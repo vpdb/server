@@ -4,14 +4,31 @@ color-darkest = rgba(255, 255, 255, 0.06)
 color-darker = rgba(255, 255, 255, 0.15)
 color-dark = rgba(255, 255, 255, 0.2)
 color-light = rgba(255, 255, 255, 0.25)
+color-lighter = rgba(255, 255, 255, 0.5)
 color-primary = #ec843d
 
 font-header = langdon
+font-content = 'Raleway', sans-serif
+
+border-radius-small = 2px;
+border-radius-large = 8px;
+
+_font-weight-thin = 100
+_font-weight-extralight = 200
+_font-weight-light = 300
+font-weight-normal = 400
+_font-weight-medium = 500
+_font-weight-semibold = 600
+font-weight-bold = 700
+_font-weight-extrabold = 800
+_font-weight-ultrabold = 900
 
 // background
 body
   background-color black
   color color-light
+  font-family font-content
+  font-weight font-weight-normal
 
 .navbar-default
   background-color rgba(0, 0, 0, 0.2)
@@ -67,3 +84,25 @@ hr
 
 
 
+// :collapsable
+.collapsable
+  margin-top 15px
+  .collapsable-header
+    background-color color-darker
+    padding 5px 0px 5px 8px
+    border-top-left-radius border-radius-large
+    border-top-right-radius border-radius-large
+    & > h1
+      color color-lighter
+      font-family font-content
+      font-weight font-weight-bold
+      font-size 18px
+      text-transform uppercase
+      margin 0
+
+
+  .collapsable-content
+    padding 8px 8px 5px 8px
+    background-color color-darkest
+    border-bottom-left-radius border-radius-large
+    border-bottom-right-radius border-radius-large

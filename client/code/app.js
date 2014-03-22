@@ -4,6 +4,7 @@
 
 angular.module('vpdb', [
 	'ngRoute',
+	'ui.bootstrap',
 	'vpdb.controllers',
 	'vpdb.filters',
 	'vpdb.services',

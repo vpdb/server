@@ -1,17 +1,36 @@
 extends layout
 
 block body
-  div(ng-controller='AppCtrl')
-    h2 Hello {{name}} 1
-    ul.menu
-      li
-        a(href='view1') view1
-      li
-        a(href='view2') view2
+	nav.navbar.navbar-default.navbar-fixed-top
+		.container
+			.navbar-header
+				span.navbar-brand vpdb
 
-    div(ng-view)
+	.container.container-topmost
+		.row
+			.col-sm-9
+				h1 all tables
+				hr
+				p content
+			.col-sm-3.col-menu
+				h2 filter
+				hr
+				.input-group
+					span.input-group-addon @
+					input.form-control(type="text", placeholder="Search")
 
-    div
-      | Angular seed app: v
-      span(app-version)
+
+	div(ng-controller='AppCtrl', ng-hide="true")
+		h2 Hello {{name}} 1
+		ul.menu
+			li
+				a(href='view1') view1
+			li
+				a(href='view2') view2
+
+		div(ng-view)
+
+		div
+			| Angular seed app: v
+			span(app-version)
 

@@ -1,2 +1,69 @@
+color-black = black
+color-background = #211f1d
+color-darkest = rgba(255, 255, 255, 0.06)
+color-darker = rgba(255, 255, 255, 0.15)
+color-dark = rgba(255, 255, 255, 0.2)
+color-light = rgba(255, 255, 255, 0.25)
+color-primary = #ec843d
+
+font-header = langdon
+
+// background
 body
-   color khaki
+  background-color black
+  color color-light
+
+.navbar-default
+  background-color rgba(0, 0, 0, 0.2)
+  border-radius 0
+  border-color color-primary
+
+.container.container-topmost
+    background-color color-background
+    padding-top 50px
+
+.col-menu
+  background-color color-darkest
+  padding-bottom 25px
+
+// :headers
+h1
+  color color-primary
+  font-family font-header
+  text-transform lowercase
+h2
+  color color-light
+  font-family font-header
+  text-transform uppercase
+
+h1, h2
+  font-size 36px
+  margin-bottom 10px
+  margin-top 20px
+
+// :hr
+hr
+  margin-top 10px
+  border-color color-light
+  border-width 2px
+
+// :input
+.form-control
+  height 28px
+  box-shadow none
+  color color-light
+  background-color color-darker
+  padding-left 3px
+  border-radius 14px
+  border none
+  &:focus
+    box-shadow none
+.input-group-addon
+  color color-light
+  background-color color-darker
+  padding-right 3px
+  border-radius 14px
+  border none
+
+
+

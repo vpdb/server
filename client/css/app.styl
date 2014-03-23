@@ -26,9 +26,10 @@ _font-weight-ultrabold = 900
 // background
 body
   background-color black
-  color color-light
+  color color-lighter
   font-family font-content
   font-weight font-weight-normal
+  font-size 16px
 
 .navbar-default
   background-color rgba(0, 0, 0, 0.2)
@@ -36,8 +37,8 @@ body
   border-color color-primary
 
 .container.container-topmost
-    background-color color-background
-    padding-top 50px
+  background-color color-background
+  padding-top 50px
 
 .col-menu
   background-color color-darkest
@@ -82,27 +83,41 @@ hr
   border-radius 14px
   border none
 
+// :selectable list
+ul.selectable
+  padding-left 20px
+  > li
+    list-style-type none
+    &.selected
+      color color-primary
+      font-weight font-weight-bold
 
 
 // :collapsable
 .collapsable
   margin-top 15px
   .collapsable-header
+    width 100%
     background-color color-darker
-    padding 5px 0px 5px 8px
+    padding 5px 0 3px 6px
     border-top-left-radius border-radius-large
     border-top-right-radius border-radius-large
+    &.collapsed
+      border-bottom-left-radius border-radius-large
+      border-bottom-right-radius border-radius-large
     & > h1
       color color-lighter
       font-family font-content
       font-weight font-weight-bold
       font-size 18px
       text-transform uppercase
+      display inline
       margin 0
 
-
   .collapsable-content
+    width 100%
     padding 8px 8px 5px 8px
     background-color color-darkest
     border-bottom-left-radius border-radius-large
     border-bottom-right-radius border-radius-large
+

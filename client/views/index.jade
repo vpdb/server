@@ -15,17 +15,48 @@ block body
 			.col-sm-3.col-menu
 				h2 filter
 				hr
+
+				// search box
 				.input-group
 					span.input-group-addon @
 					input.form-control(type="text", placeholder="Search")
 
+				// year filter
 				.collapsable(ng-controller="CollapseCtrl")
-					.collapsable-header
+					.collapsable-header(ng-class="{collapsed: isCollapsed}")
 						h1 Year
 						.pull-right
 							span(ng-click="isCollapsed = !isCollapsed") V
 					.collapsable-content(collapse="isCollapsed")
 						p content
+
+				// manufacturer filter
+				.collapsable(ng-controller="CollapseCtrl")
+					.collapsable-header(ng-class="{collapsed: isCollapsed}")
+						h1 Manufacturer
+						.pull-right
+							span(ng-click="isCollapsed = !isCollapsed") V
+					.collapsable-content(collapse="isCollapsed")
+						p content
+
+				// author filter
+				.collapsable(ng-controller="CollapseCtrl")
+					.collapsable-header(ng-class="{collapsed: isCollapsed}")
+						h1 Author
+						.pull-right
+							span(ng-click="isCollapsed = !isCollapsed") V
+					.collapsable-content(collapse="isCollapsed")
+						p content
+
+				h2 sort
+				hr
+				ul.selectable
+					li Date Added
+					li Original Release
+					li.selected Name
+					li Rating
+					li Views
+					li Downloads
 
 	div(ng-controller='AppCtrl', ng-hide="true")
 		h2 Hello {{name}} 1

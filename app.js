@@ -40,6 +40,7 @@ app.use(express.methodOverride());
 app.use(express.static(__dirname + '/client/code'));
 app.use(express.static(__dirname + '/client/static'));
 app.use(express.static(__dirname + '/client/static/css'));
+app.use(express.static(__dirname + '/data/assets'));
 app.use(app.router);
 
 // development only
@@ -67,6 +68,7 @@ app.get('/partials/:name', routes.partials);
 
 // JSON API
 app.get('/api/name', api.name);
+app.get('/api/tables', api.tables);
 
 // redirect all others to the index (HTML5 history)
 app.get('*', routes.index);

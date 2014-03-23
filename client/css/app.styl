@@ -40,6 +40,8 @@ body
   background-color color-background
   padding-top 50px
 
+.col-main
+  padding 0 30px
 .col-menu
   background-color color-darkest
   padding-bottom 25px
@@ -82,6 +84,34 @@ hr
   padding-right 3px
   border-radius 14px
   border none
+
+// :compact :table list
+.panel-table-compact
+  border-radius border-radius-small
+  background-color color-darkest
+  box-shadow 0 0 5px 1px rgba(0, 0, 0, 0.3)
+  text-align center
+  .img
+    position relative
+    width 100%
+    height 0
+    padding-bottom 80% // % of width, defines aspect ratio
+
+    background-repeat no-repeat
+    background-position center center
+    background-size cover
+  h3
+    font-size 26px
+    font-family font-header
+    text-transform uppercase
+    text-align center
+    white-space nowrap
+    overflow hidden
+    text-overflow ellipsis
+  label
+    font-weight font-weight-normal
+    margin-bottom 15px
+
 
 // :selectable list
 ul.selectable

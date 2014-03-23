@@ -8,10 +8,16 @@ block body
 
 	.container.container-topmost
 		.row
-			.col-sm-9
+			.col-sm-9.col-main
 				h1 all tables
 				hr
-				p content
+				div(ng-controller="TableListController")
+					.row
+						.col-sm-4(ng-repeat="table in tables")
+							.panel.panel-table-compact
+								div.img(style="background-image:url('backglass/{{table.id}}.png')")
+								h3 {{table.name}}
+								label {{table.manufacturer}} - {{table.year}}
 			.col-sm-3.col-menu
 				h2 filter
 				hr

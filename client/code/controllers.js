@@ -2,7 +2,7 @@
 
 /* Controllers */
 
-angular.module('vpdb.controllers', []).
+var ctrl = angular.module('vpdb.controllers', []).
 	controller('AppCtrl', function($scope, $http) {
 
 		$http({

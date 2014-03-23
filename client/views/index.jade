@@ -13,7 +13,7 @@ block body
 				hr
 				div(ng-controller="TableListController")
 					.row
-						.col-sm-4(ng-repeat="table in tables")
+						.col-md-4.col-sm-6.col-xs-6(ng-repeat="table in tables")
 							.panel.panel-table-compact
 								div.img(style="background-image:url('backglass/{{table.id}}.png')")
 								h3 {{table.name}}

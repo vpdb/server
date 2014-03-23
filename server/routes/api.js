@@ -15,7 +15,14 @@ exports.tables = function (req, res) {
 				id: 'Attack from Mars (Bally 1995)',
 				name: 'Attack from Mars',
 				manufacturer: 'Midway',
-				year: 1995
+				year: 1995,
+				rating: 8.2,
+				votes: 18,
+				views: 768,
+				comments: 5,
+				tabledownloads: 354,
+				lastrelease: '2014-03-23T20:38:20Z',
+				authors: [ 'JPSalas' ]
 			},
 			{
 				id: 'Big Bang Bar (Capcom 1996)',

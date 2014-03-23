@@ -1,15 +1,18 @@
-.row
+.row(ng-controller="TableListController")
 	.col-sm-9.col-main
 		h1 all tables
 		ul.viewtype-panel
-			li.active(ng-click='viewtype("compact")')
-				i.fa.fa-th-large
-			li(ng-click='viewtype("extended")')
-				i.fa.fa-th-list
-			li(ng-click='viewtype("list")')
-				i.fa.fa-th-list
+			li(ng-class="{ active: viewtype == 'compact' }")
+				a(href="/tables#compact")
+					i.fa.fa-th-large
+			li(ng-class="{ active: viewtype == 'extended' }")
+				a(href="/tables#extended")
+					i.fa.fa-th-list
+			li(ng-class="{ active: viewtype == 'list' }")
+				a(href="/tables#list")
+					i.fa.fa-th-list
 		hr
-		div(ng-controller="TableListController")
+		div
 			.row
 				div(ng-include="template")
 	.col-sm-3.col-menu

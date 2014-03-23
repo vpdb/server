@@ -14,9 +14,10 @@ ctrl.controller('TableListController', function($scope, $http, $location) {
 		url: '/api/tables'
 
 	}).success(function(data, status, headers, config) {
+		_.each(data.result, function(table) {
+			table.lastrelease = new Date(table.lastrelease).getTime();
+		});
 		$scope.tables = data.result;
 
-	}).error(function(data, status, headers, config) {
-		$scope.name = 'Error!';
 	});
 });

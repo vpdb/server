@@ -2,15 +2,16 @@
 
 // Declare app level module which depends on filters, and services
 
-angular.module('vpdb', [
+var app = angular.module('vpdb', [
 	'ngRoute',
 	'ui.bootstrap',
 	'vpdb.controllers',
 	'vpdb.filters',
 	'vpdb.services',
 	'vpdb.directives'
+]);
 
-]).config(function($routeProvider, $locationProvider) {
+app.config(function($routeProvider, $locationProvider) {
 
 	$routeProvider.
 		when('/tables', {
@@ -27,4 +28,5 @@ angular.module('vpdb', [
 		});
 
 	$locationProvider.html5Mode(true);
+
 });

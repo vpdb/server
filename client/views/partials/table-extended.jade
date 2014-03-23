@@ -1,0 +1,30 @@
+.col-xs-12(ng-repeat="table in tables")
+	.panel.panel-table.panel-table-extended
+		.img-wrapper
+			.img(style="background-image:url('backglass/{{table.id}}.png')")
+		.data-wrapper
+			h3 {{table.name}}
+			label {{table.manufacturer}} &middot; {{table.year}}
+			label.block
+				span(ng-repeat="author in table.authors")
+					i.fa.fa-user
+					| {{author}}
+			label
+				i.fa.fa-arrow-circle-down
+				span {{table.tabledownloads}}
+				i.fa.fa-eye
+				span {{table.views}}
+				i.fa.fa-comment
+				span {{table.comments}}
+
+			label.pull-right
+				i.fa.fa-arrow-circle-up
+				span <time-ago from-time='{{table.lastrelease}}'></time-ago>
+
+			.ratingbox
+				.ratingbox-rating {{table.rating}}
+				.ratingbox-right
+					span.stars(value="{{table.rating}}")
+					span.votes {{table.votes}} vote{{table.votes == 1 ? '' : 's'}}
+
+		.clearfix

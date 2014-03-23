@@ -1,5 +1,5 @@
 .col-md-4.col-sm-6.col-xs-6(ng-repeat="table in tables")
-	.panel.panel-table-compact
+	.panel.panel-table.panel-table-compact
 		div.img(style="background-image:url('backglass/{{table.id}}.png')")
 		h3 {{table.name}}
-		label {{table.manufacturer}} - {{table.year}}
+		label {{table.manufacturer}} &middot; {{table.year}}

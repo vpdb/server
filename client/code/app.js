@@ -9,20 +9,22 @@ angular.module('vpdb', [
 	'vpdb.filters',
 	'vpdb.services',
 	'vpdb.directives'
-]).
-	config(function($routeProvider, $locationProvider) {
-		$routeProvider.
-			when('/view1', {
-				templateUrl: 'partials/partial1',
-				controller: 'MyCtrl1'
-			}).
-			when('/view2', {
-				templateUrl: 'partials/partial2',
-				controller: 'MyCtrl2'
-			}).
-			otherwise({
-				redirectTo: '/view1'
-			});
 
-		$locationProvider.html5Mode(true);
-	});
+]).config(function($routeProvider, $locationProvider) {
+
+	$routeProvider.
+		when('/tables', {
+			templateUrl: 'partials/tables'
+		}).
+
+		when('/view2', {
+			templateUrl: 'partials/partial2',
+			controller: 'MyCtrl2'
+		}).
+
+		otherwise({
+			redirectTo: '/tables'
+		});
+
+	$locationProvider.html5Mode(true);
+});

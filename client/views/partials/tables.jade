@@ -1,0 +1,63 @@
+.row
+	.col-sm-9.col-main
+		h1 all tables
+		ul.viewtype-panel
+			li.active(ng-click='viewtype("compact")')
+				i.fa.fa-th-large
+			li(ng-click='viewtype("extended")')
+				i.fa.fa-th-list
+			li(ng-click='viewtype("list")')
+				i.fa.fa-th-list
+		hr
+		div(ng-controller="TableListController")
+			.row
+				div(ng-include="template")
+	.col-sm-3.col-menu
+		h2 filter
+		hr
+
+		// search box
+		.input-group
+			span.input-group-addon
+				i.fa.fa-search
+			input.form-control(type="text", placeholder="Search")
+
+		// year filter
+		.collapsable(ng-controller="CollapseCtrl")
+			.collapsable-header(ng-class="{collapsed: isCollapsed}")
+				h1 Year
+				.pull-right
+					span.collapse-toggle(ng-click="isCollapsed = !isCollapsed")
+						i.fa.fa-chevron-circle-down
+			.collapsable-content(collapse="isCollapsed")
+				p content
+
+		// manufacturer filter
+		.collapsable(ng-controller="CollapseCtrl")
+			.collapsable-header(ng-class="{collapsed: isCollapsed}")
+				h1 Manufacturer
+				.pull-right
+					span.collapse-toggle(ng-click="isCollapsed = !isCollapsed")
+						i.fa.fa-chevron-circle-down
+			.collapsable-content(collapse="isCollapsed")
+				p content
+
+		// author filter
+		.collapsable(ng-controller="CollapseCtrl")
+			.collapsable-header(ng-class="{collapsed: isCollapsed}")
+				h1 Author
+				.pull-right
+					span.collapse-toggle(ng-click="isCollapsed = !isCollapsed")
+						i.fa.fa-chevron-circle-down
+			.collapsable-content(collapse="isCollapsed")
+				p content
+
+		h2 sort
+		hr
+		ul.selectable
+			li Date Added
+			li Original Release
+			li.selected.asc Name
+			li Rating
+			li Views
+			li Downloads

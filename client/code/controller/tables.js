@@ -1,6 +1,13 @@
-ctrl.controller('TableListController', function($scope, $http) {
+ctrl.controller('TableListController', function($scope, $http, $location) {
 
-	$scope.tables = [];
+	if ($location.$$hash == 'extended') {
+		$scope.viewtype = 'extended';
+	} else if ($location.$$hash == 'list') {
+		$scope.viewtype = 'list';
+	} else {
+		$scope.viewtype = 'compact'
+	}
+	$scope.template = '/partials/table-' + $scope.viewtype;
 
 	$http({
 		method: 'GET',

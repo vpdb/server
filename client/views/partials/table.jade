@@ -5,8 +5,10 @@
 		hr
 		h3 Releases
 		.panel.panel-dark.panel-dark-detailed(ng-repeat="release in table.releases")
-			.img-wrapper
-				.img(style="background-image:url('{{release.thumbs.playfield}}')")
+			.sidebar-wrapper
+				a.image-link(href="{{release.thumbs.playfield}}")
+					.img-wrapper
+						.img(style="background-image:url('{{release.thumbs.playfield}}')")
 				p legend
 			.data-wrapper
 				h1 {{release.title}}

@@ -56,9 +56,6 @@ body
   background-color color-darkest
   padding-bottom 25px
 
-[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak
-  display none
-
 .row-fullheight
   overflow hidden
   border-bottom-right-radius border-radius-large
@@ -68,11 +65,23 @@ body
     padding-bottom 99999px
 .row-data
   margin-bottom 10px
+
+// generic stuff
 pre
   color color-lighter
   border-color color-darkest
   background-color transparent
   background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI3MCIgaGVpZ2h0PSI3MCI+CjxyZWN0IHdpZHRoPSI3MCIgaGVpZ2h0PSI3MCIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjAzKSI+PC9yZWN0Pgo8ZyB0cmFuc2Zvcm09InJvdGF0ZSg0NSkiPgo8cmVjdCB3aWR0aD0iOTkiIGhlaWdodD0iMjUiIGZpbGw9InJnYmEoMCwwLDAsMC4wMykiPjwvcmVjdD4KPHJlY3QgeT0iLTUwIiB3aWR0aD0iOTkiIGhlaWdodD0iMjUiIGZpbGw9InJnYmEoMCwwLDAsMC4wMykiPjwvcmVjdD4KPC9nPgo8L3N2Zz4=");
+
+a:hover
+  text-decoration none
+a:focus
+  text-decoration none
+  outline none
+
+[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak
+  display none
+
 
 // :headers
 h1
@@ -256,10 +265,10 @@ ul.viewtype-panel
 h1 + h3.pull-right
   margin-top: -42px;
 .panel-dark-detailed
-  .img-wrapper
+  .sidebar-wrapper
+    float left
     margin 15px
     width 170px
-    float left
     .img
       padding-bottom 176%
       border-radius border-radius-small
@@ -406,3 +415,18 @@ accordion.accordion-glued
       border-bottom-right-radius border-radius-large
       & > .panel-heading
         border-bottom none
+
+section.footer
+  text-align center
+  margin-top -20px
+  margin-bottom 20px
+  color color-dark
+  font-weight
+  i.fa
+    margin-right 10px
+    font-size 20px
+  a
+    color color-dark
+    transition all animation-short
+    &:hover
+      color color-light

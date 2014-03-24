@@ -9,17 +9,7 @@ block body
 	.container.container-topmost
 		div(ng-view)
 
-	div(ng-controller='AppCtrl', ng-hide="true")
-		h2 Hello {{name}} 1
-		ul.menu
-			li
-				a(href='view1') view1
-			li
-				a(href='view2') view2
-
-
-
-		div
-			| Angular seed app: v
-			span(app-version)
-
+	section.footer
+		a(href="https://github.com/freezy/node-vpdb", target="_blank")
+			i.fa.fa-github-alt
+			| <strong>Fork me</strong> on GitHub

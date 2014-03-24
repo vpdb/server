@@ -7,6 +7,7 @@ color-light = rgba(255, 255, 255, 0.25)
 color-lighter = rgba(255, 255, 255, 0.5)
 color-lightest = rgba(255, 255, 255, 0.75)
 color-primary = #ec843d
+color-primary-light = #ffa364
 
 font-header = langdon
 font-content = 'Raleway', sans-serif
@@ -24,6 +25,7 @@ font-weight-bold = 700
 _font-weight-extrabold = 800
 _font-weight-ultrabold = 900
 
+animation-long = 350ms
 animation-short = 200ms
 animation-shorter = 100ms
 
@@ -82,7 +84,6 @@ a:focus
 [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak
   display none
 
-
 // :headers
 h1
   color color-primary
@@ -108,6 +109,25 @@ hr
   margin-top 10px
   border-color color-light
   border-width 2px
+
+// :navbar
+.navbar-brand
+  position relative
+  .icon
+    font-size 115px
+    position absolute
+    top -67px
+    transition all animation-long
+    &.icon-vp
+      color color-primary
+    &.icon-db
+      color color-lighter
+  a
+    &:hover
+      .icon-vp
+        color color-primary-light
+      .icon-db
+        color color-lightest
 
 // :input
 .form-control
@@ -184,7 +204,7 @@ ul.viewtype-panel
     text-overflow ellipsis
     &.block
       display block
-    i.fa
+    i.fa, i.icon
       margin-right 10px
     span
       margin-right 10px

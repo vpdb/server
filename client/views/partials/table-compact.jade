@@ -1,5 +1,5 @@
-.col-md-4.col-sm-6.col-xs-6(ng-repeat="table in tables")
+.col-md-4.col-sm-6.col-xs-6.fade-animation(ng-repeat="table in tables", ng-click="details(table.id)")
 	.panel.panel-table.panel-table-compact
-		div.img(style="background-image:url('backglass/thumb/{{table.id}}.png')")
+		div.img(style="background-image:url('{{table.art.backglass_thumb}}')")
 		h3 {{table.name}}
 		label {{table.manufacturer}} &middot; {{table.year}}

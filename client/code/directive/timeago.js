@@ -8,13 +8,15 @@ directives.directive('timeAgo', ['timeAgoService', function(timeago) {
 		scope: {
 			"fromTime": "@"
 		},
+		template: '<span></span>',
 		link: {
 			post: function(scope, linkElement, attrs) {
 				scope.timeago = timeago;
+				scope.fromTimeMs = new Date(scope.fromTime).getTime();
 				scope.timeago.init();
-				scope.$watch("timeago.nowTime-fromTime", function(value) {
+				scope.$watch("timeago.nowTime-fromTimeMs", function(value) {
 					if (scope.timeago.nowTime != undefined) {
-						value = scope.timeago.nowTime - scope.fromTime;
+						value = scope.timeago.nowTime - scope.fromTimeMs;
 						$(linkElement).text(scope.timeago.inWords(value));
 					}
 				});

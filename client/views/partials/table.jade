@@ -1,0 +1,30 @@
+.row.ng-cloak.row-fullheight(ng-controller="TableController")
+	.col-sm-9.col-main
+		h1 {{ table.name }}
+		h3.pull-right {{table.manufacturer}}, {{table.year}}
+		hr
+		h3 Releases
+		.panel.panel-table.panel-table-detailed(ng-repeat="release in table.releases")
+			.img-wrapper
+				.img(style="background-image:url('{{release.thumbs.playfield}}')")
+				p legend
+			.data-wrapper
+				h1 {{release.title}}
+				label
+					i.fa.fa-arrow-circle-up
+					time-ago(from-time="{{release.lastversion.timestamp}}")
+				label
+					i.fa.fa-arrow-circle-down
+					span {{release.lastversion.downloads}}
+
+				accordion(close-others="true")
+					accordion-group(heading="Description", is-open="true")
+						div(markdown="release.description")
+					accordion-group(heading="Authors")
+						p here are the authors
+					accordion-group(heading="Gallery")
+						p here is the gallery
+			.clearfix
+	.col-sm-3.col-menu
+		h2 filter
+		hr

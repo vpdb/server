@@ -4,6 +4,8 @@
 
 var app = angular.module('vpdb', [
 	'ngRoute',
+	'ngAnimate',
+	'ngSanitize',
 	'ui.bootstrap',
 	'vpdb.controllers',
 	'vpdb.filters',
@@ -18,9 +20,8 @@ app.config(function($routeProvider, $locationProvider) {
 			templateUrl: 'partials/tables'
 		}).
 
-		when('/view2', {
-			templateUrl: 'partials/partial2',
-			controller: 'MyCtrl2'
+		when('/table/:id', {
+			templateUrl: 'partials/table'
 		}).
 
 		otherwise({

@@ -1,0 +1,21 @@
+.table-wrapper
+	table.tables
+		colgroup
+			col
+			col
+			col
+			col
+		thead
+			tr
+				th
+				th
+				th
+				th
+		tbody
+			tr.fade-animation(ng-repeat="table in tables", ng-click="details(table.id)", style="transition-delay: {{$index * 20}}ms")
+				td.name {{ table.name }}
+				td {{ table.manufacturer }} ({{ table.year }})
+				td
+					time-ago(from-time="{{table.lastrelease}}")
+				td
+					span.stars(value="{{table.rating}}")

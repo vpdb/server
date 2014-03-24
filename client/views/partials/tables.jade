@@ -23,35 +23,31 @@
 				i.fa.fa-search
 			input.form-control(type="text", placeholder="Search")
 
-		// year filter
-		.collapsable(ng-controller="CollapseCtrl")
-			.collapsable-header(ng-class="{collapsed: isCollapsed}")
-				h1 Year
-				.pull-right
-					span.collapse-toggle(ng-click="isCollapsed = !isCollapsed")
-						i.fa.fa-chevron-circle-down
-			.collapsable-content(collapse="isCollapsed")
-				p content
+		accordion(close-others="false")
 
-		// manufacturer filter
-		.collapsable(ng-controller="CollapseCtrl")
-			.collapsable-header(ng-class="{collapsed: isCollapsed}")
-				h1 Manufacturer
-				.pull-right
-					span.collapse-toggle(ng-click="isCollapsed = !isCollapsed")
-						i.fa.fa-chevron-circle-down
-			.collapsable-content(collapse="isCollapsed")
-				p content
+			// year filter
+			accordion-group(is-open="filterYearOpen")
+				accordion-heading
+					| Year
+					i.fa.pull-right(ng-class="{'fa-chevron-circle-up': filterYearOpen, 'fa-chevron-circle-down': !filterYearOpen}")
 
-		// author filter
-		.collapsable(ng-controller="CollapseCtrl")
-			.collapsable-header(ng-class="{collapsed: isCollapsed}")
-				h1 Author
-				.pull-right
-					span.collapse-toggle(ng-click="isCollapsed = !isCollapsed")
-						i.fa.fa-chevron-circle-down
-			.collapsable-content(collapse="isCollapsed")
-				p content
+				p select years in here.
+
+			// manufacturer filter
+			accordion-group(is-open="filterManufacturerOpen")
+				accordion-heading
+					| Manufacturer
+					i.fa.pull-right(ng-class="{'fa-chevron-circle-up': filterManufacturerOpen, 'fa-chevron-circle-down': !filterManufacturerOpen}")
+
+				p here are the manufacturers
+
+			// author filter
+			accordion-group(is-open="filterAuthorOpen")
+				accordion-heading
+					| Author
+					i.fa.pull-right(ng-class="{'fa-chevron-circle-up': filterAuthorOpen, 'fa-chevron-circle-down': !filterAuthorOpen}")
+
+				p here are the authors
 
 		h2 sort
 		hr

@@ -5,6 +5,7 @@ color-darker = rgba(255, 255, 255, 0.15)
 color-dark = rgba(255, 255, 255, 0.2)
 color-light = rgba(255, 255, 255, 0.25)
 color-lighter = rgba(255, 255, 255, 0.5)
+color-lightest = rgba(255, 255, 255, 0.75)
 color-primary = #ec843d
 
 font-header = langdon
@@ -67,6 +68,11 @@ body
     padding-bottom 99999px
 .row-data
   margin-bottom 10px
+pre
+  color color-lighter
+  border-color color-darkest
+  background-color transparent
+  background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI3MCIgaGVpZ2h0PSI3MCI+CjxyZWN0IHdpZHRoPSI3MCIgaGVpZ2h0PSI3MCIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjAzKSI+PC9yZWN0Pgo8ZyB0cmFuc2Zvcm09InJvdGF0ZSg0NSkiPgo8cmVjdCB3aWR0aD0iOTkiIGhlaWdodD0iMjUiIGZpbGw9InJnYmEoMCwwLDAsMC4wMykiPjwvcmVjdD4KPHJlY3QgeT0iLTUwIiB3aWR0aD0iOTkiIGhlaWdodD0iMjUiIGZpbGw9InJnYmEoMCwwLDAsMC4wMykiPjwvcmVjdD4KPC9nPgo8L3N2Zz4=");
 
 // :headers
 h1
@@ -139,7 +145,7 @@ ul.viewtype-panel
 
 
 // :table panes
-.panel-table
+.panel-dark
   border-radius border-radius-small
   background-color color-darkest
   box-shadow 0 0 5px 1px rgba(0, 0, 0, 0.3)
@@ -182,8 +188,17 @@ ul.viewtype-panel
         &:last-child:after
           content ''
 
+// common to compact and extended
+.panel-dark-compact, .panel-dark-extended
+  cursor pointer
+  transition all 500ms cubic-bezier(0.190, 1.000, 0.220, 1.000)
+  transform translateY(0) scale(1, 1)
+  &:hover
+    box-shadow 0 5px 9px rgba(0,0,0,0.5)
+    transform translateY(-5px) scale(1.03, 1.03)
+
 // :table panes :compact
-.panel-table-compact
+.panel-dark-compact
   text-align center
   margin-top 10px
 
@@ -198,9 +213,9 @@ ul.viewtype-panel
     margin-bottom 15px
 
 // :table panes :extended
-.panel-table-extended
+.panel-dark-extended
   &:hover
-    transform translateY(-1px) scale(1.01, 1.01)
+    transform translateY(-3px) scale(1.01, 1.01)
 
   .img-wrapper
     width 170px
@@ -237,19 +252,10 @@ ul.viewtype-panel
       top -24px
       white-space nowrap
 
-// common to both
-.panel-table-compact, .panel-table-extended
-  cursor pointer
-  transition all 500ms cubic-bezier(0.190, 1.000, 0.220, 1.000)
-  transform translateY(0) scale(1, 1)
-  &:hover
-    box-shadow 0 5px 9px rgba(0,0,0,0.5)
-    transform translateY(-5px) scale(1.03, 1.03)
-
 // :details view
 h1 + h3.pull-right
   margin-top: -42px;
-.panel-table-detailed
+.panel-dark-detailed
   .img-wrapper
     margin 15px
     width 170px
@@ -265,6 +271,10 @@ h1 + h3.pull-right
       font-weight font-weight-bold
       text-transform none
       margin-bottom 0
+    accordion
+      & > .panel-group
+        & > .panel
+          margin-right 15px
 
 // :table list
 .table-wrapper
@@ -348,22 +358,41 @@ accordion
   & > .panel-group
     & > .panel
       border none
-      margin-right 15px
       background-color color-darkest
-      border-radius 0
+      margin-top 15px
+      border-radius border-radius-large
       & > .panel-heading
         padding 7px 9px
-        border-radius 0
         background-color color-darkest
-        border-bottom solid 1px color-darker
+        border-top-left-radius border-radius-large
+        border-top-right-radius border-radius-large
         h4
           color color-lighter
           text-transform uppercase
           font-weight font-weight-bold
+        a
+          transition all animation-short
+          &:hover
+            text-decoration none
+            color color-lightest
+            cursor pointer
+
+      & + .panel
+        margin-top 15px
       & > .panel-collapse
         & > .panel-body
           border-top none
           background-color transparent
+
+accordion.accordion-glued
+  & > .panel-group
+    & > .panel
+      border none
+      border-radius 0
+      & > .panel-heading
+        padding 7px 9px
+        border-radius 0
+        border-bottom solid 1px color-darker
       & + .panel
         margin-top 0
     & > .panel:first-child

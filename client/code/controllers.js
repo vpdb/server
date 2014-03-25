@@ -2,29 +2,28 @@
 
 /* Controllers */
 
-var ctrl = angular.module('vpdb.controllers', []).
-	controller('AppCtrl', function($scope, $http) {
+var ctrl = angular.module('vpdb.controllers', []);
 
-		$http({
-			method: 'GET',
-			url: '/api/name'
-		}).
-			success(function(data, status, headers, config) {
-				$scope.name = data.name;
-			}).
-			error(function(data, status, headers, config) {
-				$scope.name = 'Error!';
-			});
+ctrl.controller('AppCtrl', function($scope, $http) {
 
-	}).
-	controller('MyCtrl1', function($scope) {
-		// write Ctrl here
+	$http({
+		method: 'GET',
+		url: '/api/name'
 
-	}).
-	controller('MyCtrl2', function($scope) {
-		// write Ctrl here
+	}).success(function(data, status, headers, config) {
+		$scope.name = data.name;
 
-	}).
-	controller('CollapseCtrl', function($scope) {
-		$scope.isCollapsed  = false;
+	}).error(function(data, status, headers, config) {
+		$scope.name = 'Error!';
 	});
+
+});
+
+
+ctrl.controller('CollapseCtrl', function($scope) {
+	$scope.isCollapsed  = false;
+});
+
+
+ctrl.controller('CommentCtrl', function($scope) {
+});

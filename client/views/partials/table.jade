@@ -31,12 +31,13 @@
 			.clearfix
 
 		.panel.panel-dark(ng-controller="CommentCtrl")
+
 			tabset
 				label.label-small.pull-right Comments are parsed with <a href="http://daringfireball.net/projects/markdown/syntax" target="_blank">Markdown</a>.
 				tab
 					tab-heading
 						i.fa.fa-edit(title="Write")
-					textarea(placeholder="Leave a comment", ng-model="newComment")
+					textarea.msd-elastic(placeholder="Leave a comment", ng-model="newComment")
 				tab
 					tab-heading
 						i.fa.fa-eye(title="Preview")

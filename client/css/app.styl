@@ -434,7 +434,7 @@ accordion.accordion-glued
         &:hover
           color color-lighter
   .tab-content
-    padding 15px
+    padding 10px 15px 15px 15px
     border-radius 0 border-radius-small border-radius-small border-radius-small
     background-color color-darker
     textarea
@@ -467,3 +467,45 @@ section.footer
     transition all animation-short
     &:hover
       color color-light
+
+// :markdown
+.comment
+  h1, h2
+    color color-lightest
+    font-family font-content
+    text-transform none
+  h3, h4, h5
+    color color-lighter
+    font-family font-content
+    text-transform none
+  h1
+    font-size 30px
+    font-weight font-weight-thin
+  h2
+    font-size 25px
+    font-weight font-weight-thin
+  h3
+    font-size 20px
+    font-weight font-weight-bold
+  h4
+    font-size 18px
+    font-weight font-weight-bold
+  h5, h6
+    font-size 16px
+    font-weight font-weight-normal
+    text-decoration underline
+  a
+    color color-lighter
+    text-decoration underline
+    &:hover
+      color color-lightest
+  code
+    background-color color-light
+    color black
+  pre code
+    font-size 16px
+    background-color transparent
+    color inherit
+  blockquote
+    font-size 16px
+    border-color color-light

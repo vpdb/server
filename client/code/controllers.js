@@ -26,4 +26,21 @@ ctrl.controller('CollapseCtrl', function($scope) {
 
 
 ctrl.controller('CommentCtrl', function($scope) {
+
+	$scope.newComment = '';
+	$scope.comments = [{
+		user: 'freezy',
+		timestamp: new Date(),
+		message: "A very first comment. Awesome release."
+	}];
+	$scope.addComment = function() {
+		if ($scope.newComment.length > 0) {
+			$scope.comments.push({
+				user: 'freezy',
+				timestamp: new Date(),
+				message: $scope.newComment
+			});
+		}
+
+	}
 });

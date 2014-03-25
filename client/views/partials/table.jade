@@ -31,6 +31,9 @@
 			.clearfix
 
 		.panel.panel-dark(ng-controller="CommentCtrl")
+			h3 Comments
+			.panel.panel-light(ng-repeat="comment in comments")
+				div.markdown(markdown="comment.message")
 
 			tabset
 				label.label-small.pull-right Comments are parsed with <a href="http://daringfireball.net/projects/markdown/syntax" target="_blank">Markdown</a>.
@@ -44,7 +47,7 @@
 					div.markdown(markdown="newComment")
 					label.label-message(ng-show="!newComment || newComment.length == 0") Nothing to preview.
 
-			button.btn.btn-default.btn-comment.pull-right Comment
+			button.btn.btn-default.btn-comment.pull-right(ng-click="addComment()") Comment
 			.clearfix
 
 

@@ -21,7 +21,7 @@
 
 				accordion.accordion-glued(close-others="true")
 					accordion-group(heading="Description", is-open="true")
-						div(markdown="release.description")
+						div.markdown(markdown="release.description")
 					accordion-group(heading="Authors")
 						ul
 							li(ng-repeat="author in release.authors") {{ author.author }}
@@ -35,13 +35,17 @@
 				label.label-small.pull-right Comments are parsed with <a href="http://daringfireball.net/projects/markdown/syntax" target="_blank">Markdown</a>.
 				tab
 					tab-heading
-						i.fa.fa-edit
+						i.fa.fa-edit(title="Write")
 					textarea(placeholder="Leave a comment", ng-model="newComment")
-
 				tab
 					tab-heading
-						i.fa.fa-eye
-					div.comment(markdown="newComment")
+						i.fa.fa-eye(title="Preview")
+					div.markdown(markdown="newComment")
+					label.label-message(ng-show="!newComment || newComment.length == 0") Nothing to preview.
+
+			button.btn.btn-default.btn-comment.pull-right Comment
+			.clearfix
+
 
 	.col-sm-3.col-menu
 		h2 filter

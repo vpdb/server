@@ -34,7 +34,7 @@
 			h3 Comments on Release
 			.panel.panel-light(ng-repeat="comment in comments")
 				.panel-header
-					label <strong>{{ comment.user }}</strong> posted <time-ago from-time="{{ comment.timestamp }}"></time-ago>
+					label <strong>{{ comment.user }}</strong> commented <time-ago>{{comment.timestamp.getTime() - 5000}}</time-ago>
 				.panel-content
 					div.markdown(markdown="comment.message")
 

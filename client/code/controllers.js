@@ -31,7 +31,7 @@ ctrl.controller('CommentCtrl', function($scope) {
 	$scope.comments = [{
 		user: 'freezy',
 		timestamp: new Date(),
-		message: "A very first comment. Awesome release."
+		message: "A very first comment. **Awesome release!**"
 	}];
 	$scope.addComment = function() {
 		if ($scope.newComment.length > 0) {

@@ -31,9 +31,12 @@
 			.clearfix
 
 		.panel.panel-dark(ng-controller="CommentCtrl")
-			h3 Comments
+			h3 Comments on Release
 			.panel.panel-light(ng-repeat="comment in comments")
-				div.markdown(markdown="comment.message")
+				.panel-header
+					label <strong>{{ comment.user }}</strong> posted <time-ago from-time="{{ comment.timestamp }}"></time-ago>
+				.panel-content
+					div.markdown(markdown="comment.message")
 
 			tabset
 				label.label-small.pull-right Comments are parsed with <a href="http://daringfireball.net/projects/markdown/syntax" target="_blank">Markdown</a>.

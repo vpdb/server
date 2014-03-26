@@ -247,6 +247,7 @@ ul.viewtype-panel
     background-color color-darkest
     border none
   & > h3
+    margin-top 15px
     margin-left 15px
 
 // common to compact and extended
@@ -317,7 +318,13 @@ ul.viewtype-panel
   background-color color-darker
   border-radius border-radius-large
   margin 15px
-  padding 15px 15px 5px
+  .panel-header
+    border-radius border-radius-large border-radius-large 0 0
+    background-color color-darkest
+    padding 6px 12px 0px
+  .panel-content
+    padding 15px 15px 5px
+
 
 // :details view
 h1 + h3.pull-right

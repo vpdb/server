@@ -69,7 +69,6 @@ body
   margin-bottom 10px
 
 // generic stuff
-
 a
   color color-light
   cursor pointer
@@ -210,6 +209,16 @@ ul.viewtype-panel
 
 
 // :table :panel
+.panel-triangle
+  position absolute
+  width 0px
+  height 0px
+  left -8px
+  top 11px
+  border-width 9px 9px 9px 0
+  border-style solid
+  transition background-color animation-short
+
 .panel-dark
   border-radius border-radius-small
   background-color color-darkest
@@ -332,6 +341,9 @@ ul.viewtype-panel
   background-color color-darker
   border-radius border-radius-large
   margin 15px
+  position relative
+  .panel-triangle
+    border-color transparent #575654 transparent transparent
   .panel-header
     border-radius border-radius-large border-radius-large 0 0
     background-color color-darkest
@@ -469,10 +481,16 @@ accordion.accordion-glued
     border none
     li
       margin-bottom 0
-      &.active a
-        color color-lighter
-        background-color color-darker
-        border none
+      &.active
+        a
+          color color-lighter
+          background-color color-darker
+          border none
+          tab-heading
+        .panel-triangle
+          border-color transparent #4c4b49 transparent transparent
+      .panel-triangle
+        border-color transparent #383735 transparent transparent
       a
         padding 4px 15px
         font-size 20px
@@ -490,6 +508,7 @@ accordion.accordion-glued
       width 100%
       height 80px
       padding 5px
+      margin-top 5px
       resize none
       border 1px solid color-darkest
       border-radius border-radius-small
@@ -497,6 +516,7 @@ accordion.accordion-glued
       transition background-color animation-short
       &:focus
         background-color rgba(255,255,255,0.08)
+
   label.label-small
     margin-top 7px
     color color-light
@@ -573,8 +593,11 @@ section.footer
   height 64px
   margin-left 15px
   border-radius 32px
+  background-color color-darkest
   &.pull-left
-    margin-right 15px
+    margin-right 0px
   & + .media-body > .panel
     margin-top 0px
-    margin-left 0px
+    margin-left 15px
+  & + .media-body > .tabbable
+    margin-top 0px

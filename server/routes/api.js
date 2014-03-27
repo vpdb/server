@@ -249,7 +249,7 @@ var data = [
 							user: 'fuzzel',
 							avatar: '/avatars/fuzzel.jpg'
 						},
-						timestamp: '2014-02-29T22:46:20Z',
+						timestamp: '2014-02-28T22:46:20Z',
 						message: 'Hey I\'m the first to say WELL DONE! :D'
 					}
 				],

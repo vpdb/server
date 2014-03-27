@@ -37,22 +37,30 @@
 					img.media-object.media-avatar-medium.pull-left(src="{{comment.author.avatar}}")
 					.media-body
 						.panel.panel-light
+							.panel-triangle
 							.panel-header
-								label <strong>{{ comment.author.user }}</strong> commented <time-ago>{{ comment.timestamp.getTime() }}</time-ago>
+								label
+								strong {{ comment.author.user }}
+								| &nbsp;commented
+								time-ago(from-time="{{comment.timestamp}}")
 							.panel-content
 								div.markdown(markdown="comment.message")
 
-				tabset
-					label.label-small.pull-right Comments are parsed with <a href="http://daringfireball.net/projects/markdown/syntax" target="_blank">Markdown</a>.
-					tab
-						tab-heading
-							i.fa.fa-edit(title="Write")
-						textarea.msd-elastic(placeholder="Leave a comment", ng-model="newComment")
-					tab
-						tab-heading
-							i.fa.fa-eye(title="Preview")
-						div.markdown(markdown="newComment")
-						label.label-message(ng-show="!newComment || newComment.length == 0") Nothing to preview.
+				.media
+					div.media-avatar-medium.pull-left
+					.media-body
+						tabset.tabset-newcomment
+							label.label-small.pull-right Comments are parsed with <a href="http://daringfireball.net/projects/markdown/syntax" target="_blank">Markdown</a>.
+							tab
+								tab-heading
+									i.fa.fa-edit(title="Write")
+									.panel-triangle
+								textarea.msd-elastic(placeholder="Leave a comment", ng-model="newComment")
+							tab
+								tab-heading
+									i.fa.fa-eye(title="Preview")
+								div.markdown(markdown="newComment")
+								label.label-message(ng-show="!newComment || newComment.length == 0") Nothing to preview.
 
 				button.btn.btn-default.btn-comment.pull-right(ng-click="addComment()") Comment
 				.clearfix

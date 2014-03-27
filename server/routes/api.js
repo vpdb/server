@@ -27,14 +27,23 @@ var data = [
 				acknowledgements: '* Thank you JP Salas for giving me permission to mod this table of yours. All credit goes to JP. Modding this table made me appreciate this table so much more.\n* Thank you to Teppotee and JimmyFingers. On the new 3-Way GI, the default settings are White `ON` and Red `OFF`. Play it first without changing anything, so you can see whats happening.',
 				authors: [
 					{
-						author: 'jpsalas',
-						role: 'original'
+						author: {
+							user: 'jpsalas',
+							avatar: '/avatars/jpsalas.png'
+						},
+						role: [ 'Original Table' ]
 					}, {
-						author: 'Aaron James',
-						role: 'mod'
+						author: {
+							user: 'Aaron James',
+							avatar: '/avatars/aaronjames.jpg'
+						},
+						role: [ 'Table Mod' ]
 					}, {
-						author: 'Teppotee',
-						role: 'gi'
+						author: {
+							user: 'teppotee',
+							avatar: '/avatars/teppotee.png'
+						},
+						role: [ 'GI' ]
 					}
 				],
 				rating: 8.1,
@@ -62,9 +71,12 @@ var data = [
 				comments: [
 					{
 						id: 1234,
-						user: 'freezy',
+						author: {
+							user: 'freezy',
+							avatar: '/avatars/freezy.jpg'
+						},
 						timestamp: '2014-03-23T23:45:20Z',
-						message: 'h1. Markdown test\n\nA list:\n\n* first item\n*second item\n\nAnd here a quote:\n\n> Geee!\n'
+						message: '## Markdown test\n\nA list:\n\n* first item\n* second item\n\nAnd here a quote:\n\n> Geee!\n'
 					}
 				],
 				media: [

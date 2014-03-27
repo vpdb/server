@@ -4,54 +4,58 @@
 		h3.pull-right {{table.manufacturer}} &middot; {{table.year}}
 		hr
 		h3 Releases
-		.panel.panel-dark.panel-dark-detailed(ng-repeat="release in table.releases")
-			.sidebar-wrapper
-				a.image-link(href="{{release.thumbs.playfield}}")
-					.img-wrapper
-						.img(style="background-image:url('{{release.thumbs.playfield}}')")
-				p legend
-			.data-wrapper
-				h1 {{release.title}}
-				label
-					i.fa.fa-arrow-circle-up
-					time-ago(from-time="{{release.lastversion.timestamp}}")
-				label
-					i.fa.fa-arrow-circle-down
-					span {{release.lastversion.downloads}}
+		div(ng-repeat="release in table.releases")
+			.panel.panel-dark.panel-dark-detailed
+				.sidebar-wrapper
+					a.image-link(href="{{release.thumbs.playfield}}")
+						.img-wrapper
+							.img(style="background-image:url('{{release.thumbs.playfield}}')")
+					p legend
+				.data-wrapper
+					h1 {{release.title}}
+					label
+						i.fa.fa-arrow-circle-up
+						time-ago(from-time="{{release.lastversion.timestamp}}")
+					label
+						i.fa.fa-arrow-circle-down
+						span {{release.lastversion.downloads}}
 
-				accordion.accordion-glued(close-others="true")
-					accordion-group(heading="Description", is-open="true")
-						div.markdown(markdown="release.description")
-					accordion-group(heading="Authors")
-						ul
-							li(ng-repeat="author in release.authors") {{ author.author }}
+					accordion.accordion-glued(close-others="true")
+						accordion-group(heading="Description", is-open="true")
+							div.markdown(markdown="release.description")
+						accordion-group(heading="Authors")
+							ul
+								li(ng-repeat="author in release.authors") {{ author.author }}
 
-					accordion-group(heading="Gallery")
-						p here is the gallery
-			.clearfix
+						accordion-group(heading="Gallery")
+							p here is the gallery
+				.clearfix
 
-		.panel.panel-dark(ng-controller="CommentCtrl")
-			h3 Comments on Release
-			.panel.panel-light(ng-repeat="comment in comments")
-				.panel-header
-					label <strong>{{ comment.user }}</strong> commented <time-ago>{{comment.timestamp.getTime() - 5000}}</time-ago>
-				.panel-content
-					div.markdown(markdown="comment.message")
+			.panel.panel-dark(ng-controller="CommentCtrl")
+				h3 Comments on Release
+				.media(ng-repeat="comment in release.comments")
+					img.media-object.media-avatar-medium.pull-left(src="{{comment.author.avatar}}")
+					.media-body
+						.panel.panel-light
+							.panel-header
+								label <strong>{{ comment.author.user }}</strong> commented <time-ago>{{ comment.timestamp.getTime() }}</time-ago>
+							.panel-content
+								div.markdown(markdown="comment.message")
 
-			tabset
-				label.label-small.pull-right Comments are parsed with <a href="http://daringfireball.net/projects/markdown/syntax" target="_blank">Markdown</a>.
-				tab
-					tab-heading
-						i.fa.fa-edit(title="Write")
-					textarea.msd-elastic(placeholder="Leave a comment", ng-model="newComment")
-				tab
-					tab-heading
-						i.fa.fa-eye(title="Preview")
-					div.markdown(markdown="newComment")
-					label.label-message(ng-show="!newComment || newComment.length == 0") Nothing to preview.
+				tabset
+					label.label-small.pull-right Comments are parsed with <a href="http://daringfireball.net/projects/markdown/syntax" target="_blank">Markdown</a>.
+					tab
+						tab-heading
+							i.fa.fa-edit(title="Write")
+						textarea.msd-elastic(placeholder="Leave a comment", ng-model="newComment")
+					tab
+						tab-heading
+							i.fa.fa-eye(title="Preview")
+						div.markdown(markdown="newComment")
+						label.label-message(ng-show="!newComment || newComment.length == 0") Nothing to preview.
 
-			button.btn.btn-default.btn-comment.pull-right(ng-click="addComment()") Comment
-			.clearfix
+				button.btn.btn-default.btn-comment.pull-right(ng-click="addComment()") Comment
+				.clearfix
 
 
 	.col-sm-3.col-menu

@@ -70,6 +70,7 @@ var data = [
 				media: [
 					{
 						filename: 'afm35.jpg',
+						src: '/cabinet/afm35.jpg',
 						type: 'playfield-cabinet',
 						version: '3.5',
 						width: 1280,
@@ -93,7 +94,7 @@ var data = [
 
 				// easy acess fields:
 				thumbs: {
-					playfield: 'cabinet/afm35.jpg'
+					playfield: '/cabinet/afm35.jpg'
 				},
 				lastversion: {
 					version: '3.5',
@@ -177,6 +178,122 @@ var data = [
 		tabledownloads: 915,
 		lastrelease: '2013-07-14T21:46:00Z',
 		authors: [ 'Fuzzel', 'Lord Hiryu' ]
+	},
+	{
+		id: 'mb',
+		key: 'Monster Bash (Williams 1998)',
+		name: 'Monster Bash',
+		manufacturer: 'Williams',
+		year: 1998,
+		ipdb: {
+			no: 4441,
+			rating: 8.4,
+			votes: 221
+		},
+		rating: 8.8,
+		votes: 21,
+		views: 7615,
+		comments: 10,
+		tabledownloads: 5934,
+		lastrelease: '2014-02-03T19:47:20Z',
+		authors: [ 'unclewilly', 'randr' ],
+		releases: [
+			{
+				id: 954,
+				title: 'PC Killer Edition',
+				description: '*This is the high poly full model edition.*\n\nChanges from prior version:\n\n* Complete rebuild of the table\n* Bumpers, targets, rubbers, pegs, brackets, wire ramps, bulbs, and all toys are now 3D mesh primitives\n* Full 8-step fading GI using alpha ramps\n* Ball momentum engine added with flipper tap code\n* Alpha flashers added\n',
+				acknowledgements: '* Special thanks to @grizz for original playfield work\n* @jimmyfingers for his excellent physics code\n* @fuzzel and @toxie for their continued work on VP and additional feature additions',
+				authors: [
+					{
+						author: {
+							user: 'unclewilly',
+							avatar: '/avatars/unclewilly.jpg'
+						},
+						role: [ 'Playfield', 'Textures' ]
+					}, {
+						author: {
+							user: 'randr',
+							avatar: '/avatars/randr.jpg'
+						},
+						role: [ '3D Models' ]
+					}
+				],
+				submitter: {
+					user: 'unclewilly',
+					avatar: '/avatars/unclewilly.jpg'
+				},
+				rating: 9.5,
+				votes: 25,
+				screenshots: [],
+				mods: [],
+				versions: [
+					{
+						version: '2.1',
+						timestamp: '2014-02-03T19:47:20Z',
+						size: 175135975,
+						downloads: 1087,
+						changes: '* Reduced Texture sizes\n* Added DOF Option\n* Added Day Option which brightens the playfield\n* Fixed Rollover lights blocking inserts'
+					},
+					{
+						version: '2.0',
+						timestamp: '2014-01-29T22:01:00Z',
+						size: 169033450,
+						downloads: 568,
+						changes: '*Initial version*'
+					}
+				],
+				comments: [
+					{
+						id: 1234,
+						author: {
+							user: 'fuzzel',
+							avatar: '/avatars/fuzzel.jpg'
+						},
+						timestamp: '2014-02-29T22:46:20Z',
+						message: 'Hey I\'m the first to say WELL DONE! :D'
+					}
+				],
+				media: [
+					{
+						filename: 'mb_pckiller.png',
+						src: '/cabinet/mb_pckiller.png',
+						type: 'playfield-cabinet',
+						version: '2.1',
+						width: 1280,
+						height: 1920,
+						filesize: 3627246,
+						format: 'image',
+						tags: ['day', 'flasher']
+					},
+					{
+						filename: '#',
+						type: 'playfield-cabinet',
+						src: '#',
+						version: '2.1',
+						width: 1280,
+						height: 1920,
+						filesize: 843398,
+						duration: 120,
+						format: 'video',
+						tags: ['day', 'attract mode']
+					}
+				],
+
+				// easy acess fields:
+				thumbs: {
+					playfield: '/cabinet/mb_pckiller.png'
+				},
+				lastversion: {
+					version: '2.1',
+					timestamp: '2014-02-03T19:47:20Z',
+					size: 175135975,
+					downloads: 1087,
+					changes: '* Reduced Texture sizes\n* Added DOF Option\n* Added Day Option which brightens the playfield\n* Fixed Rollover lights blocking inserts'
+				}
+			}
+		],
+		roms: [],
+		media: []
 	},
 	{
 		id: 't2',

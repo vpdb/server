@@ -4,6 +4,7 @@ color-darkest = rgba(255, 255, 255, 0.06)
 color-darker = rgba(255, 255, 255, 0.15)
 color-dark = rgba(255, 255, 255, 0.2)
 color-light = rgba(255, 255, 255, 0.25)
+color-lightish = rgba(255, 255, 255, 0.32)
 color-lighter = rgba(255, 255, 255, 0.5)
 color-lightest = rgba(255, 255, 255, 0.75)
 color-primary = #ec843d
@@ -354,13 +355,14 @@ ul.viewtype-panel
 			white-space nowrap
 
 .panel-light
-	background-color color-darker
+	background-color color-darkest
 	border-radius border-radius-large
 	margin 15px
 	position relative
 	.panel-triangle
-		border-color transparent #575654 transparent transparent
+		border-color transparent #454442 transparent transparent
 	.panel-header
+		color color-lightish
 		border-radius border-radius-large border-radius-large 0 0
 		background-color color-darkest
 		padding 4px 14px 3px
@@ -372,19 +374,20 @@ ul.viewtype-panel
 			&:hover
 				color color-lighter
 	.panel-content
+		color color-lightish
 		padding 15px 15px 5px
 		textarea
 			margin-bottom 8px
 	.panel-footer
 		border none
-		background-color color-darker
+		background-color color-darkest
 		border-radius 0 0 border-radius-large border-radius-large
 		button.btn.btn-default
-			background-color rgba(0, 0, 0, 0.3)
-			color rgba(255, 255, 255, 0.25)
+			background-color rgba(0, 0, 0, 0.2)
+			color rgba(255, 255, 255, 0.2)
 			&:hover
-				background-color rgba(0, 0, 0, 0.4)
-				color rgba(255, 255, 255, 0.35)
+				background-color rgba(0, 0, 0, 0.3)
+				color rgba(255, 255, 255, 0.3)
 				box-shadow none
 
 // :details view
@@ -460,17 +463,17 @@ ul.selectable
 accordion
 	& > .panel-group
 		& > .panel
-			border none
-			background-color color-darkest
 			margin-top 15px
+			background-color color-darkest
+			border none
 			border-radius border-radius-large
 			& > .panel-heading
-				padding 7px 9px
+				padding 8px 10px 5px
 				background-color color-darkest
 				border-top-left-radius border-radius-large
 				border-top-right-radius border-radius-large
 				h4
-					color color-lighter
+					color color-lightish
 					text-transform uppercase
 					font-weight font-weight-bold
 				a
@@ -494,7 +497,7 @@ accordion.accordion-glued
 			& > .panel-heading
 				padding 7px 9px
 				border-radius 0
-				border-bottom solid 1px color-darker
+				border-top 2px solid rgba(0, 0, 0, 0.34)
 			& + .panel
 				margin-top 0
 		& > .panel:first-child
@@ -506,7 +509,7 @@ accordion.accordion-glued
 		& > .panel:last-child
 			border-bottom-left-radius border-radius-large
 			border-bottom-right-radius border-radius-large
-			& > .panel-heading
+		& > .panel:first-child & > .panel-heading
 				border-bottom none
 
 // :tabs
@@ -519,11 +522,11 @@ accordion.accordion-glued
 			&.active
 				a
 					color color-lighter
-					background-color color-darker
+					background-color rgba(255, 255, 255, 0.11)
 					border none
 					tab-heading
 				.panel-triangle
-					border-color transparent #4c4b49 transparent transparent
+					border-color transparent #454442 transparent transparent
 			.panel-triangle
 				border-color transparent #383735 transparent transparent
 			a
@@ -538,7 +541,7 @@ accordion.accordion-glued
 	.tab-content
 		padding 10px 15px 15px 13px
 		border-radius 0 border-radius-large border-radius-large border-radius-large
-		background-color color-darker
+		background-color rgba(255, 255, 255, 0.11)
 		textarea
 			margin-top 5px
 	label.label-small

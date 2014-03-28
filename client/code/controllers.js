@@ -15,7 +15,7 @@ ctrl.controller('CollapseCtrl', function($scope) {
 	$scope.isCollapsed  = false;
 });
 
-ctrl.controller('CommentCtrl', function($scope) {
+ctrl.controller('CommentsCtrl', function($scope) {
 
 	$scope.newComment = '';
 	$scope.addComment = function() {
@@ -36,5 +36,23 @@ ctrl.controller('CommentCtrl', function($scope) {
 
 	$scope.deleteComment = function() {
 		$scope.release.comments.splice($scope.release.comments.indexOf($scope.comment), 1);
+	};
+
+});
+
+ctrl.controller('CommentCtrl', function($scope) {
+
+	$scope.editing = false;
+	$scope.editComment = function() {
+		$scope.updatedComment = $scope.comment.message;
+		$scope.editing = true;
+	};
+
+	$scope.saveComment = function() {
+		$scope.comment.message = $scope.updatedComment;
+		$scope.editing = false;
+	};
+	$scope.cancelEdit = function() {
+		$scope.editing = false;
 	};
 });

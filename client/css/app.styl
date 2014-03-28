@@ -165,8 +165,22 @@ hr
     margin-left -2px
     margin-top 2px
 
-// :buttons
+.tab-content, .panel-content
+  textarea
+    width 100%
+    height 80px
+    padding 5px
+    margin 0
+    resize none
+    border 1px solid color-darkest
+    border-radius border-radius-small
+    background-color rgba(255,255,255,0.05)
+    transition background-color animation-short
+    &:focus
+      background-color rgba(255,255,255,0.08)
 
+
+// :buttons
 button.btn
   transition all animation-short
   &.btn-default
@@ -358,7 +372,19 @@ ul.viewtype-panel
         color color-lighter
   .panel-content
     padding 15px 15px 5px
-
+    textarea
+      margin-bottom 8px
+  .panel-footer
+    border none
+    background-color color-darker
+    border-radius 0 0 border-radius-large border-radius-large
+    button.btn.btn-default
+      background-color rgba(0, 0, 0, 0.3)
+      color rgba(255, 255, 255, 0.25)
+      &:hover
+        background-color rgba(0, 0, 0, 0.4)
+        color rgba(255, 255, 255, 0.35)
+        box-shadow none
 
 // :details view
 h1 + h3.pull-right
@@ -513,18 +539,7 @@ accordion.accordion-glued
     border-radius 0 border-radius-large border-radius-large border-radius-large
     background-color color-darker
     textarea
-      width 100%
-      height 80px
-      padding 5px
       margin-top 5px
-      resize none
-      border 1px solid color-darkest
-      border-radius border-radius-small
-      background-color rgba(255,255,255,0.05)
-      transition background-color animation-short
-      &:focus
-        background-color rgba(255,255,255,0.08)
-
   label.label-small
     margin-top 7px
     color color-light
@@ -550,6 +565,8 @@ section.footer
 
 // :markdown
 .markdown
+  & > *:first-child
+    margin-top 0
   h1, h2
     color color-lightest
     font-family font-content
@@ -611,8 +628,8 @@ section.footer
     margin-top 0px
 div.media-avatar-medium:before
   color color-darker
-  margin-left 16px
-  margin-top 13px
+  margin-left 15px
+  margin-top 14px
   position absolute
   font-family icons
   font-size 33px

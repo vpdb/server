@@ -31,9 +31,9 @@
 							p here is the gallery
 				.clearfix
 
-			.panel.panel-dark(ng-controller="CommentCtrl")
+			.panel.panel-dark(ng-controller="CommentsCtrl")
 				h3 Comments on Release
-				.media(ng-repeat="comment in release.comments")
+				.media(ng-repeat="comment in release.comments" ng-controller="CommentCtrl")
 					div.media-object.media-avatar-medium.pull-left(ng-hide="comment.author.avatar", src="{{comment.author.avatar}}")
 					img.media-object.media-avatar-medium.pull-left(ng-show="comment.author.avatar", src="{{comment.author.avatar}}")
 					.media-body
@@ -49,7 +49,12 @@
 									i.fa.fa-times-circle(ng-click="deleteComment()")
 
 							.panel-content
-								div.markdown(markdown="comment.message")
+								div.markdown(ng-hide="editing", markdown="comment.message")
+								textarea.msd-elastic(ng-show="editing", placeholder="Update comment", ng-model="updatedComment")
+							.panel-footer(ng-show="editing")
+								button.btn.btn-default.pull-left(ng-click="cancelEdit()") Cancel
+								button.btn.btn-default.pull-right(ng-click="saveComment()") Update Comment
+								.clearfix
 
 				.media
 					div.media-avatar-medium.pull-left

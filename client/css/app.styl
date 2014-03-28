@@ -63,6 +63,9 @@ body
 		padding-bottom 99999px
 .row-data
 	margin-bottom 10px
+.img-logo
+	margin-top 30px
+	width 95%
 
 // generic stuff
 a
@@ -93,6 +96,13 @@ button.btn:focus, button.btn:active:focus
 
 ::-webkit-scrollbar-corner
 	background color-background
+
+::selection
+	color rgba(255,255,255,0.9)
+	background color-primary
+::-moz-selection
+	color rgba(255,255,255,0.9)
+	background color-primary
 
 // :headers
 h1
@@ -147,6 +157,8 @@ hr
 				color color-lightest
 
 // :input
+.input-group
+	margin-bottom 15px
 .form-control
 	height 28px
 	box-shadow none
@@ -337,22 +349,6 @@ ul.viewtype-panel
 		position absolute
 		right 10px
 		top -5px
-		.ratingbox-rating
-			display inline
-			font-size 50px
-			font-weight font-weight-thin
-		.ratingbox-right
-			display inline
-			position relative
-		.votes
-			display inline-block
-			margin-left 5px
-			width 80px
-		.stars
-			position absolute
-			left 4px
-			top -24px
-			white-space nowrap
 
 .panel-light
 	background-color color-darkest
@@ -463,7 +459,6 @@ ul.selectable
 accordion
 	& > .panel-group
 		& > .panel
-			margin-top 15px
 			background-color color-darkest
 			border none
 			border-radius border-radius-large
@@ -660,3 +655,21 @@ div.media-avatar-medium:before
 		label
 			color color-lighter
 			white-space normal
+
+.ratingbox
+	.ratingbox-rating
+		display inline
+		font-size 50px
+		font-weight font-weight-thin
+	.ratingbox-right
+		display inline
+		position relative
+	.votes
+		display inline-block
+		margin-left 5px
+		width 80px
+	.stars
+		position absolute
+		left 4px
+		top -24px
+		white-space nowrap

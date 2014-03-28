@@ -10,7 +10,11 @@
 					a.image-link(href="{{release.thumbs.playfield}}")
 						.img-wrapper
 							.img(style="background-image:url('{{release.thumbs.playfield}}')")
-					p legend
+					.ratingbox
+						.ratingbox-rating {{release.rating}}
+						.ratingbox-right
+							span.stars(value="{{release.rating}}")
+							span.votes {{release.votes}} vote{{release.votes == 1 ? '' : 's'}}
 				.data-wrapper
 					h1 {{release.title}}
 					label
@@ -29,8 +33,8 @@
 
 						accordion-group(heading="Authors")
 							div.thumbnail.thumbnail-avatar.pull-left(ng-repeat="author in release.authors")
-								div.media-avatar-medium(ng-hide="author.author.avatar", src="{{author.author.avatar}}")
-								img.media-avatar-medium(ng-show="author.author.avatar", src="{{author.author.avatar}}")
+								div.media-avatar-medium(ng-hide="author.author.avatar")
+								img.media-avatar-medium(ng-show="author.author.avatar", ng-src="{{author.author.avatar}}")
 								.caption
 									h1 {{author.author.user}}
 									label {{author.roles.join(', ')}}
@@ -45,8 +49,8 @@
 			.panel.panel-dark(ng-controller="CommentsCtrl")
 				h3 Comments on Release
 				.media(ng-repeat="comment in release.comments" ng-controller="CommentCtrl")
-					div.media-object.media-avatar-medium.pull-left(ng-hide="comment.author.avatar", src="{{comment.author.avatar}}")
-					img.media-object.media-avatar-medium.pull-left(ng-show="comment.author.avatar", src="{{comment.author.avatar}}")
+					div.media-object.media-avatar-medium.pull-left(ng-hide="comment.author.avatar")
+					img.media-object.media-avatar-medium.pull-left(ng-show="comment.author.avatar", ng-src="{{comment.author.avatar}}")
 					.media-body
 						.panel.panel-light
 							.panel-triangle
@@ -88,5 +92,4 @@
 
 
 	.col-sm-3.col-menu
-		h2 filter
-		hr
+		img.img-logo(ng-src="{{table.thumbs.logo}}")

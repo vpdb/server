@@ -24,7 +24,7 @@ var data = [
 				id: 1198,
 				title: 'AFM Lightning Edition',
 				description: "Use these options to configure the table:\n\n    '******************************\n    ' SET alpha GI colors\n    '******************************\n    ' For NORMAL operation set\n    ' GION_alphaGIcolor = 1\n    ' GIOFF_alphaGIcolor = 0\n    \n    ' Or try some green martian lighting:\n    ' GIOn_alphaGIcolor = 2\n    ' GIOFF_alphaGIcolor = 3\n    \n    ' Or Mars red:\n    ' GIOn_alphaGIcolor = 3\n    ' GIOFF_alphaGIcolor = 0\n    \n    ' or disable feature by setting both values to 0\n    \n    GION_alphaGIcolor = 1 ' 0=OFF, 1=WHITE, 2=GREEN, 3 = RED\n    GIOFF_alphaGIcolor = 3 ' 0=OFF, 1=WHITE, 2=GREEN, 3 = RED\n    '********************************\n",
-				acknowledgements: '* Thank you JP Salas for giving me permission to mod this table of yours. All credit goes to JP. Modding this table made me appreciate this table so much more.\n* Thank you to Teppotee and JimmyFingers. On the new 3-Way GI, the default settings are White `ON` and Red `OFF`. Play it first without changing anything, so you can see whats happening.',
+				acknowledgements: '* Thank you @jpsalas for giving me permission to mod this table of yours. All credit goes to JP. Modding this table made me appreciate this table so much more.\n* Thank you to @teppotee and @jimmyfingers. On the new 3-Way GI, the default settings are White `ON` and Red `OFF`. Play it first without changing anything, so you can see whats happening.',
 				authors: [
 					{
 						author: {
@@ -76,7 +76,7 @@ var data = [
 							avatar: '/avatars/freezy.jpg'
 						},
 						timestamp: '2014-03-23T23:45:20Z',
-						message: '## Markdown test\n\nA list:\n\n* first item\n* second item\n\nAnd here a quote:\n\n> Geee!\n'
+						message: '# Markdown test\n\nA list:\n\n* first item\n* second item\n\nAnd here a quote:\n\n> Geee!\n\n## A Second Title\n\nWith a numerated list:\n\n1. Count\n2. To\n3. Three!\n\nYou can also use [links](http://pind.ch/) and references to people (hi @freezy@).\n\nAlso code is possible:\n\n    for (var i; i < 10; i++) {\n        print "You\'re awesome!";\n    }\n\nYou can also refer external images:\n\n![](http://i.imgur.com/hReEn.png)\n\nOf course you can also type in **bold** or *italic*.\n'
 					}
 				],
 				media: [
@@ -119,7 +119,12 @@ var data = [
 			}
 		],
 		roms: [],
-		media: []
+		media: [],
+
+		// easy access fields
+		thumbs: {
+			logo: '/logo/afm.png'
+		}
 	},
 	{
 		id: 'bbb',
@@ -291,7 +296,7 @@ var data = [
 					}
 				],
 
-				// easy acess fields:
+				// easy access fields:
 				thumbs: {
 					playfield: '/cabinet/mb_pckiller.png'
 				},
@@ -305,7 +310,12 @@ var data = [
 			}
 		],
 		roms: [],
-		media: []
+		media: [],
+
+		// easy access fields
+		thumbs: {
+			logo: '/logo/mb.png'
+		}
 	},
 	{
 		id: 't2',

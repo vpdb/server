@@ -38,11 +38,6 @@ body
   font-size 16px
   -webkit-font-smoothing antialiased
 
-.navbar-default
-  background-color rgba(0, 0, 0, 0.2)
-  border-radius 0
-  border-color color-primary
-
 .container.container-topmost
   background-image url('/images/background.png')
   padding-top 50px
@@ -125,6 +120,12 @@ hr
   border-width 2px
 
 // :navbar
+.navbar-default
+  transition background-color animation-long
+  background-color rgba(26, 25, 23, 0.8)
+  border-radius 0
+  border-color color-primary
+
 .navbar-brand
   position relative
   .icon

@@ -4,19 +4,10 @@
 
 var ctrl = angular.module('vpdb.controllers', []);
 
-ctrl.controller('AppCtrl', function($scope, $http) {
 
-	$http({
-		method: 'GET',
-		url: '/api/name'
-
-	}).success(function(data, status, headers, config) {
-		$scope.name = data.name;
-
-	}).error(function(data, status, headers, config) {
-		$scope.name = 'Error!';
-	});
-
+ctrl.controller('AppCtrl', function($scope) {
+	$scope.scrolledOnTop = true;
+	console.log('AppCtrl initialized.');
 });
 
 

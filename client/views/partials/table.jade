@@ -24,8 +24,13 @@
 						accordion-group(heading="Description", is-open="true")
 							div.markdown(markdown="release.description")
 						accordion-group(heading="Authors")
-							ul
-								li(ng-repeat="author in release.authors") {{ author.author }}
+							div.thumbnail.thumbnail-avatar.pull-left(ng-repeat="author in release.authors")
+								div.media-avatar-medium(ng-hide="author.author.avatar", src="{{author.author.avatar}}")
+								img.media-avatar-medium(ng-show="author.author.avatar", src="{{author.author.avatar}}")
+								.caption
+									h1 {{author.author.user}}
+									label {{author.roles.join(', ')}}
+
 
 						accordion-group(heading="Gallery")
 							p here is the gallery

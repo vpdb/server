@@ -614,7 +614,7 @@ section.footer
 		background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI3MCIgaGVpZ2h0PSI3MCI+CjxyZWN0IHdpZHRoPSI3MCIgaGVpZ2h0PSI3MCIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjAzKSI+PC9yZWN0Pgo8ZyB0cmFuc2Zvcm09InJvdGF0ZSg0NSkiPgo8cmVjdCB3aWR0aD0iOTkiIGhlaWdodD0iMjUiIGZpbGw9InJnYmEoMCwwLDAsMC4wMykiPjwvcmVjdD4KPHJlY3QgeT0iLTUwIiB3aWR0aD0iOTkiIGhlaWdodD0iMjUiIGZpbGw9InJnYmEoMCwwLDAsMC4wMykiPjwvcmVjdD4KPC9nPgo8L3N2Zz4=");
 
 // :avatar
-.media-avatar-medium
+.media-avatar-medium, .thumbnail > img.media-avatar-medium
 	width 64px
 	height 64px
 	margin-left 15px
@@ -641,3 +641,19 @@ div.media-avatar-medium:before
 	-moz-osx-font-smoothing grayscale
 	content '\e605'
 
+.thumbnail.thumbnail-avatar
+	background-color transparent
+	border none
+	width 130px
+	margin-bottom 0px
+	& > img
+		margin 0 auto
+	.caption
+		text-align center
+		h1
+			margin-top 0
+			font-size 16px
+			color color-lighter
+		label
+			color color-lighter
+			white-space normal

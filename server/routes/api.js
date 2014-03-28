@@ -31,19 +31,19 @@ var data = [
 							user: 'jpsalas',
 							avatar: '/avatars/jpsalas.png'
 						},
-						role: [ 'Original Table' ]
+						roles: [ 'Original Table' ]
 					}, {
 						author: {
 							user: 'Aaron James',
 							avatar: '/avatars/aaronjames.jpg'
 						},
-						role: [ 'Table Mod' ]
+						roles: [ 'Table Mod' ]
 					}, {
 						author: {
 							user: 'teppotee',
 							avatar: '/avatars/teppotee.png'
 						},
-						role: [ 'GI' ]
+						roles: [ 'GI' ]
 					}
 				],
 				rating: 8.1,
@@ -221,13 +221,13 @@ var data = [
 							user: 'unclewilly',
 							avatar: '/avatars/unclewilly.jpg'
 						},
-						role: [ 'Playfield', 'Textures' ]
+						roles: [ 'Playfield', 'Textures' ]
 					}, {
 						author: {
 							user: 'randr',
 							avatar: '/avatars/randr.jpg'
 						},
-						role: [ '3D Models' ]
+						roles: [ '3D Models' ]
 					}
 				],
 				submitter: {

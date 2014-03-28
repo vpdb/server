@@ -349,6 +349,13 @@ ul.viewtype-panel
     border-radius border-radius-large border-radius-large 0 0
     background-color color-darkest
     padding 4px 14px 3px
+    i.fa
+      color color-dark
+      margin-left 10px
+      cursor pointer
+      transition color animation-short
+      &:hover
+        color color-lighter
   .panel-content
     padding 15px 15px 5px
 
@@ -594,7 +601,7 @@ section.footer
   height 64px
   margin-left 15px
   border-radius 32px
-  background-color color-darkest
+  background-color color-darker
   &.pull-left
     margin-right 0px
   & + .media-body > .panel
@@ -602,3 +609,17 @@ section.footer
     margin-left 15px
   & + .media-body > .tabbable
     margin-top 0px
+div.media-avatar-medium:before
+  color color-darker
+  margin-left 16px
+  margin-top 13px
+  position absolute
+  font-family icons
+  font-size 33px
+  font-style normal
+  font-weight normal
+  line-height 1
+  -webkit-font-smoothing antialiased
+  -moz-osx-font-smoothing grayscale
+  content '\e605'
+

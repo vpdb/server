@@ -34,7 +34,8 @@
 			.panel.panel-dark(ng-controller="CommentCtrl")
 				h3 Comments on Release
 				.media(ng-repeat="comment in release.comments")
-					img.media-object.media-avatar-medium.pull-left(src="{{comment.author.avatar}}")
+					div.media-object.media-avatar-medium.pull-left(ng-hide="comment.author.avatar", src="{{comment.author.avatar}}")
+					img.media-object.media-avatar-medium.pull-left(ng-show="comment.author.avatar", src="{{comment.author.avatar}}")
 					.media-body
 						.panel.panel-light
 							.panel-triangle
@@ -43,6 +44,10 @@
 								strong {{ comment.author.user }}
 								| &nbsp;commented
 								time-ago(from-time="{{comment.timestamp}}")
+								.pull-right
+									i.fa.fa-pencil(ng-click="editComment()")
+									i.fa.fa-times-circle(ng-click="deleteComment()")
+
 							.panel-content
 								div.markdown(markdown="comment.message")
 
@@ -55,11 +60,11 @@
 								tab-heading
 									i.fa.fa-edit(title="Write")
 									.panel-triangle
-								textarea.msd-elastic(placeholder="Leave a comment", ng-model="newComment")
+								textarea.msd-elastic(placeholder="Leave a comment", ng-model="$parent.newComment")
 							tab
 								tab-heading
 									i.fa.fa-eye(title="Preview")
-								div.markdown(markdown="newComment")
+								div.markdown(markdown="$parent.newComment")
 								label.label-message(ng-show="!newComment || newComment.length == 0") Nothing to preview.
 
 				button.btn.btn-default.btn-comment.pull-right(ng-click="addComment()") Comment

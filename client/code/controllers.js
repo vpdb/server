@@ -15,23 +15,26 @@ ctrl.controller('CollapseCtrl', function($scope) {
 	$scope.isCollapsed  = false;
 });
 
-
 ctrl.controller('CommentCtrl', function($scope) {
 
 	$scope.newComment = '';
-	$scope.comments = [{
-		user: 'freezy',
-		timestamp: new Date(),
-		message: "A very first comment. **Awesome release!**"
-	}];
 	$scope.addComment = function() {
+		if (!$scope.release.comments) {
+			$scope.release.comments = [];
+		}
 		if ($scope.newComment.length > 0) {
-			$scope.comments.push({
-				user: 'freezy',
-				timestamp: new Date(),
+			$scope.release.comments.push({
+				author: {
+					user: 'You'
+				},
+				timestamp: new Date().toISOString(),
 				message: $scope.newComment
 			});
+			$scope.newComment = '';
 		}
+	};
 
-	}
+	$scope.deleteComment = function() {
+		$scope.release.comments.splice($scope.release.comments.indexOf($scope.comment), 1);
+	};
 });

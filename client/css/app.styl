@@ -31,612 +31,613 @@ animation-shorter = 100ms
 
 // background
 body
-  background-image url('images/background_outer.png')
-  color color-lighter
-  font-family font-content
-  font-weight font-weight-normal
-  font-size 16px
-  -webkit-font-smoothing antialiased
+	background-image url('images/background_outer.png')
+	color color-lighter
+	font-family font-content
+	font-weight font-weight-normal
+	font-size 16px
+	-webkit-font-smoothing antialiased
 
 .container.container-topmost
-  background-image url('/images/background.png')
-  padding-top 50px
-  margin-bottom 30px
-  border-bottom-right-radius border-radius-large
-  border-bottom-left-radius border-radius-large
-  box-shadow 0 0 5px 1px rgba(0, 0, 0, 0.5)
+	background-image url('/images/background.png')
+	padding-top 50px
+	margin-bottom 30px
+	border-bottom-right-radius border-radius-large
+	border-bottom-left-radius border-radius-large
+	box-shadow 0 0 5px 1px rgba(0, 0, 0, 0.5)
 
 .col-main
-  padding-left 30px
-  padding-right 30px
+	padding-left 30px
+	padding-right 30px
 .col-menu
-  background-color color-darkest
-  padding-bottom 25px
+	background-color color-darkest
+	padding-bottom 25px
 
 .row-fullheight
-  overflow hidden
-  border-bottom-right-radius border-radius-large
-  border-bottom-left-radius border-radius-large
-  > div
-    margin-bottom -99999px
-    padding-bottom 99999px
+	overflow hidden
+	border-bottom-right-radius border-radius-large
+	border-bottom-left-radius border-radius-large
+	> div
+		margin-bottom -99999px
+		padding-bottom 99999px
 .row-data
-  margin-bottom 10px
+	margin-bottom 10px
 
 // generic stuff
 a
-  color color-light
-  cursor pointer
-  transition all animation-short
-  &:hover
-    color color-lighter
-    text-decoration none
-  &:focus
-    text-decoration none
-    outline none
+	color color-light
+	cursor pointer
+	transition all animation-short
+	&:hover
+		color color-lighter
+		text-decoration none
+	&:focus
+		text-decoration none
+		outline none
 button.btn:focus, button.btn:active:focus
-  outline none
+	outline none
 
 [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak
-  display none
+	display none
 
 ::-webkit-scrollbar
-  height 12px
-  width 12px
-  background color-background
+	height 12px
+	width 12px
+	background color-background
 
 ::-webkit-scrollbar-thumb
-  background color-darker
-  -webkit-border-radius border-radius-small
-  -webkit-box-shadow 0px 1px 2px rgba(0, 0, 0, 0.75)
+	background color-darker
+	-webkit-border-radius border-radius-small
+	-webkit-box-shadow 0px 1px 2px rgba(0, 0, 0, 0.75)
 
 ::-webkit-scrollbar-corner
-  background color-background
+	background color-background
 
 // :headers
 h1
-  color color-primary
-  font-family font-header
-  text-transform lowercase
+	color color-primary
+	font-family font-header
+	text-transform lowercase
 h2
-  color color-light
-  font-family font-header
-  text-transform uppercase
+	color color-light
+	font-family font-header
+	text-transform uppercase
 
 h1, h2
-  font-size 36px
-  margin-bottom 10px
-  margin-top 20px
+	font-size 36px
+	margin-bottom 10px
+	margin-top 20px
 h3
-  color color-light
-  font-size 28px
-  font-family font-header
-  text-transform uppercase
+	color color-light
+	font-size 28px
+	font-family font-header
+	text-transform uppercase
 
 // :hr
 hr
-  margin-top 10px
-  border-color color-light
-  border-width 2px
+	margin-top 10px
+	border-color color-light
+	border-width 2px
 
 // :navbar
 .navbar-default
-  transition background-color animation-long
-  background-color rgba(26, 25, 23, 0.8)
-  border-radius 0
-  border-color color-primary
+	transition background-color animation-long
+	background-color rgba(26, 25, 23, 0.8)
+	border-radius 0
+	border-color color-primary
+
 
 .navbar-brand
-  position relative
-  .icon
-    font-size 115px
-    position absolute
-    top -67px
-    transition all animation-long
-    &.icon-vp
-      color color-primary
-    &.icon-db
-      color color-lighter
-  a
-    &:hover
-      .icon-vp
-        color color-primary-light
-      .icon-db
-        color color-lightest
+	position relative
+	.icon
+		font-size 115px
+		position absolute
+		top -67px
+		transition all animation-long
+		&.icon-vp
+			color color-primary
+		&.icon-db
+			color color-lighter
+	a
+		&:hover
+			.icon-vp
+				color color-primary-light
+			.icon-db
+				color color-lightest
 
 // :input
 .form-control
-  height 28px
-  box-shadow none
-  color color-lighter
-  background-color color-darker
-  padding-left 3px
-  border-radius 14px
-  border none
-  &:focus
-    box-shadow none
+	height 28px
+	box-shadow none
+	color color-lighter
+	background-color color-darker
+	padding-left 3px
+	border-radius 14px
+	border none
+	&:focus
+		box-shadow none
+
 .input-group-addon
-  color color-light
-  background-color color-darker
-  padding-right 3px
-  border-radius 14px
-  border none
-  i.fa-search
-    margin-left -2px
-    margin-top 2px
+	color color-light
+	background-color color-darker
+	padding-right 3px
+	border-radius 14px
+	border none
+	i.fa-search
+		margin-left -2px
+		margin-top 2px
 
 .tab-content, .panel-content
-  textarea
-    width 100%
-    height 80px
-    padding 5px
-    margin 0
-    resize none
-    border 1px solid color-darkest
-    border-radius border-radius-small
-    background-color rgba(255,255,255,0.05)
-    transition background-color animation-short
-    &:focus
-      background-color rgba(255,255,255,0.08)
-
+	textarea
+		width 100%
+		height 80px
+		padding 5px
+		margin 0
+		resize none
+		border 1px solid color-darkest
+		border-radius border-radius-small
+		background-color rgba(255,255,255,0.05)
+		transition background-color animation-short
+		&:focus
+			background-color rgba(255,255,255,0.08)
 
 // :buttons
 button.btn
-  transition all animation-short
-  &.btn-default
-    padding 1px 20px 0px
-    font-family font-header
-    font-size 20px
-    text-transform uppercase
-    color color-light
-    background-color color-dark
-    border none
-    &:hover
-      color color-lighter
-      background-color color-light
-      box-shadow 0 0 3px 1px rgba(0, 0, 0, 0.3)
+	transition all animation-short
+	&.btn-default
+		padding 1px 20px 0px
+		font-family font-header
+		font-size 20px
+		text-transform uppercase
+		color color-light
+		background-color color-dark
+		border none
+		&:hover
+			color color-lighter
+			background-color color-light
+			box-shadow 0 0 3px 1px rgba(0, 0, 0, 0.3)
 
-  &.btn-comment
-    margin-right 15px
-    margin-bottom 15px
+	&.btn-comment
+		margin-right 15px
+		margin-bottom 15px
 
 // :view types
 ul.viewtype-panel
-    float right
-    margin-top -34px
-    position relative
-    list-style none
-    li
-      display inline
-      margin-left 15px
-      &.active i
-        color #aaa
-        text-shadow 0 0 3px black
-        cursor default
-      i
-        color color-light
-        font-size 18px
-        cursor pointer
-        transition all animation-short
-        &:hover
-          color #aaa
-          text-shadow 0 0 3px black
+	float right
+	margin-top -34px
+	position relative
+	list-style none
+	li
+		display inline
+		margin-left 15px
+		&.active i
+			color #aaa
+			text-shadow 0 0 3px black
+			cursor default
+		i
+			color color-light
+			font-size 18px
+			cursor pointer
+			transition all animation-short
+			&:hover
+				color #aaa
+				text-shadow 0 0 3px black
 
 
 // :table :panel
 .panel-triangle
-  position absolute
-  width 0px
-  height 0px
-  left -8px
-  top 11px
-  border-width 9px 9px 9px 0
-  border-style solid
-  transition background-color animation-short
+	position absolute
+	width 0px
+	height 0px
+	left -8px
+	top 11px
+	border-width 9px 9px 9px 0
+	border-style solid
+	transition background-color animation-short
 
 .panel-dark
-  border-radius border-radius-small
-  background-color color-darkest
-  box-shadow 0 0 5px 1px rgba(0, 0, 0, 0.3)
+	border-radius border-radius-small
+	background-color color-darkest
+	box-shadow 0 0 5px 1px rgba(0, 0, 0, 0.3)
 
-  .img
-    position relative
-    width 100%
-    height 0
-    padding-bottom 80% // % of width, defines aspect ratio
-    background-repeat no-repeat
-    background-position center center
-    background-size cover
+	.img
+		position relative
+		width 100%
+		height 0
+		padding-bottom 80% // % of width, defines aspect ratio
+		background-repeat no-repeat
+		background-position center center
+		background-size cover
 
-  h3
-    font-size 26px
-    font-family font-header
-    text-transform uppercase
-    white-space nowrap
-    overflow hidden
-    text-overflow ellipsis
+	h3
+		font-size 26px
+		font-family font-header
+		text-transform uppercase
+		white-space nowrap
+		overflow hidden
+		text-overflow ellipsis
 
-  label
-    font-weight font-weight-normal
-    margin-bottom 1px
-    white-space nowrap
-    overflow hidden
-    text-overflow ellipsis
-    &.block
-      display block
-    i.fa, i.icon
-      margin-right 10px
-    span
-      margin-right 10px
-      &.pipe
-        margin-right 10px
-        &:after
-          content '|'
-          margin-left 10px
-          color color-light
-        &:last-child:after
-          content ''
-    &.label-small
-      font-size 13px
-    &.label-message
-      margin 15px 0 0 10px
-      text-align center
-  textarea
-    background-color color-darkest
-    border none
-  & > h3
-    margin-top 15px
-    margin-left 15px
+	label
+		font-weight font-weight-normal
+		margin-bottom 1px
+		white-space nowrap
+		overflow hidden
+		text-overflow ellipsis
+		&.block
+			display block
+		i.fa, i.icon
+			margin-right 10px
+		span
+			margin-right 10px
+			&.pipe
+				margin-right 10px
+				&:after
+					content '|'
+					margin-left 10px
+					color color-light
+				&:last-child:after
+					content ''
+		&.label-small
+			font-size 13px
+		&.label-message
+			margin 15px 0 0 10px
+		text-align center
+	textarea
+		background-color color-darkest
+		border none
+	& > h3
+		margin-top 15px
+		margin-left 15px
 
 // common to compact and extended
 .panel-dark-compact, .panel-dark-extended
-  cursor pointer
-  transition all 500ms cubic-bezier(0.190, 1.000, 0.220, 1.000)
-  transform translateY(0) scale(1, 1)
-  &:hover
-    box-shadow 0 5px 9px rgba(0,0,0,0.5)
-    transform translateY(-5px) scale(1.03, 1.03)
+	cursor pointer
+	transition all 500ms cubic-bezier(0.190, 1.000, 0.220, 1.000)
+	transform translateY(0) scale(1, 1)
+	&:hover
+		box-shadow 0 5px 9px rgba(0,0,0,0.5)
+		transform translateY(-5px) scale(1.03, 1.03)
 
 // :table panes :compact
 .panel-dark-compact
-  text-align center
-  margin-top 10px
+	text-align center
+	margin-top 10px
 
-  .img
-    border-top-left-radius border-radius-small
-    border-top-right-radius border-radius-small
+	.img
+		border-top-left-radius border-radius-small
+		border-top-right-radius border-radius-small
 
-  h3
-    text-align center
-  label
-    font-weight font-weight-normal
-    margin-bottom 15px
+	h3
+		text-align center
+	label
+		font-weight font-weight-normal
+		margin-bottom 15px
 
 // :table panes :extended
 .panel-dark-extended
-  &:hover
-    transform translateY(-3px) scale(1.01, 1.01)
+	&:hover
+		transform translateY(-3px) scale(1.01, 1.01)
 
-  .img-wrapper
-    width 170px
-    float left
-    .img
-      border-top-left-radius border-radius-small
-      border-top-right-radius border-radius-small
-  .data-wrapper
-    margin-left 185px
+	.img-wrapper
+		width 170px
+		float left
+		.img
+			border-top-left-radius border-radius-small
+			border-top-right-radius border-radius-small
+	.data-wrapper
+		margin-left 185px
 
-  h3
-    font-size 32px
-    margin-top 10px
-    margin-bottom 5px
+	h3
+		font-size 32px
+		margin-top 10px
+		margin-bottom 5px
 
-  .ratingbox
-    position absolute
-    right 10px
-    top -5px
-    .ratingbox-rating
-      display inline
-      font-size 50px
-      font-weight font-weight-thin
-    .ratingbox-right
-      display inline
-      position relative
-    .votes
-      display inline-block
-      margin-left 5px
-      width 80px
-    .stars
-      position absolute
-      left 4px
-      top -24px
-      white-space nowrap
+	.ratingbox
+		position absolute
+		right 10px
+		top -5px
+		.ratingbox-rating
+			display inline
+			font-size 50px
+			font-weight font-weight-thin
+		.ratingbox-right
+			display inline
+			position relative
+		.votes
+			display inline-block
+			margin-left 5px
+			width 80px
+		.stars
+			position absolute
+			left 4px
+			top -24px
+			white-space nowrap
 
 .panel-light
-  background-color color-darker
-  border-radius border-radius-large
-  margin 15px
-  position relative
-  .panel-triangle
-    border-color transparent #575654 transparent transparent
-  .panel-header
-    border-radius border-radius-large border-radius-large 0 0
-    background-color color-darkest
-    padding 4px 14px 3px
-    i.fa
-      color color-dark
-      margin-left 10px
-      cursor pointer
-      transition color animation-short
-      &:hover
-        color color-lighter
-  .panel-content
-    padding 15px 15px 5px
-    textarea
-      margin-bottom 8px
-  .panel-footer
-    border none
-    background-color color-darker
-    border-radius 0 0 border-radius-large border-radius-large
-    button.btn.btn-default
-      background-color rgba(0, 0, 0, 0.3)
-      color rgba(255, 255, 255, 0.25)
-      &:hover
-        background-color rgba(0, 0, 0, 0.4)
-        color rgba(255, 255, 255, 0.35)
-        box-shadow none
+	background-color color-darker
+	border-radius border-radius-large
+	margin 15px
+	position relative
+	.panel-triangle
+		border-color transparent #575654 transparent transparent
+	.panel-header
+		border-radius border-radius-large border-radius-large 0 0
+		background-color color-darkest
+		padding 4px 14px 3px
+		i.fa
+			color color-dark
+			margin-left 10px
+			cursor pointer
+			transition color animation-short
+			&:hover
+				color color-lighter
+	.panel-content
+		padding 15px 15px 5px
+		textarea
+			margin-bottom 8px
+	.panel-footer
+		border none
+		background-color color-darker
+		border-radius 0 0 border-radius-large border-radius-large
+		button.btn.btn-default
+			background-color rgba(0, 0, 0, 0.3)
+			color rgba(255, 255, 255, 0.25)
+			&:hover
+				background-color rgba(0, 0, 0, 0.4)
+				color rgba(255, 255, 255, 0.35)
+				box-shadow none
 
 // :details view
 h1 + h3.pull-right
-  margin-top: -42px;
+	margin-top: -42px;
 .panel-dark-detailed
-  .sidebar-wrapper
-    float left
-    margin 15px
-    width 170px
-    .img
-      padding-bottom 176%
-      border-radius border-radius-small
-  .data-wrapper
-    margin-left 200px
-    h1
-      font-size 26px
-      font-family font-content
-      font-weight font-weight-bold
-      text-transform none
-      margin-bottom 0
-    accordion
-      & > .panel-group
-        & > .panel
-          margin-right 15px
+	.sidebar-wrapper
+		float left
+		margin 15px
+		width 170px
+		.img
+			padding-bottom 176%
+			border-radius border-radius-small
+	.data-wrapper
+		margin-left 200px
+		h1
+			font-size 26px
+			font-family font-content
+			font-weight font-weight-bold
+			text-transform none
+			margin-bottom 0
+		accordion
+			& > .panel-group
+				& > .panel
+					margin-right 15px
 
 // :table list
 .table-wrapper
-  margin-left 15px
-  margin-right 15px
-  table.tables
-    width 100%
+	margin-left 15px
+	margin-right 15px
+	table.tables
+		width 100%
 
-    tr
-      &:nth-child(odd) > td
-        background-color color-darkest
-      &:hover
-        td
-          color color-primary
-      td
-        cursor pointer
-        transition all animation-shorter
-        padding 5px 0
-        &.name
-          padding-left 10px
-          font-weight font-weight-bold
+		tr
+			&:nth-child(odd) > td
+				background-color color-darkest
+			&:hover
+				td
+					color color-primary
+			td
+				cursor pointer
+				transition all animation-shorter
+				padding 5px 0
+				&.name
+					padding-left 10px
+					font-weight font-weight-bold
 
 // :selectable list
 ul.selectable
-  padding-left 20px
-  > li
-    list-style-type none
-    &.selected
-      color color-primary
-      font-weight font-weight-bold
-      margin-left -20px
-      &:before
-        display inline-block
-        width 20px
-        font-family FontAwesome
-        font-size 20px
-        font-style normal
-        font-weight normal
-        line-height 1
-        -webkit-font-smoothing antialiased
-        -moz-osx-font-smoothing grayscale
-      &.desc:before
-        content '\f107'
-      &.asc:before
-        content '\f106'
+	padding-left 20px
+	> li
+		list-style-type none
+		&.selected
+			color color-primary
+			font-weight font-weight-bold
+			margin-left -20px
+			&:before
+				display inline-block
+				width 20px
+				font-family FontAwesome
+				font-size 20px
+				font-style normal
+				font-weight normal
+				line-height 1
+				-webkit-font-smoothing antialiased
+				-moz-osx-font-smoothing grayscale
+			&.desc:before
+				content '\f107'
+			&.asc:before
+				content '\f106'
 
 // :accordion
 accordion
-  & > .panel-group
-    & > .panel
-      border none
-      background-color color-darkest
-      margin-top 15px
-      border-radius border-radius-large
-      & > .panel-heading
-        padding 7px 9px
-        background-color color-darkest
-        border-top-left-radius border-radius-large
-        border-top-right-radius border-radius-large
-        h4
-          color color-lighter
-          text-transform uppercase
-          font-weight font-weight-bold
-        a
-          &:hover
-            text-decoration none
-            color color-lightest
-            cursor pointer
+	& > .panel-group
+		& > .panel
+			border none
+			background-color color-darkest
+			margin-top 15px
+			border-radius border-radius-large
+			& > .panel-heading
+				padding 7px 9px
+				background-color color-darkest
+				border-top-left-radius border-radius-large
+				border-top-right-radius border-radius-large
+				h4
+					color color-lighter
+					text-transform uppercase
+					font-weight font-weight-bold
+				a
+					&:hover
+						text-decoration none
+						color color-lightest
+						cursor pointer
 
-      & + .panel
-        margin-top 15px
-      & > .panel-collapse
-        & > .panel-body
-          border-top none
-          background-color transparent
+			& + .panel
+				margin-top 15px
+			& > .panel-collapse
+				& > .panel-body
+					border-top none
+					background-color transparent
 
 accordion.accordion-glued
-  & > .panel-group
-    & > .panel
-      border none
-      border-radius 0
-      & > .panel-heading
-        padding 7px 9px
-        border-radius 0
-        border-bottom solid 1px color-darker
-      & + .panel
-        margin-top 0
-    & > .panel:first-child
-      border-top-left-radius border-radius-large
-      border-top-right-radius border-radius-large
-      & > .panel-heading
-        border-top-left-radius border-radius-large
-        border-top-right-radius border-radius-large
-    & > .panel:last-child
-      border-bottom-left-radius border-radius-large
-      border-bottom-right-radius border-radius-large
-      & > .panel-heading
-        border-bottom none
+	& > .panel-group
+		& > .panel
+			border none
+			border-radius 0
+			& > .panel-heading
+				padding 7px 9px
+				border-radius 0
+				border-bottom solid 1px color-darker
+			& + .panel
+				margin-top 0
+		& > .panel:first-child
+			border-top-left-radius border-radius-large
+			border-top-right-radius border-radius-large
+			& > .panel-heading
+				border-top-left-radius border-radius-large
+				border-top-right-radius border-radius-large
+		& > .panel:last-child
+			border-bottom-left-radius border-radius-large
+			border-bottom-right-radius border-radius-large
+			& > .panel-heading
+				border-bottom none
 
 // :tabs
 .tabbable
-  margin 15px
-  ul.nav-tabs
-    border none
-    li
-      margin-bottom 0
-      &.active
-        a
-          color color-lighter
-          background-color color-darker
-          border none
-          tab-heading
-        .panel-triangle
-          border-color transparent #4c4b49 transparent transparent
-      .panel-triangle
-        border-color transparent #383735 transparent transparent
-      a
-        padding 4px 15px
-        font-size 20px
-        color color-light
-        background-color color-darkest
-        border none
-        border-radius border-radius-large border-radius-large 0 0
-        &:hover
-          color color-lighter
-  .tab-content
-    padding 10px 15px 15px 13px
-    border-radius 0 border-radius-large border-radius-large border-radius-large
-    background-color color-darker
-    textarea
-      margin-top 5px
-  label.label-small
-    margin-top 7px
-    color color-light
-    a
-      color color-lighter
-      &:hover
-        color color-lightest
+	margin 15px
+	ul.nav-tabs
+		border none
+		li
+			margin-bottom 0
+			&.active
+				a
+					color color-lighter
+					background-color color-darker
+					border none
+					tab-heading
+				.panel-triangle
+					border-color transparent #4c4b49 transparent transparent
+			.panel-triangle
+				border-color transparent #383735 transparent transparent
+			a
+				padding 4px 15px
+				font-size 20px
+				color color-light
+				background-color color-darkest
+				border none
+				border-radius border-radius-large border-radius-large 0 0
+				&:hover
+					color color-lighter
+	.tab-content
+		padding 10px 15px 15px 13px
+		border-radius 0 border-radius-large border-radius-large border-radius-large
+		background-color color-darker
+		textarea
+			margin-top 5px
+	label.label-small
+		margin-top 7px
+		color color-light
+		a
+			color color-lighter
+			&:hover
+				color color-lightest
 
 section.footer
-  text-align center
-  margin-top -20px
-  margin-bottom 20px
-  color color-dark
-  font-weight
-  i.fa
-    margin-right 10px
-    font-size 20px
-  a
-    color color-dark
-    transition all animation-short
-    &:hover
-      color color-light
+	text-align center
+	margin-top -20px
+	margin-bottom 20px
+	color color-dark
+	font-weight
+	i.fa
+		margin-right 10px
+		font-size 20px
+	a
+		color color-dark
+		transition all animation-short
+		&:hover
+			color color-light
 
 // :markdown
 .markdown
-  & > *:first-child
-    margin-top 0
-  h1, h2
-    color color-lightest
-    font-family font-content
-    text-transform none
-  h3, h4, h5
-    color color-lighter
-    font-family font-content
-    text-transform none
-  h1
-    font-size 30px
-    font-weight font-weight-thin
-  h2
-    font-size 25px
-    font-weight font-weight-thin
-  h3
-    font-size 20px
-    font-weight font-weight-bold
-  h4
-    font-size 18px
-    font-weight font-weight-bold
-  h5, h6
-    font-size 16px
-    font-weight font-weight-normal
-    text-decoration underline
-  a
-    color color-lighter
-    text-decoration underline
-    &:hover
-      color color-lightest
-  code
-    background-color color-light
-    color black
-  pre code
-    font-size 16px
-    background-color transparent
-    color inherit
-  blockquote
-    font-size 16px
-    border-color color-light
-  pre
-    color color-lighter
-    border-color color-darkest
-    background-color transparent
-    background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI3MCIgaGVpZ2h0PSI3MCI+CjxyZWN0IHdpZHRoPSI3MCIgaGVpZ2h0PSI3MCIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjAzKSI+PC9yZWN0Pgo8ZyB0cmFuc2Zvcm09InJvdGF0ZSg0NSkiPgo8cmVjdCB3aWR0aD0iOTkiIGhlaWdodD0iMjUiIGZpbGw9InJnYmEoMCwwLDAsMC4wMykiPjwvcmVjdD4KPHJlY3QgeT0iLTUwIiB3aWR0aD0iOTkiIGhlaWdodD0iMjUiIGZpbGw9InJnYmEoMCwwLDAsMC4wMykiPjwvcmVjdD4KPC9nPgo8L3N2Zz4=");
+	& > *:first-child
+		margin-top 0
+	h1, h2
+		color color-lightest
+		font-family font-content
+		text-transform none
+	h3, h4, h5
+		color color-lighter
+		font-family font-content
+		text-transform none
+	h1
+		font-size 30px
+		font-weight font-weight-thin
+	h2
+		font-size 25px
+		font-weight font-weight-thin
+	h3
+		font-size 20px
+		font-weight font-weight-bold
+	h4
+		font-size 18px
+		font-weight font-weight-bold
+	h5, h6
+		font-size 16px
+		font-weight font-weight-normal
+		text-decoration underline
+	a
+		color color-lighter
+		text-decoration underline
+		&:hover
+			color color-lightest
+	code
+		background-color color-light
+		color black
+	pre code
+		font-size 16px
+		background-color transparent
+		color inherit
+	blockquote
+		font-size 16px
+		border-color color-light
+	pre
+		color color-lighter
+		border-color color-darkest
+		background-color transparent
+		background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI3MCIgaGVpZ2h0PSI3MCI+CjxyZWN0IHdpZHRoPSI3MCIgaGVpZ2h0PSI3MCIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjAzKSI+PC9yZWN0Pgo8ZyB0cmFuc2Zvcm09InJvdGF0ZSg0NSkiPgo8cmVjdCB3aWR0aD0iOTkiIGhlaWdodD0iMjUiIGZpbGw9InJnYmEoMCwwLDAsMC4wMykiPjwvcmVjdD4KPHJlY3QgeT0iLTUwIiB3aWR0aD0iOTkiIGhlaWdodD0iMjUiIGZpbGw9InJnYmEoMCwwLDAsMC4wMykiPjwvcmVjdD4KPC9nPgo8L3N2Zz4=");
 
 // :avatar
 .media-avatar-medium
-  width 64px
-  height 64px
-  margin-left 15px
-  border-radius 32px
-  background-color color-darker
-  &.pull-left
-    margin-right 0px
-  & + .media-body > .panel
-    margin-top 0px
-    margin-left 15px
-  & + .media-body > .tabbable
-    margin-top 0px
+	width 64px
+	height 64px
+	margin-left 15px
+	border-radius 32px
+	background-color color-darker
+	&.pull-left
+		margin-right 0px
+	& + .media-body > .panel
+		margin-top 0px
+		margin-left 15px
+	& + .media-body > .tabbable
+		margin-top 0px
 div.media-avatar-medium:before
-  color color-darker
-  margin-left 15px
-  margin-top 14px
-  position absolute
-  font-family icons
-  font-size 33px
-  font-style normal
-  font-weight normal
-  line-height 1
-  -webkit-font-smoothing antialiased
-  -moz-osx-font-smoothing grayscale
-  content '\e605'
+	color color-darker
+	margin-left 15px
+	margin-top 14px
+	position absolute
+	font-family icons
+	font-size 33px
+	font-style normal
+	font-weight normal
+	line-height 1
+	-webkit-font-smoothing antialiased
+	-moz-osx-font-smoothing grayscale
+	content '\e605'
 

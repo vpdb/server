@@ -14,15 +14,19 @@
 				.data-wrapper
 					h1 {{release.title}}
 					label
+						i.icon.icon-user
+						span {{release.submitter.user}}
+					label
 						i.fa.fa-arrow-circle-up
 						time-ago(from-time="{{release.lastversion.timestamp}}")
 					label
 						i.fa.fa-arrow-circle-down
-						span {{release.lastversion.downloads}}
+						span {{release.lastversion.downloads}} downloads
 
 					accordion.accordion-glued(close-others="true")
 						accordion-group(heading="Description", is-open="true")
 							div.markdown(markdown="release.description")
+
 						accordion-group(heading="Authors")
 							div.thumbnail.thumbnail-avatar.pull-left(ng-repeat="author in release.authors")
 								div.media-avatar-medium(ng-hide="author.author.avatar", src="{{author.author.avatar}}")
@@ -31,6 +35,8 @@
 									h1 {{author.author.user}}
 									label {{author.roles.join(', ')}}
 
+						accordion-group(heading="Acknowledgements")
+							div.markdown(markdown="release.acknowledgements")
 
 						accordion-group(heading="Gallery")
 							p here is the gallery

@@ -44,6 +44,27 @@
 
 						accordion-group(heading="Gallery")
 							p here is the gallery
+				.padder-notop
+					button.btn.btn-primary.btn-lg.btn-download.pull-right
+						i.fa.fa-download
+						| &nbsp;&nbsp;Download
+					.btn-group
+						button.btn.btn-default.btn-lg.btn-media(type="button")
+							i.fa.fa-download
+							| &nbsp;&nbsp;Media
+						button.btn.btn-default.btn-lg.dropdown-toggle(type="button", data-toggle="dropdown")
+							i.fa.fa-angle-down
+							span.sr-only Toggle Dropdown
+						ul.dropdown-menu(role="menu")
+							li
+								a(href="#") Action
+							li
+								a(href="#") Another action
+							li
+								a(href="#") Something else here
+							li.divider
+							li
+								a(href="#") Separated link
 				.clearfix
 
 			.panel.panel-dark(ng-controller="CommentsCtrl")

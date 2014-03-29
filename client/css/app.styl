@@ -30,6 +30,9 @@ animation-long = 350ms
 animation-short = 200ms
 animation-shorter = 100ms
 
+panel-sidebar-width = 175px
+list-sidebar-width = 170px
+
 // background
 body
 	background-image url('images/background_outer.png')
@@ -103,6 +106,11 @@ button.btn:focus, button.btn:active:focus
 ::-moz-selection
 	color rgba(255,255,255,0.9)
 	background color-primary
+
+.padder
+	padding 15px
+.padder-notop
+	padding 0 15px 15px
 
 // :headers
 h1
@@ -197,7 +205,8 @@ hr
 // :buttons
 button.btn
 	transition all animation-short
-	&.btn-default
+
+	&.btn-default, &.btn-primary
 		padding 1px 20px 0px
 		font-family font-header
 		font-size 20px
@@ -209,10 +218,33 @@ button.btn
 			color color-lighter
 			background-color color-light
 			box-shadow 0 0 3px 1px rgba(0, 0, 0, 0.3)
-
+	&.btn-primary
+		color color-background
+		background-color color-primary
+		&:hover
+			color color-background
+			background-color color-primary-light
+			box-shadow 0 0 3px 1px rgba(0, 0, 0, 0.3)
+	&.btn-lg
+		font-size 26px
+		padding 2px 30px 1px
+		border-radius border-radius-large
+		.fa
+			font-size 20px
+	&.btn-download
+		padding-left 100px
+		padding-right 100px
+	&.btn-media
+		width panel-sidebar-width - 40px - 2px
+	&.dropdown-toggle
+		width 40px
 	&.btn-comment
 		margin-right 15px
 		margin-bottom 15px
+
+.btn-group
+	.btn + .btn, .btn + .btn-group, .btn-group + .btn, .btn-group + .btn-group
+		margin-left 2px
 
 // :view types
 ul.viewtype-panel
@@ -332,13 +364,13 @@ ul.viewtype-panel
 		transform translateY(-3px) scale(1.01, 1.01)
 
 	.img-wrapper
-		width 170px
+		width list-sidebar-width
 		float left
 		.img
 			border-top-left-radius border-radius-small
 			border-top-right-radius border-radius-small
 	.data-wrapper
-		margin-left 185px
+		margin-left list-sidebar-width + 15px
 
 	h3
 		font-size 32px
@@ -393,12 +425,12 @@ h1 + h3.pull-right
 	.sidebar-wrapper
 		float left
 		margin 15px
-		width 170px
+		width panel-sidebar-width
 		.img
 			padding-bottom 176%
 			border-radius border-radius-small
 	.data-wrapper
-		margin-left 200px
+		margin-left panel-sidebar-width + 30px
 		h1
 			font-size 26px
 			font-family font-content

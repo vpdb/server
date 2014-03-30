@@ -688,20 +688,54 @@ div.media-avatar-medium:before
 			color color-lighter
 			white-space normal
 
+// :rating :star
 .ratingbox
-	.ratingbox-rating
+	.ratingbox-left
 		display inline
-		font-size 50px
-		font-weight font-weight-thin
+		position relative
+		.ratingbox-rating
+			display inline
+			font-size 50px
+			font-weight font-weight-thin
+			cursor default
+			&.rating-user
+				position absolute
+				right 0
+				color color-primary
 	.ratingbox-right
 		display inline
 		position relative
-	.votes
-		display inline-block
-		margin-left 5px
-		width 80px
-	.stars
-		position absolute
-		left 4px
-		top -24px
-		white-space nowrap
+		.votes
+			width 80px
+			display inline-block
+			margin-left 5px
+			cursor default
+		.rating-avg, .rating-user
+			cursor pointer
+			position absolute
+			left 4px
+			top -24px
+			white-space nowrap
+
+	.rating-hide
+		color transparent
+	.star-left
+		width 7.5px
+		overflow hidden
+	.star-right
+		overflow hidden
+		margin-right 3px
+		&:before
+			margin-left: -7.5px;
+			overflow hidden
+	.rating-user
+		.star-on
+			color color-primary
+		.star-off
+			color color-darker
+	.rating-avg
+		.star-on
+			color color-lighter
+		.star-off
+			color color-darker
+

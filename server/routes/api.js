@@ -239,7 +239,7 @@ var data = [
 					user: 'unclewilly',
 					avatar: '/avatars/unclewilly.jpg'
 				},
-				rating: 9.5,
+				rating: 9.1,
 				votes: 25,
 				screenshots: [],
 				mods: [],

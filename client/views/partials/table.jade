@@ -10,10 +10,13 @@
 					a.image-link(href="{{release.thumbs.playfield}}")
 						.img-wrapper
 							.img(style="background-image:url('{{release.thumbs.playfield}}')")
-					.ratingbox
-						.ratingbox-rating {{release.rating}}
+					.ratingbox(rating-avg="release.rating", rating-votes="release.votes", ng-mouseenter="editing=true", ng-mouseleave="editing=false")
+						.ratingbox-left
+							.ratingbox-rating.rating-user(ng-show="editing") {{hoverRating | rating}}
+							.ratingbox-rating(ng-class="{ 'rating-hide' : editing }") {{release.rating | rating}}
 						.ratingbox-right
-							span.stars(value="{{release.rating}}")
+							rating.rating-user(ng-show="editing", value="ratingUser", max="10", rating-states="states", on-hover="hoverRating = value", on-leave="hoverRating = ratingUser")
+							rating.rating-avg(ng-hide="editing", value="ratingAvg", max="10", rating-states="states", readonly="true")
 							span.votes {{release.votes}} vote{{release.votes == 1 ? '' : 's'}}
 				.data-wrapper
 					h1 {{release.title}}

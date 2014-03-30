@@ -29,7 +29,7 @@ app.set('views', path.join(pwd, 'client', 'views'));
 app.set('view engine', 'jade');
 app.use(express.logger('dev'));
 app.use(stylus.middleware({
-	src: path.join(pwd, 'client', 'css'), //__dirname + '/client/css',
+	src: path.join(pwd, 'client', 'css'),
 	dest: path.join(pwd, 'client', 'static', 'css'),
 	compile: compile,
 	debug: true,

@@ -3,7 +3,7 @@
 		h1 {{ table.name }}
 		h3.pull-right {{table.manufacturer}} &middot; {{table.year}}
 		hr
-		h3 Releases
+		h2 Releases
 		div(ng-repeat="release in table.releases")
 			.panel.panel-dark.panel-dark-detailed
 				.sidebar-wrapper
@@ -114,8 +114,8 @@
 				button.btn.btn-default.btn-comment.pull-right(ng-click="addComment()") Comment
 				.clearfix
 
-		h3 ROMs
-		table
+		h2 ROMs
+		table.table.table-striped
 			thead
 				tr
 					th Name
@@ -127,13 +127,16 @@
 					th
 			tbody
 				tr(ng-repeat="rom in table.roms")
-					td {{ rom.name }}
+					td
+						samp {{ rom.name }}
 					td {{ rom.version }}
 					td {{ rom.language }}
 					td {{ rom.notes }}
 					td {{ rom.downloads }}
 					td {{ rom.size }}
-					td [dl]
+					td.nostripe.td-dlbtn
+						button.btn.btn-primary.btn-xs
+							i.fa.fa-download
 
 
 

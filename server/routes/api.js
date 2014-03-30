@@ -309,7 +309,12 @@ var data = [
 				}
 			}
 		],
-		roms: [],
+		roms: [
+			{ name: 'mm_05', version: '0.50', language: 'english', notes: '', downloads: 171, size: 5982313 },
+			{ name: 'mm_10', version: '1.00', language: 'english', notes: '', downloads: 3972, size: 5983929 },
+			{ name: 'mm_106', version: '1.06', language: 'english', notes: '', downloads: 2681, size: 5986447 },
+			{ name: 'mm_106b', version: '1.06b', language: 'english', notes: 'Inofficial version', downloads: 5172, size: 6034521 }
+		],
 		media: [],
 
 		// easy access fields

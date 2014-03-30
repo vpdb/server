@@ -1,6 +1,6 @@
 @-webkit-keyframes back {
   0% {
-    box-shadow: 0px 1px 1px rgba(0,0,0,0.3);
+    box-shadow: 0 0 5px 1px rgba(0, 0, 0, 0.3);
     -webkit-transform:
     scale(1)
     rotateY(180deg);
@@ -70,7 +70,7 @@
   }
 
   100% {
-    box-shadow: 0px 1px 1px rgba(0,0,0,0.3);
+    box-shadow: 0 0 5px 1px rgba(0, 0, 0, 0.3);
     -webkit-transform:
     scale(1)
     rotateY(360deg);
@@ -81,7 +81,7 @@
 
 @-moz-keyframes back {
   0% {
-    box-shadow: 0px 1px 1px rgba(0,0,0,0.3);
+    box-shadow: 0 0 5px 1px rgba(0, 0, 0, 0.3);
     -moz-transform:
     scale(1)
     rotateY(180deg);
@@ -151,7 +151,7 @@
   }
 
   100% {
-    box-shadow: 0px 1px 1px rgba(0,0,0,0.3);
+    box-shadow: 0 0 5px 1px rgba(0, 0, 0, 0.3);
     -moz-transform:
     scale(1)
     rotateY(360deg);
@@ -162,7 +162,7 @@
 
 @-ms-keyframes back {
   0% {
-    box-shadow: 0px 1px 1px rgba(0,0,0,0.3);
+    box-shadow: 0 0 5px 1px rgba(0, 0, 0, 0.3);
     -ms-transform:
     scale(1)
     rotateY(180deg);
@@ -232,7 +232,7 @@
   }
 
   100% {
-    box-shadow: 0px 1px 1px rgba(0,0,0,0.3);
+    box-shadow: 0 0 5px 1px rgba(0, 0, 0, 0.3);
     -ms-transform:
     scale(1)
     rotateY(360deg);
@@ -243,7 +243,7 @@
 
 @-o-keyframes back {
   0% {
-    box-shadow: 0px 1px 1px rgba(0,0,0,0.3);
+    box-shadow: 0 0 5px 1px rgba(0, 0, 0, 0.3);
     -o-transform:
     scale(1)
     rotateY(180deg);
@@ -313,7 +313,7 @@
   }
 
   100% {
-    box-shadow: 0px 1px 1px rgba(0,0,0,0.3);
+    box-shadow: 0 0 5px 1px rgba(0, 0, 0, 0.3);
     -o-transform:
     scale(1)
     rotateY(360deg);
@@ -324,7 +324,7 @@
 
 @keyframes back {
   0% {
-    box-shadow: 0px 1px 1px rgba(0,0,0,0.3);
+    box-shadow: 0 0 5px 1px rgba(0, 0, 0, 0.3);
     transform:
     scale(1)
     rotateY(180deg);
@@ -394,7 +394,7 @@
   }
 
   100% {
-    box-shadow: 0px 1px 1px rgba(0,0,0,0.3);
+    box-shadow: 0 0 5px 1px rgba(0, 0, 0, 0.3);
     transform:
     scale(1)
     rotateY(360deg);
@@ -407,7 +407,7 @@
 
 @-webkit-keyframes front {
   0% {
-    box-shadow: 0px 1px 1px rgba(0,0,0,0.3);
+    box-shadow: 0 0 5px 1px rgba(0, 0, 0, 0.3);
     -webkit-transform:
     scale(1)
     rotateY(0deg);
@@ -477,7 +477,7 @@
   }
 
   100% {
-    box-shadow: 0px 1px 1px rgba(0,0,0,0.3);
+    box-shadow: 0 0 5px 1px rgba(0, 0, 0, 0.3);
     -webkit-transform:
     scale(1)
     rotateY(180deg);
@@ -488,7 +488,7 @@
 
 @-moz-keyframes front {
   0% {
-    box-shadow: 0px 1px 1px rgba(0,0,0,0.3);
+    box-shadow: 0 0 5px 1px rgba(0, 0, 0, 0.3);
     -moz-transform:
     scale(1)
     rotateY(0deg);
@@ -558,7 +558,7 @@
   }
 
   100% {
-    box-shadow: 0px 1px 1px rgba(0,0,0,0.3);
+    box-shadow: 0 0 5px 1px rgba(0, 0, 0, 0.3);
     -moz-transform:
     scale(1)
     rotateY(180deg);
@@ -569,7 +569,7 @@
 
 @-ms-keyframes front {
   0% {
-    box-shadow: 0px 1px 1px rgba(0,0,0,0.3);
+    box-shadow: 0 0 5px 1px rgba(0, 0, 0, 0.3);
     -ms-transform:
     scale(1)
     rotateY(0deg);
@@ -639,7 +639,7 @@
   }
 
   100% {
-    box-shadow: 0px 1px 1px rgba(0,0,0,0.3);
+    box-shadow: 0 0 5px 1px rgba(0, 0, 0, 0.3);
     -ms-transform:
     scale(1)
     rotateY(180deg);
@@ -650,7 +650,7 @@
 
 @-o-keyframes front {
   0% {
-    box-shadow: 0px 1px 1px rgba(0,0,0,0.3);
+    box-shadow: 0 0 5px 1px rgba(0, 0, 0, 0.3);
     -o-transform:
     scale(1)
     rotateY(0deg);
@@ -720,7 +720,7 @@
   }
 
   100% {
-    box-shadow: 0px 1px 1px rgba(0,0,0,0.3);
+    box-shadow: 0 0 5px 1px rgba(0, 0, 0, 0.3);
     -o-transform:
     scale(1)
     rotateY(180deg);
@@ -731,7 +731,7 @@
 
 @keyframes front {
   0% {
-    box-shadow: 0px 1px 1px rgba(0,0,0,0.3);
+    box-shadow: 0 0 5px 1px rgba(0, 0, 0, 0.3);
     transform:
     scale(1)
     rotateY(0deg);
@@ -801,7 +801,7 @@
   }
 
   100% {
-    box-shadow: 0px 1px 1px rgba(0,0,0,0.3);
+    box-shadow: 0 0 5px 1px rgba(0, 0, 0, 0.3);
     transform:
     scale(1)
     rotateY(180deg);

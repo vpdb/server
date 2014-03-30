@@ -21,10 +21,11 @@
 				i.fa.fa-arrow-circle-up
 				time-ago(from-time="{{table.lastrelease}}")
 
-			.ratingbox
-				.ratingbox-rating {{table.rating}}
+			.ratingbox(rating-avg="table.rating", rating-votes="table.votes")
+				.ratingbox-left
+					.ratingbox-rating(ng-class="{ 'rating-hide' : editing }") {{table.rating | rating}}
 				.ratingbox-right
-					span.stars(value="{{table.rating}}")
-					span.votes {{table.votes}} vote{{table.votes == 1 ? '' : 's'}}
+					rating.rating-avg(ng-hide="editing", value="ratingAvg", max="10", rating-states="states", readonly="true")
+					span.votes {{table.votes}} vote{{release.votes == 1 ? '' : 's'}}
 
 		.clearfix

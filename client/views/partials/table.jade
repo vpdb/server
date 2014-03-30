@@ -1,5 +1,5 @@
 .row.ng-cloak.row-fullheight(ng-controller="TableController")
-	.col-sm-9.col-main
+	.col-sm-10.col-main
 		h1 {{ table.name }}
 		h3.pull-right {{table.manufacturer}} &middot; {{table.year}}
 		hr
@@ -114,6 +114,45 @@
 				button.btn.btn-default.btn-comment.pull-right(ng-click="addComment()") Comment
 				.clearfix
 
+		h3 ROMs
+		table
+			thead
+				tr
+					th Name
+					th Version
+					th Language
+					th Notes
+					th DLs
+					th Size
+					th
+			tbody
+				tr(ng-repeat="rom in table.roms")
+					td {{ rom.name }}
+					td {{ rom.version }}
+					td {{ rom.language }}
+					td {{ rom.notes }}
+					td {{ rom.downloads }}
+					td {{ rom.size }}
+					td [dl]
 
-	.col-sm-3.col-menu
+
+
+	.col-sm-2.col-menu
 		img.img-logo(ng-src="{{table.thumbs.logo}}")
+
+		.ratingbox(rating-avg="table.ipdb.rating")
+			.ratingbox-left
+				.ratingbox-rating {{table.ipdb.rating | rating}}
+			.ratingbox-right
+				rating.rating-avg(value="ratingAvg", max="10", rating-states="states", readonly="true")
+				span.votes {{table.ipdb.votes}} vote{{table.ipdb.votes == 1 ? '' : 's'}}
+		hr
+		.ratingbox(rating-avg="$parent.table.rating", rating-votes="$parent.table.votes", ng-mouseenter="editing=true", ng-mouseleave="editing=false")
+			.ratingbox-left
+				.ratingbox-rating.rating-user(ng-show="editing") {{hoverRating | rating}}
+				.ratingbox-rating(ng-class="{ 'rating-hide' : editing }") {{$parent.table.rating | rating}}
+			.ratingbox-right
+				rating.rating-user(ng-show="editing", value="ratingUser", max="10", rating-states="states", on-hover="hoverRating = value", on-leave="hoverRating = ratingUser")
+				rating.rating-avg(ng-hide="editing", value="ratingAvg", max="10", rating-states="states", readonly="true")
+				span.votes {{$parent.table.votes}} vote{{$parent.table.votes == 1 ? '' : 's'}}
+

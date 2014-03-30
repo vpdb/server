@@ -13,17 +13,20 @@ directives.directive('appVersion', function(version) {
 directives.directive('ratingbox', function($parse) {
 	return {
 		restrict: 'C',
+		scope: true,
 		controller: function($scope, $element, $attrs) {
 
 			$scope.$watch($parse($attrs.ratingAvg), function(val) {
 				$scope.ratingAvg = Math.round(val);
 			});
-			var votes = $parse($attrs.ratingVotes);
-			$scope.$watch('ratingUser', function(newVal, oldVal) {
-				if (!oldVal) {
-					votes.assign($scope, votes($scope) + 1);
-				}
-			});
+			if ($attrs.ratingVotes) {
+				var votes = $parse($attrs.ratingVotes);
+				$scope.$watch('ratingUser', function(newVal, oldVal) {
+					if (!oldVal) {
+						votes.assign($scope, votes($scope) + 1);
+					}
+				});
+			}
 
 			$scope.states = [
 				{stateOn: 'fa fa-star star-left star-on', stateOff: 'fa fa-star star-left star-off'},
@@ -47,7 +50,7 @@ directives.directive('stars', function() {
 	return {
 		replace: true,
 		restrict: 'C',
-		scope: false,
+		scope: true,
 		link: {
 			post: function(scope, element, attrs) {
 				var star0 = '<i class="fa fa-star-o"></i>';

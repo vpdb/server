@@ -315,6 +315,28 @@ var data = [
 			{ name: 'mm_106', version: '1.06', language: 'english', notes: '', downloads: 2681, size: 5986447 },
 			{ name: 'mm_106b', version: '1.06b', language: 'english', notes: 'Inofficial version', downloads: 5172, size: 6034521 }
 		],
+		backglasses: [
+			{
+				description: '**ENHANCED BACKGLASS**\n\n> It\'s Alive!\n\nThis is a fantasy backglass recreation using some advanced animations and does not represent the original machine backglass layout or globe sequence.\n\nThe majority of my backglasses will be like this to add some life to the original game.  Hope you enjoy it \n\n- Dozer316.',
+				author: { user: 'Dozer316' },
+				tags: [ 'Fantasy' ],
+				downloads: 732,
+				rating: 7.5,
+				votes: 3,
+				size: 3845915,
+				thumb: '/directb2s/thumbs/monster-bash-illuminated.png'
+			},
+			{
+				description: 'Redone Monster Bash directb2s backglass. I did not make the original. I just updated the image to a higher res version.',
+				author: { user: 'bill55' },
+				tags: [ 'Fantasy' ],
+				downloads: 798,
+				rating: 8.5,
+				votes: 3,
+				size: 11735983,
+				thumb: '/directb2s/thumbs/cc-monster-bash--williams-1998-.png'
+			}
+		],
 		media: [],
 
 		// easy access fields

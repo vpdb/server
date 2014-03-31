@@ -13,8 +13,8 @@ color-primary-light = #ffa364
 font-header = langdon
 font-content = 'Raleway', sans-serif
 
-border-radius-small = 2px;
-border-radius-large = 8px;
+border-radius-small = 2px
+border-radius-large = 8px
 
 font-weight-thin = 100
 _font-weight-extralight = 200
@@ -29,7 +29,6 @@ _font-weight-ultrabold = 900
 animation-long = 350ms
 animation-short = 200ms
 animation-shorter = 100ms
-animation-flip = 650ms
 
 panel-sidebar-width = 175px
 list-sidebar-width = 170px
@@ -425,7 +424,7 @@ ul.viewtype-panel
 
 // :details view
 h1 + h3.pull-right
-	margin-top: -42px;
+	margin-top -42px
 .panel-dark-detailed
 	.sidebar-wrapper
 		float left
@@ -665,7 +664,7 @@ section.footer
 		color color-lighter
 		border-color color-darkest
 		background-color transparent
-		background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI3MCIgaGVpZ2h0PSI3MCI+CjxyZWN0IHdpZHRoPSI3MCIgaGVpZ2h0PSI3MCIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjAzKSI+PC9yZWN0Pgo8ZyB0cmFuc2Zvcm09InJvdGF0ZSg0NSkiPgo8cmVjdCB3aWR0aD0iOTkiIGhlaWdodD0iMjUiIGZpbGw9InJnYmEoMCwwLDAsMC4wMykiPjwvcmVjdD4KPHJlY3QgeT0iLTUwIiB3aWR0aD0iOTkiIGhlaWdodD0iMjUiIGZpbGw9InJnYmEoMCwwLDAsMC4wMykiPjwvcmVjdD4KPC9nPgo8L3N2Zz4=");
+		background-image url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI3MCIgaGVpZ2h0PSI3MCI+CjxyZWN0IHdpZHRoPSI3MCIgaGVpZ2h0PSI3MCIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjAzKSI+PC9yZWN0Pgo8ZyB0cmFuc2Zvcm09InJvdGF0ZSg0NSkiPgo8cmVjdCB3aWR0aD0iOTkiIGhlaWdodD0iMjUiIGZpbGw9InJnYmEoMCwwLDAsMC4wMykiPjwvcmVjdD4KPHJlY3QgeT0iLTUwIiB3aWR0aD0iOTkiIGhlaWdodD0iMjUiIGZpbGw9InJnYmEoMCwwLDAsMC4wMykiPjwvcmVjdD4KPC9nPgo8L3N2Zz4=")
 
 // :avatar
 .media-avatar-medium, .thumbnail > img.media-avatar-medium
@@ -751,7 +750,7 @@ div.media-avatar-medium:before
 		overflow hidden
 		margin-right 3px
 		&:before
-			margin-left: -7.5px;
+			margin-left -7.5px
 			overflow hidden
 	.rating-user
 		.star-on
@@ -766,21 +765,43 @@ div.media-avatar-medium:before
 
 
 // :flip panel
-.panel-front, .panel-back
-	backface-visibility hidden
-.panel-back
-	margin-top -220px
-	transform rotateY(180deg)
+flipbox-translateY = -2px
+flipbox-shadow-color = rgba(0,0,0,0.4)
+flipbox-duration = 650ms
+
 .flipbox
 	position relative
 	height 200px
 	perspective 1000px
+
+	.panel-front, .panel-back
+		backface-visibility hidden
+		cursor pointer
+		&:hover
+			box-shadow 0 5px 9px flipbox-shadow-color
+			transform translateY(flipbox-translateY) scale(1.02)
+
+	&:not(.active)
+		.panel-front, .panel-back
+			transition transform 500ms cubic-bezier(0.190, 1.000, 0.220, 1.000)
+
+	.panel-front
+		transform translateY(0) scale(1)
+		&:hover
+			transform translateY(flipbox-translateY) scale(1.02)
+
+	.panel-back
+		margin-top -220px
+		transform translateY(0) scale(1) rotateY(180deg)
+		&:hover
+			transform translateY(flipbox-translateY) scale(1.02) rotateY(180deg)
+
 	&.active
 		.panel-front, .panel-front:after, .panel-back:after
-			animation front animation-flip 0s 1 linear forwards
+			animation front flipbox-duration 0s 1 linear forwards
 
 		.panel-back
-			animation back animation-flip 0s 1 linear forwards
+			animation back flipbox-duration 0s 1 linear forwards
 
 		.panel-front:after, .panel-back:after
 			animation-name shadow
@@ -796,75 +817,77 @@ div.media-avatar-medium:before
 		.panel-back
 			transform scale(1) rotateY(360deg)
 			animation-direction reverse
+			&:hover
+				transform translateY(flipbox-translateY) scale(1.02) rotateY(360deg)
 
 // :flip animation
 @keyframes back
 	0%
-		box-shadow 0 0 5px 1px rgba(0, 0, 0, 0.3)
-		transform scale(1) rotateY(180deg)
+		box-shadow 0 5px 9px flipbox-shadow-color
+		transform scale(1.02) rotateY(180deg) translateY(flipbox-translateY)
 	10%
-		box-shadow 0px 1.0972799999999998px 1.0972799999999998px rgba(0,0,0,0.3)
-		transform scale(1.000768) rotateY(180deg)
+		box-shadow 0px 6.0972799999999998px 10.0972799999999998px flipbox-shadow-color
+		transform scale(1.020768) rotateY(180deg) translateY(flipbox-translateY)
 	20%
-		box-shadow 0px 4.112960000000001px 4.112960000000001px rgba(0,0,0,0.3)
-		transform scale(1.024576) rotateY(180deg)
+		box-shadow 0px 9.112960000000001px 13.112960000000001px flipbox-shadow-color
+		transform scale(1.024576) rotateY(180deg) translateY(flipbox-translateY)
 	30%
-		box-shadow 0px 16.88704px 16.88704px rgba(0,0,0,0.3)
-		transform scale(1.125424) rotateY(180.17135717260666deg)
+		box-shadow 0px 16.88704px 16.88704px flipbox-shadow-color
+		transform scale(1.125424) rotateY(180.17135717260666deg) translateY(flipbox-translateY)
 	40%
-		box-shadow 0px 19.90272px 19.90272px rgba(0,0,0,0.3)
-		transform scale(1.149232) rotateY(185.48342952341287deg)
+		box-shadow 0px 19.90272px 19.90272px flipbox-shadow-color
+		transform scale(1.149232) rotateY(185.48342952341287deg) translateY(flipbox-translateY)
 	50%
-		box-shadow 0px 20px 20px rgba(0,0,0,0.3)
-		transform scale(1.15) rotateY(221.6397929434164deg)
+		box-shadow 0px 20px 20px flipbox-shadow-color
+		transform scale(1.15) rotateY(221.6397929434164deg) translateY(flipbox-translateY)
 	60%
-		box-shadow 0px 19.90272px 19.90272px rgba(0,0,0,0.3)
-		transform scale(1.149232) rotateY(318.3602070565836deg)
+		box-shadow 0px 19.90272px 19.90272px flipbox-shadow-color
+		transform scale(1.149232) rotateY(318.3602070565836deg) translateY(flipbox-translateY)
 	70%
-		box-shadow 0px 16.887040000000006px 16.887040000000006px rgba(0,0,0,0.3)
-		transform scale(1.125424) rotateY(354.51657047658716deg)
+		box-shadow 0px 16.887040000000006px 16.887040000000006px flipbox-shadow-color
+		transform scale(1.125424) rotateY(354.51657047658716deg) translateY(flipbox-translateY)
 	80%
-		box-shadow 0px 4.112959999999997px 4.112959999999997px rgba(0,0,0,0.3)
-		transform scale(1.024576) rotateY(359.8286428273933deg)
+		box-shadow 0px 9.112959999999997px 13.112959999999997px flipbox-shadow-color
+		transform scale(1.024576) rotateY(359.8286428273933deg) translateY(flipbox-translateY)
 	90%
-		box-shadow 0px 1.0972799999999998px 1.0972799999999998px rgba(0,0,0,0.3)
-		transform scale(1.000768) rotateY(360deg);
+		box-shadow 0px 6.0972799999999998px 10.0972799999999998px flipbox-shadow-color
+		transform scale(1.020768) rotateY(360deg) translateY(flipbox-translateY)
 	100%
-		box-shadow 0 0 5px 1px rgba(0, 0, 0, 0.3)
-		transform scale(1) rotateY(360deg)
+		box-shadow 0 5px 9px flipbox-shadow-color
+		transform scale(1.02) rotateY(360deg) translateY(flipbox-translateY)
 
 @keyframes front
 	0%
-		box-shadow 0 0 5px 1px rgba(0, 0, 0, 0.3)
-		transform scale(1) rotateY(0deg)
+		box-shadow 0 5px 9px flipbox-shadow-color
+		transform scale(1.02) rotateY(0deg) translateY(flipbox-translateY)
 	10%
-		box-shadow 0px 1.0972799999999998px 1.0972799999999998px rgba(0,0,0,0.3)
-		transform scale(1.000768) rotateY(0deg)
+		box-shadow 0px 6.0972799999999998px 10.0972799999999998px flipbox-shadow-color
+		transform scale(1.020768) rotateY(0deg) translateY(flipbox-translateY)
 	20%
-		box-shadow 0px 4.112960000000001px 4.112960000000001px rgba(0,0,0,0.3)
-		transform scale(1.024576) rotateY(0deg)
+		box-shadow 0px 9.112960000000001px 13.112960000000001px flipbox-shadow-color
+		transform scale(1.024576) rotateY(0deg) translateY(flipbox-translateY)
 	30%
-		box-shadow 0px 16.88704px 16.88704px rgba(0,0,0,0.3)
-		transform scale(1.125424) rotateY(0.17135717260665195deg)
+		box-shadow 0px 16.88704px 16.88704px flipbox-shadow-color
+		transform scale(1.125424) rotateY(0.17135717260665195deg) translateY(flipbox-translateY)
 	40%
-		box-shadow 0px 19.90272px 19.90272px rgba(0,0,0,0.3)
-		transform scale(1.149232) rotateY(5.4834295234128625deg)
+		box-shadow 0px 19.90272px 19.90272px flipbox-shadow-color
+		transform scale(1.149232) rotateY(5.4834295234128625deg) translateY(flipbox-translateY)
 	50%
-		box-shadow 0px 20px 20px rgba(0,0,0,0.3)
-		transform scale(1.15) rotateY(41.639792943416424deg)
+		box-shadow 0px 20px 20px flipbox-shadow-color
+		transform scale(1.15) rotateY(41.639792943416424deg) translateY(flipbox-translateY)
 	60%
-		box-shadow 0px 19.90272px 19.90272px rgba(0,0,0,0.3)
-		transform scale(1.149232) rotateY(138.36020705658356deg)
+		box-shadow 0px 19.90272px 19.90272px flipbox-shadow-color
+		transform scale(1.149232) rotateY(138.36020705658356deg) translateY(flipbox-translateY)
 	70%
-		box-shadow 0px 16.887040000000006px 16.887040000000006px rgba(0,0,0,0.3)
-		transform scale(1.125424) rotateY(174.51657047658713deg)
+		box-shadow 0px 16.887040000000006px 16.887040000000006px flipbox-shadow-color
+		transform scale(1.125424) rotateY(174.51657047658713deg) translateY(flipbox-translateY)
 	80%
-		box-shadow 0px 4.112959999999997px 4.112959999999997px rgba(0,0,0,0.3)
-		transform scale(1.024576) rotateY(179.82864282739334deg)
+		box-shadow 0px 9.112959999999997px 13.112959999999997px flipbox-shadow-color
+		transform scale(1.024576) rotateY(179.82864282739334deg) translateY(flipbox-translateY)
 	90%
-		box-shadow 0px 1.0972799999999998px 1.0972799999999998px rgba(0,0,0,0.3)
-		transform scale(1.000768) rotateY(180deg)
+		box-shadow 0px 6.0972799999999998px 10.0972799999999998px flipbox-shadow-color
+		transform scale(1.020768) rotateY(180deg) translateY(flipbox-translateY)
 	100%
-		box-shadow 0 0 5px 1px rgba(0, 0, 0, 0.3)
-		transform scale(1) rotateY(180deg)
+		box-shadow 0 5px 9px flipbox-shadow-color
+		transform scale(1.02) rotateY(180deg) translateY(flipbox-translateY)
 

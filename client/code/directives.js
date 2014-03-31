@@ -60,12 +60,11 @@ directives.directive('flipbox', function($timeout) {
 				$element.addClass('active');
 				$scope.$apply();
 
-				setTimeout(function() {
+				$timeout(function() {
 					$scope.active = false;
-					$scope.$apply();
 					$element.removeClass('active');
 					$element.toggleClass('reverse');
-				}, 680);
+				}, 650, true);
 			});
 		}
 	}

@@ -8,7 +8,7 @@
       <option name="myIgnoreVendorSpecificProperties" value="false" />
       <option name="myCustomPropertiesList">
         <value>
-          <list size="7">
+          <list size="10">
             <item index="0" class="java.lang.String" itemvalue="perspective" />
             <item index="1" class="java.lang.String" itemvalue="backface-visibility" />
             <item index="2" class="java.lang.String" itemvalue="transform" />
@@ -16,6 +16,9 @@
             <item index="4" class="java.lang.String" itemvalue="animation-name" />
             <item index="5" class="java.lang.String" itemvalue="animation-play-state" />
             <item index="6" class="java.lang.String" itemvalue="animation-direction" />
+            <item index="7" class="java.lang.String" itemvalue="font-smoothing" />
+            <item index="8" class="java.lang.String" itemvalue="osx-font-smoothing" />
+            <item index="9" class="java.lang.String" itemvalue="transition" />
           </list>
         </value>
       </option>

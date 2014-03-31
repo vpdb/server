@@ -514,6 +514,28 @@ ul.viewtype-panel li i:hover {
 .flipbox.flipbox-backglass {
   height: 250px;
 }
+.flipbox.flipbox-backglass hr {
+  margin: 0 15px;
+}
+.flipbox.flipbox-backglass h3,
+.flipbox.flipbox-backglass span {
+  text-align: center;
+}
+.flipbox.flipbox-backglass .backglass-description {
+  padding: 5px 5px 0 15px;
+  height: 128px;
+  overflow: hidden;
+  position: relative;
+}
+.flipbox.flipbox-backglass .backglass-description .nano > .nano-content {
+  padding-right: 10px;
+}
+.flipbox.flipbox-backglass .backglass-description .nano > .nano-pane {
+  background-color: rgba(255,255,255,0.05);
+}
+.flipbox.flipbox-backglass .backglass-description .nano > .nano-pane > .nano-slider {
+  background-color: rgba(255,255,255,0.15);
+}
 h1 + h3.pull-right {
   margin-top: -42px;
 }

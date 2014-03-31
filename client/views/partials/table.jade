@@ -138,22 +138,29 @@
 						button.btn.btn-primary.btn-xs
 							i.fa.fa-download
 
-		h2 Direct B2S Backglasses
+		h2 Backglasses
 		.row
 			.col-md-4.col-sm-6.col-xs-6.fade-animation(ng-repeat="backglass in table.backglasses")
 				.flipbox.flipbox-backglass
 					.panel.panel-dark.panel-backglass.panel-front
 						h3
 							i.fa.fa-picture-o
-							| &nbsp;&nbsp;Backglass
+							| &nbsp;&nbsp;Direct B2S
 						hr
-						i.icon.icon-user
-						| &nbsp;&nbsp; {{backglass.author.user}}
+						span
+							i.icon.icon-user
+							| &nbsp;&nbsp; {{backglass.author.user}}
+						hr
+						.backglass-description
+							scrollable(always-visible="true")
+								markdown.markdown(markdown="backglass.description")
+
 					.panel.panel-dark.panel-backglass.panel-back.img.img-fullspan(style="background-image:url('{{backglass.thumb}}')")
 						button.btn.btn-primary.btn-lg
 							i.fa.fa-download
-							| &nbsp;&nbsp;Download
+							| Download
 					.clearfix
+
 
 		h2 Media
 		h2 Alternative Media

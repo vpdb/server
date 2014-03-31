@@ -7,6 +7,7 @@ var app = angular.module('vpdb', [
 	'ngAnimate',
 	'ngSanitize',
 	'ui.bootstrap',
+	'sun.scrollable',
 	'vpdb.controllers',
 	'vpdb.filters',
 	'vpdb.services',

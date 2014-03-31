@@ -765,73 +765,34 @@ div.media-avatar-medium:before
 			color color-darker
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-.flipbox
-	position relative
-	height 200px
-	perspective: 1000px;
-
+// :flip panel
 .panel-front, .panel-back
-
-	//position absolute
-	//left 0%
-	//top 0%
-
-	backface-visibility: hidden;
-
+	backface-visibility hidden
 .panel-back
 	margin-top -220px
 	transform rotateY(180deg)
+.flipbox
+	position relative
+	height 200px
+	perspective 1000px
+	&.active
+		.panel-front, .panel-front:after, .panel-back:after
+			animation front animation-flip 0s 1 linear forwards
 
-.flipbox.active .panel-front,
-.flipbox.active .panel-front:after,
-.flipbox.active .panel-back:after {
-	animation: front animation-flip 0s 1 linear forwards;
-}
+		.panel-back
+			animation back animation-flip 0s 1 linear forwards
 
-.flipbox.active .panel-back {
+		.panel-front:after, .panel-back:after
+			animation-name shadow
 
-	animation: back animation-flip 0s 1 linear forwards;
-}
+		.panel-front, .panel-back, .panel-front:after, .panel-back:after
+			animation-play-state running
 
-.flipbox.active .panel-front:after,
-.flipbox.active .panel-back:after {
-	animation-name: shadow;
-}
+	&.reverse
+		.panel-front
+			transform scale(1) rotateY(180deg)
+			animation-direction reverse
 
-.flipbox.active .panel-front,
-.flipbox.active .panel-back,
-.flipbox.active .panel-front:after,
-.flipbox.active .panel-back:after {
-	animation-play-state: running;
-}
-
-.flipbox.reverse .panel-front {
-
-	transform: scale(1) rotateY(180deg);
-	animation-direction:         reverse;
-}
-
-.flipbox.reverse .panel-back {
-
-	transform: scale(1) rotateY(360deg);
-
-	animation-direction:         reverse;
-}
+		.panel-back
+			transform scale(1) rotateY(360deg)
+			animation-direction reverse

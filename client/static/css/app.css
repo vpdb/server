@@ -930,14 +930,6 @@ div.media-avatar-medium:before {
 .ratingbox .rating-avg .star-off {
   color: rgba(255,255,255,0.15);
 }
-.flipbox {
-  position: relative;
-  height: 200px;
-  -webkit-perspective: 1000px;
-  -moz-perspective: 1000px;
-  -ms-perspective: 1000px;
-  perspective: 1000px;
-}
 .panel-front,
 .panel-back {
   -webkit-backface-visibility: hidden;
@@ -952,6 +944,14 @@ div.media-avatar-medium:before {
   -o-transform: rotateY(180deg);
   -ms-transform: rotateY(180deg);
   transform: rotateY(180deg);
+}
+.flipbox {
+  position: relative;
+  height: 200px;
+  -webkit-perspective: 1000px;
+  -moz-perspective: 1000px;
+  -ms-perspective: 1000px;
+  perspective: 1000px;
 }
 .flipbox.active .panel-front,
 .flipbox.active .panel-front:after,

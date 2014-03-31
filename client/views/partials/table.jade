@@ -147,13 +147,24 @@
 							i.fa.fa-picture-o
 							| &nbsp;&nbsp;Direct B2S
 						hr
-						span
+						.oneline
 							i.icon.icon-user
 							| &nbsp;&nbsp; {{backglass.author.user}}
 						hr
 						.backglass-description
 							scrollable(always-visible="true")
 								markdown.markdown(markdown="backglass.description")
+						hr
+						.third
+							span
+								i.fa.fa-arrow-circle-down
+								| &nbsp;&nbsp;{{ backglass.downloads }}
+						.third
+							span
+								i.fa.fa-star
+								| &nbsp;&nbsp;{{ backglass.rating | rating }}
+						.third
+							span 3
 
 					.panel.panel-dark.panel-backglass.panel-back.img.img-fullspan(style="background-image:url('{{backglass.thumb}}')")
 						button.btn.btn-primary.btn-lg

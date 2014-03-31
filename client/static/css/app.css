@@ -516,14 +516,28 @@ ul.viewtype-panel li i:hover {
 }
 .flipbox.flipbox-backglass hr {
   margin: 0 15px;
+  border-color: rgba(255,255,255,0.15);
 }
-.flipbox.flipbox-backglass h3,
-.flipbox.flipbox-backglass span {
+.flipbox.flipbox-backglass h3 {
   text-align: center;
 }
+.flipbox.flipbox-backglass .oneline {
+  text-align: center;
+  margin: 5px 0;
+}
+.flipbox.flipbox-backglass .third {
+  width: 32%;
+  display: inline-table;
+  padding-top: 5px;
+  border-right: 2px solid rgba(255,255,255,0.15);
+  text-align: center;
+}
+.flipbox.flipbox-backglass .third:last-child {
+  border: none;
+}
 .flipbox.flipbox-backglass .backglass-description {
-  padding: 5px 5px 0 15px;
-  height: 128px;
+  padding: 5px 5px 9px 15px;
+  height: 119px;
   overflow: hidden;
   position: relative;
 }

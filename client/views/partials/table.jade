@@ -141,13 +141,19 @@
 		h2 Direct B2S Backglasses
 		.row
 			.col-md-4.col-sm-6.col-xs-6.fade-animation(ng-repeat="backglass in table.backglasses")
-				.flipbox
-					.panel.panel-dark.panel-front(style="height: 200px")
+				.flipbox.flipbox-backglass
+					.panel.panel-dark.panel-backglass.panel-front
 						h3
 							i.fa.fa-picture-o
 							| &nbsp;&nbsp;Backglass
-					.panel.panel-dark.panel-back(style="height: 200px")
-						h2 I'm the back!
+						hr
+						i.icon.icon-user
+						| &nbsp;&nbsp; {{backglass.author.user}}
+					.panel.panel-dark.panel-backglass.panel-back.img.img-fullspan(style="background-image:url('{{backglass.thumb}}')")
+						button.btn.btn-primary.btn-lg
+							i.fa.fa-download
+							| &nbsp;&nbsp;Download
+					.clearfix
 
 		h2 Media
 		h2 Alternative Media

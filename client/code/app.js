@@ -31,3 +31,12 @@ app.config(function($routeProvider, $locationProvider) {
 	$locationProvider.html5Mode(true);
 
 });
+
+window.requestAnimFrame = (function() {
+	return window.requestAnimationFrame    ||
+		window.webkitRequestAnimationFrame ||
+		window.mozRequestAnimationFrame    ||
+		function(callback) {
+			window.setTimeout(callback, 1000 / 60);
+		};
+})();

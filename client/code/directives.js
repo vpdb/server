@@ -29,19 +29,44 @@ directives.directive('ratingbox', function($parse) {
 			}
 
 			$scope.states = [
-				{stateOn: 'fa fa-star star-left star-on', stateOff: 'fa fa-star star-left star-off'},
-				{stateOn: 'fa fa-star star-right star-on', stateOff: 'fa fa-star star-right star-off'},
-				{stateOn: 'fa fa-star star-left star-on', stateOff: 'fa fa-star star-left star-off'},
-				{stateOn: 'fa fa-star star-right star-on', stateOff: 'fa fa-star star-right star-off'},
-				{stateOn: 'fa fa-star star-left star-on', stateOff: 'fa fa-star star-left star-off'},
-				{stateOn: 'fa fa-star star-right star-on', stateOff: 'fa fa-star star-right star-off'},
-				{stateOn: 'fa fa-star star-left star-on', stateOff: 'fa fa-star star-left star-off'},
-				{stateOn: 'fa fa-star star-right star-on', stateOff: 'fa fa-star star-right star-off'},
-				{stateOn: 'fa fa-star star-left star-on', stateOff: 'fa fa-star star-left star-off'},
-				{stateOn: 'fa fa-star star-right star-on', stateOff: 'fa fa-star star-right star-off'}
+				{ stateOn: 'fa fa-star star-left star-on', stateOff: 'fa fa-star star-left star-off' },
+				{ stateOn: 'fa fa-star star-right star-on', stateOff: 'fa fa-star star-right star-off' },
+				{ stateOn: 'fa fa-star star-left star-on', stateOff: 'fa fa-star star-left star-off' },
+				{ stateOn: 'fa fa-star star-right star-on', stateOff: 'fa fa-star star-right star-off' },
+				{ stateOn: 'fa fa-star star-left star-on', stateOff: 'fa fa-star star-left star-off' },
+				{ stateOn: 'fa fa-star star-right star-on', stateOff: 'fa fa-star star-right star-off' },
+				{ stateOn: 'fa fa-star star-left star-on', stateOff: 'fa fa-star star-left star-off' },
+				{ stateOn: 'fa fa-star star-right star-on', stateOff: 'fa fa-star star-right star-off' },
+				{ stateOn: 'fa fa-star star-left star-on', stateOff: 'fa fa-star star-left star-off' },
+				{ stateOn: 'fa fa-star star-right star-on', stateOff: 'fa fa-star star-right star-off' }
 			];
+		}
+	}
+});
 
-			console.log('rating box intitialized.');
+directives.directive('flipbox', function($timeout) {
+	return {
+		restrict: 'C',
+		scope: true,
+		controller: function($scope, $element) {
+
+			$scope.active = false;
+
+			$element.click(function() {
+				if ($scope.active) {
+					return;
+				}
+				$scope.active = true;
+				$element.addClass('active');
+				$scope.$apply();
+
+				setTimeout(function() {
+					$scope.active = false;
+					$scope.$apply();
+					$element.removeClass('active');
+					$element.toggleClass('reverse');
+				}, 680);
+			});
 		}
 	}
 });

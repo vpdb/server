@@ -783,14 +783,9 @@ div.media-avatar-medium:before
 
 
 
-.container-flip
+.flipbox
 	position relative
 	height 200px
-
-	-webkit-perspective: 1000px;
-	-moz-perspective: 1000px;
-	-ms-perspective: 1000px;
-	-o-perspective: 1000px;
 	perspective: 1000px;
 
 .panel-front, .panel-back
@@ -799,83 +794,44 @@ div.media-avatar-medium:before
 	//left 0%
 	//top 0%
 
-	-webkit-backface-visibility: hidden;
-	-moz-backface-visibility: hidden;
-	-ms-backface-visibility: hidden;
-	-o-backface-visibility: hidden;
 	backface-visibility: hidden;
 
 .panel-back
 	margin-top -220px
+	transform rotateY(180deg)
 
-.panel-back {
-
-	-webkit-transform: rotateY(180deg);
-	-moz-transform: rotateY(180deg);
-	-ms-transform: rotateY(180deg);
-	-o-transform: rotateY(180deg);
-	transform: rotateY(180deg);
+.flipbox.active .panel-front,
+.flipbox.active .panel-front:after,
+.flipbox.active .panel-back:after {
+	animation: front animation-flip 0s 1 linear forwards;
 }
 
-.container-flip.active .panel-front,
-.container-flip.active .panel-front:after,
-.container-flip.active .panel-back:after {
-	-webkit-animation: front animation-flip 0s 1 linear forwards;
-	-moz-animation:    front animation-flip 0s 1 linear forwards;
-	-o-animation:      front animation-flip 0s 1 linear forwards;
-	animation:         front animation-flip 0s 1 linear forwards;
+.flipbox.active .panel-back {
+
+	animation: back animation-flip 0s 1 linear forwards;
 }
 
-.container-flip.active .panel-back {
-
-	-webkit-animation: back animation-flip 0s 1 linear forwards;
-	-moz-animation:    back animation-flip 0s 1 linear forwards;
-	-o-animation:      back animation-flip 0s 1 linear forwards;
-	animation:         back animation-flip 0s 1 linear forwards;
+.flipbox.active .panel-front:after,
+.flipbox.active .panel-back:after {
+	animation-name: shadow;
 }
 
-.container-flip.active .panel-front:after,
-.container-flip.active .panel-back:after {
-	-webkit-animation-name: shadow;
-	-moz-animation-name:    shadow;
-	-o-animation-name:      shadow;
-	animation-name:         shadow;
+.flipbox.active .panel-front,
+.flipbox.active .panel-back,
+.flipbox.active .panel-front:after,
+.flipbox.active .panel-back:after {
+	animation-play-state: running;
 }
 
-.container-flip.active .panel-front,
-.container-flip.active .panel-back,
-.container-flip.active .panel-front:after,
-.container-flip.active .panel-back:after {
-	-webkit-animation-play-state: running;
-	-moz-animation-play-state:    running;
-	-o-animation-play-state:      running;
-	animation-play-state:         running;
-}
+.flipbox.reverse .panel-front {
 
-.container-flip.reverse .panel-front {
-
-	-webkit-transform: scale(1) rotateY(180deg);
-	-moz-transform: scale(1) rotateY(180deg);
-	-ms-transform: scale(1) rotateY(180deg);
-	-o-transform: scale(1) rotateY(180deg);
 	transform: scale(1) rotateY(180deg);
-
-	-webkit-animation-direction: reverse;
-	-moz-animation-direction:    reverse;
-	-o-animation-direction:      reverse;
 	animation-direction:         reverse;
 }
 
-.container-flip.reverse .panel-back {
+.flipbox.reverse .panel-back {
 
-	-webkit-transform: scale(1) rotateY(360deg);
-	-moz-transform: scale(1) rotateY(360deg);
-	-ms-transform: scale(1) rotateY(360deg);
-	-o-transform: scale(1) rotateY(360deg);
 	transform: scale(1) rotateY(360deg);
 
-	-webkit-animation-direction: reverse;
-	-moz-animation-direction:    reverse;
-	-o-animation-direction:      reverse;
 	animation-direction:         reverse;
 }

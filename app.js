@@ -15,7 +15,7 @@ var pwd = __dirname;
 function compile(str, path) {
 	return stylus(str)
 		.set('filename', path)
-		.set('compress', true)
+		.set('compress', false)
 		.use(nib())
 		.import('nib');
 }

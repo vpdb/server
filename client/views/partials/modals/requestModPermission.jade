@@ -1,7 +1,21 @@
-.modal-header
-	h3 Request Mod Permission
-.modal-body
-	p body
-.modal-footer
-	button.btn.btn-primary(ng-click="ok()") OK
-	button.btn.btn-default(ng-click="cancel()") Cancel
+.panel-lightest
+	.modal-header
+		h3
+			i.fa.fa-wrench.space-right
+			| &nbsp;Request Mod Permission
+	.modal-body(ng-controller="CommentsCtrl")
+		tabset.tabset-newcomment
+			label.label-small.pull-right Comments are parsed with <a href="http://daringfireball.net/projects/markdown/syntax" target="_blank">Markdown</a>.
+			tab
+				tab-heading
+					i.fa.fa-edit(title="Write")
+				textarea.msd-elastic(placeholder="Leave a comment", ng-model="$parent.newComment")
+			tab
+				tab-heading
+					i.fa.fa-eye(title="Preview")
+				div.markdown(markdown="$parent.newComment")
+				label.label-message(ng-show="!newComment || newComment.length == 0") Nothing to preview.
+
+	.modal-footer
+		button.btn.btn-primary(ng-click="ok()") OK
+		button.btn.btn-default(ng-click="cancel()") Cancel

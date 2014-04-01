@@ -105,6 +105,12 @@ button.btn:active:focus {
 .padder-notop {
   padding: 0 15px 15px;
 }
+label.label-small {
+  font-size: 13px;
+}
+label.label-message {
+  margin: 15px 0 0 10px;
+}
 h1 {
   color: #ec843d;
   font-family: langdon;
@@ -380,12 +386,6 @@ ul.viewtype-panel li i:hover {
 .panel-dark label span.pipe:last-child:after {
   content: '';
 }
-.panel-dark label.label-small {
-  font-size: 13px;
-}
-.panel-dark label.label-message {
-  margin: 15px 0 0 10px;
-}
 .panel-dark textarea {
   background-color: rgba(255,255,255,0.06);
   border: none;
@@ -513,6 +513,59 @@ ul.viewtype-panel li i:hover {
   color: rgba(255,255,255,0.3);
   -webkit-box-shadow: none;
   box-shadow: none;
+}
+.panel-lightest button.btn-default {
+  color: rgba(255,255,255,0.6);
+  background-color: rgba(0,0,0,0.25);
+}
+.panel-lightest button.btn-default:hover {
+  color: rgba(255,255,255,0.7);
+  background-color: rgba(0,0,0,0.35);
+  -webkit-box-shadow: 0 0 10px 1px rgba(0,0,0,0.1);
+  box-shadow: 0 0 10px 1px rgba(0,0,0,0.1);
+}
+.panel-lightest button.btn-primary {
+  color: rgba(255,255,255,0.7);
+  background-color: rgba(0,0,0,0.35);
+}
+.panel-lightest button.btn-primary:hover {
+  color: rgba(255,255,255,0.8);
+  background-color: rgba(0,0,0,0.45);
+  -webkit-box-shadow: 0 0 10px 1px rgba(0,0,0,0.1);
+  box-shadow: 0 0 10px 1px rgba(0,0,0,0.1);
+}
+.panel-lightest .tabbable ul.nav-tabs li.active a {
+  color: rgba(0,0,0,0.5);
+  background-color: rgba(0,0,0,0.11);
+}
+.panel-lightest .tabbable ul.nav-tabs li .panel-triangle {
+  border-color: transparent #383735 transparent transparent;
+}
+.panel-lightest .tabbable ul.nav-tabs li a {
+  color: rgba(0,0,0,0.25);
+  background-color: rgba(0,0,0,0.06);
+}
+.panel-lightest .tabbable ul.nav-tabs li a:hover {
+  color: rgba(0,0,0,0.5);
+}
+.panel-lightest .tabbable .tab-content {
+  background-color: rgba(0,0,0,0.11);
+}
+.panel-lightest .tabbable label.label-small {
+  color: rgba(0,0,0,0.25);
+}
+.panel-lightest .tabbable label.label-small a {
+  color: rgba(0,0,0,0.5);
+}
+.panel-lightest .tabbable label.label-small a:hover {
+  color: rgba(0,0,0,0.75);
+}
+.panel-lightest textarea {
+  border-color: rgba(0,0,0,0.06);
+  background-color: rgba(0,0,0,0.05);
+}
+.panel-lightest textarea:focus {
+  background-color: rgba(0,0,0,0.08);
 }
 .panel.panel-backglass {
   height: 250px;
@@ -732,7 +785,6 @@ accordion.accordion-glued > .panel-group > .panel:first-child accordion.accordio
   color: rgba(255,255,255,0.5);
   background-color: rgba(255,255,255,0.11);
   border: none;
-tab-heading
 }
 .tabbable ul.nav-tabs li.active .panel-triangle {
   border-color: transparent #454442 transparent transparent;
@@ -802,16 +854,16 @@ section.footer a:hover {
 .modal-dialog .modal-content .modal-header {
   -webkit-border-radius: 3px 3px 0 0;
   border-radius: 3px 3px 0 0;
-  background-color: rgba(0,0,0,0.15);
+  background-color: rgba(0,0,0,0.1);
   -webkit-box-shadow: inset 0px 1px 3px 0px rgba(255,255,255,0.5);
   box-shadow: inset 0px 1px 3px 0px rgba(255,255,255,0.5);
 }
 .modal-dialog .modal-content .modal-header h3 {
-  margin: 15px;
+  margin: 3px 5px 0;
   color: rgba(0,0,0,0.35);
 }
 .modal-dialog .modal-content .modal-footer {
-  background-color: rgba(0,0,0,0.15);
+  background-color: rgba(0,0,0,0.1);
   -webkit-border-radius: 0 0 3px 3px;
   border-radius: 0 0 3px 3px;
 }

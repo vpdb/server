@@ -10,6 +10,15 @@ color-lightest = rgba(255, 255, 255, 0.75)
 color-primary = #ec843d
 color-primary-light = #ffa364
 
+color-darkest-inv = rgba(0, 0, 0, 0.06)
+color-darker-inv = rgba(0, 0, 0, 0.15)
+color-dark-inv = rgba(0, 0, 0, 0.2)
+color-light-inv = rgba(0, 0, 0, 0.25)
+color-lightish-inv = rgba(0, 0, 0, 0.32)
+color-lighter-inv = rgba(0, 0, 0, 0.5)
+color-lightest-inv = rgba(0, 0, 0, 0.75)
+
+
 font-header = langdon
 font-content = 'Raleway', sans-serif
 
@@ -117,6 +126,11 @@ button.btn:focus, button.btn:active:focus
 	padding 15px
 .padder-notop
 	padding 0 15px 15px
+label
+	&.label-small
+		font-size 13px
+	&.label-message
+		margin 15px 0 0 10px
 
 // :headers
 h1
@@ -328,10 +342,6 @@ ul.viewtype-panel
 					color color-light
 				&:last-child:after
 					content ''
-		&.label-small
-			font-size 13px
-		&.label-message
-			margin 15px 0 0 10px
 	textarea
 		background-color color-darkest
 		border none
@@ -422,6 +432,50 @@ ul.viewtype-panel
 				background-color rgba(0, 0, 0, 0.3)
 				color rgba(255, 255, 255, 0.3)
 				box-shadow none
+
+.panel-lightest
+	button.btn-default
+		color rgba(255, 255, 255, 0.6)
+		background-color rgba(0, 0, 0, 0.25)
+		&:hover
+			color rgba(255, 255, 255, 0.7)
+			background-color rgba(0, 0, 0, 0.35)
+			box-shadow 0 0 10px 1px rgba(0, 0, 0, 0.1)
+	button.btn-primary
+		color rgba(255, 255, 255, 0.7)
+		background-color rgba(0, 0, 0, 0.35)
+		&:hover
+			color rgba(255, 255, 255, 0.8)
+			background-color rgba(0, 0, 0, 0.45)
+			box-shadow 0 0 10px 1px rgba(0, 0, 0, 0.1)
+	.tabbable
+		ul.nav-tabs
+			li
+				&.active
+					a
+						color color-lighter-inv
+						background-color rgba(0, 0, 0, 0.11)
+				.panel-triangle
+					border-color transparent #383735 transparent transparent
+				a
+					color color-light-inv
+					background-color color-darkest-inv
+					&:hover
+						color color-lighter-inv
+		.tab-content
+			background-color rgba(0, 0, 0, 0.11)
+		label.label-small
+			color color-light-inv
+			a
+				color color-lighter-inv
+				&:hover
+					color color-lightest-inv
+	textarea
+		border-color color-darkest-inv
+		background-color rgba(0, 0, 0, 0.05)
+		&:focus
+			background-color rgba(0, 0, 0, 0.08)
+
 
 .panel.panel-backglass
 	height 250px
@@ -609,7 +663,6 @@ accordion.accordion-glued
 					color color-lighter
 					background-color rgba(255, 255, 255, 0.11)
 					border none
-					tab-heading
 				.panel-triangle
 					border-color transparent #454442 transparent transparent
 			.panel-triangle
@@ -660,15 +713,14 @@ section.footer
 		color rgba(0,0,0,0.8)
 		.modal-header
 			border-radius 3px 3px 0 0
-			background-color rgba(0,0,0,0.15)
+			background-color rgba(0,0,0,0.1)
 			box-shadow inset 0px 1px 3px 0px rgba(255,255,255,0.5)
 			h3
-				margin 15px
+				margin 3px 5px 0
 				color rgba(0,0,0,0.35)
 		.modal-footer
-			background-color rgba(0,0,0,0.15)
+			background-color rgba(0,0,0,0.1)
 			border-radius 0 0 3px 3px
-
 
 
 // :markdown

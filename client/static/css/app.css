@@ -332,6 +332,9 @@ ul.viewtype-panel li i:hover {
   -ms-transition: background-color 200ms;
   transition: background-color 200ms;
 }
+.panel hr {
+  border-color: rgba(255,255,255,0.15);
+}
 .panel-dark {
   -webkit-border-radius: 2px;
   border-radius: 2px;
@@ -522,7 +525,6 @@ ul.viewtype-panel li i:hover {
 }
 .flipbox.flipbox-backglass hr {
   margin: 0 15px;
-  border-color: rgba(255,255,255,0.15);
 }
 .flipbox.flipbox-backglass h3 {
   text-align: center;

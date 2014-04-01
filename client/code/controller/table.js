@@ -1,4 +1,4 @@
-ctrl.controller('TableController', function($scope, $http, $routeParams) {
+ctrl.controller('TableController', function($scope, $http, $routeParams, $modal, $log) {
 
 	$scope.tableId = $routeParams.id;
 
@@ -32,5 +32,31 @@ ctrl.controller('TableController', function($scope, $http, $routeParams) {
 				}
 			});
 		}, 0);
+
 	});
+
+	$scope.requestModPermission = function(release) {
+		var modalInstance = $modal.open({
+			templateUrl: 'partials/modals/requestModPermission',
+			controller: 'RequestModPermissionModalCtrl'
+		});
+
+		modalInstance.result.then(function (selectedItem) {
+			$scope.selected = selectedItem;
+		}, function () {
+			$log.info('Modal dismissed at: ' + new Date());
+		});
+	};
+});
+
+
+ctrl.controller('RequestModPermissionModalCtrl', function($scope, $modalInstance) {
+
+	$scope.ok = function () {
+		$modalInstance.close(true);
+	};
+
+	$scope.cancel = function () {
+		$modalInstance.dismiss(false);
+	};
 });

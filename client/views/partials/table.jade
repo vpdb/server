@@ -47,9 +47,10 @@
 
 						accordion-group(heading="Mods")
 							p This release hasn't been modded yet.
-							button.btn.btn-default
+							hr
+							button.btn.btn-default(ng-click="requestModPermission()")
 								i.fa.fa-wrench.space-right
-								| Request a Mod
+								| Request Mod Permission
 
 						accordion-group(heading="Gallery")
 							p here is the gallery
@@ -173,7 +174,7 @@
 							span 3
 
 					.panel.panel-dark.panel-backglass.panel-back.img.img-fullspan(style="background-image:url('{{backglass.thumb}}')")
-						button.btn.btn-primary.btn-lg
+						button.btn.btn-primary.btn-lg(ng-click="$event.stopPropagation()")
 							i.fa.fa-download.space-right
 							| Download
 					.clearfix
@@ -202,4 +203,3 @@
 				rating.rating-user(ng-show="editing", value="ratingUser", max="10", rating-states="states", on-hover="hoverRating = value", on-leave="hoverRating = ratingUser")
 				rating.rating-avg(ng-hide="editing", value="ratingAvg", max="10", rating-states="states", readonly="true")
 				span.votes {{$parent.table.votes}} vote{{$parent.table.votes == 1 ? '' : 's'}}
-

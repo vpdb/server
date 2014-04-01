@@ -793,6 +793,28 @@ section.footer a {
 section.footer a:hover {
   color: rgba(255,255,255,0.25);
 }
+.modal-dialog .modal-content {
+  background-image: url("/images/background_white.png");
+  -webkit-border-radius: 3px;
+  border-radius: 3px;
+  color: rgba(0,0,0,0.8);
+}
+.modal-dialog .modal-content .modal-header {
+  -webkit-border-radius: 3px 3px 0 0;
+  border-radius: 3px 3px 0 0;
+  background-color: rgba(0,0,0,0.15);
+  -webkit-box-shadow: inset 0px 1px 3px 0px rgba(255,255,255,0.5);
+  box-shadow: inset 0px 1px 3px 0px rgba(255,255,255,0.5);
+}
+.modal-dialog .modal-content .modal-header h3 {
+  margin: 15px;
+  color: rgba(0,0,0,0.35);
+}
+.modal-dialog .modal-content .modal-footer {
+  background-color: rgba(0,0,0,0.15);
+  -webkit-border-radius: 0 0 3px 3px;
+  border-radius: 0 0 3px 3px;
+}
 .markdown > *:first-child {
   margin-top: 0;
 }

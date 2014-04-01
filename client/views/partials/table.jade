@@ -49,11 +49,11 @@
 							p here is the gallery
 				.padder-notop
 					button.btn.btn-primary.btn-lg.btn-download.pull-right
-						i.fa.fa-download
+						i.fa.fa-download.space-right
 						| Download
 					.btn-group
 						button.btn.btn-default.btn-lg.btn-media(type="button")
-							i.fa.fa-download
+							i.fa.fa-download.space-right
 							| Media
 						button.btn.btn-default.btn-lg.dropdown-toggle(type="button", data-toggle="dropdown")
 							i.fa.fa-angle-down
@@ -144,8 +144,8 @@
 				.flipbox.flipbox-backglass
 					.panel.panel-dark.panel-backglass.panel-front
 						h3
-							i.fa.fa-picture-o
-							| &nbsp;&nbsp;Direct B2S
+							i.fa.fa-picture-o.space-right
+							| Direct B2S
 						hr
 						.oneline
 							i.icon.icon-user
@@ -157,18 +157,18 @@
 						hr
 						.third
 							span
-								i.fa.fa-arrow-circle-down
-								| &nbsp;&nbsp;{{ backglass.downloads }}
+								i.fa.fa-arrow-circle-down.space-right
+								| {{ backglass.downloads }}
 						.third
 							span
-								i.fa.fa-star
-								| &nbsp;&nbsp;{{ backglass.rating | rating }}
+								i.fa.fa-star.space-right
+								| {{ backglass.rating | rating }}
 						.third
 							span 3
 
 					.panel.panel-dark.panel-backglass.panel-back.img.img-fullspan(style="background-image:url('{{backglass.thumb}}')")
 						button.btn.btn-primary.btn-lg
-							i.fa.fa-download
+							i.fa.fa-download.space-right
 							| Download
 					.clearfix
 

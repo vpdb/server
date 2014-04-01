@@ -46,6 +46,9 @@ body {
   margin-top: 30px;
   width: 95%;
 }
+.space-right {
+  margin-right: 10px;
+}
 a {
   color: rgba(255,255,255,0.25);
   cursor: pointer;
@@ -279,9 +282,6 @@ button.btn.dropdown-toggle {
 button.btn.btn-comment {
   margin-right: 15px;
   margin-bottom: 15px;
-}
-button.btn .fa {
-  margin-right: 10px;
 }
 .btn-group .btn + .btn,
 .btn-group .btn + .btn-group,

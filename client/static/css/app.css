@@ -280,6 +280,9 @@ button.btn.btn-comment {
   margin-right: 15px;
   margin-bottom: 15px;
 }
+button.btn .fa {
+  margin-right: 10px;
+}
 .btn-group .btn + .btn,
 .btn-group .btn + .btn-group,
 .btn-group .btn-group + .btn,
@@ -511,6 +514,9 @@ ul.viewtype-panel li i:hover {
 .panel.panel-backglass {
   height: 250px;
 }
+.panel.panel-backglass h3 {
+  margin: 10px 15px 8px;
+}
 .flipbox.flipbox-backglass {
   height: 250px;
 }
@@ -537,7 +543,7 @@ ul.viewtype-panel li i:hover {
 }
 .flipbox.flipbox-backglass .backglass-description {
   padding: 5px 5px 9px 15px;
-  height: 119px;
+  height: 125px;
   overflow: hidden;
   position: relative;
 }

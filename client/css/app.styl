@@ -1,24 +1,3 @@
-color-black = black
-color-background = #211f1d
-color-darkest = rgba(255, 255, 255, 0.06)
-color-darker = rgba(255, 255, 255, 0.15)
-color-dark = rgba(255, 255, 255, 0.2)
-color-light = rgba(255, 255, 255, 0.25)
-color-lightish = rgba(255, 255, 255, 0.32)
-color-lighter = rgba(255, 255, 255, 0.5)
-color-lightest = rgba(255, 255, 255, 0.75)
-color-primary = #ec843d
-color-primary-light = #ffa364
-
-color-darkest-inv = rgba(0, 0, 0, 0.06)
-color-darker-inv = rgba(0, 0, 0, 0.15)
-color-dark-inv = rgba(0, 0, 0, 0.2)
-color-light-inv = rgba(0, 0, 0, 0.25)
-color-lightish-inv = rgba(0, 0, 0, 0.32)
-color-lighter-inv = rgba(0, 0, 0, 0.5)
-color-lightest-inv = rgba(0, 0, 0, 0.75)
-
-
 font-header = langdon
 font-content = 'Raleway', sans-serif
 
@@ -49,26 +28,21 @@ list-sidebar-width = 170px
 
 // background
 body
-	background-image url('images/background_outer.png')
-	color color-lighter
 	font-family font-content
 	font-weight font-weight-normal
 	font-size 16px
 	-webkit-font-smoothing antialiased
 
 .container.container-topmost
-	background-image url('/images/background.png')
 	padding-top 50px
 	margin-bottom 30px
 	border-bottom-right-radius border-radius-large
 	border-bottom-left-radius border-radius-large
-	box-shadow 0 0 5px 1px rgba(0, 0, 0, 0.5)
 
 .col-main
 	padding-left 30px
 	padding-right 30px
 .col-menu
-	background-color color-darkest
 	padding-bottom 25px
 
 .row-fullheight
@@ -87,11 +61,9 @@ body
 	margin-right 10px
 // generic stuff
 a
-	color color-light
 	cursor pointer
 	transition all animation-short
 	&:hover
-		color color-lighter
 		text-decoration none
 	&:focus
 		text-decoration none
@@ -105,22 +77,9 @@ button.btn:focus, button.btn:active:focus
 ::-webkit-scrollbar
 	height 12px
 	width 12px
-	background color-background
 
 ::-webkit-scrollbar-thumb
-	background color-darker
 	-webkit-border-radius border-radius-small
-	-webkit-box-shadow 0px 1px 2px rgba(0, 0, 0, 0.75)
-
-::-webkit-scrollbar-corner
-	background color-background
-
-::selection
-	color rgba(255,255,255,0.9)
-	background color-primary
-::-moz-selection
-	color rgba(255,255,255,0.9)
-	background color-primary
 
 .padder
 	padding 15px
@@ -134,11 +93,9 @@ label
 
 // :headers
 h1
-	color color-primary
 	font-family font-header
 	text-transform lowercase
 h2
-	color color-light
 	font-family font-header
 	text-transform uppercase
 
@@ -147,7 +104,6 @@ h1, h2
 	margin-bottom 10px
 	margin-top 20px
 h3
-	color color-light
 	font-size 28px
 	font-family font-header
 	text-transform uppercase
@@ -155,17 +111,32 @@ h3
 // :hr
 hr
 	margin-top 10px
-	border-color color-light
 	border-width 2px
+
+label
+	font-weight font-weight-normal
+	margin-bottom 1px
+	white-space nowrap
+	overflow hidden
+	text-overflow ellipsis
+	&.block
+		display block
+	i.fa, i.icon
+		margin-right 10px
+	span
+		margin-right 10px
+		&.pipe
+			margin-right 10px
+			&:after
+				content '|'
+				margin-left 10px
+			&:last-child:after
+				content ''
 
 // :navbar
 .navbar-default
 	transition background-color animation-long
-	background-color rgba(26, 25, 23, 0.8)
 	border-radius 0
-	border-color color-primary
-
-
 .navbar-brand
 	position relative
 	.icon
@@ -173,34 +144,18 @@ hr
 		position absolute
 		top -67px
 		transition all animation-long
-		&.icon-vp
-			color color-primary
-		&.icon-db
-			color color-lighter
-	a
-		&:hover
-			.icon-vp
-				color color-primary-light
-			.icon-db
-				color color-lightest
 
 // :input
 .input-group
 	margin-bottom 15px
+
 .form-control
 	height 28px
-	box-shadow none
-	color color-lighter
-	background-color color-darker
 	padding-left 3px
 	border-radius 14px
 	border none
-	&:focus
-		box-shadow none
 
 .input-group-addon
-	color color-light
-	background-color color-darker
 	padding-right 3px
 	border-radius 14px
 	border none
@@ -215,12 +170,8 @@ hr
 		padding 5px
 		margin 0
 		resize none
-		border 1px solid color-darkest
+		border none
 		border-radius border-radius-small
-		background-color rgba(255,255,255,0.05)
-		transition background-color animation-short
-		&:focus
-			background-color rgba(255,255,255,0.08)
 
 // :buttons
 button.btn
@@ -231,20 +182,7 @@ button.btn
 		font-family font-header
 		font-size 20px
 		text-transform uppercase
-		color color-light
-		background-color color-dark
 		border none
-		&:hover
-			color color-lighter
-			background-color color-light
-			box-shadow 0 0 3px 1px rgba(0, 0, 0, 0.3)
-	&.btn-primary
-		color color-background
-		background-color color-primary
-		&:hover
-			color color-background
-			background-color color-primary-light
-			box-shadow 0 0 3px 1px rgba(0, 0, 0, 0.3)
 	&.btn-lg
 		font-size 26px
 		padding 2px 30px 1px
@@ -281,18 +219,11 @@ ul.viewtype-panel
 		display inline
 		margin-left 15px
 		&.active i
-			color #aaa
-			text-shadow 0 0 3px black
 			cursor default
 		i
-			color color-light
 			font-size 18px
 			cursor pointer
 			transition all animation-short
-			&:hover
-				color #aaa
-				text-shadow 0 0 3px black
-
 
 // :table :panel
 .panel-triangle
@@ -306,14 +237,7 @@ ul.viewtype-panel
 	transition background-color animation-short
 
 .panel
-	hr
-		border-color color-darker
-
-.panel-dark
 	border-radius border-radius-small
-	background-color color-darkest
-	box-shadow 0 0 5px 1px rgba(0, 0, 0, 0.3)
-
 	h3
 		font-size 26px
 		font-family font-header
@@ -322,44 +246,22 @@ ul.viewtype-panel
 		overflow hidden
 		text-overflow ellipsis
 
-	label
-		font-weight font-weight-normal
-		margin-bottom 1px
-		white-space nowrap
-		overflow hidden
-		text-overflow ellipsis
-		&.block
-			display block
-		i.fa, i.icon
-			margin-right 10px
-		span
-			margin-right 10px
-			&.pipe
-				margin-right 10px
-				&:after
-					content '|'
-					margin-left 10px
-					color color-light
-				&:last-child:after
-					content ''
 	textarea
-		background-color color-darkest
 		border none
 	& > h3
 		margin-top 15px
 		margin-left 15px
 
 // common to compact and extended
-.panel-dark-compact, .panel-dark-extended
+.panel-compact, .panel-extended
 	cursor pointer
 	transition all 500ms cubic-bezier(0.190, 1.000, 0.220, 1.000)
 	transform translateY(0) scale(1, 1)
 	&:hover
-		box-shadow 0 5px 9px rgba(0,0,0,0.5)
 		transform translateY(-5px) scale(1.03, 1.03)
 
 // :table panes :compact
-.panel-dark-compact
+.panel-compact
 	text-align center
 	margin-top 10px
 
@@ -374,7 +276,7 @@ ul.viewtype-panel
 		margin-bottom 15px
 
 // :table panes :extended
-.panel-dark-extended
+.panel-extended
 	&:hover
 		transform translateY(-3px) scale(1.01, 1.01)
 
@@ -397,91 +299,30 @@ ul.viewtype-panel
 		right 15px
 		top -5px
 
-.panel-light
-	background-color color-darkest
+.panel-small
 	border-radius border-radius-large
 	margin 15px
 	position relative
-	.panel-triangle
-		border-color transparent #454442 transparent transparent
 	.panel-header
-		color color-lightish
 		border-radius border-radius-large border-radius-large 0 0
-		background-color color-darkest
 		padding 4px 14px 3px
 		i.fa
-			color color-dark
 			margin-left 10px
 			cursor pointer
 			transition color animation-short
-			&:hover
-				color color-lighter
 	.panel-content
-		color color-lightish
 		padding 15px 15px 5px
 		textarea
 			margin-bottom 8px
 	.panel-footer
 		border none
-		background-color color-darkest
 		border-radius 0 0 border-radius-large border-radius-large
-		button.btn.btn-default
-			background-color rgba(0, 0, 0, 0.2)
-			color rgba(255, 255, 255, 0.2)
-			&:hover
-				background-color rgba(0, 0, 0, 0.3)
-				color rgba(255, 255, 255, 0.3)
-				box-shadow none
-
-.panel-lightest
-	button.btn-default
-		color rgba(255, 255, 255, 0.6)
-		background-color rgba(0, 0, 0, 0.25)
-		&:hover
-			color rgba(255, 255, 255, 0.7)
-			background-color rgba(0, 0, 0, 0.35)
-			box-shadow 0 0 10px 1px rgba(0, 0, 0, 0.1)
-	button.btn-primary
-		color rgba(255, 255, 255, 0.7)
-		background-color rgba(0, 0, 0, 0.35)
-		&:hover
-			color rgba(255, 255, 255, 0.8)
-			background-color rgba(0, 0, 0, 0.45)
-			box-shadow 0 0 10px 1px rgba(0, 0, 0, 0.1)
-	.tabbable
-		ul.nav-tabs
-			li
-				&.active
-					a
-						color color-lighter-inv
-						background-color rgba(0, 0, 0, 0.11)
-				.panel-triangle
-					border-color transparent #383735 transparent transparent
-				a
-					color color-light-inv
-					background-color color-darkest-inv
-					&:hover
-						color color-lighter-inv
-		.tab-content
-			background-color rgba(0, 0, 0, 0.11)
-		label.label-small
-			color color-light-inv
-			a
-				color color-lighter-inv
-				&:hover
-					color color-lightest-inv
-	textarea
-		border-color color-darkest-inv
-		background-color rgba(0, 0, 0, 0.05)
-		&:focus
-			background-color rgba(0, 0, 0, 0.08)
-
 
 .panel.panel-backglass
 	height 250px
 	h3
 		margin 10px 15px 8px
-.flipbox.flipbox-backglass
+.flipbox-backglass
 	height 250px
 	hr
 		margin 0 15px
@@ -494,7 +335,8 @@ ul.viewtype-panel
 		width 32%
 		display inline-table
 		padding-top 5px
-		border-right 2px solid color-darker
+		border-right-width 2px
+		border-right-style solid
 		text-align center
 		&:last-child
 			border none
@@ -503,18 +345,12 @@ ul.viewtype-panel
 		height 125px
 		overflow hidden
 		position relative
-		.nano
-			& > .nano-content
-				padding-right 10px
-			& > .nano-pane
-				background-color rgba(255, 255, 255, 0.05)
-				&  > .nano-slider
-					background-color rgba(255, 255, 255, 0.15)
 
 // :details view
 h1 + h3.pull-right
 	margin-top -42px
-.panel-dark-detailed
+
+.panel-detailed
 	.sidebar-wrapper
 		float left
 		margin 15px
@@ -545,7 +381,6 @@ table.table
 
 	tr > th
 		font-weight font-weight-normal
-		color color-primary
 
 	tr > th, tr > td
 		border none
@@ -560,10 +395,6 @@ table.table
 			width 50px
 
 	&.table-striped tr
-		&:nth-child(odd) > td
-			background-color color-darkest
-			&.nostripe
-				background-color transparent
 		& > td.nostripe
 			padding-left 5px
 
@@ -571,9 +402,6 @@ table.table
 		& > td
 			cursor pointer
 			transition all animation-shorter
-		&:hover
-			td
-				color color-primary
 
 // :selectable list
 ul.selectable
@@ -581,7 +409,6 @@ ul.selectable
 	> li
 		list-style-type none
 		&.selected
-			color color-primary
 			font-weight font-weight-bold
 			margin-left -20px
 			&:before
@@ -603,24 +430,18 @@ ul.selectable
 accordion
 	& > .panel-group
 		& > .panel
-			background-color color-darkest
 			border none
 			border-radius border-radius-large
 			& > .panel-heading
 				padding 8px 10px 5px
-				background-color color-darkest
 				border-top-left-radius border-radius-large
 				border-top-right-radius border-radius-large
 				h4
-					color color-lightish
 					text-transform uppercase
 					font-weight font-weight-bold
-				a
-					&:hover
+				a:hover
 						text-decoration none
-						color color-lightest
 						cursor pointer
-
 			& + .panel
 				margin-top 15px
 			& > .panel-collapse
@@ -653,86 +474,60 @@ accordion.accordion-glued
 
 // :tabs
 .tabbable
-	margin 15px
+	&.tabset-newcomment
+		margin 15px
+	&.tabset-moderequest
+		margin 15px 0
 	ul.nav-tabs
 		border none
 		li
 			margin-bottom 0
 			&.active
 				a
-					color color-lighter
-					background-color rgba(255, 255, 255, 0.11)
 					border none
-				.panel-triangle
-					border-color transparent #454442 transparent transparent
-			.panel-triangle
-				border-color transparent #383735 transparent transparent
 			a
 				padding 4px 15px
 				font-size 20px
-				color color-light
-				background-color color-darkest
 				border none
 				border-radius border-radius-large border-radius-large 0 0
-				&:hover
-					color color-lighter
 	.tab-content
 		padding 10px 15px 15px 13px
 		border-radius 0 border-radius-large border-radius-large border-radius-large
-		background-color rgba(255, 255, 255, 0.11)
 		textarea
 			margin-top 5px
 	label.label-small
 		margin-top 7px
-		color color-light
-		a
-			color color-lighter
-			&:hover
-				color color-lightest
 
 section.footer
 	text-align center
 	margin-top -20px
 	margin-bottom 20px
-	color color-dark
 	font-weight
 	i.fa
 		margin-right 10px
 		font-size 20px
 	a
-		color color-dark
 		transition all animation-short
-		&:hover
-			color color-light
 
 // :modals
 .modal-dialog
 	.modal-content
-		background-image url('/images/background_white.png')
 		border-radius 3px
-		color rgba(0,0,0,0.8)
 		.modal-header
 			border-radius 3px 3px 0 0
-			background-color rgba(0,0,0,0.1)
-			box-shadow inset 0px 1px 3px 0px rgba(255,255,255,0.5)
 			h3
 				margin 3px 5px 0
-				color rgba(0,0,0,0.35)
 		.modal-footer
-			background-color rgba(0,0,0,0.1)
 			border-radius 0 0 3px 3px
-
 
 // :markdown
 .markdown
 	& > *:first-child
 		margin-top 0
 	h1, h2
-		color color-lightest
 		font-family font-content
 		text-transform none
 	h3, h4, h5
-		color color-lighter
 		font-family font-content
 		text-transform none
 	h1
@@ -752,25 +547,11 @@ section.footer
 		font-weight font-weight-normal
 		text-decoration underline
 	a
-		color color-lighter
 		text-decoration underline
-		&:hover
-			color color-lightest
-	code
-		background-color color-light
-		color black
 	pre code
 		font-size 16px
-		background-color transparent
-		color inherit
 	blockquote
 		font-size 16px
-		border-color color-light
-	pre
-		color color-lighter
-		border-color color-darkest
-		background-color transparent
-		background-image url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI3MCIgaGVpZ2h0PSI3MCI+CjxyZWN0IHdpZHRoPSI3MCIgaGVpZ2h0PSI3MCIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjAzKSI+PC9yZWN0Pgo8ZyB0cmFuc2Zvcm09InJvdGF0ZSg0NSkiPgo8cmVjdCB3aWR0aD0iOTkiIGhlaWdodD0iMjUiIGZpbGw9InJnYmEoMCwwLDAsMC4wMykiPjwvcmVjdD4KPHJlY3QgeT0iLTUwIiB3aWR0aD0iOTkiIGhlaWdodD0iMjUiIGZpbGw9InJnYmEoMCwwLDAsMC4wMykiPjwvcmVjdD4KPC9nPgo8L3N2Zz4=")
 
 // :image
 .img
@@ -796,7 +577,6 @@ section.footer
 	height 64px
 	margin-left 15px
 	border-radius 32px
-	background-color color-darker
 	&.pull-left
 		margin-right 0px
 	& + .media-body > .panel
@@ -805,7 +585,6 @@ section.footer
 	& + .media-body > .tabbable
 		margin-top 0px
 div.media-avatar-medium:before
-	color color-darker
 	margin-left 15px
 	margin-top 14px
 	position absolute
@@ -819,7 +598,6 @@ div.media-avatar-medium:before
 	content '\e605'
 
 .thumbnail.thumbnail-avatar
-	background-color transparent
 	border none
 	width 130px
 	margin-bottom 0px
@@ -830,9 +608,7 @@ div.media-avatar-medium:before
 		h1
 			margin-top 0
 			font-size 16px
-			color color-lighter
 		label
-			color color-lighter
 			white-space normal
 
 // :rating :star
@@ -848,7 +624,6 @@ div.media-avatar-medium:before
 			&.rating-user
 				position absolute
 				right 0
-				color color-primary
 	.ratingbox-right
 		display inline
 		position relative
@@ -876,143 +651,3 @@ div.media-avatar-medium:before
 		&:before
 			margin-left -7.5px
 			overflow hidden
-	.rating-user
-		.star-on
-			color color-primary
-		.star-off
-			color color-darker
-	.rating-avg
-		.star-on
-			color color-lighter
-		.star-off
-			color color-darker
-
-
-// :flip panel
-flipbox-translateY = -2px
-flipbox-shadow-color = rgba(0,0,0,0.4)
-flipbox-duration = 650ms
-
-.flipbox
-	position relative
-	perspective 1000px
-	width 100%
-
-	.panel-front, .panel-back
-		position absolute
-		width 100%
-		backface-visibility hidden
-		cursor pointer
-		&:hover
-			box-shadow 0 5px 9px flipbox-shadow-color
-			transform translateY(flipbox-translateY) scale(1.02)
-
-	&:not(.active)
-		.panel-front, .panel-back
-			transition transform 500ms cubic-bezier(0.190, 1.000, 0.220, 1.000)
-
-	.panel-front
-		transform translateY(0) scale(1)
-		&:hover
-			transform translateY(flipbox-translateY) scale(1.02)
-
-	.panel-back
-		transform translateY(0) scale(1) rotateY(180deg)
-		&:hover
-			transform translateY(flipbox-translateY) scale(1.02) rotateY(180deg)
-
-	&.active
-		.panel-front, .panel-front:after, .panel-back:after
-			animation front flipbox-duration 0s 1 linear forwards
-
-		.panel-back
-			animation back flipbox-duration 0s 1 linear forwards
-
-		.panel-front:after, .panel-back:after
-			animation-name shadow
-
-		.panel-front, .panel-back, .panel-front:after, .panel-back:after
-			animation-play-state running
-
-	&.reverse
-		.panel-front
-			transform scale(1) rotateY(180deg)
-			animation-direction reverse
-
-		.panel-back
-			transform scale(1) rotateY(360deg)
-			animation-direction reverse
-			&:hover
-				transform translateY(flipbox-translateY) scale(1.02) rotateY(360deg)
-
-// :flip animation
-@keyframes back
-	0%
-		box-shadow 0 5px 9px flipbox-shadow-color
-		transform scale(1.02) rotateY(180deg) translateY(flipbox-translateY)
-	10%
-		box-shadow 0px 6.0972799999999998px 10.0972799999999998px flipbox-shadow-color
-		transform scale(1.020768) rotateY(180deg) translateY(flipbox-translateY)
-	20%
-		box-shadow 0px 9.112960000000001px 13.112960000000001px flipbox-shadow-color
-		transform scale(1.024576) rotateY(180deg) translateY(flipbox-translateY)
-	30%
-		box-shadow 0px 16.88704px 16.88704px flipbox-shadow-color
-		transform scale(1.125424) rotateY(180.17135717260666deg) translateY(flipbox-translateY)
-	40%
-		box-shadow 0px 19.90272px 19.90272px flipbox-shadow-color
-		transform scale(1.149232) rotateY(185.48342952341287deg) translateY(flipbox-translateY)
-	50%
-		box-shadow 0px 20px 20px flipbox-shadow-color
-		transform scale(1.15) rotateY(221.6397929434164deg) translateY(flipbox-translateY)
-	60%
-		box-shadow 0px 19.90272px 19.90272px flipbox-shadow-color
-		transform scale(1.149232) rotateY(318.3602070565836deg) translateY(flipbox-translateY)
-	70%
-		box-shadow 0px 16.887040000000006px 16.887040000000006px flipbox-shadow-color
-		transform scale(1.125424) rotateY(354.51657047658716deg) translateY(flipbox-translateY)
-	80%
-		box-shadow 0px 9.112959999999997px 13.112959999999997px flipbox-shadow-color
-		transform scale(1.024576) rotateY(359.8286428273933deg) translateY(flipbox-translateY)
-	90%
-		box-shadow 0px 6.0972799999999998px 10.0972799999999998px flipbox-shadow-color
-		transform scale(1.020768) rotateY(360deg) translateY(flipbox-translateY)
-	100%
-		box-shadow 0 5px 9px flipbox-shadow-color
-		transform scale(1.02) rotateY(360deg) translateY(flipbox-translateY)
-
-@keyframes front
-	0%
-		box-shadow 0 5px 9px flipbox-shadow-color
-		transform scale(1.02) rotateY(0deg) translateY(flipbox-translateY)
-	10%
-		box-shadow 0px 6.0972799999999998px 10.0972799999999998px flipbox-shadow-color
-		transform scale(1.020768) rotateY(0deg) translateY(flipbox-translateY)
-	20%
-		box-shadow 0px 9.112960000000001px 13.112960000000001px flipbox-shadow-color
-		transform scale(1.024576) rotateY(0deg) translateY(flipbox-translateY)
-	30%
-		box-shadow 0px 16.88704px 16.88704px flipbox-shadow-color
-		transform scale(1.125424) rotateY(0.17135717260665195deg) translateY(flipbox-translateY)
-	40%
-		box-shadow 0px 19.90272px 19.90272px flipbox-shadow-color
-		transform scale(1.149232) rotateY(5.4834295234128625deg) translateY(flipbox-translateY)
-	50%
-		box-shadow 0px 20px 20px flipbox-shadow-color
-		transform scale(1.15) rotateY(41.639792943416424deg) translateY(flipbox-translateY)
-	60%
-		box-shadow 0px 19.90272px 19.90272px flipbox-shadow-color
-		transform scale(1.149232) rotateY(138.36020705658356deg) translateY(flipbox-translateY)
-	70%
-		box-shadow 0px 16.887040000000006px 16.887040000000006px flipbox-shadow-color
-		transform scale(1.125424) rotateY(174.51657047658713deg) translateY(flipbox-translateY)
-	80%
-		box-shadow 0px 9.112959999999997px 13.112959999999997px flipbox-shadow-color
-		transform scale(1.024576) rotateY(179.82864282739334deg) translateY(flipbox-translateY)
-	90%
-		box-shadow 0px 6.0972799999999998px 10.0972799999999998px flipbox-shadow-color
-		transform scale(1.020768) rotateY(180deg) translateY(flipbox-translateY)
-	100%
-		box-shadow 0 5px 9px flipbox-shadow-color
-		transform scale(1.02) rotateY(180deg) translateY(flipbox-translateY)
-

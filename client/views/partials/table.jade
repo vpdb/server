@@ -1,11 +1,11 @@
-.row.ng-cloak.row-fullheight(ng-controller="TableController")
+.row.ng-cloak.row-fullheight(ng-controller="TableController", ng-hide="pageLoading")
 	.col-sm-10.col-main
 		h1 {{ table.name }}
 		h3.pull-right {{table.manufacturer}} &middot; {{table.year}}
 		hr
 		h2 Releases
 		div(ng-repeat="release in table.releases")
-			.panel.panel-dark.panel-dark-detailed
+			.panel.panel-detailed.bg-dark
 				.sidebar-wrapper
 					a.image-link(href="{{release.thumbs.playfield}}")
 						.img-wrapper
@@ -77,13 +77,13 @@
 								a(href="#") Separated link
 				.clearfix
 
-			.panel.panel-dark(ng-controller="CommentsCtrl")
+			.panel.bg-dark(ng-controller="CommentsCtrl")
 				h3 Comments on Release
 				.media(ng-repeat="comment in release.comments" ng-controller="CommentCtrl")
 					div.media-object.media-avatar-medium.pull-left(ng-hide="comment.author.avatar")
 					img.media-object.media-avatar-medium.pull-left(ng-show="comment.author.avatar", ng-src="{{comment.author.avatar}}")
 					.media-body
-						.panel.panel-light
+						.panel.panel-small.bg-lighter
 							.panel-triangle
 							.panel-header
 								label
@@ -149,7 +149,7 @@
 		.row
 			.col-md-4.col-sm-6.col-xs-6.fade-animation(ng-repeat="backglass in table.backglasses")
 				.flipbox.flipbox-backglass
-					.panel.panel-dark.panel-backglass.panel-front
+					.panel.bg-dark.panel-backglass.panel-front
 						h3
 							i.fa.fa-picture-o.space-right
 							| Direct B2S
@@ -173,7 +173,7 @@
 						.third
 							span 3
 
-					.panel.panel-dark.panel-backglass.panel-back.img.img-fullspan(style="background-image:url('{{backglass.thumb}}')")
+					.panel.bg-dark.panel-backglass.panel-back.img.img-fullspan(style="background-image:url('{{backglass.thumb}}')")
 						button.btn.btn-primary.btn-lg(ng-click="$event.stopPropagation()")
 							i.fa.fa-download.space-right
 							| Download
@@ -185,7 +185,7 @@
 
 		p
 			br
-	.col-sm-2.col-menu
+	.col-sm-2.col-menu.bg-dark
 		img.img-logo(ng-src="{{table.thumbs.logo}}")
 
 		.ratingbox(rating-avg="table.ipdb.rating")

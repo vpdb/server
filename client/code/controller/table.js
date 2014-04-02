@@ -1,6 +1,7 @@
 ctrl.controller('TableController', function($scope, $http, $routeParams, $modal, $log) {
 
 	$scope.tableId = $routeParams.id;
+	$scope.pageLoading = true;
 
 	$http({
 		method: 'GET',
@@ -32,7 +33,7 @@ ctrl.controller('TableController', function($scope, $http, $routeParams, $modal,
 				}
 			});
 		}, 0);
-
+		$scope.pageLoading = false;
 	});
 
 	$scope.requestModPermission = function(release) {

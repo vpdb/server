@@ -9,9 +9,10 @@ html(ng-app="vpdb")
 		link(rel='stylesheet', href='/css/lib/magnific-popup.css')
 		link(rel='stylesheet', href='/css/lib/nanoscroller.css')
 		link(rel='stylesheet', href='/fonts.css')
-		link(rel='stylesheet', href='/animate.css')
 		link(rel='stylesheet', href='/app.css')
-	body(ng-controller="AppCtrl")
+		link(rel='stylesheet', href='/colors.css')
+		link(rel='stylesheet', href='/animations.css')
+	body.theme-dark(ng-controller="AppCtrl")
 		block body
 
 		script(src='/lib/sockjs-0.3-min.js')

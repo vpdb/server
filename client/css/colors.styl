@@ -1,0 +1,372 @@
+color-black = black
+color-background = #211f1d
+color-darkest = rgba(255, 255, 255, 0.06)
+color-darker = rgba(255, 255, 255, 0.15)
+color-dark = rgba(255, 255, 255, 0.2)
+color-light = rgba(255, 255, 255, 0.25)
+color-lightish = rgba(255, 255, 255, 0.32)
+color-lighter = rgba(255, 255, 255, 0.5)
+color-lightest = rgba(255, 255, 255, 0.75)
+color-primary = #ec843d
+color-primary-light = #ffa364
+
+color-darkest-inv = rgba(0, 0, 0, 0.06)
+color-darker-inv = rgba(0, 0, 0, 0.15)
+color-dark-inv = rgba(0, 0, 0, 0.2)
+color-light-inv = rgba(0, 0, 0, 0.25)
+color-lightish-inv = rgba(0, 0, 0, 0.32)
+color-lighter-inv = rgba(0, 0, 0, 0.5)
+color-lightest-inv = rgba(0, 0, 0, 0.75)
+
+body
+	background-image url('images/background_outer.png')
+
+.theme-dark
+	color color-lighter
+	label
+		span
+			&.pipe
+				&:after
+					color color-light
+	textarea
+		background-color color-darkest
+	hr
+		border-color color-darker
+	a
+		color color-light
+		&:hover
+			color color-lighter
+	h1
+		color color-primary
+	h2, h3
+		color color-light
+
+
+	button.btn
+		&.btn-default, &.btn-primary
+			color color-light
+			background-color color-dark
+			&:hover
+				color color-lighter
+				background-color color-light
+				box-shadow 0 0 3px 1px rgba(0, 0, 0, 0.3)
+		&.btn-primary
+			color color-background
+			background-color color-primary
+			&:hover
+				color color-background
+				background-color color-primary-light
+				box-shadow 0 0 3px 1px rgba(0, 0, 0, 0.3)
+
+	// :table
+	table.table
+		tr > th
+			color color-primary
+		&.table-striped tr
+			&:nth-child(odd) > td
+				background-color color-darkest
+				&.nostripe
+					background-color transparent
+		&.table-selectable tr
+			&:hover
+				td
+					color color-primary
+
+	.container.container-topmost
+		background-image url('/images/background.png')
+		box-shadow 0 0 5px 1px rgba(0, 0, 0, 0.5)
+
+	// :navbar
+	.navbar-default
+		background-color rgba(26, 25, 23, 0.8)
+		border-color color-primary
+
+	.navbar-brand
+		.icon
+			&.icon-vp
+				color color-primary
+			&.icon-db
+				color color-lighter
+		a
+			&:hover
+				.icon-vp
+					color color-primary-light
+				.icon-db
+					color color-lightest
+
+	.modal-content
+		background-image url('/images/background_white.png')
+		color color-lightest-inv
+
+	// :accordion
+	accordion
+		& > .panel-group
+			& > .panel
+				background-color color-darkest
+				& > .panel-heading
+					background-color color-darkest
+					h4
+						color color-lightish
+					a:hover
+						color color-lightest
+
+	// :tabs
+	.tabbable
+		ul.nav-tabs li
+			&.active
+				a
+					color color-lighter
+					background-color rgba(255, 255, 255, 0.11)
+				.panel-triangle
+					border-color transparent #454442 transparent transparent
+			.panel-triangle
+				border-color transparent #383735 transparent transparent
+			a
+				color color-light
+				background-color color-darkest
+				&:hover
+					color color-lighter
+		.tab-content
+			background-color rgba(255, 255, 255, 0.11)
+		label.label-small
+			color color-light
+			a
+				color color-lighter
+				&:hover
+					color color-lightest
+
+
+	section.footer
+		color color-dark
+		a
+			color color-dark
+			&:hover
+				color color-light
+
+	// :selectable list
+	ul.selectable > li.selected
+		color color-primary
+
+	ul.viewtype-panel
+		li
+			&.active i
+				color #aaa
+				text-shadow 0 0 3px black
+			i
+				color color-light
+				&:hover
+					color #aaa
+					text-shadow 0 0 3px black
+
+	// :avatar
+	.media-avatar-medium, .thumbnail > img.media-avatar-medium
+		background-color color-darker
+		div.media-avatar-medium:before
+			color color-darker
+	.thumbnail.thumbnail-avatar
+		background-color transparent
+		.caption
+			h1
+				color color-lighter
+			label
+				color color-lighter
+
+	// :rating :star
+	.ratingbox
+		.ratingbox-left .ratingbox-rating.rating-user
+			color color-primary
+		.rating-user
+			.star-on
+				color color-primary
+			.star-off
+				color color-darker
+		.rating-avg
+			.star-on
+				color color-lighter
+			.star-off
+				color color-darker
+
+	// :markdown
+	.markdown
+		h1, h2
+			color color-lightest
+		h3, h4, h5
+			color color-lighter
+		a
+			color color-lighter
+			&:hover
+				color color-lightest
+		code
+			background-color color-light
+			color black
+		pre code
+			background-color transparent
+			color inherit
+		blockquote
+			border-color color-light
+		pre
+			color color-lighter
+			border-color color-darkest
+			background-color transparent
+			background-image url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI3MCIgaGVpZ2h0PSI3MCI+CjxyZWN0IHdpZHRoPSI3MCIgaGVpZ2h0PSI3MCIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjAzKSI+PC9yZWN0Pgo8ZyB0cmFuc2Zvcm09InJvdGF0ZSg0NSkiPgo8cmVjdCB3aWR0aD0iOTkiIGhlaWdodD0iMjUiIGZpbGw9InJnYmEoMCwwLDAsMC4wMykiPjwvcmVjdD4KPHJlY3QgeT0iLTUwIiB3aWR0aD0iOTkiIGhlaWdodD0iMjUiIGZpbGw9InJnYmEoMCwwLDAsMC4wMykiPjwvcmVjdD4KPC9nPgo8L3N2Zz4=")
+
+
+	::-webkit-scrollbar
+		background color-background
+	::-webkit-scrollbar-thumb
+		background color-darker
+		-webkit-box-shadow 0px 1px 2px rgba(0, 0, 0, 0.75)
+	::-webkit-scrollbar-corner
+		background color-background
+	::selection
+		color rgba(255,255,255,0.9)
+		background color-primary
+	::-moz-selection
+		color rgba(255,255,255,0.9)
+		background color-primary
+
+.bg-dark
+	background-color color-darkest
+	box-shadow 0 0 5px 1px rgba(0, 0, 0, 0.3)
+
+	textarea
+		background-color rgba(255,255,255,0.05)
+		&:focus
+			background-color rgba(255,255,255,0.08)
+
+	&.col-menu
+		background-color color-darkest
+
+	&.panel-compact, &.panel-extended
+		&:hover
+			box-shadow 0 5px 9px rgba(0,0,0,0.5)
+
+	.form-control
+		box-shadow none
+		color color-lighter
+		background-color color-darker
+		&:focus
+			box-shadow none
+
+	.input-group-addon
+		color color-light
+		background-color color-darker
+
+	.third
+		border-right-color color-darker
+
+	.nano
+		& > .nano-content
+			padding-right 10px
+		& > .nano-pane
+			background-color rgba(255, 255, 255, 0.05)
+			&  > .nano-slider
+				background-color rgba(255, 255, 255, 0.15)
+
+.bg-lighter
+	background-color color-darkest
+	.panel-triangle
+		border-color transparent #454442 transparent transparent
+	.panel-header
+		color color-lightish
+		background-color color-darkest
+		i.fa
+			color color-dark
+			&:hover
+				color color-lighter
+	.panel-content
+		color color-lightish
+	.panel-footer
+		background-color color-darkest
+		button.btn.btn-default
+			background-color rgba(0, 0, 0, 0.2)
+			color rgba(255, 255, 255, 0.2)
+			&:hover
+				background-color rgba(0, 0, 0, 0.3)
+				color rgba(255, 255, 255, 0.3)
+				box-shadow none
+
+.bg-lightest
+
+	h3
+		color color-lightish-inv
+	h4
+		color color-lighter-inv
+
+	label
+		color color-lightish-inv
+
+	.modal-header
+		background-color rgba(0,0,0,0.1)
+		box-shadow inset 0px 1px 3px 0px rgba(255,255,255,0.5)
+	.modal-footer
+		background-color rgba(0,0,0,0.1)
+
+	button.btn.btn-default
+		color rgba(255, 255, 255, 0.6)
+		background-color rgba(0, 0, 0, 0.25)
+		&:hover
+			color rgba(255, 255, 255, 0.7)
+			background-color rgba(0, 0, 0, 0.35)
+			box-shadow 0 0 10px 1px rgba(0, 0, 0, 0.1)
+
+	button.btn.btn-primary
+		color rgba(255, 255, 255, 0.7)
+		background-color rgba(0, 0, 0, 0.35)
+		&:hover
+			color rgba(255, 255, 255, 0.8)
+			background-color rgba(0, 0, 0, 0.45)
+			box-shadow 0 0 10px 1px rgba(0, 0, 0, 0.1)
+
+	.tabbable
+		ul.nav-tabs
+			li
+				&.active
+					a
+						color color-lighter-inv
+						background-color rgba(0, 0, 0, 0.11)
+				.panel-triangle
+					border-color transparent #383735 transparent transparent
+				a
+					color color-light-inv
+					background-color color-darkest-inv
+					&:hover
+						color color-lighter-inv
+		.tab-content
+			background-color rgba(0, 0, 0, 0.11)
+		label.label-small
+			color color-light-inv
+			a
+				color color-lighter-inv
+				&:hover
+					color color-lightest-inv
+
+	textarea
+		color color-lighter-inv
+		border-color color-darkest-inv
+		background-color rgba(0, 0, 0, 0.05)
+		&:focus
+			background-color rgba(0, 0, 0, 0.08)
+
+	.markdown
+		color color-lighter-inv
+		h1, h2
+			color color-lightest-inv
+		h3, h4, h5
+			color color-lighter-inv
+		a
+			color color-lighter-inv
+			&:hover
+				color color-lightest-inv
+		code
+			background-color color-light-inv
+			color black
+		blockquote
+			border-color color-light-inv
+		pre
+			color color-lighter-inv
+			border-color color-darkest-inv
+			background-color transparent
+			background-image url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI3MCIgaGVpZ2h0PSI3MCI+CjxyZWN0IHdpZHRoPSI3MCIgaGVpZ2h0PSI3MCIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjAzKSI+PC9yZWN0Pgo8ZyB0cmFuc2Zvcm09InJvdGF0ZSg0NSkiPgo8cmVjdCB3aWR0aD0iOTkiIGhlaWdodD0iMjUiIGZpbGw9InJnYmEoMCwwLDAsMC4wMykiPjwvcmVjdD4KPHJlY3QgeT0iLTUwIiB3aWR0aD0iOTkiIGhlaWdodD0iMjUiIGZpbGw9InJnYmEoMCwwLDAsMC4wMykiPjwvcmVjdD4KPC9nPgo8L3N2Zz4=")
+
+

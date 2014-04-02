@@ -122,7 +122,8 @@
 				.clearfix
 
 		h2 ROMs
-		table.table.table-striped
+		label(ng-hide="table.roms.length > 0")  No ROMs available.
+		table.table.table-striped(ng-show="table.roms.length > 0")
 			thead
 				tr
 					th Name
@@ -146,7 +147,8 @@
 							i.fa.fa-download
 
 		h2 Backglasses
-		.row
+		label(ng-hide="table.backglasses.length > 0")  No Backglasses available.
+		.row(ng-show="table.backglasses.length > 0")
 			.col-md-4.col-sm-6.col-xs-6.fade-animation(ng-repeat="backglass in table.backglasses")
 				.flipbox.flipbox-backglass
 					.panel.bg-dark.panel-backglass.panel-front

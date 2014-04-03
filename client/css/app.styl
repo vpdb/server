@@ -213,13 +213,16 @@ button.btn
 	&.btn-download
 		padding-left 100px
 		padding-right 100px
-	&.btn-media
-		width panel-sidebar-width - 40px - 2px
 	&.dropdown-toggle
 		width 40px
 	&.btn-comment
 		margin-right 15px
 		margin-bottom 15px
+.btn-group.btn-media
+	width 100%
+	& > .btn
+		padding-left 0
+		padding-right 0
 
 .btn-group
 	.btn + .btn, .btn + .btn-group, .btn-group + .btn, .btn-group + .btn-group
@@ -338,6 +341,7 @@ ul.viewtype-panel
 	height 250px
 	h3
 		margin 10px 15px 8px
+
 .flipbox-backglass
 	height 250px
 	hr

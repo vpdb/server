@@ -6,85 +6,87 @@
 		h2 Releases
 		div(ng-repeat="release in table.releases")
 			.panel.panel-detailed.bg-dark
-				.sidebar-wrapper
-					a.image-link(href="{{release.thumbs.playfield}}")
-						.img-wrapper
-							.img(style="background-image:url('{{release.thumbs.playfield}}')")
-					.ratingbox(rating-avg="release.rating", rating-votes="release.votes", ng-mouseenter="editing=true", ng-mouseleave="editing=false")
-						.ratingbox-left
-							.ratingbox-rating.rating-user(ng-show="editing") {{hoverRating | rating}}
-							.ratingbox-rating(ng-class="{ 'rating-hide' : editing }") {{release.rating | rating}}
-						.ratingbox-right
-							rating.rating-user(ng-show="editing", value="ratingUser", max="10", rating-states="states", on-hover="hoverRating = value", on-leave="hoverRating = ratingUser")
-							rating.rating-avg(ng-hide="editing", value="ratingAvg", max="10", rating-states="states", readonly="true")
-							span.votes {{release.votes}} vote{{release.votes == 1 ? '' : 's'}}
-				.data-wrapper
-					h1 {{release.title}}
-					label
-						i.icon.icon-user
-						span {{release.submitter.user}}
-					label
-						i.fa.fa-arrow-circle-up
-						time-ago(from-time="{{release.lastversion.timestamp}}")
-					label
-						i.fa.fa-arrow-circle-down
-						span {{release.lastversion.downloads}} downloads
+				.row.padder
+					.col-sm-4.col-md-3
+						a.image-link(href="{{release.thumbs.playfield}}")
+							.img-wrapper
+								img.img-responsive(ng-src="{{release.thumbs.playfield}}")
+						.ratingbox(rating-avg="release.rating", rating-votes="release.votes", ng-mouseenter="editing=true", ng-mouseleave="editing=false")
+							.ratingbox-left
+								.ratingbox-rating.rating-user(ng-show="editing") {{hoverRating | rating}}
+								.ratingbox-rating(ng-class="{ 'rating-hide' : editing }") {{release.rating | rating}}
+							.ratingbox-right
+								rating.rating-user(ng-show="editing", value="ratingUser", max="10", rating-states="states", on-hover="hoverRating = value", on-leave="hoverRating = ratingUser")
+								rating.rating-avg(ng-hide="editing", value="ratingAvg", max="10", rating-states="states", readonly="true")
+								span.votes {{release.votes}} vote{{release.votes == 1 ? '' : 's'}}
+					.col-sm-8.col-md-9
+						h1 {{release.title}}
+						label
+							i.icon.icon-user
+							span {{release.submitter.user}}
+						label
+							i.fa.fa-arrow-circle-up
+							time-ago(from-time="{{release.lastversion.timestamp}}")
+						label
+							i.fa.fa-arrow-circle-down
+							span {{release.lastversion.downloads}} downloads
 
-					accordion.accordion-glued(close-others="true")
-						accordion-group(heading="Description", is-open="true")
-							div.markdown(markdown="release.description")
+						accordion.accordion-glued(close-others="true")
+							accordion-group(heading="Description", is-open="true")
+								div.markdown(markdown="release.description")
 
-						accordion-group(heading="Authors")
-							div.thumbnail.thumbnail-avatar.pull-left(ng-repeat="author in release.authors")
-								div.media-avatar-medium(ng-hide="author.author.avatar")
-								img.media-avatar-medium(ng-show="author.author.avatar", ng-src="{{author.author.avatar}}")
-								.caption
-									h1 {{author.author.user}}
-									label {{author.roles.join(', ')}}
+							accordion-group(heading="Authors")
+								div.thumbnail.thumbnail-avatar.pull-left(ng-repeat="author in release.authors")
+									div.media-avatar-medium(ng-hide="author.author.avatar")
+									img.media-avatar-medium(ng-show="author.author.avatar", ng-src="{{author.author.avatar}}")
+									.caption
+										h1 {{author.author.user}}
+										label {{author.roles.join(', ')}}
 
-						accordion-group(heading="Acknowledgements")
-							div.markdown(markdown="release.acknowledgements")
+							accordion-group(heading="Acknowledgements")
+								div.markdown(markdown="release.acknowledgements")
 
-						accordion-group(heading="Mods")
-							p This release hasn't been modded yet.
-							hr
-							button.btn.btn-default(ng-click="requestModPermission()")
-								i.fa.fa-wrench.space-right
-								| Request Mod Permission
+							accordion-group(heading="Mods")
+								p This release hasn't been modded yet.
+								hr
+								button.btn.btn-default(ng-click="requestModPermission()")
+									i.fa.fa-wrench.space-right
+									| Request Mod Permission
 
-						accordion-group(heading="Gallery")
-							p here is the gallery
-				.padder-notop
-					button.btn.btn-primary.btn-lg.btn-download.pull-right
-						i.fa.fa-download.space-right
-						| Download
-					.btn-group
-						button.btn.btn-default.btn-lg.btn-media(type="button")
+							accordion-group(heading="Gallery")
+								p here is the gallery
+				.row.padder
+					.col-sm-4.col-md-3
+						.btn-group.btn-media
+							button.btn.btn-default.btn-lg(type="button")
+								i.fa.fa-download.space-right
+								| Media
+							button.btn.btn-default.btn-lg.dropdown-toggle(type="button", data-toggle="dropdown")
+								i.fa.fa-angle-down
+								span.sr-only Toggle Dropdown
+							ul.dropdown-menu(role="menu")
+								li
+									a(href="#")
+										i.fa.fa-download.space-right
+										| Playfied Video
+								li
+									a(href="#")
+										i.fa.fa-download.space-right
+										| Playfield Image
+								li
+									a(href="#")
+										i.fa.fa-download.space-right
+										| DMD Video
+								li.divider
+								li
+									a(href="#")
+										i.fa.fa-download.space-right
+										| All
+					.col-sm-8.col-md-9
+						button.btn.btn-primary.btn-lg.btn-download.pull-right
 							i.fa.fa-download.space-right
-							| Media
-						button.btn.btn-default.btn-lg.dropdown-toggle(type="button", data-toggle="dropdown")
-							i.fa.fa-angle-down
-							span.sr-only Toggle Dropdown
-						ul.dropdown-menu(role="menu")
-							li
-								a(href="#")
-									i.fa.fa-download.space-right
-									| Playfied Video
-							li
-								a(href="#")
-									i.fa.fa-download.space-right
-									| Playfield Image
-							li
-								a(href="#")
-									i.fa.fa-download.space-right
-									| DMD Video
-
-							li.divider
-							li
-								a(href="#")
-									i.fa.fa-download.space-right
-									| All
-				.clearfix
+							| Download
+					.clearfix
 
 			.panel.bg-dark(ng-controller="CommentsCtrl")
 				h3 Comments on Release

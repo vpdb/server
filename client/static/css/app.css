@@ -246,15 +246,19 @@ button.btn.btn-download {
   padding-left: 100px;
   padding-right: 100px;
 }
-button.btn.btn-media {
-  width: 133px;
-}
 button.btn.dropdown-toggle {
   width: 40px;
 }
 button.btn.btn-comment {
   margin-right: 15px;
   margin-bottom: 15px;
+}
+.btn-group.btn-media {
+  width: 100%;
+}
+.btn-group.btn-media > .btn {
+  padding-left: 0;
+  padding-right: 0;
 }
 .btn-group .btn + .btn,
 .btn-group .btn + .btn-group,

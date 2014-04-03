@@ -363,9 +363,10 @@ body {
   background-color: rgba(0,0,0,0.11);
 }
 .bg-lightest .tabbable label.label-small {
-  color: rgba(0,0,0,0.25);
+  color: rgba(0,0,0,0.5);
 }
 .bg-lightest .tabbable label.label-small a {
+  font-weight: 700;
   color: rgba(0,0,0,0.5);
 }
 .bg-lightest .tabbable label.label-small a:hover {

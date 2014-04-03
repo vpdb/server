@@ -162,6 +162,24 @@ label span.pipe:last-child:after {
   -ms-transition: all 350ms;
   transition: all 350ms;
 }
+.dropdown-menu {
+  -webkit-border-radius: 8px;
+  border-radius: 8px;
+}
+.dropdown-menu:after {
+  -webkit-border-radius: 8px;
+  border-radius: 8px;
+  content: "";
+  height: 100%;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 100%;
+  z-index: -1;
+}
+.dropdown-menu > li > a {
+  padding: 5px 15px;
+}
 .input-group {
   margin-bottom: 15px;
 }

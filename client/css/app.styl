@@ -145,6 +145,22 @@ label
 		top -67px
 		transition all animation-long
 
+// semi-transparent layer for dropdown
+.dropdown-menu
+	border-radius border-radius-large
+	&:after
+		border-radius border-radius-large
+		content ""
+		height 100%
+		left 0
+		position absolute
+		top 0
+		width 100%
+		z-index -1
+	& > li > a
+		padding 5px 15px
+
+
 // :input
 .input-group
 	margin-bottom 15px

@@ -81,6 +81,22 @@ body {
 .theme-dark .navbar-brand a:hover .icon-db {
   color: rgba(255,255,255,0.75);
 }
+.theme-dark .btn-group.open .dropdown-menu {
+  background-image: url("/images/background.png");
+}
+.theme-dark .btn-group.open .dropdown-menu:after {
+  background-color: rgba(255,255,255,0.26);
+}
+.theme-dark .btn-group.open .dropdown-menu > li > a {
+  color: rgba(255,255,255,0.5);
+}
+.theme-dark .btn-group.open .dropdown-menu > li > a:hover {
+  background-color: rgba(255,255,255,0.15);
+  color: rgba(255,255,255,0.75);
+}
+.theme-dark .btn-group.open .dropdown-menu .divider {
+  background-color: rgba(255,255,255,0.25);
+}
 .theme-dark .modal-content {
   background-image: url("/images/background_white.png");
   color: rgba(0,0,0,0.75);

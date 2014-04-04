@@ -225,8 +225,13 @@ button.btn
 		padding-right 0
 
 .btn-group
+	&.btn-group-flex
+		display inline-flex
+		width 100%
+
 	.btn + .btn, .btn + .btn-group, .btn-group + .btn, .btn-group + .btn-group
 		margin-left 2px
+
 
 // :view types
 ul.viewtype-panel
@@ -627,7 +632,10 @@ div.media-avatar-medium:before
 		text-align center
 		h1
 			margin-top 0
+			margin-bottom 5px
 			font-size 16px
+			font-family font-content
+			font-weight font-weight-bold
 		label
 			white-space normal
 

@@ -1,5 +1,27 @@
 .row.ng-cloak.row-fullheight(ng-controller="TableController", ng-hide="pageLoading")
-	.col-sm-10.col-main
+
+	// right column
+	.col-sm-2.col-sm-push-10.col-menu.bg-dark
+		img.img-logo(ng-src="{{table.thumbs.logo}}")
+
+		.ratingbox(rating-avg="table.ipdb.rating")
+			.ratingbox-left
+				.ratingbox-rating {{table.ipdb.rating | rating}}
+			.ratingbox-right
+				rating.rating-avg(value="ratingAvg", max="10", rating-states="states", readonly="true")
+				span.votes {{table.ipdb.votes}} vote{{table.ipdb.votes == 1 ? '' : 's'}}
+		hr
+		.ratingbox(rating-avg="$parent.table.rating", rating-votes="$parent.table.votes", ng-mouseenter="editing=true", ng-mouseleave="editing=false")
+			.ratingbox-left
+				.ratingbox-rating.rating-user(ng-show="editing") {{hoverRating | rating}}
+				.ratingbox-rating(ng-class="{ 'rating-hide' : editing }") {{$parent.table.rating | rating}}
+			.ratingbox-right
+				rating.rating-user(ng-show="editing", value="ratingUser", max="10", rating-states="states", on-hover="hoverRating = value", on-leave="hoverRating = ratingUser")
+				rating.rating-avg(ng-hide="editing", value="ratingAvg", max="10", rating-states="states", readonly="true")
+				span.votes {{$parent.table.votes}} vote{{$parent.table.votes == 1 ? '' : 's'}}
+
+	// left column (main content)
+	.col-sm-10.col-sm-pull-2.col-main
 		h1 {{ table.name }}
 		h3.pull-right {{table.manufacturer}} &middot; {{table.year}}
 		hr
@@ -57,11 +79,11 @@
 								p here is the gallery
 				.row.padder
 					.col-sm-4.col-md-3
-						.btn-group.btn-media
-							button.btn.btn-default.btn-lg(type="button")
+						.btn-group.btn-group-flex
+							button.btn.btn-default.btn-lg.col-xs-11(type="button")
 								i.fa.fa-download.space-right
 								| Media
-							button.btn.btn-default.btn-lg.dropdown-toggle(type="button", data-toggle="dropdown")
+							button.btn.btn-default.btn-lg.dropdown-toggle.col-xs-1(type="button", data-toggle="dropdown")
 								i.fa.fa-angle-down
 								span.sr-only Toggle Dropdown
 							ul.dropdown-menu(role="menu")
@@ -139,8 +161,8 @@
 				tr
 					th Name
 					th Version
-					th Language
-					th Notes
+					th.hidden-xs Language
+					th.hidden-xs Notes
 					th DLs
 					th Size
 					th
@@ -149,8 +171,8 @@
 					td
 						samp {{ rom.name }}
 					td {{ rom.version }}
-					td {{ rom.language }}
-					td {{ rom.notes }}
+					td.hidden-xs {{ rom.language }}
+					td.hidden-xs {{ rom.notes }}
 					td {{ rom.downloads }}
 					td {{ rom.size }}
 					td.nostripe.td-dlbtn
@@ -198,21 +220,3 @@
 
 		p
 			br
-	.col-sm-2.col-menu.bg-dark
-		img.img-logo(ng-src="{{table.thumbs.logo}}")
-
-		.ratingbox(rating-avg="table.ipdb.rating")
-			.ratingbox-left
-				.ratingbox-rating {{table.ipdb.rating | rating}}
-			.ratingbox-right
-				rating.rating-avg(value="ratingAvg", max="10", rating-states="states", readonly="true")
-				span.votes {{table.ipdb.votes}} vote{{table.ipdb.votes == 1 ? '' : 's'}}
-		hr
-		.ratingbox(rating-avg="$parent.table.rating", rating-votes="$parent.table.votes", ng-mouseenter="editing=true", ng-mouseleave="editing=false")
-			.ratingbox-left
-				.ratingbox-rating.rating-user(ng-show="editing") {{hoverRating | rating}}
-				.ratingbox-rating(ng-class="{ 'rating-hide' : editing }") {{$parent.table.rating | rating}}
-			.ratingbox-right
-				rating.rating-user(ng-show="editing", value="ratingUser", max="10", rating-states="states", on-hover="hoverRating = value", on-leave="hoverRating = ratingUser")
-				rating.rating-avg(ng-hide="editing", value="ratingAvg", max="10", rating-states="states", readonly="true")
-				span.votes {{$parent.table.votes}} vote{{$parent.table.votes == 1 ? '' : 's'}}

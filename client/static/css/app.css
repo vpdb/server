@@ -260,6 +260,15 @@ button.btn.btn-comment {
   padding-left: 0;
   padding-right: 0;
 }
+.btn-group.btn-group-flex {
+  display: -webkit-inline-box;
+  display: -moz-inline-box;
+  display: -webkit-inline-flex;
+  display: -ms-inline-flexbox;
+  display: inline-box;
+  display: inline-flex;
+  width: 100%;
+}
 .btn-group .btn + .btn,
 .btn-group .btn + .btn-group,
 .btn-group .btn-group + .btn,
@@ -780,7 +789,10 @@ div.media-avatar-medium:before {
 }
 .thumbnail.thumbnail-avatar .caption h1 {
   margin-top: 0;
+  margin-bottom: 5px;
   font-size: 16px;
+  font-family: 'Raleway', sans-serif;
+  font-weight: 700;
 }
 .thumbnail.thumbnail-avatar .caption label {
   white-space: normal;

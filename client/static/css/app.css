@@ -315,6 +315,13 @@ ul.viewtype-panel li i {
   -webkit-border-radius: 2px;
   border-radius: 2px;
 }
+.panel h1 {
+  margin-top: 0;
+  font-size: 28px;
+  font-family: 'Raleway', sans-serif;
+  font-weight: 700;
+  text-transform: none;
+}
 .panel h3 {
   font-size: 26px;
   font-family: langdon;

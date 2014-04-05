@@ -127,14 +127,30 @@
   -ms-transform: translateY(-2px) scale(1.02) rotateY(360deg);
   transform: translateY(-2px) scale(1.02) rotateY(360deg);
 }
+.fade-animation {
+  opacity: 1;
+  -ms-filter: none;
+  filter: none;
+}
 .fade-animation.ng-enter,
 .fade-animation.ng-leave,
-.fade-animation.ng-move {
+.fade-animation.ng-move,
+.fade-animation.ng-hide-add,
+.fade-animation.ng-hide-remove {
   -webkit-transition: 0.2s ease all;
   -moz-transition: 0.2s ease all;
   -o-transition: 0.2s ease all;
   -ms-transition: 0.2s ease all;
   transition: 0.2s ease all;
+}
+.fade-animation.ng-hide-add,
+.fade-animation.ng-hide-remove {
+  display: block !important;
+}
+.fade-animation.ng-hide {
+  opacity: 0;
+  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
+  filter: alpha(opacity=0);
 }
 .fade-animation.ng-enter {
   opacity: 0;

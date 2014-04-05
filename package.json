@@ -1,5 +1,6 @@
 {
-	"name": "application-name",
+	"name": "vpdb",
+	"description": "Visual Pinball Database",
 	"version": "0.0.1",
 	"private": true,
 	"dependencies": {
@@ -9,5 +10,8 @@
 		"nib": "*",
 		"reload": "*",
 		"underscore": "1.6.x"
+	},
+	"engines" : {
+		"node": "0.10.x"
 	}
 }

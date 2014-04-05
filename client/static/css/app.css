@@ -83,6 +83,9 @@ button.btn:active:focus {
 .padder-notop {
   padding: 0 15px 15px;
 }
+.padder-nobottom {
+  padding: 15px 15px 0 15px;
+}
 label.label-small {
   font-size: 13px;
 }
@@ -139,6 +142,10 @@ label span.pipe:after {
 }
 label span.pipe:last-child:after {
   content: '';
+}
+label.label-download {
+  padding-top: 9px;
+  margin-right: -25px;
 }
 .navbar-default {
   -webkit-transition: background-color 350ms;
@@ -241,10 +248,6 @@ button.btn.btn-xs {
 }
 button.btn.btn-xs .fa {
   font-size: 20px;
-}
-button.btn.btn-download {
-  padding-left: 100px;
-  padding-right: 100px;
 }
 button.btn.dropdown-toggle {
   width: 40px;
@@ -453,7 +456,21 @@ ul.viewtype-panel li i {
   text-align: center;
   margin: 5px 0;
 }
-.flipbox-backglass .third {
+.flipbox-backglass .morelines {
+  margin: 5px 15px;
+}
+.flipbox-backglass .backglass-description {
+  padding: 5px 5px 9px 15px;
+  height: 125px;
+  overflow: hidden;
+  position: relative;
+}
+.flipbox-backglass footer {
+  position: absolute;
+  bottom: 8px;
+  width: 100%;
+}
+.flipbox-backglass footer .third {
   width: 32%;
   display: inline-table;
   padding-top: 5px;
@@ -461,14 +478,8 @@ ul.viewtype-panel li i {
   border-right-style: solid;
   text-align: center;
 }
-.flipbox-backglass .third:last-child {
+.flipbox-backglass footer .third:last-child {
   border: none;
-}
-.flipbox-backglass .backglass-description {
-  padding: 5px 5px 9px 15px;
-  height: 125px;
-  overflow: hidden;
-  position: relative;
 }
 h1 + h3.pull-right {
   margin-top: -42px;

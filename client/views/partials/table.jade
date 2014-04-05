@@ -26,9 +26,10 @@
 		h3.pull-right {{ table.manufacturer }} &middot; {{ table.year }}
 		hr
 		h2 Releases
+		label(ng-hide="table.releases.length > 0")  No releases for this table available.
 		div(ng-repeat="release in table.releases")
 			.panel.panel-detailed.bg-dark
-				.row.padder
+				.row.padder-nobottom
 					.col-sm-4.col-md-3
 						a.image-link(href="{{ release.thumbs.playfield }}")
 							.img-wrapper
@@ -77,7 +78,7 @@
 
 							accordion-group(heading="Gallery")
 								p here is the gallery
-				.row.padder
+				.row.padder-notop
 					.col-sm-4.col-md-3
 						.btn-group.btn-group-flex
 							button.btn.btn-default.btn-lg.col-xs-11(type="button")
@@ -104,8 +105,12 @@
 									a(href="#")
 										i.fa.fa-download.space-right
 										| All
-					.col-sm-8.col-md-9
-						button.btn.btn-primary.btn-lg.btn-download.pull-right
+					.col-sm-4.col-md-4
+						label.label-download.pull-right
+							span.pipe Version {{ release.lastversion.version }}
+							span.pipe {{ release.lastversion.size | bytes }}
+					.col-sm-4.col-md-5
+						button.btn.btn-primary.btn-lg.btn-block.pull-right
 							i.fa.fa-download.space-right
 							| Download
 					.clearfix
@@ -180,7 +185,7 @@
 							i.fa.fa-download
 
 		h2 Backglasses
-		label(ng-hide="table.backglasses.length > 0")  No Backglasses available.
+		label(ng-hide="table.backglasses.length > 0")  No backglasses available.
 		.row(ng-show="table.backglasses.length > 0")
 			.col-md-4.col-sm-6.col-xs-6.fade-animation(ng-repeat="backglass in table.backglasses")
 				.flipbox.flipbox-backglass
@@ -196,17 +201,18 @@
 						.backglass-description
 							scrollable(always-visible="true")
 								markdown.markdown(markdown="backglass.description")
-						hr
-						.third
-							span
-								i.fa.fa-arrow-circle-down.space-right
-								| {{ backglass.downloads }}
-						.third
-							span
-								i.fa.fa-star.space-right
-								| {{ backglass.rating | rating }}
-						.third
-							span 3
+						footer
+							hr
+							.third
+								span
+									i.fa.fa-arrow-circle-down.space-right
+									| {{ backglass.downloads | number }}
+							.third
+								span
+									i.fa.fa-star.space-right
+									| {{ backglass.rating | rating }}
+							.third
+								span {{ backglass.size | bytes }}
 
 					.panel.bg-dark.panel-backglass.panel-back.img.img-fullspan(style="background-image:url('{{ backglass.thumb }}')")
 						button.btn.btn-primary.btn-lg(ng-click="$event.stopPropagation()")
@@ -216,7 +222,50 @@
 
 
 		h2 Media
+		label(ng-hide="table.media.length > 0")  No media available.
+		.row(ng-show="table.media.length > 0")
+			.col-md-4.col-sm-6.col-xs-6.fade-animation(ng-repeat="item in table.media")
+				.flipbox.flipbox-backglass
+					.panel.bg-dark.panel-backglass.panel-front
+						h3
+							i.fa.space-right(ng-class="{ 'fa-picture-o': item.format == 'image', 'fa-video-camera': item.format == 'video', 'fa-info-circle': item.type == 'instructioncard' }")
+							| {{ item.type | mediatype }}
+						hr
+						.oneline
+							i.icon.icon-user
+							| &nbsp;&nbsp; {{ item.author.user }}
+						hr
+						.oneline(ng-show="item.width && item.height")
+							| {{ item.width }} &times; {{ item.height }}
+						hr(ng-show="item.width && item.height")
+
+						.oneline(ng-show="item.pages")
+							| {{ item.pages.length }} pages
+						hr(ng-show="item.pages")
+						.morelines(ng-show="item.pages") {{ item.pages.join(', ') }}
+
+						footer
+							hr
+							.third
+								span
+									i.fa.fa-arrow-circle-down.space-right
+									| {{ item.downloads | number }}
+							.third
+								span
+									i.fa.fa-star.space-right
+									| {{ item.rating | rating }}
+							.third
+								span {{ item.size | bytes }}
+
+					.panel.bg-dark.panel-backglass.panel-back.img.img-fullspan(style="background-image:url('{{ item.thumb }}')")
+						button.btn.btn-primary.btn-lg(ng-click="$event.stopPropagation()")
+							i.fa.fa-download.space-right
+							| Download
+					.clearfix
+
+
 		h2 Alternative Media
+		label(ng-hide="table.secondarymedia.length > 0")  No alternative media available.
 
 		p
 			br

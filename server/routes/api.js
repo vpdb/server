@@ -278,7 +278,7 @@ var data = [
 						version: '2.1',
 						width: 1280,
 						height: 1920,
-						filesize: 3627246,
+						size: 3627246,
 						format: 'image',
 						tags: ['day', 'flasher']
 					},
@@ -289,7 +289,7 @@ var data = [
 						version: '2.1',
 						width: 1280,
 						height: 1920,
-						filesize: 843398,
+						size: 843398,
 						duration: 120,
 						format: 'video',
 						tags: ['day', 'attract mode']
@@ -337,11 +337,52 @@ var data = [
 				thumb: '/directb2s/thumbs/cc-monster-bash--williams-1998-.png'
 			}
 		],
-		media: [],
+		media: [
+			{
+				filename: 'Monster Bash (Williams 1998).png',
+				src: '/backglass/Monster Bash (Williams 1998).png',
+				thumb: '/backglass/thumb/Monster Bash (Williams 1998).png',
+				type: 'backglass',
+				author: { user: 'bitupset' },
+				width: 1280,
+				height: 1024,
+				size: 3135204,
+				format: 'image',
+				downloads: 335,
+				rating: 8.7,
+				votes: 5
+			},
+			{
+				filename: 'Monster Bash (Williams 1998).jpg',
+				src: '#',
+				thumb: '/flyer/thumb/Monster Bash (Williams 1998).jpg',
+				type: 'flyer',
+				author: { user: 'bitupset' },
+				pages: [ 'Front', 'Back' ],
+				size: 7955231,
+				format: 'image',
+				downloads: 6651,
+				rating: 8,
+				votes: 8555
+			},
+			{
+				filename: 'Monster Bash (Williams 1998).swf',
+				src: '/flyer/Monster Bash (Williams 1998).swf',
+				thumb: '/flyer/Monster Bash (Williams 1998).swf',
+				type: 'instructioncard',
+				author: { user: 'bitupset' },
+				size: 174729,
+				format: 'swf',
+				downloads: 112,
+				rating: 8.8,
+				votes: 65
+			}
+		],
 
 		// easy access fields
 		thumbs: {
-			logo: '/logo/mb.png'
+			logo: '/logo/mb.png',
+			backglass: '/backglass/thumb/Monster Bash (Williams 1998).png'
 		}
 	},
 	{

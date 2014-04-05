@@ -2,56 +2,56 @@
 
 	// right column
 	.col-sm-2.col-sm-push-10.col-menu.bg-dark
-		img.img-logo(ng-src="{{table.thumbs.logo}}")
+		img.img-logo(ng-src="{{ table.thumbs.logo }}")
 
 		.ratingbox(rating-avg="table.ipdb.rating")
 			.ratingbox-left
-				.ratingbox-rating {{table.ipdb.rating | rating}}
+				.ratingbox-rating {{ table.ipdb.rating | rating }}
 			.ratingbox-right
 				rating.rating-avg(value="ratingAvg", max="10", rating-states="states", readonly="true")
-				span.votes {{table.ipdb.votes}} vote{{table.ipdb.votes == 1 ? '' : 's'}}
+				span.votes {{ table.ipdb.votes | number }} vote{{ table.ipdb.votes == 1 ? '' : 's' }}
 		hr
 		.ratingbox(rating-avg="$parent.table.rating", rating-votes="$parent.table.votes", ng-mouseenter="editing=true", ng-mouseleave="editing=false")
 			.ratingbox-left
-				.ratingbox-rating.rating-user(ng-show="editing") {{hoverRating | rating}}
-				.ratingbox-rating(ng-class="{ 'rating-hide' : editing }") {{$parent.table.rating | rating}}
+				.ratingbox-rating.rating-user(ng-show="editing") {{ hoverRating | rating }}
+				.ratingbox-rating(ng-class="{ 'rating-hide' : editing }") {{ $parent.table.rating | rating }}
 			.ratingbox-right
 				rating.rating-user(ng-show="editing", value="ratingUser", max="10", rating-states="states", on-hover="hoverRating = value", on-leave="hoverRating = ratingUser")
 				rating.rating-avg(ng-hide="editing", value="ratingAvg", max="10", rating-states="states", readonly="true")
-				span.votes {{$parent.table.votes}} vote{{$parent.table.votes == 1 ? '' : 's'}}
+				span.votes {{ $parent.table.votes | number }} vote{{ $parent.table.votes == 1 ? '' : 's' }}
 
 	// left column (main content)
 	.col-sm-10.col-sm-pull-2.col-main
 		h1 {{ table.name }}
-		h3.pull-right {{table.manufacturer}} &middot; {{table.year}}
+		h3.pull-right {{ table.manufacturer }} &middot; {{ table.year }}
 		hr
 		h2 Releases
 		div(ng-repeat="release in table.releases")
 			.panel.panel-detailed.bg-dark
 				.row.padder
 					.col-sm-4.col-md-3
-						a.image-link(href="{{release.thumbs.playfield}}")
+						a.image-link(href="{{ release.thumbs.playfield }}")
 							.img-wrapper
-								img.img-responsive(ng-src="{{release.thumbs.playfield}}")
+								img.img-responsive(ng-src="{{ release.thumbs.playfield }}")
 						.ratingbox(rating-avg="release.rating", rating-votes="release.votes", ng-mouseenter="editing=true", ng-mouseleave="editing=false")
 							.ratingbox-left
-								.ratingbox-rating.rating-user(ng-show="editing") {{hoverRating | rating}}
-								.ratingbox-rating(ng-class="{ 'rating-hide' : editing }") {{release.rating | rating}}
+								.ratingbox-rating.rating-user(ng-show="editing") {{ hoverRating | rating }}
+								.ratingbox-rating(ng-class="{ 'rating-hide' : editing }") {{ release.rating | rating }}
 							.ratingbox-right
 								rating.rating-user(ng-show="editing", value="ratingUser", max="10", rating-states="states", on-hover="hoverRating = value", on-leave="hoverRating = ratingUser")
 								rating.rating-avg(ng-hide="editing", value="ratingAvg", max="10", rating-states="states", readonly="true")
-								span.votes {{release.votes}} vote{{release.votes == 1 ? '' : 's'}}
+								span.votes {{ release.votes | number }} vote{{ release.votes == 1 ? '' : 's' }}
 					.col-sm-8.col-md-9
-						h1 {{release.title}}
+						h1 {{ release.title }}
 						label
 							i.icon.icon-user
-							span {{release.submitter.user}}
+							span {{ release.submitter.user }}
 						label
 							i.fa.fa-arrow-circle-up
-							time-ago(from-time="{{release.lastversion.timestamp}}")
+							time-ago(from-time="{{ release.lastversion.timestamp }}")
 						label
 							i.fa.fa-arrow-circle-down
-							span {{release.lastversion.downloads}} downloads
+							span {{ release.lastversion.downloads | number }} downloads
 
 						accordion.accordion-glued(close-others="true")
 							accordion-group(heading="Description", is-open="true")
@@ -60,10 +60,10 @@
 							accordion-group(heading="Authors")
 								div.thumbnail.thumbnail-avatar.pull-left(ng-repeat="author in release.authors")
 									div.media-avatar-medium(ng-hide="author.author.avatar")
-									img.media-avatar-medium(ng-show="author.author.avatar", ng-src="{{author.author.avatar}}")
+									img.media-avatar-medium(ng-show="author.author.avatar", ng-src="{{ author.author.avatar }}")
 									.caption
-										h1 {{author.author.user}}
-										label {{author.roles.join(', ')}}
+										h1 {{ author.author.user }}
+										label {{ author.roles.join(', ') }}
 
 							accordion-group(heading="Acknowledgements")
 								div.markdown(markdown="release.acknowledgements")
@@ -114,7 +114,7 @@
 				h3 Comments on Release
 				.media(ng-repeat="comment in release.comments" ng-controller="CommentCtrl")
 					div.media-object.media-avatar-medium.pull-left(ng-hide="comment.author.avatar")
-					img.media-object.media-avatar-medium.pull-left(ng-show="comment.author.avatar", ng-src="{{comment.author.avatar}}")
+					img.media-object.media-avatar-medium.pull-left(ng-show="comment.author.avatar", ng-src="{{ comment.author.avatar }}")
 					.media-body
 						.panel.panel-small.bg-lighter
 							.panel-triangle
@@ -122,7 +122,7 @@
 								label
 								strong {{ comment.author.user }}
 								| &nbsp;commented
-								time-ago(from-time="{{comment.timestamp}}")
+								time-ago(from-time="{{ comment.timestamp }}")
 								.pull-right
 									i.fa.fa-pencil(ng-click="editComment()")
 									i.fa.fa-times-circle(ng-click="deleteComment()")
@@ -173,8 +173,8 @@
 					td {{ rom.version }}
 					td.hidden-xs {{ rom.language }}
 					td.hidden-xs {{ rom.notes }}
-					td {{ rom.downloads }}
-					td {{ rom.size }}
+					td {{ rom.downloads | number }}
+					td {{ rom.size | bytes }}
 					td.nostripe.td-dlbtn
 						button.btn.btn-primary.btn-xs
 							i.fa.fa-download
@@ -191,7 +191,7 @@
 						hr
 						.oneline
 							i.icon.icon-user
-							| &nbsp;&nbsp; {{backglass.author.user}}
+							| &nbsp;&nbsp; {{ backglass.author.user }}
 						hr
 						.backglass-description
 							scrollable(always-visible="true")
@@ -208,7 +208,7 @@
 						.third
 							span 3
 
-					.panel.bg-dark.panel-backglass.panel-back.img.img-fullspan(style="background-image:url('{{backglass.thumb}}')")
+					.panel.bg-dark.panel-backglass.panel-back.img.img-fullspan(style="background-image:url('{{ backglass.thumb }}')")
 						button.btn.btn-primary.btn-lg(ng-click="$event.stopPropagation()")
 							i.fa.fa-download.space-right
 							| Download

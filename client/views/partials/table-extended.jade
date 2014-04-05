@@ -1,31 +1,31 @@
 .col-xs-12.fade-animation(ng-repeat="table in tables", ng-click="details(table.id)")
 	.panel.panel-dark.panel-extended.bg-dark
 		.img-wrapper
-			.img(style="background-image:url('{{table.art.backglass_thumb}}')")
+			.img(style="background-image:url('{{ table.art.backglass_thumb }}')")
 		.data-wrapper
-			h3 {{table.name}}
-			label {{table.manufacturer}} &middot; {{table.year}}
+			h3 {{ table.name }}
+			label {{ table.manufacturer }} &middot; {{ table.year }}
 			label.block
 				span(ng-repeat="author in table.authors")
 					i.icon.icon-user
-					| {{author}}
+					| {{ author}}
 			label
 				i.fa.fa-arrow-circle-down
-				span.pipe {{table.tabledownloads}}
+				span.pipe {{ table.tabledownloads | number }}
 				i.fa.fa-eye
-				span.pipe {{table.views}}
+				span.pipe {{ table.views | number }}
 				i.fa.fa-comment
-				span.pipe {{table.comments}}
+				span.pipe {{ table.comments | number }}
 
 			label.pull-right
 				i.fa.fa-arrow-circle-up
-				time-ago(from-time="{{table.lastrelease}}")
+				time-ago(from-time="{{ table.lastrelease }}")
 
 			.ratingbox(rating-avg="table.rating")
 				.ratingbox-left
-					.ratingbox-rating {{table.rating | rating}}
+					.ratingbox-rating {{ table.rating | rating }}
 				.ratingbox-right
 					rating.rating-avg(value="ratingAvg", max="10", rating-states="states", readonly="true")
-					span.votes {{table.votes}} vote{{table.votes == 1 ? '' : 's'}}
+					span.votes {{ table.votes | number }} vote{{ table.votes == 1 ? '' : 's' }}
 
 		.clearfix

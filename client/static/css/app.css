@@ -760,6 +760,23 @@ section.footer a {
   -webkit-border-radius: 0 0 2px 2px;
   border-radius: 0 0 2px 2px;
 }
+img.fade-after-load,
+.img.fade-after-load {
+  opacity: 0;
+  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
+  filter: alpha(opacity=0);
+  -webkit-transition: opacity 150ms;
+  -moz-transition: opacity 150ms;
+  -o-transition: opacity 150ms;
+  -ms-transition: opacity 150ms;
+  transition: opacity 150ms;
+}
+img.fade-after-load.loaded,
+.img.fade-after-load.loaded {
+  opacity: 1;
+  -ms-filter: none;
+  filter: none;
+}
 .media-avatar-medium,
 .thumbnail > img.media-avatar-medium {
   width: 64px;

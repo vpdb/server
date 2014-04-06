@@ -19,6 +19,10 @@
 				rating.rating-user(ng-show="editing", value="ratingUser", max="10", rating-states="states", on-hover="hoverRating = value", on-leave="hoverRating = ratingUser")
 				rating.rating-avg(ng-hide="editing", value="ratingAvg", max="10", rating-states="states", readonly="true")
 				span.votes {{ $parent.table.votes | number }} vote{{ $parent.table.votes == 1 ? '' : 's' }}
+		hr
+		button.btn.btn-default.btn-block
+			i.fa.fa-star.space-right
+			| Follow
 
 	// left column (main content)
 	.col-sm-10.col-sm-pull-2.col-main
@@ -33,7 +37,7 @@
 					.col-sm-4.col-md-3
 						a.image-link(href="{{ release.thumbs.playfield }}")
 							.img-wrapper
-								img.img-responsive(ng-src="{{ release.thumbs.playfield }}")
+								img.img-responsive.fade-after-load(ng-src="{{ release.thumbs.playfield }}")
 						.ratingbox(rating-avg="release.rating", rating-votes="release.votes", ng-mouseenter="editing=true", ng-mouseleave="editing=false")
 							.ratingbox-left
 								.ratingbox-rating.rating-user(ng-show="editing") {{ hoverRating | rating }}

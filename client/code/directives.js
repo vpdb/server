@@ -115,3 +115,18 @@ directives.directive('markdown', function($sanitize) {
 		}
 	};
 });
+
+directives.directive('fadeAfterLoad', function() {
+	return {
+		restrict: 'C',
+		link: function(scope, element, attrs) {
+			element.waitForImages({
+				each: function() {
+					var that = $(this);
+					that.addClass('loaded');
+				},
+				waitForAll: true
+			});
+		}
+	};
+});

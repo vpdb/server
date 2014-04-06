@@ -612,6 +612,14 @@ section.footer
 		position absolute
 		border-radius 0 0 border-radius-small border-radius-small
 
+img, .img
+	&.fade-after-load
+		opacity 0
+		transition opacity 150ms
+		&.loaded
+			opacity 1
+
+
 // :avatar
 .media-avatar-medium, .thumbnail > img.media-avatar-medium
 	width 64px

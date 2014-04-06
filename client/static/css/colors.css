@@ -26,6 +26,10 @@ body {
 .theme-dark h3 {
   color: rgba(255,255,255,0.25);
 }
+.theme-dark img,
+.theme-dark .img {
+  background-color: rgba(255,255,255,0.06);
+}
 .theme-dark button.btn.btn-default,
 .theme-dark button.btn.btn-primary {
   color: rgba(255,255,255,0.25);

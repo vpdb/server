@@ -20,6 +20,7 @@ body {
 .col-main {
   padding-left: 30px;
   padding-right: 30px;
+  position: relative;
 }
 .col-menu {
   padding-bottom: 25px;
@@ -86,11 +87,33 @@ button.btn:active:focus {
 .padder-nobottom {
   padding: 15px 15px 0 15px;
 }
+.padder-bottom-2x {
+  padding-bottom: 30px;
+}
 label.label-small {
   font-size: 13px;
 }
 label.label-message {
   margin: 15px 0 0 10px;
+}
+label.label-name {
+  text-transform: uppercase;
+  margin-bottom: 0;
+}
+label.label-value {
+  font-weight: 700;
+  margin-top: 0;
+}
+dl.oneline {
+  width: 100%;
+}
+dl.oneline dt {
+  float: left;
+  font-weight: 400;
+  text-transform: uppercase;
+}
+dl.oneline dd {
+  text-align: right;
 }
 h1 {
   font-family: langdon;
@@ -442,6 +465,9 @@ ul.viewtype-panel li i {
 }
 .panel.panel-backglass h3 {
   margin: 10px 15px 8px;
+}
+.panel.panel-backglass.panel-back {
+  border: 1px solid #000;
 }
 .flipbox-backglass {
   height: 250px;

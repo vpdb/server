@@ -1,16 +1,9 @@
 .row.ng-cloak.row-fullheight.fade-animation(ng-controller="TableController", ng-show="!pageLoading")
 
 	// right column
-	.col-sm-2.col-sm-push-10.col-menu.bg-dark
+	.col-sm-2.col-sm-push-10.col-menu.bg-dark.text-center
 		img.img-logo(ng-src="{{ table.thumbs.logo }}")
 
-		.ratingbox(rating-avg="table.ipdb.rating")
-			.ratingbox-left
-				.ratingbox-rating {{ table.ipdb.rating | rating }}
-			.ratingbox-right
-				rating.rating-avg(value="ratingAvg", max="10", rating-states="states", readonly="true")
-				span.votes {{ table.ipdb.votes | number }} vote{{ table.ipdb.votes == 1 ? '' : 's' }}
-		hr
 		.ratingbox(rating-avg="$parent.table.rating", rating-votes="$parent.table.votes", ng-mouseenter="editing=true", ng-mouseleave="editing=false")
 			.ratingbox-left
 				.ratingbox-rating.rating-user(ng-show="editing") {{ hoverRating | rating }}
@@ -20,6 +13,33 @@
 				rating.rating-avg(ng-hide="editing", value="ratingAvg", max="10", rating-states="states", readonly="true")
 				span.votes {{ $parent.table.votes | number }} vote{{ $parent.table.votes == 1 ? '' : 's' }}
 		hr
+
+		label(ng-show="table.gametype") {{ table.gametype | gametype }}
+		label(ng-show="table.units") {{ table.units | number }} units sold
+		hr(ng-show="table.gametype || table.units")
+
+		label.label-name(ng-show="table.gamedesign") Game Design
+		label.label-value(ng-show="table.gamedesign") {{ table.gamedesign.join(', ') }}
+		hr(ng-show="table.gamedesign")
+
+		label.label-name(ng-show="table.artdesign") Art Design
+		label.label-value(ng-show="table.artdesign")  {{ table.artdesign.join(', ') }}
+		hr(ng-show="table.artdesign")
+
+		label.label-name(ng-show="table.ipdb")
+			a(href="http://www.ipdb.org/machine.cgi?id={{ table.ipdb.no  }}", target="_blank")
+				span.space-right
+					strong IPDB
+				i.fa.fa-external-link
+		dl.oneline(ng-show="table.ipdb.rating")
+			dt Rating
+			dd(title="{{ table.ipdb.votes | number }} vote{{ table.ipdb.votes == 1 ? '' : 's' }}")
+				strong {{ table.ipdb.rating }}
+			dt(ng-show="table.ipdb.top300") Top 300
+			dd(ng-show="table.ipdb.top300") rank <strong>{{ table.ipdb.top300 }}</strong>
+
+		hr(ng-show="table.ipdb")
+		
 		button.btn.btn-default.btn-block
 			i.fa.fa-star.space-right
 			| Follow
@@ -95,15 +115,11 @@
 								li
 									a(href="#")
 										i.fa.fa-download.space-right
-										| Playfied Video
+										| Playfield Video
 								li
 									a(href="#")
 										i.fa.fa-download.space-right
 										| Playfield Image
-								li
-									a(href="#")
-										i.fa.fa-download.space-right
-										| DMD Video
 								li.divider
 								li
 									a(href="#")
@@ -226,9 +242,12 @@
 
 
 		h2 Media
+			button(ng-show="table.media.length > 0").btn.btn-primary.pull-right
+				i.fa.fa-download.space-right
+				| Download Pack
 		label(ng-hide="table.media.length > 0")  No media available.
 		.row(ng-show="table.media.length > 0")
-			.col-md-4.col-sm-6.col-xs-6.fade-animation(ng-repeat="item in table.media")
+			.col-md-4.col-sm-6.col-xs-6.fade-animation.padder-bottom-2x(ng-repeat="item in table.media")
 				.flipbox.flipbox-backglass
 					.panel.bg-dark.panel-backglass.panel-front
 						h3
@@ -246,6 +265,11 @@
 						.oneline(ng-show="item.pages")
 							| {{ item.pages.length }} pages
 						hr(ng-show="item.pages")
+
+						.oneline(ng-show="item.duration")
+							| {{ item.duration }} seconds
+						hr(ng-show="item.duration")
+
 						.morelines(ng-show="item.pages") {{ item.pages.join(', ') }}
 
 						footer

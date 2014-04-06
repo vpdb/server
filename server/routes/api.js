@@ -11,7 +11,12 @@ var data = [
 		name: 'Attack from Mars',
 		manufacturer: 'Midway',
 		year: 1995,
-		ipdbno: 3781,
+		ipdb: {
+			no: 3781,
+			rating: 8.1,
+			votes: 231,
+			top300: 11
+		},
 		rating: 8.2,
 		votes: 18,
 		views: 768,
@@ -76,7 +81,7 @@ var data = [
 							avatar: '/avatars/freezy.jpg'
 						},
 						timestamp: '2014-03-23T23:45:20Z',
-						message: '# Markdown test\n\nA list:\n\n* first item\n* second item\n\nAnd here a quote:\n\n> Geee!\n\n## A Second Title\n\nWith a numerated list:\n\n1. Count\n2. To\n3. Three!\n\nYou can also use [links](http://pind.ch/) and references to people (hi @freezy@).\n\nAlso code is possible:\n\n    for (var i; i < 10; i++) {\n        print "You\'re awesome!";\n    }\n\nYou can also refer external images:\n\n![](http://i.imgur.com/hReEn.png)\n\nOf course you can also type in **bold** or *italic*.\n'
+						message: '# Markdown test\n\nA list:\n\n* first item\n* second item\n\nAnd here a quote:\n\n> Geee!\n\n## A Second Title\n\nWith a numerated list:\n\n1. Count\n2. To\n3. Three!\n\nYou can also use [links](http://pind.ch/) and references to people (hi @freezy).\n\nAlso code is possible:\n\n    for (var i; i < 10; i++) {\n        print "You\'re awesome!";\n    }\n\nYou can also refer external images:\n\n![](http://i.imgur.com/hReEn.png)\n\nOf course you can also type in **bold** or *italic*.\n'
 					}
 				],
 				media: [
@@ -205,8 +210,13 @@ var data = [
 		ipdb: {
 			no: 4441,
 			rating: 8.4,
-			votes: 221
+			votes: 221,
+			top300: 3
 		},
+		units: 3361,
+		gamedesign: [ 'George Gomez' ],
+		artdesign: [ 'Kevin O\'Connor'],
+		gametype: 'ss',
 		rating: 8.8,
 		votes: 21,
 		views: 7615,
@@ -367,8 +377,8 @@ var data = [
 			},
 			{
 				filename: 'Monster Bash (Williams 1998).swf',
-				src: '/flyer/Monster Bash (Williams 1998).swf',
-				thumb: '/flyer/Monster Bash (Williams 1998).swf',
+				src: '/instructioncard/Monster Bash (Williams 1998).swf',
+				thumb: '/instructioncard/thumb/Monster Bash (Williams 1998).png',
 				type: 'instructioncard',
 				author: { user: 'bitupset' },
 				size: 174729,
@@ -376,6 +386,21 @@ var data = [
 				downloads: 112,
 				rating: 8.8,
 				votes: 65
+			},
+			{
+				filename: 'Monster Bash (Williams 1998).png',
+				src: '#',
+				thumb: '/backglass/thumb/Monster Bash (Williams 1998).png',
+				type: 'backglass',
+				author: { user: 'bitupset' },
+				width: 1280,
+				height: 1024,
+				duration: 120,
+				size: 92349945,
+				format: 'video',
+				downloads: 210,
+				rating: 8.5,
+				votes: 2
 			}
 		],
 

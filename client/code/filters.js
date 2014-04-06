@@ -48,3 +48,18 @@ filters.filter('mediatype', function() {
 		}
 	}
 });
+
+filters.filter('gametype', function() {
+	return function(type) {
+		switch (type) {
+			case 'ss':
+				return 'Solid-State Game';
+			case 'em':
+				return 'Electro-Mechanical Game';
+			case 'og':
+				return 'Original Game';
+			default:
+				return type;
+		}
+	}
+});

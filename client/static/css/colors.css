@@ -7,6 +7,12 @@ body {
 .theme-dark label span.pipe:after {
   color: rgba(255,255,255,0.25);
 }
+.theme-dark label.label-name a {
+  color: rgba(255,255,255,0.5);
+}
+.theme-dark label.label-name a:hover {
+  color: rgba(255,255,255,0.75);
+}
 .theme-dark textarea {
   background-color: rgba(255,255,255,0.06);
 }
@@ -26,8 +32,8 @@ body {
 .theme-dark h3 {
   color: rgba(255,255,255,0.25);
 }
-.theme-dark img,
-.theme-dark .img {
+.theme-dark img.fade-after-load,
+.theme-dark .img.fade-after-load {
   background-color: rgba(255,255,255,0.06);
 }
 .theme-dark button.btn.btn-default,
@@ -253,8 +259,6 @@ body {
 }
 .bg-dark {
   background-color: rgba(255,255,255,0.06);
-  -webkit-box-shadow: 0 0 5px 1px rgba(0,0,0,0.3);
-  box-shadow: 0 0 5px 1px rgba(0,0,0,0.3);
 }
 .bg-dark textarea {
   background-color: rgba(255,255,255,0.05);
@@ -264,6 +268,10 @@ body {
 }
 .bg-dark.col-menu {
   background-color: rgba(255,255,255,0.06);
+}
+.bg-dark.panel {
+  -webkit-box-shadow: 0 0 5px 1px rgba(0,0,0,0.3);
+  box-shadow: 0 0 5px 1px rgba(0,0,0,0.3);
 }
 .bg-dark.panel-compact:hover,
 .bg-dark.panel-extended:hover {

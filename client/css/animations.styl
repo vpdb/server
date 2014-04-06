@@ -155,6 +155,36 @@ flipbox-duration = 650ms
 		&.ng-move-active
 			opacity 1
 
+
+
+.mfp-fade
+	&.mfp-bg
+		opacity 0
+		transition all 0.3s ease-out
+
+	/* overlay animate in */
+	&.mfp-bg.mfp-ready
+		opacity 0.8
+
+	/* overlay animate out */
+	&.mfp-bg.mfp-removing
+		opacity 0
+
+	/* content at start */
+	&.mfp-wrap
+		.mfp-content
+			opacity 0
+			transition all 0.3s ease-out
+
+		/* content animate it */
+		&.mfp-ready .mfp-content
+			opacity 1
+
+		/* content animate out */
+		&.mfp-removing .mfp-content
+			opacity 0
+
+
 .mfp-with-zoom
 	.mfp-container, &.mfp-bg
 		opacity 0

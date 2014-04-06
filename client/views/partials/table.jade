@@ -1,7 +1,7 @@
 .row.ng-cloak.row-fullheight.fade-animation(ng-controller="TableController", ng-show="!pageLoading")
 
 	// right column
-	.col-sm-2.col-sm-push-10.col-menu.bg-dark.text-center
+	.col-sm-3.col-sm-push-9.col-lg-2.col-lg-push-10.col-menu.bg-dark.text-center
 		img.img-logo(ng-src="{{ table.thumbs.logo }}")
 
 		.ratingbox(rating-avg="$parent.table.rating", rating-votes="$parent.table.votes", ng-mouseenter="editing=true", ng-mouseleave="editing=false")
@@ -39,13 +39,13 @@
 			dd(ng-show="table.ipdb.top300") rank <strong>{{ table.ipdb.top300 }}</strong>
 
 		hr(ng-show="table.ipdb")
-		
+
 		button.btn.btn-default.btn-block
 			i.fa.fa-star.space-right
 			| Follow
 
 	// left column (main content)
-	.col-sm-10.col-sm-pull-2.col-main
+	.col-sm-9.col-sm-pull-3.col-lg-10.col-lg-pull-2.col-main
 		h1 {{ table.name }}
 		h3.pull-right {{ table.manufacturer }} &middot; {{ table.year }}
 		hr
@@ -57,7 +57,7 @@
 					.col-sm-4.col-md-3
 						a.image-link(href="{{ release.thumbs.playfield }}")
 							.img-wrapper
-								img.img-responsive.fade-after-load(ng-src="{{ release.thumbs.playfield }}")
+								img.img-responsive(ng-src="{{ release.thumbs.playfield }}")
 						.ratingbox(rating-avg="release.rating", rating-votes="release.votes", ng-mouseenter="editing=true", ng-mouseleave="editing=false")
 							.ratingbox-left
 								.ratingbox-rating.rating-user(ng-show="editing") {{ hoverRating | rating }}

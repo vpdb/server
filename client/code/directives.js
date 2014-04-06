@@ -4,12 +4,6 @@
 
 var directives = angular.module('vpdb.directives', []);
 
-directives.directive('appVersion', function(version) {
-	return function(scope, elm, attrs) {
-		elm.text(version);
-	};
-});
-
 directives.directive('ratingbox', function($parse) {
 	return {
 		restrict: 'C',

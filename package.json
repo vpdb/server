@@ -1,14 +1,14 @@
 {
 	"name": "vpdb",
-	"description": "Visual Pinball Database	",
+	"description": "Visual Pinball Database",
 	"mod-project-name": "vpdb",
 	"version": "0.0.1",
 	"private": true,
 	"dependencies": {
 		"express": "3.5.x",
 		"jade": "*",
-	 	"stylus": "*",
-		"nib": "*",
+	 	"stylus": "0.42.3",
+		"nib": "1.0.2",
 		"reload": "*",
 		"underscore": "1.6.x"
 	},

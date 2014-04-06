@@ -75,7 +75,7 @@ tables.
 
 ## Credits
 
-To Muskuste. He gave the community such a nice momentum and I thought I could add a little bit to it.
+To Mukuste. He gave the community such a nice momentum and I thought I could add a little bit to it.
 
 ## License
 

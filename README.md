@@ -47,13 +47,13 @@ we make prominent use of the available media, while giving the user the possibil
 as well.
 
 The interface is simple, clear and to the point. Downloads start with one click. There are subtle animations for most
-actions or view transitions. Browsing should be a smooth and very pleasing experience.
+actions or view transitions. Browsing should be a smooth and pleasing experience.
 
 ## Technology Stack
 
 Server side runs on Node.js with Express, Stylus and Jade. Client uses AngularJS.
 
-## Installation Instructions
+## Installation
 
 Install Node.js and git, then open a command line and type:
 
@@ -76,3 +76,7 @@ tables.
 ## Credits
 
 To Muskuste. He gave the community such a nice momentum and I thought I could add a little bit to it.
+
+## License
+
+GPLv2, see LICENSE.

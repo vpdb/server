@@ -13,6 +13,10 @@ body {
 .theme-dark label.label-name a:hover {
   color: rgba(255,255,255,0.75);
 }
+.theme-dark label.label-version {
+  background-color: rgba(255,255,255,0.5);
+  color: #000;
+}
 .theme-dark textarea {
   background-color: rgba(255,255,255,0.06);
 }

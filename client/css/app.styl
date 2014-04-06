@@ -1,5 +1,6 @@
 font-header = langdon
 font-content = 'Raleway', sans-serif
+font-code = Menlo,Monaco,Consolas,'Courier New',monospace;
 
 border-radius-small = 2px
 border-radius-large = 8px
@@ -101,6 +102,14 @@ label
 	&.label-value
 		font-weight font-weight-bold
 		margin-top 0
+	&.label-version
+		font-family font-code
+		font-weight bold
+		border-radius 4px
+		padding 0 5px
+		margin-bottom -6px
+		margin-left 4px
+
 dl.oneline
 	width 100%
 	dt
@@ -126,6 +135,9 @@ h3
 	font-size 28px
 	font-family font-header
 	text-transform uppercase
+
+h4 .small
+	font-size 16px
 
 // :hr
 hr
@@ -232,6 +244,9 @@ button.btn
 		line-height 1
 		.fa
 			font-size 20px
+		&.btn-default .fa
+			font-size 18px
+
 	&.dropdown-toggle
 		width 40px
 	&.btn-comment

@@ -104,6 +104,15 @@ label.label-value {
   font-weight: 700;
   margin-top: 0;
 }
+label.label-version {
+  font-family: Menlo, Monaco, Consolas, 'Courier New', monospace;
+  font-weight: bold;
+  -webkit-border-radius: 4px;
+  border-radius: 4px;
+  padding: 0 5px;
+  margin-bottom: -6px;
+  margin-left: 4px;
+}
 dl.oneline {
   width: 100%;
 }
@@ -133,6 +142,9 @@ h3 {
   font-size: 28px;
   font-family: langdon;
   text-transform: uppercase;
+}
+h4 .small {
+  font-size: 16px;
 }
 hr {
   margin-top: 10px;
@@ -271,6 +283,9 @@ button.btn.btn-xs {
 }
 button.btn.btn-xs .fa {
   font-size: 20px;
+}
+button.btn.btn-xs.btn-default .fa {
+  font-size: 18px;
 }
 button.btn.dropdown-toggle {
   width: 40px;

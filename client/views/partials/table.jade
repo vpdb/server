@@ -93,6 +93,18 @@
 							accordion-group(heading="Acknowledgements")
 								div.markdown(markdown="release.acknowledgements")
 
+							accordion-group(heading="Changelog")
+								div(ng-repeat="version in release.versions")
+									h4
+										| Version
+										label.label-version {{ version.version }}
+										.pull-right
+											time-ago.small.space-right(from-time="{{ version.timestamp }}")
+											button.btn.btn-default.btn-xs(title="{{ version.size | bytes }}")
+												i.fa.fa-download
+									hr
+									div.markdown(markdown="version.changes")
+
 							accordion-group(heading="Mods")
 								p This release hasn't been modded yet.
 								hr
@@ -127,7 +139,9 @@
 										| All
 					.col-sm-4.col-md-4
 						label.label-download.pull-right
-							span.pipe Version {{ release.lastversion.version }}
+							span.pipe
+								| Version
+								label.label-version {{ release.lastversion.version }}
 							span.pipe {{ release.lastversion.size | bytes }}
 					.col-sm-4.col-md-5
 						button.btn.btn-primary.btn-lg.btn-block.pull-right

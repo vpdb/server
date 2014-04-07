@@ -168,8 +168,13 @@ body
 				color color-light
 
 	// :selectable list
-	ul.selectable > li.selected
-		color color-primary
+	ul.selectable > li
+		&:hover
+			color color-lightest
+		&.selected
+			color color-primary
+			&:hover
+				color color-primary-light
 
 	ul.viewtype-panel
 		li

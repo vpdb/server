@@ -617,6 +617,12 @@ ul.selectable {
 }
 ul.selectable > li {
   list-style-type: none;
+  -webkit-transition: all 100ms;
+  -moz-transition: all 100ms;
+  -o-transition: all 100ms;
+  -ms-transition: all 100ms;
+  transition: all 100ms;
+  cursor: pointer;
 }
 ul.selectable > li.selected {
   font-weight: 700;

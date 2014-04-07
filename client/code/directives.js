@@ -148,3 +148,29 @@ directives.directive('filterManufacturer', function() {
 		}
 	};
 });
+
+directives.directive('sort', function() {
+	return {
+		restrict: 'A',
+		link: function(scope, element, attrs) {
+			element.click(function() {
+				if (element.hasClass('selected')) {
+					element.toggleClass('asc');
+					element.toggleClass('desc');
+				} else {
+					element.siblings().removeClass('selected');
+					element.addClass('selected');
+					element.addClass('asc');
+					if (attrs.d == 'asc') {
+						element.addClass('asc');
+						element.removeClass('desc');
+					} else {
+						element.removeClass('asc');
+						element.addClass('desc');
+					}
+				}
+				scope.$emit('dataChangeSort', attrs.sort, element.hasClass('asc') ? 'asc' : 'desc');
+			});
+		}
+	};
+});

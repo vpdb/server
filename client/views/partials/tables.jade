@@ -65,9 +65,9 @@
 		h2 sort
 		hr
 		ul.selectable
-			li Date Added
-			li Original Release
-			li.selected.asc Name
-			li Rating
-			li Views
-			li Downloads
+			li(sort="name", d="desc") Date Added
+			li(sort="year", d="asc") Original Release
+			li.selected.asc(sort="name", d="asc") Name
+			li(sort="rating", d="desc") Rating
+			li(sort="views", d="desc") Views
+			li(sort="tabledownloads", d="desc") Downloads

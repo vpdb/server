@@ -2,6 +2,8 @@ ctrl.controller('TableListController', function($scope, $http, $location, $templ
 
 	$scope.filterDecades = [];
 	$scope.filterManufacturer = [];
+	$scope.sort = 'name';
+	$scope.sortReverse = false;
 
 	// preload partials
 	_.each(['compact', 'extended', 'list'], function(view) {
@@ -57,6 +59,12 @@ ctrl.controller('TableListController', function($scope, $http, $location, $templ
 		} else {
 			$scope.filterManufacturer.push(manufacturer);
 		}
+		$scope.$apply();
+	});
+
+	$scope.$on('dataChangeSort', function(event, field, direction) {
+		$scope.sort = field;
+		$scope.sortReverse = direction == 'desc';
 		$scope.$apply();
 	});
 

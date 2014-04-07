@@ -165,8 +165,14 @@ body {
 .theme-dark section.footer a:hover {
   color: rgba(255,255,255,0.25);
 }
+.theme-dark ul.selectable > li:hover {
+  color: rgba(255,255,255,0.75);
+}
 .theme-dark ul.selectable > li.selected {
   color: #ec843d;
+}
+.theme-dark ul.selectable > li.selected:hover {
+  color: #ffa364;
 }
 .theme-dark ul.viewtype-panel li.active i {
   color: #aaa;

@@ -81,3 +81,21 @@ filters.filter('decade', function() {
 		});
 	}
 });
+
+filters.filter('manufacturer', function() {
+	return function(items, manufacturers) {
+		if (!items || !manufacturers || !manufacturers.length) {
+			return items;
+		}
+		return _.filter(items, function(table) {
+			var manufacturer;
+			for (var i = 0; i < manufacturers.length; i++) {
+				manufacturer = manufacturers[i];
+				if (table.manufacturer.toLowerCase() == manufacturer.toLowerCase()) {
+					return true;
+				}
+			}
+			return false;
+		});
+	}
+});

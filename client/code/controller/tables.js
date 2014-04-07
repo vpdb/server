@@ -1,6 +1,7 @@
 ctrl.controller('TableListController', function($scope, $http, $location, $templateCache, $route) {
 
 	$scope.filterDecades = [];
+	$scope.filterManufacturer = [];
 
 	// preload partials
 	_.each(['compact', 'extended', 'list'], function(view) {
@@ -46,6 +47,15 @@ ctrl.controller('TableListController', function($scope, $http, $location, $templ
 			$scope.filterDecades.splice($scope.filterDecades.indexOf(decade), 1);
 		} else {
 			$scope.filterDecades.push(decade);
+		}
+		$scope.$apply();
+	});
+
+	$scope.$on('dataToggleManufacturer', function(event, manufacturer) {
+		if (_.contains($scope.filterManufacturer, manufacturer)) {
+			$scope.filterManufacturer.splice($scope.filterManufacturer.indexOf(manufacturer), 1);
+		} else {
+			$scope.filterManufacturer.push(manufacturer);
 		}
 		$scope.$apply();
 	});

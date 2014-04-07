@@ -47,7 +47,12 @@
 					| Manufacturer
 					i.fa.pull-right(ng-class="{'fa-chevron-circle-up': filterManufacturerOpen, 'fa-chevron-circle-down': !filterManufacturerOpen}")
 
-				p here are the manufacturers
+				ul.list-group
+					li.list-group-item(filter-manufacturer="bally") Bally
+					li.list-group-item(filter-manufacturer="capcom") Capcom
+				ul.list-group
+					li.list-group-item(filter-manufacturer="midway") Midway
+					li.list-group-item(filter-manufacturer="williams") Williams
 
 			// author filter
 			accordion-group(is-open="filterAuthorOpen")

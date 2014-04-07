@@ -11,8 +11,8 @@
 		hr
 		div.ng-cloak
 			.row.row-data
-				label(ng-show="(tables | filter:query).length == 0") No results found for query <strong>{{ query }}</strong>.
-				div(ng-include="template")
+				label(ng-show="(tables | filter:query | decade:filterDecades).length == 0") No results found for query <strong>{{ query }}</strong>.
+				.fade2-animation(ng-include="template")
 
 	.col-sm-3.col-menu.bg-dark
 		h2 filter
@@ -32,7 +32,14 @@
 					| Year
 					i.fa.pull-right(ng-class="{'fa-chevron-circle-up': filterYearOpen, 'fa-chevron-circle-down': !filterYearOpen}")
 
-				p select years in here.
+				ul.list-group
+					li.list-group-item(filter-decade="1960") 1960s
+					li.list-group-item(filter-decade="1970") 1970s
+					li.list-group-item(filter-decade="1980") 1980s
+				ul.list-group
+					li.list-group-item(filter-decade="1990") 1990s
+					li.list-group-item(filter-decade="2000") 2000s
+					li.list-group-item(filter-decade="2010") 2010s
 
 			// manufacturer filter
 			accordion-group(is-open="filterManufacturerOpen")

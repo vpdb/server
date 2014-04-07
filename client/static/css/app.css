@@ -36,6 +36,7 @@ body {
 }
 .row-data {
   margin-bottom: 10px;
+  position: relative;
 }
 .row-data > label {
   margin-left: 15px;
@@ -381,6 +382,27 @@ ul.viewtype-panel li i {
 .panel > h3 {
   margin-top: 15px;
   margin-left: 15px;
+}
+.panel .list-group {
+  width: 46%;
+  float: left;
+  margin-bottom: 0;
+}
+.panel .list-group + .list-group {
+  float: right;
+}
+.panel .list-group .list-group-item {
+  border: none;
+  padding: 3px 0;
+  cursor: pointer;
+  -webkit-transition: color 200ms;
+  -moz-transition: color 200ms;
+  -o-transition: color 200ms;
+  -ms-transition: color 200ms;
+  transition: color 200ms;
+}
+.panel .list-group .list-group-item.active {
+  font-weight: 700;
 }
 .panel-compact,
 .panel-extended {

@@ -56,6 +56,7 @@ body
 		padding-bottom 99999px
 .row-data
 	margin-bottom 10px
+	position relative
 	& > label
 		margin-left 15px
 .img-logo
@@ -317,6 +318,21 @@ ul.viewtype-panel
 	& > h3
 		margin-top 15px
 		margin-left 15px
+
+	.list-group
+		width 46%
+		float left
+		margin-bottom 0
+		& + .list-group
+			float right
+		.list-group-item
+			border none
+			padding 3px 0
+			cursor pointer
+			transition color animation-short
+			&.active
+				font-weight font-weight-bold
+
 
 // common to compact and extended
 .panel-compact, .panel-extended

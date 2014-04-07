@@ -1,4 +1,4 @@
-.col-xs-12.fade-animation(ng-repeat="table in tables | filter:query", ng-click="details(table.id)")
+.col-xs-12.fade-animation(ng-repeat="table in tables | filter:query | decade:filterDecades", ng-click="details(table.id)")
 	.panel.panel-dark.panel-extended.bg-dark
 		.img-wrapper
 			.img.fade-after-load(style="background-image:url('{{ table.art.backglass_thumb }}')")

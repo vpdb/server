@@ -157,6 +157,25 @@ flipbox-duration = 650ms
 
 
 
+.fade2-animation
+	opacity 1
+	&.ng-enter, &.ng-leave
+		transition 5s ease all
+
+	&.ng-enter
+		transition-delay 5s
+		opacity 0
+		&.ng-enter-active
+			opacity 1
+
+	&.ng-leave
+		opacity 1
+		&.ng-leave-active
+			opacity 0
+
+
+
+
 .mfp-fade
 	&.mfp-bg
 		opacity 0

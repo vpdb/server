@@ -1,4 +1,6 @@
-ctrl.controller('TableListController', function($scope, $http, $location, $templateCache) {
+ctrl.controller('TableListController', function($scope, $http, $location, $templateCache, $route) {
+
+	$scope.filterDecades = [];
 
 	// preload partials
 	_.each(['compact', 'extended', 'list'], function(view) {
@@ -6,21 +8,19 @@ ctrl.controller('TableListController', function($scope, $http, $location, $templ
 	});
 
 	var hash = $location.hash();
-	if (hash == 'extended') {
-		$scope.viewtype = 'extended';
-	} else if (hash == 'list') {
-		$scope.viewtype = 'list';
-	} else {
-		$scope.viewtype = 'compact'
-	}
-	$scope.template = '/partials/table-' + $scope.viewtype;
-
+	$scope.viewtype = _.contains([ 'extended', 'list' ], hash) ? hash : 'compact';
+	$scope.setView = function() {
+		$scope.template = '/partials/table-' + $scope.viewtype;
+	};
 	$scope.switchview = function(view) {
 		if ($scope.viewtype == view) {
 			return;
 		}
 		$location.hash(view);
+		$scope.viewtype = view;
+		$scope.setView();
 	};
+	$scope.setView();
 
 	$scope.details = function(key) {
 		$location.hash('');
@@ -39,5 +39,24 @@ ctrl.controller('TableListController', function($scope, $http, $location, $templ
 			}
 		});
 		$scope.tables = data.result;
+	});
+
+	$scope.$on('dataToggleDecade', function(event, decade) {
+		if (_.contains($scope.filterDecades, decade)) {
+			$scope.filterDecades.splice($scope.filterDecades.indexOf(decade), 1);
+		} else {
+			$scope.filterDecades.push(decade);
+		}
+		$scope.$apply();
+	});
+
+	// don't relead
+	var lastRoute = $route.current;
+	var lastPath = $location.path();
+	$scope.$on('$locationChangeSuccess', function() {
+		// "undo" route change if path didn't change (only hashes or params)
+		if ($location.path() == lastPath) {
+			$route.current = lastRoute;
+		}
 	});
 });

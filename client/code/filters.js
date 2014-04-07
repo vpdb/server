@@ -63,3 +63,21 @@ filters.filter('gametype', function() {
 		}
 	}
 });
+
+filters.filter('decade', function() {
+	return function(items, decades) {
+		if (!items || !decades || !decades.length) {
+			return items;
+		}
+		return _.filter(items, function(table) {
+			var decade;
+			for (var i = 0; i < decades.length; i++) {
+				decade = decades[i];
+				if (table.year >= decade && table.year < (decade + 10)) {
+					return true;
+				}
+			}
+			return false;
+		});
+	}
+});

@@ -261,6 +261,19 @@ body {
   color: rgba(255,255,255,0.9);
   background: #ec843d;
 }
+.theme-dark .panel .list-group-item {
+  color: rgba(255,255,255,0.5);
+  background-color: transparent;
+}
+.theme-dark .panel .list-group-item:hover {
+  color: rgba(255,255,255,0.75);
+}
+.theme-dark .panel .list-group-item.active {
+  color: #ec843d;
+}
+.theme-dark .panel .list-group-item.active:hover {
+  color: #ffa364;
+}
 .bg-dark {
   background-color: rgba(255,255,255,0.06);
 }

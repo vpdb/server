@@ -124,3 +124,29 @@ directives.directive('fadeAfterLoad', function() {
 		}
 	};
 });
+
+directives.directive('filterDecade', function() {
+	return {
+		restrict: 'A',
+		link: function(scope, element, attrs) {
+			element.click(function() {
+				element.toggleClass('active');
+				scope.$emit('dataToggleDecade', parseInt(attrs.filterDecade), element.hasClass('active'));
+			});
+		}
+	};
+});
+
+directives.directive('viewSwitchAnimation', function($animate) {
+	return function(scope, element) {
+		var currentStep = 0;
+		var maxStep = 3;
+		element.bind('click', function() {
+			var remove = 'step-' + currentStep;
+			$animate.removeClass(element, remove);
+			currentStep = (currentStep + 1) % maxStep;
+			var add = 'step-' + currentStep;
+			$animate.addClass(element, add);
+		});
+	}
+});

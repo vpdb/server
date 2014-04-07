@@ -11,7 +11,7 @@
 		hr
 		div.ng-cloak
 			.row.row-data
-				label(ng-show="(tables | filter:query | decade:filterDecades).length == 0") No results found for query <strong>{{ query }}</strong>.
+				label(ng-show="(tables | filter:query | decade:filterDecades | manufacturer:filterManufacturer).length == 0") No results found for query <strong>{{ query }}</strong>.
 				.fade2-animation(ng-include="template")
 
 	.col-sm-3.col-menu.bg-dark

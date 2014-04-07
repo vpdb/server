@@ -14,7 +14,7 @@ In a nutshell, it is:
 
 Contrarily to VPF and VPU that use a bulletin board solution with a downloads module, this was designed from scratch
 specifically for its purpose. It was also designed with the assumption that in VP10, there won't be any distinction
-between any table formats anymore (FS vs Desktop). Additionally, night/day mods are assumed to become parameters
+between any table orientation anymore (FS vs Desktop). Additionally, night/day mods are assumed to become parameters
 detached from the individual tables as well.
 
 ### Data Structure
@@ -26,7 +26,7 @@ It also means that once you've found the game you were looking for, you will onl
 and no other hits polluting your search results.
 
 * Data like authors, acknowledgements, changelogs and mods are structured. That means that stats can pulled from those,
-like most active releases, most acknowledged people, most modded tables etc.
+like most active releases, most acknowledged people, most modded tables or whatever else you would think of.
 
 * Media is divided into two types: Release-specific media (basically everything playfield related) and game-specific
 media (backglasses, flyers, instruction cards etc). Release-specific media is obviously linked to the corresponding
@@ -75,7 +75,7 @@ Open your browser and connect to ``http://localhost:3000/``.
 
 All this is currently a mock only. That means there is no database and all data/media is static. Obviously no download
 works. Table data is only available in **Monster Bash** and some in **Attack from Mars**, the other tables are only
-there to show how lists render.
+there to demonstrate how lists are displayed.
 
 I will soon gather some feedback and if there's interest, this could be the base of the next generation download
 platform for VP tables.

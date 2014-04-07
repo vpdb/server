@@ -190,26 +190,18 @@
 }
 .fade2-animation.ng-enter,
 .fade2-animation.ng-leave {
-  -webkit-transition: 5s ease all;
-  -moz-transition: 5s ease all;
-  -o-transition: 5s ease all;
-  -ms-transition: 5s ease all;
-  transition: 5s ease all;
+  -webkit-transition: 0.2s ease all;
+  -moz-transition: 0.2s ease all;
+  -o-transition: 0.2s ease all;
+  -ms-transition: 0.2s ease all;
+  transition: 0.2s ease all;
 }
 .fade2-animation.ng-enter {
-  -webkit-transition-delay: 5s;
-  -moz-transition-delay: 5s;
-  -o-transition-delay: 5s;
-  -ms-transition-delay: 5s;
-  transition-delay: 5s;
   opacity: 0;
   -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
   filter: alpha(opacity=0);
-  position: absolute;
-  width: 100%;
 }
 .fade2-animation.ng-enter.ng-enter-active {
-  position: relative;
   opacity: 1;
   -ms-filter: none;
   filter: none;

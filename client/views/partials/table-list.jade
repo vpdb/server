@@ -1,4 +1,4 @@
-.table-wrapper
+.table-wrapper(ng-hide="(tables | filter:query).length == 0")
 	table.table.table-striped.table-selectable
 		thead
 			tr
@@ -7,7 +7,7 @@
 				th
 				th
 		tbody
-			tr.fade-animation(ng-repeat="table in tables", ng-click="details(table.id)", style="transition-delay: {{ $index * 20 }}ms")
+			tr.fade-animation(ng-repeat="table in tables | filter:query", ng-click="details(table.id)", style="transition-delay: {{ $index * 20 }}ms")
 				td.name {{ table.name }}
 				td {{ table.manufacturer }} ({{ table.year }})
 				td

@@ -37,6 +37,9 @@ body {
 .row-data {
   margin-bottom: 10px;
 }
+.row-data > label {
+  margin-left: 15px;
+}
 .img-logo {
   margin-top: 30px;
   width: 95%;

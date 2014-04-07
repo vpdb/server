@@ -11,6 +11,7 @@
 		hr
 		div.ng-cloak
 			.row.row-data
+				label(ng-show="(tables | filter:query).length == 0") No results found for query <strong>{{ query }}</strong>.
 				div(ng-include="template")
 
 	.col-sm-3.col-menu.bg-dark
@@ -21,7 +22,7 @@
 		.input-group
 			span.input-group-addon
 				i.fa.fa-search
-			input.form-control(type="text", placeholder="Search")
+			input.form-control(ng-model="query", type="text", placeholder="Search")
 
 		accordion(close-others="false")
 

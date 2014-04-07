@@ -14,7 +14,7 @@ In a nutshell, it is:
 
 Contrarily to VPF and VPU that use a bulletin board solution with a downloads module, this was designed from scratch
 specifically for its purpose. It was also designed with the assumption that in VP10, there won't be any distinction
-between any table orientation anymore (FS vs Desktop). Additionally, night/day mods are assumed to become parameters
+between table orientation anymore (FS vs Desktop). Additionally, night/day mods are assumed to become parameters
 detached from the individual tables as well.
 
 ### Data Structure

@@ -1,9 +1,19 @@
 {
 	"name": "vpdb",
-	"description": "Visual Pinball Database",
-	"mod-project-name": "vpdb",
 	"version": "0.0.1",
+	"description": "Visual Pinball Database",
+	"main": "app.js",
 	"private": true,
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/freezy/node-vpdb"
+	},
+	"keywords": [ "visual pinball" ],
+	"author": "freezy",
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/freezy/node-vpdb/issues"
+	},
 	"dependencies": {
 		"express": "3.5.x",
 		"jade": "*",
@@ -15,5 +25,6 @@
 	},
 	"engines" : {
 		"node": "0.10.x"
-	}
+	},
+	"mod-project-name": "vpdb"
 }

@@ -1,5 +1,5 @@
 .col-md-4.col-sm-6.col-xs-6.fade-animation(ng-repeat="table in tables | filter:query | decade:filterDecades | manufacturer:filterManufacturer | orderBy:sort:sortReverse", ng-click="details(table.id)")
-	.panel.panel-dark.panel-compact.bg-dark
+	.panel.panel-dark.panel-compact.bg-dark.ng-cloak
 		.img.fade-after-load(style="background-image:url('{{ table.art.backglass_thumb }}')")
 		h3 {{ table.name }}
 		label {{ table.manufacturer }} &middot; {{ table.year }}

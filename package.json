@@ -10,7 +10,8 @@
 	 	"stylus": "0.42.3",
 		"nib": "1.0.2",
 		"reload": "*",
-		"underscore": "1.6.x"
+		"underscore": "1.6.x",
+		"piler": "freezy/piler"
 	},
 	"engines" : {
 		"node": "0.10.x"

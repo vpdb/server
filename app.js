@@ -1,8 +1,6 @@
-var nib = require('nib');
 var http = require('http');
 var path = require('path');
 var piler = require('piler');
-var stylus = require('stylus');
 var reload = require('reload');
 var express = require('express');
 
@@ -24,6 +22,7 @@ var clientcss = piler.createCSSManager({
 /**
  * Configuration
  */
+
 // all environments
 app.set('port', process.env.PORT || 3000);
 app.set('views', path.join(pwd, 'client', 'views'));
@@ -65,6 +64,7 @@ var index = function(req, res){
 app.get('/', index);
 app.get('/tables', index);
 app.get('/table', index);
+app.get('/table/*', index);
 
 // serve index and view partials
 app.get('/partials/:name', routes.partials);

@@ -119,6 +119,8 @@ app.configure(function() {
 	clientjs.addFile(__dirname + "/client/code/service/timeago.js");
 	clientjs.addFile(__dirname + "/client/code/directive/timeago.js");
 	clientjs.addFile(__dirname + "/client/code/directive/elastic.js");
+
+	clientjs.liveUpdate(clientcss);
 });
 
 reload(server, app);

@@ -110,16 +110,33 @@ directives.directive('markdown', function($sanitize) {
 	};
 });
 
-directives.directive('fadeAfterLoad', function() {
+directives.directive('imgBg', function() {
 	return {
-		restrict: 'C',
+		restrict: 'A',
 		link: function(scope, element, attrs) {
+			element.css('background-image', "url('" + attrs.imgBg + "')");
 			element.waitForImages({
 				each: function() {
 					var that = $(this);
 					that.addClass('loaded');
 				},
 				waitForAll: true
+			});
+		}
+	};
+});
+
+directives.directive('imgSrc', function() {
+	return {
+		restrict: 'A',
+		link: function(scope, element, attrs) {
+			attrs.$observe('imgSrc', function(value) {
+				element.attr('src', value);
+				element.waitForImages(function() {
+					$(this).addClass('loaded');
+				}, function() {
+					console.error('wait has failed.');
+				});
 			});
 		}
 	};

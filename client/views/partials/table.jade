@@ -57,7 +57,7 @@
 					.col-sm-4.col-md-3
 						a.image-link(href="{{ release.thumbs.playfield }}")
 							.img-wrapper
-								img.img-responsive(ng-src="{{ release.thumbs.playfield }}")
+								img.img-responsive.img-fade(img-src="{{ release.thumbs.playfield }}")
 						.ratingbox(rating-avg="release.rating", rating-votes="release.votes", ng-mouseenter="editing=true", ng-mouseleave="editing=false")
 							.ratingbox-left
 								.ratingbox-rating.rating-user(ng-show="editing") {{ hoverRating | rating }}
@@ -248,7 +248,7 @@
 							.third
 								span {{ backglass.size | bytes }}
 
-					.panel.bg-dark.panel-backglass.panel-back.img.img-fullspan(style="background-image:url('{{ backglass.thumb }}')")
+					.panel.bg-dark.panel-backglass.panel-back.img.img-fullspan.img-fade(img-bg="{{ backglass.thumb }}")
 						button.btn.btn-primary.btn-lg(ng-click="$event.stopPropagation()")
 							i.fa.fa-download.space-right
 							| Download
@@ -299,7 +299,7 @@
 							.third
 								span {{ item.size | bytes }}
 
-					.panel.bg-dark.panel-backglass.panel-back.img.img-fullspan(style="background-image:url('{{ item.thumb }}')")
+					.panel.bg-dark.panel-backglass.panel-back.img.img-fullspan.img-fade(img-bg="{{ item.thumb }}")
 						button.btn.btn-primary.btn-lg(ng-click="$event.stopPropagation()")
 							i.fa.fa-download.space-right
 							| Download

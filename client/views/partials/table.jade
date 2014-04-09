@@ -14,15 +14,15 @@
 				span.votes {{ $parent.table.votes | number }} vote{{ $parent.table.votes == 1 ? '' : 's' }}
 		hr
 
-		label(ng-show="table.gametype") {{ table.gametype | gametype }}
+		label.label-block(ng-show="table.gametype") {{ table.gametype | gametype }}
 		label(ng-show="table.units") {{ table.units | number }} units sold
 		hr(ng-show="table.gametype || table.units")
 
-		label.label-name(ng-show="table.gamedesign") Game Design
+		label.label-name.label-block(ng-show="table.gamedesign") Game Design
 		label.label-value(ng-show="table.gamedesign") {{ table.gamedesign.join(', ') }}
 		hr(ng-show="table.gamedesign")
 
-		label.label-name(ng-show="table.artdesign") Art Design
+		label.label-name.label-block(ng-show="table.artdesign") Art Design
 		label.label-value(ng-show="table.artdesign")  {{ table.artdesign.join(', ') }}
 		hr(ng-show="table.artdesign")
 

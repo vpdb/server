@@ -12,16 +12,16 @@
 			label
 				i.fa.fa-arrow-circle-down
 				span.pipe {{ table.tabledownloads | number }}
-				i.fa.fa-eye
-				span.pipe {{ table.views | number }}
-				i.fa.fa-comment
-				span.pipe {{ table.comments | number }}
+				i.fa.fa-eye.hidden-xs
+				span.pipe.hidden-xs {{ table.views | number }}
+				i.fa.fa-comment.hidden-xs
+				span.pipe.hidden-xs {{ table.comments | number }}
 
 			label.pull-right
 				i.fa.fa-arrow-circle-up
 				time-ago(from-time="{{ table.lastrelease }}")
 
-			.ratingbox(rating-avg="table.rating")
+			.ratingbox.hidden-xs(rating-avg="table.rating")
 				.ratingbox-left
 					.ratingbox-rating {{ table.rating | rating }}
 				.ratingbox-right

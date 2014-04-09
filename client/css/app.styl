@@ -114,6 +114,8 @@ label
 		padding 0 5px
 		margin-bottom -6px
 		margin-left 4px
+	&.label-block
+		display block
 
 dl.oneline
 	width 100%
@@ -759,3 +761,18 @@ div.media-avatar-medium:before
 		&:before
 			margin-left -7.5px
 			overflow hidden
+
+
+@media (max-width: 768px)
+	.container.container-topmost
+		border-radius 0
+	.row-fullheight
+		border-radius 0
+		> div
+			margin-bottom 0
+			padding-top 1px
+			padding-bottom 10px
+
+	.label-download
+		margin-top 10px
+		margin-bottom 8px

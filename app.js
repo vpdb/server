@@ -24,7 +24,8 @@ var clientcss = piler.createCSSManager({
  */
 
 // all environments
-app.set('port', process.env.PORT || 3000);
+app.set('port', process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || 3000);
+app.set('ipaddress', process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1');
 app.set('views', path.join(pwd, 'client', 'views'));
 app.set('view engine', 'jade');
 app.use(express.logger('dev'));
@@ -119,6 +120,6 @@ app.configure(function() {
 });
 
 reload(server, app);
-server.listen(app.get('port'), function() {
-	console.log('Express server listening on port ' + app.get('port'));
+server.listen(app.get('port'), app.get('ipaddress'), function() {
+	console.log('Express server listening at ' + app.get('ipaddress') + ':' + app.get('port'));
 });

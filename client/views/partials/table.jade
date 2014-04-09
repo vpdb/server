@@ -221,7 +221,7 @@
 		h2 Backglasses
 		label(ng-hide="table.backglasses.length > 0")  No backglasses available.
 		.row(ng-show="table.backglasses.length > 0")
-			.col-md-4.col-sm-6.col-xs-6.fade-animation(ng-repeat="backglass in table.backglasses")
+			.col-md-4.col-sm-6.col-xs-12.fade-animation.padder-bottom-2x(ng-repeat="backglass in table.backglasses")
 				.flipbox.flipbox-backglass
 					.panel.bg-dark.panel-backglass.panel-front
 						h3
@@ -261,7 +261,7 @@
 				| Download Pack
 		label(ng-hide="table.media.length > 0")  No media available.
 		.row(ng-show="table.media.length > 0")
-			.col-md-4.col-sm-6.col-xs-6.fade-animation.padder-bottom-2x(ng-repeat="item in table.media")
+			.col-md-4.col-sm-6.col-xs-12.fade-animation.padder-bottom-2x(ng-repeat="item in table.media")
 				.flipbox.flipbox-backglass
 					.panel.bg-dark.panel-backglass.panel-front
 						h3

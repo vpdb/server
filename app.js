@@ -29,12 +29,14 @@ app.set('ipaddress', process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1');
 app.set('views', path.join(pwd, 'client', 'views'));
 app.set('view engine', 'jade');
 app.use(express.logger('dev'));
+app.use(express.compress());
 app.use(express.bodyParser());
 app.use(express.methodOverride());
-app.use(express.static(__dirname + '/client/static'));
-app.use(express.static(__dirname + '/data/assets'));
-app.use(express.compress());
+app.use(express.static(__dirname + '/client/static', { maxAge: 3600*24*30*1000 }));
+app.use(express.static(__dirname + '/data/assets', { maxAge: 3600*24*30*1000 }));
 app.use(app.router);
+
+
 
 // development only
 if (app.get('env') === 'development') {

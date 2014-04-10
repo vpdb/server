@@ -102,6 +102,9 @@ app.configure(function() {
 	clientjs.addFile(__dirname + "/client/code/lib/angular-1.3.0-beta.3/angular-route.js");
 	clientjs.addFile(__dirname + "/client/code/lib/angular-1.3.0-beta.3/angular-animate.js");
 	clientjs.addFile(__dirname + "/client/code/lib/angular-1.3.0-beta.3/angular-sanitize.js");
+	clientjs.addFile(__dirname + "/client/code/lib/angulartics-0.14.15/angulartics.js");
+	clientjs.addFile(__dirname + "/client/code/lib/angulartics-0.14.15/angulartics-ga.js");
+	clientjs.addFile(__dirname + "/client/code/lib/angulartics-0.14.15/angulartics-ga-cordova.js");
 	clientjs.addFile(__dirname + "/client/code/lib/ui-bootstrap-tpls-0.10.0.js");
 	clientjs.addFile(__dirname + "/client/code/lib/underscore-1.6.0.js");
 	clientjs.addFile(__dirname + "/client/code/lib/showdown.js");

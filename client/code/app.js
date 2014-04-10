@@ -7,6 +7,8 @@ var app = angular.module('vpdb', [
 	'ngAnimate',
 	'ngSanitize',
 	'ui.bootstrap',
+	'angulartics',
+	'angulartics.google.analytics',
 	'sun.scrollable',
 	'vpdb.controllers',
 	'vpdb.filters',
@@ -48,4 +50,4 @@ window.requestAnimFrame = (function() {
 })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
 ga('create', 'UA-49887651-1', 'vpdb.ch');
-ga('send', 'pageview');
+///ga('send', 'pageview');

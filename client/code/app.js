@@ -19,6 +19,11 @@ var app = angular.module('vpdb', [
 app.config(function($routeProvider, $locationProvider) {
 
 	$routeProvider.
+
+		when('/home', {
+			templateUrl: 'partials/home'
+		}).
+
 		when('/tables', {
 			templateUrl: 'partials/tables'
 		}).

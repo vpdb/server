@@ -68,6 +68,7 @@ app.get('/', index);
 app.get('/tables', index);
 app.get('/table', index);
 app.get('/table/*', index);
+app.get('/home', index);
 
 // serve index and view partials
 app.get('/partials/:name', routes.partials);

@@ -1,6 +1,8 @@
 # vpdb
 *A database for VP10 tables.*
 
+Demo can be found [here](http://vpdb.ch/).
+
 ## What is it?
 A web application that makes downloading Visual Pinball tables as effective and pleasant as possible.
 In a nutshell, it is:

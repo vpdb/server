@@ -75,9 +75,9 @@ app.get('/partials/:name', routes.partials);
 app.get('/partials/modals/:name', routes.modals);
 
 // JSON API
-app.get('/api/table/:id', api.table);
+app.get('/api/tables/:id', api.table);
 app.get('/api/tables', api.tables);
-
+app.get('/api/packs', api.packs);
 
 /**
  * Start Server
@@ -118,6 +118,7 @@ app.configure(function() {
 	clientjs.addFile(__dirname + "/client/code/controllers.js");
 	clientjs.addFile(__dirname + "/client/code/filters.js");
 	clientjs.addFile(__dirname + "/client/code/directives.js");
+	clientjs.addFile(__dirname + "/client/code/controller/home.js");
 	clientjs.addFile(__dirname + "/client/code/controller/tables.js");
 	clientjs.addFile(__dirname + "/client/code/controller/table.js");
 	clientjs.addFile(__dirname + "/client/code/service/timeago.js");

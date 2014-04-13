@@ -5,7 +5,7 @@ ctrl.controller('TableController', function($scope, $http, $routeParams, $modal,
 
 	$http({
 		method: 'GET',
-		url: '/api/table/' + $scope.tableId
+		url: '/api/tables/' + $scope.tableId
 
 	}).success(function(data, status, headers, config) {
 		var table = data.result;

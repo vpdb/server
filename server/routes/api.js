@@ -467,3 +467,13 @@ exports.table = function(req, res) {
 		})
 	});
 };
+
+exports.packs = function(req, res) {
+	res.json({
+		result: [
+			{
+				name: 'Williams 1990s'
+			}
+		]
+	});
+};

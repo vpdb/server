@@ -1,1 +1,26 @@
-p Welcome home!
+.row.row-fullheight(ng-controller="HomeController")
+	.col-sm-9.col-main
+		h5 packs
+		hr
+		.col-md-4.col-sm-6.col-xs-12.fade-animation(ng-repeat="pack in packs", ng-click="details(table.id)")
+			.panel.panel-dark.panel-compact.bg-dark.ng-cloak
+				.img.img-fade(img-bg="{{ table.art.backglass_thumb }}")
+				h3 {{ pack.name }}
+				label {{ table.manufacturer }} &middot; {{ table.year }}
+
+		.clearfix
+		h5 new releases
+		hr
+
+		h5 updated releases
+		hr
+
+		h5 news feed
+		hr
+
+	.col-sm-3.col-menu.bg-dark
+		h2 releases
+		hr
+
+		h2 people
+		hr

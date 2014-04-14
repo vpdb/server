@@ -1,0 +1,6 @@
+#!/bin/bash
+
+if [ ! -f "${OPENSHIFT_HOMEDIR}.node_modules/.bin/gm" ]; then
+	echo "Creating link to GraphicsMagick..."
+	ln -s "${OPENSHIFT_DATA_DIR}bin/gm" "${OPENSHIFT_HOMEDIR}.node_modules/.bin/gm"
+fi

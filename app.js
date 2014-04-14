@@ -1,11 +1,14 @@
+'use strict';
+
 var http = require('http');
 var path = require('path');
 var piler = require('piler');
 var reload = require('reload');
 var express = require('express');
 
-var routes = require('./server/routes');
 var api = require('./server/routes/api');
+var routes = require('./server/routes');
+var asset = require('./server/middleware/asset');
 
 var app = module.exports = express();
 var pwd = __dirname;
@@ -34,8 +37,8 @@ app.use(express.bodyParser());
 app.use(express.methodOverride());
 app.use(express.static(__dirname + '/client/static', { maxAge: 3600*24*30*1000 }));
 app.use(express.static(__dirname + '/data/assets', { maxAge: 3600*24*30*1000 }));
+app.use(asset.middleware());
 app.use(app.router);
-
 
 
 // development only

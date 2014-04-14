@@ -343,7 +343,7 @@ ul.viewtype-panel
 
 
 // common to compact and extended
-.panel-compact, .panel-extended
+.panel-compact, .panel-extended, .panel-mini
 	cursor pointer
 	transition all 500ms cubic-bezier(0.190, 1.000, 0.220, 1.000)
 	transform translateY(0) scale(1, 1)
@@ -375,6 +375,13 @@ ul.viewtype-panel
 			height list-square-width
 	.data-wrapper
 		margin-left list-square-width + 15px
+		h3
+			margin-top 10px
+			margin-right 10px
+		h4
+			label.label-version
+				margin-bottom -4px
+
 
 // :table panes :extended
 .panel-extended

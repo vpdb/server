@@ -4,267 +4,275 @@ var _ = require('underscore');
  * Serve JSON to our AngularJS client
  */
 
-var afm = {
-	id: 1198,
-	title: 'AFM Lightning Edition',
-	description: "Use these options to configure the table:\n\n    '******************************\n    ' SET alpha GI colors\n    '******************************\n    ' For NORMAL operation set\n    ' GION_alphaGIcolor = 1\n    ' GIOFF_alphaGIcolor = 0\n    \n    ' Or try some green martian lighting:\n    ' GIOn_alphaGIcolor = 2\n    ' GIOFF_alphaGIcolor = 3\n    \n    ' Or Mars red:\n    ' GIOn_alphaGIcolor = 3\n    ' GIOFF_alphaGIcolor = 0\n    \n    ' or disable feature by setting both values to 0\n    \n    GION_alphaGIcolor = 1 ' 0=OFF, 1=WHITE, 2=GREEN, 3 = RED\n    GIOFF_alphaGIcolor = 3 ' 0=OFF, 1=WHITE, 2=GREEN, 3 = RED\n    '********************************\n",
-	acknowledgements: '* Thank you @jpsalas for giving me permission to mod this table of yours. All credit goes to JP. Modding this table made me appreciate this table so much more.\n* Thank you to @teppotee and @jimmyfingers. On the new 3-Way GI, the default settings are White `ON` and Red `OFF`. Play it first without changing anything, so you can see whats happening.',
-	authors: [
-		{
-			author: {
-				user: 'jpsalas',
-				avatar: '/avatars/jpsalas.png'
+
+var releases = {
+	afm: {
+		id: 1198,
+		title: 'Real-Flag Edition',
+		description: "Use these options to configure the table:\n\n    '******************************\n    ' SET alpha GI colors\n    '******************************\n    ' For NORMAL operation set\n    ' GION_alphaGIcolor = 1\n    ' GIOFF_alphaGIcolor = 0\n    \n    ' Or try some green martian lighting:\n    ' GIOn_alphaGIcolor = 2\n    ' GIOFF_alphaGIcolor = 3\n    \n    ' Or Mars red:\n    ' GIOn_alphaGIcolor = 3\n    ' GIOFF_alphaGIcolor = 0\n    \n    ' or disable feature by setting both values to 0\n    \n    GION_alphaGIcolor = 1 ' 0=OFF, 1=WHITE, 2=GREEN, 3 = RED\n    GIOFF_alphaGIcolor = 3 ' 0=OFF, 1=WHITE, 2=GREEN, 3 = RED\n    '********************************\n",
+		acknowledgements: '* Thank you @jpsalas for giving me permission to mod this table of yours. All credit goes to JP. Modding this table made me appreciate this table so much more.\n* Thank you to @teppotee and @jimmyfingers. On the new 3-Way GI, the default settings are White `ON` and Red `OFF`. Play it first without changing anything, so you can see whats happening.',
+		authors: [
+			{
+				author: {
+					user: 'jpsalas',
+					avatar: '/avatars/jpsalas.png'
+				},
+				roles: [ 'Original Table' ]
+			}, {
+				author: {
+					user: 'Aaron James',
+					avatar: '/avatars/aaronjames.jpg'
+				},
+				roles: [ 'Table Mod' ]
+			}, {
+				author: {
+					user: 'teppotee',
+					avatar: '/avatars/teppotee.png'
+				},
+				roles: [ 'GI' ]
+			}
+		],
+		submitter: {
+			user: 'Aaron James',
+			avatar: '/avatars/aaronjames.jpg'
+		},
+		rating: 8.1,
+		votes: 20,
+		screenshots: [],
+		mods: [],
+		versions: [
+			{
+				version: '3.5',
+				timestamp: '2013-12-30T19:42:20Z',
+				size: 22023498,
+				submitter: 'Aaron James',
+				downloads: 3659,
+				changes: '* Teppotee reworked the lighting to make it work with VP9.2 Big thanks!!! He really helped me on this because i couldn\'t figure some things out, and he saved me alot of time.\n* I then changed the layback/xy settings, and had to add one more wall to the left side to hide flasher artifacts. I did a minor physics tweak.'
 			},
-			roles: [ 'Original Table' ]
-		}, {
-			author: {
-				user: 'Aaron James',
-				avatar: '/avatars/aaronjames.jpg'
+			{
+				version: '3.1',
+				timestamp: '2013-04-22T05:04:20Z',
+				size: 16903345,
+				submitter: 'Aaron James',
+				downloads: 2978,
+				changes: '* I increased the size/shape of the strobe light. It\'s more dramatic and intensive.\n* I changed the red wire metal ramps to dark green/yellow. I was getting tired of the red myself...lol'
+			}
+		],
+		comments: [
+			{
+				id: 1234,
+				author: {
+					user: 'freezy',
+					avatar: '/avatars/freezy.jpg'
+				},
+				timestamp: '2014-03-23T23:45:20Z',
+				message: '# Markdown test\n\nA list:\n\n* first item\n* second item\n\nAnd here a quote:\n\n> Geee!\n\n## A Second Title\n\nWith a numerated list:\n\n1. Count\n2. To\n3. Three!\n\nYou can also use [links](http://pind.ch/) and references to people (hi @freezy).\n\nAlso code is possible:\n\n    for (var i; i < 10; i++) {\n        print "You\'re awesome!";\n    }\n\nYou can also refer external images:\n\n![](http://i.imgur.com/hReEn.png)\n\nOf course you can also type in **bold** or *italic*.\n'
+			}
+		],
+		media: [
+			{
+				filename: 'afm35.jpg',
+				src: '/cabinet/afm35.png',
+				type: 'playfield-cabinet',
+				version: '3.5',
+				width: 1280,
+				height: 1920,
+				filesize: 3994043,
+				format: 'image',
+				tags: ['night']
 			},
-			roles: [ 'Table Mod' ]
-		}, {
-			author: {
-				user: 'teppotee',
-				avatar: '/avatars/teppotee.png'
-			},
-			roles: [ 'GI' ]
-		}
-	],
-	rating: 8.1,
-	votes: 20,
-	screenshots: [],
-	mods: [],
-	versions: [
-		{
+			{
+				filename: 'Attack from Mars (Bally 1995).flv',
+				type: 'playfield-cabinet',
+				version: '3.5',
+				width: 1280,
+				height: 1920,
+				filesize: 586292,
+				duration: 120,
+				format: 'video',
+				tags: ['day']
+			}
+		],
+
+		// easy acess fields:
+		thumbs: {
+			playfield: '/cabinet/afm35.png',
+			square: '/asset/release/afm35/square-small.png'
+		},
+		lastversion: {
 			version: '3.5',
 			timestamp: '2013-12-30T19:42:20Z',
 			size: 22023498,
 			submitter: 'Aaron James',
 			downloads: 3659,
 			changes: '* Teppotee reworked the lighting to make it work with VP9.2 Big thanks!!! He really helped me on this because i couldn\'t figure some things out, and he saved me alot of time.\n* I then changed the layback/xy settings, and had to add one more wall to the left side to hide flasher artifacts. I did a minor physics tweak.'
-		},
-		{
-			version: '3.1',
-			timestamp: '2013-04-22T05:04:20Z',
-			size: 16903345,
-			submitter: 'Aaron James',
-			downloads: 2978,
-			changes: '* I increased the size/shape of the strobe light. It\'s more dramatic and intensive.\n* I changed the red wire metal ramps to dark green/yellow. I was getting tired of the red myself...lol'
 		}
-	],
-	comments: [
-		{
-			id: 1234,
-			author: {
-				user: 'freezy',
-				avatar: '/avatars/freezy.jpg'
-			},
-			timestamp: '2014-03-23T23:45:20Z',
-			message: '# Markdown test\n\nA list:\n\n* first item\n* second item\n\nAnd here a quote:\n\n> Geee!\n\n## A Second Title\n\nWith a numerated list:\n\n1. Count\n2. To\n3. Three!\n\nYou can also use [links](http://pind.ch/) and references to people (hi @freezy).\n\nAlso code is possible:\n\n    for (var i; i < 10; i++) {\n        print "You\'re awesome!";\n    }\n\nYou can also refer external images:\n\n![](http://i.imgur.com/hReEn.png)\n\nOf course you can also type in **bold** or *italic*.\n'
-		}
-	],
-	media: [
-		{
-			filename: 'afm35.jpg',
-			src: '/cabinet/afm35.png',
-			type: 'playfield-cabinet',
-			version: '3.5',
-			width: 1280,
-			height: 1920,
-			filesize: 3994043,
-			format: 'image',
-			tags: ['night']
-		},
-		{
-			filename: 'Attack from Mars (Bally 1995).flv',
-			type: 'playfield-cabinet',
-			version: '3.5',
-			width: 1280,
-			height: 1920,
-			filesize: 586292,
-			duration: 120,
-			format: 'video',
-			tags: ['day']
-		}
-	],
-
-	// easy acess fields:
-	thumbs: {
-		playfield: '/cabinet/afm35.png',
-		square: '/asset/release/afm35/square-small.png'
 	},
-	lastversion: {
-		version: '3.5',
-		timestamp: '2013-12-30T19:42:20Z',
-		size: 22023498,
-		submitter: 'Aaron James',
-		downloads: 3659,
-		changes: '* Teppotee reworked the lighting to make it work with VP9.2 Big thanks!!! He really helped me on this because i couldn\'t figure some things out, and he saved me alot of time.\n* I then changed the layback/xy settings, and had to add one more wall to the left side to hide flasher artifacts. I did a minor physics tweak.'
-	}
-};
 
-var mb = {
-	id: 954,
-	title: 'PC Killer Edition',
-	description: '*This is the high poly full model edition.*\n\nChanges from prior version:\n\n* Complete rebuild of the table\n* Bumpers, targets, rubbers, pegs, brackets, wire ramps, bulbs, and all toys are now 3D mesh primitives\n* Full 8-step fading GI using alpha ramps\n* Ball momentum engine added with flipper tap code\n* Alpha flashers added\n',
-	acknowledgements: '* Special thanks to @grizz for original playfield work\n* @jimmyfingers for his excellent physics code\n* @fuzzel and @toxie for their continued work on VP and additional feature additions',
-	authors: [
-		{
-			author: {
-				user: 'unclewilly',
-				avatar: '/avatars/unclewilly.jpg'
+	mb: {
+		id: 954,
+		title: 'PC Killer Edition',
+		description: '*This is the high poly full model edition.*\n\nChanges from prior version:\n\n* Complete rebuild of the table\n* Bumpers, targets, rubbers, pegs, brackets, wire ramps, bulbs, and all toys are now 3D mesh primitives\n* Full 8-step fading GI using alpha ramps\n* Ball momentum engine added with flipper tap code\n* Alpha flashers added\n',
+		acknowledgements: '* Special thanks to @grizz for original playfield work\n* @jimmyfingers for his excellent physics code\n* @fuzzel and @toxie for their continued work on VP and additional feature additions',
+		authors: [
+			{
+				author: {
+					user: 'unclewilly',
+					avatar: '/avatars/unclewilly.jpg'
+				},
+				roles: [ 'Playfield', 'Textures' ]
+			}, {
+				author: {
+					user: 'randr',
+					avatar: '/avatars/randr.jpg'
+				},
+				roles: [ '3D Models' ]
+			}
+		],
+		submitter: {
+			user: 'unclewilly',
+			avatar: '/avatars/unclewilly.jpg'
+		},
+		rating: 9.1,
+		votes: 25,
+		screenshots: [],
+		mods: [],
+		versions: [
+			{
+				version: '2.1',
+				timestamp: '2014-02-03T19:47:20Z',
+				size: 175135975,
+				downloads: 1087,
+				changes: '* Reduced Texture sizes\n* Added DOF Option\n* Added Day Option which brightens the playfield\n* Fixed Rollover lights blocking inserts'
 			},
-			roles: [ 'Playfield', 'Textures' ]
-		}, {
-			author: {
-				user: 'randr',
-				avatar: '/avatars/randr.jpg'
+			{
+				version: '2.0',
+				timestamp: '2014-01-29T22:01:00Z',
+				size: 169033450,
+				downloads: 568,
+				changes: '*Initial version*'
+			}
+		],
+		comments: [
+			{
+				id: 1234,
+				author: {
+					user: 'fuzzel',
+					avatar: '/avatars/fuzzel.jpg'
+				},
+				timestamp: '2014-02-28T22:46:20Z',
+				message: 'Hey I\'m the first to say WELL DONE! :D'
+			}
+		],
+		media: [
+			{
+				filename: 'mb_pckiller.png',
+				src: '/cabinet/mb_pckiller.png',
+				type: 'playfield-cabinet',
+				version: '2.1',
+				width: 1280,
+				height: 1920,
+				size: 3627246,
+				format: 'image',
+				tags: ['day', 'flasher']
 			},
-			roles: [ '3D Models' ]
-		}
-	],
-	submitter: {
-		user: 'unclewilly',
-		avatar: '/avatars/unclewilly.jpg'
-	},
-	rating: 9.1,
-	votes: 25,
-	screenshots: [],
-	mods: [],
-	versions: [
-		{
+			{
+				filename: '#',
+				type: 'playfield-cabinet',
+				src: '#',
+				version: '2.1',
+				width: 1280,
+				height: 1920,
+				size: 843398,
+				duration: 120,
+				format: 'video',
+				tags: ['day', 'attract mode']
+			}
+		],
+
+		// easy access fields:
+		thumbs: {
+			playfield: '/cabinet/mb_pckiller.png',
+			square: '/asset/release/mb_pckiller/square-small.png'
+		},
+		lastversion: {
 			version: '2.1',
 			timestamp: '2014-02-03T19:47:20Z',
 			size: 175135975,
 			downloads: 1087,
 			changes: '* Reduced Texture sizes\n* Added DOF Option\n* Added Day Option which brightens the playfield\n* Fixed Rollover lights blocking inserts'
-		},
-		{
-			version: '2.0',
-			timestamp: '2014-01-29T22:01:00Z',
-			size: 169033450,
-			downloads: 568,
-			changes: '*Initial version*'
 		}
-	],
-	comments: [
-		{
-			id: 1234,
-			author: {
-				user: 'fuzzel',
-				avatar: '/avatars/fuzzel.jpg'
-			},
-			timestamp: '2014-02-28T22:46:20Z',
-			message: 'Hey I\'m the first to say WELL DONE! :D'
-		}
-	],
-	media: [
-		{
-			filename: 'mb_pckiller.png',
-			src: '/cabinet/mb_pckiller.png',
-			type: 'playfield-cabinet',
-			version: '2.1',
-			width: 1280,
-			height: 1920,
-			size: 3627246,
-			format: 'image',
-			tags: ['day', 'flasher']
-		},
-		{
-			filename: '#',
-			type: 'playfield-cabinet',
-			src: '#',
-			version: '2.1',
-			width: 1280,
-			height: 1920,
-			size: 843398,
-			duration: 120,
-			format: 'video',
-			tags: ['day', 'attract mode']
-		}
-	],
-
-	// easy access fields:
-	thumbs: {
-		playfield: '/cabinet/mb_pckiller.png',
-		square: '/asset/release/mb_pckiller/square-small.png'
 	},
-	lastversion: {
-		version: '2.1',
-		timestamp: '2014-02-03T19:47:20Z',
-		size: 175135975,
-		downloads: 1087,
-		changes: '* Reduced Texture sizes\n* Added DOF Option\n* Added Day Option which brightens the playfield\n* Fixed Rollover lights blocking inserts'
-	}
-};
 
-var ij = {
-	id: 1198,
-	title: 'HD Edition',
-	description: "This is an update to Lord Hiryu's version of Indiana Jones and released with author's permission.\n\nAlmost all aspects of the table have been reworked or updated.\n\n* New GI and lighting (+adjustable additional alpha GI)\n* New HD playfield\n* New flasherdomes / effects\n* Alpha ramp conversions\n* Drop targets changed to primitives with better animation\n* Idolhead reworked as a 3d primitive with better animation\n* Ball lock reworked with better animation and visuals\n* Center plane propeller reworked as primitive and smoother animation\n* Complete physics overhaul\n* New bumper flashers (can be turned off)\n* New slingshot flashers (can be turned off)\n* Missing sounds added\n\nThis has been a true community effort with a lot of people helping to make this the best version possible!",
-	acknowledgements: '* @LordHiryu - the biggest thanks goes of course to LH for creating the first version and letting us release this MOD!\n* @Rob046 - Physics adjustments, alpha ramps and tweaking almost every aspect of the table!\n* @ClarkKent - New HD playfield redraw with amazing detail + acting as a "project manager" :)\n* @jpsalas - primitive idol coding, captive ball bug fix,propeller primitives and ball lock rework. Really glad JP found the time to help us!\n* @Fuzzel - converted FP 3D object and helped to implement it into the table\n* @JimmyFingers - flipper tap code and the enhanced ball rolling script\n* @unclewilly - primitive drop target code that I borrowed from BBB\n* @Aaron James - Testing\n* @teppotee - I did the lighting effects and visuals mainly and also primitive drop targets etc. Too much stuff to even remember!\n* @HighInder00 for the 3d object in the FP version',
-	authors: [
-		{
-			author: {
-				user: 'teppotee ',
-				avatar: '/avatars/teppotee.png'
+	ij: {
+		id: 1198,
+		title: 'HD Edition',
+		description: "This is an update to Lord Hiryu's version of Indiana Jones and released with author's permission.\n\nAlmost all aspects of the table have been reworked or updated.\n\n* New GI and lighting (+adjustable additional alpha GI)\n* New HD playfield\n* New flasherdomes / effects\n* Alpha ramp conversions\n* Drop targets changed to primitives with better animation\n* Idolhead reworked as a 3d primitive with better animation\n* Ball lock reworked with better animation and visuals\n* Center plane propeller reworked as primitive and smoother animation\n* Complete physics overhaul\n* New bumper flashers (can be turned off)\n* New slingshot flashers (can be turned off)\n* Missing sounds added\n\nThis has been a true community effort with a lot of people helping to make this the best version possible!",
+		acknowledgements: '* @LordHiryu - the biggest thanks goes of course to LH for creating the first version and letting us release this MOD!\n* @Rob046 - Physics adjustments, alpha ramps and tweaking almost every aspect of the table!\n* @ClarkKent - New HD playfield redraw with amazing detail + acting as a "project manager" :)\n* @jpsalas - primitive idol coding, captive ball bug fix,propeller primitives and ball lock rework. Really glad JP found the time to help us!\n* @Fuzzel - converted FP 3D object and helped to implement it into the table\n* @JimmyFingers - flipper tap code and the enhanced ball rolling script\n* @unclewilly - primitive drop target code that I borrowed from BBB\n* @Aaron James - Testing\n* @teppotee - I did the lighting effects and visuals mainly and also primitive drop targets etc. Too much stuff to even remember!\n* @HighInder00 for the 3d object in the FP version',
+		authors: [
+			{
+				author: {
+					user: 'teppotee ',
+					avatar: '/avatars/teppotee.png'
+				},
+				roles: [ 'Table Mod' ]
+			}
+		],
+		submitter: {
+			user: 'teppotee ',
+			avatar: '/avatars/teppotee.png'
+		},
+		rating: 8.9,
+		votes: 21,
+		screenshots: [],
+		mods: [],
+		versions: [
+			{
+				version: '2.0',
+				timestamp: '2012-12-28T08:04:20Z',
+				size: 273448315,
+				submitter: { user: 'teppotee' },
+				downloads: 5594,
+				changes: '* VP 9.2 compatible (alpha lighting issues fixed)\n* Small physics tweaks (lower slope)'
 			},
-			roles: [ 'Table Mod' ]
-		}
-	],
-	submitter: {
-		user: 'teppotee ',
-		avatar: '/avatars/teppotee.png'
-	},
-	rating: 8.9,
-	votes: 21,
-	screenshots: [],
-	mods: [],
-	versions: [
-		{
+			{
+				version: '1.3',
+				timestamp: '2012-11-02T02:04:20Z',
+				size: 239448561,
+				submitter: { user: 'teppotee' },
+				downloads: 1232,
+				changes: '* Added BMPR physics to the table. Thanks to @jimmyfingers for the original scripting and examples! Makes the table quite a bit more challenging so you have been warned :)\n* small visual feedback for the rollover switches (switch hidden when ball on switch)\n* Repositioned "additinal alpha GI" lights so that the ball moves under the lights now. This lets the lighting affect the ball as well + works better with the new ball reflection feature.'
+			},
+			{
+				version: '1.1',
+				timestamp: '2012-10-01T12:04:20Z',
+				size: 236898456,
+				submitter: { user: 'teppotee' },
+				downloads: 2556,
+				changes: '* One B2B collision bug fixed (thanks @JimmyFingers!)\n* Few graphich glitches fixed (such as ball visible under upper PF)\n* Added missing sounds for ball drops from ramps\n* new ball with decals\n* playfield images with ramp shadows\n* new fluid animated propellers (beginning slower, accelerating, slowing down)\n* second propeller added\n* new animated flippers decals\n* idol head mechanism repaired\n* idol head texture corrected a little bit'
+			}
+		],
+		comments: [ ],
+		media: [ ],
+
+		// easy acess fields:
+		thumbs: {
+			playfield: '/cabinet/ij.png',
+			square: '/asset/release/ij/square-small.png'
+		},
+		lastversion: {
 			version: '2.0',
 			timestamp: '2012-12-28T08:04:20Z',
 			size: 273448315,
 			submitter: { user: 'teppotee' },
-			downloads: 5594,
-			changes: '* VP 9.2 compatible (alpha lighting issues fixed)\n* Small physics tweaks (lower slope)'
-		},
-		{
-			version: '1.3',
-			timestamp: '2012-11-02T02:04:20Z',
-			size: 239448561,
-			submitter: { user: 'teppotee' },
-			downloads: 1232,
-			changes: '* Added BMPR physics to the table. Thanks to @jimmyfingers for the original scripting and examples! Makes the table quite a bit more challenging so you have been warned :)\n* small visual feedback for the rollover switches (switch hidden when ball on switch)\n* Repositioned "additinal alpha GI" lights so that the ball moves under the lights now. This lets the lighting affect the ball as well + works better with the new ball reflection feature.'
-		},
-		{
-			version: '1.1',
-			timestamp: '2012-10-01T12:04:20Z',
-			size: 236898456,
-			submitter: { user: 'teppotee' },
-			downloads: 2556,
-			changes: '* One B2B collision bug fixed (thanks @JimmyFingers!)\n* Few graphich glitches fixed (such as ball visible under upper PF)\n* Added missing sounds for ball drops from ramps\n* new ball with decals\n* playfield images with ramp shadows\n* new fluid animated propellers (beginning slower, accelerating, slowing down)\n* second propeller added\n* new animated flippers decals\n* idol head mechanism repaired\n* idol head texture corrected a little bit'
+			downloads: 5594
 		}
-	],
-	comments: [ ],
-	media: [ ],
-
-	// easy acess fields:
-	thumbs: {
-		playfield: '/cabinet/ij.png',
-		square: '/asset/release/ij/square-small.png'
-	},
-	lastversion: {
-		version: '2.0',
-		timestamp: '2012-12-28T08:04:20Z',
-		size: 273448315,
-		submitter: { user: 'teppotee' },
-		downloads: 5594
 	}
 };
 
-var data = [
-	{
+var games = {
+
+	afm: {
 		id: 'afm',
 		key: 'Attack from Mars (Bally 1995)',
 		name: 'Attack from Mars',
@@ -283,106 +291,18 @@ var data = [
 		tabledownloads: 4098,
 		lastrelease: '2014-03-23T20:38:20Z',
 		authors: [ 'jpsalas' ],
-		releases: [ afm ],
+		releases: [ releases.afm ],
 		roms: [],
 		media: [],
 
 		// easy access fields
 		thumbs: {
-			logo: '/logo/afm.png'
+			logo: '/logo/afm.png',
+			backglass: '/backglass/thumb/Attack from Mars (Bally 1995).png'
 		}
 	},
-	{
-		id: 'bbb',
-		key: 'Big Bang Bar (Capcom 1996)',
-		name: 'Big Bang Bar',
-		manufacturer: 'Capcom',
-		year: 1996,
-		rating: 8.2,
-		votes: 12,
-		views: 	6932,
-		comments: 16,
-		tabledownloads: 2797,
-		lastrelease: '2013-06-16T11:52:00Z',
-		authors: [ 'unclewilly', 'jimmyfingers', 'Grizz' ]
-	},
-	{
-		id: 'br',
-		key: 'Black Rose (Bally 1992)',
-		name: 'Black Rose',
-		manufacturer: 'Bally',
-		year: 1992,
-		rating: 7.8,
-		votes: 1,
-		views: 3584,
-		comments: 16,
-		tabledownloads: 1339,
-		lastrelease: '2009-07-23T10:03:00Z',
-		authors: [ 'destruk' ]
-	},
-	{
-		id: 'cc',
-		key: 'Cactus Canyon (Midway 1998)',
-		name: 'Cactus Canyon',
-		manufacturer: 'Midway',
-		year: 1998,
-		rating: 8.5,
-		votes: 14,
-		views: 8179,
-		comments: 7,
-		tabledownloads: 3238,
-		lastrelease: '2014-02-03T20:59:00Z',
-		authors: [ 'Lord Hiryu', 'MRCMRC', 'Aaron James', 'thewool', 'unclewilly', 'Koadic', 'Sheltemke' ]
-	},
-	{
-		id: 'cv',
-		key: 'Cirqus Voltaire (Bally 1997)',
-		name: 'Cirqus Voltaire',
-		manufacturer: 'Bally',
-		year: 1997,
-		rating: 8.1,
-		votes: 14,
-		views: 	9473,
-		comments: 31,
-		tabledownloads: 3845,
-		lastrelease: '2014-02-03T20:59:00Z',
-		authors: [ 'JP Salas', 'Rosve', 'Aaron James', 'Teppotee', 'Koadic', 'Dozer316' ]
-	},
-	{
-		id: 'centaur',
-		key: 'Centaur (Bally 1981)',
-		name: 'Centaur',
-		manufacturer: 'Bally',
-		year: 1981,
-		rating: 9.1,
-		votes: 5,
-		views: 2440,
-		comments: 12,
-		tabledownloads: 915,
-		lastrelease: '2013-07-14T21:46:00Z',
-		authors: [ 'Fuzzel', 'Lord Hiryu' ]
-	},
-	{
-		id: 'ij',
-		key: 'Indiana Jones (Stern 2008)',
-		name: 'Indiana Jones: The Pinball Adventure',
-		manufacturer: 'Williams',
-		year: 1993,
-		rating: 8.3,
-		votes: 3,
-		views: 240,
-		comments: 11,
-		tabledownloads: 5547,
-		lastrelease: '2013-07-14T21:46:00Z',
-		authors: [ 'teppotee', 'Lord Hiryu' ],
-		releases: [ ij ],
 
-		// easy access fields
-		thumbs: {
-			logo: '/logo/ij.png'
-		}
-	},
-	{
+	mb: {
 		id: 'mb',
 		key: 'Monster Bash (Williams 1998)',
 		name: 'Monster Bash',
@@ -405,7 +325,7 @@ var data = [
 		tabledownloads: 5934,
 		lastrelease: '2014-02-03T19:47:20Z',
 		authors: [ 'unclewilly', 'randr' ],
-		releases: [ mb ],
+		releases: [ releases.mb ],
 		roms: [
 			{ name: 'mm_05', version: '0.50', language: 'english', notes: '', downloads: 171, size: 5982313 },
 			{ name: 'mm_10', version: '1.00', language: 'english', notes: '', downloads: 3972, size: 5983929 },
@@ -497,6 +417,104 @@ var data = [
 			backglass: '/backglass/thumb/Monster Bash (Williams 1998).png'
 		}
 	},
+
+	ij: {
+		id: 'ij',
+		key: 'Indiana Jones (Stern 2008)',
+		name: 'Indiana Jones: The Pinball Adventure',
+		manufacturer: 'Williams',
+		year: 1993,
+		rating: 8.3,
+		votes: 3,
+		views: 240,
+		comments: 11,
+		tabledownloads: 5547,
+		lastrelease: '2013-07-14T21:46:00Z',
+		authors: [ 'teppotee', 'Lord Hiryu' ],
+		releases: [ releases.ij ],
+
+		// easy access fields
+		thumbs: {
+			logo: '/logo/ij.png',
+			backglass: '/backglass/thumb/Indiana Jones (Stern 2008).png'
+		}
+	}
+};
+
+var data = [
+	games.afm,
+	{
+		id: 'bbb',
+		key: 'Big Bang Bar (Capcom 1996)',
+		name: 'Big Bang Bar',
+		manufacturer: 'Capcom',
+		year: 1996,
+		rating: 8.2,
+		votes: 12,
+		views: 	6932,
+		comments: 16,
+		tabledownloads: 2797,
+		lastrelease: '2013-06-16T11:52:00Z',
+		authors: [ 'unclewilly', 'jimmyfingers', 'Grizz' ]
+	},
+	{
+		id: 'br',
+		key: 'Black Rose (Bally 1992)',
+		name: 'Black Rose',
+		manufacturer: 'Bally',
+		year: 1992,
+		rating: 7.8,
+		votes: 1,
+		views: 3584,
+		comments: 16,
+		tabledownloads: 1339,
+		lastrelease: '2009-07-23T10:03:00Z',
+		authors: [ 'destruk' ]
+	},
+	{
+		id: 'cc',
+		key: 'Cactus Canyon (Midway 1998)',
+		name: 'Cactus Canyon',
+		manufacturer: 'Midway',
+		year: 1998,
+		rating: 8.5,
+		votes: 14,
+		views: 8179,
+		comments: 7,
+		tabledownloads: 3238,
+		lastrelease: '2014-02-03T20:59:00Z',
+		authors: [ 'Lord Hiryu', 'MRCMRC', 'Aaron James', 'thewool', 'unclewilly', 'Koadic', 'Sheltemke' ]
+	},
+	{
+		id: 'cv',
+		key: 'Cirqus Voltaire (Bally 1997)',
+		name: 'Cirqus Voltaire',
+		manufacturer: 'Bally',
+		year: 1997,
+		rating: 8.1,
+		votes: 14,
+		views: 	9473,
+		comments: 31,
+		tabledownloads: 3845,
+		lastrelease: '2014-02-03T20:59:00Z',
+		authors: [ 'JP Salas', 'Rosve', 'Aaron James', 'Teppotee', 'Koadic', 'Dozer316' ]
+	},
+	{
+		id: 'centaur',
+		key: 'Centaur (Bally 1981)',
+		name: 'Centaur',
+		manufacturer: 'Bally',
+		year: 1981,
+		rating: 9.1,
+		votes: 5,
+		views: 2440,
+		comments: 12,
+		tabledownloads: 915,
+		lastrelease: '2013-07-14T21:46:00Z',
+		authors: [ 'Fuzzel', 'Lord Hiryu' ]
+	},
+	games.ij,
+	games.mb,
 	{
 		id: 'sttng',
 		key: 'STTNG (Williams 1993)',
@@ -642,6 +660,16 @@ exports.packs = function(req, res) {
 };
 
 exports.releases = function(req, res) {
+
+	var ij = releases.ij;
+	var afm = releases.afm;
+	var mb = releases.mb;
+	var gameAttrs = [ 'id', 'name', 'manufacturer', 'year', 'thumbs'];
+
+	ij.table = _.pick(games.ij, gameAttrs);
+	afm.table = _.pick(games.afm, gameAttrs);
+	mb.table = _.pick(games.mb, gameAttrs);
+
 	res.json({
 		result: [ ij, afm, mb ]
 	});

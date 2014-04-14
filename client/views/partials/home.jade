@@ -2,22 +2,30 @@
 	.col-sm-9.col-main
 		h5 packs
 		hr
-		.col-md-4.col-sm-6.col-xs-12.fade-animation(ng-repeat="pack in packs", ng-click="details(table.id)")
-			.panel.panel-dark.panel-compact.bg-dark.ng-cloak
-				.img.img-fade(img-bg="{{ table.art.backglass_thumb }}")
-				h3 {{ pack.name }}
-				label {{ table.manufacturer }} &middot; {{ table.year }}
+		.row.row-data
+			.col-md-4.col-sm-6.col-xs-12.fade-animation(ng-repeat="pack in packs", ng-click="details(table.id)")
+				.panel.panel-dark.panel-compact.bg-dark.ng-cloak
+					.img.img-fade(img-bg="{{ table.art.backglass_thumb }}")
+					h3 {{ pack.name }}
+					label {{ table.manufacturer }} &middot; {{ table.year }}
 
 		.clearfix
 		h5 new releases
 		hr
-		.col-lg-6.col-md-12.fade-animation(ng-repeat="release in releases", ng-click="details(table.id)")
-			.panel.panel-dark.panel-mini.bg-dark.ng-cloak
-				.img-wrapper
-					.img.img-fade(img-bg="{{ release.thumbs.square }}")
-				.data-wrapper
-					h2 {{ release.title }}
-				.clearfix
+		.row.row-data
+			.col-lg-6.col-md-12.fade-animation(ng-repeat="release in releases", ng-click="details(table.id)")
+				.panel.panel-dark.panel-mini.bg-dark.ng-cloak
+					.img-wrapper
+						.img.img-fade(img-bg="{{ release.thumbs.square }}")
+					.data-wrapper
+						h3 {{ release.table.name }}
+						h4
+							| {{ release.title }}
+							label.label-version {{ release.lastversion.version }}
+						label.block
+							i.icon.icon-user
+							| {{ release.submitter.user }}
+					.clearfix
 
 		.clearfix
 

@@ -24,6 +24,9 @@
 		"stylus": "0.42.3",
 		"underscore": "1.6.x"
 	},
+	"devDependencies": {
+		"socket.io": "1.0.x"
+	},
 	"engines" : {
 		"node": "0.10.x"
 	},

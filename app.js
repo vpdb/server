@@ -10,9 +10,7 @@ var api = require('./server/routes/api');
 var routes = require('./server/routes');
 var asset = require('./server/middleware/asset');
 
-var app = module.exports = express();
-var pwd = __dirname;
-
+var app = express();
 var clientjs = piler.createJSManager({
 	outputDirectory: __dirname + "/gen/js",
 	urlRoot: "/js/"
@@ -22,6 +20,7 @@ var clientcss = piler.createCSSManager({
 	urlRoot: "/css/"
 });
 
+
 /**
  * Configuration
  */
@@ -29,11 +28,12 @@ var clientcss = piler.createCSSManager({
 // all environments
 app.set('port', process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || 3000);
 app.set('ipaddress', process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1');
-app.set('views', path.join(pwd, 'client', 'views'));
+app.set('views', path.join(__dirname, 'client', 'views'));
 app.set('view engine', 'jade');
 app.use(express.logger('dev'));
 app.use(express.compress());
-app.use(express.bodyParser());
+app.use(express.json());
+app.use(express.urlencoded());
 app.use(express.methodOverride());
 app.use(express.static(__dirname + '/client/static', { maxAge: 3600*24*30*1000 }));
 app.use(express.static(__dirname + '/data/assets', { maxAge: 3600*24*30*1000 }));
@@ -41,23 +41,10 @@ app.use(asset.middleware());
 app.use(app.router);
 
 
-// development only
-if (app.get('env') === 'development') {
-	app.use(express.errorHandler());
-	app.configure('development', function(){
-		app.use(express.errorHandler());
-		app.locals.pretty = true;
-	});
-}
-
 // production only
 if (app.get('env') === 'production') {
 	// TODO
 }
-
-/**
- * Routes
- */
 
 var index = function(req, res){
 	res.render('index', {
@@ -66,22 +53,6 @@ var index = function(req, res){
 		css: clientcss.renderTags()
 	});
 };
-
-app.get('/', index);
-app.get('/tables', index);
-app.get('/table', index);
-app.get('/table/*', index);
-app.get('/home', index);
-
-// serve index and view partials
-app.get('/partials/:name', routes.partials);
-app.get('/partials/modals/:name', routes.modals);
-
-// JSON API
-app.get('/api/tables/:id', api.table);
-app.get('/api/tables', api.tables);
-app.get('/api/packs', api.packs);
-app.get('/api/releases', api.releases);
 
 /**
  * Start Server
@@ -128,11 +99,37 @@ app.configure(function() {
 	clientjs.addFile(__dirname + "/client/code/service/timeago.js");
 	clientjs.addFile(__dirname + "/client/code/directive/timeago.js");
 	clientjs.addFile(__dirname + "/client/code/directive/elastic.js");
-
-	clientjs.liveUpdate(clientcss);
 });
 
-reload(server, app);
+// development only
+if (app.get('env') === 'development') {
+	app.use(express.errorHandler());
+	app.configure('development', function() {
+		app.use(express.errorHandler());
+		app.locals.pretty = true;
+		clientjs.liveUpdate(clientcss);
+	});
+}
+
+/**
+ * Routes
+ */
+app.get('/', index);
+app.get('/tables', index);
+app.get('/table', index);
+app.get('/table/*', index);
+app.get('/home', index);
+
+// serve index and view partials
+app.get('/partials/:name', routes.partials);
+app.get('/partials/modals/:name', routes.modals);
+
+// JSON API
+app.get('/api/tables/:id', api.table);
+app.get('/api/tables', api.tables);
+app.get('/api/packs', api.packs);
+app.get('/api/releases', api.releases);
+
 server.listen(app.get('port'), app.get('ipaddress'), function() {
 	console.log('Express server listening at ' + app.get('ipaddress') + ':' + app.get('port'));
 });

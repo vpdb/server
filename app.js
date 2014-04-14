@@ -81,6 +81,7 @@ app.get('/partials/modals/:name', routes.modals);
 app.get('/api/tables/:id', api.table);
 app.get('/api/tables', api.tables);
 app.get('/api/packs', api.packs);
+app.get('/api/releases', api.releases);
 
 /**
  * Start Server

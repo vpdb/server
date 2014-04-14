@@ -151,6 +151,7 @@
 
 			.panel.bg-dark(ng-controller="CommentsCtrl")
 				h3 Comments on Release
+				label.padder-left(ng-show="!release.comments || release.comments.length == 0") No comments yet.
 				.media(ng-repeat="comment in release.comments" ng-controller="CommentCtrl")
 					div.media-object.media-avatar-medium.pull-left(ng-hide="comment.author.avatar")
 					img.media-object.media-avatar-medium.pull-left(ng-show="comment.author.avatar", ng-src="{{ comment.author.avatar }}")

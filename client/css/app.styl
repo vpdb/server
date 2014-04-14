@@ -23,6 +23,7 @@ animation-shorter = 100ms
 
 panel-sidebar-width = 175px
 list-sidebar-width = 170px
+list-square-width = 120px
 
 // fix the box model (http://www.paulirish.com/2012/box-sizing-border-box-ftw/)
 *, *:before, *:after
@@ -96,6 +97,8 @@ button.btn:focus, button.btn:active:focus
 	padding 15px 15px 0 15px
 .padder-bottom-2x
 	padding-bottom 30px
+.padder-left
+	margin-left 15px
 label
 	&.label-small
 		font-size 13px
@@ -361,6 +364,17 @@ ul.viewtype-panel
 	label
 		font-weight font-weight-normal
 		margin-bottom 15px
+
+// :table panes releases (square img)
+.panel-mini
+	.img-wrapper
+		width list-square-width
+		float left
+		.img
+			padding 0
+			height list-square-width
+	.data-wrapper
+		margin-left list-square-width + 15px
 
 // :table panes :extended
 .panel-extended

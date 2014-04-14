@@ -1,7 +1,7 @@
 # vpdb
 *A database for VP10 tables.*
 
-Demo can be found [here](http://vpdb.ch/).
+Live demo [here](http://vpdb.ch/).
 
 ## What is it?
 A web application that makes downloading Visual Pinball tables as effective and pleasant as possible.
@@ -64,6 +64,11 @@ Server runs on Node.js with Express, Stylus and Jade. Client uses AngularJS with
 
 ## Installation
 
+Prerequisites:
+
+* Download and install [GraphicsMagick](http://www.graphicsmagick.org/) and make sure that the binary is in
+  your ``PATH``.
+
 Install Node.js and git, then open a command line and type:
 
 	git clone https://github.com/freezy/node-vpdb.git
@@ -72,6 +77,20 @@ Install Node.js and git, then open a command line and type:
 	node app
 
 Open your browser and connect to ``http://localhost:3000/``.
+
+If you're deploying to a remote service like OpenShift that doesn't have GraphicsMagick installed, SSH into your app
+and type:
+
+	mkdir $OPENSHIFT_DATA_DIR/src
+	cd $OPENSHIFT_DATA_DIR/src
+	wget ftp://ftp.graphicsmagick.org/pub/GraphicsMagick/1.3/GraphicsMagick-1.3.19.tar.gz
+	tar xvfz GraphicsMagick-1.3.19.tar.gz
+	cd GraphicsMagick-1.3.19
+	./configure --prefix=$OPENSHIFT_DATA_DIR
+	make && make install
+
+In OpenShift's case, there's pre-build script which links the ``gm`` executable to Node.js' binary folder which is part
+of the app's ``$PATH`` variable.
 
 ## Status
 

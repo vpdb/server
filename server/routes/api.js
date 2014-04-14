@@ -302,6 +302,26 @@ var games = {
 		}
 	},
 
+	bop: {
+		id: 'tm-bop',
+		key: 'Bride Of Pinbot (Williams 1991)',
+		name: 'The Machine: Bride of Pin·bot',
+		manufacturer: 'Williams',
+		year: 1991,
+		rating: 8.1,
+		votes: 2,
+		views: 1232,
+		comments: 1,
+		tabledownloads: 1233,
+		lastrelease: '2011-01-07T19:48:00Z',
+		authors: [ 'unclewilly' ],
+
+		// easy access fields
+		thumbs: {
+			logo: '/logo/tm-bop.png'
+		}
+	},
+
 	mb: {
 		id: 'mb',
 		key: 'Monster Bash (Williams 1998)',
@@ -438,6 +458,66 @@ var games = {
 			logo: '/logo/ij.png',
 			backglass: '/backglass/thumb/Indiana Jones (Stern 2008).png'
 		}
+	},
+
+	sttng: {
+		id: 'sttng',
+		key: 'STTNG (Williams 1993)',
+		name: 'Star Trek: The Next Generation',
+		manufacturer: 'Williams',
+		year: 1993,
+		rating: 8.3,
+		votes: 22,
+		views: 2232,
+		comments: 0,
+		tabledownloads: 44561,
+		lastrelease: '2013-12-26T08:25:00Z',
+		authors: [ 'teppotee ' ],
+
+		// easy access fields
+		thumbs: {
+			logo: '/logo/sttng.png'
+		}
+	},
+
+	totan: {
+		id: 'totan',
+		key: 'Tales of the Arabian Nights (Williams 1996)',
+		name: 'Tales of the Arabian Nights',
+		manufacturer: 'Williams',
+		year: 1996,
+		rating: 8.2,
+		votes: 4,
+		views: 	2231,
+		comments: 1,
+		tabledownloads: 234,
+		lastrelease: '2012-10-25T19:39:00Z',
+		authors: [ 'jpsalas' ],
+
+		// easy access fields
+		thumbs: {
+			logo: '/logo/totan.png'
+		}
+	},
+
+	ww: {
+		id: 'ww',
+		key: 'Whitewater (Williams 1993)',
+		name: 'Whitewater',
+		manufacturer: 'Williams',
+		year: 1993,
+		rating: 8.3,
+		votes: 2,
+		views: 	1332,
+		comments: 0,
+		tabledownloads: 1333,
+		lastrelease: '2013-09-17T05:06:00Z',
+		authors: [ 'aaronjames' ],
+
+		// easy access fields
+		thumbs: {
+			logo: '/logo/ww.png'
+		}
 	}
 };
 
@@ -515,25 +595,7 @@ var data = [
 	},
 	games.ij,
 	games.mb,
-	{
-		id: 'sttng',
-		key: 'STTNG (Williams 1993)',
-		name: 'Star Trek: The Next Generation',
-		manufacturer: 'Williams',
-		year: 1993,
-		rating: 8.3,
-		votes: 22,
-		views: 2232,
-		comments: 0,
-		tabledownloads: 44561,
-		lastrelease: '2013-12-26T08:25:00Z',
-		authors: [ 'teppotee ' ],
-
-		// easy access fields
-		thumbs: {
-			logo: '/logo/sttng.png'
-		}
-	},
+	games.sttng,
 	{
 		id: 't2',
 		key: 'Terminator 2 - Judgment Day (Williams 1991)',
@@ -548,25 +610,7 @@ var data = [
 		lastrelease: '2014-01-10T08:29:00Z',
 		authors: [ 'Tipoto' ]
 	},
-	{
-		id: 'totan',
-		key: 'Tales of the Arabian Nights (Williams 1996)',
-		name: 'Tales of the Arabian Nights',
-		manufacturer: 'Williams',
-		year: 1996,
-		rating: 8.2,
-		votes: 4,
-		views: 	2231,
-		comments: 1,
-		tabledownloads: 234,
-		lastrelease: '2012-10-25T19:39:00Z',
-		authors: [ 'jpsalas' ],
-
-		// easy access fields
-		thumbs: {
-			logo: '/logo/totan.png'
-		}
-	},
+	games.totan,
 	{
 		id: 'taf',
 		key: 'The Adams Family (Williams 1992)',
@@ -581,25 +625,7 @@ var data = [
 		lastrelease: '2011-11-06T05:25:00Z',
 		authors: [ 'melon' ]
 	},
-	{
-		id: 'tm-bop',
-		key: 'Bride Of Pinbot (Williams 1991)',
-		name: 'The Machine: Bride of Pin·bot',
-		manufacturer: 'Williams',
-		year: 1991,
-		rating: 8.1,
-		votes: 2,
-		views: 1232,
-		comments: 1,
-		tabledownloads: 1233,
-		lastrelease: '2011-01-07T19:48:00Z',
-		authors: [ 'unclewilly' ],
-
-		// easy access fields
-		thumbs: {
-			logo: '/logo/tm-bop.png'
-		}
-	},
+	games.bop,
 	{
 		id: 'whodunnit',
 		key: 'Who Dunnit (Bally 1995)',
@@ -614,25 +640,7 @@ var data = [
 		lastrelease: '2011-11-06T05:25:00Z',
 		authors: [ 'destruk', 'The Trout' ]
 	},
-	{
-		id: 'ww',
-		key: 'Whitewater (Williams 1993)',
-		name: 'Whitewater',
-		manufacturer: 'Williams',
-		year: 1993,
-		rating: 8.3,
-		votes: 2,
-		views: 	1332,
-		comments: 0,
-		tabledownloads: 1333,
-		lastrelease: '2013-09-17T05:06:00Z',
-		authors: [ 'aaronjames' ],
-
-		// easy access fields
-		thumbs: {
-			logo: '/logo/ww.png'
-		}
-	}
+	games.ww
 ];
 
 exports.tables = function(req, res) {
@@ -650,10 +658,24 @@ exports.table = function(req, res) {
 };
 
 exports.packs = function(req, res) {
+
+	var gameAttrs = [ 'id', 'name' ];
 	res.json({
 		result: [
 			{
-				name: 'Williams 1990s'
+				logo: 'williams',
+				name: '1990s',
+				number: 'PACK 1',
+				banner: '/packs/williams-1990s.png',
+				releases: [
+					_.pick(games.ij, gameAttrs),
+					_.pick(games.ww, gameAttrs),
+					_.pick(games.mb, gameAttrs),
+					_.pick(games.totan, gameAttrs),
+					_.pick(games.bop, gameAttrs),
+					_.pick(games.sttng, gameAttrs)
+				]
+
 			}
 		]
 	});

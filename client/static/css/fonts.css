@@ -134,6 +134,33 @@
 	-moz-osx-font-smoothing: grayscale;
 }
 
+.icon-bally:before {
+	content: "\e60e";
+}
+.icon-dataeast:before {
+	content: "\e60d";
+}
+.icon-williams:before {
+	content: "\e606";
+}
+.icon-stern-old:before {
+	content: "\e607";
+}
+.icon-stern:before {
+	content: "\e608";
+}
+.icon-sega:before {
+	content: "\e609";
+}
+.icon-midway:before {
+	content: "\e60a";
+}
+.icon-gottlieb:before {
+	content: "\e60b";
+}
+.icon-capcom:before {
+	content: "\e60c";
+}
 .icon-vpdb:before {
 	content: "\e600";
 }

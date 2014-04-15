@@ -190,9 +190,9 @@ body
 					text-shadow 0 0 3px black
 
 	// :avatar
-	.media-avatar-medium, .thumbnail > img.media-avatar-medium
+	.media-avatar, .thumbnail > img.media-avatar
 		background-color color-darker
-		div.media-avatar-medium:before
+		div.media-avatar:before
 			color color-darker
 	.thumbnail.thumbnail-avatar
 		background-color transparent
@@ -216,6 +216,17 @@ body
 				color color-lighter
 			.star-off
 				color color-darker
+
+	// :newsfeed
+	.media-news
+		hr
+			border-color color-darkest
+		.media-body
+			& > label
+				a
+					color color-lighter
+					&:hover
+						color color-lightest
 
 	// :markdown
 	.markdown

@@ -959,3 +959,56 @@ exports.releases = function(req, res) {
 	});
 };
 
+exports.feed = function(req, res) {
+
+	res.json({
+		result: [
+			{
+				type: 'release',
+				timestamp: new Date(new Date().getTime() - 3600000).toISOString(),
+				user: {
+					user: 'teppotee',
+					avatar: '/avatars/teppotee.png'
+				},
+				data: {
+					game: {
+						id: 'ij',
+						name: 'Indiana Jones: The Pinball Adventure',
+						manufacturer: 'Williams',
+						year: 1993
+					},
+					release: {
+						id: 123,
+						title: 'HD Edition',
+						lastversion: {
+							version: '2.0'
+						}
+					}
+				}
+			},
+			{
+				type: 'comment',
+				timestamp: '2014-02-28T22:46:20Z',
+				user: {
+					user: 'fuzzel',
+					avatar: '/avatars/fuzzel.jpg'
+				},
+				data: {
+					type: 'release',
+					game: {
+						id: 'mb',
+						name: 'Monster Bash',
+						manufacturer: 'Williams',
+						year: 1998
+					},
+					release: {
+						id: 954,
+						title: 'PC Killer Edition'
+					},
+					message: 'Hey I\'m the first to say WELL DONE! :D'
+				}
+			}
+		]
+	});
+};
+

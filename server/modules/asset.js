@@ -71,7 +71,7 @@ var asset = function(context, path, process, defaultName) {
 			});
 		});
 	} else {
-		logger.log('warn', '[asset] No asset found for %s.', path);
+		console.warn('[asset] No asset found for %s.', path);
 		if (defaultName) {
 			context.res.writeHead(200, {
 				'Content-Type': 'image/svg+xml',

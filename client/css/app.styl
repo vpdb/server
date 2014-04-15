@@ -731,13 +731,8 @@ img, .img
 		&.loaded
 			opacity 1
 
-
 // :avatar
-.media-avatar-medium, .thumbnail > img.media-avatar-medium
-	width 64px
-	height 64px
-	margin-left 15px
-	border-radius 32px
+.media-avatar, .thumbnail > img.media-avatar
 	&.pull-left
 		margin-right 0px
 	& + .media-body > .panel
@@ -745,18 +740,33 @@ img, .img
 		margin-left 15px
 	& + .media-body > .tabbable
 		margin-top 0px
-div.media-avatar-medium:before
-	margin-left 15px
-	margin-top 14px
+div.media-avatar:before
 	position absolute
 	font-family icons
-	font-size 33px
 	font-style normal
 	font-weight normal
 	line-height 1
 	-webkit-font-smoothing antialiased
 	-moz-osx-font-smoothing grayscale
 	content '\e605'
+.media-avatar-medium, .thumbnail > img.media-avatar-medium
+	width 64px
+	height 64px
+	margin-left 15px
+	border-radius 32px
+div.media-avatar-medium:before
+	margin-left 15px
+	margin-top 14px
+	font-size 33px
+.media-avatar-large, .thumbnail > img.media-avatar-large
+	width 72px
+	height 72px
+	margin-left 15px
+	border-radius 36px
+div.media-avatar-large:before
+	margin-left 18px
+	margin-top 16px
+	font-size 37px
 
 .thumbnail.thumbnail-avatar
 	border none
@@ -815,6 +825,19 @@ div.media-avatar-medium:before
 		&:before
 			margin-left -7.5px
 			overflow hidden
+
+
+// :newsfeed
+.media-news
+	hr
+		margin-top 15px
+		margin-left 15px
+		margin-bottom 0
+	.media-body
+		& > label
+			margin-left 15px
+			a
+				font-weight font-weight-bold
 
 
 @media (max-width: 768px)

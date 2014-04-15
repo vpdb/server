@@ -59,6 +59,23 @@
 
 		h5 news feed
 		hr
+		.media.media-news(ng-repeat="item in feed")
+			div.media-object.media-avatar.media-avatar-large.pull-left(ng-hide="item.user.avatar")
+			img.media-object.media-avatar.media-avatar-large.pull-left(ng-show="item.user.avatar", ng-src="{{ item.user.avatar }}")
+			.media-body
+				label.label-block
+					time-ago(from-time="{{ item.timestamp }}")
+				label.label-block
+					i.fa(class="{{ item | feedIcon }}")
+					strong {{ item.user.user }}
+					span(ng-bind-html="item | feedAction")
+				label.label-block(ng-bind-html="item | feedMessage")
+			hr(ng-hide="$last")
+
+		.clearfix
+		// todo properly
+		p
+			br
 
 	.col-sm-3.col-menu.bg-dark
 		h2 releases

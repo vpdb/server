@@ -64,6 +64,12 @@ filters.filter('gametype', function() {
 	}
 });
 
+filters.filter('smalls', function() {
+	return function(str) {
+		return str.replace(/(\d\d\d0)s/i, "$1<small>s</small>");
+	}
+});
+
 filters.filter('decade', function() {
 	return function(items, decades) {
 		if (!items || !decades || !decades.length) {

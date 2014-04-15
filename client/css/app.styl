@@ -428,11 +428,35 @@ ul.viewtype-panel
 .panel-banner
 	img
 		width 100%
-	i.icon-williams
-		display block
-		font-size 48px
-		margin-left 10px
-		margin-top 15px
+	i.icon-title
+		cursor default
+		& + label
+			margin-right 15px
+			font-size 34px
+			strong
+				font-weight normal
+		&.icon-williams
+			font-size 48px
+			margin-top 15px
+			& + label
+				margin-top -35px
+	h3 small
+		font-size 80%
+
+	& > .row
+		margin 0 0 15px
+		& > div
+			transition color animation-short
+			cursor pointer
+			overflow hidden
+			text-overflow ellipsis
+			white-space nowrap
+			&:nth-child(even)
+				text-align right
+
+	& > button.btn.btn-lg
+		width 100%
+		border-radius 0 0 border-radius-small border-radius-small
 
 .panel.panel-backglass
 	height 250px
@@ -806,3 +830,6 @@ div.media-avatar-medium:before
 	.label-download
 		margin-top 10px
 		margin-bottom 8px
+
+	.panel-banner > .row > div:nth-child(even)
+		text-align left

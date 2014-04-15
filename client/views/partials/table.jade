@@ -55,9 +55,9 @@
 			.panel.panel-detailed.bg-dark
 				.row.padder-nobottom
 					.col-sm-4.col-md-3
-						a.image-link(href="{{ release.thumbs.playfield }}")
+						a.image-link(href="{{ release.thumbs.playfield[0] }}")
 							.img-wrapper
-								img.img-responsive.img-fade(img-src="{{ release.thumbs.playfield }}")
+								img.img-responsive.img-fade(img-src="{{ release.thumbs.playfield[0] }}")
 						.ratingbox(rating-avg="release.rating", rating-votes="release.votes", ng-mouseenter="editing=true", ng-mouseleave="editing=false")
 							.ratingbox-left
 								.ratingbox-rating.rating-user(ng-show="editing") {{ hoverRating | rating }}

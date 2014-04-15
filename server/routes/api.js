@@ -96,7 +96,7 @@ var releases = {
 
 		// easy acess fields:
 		thumbs: {
-			playfield: '/cabinet/afm35.png',
+			playfield: [ '/cabinet/afm35.png' ],
 			square: '/asset/release/afm35/square-small.png'
 		},
 		lastversion: {
@@ -160,8 +160,85 @@ var releases = {
 
 		// easy acess fields:
 		thumbs: {
-			playfield: '/cabinet/centaur.png',
+			playfield: [ '/cabinet/centaur.png' ],
 			square: '/asset/release/centaur/square-small.png'
+		},
+		lastversion: {
+			version: '2.1',
+			timestamp: '2014-04-02T21:24:20Z',
+			size: 103765981,
+			submitter: { user: 'fuzzel' },
+			downloads: 1344
+		}
+	},
+
+	cv: {
+		id: 123,
+		title: 'Platinum Edition',
+		description: "Thank you to JP Salas and Rosve for giving myself, Teppotee, and Koadic the permission to update this table.\nThis is the \"Platinum Version\" of Cirqus Voltaire.\n\nThe night mod has been deleted because, in my opinion, this is much more than just a night mod.\n\nYou can now toggle between the original version, night mod, and day/night w/ BMPR Lite....with all the recent table updates! (4 tables in 1 all easily displayed in the ``F6`` Menu, among many more options)\n\nAll script issues should be fixed, with no more errors (``F6`` Menu)",
+		acknowledgements: '* Special thanks to @Koadic, @Teppotee, and @Dozer316 (version 1.6) - You guys have made this table so much more than I could have ever imagined.\n* Thanks to @jimmyfingers for his bmpr script!',
+		authors: [
+			{
+				author: {
+					user: 'Aaron James',
+					avatar: '/avatars/aaronjames.jpg'
+				},
+				roles: [ 'Table Mod' ]
+			},
+			{
+				author: {
+					user: 'Teppotee',
+					avatar: '/avatars/teppotee.png'
+				},
+				roles: [ 'Table Mod' ]
+			},
+			{
+				author: {
+					user: 'Koadic',
+					avatar: '/avatars/koadic.gif'
+				},
+				roles: [ 'Table Mod' ]
+			},
+			{
+				author: {
+					user: 'jpsalas',
+					avatar: '/avatars/jpsalas.png'
+				},
+				roles: [ 'Original Release' ]
+			},
+			{
+				author: {
+					user: 'Rosve',
+					avatar: '/avatars/rosve.jpg'
+				},
+				roles: [ 'Original Release' ]
+			}
+		],
+		submitter: {
+			user: 'Aaron James',
+			avatar: '/avatars/aaronjames.jpg'
+		},
+		rating: 8.8,
+		votes: 22,
+		screenshots: [],
+		mods: [],
+		versions: [
+			{
+				version: '1.6',
+				timestamp: '2014-03-05T22:57:20Z',
+				size: 153183654,
+				submitter: { user: 'Aaron James' },
+				downloads: 3919,
+				changes: '* @Dozer316 has made a FOM (flasher object mod) for this table! Awesome work!\n* This archive contains the flush and sunken versions as well as the associated ``b2s.exe`` files from the original Rosve mod. The ``.exe`` files have been named so that they match the filename of the associated table and will load appropriately if someone chooses to use the older B2S instead of directb2s from the ``F6`` menu.!\n* Both versions end with B2S for users that are using the files with Hyperpin. It may be worth noting the subtleties associated with what they need to select in the ``F6`` menu if they are going to use the old B2S with Hyperpin etc.!\n* The ``F6`` menu has also been modified to remove the GI options as it is now alpha 8 step GI but the rest of the options remain the same. When both tables are run for the first time options will need to be set as they don\'t query the options database for the Platinum Mod. Everything else is pretty much the same.'
+			}
+		],
+		comments: [ ],
+		media: [ ],
+
+		// easy acess fields:
+		thumbs: {
+			playfield: [ '/cabinet/cv-platinum-1.png', '/cabinet/cv-platinum-2.png', '/cabinet/cv-platinum-3.png' ],
+			square: '/asset/release/cv-platinum-1/square-small.png'
 		},
 		lastversion: {
 			version: '2.1',
@@ -255,7 +332,7 @@ var releases = {
 
 		// easy access fields:
 		thumbs: {
-			playfield: '/cabinet/mb_pckiller.png',
+			playfield: [ '/cabinet/mb_pckiller.png' ],
 			square: '/asset/release/mb_pckiller/square-small.png'
 		},
 		lastversion: {
@@ -320,7 +397,7 @@ var releases = {
 
 		// easy acess fields:
 		thumbs: {
-			playfield: '/cabinet/ij.png',
+			playfield: [ '/cabinet/ij.png' ],
 			square: '/asset/release/ij/square-small.png'
 		},
 		lastversion: {
@@ -399,7 +476,7 @@ var releases = {
 
 		// easy acess fields:
 		thumbs: {
-			playfield: '/cabinet/t2chrome.png',
+			playfield: [ '/cabinet/t2chrome.png' ],
 			square: '/asset/release/t2chrome/square-small.png'
 		},
 		lastversion: {
@@ -478,6 +555,28 @@ var games = {
 		lastrelease: '2013-07-14T21:46:00Z',
 		authors: [ 'Fuzzel', 'Lord Hiryu' ],
 		releases: [ releases.centaur ]
+	},
+
+	cv: {
+		id: 'cv',
+		key: 'Cirqus Voltaire (Bally 1997)',
+		name: 'Cirqus Voltaire',
+		manufacturer: 'Bally',
+		year: 1997,
+		rating: 8.1,
+		votes: 14,
+		views: 	9473,
+		comments: 31,
+		tabledownloads: 3845,
+		lastrelease: '2014-02-03T20:59:00Z',
+		authors: [ 'JP Salas', 'Rosve', 'Aaron James', 'Teppotee', 'Koadic', 'Dozer316' ],
+		releases: [ releases.cv ],
+
+		// easy access fields
+		thumbs: {
+			logo: '/logo/cv.png',
+			backglass: '/backglass/thumb/Cirqus Voltaire (Bally 1997).png'
+		}
 	},
 
 	mb: {
@@ -651,7 +750,13 @@ var games = {
 		tabledownloads: 8265,
 		lastrelease: '2014-01-10T08:29:00Z',
 		authors: [ 'Tipoto' ],
-		releases: [ releases.t2 ]
+		releases: [ releases.t2 ],
+
+		// easy access fields
+		thumbs: {
+			logo: '/logo/t2chrome.png',
+			backglass: '/backglass/thumb/Terminator 2 - Judgment Day (Williams 1991).png'
+		}
 	},
 
 	totan: {
@@ -739,20 +844,7 @@ var data = [
 		lastrelease: '2014-02-03T20:59:00Z',
 		authors: [ 'Lord Hiryu', 'MRCMRC', 'Aaron James', 'thewool', 'unclewilly', 'Koadic', 'Sheltemke' ]
 	},
-	{
-		id: 'cv',
-		key: 'Cirqus Voltaire (Bally 1997)',
-		name: 'Cirqus Voltaire',
-		manufacturer: 'Bally',
-		year: 1997,
-		rating: 8.1,
-		votes: 14,
-		views: 	9473,
-		comments: 31,
-		tabledownloads: 3845,
-		lastrelease: '2014-02-03T20:59:00Z',
-		authors: [ 'JP Salas', 'Rosve', 'Aaron James', 'Teppotee', 'Koadic', 'Dozer316' ]
-	},
+	games.cv,
 	games.centaur,
 	games.ij,
 	games.mb,
@@ -834,16 +926,17 @@ exports.releases = function(req, res) {
 	var gameAttrs = [ 'id', 'name', 'manufacturer', 'year', 'thumbs'];
 	var ret = [];
 
+	var ij = releases.ij;
+	var mb = releases.mb;
+	ij.table = _.pick(games.ij, gameAttrs);
+	mb.table = _.pick(games.mb, gameAttrs);
+
 	switch (req.query.show) {
 		case 'new':
 			var centaur = releases.centaur;
-			var ij = releases.ij;
 			var afm = releases.afm;
-			var mb = releases.mb;
 
-			ij.table = _.pick(games.ij, gameAttrs);
 			afm.table = _.pick(games.afm, gameAttrs);
-			mb.table = _.pick(games.mb, gameAttrs);
 			centaur.table = _.pick(games.centaur, gameAttrs);
 
 			ret = [ ij, afm, mb, centaur ];
@@ -852,10 +945,12 @@ exports.releases = function(req, res) {
 		case 'updated':
 		default:
 			var t2 = releases.t2;
+			var cv = releases.cv;
 
 			t2.table = _.pick(games.t2, gameAttrs);
+			cv.table = _.pick(games.cv, gameAttrs);
 
-			ret = [ t2 ];
+			ret = [ t2, cv, mb, ij ];
 			break;
 	}
 

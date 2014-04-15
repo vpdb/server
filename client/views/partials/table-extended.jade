@@ -1,4 +1,4 @@
-.col-xs-12.fade-animation(ng-repeat="table in tables | filter:query | decade:filterDecades | manufacturer:filterManufacturer | orderBy:sort:sortReverse", ng-click="details(table.id)")
+.col-xs-12.fade-animation(ng-repeat="table in tables | filter:query | decade:filterDecades | manufacturer:filterManufacturer | orderBy:sort:sortReverse", ng-click="navGame(table.id)")
 	.panel.panel-dark.panel-extended.bg-dark.ng-cloak
 		.img-wrapper
 			.img.img-fade(img-bg="{{ table.art.backglass_thumb }}")

@@ -26,7 +26,7 @@
 		h5 new releases
 		hr
 		.row.row-data
-			.col-lg-6.col-md-12.fade-animation(ng-repeat="release in releases", ng-click="details(table.id)")
+			.col-lg-6.col-md-12.fade-animation(ng-repeat="release in releases", ng-click="navGame(table.id)")
 				.panel.panel-dark.panel-mini.bg-dark.ng-cloak
 					.img-wrapper
 						.img.img-fade(img-bg="{{ release.thumbs.square }}")

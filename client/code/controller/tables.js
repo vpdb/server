@@ -25,11 +25,6 @@ ctrl.controller('TableListController', function($scope, $http, $location, $templ
 	};
 	$scope.setView();
 
-	$scope.details = function(key) {
-		$location.hash('');
-		$location.path('/table/' + key);
-	};
-
 	$http({
 		method: 'GET',
 		url: '/api/tables'

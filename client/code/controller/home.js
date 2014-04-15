@@ -1,7 +1,8 @@
 ctrl.controller('HomeController', function($scope, $http) {
 
 	$scope.packs = [];
-	$scope.releases = [];
+	$scope.newReleases = [];
+	$scope.updatedReleases = [];
 
 	$http({
 		method: 'GET',
@@ -12,9 +13,17 @@ ctrl.controller('HomeController', function($scope, $http) {
 
 	$http({
 		method: 'GET',
-		url: '/api/releases'
+		url: '/api/releases?show=new'
 	}).success(function(data, status, headers, config) {
-		$scope.releases = data.result;
+		$scope.newReleases = data.result;
 	});
+
+	$http({
+		method: 'GET',
+		url: '/api/releases?show=updated'
+	}).success(function(data, status, headers, config) {
+		$scope.updatedReleases = data.result;
+	});
+
 
 });

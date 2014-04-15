@@ -109,6 +109,69 @@ var releases = {
 		}
 	},
 
+	centaur: {
+		id: 1123,
+		title: '3D Edition',
+		description: "This is a complete rework of the old 1.2 version. A big thank you to @JimmyFingers who did the majority of changes to this table.",
+		acknowledgements: '',
+		authors: [
+			{
+				author: {
+					user: 'fuzzel',
+					avatar: '/avatars/fuzzel.jpg'
+				},
+				roles: [ 'Table Mod' ]
+			},
+			{
+				author: {
+					user: 'JimmyFingers',
+					avatar: '/avatars/jf.jpg'
+				},
+				roles: [ 'Major Tweaks' ]
+			},
+			{
+				author: {
+					user: 'Lord Hiryu',
+					avatar: '/avatars/lordhiryu.jpg'
+				},
+				roles: [ 'Original Release' ]
+			}
+		],
+		submitter: {
+			user: 'fuzzel ',
+			avatar: '/avatars/fuzzel.jpg'
+		},
+		rating: 7.9,
+		votes: 21,
+		screenshots: [],
+		mods: [],
+		versions: [
+			{
+				version: '2.1',
+				timestamp: '2014-04-02T21:24:20Z',
+				size: 103765981,
+				submitter: { user: 'fuzzel' },
+				downloads: 1344,
+				changes: '* Implemented and tuned new BMPR routine which uses an updated formula for a better / smoother momentum curve, higher table friction settings (for better ball weight appearance), and new corresponding BMPR parameters\n* Implemented additional custom physics routines for dampening, positional slingshot strength, flipper tap code, and a new / experimental one for “X” cushioning / ball jumping for the ORBS targets as well as the soft targets behind them\n* Adjusted size of the ball accordingly to compensate for wide build dimensions\n* Added a variety of sounds and sound processing (speed based) routines\n* Created new alpha full sized fading GI plastics with transparent edges / sections\n* Created new individual alpha ramp fading GI bulb Halos for incandescent and LED based lights (for PF lighting but at height to affect interaction / lighting on the ball) and choice can be selected via script options\n* Created Chamber section GI Halos for independent control / coding\n* Created new bumper fading GI images for 3D meshes\n* Added back metal and back wall GI interaction / images\n* Created basic PF GI for when all GI lights / independent sections off or on\n* Updated GI scripting for above components and corrected sections to be authentic (Chamber and slings isolated from rest of GI)\n* Created and coded new individual lamp halos for added lighting effects on most table lamps / light inserts (can be disabled in script)\n* Added Bonus rollover lights reflections in back metal\n* Re-scripted / architected captured ball in chamber so now it is totally natural and does not jerkily land back into kicker position (removed original / extra coding and is now simply a ball trapped in that area that can be collided with as would be on a real table)\n* Fixed Orbs Release target magnet area, modified operation to be better timed with that of a real machine, and incorporated animations for the sub-PF ball launch / metal door (some tricks to make ball appear hidden / look like it comes up from beneath the table)\n* Added code for allowing simultaneous / two target hits on ORBS and Sequence drop targets\n* Modified images / added metal textures to all posts and gate housings (some were previously just solid colours / no images mapped)\n* Adjusted some images for lighting aspects\n* Adjusted behaviour of Outlane pegs for ball save / nudging based on some previous feedback by Mukuste\n* A complete new set of 3D meshes'
+			}
+		],
+		comments: [ ],
+		media: [ ],
+
+		// easy acess fields:
+		thumbs: {
+			playfield: '/cabinet/centaur.png',
+			square: '/asset/release/centaur/square-small.png'
+		},
+		lastversion: {
+			version: '2.1',
+			timestamp: '2014-04-02T21:24:20Z',
+			size: 103765981,
+			submitter: { user: 'fuzzel' },
+			downloads: 1344
+		}
+	},
+
 	mb: {
 		id: 954,
 		title: 'PC Killer Edition',
@@ -267,6 +330,85 @@ var releases = {
 			submitter: { user: 'teppotee' },
 			downloads: 5594
 		}
+	},
+
+	t2: {
+		id: 123,
+		title: 'Chrome Edition',
+		description: "Based on Terminator 2: Judgment Day VP9 v1.1RC 4/3 by UncleReamus and Noah Fentz. EMreels / Angle-dependent table:\n\n### Works only in 1920 x 1080 x 32bit.\n### \"Antialias Ball\" has to be activated\n\nROM name (not included): ``t2_l8``",
+		acknowledgements: '* @UncleReamus and @NoahFentz for giving me permission to use their version to build mine.\n* @Light66 for giving me permission to use some of his textures originally done for the FP version.\n* @BFG_Brutal and @Gear323 for their precious help, they tested the table during months and their comments, advises and feedback have been extremely helpful.',
+		authors: [
+			{
+				author: {
+					user: ' tipoto',
+					avatar: '/avatars/tipoto.jpg'
+				},
+				roles: [ 'Table Mod' ]
+			},
+			{
+				author: {
+					user: ' Noah Fentz',
+					avatar: '/avatars/noah.jpg'
+				},
+				roles: [ 'Original 4:3 Version' ]
+			},
+			{
+				author: {
+					user: ' UncleReamus',
+					avatar: '/avatars/UncleReamus.png'
+				},
+				roles: [ 'Original 4:3 Version' ]
+			}
+		],
+		submitter: {
+			user: 'tipoto ',
+			avatar: '/avatars/tipoto.jpg'
+		},
+		rating: 9.8,
+		votes: 212,
+		screenshots: [],
+		mods: [],
+		versions: [
+			{
+				version: '1.0.7',
+				timestamp: '2014-01-10T10:29:20Z',
+				size: 63460654,
+				submitter: { user: 'tipoto' },
+				downloads: 1231,
+				changes: '* Fake Anti-aliasing and FXAA disabled. These new features are unnecessary and don\'t work well with this table, they produce a blurry render.'
+			},
+			{
+				version: '1.0.6',
+				timestamp: '2014-01-02T02:04:20Z',
+				size: 63460654,
+				submitter: { user: 'tipoto' },
+				downloads: 1232,
+				changes: '* New Game Play / Physics. It\'s now easier to load the cannon, with both flippers. The table is fast, precise and fluid.\n* Added a new option in the script to hide the virtual DMD. It\'s for those having a real DMD on their Cab. The option is called "DMD_Hidden" and you will find it at the beginning of the script with the other options.\n* ROM name has been moved at the beginning of the script with all the options. It\'s now easy to access.'
+			},
+			{
+				version: '1.0.5',
+				timestamp: '2013-12-12T12:04:20Z',
+				size: 63460654,
+				submitter: { user: 'tipoto' },
+				downloads: 2556,
+				changes: '* 1 texture modified, there was a glitch when the flasher near by the left bumper was flashing\n* Plunger strength slightly increased\n* (Table works fine with vp914 and vp913)'
+			}
+		],
+		comments: [ ],
+		media: [ ],
+
+		// easy acess fields:
+		thumbs: {
+			playfield: '/cabinet/t2chrome.png',
+			square: '/asset/release/t2chrome/square-small.png'
+		},
+		lastversion: {
+			version: '1.0.7',
+			timestamp: '2014-01-10T10:29:20Z',
+			size: 63460654,
+			submitter: { user: 'tipoto' },
+			downloads: 1231
+		}
 	}
 };
 
@@ -320,6 +462,22 @@ var games = {
 		thumbs: {
 			logo: '/logo/tm-bop.png'
 		}
+	},
+
+	centaur: {
+		id: 'centaur',
+		key: 'Centaur (Bally 1981)',
+		name: 'Centaur',
+		manufacturer: 'Bally',
+		year: 1981,
+		rating: 9.1,
+		votes: 5,
+		views: 2440,
+		comments: 12,
+		tabledownloads: 915,
+		lastrelease: '2013-07-14T21:46:00Z',
+		authors: [ 'Fuzzel', 'Lord Hiryu' ],
+		releases: [ releases.centaur ]
 	},
 
 	mb: {
@@ -480,6 +638,22 @@ var games = {
 		}
 	},
 
+	t2: {
+		id: 't2',
+		key: 'Terminator 2 - Judgment Day (Williams 1991)',
+		name: 'Terminator 2: Judgment Day',
+		manufacturer: 'Williams',
+		year: 1991,
+		rating: 9.8,
+		votes: 42,
+		views: 34026,
+		comments: 65,
+		tabledownloads: 8265,
+		lastrelease: '2014-01-10T08:29:00Z',
+		authors: [ 'Tipoto' ],
+		releases: [ releases.t2 ]
+	},
+
 	totan: {
 		id: 'totan',
 		key: 'Tales of the Arabian Nights (Williams 1996)',
@@ -579,37 +753,11 @@ var data = [
 		lastrelease: '2014-02-03T20:59:00Z',
 		authors: [ 'JP Salas', 'Rosve', 'Aaron James', 'Teppotee', 'Koadic', 'Dozer316' ]
 	},
-	{
-		id: 'centaur',
-		key: 'Centaur (Bally 1981)',
-		name: 'Centaur',
-		manufacturer: 'Bally',
-		year: 1981,
-		rating: 9.1,
-		votes: 5,
-		views: 2440,
-		comments: 12,
-		tabledownloads: 915,
-		lastrelease: '2013-07-14T21:46:00Z',
-		authors: [ 'Fuzzel', 'Lord Hiryu' ]
-	},
+	games.centaur,
 	games.ij,
 	games.mb,
 	games.sttng,
-	{
-		id: 't2',
-		key: 'Terminator 2 - Judgment Day (Williams 1991)',
-		name: 'Terminator 2: Judgment Day',
-		manufacturer: 'Williams',
-		year: 1991,
-		rating: 9.8,
-		votes: 42,
-		views: 34026,
-		comments: 65,
-		tabledownloads: 8265,
-		lastrelease: '2014-01-10T08:29:00Z',
-		authors: [ 'Tipoto' ]
-	},
+	games.t2,
 	games.totan,
 	{
 		id: 'taf',
@@ -683,17 +831,36 @@ exports.packs = function(req, res) {
 
 exports.releases = function(req, res) {
 
-	var ij = releases.ij;
-	var afm = releases.afm;
-	var mb = releases.mb;
 	var gameAttrs = [ 'id', 'name', 'manufacturer', 'year', 'thumbs'];
+	var ret = [];
 
-	ij.table = _.pick(games.ij, gameAttrs);
-	afm.table = _.pick(games.afm, gameAttrs);
-	mb.table = _.pick(games.mb, gameAttrs);
+	switch (req.query.show) {
+		case 'new':
+			var centaur = releases.centaur;
+			var ij = releases.ij;
+			var afm = releases.afm;
+			var mb = releases.mb;
+
+			ij.table = _.pick(games.ij, gameAttrs);
+			afm.table = _.pick(games.afm, gameAttrs);
+			mb.table = _.pick(games.mb, gameAttrs);
+			centaur.table = _.pick(games.centaur, gameAttrs);
+
+			ret = [ ij, afm, mb, centaur ];
+			break;
+
+		case 'updated':
+		default:
+			var t2 = releases.t2;
+
+			t2.table = _.pick(games.t2, gameAttrs);
+
+			ret = [ t2 ];
+			break;
+	}
 
 	res.json({
-		result: [ ij, afm, mb ]
+		result: ret
 	});
 };
 

@@ -921,14 +921,14 @@ exports.packs = function(req, res) {
 				logo: 'stern',
 				name: 'early 2000s',
 				number: 'PACK 1',
-				banner: '/packs/williams-1990s.png',
+				banner: '/packs/stern-2000s.png',
 				releases: [
-					_.pick(games.ij, gameAttrs),
-					_.pick(games.ww, gameAttrs),
-					_.pick(games.mb, gameAttrs),
-					_.pick(games.totan, gameAttrs),
-					_.pick(games.bop, gameAttrs),
-					_.pick(games.sttng, gameAttrs)
+					{ name: 'Elvis®', id: 'mb' },
+					{ name: 'The Lord of the Rings', id: 'mb' },
+					{ name: 'The Simpsons Pinball Party', id: 'mb' },
+					{ name: 'Monopoly™', id: 'mb' },
+					{ name: 'Ripley\'s Believe It or Not!®', id: 'mb' },
+					{ name: 'Playboy®', id: 'mb' }
 				]
 
 			}

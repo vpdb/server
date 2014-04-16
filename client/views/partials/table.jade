@@ -153,8 +153,8 @@
 				h3 Comments on Release
 				label.padder-left(ng-show="!release.comments || release.comments.length == 0") No comments yet.
 				.media(ng-repeat="comment in release.comments", ng-controller="CommentCtrl")
-					div.media-object.media-avatar.media-avatar-medium.pull-left(ng-hide="comment.author.avatar")
-					img.media-object.media-avatar.media-avatar-medium.pull-left(ng-show="comment.author.avatar", ng-src="{{ comment.author.avatar }}")
+					div.media-object.media-avatar.media-avatar-medium.media-avatar-comment.pull-left(ng-hide="comment.author.avatar")
+					img.media-object.media-avatar.media-avatar-medium.media-avatar-comment.pull-left(ng-show="comment.author.avatar", ng-src="{{ comment.author.avatar }}")
 					.media-body
 						.panel.panel-small.bg-lighter
 							.panel-triangle
@@ -176,7 +176,7 @@
 								.clearfix
 
 				.media
-					.media-avatar-medium.media-avatar.pull-left
+					.media-avatar-medium.media-avatar.media-avatar-comment.pull-left
 					.media-body
 						tabset.tabset-newcomment
 							label.label-small.pull-right Comments are parsed with <a href="http://daringfireball.net/projects/markdown/syntax" target="_blank">Markdown</a>.

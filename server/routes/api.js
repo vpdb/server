@@ -438,7 +438,7 @@ var releases = {
 			}
 		],
 		submitter: {
-			user: 'tipoto ',
+			user: 'tipoto',
 			avatar: '/avatars/tipoto.jpg'
 		},
 		rating: 9.8,
@@ -916,6 +916,21 @@ exports.packs = function(req, res) {
 					_.pick(games.sttng, gameAttrs)
 				]
 
+			},
+			{
+				logo: 'stern',
+				name: 'early 2000s',
+				number: 'PACK 1',
+				banner: '/packs/williams-1990s.png',
+				releases: [
+					_.pick(games.ij, gameAttrs),
+					_.pick(games.ww, gameAttrs),
+					_.pick(games.mb, gameAttrs),
+					_.pick(games.totan, gameAttrs),
+					_.pick(games.bop, gameAttrs),
+					_.pick(games.sttng, gameAttrs)
+				]
+
 			}
 		]
 	});
@@ -926,31 +941,27 @@ exports.releases = function(req, res) {
 	var gameAttrs = [ 'id', 'name', 'manufacturer', 'year', 'thumbs'];
 	var ret = [];
 
+	var afm = releases.afm;
+	var centaur = releases.centaur;
+	var cv = releases.cv;
 	var ij = releases.ij;
 	var mb = releases.mb;
+	var t2 = releases.t2;
+
+	afm.table = _.pick(games.afm, gameAttrs);
+	centaur.table = _.pick(games.centaur, gameAttrs);
+	cv.table = _.pick(games.cv, gameAttrs);
 	ij.table = _.pick(games.ij, gameAttrs);
 	mb.table = _.pick(games.mb, gameAttrs);
+	t2.table = _.pick(games.t2, gameAttrs);
 
 	switch (req.query.show) {
 		case 'new':
-			var centaur = releases.centaur;
-			var afm = releases.afm;
-
-			afm.table = _.pick(games.afm, gameAttrs);
-			centaur.table = _.pick(games.centaur, gameAttrs);
-
-			ret = [ ij, afm, mb, centaur ];
+			ret = [ ij, afm, mb, centaur, t2, cv ];
 			break;
-
 		case 'updated':
 		default:
-			var t2 = releases.t2;
-			var cv = releases.cv;
-
-			t2.table = _.pick(games.t2, gameAttrs);
-			cv.table = _.pick(games.cv, gameAttrs);
-
-			ret = [ t2, cv, mb, ij ];
+			ret = [ t2, cv, mb, ij, afm, centaur ];
 			break;
 	}
 
@@ -960,9 +971,30 @@ exports.releases = function(req, res) {
 };
 
 exports.feed = function(req, res) {
-
 	res.json({
 		result: [
+			{
+				type: 'comment',
+				timestamp: new Date(new Date().getTime() - 30000).toISOString(),
+				user: {
+					user: 'freezy',
+					avatar: '/avatars/freezy.jpg'
+				},
+				data: {
+					type: 'release',
+					game: {
+						id: 'afm',
+						name: 'Attack from Mars',
+						manufacturer: 'Williams',
+						year: 1998
+					},
+					release: {
+						id: 1198,
+						title: 'Real-Flag Edition'
+					},
+					message: 'Welcome to the dashboard!'
+				}
+			},
 			{
 				type: 'release',
 				timestamp: new Date(new Date().getTime() - 3600000).toISOString(),
@@ -982,6 +1014,29 @@ exports.feed = function(req, res) {
 						title: 'HD Edition',
 						lastversion: {
 							version: '2.0'
+						}
+					}
+				}
+			},
+			{
+				type: 'release',
+				timestamp: '2014-01-10T08:29:00Z',
+				user: {
+					user: 'tipoto',
+					avatar: '/avatars/tipoto.jpg'
+				},
+				data: {
+					game: {
+						id: 't2',
+						name: 'Terminator 2: Judgment Day',
+						manufacturer: 'Williams',
+						year: 1991
+					},
+					release: {
+						id: 123,
+						title: 'Chrome Edition',
+						lastversion: {
+							version: '1.0.7'
 						}
 					}
 				}
@@ -1007,6 +1062,46 @@ exports.feed = function(req, res) {
 					},
 					message: 'Hey I\'m the first to say WELL DONE! :D'
 				}
+			}
+		]
+	});
+};
+
+exports.users = function(req, res) {
+
+	res.json({
+		result: [
+			{
+				user: 'fuzzel',
+				avatar: '/avatars/fuzzel.jpg',
+				authored: 2,
+				submitted: 3,
+				acknowledged: 52,
+				followers: 2231
+			},
+			{
+				user: 'jpsalas',
+				avatar: '/avatars/jpsalas.png',
+				authored: 74,
+				submitted: 12,
+				acknowledged: 1165,
+				followers: 4231
+			},
+			{
+				user: 'unclewilly',
+				avatar: '/avatars/unclewilly.jpg',
+				authored: 54,
+				submitted: 5,
+				acknowledged: 554,
+				followers: 5132
+			},
+			{
+				user: 'Noah Fentz',
+				avatar: '/avatars/noah.jpg',
+				authored: 3,
+				submitted: 6651,
+				acknowledged: 565,
+				followers: 2132
 			}
 		]
 	});

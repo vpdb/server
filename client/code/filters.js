@@ -83,6 +83,19 @@ filters.filter('feedIcon', function() {
 	}
 });
 
+filters.filter('manufacturerIcon', function() {
+	return function(item) {
+		switch (item.logo) {
+			case 'williams':
+				return 'icon-williams';
+			case 'stern':
+				return 'icon-stern';
+			default:
+				return '';
+		}
+	}
+});
+
 filters.filter('feedAction', function() {
 	return function(item) {
 

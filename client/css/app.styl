@@ -17,6 +17,8 @@ font-weight-bold = 700
 _font-weight-extrabold = 800
 _font-weight-ultrabold = 900
 
+font-size-standard = 16px
+
 animation-long = 350ms
 animation-short = 200ms
 animation-shorter = 100ms
@@ -34,7 +36,7 @@ list-square-width = 120px
 body
 	font-family font-content
 	font-weight font-weight-normal
-	font-size 16px
+	font-size font-size-standard
 	-webkit-font-smoothing antialiased
 
 .container.container-topmost
@@ -147,8 +149,12 @@ h3
 	text-transform uppercase
 
 h4 .small
-	font-size 16px
+	font-size font-size-standard
 
+.col-menu
+	h4
+		margin-top 20px
+		text-transform uppercase
 
 // :hr
 hr
@@ -163,8 +169,6 @@ label
 	text-overflow ellipsis
 	&.block
 		display block
-	i.fa, i.icon
-		margin-right 10px
 	span
 		margin-right 10px
 		&.pipe
@@ -177,6 +181,10 @@ label
 	&.label-download
 		padding-top 9px
 		margin-right -25px
+
+label, h4, h5
+	i.fa, i.icon
+		margin-right 6px
 
 // :navbar
 .navbar-default
@@ -441,6 +449,10 @@ ul.viewtype-panel
 			margin-top 15px
 			& + label
 				margin-top -35px
+		&.icon-stern
+			font-size 62px
+			& + label
+				margin-top -50px
 	h3 small
 		font-size 80%
 
@@ -697,15 +709,15 @@ section.footer
 		font-size 18px
 		font-weight font-weight-bold
 	h5, h6
-		font-size 16px
+		font-size font-size-standard
 		font-weight font-weight-normal
 		text-decoration underline
 	a
 		text-decoration underline
 	pre code
-		font-size 16px
+		font-size font-size-standard
 	blockquote
-		font-size 16px
+		font-size font-size-standard
 
 // :image
 .img
@@ -732,9 +744,9 @@ img, .img
 		&.loaded
 			opacity 1
 
-// :avatar
+// :media
 .media-avatar, .thumbnail > img.media-avatar
-	&.pull-left
+	&.media-avatar-comment.pull-left
 		margin-right 0px
 	& + .media-body > .panel
 		margin-top 0px
@@ -769,6 +781,17 @@ div.media-avatar-large:before
 	margin-top 16px
 	font-size 37px
 
+.media-avatar-small, .thumbnail > img.media-avatar-small
+	width 36px
+	height 36px
+	margin-left 0px
+	border-radius 18px
+div.media-avatar-small:before
+	margin-left 18px
+	margin-top 16px
+	font-size 37px
+
+
 .thumbnail.thumbnail-avatar
 	border none
 	width 130px
@@ -780,11 +803,31 @@ div.media-avatar-large:before
 		h1
 			margin-top 0
 			margin-bottom 5px
-			font-size 16px
+			font-size font-size-standard
 			font-family font-content
 			font-weight font-weight-bold
 		label
 			white-space normal
+
+.media.media-mini
+	margin-top 10px
+	padding-bottom 5px
+	&.last
+		border none !important
+	img.media-object
+		width 40px
+		height 40px
+	h4, h5
+		margin-top 0
+		text-transform none
+		font-family font-content
+		font-size font-size-standard
+		white-space nowrap
+		overflow hidden
+		text-overflow ellipsis
+	h4
+		font-weight font-weight-bold
+
 
 // :rating :star
 .ratingbox

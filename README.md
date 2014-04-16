@@ -28,7 +28,7 @@ It also means that once you've found the game you were looking for, you will onl
 and no other hits polluting your search results.
 
 * Data like authors, acknowledgements, changelogs and mods are structured. That means that stats can pulled from those,
-like most active releases, most acknowledged people, most modded tables or whatever else you would think of.
+like most active releases, most acknowledged people, most modded tables or whatever else you could think of.
 
 * Media is divided into two types: Release-specific media (basically everything playfield related) and game-specific
 media (backglasses, flyers, instruction cards etc). Release-specific media is obviously linked to the corresponding
@@ -69,7 +69,7 @@ Prerequisites:
 * Download and install [GraphicsMagick](http://www.graphicsmagick.org/) and make sure that the binary is in
   your ``PATH``.
 
-Install Node.js and git, then open a command line and type:
+Install Node.js and Git, then open a command line and type:
 
 	git clone https://github.com/freezy/node-vpdb.git
 	cd node-vpdb

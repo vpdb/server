@@ -4,6 +4,7 @@ ctrl.controller('HomeController', function($scope, $http) {
 	$scope.newReleases = [];
 	$scope.updatedReleases = [];
 	$scope.feed = [];
+	$scope.users = [];
 
 	$http({
 		method: 'GET',
@@ -31,6 +32,13 @@ ctrl.controller('HomeController', function($scope, $http) {
 		url: '/api/feed'
 	}).success(function(data, status, headers, config) {
 		$scope.feed = data.result;
+	});
+
+	$http({
+		method: 'GET',
+		url: '/api/users'
+	}).success(function(data, status, headers, config) {
+		$scope.users = data.result;
 	});
 
 });

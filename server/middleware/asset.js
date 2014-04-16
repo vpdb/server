@@ -19,7 +19,6 @@ exports.middleware = function() {
 			var size = m[4] ? m[4].substr(1) : null;
 
 			if (_.contains(['square'], format)) {
-				console.log(req.originalUrl);
 				var s = size && sizes[format][size] ? sizes[format][size] : null;
 				asset[format].call(asset, { res: res, req: req }, type, key, s);
 			} else {

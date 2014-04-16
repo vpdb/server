@@ -18,9 +18,11 @@
 		"express": "3.5.x",
 		"gm": "1.14.x",
 		"jade": "*",
-		"nib": "1.0.2",
+		"md5": "1.0.x",
+		"nib": "1.0.x",
 		"piler": "freezy/piler",
 		"reload": "*",
+		"request": "2.34.x",
 		"stylus": "0.42.3",
 		"underscore": "1.6.x"
 	},

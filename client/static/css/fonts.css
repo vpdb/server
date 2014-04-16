@@ -111,11 +111,11 @@
 /*noinspection CssUnknownTarget*/
 @font-face {
 	font-family: 'icons';
-	src:url('/fonts/icons.eot?-7ytd06');
-	src:url('/fonts/icons.svg?-7ytd06#icons') format('svg'),
-	url('/fonts/icons.eot?#iefix-7ytd06') format('embedded-opentype'),
-	url('/fonts/icons.woff?-7ytd06') format('woff'),
-	url('/fonts/icons.ttf?-7ytd06') format('truetype');
+	src:url('/fonts/icons.eot?-7ytd07');
+	src:url('/fonts/icons.svg?-7ytd07#icons') format('svg'),
+	url('/fonts/icons.eot?#iefix-7ytd07') format('embedded-opentype'),
+	url('/fonts/icons.woff?-7ytd07') format('woff'),
+	url('/fonts/icons.ttf?-7ytd07') format('truetype');
 	font-weight: normal;
 	font-style: normal;
 }

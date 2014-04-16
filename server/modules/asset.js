@@ -2,8 +2,12 @@
 
 var fs = require('fs');
 var gm = require('gm');
+var md5 = require('md5');
+var util = require('util');
+var path = require('path');
+var request = require('request');
 
-var disableCache = true;
+var disableCache = false;
 
 /**
  * Renders a square image.
@@ -16,9 +20,9 @@ var disableCache = true;
 exports.square = function(context, type, key, size) {
 
 	if (type == 'release') {
-		var path = __dirname + '/../../data/assets/cabinet/' + key + '.png';
+		var p = __dirname + '/../../data/assets/cabinet/' + key + '.png';
 
-		asset(context, path, function(gm, callback) {
+		asset(context, p, function(gm, callback) {
 			gm.size(function(err, srcSize) {
 				if (err) {
 					console.error(err);
@@ -31,7 +35,7 @@ exports.square = function(context, type, key, size) {
 				}
 				callback(gm);
 			});
-		});
+		}, type, key, size);
 
 	} else {
 		context.res.writeHead(404);
@@ -39,11 +43,11 @@ exports.square = function(context, type, key, size) {
 	}
 };
 
-var asset = function(context, path, process, defaultName) {
-	if (path && fs.existsSync(path)) {
+var asset = function(context, p, process, type, key, size, defaultName) {
+	if (p && fs.existsSync(p)) {
 
-		// caching
-		var fd = fs.openSync(path, 'r');
+		// browser caching
+		var fd = fs.openSync(p, 'r');
 		var modified = new Date(fs.fstatSync(fd).mtime);
 		fs.closeSync(fd);
 		var ifmodifiedsince = new Date(context.req.headers['if-modified-since']);
@@ -53,10 +57,22 @@ var asset = function(context, path, process, defaultName) {
 			return;
 		}
 
+		// file caching
+		var hash = md5.digest_s(type + ':' + ':' + key + ':' + size);
+		var filename = path.normalize(__dirname + '../../../gen/img/' + hash + '.png');
+		if (fs.existsSync(filename)) {
+			console.log('File cache hit, returning ' + filename);
+			return file(context, filename);
+		} else {
+			console.log('No cache hit for ' + filename);
+		}
+
 		// cache, process.
 		var now = new Date().getTime();
-		process(gm(path), function(gm) {
-			gm.stream(function (err, stream) {
+		process(gm(p), function(gm) {
+
+			// stream to client
+			gm.stream(function(err, stream) {
 				if (err) {
 					logger.log('error', '[asset] ERROR streaming image: ' + err);
 					return context.res.writeHead(500);
@@ -67,11 +83,38 @@ var asset = function(context, path, process, defaultName) {
 					'Last-Modified': modified
 				});
 				stream.pipe(context.res);
-				console.log("image processed in %d ms.", new Date().getTime() - now);
+				console.log("Asset processed in %d ms.", new Date().getTime() - now);
 			});
 		});
+
+		// FIXME don't process twice, but when chaining write() after stream(), the unprocessed image gets saved.
+		// save to cache
+		process(gm(p), function(gm) {
+			gm.write(filename, function(err) {
+				if (err) {
+					return console.error('Error writing asset cache to ' + filename + ': ' + err);
+				}
+				console.log('Successfully wrote asset cache to ' + filename + '.');
+
+				// now shrink it
+				fs.createReadStream(filename).pipe(request.post({
+					url: 'https://api.tinypng.com/shrink',
+					json: true,
+					headers: { 'Authorization' : 'Basic ' + new Buffer('key:X6JiKxeLNoN8Fgnpz0F7ervRS7Z8SIfW').toString('base64') }
+				}, function(err, response, json) {
+					if (err) {
+						return console.error('Error while posting image to tinypng: %s', err);
+					}
+					if (response.statusCode != 201) {
+						return console.error('Error shrinking image (%d): %s', response.statusCode, util.inspect(json));
+					}
+					request(json.output.url).pipe(fs.createWriteStream(filename));
+				}));
+			});
+		});
+
 	} else {
-		console.warn('[asset] No asset found for %s.', path);
+		console.warn('[asset] No asset found for %s.', p);
 		if (defaultName) {
 			context.res.writeHead(200, {
 				'Content-Type': 'image/svg+xml',
@@ -80,7 +123,13 @@ var asset = function(context, path, process, defaultName) {
 			fs.createReadStream(__dirname + '/../../client/static/images/' + defaultName).pipe(context.res);
 		} else {
 			context.res.writeHead(404);
-			context.res.end('Sorry, ' + path + ' not found.');
+			context.res.end('Sorry, ' + p + ' not found.');
 		}
 	}
+};
+
+var file = function(context, path) {
+	context.res.writeHead(200, { 'Content-Type': 'image/png' });
+	var stream = fs.createReadStream(path);
+	stream.pipe(context.res);
 };

@@ -3,7 +3,7 @@
 		h5 packs
 		hr
 		.row.row-data
-			.col-xs-12.fade-animation(ng-repeat="pack in packs", ng-click="details(table.id)")
+			.col-xs-12.fade-animation(ng-repeat="pack in packs", ng-click="details(game.id)")
 				.panel.panel-dark.panel-banner.bg-dark.ng-cloak
 					img(ng-src="{{ pack.banner }}")
 
@@ -24,12 +24,12 @@
 		h5 new releases
 		hr
 		.row.row-data
-			.col-lg-6.col-md-12.fade-animation(ng-repeat="release in newReleases", ng-click="navGame(release.table.id)")
+			.col-lg-6.col-md-12.fade-animation(ng-repeat="release in newReleases", ng-click="navGame(release.game.id)")
 				.panel.panel-dark.panel-mini.bg-dark.ng-cloak
 					.img-wrapper
 						.img.img-fade(img-bg="{{ release.thumbs.square }}")
 					.data-wrapper
-						h3 {{ release.table.name }}
+						h3 {{ release.game.name }}
 						h4
 							| {{ release.title }}
 							label.label-version {{ release.lastversion.version }}
@@ -42,12 +42,12 @@
 		h5 updated releases
 		hr
 		.row.row-data
-			.col-lg-6.col-md-12.fade-animation(ng-repeat="release in updatedReleases", ng-click="navGame(release.table.id)")
+			.col-lg-6.col-md-12.fade-animation(ng-repeat="release in updatedReleases", ng-click="navGame(release.game.id)")
 				.panel.panel-dark.panel-mini.bg-dark.ng-cloak
 					.img-wrapper
 						.img.img-fade(img-bg="{{ release.thumbs.square }}")
 					.data-wrapper
-						h3 {{ release.table.name }}
+						h3 {{ release.game.name }}
 						h4
 							| {{ release.title }}
 							label.label-version {{ release.lastversion.version }}
@@ -85,21 +85,21 @@
 		.media.media-mini(ng-repeat="release in newReleases.slice(0,4)", ng-class="{ last: $last }")
 			img.media-object.pull-left(ng-src="{{release.thumbs.square}}")
 			.media-body
-				h4.media-heading {{ release.table.name }}
+				h4.media-heading {{ release.game.name }}
 				h5.media-heading {{ release.title }}
 
 		h4 Most Starred
 		.media.media-mini(ng-repeat="release in updatedReleases.slice(0,4)", ng-class="{ last: $last }")
 			img.media-object.pull-left(ng-src="{{release.thumbs.square}}")
 			.media-body
-				h4.media-heading {{ release.table.name }}
+				h4.media-heading {{ release.game.name }}
 				h5.media-heading {{ release.title }}
 
 		h4 Most Downloaded
 		.media.media-mini(ng-repeat="release in newReleases.slice(0,4)", ng-class="{ last: $last }")
 			img.media-object.pull-left(ng-src="{{release.thumbs.square}}")
 			.media-body
-				h4.media-heading {{ release.table.name }}
+				h4.media-heading {{ release.game.name }}
 				h5.media-heading {{ release.title }}
 
 		h2 people

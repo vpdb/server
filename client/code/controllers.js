@@ -10,7 +10,7 @@ ctrl.controller('AppCtrl', function($scope, $location) {
 
 	$scope.navGame = function(key) {
 		$location.hash('');
-		$location.path('/table/' + key);
+		$location.path('/game/' + key);
 	};
 
 	console.log('AppCtrl initialized.');

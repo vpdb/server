@@ -101,6 +101,15 @@ there to demonstrate how lists are displayed.
 I will soon gather some feedback and if there's interest, this could be the base of the next generation download
 platform for VP tables.
 
+## TODO
+
+Stuff to add before I seriously think about going further:
+
+* Tagging
+* Download Pinning
+* User Details
+* Review mod relations
+
 ## Credits
 
 To Mukuste. He gave the community such a nice momentum and I thought I could add a little bit to it.

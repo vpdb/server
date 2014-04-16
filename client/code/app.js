@@ -24,16 +24,16 @@ app.config(function($routeProvider, $locationProvider) {
 			templateUrl: 'partials/home'
 		}).
 
-		when('/tables', {
-			templateUrl: 'partials/tables'
+		when('/games', {
+			templateUrl: 'partials/games'
 		}).
 
-		when('/table/:id', {
-			templateUrl: 'partials/table'
+		when('/game/:id', {
+			templateUrl: 'partials/game'
 		}).
 
 		otherwise({
-			redirectTo: '/tables'
+			redirectTo: '/games'
 		});
 
 	$locationProvider.html5Mode(true);

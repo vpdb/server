@@ -1,4 +1,4 @@
-ctrl.controller('TableListController', function($scope, $http, $location, $templateCache, $route) {
+ctrl.controller('GameListController', function($scope, $http, $location, $templateCache, $route) {
 
 	$scope.filterDecades = [];
 	$scope.filterManufacturer = [];
@@ -7,13 +7,13 @@ ctrl.controller('TableListController', function($scope, $http, $location, $templ
 
 	// preload partials
 	_.each(['compact', 'extended', 'list'], function(view) {
-		$http.get( '/partials/table-' + view, { cache:$templateCache });
+		$http.get( '/partials/game-' + view, { cache:$templateCache });
 	});
 
 	var hash = $location.hash();
 	$scope.viewtype = _.contains([ 'extended', 'list' ], hash) ? hash : 'compact';
 	$scope.setView = function() {
-		$scope.template = '/partials/table-' + $scope.viewtype;
+		$scope.template = '/partials/game-' + $scope.viewtype;
 	};
 	$scope.switchview = function(view) {
 		if ($scope.viewtype == view) {
@@ -27,16 +27,16 @@ ctrl.controller('TableListController', function($scope, $http, $location, $templ
 
 	$http({
 		method: 'GET',
-		url: '/api/tables'
+		url: '/api/games'
 
 	}).success(function(data, status, headers, config) {
-		_.each(data.result, function(table) {
-			table.art = {
-				backglass: 'backglass/' + table.key + '.png',
-				backglass_thumb: 'backglass/thumb/' + table.key + '.png'
+		_.each(data.result, function(game) {
+			game.art = {
+				backglass: 'backglass/' + game.key + '.png',
+				backglass_thumb: 'backglass/thumb/' + game.key + '.png'
 			}
 		});
-		$scope.tables = data.result;
+		$scope.games = data.result;
 	});
 
 	$scope.$on('dataToggleDecade', function(event, decade) {

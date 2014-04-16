@@ -1,6 +1,6 @@
-.row.row-fullheight(ng-controller="TableListController")
+.row.row-fullheight(ng-controller="GameListController")
 	.col-sm-9.col-main
-		h1 all tables
+		h1 all games
 		ul.viewtype-panel
 			li(ng-class="{ active: viewtype == 'compact' }")
 				i.fa.fa-th-large(ng-click="switchview('compact')")
@@ -11,7 +11,7 @@
 		hr
 		div.ng-cloak
 			.row.row-data
-				label(ng-show="(tables | filter:query | decade:filterDecades | manufacturer:filterManufacturer).length == 0") No results found for query <strong>{{ query }}</strong>.
+				label(ng-show="(games | filter:query | decade:filterDecades | manufacturer:filterManufacturer).length == 0") No results found for query <strong>{{ query }}</strong>.
 				.fade2-animation(ng-include="template")
 
 	.col-sm-3.col-menu.bg-dark
@@ -70,4 +70,4 @@
 			li.selected.asc(sort="name", d="asc") Name
 			li(sort="rating", d="desc") Rating
 			li(sort="views", d="desc") Views
-			li(sort="tabledownloads", d="desc") Downloads
+			li(sort="gamedownloads", d="desc") Downloads

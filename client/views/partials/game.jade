@@ -1,44 +1,44 @@
-.row.ng-cloak.row-fullheight.fade-animation(ng-controller="TableController", ng-show="!pageLoading")
+.row.ng-cloak.row-fullheight.fade-animation(ng-controller="GameController", ng-show="!pageLoading")
 
 	// right column
 	.col-sm-3.col-sm-push-9.col-lg-2.col-lg-push-10.col-menu.bg-dark.text-center
-		img.img-logo(ng-src="{{ table.thumbs.logo }}")
+		img.img-logo(ng-src="{{ game.thumbs.logo }}")
 
-		.ratingbox(rating-avg="$parent.table.rating", rating-votes="$parent.table.votes", ng-mouseenter="editing=true", ng-mouseleave="editing=false")
+		.ratingbox(rating-avg="$parent.game.rating", rating-votes="$parent.game.votes", ng-mouseenter="editing=true", ng-mouseleave="editing=false")
 			.ratingbox-left
 				.ratingbox-rating.rating-user(ng-show="editing") {{ hoverRating | rating }}
-				.ratingbox-rating(ng-class="{ 'rating-hide' : editing }") {{ $parent.table.rating | rating }}
+				.ratingbox-rating(ng-class="{ 'rating-hide' : editing }") {{ $parent.game.rating | rating }}
 			.ratingbox-right
 				rating.rating-user(ng-show="editing", value="ratingUser", max="10", rating-states="states", on-hover="hoverRating = value", on-leave="hoverRating = ratingUser")
 				rating.rating-avg(ng-hide="editing", value="ratingAvg", max="10", rating-states="states", readonly="true")
-				span.votes {{ $parent.table.votes | number }} vote{{ $parent.table.votes == 1 ? '' : 's' }}
+				span.votes {{ $parent.game.votes | number }} vote{{ $parent.game.votes == 1 ? '' : 's' }}
 		hr
 
-		label.label-block(ng-show="table.gametype") {{ table.gametype | gametype }}
-		label(ng-show="table.units") {{ table.units | number }} units sold
-		hr(ng-show="table.gametype || table.units")
+		label.label-block(ng-show="game.gametype") {{ game.gametype | gametype }}
+		label(ng-show="game.units") {{ game.units | number }} units sold
+		hr(ng-show="game.gametype || game.units")
 
-		label.label-name.label-block(ng-show="table.gamedesign") Game Design
-		label.label-value(ng-show="table.gamedesign") {{ table.gamedesign.join(', ') }}
-		hr(ng-show="table.gamedesign")
+		label.label-name.label-block(ng-show="game.gamedesign") Game Design
+		label.label-value(ng-show="game.gamedesign") {{ game.gamedesign.join(', ') }}
+		hr(ng-show="game.gamedesign")
 
-		label.label-name.label-block(ng-show="table.artdesign") Art Design
-		label.label-value(ng-show="table.artdesign")  {{ table.artdesign.join(', ') }}
-		hr(ng-show="table.artdesign")
+		label.label-name.label-block(ng-show="game.artdesign") Art Design
+		label.label-value(ng-show="game.artdesign")  {{ game.artdesign.join(', ') }}
+		hr(ng-show="game.artdesign")
 
-		label.label-name(ng-show="table.ipdb")
-			a(href="http://www.ipdb.org/machine.cgi?id={{ table.ipdb.no  }}", target="_blank")
+		label.label-name(ng-show="game.ipdb")
+			a(href="http://www.ipdb.org/machine.cgi?id={{ game.ipdb.no  }}", target="_blank")
 				span.space-right
 					strong IPDB
 				i.fa.fa-external-link
-		dl.oneline(ng-show="table.ipdb.rating")
+		dl.oneline(ng-show="game.ipdb.rating")
 			dt Rating
-			dd(title="{{ table.ipdb.votes | number }} vote{{ table.ipdb.votes == 1 ? '' : 's' }}")
-				strong {{ table.ipdb.rating }}
-			dt(ng-show="table.ipdb.top300") Top 300
-			dd(ng-show="table.ipdb.top300") rank <strong>{{ table.ipdb.top300 }}</strong>
+			dd(title="{{ game.ipdb.votes | number }} vote{{ game.ipdb.votes == 1 ? '' : 's' }}")
+				strong {{ game.ipdb.rating }}
+			dt(ng-show="game.ipdb.top300") Top 300
+			dd(ng-show="game.ipdb.top300") rank <strong>{{ game.ipdb.top300 }}</strong>
 
-		hr(ng-show="table.ipdb")
+		hr(ng-show="game.ipdb")
 
 		button.btn.btn-default.btn-block
 			i.fa.fa-star.space-right
@@ -46,12 +46,12 @@
 
 	// left column (main content)
 	.col-sm-9.col-sm-pull-3.col-lg-10.col-lg-pull-2.col-main
-		h1 {{ table.name }}
-		h3.pull-right {{ table.manufacturer }} &middot; {{ table.year }}
+		h1 {{ game.name }}
+		h3.pull-right {{ game.manufacturer }} &middot; {{ game.year }}
 		hr
 		h2 Releases
-		label(ng-hide="table.releases.length > 0")  No releases for this table available.
-		div(ng-repeat="release in table.releases")
+		label(ng-hide="game.releases.length > 0")  No releases for this game available.
+		div(ng-repeat="release in game.releases")
 			.panel.panel-detailed.bg-dark
 				.row.padder-nobottom
 					.col-sm-4.col-md-3
@@ -195,8 +195,8 @@
 				.clearfix
 
 		h2 ROMs
-		label(ng-hide="table.roms.length > 0")  No ROMs available.
-		table.table.table-striped(ng-show="table.roms.length > 0")
+		label(ng-hide="game.roms.length > 0")  No ROMs available.
+		table.table.table-striped(ng-show="game.roms.length > 0")
 			thead
 				tr
 					th Name
@@ -207,7 +207,7 @@
 					th Size
 					th
 			tbody
-				tr(ng-repeat="rom in table.roms")
+				tr(ng-repeat="rom in game.roms")
 					td
 						samp {{ rom.name }}
 					td {{ rom.version }}
@@ -220,9 +220,9 @@
 							i.fa.fa-download
 
 		h2 Backglasses
-		label(ng-hide="table.backglasses.length > 0")  No backglasses available.
-		.row(ng-show="table.backglasses.length > 0")
-			.col-md-4.col-sm-6.col-xs-12.fade-animation.padder-bottom-2x(ng-repeat="backglass in table.backglasses")
+		label(ng-hide="game.backglasses.length > 0")  No backglasses available.
+		.row(ng-show="game.backglasses.length > 0")
+			.col-md-4.col-sm-6.col-xs-12.fade-animation.padder-bottom-2x(ng-repeat="backglass in game.backglasses")
 				.flipbox.flipbox-backglass
 					.panel.bg-dark.panel-backglass.panel-front
 						h3
@@ -257,12 +257,12 @@
 
 
 		h2 Media
-			button(ng-show="table.media.length > 0").btn.btn-primary.pull-right
+			button(ng-show="game.media.length > 0").btn.btn-primary.pull-right
 				i.fa.fa-download.space-right
 				| Download Pack
-		label(ng-hide="table.media.length > 0")  No media available.
-		.row(ng-show="table.media.length > 0")
-			.col-md-4.col-sm-6.col-xs-12.fade-animation.padder-bottom-2x(ng-repeat="item in table.media")
+		label(ng-hide="game.media.length > 0")  No media available.
+		.row(ng-show="game.media.length > 0")
+			.col-md-4.col-sm-6.col-xs-12.fade-animation.padder-bottom-2x(ng-repeat="item in game.media")
 				.flipbox.flipbox-backglass
 					.panel.bg-dark.panel-backglass.panel-front
 						h3
@@ -308,7 +308,7 @@
 
 
 		h2 Alternative Media
-		label(ng-hide="table.secondarymedia.length > 0")  No alternative media available.
+		label(ng-hide="game.secondarymedia.length > 0")  No alternative media available.
 
 		p
 			br

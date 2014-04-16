@@ -101,18 +101,18 @@ filters.filter('feedAction', function() {
 
 		switch (item.type) {
 			case 'comment':
-				return '&nbsp;commented on <a href="/table/' + item.data.game.id + '#' + item.data.release.id +'">'
+				return '&nbsp;commented on <a href="/game/' + item.data.game.id + '#' + item.data.release.id +'">'
 					+ item.data.release.title
-					+ '</a> of <a href="/table/' + item.data.game.id +'">'
+					+ '</a> of <a href="/game/' + item.data.game.id +'">'
 					+ item.data.game.name
 					+ '</a>';
 
 			case 'release':
-				return '&nbsp;released <a href="/table/' + item.data.game.id + '#' + item.data.release.id +'">'
+				return '&nbsp;released <a href="/game/' + item.data.game.id + '#' + item.data.release.id +'">'
 					+ item.data.release.title
 					+ '</a> <label class="label-version">' + item.data.release.lastversion.version + '</label>'
 					+ ' of '
-					+ '<a href="/table/' + item.data.game.id +'">'
+					+ '<a href="/game/' + item.data.game.id +'">'
 					+ item.data.game.name
 					+ '</a>';
 			default:
@@ -140,11 +140,11 @@ filters.filter('decade', function() {
 		if (!items || !decades || !decades.length) {
 			return items;
 		}
-		return _.filter(items, function(table) {
+		return _.filter(items, function(game) {
 			var decade;
 			for (var i = 0; i < decades.length; i++) {
 				decade = decades[i];
-				if (table.year >= decade && table.year < (decade + 10)) {
+				if (game.year >= decade && game.year < (decade + 10)) {
 					return true;
 				}
 			}
@@ -158,11 +158,11 @@ filters.filter('manufacturer', function() {
 		if (!items || !manufacturers || !manufacturers.length) {
 			return items;
 		}
-		return _.filter(items, function(table) {
+		return _.filter(items, function(game) {
 			var manufacturer;
 			for (var i = 0; i < manufacturers.length; i++) {
 				manufacturer = manufacturers[i];
-				if (table.manufacturer.toLowerCase() == manufacturer.toLowerCase()) {
+				if (game.manufacturer.toLowerCase() == manufacturer.toLowerCase()) {
 					return true;
 				}
 			}

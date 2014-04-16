@@ -17,7 +17,7 @@ var releases = {
 					user: 'jpsalas',
 					avatar: '/avatars/jpsalas.png'
 				},
-				roles: [ 'Original Table' ]
+				roles: [ 'Original Release' ]
 			}, {
 				author: {
 					user: 'Aaron James',
@@ -507,7 +507,7 @@ var games = {
 		votes: 18,
 		views: 768,
 		comments: 5,
-		tabledownloads: 4098,
+		gamedownloads: 4098,
 		lastrelease: '2014-03-23T20:38:20Z',
 		authors: [ 'jpsalas' ],
 		releases: [ releases.afm ],
@@ -531,7 +531,7 @@ var games = {
 		votes: 2,
 		views: 1232,
 		comments: 1,
-		tabledownloads: 1233,
+		gamedownloads: 1233,
 		lastrelease: '2011-01-07T19:48:00Z',
 		authors: [ 'unclewilly' ],
 
@@ -551,7 +551,7 @@ var games = {
 		votes: 5,
 		views: 2440,
 		comments: 12,
-		tabledownloads: 915,
+		gamedownloads: 915,
 		lastrelease: '2013-07-14T21:46:00Z',
 		authors: [ 'Fuzzel', 'Lord Hiryu' ],
 		releases: [ releases.centaur ]
@@ -567,7 +567,7 @@ var games = {
 		votes: 14,
 		views: 	9473,
 		comments: 31,
-		tabledownloads: 3845,
+		gamedownloads: 3845,
 		lastrelease: '2014-02-03T20:59:00Z',
 		authors: [ 'JP Salas', 'Rosve', 'Aaron James', 'Teppotee', 'Koadic', 'Dozer316' ],
 		releases: [ releases.cv ],
@@ -599,7 +599,7 @@ var games = {
 		votes: 21,
 		views: 7615,
 		comments: 10,
-		tabledownloads: 5934,
+		gamedownloads: 5934,
 		lastrelease: '2014-02-03T19:47:20Z',
 		authors: [ 'unclewilly', 'randr' ],
 		releases: [ releases.mb ],
@@ -705,7 +705,7 @@ var games = {
 		votes: 3,
 		views: 240,
 		comments: 11,
-		tabledownloads: 5547,
+		gamedownloads: 5547,
 		lastrelease: '2013-07-14T21:46:00Z',
 		authors: [ 'teppotee', 'Lord Hiryu' ],
 		releases: [ releases.ij ],
@@ -727,7 +727,7 @@ var games = {
 		votes: 22,
 		views: 2232,
 		comments: 0,
-		tabledownloads: 44561,
+		gamedownloads: 44561,
 		lastrelease: '2013-12-26T08:25:00Z',
 		authors: [ 'teppotee ' ],
 
@@ -747,7 +747,7 @@ var games = {
 		votes: 42,
 		views: 34026,
 		comments: 65,
-		tabledownloads: 8265,
+		gamedownloads: 8265,
 		lastrelease: '2014-01-10T08:29:00Z',
 		authors: [ 'Tipoto' ],
 		releases: [ releases.t2 ],
@@ -769,7 +769,7 @@ var games = {
 		votes: 4,
 		views: 	2231,
 		comments: 1,
-		tabledownloads: 234,
+		gamedownloads: 234,
 		lastrelease: '2012-10-25T19:39:00Z',
 		authors: [ 'jpsalas' ],
 
@@ -789,7 +789,7 @@ var games = {
 		votes: 2,
 		views: 	1332,
 		comments: 0,
-		tabledownloads: 1333,
+		gamedownloads: 1333,
 		lastrelease: '2013-09-17T05:06:00Z',
 		authors: [ 'aaronjames' ],
 
@@ -812,7 +812,7 @@ var data = [
 		votes: 12,
 		views: 	6932,
 		comments: 16,
-		tabledownloads: 2797,
+		gamedownloads: 2797,
 		lastrelease: '2013-06-16T11:52:00Z',
 		authors: [ 'unclewilly', 'jimmyfingers', 'Grizz' ]
 	},
@@ -826,7 +826,7 @@ var data = [
 		votes: 1,
 		views: 3584,
 		comments: 16,
-		tabledownloads: 1339,
+		gamedownloads: 1339,
 		lastrelease: '2009-07-23T10:03:00Z',
 		authors: [ 'destruk' ]
 	},
@@ -840,7 +840,7 @@ var data = [
 		votes: 14,
 		views: 8179,
 		comments: 7,
-		tabledownloads: 3238,
+		gamedownloads: 3238,
 		lastrelease: '2014-02-03T20:59:00Z',
 		authors: [ 'Lord Hiryu', 'MRCMRC', 'Aaron James', 'thewool', 'unclewilly', 'Koadic', 'Sheltemke' ]
 	},
@@ -861,7 +861,7 @@ var data = [
 		votes: 22,
 		views: 23750,
 		comments: 43,
-		tabledownloads: 9428,
+		gamedownloads: 9428,
 		lastrelease: '2011-11-06T05:25:00Z',
 		authors: [ 'melon' ]
 	},
@@ -876,23 +876,23 @@ var data = [
 		votes: 1,
 		views: 	5013,
 		comments: 9,
-		tabledownloads: 1934,
+		gamedownloads: 1934,
 		lastrelease: '2011-11-06T05:25:00Z',
 		authors: [ 'destruk', 'The Trout' ]
 	},
 	games.ww
 ];
 
-exports.tables = function(req, res) {
+exports.games = function(req, res) {
 	res.json({
 		result: data
 	});
 };
 
-exports.table = function(req, res) {
+exports.game = function(req, res) {
 	res.json({
-		result: _.find(data, function(table) {
-			return table.id == req.params.id;
+		result: _.find(data, function(game) {
+			return game.id == req.params.id;
 		})
 	});
 };
@@ -948,12 +948,12 @@ exports.releases = function(req, res) {
 	var mb = releases.mb;
 	var t2 = releases.t2;
 
-	afm.table = _.pick(games.afm, gameAttrs);
-	centaur.table = _.pick(games.centaur, gameAttrs);
-	cv.table = _.pick(games.cv, gameAttrs);
-	ij.table = _.pick(games.ij, gameAttrs);
-	mb.table = _.pick(games.mb, gameAttrs);
-	t2.table = _.pick(games.t2, gameAttrs);
+	afm.game = _.pick(games.afm, gameAttrs);
+	centaur.game = _.pick(games.centaur, gameAttrs);
+	cv.game = _.pick(games.cv, gameAttrs);
+	ij.game = _.pick(games.ij, gameAttrs);
+	mb.game = _.pick(games.mb, gameAttrs);
+	t2.game = _.pick(games.t2, gameAttrs);
 
 	switch (req.query.show) {
 		case 'new':

@@ -1,0 +1,31 @@
+.col-xs-12.fade-animation(ng-repeat="game in games | filter:query | decade:filterDecades | manufacturer:filterManufacturer | orderBy:sort:sortReverse", ng-click="navGame(game.id)")
+	.panel.panel-dark.panel-extended.bg-dark.ng-cloak
+		.img-wrapper
+			.img.img-fade(img-bg="{{ game.art.backglass_thumb }}")
+		.data-wrapper
+			h3 {{ game.name }}
+			label {{ game.manufacturer }} &middot; {{ game.year }}
+			label.block
+				span(ng-repeat="author in game.authors")
+					i.icon.icon-user
+					| {{ author}}
+			label
+				i.fa.fa-arrow-circle-down
+				span.pipe {{ game.gamedownloads | number }}
+				i.fa.fa-eye.hidden-xs
+				span.pipe.hidden-xs {{ game.views | number }}
+				i.fa.fa-comment.hidden-xs
+				span.pipe.hidden-xs {{ game.comments | number }}
+
+			label.pull-right
+				i.fa.fa-arrow-circle-up
+				time-ago(from-time="{{ game.lastrelease }}")
+
+			.ratingbox.hidden-xs(rating-avg="game.rating")
+				.ratingbox-left
+					.ratingbox-rating {{ game.rating | rating }}
+				.ratingbox-right
+					rating.rating-avg(value="ratingAvg", max="10", rating-states="states", readonly="true")
+					span.votes {{ game.votes | number }} vote{{ game.votes == 1 ? '' : 's' }}
+
+		.clearfix

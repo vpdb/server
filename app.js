@@ -46,14 +46,6 @@ if (app.get('env') === 'production') {
 	// TODO
 }
 
-var index = function(req, res){
-	res.render('index', {
-		layout: false,
-		js: clientjs.renderTags(),
-		css: clientcss.renderTags()
-	});
-};
-
 /**
  * Start Server
  */
@@ -94,8 +86,8 @@ app.configure(function() {
 	clientjs.addFile(__dirname + "/client/code/filters.js");
 	clientjs.addFile(__dirname + "/client/code/directives.js");
 	clientjs.addFile(__dirname + "/client/code/controller/home.js");
-	clientjs.addFile(__dirname + "/client/code/controller/tables.js");
-	clientjs.addFile(__dirname + "/client/code/controller/table.js");
+	clientjs.addFile(__dirname + "/client/code/controller/games.js");
+	clientjs.addFile(__dirname + "/client/code/controller/game.js");
 	clientjs.addFile(__dirname + "/client/code/service/timeago.js");
 	clientjs.addFile(__dirname + "/client/code/directive/timeago.js");
 	clientjs.addFile(__dirname + "/client/code/directive/elastic.js");
@@ -111,13 +103,21 @@ if (app.get('env') === 'development') {
 	});
 }
 
+var index = function(req, res){
+	res.render('index', {
+		layout: false,
+		js: clientjs.renderTags(),
+		css: clientcss.renderTags()
+	});
+};
+
 /**
  * Routes
  */
 app.get('/', index);
-app.get('/tables', index);
-app.get('/table', index);
-app.get('/table/*', index);
+app.get('/games', index);
+app.get('/game', index);
+app.get('/game/*', index);
 app.get('/home', index);
 
 // serve index and view partials
@@ -125,8 +125,8 @@ app.get('/partials/:name', routes.partials);
 app.get('/partials/modals/:name', routes.modals);
 
 // JSON API
-app.get('/api/tables/:id', api.table);
-app.get('/api/tables', api.tables);
+app.get('/api/games/:id', api.game);
+app.get('/api/games', api.games);
 app.get('/api/packs', api.packs);
 app.get('/api/releases', api.releases);
 app.get('/api/feed', api.feed);

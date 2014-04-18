@@ -6,14 +6,18 @@ var ctrl = angular.module('vpdb.controllers', []);
 
 
 ctrl.controller('AppCtrl', function($scope, $location) {
-	$scope.scrolledOnTop = true;
+
+	$scope.menu = 'home';
 
 	$scope.navGame = function(key) {
 		$location.hash('');
 		$location.path('/game/' + key);
 	};
 
-	console.log('AppCtrl initialized.');
+	$scope.setMenu = function(menu) {
+		$scope.menu = menu;
+	}
+
 });
 
 

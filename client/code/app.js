@@ -20,7 +20,7 @@ app.config(function($routeProvider, $locationProvider) {
 
 	$routeProvider.
 
-		when('/home', {
+		when('/', {
 			templateUrl: 'partials/home'
 		}).
 
@@ -33,7 +33,7 @@ app.config(function($routeProvider, $locationProvider) {
 		}).
 
 		otherwise({
-			redirectTo: '/games'
+			redirectTo: '/'
 		});
 
 	$locationProvider.html5Mode(true);

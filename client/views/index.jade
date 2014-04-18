@@ -9,6 +9,12 @@ block body
 						i.icon.icon-vp
 						i.icon.icon-db
 
+			ul.nav.navbar-nav
+				li(ng-class="{ active: menu == 'home' }")
+					a(href="/home") Home
+				li(ng-class="{ active: menu == 'games' }")
+					a(href="/games") Games
+
 	.container.container-topmost
 		div(ng-view)
 

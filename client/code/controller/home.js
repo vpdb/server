@@ -6,6 +6,8 @@ ctrl.controller('HomeController', function($scope, $http) {
 	$scope.feed = [];
 	$scope.users = [];
 
+	$scope.setMenu('home');
+
 	$http({
 		method: 'GET',
 		url: '/api/packs'

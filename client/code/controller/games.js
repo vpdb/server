@@ -5,6 +5,8 @@ ctrl.controller('GameListController', function($scope, $http, $location, $templa
 	$scope.sort = 'name';
 	$scope.sortReverse = false;
 
+	$scope.setMenu('games');
+
 	// preload partials
 	_.each(['compact', 'extended', 'list'], function(view) {
 		$http.get( '/partials/game-' + view, { cache:$templateCache });

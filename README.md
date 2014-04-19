@@ -110,6 +110,14 @@ Stuff to add before I seriously think about going further:
 * User Details
 * Review mod relations
 
+Stuff to add after having decided to go further:
+
+* MongoDB integration
+* User authentication
+* File up/downloads
+* Upload/edit forms in UI
+* Counters/quota system (TBD)
+
 ## Credits
 
 To Mukuste. He gave the community such a nice momentum and I thought I could add a little bit to it.

@@ -102,10 +102,13 @@ var releases = {
 		lastversion: {
 			version: '3.5',
 			timestamp: '2013-12-30T19:42:20Z',
-			size: 22023498,
 			submitter: 'Aaron James',
 			downloads: 3659,
-			changes: '* Teppotee reworked the lighting to make it work with VP9.2 Big thanks!!! He really helped me on this because i couldn\'t figure some things out, and he saved me alot of time.\n* I then changed the layback/xy settings, and had to add one more wall to the left side to hide flasher artifacts. I did a minor physics tweak.'
+				changes: '* Teppotee reworked the lighting to make it work with VP9.2 Big thanks!!! He really helped me on this because i couldn\'t figure some things out, and he saved me alot of time.\n* I then changed the layback/xy settings, and had to add one more wall to the left side to hide flasher artifacts. I did a minor physics tweak.',
+			download: {
+				id: 'sdaf2',
+				size: 22023498
+			}
 		}
 	},
 
@@ -166,9 +169,12 @@ var releases = {
 		lastversion: {
 			version: '2.1',
 			timestamp: '2014-04-02T21:24:20Z',
-			size: 103765981,
 			submitter: { user: 'fuzzel' },
-			downloads: 1344
+			downloads: 1344,
+			download: {
+				id: 'infda',
+				size: 103765981
+			}
 		}
 	},
 
@@ -243,9 +249,12 @@ var releases = {
 		lastversion: {
 			version: '2.1',
 			timestamp: '2014-04-02T21:24:20Z',
-			size: 103765981,
 			submitter: { user: 'fuzzel' },
-			downloads: 1344
+			downloads: 1344,
+			download: {
+				id: 'lnfds',
+				size: 103765981
+			}
 		}
 	},
 
@@ -338,9 +347,12 @@ var releases = {
 		lastversion: {
 			version: '2.1',
 			timestamp: '2014-02-03T19:47:20Z',
-			size: 175135975,
 			downloads: 1087,
-			changes: '* Reduced Texture sizes\n* Added DOF Option\n* Added Day Option which brightens the playfield\n* Fixed Rollover lights blocking inserts'
+			changes: '* Reduced Texture sizes\n* Added DOF Option\n* Added Day Option which brightens the playfield\n* Fixed Rollover lights blocking inserts',
+			download: {
+				id: 'ohnca',
+				size: 175135975
+			}
 		}
 	},
 
@@ -403,9 +415,13 @@ var releases = {
 		lastversion: {
 			version: '2.0',
 			timestamp: '2012-12-28T08:04:20Z',
-			size: 273448315,
 			submitter: { user: 'teppotee' },
-			downloads: 5594
+			downloads: 5594,
+			download: {
+				id: 'saoi2',
+				size: 273448315
+			}
+
 		}
 	},
 
@@ -482,9 +498,12 @@ var releases = {
 		lastversion: {
 			version: '1.0.7',
 			timestamp: '2014-01-10T10:29:20Z',
-			size: 63460654,
 			submitter: { user: 'tipoto' },
-			downloads: 1231
+			downloads: 1231,
+			download: {
+				id: 'ksjfda',
+				size: 63460654
+			}
 		}
 	}
 };

@@ -142,10 +142,9 @@
 							span.pipe
 								| Version
 								label.label-version {{ release.lastversion.version }}
-							span.pipe {{ release.lastversion.size | bytes }}
+							span.pipe {{ release.lastversion.download.size | bytes }}
 					.col-sm-4.col-md-5
-						button.btn.btn-primary.btn-lg.btn-block.pull-right
-							i.fa.fa-download.space-right
+						button.btn.btn-primary.btn-lg.btn-block.pull-right(download="release.lastversion.download", download-info="release | dlRelease", ng-class="{ 'btn-pin': downloadsPinned }")
 							| Download
 					.clearfix
 

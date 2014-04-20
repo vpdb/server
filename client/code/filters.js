@@ -170,3 +170,10 @@ filters.filter('manufacturer', function() {
 		});
 	}
 });
+
+
+filters.filter('dlRelease', function() {
+	return function(release) {
+		return [ release.game.name, release.title ];
+	}
+});

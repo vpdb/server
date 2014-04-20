@@ -8,6 +8,10 @@ var ctrl = angular.module('vpdb.controllers', []);
 ctrl.controller('AppCtrl', function($scope, $location) {
 
 	$scope.menu = 'home';
+	$scope.downloadsPinned = false;
+	$scope.pinnedDownloads = {};
+	$scope.pinnedDownloadCount = 0;
+	$scope.pinnedDownloadSize = 0;
 
 	$scope.navGame = function(key) {
 		$location.hash('');
@@ -16,6 +20,28 @@ ctrl.controller('AppCtrl', function($scope, $location) {
 
 	$scope.setMenu = function(menu) {
 		$scope.menu = menu;
+	};
+
+	$scope.download = function(download, info) {
+		if ($scope.downloadsPinned) {
+			download.info = info;
+			if ($scope.pinnedDownloads[download.id]) {
+				$scope.unpinDownload(download);
+			} else {
+				$scope.pinnedDownloads[download.id] = download;
+				$scope.pinnedDownloadCount++;
+				$scope.pinnedDownloadSize += download.size;
+			}
+		} else {
+			console.log('starting download for id ' + download.id)
+		}
+	};
+
+	$scope.unpinDownload = function(download) {
+		delete $scope.pinnedDownloads[download.id];
+		$scope.pinnedDownloadCount--;
+		$scope.pinnedDownloadSize -= download.size;
+		$scope.$broadcast('downloadUnpinned', download);
 	}
 
 });

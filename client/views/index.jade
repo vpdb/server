@@ -30,14 +30,29 @@ block body
 										i.fa.fa-question-circle.space-right
 										| What's this?
 								li.divider
+								li(ng-hide="pinnedDownloadCount")
+									i No pinned downloads.
 								li
+									table
+										tr(ng-repeat="(id, dl) in pinnedDownloads")
+											td
+												i.fa.fa-trash-o(ng-click="unpinDownload(dl);$event.stopPropagation()")
+											td
+												p {{ dl.info[0] }}
+												p {{ dl.info[1] }}
+											td {{ dl.size | bytes }}
+
+
+								li.divider(ng-show="pinnedDownloadCount > 0")
+								li(ng-show="pinnedDownloadCount > 0")
+									a(href="#")
+										i.fa.fa-trash-o.space-right
+										| Clear
+								li(ng-show="pinnedDownloadCount > 0")
 									a(href="#")
 										i.fa.fa-download.space-right
-										| Playfield Image
-								li
-									a(href="#")
-										i.fa.fa-download.space-right
-										| All
+										| Download
+										span.pull-right {{ pinnedDownloadSize | bytes }}
 
 	.container.container-topmost
 		div(ng-view)

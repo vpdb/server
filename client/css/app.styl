@@ -206,14 +206,37 @@ label, h4, h5
 
 	button
 		margin-top 10px
-		position relative
 		&.btn-pin
-			padding-left 36px
-			i
-				font-size 30px
-				left 8px
-				position absolute
-				top 0px
+			padding-left 14px
+
+ul.dropdown-menu table
+	tr
+		td
+			padding-left 12px
+			padding-top 7px
+			padding-bottom 7px
+			border-bottom-style solid
+			border-bottom-width 1px
+			&:last-child
+				padding-right 12px
+				white-space nowrap
+				vertical-align bottom
+				text-align right
+			p
+				white-space nowrap
+				overflow hidden
+				text-overflow ellipsis
+				margin 0
+				&:first-child
+					font-weight font-weight-bold
+		&:first-child
+			td
+				padding-top 0
+		&:last-child
+			td
+				padding-bottom 0
+				border none
+
 
 
 // semi-transparent layer for dropdown
@@ -268,6 +291,7 @@ label, h4, h5
 // :buttons
 button.btn
 	transition all animation-short
+	position relative
 
 	&.btn-default, &.btn-primary
 		padding 1px 20px 0px
@@ -275,12 +299,18 @@ button.btn
 		font-size 20px
 		text-transform uppercase
 		border none
+		& > i.icon-pin-on, & > i.icon-pin-off
+			font-size 24px
+			line-height 12px
 	&.btn-lg
 		font-size 26px
 		padding 2px 30px 1px
 		border-radius border-radius-large
 		.fa
 			font-size 20px
+		& > i.icon-pin-on, & > i.icon-pin-off
+			font-size 32px
+			line-height 12px
 	&.btn-xs
 		padding 2px 10px 0px
 		line-height 1
@@ -294,6 +324,7 @@ button.btn
 	&.btn-comment
 		margin-right 15px
 		margin-bottom 15px
+
 .btn-group.btn-media
 	width 100%
 	& > .btn

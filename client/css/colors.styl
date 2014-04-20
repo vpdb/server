@@ -123,7 +123,7 @@ body
 	.btn-group.open .dropdown-menu
 		background-image url('/images/background.png')
 		&:after
-			background-color color-dark + color-darkest
+			background-color color-dark
 		& > li > a
 			color color-lighter
 			&:hover
@@ -131,6 +131,8 @@ body
 				color color-lightest
 		.divider
 			background-color color-light
+	.btn-lg + .dropdown-menu:after
+		background-color color-dark + color-darkest
 
 	.modal-content
 		background-image url('/images/background_white.png')

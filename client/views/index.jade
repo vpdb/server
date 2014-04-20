@@ -15,6 +15,30 @@ block body
 				li(ng-class="{ active: menu == 'games' }")
 					a(href="/games") Games
 
+			ul.nav.navbar-nav.navbar-right
+				li
+					.btn-group.btn-group-flex
+						button.btn.btn-pin(type="button", class="{{ downloadsPinned ? 'btn-primary' : 'btn-default' }}", ng-model="downloadsPinned", btn-checkbox, btn-checkbox-true="1", btn-checkbox-false="0")
+							i.icon.space-right(class="{{ downloadsPinned ? 'icon-pin-on' : 'icon-pin-off' }}")
+							| {{ downloadsPinned ? 'Unpin' : 'Pin' }} Downloads
+							button.btn.dropdown-toggle(type="button", class="{{ downloadsPinned ? 'btn-primary' : 'btn-default' }}", data-toggle="dropdown")
+								i.fa.fa-angle-down
+								span.sr-only Toggle Dropdown
+							ul.dropdown-menu(role="menu")
+								li
+									a(href="#")
+										i.fa.fa-question-circle.space-right
+										| What's this?
+								li.divider
+								li
+									a(href="#")
+										i.fa.fa-download.space-right
+										| Playfield Image
+								li
+									a(href="#")
+										i.fa.fa-download.space-right
+										| All
+
 	.container.container-topmost
 		div(ng-view)
 

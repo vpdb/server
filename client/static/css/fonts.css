@@ -111,11 +111,11 @@
 /*noinspection CssUnknownTarget*/
 @font-face {
 	font-family: 'icons';
-	src:url('/fonts/icons.eot?-7ytd07');
-	src:url('/fonts/icons.svg?-7ytd07#icons') format('svg'),
-	url('/fonts/icons.eot?#iefix-7ytd07') format('embedded-opentype'),
-	url('/fonts/icons.woff?-7ytd07') format('woff'),
-	url('/fonts/icons.ttf?-7ytd07') format('truetype');
+	src:url('/fonts/icons.eot?-7ytd10');
+	src:url('/fonts/icons.svg?-7ytd10#icons') format('svg'),
+	url('/fonts/icons.eot?#iefix-7ytd10') format('embedded-opentype'),
+	url('/fonts/icons.woff?-7ytd10') format('woff'),
+	url('/fonts/icons.ttf?-7ytd10') format('truetype');
 	font-weight: normal;
 	font-style: normal;
 }
@@ -133,7 +133,12 @@
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
 }
-
+.icon-pin-on:before {
+	content: "\e60f";
+}
+.icon-pin-off:before {
+	content: "\e610";
+}
 .icon-bally:before {
 	content: "\e60e";
 }

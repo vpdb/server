@@ -16,8 +16,7 @@
 					.row
 						.col-xs-12.col-sm-6(ng-repeat="game in pack.releases", ng-click="navGame(game.id)") {{ game.name }}
 
-					button.btn.btn-default.btn-lg
-						i.fa.fa-download.space-right
+					button.btn.btn-default.btn-lg(download="pack.download", download-info="pack | dlPack")
 						| Download
 		.clearfix
 

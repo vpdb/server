@@ -992,8 +992,9 @@ exports.packs = function(req, res) {
 		result: [
 			{
 				logo: 'williams',
+				manufacturer: 'Williams',
 				name: '1990s',
-				number: 'PACK 1',
+				number: 'Pack 1',
 				banner: '/packs/williams-1990s.png',
 				releases: [
 					_.pick(games.ij, gameAttrs),
@@ -1002,13 +1003,18 @@ exports.packs = function(req, res) {
 					_.pick(games.totan, gameAttrs),
 					_.pick(games.bop, gameAttrs),
 					_.pick(games.sttng, gameAttrs)
-				]
-
+				],
+				download: {
+					id: 'ocrzcdiop',
+					size: 846534213,
+					version: '1.0.2'
+				}
 			},
 			{
 				logo: 'stern',
-				name: 'early 2000s',
-				number: 'PACK 1',
+				manufacturer: 'Stern',
+				name: 'Early 2000s',
+				number: 'Pack 1',
 				banner: '/packs/stern-2000s.png',
 				releases: [
 					{ name: 'Elvis®', id: 'mb' },
@@ -1017,7 +1023,12 @@ exports.packs = function(req, res) {
 					{ name: 'Monopoly™', id: 'mb' },
 					{ name: 'Ripley\'s Believe It or Not!®', id: 'mb' },
 					{ name: 'Playboy®', id: 'mb' }
-				]
+				],
+				download: {
+					id: 'wvzqwcqpb',
+					size: 988316844,
+					version: '1.0.0'
+				}
 
 			}
 		]

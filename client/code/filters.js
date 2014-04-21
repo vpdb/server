@@ -191,10 +191,18 @@ filters.filter('dlMedia', function(display) {
 	return function(data) {
 		var game = data[0];
 		var media = data[1];
-
 		return [
 			game.name,
-			display.media(media.type) + ' ' + media.format + ' by <strong>' + media.author.user + '</strong>'
+			display.media(media.type) + ' (' + media.format + ') by <strong>' + media.author.user + '</strong>'
+		];
+	}
+});
+
+filters.filter('dlPack', function() {
+	return function(pack) {
+		return [
+			pack.manufacturer + ' ' + pack.number,
+			pack.name
 		];
 	}
 });

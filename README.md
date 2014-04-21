@@ -106,7 +106,6 @@ platform for VP tables.
 Stuff to add before I seriously think about going further:
 
 * Tagging
-* Download Pinning
 * User Details
 * Review mod relations
 

@@ -681,8 +681,12 @@ var games = {
 				downloads: 732,
 				rating: 7.5,
 				votes: 3,
-				size: 3845915,
-				thumb: '/directb2s/thumbs/monster-bash-illuminated.png'
+				thumb: '/directb2s/thumbs/monster-bash-illuminated.png',
+				download: {
+					id: 'pipisonvd',
+					size: 3845915,
+					version: '1.0'
+				}
 			},
 			{
 				description: 'Redone Monster Bash directb2s backglass. I did not make the original. I just updated the image to a higher res version.',
@@ -691,8 +695,12 @@ var games = {
 				downloads: 798,
 				rating: 8.5,
 				votes: 3,
-				size: 11735983,
-				thumb: '/directb2s/thumbs/cc-monster-bash--williams-1998-.png'
+				thumb: '/directb2s/thumbs/cc-monster-bash--williams-1998-.png',
+				download: {
+					id: 'pivpoobi',
+					size: 11735983,
+					version: '1.0'
+				}
 			}
 		],
 		media: [
@@ -704,11 +712,15 @@ var games = {
 				author: { user: 'bitupset' },
 				width: 1280,
 				height: 1024,
-				size: 3135204,
 				format: 'image',
 				downloads: 335,
 				rating: 8.7,
-				votes: 5
+				votes: 5,
+				download: {
+					id: 'uhmupmh',
+					size: 3135204,
+					version: '1.0.1'
+				}
 			},
 			{
 				filename: 'Monster Bash (Williams 1998).jpg',
@@ -717,11 +729,15 @@ var games = {
 				type: 'flyer',
 				author: { user: 'bitupset' },
 				pages: [ 'Front', 'Back' ],
-				size: 7955231,
 				format: 'image',
 				downloads: 6651,
 				rating: 8,
-				votes: 8555
+				votes: 8555,
+				download: {
+					id: 'uhmuudfvh',
+					size: 7955231,
+					version: '1.0'
+				}
 			},
 			{
 				filename: 'Monster Bash (Williams 1998).swf',
@@ -729,11 +745,15 @@ var games = {
 				thumb: '/instructioncard/thumb/Monster Bash (Williams 1998).png',
 				type: 'instructioncard',
 				author: { user: 'bitupset' },
-				size: 174729,
 				format: 'swf',
 				downloads: 112,
 				rating: 8.8,
-				votes: 65
+				votes: 65,
+				download: {
+					id: 'ukasdudfvh',
+					size: 174729,
+					version: '1.0'
+				}
 			},
 			{
 				filename: 'Monster Bash (Williams 1998).png',
@@ -744,11 +764,15 @@ var games = {
 				width: 1280,
 				height: 1024,
 				duration: 120,
-				size: 92349945,
 				format: 'video',
 				downloads: 210,
 				rating: 8.5,
-				votes: 2
+				votes: 2,
+				download: {
+					id: 'outcogcs',
+					size: 92349945,
+					version: '1.0'
+				}
 			}
 		],
 

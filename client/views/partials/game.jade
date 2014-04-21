@@ -244,12 +244,11 @@
 									i.fa.fa-star.space-right
 									| {{ backglass.rating | rating }}
 							.third
-								span {{ backglass.size | bytes }}
+								span {{ backglass.download.size | bytes }}
 
 					.panel.bg-dark.panel-backglass.panel-back.img.img-fullspan.img-fade(img-bg="{{ backglass.thumb }}")
-						button.btn.btn-primary.btn-lg(ng-click="$event.stopPropagation()")
-							i.fa.fa-download.space-right
-							| Download
+						button.btn.btn-primary.btn-lg(download="backglass.download", download-info="[ game, backglass ] | dlBackglass", ng-click="$event.stopPropagation()")
+								| Download
 					.clearfix
 
 
@@ -295,11 +294,10 @@
 									i.fa.fa-star.space-right
 									| {{ item.rating | rating }}
 							.third
-								span {{ item.size | bytes }}
+								span {{ item.download.size | bytes }}
 
 					.panel.bg-dark.panel-backglass.panel-back.img.img-fullspan.img-fade(img-bg="{{ item.thumb }}")
-						button.btn.btn-primary.btn-lg(ng-click="$event.stopPropagation()")
-							i.fa.fa-download.space-right
+						button.btn.btn-primary.btn-lg(download="item.download", download-info="[ game, item ] | dlMedia", ng-click="$event.stopPropagation()")
 							| Download
 					.clearfix
 

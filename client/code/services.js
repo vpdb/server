@@ -1,9 +1,21 @@
 'use strict';
 
 /* Services */
+var services = angular.module('vpdb.services', []);
 
-
-// Demonstrate how to register services
-// In this case it is a simple value service.
-var serv = angular.module('vpdb.services', []).
-  value('version', '0.1');
+services.factory('display', function() {
+	return {
+		media: function(type) {
+			switch (type) {
+				case 'backglass':
+					return 'Backglass';
+				case 'flyer':
+					return 'Flyer';
+				case 'instructioncard':
+					return 'Instruction Card';
+				default:
+					return 'Unknown';
+			}
+		}
+	}
+});

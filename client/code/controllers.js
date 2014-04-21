@@ -34,7 +34,7 @@ ctrl.controller('AppCtrl', function($scope, $location, $modal) {
 				$scope.$broadcast('downloadPinned', download);
 			}
 		} else {
-			alert('Here\'s the file! You\'re welcome!');
+			alert('Here\'s the file! You\'re welcome!	');
 		}
 	};
 

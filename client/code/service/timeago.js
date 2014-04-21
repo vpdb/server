@@ -1,7 +1,7 @@
 /**
  * @see http://jsfiddle.net/lrlopez/dFeuf/
  */
-serv.service('timeAgoService', function($timeout) {
+services.service('timeAgoService', function($timeout) {
 	var ref;
 	return {
 		nowTime: 0,

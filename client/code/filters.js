@@ -34,18 +34,9 @@ filters.filter('bytes', function() {
 	}
 });
 
-filters.filter('mediatype', function() {
+filters.filter('mediatype', function(display) {
 	return function(type) {
-		switch (type) {
-			case 'backglass':
-				return 'Backglass';
-			case 'flyer':
-				return 'Flyer';
-			case 'instructioncard':
-				return 'Instruction Card';
-			default:
-				return 'Unknown';
-		}
+		return display.media(type);
 	}
 });
 
@@ -187,3 +178,24 @@ filters.filter('dlRom', function() {
 		return [ game.name, 'ROM <samp>' + rom.name + '</samp>' ];
 	}
 });
+
+filters.filter('dlBackglass', function() {
+	return function(data) {
+		var game = data[0];
+		var backglass = data[1];
+		return [ game.name, 'Backglass by <strong>' + backglass.author.user + '</strong>' ];
+	}
+});
+
+filters.filter('dlMedia', function(display) {
+	return function(data) {
+		var game = data[0];
+		var media = data[1];
+
+		return [
+			game.name,
+			display.media(media.type) + ' ' + media.format + ' by <strong>' + media.author.user + '</strong>'
+		];
+	}
+});
+

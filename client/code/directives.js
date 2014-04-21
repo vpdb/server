@@ -177,14 +177,16 @@ directives.directive('download', function($parse) {
 			scope.dlPinned = scope.pinnedDownloads[dl.id] ? true : false;
 			element.click(function() {
 				scope.download(dl, $parse(attrs.downloadInfo)(scope));
-				if (scope.downloadsPinned) {
-					scope.dlPinned = !scope.dlPinned;
-					scope.$apply();
-				}
+				scope.$apply();
 			});
 			scope.$on('downloadUnpinned', function(event, download) {
 				if (download.id == dl.id) {
 					scope.dlPinned = false;
+				}
+			});
+			scope.$on('downloadPinned', function(event, download) {
+				if (download.id == dl.id) {
+					scope.dlPinned = true;
 				}
 			});
 		}

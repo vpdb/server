@@ -97,11 +97,10 @@
 								div(ng-repeat="version in release.versions")
 									h4
 										| Version
-										label.label-version {{ version.version }}
+										label.label-version {{ version.download.version }}
 										.pull-right
 											time-ago.small.space-right(from-time="{{ version.timestamp }}")
-											button.btn.btn-default.btn-xs(title="{{ version.size | bytes }}")
-												i.fa.fa-download
+											button.btn.btn-default.btn-xs.btn-dl(download="version.download", download-info="[ game, release ] | dlRelease", title="{{ version.download.size | bytes }}")
 									hr
 									div.markdown(markdown="version.changes")
 
@@ -141,10 +140,10 @@
 						label.label-download.pull-right
 							span.pipe
 								| Version
-								label.label-version {{ release.lastversion.version }}
+								label.label-version {{ release.lastversion.download.version }}
 							span.pipe {{ release.lastversion.download.size | bytes }}
 					.col-sm-4.col-md-5
-						button.btn.btn-primary.btn-lg.btn-block.pull-right(download="release.lastversion.download", download-info="release | dlRelease", ng-class="{ 'btn-pin': downloadsPinned }")
+						button.btn.btn-primary.btn-lg.btn-block.pull-right(download="release.lastversion.download", download-info="[ game, release ] | dlRelease", ng-class="{ 'btn-pin': downloadsPinned }")
 							| Download
 					.clearfix
 
@@ -209,14 +208,13 @@
 				tr(ng-repeat="rom in game.roms")
 					td
 						samp {{ rom.name }}
-					td {{ rom.version }}
+					td {{ rom.download.version }}
 					td.hidden-xs {{ rom.language }}
 					td.hidden-xs {{ rom.notes }}
 					td {{ rom.downloads | number }}
-					td {{ rom.size | bytes }}
+					td {{ rom.download.size | bytes }}
 					td.nostripe.td-dlbtn
-						button.btn.btn-primary.btn-xs
-							i.fa.fa-download
+						button.btn.btn-primary.btn-xs.btn-dl(download="rom.download", download-info="[ game, rom ] | dlRom")
 
 		h2 Backglasses
 		label(ng-hide="game.backglasses.length > 0")  No backglasses available.

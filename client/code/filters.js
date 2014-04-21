@@ -173,7 +173,17 @@ filters.filter('manufacturer', function() {
 
 
 filters.filter('dlRelease', function() {
-	return function(release) {
-		return [ release.game.name, release.title ];
+	return function(data) {
+		var game = data[0];
+		var release = data[1];
+		return [ game.name, release.title ];
+	}
+});
+
+filters.filter('dlRom', function() {
+	return function(data) {
+		var game = data[0];
+		var rom = data[1];
+		return [ game.name, 'ROM <samp>' + rom.name + '</samp>' ];
 	}
 });

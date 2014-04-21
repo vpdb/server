@@ -42,7 +42,9 @@ block body
 													i.fa.fa-trash-o(ng-click="unpinDownload(dl);$event.stopPropagation()")
 												td
 													p {{ dl.info[0] }}
-													p {{ dl.info[1] }}
+													p
+														span(bind-html-unsafe="dl.info[1]")
+														| &nbsp;	 - v{{ dl.version }}
 												td {{ dl.size | bytes }}
 											tr.divider-top(ng-show="pinnedDownloadCount > 0", ng-click="downloadPinned()")
 												td.ic

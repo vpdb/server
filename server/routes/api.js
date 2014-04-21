@@ -42,12 +42,15 @@ var releases = {
 		mods: [],
 		versions: [
 			{
-				version: '3.5',
 				timestamp: '2013-12-30T19:42:20Z',
-				size: 22023498,
 				submitter: 'Aaron James',
 				downloads: 3659,
-				changes: '* Teppotee reworked the lighting to make it work with VP9.2 Big thanks!!! He really helped me on this because i couldn\'t figure some things out, and he saved me alot of time.\n* I then changed the layback/xy settings, and had to add one more wall to the left side to hide flasher artifacts. I did a minor physics tweak.'
+				changes: '* Teppotee reworked the lighting to make it work with VP9.2 Big thanks!!! He really helped me on this because i couldn\'t figure some things out, and he saved me alot of time.\n* I then changed the layback/xy settings, and had to add one more wall to the left side to hide flasher artifacts. I did a minor physics tweak.',
+				download: {
+					id: 'sdaf2',
+					version: '3.5',
+					size: 22023498
+				}
 			},
 			{
 				version: '3.1',
@@ -55,7 +58,12 @@ var releases = {
 				size: 16903345,
 				submitter: 'Aaron James',
 				downloads: 2978,
-				changes: '* I increased the size/shape of the strobe light. It\'s more dramatic and intensive.\n* I changed the red wire metal ramps to dark green/yellow. I was getting tired of the red myself...lol'
+				changes: '* I increased the size/shape of the strobe light. It\'s more dramatic and intensive.\n* I changed the red wire metal ramps to dark green/yellow. I was getting tired of the red myself...lol',
+				download: {
+					id: 'sdaf3',
+					version: '3.1',
+					size: 16903345
+				}
 			}
 		],
 		comments: [
@@ -100,13 +108,13 @@ var releases = {
 			square: '/asset/release/afm35/square-small.png'
 		},
 		lastversion: {
-			version: '3.5',
 			timestamp: '2013-12-30T19:42:20Z',
 			submitter: 'Aaron James',
 			downloads: 3659,
-				changes: '* Teppotee reworked the lighting to make it work with VP9.2 Big thanks!!! He really helped me on this because i couldn\'t figure some things out, and he saved me alot of time.\n* I then changed the layback/xy settings, and had to add one more wall to the left side to hide flasher artifacts. I did a minor physics tweak.',
+			changes: '* Teppotee reworked the lighting to make it work with VP9.2 Big thanks!!! He really helped me on this because i couldn\'t figure some things out, and he saved me alot of time.\n* I then changed the layback/xy settings, and had to add one more wall to the left side to hide flasher artifacts. I did a minor physics tweak.',
 			download: {
 				id: 'sdaf2',
+				version: '3.5',
 				size: 22023498
 			}
 		}
@@ -150,12 +158,15 @@ var releases = {
 		mods: [],
 		versions: [
 			{
-				version: '2.1',
 				timestamp: '2014-04-02T21:24:20Z',
-				size: 103765981,
 				submitter: { user: 'fuzzel' },
 				downloads: 1344,
-				changes: '* Implemented and tuned new BMPR routine which uses an updated formula for a better / smoother momentum curve, higher table friction settings (for better ball weight appearance), and new corresponding BMPR parameters\n* Implemented additional custom physics routines for dampening, positional slingshot strength, flipper tap code, and a new / experimental one for “X” cushioning / ball jumping for the ORBS targets as well as the soft targets behind them\n* Adjusted size of the ball accordingly to compensate for wide build dimensions\n* Added a variety of sounds and sound processing (speed based) routines\n* Created new alpha full sized fading GI plastics with transparent edges / sections\n* Created new individual alpha ramp fading GI bulb Halos for incandescent and LED based lights (for PF lighting but at height to affect interaction / lighting on the ball) and choice can be selected via script options\n* Created Chamber section GI Halos for independent control / coding\n* Created new bumper fading GI images for 3D meshes\n* Added back metal and back wall GI interaction / images\n* Created basic PF GI for when all GI lights / independent sections off or on\n* Updated GI scripting for above components and corrected sections to be authentic (Chamber and slings isolated from rest of GI)\n* Created and coded new individual lamp halos for added lighting effects on most table lamps / light inserts (can be disabled in script)\n* Added Bonus rollover lights reflections in back metal\n* Re-scripted / architected captured ball in chamber so now it is totally natural and does not jerkily land back into kicker position (removed original / extra coding and is now simply a ball trapped in that area that can be collided with as would be on a real table)\n* Fixed Orbs Release target magnet area, modified operation to be better timed with that of a real machine, and incorporated animations for the sub-PF ball launch / metal door (some tricks to make ball appear hidden / look like it comes up from beneath the table)\n* Added code for allowing simultaneous / two target hits on ORBS and Sequence drop targets\n* Modified images / added metal textures to all posts and gate housings (some were previously just solid colours / no images mapped)\n* Adjusted some images for lighting aspects\n* Adjusted behaviour of Outlane pegs for ball save / nudging based on some previous feedback by Mukuste\n* A complete new set of 3D meshes'
+				changes: '* Implemented and tuned new BMPR routine which uses an updated formula for a better / smoother momentum curve, higher table friction settings (for better ball weight appearance), and new corresponding BMPR parameters\n* Implemented additional custom physics routines for dampening, positional slingshot strength, flipper tap code, and a new / experimental one for “X” cushioning / ball jumping for the ORBS targets as well as the soft targets behind them\n* Adjusted size of the ball accordingly to compensate for wide build dimensions\n* Added a variety of sounds and sound processing (speed based) routines\n* Created new alpha full sized fading GI plastics with transparent edges / sections\n* Created new individual alpha ramp fading GI bulb Halos for incandescent and LED based lights (for PF lighting but at height to affect interaction / lighting on the ball) and choice can be selected via script options\n* Created Chamber section GI Halos for independent control / coding\n* Created new bumper fading GI images for 3D meshes\n* Added back metal and back wall GI interaction / images\n* Created basic PF GI for when all GI lights / independent sections off or on\n* Updated GI scripting for above components and corrected sections to be authentic (Chamber and slings isolated from rest of GI)\n* Created and coded new individual lamp halos for added lighting effects on most table lamps / light inserts (can be disabled in script)\n* Added Bonus rollover lights reflections in back metal\n* Re-scripted / architected captured ball in chamber so now it is totally natural and does not jerkily land back into kicker position (removed original / extra coding and is now simply a ball trapped in that area that can be collided with as would be on a real table)\n* Fixed Orbs Release target magnet area, modified operation to be better timed with that of a real machine, and incorporated animations for the sub-PF ball launch / metal door (some tricks to make ball appear hidden / look like it comes up from beneath the table)\n* Added code for allowing simultaneous / two target hits on ORBS and Sequence drop targets\n* Modified images / added metal textures to all posts and gate housings (some were previously just solid colours / no images mapped)\n* Adjusted some images for lighting aspects\n* Adjusted behaviour of Outlane pegs for ball save / nudging based on some previous feedback by Mukuste\n* A complete new set of 3D meshes',
+				download: {
+					id: 'jsfsvr',
+					version: '2.1',
+					size: 103765981
+				}
 			}
 		],
 		comments: [ ],
@@ -167,12 +178,12 @@ var releases = {
 			square: '/asset/release/centaur/square-small.png'
 		},
 		lastversion: {
-			version: '2.1',
 			timestamp: '2014-04-02T21:24:20Z',
 			submitter: { user: 'fuzzel' },
 			downloads: 1344,
 			download: {
-				id: 'infda',
+				id: 'jsfsvr',
+				version: '2.1',
 				size: 103765981
 			}
 		}
@@ -230,12 +241,15 @@ var releases = {
 		mods: [],
 		versions: [
 			{
-				version: '1.6',
 				timestamp: '2014-03-05T22:57:20Z',
-				size: 153183654,
 				submitter: { user: 'Aaron James' },
 				downloads: 3919,
-				changes: '* @Dozer316 has made a FOM (flasher object mod) for this table! Awesome work!\n* This archive contains the flush and sunken versions as well as the associated ``b2s.exe`` files from the original Rosve mod. The ``.exe`` files have been named so that they match the filename of the associated table and will load appropriately if someone chooses to use the older B2S instead of directb2s from the ``F6`` menu.!\n* Both versions end with B2S for users that are using the files with Hyperpin. It may be worth noting the subtleties associated with what they need to select in the ``F6`` menu if they are going to use the old B2S with Hyperpin etc.!\n* The ``F6`` menu has also been modified to remove the GI options as it is now alpha 8 step GI but the rest of the options remain the same. When both tables are run for the first time options will need to be set as they don\'t query the options database for the Platinum Mod. Everything else is pretty much the same.'
+				changes: '* @Dozer316 has made a FOM (flasher object mod) for this table! Awesome work!\n* This archive contains the flush and sunken versions as well as the associated ``b2s.exe`` files from the original Rosve mod. The ``.exe`` files have been named so that they match the filename of the associated table and will load appropriately if someone chooses to use the older B2S instead of directb2s from the ``F6`` menu.!\n* Both versions end with B2S for users that are using the files with Hyperpin. It may be worth noting the subtleties associated with what they need to select in the ``F6`` menu if they are going to use the old B2S with Hyperpin etc.!\n* The ``F6`` menu has also been modified to remove the GI options as it is now alpha 8 step GI but the rest of the options remain the same. When both tables are run for the first time options will need to be set as they don\'t query the options database for the Platinum Mod. Everything else is pretty much the same.',
+				download: {
+					id: 'lnfds',
+					version: '1.6',
+					size: 153183654
+				}
 			}
 		],
 		comments: [ ],
@@ -247,13 +261,13 @@ var releases = {
 			square: '/asset/release/cv-platinum-1/square-small.png'
 		},
 		lastversion: {
-			version: '2.1',
 			timestamp: '2014-04-02T21:24:20Z',
 			submitter: { user: 'fuzzel' },
 			downloads: 1344,
 			download: {
 				id: 'lnfds',
-				size: 103765981
+				version: '1.6',
+				size: 153183654
 			}
 		}
 	},
@@ -288,18 +302,24 @@ var releases = {
 		mods: [],
 		versions: [
 			{
-				version: '2.1',
 				timestamp: '2014-02-03T19:47:20Z',
-				size: 175135975,
 				downloads: 1087,
-				changes: '* Reduced Texture sizes\n* Added DOF Option\n* Added Day Option which brightens the playfield\n* Fixed Rollover lights blocking inserts'
+				changes: '* Reduced Texture sizes\n* Added DOF Option\n* Added Day Option which brightens the playfield\n* Fixed Rollover lights blocking inserts',
+				download: {
+					id: 'ohnca',
+					version: '2.1',
+					size: 175135975
+				}
 			},
 			{
-				version: '2.0',
 				timestamp: '2014-01-29T22:01:00Z',
-				size: 169033450,
 				downloads: 568,
-				changes: '*Initial version*'
+				changes: '*Initial version*',
+				download: {
+					id: 'ohnc2',
+					version: '2.0',
+					size: 169033450
+				}
 			}
 		],
 		comments: [
@@ -345,12 +365,12 @@ var releases = {
 			square: '/asset/release/mb_pckiller/square-small.png'
 		},
 		lastversion: {
-			version: '2.1',
 			timestamp: '2014-02-03T19:47:20Z',
 			downloads: 1087,
 			changes: '* Reduced Texture sizes\n* Added DOF Option\n* Added Day Option which brightens the playfield\n* Fixed Rollover lights blocking inserts',
 			download: {
 				id: 'ohnca',
+				version: '2.1',
 				size: 175135975
 			}
 		}
@@ -380,28 +400,37 @@ var releases = {
 		mods: [],
 		versions: [
 			{
-				version: '2.0',
 				timestamp: '2012-12-28T08:04:20Z',
-				size: 273448315,
 				submitter: { user: 'teppotee' },
 				downloads: 5594,
-				changes: '* VP 9.2 compatible (alpha lighting issues fixed)\n* Small physics tweaks (lower slope)'
+				changes: '* VP 9.2 compatible (alpha lighting issues fixed)\n* Small physics tweaks (lower slope)',
+				download: {
+					id: 'saoi2',
+					version: '2.0',
+					size: 273448315
+				}
 			},
 			{
-				version: '1.3',
 				timestamp: '2012-11-02T02:04:20Z',
-				size: 239448561,
 				submitter: { user: 'teppotee' },
 				downloads: 1232,
-				changes: '* Added BMPR physics to the table. Thanks to @jimmyfingers for the original scripting and examples! Makes the table quite a bit more challenging so you have been warned :)\n* small visual feedback for the rollover switches (switch hidden when ball on switch)\n* Repositioned "additinal alpha GI" lights so that the ball moves under the lights now. This lets the lighting affect the ball as well + works better with the new ball reflection feature.'
+				changes: '* Added BMPR physics to the table. Thanks to @jimmyfingers for the original scripting and examples! Makes the table quite a bit more challenging so you have been warned :)\n* small visual feedback for the rollover switches (switch hidden when ball on switch)\n* Repositioned "additinal alpha GI" lights so that the ball moves under the lights now. This lets the lighting affect the ball as well + works better with the new ball reflection feature.',
+				download: {
+					id: 'saoi3',
+					version: '1.3',
+					size: 239448561
+				}
 			},
 			{
-				version: '1.1',
 				timestamp: '2012-10-01T12:04:20Z',
-				size: 236898456,
 				submitter: { user: 'teppotee' },
 				downloads: 2556,
-				changes: '* One B2B collision bug fixed (thanks @JimmyFingers!)\n* Few graphich glitches fixed (such as ball visible under upper PF)\n* Added missing sounds for ball drops from ramps\n* new ball with decals\n* playfield images with ramp shadows\n* new fluid animated propellers (beginning slower, accelerating, slowing down)\n* second propeller added\n* new animated flippers decals\n* idol head mechanism repaired\n* idol head texture corrected a little bit'
+				changes: '* One B2B collision bug fixed (thanks @JimmyFingers!)\n* Few graphich glitches fixed (such as ball visible under upper PF)\n* Added missing sounds for ball drops from ramps\n* new ball with decals\n* playfield images with ramp shadows\n* new fluid animated propellers (beginning slower, accelerating, slowing down)\n* second propeller added\n* new animated flippers decals\n* idol head mechanism repaired\n* idol head texture corrected a little bit',
+				download: {
+					id: 'saoi4',
+					version: '1.1',
+					size: 236898456
+				}
 			}
 		],
 		comments: [ ],
@@ -413,12 +442,12 @@ var releases = {
 			square: '/asset/release/ij/square-small.png'
 		},
 		lastversion: {
-			version: '2.0',
 			timestamp: '2012-12-28T08:04:20Z',
 			submitter: { user: 'teppotee' },
 			downloads: 5594,
 			download: {
 				id: 'saoi2',
+				version: '2.0',
 				size: 273448315
 			}
 
@@ -463,20 +492,27 @@ var releases = {
 		mods: [],
 		versions: [
 			{
-				version: '1.0.7',
 				timestamp: '2014-01-10T10:29:20Z',
-				size: 63460654,
 				submitter: { user: 'tipoto' },
 				downloads: 1231,
-				changes: '* Fake Anti-aliasing and FXAA disabled. These new features are unnecessary and don\'t work well with this table, they produce a blurry render.'
+				changes: '* Fake Anti-aliasing and FXAA disabled. These new features are unnecessary and don\'t work well with this table, they produce a blurry render.',
+				download: {
+					id: 'ksjfda',
+					version: '1.0.7',
+					size: 63460654
+				}
 			},
 			{
-				version: '1.0.6',
 				timestamp: '2014-01-02T02:04:20Z',
 				size: 63460654,
 				submitter: { user: 'tipoto' },
 				downloads: 1232,
-				changes: '* New Game Play / Physics. It\'s now easier to load the cannon, with both flippers. The table is fast, precise and fluid.\n* Added a new option in the script to hide the virtual DMD. It\'s for those having a real DMD on their Cab. The option is called "DMD_Hidden" and you will find it at the beginning of the script with the other options.\n* ROM name has been moved at the beginning of the script with all the options. It\'s now easy to access.'
+				changes: '* New Game Play / Physics. It\'s now easier to load the cannon, with both flippers. The table is fast, precise and fluid.\n* Added a new option in the script to hide the virtual DMD. It\'s for those having a real DMD on their Cab. The option is called "DMD_Hidden" and you will find it at the beginning of the script with the other options.\n* ROM name has been moved at the beginning of the script with all the options. It\'s now easy to access.',
+				download: {
+					id: 'ksjfdb',
+					version: '1.0.6',
+					size: 63460654
+				}
 			},
 			{
 				version: '1.0.5',
@@ -484,7 +520,12 @@ var releases = {
 				size: 63460654,
 				submitter: { user: 'tipoto' },
 				downloads: 2556,
-				changes: '* 1 texture modified, there was a glitch when the flasher near by the left bumper was flashing\n* Plunger strength slightly increased\n* (Table works fine with vp914 and vp913)'
+				changes: '* 1 texture modified, there was a glitch when the flasher near by the left bumper was flashing\n* Plunger strength slightly increased\n* (Table works fine with vp914 and vp913)',
+				download: {
+					id: 'ksjfdc',
+					version: '1.0.5',
+					size: 63460654
+				}
 			}
 		],
 		comments: [ ],
@@ -496,12 +537,12 @@ var releases = {
 			square: '/asset/release/t2chrome/square-small.png'
 		},
 		lastversion: {
-			version: '1.0.7',
 			timestamp: '2014-01-10T10:29:20Z',
 			submitter: { user: 'tipoto' },
 			downloads: 1231,
 			download: {
 				id: 'ksjfda',
+				version: '1.0.7',
 				size: 63460654
 			}
 		}
@@ -623,10 +664,14 @@ var games = {
 		authors: [ 'unclewilly', 'randr' ],
 		releases: [ releases.mb ],
 		roms: [
-			{ name: 'mm_05', version: '0.50', language: 'english', notes: '', downloads: 171, size: 5982313 },
-			{ name: 'mm_10', version: '1.00', language: 'english', notes: '', downloads: 3972, size: 5983929 },
-			{ name: 'mm_106', version: '1.06', language: 'english', notes: '', downloads: 2681, size: 5986447 },
-			{ name: 'mm_106b', version: '1.06b', language: 'english', notes: 'Inofficial version', downloads: 5172, size: 6034521 }
+			{ name: 'mm_05', language: 'english', notes: '', downloads: 171,
+				download: { id: 'fdd234', size: 5982313, version: '0.50' }},
+			{ name: 'mm_10', language: 'english', notes: '', downloads: 3972,
+				download: { id: 'fdd235', size: 5983929, version: '1.00' }},
+			{ name: 'mm_106', language: 'english', notes: '', downloads: 2681,
+				download: { id: 'fdd236', size: 5986447, version: '1.06' }},
+			{ name: 'mm_106b', language: 'english', notes: 'Inofficial version', downloads: 5172,
+				download: { id: 'fdd237', size: 6034521, version: '1.06b' }}
 		],
 		backglasses: [
 			{

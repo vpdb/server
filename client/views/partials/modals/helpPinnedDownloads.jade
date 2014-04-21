@@ -1,0 +1,16 @@
+.bg-lightest
+	.modal-header
+		h3
+			i.icon.icon-pin-off.space-right
+			| &nbsp;Pinned Downloads
+	.modal-body(ng-controller="CommentsCtrl")
+		h4 How it works
+		p Instead of downloading files directly, you also can <strong>pin</strong> them and download them as one big zip
+			| file later. In order to do this, click on the "Pin Downloads" button in the top right corner in order to
+			| enable pinned mode.  You can always go back to normal mode by clicking again on the button. Your queue
+			| will not be deleted when doing so.
+		p In the downloaded zip file, you'll find all your downloads organized in the correct folders, i.e. you only
+			| need to extract files once for every download type.
+
+	.modal-footer
+		button.btn.btn-primary(ng-click="$close()") Got it

@@ -5,7 +5,7 @@
 var ctrl = angular.module('vpdb.controllers', []);
 
 
-ctrl.controller('AppCtrl', function($scope, $location) {
+ctrl.controller('AppCtrl', function($scope, $location, $modal) {
 
 	$scope.menu = 'home';
 	$scope.downloadsPinned = false;
@@ -31,9 +31,10 @@ ctrl.controller('AppCtrl', function($scope, $location) {
 				$scope.pinnedDownloads[download.id] = download;
 				$scope.pinnedDownloadCount++;
 				$scope.pinnedDownloadSize += download.size;
+				$scope.$broadcast('downloadPinned', download);
 			}
 		} else {
-			console.log('starting download for id ' + download.id)
+			alert('Here\'s the file! You\'re welcome!');
 		}
 	};
 
@@ -42,8 +43,17 @@ ctrl.controller('AppCtrl', function($scope, $location) {
 		$scope.pinnedDownloadCount--;
 		$scope.pinnedDownloadSize -= download.size;
 		$scope.$broadcast('downloadUnpinned', download);
-	}
+	};
 
+	$scope.downloadPinned = function() {
+		alert('You would now get a zip file with everthing included.');
+	};
+
+	$scope.helpPinnedDownloads = function() {
+		$modal.open({
+			templateUrl: 'partials/modals/helpPinnedDownloads'
+		});
+	};
 });
 
 

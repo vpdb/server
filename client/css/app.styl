@@ -211,12 +211,17 @@ label, h4, h5
 
 ul.dropdown-menu table
 	tr
+		transition all animation-short
 		td
 			padding-left 12px
 			padding-top 7px
 			padding-bottom 7px
 			border-bottom-style solid
 			border-bottom-width 1px
+
+			&.ic
+				width 20px
+
 			&:last-child
 				padding-right 12px
 				white-space nowrap
@@ -229,13 +234,23 @@ ul.dropdown-menu table
 				margin 0
 				&:first-child
 					font-weight font-weight-bold
-		&:first-child
-			td
-				padding-top 0
+			i
+				transition all animation-short
+				cursor pointer
+		&.divider-bottom td
+			border-bottom-style solid
+			border-bottom-width 2px
+		&.divider-top td
+			border-top-style solid
+			border-top-width 2px
+		&.divider-none td
+			border-bottom none
 		&:last-child
 			td
-				padding-bottom 0
-				border none
+				border-bottom none
+
+		&[ng-click] td
+			cursor pointer
 
 
 
@@ -324,6 +339,13 @@ button.btn
 	&.btn-comment
 		margin-right 15px
 		margin-bottom 15px
+
+	.badge
+		margin-left 10px
+		margin-right -8px
+		vertical-align middle
+		font-family font-content
+		font-weight font-weight-bold
 
 .btn-group.btn-media
 	width 100%

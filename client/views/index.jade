@@ -20,39 +20,35 @@ block body
 					.btn-group.btn-group-flex
 						button.btn.btn-pin(type="button", class="{{ downloadsPinned ? 'btn-primary' : 'btn-default' }}", ng-model="downloadsPinned", btn-checkbox, btn-checkbox-true="1", btn-checkbox-false="0")
 							i.icon.space-right(class="{{ downloadsPinned ? 'icon-pin-on' : 'icon-pin-off' }}")
-							| {{ downloadsPinned ? 'Unpin' : 'Pin' }} Downloads
+							| Pin Downloads
+							span.badge(ng-show="downloadsPinned || pinnedDownloadCount") {{ pinnedDownloadCount }}
 							button.btn.dropdown-toggle(type="button", class="{{ downloadsPinned ? 'btn-primary' : 'btn-default' }}", data-toggle="dropdown")
 								i.fa.fa-angle-down
 								span.sr-only Toggle Dropdown
 							ul.dropdown-menu(role="menu")
 								li
-									a(href="#")
-										i.fa.fa-question-circle.space-right
-										| What's this?
-								li.divider
-								li(ng-hide="pinnedDownloadCount")
-									i No pinned downloads.
-								li
 									table
-										tr(ng-repeat="(id, dl) in pinnedDownloads")
-											td
-												i.fa.fa-trash-o(ng-click="unpinDownload(dl);$event.stopPropagation()")
-											td
-												p {{ dl.info[0] }}
-												p {{ dl.info[1] }}
-											td {{ dl.size | bytes }}
+										tbody
+											tr.divider-bottom(ng-click="helpPinnedDownloads()")
+												td.ic
+													i.fa.fa-question-circle
+												td What's this?
+												td
+											tr.divider-none(ng-hide="pinnedDownloadCount")
+												td(colspan="3") No pinned downloads.
 
-
-								li.divider(ng-show="pinnedDownloadCount > 0")
-								li(ng-show="pinnedDownloadCount > 0")
-									a(href="#")
-										i.fa.fa-trash-o.space-right
-										| Clear
-								li(ng-show="pinnedDownloadCount > 0")
-									a(href="#")
-										i.fa.fa-download.space-right
-										| Download
-										span.pull-right {{ pinnedDownloadSize | bytes }}
+											tr(ng-repeat="(id, dl) in pinnedDownloads")
+												td.ic
+													i.fa.fa-trash-o(ng-click="unpinDownload(dl);$event.stopPropagation()")
+												td
+													p {{ dl.info[0] }}
+													p {{ dl.info[1] }}
+												td {{ dl.size | bytes }}
+											tr.divider-top(ng-show="pinnedDownloadCount > 0", ng-click="downloadPinned()")
+												td.ic
+													i.fa.fa-download
+												td Download
+												td {{ pinnedDownloadSize | bytes }}
 
 	.container.container-topmost
 		div(ng-view)

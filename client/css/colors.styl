@@ -67,6 +67,9 @@ body
 				color color-lighter
 				background-color color-light
 				box-shadow 0 0 3px 1px rgba(black, 0.3)
+			.badge
+				background-color color-light
+				color color-lighter-inv
 		&.btn-primary
 			color color-background
 			background-color color-primary
@@ -74,6 +77,9 @@ body
 				color color-background
 				background-color color-primary-light
 				box-shadow 0 0 3px 1px rgba(black, 0.3)
+			.badge
+				background-color color-background
+				color color-lightest
 
 	// :table
 	table.table
@@ -120,8 +126,18 @@ body
 			background-color color-darkest
 			color color-primary
 	ul.dropdown-menu table
-		tr td
-			border-bottom-color color-darker
+		tr
+			td
+				border-bottom-color color-darker
+				i:hover
+					color color-lightest
+			&.divider-bottom td
+				border-bottom-color color-dark
+			&.divider-top td
+				border-top-color color-dark
+			&[ng-click]:hover
+				background-color color-darker
+				color color-lightest
 
 	.btn-group.open .dropdown-menu
 		background-image url('/images/background.png')

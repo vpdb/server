@@ -115,13 +115,14 @@ directives.directive('markdown', function($sanitize, $compile) {
 	};
 });
 
-directives.directive('user', function() {
+directives.directive('user', function($compile) {
 	return {
 		restrict: 'E',
-		scope: true,
 		link: function(scope, element, attrs) {
 			// http://stackoverflow.com/questions/16722424/how-do-i-create-an-angularjs-ui-bootstrap-popover-with-html-content
-			element.css('font-weight', 'bold');
+			var username = element.html();
+			element.html('<span popover="I appeared on mouse enter!" popover-trigger="mouseenter">' + username + '</b>');
+			$compile(element.contents())(scope);
 		}
 	};
 });

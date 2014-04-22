@@ -92,23 +92,40 @@ directives.directive('stars', function() {
 	};
 });
 
-directives.directive('markdown', function($sanitize) {
+directives.directive('markdown', function($sanitize, $compile) {
 	var converter = new Showdown.converter();
 	return {
 		restrict: 'AE',
 		link: function(scope, element, attrs) {
+			var linkUsers = function(html) {
+				return html.replace(/@([^\s]+)/g, '<user>$1</user>');
+			};
 			if (attrs.markdown) {
 				scope.$watch(attrs.markdown, function(newVal) {
 					var html = newVal ? $sanitize(converter.makeHtml(newVal)) : '';
-					element.html(html);
+					element.html(linkUsers(html));
+					$compile(element.contents())(scope);
 				});
 			} else {
 				var html = $sanitize(converter.makeHtml(element.text()));
-				element.html(html);
+				element.html(linkUsers(html));
+				$compile(element.contents())(scope);
 			}
 		}
 	};
 });
+
+directives.directive('user', function() {
+	return {
+		restrict: 'E',
+		scope: true,
+		link: function(scope, element, attrs) {
+			// http://stackoverflow.com/questions/16722424/how-do-i-create-an-angularjs-ui-bootstrap-popover-with-html-content
+			element.css('font-weight', 'bold');
+		}
+	};
+});
+
 
 directives.directive('imgBg', function() {
 	return {

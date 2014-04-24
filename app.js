@@ -131,6 +131,7 @@ app.get('/api/packs', api.packs);
 app.get('/api/releases', api.releases);
 app.get('/api/feed', api.feed);
 app.get('/api/users', api.users);
+app.get('/api/users/:user', api.user);
 
 server.listen(app.get('port'), app.get('ipaddress'), function() {
 	console.log('Express server listening at ' + app.get('ipaddress') + ':' + app.get('port'));

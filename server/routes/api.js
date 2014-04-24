@@ -971,6 +971,41 @@ var data = [
 	games.ww
 ];
 
+var users = [
+	{
+		user: 'fuzzel',
+		avatar: '/avatars/fuzzel.jpg',
+		authored: 2,
+		submitted: 3,
+		acknowledged: 52,
+		followers: 2231
+	},
+	{
+		user: 'jpsalas',
+		avatar: '/avatars/jpsalas.png',
+		authored: 74,
+		submitted: 12,
+		acknowledged: 1165,
+		followers: 4231
+	},
+	{
+		user: 'unclewilly',
+		avatar: '/avatars/unclewilly.jpg',
+		authored: 54,
+		submitted: 5,
+		acknowledged: 554,
+		followers: 5132
+	},
+	{
+		user: 'Noah Fentz',
+		avatar: '/avatars/noah.jpg',
+		authored: 3,
+		submitted: 6651,
+		acknowledged: 565,
+		followers: 2132
+	}
+];
+
 exports.games = function(req, res) {
 	res.json({
 		result: data
@@ -1169,40 +1204,16 @@ exports.feed = function(req, res) {
 exports.users = function(req, res) {
 
 	res.json({
-		result: [
-			{
-				user: 'fuzzel',
-				avatar: '/avatars/fuzzel.jpg',
-				authored: 2,
-				submitted: 3,
-				acknowledged: 52,
-				followers: 2231
-			},
-			{
-				user: 'jpsalas',
-				avatar: '/avatars/jpsalas.png',
-				authored: 74,
-				submitted: 12,
-				acknowledged: 1165,
-				followers: 4231
-			},
-			{
-				user: 'unclewilly',
-				avatar: '/avatars/unclewilly.jpg',
-				authored: 54,
-				submitted: 5,
-				acknowledged: 554,
-				followers: 5132
-			},
-			{
-				user: 'Noah Fentz',
-				avatar: '/avatars/noah.jpg',
-				authored: 3,
-				submitted: 6651,
-				acknowledged: 565,
-				followers: 2132
-			}
-		]
+		result: users
 	});
 };
+
+exports.user = function(req, res) {
+	res.json({
+		result: _.find(users, function(user) {
+			return user.user == req.params.user;
+		})
+	});
+};
+
 

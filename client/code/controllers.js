@@ -102,3 +102,16 @@ ctrl.controller('CommentCtrl', function($scope) {
 		$scope.editing = false;
 	};
 });
+
+
+ctrl.controller('UserDetailCtrl', function($scope, $http, username) {
+
+	$scope.loading = true;
+	$http({
+		method: 'GET',
+		url: '/api/users/' + username
+	}).success(function(data, status, headers, config) {
+		$scope.user = data.result;
+	});
+});
+

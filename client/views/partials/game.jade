@@ -71,7 +71,8 @@
 						h1 {{ release.title }}
 						label
 							i.icon.icon-user
-							span {{ release.submitter.user }}
+							span
+								user {{ release.submitter.user }}
 						label
 							i.fa.fa-arrow-circle-up
 							time-ago(from-time="{{ release.lastversion.timestamp }}")

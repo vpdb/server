@@ -1,9 +1,7 @@
 .bg-lightest
-	img.avatar-details(ng-src="{{ user.avatar }}")
 	.modal-header
-		h3
-			i.fa.fa-user.space-right
-			| &nbsp;{{ user.user }}
+		img.avatar-details(ng-src="{{ user.avatar }}")
+		h3 {{ user.user }}
 	.modal-body
 		p more info here.
 

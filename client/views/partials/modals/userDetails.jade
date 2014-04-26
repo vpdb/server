@@ -3,8 +3,17 @@
 		img.avatar-details(ng-src="{{ user.avatar }}")
 		h3 {{ user.user }}
 	.modal-body
-		p more info here.
+		div.ident {{ user.followers | number }} followers, acknowledged {{ user.acknowledged | number }} times
+
+		hr
+		h4 Games Authored
+		div.center-block list here
+		h4 Games Contributed To
+		div.center-block list here
 
 
 	.modal-footer
+		button.btn.btn-default.pull-left
+			i.fa.fa-star.space-right
+			| Follow
 		button.btn.btn-primary(ng-click="$close()") Close

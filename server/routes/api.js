@@ -123,7 +123,7 @@ var releases = {
 	centaur: {
 		id: 1123,
 		title: '3D Edition',
-		description: "This is a complete rework of the old 1.2 version. A big thank you to @JimmyFingers who did the majority of changes to this table.",
+		description: "This is a complete rework of the old 1.2 version. A big thank you to @jimmyfingers who did the majority of changes to this table.",
 		acknowledgements: '',
 		authors: [
 			{
@@ -1003,6 +1003,30 @@ var users = [
 		submitted: 6651,
 		acknowledged: 565,
 		followers: 2132
+	},
+	{
+		user: 'jimmyfingers',
+		avatar: '/avatars/jimmyfingers.jpg',
+		authored: 4,
+		submitted: 21,
+		acknowledged: 1024,
+		followers: 115
+	},
+	{
+		user: 'toxie',
+		avatar: '/avatars/toxie.png',
+		authored: 2,
+		submitted: 12,
+		acknowledged: 456,
+		followers: 554
+	},
+	{
+		user: 'grizz',
+		avatar: '/avatars/grizz.jpg',
+		authored: 23,
+		submitted: 128,
+		acknowledged: 16,
+		followers: 669
 	}
 ];
 
@@ -1204,7 +1228,7 @@ exports.feed = function(req, res) {
 exports.users = function(req, res) {
 
 	res.json({
-		result: users
+		result: users.slice(0, 4)
 	});
 };
 

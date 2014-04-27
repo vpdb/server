@@ -96,7 +96,8 @@ of the app's ``$PATH`` variable.
 
 All this is currently a mock only. That means there is no database and all data/media is static. Obviously no download
 works. Table data is only available in **Monster Bash** and some in **Attack from Mars**, the other tables are only
-there to demonstrate how lists are displayed.
+there to demonstrate how lists are displayed. Also, not all refered users are in the database. If you click on a user
+and the dialog box is empty, try another one.
 
 I will soon gather some feedback and if there's interest, this could be the base of the next generation download
 platform for VP tables.
@@ -106,7 +107,6 @@ platform for VP tables.
 Stuff to add before I seriously think about going further:
 
 * Tagging
-* User Details
 * Review mod relations
 
 Stuff to add after having decided to go further:

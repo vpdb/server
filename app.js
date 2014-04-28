@@ -20,6 +20,8 @@ var clientcss = piler.createCSSManager({
 	urlRoot: "/css/"
 });
 
+var gracefullyClosing = false;
+
 
 /**
  * Configuration
@@ -30,6 +32,13 @@ app.set('port', process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || 3000);
 app.set('ipaddress', process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1');
 app.set('views', path.join(__dirname, 'client', 'views'));
 app.set('view engine', 'jade');
+app.use(function(req, res, next) {
+	if (!gracefullyClosing) {
+		return next();
+	}
+	res.setHeader("Connection", "close");
+	return res.send(502, "Server is in the process of restarting");
+});
 app.use(express.logger('dev'));
 app.use(express.compress());
 app.use(express.json());
@@ -135,4 +144,22 @@ app.get('/api/users/:user', api.user);
 
 server.listen(app.get('port'), app.get('ipaddress'), function() {
 	console.log('Express server listening at ' + app.get('ipaddress') + ':' + app.get('port'));
+});
+
+
+// gracefully shutdown on SIGTERM
+process.on('SIGTERM', function() {
+	gracefullyClosing = true;
+	console.log("Received kill signal (SIGTERM), shutting down gracefully.");
+	server.close(function() {
+		console.log("Closed out remaining connections.");
+		return process.exit();
+	});
+
+	// create a timeout that forcefully exits the process if connections are taking an unreasonable
+	// amount of time to close
+	return setTimeout(function() {
+		console.error("Could not close connections in time, forcefully shutting down");
+		return process.exit(1);
+	}, 30 * 1000);
 });

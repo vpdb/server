@@ -1,16 +1,26 @@
 #!/bin/sh
 
-path=/var/www/production
-GIT_WORK_TREE=$path/current
-export GIT_WORK_TREE
-git checkout -f
+DEPLOY_ENV='production'
 
-# latest tag
-if test -z "$ref"; then
-	ref=`run "cd $path/source && git for-each-ref refs/tags \
-		--sort=-*authordate \
-		--format='%(refname)' \
-		--count=1 | cut -d '/' -f 3"`
-	test $? -eq 0 || abort failed to determine latest tag
+. ./hooks/common
+
+LAST_TAG=`repo_last_tag`
+if [ -z "$LAST_TAG" ]; then
+	abort No tag found.
 fi
 
+echo Deploying version ${LAST_TAG}...
+
+# 1. clone into new folder
+repo_clone ${LAST_TAG}
+
+# 2. install node packages
+npm_install ${LAST_TAG}
+
+# 3. change symlink
+repo_link ${LAST_TAG}
+
+# 4. reload node cluster
+node_cluster_reload
+
+# 5. cleanup

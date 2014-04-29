@@ -1,6 +1,9 @@
+#!/bin/sh
+
 # config start
 
 DEPLOY_ROOT=/var/www
+NODE_CLUSTER_RESTART_FILE_PREFIX=/var/run/vpdb-
 
 # config end
 
@@ -13,21 +16,34 @@ abort() {
 
 npm_install() {
 	echo Installing Node.js dependencies...
-	cd $DEPLOY_ROOT/$DEPLOY_ENV/$1
+	cd ${DEPLOY_ROOT}/${DEPLOY_ENV}/$1
 	npm install
 	test $? -eq 0 || abort Failed to run npm install.
 }
 
 repo_clone() {
-	local ref=$1
-	local dest=$DEPLOY_ROOT/$DEPLOY_ENV/$ref
-	git clone $PWD $dest
-    test $? -eq 0 || abort Failed to clone into $dest
+	local dest=${DEPLOY_ROOT}/${DEPLOY_ENV}/$1
+	if [ -d "$dest" ]; then
+		abort $1 is already deployed, aborting.
+	fi
+	git clone $PWD ${dest}
+    test $? -eq 0 || abort Failed to clone into ${dest}
 }
 
 repo_link() {
 	echo Swapping code...
-	local dest=$DEPLOY_ROOT/$DEPLOY_ENV/$ref
-	ln -sfn dest $DEPLOY_ROOT/$DEPLOY_ENV/current
+	local dest=${DEPLOY_ROOT}/${DEPLOY_ENV}/$1
+	ln -sfn ${dest} ${DEPLOY_ROOT}/${DEPLOY_ENV}/current
 	test $? -eq 0 || abort Failed to symlink current repo.
+}
+
+repo_last_tag() {
+	ref=`git for-each-ref refs/tags --sort=-*authordate --format='%(refname)' --count=1 | cut -d '/' -f 3`
+	test $? -eq 0 || abort Failed to determine latest tag
+	echo ${ref}
+}
+
+node_cluster_reload() {
+	touch ${NODE_CLUSTER_RESTART_FILE_PREFIX}${DEPLOY_ENV}
+	test $? -eq 0 || abort Failed to trigger Node.js cluster reload.
 }

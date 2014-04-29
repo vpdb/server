@@ -6,14 +6,15 @@ HEAD_REV=`git rev-parse HEAD`
 . ./hooks/common
 
 # 1. clone into new folder
-repo_clone $HEAD_REV
+repo_clone ${HEAD_REV}
 
-# 2. update node packages
-npm_install $HEAD_REV
+# 2. install node packages
+npm_install ${HEAD_REV}
 
 # 3. change symlink
-repo_link $HEAD_REV
+repo_link ${HEAD_REV}
 
 # 4. reload node cluster
+node_cluster_reload
 
 # 5. cleanup

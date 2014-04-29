@@ -1,0 +1,29 @@
+#!/bin/sh
+
+DEPLOY_ENV='production'
+
+. ./hooks/common
+
+LAST_TAG=`repo_last_tag`
+if [ -z "$LAST_TAG" ]; then
+	abort No tag found.
+fi
+
+echo Deploying version ${LAST_TAG}...
+
+# 1. clone into new folder
+repo_clone ${LAST_TAG}
+
+# 2. install node packages
+npm_install ${LAST_TAG}
+
+# 3. change symlink
+repo_link ${LAST_TAG}
+
+# 4. reload node cluster
+node_cluster_reload
+
+# 5. cleanup
+repo_cleanup "v[0-9]+\.[0-9]+\.[0-9]+"
+
+echo Production deployment successful!

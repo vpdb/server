@@ -55,7 +55,7 @@ Paste this at the end of ``/etc/init/mongod.conf``:
 	# make sure we don't respawn too fast
 
 	post-stop script
-	  sleep 5
+		sleep 5
 	end script
 	respawn
 
@@ -156,22 +156,33 @@ end script
 
 ## Setup Deployment
 
-Create deployment user:
-
-	sudo useradd deployer
-	sudo touch /var/run/vpdb-production
-	sudo touch /var/run/vpdb-staging
-	sudo chown deployer:deployer /var/run/vpdb-*
-	sudo chmod 644 /var/run/vpdb-*
+For a more client-oriented description, check the [deployment guide](DEPLOY.md).
 
 Create file structure:
 
-	sudo mkdir /var/www/production -p
-	sudo mkdir /var/www/staging -p
+	sudo mkdir -p /var/www/production /var/www/staging
+	sudo mkdir -p /repos/production /repos/staging
 
-	sudo chown deployer:deployer /var/www/staging /var/www/production
-	sudo chmod 700 /var/www/staging /var/www/production
+	sudo touch /var/run/vpdb-production
+    sudo touch /var/run/vpdb-staging
 
+	sudo chmod 700 /var/www/production /var/www/staging
+	sudo chmod 700 /repos/production /repos/staging
+	sudo chmod 644 /var/run/vpdb-*
+
+Create deployment user:
+
+	sudo useradd deployer -d /repos -s /bin/bash
+
+	sudo chown deployer:deployer /var/www /repos -R
+	sudo chown deployer:deployer /var/run/vpdb-*
+
+	su - deployer
+	mkdir .ssh
+	chmod 700 .ssh
+	vi .ssh/authorized_key
+
+Paste your pub key in there.
 
 
 ## Credits

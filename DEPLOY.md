@@ -20,7 +20,8 @@ remotes like so:
 	git remote add production ssh://deployer@1.2.3.4/repos/production
 	git remote add staging ssh://deployer@1.2.3.4/repos/staging
 
-Of course you'll need to have your SSH public key added to the server's ``deployer`` account.
+Where ``1.2.3.4`` is the IP address of your production server (host name works too). Of course you'll need to have your
+SSH public key added to the server's ``deployer`` account.
 
 ## Staging Deployment
 

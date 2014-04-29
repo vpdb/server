@@ -1,0 +1,33 @@
+# config start
+
+DEPLOY_ROOT=/var/www
+
+# config end
+
+abort() {
+	echo
+	echo "  $@" 1>&2
+	echo
+	exit 1
+}
+
+npm_install() {
+	echo Installing Node.js dependencies...
+	cd $DEPLOY_ROOT/$DEPLOY_ENV/$1
+	npm install
+	test $? -eq 0 || abort Failed to run npm install.
+}
+
+repo_clone() {
+	local ref=$1
+	local dest=$DEPLOY_ROOT/$DEPLOY_ENV/$ref
+	git clone $PWD $dest
+    test $? -eq 0 || abort Failed to clone into $dest
+}
+
+repo_link() {
+	echo Swapping code...
+	local dest=$DEPLOY_ROOT/$DEPLOY_ENV/$ref
+	ln -sfn dest $DEPLOY_ROOT/$DEPLOY_ENV/current
+	test $? -eq 0 || abort Failed to symlink current repo.
+}

@@ -15,11 +15,10 @@ Make sure you enable OpenSSH. Once done, login and update the system:
 
 ### General Stuff.
 
-	sudo apt-get -y install rcconf git-core
+	sudo apt-get -y install rcconf git-core python-software-properties vim
 
 ### Node.js
 
-	sudo apt-get -y install python-software-properties
 	sudo add-apt-repository ppa:chris-lea/node.js
 	sudo apt-get -y update
 	sudo apt-get -y install nodejs
@@ -171,6 +170,7 @@ Create file structure:
 	sudo mkdir /var/www/staging -p
 
 	sudo chown deployer:deployer /var/www/staging /var/www/production
+	sudo chmod 700 /var/www/staging /var/www/production
 
 
 

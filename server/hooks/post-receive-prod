@@ -1,0 +1,16 @@
+#!/bin/sh
+
+path=/var/www/production
+GIT_WORK_TREE=$path/current
+export GIT_WORK_TREE
+git checkout -f
+
+# latest tag
+if test -z "$ref"; then
+	ref=`run "cd $path/source && git for-each-ref refs/tags \
+		--sort=-*authordate \
+		--format='%(refname)' \
+		--count=1 | cut -d '/' -f 3"`
+	test $? -eq 0 || abort failed to determine latest tag
+fi
+

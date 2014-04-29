@@ -13,28 +13,63 @@ Make sure you enable OpenSSH. Once done, login and update the system:
 
 ## Get Deps
 
-Manage services, build tools.
+### General Stuff.
 
-	sudo apt-get install rcconf build-essential libssl-dev git-core
+	sudo apt-get -y install rcconf git-core
 
-Install Node.js
+### Node.js
 
-	mkdir ~/src
-	cd ~/src
-	wget http://nodejs.org/dist/node-latest.tar.gz
-	tar xzf node-latest.tar.gz
-	cd node-v*
-	./configure --prefix=/usr
-	make
-	sudo make install
+	sudo apt-get -y install python-software-properties
+	sudo add-apt-repository ppa:chris-lea/node.js
+	sudo apt-get -y update
+	sudo apt-get -y install nodejs
 
-VPDB deps:
+Upgrade ``npm`` to latest and prevent self-signed certificate error
 
-	sudo apt-get install graphicsmagick
+    sudo npm config set ca ""
+    sudo npm install -g npm
+
+### GraphicsMagick:
+
+	sudo apt-get -y install graphicsmagick
+
+### MongoDB:
+
+Install 2.6 from repo:
+
+	sudo apt-key adv --keyserver keyserver.ubuntu.com --recv 7F0CEB10
+	su -
+	echo "deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen" >> /etc/apt/sources.list
+	exit
+	sudo apt-get -y update
+	sudo apt-get install -y mongodb-org
+
+Configure correctly. Also open `/etc/mongod.conf` and check that ``bind_ip = 127.0.0.1`` is in there.
+
+	su -
+	echo "smallfiles = true" >> /etc/mongod.conf
+
+Paste this at the end of ``/etc/init/mongod.conf``:
+
+	# Make sure we respawn if the physical server
+	# momentarily lies about disk space, but also
+	# make sure we don't respawn too fast
+
+	post-stop script
+	  sleep 5
+	end script
+	respawn
+
+Restart and go back to normal user:
+
+	stop mongodb
+    start mongodb
+	exit
+
 
 ## Setup Reverse Proxy
 
-	sudo apt-get install nginx
+	sudo apt-get -y install nginx
 
 Edit the **nginx** default configuration file replacing the root (/) location section:
 
@@ -66,7 +101,7 @@ Then restart nginx:
 
 Start and test:
 
-		node server.js
+	node server.js
 
 Open browser with the VM's IP address and make sure you'll get a "Hello World". If all good,
 ``Ctrl+C`` node and remove the test folder.
@@ -80,13 +115,14 @@ Open browser with the VM's IP address and make sure you'll get a "Hello World". 
 
 Paste this:
 
-```Shell
+```bash
 description "Start and stop node-vpdb"
 author "freezy"
 
 env APP_NAME=vpdb
 env APP_HOME=/var/www/vpdb/releases/current
 
+env RESTARTFILE=/var/run/node-vpdb
 env ENV=production
 env PORT=8124
 
@@ -119,18 +155,22 @@ script
 end script
 ```
 
+## Setup Deployment
 
-## Checkout Code
+Create deployment user:
 
-	sudo mkdir /var/www -p
-	cd /var/www
-	sudo git clone https://github.com/freezy/node-vpdb.git vpdb
-	sudo chown `whoami`:`whoami` vpdb -R
-	sudo chmod 700 vpdb
+	sudo useradd deployer
+	sudo touch /var/run/vpdb-production
+	sudo touch /var/run/vpdb-staging
+	sudo chown deployer:deployer /var/run/vpdb-*
+	sudo chmod 644 /var/run/vpdb-*
 
+Create file structure:
 
+	sudo mkdir /var/www/production -p
+	sudo mkdir /var/www/staging -p
 
-
+	sudo chown deployer:deployer /var/www/staging /var/www/production
 
 
 

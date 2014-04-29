@@ -24,3 +24,6 @@ repo_link ${LAST_TAG}
 node_cluster_reload
 
 # 5. cleanup
+repo_cleanup "v[0-9]+\.[0-9]+\.[0-9]+"
+
+echo Production deployment successful!

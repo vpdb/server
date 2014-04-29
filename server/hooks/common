@@ -1,11 +1,12 @@
 #!/bin/sh
 
-# config start
+################ config start ################
 
+KEEP_DEPLOYMENTS=5
 DEPLOY_ROOT=/var/www
 NODE_CLUSTER_RESTART_FILE_PREFIX=/var/run/vpdb-
 
-# config end
+################  config end  ################
 
 abort() {
 	echo
@@ -37,6 +38,14 @@ repo_link() {
 	test $? -eq 0 || abort Failed to symlink current repo.
 }
 
+repo_cleanup() {
+	local regex=$1
+	local dir=${DEPLOY_ROOT}/${DEPLOY_ENV}
+	echo Deleting old deployments:
+	(ls -t ${dir}|egrep ${regex}|head -n ${KEEP_DEPLOYMENTS};ls ${dir}|egrep ${regex})|sort|uniq -u|xargs -I {} echo "   * ${dir}/{}"
+	(ls -t ${dir}|egrep ${regex}|head -n ${KEEP_DEPLOYMENTS};ls ${dir}|egrep ${regex})|sort|uniq -u|xargs -I {} rm ${dir}/{} -r
+}
+
 repo_last_tag() {
 	ref=`git for-each-ref refs/tags --sort=-*authordate --format='%(refname)' --count=1 | cut -d '/' -f 3`
 	test $? -eq 0 || abort Failed to determine latest tag
@@ -44,6 +53,7 @@ repo_last_tag() {
 }
 
 node_cluster_reload() {
+	echo Triggering Node.js cluster reload...
 	touch ${NODE_CLUSTER_RESTART_FILE_PREFIX}${DEPLOY_ENV}
 	test $? -eq 0 || abort Failed to trigger Node.js cluster reload.
 }

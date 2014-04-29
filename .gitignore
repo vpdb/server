@@ -11,6 +11,7 @@ lib-cov
 pids
 logs
 results
+server/config/settings.js
 
 npm-debug.log
 node_modules

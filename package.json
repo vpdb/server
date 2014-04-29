@@ -27,7 +27,9 @@
 		"reload": "*",
 		"request": "2.34.x",
 		"stylus": "0.42.3",
-		"underscore": "1.6.x"
+		"uglify-js": "2.4.x",
+		"underscore": "1.6.x",
+		"winston": "0.7.x"
 	},
 	"devDependencies": {
 		"socket.io": "1.0.x"

@@ -30,7 +30,7 @@ Upgrade ``npm`` to latest and prevent self-signed certificate error
 
 #### Node Deps
 
-	sudo npm install -g naught
+	sudo npm install -g andrewrk/naught
 
 ### GraphicsMagick
 
@@ -156,8 +156,7 @@ end script
 # cd to code path and run naught
 script
     echo Starting staging server for VPDB at ${APP_HOME}...
-    chdir $APP_HOME
-    exec sudo -u $RUN_AS_USER /usr/bin/naught start --ipc-file $APP_ROOT/shared/naught.ipc --log $APP_ROOT/shared/logs/naught --stdout $APP_ROOT/shared/logs/$APP_NAME.out --stderr $APP_ROOT/shared/logs/$APP_NAME.err --max-log-size 10485760 --cwd . --daemon-mode false app.js
+    exec sudo -u $RUN_AS_USER /usr/bin/naught start --ipc-file $APP_ROOT/shared/naught.ipc --log $APP_ROOT/shared/logs/naught --stdout $APP_ROOT/shared/logs/$APP_NAME.out --stderr $APP_ROOT/shared/logs/$APP_NAME.err --max-log-size 10485760 --cwd $APP_HOME --daemon-mode false $APP_HOME/app.js
 end script
 ```
 

@@ -52,7 +52,7 @@ repo_last_tag() {
 }
 
 node_cluster_reload() {
-	echo Triggering Node.js cluster reload...
+	echo Deploying new code...
 	sudo naught deploy ${DEPLOY_ROOT}/${DEPLOY_ENV}/shared/naught.ipc
 	test $? -eq 0 || abort Failed to trigger Node.js cluster reload.
 }

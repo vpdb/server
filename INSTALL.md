@@ -130,10 +130,10 @@ env PORT=8124
 
 # Node Environment is production
 env NODE_ENV=production
-env ENV=production
 
 # User to run as
-env RUN_AS_USER=www-data
+setuid www-data
+setgid www-data
 
 # Make sure network and fs is up, and start in runlevels 2-5
 start on (net-device-up
@@ -156,7 +156,7 @@ end script
 # cd to code path and run naught
 script
     echo Starting staging server for VPDB at ${APP_HOME}...
-    exec sudo -u $RUN_AS_USER /usr/bin/naught start --ipc-file $APP_ROOT/shared/naught.ipc --log $APP_ROOT/shared/logs/naught --stdout $APP_ROOT/shared/logs/$APP_NAME.out --stderr $APP_ROOT/shared/logs/$APP_NAME.err --max-log-size 10485760 --cwd $APP_HOME --daemon-mode false $APP_HOME/app.js
+    exec /usr/bin/naught start --ipc-file $APP_ROOT/shared/naught.ipc --log $APP_ROOT/shared/logs/naught --stdout $APP_ROOT/shared/logs/$APP_NAME.out --stderr $APP_ROOT/shared/logs/$APP_NAME.err --max-log-size 10485760 --cwd $APP_HOME --daemon-mode false $APP_HOME/app.js
 end script
 ```
 
@@ -198,11 +198,11 @@ Paste your pub key in there.
 Then, add ``naught`` sudo permission to user ``deployer``
 
 	su -
-	chmod u+r /etc/sudoers
+	chmod u+w /etc/sudoers
 	echo "# Allow deployer to use naught as root" >> /etc/sudoers
 	echo "Cmnd_Alias NAUGHT_CMD = /usr/bin/naught" >> /etc/sudoers
 	echo "deployer ALL=(ALL) NOPASSWD: NAUGHT_CMD" >> /etc/sudoers
-	chmod u-r /etc/sudoers
+	chmod u-w /etc/sudoers
 	exit
 
 ### Setup bare Git repositories

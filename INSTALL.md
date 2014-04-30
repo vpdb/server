@@ -1,5 +1,16 @@
 # VPDB Production Setup
 
+## Tech Stack
+
+* [Ubuntu Server](http://www.ubuntu.com/) or any Debian-based distro as base OS
+* [Node.js](http://nodejs.org/) for dynamic page serving
+* [Nginx](http://nginx.org/) for static page serving and reverse proxy
+* [Git](http://git-scm.com/) for push deployments on client side
+* [Upstart](http://upstart.ubuntu.com/) as Node.js service wrapper
+* [Naught](https://github.com/andrewrk/naught) for zero downtime code deployment
+* [MongoDB](https://www.mongodb.org/) for data storage
+* [Redis](http://redis.io/) for session storage
+
 ## Install Ubuntu
 
 Get Ubuntu 14.04 Server from [here](http://www.ubuntu.com/download/server). Start up
@@ -123,7 +134,7 @@ description "Start and stop node-vpdb"
 author "freezy"
 
 # Configuration
-env APP_NAME=vpdb-staging
+env APP_NAME=staging
 env APP_ROOT=/var/www/staging
 env APP_HOME=/var/www/staging/current
 env PORT=8124
@@ -166,7 +177,7 @@ Then do the same for the production script:
 	sudo vi /etc/init/vpdb-production.conf
 
 And update:
-* ``env APP_NAME=vpdb-production``
+* ``env APP_NAME=production``
 * ``env APP_ROOT=/var/www/production``
 * ``env APP_HOME=/var/www/production/current``
 * ``env PORT=9124``

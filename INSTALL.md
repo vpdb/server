@@ -13,7 +13,7 @@ Make sure you enable OpenSSH. Once done, login and update the system:
 
 ## Get Deps
 
-### General Stuff.
+### General Stuff
 
 	sudo apt-get -y install rcconf git-core python-software-properties vim
 
@@ -28,11 +28,11 @@ Upgrade ``npm`` to latest and prevent self-signed certificate error
     sudo npm config set ca ""
     sudo npm install -g npm
 
-### GraphicsMagick:
+### GraphicsMagick
 
 	sudo apt-get -y install graphicsmagick
 
-### MongoDB:
+### MongoDB
 
 Install 2.6 from repo:
 
@@ -108,9 +108,9 @@ Open browser with the VM's IP address and make sure you'll get a "Hello World". 
 	cd ~
 	rm www-test -r
 
-## Create Node.js Startup Script
+## Create Node.js Startup Scripts
 
-	sudo vi /etc/init/node-vpdb.conf
+	sudo vi /etc/init/vpdb-staging.conf
 
 Paste this:
 
@@ -118,17 +118,21 @@ Paste this:
 description "Start and stop node-vpdb"
 author "freezy"
 
-env APP_NAME=vpdb
-env APP_HOME=/var/www/vpdb/releases/current
-
-env RESTARTFILE=/var/run/node-vpdb
-env ENV=production
+# Configuration
+env APP_NAME=vpdb-staging
+env APP_ROOT=/var/www/staging
+env NODE_RESTARTFILE=/var/run/vpdb-staging
 env PORT=8124
 
 # Node Environment is production
 env NODE_ENV=production
+env ENV=production
+
 # User to run as
 env RUN_AS_USER=www-data
+
+# Where the app code is deployed
+env APP_HOME=$APP_ROOT/current
 
 # Make sure network and fs is up, and start in runlevels 2-5
 start on (net-device-up
@@ -144,50 +148,75 @@ respawn limit 5 60
 # make sure node is there, the code directory is there
 pre-start script
     test -x /usr/bin/node || { stop; exit 0; }
-    test -e $APP_HOME/logs || { stop; exit 0; }
+    test -e $APP_ROOT/shared/logs || { stop; exit 0; }
+    test -e $APP_HOME/app.js || { stop; exit 0; }
 end script
 
 # cd to code path and run node, with the right switches
 script
     chdir $APP_HOME
-    exec /usr/bin/node server/cluster app.js -u $RUN_AS_USER -l logs/$APP_NAME.out -e logs/$APP_NAME.err >> $APP_HOME/logs/upstart
+    exec /usr/bin/node server/cluster app.js -u $RUN_AS_USER -l shared/logs/$APP_NAME.out -e shared/logs/$APP_NAME.err >> $APP_ROOT/shared/logs/upstart
 end script
 ```
 
-## Setup Deployment
+Then do the same for the production script:
 
-For a more client-oriented description, check the [deployment guide](DEPLOY.md).
+	sudo cp /etc/init/vpdb-staging.conf /etc/init/vpdb-production.conf
+	sudo vi /etc/init/vpdb-production.conf
 
-Create file structure:
+And change:
+* ``env APP_NAME=vpdb-production``
+* ``env APP_ROOT=/var/www/production``
+* ``env RESTARTFILE=/var/run/vpdb-production``
+* ``env PORT=9124``
 
-	sudo mkdir -p /var/www/production /var/www/staging
+## Setup Push Deployment
+
+For client documentation, check the [deployment guide](DEPLOY.md).
+
+### Create file structure
+
+	sudo mkdir -p /var/www/production/shared/logs /var/www/staging/shared/logs
 	sudo mkdir -p /repos/production /repos/staging
 
 	sudo touch /var/run/vpdb-production
     sudo touch /var/run/vpdb-staging
 
-	sudo chmod 700 /var/www/production /var/www/staging
+	sudo chmod 770 /var/www/production /var/www/staging -R
 	sudo chmod 700 /repos/production /repos/staging
 	sudo chmod 644 /var/run/vpdb-*
 
-Create deployment user:
+### Create deployment user
 
-	sudo useradd deployer -d /repos -s /bin/bash
+	sudo useradd deployer -d /repos -s /bin/bash -g www-data
 
-	sudo chown deployer:deployer /var/www /repos -R
-	sudo chown deployer:deployer /var/run/vpdb-*
+	sudo chown deployer:www-data /var/www /repos -R
+	sudo chown deployer:www-data /var/run/vpdb-*
 
-	su - deployer
+	sudo su - deployer
 	mkdir .ssh
 	chmod 700 .ssh
 	vi .ssh/authorized_key
 
 Paste your pub key in there.
 
+### Setup bare Git repositories
 
-## Credits
+Still as user ``deployer``:
 
-Useful resources:
+	cd ~/staging && git init --bare
+	cd ~/production && git init --bare
+
+Setup deployment hooks:
+
+	cd /tmp
+	git clone https://github.com/freezy/node-vpdb.git
+	cd node-vpdb/server/hooks
+	cp post-receive-production ~/production/hooks/post-receive
+	cp post-receive-staging ~/staging/hooks/post-receive
+
+
+## Links
 
 * [DIY Node.js Server on Amazon EC2](http://cuppster.com/2011/05/12/diy-node-js-server-on-amazon-ec2/)
 * [10 steps to nodejs nirvana in production](http://qzaidi.github.io/2013/05/14/node-in-production/)

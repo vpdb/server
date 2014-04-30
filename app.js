@@ -2,25 +2,22 @@
 
 var http = require('http');
 var path = require('path');
-var piler = require('piler');
+
 var reload = require('reload');
+var domain = require('domain');
 var express = require('express');
+var domainError = require('express-domain-errors');
+var gracefulExit = require('express-graceful-exit');
 
 var api = require('./server/routes/api');
 var routes = require('./server/routes');
 var asset = require('./server/middleware/asset');
+var Assets = require('./server/assets');
 
+var serverDomain = domain.create();
 var app = express();
-var clientjs = piler.createJSManager({
-	outputDirectory: __dirname + "/gen/js",
-	urlRoot: "/js/"
-});
-var clientcss = piler.createCSSManager({
-	outputDirectory: __dirname + "/gen/css",
-	urlRoot: "/css/"
-});
 
-var gracefullyClosing = false;
+var shuttingDown = false;
 
 
 /**
@@ -33,7 +30,7 @@ app.set('ipaddress', process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1');
 app.set('views', path.join(__dirname, 'client', 'views'));
 app.set('view engine', 'jade');
 app.use(function(req, res, next) {
-	if (!gracefullyClosing) {
+	if (!shuttingDown) {
 		return next();
 	}
 	res.setHeader("Connection", "close");
@@ -49,58 +46,27 @@ app.use(express.static(__dirname + '/data/assets', { maxAge: 3600*24*30*1000 }))
 app.use(asset.middleware());
 app.use(app.router);
 
-
-// production only
-if (app.get('env') === 'production') {
-	// TODO
-}
-
 /**
  * Start Server
  */
-var server = http.createServer(app);
+var server = http.createServer(app).on('error', function(e) {
 
-app.configure(function() {
-
-	clientjs.bind(app, server);
-	clientcss.bind(app, server);
-
-	clientcss.addFile(__dirname + "/client/static/css/lib/bootstrap-3.1.1.css");
-	clientcss.addFile(__dirname + "/client/static/css/lib/font-awesome.css");
-	clientcss.addFile(__dirname + "/client/static/css/lib/magnific-popup.css");
-	clientcss.addFile(__dirname + "/client/static/css/lib/nanoscroller.css");
-	clientcss.addFile(__dirname + "/client/static/css/fonts.css");
-	clientcss.addFile(__dirname + "/client/css/app.styl");
-	clientcss.addFile(__dirname + "/client/css/colors.styl");
-	clientcss.addFile(__dirname + "/client/css/animations.styl");
-
-	clientjs.addFile(__dirname + "/client/code/lib/jquery-2.1.0.js");
-	clientjs.addFile(__dirname + "/client/code/lib/angular-1.3.0-beta.3/angular.js");
-	clientjs.addFile(__dirname + "/client/code/lib/angular-1.3.0-beta.3/angular-route.js");
-	clientjs.addFile(__dirname + "/client/code/lib/angular-1.3.0-beta.3/angular-animate.js");
-	clientjs.addFile(__dirname + "/client/code/lib/angular-1.3.0-beta.3/angular-sanitize.js");
-	clientjs.addFile(__dirname + "/client/code/lib/angulartics-0.14.15/angulartics.js");
-	clientjs.addFile(__dirname + "/client/code/lib/angulartics-0.14.15/angulartics-ga.js");
-	clientjs.addFile(__dirname + "/client/code/lib/angulartics-0.14.15/angulartics-ga-cordova.js");
-	clientjs.addFile(__dirname + "/client/code/lib/ui-bootstrap-tpls-0.10.0.js");
-	clientjs.addFile(__dirname + "/client/code/lib/underscore-1.6.0.js");
-	clientjs.addFile(__dirname + "/client/code/lib/showdown.js");
-	clientjs.addFile(__dirname + "/client/code/lib/jquery.magnific-popup-0.9.9.js");
-	clientjs.addFile(__dirname + "/client/code/lib/jquery.nanoscroller-0.8.0.js");
-	clientjs.addFile(__dirname + "/client/code/lib/jquery.waitforimages-1.5.0.js");
-	clientjs.addFile(__dirname + "/client/code/lib/angular.scrollable-0.2.0.js");
-	clientjs.addFile(__dirname + "/client/code/app.js");
-	clientjs.addFile(__dirname + "/client/code/services.js");
-	clientjs.addFile(__dirname + "/client/code/controllers.js");
-	clientjs.addFile(__dirname + "/client/code/filters.js");
-	clientjs.addFile(__dirname + "/client/code/directives.js");
-	clientjs.addFile(__dirname + "/client/code/controller/home.js");
-	clientjs.addFile(__dirname + "/client/code/controller/games.js");
-	clientjs.addFile(__dirname + "/client/code/controller/game.js");
-	clientjs.addFile(__dirname + "/client/code/service/timeago.js");
-	clientjs.addFile(__dirname + "/client/code/directive/timeago.js");
-	clientjs.addFile(__dirname + "/client/code/directive/elastic.js");
+	// do not fail silently on error, particularly annoying in development.
+	if (e.code == 'EADDRINUSE') {
+		console.log('Failed to bind to port - address already in use ');
+		process.exit(1);
+	}
 });
+
+
+
+var assets = new Assets(app, server);
+app.configure(assets.configure);
+
+// production only
+if (app.get('env') === 'production') {
+	http.globalAgent.maxSockets = 500; // set this high, if you use httpClient or request anywhere (defaults to 5)
+}
 
 // development only
 if (app.get('env') === 'development') {
@@ -108,26 +74,18 @@ if (app.get('env') === 'development') {
 	app.configure('development', function() {
 		app.use(express.errorHandler());
 		app.locals.pretty = true;
-		clientjs.liveUpdate(clientcss);
+//		assets.liveUpdate();
 	});
 }
-
-var index = function(req, res){
-	res.render('index', {
-		layout: false,
-		js: clientjs.renderTags(),
-		css: clientcss.renderTags()
-	});
-};
 
 /**
  * Routes
  */
-app.get('/', index);
-app.get('/games', index);
-app.get('/game', index);
-app.get('/game/*', index);
-app.get('/home', index);
+app.get('/', assets.renderIndex);
+app.get('/games', assets.renderIndex);
+app.get('/game', assets.renderIndex);
+app.get('/game/*', assets.renderIndex);
+app.get('/home', assets.renderIndex);
 
 // serve index and view partials
 app.get('/partials/:name', routes.partials);
@@ -144,13 +102,15 @@ app.get('/api/users/:user', api.user);
 
 server.listen(app.get('port'), app.get('ipaddress'), function() {
 	console.log('Express server listening at ' + app.get('ipaddress') + ':' + app.get('port'));
+	if (process.send) {
+		process.send('online');
+	}
 });
 
-
-// gracefully shutdown on SIGTERM
-process.on('SIGTERM', function() {
-	gracefullyClosing = true;
-	console.log("Received kill signal (SIGTERM), shutting down gracefully.");
+// gracefully shutdown
+var shutdown = function() {
+	shuttingDown = true;
+	console.log("Received kill signal, shutting down gracefully.");
 	server.close(function() {
 		console.log("Closed out remaining connections.");
 		return process.exit();
@@ -162,4 +122,14 @@ process.on('SIGTERM', function() {
 		console.error("Could not close connections in time, forcefully shutting down");
 		return process.exit(1);
 	}, 30 * 1000);
+};
+
+// shutdown on SIGTERM
+process.on('SIGTERM', shutdown);
+
+// shutdown when naught asks to
+process.on('message', function(message) {
+	if (message === 'shutdown') {
+		shutdown();
+	}
 });

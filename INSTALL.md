@@ -137,7 +137,11 @@ author "freezy"
 env APP_NAME=staging
 env APP_ROOT=/var/www/staging
 env APP_HOME=/var/www/staging/current
+env APP_CACHEDIR=/var/www/staging/shared/cache
 env PORT=8124
+
+# Application settings
+env APP_SETTINGS=/var/www/shared/settings.js
 
 # Node Environment is production
 env NODE_ENV=production
@@ -180,6 +184,7 @@ And update:
 * ``env APP_NAME=production``
 * ``env APP_ROOT=/var/www/production``
 * ``env APP_HOME=/var/www/production/current``
+* ``env APP_CACHEDIR=/var/www/production/shared/cache``
 * ``env PORT=9124``
 
 ## Setup Push Deployment
@@ -188,16 +193,30 @@ For client documentation, check the [deployment guide](DEPLOY.md).
 
 ### Create file structure
 
-	sudo mkdir -p /var/www/production/shared/logs /var/www/staging/shared/logs
+	sudo mkdir -p /var/www/shared
+	sudo mkdir -p /var/www/production/shared/logs /var/www/production/shared/cache /var/www/production/shared/data
+	sudo mkdir -p /var/www/staging/shared/logs /var/www/staging/shared/cache /var/www/staging/shared/data
 	sudo mkdir -p /repos/production /repos/staging
 
-	sudo chmod 770 /var/www/production /var/www/staging -R
+	sudo chmod 770 /var/www/production /var/www/staging /var/www/shared -R
 	sudo chmod 700 /repos/production /repos/staging
+
+The ``shared`` folder contains the following:
+
+* ``logs`` - Log files from the workers and naught
+* ``data`` - User-generated files.
+* ``cache`` - Auto-generated files. This folder is cleaned on every deployment.
+
+Note that the deployment files in ``/var/www/[production|staging]/current`` are read-only (and owned by the ``deployer``
+user). All data *written* by the app (the ``www-data`` user) goes into either ``cache`` or ``data`` of the ``shared``
+folder.
 
 ### Create deployment user
 
 	sudo useradd deployer -d /repos -s /bin/bash -g www-data
 	sudo chown deployer:www-data /var/www /repos -R
+	sudo chown www-data:www-data /var/www/production/shared/cache /var/www/production/shared/data -R
+	sudo chown www-data:www-data /var/www/production/staging/cache /var/www/production/staging/data -R
 
 	sudo su - deployer
 	mkdir .ssh
@@ -227,11 +246,18 @@ Setup deployment hooks:
 
 	cd /tmp
 	git clone https://github.com/freezy/node-vpdb.git
-	cd node-vpdb/server/hooks
-	cp post-receive-production ~/production/hooks/post-receive
-	cp post-receive-staging ~/staging/hooks/post-receive
-	cp common ~/production/hooks
-	cp common ~/staging/hooks
+	cd node-vpdb
+	cp server/hooks/post-receive-production ~/production/hooks/post-receive
+	cp server/hooks/post-receive-staging ~/staging/hooks/post-receive
+	cp server/hooks/common ~/production/hooks
+	cp server/hooks/common ~/staging/hooks
+
+Create configuration file
+
+	cp server/config/settings-dist.js /var/www/shared/settings.js
+	vi /var/www/shared/settings.js
+
+Update and double-check all ``@important`` settings.
 
 ### Upload Code
 

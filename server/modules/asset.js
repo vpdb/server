@@ -44,6 +44,19 @@ exports.square = function(context, type, key, size) {
 };
 
 var asset = function(context, p, process, type, key, size, defaultName) {
+
+	// setup cache dir
+	var cacheImg;
+	var cacheRoot = process.env.APP_CACHEDIR ? process.env.APP_CACHEDIR : path.normalize(__dirname + '../../../gen');
+	if (fs.existsSync(cacheRoot)) {
+		cacheImg = cacheRoot + '/img';
+		if (!fs.existsSync(cacheImg)) {
+			fs.mkdirSync(cacheImg);
+		}
+	} else {
+		cacheImg = null;
+	}
+
 	if (p && fs.existsSync(p)) {
 
 		// browser caching
@@ -58,13 +71,15 @@ var asset = function(context, p, process, type, key, size, defaultName) {
 		}
 
 		// file caching
-		var hash = md5.digest_s(type + ':' + ':' + key + ':' + size);
-		var filename = path.normalize(__dirname + '../../../gen/img/' + hash + '.png');
-		if (fs.existsSync(filename)) {
-			console.log('File cache hit, returning ' + filename);
-			return file(context, filename);
-		} else {
-			console.log('No cache hit for ' + filename);
+		if (cacheImg) {
+			var hash = md5.digest_s(type + ':' + ':' + key + ':' + size);
+			var filename = cacheImg + '/' + hash + '.png';
+			if (fs.existsSync(filename)) {
+				console.log('File cache hit, returning ' + filename);
+				return file(context, filename);
+			} else {
+				console.log('No cache hit for ' + filename);
+			}
 		}
 
 		// cache, process.
@@ -87,7 +102,7 @@ var asset = function(context, p, process, type, key, size, defaultName) {
 			});
 		});
 
-		// FIXME don't process twice, but when chaining write() after stream(), the unprocessed image gets saved.
+		// FIXME don't process twice (tried to fix, but when chaining write() after stream(), the unprocessed image gets saved).
 		// save to cache
 		process(gm(p), function(gm) {
 			gm.write(filename, function(err) {

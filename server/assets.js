@@ -1,5 +1,6 @@
-var piler = require('piler');
+var fs = require('fs');
 var path = require('path');
+var piler = require('piler');
 
 // hack for weird context calls. we're a singleton anyways.
 var instance;
@@ -9,12 +10,27 @@ function Assets(app, server) {
 	this.app = app;
 	this.server = server;
 
+	// check cache dir
+	var cacheRoot = process.env.APP_CACHEDIR ? process.env.APP_CACHEDIR : path.normalize(__dirname + "/gen/js");
+	if (!fs.existsSync(cacheRoot)) {
+		throw 'Cannot find cache dir "' + cacheRoot + '" for generating assets.';
+	}
+	// setup cache dir
+	var cacheJs = cacheRoot + '/js';
+	var cacheCss = cacheRoot + '/css';
+	if (!fs.existsSync(cacheJs)) {
+		fs.mkdirSync(cacheJs);
+	}
+	if (!fs.existsSync(cacheCss)) {
+		fs.mkdirSync(cacheCss);
+	}
+
 	this.clientjs = piler.createJSManager({
-		outputDirectory: path.normalize(__dirname + "/../gen/js"),
+		outputDirectory: cacheJs,
 		urlRoot: "/js/"
 	});
 	this.clientcss = piler.createCSSManager({
-		outputDirectory: path.normalize(__dirname + "/../gen/css"),
+		outputDirectory: cacheCss,
 		urlRoot: "/css/"
 	});
 	instance = this;

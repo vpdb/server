@@ -11,11 +11,11 @@ function Settings() {
 	var msg;
 
 	// 1. check for env variable
-	if (process.env.VPDB_SETTINGS) {
-		if (fs.existsSync(process.env.VPDB_SETTINGS)) {
-			this.filePath = process.env.VPDB_SETTINGS;
+	if (process.env.APP_SETTINGS) {
+		if (fs.existsSync(process.env.APP_SETTINGS)) {
+			this.filePath = process.env.APP_SETTINGS;
 		} else {
-			msg = 'Cannot find settings at "' + process.env.VPDB_SETTINGS + '", check your env variable VPDB_SETTINGS.';
+			msg = 'Cannot find settings at "' + process.env.APP_SETTINGS + '", check your env variable APP_SETTINGS.';
 			logger.log('error', '[settings] %s', msg);
 			throw msg;
 		}

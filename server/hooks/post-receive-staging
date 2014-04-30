@@ -17,7 +17,10 @@ repo_link ${HEAD_REV}
 # 4. reload node cluster
 node_cluster_reload
 
-# 5. cleanup
+# 5. clean cache folder
+node_cache_cleanup
+
+# 6. cleanup old deployment
 repo_cleanup "[a-f0-9]{40}"
 
 echo Staging deployment successful!

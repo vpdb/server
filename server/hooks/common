@@ -45,6 +45,11 @@ repo_cleanup() {
 	(ls -t ${dir}|egrep ${regex}|head -n ${KEEP_DEPLOYMENTS};ls ${dir}|egrep ${regex})|sort|uniq -u|xargs -I {} rm ${dir}/{} -r
 }
 
+node_cache_cleanup() {
+	local cache_dir=${DEPLOY_ROOT}/${DEPLOY_ENV}/shared/cache/*
+	echo Cleaning cache folder at ${cache_dir}...
+	rm ${cache_dir} -rf
+}
 repo_last_tag() {
 	ref=`git for-each-ref refs/tags --sort=-*authordate --format='%(refname)' --count=1 | cut -d '/' -f 3`
 	test $? -eq 0 || abort Failed to determine latest tag

@@ -4,7 +4,6 @@
 
 KEEP_DEPLOYMENTS=5
 DEPLOY_ROOT=/var/www
-NODE_CLUSTER_RESTART_FILE_PREFIX=/var/run/vpdb-
 
 ################  config end  ################
 
@@ -54,6 +53,6 @@ repo_last_tag() {
 
 node_cluster_reload() {
 	echo Triggering Node.js cluster reload...
-	touch ${NODE_CLUSTER_RESTART_FILE_PREFIX}${DEPLOY_ENV}
+	sudo naught deploy ${DEPLOY_ROOT}/${DEPLOY_ENV}/shared/naught.ipc
 	test $? -eq 0 || abort Failed to trigger Node.js cluster reload.
 }

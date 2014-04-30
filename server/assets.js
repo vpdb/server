@@ -35,7 +35,7 @@ Assets.prototype.liveUpdate = function() {
 
 Assets.prototype.renderIndex = function(req, res) {
 	var that = instance;
-	res.render('index', {
+	res.render('index.html', {
 		layout: false,
 		js: that.renderJsTags(),
 		css: that.renderCssTags()

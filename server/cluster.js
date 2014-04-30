@@ -23,7 +23,7 @@ function startApp(filename) {
 	var opts = { timeout: 30, respawn: 60 };
 	var cluster = recluster(filename, opts);
 	var sighupSent = false;
-	var restartFile = path.resolve(process.env.NODE_RESTARTFILE || './public/system/restart');
+	var restartFile = path.resolve(process.env.NODE_RESTARTFILE);
 
 	cluster.run();
 	util.log('Spawned cluster with pid ' + process.pid + '.');

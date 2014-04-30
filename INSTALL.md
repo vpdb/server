@@ -28,6 +28,10 @@ Upgrade ``npm`` to latest and prevent self-signed certificate error
     sudo npm config set ca ""
     sudo npm install -g npm
 
+#### Node Deps
+
+	sudo npm install -g naught
+
 ### GraphicsMagick
 
 	sudo apt-get -y install graphicsmagick
@@ -121,7 +125,7 @@ author "freezy"
 # Configuration
 env APP_NAME=vpdb-staging
 env APP_ROOT=/var/www/staging
-env NODE_RESTARTFILE=/var/run/vpdb-staging
+env APP_HOME=/var/www/staging/current
 env PORT=8124
 
 # Node Environment is production
@@ -130,9 +134,6 @@ env ENV=production
 
 # User to run as
 env RUN_AS_USER=www-data
-
-# Where the app code is deployed
-env APP_HOME=$APP_ROOT/current
 
 # Make sure network and fs is up, and start in runlevels 2-5
 start on (net-device-up
@@ -152,10 +153,11 @@ pre-start script
     test -e $APP_HOME/app.js || { stop; exit 0; }
 end script
 
-# cd to code path and run node, with the right switches
+# cd to code path and run naught
 script
+    echo Starting staging server for VPDB at ${APP_HOME}...
     chdir $APP_HOME
-    exec /usr/bin/node server/cluster app.js -u $RUN_AS_USER -l shared/logs/$APP_NAME.out -e shared/logs/$APP_NAME.err >> $APP_ROOT/shared/logs/upstart
+    exec sudo -u $RUN_AS_USER /usr/bin/naught start --ipc-file $APP_ROOT/shared/naught.ipc --log $APP_ROOT/shared/logs/naught --stdout $APP_ROOT/shared/logs/$APP_NAME.out --stderr $APP_ROOT/shared/logs/$APP_NAME.err --max-log-size 10485760 --cwd . --daemon-mode false app.js
 end script
 ```
 
@@ -164,10 +166,10 @@ Then do the same for the production script:
 	sudo cp /etc/init/vpdb-staging.conf /etc/init/vpdb-production.conf
 	sudo vi /etc/init/vpdb-production.conf
 
-And change:
+And update:
 * ``env APP_NAME=vpdb-production``
 * ``env APP_ROOT=/var/www/production``
-* ``env RESTARTFILE=/var/run/vpdb-production``
+* ``env APP_HOME=/var/www/production/current``
 * ``env PORT=9124``
 
 ## Setup Push Deployment
@@ -179,26 +181,30 @@ For client documentation, check the [deployment guide](DEPLOY.md).
 	sudo mkdir -p /var/www/production/shared/logs /var/www/staging/shared/logs
 	sudo mkdir -p /repos/production /repos/staging
 
-	sudo touch /var/run/vpdb-production
-    sudo touch /var/run/vpdb-staging
-
 	sudo chmod 770 /var/www/production /var/www/staging -R
 	sudo chmod 700 /repos/production /repos/staging
-	sudo chmod 644 /var/run/vpdb-*
 
 ### Create deployment user
 
 	sudo useradd deployer -d /repos -s /bin/bash -g www-data
-
 	sudo chown deployer:www-data /var/www /repos -R
-	sudo chown deployer:www-data /var/run/vpdb-*
 
 	sudo su - deployer
 	mkdir .ssh
 	chmod 700 .ssh
-	vi .ssh/authorized_key
+	vi .ssh/authorized_keys
 
 Paste your pub key in there.
+
+Then, add ``naught`` sudo permission to user ``deployer``
+
+	su -
+	chmod u+r /etc/sudoers
+	echo "# Allow deployer to use naught as root" >> /etc/sudoers
+	echo "Cmnd_Alias NAUGHT_CMD = /usr/bin/naught" >> /etc/sudoers
+	echo "deployer ALL=(ALL) NOPASSWD: NAUGHT_CMD" >> /etc/sudoers
+	chmod u-r /etc/sudoers
+	exit
 
 ### Setup bare Git repositories
 
@@ -214,7 +220,16 @@ Setup deployment hooks:
 	cd node-vpdb/server/hooks
 	cp post-receive-production ~/production/hooks/post-receive
 	cp post-receive-staging ~/staging/hooks/post-receive
+	cp common ~/production/hooks
+	cp common ~/staging/hooks
 
+### Upload Code
+
+Push the code to the server as described [here](DEPLOY.md). Then you can start the services:
+
+	su -
+	start vpdb-staging
+	start vpdb-production
 
 ## Links
 

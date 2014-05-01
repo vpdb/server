@@ -31,8 +31,14 @@ repo_clone() {
 }
 
 repo_link() {
-	echo Swapping code...
 	local dest=${DEPLOY_ROOT}/${DEPLOY_ENV}/$1
+	echo Migrating settings...
+	APP_SETTINGS=${DEPLOY_ROOT}/shared/settings.js node ${dest}/server/config/migrate.js
+	test $? -eq 0 || abort New important config settings. Please update manually and restart service.
+	echo Validating settings...
+	APP_SETTINGS=${DEPLOY_ROOT}/shared/settings.js node ${dest}/server/config/validate.js
+	test $? -eq 0 || abort Setting validation failed. Please fix manually and restart service.
+	echo Swapping code...
 	ln -sfn ${dest} ${DEPLOY_ROOT}/${DEPLOY_ENV}/current
 	test $? -eq 0 || abort Failed to symlink current repo.
 }

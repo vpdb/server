@@ -15,16 +15,11 @@ abort() {
 }
 
 rollback_abort() {
+	echo Removing ${DEPLOY_ROOT}/${DEPLOY_ENV}/$1
 	rm -r ${DEPLOY_ROOT}/${DEPLOY_ENV}/$1
 	abort $2
 }
 
-npm_install() {
-	echo Installing Node.js dependencies...
-	cd ${DEPLOY_ROOT}/${DEPLOY_ENV}/$1
-	npm install
-	test $? -eq 0 || abort "Failed to run npm install".
-}
 
 repo_clone() {
 	local dest=${DEPLOY_ROOT}/${DEPLOY_ENV}/$1
@@ -35,14 +30,25 @@ repo_clone() {
     test $? -eq 0 || abort "Failed to clone into ${dest}"
 }
 
+
+npm_install() {
+	echo Installing Node.js dependencies...
+	cd ${DEPLOY_ROOT}/${DEPLOY_ENV}/$1
+	npm install
+	test $? -eq 0 || rollback_abort $1 "Failed to run npm install. Manually fix and relaunch deployment.".
+}
+
 repo_link() {
 	local dest=${DEPLOY_ROOT}/${DEPLOY_ENV}/$1
+
 	echo Migrating settings...
 	APP_SETTINGS=${DEPLOY_ROOT}/shared/settings.js node ${dest}/server/config/migrate.js
-	test $? -eq 0 || rollback_abort $1 "New important config settings. Please update manually and restart service."
+	test $? -eq 0 || rollback_abort $1 "New @important config settings. Please update and manually finish deployment."
+
 	echo Validating settings...
 	APP_SETTINGS=${DEPLOY_ROOT}/shared/settings.js node ${dest}/server/config/validate.js
-	test $? -eq 0 || rollback_abort $1 "Setting validation failed. Please fix manually and restart service."
+	test $? -eq 0 || rollback_abort $1 "Setting validation failed. Please fix and manually finish deployment."
+
 	echo Swapping code...
 	ln -sfn ${dest} ${DEPLOY_ROOT}/${DEPLOY_ENV}/current
 	test $? -eq 0 || rollback_abort $1 "Failed to symlink current repo."

@@ -182,11 +182,9 @@ Then do the same for the production script:
 	sudo vi /etc/init/vpdb-production.conf
 
 And update:
-* ``env APP_NAME=production``
-* ``env APP_ROOT=/var/www/production``
-* ``env APP_HOME=/var/www/production/current``
-* ``env APP_CACHEDIR=/var/www/production/shared/cache``
-* ``env PORT=9124``
+
+	sudo sed -i 's/staging/production/g' /etc/init/vpdb-production.conf
+	sudo sed -i 's/8124/9124/g' /etc/init/vpdb-production.conf
 
 ## Setup Push Deployment
 

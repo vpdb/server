@@ -43,7 +43,7 @@ exports.square = function(context, type, key, size) {
 	}
 };
 
-var asset = function(context, p, process, type, key, size, defaultName) {
+var asset = function(context, p, processFct, type, key, size, defaultName) {
 
 	// setup cache dir
 	var cacheImg;
@@ -84,7 +84,7 @@ var asset = function(context, p, process, type, key, size, defaultName) {
 
 		// cache, process.
 		var now = new Date().getTime();
-		process(gm(p), function(gm) {
+		processFct(gm(p), function(gm) {
 
 			// stream to client
 			gm.stream(function(err, stream) {
@@ -104,7 +104,7 @@ var asset = function(context, p, process, type, key, size, defaultName) {
 
 		// FIXME don't process twice (tried to fix, but when chaining write() after stream(), the unprocessed image gets saved).
 		// save to cache
-		process(gm(p), function(gm) {
+		processFct(gm(p), function(gm) {
 			gm.write(filename, function(err) {
 				if (err) {
 					return console.error('Error writing asset cache to ' + filename + ': ' + err);

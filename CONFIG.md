@@ -9,7 +9,7 @@ new values are added. Detailed documentation about each value can be found in th
 [file itself](https://github.com/freezy/node-vpdb/blob/master/server/config/settings-dist.js).
 
 Per default, VPDB checks ``server/config/settings.js`` for your customized settings file. This can be changed by setting
-the environment variable ``APP_SETTINGS`` to a different path. If neither exists, ``app.js`` exists upon start. Before
+the environment variable ``APP_SETTINGS`` to a different path. If neither exists, ``app.js`` exits upon start. Before
 starting VPDB the first time, copy ``settings-dist.js`` to ``settings.js`` and update its values.
 
 The configuration file is not JSON but laid out as a Node module for two reasons:

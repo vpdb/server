@@ -14,33 +14,38 @@ abort() {
 	exit 1
 }
 
+rollback_abort() {
+	rm -r ${DEPLOY_ROOT}/${DEPLOY_ENV}/$1
+	abort $2
+}
+
 npm_install() {
 	echo Installing Node.js dependencies...
 	cd ${DEPLOY_ROOT}/${DEPLOY_ENV}/$1
 	npm install
-	test $? -eq 0 || abort Failed to run npm install.
+	test $? -eq 0 || abort "Failed to run npm install".
 }
 
 repo_clone() {
 	local dest=${DEPLOY_ROOT}/${DEPLOY_ENV}/$1
 	if [ -d "$dest" ]; then
-		abort $1 is already deployed, aborting.
+		abort "$1 is already deployed, aborting".
 	fi
 	git clone $PWD ${dest}
-    test $? -eq 0 || abort Failed to clone into ${dest}
+    test $? -eq 0 || abort "Failed to clone into ${dest}"
 }
 
 repo_link() {
 	local dest=${DEPLOY_ROOT}/${DEPLOY_ENV}/$1
 	echo Migrating settings...
 	APP_SETTINGS=${DEPLOY_ROOT}/shared/settings.js node ${dest}/server/config/migrate.js
-	test $? -eq 0 || abort New important config settings. Please update manually and restart service.
+	test $? -eq 0 || rollback_abort $1 "New important config settings. Please update manually and restart service."
 	echo Validating settings...
 	APP_SETTINGS=${DEPLOY_ROOT}/shared/settings.js node ${dest}/server/config/validate.js
-	test $? -eq 0 || abort Setting validation failed. Please fix manually and restart service.
+	test $? -eq 0 || rollback_abort $1 "Setting validation failed. Please fix manually and restart service."
 	echo Swapping code...
 	ln -sfn ${dest} ${DEPLOY_ROOT}/${DEPLOY_ENV}/current
-	test $? -eq 0 || abort Failed to symlink current repo.
+	test $? -eq 0 || rollback_abort $1 "Failed to symlink current repo."
 }
 
 repo_cleanup() {
@@ -58,12 +63,12 @@ node_cache_cleanup() {
 }
 repo_last_tag() {
 	ref=`git for-each-ref refs/tags --sort=-*authordate --format='%(refname)' --count=1 | cut -d '/' -f 3`
-	test $? -eq 0 || abort Failed to determine latest tag
+	test $? -eq 0 || abort "Failed to determine latest tag"
 	echo ${ref}
 }
 
 node_cluster_reload() {
 	echo Deploying new code...
 	sudo naught deploy ${DEPLOY_ROOT}/${DEPLOY_ENV}/shared/naught.ipc
-	test $? -eq 0 || abort Failed to trigger Node.js cluster reload.
+	test $? -eq 0 || abort "Failed to trigger Node.js cluster reload."
 }

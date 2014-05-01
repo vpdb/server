@@ -11,7 +11,7 @@ function Assets(app, server) {
 	this.server = server;
 
 	// check cache dir
-	var cacheRoot = process.env.APP_CACHEDIR ? process.env.APP_CACHEDIR : path.normalize(__dirname + "/gen/js");
+	var cacheRoot = process.env.APP_CACHEDIR ? process.env.APP_CACHEDIR : path.normalize(__dirname + "/../gen/js");
 	if (!fs.existsSync(cacheRoot)) {
 		throw 'Cannot find cache dir "' + cacheRoot + '" for generating assets.';
 	}
@@ -51,7 +51,7 @@ Assets.prototype.liveUpdate = function() {
 
 Assets.prototype.renderIndex = function(req, res) {
 	var that = instance;
-	res.render('index.html', {
+	res.render('index', {
 		layout: false,
 		js: that.renderJsTags(),
 		css: that.renderCssTags()

@@ -216,7 +216,7 @@ folder.
 	sudo useradd deployer -d /repos -s /bin/bash -g www-data
 	sudo chown deployer:www-data /var/www /repos -R
 	sudo chown www-data:www-data /var/www/production/shared/cache /var/www/production/shared/data -R
-	sudo chown www-data:www-data /var/www/production/staging/cache /var/www/production/staging/data -R
+	sudo chown www-data:www-data /var/www/staging/shared/cache /var/www/staging/shared/data -R
 
 	sudo su - deployer
 	mkdir .ssh
@@ -252,20 +252,29 @@ Setup deployment hooks:
 	cp server/hooks/common ~/production/hooks
 	cp server/hooks/common ~/staging/hooks
 
+### Upload Code
+
 Create configuration file
 
 	cp server/config/settings-dist.js /var/www/shared/settings.js
 	vi /var/www/shared/settings.js
 
-Update and double-check all ``@important`` settings.
+Update and double-check all ``@important`` settings. When done, run
 
-### Upload Code
+	npm install
+	APP_SETTINGS=/var/www/shared/settings.js node server/config/validate.js
 
-Push the code to the server as described [here](DEPLOY.md). Then you can start the services:
+Check if your settings are valid. Then push the code to the server as described [here](DEPLOY.md). Of course the code
+hot-swap will fail since there isn't anything running yet. However, code should be uploaded at the correct location, and
+you can now start the services:
 
 	su -
 	start vpdb-staging
+
+Once VPDB gets a first release tag and you've pushed to production as well, don't forget to launch the service:
+
 	start vpdb-production
+
 
 ## Links
 

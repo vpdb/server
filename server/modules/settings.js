@@ -26,7 +26,7 @@ function Settings() {
 		if (fs.existsSync(filePath)) {
 			this.filePath = filePath;
 		} else {
-			msg = 'Cannot find settings at "' + filePath + '", copy server/config/settings-dist.js to server/config/settings.js or point VPDB_SETTING env variable to correct path.';
+			msg = 'Cannot find settings at "' + filePath + '", copy server/config/settings-dist.js to server/config/settings.js or point APP_SETTINGS env variable to correct path.';
 			logger.log('error', '[settings] %s', msg);
 			throw msg;
 		}

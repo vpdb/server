@@ -278,9 +278,9 @@ Generate an SSL certificate:
 
 Update the configuration and add the sites:
 
-	sudo cp /home/deployer/source/deploy/nginx/nginx.conf /etc/nginx/nginx.conf
-	sudo cp /home/deployer/source/deploy/nginx/sites/production /etc/nginx/sites-available/vpdb-production
-	sudo cp /home/deployer/source/deploy/nginx/sites/staging /etc/nginx/sites-available/vpdb-staging
+	sudo cp /repos/source/deploy/nginx/nginx.conf /etc/nginx/nginx.conf
+	sudo cp /repos/source/deploy/nginx/sites/production /etc/nginx/sites-available/vpdb-production
+	sudo cp /repos/source/deploy/nginx/sites/staging /etc/nginx/sites-available/vpdb-staging
 	sudo ln -s /etc/nginx/sites-available/vpdb-production /etc/nginx/sites-enabled/vpdb-production
 	sudo ln -s /etc/nginx/sites-available/vpdb-staging /etc/nginx/sites-enabled/vpdb-staging
 

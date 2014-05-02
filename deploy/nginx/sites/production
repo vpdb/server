@@ -25,8 +25,8 @@ server {
 		proxy_set_header X-NginX-Proxy     true;
 		proxy_set_header Connection "";
 		proxy_http_version 1.1;
-		proxy_cache one;
-		proxy_cache_key vpdb$request_uri$scheme;
+		#proxy_cache one;
+		#proxy_cache_key vpdb$request_uri$scheme;
 		proxy_pass http://vpdb_production_upstream;
 	}
 }

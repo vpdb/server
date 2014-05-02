@@ -112,6 +112,7 @@ Restart and go back to normal user:
 ## Setup Reverse Proxy
 
 	sudo apt-get -y install nginx
+	sudo mkdir -p /var/cache/nginx
 
 Edit the **nginx** default configuration file replacing the root (/) location section:
 

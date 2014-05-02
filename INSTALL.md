@@ -108,50 +108,6 @@ Restart and go back to normal user:
     start mongod
 	exit
 
-
-## Setup Reverse Proxy
-
-	sudo apt-get -y install nginx
-	sudo mkdir -p /var/cache/nginx
-
-Edit the **nginx** default configuration file replacing the root (/) location section:
-
-	sudo vi /etc/nginx/sites-enabled/default
-
-Use a proxy passengry entry. This will forward your requests to your node server.
-
-	location / {
-		proxy_pass http://127.0.0.1:8124/;
-	}
-
-
-Then restart nginx:
-
-	sudo /etc/init.d/nginx restart
-
-### Test
-
-	mkdir ~/www-test
-	cd ~/www-test
-	cat > server.js
-
-	var http = require('http');
-	http.createServer(function (req, res) {
-		res.writeHead(200, {'Content-Type': 'text/plain'});
-		res.end('Hello World\n');
-	}).listen(8124, "127.0.0.1");
-	console.log('Server running at http://127.0.0.1:8124/');
-
-Start and test:
-
-	node server.js
-
-Open browser with the VM's IP address and make sure you'll get a "Hello World". If all good,
-``Ctrl+C`` node and remove the test folder.
-
-	cd ~
-	rm www-test -r
-
 ## Create Node.js Startup Scripts
 
 	sudo vi /etc/init/vpdb-staging.conf
@@ -294,11 +250,43 @@ you can now start the services:
 
 	su -
 	start vpdb-staging
+	exit
 
 Once VPDB gets a first release tag and you've pushed to production as well, don't forget to launch the service:
 
 	start vpdb-production
 
+## Setup Reverse Proxy
+
+	sudo apt-get -y install nginx nginx-naxsi
+	sudo mkdir -p /var/cache/nginx
+
+Generate an SSL certificate:
+
+	su -
+	chgrp www-data /etc/nginx/ssl
+	chmod 770 /etc/nginx/ssl
+	mkdir /etc/nginx/ssl
+	cd /etc/nginx/ssl
+	openssl genrsa -des3 -out vpdb.key 2048
+	openssl req -new -key vpdb.key -out vpdb.csr
+	cp -v vpdb.{key,original}
+	openssl rsa -in vpdb.original -out vpdb.key
+	rm -v vpdb.original
+	openssl x509 -req -days 365 -in vpdb.csr -signkey vpdb.key -out vpdb.crt
+	exit
+
+Update the configuration and add the sites:
+
+	sudo cp /home/deployer/source/deploy/nginx/nginx.conf /etc/nginx/nginx.conf
+	sudo cp /home/deployer/source/deploy/nginx/sites/production /etc/nginx/sites-available/vpdb-production
+	sudo cp /home/deployer/source/deploy/nginx/sites/staging /etc/nginx/sites-available/vpdb-staging
+	sudo ln -s /etc/nginx/sites-available/vpdb-production /etc/nginx/sites-enabled/vpdb-production
+	sudo ln -s /etc/nginx/sites-available/vpdb-staging /etc/nginx/sites-enabled/vpdb-staging
+
+Then restart nginx:
+
+	sudo /etc/init.d/nginx restart
 
 ## Links
 

@@ -1,0 +1,32 @@
+server {
+
+	listen 80;
+	listen 443 ssl;
+
+	ssl_certificate /etc/nginx/ssl/vpdb.crt;
+	ssl_certificate_key /etc/nginx/ssl/vpdb.key;
+	ssl_protocols SSLv3 TLSv1;
+	ssl_ciphers HIGH:!aNULL:!MD5;
+
+	server_name production.vpdb;
+
+	location ~ ^/(fonts/|images/|robots.txt|humans.txt|favicon.ico) {
+		root /var/www/staging/current/client/static;
+		access_log off;
+		expires max;
+	}
+
+	location / {
+		proxy_redirect off;
+		proxy_set_header X-Real-IP         $remote_addr;
+		proxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;
+		proxy_set_header X-Forwarded-Proto $scheme;
+		proxy_set_header Host              $http_host;
+		proxy_set_header X-NginX-Proxy     true;
+		proxy_set_header Connection "";
+		proxy_http_version 1.1;
+		proxy_cache one;
+		proxy_cache_key vpdb$request_uri$scheme;
+		proxy_pass http://vpdb_production_upstream;
+	}
+}

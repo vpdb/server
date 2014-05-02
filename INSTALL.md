@@ -288,6 +288,19 @@ Then restart nginx:
 
 	sudo /etc/init.d/nginx restart
 
+If you want to (temporarily) protect your site:
+
+	sudo apt-get -y install apache2-utils
+	sudo htpasswd -c /var/www/shared/.htpasswd vpdb
+	sudo chown www-data:www-data /var/www/shared/.htpasswd
+	sudo vi /etc/nginx/sites-available/vpdb-staging
+
+Add this to the ``server { ... }`` block
+
+	auth_basic "Restricted";
+	auth_basic_user_file /var/www/shared/.htpasswd;
+
+
 ## Links
 
 * [DIY Node.js Server on Amazon EC2](http://cuppster.com/2011/05/12/diy-node-js-server-on-amazon-ec2/)

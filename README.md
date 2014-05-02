@@ -92,6 +92,8 @@ and type:
 In OpenShift's case, there's pre-build script which links the ``gm`` executable to Node.js' binary folder which is part
 of the app's ``$PATH`` variable.
 
+If you want to setup a production environment from scratch, see the [Installation Guide](INSTALL.md).
+
 ## Status
 
 All this is currently a mock only. That means there is no database and all data/media is static. Obviously no download

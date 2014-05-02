@@ -22,6 +22,34 @@ Make sure you enable OpenSSH. Once done, login and update the system:
 	sudo apt-get update
 	sudo apt-get -y upgrade
 
+### Setup Firewall
+
+	sudo apt-get -y install iptables-persistent
+	cd /etc/iptables
+	sudo wget https://gist.githubusercontent.com/jirutka/3742890/raw/c025b0b8c58af49aa9644982c459314c9adba157/rules-both.iptables
+	sudo vi rules-both.iptables
+
+Update to your taste, then create symlinks and apply:
+
+	sudo ln -s rules-both.iptables rules.v4
+    sudo ln -s rules-both.iptables rules.v6
+    sudo service iptables-persistent start
+
+### Harden System Security
+
+[Shared Memory](https://help.ubuntu.com/community/StricterDefaults#Shared_Memory)
+
+	sudo echo "none     /run/shm     tmpfs     defaults,ro     0     0" >> /etc/fstab
+
+[SSH Root Login](https://help.ubuntu.com/community/StricterDefaults#SSH_Root_Login)
+
+	sudo vi /etc/ssh/sshd_config
+
+Set:
+
+	PermitRootLogin no
+
+
 ## Get Deps
 
 ### General Stuff
@@ -243,17 +271,17 @@ Still as user ``deployer``:
 
 Setup deployment hooks:
 
-	cd /tmp
-	git clone https://github.com/freezy/node-vpdb.git
-	cd node-vpdb
+	cd ~
+	git clone https://github.com/freezy/node-vpdb.git source
+	cd source
 	cp server/hooks/post-receive-production ~/production/hooks/post-receive
 	cp server/hooks/post-receive-staging ~/staging/hooks/post-receive
 	cp server/hooks/common ~/production/hooks
 	cp server/hooks/common ~/staging/hooks
 
-### Upload Code
+## Upload Code
 
-Create configuration file
+Still as user ``deployer``, create configuration file
 
 	cp server/config/settings-dist.js /var/www/shared/settings.js
 	vi /var/www/shared/settings.js
@@ -282,5 +310,4 @@ Once VPDB gets a first release tag and you've pushed to production as well, don'
 * [The 4 Keys to 100% Uptime With Node.js](http://engineering.spanishdict.com/blog/2013/12/20/the-4-keys-to-100-uptime-with-nodejs)
 * [visionmedia/deploy](https://github.com/visionmedia/deploy/blob/master/bin/deploy)
 * [Stagecoach Ubuntu installer](https://github.com/punkave/stagecoach/blob/master/sc-proxy/install-node-and-mongo-on-ubuntu.bash)
-
-
+* [Hardening Node.js for Production Part 2](http://blog.argteam.com/coding/hardening-node-js-for-production-part-2-using-nginx-to-avoid-node-js-load/)

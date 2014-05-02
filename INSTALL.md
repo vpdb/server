@@ -205,16 +205,6 @@ folder.
 
 Paste your pub key in there.
 
-Then, add ``naught`` sudo permission to user ``deployer``
-
-	su -
-	chmod u+w /etc/sudoers
-	echo "# Allow deployer to use naught as root" >> /etc/sudoers
-	echo "Cmnd_Alias NAUGHT_CMD = /usr/bin/naught" >> /etc/sudoers
-	echo "deployer ALL=(ALL) NOPASSWD: NAUGHT_CMD" >> /etc/sudoers
-	chmod u-w /etc/sudoers
-	exit
-
 ### Setup bare Git repositories
 
 Still as user ``deployer``:

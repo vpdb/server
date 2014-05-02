@@ -209,8 +209,15 @@ Paste your pub key in there.
 
 Still as user ``deployer``:
 
-	cd ~/staging && git init --bare
-	cd ~/production && git init --bare
+	cd ~/staging
+	git init --bare
+	git remote add origin https://github.com/freezy/node-vpdb.git
+	git fetch
+
+	cd ~/production
+	git init --bare
+	git remote add origin https://github.com/freezy/node-vpdb.git
+	git fetch
 
 Setup deployment hooks:
 

@@ -11,7 +11,7 @@ function Assets(app, server) {
 	this.server = server;
 
 	// check cache dir
-	var cacheRoot = process.env.APP_CACHEDIR ? process.env.APP_CACHEDIR : path.normalize(__dirname + "/../gen");
+	var cacheRoot = process.env.APP_CACHEDIR ? process.env.APP_CACHEDIR : path.normalize(__dirname + "/../cache");
 	if (!fs.existsSync(cacheRoot)) {
 		throw 'Cannot find cache dir "' + cacheRoot + '" for generating assets.';
 	}

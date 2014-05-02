@@ -47,7 +47,7 @@ var asset = function(context, p, processFct, type, key, size, defaultName) {
 
 	// setup cache dir
 	var cacheImg;
-	var cacheRoot = process.env.APP_CACHEDIR ? process.env.APP_CACHEDIR : path.normalize(__dirname + '../../../gen');
+	var cacheRoot = process.env.APP_CACHEDIR ? process.env.APP_CACHEDIR : path.normalize(__dirname + '../../../cache');
 	if (fs.existsSync(cacheRoot)) {
 		cacheImg = cacheRoot + '/img';
 		if (!fs.existsSync(cacheImg)) {

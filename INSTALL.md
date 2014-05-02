@@ -104,8 +104,8 @@ Paste this at the end of ``/etc/init/mongod.conf``:
 
 Restart and go back to normal user:
 
-	stop mongodb
-    start mongodb
+	stop mongod
+    start mongod
 	exit
 
 
@@ -207,10 +207,6 @@ end script
 Then do the same for the production script:
 
 	sudo cp /etc/init/vpdb-staging.conf /etc/init/vpdb-production.conf
-	sudo vi /etc/init/vpdb-production.conf
-
-And update:
-
 	sudo sed -i 's/staging/production/g' /etc/init/vpdb-production.conf
 	sudo sed -i 's/8124/9124/g' /etc/init/vpdb-production.conf
 

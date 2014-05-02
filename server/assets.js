@@ -54,7 +54,8 @@ Assets.prototype.renderIndex = function(req, res) {
 	res.render('index', {
 		layout: false,
 		js: that.renderJsTags(),
-		css: that.renderCssTags()
+		css: that.renderCssTags(),
+		deployment: process.env.APP_NAME
 	});
 };
 

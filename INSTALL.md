@@ -254,9 +254,9 @@ Once VPDB gets a first release tag and you've pushed to production as well, don'
 Generate an SSL certificate:
 
 	su -
+	mkdir /etc/nginx/ssl
 	chgrp www-data /etc/nginx/ssl
 	chmod 770 /etc/nginx/ssl
-	mkdir /etc/nginx/ssl
 	cd /etc/nginx/ssl
 	openssl genrsa -des3 -out vpdb.key 2048
 	openssl req -new -key vpdb.key -out vpdb.csr
@@ -273,6 +273,12 @@ Update the configuration and add the sites:
 	sudo cp /repos/source/deploy/nginx/sites/staging /etc/nginx/sites-available/vpdb-staging
 	sudo ln -s /etc/nginx/sites-available/vpdb-production /etc/nginx/sites-enabled/vpdb-production
 	sudo ln -s /etc/nginx/sites-available/vpdb-staging /etc/nginx/sites-enabled/vpdb-staging
+	sudo rm /etc/nginx/sites-enabled/default
+
+Update ``server_name`` to the correct domain:
+
+	sudo vi /etc/nginx/sites-available/vpdb-production
+	sudo vi /etc/nginx/sites-available/vpdb-staging
 
 Then restart nginx:
 

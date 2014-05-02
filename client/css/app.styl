@@ -984,6 +984,18 @@ user
 	font-weight font-weight-bold
 	cursor pointer
 
+// :staging indicator
+.staging-bar
+	position fixed
+	height 100%
+	width 15px
+	z-index 9999
+	&:nth-child(1)
+		left 0
+	&:nth-child(2)
+		right 0
+
+
 @media (max-width: 768px)
 	.container.container-topmost
 		padding-top 135px

@@ -1,0 +1,80 @@
+#!/bin/sh
+
+################ config start ################
+
+KEEP_DEPLOYMENTS=5
+DEPLOY_ROOT=/var/www
+
+################  config end  ################
+
+abort() {
+	echo
+	echo "  $@" 1>&2
+	echo
+	exit 1
+}
+
+rollback_abort() {
+	echo Removing ${DEPLOY_ROOT}/${DEPLOY_ENV}/$1
+	rm -r ${DEPLOY_ROOT}/${DEPLOY_ENV}/$1
+	abort $2
+}
+
+
+repo_clone() {
+	local dest=${DEPLOY_ROOT}/${DEPLOY_ENV}/$1
+	if [ -d "$dest" ]; then
+		abort "$1 is already deployed, aborting".
+	fi
+	git clone $PWD ${dest}
+    test $? -eq 0 || abort "Failed to clone into ${dest}"
+}
+
+
+npm_install() {
+	echo Installing Node.js dependencies...
+	cd ${DEPLOY_ROOT}/${DEPLOY_ENV}/$1
+	npm install
+	test $? -eq 0 || rollback_abort $1 "Failed to run npm install. Manually fix and relaunch deployment.".
+}
+
+repo_link() {
+	local dest=${DEPLOY_ROOT}/${DEPLOY_ENV}/$1
+
+	echo Migrating settings...
+	APP_SETTINGS=${DEPLOY_ROOT}/shared/settings.js node ${dest}/server/config/migrate.js
+	test $? -eq 0 || rollback_abort $1 "New @important config settings. Please update and manually finish deployment."
+
+	echo Validating settings...
+	APP_SETTINGS=${DEPLOY_ROOT}/shared/settings.js node ${dest}/server/config/validate.js
+	test $? -eq 0 || rollback_abort $1 "Setting validation failed. Please fix and manually finish deployment."
+
+	echo Swapping code...
+	ln -sfn ${dest} ${DEPLOY_ROOT}/${DEPLOY_ENV}/current
+	test $? -eq 0 || rollback_abort $1 "Failed to symlink current repo."
+}
+
+repo_cleanup() {
+	local regex=$1
+	local dir=${DEPLOY_ROOT}/${DEPLOY_ENV}
+	echo Deleting old deployments:
+	(ls -t ${dir}|egrep ${regex}|head -n ${KEEP_DEPLOYMENTS};ls ${dir}|egrep ${regex})|sort|uniq -u|xargs -I {} echo "   * ${dir}/{}"
+	(ls -t ${dir}|egrep ${regex}|head -n ${KEEP_DEPLOYMENTS};ls ${dir}|egrep ${regex})|sort|uniq -u|xargs -I {} rm ${dir}/{} -r
+}
+
+node_cache_cleanup() {
+	local cache_dir=${DEPLOY_ROOT}/${DEPLOY_ENV}/shared/cache/*
+	echo Cleaning cache folder at ${cache_dir}...
+	rm ${cache_dir} -rf
+}
+repo_last_tag() {
+	ref=`git for-each-ref refs/tags --sort=-*authordate --format='%(refname)' --count=1 | cut -d '/' -f 3`
+	test $? -eq 0 || abort "Failed to determine latest tag"
+	echo ${ref}
+}
+
+node_cluster_reload() {
+	echo Deploying new code...
+	sudo naught deploy ${DEPLOY_ROOT}/${DEPLOY_ENV}/shared/naught.ipc
+	test $? -eq 0 || abort "Failed to trigger Node.js cluster reload."
+}

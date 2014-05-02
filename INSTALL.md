@@ -270,10 +270,10 @@ Setup deployment hooks:
 	cd ~
 	git clone https://github.com/freezy/node-vpdb.git source
 	cd source
-	cp server/hooks/post-receive-production ~/production/hooks/post-receive
-	cp server/hooks/post-receive-staging ~/staging/hooks/post-receive
-	cp server/hooks/common ~/production/hooks
-	cp server/hooks/common ~/staging/hooks
+	cp deploy/hooks/post-receive-production ~/production/hooks/post-receive
+	cp deploy/hooks/post-receive-staging ~/staging/hooks/post-receive
+	cp deploy/hooks/common ~/production/hooks
+	cp deploy/hooks/common ~/staging/hooks
 
 ## Upload Code
 

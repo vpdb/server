@@ -1,12 +1,12 @@
-module.exports = function (app, assets) {
+module.exports = function (app) {
 
 	var web = require('./controllers/web');
 
-	app.get('/', assets.renderIndex);
-	app.get('/games', assets.renderIndex);
-	app.get('/game', assets.renderIndex);
-	app.get('/game/*', assets.renderIndex);
-	app.get('/home', assets.renderIndex);
+	app.get('/', web.index);
+	app.get('/games', web.index);
+	app.get('/game', web.index);
+	app.get('/game/*', web.index);
+	app.get('/home', web.index);
 
 	// serve index and view partials
 	app.get('/partials/:name', web.partials);

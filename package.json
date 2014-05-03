@@ -33,7 +33,6 @@
 		"md5": "1.0.x",
 		"nib": "1.0.x",
 		"optimist": "0.6.x",
-		"piler": "freezy/piler",
 		"reload": "*",
 		"request": "2.34.x",
 		"stylus": "0.42.3",

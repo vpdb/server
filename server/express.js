@@ -5,8 +5,8 @@ var express = require('express');
 var domainError = require('express-domain-errors');
 var gracefulExit = require('express-graceful-exit');
 
+var writeable = require('./modules/writeable');
 var asset = require('./middleware/asset');
-var Assets = require('./assets');
 
 module.exports = function(app, config, passport) {
 
@@ -22,6 +22,7 @@ module.exports = function(app, config, passport) {
 	app.use(express.urlencoded());
 	app.use(express.methodOverride());
 	app.use(express.static(path.resolve(__dirname, '../client/static'), { maxAge: 3600*24*30*1000 }));
+	app.use(express.static(writeable.cacheRoot, { maxAge: 3600*24*30*1000 }));
 	app.use(express.static(path.resolve(__dirname, '../data/assets'), { maxAge: 3600*24*30*1000 }));
 	app.use(asset.middleware());
 	app.use(app.router);
@@ -37,9 +38,6 @@ module.exports = function(app, config, passport) {
 			process.exit(1);
 		}
 	});
-
-	var assets = new Assets(app, server);
-	app.configure(assets.configure);
 
 	// production only
 	if (app.get('env') === 'production') {

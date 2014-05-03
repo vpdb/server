@@ -8,7 +8,6 @@ var domain = require('domain');
 var express = require('express');
 
 var settings = require('./server/modules/settings');
-var Assets = require('./server/assets');
 
 var serverDomain = domain.create();
 var app;
@@ -16,13 +15,12 @@ var app;
 serverDomain.run(function() {
 
 	app = express();
-	var assets = new Assets(app, server);
 
 	// express settings
 	var server = require('./server/express')(app, settings.current);
 
 	// bootstrap routes
-	require('./server/routes')(app, assets);
+	require('./server/routes')(app);
 
 	server.listen(app.get('port'), app.get('ipaddress'), function() {
 		console.log('Express server listening at ' + app.get('ipaddress') + ':' + app.get('port'));

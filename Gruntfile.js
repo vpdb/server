@@ -1,8 +1,9 @@
 var path = require('path');
+var writeable = require('./server/modules/writeable');
 
 module.exports = function(grunt) {
 
-	var cacheRoot = process.env.APP_CACHEDIR ? process.env.APP_CACHEDIR : path.resolve(__dirname, "cache");
+	var cacheRoot = writeable.cacheRoot;
 	var cssRoot = path.resolve(cacheRoot, 'css/');
 	var jsRoot = path.resolve(cacheRoot, 'js/');
 	var cssGlobal = path.resolve(cssRoot, 'global.min.css');
@@ -55,7 +56,9 @@ module.exports = function(grunt) {
 		uglify: {
 			build: {
 				options: {
-					mangle: false
+					mangle: false,
+					compress: false,
+					beautify: true
 				},
 				files: [{
 					expand: false,
@@ -80,12 +83,20 @@ module.exports = function(grunt) {
 						'client/code/services.js',
 						'client/code/controllers.js',
 						'client/code/filters.js',
+						'client/code/directives.js',
 						'client/code/controller/*.js',
 						'client/code/service/*.js',
 						'client/code/directive/*.js'
 					],
 					dest: jsGlobal
 				}]
+			}
+		},
+
+		watch: {
+			stylesheets: {
+				files: 'client/css/*.styl',
+				tasks: [ 'stylus' ]
 			}
 		}
 	});
@@ -96,11 +107,13 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-stylus');
 	grunt.loadNpmTasks('grunt-contrib-cssmin');
 	grunt.loadNpmTasks('grunt-contrib-uglify');
+	grunt.loadNpmTasks('grunt-contrib-watch');
 
 	// define the tasks
 	grunt.registerTask(
 		'build',
-		'Compiles all of the assets and copies the files to the build directory.',
+		'Compiles all of the assets to the cache directory.',
 		[ 'clean', 'mkdir', 'stylus', 'cssmin', 'uglify' ]
 	);
+
 };

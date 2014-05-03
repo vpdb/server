@@ -5,10 +5,9 @@ var piler = require('piler');
 // hack for weird context calls. we're a singleton anyways.
 var instance;
 
-function Assets(app, server) {
+function Assets(app) {
 
 	this.app = app;
-	this.server = server;
 
 	// check cache dir
 	var cacheRoot = process.env.APP_CACHEDIR ? process.env.APP_CACHEDIR : path.normalize(__dirname + "/../cache");
@@ -64,8 +63,8 @@ Assets.prototype.configure = function() {
 	var that = instance;
 	var clientDir = __dirname + "/../client";
 
-	that.clientjs.bind(that.app, that.server);
-	that.clientcss.bind(that.app, that.server);
+	that.clientjs.bind(that.app);
+	that.clientcss.bind(that.app);
 
 	that.clientcss.addFile(clientDir + "/static/css/lib/bootstrap-3.1.1.css");
 	that.clientcss.addFile(clientDir + "/static/css/lib/font-awesome.css");

@@ -34,6 +34,13 @@ function Settings() {
 	this.current = require(this.filePath.substr(0, this.filePath.length - 3));
 }
 
+Settings.prototype.isProd = function() {
+};
+
+Settings.prototype.get = function() {
+	return this.current;
+};
+
 /**
  * Checks that all settings are available and runs validation on each.
  *

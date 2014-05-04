@@ -30,17 +30,19 @@ module.exports = function(app, config, passport) {
 	// log to file if env APP_ACCESS_LOG is set
 	if (process.env.APP_ACCESS_LOG) {
 		app.use(expressWinston.logger({
-			transports: [ logger.transports.File, {
-				level: 'info',                   // Level of messages that this transport should log.
-				silent: false,                   // Boolean flag indicating whether to suppress output.
-				colorize: false,                 // Boolean flag indicating if we should colorize output.
-				timestamp: true,                 // Boolean flag indicating if we should prepend output with timestamps (default true). If function is specified, its return value will be used instead of timestamps.
-				filename: process.env.APP_ACCESS_LOG,  // The filename of the logfile to write output to.
-				maxsize: 1000000,                // Max size in bytes of the logfile, if the size is exceeded then a new file is created.
-				maxFiles: 10,                    // Limit the number of files created when the size of the logfile is exceeded.
-				stream: null,                    // The WriteableStream to write output to.
-				json: false                      // If true, messages will be logged as JSON (default true).
-			} ],
+			transports: [
+				new logger.transports.File({
+					level: 'info',                   // Level of messages that this transport should log.
+					silent: false,                   // Boolean flag indicating whether to suppress output.
+					colorize: false,                 // Boolean flag indicating if we should colorize output.
+					timestamp: true,                 // Boolean flag indicating if we should prepend output with timestamps (default true). If function is specified, its return value will be used instead of timestamps.
+					filename: process.env.APP_ACCESS_LOG,  // The filename of the logfile to write output to.
+					maxsize: 1000000,                // Max size in bytes of the logfile, if the size is exceeded then a new file is created.
+					maxFiles: 10,                    // Limit the number of files created when the size of the logfile is exceeded.
+					stream: null,                    // The WriteableStream to write output to.
+					json: false                      // If true, messages will be logged as JSON (default true).
+				})
+			],
 			meta: false, // optional: control whether you want to log the meta data about the request (default to true)
 			msg: '[http] {{req.method}} {{req.url}} - {{res.statusCode}} {{res.responseTime}}ms' // optional: customize the default logging message. E.g. "{{res.statusCode}} {{req.method}} {{res.responseTime}}ms {{req.url}}"
 		}));

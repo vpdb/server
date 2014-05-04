@@ -10,6 +10,12 @@ server {
 		expires max;
 	}
 
+	location ~ ^/(css/global\.min\.css|js/global\.min\.js) {
+		root /var/www/staging/shared/cache;
+		access_log off;
+		expires max;
+	}
+
 	location / {
 		proxy_redirect off;
 		proxy_set_header X-Real-IP         $remote_addr;

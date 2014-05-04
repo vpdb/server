@@ -52,17 +52,18 @@ module.exports = {
 
 				/**
 				 * The client ID of the generated application.
+				 * @important
 				 */
-				clientID: '',
+				clientID: 'CLIENT_ID',
 
 				/**
 				 * The client secret of the generated application.
+				 * @important
 				 */
-				clientSecret: '',
+				clientSecret: 'CLIENT_SECRET',
 
 				/**
 				 * The callback URL of this application.
-				 * @important
 				 */
 				callbackURL: 'http://localhost:3000/auth/github/callback'
 			}

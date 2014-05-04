@@ -7,7 +7,6 @@ var mongoStore = require('connect-mongo')(express);
 var domainError = require('express-domain-errors');
 var gracefulExit = require('express-graceful-exit');
 
-var settings = require('./modules/settings');
 var writeable = require('./modules/writeable');
 var asset = require('./middleware/asset');
 
@@ -47,9 +46,9 @@ module.exports = function(app, config, passport) {
 
 	// express/mongo session storage
 	app.use(express.session({
-		secret: settings.current.vpdb.secret,
+		secret: config.vpdb.secret,
 		store: new mongoStore({
-			url: settings.current.vpdb.db,
+			url: config.vpdb.db,
 			collection: 'sessions'
 		})
 	}));

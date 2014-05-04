@@ -18,6 +18,11 @@ module.exports = {
 		port: 8124,
 
 		/**
+		 * Database configuration. Must point to a MongoDB schema.
+		 */
+		db: 'mongodb://localhost/vpdb',
+
+		/**
 		 * Session timeout in milliseconds.
 		 */
 		sessionTimeout: 3600000,
@@ -32,7 +37,36 @@ module.exports = {
 		 * A temp folder for extracting stuff. No trailing slash!
 		 * @important
 		 */
-		tmp: '/tmp'
+		tmp: '/tmp',
+
+		/**
+		 * Configure login strategies here.
+		 */
+		passport: {
+
+			/**
+			 * GitHub. You'll need to create an application here:
+			 *    https://github.com/settings/applications/
+			 */
+			github: {
+
+				/**
+				 * The client ID of the generated application.
+				 */
+				clientID: '',
+
+				/**
+				 * The client secret of the generated application.
+				 */
+				clientSecret: '',
+
+				/**
+				 * The callback URL of this application.
+				 * @important
+				 */
+				callbackURL: 'http://localhost:3000/auth/github/callback'
+			}
+		}
 	}
 
 };

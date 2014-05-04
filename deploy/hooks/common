@@ -20,7 +20,6 @@ rollback_abort() {
 	abort $2
 }
 
-
 repo_clone() {
 	local dest=${DEPLOY_ROOT}/${DEPLOY_ENV}/$1
 	if [ -d "$dest" ]; then
@@ -29,7 +28,6 @@ repo_clone() {
 	git clone $PWD ${dest}
     test $? -eq 0 || abort "Failed to clone into ${dest}"
 }
-
 
 npm_install() {
 	echo Installing Node.js dependencies...

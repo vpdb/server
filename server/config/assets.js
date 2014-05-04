@@ -47,11 +47,13 @@ function Assets() {
 		assets.css.push('lib/' + file);
 	});
 	// compiled from stylus
-	fs.readdirSync(cssCacheRoot).forEach(function(file) {
-		if (!/\.min\./.test(file)) { // "elegant" way to ignore global.min.css, which already contains everything.
-			assets.cssCache.push(file);
-		}
-	});
+	if (fs.existsSync(cssCacheRoot)) {
+		fs.readdirSync(cssCacheRoot).forEach(function(file) {
+			if (!/\.min\./.test(file)) { // "elegant" way to ignore global.min.css, which already contains everything.
+				assets.cssCache.push(file);
+			}
+		});
+	}
 
 	this.assets = assets;
 }

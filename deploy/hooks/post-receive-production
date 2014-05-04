@@ -24,10 +24,7 @@ repo_link ${LAST_TAG}
 # 4. reload node cluster
 node_cluster_reload
 
-# 5. clean cache folder
-node_cache_cleanup
-
-# 6. cleanup old deployment
+# 5. cleanup old deployment
 repo_cleanup "v[0-9]+\.[0-9]+\.[0-9]+"
 
 echo Production deployment successful!

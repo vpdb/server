@@ -182,6 +182,10 @@ For client documentation, check the [deployment guide](DEPLOY.md).
 	sudo chmod 770 /var/www/production /var/www/staging /var/www/shared -R
 	sudo chmod 700 /repos/production /repos/staging
 
+	sudo ln -s /var/log/upstart/vpdb-production.log /var/www/production/shared/logs/upstart
+	sudo ln -s /var/log/upstart/vpdb-staging.log /var/www/staging/shared/logs/upstart
+
+
 The ``shared`` folder contains the following:
 
 * ``logs`` - Log files from the workers and naught
@@ -224,11 +228,10 @@ Setup deployment hooks:
 
 	cd ~
 	git clone https://github.com/freezy/node-vpdb.git source
-	cd source
-	cp deploy/hooks/post-receive-production ~/production/hooks/post-receive
-	cp deploy/hooks/post-receive-staging ~/staging/hooks/post-receive
-	cp deploy/hooks/common ~/production/hooks
-	cp deploy/hooks/common ~/staging/hooks
+	ln -s ~/source/deploy/hooks/post-receive-production ~/production/hooks/post-receive
+	ln -s ~/source/deploy/hooks/post-receive-staging ~/staging/hooks/post-receive
+	ln -s ~/source/deploy/hooks/common ~/production/hooks/common
+	ln -s ~/source/deploy/hooks/common ~/staging/hooks/common
 
 ## Upload Code
 

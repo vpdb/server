@@ -79,12 +79,12 @@ module.exports = function(app, config, passport) {
 		})
 	}));
 
-	// connect flash for flash messages
-	app.use(flash());
-
 	// use passport session
 	app.use(passport.initialize());
 	app.use(passport.session());
+
+	// connect flash for flash messages
+	app.use(flash());
 
 	// routes should be at the last (pretty much)
 	app.use(app.router);

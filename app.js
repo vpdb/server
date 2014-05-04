@@ -32,7 +32,7 @@ serverDomain.run(function() {
 	app = express();
 
 	// bootstrap db connection
-	mongoose.connect(config.vpdb.db);
+	mongoose.connect(config.vpdb.db, { server: { socketOptions: { keepAlive: 1 } } });
 
 	// bootstrap models
 	var modelsPath = path.resolve(__dirname, 'server/models');

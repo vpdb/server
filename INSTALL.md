@@ -233,10 +233,15 @@ Setup deployment hooks:
 	ln -s ~/source/deploy/hooks/common ~/production/hooks/common
 	ln -s ~/source/deploy/hooks/common ~/staging/hooks/common
 
+Also add ``scripts`` folder to the path for easy deployment commands.
+
+	echo PATH="\$HOME/source/deploy/scripts:\$PATH" >> ~/.profile
+
 ## Upload Code
 
 Still as user ``deployer``, create configuration file
 
+	cd ~/source
 	cp server/config/settings-dist.js /var/www/shared/settings.js
 	vi /var/www/shared/settings.js
 

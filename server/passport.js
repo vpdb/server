@@ -5,6 +5,12 @@ var GitHubStrategy = require('passport-github').Strategy;
 
 var User = mongoose.model('User');
 
+/**
+ * Defines the authentication strategies and user serialization.
+ *
+ * @param passport Passport module
+ * @param config Passport configuration from settings
+ */
 module.exports = function(passport, config) {
 
 	// serialize sessions
@@ -48,16 +54,18 @@ module.exports = function(passport, config) {
 		function(accessToken, refreshToken, profile, done) {
 			User.findOne({ 'github.id': profile.id }, function(err, user) {
 				if (!user) {
+					logger.info('[passport|github] Saving new user %s', profile.emails[0].value);
 					user = new User({
 						name: profile.displayName, email: profile.emails[0].value, username: profile.username, provider: 'github', github: profile._json
 					});
 					user.save(function(err) {
 						if (err) {
-							logger.error('[passport] Error saving user: %s', err);
+							logger.error('[passport|github] Error saving user: %s', err);
 						}
 						return done(err, user);
 					});
 				} else {
+					logger.info('[passport|github] Returning user %s', profile.emails[0].value);
 					return done(err, user);
 				}
 			});

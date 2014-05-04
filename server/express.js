@@ -61,7 +61,7 @@ module.exports = function(app, config, passport) {
 	app.use(express.json());           // bodyParser should be above methodOverride
 	app.use(express.urlencoded());
 	app.use(express.methodOverride());
-	app.use(express.favicon());
+	app.use(express.favicon(path.resolve(__dirname, '../client/static/images/favicon.png')));
 
 	// static file serving
 	app.use(express.static(writeable.cacheRoot, { maxAge: 3600*24*30*1000 }));

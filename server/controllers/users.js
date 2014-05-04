@@ -1,3 +1,4 @@
+var logger = require('winston');
 var mongoose = require('mongoose');
 var User = mongoose.model('User');
 
@@ -61,7 +62,7 @@ exports.create = function(req, res) {
 			if (!user) {
 				newUser.save(function(err) {
 					if (err) {
-						console.log(err);
+						logger.error('[ctrl|users] Error saving user: %s', err);
 						return res.render('users/signup', { errors: err.errors, user: newUser });
 					}
 

@@ -54,7 +54,6 @@ function Assets() {
 	});
 
 	this.assets = assets;
-	//console.log('css: %s', assets.css);
 }
 
 var assets = new Assets();

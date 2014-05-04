@@ -5,6 +5,7 @@ var gm = require('gm');
 var md5 = require('md5');
 var util = require('util');
 var path = require('path');
+var logger = require('winston');
 var request = require('request');
 
 var disableCache = false;
@@ -25,7 +26,7 @@ exports.square = function(context, type, key, size) {
 		asset(context, p, function(gm, callback) {
 			gm.size(function(err, srcSize) {
 				if (err) {
-					console.error(err);
+					logger.error('[asset] Error resizing: %s', err);
 				}
 				var scale = srcSize.height / 1920;
 				gm.rotate('black', -30);
@@ -75,10 +76,10 @@ var asset = function(context, p, processFct, type, key, size, defaultName) {
 			var hash = md5.digest_s(type + ':' + ':' + key + ':' + size);
 			var filename = cacheImg + '/' + hash + '.png';
 			if (fs.existsSync(filename)) {
-				console.log('File cache hit, returning ' + filename);
+				logger.info('[asset] File cache hit, returning ' + filename);
 				return file(context, filename);
 			} else {
-				console.log('No cache hit for ' + filename);
+				logger.info('[asset] No cache hit for ' + filename);
 			}
 		}
 
@@ -89,7 +90,7 @@ var asset = function(context, p, processFct, type, key, size, defaultName) {
 			// stream to client
 			gm.stream(function(err, stream) {
 				if (err) {
-					logger.log('error', '[asset] ERROR streaming image: ' + err);
+					logger.error('[asset] ERROR streaming image: ' + err);
 					return context.res.writeHead(500);
 				}
 				context.res.writeHead(200, {
@@ -98,7 +99,7 @@ var asset = function(context, p, processFct, type, key, size, defaultName) {
 					'Last-Modified': modified
 				});
 				stream.pipe(context.res);
-				console.log("Asset processed in %d ms.", new Date().getTime() - now);
+				logger.info('[asset] Generated in %d ms.', new Date().getTime() - now);
 			});
 		});
 
@@ -107,9 +108,9 @@ var asset = function(context, p, processFct, type, key, size, defaultName) {
 		processFct(gm(p), function(gm) {
 			gm.write(filename, function(err) {
 				if (err) {
-					return console.error('Error writing asset cache to ' + filename + ': ' + err);
+					return logger.error('[asset] Error writing asset cache to %s: %s', filename, err);
 				}
-				console.log('Successfully wrote asset cache to ' + filename + '.');
+				logger.info('[asset] Successfully wrote asset cache to %s.', filename);
 
 				// now shrink it
 				fs.createReadStream(filename).pipe(request.post({
@@ -118,10 +119,10 @@ var asset = function(context, p, processFct, type, key, size, defaultName) {
 					headers: { 'Authorization' : 'Basic ' + new Buffer('key:X6JiKxeLNoN8Fgnpz0F7ervRS7Z8SIfW').toString('base64') }
 				}, function(err, response, json) {
 					if (err) {
-						return console.error('Error while posting image to tinypng: %s', err);
+						return logger.error('[asset] Error while posting image to tinypng: %s', err);
 					}
 					if (response.statusCode != 201) {
-						return console.error('Error shrinking image (%d): %s', response.statusCode, util.inspect(json));
+						return logger.error('[asset] Error shrinking image (%d): %s', response.statusCode, util.inspect(json));
 					}
 					request(json.output.url).pipe(fs.createWriteStream(filename));
 				}));
@@ -129,7 +130,7 @@ var asset = function(context, p, processFct, type, key, size, defaultName) {
 		});
 
 	} else {
-		console.warn('[asset] No asset found for %s.', p);
+		logger.warn('[asset] No asset found for %s.', p);
 		if (defaultName) {
 			context.res.writeHead(200, {
 				'Content-Type': 'image/svg+xml',

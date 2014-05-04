@@ -4,16 +4,28 @@ var fs = require('fs');
 var http = require('http');
 var path = require('path');
 var reload = require('reload');
+var logger = require('winston');
 var domain = require('domain');
 var express = require('express');
 var passport = require('passport');
 var mongoose = require('mongoose');
 
-var config = require('./server/modules/settings').current;
+var settings = require('./server/modules/settings');
 var auth = require('./server/middleware/authorization');
 
-var app;
+var app, config;
 var serverDomain = domain.create();
+
+// early init
+require('./server/boostrap')();
+
+// validate settings before continueing
+if (!settings.validate()) {
+	logger.error('[app] Settings validation failed, aborting.');
+	process.exit(1);
+} else {
+	config = settings.current;
+}
 
 serverDomain.run(function() {
 
@@ -38,7 +50,7 @@ serverDomain.run(function() {
 	require('./server/routes')(app, passport, auth);
 
 	app.listen(app.get('port'), app.get('ipaddress'), function() {
-		console.log('Express server listening at ' + app.get('ipaddress') + ':' + app.get('port'));
+		logger.info('[app] Express server listening at ' + app.get('ipaddress') + ':' + app.get('port'));
 		if (process.send) {
 			process.send('online');
 		}

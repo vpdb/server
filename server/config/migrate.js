@@ -3,7 +3,7 @@ var logger = require('winston');
 try {
 	var settings = require(path.resolve(__dirname, '../modules/settings'));
 } catch (e) {
-	logger.log('error', '[settings] Migration failed!');
+	logger.error('[settings] Migration failed!');
 	process.exit(2);
 }
 settings.migrate(function(result) {
@@ -17,7 +17,7 @@ settings.migrate(function(result) {
 		}
 	}
 	if (importantSettings.length > 0) {
-		logger.log('warn', '[settings] New important setting%s: [%s]', importantSettings.length == 1 ? '' : 's', importantSettings.join(', '));
+		logger.warn('[settings] New important setting%s: [%s]', importantSettings.length == 1 ? '' : 's', importantSettings.join(', '));
 		return process.exit(1);
 	}
 	process.exit(0);

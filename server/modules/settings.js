@@ -16,7 +16,7 @@ function Settings() {
 			this.filePath = process.env.APP_SETTINGS;
 		} else {
 			msg = 'Cannot find settings at "' + process.env.APP_SETTINGS + '", check your env variable APP_SETTINGS.';
-			logger.log('error', '[settings] %s', msg);
+			logger.error('[settings] %s', msg);
 			throw msg;
 		}
 
@@ -27,7 +27,7 @@ function Settings() {
 			this.filePath = filePath;
 		} else {
 			msg = 'Cannot find settings at "' + filePath + '", copy server/config/settings-dist.js to server/config/settings.js or point APP_SETTINGS env variable to correct path.';
-			logger.log('error', '[settings] %s', msg);
+			logger.error('[settings] %s', msg);
 			throw msg;
 		}
 	}
@@ -41,10 +41,11 @@ function Settings() {
  */
 Settings.prototype.validate = function() {
 
-	logger.log('info', '[settings] Validating settings at %s', this.filePath);
+	logger.info('[settings] Validating settings at %s', this.filePath);
 	var settings = this.current;
-	var validate = function(validation, setting, path) {
 
+	var validate = function(validation, setting, path) {
+		var success = true;
 		var validationError, p;
 		for (var s in validation) {
 			if (validation.hasOwnProperty(s)) {
@@ -52,30 +53,30 @@ Settings.prototype.validate = function() {
 				if (_.isFunction(validation[s])) {
 					validationError = validation[s](setting[s]);
 					if (!validationError) {
-						logger.log('info', '[settings] %s [OK]', p);
+						logger.info('[settings] %s [OK]', p);
 					} else {
-						logger.log('error', '[settings] Illegal setting %s: %s', p, validationError);
-						return false;
+						logger.error('[settings] %s [KO]: %s', p, validationError);
+						success = false;
 					}
 				}
 
 				if (validation[s] && _.isObject(validation[s])) {
 
 					if (_.isUndefined(setting[s])) {
-						logger.log('error', '[settings] Missing setting %s', p);
-						return false;
+						logger.error('[settings] Missing setting %s', p);
+						success = false;
 					}
 					if (!validate(validation[s], setting[s], path + '.' + s)) {
-						logger.log('error', '[settings] %s failed', path);
-						return false;
+						//logger.error('[settings] %s failed', path);
+						success = false;
 					}
 				}
 			}
 		}
-		if (!path) {
-			logger.log('info', '[settings] Congrats, your settings look splendid!');
+		if (success && !path) {
+			logger.info('[settings] Congrats, your settings look splendid!');
 		}
-		return true;
+		return success;
 	};
 	return validate(validations, settings, '');
 };
@@ -90,7 +91,7 @@ Settings.prototype.migrate = function(callback) {
 
 	if (settingsCurr != settingsDist) {
 
-		logger.log('info', '[settings] Checking for new settings.');
+		logger.info('[settings] Checking for new settings.');
 
 		/**
 		 * Returns an array of path names (sepearted separated by ".") for all
@@ -174,10 +175,10 @@ Settings.prototype.migrate = function(callback) {
 		eval(settingsDist.replace(/module\.exports\s*=\s*\{/, 'newTree = {'));
 		var newProps = diff(oldTree, newTree);
 		if (newProps.length == 0) {
-			logger.log('info', '[settings] No new settings found.');
+			logger.info('[settings] No new settings found.');
 			return callback(result);
 		}
-		logger.log('info', '[settings] Found new settings: [' + newProps.join(', ') + ']');
+		logger.info('[settings] Found new settings: [' + newProps.join(', ') + ']');
 
 		// 2. retrieve code blocks of added properties
 		var nodesNew = analyze(uglify.parse(settingsDist));
@@ -193,28 +194,28 @@ Settings.prototype.migrate = function(callback) {
 				// analyze current settings, so we know where to inject
 				var ast = analyze(uglify.parse(settingsPatched));
 			} catch (err) {
-				logger.log('error', '[settings] Error parsing patched file: ' + err);
+				logger.error('[settings] Error parsing patched file: ' + err);
 				result.errors.push({
 					when: 'settings',
 					message: err.message,
 					obj: err
 				});
 				fs.writeFileSync('settings-err.js', settingsPatched);
-				logger.log('info', '[settings] File dumped to settings-err.js.');
+				logger.info('[settings] File dumped to settings-err.js.');
 				return callback(result);
 			}
 
 			// check if not already available
 			if (!ast[path]) {
-				logger.log('info', '[settings] Patching %s with setting "%s"', settingsCurrName, path);
+				logger.info('[settings] Patching %s with setting "%s"', settingsCurrName, path);
 
 				var comment = node.start.comments_before.length > 0;
 				var start = comment ? node.start.comments_before[0].pos : node.start.pos;
 				var len = comment ? node.end.endpos - start : node.end.endpos - start;
 				var codeBlock = settingsDist.substr(start, len);
-//				logger.log('info', 'start: %d, len: %d, hasComment: %s', start, len, comment);
-//				logger.log('info', '\n===============\n%s\n===============\n', util.inspect(node, false, 10, true));
-//				logger.log('info', 'settingsDist:\n%s', settingsDist);
+//				logger.info('start: %d, len: %d, hasComment: %s', start, len, comment);
+//				logger.info('\n===============\n%s\n===============\n', util.inspect(node, false, 10, true));
+//				logger.info('settingsDist:\n%s', settingsDist);
 
 				// inject at the end of an element
 				if (path.indexOf('.') > 0) {
@@ -250,20 +251,20 @@ Settings.prototype.migrate = function(callback) {
 				});
 
 			} else {
-				logger.log('info', '[settings] %s already contains "%s", skipping.', settingsCurrName, path);
+				logger.info('[settings] %s already contains "%s", skipping.', settingsCurrName, path);
 			}
 		}
 		if (!dryRun) {
 			fs.writeFileSync(this.filePath, settingsPatched);
-			logger.log('info', '[settings] Patched %s written.', settingsCurrName);
+			logger.info('[settings] Patched %s written.', settingsCurrName);
 		} else {
 			fs.writeFileSync('settings-patched.js', settingsPatched);
-			logger.log('info', '[settings] Updated settings-patched.js.');
+			logger.info('[settings] Updated settings-patched.js.');
 		}
 		callback(result);
 
 	} else {
-		logger.log('info', '[settings] Settings are identical, moving on.');
+		logger.info('[settings] Settings are identical, moving on.');
 		callback(result);
 	}
 };

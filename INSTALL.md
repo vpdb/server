@@ -123,6 +123,7 @@ env APP_NAME=staging
 env APP_ROOT=/var/www/staging
 env APP_HOME=/var/www/staging/current
 env APP_CACHEDIR=/var/www/staging/shared/cache
+env APP_ACCESS_LOG=/var/www/staging/shared/logs/access
 env PORT=8124
 
 # Application settings

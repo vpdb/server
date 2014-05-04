@@ -55,6 +55,49 @@ module.exports = {
 			if (!fs.lstatSync(path).isDirectory()) {
 				return 'Temp path "' + path + '" is not a folder. Please make it point to a folder.';
 			}
+		},
+
+		/**
+		 * Configure login strategies here.
+		 */
+		passport: {
+
+			/**
+			 * GitHub. You'll need to create an application here:
+			 *    https://github.com/settings/applications/
+			 */
+			github: {
+
+				/**
+				 * The client ID of the generated application.
+				 */
+				clientID: function(id) {
+					if (id.length == 0) {
+						return 'Your client ID must be longer than 0 characters. Please consult https://github.com/settings/applications/ in order to obtain GitHub\'s client ID.';
+					}
+					if (id == 'CLIENT_ID') {
+						return 'You\'re using the default client ID. Please consult https://github.com/settings/applications/ in order to obtain GitHub\'s client ID.';
+					}
+				},
+
+				/**
+				 * The client secret of the generated application.
+				 */
+				clientSecret: function(secret) {
+					if (secret.length == 0) {
+						return 'Your client secret must be longer than 0 characters. Please consult https://github.com/settings/applications/ in order to obtain GitHub\'s client secret.';
+					}
+					if (secret == 'CLIENT_SECRET') {
+						return 'You\'re using the default client secret. Please consult https://github.com/settings/applications/ in order to obtain GitHub\'s client secret.';
+					}
+				},
+
+				/**
+				 * The callback URL of this application.
+				 * @important
+				 */
+				callbackURL: 'http://localhost:3000/auth/github/callback'
+			}
 		}
 	}
 };

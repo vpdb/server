@@ -1,8 +1,10 @@
 var path = require('path');
 var http = require('http');
 var flash = require('connect-flash');
+var logger = require('winston');
 var express = require('express');
 var mongoStore = require('connect-mongo')(express);
+var expressWinston = require('express-winston');
 
 var domainError = require('express-domain-errors');
 var gracefulExit = require('express-graceful-exit');
@@ -15,7 +17,7 @@ module.exports = function(app, config, passport) {
 	var runningLocal = !process.env.APP_NAME || (process.env.APP_NAME != 'production' && process.env.APP_NAME != 'staging');
 	var runningDev = process.env.NODE_ENV != 'production';
 
-	console.log('Setting up Express for running %s in %s mode.', runningLocal ? 'locally' : 'remotely', runningDev ? 'development' : 'production');
+	logger.info('[express] Setting up Express for running %s in %s mode.', runningLocal ? 'locally' : 'remotely', runningDev ? 'development' : 'production');
 
 	app.set('port', process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || 3000);
 	app.set('ipaddress', process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1');
@@ -24,7 +26,28 @@ module.exports = function(app, config, passport) {
 	app.set('showStackError', runningDev);
 
 	app.use(domainError(sendOfflineMsg, doGracefulExit));
-	app.use(express.logger('dev'));
+
+	// log to file if env NODE_ACCESS_LOG is set
+	if (process.env.NODE_ACCESS_LOG) {
+		app.use(expressWinston.logger({
+			transports: [ logger.transports.File, {
+				level: 'info',                   // Level of messages that this transport should log.
+				silent: false,                   // Boolean flag indicating whether to suppress output.
+				colorize: false,                 // Boolean flag indicating if we should colorize output.
+				timestamp: true,                 // Boolean flag indicating if we should prepend output with timestamps (default true). If function is specified, its return value will be used instead of timestamps.
+				filename: process.env.NODE_ACCESS_LOG,  // The filename of the logfile to write output to.
+				maxsize: 1000000,                // Max size in bytes of the logfile, if the size is exceeded then a new file is created.
+				maxFiles: 10,                    // Limit the number of files created when the size of the logfile is exceeded.
+				stream: null,                    // The WriteableStream to write output to.
+				json: false                      // If true, messages will be logged as JSON (default true).
+			} ],
+			meta: false, // optional: control whether you want to log the meta data about the request (default to true)
+			msg: '[http] {{req.method}} {{req.url}} - {{res.statusCode}}' // optional: customize the default logging message. E.g. "{{res.statusCode}} {{req.method}} {{res.responseTime}}ms {{req.url}}"
+		}));
+	} else {
+		app.use(express.logger('dev'));
+	}
+
 	if (runningLocal) {
 		// in production the reverse proxy is taking care of this
 		app.use(express.compress({ filter: function(req, res) { return /json|text|javascript|css/.test(res.getHeader('Content-Type')); }, level: 9 }));
@@ -60,8 +83,15 @@ module.exports = function(app, config, passport) {
 	app.use(passport.initialize());
 	app.use(passport.session());
 
-	// routes should be at the last
+	// routes should be at the last (pretty much)
 	app.use(app.router);
+
+	// error logger comes at the very last
+	app.use(expressWinston.errorLogger({
+		transports: [
+			new logger.transports.Console({ json: false, colorize: true })
+		]
+	}));
 
 	// production only
 	if (!runningDev) {
@@ -83,7 +113,7 @@ module.exports = function(app, config, passport) {
 		if (~err.message.indexOf('not found')) {
 			return next();
 		}
-		console.error(err.stack);
+		logger.error('[express] %s', err.stack);
 
 		// error page
 		res.status(500).render('500', { error: err.stack });

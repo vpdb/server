@@ -1,3 +1,4 @@
+var logger = require('winston');
 var mongoose = require('mongoose');
 var LocalStrategy = require('passport-local').Strategy;
 var GitHubStrategy = require('passport-github').Strategy;
@@ -52,7 +53,7 @@ module.exports = function(passport, config) {
 					});
 					user.save(function(err) {
 						if (err) {
-							console.log(err);
+							logger.error('[passport] Error saving user: %s', err);
 						}
 						return done(err, user);
 					});

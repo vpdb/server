@@ -38,6 +38,13 @@ npm_install() {
 	test $? -eq 0 || rollback_abort $1 "Failed to run npm install. Manually fix and relaunch deployment.".
 }
 
+grunt_build() {
+	echo Running build with Grunt...
+	cd ${DEPLOY_ROOT}/${DEPLOY_ENV}/$1
+	APP_CACHEDIR=${DEPLOY_ROOT}/shared/cache grunt build
+	test $? -eq 0 || rollback_abort $1 "Grunt build failed. Fix and redeploy."
+}
+
 repo_link() {
 	local dest=${DEPLOY_ROOT}/${DEPLOY_ENV}/$1
 

@@ -44,6 +44,7 @@ module.exports = function(app, config, passport) {
 			meta: false, // optional: control whether you want to log the meta data about the request (default to true)
 			msg: '[http] {{req.method}} {{req.url}} - {{res.statusCode}}' // optional: customize the default logging message. E.g. "{{res.statusCode}} {{req.method}} {{res.responseTime}}ms {{req.url}}"
 		}));
+		logger.info('[express] Access log will be written to %s.', process.env.NODE_ACCESS_LOG);
 	} else {
 		app.use(express.logger('dev'));
 	}

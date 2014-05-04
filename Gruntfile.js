@@ -1,5 +1,7 @@
+var _ = require('underscore');
 var path = require('path');
 var writeable = require('./server/modules/writeable');
+var assets = require('./server/config/assets');
 
 module.exports = function(grunt) {
 
@@ -10,7 +12,7 @@ module.exports = function(grunt) {
 	var jsGlobal = path.resolve(jsRoot, 'global.min.js');
 
 	// configure the tasks
-	grunt.initConfig({
+	var config = {
 
 		clean: {
 			build: {
@@ -30,7 +32,7 @@ module.exports = function(grunt) {
 		stylus: {
 			build: {
 				options: {
-					linenos: true,
+					linenos: false,
 					compress: false
 				},
 				files: [{
@@ -58,36 +60,14 @@ module.exports = function(grunt) {
 				options: {
 					mangle: false,
 					compress: false,
-					beautify: true
+					beautify: false
 				},
 				files: [{
 					expand: false,
 					cwd: '.',
-					src: [
-						'client/code/lib/jquery-2.1.0.js',
-						'client/code/lib/angular-1.3.0-beta.3/angular.js',
-						'client/code/lib/angular-1.3.0-beta.3/angular-route.js',
-						'client/code/lib/angular-1.3.0-beta.3/angular-animate.js',
-						'client/code/lib/angular-1.3.0-beta.3/angular-sanitize.js',
-						'client/code/lib/angulartics-0.14.15/angulartics.js',
-						'client/code/lib/angulartics-0.14.15/angulartics-ga.js',
-						'client/code/lib/angulartics-0.14.15/angulartics-ga-cordova.js',
-						'client/code/lib/ui-bootstrap-tpls-0.10.0.js',
-						'client/code/lib/underscore-1.6.0.js',
-						'client/code/lib/showdown.js',
-						'client/code/lib/jquery.magnific-popup-0.9.9.js',
-						'client/code/lib/jquery.nanoscroller-0.8.0.js',
-						'client/code/lib/jquery.waitforimages-1.5.0.js',
-						'client/code/lib/angular.scrollable-0.2.0.js',
-						'client/code/app.js',
-						'client/code/services.js',
-						'client/code/controllers.js',
-						'client/code/filters.js',
-						'client/code/directives.js',
-						'client/code/controller/*.js',
-						'client/code/service/*.js',
-						'client/code/directive/*.js'
-					],
+					src: _.map(assets.js, function(js) {
+						return path.resolve('client/code', js);
+					}),
 					dest: jsGlobal
 				}]
 			}
@@ -99,7 +79,9 @@ module.exports = function(grunt) {
 				tasks: [ 'stylus' ]
 			}
 		}
-	});
+	};
+
+	grunt.initConfig(config);
 
 	// load the tasks
 	grunt.loadNpmTasks('grunt-mkdir');

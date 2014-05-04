@@ -5,8 +5,16 @@ html(ng-app="vpdb")
 		meta(name="viewport", content="width=device-width, initial-scale=1")
 		base(href='/')
 		title vpdb
-		link(rel="stylesheet", href="/css/global.min.css")
+		if environment == 'production'
+			link(rel="stylesheet", href="/css/global.min.css")
+		else
+			- each css in cssFiles
+				link(rel="stylesheet", href=css)
 
 	body.theme-dark(ng-controller="AppCtrl")
 		block body
-		script(type="text/javascript" src="/js/global.min.js")
+		if environment == 'production'
+			script(type="text/javascript", src="/js/global.min.js")
+		else
+			- each js in jsFiles
+				script(type="text/javascript", src=js)

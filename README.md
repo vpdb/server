@@ -74,9 +74,14 @@ Install Node.js and Git, then open a command line and type:
 	git clone https://github.com/freezy/node-vpdb.git
 	cd node-vpdb
 	npm install
+	grunt build
 	node app
 
 Open your browser and connect to ``http://localhost:3000/``.
+
+For CSS live regeneration while developing, open shell and launch:
+
+	grunt watch
 
 If you're deploying to a remote service like OpenShift that doesn't have GraphicsMagick installed, SSH into your app
 and type:

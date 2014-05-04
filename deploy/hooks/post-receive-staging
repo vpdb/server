@@ -8,8 +8,9 @@ HEAD_REV=`git rev-parse HEAD`
 # 1. clone into new folder
 repo_clone ${HEAD_REV}
 
-# 2. install node packages
+# 2. install node packages and build
 npm_install ${HEAD_REV}
+grunt_build ${HEAD_REV}
 
 # 3. change symlink
 repo_link ${HEAD_REV}

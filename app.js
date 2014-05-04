@@ -17,12 +17,12 @@ serverDomain.run(function() {
 	app = express();
 
 	// express settings
-	var server = require('./server/express')(app, settings.current);
+	require('./server/express')(app, settings.current);
 
 	// bootstrap routes
 	require('./server/routes')(app);
 
-	server.listen(app.get('port'), app.get('ipaddress'), function() {
+	app.listen(app.get('port'), app.get('ipaddress'), function() {
 		console.log('Express server listening at ' + app.get('ipaddress') + ':' + app.get('port'));
 		if (process.send) {
 			process.send('online');

@@ -65,7 +65,8 @@ Set:
 Upgrade ``npm`` to latest and prevent self-signed certificate error
 
     sudo npm config set ca ""
-    sudo npm install -g npm grunt-cli
+    sudo npm install -g npm
+    sudo npm install -g grunt-cli
 
 #### Node Deps
 
@@ -80,7 +81,7 @@ Upgrade ``npm`` to latest and prevent self-signed certificate error
 Install 2.6 from repo:
 
 	sudo apt-key adv --keyserver keyserver.ubuntu.com --recv 7F0CEB10
-	su -
+	sudo /bin/bash
 	echo "deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen" >> /etc/apt/sources.list
 	exit
 	sudo apt-get -y update
@@ -88,7 +89,7 @@ Install 2.6 from repo:
 
 Configure correctly. Also open `/etc/mongod.conf` and check that ``bind_ip = 127.0.0.1`` is in there.
 
-	su -
+	sudo /bin/bash
 	echo "smallfiles = true" >> /etc/mongod.conf
 
 Paste this at the end of ``/etc/init/mongod.conf``:
@@ -254,7 +255,7 @@ Check if your settings are valid. Then push the code to the server as described 
 hot-swap will fail since there isn't anything running yet. However, code should be uploaded at the correct location, and
 you can now start the services:
 
-	su -
+	sudo /bin/bash
 	start vpdb-staging
 	exit
 
@@ -269,7 +270,7 @@ Once VPDB gets a first release tag and you've pushed to production as well, don'
 
 Generate an SSL certificate:
 
-	su -
+	sudo /bin/bash
 	mkdir /etc/nginx/ssl
 	chgrp www-data /etc/nginx/ssl
 	chmod 770 /etc/nginx/ssl

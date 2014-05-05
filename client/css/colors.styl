@@ -59,7 +59,7 @@ body
 			background-color color-darkest
 
 
-	button.btn
+	.btn
 		&.btn-default, &.btn-primary
 			color color-light
 			background-color color-dark
@@ -388,7 +388,7 @@ body
 		color color-lightish
 	.panel-footer
 		background-color color-darkest
-		button.btn.btn-default
+		.btn.btn-default
 			background-color rgba(black, 0.2)
 			color rgba(white, 0.2)
 			&:hover
@@ -416,10 +416,13 @@ body
 	.modal-header
 		background-color rgba(black, 0.1)
 		box-shadow inset 0px 1px 3px 0px rgba(white, 0.5)
+	.modal-body
+		h1
+			color color-lightest-inv
 	.modal-footer
 		background-color rgba(black, 0.1)
 
-	button.btn.btn-default
+	.btn.btn-default
 		color rgba(white, 0.6)
 		background-color rgba(black, 0.25)
 		&:hover
@@ -427,13 +430,22 @@ body
 			background-color rgba(black, 0.35)
 			box-shadow 0 0 10px 1px rgba(black, 0.1)
 
-	button.btn.btn-primary
+	.btn.btn-primary
 		color rgba(white, 0.7)
 		background-color rgba(black, 0.35)
 		&:hover
 			color rgba(white, 0.8)
 			background-color rgba(black, 0.45)
 			box-shadow 0 0 10px 1px rgba(black, 0.1)
+
+	.form-control
+		box-shadow none
+		color color-lighter-inv
+		background-color color-lighter
+		&:focus
+			box-shadow none
+		&::-webkit-input-placeholder, &:-moz-placeholder, &::-moz-placeholder, &:-ms-input-placeholder
+			color red
 
 	.tabbable
 		ul.nav-tabs

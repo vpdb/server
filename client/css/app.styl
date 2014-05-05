@@ -95,6 +95,8 @@ button.btn:focus, button.btn:active:focus
 	padding 15px
 .padder-notop
 	padding 0 15px 15px
+.padder-top
+	margin-top 30px
 .padder-nobottom
 	padding 15px 15px 0 15px
 .padder-bottom-2x
@@ -274,16 +276,26 @@ ul.dropdown-menu table
 		border-radius border-radius-large
 
 
+// :form
+.form-group
+	label.control-label
+		font-size font-size-standard
+		text-transform uppercase
+
 
 // :input
 .input-group
 	margin-bottom 15px
 
 .form-control
-	height 28px
-	padding-left 3px
-	border-radius 14px
+	border-radius border-radius-small
 	border none
+	&.input-search
+		height 28px
+		padding-left 3px
+		border-radius 14px
+		border none
+
 
 .input-group-addon
 	padding-right 3px
@@ -304,7 +316,7 @@ ul.dropdown-menu table
 		border-radius border-radius-small
 
 // :buttons
-button.btn
+.btn
 	transition all animation-short
 	position relative
 
@@ -326,6 +338,11 @@ button.btn
 		& > i.icon-pin-on, & > i.icon-pin-off
 			font-size 32px
 			line-height 12px
+		& > i.fa-github
+			font-size 27px
+		& > i.icon-gameex
+			font-size 27px
+			vertical-align middle
 	&.btn-xs
 		padding 2px 10px 0px
 		line-height 1
@@ -770,11 +787,22 @@ section.footer
 				margin-left 110px
 				& + hr
 					margin-top 20px
+			h1
+				font-family font-content
+				font-weight font-weight-thin
+				text-transform none
+				margin-bottom 15px
+				&:first-child
+					margin-top 0
 			h4
 				text-transform uppercase
 
+			.btn.btn-lg + .btn.btn-lg
+				margin-left 20px
+
 		.modal-footer
 			border-radius 0 0 3px 3px
+			margin-top 0
 
 // :markdown
 .markdown

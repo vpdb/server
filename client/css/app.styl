@@ -27,11 +27,6 @@ panel-sidebar-width = 175px
 list-sidebar-width = 170px
 list-square-width = 120px
 
-// fix the box model (http://www.paulirish.com/2012/box-sizing-border-box-ftw/)
-*, *:before, *:after
-	box-sizing border-box
-
-
 // background
 body
 	font-family font-content
@@ -199,7 +194,14 @@ label, h4, h5
 		font-size 115px
 		position absolute
 		top -67px
+		left 60px
 		transition all animation-long
+		&.icon-vpdb-logo-o
+			color color-primary
+			font-size 53px
+			left 0
+			top -2px
+
 .nav.navbar-nav li
 	a
 		text-transform uppercase

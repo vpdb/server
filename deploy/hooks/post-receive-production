@@ -13,6 +13,7 @@ echo Deploying version ${LAST_TAG}...
 
 # 1. clone into new folder
 repo_clone ${LAST_TAG}
+repo_checkout ${LAST_TAG}
 
 # 2. install node packages and build
 npm_install ${LAST_TAG}

@@ -29,6 +29,13 @@ repo_clone() {
     test $? -eq 0 || abort "Failed to clone into ${dest}"
 }
 
+repo_checkout() {
+	local dest=${DEPLOY_ROOT}/${DEPLOY_ENV}/$1
+	cd ${dest}
+	git checkout $1
+    test $? -eq 0 || rollback_abort $1 "Failed to checkout $1, aborting."
+}
+
 npm_install() {
 	echo Installing Node.js dependencies...
 	cd ${DEPLOY_ROOT}/${DEPLOY_ENV}/$1

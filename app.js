@@ -3,7 +3,6 @@
 var fs = require('fs');
 var http = require('http');
 var path = require('path');
-var reload = require('reload');
 var logger = require('winston');
 var domain = require('domain');
 var express = require('express');

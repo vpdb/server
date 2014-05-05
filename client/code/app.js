@@ -18,26 +18,11 @@ var app = angular.module('vpdb', [
 
 app.config(function($routeProvider, $locationProvider) {
 
-	$routeProvider.
-
-		when('/', {
-			templateUrl: 'partials/home'
-		}).
-
-		when('/games', {
-			templateUrl: 'partials/games'
-		}).
-
-		when('/game/:id', {
-			templateUrl: 'partials/game'
-		}).
-
-		otherwise({
-			redirectTo: '/'
-		});
-
+	$routeProvider.when('/', { templateUrl: 'partials/home' });
+	$routeProvider.when('/games', { templateUrl: 'partials/games' });
+	$routeProvider.when('/game/:id', { templateUrl: 'partials/game' });
+//	$routeProvider.otherwise({ redirectTo: '/' });
 	$locationProvider.html5Mode(true);
-
 });
 
 window.requestAnimFrame = (function() {

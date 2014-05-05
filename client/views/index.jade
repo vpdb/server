@@ -18,6 +18,16 @@ block body
 				li(ng-class="{ active: menu == 'games' }")
 					a(href="/games") Games
 
+			ul.nav.navbar-nav
+				- if (req.isAuthenticated())
+					li
+						a(href="/users/"+req.user.id, title="Profile") Profile
+					li
+						a(href="/logout", title="logout", target="_self") Logout
+				- else
+					li
+						a(href="#", title="Login", ng-click="login()") Login
+
 			ul.nav.navbar-nav.navbar-right
 				li
 					.btn-group.btn-group-flex

@@ -76,7 +76,10 @@ module.exports = function(grunt) {
 		watch: {
 			stylesheets: {
 				files: 'client/css/*.styl',
-				tasks: [ 'stylus' ]
+				tasks: [ 'stylus' ],
+				options: {
+					livereload: true
+				}
 			}
 		}
 	};

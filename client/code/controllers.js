@@ -54,6 +54,12 @@ ctrl.controller('AppCtrl', function($scope, $location, $modal) {
 			templateUrl: 'partials/modals/helpPinnedDownloads'
 		});
 	};
+
+	$scope.login = function() {
+		$modal.open({
+			templateUrl: 'partials/modals/auth'
+		});
+	};
 });
 
 

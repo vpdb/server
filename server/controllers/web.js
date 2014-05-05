@@ -11,7 +11,8 @@ exports.index = function (req, res) {
 		}),
 		cssFiles: _.map(_.union(assets.css, assets.cssCache), function(css) {
 			return '/css/' + css;
-		})
+		}),
+		req: req
 	});
 };
 

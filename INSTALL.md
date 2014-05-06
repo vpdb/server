@@ -128,7 +128,7 @@ env APP_ACCESS_LOG=/var/www/staging/shared/logs/access
 env PORT=8124
 
 # Application settings
-env APP_SETTINGS=/var/www/shared/settings.js
+env APP_SETTINGS=/var/www/staging/settings.js
 
 # Node Environment is production
 env NODE_ENV=production
@@ -175,12 +175,11 @@ For client documentation, check the [deployment guide](DEPLOY.md).
 
 ### Create file structure
 
-	sudo mkdir -p /var/www/shared
-	sudo mkdir -p /var/www/production/shared/logs /var/www/production/shared/cache /var/www/production/shared/data
-	sudo mkdir -p /var/www/staging/shared/logs /var/www/staging/shared/cache /var/www/staging/shared/data
+	sudo mkdir -p /var/www/production/shared/logs /var/www/production/shared/cache /var/www/production/shared/data /var/www/production/config
+	sudo mkdir -p /var/www/staging/shared/logs /var/www/staging/shared/cache /var/www/staging/shared/data /var/www/staging/config
 	sudo mkdir -p /repos/production /repos/staging
 
-	sudo chmod 770 /var/www/production /var/www/staging /var/www/shared -R
+	sudo chmod 770 /var/www/production /var/www/staging -R
 	sudo chmod 700 /repos/production /repos/staging
 
 	sudo ln -s /var/log/upstart/vpdb-production.log /var/www/production/shared/logs/upstart
@@ -191,7 +190,7 @@ The ``shared`` folder contains the following:
 
 * ``logs`` - Log files from the workers and naught
 * ``data`` - User-generated files.
-* ``cache`` - Auto-generated files. This folder is cleaned on every deployment.
+* ``cache`` - Auto-generated files.
 
 Note that the deployment files in ``/var/www/[production|staging]/current`` are read-only (and owned by the ``deployer``
 user). All data *written* by the app (the ``www-data`` user) goes into either ``cache`` or ``data`` of the ``shared``
@@ -243,13 +242,18 @@ Also add ``scripts`` folder to the path for easy deployment commands.
 Still as user ``deployer``, create configuration file
 
 	cd ~/source
-	cp server/config/settings-dist.js /var/www/shared/settings.js
-	vi /var/www/shared/settings.js
+	cp server/config/settings-dist.js ~/initial-production-settings.js
+	cp server/config/settings-dist.js ~/initial-staging-settings.js
+	ln -s ~/initial-production-settings.js /var/www/production/settings.js
+	ln -s ~/initial-staging-settings.js /var/www/staging/settings.js
+	vi /var/www/production/settings.js
+	vi /var/www/staging/settings.js
 
 Update and double-check all ``@important`` settings. When done, run
 
 	npm install
-	APP_SETTINGS=/var/www/shared/settings.js node server/config/validate.js
+	APP_SETTINGS=/var/www/production/settings.js node server/config/validate.js
+	APP_SETTINGS=/var/www/staging/settings.js node server/config/validate.js
 
 Check if your settings are valid. Then push the code to the server as described [here](DEPLOY.md). Of course the code
 hot-swap will fail since there isn't anything running yet. However, code should be uploaded at the correct location, and
@@ -304,14 +308,14 @@ Then restart nginx:
 If you want to (temporarily) protect your site:
 
 	sudo apt-get -y install apache2-utils
-	sudo htpasswd -c /var/www/shared/.htpasswd vpdb
-	sudo chown www-data:www-data /var/www/shared/.htpasswd
+	sudo htpasswd -c /var/www/.htpasswd vpdb
+	sudo chown www-data:www-data /var/www/.htpasswd
 	sudo vi /etc/nginx/sites-available/vpdb-staging
 
 Add this to the ``server { ... }`` block
 
 	auth_basic "Restricted";
-	auth_basic_user_file /var/www/shared/.htpasswd;
+	auth_basic_user_file /var/www/.htpasswd;
 
 
 ## Links

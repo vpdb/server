@@ -15,8 +15,14 @@ abort() {
 }
 
 rollback_abort() {
-	echo Removing ${DEPLOY_ROOT}/${DEPLOY_ENV}/$1
-	rm -r ${DEPLOY_ROOT}/${DEPLOY_ENV}/$1
+	local settings=${DEPLOY_ROOT}/${DEPLOY_ENV}/config/${1}.js
+	local path=${DEPLOY_ROOT}/${DEPLOY_ENV}/$1
+	echo Removing ${path}
+	rm -r ${path}
+	if [ -f "$settings" ]; then
+		echo "Also removing settings at ${settings}"
+		rm ${settings}
+	fi
 	abort $2
 }
 
@@ -52,14 +58,23 @@ grunt_build() {
 
 repo_link() {
 	local dest=${DEPLOY_ROOT}/${DEPLOY_ENV}/$1
+	local newSettings=${DEPLOY_ROOT}/${DEPLOY_ENV}/config/${1}.js
+
+	echo Copying settings...
+	cp ${DEPLOY_ROOT}/${DEPLOY_ENV}/settings.js ${newSettings}
+	test $? -eq 0 || rollback_abort $1 "Unable to copy settings from ${DEPLOY_ROOT}/${DEPLOY_ENV}/settings.js to ${newSettings}. Please fix and manually relaunch deployment."
 
 	echo Migrating settings...
-	APP_SETTINGS=${DEPLOY_ROOT}/shared/settings.js node ${dest}/server/config/migrate.js
+	APP_SETTINGS=${newSettings} node ${dest}/server/config/migrate.js
 	test $? -eq 0 || rollback_abort $1 "New @important config settings. Please update and manually finish deployment."
 
 	echo Validating settings...
-	APP_SETTINGS=${DEPLOY_ROOT}/shared/settings.js node ${dest}/server/config/validate.js
+	APP_SETTINGS=${newSettings} node ${dest}/server/config/validate.js
 	test $? -eq 0 || rollback_abort $1 "Setting validation failed. Please fix and manually finish deployment."
+
+	echo Swapping settings...
+	ln -sfn ${newSettings} ${DEPLOY_ROOT}/${DEPLOY_ENV}/settings.js
+	test $? -eq 0 || rollback_abort $1 "Error linking new settings. Please fix and manually finish deployment."
 
 	echo Swapping code...
 	ln -sfn ${dest} ${DEPLOY_ROOT}/${DEPLOY_ENV}/current

@@ -1,6 +1,6 @@
 @import('nib')
 
-font-header = langdon
+font-header = Oswald
 font-content = 'Raleway', sans-serif
 font-code = Menlo,Monaco,Consolas,'Courier New',monospace;
 
@@ -79,13 +79,6 @@ button.btn:focus, button.btn:active:focus
 [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak
 	display none
 
-::-webkit-scrollbar
-	height 12px
-	width 12px
-
-::-webkit-scrollbar-thumb
-	-webkit-border-radius border-radius-small
-
 .padder
 	padding 15px
 .padder-notop
@@ -131,7 +124,7 @@ dl.oneline
 // :headers
 h1
 	font-family font-header
-	text-transform lowercase
+	text-transform uppercase
 h2, h5
 	font-family font-header
 	text-transform uppercase
@@ -150,6 +143,9 @@ h4 .small
 
 .col-menu
 	h4
+		font-family font-header
+		font-weight 300
+		font-size 22px
 		margin-top 20px
 		text-transform uppercase
 
@@ -322,17 +318,17 @@ ul.dropdown-menu table
 	position relative
 
 	&.btn-default, &.btn-primary
-		padding 1px 20px 0px
+		padding 4px 20px 3px
 		font-family font-header
-		font-size 20px
+		font-size 18px
 		text-transform uppercase
 		border none
 		& > i.icon-pin-on, & > i.icon-pin-off
 			font-size 24px
 			line-height 12px
 	&.btn-lg
-		font-size 26px
-		padding 2px 30px 1px
+		font-size 23px
+		padding 4px 30px
 		border-radius border-radius-large
 		.fa
 			font-size 20px
@@ -343,7 +339,8 @@ ul.dropdown-menu table
 			font-size 27px
 		& > i.icon-gameex
 			font-size 27px
-			vertical-align middle
+			line-height 29px
+			vertical-align bottom
 	&.btn-xs
 		padding 2px 10px 0px
 		line-height 1
@@ -363,9 +360,11 @@ ul.dropdown-menu table
 	.badge
 		margin-left 10px
 		margin-right -8px
+		margin-top -4px
 		vertical-align middle
-		font-family font-content
-		font-weight font-weight-bold
+		font-weight 300
+		font-size font-size-standard
+
 
 .btn-group.btn-media
 	width 100%

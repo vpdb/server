@@ -15,6 +15,11 @@ abort() {
 }
 
 rollback_abort() {
+
+	echo
+	echo "  $@" 1>&2
+	echo
+
 	local settings=${DEPLOY_ROOT}/${DEPLOY_ENV}/config/${1}.js
 	local path=${DEPLOY_ROOT}/${DEPLOY_ENV}/$1
 	echo Removing ${path}
@@ -23,7 +28,7 @@ rollback_abort() {
 		echo "Also removing settings at ${settings}"
 		rm ${settings}
 	fi
-	abort $2
+	exit 1
 }
 
 repo_clone() {

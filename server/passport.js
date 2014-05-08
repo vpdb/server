@@ -1,9 +1,11 @@
+var _ = require('underscore');
 var util = require('util');
 var logger = require('winston');
 var mongoose = require('mongoose');
 var LocalStrategy = require('passport-local').Strategy;
 var GitHubStrategy = require('passport-github').Strategy;
 
+var settings = require('./modules/settings');
 var User = mongoose.model('User');
 
 /**
@@ -48,6 +50,7 @@ module.exports = function(passport, config) {
 
 	// use github strategy
 	if (config.vpdb.passport.github.enabled) {
+		logger.info('[passport] Enabling GitHub authentication strategy.');
 		passport.use(new GitHubStrategy({
 				clientID: config.vpdb.passport.github.clientID,
 				clientSecret: config.vpdb.passport.github.clientSecret,
@@ -78,12 +81,14 @@ module.exports = function(passport, config) {
 	_.each(config.vpdb.passport.ipboard, function(ipbConfig) {
 		if (ipbConfig.enabled) {
 			var OAuth2Strategy = require('passport-oauth').OAuth2Strategy;
+			var callbackUrl = settings.publicUrl(config) + '/auth/' +  ipbConfig.id + '/callback';
+			logger.info('[passport] Enabling IP.Board authentication strategy for "%s" with callback %s.', ipbConfig.name, callbackUrl);
 			passport.use(ipbConfig.id, new OAuth2Strategy({
 					authorizationURL: ipbConfig.baseURL + '?app=oauth2server&module=main&section=authorize',
 					tokenURL: ipbConfig.baseURL + '?app=oauth2server&module=main&section=token', // http://50.7.38.235/forums/index.php
 					clientID: ipbConfig.clientID, // 'ESk86muBx2ts3Y549XH48y7wZUUnzBtf'
 					clientSecret: ipbConfig.clientSecret, //'SurferSelect!2.',
-					callbackURL: 'http://localhost:3000/auth/' +  ipbConfig.baseURL + '/callback'
+					callbackURL: callbackUrl
 				},
 				function (accessToken, refreshToken, profile, done) {
 					logger.info('Got profile from IP.Board: ', util.inspect(profile));

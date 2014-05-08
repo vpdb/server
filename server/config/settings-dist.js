@@ -18,14 +18,21 @@ module.exports = {
 		host: 'localhost',
 
 		/**
-		 * Where the HTTP server listens; 80 is the default port.
+		 * The public port of the server. Note that this isn't what defines on which port
+		 * the app listens, for that set the PORT environment variable.
 		 */
-		port: 8124,
+		port: 80,
 
 		/**
 		 * Database configuration. Must point to a MongoDB schema.
 		 */
 		db: 'mongodb://localhost/vpdb',
+
+		/**
+		 * True if the host defined above is reachable via https. It is highly encouraged
+		 * to enable HTTPS!
+		 */
+		httpsEnabled: true,
 
 		/**
 		 * Session timeout in milliseconds.
@@ -79,7 +86,7 @@ module.exports = {
 			},
 
 			/**
-			 * IP Board OAuth2 authentication.
+			 * IP.Board OAuth2 authentication.
 			 * You'll need to install the ipb-oauth2-server application here:
 			 * 		https://github.com/freezy/ipb-oauth2-server
 			 *
@@ -110,7 +117,7 @@ module.exports = {
 				/**
 				 * Index file of the forum.
 				 */
-				baseURL: 'https://example.com/forums/index.php',
+				baseURL: 'https://localhost/forums/index.php',
 
 				/**
 				 * The client ID of the generated application.
@@ -122,12 +129,7 @@ module.exports = {
 				 * The client secret of the generated application.
 				 * @important
 				 */
-				clientSecret: 'CLIENT_SECRET',
-
-				/**
-				 * The callback URL of this application.
-				 */
-				callbackURL: 'http://localhost:3000/auth/gameex/callback'
+				clientSecret: 'CLIENT_SECRET'
 
 			}]
 		}

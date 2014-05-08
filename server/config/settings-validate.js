@@ -25,11 +25,31 @@ module.exports = {
 		},
 
 		/**
-		 * Where the HTTP server listens; 80 is the default port.
+		 * The public port of the server. Note that this isn't what defines on which port
+		 * the app listens, for that set the PORT environment variable.
 		 */
 		port: function(port) {
 			if (!parseInt(port) || parseInt(port) > 65535 || parseInt(port) < 1) {
 				return 'Port must be an integer between 1 and 65535'
+			}
+		},
+
+		/**
+		 * Database configuration. Must point to a MongoDB schema.
+		 */
+		db: function(db) {
+			if (!/mongodb:\/\/[^\/]+\/[a-z0-9]+/i.test(db)) {
+				return 'Database must fit the scheme "mongodb://<host>/<db-name>"';
+			}
+		},
+
+		/**
+		 * True if the host defined above is reachable via https. It is highly encouraged
+		 * to enable HTTPS!
+		 */
+		httpsEnabled: function(httpsEnabled) {
+			if (!_.isBoolean(httpsEnabled)) {
+				return 'Must be a boolean value';
 			}
 		},
 
@@ -152,7 +172,7 @@ module.exports = {
 					if (urlErr) {
 						return urlErr;
 					}
-					if (url == 'https://example.com/forums/index.php') {
+					if (url == 'https://localhost/forums/index.php') {
 						return 'You\'re using the default base URL';
 					}
 				},
@@ -180,12 +200,6 @@ module.exports = {
 						return 'You\'re using the default client secret';
 					}
 				},
-
-				/**
-				 * The callback URL of this application.
-				 * @important
-				 */
-				callbackURL: checkUrl,
 
 				__array: true
 			}

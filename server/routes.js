@@ -1,4 +1,6 @@
-module.exports = function(app, passport, auth) {
+var _ = require('underscore');
+
+module.exports = function(app, config, passport, auth) {
 
 	var web = require('./controllers/web');
 
@@ -30,9 +32,16 @@ module.exports = function(app, passport, auth) {
 	app.post('/users', users.create);
 	app.post('/users/session', passport.authenticate('local', { failureRedirect: '/', failureFlash: 'Invalid email or password.' }), users.session);
 	app.get('/users/:userId', users.show);
-	app.get('/auth/github', passport.authenticate('github', { failureRedirect: '/' }), users.signin);
-	app.get('/auth/github/callback', passport.authenticate('github', { failureRedirect: '/' }), users.authCallback);
-	app.get('/auth/gameex', passport.authenticate('gameex', { failureRedirect: '/' }), users.signin);
-	app.get('/auth/gameex/callback', passport.authenticate('gameex', { failureRedirect: '/' }), users.authCallback);
 
+	// authentication routes
+	if (config.vpdb.passport.github.enabled) {
+		app.get('/auth/github', passport.authenticate('github', { failureRedirect: '/' }), users.signin);
+		app.get('/auth/github/callback', passport.authenticate('github', { failureRedirect: '/' }), users.authCallback);
+	}
+	_.each(config.vpdb.passport.ipboard, function(ipbConfig) {
+		if (ipbConfig.enabled) {
+			app.get('/auth/' + ipbConfig.id, passport.authenticate(ipbConfig.id, { failureRedirect: '/' }), users.signin);
+			app.get('/auth/' + ipbConfig.id + '/callback', passport.authenticate(ipbConfig.id, { failureRedirect: '/' }), users.authCallback);
+		}
+	});
 };

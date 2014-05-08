@@ -46,7 +46,7 @@ serverDomain.run(function() {
 	require('./server/express')(app, config, passport);
 
 	// bootstrap routes
-	require('./server/routes')(app, passport, auth);
+	require('./server/routes')(app, config, passport, auth);
 
 	app.listen(app.get('port'), app.get('ipaddress'), function() {
 		logger.info('[app] Express server listening at ' + app.get('ipaddress') + ':' + app.get('port'));

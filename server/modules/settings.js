@@ -293,4 +293,12 @@ Settings.prototype.migrate = function(callback) {
 	}
 };
 
+Settings.prototype.publicUrl = function(config) {
+	return 'http' +
+		(config.vpdb.httpsEnabled ? 's' : '') +
+		'://' +
+		config.vpdb.host +
+		(config.vpdb.httpsEnabled || config.vpdb.port == 80 ? '' : ':' + config.vpdb.port)
+};
+
 module.exports = new Settings();

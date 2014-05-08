@@ -6,12 +6,14 @@
 	.modal-body
 		h1 Login with
 		.text-center
-			a.btn.btn-primary.btn-lg(href="/auth/gameex", target="_self")
-				i.icon.icon-gameex.space-right
-				| GameEx
-			a.btn.btn-primary.btn-lg(href="/auth/github", target="_self")
-				i.fa.fa-github.space-right
-				| GitHub
+			- each ipb in auth.ipboard
+				a.btn.btn-primary.btn-lg(href=ipb.url, target="_self")
+					i.space-right(class=ipb.icon)
+					| #{ipb.name}
+			if auth.github
+				a.btn.btn-primary.btn-lg(href="/auth/github", target="_self")
+					i.fa.fa-github.space-right
+					| GitHub
 		hr.padder-top
 		h1 Or, with your Email:
 		form.form-horizontal(role='form')

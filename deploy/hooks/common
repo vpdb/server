@@ -63,11 +63,11 @@ repo_link() {
 	local currentSettings=${DEPLOY_ROOT}/${DEPLOY_ENV}/settings.js
 	local patchedSettings=${DEPLOY_ROOT}/${DEPLOY_ENV}/settings-patched.js
 
-	if [[ ! -f "$newSettings" ]]; then
+	if [ ! -f "$newSettings" ]; then
 		echo Copying settings...
 
 		if [ -f "$patchedSettings" ]; then
-			echo "Using ${patchedSettings} instead of ${currentSettings}."
+			echo "Copying ${patchedSettings} instead of ${currentSettings}."
 			cp ${patchedSettings} ${newSettings}
 			test $? -eq 0 || rollback_abort $1 "Unable to copy settings from ${patchedSettings} to ${newSettings}. Please fix and manually relaunch deployment."
 		else

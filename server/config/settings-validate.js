@@ -1,3 +1,4 @@
+var _ = require('underscore');
 var fs = require('fs');
 
 /**
@@ -13,11 +14,22 @@ module.exports = {
 	vpdb: {
 
 		/**
+		 * Public host name of the server.
+		 */
+		host: function(host) {
+			var validIp = !/^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$/.test(host);
+			var validHost = /^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$/.test(host);
+			if (!validIp && !validHost) {
+				return 'Must be a valid host or IP address';
+			}
+		},
+
+		/**
 		 * Where the HTTP server listens; 80 is the default port.
 		 */
 		port: function(port) {
 			if (!parseInt(port) || parseInt(port) > 65535 || parseInt(port) < 1) {
-				return 'Port must be an integer between 1 and 65535.'
+				return 'Port must be an integer between 1 and 65535'
 			}
 		},
 
@@ -26,7 +38,7 @@ module.exports = {
 		 */
 		sessionTimeout: function(timeout) {
 			if (!parseInt(timeout) || parseInt(timeout) < 1) {
-				return 'Session timeout must be a number greater than 0.'
+				return 'Session timeout must be a number greater than 0'
 			}
 		},
 
@@ -36,10 +48,10 @@ module.exports = {
 		 */
 		secret: function(secret) {
 			if (secret.length < 10) {
-				return 'Your secret must be longer than 10 characters. Please use a generator, e.g. http://strongpasswordgenerator.com/.';
+				return 'Your secret must be longer than 10 characters. Please use a generator, e.g. http://strongpasswordgenerator.com/';
 			}
 			if (secret == 'alongsecret') {
-				return 'You\'re using the default secret. Please use a generator, e.g. http://strongpasswordgenerator.com/.';
+				return 'You\'re using the default secret. Please use a generator, e.g. http://strongpasswordgenerator.com/';
 			}
 		},
 
@@ -49,11 +61,11 @@ module.exports = {
 		 */
 		tmp: function(path) {
 			if (!fs.existsSync(path)) {
-				return 'Temp path "' + path + '" does not exist. Please point it to an existing folder or create the mentioned path.';
+				return 'Temp path does not exist. Please point it to an existing folder or create the mentioned path';
 			}
 
 			if (!fs.lstatSync(path).isDirectory()) {
-				return 'Temp path "' + path + '" is not a folder. Please make it point to a folder.';
+				return 'Temp path is not a folder. Please make it point to a folder';
 			}
 		},
 
@@ -69,14 +81,23 @@ module.exports = {
 			github: {
 
 				/**
+				 * Set false to disable.
+				 */
+				enabled: function(isEnabled) {
+					if (!_.isBoolean(isEnabled)) {
+						return 'Enabled flag must be either true or false';
+					}
+				},
+
+				/**
 				 * The client ID of the generated application.
 				 */
 				clientID: function(id) {
 					if (id.length == 0) {
-						return 'Your client ID must be longer than 0 characters. Please consult https://github.com/settings/applications/ in order to obtain GitHub\'s client ID.';
+						return 'Your client ID must be longer than 0 characters. Please consult https://github.com/settings/applications/ in order to obtain GitHub\'s client ID';
 					}
 					if (id == 'CLIENT_ID') {
-						return 'You\'re using the default client ID. Please consult https://github.com/settings/applications/ in order to obtain GitHub\'s client ID.';
+						return 'You\'re using the default client ID. Please consult https://github.com/settings/applications/ in order to obtain GitHub\'s client ID';
 					}
 				},
 
@@ -85,10 +106,10 @@ module.exports = {
 				 */
 				clientSecret: function(secret) {
 					if (secret.length == 0) {
-						return 'Your client secret must be longer than 0 characters. Please consult https://github.com/settings/applications/ in order to obtain GitHub\'s client secret.';
+						return 'Your client secret must be longer than 0 characters. Please consult https://github.com/settings/applications/ in order to obtain GitHub\'s client secret';
 					}
 					if (secret == 'CLIENT_SECRET') {
-						return 'You\'re using the default client secret. Please consult https://github.com/settings/applications/ in order to obtain GitHub\'s client secret.';
+						return 'You\'re using the default client secret. Please consult https://github.com/settings/applications/ in order to obtain GitHub\'s client secret';
 					}
 				},
 
@@ -96,12 +117,121 @@ module.exports = {
 				 * The callback URL of this application.
 				 * @important
 				 */
-				callbackURL: 'http://localhost:3000/auth/github/callback'
+				callbackURL: checkUrl
+			},
+
+			/**
+			 * Ipboard
+			 * Install https://github.com/freezy/ipb-oauth2-server
+			 */
+			ipboard: {
+
+				/**
+				 * Set false to disable.
+				 */
+				enabled: function(isEnabled) {
+					if (!_.isBoolean(isEnabled)) {
+						return 'Enabled flag must be either true or false';
+					}
+				},
+
+				/**
+				 * Must contain only letters from a-z (no spaces or special chars).
+				 */
+				id: function(id) {
+					if (!/^[a-z0-9]+$/.test(id)) {
+						return 'ID must be alphanumeric'
+					}
+				},
+
+				/**
+				 * Index file of the forum.
+				 */
+				baseURL: function(url) {
+					var urlErr = checkUrl(url);
+					if (urlErr) {
+						return urlErr;
+					}
+					if (url == 'https://example.com/forums/index.php') {
+						return 'You\'re using the default base URL';
+					}
+				},
+
+				/**
+				 * The client ID of the generated application.
+				 */
+				clientID: function(id) {
+					if (id.length == 0) {
+						return 'Your client ID must be longer than 0 characters';
+					}
+					if (id == 'CLIENT_ID') {
+						return 'You\'re using the default client ID';
+					}
+				},
+
+				/**
+				 * The client secret of the generated application.
+				 */
+				clientSecret: function(secret) {
+					if (secret.length == 0) {
+						return 'Your client secret must be longer than 0 characters';
+					}
+					if (secret == 'CLIENT_SECRET') {
+						return 'You\'re using the default client secret';
+					}
+				},
+
+				/**
+				 * The callback URL of this application.
+				 * @important
+				 */
+				callbackURL: checkUrl,
+
+				__array: true
 			}
 		}
 	}
 };
 
+function checkUrl(str) {
+	var pattern = new RegExp(
+			"^" +
+			// protocol identifier
+			"(?:(?:https?)://)" +
+			// user:pass authentication
+			"(?:\\S+(?::\\S*)?@)?" +
+			"(?:" +
+			// IP address exclusion
+			// private & local networks
+			"(?!(?:10|127)(?:\\.\\d{1,3}){3})" +
+			"(?!(?:169\\.254|192\\.168)(?:\\.\\d{1,3}){2})" +
+			"(?!172\\.(?:1[6-9]|2\\d|3[0-1])(?:\\.\\d{1,3}){2})" +
+			// IP address dotted notation octets
+			// excludes loopback network 0.0.0.0
+			// excludes reserved space >= 224.0.0.0
+			// excludes network & broacast addresses
+			// (first & last IP address of each class)
+			"(?:[1-9]\\d?|1\\d\\d|2[01]\\d|22[0-3])" +
+			"(?:\\.(?:1?\\d{1,2}|2[0-4]\\d|25[0-5])){2}" +
+			"(?:\\.(?:[1-9]\\d?|1\\d\\d|2[0-4]\\d|25[0-4]))" +
+			"|localhost|" +
+			// host name
+			"(?:(?:[a-z\\u00a1-\\uffff0-9]+-?)*[a-z\\u00a1-\\uffff0-9]+)" +
+			// domain name
+			"(?:\\.(?:[a-z\\u00a1-\\uffff0-9]+-?)*[a-z\\u00a1-\\uffff0-9]+)*" +
+			// TLD identifier
+			"(?:\\.(?:[a-z\\u00a1-\\uffff]{2,}))" +
+			")" +
+			// port number
+			"(?::\\d{2,5})?" +
+			// resource path
+			"(?:/[^\\s]*)?" +
+			"$", "i"
+	);
+	if (!pattern.test(str)) {
+		return 'Must be a valid URL';
+	}
+}
 
 
 

@@ -46,31 +46,55 @@ Settings.prototype.validate = function() {
 
 	var validate = function(validation, setting, path) {
 		var success = true;
-		var validationError, p;
+		var validationError, p, i;
 		for (var s in validation) {
 			if (validation.hasOwnProperty(s)) {
 				p = (path + '.' + s).substr(1);
+
+				// validation function
 				if (_.isFunction(validation[s])) {
-					validationError = validation[s](setting[s]);
-					if (!validationError) {
-						logger.info('[settings] %s [OK]', p);
-					} else {
-						logger.error('[settings] %s [KO]: %s', p, validationError);
+					if (_.isUndefined(setting[s])) {
+						logger.error('[settings] %s [KO]: Setting is missing.', p);
 						success = false;
+					} else {
+						validationError = validation[s](setting[s]);
+						if (!validationError) {
+							logger.info('[settings] %s [OK]', p);
+						} else {
+							logger.error('[settings] %s [KO]: %s (%s).', p, validationError, setting[s]);
+							success = false;
+						}
 					}
 				}
 
-				if (validation[s] && _.isObject(validation[s])) {
+				// array
+				else if (validation[s].__array) {
+					if (!_.isArray(setting[s])) {
+						logger.error('[settings] %s [KO]: Setting must be an array.', p);
+						success = false;
+					} else {
+						for (i = 0; i < setting[s].length; i++) {
+							if (!validate(validation[s], setting[s][i], path + '.' + s + '[' + i + ']')) {
+								//logger.error('[settings] %s failed', path);
+								success = false;
+							}
+						}
+					}
+				}
+
+				// object
+				else if (validation[s] && _.isObject(validation[s])) {
 
 					if (_.isUndefined(setting[s])) {
-						logger.error('[settings] Missing setting %s', p);
+						logger.error('[settings] %s [KO]: Setting block is missing.', p);
 						success = false;
-					}
-					if (!validate(validation[s], setting[s], path + '.' + s)) {
+
+					} else if (!validate(validation[s], setting[s], path + '.' + s)) {
 						//logger.error('[settings] %s failed', path);
 						success = false;
 					}
 				}
+
 			}
 		}
 		if (success && !path) {
@@ -201,7 +225,7 @@ Settings.prototype.migrate = function(callback) {
 					obj: err
 				});
 				fs.writeFileSync('settings-err.js', settingsPatched);
-				logger.info('[settings] File dumped to settings-err.js.');
+				logger.error('[settings] File dumped to settings-err.js.');
 				return callback(result);
 			}
 

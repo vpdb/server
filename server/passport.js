@@ -1,3 +1,4 @@
+var util = require('util');
 var logger = require('winston');
 var mongoose = require('mongoose');
 var LocalStrategy = require('passport-local').Strategy;
@@ -46,29 +47,50 @@ module.exports = function(passport, config) {
 	));
 
 	// use github strategy
-	passport.use(new GitHubStrategy({
-			clientID: config.github.clientID,
-			clientSecret: config.github.clientSecret,
-			callbackURL: config.github.callbackURL
-		},
-		function(accessToken, refreshToken, profile, done) {
-			User.findOne({ 'github.id': profile.id }, function(err, user) {
-				if (!user) {
-					logger.info('[passport|github] Saving new user %s', profile.emails[0].value);
-					user = new User({
-						name: profile.displayName, email: profile.emails[0].value, username: profile.username, provider: 'github', github: profile._json
-					});
-					user.save(function(err) {
-						if (err) {
-							logger.error('[passport|github] Error saving user: %s', err);
-						}
+	if (config.vpdb.passport.github.enabled) {
+		passport.use(new GitHubStrategy({
+				clientID: config.vpdb.passport.github.clientID,
+				clientSecret: config.vpdb.passport.github.clientSecret,
+				callbackURL: config.vpdb.passport.github.callbackURL
+			},
+			function (accessToken, refreshToken, profile, done) {
+				User.findOne({ 'github.id': profile.id }, function (err, user) {
+					if (!user) {
+						logger.info('[passport|github] Saving new user %s', profile.emails[0].value);
+						user = new User({
+							name: profile.displayName, email: profile.emails[0].value, username: profile.username, provider: 'github', github: profile._json
+						});
+						user.save(function (err) {
+							if (err) {
+								logger.error('[passport|github] Error saving user: %s', err);
+							}
+							return done(err, user);
+						});
+					} else {
+						logger.info('[passport|github] Returning user %s', profile.emails[0].value);
 						return done(err, user);
-					});
-				} else {
-					logger.info('[passport|github] Returning user %s', profile.emails[0].value);
-					return done(err, user);
+					}
+				});
+			}
+		));
+	}
+
+	_.each(config.vpdb.passport.ipboard, function(ipbConfig) {
+		if (ipbConfig.enabled) {
+			var OAuth2Strategy = require('passport-oauth').OAuth2Strategy;
+			passport.use(ipbConfig.id, new OAuth2Strategy({
+					authorizationURL: ipbConfig.baseURL + '?app=oauth2server&module=main&section=authorize',
+					tokenURL: ipbConfig.baseURL + '?app=oauth2server&module=main&section=token', // http://50.7.38.235/forums/index.php
+					clientID: ipbConfig.clientID, // 'ESk86muBx2ts3Y549XH48y7wZUUnzBtf'
+					clientSecret: ipbConfig.clientSecret, //'SurferSelect!2.',
+					callbackURL: 'http://localhost:3000/auth/' +  ipbConfig.baseURL + '/callback'
+				},
+				function (accessToken, refreshToken, profile, done) {
+					logger.info('Got profile from IP.Board: ', util.inspect(profile));
+					done();
 				}
-			});
+			));
 		}
-	));
+	});
+
 };

@@ -40,7 +40,7 @@ serverDomain.run(function() {
 	});
 
 	// bootstrap passport config
-	require('./server/passport')(passport, config.vpdb.passport);
+	require('./server/passport')(passport, config);
 
 	// express settings
 	require('./server/express')(app, config, passport);

@@ -125,6 +125,7 @@ env APP_ROOT=/var/www/staging
 env APP_HOME=/var/www/staging/current
 env APP_CACHEDIR=/var/www/staging/shared/cache
 env APP_ACCESS_LOG=/var/www/staging/shared/logs/access
+env APP_NUMWORKERS=1
 env PORT=8124
 
 # Application settings
@@ -159,7 +160,7 @@ end script
 script
     echo Starting staging server for VPDB at ${APP_HOME}...
     umask 0007
-    exec /usr/bin/naught start --ipc-file $APP_ROOT/shared/naught.ipc --log $APP_ROOT/shared/logs/naught --stdout $APP_ROOT/shared/logs/$APP_NAME.out --stderr $APP_ROOT/shared/logs/$APP_NAME.err --max-log-size 10485760 --cwd $APP_HOME --daemon-mode false $APP_HOME/app.js
+    exec /usr/bin/naught start --ipc-file $APP_ROOT/shared/naught.ipc --log $APP_ROOT/shared/logs/naught --stdout $APP_ROOT/shared/logs/$APP_NAME.out --stderr $APP_ROOT/shared/logs/$APP_NAME.err --max-log-size 10485760 --cwd $APP_HOME --daemon-mode false --worker-count $APP_NUMWORKERS $APP_HOME/app.js
 end script
 ```
 
@@ -168,6 +169,7 @@ Then do the same for the production script:
 	sudo cp /etc/init/vpdb-staging.conf /etc/init/vpdb-production.conf
 	sudo sed -i 's/staging/production/g' /etc/init/vpdb-production.conf
 	sudo sed -i 's/8124/9124/g' /etc/init/vpdb-production.conf
+	sudo sed -i 's/APP_NUMWORKERS=1/APP_NUMWORKERS=2/g' /etc/init/vpdb-production.conf
 
 ## Setup Push Deployment
 

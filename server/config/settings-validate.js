@@ -131,13 +131,7 @@ module.exports = {
 					if (secret == 'CLIENT_SECRET') {
 						return 'You\'re using the default client secret. Please consult https://github.com/settings/applications/ in order to obtain GitHub\'s client secret';
 					}
-				},
-
-				/**
-				 * The callback URL of this application.
-				 * @important
-				 */
-				callbackURL: checkUrl
+				}
 			},
 
 			/**

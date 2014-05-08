@@ -54,7 +54,7 @@ module.exports = function(passport, config) {
 		passport.use(new GitHubStrategy({
 				clientID: config.vpdb.passport.github.clientID,
 				clientSecret: config.vpdb.passport.github.clientSecret,
-				callbackURL: config.vpdb.passport.github.callbackURL
+				callbackURL: settings.publicUrl(config) + '/auth/github/callback'
 			},
 			function (accessToken, refreshToken, profile, done) {
 				User.findOne({ 'github.id': profile.id }, function (err, user) {
@@ -78,6 +78,7 @@ module.exports = function(passport, config) {
 		));
 	}
 
+	// ipboard strategies
 	_.each(config.vpdb.passport.ipboard, function(ipbConfig) {
 		if (ipbConfig.enabled) {
 			var OAuth2Strategy = require('passport-oauth').OAuth2Strategy;

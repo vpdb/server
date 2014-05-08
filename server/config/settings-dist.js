@@ -77,12 +77,7 @@ module.exports = {
 				 * The client secret of the generated application.
 				 * @important
 				 */
-				clientSecret: 'CLIENT_SECRET',
-
-				/**
-				 * The callback URL of this application.
-				 */
-				callbackURL: 'http://localhost:3000/auth/github/callback'
+				clientSecret: 'CLIENT_SECRET'
 			},
 
 			/**

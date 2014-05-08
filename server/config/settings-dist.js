@@ -13,6 +13,11 @@ module.exports = {
 	vpdb: {
 
 		/**
+		 * Public host name of the server.
+		 */
+		host: 'localhost',
+
+		/**
 		 * Where the HTTP server listens; 80 is the default port.
 		 */
 		port: 8124,
@@ -51,6 +56,11 @@ module.exports = {
 			github: {
 
 				/**
+				 * Set false to disable.
+				 */
+				enabled: true,
+
+				/**
 				 * The client ID of the generated application.
 				 * @important
 				 */
@@ -66,7 +76,60 @@ module.exports = {
 				 * The callback URL of this application.
 				 */
 				callbackURL: 'http://localhost:3000/auth/github/callback'
-			}
+			},
+
+			/**
+			 * IP Board OAuth2 authentication.
+			 * You'll need to install the ipb-oauth2-server application here:
+			 * 		https://github.com/freezy/ipb-oauth2-server
+			 *
+			 * You can also add multiple entries if you like to offer authentication from multiple boards.
+			 */
+			ipboard: [{
+
+				/**
+				 * Set false to disable.
+				 */
+				enabled: false,
+
+				/**
+				 * Must contain only letters or numbers (no spaces or special chars).
+				 */
+				id: 'myipboard',
+
+				/**
+				 * Label of the button
+				 */
+				name: 'My IP Board',
+
+				/**
+				 * Icon class for the button, separated by space. Set empty or null if no icon.
+				 */
+				icon: '',
+
+				/**
+				 * Index file of the forum.
+				 */
+				baseURL: 'https://example.com/forums/index.php',
+
+				/**
+				 * The client ID of the generated application.
+				 * @important
+				 */
+				clientID: 'CLIENT_ID',
+
+				/**
+				 * The client secret of the generated application.
+				 * @important
+				 */
+				clientSecret: 'CLIENT_SECRET',
+
+				/**
+				 * The callback URL of this application.
+				 */
+				callbackURL: 'http://localhost:3000/auth/gameex/callback'
+
+			}]
 		}
 	}
 

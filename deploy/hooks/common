@@ -24,10 +24,6 @@ rollback_abort() {
 	local path=${DEPLOY_ROOT}/${DEPLOY_ENV}/$1
 	echo Removing ${path}
 	rm -r ${path}
-	if [ -f "$settings" ]; then
-		echo "Also removing settings at ${settings}"
-		rm ${settings}
-	fi
 	exit 1
 }
 
@@ -64,22 +60,38 @@ grunt_build() {
 repo_link() {
 	local dest=${DEPLOY_ROOT}/${DEPLOY_ENV}/$1
 	local newSettings=${DEPLOY_ROOT}/${DEPLOY_ENV}/config/${1}.js
+	local currentSettings=${DEPLOY_ROOT}/${DEPLOY_ENV}/settings.js
+	local patchedSettings=${DEPLOY_ROOT}/${DEPLOY_ENV}/settings-patched.js
 
-	echo Copying settings...
-	cp ${DEPLOY_ROOT}/${DEPLOY_ENV}/settings.js ${newSettings}
-	test $? -eq 0 || rollback_abort $1 "Unable to copy settings from ${DEPLOY_ROOT}/${DEPLOY_ENV}/settings.js to ${newSettings}. Please fix and manually relaunch deployment."
+	if [[ ! -f "$newSettings" ]]; then
+		echo Copying settings...
+
+		if [ -f "$patchedSettings" ]; then
+			echo "Using ${patchedSettings} instead of ${currentSettings}."
+			cp ${patchedSettings} ${newSettings}
+			test $? -eq 0 || rollback_abort $1 "Unable to copy settings from ${patchedSettings} to ${newSettings}. Please fix and manually relaunch deployment."
+		else
+			cp ${currentSettings} ${newSettings}
+			test $? -eq 0 || rollback_abort $1 "Unable to copy settings from ${currentSettings} to ${newSettings}. Please fix and manually relaunch deployment."
+		fi
+	else
+		echo "Settings file already found at ${newSettings}"
+	fi
+	ln -sfn ${newSettings} ${patchedSettings}
+
 
 	echo Migrating settings...
 	APP_SETTINGS=${newSettings} node ${dest}/server/config/migrate.js
-	test $? -eq 0 || rollback_abort $1 "New @important config settings. Please update and manually finish deployment."
+	test $? -eq 0 || rollback_abort $1 "New @important config settings. Please fix settings at ${patchedSettings} and manually finish deployment."
 
 	echo Validating settings...
 	APP_SETTINGS=${newSettings} node ${dest}/server/config/validate.js
-	test $? -eq 0 || rollback_abort $1 "Setting validation failed. Please fix and manually finish deployment."
+	test $? -eq 0 || rollback_abort $1 "Setting validation failed. Please fix settings at ${patchedSettings} and manually finish deployment."
 
 	echo Swapping settings...
-	ln -sfn ${newSettings} ${DEPLOY_ROOT}/${DEPLOY_ENV}/settings.js
+	ln -sfn ${newSettings} ${currentSettings}
 	test $? -eq 0 || rollback_abort $1 "Error linking new settings. Please fix and manually finish deployment."
+	rm ${patchedSettings}
 
 	echo Swapping code...
 	ln -sfn ${dest} ${DEPLOY_ROOT}/${DEPLOY_ENV}/current

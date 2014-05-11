@@ -85,11 +85,12 @@ module.exports = function(passport, config) {
 			var callbackUrl = settings.publicUrl(config) + '/auth/' +  ipbConfig.id + '/callback';
 			logger.info('[passport] Enabling IP.Board authentication strategy for "%s" with callback %s.', ipbConfig.name, callbackUrl);
 			passport.use(ipbConfig.id, new OAuth2Strategy({
-					authorizationURL: ipbConfig.baseURL + '?app=oauth2server&module=main&section=authorize',
-					tokenURL: ipbConfig.baseURL + '?app=oauth2server&module=main&section=token', // http://50.7.38.235/forums/index.php
-					clientID: ipbConfig.clientID, // 'ESk86muBx2ts3Y549XH48y7wZUUnzBtf'
-					clientSecret: ipbConfig.clientSecret, //'SurferSelect!2.',
-					callbackURL: callbackUrl
+					authorizationURL: ipbConfig.baseURL + '?app=oauth2&module=server&section=authorize',
+					tokenURL: ipbConfig.baseURL + '?app=oauth2server&module=main&section=token',
+					clientID: ipbConfig.clientID,
+					clientSecret: ipbConfig.clientSecret,
+					callbackURL: callbackUrl,
+					state: true
 				},
 				function (accessToken, refreshToken, profile, done) {
 					logger.info('Got profile from IP.Board: ', util.inspect(profile));

@@ -2,21 +2,29 @@ var _ = require('underscore');
 var crypto = require('crypto');
 var mongoose = require('mongoose');
 
-var authTypes = [ 'github' ];
+var config = require('../modules/settings').current;
 var Schema = mongoose.Schema;
 
 /**
  * User Schema
  */
-var UserSchema = new Schema({
+var fields = {
 	name: String,
 	email: String,
 	username: String,
 	provider: String,
 	hashed_password: String,
-	salt: String,
-	github: {}
+	salt: String
+};
+if (config.vpdb.passport.github.enabled) {
+	fields['github'] = {};
+}
+_.each(config.vpdb.passport.ipboard, function(ipbConfig) {
+	if (ipbConfig.enabled) {
+		fields[ipbConfig.id] = {};
+	}
 });
+var UserSchema = new Schema(fields);
 
 /**
  * Virtuals
@@ -42,7 +50,7 @@ var validatePresenceOf = function(value) {
 // the below 4 validations only apply if you are signing up traditionally
 UserSchema.path('name').validate(function(name) {
 	// if you are authenticating by any of the oauth strategies, don't validate
-	if (authTypes.indexOf(this.provider) !== -1) {
+	if (this.provider != 'local') {
 		return true;
 	}
 	return name.length;
@@ -50,7 +58,7 @@ UserSchema.path('name').validate(function(name) {
 
 UserSchema.path('email').validate(function(email) {
 	// if you are authenticating by any of the oauth strategies, don't validate
-	if (authTypes.indexOf(this.provider) !== -1) {
+	if (this.provider != 'local') {
 		return true;
 	}
 	return email.length;
@@ -58,7 +66,7 @@ UserSchema.path('email').validate(function(email) {
 
 UserSchema.path('username').validate(function(username) {
 	// if you are authenticating by any of the oauth strategies, don't validate
-	if (authTypes.indexOf(this.provider) !== -1) {
+	if (this.provider != 'local') {
 		return true;
 	}
 	return username.length;
@@ -66,7 +74,7 @@ UserSchema.path('username').validate(function(username) {
 
 UserSchema.path('hashed_password').validate(function(hashed_password) {
 	// if you are authenticating by any of the oauth strategies, don't validate
-	if (authTypes.indexOf(this.provider) !== -1) {
+	if (this.provider != 'local') {
 		return true;
 	}
 	return hashed_password.length;
@@ -80,8 +88,7 @@ UserSchema.pre('save', function(next) {
 	if (!this.isNew) {
 		return next();
 	}
-
-	if (!validatePresenceOf(this.password) && authTypes.indexOf(this.provider) === -1) {
+	if (!validatePresenceOf(this.password) && this.provider == 'local') {
 		next(new Error('Invalid password'));
 	} else {
 		next();

@@ -1,6 +1,7 @@
 var _ = require('underscore');
 var util = require('util');
 var logger = require('winston');
+var request = require('request');
 var mongoose = require('mongoose');
 var LocalStrategy = require('passport-local').Strategy;
 var GitHubStrategy = require('passport-github').Strategy;
@@ -83,18 +84,56 @@ module.exports = function(passport, config) {
 		if (ipbConfig.enabled) {
 			var OAuth2Strategy = require('passport-oauth').OAuth2Strategy;
 			var callbackUrl = settings.publicUrl(config) + '/auth/' +  ipbConfig.id + '/callback';
-			logger.info('[passport] Enabling IP.Board authentication strategy for "%s" with callback %s.', ipbConfig.name, callbackUrl);
+			logger.info('[passport|ipboard:' + ipbConfig.id + '] Enabling IP.Board authentication strategy for "%s" with callback %s.', ipbConfig.name, callbackUrl);
 			passport.use(ipbConfig.id, new OAuth2Strategy({
 					authorizationURL: ipbConfig.baseURL + '?app=oauth2&module=server&section=authorize',
-					tokenURL: ipbConfig.baseURL + '?app=oauth2server&module=main&section=token',
+					tokenURL: ipbConfig.baseURL + '?app=oauth2&module=server&section=token',
 					clientID: ipbConfig.clientID,
 					clientSecret: ipbConfig.clientSecret,
 					callbackURL: callbackUrl,
 					state: true
 				},
 				function (accessToken, refreshToken, profile, done) {
-					logger.info('Got profile from IP.Board: ', util.inspect(profile));
-					done();
+					if (!accessToken) {
+						logger.warn('[passport|ipboard:' + ipbConfig.id + '] No access token received from IP.Board "%s", aborting login.');
+						return done('No access token received from IP.Board.');
+					}
+					logger.info('[passport|ipboard:' + ipbConfig.id + '] Getting profile data...');
+					var req = {
+						url: ipbConfig.baseURL + '?app=oauth2&module=server&section=profile',
+						json: true,
+						headers: {
+							'Authorization': 'Bearer ' + accessToken
+						}
+					};
+					request(req, function(err, response, result) {
+						if (err) {
+							logger.error('[passport|ipboard:' + ipbConfig.id + '] Error getting profile data: %s', err);
+							return done(err);
+						}
+						if (response.statusCode == 200) {
+							if (result.success) {
+								logger.info('[passport] Successfully retrieved user profile: %s', util.inspect(result, false, 3, true));
+								done(null, {
+									provider: ipbConfig.id,
+									id: parseInt(result.member.id),
+									username: result.member.username,
+									displayName: result.member.displayName,
+									profileUrl: result.member.profileUrl,
+									emails: [{ value: result.member.email }],
+									photos: [{ value: result.member.avatar.thumb.url }],
+									_raw: JSON.stringify(body),
+									_json: body
+								});
+							} else {
+								logger.error('[passport|ipboard:' + ipbConfig.id + '] Error getting profile data: %s', result.message);
+								done(result.message);
+							}
+						} else {
+							logger.error('[passport|ipboard:' + ipbConfig.id + '] Error getting profile data (%d): %s', response.statusCode, result);
+							done('Status code is ' + response.statusCode + ', expected 200.');
+						}
+					});
 				}
 			));
 		}

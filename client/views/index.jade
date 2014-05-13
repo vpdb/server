@@ -15,14 +15,12 @@ block body
 
 			ul.nav.navbar-nav
 				li(ng-class="{ active: menu == 'home' }")
-					a(href="/home") Home
+					a(href="/") Home
 				li(ng-class="{ active: menu == 'games' }")
 					a(href="/games") Games
 
 			ul.nav.navbar-nav
 				- if (req.isAuthenticated())
-					li
-						a(href="/users/"+req.user.id, title="Profile") Profile
 					li
 						a(href="/logout", title="logout", target="_self") Logout
 				- else

@@ -1,6 +1,6 @@
 @import('nib')
 
-font-header = Oswald
+font-header = 'langdon', sans-serif
 font-content = 'Raleway', sans-serif
 font-code = Menlo,Monaco,Consolas,'Courier New',monospace;
 
@@ -124,7 +124,7 @@ dl.oneline
 // :headers
 h1
 	font-family font-header
-	text-transform uppercase
+	text-transform lowercase
 h2, h5
 	font-family font-header
 	text-transform uppercase
@@ -207,6 +207,14 @@ label, h4, h5
 		margin-top 10px
 		&.btn-pin
 			padding-left 14px
+	img
+		border-radius 20px
+		width 40px
+		height 40px
+		top 4px
+		position absolute
+		& + a
+			margin-left 35px
 
 ul.dropdown-menu table
 	tr
@@ -318,17 +326,17 @@ ul.dropdown-menu table
 	position relative
 
 	&.btn-default, &.btn-primary
-		padding 4px 20px 3px
+		padding 1px 20px 0px
 		font-family font-header
-		font-size 18px
+		font-size 20px
 		text-transform uppercase
 		border none
 		& > i.icon-pin-on, & > i.icon-pin-off
 			font-size 24px
 			line-height 12px
 	&.btn-lg
-		font-size 23px
-		padding 4px 30px
+		font-size 26px
+		padding 2px 30px 1px
 		border-radius border-radius-large
 		.fa
 			font-size 20px
@@ -340,7 +348,7 @@ ul.dropdown-menu table
 		& > i.icon-gameex
 			font-size 27px
 			line-height 29px
-			vertical-align bottom
+			vertical-align middle
 	&.btn-xs
 		padding 2px 10px 0px
 		line-height 1
@@ -362,8 +370,8 @@ ul.dropdown-menu table
 		margin-right -8px
 		margin-top -4px
 		vertical-align middle
-		font-weight 300
-		font-size font-size-standard
+		font-family font-content
+		font-weight font-weight-bold
 
 
 .btn-group.btn-media

@@ -99,10 +99,12 @@ Strategy.prototype.userProfile = function(accessToken, done) {
 				displayName: json.displayName,
 				profileUrl: json.profileUrl,
 				emails: [{ value: json.email }],
-				photos: [{ value: json.avatar.thumb.url }],
 				_raw: body,
 				_json: json
 			};
+			if (json.avatar) {
+				profile.photos = [{ value: json.avatar.thumb.url }];
+			}
 
 			done(null, profile);
 		} catch(e) {

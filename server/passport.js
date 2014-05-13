@@ -40,14 +40,24 @@ module.exports = function(passport, config) {
 				var logtag = providerName ? strategy + ':' + providerName : strategy;
 				if (!user) {
 					logger.info('[passport|%s] Saving new user %s <%s>', logtag, profile.username, profile.emails[0].value);
+
+					// mandatory data
 					user = new User({
 						name: profile.displayName,
 						email: profile.emails[0].value,
-						username: profile.username,
 						provider: provider
 					});
+
+					// save original data to separate field
 					user[provider] = profile._json;
 					user[provider].id = profile._json.id.toString();
+
+					// optional data
+					if (profile.photos && profile.photos.length > 0) {
+						user.thumb = profile.photos[0].value;
+					}
+
+					// now save and return
 					user.save(function(err) {
 						if (err) {
 							logger.error('[passport|%s] Error creating user: %s', logtag, err);
@@ -60,8 +70,17 @@ module.exports = function(passport, config) {
 					} else {
 						logger.info('[passport|%s] Returning user %s', logtag, profile.emails[0].value);
 					}
+
+					// update profile data on separate field
 					user[provider] = profile._json;
 					user[provider].id = profile._json.id.toString();
+
+					// optional data
+					if (!user.thumb && profile.photos && profile.photos.length > 0) {
+						user.thumb = profile.photos[0].value;
+					}
+
+					// save and return
 					user.save(function(err) {
 						if (err) {
 							logger.error('[passport|%s] Error updating user: %s', logtag, err);

@@ -19,50 +19,62 @@ block body
 				li(ng-class="{ active: menu == 'games' }")
 					a(href="/games") Games
 
-			ul.nav.navbar-nav
-				- if (req.isAuthenticated())
+			ul.nav.navbar-nav.navbar-right
+				- if (!req.isAuthenticated())
 					li
-						a(href="/logout", title="logout", target="_self") Logout
+						a(ng-click="login()")
+							i.fa.fa-lock.space-right-2x
+							span.space-right Login
 				- else
 					li
-						a(href="#", title="Login", ng-click="login()") Login
+						a.space-right.dropdown-toggle(data-toggle="dropdown")
+							span.space-right-2x=req.user.name
+							i.fa.fa-angle-down
+						ul.dropdown-menu(role="menu")
+							li
+								a(href="/logout", title="logout", target="_self")
+									i.icon.icon-exit
+									span.space-left-abs Logout
+							li
+								a
+									i.fa.fa-user.space-right
+									span.space-left-abs Profile
 
-			ul.nav.navbar-nav.navbar-right
-				li
+				li(ng-show="false")
 					.btn-group.btn-group-flex
 						button.btn.btn-pin(type="button", class="{{ downloadsPinned ? 'btn-primary' : 'btn-default' }}", ng-model="downloadsPinned", btn-checkbox, btn-checkbox-true="1", btn-checkbox-false="0")
 							i.icon.space-right(class="{{ downloadsPinned ? 'icon-pin-on' : 'icon-pin-off' }}")
 							| Pin Downloads
 							span.badge(ng-show="downloadsPinned || pinnedDownloadCount") {{ pinnedDownloadCount }}
-							button.btn.dropdown-toggle(type="button", class="{{ downloadsPinned ? 'btn-primary' : 'btn-default' }}", data-toggle="dropdown")
-								i.fa.fa-angle-down
-								span.sr-only Toggle Dropdown
-							ul.dropdown-menu(role="menu")
-								li
-									table
-										tbody
-											tr.divider-bottom(ng-click="helpPinnedDownloads()")
-												td.ic
-													i.fa.fa-question-circle
-												td What's this?
-												td
-											tr.divider-none(ng-hide="pinnedDownloadCount")
-												td(colspan="3") No pinned downloads.
+						button.btn.dropdown-toggle(type="button", class="{{ downloadsPinned ? 'btn-primary' : 'btn-default' }}", data-toggle="dropdown")
+							i.fa.fa-angle-down
+							span.sr-only Toggle Dropdown
+						ul.dropdown-menu(role="menu")
+							li
+								table
+									tbody
+										tr.divider-bottom(ng-click="helpPinnedDownloads()")
+											td.ic
+												i.fa.fa-question-circle
+											td What's this?
+											td
+										tr.divider-none(ng-hide="pinnedDownloadCount")
+											td(colspan="3") No pinned downloads.
 
-											tr(ng-repeat="(id, dl) in pinnedDownloads")
-												td.ic
-													i.fa.fa-trash-o(ng-click="unpinDownload(dl);$event.stopPropagation()")
-												td
-													p {{ dl.info[0] }}
-													p
-														span(bind-html-unsafe="dl.info[1]")
-														| &nbsp;	 - v{{ dl.version }}
-												td {{ dl.size | bytes }}
-											tr.divider-top(ng-show="pinnedDownloadCount > 0", ng-click="downloadPinned()")
-												td.ic
-													i.fa.fa-download
-												td Download
-												td {{ pinnedDownloadSize | bytes }}
+										tr(ng-repeat="(id, dl) in pinnedDownloads")
+											td.ic
+												i.fa.fa-trash-o(ng-click="unpinDownload(dl);$event.stopPropagation()")
+											td
+												p {{ dl.info[0] }}
+												p
+													span(bind-html-unsafe="dl.info[1]")
+													| &nbsp;	 - v{{ dl.version }}
+											td {{ dl.size | bytes }}
+										tr.divider-top(ng-show="pinnedDownloadCount > 0", ng-click="downloadPinned()")
+											td.ic
+												i.fa.fa-download
+											td Download
+											td {{ pinnedDownloadSize | bytes }}
 
 	.container.container-topmost
 		div(ng-view)

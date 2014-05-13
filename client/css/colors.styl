@@ -20,9 +20,10 @@ color-lightish-inv = rgba(black, 0.32)
 color-lighter-inv = rgba(black, 0.5)
 color-lightest-inv = rgba(black, 0.75)
 
+color-navbar = rgba(26, 25, 23, 0.8)
+
 body
 	background-image url('/images/background_outer.png')
-
 .theme-dark
 	color color-lighter
 	label
@@ -101,7 +102,7 @@ body
 
 	// :navbar
 	.navbar-default
-		background-color rgba(26, 25, 23, 0.8)
+		background-color color-navbar
 		border-color color-primary
 
 	.navbar-brand
@@ -129,6 +130,16 @@ body
 		&.active a
 			background-color color-darkest
 			color color-primary
+		.dropdown-menu
+			background-color color-navbar
+			border-left-color color-primary
+			border-right-color color-primary
+			border-bottom-color color-primary
+
+	.navbar-default .navbar-nav > .open
+		& > a, & > a:hover, & > a:focus
+			background-color transparent
+
 	ul.dropdown-menu table
 		tr
 			td

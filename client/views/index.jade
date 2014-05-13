@@ -40,7 +40,7 @@ block body
 									i.fa.fa-user.space-right
 									span.space-left-abs Profile
 
-				li(ng-show="false")
+				//li.ng-cloak
 					.btn-group.btn-group-flex
 						button.btn.btn-pin(type="button", class="{{ downloadsPinned ? 'btn-primary' : 'btn-default' }}", ng-model="downloadsPinned", btn-checkbox, btn-checkbox-true="1", btn-checkbox-false="0")
 							i.icon.space-right(class="{{ downloadsPinned ? 'icon-pin-on' : 'icon-pin-off' }}")

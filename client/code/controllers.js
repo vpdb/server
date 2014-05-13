@@ -57,11 +57,43 @@ ctrl.controller('AppCtrl', function($scope, $location, $modal) {
 
 	$scope.login = function() {
 		$modal.open({
-			templateUrl: 'partials/modals/auth'
+			templateUrl: 'partials/modals/auth',
+			controller: 'LoginCtrl'
 		});
 	};
 });
 
+
+ctrl.controller('LoginCtrl', function($scope) {
+
+	$scope.registering = false;
+
+	var validEmail = function(email) {
+		var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+		return re.test(email);
+	};
+
+	$scope.login = function(email, password) {
+		if (!validEmail(email)) {
+			return $scope.error = 'You must provide a valid email address.';
+		}
+	};
+
+	$scope.register = function(email, password1, password2) {
+		if (!validEmail(email)) {
+			return $scope.error = 'You must provide a valid email address.';
+		}
+		if (password1 != password2) {
+			return $scope.error = 'Sorry, passwords don\'t match.';
+		}
+	};
+
+	$scope.swap = function() {
+		$scope.registering = !$scope.registering;
+		$scope.error = '';
+	};
+
+});
 
 ctrl.controller('CollapseCtrl', function($scope) {
 	$scope.isCollapsed  = false;

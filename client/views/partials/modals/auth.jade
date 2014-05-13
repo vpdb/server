@@ -15,20 +15,39 @@
 					i.fa.fa-github.space-right
 					| GitHub
 		hr.padder-top
-		h1 Or, with your Email:
-		form.form-horizontal(role='form')
-			.form-group
-				label.col-sm-4.control-label(for='inputEmail3') Email
-				.col-sm-6
-					input#inputEmail3.form-control(type='email')
-			.form-group
-				label.col-sm-4.control-label(for='inputPassword3') Password
-				.col-sm-6
-					input#inputPassword3.form-control(type='password')
 
-
+		div(ng-hide="registering")
+			h1 Or, with your Email:
+			form.form-horizontal(role='form')
+				.form-group
+					label.col-sm-4.control-label Email
+					.col-sm-6
+						input.form-control(ng-model="email1", ng-required)
+				.form-group
+					label.col-sm-4.control-label(for='inputPassword1') Password
+					.col-sm-6
+						input#inputPassword1.form-control(type='password', ng-model="password1")
+		div(ng-show="registering")
+			h1 Or, register with your Email:
+			form.form-horizontal(role='form')
+				.form-group
+					label.col-sm-4.control-label(for='inputEmail2') Email
+					.col-sm-6
+						input#inputEmail2.form-control(ng-model="email2", ng-required)
+				.form-group
+					label.col-sm-4.control-label(for='inputPassword2') Password
+					.col-sm-6
+						input#inputPassword2.form-control(type='password', ng-model="password2")
+				.form-group
+					label.col-sm-4.control-label(for='inputPassword3') Confirm
+					.col-sm-6
+						input#inputPassword3.form-control(type='password', ng-model="password3")
+		div.alert.alert-danger(ng-show="error")
+			i.fa.fa-exclamation-triangle.space-right
+			| {{ error }}
 
 	.modal-footer
-		button.btn.btn-default.pull-left(ng-click="$close()") Register
+		button.btn.btn-default.pull-left(ng-click="swap()") {{ registering ? "Login" : "Register" }}
 		button.btn.btn-default(ng-click="$close()") Cancel
-		button.btn.btn-primary(ng-click="$close()") Login
+		button.btn.btn-primary(ng-hide="registering", ng-click="login(email1, password1)") Login
+		button.btn.btn-primary(ng-show="registering", ng-click="register(email2, password2, password3)") Register

@@ -15,14 +15,16 @@ module.exports = function(app, config, passport, auth) {
 	app.get('/partials/modals/:name', web.modals);
 
 	// JSON API
-	var api = require('./controllers/api');
-	app.get('/api/games/:id', api.game);
-	app.get('/api/games', api.games);
-	app.get('/api/packs', api.packs);
-	app.get('/api/releases', api.releases);
-	app.get('/api/feed', api.feed);
-	app.get('/api/users', api.users);
-	app.get('/api/users/:user', api.user);
+
+	// JSON API (mock)
+	var apiMock = require('./controllers/api-mock');
+	app.get('/api-mock/games/:id', apiMock.game);
+	app.get('/api-mock/games', apiMock.games);
+	app.get('/api-mock/packs', apiMock.packs);
+	app.get('/api-mock/releases', apiMock.releases);
+	app.get('/api-mock/feed', apiMock.feed);
+	app.get('/api-mock/users', apiMock.users);
+	app.get('/api-mock/users/:user', apiMock.user);
 
 	// user routes
 	var users = require('./controllers/users');

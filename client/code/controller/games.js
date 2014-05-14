@@ -29,7 +29,7 @@ ctrl.controller('GameListController', function($scope, $http, $location, $templa
 
 	$http({
 		method: 'GET',
-		url: '/api/games'
+		url: '/api-mock/games'
 
 	}).success(function(data, status, headers, config) {
 		_.each(data.result, function(game) {

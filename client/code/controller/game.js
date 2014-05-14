@@ -6,7 +6,7 @@ ctrl.controller('GameController', function($scope, $http, $routeParams, $modal, 
 
 	$http({
 		method: 'GET',
-		url: '/api/games/' + $scope.gameId
+		url: '/api-mock/games/' + $scope.gameId
 
 	}).success(function(data, status, headers, config) {
 		var game = data.result;

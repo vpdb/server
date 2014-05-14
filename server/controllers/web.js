@@ -43,5 +43,10 @@ exports.modals = function(req, res) {
 };
 
 exports.four04 = function(req, res) {
-	res.status(404).render('404', _.extend(exports.params(req), { url: req.originalUrl, error: 'Not found' }));
+	if (req.originalUrl.substr(0, 5) == '/api/') {
+		res.setHeader('Content-Type', 'application/json');
+		res.status(404).end(JSON.stringify({ error: 'Not found.' }));
+	} else {
+		res.status(404).render('404', _.extend(exports.params(req), { url: req.originalUrl, error: 'Not found' }));
+	}
 };

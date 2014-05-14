@@ -11,6 +11,7 @@ var gracefulExit = require('express-graceful-exit');
 
 var writeable = require('./modules/writeable');
 var asset = require('./middleware/asset');
+var webCtrl = require('./controllers/web');
 
 module.exports = function(app, config, passport) {
 
@@ -123,9 +124,7 @@ module.exports = function(app, config, passport) {
 	});
 
 	// assume 404 since no middleware responded
-	app.use(function(req, res) {
-		res.status(404).render('404', { url: req.originalUrl, error: 'Not found' })
-	});
+	app.use(webCtrl.four04);
 };
 
 function sendOfflineMsg() {

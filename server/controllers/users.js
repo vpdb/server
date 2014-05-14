@@ -12,25 +12,6 @@ exports.authCallback = function(req, res, next) {
 	res.redirect('/');
 };
 
-/**
- * Show login form
- */
-exports.login = function(req, res) {
-	res.render('users/login', {
-		title: 'Login',
-		message: req.flash('error')
-	});
-};
-
-/**
- * Show sign up form
- */
-exports.signup = function(req, res) {
-	res.render('users/signup', {
-		title: 'Sign up',
-		user: new User()
-	});
-};
 
 /**
  * Logout

@@ -26,8 +26,6 @@ module.exports = function(app, config, passport, auth) {
 
 	// user routes
 	var users = require('./controllers/users');
-	app.get('/login', users.login);
-	app.get('/signup', users.signup);
 	app.get('/logout', users.logout);
 	app.post('/users', users.create);
 	app.post('/users/session', passport.authenticate('local', { failureRedirect: '/', failureFlash: 'Invalid email or password.' }), users.session);

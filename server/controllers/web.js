@@ -28,17 +28,20 @@ exports.params = function(req) {
 	};
 };
 
-exports.index = function (req, res) {
+exports.index = function(req, res) {
 	res.render('index', exports.params(req));
 };
 
-exports.partials = function (req, res) {
+exports.partials = function(req, res) {
 	var name = req.params.name;
 	res.render('partials/' + name, exports.params(req));
 };
 
-exports.modals = function (req, res) {
+exports.modals = function(req, res) {
 	var name = req.params.name;
 	res.render('partials/modals/' + name, exports.params(req));
 };
 
+exports.four04 = function(req, res) {
+	res.status(404).render('404', _.extend(exports.params(req), { url: req.originalUrl, error: 'Not found' }));
+};

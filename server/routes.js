@@ -15,6 +15,8 @@ module.exports = function(app, config, passport, auth) {
 	app.get('/partials/modals/:name', web.modals);
 
 	// JSON API
+	var api = require('./controllers/api');
+	app.post('/api/users', api.userCreate);
 
 	// JSON API (mock)
 	var apiMock = require('./controllers/api-mock');

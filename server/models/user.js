@@ -1,6 +1,7 @@
 var _ = require('underscore');
 var crypto = require('crypto');
 var mongoose = require('mongoose');
+var validator = require('validator');
 
 var config = require('../modules/settings').current;
 var Schema = mongoose.Schema;
@@ -10,12 +11,13 @@ var Schema = mongoose.Schema;
  */
 var fields = {
 	name: String,
-	email: String,
+	email: { type: String, lowercase: true, unique: true },
 	username: String,
 	thumb: String,
-	provider: String,
-	hashed_password: String,
-	salt: String
+	provider: { type: String, required: true },
+	passwordHash: { type: String },
+	salt: { type: String },
+	active: { type: Boolean, default: true, required: true }
 };
 if (config.vpdb.passport.github.enabled) {
 	fields['github'] = {};
@@ -30,12 +32,11 @@ var UserSchema = new Schema(fields);
 /**
  * Virtuals
  */
-UserSchema
-	.virtual('password')
+UserSchema.virtual('password')
 	.set(function(password) {
 		this._password = password;
 		this.salt = this.makeSalt();
-		this.hashed_password = this.encryptPassword(password);
+		this.passwordHash = this.encryptPassword(password);
 	})
 	.get(function() {
 		return this._password
@@ -44,11 +45,6 @@ UserSchema
 /**
  * Validations
  */
-var validatePresenceOf = function(value) {
-	return value && value.length;
-};
-
-// the below 4 validations only apply if you are signing up traditionally
 UserSchema.path('name').validate(function(name) {
 	// if you are authenticating by any of the oauth strategies, don't validate
 	if (this.provider != 'local') {
@@ -62,8 +58,8 @@ UserSchema.path('email').validate(function(email) {
 	if (this.provider != 'local') {
 		return true;
 	}
-	return email.length;
-}, 'Email cannot be blank');
+	return validator.isEmail(email);
+}, 'Email must be in the correct format.');
 
 UserSchema.path('username').validate(function(username) {
 	// if you are authenticating by any of the oauth strategies, don't validate
@@ -73,28 +69,28 @@ UserSchema.path('username').validate(function(username) {
 	return username.length;
 }, 'Username cannot be blank');
 
-UserSchema.path('hashed_password').validate(function(hashed_password) {
-	// if you are authenticating by any of the oauth strategies, don't validate
-	if (this.provider != 'local') {
-		return true;
-	}
-	return hashed_password.length;
-}, 'Password cannot be blank');
+UserSchema.path('provider').validate(function(provider) {
 
+	// validate presence of password. can't do that in the password validator
+	// below because it's not run when there's no value (and it can be null,
+	// if auth strategy is not local. so do it here, invalidate password if
+	// necessary but return true so provider passes.
+	if (this.isNew && provider == 'local') {
+		if (!this._password) {
+			this.invalidate('password', 'required');
+			return true;
+		}
+	}
+}, null);
 
-/**
- * Pre-save hook
- */
-UserSchema.pre('save', function(next) {
-	if (!this.isNew) {
-		return next();
+UserSchema.path('passwordHash').validate(function() {
+	// here we check the length. remember that the virtual _password field is
+	// the one that triggers the hashing.
+	if (this.isNew && this._password && !validator.isLength(this._password, 6)) {
+		this.invalidate('password', 'must be at least 6 characters.');
 	}
-	if (!validatePresenceOf(this.password) && this.provider == 'local') {
-		next(new Error('Invalid password'));
-	} else {
-		next();
-	}
-});
+}, null);
+
 
 /**
  * Methods
@@ -109,7 +105,7 @@ UserSchema.methods = {
 	 * @api public
 	 */
 	authenticate: function(plainText) {
-		return this.encryptPassword(plainText) === this.hashed_password;
+		return this.encryptPassword(plainText) === this.passwordHash;
 	},
 
 	/**

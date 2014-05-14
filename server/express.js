@@ -12,6 +12,7 @@ var gracefulExit = require('express-graceful-exit');
 var writeable = require('./modules/writeable');
 var asset = require('./middleware/asset');
 var webCtrl = require('./controllers/web');
+var apiCtrl = require('./controllers/api');
 
 module.exports = function(app, config, passport) {
 
@@ -87,8 +88,14 @@ module.exports = function(app, config, passport) {
 	// connect flash for flash messages
 	app.use(flash());
 
+	// api pre-checks
+//	app.use(apiCtrl.checkApiContentType);
+
 	// routes should be at the last (pretty much)
 	app.use(app.router);
+
+	// api errors
+	app.use(apiCtrl.handleParseError);
 
 	// error logger comes at the very last
 	app.use(expressWinston.errorLogger({

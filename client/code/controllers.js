@@ -64,49 +64,52 @@ ctrl.controller('AppCtrl', function($scope, $location, $modal) {
 });
 
 
-ctrl.controller('LoginCtrl', function($scope, UserResource) {
+ctrl.controller('LoginCtrl', function($scope, $modalInstance, UserResource) {
 
 	$scope.registering = false;
 	$scope.loginUser = {};
 	$scope.registerUser = {};
+	$scope.message = null;
+	$scope.error = null;
 	$scope.errors = {};
 
-	var validEmail = function(email) {
-		var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-		return re.test(email);
+	var handleErrors = function(response) {
+		$scope.message = null;
+		$scope.errors = {};
+		$scope.error = null;
+		if (response.data.errors) {
+			_.each(response.data.errors, function(err) {
+				$scope.errors[err.field] = err.message;
+			});
+		}
+		if (response.data.error) {
+			$scope.error = response.data.error;
+		}
 	};
 
-	$scope.login = function(email, password) {
-		if (!validEmail(email)) {
-			return $scope.error = 'You must provide a valid email address.';
-		}
+	$scope.login = function() {
+		UserResource.login($scope.loginUser, function(user) {
+			$scope.errors = {};
+			$scope.error = null;
+			$modalInstance.$close();
+		}, handleErrors);
 	};
 
 	$scope.register = function() {
 
-		UserResource.register($scope.registerUser, function(a, b, c) {
-			console.log(a);
-		}, function(error) {
-			if (error.status == 422) { // validation error
-				$scope.errors = {};
-				_.each(error.data.errors, function(err) {
-					$scope.errors[err.field] = err.message;
-				});
-			}
-		});
-
-		/*
-		if (!validEmail(email)) {
-			return $scope.error = 'You must provide a valid email address.';
-		}
-		if (password1 != password2) {
-			return $scope.error = 'Sorry, passwords don\'t match.';
-		}*/
+		UserResource.register($scope.registerUser, function() {
+			$scope.errors = {};
+			$scope.error = null;
+			$scope.message = 'Registration successful. You can now login.';
+			$scope.registering = !$scope.registering;
+		}, handleErrors);
 	};
 
 	$scope.swap = function() {
 		$scope.registering = !$scope.registering;
+		$scope.message = null;
 		$scope.errors = {};
+		$scope.error = null;
 	};
 
 });

@@ -17,6 +17,7 @@ module.exports = function(app, config, passport, auth) {
 	// JSON API
 	var api = require('./controllers/api');
 	app.post('/api/users', api.userCreate);
+	app.post('/api/users/login', api.userLogin);
 
 	// JSON API (mock)
 	var apiMock = require('./controllers/api-mock');

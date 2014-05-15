@@ -17,12 +17,12 @@
 		hr.padder-top
 
 		div(ng-hide="registering")
-			h1 Or, with your Email:
+			h1 Or, with your account:
 			form.form-horizontal(role='form')
 				.form-group
-					label.col-sm-4.control-label Email
+					label.col-sm-4.control-label Username
 					.col-sm-6
-						input.form-control(ng-model="loginUser.email", ng-required)
+						input.form-control(ng-model="loginUser.username", ng-required)
 				.form-group
 					label.col-sm-4.control-label Password
 					.col-sm-6
@@ -51,6 +51,9 @@
 		div.alert.alert-danger(ng-show="errors.password")
 			i.fa.fa-exclamation-triangle.space-right
 			| {{ errors.password }}
+		div.alert.alert-danger(ng-show="error")
+			i.fa.fa-exclamation-triangle.space-right
+			| {{ error }}
 		div.alert.alert-success(ng-show="message")
 			i.fa.fa-info-circle.space-right
 			| {{ message }}

@@ -18,30 +18,49 @@ exports.userCreate = function(req, res) {
 		logger.info('[api|user:create] Validations passed, checking for existing user.');
 		User.findOne({ email: newUser.email }).exec(function(err, user) {
 			if (err) {
-				logger.error('[api|user:create] Error finding user with email "%s": ', newUser.email, err);
+				logger.error('[api|user:create] Error finding user with email "%s": %s', newUser.email, err);
 				return fail(res, err);
 			}
 			if (!user) {
 				newUser.save(function(err) {
 					if (err) {
-						logger.error('[api|user:create] Error saving user "%s": ', newUser.email, err);
+						logger.error('[api|user:create] Error saving user "%s": %s', newUser.email, err);
 						return fail(res, err, 500);
 					}
-
-					logger.info('[api|user:create] Success, logging user "%s" in.', newUser.email);
-					req.logIn(newUser, function(err) {
-						if (err) {
-							logger.error('[api|user:create] Error logging in user "%s": ', newUser.email, err);
-							return fail(res, err, 500);
-						}
-						return success(res, _.omit(newUser, 'passwordHash', 'salt'), 201);
-					});
+					logger.info('[api|user:create] Success!');
+					return success(res, _.omit(newUser, 'passwordHash', 'salt'), 201);
 				});
 
 			} else {
 				logger.warn('[api|user:create] User "%s" already in database, aborting.', newUser.email);
 				return fail(res, 'User with email "' + newUser.email + '" already exists.', 409);
 			}
+		});
+	});
+};
+
+exports.userLogin = function(req, res) {
+
+	if (!req.body.username || !req.body.password) {
+		logger.warn('[api|user:login] Ignoring empty login request.');
+		return fail(res, 'You must supply a username and password.', 400)
+	}
+	User.findOne({ username: req.body.username }).exec(function(err, user) {
+		if (err) {
+			logger.error('[api|user:login] Error finding user with email "%s": %s', req.body.username, err);
+			return fail(res, err, 500);
+		}
+		if (!user || user.authenticate(req.body.password)) {
+			logger.warn('[api|user:login] Login denied for user "%s" (%s).', req.body.username, user ? 'password' : 'username');
+			return fail(res, 'Wrong username or password.', 401);
+		}
+		req.logIn(user, function(err) {
+			if (err) {
+				logger.error('[api|user:login] Error logging in user "%s": %s', user.email, err);
+				return fail(res, err, 500);
+			}
+			logger.info('[api|user:login] User "%s" successfully logged in.', user.email);
+			return success(res, _.omit(user, 'passwordHash', 'salt'), 200);
 		});
 	});
 };

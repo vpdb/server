@@ -6,19 +6,19 @@ var validator = require('validator');
 var config = require('../modules/settings').current;
 var Schema = mongoose.Schema;
 
-/**
- * User Schema
- */
+// schema
 var fields = {
-	name: String,
-	email: { type: String, lowercase: true, unique: true },
-	username: String,
-	thumb: String,
-	provider: { type: String, required: true },
+	name:         { type: String, required: true }, // display name, equals username when locally registering
+	username:     { type: String, unique: true },
+	email:        { type: String, lowercase: true, unique: true },
+	provider:     { type: String, required: true },
 	passwordHash: { type: String },
-	salt: { type: String },
-	active: { type: Boolean, default: true, required: true }
+	salt:         { type: String },
+	thumb:        { type: String },
+	active:       { type: Boolean, required: true, default: true }
 };
+
+// provider data fields
 if (config.vpdb.passport.github.enabled) {
 	fields['github'] = {};
 }
@@ -29,9 +29,7 @@ _.each(config.vpdb.passport.ipboard, function(ipbConfig) {
 });
 var UserSchema = new Schema(fields);
 
-/**
- * Virtuals
- */
+// virtuals
 UserSchema.virtual('password')
 	.set(function(password) {
 		this._password = password;
@@ -42,16 +40,14 @@ UserSchema.virtual('password')
 		return this._password
 	});
 
-/**
- * Validations
- */
+// validations
 UserSchema.path('name').validate(function(name) {
 	// if you are authenticating by any of the oauth strategies, don't validate
 	if (this.provider != 'local') {
 		return true;
 	}
-	return name.length;
-}, 'Name cannot be blank');
+	return validator.isLength(name, 3, 30);
+}, 'Name must be between 3 and 30 characters.');
 
 UserSchema.path('email').validate(function(email) {
 	// if you are authenticating by any of the oauth strategies, don't validate
@@ -66,20 +62,29 @@ UserSchema.path('username').validate(function(username) {
 	if (this.provider != 'local') {
 		return true;
 	}
-	return username.length;
-}, 'Username cannot be blank');
+	if (!validator.isAlphanumeric(username)) {
+		this.invalidate('username', 'Username must only contain alpha-numeric characters.');
+	}
+	if (!validator.isLength(username, 3, 30)) {
+		this.invalidate('username', 'Length of username must be between 3 and 30 characters.');
+	}
+}, null);
 
 UserSchema.path('provider').validate(function(provider) {
 
 	// validate presence of password. can't do that in the password validator
 	// below because it's not run when there's no value (and it can be null,
-	// if auth strategy is not local. so do it here, invalidate password if
+	// if auth strategy is not local). so do it here, invalidate password if
 	// necessary but return true so provider passes.
 	if (this.isNew && provider == 'local') {
 		if (!this._password) {
-			this.invalidate('password', 'required');
-			return true;
+			this.invalidate('password', 'Password is required.');
 		}
+		// idem for username
+		if (!this.username) {
+			this.invalidate('username', 'Username is required.');
+		}
+		return true;
 	}
 }, null);
 
@@ -87,14 +92,12 @@ UserSchema.path('passwordHash').validate(function() {
 	// here we check the length. remember that the virtual _password field is
 	// the one that triggers the hashing.
 	if (this.isNew && this._password && !validator.isLength(this._password, 6)) {
-		this.invalidate('password', 'must be at least 6 characters.');
+		this.invalidate('password', 'Password must be at least 6 characters.');
 	}
 }, null);
 
 
-/**
- * Methods
- */
+// methods
 UserSchema.methods = {
 
 	/**

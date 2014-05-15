@@ -6,6 +6,7 @@ var app = angular.module('vpdb', [
 	'ngRoute',
 	'ngAnimate',
 	'ngSanitize',
+	'ngResource',
 	'ui.bootstrap',
 	'angulartics',
 	'angulartics.google.analytics',

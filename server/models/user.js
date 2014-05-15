@@ -88,9 +88,12 @@ UserSchema.path('provider').validate(function(provider) {
 		if (!this._password) {
 			this.invalidate('password', 'Password is required.');
 		}
-		// idem for username
+		// idem for username and email
 		if (!this.username) {
 			this.invalidate('username', 'Username is required.');
+		}
+		if (!this.email) {
+			this.invalidate('email', 'Email is required.');
 		}
 		return true;
 	}

@@ -297,7 +297,9 @@ ul.dropdown-menu table
 	label.control-label
 		font-size font-size-standard
 		text-transform uppercase
-
+	&.error .form-control
+		border-style solid
+		border-width 1px
 
 // :input
 .input-group
@@ -823,7 +825,9 @@ section.footer
 			margin 0 -20px
 			padding 5px 20px
 			border-radius 0
-			text-align: center;
+			text-align center
+			& + .alert
+				margin-top 10px
 
 		.modal-footer
 			border-radius 0 0 3px 3px
@@ -842,6 +846,8 @@ section.footer
 		font-size 140px
 	a
 		font-family font-content
+	p
+		margin 0 0 30px
 
 
 

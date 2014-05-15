@@ -64,9 +64,12 @@ ctrl.controller('AppCtrl', function($scope, $location, $modal) {
 });
 
 
-ctrl.controller('LoginCtrl', function($scope) {
+ctrl.controller('LoginCtrl', function($scope, UserResource) {
 
 	$scope.registering = false;
+	$scope.loginUser = {};
+	$scope.registerUser = {};
+	$scope.errors = {};
 
 	var validEmail = function(email) {
 		var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -79,18 +82,31 @@ ctrl.controller('LoginCtrl', function($scope) {
 		}
 	};
 
-	$scope.register = function(email, password1, password2) {
+	$scope.register = function() {
+
+		UserResource.register($scope.registerUser, function(a, b, c) {
+			console.log(a);
+		}, function(error) {
+			if (error.status == 422) { // validation error
+				$scope.errors = {};
+				_.each(error.data.errors, function(err) {
+					$scope.errors[err.field] = err.message;
+				});
+			}
+		});
+
+		/*
 		if (!validEmail(email)) {
 			return $scope.error = 'You must provide a valid email address.';
 		}
 		if (password1 != password2) {
 			return $scope.error = 'Sorry, passwords don\'t match.';
-		}
+		}*/
 	};
 
 	$scope.swap = function() {
 		$scope.registering = !$scope.registering;
-		$scope.error = '';
+		$scope.errors = {};
 	};
 
 });

@@ -79,11 +79,11 @@ function fail(res, err, code) {
 	res.setHeader('Content-Type', 'application/json');
 	if (err.errors) {
 		var arr = [];
-		_.each(err.errors, function(e, key) {
+		_.each(err.errors, function(error) {
 			arr.push({
-				message: e.message,
-				field: e.path,
-				value: e.value
+				message: error.message,
+				field: error.path,
+				value: error.value
 			});
 		});
 		res.status(code).json({ errors: arr });

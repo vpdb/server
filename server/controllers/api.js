@@ -13,7 +13,7 @@ exports.userCreate = function(req, res) {
 	newUser.validate(function(err) {
 		if (err) {
 			logger.warn('[api|user:create] Validations failed: %s', util.inspect(_.map(err.errors, function(value, key, list) { return key; })));
-			return fail(res, err.errors, 422);
+			return fail(res, err, 422);
 		}
 		logger.info('[api|user:create] Validations passed, checking for existing user.');
 		User.findOne({ email: newUser.email }).exec(function(err, user) {
@@ -34,7 +34,7 @@ exports.userCreate = function(req, res) {
 							logger.error('[api|user:create] Error logging in user "%s": ', newUser.email, err);
 							return fail(res, err, 500);
 						}
-						return success(res, newUser, 201);
+						return success(res, _.omit(newUser, 'passwordHash', 'salt'), 201);
 					});
 				});
 
@@ -77,5 +77,17 @@ function fail(res, err, code) {
 		code = 500;
 	}
 	res.setHeader('Content-Type', 'application/json');
-	res.status(code).json({ error: err instanceof Error ? err.message : err });
+	if (err.errors) {
+		var arr = [];
+		_.each(err.errors, function(e, key) {
+			arr.push({
+				message: e.message,
+				field: e.path,
+				value: e.value
+			});
+		});
+		res.status(code).json({ errors: arr });
+	} else {
+		res.status(code).json({ error: err instanceof Error ? err.message : err });
+	}
 }

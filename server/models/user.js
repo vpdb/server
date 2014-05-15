@@ -40,6 +40,14 @@ UserSchema.virtual('password')
 		return this._password
 	});
 
+// middleware
+UserSchema.pre('validate', function(next) {
+	if (this.isNew && !this.name && this.username) {
+		this.name = this.username;
+	}
+	next();
+});
+
 // validations
 UserSchema.path('name').validate(function(name) {
 	// if you are authenticating by any of the oauth strategies, don't validate

@@ -91,7 +91,7 @@ ctrl.controller('LoginCtrl', function($scope, $modalInstance, UserResource) {
 		UserResource.login($scope.loginUser, function(user) {
 			$scope.errors = {};
 			$scope.error = null;
-			$modalInstance.$close();
+			$modalInstance.close();
 		}, handleErrors);
 	};
 

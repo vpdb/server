@@ -50,7 +50,7 @@ exports.userLogin = function(req, res) {
 			logger.error('[api|user:login] Error finding user with email "%s": %s', req.body.username, err);
 			return fail(res, err, 500);
 		}
-		if (!user || user.authenticate(req.body.password)) {
+		if (!user || !user.authenticate(req.body.password)) {
 			logger.warn('[api|user:login] Login denied for user "%s" (%s).', req.body.username, user ? 'password' : 'username');
 			return fail(res, 'Wrong username or password.', 401);
 		}
@@ -60,7 +60,7 @@ exports.userLogin = function(req, res) {
 				return fail(res, err, 500);
 			}
 			logger.info('[api|user:login] User "%s" successfully logged in.', user.email);
-			return success(res, _.omit(user, 'passwordHash', 'salt'), 200);
+			return success(res, _.pick(user, 'username', 'email', 'active', 'thumb'), 200);
 		});
 	});
 };

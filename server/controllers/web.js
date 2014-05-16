@@ -24,6 +24,10 @@ exports.params = function(req) {
 					url: '/auth/' + ipbConfig.id
 				};
 			})
+		},
+		user: {
+			isAuthenticated: req.isAuthenticated(),
+			obj: req.isAuthenticated() ? req.user : null
 		}
 	};
 };

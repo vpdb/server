@@ -28,39 +28,6 @@ exports.session = function(req, res) {
 	res.redirect('/');
 };
 
-/**
- * Create user
- */
-exports.create = function(req, res) {
-	var newUser = new User(req.body);
-	newUser.provider = 'local';
-	User
-		.findOne({ email: newUser.email })
-		.exec(function(err, user) {
-			if (err) {
-				return next(err);
-			}
-			if (!user) {
-				newUser.save(function(err) {
-					if (err) {
-						logger.error('[ctrl|users] Error saving user: %s', err);
-						return res.render('users/signup', { errors: err.errors, user: newUser });
-					}
-
-					req.logIn(newUser, function(err) {
-						if (err) {
-							return next(err);
-						}
-						return res.redirect('/');
-					})
-				});
-			} else {
-				return res.render('users/signup', { errors: [
-					{ "message": "email already registered" }
-				], user: newUser });
-			}
-		});
-};
 
 /**
  *  Show profile

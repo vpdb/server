@@ -20,25 +20,23 @@ block body
 					a(href="/games") Games
 
 			ul.nav.navbar-nav.navbar-right
-				- if (!req.isAuthenticated())
-					li
-						a(ng-click="login()")
-							i.fa.fa-lock.space-right-2x
-							span.space-right Login
-				- else
-					li
-						a.space-right.dropdown-toggle(data-toggle="dropdown")
-							span.space-right-2x=req.user.name
-							i.fa.fa-angle-down
-						ul.dropdown-menu(role="menu")
-							li
-								a(href="/logout", title="logout", target="_self")
-									i.icon.icon-exit
-									span.space-left-abs Logout
-							li
-								a
-									i.fa.fa-user.space-right
-									span.space-left-abs Profile
+				li(ng-hide="user.isAuthenticated")
+					a(ng-click="login()")
+						i.fa.fa-lock.space-right-2x
+						span.space-right Login
+				li(ng-show="user.isAuthenticated")
+					a.space-right.dropdown-toggle(data-toggle="dropdown")
+						span.space-right-2x {{ user.obj.username }}
+						i.fa.fa-angle-down
+					ul.dropdown-menu(role="menu")
+						li
+							a(ng-click="logout()")
+								i.icon.icon-exit
+								span.space-left-abs Logout
+						li
+							a
+								i.fa.fa-user.space-right
+								span.space-left-abs Profile
 
 				//li.ng-cloak
 					.btn-group.btn-group-flex

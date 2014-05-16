@@ -5,7 +5,7 @@
 var ctrl = angular.module('vpdb.controllers', []);
 
 
-ctrl.controller('AppCtrl', function($scope, $location, $modal) {
+ctrl.controller('AppCtrl', function($scope, $rootScope, $location, $modal, UserResource) {
 
 	$scope.menu = 'home';
 	$scope.downloadsPinned = false;
@@ -61,10 +61,17 @@ ctrl.controller('AppCtrl', function($scope, $location, $modal) {
 			controller: 'LoginCtrl'
 		});
 	};
+
+	$scope.logout = function() {
+		UserResource.logout(function() {
+			$rootScope.user.isAuthenticated = false;
+			$rootScope.user.obj = null;
+		});
+	}
 });
 
 
-ctrl.controller('LoginCtrl', function($scope, $modalInstance, UserResource) {
+ctrl.controller('LoginCtrl', function($scope, $rootScope, $modalInstance, UserResource) {
 
 	$scope.registering = false;
 	$scope.loginUser = {};
@@ -92,6 +99,8 @@ ctrl.controller('LoginCtrl', function($scope, $modalInstance, UserResource) {
 			$scope.errors = {};
 			$scope.error = null;
 			$modalInstance.close();
+			$rootScope.user.isAuthenticated = true;
+			$rootScope.user.obj = user;
 		}, handleErrors);
 	};
 

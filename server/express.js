@@ -12,7 +12,7 @@ var gracefulExit = require('express-graceful-exit');
 var writeable = require('./modules/writeable');
 var asset = require('./middleware/asset');
 var webCtrl = require('./controllers/web');
-var apiCtrl = require('./controllers/api');
+var apiCtrl = require('./controllers/api/common');
 
 module.exports = function(app, config, passport) {
 

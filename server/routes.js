@@ -15,9 +15,10 @@ module.exports = function(app, config, passport, auth) {
 	app.get('/partials/modals/:name', web.modals);
 
 	// JSON API
-	var api = require('./controllers/api');
-	app.post('/api/users', api.userCreate);
-	app.post('/api/users/login', api.userLogin);
+	var userApi = require('./controllers/api/users');
+	app.post('/api/users', userApi.create);
+	app.post('/api/users/login', userApi.login);
+	app.post('/api/users/logout', userApi.logout);
 
 	// JSON API (mock)
 	var apiMock = require('./controllers/api-mock');
@@ -32,7 +33,6 @@ module.exports = function(app, config, passport, auth) {
 	// user routes
 	var users = require('./controllers/users');
 	app.get('/logout', users.logout);
-	app.post('/users', users.create);
 	app.post('/users/session', passport.authenticate('local', { failureRedirect: '/', failureFlash: 'Invalid email or password.' }), users.session);
 	app.get('/users/:userId', users.show);
 

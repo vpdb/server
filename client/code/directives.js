@@ -4,6 +4,15 @@
 
 var directives = angular.module('vpdb.directives', []);
 
+directives.directive('user', function($rootScope) {
+	return {
+		restrict: 'A',
+		link: function(scope, element, attrs) {
+			$rootScope.user = JSON.parse(attrs.user);
+		}
+	}
+});
+
 directives.directive('ratingbox', function($parse) {
 	return {
 		restrict: 'C',

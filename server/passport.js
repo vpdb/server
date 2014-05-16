@@ -1,9 +1,6 @@
 var _ = require('underscore');
-var util = require('util');
 var logger = require('winston');
-var request = require('request');
 var mongoose = require('mongoose');
-var LocalStrategy = require('passport-local').Strategy;
 var GitHubStrategy = require('passport-github').Strategy;
 var IPBoardStrategy = require('./modules/passport-ipboard').Strategy;
 
@@ -119,27 +116,4 @@ module.exports = function(passport, config) {
 			);
 		}
 	});
-
-	// use local strategy
-	passport.use(new LocalStrategy({
-			usernameField: 'email',
-			passwordField: 'password'
-		},
-		function(email, password, done) {
-			User.findOne({ email: email }, function(err, user) {
-				if (err) {
-					return done(err);
-				}
-				if (!user) {
-					return done(null, false, { message: 'Unknown user' });
-				}
-				if (!user.authenticate(password)) {
-					return done(null, false, { message: 'Invalid password' });
-				}
-				return done(null, user);
-			});
-		}
-	));
-
-
 };

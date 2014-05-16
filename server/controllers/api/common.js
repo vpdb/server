@@ -6,7 +6,7 @@ exports.success = function(res, result, code) {
 		code = 200;
 	}
 	res.setHeader('Content-Type', 'application/json');
-	res.status(code).json(_.omit(result, '__v'));
+	res.status(code).json(result);
 };
 
 exports.fail = function(res, err, code) {

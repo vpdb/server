@@ -6,6 +6,11 @@ var mongoose = require('mongoose');
 var User = mongoose.model('User');
 var api = require('./common');
 
+var fields = {
+	pub: ['username', 'email', 'active', 'thumb'],
+	adm: ['roles']
+};
+
 exports.create = function(req, res) {
 
 	var newUser = new User(req.body);
@@ -23,15 +28,22 @@ exports.create = function(req, res) {
 				return api.fail(res, err);
 			}
 			if (!user) {
-				newUser.save(function(err) {
+				// check if it's the first user
+				User.count(function(err, count) {
 					if (err) {
-						logger.error('[api|user:create] Error saving user "%s": %s', newUser.email, err);
+						logger.error('[api|user:create] Error counting users: %s', err);
 						return api.fail(res, err, 500);
 					}
-					logger.info('[api|user:create] Success!');
-					return api.success(res, _.omit(newUser, 'passwordHash', 'salt'), 201);
+					newUser.roles = count ? [ 'member' ] : [ 'god' ];
+					newUser.save(function(err) {
+						if (err) {
+							logger.error('[api|user:create] Error saving user "%s": %s', newUser.email, err);
+							return api.fail(res, err, 500);
+						}
+						logger.info('[api|user:create] Success!');
+						return api.success(res, _.omit(newUser, 'passwordHash', 'salt'), 201);
+					});
 				});
-
 			} else {
 				logger.warn('[api|user:create] User "%s" already in database, aborting.', newUser.email);
 				return api.fail(res, 'User with email "' + newUser.email + '" already exists.', 409);
@@ -61,8 +73,22 @@ exports.login = function(req, res) {
 				return api.fail(res, err, 500);
 			}
 			logger.info('[api|user:login] User "%s" successfully logged in.', user.email);
-			return api.success(res, _.pick(user, 'username', 'email', 'active', 'thumb'), 200);
+			return api.success(res, _.pick(user, fields.pub), 200);
 		});
+	});
+};
+
+exports.list = function(req, res) {
+	User.find({}, function(err, users) {
+		if (err) {
+			logger.error('[api|user:list] Error: %s', err);
+			return api.fail(res, err, 500);
+		}
+		// reduce
+		users = _.map(users, function(user) {
+			return _.pick(user, fields.pub);
+		});
+		api.success(res, users);
 	});
 };
 

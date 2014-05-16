@@ -32,6 +32,7 @@ serverDomain.run(function() {
 
 	// bootstrap db connection
 	mongoose.connect(config.vpdb.db, { server: { socketOptions: { keepAlive: 1 } } });
+	logger.info('[app] Database connected to %s.', config.vpdb.db);
 
 	// bootstrap models
 	var modelsPath = path.resolve(__dirname, 'server/models');
@@ -39,20 +40,29 @@ serverDomain.run(function() {
 		require(modelsPath + '/' + file);
 	});
 
-	// bootstrap passport config
-	require('./server/passport')(passport, config);
+	// load ACLs
+	require('./server/acl').init(function(err, acl) {
 
-	// express settings
-	require('./server/express')(app, config, passport);
-
-	// bootstrap routes
-	require('./server/routes')(app, config, passport, auth);
-
-	app.listen(app.get('port'), app.get('ipaddress'), function() {
-		logger.info('[app] Express server listening at ' + app.get('ipaddress') + ':' + app.get('port'));
-		if (process.send) {
-			process.send('online');
+		if (err) {
+			return logger.error('[app] Aborting.');
 		}
+
+		// bootstrap passport config
+		require('./server/passport')(passport, config);
+
+		// express settings
+		require('./server/express')(app, config, passport);
+
+		// bootstrap routes
+		require('./server/routes')(app, config, passport, auth, acl);
+
+		app.listen(app.get('port'), app.get('ipaddress'), function() {
+			logger.info('[app] Express server listening at %s:%d', app.get('ipaddress'), app.get('port'));
+			if (process.send) {
+				process.send('online');
+			}
+		});
+
 	});
 });
 

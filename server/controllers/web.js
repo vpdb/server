@@ -17,7 +17,7 @@ exports.params = function(req) {
 		auth: {
 			local: true,
 			github: config.vpdb.passport.github.enabled,
-			ipboard: _.map(config.vpdb.passport.ipboard, function(ipbConfig) {
+			ipboard: _.map(_.filter(config.vpdb.passport.ipboard, function(ipbConfig) { return ipbConfig.enabled }), function(ipbConfig) {
 				return {
 					name: ipbConfig.name,
 					icon: ipbConfig.icon,

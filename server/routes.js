@@ -1,6 +1,6 @@
 var _ = require('underscore');
 
-module.exports = function(app, config, passport, auth) {
+module.exports = function(app, config, passport, auth, acl) {
 
 	var web = require('./controllers/web');
 
@@ -16,6 +16,7 @@ module.exports = function(app, config, passport, auth) {
 
 	// JSON API
 	var userApi = require('./controllers/api/users');
+	app.get('/api/users', userApi.list);
 	app.post('/api/users', userApi.create);
 	app.post('/api/users/login', userApi.login);
 	app.post('/api/users/logout', userApi.logout);

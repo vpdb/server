@@ -1,5 +1,6 @@
 var _ = require('underscore');
 var crypto = require('crypto');
+var logger = require('winston');
 var mongoose = require('mongoose');
 var validator = require('validator');
 
@@ -11,9 +12,10 @@ var fields = {
 	name:         { type: String, required: true }, // display name, equals username when locally registering
 	username:     { type: String, unique: true },
 	email:        { type: String, lowercase: true, unique: true },
+	roles:        [ String ],
 	provider:     { type: String, required: true },
 	passwordHash: { type: String },
-	salt:         { type: String },
+	passwordSalt: { type: String },
 	thumb:        { type: String },
 	active:       { type: Boolean, required: true, default: true }
 };
@@ -33,7 +35,7 @@ var UserSchema = new Schema(fields);
 UserSchema.virtual('password')
 	.set(function(password) {
 		this._password = password;
-		this.salt = this.makeSalt();
+		this.passwordSalt = this.makeSalt();
 		this.passwordHash = this.encryptPassword(password);
 	})
 	.get(function() {
@@ -143,8 +145,9 @@ UserSchema.methods = {
 		if (!password) {
 			return '';
 		}
-		return crypto.createHmac('sha1', this.salt).update(password).digest('hex');
+		return crypto.createHmac('sha1', this.passwordSalt).update(password).digest('hex');
 	}
 };
 
 mongoose.model('User', UserSchema);
+logger.info('[model] Model "user" registrated.');

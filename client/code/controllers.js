@@ -109,6 +109,7 @@ ctrl.controller('LoginCtrl', function($scope, $rootScope, $modalInstance, UserRe
 		UserResource.register($scope.registerUser, function() {
 			$scope.errors = {};
 			$scope.error = null;
+			$scope.registerUser = {};
 			$scope.message = 'Registration successful. You can now login.';
 			$scope.registering = !$scope.registering;
 		}, handleErrors);

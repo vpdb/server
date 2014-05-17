@@ -1,11 +1,13 @@
-ctrl.controller('GameListController', function($scope, $http, $location, $templateCache, $route) {
+ctrl.controller('GameListController', function($scope, $rootScope, $http, $location, $templateCache, $route) {
+
+	$scope.theme('dark');
+	$scope.setMenu('games');
 
 	$scope.filterDecades = [];
 	$scope.filterManufacturer = [];
 	$scope.sort = 'name';
-	$scope.sortReverse = false;
 
-	$scope.setMenu('games');
+	$scope.sortReverse = false;
 
 	// preload partials
 	_.each(['compact', 'extended', 'list'], function(view) {

@@ -1,6 +1,6 @@
-ctrl.controller('AdminUserCtrl', function($scope, $rootScope) {
+ctrl.controller('AdminUserCtrl', function($scope) {
 
-	$rootScope.theme = 'theme-light';
+	$scope.theme('light');
 	$scope.setMenu('admin');
 });
 

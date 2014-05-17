@@ -1,12 +1,13 @@
 ctrl.controller('HomeController', function($scope, $http) {
 
+	$scope.theme('dark');
+	$scope.setMenu('home');
+
 	$scope.packs = [];
 	$scope.newReleases = [];
 	$scope.updatedReleases = [];
 	$scope.feed = [];
 	$scope.users = [];
-
-	$scope.setMenu('home');
 
 	$http({
 		method: 'GET',

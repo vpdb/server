@@ -7,7 +7,7 @@ var ctrl = angular.module('vpdb.controllers', []);
 
 ctrl.controller('AppCtrl', function($scope, $rootScope, $location, $modal, UserResource) {
 
-	$rootScope.theme = 'theme-dark';
+	$rootScope.themeName = 'theme-dark';
 	$scope.menu = 'home';
 	$scope.downloadsPinned = false;
 	$scope.pinnedDownloads = {};
@@ -21,6 +21,10 @@ ctrl.controller('AppCtrl', function($scope, $rootScope, $location, $modal, UserR
 
 	$scope.setMenu = function(menu) {
 		$scope.menu = menu;
+	};
+
+	$scope.theme = function(theme) {
+		$rootScope.themeName = 'theme-' + theme;
 	};
 
 	$scope.download = function(download, info) {

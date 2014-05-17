@@ -1,8 +1,10 @@
 ctrl.controller('GameController', function($scope, $http, $routeParams, $modal, $log) {
 
+	$scope.theme('dark');
+	$scope.setMenu('games');
+
 	$scope.gameId = $routeParams.id;
 	$scope.pageLoading = true;
-	$scope.setMenu('games');
 
 	$http({
 		method: 'GET',

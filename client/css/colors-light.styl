@@ -39,7 +39,6 @@ body.theme-light
 		&.fade-after-load
 			background-color color-darkest-inv
 
-
 	.btn
 		&.btn-default, &.btn-primary
 			color color-light-inv
@@ -59,6 +58,20 @@ body.theme-light
 				background-color color-primary-light
 				box-shadow 0 0 3px 1px rgba(black, 0.3)
 
+
+	// :table
+	table.table
+		tr > th
+			color color-lighter-inv
+		&.table-striped tr
+			&:nth-child(odd) > td
+				background-color color-dark
+				&.nostripe
+					background-color transparent
+		&.table-selectable tr
+			&:hover
+				td
+					color color-lightest-inv
 
 	.container.container-topmost
 		background-image url('/images/background_white.png')

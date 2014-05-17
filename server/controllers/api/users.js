@@ -6,7 +6,7 @@ var User = require('mongoose').model('User');
 var api = require('./common');
 
 exports.fields = {
-	pub: ['username', 'thumb'],
+	pub: ['name', 'username', 'thumb'],
 	adm: ['email', 'active', 'roles']
 };
 
@@ -79,14 +79,17 @@ exports.login = function(req, res) {
 
 exports.list = function(req, res) {
 	api.auth(req, res, 'users', 'list', function() {
-		User.find({}, function(err, users) {
+		User.find({}, '-passwordHash -passwordSalt -__v', function(err, users) {
 			if (err) {
 				logger.error('[api|user:list] Error: %s', err);
 				return api.fail(res, err, 500);
 			}
 			// reduce
 			users = _.map(users, function(user) {
-				return _.pick(user, _.union(exports.fields.pub, exports.fields.adm));
+				if (!_.isEmpty(user.github)) {
+					user.github = _.pick(user.github, 'id', 'login', 'email', 'avatar_url', 'html_url');
+				}
+				return user;
 			});
 			api.success(res, users);
 		});

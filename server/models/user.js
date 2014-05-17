@@ -44,8 +44,19 @@ UserSchema.virtual('password')
 
 // middleware
 UserSchema.pre('validate', function(next) {
-	if (this.isNew && !this.name && this.username) {
-		this.name = this.username;
+	var user = this.toJSON();
+	if (this.isNew && !this.name) {
+		if (user.username) {
+			this.name = user.username;
+		}
+		if (!_.isEmpty(user.github)) {
+			this.name = user.github.name ? user.github.name : user.github.login;
+		}
+		_.each(config.vpdb.passport.ipboard, function(ipbConfig) {
+			if (!_.isEmpty(user[ipbConfig.id])) {
+				this.name = user[ipbConfig.id].displayName ? user[ipbConfig.id].displayName : user[ipbConfig.id].username;
+			}
+		}, this);
 	}
 	next();
 });

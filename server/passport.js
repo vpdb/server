@@ -105,7 +105,7 @@ module.exports = function(passport, config) {
 		if (ipbConfig.enabled) {
 
 			var callbackUrl = settings.publicUrl(config) + '/auth/' +  ipbConfig.id + '/callback';
-			logger.info('[passport|ipboard:' + ipbConfig.id + '] Enabling IP.Board authentication strategy for "%s" with callback %s.', ipbConfig.name, callbackUrl);
+			logger.info('[passport|ipboard:' + ipbConfig.id + '] Enabling IP.Board authentication strategy for "%s".', ipbConfig.name);
 			passport.use(new IPBoardStrategy({
 					name: ipbConfig.id,
 					baseURL: ipbConfig.baseURL,

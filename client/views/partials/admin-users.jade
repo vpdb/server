@@ -24,5 +24,6 @@
 		table.table.table-striped.table-selectable
 			tr(ng-repeat="user in users")
 				td {{ user.name }}
-				td {{ user.email}}
+				td {{ user.email }}
+				td {{ user.roles.join(' ') }}
 

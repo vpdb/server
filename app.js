@@ -10,7 +10,6 @@ var passport = require('passport');
 var mongoose = require('mongoose');
 
 var settings = require('./server/modules/settings');
-var auth = require('./server/middleware/authorization');
 
 var app, config;
 var serverDomain = domain.create();
@@ -41,7 +40,7 @@ serverDomain.run(function() {
 	});
 
 	// load ACLs
-	require('./server/acl').init(function(err, acl) {
+	require('./server/acl').init(function(err) {
 
 		if (err) {
 			return logger.error('[app] Aborting.');
@@ -54,7 +53,7 @@ serverDomain.run(function() {
 		require('./server/express')(app, config, passport);
 
 		// bootstrap routes
-		require('./server/routes')(app, config, passport, auth, acl);
+		require('./server/routes')(app, config, passport);
 
 		app.listen(app.get('port'), app.get('ipaddress'), function() {
 			logger.info('[app] Express server listening at %s:%d', app.get('ipaddress'), app.get('port'));

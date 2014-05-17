@@ -5,9 +5,9 @@ var logger = require('winston');
 var User = require('mongoose').model('User');
 var api = require('./common');
 
-var fields = {
-	pub: ['username', 'email', 'active', 'thumb'],
-	adm: ['roles']
+exports.fields = {
+	pub: ['username', 'thumb'],
+	adm: ['email', 'active', 'roles']
 };
 
 exports.create = function(req, res) {
@@ -72,7 +72,7 @@ exports.login = function(req, res) {
 				return api.fail(res, err, 500);
 			}
 			logger.info('[api|user:login] User "%s" successfully logged in.', user.email);
-			return api.success(res, _.pick(user, fields.pub), 200);
+			return api.success(res, _.pick(user, exports.fields.pub), 200);
 		});
 	});
 };
@@ -86,7 +86,7 @@ exports.list = function(req, res) {
 			}
 			// reduce
 			users = _.map(users, function(user) {
-				return _.pick(user, fields.pub);
+				return _.pick(user, _.union(exports.fields.pub, exports.fields.adm));
 			});
 			api.success(res, users);
 		});

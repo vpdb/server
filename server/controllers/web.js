@@ -1,9 +1,14 @@
 var _ = require('underscore');
-var assets = require('../config/assets');
-var config = require('./../modules/settings').current;
+var logger = require('winston');
 
-exports.params = function(req) {
-	return {
+var acl = require('../acl');
+var assets = require('../config/assets');
+var config = require('../modules/settings').current;
+var userApi = require('./api/users');
+
+var params = function(req, done) {
+
+	var params = {
 		layout: false,
 		deployment: process.env.APP_NAME,
 		environment: process.env.NODE_ENV || 'development',
@@ -27,23 +32,43 @@ exports.params = function(req) {
 		},
 		user: {
 			isAuthenticated: req.isAuthenticated(),
-			obj: req.isAuthenticated() ? req.user : null
+			obj: req.isAuthenticated() ? _.pick(req.user, _.union(userApi.fields.pub, userApi.fields.adm)) : null
 		}
 	};
+	if (req.isAuthenticated()) {
+		acl.allowedPermissions(req.user.email, [ 'users', 'content' ], function(err, permissions) {
+			if (err) {
+				logger.error('[webctrl] Error reading permissions for user "%s": %s', req.user.email, err);
+			} else {
+				params.user.permissions = permissions;
+			}
+			done(params);
+		})
+	} else {
+		done(params);
+	}
+
 };
 
 exports.index = function(req, res) {
-	res.render('index', exports.params(req));
+	params(req, function(params) {
+		res.render('index', params);
+	});
 };
 
 exports.partials = function(req, res) {
 	var name = req.params.name;
-	res.render('partials/' + name, exports.params(req));
+	params(req, function(params) {
+		res.render('partials/' + name, params);
+	});
+
 };
 
 exports.modals = function(req, res) {
 	var name = req.params.name;
-	res.render('partials/modals/' + name, exports.params(req));
+	params(req, function(params) {
+		res.render('partials/modals/' + name, params);
+	});
 };
 
 exports.four04 = function(req, res) {
@@ -51,6 +76,9 @@ exports.four04 = function(req, res) {
 		res.setHeader('Content-Type', 'application/json');
 		res.status(404).end(JSON.stringify({ error: 'Not found.' }));
 	} else {
-		res.status(404).render('404', _.extend(exports.params(req), { url: req.originalUrl, error: 'Not found' }));
+		params(req, function(params) {
+			res.status(404).render('404', _.extend(params, { url: req.originalUrl, error: 'Not found' }));
+		});
+
 	}
 };

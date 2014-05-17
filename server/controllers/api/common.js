@@ -12,21 +12,21 @@ exports.auth = function(req, res, resource, permission, next) {
 		resource();
 	} else {
 
-		var check = function(email) {
+		var checkAcl = function(email) {
 			acl.isAllowed(email, resource, permission, function(err, granted) {
 				if (err) {
 					logger.error('[api|common:auth] Error checking ACLs for user "%s": %s', email, err);
 					return exports.fail(res, err, 500);
 				}
 				if (granted) {
-					next(email);
+					next(email, acl);
 				} else {
 					exports.fail(res, { message: 'Access denied.' }, 403);
 				}
 			});
 		};
 		if (req.isAuthenticated()) {
-			check(req.user.email);
+			checkAcl(req.user.email);
 		} else {
 
 			// read basic auth params from header
@@ -56,7 +56,7 @@ exports.auth = function(req, res, resource, permission, next) {
 					logger.warn('[api|common:auth] Basic auth credentials denied for user "%s" (%s).', username, user ? 'password' : 'username');
 					return exports.fail(res, { message: 'Invalid credentials.' }, 401);
 				}
-				check(user.email);
+				checkAcl(user.email);
 			});
 		}
 	}

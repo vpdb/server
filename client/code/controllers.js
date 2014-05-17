@@ -60,31 +60,39 @@ ctrl.controller('AppCtrl', function($scope, $rootScope, $location, $modal, UserR
 		});
 	};
 
-	$scope.login = function() {
+	$rootScope.login = function() {
 		$modal.open({
 			templateUrl: 'partials/modals/auth',
 			controller: 'LoginCtrl'
 		});
 	};
 
-	$scope.logout = function() {
+	$rootScope.logout = function() {
 		UserResource.logout(function() {
 			$rootScope.user.isAuthenticated = false;
 			$rootScope.user.obj = null;
+			$rootScope.user.permissions = {};
 		});
 	};
 
-	$scope.hasPermission = function(resourcePermission) {
+
+	$rootScope.loggedIn = function(user) {
+		$rootScope.user.isAuthenticated = true;
+		$rootScope.user.obj = user;
+		$rootScope.user.permissions = user.permissions;
+		delete $rootScope.user.obj.permissions;
+	};
+
+	$rootScope.hasPermission = function(resourcePermission) {
 		var p = resourcePermission.split('/');
 		var resource = p[0];
 		var permission = p[1];
 		return $rootScope.user && $rootScope.user.permissions && _.contains($rootScope.user.permissions[resource], permission);
 	};
 
-	$scope.hasRole = function(role) {
+	$rootScope.hasRole = function(role) {
 		return $rootScope.user && $rootScope.user.obj && $rootScope.user.obj.roles && _.contains($rootScope.user.obj.roles, role);
 	};
-
 
 });
 
@@ -116,9 +124,8 @@ ctrl.controller('LoginCtrl', function($scope, $rootScope, $modalInstance, UserRe
 		UserResource.login($scope.loginUser, function(user) {
 			$scope.errors = {};
 			$scope.error = null;
+			$scope.loggedIn(user);
 			$modalInstance.close();
-			$rootScope.user.isAuthenticated = true;
-			$rootScope.user.obj = user;
 		}, handleErrors);
 	};
 

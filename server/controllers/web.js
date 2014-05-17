@@ -43,7 +43,7 @@ var params = function(req, done) {
 				params.user.permissions = permissions;
 			}
 			done(params);
-		})
+		});
 	} else {
 		done(params);
 	}

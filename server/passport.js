@@ -42,7 +42,8 @@ module.exports = function(passport, config) {
 					user = new User({
 						name: profile.displayName,
 						email: profile.emails[0].value,
-						provider: provider
+						provider: provider,
+						roles: [ 'member' ]
 					});
 
 					// save original data to separate field

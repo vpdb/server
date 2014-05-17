@@ -8,7 +8,7 @@ module.exports = function(app, config, passport, auth, acl) {
 	app.get('/games', web.index);
 	app.get('/game', web.index);
 	app.get('/game/*', web.index);
-	app.get('/home', web.index);
+	app.get('/admin/users', web.index);
 
 	// serve index and view partials
 	app.get('/partials/:name', web.partials);

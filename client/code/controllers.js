@@ -7,6 +7,7 @@ var ctrl = angular.module('vpdb.controllers', []);
 
 ctrl.controller('AppCtrl', function($scope, $rootScope, $location, $modal, UserResource) {
 
+	$rootScope.theme = 'theme-dark';
 	$scope.menu = 'home';
 	$scope.downloadsPinned = false;
 	$scope.pinnedDownloads = {};

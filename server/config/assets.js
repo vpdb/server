@@ -50,7 +50,7 @@ function Assets() {
 	// compiled from stylus
 	if (fs.existsSync(cssCacheRoot)) {
 		fs.readdirSync(cssCacheRoot).forEach(function(file) {
-			if (!/\.min\./.test(file)) { // "elegant" way to ignore global.min.css, which already contains everything.
+			if (!/\.min\./.test(file) && !/color-def/.test(file)) { // "elegant" way to ignore global.min.css, which already contains everything.
 				assets.cssCache.push(file);
 			}
 		});

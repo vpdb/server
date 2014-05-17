@@ -1,0 +1,23 @@
+.row.row-fullheight(ng-controller="AdminUserCtrl")
+	.col-sm-3.col-menu.bg-dark
+		h2 filter
+		hr
+		// search box
+		.input-group
+			span.input-group-addon
+				i.fa.fa-search
+			input.form-control.input-search(ng-model="query", type="text", placeholder="Search")
+		accordion(close-others="false")
+			// year filter
+			accordion-group(is-open="filterYearOpen")
+				accordion-heading
+					| Role
+					i.fa.pull-right(ng-class="{'fa-chevron-circle-up': filterYearOpen, 'fa-chevron-circle-down': !filterYearOpen}")
+				ul.list-group
+					li.list-group-item God
+					li.list-group-item Member
+				ul.list-group
+					li.list-group-item Admin
+	.col-sm-9.col-main
+		h1 users
+

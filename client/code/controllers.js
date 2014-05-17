@@ -67,7 +67,20 @@ ctrl.controller('AppCtrl', function($scope, $rootScope, $location, $modal, UserR
 			$rootScope.user.isAuthenticated = false;
 			$rootScope.user.obj = null;
 		});
-	}
+	};
+
+	$scope.hasPermission = function(resourcePermission) {
+		var p = resourcePermission.split('/');
+		var resource = p[0];
+		var permission = p[1];
+		return $rootScope.user && $rootScope.user.permissions && _.contains($rootScope.user.permissions[resource], permission);
+	};
+
+	$scope.hasRole = function(role) {
+		return $rootScope.user && $rootScope.user.obj && $rootScope.user.obj.roles && _.contains($rootScope.user.obj.roles, role);
+	};
+
+
 });
 
 

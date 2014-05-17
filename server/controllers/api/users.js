@@ -1,9 +1,8 @@
 var _ = require('underscore');
 var util = require('util');
 var logger = require('winston');
-var mongoose = require('mongoose');
 
-var User = mongoose.model('User');
+var User = require('mongoose').model('User');
 var api = require('./common');
 
 var fields = {
@@ -60,7 +59,7 @@ exports.login = function(req, res) {
 	}
 	User.findOne({ username: req.body.username }).exec(function(err, user) {
 		if (err) {
-			logger.error('[api|user:login] Error finding user with email "%s": %s', req.body.username, err);
+			logger.error('[api|user:login] Error finding user "%s": %s', req.body.username, err);
 			return api.fail(res, err, 500);
 		}
 		if (!user || !user.authenticate(req.body.password)) {
@@ -79,16 +78,18 @@ exports.login = function(req, res) {
 };
 
 exports.list = function(req, res) {
-	User.find({}, function(err, users) {
-		if (err) {
-			logger.error('[api|user:list] Error: %s', err);
-			return api.fail(res, err, 500);
-		}
-		// reduce
-		users = _.map(users, function(user) {
-			return _.pick(user, fields.pub);
+	api.auth(req, res, 'users', 'list', function() {
+		User.find({}, function(err, users) {
+			if (err) {
+				logger.error('[api|user:list] Error: %s', err);
+				return api.fail(res, err, 500);
+			}
+			// reduce
+			users = _.map(users, function(user) {
+				return _.pick(user, fields.pub);
+			});
+			api.success(res, users);
 		});
-		api.success(res, users);
 	});
 };
 

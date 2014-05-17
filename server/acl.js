@@ -39,7 +39,7 @@ var init = function(next) {
 
 		logger.info('[acl] Applying ACLs to %d users...', users.length);
 		_.each(users, function(user) {
-			acl.addUserRoles(user.username, user.roles);
+			acl.addUserRoles(user.email, user.roles);
 		});
 		logger.info('[acl] ACLs applied.');
 		next(null, acl);

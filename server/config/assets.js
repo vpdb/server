@@ -26,6 +26,7 @@ function Assets() {
 			'lib/jquery.magnific-popup-0.9.9.js',
 			'lib/jquery.nanoscroller-0.8.0.js',
 			'lib/jquery.waitforimages-1.5.0.js',
+			'lib/jquery.throttle-debounce-1.1.js',
 			'lib/angular.scrollable-0.2.0.js',
 			'app.js',
 			'services.js',

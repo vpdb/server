@@ -5,6 +5,8 @@ ctrl.controller('AdminUserCtrl', function($scope, $modal, UserResource, RolesRes
 	$scope.users = UserResource.query();
 	$scope.roles = RolesResource.query();
 
+	var firstLoad = true;
+
 	$scope.edit = function(user) {
 		$modal.open({
 			templateUrl: 'partials/modals/admin-userEdit',
@@ -19,6 +21,13 @@ ctrl.controller('AdminUserCtrl', function($scope, $modal, UserResource, RolesRes
 			}
 		});
 	};
+
+	$scope.$watch("query", $.debounce(350, function() {
+		if (!firstLoad || $scope.query) {
+			$scope.users = UserResource.query({ q: $scope.query });
+			firstLoad = false;
+		}
+	}), true);
 
 });
 

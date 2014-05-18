@@ -22,25 +22,12 @@ ctrl.controller('AdminUserCtrl', function($scope, $modal, UserResource, RolesRes
 
 });
 
-ctrl.controller('AdminUserEditCtrl', function($scope, $modalInstance, UserResource, user, roles) {
+ctrl.controller('AdminUserEditCtrl', function($scope, $rootScope, $modalInstance, ApiHelper, UserResource, user, roles) {
 
 	$scope.user = {};
 	$scope.roles = roles;
+	$scope.originalName = user.name;
 	angular.copy(user, $scope.user);
-
-	var handleErrors = function(response) {
-		$scope.message = null;
-		$scope.errors = {};
-		$scope.error = null;
-		if (response.data.errors) {
-			_.each(response.data.errors, function(err) {
-				$scope.errors[err.field] = err.message;
-			});
-		}
-		if (response.data.error) {
-			$scope.error = response.data.error;
-		}
-	};
 
 	$scope.toggleSelection = function toggleSelection(roleName) {
 		var idx = $scope.user.roles.indexOf(roleName);
@@ -57,8 +44,11 @@ ctrl.controller('AdminUserEditCtrl', function($scope, $modalInstance, UserResour
 	$scope.save = function() {
 		UserResource.update({ userid: $scope.user._id }, $scope.user, function() {
 			angular.copy($scope.user, user);
+			if ($rootScope.user.obj._id == $scope.user._id) {
+				$rootScope.user.obj = $scope.user;
+			}
 			$modalInstance.close();
-		}, handleErrors);
+		}, ApiHelper.handleErrors($scope));
 	};
 
 	$scope.reset = function() {

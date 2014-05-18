@@ -7,8 +7,8 @@ var acl = require('../../acl');
 var api = require('./common');
 
 exports.fields = {
-	pub: ['name', 'username', 'thumb'],
-	adm: ['email', 'active', 'roles'],
+	pub: ['_id', 'name', 'username', 'thumb'],
+	adm: ['email', 'active', 'roles']
 };
 
 exports.create = function(req, res) {

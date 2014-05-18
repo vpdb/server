@@ -96,8 +96,7 @@ ctrl.controller('AppCtrl', function($scope, $rootScope, $location, $modal, UserR
 
 });
 
-
-ctrl.controller('LoginCtrl', function($scope, $rootScope, $modalInstance, UserResource) {
+ctrl.controller('LoginCtrl', function($scope, $rootScope, $modalInstance, ApiHelper, UserResource) {
 
 	$scope.registering = false;
 	$scope.loginUser = {};
@@ -106,27 +105,13 @@ ctrl.controller('LoginCtrl', function($scope, $rootScope, $modalInstance, UserRe
 	$scope.error = null;
 	$scope.errors = {};
 
-	var handleErrors = function(response) {
-		$scope.message = null;
-		$scope.errors = {};
-		$scope.error = null;
-		if (response.data.errors) {
-			_.each(response.data.errors, function(err) {
-				$scope.errors[err.field] = err.message;
-			});
-		}
-		if (response.data.error) {
-			$scope.error = response.data.error;
-		}
-	};
-
 	$scope.login = function() {
 		UserResource.login($scope.loginUser, function(user) {
 			$scope.errors = {};
 			$scope.error = null;
 			$scope.loggedIn(user);
 			$modalInstance.close();
-		}, handleErrors);
+		}, ApiHelper.handleErrors($scope));
 	};
 
 	$scope.register = function() {
@@ -137,7 +122,7 @@ ctrl.controller('LoginCtrl', function($scope, $rootScope, $modalInstance, UserRe
 			$scope.registerUser = {};
 			$scope.message = 'Registration successful. You can now login.';
 			$scope.registering = !$scope.registering;
-		}, handleErrors);
+		}, ApiHelper.handleErrors($scope));
 	};
 
 	$scope.swap = function() {

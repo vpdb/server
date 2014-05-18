@@ -24,7 +24,7 @@ exports.create = function(req, res) {
 		logger.info('[api|user:create] Validations passed, checking for existing user.');
 		User.findOne({ email: newUser.email }).exec(function(err, user) {
 			if (err) {
-				logger.error('[api|user:create] Error finding user with email "%s": %s', newUser.email, err, {});
+				logger.error('[api|user:create] Error finding user with email <%s>: %s', newUser.email, err, {});
 				return api.fail(res, err);
 			}
 			if (!user) {
@@ -37,7 +37,7 @@ exports.create = function(req, res) {
 					newUser.roles = count ? [ 'member' ] : [ 'root' ];
 					newUser.save(function(err) {
 						if (err) {
-							logger.error('[api|user:create] Error saving user "%s": %s', newUser.email, err, {});
+							logger.error('[api|user:create] Error saving user <%s>: %s', newUser.email, err, {});
 							return api.fail(res, err, 500);
 						}
 						logger.info('[api|user:create] Success!');
@@ -45,7 +45,7 @@ exports.create = function(req, res) {
 					});
 				});
 			} else {
-				logger.warn('[api|user:create] User "%s" already in database, aborting.', newUser.email);
+				logger.warn('[api|user:create] User <%s> already in database, aborting.', newUser.email);
 				return api.fail(res, 'User with email "' + newUser.email + '" already exists.', 409);
 			}
 		});
@@ -73,13 +73,13 @@ exports.login = function(req, res) {
 		}
 		req.logIn(user, function(err) {
 			if (err) {
-				logger.error('[api|user:login] Error logging in user "%s": %s', user.email, err, {});
+				logger.error('[api|user:login] Error logging in user <%s>: %s', user.email, err, {});
 				return api.fail(res, err, 500);
 			}
-			logger.info('[api|user:login] User "%s" successfully logged in.', user.email);
+			logger.info('[api|user:login] User <%s> successfully logged in.', user.email);
 			acl.allowedPermissions(req.user.email, [ 'users', 'content' ], function(err, permissions) {
 				if (err) {
-					logger.error('[api|user:login] Error reading permissions for user "%s": %s', user.email, err, {});
+					logger.error('[api|user:login] Error reading permissions for user <%s>: %s', user.email, err, {});
 					return api.fail(res, err, 500);
 				} else {
 					return api.success(res, _.extend( _.omit(user.toJSON(), 'passwordHash', 'passwordSalt'), { permissions: permissions }), 200);
@@ -117,28 +117,30 @@ exports.update = function(req, res) {
 				return api.fail(res, err, 500);
 			}
 			var updatedUser = req.body;
+			var originalEmail = user.email;
 
 			// 1. check for permission escalation
 			var callerRoles = req.user.roles;
 			var currentUserRoles = user.roles;
 			var updatedUserRoles = updatedUser.roles;
 
+			var removedRoles = _.difference(currentUserRoles, updatedUserRoles);
+			var addedRoles = _.difference(updatedUserRoles, currentUserRoles);
+
 			// if caller is not root..
 			if (!_.contains(callerRoles, 'root')) {
 
-				var removedRoles = _.difference(updatedUserRoles, currentUserRoles);
-				var addedRoles = _.difference(currentUserRoles, updatedUserRoles);
 				logger.info('[api|user:update] Checking for privilage escalation. Added roles: [%s], Removed roles: [%s].', addedRoles.join(' '), removedRoles.join(' '));
 
 				// if user to be updated is already root or admin, deny (unless it's the same user).
 				if (!user._id.equals(req.user._id) && (_.contains(currentUserRoles, 'root') || _.contains(currentUserRoles, 'admin'))) {
-					logger.error('[api|user:update] PRIVILEGE ESCALATION: Non-root user "%s" [%s] tried to update user "%s" [%s].', req.user.email, callerRoles.join(' '), user.email, currentUserRoles.join(' '));
+					logger.error('[api|user:update] PRIVILEGE ESCALATION: Non-root user <%s> [%s] tried to update user <%s> [%s].', req.user.email, callerRoles.join(' '), user.email, currentUserRoles.join(' '));
 					return api.fail(res, 'You are now allowed to update administrators or root users.', 403);
 				}
 
 				// if new roles contain root or admin, deny (even when removing)
 				if (_.contains(addedRoles, 'root') || _.contains(addedRoles, 'admin') || _.contains(removedRoles, 'root') || _.contains(removedRoles, 'admin')) {
-					logger.error('[api|user:update] PRIVILEGE ESCALATION: User "%s" [%s] tried to update user "%s" [%s] with new roles [%s].', req.user.email, callerRoles.join(' '), user.email, currentUserRoles.join(' '), updatedUserRoles.join(' '));
+					logger.error('[api|user:update] PRIVILEGE ESCALATION: User <%s> [%s] tried to update user <%s> [%s] with new roles [%s].', req.user.email, callerRoles.join(' '), user.email, currentUserRoles.join(' '), updatedUserRoles.join(' '));
 					return api.fail(res, 'You are now allowed change the admin or root role for anyone.', 403);
 				}
 			}
@@ -161,12 +163,28 @@ exports.update = function(req, res) {
 				// 4. save
 				user.save(function(err) {
 					if (err) {
-						logger.error('[api|user:update] Error updating user "%s": %s', updatedUser.email, err, {});
+						logger.error('[api|user:update] Error updating user <%s>: %s', updatedUser.email, err, {});
 						return api.fail(res, err, 500);
 					}
 					logger.info('[api|user:update] Success!');
 
 					// 5. update ACLs if email or roles changed
+					if (originalEmail != user.email) {
+						logger.info('[api|user:update] Email changed, removing ACLs for <%s> and creating new ones for <%s>.', originalEmail, user.email);
+						acl.removeUserRoles(originalEmail, '*');
+						acl.addUserRoles(user.email, user.roles);
+
+					} else {
+						if (removedRoles.length > 0) {
+							logger.info('[api|user:update] Updating ACLs: Removing roles [%s] from user <%s>.', removedRoles.join(' '), user.email);
+							acl.removeUserRoles(user.email, removedRoles);
+						}
+						if (addedRoles.length > 0) {
+							logger.info('[api|user:update] Updating ACLs: Adding roles [%s] to user <%s>.', addedRoles.join(' '), user.email);
+							acl.addUserRoles(user.email, addedRoles);
+						}
+					}
+
 					return api.success(res, user, 200);
 				});
 			});
@@ -177,7 +195,7 @@ exports.update = function(req, res) {
 
 exports.logout = function(req, res) {
 	if (req.isAuthenticated()) {
-		logger.info('[api|user:logout] Logging out user "%s".', req.user.email);
+		logger.info('[api|user:logout] Logging out user <%s>.', req.user.email);
 		req.logout();
 		api.success(res, { message: "You have been successfully logged out." }, 200);
 	} else {

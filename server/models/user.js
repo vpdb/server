@@ -3,6 +3,7 @@ var crypto = require('crypto');
 var logger = require('winston');
 var mongoose = require('mongoose');
 var validator = require('validator');
+var uniqueValidator = require('mongoose-unique-validator');
 
 var config = require('../modules/settings').current;
 var Schema = mongoose.Schema;
@@ -30,6 +31,7 @@ _.each(config.vpdb.passport.ipboard, function(ipbConfig) {
 	}
 });
 var UserSchema = new Schema(fields);
+UserSchema.plugin(uniqueValidator, { message: 'The {PATH} "{VALUE}" is already taken.' });
 
 // virtuals
 UserSchema.virtual('password')

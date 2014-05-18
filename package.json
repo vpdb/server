@@ -36,6 +36,7 @@
 		"jade": "*",
 		"md5": "1.0.x",
 		"mongoose": "~3.8.8",
+		"mongoose-unique-validator" : "~0.3.0",
 		"nib": "1.0.x",
 		"optimist": "0.6.x",
 		"passport": "~0.2.0",

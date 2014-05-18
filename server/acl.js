@@ -46,18 +46,6 @@ var init = function(next) {
 		next(null, acl);
 	});
 
-/*	acl.isAllowed('test', 'users', 'list', function(err, res) {
-		if (res) {
-			console.log("User test is allowed to list users.");
-		} else {
-			console.log("User test is NOT allowed to list users.");
-		}
-	});
-
-	acl.allowedPermissions('test', ['users', 'content'], function(err, permissions) {
-		console.log("User test has permissions: %j", permissions);
-	});*/
-
 };
 
 acl.init = init;

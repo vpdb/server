@@ -67,6 +67,10 @@ exports.login = function(req, res) {
 			logger.warn('[api|user:login] Login denied for user "%s" (%s).', req.body.username, user ? 'password' : 'username');
 			return api.fail(res, 'Wrong username or password.', 401);
 		}
+		if (!user.active) {
+			logger.warn('[api|user:login] Login denied for inactive user "%s".', req.body.username);
+			return api.fail(res, 'Inactive account. Please contact an administrator.', 401);
+		}
 		req.logIn(user, function(err) {
 			if (err) {
 				logger.error('[api|user:login] Error logging in user "%s": %s', user.email, err, {});
@@ -113,9 +117,38 @@ exports.update = function(req, res) {
 				return api.fail(res, err, 500);
 			}
 			var updatedUser = req.body;
+
+			// 1. check for permission escalation
+			var callerRoles = req.user.roles;
+			var currentUserRoles = user.roles;
+			var updatedUserRoles = updatedUser.roles;
+
+			// if caller is not root..
+			if (!_.contains(callerRoles, 'root')) {
+
+				var removedRoles = _.difference(updatedUserRoles, currentUserRoles);
+				var addedRoles = _.difference(currentUserRoles, updatedUserRoles);
+				logger.info('[api|user:update] Checking for privilage escalation. Added roles: [%s], Removed roles: [%s].', addedRoles.join(' '), removedRoles.join(' '));
+
+				// if user to be updated is already root or admin, deny (unless it's the same user).
+				if (!user._id.equals(req.user._id) && (_.contains(currentUserRoles, 'root') || _.contains(currentUserRoles, 'admin'))) {
+					logger.error('[api|user:update] PRIVILEGE ESCALATION: Non-root user "%s" [%s] tried to update user "%s" [%s].', req.user.email, callerRoles.join(' '), user.email, currentUserRoles.join(' '));
+					return api.fail(res, 'You are now allowed to update administrators or root users.', 403);
+				}
+
+				// if new roles contain root or admin, deny (even when removing)
+				if (_.contains(addedRoles, 'root') || _.contains(addedRoles, 'admin') || _.contains(removedRoles, 'root') || _.contains(removedRoles, 'admin')) {
+					logger.error('[api|user:update] PRIVILEGE ESCALATION: User "%s" [%s] tried to update user "%s" [%s] with new roles [%s].', req.user.email, callerRoles.join(' '), user.email, currentUserRoles.join(' '), updatedUserRoles.join(' '));
+					return api.fail(res, 'You are now allowed change the admin or root role for anyone.', 403);
+				}
+			}
+
+			// 2. copy over new values
 			_.each(updateableFields, function(field) {
 				user[field] = updatedUser[field];
 			});
+
+			// 3. validate
 			user.validate(function(err) {
 				if (err) {
 					logger.warn('[api|user:update] Validations failed: %s', util.inspect(_.map(err.errors, function(value, key) {
@@ -124,12 +157,16 @@ exports.update = function(req, res) {
 					return api.fail(res, err, 422);
 				}
 				logger.info('[api|user:update] Validations passed, updating user.');
+
+				// 4. save
 				user.save(function(err) {
 					if (err) {
 						logger.error('[api|user:update] Error updating user "%s": %s', updatedUser.email, err, {});
 						return api.fail(res, err, 500);
 					}
 					logger.info('[api|user:update] Success!');
+
+					// 5. update ACLs if email or roles changed
 					return api.success(res, user, 200);
 				});
 			});

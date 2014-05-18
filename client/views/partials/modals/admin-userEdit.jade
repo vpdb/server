@@ -50,6 +50,10 @@
 				i.fa.fa-exclamation-triangle.space-right
 				| {{ errors.roles }}
 
+			div.alert.alert-danger(ng-show="error")
+				i.fa.fa-exclamation-triangle.space-right
+				| {{ error }}
+
 
 
 	.modal-footer

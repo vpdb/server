@@ -1,0 +1,58 @@
+.bg-lightest
+	.modal-header
+		h3 Update User
+	.modal-body
+		form.form-horizontal(role="form")
+
+			.form-group(ng-class="{ error: errors.name }")
+				label.col-sm-3.control-label Display Name
+				.col-sm-7
+					input.form-control(ng-model="user.name", ng-required)
+
+			.form-group(ng-class="{ error: errors.active }")
+				label.col-sm-3.control-label(for="userActive") Active
+				.col-sm-8
+					.checkbox
+						input#userActive(type="checkbox", ng-model="user.active")
+
+			.form-group(ng-class="{ error: errors.username }")
+				label.col-sm-3.control-label Username
+				.col-sm-7
+					input.form-control(ng-model="user.username", ng-required)
+
+			.form-group(ng-class="{ error: errors.email }")
+				label.col-sm-3.control-label Email
+				.col-sm-7
+					input.form-control(ng-model="user.email", ng-required)
+
+			.form-group(ng-class="{ error: errors.roles }")
+				label.col-sm-3.control-label Roles
+				.col-sm-8
+					.checkbox(ng-repeat="role in roles")
+						label
+							input(type="checkbox", name="selectedRoles[]", value="{{ role.name }}", ng-checked="user.roles.indexOf(role.name) > -1", ng-click="toggleSelection(role.name)")
+							h6 {{ role.name }}
+							div {{ role.description }}
+
+			div.alert.alert-danger(ng-show="errors.name")
+				i.fa.fa-exclamation-triangle.space-right
+				| {{ errors.name }}
+
+			div.alert.alert-danger(ng-show="errors.username")
+				i.fa.fa-exclamation-triangle.space-right
+				| {{ errors.name }}
+
+			div.alert.alert-danger(ng-show="errors.email")
+				i.fa.fa-exclamation-triangle.space-right
+				| {{ errors.email }}
+
+			div.alert.alert-danger(ng-show="errors.roles")
+				i.fa.fa-exclamation-triangle.space-right
+				| {{ errors.roles }}
+
+
+
+	.modal-footer
+		button.btn.btn-default.pull-left(ng-click="reset()") Reset
+		button.btn.btn-default(ng-click="$close()") Cancel
+		button.btn.btn-primary(ng-click="save()") Update

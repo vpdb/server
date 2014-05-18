@@ -34,7 +34,7 @@ exports.create = function(req, res) {
 						logger.error('[api|user:create] Error counting users: %s', err, {});
 						return api.fail(res, err, 500);
 					}
-					newUser.roles = count ? [ 'member' ] : [ 'god' ];
+					newUser.roles = count ? [ 'member' ] : [ 'root' ];
 					newUser.save(function(err) {
 						if (err) {
 							logger.error('[api|user:create] Error saving user "%s": %s', newUser.email, err, {});
@@ -103,6 +103,40 @@ exports.list = function(req, res) {
 		});
 	});
 };
+
+exports.update = function(req, res) {
+	var updateableFields = [ 'name', 'email', 'username', 'active', 'roles' ];
+	api.auth(req, res, 'users', 'update', function() {
+		User.findById(req.params.id, '-passwordHash -passwordSalt -__v', function(err, user) {
+			if (err) {
+				logger.error('[api|user:update] Error: %s', err, {});
+				return api.fail(res, err, 500);
+			}
+			var updatedUser = req.body;
+			_.each(updateableFields, function(field) {
+				user[field] = updatedUser[field];
+			});
+			user.validate(function(err) {
+				if (err) {
+					logger.warn('[api|user:update] Validations failed: %s', util.inspect(_.map(err.errors, function(value, key) {
+						return key;
+					})));
+					return api.fail(res, err, 422);
+				}
+				logger.info('[api|user:update] Validations passed, updating user.');
+				user.save(function(err) {
+					if (err) {
+						logger.error('[api|user:update] Error updating user "%s": %s', updatedUser.email, err, {});
+						return api.fail(res, err, 500);
+					}
+					logger.info('[api|user:update] Success!');
+					return api.success(res, user, 200);
+				});
+			});
+		});
+	});
+};
+
 
 exports.logout = function(req, res) {
 	if (req.isAuthenticated()) {

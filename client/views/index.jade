@@ -18,7 +18,7 @@ block body
 					a(href="/") Home
 				li(ng-class="{ active: menu == 'games' }")
 					a(href="/games") Games
-				li(ng-class="{ active: menu == 'admin' }", ng-show="hasRole('god')")
+				li(ng-class="{ active: menu == 'admin' }", ng-show="hasRole('root')")
 					a.space-right.dropdown-toggle(data-toggle="dropdown")
 						span.space-right-2x Admin
 						i.fa.fa-angle-down

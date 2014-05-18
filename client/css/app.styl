@@ -398,6 +398,15 @@ ul.dropdown-menu table
 	.btn + .btn, .btn + .btn-group, .btn-group + .btn, .btn-group + .btn-group
 		margin-left 2px
 
+// :checkbox
+.checkbox > label
+	h6
+		font-size font-size-standard
+		font-weight font-weight-bold
+		text-transform uppercase
+		margin 3px 0 0
+	div
+		white-space normal
 
 // :view types
 ul.viewtype-panel
@@ -679,6 +688,8 @@ table.table
 		& > td
 			cursor pointer
 			transition all animation-shorter
+	tr.inactive > td
+		text-decoration line-through
 
 // :selectable list
 ul.selectable

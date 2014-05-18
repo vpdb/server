@@ -15,7 +15,8 @@ var init = function(next) {
 		{
 			roles: 'admin',
 			allows: [
-				{ resources: 'users', permissions: '*' }
+				{ resources: 'users', permissions: '*' },
+				{ resources: 'roles', permissions: '*' }
 			]
 		}, {
 			roles: 'member',
@@ -27,7 +28,7 @@ var init = function(next) {
 	]);
 
 	// hierarchy
-	acl.addRoleParents('god', [ 'admin' ]);
+	acl.addRoleParents('root', [ 'admin' ]);
 	acl.addRoleParents('admin', [ 'member' ]);
 
 	// apply to all users

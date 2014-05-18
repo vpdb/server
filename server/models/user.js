@@ -9,9 +9,9 @@ var Schema = mongoose.Schema;
 
 // schema
 var fields = {
-	name:         { type: String, required: true }, // display name, equals username when locally registering
+	name:         { type: String, required: 'Name must be provided.' }, // display name, equals username when locally registering
 	username:     { type: String, unique: true },
-	email:        { type: String, lowercase: true, unique: true },
+	email:        { type: String, lowercase: true, unique: true, required: 'Email must be provided.' },
 	roles:        [ String ],
 	provider:     { type: String, required: true },
 	passwordHash: { type: String },

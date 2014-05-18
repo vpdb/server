@@ -1,0 +1,13 @@
+extends ../layout
+block body
+	.center-middle.center-middle-errorpage
+		i.icon.icon-vpdb-logo-o
+		h1 403
+		p You tried to access&nbsp;
+			code=url
+			| &nbsp;but you don't have the permission to do that. If you've clicked on a link and you're receiving this
+			| page, please contact an administrator.
+
+		a(href="/", target="_self")
+			i.fa.fa-arrow-circle-left.space-right
+			|GO HOME

@@ -27,6 +27,7 @@ exports.auth = function(req, res, resource, permission, next) {
 		};
 		if (req.isAuthenticated()) {
 			checkAcl(req.user.email);
+
 		} else {
 
 			// read basic auth params from header

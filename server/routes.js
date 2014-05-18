@@ -4,11 +4,11 @@ module.exports = function(app, config, passport) {
 
 	var web = require('./controllers/web');
 
-	app.get('/', web.index);
-	app.get('/games', web.index);
-	app.get('/game', web.index);
-	app.get('/game/*', web.index);
-	app.get('/admin/users', web.index);
+	app.get('/', web.index());
+	app.get('/games', web.index());
+	app.get('/game', web.index());
+	app.get('/game/*', web.index());
+	app.get('/admin/users', web.index('users', 'list'));
 
 	// serve index and view partials
 	app.get('/partials/:name', web.partials);

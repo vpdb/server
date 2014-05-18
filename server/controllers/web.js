@@ -38,7 +38,7 @@ var params = function(req, done) {
 	if (req.isAuthenticated()) {
 		acl.allowedPermissions(req.user.email, [ 'users', 'content' ], function(err, permissions) {
 			if (err) {
-				logger.error('[webctrl] Error reading permissions for user "%s": %s', req.user.email, err);
+				logger.error('[webctrl] Error reading permissions for user <%s>: %s', req.user.email, err);
 			} else {
 				params.user.permissions = permissions;
 			}
@@ -50,10 +50,41 @@ var params = function(req, done) {
 
 };
 
-exports.index = function(req, res) {
-	params(req, function(params) {
-		res.render('index', params);
-	});
+exports.index = function(resource, permission) {
+	if (resource && permission) {
+		return function(req, res) {
+			var show403 = function() {
+				params(req, function(params) {
+					res.status(403).render('errors/403', _.extend(params, { url: req.originalUrl, error: 'Access denied.' }));
+				});
+			};
+			if (req.isAuthenticated()) {
+				acl.isAllowed(req.user.email, resource, permission, function(err, granted) {
+					if (err) {
+						logger.error('[webctrl] Error checking ACLs for user <%s>: %s', req.user.email, err);
+						return params(req, function(params) {
+							res.status(500).render('errors/500', _.extend(params, { url: req.originalUrl, error: 'Internal server error.' }));
+						});
+					}
+					if (granted) {
+						params(req, function (params) {
+							res.render('index', params);
+						});
+					} else {
+						show403();
+					}
+				});
+			} else {
+				show403();
+			}
+		};
+	} else {
+		return function(req, res) {
+			params(req, function (params) {
+				res.render('index', params);
+			});
+		};
+	}
 };
 
 exports.partials = function(req, res) {
@@ -77,7 +108,7 @@ exports.four04 = function(req, res) {
 		res.status(404).end(JSON.stringify({ error: 'Not found.' }));
 	} else {
 		params(req, function(params) {
-			res.status(404).render('404', _.extend(params, { url: req.originalUrl, error: 'Not found' }));
+			res.status(404).render('errors/404', _.extend(params, { url: req.originalUrl, error: 'Not found' }));
 		});
 
 	}

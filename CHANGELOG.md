@@ -5,7 +5,14 @@
 Server Update
 
 * Added [PassportJS](http://passportjs.org/) integration
-* Moved from [Piler](https://github.com/epeli/piler) to [Grunt](http://gruntjs.com/)
+* Added IP.Board integration via [OAuth2](https://github.com/freezy/ipb-oauth2-server).
+* Added user registration and login
+* Added admin interface for users
+* Added "real" server-side API:
+  * User resource (``create``, ``list``, ``update``, ``login``, ``logout``)
+  * Roles resource (``list``)
+* Added ACLs for permissions management to API
+* Moved from [Piler](https://github.com/epeli/piler) to [Grunt](http://gruntjs.com/) for asset compilation
 * Restructured server code
 * Added documentation and scripts for production deployment
 

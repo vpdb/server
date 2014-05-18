@@ -89,35 +89,34 @@ body.theme-light
 			&.icon-vp
 				color color-primary
 			&.icon-db
-				color color-lighter-inv
-			&.icon-vpdb-logo-o, &.icon-vp, &.icon-db
-				text-shadow 0 0 15px rgba(white, 0.75)
+				color color-lighter
 		a
 			&:hover
 				.icon-vpdb-logo-o
-					color color-primary-dark
+					color color-primary-light
 				.icon-vp
-					color color-primary-dark
+					color color-primary-light
 				.icon-db
-					color color-lightest-inv
+					color color-lightest
 	.nav.navbar-nav li
 		a
 			background-color transparent
-			color color-lighter-inv
+			color color-lighter
 			&:hover
-				color color-lightest-inv
+				color color-lightest
 		&.active > a
-			background-color color-dark
+			background-color color-darkest
 			color color-primary
 		.dropdown-menu
+			margin-top 0
+			border-top 1px solid #2d2d2b // hack to hide the bottom line of the bar
 			background-color color-navbar-inv
 			border-left-color color-primary
 			border-right-color color-primary
 			border-bottom-color color-primary
-			box-shadow 0 1px 13px color-darkest-inv
 
 	.navbar-default .navbar-nav > .open
-		& > a, & > a:hover, & > a:focus
+		& > a
 			background-color transparent
 
 	ul.dropdown-menu table

@@ -56,66 +56,66 @@ var params = function(req, done) {
 	}
 };
 
-exports.index = function(resource, permission) {
+var showError = function(errCode, req, res) {
+	params(req, function(params) {
+		res.status(errCode).render('errors/' + errCode, _.extend(params, { url: req.originalUrl }));
+	});
+};
+
+
+var protectedRoute = function(resource, permission, successFct, errFct) {
 	if (resource && permission) {
 		return function(req, res) {
-			var show403 = function() {
-				params(req, function(params) {
-					res.status(403).render('errors/403', _.extend(params, { url: req.originalUrl, error: 'Access denied.' }));
-				});
-			};
 			if (req.isAuthenticated()) {
-				acl.isAllowed(req.user.email, resource, permission, function(err, granted) {
+				acl.isAllowed(req.user.email, resource, permission, function (err, granted) {
 					if (err) {
-						logger.error('[webctrl] Error checking ACLs for user <%s>: %s', req.user.email, err);
-						return params(req, function(params) {
-							res.status(500).render('errors/500', _.extend(params, { url: req.originalUrl, error: 'Internal server error.' }));
-						});
+						logger.error('[partialsctrl] Error checking ACLs for user <%s>: %s', req.user.email, err);
+						return showError(500, req, res);
 					}
 					if (granted) {
-						params(req, function (params) {
-							res.render('index', params);
+						params(req, function(params) {
+							successFct(req, res, params);
 						});
 					} else {
-						show403();
+						errFct(req, res);
 					}
 				});
 			} else {
-				show403();
+				errFct(req, res);
 			}
 		};
 	} else {
 		return function(req, res) {
-			params(req, function (params) {
-				res.render('index', params);
+			params(req, function(params) {
+				successFct(req, res, params);
 			});
 		};
 	}
 };
 
-exports.partials = function(req, res) {
-	var name = req.params.name;
-	params(req, function(params) {
-		res.render('partials/' + name, params);
-	});
-
-};
-
-exports.modals = function(req, res) {
-	var name = req.params.name;
-	params(req, function(params) {
-		res.render('partials/modals/' + name, params);
+exports.index = function(resource, permission) {
+	return protectedRoute(resource, permission, function(req, res, params) {
+		res.render('index', params);
+	}, function(req, res) {
+		showError(403, req, res);
 	});
 };
 
-exports.four04 = function(req, res) {
+exports.partials = function(subfolder, resource, permission) {
+	var prefix = 'partials' + (subfolder ? '/' + subfolder : '');
+	return protectedRoute(resource, permission, function(req, res, params) {
+		res.render(prefix + (req.params.name ? '/' + req.params.name : ''), params);
+	}, function(req, res) {
+		res.status(403).end();
+	});
+};
+
+exports.show404 = function(req, res) {
 	if (req.originalUrl.substr(0, 5) == '/api/') {
 		res.setHeader('Content-Type', 'application/json');
 		res.status(404).end(JSON.stringify({ error: 'Not found.' }));
 	} else {
-		params(req, function(params) {
-			res.status(404).render('errors/404', _.extend(params, { url: req.originalUrl, error: 'Not found' }));
-		});
-
+		showError(404, req, res);
 	}
 };
+

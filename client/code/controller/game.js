@@ -50,3 +50,10 @@ ctrl.controller('RequestModPermissionModalCtrl', function($scope, $modalInstance
 		$modalInstance.dismiss(false);
 	};
 });
+
+ctrl.controller('AdminGameAddCtrl', function($scope) {
+
+	$scope.theme('light');
+	$scope.setMenu('admin');
+
+});

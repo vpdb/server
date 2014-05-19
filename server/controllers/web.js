@@ -36,7 +36,7 @@ var params = function(req, done) {
 		}
 	};
 	if (req.isAuthenticated()) {
-		acl.allowedPermissions(req.user.email, [ 'users', 'content' ], function(err, permissions) {
+		acl.allowedPermissions(req.user.email, [ 'users', 'content', 'games', 'roles' ], function(err, permissions) {
 			if (err) {
 				logger.error('[webctrl] Error reading permissions for user <%s>: %s', req.user.email, err);
 			} else {

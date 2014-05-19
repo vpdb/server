@@ -19,31 +19,38 @@ var init = function(next) {
 				{ resources: 'roles', permissions: '*' }
 			]
 		}, {
+			roles: 'contributor',
+			allows: [
+				{ resources: 'games', permissions: 'edit' }
+			]
+		}, {
 			roles: 'member',
 			allows: [
 				{ resources: 'users', permissions: 'view' },
 				{ resources: 'content', permissions: 'download' }
 			]
 		}
-	]);
+	])
 
 	// hierarchy
-	acl.addRoleParents('root', [ 'admin' ]);
-	acl.addRoleParents('admin', [ 'member' ]);
+	.then(function() { return acl.addRoleParents('root', [ 'admin' ]) })
+	.then(function() { return acl.addRoleParents('admin', [ 'member', 'contributor' ]) })
 
 	// apply to all users
-	User.find({}, function(err, users) {
-		if (err) {
-			logger.error('[acl] Error finding users for ACLs: ', err);
-			return next(err);
-		}
+	.then(function() {
+		User.find({}, function(err, users) {
+			if (err) {
+				logger.error('[acl] Error finding users for ACLs: ', err);
+				return next(err);
+			}
 
-		logger.info('[acl] Applying ACLs to %d users...', users.length);
-		_.each(users, function(user) {
-			acl.addUserRoles(user.email, user.roles);
+			logger.info('[acl] Applying ACLs to %d users...', users.length);
+			_.each(users, function(user) {
+				acl.addUserRoles(user.email, user.roles);
+			});
+			logger.info('[acl] ACLs applied.');
+			next(null, acl);
 		});
-		logger.info('[acl] ACLs applied.');
-		next(null, acl);
 	});
 
 };

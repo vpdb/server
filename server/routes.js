@@ -8,11 +8,13 @@ module.exports = function(app, config, passport) {
 	app.get('/games', web.index());
 	app.get('/game', web.index());
 	app.get('/game/*', web.index());
+	app.get('/games/add', web.index('games', 'edit'));
 	app.get('/admin/users', web.index('users', 'list'));
 
 	// serve index and view partials
 	app.get('/partials/:name', web.partials());
 	app.get('/partials/admin/users', web.partials('admin/users', 'users', '*'));
+	app.get('/partials/admin/game-add', web.partials('admin/game-add', 'games', 'edit'));
 	app.get('/partials/admin/modals/:name', web.partials('admin/modals', 'users', '*'));
 	app.get('/partials/modals/:name', web.partials('modals'));
 

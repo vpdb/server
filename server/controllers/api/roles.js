@@ -12,6 +12,9 @@ exports.list = function(req, res) {
 			}, {
 				name: 'member',
 				description: 'A registered member. This role every user should have. Removing results in having the same permissions as anonymous.'
+			}, {
+				name: 'contributor',
+				description: 'Permission to edit meta data, e.g. games and media.'
 			}
 		];
 		api.success(res, roles);

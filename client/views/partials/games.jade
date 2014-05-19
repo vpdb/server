@@ -71,3 +71,10 @@
 			li(sort="rating", d="desc") Rating
 			li(sort="views", d="desc") Views
 			li(sort="gamedownloads", d="desc") Downloads
+
+		span(ng-show="hasPermission('games/edit')")
+			h2 content
+			hr
+			a.btn.btn-primary(href="/games/add")
+				i.fa.fa-plus-circle.space-right
+				| Add Game

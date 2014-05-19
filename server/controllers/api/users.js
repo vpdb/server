@@ -102,7 +102,7 @@ exports.login = function(req, res) {
 
 exports.list = function(req, res) {
 	api.auth(req, res, 'users', 'list', function() {
-		User.find({}, '-passwordHash -passwordSalt -__v', function(err, users) {
+		var callback = function(err, users) {
 			if (err) {
 				logger.error('[api|user:list] Error: %s', err, {});
 				return api.fail(res, err, 500);
@@ -115,7 +115,19 @@ exports.list = function(req, res) {
 				return user;
 			});
 			api.success(res, users);
-		});
+		};
+		if (req.query.q) {
+			var q = req.query.q.trim().replace(/[^a-z0-9]+/gi, ' ').replace(/\s+/g, '.*');
+			var regex = new RegExp(q, 'i');
+			User.find().select('-passwordHash -passwordSalt -__v').or([
+				{ name: regex },
+				{ username: regex },
+				{ email: regex }
+			]).exec(callback);
+		} else {
+			console.log('returning full result...');
+			User.find({}, '-passwordHash -passwordSalt -__v', callback);
+		}
 	});
 };
 

@@ -24,3 +24,4 @@
 				td {{ user.name }}
 				td {{ user.email }}
 				td {{ user.roles.join(' ') }}
+		span(ng-hide="users.length > 0") No users found.

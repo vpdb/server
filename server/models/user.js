@@ -3,6 +3,7 @@ var crypto = require('crypto');
 var logger = require('winston');
 var mongoose = require('mongoose');
 var validator = require('validator');
+var textSearch = require('mongoose-text-search');
 var uniqueValidator = require('mongoose-unique-validator');
 
 var config = require('../modules/settings').current;
@@ -10,9 +11,9 @@ var Schema = mongoose.Schema;
 
 // schema
 var fields = {
-	name:         { type: String, required: 'Name must be provided.' }, // display name, equals username when locally registering
-	username:     { type: String, unique: true },
-	email:        { type: String, lowercase: true, unique: true, required: 'Email must be provided.' },
+	name:         { type: String, index: true, required: 'Name must be provided.' }, // display name, equals username when locally registering
+	username:     { type: String, index: true, unique: true },
+	email:        { type: String, index: true, unique: true, lowercase: true, required: 'Email must be provided.' },
 	roles:        [ String ],
 	provider:     { type: String, required: true },
 	passwordHash: { type: String },
@@ -32,6 +33,9 @@ _.each(config.vpdb.passport.ipboard, function(ipbConfig) {
 });
 var UserSchema = new Schema(fields);
 UserSchema.plugin(uniqueValidator, { message: 'The {PATH} "{VALUE}" is already taken.' });
+UserSchema.plugin(textSearch);
+
+UserSchema.index({ name: 'text', username: 'text', email: 'text' });
 
 // virtuals
 UserSchema.virtual('password')

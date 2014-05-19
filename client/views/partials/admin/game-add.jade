@@ -1,6 +1,47 @@
 .row.row-fullheight(ng-controller="AdminGameAddCtrl")
-	.col-sm-3.col-menu.bg-dark
-		h2 side bar
-		hr
 	.col-sm-9.col-main
 		h1 add new game
+		hr
+		p Note that a game is completely decoupled from its releases. Data appearing in here is common to all releases
+			| that are linked to that game, but kept as a separate and independent data set.
+
+
+
+		form(role="form")
+			h2 1. enter title
+			hr
+			.form-group
+				input.form-control.input-lg(type="text", placeholder="Title")
+				span.help-block No year, manufacturer or anything else, just the title. Example: <i>The Addams Family</i>.
+
+			h2 2. origin
+			hr
+			p If you’ve created the game by yourself, it’s an original game. I’ve you built a game that exists in real
+				| life, it’s called a recreation. Recreations must be on IPDB.org.
+
+
+			.text-center.padder-top
+				.radio-inline.radio-lg
+					label
+						input.input-lg(type="radio", name="origin", value="recreation", checked)
+						span Recreation
+
+				.radio-inline.radio-lg
+					label
+						input(type="radio", name="origin", value="og")
+						span Original Game
+
+			.clearfix
+			h2 3. game info
+			hr
+			p Search IPDB.org and it will populate the following fields. You can also add additional data if you have
+				| more info available.
+
+
+			p
+				br
+
+	.col-sm-3.col-menu.bg-dark
+		h2 drafts
+		hr
+		p None

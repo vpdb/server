@@ -408,6 +408,40 @@ ul.dropdown-menu table
 	div
 		white-space normal
 
+// :radio
+.radio-lg
+	cursor default
+	input[type=radio]
+		display none
+		cursor default
+		& + span
+			cursor pointer
+			display block
+			font-weight font-weight-bold
+			font-size 20px
+			text-transform uppercase
+			margin-left 20px
+			transition color animation-short
+			&:before
+				cursor pointer
+				position absolute
+				margin-left -31px
+				margin-top -5px
+				font-size 36px
+				font-family icons
+				font-style normal
+				font-weight normal
+				line-height 1
+				-webkit-font-smoothing antialiased
+				-moz-osx-font-smoothing grayscale
+				transition color animation-short
+				content "\e617" /* Radio Unchecked */
+		&:checked + span
+			cursor default
+			&::before
+				cursor default
+				content "\e618" /* Radio Checked */
+
 // :view types
 ul.viewtype-panel
 	float right

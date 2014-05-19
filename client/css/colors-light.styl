@@ -58,6 +58,20 @@ body.theme-light
 				background-color color-primary
 				box-shadow 0 0 3px 1px rgba(black, 0.3)
 
+	.radio-lg
+		input[type=radio]
+			& + span
+				color color-lightish-inv
+				&:before
+					color color-lightish-inv
+				&:hover
+					color color-lighter-inv
+					&:before
+						color color-lighter-inv
+			&:checked + span:hover
+				color color-lightish-inv
+				&::before
+					color color-lightish-inv
 
 	// :table
 	table.table

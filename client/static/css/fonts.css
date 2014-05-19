@@ -113,11 +113,11 @@
 /*noinspection CssUnknownTarget*/
 @font-face {
 	font-family: 'icons';
-	src:url('/fonts/icons.eot?-7ytd12');
-	src:url('/fonts/icons.svg?-7ytd12#icons') format('svg'),
-	url('/fonts/icons.eot?#iefix-7ytd12') format('embedded-opentype'),
-	url('/fonts/icons.woff?-7ytd12') format('woff'),
-	url('/fonts/icons.ttf?-7ytd12') format('truetype');
+	src:url('/fonts/icons.eot?-7ytd13');
+	src:url('/fonts/icons.svg?-7ytd13#icons') format('svg'),
+	url('/fonts/icons.eot?#iefix-7ytd13') format('embedded-opentype'),
+	url('/fonts/icons.woff?-7ytd13') format('woff'),
+	url('/fonts/icons.ttf?-7ytd13') format('truetype');
 	font-weight: normal;
 	font-style: normal;
 }
@@ -134,6 +134,25 @@
 	/* Better Font Rendering =========== */
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
+}
+
+.icon-vpf-short:before {
+	content: "\e604";
+}
+.icon-vpf-logo:before {
+	content: "\e605";
+}
+.icon-vpf:before {
+	content: "\e615";
+}
+.icon-ipdb:before {
+	content: "\e616";
+}
+.icon-checkbox-unchecked:before {
+	content: "\e617";
+}
+.icon-checkbox-checked:before {
+	content: "\e618";
 }
 .icon-vpdb-logo-o:before {
 	content: "\e613";
@@ -191,10 +210,4 @@
 }
 .icon-db:before {
 	content: "\e603";
-}
-.icon-user:before {
-	content: "\e605";
-}
-.icon-exit:before {
-	content: "\e604";
 }

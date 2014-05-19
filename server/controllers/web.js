@@ -19,7 +19,7 @@ var params = function(req, done) {
 			return '/css/' + css;
 		}),
 		req: req,
-		auth: {
+		authStrategies: {
 			local: true,
 			github: config.vpdb.passport.github.enabled,
 			ipboard: _.map(_.filter(config.vpdb.passport.ipboard, function(ipbConfig) { return ipbConfig.enabled }), function(ipbConfig) {
@@ -30,9 +30,9 @@ var params = function(req, done) {
 				};
 			})
 		},
-		user: {
+		auth: {
 			isAuthenticated: req.isAuthenticated(),
-			obj: req.isAuthenticated() ? _.pick(req.user, _.union(userApi.fields.pub, userApi.fields.adm)) : null
+			user: req.isAuthenticated() ? _.pick(req.user, _.union(userApi.fields.pub, userApi.fields.adm)) : null
 		}
 	};
 	if (req.isAuthenticated()) {
@@ -40,14 +40,20 @@ var params = function(req, done) {
 			if (err) {
 				logger.error('[webctrl] Error reading permissions for user <%s>: %s', req.user.email, err);
 			} else {
-				params.user.permissions = permissions;
+				params.auth.permissions = permissions;
 			}
-			done(params);
+			acl.userRoles(req.user.email, function(err, roles) {
+				if (err) {
+					logger.error('[webctrl] Error reading roles for user <%s>: %s', req.user.email, err);
+				} else {
+					params.auth.roles = roles;
+				}
+				done(params);
+			});
 		});
 	} else {
 		done(params);
 	}
-
 };
 
 exports.index = function(resource, permission) {

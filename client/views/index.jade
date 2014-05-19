@@ -18,7 +18,7 @@ block body
 					a(href="/") Home
 				li(ng-class="{ active: menu == 'games' }")
 					a(href="/games") Games
-				li(ng-class="{ active: menu == 'admin' }", ng-show="hasRole(['root', 'admin'])")
+				li(ng-class="{ active: menu == 'admin' }", ng-show="true || hasRole(['root', 'admin'])")
 					a.space-right.dropdown-toggle(data-toggle="dropdown")
 						span.space-right-2x Admin
 						i.fa.fa-angle-down
@@ -29,13 +29,13 @@ block body
 								span.space-left-abs Users
 
 			ul.nav.navbar-nav.navbar-right
-				li(ng-hide="user.isAuthenticated")
+				li(ng-hide="auth.isAuthenticated")
 					a(ng-click="login()")
 						i.fa.fa-lock.space-right-2x
 						span.space-right Login
-				li(ng-show="user.isAuthenticated")
+				li(ng-show="auth.isAuthenticated")
 					a.space-right.dropdown-toggle(data-toggle="dropdown")
-						span.space-right-2x {{ user.obj.name }}
+						span.space-right-2x {{ auth.user.name }}
 						i.fa.fa-angle-down
 					ul.dropdown-menu(role="menu")
 						li
@@ -47,7 +47,7 @@ block body
 								i.fa.fa-user.space-right
 								span.space-left-abs Profile
 
-				//li.ng-cloak
+				//- li.ng-cloak
 					.btn-group.btn-group-flex
 						button.btn.btn-pin(type="button", class="{{ downloadsPinned ? 'btn-primary' : 'btn-default' }}", ng-model="downloadsPinned", btn-checkbox, btn-checkbox-true="1", btn-checkbox-false="0")
 							i.icon.space-right(class="{{ downloadsPinned ? 'icon-pin-on' : 'icon-pin-off' }}")

@@ -69,37 +69,40 @@ ctrl.controller('AppCtrl', function($scope, $rootScope, $location, $modal, UserR
 
 	$rootScope.logout = function() {
 		UserResource.logout(function() {
-			$rootScope.user.isAuthenticated = false;
-			$rootScope.user.obj = null;
-			$rootScope.user.permissions = {};
+			$rootScope.auth.isAuthenticated = false;
+			$rootScope.auth.user = null;
+			$rootScope.auth.permissions = {};
+			$rootScope.auth.roles = [];
 		});
 	};
 
 
 	$rootScope.loggedIn = function(user) {
-		$rootScope.user.isAuthenticated = true;
-		$rootScope.user.obj = user;
-		$rootScope.user.permissions = user.permissions;
-		delete $rootScope.user.obj.permissions;
+		$rootScope.auth.isAuthenticated = true;
+		$rootScope.auth.user = user;
+		$rootScope.auth.permissions = user.permissions;
+		$rootScope.auth.roles = user.rolesAll;
+		delete $rootScope.auth.user.permissions;
+		delete $rootScope.auth.user.rolesAll;
 	};
 
 	$rootScope.hasPermission = function(resourcePermission) {
 		var p = resourcePermission.split('/');
 		var resource = p[0];
 		var permission = p[1];
-		return $rootScope.user && $rootScope.user.permissions && _.contains($rootScope.user.permissions[resource], permission);
+		return $rootScope.auth && $rootScope.auth.permissions && _.contains($rootScope.auth.permissions[resource], permission);
 	};
 
 	$rootScope.hasRole = function(role) {
 		if (_.isArray(role)) {
 			for (var i = 0; i < role.length; i++) {
-				if ($rootScope.user && $rootScope.user.obj && $rootScope.user.obj.roles && _.contains($rootScope.user.obj.roles, role[i])) {
+				if ($rootScope.auth && $rootScope.auth.roles && _.contains($rootScope.auth.roles, role[i])) {
 					return true;
 				}
 			}
 			return false;
 		} else {
-			return $rootScope.user && $rootScope.user.obj && $rootScope.user.obj.roles && _.contains($rootScope.user.obj.roles, role);
+			return $rootScope.auth && $rootScope.auth.roles && _.contains($rootScope.auth.roles, role);
 		}
 
 	};

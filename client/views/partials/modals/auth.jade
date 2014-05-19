@@ -6,11 +6,11 @@
 	.modal-body
 		h1 Login with
 		.text-center
-			- each ipb in auth.ipboard
+			- each ipb in authStrategies.ipboard
 				a.btn.btn-primary.btn-lg(href=ipb.url, target="_self")
 					i.space-right(class=ipb.icon)
 					| #{ipb.name}
-			if auth.github
+			if authStrategies.github
 				a.btn.btn-primary.btn-lg(href="/auth/github", target="_self")
 					i.fa.fa-github.space-right
 					| GitHub

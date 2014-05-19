@@ -81,9 +81,20 @@ exports.login = function(req, res) {
 				if (err) {
 					logger.error('[api|user:login] Error reading permissions for user <%s>: %s', user.email, err, {});
 					return api.fail(res, err, 500);
-				} else {
-					return api.success(res, _.extend( _.omit(user.toJSON(), 'passwordHash', 'passwordSalt'), { permissions: permissions }), 200);
 				}
+				acl.userRoles(req.user.email, function(err, roles) {
+					if (err) {
+						logger.error('[api|user:login] Error reading roles for user <%s>: %s', user.email, err, {});
+						return api.fail(res, err, 500);
+					}
+					return api.success(res, _.extend(
+						_.omit(user.toJSON(), 'passwordHash', 'passwordSalt'),
+						{
+							permissions: permissions,
+							rolesAll: roles
+						}
+					), 200);
+				});
 			});
 		});
 	});

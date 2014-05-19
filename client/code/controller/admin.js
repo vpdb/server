@@ -53,8 +53,8 @@ ctrl.controller('AdminUserEditCtrl', function($scope, $rootScope, $modalInstance
 	$scope.save = function() {
 		UserResource.update({ userid: $scope.user._id }, $scope.user, function() {
 			angular.copy($scope.user, user);
-			if ($rootScope.user.obj._id == $scope.user._id) {
-				$rootScope.user.obj = $scope.user;
+			if ($rootScope.auth.user._id == $scope.user._id) {
+				$rootScope.auth.user = $scope.user;
 			}
 			$modalInstance.close();
 		}, ApiHelper.handleErrors($scope));

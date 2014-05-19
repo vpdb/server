@@ -28,7 +28,7 @@
 			.form-group(ng-class="{ error: errors.roles }")
 				label.col-sm-3.control-label Roles
 				.col-sm-8
-					.checkbox(ng-repeat="role in roles")
+					.checkbox(ng-repeat="role in roles", ng-hide="!hasRole('root') && (role.name == 'root' || role.name == 'admin')")
 						label
 							input(type="checkbox", name="selectedRoles[]", value="{{ role.name }}", ng-checked="user.roles.indexOf(role.name) > -1", ng-click="toggleSelection(role.name)")
 							h6 {{ role.name }}
@@ -53,8 +53,6 @@
 			div.alert.alert-danger(ng-show="error")
 				i.fa.fa-exclamation-triangle.space-right
 				| {{ error }}
-
-
 
 	.modal-footer
 		button.btn.btn-default.pull-left(ng-click="reset()") Reset

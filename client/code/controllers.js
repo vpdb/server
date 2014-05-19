@@ -91,7 +91,17 @@ ctrl.controller('AppCtrl', function($scope, $rootScope, $location, $modal, UserR
 	};
 
 	$rootScope.hasRole = function(role) {
-		return $rootScope.user && $rootScope.user.obj && $rootScope.user.obj.roles && _.contains($rootScope.user.obj.roles, role);
+		if (_.isArray(role)) {
+			for (var i = 0; i < role.length; i++) {
+				if ($rootScope.user && $rootScope.user.obj && $rootScope.user.obj.roles && _.contains($rootScope.user.obj.roles, role[i])) {
+					return true;
+				}
+			}
+			return false;
+		} else {
+			return $rootScope.user && $rootScope.user.obj && $rootScope.user.obj.roles && _.contains($rootScope.user.obj.roles, role);
+		}
+
 	};
 
 });

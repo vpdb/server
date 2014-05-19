@@ -15,7 +15,7 @@
 					| Role
 					i.fa.pull-right(ng-class="{'fa-chevron-circle-up': filterYearOpen, 'fa-chevron-circle-down': !filterYearOpen}")
 				ul.list-group
-					li.list-group-item(ng-repeat="role in roles") {{ role.name }}
+					li.list-group-item(ng-repeat="role in roles", filter-role="{{ role.name }}") {{ role.name }}
 	.col-sm-9.col-main
 		h1 users
 

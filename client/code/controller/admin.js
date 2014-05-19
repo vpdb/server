@@ -5,6 +5,8 @@ ctrl.controller('AdminUserCtrl', function($scope, $modal, UserResource, RolesRes
 	$scope.users = UserResource.query();
 	$scope.roles = RolesResource.query();
 
+	$scope.filterRole = [];
+
 	var firstLoad = true;
 
 	$scope.edit = function(user) {
@@ -22,12 +24,34 @@ ctrl.controller('AdminUserCtrl', function($scope, $modal, UserResource, RolesRes
 		});
 	};
 
-	$scope.$watch("query", $.debounce(350, function() {
+	var refresh = function() {
+		var query = {};
 		if (!firstLoad || $scope.query) {
-			$scope.users = UserResource.query({ q: $scope.query });
+			query.q = $scope.query;
 			firstLoad = false;
 		}
+		if ($scope.filterRole.length > 0) {
+			query.roles = $scope.filterRole.join(',');
+		}
+
+		$scope.users = UserResource.query(query);
+	};
+
+	$scope.$watch("query", $.debounce(350, function() {
+		if (!firstLoad || $scope.query) {
+			refresh();
+		}
 	}), true);
+
+	$scope.$on('dataToggleRole', function(event, role) {
+		if (_.contains($scope.filterRole, role)) {
+			$scope.filterRole.splice($scope.filterRole.indexOf(role), 1);
+		} else {
+			$scope.filterRole.push(role);
+		}
+		$scope.$apply();
+		refresh();
+	});
 
 });
 

@@ -189,6 +189,18 @@ directives.directive('filterDecade', function() {
 	};
 });
 
+directives.directive('filterRole', function() {
+	return {
+		restrict: 'A',
+		link: function(scope, element, attrs) {
+			element.click(function() {
+				element.toggleClass('active');
+				scope.$emit('dataToggleRole', attrs.filterRole, element.hasClass('active'));
+			});
+		}
+	};
+});
+
 directives.directive('filterManufacturer', function() {
 	return {
 		restrict: 'A',

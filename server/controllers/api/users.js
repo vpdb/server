@@ -116,18 +116,29 @@ exports.list = function(req, res) {
 			});
 			api.success(res, users);
 		};
+
+		var query = User.find().select('-passwordHash -passwordSalt -__v');
+
+		// text search
 		if (req.query.q) {
+			// sanitize and build regex
 			var q = req.query.q.trim().replace(/[^a-z0-9]+/gi, ' ').replace(/\s+/g, '.*');
 			var regex = new RegExp(q, 'i');
-			User.find().select('-passwordHash -passwordSalt -__v').or([
+			query.or([
 				{ name: regex },
 				{ username: regex },
 				{ email: regex }
-			]).exec(callback);
-		} else {
-			console.log('returning full result...');
-			User.find({}, '-passwordHash -passwordSalt -__v', callback);
+			]);
 		}
+
+		// filter by role
+		if (req.query.roles) {
+			// sanitze and split
+			var roles = req.query.roles.trim().replace(/[^a-z0-9,]+/gi, '').split(',');
+			query.where('roles').in(roles);
+		}
+
+		query.exec(callback);
 	});
 };
 

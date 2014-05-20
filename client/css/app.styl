@@ -17,12 +17,19 @@ font-weight-bold = 700
 //font-weight-extrabold = 800
 //font-weight-ultrabold = 900
 
+// primary font sizes (font-content)
 font-size-smaller = 13px
 font-size-small = 14px
 font-size-normal = 16px
 font-size-large = 20px
 font-size-larger = 24px
 font-size-largest = 30px
+
+// alt font sizes (font-header)
+font-size-normal-alt = 20px
+font-size-large-alt = 26px
+font-size-larger-alt = 32px
+font-size-largest-alt = 34px
 
 animation-long = 350ms
 animation-short = 200ms
@@ -195,13 +202,13 @@ label, h4, h5
 	position relative
 	width 200px
 	.icon
-		font-size 92px
+		font-size 92px  // icon
 		left 55px
 		position absolute
 		top -50px
 		transition all animation-long
 		&.icon-vpdb-logo-o
-			font-size 36px
+			font-size 36px // icon
 			left 13px
 			top 7px
 
@@ -348,34 +355,34 @@ ul.dropdown-menu table
 	&.btn-default, &.btn-primary
 		padding 1px 20px 0px
 		font-family font-header
-		font-size 20px
+		font-size font-size-normal-alt
 		text-transform uppercase
 		border none
 		& > i.icon-pin-on, & > i.icon-pin-off
-			font-size 24px
+			font-size 24px // icon
 			line-height 12px
 	&.btn-lg
-		font-size 26px
+		font-size font-size-large-alt // -alt
 		padding 2px 30px 1px
 		border-radius border-radius-large
 		.fa
-			font-size 20px
+			font-size 20px // icon
 		& > i.icon-pin-on, & > i.icon-pin-off
-			font-size 32px
+			font-size 32px // icon
 			line-height 12px
 		& > i.fa-github
-			font-size 27px
+			font-size 27px // icon
 		& > i.icon-gameex
-			font-size 27px
+			font-size 27px // icon
 			line-height 29px
 			vertical-align middle
 	&.btn-xs
 		padding 2px 10px 0px
 		line-height 1
 		.fa
-			font-size 20px
+			font-size 20px // icon
 		&.btn-default .fa
-			font-size 18px
+			font-size 18px // icon
 	&.btn-dl > i
 		margin-right 1px
 
@@ -437,7 +444,7 @@ ul.dropdown-menu table
 				position absolute
 				margin-left -31px
 				margin-top -5px
-				font-size 36px
+				font-size 36px // icon
 				font-family icons
 				font-style normal
 				font-weight normal
@@ -464,7 +471,7 @@ ul.viewtype-panel
 		&.active i
 			cursor default
 		i
-			font-size 18px
+			font-size 18px // icon
 			cursor pointer
 			transition all animation-short
 
@@ -572,7 +579,7 @@ ul.viewtype-panel
 		margin-left list-sidebar-width + 15px
 
 	h3
-		font-size 32px   // font-header
+		font-size font-size-larger-alt
 		margin-top 10px
 		margin-bottom 5px
 
@@ -611,13 +618,13 @@ ul.viewtype-panel
 			margin-right 15px
 			margin-bottom 15px
 			margin-top 0px
-			font-size 34px      // font-header
+			font-size font-size-largest-alt
 			strong
 				font-weight normal
 		&.icon-williams
-			font-size 48px
+			font-size 48px // icon
 		&.icon-stern
-			font-size 62px
+			font-size 62px // icon
 	h3 small
 		font-size 80%
 
@@ -737,7 +744,7 @@ ul.selectable
 				display inline-block
 				width 20px
 				font-family FontAwesome
-				font-size 20px
+				font-size 20px // icon
 				font-style normal
 				font-weight normal
 				line-height 1
@@ -829,7 +836,7 @@ section.footer
 	font-weight
 	i.fa
 		margin-right 10px
-		font-size 20px
+		font-size 20px // icon
 	a
 		transition all animation-short
 

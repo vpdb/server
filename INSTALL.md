@@ -332,7 +332,7 @@ Install PHP-FPM:
 	sudo apt-get install -y php5-fpm php5-dev php5-cli php-pear php5-mongo
 	sudo service php5-fpm restart
 	
-Get sources:
+Install Genghis:
 	
 	cd /var/www
 	sudo git clone https://github.com/bobthecow/genghis.git
@@ -343,7 +343,6 @@ Setup nginx:
 	sudo cp /repos/source/deploy/nginx/sites/genghis /etc/nginx/sites-available/genghis
 	sudo ln -s /etc/nginx/sites-available/genghis /etc/nginx/sites-enabled/genghis
 	sudo /etc/init.d/nginx restart
-
 
 ## Links
 

@@ -68,6 +68,8 @@ Prerequisites:
 
 * Download and install [GraphicsMagick](http://www.graphicsmagick.org/) and make sure that the binary is in
   your ``PATH``.
+* Download and install [pngquant](http://pngquant.org/) and make sure that the binary is in
+  your ``PATH``.
 * Install the Grunt command line tool: ``npm install -g grunt-cli``
 
 Install Node.js and Git, then open a command line and type:
@@ -95,8 +97,8 @@ and type:
 	./configure --prefix=$OPENSHIFT_DATA_DIR
 	make && make install
 
-In OpenShift's case, there's pre-build script which links the ``gm`` executable to Node.js' binary folder which is part
-of the app's ``$PATH`` variable.
+In OpenShift's case, there's a pre-build script which links the ``gm`` executable to Node.js' binary folder which is 
+part of the app's ``$PATH`` variable.
 
 If you want to setup a production environment from scratch, see the [Installation Guide](INSTALL.md).
 

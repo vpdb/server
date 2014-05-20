@@ -1,0 +1,15 @@
+server {
+	listen 8088;
+
+	root /var/www/genghis;
+
+	location / {
+		fastcgi_pass unix:/var/run/php5-fpm.sock;
+		include fastcgi_params;
+		fastcgi_param SCRIPT_FILENAME $document_root/genghis.php;
+		fastcgi_param SCRIPT_NAME /genghis.php;
+		fastcgi_param PATH_INFO $uri;
+
+		rewrite /genghis.php / permanent;
+	}
+}

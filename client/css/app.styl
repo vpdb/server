@@ -305,12 +305,16 @@ ul.dropdown-menu table
 .form-control
 	border-radius border-radius-small
 	border none
+	box-shadow none
+	&:focus
+		box-shadow none
 	&.input-search
 		height 28px
 		padding-left 3px
 		border-radius 14px
 		border none
-
+	&.input-lg
+		border-radius border-radius-large
 
 .input-group-addon
 	padding-right 3px

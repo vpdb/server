@@ -72,9 +72,9 @@ Upgrade ``npm`` to latest and prevent self-signed certificate error
 
 	sudo npm install -g andrewrk/naught
 
-### GraphicsMagick
+### Image Tools
 
-	sudo apt-get -y install graphicsmagick
+	sudo apt-get -y install graphicsmagick pngquant
 
 ### MongoDB
 
@@ -116,7 +116,7 @@ Restart and go back to normal user:
 Paste this:
 
 ```bash
-description "Start and stop node-vpdb"
+description "Visual Pinball Database (staging)"
 author "freezy"
 
 # Configuration
@@ -320,6 +320,29 @@ Add this to the ``server { ... }`` block
 
 	auth_basic "Restricted";
 	auth_basic_user_file /var/www/.htpasswd;
+
+## Administration Tools
+
+### Genghis
+
+*The single-file MongoDB admin app.*
+
+Install PHP-FPM:
+
+	sudo apt-get install -y php5-fpm php5-dev php5-cli php-pear php5-mongo
+	sudo service php5-fpm restart
+	
+Get sources:
+	
+	cd /var/www
+	sudo git clone https://github.com/bobthecow/genghis.git
+	sudo chown www-data:www-data genghis -R
+
+Setup nginx:
+
+	sudo cp /repos/source/deploy/nginx/sites/genghis /etc/nginx/sites-available/genghis
+	sudo ln -s /etc/nginx/sites-available/genghis /etc/nginx/sites-enabled/genghis
+	sudo /etc/init.d/nginx restart
 
 
 ## Links

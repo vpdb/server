@@ -342,7 +342,17 @@ Setup nginx:
 
 	sudo cp /repos/source/deploy/nginx/sites/genghis /etc/nginx/sites-available/genghis
 	sudo ln -s /etc/nginx/sites-available/genghis /etc/nginx/sites-enabled/genghis
+
+Secure access:
+	
+	sudo apt-get -y install apache2-utils
+	sudo htpasswd -c /var/www/genghis/.htpasswd vpdb
+	sudo chown www-data:www-data /var/www/genghis/.htpasswd
+
+Restart nginx and we're good:
+
 	sudo /etc/init.d/nginx restart
+
 
 ## Links
 

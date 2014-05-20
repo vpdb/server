@@ -1,8 +1,8 @@
 server {
 	listen 8088;
-
 	root /var/www/genghis;
-
+	auth_basic "Restricted";
+	auth_basic_user_file /var/www/genghis/.htpasswd;
 	location / {
 		fastcgi_pass unix:/var/run/php5-fpm.sock;
 		include fastcgi_params;

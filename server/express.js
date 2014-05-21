@@ -25,6 +25,7 @@ module.exports = function(app, config, passport) {
 	app.set('ipaddress', process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1');
 	app.set('views', path.resolve(__dirname, '../client/views'));
 	app.set('view engine', 'jade');
+	app.set('json spaces', "\t");
 	app.set('showStackError', runningDev);
 
 	app.use(domainError(sendOfflineMsg, doGracefulExit));

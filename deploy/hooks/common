@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 ################ config start ################
 
@@ -20,11 +20,30 @@ rollback_abort() {
 	echo "  $@" 1>&2
 	echo
 
-	local settings=${DEPLOY_ROOT}/${DEPLOY_ENV}/config/${1}.js
 	local path=${DEPLOY_ROOT}/${DEPLOY_ENV}/$1
 	echo Removing ${path}
 	rm -r ${path}
 	exit 1
+}
+
+repo_get_branch() {
+	if (( $# == 1 )); then
+		# if first argument is set, use it as branch name
+		branch=$1
+	else
+		# determine the branch that was pushed
+		if ! [ -t 0 ]; then
+		  read -a ref
+		fi
+		IFS='/' read -ra REF <<< "${ref[2]}"
+		branch="${REF[2]}"
+
+		# if executed manually and no argument is provided, fall back to master.
+		if [ -z "$branch" ]; then
+			branch="master"
+		fi
+	fi
+	echo ${branch}
 }
 
 repo_clone() {
@@ -36,11 +55,18 @@ repo_clone() {
     test $? -eq 0 || abort "Failed to clone into ${dest}"
 }
 
-repo_checkout() {
+repo_checkout_tag() {
 	local dest=${DEPLOY_ROOT}/${DEPLOY_ENV}/$1
 	cd ${dest}
 	git checkout $1
     test $? -eq 0 || rollback_abort $1 "Failed to checkout $1, aborting."
+}
+
+repo_checkout_branch() {
+	local dest=${DEPLOY_ROOT}/${DEPLOY_ENV}/$1
+	cd ${dest}
+	git checkout ${branch}
+	test $? -eq 0 || rollback_abort $1 "Failed to checkout branch $branch, aborting."
 }
 
 npm_install() {

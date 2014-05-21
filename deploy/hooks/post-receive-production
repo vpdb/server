@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 DEPLOY_ENV='production'
 
@@ -13,7 +13,7 @@ echo Deploying version ${LAST_TAG}...
 
 # 1. clone into new folder
 repo_clone ${LAST_TAG}
-repo_checkout ${LAST_TAG}
+repo_checkout_tag ${LAST_TAG}
 
 # 2. install node packages and build
 npm_install ${LAST_TAG}
@@ -28,4 +28,6 @@ node_cluster_reload
 # 5. cleanup old deployment
 repo_cleanup "v[0-9]+\.[0-9]+\.[0-9]+"
 
+echo ==================================================================
 echo Production deployment successful!
+echo ==================================================================

@@ -1,24 +1,31 @@
-#!/bin/sh
+#!/bin/bash
 
 DEPLOY_ENV='staging'
 HEAD_REV=`git rev-parse HEAD`
+HEAD_REV=${HEAD_REV:0:10}
 
 . ./hooks/common
 
+DIRNAME=`repo_get_branch $1`-${HEAD_REV}
+
 # 1. clone into new folder
-repo_clone ${HEAD_REV}
+repo_clone ${DIRNAME}
+repo_checkout_branch ${DIRNAME}
 
 # 2. install node packages and build
-npm_install ${HEAD_REV}
-grunt_build ${HEAD_REV}
+npm_install ${DIRNAME}
+grunt_build ${DIRNAME}
 
 # 3. change symlink
-repo_link ${HEAD_REV}
+repo_link ${DIRNAME}
 
 # 4. reload node cluster
 node_cluster_reload
 
 # 5. cleanup old deployment
 repo_cleanup "[a-f0-9]{40}"
+#repo_cleanup "[a-z0-9\-_]-[a-f0-9]{10}" <-- that's the new one, change when we have enough new format folders.
 
+echo ==================================================================
 echo Staging deployment successful!
+echo ==================================================================

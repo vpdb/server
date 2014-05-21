@@ -66,6 +66,8 @@ repo_checkout_branch() {
 	local dest=${DEPLOY_ROOT}/${DEPLOY_ENV}/$1
 	cd ${dest}
 	echo "Checking out branch branch ${2} at ${PWD}..."
+	# git looks at $GIT_DIR first before checking $PWD, so let's fix that.
+	unset GIT_DIR
 	git checkout $2
 	test $? -eq 0 || rollback_abort $1 "Failed to checkout branch ${2} at ${PWD}, aborting."
 }

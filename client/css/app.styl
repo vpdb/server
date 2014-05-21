@@ -24,13 +24,14 @@ font-size-normal = 16px
 font-size-large = 20px
 font-size-larger = 24px
 font-size-largest = 30px
-font-size-huge = 36px
 
 // alt font sizes (font-header)
-font-size-normal-alt = 20px
-font-size-large-alt = 26px
-font-size-larger-alt = 32px
-font-size-largest-alt = 34px
+font-size-smaller-alt = 20px
+font-size-small-alt = 26px
+font-size-normal-alt = 32px
+font-size-large-alt = 34px
+font-size-larger-alt = 37px
+
 
 animation-long = 350ms
 animation-short = 200ms
@@ -149,7 +150,7 @@ h2, h5
 	text-transform uppercase
 
 h1, h2, h5
-	font-size font-size-huge
+	font-size font-size-larger-alt
 	margin-bottom 10px
 	margin-top 20px
 h3
@@ -356,14 +357,14 @@ ul.dropdown-menu table
 	&.btn-default, &.btn-primary
 		padding 1px 20px 0px
 		font-family font-header
-		font-size font-size-normal-alt
+		font-size font-size-smaller-alt
 		text-transform uppercase
 		border none
 		& > i.icon-pin-on, & > i.icon-pin-off
 			font-size 24px // icon
 			line-height 12px
 	&.btn-lg
-		font-size font-size-large-alt // -alt
+		font-size font-size-small-alt // -alt
 		padding 2px 30px 1px
 		border-radius border-radius-large
 		.fa
@@ -580,7 +581,7 @@ ul.viewtype-panel
 		margin-left list-sidebar-width + 15px
 
 	h3
-		font-size font-size-larger-alt
+		font-size font-size-normal-alt
 		margin-top 10px
 		margin-bottom 5px
 
@@ -619,7 +620,7 @@ ul.viewtype-panel
 			margin-right 15px
 			margin-bottom 15px
 			margin-top 0px
-			font-size font-size-largest-alt
+			font-size font-size-large-alt
 			strong
 				font-weight normal
 		&.icon-williams

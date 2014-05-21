@@ -100,11 +100,6 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-gitinfo');
 
 	// define the tasks
-	grunt.registerTask(
-		'build',
-		'Compiles all of the assets to the cache directory.',
-		[ 'clean', 'mkdir', 'stylus', 'cssmin', 'uglify', 'gitsave' ]
-	);
 	grunt.registerTask('gitsave', 'do stuff', function() {
 		grunt.task.requires('gitinfo');
 		var gitinfo = grunt.config.get('gitinfo');
@@ -119,5 +114,9 @@ module.exports = function(grunt) {
 		grunt.log.writeln("Gitinfo written to %s.", gitsave.output);
 	});
 	grunt.registerTask('git', [ 'gitinfo', 'gitsave']);
-
+	grunt.registerTask(
+		'build',
+		'Compiles all of the assets to the cache directory.',
+		[ 'clean', 'mkdir', 'stylus', 'cssmin', 'uglify', 'git' ]
+	);
 };

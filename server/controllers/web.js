@@ -5,13 +5,15 @@ var acl = require('../acl');
 var assets = require('../config/assets');
 var config = require('../modules/settings').current;
 var userApi = require('./api/users');
+var gitinfo = require('../modules/gitinfo').info;
 
 var params = function(req, done) {
 
 	var params = {
 		layout: false,
-		deployment: process.env.APP_NAME,
+		deployment: process.env.APP_NAME || 'staging',
 		environment: process.env.NODE_ENV || 'development',
+		gitinfo: gitinfo,
 		jsFiles: _.map(assets.js, function(js) {
 			return '/' + js;
 		}),

@@ -87,6 +87,12 @@ block body
 		div(ng-view)
 
 	section.footer
-		a(href="https://github.com/freezy/node-vpdb", target="_blank")
-			i.fa.fa-github-alt
-			| <strong>Fork me</strong> on GitHub
+		p
+			a(href="https://github.com/freezy/node-vpdb", target="_blank")
+				i.fa.fa-github-alt
+				| <strong>Fork me</strong> on GitHub
+			if deployment == 'staging'
+				| &nbsp;&#8212;
+				a(href="https://github.com/freezy/node-vpdb/commit/#{gitinfo.local.branch.current.SHA}", target="_blank")=gitinfo.local.branch.current.shortSHA
+				| &nbsp;@&nbsp;
+				a(href="https://github.com/freezy/node-vpdb/tree/#{gitinfo.local.branch.current.name}", target="_blank")=gitinfo.local.branch.current.name

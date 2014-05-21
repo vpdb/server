@@ -81,10 +81,14 @@ module.exports = function(grunt) {
 					livereload: true
 				}
 			}
+		},
+
+		gitsave: {
+			output: './gitinfo.json'
 		}
 	};
 
-	grunt.initConfig(config);
+	grunt.config.init(config);
 
 	// load the tasks
 	grunt.loadNpmTasks('grunt-mkdir');
@@ -93,12 +97,27 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-cssmin');
 	grunt.loadNpmTasks('grunt-contrib-uglify');
 	grunt.loadNpmTasks('grunt-contrib-watch');
+	grunt.loadNpmTasks('grunt-gitinfo');
 
 	// define the tasks
 	grunt.registerTask(
 		'build',
 		'Compiles all of the assets to the cache directory.',
-		[ 'clean', 'mkdir', 'stylus', 'cssmin', 'uglify' ]
+		[ 'clean', 'mkdir', 'stylus', 'cssmin', 'uglify', 'gitsave' ]
 	);
+	grunt.registerTask('gitsave', 'do stuff', function() {
+		grunt.task.requires('gitinfo');
+		var gitinfo = grunt.config.get('gitinfo');
+		var gitsave = grunt.config.get('gitsave');
+
+		// strip unnecessary quotes from author and time
+		gitinfo.local.branch.current.lastCommitAuthor = gitinfo.local.branch.current.lastCommitAuthor.replace(/"/g, '');
+		gitinfo.local.branch.current.lastCommitTime = gitinfo.local.branch.current.lastCommitTime.replace(/"/g, '');
+
+		// dump to disk
+		grunt.file.write(gitsave.output, JSON.stringify(gitinfo, null, "\t"));
+		grunt.log.writeln("Gitinfo written to %s.", gitsave.output);
+	});
+	grunt.registerTask('git', [ 'gitinfo', 'gitsave']);
 
 };

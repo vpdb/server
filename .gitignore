@@ -17,6 +17,7 @@ gitinfo.json
 npm-debug.log
 node_modules
 
+.rebooted
 .idea/compiler.xml
 .idea/copyright/
 .idea/dictionaries/

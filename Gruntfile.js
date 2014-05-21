@@ -74,9 +74,19 @@ module.exports = function(grunt) {
 		},
 
 		watch: {
+			branch: {
+				files: '.git/HEAD',
+				tasks: [ 'git' ]
+			},
 			stylesheets: {
 				files: 'client/css/*.styl',
 				tasks: [ 'stylus' ],
+				options: {
+					livereload: true
+				}
+			},
+			server: {
+				files: ['.rebooted', 'client/code/**/*.js', 'client/views/**/*.jade'],
 				options: {
 					livereload: true
 				}
@@ -84,8 +94,42 @@ module.exports = function(grunt) {
 		},
 
 		gitsave: {
-			output: './gitinfo.json'
+			output: 'gitinfo.json'
+		},
+
+		concurrent: {
+			dev: {
+				tasks: ['nodemon', 'watch'],
+				options: {
+					logConcurrentOutput: true
+				}
+			}
+		},
+
+		nodemon: {
+			dev: {
+				script: 'app.js',
+				options: {
+					cwd: __dirname,
+					ignore: ['node_modules/**'],
+					watch: [ 'server', 'gitinfo.json' ],
+					callback: function (nodemon) {
+						nodemon.on('log', function (event) {
+							console.log(event.colour);
+						});
+
+						// refreshes browser when server reboots
+						nodemon.on('restart', function () {
+							// Delay before server listens on port
+							setTimeout(function() {
+								require('fs').writeFileSync('.rebooted', new Date());
+							}, 1000);
+						});
+					}
+				}
+			}
 		}
+
 	};
 
 	grunt.config.init(config);
@@ -97,10 +141,12 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-cssmin');
 	grunt.loadNpmTasks('grunt-contrib-uglify');
 	grunt.loadNpmTasks('grunt-contrib-watch');
+	grunt.loadNpmTasks('grunt-nodemon');
 	grunt.loadNpmTasks('grunt-gitinfo');
+	grunt.loadNpmTasks('grunt-concurrent');
 
 	// define the tasks
-	grunt.registerTask('gitsave', 'do stuff', function() {
+	grunt.registerTask('gitsave', function() {
 		grunt.task.requires('gitinfo');
 		var gitinfo = grunt.config.get('gitinfo');
 		var gitsave = grunt.config.get('gitsave');
@@ -119,4 +165,5 @@ module.exports = function(grunt) {
 		'Compiles all of the assets to the cache directory.',
 		[ 'clean', 'mkdir', 'stylus', 'cssmin', 'uglify', 'git' ]
 	);
+	grunt.registerTask('dev', [ 'concurrent' ]);
 };

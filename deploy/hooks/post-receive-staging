@@ -6,11 +6,12 @@ HEAD_REV=${HEAD_REV:0:10}
 
 . ./hooks/common
 
-DIRNAME=`repo_get_branch $1`-${HEAD_REV}
+BRANCH=`repo_get_branch $1`
+DIRNAME=${BRANCH}-${HEAD_REV}
 
 # 1. clone into new folder
 repo_clone ${DIRNAME}
-repo_checkout_branch ${DIRNAME}
+repo_checkout_branch ${DIRNAME} ${BRANCH}
 
 # 2. install node packages and build
 npm_install ${DIRNAME}

@@ -51,8 +51,8 @@ repo_clone() {
 	if [ -d "$dest" ]; then
 		abort "$1 is already deployed, aborting".
 	fi
-	git clone $PWD ${dest}
-    test $? -eq 0 || abort "Failed to clone into ${dest}"
+	git clone ${PWD} ${dest}
+    test $? -eq 0 || abort "Failed to clone ${PWD} into ${dest}"
 }
 
 repo_checkout_tag() {
@@ -65,8 +65,8 @@ repo_checkout_tag() {
 repo_checkout_branch() {
 	local dest=${DEPLOY_ROOT}/${DEPLOY_ENV}/$1
 	cd ${dest}
-	git checkout ${branch}
-	test $? -eq 0 || rollback_abort $1 "Failed to checkout branch $branch, aborting."
+	git checkout $2
+	test $? -eq 0 || rollback_abort $1 "Failed to checkout branch $2, aborting."
 }
 
 npm_install() {

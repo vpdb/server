@@ -1,7 +1,7 @@
 extends layout
 
 block body
-	if deployment == 'staging'
+	if deployment != 'production'
 		.staging-bar
 		.staging-bar
 	nav.navbar.navbar-default.navbar-fixed-top
@@ -91,7 +91,7 @@ block body
 			a(href="https://github.com/freezy/node-vpdb", target="_blank")
 				i.fa.fa-github-alt
 				| <strong>Fork me</strong> on GitHub
-			if deployment == 'staging'
+			if deployment != 'production'
 				| &nbsp;&#8212;
 				a(href="https://github.com/freezy/node-vpdb/commit/#{gitinfo.local.branch.current.SHA}", target="_blank")=gitinfo.local.branch.current.shortSHA
 				| &nbsp;@&nbsp;

@@ -1,12 +1,13 @@
 #!/bin/bash
 
 DEPLOY_ENV='staging'
-HEAD_REV=`git rev-parse HEAD`
-HEAD_REV=${HEAD_REV:0:10}
 
 . ./hooks/common
 
 BRANCH=`repo_get_branch $1`
+HEAD_REV=`git rev-parse ${BRANCH}`
+HEAD_REV=${HEAD_REV:0:10}
+
 DIRNAME=${BRANCH}-${HEAD_REV}
 
 # 1. clone into new folder

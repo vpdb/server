@@ -65,8 +65,9 @@ repo_checkout_tag() {
 repo_checkout_branch() {
 	local dest=${DEPLOY_ROOT}/${DEPLOY_ENV}/$1
 	cd ${dest}
+	echo "Checking out branch branch ${2} at ${PWD}..."
 	git checkout $2
-	test $? -eq 0 || rollback_abort $1 "Failed to checkout branch $2, aborting."
+	test $? -eq 0 || rollback_abort $1 "Failed to checkout branch ${2} at ${PWD}, aborting."
 }
 
 npm_install() {

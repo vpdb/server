@@ -25,16 +25,10 @@ exports.auth = function(req, res, resource, permission, next) {
 				}
 			});
 		};
-		if (req.isAuthenticated()) {
-			checkAcl(req.user.email);
 
-		} else {
-
-			// read basic auth params from header
-			var authorization = req.headers.authorization;
-			if (!authorization) {
-				return exports.fail(res, { message: 'Unauthorized. You need to provide credentials for this resource.' }, 401);
-			}
+		// first check for http basic auth
+		var authorization = req.headers.authorization;
+		if (authorization) {
 			var parts = authorization.split(' ');
 			if (parts[0] != 'Basic') {
 				return exports.fail(res, { message: 'Only HTTP Basic authentication is supported at the moment.' }, 401);
@@ -59,6 +53,14 @@ exports.auth = function(req, res, resource, permission, next) {
 				}
 				checkAcl(user.email);
 			});
+
+		// then check for a session (will change this to oauth token later)
+		} else if (req.isAuthenticated()) {
+			checkAcl(req.user.email);
+
+		// otherwise, 401.
+		} else {
+			return exports.fail(res, { message: 'Unauthorized. You need to provide credentials for this resource.' }, 401);
 		}
 	}
 };

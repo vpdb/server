@@ -1,7 +1,7 @@
 @import('nib')
 
 font-header = 'langdon', sans-serif
-font-content = 'Raleway', sans-serif
+font-content = 'brandon-grotesque', sans-serif
 font-code = Menlo,Monaco,Consolas,'Courier New',monospace;
 
 border-radius-small = 2px
@@ -10,7 +10,7 @@ border-radius-large = 8px
 font-weight-thin = 100
 //font-weight-extralight = 200
 //font-weight-light = 300
-font-weight-normal = 400
+font-weight-normal = 300
 //font-weight-medium = 500
 //font-weight-semibold = 600
 font-weight-bold = 700
@@ -18,12 +18,12 @@ font-weight-bold = 700
 //font-weight-ultrabold = 900
 
 // primary font sizes (font-content)
-font-size-smaller = 13px
-font-size-small = 14px
-font-size-normal = 16px
-font-size-large = 20px
-font-size-larger = 24px
-font-size-largest = 30px
+font-size-smaller = 16px
+font-size-small = 18px
+font-size-normal = 20px
+font-size-large = 24px
+font-size-larger = 28px
+font-size-largest = 34px
 
 // alt font sizes (font-header)
 font-size-smaller-alt = 20px
@@ -32,6 +32,9 @@ font-size-normal-alt = 32px
 font-size-large-alt = 34px
 font-size-larger-alt = 37px
 
+// alt font weights
+font-weight-light-alt = 400
+font-weight-normal-alt = 500
 
 animation-long = 350ms
 animation-short = 200ms
@@ -144,13 +147,14 @@ dl.oneline
 // :headers
 h1
 	font-family font-header
-	text-transform lowercase
+	text-transform uppercase
 h2, h5
 	font-family font-header
 	text-transform uppercase
 
 h1, h2, h5
 	font-size font-size-larger-alt
+	font-weight font-weight-normal-alt
 	margin-bottom 10px
 	margin-top 20px
 h3
@@ -215,6 +219,7 @@ label, h4, h5
 			top 7px
 
 .nav.navbar-nav li
+	font-size font-size-small
 	a
 		text-transform uppercase
 	&.active a
@@ -295,8 +300,12 @@ ul.dropdown-menu table
 		top 0
 		width 100%
 		z-index -1
-	& > li > a
-		padding 5px 15px
+	& > li
+		& > a
+			padding 5px 15px
+			margin-top 15px
+		&:first-child > a
+			margin-top 0px
 .btn-lg + .dropdown-menu
 	border-radius border-radius-large
 	&:after
@@ -358,6 +367,7 @@ ul.dropdown-menu table
 		padding 1px 20px 0px
 		font-family font-header
 		font-size font-size-smaller-alt
+		font-weight font-weight-normal-alt
 		text-transform uppercase
 		border none
 		& > i.icon-pin-on, & > i.icon-pin-off
@@ -365,6 +375,7 @@ ul.dropdown-menu table
 			line-height 12px
 	&.btn-lg
 		font-size font-size-small-alt // -alt
+		font-weight font-weight-normal-alt
 		padding 2px 30px 1px
 		border-radius border-radius-large
 		.fa
@@ -499,6 +510,7 @@ ul.viewtype-panel
 	h3
 		font-size font-size-larger
 		font-family font-header
+		font-weight font-weight-normal-alt
 		text-transform uppercase
 		white-space nowrap
 		overflow hidden
@@ -582,6 +594,7 @@ ul.viewtype-panel
 
 	h3
 		font-size font-size-normal-alt
+		font-weight font-weight-normal-alt
 		margin-top 10px
 		margin-bottom 5px
 
@@ -621,8 +634,9 @@ ul.viewtype-panel
 			margin-bottom 15px
 			margin-top 0px
 			font-size font-size-large-alt
+			font-weight font-weight-normal-alt
 			strong
-				font-weight normal
+				font-weight font-weight-light-alt
 		&.icon-williams
 			font-size 48px // icon
 		&.icon-stern

@@ -4,8 +4,9 @@ html(ng-app="vpdb", auth=JSON.stringify(auth))
 		meta(charset='utf8')
 		meta(name="viewport", content="width=device-width, initial-scale=1")
 		base(href='/')
-		link(href='http://fonts.googleapis.com/css?family=Oswald:400,700,300', rel='stylesheet' type='text/css')
 		link(rel="icon", type="image/png", href="/images/favicon.png")
+		script(type="text/javascript", src="//use.typekit.net/xhi7wnv.js")
+		script(type="text/javascript") try{Typekit.load();}catch(e){}
 		title vpdb
 		if environment == 'production'
 			link(rel="stylesheet", href="/css/global.min.css")

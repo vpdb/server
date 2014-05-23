@@ -35,32 +35,42 @@ module.exports = function(passport, config) {
 			providerMatch[provider + '.id'] = profile.id;
 			User.findOne().or([providerMatch, {'email': profile.emails[0].value }]).exec(function(err, user) {
 				var logtag = providerName ? strategy + ':' + providerName : strategy;
+				if (err) {
+					logger.error('[passport|%s] Error checking for user <%s> in database: %s', logtag, profile.emails[0].value, err, {});
+					return done(err);
+				}
 				if (!user) {
-					logger.info('[passport|%s] Saving new user %s <%s>', logtag, profile.username, profile.emails[0].value);
-
-					// mandatory data
-					user = new User({
-						name: profile.displayName,
-						email: profile.emails[0].value,
-						provider: provider,
-						roles: [ 'member' ]
-					});
-
-					// save original data to separate field
-					user[provider] = profile._json;
-					user[provider].id = profile._json.id.toString();
-
-					// optional data
-					if (profile.photos && profile.photos.length > 0) {
-						user.thumb = profile.photos[0].value;
-					}
-
-					// now save and return
-					user.save(function(err) {
+					User.count(function(err, count) {
 						if (err) {
-							logger.error('[passport|%s] Error creating user: %s', logtag, err);
+							logger.error('[passport|%s] Error counting users: %s', logtag, err, {});
+							return done(err);
 						}
-						return done(err, user);
+						logger.info('[passport|%s] Saving %s user %s <%s>', logtag, count ? 'new' : 'first', profile.username, profile.emails[0].value);
+
+						// mandatory data
+						user = new User({
+							name: profile.displayName,
+							email: profile.emails[0].value,
+							provider: provider,
+							roles: count ? [ 'member' ] : [ 'root' ]
+						});
+
+						// save original data to separate field
+						user[provider] = profile._json;
+						user[provider].id = profile._json.id.toString();
+
+						// optional data
+						if (profile.photos && profile.photos.length > 0) {
+							user.thumb = profile.photos[0].value;
+						}
+
+						// now save and return
+						user.save(function(err) {
+							if (err) {
+								logger.error('[passport|%s] Error creating user: %s', logtag, err);
+							}
+							return done(err, user);
+						});
 					});
 				} else {
 					if (!user[provider]) {

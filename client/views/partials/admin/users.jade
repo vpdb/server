@@ -18,6 +18,7 @@
 					li.list-group-item(ng-repeat="role in roles", filter-role="{{ role.name }}") {{ role.name }}
 	.col-sm-9.col-main
 		h1 users
+		hr
 
 		table.table.table-striped.table-selectable
 			tr(ng-repeat="user in users", ng-click="edit(user)", ng-class="{ inactive: !user.active }")

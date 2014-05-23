@@ -13,6 +13,7 @@ ctrl.controller('AdminUserCtrl', function($scope, $modal, UserResource, RolesRes
 		$modal.open({
 			templateUrl: 'partials/admin/modals/user-edit',
 			controller: 'AdminUserEditCtrl',
+			size: 'lg',
 			resolve: {
 				user: function () {
 					return user;

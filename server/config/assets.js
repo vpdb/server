@@ -20,7 +20,7 @@ function Assets() {
 			'lib/angulartics-0.14.15/angulartics.js',
 			'lib/angulartics-0.14.15/angulartics-ga.js',
 			'lib/angulartics-0.14.15/angulartics-ga-cordova.js',
-			'lib/ui-bootstrap-tpls-0.10.0.js',
+			'lib/ui-bootstrap-tpls-0.11.0.js',
 			'lib/underscore-1.6.0.js',
 			'lib/showdown.js',
 			'lib/jquery.magnific-popup-0.9.9.js',

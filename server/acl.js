@@ -21,7 +21,8 @@ var init = function(next) {
 		}, {
 			roles: 'contributor',
 			allows: [
-				{ resources: 'games', permissions: 'edit' }
+				{ resources: 'games', permissions: 'edit' },
+				{ resources: 'ipdb', permissions: 'view' }
 			]
 		}, {
 			roles: 'member',

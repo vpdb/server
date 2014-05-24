@@ -34,6 +34,10 @@ filters.filter('bytes', function() {
 	}
 });
 
+filters.filter('escape', function() {
+	return window.escape;
+});
+
 filters.filter('mediatype', function(display) {
 	return function(type) {
 		return display.media(type);

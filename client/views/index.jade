@@ -18,11 +18,11 @@ block body
 					a(href="/") Home
 				li(ng-class="{ active: menu == 'games' }")
 					a(href="/games") Games
-				li(ng-class="{ active: menu == 'admin' }", ng-show="hasRole(['root', 'admin'])")
-					a.space-right.dropdown-toggle(data-toggle="dropdown")
+				li.dropdown(ng-class="{ active: menu == 'admin' }", ng-show="hasRole(['root', 'admin'])", on-toggle="toggled(open)")
+					a.space-right.dropdown-toggle
 						span.space-right-2x Admin
 						i.fa.fa-angle-down
-					ul.dropdown-menu(role="menu")
+					ul.dropdown-menu
 						li
 							a(href="/admin/users")
 								i.fa.fa-users
@@ -33,11 +33,11 @@ block body
 					a(ng-click="login()")
 						i.fa.fa-lock.space-right-2x
 						span.space-right Login
-				li(ng-show="auth.isAuthenticated")
-					a.space-right.dropdown-toggle(data-toggle="dropdown")
+				li.dropdown(ng-show="auth.isAuthenticated", on-toggle="toggled(open)")
+					a.space-right.dropdown-toggle
 						span.space-right-2x {{ auth.user.name }}
 						i.fa.fa-angle-down
-					ul.dropdown-menu(role="menu")
+					ul.dropdown-menu
 						li
 							a(ng-click="logout()")
 								i.icon.icon-exit

@@ -22,6 +22,7 @@
 		"express-domain-errors": "0.0.x",
 		"express-graceful-exit": "0.1.x",
 		"express-winston": "0.2.5",
+		"ent": "~2.0.0",
 		"gm": "1.14.x",
 		"grunt": "0.x.x",
 		"grunt-autoprefixer": "0.2.x",

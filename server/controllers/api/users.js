@@ -102,21 +102,6 @@ exports.login = function(req, res) {
 
 exports.list = function(req, res) {
 	api.auth(req, res, 'users', 'list', function() {
-		var callback = function(err, users) {
-			if (err) {
-				logger.error('[api|user:list] Error: %s', err, {});
-				return api.fail(res, err, 500);
-			}
-			// reduce
-			users = _.map(users, function(user) {
-				if (!_.isEmpty(user.github)) {
-					user.github = _.pick(user.github, 'id', 'login', 'email', 'avatar_url', 'html_url');
-				}
-				return user;
-			});
-			api.success(res, users);
-		};
-
 		var query = User.find().select('-passwordHash -passwordSalt -__v');
 
 		// text search
@@ -138,7 +123,20 @@ exports.list = function(req, res) {
 			query.where('roles').in(roles);
 		}
 
-		query.exec(callback);
+		query.exec(function(err, users) {
+			if (err) {
+				logger.error('[api|user:list] Error: %s', err, {});
+				return api.fail(res, err, 500);
+			}
+			// reduce
+			users = _.map(users, function(user) {
+				if (!_.isEmpty(user.github)) {
+					user.github = _.pick(user.github, 'id', 'login', 'email', 'avatar_url', 'html_url');
+				}
+				return user;
+			});
+			api.success(res, users);
+		});
 	});
 };
 

@@ -40,16 +40,13 @@ body.theme-light
 			background-color color-darkest-inv
 
 	.btn
-		&.btn-default, &.btn-primary-black
-			color color-light-inv
-			background-color color-dark-inv
+		&.btn-default
+			color rgba(white, 0.6)
+			background-color rgba(black, 0.25)
 			&:hover
-				color color-lighter-inv
-				background-color color-light-inv
-				box-shadow 0 0 3px 1px rgba(black, 0.3)
-			.badge
-				background-color color-light-inv
-				color color-lighter
+				color rgba(white, 0.7)
+				background-color rgba(black, 0.35)
+				box-shadow 0 0 10px 1px rgba(black, 0.1)
 		&.btn-primary
 			color color-background-inv
 			background-color color-primary-black
@@ -408,7 +405,7 @@ body.theme-light
 		color color-lighter-inv
 		background-color color-lighter
 
-	.tabbable
+	.tabset
 		ul.nav-tabs
 			li
 				&.active

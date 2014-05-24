@@ -29,6 +29,8 @@ module.exports = function(app, config, passport) {
 	var rolesApi = require('./controllers/api/roles');
 	app.get('/api/roles', rolesApi.list);
 
+	var ipdbApi = require('./controllers/api/ipdb');
+	app.get('/api/ipdb/:id', ipdbApi.view);
 
 	// JSON API (mock)
 	var apiMock = require('./controllers/api-mock');

@@ -40,16 +40,16 @@
 			.form-horizontal
 				.form-group
 					label.col-sm-3.control-label(for='ipdbUrl') IPDB
-					.col-sm-4
+					.col-sm-6
 						input#ipdbUrl.form-control(type="text", ng-model="ipdbUrl", placeholder="URL or Number")
-					.col-sm-5
-						a(ng-show="game.title.length", href="http://www.ipdb.org/search.pl?any={{ game.title | escape }}&search=Search+Database&searchtype=quick", target="_blank")
+						a(href="http://www.ipdb.org/search.pl?any={{ game.name | escape }}&search=Search+Database&searchtype=quick", target="_blank")
 							i.fa.fa-external-link.space-right
 							| Search title on IPDB.org
+					.col-sm-3
+						button.btn.btn-default.pull-right(ng-click="refresh()")
+							i.fa.fa-refresh.space-right
+							| Refresh
 				hr
-				button.btn.btn-default.pull-right(ng-click="refresh()")
-					i.fa.fa-refresh.space-right
-					| Refresh
 				.form-group
 					label.col-sm-3.control-label Manufacturer
 					.col-sm-6

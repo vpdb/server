@@ -9,8 +9,8 @@
 				.ratingbox-rating.rating-user(ng-show="editing") {{ hoverRating | rating }}
 				.ratingbox-rating(ng-class="{ 'rating-hide' : editing }") {{ $parent.game.rating | rating }}
 			.ratingbox-right
-				rating.rating-user(ng-show="editing", value="ratingUser", max="10", rating-states="states", on-hover="hoverRating = value", on-leave="hoverRating = ratingUser")
-				rating.rating-avg(ng-hide="editing", value="ratingAvg", max="10", rating-states="states", readonly="true")
+				rating.rating-user(ng-show="editing", ng-model="ratingUser", max="10", rating-states="states", on-hover="hoverRating = value", on-leave="hoverRating = ratingUser")
+				rating.rating-avg(ng-hide="editing", ng-model="ratingAvg", max="10", rating-states="states", readonly="true")
 				span.votes {{ $parent.game.votes | number }} vote{{ $parent.game.votes == 1 ? '' : 's' }}
 		hr
 
@@ -64,8 +64,8 @@
 								.ratingbox-rating.rating-user(ng-show="editing") {{ hoverRating | rating }}
 								.ratingbox-rating(ng-class="{ 'rating-hide' : editing }") {{ release.rating | rating }}
 							.ratingbox-right
-								rating.rating-user(ng-show="editing", value="ratingUser", max="10", rating-states="states", on-hover="hoverRating = value", on-leave="hoverRating = ratingUser")
-								rating.rating-avg(ng-hide="editing", value="ratingAvg", max="10", rating-states="states", readonly="true")
+								rating.rating-user(ng-show="editing", ng-model="ratingUser", max="10", rating-states="states", on-hover="hoverRating = value", on-leave="hoverRating = ratingUser")
+								rating.rating-avg(ng-hide="editing", ng-model="ratingAvg", max="10", rating-states="states", readonly="true")
 								span.votes {{ release.votes | number }} vote{{ release.votes == 1 ? '' : 's' }}
 					.col-sm-8.col-md-9
 						h1 {{ release.title }}
@@ -81,7 +81,7 @@
 							span {{ release.lastversion.downloads | number }} downloads
 
 						accordion.accordion-glued(close-others="true")
-							accordion-group(heading="Description", is-open="true")
+							accordion-group(heading="Description", is-open="accordeon.isFirstOpen")
 								div.markdown(markdown="release.description")
 
 							accordion-group(heading="Authors")
@@ -178,7 +178,7 @@
 				.media
 					.media-avatar-medium.media-avatar.media-avatar-comment.pull-left
 					.media-body
-						tabset.tabset-newcomment
+						tabset.tabset.tabset-newcomment
 							label.label-small.pull-right Comments are parsed with <a href="http://daringfireball.net/projects/markdown/syntax" target="_blank">Markdown</a>.
 							tab
 								tab-heading

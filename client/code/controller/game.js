@@ -6,6 +6,10 @@ ctrl.controller('GameController', function($scope, $http, $routeParams, $modal, 
 	$scope.gameId = $routeParams.id;
 	$scope.pageLoading = true;
 
+	$scope.accordeon = {
+		isFirstOpen: true
+	};
+
 	$http({
 		method: 'GET',
 		url: '/api-mock/games/' + $scope.gameId

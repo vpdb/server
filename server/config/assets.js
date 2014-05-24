@@ -12,11 +12,11 @@ function Assets() {
 	var assets = {
 		js: [
 			'lib/jquery-2.1.0.js',
-			'lib/angular-1.3.0-beta.3/angular.js',
-			'lib/angular-1.3.0-beta.3/angular-route.js',
-			'lib/angular-1.3.0-beta.3/angular-animate.js',
-			'lib/angular-1.3.0-beta.3/angular-sanitize.js',
-			'lib/angular-1.3.0-beta.3/angular-resource.js',
+			'lib/angular-1.3.0-beta.8/angular.js',
+			'lib/angular-1.3.0-beta.8/angular-route.js',
+			'lib/angular-1.3.0-beta.8/angular-animate.js',
+			'lib/angular-1.3.0-beta.8/angular-sanitize.js',
+			'lib/angular-1.3.0-beta.8/angular-resource.js',
 			'lib/angulartics-0.14.15/angulartics.js',
 			'lib/angulartics-0.14.15/angulartics-ga.js',
 			'lib/angulartics-0.14.15/angulartics-ga-cordova.js',

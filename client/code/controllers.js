@@ -13,6 +13,7 @@ ctrl.controller('AppCtrl', function($scope, $rootScope, $location, $modal, UserR
 	$scope.pinnedDownloads = {};
 	$scope.pinnedDownloadCount = 0;
 	$scope.pinnedDownloadSize = 0;
+	$scope.loading = false;
 
 	$scope.navGame = function(key) {
 		$location.hash('');
@@ -25,6 +26,10 @@ ctrl.controller('AppCtrl', function($scope, $rootScope, $location, $modal, UserR
 
 	$scope.theme = function(theme) {
 		$rootScope.themeName = 'theme-' + theme;
+	};
+
+	$scope.setLoading = function(loading) {
+		$scope.loading = loading;
 	};
 
 	$scope.download = function(download, info) {

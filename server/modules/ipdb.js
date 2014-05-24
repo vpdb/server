@@ -65,10 +65,10 @@ function parseDetails(body, done) {
 		game.theme = firstMatch(body, /Theme:\s*<\/b><\/td><td[^>]*>([^<]+)/i, function(m) {
 			return m.split(/\s+-\s+/gi);
 		});
-		game.designer = firstMatch(body, /Design by:\s*<\/b><\/td><td[^>]*><span[^>]*>(.*?)<\/tr>/i, function(m) {
+		game.designers = firstMatch(body, /Design by:\s*<\/b><\/td><td[^>]*><span[^>]*>(.*?)<\/tr>/i, function(m) {
 			return ent.decode(striptags(m)).split(/,\s*/);
 		});
-		game.artist = firstMatch(body, /Art by:\s*<\/b><\/td><td[^>]*><span[^>]*>(.*?)<\/tr>/i, function(m) {
+		game.artists = firstMatch(body, /Art by:\s*<\/b><\/td><td[^>]*><span[^>]*>(.*?)<\/tr>/i, function(m) {
 			return ent.decode(striptags(m)).split(/,\s*/);
 		});
 

@@ -55,11 +55,31 @@ ctrl.controller('RequestModPermissionModalCtrl', function($scope, $modalInstance
 	};
 });
 
-ctrl.controller('AdminGameAddCtrl', function($scope) {
+ctrl.controller('AdminGameAddCtrl', function($scope, IpdbResource) {
 
 	$scope.theme('light');
 	$scope.setMenu('admin');
 
 	$scope.game = {};
+
+	$scope.refresh = function() {
+		var ipdbId;
+		if (/id=\d+/i.test($scope.ipdbUrl)) {
+			var m = $scope.ipdbUrl.match(/id=(\d+)/i);
+			ipdbId = m[1];
+
+		} else if (parseInt($scope.ipdbUrl)) {
+			ipdbId = $scope.ipdbUrl;
+		}
+
+		if (ipdbId) {
+			$scope.setLoading(true);
+			$scope.game = IpdbResource.get({ id: ipdbId }, function() {
+				$scope.setLoading(false);
+			});
+		} else {
+			alert('Need either number or URL with ID!');
+		}
+	}
 
 });

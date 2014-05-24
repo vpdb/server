@@ -86,6 +86,9 @@ block body
 	.container.container-topmost
 		div(ng-view)
 
+	.spinner-overlay.fade-animation(ng-show="loading")
+		.spinner
+
 	section.footer
 		p
 			a(href="https://github.com/freezy/node-vpdb", target="_blank")

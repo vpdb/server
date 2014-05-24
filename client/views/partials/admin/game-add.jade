@@ -11,7 +11,7 @@
 			h2 1. enter title
 			hr
 			.form-group
-				input.form-control.input-lg(type="text", placeholder="Title", ng-model="game.title")
+				input.form-control.input-lg(type="text", placeholder="Title", ng-model="game.name")
 				span.help-block No year, manufacturer or anything else, just the title. Example: <i>The Addams Family</i>.
 
 			h2 2. origin
@@ -41,26 +41,26 @@
 				.form-group
 					label.col-sm-3.control-label(for='ipdbUrl') IPDB
 					.col-sm-4
-						input#ipdbUrl.form-control(type="text", placeholder="URL or Number")
+						input#ipdbUrl.form-control(type="text", ng-model="ipdbUrl", placeholder="URL or Number")
 					.col-sm-5
 						a(ng-show="game.title.length", href="http://www.ipdb.org/search.pl?any={{ game.title | escape }}&search=Search+Database&searchtype=quick", target="_blank")
 							i.fa.fa-external-link.space-right
 							| Search title on IPDB.org
 				hr
-				button.btn.btn-default.pull-right
+				button.btn.btn-default.pull-right(ng-click="refresh()")
 					i.fa.fa-refresh.space-right
 					| Refresh
 				.form-group
 					label.col-sm-3.control-label Manufacturer
 					.col-sm-6
-						input.form-control(type="text", disabled)
+						input.form-control(type="text", ng-model="game.manufacturer", disabled)
 				.form-group
 					label.col-sm-3.control-label Year
 					.col-sm-2
-						input.form-control(type="text", disabled)
+						input.form-control(type="text", ng-model="game.year", disabled)
 					label.col-sm-2.control-label Game Type
 					.col-sm-2
-						input.form-control(type="text", disabled)
+						input.form-control(type="text", ng-model="game.type", disabled)
 			p
 				br
 

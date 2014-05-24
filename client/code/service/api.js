@@ -15,6 +15,12 @@ services.factory('RolesResource', function($resource) {
 	});
 });
 
+services.factory('IpdbResource', function($resource) {
+	return $resource('/api/ipdb/:id', {}, {
+	});
+});
+
+
 services.factory('ApiHelper', function() {
 	return {
 		handleErrors: function(scope) {

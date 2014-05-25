@@ -31,7 +31,6 @@ exports.upload = function(req, res) {
 			fileType: req.query.type
 		});
 
-		//console.log('***** UPLOAD headers: %s', require('util').inspect(req.headers, false, 3, true));
 		file.validate(function(err) {
 			if (err) {
 				return api.fail(res, err, 422);

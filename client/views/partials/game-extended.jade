@@ -1,7 +1,7 @@
 .col-xs-12.fade-animation(ng-repeat="game in games | filter:query | decade:filterDecades | manufacturer:filterManufacturer | orderBy:sort:sortReverse", ng-click="navGame(game.id)")
 	.panel.panel-dark.panel-extended.bg-dark.ng-cloak
 		.img-wrapper
-			.img.img-fade(img-bg="{{ game.art.backglass_thumb }}")
+			.img.img-fade(img-bg="game.art.backglass_thumb")
 		.data-wrapper
 			h3 {{ game.name }}
 			label {{ game.manufacturer }} &middot; {{ game.year }}
@@ -25,7 +25,7 @@
 				.ratingbox-left
 					.ratingbox-rating {{ game.rating | rating }}
 				.ratingbox-right
-					rating.rating-avg(value="ratingAvg", max="10", rating-states="states", readonly="true")
+					rating.rating-avg(ng-model="ratingAvg", max="10", rating-states="states", readonly="true")
 					span.votes {{ game.votes | number }} vote{{ game.votes == 1 ? '' : 's' }}
 
 		.clearfix

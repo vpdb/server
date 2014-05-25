@@ -59,7 +59,6 @@
 						button.btn.btn-default.pull-right(ng-click="refresh()")
 							i.fa.fa-check.space-right
 							| Check
-				hr
 				div(ng-show="false")
 					.form-group
 						label.col-sm-3.control-label Manufacturer
@@ -73,7 +72,6 @@
 						.col-sm-2
 							input.form-control(type="text", ng-model="game.type", disabled)
 			.col-md-offset-2.col-md-8.col-sm-offset-1.col-sm-10
-				.clearfix
 				.panel(ng-show="game.year")
 					.panel-header
 						h1.center-block {{ game.name }}
@@ -88,8 +86,8 @@
 						dl(ng-show="game.units || game.ipdb.rating || game.type || game.modelno").dl-horizontal.dl-centered
 							dt(ng-show="game.ipdb.rating") IPDB Rating
 							dd(ng-show="game.ipdb.rating") {{ game.ipdb.rating }}
-							dt(ng-show="game.units") Units
-							dd(ng-show="game.units") {{ game.units | number }}
+							dt(ng-show="game.units") Production
+							dd(ng-show="game.units") {{ game.units | number }} units
 							dt(ng-show="game.type") Game Type
 							dd(ng-show="game.type") {{ game.type | gametype }}
 							dt(ng-show="game.modelno") Model Number
@@ -107,6 +105,34 @@
 						p
 							i Click "Fetch" to load data.
 
+			.clearfix
+			h2 4. Upload Media
+			hr
+			p Upload high quality artwork here. The backglass is mandatory but also the logo is strongly recommended.
+				| Please check the image guidelines if you haven’t done so yet.
+
+			.row
+				.col-sm-6
+					.panel.panel-droppable.panel-clickable(ng-file-drop="onFileSelect($files)", ng-file-drag-over-class="panel-dragging")
+						.panel-content
+							.img(img-bg="uploadedLink")
+								.text-center
+									p
+										i.fa.fa-picture-o
+										p Drop image here
+				.col-sm-6
+					h4 Backglass
+					i A few guidelines:
+					ul
+						li The aspect ratio should be <i>5:4</i> (or <i>1:1.25</i>)
+						li Recommended resolution is <i>1280&times;1024</i>.
+						li The DMD area should be cut off.
+						li The image must not be stretched or upscaled.
+
+			//- input(type='file', ng-file-select='onFileSelect($files)')
+			//- div(ng-file-drop='onFileSelect($files)', ng-file-drag-over-class='optional-css-class', ng-show='dropSupported') drop files here
+			//- div(ng-file-drop-available='dropSupported=true', ng-show='!dropSupported') HTML5 Drop File is not supported!
+			//- button(ng-click='upload.abort()') Cancel Upload
 
 
 			p

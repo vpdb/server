@@ -145,17 +145,22 @@ directives.directive('user', function($compile, $modal) {
 });
 
 
-directives.directive('imgBg', function() {
+directives.directive('imgBg', function($parse) {
 	return {
 		restrict: 'A',
 		link: function(scope, element, attrs) {
-			element.css('background-image', "url('" + attrs.imgBg + "')");
-			element.waitForImages({
-				each: function() {
-					var that = $(this);
-					that.addClass('loaded');
-				},
-				waitForAll: true
+			var value = $parse(attrs.imgBg);
+			scope.$watch(value, function() {
+				if (value(scope)) {
+					element.css('background-image', "url('" + value(scope) + "')");
+					element.waitForImages({
+						each: function() {
+							var that = $(this);
+							that.addClass('loaded');
+						},
+						waitForAll: true
+					});
+				}
 			});
 		}
 	};

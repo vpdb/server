@@ -55,7 +55,7 @@ ctrl.controller('RequestModPermissionModalCtrl', function($scope, $modalInstance
 	};
 });
 
-ctrl.controller('AdminGameAddCtrl', function($scope, ApiHelper, IpdbResource) {
+ctrl.controller('AdminGameAddCtrl', function($scope, $upload, ApiHelper, IpdbResource) {
 
 	$scope.theme('light');
 	$scope.setMenu('admin');
@@ -82,12 +82,42 @@ ctrl.controller('AdminGameAddCtrl', function($scope, ApiHelper, IpdbResource) {
 				} else {
 					$scope.gameId = $scope.game.name.replace(/[^a-z0-9\s\-]+/gi, '').replace(/\s+/g, '-').toLowerCase();
 				}
-
-
 			}, ApiHelper.handleErrorsInDialog($scope, 'Error fetching data.'));
 		} else {
 			alert('Need either number or URL with ID!');
 		}
-	}
+	};
+
+	$scope.onFileSelect = function($files) {
+		//$files: an array of files selected, each file has name, size, and type.
+		var file = $files[0];
+
+		var fileReader = new FileReader();
+		fileReader.readAsArrayBuffer(file);
+		fileReader.onload = function(e) {
+			console.log(file);
+			$upload.http({
+				url: '/api/files',
+				method: 'PUT',
+				params: { type: 'backglass' },
+				headers: {
+					'Content-Type': file.type,
+					'Content-Disposition': 'attachment; filename="' + file.name + '"'
+				},
+				data: e.target.result
+			}).then(function(response) {
+				console.log('SUCCESS:');
+				$scope.uploadedLink = response.data.url;
+				console.log(response);
+
+			}, function(err) {
+				console.log('ERROR: ' + err);
+			}, function(evt) {
+				$scope.progress = parseInt(100.0 * evt.loaded / evt.total);
+				console.log('PROGRESS: ' + $scope.progress);
+			});
+		};
+
+	};
 
 });

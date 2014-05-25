@@ -46,18 +46,23 @@ filters.filter('mediatype', function(display) {
 
 filters.filter('gametype', function() {
 	return function(type) {
-		switch (type.toLowerCase()) {
-			case 'ss':
-				return 'Solid-State Game';
-			case 'em':
-				return 'Electro-Mechanical Game';
-			case 'pm':
-				return 'Pure Mechanical';
-			case 'og':
-				return 'Original Game';
-			default:
-				return type;
+		if (type) {
+			switch (type.toLowerCase()) {
+				case 'ss':
+					return 'Solid-State Game';
+				case 'em':
+					return 'Electro-Mechanical Game';
+				case 'pm':
+					return 'Pure Mechanical';
+				case 'og':
+					return 'Original Game';
+				default:
+					return type;
+			}
+		} else {
+			return 'Undefined';
 		}
+
 	}
 });
 

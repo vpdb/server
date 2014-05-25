@@ -248,7 +248,7 @@
 							.third
 								span {{ backglass.download.size | bytes }}
 
-					.panel.bg-dark.panel-backglass.panel-back.img.img-fullspan.img-fade(img-bg="{{ backglass.thumb }}")
+					.panel.bg-dark.panel-backglass.panel-back.img.img-fullspan.img-fade(img-bg="backglass.thumb")
 						button.btn.btn-primary.btn-lg(download="backglass.download", download-info="[ game, backglass ] | dlBackglass", ng-click="$event.stopPropagation()")
 								| Download
 					.clearfix
@@ -298,7 +298,7 @@
 							.third
 								span {{ item.download.size | bytes }}
 
-					.panel.bg-dark.panel-backglass.panel-back.img.img-fullspan.img-fade(img-bg="{{ item.thumb }}")
+					.panel.bg-dark.panel-backglass.panel-back.img.img-fullspan.img-fade(img-bg="item.thumb")
 						button.btn.btn-primary.btn-lg(download="item.download", download-info="[ game, item ] | dlMedia", ng-click="$event.stopPropagation()")
 							| Download
 					.clearfix

@@ -8,8 +8,8 @@ var User = require('mongoose').model('User');
 exports.auth = function(req, res, resource, permission, next) {
 
 	// next is passed as second arg, meaning no auth necessary (public api)
-	if (_.isFunction(resource)) {
-		resource();
+	if (_.isFunction(resource) && !next) {
+		resource(); // resource and permission not provided, this is calling next().
 	} else {
 
 		var checkAcl = function(email) {
@@ -51,6 +51,7 @@ exports.auth = function(req, res, resource, permission, next) {
 					logger.warn('[api|common:auth] Basic auth credentials denied for user "%s" (%s).', username, user ? 'password' : 'username');
 					return exports.fail(res, { message: 'Invalid credentials.' }, 401);
 				}
+				req.user = user;
 				checkAcl(user.email);
 			});
 

@@ -3,6 +3,7 @@ var _ = require('underscore');
 module.exports = function(app, config, passport) {
 
 	var web = require('./controllers/web');
+	var storage = require('./controllers/storage');
 
 	app.get('/', web.index());
 	app.get('/games', web.index());
@@ -31,6 +32,12 @@ module.exports = function(app, config, passport) {
 
 	var ipdbApi = require('./controllers/api/ipdb');
 	app.get('/api/ipdb/:id', ipdbApi.view);
+
+	var filesApi = require('./controllers/api/files');
+	app.put('/api/files', filesApi.upload);
+
+	// Storage
+	app.get('/storage/:id', storage.get);
 
 	// JSON API (mock)
 	var apiMock = require('./controllers/api-mock');

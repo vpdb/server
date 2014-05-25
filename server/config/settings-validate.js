@@ -76,6 +76,20 @@ module.exports = {
 		},
 
 		/**
+		 * Where the files are stored.
+		 * @important
+		 */
+		storage: function(path) {
+			if (!fs.existsSync(path)) {
+				return 'Storage path does not exist. Please point it to an existing folder or create the mentioned path';
+			}
+
+			if (!fs.lstatSync(path).isDirectory()) {
+				return 'Storage path is not a folder. Please make it point to a folder';
+			}
+		},
+
+		/**
 		 * A temp folder for extracting stuff. No trailing slash!
 		 * @important
 		 */

@@ -22,13 +22,14 @@ var init = function(next) {
 			roles: 'contributor',
 			allows: [
 				{ resources: 'games', permissions: 'edit' },
-				{ resources: 'ipdb', permissions: 'view' }
+				{ resources: 'ipdb', permissions: 'view' },
+				{ resources: 'files', permissions: 'upload' }
 			]
 		}, {
 			roles: 'member',
 			allows: [
 				{ resources: 'users', permissions: 'view' },
-				{ resources: 'content', permissions: 'download' }
+				{ resources: 'files', permissions: 'download' }
 			]
 		}
 	])

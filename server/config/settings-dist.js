@@ -46,6 +46,12 @@ module.exports = {
 		secret: 'alongsecret',
 
 		/**
+		 * Where the files are stored.
+		 * @important
+		 */
+		storage: './data/storage',
+
+		/**
 		 * A temp folder for extracting stuff. No trailing slash!
 		 * @important
 		 */

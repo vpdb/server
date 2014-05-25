@@ -79,7 +79,7 @@ function parseDetails(body, done) {
 
 		done(null, game);
 	} else {
-		done('Cannot parse game details from page body.');
+		done('Cannot parse game details from page body. Are you sure the provided IPDB No. exists?');
 	}
 }
 

@@ -164,4 +164,4 @@ UserSchema.methods = {
 };
 
 mongoose.model('User', UserSchema);
-logger.info('[model] Model "user" registrated.');
+logger.info('[model] Model "user" registered.');

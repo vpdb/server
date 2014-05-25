@@ -11,6 +11,7 @@ lib-cov
 pids
 logs
 results
+data/storage
 server/config/settings.js
 
 gitinfo.json

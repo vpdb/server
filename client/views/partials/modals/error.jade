@@ -1,0 +1,11 @@
+.bg-lightest
+	.modal-header
+		h3
+			i.fa.fa-exclamation-triangle.space-right
+			| &nbsp;Ooops!
+	.modal-body
+		h4 {{ errorTitle }}
+		p {{ errorMessage }}
+
+	.modal-footer
+		button.btn.btn-primary(ng-click="$close()") Close

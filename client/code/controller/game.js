@@ -55,7 +55,7 @@ ctrl.controller('RequestModPermissionModalCtrl', function($scope, $modalInstance
 	};
 });
 
-ctrl.controller('AdminGameAddCtrl', function($scope, IpdbResource) {
+ctrl.controller('AdminGameAddCtrl', function($scope, ApiHelper, IpdbResource) {
 
 	$scope.theme('light');
 	$scope.setMenu('admin');
@@ -76,7 +76,15 @@ ctrl.controller('AdminGameAddCtrl', function($scope, IpdbResource) {
 			$scope.setLoading(true);
 			$scope.game = IpdbResource.get({ id: ipdbId }, function() {
 				$scope.setLoading(false);
-			});
+
+				if ($scope.game.short) {
+					$scope.gameId = $scope.game.short[0].replace(/[^a-z0-9\s\-]+/gi, '').replace(/\s+/g, '-').toLowerCase();
+				} else {
+					$scope.gameId = $scope.game.name.replace(/[^a-z0-9\s\-]+/gi, '').replace(/\s+/g, '-').toLowerCase();
+				}
+
+
+			}, ApiHelper.handleErrorsInDialog($scope, 'Error fetching data.'));
 		} else {
 			alert('Need either number or URL with ID!');
 		}

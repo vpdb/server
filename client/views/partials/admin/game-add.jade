@@ -48,7 +48,17 @@
 					.col-sm-3
 						button.btn.btn-default.pull-right(ng-click="refresh()")
 							i.fa.fa-refresh.space-right
-							| Refresh
+							| Fetch
+
+				.form-group
+					label.col-sm-3.control-label(for='ipdbUrl') Game ID
+					.col-sm-6
+						input#ipdbUrl.form-control(type="text", ng-model="gameId", placeholder="Common Abbreviation")
+						span.help-block Must be unique and contain only letters and dashes.
+					.col-sm-3
+						button.btn.btn-default.pull-right(ng-click="refresh()")
+							i.fa.fa-check.space-right
+							| Check
 				hr
 				div(ng-show="false")
 					.form-group
@@ -74,14 +84,14 @@
 							dt Year
 							dd {{ game.year }}
 							dt
-						hr(ng-show="game.units || game.ipdb.rating || game.gametype || game.modelno")
-						dl(ng-show="game.units || game.ipdb.rating || game.gametype || game.modelno").dl-horizontal.dl-centered
+						hr(ng-show="game.units || game.ipdb.rating || game.type || game.modelno")
+						dl(ng-show="game.units || game.ipdb.rating || game.type || game.modelno").dl-horizontal.dl-centered
 							dt(ng-show="game.ipdb.rating") IPDB Rating
 							dd(ng-show="game.ipdb.rating") {{ game.ipdb.rating }}
 							dt(ng-show="game.units") Units
 							dd(ng-show="game.units") {{ game.units | number }}
-							dt(ng-show="game.gametype") Game Type
-							dd(ng-show="game.gametype") {{ game.gametype | gametype }}
+							dt(ng-show="game.type") Game Type
+							dd(ng-show="game.type") {{ game.type | gametype }}
 							dt(ng-show="game.modelno") Model Number
 							dd(ng-show="game.modelno") {{ game.modelno }}
 						hr(ng-show="game.designers || game.artists")
@@ -95,7 +105,7 @@
 						i.icon.icon-ipdb.space-right
 						span INFO
 						p
-							i Click "Refresh" to load data.
+							i Click "Fetch" to load data.
 
 
 

@@ -210,3 +210,8 @@ ctrl.controller('UserDetailCtrl', function($scope, $http, username) {
 	});
 });
 
+ctrl.controller('ErrorModalCtrl', function($scope, errorTitle, errorMessage) {
+	$scope.errorTitle = errorTitle;
+	$scope.errorMessage = errorMessage;
+});
+

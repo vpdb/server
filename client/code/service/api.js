@@ -21,7 +21,7 @@ services.factory('IpdbResource', function($resource) {
 });
 
 
-services.factory('ApiHelper', function() {
+services.factory('ApiHelper', function($modal) {
 	return {
 		handleErrors: function(scope) {
 			return function(response) {
@@ -36,6 +36,20 @@ services.factory('ApiHelper', function() {
 				if (response.data.error) {
 					scope.error = response.data.error;
 				}
+			}
+		},
+
+		handleErrorsInDialog: function(scope, title) {
+			return function(response) {
+				scope.setLoading(false);
+				$modal.open({
+					templateUrl: 'partials/modals/error',
+					controller: 'ErrorModalCtrl',
+					resolve: {
+						errorTitle: function() { return title; },
+						errorMessage: function() { return response.data.error; }
+					}
+				});
 			}
 		}
 	};

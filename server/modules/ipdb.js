@@ -10,11 +10,11 @@ function Ipdb() {
 Ipdb.prototype.details = function(ipdbNo, done) {
 	var url = 'http://www.ipdb.org/machine.cgi?id=' + ipdbNo;
 	logger.info('[ipdb] Fetching %s', url);
-	request(url, function(err, response, body) {
+	request({ url: url, timeout: 30000 }, function(err, response, body) {
 
 		if (!response) {
-			logger.error('[ipdb] Network seems to be down, aborting.');
-			return done('No network.');
+			logger.error('[ipdb] Timeout while trying to reach IPDB.org.');
+			return done('Timeout while trying to reach IPDB.org. Please try again later.');
 		}
 
 		if (err) {

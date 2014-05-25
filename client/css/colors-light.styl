@@ -319,6 +319,12 @@ body.theme-light
 		background color-primary-black
 
 	.panel
+		box-shadow 0 0 5px 1px rgba(black, 0.05)
+		background-color color-lighter
+		.panel-header
+			background-color color-light-inv
+			h1
+				color color-lightest
 		.list-group-item
 			color color-lightish-inv
 			background-color transparent
@@ -328,6 +334,9 @@ body.theme-light
 				color color-primary-black
 				&:hover
 					color color-lightest-inv
+		&.panel-inactive
+			color color-dark-inv
+
 	user:hover
 		color color-lightest-inv
 

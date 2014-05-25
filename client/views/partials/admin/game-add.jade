@@ -50,17 +50,55 @@
 							i.fa.fa-refresh.space-right
 							| Refresh
 				hr
-				.form-group
-					label.col-sm-3.control-label Manufacturer
-					.col-sm-6
-						input.form-control(type="text", ng-model="game.manufacturer", disabled)
-				.form-group
-					label.col-sm-3.control-label Year
-					.col-sm-2
-						input.form-control(type="text", ng-model="game.year", disabled)
-					label.col-sm-2.control-label Game Type
-					.col-sm-2
-						input.form-control(type="text", ng-model="game.type", disabled)
+				div(ng-show="false")
+					.form-group
+						label.col-sm-3.control-label Manufacturer
+						.col-sm-6
+							input.form-control(type="text", ng-model="game.manufacturer", disabled)
+					.form-group
+						label.col-sm-3.control-label Year
+						.col-sm-2
+							input.form-control(type="text", ng-model="game.year", disabled)
+						label.col-sm-2.control-label Game Type
+						.col-sm-2
+							input.form-control(type="text", ng-model="game.type", disabled)
+			.col-md-offset-2.col-md-8.col-sm-offset-1.col-sm-10
+				.clearfix
+				.panel(ng-show="game.year")
+					.panel-header
+						h1.center-block {{ game.name }}
+					.panel-content
+						dl.dl-horizontal.dl-centered
+							dt Manufacturer
+							dd {{ game.manufacturer }}
+							dt Year
+							dd {{ game.year }}
+							dt
+						hr(ng-show="game.units || game.ipdb.rating || game.gametype || game.modelno")
+						dl(ng-show="game.units || game.ipdb.rating || game.gametype || game.modelno").dl-horizontal.dl-centered
+							dt(ng-show="game.ipdb.rating") IPDB Rating
+							dd(ng-show="game.ipdb.rating") {{ game.ipdb.rating }}
+							dt(ng-show="game.units") Units
+							dd(ng-show="game.units") {{ game.units | number }}
+							dt(ng-show="game.gametype") Game Type
+							dd(ng-show="game.gametype") {{ game.gametype | gametype }}
+							dt(ng-show="game.modelno") Model Number
+							dd(ng-show="game.modelno") {{ game.modelno }}
+						hr(ng-show="game.designers || game.artists")
+						dl(ng-show="game.designers || game.artists").dl-horizontal.dl-centered
+							dt(ng-show="game.designers") Game Design
+							dd(ng-show="game.designers") {{ game.designers.join(', ') }}
+							dt(ng-show="game.artists") Art design
+							dd(ng-show="game.artists") {{ game.artists.join(', ') }}
+				.panel.panel-inactive(ng-hide="game.year")
+					.panel-content
+						i.icon.icon-ipdb.space-right
+						span INFO
+						p
+							i Click "Refresh" to load data.
+
+
+
 			p
 				br
 

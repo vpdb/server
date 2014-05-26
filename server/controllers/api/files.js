@@ -5,6 +5,7 @@ var path = require('path');
 var api = require('./common');
 var File = require('mongoose').model('File');
 var config = require('../../modules/settings').current;
+var storage = require('../../modules/storage');
 
 exports.upload = function(req, res) {
 	api.auth(req, res, 'files', 'upload', function() {
@@ -40,15 +41,25 @@ exports.upload = function(req, res) {
 				if (err) {
 					return api.fail(res, err, 500);
 				}
-				var writeStream = fs.createWriteStream(path.resolve(config.vpdb.storage, file._id.toString()));
+				var writeStream = fs.createWriteStream(file.getPath());
 				req.on('data', function (data) {
 					writeStream.write(data);
 				});
 				req.on('end', function() {
 					writeStream.end();
-					var f = _.pick(file, 'name', 'bytes', 'created', 'mimeType', 'fileType');
-					f.url = '/storage/' + file._id;
-					api.success(res, f);
+					storage.metadata(file, function(err, metadata) {
+						if (!err && metadata) {
+							file.metadata = metadata;
+						}
+						var f = _.pick(file, 'name', 'bytes', 'created', 'mimeType', 'fileType', 'metadata');
+						f.url = file.getUrl();
+						api.success(res, f);
+						file.save(function(err) {
+							if (err) {
+								logger.error('[api|file:save] Error saving metadata: %s', err, {});
+							}
+						});
+					});
 				});
 			});
 		});

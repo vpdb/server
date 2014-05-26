@@ -10,15 +10,16 @@ var Schema = mongoose.Schema;
 
 // schema
 var fields = {
-	name:         { type: String, index: true, required: 'Name must be provided.' }, // display name, equals username when locally registering
-	username:     { type: String, index: true, unique: true },
-	email:        { type: String, index: true, unique: true, lowercase: true, required: 'Email must be provided.' },
-	roles:        [ String ],
-	provider:     { type: String, required: true },
-	passwordHash: { type: String },
-	passwordSalt: { type: String },
-	thumb:        { type: String },
-	active:       { type: Boolean, required: true, default: true }
+	name:          { type: String, index: true, required: 'Name must be provided.' }, // display name, equals username when locally registering
+	username:      { type: String, index: true, unique: true },
+	email:         { type: String, index: true, unique: true, lowercase: true, required: 'Email must be provided.' },
+	roles:         [ String ],
+	provider:      { type: String, required: true },
+	passwordHash:  { type: String },
+	passwordSalt:  { type: String },
+	thumb:         { type: String },
+	active:        { type: Boolean, required: true, default: true },
+	uploadedFiles: [{ type: Schema.Types.ObjectId, ref: 'File' }]
 };
 
 // provider data fields

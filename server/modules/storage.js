@@ -1,0 +1,56 @@
+'use strict';
+
+var _ = require('underscore');
+var gm = require('gm');
+var fs = require('fs');
+var path = require('path');
+var logger = require('winston');
+
+var File = require('mongoose').model('File');
+var config = require('./settings').current;
+
+function Storage() {
+}
+
+Storage.prototype.cleanup = function(graceperiod, done) {
+	graceperiod = graceperiod ? graceperiod : 0;
+
+	File.find({ active: false, created: { $lt: new Date(new Date().getTime() - graceperiod)} })
+		.populate('author').
+		exec(function(err, files) {
+		if (err) {
+			logger.error('[storage] Error getting files for cleanup: %s', err);
+			return done(err);
+		}
+		_.each(files, function(file) {
+			logger.info('[storage] Cleanup: Removing inactive file "%s" from <%s> (%s).', file.name, file.author.email, file._id.toString());
+			fs.unlinkSync(file.getPath());
+			file.remove();
+		});
+		done();
+	});
+};
+
+Storage.prototype.metadata = function(file, done) {
+	var mime = file.mimeType.split('/');
+	var type = mime[0];
+	var subtype = mime[1];
+
+	switch(type) {
+		case 'image':
+			gm(file.getPath()).identify(function(err, value) {
+				if (err) {
+					logger.warning('[storage] Error reading metadata from image: %s', err);
+					return done();
+				}
+				logger.info('[storage] Metadata: %s', require('util').inspect(value, false, 2, true));
+				done(null, value);
+			});
+			break;
+		default:
+			logger.warning('[storage] No metadata parser for mime type "%s".', file.mimeType);
+			done();
+	}
+};
+
+module.exports = new Storage();

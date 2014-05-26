@@ -113,13 +113,13 @@
 
 			.row
 				.col-sm-6
-					.panel.panel-droppable.panel-clickable(ng-file-drop="onFileSelect($files)", ng-file-drag-over-class="panel-dragging")
+					.panel(ng-file-drop="onBackglassUpload($files)", ng-file-drag-over-class="panel-dragging")
 						.panel-content
-							.img(img-bg="uploadedLink")
-								.text-center
+							.img(img-bg="uploadedBackglass")
+								.text-center(ng-hide="uploadedBackglass")
 									p
 										i.fa.fa-picture-o
-										p Drop image here
+										p Drop backglass image here
 				.col-sm-6
 					h4 Backglass
 					i A few guidelines:
@@ -128,6 +128,23 @@
 						li Recommended resolution is <i>1280&times;1024</i>.
 						li The DMD area should be cut off.
 						li The image must not be stretched or upscaled.
+
+			.row
+				.col-sm-6
+					.panel(ng-file-drop="onLogoUpload($files)", ng-file-drag-over-class="panel-dragging")
+						.panel-content
+							.img(img-bg="uploadedLogo")
+								.text-center(ng-hide="uploadedLogo")
+									p
+										i.fa.fa-picture-o
+										p Drop logo here
+				.col-sm-6
+					h4 Logo
+					i A few guidelines:
+					ul
+						li Use the PNG format
+						li Background should be transparent
+						li There should be enough contrast on white as well as on black background.
 
 			//- input(type='file', ng-file-select='onFileSelect($files)')
 			//- div(ng-file-drop='onFileSelect($files)', ng-file-drag-over-class='optional-css-class', ng-show='dropSupported') drop files here

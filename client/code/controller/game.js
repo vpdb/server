@@ -88,10 +88,8 @@ ctrl.controller('AdminGameAddCtrl', function($scope, $upload, ApiHelper, IpdbRes
 		}
 	};
 
-	$scope.onFileSelect = function($files) {
-		//$files: an array of files selected, each file has name, size, and type.
+	$scope.onBackglassUpload = function($files) {
 		var file = $files[0];
-
 		var fileReader = new FileReader();
 		fileReader.readAsArrayBuffer(file);
 		fileReader.onload = function(e) {
@@ -106,13 +104,10 @@ ctrl.controller('AdminGameAddCtrl', function($scope, $upload, ApiHelper, IpdbRes
 				},
 				data: e.target.result
 			}).then(function(response) {
-				console.log('SUCCESS:');
-				$scope.uploadedLink = response.data.url;
-				console.log(response);
+				$scope.uploadedBackglass = response.data.url;
 
-			}, function(err) {
-				console.log('ERROR: ' + err);
-			}, function(evt) {
+			}, ApiHelper.handleErrorsInDialog($scope, 'Error uploading image.'), function(evt) {
+
 				$scope.progress = parseInt(100.0 * evt.loaded / evt.total);
 				console.log('PROGRESS: ' + $scope.progress);
 			});

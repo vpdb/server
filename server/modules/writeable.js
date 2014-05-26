@@ -7,8 +7,8 @@ function Writeable() {
 	this.cacheRoot = process.env.APP_CACHEDIR ? process.env.APP_CACHEDIR : path.resolve(__dirname, "../../cache");
 
 	this.jsRoot = path.resolve(this.cacheRoot, 'js');
-	this.cssRoot = path.resolve(this.cacheRoot, 'js');
-	this.imgRoot = path.resolve(this.cacheRoot, 'js');
+	this.cssRoot = path.resolve(this.cacheRoot, 'css');
+	this.imgRoot = path.resolve(this.cacheRoot, 'img');
 
 	if (!fs.existsSync(this.jsRoot)) {
 		fs.mkdirSync(this.jsRoot)

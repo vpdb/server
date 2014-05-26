@@ -44,8 +44,7 @@ Storage.prototype.metadata = function(file, done) {
 					logger.warning('[storage] Error reading metadata from image: %s', err);
 					return done();
 				}
-				logger.info('[storage] Metadata: %s', require('util').inspect(value, false, 2, true));
-				done(null, value);
+				done(null, value, _.pick(value, 'format', 'size', 'depth', 'JPEG-Quality'));
 			});
 			break;
 		default:

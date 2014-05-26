@@ -1,6 +1,7 @@
 var _ = require('underscore');
 var fs = require('fs');
 var path = require('path');
+var logger = require('winston');
 
 var api = require('./common');
 var File = require('mongoose').model('File');
@@ -47,12 +48,13 @@ exports.upload = function(req, res) {
 				});
 				req.on('end', function() {
 					writeStream.end();
-					storage.metadata(file, function(err, metadata) {
+					storage.metadata(file, function(err, metadata, shortMetadata) {
 						if (!err && metadata) {
 							file.metadata = metadata;
 						}
-						var f = _.pick(file, 'name', 'bytes', 'created', 'mimeType', 'fileType', 'metadata');
+						var f = _.pick(file, 'name', 'bytes', 'created', 'mimeType', 'fileType');
 						f.url = file.getUrl();
+						f.metaData = shortMetadata;
 						api.success(res, f);
 						file.save(function(err) {
 							if (err) {

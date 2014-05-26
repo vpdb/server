@@ -4,6 +4,7 @@ var _ = require('underscore');
 var gm = require('gm');
 var fs = require('fs');
 var path = require('path');
+var async = require('async');
 var logger = require('winston');
 
 var File = require('mongoose').model('File');
@@ -22,12 +23,12 @@ Storage.prototype.cleanup = function(graceperiod, done) {
 			logger.error('[storage] Error getting files for cleanup: %s', err);
 			return done(err);
 		}
-		_.each(files, function(file) {
-			logger.info('[storage] Cleanup: Removing inactive file "%s" from <%s> (%s).', file.name, file.author.email, file._id.toString());
+
+		async.eachSeries(files, function(file, next) {
+			logger.info('[storage] Cleanup: Removing inactive file "%s" by <%s> (%s).', file.name, file.author.email, file._id.toString());
 			fs.unlinkSync(file.getPath());
-			file.remove();
-		});
-		done();
+			file.remove(next);
+		}, done);
 	});
 };
 

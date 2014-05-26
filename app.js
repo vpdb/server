@@ -55,13 +55,22 @@ serverDomain.run(function() {
 		// bootstrap routes
 		require('./server/routes')(app, config, passport);
 
-		app.listen(app.get('port'), app.get('ipaddress'), function() {
-			logger.info('[app] Express server listening at %s:%d', app.get('ipaddress'), app.get('port'));
-			if (process.send) {
-				process.send('online');
-			}
-		});
+		// and lastly, startup scripts - stuff that is run at start.
+		require('./server/startup')(function(err) {
 
+			if (err) {
+				logger.error('[app] Error executing startup scripts: %s', err);
+				return process.exit(1);
+			}
+
+			// now we start the server.
+			app.listen(app.get('port'), app.get('ipaddress'), function() {
+				logger.info('[app] Express server listening at %s:%d', app.get('ipaddress'), app.get('port'));
+				if (process.send) {
+					process.send('online');
+				}
+			});
+		});
 	});
 });
 

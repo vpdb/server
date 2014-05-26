@@ -25,7 +25,7 @@ app.config(function($routeProvider, $locationProvider) {
 	$routeProvider.when('/game/:id', { templateUrl: 'partials/game' });
 	$routeProvider.when('/games/add', { templateUrl: 'partials/admin/game-add' });
 	$routeProvider.when('/admin/users', { templateUrl: 'partials/admin/users' });
-//	$routeProvider.otherwise({ redirectTo: '/' });
+	$routeProvider.when('/styleguide', { templateUrl: 'partials/styleguide' });
 	$locationProvider.html5Mode(true);
 });
 

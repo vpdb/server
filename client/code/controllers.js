@@ -28,6 +28,10 @@ ctrl.controller('AppCtrl', function($scope, $rootScope, $location, $modal, UserR
 		$rootScope.themeName = 'theme-' + theme;
 	};
 
+	$scope.toggleTheme = function() {
+		$rootScope.themeName = $rootScope.themeName == 'theme-dark' ? 'theme-light' : 'theme-dark';
+	};
+
 	$scope.setLoading = function(loading) {
 		$scope.loading = loading;
 	};

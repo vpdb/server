@@ -116,26 +116,29 @@ button.btn:focus, button.btn:active:focus
 	padding-bottom 30px
 .padder-left
 	margin-left 15px
-label
-	&.label-small
-		font-size font-size-smaller
-	&.label-message
-		margin 15px 0 0 10px
-	&.label-name
-		text-transform uppercase
-		margin-bottom 0
-	&.label-value
-		font-weight font-weight-bold
-		margin-top 0
-	&.label-version
-		font-family font-code
-		font-weight bold
-		border-radius 4px
-		padding 0 5px
-		margin-bottom -6px
-		margin-left 4px
-	&.label-block
-		display block
+
+.label-small
+	font-size font-size-smaller
+.label-message
+	margin 15px 0 0 10px
+.label-name
+	text-transform uppercase
+	margin-bottom 0
+.label-value
+	font-weight font-weight-bold
+	margin-top 0
+.label-version, .label-code
+	font-family font-code
+	font-weight bold
+	border-radius 4px
+	padding 0 5px
+	margin-bottom -6px
+	margin-left 4px
+.label-code
+	margin-left 0
+	margin-bottom 10px
+.label-block
+	display block
 
 dl.oneline
 	width 100%
@@ -415,6 +418,11 @@ ul.dropdown-menu table
 
 	&.btn-width-med
 		width 124px
+
+	&.btn-theme-toggle
+		position fixed
+		bottom 5px
+		right 20px
 
 	.badge
 		margin-left 10px

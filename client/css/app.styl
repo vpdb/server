@@ -173,7 +173,6 @@ h4
 h4 .small
 	font-size font-size-normal
 
-
 .col-menu
 	h4
 		margin-top 20px
@@ -413,6 +412,9 @@ ul.dropdown-menu table
 	&.btn-comment
 		margin-right 15px
 		margin-bottom 15px
+
+	&.btn-width-med
+		width 124px
 
 	.badge
 		margin-left 10px
@@ -999,13 +1001,18 @@ section.footer
 
 // :image
 .img
-	position relative
-	width 100%
-	height 0
-	padding-bottom 80% // % of width, defines aspect ratio
 	background-repeat no-repeat
 	background-position center center
 	background-size cover
+	&.img-backglass, &.img-logo-placeholder
+		position relative
+		width 100%
+		height 0
+	&.img-backglass
+		padding-bottom 80% // % of width, defines aspect ratio
+	&.img-logo-placeholder
+		padding-bottom 40% // % of width, defines aspect ratio
+
 	&.img-fullspan
 		padding 0
 		border-radius border-radius-small
@@ -1015,7 +1022,10 @@ section.footer
 		position absolute
 		border-radius 0 0 border-radius-small border-radius-small
 	.text-center
-		padding-top 25%
+		margin-top -50px
+		position absolute
+		top 50%
+		width 100%
 		p
 			font-weight font-weight-bold
 			font-style italic

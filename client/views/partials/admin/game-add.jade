@@ -46,7 +46,7 @@
 							i.fa.fa-external-link.space-right
 							| Search title on IPDB.org
 					.col-sm-3
-						button.btn.btn-default.pull-right(ng-click="refresh()")
+						button.btn.btn-default.btn-width-med.pull-right(ng-click="refresh()")
 							i.fa.fa-refresh.space-right
 							| Fetch
 
@@ -56,7 +56,7 @@
 						input#ipdbUrl.form-control(type="text", ng-model="gameId", placeholder="Common Abbreviation")
 						span.help-block Must be unique and contain only letters and dashes.
 					.col-sm-3
-						button.btn.btn-default.pull-right(ng-click="refresh()")
+						button.btn.btn-default.btn-width-med.pull-right(ng-click="refresh()")
 							i.fa.fa-check.space-right
 							| Check
 				div(ng-show="false")
@@ -115,7 +115,7 @@
 				.col-sm-6
 					.panel(ng-file-drop="onBackglassUpload($files)", ng-file-drag-over-class="panel-dragging")
 						.panel-content
-							.img(img-bg="uploadedBackglass")
+							.img.img-backglass(img-bg="uploadedBackglass")
 								.text-center(ng-hide="uploadedBackglass")
 									p
 										i.fa.fa-picture-o
@@ -133,7 +133,7 @@
 				.col-sm-6
 					.panel(ng-file-drop="onLogoUpload($files)", ng-file-drag-over-class="panel-dragging")
 						.panel-content
-							.img(img-bg="uploadedLogo")
+							.img.img-logo-placeholder(img-bg="uploadedLogo")
 								.text-center(ng-hide="uploadedLogo")
 									p
 										i.fa.fa-picture-o
@@ -151,6 +151,9 @@
 			//- div(ng-file-drop-available='dropSupported=true', ng-show='!dropSupported') HTML5 Drop File is not supported!
 			//- button(ng-click='upload.abort()') Cancel Upload
 
+			hr
+			button.btn.btn-primary.btn-lg.pull-right Add New Game
+			.clearfix
 
 			p
 				br

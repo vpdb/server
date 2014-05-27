@@ -1,15 +1,17 @@
 .row.ng-cloak.row-fullheight.fade-animation
 
 	// right column
-	.col-sm-6.col-sm-push-6.col-lg-6.col-lg-push-6.col-menu.bg-dark.text-center
+	.col-sm-3.col-sm-push-9.col-lg-2.col-lg-push-10.col-menu.bg-dark.text-center
 
 		button.btn.btn-primary.btn-lg.pull-right.btn-theme-toggle(ng-click="toggleTheme()")
 			i.fa.fa-adjust
 		.clearfix
 
-		include includes/styleguide-elements
+		include includes/styleguide-common
+		include includes/styleguide-sidebar
 
 	// left column (main content)
-	.col-sm-6.col-sm-pull-6.col-lg-6.col-lg-pull-6.col-main
+	.col-sm-9.col-sm-pull-3.col-lg-10.col-lg-pull-2.col-main
 
-		include includes/styleguide-elements
+		include includes/styleguide-common
+		include includes/styleguide-main

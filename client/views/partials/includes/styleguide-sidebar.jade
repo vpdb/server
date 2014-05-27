@@ -1,0 +1,20 @@
+// single input
+p.padder
+hr
+.label-code .input-group
+.input-group
+	span.input-group-addon
+		i.fa.fa-search
+	input.form-control.input-search(ng-model="query", type="text", placeholder="Search")
+
+p.padder
+hr
+.label-code accordion
+accordion(close-others="false")
+	accordion-group(is-open="accordeonOpen", ng-init="accordeonOpen=true")
+		accordion-heading header
+			i.fa.pull-right(ng-class="{'fa-chevron-circle-up': accordeonOpen, 'fa-chevron-circle-down': !accordeonOpen}")
+		ul.list-group
+			li.list-group-item item
+		ul.list-group
+			li.list-group-item item

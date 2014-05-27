@@ -1,0 +1,153 @@
+// banner, e.g. the packs on the home page
+p.padder
+hr
+.label-code .panel.panel-dark.panel-banner.bg-dark
+.row.row-data
+	.col-xs-12.fade-animation
+		.panel.panel-dark.panel-banner.bg-dark.ng-cloak
+			img(src="/images/styleguide_banner.jpg")
+			h3
+				i.icon.icon-title.icon.icon-title.icon-williams
+				label.pull-right h3 header > label
+					strong  > strong
+					span span
+			.row
+				.col-xs-12.col-sm-6 .row > .col-x
+			button.btn.btn-default.btn-lg btn.btn-default.btn-lg
+	.clearfix
+
+
+// mini panel, e.g. the releases on the home page
+p.padder
+hr
+.label-code .panel.panel-dark.panel-mini.bg-dark
+.row.row-data
+	- for i in [1, 2]
+		.col-lg-6.col-md-12.fade-animation
+			.panel.panel-dark.panel-mini.bg-dark.ng-cloak
+				.img-wrapper
+					.img.img-fade(style="background-image:url(/images/styleguide_square.jpg);opacity:1")
+				.data-wrapper
+					h3 h3 header
+					h4
+						| h4
+						label.label-version .label-version
+					label.block
+						i.icon.icon-user
+						| label.block
+				.clearfix
+.clearfix
+
+
+// compact panel, e.g. the compact view of the game list
+p.padder
+hr
+.label-code .panel.panel-dark.panel-compact.bg-dark
+.row
+	- for i in [1, 2, 3, 4, 5, 6]
+		.col-md-4.col-sm-6.col-xs-12.fade-animation
+			.panel.panel-dark.panel-compact.bg-dark
+				.img.img-backglass.img-fade(style="background-image:url(/images/styleguide_square.jpg);opacity:1")
+				h3 h3 header
+				label label
+
+
+// extended panel, e.g. the extended view of the game list
+p.padder
+hr
+.label-code .panel.panel-dark.panel-extended.bg-dark
+.col-xs-12.fade-animation
+	.panel.panel-dark.panel-extended.bg-dark.ng-cloak
+		.img-wrapper
+			.img.img-backglass.img-fade(style="background-image:url(/images/styleguide_square.jpg);opacity:1")
+		.data-wrapper
+			h3 h3 header
+			label label
+			label.block
+				span(ng-repeat="author in game.authors")
+					i.icon.icon-user
+					| label.block
+			label
+				i.fa.fa-arrow-circle-down
+				span.pipe span.pipe
+				i.fa.fa-eye.hidden-xs
+				span.pipe.hidden-xs span.pipe
+				i.fa.fa-comment.hidden-xs
+				span.pipe.hidden-xs span.pipe
+		.clearfix
+.clearfix
+
+
+// detail panel, e.g. release details
+p.padder
+hr
+.label-code .panel.panel-detailed.bg-dark
+.panel.panel-detailed.bg-dark: .padder
+	h1 h1 Header 1
+	h2 h2 Header 2
+	h3 h3 Header 3
+	label
+		i.icon.icon-user
+		span: user label > span > user
+	label
+		i.fa.fa-arrow-circle-down
+		span label > span
+	.label-code .accordion-glued
+	accordion.accordion-glued
+		accordion-group(heading="accordion-group 1")
+			p p Paragraph
+		accordion-group(heading="accordion-group 2")
+			p p Paragraph
+		accordion-group(heading="accordion-group 3")
+			p p Paragraph
+
+
+// "plain" panel, e.g. release details
+p.padder
+hr
+.label-code .panel.bg-dark
+.panel.bg-dark: .padder
+	h1 h1 Header 1
+	h2 h2 Header 2
+	h3 h3 Header 3
+	label label
+	.label-code .media
+	.media
+		.media-object.media-avatar.media-avatar-medium.media-avatar-comment.pull-left
+		.media-body
+			.panel.panel-small.bg-lighter
+				.panel-triangle
+				.panel-header
+					label
+					strong label > strong
+					| label
+					.pull-right
+						i.fa.fa-pencil
+						i.fa.fa-times-circle
+				.panel-content
+					p p Paragraph
+				.panel-footer
+					button.btn.btn-default.pull-left .btn-default
+					button.btn.btn-default.pull-right .btn-default
+					.clearfix
+
+	.label-code .media
+	.media
+		.media-avatar-medium.media-avatar.media-avatar-comment.pull-left
+		.media-body
+			.label-code tabset.tabset.tabset-newcomment
+			tabset.tabset.tabset-newcomment
+				label.label-small.pull-right label.label-small <a>a link</a>
+				tab
+					tab-heading
+						i.fa.fa-edit
+						.panel-triangle
+					textarea.msd-elastic(placeholder="textarea.msg-elastic")
+				tab
+					tab-heading
+						i.fa.fa-eye(title="Preview")
+					div.markdown(markdown="$parent.newComment")
+					label.label-message(ng-show="!newComment || newComment.length == 0") label.label-message
+
+	button.btn.btn-default.btn-comment.pull-right .btn.btn-default.btn-comment
+	.clearfix

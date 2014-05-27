@@ -165,5 +165,5 @@ module.exports = function(grunt) {
 		'Compiles all of the assets to the cache directory.',
 		[ 'clean', 'mkdir', 'stylus', 'cssmin', 'uglify', 'git' ]
 	);
-	grunt.registerTask('dev', [ 'concurrent' ]);
+	grunt.registerTask('dev', [ 'build', 'concurrent' ]);
 };

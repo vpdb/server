@@ -1,0 +1,27 @@
+//
+// Grid system
+// --------------------------------------------------
+
+// the main container, there's only one element with this class.
+.container--topmost
+	padding-top 50px
+	margin-bottom 30px
+	border-bottom-right-radius $border-radius-large
+	border-bottom-left-radius $border-radius-large
+
+// a row that fills the entire height so we can put a background color on it.
+.row--fullheight
+	overflow hidden
+	border-bottom-right-radius $border-radius-large
+	border-bottom-left-radius $border-radius-large
+	> div
+		margin-bottom -99999px
+		padding-bottom 99999px
+
+// our main- and menu column
+.col-main
+	padding-left 30px
+	padding-right 30px
+	position relative
+.col-menu
+	padding-bottom 25px

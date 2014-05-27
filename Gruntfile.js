@@ -32,13 +32,14 @@ module.exports = function(grunt) {
 		stylus: {
 			build: {
 				options: {
+					paths: ['styles'],
 					linenos: false,
 					compress: false
 				},
 				files: [{
 					expand: true,
-					cwd: 'client/css',
-					src: [ '*.styl' ],
+					cwd: 'client/styles',
+					src: [ 'bootstrap.styl' ],
 					dest: cssRoot,
 					ext: '.css'
 				}]
@@ -79,7 +80,7 @@ module.exports = function(grunt) {
 				tasks: [ 'git' ]
 			},
 			stylesheets: {
-				files: 'client/css/*.styl',
+				files: 'client/styles/**/*.styl',
 				tasks: [ 'stylus' ],
 				options: {
 					livereload: true

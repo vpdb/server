@@ -39,7 +39,7 @@ module.exports = function(grunt) {
 				files: [{
 					expand: true,
 					cwd: 'client/styles',
-					src: [ 'bootstrap.styl' ],
+					src: [ 'vpdb.styl' ],
 					dest: cssRoot,
 					ext: '.css'
 				}]

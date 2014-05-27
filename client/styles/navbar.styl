@@ -1,0 +1,32 @@
+//
+// Navbars
+// --------------------------------------------------
+
+// Default navbar
+.navbar-default
+	transition background-color $animation-long
+	border-radius 0
+
+// VPDB logo
+.navbar-brand
+	position relative
+	width 200px
+	.icon
+		font-size 92px  // both icons, overlayed
+		left 55px
+		position absolute
+		top -50px
+		transition all $animation-long
+		&.icon-vpdb-logo-o
+			font-size 36px // logo
+			left 13px
+			top 7px
+
+// Navbar nav links
+.navbar-nav
+	> li
+		font-size $font-size-small
+		a
+			text-transform uppercase
+	> .active > a
+			cursor default

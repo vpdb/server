@@ -1,0 +1,56 @@
+//
+// Both themes
+// --------------------------------------------------
+
+// VPDB logo
+.navbar-brand
+	.icon
+		&.icon-vpdb-logo-o
+			color $color-primary
+		&.icon-vp
+			color $color-primary
+		&.icon-db
+			color $color-lighter
+	a
+		&:hover
+			.icon-vpdb-logo-o
+				color $color-primary-light
+			.icon-vp
+				color $color-primary-light
+			.icon-db
+				color $color-lightest
+
+// Navbar nav links
+.navbar-default .navbar-nav
+	> li > a
+		background-color transparent
+		color $color-lighter
+		&:hover, &:focus
+			color $color-lightest
+	> .active > a
+		background-color $color-darkest
+		color $color-primary
+		&:hover, &:focus
+			background-color $color-darkest
+			color $color-primary
+
+//
+// Dark theme
+// --------------------------------------------------
+body.theme-dark
+
+	// Default navbar
+	.navbar-default
+		background-color $color-navbar
+		border-color $color-primary
+
+
+//
+// Light theme
+// --------------------------------------------------
+body.theme-light
+
+	// Default navbar
+	.navbar-default
+		background-color $color-navbar-inv
+		border-color $color-primary-black

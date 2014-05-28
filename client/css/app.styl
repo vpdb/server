@@ -46,14 +46,11 @@ dl.oneline
 	dd
 		text-align right
 
-// :headers
 
 .col-menu
 	h4
 		margin-top 20px
 		text-transform uppercase
-
-
 
 label
 	font-weight font-weight-normal
@@ -164,40 +161,9 @@ ul.dropdown-menu table
 
 
 // :form
-.form-group
-	label.control-label
-		font-size font-size-normal
-		text-transform uppercase
-	&.error .form-control
-		border-style solid
-		border-width 1px
-
-// :input
-.input-group
-	margin-bottom 15px
-
-.form-control
-	border-radius border-radius-small
-	border none
-	box-shadow none
+.form-group label.control-label
 	font-size font-size-normal
-	&:focus
-		box-shadow none
-	&.input-search
-		height 28px
-		padding-left 3px
-		border-radius 14px
-		border none
-	&.input-lg
-		border-radius border-radius-large
-
-.input-group-addon
-	padding-right 3px
-	border-radius 14px
-	border none
-	i.fa-search
-		margin-left -2px
-		margin-top 2px
+	text-transform uppercase
 
 .tab-content, .panel-content
 	textarea
@@ -289,22 +255,6 @@ ul.dropdown-menu table
 			&::before
 				cursor default
 				content "\e618" /* Radio Checked */
-
-// :view types
-ul.viewtype-panel
-	float right
-	margin-top -34px
-	position relative
-	list-style none
-	li
-		display inline
-		margin-left 15px
-		&.active i
-			cursor default
-		i
-			font-size 18px // icon
-			cursor pointer
-			transition all animation-short
 
 // :table :panel
 .panel-triangle
@@ -584,31 +534,6 @@ ul.selectable
 				content '\f107'
 			&.asc:before
 				content '\f106'
-
-// :accordion
-accordion
-	& > .panel-group
-		& > .panel
-			border none
-			border-radius border-radius-large
-			& > .panel-heading
-				padding 8px 10px 5px
-				border-top-left-radius border-radius-large
-				border-top-right-radius border-radius-large
-				h4
-					text-transform uppercase
-					font-weight font-weight-bold
-				a:hover
-						text-decoration none
-						cursor pointer
-				h4
-					margin-top 0
-			& + .panel
-				margin-top 15px
-			& > .panel-collapse
-				& > .panel-body
-					border-top none
-					background-color transparent
 
 accordion.accordion-glued
 	& > .panel-group

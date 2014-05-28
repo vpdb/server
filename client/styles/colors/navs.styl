@@ -1,0 +1,31 @@
+//
+// Dark theme
+// --------------------------------------------------
+body.theme-dark
+
+	// View type switcher when listing games
+	.nav-icons
+		.active i
+			color #aaa
+			text-shadow 0 0 3px black
+		i
+			color $color-light
+			&:hover
+				color #aaa
+				text-shadow 0 0 3px black
+
+//
+// Light theme
+// --------------------------------------------------
+body.theme-light
+
+	// View type switcher when listing games
+	.nav-icons
+		.active i
+			color #aaa
+			text-shadow 0 0 3px white
+		i
+			color $color-light-inv
+			&:hover
+				color #aaa
+				text-shadow 0 0 3px white

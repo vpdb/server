@@ -1,7 +1,7 @@
 .row.row--fullheight(ng-controller="GameListController")
 	.col-sm-9.col-main
 		h1 all games
-		ul.viewtype-panel
+		ul.nav-icons
 			li(ng-class="{ active: viewtype == 'compact' }")
 				i.fa.fa-th-large(ng-click="switchview('compact')")
 			li(ng-class="{ active: viewtype == 'extended' }")
@@ -22,7 +22,7 @@
 		.input-group
 			span.input-group-addon
 				i.fa.fa-search
-			input.form-control.input-search(ng-model="query", type="text", placeholder="Search")
+			input.form-control.input--search(ng-model="query", type="text", placeholder="Search")
 
 		accordion(close-others="false")
 

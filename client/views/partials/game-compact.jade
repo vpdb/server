@@ -1,5 +1,6 @@
 .col-md-4.col-sm-6.col-xs-12.fade-animation(ng-repeat="game in games | filter:query | decade:filterDecades | manufacturer:filterManufacturer | orderBy:sort:sortReverse", ng-click="navGame(game.id)")
 	.panel.panel--animated.ng-cloak
 		.img.img--ar-bg.img--fade.img--rounded-top(img-bg="game.art.backglass_thumb")
-		h3 {{ game.name }}
-		label {{ game.manufacturer }} &middot; {{ game.year }}
+		.text-center
+			h3.panel__h-beta {{ game.name }}
+			label {{ game.manufacturer }} &middot; {{ game.year }}

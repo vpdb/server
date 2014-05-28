@@ -16,8 +16,7 @@
 		transform translateY(-5px) scale(1.03, 1.03)
 
 .panel-heading // formerly: ".panel-header" - might need to override some bootstrap props
-	border-top-left-radius $border-radius-small
-	border-top-right-radius $border-radius-small
+	border-top-radius($border-radius-small)
 	display flex
 	margin -1px -1px 0 -1px
 
@@ -28,9 +27,9 @@ accordion
 			border none
 			border-radius $border-radius-large
 			> .panel-heading
+				margin 0
 				padding 8px 10px 5px
-				border-top-left-radius $border-radius-large
-				border-top-right-radius $border-radius-large
+				border-top-radius($border-radius-large)
 				a:hover
 					text-decoration none
 					cursor pointer
@@ -49,24 +48,21 @@ accordion
 
 // Accordion with groups glued together
 accordion.accordion--glued
-	& > .panel-group
-		& > .panel
+	> .panel-group
+		> .panel
 			border none
 			border-radius 0
-			& > .panel-heading
+			> .panel-heading
 				padding 7px 9px
 				border-radius 0
 				border-top 2px solid rgba(0, 0, 0, 0.34)
-			& + .panel
+			+ .panel
 				margin-top 0
-		& > .panel:first-child
-			border-top-left-radius $border-radius-large
-			border-top-right-radius $border-radius-large
-			& > .panel-heading
-				border-top-left-radius $border-radius-large
-				border-top-right-radius $border-radius-large
-		& > .panel:last-child
-			border-bottom-left-radius $border-radius-large
-			border-bottom-right-radius $border-radius-large
-		& > .panel:first-child & > .panel-heading
+		> .panel:first-child
+			border-top-radius($border-radius-large)
+			> .panel-heading
+				border-top-radius($border-radius-large)
+		> .panel:last-child
+			border-bottom-radius($border-radius-large)
+		> .panel:first-child & > .panel-heading
 			border-bottom none

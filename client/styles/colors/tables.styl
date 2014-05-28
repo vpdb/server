@@ -1,0 +1,34 @@
+//
+// Dark theme
+// --------------------------------------------------
+body.theme-dark
+
+	table.table
+		tr > th
+			color $color-primary
+
+		&.table-striped tr:nth-child(odd) > td
+			background-color $color-darkest
+			&.nostripe
+				background-color transparent
+
+		&.table--selectable tr:hover td
+			color $color-primary
+
+
+//
+// Light theme
+// --------------------------------------------------
+body.theme-light
+
+	table.table
+		tr > th
+			color $color-lighter-inv
+
+		&.table-striped tr:nth-child(odd) > td
+			background-color $color-dark
+			&.nostripe
+				background-color transparent
+
+		&.table--selectable tr:hover td
+			color $color-lightest-inv

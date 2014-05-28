@@ -20,7 +20,7 @@
 		h1 users
 		hr
 
-		table.table.table-striped.table-selectable
+		table.table.table-striped.table--selectable
 			tr(ng-repeat="user in users", ng-click="edit(user)", ng-class="{ inactive: !user.active }")
 				td {{ user.name }}
 				td {{ user.email }}

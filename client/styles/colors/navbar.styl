@@ -22,7 +22,7 @@
 
 // Navbar nav links
 .navbar-default .navbar-nav
-	> li > a
+	> li a
 		background-color transparent
 		color $color-lighter
 		&:hover, &:focus
@@ -33,6 +33,13 @@
 		&:hover, &:focus
 			background-color $color-darkest
 			color $color-primary
+
+// Dropdown menu states
+.navbar-default .navbar-nav > .open
+	& > a, & > a:hover, & > a:focus
+		color $color-primary
+		background-color transparent
+
 
 //
 // Dark theme
@@ -54,3 +61,4 @@ body.theme-light
 	.navbar-default
 		background-color $color-navbar-inv
 		border-color $color-primary-black
+

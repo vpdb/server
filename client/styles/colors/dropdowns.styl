@@ -1,0 +1,26 @@
+//
+// Dark theme
+// --------------------------------------------------
+body.theme-dark
+
+	// In navbar
+	.navbar-nav li > .dropdown-menu
+		background-color $color-navbar
+		border-left-color $color-primary
+		border-right-color $color-primary
+		border-bottom-color $color-primary
+
+
+//
+// Light theme
+// --------------------------------------------------
+body.theme-light
+
+	// In navbar
+	.nav.navbar-nav li > .dropdown-menu
+		margin-top 0
+		border-top 1px solid #2d2d2b // hack to hide the bottom line of the bar
+		background-color $color-navbar-inv
+		border-left-color $color-primary-black
+		border-right-color $color-primary-black
+		border-bottom-color $color-primary-black

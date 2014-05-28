@@ -1,10 +1,8 @@
 @import('nib')
 @import('color-def')
 
-body.theme-dark
-	background-image url('/images/background_outer.png')
 .theme-dark
-	color color-lighter
+
 	label
 		span
 			&.pipe
@@ -20,12 +18,8 @@ body.theme-dark
 		color black
 	textarea
 		background-color color-darkest
-	hr
-		border-color color-darker
-	a
-		color color-light
-		&:hover
-			color color-lighter
+
+
 
 	.col-menu h4
 		color color-primary
@@ -34,28 +28,6 @@ body.theme-dark
 		&.fade-after-load
 			background-color color-darkest
 
-
-	.btn
-		&.btn-default, &.btn-primary
-			color color-light
-			background-color color-dark
-			&:hover
-				color color-lighter
-				background-color color-light
-				box-shadow 0 0 3px 1px rgba(black, 0.3)
-			.badge
-				background-color color-light
-				color color-lighter-inv
-		&.btn-primary
-			color color-background
-			background-color color-primary
-			&:hover
-				color color-background
-				background-color color-primary-light
-				box-shadow 0 0 3px 1px rgba(black, 0.3)
-			.badge
-				background-color color-background
-				color color-lightest
 
 	// :table
 	table.table
@@ -72,16 +44,6 @@ body.theme-dark
 					color color-primary
 
 	// :navbar
-	.nav.navbar-nav li
-		.dropdown-menu
-			background-color color-navbar
-			border-left-color color-primary
-			border-right-color color-primary
-			border-bottom-color color-primary
-
-	.navbar-default .navbar-nav > .open
-		& > a, & > a:hover, & > a:focus
-			background-color transparent
 
 	ul.dropdown-menu table
 		tr
@@ -294,12 +256,6 @@ body.theme-dark
 		color color-lightest
 
 
-	.staging-bar
-		background-image url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI3MCIgaGVpZ2h0PSI3MCI+CjxyZWN0IHdpZHRoPSI3MCIgaGVpZ2h0PSI3MCIgZmlsbD0iI2VjODQzZCI+PC9yZWN0Pgo8ZyB0cmFuc2Zvcm09InJvdGF0ZSg0NSkiPgo8cmVjdCB3aWR0aD0iOTkiIGhlaWdodD0iMjUiIGZpbGw9InJnYmEoMCwwLDAsMC43NSkiPjwvcmVjdD4KPHJlY3QgeT0iLTUwIiB3aWR0aD0iOTkiIGhlaWdodD0iMjUiIGZpbGw9InJnYmEoMCwwLDAsMC43NSkiPjwvcmVjdD4KPC9nPgo8L3N2Zz4=")
-
-	.bg-dark
-		background-color color-darkest
-
 .bg-dark
 	textarea
 		background-color rgba(white, 0.05)
@@ -309,8 +265,6 @@ body.theme-dark
 	&.col-menu
 		background-color color-darkest
 
-	&.panel
-		box-shadow 0 0 5px 1px rgba(black, 0.3)
 	&.panel-compact, &.panel-extended
 		&:hover
 			box-shadow 0 5px 9px rgba(black, 0.5)

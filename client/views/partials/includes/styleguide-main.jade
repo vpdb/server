@@ -1,3 +1,19 @@
+// panel styles
+p.padder
+hr
+.label-code .panel
+.row.row-data
+	.col-xs-12
+		.panel
+			.panel-heading
+				h3.panel-title .panel-heading > h3.panel-title
+			.panel-body
+				h1.panel__h-alpha panel-body > h1.panel__h-alpha
+				h2.panel__h-beta panel-body > h2.panel__h-beta
+				h3.panel__h-gamma panel-body > h3.panel__h-gamma
+	.clearfix
+
+
 // banner, e.g. the packs on the home page
 p.padder
 hr
@@ -46,8 +62,8 @@ hr
 .row
 	- for i in [1, 2, 3, 4, 5, 6]
 		.col-md-4.col-sm-6.col-xs-12.fade-animation
-			.panel.panel-dark.panel-compact.bg-dark
-				.img.img-backglass.img-fade(style="background-image:url(/images/styleguide_square.jpg);opacity:1")
+			.panel.panel--animated.ng-cloak
+				.img.img--ar-bg.img--fade.img--rounded-top(style="background-image:url(/images/styleguide_square.jpg);opacity:1")
 				h3 h3 header
 				label label
 

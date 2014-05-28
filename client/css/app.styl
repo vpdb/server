@@ -1,9 +1,7 @@
 @import('nib')
 
+// http://csswizardry.com/2013/01/mindbemding-getting-your-head-round-bem-syntax/
 // http://drewbarontini.com/articles/single-responsibility/
-
-
-// background
 
 
 .row-data
@@ -14,41 +12,7 @@
 .img-logo
 	margin-top 30px
 	width 95%
-.space-right
-	margin-right 10px
-.space-right-2x
-	margin-right 15px
-.space-left-abs
-	position absolute
-	left 48px
 
-// generic stuff
-a
-	cursor pointer
-	transition all animation-short
-	&:hover
-		text-decoration none
-	&:focus
-		text-decoration none
-		outline none
-button.btn:focus, button.btn:active:focus
-	outline none
-
-[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak
-	display none
-
-.padder
-	padding 15px
-.padder-notop
-	padding 0 15px 15px
-.padder-top
-	margin-top 30px
-.padder-nobottom
-	padding 15px 15px 0 15px
-.padder-bottom-2x
-	padding-bottom 30px
-.padder-left
-	margin-left 15px
 
 .label-small
 	font-size font-size-smaller
@@ -89,10 +53,7 @@ dl.oneline
 		margin-top 20px
 		text-transform uppercase
 
-// :hr
-hr
-	margin-top 10px
-	border-width 2px
+
 
 label
 	font-weight font-weight-normal
@@ -131,12 +92,7 @@ label, h4, h5
 		width 40px
 		height 40px
 		position absolute
-	.dropdown-menu
-		padding 	5px
-		margin-top 1px
-		border-left solid 1px
-		border-right solid 1px
-		border-bottom solid 1px
+
 
 ul.dropdown-menu table
 	tr
@@ -255,42 +211,6 @@ ul.dropdown-menu table
 
 // :buttons
 .btn
-	transition all animation-short
-	position relative
-
-	&.btn-default, &.btn-primary
-		padding 1px 20px 0px
-		font-family font-header
-		font-size font-size-smaller-alt
-		font-weight font-weight-normal-alt
-		text-transform uppercase
-		border none
-		& > i.icon-pin-on, & > i.icon-pin-off
-			font-size 24px // icon
-			line-height 12px
-	&.btn-lg
-		font-size font-size-small-alt // -alt
-		font-weight font-weight-normal-alt
-		padding 2px 30px 1px
-		border-radius border-radius-large
-		.fa
-			font-size 20px // icon
-		& > i.icon-pin-on, & > i.icon-pin-off
-			font-size 32px // icon
-			line-height 12px
-		& > i.fa-github
-			font-size 27px // icon
-		& > i.icon-gameex
-			font-size 27px // icon
-			line-height 29px
-			vertical-align middle
-	&.btn-xs
-		padding 2px 10px 0px
-		line-height 1
-		.fa
-			font-size 20px // icon
-		&.btn-default .fa
-			font-size 18px // icon
 	&.btn-dl > i
 		margin-right 1px
 
@@ -398,43 +318,10 @@ ul.viewtype-panel
 	transition background-color animation-short
 
 .panel
-	border-radius border-radius-small
-	transition background-color animation-short, color animation-short
-	h1
-		margin-top 0
-		font-size font-size-largest
-		font-family font-content
-		font-weight font-weight-bold
-		text-transform none
-	h3
-		font-size font-size-larger
-		font-family font-header
-		font-weight font-weight-normal-alt
-		text-transform uppercase
-		white-space nowrap
-		overflow hidden
-		text-overflow ellipsis
-
-	textarea
-		border none
-
-	.panel-header
-		border-top-left-radius border-radius-small
-		border-top-right-radius border-radius-small
-		display flex
-		margin -1px -1px 0 -1px
-		& > h1
-			margin 10px auto
-			font-family font-content
-			font-size font-size-larger
-			font-weight font-weight-bold
-
-	.panel-content
-		padding 15px
+	.panel-content // will be panel-body.
 		& > h3
 			margin-top 15px
 			margin-left 15px
-
 		& > dl
 			margin-bottom 10px
 		& > hr
@@ -453,14 +340,6 @@ ul.viewtype-panel
 			transition color animation-short
 			&.active
 				font-weight font-weight-bold
-
-// common to compact and extended
-.panel-compact, .panel-extended, .panel-mini
-	cursor pointer
-	transition all 500ms cubic-bezier(0.190, 1.000, 0.220, 1.000)
-	transform translateY(0) scale(1, 1)
-	&:hover
-		transform translateY(-5px) scale(1.03, 1.03)
 
 // :table panes :compact
 .panel-compact
@@ -888,27 +767,12 @@ section.footer
 
 // :image
 .img
-	background-repeat no-repeat
-	background-position center center
-	background-size cover
-	&.img-backglass, &.img-logo-placeholder
-		position relative
-		width 100%
-		height 0
-	&.img-backglass
-		padding-bottom 80% // % of width, defines aspect ratio
-	&.img-logo-placeholder
-		padding-bottom 40% // % of width, defines aspect ratio
-
-	&.img-fullspan
-		padding 0
-		border-radius border-radius-small
-	& > .btn.btn-lg
+	& > .btn.btn-lg // change to btn--sticky-bottom
 		width 100%
 		bottom -1px
 		position absolute
 		border-radius 0 0 border-radius-small border-radius-small
-	.text-center
+	.text-center // "drop here" placeholder - not sure how to name this
 		margin-top -50px
 		position absolute
 		top 50%
@@ -918,13 +782,6 @@ section.footer
 			font-style italic
 		i
 			font-size 70px
-
-img, .img
-	&.img-fade
-		opacity 0
-		transition opacity animation-short
-		&.loaded
-			opacity 1
 
 // :media
 .media-avatar, .thumbnail > img.media-avatar

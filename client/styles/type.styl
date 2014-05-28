@@ -31,3 +31,28 @@ h4
 
 h4 .small
 	font-size $font-size-normal
+
+
+// Panel headings
+// -------------------------
+.panel__h-alpha // formerly: .panel h1
+	margin-top 0
+	font-size $font-size-largest
+	font-family $font-content
+	font-weight $font-weight-bold
+	text-transform none
+
+.panel__h-beta // formerly: .panel h3
+	font-size $font-size-larger
+	font-family $font-header
+	font-weight $font-weight-normal-alt
+	text-transform uppercase
+	white-space nowrap
+	overflow hidden
+	text-overflow ellipsis
+
+.panel__h-gamma // formerly: .panel-header > h1
+	margin 10px auto
+	font-family $font-content
+	font-size $font-size-larger
+	font-weight $font-weight-bold

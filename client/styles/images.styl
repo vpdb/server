@@ -1,0 +1,38 @@
+//
+// Images
+// --------------------------------------------------
+
+
+// Base class
+.img
+	background-repeat no-repeat
+	background-position center center
+	background-size cover
+
+
+// Aspect ratio
+.img--ar-bg, .img--ar-logo
+	position relative
+	width 100%
+	height 0
+.img--ar-bg // formerly: .img-backglass
+	padding-bottom 80% // % of width, defines aspect ratio
+.img--ar-logo // formerly: .img-logo-placeholder
+	padding-bottom 40% // % of width, defines aspect ratio
+
+// Fading animation
+.img--fade // formerly: .img-fade
+	opacity 0
+	transition opacity animation-short
+	&.loaded
+		opacity 1
+
+
+// Rounded corners
+.img--rounded // formerly: .img-fullspan
+	padding 0
+	border-radius $border-radius-small
+.img--rounded-top
+	border-top-radius($border-radius-small)
+.img--rounded-left
+	border-left-radius($border-radius-small)

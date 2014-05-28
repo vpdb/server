@@ -1,14 +1,38 @@
-
 //
 // Dark theme
 // --------------------------------------------------
-
 body.theme-dark
+
+	// Global color and background
+	color $color-lighter
 	background-image url('/images/background_outer.png')
+
+	// links
+	a
+		color $color-light
+		&:hover
+			color $color-lighter
+
+	// hr
+	hr
+		border-color $color-darker
 
 
 //
 // Light theme
 // --------------------------------------------------
 body.theme-light
+
+	// Global color and background
+	color $color-lighter-inv
 	background-image url('/images/background_white_outer.png')
+
+	// links
+	a
+		color $color-light-inv
+		&:hover
+			color $color-lighter-inv
+
+	// hr
+	hr
+		border-color $color-darker-inv

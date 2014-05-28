@@ -1,11 +1,8 @@
 @import('nib')
 @import('color-def')
 
-body.theme-light
-	background-image url('/images/background_white_outer.png')
-
 .theme-light
-	color color-lighter-inv
+
 	label
 		span
 			&.pipe
@@ -21,12 +18,6 @@ body.theme-light
 		color white
 	textarea
 		background-color color-darkest-inv
-	hr
-		border-color color-darker-inv
-	a
-		color color-light-inv
-		&:hover
-			color color-lighter-inv
 
 
 	.col-menu h4
@@ -38,21 +29,6 @@ body.theme-light
 		.text-center
 			color color-dark-inv
 
-	.btn
-		&.btn-default
-			color rgba(white, 0.6)
-			background-color rgba(black, 0.25)
-			&:hover
-				color rgba(white, 0.7)
-				background-color rgba(black, 0.35)
-				box-shadow 0 0 10px 1px rgba(black, 0.1)
-		&.btn-primary
-			color color-background-inv
-			background-color color-primary-black
-			&:hover
-				color color-lightest
-				background-color color-primary-black-light
-				box-shadow 0 0 10px 1px rgba(white, 0.7)
 
 	// :radio
 	.radio-lg
@@ -84,15 +60,6 @@ body.theme-light
 				td
 					color color-lightest-inv
 
-	// :navbar
-	.nav.navbar-nav li
-		.dropdown-menu
-			margin-top 0
-			border-top 1px solid #2d2d2b // hack to hide the bottom line of the bar
-			background-color color-navbar-inv
-			border-left-color color-primary-black
-			border-right-color color-primary-black
-			border-bottom-color color-primary-black
 
 	ul.dropdown-menu table
 		tr
@@ -282,12 +249,7 @@ body.theme-light
 		background color-primary-black
 
 	.panel
-		box-shadow 0 0 5px 1px rgba(black, 0.05)
-		background-color color-lighter
-		.panel-header
-			background-color color-light-inv
-			h1
-				color color-lightest
+
 		.list-group-item
 			color color-lightish-inv
 			background-color transparent

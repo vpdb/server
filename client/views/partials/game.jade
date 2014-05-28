@@ -14,15 +14,15 @@
 				span.votes {{ $parent.game.votes | number }} vote{{ $parent.game.votes == 1 ? '' : 's' }}
 		hr
 
-		label.label-block(ng-show="game.gametype") {{ game.gametype | gametype }}
+		label.label--block(ng-show="game.gametype") {{ game.gametype | gametype }}
 		label(ng-show="game.units") {{ game.units | number }} units sold
 		hr(ng-show="game.gametype || game.units")
 
-		label.label-name.label-block(ng-show="game.gamedesign") Game Design
+		label.label-name.label--block(ng-show="game.gamedesign") Game Design
 		label.label-value(ng-show="game.gamedesign") {{ game.gamedesign.join(', ') }}
 		hr(ng-show="game.gamedesign")
 
-		label.label-name.label-block(ng-show="game.artdesign") Art Design
+		label.label-name.label--block(ng-show="game.artdesign") Art Design
 		label.label-value(ng-show="game.artdesign")  {{ game.artdesign.join(', ') }}
 		hr(ng-show="game.artdesign")
 
@@ -98,7 +98,7 @@
 								div(ng-repeat="version in release.versions")
 									h4
 										| Version
-										label.label-version {{ version.download.version }}
+										label.label--version {{ version.download.version }}
 										.pull-right
 											time-ago.small.space-right(from-time="{{ version.timestamp }}")
 											button.btn.btn-default.btn-xs.btn-dl(download="version.download", download-info="[ game, release ] | dlRelease", title="{{ version.download.size | bytes }}")
@@ -138,10 +138,10 @@
 										i.fa.fa-download.space-right
 										| All
 					.col-sm-4.col-md-4
-						label.label-download.pull-right
+						label.label--download.pull-right
 							span.pipe
 								| Version
-								label.label-version {{ release.lastversion.download.version }}
+								label.label--version {{ release.lastversion.download.version }}
 							span.pipe {{ release.lastversion.download.size | bytes }}
 					.col-sm-4.col-md-5
 						button.btn.btn-primary.btn-lg.btn-block.pull-right(download="release.lastversion.download", download-info="[ game, release ] | dlRelease", ng-class="{ 'btn-pin': downloadsPinned }")
@@ -178,7 +178,7 @@
 					.media-avatar-medium.media-avatar.media-avatar-comment.pull-left
 					.media-body
 						tabset.tabset.tabset-newcomment
-							label.label-small.pull-right Comments are parsed with <a href="http://daringfireball.net/projects/markdown/syntax" target="_blank">Markdown</a>.
+							label.label--small.pull-right Comments are parsed with <a href="http://daringfireball.net/projects/markdown/syntax" target="_blank">Markdown</a>.
 							tab
 								tab-heading
 									i.fa.fa-edit(title="Write")
@@ -188,7 +188,7 @@
 								tab-heading
 									i.fa.fa-eye(title="Preview")
 								div.markdown(markdown="$parent.newComment")
-								label.label-message(ng-show="!newComment || newComment.length == 0") Nothing to preview.
+								label.tab__label(ng-show="!newComment || newComment.length == 0") Nothing to preview.
 
 				button.btn.btn-default.btn-comment.pull-right(ng-click="addComment()") Comment
 				.clearfix

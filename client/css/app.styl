@@ -14,29 +14,6 @@
 	width 95%
 
 
-.label-small
-	font-size font-size-smaller
-.label-message
-	margin 15px 0 0 10px
-.label-name
-	text-transform uppercase
-	margin-bottom 0
-.label-value
-	font-weight font-weight-bold
-	margin-top 0
-.label-version, .label-code
-	font-family font-code
-	font-weight bold
-	border-radius 4px
-	padding 0 5px
-	margin-bottom -6px
-	margin-left 4px
-.label-code
-	margin 10px 0
-	text-align left
-.label-block
-	display block
-
 dl.oneline
 	width 100%
 	dt
@@ -52,28 +29,8 @@ dl.oneline
 		margin-top 20px
 		text-transform uppercase
 
-label
-	font-weight font-weight-normal
-	margin-bottom 1px
-	white-space nowrap
-	overflow hidden
-	text-overflow ellipsis
-	&.block
-		display block
-	span
-		margin-right 10px
-		&.pipe
-			margin-right 10px
-			&:after
-				content '|'
-				margin-left 10px
-			&:last-child:after
-				content ''
-	&.label-download
-		padding-top 9px
-		margin-right -25px
 
-label, h4, h5
+label, h4, h5 // TODO decide what to do
 	i.fa, i.icon
 		margin-right 6px
 
@@ -302,9 +259,7 @@ ul.dropdown-menu table
 
 	h3
 		text-align center
-	label
-		font-weight font-weight-normal
-		margin-bottom 15px
+
 
 // :table panes releases (square img)
 .panel-mini

@@ -1,0 +1,63 @@
+//
+// Labels
+// --------------------------------------------------
+
+// Base style
+label
+	font-weight $font-weight-normal
+	margin-bottom 1px
+	white-space nowrap
+	overflow hidden
+	text-overflow ellipsis
+
+	// Allow easy chaining of multiple spans in one single label
+	span
+		margin-right 10px
+		&.pipe
+			margin-right 10px
+			&:after
+				content '|'
+				margin-left 10px
+			&:last-child:after
+				content ''
+
+// Block label
+.label--block
+	display block
+
+// Sizes
+.label--small
+	font-size $font-size-smaller
+
+// Name / value labels (in sidebar)
+.label--prop-name
+	text-transform uppercase
+	margin-bottom 0
+.label--prop-value
+	font-weight $font-weight-bold
+	margin-top 0
+
+// Version and code labels
+.label--version, .label--code
+	font-family $font-code
+	font-weight bold
+	padding 0 5px
+	margin-left 4px
+	margin-bottom -6px
+	border-radius 4px
+.label--code
+	margin 10px 0
+	text-align left
+
+// Used on release detail panel next to the download button
+.label--download
+	padding-top 9px
+	margin-right -25px
+
+.label--subtitle
+	font-weight $font-weight-normal
+	margin-bottom 15px
+
+// Special usages
+.tab__label // formerly: label-message
+	margin 15px 0 0 10px

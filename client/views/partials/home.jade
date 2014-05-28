@@ -31,8 +31,8 @@
 						h3 {{ release.game.name }}
 						h4
 							| {{ release.title }}
-							label.label-version {{ release.lastversion.version }}
-						label.block
+							label.label--version {{ release.lastversion.version }}
+						label.label--block
 							i.icon.icon-user
 							| {{ release.submitter.user }}
 					.clearfix
@@ -49,8 +49,8 @@
 						h3 {{ release.game.name }}
 						h4
 							| {{ release.title }}
-							label.label-version {{ release.lastversion.version }}
-						label.block
+							label.label--version {{ release.lastversion.version }}
+						label.label--block
 							i.icon.icon-user
 							| {{ release.submitter.user }}
 					.clearfix
@@ -62,13 +62,13 @@
 			div.media-object.media-avatar.media-avatar-large.pull-left(ng-hide="item.user.avatar")
 			img.media-object.media-avatar.media-avatar-large.pull-left(ng-show="item.user.avatar", ng-src="{{ item.user.avatar }}")
 			.media-body
-				label.label-block
+				label.label--block
 					time-ago(from-time="{{ item.timestamp }}")
-				label.label-block
+				label.label--block
 					i.fa(class="{{ item | feedIcon }}")
 					strong {{ item.user.user }}
 					span(ng-bind-html="item | feedAction")
-				label.label-block(ng-bind-html="item | feedMessage")
+				label.label--block(ng-bind-html="item | feedMessage")
 			hr(ng-hide="$last")
 
 		.clearfix

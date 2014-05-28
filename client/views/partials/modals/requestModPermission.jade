@@ -6,7 +6,7 @@
 	.modal-body(ng-controller="CommentsCtrl")
 		h4 Please leave a message to the author.
 		tabset.tabset.tabset-moderequest
-			label.label-small.pull-right Comments are parsed with <a href="http://daringfireball.net/projects/markdown/syntax" target="_blank">Markdown</a>.
+			label.label--small.pull-right Comments are parsed with <a href="http://daringfireball.net/projects/markdown/syntax" target="_blank">Markdown</a>.
 			tab
 				tab-heading
 					i.fa.fa-edit(title="Write")
@@ -15,7 +15,7 @@
 				tab-heading
 					i.fa.fa-eye(title="Preview")
 				div.markdown(markdown="$parent.newComment")
-				label.label-message(ng-show="!newComment || newComment.length == 0") Nothing to preview.
+				label.tab__label(ng-show="!newComment || newComment.length == 0") Nothing to preview.
 
 	.modal-footer
 		button.btn.btn-default(ng-click="cancel()") Cancel

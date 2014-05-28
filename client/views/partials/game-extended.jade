@@ -5,7 +5,7 @@
 		.data-wrapper
 			h3 {{ game.name }}
 			label {{ game.manufacturer }} &middot; {{ game.year }}
-			label.block
+			label.label--block
 				span(ng-repeat="author in game.authors")
 					i.icon.icon-user
 					| {{ author}}

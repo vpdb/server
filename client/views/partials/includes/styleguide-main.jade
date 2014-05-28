@@ -47,10 +47,10 @@ hr
 					h3 h3 header
 					h4
 						| h4
-						label.label-version .label-version
-					label.block
+						label.label--version .label--version
+					label.label--block
 						i.icon.icon-user
-						| label.block
+						| label.label--block
 				.clearfix
 .clearfix
 
@@ -66,7 +66,7 @@ hr
 				.img.img--ar-bg.img--fade.img--rounded-top(style="background-image:url(/images/styleguide_square.jpg);opacity:1")
 				.text-center
 					h3 h3 header
-					label label
+					label.label--subtitle .label--subtitle
 
 
 // extended panel, e.g. the extended view of the game list
@@ -80,10 +80,10 @@ hr
 		.data-wrapper
 			h3 h3 header
 			label label
-			label.block
+			label.label--block
 				span(ng-repeat="author in game.authors")
 					i.icon.icon-user
-					| label.block
+					| label.label--block
 			label
 				i.fa.fa-arrow-circle-down
 				span.pipe span.pipe
@@ -154,7 +154,7 @@ hr
 		.media-body
 			.label-code tabset.tabset.tabset-newcomment
 			tabset.tabset.tabset-newcomment
-				label.label-small.pull-right label.label-small <a>a link</a>
+				label.label--small.pull-right label.label--small <a>a link</a>
 				tab
 					tab-heading
 						i.fa.fa-edit
@@ -164,7 +164,7 @@ hr
 					tab-heading
 						i.fa.fa-eye(title="Preview")
 					div.markdown(markdown="$parent.newComment")
-					label.label-message(ng-show="!newComment || newComment.length == 0") label.label-message
+					label.tab__label(ng-show="!newComment || newComment.length == 0") label.tab__label
 
 	button.btn.btn-default.btn-comment.pull-right .btn.btn-default.btn-comment
 	.clearfix

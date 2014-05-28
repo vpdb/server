@@ -1,0 +1,29 @@
+//
+// Dark theme
+// --------------------------------------------------
+body.theme-dark
+
+	// Items can be selected along with a sort order toggle
+	.list--sort-options > li
+		&:hover
+			color $color-lightest
+		&.selected
+			color $color-primary
+			&:hover
+				color $color-primary-light
+
+
+//
+// Light theme
+// --------------------------------------------------
+body.theme-light
+
+	// Items can be selected along with a sort order toggle
+	.list--sort-options > li
+		&:hover
+			color $color-lightest-inv
+		&.selected
+			color $color-primary-black
+			&:hover
+				color $color-primary
+

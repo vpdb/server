@@ -465,30 +465,6 @@ table.table
 	tr.inactive > td
 		text-decoration line-through
 
-// :selectable list
-ul.selectable
-	padding-left 20px
-	> li
-		list-style-type none
-		transition all animation-shorter
-		cursor pointer
-		&.selected
-			font-weight font-weight-bold
-			margin-left -20px
-			&:before
-				display inline-block
-				width 20px
-				font-family FontAwesome
-				font-size 20px // icon
-				font-style normal
-				font-weight normal
-				line-height 1
-				-webkit-font-smoothing antialiased
-				-moz-osx-font-smoothing grayscale
-			&.desc:before
-				content '\f107'
-			&.asc:before
-				content '\f106'
 
 accordion.accordion-glued
 	& > .panel-group

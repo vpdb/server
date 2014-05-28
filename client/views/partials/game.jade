@@ -79,7 +79,7 @@
 							i.fa.fa-arrow-circle-down
 							span {{ release.lastversion.downloads | number }} downloads
 
-						accordion.accordion-glued(close-others="true")
+						accordion.accordion--glued(close-others="true")
 							accordion-group(heading="Description", is-open="accordeon.isFirstOpen")
 								div.markdown(markdown="release.description")
 

@@ -5,7 +5,7 @@
 // Base class
 .panel
 	border-radius $border-radius-small
-	transition background-color animation-short, color animation-short
+	transition background-color $animation-short, color $animation-short
 
 // Hover animates it towards POV
 .panel--animated
@@ -21,9 +21,7 @@
 	display flex
 	margin -1px -1px 0 -1px
 
-
-
-// :accordion
+// Accordion with separate groups
 accordion
 	> .panel-group
 		> .panel
@@ -48,3 +46,27 @@ accordion
 					background-color transparent
 			+ .panel
 				margin-top 15px
+
+// Accordion with groups glued together
+accordion.accordion--glued
+	& > .panel-group
+		& > .panel
+			border none
+			border-radius 0
+			& > .panel-heading
+				padding 7px 9px
+				border-radius 0
+				border-top 2px solid rgba(0, 0, 0, 0.34)
+			& + .panel
+				margin-top 0
+		& > .panel:first-child
+			border-top-left-radius $border-radius-large
+			border-top-right-radius $border-radius-large
+			& > .panel-heading
+				border-top-left-radius $border-radius-large
+				border-top-right-radius $border-radius-large
+		& > .panel:last-child
+			border-bottom-left-radius $border-radius-large
+			border-bottom-right-radius $border-radius-large
+		& > .panel:first-child & > .panel-heading
+			border-bottom none

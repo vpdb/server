@@ -1,0 +1,60 @@
+//
+// Ratings
+// --------------------------------------------------
+
+
+// We have a 2-column layout here, the large number in the left column and the
+// stars with the votes in the right column.
+.ratingbox
+
+	// Left column
+	.ratingbox__left-col
+		display inline
+		position relative
+		.ratingbox__rating
+			display inline
+			font-size 50px
+			font-weight $font-weight-thin
+			cursor default
+			&.rating-user
+				position absolute
+				right 0
+
+	// Right column
+	.ratingbox__right-col
+		display inline
+		position relative
+		.votes
+			width 80px
+			display inline-block
+			margin-left 5px
+			cursor default
+		.rating-avg, .rating-user
+			font-size 16px
+			position absolute
+			left 4px
+			top -17px
+			white-space nowrap
+		.rating-user
+			cursor pointer
+
+	// When hovering over an editable rating, hide the average rating stars.
+	.rating-hide
+		color transparent
+
+	// Star styling
+	.star-left
+		width 7.5px
+		overflow hidden
+	.star-right
+		overflow hidden
+		margin-right 3px
+		&:before
+			margin-left -7.5px
+			overflow hidden
+
+
+.ratingbox--sticky-top-right
+	position absolute
+	right 40px
+	top 5px

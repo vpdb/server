@@ -14,6 +14,24 @@ body.theme-dark
 				color #aaa
 				text-shadow 0 0 3px black
 
+	// Tabs for message composition
+	.nav-tabs li
+		&.active
+			a
+				color $color-lighter
+				background-color rgba(white, 0.11)
+			.panel-triangle
+				border-color transparent #454442 transparent transparent
+		.panel-triangle
+			border-color transparent #383735 transparent transparent
+		a
+			color $color-light
+			background-color $color-darkest
+		a:hover
+			color $color-lighter
+	.tab-content
+		background-color rgba(white, 0.11)
+
 //
 // Light theme
 // --------------------------------------------------
@@ -29,3 +47,22 @@ body.theme-light
 			&:hover
 				color #aaa
 				text-shadow 0 0 3px white
+
+
+	// Tabs for message composition
+	.nav-tabs li
+		&.active
+			a
+				color $color-lighter-inv
+				background-color rgba(black, 0.11)
+			.panel-triangle
+				border-color transparent #454442 transparent transparent
+		.panel-triangle
+			border-color transparent #383735 transparent transparent
+		a
+			color $color-light-inv
+			background-color $color-darkest-inv
+		a:hover
+			color $color-lighter-inv
+	.tab-content
+		background-color rgba(white, 0.11)

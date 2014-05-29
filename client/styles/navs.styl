@@ -19,3 +19,36 @@
 			font-size 18px
 			cursor pointer
 			transition all $animation-short
+
+
+// Tabs for message composition
+// --------------------------------------------------
+.nav-tabs
+	border none
+	li
+		margin-bottom 0
+		&.active
+			> a,  > a:hover,  > a:focus
+				border none
+		a
+			padding 4px 15px
+			font-size 20px  // tab icons
+			border none
+			border-top-radius($border-radius-large)
+
+	// the markdown notice
+	> .label--small
+		margin-top 7px
+
+// content panel
+.tab-content
+	padding 10px 15px 15px 13px
+	border-radius 0 $border-radius-large $border-radius-large $border-radius-large
+	textarea
+		margin-top 5px
+
+// padding fixes
+.tabset--newcomment
+	margin 15px
+.tabset--moderequest
+	margin 15px 0

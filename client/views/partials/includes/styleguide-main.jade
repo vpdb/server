@@ -13,6 +13,60 @@ hr
 				h3.panel__h-gamma panel-body > h3.panel__h-gamma
 	.clearfix
 
+.panel.padder(ng-controller="CommentsCtrl")
+	h3 Comments on Release
+	.media
+		.avatar--md.avatar-placeholder.avatar-placeholder--md.pull-left(ng-hide="comment.author.avatar")
+		img.media-object.avatar.avatar--md.pull-left(ng-show="comment.author.avatar", ng-src="/images/styleguide_square.jpg")
+		.media-body
+			.panel.panel--inner
+				.panel-triangle
+				.panel-heading
+					label
+						strong label.strong
+						| &nbsp;commented
+					time-ago(from-time="11236548")
+					.pull-right
+						i.fa.fa-pencil(ng-click="editComment()")
+						i.fa.fa-times-circle(ng-click="deleteComment()")
+				.panel-body
+					div .panel-body
+					textarea.msd-elastic(ng-show="editing", placeholder="Update comment", ng-model="updatedComment")
+				.panel-footer(ng-show="editing")
+					button.btn.btn-default.pull-left(ng-click="cancelEdit()") Cancel
+					button.btn.btn-default.pull-right(ng-click="saveComment()") Update Comment
+					.clearfix
+
+	.media
+		.avatar--md.avatar-placeholder.avatar-placeholder--md.pull-left
+		.media-body
+			tabset
+				label.label--small.pull-right Comments are parsed with <a href="http://daringfireball.net/projects/markdown/syntax" target="_blank">Markdown</a>.
+				tab
+					tab-heading
+						i.fa.fa-edit(title="Write")
+						.panel-triangle
+					textarea.msd-elastic(placeholder="Leave a comment", ng-model="$parent.newComment")
+				tab
+					tab-heading
+						i.fa.fa-eye(title="Preview")
+					div.markdown(markdown="$parent.newComment")
+					label.tab__label(ng-show="!newComment || newComment.length == 0") Nothing to preview.
+
+	button.btn.btn-default.btn-comment.pull-right(ng-click="addComment()") Comment
+	.clearfix
+
+.panel.padder
+	accordion.panel-group--glued(close-others="true")
+		accordion-group.panel--inner(heading="heading 1", is-open="accordeon.isFirstOpen")
+			p body 1
+
+		accordion-group.panel--inner(heading="heading 2")
+			p body 2
+
+		accordion-group.panel--inner(heading="heading 3")
+			p body 3
+
 
 // banner, e.g. the packs on the home page
 p.padder
@@ -168,3 +222,4 @@ hr
 
 	button.btn.btn-default.btn-comment.pull-right .btn.btn-default.btn-comment
 	.clearfix
+

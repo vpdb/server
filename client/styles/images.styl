@@ -27,6 +27,37 @@
 	&.loaded
 		opacity 1
 
+// Avatars
+.avatar--md
+	width 64px
+	height 64px
+	border-radius 50%
+.avatar--lg
+	width 72px
+	height 72px
+	border-radius 50%
+.avatar-placeholder:before
+	position absolute
+	font-family FontAwesome
+	font-style normal
+	font-weight normal
+	line-height 1
+	-webkit-font-smoothing antialiased
+	-moz-osx-font-smoothing grayscale
+	content '\f007'
+.avatar-placeholder--sm:before
+	margin-left 18px
+	margin-top 16px
+	font-size 37px // font-awesome
+.avatar-placeholder--md:before
+	margin-left 19px
+	margin-top 14px
+	font-size 33px // font-awesome
+.avatar-placeholder--lg:before
+	margin-left 18px
+	margin-top 16px
+	font-size 37px  // font-awesome
+
 
 // Rounded corners
 .img--rounded // formerly: .img-fullspan

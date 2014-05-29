@@ -27,7 +27,7 @@
 		accordion(close-others="false")
 
 			// year filter
-			accordion-group(is-open="filterYearOpen")
+			accordion-group.panel--inner(is-open="filterYearOpen")
 				accordion-heading
 					| Year
 					i.fa.pull-right(ng-class="{'fa-chevron-circle-up': filterYearOpen, 'fa-chevron-circle-down': !filterYearOpen}")
@@ -42,7 +42,7 @@
 					li.list-group-item(filter-decade="2010") 2010s
 
 			// manufacturer filter
-			accordion-group(is-open="filterManufacturerOpen")
+			accordion-group.panel--inner(is-open="filterManufacturerOpen")
 				accordion-heading
 					| Manufacturer
 					i.fa.pull-right(ng-class="{'fa-chevron-circle-up': filterManufacturerOpen, 'fa-chevron-circle-down': !filterManufacturerOpen}")
@@ -55,7 +55,7 @@
 					li.list-group-item(filter-manufacturer="williams") Williams
 
 			// author filter
-			accordion-group(is-open="filterAuthorOpen")
+			accordion-group.panel--inner(is-open="filterAuthorOpen")
 				accordion-heading
 					| Author
 					i.fa.pull-right(ng-class="{'fa-chevron-circle-up': filterAuthorOpen, 'fa-chevron-circle-down': !filterAuthorOpen}")

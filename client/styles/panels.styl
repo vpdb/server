@@ -4,8 +4,51 @@
 
 // Base class
 .panel
+	position relative
 	border-radius $border-radius-small
 	transition background-color $animation-short, color $animation-short
+
+	> .panel-heading // formerly: ".panel-header" - might need to override some bootstrap props
+		margin 0
+		border-top-radius($border-radius-small)
+
+		+ .panel-collapse .panel-body // bootstrap has border on those
+			border none
+
+.panel, .panel-default
+	border none
+
+// panels within panels
+.panel--inner, .panel-group .panel--inner
+	border-radius $border-radius-large
+
+	> .panel-heading
+		border-top-radius($border-radius-large)
+
+/*		//a:hover
+			//text-decoration none
+			//cursor pointer
+	//h4
+	//	margin-top 0
+	//	text-transform uppercase
+	//	font-weight $font-weight-bold
+*/
+
+// Accordion with groups glued together
+.panel-group--glued
+	.panel
+		border-top-radius($border-radius-large)
+		> .panel-heading
+			border-top 2px solid rgba(0, 0, 0, 0.34)
+			border-top-radius($border-radius-large)
+	.panel + .panel
+		margin-top 0
+		border-radius 0
+		> .panel-heading
+			border-radius 0
+	.panel:last-child
+		border-bottom-radius($border-radius-large)
+
 
 // Hover animates it towards POV
 .panel--animated
@@ -15,54 +58,17 @@
 	&:hover
 		transform translateY(-5px) scale(1.03, 1.03)
 
-.panel-heading // formerly: ".panel-header" - might need to override some bootstrap props
-	border-top-radius($border-radius-small)
-	display flex
-	margin -1px -1px 0 -1px
-
 // Accordion with separate groups
+/*
 accordion
 	> .panel-group
 		> .panel
 			border none
 			border-radius $border-radius-large
-			> .panel-heading
-				margin 0
-				padding 8px 10px 5px
-				border-top-radius($border-radius-large)
-				a:hover
-					text-decoration none
-					cursor pointer
-
-				h4 // TODO isolate
-					margin-top 0
-					text-transform uppercase
-					font-weight $font-weight-bold
-
 			> .panel-collapse
 				> .panel-body
 					border-top none
 					background-color transparent
 			+ .panel
 				margin-top 15px
-
-// Accordion with groups glued together
-accordion.accordion--glued
-	> .panel-group
-		> .panel
-			border none
-			border-radius 0
-			> .panel-heading
-				padding 7px 9px
-				border-radius 0
-				border-top 2px solid rgba(0, 0, 0, 0.34)
-			+ .panel
-				margin-top 0
-		> .panel:first-child
-			border-top-radius($border-radius-large)
-			> .panel-heading
-				border-top-radius($border-radius-large)
-		> .panel:last-child
-			border-bottom-radius($border-radius-large)
-		> .panel:first-child & > .panel-heading
-			border-bottom none
+*/

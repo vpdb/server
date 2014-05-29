@@ -148,16 +148,16 @@
 							| Download
 					.clearfix
 
-			.panel.bg-dark(ng-controller="CommentsCtrl")
+			.panel.padder(ng-controller="CommentsCtrl")
 				h3 Comments on Release
 				label.padder-left(ng-show="!release.comments || release.comments.length == 0") No comments yet.
 				.media(ng-repeat="comment in release.comments", ng-controller="CommentCtrl")
-					div.media-object.media-avatar.media-avatar-medium.media-avatar-comment.pull-left(ng-hide="comment.author.avatar")
-					img.media-object.media-avatar.media-avatar-medium.media-avatar-comment.pull-left(ng-show="comment.author.avatar", ng-src="{{ comment.author.avatar }}")
+					.avatar--md.avatar-placeholder.avatar-placeholder--md.pull-left(ng-hide="comment.author.avatar")
+					img.media-object.avatar.avatar--md.pull-left(ng-show="comment.author.avatar", ng-src="{{ comment.author.avatar }}")
 					.media-body
-						.panel.panel-small.bg-lighter
+						.panel.panel--inner
 							.panel-triangle
-							.panel-header
+							.panel-heading
 								label
 								strong {{ comment.author.user }}
 								| &nbsp;commented
@@ -165,8 +165,7 @@
 								.pull-right
 									i.fa.fa-pencil(ng-click="editComment()")
 									i.fa.fa-times-circle(ng-click="deleteComment()")
-
-							.panel-content
+							.panel-body
 								div.markdown(ng-hide="editing", markdown="comment.message")
 								textarea.msd-elastic(ng-show="editing", placeholder="Update comment", ng-model="updatedComment")
 							.panel-footer(ng-show="editing")
@@ -175,9 +174,9 @@
 								.clearfix
 
 				.media
-					.media-avatar-medium.media-avatar.media-avatar-comment.pull-left
+					.avatar--md.avatar-placeholder.avatar-placeholder--md.pull-left
 					.media-body
-						tabset.tabset--newcomment
+						tabset
 							label.label--small.pull-right Comments are parsed with <a href="http://daringfireball.net/projects/markdown/syntax" target="_blank">Markdown</a>.
 							tab
 								tab-heading

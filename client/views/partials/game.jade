@@ -167,7 +167,7 @@
 									i.fa.fa-times-circle(ng-click="deleteComment()")
 							.panel-body
 								div.markdown(ng-hide="editing", markdown="comment.message")
-								textarea.msd-elastic(ng-show="editing", placeholder="Update comment", ng-model="updatedComment")
+								textarea.textarea--full.msd-elastic(ng-show="editing", placeholder="Update comment", ng-model="updatedComment")
 							.panel-footer(ng-show="editing")
 								button.btn.btn-default.pull-left(ng-click="cancelEdit()") Cancel
 								button.btn.btn-default.pull-right(ng-click="saveComment()") Update Comment
@@ -182,14 +182,15 @@
 								tab-heading
 									i.fa.fa-edit(title="Write")
 									.panel-triangle
-								textarea.msd-elastic(placeholder="Leave a comment", ng-model="$parent.newComment")
+								textarea.textarea--full.msd-elastic(placeholder="Leave a comment", ng-model="$parent.newComment")
 							tab
 								tab-heading
 									i.fa.fa-eye(title="Preview")
 								div.markdown(markdown="$parent.newComment")
 								label.tab__label(ng-show="!newComment || newComment.length == 0") Nothing to preview.
 
-				button.btn.btn-default.btn-comment.pull-right(ng-click="addComment()") Comment
+
+				button.btn.btn-default.padder-top.pull-right(ng-click="addComment()") Comment
 				.clearfix
 
 		h2 ROMs

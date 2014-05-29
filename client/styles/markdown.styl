@@ -1,0 +1,35 @@
+//
+// Markdown styles
+// --------------------------------------------------
+
+.markdown
+	& > *:first-child
+		margin-top 0
+	h1, h2
+		font-family $font-content
+		text-transform none
+	h3, h4, h5
+		font-family $font-content
+		text-transform none
+	h1
+		font-size $font-size-largest
+		font-weight $font-weight-thin
+	h2
+		font-size $font-size-larger
+		font-weight $font-weight-thin
+	h3
+		font-size $font-size-large
+		font-weight $font-weight-bold
+	h4
+		font-size $font-size-normal + 2px
+		font-weight $font-weight-bold
+	h5, h6
+		font-size $font-size-normal
+		font-weight $font-weight-normal
+		text-decoration underline
+	a
+		text-decoration underline
+	pre code
+		font-size $font-size-code
+	blockquote
+		font-size $font-size-normal

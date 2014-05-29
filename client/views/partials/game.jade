@@ -79,11 +79,11 @@
 							i.fa.fa-arrow-circle-down
 							span {{ release.lastversion.downloads | number }} downloads
 
-						accordion.accordion--glued(close-others="true")
-							accordion-group(heading="Description", is-open="accordeon.isFirstOpen")
+						accordion.panel-group--glued(close-others="true")
+							accordion-group.panel--inner(heading="Description", is-open="accordeon.isFirstOpen")
 								div.markdown(markdown="release.description")
 
-							accordion-group(heading="Authors")
+							accordion-group.panel--inner(heading="Authors")
 								div.thumbnail.thumbnail-avatar.pull-left(ng-repeat="author in release.authors")
 									div.media-avatar.media-avatar-medium(ng-hide="author.author.avatar")
 									img.media-avatar.media-avatar-medium(ng-show="author.author.avatar", ng-src="{{ author.author.avatar }}")
@@ -91,10 +91,10 @@
 										h1 {{ author.author.user }}
 										label {{ author.roles.join(', ') }}
 
-							accordion-group(heading="Acknowledgements")
+							accordion-group.panel--inner(heading="Acknowledgements")
 								div.markdown(markdown="release.acknowledgements")
 
-							accordion-group(heading="Changelog")
+							accordion-group.panel--inner(heading="Changelog")
 								div(ng-repeat="version in release.versions")
 									h4
 										| Version
@@ -105,14 +105,14 @@
 									hr
 									div.markdown(markdown="version.changes")
 
-							accordion-group(heading="Mods")
+							accordion-group.panel--inner(heading="Mods")
 								p This release hasn't been modded yet.
 								hr
 								button.btn.btn-default(ng-click="requestModPermission()")
 									i.fa.fa-wrench.space-right
 									| Request Mod Permission
 
-							accordion-group(heading="Gallery")
+							accordion-group.panel--inner(heading="Gallery")
 								p No images in the gallery yet.
 				.row.padder-notop
 					.col-sm-4.col-md-3
@@ -162,8 +162,8 @@
 								strong {{ comment.author.user }}
 								| &nbsp;commented
 								time-ago(from-time="{{ comment.timestamp }}")
-								.pull-right
-									i.fa.fa-pencil(ng-click="editComment()")
+								.pull-right(ng-hide="editing")
+									i.fa.fa-pencil.space-right(ng-click="editComment()")
 									i.fa.fa-times-circle(ng-click="deleteComment()")
 							.panel-body
 								div.markdown(ng-hide="editing", markdown="comment.message")

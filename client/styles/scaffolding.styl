@@ -2,12 +2,15 @@
 // Scaffolding
 // --------------------------------------------------
 
+// Body
 body
 	font-family $font-content
 	font-weight $font-weight-normal
 	font-size $font-size-normal
 	-webkit-font-smoothing antialiased
-a
+
+// Links
+a, [ng-click]
 	cursor pointer
 	transition all $animation-short
 	&:hover
@@ -15,11 +18,14 @@ a
 	&:focus
 		text-decoration none
 		outline none
+
+// Divider
 hr
 	margin-top 10px
 	border-width 2px
 
 // TODO change to footer element
+// Footer
 section.footer
 	text-align center
 	margin-top -20px

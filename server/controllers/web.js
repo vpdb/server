@@ -1,4 +1,6 @@
 var _ = require('underscore');
+var fs = require('fs');
+var path = require('path');
 var logger = require('winston');
 
 var acl = require('../acl');
@@ -101,6 +103,14 @@ exports.index = function(resource, permission) {
 	}, function(req, res) {
 		showError(403, req, res);
 	});
+};
+
+exports.styleguide = function() {
+	return function(req, res) {
+		res.writeHead(200);
+		var stream = fs.createReadStream(path.resolve(__dirname, '../../styleguide/index.html'));
+		stream.pipe(res);
+	}
 };
 
 exports.partials = function(subfolder, resource, permission) {

@@ -3,6 +3,11 @@ var path = require('path');
 var writeable = require('./server/modules/writeable');
 var assets = require('./server/config/assets');
 
+var fs = require('fs');
+var kss = require('kss');
+var jade = require('jade');
+var marked = require('marked');
+
 module.exports = function(grunt) {
 
 	var cacheRoot = writeable.cacheRoot;
@@ -53,6 +58,19 @@ module.exports = function(grunt) {
 				src: [ 'client/static/css/lib/*.css', 'client/static/css/fonts.css', cssRoot + '/*.css' ],
 				dest: cssGlobal,
 				ext: '.css'
+			}
+		},
+
+		kss: {
+			options: {
+				includeType: 'styl',
+				includePath: 'client/styles/vpdb.styl',
+				template: 'styleguide/template'
+			},
+			dist: {
+				files: {
+					'styleguide': ['client/styles']
+				}
 			}
 		},
 
@@ -145,8 +163,9 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-nodemon');
 	grunt.loadNpmTasks('grunt-gitinfo');
 	grunt.loadNpmTasks('grunt-concurrent');
+	grunt.loadNpmTasks('grunt-kss');
 
-	// define the tasks
+	// tasks
 	grunt.registerTask('gitsave', function() {
 		grunt.task.requires('gitinfo');
 		var gitinfo = grunt.config.get('gitinfo');
@@ -160,6 +179,31 @@ module.exports = function(grunt) {
 		grunt.file.write(gitsave.output, JSON.stringify(gitinfo, null, "\t"));
 		grunt.log.writeln("Gitinfo written to %s.", gitsave.output);
 	});
+
+	grunt.registerTask('kssangular', function() {
+		var done = this.async();
+		kss.traverse('client/styles', { multiline: true, markdown: true, markup: true,  mask: '*.styl' }, function(err, styleguide) {
+			if (err) {
+				throw err;
+			}
+			var sections = styleguide.section('*.');
+			var sectionTemplate = jade.compile(fs.readFileSync('client/views/partials/styleguide-section.jade'), { pretty: true });
+			var indexHtml = jade.renderFile('client/views/styleguide.jade', {
+				sections: sections,
+				pretty: true
+			});
+			fs.writeFileSync('styleguide/index.html', indexHtml);
+			_.each(sections, function(section) {
+				fs.writeFileSync('styleguide/sections/' + section.reference() + '.html', sectionTemplate());
+			});
+
+			fs.writeFileSync('styleguide/overview.html', marked(fs.readFileSync('doc/styleguide.md').toString()));
+			console.log('done!');
+			done();
+		});
+
+	});
+
 	grunt.registerTask('git', [ 'gitinfo', 'gitsave']);
 	grunt.registerTask(
 		'build',

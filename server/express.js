@@ -92,6 +92,10 @@ module.exports = function(app, config, passport) {
 	// api pre-checks
 //	app.use(apiCtrl.checkApiContentType);
 
+
+	app.use('/styleguide', express.static(path.resolve(__dirname, '../styleguide')));
+
+
 	// routes should be at the last (pretty much)
 	app.use(app.router);
 

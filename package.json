@@ -8,7 +8,11 @@
 		"type": "git",
 		"url": "https://github.com/freezy/node-vpdb"
 	},
-	"keywords": [ "visual pinball", "vp10", "vpx" ],
+	"keywords": [
+		"visual pinball",
+		"vp10",
+		"vpx"
+	],
 	"author": "freezy",
 	"license": "MIT",
 	"bugs": {
@@ -36,12 +40,15 @@
 		"grunt-contrib-uglify": "0.2.x",
 		"grunt-contrib-watch": "0.5.x",
 		"grunt-gitinfo": "~0.1.4",
+		"grunt-kss": "^0.3.1",
 		"grunt-mkdir": "0.1.x",
 		"grunt-nodemon": "~0.2.1",
 		"jade": "*",
+		"kss": "^0.3.7",
+		"marked": "^0.3.2",
 		"md5": "1.0.x",
 		"mongoose": "~3.8.8",
-		"mongoose-unique-validator" : "~0.3.0",
+		"mongoose-unique-validator": "~0.3.0",
 		"nib": "1.0.x",
 		"optimist": "0.6.x",
 		"passport": "~0.2.0",
@@ -59,7 +66,7 @@
 	"devDependencies": {
 		"socket.io": "1.0.x"
 	},
-	"engines" : {
+	"engines": {
 		"node": "0.10.x"
 	},
 	"mod-project-name": "vpdb"

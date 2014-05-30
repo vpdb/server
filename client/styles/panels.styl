@@ -10,9 +10,10 @@
 	transition background-color $animation-short, color $animation-short
 	> .panel-heading
 		border-top-radius($border-radius-small)
-		padding 8px 12px 6px
+		padding 7px 12px 6px
 	> .panel-footer
 		border-bottom-radius($border-radius-small)
+
 
 // Panels within panels
 .panel--inner, .panel-group .panel--inner
@@ -22,6 +23,7 @@
 	> .panel-footer
 		border-bottom-radius($border-radius-large)
 
+
 // Heading style
 .panel-title
 	text-align left
@@ -30,9 +32,14 @@
 	font-weight $font-weight-bold
 
 
-// remove border from bootstrap
+// Remove border from bootstrap
 .panel, .panel-default, .panel > .panel-heading + .panel-collapse .panel-body, .panel-footer
 	border none
+
+
+// For non-glued panel groups, make margin larger.
+.panel-group .panel + .panel
+	margin-top 15px
 
 
 // Accordion with groups glued together

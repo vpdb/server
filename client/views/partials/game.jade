@@ -84,12 +84,12 @@
 								div.markdown(markdown="release.description")
 
 							accordion-group.panel--inner(heading="Authors")
-								div.thumbnail.thumbnail-avatar.pull-left(ng-repeat="author in release.authors")
-									div.media-avatar.media-avatar-medium(ng-hide="author.author.avatar")
-									img.media-avatar.media-avatar-medium(ng-show="author.author.avatar", ng-src="{{ author.author.avatar }}")
+								div.thumbnail.thumbnail--avatar.pull-left(ng-repeat="author in release.authors")
+									.img.img-avatar.avatar-placeholder(ng-hide="author.author.avatar")
+									.img.img-avatar(ng-show="author.author.avatar", img-bg="author.author.avatar")
 									.caption
-										h1 {{ author.author.user }}
-										label {{ author.roles.join(', ') }}
+										user.center-block {{ author.author.user }}
+										i.center-block {{ author.roles.join(', ') }}
 
 							accordion-group.panel--inner(heading="Acknowledgements")
 								div.markdown(markdown="release.acknowledgements")
@@ -152,8 +152,8 @@
 				h3 Comments on Release
 				label.padder-left(ng-show="!release.comments || release.comments.length == 0") No comments yet.
 				.media(ng-repeat="comment in release.comments", ng-controller="CommentCtrl")
-					.avatar--md.avatar-placeholder.avatar-placeholder--md.pull-left(ng-hide="comment.author.avatar")
-					img.media-object.avatar.avatar--md.pull-left(ng-show="comment.author.avatar", ng-src="{{ comment.author.avatar }}")
+					.img.img-avatar.avatar-placeholder.pull-left(ng-hide="comment.author.avatar")
+					.img.img-avatar.pull-left(ng-show="comment.author.avatar", img-bg="comment.author.avatar")
 					.media-body
 						.panel.panel--inner
 							.panel-triangle
@@ -174,7 +174,7 @@
 								.clearfix
 
 				.media
-					.avatar--md.avatar-placeholder.avatar-placeholder--md.pull-left
+					.img.img-avatar.avatar-placeholder.pull-left
 					.media-body
 						tabset
 							label.label--small.pull-right Comments are parsed with <a href="http://daringfireball.net/projects/markdown/syntax" target="_blank">Markdown</a>.

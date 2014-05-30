@@ -127,7 +127,7 @@ directives.directive('markdown', function($sanitize, $compile) {
 directives.directive('user', function($compile, $modal) {
 	return {
 		restrict: 'E',
-		link: function(scope, element, attrs) {
+		link: function(scope, element) {
 			element.click(function() {
 				$modal.open({
 					templateUrl: 'partials/modals/userDetails',

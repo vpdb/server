@@ -10,15 +10,16 @@
 	background-size cover
 
 
-// Aspect ratio
-.img--ar-bg, .img--ar-logo
+// Aspect ratios
+.img--ar-bg, .img--ar-logo, .img--ar-square
 	position relative
 	width 100%
 	height 0
 .img--ar-bg // formerly: .img-backglass
 	padding-bottom 80% // % of width, defines aspect ratio
 .img--ar-logo // formerly: .img-logo-placeholder
-	padding-bottom 40% // % of width, defines aspect ratio
+	padding-bottom 40%
+
 
 // Fading animation
 .img--fade // formerly: .img-fade
@@ -27,15 +28,19 @@
 	&.loaded
 		opacity 1
 
-// Avatars
-.avatar--md
+
+// Avatar images (size and border-radius) - default is --md
+.img-avatar
 	width 64px
 	height 64px
 	border-radius 50%
-.avatar--lg
+	padding-bottom 0
+.img-avatar--lg
 	width 72px
 	height 72px
-	border-radius 50%
+
+
+// Avatar place holders
 .avatar-placeholder:before
 	position absolute
 	font-family FontAwesome
@@ -45,18 +50,17 @@
 	-webkit-font-smoothing antialiased
 	-moz-osx-font-smoothing grayscale
 	content '\f007'
+	margin-left 19px // --md
+	margin-top 14px
+	font-size 33px
 .avatar-placeholder--sm:before
 	margin-left 18px
 	margin-top 16px
-	font-size 37px // font-awesome
-.avatar-placeholder--md:before
-	margin-left 19px
-	margin-top 14px
-	font-size 33px // font-awesome
+	font-size 37px
 .avatar-placeholder--lg:before
 	margin-left 18px
 	margin-top 16px
-	font-size 37px  // font-awesome
+	font-size 37px
 
 
 // Rounded corners

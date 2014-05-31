@@ -3,7 +3,7 @@ html(ng-app="vpdb")
 	head
 		meta(charset='utf8')
 		meta(name="viewport", content="width=device-width, initial-scale=1")
-		base(href='/')
+		base(href="/")
 		link(rel="icon", type="image/png", href="/images/favicon.png")
 		script(type="text/javascript", src="//use.typekit.net/xhi7wnv.js")
 		script(type="text/javascript") try{Typekit.load();}catch(e){}
@@ -21,7 +21,7 @@ html(ng-app="vpdb")
 			.container
 				.navbar-header
 					span.navbar-brand
-						a(href="/")
+						a(href="/", target="_self")
 							i.icon.icon-vpdb-logo-o
 							i.icon.icon-vp
 							i.icon.icon-db
@@ -32,18 +32,24 @@ html(ng-app="vpdb")
 
 				ul.nav.navbar-nav.navbar-right
 					li
-						a(href="/")
+						a(href="/", target="_self")
 							i.fa.fa-caret-left.space-right-2x
 							span.space-right Back to Site
 
-		.container.container--topmost
+		.container.container--topmost(ng-controller="StyleguideCtrl")
 			.row.row--fullheight
 				.col-sm-3.col--menu.bg-dark
 					h2 Contents
 					hr
-					ul
-					- each section in sections
-						li: a(href="/styleguide/sections/#{section.id}")=section.title
+					h4.padder-top: a(href="/styleguide")
+						i.fa.fa-home.space-right
+						| Overview
+					accordion.panel-group--glued(close-others="false")
+						- each section, i in sections
+							accordion-group.panel--inner(heading=section.title, is-open=(i == 0 ? "true" : "false"))
+								ul.list-group
+									- each subsection in section.childSections
+										li.list-group-item: a(href="/styleguide/sections/#{section.id}?section=#{subsection.reference()}")=subsection.header()
 
 				.col-sm-9.col--main
 					div(ng-view)

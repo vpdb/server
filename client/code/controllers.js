@@ -219,3 +219,13 @@ ctrl.controller('ErrorModalCtrl', function($scope, errorTitle, errorMessage) {
 	$scope.errorMessage = errorMessage;
 });
 
+ctrl.controller('StyleguideCtrl', function($scope) {
+	$scope.scrollTo = function(id) {
+		var old = $location.hash();
+		$location.hash(id);
+		$anchorScroll();
+		//reset to old to keep any additional routing logic from kicking in
+		$location.hash(old);
+	};
+});
+

@@ -65,7 +65,8 @@
 		"winston": "0.7.x"
 	},
 	"devDependencies": {
-		"socket.io": "1.0.x"
+		"socket.io": "1.0.x",
+		"debug": "^0.8.1"
 	},
 	"engines": {
 		"node": "0.10.x"

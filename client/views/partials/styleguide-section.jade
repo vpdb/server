@@ -1,13 +1,14 @@
 article#kss-content
 
 	- for section in sections
+		a(name="#{section.reference}")
 		h1 #{section.reference} #{section.header}
 		div!=section.description
 
 		- for modifier in section.modifiers
 			h1.code=modifier.className
-			div!=modifier.description
 			hr
+			div!=modifier.description
 			div!=modifier.markup
 			hr
 			tabset

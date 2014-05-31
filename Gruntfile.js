@@ -3,11 +3,6 @@ var path = require('path');
 var writeable = require('./server/modules/writeable');
 var assets = require('./server/config/assets');
 
-var fs = require('fs');
-var kss = require('kss');
-var jade = require('jade');
-var marked = require('marked');
-
 module.exports = function(grunt) {
 
 	var cacheRoot = writeable.cacheRoot;
@@ -106,7 +101,7 @@ module.exports = function(grunt) {
 					'client/views/partials/styleguide-section.jade',
 					'doc/styleguide.md'
 				],
-				tasks: [ 'kssgen' ]
+				tasks: [ 'kss' ]
 			}
 		},
 
@@ -146,7 +141,6 @@ module.exports = function(grunt) {
 				}
 			}
 		}
-
 	};
 
 	grunt.config.init(config);
@@ -161,6 +155,7 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-nodemon');
 	grunt.loadNpmTasks('grunt-gitinfo');
 	grunt.loadNpmTasks('grunt-concurrent');
+	grunt.loadTasks('./server/grunt-tasks');
 
 	// tasks
 	grunt.registerTask('gitsave', function() {
@@ -177,36 +172,12 @@ module.exports = function(grunt) {
 		grunt.log.writeln("Gitinfo written to %s.", gitsave.output);
 	});
 
-	grunt.registerTask('kssgen', function() {
-		var done = this.async();
-		kss.traverse('client/styles', { multiline: true, markdown: true, markup: true,  mask: '*.styl' }, function(err, styleguide) {
-			if (err) {
-				throw err;
-			}
-			var sections = styleguide.section('*.');
-			var sectionTemplate = jade.compile(fs.readFileSync('client/views/partials/styleguide-section.jade'), { pretty: true });
-			var indexHtml = jade.renderFile('client/views/styleguide.jade', {
-				sections: sections,
-				pretty: true
-			});
-			fs.writeFileSync('styleguide/index.html', indexHtml);
-			_.each(sections, function(section) {
-				fs.writeFileSync('styleguide/sections/' + section.reference() + '.html', sectionTemplate());
-			});
-
-			fs.writeFileSync('styleguide/overview.html', marked(fs.readFileSync('doc/styleguide.md').toString()));
-			console.log('done!');
-			done();
-		});
-
-	});
-
-	grunt.registerTask('kss', [ 'clean:styleguide', 'kssgen']);
+	grunt.registerTask('kssrebuild', [ 'clean:styleguide', 'kss']);
 	grunt.registerTask('git', [ 'gitinfo', 'gitsave']);
 	grunt.registerTask(
 		'build',
 		'Compiles all of the assets to the cache directory.',
 		[ 'clean', 'mkdir', 'stylus', 'cssmin', 'uglify', 'git' ]
 	);
-	grunt.registerTask('dev', [ 'build', 'concurrent' ]);
+	grunt.registerTask('dev', [ 'build', 'kssrebuild', 'concurrent' ]);
 };

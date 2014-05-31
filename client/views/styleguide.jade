@@ -36,7 +36,7 @@ html(ng-app="vpdb")
 					hr
 					ul
 					- each section in sections
-						li: a(href="/styleguide/sections/#{section.reference()}")=section.header()
+						li: a(href="/styleguide/sections/#{section.id}")=section.title
 
 				.col-sm-9.col--main
 					div(ng-view)

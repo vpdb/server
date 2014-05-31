@@ -1,1 +1,8 @@
-h1 Generated style section.
+article#kss-content
+
+	- for section in sections
+		h1 #{section.reference} #{section.header}
+		div!=section.description
+
+
+	pre=JSON.stringify(sections, null, "  ")

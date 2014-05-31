@@ -46,7 +46,7 @@ html(ng-app="vpdb")
 						| Overview
 					accordion.panel-group--glued(close-others="false")
 						- each section, i in sections
-							accordion-group.panel--inner(heading=section.title, is-open=(i == 0 ? "true" : "false"))
+							accordion-group.panel--inner(heading=section.title, is-open="sgIsOpen#{i}", ng-init="sgIsOpen#{i}=#{(i == 0 ? 'true' : 'false')}")
 								ul.list-group
 									- each subsection in section.childSections
 										li.list-group-item: a(href="/styleguide/sections/#{section.id}?section=#{subsection.reference()}")=subsection.header()

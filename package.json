@@ -40,7 +40,6 @@
 		"grunt-contrib-uglify": "0.2.x",
 		"grunt-contrib-watch": "0.5.x",
 		"grunt-gitinfo": "~0.1.4",
-		"grunt-kss": "^0.3.1",
 		"grunt-mkdir": "0.1.x",
 		"grunt-nodemon": "~0.2.1",
 		"jade": "*",

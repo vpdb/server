@@ -22,6 +22,9 @@ module.exports = function(grunt) {
 		clean: {
 			build: {
 				src: [ cssRoot, jsRoot ]
+			},
+			styleguide: {
+				src: [ 'styleguide/**/*.html']
 			}
 		},
 
@@ -61,19 +64,6 @@ module.exports = function(grunt) {
 			}
 		},
 
-		kss: {
-			options: {
-				includeType: 'styl',
-				includePath: 'client/styles/vpdb.styl',
-				template: 'styleguide/template'
-			},
-			dist: {
-				files: {
-					'styleguide': ['client/styles']
-				}
-			}
-		},
-
 		uglify: {
 			build: {
 				options: {
@@ -99,7 +89,7 @@ module.exports = function(grunt) {
 			},
 			stylesheets: {
 				files: 'client/styles/**/*.styl',
-				tasks: [ 'stylus' ],
+				tasks: [ 'stylus', 'kssgen' ],
 				options: {
 					livereload: true
 				}
@@ -109,6 +99,14 @@ module.exports = function(grunt) {
 				options: {
 					livereload: true
 				}
+			},
+			styleguide: {
+				files: [
+					'client/views/styleguide.jade',
+					'client/views/partials/styleguide-section.jade',
+					'doc/styleguide.md'
+				],
+				tasks: [ 'kssgen' ]
 			}
 		},
 
@@ -163,7 +161,6 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-nodemon');
 	grunt.loadNpmTasks('grunt-gitinfo');
 	grunt.loadNpmTasks('grunt-concurrent');
-	grunt.loadNpmTasks('grunt-kss');
 
 	// tasks
 	grunt.registerTask('gitsave', function() {
@@ -180,7 +177,7 @@ module.exports = function(grunt) {
 		grunt.log.writeln("Gitinfo written to %s.", gitsave.output);
 	});
 
-	grunt.registerTask('kssangular', function() {
+	grunt.registerTask('kssgen', function() {
 		var done = this.async();
 		kss.traverse('client/styles', { multiline: true, markdown: true, markup: true,  mask: '*.styl' }, function(err, styleguide) {
 			if (err) {
@@ -204,6 +201,7 @@ module.exports = function(grunt) {
 
 	});
 
+	grunt.registerTask('kss', [ 'clean:styleguide', 'kssgen']);
 	grunt.registerTask('git', [ 'gitinfo', 'gitsave']);
 	grunt.registerTask(
 		'build',

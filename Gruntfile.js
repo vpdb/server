@@ -84,7 +84,7 @@ module.exports = function(grunt) {
 			},
 			stylesheets: {
 				files: 'client/styles/**/*.styl',
-				tasks: [ 'stylus', 'kssgen' ],
+				tasks: [ 'stylus', 'kss' ],
 				options: {
 					livereload: true
 				}
@@ -177,7 +177,7 @@ module.exports = function(grunt) {
 	grunt.registerTask(
 		'build',
 		'Compiles all of the assets to the cache directory.',
-		[ 'clean', 'mkdir', 'stylus', 'cssmin', 'uglify', 'git' ]
+		[ 'clean:build', 'mkdir', 'stylus', 'cssmin', 'uglify', 'git' ]
 	);
-	grunt.registerTask('dev', [ 'build', 'kssrebuild', 'concurrent' ]);
+	grunt.registerTask('dev', [ 'build', 'concurrent' ]);
 };

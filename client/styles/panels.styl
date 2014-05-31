@@ -1,9 +1,16 @@
-//
 // Panels
-// --------------------------------------------------
-
-
-// Base class
+//
+// Basic panel. Use this to group elements.
+//
+// Markup:
+// <div class="panel padder {$modifiers}">
+//    <p>Panel Content</p>
+// </div>
+//
+// .                   - Default panel
+// .panel--animated    - Hover animates it towards POV
+//
+// Styleguide 3.1
 .panel
 	position relative
 	border-radius $border-radius-small
@@ -15,7 +22,20 @@
 		border-bottom-radius($border-radius-small)
 
 
-// Panels within panels
+// Inner Panels
+//
+// Add this class if you're creating a panel within another panel.
+//
+// Markup:
+//	<div class="panel padder">
+//		<div class="panel padder {$modifiers}">
+//			<p>Panel Content</p>
+//		</div>
+// </div>
+//
+// .panel--inner         - Inner panel
+//
+// Styleguide 3.2
 .panel--inner, .panel-group .panel--inner
 	border-radius $border-radius-large
 	> .panel-heading, > .panel-footer

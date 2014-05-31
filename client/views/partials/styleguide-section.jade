@@ -4,5 +4,11 @@ article#kss-content
 		h1 #{section.reference} #{section.header}
 		div!=section.description
 
+		- for modifier in section.modifiers
+			h1.code=modifier.className
+			div!=modifier.description
+			div!=modifier.markup
+			pre!=modifier.jade
 
-	pre=JSON.stringify(sections, null, "  ")
+
+	//pre=JSON.stringify(sections, null, "  ")

@@ -42,6 +42,8 @@
 		"grunt-gitinfo": "~0.1.4",
 		"grunt-mkdir": "0.1.x",
 		"grunt-nodemon": "~0.2.1",
+		"highlight.js": "^8.0.0",
+		"html2jade": "0.7.6",
 		"jade": "*",
 		"kss": "^0.3.7",
 		"marked": "^0.3.2",

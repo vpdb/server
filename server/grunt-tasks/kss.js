@@ -6,6 +6,7 @@ var path = require('path');
 var async = require('async');
 var marked = require('marked');
 var html2jade = require('html2jade');
+var highlight = require('highlight.js');
 
 module.exports = function(grunt) {
 
@@ -54,7 +55,6 @@ module.exports = function(grunt) {
 						rootSections: rootSections
 					}));
 					grunt.log.ok();
-
 
 					// render index
 					var indexHtml = jade.renderFile('client/views/styleguide.jade', {
@@ -130,11 +130,14 @@ function serializeModifiers(modifiers, done) {
 			}
 			jade = jade.replace(/html[\s\S]+body[\n\r]+/gi, '');
 			jade = ("\n" + jade).replace(/[\n\r]\s{4}/g, '\n');
+
+			var html = modifier.markup();
 			next(null, {
 				name: modifier.name(),
 				description: modifier.description(),
 				className: modifier.className(),
-				markup: modifier.markup(),
+				markup: html,
+				markupHighlighted: highlight.highlight('html', html).value,
 				jade: jade
 			});
 		});

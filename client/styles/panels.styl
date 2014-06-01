@@ -44,12 +44,94 @@
 		border-bottom-radius($border-radius-large)
 
 
+// Inactive Panels
+//
+// When you show stuff that is going to be filled up, "blank slate" as GitHub calls it.
+//
+// Markup:
+// <div class="panel {$modifiers}">
+//   <div class="panel-content">
+//     <i class="icon icon-ipdb space-right"></i>
+//     <span>INFO</span>
+//     <p><i>Click "Fetch" to load data.</i></p>
+//    </div>
+// </div>
+//
+// .panel--inactive         - Inactive panel
+//
+// Styleguide 3.3
+.panel--inactive
+	height 300px
+	text-align center
+	padding-top 90px
+	i.icon
+		font-size 50px
+		& + span
+			line-height 56px
+			margin-left 7px
+			vertical-align top
+
+// toclean
 .panel--backglass
 	height 250px
 	h3
 		margin 10px 15px 8px
 
+// toclean
+.panel-banner
+	img
+		width 100%
+	i.icon-title
+		position absolute
+		margin-top 0
+		cursor default
+		& + label
+			margin-right 15px
+			margin-bottom 15px
+			margin-top 0px
+			font-size $font-size-large-alt
+			font-weight $font-weight-normal-alt
+			strong
+				font-weight $font-weight-light-alt
+		&.icon-williams
+			font-size 48px // icon
+		&.icon-stern
+			font-size 62px // icon
+	h3 small
+		font-size 80%
 
+	& > .row
+		margin 0 0 15px
+		& > div
+			transition color $animation-short
+			cursor pointer
+			overflow hidden
+			text-overflow ellipsis
+			white-space nowrap
+			&:nth-child(even)
+				text-align right
+
+	& > button.btn.btn-lg
+		width 100%
+		border-radius 0 0 $border-radius-small $border-radius-small
+
+// toclean
+.panel-mini
+	.img-wrapper
+		width $list-square-width
+		float left
+		.img
+			padding 0
+			height $list-square-width
+			border-radius $border-radius-small 0 0 $border-radius-small
+	.data-wrapper
+		margin-left $list-square-width + 15px
+		h3
+			margin-top 10px
+			margin-right 10px
+		h4
+			label.label-version
+				margin-bottom -4px
 
 // Heading style
 .panel-title
@@ -92,3 +174,6 @@
 	transform translateY(0) scale(1, 1)
 	&:hover
 		transform translateY(-5px) scale(1.03, 1.03)
+
+.panel--animated--less:hover
+		transform translateY(-3px) scale(1.01, 1.01)

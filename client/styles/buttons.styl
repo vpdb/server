@@ -79,3 +79,19 @@
 		font-size 20px // icon
 	&.btn-default .fa
 		font-size 18px // icon
+
+
+.btn-group
+	.btn + .btn, .btn + .btn-group, .btn-group + .btn, .btn-group + .btn-group
+		margin-left 2px
+
+.btn-group--flex
+	display inline-flex
+	width 100%
+
+
+.btn--sticky-bottom
+	width 100%
+	bottom -1px
+	position absolute
+	border-bottom-radius($border-radius-small)

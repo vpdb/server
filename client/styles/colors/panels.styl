@@ -15,6 +15,22 @@ body.theme-dark
 	.panel--inner
 		box-shadow none
 
+	// Inactive panels
+	.panel--inactive
+		color $color-dark
+
+	// toclean
+	.panel-banner
+		i.icon-title
+			color $color-primary
+			& + label
+				strong
+					color $color-lighter
+		h3 small
+			color inherit
+		& > .row > div:hover
+			color $color-lightest
+
 
 //
 // Light theme
@@ -40,6 +56,10 @@ body.theme-light
 						color $color-lightish-inv
 					a:hover
 						color $color-lightish-inv
+
+	// Inactive panels
+	.panel--inactive
+		color $color-dark-inv
 
 
 //

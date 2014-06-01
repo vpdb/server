@@ -7,7 +7,7 @@
 				.panel.panel-dark.panel-banner.bg-dark.ng-cloak
 					img(ng-src="{{ pack.banner }}")
 
-					h3
+					h3.panel--banner__h3
 						i.icon.icon-title(class="{{ pack | manufacturerIcon }}")
 						label.pull-right
 							strong(ng-bind-html="pack.name | smalls")
@@ -59,8 +59,8 @@
 		h5 news feed
 		hr
 		.media.media-news(ng-repeat="item in feed | orderBy:'timestamp':true")
-			div.media-object.media-avatar.media-avatar-large.pull-left(ng-hide="item.user.avatar")
-			img.media-object.media-avatar.media-avatar-large.pull-left(ng-show="item.user.avatar", ng-src="{{ item.user.avatar }}")
+			.img.img-avatar.img-avatar--lg.avatar-placeholder.avatar-placeholder--lg.pull-left(ng-hide="item.user.avatar")
+			.img.img-avatar.img-avatar--lg.pull-left(ng-show="item.user.avatar", img-bg="item.user.avatar")
 			.media-body
 				label.label--block
 					time-ago(from-time="{{ item.timestamp }}")
@@ -105,8 +105,8 @@
 		hr
 		h4 Most Active Authors
 		.media.media-mini(ng-repeat="user in users | orderBy:'authored':true", ng-class="{ last: $last }")
-			div.media-object.media-avatar.media-avatar-small.pull-left(ng-hide="user.avatar")
-			img.media-object.media-avatar.media-avatar-small.pull-left(ng-show="user.avatar", ng-src="{{ user.avatar }}")
+			.img.img-avatar.avatar-placeholder.avatar-placeholder--sm.pull-left(ng-hide="user.avatar")
+			.img.img-avatar.pull-left(ng-show="user.avatar", img-bg="user.avatar")
 			.media-body
 				h4.media-heading {{ user.user }}
 				h5.media-heading

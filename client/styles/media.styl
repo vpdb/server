@@ -7,3 +7,38 @@
 	padding-left 15px
 .media > .pull-left
 	margin-right 0
+
+// toclean
+.media-news
+	hr
+		margin-top 15px
+		margin-left 15px
+		margin-bottom 0
+	.media-body
+		& > label
+			margin-left 15px
+			a
+				font-weight $font-weight-bold
+
+// toclean
+.media.media-mini
+	margin-top 10px
+	padding-bottom 5px
+	&.last
+		border none !important
+	img.media-object
+		width 40px
+		height 40px
+	h4, h5
+		margin-top 0
+		text-transform none
+		font-family $font-content
+		font-size $font-size-normal
+		white-space nowrap
+		overflow hidden
+		text-overflow ellipsis
+	h4
+		font-weight $font-weight-bold
+	h5
+		font-weight $font-weight-normal
+

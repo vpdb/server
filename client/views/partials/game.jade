@@ -115,7 +115,7 @@
 								p No images in the gallery yet.
 				.row.padder-notop
 					.col-sm-4.col-md-3
-						.btn-group.btn-group-flex
+						.btn-group.btn-group--flex
 							button.btn.btn-default.btn-lg.col-xs-11(type="button")
 								i.fa.fa-download.space-right
 								| Media
@@ -247,7 +247,7 @@
 								span {{ backglass.download.size | bytes }}
 
 					.panel.bg-dark.panel--backglass.flipbox-back.img.img-fullspan.img-fade(img-bg="backglass.thumb")
-						button.btn.btn-primary.btn-lg(download="backglass.download", download-info="[ game, backglass ] | dlBackglass", ng-click="$event.stopPropagation()")
+						button.btn.btn-primary.btn-lg.btn--sticky-bottom(download="backglass.download", download-info="[ game, backglass ] | dlBackglass", ng-click="$event.stopPropagation()")
 								| Download
 					.clearfix
 
@@ -297,7 +297,7 @@
 								span {{ item.download.size | bytes }}
 
 					.panel.bg-dark.panel--backglass.flipbox-back.img.img-fullspan.img-fade(img-bg="item.thumb")
-						button.btn.btn-primary.btn-lg(download="item.download", download-info="[ game, item ] | dlMedia", ng-click="$event.stopPropagation()")
+						button.btn.btn-primary.btn-lg.btn--sticky-bottom(download="item.download", download-info="[ game, item ] | dlMedia", ng-click="$event.stopPropagation()")
 							| Download
 					.clearfix
 

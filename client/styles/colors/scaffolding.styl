@@ -24,6 +24,14 @@ body.theme-dark
 		a:hover
 			color $color-light
 
+	// text selection color
+	::selection
+		color rgba(white,0.9)
+		background $color-primary
+	::-moz-selection
+		color rgba(white,0.9)
+		background $color-primary
+
 
 //
 // Light theme
@@ -50,3 +58,10 @@ body.theme-light
 			color $color-lighter
 		a:hover
 			color $color-lightest
+
+	::selection
+		color rgba(white,0.9)
+		background $color-primary-black
+	::-moz-selection
+		color rgba(white,0.9)
+		background $color-primary-black

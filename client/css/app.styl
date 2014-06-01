@@ -141,20 +141,6 @@ ul.dropdown-menu table
 		font-weight font-weight-bold
 
 
-.btn-group.btn-media
-	width 100%
-	& > .btn
-		padding-left 0
-		padding-right 0
-
-.btn-group
-	&.btn-group-flex
-		display inline-flex
-		width 100%
-
-	.btn + .btn, .btn + .btn-group, .btn-group + .btn, .btn-group + .btn-group
-		margin-left 2px
-
 // :checkbox
 .checkbox > label
 	h6
@@ -238,43 +224,6 @@ ul.dropdown-menu table
 	h3
 		text-align center
 
-
-// :table panes releases (square img)
-.panel-mini
-	.img-wrapper
-		width list-square-width
-		float left
-		.img
-			padding 0
-			height list-square-width
-			border-radius border-radius-small 0 0 border-radius-small
-	.data-wrapper
-		margin-left list-square-width + 15px
-		h3
-			margin-top 10px
-			margin-right 10px
-		h4
-			label.label-version
-				margin-bottom -4px
-
-// :table panes :extended
-.panel-extended
-	&:hover
-		transform translateY(-3px) scale(1.01, 1.01)
-
-	.img-wrapper
-		width list-sidebar-width
-		float left
-		.img
-			border-top-left-radius border-radius-small
-			border-top-right-radius border-radius-small
-
-	h3
-		font-size font-size-normal-alt
-		font-weight font-weight-normal-alt
-		margin-top 10px
-		margin-bottom 5px
-
 .panel-small
 	border-radius border-radius-large
 	margin 15px
@@ -294,57 +243,10 @@ ul.dropdown-menu table
 		border none
 		border-radius 0 0 border-radius-large border-radius-large
 
-.panel-banner
-	img
-		width 100%
-	i.icon-title
-		position absolute
-		margin-top 0
-		cursor default
-		& + label
-			margin-right 15px
-			margin-bottom 15px
-			margin-top 0px
-			font-size font-size-large-alt
-			font-weight font-weight-normal-alt
-			strong
-				font-weight font-weight-light-alt
-		&.icon-williams
-			font-size 48px // icon
-		&.icon-stern
-			font-size 62px // icon
-	h3 small
-		font-size 80%
-
-	& > .row
-		margin 0 0 15px
-		& > div
-			transition color animation-short
-			cursor pointer
-			overflow hidden
-			text-overflow ellipsis
-			white-space nowrap
-			&:nth-child(even)
-				text-align right
-
-	& > button.btn.btn-lg
-		width 100%
-		border-radius 0 0 border-radius-small border-radius-small
-
 
 .panel-title
 	font-size font-size-normal
 
-.panel-inactive
-	height 300px
-	text-align center
-	padding-top 90px
-	i.icon
-		font-size 50px
-		& + span
-			line-height 56px
-			margin-left 7px
-			vertical-align top
 
 .panel-droppable
 	.img
@@ -397,11 +299,6 @@ ul.dropdown-menu table
 
 // :image
 .img
-	& > .btn.btn-lg // change to btn--sticky-bottom
-		width 100%
-		bottom -1px
-		position absolute
-		border-radius 0 0 border-radius-small border-radius-small
 	.text-center // "drop here" placeholder - not sure how to name this
 		margin-top -50px
 		position absolute
@@ -423,80 +320,12 @@ img.avatar-details
 	top 15px
 
 
-.media.media-mini
-	margin-top 10px
-	padding-bottom 5px
-	&.last
-		border none !important
-	img.media-object
-		width 40px
-		height 40px
-	h4, h5
-		margin-top 0
-		text-transform none
-		font-family font-content
-		font-size font-size-normal
-		white-space nowrap
-		overflow hidden
-		text-overflow ellipsis
-	h4
-		font-weight font-weight-bold
-	h5
-		font-weight font-weight-normal
-
-// :newsfeed
-.media-news
-	hr
-		margin-top 15px
-		margin-left 15px
-		margin-bottom 0
-	.media-body
-		& > label
-			margin-left 15px
-			a
-				font-weight font-weight-bold
-
-
-
-.spinner-overlay
-	position absolute
-	padding-top 200px
-	top 0
-	left 0
-	width 100%
-	height 100%
-	z-index 10
-	background-color rgba(0,0,0,0.5)
-	transition all 1s
-
-// loading spinner
-.spinner
-	margin 6em auto
-	font-size 10px
-	position relative
-	text-indent -9999em
-	border-top 1.1em solid rgba(255, 255, 255, 0.2)
-	border-right 1.1em solid rgba(255, 255, 255, 0.2)
-	border-bottom 1.1em solid rgba(255, 255, 255, 0.2)
-	border-left 1.1em solid #ffffff
-	animation load8 2s infinite linear
-	&, &:after
-		border-radius: 50%;
-		width: 10em;
-		height: 10em;
-@keyframes load8
-	0%
-		transform: rotate(0deg)
-	100%
-		transform: rotate(360deg);
-
 // :lists
 dl.dl-centered
 	& > dt
 		width 49%
 	& > dd
 		margin-left 51%
-
 
 // :staging indicator
 .staging-bar

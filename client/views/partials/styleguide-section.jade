@@ -1,8 +1,8 @@
 article#kss-content
 
 	- for section in sections
-		a(name="#{section.reference}")
-		h1 #{section.reference} #{section.header}
+		section(id="#{section.reference}")
+			h1 #{section.reference} #{section.header}
 		div!=section.description
 
 		- for modifier in section.modifiers

@@ -171,6 +171,6 @@ function toJade(html, done) {
 	}
 	var result = html2jade.convertHtml(html, {}, done);
 	if (result) {
-		next(result);
+		done(result);
 	}
 }

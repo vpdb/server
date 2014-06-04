@@ -202,7 +202,7 @@ folder.
 
 ### Create deployment user
 
-	sudo useradd deployer -d /repos -s /bin/bash -g www-data
+	sudo adduser deployer --home /repos --shell /bin/bash --ingroup www-data
 	sudo chown deployer:www-data /var/www /repos -R
 	sudo chown www-data:www-data /var/www/production/shared/cache /var/www/production/shared/data -R
 	sudo chown www-data:www-data /var/www/staging/shared/cache /var/www/staging/shared/data -R

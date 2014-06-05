@@ -1,0 +1,47 @@
+// Modals
+//
+
+
+// :modals
+.modal-dialog
+	overflow hidden
+	.modal-content
+		border-radius 3px
+		.modal-header
+			border-radius 3px 3px 0 0
+			h3
+				margin 3px 5px 0
+				strong
+					margin-left 2px
+					font-weight normal
+			img.avatar-details + h3
+				margin-left 110px
+		.modal-body
+			.ident
+				margin-left 110px
+				& + hr
+					margin-top 20px
+			h1
+				font-family $font-content
+				font-weight $font-weight-thin
+				text-transform none
+				margin-bottom 15px
+				&:first-child
+					margin-top 0
+			h4
+				text-transform uppercase
+
+			.btn.btn-lg + .btn.btn-lg
+				margin-left 20px
+
+		.alert
+			margin 0 -20px
+			padding 5px 20px
+			border-radius 0
+			text-align center
+			& + .alert
+				margin-top 10px
+
+		.modal-footer
+			border-radius 0 0 3px 3px
+			margin-top 0

@@ -1,11 +1,7 @@
 //
 // Dark theme
 // --------------------------------------------------
-body.theme-dark
-
-	// Global color and background
-	color $color-lighter
-	background-image url('/images/background_outer.png')
+.theme-dark
 
 	// links
 	a, [ng-click]
@@ -32,15 +28,16 @@ body.theme-dark
 		color rgba(white,0.9)
 		background $color-primary
 
+// Global color and background
+body.theme-dark
+	color $color-lighter
+	background-image url('/images/background_outer.png')
+
 
 //
 // Light theme
 // --------------------------------------------------
-body.theme-light
-
-	// Global color and background
-	color $color-lighter-inv
-	background-image url('/images/background_white_outer.png')
+.theme-light
 
 	// links
 	a, [ng-click]
@@ -65,3 +62,8 @@ body.theme-light
 	::-moz-selection
 		color rgba(white,0.9)
 		background $color-primary-black
+
+// Global color and background
+body.theme-light
+	color $color-lighter-inv
+	background-image url('/images/background_white_outer.png')

@@ -72,7 +72,8 @@ ctrl.controller('AppCtrl', function($scope, $rootScope, $location, $modal, UserR
 	$rootScope.login = function() {
 		$modal.open({
 			templateUrl: 'partials/modals/auth',
-			controller: 'LoginCtrl'
+			controller: 'LoginCtrl',
+            windowClass: 'theme-light'
 		});
 	};
 

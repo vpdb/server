@@ -1,15 +1,13 @@
 //
-// Both themes
-// --------------------------------------------------
-
-//
 // Dark theme
 // --------------------------------------------------
 .theme-dark
-	h1, h5
-		color $color-primary
-	h2, h3
+
+	// Headings
+	h1, h2, h3, h4, h5, h6
 		color $color-light
+	.h--primary
+		color $color-primary
 
 //
 // Light theme
@@ -17,13 +15,7 @@
 .theme-light
 
 	// Headings
-	h1, h5
-		color $color-primary-black
-	h2, h3
+	h1, h2, h3, h4, h5, h6
 		color $color-light-inv
-	h4
-		color $color-lightish-inv
-
-	// Panel headings
-	.panel__h-gamma // formerly: .panel-header > h1
-		color $color-lightest
+	.h--primary
+		color $color-primary-black

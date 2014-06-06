@@ -1,53 +1,79 @@
 // Typography
 //
-// Below are different headings used on VPDB.
+// Below are different text styles used on VPDB.
 //
 // Styleguide 1.2
 
 
 // Headings
 //
-// Your standard, everyday headings.
+// Your standard, everyday headings. The pure headers define font, weight and absolute
+// size, while the modifiers take care of color, relative size and special positioning.
+// Note that `.h4` headers are usually used by panel headers.
 //
-// . - Default styles
+//   * Color - `.h--primary` which changes the color, leaving type and size as-is
+//   * Size -  `.h--small` which changes the size, leaving the type and color as-is
+//
+// .             - Default styles
+// .h--primary   - Header in primary color
+// .h--small     - Small font size (80%)
+// .h--smaller   - Smaller font size
+// .h--no-margin - Without margin, when padding is given by parent.
 //
 // Markup:
-// <h1>Heading h1</h1>
-// <h2>Heading h2</h2>
-// <h3>Heading h3</h3>
-// <h4>Heading h4</h4>
-// <h5>Heading h5</h5>
-// <h6>Heading h6</h6>
+// <h1 class="{$modifiers}">Heading h1</h1>
+// <h2 class="{$modifiers}">Heading h2</h2>
+// <h3 class="{$modifiers}">Heading h3</h3>
+// <h4 class="{$modifiers}">Heading h4</h4>
+// <h5 class="{$modifiers}">Heading h5</h5>
 //
 // Styleguide 1.2.1
+
+// Page headers, Sidebar header, anything that is upper case and title font
 h1
 	font-family $font-header
-	text-transform uppercase
-
-h2, h5
-	font-family $font-header
-	text-transform uppercase
-
-h1, h2, h5
 	font-size $font-size-larger-alt
 	font-weight $font-weight-normal-alt
-	margin-bottom 10px
-	margin-top 20px
-
-h3
-	font-size $font-size-largest
-	font-family $font-header
 	text-transform uppercase
+	white-space nowrap
+	overflow hidden
+	text-overflow ellipsis
 
+// Release title
+h2
+	font-family $font-content
+	font-weight $font-weight-bold
+	font-size $font-size-largest
+	text-transform none
+
+// Huge modal title
+h3
+	font-family $font-content
+	font-weight $font-weight-thin
+	font-size $font-size-huge
+	text-transform none
+	margin-bottom 15px
+
+// Panel headers
 h4
 	font-family $font-content
 	font-weight $font-weight-bold
-	font-size $font-size-large
+	font-size $font-size-normal
 	text-transform uppercase
 
-h4 .small
+// Small sidebar headers
+h5
+	font-family $font-content
+	font-weight $font-weight-normal
 	font-size $font-size-normal
+	text-transform uppercase
 
+h1.h--small
+	font-size $font-size-normal-alt
+
+h1, h2, h3, h4, h5, h6
+	&.h--no-margin
+		margin 0
 
 // Panel headings
 // -------------------------

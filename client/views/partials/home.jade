@@ -30,7 +30,7 @@
 						.img.img--ar-square.img--rounded-left.img--fade(img-bg="release.thumbs.square")
 					.col--list-mini-right
 						h1.h--small.h--no-margin {{ release.game.name }}
-						h4
+						h5
 							| {{ release.title }}
 							label.label--version {{ release.lastversion.version }}
 						label.label--block
@@ -49,7 +49,7 @@
 						.img.img--ar-square.img--rounded-left.img--fade(img-bg="release.thumbs.square")
 					.col--list-mini-right
 						h1.h--small.h--no-margin {{ release.game.name }}
-						h4
+						h5
 							| {{ release.title }}
 							label.label--version {{ release.lastversion.version }}
 						label.label--block
@@ -86,59 +86,59 @@
 		.media.media-mini(ng-repeat="release in newReleases.slice(0,4)", ng-class="{ last: $last }")
 			img.media-object.pull-left(ng-src="{{release.thumbs.square}}")
 			.media-body
-				h4.media-heading {{ release.game.name }}
-				h5.media-heading {{ release.title }}
+				h6.h--no-margin.media-heading {{ release.game.name }}
+				span {{ release.title }}
 
 		h5.h--primary Most Starred
 		.media.media-mini(ng-repeat="release in updatedReleases.slice(0,4)", ng-class="{ last: $last }")
 			img.media-object.pull-left(ng-src="{{release.thumbs.square}}")
 			.media-body
-				h4.media-heading {{ release.game.name }}
-				h5.media-heading {{ release.title }}
+				h6.h--no-margin.media-heading {{ release.game.name }}
+				span {{ release.title }}
 
 		h5.h--primary Most Downloaded
 		.media.media-mini(ng-repeat="release in newReleases.slice(0,4)", ng-class="{ last: $last }")
 			img.media-object.pull-left(ng-src="{{release.thumbs.square}}")
 			.media-body
-				h4.media-heading {{ release.game.name }}
-				h5.media-heading {{ release.title }}
+				h6.h--no-margin.media-heading {{ release.game.name }}
+				span {{ release.title }}
 
 		h1 People
 		hr
 		h5.h--primary Most Active Authors
 		.media.media-mini(ng-repeat="user in users | orderBy:'authored':true", ng-class="{ last: $last }")
-			.img.img-avatar.avatar-placeholder.avatar-placeholder--sm.pull-left(ng-hide="user.avatar")
-			.img.img-avatar.pull-left(ng-show="user.avatar", img-bg="user.avatar")
+			.img.img-avatar.img-avatar--sm.avatar-placeholder.avatar-placeholder--sm.pull-left(ng-hide="user.avatar")
+			.img.img-avatar.img-avatar--sm.pull-left(ng-show="user.avatar", img-bg="user.avatar")
 			.media-body
-				h4.media-heading {{ user.user }}
-				h5.media-heading
-					i.fa.fa-arrow-circle-up
+				h6.h--no-margin.media-heading {{ user.user }}
+				span
+					i.fa.fa-arrow-circle-up.space-right
 					| {{ user.authored| number }} releases
 
 		h5.h--primary Most Active Submitters
 		.media.media-mini(ng-repeat="user in users | orderBy:'submitted':true", ng-class="{ last: $last }")
-			div.media-object.media-avatar.media-avatar-small.pull-left(ng-hide="user.avatar")
-			img.media-object.media-avatar.media-avatar-small.pull-left(ng-show="user.avatar", ng-src="{{ user.avatar }}")
+			.img.img-avatar.img-avatar--sm.avatar-placeholder.avatar-placeholder--sm.pull-left(ng-hide="user.avatar")
+			.img.img-avatar.img-avatar--sm.pull-left(ng-show="user.avatar", img-bg="user.avatar")
 			.media-body
-				h4.media-heading {{ user.user }}
-				h5.media-heading
-					i.fa.fa-arrow-circle-up
+				h6.h--no-margin.media-heading {{ user.user }}
+				span
+					i.fa.fa-arrow-circle-up.space-right
 					| {{ user.submitted| number }} items
 		h5.h--primary Most Acknowledged
 		.media.media-mini(ng-repeat="user in users | orderBy:'acknowledged':true", ng-class="{ last: $last }")
-			div.media-object.media-avatar.media-avatar-small.pull-left(ng-hide="user.avatar")
-			img.media-object.media-avatar.media-avatar-small.pull-left(ng-show="user.avatar", ng-src="{{ user.avatar }}")
+			.img.img-avatar.img-avatar--sm.avatar-placeholder.avatar-placeholder--sm.pull-left(ng-hide="user.avatar")
+			.img.img-avatar.img-avatar--sm.pull-left(ng-show="user.avatar", img-bg="user.avatar")
 			.media-body
-				h4.media-heading {{ user.user }}
-				h5.media-heading
-					i.fa.fa-thumbs-up
+				h6.h--no-margin.media-heading {{ user.user }}
+				span
+					i.fa.fa-thumbs-up.space-right
 					| {{ user.acknowledged| number }} times
 		h5.h--primary Most Followed
 		.media.media-mini(ng-repeat="user in users | orderBy:'followers':true", ng-class="{ last: $last }")
-			div.media-object.media-avatar.media-avatar-small.pull-left(ng-hide="user.avatar")
-			img.media-object.media-avatar.media-avatar-small.pull-left(ng-show="user.avatar", ng-src="{{ user.avatar }}")
+			.img.img-avatar.img-avatar--sm.avatar-placeholder.avatar-placeholder--sm.pull-left(ng-hide="user.avatar")
+			.img.img-avatar.img-avatar--sm.pull-left(ng-show="user.avatar", img-bg="user.avatar")
 			.media-body
-				h4.media-heading {{ user.user }}
-				h5.media-heading
-					i.fa.fa-star
+				h6.h--no-margin.media-heading {{ user.user }}
+				span
+					i.fa.fa-star.space-right
 					| {{ user.followers | number }} followers

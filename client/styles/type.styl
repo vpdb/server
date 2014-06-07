@@ -9,10 +9,11 @@
 //
 // Your standard, everyday headings. The pure headers define font, weight and absolute
 // size, while the modifiers take care of color, relative size and special positioning.
-// Note that `.h4` headers are usually used by panel headers.
+// Note that `.h4` headers are usually used by panel headers. Also note that headers are
+// per default oneliners, i.e. they don't line wrap but are cut off with an ellipsis.
 //
 //   * Color - `.h--primary` which changes the color, leaving type and size as-is
-//   * Size -  `.h--small` which changes the size, leaving the type and color as-is
+//   * Size -  `.h--small`, `.h--smalleer` which changes the size, leaving the type and color as-is
 //
 // .             - Default styles
 // .h--primary   - Header in primary color
@@ -26,6 +27,7 @@
 // <h3 class="{$modifiers}">Heading h3</h3>
 // <h4 class="{$modifiers}">Heading h4</h4>
 // <h5 class="{$modifiers}">Heading h5</h5>
+// <h6 class="{$modifiers}">Heading h6</h6>
 //
 // Styleguide 1.2.1
 
@@ -35,9 +37,6 @@ h1
 	font-size $font-size-larger-alt
 	font-weight $font-weight-normal-alt
 	text-transform uppercase
-	white-space nowrap
-	overflow hidden
-	text-overflow ellipsis
 
 // Release title
 h2
@@ -67,6 +66,11 @@ h5
 	font-weight $font-weight-normal
 	font-size $font-size-normal
 	text-transform uppercase
+h6
+	font-family $font-content
+	font-weight $font-weight-bold
+	font-size $font-size-normal
+	text-transform none
 
 h1.h--small
 	font-size $font-size-normal-alt
@@ -74,6 +78,9 @@ h1.h--smaller
 	font-size $font-size-small-alt
 
 h1, h2, h3, h4, h5, h6
+	white-space nowrap
+	overflow hidden
+	text-overflow ellipsis
 	&.h--no-margin
 		margin 0
 

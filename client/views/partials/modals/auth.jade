@@ -1,12 +1,12 @@
 .theme-light
 	.modal-header
-		h3
+		h1.h--no-margin.h--small
 			i.fa.fa-lock.space-right
 			| &nbsp;Login
 	.modal-body
-		h1 Login with
+		h3 Login with
 		.text-center
-			- each ipb in authStrategies.ipboard
+			for ipb in authStrategies.ipboard
 				a.btn.btn-primary.btn-lg(href=ipb.url, target="_self")
 					i.space-right(class=ipb.icon)
 					| #{ipb.name}
@@ -17,7 +17,7 @@
 		hr.padder-top
 
 		div(ng-hide="registering")
-			h1 Or, with your account:
+			h3 Or, with your account:
 			form.form-horizontal(role='form')
 				.form-group
 					label.col-sm-4.control-label Username

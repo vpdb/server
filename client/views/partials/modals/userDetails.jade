@@ -1,7 +1,7 @@
 .bg-lightest
 	.modal-header
 		img.avatar-details(ng-src="{{ user.avatar }}")
-		h3 {{ user.user }}
+		h1.h--no-margin.h--small {{ user.user }}
 	.modal-body
 		div.ident {{ user.followers | number }} followers, acknowledged {{ user.acknowledged | number }} times
 

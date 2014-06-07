@@ -70,10 +70,17 @@ h5
 
 h1.h--small
 	font-size $font-size-normal-alt
+h1.h--smaller
+	font-size $font-size-small-alt
 
 h1, h2, h3, h4, h5, h6
 	&.h--no-margin
 		margin 0
+
+// Fix vetical position of floating h3
+h1 + h1.pull-right
+	margin-top -48px
+	margin-bottom 0
 
 // Panel headings
 // -------------------------

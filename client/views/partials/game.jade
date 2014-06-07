@@ -46,10 +46,10 @@
 
 	// left column (main content)
 	.col-sm-9.col-sm-pull-3.col-lg-10.col-lg-pull-2.col--main
-		h1 {{ game.name }}
-		h3.pull-right {{ game.manufacturer }} &middot; {{ game.year }}
+		h1.h--primary {{ game.name }}
+		h1.h--small.pull-right {{ game.manufacturer }} &middot; {{ game.year }}
 		hr
-		h2 Releases
+		h1 Releases
 		label(ng-hide="game.releases.length > 0")  No releases for this game available.
 		div(ng-repeat="release in game.releases")
 			.panel.panel-detailed.bg-dark
@@ -66,7 +66,7 @@
 								rating.rating-avg(ng-hide="editing", ng-model="ratingAvg", max="10", rating-states="states", readonly="true")
 								span.votes {{ release.votes | number }} vote{{ release.votes == 1 ? '' : 's' }}
 					.col-sm-8.col-md-9
-						h1 {{ release.title }}
+						h2.h--primary.h--no-margin {{ release.title }}
 						label
 							i.icon.icon-user
 							span
@@ -148,7 +148,7 @@
 					.clearfix
 
 			.panel.padder(ng-controller="CommentsCtrl")
-				h3 Comments on Release
+				h1.h--no-margin.h--small Comments on Release
 				label.padder-left(ng-show="!release.comments || release.comments.length == 0") No comments yet.
 				.media(ng-repeat="comment in release.comments", ng-controller="CommentCtrl")
 					.img.img-avatar.avatar-placeholder.pull-left(ng-hide="comment.author.avatar")
@@ -192,7 +192,7 @@
 				button.btn.btn-default.padder-top.pull-right(ng-click="addComment()") Comment
 				.clearfix
 
-		h2 ROMs
+		h1 ROMs
 		label(ng-hide="game.roms.length > 0")  No ROMs available.
 		table.table.table-striped(ng-show="game.roms.length > 0")
 			thead
@@ -216,13 +216,13 @@
 					td.nostripe.td-dlbtn
 						button.btn.btn-primary.btn-xs.btn-dl(download="rom.download", download-info="[ game, rom ] | dlRom")
 
-		h2 Backglasses
+		h1 Backglasses
 		label(ng-hide="game.backglasses.length > 0")  No backglasses available.
 		.row(ng-show="game.backglasses.length > 0")
 			.col-md-4.col-sm-6.col-xs-12.fade-animation.padder-bottom-2x(ng-repeat="backglass in game.backglasses")
 				.flipbox.flipbox-backglass
-					.panel.bg-dark.panel--backglass.flipbox-front
-						h3
+					.panel.panel--backglass.flipbox-front.text-center
+						h1.h--smaller
 							i.fa.fa-picture-o.space-right
 							| Direct B2S
 						hr
@@ -252,7 +252,7 @@
 					.clearfix
 
 
-		h2 Media
+		h1 Media
 			button(ng-show="game.media.length > 0").btn.btn-primary.pull-right
 				i.fa.fa-download.space-right
 				| Download Pack
@@ -260,8 +260,8 @@
 		.row(ng-show="game.media.length > 0")
 			.col-md-4.col-sm-6.col-xs-12.fade-animation.padder-bottom-2x(ng-repeat="item in game.media")
 				.flipbox.flipbox-backglass
-					.panel.bg-dark.panel--backglass.flipbox-front
-						h3
+					.panel.panel--backglass.flipbox-front.text-center
+						h1.h--smaller
 							i.fa.space-right(ng-class="{ 'fa-picture-o': item.format == 'image', 'fa-video-camera': item.format == 'video', 'fa-info-circle': item.type == 'instructioncard' }")
 							| {{ item.type | mediatype }}
 						hr
@@ -302,7 +302,7 @@
 					.clearfix
 
 
-		h2 Alternative Media
+		h1 Alternative Media
 		label(ng-hide="game.secondarymedia.length > 0")  No alternative media available.
 
 		p

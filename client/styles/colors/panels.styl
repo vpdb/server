@@ -15,8 +15,8 @@
 	.panel--inner
 		box-shadow none
 
-	// Inactive panels
-	.panel--inactive
+	// Blank panels have a low-contrast color
+	.panel--blank
 		color $color-dark
 
 	// toclean
@@ -44,6 +44,8 @@
 
 	.panel-heading
 		background-color $color-light-inv
+		> *
+			color $color-lightest
 
 	// Accordion panels
 	accordion
@@ -55,8 +57,8 @@
 					a:hover
 						color $color-lightish-inv
 
-	// Inactive panels
-	.panel--inactive
+	// Blank panels have a low-contrast color
+	.panel--blank
 		color $color-dark-inv
 
 

@@ -18,6 +18,8 @@
 	> .panel-heading
 		border-top-radius($border-radius-small)
 		padding 7px 12px 6px
+		> *
+			margin 0
 	> .panel-footer
 		border-bottom-radius($border-radius-small)
 
@@ -47,11 +49,12 @@
 // Inactive Panels
 //
 // When you show stuff that is going to be filled up, "blank slate" as GitHub calls it.
+// Basically its `.panel.content` div is vertically and horizontally centered.
 //
 // Markup:
-// <div class="panel {$modifiers}">
+// <div class="panel panel--fixed-height-300 {$modifiers}">
 //   <div class="panel-content">
-//     <i class="icon icon-ipdb space-right"></i>
+//     <i class="icon icon-ipdb icon-ipdb--huge space-right"></i>
 //     <span>INFO</span>
 //     <p><i>Click "Fetch" to load data.</i></p>
 //    </div>
@@ -60,20 +63,20 @@
 // .panel--inactive         - Inactive panel
 //
 // Styleguide 3.3
-.panel--inactive
-	height 300px
+.panel--blank
+	width 100%
+	display table
 	text-align center
-	padding-top 90px
-	i.icon
-		font-size 50px
-		& + span
-			line-height 56px
-			margin-left 7px
-			vertical-align top
+	> .panel-content
+		display table-cell
+		vertical-align middle
 
 // toclean
 .panel--backglass
 	height 250px
+
+.panel--fixed-height-300
+	height 300px
 
 // toclean
 .panel-banner

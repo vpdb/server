@@ -73,17 +73,17 @@
 							input.form-control(type="text", ng-model="game.type", disabled)
 			.col-md-offset-2.col-md-8.col-sm-offset-1.col-sm-10
 				.panel(ng-show="game.year")
-					.panel-header
-						h1.center-block {{ game.name }}
-					.panel-content
-						dl.dl-horizontal.dl-centered
+					.panel-heading
+						h2.h--small.text-center {{ game.name }}
+					.panel-body
+						dl.dl-horizontal.dl--centered
 							dt Manufacturer
 							dd {{ game.manufacturer }}
 							dt Year
 							dd {{ game.year }}
 							dt
-						hr(ng-show="game.units || game.ipdb.rating || game.type || game.modelno")
-						dl(ng-show="game.units || game.ipdb.rating || game.type || game.modelno").dl-horizontal.dl-centered
+						hr.hr--margin-small(ng-show="game.units || game.ipdb.rating || game.type || game.modelno")
+						dl(ng-show="game.units || game.ipdb.rating || game.type || game.modelno").dl-horizontal.dl--centered
 							dt(ng-show="game.ipdb.rating") IPDB Rating
 							dd(ng-show="game.ipdb.rating") {{ game.ipdb.rating }}
 							dt(ng-show="game.units") Production
@@ -92,15 +92,15 @@
 							dd(ng-show="game.type") {{ game.type | gametype }}
 							dt(ng-show="game.modelno") Model Number
 							dd(ng-show="game.modelno") {{ game.modelno }}
-						hr(ng-show="game.designers || game.artists")
-						dl(ng-show="game.designers || game.artists").dl-horizontal.dl-centered
+						hr.hr--margin-small(ng-show="game.designers || game.artists")
+						dl(ng-show="game.designers || game.artists").dl-horizontal.dl--centered
 							dt(ng-show="game.designers") Game Design
 							dd(ng-show="game.designers") {{ game.designers.join(', ') }}
 							dt(ng-show="game.artists") Art design
 							dd(ng-show="game.artists") {{ game.artists.join(', ') }}
-				.panel.panel--inactive(ng-hide="game.year")
+				.panel.panel--fixed-height-300.panel--blank(ng-hide="game.year")
 					.panel-content
-						i.icon.icon-ipdb.space-right
+						i.icon.icon-ipdb.icon-ipdb--huge.space-right
 						span INFO
 						p
 							i Click "Fetch" to load data.
@@ -114,12 +114,11 @@
 			.row
 				.col-sm-6
 					.panel(ng-file-drop="onBackglassUpload($files)", ng-file-drag-over-class="panel-dragging")
-						.panel-content
-							.img.img-backglass(img-bg="uploadedBackglass")
-								.text-center(ng-hide="uploadedBackglass")
-									p
-										i.fa.fa-picture-o
-										p Drop backglass image here
+						.panel-body
+							.img.img--ar-bg(img-bg="uploadedBackglass")
+								.text-center.vertical-center--100(ng-hide="uploadedBackglass")
+									i.fa.fa-picture-o.fa-3x
+									p Drop backglass image here
 				.col-sm-6
 					h4.h--large.h--no-margin Backglass
 					i A few guidelines:
@@ -132,15 +131,13 @@
 			.row
 				.col-sm-6
 					.panel(ng-file-drop="onLogoUpload($files)", ng-file-drag-over-class="panel-dragging")
-						.panel-content
-							.img.img-logo-placeholder(img-bg="uploadedLogo")
-								.text-center(ng-hide="uploadedLogo")
-									p
-										i.fa.fa-picture-o
-										p Drop logo here
+						.panel-body
+							.img.img--ar-logo(img-bg="uploadedLogo")
+								.text-center.vertical-center--100(ng-hide="uploadedLogo")
+									i.fa.fa-picture-o.fa-3x
+									p Drop logo here
 				.col-sm-6
 					h4.h--large.h--no-margin Logo
-					i A few guidelines:
 					ul
 						li Use the PNG format
 						li Background should be transparent

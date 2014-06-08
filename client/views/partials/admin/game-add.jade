@@ -1,6 +1,6 @@
 .row.row--fullheight(ng-controller="AdminGameAddCtrl")
 	.col-sm-9.col--main
-		h1 add new game
+		h1.h--primary add new game
 		hr
 		p Note that a game is completely decoupled from its releases. Data appearing in here is common to all releases
 			| that are linked to that game, but kept as a separate and independent data set.
@@ -8,31 +8,31 @@
 
 
 		form(role="form")
-			h2 1. enter title
+			h1 1. enter title
 			hr
 			.form-group
 				input.form-control.input-lg(type="text", placeholder="Title", ng-model="game.name")
 				span.help-block No year, manufacturer or anything else, just the title. Example: <i>The Addams Family</i>.
 
-			h2 2. origin
+			h1 2. origin
 			hr
 			p If you’ve created the game by yourself, it’s an original game. I’ve you built a game that exists in real
 				| life, it’s called a recreation. Recreations must be on IPDB.org.
 
 
 			.text-center.padder-top
-				.radio-inline.radio-lg
+				.radio-inline.radio--lg
 					label
 						input.input-lg(type="radio", name="origin", value="recreation", checked)
 						span Recreation
 
-				.radio-inline.radio-lg
+				.radio-inline.radio--lg
 					label
 						input(type="radio", name="origin", value="og")
 						span Original Game
 
 			.clearfix
-			h2 3. game info
+			h1 3. game info
 			hr
 			p Search IPDB.org and it will populate the following fields. You can also add additional data if you have
 				| more info available.
@@ -106,7 +106,7 @@
 							i Click "Fetch" to load data.
 
 			.clearfix
-			h2 4. Upload Media
+			h1 4. Upload Media
 			hr
 			p Upload high quality artwork here. The backglass is mandatory but also the logo is strongly recommended.
 				| Please check the image guidelines if you haven’t done so yet.
@@ -121,7 +121,7 @@
 										i.fa.fa-picture-o
 										p Drop backglass image here
 				.col-sm-6
-					h4 Backglass
+					h4.h--large.h--no-margin Backglass
 					i A few guidelines:
 					ul
 						li The aspect ratio should be <i>5:4</i> (or <i>1:1.25</i>)
@@ -139,7 +139,7 @@
 										i.fa.fa-picture-o
 										p Drop logo here
 				.col-sm-6
-					h4 Logo
+					h4.h--large.h--no-margin Logo
 					i A few guidelines:
 					ul
 						li Use the PNG format
@@ -159,6 +159,6 @@
 				br
 
 	.col-sm-3.col--menu.bg-dark
-		h2 drafts
+		h1 drafts
 		hr
 		p None

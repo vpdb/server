@@ -12,11 +12,12 @@
 // Note that `.h4` headers are usually used by panel headers. Also note that headers are
 // per default oneliners, i.e. they don't line wrap but are cut off with an ellipsis.
 //
-//   * Color - `.h--primary` which changes the color, leaving type and size as-is
+//   * Color - `.h--primary`, `.h--lighter` which changes the color, leaving type and size as-is
 //   * Size -  `.h--small`, `.h--smalleer` which changes the size, leaving the type and color as-is
 //
 // .             - Default styles
 // .h--primary   - Header in primary color
+// .h--lighter   - Header in lighter color
 // .h--small     - Small font size (only `h1` and `h2` affected)
 // .h--smaller   - Smaller font size (only `h1` affected)
 // .h--no-margin - Without margin, when padding is given by parent.
@@ -118,15 +119,6 @@ h1 + h1.pull-right
 	font-family $font-content
 	font-size $font-size-larger
 	font-weight $font-weight-bold
-
-.panel--banner__h3
-	font-size $font-size-larger
-	font-family $font-header
-	font-weight $font-weight-normal-alt
-	text-transform uppercase
-	white-space nowrap
-	overflow hidden
-	text-overflow ellipsis
 
 // User links
 user

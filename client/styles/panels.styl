@@ -78,26 +78,18 @@
 .panel--fixed-height-300
 	height 300px
 
-// toclean
-.panel-banner
+// Banner panel
+.panel--banner
 	img
 		width 100%
-	i.icon-title
+	i.icon--title
 		position absolute
 		margin-top 0
 		cursor default
-		& + label
-			margin-right 15px
-			margin-bottom 15px
-			margin-top 0px
-			font-size $font-size-large-alt
-			font-weight $font-weight-normal-alt
-			strong
-				font-weight $font-weight-light-alt
 		&.icon-williams
-			font-size 48px // icon
+			font-size 48px
 		&.icon-stern
-			font-size 62px // icon
+			font-size 62px
 
 	& > .row
 		margin 0 0 15px
@@ -163,13 +155,3 @@
 
 .panel--animated--less:hover
 		transform translateY(-3px) scale(1.01, 1.01)
-
-.panel--banner__h3
-	font-size $font-size-larger
-	font-family $font-header
-	font-weight $font-weight-normal-alt
-	text-transform uppercase
-	white-space nowrap
-	overflow hidden
-	text-overflow ellipsis
-	margin-left 15px

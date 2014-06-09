@@ -4,14 +4,13 @@
 		hr
 		.row.row-data
 			.col-xs-12.fade-animation(ng-repeat="pack in packs", ng-click="details(game.id)")
-				.panel.panel-dark.panel-banner.bg-dark.ng-cloak
+				.panel.panel--banner.ng-cloak
 					img(ng-src="{{ pack.banner }}")
-
-					h3.panel--banner__h3
-						i.icon.icon-title(class="{{ pack | manufacturerIcon }}")
-						label.pull-right
-							strong(ng-bind-html="pack.name | smalls")
-							span &nbsp;{{ pack.number }}
+					h1.space-left-2x.space-right-2x
+						i.icon.icon--title.color-primary(class="{{ pack | manufacturerIcon }}")
+						span.pull-right
+							span.h--lighter(ng-bind-html="pack.name | smalls")
+							span  {{ pack.number }}
 
 					.row
 						.col-xs-12.col-sm-6(ng-repeat="game in pack.releases", ng-click="navGame(game.id)") {{ game.name }}

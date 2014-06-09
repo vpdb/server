@@ -46,7 +46,7 @@
 							i.fa.fa-external-link.space-right
 							| Search title on IPDB.org
 					.col-sm-3
-						button.btn.btn-default.btn-width-med.pull-right(ng-click="refresh()")
+						button.btn.btn-default.btn--width-med.pull-right(ng-click="refresh()")
 							i.fa.fa-refresh.space-right
 							| Fetch
 
@@ -56,7 +56,7 @@
 						input#ipdbUrl.form-control(type="text", ng-model="gameId", placeholder="Common Abbreviation")
 						span.help-block Must be unique and contain only letters and dashes.
 					.col-sm-3
-						button.btn.btn-default.btn-width-med.pull-right(ng-click="refresh()")
+						button.btn.btn-default.btn--width-med.pull-right(ng-click="refresh()")
 							i.fa.fa-check.space-right
 							| Check
 				div(ng-show="false")
@@ -113,7 +113,7 @@
 
 			.row
 				.col-sm-6
-					.panel(ng-file-drop="onBackglassUpload($files)", ng-file-drag-over-class="panel-dragging")
+					.panel(ng-file-drop="onBackglassUpload($files)", ng-file-drag-over-class="panel--dragging")
 						.panel-body
 							.img.img--ar-bg(img-bg="uploadedBackglass")
 								.text-center.vertical-center--100(ng-hide="uploadedBackglass")
@@ -130,7 +130,7 @@
 
 			.row
 				.col-sm-6
-					.panel(ng-file-drop="onLogoUpload($files)", ng-file-drag-over-class="panel-dragging")
+					.panel(ng-file-drop="onLogoUpload($files)", ng-file-drag-over-class="panel--dragging")
 						.panel-body
 							.img.img--ar-logo(img-bg="uploadedLogo")
 								.text-center.vertical-center--100(ng-hide="uploadedLogo")

@@ -17,8 +17,8 @@
 //
 // .             - Default styles
 // .h--primary   - Header in primary color
-// .h--small     - Small font size (80%)
-// .h--smaller   - Smaller font size
+// .h--small     - Small font size (only `h1` and `h2` affected)
+// .h--smaller   - Smaller font size (only `h1` affected)
 // .h--no-margin - Without margin, when padding is given by parent.
 //
 // Markup:
@@ -81,7 +81,8 @@ h1.h--smaller
 h4.h--large
 	font-size $font-size-large
 
-h1, h2, h3, h4, h5, h6
+// Make all headings oneliner with ellipsis (except h4, which causes weird behavior in panel heading)
+h1, h2, h3, h5, h6
 	white-space nowrap
 	overflow hidden
 	text-overflow ellipsis

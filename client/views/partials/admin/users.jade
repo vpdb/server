@@ -1,23 +1,25 @@
 .row.row--fullheight(ng-controller="AdminUserCtrl")
 	.col-sm-3.col--menu.bg-dark
-		h2 filter
+		h1 Filter
 		hr
 		// search box
 		.input-group
 			span.input-group-addon
 				i.fa.fa-search
 			input.form-control.input--search(ng-model="query", type="text", placeholder="Search")
+
 		accordion(close-others="false")
 
 			// role filter
 			accordion-group(is-open="filterYearOpen")
 				accordion-heading
 					| Role
-					i.fa.pull-right(ng-class="{'fa-chevron-circle-up': filterYearOpen, 'fa-chevron-circle-down': !filterYearOpen}")
+					i.fa.pull-right.space-right(ng-class="{'fa-chevron-circle-up': filterYearOpen, 'fa-chevron-circle-down': !filterYearOpen}")
 				ul.list-group
 					li.list-group-item(ng-repeat="role in roles", filter-role="{{ role.name }}") {{ role.name }}
+
 	.col-sm-9.col--main
-		h1 users
+		h1.h--primary Users
 		hr
 
 		table.table.table-striped.table--selectable

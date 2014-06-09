@@ -126,11 +126,17 @@
 .panel, .panel-default, .panel > .panel-heading + .panel-collapse .panel-body, .panel-footer
 	border none
 
+// Rounder corner and padding for panel groups.
+.panel-group
+	.panel
+		border-radius $border-radius-large
+		> .panel-heading
+			border-top-radius($border-radius-large)
+			padding 8px 10px 5px
 
 // For non-glued panel groups, make margin larger.
 .panel-group .panel + .panel
 	margin-top 15px
-
 
 // Accordion with groups glued together
 .panel-group--glued
@@ -146,7 +152,6 @@
 			border-radius 0
 	.panel:last-child
 		border-bottom-radius($border-radius-large)
-
 
 // Hover animates it towards POV
 .panel--animated

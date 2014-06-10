@@ -27,7 +27,7 @@
 		hr(ng-show="game.artdesign")
 
 		label.label-name(ng-show="game.ipdb")
-			a(href="http://www.ipdb.org/machine.cgi?id={{ game.ipdb.no  }}", target="_blank")
+			a.a--lighter(href="http://www.ipdb.org/machine.cgi?id={{ game.ipdb.no  }}", target="_blank")
 				span.space-right
 					strong IPDB
 				i.fa.fa-external-link
@@ -72,10 +72,10 @@
 							span
 								user {{ release.submitter.user }}
 						label
-							i.fa.fa-arrow-circle-up
+							i.fa.fa-arrow-circle-up.space-right
 							time-ago(from-time="{{ release.lastversion.timestamp }}")
 						label
-							i.fa.fa-arrow-circle-down
+							i.fa.fa-arrow-circle-down.space-right
 							span {{ release.lastversion.downloads | number }} downloads
 
 						accordion.panel-group--glued(close-others="true")
@@ -147,8 +147,9 @@
 							| Download
 					.clearfix
 
+			//- Comments
 			.panel.padder(ng-controller="CommentsCtrl")
-				h1.h--no-margin.h--small Comments on Release
+				h1.h--no-margin.h--small.space-left-2x Comments on Release
 				label.padder-left(ng-show="!release.comments || release.comments.length == 0") No comments yet.
 				.media(ng-repeat="comment in release.comments", ng-controller="CommentCtrl")
 					.img.img-avatar.avatar-placeholder.pull-left(ng-hide="comment.author.avatar")
@@ -162,8 +163,8 @@
 								| &nbsp;commented
 								time-ago(from-time="{{ comment.timestamp }}")
 								.pull-right(ng-hide="editing")
-									i.fa.fa-pencil.space-right(ng-click="editComment()")
-									i.fa.fa-times-circle(ng-click="deleteComment()")
+									i.a.fa.fa-pencil.space-right(ng-click="editComment()")
+									i.a.fa.fa-times-circle(ng-click="deleteComment()")
 							.panel-body
 								div.markdown(ng-hide="editing", markdown="comment.message")
 								textarea.textarea--full.msd-elastic(ng-show="editing", placeholder="Update comment", ng-model="updatedComment")

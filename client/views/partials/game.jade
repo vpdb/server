@@ -31,7 +31,7 @@
 				span.space-right
 					strong IPDB
 				i.fa.fa-external-link
-		dl.oneline(ng-show="game.ipdb.rating")
+		dl.dl--oneliner(ng-show="game.ipdb.rating")
 			dt Rating
 			dd(title="{{ game.ipdb.votes | number }} vote{{ game.ipdb.votes == 1 ? '' : 's' }}")
 				strong {{ game.ipdb.rating }}
@@ -227,7 +227,7 @@
 							i.fa.fa-picture-o.space-right
 							| Direct B2S
 						hr
-						.oneline
+						.oneliner
 							i.icon.icon-user
 							| &nbsp;&nbsp; {{ backglass.author.user }}
 						hr
@@ -266,19 +266,19 @@
 							i.fa.space-right(ng-class="{ 'fa-picture-o': item.format == 'image', 'fa-video-camera': item.format == 'video', 'fa-info-circle': item.type == 'instructioncard' }")
 							| {{ item.type | mediatype }}
 						hr
-						.oneline
+						.oneliner
 							i.icon.icon-user
 							| &nbsp;&nbsp; {{ item.author.user }}
 						hr
-						.oneline(ng-show="item.width && item.height")
+						.oneliner(ng-show="item.width && item.height")
 							| {{ item.width }} &times; {{ item.height }}
 						hr(ng-show="item.width && item.height")
 
-						.oneline(ng-show="item.pages")
+						.oneliner(ng-show="item.pages")
 							| {{ item.pages.length }} pages
 						hr(ng-show="item.pages")
 
-						.oneline(ng-show="item.duration")
+						.oneliner(ng-show="item.duration")
 							| {{ item.duration }} seconds
 						hr(ng-show="item.duration")
 

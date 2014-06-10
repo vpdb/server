@@ -10,7 +10,7 @@ overview) using [Knyle Style Sheets](https://github.com/kneath/kss).
 ## Base CSS
 
 VPDB's styles are based on [Twitter Bootstrap](http://getbootstrap.com/). It
-takes care of element positioning provides the nomenclature for non-custom
+takes care of element positioning and provides nomenclature for non-custom
 elements. Generally, if there's an element or component in Bootstrap, VPDB
 makes use of it. If you know Bootstrap's internal file structure (see below),
 our overrides are usually in the same file.
@@ -21,7 +21,7 @@ Apart from Twitter Bootstrap specific classes, we use a modified version of
 [BEM naming](http://bem.info/method/) - read all about it 
 [here](http://csswizardry.com/2013/01/mindbemding-getting-your-head-round-bem-syntax/).
 In our case, one of the many benfits of this method is that it's usually 
-obvious to determine if a CSS class is a custom VPDB-specific class or a 
+easy to determine if a CSS class is a custom VPDB-specific class or a 
 Twitter Bootstrap override - Bootstrap doesn't use `--` for its modifiers.
 
 ## Class Usage
@@ -33,20 +33,21 @@ try to not overly rely on the DOM when styling our elements, but use classes
 instead and make them as re-usuable as possible.
 
 Note that CSS styling is completely based on classes and no IDs are used. 
-Classes that are prefixed with `vpdb-` are AngularJS directives and can be
-ignored style-wise.
+Classes that are prefixed with `vpdb-` are AngularJS directives and can usually
+be ignored style-wise.
 
 ## Files
 
-We roughly use Twitter Bootstrap's file structure, i.e. one file for pretty much 
+We roughly use Twitter Bootstrap's file structure, i.e. one file per pretty much 
 every component. The `.styl` files are all compiled into one single CSS anyway, 
 so there aren't any performance hits caused by multiple style sheets.
 [`vpdb.styl`](https://github.com/freezy/node-vpdb/blob/master/client/styles/vpdb.styl)
-is the root style where everything else gets included.
+is the root file where everything else gets included.
 
-However, we separate color styles from the rest. Since we have different color 
-sets based on which theme a page or element is using, this seems the most 
-practical approach. It also makes it really easy to add additional color themes.
+Contrarily to Bootstrap, we separate color styles from the rest. Since we have
+different color sets based on which theme a page or element is using, this 
+seems the most practical approach. It also makes it really easy to add 
+additional color themes.
 
 ## Coding Style
 
@@ -58,6 +59,15 @@ We use tabs, no spaces.
 The following list briefly describes each component. You can use the menu navigation
 on the right hand side to quickly navigate each section.
 
-1. Buttons
-2. Forms
-3. Typography
+1. Core CSS
+	1. Scaffolding
+	2. Typography
+	3. Grid
+	4. Tables
+	5. Forms
+	6. Buttons
+	7. Images
+    8. Helper Classes
+2. Components
+	1. Dropdowns
+

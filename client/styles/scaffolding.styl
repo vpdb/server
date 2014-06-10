@@ -1,15 +1,23 @@
-//
 // Scaffolding
-// --------------------------------------------------
+//
+// Global styles that don't fit in any component or category.
+//
+// Styleguide 1.1
 
-// Body
-body
-	font-family $font-content
-	font-weight $font-weight-normal
-	font-size $font-size-normal
-	-webkit-font-smoothing antialiased
 
 // Links
+//
+// When not using the `<a>` element, add the `.a` class to your element so the
+// link behaves accordingly.
+//
+// .             - Default link
+// .a--lighter   - Header in lighter color
+//
+// Markup:
+// <a href="#" class="{$modifiers}">Link in &lt;a&gt;</a>
+// <span class="a {$modifiers}" ng-click="alert('you clicked!')">Link in &lt;span&gt;</span>
+//
+// Styleguide 1.1.1
 a, .a
 	cursor pointer
 	transition all $animation-short
@@ -26,8 +34,21 @@ hr
 .hr--margin-small
 	margin-bottom 10px
 
-// Horizontal definition lists
-dl.oneline
+// Definition Lists
+//
+// .dl--oneliner               - Horizontal list with caps for the term
+// .dl--centered.dl-horizontal - Horizontal list with 50% width for term/definition respectively
+//
+// Markup:
+// <dl class="{$modifiers}">
+// 	<dt>Rating</dt>
+// 	<dd>8.4</dd>
+// 	<dt>Top 300</dt>
+// 	<dd>Rank 3</dd>
+// </dl>
+//
+// Styleguide 1.1.2
+.dl--oneliner
 	width 100%
 	dt
 		float left
@@ -35,6 +56,14 @@ dl.oneline
 		text-transform uppercase
 	dd
 		text-align right
+.dl--centered
+	margin-bottom 10px
+	&:last-child
+		margin-bottom 0
+	> dt
+		width 49%
+	> dd
+		margin-left 51%
 
 // Inline code
 code

@@ -1,6 +1,6 @@
 .row.row--fullheight(ng-controller="HomeController")
 	.col-sm-9.col--main
-		h1.h--primary packs
+		h1.h--primary Packs
 		hr
 		.row.row-data
 			.col-xs-12.fade-animation(ng-repeat="pack in packs", ng-click="details(game.id)")
@@ -13,13 +13,13 @@
 							span  {{ pack.number }}
 
 					.row
-						.col-xs-12.col-sm-6(ng-repeat="game in pack.releases", ng-click="navGame(game.id)") {{ game.name }}
+						.col-xs-12.col-sm-6.a.a--light(ng-repeat="game in pack.releases", ng-click="navGame(game.id)") {{ game.name }}
 
 					button.btn.btn-default.btn-lg(download="pack.download", download-info="pack | dlPack")
 						| Download
 		.clearfix
 
-		h1.h--primary new releases
+		h1.h--primary New Releases
 		hr
 		.row.row-data
 			.col-lg-6.col-md-12.fade-animation(ng-repeat="release in newReleases", ng-click="navGame(release.game.id)")
@@ -29,7 +29,7 @@
 						.img.img--ar-square.img--rounded-left.img--fade(img-bg="release.thumbs.square")
 					.col--list-mini-right
 						h1.h--small.h--no-margin {{ release.game.name }}
-						h5
+						span
 							| {{ release.title }}
 							label.label--version {{ release.lastversion.version }}
 						label.label--block
@@ -38,7 +38,7 @@
 					.clearfix
 		.clearfix
 
-		h1.h--primary updated releases
+		h1.h--primary Updated Releases
 		hr
 		.row.row-data
 			.col-lg-6.col-md-12.fade-animation(ng-repeat="release in updatedReleases", ng-click="navGame(release.game.id)")
@@ -48,7 +48,7 @@
 						.img.img--ar-square.img--rounded-left.img--fade(img-bg="release.thumbs.square")
 					.col--list-mini-right
 						h1.h--small.h--no-margin {{ release.game.name }}
-						h5
+						span
 							| {{ release.title }}
 							label.label--version {{ release.lastversion.version }}
 						label.label--block

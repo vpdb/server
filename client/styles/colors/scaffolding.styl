@@ -4,10 +4,14 @@
 .theme-dark
 
 	// links
-	a, [ng-click]
+	a, .a
 		color $color-light
 		&:hover
 			color $color-lighter
+		&.a--light
+			color $color-lighter
+			&:hover
+				color $color-lightest
 
 	// hr
 	hr
@@ -45,7 +49,7 @@ body.theme-dark
 .theme-light
 
 	// links
-	a, [ng-click]
+	a, .a
 		color $color-light-inv
 		&:hover
 			color $color-lighter-inv

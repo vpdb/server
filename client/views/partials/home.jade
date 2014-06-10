@@ -13,7 +13,7 @@
 							span  {{ pack.number }}
 
 					.row
-						.col-xs-12.col-sm-6.a.a--light(ng-repeat="game in pack.releases", ng-click="navGame(game.id)") {{ game.name }}
+						.col-xs-12.col-sm-6.a.a--lighter.oneliner(ng-repeat="game in pack.releases", ng-click="navGame(game.id)") {{ game.name }}
 
 					button.btn.btn-default.btn-lg(download="pack.download", download-info="pack | dlPack")
 						| Download
@@ -59,14 +59,14 @@
 
 		h1.h--primary news feed
 		hr
-		.media.media-news(ng-repeat="item in feed | orderBy:'timestamp':true")
+		.media.media--news(ng-repeat="item in feed | orderBy:'timestamp':true")
 			.img.img-avatar.img-avatar--lg.avatar-placeholder.avatar-placeholder--lg.pull-left(ng-hide="item.user.avatar")
 			.img.img-avatar.img-avatar--lg.pull-left(ng-show="item.user.avatar", img-bg="item.user.avatar")
 			.media-body
 				label.label--block
 					time-ago(from-time="{{ item.timestamp }}")
 				label.label--block
-					i.fa(class="{{ item | feedIcon }}")
+					i.fa.space-right(class="{{ item | feedIcon }}")
 					strong {{ item.user.user }}
 					span(ng-bind-html="item | feedAction")
 				label.label--block(ng-bind-html="item | feedMessage")

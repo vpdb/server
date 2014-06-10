@@ -91,21 +91,13 @@
 		&.icon-stern
 			font-size 62px
 			margin-top -10px
-
-	& > .row
+	> .row
 		margin 0 0 15px
-		& > div
-			transition color $animation-short
-			cursor pointer
-			overflow hidden
-			text-overflow ellipsis
-			white-space nowrap
-			&:nth-child(even)
-				text-align right
-
-	& > button.btn.btn-lg
+		> div:nth-child(even)
+			text-align right
+	> .btn.btn-lg
 		width 100%
-		border-radius 0 0 $border-radius-small $border-radius-small
+		border-bottom-radius($border-radius-small)
 
 // Heading style
 .panel-title

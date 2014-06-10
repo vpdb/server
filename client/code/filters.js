@@ -103,18 +103,18 @@ filters.filter('feedAction', function() {
 
 		switch (item.type) {
 			case 'comment':
-				return '&nbsp;commented on <a href="/game/' + item.data.game.id + '#' + item.data.release.id +'">'
+				return '&nbsp;commented on <a href="/game/' + item.data.game.id + '#' + item.data.release.id +'" class="a--lighter">'
 					+ item.data.release.title
-					+ '</a> of <a href="/game/' + item.data.game.id +'">'
+					+ '</a> of <a href="/game/' + item.data.game.id +'" class="a--lighter">'
 					+ item.data.game.name
 					+ '</a>';
 
 			case 'release':
-				return '&nbsp;released <a href="/game/' + item.data.game.id + '#' + item.data.release.id +'">'
+				return '&nbsp;released <a href="/game/' + item.data.game.id + '#' + item.data.release.id +'" class="a--lighter">'
 					+ item.data.release.title
-					+ '</a> <label class="label-version">' + item.data.release.lastversion.version + '</label>'
+					+ '</a> <label class="label--version">' + item.data.release.lastversion.version + '</label>'
 					+ ' of '
-					+ '<a href="/game/' + item.data.game.id +'">'
+					+ '<a href="/game/' + item.data.game.id +'" class="a--lighter">'
 					+ item.data.game.name
 					+ '</a>';
 			default:

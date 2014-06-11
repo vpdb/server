@@ -59,14 +59,7 @@ module.exports = function(grunt) {
 			async.each(rootRefs, function(rootRef, next) {
 
 				var rootSection = styleguide.section(rootRef);
-				if (rootSection) {
-					console.log("### Section %s.x %s", rootRef, rootSection.header());
-				} else {
-					console.log("### Section %s.x %s", rootRef, '<n/a>');
-				}
-
 				async.each(styleguide.section(new RegExp('^' + rootRef + '\\.\\d+$')), function(section, next) {
-					//console.log('--- %s + %s', section.reference(), section.reference() + '.x.x');
 					renderSection(rootSection, section.reference(), [ section ].concat(styleguide.section(section.reference() + '.x.x')), next);
 				}, next);
 

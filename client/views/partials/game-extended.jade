@@ -1,5 +1,5 @@
 .col-xs-12.fade-animation(ng-repeat="game in games | filter:query | decade:filterDecades | manufacturer:filterManufacturer | orderBy:sort:sortReverse", ng-click="navGame(game.id)")
-	.panel.panel-dark.panel-extended.panel--animated.panel--animated--less.bg-dark.ng-cloak
+	.panel.panel--animated.panel--animated--less.ng-cloak
 		.clearfix
 		.col--list-extended-left
 			.img.img--ar-bg.img--rounded-left.img--fade(img-bg="game.art.backglass_thumb")

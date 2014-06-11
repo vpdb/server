@@ -1,6 +1,7 @@
+// Grids
 //
-// Grid system
-// --------------------------------------------------
+// Styleguide 3
+
 
 // Main container, there's only one element with this class.
 .container--topmost
@@ -24,7 +25,26 @@
 .col--menu
 	padding-bottom 25px
 
-// Columns for the extended game list
+
+// Extended List Panel
+//
+// Columns for the extended game list panel
+//
+// Markup:
+// <div class="panel">
+//   <div class="clearfix"></div>
+//   <div class="{$modifiers}">
+//     <div class="img img--ar-bg img--rounded-left" img-bg="/images/styleguide_16_9.jpg"></div>
+//   </div>
+//   <div class="col--list-extended-right">
+//     <h1 class="h--small h--no-margin">Content here</h1>
+//   </div>
+//   <div class="clearfix"></div>
+// </div>
+//
+// .col--list-extended-left - Extended List Panel
+//
+// Styleguide 3.1
 .col--list-extended-left
 	width $list-sidebar-width
 	float left

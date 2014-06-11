@@ -149,19 +149,32 @@ directives.directive('imgBg', function($parse) {
 	return {
 		restrict: 'A',
 		link: function(scope, element, attrs) {
-			var value = $parse(attrs.imgBg);
-			scope.$watch(value, function() {
-				if (value(scope)) {
-					element.css('background-image', "url('" + value(scope) + "')");
-					element.waitForImages({
-						each: function() {
-							var that = $(this);
-							that.addClass('loaded');
-						},
-						waitForAll: true
-					});
-				}
-			});
+
+			var setImg = function(value) {
+				element.css('background-image', "url('" + value + "')");
+				element.waitForImages({
+					each: function() {
+						var that = $(this);
+						that.addClass('loaded');
+					},
+					waitForAll: true
+				});
+			};
+
+			// check for constant
+			if (attrs.imgBg.substr(0, 1) == '/') {
+				setImg(attrs.imgBg);
+
+			// otherwise, watch scope for expression.
+			} else {
+				var value = $parse(attrs.imgBg);
+				scope.$watch(value, function() {
+					if (value(scope)) {
+						setImg(value(scope));
+					}
+				});
+			}
+
 		}
 	};
 });

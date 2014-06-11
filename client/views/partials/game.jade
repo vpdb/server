@@ -1,7 +1,7 @@
 .row.ng-cloak.row--fullheight.fade-animation(ng-controller="GameController", ng-show="!pageLoading")
 
 	// right column
-	.col-sm-3.col-sm-push-9.col-lg-2.col-lg-push-10.col--menu.bg-dark.text-center
+	.col-sm-3.col-sm-push-9.col-lg-2.col-lg-push-10.col--menu.text-center
 		img.img--logo(ng-src="{{ game.thumbs.logo }}")
 
 		.ratingbox(rating-avg="$parent.game.rating", rating-votes="$parent.game.votes", ng-mouseenter="editing=true", ng-mouseleave="editing=false")
@@ -52,7 +52,7 @@
 		h1 Releases
 		label(ng-hide="game.releases.length > 0")  No releases for this game available.
 		div(ng-repeat="release in game.releases")
-			.panel.panel-detailed.bg-dark
+			.panel
 				.row.padder-nobottom
 					.col-sm-4.col-md-3
 						a.image-link(href="{{ release.thumbs.playfield[0] }}")
@@ -247,7 +247,7 @@
 							.third
 								span {{ backglass.download.size | bytes }}
 
-					.panel.bg-dark.panel--backglass.flipbox-back.img.img-fullspan.img-fade(img-bg="backglass.thumb")
+					.panel.panel--backglass.flipbox-back.img.img-fullspan.img--fade(img-bg="backglass.thumb")
 						button.btn.btn-primary.btn-lg.btn--sticky-bottom(download="backglass.download", download-info="[ game, backglass ] | dlBackglass", ng-click="$event.stopPropagation()")
 								| Download
 					.clearfix
@@ -297,7 +297,7 @@
 							.third
 								span {{ item.download.size | bytes }}
 
-					.panel.bg-dark.panel--backglass.flipbox-back.img.img-fullspan.img-fade(img-bg="item.thumb")
+					.panel.panel--backglass.flipbox-back.img.img--fade.img--rounded(img-bg="item.thumb")
 						button.btn.btn-primary.btn-lg.btn--sticky-bottom(download="item.download", download-info="[ game, item ] | dlMedia", ng-click="$event.stopPropagation()")
 							| Download
 					.clearfix

@@ -89,10 +89,21 @@
 .btn--width-med
 	width 124px
 
-.btn-group
-	.btn + .btn, .btn + .btn-group, .btn-group + .btn, .btn-group + .btn-group
-		margin-left 2px
-
+// Flexible Group
+//
+// Use this if you want to span a `btn-group` over a 100% width.
+//
+// Markup:
+// <div class="btn-group {$modifiers}">
+//   <button class="btn btn-default btn-lg col-xs-11" type="button">Span me!</button>
+//   <button class="btn btn-default btn-lg col-xs-1" type="button">
+//     <i class="fa fa-angle-down"></i>
+//   </button>
+// </div>
+//
+// .btn-group--flex         - Flexible Group
+//
+// Styleguide 6.2
 .btn-group--flex
 	display inline-flex
 	width 100%
@@ -103,3 +114,8 @@
 	bottom -1px
 	position absolute
 	border-bottom-radius($border-radius-small)
+
+// Margin fixes
+.btn-group
+	.btn + .btn, .btn + .btn-group, .btn-group + .btn, .btn-group + .btn-group
+		margin-left 2px

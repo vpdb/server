@@ -52,7 +52,26 @@
 	margin-left $list-sidebar-width + 15px
 	margin-top 10px
 
+// Mini Panel
+//
 // Columns for the mini release list
+//
+// Markup:
+// <div class="col-lg-6 col-md-12" ng-repeat="i in [1, 2]">
+//   <div class="panel">
+//     <div class="clearfix"></div>
+//     <div class="{$modifiers}">
+//       <div class="img img--ar-square img--rounded-left" img-bg="/images/styleguide_square.jpg"></div>
+//     </div>
+//     <div class="col--list-mini-right">
+//       <h1 class="h--small h--no-margin">Content here</h1>
+//     <div class="clearfix"></div>
+//   </div>
+// </div>
+//
+// .col--list-mini-left - Mini Panel
+//
+// Styleguide 3.2
 .col--list-mini-left
 	width $list-square-width
 	float left
@@ -61,6 +80,7 @@
 	margin-top 10px
 	margin-right 5px
 
+// Apply this to elements you want to center vertically that have a height of 100px.
 .vertical-center--100
 	top 50%
 	margin-top -45px

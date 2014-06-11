@@ -74,6 +74,8 @@ module.exports = function(grunt) {
 				if (err) {
 					return done(false);
 				}
+
+
 				// render index
 				var indexHtml = jade.renderFile('client/views/styleguide.jade', {
 					sections: _.map(rootRefs, function(rootRef) {
@@ -82,6 +84,8 @@ module.exports = function(grunt) {
 							title: styleguide.section(rootRef) ? styleguide.section(rootRef).header() : 'Unnamed',
 							childSections: styleguide.section(new RegExp('^' + rootRef + '\\.\\d+$'))
 						}
+					}).sort(function(a, b) {
+						return parseInt(a.id) > parseInt(b.id);
 					}),
 					pretty: true
 				});
@@ -183,4 +187,15 @@ function toJade(html, done) {
 	if (result) {
 		done(result);
 	}
+}
+
+function sectionSort(a, b) {
+	var arrA = a.reference().split('.');
+	var arrB = b.reference().split('.');
+	var i = 0;
+	while (parseInt(arrA[i]) === parseInt(arrB[i])) {
+		if (++i > arrA.length)
+			return 0;
+	}
+	return parseInt(arrA[i]) < parseInt(arrB[i]);
 }

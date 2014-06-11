@@ -59,15 +59,13 @@ We use tabs, no spaces.
 The following list briefly describes each component. You can use the menu navigation
 on the right hand side to quickly navigate each section.
 
-1. Core CSS
-	1. Scaffolding
-	2. Typography
-	3. Grid
-	4. Tables
-	5. Forms
-	6. Buttons
-	7. Images
-    8. Helper Classes
-2. Components
-	1. Dropdowns
+1. Scaffolding
+2. Typography
+3. Grid
+4. Tables
+5. Forms
+6. Buttons
+7. Images
+8. Helper Classes
+9. Dropdowns
 

@@ -46,10 +46,10 @@ html(ng-app="vpdb")
 						| Overview
 					accordion.panel-group--glued(close-others="false")
 						- each section, i in sections
-							accordion-group.panel--inner(heading=section.title, is-open="sgIsOpen#{i}", ng-init="sgIsOpen#{i}=#{(i == 0 ? 'true' : 'false')}")
+							accordion-group.panel--inner(heading=section.title, is-open="sgIsOpen#{i}", ng-init="sgIsOpen#{i}=true")
 								ul.list-group
 									- each subsection in section.childSections
-										li.list-group-item: a(href="/styleguide/sections/#{section.id}##{subsection.reference()}", du-smooth-scroll, du-scrollspy, offset="90")=subsection.header()
+										li.list-group-item: a(href="/styleguide/sections/#{subsection.reference()}", du-smooth-scroll, du-scrollspy, offset="90")=subsection.header()
 
 				.col-sm-9.col--main
 					div(ng-view)

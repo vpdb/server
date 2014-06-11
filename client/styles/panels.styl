@@ -1,5 +1,10 @@
 // Panels
 //
+// Styleguide 10
+
+
+// Default Panels
+//
 // Basic panel. Use this to group elements.
 //
 // Markup:
@@ -10,7 +15,7 @@
 // .                   - Default panel
 // .panel--animated    - Hover animates it towards POV
 //
-// Styleguide 3.1
+// Styleguide 10.1
 .panel
 	position relative
 	border-radius $border-radius-small
@@ -37,7 +42,7 @@
 //
 // .panel--inner         - Inner panel
 //
-// Styleguide 3.2
+// Styleguide 10.2
 .panel--inner, .panel-group .panel--inner
 	border-radius $border-radius-large
 	> .panel-heading, > .panel-footer
@@ -46,7 +51,7 @@
 		border-bottom-radius($border-radius-large)
 
 
-// Inactive Panels
+// Blank Panels
 //
 // When you show stuff that is going to be filled up, "blank slate" as GitHub calls it.
 // Basically its `.panel.content` div is vertically and horizontally centered.
@@ -60,9 +65,9 @@
 //    </div>
 // </div>
 //
-// .panel--inactive         - Inactive panel
+// .panel--blank         - Inactive panel
 //
-// Styleguide 3.3
+// Styleguide 10.3
 .panel--blank
 	width 100%
 	display table
@@ -70,6 +75,13 @@
 	> .panel-content
 		display table-cell
 		vertical-align middle
+
+// Blanker Panels
+//
+// This is just a **subcategory** in order to show cascading.
+//
+// Styleguide 10.3.2
+
 
 // toclean
 .panel--backglass

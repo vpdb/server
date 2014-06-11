@@ -18,7 +18,7 @@ module.exports = function(grunt) {
 			if (err) {
 				throw err;
 			}
-			var rootSections = [];
+			var rootRefs = [];
 
 			// print out files to be generated
 			grunt.log.writeln('Parsed stylesheets:');
@@ -27,49 +27,60 @@ module.exports = function(grunt) {
 			}).join('\n'));
 
 			// accumulate all of the sections' first indexes in case they don't have a root element.
-			_.each(styleguide.section('*.'), function(section) {
-				var currentRoot = section.reference().match(/[0-9]*\.?/)[0].replace('.', '');
-				if (!~rootSections.indexOf(currentRoot)) {
-					rootSections.push(currentRoot);
+			_.each(styleguide.section('*.'), function(rootSection) {
+				var currentRoot = rootSection.reference().match(/[0-9]*\.?/)[0].replace('.', '');
+				if (!~rootRefs.indexOf(currentRoot)) {
+					rootRefs.push(currentRoot);
 				}
 			});
-			rootSections.sort();
-
-			// now, group all of the sections by their root reference, and make a page for each.
+			rootRefs.sort();
 			var sectionTemplate = jade.compile(fs.readFileSync('client/views/partials/styleguide-section.jade'), { pretty: true });
 
-			async.each(rootSections, function(rootSection, next) {
-				var childSections = styleguide.section(rootSection + '.*');
-
-				grunt.log.writeln('Generating "%s %s"', rootSection, styleguide.section(rootSection) ? styleguide.section(rootSection).header() : 'Unnamed');
-
-				serializesSections(childSections, function(err, sections) {
+			var renderSection = function(rootSection, reference, sections, next) {
+				grunt.log.writeln('Generating %s %s"', reference, rootSection ? rootSection.header() : 'Unnamed');
+				serializesSections(sections, function(err, sections) {
 					if (err) {
 						grunt.log.error(err);
 						return next(err);
 					}
-					var filename = path.normalize('styleguide/sections/' + rootSection + '.html');
+					var filename = path.normalize('styleguide/sections/' + reference + '.html');
 					grunt.log.write('Writing "%s"... ', filename);
 					fs.writeFileSync(filename, sectionTemplate({
 						styleguide: styleguide,
-						sections: sections,
-						rootNumber: rootSection,
-						rootSections: rootSections
+						sections: sections
 					}));
 					grunt.log.ok();
 					next();
 				});
+			}
+
+
+			// now, group all of the sections by their root reference, and make a page for each.
+			async.each(rootRefs, function(rootRef, next) {
+
+				var rootSection = styleguide.section(rootRef);
+				if (rootSection) {
+					console.log("### Section %s.x %s", rootRef, rootSection.header());
+				} else {
+					console.log("### Section %s.x %s", rootRef, '<n/a>');
+				}
+
+				async.each(styleguide.section(new RegExp('^' + rootRef + '\\.\\d+$')), function(section, next) {
+					//console.log('--- %s + %s', section.reference(), section.reference() + '.x.x');
+					renderSection(rootSection, section.reference(), [ section ].concat(styleguide.section(section.reference() + '.x.x')), next);
+				}, next);
+
 			}, function(err) {
 				if (err) {
 					return done(false);
 				}
 				// render index
 				var indexHtml = jade.renderFile('client/views/styleguide.jade', {
-					sections: _.map(rootSections, function(rootSection) {
+					sections: _.map(rootRefs, function(rootRef) {
 						return {
-							id: rootSection,
-							title: styleguide.section(rootSection) ? styleguide.section(rootSection).header() : 'Unnamed',
-							childSections: styleguide.section(rootSection + '.*')
+							id: rootRef,
+							title: styleguide.section(rootRef) ? styleguide.section(rootRef).header() : 'Unnamed',
+							childSections: styleguide.section(new RegExp('^' + rootRef + '\\.\\d+$'))
 						}
 					}),
 					pretty: true
@@ -107,7 +118,6 @@ function serializesSections(sections, done) {
 				return next(err);
 			}
 			toJade(section.markup(), function(err, jade) {
-				debug('continueing 2...');
 				if (err) {
 					console.error(err);
 					return next(err);

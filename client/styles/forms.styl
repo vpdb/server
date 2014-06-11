@@ -1,13 +1,19 @@
-//
 // Forms
-// --------------------------------------------------
+//
+// Styleguide 5
 
 
-// Text box
-textarea
-	border none
-
-// Those are basically all <input>, <textarea>, and <select> elements
+// Text Input
+//
+// Those are basically all `<input>`, `<textarea>` and `<select>` elements
+//
+// Markup:
+// <input type="text" placeholder="Type something!" class="{$modifiers}"/><br>
+// <textarea class="{$modifiers}">Text goes here</textarea>
+//
+// .form-control - Plain text boxes
+//
+// Styleguide 5.1
 .form-control
 	border-radius $border-radius-small
 	border none
@@ -15,6 +21,7 @@ textarea
 	font-size $font-size-normal
 	&:focus
 		box-shadow none
+
 // On error
 .form-group.error .form-control
 	border-style solid
@@ -84,7 +91,9 @@ textarea
 				cursor default
 				content "\e618" /* Radio Checked */
 
-
+// Text box
+textarea
+	border none
 
 // Move this to input-groups.styl if it gets bigger
 .input-group

@@ -22,7 +22,23 @@
 	&:focus
 		box-shadow none
 
-// On error
+// Erroneous Text Input
+//
+// When validations fail for a text input
+//
+// Markup:
+// <form class="form-horizontal">
+//   <div class="{$modifiers}">
+//     <label class="col-sm-3 control-label">Display Name</label>
+//     <div class="col-sm-7">
+//       <input class="form-control" type="text"/>
+//     </div>
+//   </div>
+// </form>
+//
+// .form-group.error - Erroneous field
+//
+// Styleguide 5.2
 .form-group.error .form-control
 	border-style solid
 	border-width 1px

@@ -50,7 +50,7 @@ html(ng-app="vpdb")
 								ul.list-group
 									- each subsection in section.childSections
 										li.list-group-item: a(href="/styleguide/sections/#{subsection.reference()}", du-smooth-scroll, du-scrollspy, offset="90")=subsection.header()
-
+					button.btn.btn-primary.btn--styleguide-toggle-theme(ng-click="toggleTheme()"): i.fa.fa-bullseye
 				.col-sm-9.col--main
 					div(ng-view)
 

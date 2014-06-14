@@ -43,7 +43,21 @@
 	border-style solid
 	border-width 1px
 
-// Search box gets special treatment
+// Search Box
+//
+// Search box gets special treatment with rounded corners.
+//
+// Markup:
+// <div class="input-group">
+//   <span class="input-group-addon">
+//     <i class="fa fa-search"></i>
+//   </span>
+//   <input class="form-control {$modifiers}" type="text" placeholder="Search">
+// </div>
+//
+// .input--search - Search Box with addon icon
+//
+// Styleguide 5.3
 .input--search
 	height 28px
 	padding-left 3px

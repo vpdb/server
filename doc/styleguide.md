@@ -66,6 +66,5 @@ on the left hand side to quickly navigate each section.
 5. Forms
 6. Buttons
 7. Images
-8. Helper Classes
-9. Dropdowns
+8. Dropdowns
 

@@ -61,15 +61,45 @@
 		width 48px
 		height 48px
 
+// Rounded Corners
+//
+// Apply those classes if you need images with rounded corners.
+//
+// Markup:
+// <div class="img img--ar-square {$modifiers}" img-bg="/images/styleguide_square.jpg"></div>
+//
+// .img--rounded          - All corners
+// .img--rounded-top      - Top corners
+// .img--rounded-left     - Left corners
+//
+// Styleguide 7.3
+.img--rounded
+	padding 0
+	border-radius $border-radius-small
+.img--rounded-top
+	border-top-radius($border-radius-small)
+.img--rounded-left
+	border-left-radius($border-radius-small)
 
-// Top right table logo
-.img--logo
-	margin-top 30px
-	width 95%
+
+// Avatars
+//
+// Avatars are circle-cropped images or placeholders if no image given. Use a
+// `<div>` for each case and toggle them with `ng-hide`.
+//
+// Styleguide 7.4
 
 
-
-// Avatar images (size and border-radius) - default is --md
+// Image available
+//
+// Markup:
+// <div class="img img-avatar {$modifiers}" img-bg="/images/styleguide_square.jpg"></div>
+//
+// .                        - Medium size (default)
+// .img-avatar--sm          - Small
+// .img-avatar--lg          - Large
+//
+// Styleguide 7.4.1
 .img-avatar
 	width 64px
 	height 64px
@@ -82,7 +112,16 @@
 	width 48px
 	height 48px
 
-// Avatar place holders
+// Placeholder
+//
+// Markup:
+// <div class="img-avatar avatar-placeholder {$modifiers}"></div>
+//
+// .                                        - Medium size (default)
+// .img-avatar--sm.avatar-placeholder--sm   - Small
+// .img-avatar--lg.avatar-placeholder--lg   - Large
+//
+// Styleguide 7.4.2
 .avatar-placeholder:before
 	position absolute
 	font-family FontAwesome
@@ -105,11 +144,7 @@
 	font-size 37px
 
 
-// Rounded corners
-.img--rounded // formerly: .img-fullspan
-	padding 0
-	border-radius $border-radius-small
-.img--rounded-top
-	border-top-radius($border-radius-small)
-.img--rounded-left
-	border-left-radius($border-radius-small)
+// Top right table logo
+.img--logo
+	margin-top 30px
+	width 95%

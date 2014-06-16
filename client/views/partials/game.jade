@@ -56,7 +56,7 @@
 				.row.padder-nobottom
 					.col-sm-4.col-md-3
 						a.image-link(href="{{ release.thumbs.playfield[0] }}")
-							img.img-responsive.img--fade.img--rounded(img-src="{{ release.thumbs.playfield[0] }}")
+							img.img.img-responsive.img--rounded(img-src="{{ release.thumbs.playfield[0] }}")
 						.ratingbox(rating-avg="release.rating", rating-votes="release.votes", ng-mouseenter="editing=true", ng-mouseleave="editing=false")
 							.ratingbox__left-col
 								.ratingbox__rating.rating-user(ng-show="editing") {{ hoverRating | rating }}
@@ -247,7 +247,7 @@
 							.third
 								span {{ backglass.download.size | bytes }}
 
-					.panel.panel--backglass.flipbox-back.img.img-fullspan.img--fade(img-bg="backglass.thumb")
+					.panel.panel--backglass.flipbox-back.img.img-fullspan(img-bg="backglass.thumb")
 						button.btn.btn-primary.btn-lg.btn--sticky-bottom(download="backglass.download", download-info="[ game, backglass ] | dlBackglass", ng-click="$event.stopPropagation()")
 								| Download
 					.clearfix
@@ -297,7 +297,7 @@
 							.third
 								span {{ item.download.size | bytes }}
 
-					.panel.panel--backglass.flipbox-back.img.img--fade.img--rounded(img-bg="item.thumb")
+					.panel.panel--backglass.flipbox-back.img.img--rounded(img-bg="item.thumb")
 						button.btn.btn-primary.btn-lg.btn--sticky-bottom(download="item.download", download-info="[ game, item ] | dlMedia", ng-click="$event.stopPropagation()")
 							| Download
 					.clearfix

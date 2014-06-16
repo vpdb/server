@@ -20,7 +20,7 @@ our overrides are usually in the same file.
 Apart from Twitter Bootstrap specific classes, we use a modified version of 
 [BEM naming](http://bem.info/method/) - read all about it 
 [here](http://csswizardry.com/2013/01/mindbemding-getting-your-head-round-bem-syntax/).
-In our case, one of the many benfits of this method is that it's usually 
+In our case, one of the many benefits of this method is that it's usually 
 easy to determine if a CSS class is a custom VPDB-specific class or a 
 Twitter Bootstrap override - Bootstrap doesn't use `--` for its modifiers.
 
@@ -57,7 +57,7 @@ We use tabs, no spaces.
 ## Components
 
 The following list briefly describes each component. You can use the menu navigation
-on the right hand side to quickly navigate each section.
+on the left hand side to quickly navigate each section.
 
 1. Scaffolding
 2. Typography

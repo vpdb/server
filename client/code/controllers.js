@@ -220,8 +220,13 @@ ctrl.controller('ErrorModalCtrl', function($scope, errorTitle, errorMessage) {
 	$scope.errorMessage = errorMessage;
 });
 
-ctrl.controller('StyleguideCtrl', function($scope, $location) {
-	$scope.section = $location.path().match(/(\d)\.\d$/)[1];
+ctrl.controller('StyleguideCtrl', function($scope, $location, $rootScope) {
+	if (/(\d+)\.\d+$/.test($location.path())) {
+		$scope.section = $location.path().match(/(\d+)\.\d+$/)[1];
+	}
+	$rootScope.$on('$routeChangeSuccess', function(event, route) {
+		$scope.subsection = route.params.section;
+	});
 	$scope.scrollTo = function(id) {
 		var old = $location.hash();
 		$location.hash(id);

@@ -1,10 +1,29 @@
+// Lists
 //
-// Labels
-// --------------------------------------------------
-// This also contains "list-group" styles.
+// Styleguide 12
 
 
-// Items can be selected along with a sort order toggle
+// Sort Option List
+//
+// A list where you can toggle sort options. Clicking once on an item will
+// highlight it with a default sort direction and following clicks will toggle
+// the sort direction.
+//
+// > The directive that contains the selection logic is called `sort`.
+//
+// Markup:
+// <ul class="list--sort-options">
+//   <li d="desc" sort="name">Date Added</li>
+//   <li d="asc" sort="year">Original Release</li>
+//   <li d="asc" sort="name" class="asc selected">Name</li>
+//   <li d="desc" sort="rating">Rating</li>
+//   <li d="desc" sort="views">Views</li>
+//   <li d="desc" sort="gamedownloads">Downloads</li>
+// </ul>
+//
+// .list--sort-options    - Sort Option List
+//
+// Styleguide 12.1
 .list--sort-options
 	padding-left 20px
 	> li
@@ -32,6 +51,7 @@
 
 
 // List group within panel-body
+// @todo refactor, this was done for the style guide panel, the game filter panels look different.
 .panel-body > .list-group
 	margin -15px -15px
 	.list-group-item

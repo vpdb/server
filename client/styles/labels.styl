@@ -1,7 +1,29 @@
-//
 // Labels
-// --------------------------------------------------
+//
+// Styleguide 11
 
+
+// Styles
+//
+// Per default, labels
+//
+// * Don't line wrap
+// * Overflow with ellipsis
+//
+// Labels have different usages, not only for labeling form fields. Here's
+// an overview of the different classes.
+//
+// Markup:
+// <label class="{$modifiers}">Hi, I'm a label</label>
+//
+// .label--block          - Forces block display (i.e. line break)
+// .label--small          - Smaller font size
+// .label--prop-name      - Property name in side bar
+// .label--prop-value     - Property value in side bar
+// .label--version        - Version label
+// .label--code           - Code label
+//
+// Styleguide 11.1
 // Base style
 label
 	font-weight $font-weight-normal
@@ -10,16 +32,6 @@ label
 	overflow hidden
 	text-overflow ellipsis
 
-	// Allow easy chaining of multiple spans in one single label
-	span
-		margin-right 10px
-		&.pipe
-			margin-right 10px
-			&:after
-				content '|'
-				margin-left 10px
-			&:last-child:after
-				content ''
 
 // Block label
 .label--block
@@ -57,6 +69,31 @@ label
 .label--subtitle
 	font-weight $font-weight-normal
 	margin-bottom 15px
+
+// Chaining
+//
+// Allow easy chaining of multiple spans in one single label, with a separator
+// (pipe) between each label
+//
+// Markup:
+// <label>
+//   <span class="pipe">One</span>
+//   <span class="pipe">Two</span>
+//   <span class="pipe">Three</span>
+// </label>
+//
+// span.pipe          - Separates values within a label
+//
+// Styleguide 11.2
+label span
+	margin-right 10px
+	&.pipe
+		margin-right 10px
+		&:after
+			content '|'
+			margin-left 10px
+		&:last-child:after
+			content ''
 
 // Special usages
 .tab__label // formerly: label-message

@@ -220,7 +220,8 @@ ctrl.controller('ErrorModalCtrl', function($scope, errorTitle, errorMessage) {
 	$scope.errorMessage = errorMessage;
 });
 
-ctrl.controller('StyleguideCtrl', function($scope) {
+ctrl.controller('StyleguideCtrl', function($scope, $location) {
+	$scope.section = $location.path().match(/(\d)\.\d$/)[1];
 	$scope.scrollTo = function(id) {
 		var old = $location.hash();
 		$location.hash(id);

@@ -8,7 +8,6 @@ var app = angular.module('vpdb', [
 	'ngSanitize',
 	'ngResource',
 	'angularFileUpload',
-	'duScroll',
 	'ui.bootstrap',
 	'angulartics',
 	'angulartics.google.analytics',

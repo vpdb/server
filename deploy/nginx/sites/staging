@@ -16,6 +16,12 @@ server {
 		expires max;
 	}
 
+	location ~ ^/styleguide {
+		root /var/www/staging/current;
+		access_log off;
+		expires max;
+	}
+
 	location / {
 		proxy_redirect off;
 		proxy_set_header X-Real-IP         $remote_addr;

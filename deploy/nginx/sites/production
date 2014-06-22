@@ -11,13 +11,19 @@ server {
 	server_name production.vpdb;
 
 	location ~ ^/(fonts/|images/|robots.txt|humans.txt|favicon.ico) {
-		root /var/www/staging/current/client/static;
+		root /var/www/production/current/client/static;
 		access_log off;
 		expires max;
 	}
 
 	location ~ ^/(css/global\.min\.css|js/global\.min\.js) {
-		root /var/www/staging/shared/cache;
+		root /var/www/production/shared/cache;
+		access_log off;
+		expires max;
+	}
+
+	location ~ ^/styleguide {
+		root /var/www/production/current;
 		access_log off;
 		expires max;
 	}

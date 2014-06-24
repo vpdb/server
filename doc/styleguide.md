@@ -4,8 +4,9 @@ It's the internal style guide, designated for people who want to contribute
 to VPDB. Of course it also helps explaining stuff that you might wrote a few
 months back and forgot about it by now. :)
 
-The contents is entirely generated from the style sheet comments (except this 
-overview) using [Knyle Style Sheets](https://github.com/kneath/kss). 
+This is a living style guide, i.e. the content is entirely generated from the
+style sheet comments of the current version of the app you're browsing using
+[Knyle Style Sheets](https://github.com/kneath/kss). 
 
 ## Base CSS
 

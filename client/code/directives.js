@@ -116,7 +116,10 @@ directives.directive('markdown', function($sanitize, $compile) {
 					$compile(element.contents())(scope);
 				});
 			} else {
-				var html = $sanitize(converter.makeHtml(element.text()));
+				var mdText = element.text().replace(/^\s*[\n\r]+/g, '');
+				var firstIdent = mdText.match(/^\s+/);
+				mdText = ('\n' + mdText).replace(new RegExp('[\\n\\r]' + firstIdent, 'g'), '\n');
+				var html = $sanitize(converter.makeHtml(mdText));
 				element.html(linkUsers(html));
 				$compile(element.contents())(scope);
 			}

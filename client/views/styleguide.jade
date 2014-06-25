@@ -44,7 +44,7 @@ html(ng-app="vpdb")
 					h4.padder-top: a(href="/styleguide")
 						i.fa.fa-home.space-right
 						| Overview
-					accordion.panel-group--glued(close-others="false")
+					accordion.panel-group--accordion(close-others="false")
 						- each section, i in sections
 							accordion-group.panel--inner(heading=section.title, is-open="sgIsOpen#{i}", ng-init="sgIsOpen#{i}=#{section.id}==section")
 								ul.list-group

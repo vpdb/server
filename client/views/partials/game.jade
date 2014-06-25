@@ -78,7 +78,7 @@
 							i.fa.fa-arrow-circle-down.space-right
 							span {{ release.lastversion.downloads | number }} downloads
 
-						accordion.panel-group--glued(close-others="true")
+						accordion.panel-group--accordion(close-others="true")
 							accordion-group.panel--inner(heading="Description", is-open="accordeon.isFirstOpen")
 								div.markdown(markdown="release.description")
 

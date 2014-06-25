@@ -31,6 +31,44 @@
 		border-bottom-radius($border-radius-small)
 
 
+// Remove border from bootstrap
+.panel, .panel-default, .panel > .panel-heading + .panel-collapse .panel-body, .panel-footer
+	border none
+
+// Hover animates it towards POV
+.panel--animated
+	cursor pointer
+	transition all 500ms cubic-bezier(0.190, 1.000, 0.220, 1.000)
+	transform translateY(0) scale(1, 1)
+	&:hover
+		transform translateY(-5px) scale(1.03, 1.03)
+
+.panel--animated--less:hover
+	transform translateY(-3px) scale(1.01, 1.01)
+
+
+// Panel Heights
+//
+// For certain type of panels, the height is hard-coded.
+//
+// Markup:
+// <div class=".panel {$modifiers}">
+//   <div class="panel-body">
+//     <p>Panel Content</p>
+//   </div>
+// </div>
+//
+// .panel--backglass         - Flipbox height
+// .panel--fixed-height-300  - 300px height
+//
+// Styleguide 17.1.1
+.panel--backglass
+	height 250px
+
+.panel--fixed-height-300
+	height 300px
+
+
 // Inner Panels
 //
 // Add this class if you're creating a panel within another panel.
@@ -79,14 +117,26 @@
 		vertical-align middle
 
 
-// toclean
-.panel--backglass
-	height 250px
-
-.panel--fixed-height-300
-	height 300px
-
 // Banner panel
+//
+// Huge panels for the pack downloads on the home page.
+//
+// Markup:
+// <div class="panel {$modifiers}">
+//   <img img-src="/images/styleguide_banner.jpg">
+//   <h1 class="space-left-2x space-right-2x">
+//     <i class="icon icon--title color-primary icon-williams"></i>
+//     <span class="pull-right">Title</span>
+//   </h1>
+//   <div class="padder">
+//     Content here.
+//   </div>
+//   <button class="btn btn-default btn-lg ng-scope">Download</button>
+// </div>
+//
+// .panel--banner         - Banner
+//
+// Styleguide 17.4
 .panel--banner
 	img
 		width 100%
@@ -107,19 +157,36 @@
 		width 100%
 		border-bottom-radius($border-radius-small)
 
-// Heading style
-.panel-title
-	text-align left
-	font-family $font-family-content
-	font-size $font-size-normal
-	font-weight $font-weight-bold
+
+// Panel Groups
+//
+// Use panel groups for either the accordion effect or simply for grouping
+// several panels together. Both use the `accordion` directive from Bootstrap UI.
+//
+// Styleguide 17.5
 
 
-// Remove border from bootstrap
-.panel, .panel-default, .panel > .panel-heading + .panel-collapse .panel-body, .panel-footer
-	border none
-
-// Rounder corner and padding for panel groups.
+// Groups
+//
+// Markup:
+// <accordion ng-init="panelOpen=[ true, true, true]" close-others="false">
+//   <accordion-group class="panel--inner" is-open="panelOpen[0]">
+//     <accordion-heading>First Panel<i ng-class="{'fa-chevron-circle-up': panelOpen[0], 'fa-chevron-circle-down': !panelOpen[0]}" class="fa pull-right"></i></accordion-heading>
+//     First Panel Content
+//   </accordion-group>
+//   <accordion-group class="panel--inner" is-open="panelOpen[1]">
+//     <accordion-heading>Second Panel<i ng-class="{'fa-chevron-circle-up': panelOpen[1], 'fa-chevron-circle-down': !panelOpen[1]}" class="fa pull-right"></i></accordion-heading>
+//     Second Panel Content
+//   </accordion-group>
+//   <accordion-group class="panel--inner" is-open="panelOpen[2]">
+//     <accordion-heading>Third Panel<i ng-class="{'fa-chevron-circle-up': panelOpen[2], 'fa-chevron-circle-down': !panelOpen[2]}" class="fa pull-right"></i></accordion-heading>
+//     Third Panel Content
+//   </accordion-group>
+// </accordion>
+//
+// .panel-group - "Normal" panel group
+//
+// Styleguide 17.5.2
 .panel-group
 	.panel
 		border-radius $border-radius-large
@@ -131,8 +198,26 @@
 .panel-group .panel + .panel
 	margin-top 15px
 
-// Accordion with groups glued together
-.panel-group--glued
+
+// Accordion
+//
+// Markup:
+// <accordion class="{$modifiers}" close-others="true" ng-init="firstOpen=true">
+//   <accordion-group heading="First Panel" class="panel--inner" is-open="firstOpen">
+//     First Panel Content
+//   </accordion-group>
+//   <accordion-group heading="Second Panel" class="panel--inner">
+//     Second Panel Content
+//   </accordion-group>
+//   <accordion-group heading="Third Panel" class="panel--inner">
+//     Third Panel Content
+//   </accordion-group>
+// </accordion>
+//
+// .panel-group--accordion     - Accordion
+//
+// Styleguide 17.5.1
+.panel-group--accordion
 	.panel
 		border-top-radius($border-radius-large)
 		> .panel-heading
@@ -145,14 +230,3 @@
 			border-radius 0
 	.panel:last-child
 		border-bottom-radius($border-radius-large)
-
-// Hover animates it towards POV
-.panel--animated
-	cursor pointer
-	transition all 500ms cubic-bezier(0.190, 1.000, 0.220, 1.000)
-	transform translateY(0) scale(1, 1)
-	&:hover
-		transform translateY(-5px) scale(1.03, 1.03)
-
-.panel--animated--less:hover
-		transform translateY(-3px) scale(1.01, 1.01)

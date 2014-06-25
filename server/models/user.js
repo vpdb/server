@@ -14,6 +14,7 @@ var fields = {
 	username:      { type: String, index: true, unique: true },
 	email:         { type: String, index: true, unique: true, lowercase: true, required: 'Email must be provided.' },
 	roles:         [ String ],
+	plan:          { type: String, required: false },
 	provider:      { type: String, required: true },
 	passwordHash:  { type: String },
 	passwordSalt:  { type: String },

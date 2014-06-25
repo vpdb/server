@@ -11,7 +11,8 @@ Server Update
 * Added "real" server-side API:
   * User resource (``create``, ``list``, ``update``, ``login``, ``logout``)
   * Roles resource (``list``)
-* Added ACLs for permissions management to API
+* Added ACLs for permissions management to REST API
+* Added basic quota management to storage API
 * Moved from [Piler](https://github.com/epeli/piler) to [Grunt](http://gruntjs.com/) for asset compilation
 * Restructured server code
 * Added documentation and scripts for production deployment

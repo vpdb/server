@@ -5,6 +5,7 @@ var logger = require('winston');
 
 var File = require('mongoose').model('File');
 var config = require('../modules/settings').current;
+var quota = require('../modules/quota');
 var acl = require('../acl');
 
 var serve = function(req, res, file) {
@@ -26,10 +27,14 @@ exports.get = function(req, res) {
 		if (!file) {
 			return res.status(404).end();
 		}
+		// file is not public (i.e. user must be logged in order to download)
 		if (!file.public) {
+
+			// if not logged, deny
 			if (!req.isAuthenticated()) {
 				return res.status(401).end();
 			} else {
+				// otherwise, check acl first
 				acl.isAllowed(req.user.email, 'files', 'download', function(err, granted) {
 					if (err) {
 						logger.error('[storage] Error checking ACLs for <%s>: %s', req.user.email, err, {});
@@ -41,13 +46,28 @@ exports.get = function(req, res) {
 					if (!file.active && !file.author.equals(req.user._id)) {
 						return res.status(404).end();
 					}
-					serve(req, res, file);
+					// and the quota
+					quota.isAllowed(req, res, file, function(err, granted) {
+						if (err) {
+							logger.error('[storage] Error checking quota for <%s>: %s', req.user.email, err, {});
+							return res.status(500).end();
+						}
+						if (!granted) {
+							return res.status(403).end();
+						}
+						serve(req, res, file);
+					});
 				});
 			}
+
+		// file is public
 		} else {
+
+			// but not active and user isn't the owner
 			if (!file.active && (!req.isAuthenticated() || file.author.equals(req.user._id))) {
 				return res.status(404).end();
 			}
+			// otherwise, serve.
 			serve(req, res, file);
 		}
 		if (!file.public && !req.isAuthenticated()) {

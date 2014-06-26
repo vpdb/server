@@ -4,20 +4,21 @@
 			i.fa.fa-lock.space-right
 			| &nbsp;Login
 	.modal-body
-		h3 Login with
+		h3.h--shift-up Login with
 		.text-center
 			for ipb in authStrategies.ipboard
-				a.btn.btn-primary.btn-lg(href=ipb.url, target="_self")
+				a.btn.btn--secondary.btn-lg(href=ipb.url, target="_self")
 					i.space-right(class=ipb.icon)
 					| #{ipb.name}
 			if authStrategies.github
-				a.btn.btn-primary.btn-lg(href="/auth/github", target="_self")
+				a.btn.btn--secondary.btn-lg(href="/auth/github", target="_self")
 					i.fa.fa-github.space-right
 					| GitHub
-		hr.padder-top
+		hr.hr--light.padder-top-2x
+		.clearfix
 
 		div(ng-hide="registering")
-			h3 Or, with your account:
+			h3.h--shift-up Or, with your account:
 			form.form-horizontal(role='form')
 				.form-group
 					label.col-sm-4.control-label Username
@@ -28,7 +29,7 @@
 					.col-sm-6
 						input.form-control(ng-model="loginUser.password", type="password")
 		div(ng-show="registering")
-			h3 Or, register with your Email:
+			h3.h--shift-up Or, register with your Email:
 			form.form-horizontal(role="form")
 				.form-group(ng-class="{ error: errors.email }")
 					label.col-sm-4.control-label Email
@@ -61,5 +62,5 @@
 	.modal-footer
 		button.btn.btn-default.pull-left(ng-click="swap()") {{ registering ? "Login" : "Register" }}
 		button.btn.btn-default(ng-click="$close()") Cancel
-		button.btn.btn-primary(ng-hide="registering", ng-click="login()") Login
-		button.btn.btn-primary(ng-show="registering", ng-click="register()") Register
+		button.btn.btn--secondary(ng-hide="registering", ng-click="login()") Login
+		button.btn.btn--secondary(ng-show="registering", ng-click="register()") Register

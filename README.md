@@ -41,15 +41,15 @@ and a [fuzzy search](http://en.wikipedia.org/wiki/Approximate_string_matching) a
 *The Addams Family* even when typing *Adams Family*.
 
 To make it even faster, network traffic is kept to a minimum. HTML templates are only loaded once and data is 
-transferred separately and asynchronously.
+transferred separately and asynchronously. Of course everything is minified and compressed for minimal transfer size.
 
 ### User Interface
 
-The low-contrast dark color scheme fatigues the reader's eye as little as possible. When browsing tables, we make
-prominent use of the available media, while giving the user the possibility to switch to less media-oriented views as
-well.
+The low-contrast dark color scheme is easy on the reader's eye and makes it comfortable to read. When browsing tables, 
+we make prominent use of the available media, while giving the user the possibility to switch to less media-oriented 
+views as well.
 
-The interface is simple, clear and to the point. Downloads start with one click. There are subtle animations for most
+The interface is simple, clean and to the point. Downloads start with one click. There are subtle animations for most
 actions or view transitions. Browsing should be a smooth and pleasing experience.
 
 ### API
@@ -60,7 +60,9 @@ table updates and media directly from the API in an automated way.
 
 ## Technology Stack
 
-Server runs on Node.js with Express, Stylus and Jade. Client uses AngularJS with CSS based on Twitter Bootstrap.
+Server runs on [Node.js](http://nodejs.org/) with [Express](http://expressjs.com/), [Stylus](http://learnboost.github.io/stylus/)
+and [Jade](http://jade-lang.com/). Client uses [AngularJS](https://angularjs.org/) with CSS based on 
+[Twitter Bootstrap](http://getbootstrap.com/).
 
 ## Installation
 

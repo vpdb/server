@@ -18,6 +18,7 @@ server {
 
 	location ~ ^/styleguide {
 		root /var/www/staging/current;
+		try_files $uri /styleguide/index.html;
 		access_log off;
 		expires max;
 	}
@@ -35,10 +36,10 @@ server {
 		#proxy_cache_key vpdb$request_uri$scheme;
 		proxy_pass http://vpdb_staging_upstream;
 
-		error_page 502 /500.html;
+		error_page 502 /502.html;
 	}
 
-	location /500.html {
+	location /502.html {
 		root /var/www/staging/shared/cache/html;
 		access_log off;
 		expires max;

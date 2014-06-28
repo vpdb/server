@@ -34,7 +34,7 @@ block body
 				accordion.panel-group--accordion(close-others="false")
 					- each section, i in sections
 						accordion-group.panel--inner(heading=section.title, is-open="sgIsOpen#{i}", ng-init="sgIsOpen#{i}=#{section.id}==section")
-							ul.list-group
+							ul.list-group.list-group--simple
 								- each subsection in section.childSections
 									li.list-group-item: a(href="/styleguide/sections/#{subsection.reference()}", ng-class="{ active: subsection == '#{subsection.reference()}' }")=subsection.header()
 				button.btn.btn-primary.btn--styleguide-toggle-theme(ng-click="toggleTheme()"): i.fa.fa-adjust

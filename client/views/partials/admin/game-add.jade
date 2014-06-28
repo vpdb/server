@@ -113,9 +113,9 @@
 
 			.row
 				.col-sm-6
-					.panel(ng-file-drop="onBackglassUpload($files)", ng-file-drag-over-class="panel--dragging")
+					.panel.panel--blank(ng-file-drop="onBackglassUpload($files)", ng-file-drag-over-class="panel--dragging")
 						.panel-body
-							.img.img--ar-bg(img-bg="uploadedBackglass")
+							.img.img--ar-bg.loaded(img-bg="uploadedBackglass")
 								.text-center.vertical-center--100(ng-hide="uploadedBackglass")
 									i.fa.fa-picture-o.fa-3x
 									p Drop backglass image here
@@ -130,9 +130,9 @@
 
 			.row
 				.col-sm-6
-					.panel(ng-file-drop="onLogoUpload($files)", ng-file-drag-over-class="panel--dragging")
+					.panel.panel--blank(ng-file-drop="onLogoUpload($files)", ng-file-drag-over-class="panel--dragging")
 						.panel-body
-							.img.img--ar-logo(img-bg="uploadedLogo")
+							.img.img--ar-logo.loaded(img-bg="uploadedLogo")
 								.text-center.vertical-center--100(ng-hide="uploadedLogo")
 									i.fa.fa-picture-o.fa-3x
 									p Drop logo here

@@ -199,7 +199,7 @@ module.exports = function(grunt) {
 	grunt.registerTask(
 		'build',
 		'Compiles all of the assets to the cache directory.',
-		[ 'clean:build', 'mkdir', 'stylus', 'kssrebuild', 'cssmin', 'uglify', 'git', 'jade' ]
+		[ 'clean:build', 'mkdir', 'stylus', 'cssmin', 'uglify', 'git', 'kssrebuild', 'jade' ]
 	);
 	grunt.registerTask('dev', [ 'build', 'concurrent' ]);
 };

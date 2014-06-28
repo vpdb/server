@@ -16,12 +16,8 @@ var params = function(req, done) {
 		deployment: process.env.APP_NAME || 'staging',
 		environment: process.env.NODE_ENV || 'development',
 		gitinfo: gitinfo,
-		jsFiles: _.map(assets.js, function(js) {
-			return '/' + js;
-		}),
-		cssFiles: _.map(_.union(assets.css, assets.cssCache), function(css) {
-			return '/css/' + css;
-		}),
+		jsFiles: assets.getJS(),
+		cssFiles: assets.getCSS(),
 		req: req,
 		authStrategies: {
 			local: true,

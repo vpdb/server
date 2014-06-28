@@ -10,20 +10,22 @@ server {
 
 	server_name production.vpdb;
 
-	location ~ ^/(fonts/|images/|robots.txt|humans.txt|favicon.ico) {
+	location ~ ^/(fonts/|images/|css/|robots.txt|humans.txt|favicon.ico) {
 		root /var/www/production/current/client/static;
 		access_log off;
 		expires max;
 	}
 
-	location ~ ^/(css/global\.min\.css|js/global\.min\.js) {
-		root /var/www/production/shared/cache;
+	location ~ ^/js/ {
+		root /var/www/production/current/client/code;
+		rewrite ^/js/(.*)$ /$1 break;
 		access_log off;
 		expires max;
 	}
 
 	location ~ ^/styleguide {
 		root /var/www/production/current;
+		try_files $uri /styleguide/index.html;
 		access_log off;
 		expires max;
 	}

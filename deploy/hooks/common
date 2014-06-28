@@ -82,7 +82,7 @@ npm_install() {
 grunt_build() {
 	echo Running build with Grunt...
 	cd ${DEPLOY_ROOT}/${DEPLOY_ENV}/$1
-	APP_CACHEDIR=${DEPLOY_ROOT}/${DEPLOY_ENV}/shared/cache grunt build --force
+	NODE_ENV=production APP_CACHEDIR=${DEPLOY_ROOT}/${DEPLOY_ENV}/shared/cache grunt build --force
 	test $? -eq 0 || rollback_abort $1 "Grunt build failed. Fix and redeploy."
 }
 

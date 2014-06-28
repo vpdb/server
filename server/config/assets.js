@@ -62,7 +62,7 @@ function Assets() {
 
 	assets.getJS = function() {
 		return _.map(assets.js, function(js) {
-			return '/' + js;
+			return '/js/' + js;
 		});
 	};
 

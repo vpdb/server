@@ -69,7 +69,7 @@ module.exports = function(app, config, passport) {
 	// static file serving
 	app.use(express.static(writeable.cacheRoot, { maxAge: 3600*24*30*1000 }));
 	app.use(express.static(path.resolve(__dirname, '../client/static'), { maxAge: 3600*24*30*1000 }));
-	app.use(express.static(path.resolve(__dirname, '../client/code'), { maxAge: 3600*24*30*1000 }));
+	app.use('/js', express.static(path.resolve(__dirname, '../client/code'), { maxAge: 3600*24*30*1000 }));
 	app.use(express.static(path.resolve(__dirname, '../data/assets'), { maxAge: 3600*24*30*1000 }));
 	app.use(asset.middleware());
 

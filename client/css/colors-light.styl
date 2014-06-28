@@ -1,38 +1,11 @@
 @import('nib')
 @import('color-def')
 
-body.theme-light
-	background-image url('/images/background_white_outer.png')
-
 .theme-light
-	color color-lighter-inv
-	label
-		span
-			&.pipe
-				&:after
-					color color-light-inv
-	.label-name
-		a
-			color color-lighter-inv
-			&:hover
-				color color-lightest-inv
-	.label-version, .label-code
-		background-color color-lighter-inv
-		color white
+
 	textarea
 		background-color color-darkest-inv
-	hr
-		border-color color-darker-inv
-	a
-		color color-light-inv
-		&:hover
-			color color-lighter-inv
-	h1, h5
-		color color-primary-black
-	h2, h3
-		color color-light-inv
-	h4
-		color color-lightish-inv
+
 
 	.col-menu h4
 		color color-primary-black
@@ -42,22 +15,6 @@ body.theme-light
 			background-color color-darkest-inv
 		.text-center
 			color color-dark-inv
-
-	.btn
-		&.btn-default
-			color rgba(white, 0.6)
-			background-color rgba(black, 0.25)
-			&:hover
-				color rgba(white, 0.7)
-				background-color rgba(black, 0.35)
-				box-shadow 0 0 10px 1px rgba(black, 0.1)
-		&.btn-primary
-			color color-background-inv
-			background-color color-primary-black
-			&:hover
-				color color-lightest
-				background-color color-primary-black-light
-				box-shadow 0 0 10px 1px rgba(white, 0.7)
 
 	// :radio
 	.radio-lg
@@ -74,66 +31,6 @@ body.theme-light
 				color color-lightish-inv
 				&::before
 					color color-lightish-inv
-
-	// :table
-	table.table
-		tr > th
-			color color-lighter-inv
-		&.table-striped tr
-			&:nth-child(odd) > td
-				background-color color-dark
-				&.nostripe
-					background-color transparent
-		&.table-selectable tr
-			&:hover
-				td
-					color color-lightest-inv
-
-	.container.container-topmost
-		background-image url('/images/background_white.png')
-		box-shadow 0 0 5px 1px rgba(black, 0.1)
-
-	// :navbar
-	.navbar-default
-		background-color color-navbar-inv
-		border-color color-primary-black
-
-	.navbar-brand
-		.icon
-			&.icon-vpdb-logo-o
-				color color-primary
-			&.icon-vp
-				color color-primary
-			&.icon-db
-				color color-lighter
-		a
-			&:hover
-				.icon-vpdb-logo-o
-					color color-primary-light
-				.icon-vp
-					color color-primary-light
-				.icon-db
-					color color-lightest
-	.nav.navbar-nav li
-		a
-			background-color transparent
-			color color-lighter
-			&:hover
-				color color-lightest
-		&.active > a
-			background-color color-darkest
-			color color-primary
-		.dropdown-menu
-			margin-top 0
-			border-top 1px solid #2d2d2b // hack to hide the bottom line of the bar
-			background-color color-navbar-inv
-			border-left-color color-primary-black
-			border-right-color color-primary-black
-			border-bottom-color color-primary-black
-
-	.navbar-default .navbar-nav > .open
-		& > a
-			background-color transparent
 
 	ul.dropdown-menu table
 		tr
@@ -173,71 +70,6 @@ body.theme-light
 		background-image url('/images/background_white.png')
 		color color-lighter-inv
 
-	// :accordion
-	accordion
-		& > .panel-group
-			& > .panel
-				background-color color-light
-				& > .panel-heading
-					background-color color-light
-					h4
-						color color-lightish-inv
-					a:hover
-						color color-lightish-inv
-
-	// :tabs
-	.tabset
-		ul.nav-tabs li
-			&.active
-				a
-					color color-lighter-inv
-					background-color rgba(black, 0.11)
-				.panel-triangle
-					border-color transparent #454442 transparent transparent
-			.panel-triangle
-				border-color transparent #383735 transparent transparent
-			a
-				color color-light-inv
-				background-color color-darkest-inv
-				&:hover
-					color color-lighter-inv
-		.tab-content
-			background-color rgba(white, 0.11)
-		label.label-small
-			color color-light-inv
-			a
-				color color-lighter-inv
-				&:hover
-					color color-lightest-inv
-
-
-	section.footer
-		color color-lighter
-		a
-			color color-lighter
-			&:hover
-				color color-lightest
-
-	// :selectable list
-	ul.selectable > li
-		&:hover
-			color color-lightest-inv
-		&.selected
-			color color-primary-black
-			&:hover
-				color color-primary
-
-	ul.viewtype-panel
-		li
-			&.active i
-				color #aaa
-				text-shadow 0 0 3px white
-			i
-				color color-light-inv
-				&:hover
-					color #aaa
-					text-shadow 0 0 3px white
-
 	// :avatar
 	.media-avatar, .thumbnail > img.media-avatar
 		background-color color-darker
@@ -257,21 +89,6 @@ body.theme-light
 		h4, h5
 			color color-lighter-inv
 
-	// :rating :star
-	.ratingbox
-		.ratingbox-left .ratingbox-rating.rating-user
-			color color-primary-black
-		.rating-user
-			.star-on
-				color color-primary-black
-			.star-off
-				color color-darker-inv
-		.rating-avg
-			.star-on
-				color color-lighter
-			.star-off
-				color color-darker-inv
-
 	// :newsfeed
 	.media-news
 		hr
@@ -282,30 +99,6 @@ body.theme-light
 					color color-lighter-inv
 					&:hover
 						color color-lightest-inv
-
-	// :markdown
-	.markdown
-		h1, h2
-			color color-lightest-inv
-		h3, h4, h5
-			color color-lighter-inv
-		a
-			color color-lighter-inv
-			&:hover
-				color color-lightest-inv
-		code
-			background-color color-light-inv
-			color white
-		pre code
-			background-color transparent
-			color inherit
-		blockquote
-			border-color color-light-inv
-		pre
-			color color-lighter-inv
-			border-color color-darkest-inv
-			background-color transparent
-			background-image url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI3MCIgaGVpZ2h0PSI3MCI+CjxyZWN0IHdpZHRoPSI3MCIgaGVpZ2h0PSI3MCIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjAzKSI+PC9yZWN0Pgo8ZyB0cmFuc2Zvcm09InJvdGF0ZSg0NSkiPgo8cmVjdCB3aWR0aD0iOTkiIGhlaWdodD0iMjUiIGZpbGw9InJnYmEoMCwwLDAsMC4wMykiPjwvcmVjdD4KPHJlY3QgeT0iLTUwIiB3aWR0aD0iOTkiIGhlaWdodD0iMjUiIGZpbGw9InJnYmEoMCwwLDAsMC4wMykiPjwvcmVjdD4KPC9nPgo8L3N2Zz4=")
 
 
 	::-webkit-scrollbar
@@ -323,12 +116,7 @@ body.theme-light
 		background color-primary-black
 
 	.panel
-		box-shadow 0 0 5px 1px rgba(black, 0.05)
-		background-color color-lighter
-		.panel-header
-			background-color color-light-inv
-			h1
-				color color-lightest
+
 		.list-group-item
 			color color-lightish-inv
 			background-color transparent
@@ -338,8 +126,7 @@ body.theme-light
 				color color-primary-black
 				&:hover
 					color color-lightest-inv
-		&.panel-inactive
-			color color-dark-inv
+
 
 		&.panel-dragging
 			background-color color-darker-inv
@@ -354,22 +141,15 @@ body.theme-light
 
 	// DARK COLUMN
 	.bg-dark
-		background-color color-darkest-inv
 
 		.form-control
 			color color-lighter-inv
 			background-color color-lighter
 
-		.input-group-addon
-			color color-dark-inv
-			background-color color-lighter
 
 .bg-lightest
 
-	h3
-		color color-lightish-inv
-	h4
-		color color-lighter-inv
+
 
 	a
 		color color-lighter-inv
@@ -381,71 +161,6 @@ body.theme-light
 	hr
 		border-color color-darkest-inv
 
-	.modal-header
-		background-color rgba(black, 0.1)
-		box-shadow inset 0px 1px 3px 0px rgba(white, 0.5)
-		h3 > strong
-			color color-primary-black
-	.modal-body
-		h1
-			color color-lightest-inv
-		.alert-danger
-			color color-lightest
-			background-color color-danger
-		.alert-success
-			color color-lightest
-			background-color color-success
-	.modal-footer
-		background-color rgba(black, 0.1)
-
-	.btn.btn-default
-		color rgba(white, 0.6)
-		background-color rgba(black, 0.25)
-		&:hover
-			color rgba(white, 0.7)
-			background-color rgba(black, 0.35)
-			box-shadow 0 0 10px 1px rgba(black, 0.1)
-
-	.btn.btn-primary
-		color rgba(white, 0.7)
-		background-color rgba(black, 0.35)
-		&:hover
-			color rgba(white, 0.8)
-			background-color rgba(black, 0.45)
-			box-shadow 0 0 10px 1px rgba(black, 0.1)
-
-	.form-group.error
-		.form-control
-			border-color color-danger
-		label
-			color color-danger
-	.form-control
-		color color-lighter-inv
-		background-color color-lighter
-
-	.tabset
-		ul.nav-tabs
-			li
-				&.active
-					a
-						color color-lighter-inv
-						background-color rgba(black, 0.11)
-				.panel-triangle
-					border-color transparent #383735 transparent transparent
-				a
-					color color-light-inv
-					background-color color-darkest-inv
-					&:hover
-						color color-lighter-inv
-		.tab-content
-			background-color rgba(black, 0.11)
-		label.label-small
-			color color-lighter-inv
-			a
-				font-weight 700
-				color color-lighter-inv
-				&:hover
-					color color-lightest-inv
 
 	textarea
 		color color-lighter-inv

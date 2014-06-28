@@ -1,144 +1,14 @@
 @import('nib')
 
-font-header = 'langdon', sans-serif
-font-content = 'brandon-grotesque', sans-serif
-font-code = Menlo,Monaco,Consolas,'Courier New',monospace;
+// http://csswizardry.com/2013/01/mindbemding-getting-your-head-round-bem-syntax/
+// http://drewbarontini.com/articles/single-responsibility/
 
-border-radius-small = 2px
-border-radius-large = 8px
 
-font-weight-thin = 100
-//font-weight-extralight = 200
-//font-weight-light = 300
-font-weight-normal = 300
-//font-weight-medium = 500
-//font-weight-semibold = 600
-font-weight-bold = 700
-//font-weight-extrabold = 800
-//font-weight-ultrabold = 900
-
-// primary font sizes (font-content)
-font-size-smaller = 16px
-font-size-small = 18px
-font-size-normal = 20px
-font-size-large = 24px
-font-size-larger = 28px
-font-size-largest = 34px
-
-// alt font sizes (font-header)
-font-size-smaller-alt = 24px
-font-size-small-alt = 26px
-font-size-normal-alt = 32px
-font-size-large-alt = 34px
-font-size-larger-alt = 37px
-
-font-size-code = 16px
-
-// alt font weights
-font-weight-light-alt = 400
-font-weight-normal-alt = 500
-
-animation-long = 350ms
-animation-short = 200ms
-animation-shorter = 100ms
-
-panel-sidebar-width = 175px
-list-sidebar-width = 170px
-list-square-width = 120px
-
-// background
-body
-	font-family font-content
-	font-weight font-weight-normal
-	font-size font-size-normal
-	-webkit-font-smoothing antialiased
-
-.container.container-topmost
-	padding-top 50px
-	margin-bottom 30px
-	border-bottom-right-radius border-radius-large
-	border-bottom-left-radius border-radius-large
-
-.col-main
-	padding-left 30px
-	padding-right 30px
-	position relative
-.col-menu
-	padding-bottom 25px
-
-.row-fullheight
-	overflow hidden
-	border-bottom-right-radius border-radius-large
-	border-bottom-left-radius border-radius-large
-	> div
-		margin-bottom -99999px
-		padding-bottom 99999px
 .row-data
 	margin-bottom 10px
 	position relative
 	& > label
 		margin-left 15px
-.img-logo
-	margin-top 30px
-	width 95%
-.space-right
-	margin-right 10px
-.space-right-2x
-	margin-right 15px
-.space-left-abs
-	position absolute
-	left 48px
-
-// generic stuff
-a
-	cursor pointer
-	transition all animation-short
-	&:hover
-		text-decoration none
-	&:focus
-		text-decoration none
-		outline none
-button.btn:focus, button.btn:active:focus
-	outline none
-
-[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak
-	display none
-
-.padder
-	padding 15px
-.padder-notop
-	padding 0 15px 15px
-.padder-top
-	margin-top 30px
-.padder-nobottom
-	padding 15px 15px 0 15px
-.padder-bottom-2x
-	padding-bottom 30px
-.padder-left
-	margin-left 15px
-
-.label-small
-	font-size font-size-smaller
-.label-message
-	margin 15px 0 0 10px
-.label-name
-	text-transform uppercase
-	margin-bottom 0
-.label-value
-	font-weight font-weight-bold
-	margin-top 0
-.label-version, .label-code
-	font-family font-code
-	font-weight bold
-	border-radius 4px
-	padding 0 5px
-	margin-bottom -6px
-	margin-left 4px
-.label-code
-	margin-left 0
-	margin-bottom 10px
-.label-block
-	display block
 
 dl.oneline
 	width 100%
@@ -149,93 +19,18 @@ dl.oneline
 	dd
 		text-align right
 
-// :headers
-h1
-	font-family font-header
-	text-transform uppercase
-h2, h5
-	font-family font-header
-	text-transform uppercase
-
-h1, h2, h5
-	font-size font-size-larger-alt
-	font-weight font-weight-normal-alt
-	margin-bottom 10px
-	margin-top 20px
-h3
-	font-size font-size-largest
-	font-family font-header
-	text-transform uppercase
-
-h4
-	font-family font-content
-	font-weight font-weight-bold
-	font-size font-size-large
-	text-transform uppercase
-
-h4 .small
-	font-size font-size-normal
 
 .col-menu
 	h4
 		margin-top 20px
 		text-transform uppercase
 
-// :hr
-hr
-	margin-top 10px
-	border-width 2px
 
-label
-	font-weight font-weight-normal
-	margin-bottom 1px
-	white-space nowrap
-	overflow hidden
-	text-overflow ellipsis
-	&.block
-		display block
-	span
-		margin-right 10px
-		&.pipe
-			margin-right 10px
-			&:after
-				content '|'
-				margin-left 10px
-			&:last-child:after
-				content ''
-	&.label-download
-		padding-top 9px
-		margin-right -25px
-
-label, h4, h5
+label, h4, h5 // TODO decide what to do
 	i.fa, i.icon
 		margin-right 6px
 
-// :navbar
-.navbar-default
-	transition background-color animation-long
-	border-radius 0
-.navbar-brand
-	position relative
-	width 200px
-	.icon
-		font-size 92px  // icon
-		left 55px
-		position absolute
-		top -50px
-		transition all animation-long
-		&.icon-vpdb-logo-o
-			font-size 36px // icon
-			left 13px
-			top 7px
-
 .nav.navbar-nav li
-	font-size font-size-small
-	a
-		text-transform uppercase
-	&.active a
-		cursor default
-
 	button
 		margin-top 10px
 		&.btn-pin
@@ -246,13 +41,8 @@ label, h4, h5
 		left -35px
 		width 40px
 		height 40px
-		position absolute
-	.dropdown-menu
-		padding 	5px
-		margin-top 1px
-		border-left solid 1px
-		border-right solid 1px
-		border-bottom solid 1px
+		position absolute-
+
 
 ul.dropdown-menu table
 	tr
@@ -298,25 +88,6 @@ ul.dropdown-menu table
 			cursor pointer
 
 
-
-// semi-transparent layer for dropdown
-.dropdown-menu
-	border-radius border-radius-small
-	&:after
-		border-radius border-radius-small
-		content ""
-		height 100%
-		left 0
-		position absolute
-		top 0
-		width 100%
-		z-index -1
-	& > li
-		& > a
-			padding 5px 15px
-			margin-top 15px
-		&:first-child > a
-			margin-top 0px
 .btn-lg + .dropdown-menu
 	border-radius border-radius-large
 	&:after
@@ -324,89 +95,12 @@ ul.dropdown-menu table
 
 
 // :form
-.form-group
-	label.control-label
-		font-size font-size-normal
-		text-transform uppercase
-	&.error .form-control
-		border-style solid
-		border-width 1px
-
-// :input
-.input-group
-	margin-bottom 15px
-
-.form-control
-	border-radius border-radius-small
-	border none
-	box-shadow none
+.form-group label.control-label
 	font-size font-size-normal
-	&:focus
-		box-shadow none
-	&.input-search
-		height 28px
-		padding-left 3px
-		border-radius 14px
-		border none
-	&.input-lg
-		border-radius border-radius-large
-
-.input-group-addon
-	padding-right 3px
-	border-radius 14px
-	border none
-	i.fa-search
-		margin-left -2px
-		margin-top 2px
-
-.tab-content, .panel-content
-	textarea
-		width 100%
-		height 80px
-		padding 5px
-		margin 0
-		resize none
-		border none
-		border-radius border-radius-small
+	text-transform uppercase
 
 // :buttons
 .btn
-	transition all animation-short
-	position relative
-
-	&.btn-default, &.btn-primary
-		padding 1px 20px 0px
-		font-family font-header
-		font-size font-size-smaller-alt
-		font-weight font-weight-normal-alt
-		text-transform uppercase
-		border none
-		& > i.icon-pin-on, & > i.icon-pin-off
-			font-size 24px // icon
-			line-height 12px
-	&.btn-lg
-		font-size font-size-small-alt // -alt
-		font-weight font-weight-normal-alt
-		padding 2px 30px 1px
-		border-radius border-radius-large
-		.fa
-			font-size 20px // icon
-		& > i.icon-pin-on, & > i.icon-pin-off
-			font-size 32px // icon
-			line-height 12px
-		& > i.fa-github
-			font-size 27px // icon
-		& > i.icon-gameex
-			font-size 27px // icon
-			line-height 29px
-			vertical-align middle
-	&.btn-xs
-		padding 2px 10px 0px
-		line-height 1
-		.fa
-			font-size 20px // icon
-		&.btn-default .fa
-			font-size 18px // icon
 	&.btn-dl > i
 		margin-right 1px
 
@@ -416,14 +110,6 @@ ul.dropdown-menu table
 		margin-right 15px
 		margin-bottom 15px
 
-	&.btn-width-med
-		width 124px
-
-	&.btn-theme-toggle
-		position fixed
-		bottom 5px
-		right 20px
-
 	.badge
 		margin-left 10px
 		margin-right -8px
@@ -432,20 +118,6 @@ ul.dropdown-menu table
 		font-family font-content
 		font-weight font-weight-bold
 
-
-.btn-group.btn-media
-	width 100%
-	& > .btn
-		padding-left 0
-		padding-right 0
-
-.btn-group
-	&.btn-group-flex
-		display inline-flex
-		width 100%
-
-	.btn + .btn, .btn + .btn-group, .btn-group + .btn, .btn-group + .btn-group
-		margin-left 2px
 
 // :checkbox
 .checkbox > label
@@ -457,105 +129,14 @@ ul.dropdown-menu table
 	div
 		white-space normal
 
-// :radio
-.radio-lg
-	cursor default
-	input[type=radio]
-		display none
-		cursor default
-		& + span
-			cursor pointer
-			display block
-			font-weight font-weight-bold
-			font-size font-size-large
-			text-transform uppercase
-			margin-left 20px
-			transition color animation-short
-			&:before
-				cursor pointer
-				position absolute
-				margin-left -31px
-				margin-top -2px
-				font-size 36px // icon
-				font-family icons
-				font-style normal
-				font-weight normal
-				line-height 1
-				-webkit-font-smoothing antialiased
-				-moz-osx-font-smoothing grayscale
-				transition color animation-short
-				content "\e617" /* Radio Unchecked */
-		&:checked + span
-			cursor default
-			&::before
-				cursor default
-				content "\e618" /* Radio Checked */
-
-// :view types
-ul.viewtype-panel
-	float right
-	margin-top -34px
-	position relative
-	list-style none
-	li
-		display inline
-		margin-left 15px
-		&.active i
-			cursor default
-		i
-			font-size 18px // icon
-			cursor pointer
-			transition all animation-short
-
 // :table :panel
-.panel-triangle
-	position absolute
-	width 0px
-	height 0px
-	left -8px
-	top 11px
-	border-width 9px 9px 9px 0
-	border-style solid
-	transition background-color animation-short
+
 
 .panel
-	border-radius border-radius-small
-	transition background-color animation-short, color animation-short
-	h1
-		margin-top 0
-		font-size font-size-largest
-		font-family font-content
-		font-weight font-weight-bold
-		text-transform none
-	h3
-		font-size font-size-larger
-		font-family font-header
-		font-weight font-weight-normal-alt
-		text-transform uppercase
-		white-space nowrap
-		overflow hidden
-		text-overflow ellipsis
-
-	textarea
-		border none
-
-	.panel-header
-		border-top-left-radius border-radius-small
-		border-top-right-radius border-radius-small
-		display flex
-		margin -1px -1px 0 -1px
-		& > h1
-			margin 10px auto
-			font-family font-content
-			font-size font-size-larger
-			font-weight font-weight-bold
-
-	.panel-content
-		padding 15px
+	.panel-content // will be panel-body.
 		& > h3
 			margin-top 15px
 			margin-left 15px
-
 		& > dl
 			margin-bottom 10px
 		& > hr
@@ -575,14 +156,6 @@ ul.viewtype-panel
 			&.active
 				font-weight font-weight-bold
 
-// common to compact and extended
-.panel-compact, .panel-extended, .panel-mini
-	cursor pointer
-	transition all 500ms cubic-bezier(0.190, 1.000, 0.220, 1.000)
-	transform translateY(0) scale(1, 1)
-	&:hover
-		transform translateY(-5px) scale(1.03, 1.03)
-
 // :table panes :compact
 .panel-compact
 	text-align center
@@ -594,52 +167,6 @@ ul.viewtype-panel
 
 	h3
 		text-align center
-	label
-		font-weight font-weight-normal
-		margin-bottom 15px
-
-// :table panes releases (square img)
-.panel-mini
-	.img-wrapper
-		width list-square-width
-		float left
-		.img
-			padding 0
-			height list-square-width
-			border-radius border-radius-small 0 0 border-radius-small
-	.data-wrapper
-		margin-left list-square-width + 15px
-		h3
-			margin-top 10px
-			margin-right 10px
-		h4
-			label.label-version
-				margin-bottom -4px
-
-// :table panes :extended
-.panel-extended
-	&:hover
-		transform translateY(-3px) scale(1.01, 1.01)
-
-	.img-wrapper
-		width list-sidebar-width
-		float left
-		.img
-			border-top-left-radius border-radius-small
-			border-top-right-radius border-radius-small
-	.data-wrapper
-		margin-left list-sidebar-width + 15px
-
-	h3
-		font-size font-size-normal-alt
-		font-weight font-weight-normal-alt
-		margin-top 10px
-		margin-bottom 5px
-
-	.ratingbox
-		position absolute
-		right 15px
-		top -5px
 
 .panel-small
 	border-radius border-radius-large
@@ -660,376 +187,20 @@ ul.viewtype-panel
 		border none
 		border-radius 0 0 border-radius-large border-radius-large
 
-.panel-banner
-	img
-		width 100%
-	i.icon-title
-		position absolute
-		margin-top 0
-		cursor default
-		& + label
-			margin-right 15px
-			margin-bottom 15px
-			margin-top 0px
-			font-size font-size-large-alt
-			font-weight font-weight-normal-alt
-			strong
-				font-weight font-weight-light-alt
-		&.icon-williams
-			font-size 48px // icon
-		&.icon-stern
-			font-size 62px // icon
-	h3 small
-		font-size 80%
-
-	& > .row
-		margin 0 0 15px
-		& > div
-			transition color animation-short
-			cursor pointer
-			overflow hidden
-			text-overflow ellipsis
-			white-space nowrap
-			&:nth-child(even)
-				text-align right
-
-	& > button.btn.btn-lg
-		width 100%
-		border-radius 0 0 border-radius-small border-radius-small
-
-.panel.panel-backglass
-	height 250px
-	h3
-		margin 10px 15px 8px
-	&.panel-back
-		border 1px solid black
 
 .panel-title
 	font-size font-size-normal
 
-.panel-inactive
-	height 300px
-	text-align center
-	padding-top 90px
-	i.icon
-		font-size 50px
-		& + span
-			line-height 56px
-			margin-left 7px
-			vertical-align top
 
 .panel-droppable
 	.img
 		border-radius border-radius-small
 
-.flipbox-backglass
-	height 250px
-	hr
-		margin 0 15px
-	h3
-		text-align center
-	.oneline
-		text-align center
-		margin 5px 0
-	.morelines
-		margin 5px 15px
 
-	.backglass-description
-		padding 5px 5px 9px 15px
-		height 125px
-		overflow hidden
-		position relative
-
-	footer
-		position absolute
-		bottom 8px
-		width 100%
-		.third
-			width 32%
-			display inline-table
-			padding-top 5px
-			border-right-width 2px
-			border-right-style solid
-			text-align center
-			&:last-child
-				border none
-
-// :details view
-h1 + h3.pull-right
-	margin-top -42px
-
-.panel-detailed
-	.sidebar-wrapper
-		float left
-		margin 15px
-		width panel-sidebar-width
-		.img
-			padding-bottom 176%
-			border-radius border-radius-small
-
-// :table list
-.table-wrapper
-	margin-left 15px
-	margin-right 15px
-
-// :table
-table.table
-
-	tr > th
-		font-weight font-weight-normal
-
-	tr > th, tr > td
-		border none
-		padding 5px 0
-		&:first-child
-			padding-left 10px
-		&:last-child
-			padding-right 10px
-			text-align right
-		&.name
-			font-weight font-weight-bold
-		&.td-dlbtn
-			width 50px
-
-	&.table-striped tr
-		& > td.nostripe
-			padding-left 5px
-
-	&.table-selectable tr
-		& > td
-			cursor pointer
-			transition all animation-shorter
-	tr.inactive > td
-		text-decoration line-through
-
-// :selectable list
-ul.selectable
-	padding-left 20px
-	> li
-		list-style-type none
-		transition all animation-shorter
-		cursor pointer
-		&.selected
-			font-weight font-weight-bold
-			margin-left -20px
-			&:before
-				display inline-block
-				width 20px
-				font-family FontAwesome
-				font-size 20px // icon
-				font-style normal
-				font-weight normal
-				line-height 1
-				-webkit-font-smoothing antialiased
-				-moz-osx-font-smoothing grayscale
-			&.desc:before
-				content '\f107'
-			&.asc:before
-				content '\f106'
-
-// :accordion
-accordion
-	& > .panel-group
-		& > .panel
-			border none
-			border-radius border-radius-large
-			& > .panel-heading
-				padding 8px 10px 5px
-				border-top-left-radius border-radius-large
-				border-top-right-radius border-radius-large
-				h4
-					text-transform uppercase
-					font-weight font-weight-bold
-				a:hover
-						text-decoration none
-						cursor pointer
-				h4
-					margin-top 0
-			& + .panel
-				margin-top 15px
-			& > .panel-collapse
-				& > .panel-body
-					border-top none
-					background-color transparent
-
-accordion.accordion-glued
-	& > .panel-group
-		& > .panel
-			border none
-			border-radius 0
-			& > .panel-heading
-				padding 7px 9px
-				border-radius 0
-				border-top 2px solid rgba(0, 0, 0, 0.34)
-			& + .panel
-				margin-top 0
-		& > .panel:first-child
-			border-top-left-radius border-radius-large
-			border-top-right-radius border-radius-large
-			& > .panel-heading
-				border-top-left-radius border-radius-large
-				border-top-right-radius border-radius-large
-		& > .panel:last-child
-			border-bottom-left-radius border-radius-large
-			border-bottom-right-radius border-radius-large
-		& > .panel:first-child & > .panel-heading
-				border-bottom none
-
-// :tabs
-.tabset
-	&.tabset-newcomment
-		margin 15px
-	&.tabset-moderequest
-		margin 15px 0
-	ul.nav-tabs
-		border none
-		li
-			margin-bottom 0
-			&.active
-				a
-					border none
-			a
-				padding 4px 15px
-				font-size 20px  // font awesome (comment tab icons)
-				border none
-				border-radius border-radius-large border-radius-large 0 0
-	.tab-content
-		padding 10px 15px 15px 13px
-		border-radius 0 border-radius-large border-radius-large border-radius-large
-		textarea
-			margin-top 5px
-	label.label-small
-		margin-top 7px
-
-section.footer
-	text-align center
-	margin-top -20px
-	margin-bottom 20px
-	font-weight
-	i.fa
-		margin-right 10px
-		font-size 20px // icon
-	a
-		transition all animation-short
-
-// :modals
-.modal-dialog
-	overflow hidden
-	.modal-content
-		border-radius 3px
-		.modal-header
-			border-radius 3px 3px 0 0
-			h3
-				margin 3px 5px 0
-				strong
-					margin-left 2px
-					font-weight normal
-			img.avatar-details + h3
-				margin-left 110px
-		.modal-body
-			.ident
-				margin-left 110px
-				& + hr
-					margin-top 20px
-			h1
-				font-family font-content
-				font-weight font-weight-thin
-				text-transform none
-				margin-bottom 15px
-				&:first-child
-					margin-top 0
-			h4
-				text-transform uppercase
-
-			.btn.btn-lg + .btn.btn-lg
-				margin-left 20px
-
-		.alert
-			margin 0 -20px
-			padding 5px 20px
-			border-radius 0
-			text-align center
-			& + .alert
-				margin-top 10px
-
-		.modal-footer
-			border-radius 0 0 3px 3px
-			margin-top 0
-.center-middle-errorpage
-	position relative
-	padding 120px 50px 0
-	text-align center
-	i.icon-vpdb-logo-o
-		font-size 300px
-	h1
-		margin-top -10px
-		margin-bottom 15px
-		font-family font-content
-		font-weight font-weight-thin
-		font-size 140px
-	a
-		font-family font-content
-	p
-		margin 0 0 30px
-
-
-
-// :markdown
-.markdown
-	& > *:first-child
-		margin-top 0
-	h1, h2
-		font-family font-content
-		text-transform none
-	h3, h4, h5
-		font-family font-content
-		text-transform none
-	h1
-		font-size font-size-largest
-		font-weight font-weight-thin
-	h2
-		font-size font-size-larger
-		font-weight font-weight-thin
-	h3
-		font-size font-size-large
-		font-weight font-weight-bold
-	h4
-		font-size font-size-normal + 2px
-		font-weight font-weight-bold
-	h5, h6
-		font-size font-size-normal
-		font-weight font-weight-normal
-		text-decoration underline
-	a
-		text-decoration underline
-	pre code
-		font-size font-size-code
-	blockquote
-		font-size font-size-normal
 
 // :image
 .img
-	background-repeat no-repeat
-	background-position center center
-	background-size cover
-	&.img-backglass, &.img-logo-placeholder
-		position relative
-		width 100%
-		height 0
-	&.img-backglass
-		padding-bottom 80% // % of width, defines aspect ratio
-	&.img-logo-placeholder
-		padding-bottom 40% // % of width, defines aspect ratio
-
-	&.img-fullspan
-		padding 0
-		border-radius border-radius-small
-	& > .btn.btn-lg
-		width 100%
-		bottom -1px
-		position absolute
-		border-radius 0 0 border-radius-small border-radius-small
-	.text-center
+	.text-center // "drop here" placeholder - not sure how to name this
 		margin-top -50px
 		position absolute
 		top 50%
@@ -1040,197 +211,9 @@ section.footer
 		i
 			font-size 70px
 
-img, .img
-	&.img-fade
-		opacity 0
-		transition opacity animation-short
-		&.loaded
-			opacity 1
-
-// :media
-.media-avatar, .thumbnail > img.media-avatar
-	&.media-avatar-comment.pull-left
-		margin-right 0px
-	& + .media-body > .panel
-		margin-top 0px
-		margin-left 15px
-	& + .media-body > .tabbable
-		margin-top 0px
-div.media-avatar:before
-	position absolute
-	font-family fontawesome
-	font-style normal
-	font-weight normal
-	line-height 1
-	-webkit-font-smoothing antialiased
-	-moz-osx-font-smoothing grayscale
-	content '\f007'
-.media-avatar-medium, .thumbnail > img.media-avatar-medium
-	width 64px
-	height 64px
-	margin-left 15px
-	border-radius 32px
-div.media-avatar-medium:before
-	margin-left 19px
-	margin-top 14px
-	font-size 33px // font-awesome
-.media-avatar-large, .thumbnail > img.media-avatar-large
-	width 72px
-	height 72px
-	margin-left 15px
-	border-radius 36px
-div.media-avatar-large:before
-	margin-left 18px
-	margin-top 16px
-	font-size 37px  // font-awesome
-
-.media-avatar-small, .thumbnail > img.media-avatar-small
-	width 36px
-	height 36px
-	margin-left 0px
-	border-radius 18px
-div.media-avatar-small:before
-	margin-left 18px
-	margin-top 16px
-	font-size 37px // font-awesome
-img.avatar-details
-	width 100px
-	height 100px
-	border-radius 50px
-	position absolute
-	left 15px
-	top 15px
-
-.thumbnail.thumbnail-avatar
-	border none
-	width 130px
-	margin-bottom 0px
-	& > img
-		margin 0 auto
-	.caption
-		text-align center
-		h1
-			margin-top 0
-			margin-bottom 5px
-			font-size font-size-normal
-			font-family font-content
-			font-weight font-weight-bold
-		label
-			white-space normal
-
-.media.media-mini
-	margin-top 10px
-	padding-bottom 5px
-	&.last
-		border none !important
-	img.media-object
-		width 40px
-		height 40px
-	h4, h5
-		margin-top 0
-		text-transform none
-		font-family font-content
-		font-size font-size-normal
-		white-space nowrap
-		overflow hidden
-		text-overflow ellipsis
-	h4
-		font-weight font-weight-bold
-	h5
-		font-weight font-weight-normal
 
 
-// :rating :star
-.ratingbox
-	.ratingbox-left
-		display inline
-		position relative
-		.ratingbox-rating
-			display inline
-			font-size 50px
-			font-weight font-weight-thin
-			cursor default
-			&.rating-user
-				position absolute
-				right 0
-	.ratingbox-right
-		display inline
-		position relative
-		.votes
-			width 80px
-			display inline-block
-			margin-left 5px
-			cursor default
-		.rating-avg, .rating-user
-			position absolute
-			left 4px
-			top -24px
-			white-space nowrap
-		.rating-user
-			cursor pointer
 
-	.rating-hide
-		color transparent
-	.star-left
-		width 7.5px
-		overflow hidden
-	.star-right
-		overflow hidden
-		margin-right 3px
-		&:before
-			margin-left -7.5px
-			overflow hidden
-
-
-// :newsfeed
-.media-news
-	hr
-		margin-top 15px
-		margin-left 15px
-		margin-bottom 0
-	.media-body
-		& > label
-			margin-left 15px
-			a
-				font-weight font-weight-bold
-
-user
-	transition color animation-short
-	font-weight font-weight-bold
-	cursor pointer
-
-
-.spinner-overlay
-	position absolute
-	padding-top 200px
-	top 0
-	left 0
-	width 100%
-	height 100%
-	z-index 10
-	background-color rgba(0,0,0,0.5)
-	transition all 1s
-
-// loading spinner
-.spinner
-	margin 6em auto
-	font-size 10px
-	position relative
-	text-indent -9999em
-	border-top 1.1em solid rgba(255, 255, 255, 0.2)
-	border-right 1.1em solid rgba(255, 255, 255, 0.2)
-	border-bottom 1.1em solid rgba(255, 255, 255, 0.2)
-	border-left 1.1em solid #ffffff
-	animation load8 2s infinite linear
-	&, &:after
-		border-radius: 50%;
-		width: 10em;
-		height: 10em;
-@keyframes load8
-	0%
-		transform: rotate(0deg)
-	100%
-		transform: rotate(360deg);
 
 // :lists
 dl.dl-centered
@@ -1238,7 +221,6 @@ dl.dl-centered
 		width 49%
 	& > dd
 		margin-left 51%
-
 
 // :staging indicator
 .staging-bar

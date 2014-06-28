@@ -46,6 +46,8 @@ function parseDetails(body, done) {
 		game.ipdb.mfg = firstMatch(body, /Manufacturer:\s*<\/b>.*?mfgid=(\d+)/i);
 		if (game.ipdb.mfg && manufacturerNames[game.ipdb.mfg]) {
 			game.manufacturer = manufacturerNames[game.ipdb.mfg];
+		} else {
+			game.manufacturer = 'Unknown ID ' + game.ipdb.mfg;
 		}
 		game.modelno = firstMatch(body, /Model Number:\s*<\/b><\/td><td[^>]*>(\d+)/i);
 		game.year = firstMatch(body, /href="machine\.cgi\?id=\d+">\d+<\/a>\s*<I>[^<]*?(\d{4})/i);

@@ -1,0 +1,45 @@
+//
+// Dark theme
+// --------------------------------------------------
+.theme-dark
+
+	// <input>, <textarea>, and <select> elements
+	.form-control
+		color $color-lighter
+		background-color $color-darker
+
+	// Addon has the same background-color as the form control
+	.input-group-addon
+		color $color-light
+		background-color $color-darker
+
+	textarea
+		background-color $color-darkest
+
+//
+// Light theme
+// --------------------------------------------------
+.theme-light
+
+	// <input>, <textarea>, and <select> elements
+	.form-control
+		color $color-lighter-inv
+		background-color $color-lighter
+
+	// On error:
+	.form-group.error
+		.form-control
+			border-color $color-danger
+		label
+			color $color-danger
+
+	// Addon has the same background-color as the form control
+	.input-group-addon
+		color $color-dark-inv
+		background-color $color-lighter
+
+	textarea
+		background-color $color-light
+
+	.radio--lg
+		color $color-light-inv

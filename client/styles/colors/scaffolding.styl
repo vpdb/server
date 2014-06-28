@@ -1,0 +1,86 @@
+//
+// Dark theme
+// --------------------------------------------------
+.theme-dark
+
+	// links
+	a, .a
+		color $color-light
+		&:hover
+			color $color-lighter
+		&.a--lighter
+			color $color-lighter
+			&:hover
+				color $color-lightest
+
+	// hr
+	hr
+		border-color $color-darker
+
+	// inline code
+	code
+		color $color-lighter
+		background-color $color-darker
+
+	// TODO change to <footer>
+	section.footer
+		&, a
+			color $color-dark
+		a:hover
+			color $color-light
+
+	// text selection color
+	::selection
+		color rgba(white,0.9)
+		background $color-primary
+	::-moz-selection
+		color rgba(white,0.9)
+		background $color-primary
+
+// Global color and background
+body.theme-dark
+	color $color-lighter
+	background-image url('/images/background_outer.png')
+
+
+//
+// Light theme
+// --------------------------------------------------
+.theme-light
+
+
+	// links
+	a, .a
+		color $color-light-inv
+		&:hover
+			color $color-lighter-inv
+		&.a--lighter
+			color $color-lighter-inv
+			&:hover
+				color $color-lightest-inv
+
+	// hr
+	hr
+		border-color $color-darker-inv
+		&.hr--light
+			border-color $color-darkest-inv
+
+
+	// TODO change to <footer>
+	section.footer
+		&, a
+			color $color-lighter
+		a:hover
+			color $color-lightest
+
+	::selection
+		color rgba(white,0.9)
+		background $color-primary-black
+	::-moz-selection
+		color rgba(white,0.9)
+		background $color-primary-black
+
+// Global color and background
+body.theme-light
+	color $color-lighter-inv
+	background-image url('/images/background_white_outer.png')

@@ -1,0 +1,48 @@
+extends layout
+
+block body
+	if deployment != 'production'
+		.staging-bar
+		.staging-bar
+	nav.navbar.navbar-default.navbar-fixed-top
+		.container
+			.navbar-header
+				span.navbar-brand
+					a(href="/", target="_self")
+						i.icon.icon-vpdb-logo-o
+						i.icon.icon-vp
+						i.icon.icon-db
+
+			ul.nav.navbar-nav
+				li(ng-class="{ active: menu == 'home' }")
+					a(href="/styleguide") Style Guide
+
+			ul.nav.navbar-nav.navbar-right
+				li
+					a(href="/", target="_self")
+						i.fa.fa-caret-left.space-right-2x
+						span.space-right Back to Site
+
+	.container.container--topmost.styleguide(ng-controller="StyleguideCtrl")
+		.row.row--fullheight
+			.col-sm-3.col--menu
+				h1 Contents
+				hr
+				h4.padder-top: a(href="/styleguide")
+					i.fa.fa-home.space-right
+					| Overview
+				accordion.panel-group--accordion(close-others="false")
+					- each section, i in sections
+						accordion-group.panel--inner(heading=section.title, is-open="sgIsOpen#{i}", ng-init="sgIsOpen#{i}=#{section.id}==section")
+							ul.list-group.list-group--simple
+								- each subsection in section.childSections
+									li.list-group-item: a(href="/styleguide/sections/#{subsection.reference()}", ng-class="{ active: subsection == '#{subsection.reference()}' }")=subsection.header()
+				button.btn.btn-primary.btn--styleguide-toggle-theme(ng-click="toggleTheme()"): i.fa.fa-adjust
+			.col-sm-9.col--main
+				div(ng-view)
+
+	section.footer
+		p
+			a(href="https://github.com/freezy/node-vpdb", target="_blank")
+				i.fa.fa-github-alt
+				| <strong>Fork me</strong> on GitHub

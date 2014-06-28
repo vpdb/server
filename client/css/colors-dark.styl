@@ -1,35 +1,9 @@
 @import('nib')
 @import('color-def')
 
-body.theme-dark
-	background-image url('/images/background_outer.png')
 .theme-dark
-	color color-lighter
-	label
-		span
-			&.pipe
-				&:after
-					color color-light
-	.label-name
-		a
-			color color-lighter
-			&:hover
-				color color-lightest
-	.label-version, .label-code
-		background-color color-lighter
-		color black
-	textarea
-		background-color color-darkest
-	hr
-		border-color color-darker
-	a
-		color color-light
-		&:hover
-			color color-lighter
-	h1, h5
-		color color-primary
-	h2, h3
-		color color-light
+
+
 
 	.col-menu h4
 		color color-primary
@@ -37,87 +11,6 @@ body.theme-dark
 	img, .img
 		&.fade-after-load
 			background-color color-darkest
-
-
-	.btn
-		&.btn-default, &.btn-primary
-			color color-light
-			background-color color-dark
-			&:hover
-				color color-lighter
-				background-color color-light
-				box-shadow 0 0 3px 1px rgba(black, 0.3)
-			.badge
-				background-color color-light
-				color color-lighter-inv
-		&.btn-primary
-			color color-background
-			background-color color-primary
-			&:hover
-				color color-background
-				background-color color-primary-light
-				box-shadow 0 0 3px 1px rgba(black, 0.3)
-			.badge
-				background-color color-background
-				color color-lightest
-
-	// :table
-	table.table
-		tr > th
-			color color-primary
-		&.table-striped tr
-			&:nth-child(odd) > td
-				background-color color-darkest
-				&.nostripe
-					background-color transparent
-		&.table-selectable tr
-			&:hover
-				td
-					color color-primary
-
-	.container.container-topmost
-		background-image url('/images/background.png')
-		box-shadow 0 0 5px 1px rgba(black, 0.5)
-
-	// :navbar
-	.navbar-default
-		background-color color-navbar
-		border-color color-primary
-
-	.navbar-brand
-		.icon
-			&.icon-vpdb-logo-o
-				color color-primary
-			&.icon-vp
-				color color-primary
-			&.icon-db
-				color color-lighter
-		a
-			&:hover
-				.icon-vpdb-logo-o
-					color color-primary-light
-				.icon-vp
-					color color-primary-light
-				.icon-db
-					color color-lightest
-	.nav.navbar-nav li
-		a
-			background-color transparent
-			color color-lighter
-			&:hover
-				color color-lightest
-		&.active a
-			background-color color-darkest
-			color color-primary
-		.dropdown-menu
-			background-color color-navbar
-			border-left-color color-primary
-			border-right-color color-primary
-			border-bottom-color color-primary
-
-	.navbar-default .navbar-nav > .open
-		& > a, & > a:hover, & > a:focus
-			background-color transparent
 
 	ul.dropdown-menu table
 		tr
@@ -151,71 +44,6 @@ body.theme-dark
 		background-image url('/images/background_white.png')
 		color color-lightest-inv
 
-	// :accordion
-	accordion
-		& > .panel-group
-			& > .panel
-				background-color color-darkest
-				& > .panel-heading
-					background-color color-darkest
-					h4
-						color color-lightish
-					a:hover
-						color color-lightest
-
-	// :tabs
-	.tabset
-		ul.nav-tabs li
-			&.active
-				a
-					color color-lighter
-					background-color rgba(white, 0.11)
-				.panel-triangle
-					border-color transparent #454442 transparent transparent
-			.panel-triangle
-				border-color transparent #383735 transparent transparent
-			a
-				color color-light
-				background-color color-darkest
-				&:hover
-					color color-lighter
-		.tab-content
-			background-color rgba(white, 0.11)
-		label.label-small
-			color color-light
-			a
-				color color-lighter
-				&:hover
-					color color-lightest
-
-
-	section.footer
-		color color-dark
-		a
-			color color-dark
-			&:hover
-				color color-light
-
-	// :selectable list
-	ul.selectable > li
-		&:hover
-			color color-lightest
-		&.selected
-			color color-primary
-			&:hover
-				color color-primary-light
-
-	ul.viewtype-panel
-		li
-			&.active i
-				color #aaa
-				text-shadow 0 0 3px black
-			i
-				color color-light
-				&:hover
-					color #aaa
-					text-shadow 0 0 3px black
-
 	// :avatar
 	.media-avatar, .thumbnail > img.media-avatar
 		background-color color-darker
@@ -228,38 +56,6 @@ body.theme-dark
 				color color-lighter
 			label
 				color color-lighter
-
-	// more :media
-	.media.media-mini
-		border-bottom solid 2px color-darkest
-		h4, h5
-			color color-lighter
-
-	// :rating :star
-	.ratingbox
-		.ratingbox-left .ratingbox-rating.rating-user
-			color color-primary
-		.rating-user
-			.star-on
-				color color-primary
-			.star-off
-				color color-darker
-		.rating-avg
-			.star-on
-				color color-lighter
-			.star-off
-				color color-darker
-
-	// :newsfeed
-	.media-news
-		hr
-			border-color color-darkest
-		.media-body
-			& > label
-				a
-					color color-lighter
-					&:hover
-						color color-lightest
 
 	// 404 page
 	.center-middle-errorpage
@@ -277,45 +73,6 @@ body.theme-dark
 			&:hover
 				color color-lighter
 
-	// :markdown
-	.markdown
-		h1, h2
-			color color-lightest
-		h3, h4, h5
-			color color-lighter
-		a
-			color color-lighter
-			&:hover
-				color color-lightest
-		code
-			background-color color-light
-			color black
-		pre code
-			background-color transparent
-			color inherit
-		blockquote
-			border-color color-light
-		pre
-			color color-lighter
-			border-color color-darkest
-			background-color transparent
-			background-image url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI3MCIgaGVpZ2h0PSI3MCI+CjxyZWN0IHdpZHRoPSI3MCIgaGVpZ2h0PSI3MCIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjAzKSI+PC9yZWN0Pgo8ZyB0cmFuc2Zvcm09InJvdGF0ZSg0NSkiPgo8cmVjdCB3aWR0aD0iOTkiIGhlaWdodD0iMjUiIGZpbGw9InJnYmEoMCwwLDAsMC4wMykiPjwvcmVjdD4KPHJlY3QgeT0iLTUwIiB3aWR0aD0iOTkiIGhlaWdodD0iMjUiIGZpbGw9InJnYmEoMCwwLDAsMC4wMykiPjwvcmVjdD4KPC9nPgo8L3N2Zz4=")
-
-
-	::-webkit-scrollbar
-		background color-background
-	::-webkit-scrollbar-thumb
-		background color-darker
-		-webkit-box-shadow 0px 1px 2px rgba(black, 0.75)
-	::-webkit-scrollbar-corner
-		background color-background
-	::selection
-		color rgba(white,0.9)
-		background color-primary
-	::-moz-selection
-		color rgba(white,0.9)
-		background color-primary
-
 	.panel
 		.list-group-item
 			color color-lighter
@@ -330,12 +87,6 @@ body.theme-dark
 		color color-lightest
 
 
-	.staging-bar
-		background-image url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI3MCIgaGVpZ2h0PSI3MCI+CjxyZWN0IHdpZHRoPSI3MCIgaGVpZ2h0PSI3MCIgZmlsbD0iI2VjODQzZCI+PC9yZWN0Pgo8ZyB0cmFuc2Zvcm09InJvdGF0ZSg0NSkiPgo8cmVjdCB3aWR0aD0iOTkiIGhlaWdodD0iMjUiIGZpbGw9InJnYmEoMCwwLDAsMC43NSkiPjwvcmVjdD4KPHJlY3QgeT0iLTUwIiB3aWR0aD0iOTkiIGhlaWdodD0iMjUiIGZpbGw9InJnYmEoMCwwLDAsMC43NSkiPjwvcmVjdD4KPC9nPgo8L3N2Zz4=")
-
-	.bg-dark
-		background-color color-darkest
-
 .bg-dark
 	textarea
 		background-color rgba(white, 0.05)
@@ -345,30 +96,12 @@ body.theme-dark
 	&.col-menu
 		background-color color-darkest
 
-	&.panel
-		box-shadow 0 0 5px 1px rgba(black, 0.3)
 	&.panel-compact, &.panel-extended
 		&:hover
 			box-shadow 0 5px 9px rgba(black, 0.5)
-	&.panel-banner
-		i.icon-title
-			color color-primary
-			& + label
-				strong
-					color color-lighter
-		h3 small
-			color inherit
-		& > .row > div:hover
-			color color-lightest
 
 
-	.form-control
-		color color-lighter
-		background-color color-darker
 
-	.input-group-addon
-		color color-light
-		background-color color-darker
 
 	.third
 		border-right-color color-darker

@@ -15,6 +15,7 @@ Server Update
 * Moved from [Piler](https://github.com/epeli/piler) to [Grunt](http://gruntjs.com/) for asset compilation
 * Restructured server code
 * Added documentation and scripts for production deployment
+* Rewrote all the CSS using KSS style sheets.
 
 ## v0.0.1
 

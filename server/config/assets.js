@@ -36,7 +36,7 @@ function Assets() {
 			'filters.js',
 			'directives.js'
 		],
-		css: [ 'fonts.css' ],
+		css: [ 'fonts.css', 'hljs-pojoaque.css' ],
 		cssCache: []
 	};
 	// javascript files
@@ -53,11 +53,24 @@ function Assets() {
 	// compiled from stylus
 	if (fs.existsSync(cssCacheRoot)) {
 		fs.readdirSync(cssCacheRoot).forEach(function(file) {
-			if (!/\.min\./.test(file) && !/color-def/.test(file)) { // "elegant" way to ignore global.min.css, which already contains everything.
+			// "elegant" way to ignore global.min.css, which already contains everything.
+			if (!/\.min\./.test(file) && !/color-def/.test(file)) {
 				assets.cssCache.push(file);
 			}
 		});
 	}
+
+	assets.getJS = function() {
+		return _.map(assets.js, function(js) {
+			return '/' + js;
+		});
+	};
+
+	assets.getCSS = function() {
+		return _.map(_.union(assets.css, assets.cssCache), function(css) {
+			return '/css/' + css;
+		});
+	};
 
 	this.assets = assets;
 }

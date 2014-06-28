@@ -1,6 +1,6 @@
 .bg-lightest
 	.modal-header
-		h3 Update User <strong>{{ originalName }}<strong>
+		h1.h--small.h--no-margin Update User <strong>{{ originalName }}<strong>
 	.modal-body
 		form.form-horizontal(role="form")
 
@@ -31,7 +31,7 @@
 					.checkbox(ng-repeat="role in roles", ng-hide="!hasRole('root') && (role.name == 'root' || role.name == 'admin')")
 						label
 							input(type="checkbox", name="selectedRoles[]", value="{{ role.name }}", ng-checked="user.roles.indexOf(role.name) > -1", ng-click="toggleSelection(role.name)")
-							h6 {{ role.name }}
+							h4.h--no-margin.h--lighter {{ role.name }}
 							div {{ role.description }}
 
 			div.alert.alert-danger(ng-show="errors.name")

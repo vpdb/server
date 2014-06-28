@@ -35,11 +35,22 @@ This will do the following:
 1. Upload the latest code to the server
 2. Clone the repo into a new folder on the server
 3. Run ``npm install`` in that folder
-4. Move the pointer of the current web folder to the new folder
-5. Reload the Node cluster (resulting in zero downtime)
-6. Clean up old deployments if necessary
+4. Build all stylesheets and javascripts and minify them
+5. Check `settings.js` for changes and migrate if necessary
+6. Move the pointer of the current web folder to the new folder
+7. Reload the Node cluster (resulting in zero downtime)
+8. Clean up old deployments if necessary
 
-If anything goes wrong, deployment is aborted.
+If anything goes wrong, deployment is aborted. If there were new `@important` settings, deployment will also be halted
+and a settings file is created that should be updated and will be used for the next deployment.
+
+Note that you can also push other branches to staging, which will result in a different branch being deployed on 
+staging:
+
+	git checkout otherbranch
+	git push staging otherbranch
+	
+This deploys the `otherbranch` branch to staging.
 
 ## Production Deployment
 
@@ -47,7 +58,7 @@ The principle here is the same, but there's still a difference: In production, o
 means if you feel that a commit is ready for production, you need to tag it so it can be deployed into production:
 
 	git tag -a v0.0.2 -m "Released version 0.0.2."
-	git push production master --tags
+	git push production master && git push production master --tags
 
 The version should match the [Semantic Versioning](http://semver.org/) scheme, prefixed with a ``v``. Note that always
 the latest tag is deployed, so if there was previous tag that wasn't deployed, it will be ignored. Also note that

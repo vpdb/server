@@ -1,0 +1,85 @@
+// Lists
+//
+// Styleguide 12
+
+
+// Simple List
+//
+// Usually in a panel
+//
+// Markup:
+// <accordion close-others="false" ng-init="simpleListOpened=true">
+//   <accordion-group is-open="simpleListOpened">
+//     <accordion-heading>Selectable List<i ng-class="{'fa-chevron-circle-up': filterYearOpen, 'fa-chevron-circle-down': !filterYearOpen}" class="fa pull-right space-right"></i></accordion-heading>
+//     <ul class="list-group {$modifiers}">
+//       <li class="a a--lighter list-group-item" ng-class="{ active: one }" ng-click="one=!one">One</li>
+//       <li class="a a--lighter list-group-item" ng-class="{ active: two }" ng-click="two=!two">Two</li>
+//       <li class="a a--lighter list-group-item" ng-class="{ active: three }" ng-click="three=!three">Three</li>
+//     </ul>
+//   </accordion-group>
+// </accordion>
+//
+// .list-group--simple    - Simple list
+//
+// Styleguide 12.1
+.list-group--simple > li
+	border none
+
+
+// Sort Option List
+//
+// A list where you can toggle sort options. Clicking once on an item will
+// highlight it with a default sort direction and following clicks will toggle
+// the sort direction.
+//
+// > The directive that contains the selection logic is called `sort`.
+//
+// Markup:
+// <ul class="{$modifiers}">
+//   <li d="desc" sort="name">Date Added</li>
+//   <li d="asc" sort="year">Original Release</li>
+//   <li d="asc" sort="name" class="asc selected">Name</li>
+//   <li d="desc" sort="rating">Rating</li>
+//   <li d="desc" sort="views">Views</li>
+//   <li d="desc" sort="gamedownloads">Downloads</li>
+// </ul>
+//
+// .list--sort-options    - Sort Option List
+//
+// Styleguide 12.2
+.list--sort-options
+	padding-left 20px
+	> li
+		list-style-type none
+		transition all $animation-shorter
+		cursor pointer
+		&.selected
+			font-weight $font-weight-bold
+			margin-left -20px
+			&:before
+				display inline-block
+				width 20px
+				font-family FontAwesome
+				font-size 20px // icon
+				font-style normal
+				font-weight normal
+				line-height 1
+				-webkit-font-smoothing antialiased
+				-moz-osx-font-smoothing grayscale
+			&.desc:before
+				content '\f107'
+			&.asc:before
+				content '\f106'
+
+// List group within panel-body
+// @todo refactor, this was done for the style guide panel, the game filter panels look different.
+.panel-body > .list-group
+	margin -15px -15px
+	.list-group-item
+		padding 5px 15px
+		border-radius 0
+		border-left-style none
+		border-right-style none
+		border-bottom-style none
+		&:first-child
+			border-top-style none

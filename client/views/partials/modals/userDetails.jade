@@ -1,9 +1,9 @@
-.bg-lightest
+.theme-light
 	.modal-header
-		img.avatar-details(ng-src="{{ user.avatar }}")
-		h3 {{ user.user }}
+		.img.img-avatar.img--avatar-header(img-bg="user.avatar")
+		h1.h--no-margin.h--small {{ user.user }}
 	.modal-body
-		div.ident {{ user.followers | number }} followers, acknowledged {{ user.acknowledged | number }} times
+		div.indent {{ user.followers | number }} followers, acknowledged {{ user.acknowledged | number }} times
 
 		hr
 		h4 Games Authored
@@ -16,4 +16,4 @@
 		button.btn.btn-default.pull-left
 			i.fa.fa-star.space-right
 			| Follow
-		button.btn.btn-primary(ng-click="$close()") Close
+		button.btn.btn--secondary(ng-click="$close()") Close

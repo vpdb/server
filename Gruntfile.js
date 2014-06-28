@@ -8,6 +8,7 @@ module.exports = function(grunt) {
 	var cacheRoot = writeable.cacheRoot;
 	var cssRoot = path.resolve(cacheRoot, 'css/');
 	var jsRoot = path.resolve(cacheRoot, 'js/');
+	var htmlRoot = path.resolve(cacheRoot, 'html/');
 	var cssGlobal = path.resolve(cssRoot, 'global.min.css');
 	var jsGlobal = path.resolve(jsRoot, 'global.min.js');
 
@@ -17,6 +18,9 @@ module.exports = function(grunt) {
 		clean: {
 			build: {
 				src: [ cssRoot, jsRoot ]
+			},
+			styleguide: {
+				src: [ 'styleguide/**/*.html']
 			}
 		},
 
@@ -32,15 +36,36 @@ module.exports = function(grunt) {
 		stylus: {
 			build: {
 				options: {
+					paths: ['styles'],
 					linenos: false,
 					compress: false
 				},
 				files: [{
 					expand: true,
-					cwd: 'client/css',
-					src: [ '*.styl' ],
+					cwd: 'client/styles',
+					src: [ 'vpdb.styl' ],
 					dest: cssRoot,
 					ext: '.css'
+				}]
+			}
+		},
+
+		jade: {
+			errors: {
+				options: {
+					data: {
+						deployment: process.env.APP_NAME || 'staging',
+						environment: process.env.NODE_ENV || 'development',
+						jsFiles: assets.getJS(),
+						cssFiles: assets.getCSS()
+					}
+				},
+				files: [{
+					expand: true,
+					cwd: 'client/views/errors',
+					src: [ '*.jade' ],
+					dest: htmlRoot,
+					ext: '.html'
 				}]
 			}
 		},
@@ -79,8 +104,8 @@ module.exports = function(grunt) {
 				tasks: [ 'git' ]
 			},
 			stylesheets: {
-				files: 'client/css/*.styl',
-				tasks: [ 'stylus' ],
+				files: 'client/styles/**/*.styl',
+				tasks: [ 'stylus', 'kss' ],
 				options: {
 					livereload: true
 				}
@@ -90,6 +115,14 @@ module.exports = function(grunt) {
 				options: {
 					livereload: true
 				}
+			},
+			styleguide: {
+				files: [
+					'client/views/styleguide.jade',
+					'client/views/partials/styleguide-section.jade',
+					'doc/styleguide.md'
+				],
+				tasks: [ 'kss' ]
 			}
 		},
 
@@ -129,7 +162,6 @@ module.exports = function(grunt) {
 				}
 			}
 		}
-
 	};
 
 	grunt.config.init(config);
@@ -138,14 +170,16 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-mkdir');
 	grunt.loadNpmTasks('grunt-contrib-clean');
 	grunt.loadNpmTasks('grunt-contrib-stylus');
+	grunt.loadNpmTasks('grunt-contrib-jade');
 	grunt.loadNpmTasks('grunt-contrib-cssmin');
 	grunt.loadNpmTasks('grunt-contrib-uglify');
 	grunt.loadNpmTasks('grunt-contrib-watch');
 	grunt.loadNpmTasks('grunt-nodemon');
 	grunt.loadNpmTasks('grunt-gitinfo');
 	grunt.loadNpmTasks('grunt-concurrent');
+	grunt.loadTasks('./server/grunt-tasks');
 
-	// define the tasks
+	// tasks
 	grunt.registerTask('gitsave', function() {
 		grunt.task.requires('gitinfo');
 		var gitinfo = grunt.config.get('gitinfo');
@@ -159,11 +193,13 @@ module.exports = function(grunt) {
 		grunt.file.write(gitsave.output, JSON.stringify(gitinfo, null, "\t"));
 		grunt.log.writeln("Gitinfo written to %s.", gitsave.output);
 	});
+
+	grunt.registerTask('kssrebuild', [ 'clean:styleguide', 'kss']);
 	grunt.registerTask('git', [ 'gitinfo', 'gitsave']);
 	grunt.registerTask(
 		'build',
 		'Compiles all of the assets to the cache directory.',
-		[ 'clean', 'mkdir', 'stylus', 'cssmin', 'uglify', 'git' ]
+		[ 'clean:build', 'mkdir', 'stylus', 'kssrebuild', 'cssmin', 'uglify', 'git', 'jade' ]
 	);
-	grunt.registerTask('dev', [ 'concurrent' ]);
+	grunt.registerTask('dev', [ 'build', 'concurrent' ]);
 };

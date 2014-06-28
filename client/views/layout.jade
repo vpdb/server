@@ -14,7 +14,7 @@ html(ng-app="vpdb", auth=JSON.stringify(auth))
 			- each css in cssFiles
 				link(rel="stylesheet", href=css)
 
-	body(ng-controller="AppCtrl" ng-class="themeName")
+	body(ng-controller="AppCtrl", ng-class="themeName")
 		block body
 		if environment == 'production'
 			script(type="text/javascript", src="/js/global.min.js")

@@ -1,37 +1,37 @@
-.row.ng-cloak.row-fullheight.fade-animation(ng-controller="GameController", ng-show="!pageLoading")
+.row.ng-cloak.row--fullheight.fade-animation(ng-controller="GameController", ng-show="!pageLoading")
 
 	// right column
-	.col-sm-3.col-sm-push-9.col-lg-2.col-lg-push-10.col-menu.bg-dark.text-center
-		img.img-logo(ng-src="{{ game.thumbs.logo }}")
+	.col-sm-3.col-sm-push-9.col-lg-2.col-lg-push-10.col--menu.text-center
+		img.img--logo(ng-src="{{ game.thumbs.logo }}")
 
 		.ratingbox(rating-avg="$parent.game.rating", rating-votes="$parent.game.votes", ng-mouseenter="editing=true", ng-mouseleave="editing=false")
-			.ratingbox-left
-				.ratingbox-rating.rating-user(ng-show="editing") {{ hoverRating | rating }}
-				.ratingbox-rating(ng-class="{ 'rating-hide' : editing }") {{ $parent.game.rating | rating }}
-			.ratingbox-right
+			.ratingbox__left-col
+				.ratingbox__rating.rating-user(ng-show="editing") {{ hoverRating | rating }}
+				.ratingbox__rating(ng-class="{ 'rating-hide' : editing }") {{ $parent.game.rating | rating }}
+			.ratingbox__right-col
 				rating.rating-user(ng-show="editing", ng-model="ratingUser", max="10", rating-states="states", on-hover="hoverRating = value", on-leave="hoverRating = ratingUser")
 				rating.rating-avg(ng-hide="editing", ng-model="ratingAvg", max="10", rating-states="states", readonly="true")
 				span.votes {{ $parent.game.votes | number }} vote{{ $parent.game.votes == 1 ? '' : 's' }}
 		hr
 
-		label.label-block(ng-show="game.gametype") {{ game.gametype | gametype }}
+		label.label--block(ng-show="game.gametype") {{ game.gametype | gametype }}
 		label(ng-show="game.units") {{ game.units | number }} units sold
 		hr(ng-show="game.gametype || game.units")
 
-		label.label-name.label-block(ng-show="game.gamedesign") Game Design
+		label.label-name.label--block(ng-show="game.gamedesign") Game Design
 		label.label-value(ng-show="game.gamedesign") {{ game.gamedesign.join(', ') }}
 		hr(ng-show="game.gamedesign")
 
-		label.label-name.label-block(ng-show="game.artdesign") Art Design
+		label.label-name.label--block(ng-show="game.artdesign") Art Design
 		label.label-value(ng-show="game.artdesign")  {{ game.artdesign.join(', ') }}
 		hr(ng-show="game.artdesign")
 
 		label.label-name(ng-show="game.ipdb")
-			a(href="http://www.ipdb.org/machine.cgi?id={{ game.ipdb.no  }}", target="_blank")
+			a.a--lighter(href="http://www.ipdb.org/machine.cgi?id={{ game.ipdb.no  }}", target="_blank")
 				span.space-right
 					strong IPDB
 				i.fa.fa-external-link
-		dl.oneline(ng-show="game.ipdb.rating")
+		dl.dl--oneliner(ng-show="game.ipdb.rating")
 			dt Rating
 			dd(title="{{ game.ipdb.votes | number }} vote{{ game.ipdb.votes == 1 ? '' : 's' }}")
 				strong {{ game.ipdb.rating }}
@@ -45,79 +45,77 @@
 			| Follow
 
 	// left column (main content)
-	.col-sm-9.col-sm-pull-3.col-lg-10.col-lg-pull-2.col-main
-		//user(popover="I appeared on mouse enter!", popover-trigger="mouseenter", popover-placement="bottom") hover me!
-		h1 {{ game.name }}
-		h3.pull-right {{ game.manufacturer }} &middot; {{ game.year }}
+	.col-sm-9.col-sm-pull-3.col-lg-10.col-lg-pull-2.col--main
+		h1.h--primary {{ game.name }}
+		h1.h--small.pull-right {{ game.manufacturer }} &middot; {{ game.year }}
 		hr
-		h2 Releases
+		h1 Releases
 		label(ng-hide="game.releases.length > 0")  No releases for this game available.
 		div(ng-repeat="release in game.releases")
-			.panel.panel-detailed.bg-dark
+			.panel
 				.row.padder-nobottom
 					.col-sm-4.col-md-3
 						a.image-link(href="{{ release.thumbs.playfield[0] }}")
-							.img-wrapper
-								img.img-responsive.img-fade(img-src="{{ release.thumbs.playfield[0] }}")
+							img.img.img-responsive.img--rounded(img-src="{{ release.thumbs.playfield[0] }}")
 						.ratingbox(rating-avg="release.rating", rating-votes="release.votes", ng-mouseenter="editing=true", ng-mouseleave="editing=false")
-							.ratingbox-left
-								.ratingbox-rating.rating-user(ng-show="editing") {{ hoverRating | rating }}
-								.ratingbox-rating(ng-class="{ 'rating-hide' : editing }") {{ release.rating | rating }}
-							.ratingbox-right
+							.ratingbox__left-col
+								.ratingbox__rating.rating-user(ng-show="editing") {{ hoverRating | rating }}
+								.ratingbox__rating(ng-class="{ 'rating-hide' : editing }") {{ release.rating | rating }}
+							.ratingbox__right-col
 								rating.rating-user(ng-show="editing", ng-model="ratingUser", max="10", rating-states="states", on-hover="hoverRating = value", on-leave="hoverRating = ratingUser")
 								rating.rating-avg(ng-hide="editing", ng-model="ratingAvg", max="10", rating-states="states", readonly="true")
 								span.votes {{ release.votes | number }} vote{{ release.votes == 1 ? '' : 's' }}
 					.col-sm-8.col-md-9
-						h1 {{ release.title }}
+						h2.h--primary.h--no-margin {{ release.title }}
 						label
 							i.icon.icon-user
 							span
 								user {{ release.submitter.user }}
 						label
-							i.fa.fa-arrow-circle-up
+							i.fa.fa-arrow-circle-up.space-right
 							time-ago(from-time="{{ release.lastversion.timestamp }}")
 						label
-							i.fa.fa-arrow-circle-down
+							i.fa.fa-arrow-circle-down.space-right
 							span {{ release.lastversion.downloads | number }} downloads
 
-						accordion.accordion-glued(close-others="true")
-							accordion-group(heading="Description", is-open="accordeon.isFirstOpen")
+						accordion.panel-group--accordion(close-others="true")
+							accordion-group.panel--inner(heading="Description", is-open="accordeon.isFirstOpen")
 								div.markdown(markdown="release.description")
 
-							accordion-group(heading="Authors")
-								div.thumbnail.thumbnail-avatar.pull-left(ng-repeat="author in release.authors")
-									div.media-avatar.media-avatar-medium(ng-hide="author.author.avatar")
-									img.media-avatar.media-avatar-medium(ng-show="author.author.avatar", ng-src="{{ author.author.avatar }}")
+							accordion-group.panel--inner(heading="Authors")
+								div.thumbnail.thumbnail--avatar.pull-left(ng-repeat="author in release.authors")
+									.img-avatar.avatar-placeholder(ng-hide="author.author.avatar")
+									.img.img-avatar(ng-show="author.author.avatar", img-bg="author.author.avatar")
 									.caption
-										h1 {{ author.author.user }}
-										label {{ author.roles.join(', ') }}
+										user.center-block {{ author.author.user }}
+										i.center-block {{ author.roles.join(', ') }}
 
-							accordion-group(heading="Acknowledgements")
+							accordion-group.panel--inner(heading="Acknowledgements")
 								div.markdown(markdown="release.acknowledgements")
 
-							accordion-group(heading="Changelog")
+							accordion-group.panel--inner(heading="Changelog")
 								div(ng-repeat="version in release.versions")
 									h4
 										| Version
-										label.label-version {{ version.download.version }}
+										label.label--version {{ version.download.version }}
 										.pull-right
 											time-ago.small.space-right(from-time="{{ version.timestamp }}")
 											button.btn.btn-default.btn-xs.btn-dl(download="version.download", download-info="[ game, release ] | dlRelease", title="{{ version.download.size | bytes }}")
 									hr
 									div.markdown(markdown="version.changes")
 
-							accordion-group(heading="Mods")
+							accordion-group.panel--inner(heading="Mods")
 								p This release hasn't been modded yet.
 								hr
 								button.btn.btn-default(ng-click="requestModPermission()")
 									i.fa.fa-wrench.space-right
 									| Request Mod Permission
 
-							accordion-group(heading="Gallery")
+							accordion-group.panel--inner(heading="Gallery")
 								p No images in the gallery yet.
 				.row.padder-notop
 					.col-sm-4.col-md-3
-						.btn-group.btn-group-flex
+						.btn-group.btn-group--flex
 							button.btn.btn-default.btn-lg.col-xs-11(type="button")
 								i.fa.fa-download.space-right
 								| Media
@@ -139,62 +137,63 @@
 										i.fa.fa-download.space-right
 										| All
 					.col-sm-4.col-md-4
-						label.label-download.pull-right
+						label.label--download.pull-right
 							span.pipe
 								| Version
-								label.label-version {{ release.lastversion.download.version }}
+								label.label--version {{ release.lastversion.download.version }}
 							span.pipe {{ release.lastversion.download.size | bytes }}
 					.col-sm-4.col-md-5
 						button.btn.btn-primary.btn-lg.btn-block.pull-right(download="release.lastversion.download", download-info="[ game, release ] | dlRelease", ng-class="{ 'btn-pin': downloadsPinned }")
 							| Download
 					.clearfix
 
-			.panel.bg-dark(ng-controller="CommentsCtrl")
-				h3 Comments on Release
+			//- Comments
+			.panel.padder(ng-controller="CommentsCtrl")
+				h1.h--no-margin.h--small.space-left-2x Comments on Release
 				label.padder-left(ng-show="!release.comments || release.comments.length == 0") No comments yet.
 				.media(ng-repeat="comment in release.comments", ng-controller="CommentCtrl")
-					div.media-object.media-avatar.media-avatar-medium.media-avatar-comment.pull-left(ng-hide="comment.author.avatar")
-					img.media-object.media-avatar.media-avatar-medium.media-avatar-comment.pull-left(ng-show="comment.author.avatar", ng-src="{{ comment.author.avatar }}")
+					.img-avatar.avatar-placeholder.pull-left(ng-hide="comment.author.avatar")
+					.img.img-avatar.pull-left(ng-show="comment.author.avatar", img-bg="comment.author.avatar")
 					.media-body
-						.panel.panel-small.bg-lighter
+						.panel.panel--inner
 							.panel-triangle
-							.panel-header
+							.panel-heading
 								label
 								strong {{ comment.author.user }}
 								| &nbsp;commented
 								time-ago(from-time="{{ comment.timestamp }}")
-								.pull-right
-									i.fa.fa-pencil(ng-click="editComment()")
-									i.fa.fa-times-circle(ng-click="deleteComment()")
-
-							.panel-content
+								.pull-right(ng-hide="editing")
+									i.a.fa.fa-pencil.space-right(ng-click="editComment()")
+									i.a.fa.fa-times-circle(ng-click="deleteComment()")
+							.panel-body
 								div.markdown(ng-hide="editing", markdown="comment.message")
-								textarea.msd-elastic(ng-show="editing", placeholder="Update comment", ng-model="updatedComment")
+								textarea.textarea--full.msd-elastic(ng-show="editing", placeholder="Update comment", ng-model="updatedComment")
 							.panel-footer(ng-show="editing")
 								button.btn.btn-default.pull-left(ng-click="cancelEdit()") Cancel
 								button.btn.btn-default.pull-right(ng-click="saveComment()") Update Comment
 								.clearfix
 
 				.media
-					.media-avatar-medium.media-avatar.media-avatar-comment.pull-left
+					.img-avatar.avatar-placeholder.pull-left
 					.media-body
-						tabset.tabset.tabset-newcomment
-							label.label-small.pull-right Comments are parsed with <a href="http://daringfireball.net/projects/markdown/syntax" target="_blank">Markdown</a>.
+						tabset
+							label.label--small.pull-right Comments are parsed with <a href="http://daringfireball.net/projects/markdown/syntax" target="_blank">Markdown</a>.
 							tab
 								tab-heading
 									i.fa.fa-edit(title="Write")
 									.panel-triangle
-								textarea.msd-elastic(placeholder="Leave a comment", ng-model="$parent.newComment")
+								textarea.textarea--full.msd-elastic(placeholder="Leave a comment", ng-model="$parent.newComment")
 							tab
 								tab-heading
 									i.fa.fa-eye(title="Preview")
 								div.markdown(markdown="$parent.newComment")
-								label.label-message(ng-show="!newComment || newComment.length == 0") Nothing to preview.
+								label.tab__label(ng-show="!newComment || newComment.length == 0") Nothing to preview.
 
-				button.btn.btn-default.btn-comment.pull-right(ng-click="addComment()") Comment
+
+				button.btn.btn-default.padder-top.pull-right(ng-click="addComment()") Comment
 				.clearfix
 
-		h2 ROMs
+		h1 ROMs
 		label(ng-hide="game.roms.length > 0")  No ROMs available.
 		table.table.table-striped(ng-show="game.roms.length > 0")
 			thead
@@ -218,17 +217,17 @@
 					td.nostripe.td-dlbtn
 						button.btn.btn-primary.btn-xs.btn-dl(download="rom.download", download-info="[ game, rom ] | dlRom")
 
-		h2 Backglasses
+		h1 Backglasses
 		label(ng-hide="game.backglasses.length > 0")  No backglasses available.
 		.row(ng-show="game.backglasses.length > 0")
 			.col-md-4.col-sm-6.col-xs-12.fade-animation.padder-bottom-2x(ng-repeat="backglass in game.backglasses")
 				.flipbox.flipbox-backglass
-					.panel.bg-dark.panel-backglass.panel-front
-						h3
+					.panel.panel--backglass.flipbox-front.text-center
+						h1.h--smaller
 							i.fa.fa-picture-o.space-right
 							| Direct B2S
 						hr
-						.oneline
+						.oneliner
 							i.icon.icon-user
 							| &nbsp;&nbsp; {{ backglass.author.user }}
 						hr
@@ -248,13 +247,13 @@
 							.third
 								span {{ backglass.download.size | bytes }}
 
-					.panel.bg-dark.panel-backglass.panel-back.img.img-fullspan.img-fade(img-bg="backglass.thumb")
-						button.btn.btn-primary.btn-lg(download="backglass.download", download-info="[ game, backglass ] | dlBackglass", ng-click="$event.stopPropagation()")
+					.panel.panel--backglass.flipbox-back.img.img-fullspan(img-bg="backglass.thumb")
+						button.btn.btn-primary.btn-lg.btn--sticky-bottom(download="backglass.download", download-info="[ game, backglass ] | dlBackglass", ng-click="$event.stopPropagation()")
 								| Download
 					.clearfix
 
 
-		h2 Media
+		h1 Media
 			button(ng-show="game.media.length > 0").btn.btn-primary.pull-right
 				i.fa.fa-download.space-right
 				| Download Pack
@@ -262,24 +261,24 @@
 		.row(ng-show="game.media.length > 0")
 			.col-md-4.col-sm-6.col-xs-12.fade-animation.padder-bottom-2x(ng-repeat="item in game.media")
 				.flipbox.flipbox-backglass
-					.panel.bg-dark.panel-backglass.panel-front
-						h3
+					.panel.panel--backglass.flipbox-front.text-center
+						h1.h--smaller
 							i.fa.space-right(ng-class="{ 'fa-picture-o': item.format == 'image', 'fa-video-camera': item.format == 'video', 'fa-info-circle': item.type == 'instructioncard' }")
 							| {{ item.type | mediatype }}
 						hr
-						.oneline
+						.oneliner
 							i.icon.icon-user
 							| &nbsp;&nbsp; {{ item.author.user }}
 						hr
-						.oneline(ng-show="item.width && item.height")
+						.oneliner(ng-show="item.width && item.height")
 							| {{ item.width }} &times; {{ item.height }}
 						hr(ng-show="item.width && item.height")
 
-						.oneline(ng-show="item.pages")
+						.oneliner(ng-show="item.pages")
 							| {{ item.pages.length }} pages
 						hr(ng-show="item.pages")
 
-						.oneline(ng-show="item.duration")
+						.oneliner(ng-show="item.duration")
 							| {{ item.duration }} seconds
 						hr(ng-show="item.duration")
 
@@ -298,13 +297,13 @@
 							.third
 								span {{ item.download.size | bytes }}
 
-					.panel.bg-dark.panel-backglass.panel-back.img.img-fullspan.img-fade(img-bg="item.thumb")
-						button.btn.btn-primary.btn-lg(download="item.download", download-info="[ game, item ] | dlMedia", ng-click="$event.stopPropagation()")
+					.panel.panel--backglass.flipbox-back.img.img--rounded(img-bg="item.thumb")
+						button.btn.btn-primary.btn-lg.btn--sticky-bottom(download="item.download", download-info="[ game, item ] | dlMedia", ng-click="$event.stopPropagation()")
 							| Download
 					.clearfix
 
 
-		h2 Alternative Media
+		h1 Alternative Media
 		label(ng-hide="game.secondarymedia.length > 0")  No alternative media available.
 
 		p

@@ -72,7 +72,8 @@ ctrl.controller('AppCtrl', function($scope, $rootScope, $location, $modal, UserR
 	$rootScope.login = function() {
 		$modal.open({
 			templateUrl: 'partials/modals/auth',
-			controller: 'LoginCtrl'
+			controller: 'LoginCtrl',
+            windowClass: 'theme-light'
 		});
 	};
 
@@ -217,5 +218,21 @@ ctrl.controller('UserDetailCtrl', function($scope, $http, username) {
 ctrl.controller('ErrorModalCtrl', function($scope, errorTitle, errorMessage) {
 	$scope.errorTitle = errorTitle;
 	$scope.errorMessage = errorMessage;
+});
+
+ctrl.controller('StyleguideCtrl', function($scope, $location, $rootScope) {
+	if (/(\d+)\.\d+$/.test($location.path())) {
+		$scope.section = $location.path().match(/(\d+)\.\d+$/)[1];
+	}
+	$rootScope.$on('$routeChangeSuccess', function(event, route) {
+		$scope.subsection = route.params.section;
+	});
+	$scope.scrollTo = function(id) {
+		var old = $location.hash();
+		$location.hash(id);
+		$anchorScroll();
+		//reset to old to keep any additional routing logic from kicking in
+		$location.hash(old);
+	};
 });
 

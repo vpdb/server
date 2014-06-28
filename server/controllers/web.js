@@ -1,4 +1,6 @@
 var _ = require('underscore');
+var fs = require('fs');
+var path = require('path');
 var logger = require('winston');
 
 var acl = require('../acl');
@@ -14,12 +16,8 @@ var params = function(req, done) {
 		deployment: process.env.APP_NAME || 'staging',
 		environment: process.env.NODE_ENV || 'development',
 		gitinfo: gitinfo,
-		jsFiles: _.map(assets.js, function(js) {
-			return '/' + js;
-		}),
-		cssFiles: _.map(_.union(assets.css, assets.cssCache), function(css) {
-			return '/css/' + css;
-		}),
+		jsFiles: assets.getJS(),
+		cssFiles: assets.getCSS(),
 		req: req,
 		authStrategies: {
 			local: true,
@@ -101,6 +99,14 @@ exports.index = function(resource, permission) {
 	}, function(req, res) {
 		showError(403, req, res);
 	});
+};
+
+exports.styleguide = function() {
+	return function(req, res) {
+		res.writeHead(200);
+		var stream = fs.createReadStream(path.resolve(__dirname, '../../styleguide/index.html'));
+		stream.pipe(res);
+	}
 };
 
 exports.partials = function(subfolder, resource, permission) {

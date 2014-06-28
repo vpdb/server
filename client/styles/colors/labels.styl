@@ -1,0 +1,44 @@
+//
+// Dark theme
+// --------------------------------------------------
+.theme-dark
+
+	// Pipe color
+	label span.pipe:after
+		color $color-light
+
+	// Name / value labels (in sidebar)
+	.label--prop-name a
+		color $color-lighter
+		&:hover
+			color $color-lightest
+
+	// Version and code labels
+	.label--version, .label--code
+		background-color $color-lighter
+		color black
+
+//
+// Light theme
+// --------------------------------------------------
+.theme-light
+
+	// "Form" label is lightish
+	.form-group label
+		color $color-lightish-inv
+
+	// Pipe color
+	label span.pipe:after
+		color $color-light-inv
+
+	// Name / value labels (in sidebar)
+	.label--prop-name a
+		color $color-lighter-inv
+		&:hover
+			color $color-lightest-inv
+
+	// Version and code labels
+	.label--version, .label--code
+		background-color $color-lighter-inv
+		color white
+

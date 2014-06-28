@@ -1,0 +1,54 @@
+//
+// Dark theme
+// --------------------------------------------------
+.theme-dark
+
+	// Items can be selected along with a sort order toggle
+	.list--sort-options > li
+		&:hover
+			color $color-lightest
+		&.selected
+			color $color-primary
+			&:hover
+				color $color-primary-light
+
+
+	// List group within panel-body
+	.list-group > li
+		background-color transparent
+		a.active
+			color $color-primary
+
+	// Active and non-active colors
+	.list-group-item.active
+		color $color-primary
+		background-color $color-darker-inv
+		&:hover
+			color $color-lighter
+			background-color $color-darker-inv
+
+
+//
+// Light theme
+// --------------------------------------------------
+.theme-light
+
+	// Items can be selected along with a sort order toggle
+	.list--sort-options > li
+		&:hover
+			color $color-lightest-inv
+		&.selected
+			color $color-primary-black
+			&:hover
+				color $color-primary
+
+	.list-group > li
+		background-color transparent
+
+	// Active and non-active colors
+	.list-group-item.active
+		color $color-primary-black
+		background-color $color-darkest-inv
+		&:hover
+			color $color-lighter-inv
+			background-color $color-darkest-inv

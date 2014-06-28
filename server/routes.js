@@ -11,7 +11,7 @@ module.exports = function(app, config, passport) {
 	app.get('/game/*', web.index());
 	app.get('/games/add', web.index('games', 'edit'));
 	app.get('/admin/users', web.index('users', 'list'));
-	app.get('/styleguide', web.index());
+	app.get('/styleguide/sections/*', web.styleguide());
 
 	// serve index and view partials
 	app.get('/partials/:name', web.partials());

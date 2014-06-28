@@ -1,0 +1,61 @@
+// Dropdowns
+//
+// Styleguide 8
+
+
+// Navbar
+//
+// The dropdowns from the navbar
+//
+// Markup:
+// <nav class="navbar navbar-default">
+//   <div class="container">
+//       <ul class="nav navbar-nav">
+//         <li class="dropdown" on-toggle="toggled(open)">
+//           <a class="dropdown-toggle">Menu <i class="fa fa-angle-down space-left"></i></a>
+//           <ul class="{$modifiers}">
+//             <li>
+//               <a ng-click="alert('clicked!')">Item</a>
+//             </li>
+//           </li>
+//         </ul>
+//       </ul>
+//   </div>
+// </nav>
+//
+// .dropdown-menu          - Dropdown menu
+//
+// Styleguide 8.1
+.navbar-nav > li .dropdown-menu
+	padding 5px
+	margin-top 1px
+	border-left solid 1px
+	border-right solid 1px
+	border-bottom solid 1px
+
+// semi-transparent layer for dropdown
+.dropdown-menu
+	border-radius $border-radius-small
+	&:after
+		border-radius $border-radius-small
+		content ""
+		height 100%
+		left 0
+		position absolute
+		top 0
+		width 100%
+		z-index -1
+	& > li
+		// Item overlap fix
+		& > a
+			padding 5px 15px
+			margin-top 15px
+		&:first-child > a
+			margin-top 0px
+
+
+// Typography
+.dropdown-menu
+	font-size $font-size-small
+	> li > a
+		font-weight $font-weight-normal

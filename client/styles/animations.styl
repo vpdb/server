@@ -1,0 +1,126 @@
+//
+// Dropdown menus
+// --------------------------------------------------
+
+// Loading spinner
+.spinner
+	margin 6em auto
+	font-size 10px
+	position relative
+	text-indent -9999em
+	border-top 1.1em solid rgba(255, 255, 255, 0.2)
+	border-right 1.1em solid rgba(255, 255, 255, 0.2)
+	border-bottom 1.1em solid rgba(255, 255, 255, 0.2)
+	border-left 1.1em solid #ffffff
+	animation load8 2s infinite linear
+	&, &:after
+		border-radius: 50%;
+		width: 10em;
+		height: 10em;
+.spinner-overlay
+	position absolute
+	padding-top 200px
+	top 0
+	left 0
+	width 100%
+	height 100%
+	z-index 10
+	background-color rgba(0,0,0,0.5)
+	transition all 1s
+@keyframes load8
+	0%
+		transform: rotate(0deg)
+	100%
+		transform: rotate(360deg);
+
+
+// Fade animation
+.fade-animation
+	opacity 1
+	&.ng-enter, &.ng-leave, &.ng-move, &.ng-hide-add, &.ng-hide-remove
+		transition 0.2s ease all
+
+	&.ng-hide-add, &.ng-hide-remove
+		display block!important
+	&.ng-hide
+		opacity 0
+
+	&.ng-enter
+		opacity 0
+		&.ng-enter-active
+			opacity 1
+			background-color rgba(0,0,0,0.01)
+
+	&.ng-leave
+		opacity 1
+		&.ng-leave-active
+			opacity 0
+
+	&.ng-move
+		opacity 0.5
+
+		&.ng-move-active
+			opacity 1
+
+
+// to be tweaked..
+.fade2-animation
+	opacity 1
+	&.ng-enter, &.ng-leave
+		transition 0.2s ease all
+
+	&.ng-enter
+		opacity 0
+		&.ng-enter-active
+			opacity 1
+			background-color rgba(0,0,0,0.01)
+
+	&.ng-leave
+		opacity 1
+		&.ng-leave-active
+			opacity 0
+
+
+.mfp-fade
+	&.mfp-bg
+		opacity 0
+		transition all 0.3s ease-out
+
+	/* overlay animate in */
+	&.mfp-bg.mfp-ready
+		opacity 0.8
+
+	/* overlay animate out */
+	&.mfp-bg.mfp-removing
+		opacity 0
+
+	/* content at start */
+	&.mfp-wrap
+		.mfp-content
+			opacity 0
+			transition all 0.3s ease-out
+
+		/* content animate it */
+		&.mfp-ready .mfp-content
+			opacity 1
+
+		/* content animate out */
+		&.mfp-removing .mfp-content
+			opacity 0
+
+
+.mfp-with-zoom
+	.mfp-container, &.mfp-bg
+		opacity 0
+		backface-visibility hidden
+		/* ideally, transition speed should match zoom duration */
+		transition all 0.3s ease-out
+
+	&.mfp-ready .mfp-container
+		opacity 1
+
+	&.mfp-ready.mfp-bg
+		opacity 0.8
+
+	&.mfp-removing .mfp-container, &.mfp-removing.mfp-bg
+		opacity 0

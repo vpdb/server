@@ -1,0 +1,128 @@
+// Buttons
+//
+// Styleguide 6
+
+
+// Single Buttons
+//
+// A majority of buttons in the site are built from the same base class.
+//
+// Markup:
+// <a href="#" class="btn {$modifiers}">Link Button</a>
+// <button class="btn {$modifiers}">Button Element</button>
+// <input type="btn" class="btn {$modifiers}" value="input[type='button']"/>
+//
+// .btn-default         - Default button
+// .btn-primary         - Primary button
+// .btn-lg              - Large button
+// .btn-xs              - Extra small button
+// :hover               - Highlight the button when hovered.
+// :disabled            - Make the button change appearance to reflect it being disabled.
+// :active              - "Press" the button down when clicked.
+//
+// Styleguide 6.1
+.btn
+
+	// border and padding
+	padding 1px 20px 0px
+	border none
+
+	// typography
+	font-family $font-header
+	font-size $font-size-smaller-alt
+	font-weight $font-weight-normal-alt
+	text-transform uppercase
+
+	// animation & position
+	transition all $animation-short
+	position relative
+
+	// pin icon
+	> i.icon-pin-on, > i.icon-pin-off
+		font-size 24px // icon
+		line-height 12px
+
+	// get rid of that dotted box..
+	&:focus, &:active:focus
+		outline none
+
+
+// Button Sizes
+// --------------------------------------------------
+
+.btn-lg
+
+	// border and padding
+	padding 2px 30px 1px
+	border-radius $border-radius-large
+
+	// typography
+	font-size $font-size-small-alt // -alt
+	font-weight $font-weight-normal-alt
+
+	// icon tweaks
+	.fa
+		font-size 20px // icon
+	> i.icon-pin-on, > i.icon-pin-off
+		font-size 32px // icon
+		line-height 12px
+	> i.fa-github
+		font-size 27px // icon
+	> i.icon-gameex
+		font-size 27px // icon
+		line-height 29px
+		vertical-align middle
+
+.btn-xs
+
+	// border and padding
+	padding 2px 10px 0px
+	line-height 1
+
+	// icon tweaks
+	.fa
+		font-size 20px // icon
+	&.btn-default .fa
+		font-size 18px // icon
+
+// Buttton with fixed medium width
+.btn--width-med
+	width 124px
+
+
+// Groups
+//
+// Use this if you want to span a `btn-group` over a 100% width.
+//
+// Markup:
+// <div class="btn-group {$modifiers}">
+//   <button class="btn btn-default btn-lg col-xs-11" type="button">Span me!</button>
+//   <button class="btn btn-default btn-lg col-xs-1" type="button">
+//     <i class="fa fa-angle-down"></i>
+//   </button>
+// </div>
+//
+// .btn-group--flex         - Flexible Group
+//
+// Styleguide 6.2
+.btn-group--flex
+	display inline-flex
+	width 100%
+
+
+.btn--sticky-bottom
+	width 100%
+	bottom -1px
+	position absolute
+	border-bottom-radius($border-radius-small)
+
+// Theme toggle button on style guide
+.btn--styleguide-toggle-theme
+	position fixed
+	bottom 15px
+	right 15px
+
+// Margin fixes
+.btn-group
+	.btn + .btn, .btn + .btn-group, .btn-group + .btn, .btn-group + .btn-group
+		margin-left 2px

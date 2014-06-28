@@ -1,0 +1,68 @@
+// Media Objects
+//
+// Styleguide 14
+
+
+// Add padding to body instead of media
+.media-body
+	padding-left 15px
+.media > .pull-left
+	margin-right 0
+
+
+// News Flow
+//
+// List that displays user events along with the avatar of the user. Contains three lines.
+//
+// Markup:
+// <div class="media {$modifiers}" ng-repeat="i in [1, 2, 3]">
+//   <div class="img img-avatar img-avatar--lg pull-left" img-bg="/images/styleguide_square.jpg"></div>
+//     <div class="media-body">
+//       <label class="label--block">Time</label>
+//       <label class="label--block"><i class="fa fa-comment space-right"></i>First Line</label>
+//       <label class="label--block">Second Line</label>
+//     </div>
+//     <hr class="" ng-hide="$last">
+// </div>
+//
+// .media--news          - Icons
+//
+// Styleguide 14.1
+.media--news
+	hr
+		margin-top 15px
+		margin-left 15px
+		margin-bottom 0
+	.img
+		margin-left 30px
+	.media-body
+		> label
+			margin-left 15px
+			a
+				font-weight $font-weight-bold
+
+// Mini Panels
+//
+// Mini media panels in the side bar with two lines.
+//
+// Markup:
+// <div class="media {$modifiers}" ng-class="{ last: $last }" ng-repeat="i in [1, 2, 3]">
+//    <div class="img img--ar-square img--sm pull-left" img-bg="/images/styleguide_square.jpg"></div>
+//    <div class="media-body">
+//      <h6 class="h--no-margin h--lighter media-heading">First Line</h6>
+//      <span>Second Line</span>
+//   </div>
+// </div>
+//
+// .media--mini          - Icons
+//
+// Styleguide 14.2
+.media--mini
+	margin-top 10px
+	padding-bottom 5px
+	&.last
+		border none !important
+	h6
+		margin-top -5px
+	.media-body
+		padding-left 10px

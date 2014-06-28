@@ -1,7 +1,7 @@
-.row.row-fullheight(ng-controller="GameListController")
-	.col-sm-9.col-main
-		h1 all games
-		ul.viewtype-panel
+.row.row--fullheight(ng-controller="GameListController")
+	.col-sm-9.col--main
+		h1.h--primary All Games
+		ul.nav-icons
 			li(ng-class="{ active: viewtype == 'compact' }")
 				i.fa.fa-th-large(ng-click="switchview('compact')")
 			li(ng-class="{ active: viewtype == 'extended' }")
@@ -14,20 +14,20 @@
 				label(ng-show="(games | filter:query | decade:filterDecades | manufacturer:filterManufacturer).length == 0") No results found for query <strong>{{ query }}</strong>.
 				.fade2-animation(ng-include="template")
 
-	.col-sm-3.col-menu.bg-dark
-		h2 filter
+	.col-sm-3.col--menu
+		h1 Filter
 		hr
 
 		// search box
 		.input-group
 			span.input-group-addon
 				i.fa.fa-search
-			input.form-control.input-search(ng-model="query", type="text", placeholder="Search")
+			input.form-control.input--search(ng-model="query", type="text", placeholder="Search")
 
 		accordion(close-others="false")
 
 			// year filter
-			accordion-group(is-open="filterYearOpen")
+			accordion-group.panel--inner(is-open="filterYearOpen")
 				accordion-heading
 					| Year
 					i.fa.pull-right(ng-class="{'fa-chevron-circle-up': filterYearOpen, 'fa-chevron-circle-down': !filterYearOpen}")
@@ -42,7 +42,7 @@
 					li.list-group-item(filter-decade="2010") 2010s
 
 			// manufacturer filter
-			accordion-group(is-open="filterManufacturerOpen")
+			accordion-group.panel--inner(is-open="filterManufacturerOpen")
 				accordion-heading
 					| Manufacturer
 					i.fa.pull-right(ng-class="{'fa-chevron-circle-up': filterManufacturerOpen, 'fa-chevron-circle-down': !filterManufacturerOpen}")
@@ -55,16 +55,16 @@
 					li.list-group-item(filter-manufacturer="williams") Williams
 
 			// author filter
-			accordion-group(is-open="filterAuthorOpen")
+			accordion-group.panel--inner(is-open="filterAuthorOpen")
 				accordion-heading
 					| Author
 					i.fa.pull-right(ng-class="{'fa-chevron-circle-up': filterAuthorOpen, 'fa-chevron-circle-down': !filterAuthorOpen}")
 
 				p here are the authors
 
-		h2 sort
+		h1 Sort
 		hr
-		ul.selectable
+		ul.list--sort-options
 			li(sort="name", d="desc") Date Added
 			li(sort="year", d="asc") Original Release
 			li.selected.asc(sort="name", d="asc") Name
@@ -73,7 +73,7 @@
 			li(sort="gamedownloads", d="desc") Downloads
 
 		span(ng-show="hasPermission('games/edit')")
-			h2 content
+			h1 Content
 			hr
 			a.btn.btn-primary(href="/games/add")
 				i.fa.fa-plus-circle.space-right

@@ -1,0 +1,173 @@
+// Forms
+//
+// Styleguide 5
+
+
+// Text Input
+//
+// Those are basically all `<input>`, `<textarea>` and `<select>` elements
+//
+// Markup:
+// <input type="text" placeholder="Type something!" class="{$modifiers}"/><br>
+// <textarea class="{$modifiers}">Text goes here</textarea>
+//
+// .form-control          - Plain text boxes
+// .form-control.input-lg - Large input boxes
+//
+// Styleguide 5.1
+.form-control
+	border-radius $border-radius-small
+	border none
+	box-shadow none
+	font-size $font-size-normal
+	&:focus
+		box-shadow none
+// Large input box
+.input-lg
+	border-radius $border-radius-large
+
+
+// Search Box
+//
+// Search box gets special treatment with rounded corners.
+//
+// Markup:
+// <div class="input-group">
+//   <span class="input-group-addon">
+//     <i class="fa fa-search"></i>
+//   </span>
+//   <input class="form-control {$modifiers}" type="text" placeholder="Search">
+// </div>
+//
+// .input--search - Search Box with addon icon
+//
+// Styleguide 5.1.1
+.input--search
+	height 28px
+	padding-left 3px
+	border-radius 14px
+	border none
+// Addon
+.input-group-addon
+	padding-right 3px
+	border-radius 14px
+	border none
+	// fix search icon position
+	i.fa-search
+		margin-left -2px
+		margin-top 2px
+
+
+// Text Area
+//
+// Different text area stylings
+//
+// Markup:
+// <textarea class="form-control {$modifiers}">Text goes here</textarea>
+//
+// .textarea--full - Full width
+//
+// Styleguide 5.1.2
+textarea
+	border none
+.textarea--full
+	width 100%
+	height 80px
+	padding 5px
+	margin 0
+	resize none
+	border none
+	border-radius $border-radius-small
+
+
+// Radio Buttons
+//
+// Huge custom buttons
+//
+// Markup:
+// <div class="radio-inline {$modifiers}">
+//   <label>
+//     <input type="radio" name="yesorno" checked>
+//     <span>Yeah</span>
+//   </label>
+// </div>
+// <div class="radio-inline {$modifiers}">
+//   <label>
+//     <input type="radio" name="yesorno">
+//     <span>Nope</span>
+//   </label>
+// </div>
+//
+// .radio--lg - Large buttons
+//
+// Styleguide 5.2
+.radio--lg
+	cursor default
+	input[type=radio]
+		display none
+		cursor default
+		& + span
+			cursor pointer
+			display block
+			font-weight $font-weight-bold
+			font-size $font-size-large
+			text-transform uppercase
+			margin-left 20px
+			transition color $animation-short
+			&:before
+				cursor pointer
+				position absolute
+				margin-left -31px
+				margin-top -2px
+				font-size 36px // icon
+				font-family icons
+				font-style normal
+				font-weight normal
+				line-height 1
+				-webkit-font-smoothing antialiased
+				-moz-osx-font-smoothing grayscale
+				transition color $animation-short
+				content "\e617" /* Radio Unchecked */
+		&:checked + span
+			cursor default
+			&::before
+				cursor default
+				content "\e618" /* Radio Checked */
+
+
+// Errors
+//
+// For errors, wrap your element into a `.form-group` element and add the error class.
+//
+// Styleguide 5.3
+
+
+// Erroneous Text Input
+//
+// When validations fail for a text input
+//
+// Markup:
+// <form class="form-horizontal">
+//   <div class="{$modifiers}">
+//     <label class="col-sm-3 control-label">Display Name</label>
+//     <div class="col-sm-7">
+//       <input class="form-control" type="text"/>
+//     </div>
+//   </div>
+// </form>
+//
+// .form-group.error - Erroneous field
+//
+// Styleguide 5.3.1
+.form-group.error .form-control
+	border-style solid
+	border-width 1px
+
+
+// Move this to input-groups.styl if it gets bigger
+.input-group
+	margin-bottom 15px
+
+// Normal line breaks for descriptions after label
+.checkbox > label div
+	white-space normal

@@ -4,8 +4,8 @@
 Live demo [here](http://vpdb.ch/).
 
 ## What is it?
-A web application that makes downloading Visual Pinball tables as effective and pleasant as possible.
-In a nutshell, it is:
+A free and open source web application that makes downloading Visual Pinball tables as effective and pleasant as 
+possible. In a nutshell, it is:
 
 * Well-structured
 * Fast
@@ -15,9 +15,9 @@ In a nutshell, it is:
 ## Why is it better than what we have?
 
 Contrarily to VPF and VPU that use a bulletin board solution with a downloads module, this was designed from scratch
-specifically for its purpose. It was also designed with the assumption that in VP10, there won't be any distinction
-between table orientation anymore (FS vs Desktop). Additionally, night/day mods are assumed to become parameters
-detached from the individual tables as well.
+specifically for its purpose. That allows us to properly structure the data, make use of clever search algorithms
+and pull interesting stats out of user interactions. Also we enjoy complete freedom over the UI, allowing us to 
+streamline the user experience to the max.
 
 ### Data Structure
 
@@ -40,16 +40,16 @@ Browsing should be as effective as possible. For example, when typing a search q
 and a [fuzzy search](http://en.wikipedia.org/wiki/Approximate_string_matching) algorithm is used so you'll find
 *The Addams Family* even when typing *Adams Family*.
 
-To make it even faster, network traffic is kept to a minimum. HTML templates are only loaded once and data is transferred
-separately and asynchronously.
+To make it even faster, network traffic is kept to a minimum. HTML templates are only loaded once and data is 
+transferred separately and asynchronously. Of course everything is minified and compressed for minimal transfer size.
 
 ### User Interface
 
-The low-contrast dark color scheme fatigues the reader's eye as little as possible. When browsing tables, we make
-prominent use of the available media, while giving the user the possibility to switch to less media-oriented views as
-well.
+The low-contrast dark color scheme is easy on the reader's eye and makes it comfortable to read. When browsing tables, 
+we make prominent use of the available media, while giving the user the possibility to switch to less media-oriented 
+views as well.
 
-The interface is simple, clear and to the point. Downloads start with one click. There are subtle animations for most
+The interface is simple, clean and to the point. Downloads start with one click. There are subtle animations for most
 actions or view transitions. Browsing should be a smooth and pleasing experience.
 
 ### API
@@ -60,7 +60,9 @@ table updates and media directly from the API in an automated way.
 
 ## Technology Stack
 
-Server runs on Node.js with Express, Stylus and Jade. Client uses AngularJS with CSS based on Twitter Bootstrap.
+Server runs on [Node.js](http://nodejs.org/) with [Express](http://expressjs.com/), [Stylus](http://learnboost.github.io/stylus/)
+and [Jade](http://jade-lang.com/). Client uses [AngularJS](https://angularjs.org/) with CSS based on 
+[Twitter Bootstrap](http://getbootstrap.com/).
 
 ## Installation
 
@@ -84,7 +86,7 @@ Open your browser and connect to ``http://localhost:3000/``.
 
 For CSS live regeneration while developing, open shell and launch:
 
-	grunt watch
+	grunt dev
 
 If you're deploying to a remote service like OpenShift that doesn't have GraphicsMagick installed, SSH into your app
 and type:
@@ -109,27 +111,21 @@ works. Table data is only available in **Monster Bash** and some in **Attack fro
 there to demonstrate how lists are displayed. Also, not all refered users are in the database. If you click on a user
 and the dialog box is empty, try another one.
 
-I will soon gather some feedback and if there's interest, this could be the base of the next generation download
-platform for VP tables.
+Work has however started on a serious version that uses a MongoDB backend. See [changelog](CHANGELOG.md) for more 
+details. There will be a beta version deployed at some point where users can start testing.
 
 ## TODO
 
-Stuff to add before I seriously think about going further:
+Among other things:
 
-* Tagging
-* Review mod relations
-
-Stuff to add after having decided to go further:
-
-* MongoDB integration
-* User authentication
 * File up/downloads
 * Upload/edit forms in UI
-* Counters/quota system (TBD)
+* Counters/quota system
 
 ## Credits
 
-To Mukuste. He gave the community such a nice momentum and I thought I could add a little bit to it.
+* To Mukuste. He gave the community such a nice momentum and I thought I could add a little bit to it.
+* To Tom for his support of this project and a certainly awesome PinballX integration!
 
 ## License
 

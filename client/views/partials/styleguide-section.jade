@@ -1,0 +1,21 @@
+article#kss-content
+
+	- for section in sections
+		section(id="#{section.reference}")
+			h1 #{section.header}
+			hr
+		div!=section.description
+
+		- for modifier in section.modifiers
+			h1.code=modifier.className
+			div!=modifier.description
+			div!=modifier.markup
+			tabset
+				tab
+					tab-heading HTML
+					pre!=modifier.markupHighlighted
+				tab
+					tab-heading Jade
+					pre!=modifier.jade
+
+	//pre=JSON.stringify(sections, null, "  ")

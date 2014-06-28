@@ -1,0 +1,102 @@
+// Scaffolding
+//
+// Global styles that don't fit in any component or category.
+//
+// Styleguide 1
+
+
+// Links
+//
+// When not using the `<a>` element, add the `.a` class to your element so the
+// link behaves accordingly.
+//
+// .             - Default link
+// .a--lighter   - Link in lighter color
+//
+// Markup:
+// <a href="#" class="{$modifiers}">Link in &lt;a&gt;</a>
+// <span class="a {$modifiers}" ng-click="alert('you clicked!')">Link in &lt;span&gt;</span>
+//
+// Styleguide 1.1
+a, .a
+	cursor pointer
+	transition all $animation-short
+	&:hover
+		text-decoration none
+	&:focus
+		text-decoration none
+		outline none
+
+// Divider
+hr
+	margin-top 10px
+	border-width 2px
+.hr--margin-small
+	margin-bottom 10px
+
+// Definition Lists
+//
+// .dl--oneliner               - Horizontal list with caps for the term
+// .dl--centered.dl-horizontal - Horizontal list with 50% width for term/definition respectively
+//
+// Markup:
+// <dl class="{$modifiers}">
+//   <dt>Rating</dt>
+//   <dd>8.4</dd>
+//   <dt>Top 300</dt>
+//   <dd>Rank 3</dd>
+// </dl>
+//
+// Styleguide 1.2
+.dl--oneliner
+	width 100%
+	dt
+		float left
+		font-weight $font-weight-normal
+		text-transform uppercase
+	dd
+		text-align right
+.dl--centered
+	margin-bottom 10px
+	&:last-child
+		margin-bottom 0
+	> dt
+		width 49%
+	> dd
+		margin-left 51%
+
+// Inline code
+code
+	font-size $font-size-code
+
+// TODO change to footer element
+// Footer
+section.footer
+	text-align center
+	margin-top -20px
+	margin-bottom 20px
+	font-weight
+	i.fa
+		margin-right 10px
+		font-size 20px // icon
+	a
+		transition all $animation-short
+
+
+// Error page
+.center-middle-errorpage
+	position relative
+	padding 120px 50px 0
+	text-align center
+	i.icon-vpdb-logo-o
+		font-size 300px
+	h1
+		margin-top -10px
+		margin-bottom 15px
+		font-family $font-content
+		font-weight $font-weight-thin
+		font-size 140px
+	a
+		font-family $font-content
+	p
+		margin 0 0 30px

@@ -25,7 +25,10 @@ app.config(function($routeProvider, $locationProvider) {
 	$routeProvider.when('/game/:id', { templateUrl: 'partials/game' });
 	$routeProvider.when('/games/add', { templateUrl: 'partials/admin/game-add' });
 	$routeProvider.when('/admin/users', { templateUrl: 'partials/admin/users' });
-	$routeProvider.when('/styleguide', { templateUrl: 'partials/styleguide' });
+	$routeProvider.when('/styleguide', { templateUrl: '/styleguide/overview.html' });
+	$routeProvider.when('/styleguide/sections/:section', { templateUrl: function(route) {
+		return '/styleguide/sections/' + route.section + '.html';
+	}});
 	$locationProvider.html5Mode(true);
 });
 

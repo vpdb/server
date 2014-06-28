@@ -1,0 +1,105 @@
+// Labels
+//
+// Styleguide 11
+
+
+// Styles
+//
+// Per default, labels
+//
+// * Don't line wrap
+// * Overflow with ellipsis
+//
+// Labels have different usages, not only for labeling form fields. Here's
+// an overview of the different classes.
+//
+// Markup:
+// <label class="{$modifiers}">Hi, I'm a label</label>
+//
+// .label--block          - Forces block display (i.e. line break)
+// .label--small          - Smaller font size
+// .label--prop-name      - Property name in side bar
+// .label--prop-value     - Property value in side bar
+// .label--version        - Version label
+// .label--code           - Code label
+//
+// Styleguide 11.1
+// Base style
+label
+	font-weight $font-weight-normal
+	margin-bottom 1px
+	white-space nowrap
+	overflow hidden
+	text-overflow ellipsis
+
+
+// Block label
+.label--block
+	display block
+
+// Sizes
+.label--small
+	font-size $font-size-smaller
+
+// Name / value labels (in sidebar)
+.label--prop-name
+	text-transform uppercase
+	margin-bottom 0
+.label--prop-value
+	font-weight $font-weight-bold
+	margin-top 0
+
+// Version and code labels
+.label--version, .label--code
+	font-family $font-code
+	font-weight bold
+	padding 0 5px
+	margin-left 4px
+	margin-bottom -6px
+	border-radius 4px
+.label--code
+	margin 10px 0
+	text-align left
+
+// Used on release detail panel next to the download button
+.label--download
+	padding-top 9px
+	margin-right -25px
+
+.label--subtitle
+	font-weight $font-weight-normal
+	margin-bottom 15px
+
+// Chaining
+//
+// Allow easy chaining of multiple spans in one single label, with a separator
+// (pipe) between each label
+//
+// Markup:
+// <label>
+//   <span class="pipe">One</span>
+//   <span class="pipe">Two</span>
+//   <span class="pipe">Three</span>
+// </label>
+//
+// span.pipe          - Separates values within a label
+//
+// Styleguide 11.2
+label span
+	margin-right 10px
+	&.pipe
+		margin-right 10px
+		&:after
+			content '|'
+			margin-left 10px
+		&:last-child:after
+			content ''
+
+// "Form" label is upper case and small
+.form-group label
+	text-transform uppercase
+	font-size $font-size-smaller
+
+// Special usages
+.tab__label // formerly: label-message
+	margin 15px 0 0 10px

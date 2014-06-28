@@ -1,96 +1,48 @@
-doctype html
-html(ng-app="vpdb")
-	head
-		meta(charset='utf8')
-		meta(name="viewport", content="width=device-width, initial-scale=1")
-		base(href="/")
-		link(rel="icon", type="image/png", href="/images/favicon.png")
-		script(type="text/javascript", src="//use.typekit.net/xhi7wnv.js")
-		script(type="text/javascript") try{Typekit.load();}catch(e){}
-		title Style Guide
-		link(rel="stylesheet", href="/css/fonts.css")
-		link(rel="stylesheet", href="/css/lib/bootstrap-3.1.1.css")
-		link(rel="stylesheet", href="/css/lib/font-awesome.css")
-		link(rel="stylesheet", href="/css/lib/magnific-popup.css")
-		link(rel="stylesheet", href="/css/lib/nanoscroller.css")
-		link(rel="stylesheet", href="/css/vpdb.css")
-		link(rel="stylesheet", href="/css/hljs-pojoaque.css")
+extends layout
 
-	body(ng-controller="AppCtrl", class="styleguide", ng-class="themeName")
-		nav.navbar.navbar-default.navbar-fixed-top
-			.container
-				.navbar-header
-					span.navbar-brand
-						a(href="/", target="_self")
-							i.icon.icon-vpdb-logo-o
-							i.icon.icon-vp
-							i.icon.icon-db
+block body
+	if deployment != 'production'
+		.staging-bar
+		.staging-bar
+	nav.navbar.navbar-default.navbar-fixed-top
+		.container
+			.navbar-header
+				span.navbar-brand
+					a(href="/", target="_self")
+						i.icon.icon-vpdb-logo-o
+						i.icon.icon-vp
+						i.icon.icon-db
 
-				ul.nav.navbar-nav
-					li(ng-class="{ active: menu == 'home' }")
-						a(href="/styleguide") Style Guide
+			ul.nav.navbar-nav
+				li(ng-class="{ active: menu == 'home' }")
+					a(href="/styleguide") Style Guide
 
-				ul.nav.navbar-nav.navbar-right
-					li
-						a(href="/", target="_self")
-							i.fa.fa-caret-left.space-right-2x
-							span.space-right Back to Site
+			ul.nav.navbar-nav.navbar-right
+				li
+					a(href="/", target="_self")
+						i.fa.fa-caret-left.space-right-2x
+						span.space-right Back to Site
 
-		.container.container--topmost(ng-controller="StyleguideCtrl")
-			.row.row--fullheight
-				.col-sm-3.col--menu
-					h1 Contents
-					hr
-					h4.padder-top: a(href="/styleguide")
-						i.fa.fa-home.space-right
-						| Overview
-					accordion.panel-group--accordion(close-others="false")
-						- each section, i in sections
-							accordion-group.panel--inner(heading=section.title, is-open="sgIsOpen#{i}", ng-init="sgIsOpen#{i}=#{section.id}==section")
-								ul.list-group
-									- each subsection in section.childSections
-										li.list-group-item: a(href="/styleguide/sections/#{subsection.reference()}", ng-class="{ active: subsection == '#{subsection.reference()}' }")=subsection.header()
-					button.btn.btn-primary.btn--styleguide-toggle-theme(ng-click="toggleTheme()"): i.fa.fa-adjust
-				.col-sm-9.col--main
-					div(ng-view)
+	.container.container--topmost(ng-controller="StyleguideCtrl")
+		.row.row--fullheight
+			.col-sm-3.col--menu
+				h1 Contents
+				hr
+				h4.padder-top: a(href="/styleguide")
+					i.fa.fa-home.space-right
+					| Overview
+				accordion.panel-group--accordion(close-others="false")
+					- each section, i in sections
+						accordion-group.panel--inner(heading=section.title, is-open="sgIsOpen#{i}", ng-init="sgIsOpen#{i}=#{section.id}==section")
+							ul.list-group
+								- each subsection in section.childSections
+									li.list-group-item: a(href="/styleguide/sections/#{subsection.reference()}", ng-class="{ active: subsection == '#{subsection.reference()}' }")=subsection.header()
+				button.btn.btn-primary.btn--styleguide-toggle-theme(ng-click="toggleTheme()"): i.fa.fa-adjust
+			.col-sm-9.col--main
+				div(ng-view)
 
-		section.footer
-			p
-				a(href="https://github.com/freezy/node-vpdb", target="_blank")
-					i.fa.fa-github-alt
-					| <strong>Fork me</strong> on GitHub
-
-		script(type='text/javascript', src='/lib/jquery-2.1.0.js')
-		script(type='text/javascript', src='/lib/angular-file-upload-shim-1.4.0.js')
-		script(type='text/javascript', src='/lib/angular-1.3.0-beta.8/angular.js')
-		script(type='text/javascript', src='/lib/angular-1.3.0-beta.8/angular-route.js')
-		script(type='text/javascript', src='/lib/angular-1.3.0-beta.8/angular-animate.js')
-		script(type='text/javascript', src='/lib/angular-1.3.0-beta.8/angular-sanitize.js')
-		script(type='text/javascript', src='/lib/angular-1.3.0-beta.8/angular-resource.js')
-		script(type='text/javascript', src='/lib/angular-file-upload-1.4.0.js')
-		script(type='text/javascript', src='/lib/angulartics-0.14.15/angulartics.js')
-		script(type='text/javascript', src='/lib/angulartics-0.14.15/angulartics-ga.js')
-		script(type='text/javascript', src='/lib/angulartics-0.14.15/angulartics-ga-cordova.js')
-		script(type='text/javascript', src='/lib/ui-bootstrap-tpls-0.11.0.js')
-		script(type='text/javascript', src='/lib/underscore-1.6.0.js')
-		script(type='text/javascript', src='/lib/showdown.js')
-		script(type='text/javascript', src='/lib/jquery.magnific-popup-0.9.9.js')
-		script(type='text/javascript', src='/lib/jquery.nanoscroller-0.8.0.js')
-		script(type='text/javascript', src='/lib/jquery.waitforimages-1.5.0.js')
-		script(type='text/javascript', src='/lib/jquery.throttle-debounce-1.1.js')
-		script(type='text/javascript', src='/lib/angular.scrollable-0.2.0.js')
-		script(type='text/javascript', src='/app.js')
-		script(type='text/javascript', src='/services.js')
-		script(type='text/javascript', src='/controllers.js')
-		script(type='text/javascript', src='/filters.js')
-		script(type='text/javascript', src='/directives.js')
-		script(type='text/javascript', src='/controller/admin.js')
-		script(type='text/javascript', src='/controller/game.js')
-		script(type='text/javascript', src='/controller/games.js')
-		script(type='text/javascript', src='/controller/home.js')
-		script(type='text/javascript', src='/service/api.js')
-		script(type='text/javascript', src='/service/timeago.js')
-		script(type='text/javascript', src='/directive/elastic.js')
-		script(type='text/javascript', src='/directive/timeago.js')
-
-		//-script(type="text/javascript", src="/js/global.min.js")
+	section.footer
+		p
+			a(href="https://github.com/freezy/node-vpdb", target="_blank")
+				i.fa.fa-github-alt
+				| <strong>Fork me</strong> on GitHub

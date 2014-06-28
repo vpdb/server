@@ -9,6 +9,7 @@ var html2jade = require('html2jade');
 var highlight = require('highlight.js');
 
 var debug = require('debug')('grunt-kss');
+var assets = require('../config/assets');
 
 module.exports = function(grunt) {
 
@@ -80,7 +81,15 @@ module.exports = function(grunt) {
 					}).sort(function(a, b) {
 						return parseInt(a.id) > parseInt(b.id);
 					}),
-					pretty: true
+					pretty: true,
+					deployment: process.env.APP_NAME || 'staging',
+					environment: process.env.NODE_ENV || 'development',
+					jsFiles: _.map(assets.js, function(js) {
+						return '/' + js;
+					}),
+					cssFiles: _.map(_.union(assets.css, assets.cssCache), function(css) {
+						return '/css/' + css;
+					})
 				});
 
 				var filename = path.normalize('styleguide/index.html');

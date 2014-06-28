@@ -14,12 +14,18 @@
 
 
 	// List group within panel-body
-	.panel-body > .list-group .list-group-item
+	.list-group > li
 		background-color transparent
-		color $color-lighter
-		border-color $color-darker
 		a.active
 			color $color-primary
+
+	// Active and non-active colors
+	.list-group-item.active
+		color $color-primary
+		background-color $color-darker-inv
+		&:hover
+			color $color-lighter
+			background-color $color-darker-inv
 
 
 //
@@ -36,3 +42,13 @@
 			&:hover
 				color $color-primary
 
+	.list-group > li
+		background-color transparent
+
+	// Active and non-active colors
+	.list-group-item.active
+		color $color-primary-black
+		background-color $color-darkest-inv
+		&:hover
+			color $color-lighter-inv
+			background-color $color-darkest-inv

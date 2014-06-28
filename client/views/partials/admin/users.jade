@@ -15,8 +15,8 @@
 				accordion-heading
 					| Role
 					i.fa.pull-right.space-right(ng-class="{'fa-chevron-circle-up': filterYearOpen, 'fa-chevron-circle-down': !filterYearOpen}")
-				ul.list-group
-					li.list-group-item(ng-repeat="role in roles", filter-role="{{ role.name }}") {{ role.name }}
+				ul.list-group.list-group--simple
+					li.a.a--lighter.list-group-item(ng-repeat="role in roles", filter-role="{{ role.name }}") {{ role.name }}
 
 	.col-sm-9.col--main
 		h1.h--primary Users

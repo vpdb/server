@@ -36,7 +36,7 @@ function Assets() {
 			'filters.js',
 			'directives.js'
 		],
-		css: [ 'fonts.css' ],
+		css: [ 'fonts.css', 'hljs-pojoaque.css' ],
 		cssCache: []
 	};
 	// javascript files

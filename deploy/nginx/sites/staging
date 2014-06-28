@@ -4,7 +4,7 @@ server {
 
 	server_name staging.vpdb;
 
-	location ~ ^/(css/vpdb\.css|js/global\.min\.js) {
+	location ~ ^/(css/global\.min\.css|js/global\.min\.js) {
 		root /var/www/staging/shared/cache;
 		access_log off;
 		expires max;

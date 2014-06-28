@@ -10,24 +10,27 @@
 		.modal-header
 			border-radius 3px 3px 0 0
 			padding 12px 20px 10px
-			img.avatar-details + h3
-				margin-left 110px
-		.modal-body
-			.ident
-				margin-left 110px
-				& + hr
-					margin-top 20px
-			.btn.btn-lg + .btn.btn-lg
-				margin-left 20px
+	// Title margin before title when avatar is displayed
+	.img--avatar-header + h1
+		margin-left 100px
+		
+	.modal-body
+		.indent
+			margin-left 100px
+			& + hr
+				margin-top 20px
+		.btn.btn-lg + .btn.btn-lg
+			margin-left 20px
 
-		.alert
-			margin 0 -20px
-			padding 5px 20px
-			border-radius 0
-			text-align center
-			& + .alert
-				margin-top 10px
+	.alert
+		margin 0 -20px
+		padding 5px 20px
+		border-radius 0
+		text-align center
+		& + .alert
+			margin-top 10px
 
-		.modal-footer
-			border-radius 0 0 3px 3px
-			margin-top 0
+	.modal-footer
+		border-radius 0 0 3px 3px
+		margin-top 0
+

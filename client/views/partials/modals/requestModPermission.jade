@@ -1,16 +1,16 @@
-.bg-lightest
+.theme-light
 	.modal-header
 		h1.h--no-margin.h--small
 			i.fa.fa-wrench.space-right
 			| &nbsp;Request Mod Permission
 	.modal-body(ng-controller="CommentsCtrl")
-		h4 Please leave a message to the author.
+		h5.h--lighter Please leave a message to the author.
 		tabset.tabset--moderequest
 			label.label--small.pull-right Comments are parsed with <a href="http://daringfireball.net/projects/markdown/syntax" target="_blank">Markdown</a>.
 			tab
 				tab-heading
 					i.fa.fa-edit(title="Write")
-				textarea.msd-elastic(placeholder="Leave a message about your mod request", ng-model="$parent.newComment")
+				textarea.textarea--full.msd-elastic(placeholder="Leave a message about your mod request", ng-model="$parent.newComment")
 			tab
 				tab-heading
 					i.fa.fa-eye(title="Preview")
@@ -19,4 +19,4 @@
 
 	.modal-footer
 		button.btn.btn-default(ng-click="cancel()") Cancel
-		button.btn.btn-primary(ng-click="ok()") Send
+		button.btn.btn--secondary(ng-click="ok()") Send

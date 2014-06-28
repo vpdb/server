@@ -9,6 +9,7 @@ function Writeable() {
 	this.jsRoot = path.resolve(this.cacheRoot, 'js');
 	this.cssRoot = path.resolve(this.cacheRoot, 'css');
 	this.imgRoot = path.resolve(this.cacheRoot, 'img');
+	this.htmlRoot = path.resolve(this.cacheRoot, 'html');
 
 	if (!fs.existsSync(this.jsRoot)) {
 		fs.mkdirSync(this.jsRoot)
@@ -18,6 +19,9 @@ function Writeable() {
 	}
 	if (!fs.existsSync(this.imgRoot)) {
 		fs.mkdirSync(this.imgRoot)
+	}
+	if (!fs.existsSync(this.htmlRoot)) {
+		fs.mkdirSync(this.htmlRoot)
 	}
 }
 

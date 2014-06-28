@@ -34,5 +34,13 @@ server {
 		#proxy_cache one;
 		#proxy_cache_key vpdb$request_uri$scheme;
 		proxy_pass http://vpdb_staging_upstream;
+		
+		error_page 502 /500.html;
 	}
+
+	location /500.html {
+		root /var/www/staging/shared/cache/html;
+		access_log off;
+		expires max;
+    }
 }

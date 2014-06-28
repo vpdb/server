@@ -8,6 +8,7 @@ module.exports = function(grunt) {
 	var cacheRoot = writeable.cacheRoot;
 	var cssRoot = path.resolve(cacheRoot, 'css/');
 	var jsRoot = path.resolve(cacheRoot, 'js/');
+	var htmlRoot = path.resolve(cacheRoot, 'html/');
 	var cssGlobal = path.resolve(cssRoot, 'global.min.css');
 	var jsGlobal = path.resolve(jsRoot, 'global.min.js');
 
@@ -45,6 +46,26 @@ module.exports = function(grunt) {
 					src: [ 'vpdb.styl' ],
 					dest: cssRoot,
 					ext: '.css'
+				}]
+			}
+		},
+
+		jade: {
+			errors: {
+				options: {
+					data: {
+						deployment: process.env.APP_NAME || 'staging',
+						environment: process.env.NODE_ENV || 'development',
+						jsFiles: assets.getJS(),
+						cssFiles: assets.getCSS()
+					}
+				},
+				files: [{
+					expand: true,
+					cwd: 'client/views/errors',
+					src: [ '*.jade' ],
+					dest: htmlRoot,
+					ext: '.html'
 				}]
 			}
 		},
@@ -149,6 +170,7 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-mkdir');
 	grunt.loadNpmTasks('grunt-contrib-clean');
 	grunt.loadNpmTasks('grunt-contrib-stylus');
+	grunt.loadNpmTasks('grunt-contrib-jade');
 	grunt.loadNpmTasks('grunt-contrib-cssmin');
 	grunt.loadNpmTasks('grunt-contrib-uglify');
 	grunt.loadNpmTasks('grunt-contrib-watch');
@@ -177,7 +199,7 @@ module.exports = function(grunt) {
 	grunt.registerTask(
 		'build',
 		'Compiles all of the assets to the cache directory.',
-		[ 'clean:build', 'mkdir', 'stylus', 'kssrebuild', 'cssmin', 'uglify', 'git' ]
+		[ 'clean:build', 'mkdir', 'stylus', 'kssrebuild', 'cssmin', 'uglify', 'git', 'jade' ]
 	);
 	grunt.registerTask('dev', [ 'build', 'concurrent' ]);
 };

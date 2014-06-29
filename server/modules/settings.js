@@ -49,6 +49,15 @@ Settings.prototype.validate = function() {
 	var validate = function(validation, setting, path) {
 		var success = true;
 		var validationError, p, i;
+		var logError = function(p, error, setting) {
+			setting = !_.isUndefined(error.setting) ? error.setting : setting;
+			var s = _.isObject(setting) ? JSON.stringify(setting) : setting;
+			if (_.isObject(error)) {
+				logger.error('[settings] %s.%s [KO]: %s (%s).', p, error.path, error.message, s);
+			} else {
+				logger.error('[settings] %s [KO]: %s (%s).', p, error, s);
+			}
+		}
 		for (var s in validation) {
 			if (validation.hasOwnProperty(s)) {
 				p = (path + '.' + s).substr(1);
@@ -59,11 +68,17 @@ Settings.prototype.validate = function() {
 						logger.error('[settings] %s [KO]: Setting is missing.', p);
 						success = false;
 					} else {
-						validationError = validation[s](setting[s]);
+						validationError = validation[s](setting[s], settings);
 						if (!validationError) {
 							logger.info('[settings] %s [OK]', p);
 						} else {
-							logger.error('[settings] %s [KO]: %s (%s).', p, validationError, setting[s]);
+							if (_.isArray(validationError)) {
+								_.each(validationError, function(error) {
+									logError(p, error, setting[s]);
+								});
+							} else {
+								logError(p, validationError, setting[s]);
+							}
 							success = false;
 						}
 					}

@@ -1,5 +1,6 @@
 var _ = require('underscore');
 var fs = require('fs');
+var mimeTypes = require('../modules/mimetypes');
 
 /**
  * Settings validations for VPFB
@@ -86,6 +87,77 @@ module.exports = {
 
 			if (!fs.lstatSync(path).isDirectory()) {
 				return 'Storage path is not a folder. Please make it point to a folder';
+			}
+		},
+
+		/**
+		 * Quota definitions for the site. Quotas can be used to limit the
+		 * number of items a user can download in a given time.
+		 */
+		quota: {
+			plans: function(plans) {
+				var durations = ['minute', 'hour', 'day', 'week'];
+				if (_.keys(plans).length < 1) {
+					return 'Quota plans must contain at least one plan.';
+				}
+				var plan;
+				var errors = [];
+				for (var key in plans) {
+					if (plans.hasOwnProperty(key)) {
+						plan = plans[key];
+						if (plan.unlimited !== true) {
+							if (!_.contains(durations, plan.per)) {
+								errors.push({
+									path: key + '.per',
+									message: 'Invalid duration. Valid durations are: ["' + durations.join('", "') + '"].',
+									setting: plan.per
+								});
+							}
+							if (!_.isNumber(parseInt(plan.credits)) || parseInt(plan.credits) < 0) {
+								errors.push({
+									path: key + '.credits',
+									message: 'Credits must be an integer equal or greater than 0.',
+									setting: plan.credits
+								});
+							}
+						}
+					}
+				}
+				if (errors.length > 0) {
+					return errors;
+				}
+			},
+
+			defaultPlan: function(defaultPlan, settings) {
+				if (!settings.vpdb.quota.plans[defaultPlan]) {
+					return 'Default plan must exist in the "vpdb.quota.plans" setting.'
+				}
+			},
+
+			costs: function(costs) {
+				var cost, errors = [];
+				for (var mimeType in costs) {
+					if (costs.hasOwnProperty(mimeType)) {
+						cost = costs[mimeType];
+						if (!_.contains(_.keys(mimeTypes), mimeType)) {
+							errors.push({
+								path: mimeType,
+								message: 'Invalid MIME type. Valid MIME types are: ["' + _.keys(mimeTypes).join('", "') + '"].',
+								setting: mimeType
+							});
+						}
+						if (!_.isNumber(parseInt(cost)) || parseInt(cost) < 0) {
+							errors.push({
+								path: mimeType,
+								message: 'Cost must be an integer equal or greater than 0.',
+								setting: cost
+							});
+						}
+					}
+				}
+				if (errors.length > 0) {
+					return errors;
+				}
 			}
 		},
 

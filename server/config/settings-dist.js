@@ -52,6 +52,58 @@ module.exports = {
 		storage: './data/storage',
 
 		/**
+		 * Quota definitions for the site. Quotas can be used to limit the
+		 * number of items a user can download in a given time.
+		 */
+		quota: {
+			/**
+			 *  Every user has one plan assigned. The plan defines how many
+			 *  credits the user is allowed to burn for a given duration.
+			 *  After the duration, the credits are reset.
+			 *
+			 *  Valid durations are: "minute", "hour", "day" and "week". If
+			 *  "unlimited" is set to true, the quota check is skipped.
+			 *
+			 *  You can add any number of plans here (they will show up in the
+			 *  user control panel), but at least one default plan must exist.
+			 */
+			plans: {
+				free: { credits: 5, per: 'day' },
+				bronze: { credits: 50, per: 'day' },
+				silver: { credits: 200, per: 'day' },
+				gold: { credits: 5000, per: 'day' },
+				unlimited: { unlimited: true }
+			},
+
+			/**
+			 * The default plan which is assigned to new users.
+			 */
+			defaultPlan: 'free',
+
+			/**
+			 * How many credits are debited per download. For now, you can
+			 * define different costs per MIME type of the file, other
+			 * attributes are imaginable in the future.
+			 *
+			 * Note that if a MIME type is not defined here (list can be
+			 * checked here[1]), no cost will be applied to it.
+			 *
+			 * [1] https://github.com/freezy/node-vpdb/blob/master/server/models/file.js#L9
+			 *
+			 * Also note that packs value the sum of their content and even
+			 * though they are zipped, they won't count as zip files.
+			 */
+			costs: {
+				'image/jpeg': 0,
+				'image/png': 0,
+				'application/zip': 1,
+				'application/x-visual-pinball-table': 1,
+				'video/mp4': 1,
+				'video/x-flv': 1
+			}
+		},
+
+		/**
 		 * A temp folder for extracting stuff. No trailing slash!
 		 * @important
 		 */

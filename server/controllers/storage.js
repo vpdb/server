@@ -27,6 +27,7 @@ exports.get = function(req, res) {
 		if (!file) {
 			return res.status(404).end();
 		}
+
 		// file is not public (i.e. user must be logged in order to download)
 		if (!file.public) {
 
@@ -34,7 +35,13 @@ exports.get = function(req, res) {
 			if (!req.isAuthenticated()) {
 				return res.status(401).end();
 			} else {
-				// otherwise, check acl first
+
+				// if inactive and user isn't the owner, refuse directly
+				if (!file.active && !file.author.equals(req.user._id)) {
+					return res.status(404).end();
+				}
+
+				// otherwise, check acl
 				acl.isAllowed(req.user.email, 'files', 'download', function(err, granted) {
 					if (err) {
 						logger.error('[storage] Error checking ACLs for <%s>: %s', req.user.email, err, {});
@@ -43,9 +50,7 @@ exports.get = function(req, res) {
 					if (!granted) {
 						return res.status(403).end();
 					}
-					if (!file.active && !file.author.equals(req.user._id)) {
-						return res.status(404).end();
-					}
+
 					// and the quota
 					quota.isAllowed(req, res, file, function(err, granted) {
 						if (err) {

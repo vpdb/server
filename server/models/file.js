@@ -3,17 +3,9 @@ var path = require('path');
 var logger = require('winston');
 var mongoose = require('mongoose');
 var config = require('./../modules/settings').current;
+var mimeTypes = require('./../modules/mimetypes');
 
 var Schema = mongoose.Schema;
-
-var mimeTypes = [
-	'image/jpeg',
-	'image/png',
-	'application/zip',
-	'application/x-visual-pinball-table',
-	'video/mp4',
-	'video/x-flv'
-];
 
 // schema
 var fields = {
@@ -21,7 +13,7 @@ var fields = {
 	bytes:        { type: Number, required: true },
 	created:      { type: Date, required: true },
 	author:       { type: Schema.ObjectId, required: true, ref: 'User' },
-	mimeType:     { type: String, required: true, enum: { values: mimeTypes, message: 'Invalid MIME type. Valid MIME types are: ["' + mimeTypes.join('", "') + '"].' }},
+	mimeType:     { type: String, required: true, enum: { values: _.keys(mimeTypes), message: 'Invalid MIME type. Valid MIME types are: ["' +  _.keys(mimeTypes).join('", "') + '"].' }},
 	fileType:     { type: String, required: true },
 	metadata:     { type: Schema.Types.Mixed },
 	public:       { type: Boolean, required: true, default: false },

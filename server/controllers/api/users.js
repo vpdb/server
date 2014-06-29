@@ -35,7 +35,7 @@ exports.create = function(req, res) {
 						return api.fail(res, err, 500);
 					}
 					newUser.roles = count ? [ 'member' ] : [ 'root' ];
-					newUser.plan = count ? null : 'root';
+					newUser.plan = count ? settings.vpdb.quota.defaultPlan : 'unlimited';
 					newUser.save(function(err) {
 						if (err) {
 							logger.error('[api|user:create] Error saving user <%s>: %s', newUser.email, err, {});

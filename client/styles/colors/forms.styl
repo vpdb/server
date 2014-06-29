@@ -16,6 +16,22 @@
 	textarea
 		background-color $color-darkest
 
+	// Large radio buttons
+	.radio--lg
+		input[type=radio]
+			& + span
+				color $color-light
+				&:before
+					color $color-light
+				&:hover
+					color $color-lightish
+					&:before
+						color $color-lightish
+			&:checked + span:hover
+				color $color-light
+				&::before
+					color $color-light
+
 //
 // Light theme
 // --------------------------------------------------
@@ -41,5 +57,18 @@
 	textarea
 		background-color $color-light
 
+	// Large radio buttons
 	.radio--lg
-		color $color-light-inv
+		input[type=radio]
+			& + span
+				color $color-light-inv
+				&:before
+					color $color-light-inv
+				&:hover
+					color $color-lightish-inv
+					&:before
+						color $color-lightish-inv
+			&:checked + span:hover
+				color $color-light-inv
+				&::before
+					color $color-light-inv

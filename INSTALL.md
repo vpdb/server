@@ -161,7 +161,7 @@ script
 	echo Starting staging server for VPDB at ${APP_HOME}...
 	umask 0007
 	IPC=$APP_ROOT/shared/naught.ipc
-    rm -f $IPC
+	rm -f $IPC
 	exec /usr/bin/naught start --ipc-file $IPC --log $APP_ROOT/shared/logs/naught --stdout $APP_ROOT/shared/logs/$APP_NAME.out --stderr $APP_ROOT/shared/logs/$APP_NAME.err --max-log-size 10485760 --cwd $APP_HOME --daemon-mode false --worker-count $APP_NUMWORKERS $APP_HOME/app.js
 end script
 ```

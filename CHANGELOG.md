@@ -2,7 +2,13 @@
 
 ## v0.0.2 (unreleased)
 
-Server Update
+Client Changes:
+
+* Added login Form
+* Added user management page
+* Added page for adding new games
+
+Server Update:
 
 * Added [PassportJS](http://passportjs.org/) integration
 * Added IP.Board integration via [OAuth2](https://github.com/freezy/ipb-oauth2-server).

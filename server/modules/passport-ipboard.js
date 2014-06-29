@@ -88,6 +88,7 @@ util.inherits(Strategy, OAuth2Strategy);
  * @api protected
  */
 Strategy.prototype.userProfile = function(accessToken, done) {
+	var that = this;
 	this._oauth2.get(this._userProfileURL, accessToken, function (err, body, res) {
 		if (err) { return done(new InternalOAuthError('failed to fetch user profile', err)); }
 
@@ -95,7 +96,7 @@ Strategy.prototype.userProfile = function(accessToken, done) {
 			var json = JSON.parse(body);
 
 			var profile = {
-				provider: this.name,
+				provider: that.name,
 				id: json.id,
 				username: json.username,
 				displayName: json.displayName,

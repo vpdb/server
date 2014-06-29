@@ -29,12 +29,17 @@ module.exports = function(passport, config) {
 	// oauth callback
 	var updateProfile = function(strategy, providerName) {
 		var provider = providerName ? providerName : strategy;
+		var logtag = providerName ? strategy + ':' + providerName : strategy;
 		return function(accessToken, refreshToken, profile, done) {
 			profile.id = profile.id.toString(); // types must be equal when matching in mongodb
+
 			var providerMatch = {};
 			providerMatch[provider + '.id'] = profile.id;
-			User.findOne().or([providerMatch, {'email': profile.emails[0].value }]).exec(function(err, user) {
-				var logtag = providerName ? strategy + ':' + providerName : strategy;
+			var condition = [providerMatch, {'email': profile.emails[0].value }];
+			logger.info('[passport|%s] Checking for existing user: %s', logtag, JSON.stringify(condition));
+
+			User.findOne().or(condition).exec(function(err, user) {
+
 				if (err) {
 					logger.error('[passport|%s] Error checking for user <%s> in database: %s', logtag, profile.emails[0].value, err, {});
 					return done(err);

@@ -132,7 +132,7 @@ module.exports = function(app, config, passport) {
 		logger.error('[express] %s', err.stack);
 
 		// error page
-		res.status(500).render('500', { error: err.stack });
+		webCtrl.showError(500, req, res);
 	});
 
 	// assume 404 since no middleware responded

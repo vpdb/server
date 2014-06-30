@@ -127,3 +127,5 @@ exports.show404 = function(req, res) {
 	}
 };
 
+exports.showError = showError;
+

@@ -25,7 +25,7 @@ repo_link ${DIRNAME}
 node_cluster_reload
 
 # 5. cleanup old deployment
-repo_cleanup "[a-z0-9\\\\-_]-[a-f0-9]{10}"
+repo_cleanup "[a-z0-9_\\\\-]-[a-f0-9]{10}"
 
 echo ==================================================================
 echo Staging deployment successful!

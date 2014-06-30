@@ -11,7 +11,7 @@ var Schema = mongoose.Schema;
 // schema
 var fields = {
 	name:          { type: String, index: true, required: 'Name must be provided.' }, // display name, equals username when locally registering
-	username:      { type: String, index: true, unique: true },
+	username:      { type: String, index: true, unique: true, sparse: true },
 	email:         { type: String, index: true, unique: true, lowercase: true, required: 'Email must be provided.' },
 	roles:         [ String ],
 	plan:          { type: String, required: false },

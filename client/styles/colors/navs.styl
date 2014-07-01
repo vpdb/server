@@ -15,20 +15,23 @@
 				text-shadow 0 0 3px black
 
 	// Tabs for message composition
-	.nav-tabs li
-		&.active
-			a
-				color $color-lighter
-				background-color rgba(white, 0.11)
+	.nav-tabs
+		.icon-markdown
+			color $color-dark
+		li
+			&.active
+				a
+					color $color-lighter
+					background-color rgba(white, 0.11)
+				.panel-triangle
+					border-color transparent #454442 transparent transparent
 			.panel-triangle
-				border-color transparent #454442 transparent transparent
-		.panel-triangle
-			border-color transparent #383735 transparent transparent
-		a
-			color $color-light
-			background-color $color-darkest
-		a:hover
-			color $color-lighter
+				border-color transparent #383735 transparent transparent
+			a
+				color $color-light
+				background-color $color-darkest
+			a:hover
+				color $color-lighter
 	.tab-content
 		background-color rgba(white, 0.11)
 	.panel-triangle
@@ -52,19 +55,32 @@
 
 
 	// Tabs for message composition
-	.nav-tabs li
-		&.active
-			a
-				color $color-lighter-inv
-				background-color rgba(black, 0.11)
+	.nav-tabs
+		.icon-markdown
+			color $color-dark-inv
+		li
+			&.active
+				a
+					color $color-lighter-inv
+					background-color rgba(black, 0.11)
+				.panel-triangle
+					border-color transparent #454442 transparent transparent
 			.panel-triangle
-				border-color transparent #454442 transparent transparent
-		.panel-triangle
-			border-color transparent #383735 transparent transparent
-		a
-			color $color-light-inv
-			background-color $color-darkest-inv
-		a:hover
-			color $color-lighter-inv
+				border-color transparent #383735 transparent transparent
+			a
+				color $color-light-inv
+				background-color $color-darkest-inv
+			a:hover
+				color $color-lighter-inv
 	.tab-content
 		background-color rgba(black, 0.11)
+
+
+	.tabset--light
+		.nav-tabs
+			li.active a
+				background-color $color-lighter
+		.tab-content
+			background-color $color-lighter
+			textarea
+				background-color transparent

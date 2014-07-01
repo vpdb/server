@@ -14,11 +14,11 @@
 /*noinspection CssUnknownTarget*/
 @font-face {
 	font-family: 'icons';
-	src:url('/fonts/icons.eot?-7ytd13');
-	src:url('/fonts/icons.svg?-7ytd13#icons') format('svg'),
-	url('/fonts/icons.eot?#iefix-7ytd13') format('embedded-opentype'),
-	url('/fonts/icons.woff?-7ytd13') format('woff'),
-	url('/fonts/icons.ttf?-7ytd13') format('truetype');
+	src:url('/fonts/icons.eot?-lrmp0w');
+	src:url('/fonts/icons.svg?-lrmp0w#icons') format('svg'),
+	url('/fonts/icons.eot?#iefix-lrmp0w') format('embedded-opentype'),
+	url('/fonts/icons.woff?-lrmp0w') format('woff'),
+	url('/fonts/icons.ttf?-lrmp0w') format('truetype');
 	font-weight: normal;
 	font-style: normal;
 }
@@ -37,78 +37,91 @@
 	-moz-osx-font-smoothing: grayscale;
 }
 
+
+.icon-markdown:before {
+	content: "\e600";
+}
+.icon-markdown-o:before {
+	content: "\e601";
+}
 .icon-vpf-short:before {
-	content: "\e604";
+	content: "\e602";
 }
 .icon-vpf-logo:before {
-	content: "\e605";
+	content: "\e603";
 }
 .icon-vpf:before {
-	content: "\e615";
+	content: "\e604";
 }
 .icon-ipdb:before {
-	content: "\e616";
+	content: "\e605";
 }
 .icon-checkbox-unchecked:before {
-	content: "\e617";
+	content: "\e606";
 }
 .icon-checkbox-checked:before {
-	content: "\e618";
+	content: "\e607";
 }
 .icon-vpdb-logo-o:before {
-	content: "\e613";
+	content: "\e608";
 }
 .icon-vpdb-logo:before {
-	content: "\e614";
+	content: "\e609";
 }
 .icon-gameex-text:before {
-	content: "\e611";
+	content: "\e60a";
 }
 .icon-gameex:before {
-	content: "\e612";
+	content: "\e60b";
 }
 .icon-pin-on:before {
-	content: "\e60f";
+	content: "\e60c";
 }
 .icon-pin-off:before {
-	content: "\e610";
+	content: "\e60d";
 }
 .icon-bally:before {
 	content: "\e60e";
 }
 .icon-dataeast:before {
-	content: "\e60d";
+	content: "\e60f";
 }
 .icon-williams:before {
-	content: "\e606";
+	content: "\e610";
 }
 .icon-stern-old:before {
-	content: "\e607";
+	content: "\e611";
 }
 .icon-stern:before {
-	content: "\e608";
+	content: "\e612";
 }
 .icon-sega:before {
-	content: "\e609";
+	content: "\e613";
 }
 .icon-midway:before {
-	content: "\e60a";
+	content: "\e614";
 }
 .icon-gottlieb:before {
-	content: "\e60b";
+	content: "\e615";
 }
 .icon-capcom:before {
-	content: "\e60c";
+	content: "\e616";
 }
 .icon-vpdb:before {
-	content: "\e600";
+	content: "\e617";
 }
 .icon-vp:before {
-	content: "\e601";
+	content: "\e618";
 }
 .icon-th-list-list:before {
-	content: "\e602";
+	content: "\e619";
 }
 .icon-db:before {
-	content: "\e603";
+	content: "\e61a";
+}
+.icon-user:before {
+	content: "\e61b";
+}
+.icon-exit:before {
+	content: "\e61c";
 }

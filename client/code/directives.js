@@ -198,6 +198,16 @@ directives.directive('imgSrc', function() {
 	};
 });
 
+directives.directive('markdownInfo', function($parse) {
+	return {
+		restrict: 'A',
+		link: function(scope, element, attrs) {
+			var icon = '<i class="icon icon-markdown"></i>&nbsp;&nbsp;';
+			element.html(icon + attrs.markdownInfo.replace(/markdown/gi, '<a href="http://daringfireball.net/projects/markdown/syntax" target="_blank">Markdown</a>'));
+		}
+	}
+});
+
 directives.directive('filterDecade', function() {
 	return {
 		restrict: 'A',

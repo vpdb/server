@@ -57,10 +57,12 @@
 				.form-group
 					label.col-sm-3.control-label(for='ipdbUrl') Game ID
 					.col-sm-6
-						input#ipdbUrl.form-control(type="text", ng-model="game.gameId", placeholder="Common Abbreviation")
+						.input-group
+							input#ipdbUrl.form-control(type="text", ng-model="game.gameId", placeholder="Common Abbreviation", ng-change="idValidated = false")
+							span.input-group-addon(ng-class="{ transparent: !idValidated }"): i.fa.fa-check
 						span.help-block Must be unique and contain only letters and dashes.
 					.col-sm-3
-						button.btn.btn-default.btn--width-med.pull-right(ng-click="check()")
+						button.btn.btn-default.btn--width-med.pull-right(ng-click="check()", ng-disabled="idValidated")
 							i.fa.fa-check.space-right
 							| Check
 
@@ -105,6 +107,17 @@
 			p(ng-show="game.origin == 'originalGame'") Provide some more information about your table.
 
 			.form-horizontal(ng-show="game.origin == 'originalGame'")
+
+				.form-group
+					label.col-sm-3.control-label(for='ipdbUrl') Game ID
+					.col-sm-6
+						input#ipdbUrl.form-control(type="text", ng-model="game.gameId", placeholder="Common Abbreviation")
+						span.help-block Must be unique and contain only letters and dashes.
+					.col-sm-3
+						button.btn.btn-default.btn--width-med.pull-right(ng-click="check()")
+							i.fa.fa-check.space-right
+							| Check
+
 				.form-group
 					label.col-sm-3.control-label Description
 					.col-sm-9

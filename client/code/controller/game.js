@@ -55,7 +55,7 @@ ctrl.controller('RequestModPermissionModalCtrl', function($scope, $modalInstance
 	};
 });
 
-ctrl.controller('AdminGameAddCtrl', function($scope, $upload, ApiHelper, IpdbResource) {
+ctrl.controller('AdminGameAddCtrl', function($scope, $upload, ApiHelper, IpdbResource, GameResource) {
 
 	$scope.theme('light');
 	$scope.setMenu('admin');
@@ -63,6 +63,7 @@ ctrl.controller('AdminGameAddCtrl', function($scope, $upload, ApiHelper, IpdbRes
 	$scope.game = {
 		origin: 'recreation'
 	};
+	$scope.idValidated = false;
 
 	$scope.refresh = function() {
 		var ipdbId;
@@ -90,6 +91,14 @@ ctrl.controller('AdminGameAddCtrl', function($scope, $upload, ApiHelper, IpdbRes
 			alert('Need either number or URL with ID!');
 		}
 	};
+
+	$scope.check = function() {
+		GameResource.head({ id: $scope.game.gameId }, function() {
+			$scope.idValidated = true;
+		}, function() {
+			$scope.idValidated = true;
+		})
+	}
 
 	$scope.onBackglassUpload = function($files) {
 		var file = $files[0];

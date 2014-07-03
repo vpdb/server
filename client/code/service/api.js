@@ -3,10 +3,10 @@
  */
 services.factory('UserResource', function($resource) {
 	return $resource('/api/users/:userid', {}, {
-		'update': { method: 'PUT' },
-		'register': { method: 'POST' },
-		'login': { method: 'POST', params: { userid : 'login'} },
-		'logout': { method: 'POST', params: { userid : 'logout'} }
+		update: { method: 'PUT' },
+		register: { method: 'POST' },
+		login: { method: 'POST', params: { userid : 'login'} },
+		logout: { method: 'POST', params: { userid : 'logout'} }
 	});
 });
 
@@ -17,6 +17,12 @@ services.factory('RolesResource', function($resource) {
 
 services.factory('IpdbResource', function($resource) {
 	return $resource('/api/ipdb/:id', {}, {
+	});
+});
+
+services.factory('GameResource', function($resource) {
+	return $resource('/api/games/:id', {}, {
+		head: { method: 'HEAD' }
 	});
 });
 

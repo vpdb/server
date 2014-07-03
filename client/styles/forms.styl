@@ -32,7 +32,7 @@
 // Search box gets special treatment with rounded corners.
 //
 // Markup:
-// <div class="input-group">
+// <div class="input-group input-group-addon--search">
 //   <span class="input-group-addon">
 //     <i class="fa fa-search"></i>
 //   </span>
@@ -49,9 +49,10 @@
 	border none
 // Addon
 .input-group-addon
+	border none
+.input-group-addon--search
 	padding-right 3px
 	border-radius 14px
-	border none
 	// fix search icon position
 	i.fa-search
 		margin-left -2px

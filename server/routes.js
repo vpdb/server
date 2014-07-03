@@ -37,6 +37,9 @@ module.exports = function(app, config, passport) {
 	var filesApi = require('./controllers/api/files');
 	app.put('/api/files', filesApi.upload);
 
+	var gamesApi = require('./controllers/api/games');
+	app.head('/api/games/:id', gamesApi.head);
+
 	// Storage
 	app.get('/storage/:id', storage.get);
 

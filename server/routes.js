@@ -39,6 +39,7 @@ module.exports = function(app, config, passport) {
 
 	var gamesApi = require('./controllers/api/games');
 	app.head('/api/games/:id', gamesApi.head);
+	app.post('/api/games', gamesApi.create);
 
 	// Storage
 	app.get('/storage/:id', storage.get);

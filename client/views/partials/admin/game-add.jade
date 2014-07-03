@@ -10,10 +10,12 @@
 		form(role="form")
 			h1 1. enter title
 			hr
-			.form-group
+			.form-group(ng-class="{ error: errors.title }")
 				input.form-control.input-lg(type="text", placeholder="Title", ng-model="game.name")
 				span.help-block No year, manufacturer or anything else, just the title. Example: <i>The Addams Family</i>.
-
+			div.alert.alert-danger(ng-show="errors.title")
+				i.fa.fa-exclamation-triangle.space-right
+				| {{ errors.title }}
 			h1 2. origin
 			hr
 			p If you’ve created the game by yourself, it’s an original game. I’ve you built a game that exists in real
@@ -59,7 +61,7 @@
 					.col-sm-6
 						.input-group
 							input#ipdbUrl.form-control(type="text", ng-model="game.gameId", placeholder="Common Abbreviation", ng-change="idValidated = false")
-							span.input-group-addon(ng-class="{ transparent: !idValidated }"): i.fa.fa-check
+							span.input-group-addon(ng-class="{ transparent: !idValidated }"): i.fa(class="{{ idValid ? 'fa-check': 'fa-times'}}")
 						span.help-block Must be unique and contain only letters and dashes.
 					.col-sm-3
 						button.btn.btn-default.btn--width-med.pull-right(ng-click="check()", ng-disabled="idValidated")
@@ -193,7 +195,7 @@
 			//- button(ng-click='upload.abort()') Cancel Upload
 
 			hr
-			button.btn.btn-primary.btn-lg.pull-right Add New Game
+			button.btn.btn-primary.btn-lg.pull-right(ng-click="submit()") Add New Game
 			.clearfix
 
 			p

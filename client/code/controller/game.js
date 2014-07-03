@@ -94,11 +94,13 @@ ctrl.controller('AdminGameAddCtrl', function($scope, $upload, ApiHelper, IpdbRes
 
 	$scope.check = function() {
 		GameResource.head({ id: $scope.game.gameId }, function() {
+			$scope.idValid = false;
 			$scope.idValidated = true;
 		}, function() {
+			$scope.idValid = true;
 			$scope.idValidated = true;
 		})
-	}
+	};
 
 	$scope.onBackglassUpload = function($files) {
 		var file = $files[0];
@@ -124,7 +126,12 @@ ctrl.controller('AdminGameAddCtrl', function($scope, $upload, ApiHelper, IpdbRes
 				console.log('PROGRESS: ' + $scope.progress);
 			});
 		};
-
 	};
+
+	$scope.submit = function() {
+		var result = GameResource.save($scope.game, function() {
+			alert('success');
+		}, ApiHelper.handleErrors($scope));
+	}
 
 });

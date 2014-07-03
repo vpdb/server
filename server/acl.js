@@ -22,6 +22,7 @@ var init = function(next) {
 			roles: 'contributor',
 			allows: [
 				{ resources: 'games', permissions: 'edit' },
+				{ resources: 'games', permissions: 'add' },
 				{ resources: 'ipdb', permissions: 'view' },
 				{ resources: 'files', permissions: 'upload' }
 			]

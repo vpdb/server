@@ -61,10 +61,10 @@ function parseDetails(body, done) {
 		game.short = firstMatch(body, /Common Abbreviations:\s*<\/b><\/td><td[^>]*>([^<]+)/i, function(m) {
 			return m.split(/,\s*/);
 		});
-		game.units = firstMatch(body, /Production:\s*<\/b><\/td><td[^>]*>([\d,]+)\s*units/i, function(m) {
+		game.producedUnits = firstMatch(body, /Production:\s*<\/b><\/td><td[^>]*>([\d,]+)\s*units/i, function(m) {
 			return m.replace(/,/g, '');
 		});
-		game.theme = firstMatch(body, /Theme:\s*<\/b><\/td><td[^>]*>([^<]+)/i, function(m) {
+		game.themes = firstMatch(body, /Theme:\s*<\/b><\/td><td[^>]*>([^<]+)/i, function(m) {
 			return m.split(/\s+-\s+/gi);
 		});
 		game.designers = firstMatch(body, /Design by:\s*<\/b><\/td><td[^>]*><span[^>]*>(.*?)<\/tr>/i, function(m) {

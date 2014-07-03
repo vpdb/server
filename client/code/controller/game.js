@@ -60,7 +60,9 @@ ctrl.controller('AdminGameAddCtrl', function($scope, $upload, ApiHelper, IpdbRes
 	$scope.theme('light');
 	$scope.setMenu('admin');
 
-	$scope.game = {};
+	$scope.game = {
+		origin: 'recreation'
+	};
 
 	$scope.refresh = function() {
 		var ipdbId;
@@ -74,13 +76,14 @@ ctrl.controller('AdminGameAddCtrl', function($scope, $upload, ApiHelper, IpdbRes
 
 		if (ipdbId) {
 			$scope.setLoading(true);
-			$scope.game = IpdbResource.get({ id: ipdbId }, function() {
+			var game = IpdbResource.get({ id: ipdbId }, function() {
 				$scope.setLoading(false);
 
+				$scope.game = _.extend($scope.game, game);
 				if ($scope.game.short) {
-					$scope.gameId = $scope.game.short[0].replace(/[^a-z0-9\s\-]+/gi, '').replace(/\s+/g, '-').toLowerCase();
+					$scope.game.gameId = $scope.game.short[0].replace(/[^a-z0-9\s\-]+/gi, '').replace(/\s+/g, '-').toLowerCase();
 				} else {
-					$scope.gameId = $scope.game.name.replace(/[^a-z0-9\s\-]+/gi, '').replace(/\s+/g, '-').toLowerCase();
+					$scope.game.gameId = $scope.game.name.replace(/[^a-z0-9\s\-]+/gi, '').replace(/\s+/g, '-').toLowerCase();
 				}
 			}, ApiHelper.handleErrorsInDialog($scope, 'Error fetching data.'));
 		} else {

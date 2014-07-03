@@ -5,7 +5,7 @@
 		p Note that a game is completely decoupled from its releases. Data appearing in here is common to all releases
 			| that are linked to that game, but kept as a separate and independent data set.
 
-
+		pre {{ game }}
 
 		form(role="form")
 			h1 1. enter title
@@ -20,15 +20,15 @@
 				| life, it’s called a recreation. Recreations must be on IPDB.org.
 
 
-			.text-center.padder-top(ng-init="origin = 'recreation'")
+			.text-center.padder-top()
 				.radio-inline.radio--lg
 					label
-						input.input-lg(type="radio", name="origin", value="recreation", ng-model="origin")
+						input.input-lg(type="radio", name="origin", value="recreation", ng-model="game.origin")
 						span Recreation
 
 				.radio-inline.radio--lg
 					label
-						input(type="radio", name="origin", value="originalGame", ng-model="origin")
+						input(type="radio", name="origin", value="originalGame", ng-model="game.origin")
 						span Original Game
 
 			.clearfix
@@ -38,10 +38,10 @@
 			//----------------------
 			//- form for recreations
 			//----------------------
-			p(ng-show="origin == 'recreation'") Search IPDB.org and it will populate the following fields. You can also add additional data if you have
+			p(ng-show="game.origin == 'recreation'") Search IPDB.org and it will populate the following fields. You can also add additional data if you have
 				| more info available.
 
-			.form-horizontal(ng-show="origin == 'recreation'")
+			.form-horizontal(ng-show="game.origin == 'recreation'")
 				.form-group
 					label.col-sm-3.control-label(for='ipdbUrl') IPDB
 					.col-sm-6
@@ -57,27 +57,14 @@
 				.form-group
 					label.col-sm-3.control-label(for='ipdbUrl') Game ID
 					.col-sm-6
-						input#ipdbUrl.form-control(type="text", ng-model="gameId", placeholder="Common Abbreviation")
+						input#ipdbUrl.form-control(type="text", ng-model="game.gameId", placeholder="Common Abbreviation")
 						span.help-block Must be unique and contain only letters and dashes.
 					.col-sm-3
-						button.btn.btn-default.btn--width-med.pull-right(ng-click="refresh()")
+						button.btn.btn-default.btn--width-med.pull-right(ng-click="check()")
 							i.fa.fa-check.space-right
 							| Check
-				div(ng-show="false")
-					.form-group
-						label.col-sm-3.control-label Manufacturer
-						.col-sm-6
-							input.form-control(type="text", ng-model="game.manufacturer", disabled)
-					.form-group
-						label.col-sm-3.control-label Year
-						.col-sm-2
-							input.form-control(type="text", ng-model="game.year", disabled)
-						label.col-sm-2.control-label Game Type
-						.col-sm-2
-							input.form-control(type="text", ng-model="game.type", disabled)
 
-
-			.col-md-offset-2.col-md-8.col-sm-offset-1.col-sm-10(ng-show="origin == 'recreation'")
+			.col-md-offset-2.col-md-8.col-sm-offset-1.col-sm-10(ng-show="game.origin == 'recreation'")
 				.panel(ng-show="game.year")
 					.panel-heading
 						h2.h--small.text-center {{ game.name }}
@@ -111,12 +98,13 @@
 						p
 							i Click "Fetch" to load data.
 
+
 			//-------------------------
 			//- form for original games
 			//-------------------------
-			p(ng-show="origin == 'originalGame'") Provide some more information about your table.
+			p(ng-show="game.origin == 'originalGame'") Provide some more information about your table.
 
-			.form-horizontal(ng-show="origin == 'originalGame'")
+			.form-horizontal(ng-show="game.origin == 'originalGame'")
 				.form-group
 					label.col-sm-3.control-label Description
 					.col-sm-9
@@ -125,12 +113,12 @@
 							tab
 								tab-heading
 									i.fa.fa-edit(title="Write")
-								textarea.textarea--full.msd-elastic(placeholder="Description of the original table", ng-model="description")
+								textarea.textarea--full.msd-elastic(placeholder="Description of the original table", ng-model="game.description")
 							tab
 								tab-heading
 									i.fa.fa-eye(title="Preview")
-								div.markdown(markdown="description")
-								label.tab__label(ng-show="!description || description.length == 0") Nothing to preview.
+								div.markdown(markdown="game.description")
+								label.tab__label(ng-show="!game.description || game.description.length == 0") Nothing to preview.
 
 				.form-group
 					label.col-sm-3.control-label Instructions
@@ -140,12 +128,12 @@
 							tab
 								tab-heading
 									i.fa.fa-edit(title="Write")
-								textarea.textarea--full.msd-elastic(placeholder="Put game instructions here", ng-model="instructions")
+								textarea.textarea--full.msd-elastic(placeholder="Put game instructions here", ng-model="game.instructions")
 							tab
 								tab-heading
 									i.fa.fa-eye(title="Preview")
-								div.markdown(markdown="instructions")
-								label.tab__label(ng-show="!instructions || instructions.length == 0") Nothing to preview.
+								div.markdown(markdown="game.instructions")
+								label.tab__label(ng-show="!game.instructions || game.instructions.length == 0") Nothing to preview.
 
 
 			.clearfix
@@ -154,7 +142,7 @@
 			p Upload high quality artwork here. The backglass is mandatory but also the logo is strongly recommended.
 				| Please check the image guidelines if you haven’t done so yet.
 
-			.row
+			.row.padder-top
 				.col-sm-6
 					.panel.panel--blank(ng-file-drop="onBackglassUpload($files)", ng-file-drag-over-class="panel--dragging")
 						.panel-body
@@ -171,7 +159,7 @@
 						li The DMD area should be cut off.
 						li The image must not be stretched or upscaled.
 
-			.row
+			.row.padder-top
 				.col-sm-6
 					.panel.panel--blank(ng-file-drop="onLogoUpload($files)", ng-file-drag-over-class="panel--dragging")
 						.panel-body

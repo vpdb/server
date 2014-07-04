@@ -79,7 +79,7 @@
 			.col-md-offset-2.col-md-8.col-sm-offset-1.col-sm-10(ng-show="game.origin == 'recreation'")
 				.panel(ng-show="game.year")
 					.panel-heading
-						h2.h--small.text-center {{ game.name }}
+						h2.h--small.text-center {{ game.title }}
 					.panel-body
 						dl.dl-horizontal.dl--centered
 							dt Manufacturer
@@ -87,14 +87,14 @@
 							dt Year
 							dd {{ game.year }}
 							dt
-						hr.hr--margin-small(ng-show="game.units || game.ipdb.rating || game.type || game.modelno")
+						hr.hr--margin-small(ng-show="game.units || game.ipdb.rating || game.gameType || game.modelno")
 						dl(ng-show="game.units || game.ipdb.rating || game.type || game.modelno").dl-horizontal.dl--centered
 							dt(ng-show="game.ipdb.rating") IPDB Rating
 							dd(ng-show="game.ipdb.rating") {{ game.ipdb.rating }}
-							dt(ng-show="game.units") Production
-							dd(ng-show="game.units") {{ game.units | number }} units
-							dt(ng-show="game.type") Game Type
-							dd(ng-show="game.type") {{ game.type | gametype }}
+							dt(ng-show="game.producedUnits") Production
+							dd(ng-show="game.producedUnits") {{ game.producedUnits | number }} units
+							dt(ng-show="game.gameType") Game Type
+							dd(ng-show="game.gameType") {{ game.gameType | gametype }}
 							dt(ng-show="game.modelno") Model Number
 							dd(ng-show="game.modelno") {{ game.modelno }}
 						hr.hr--margin-small(ng-show="game.designers || game.artists")

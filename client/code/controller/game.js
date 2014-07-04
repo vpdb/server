@@ -66,18 +66,17 @@ ctrl.controller('AdminGameAddCtrl', function($scope, $upload, ApiHelper, IpdbRes
 	$scope.idValidated = false;
 
 	$scope.refresh = function() {
-		var ipdbId;
 		if (/id=\d+/i.test($scope.ipdbUrl)) {
 			var m = $scope.ipdbUrl.match(/id=(\d+)/i);
-			ipdbId = m[1];
+			$scope.ipdbId = m[1];
 
 		} else if (parseInt($scope.ipdbUrl)) {
-			ipdbId = $scope.ipdbUrl;
+			$scope.ipdbId = $scope.ipdbUrl;
 		}
 
-		if (ipdbId) {
+		if ($scope.ipdbId) {
 			$scope.setLoading(true);
-			var game = IpdbResource.get({ id: ipdbId }, function() {
+			var game = IpdbResource.get({ id: $scope.ipdbId }, function() {
 				$scope.setLoading(false);
 
 				$scope.game = _.extend($scope.game, game);
@@ -101,6 +100,12 @@ ctrl.controller('AdminGameAddCtrl', function($scope, $upload, ApiHelper, IpdbRes
 			$scope.idValidated = true;
 		})
 	};
+
+	$scope.submit = function() {
+		var result = GameResource.save($scope.game, function() {
+			alert('success');
+		}, ApiHelper.handleErrors($scope));
+	}
 
 	$scope.onBackglassUpload = function($files) {
 		var file = $files[0];
@@ -128,10 +133,5 @@ ctrl.controller('AdminGameAddCtrl', function($scope, $upload, ApiHelper, IpdbRes
 		};
 	};
 
-	$scope.submit = function() {
-		var result = GameResource.save($scope.game, function() {
-			alert('success');
-		}, ApiHelper.handleErrors($scope));
-	}
 
 });

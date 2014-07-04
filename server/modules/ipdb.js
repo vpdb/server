@@ -41,8 +41,8 @@ function parseDetails(body, done) {
 	var m = body.match(/<a name="(\d+)">([^<]+)/i);
 	var game = { ipdb: {}};
 	if (m) {
-		game.name = trim(m[2]);
-		game.ipdb.no = m[1];
+		game.title = trim(m[2]);
+		game.ipdb.number = m[1];
 		game.ipdb.mfg = firstMatch(body, /Manufacturer:\s*<\/b>.*?mfgid=(\d+)/i);
 		if (game.ipdb.mfg && manufacturerNames[game.ipdb.mfg]) {
 			game.manufacturer = manufacturerNames[game.ipdb.mfg];
@@ -52,7 +52,7 @@ function parseDetails(body, done) {
 		game.modelno = firstMatch(body, /Model Number:\s*<\/b><\/td><td[^>]*>(\d+)/i);
 		game.year = firstMatch(body, /href="machine\.cgi\?id=\d+">\d+<\/a>\s*<I>[^<]*?(\d{4})/i);
 
-		game.type = firstMatch(body, /Type:\s*<\/b><\/td><td[^>]*>([^<]+)/i, function(m) {
+		game.gameType = firstMatch(body, /Type:\s*<\/b><\/td><td[^>]*>([^<]+)/i, function(m) {
 			var mm = m.match(/\((..)\)/);
 			return mm ? mm[1] : null;
 		});
@@ -62,7 +62,7 @@ function parseDetails(body, done) {
 			return m.split(/,\s*/);
 		});
 		game.producedUnits = firstMatch(body, /Production:\s*<\/b><\/td><td[^>]*>([\d,]+)\s*units/i, function(m) {
-			return m.replace(/,/g, '');
+			return parseInt(m.replace(/,/g, ''));
 		});
 		game.themes = firstMatch(body, /Theme:\s*<\/b><\/td><td[^>]*>([^<]+)/i, function(m) {
 			return m.split(/\s+-\s+/gi);

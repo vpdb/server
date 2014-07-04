@@ -52,7 +52,7 @@ exports.upload = function(req, res) {
 						if (!err && metadata) {
 							file.metadata = metadata;
 						}
-						var f = _.pick(file, 'name', 'bytes', 'created', 'mimeType', 'fileType');
+						var f = _.pick(file, '_id', 'name', 'bytes', 'created', 'mimeType', 'fileType');
 						f.url = file.getUrl();
 						f.metaData = shortMetadata;
 						api.success(res, f);

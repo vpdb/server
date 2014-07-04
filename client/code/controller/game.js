@@ -61,7 +61,8 @@ ctrl.controller('AdminGameAddCtrl', function($scope, $upload, ApiHelper, IpdbRes
 	$scope.setMenu('admin');
 
 	$scope.game = {
-		origin: 'recreation'
+		origin: 'recreation',
+		media: {}
 	};
 	$scope.idValidated = false;
 
@@ -102,10 +103,11 @@ ctrl.controller('AdminGameAddCtrl', function($scope, $upload, ApiHelper, IpdbRes
 	};
 
 	$scope.submit = function() {
+		$scope.game.gameType = $scope.game.gameType ? $scope.game.gameType.toLowerCase() : 'na';
 		var result = GameResource.save($scope.game, function() {
 			alert('success');
 		}, ApiHelper.handleErrors($scope));
-	}
+	};
 
 	$scope.onBackglassUpload = function($files) {
 		var file = $files[0];
@@ -124,6 +126,7 @@ ctrl.controller('AdminGameAddCtrl', function($scope, $upload, ApiHelper, IpdbRes
 				data: e.target.result
 			}).then(function(response) {
 				$scope.uploadedBackglass = response.data.url;
+				$scope.game.media.backglass = response.data._id;
 
 			}, ApiHelper.handleErrorsInDialog($scope, 'Error uploading image.'), function(evt) {
 

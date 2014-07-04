@@ -111,3 +111,26 @@ exports.handleParseError = function(err, req, res, next) {
 		next(err, req, res, next);
 	}
 };
+
+exports.ok = function(type, action, ref, res, rollback) {
+	return function(successFct, message) {
+		return function (err, result) {
+			if (err) {
+				logger.error('[api|%s:%s] ' + message, type, action, ref, err, {});
+				if (rollback) {
+					logger.error('[api|%s:%s] ROLLING BACK.', type, action);
+					rollback(function(rollbackErr) {
+						if (rollbackErr) {
+							logger.error('[api|%s:%s] Error rolling back: %s', type, action, rollbackErr);
+						}
+						exports.fail(res, err);
+					});
+				} else {
+					exports.fail(res, err);
+				}
+			} else {
+				successFct(result);
+			}
+		}
+	}
+};

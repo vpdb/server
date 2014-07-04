@@ -6,7 +6,7 @@ var uniqueValidator = require('mongoose-unique-validator');
 
 var Schema = mongoose.Schema;
 
-var gameTypes = [ 'ss', 'em', 'pm', 'og'];
+var gameTypes = [ 'ss', 'em', 'pm', 'og', 'na'];
 
 // schema
 var fields = {
@@ -31,6 +31,10 @@ var fields = {
 		number: Number,
 		rating: Number,
 		mfg: Number
+	},
+	media: {
+		backglass: { type: Schema.Types.ObjectId, ref: 'File', required: 'Backglass image must be provided.' },
+		logo: { type: Schema.Types.ObjectId, ref: 'File' }
 	}
 };
 var GameSchema = new Schema(fields);
@@ -38,14 +42,16 @@ var GameSchema = new Schema(fields);
 GameSchema.plugin(uniqueValidator, { message: 'The {PATH} "{VALUE}" is already taken.' });
 
 // validations
-GameSchema.path('ipdb.number').validate(function(ipdb) {
+GameSchema.path('gameType').validate(function(gameType) {
+
+	var ipdb = this.ipdb ? this.ipdb.number : null;
 
 	// only check if not an original game.
-	if (this.gameType != 'og') {
-		return ipdb && validator.isNumeric(ipdb);
+	if (this.gameType != 'og' && (!ipdb || !validator.isInt(ipdb))) {
+		this.invalidate('ipdb.number', 'IPDB Number is mandatory for recreations and must be a postive integer.');
 	}
 	return true;
-}, 'IPDB Number is mandatory for recreations.');
+});
 
 
 // methods

@@ -43,13 +43,10 @@
 				| more info available.
 
 			.form-horizontal(ng-show="game.origin == 'recreation'")
-				.form-group(ng-class="{ error: errors.ipdbUrl }")
+				.form-group(ng-class="{ error: errors['ipdb.number'] }")
 					label.col-sm-3.control-label IPDB
 					.col-sm-6
 						input#ipdbUrl.form-control(type="text", ng-model="ipdbUrl", placeholder="URL or Number")
-						.alert.alert-danger(ng-show="errors.ipdbUrl")
-							i.fa.fa-exclamation-triangle.space-right
-							| {{ errors.ipdbUrl }}
 						a(href="http://www.ipdb.org/search.pl?any={{ game.name | escape }}&search=Search+Database&searchtype=quick", target="_blank")
 							i.fa.fa-external-link.space-right
 							| Search title on IPDB.org
@@ -57,6 +54,12 @@
 						button.btn.btn-default.btn--width-med.pull-right(ng-click="refresh()")
 							i.fa.fa-refresh.space-right
 							| Fetch
+
+				.alert.alert-danger.alert--shifted-up(ng-show="errors['ipdb.number']")
+					.row
+						.col-sm-9.col-sm-offset-3
+							i.fa.fa-exclamation-triangle.space-right
+							| {{ errors['ipdb.number'] }}
 
 				.form-group(ng-class="{ error: errors.gameId }")
 					label.col-sm-3.control-label Game ID
@@ -72,7 +75,7 @@
 
 				.alert.alert-danger.alert--shifted-up(ng-show="errors.gameId")
 					.row
-						.col-sm-6.col-sm-offset-3
+						.col-sm-9.col-sm-offset-3
 							i.fa.fa-exclamation-triangle.space-right
 							| {{ errors.gameId }}
 

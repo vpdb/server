@@ -1,0 +1,31 @@
+// Alerts
+//
+// Styleguide 18
+
+
+// Full page alerts
+//
+// Span over the whole width without any padding.
+//
+// Markup:
+// <div class="alert alert-danger">
+//   <i class="fa fa-exclamation-triangle space-right"></i>
+//   Geez, an error!
+// </div>
+//
+// Styleguide 18.1
+.alert
+	margin 0 -30px
+	padding 5px 30px
+	border-radius 0
+	border none
+
+
+// Alerts in modals
+.modal-dialog
+	.alert
+		margin 0 -20px
+		padding 5px 20px
+		text-align center
+		& + .alert
+			margin-top 10px

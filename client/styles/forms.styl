@@ -160,14 +160,13 @@ textarea
 // .form-group.error - Erroneous field
 //
 // Styleguide 5.3.1
-.form-group.error .form-control
-	border-style solid
-	border-width 1px
+.form-group.error
+	.form-control, .input-group-addon
+		border-style solid
+		border-width 1px
+	.input-group-addon
+		border-left-style none
 
-
-// Move this to input-groups.styl if it gets bigger
-.input-group
-	margin-bottom 15px
 
 // Normal line breaks for descriptions after label
 .checkbox > label div

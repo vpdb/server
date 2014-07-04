@@ -44,10 +44,13 @@
 
 	// On error:
 	.form-group.error
-		.form-control
+		.form-control, .input-group-addon
 			border-color $color-danger
 		label
 			color $color-danger
+
+		.input-group .form-control:first-child, .input-group-addon:first-child, .input-group-btn:first-child > .btn, .input-group-btn:first-child > .btn-group > .btn, .input-group-btn:first-child > .dropdown-toggle, .input-group-btn:last-child > .btn:not(:last-child):not(.dropdown-toggle), .input-group-btn:last-child > .btn-group:not(:last-child) > .btn
+			border-right none
 
 	// Addon has the same background-color as the form control
 	.input-group-addon

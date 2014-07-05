@@ -136,3 +136,20 @@ exports.ok = function(type, action, ref, res, rollback) {
 		}
 	}
 };
+
+exports.sanitizeObject = function(object) {
+	var oldProp;
+	for (var property in object) {
+		if (object.hasOwnProperty(property)) {
+			if (/\.|\$/.test(property)) {
+				oldProp = property;
+				property = oldProp.replace(/\.|\$/g, '-');
+				object[property] = object[oldProp];
+				delete object[oldProp]
+			}
+			if (typeof object[property] == "object"){
+				exports.sanitizeObject(object[property]);
+			}
+		}
+	}
+}

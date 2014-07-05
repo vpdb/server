@@ -50,6 +50,7 @@ exports.upload = function(req, res) {
 					writeStream.end();
 					storage.metadata(file, function(err, metadata, shortMetadata) {
 						if (!err && metadata) {
+							api.sanitizeObject(metadata);
 							file.metadata = metadata;
 						}
 						var f = _.pick(file, '_id', 'name', 'bytes', 'created', 'mimeType', 'fileType');
@@ -59,6 +60,7 @@ exports.upload = function(req, res) {
 						file.save(function(err) {
 							if (err) {
 								logger.error('[api|file:save] Error saving metadata: %s', err, {});
+								logger.error('[api|file:save] Metadata: %s', require('util').inspect(metadata));
 							}
 						});
 					});

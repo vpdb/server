@@ -141,11 +141,11 @@ ctrl.controller('AdminGameAddCtrl', function($scope, $upload, ApiHelper, IpdbRes
 		$scope.uploadedBackglass = bg.url;
 		$scope.game.media.backglass = bg._id;
 
-		var ar = Math.round(bg.metaData.size.width / bg.metaData.size.height * 1000) / 1000;
+		var ar = Math.round(bg.metadata.size.width / bg.metadata.size.height * 1000) / 1000;
 		var arDiff = Math.abs(ar / 1.25 - 1);
 
 		$scope.backglass = {
-			dimensions: bg.metaData.size.width + '×' + bg.metaData.size.height,
+			dimensions: bg.metadata.size.width + '×' + bg.metadata.size.height,
 			test: ar == 1.25 ? 'optimal' : (arDiff < maxAspectRatioDifference ? 'warning' : 'error'),
 			ar: ar,
 			arDiff: Math.round(arDiff * 100)

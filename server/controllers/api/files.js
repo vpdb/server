@@ -55,7 +55,7 @@ exports.upload = function(req, res) {
 						}
 						var f = _.pick(file, '_id', 'name', 'bytes', 'created', 'mimeType', 'fileType');
 						f.url = file.getUrl();
-						f.metaData = shortMetadata;
+						f.metadata = shortMetadata;
 						api.success(res, f);
 						file.save(function(err) {
 							if (err) {

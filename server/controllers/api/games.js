@@ -40,11 +40,13 @@ exports.create = function(req, res) {
 						// set media to active
 						File.findById(newGame.media.backglass, okk(function(backglass) {
 							backglass.active = true;
+							backglass.public = true;
 							backglass.save(okk(function(backglass) {
 								logger.info('[api|game:create] Set backglass to active.');
 								if (newGame.media.logo) {
 									File.findById(newGame.media.logo, okk(function(logo) {
 										logo.active = true;
+										logo.public = true;
 										logo.save(okk(function(logo) {
 											logger.info('[api|game:create] Set logo to active.');
 											return api.success(res, newGame.toJSON(), 201);

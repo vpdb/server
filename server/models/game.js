@@ -8,6 +8,8 @@ var Schema = mongoose.Schema;
 
 var gameTypes = [ 'ss', 'em', 'pm', 'og', 'na'];
 
+var maxAspectRatioDifference = 0.2;
+
 // schema
 var fields = {
 	gameId:        { type: String, required: 'Game ID must be provided.', index: true, unique: true },
@@ -52,6 +54,24 @@ GameSchema.path('gameType').validate(function(gameType) {
 	}
 	return true;
 });
+
+// validations
+GameSchema.path('media.backglass').validate(function(backglass, callback) {
+
+	var File = mongoose.model('File');
+
+	File.findById(backglass, function(err, backglass) {
+		if (err) {
+			logger.error('[model] Error fetching backglass %s.');
+			return callback(false);
+		}
+
+		var ar = Math.round(backglass.metadata.size.width / backglass.metadata.size.height * 1000) / 1000;
+		var arDiff = Math.abs(ar / 1.25 - 1);
+		console.log('AR: %s, diff: %s', ar, arDiff)
+		callback(arDiff < maxAspectRatioDifference);
+	});
+}, 'Aspect of backglass must be smaller than 1:1.5 and greater than 1:1.05.');
 
 
 // methods

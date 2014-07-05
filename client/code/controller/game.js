@@ -98,11 +98,27 @@ ctrl.controller('AdminGameAddCtrl', function($scope, $upload, $modal, ApiHelper,
 				}
 			}, ApiHelper.handleErrorsInDialog($scope, 'Error fetching data.'));
 		} else {
-			alert('Need either number or URL with ID!');
+			$modal.open({
+				templateUrl: 'partials/modals/info',
+				controller: 'InfoModalCtrl',
+				resolve: {
+					icon: function() { return 'fa-warning'; },
+					title: function() { return 'IPDB Fetch'; },
+					subtitle: function() { return 'Sorry!'; },
+					message: function() { return 'You need to put either the IPDB number or the URL with an ID.'; }
+				}
+			});
 		}
 	};
 
 	$scope.check = function() {
+
+		if (!$scope.game.gameId) {
+			$scope.idValid = false;
+			$scope.idValidated = true;
+			return;
+		}
+
 		GameResource.head({ id: $scope.game.gameId }, function() {
 			$scope.idValid = false;
 			$scope.idValidated = true;

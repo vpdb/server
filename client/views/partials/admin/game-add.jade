@@ -11,7 +11,7 @@
 			h1 1. enter title
 			hr
 			.form-group(ng-class="{ error: errors.title }")
-				input.form-control.input-lg(type="text", placeholder="Title", ng-model="game.name")
+				input.form-control.input-lg(type="text", placeholder="Title", ng-model="game.title")
 				.alert.alert-danger(ng-show="errors.title")
 					i.fa.fa-exclamation-triangle.space-right
 					| {{ errors.title }}

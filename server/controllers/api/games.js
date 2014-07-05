@@ -42,8 +42,17 @@ exports.create = function(req, res) {
 							backglass.active = true;
 							backglass.save(okk(function(backglass) {
 								logger.info('[api|game:create] Set backglass to active.');
-								return api.success(res, _.omit(newGame.toJSON(), 'passwordHash', 'passwordSalt'), 201);
-
+								if (newGame.media.logo) {
+									File.findById(newGame.media.logo, okk(function(logo) {
+										logo.active = true;
+										logo.save(okk(function(logo) {
+											logger.info('[api|game:create] Set logo to active.');
+											return api.success(res, newGame.toJSON(), 201);
+										}, 'Error saving logo for game "%s": %s'));
+									}, 'Error finding logo for game "%s": %s'));
+								} else {
+									return api.success(res, newGame.toJSON(), 201);
+								}
 							}, 'Error saving backglass for game "%s": %s'));
 						}, 'Error finding backglass for game "%s": %s'));
 					}, 'Error saving game "%s": %s'));

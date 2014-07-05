@@ -111,44 +111,54 @@ ctrl.controller('AdminGameAddCtrl', function($scope, $upload, ApiHelper, IpdbRes
 		}, ApiHelper.handleErrors($scope));
 	};
 
-	$scope.onBackglassUpload = function($files) {
-		var file = $files[0];
-		var fileReader = new FileReader();
-		fileReader.readAsArrayBuffer(file);
-		fileReader.onload = function(e) {
-			console.log(file);
-			$upload.http({
-				url: '/api/files',
-				method: 'PUT',
-				params: { type: 'backglass' },
-				headers: {
-					'Content-Type': file.type,
-					'Content-Disposition': 'attachment; filename="' + file.name + '"'
-				},
-				data: e.target.result
-			}).then(function(response) {
-
-				var bg = response.data;
-				$scope.uploadedBackglass = bg.url;
-				$scope.game.media.backglass = bg._id;
-
-				var ar = Math.round(bg.metaData.size.width / bg.metaData.size.height * 1000) / 1000;
-				var arDiff = Math.abs(ar / 1.25 - 1);
-
-				$scope.backglass = {
-					dimensions: bg.metaData.size.width + '×' + bg.metaData.size.height,
-					test: ar == 1.25 ? 'optimal' : (arDiff < maxAspectRatioDifference ? 'warning' : 'error'),
-					ar: ar,
-					arDiff: Math.round(arDiff * 100)
-				};
-
-			}, ApiHelper.handleErrorsInDialog($scope, 'Error uploading image.'), function(evt) {
-
-				$scope.progress = parseInt(100.0 * evt.loaded / evt.total);
-				console.log('PROGRESS: ' + $scope.progress);
-			});
+	var onImageUpload = function(type, done) {
+		return function($files) {
+			var file = $files[0];
+			var fileReader = new FileReader();
+			fileReader.readAsArrayBuffer(file);
+			fileReader.onload = function (e) {
+				console.log(file);
+				$upload.http({
+					url: '/api/files',
+					method: 'PUT',
+					params: { type: type },
+					headers: {
+						'Content-Type': file.type,
+						'Content-Disposition': 'attachment; filename="' + file.name + '"'
+					},
+					data: e.target.result
+				}).then(done, ApiHelper.handleErrorsInDialog($scope, 'Error uploading image.'), function (evt) {
+					$scope.progress = parseInt(100.0 * evt.loaded / evt.total);
+					console.log('PROGRESS: ' + $scope.progress);
+				});
+			};
 		};
 	};
+
+	$scope.onBackglassUpload = onImageUpload('backglass', function(response) {
+
+		var bg = response.data;
+		$scope.uploadedBackglass = bg.url;
+		$scope.game.media.backglass = bg._id;
+
+		var ar = Math.round(bg.metaData.size.width / bg.metaData.size.height * 1000) / 1000;
+		var arDiff = Math.abs(ar / 1.25 - 1);
+
+		$scope.backglass = {
+			dimensions: bg.metaData.size.width + '×' + bg.metaData.size.height,
+			test: ar == 1.25 ? 'optimal' : (arDiff < maxAspectRatioDifference ? 'warning' : 'error'),
+			ar: ar,
+			arDiff: Math.round(arDiff * 100)
+		};
+	});
+
+	$scope.onLogoUpload = onImageUpload('logo', function(response) {
+
+		var bg = response.data;
+		$scope.uploadedLogo = bg.url;
+		$scope.game.media.logo = bg._id;
+
+	});
 
 
 });

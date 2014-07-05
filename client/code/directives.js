@@ -154,14 +154,21 @@ directives.directive('imgBg', function($parse) {
 		link: function(scope, element, attrs) {
 
 			var setImg = function(value) {
-				element.css('background-image', "url('" + value + "')");
-				element.waitForImages({
-					each: function() {
-						var that = $(this);
-						that.addClass('loaded');
-					},
-					waitForAll: true
-				});
+
+				// check for empty
+				if (value === false) {
+					element.css('background-image', 'none');
+
+				} else {
+					element.css('background-image', "url('" + value + "')");
+					element.waitForImages({
+						each: function() {
+							var that = $(this);
+							that.addClass('loaded');
+						},
+						waitForAll: true
+					});
+				}
 			};
 
 			// check for constant
@@ -172,8 +179,9 @@ directives.directive('imgBg', function($parse) {
 			} else {
 				var value = $parse(attrs.imgBg);
 				scope.$watch(value, function() {
-					if (value(scope)) {
-						setImg(value(scope));
+					var v = value(scope)
+					if (v || v === false) {
+						setImg(v);
 					}
 				});
 			}

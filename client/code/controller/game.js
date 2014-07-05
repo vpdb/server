@@ -55,18 +55,26 @@ ctrl.controller('RequestModPermissionModalCtrl', function($scope, $modalInstance
 	};
 });
 
-ctrl.controller('AdminGameAddCtrl', function($scope, $upload, ApiHelper, IpdbResource, GameResource) {
+ctrl.controller('AdminGameAddCtrl', function($scope, $upload, $modal, ApiHelper, IpdbResource, GameResource) {
 
 	var maxAspectRatioDifference = 0.2;
 
 	$scope.theme('light');
 	$scope.setMenu('admin');
 
-	$scope.game = {
-		origin: 'recreation',
-		media: {}
-	};
+
 	$scope.idValidated = false;
+
+	$scope.reset = function() {
+		$scope.game = {
+			origin: 'recreation',
+			media: {}
+		};
+		$scope.ipdbUrl = '';
+		$scope.backglass = {};
+		$scope.uploadedBackglass = false;
+		$scope.uploadedLogo = false;
+	}
 
 	$scope.refresh = function() {
 		if (/id=\d+/i.test($scope.ipdbUrl)) {
@@ -112,7 +120,17 @@ ctrl.controller('AdminGameAddCtrl', function($scope, $upload, ApiHelper, IpdbRes
 			);
 
 		var result = GameResource.save($scope.game, function() {
-			alert('success');
+			$scope.reset();
+			$modal.open({
+				templateUrl: 'partials/modals/info',
+				controller: 'InfoModalCtrl',
+				resolve: {
+					icon: function() { return 'fa-check-circle-o'; },
+					title: function() { return 'Game Created!'; },
+					subtitle: function() { return result.title; },
+					message: function() { return 'The game has been successfully created.'; }
+				}
+			});
 		}, ApiHelper.handleErrors($scope));
 	};
 
@@ -166,4 +184,5 @@ ctrl.controller('AdminGameAddCtrl', function($scope, $upload, ApiHelper, IpdbRes
 	});
 
 
+	$scope.reset();
 });

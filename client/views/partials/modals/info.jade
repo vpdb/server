@@ -1,0 +1,11 @@
+.bg-lightest
+	.modal-header
+		h1.h--no-margin.h--small
+			i.fa.space-right(ng-class="icon")
+			| {{ title }}
+	.modal-body
+		h4 {{ subtitle }}
+		p {{ message }}
+
+	.modal-footer
+		button.btn.btn-primary(ng-click="$close()") Close

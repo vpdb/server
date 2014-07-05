@@ -220,6 +220,13 @@ ctrl.controller('ErrorModalCtrl', function($scope, errorTitle, errorMessage) {
 	$scope.errorMessage = errorMessage;
 });
 
+ctrl.controller('InfoModalCtrl', function($scope, title, subtitle, message, icon) {
+	$scope.title = title;
+	$scope.subtitle = subtitle;
+	$scope.message = message;
+	$scope.icon = icon;
+});
+
 ctrl.controller('StyleguideCtrl', function($scope, $location, $rootScope) {
 	if (/(\d+)\.\d+$/.test($location.path())) {
 		$scope.section = $location.path().match(/(\d+)\.\d+$/)[1];

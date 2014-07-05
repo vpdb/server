@@ -105,7 +105,12 @@ ctrl.controller('AdminGameAddCtrl', function($scope, $upload, ApiHelper, IpdbRes
 	};
 
 	$scope.submit = function() {
-		$scope.game.gameType = $scope.game.gameType ? $scope.game.gameType.toLowerCase() : 'na';
+
+		$scope.game.gameType =
+				$scope.game.origin == 'originalGame' ? 'og' : (
+				$scope.game.gameType ? $scope.game.gameType.toLowerCase() : 'na'
+			);
+
 		var result = GameResource.save($scope.game, function() {
 			alert('success');
 		}, ApiHelper.handleErrors($scope));

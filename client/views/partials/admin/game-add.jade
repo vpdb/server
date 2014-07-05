@@ -5,8 +5,6 @@
 		p Note that a game is completely decoupled from its releases. Data appearing in here is common to all releases
 			| that are linked to that game, but kept as a separate and independent data set.
 
-		pre {{ game }}
-
 		form(role="form")
 			h1 1. enter title
 			hr
@@ -44,7 +42,7 @@
 
 			.form-horizontal(ng-show="game.origin == 'recreation'")
 				.form-group(ng-class="{ error: errors['ipdb.number'] }")
-					label.col-sm-3.control-label IPDB
+					label.col-sm-3.control-label(for="ipdbUrl") IPDB
 					.col-sm-6
 						input#ipdbUrl.form-control(type="text", ng-model="ipdbUrl", placeholder="URL or Number")
 						a(href="http://www.ipdb.org/search.pl?any={{ game.name | escape }}&search=Search+Database&searchtype=quick", target="_blank")
@@ -62,10 +60,10 @@
 							| {{ errors['ipdb.number'] }}
 
 				.form-group(ng-class="{ error: errors.gameId }")
-					label.col-sm-3.control-label Game ID
+					label.col-sm-3.control-label(for="gameId1") Game ID
 					.col-sm-6
 						.input-group
-							input#ipdbUrl.form-control(type="text", ng-model="game.gameId", placeholder="Common Abbreviation", ng-change="idValidated = false")
+							input#gameId1.form-control(type="text", ng-model="game.gameId", placeholder="Common Abbreviation", ng-change="idValidated = false")
 							span.input-group-addon(ng-class="{ transparent: !idValidated }"): i.fa(class="{{ idValid ? 'fa-check': 'fa-times'}}")
 						span.help-block Must be unique and contain only letters and dashes.
 					.col-sm-3
@@ -121,15 +119,44 @@
 
 			.form-horizontal(ng-show="game.origin == 'originalGame'")
 
-				.form-group
-					label.col-sm-3.control-label(for='ipdbUrl') Game ID
+				.form-group(ng-class="{ error: errors.gameId }")
+					label.col-sm-3.control-label(for="gameId2") Game ID
 					.col-sm-6
-						input#ipdbUrl.form-control(type="text", ng-model="game.gameId", placeholder="Common Abbreviation")
+						.input-group
+							input#gameId2.form-control(type="text", ng-model="game.gameId", placeholder="Common Abbreviation", ng-change="idValidated = false")
+							span.input-group-addon(ng-class="{ transparent: !idValidated }"): i.fa(class="{{ idValid ? 'fa-check': 'fa-times'}}")
 						span.help-block Must be unique and contain only letters and dashes.
 					.col-sm-3
-						button.btn.btn-default.btn--width-med.pull-right(ng-click="check()")
+						button.btn.btn-default.btn--width-med.pull-right(ng-click="check()", ng-disabled="idValidated")
 							i.fa.fa-check.space-right
 							| Check
+
+				.alert.alert-danger.alert--shifted-up-2x(ng-show="errors.gameId")
+					.row
+						.col-sm-9.col-sm-offset-3
+							i.fa.fa-exclamation-triangle.space-right
+							| {{ errors.gameId }}
+
+				.form-group
+					label.col-sm-3.control-label(for='author', ng-class="{ error: errors.manufacturer }") Author
+					.col-sm-6
+						input#author.form-control(type="text", ng-model="game.manufacturer", placeholder="Your name, nick name or pen name", ng-class="{ error: errors.manufacturer }")
+						span.help-block This will show up as manufacturer.
+					label.col-sm-1.control-label.text-right(for='manufacturer', ng-class="{ error: errors.year }") Year
+					.col-sm-2.form-subgroup
+						input#author.form-control(type="text", ng-model="game.year", ng-class="{ error: errors.year }")
+
+				.alert.alert-danger.alert--shifted-up(ng-show="errors.manufacturer")
+					.row
+						.col-sm-9.col-sm-offset-3
+							i.fa.fa-exclamation-triangle.space-right
+							| {{ errors.manufacturer }}
+
+				.alert.alert-danger.alert--shifted-up(ng-show="errors.year")
+					.row
+						.col-sm-9.col-sm-offset-3
+							i.fa.fa-exclamation-triangle.space-right
+							| {{ errors.year }}
 
 				.form-group
 					label.col-sm-3.control-label Description

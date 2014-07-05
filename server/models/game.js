@@ -58,6 +58,10 @@ GameSchema.path('gameType').validate(function(gameType) {
 // validations
 GameSchema.path('media.backglass').validate(function(backglass, callback) {
 
+	if (!backglass) {
+		return;
+	}
+
 	var File = mongoose.model('File');
 
 	File.findById(backglass, function(err, backglass) {
@@ -71,7 +75,7 @@ GameSchema.path('media.backglass').validate(function(backglass, callback) {
 		console.log('AR: %s, diff: %s', ar, arDiff)
 		callback(arDiff < maxAspectRatioDifference);
 	});
-}, 'Aspect of backglass must be smaller than 1:1.5 and greater than 1:1.05.');
+}, 'Aspect ratio of backglass must be smaller than 1:1.5 and greater than 1:1.05.');
 
 
 // methods

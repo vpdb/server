@@ -14,3 +14,17 @@
 	.alert-success
 		color $color-lightest
 		background-color $color-success
+
+	.alert--inverted
+		&.alert-danger
+			border-color $color-danger
+			color $color-danger
+			background-color $color-light
+		&.alert-success
+			border-color $color-success
+			color $color-success
+			background-color $color-light
+		&.alert-warning
+			border-color $color-warning
+			color $color-warning
+			background-color $color-light

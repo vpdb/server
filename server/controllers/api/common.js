@@ -114,7 +114,7 @@ exports.handleParseError = function(err, req, res, next) {
 
 exports.ok = function(type, action, ref, res, rollback) {
 	return function(successFct, message) {
-		return function (err, result) {
+		return function(err, result) {
 			if (err) {
 				logger.error('[api|%s:%s] ' + message, type, action, ref, err, {});
 				if (rollback) {
@@ -122,6 +122,8 @@ exports.ok = function(type, action, ref, res, rollback) {
 					rollback(function(rollbackErr) {
 						if (rollbackErr) {
 							logger.error('[api|%s:%s] Error rolling back: %s', type, action, rollbackErr);
+						} else {
+							logger.error('[api|%s:%s] Rollback successful.', type, action);
 						}
 						exports.fail(res, err);
 					});

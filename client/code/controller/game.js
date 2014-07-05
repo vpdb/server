@@ -57,6 +57,8 @@ ctrl.controller('RequestModPermissionModalCtrl', function($scope, $modalInstance
 
 ctrl.controller('AdminGameAddCtrl', function($scope, $upload, ApiHelper, IpdbResource, GameResource) {
 
+	var maxAspectRatioDifference = 0.2;
+
 	$scope.theme('light');
 	$scope.setMenu('admin');
 
@@ -125,8 +127,20 @@ ctrl.controller('AdminGameAddCtrl', function($scope, $upload, ApiHelper, IpdbRes
 				},
 				data: e.target.result
 			}).then(function(response) {
-				$scope.uploadedBackglass = response.data.url;
-				$scope.game.media.backglass = response.data._id;
+
+				var bg = response.data;
+				$scope.uploadedBackglass = bg.url;
+				$scope.game.media.backglass = bg._id;
+
+				var ar = Math.round(bg.metaData.size.width / bg.metaData.size.height * 1000) / 1000;
+				var arDiff = Math.abs(ar / 1.25 - 1);
+
+				$scope.backglass = {
+					dimensions: bg.metaData.size.width + '×' + bg.metaData.size.height,
+					test: ar == 1.25 ? 'optimal' : (arDiff < maxAspectRatioDifference ? 'warning' : 'error'),
+					ar: ar,
+					arDiff: Math.round(arDiff * 100)
+				};
 
 			}, ApiHelper.handleErrorsInDialog($scope, 'Error uploading image.'), function(evt) {
 

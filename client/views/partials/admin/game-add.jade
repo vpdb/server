@@ -45,7 +45,7 @@
 					label.col-sm-3.control-label(for="ipdbUrl") IPDB
 					.col-sm-6
 						input#ipdbUrl.form-control(type="text", ng-model="ipdbUrl", placeholder="URL or Number")
-						a(href="http://www.ipdb.org/search.pl?any={{ game.name | escape }}&search=Search+Database&searchtype=quick", target="_blank")
+						a(href="http://www.ipdb.org/search.pl?any={{ game.title | escape }}&search=Search+Database&searchtype=quick", target="_blank")
 							i.fa.fa-external-link.space-right
 							| Search title on IPDB.org
 					.col-sm-3

@@ -76,27 +76,38 @@ ctrl.controller('AdminGameAddCtrl', function($scope, $upload, $modal, ApiHelper,
 		$scope.uploadedLogo = false;
 	}
 
-	$scope.refresh = function() {
+	var fetchIpdb = function(ipdbId, done) {
+		$scope.setLoading(true);
+		var game = IpdbResource.get({ id: ipdbId }, function() {
+			$scope.setLoading(false);
+
+			$scope.game = _.extend($scope.game, game);
+			if ($scope.game.short) {
+				$scope.game.gameId = $scope.game.short[0].replace(/[^a-z0-9\s\-]+/gi, '').replace(/\s+/g, '-').toLowerCase();
+			} else {
+				$scope.game.gameId = $scope.game.name.replace(/[^a-z0-9\s\-]+/gi, '').replace(/\s+/g, '-').toLowerCase();
+			}
+			if (done) {
+				done(null, $scope.game);
+			}
+		}, ApiHelper.handleErrorsInDialog($scope, 'Error fetching data.'));
+	};
+
+	var readIpdbId = function() {
 		if (/id=\d+/i.test($scope.ipdbUrl)) {
 			var m = $scope.ipdbUrl.match(/id=(\d+)/i);
-			$scope.ipdbId = m[1];
+			return m[1];
 
 		} else if (parseInt($scope.ipdbUrl)) {
-			$scope.ipdbId = $scope.ipdbUrl;
+			return $scope.ipdbUrl;
 		}
+	}
 
-		if ($scope.ipdbId) {
-			$scope.setLoading(true);
-			var game = IpdbResource.get({ id: $scope.ipdbId }, function() {
-				$scope.setLoading(false);
+	$scope.refresh = function(done) {
 
-				$scope.game = _.extend($scope.game, game);
-				if ($scope.game.short) {
-					$scope.game.gameId = $scope.game.short[0].replace(/[^a-z0-9\s\-]+/gi, '').replace(/\s+/g, '-').toLowerCase();
-				} else {
-					$scope.game.gameId = $scope.game.name.replace(/[^a-z0-9\s\-]+/gi, '').replace(/\s+/g, '-').toLowerCase();
-				}
-			}, ApiHelper.handleErrorsInDialog($scope, 'Error fetching data.'));
+		var ipdbId = readIpdbId();
+		if (ipdbId) {
+			fetchIpdb(ipdbId, done);
 		} else {
 			$modal.open({
 				templateUrl: 'partials/modals/info',
@@ -135,19 +146,28 @@ ctrl.controller('AdminGameAddCtrl', function($scope, $upload, $modal, ApiHelper,
 				$scope.game.gameType ? $scope.game.gameType.toLowerCase() : 'na'
 			);
 
-		var result = GameResource.save($scope.game, function() {
-			$scope.reset();
-			$modal.open({
-				templateUrl: 'partials/modals/info',
-				controller: 'InfoModalCtrl',
-				resolve: {
-					icon: function() { return 'fa-check-circle-o'; },
-					title: function() { return 'Game Created!'; },
-					subtitle: function() { return result.title; },
-					message: function() { return 'The game has been successfully created.'; }
-				}
-			});
-		}, ApiHelper.handleErrors($scope));
+		var submit = function() {
+			var game = GameResource.save($scope.game, function() {
+				$scope.reset();
+				$modal.open({
+					templateUrl: 'partials/modals/info',
+					controller: 'InfoModalCtrl',
+					resolve: {
+						icon: function() { return 'fa-check-circle-o'; },
+						title: function() { return 'Game Created!'; },
+						subtitle: function() { return game.title; },
+						message: function() { return 'The game has been successfully created.'; }
+					}
+				});
+			}, ApiHelper.handleErrors($scope));
+		};
+
+		// if not yet refreshed, do that first.
+		if ($scope.game.origin == 'recreation' && (!$scope.game.ipdb || !$scope.game.ipdb.number)) {
+			fetchIpdb(readIpdbId(), submit);
+		} else {
+			submit();
+		}
 	};
 
 	var onImageUpload = function(type, done) {

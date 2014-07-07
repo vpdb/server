@@ -5,6 +5,7 @@ var logger = require('winston');
 var User = require('mongoose').model('User');
 var acl = require('../../acl');
 var api = require('./common');
+var config = require('../../modules/settings').current;
 
 exports.fields = {
 	pub: ['_id', 'name', 'username', 'thumb'],
@@ -35,7 +36,7 @@ exports.create = function(req, res) {
 						return api.fail(res, err, 500);
 					}
 					newUser.roles = count ? [ 'member' ] : [ 'root' ];
-					newUser.plan = count ? settings.vpdb.quota.defaultPlan : 'unlimited';
+					newUser.plan = count ? config.vpdb.quota.defaultPlan : 'unlimited';
 					newUser.save(function(err) {
 						if (err) {
 							logger.error('[api|user:create] Error saving user <%s>: %s', newUser.email, err, {});

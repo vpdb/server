@@ -28,6 +28,11 @@ module.exports = function(app, config, passport) {
 	app.set('json spaces', "\t");
 	app.set('showStackError', runningDev);
 
+	// add reverse proxy config for non-local
+	if (!runningLocal) {
+		app.enable('trust proxy');
+	}
+
 	app.use(domainError(sendOfflineMsg, doGracefulExit));
 
 	// log to file if env APP_ACCESS_LOG is set
@@ -47,7 +52,7 @@ module.exports = function(app, config, passport) {
 				})
 			],
 			meta: false, // optional: control whether you want to log the meta data about the request (default to true)
-			msg: '[http] {{req.method}} {{req.url}} - {{res.statusCode}} {{res.responseTime}}ms' // optional: customize the default logging message. E.g. "{{res.statusCode}} {{req.method}} {{res.responseTime}}ms {{req.url}}"
+			msg: '[http] {{req.ip}}: {{req.method}} {{req.url}} - {{res.statusCode}} {{res.responseTime}}ms' // optional: customize the default logging message. E.g. "{{res.statusCode}} {{req.method}} {{res.responseTime}}ms {{req.url}}"
 		}));
 		logger.info('[express] Access log will be written to %s.', process.env.APP_ACCESS_LOG);
 	} else {

@@ -62,7 +62,6 @@ ctrl.controller('AdminGameAddCtrl', function($scope, $upload, $modal, ApiHelper,
 	$scope.theme('light');
 	$scope.setMenu('admin');
 
-
 	$scope.idValidated = false;
 
 	$scope.reset = function() {
@@ -74,7 +73,9 @@ ctrl.controller('AdminGameAddCtrl', function($scope, $upload, $modal, ApiHelper,
 		$scope.backglass = {};
 		$scope.uploadedBackglass = false;
 		$scope.uploadedLogo = false;
-	}
+		$scope.errors = {};
+		$scope.error = null;
+	};
 
 	var fetchIpdb = function(ipdbId, done) {
 		$scope.setLoading(true);
@@ -100,8 +101,10 @@ ctrl.controller('AdminGameAddCtrl', function($scope, $upload, $modal, ApiHelper,
 
 		} else if (parseInt($scope.ipdbUrl)) {
 			return $scope.ipdbUrl;
+		} else {
+			return false;
 		}
-	}
+	};
 
 	$scope.refresh = function(done) {
 
@@ -141,12 +144,13 @@ ctrl.controller('AdminGameAddCtrl', function($scope, $upload, $modal, ApiHelper,
 
 	$scope.submit = function() {
 
-		$scope.game.gameType =
-				$scope.game.origin == 'originalGame' ? 'og' : (
-				$scope.game.gameType ? $scope.game.gameType.toLowerCase() : 'na'
-			);
-
 		var submit = function() {
+
+			$scope.game.gameType =
+					$scope.game.origin == 'originalGame' ? 'og' : (
+					$scope.game.gameType ? $scope.game.gameType.toLowerCase() : 'na'
+				);
+
 			var game = GameResource.save($scope.game, function() {
 				$scope.reset();
 				$modal.open({
@@ -163,8 +167,9 @@ ctrl.controller('AdminGameAddCtrl', function($scope, $upload, $modal, ApiHelper,
 		};
 
 		// if not yet refreshed, do that first.
-		if ($scope.game.origin == 'recreation' && (!$scope.game.ipdb || !$scope.game.ipdb.number)) {
-			fetchIpdb(readIpdbId(), submit);
+		var ipdbId = readIpdbId();
+		if ($scope.game.origin == 'recreation' && ipdbId && (!$scope.game.ipdb || !$scope.game.ipdb.number)) {
+			fetchIpdb(ipdbId, submit);
 		} else {
 			submit();
 		}

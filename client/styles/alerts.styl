@@ -8,10 +8,13 @@
 // Span over the whole width without any padding.
 //
 // Markup:
-// <div class="alert alert-danger">
+// <div class="alert {$modifiers}">
 //   <i class="fa fa-exclamation-triangle space-right"></i>
-//   Geez, an error!
+//   Hello, I'm an alert!
 // </div>
+//
+// .alert-danger  - Danger
+// .alert-success - Success
 //
 // Styleguide 18.1
 .alert
@@ -24,6 +27,21 @@
 	border-radius 0
 	border none
 
+// Inverted Alerts
+//
+// Have padding and transparentish background.
+//
+// Markup:
+// <div class="alert alert--inverted {$modifiers}">
+//   <i class="fa fa-exclamation-triangle space-right"></i>
+//   Hello, I'm an alert!
+// </div>
+//
+// .alert-danger  - Danger
+// .alert-warning - Warning
+// .alert-success - Success
+//
+// Styleguide 18.2
 .alert--inverted
 	margin 10px -15px 0
 	padding-top 5px

@@ -114,13 +114,6 @@ and the dialog box is empty, try another one.
 Work has however started on a serious version that uses a MongoDB backend. See [changelog](CHANGELOG.md) for more 
 details. There will be a beta version deployed at some point where users can start testing.
 
-## TODO
-
-Among other things:
-
-* File up/downloads
-* Upload/edit forms in UI
-* Counters/quota system
 
 ## Credits
 

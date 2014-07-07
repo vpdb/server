@@ -58,7 +58,7 @@ The principle here is the same, but there's still a difference: In production, o
 means if you feel that a commit is ready for production, you need to tag it so it can be deployed into production:
 
 	git tag -a v0.0.2 -m "Released version 0.0.2."
-	git push production master && git push production master --tags
+	git push production master --tags
 
 The version should match the [Semantic Versioning](http://semver.org/) scheme, prefixed with a ``v``. Note that always
 the latest tag is deployed, so if there was previous tag that wasn't deployed, it will be ignored. Also note that

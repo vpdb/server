@@ -1,6 +1,6 @@
 # VPDB Changelog
 
-## v0.0.2 (unreleased)
+## v0.0.4
 
 Client Changes:
 
@@ -15,8 +15,12 @@ Server Update:
 * Added user registration and login
 * Added admin interface for users
 * Added "real" server-side API:
-  * User resource (``create``, ``list``, ``update``, ``login``, ``logout``)
-  * Roles resource (``list``)
+  * User resource (`create`, `list`, `update`, `login`, `logout`)
+  * Roles resource (`list`)
+  * Games resource (`create`)
+  * IPDB resource (`get`)
+  * Files resource (`upload`)
+* Added storage API
 * Added ACLs for permissions management to REST API
 * Added basic quota management to storage API
 * Moved from [Piler](https://github.com/epeli/piler) to [Grunt](http://gruntjs.com/) for asset compilation

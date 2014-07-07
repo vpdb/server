@@ -203,6 +203,7 @@
 						.panel-body
 							.img.img--ar-bg.loaded(img-bg="uploadedBackglass")
 								.text-center.vertical-center--100(ng-hide="uploadedBackglass")
+									progressbar.progress-striped.active(value="backglassUploadProgress", type="success", ng-show="backglassUploading")
 									i.fa.fa-picture-o.fa-3x
 									p Drop backglass image here
 				.col-sm-6
@@ -236,6 +237,7 @@
 						.panel-body
 							.img.img--ar-logo.loaded(img-bg="uploadedLogo")
 								.text-center.vertical-center--100(ng-hide="uploadedLogo")
+									progressbar.progress-striped.active(value="logoUploadProgress", type="success", ng-show="logoUploading")
 									i.fa.fa-picture-o.fa-3x
 									p Drop logo here
 				.col-sm-6

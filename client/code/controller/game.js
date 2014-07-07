@@ -197,6 +197,7 @@ ctrl.controller('AdminGameAddCtrl', function($scope, $upload, $modal, ApiHelper,
 			var fileReader = new FileReader();
 			fileReader.readAsArrayBuffer(file);
 			fileReader.onload = function(event) {
+				$scope[type + 'Uploading'] = true;
 				console.log(file);
 				$upload.http({
 					url: '/api/files',
@@ -207,9 +208,11 @@ ctrl.controller('AdminGameAddCtrl', function($scope, $upload, $modal, ApiHelper,
 						'Content-Disposition': 'attachment; filename="' + file.name + '"'
 					},
 					data: event.target.result
-				}).then(done, ApiHelper.handleErrorsInDialog($scope, 'Error uploading image.'), function (evt) {
-					$scope.progress = parseInt(100.0 * evt.loaded / evt.total);
-					console.log('PROGRESS: ' + $scope.progress);
+				}).then(function(response) {
+					$scope[type + 'Uploading'] = false;
+					done(response);
+				}, ApiHelper.handleErrorsInDialog($scope, 'Error uploading image.'), function (evt) {
+						$scope[type + 'UploadProgress'] = parseInt(100.0 * evt.loaded / evt.total);
 				});
 			};
 		};

@@ -58,6 +58,8 @@ repo_clone() {
 repo_checkout_tag() {
 	local dest=${DEPLOY_ROOT}/${DEPLOY_ENV}/$1
 	cd ${dest}
+	# git looks at $GIT_DIR first before checking $PWD, so let's fix that.
+	unset GIT_DIR
 	git checkout $1
     test $? -eq 0 || rollback_abort $1 "Failed to checkout $1, aborting."
 }

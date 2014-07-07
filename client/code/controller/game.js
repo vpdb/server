@@ -178,9 +178,25 @@ ctrl.controller('AdminGameAddCtrl', function($scope, $upload, $modal, ApiHelper,
 	var onImageUpload = function(type, done) {
 		return function($files) {
 			var file = $files[0];
+
+			// check for image mime type
+			if (!_.contains(['image/jpeg', 'image/png'], file.type)) {
+				return $modal.open({
+					templateUrl: 'partials/modals/info',
+					controller: 'InfoModalCtrl',
+					resolve: {
+						icon: function() { return 'fa-file-image-o'; },
+						title: function() { return 'Image Upload'; },
+						subtitle: function() { return 'Wrong file type!'; },
+						message: function() { return 'Please upload a JPEG or PNG image.'; }
+					}
+				});
+			}
+
+			// upload image
 			var fileReader = new FileReader();
 			fileReader.readAsArrayBuffer(file);
-			fileReader.onload = function (e) {
+			fileReader.onload = function(event) {
 				console.log(file);
 				$upload.http({
 					url: '/api/files',
@@ -190,7 +206,7 @@ ctrl.controller('AdminGameAddCtrl', function($scope, $upload, $modal, ApiHelper,
 						'Content-Type': file.type,
 						'Content-Disposition': 'attachment; filename="' + file.name + '"'
 					},
-					data: e.target.result
+					data: event.target.result
 				}).then(done, ApiHelper.handleErrorsInDialog($scope, 'Error uploading image.'), function (evt) {
 					$scope.progress = parseInt(100.0 * evt.loaded / evt.total);
 					console.log('PROGRESS: ' + $scope.progress);

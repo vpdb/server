@@ -58,6 +58,8 @@ ctrl.controller('RequestModPermissionModalCtrl', function($scope, $modalInstance
 ctrl.controller('AdminGameAddCtrl', function($scope, $upload, $modal, ApiHelper, IpdbResource, GameResource) {
 
 	var maxAspectRatioDifference = 0.2;
+	var dropText = 'Drop backglass image here';
+	var uploadText = 'Uploading...';
 
 	$scope.theme('light');
 	$scope.setMenu('admin');
@@ -75,6 +77,8 @@ ctrl.controller('AdminGameAddCtrl', function($scope, $upload, $modal, ApiHelper,
 		$scope.uploadedLogo = false;
 		$scope.errors = {};
 		$scope.error = null;
+		$scope.backglassUploadText = dropText;
+		$scope.logoUploadText = dropText;
 	};
 
 	var fetchIpdb = function(ipdbId, done) {
@@ -176,6 +180,7 @@ ctrl.controller('AdminGameAddCtrl', function($scope, $upload, $modal, ApiHelper,
 	};
 
 	var onImageUpload = function(type, done) {
+		var cType = type.charAt(0).toUpperCase() + type.slice(1);
 		return function($files) {
 			var file = $files[0];
 
@@ -197,7 +202,9 @@ ctrl.controller('AdminGameAddCtrl', function($scope, $upload, $modal, ApiHelper,
 			var fileReader = new FileReader();
 			fileReader.readAsArrayBuffer(file);
 			fileReader.onload = function(event) {
+				$scope['uploaded' + cType] = false;
 				$scope[type + 'Uploading'] = true;
+				$scope[type + 'UploadText'] = uploadText;
 				console.log(file);
 				$upload.http({
 					url: '/api/files',
@@ -210,6 +217,7 @@ ctrl.controller('AdminGameAddCtrl', function($scope, $upload, $modal, ApiHelper,
 					data: event.target.result
 				}).then(function(response) {
 					$scope[type + 'Uploading'] = false;
+					$scope[type + 'UploadText'] = dropText;
 					done(response);
 				}, ApiHelper.handleErrorsInDialog($scope, 'Error uploading image.'), function (evt) {
 						$scope[type + 'UploadProgress'] = parseInt(100.0 * evt.loaded / evt.total);

@@ -14,7 +14,7 @@
 		"vpx"
 	],
 	"author": "freezy",
-	"license": "MIT",
+	"license": "GPLv2",
 	"bugs": {
 		"url": "https://github.com/freezy/node-vpdb/issues"
 	},
@@ -46,6 +46,7 @@
 		"highlight.js": "^8.0.0",
 		"html2jade": "0.7.7",
 		"jade": "latest",
+		"jwt-simple": "^0.2.0",
 		"kss": "^0.3.7",
 		"marked": "^0.3.2",
 		"md5": "^1.0.0",
@@ -56,8 +57,8 @@
 		"passport-github": "~0.1.5",
 		"passport-local": "~1.0.0",
 		"passport-oauth": "latest",
-		"pngquant-bin": "~0.1.7",
 		"pkginfo": "^0.3.0",
+		"pngquant-bin": "~0.1.7",
 		"request": "^2.36.0s",
 		"stylus": "^0.46.3",
 		"uglify-js": "^2.4.0",

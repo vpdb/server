@@ -1,4 +1,5 @@
 var _ = require('underscore');
+var jwt = require('jwt-simple');
 var util = require('util');
 var logger = require('winston');
 
@@ -54,10 +55,10 @@ exports.create = function(req, res) {
 	});
 };
 
-exports.login = function(req, res) {
+exports.authenticate = function(req, res) {
 
 	if (!req.body.username || !req.body.password) {
-		logger.warn('[api|user:login] Ignoring empty login request.');
+		logger.warn('[api|user:login] Ignoring empty authentication request.');
 		return api.fail(res, 'You must supply a username and password.', 400)
 	}
 	User.findOne({ username: req.body.username }, '-__v', function(err, user) {
@@ -66,37 +67,36 @@ exports.login = function(req, res) {
 			return api.fail(res, err, 500);
 		}
 		if (!user || !user.authenticate(req.body.password)) {
-			logger.warn('[api|user:login] Login denied for user "%s" (%s).', req.body.username, user ? 'password' : 'username');
+			logger.warn('[api|user:login] Authentication denied for user "%s" (%s).', req.body.username, user ? 'password' : 'username');
 			return api.fail(res, 'Wrong username or password.', 401);
 		}
 		if (!user.active) {
-			logger.warn('[api|user:login] Login denied for inactive user "%s".', req.body.username);
+			logger.warn('[api|user:login] Authentication denied for inactive user "%s".', req.body.username);
 			return api.fail(res, 'Inactive account. Please contact an administrator.', 401);
 		}
-		req.logIn(user, function(err) {
+
+		var expires = new Date(new Date().getTime() + 3600000); // 1h
+		var token = jwt.encode({
+			iss: user.email,
+			exp: expires
+		}, config.vpdb.secret);
+
+		logger.info('[api|user:login] User <%s> successfully authenticated.', user.email);
+		acl.allowedPermissions(user.email, [ 'users', 'content' ], function(err, permissions) {
 			if (err) {
-				logger.error('[api|user:login] Error logging in user <%s>: %s', user.email, err, {});
+				logger.error('[api|user:login] Error reading permissions for user <%s>: %s', user.email, err, {});
 				return api.fail(res, err, 500);
 			}
-			logger.info('[api|user:login] User <%s> successfully logged in.', user.email);
-			acl.allowedPermissions(req.user.email, [ 'users', 'content' ], function(err, permissions) {
+			acl.userRoles(user.email, function(err, roles) {
 				if (err) {
-					logger.error('[api|user:login] Error reading permissions for user <%s>: %s', user.email, err, {});
+					logger.error('[api|user:login] Error reading roles for user <%s>: %s', user.email, err, {});
 					return api.fail(res, err, 500);
 				}
-				acl.userRoles(req.user.email, function(err, roles) {
-					if (err) {
-						logger.error('[api|user:login] Error reading roles for user <%s>: %s', user.email, err, {});
-						return api.fail(res, err, 500);
-					}
-					return api.success(res, _.extend(
-						_.omit(user.toJSON(), 'passwordHash', 'passwordSalt'),
-						{
-							permissions: permissions,
-							rolesAll: roles
-						}
-					), 200);
-				});
+				return api.success(res, {
+					token: token,
+					expires: expires,
+					user: _.extend(_.omit(user.toJSON(), 'passwordHash', 'passwordSalt','uploadedFiles'), { permissions: permissions, rolesAll: roles })
+				}, 200);
 			});
 		});
 	});

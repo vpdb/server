@@ -22,10 +22,11 @@ module.exports = function(app, config, passport) {
 
 	// JSON API
 	var userApi = require('./controllers/api/users');
+	app.post('/api/authenticate', userApi.authenticate);
 	app.get('/api/users', userApi.list);
 	app.put('/api/users/:id', userApi.update);
 	app.post('/api/users', userApi.create);
-	app.post('/api/users/login', userApi.login);
+
 	app.post('/api/users/logout', userApi.logout);
 
 	var rolesApi = require('./controllers/api/roles');

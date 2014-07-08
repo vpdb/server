@@ -78,18 +78,8 @@ module.exports = function(app, config, passport) {
 	app.use(express.static(path.resolve(__dirname, '../data/assets'), { maxAge: 3600*24*30*1000 }));
 	app.use(asset.middleware());
 
-	// express/mongo session storage
-	app.use(express.session({
-		secret: config.vpdb.secret,
-		store: new mongoStore({
-			url: config.vpdb.db,
-			collection: 'sessions'
-		})
-	}));
-
 	// use passport session
 	app.use(passport.initialize());
-	app.use(passport.session());
 
 	// connect flash for flash messages
 	app.use(flash());

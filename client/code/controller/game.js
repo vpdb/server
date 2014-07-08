@@ -79,6 +79,8 @@ ctrl.controller('AdminGameAddCtrl', function($scope, $upload, $modal, ApiHelper,
 		$scope.error = null;
 		$scope.backglassUploadText = dropText;
 		$scope.logoUploadText = dropText;
+		$scope.backglassUploadProgress = 0;
+		$scope.logoUploadProgress = 0;
 	};
 
 	var fetchIpdb = function(ipdbId, done) {

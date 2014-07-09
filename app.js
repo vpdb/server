@@ -47,7 +47,7 @@ serverDomain.run(function() {
 		}
 
 		// bootstrap passport config
-		require('./server/passport')(passport, config);
+		require('./server/passport')(config, passport);
 
 		// express settings
 		require('./server/express')(app, config, passport);

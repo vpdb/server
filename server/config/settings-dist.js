@@ -35,12 +35,12 @@ module.exports = {
 		httpsEnabled: true,
 
 		/**
-		 * Session timeout in milliseconds.
+		 * Session timeout in milliseconds (technically it's the expiration length of the JWT)
 		 */
 		sessionTimeout: 3600000,
 
 		/**
-		 * Secret for hashing stuff. Create something long here: http://strongpasswordgenerator.com/
+		 * Secret for hashing and signing. Create something long here: http://strongpasswordgenerator.com/
 		 * @important
 		 */
 		secret: 'alongsecret',

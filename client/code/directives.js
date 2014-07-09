@@ -4,11 +4,14 @@
 
 var directives = angular.module('vpdb.directives', []);
 
-directives.directive('auth', function($rootScope) {
+directives.directive('auth', function($rootScope, $location) {
 	return {
 		restrict: 'A',
 		link: function(scope, element, attrs) {
 			$rootScope.auth = JSON.parse(attrs.auth);
+			if ($rootScope.auth.redirect) {
+				$location.url($rootScope.auth.redirect);
+			}
 		}
 	}
 });

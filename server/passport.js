@@ -10,21 +10,10 @@ var User = mongoose.model('User');
 /**
  * Defines the authentication strategies and user serialization.
  *
- * @param passport Passport module
  * @param config Passport configuration from settings
+ * @param passport Passport module
  */
-module.exports = function(passport, config) {
-
-	// serialize sessions
-	passport.serializeUser(function(user, done) {
-		done(null, user.id);
-	});
-
-	passport.deserializeUser(function(id, done) {
-		User.findOne({ _id: id }, function(err, user) {
-			done(err, user);
-		});
-	});
+module.exports = function(config, passport) {
 
 	// oauth callback
 	var updateProfile = function(strategy, providerName) {
@@ -133,4 +122,5 @@ module.exports = function(passport, config) {
 			);
 		}
 	});
+
 };

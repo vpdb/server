@@ -76,7 +76,7 @@ var asset = function(context, p, processFct, type, key, size, defaultName) {
 			var hash = md5.digest_s(type + ':' + ':' + key + ':' + size);
 			var filename = cacheImg + '/' + hash + '.png';
 			if (fs.existsSync(filename)) {
-				logger.info('[asset] File cache hit, returning ' + filename);
+				//logger.info('[asset] File cache hit, returning ' + filename);
 				return file(context, filename);
 			} else {
 				logger.info('[asset] No cache hit for ' + filename);

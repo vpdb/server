@@ -2,6 +2,7 @@ var _ = require('underscore');
 
 module.exports = function(app, config, passport) {
 
+	var api = require('./controllers/api');
 	var web = require('./controllers/web');
 	var storage = require('./controllers/storage');
 
@@ -21,26 +22,19 @@ module.exports = function(app, config, passport) {
 	app.get('/partials/modals/:name', web.partials('modals'));
 
 	// JSON API
-	var userApi = require('./controllers/api/users');
-	app.post('/api/authenticate', userApi.authenticate);
-	app.get('/api/users', userApi.list);
-	app.put('/api/users/:id', userApi.update);
-	app.post('/api/users', userApi.create);
+	app.post('/api/authenticate', api.users.authenticate);
+	app.post('/api/users',        api.users.create);
+	app.get('/api/users',         api.auth(api.users.list, 'users', 'list'));
+	app.put('/api/users/:id',     api.auth(api.users.update, 'users', 'update'));
 
-	app.post('/api/users/logout', userApi.logout);
+	app.get('/api/roles',         api.auth(api.roles.list, 'roles', 'list'));
 
-	var rolesApi = require('./controllers/api/roles');
-	app.get('/api/roles', rolesApi.list);
+	app.get('/api/ipdb/:id',      api.auth(api.ipdb.view, 'ipdb', 'view'));
 
-	var ipdbApi = require('./controllers/api/ipdb');
-	app.get('/api/ipdb/:id', ipdbApi.view);
+	app.put('/api/files',         api.auth(api.files.upload, 'files', 'upload'));
 
-	var filesApi = require('./controllers/api/files');
-	app.put('/api/files', filesApi.upload);
-
-	var gamesApi = require('./controllers/api/games');
-	app.head('/api/games/:id', gamesApi.head);
-	app.post('/api/games', gamesApi.create);
+	app.head('/api/games/:id',    api.games.head);
+	app.post('/api/games',        api.auth(api.games.create, 'games', 'add'));
 
 	// Storage
 	app.get('/storage/:id', storage.get);
@@ -57,8 +51,8 @@ module.exports = function(app, config, passport) {
 
 	// authentication routes
 	if (config.vpdb.passport.github.enabled) {
-		app.get('/auth/github', passport.authenticate('github', { failureRedirect: '/' }));
-		app.get('/auth/github/callback', passport.authenticate('github', { failureRedirect: '/', successRedirect: '/' }));
+		app.get('/auth/github', passport.authenticate('github', { failureRedirect: '/', session: false }));
+		app.get('/auth/github/callback', api.passport('github', passport, web));
 	}
 	_.each(config.vpdb.passport.ipboard, function(ipbConfig) {
 		if (ipbConfig.enabled) {

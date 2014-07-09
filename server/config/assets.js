@@ -30,6 +30,7 @@ function Assets() {
 			'lib/jquery.waitforimages-1.5.0.js',
 			'lib/jquery.throttle-debounce-1.1.js',
 			'lib/angular.scrollable-0.2.0.js',
+			'lib/angular.storage-bea0498.js',
 			'app.js',
 			'services.js',
 			'controllers.js',

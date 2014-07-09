@@ -7,6 +7,7 @@ var app = angular.module('vpdb', [
 	'ngAnimate',
 	'ngSanitize',
 	'ngResource',
+	'ngStorage',
 	'angularFileUpload',
 	'ui.bootstrap',
 	'angulartics',

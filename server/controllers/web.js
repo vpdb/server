@@ -95,7 +95,7 @@ var protectedRoute = function(resource, permission, successFct, errFct) {
 
 exports.index = function(resource, permission, params1) {
 	return protectedRoute(resource, permission, function(req, res, params2) {
-		res.render('index', _.extend(params1, params2));
+		res.render('index', _.extend({}, params1, params2));
 	}, function(req, res) {
 		showError(403, req, res);
 	});

@@ -222,10 +222,11 @@ exports.passport = function(strategy, passport, web) {
 			}
 			// don't do a HTTP redirect because we need Angular read the JWT first
 			web.index(false, false, {
-				redirect: '/',
-				jwt: exports.generateToken(user, new Date())
-			});
-			done(req, res);
+				auth: {
+					redirect: '/',
+					jwt: exports.generateToken(user, new Date())
+				}
+			})(req, res);
 		})(req, res, next);
 	};
 };

@@ -26,6 +26,7 @@ module.exports = function(app, config, passport) {
 	app.post('/api/users',        api.users.create);
 	app.get('/api/users',         api.auth(api.users.list, 'users', 'list'));
 	app.put('/api/users/:id',     api.auth(api.users.update, 'users', 'update'));
+	app.get('/api/user',          api.auth(api.users.profile, 'user', 'profile'));
 
 	app.get('/api/roles',         api.auth(api.roles.list, 'roles', 'list'));
 

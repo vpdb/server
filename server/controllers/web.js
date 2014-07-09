@@ -29,31 +29,28 @@ var params = function(req, done) {
 					url: '/auth/' + ipbConfig.id
 				};
 			})
-		},
-		auth: {
-			isAuthenticated: req.isAuthenticated(),
-			user: req.isAuthenticated() ? _.pick(req.user, _.union(userApi.fields.pub, userApi.fields.adm)) : null
 		}
 	};
-	if (req.isAuthenticated()) {
-		acl.allowedPermissions(req.user.email, [ 'users', 'content', 'games', 'roles' ], function(err, permissions) {
-			if (err) {
-				logger.error('[webctrl] Error reading permissions for user <%s>: %s', req.user.email, err);
-			} else {
-				params.auth.permissions = permissions;
-			}
-			acl.userRoles(req.user.email, function(err, roles) {
-				if (err) {
-					logger.error('[webctrl] Error reading roles for user <%s>: %s', req.user.email, err);
-				} else {
-					params.auth.roles = roles;
-				}
-				done(params);
-			});
-		});
-	} else {
-		done(params);
-	}
+	done(params);
+//	if (req.isAuthenticated()) {
+//		acl.allowedPermissions(req.user.email, [ 'users', 'content', 'games', 'roles' ], function(err, permissions) {
+//			if (err) {
+//				logger.error('[webctrl] Error reading permissions for user <%s>: %s', req.user.email, err);
+//			} else {
+//				params.auth.permissions = permissions;
+//			}
+//			acl.userRoles(req.user.email, function(err, roles) {
+//				if (err) {
+//					logger.error('[webctrl] Error reading roles for user <%s>: %s', req.user.email, err);
+//				} else {
+//					params.auth.roles = roles;
+//				}
+//				done(params);
+//			});
+//		});
+//	} else {
+//		done(params);
+//	}
 };
 
 var showError = function(errCode, req, res) {

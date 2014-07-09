@@ -137,6 +137,28 @@ exports.list = function(req, res) {
 	});
 };
 
+exports.profile = function(req, res) {
+
+	var user = req.user;
+	acl.allowedPermissions(user.email, [ 'users', 'content' ], function(err, permissions) {
+		if (err) {
+			logger.error('[api|user:profile] Error reading permissions for user <%s>: %s', user.email, err, {});
+			return api.fail(res, err, 500);
+		}
+		acl.userRoles(user.email, function(err, roles) {
+			if (err) {
+				logger.error('[api|user:profile] Error reading roles for user <%s>: %s', user.email, err, {});
+				return api.fail(res, err, 500);
+			}
+			return api.success(res,_.extend(
+				_.omit(user.toJSON(), 'passwordHash', 'passwordSalt', 'uploadedFiles'),
+				{ permissions: permissions, rolesAll: roles }
+			), 200);
+		});
+	});
+};
+
+
 exports.update = function(req, res) {
 	var updateableFields = [ 'name', 'email', 'username', 'active', 'roles' ];
 	User.findById(req.params.id, '-passwordHash -passwordSalt -__v', function(err, user) {

@@ -1,6 +1,10 @@
-/**
- *
- */
+
+services.factory('AuthResource', function($resource) {
+	return $resource('/api/authenticate', {}, {
+		authenticate: { method: 'POST' }
+	});
+});
+
 services.factory('UserResource', function($resource) {
 	return $resource('/api/users/:userid', {}, {
 		update: { method: 'PUT' },
@@ -9,6 +13,11 @@ services.factory('UserResource', function($resource) {
 		logout: { method: 'POST', params: { userid : 'logout'} }
 	});
 });
+
+services.factory('ProfileResource', function($resource) {
+	return $resource('/api/user', {}, {});
+});
+
 
 services.factory('RolesResource', function($resource) {
 	return $resource('/api/roles/:role', {}, {

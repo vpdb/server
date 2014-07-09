@@ -29,6 +29,7 @@ var init = function(next) {
 		}, {
 			roles: 'member',
 			allows: [
+				{ resources: 'user', permissions: 'profile' },
 				{ resources: 'users', permissions: 'view' },
 				{ resources: 'files', permissions: 'download' }
 			]

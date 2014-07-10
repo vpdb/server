@@ -1,7 +1,7 @@
 var _ = require('underscore');
 var logger = require('winston');
 
-var ctrl = require('../common');
+var ctrl = require('../ctrl');
 var config = require('../../modules/settings').current;
 var User = require('mongoose').model('User');
 

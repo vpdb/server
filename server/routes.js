@@ -10,8 +10,8 @@ module.exports = function(app, config, passport) {
 	app.get('/games', web.index());
 	app.get('/game', web.index());
 	app.get('/game/*', web.index());
-	app.get('/games/add', web.index('games', 'edit'));
-	app.get('/admin/users', web.index('users', 'list'));
+	app.get('/games/add', web.index());
+	app.get('/admin/users', web.index());
 	app.get('/styleguide/sections/*', web.styleguide());
 
 	// serve index and view partials

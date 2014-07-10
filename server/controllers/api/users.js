@@ -4,7 +4,8 @@ var logger = require('winston');
 
 var User = require('mongoose').model('User');
 var acl = require('../../acl');
-var api = require('./common');
+var api = require('./api');
+var ctrl = require('../ctrl');
 var config = require('../../modules/settings').current;
 
 exports.fields = {
@@ -76,7 +77,7 @@ exports.authenticate = function(req, res) {
 
 		var now = new Date();
 		var expires = new Date(now.getTime() + config.vpdb.sessionTimeout);
-		var token = api.generateToken(user, now);
+		var token = ctrl.generateToken(user, now);
 
 		logger.info('[api|user:authenticate] User <%s> successfully authenticated.', user.email);
 		acl.allowedPermissions(user.email, [ 'users', 'content' ], function(err, permissions) {

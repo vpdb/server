@@ -3,7 +3,7 @@ var fs = require('fs');
 var path = require('path');
 var logger = require('winston');
 
-var api = require('./common');
+var api = require('./api');
 var File = require('mongoose').model('File');
 var config = require('../../modules/settings').current;
 var storage = require('../../modules/storage');

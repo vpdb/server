@@ -1,0 +1,13 @@
+extends ../layout
+block body
+	.center-middle.center-middle-errorpage
+		i.icon.icon-vpdb-logo-o
+		h1=code
+		p You tried to access&nbsp;
+			code=url
+			| .&nbsp;
+			span=message
+
+		a(href="/", target="_self")
+			i.fa.fa-arrow-circle-left.space-right
+			|GO HOME

@@ -20,12 +20,27 @@ services.factory('display', function() {
 	}
 });
 
+app.factory('ProfileService', function($rootScope, ProfileResource) {
+	return {
+		init: function() {
 
-app.factory('AuthService', function($window, $localStorage, $sessionStorage, ProfileResource) {
+			// this is primarily used by AuthService in order to avoid cyclic deps.
+			$rootScope.$on('updateUser', function() {
+				ProfileResource.get(function(user) {
+					$rootScope.$broadcast('userUpdated', user);
+				})
+			})
+		}
+	}
+});
+
+
+app.factory('AuthService', function($window, $localStorage, $sessionStorage, $rootScope) {
 	return {
 
 		user: null,
 		isAuthenticated: false,
+		timeout: null,
 
 		init: function() {
 			this.user = this.readUser();
@@ -44,7 +59,7 @@ app.factory('AuthService', function($window, $localStorage, $sessionStorage, Pro
 
 			// save token and user to storage
 			$localStorage.user = result.user;
-			this.readToken(result.token);
+			this.saveToken(result.token);
 
 			// update data
 			this.isAuthenticated = true;
@@ -62,19 +77,16 @@ app.factory('AuthService', function($window, $localStorage, $sessionStorage, Pro
 		 */
 		tokenReceived: function(token) {
 
-			this.readToken(token);
-			this.user = $localStorage.user = ProfileResource.get();
+			this.saveToken(token);
+			$rootScope.$broadcast('updateUser');
+		},
+
+		tokenUpdated: function(token) {
+			this.saveToken(token);
 		},
 
 		logout: function() {
-			this.user = null;
-			this.isAuthenticated = false;
-			delete this.permissions;
-			delete this.roles;
-
-			delete $localStorage.jwt;
-			delete $localStorage.user;
-			delete $localStorage.tokenExpires;
+			this.deleteToken();
 		},
 
 		hasPermission: function(resourcePermission) {
@@ -101,31 +113,61 @@ app.factory('AuthService', function($window, $localStorage, $sessionStorage, Pro
 			return $localStorage.user;
 		},
 
-		readToken: function(token) {
+		isTokenExpired: function() {
+			var exp = $localStorage.tokenExpires;
+			return exp && new Date(exp).getTime() < new Date().getTime()
+		},
+
+		hasToken: function() {
+			if (this.isTokenExpired()) {
+				this.deleteToken();
+				return false;
+			}
+			return $localStorage.jwt ? true : false;
+		},
+
+		getToken: function() {
+			return $localStorage.jwt;
+		},
+
+		saveToken: function(token) {
 			var claims = angular.fromJson($window.atob(token.split('.')[1]));
 
 			$localStorage.jwt = token;
-			$localStorage.tokenExpires = new Date(claims.exp);
-			$localStorage.tokenCreated = new Date(claims.iat);
+			$localStorage.tokenExpires = claims.exp;
+			$localStorage.tokenCreated = claims.iat;
 			return claims.iss
+		},
+
+		deleteToken: function() {
+			this.user = null;
+			this.isAuthenticated = false;
+			delete this.permissions;
+			delete this.roles;
+
+			delete $localStorage.jwt;
+			delete $localStorage.user;
+			delete $localStorage.tokenExpires;
 		}
+
 	};
 });
 
-app.factory('AuthInterceptor', function($localStorage, $rootScope, $q, $window) {
+app.factory('AuthInterceptor', function(AuthService) {
 	return {
 		request: function(config) {
 			config.headers = config.headers || {};
-			if ($localStorage.jwt) {
-				config.headers.Authorization = 'Bearer ' + $localStorage.jwt;
+			if (AuthService.hasToken()) {
+				config.headers.Authorization = 'Bearer ' + AuthService.getToken();
 			}
 			return config;
 		},
-		response: function (response) {
-			if (response.status === 401) {
-				alert('oops, got 401 from API.')
+		response: function(response) {
+			var token = response.headers('x-token-refresh');
+			if (token) {
+				AuthService.tokenUpdated(token);
 			}
-			return response || $q.when(response);
+			return response;
 		}
 	};
 });

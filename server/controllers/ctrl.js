@@ -27,24 +27,27 @@ exports.auth = function(resource, permission, done) {
 		var token;
 
 		// read headers
-		if (req.headers && req.headers.authorization) {
+		if ((req.headers && req.headers.authorization) || (req.query && req.query.jwt)) {
 
-			// validate format
-			var parts = req.headers.authorization.split(' ');
-			if (parts.length == 2) {
-				var scheme = parts[0];
-				var credentials = parts[1];
-				if (/^Bearer$/i.test(scheme)) {
+			if (req.query.jwt) {
+				token = req.query.jwt;
+			} else {
 
-					// set token
-					token = credentials;
-
+				// validate format
+				var parts = req.headers.authorization.split(' ');
+				if (parts.length == 2) {
+					var scheme = parts[0];
+					var credentials = parts[1];
+					if (/^Bearer$/i.test(scheme)) {
+						token = credentials;
+					} else {
+						return done({ code: 401, message: 'Bad Authorization header. Format is "Authorization: Bearer [token]"' }, req, res);
+					}
 				} else {
 					return done({ code: 401, message: 'Bad Authorization header. Format is "Authorization: Bearer [token]"' }, req, res);
 				}
-			} else {
-				return done({ code: 401, message: 'Bad Authorization header. Format is "Authorization: Bearer [token]"' }, req, res);
 			}
+
 		} else {
 			return done({ code: 401, message: 'Unauthorized. You need to provide credentials for this resource.' }, req, res);
 		}
@@ -167,7 +170,8 @@ exports.renderError = function(code, message) {
 		// otherwise, return the full page.
 		} else {
 			exports.viewParams(req, function(params) {
-				res.status(code).render('errors/' + code, _.extend(params, { url: req.originalUrl }));
+				var tpl = _.contains([403, 404, 500, 502], code) ? code : '000';
+				res.status(code).render('errors/' + tpl, _.extend(params, { url: req.originalUrl, code: code, message: message }));
 			});
 		}
 	}

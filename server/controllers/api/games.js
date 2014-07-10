@@ -5,7 +5,7 @@ var logger = require('winston');
 var Game = require('mongoose').model('Game');
 var File = require('mongoose').model('File');
 var acl = require('../../acl');
-var api = require('./common');
+var api = require('./api');
 
 exports.head = function(req, res) {
 	Game.findOne({ gameId: req.params.id }, '-__v', function(err, game) {

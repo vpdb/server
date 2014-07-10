@@ -5,7 +5,7 @@
 var ctrl = angular.module('vpdb.controllers', []);
 
 
-ctrl.controller('AppCtrl', function($scope, $rootScope, $location, $modal, UserResource, AuthService) {
+ctrl.controller('AppCtrl', function($scope, $rootScope, $location, $modal, UserResource, AuthService, ProfileService) {
 
 	$rootScope.themeName = 'theme-dark';
 	$rootScope.auth = AuthService;
@@ -18,6 +18,7 @@ ctrl.controller('AppCtrl', function($scope, $rootScope, $location, $modal, UserR
 	$scope.loading = false;
 
 	AuthService.init();
+	ProfileService.init();
 
 	$scope.navGame = function(key) {
 		$location.hash('');

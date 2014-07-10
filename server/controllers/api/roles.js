@@ -1,4 +1,4 @@
-var api = require('./common');
+var api = require('./api');
 
 exports.list = function(req, res) {
 	var roles = [

@@ -10,9 +10,9 @@ var gracefulExit = require('express-graceful-exit');
 
 var writeable = require('./modules/writeable');
 var asset = require('./middleware/asset');
-var ctrl = require('./controllers/common');
+var ctrl = require('./controllers/ctrl');
 var webCtrl = require('./controllers/web');
-var apiCtrl = require('./controllers/api/common');
+var apiCtrl = require('./controllers/api/api');
 
 module.exports = function(app, config, passport) {
 

@@ -1,4 +1,4 @@
-var api = require('./common');
+var api = require('./api');
 var ipdb = require('../../modules/ipdb');
 
 exports.view = function(req, res) {

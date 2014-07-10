@@ -1,6 +1,7 @@
 var _ = require('underscore');
 var util = require('util');
 var logger = require('winston');
+var redis = require('redis-mock').createClient();
 
 var User = require('mongoose').model('User');
 var acl = require('../../acl');
@@ -236,7 +237,18 @@ exports.update = function(req, res) {
 					}
 				}
 
-				return api.success(res, user, 200);
+				// 6. if changer is not changed user, mark user as dirty
+				if (!req.user._id.equals(user._id)) {
+					logger.info('[api|user:update] Marking user <%s> as dirty.', user.email);
+					redis.set('dirty_user_' + user._id, true, function() {
+						redis.expire('dirty_user_' + user._id, 10000, function() {
+							api.success(res, user, 200);
+						});
+					});
+				} else {
+					api.success(res, user, 200);
+				}
+
 			});
 		});
 	});

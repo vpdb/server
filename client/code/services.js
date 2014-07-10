@@ -35,7 +35,7 @@ app.factory('ProfileService', function($rootScope, ProfileResource) {
 });
 
 
-app.factory('AuthService', function($window, $localStorage, $sessionStorage, $rootScope) {
+app.factory('AuthService', function($window, $localStorage, $sessionStorage, $rootScope, $location) {
 	return {
 
 		user: null,
@@ -98,6 +98,7 @@ app.factory('AuthService', function($window, $localStorage, $sessionStorage, $ro
 		 */
 		logout: function() {
 			this.deleteToken();
+			$location.url('/');
 		},
 
 		/**
@@ -219,17 +220,19 @@ app.factory('AuthInterceptor', function(AuthService) {
 			return config;
 		},
 		response: function(response) {
+			if (response.status === 401) {
+				console.log('oops, 401.');
+				return response;
+			}
 			var token = response.headers('x-token-refresh');
 			if (token) {
-				if (response.headers('x-user-refresh')) {
+				if (response.headers('x-user-dirty')) {
 					// force user update
 					AuthService.tokenReceived(token);
 				} else {
 					AuthService.tokenUpdated(token);
 				}
-
 			}
-
 			return response;
 		}
 	};

@@ -1,5 +1,6 @@
 var _ = require('underscore');
 var jwt = require('jwt-simple');
+var redis = require('redis-mock').createClient();
 var logger = require('winston');
 
 var acl = require('../acl');
@@ -86,22 +87,33 @@ exports.auth = function(resource, permission, done) {
 				res.setHeader('X-Token-Refresh', exports.generateToken(user, now));
 			}
 
-			// check ACL if necessary
-			if (resource && permission) {
-				acl.isAllowed(user.email, resource, permission, function(err, granted) {
-					if (err) {
-						logger.error('[ctrl|auth] Error checking ACLs for user "%s": %s', user.email, err);
-						return done({ code: 500, message: err }, req, res);
-					}
-					if (granted) {
-						done(false, req, res);
-					} else {
-						return done({ code: 4.3, message: 'Access denied.' });
-					}
-				});
-			} else {
-				done(false, req, res);
-			}
+			// set dirty header if necessary
+			redis.get('dirty_user_' + user._id, function(err, result) {
+				if (err) {
+					logger.warn('[ctrl|auth] Error checking if user <%s> is dirty: %s', user.email, err);
+				} else if (result) {
+					logger.info('[ctrl|auth] User <%s> is dirty, telling him in header.', user.email);
+					res.setHeader('X-User-Dirty', exports.generateToken(user, now));
+				}
+
+				// check ACL if necessary
+				if (resource && permission) {
+					acl.isAllowed(user.email, resource, permission, function(err, granted) {
+						if (err) {
+							logger.error('[ctrl|auth] Error checking ACLs for user <%s>: %s', user.email, err);
+							return done({ code: 500, message: err }, req, res);
+						}
+						if (granted) {
+							done(false, req, res);
+						} else {
+							return done({ code: 4.3, message: 'Access denied.' });
+						}
+					});
+				} else {
+					done(false, req, res);
+				}
+
+			});
 		});
 	}
 };

@@ -18,6 +18,10 @@ services.factory('ProfileResource', function($resource) {
 	return $resource('/api/user', {}, {});
 });
 
+services.factory('PingResource', function($resource) {
+	return $resource('/api/ping', {}, {});
+});
+
 
 services.factory('RolesResource', function($resource) {
 	return $resource('/api/roles/:role', {}, {

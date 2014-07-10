@@ -1,6 +1,7 @@
 var api = require('./api');
 
 exports.auth = api.auth;
+exports.ping = api.ping;
 exports.passport = api.passport;
 exports.files = require('./files');
 exports.games = require('./games');

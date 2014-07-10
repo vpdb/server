@@ -156,3 +156,7 @@ exports.sanitizeObject = function(object, replacement) {
 		}
 	}
 };
+
+exports.ping = function(req, res) {
+	exports.success(res, { result: 'pong' });
+};

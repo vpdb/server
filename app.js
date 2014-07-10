@@ -54,6 +54,7 @@ serverDomain.run(function() {
 
 		// bootstrap routes
 		require('./server/routes')(app, config, passport);
+		require('./server/routes')(app, config, passport);
 
 		// and lastly, startup scripts - stuff that is run at start.
 		require('./server/startup')(function(err) {

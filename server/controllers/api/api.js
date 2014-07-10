@@ -12,8 +12,15 @@ exports.auth = function(done, resource, permission) {
 			return exports.fail(res, err.message, err.code);
 		}
 		done(req, res);
+	}, false);
+};
+
+exports.anon = function(done) {
+	return ctrl.auth(null, null, function(err, req, res) {
+		done(req, res);
 	});
 };
+
 
 /**
  * Returns a JSON-serialized object to the client and a 200 status code.

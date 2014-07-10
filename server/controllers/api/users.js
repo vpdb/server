@@ -240,7 +240,7 @@ exports.update = function(req, res) {
 				// 6. if changer is not changed user, mark user as dirty
 				if (!req.user._id.equals(user._id)) {
 					logger.info('[api|user:update] Marking user <%s> as dirty.', user.email);
-					redis.set('dirty_user_' + user._id, true, function() {
+					redis.set('dirty_user_' + user._id, new Date().getTime(), function() {
 						redis.expire('dirty_user_' + user._id, 10000, function() {
 							api.success(res, user, 200);
 						});

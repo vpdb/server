@@ -1,6 +1,7 @@
 var api = require('./api');
 
 exports.auth = api.auth;
+exports.anon = api.anon;
 exports.ping = api.ping;
 exports.passport = api.passport;
 exports.files = require('./files');

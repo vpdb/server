@@ -229,6 +229,7 @@ app.factory('AuthInterceptor', function(AuthService) {
 				if (response.headers('x-user-dirty')) {
 					// force user update
 					AuthService.tokenReceived(token);
+					console.log(response.status + ' Got dirty flag ' + response.headers('x-user-dirty') + ', updating local user (' + token + ')');
 				} else {
 					AuthService.tokenUpdated(token);
 				}

@@ -27,6 +27,10 @@ exports.auth = function(resource, permission, done) {
 	return function(req, res) {
 		var token;
 
+		var deny = function(error) {
+			done(error, req, res);
+		};
+
 		// read headers
 		if ((req.headers && req.headers.authorization) || (req.query && req.query.jwt)) {
 
@@ -42,40 +46,40 @@ exports.auth = function(resource, permission, done) {
 					if (/^Bearer$/i.test(scheme)) {
 						token = credentials;
 					} else {
-						return done({ code: 401, message: 'Bad Authorization header. Format is "Authorization: Bearer [token]"' }, req, res);
+						return deny({ code: 401, message: 'Bad Authorization header. Format is "Authorization: Bearer [token]"' });
 					}
 				} else {
-					return done({ code: 401, message: 'Bad Authorization header. Format is "Authorization: Bearer [token]"' }, req, res);
+					return deny({ code: 401, message: 'Bad Authorization header. Format is "Authorization: Bearer [token]"' });
 				}
 			}
 
 		} else {
-			return done({ code: 401, message: 'Unauthorized. You need to provide credentials for this resource.' }, req, res);
+			return deny({ code: 401, message: 'Unauthorized. You need to provide credentials for this resource.' });
 		}
 
 		// validate token
 		try {
 			var decoded = jwt.decode(token, config.vpdb.secret);
 		} catch (e) {
-			return done({ code: 401,  message: 'Bad JSON Web Token: ' + e.message }, req, res);
+			return deny({ code: 401,  message: 'Bad JSON Web Token: ' + e.message });
 		}
 
 		// check for expiration
 		var now = new Date();
 		var tokenExp = new Date(decoded.exp);
 		if (tokenExp.getTime() < now.getTime()) {
-			return done({ code: 401, message: 'JSON Web Token has expired.' }, req, res);
+			return deny({ code: 401, message: 'JSON Web Token has expired.' });
 		}
 
 		// here we're authenticated (token is valid and not expired). So update user and check ACL if necessary
 		User.findById(decoded.iss, '-__v', function(err, user) {
 			if (err) {
 				logger.error('[ctrl|auth] Error finding user %s: %s', decoded.iss, err);
-				return done({ code: 500, message: err }, req, res);
+				return deny({ code: 500, message: err });
 			}
 			if (!user) {
 				logger.error('[ctrl|auth] No user with ID %s found.', decoded.iss);
-				return done({ code: 500, message: 'No user with ID ' + decoded.iss + ' found.' }, req, res);
+				return deny({ code: 500, message: 'No user with ID ' + decoded.iss + ' found.' });
 			}
 
 			// this will be useful for the rest of the stack
@@ -87,37 +91,43 @@ exports.auth = function(resource, permission, done) {
 				res.setHeader('X-Token-Refresh', exports.generateToken(user, now));
 			}
 
+			var checkACLs = function(err) {
+				if (err) {
+					logger.warn('[ctrl|auth] Error deleting dirty key from redis: %s', err);
+				}
+				if (resource && permission) {
+					acl.isAllowed(user.email, resource, permission, function(err, granted) {
+						if (err) {
+							logger.error('[ctrl|auth] Error checking ACLs for user <%s>: %s', user.email, err);
+							return deny({ code: 500, message: err });
+						}
+						if (granted) {
+							done(false, req, res);
+						} else {
+							return deny({ code: 403, message: 'Access denied.' });
+						}
+					});
+				} else {
+					done(false, req, res);
+				}
+			};
+
 			// set dirty header if necessary
 			redis.get('dirty_user_' + user._id, function(err, result) {
 				if (err) {
 					logger.warn('[ctrl|auth] Error checking if user <%s> is dirty: %s', user.email, err);
 				} else if (result) {
 					logger.info('[ctrl|auth] User <%s> is dirty, telling him in header.', user.email);
-					res.setHeader('X-User-Dirty', exports.generateToken(user, now));
-				}
-
-				// check ACL if necessary
-				if (resource && permission) {
-					acl.isAllowed(user.email, resource, permission, function(err, granted) {
-						if (err) {
-							logger.error('[ctrl|auth] Error checking ACLs for user <%s>: %s', user.email, err);
-							return done({ code: 500, message: err }, req, res);
-						}
-						if (granted) {
-							done(false, req, res);
-						} else {
-							return done({ code: 4.3, message: 'Access denied.' });
-						}
-					});
+					res.setHeader('X-User-Dirty', result);
+					redis.del('dirty_user_' + user._id, checkACLs);
 				} else {
-					done(false, req, res);
+					logger.info('[ctrl|auth] User <%s> is clean.', user.email);
+					checkACLs();
 				}
-
 			});
 		});
 	}
 };
-
 
 /**
  * Creates a JSON Web Token for a given user and time.

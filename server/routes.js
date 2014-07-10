@@ -37,7 +37,7 @@ module.exports = function(app, config, passport) {
 	app.head('/api/games/:id',    api.games.head);
 	app.post('/api/games',        api.auth(api.games.create, 'games', 'add'));
 
-	app.get('/api/ping',          api.ping);
+	app.get('/api/ping',          api.anon(api.ping));
 
 	// Storage
 	app.get('/storage/:id', storage.get);

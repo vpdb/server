@@ -18,7 +18,7 @@ exports.init = function() {
 			logger.info('[quota] Creating quota for credits per %s...', duration);
 			this.quota[duration] = quotaModule.create({ timeUnit: duration, interval: 1 });
 		}
-	};
+	}
 };
 
 exports.isAllowed = function(req, res, file, callback) {
@@ -34,7 +34,7 @@ exports.isAllowed = function(req, res, file, callback) {
 	}
 
 	// deny access to anon (free files would have been served by now)
-	if (!req.isAuthenticated()) {
+	if (!req.user) {
 		return callback(null, false);
 	}
 

@@ -1,103 +1,18 @@
 var _ = require('underscore');
-var jwt = require('jwt-simple');
-var util = require('util');
 var logger = require('winston');
 
-var acl = require('../../acl');
+var ctrl = require('../common');
 var config = require('../../modules/settings').current;
 var User = require('mongoose').model('User');
 
-/**
- * Returns a middleware function that protects a resource by verifying the JWT
- * in the header. If `resource` and `permission` are set, ACLs are additionally
- * checked.
- *
- * On success, the `req.user` object is additionally set.
- *
- * @param done Resource call in case of success
- * @param resource ACL resource
- * @param permission ACL permission
- * @returns {Function} Middleware function
- */
+
 exports.auth = function(done, resource, permission) {
-	return function(req, res) {
-		var token;
-
-		// read headers
-		if (req.headers && req.headers.authorization) {
-
-			// validate format
-			var parts = req.headers.authorization.split(' ');
-			if (parts.length == 2) {
-				var scheme = parts[0];
-				var credentials = parts[1];
-				if (/^Bearer$/i.test(scheme)) {
-
-					// set token
-					token = credentials;
-
-				} else {
-					return exports.fail(res, { message: 'Bad Authorization header. Format is "Authorization: Bearer [token]"' }, 401);
-				}
-			} else {
-				return exports.fail(res, { message: 'Bad Authorization header. Format is "Authorization: Bearer [token]"' }, 401);
-			}
-		} else {
-			return exports.fail(res, { message: 'Unauthorized. You need to provide credentials for this resource.' }, 401);
+	return ctrl.auth(resource, permission, function(err, req, res) {
+		if (err) {
+			return exports.fail(res, err.message, err.code);
 		}
-
-		// validate token
-		try {
-			var decoded = jwt.decode(token, config.vpdb.secret);
-		} catch (e) {
-			return exports.fail(res, { message: 'Bad JSON Web Token: ' + e.message }, 401)
-		}
-
-		// check for expiration
-		var now = new Date();
-		var tokenExp = new Date(decoded.exp);
-		if (tokenExp.getTime() < now.getTime()) {
-			return exports.fail(res, { message: 'JSON Web Token has expired.' }, 401);
-		}
-
-		// here we're authenticated (token is valid and not expired). So update user and check ACL if necessary
-		User.findById(decoded.iss, '-__v', function(err, user) {
-			if (err) {
-				logger.error('[api|common:auth] Error finding user %s: %s', decoded.iss, err);
-				return exports.fail(res, err, 500);
-			}
-			if (!user) {
-				logger.error('[api|common:auth] No user with ID %s found.', decoded.iss);
-				return exports.fail(res, err, 400);
-			}
-
-			// this will be useful for the rest of the stack
-			req.user = user;
-
-			// generate new token if it's a short term token.
-			var tokenIssued = new Date(decoded.iat);
-			if (tokenExp.getTime() - tokenIssued.getTime() == config.vpdb.sessionTimeout) {
-				res.setHeader('X-Token-Refresh', exports.generateToken(user, now));
-			}
-
-			// check ACL if necessary
-			if (resource && permission) {
-				acl.isAllowed(user.email, resource, permission, function(err, granted) {
-					if (err) {
-						logger.error('[api|common:auth] Error checking ACLs for user "%s": %s', user.email, err);
-						return exports.fail(res, err, 500);
-					}
-					if (granted) {
-						done(req, res);
-					} else {
-						return exports.fail(res, { message: 'Access denied.' }, 403);
-					}
-				});
-			} else {
-				done(req, res);
-			}
-		});
-	}
+		done(req, res);
+	});
 };
 
 /**
@@ -141,20 +56,6 @@ exports.fail = function(res, err, code) {
 	}
 };
 
-
-/**
- * Returns a JSON Web Token for a given user and time.
- * @param user
- * @param now
- * @returns {*}
- */
-exports.generateToken = function(user, now) {
-	return jwt.encode({
-		iss: user._id,
-		iat: now,
-		exp: new Date(now.getTime() + config.vpdb.sessionTimeout)
-	}, config.vpdb.secret)
-};
 
 exports.checkApiContentType = function(req, res, next) {
 	if (req.path.substr(0, 5) == '/api/' && req.get('content-type') != 'application/json') {
@@ -224,7 +125,7 @@ exports.passport = function(strategy, passport, web) {
 			web.index(false, false, {
 				auth: {
 					redirect: '/',
-					jwt: exports.generateToken(user, new Date())
+					jwt: ctrl.generateToken(user, new Date())
 				}
 			})(req, res);
 		})(req, res, next);

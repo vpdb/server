@@ -111,3 +111,21 @@ app.factory('AuthService', function($window, $localStorage, $sessionStorage, Pro
 		}
 	};
 });
+
+app.factory('AuthInterceptor', function($localStorage, $rootScope, $q, $window) {
+	return {
+		request: function(config) {
+			config.headers = config.headers || {};
+			if ($localStorage.jwt) {
+				config.headers.Authorization = 'Bearer ' + $localStorage.jwt;
+			}
+			return config;
+		},
+		response: function (response) {
+			if (response.status === 401) {
+				alert('oops, got 401 from API.')
+			}
+			return response || $q.when(response);
+		}
+	};
+});

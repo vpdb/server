@@ -32,7 +32,7 @@ exports.get = function(req, res) {
 		if (!file.public) {
 
 			// if not logged, deny
-			if (!req.isAuthenticated()) {
+			if (!req.user) {
 				return res.status(401).end();
 			} else {
 
@@ -69,13 +69,13 @@ exports.get = function(req, res) {
 		} else {
 
 			// but not active and user isn't the owner
-			if (!file.active && (!req.isAuthenticated() || file.author.equals(req.user._id))) {
+			if (!file.active && (!req.user || file.author.equals(req.user._id))) {
 				return res.status(404).end();
 			}
 			// otherwise, serve.
 			serve(req, res, file);
 		}
-		if (!file.public && !req.isAuthenticated()) {
+		if (!file.public && !req.user) {
 			return res.status(403).end();
 		}
 	});

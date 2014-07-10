@@ -3,7 +3,6 @@ var http = require('http');
 var flash = require('connect-flash');
 var logger = require('winston');
 var express = require('express');
-var mongoStore = require('connect-mongo')(express);
 var expressWinston = require('express-winston');
 
 var domainError = require('express-domain-errors');
@@ -11,6 +10,7 @@ var gracefulExit = require('express-graceful-exit');
 
 var writeable = require('./modules/writeable');
 var asset = require('./middleware/asset');
+var ctrl = require('./controllers/common');
 var webCtrl = require('./controllers/web');
 var apiCtrl = require('./controllers/api/common');
 
@@ -127,11 +127,11 @@ module.exports = function(app, config, passport) {
 		logger.error('[express] %s', err.stack);
 
 		// error page
-		webCtrl.showError(500, req, res);
+		ctrl.renderError(500, 'Internal Server Error.')(req, res);
 	});
 
 	// assume 404 since no middleware responded
-	app.use(webCtrl.show404);
+	app.use(ctrl.renderError(404, 'Not found.'));
 };
 
 function sendOfflineMsg() {

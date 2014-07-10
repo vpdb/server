@@ -19,7 +19,7 @@ var app = angular.module('vpdb', [
 	'vpdb.directives'
 ]);
 
-app.config(function($routeProvider, $locationProvider) {
+app.config(function($routeProvider, $locationProvider, $httpProvider) {
 
 	$routeProvider.when('/', { templateUrl: 'partials/home' });
 	$routeProvider.when('/games', { templateUrl: 'partials/games' });
@@ -31,6 +31,7 @@ app.config(function($routeProvider, $locationProvider) {
 		return '/styleguide/sections/' + route.section + '.html';
 	}});
 	$locationProvider.html5Mode(true);
+	$httpProvider.interceptors.push('AuthInterceptor');
 });
 
 window.requestAnimFrame = (function() {

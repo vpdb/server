@@ -42,8 +42,11 @@ app.factory('AuthService', function($window, $localStorage, $sessionStorage, $ro
 		isAuthenticated: false,
 		timeout: null,
 
+		/**
+		 * Should be called when the app initializes. Reads data from storage into Angular.
+		 */
 		init: function() {
-			this.user = this.readUser();
+			this.user = this.getUser();
 			this.isAuthenticated = this.user ? true : false;
 			this.permissions = this.user ? this.user.permissions : null;
 			this.roles = this.user ? this.user.rolesAll : null;
@@ -81,14 +84,29 @@ app.factory('AuthService', function($window, $localStorage, $sessionStorage, $ro
 			$rootScope.$broadcast('updateUser');
 		},
 
+		/**
+		 * Executed after token refresh, where only the token but not the user
+		 * is updated.
+		 * @param token JWT, as string
+		 */
 		tokenUpdated: function(token) {
 			this.saveToken(token);
 		},
 
+		/**
+		 * Clears token, resulting in not being authenticated anymore.
+		 */
 		logout: function() {
 			this.deleteToken();
 		},
 
+		/**
+		 * Checks whether the currently logged user has a given permission.
+		 * Returns false if not logged.
+		 *
+		 * @param resourcePermission
+		 * @returns {boolean} True if user has permission, false otherwise.
+		 */
 		hasPermission: function(resourcePermission) {
 			var p = resourcePermission.split('/');
 			var resource = p[0];
@@ -96,6 +114,13 @@ app.factory('AuthService', function($window, $localStorage, $sessionStorage, $ro
 			return this.permissions && _.contains(this.permissions[resource], permission);
 		},
 
+		/**
+		 * Checks whether the currently logged user has a given role.
+		 * Returns false if not logged.
+		 *
+		 * @param role
+		 * @returns {boolean} True if user has role, false otherwise.
+		 */
 		hasRole: function(role) {
 			if (_.isArray(role)) {
 				for (var i = 0; i < role.length; i++) {
@@ -109,15 +134,34 @@ app.factory('AuthService', function($window, $localStorage, $sessionStorage, $ro
 			}
 		},
 
-		readUser: function() {
+		/**
+		 * Returns the user from browser storage.
+		 * @returns {Object}
+		 */
+		getUser: function() {
 			return $localStorage.user;
 		},
 
+		/**
+		 * Checks if the current JWT is expired.
+		 * Returns true if no token set.
+		 *
+		 * @returns {boolean}
+		 */
 		isTokenExpired: function() {
 			var exp = $localStorage.tokenExpires;
-			return exp && new Date(exp).getTime() < new Date().getTime()
+			if (!exp) {
+				return true;
+			}
+			return new Date(exp).getTime() < new Date().getTime()
 		},
 
+		/**
+		 * Checks if there is a valid token. If there is an expired token, it
+		 * is deleted first.
+		 *
+		 * @returns {boolean}
+		 */
 		hasToken: function() {
 			if (this.isTokenExpired()) {
 				this.deleteToken();
@@ -126,10 +170,19 @@ app.factory('AuthService', function($window, $localStorage, $sessionStorage, $ro
 			return $localStorage.jwt ? true : false;
 		},
 
+		/**
+		 * Returns the token from browser storage.
+		 * @returns {*}
+		 */
 		getToken: function() {
 			return $localStorage.jwt;
 		},
 
+		/**
+		 * Saves the token to browser storage.
+		 * @param {String} token JWT
+		 * @returns {String} User ID stored in the token (Issuer Claim)
+		 */
 		saveToken: function(token) {
 			var claims = angular.fromJson($window.atob(token.split('.')[1]));
 
@@ -139,6 +192,9 @@ app.factory('AuthService', function($window, $localStorage, $sessionStorage, $ro
 			return claims.iss
 		},
 
+		/**
+		 * Removes the token from browser storage.
+		 */
 		deleteToken: function() {
 			this.user = null;
 			this.isAuthenticated = false;
@@ -165,8 +221,15 @@ app.factory('AuthInterceptor', function(AuthService) {
 		response: function(response) {
 			var token = response.headers('x-token-refresh');
 			if (token) {
-				AuthService.tokenUpdated(token);
+				if (response.headers('x-user-refresh')) {
+					// force user update
+					AuthService.tokenReceived(token);
+				} else {
+					AuthService.tokenUpdated(token);
+				}
+
 			}
+
 			return response;
 		}
 	};

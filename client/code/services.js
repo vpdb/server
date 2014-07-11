@@ -50,6 +50,10 @@ app.factory('AuthService', function($window, $localStorage, $sessionStorage, $ro
 			this.isAuthenticated = this.user ? true : false;
 			this.permissions = this.user ? this.user.permissions : null;
 			this.roles = this.user ? this.user.rolesAll : null;
+			var that = this;
+			$rootScope.$on('userUpdated', function(event, user) {
+				that.user = user;
+			});
 		},
 
 		/**
@@ -229,7 +233,7 @@ app.factory('AuthInterceptor', function(AuthService) {
 				if (response.headers('x-user-dirty')) {
 					// force user update
 					AuthService.tokenReceived(token);
-					console.log(response.status + ' Got dirty flag ' + response.headers('x-user-dirty') + ', updating local user (' + token + ')');
+					console.log(response.config.url + ' ' + response.status + ' Got dirty flag ' + response.headers('x-user-dirty') + ', updating local user (' + token + ')');
 				} else {
 					AuthService.tokenUpdated(token);
 				}

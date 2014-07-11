@@ -4,6 +4,7 @@ module.exports = function(app, config, passport) {
 
 	var api = require('./controllers/api');
 	var web = require('./controllers/web');
+	var ctrl = require('./controllers/ctrl');
 	var storage = require('./controllers/storage');
 
 	app.get('/', web.index());
@@ -34,13 +35,13 @@ module.exports = function(app, config, passport) {
 
 	app.put('/api/files',         api.auth(api.files.upload, 'files', 'upload'));
 
-	app.head('/api/games/:id',    api.games.head);
+	app.head('/api/games/:id',    api.anon(api.games.head));
 	app.post('/api/games',        api.auth(api.games.create, 'games', 'add'));
 
 	app.get('/api/ping',          api.anon(api.ping));
 
 	// Storage
-	app.get('/storage/:id', storage.get);
+	app.get('/storage/:id', api.anon(storage.get));
 
 	// JSON API (mock)
 	var apiMock = require('./controllers/api-mock');
@@ -55,7 +56,7 @@ module.exports = function(app, config, passport) {
 	// authentication routes
 	if (config.vpdb.passport.github.enabled) {
 		app.get('/auth/github', passport.authenticate('github', { failureRedirect: '/', session: false }));
-		app.get('/auth/github/callback', api.passport('github', passport, web));
+		app.get('/auth/github/callback', ctrl.passport('github', passport, web));
 	}
 	_.each(config.vpdb.passport.ipboard, function(ipbConfig) {
 		if (ipbConfig.enabled) {

@@ -121,7 +121,7 @@ exports.auth = function(resource, permission, done) {
 					res.setHeader('X-User-Dirty', result);
 					redis.del('dirty_user_' + user._id, checkACLs);
 				} else {
-					logger.info('[ctrl|auth] User <%s> is clean.', user.email);
+					res.setHeader('X-User-Dirty', 0);
 					checkACLs();
 				}
 			});
@@ -143,6 +143,50 @@ exports.generateToken = function(user, now) {
 	}, config.vpdb.secret)
 };
 
+/**
+ * Appends the JWT to an url as query parameter, so protected non-api resources (such as storage)
+ * can be accessed. The JWT is read from the response, so make sure you're in a call that went
+ * through {@link exports.auth}.
+ *
+ * @param url Base URL
+ * @param res Current response object
+ * @returns {string}
+ */
+exports.appendToken = function(url, res) {
+	var token = res.get('X-Token-Refresh');
+	var sep = ~url.indexOf('?') ? '&' : '?';
+	return token ? url + sep + 'jwt=' + token : url;
+};
+
+
+/**
+ * Handles a passport callback from an authentication via OAuth2.
+ *
+ * @param strategy Strategy used
+ * @param passport Passport module
+ * @param web Web module
+ * @returns {Function}
+ */
+exports.passport = function(strategy, passport, web) {
+	return function (req, res, next) {
+		passport.authenticate(strategy, function(err, user, info) {
+			if (err) {
+				return next(err);
+			}
+			if (!user) {
+				// TODO handle error
+				return res.redirect('/');
+			}
+			// don't do a HTTP redirect because we need Angular to read the JWT first
+			web.index({
+				auth: {
+					redirect: '/',
+					jwt: exports.generateToken(user, new Date())
+				}
+			})(req, res);
+		})(req, res, next);
+	};
+};
 
 /**
  * Returns the parameter object that is accessible when rendering the views.
@@ -187,7 +231,8 @@ exports.renderError = function(code, message) {
 
 		// for partials, return a partial
 		} else if (req.originalUrl.substr(0, 10) == '/partials/') {
-			res.status(code).send('<h1>Oops!</h1><p>' + message + '</p>');
+			// return 200 because otherwise angular doesn't render the partial view.
+			res.status(200).send('<h1>Oops!</h1><p>' + message + '</p>');
 
 		// otherwise, return the full page.
 		} else {

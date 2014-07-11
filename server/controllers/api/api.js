@@ -6,6 +6,15 @@ var config = require('../../modules/settings').current;
 var User = require('mongoose').model('User');
 
 
+/**
+ * Protects a resource, meaning there must be valid JWT. If additionally
+ * resource and permissions are provided, these are checked too.
+ *
+ * @param done Callback, called with (`req`, `res`). This is your API logic
+ * @param resource ACL for resource
+ * @param permission ACL for permission
+ * @returns {Function} Middleware function
+ */
 exports.auth = function(done, resource, permission) {
 	return ctrl.auth(resource, permission, function(err, req, res) {
 		if (err) {
@@ -15,6 +24,14 @@ exports.auth = function(done, resource, permission) {
 	}, false);
 };
 
+
+/**
+ * Allows anonymous access, but still updates `req` with user if sent and
+ * takes care of token invalidation.
+ *
+ * @param done Callback, called with (`req`, `res`). This is your API logic
+ * @returns {Function} Middleware function
+ */
 exports.anon = function(done) {
 	return ctrl.auth(null, null, function(err, req, res) {
 		done(req, res);
@@ -116,27 +133,6 @@ exports.ok = function(type, action, ref, res, rollback) {
 			}
 		}
 	}
-};
-
-exports.passport = function(strategy, passport, web) {
-	return function (req, res, next) {
-		passport.authenticate(strategy, function (err, user, info) {
-			if (err) {
-				return next(err);
-			}
-			if (!user) {
-				// TODO handle error
-				return res.redirect('/');
-			}
-			// don't do a HTTP redirect because we need Angular read the JWT first
-			web.index(false, false, {
-				auth: {
-					redirect: '/',
-					jwt: ctrl.generateToken(user, new Date())
-				}
-			})(req, res);
-		})(req, res, next);
-	};
 };
 
 /**

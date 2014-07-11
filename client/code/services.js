@@ -28,6 +28,8 @@ app.factory('ProfileService', function($rootScope, ProfileResource) {
 			$rootScope.$on('updateUser', function() {
 				ProfileResource.get(function(user) {
 					$rootScope.$broadcast('userUpdated', user);
+				}, function(err) {
+					console.log('Error retrieving user profile: %s', err);
 				})
 			})
 		}
@@ -52,7 +54,7 @@ app.factory('AuthService', function($window, $localStorage, $sessionStorage, $ro
 			this.roles = this.user ? this.user.rolesAll : null;
 			var that = this;
 			$rootScope.$on('userUpdated', function(event, user) {
-				that.user = user;
+				that.saveUser(user);
 			});
 		},
 
@@ -63,16 +65,8 @@ app.factory('AuthService', function($window, $localStorage, $sessionStorage, $ro
 		 * @param result Object with keys `token`, `expires` and `user`.
 		 */
 		authenticated: function(result) {
-
-			// save token and user to storage
-			$localStorage.user = result.user;
 			this.saveToken(result.token);
-
-			// update data
-			this.isAuthenticated = true;
-			this.user = result.user;
-			this.permissions = result.user.permissions;
-			this.roles = result.user.rolesAll;
+			this.saveUser(result.user);
 		},
 
 		/**
@@ -145,6 +139,19 @@ app.factory('AuthService', function($window, $localStorage, $sessionStorage, $ro
 		 */
 		getUser: function() {
 			return $localStorage.user;
+		},
+
+		/**
+		 * Saves the user data to browser storage. Called after user profile update
+		 * or successful authentication.
+		 * @param user
+		 */
+		saveUser: function(user) {
+			$localStorage.user = user;
+			this.isAuthenticated = true;
+			this.user = user;
+			this.permissions = user.permissions;
+			this.roles = user.rolesAll;
 		},
 
 		/**
@@ -230,7 +237,8 @@ app.factory('AuthInterceptor', function(AuthService) {
 			}
 			var token = response.headers('x-token-refresh');
 			if (token) {
-				if (response.headers('x-user-dirty')) {
+				var dirty = parseInt(response.headers('x-user-dirty'));
+				if (dirty > 0) {
 					// force user update
 					AuthService.tokenReceived(token);
 					console.log(response.config.url + ' ' + response.status + ' Got dirty flag ' + response.headers('x-user-dirty') + ', updating local user (' + token + ')');

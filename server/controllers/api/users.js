@@ -81,22 +81,15 @@ exports.authenticate = function(req, res) {
 		var token = ctrl.generateToken(user, now);
 
 		logger.info('[api|user:authenticate] User <%s> successfully authenticated.', user.email);
-		acl.allowedPermissions(user.email, [ 'users', 'content' ], function(err, permissions) {
+		getACLs(user, function(err, acls) {
 			if (err) {
-				logger.error('[api|user:authenticate] Error reading permissions for user <%s>: %s', user.email, err, {});
 				return api.fail(res, err, 500);
 			}
-			acl.userRoles(user.email, function(err, roles) {
-				if (err) {
-					logger.error('[api|user:authenticate] Error reading roles for user <%s>: %s', user.email, err, {});
-					return api.fail(res, err, 500);
-				}
-				return api.success(res, {
-					token: token,
-					expires: expires,
-					user: _.extend(_.omit(user.toJSON(), 'passwordHash', 'passwordSalt', 'uploadedFiles'), { permissions: permissions, rolesAll: roles })
-				}, 200);
-			});
+			api.success(res, {
+				token: token,
+				expires: expires,
+				user: _.extend(_.omit(user.toJSON(), 'passwordHash', 'passwordSalt', 'uploadedFiles'), acls)
+			}, 200);
 		});
 	});
 };
@@ -140,23 +133,14 @@ exports.list = function(req, res) {
 };
 
 exports.profile = function(req, res) {
-
-	var user = req.user;
-	acl.allowedPermissions(user.email, [ 'users', 'content' ], function(err, permissions) {
+	getACLs(req.user, function(err, acls) {
 		if (err) {
-			logger.error('[api|user:profile] Error reading permissions for user <%s>: %s', user.email, err, {});
 			return api.fail(res, err, 500);
 		}
-		acl.userRoles(user.email, function(err, roles) {
-			if (err) {
-				logger.error('[api|user:profile] Error reading roles for user <%s>: %s', user.email, err, {});
-				return api.fail(res, err, 500);
-			}
-			return api.success(res,_.extend(
-				_.omit(user.toJSON(), 'passwordHash', 'passwordSalt', 'uploadedFiles'),
-				{ permissions: permissions, rolesAll: roles }
-			), 200);
-		});
+		api.success(res, _.extend(
+			_.omit(req.user.toJSON(), 'passwordHash', 'passwordSalt', 'uploadedFiles'),
+			acls
+		), 200);
 	});
 };
 
@@ -253,3 +237,25 @@ exports.update = function(req, res) {
 		});
 	});
 };
+
+function getACLs(user, done) {
+	acl.userRoles(user.email, function(err, roles) {
+		if (err) {
+			logger.error('[api|user:profile] Error reading roles for user <%s>: %s', user.email, err, {});
+			return done(err);
+		}
+		acl.whatResources(roles, function(err, resources) {
+			if (err) {
+				logger.error('[api|user:profile] Error reading resources: %s', err, {});
+				return done(err);
+			}
+			acl.allowedPermissions(user.email, _.keys(resources), function(err, permissions) {
+				if (err) {
+					logger.error('[api|user:profile] Error reading permissions for user <%s>: %s', user.email, err, {});
+					return done(err);
+				}
+				return done(null, { permissions: permissions, rolesAll: roles });
+			});
+		});
+	});
+}

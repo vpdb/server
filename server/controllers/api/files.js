@@ -4,6 +4,7 @@ var path = require('path');
 var logger = require('winston');
 
 var api = require('./api');
+var ctrl = require('../ctrl');
 var File = require('mongoose').model('File');
 var config = require('../../modules/settings').current;
 var storage = require('../../modules/storage');
@@ -53,7 +54,7 @@ exports.upload = function(req, res) {
 						file.metadata = metadata;
 					}
 					var f = _.pick(file, '_id', 'name', 'bytes', 'created', 'mimeType', 'fileType');
-					f.url = file.getUrl();
+					f.url = ctrl.appendToken(file.getUrl(), res);
 					f.metadata = shortMetadata;
 					api.success(res, f);
 					file.save(function(err) {

@@ -72,7 +72,7 @@
 			li(sort="views", d="desc") Views
 			li(sort="gamedownloads", d="desc") Downloads
 
-		span(ng-show="hasPermission('games/edit')")
+		span(ng-show="auth.hasPermission('games/edit')")
 			h1 Content
 			hr
 			a.btn.btn-primary(href="/games/add")

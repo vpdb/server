@@ -44,7 +44,8 @@ exports.create = function(req, res) {
 							logger.error('[api|user:create] Error saving user <%s>: %s', newUser.email, err, {});
 							return api.fail(res, err, 500);
 						}
-						logger.info('[api|user:create] Success!');
+						logger.info('[api|user:create] %s <%s> successfully created.', count ? 'User' : 'Root user', newUser.email);
+						acl.addUserRoles(newUser.email, newUser.roles);
 						return api.success(res, _.omit(newUser.toJSON(), 'passwordHash', 'passwordSalt'), 201);
 					});
 				});
@@ -234,6 +235,27 @@ exports.update = function(req, res) {
 				}
 
 			});
+		});
+	});
+};
+
+exports.delete = function(req, res) {
+	User.findById(req.params.id, function(err, user) {
+		if (err) {
+			logger.error('[api|user:delete] Error finding user "%s": %s', req.params.id, err, {});
+			return api.fail(res, err, 500);
+		}
+		if (!user) {
+			return api.fail(res, 'No such user.', 404);
+		}
+		user.remove(function(err) {
+			if (err) {
+				logger.error('[api|user:delete] Error deleting user <%s>: %s', user.email, err, {});
+				return api.fail(res, err, 500);
+			}
+			acl.removeUserRoles(user.email, user.roles);
+			logger.info('[api|user:delete] User <%s> successfully deleted.', user.email);
+			api.success(res, null, 204);
 		});
 	});
 };

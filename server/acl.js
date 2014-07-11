@@ -15,14 +15,14 @@ var init = function(next) {
 		{
 			roles: 'admin',
 			allows: [
-				{ resources: 'users', permissions: '*' },
+				{ resources: 'users', permissions: [ 'list', 'update', 'delete' ] },
+				{ resources: 'users', permissions: 'update' },
 				{ resources: 'roles', permissions: '*' }
 			]
 		}, {
 			roles: 'contributor',
 			allows: [
-				{ resources: 'games', permissions: 'edit' },
-				{ resources: 'games', permissions: 'add' },
+				{ resources: 'games', permissions: [ 'edit', 'add' ]},
 				{ resources: 'ipdb', permissions: 'view' },
 				{ resources: 'files', permissions: 'upload' }
 			]
@@ -32,6 +32,11 @@ var init = function(next) {
 				{ resources: 'user', permissions: 'profile' },
 				{ resources: 'users', permissions: 'view' },
 				{ resources: 'files', permissions: 'download' }
+			]
+		}, {
+			roles: 'mocha',
+			allows: [
+				{ resources: 'users', permissions: 'delete' }
 			]
 		}
 	])

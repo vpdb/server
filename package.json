@@ -1,6 +1,6 @@
 {
 	"name": "vpdb",
-	"version": "0.0.4",
+	"version": "0.1.0-pre",
 	"description": "Visual Pinball Database",
 	"main": "app.js",
 	"private": true,
@@ -69,11 +69,20 @@
 		"winston": "^0.7.0"
 	},
 	"devDependencies": {
+		"debug": "^1.0.1",
+		"expect.js": "^0.3.1",
+		"faker": "^1.0.0",
+		"mocha": "^1.20.1",
+		"randomstring": "^1.0.3",
 		"socket.io": "1.0.x",
-		"debug": "^1.0.1"
+		"superagent": "^0.18.1",
+		"supertest": "^0.13.0"
 	},
 	"engines": {
 		"node": "0.10.x"
+	},
+	"scripts": {
+		"test": "mocha test/api/*.test.js --watch"
 	},
 	"mod-project-name": "vpdb"
 }

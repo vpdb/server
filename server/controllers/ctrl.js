@@ -104,6 +104,7 @@ exports.auth = function(resource, permission, done) {
 						if (granted) {
 							done(false, req, res);
 						} else {
+							logger.warn('[ctrl|auth] User <%s> tried to access `%s` but was access denied due to missing permissions to %s/%s.', user.email, req.url, resource, permission);
 							return deny({ code: 403, message: 'Access denied.' });
 						}
 					});

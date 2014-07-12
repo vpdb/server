@@ -22,7 +22,7 @@ var init = function(next) {
 		}, {
 			roles: 'contributor',
 			allows: [
-				{ resources: 'games', permissions: [ 'edit', 'add' ]},
+				{ resources: 'games', permissions: [ 'update', 'add' ]},
 				{ resources: 'ipdb', permissions: 'view' },
 				{ resources: 'files', permissions: 'upload' }
 			]

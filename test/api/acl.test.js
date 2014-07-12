@@ -10,7 +10,7 @@ superagentTest(request, {
 	path: '/api'
 });
 
-describe('The VPDB API', function() {
+describe('The ACLs of the VPDB API', function() {
 
 	before(function(done) {
 		hlp.setupUsers(request, {

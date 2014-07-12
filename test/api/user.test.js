@@ -2,6 +2,13 @@ var request = require('superagent');
 var expect = require('expect.js');
 var faker = require('faker');
 var randomstring = require('randomstring');
+var superagentTest = require('../modules/superagent-test');
+
+superagentTest(request, {
+	host: 'localhost',
+	port: 3000,
+	path: '/api'
+});
 
 describe('The VPDB `user` API', function() {
 
@@ -13,9 +20,10 @@ describe('The VPDB `user` API', function() {
 	};
 
 	before(function(done) {
+
 		// create root user
 		request
-			.post('http://localhost:3000/api/users')
+			.post('/users')
 			.send(user)
 			.end(function(err, res) {
 				if (err) {
@@ -26,7 +34,7 @@ describe('The VPDB `user` API', function() {
 
 				// retrieve root user token
 				request
-					.post('http://localhost:3000/api/authenticate')
+					.post('/authenticate')
 					.send(user)
 					.end(function(err, res) {
 						if (err) {
@@ -41,7 +49,7 @@ describe('The VPDB `user` API', function() {
 
 	after(function(done) {
 		request
-			.del('http://localhost:3000/api/users/' + user.id)
+			.del('/users/' + user.id)
 			.set('Authorization', auth.root)
 			.end(function(err, res) {
 				if (err) {
@@ -54,7 +62,7 @@ describe('The VPDB `user` API', function() {
 
 	it('should display the user profile', function(done) {
 		request
-			.get('http://localhost:3000/api/user')
+			.get('/user')
 			.set('Authorization', auth.root)
 			.end(function(err, res) {
 				expect(err).to.eql(null);

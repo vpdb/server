@@ -4,6 +4,7 @@ module.exports = function(superagent, options) {
 	options.host = options.host || 'localhost';
 	options.port = options.port || 80;
 	options.path = options.path || '';
+	options.authHeader = options.authHeader || 'Authentication';
 
 	var Request = superagent.Request;
 
@@ -23,7 +24,7 @@ module.exports = function(superagent, options) {
 		if (!superagent.tokens || !superagent.tokens[name]) {
 			throw new Error('Cannot find JWT for role "' + name + '".');
 		}
-		this.set('Authorization', 'Bearer ' + superagent.tokens[name]);
+		this.set(options.authHeader, 'Bearer ' + superagent.tokens[name]);
 		return this;
 	};
 

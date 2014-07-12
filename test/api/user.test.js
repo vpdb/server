@@ -7,7 +7,8 @@ var hlp = require('../modules/helper');
 superagentTest(request, {
 	host: 'localhost',
 	port: 3000,
-	path: '/api'
+	path: '/api',
+	authHeader: 'Authorization'
 });
 
 describe('The VPDB `user` API', function() {

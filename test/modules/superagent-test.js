@@ -15,4 +15,13 @@ module.exports = function(superagent, options) {
 		}
 		return this.request();
 	};
+
+	Request.prototype.as = function(role) {
+		if (!superagent.tokens || !superagent.tokens[role]) {
+			throw new Error('Cannot find JWT for role "' + role + '".');
+		}
+		this.set('Authorization', 'Bearer ' + superagent.tokens[role]);
+		return this;
+	};
+
 };

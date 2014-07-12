@@ -13,7 +13,11 @@ superagentTest(request, {
 describe('The VPDB `user` API', function() {
 
 	before(function(done) {
-		hlp.setupUsers(request, ['root', 'member'], done);
+		hlp.setupUsers(request, {
+			root: { roles: [ 'root' ]},
+			admin: { roles: [ 'admin' ]},
+			member: { roles: [ 'member' ]}
+		}, done);
 	});
 
 	after(function(done) {

@@ -1,9 +1,10 @@
 var _ = require('underscore');
+var async = require('async');
 var faker = require('faker');
 var randomstring = require('randomstring');
 var expect = require('expect.js');
 
-exports.setupUsers = function(request, roles, done) {
+exports.setupUsers = function(request, users, done) {
 
 	this.users = {};
 	request.tokens = {};
@@ -16,10 +17,9 @@ exports.setupUsers = function(request, roles, done) {
 			email: faker.Internet.email().toLowerCase()
 		};
 	};
-	var createUser = function(role) {
+	var createUser = function(name, config) {
 		return function(next) {
 			var user = genUser();
-			role = role || 'root';
 			request
 				.post('/users')
 				.send(user)
@@ -30,7 +30,7 @@ exports.setupUsers = function(request, roles, done) {
 					expect(res.status).to.eql(201);
 
 					user = _.extend(user, res.body);
-					that.users[role] = user;
+					that.users[name] = user;
 
 					// retrieve root user token
 					request
@@ -41,14 +41,14 @@ exports.setupUsers = function(request, roles, done) {
 								return next(err);
 							}
 							expect(res.status).to.eql(200);
-							request.tokens[role] = res.body.token;
+							request.tokens[name] = res.body.token;
 							next();
 						});
 				});
 		}
 	};
 
-	createUser('root')(done);
+	createUser('__superuser', { roles: ['root', 'mocha' ]})(done);
 };
 
 exports.teardownUsers = function(request, done) {

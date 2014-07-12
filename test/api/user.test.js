@@ -9,7 +9,7 @@ describe('The VPDB `user` API', function() {
 	var user = {
 		username: faker.Internet.userName(),
 		password: randomstring.generate(10),
-		email: faker.Internet.email()
+		email: faker.Internet.email().toLowerCase()
 	};
 
 	before(function(done) {
@@ -59,6 +59,10 @@ describe('The VPDB `user` API', function() {
 			.end(function(err, res) {
 				expect(err).to.eql(null);
 				expect(res.status).to.eql(200);
+
+				expect(res.body.email).to.eql(user.email);
+				expect(res.body.name).to.eql(user.username);
+
 				done();
 			});
 	});

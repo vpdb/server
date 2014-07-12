@@ -88,8 +88,8 @@ UserSchema.path('username').validate(function(username) {
 	if (this.provider != 'local') {
 		return true;
 	}
-	if (!validator.isAlphanumeric(username)) {
-		this.invalidate('username', 'Username must only contain alpha-numeric characters.');
+	if (!validator.matches(username, /^[a-z0-9\._]+$/i)) {
+		this.invalidate('username', 'Username must only contain alpha-numeric characters including dot and underscore.');
 	}
 	if (!validator.isLength(username, 3, 30)) {
 		this.invalidate('username', 'Length of username must be between 3 and 30 characters.');

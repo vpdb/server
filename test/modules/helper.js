@@ -1,18 +1,22 @@
 var _ = require('underscore');
 var async = require('async');
+var debug = require('debug')('test-helper');
 var faker = require('faker');
 var randomstring = require('randomstring');
 var expect = require('expect.js');
 
-exports.setupUsers = function(request, users, done) {
+var superuser = '__superuser';
 
+exports.setupUsers = function(request, config, done) {
+
+	debug('Setting up %d user(s)...', _.keys(config).length);
 	this.users = {};
 	request.tokens = {};
 
 	var that = this;
 	var genUser = function() {
 		return {
-			username: faker.Internet.userName(),
+			username: faker.Internet.userName().replace(/[^a-z0-9\._]+/gi, ''),
 			password: randomstring.generate(10),
 			email: faker.Internet.email().toLowerCase()
 		};
@@ -20,44 +24,91 @@ exports.setupUsers = function(request, users, done) {
 	var createUser = function(name, config) {
 		return function(next) {
 			var user = genUser();
+
+
+			// 1. create user
+			debug('%s <%s>: Creating user...', name, user.email);
 			request
 				.post('/users')
 				.send(user)
 				.end(function(err, res) {
 					if (err) {
-						return next(err);
+						return next(err.body.error);
 					}
-					expect(res.status).to.eql(201);
+					if (res.status != 201) {
+						return next(res.error.message);
+					}
 
 					user = _.extend(user, res.body);
 					that.users[name] = user;
 
-					// retrieve root user token
+					// 2. retrieve root user token
+					debug('%s <%s>: Authenticating user...', name, user.email);
 					request
 						.post('/authenticate')
 						.send(_.pick(user, 'username', 'password'))
 						.end(function(err, res) {
 							if (err) {
-								return next(err);
+								return next(err.body.error);
 							}
-							expect(res.status).to.eql(200);
+							if (res.status != 200) {
+								debug('%s <%s>: ERROR: %s', name, user.email, res.body.error.message);
+								return next(res.body.error.message);
+							}
 							request.tokens[name] = res.body.token;
-							next();
+
+							// 3. update user
+							debug('%s <%s>: Updating user...', name, user.email);
+							user.roles = config.roles;
+							request
+								.put('/users/' + user._id)
+								.as(superuser)
+								.send(user)
+								.end(function(err, res) {
+									if (err) {
+										return next(err.body.error);
+									}
+									if (res.status != 200) {
+										return next(res.body.error.message);
+									}
+									debug('%s <%s>: All good, next!', name, user.email);
+									next();
+								});
 						});
 				});
 		}
 	};
 
-	createUser('__superuser', { roles: ['root', 'mocha' ]})(done);
+	var users = _.map(config, function(config, name) {
+		return createUser(name, config);
+	});
+
+	// create super user first and then the rest
+	createUser(superuser, { roles: ['root', 'mocha' ] })(function(err) {
+		if (err) {
+			throw err;
+		}
+		async.series(users, function(err) {
+			if (err) {
+				throw err;
+			}
+			done();
+		});
+	});
+
 };
 
 exports.teardownUsers = function(request, done) {
 	var that = this;
-	var deleteUser = function(role) {
+	var deleteUser = function(name, force) {
 		return function(next) {
+			// don't cut off the branch we're sitting on...
+			if (!force && name == superuser) {
+				return next();
+			}
 			request
-				.del('/users/' + that.users[role]._id)
-				.as('root')
+				.del('/users/' + that.users[name]._id)
+				.as(superuser)
 				.end(function(err, res) {
 					if (err) {
 						return next(err);
@@ -68,7 +119,22 @@ exports.teardownUsers = function(request, done) {
 		}
 	};
 
-	deleteUser('root')(done);
+	var users = _.map(this.users, function(config, name) {
+		return deleteUser(name);
+	});
+
+	async.series(users, function(err) {
+		if (err) {
+			throw err;
+		}
+		// lastly, delete super user.
+		deleteUser(superuser, true)(function(err) {
+			if (err) {
+				throw err;
+			}
+			done();
+		});
+	});
 };
 
 exports.getUser = function(role) {

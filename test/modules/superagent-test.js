@@ -16,11 +16,14 @@ module.exports = function(superagent, options) {
 		return this.request();
 	};
 
-	Request.prototype.as = function(role) {
-		if (!superagent.tokens || !superagent.tokens[role]) {
-			throw new Error('Cannot find JWT for role "' + role + '".');
+	Request.prototype.as = function(name) {
+		if (!name) {
+			return this;
 		}
-		this.set('Authorization', 'Bearer ' + superagent.tokens[role]);
+		if (!superagent.tokens || !superagent.tokens[name]) {
+			throw new Error('Cannot find JWT for role "' + name + '".');
+		}
+		this.set('Authorization', 'Bearer ' + superagent.tokens[name]);
 		return this;
 	};
 

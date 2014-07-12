@@ -39,4 +39,14 @@ describe('The VPDB `user` API', function() {
 			});
 	});
 
+	it('should return a token refresh header when user changed', function(done) {
+		request
+			.get('/ping')
+			.as('admin')
+			.end(function(err, res) {
+				expect(res.headers['x-token-refresh']).not.to.be.empty();
+				done();
+			});
+	});
+
 });

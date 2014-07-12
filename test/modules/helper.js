@@ -36,7 +36,7 @@ exports.setupUsers = function(request, config, done) {
 						return next(err.body.error);
 					}
 					if (res.status != 201) {
-						return next(res.error.message);
+						return next(res.body.error);
 					}
 
 					user = _.extend(user, res.body);
@@ -52,8 +52,8 @@ exports.setupUsers = function(request, config, done) {
 								return next(err.body.error);
 							}
 							if (res.status != 200) {
-								debug('%s <%s>: ERROR: %s', name, user.email, res.body.error.message);
-								return next(res.body.error.message);
+								debug('%s <%s>: ERROR: %s', name, user.email, res.body.error);
+								return next(res.body.error);
 							}
 							request.tokens[name] = res.body.token;
 
@@ -69,7 +69,7 @@ exports.setupUsers = function(request, config, done) {
 										return next(err.body.error);
 									}
 									if (res.status != 200) {
-										return next(res.body.error.message);
+										return next(res.body.error);
 									}
 									debug('%s <%s>: All good, next!', name, user.email);
 									next();
@@ -137,6 +137,6 @@ exports.teardownUsers = function(request, done) {
 	});
 };
 
-exports.getUser = function(role) {
-	return this.users[role];
+exports.getUser = function(name) {
+	return this.users[name];
 }

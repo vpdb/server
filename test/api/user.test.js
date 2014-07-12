@@ -28,8 +28,8 @@ describe('The VPDB `user` API', function() {
 				expect(err).to.eql(null);
 				expect(res.status).to.eql(200);
 
-//				expect(res.body.email).to.eql(user.email);
-//				expect(res.body.name).to.eql(user.username);
+				expect(res.body.email).to.eql(hlp.getUser('root').email);
+				expect(res.body.name).to.eql(hlp.getUser('root').name);
 
 				done();
 			});

@@ -1,52 +1,76 @@
+var _ = require('underscore');
 var faker = require('faker');
 var randomstring = require('randomstring');
 var expect = require('expect.js');
 
 exports.setupUsers = function(request, roles, done) {
 
-	this.user = {
-		username: faker.Internet.userName(),
-		password: randomstring.generate(10),
-		email: faker.Internet.email().toLowerCase()
-	};
+	this.users = {};
+	request.tokens = {};
 
 	var that = this;
-
-	// create root user
-	request
-		.post('/users')
-		.send(that.user)
-		.end(function(err, res) {
-			if (err) {
-				return done(err);
-			}
-			expect(res.status).to.eql(201);
-			that.user.id = res.body._id;
-
-			// retrieve root user token
+	var genUser = function() {
+		return {
+			username: faker.Internet.userName(),
+			password: randomstring.generate(10),
+			email: faker.Internet.email().toLowerCase()
+		};
+	};
+	var createUser = function(role) {
+		return function(next) {
+			var user = genUser();
+			role = role || 'root';
 			request
-				.post('/authenticate')
-				.send(that.user)
+				.post('/users')
+				.send(user)
 				.end(function(err, res) {
 					if (err) {
-						return done(err);
+						return next(err);
 					}
-					expect(res.status).to.eql(200);
-					request.tokens = { root: res.body.token };
-					done();
+					expect(res.status).to.eql(201);
+
+					user = _.extend(user, res.body);
+					that.users[role] = user;
+
+					// retrieve root user token
+					request
+						.post('/authenticate')
+						.send(_.pick(user, 'username', 'password'))
+						.end(function(err, res) {
+							if (err) {
+								return next(err);
+							}
+							expect(res.status).to.eql(200);
+							request.tokens[role] = res.body.token;
+							next();
+						});
 				});
-		});
+		}
+	};
+
+	createUser('root')(done);
 };
 
 exports.teardownUsers = function(request, done) {
-	request
-		.del('/users/' + this.user.id)
-		.as('root')
-		.end(function(err, res) {
-			if (err) {
-				return done(err);
-			}
-			expect(res.status).to.eql(204);
-			done();
-		});
+	var that = this;
+	var deleteUser = function(role) {
+		return function(next) {
+			request
+				.del('/users/' + that.users[role]._id)
+				.as('root')
+				.end(function(err, res) {
+					if (err) {
+						return next(err);
+					}
+					expect(res.status).to.eql(204);
+					next();
+				});
+		}
+	};
+
+	deleteUser('root')(done);
 };
+
+exports.getUser = function(role) {
+	return this.users[role];
+}

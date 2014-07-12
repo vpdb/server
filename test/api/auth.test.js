@@ -16,6 +16,7 @@ describe('The VPDB API', function() {
 		hlp.setupUsers(request, {
 			root: { roles: [ 'root' ]},
 			admin: { roles: [ 'admin' ]},
+			admin2: { roles: [ 'admin' ]},
 			contributor: { roles: [ 'contributor' ]},
 			member: { roles: [ 'member' ]}
 		}, done);
@@ -276,7 +277,7 @@ describe('The VPDB API', function() {
 		it('should deny access to user delete', function(done) {
 			request
 				.del('/users/1234567890abcdef')
-				.as('member')
+				.as('contributor')
 				.end(function(err, res) {
 					expect(res.status).to.be(403);
 					done();
@@ -356,4 +357,272 @@ describe('The VPDB API', function() {
 		});
 
 	});
+
+	describe('for administrators', function() {
+
+		/**
+		 * {
+		 *	roles: 'admin',
+		 *	allows: [
+		 *		{ resources: 'users', permissions: [ 'list', 'update' ] },
+		 *		{ resources: 'users', permissions: 'update' },
+		 *		{ resources: 'roles', permissions: '*' }
+		 *	] }
+		 */
+		it('should allow to list users', function(done) {
+			request
+				.get('/users')
+				.as('admin')
+				.end(function(err, res) {
+					expect(res.status).to.be(200);
+					done();
+				});
+		});
+
+		it('should allow user update of non-admin', function(done) {
+			request
+				.put('/users/' + hlp.getUser('member')._id)
+				.as('admin')
+				.send({})
+				.end(function(err, res) {
+					expect(res.status).to.be(422);
+					done();
+				});
+		});
+
+		it('should deny user update of admin', function(done) {
+			request
+				.put('/users/' + hlp.getUser('admin2')._id)
+				.as('admin')
+				.send({})
+				.end(function(err, res) {
+					expect(res.status).to.be(403);
+					done();
+				});
+		});
+
+		it('should deny user update himself', function(done) {
+			request
+				.put('/users/' + hlp.getUser('admin')._id)
+				.as('admin')
+				.send({})
+				.end(function(err, res) {
+					expect(res.status).to.be(403);
+					done();
+				});
+		});
+
+		it('should deny access to user delete', function(done) {
+			request
+				.del('/users/1234567890abcdef')
+				.as('admin')
+				.end(function(err, res) {
+					expect(res.status).to.be(403);
+					done();
+				});
+		});
+
+		it('should allow access to user profile', function(done) {
+			request
+				.get('/user')
+				.as('admin')
+				.end(function(err, res) {
+					expect(res.status).to.be(200);
+					done();
+				});
+		});
+
+		it('should allow access to roles list', function(done) {
+			request
+				.get('/roles')
+				.as('admin')
+				.end(function(err, res) {
+					expect(res.status).to.be(200);
+					done();
+				});
+		});
+
+		it('should deny access to ipdb query', function(done) {
+			request
+				.get('/ipdb/4441?dryrun=1')
+				.as('admin')
+				.end(function(err, res) {
+					expect(res.status).to.be(403);
+					done();
+				});
+		});
+
+		it('should deny access to file upload', function(done) {
+			request
+				.put('/files')
+				.as('admin')
+				.send({})
+				.end(function(err, res) {
+					expect(res.status).to.be(403);
+					done();
+				});
+		});
+
+		it('should allow check for existing games', function(done) {
+			request
+				.head('/games/mb')
+				.as('admin')
+				.end(function(err, res) {
+					expect(res.status).to.be(404);
+					done();
+				});
+		});
+
+		it('should deny to create games', function(done) {
+			request
+				.post('/games')
+				.as('admin')
+				.send({})
+				.end(function(err, res) {
+					expect(res.status).to.be(403);
+					done();
+				});
+		});
+
+		it('should allow access to ping', function(done) {
+			request
+				.get('/ping')
+				.as('admin')
+				.end(function(err, res) {
+					expect(res.status).to.be(200);
+					done();
+				});
+		});
+
+	});
+
+	describe('for the root user', function() {
+
+		it('should allow to list users', function(done) {
+			request
+				.get('/users')
+				.as('root')
+				.end(function(err, res) {
+					expect(res.status).to.be(200);
+					done();
+				});
+		});
+
+		it('should allow user update of non-admin', function(done) {
+			request
+				.put('/users/' + hlp.getUser('member')._id)
+				.as('root')
+				.send({})
+				.end(function(err, res) {
+					expect(res.status).to.be(422);
+					done();
+				});
+		});
+
+		it('should allow user update of admin', function(done) {
+			request
+				.put('/users/' + hlp.getUser('admin')._id)
+				.as('root')
+				.send({})
+				.end(function(err, res) {
+					expect(res.status).to.be(422);
+					done();
+				});
+		});
+
+		it('should allow update himself', function(done) {
+			request
+				.put('/users/' + hlp.getUser('root')._id)
+				.as('root')
+				.send({})
+				.end(function(err, res) {
+					expect(res.status).to.be(422);
+					done();
+				});
+		});
+
+		it('should deny access to user delete', function(done) {
+			request
+				.del('/users/1234567890abcdef')
+				.as('root')
+				.end(function(err, res) {
+					expect(res.status).to.be(403);
+					done();
+				});
+		});
+
+		it('should allow access to user profile', function(done) {
+			request
+				.get('/user')
+				.as('root')
+				.end(function(err, res) {
+					expect(res.status).to.be(200);
+					done();
+				});
+		});
+
+		it('should allow access to roles list', function(done) {
+			request
+				.get('/roles')
+				.as('root')
+				.end(function(err, res) {
+					expect(res.status).to.be(200);
+					done();
+				});
+		});
+
+		it('should allow access to ipdb query', function(done) {
+			request
+				.get('/ipdb/4441?dryrun=1')
+				.as('root')
+				.end(function(err, res) {
+					expect(res.status).to.be(200);
+					done();
+				});
+		});
+
+		it('should allow access to file upload', function(done) {
+			request
+				.put('/files')
+				.as('root')
+				.send({})
+				.end(function(err, res) {
+					expect(res.status).to.be(422);
+					done();
+				});
+		});
+
+		it('should allow check for existing games', function(done) {
+			request
+				.head('/games/mb')
+				.as('root')
+				.end(function(err, res) {
+					expect(res.status).to.be(404);
+					done();
+				});
+		});
+
+		it('should allow to create games', function(done) {
+			request
+				.post('/games')
+				.as('root')
+				.send({})
+				.end(function(err, res) {
+					expect(res.status).to.be(422);
+					done();
+				});
+		});
+
+		it('should allow access to ping', function(done) {
+			request
+				.get('/ping')
+				.as('root')
+				.end(function(err, res) {
+					expect(res.status).to.be(200);
+					done();
+				});
+		});
+
+	});
+
 });

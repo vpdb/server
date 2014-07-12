@@ -157,9 +157,9 @@ exports.update = function(req, res) {
 		var originalEmail = user.email;
 
 		// 1. check for permission escalation
-		var callerRoles = req.user.roles;
-		var currentUserRoles = user.roles;
-		var updatedUserRoles = updatedUser.roles;
+		var callerRoles = req.user.roles || [];
+		var currentUserRoles = user.roles || [];
+		var updatedUserRoles = updatedUser.roles || [];
 
 		var removedRoles = _.difference(currentUserRoles, updatedUserRoles);
 		var addedRoles = _.difference(updatedUserRoles, currentUserRoles);

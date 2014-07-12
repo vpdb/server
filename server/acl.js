@@ -42,8 +42,8 @@ var init = function(next) {
 	])
 
 	// hierarchy
-	.then(function() { return acl.addRoleParents('root', [ 'admin' ]) })
-	.then(function() { return acl.addRoleParents('admin', [ 'member', 'contributor' ]) })
+	.then(function() { return acl.addRoleParents('root', [ 'admin', 'contributor' ]) })
+	.then(function() { return acl.addRoleParents('admin', [ 'member' ]) })
 	.then(function() { return acl.addRoleParents('contributor', [ 'member' ]) })
 
 	// apply to all users

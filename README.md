@@ -106,14 +106,11 @@ If you want to setup a production environment from scratch, see the [Installatio
 
 ## Status
 
-All this is currently a mock only. That means there is no database and all data/media is static. Obviously no download
-works. Table data is only available in **Monster Bash** and some in **Attack from Mars**, the other tables are only
-there to demonstrate how lists are displayed. Also, not all refered users are in the database. If you click on a user
-and the dialog box is empty, try another one.
+See [changelog](CHANGELOG.md).
 
-Work has however started on a serious version that uses a MongoDB backend. See [changelog](CHANGELOG.md) for more 
-details. There will be a beta version deployed at some point where users can start testing.
+## Tests
 
+Test coverage is mainly API tests. Make sure your database is clean and run them with `npm test`.
 
 ## Credits
 

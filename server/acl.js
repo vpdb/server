@@ -15,7 +15,7 @@ var init = function(next) {
 		{
 			roles: 'admin',
 			allows: [
-				{ resources: 'users', permissions: [ 'list', 'update', 'delete' ] },
+				{ resources: 'users', permissions: [ 'list', 'update' ] },
 				{ resources: 'users', permissions: 'update' },
 				{ resources: 'roles', permissions: '*' }
 			]
@@ -44,6 +44,7 @@ var init = function(next) {
 	// hierarchy
 	.then(function() { return acl.addRoleParents('root', [ 'admin' ]) })
 	.then(function() { return acl.addRoleParents('admin', [ 'member', 'contributor' ]) })
+	.then(function() { return acl.addRoleParents('contributor', [ 'member' ]) })
 
 	// apply to all users
 	.then(function() {

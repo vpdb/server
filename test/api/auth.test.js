@@ -16,6 +16,7 @@ describe('The VPDB API', function() {
 		hlp.setupUsers(request, {
 			root: { roles: [ 'root' ]},
 			admin: { roles: [ 'admin' ]},
+			contributor: { roles: [ 'contributor' ]},
 			member: { roles: [ 'member' ]}
 		}, done);
 	});
@@ -26,15 +27,7 @@ describe('The VPDB API', function() {
 
 	describe('for anonymous clients', function() {
 
-		it('should deny access to user profile', function(done) {
-			request
-				.get('/user')
-				.end(function(err, res) {
-					expect(res.status).to.be(401);
-					done();
-				});
-		});
-
+		// app.get('/api/users',         api.auth(api.users.list, 'users', 'list'));
 		it('should deny access to user list', function(done) {
 			request
 				.get('/users')
@@ -44,7 +37,7 @@ describe('The VPDB API', function() {
 				});
 		});
 
-
+		// app.put('/api/users/:id',     api.auth(api.users.update, 'users', 'update'));
 		it('should deny access to user update', function(done) {
 			request
 				.put('/users/1234567890abcdef')
@@ -54,7 +47,313 @@ describe('The VPDB API', function() {
 				});
 		});
 
+		// app.delete('/api/users/:id',  api.auth(api.users.delete, 'users', 'delete'));
+		it('should deny access to user delete', function(done) {
+			request
+				.del('/users/1234567890abcdef')
+				.end(function(err, res) {
+					expect(res.status).to.be(401);
+					done();
+				});
+		});
+
+		// app.get('/api/user',          api.auth(api.users.profile, 'user', 'profile'));
+		it('should deny access to user profile', function(done) {
+			request
+				.get('/user')
+				.end(function(err, res) {
+					expect(res.status).to.be(401);
+					done();
+				});
+		});
+
+		// app.get('/api/roles',         api.auth(api.roles.list, 'roles', 'list'));
+		it('should deny access to roles list', function(done) {
+			request
+				.get('/roles')
+				.end(function(err, res) {
+					expect(res.status).to.be(401);
+					done();
+				});
+		});
+
+		// app.get('/api/ipdb/:id',      api.auth(api.ipdb.view, 'ipdb', 'view'));
+		it('should deny access to ipdb query', function(done) {
+			request
+				.get('/ipdb/4441')
+				.end(function(err, res) {
+					expect(res.status).to.be(401);
+					done();
+				});
+		});
+
+		// app.put('/api/files',         api.auth(api.files.upload, 'files', 'upload'));
+		it('should deny access to file upload', function(done) {
+			request
+				.put('/files')
+				.end(function(err, res) {
+					expect(res.status).to.be(401);
+					done();
+				});
+		});
+
+		// app.head('/api/games/:id',    api.anon(api.games.head));
+		it('should allow check for existing games', function(done) {
+			request
+				.head('/games/mb')
+				.end(function(err, res) {
+					expect(res.status).to.be(404);
+					done();
+				});
+		});
+
+		// app.post('/api/games',        api.auth(api.games.create, 'games', 'add'));
+		it('should deny access to game creation', function(done) {
+			request
+				.post('/games')
+				.end(function(err, res) {
+					expect(res.status).to.be(401);
+					done();
+				});
+		});
+
+		// app.get('/api/ping',          api.anon(api.ping));
+		it('should allow access to ping', function(done) {
+			request
+				.get('/ping')
+				.end(function(err, res) {
+					expect(res.status).to.be(200);
+					done();
+				});
+		});
 
 	});
 
+	describe('for logged clients (role member)', function() {
+
+		/**
+		 * {
+		 *	roles: 'member',
+		 *	allows: [
+		 *		{ resources: 'user', permissions: 'profile' },
+		 *		{ resources: 'users', permissions: 'view' },
+		 *		{ resources: 'files', permissions: 'download' }
+		 *	]}
+		 */
+		it('should deny access to user list', function(done) {
+			request
+				.get('/users')
+				.as('member')
+				.end(function(err, res) {
+					expect(res.status).to.be(403);
+					done();
+				});
+		});
+
+		it('should deny access to user update', function(done) {
+			request
+				.put('/users/1234567890abcdef')
+				.as('member')
+				.end(function(err, res) {
+					expect(res.status).to.be(403);
+					done();
+				});
+		});
+
+		it('should deny access to user delete', function(done) {
+			request
+				.del('/users/1234567890abcdef')
+				.as('member')
+				.end(function(err, res) {
+					expect(res.status).to.be(403);
+					done();
+				});
+		});
+
+		it('should allow access to user profile', function(done) {
+			request
+				.get('/user')
+				.as('member')
+				.end(function(err, res) {
+					expect(res.status).to.be(200);
+					done();
+				});
+		});
+
+		it('should deny access to roles list', function(done) {
+			request
+				.get('/roles')
+				.as('member')
+				.end(function(err, res) {
+					expect(res.status).to.be(403);
+					done();
+				});
+		});
+
+		it('should deny access to ipdb query', function(done) {
+			request
+				.get('/ipdb/4441')
+				.as('member')
+				.end(function(err, res) {
+					expect(res.status).to.be(403);
+					done();
+				});
+		});
+
+		it('should deny access to file upload', function(done) {
+			request
+				.put('/files')
+				.as('member')
+				.end(function(err, res) {
+					expect(res.status).to.be(403);
+					done();
+				});
+		});
+
+		it('should allow check for existing games', function(done) {
+			request
+				.head('/games/mb')
+				.as('member')
+				.end(function(err, res) {
+					expect(res.status).to.be(404);
+					done();
+				});
+		});
+
+		it('should deny access to game creation', function(done) {
+			request
+				.post('/games')
+				.as('member')
+				.end(function(err, res) {
+					expect(res.status).to.be(403);
+					done();
+				});
+		});
+
+		it('should allow access to ping', function(done) {
+			request
+				.get('/ping')
+				.as('member')
+				.end(function(err, res) {
+					expect(res.status).to.be(200);
+					done();
+				});
+		});
+
+	});
+
+	describe('for members with the `contributor` role', function() {
+
+		/**
+		 * {
+		 *	roles: 'contributor',
+		 *	allows: [
+		 *		{ resources: 'games', permissions: [ 'edit', 'add' ]},
+		 *		{ resources: 'ipdb', permissions: 'view' },
+		 *		{ resources: 'files', permissions: 'upload' }
+		 *	]}
+		 */
+		it('should deny access to user list', function(done) {
+			request
+				.get('/users')
+				.as('contributor')
+				.end(function(err, res) {
+					expect(res.status).to.be(403);
+					done();
+				});
+		});
+
+		it('should deny access to user update', function(done) {
+			request
+				.put('/users/1234567890abcdef')
+				.as('contributor')
+				.end(function(err, res) {
+					expect(res.status).to.be(403);
+					done();
+				});
+		});
+
+		it('should deny access to user delete', function(done) {
+			request
+				.del('/users/1234567890abcdef')
+				.as('member')
+				.end(function(err, res) {
+					expect(res.status).to.be(403);
+					done();
+				});
+		});
+
+		it('should allow access to user profile', function(done) {
+			request
+				.get('/user')
+				.as('contributor')
+				.end(function(err, res) {
+					expect(res.status).to.be(200);
+					done();
+				});
+		});
+
+		it('should deny access to roles list', function(done) {
+			request
+				.get('/roles')
+				.as('contributor')
+				.end(function(err, res) {
+					expect(res.status).to.be(403);
+					done();
+				});
+		});
+
+		it('should allow access to ipdb query', function(done) {
+			request
+				.get('/ipdb/4441?dryrun=1')
+				.as('contributor')
+				.end(function(err, res) {
+					expect(res.status).to.be(200);
+					done();
+				});
+		});
+
+		it('should allow access to file upload', function(done) {
+			request
+				.put('/files')
+				.as('contributor')
+				.send({})
+				.end(function(err, res) {
+					expect(res.status).to.be(422);
+					done();
+				});
+		});
+
+		it('should allow check for existing games', function(done) {
+			request
+				.head('/games/mb')
+				.as('contributor')
+				.end(function(err, res) {
+					expect(res.status).to.be(404);
+					done();
+				});
+		});
+
+		it('should allow to create games', function(done) {
+			request
+				.post('/games')
+				.as('contributor')
+				.send({})
+				.end(function(err, res) {
+					expect(res.status).to.be(422);
+					done();
+				});
+		});
+
+		it('should allow access to ping', function(done) {
+			request
+				.get('/ping')
+				.as('contributor')
+				.end(function(err, res) {
+					expect(res.status).to.be(200);
+					done();
+				});
+		});
+
+	});
 });

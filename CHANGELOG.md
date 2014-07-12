@@ -1,14 +1,24 @@
 # VPDB Changelog
 
+## v0.1.0 (WIP)
+
+*Server Changes*:
+
+* Updated API:
+  * User resource (`authorize`)
+* Switched from sessions to auth tokens on the API
+* Added API integration tests
+
+
 ## v0.0.4
 
-Client Changes:
+*Client Changes*:
 
 * Added login Form
 * Added user management page
 * Added page for adding new games
 
-Server Update:
+*Server Update:*
 
 * Added [PassportJS](http://passportjs.org/) integration
 * Added IP.Board integration via [OAuth2](https://github.com/freezy/ipb-oauth2-server).
@@ -27,6 +37,7 @@ Server Update:
 * Restructured server code
 * Added documentation and scripts for production deployment
 * Rewrote all the CSS using KSS style sheets.
+
 
 ## v0.0.1
 

@@ -104,12 +104,6 @@ module.exports = {
 		},
 
 		/**
-		 * A temp folder for extracting stuff. No trailing slash!
-		 * @important
-		 */
-		tmp: '/tmp',
-
-		/**
 		 * Configure login strategies here.
 		 */
 		passport: {
@@ -185,7 +179,20 @@ module.exports = {
 				clientSecret: 'CLIENT_SECRET'
 
 			}]
-		}
+		},
+
+		/**
+		 * A temp folder for extracting stuff. No trailing slash!
+		 * @important
+		 */
+		tmp: '/tmp',
+
+		/**
+		 * HTTP header where the JWT is send from the client. If you globally
+		 * protect the site with let's say HTTP Basic, you'd need to use
+		 * different name for the authorization header.
+		 */
+		authorizationHeader: 'Authorization'
 	}
 
 };

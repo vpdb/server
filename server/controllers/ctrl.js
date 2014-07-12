@@ -26,30 +26,31 @@ var User = require('mongoose').model('User');
 exports.auth = function(resource, permission, done) {
 	return function(req, res) {
 		var token;
+		var headerName = config.vpdb.authorizationHeader;
 
 		var deny = function(error) {
 			done(error, req, res);
 		};
 
 		// read headers
-		if ((req.headers && req.headers.authorization) || (req.query && req.query.jwt)) {
+		if ((req.headers && req.headers[headerName.toLowerCase()]) || (req.query && req.query.jwt)) {
 
 			if (req.query.jwt) {
 				token = req.query.jwt;
 			} else {
 
 				// validate format
-				var parts = req.headers.authorization.split(' ');
+				var parts = req.headers[headerName.toLowerCase()].split(' ');
 				if (parts.length == 2) {
 					var scheme = parts[0];
 					var credentials = parts[1];
 					if (/^Bearer$/i.test(scheme)) {
 						token = credentials;
 					} else {
-						return deny({ code: 401, message: 'Bad Authorization header. Format is "Authorization: Bearer [token]"' });
+						return deny({ code: 401, message: 'Bad Authorization header. Format is "' + headerName + ': Bearer [token]"' });
 					}
 				} else {
-					return deny({ code: 401, message: 'Bad Authorization header. Format is "Authorization: Bearer [token]"' });
+					return deny({ code: 401, message: 'Bad Authorization header. Format is "' + headerName + ': Bearer [token]"' });
 				}
 			}
 
@@ -211,7 +212,8 @@ exports.viewParams = function(req, done) {
 					url: '/auth/' + ipbConfig.id
 				};
 			})
-		}
+		},
+		authHeader: config.vpdb.authorizationHeader
 	};
 	done(params);
 };

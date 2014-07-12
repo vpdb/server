@@ -162,20 +162,6 @@ module.exports = {
 		},
 
 		/**
-		 * A temp folder for extracting stuff. No trailing slash!
-		 * @important
-		 */
-		tmp: function(path) {
-			if (!fs.existsSync(path)) {
-				return 'Temp path does not exist. Please point it to an existing folder or create the mentioned path';
-			}
-
-			if (!fs.lstatSync(path).isDirectory()) {
-				return 'Temp path is not a folder. Please make it point to a folder';
-			}
-		},
-
-		/**
 		 * Configure login strategies here.
 		 */
 		passport: {
@@ -282,6 +268,31 @@ module.exports = {
 				},
 
 				__array: true
+			}
+		},
+
+		/**
+		 * A temp folder for extracting stuff. No trailing slash!
+		 * @important
+		 */
+		tmp: function(path) {
+			if (!fs.existsSync(path)) {
+				return 'Temp path does not exist. Please point it to an existing folder or create the mentioned path';
+			}
+
+			if (!fs.lstatSync(path).isDirectory()) {
+				return 'Temp path is not a folder. Please make it point to a folder';
+			}
+		},
+
+		/**
+		 * HTTP header where the JWT is send from the client. If you globally
+		 * protect the site with let's say HTTP Basic, you'd need to use
+		 * different name for the authorization header.
+		 */
+		authorizationHeader: function(header) {
+			if (header.length === 0) {
+				return 'Your authorization header must be longer than 0 characters';
 			}
 		}
 	}

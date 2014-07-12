@@ -43,6 +43,7 @@ app.factory('AuthService', function($window, $localStorage, $sessionStorage, $ro
 		user: null,
 		isAuthenticated: false,
 		timeout: null,
+		authHeader: 'Authorization',
 
 		/**
 		 * Should be called when the app initializes. Reads data from storage into Angular.
@@ -216,6 +217,14 @@ app.factory('AuthService', function($window, $localStorage, $sessionStorage, $ro
 			delete $localStorage.jwt;
 			delete $localStorage.user;
 			delete $localStorage.tokenExpires;
+		},
+
+		setAuthHeader: function(authHeader) {
+			this.authHeader = authHeader;
+		},
+
+		getAuthHeader: function() {
+			return this.authHeader;
 		}
 
 	};
@@ -226,7 +235,7 @@ app.factory('AuthInterceptor', function(AuthService) {
 		request: function(config) {
 			config.headers = config.headers || {};
 			if (AuthService.hasToken()) {
-				config.headers.Authorization = 'Bearer ' + AuthService.getToken();
+				config.headers[AuthService.getAuthHeader()] = 'Bearer ' + AuthService.getToken();
 			}
 			return config;
 		},

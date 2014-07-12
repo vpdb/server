@@ -19,6 +19,16 @@ directives.directive('auth', function($rootScope, $location, AuthService) {
 	}
 });
 
+directives.directive('authHeader', function($rootScope, $location, AuthService) {
+	return {
+		restrict: 'A',
+		link: function(scope, element, attrs) {
+			AuthService.setAuthHeader(attrs.authHeader);
+		}
+	}
+});
+
+
 directives.directive('ratingbox', function($parse) {
 	return {
 		restrict: 'C',

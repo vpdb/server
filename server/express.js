@@ -3,7 +3,12 @@ var http = require('http');
 var flash = require('connect-flash');
 var logger = require('winston');
 var express = require('express');
+var expressMorgan  = require('morgan');
+var expressFavion = require('serve-favicon');
 var expressWinston = require('express-winston');
+var expressBodyParser = require('body-parser');
+var expressCompression = require('compression');
+var expressErrorhandler = require('errorhandler');
 
 var domainError = require('express-domain-errors');
 var gracefulExit = require('express-graceful-exit');
@@ -55,20 +60,19 @@ module.exports = function(app, config, passport) {
 		}));
 		logger.info('[express] Access log will be written to %s.', process.env.APP_ACCESS_LOG);
 	} else {
-		app.use(express.logger('dev'));
+		app.use(expressMorgan('dev'));
 	}
 
 	if (runningLocal) {
 		// in production the reverse proxy is taking care of this
-		app.use(express.compress({ filter: function(req, res) { return /json|text|javascript|css/.test(res.getHeader('Content-Type')); }, level: 9 }));
+		app.use(expressCompression({ filter: function(req, res) { return /json|text|javascript|css/.test(res.getHeader('Content-Type')); }, level: 9 }));
 	}
 
 	// general stuff
-	app.use(express.cookieParser());   // cookieParser should be above session
-	app.use(express.json());           // bodyParser should be above methodOverride
-	app.use(express.urlencoded());
-	app.use(express.methodOverride());
-	app.use(express.favicon(path.resolve(__dirname, '../client/static/images/favicon.png')));
+	app.use(expressBodyParser.json());
+	//app.use(expressBodyParser.urlencoded());
+	//app.use(expressMethodOverride()); // npm install --save method-override
+	app.use(expressFavion(path.resolve(__dirname, '../client/static/images/favicon.png')));
 
 	// static file serving
 	app.use(express.static(writeable.cacheRoot, { maxAge: 3600*24*30*1000 }));
@@ -86,12 +90,10 @@ module.exports = function(app, config, passport) {
 	// api pre-checks
 //	app.use(apiCtrl.checkApiContentType);
 
-
 	app.use('/styleguide', express.static(path.resolve(__dirname, '../styleguide')));
 
-
-	// routes should be at the last (pretty much)
-	app.use(app.router);
+	// bootstrap routes
+	require('./routes')(app, config, passport);
 
 	// api errors
 	app.use(apiCtrl.handleParseError);
@@ -110,7 +112,7 @@ module.exports = function(app, config, passport) {
 
 	// development only
 	if (runningDev) {
-		app.use(express.errorHandler());
+		app.use(expressErrorhandler());
 		app.locals.pretty = true;
 	}
 

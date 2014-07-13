@@ -11,7 +11,6 @@ var mongoose = require('mongoose');
 
 var settings = require('./server/modules/settings');
 
-var app, config;
 var serverDomain = domain.create();
 
 // early init
@@ -22,12 +21,12 @@ if (!settings.validate()) {
 	logger.error('[app] Settings validation failed, aborting.');
 	process.exit(1);
 } else {
-	config = settings.current;
+	var config = settings.current;
 }
 
 serverDomain.run(function() {
 
-	app = express();
+	var app = express();
 
 	// bootstrap db connection
 	mongoose.connect(config.vpdb.db, { server: { socketOptions: { keepAlive: 1 } } });
@@ -51,10 +50,6 @@ serverDomain.run(function() {
 
 		// express settings
 		require('./server/express')(app, config, passport);
-
-		// bootstrap routes
-		require('./server/routes')(app, config, passport);
-		require('./server/routes')(app, config, passport);
 
 		// and lastly, startup scripts - stuff that is run at start.
 		require('./server/startup')(function(err) {

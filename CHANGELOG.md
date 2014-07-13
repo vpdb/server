@@ -1,6 +1,6 @@
 # VPDB Changelog
 
-## v0.1.0 (WIP)
+## v0.0.5
 
 *Server Changes*:
 
@@ -8,6 +8,7 @@
   * User resource (`authorize`)
 * Switched from sessions to auth tokens on the API
 * Added API integration tests
+* Migrated to Express v4.x
 
 
 ## v0.0.4

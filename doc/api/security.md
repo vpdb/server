@@ -16,16 +16,16 @@ Restricted resources however need an access token. VPDB authenticates using
 via the `Authorization` header. Compared to other authentication schemes, this
 has several advantages:
 
-	* Credentials are only sent once over the wire when requesting the token
-	* Token is self-containing, i.e. the server is not required to maintain
-	  a list of tokens and expire them; it only checks the signature and 
-	  accepts or drops.
-	* Compared to cookie-based sessions, security problems related to cross
-	  site requests don't exist due to the nature of the non-persistent header
-	* Easy non-browser implementation: Cookie or Simple HTTP-based 
-	  authentication is not ideal when working with native mobile clients or
-	  other non-browser based applications.
-	  
+ * Credentials are only sent once over the wire when requesting the token
+ * Token is self-containing, i.e. the server is not required to maintain
+   a list of tokens and expire them; it only checks the signature and 
+   accepts or drops.
+ * Compared to cookie-based sessions, security problems related to cross
+   site requests don't exist due to the nature of the non-persistent header
+ * Easy non-browser implementation: Cookie or Simple HTTP-based 
+   authentication is not ideal when working with native mobile clients or
+   other non-browser based applications.
+  
 In order to get a token, you need to post your credentials to this resource:
 
 	POST https://vpdb.ch/api/authenticate
@@ -89,7 +89,7 @@ special role to access it. Here's a table of the resources and roles you'll
 need to access them.
 
 |                     | `GET`       | `POST`      | `PUT`       | `HEAD` |
-|---------------------|-------------|-------------|-------------|--------|
+|=====================|=============|=============|=============|========|
 | `/api/authenticate` |             | *anon*      |             |        |
 | `/api/users`        | admin       | *anon*      |             |        |
 | `/api/users/:id`    |             |             | admin       |        |

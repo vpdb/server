@@ -89,7 +89,7 @@ special role to access it. Here's a table of the resources and roles you'll
 need to access them.
 
 |                     | `GET`       | `POST`      | `PUT`       | `HEAD` |
-|=====================|=============|=============|=============|========|
+|---------------------|-------------|-------------|-------------|--------|
 | `/api/authenticate` |             | *anon*      |             |        |
 | `/api/users`        | admin       | *anon*      |             |        |
 | `/api/users/:id`    |             |             | admin       |        |

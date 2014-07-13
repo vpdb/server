@@ -19,7 +19,7 @@ module.exports = function(app, config, passport) {
 	app.get('/partials/:name', web.partials());
 	app.get('/partials/admin/users', web.partials('admin/users', 'users', 'update'));
 	app.get('/partials/admin/game-add', web.partials('admin/game-add', 'games', 'update'));
-	app.get('/partials/admin/modals/:name', web.partials('admin/modals', 'users', '*'));
+	app.get('/partials/admin/modals/:name', web.partials('admin/modals', 'users', 'update'));
 	app.get('/partials/modals/:name', web.partials('modals'));
 
 	// JSON API

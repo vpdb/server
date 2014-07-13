@@ -59,13 +59,3 @@ We use tabs, no spaces.
 
 The following list briefly describes each component. You can use the menu navigation
 on the left hand side to quickly navigate each section.
-
-1. Scaffolding
-2. Typography
-3. Grid
-4. Tables
-5. Forms
-6. Buttons
-7. Images
-8. Dropdowns
-

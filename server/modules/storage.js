@@ -53,4 +53,8 @@ Storage.prototype.metadata = function(file, done) {
 	}
 };
 
+Storage.prototype.url = function(obj) {
+	return '/storage/' + obj._id;
+}
+
 module.exports = new Storage();

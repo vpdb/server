@@ -31,16 +31,10 @@ ctrl.controller('GameListController', function($scope, $rootScope, $http, $locat
 
 	$http({
 		method: 'GET',
-		url: '/api-mock/games'
+		url: '/api/games'
 
 	}).success(function(data, status, headers, config) {
-		_.each(data.result, function(game) {
-			game.art = {
-				backglass: 'backglass/' + game.key + '.png',
-				backglass_thumb: 'backglass/thumb/' + game.key + '.png'
-			}
-		});
-		$scope.games = data.result;
+		$scope.games = data;
 	});
 
 	$scope.$on('dataToggleDecade', function(event, decade) {

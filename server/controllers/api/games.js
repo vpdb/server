@@ -4,8 +4,8 @@ var logger = require('winston');
 
 var Game = require('mongoose').model('Game');
 var File = require('mongoose').model('File');
-var acl = require('../../acl');
 var api = require('./api');
+var storage = require('../../modules/storage');
 
 exports.head = function(req, res) {
 	Game.findOne({ gameId: req.params.id }, '-__v', function(err, game) {
@@ -66,6 +66,35 @@ exports.create = function(req, res) {
 };
 
 exports.list = function(req, res) {
+
+	var query = Game.find().select('-__v').populate('media.backglass', '_').populate('media.logo');
+
+	// text search
+	if (req.query.q) {
+		// sanitize and build regex
+		var q = req.query.q.trim().replace(/[^a-z0-9]+/gi, ' ').replace(/\s+/g, '.*');
+		var regex = new RegExp(q, 'i');
+		query.or([
+			{ title: regex },
+			{ gameid: regex },
+		]);
+	}
+
+	query.exec(function(err, games) {
+		if (err) {
+			logger.error('[api|game:list] Error: %s', err, {});
+			return api.fail(res, err, 500);
+		}
+		var games = _.map(games, function(game) {
+			return _.extend(
+				_.pick(game, 'gameId', 'title', 'manufacturer', 'year', 'gameType', 'ipdb'),
+				{ media: {
+					backglass: storage.url(game.media.backglass),
+					logo: storage.url(game.media.logo)
+				}});
+		});
+		api.success(res, games);
+	});
 };
 
 exports.update = function(req, res) {

@@ -1,4 +1,4 @@
-.col-md-4.col-sm-6.col-xs-12.fade-animation(ng-repeat="game in games | filter:query | decade:filterDecades | manufacturer:filterManufacturer | orderBy:sort:sortReverse", ng-click="navGame(game.id)")
+.col-md-4.col-sm-6.col-xs-12.fade-animation(ng-repeat="game in games | filter:query | decade:filterDecades | manufacturer:filterManufacturer | orderBy:sort:sortReverse", ng-click="navGame(game.gameId)")
 	.panel.panel--animated.ng-cloak
 		.img.img--ar-bg.img--rounded-top(img-bg="game.media.backglass")
 		.text-center.padder-horizontal

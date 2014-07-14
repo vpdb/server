@@ -85,11 +85,11 @@ exports.list = function(req, res) {
 			logger.error('[api|game:list] Error: %s', err, {});
 			return api.fail(res, err, 500);
 		}
-		var games = _.map(games, function(game) {
+		games = _.map(games, function(game) {
 			return _.extend(
 				_.pick(game, 'gameId', 'title', 'manufacturer', 'year', 'gameType', 'ipdb'),
 				{ media: {
-					backglass: storage.url(game.media.backglass),
+					backglass: storage.url(game.media.backglass, 'small'),
 					logo: storage.url(game.media.logo)
 				}});
 		});

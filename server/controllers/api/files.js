@@ -56,11 +56,19 @@ exports.upload = function(req, res) {
 					var f = _.pick(file, '_id', 'name', 'bytes', 'created', 'mimeType', 'fileType');
 					f.url = ctrl.appendToken(file.getUrl(), res);
 					f.metadata = shortMetadata;
+
 					api.success(res, f);
+
+					// do the rest non-blocking in the background.
 					file.save(function(err) {
 						if (err) {
 							logger.error('[api|file:save] Error saving metadata: %s', err, {});
 							logger.error('[api|file:save] Metadata: %s', require('util').inspect(metadata));
+						}
+					});
+					storage.postprocess(file, function(err) {
+						if (err) {
+							logger.error('[api|file:postprocess] Error post-processing file: %s', err, {});
 						}
 					});
 				});

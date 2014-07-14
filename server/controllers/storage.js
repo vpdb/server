@@ -8,12 +8,12 @@ var config = require('../modules/settings').current;
 var quota = require('../modules/quota');
 var acl = require('../acl');
 
-var serve = function(req, res, file) {
+var serve = function(req, res, file, size) {
 	res.writeHead(200, {
 		'Content-Type': file.mimeType,
 		'Content-Length': file.bytes
 	});
-	var stream = fs.createReadStream(path.resolve(config.vpdb.storage, file._id.toString()));
+	var stream = fs.createReadStream(file.getPath(size));
 	stream.pipe(res);
 };
 
@@ -60,7 +60,7 @@ exports.get = function(req, res) {
 						if (!granted) {
 							return res.status(403).end();
 						}
-						serve(req, res, file);
+						serve(req, res, file, req.params.size);
 					});
 				});
 			}
@@ -73,7 +73,7 @@ exports.get = function(req, res) {
 				return res.status(404).end();
 			}
 			// otherwise, serve.
-			serve(req, res, file);
+			serve(req, res, file, req.params.size);
 		}
 		if (!file.public && !req.user) {
 			return res.status(403).end();

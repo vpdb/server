@@ -37,7 +37,9 @@ module.exports = function(app, config, passport) {
 		app.enable('trust proxy');
 	}
 
-	app.use(domainError(sendOfflineMsg, doGracefulExit));
+/*	app.use(domainError(sendOfflineMsg, function (err) {
+		gracefulExit.gracefulExitHandler(app);
+	}));*/
 
 	// log to file if env APP_ACCESS_LOG is set
 	if (process.env.APP_ACCESS_LOG) {
@@ -139,7 +141,4 @@ function sendOfflineMsg() {
 	if (process.send) {
 		process.send('offline');
 	}
-}
-function doGracefulExit(err) {
-	gracefulExit.gracefulExitHandler(app, server);
 }

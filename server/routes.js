@@ -43,7 +43,8 @@ module.exports = function(app, config, passport) {
 	app.get('/api/ping',          api.anon(api.ping));
 
 	// Storage
-	app.get('/storage/:id', api.anon(storage.get));
+	app.get('/storage/:id',       api.anon(storage.get));  // permission/quota handling is inside.
+	app.get('/storage/:id/:size', api.anon(storage.get));
 
 	// JSON API (mock)
 	var apiMock = require('./controllers/api-mock');

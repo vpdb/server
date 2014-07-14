@@ -32,8 +32,10 @@ FileSchema.methods = {
 	 * @return {String}
 	 * @api public
 	 */
-	getPath: function() {
-		return path.resolve(config.vpdb.storage, this._id.toString());
+	getPath: function(size) {
+		return size
+			? path.resolve(config.vpdb.storage, size, this._id.toString())
+			: path.resolve(config.vpdb.storage, this._id.toString());
 	},
 
 	/**
@@ -42,8 +44,10 @@ FileSchema.methods = {
 	 * @return {String}
 	 * @api public
 	 */
-	getUrl: function() {
-		return '/storage/' + this._id.toString();
+	getUrl: function(size) {
+		return size
+			? '/storage/' + this._id.toString() + '/' + size
+			: '/storage/' + this._id.toString();
 	}
 };
 

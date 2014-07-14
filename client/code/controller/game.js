@@ -231,7 +231,7 @@ ctrl.controller('AdminGameAddCtrl', function($scope, $upload, $modal, ApiHelper,
 	$scope.onBackglassUpload = onImageUpload('backglass', function(response) {
 
 		var bg = response.data;
-		$scope.uploadedBackglass = bg.url;
+		$scope.uploadedBackglass = bg.variations.small;
 		$scope.game.media.backglass = bg._id;
 
 		var ar = Math.round(bg.metadata.size.width / bg.metadata.size.height * 1000) / 1000;

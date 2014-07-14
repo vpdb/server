@@ -3,16 +3,21 @@
 var _ = require('underscore');
 var gm = require('gm');
 var fs = require('fs');
+var util  = require('util');
 var path = require('path');
 var async = require('async');
 var logger = require('winston');
+var events = require('events');
 
 var File = require('mongoose').model('File');
 var config = require('./settings').current;
 
 function Storage() {
 
+	events.EventEmitter.call(this);
 	this.variationNames = [];
+	this.processingFiles = {}; // contains callbacks for potential controller requests of not-yet-processed files
+
 	var that = this;
 
 	// create necessary paths..
@@ -28,13 +33,40 @@ function Storage() {
 			}
 		});
 	});
+
+	// collect processing files
+	this.on('postProcessStarted', function(file, variation) {
+		var key = file._id.toString() + '/' + variation.name;
+		logger.info('[storage] Post-processing of %s started.', key);
+		that.processingFiles[key] = [];
+	});
+
+	this.on('postProcessFinished', function(file, variation) {
+		var key = file._id.toString() + '/' + variation.name;
+		logger.info('[storage] Post-processing of %s done, running %d callback(s).', key, that.processingFiles[key].length);
+		_.each(that.processingFiles[key], function(callback) {
+			callback(that.info(file, variation.name));
+		});
+		delete that.processingFiles[key];
+	});
 }
+util.inherits(Storage, events.EventEmitter);
 
 Storage.prototype.variations = {
 	backglass: [
 		{ name: 'small',   width: 253, height: 202 },
 		{ name: 'small-2x', width: 506, height: 404 }
 	]
+};
+
+Storage.prototype.whenProcessed = function(file, variationName, callback) {
+	var key = file._id.toString() + '/' + variationName;
+	if (!this.processingFiles[key]) {
+		logger.warn('[storage] No such file being processed: %s', key);
+		return callback(null);
+	}
+	logger.info('[storage] Added %s to queue for post-post-processing.', key);
+	this.processingFiles[key].push(callback);
 };
 
 
@@ -85,6 +117,7 @@ Storage.prototype.postprocess = function(file, done) {
 	var type = mime[0];
 	var subtype = mime[1];
 
+	var that = this;
 	var PngQuant = require('pngquant');
 	var OptiPng = require('optipng');
 
@@ -93,10 +126,12 @@ Storage.prototype.postprocess = function(file, done) {
 			if (this.variations[file.fileType]) {
 				async.eachSeries(this.variations[file.fileType], function(variation, next) {
 
+					that.emit('postProcessStarted', file, variation);
 					var filepath = file.getPath(variation.name);
 					var writeStream = fs.createWriteStream(filepath);
 					writeStream.on('finish', function() {
 						logger.info('[storage] Saved resized image to "%s".', filepath);
+						that.emit('postProcessFinished', file, variation);
 						next();
 					});
 
@@ -126,20 +161,20 @@ Storage.prototype.url = function(file, variation) {
 	return file ? '/storage/' + file._id + (variation ? '/' + variation : '') : null;
 };
 
-Storage.prototype.info = function(file, variation) {
+Storage.prototype.info = function(file, variationName) {
 
-	if (variation && !_.contains(this.variationNames, variation)) {
+	if (variationName && !_.contains(this.variationNames, variationName)) {
 		return null;
 	}
 
-	// TODO optimize (aka "cache")
-	if (variation && fs.existsSync(file.getPath(variation))) {
-		return fs.statSync(file.getPath(variation));
+	// TODO optimize (aka "cache" and make it async, this is called frequently)
+	if (variationName && fs.existsSync(file.getPath(variationName))) {
+		return fs.statSync(file.getPath(variationName));
 
 	} else if (fs.existsSync(file.getPath())) {
 		return fs.statSync(file.getPath());
 	}
 	return null;
-}
+};
 
 module.exports = new Storage();

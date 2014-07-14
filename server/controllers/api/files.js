@@ -42,12 +42,9 @@ exports.upload = function(req, res) {
 			if (err) {
 				return api.fail(res, err, 500);
 			}
+
 			var writeStream = fs.createWriteStream(file.getPath());
-			req.on('data', function (data) {
-				writeStream.write(data);
-			});
-			req.on('end', function() {
-				writeStream.end();
+			writeStream.on('finish', function() {
 				storage.metadata(file, function(err, metadata, shortMetadata) {
 					if (!err && metadata) {
 						api.sanitizeObject(metadata);
@@ -55,6 +52,9 @@ exports.upload = function(req, res) {
 					}
 					var f = _.pick(file, '_id', 'name', 'bytes', 'created', 'mimeType', 'fileType');
 					f.url = ctrl.appendToken(file.getUrl(), res);
+					f.variations = {
+						small: ctrl.appendToken(file.getUrl('small'), res)
+					};
 					f.metadata = shortMetadata;
 
 					api.success(res, f);
@@ -73,6 +73,7 @@ exports.upload = function(req, res) {
 					});
 				});
 			});
+			req.pipe(writeStream);
 		});
 	});
 };

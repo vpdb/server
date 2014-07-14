@@ -32,9 +32,9 @@ FileSchema.methods = {
 	 * @return {String}
 	 * @api public
 	 */
-	getPath: function(size) {
-		return size
-			? path.resolve(config.vpdb.storage, size, this._id.toString())
+	getPath: function(variationName) {
+		return variationName
+			? path.resolve(config.vpdb.storage, variationName, this._id.toString())
 			: path.resolve(config.vpdb.storage, this._id.toString());
 	},
 
@@ -44,9 +44,9 @@ FileSchema.methods = {
 	 * @return {String}
 	 * @api public
 	 */
-	getUrl: function(size) {
-		return size
-			? '/storage/' + this._id.toString() + '/' + size
+	getUrl: function(variationName) {
+		return variationName
+			? '/storage/' + this._id.toString() + '/' + variationName
 			: '/storage/' + this._id.toString();
 	}
 };

@@ -9,19 +9,50 @@ var quota = require('../modules/quota');
 var storage = require('../modules/storage');
 var acl = require('../acl');
 
-var serve = function(req, res, file, variation) {
+var serve = function(req, res, file, variationName) {
 
-	var info = storage.info(file, variation);
+	var info = storage.info(file, variationName);
 
-	if (info) {
+	if (info && info.size > 0) {
 		res.writeHead(200, {
 			'Content-Type': file.mimeType,
 			'Content-Length':  info.size
 		});
-		var stream = fs.createReadStream(file.getPath(variation));
+		var stream = fs.createReadStream(file.getPath(variationName));
 		stream.pipe(res);
+
 	} else {
-		res.writeHead(404).end();
+		/*
+		 * So the idea is the following:
+		 *
+		 * The user uploads let's say an image, a backglass at 1280x1024 that weights 2.5M. As uploading takes already
+		 * long enough, we don't want the user wait another minute until the post-processing stuff is done (i.e.
+		 * creating thumbs and running everything through pngquant and optipng).
+		 *
+		 * For this reason, when uploading, the API only reads image meta data and instantly returns the payload that
+		 * contains urls for not-yet-generated thumbs. The post-processing is then launched in the background.
+		 *
+		 * Now, when the client accesses the not-yet-generated thumb, we end up here. By calling `whenProcessed()`, we
+		 * ask the `storage` module to let us know when processing for that file and variation has finished (if there
+		 * wasn't actually any processing going on, it will instantly return null).
+		 *
+		 * That means that the client's request for the image is delayed until the image is ready and then instantly
+		 * delivered.
+		 */
+		logger.info('[ctrl|storage] Waiting for %s/%s to be processed...', file._id.toString(), variationName);
+		storage.whenProcessed(file, variationName, function(info) {
+			if (!info) {
+				logger.info('[ctrl|storage] No processing, returning 404.');
+				return res.writeHead(404);
+			}
+			logger.info('[ctrl|storage] Streaming freshly processed item back to client.');
+			res.writeHead(200, {
+				'Content-Type': file.mimeType,
+				'Content-Length':  info.size
+			});
+			var stream = fs.createReadStream(file.getPath(variationName));
+			stream.pipe(res);
+		});
 	}
 
 };
@@ -30,7 +61,7 @@ exports.get = function(req, res) {
 
 	File.findById(req.params.id, function(err, file) {
 		if (err) {
-			logger.error('[storage] Error getting file "%s": %s', req.params.id, err, {});
+			logger.error('[ctrl|storage] Error getting file "%s": %s', req.params.id, err, {});
 			return res.status(500).end();
 		}
 		if (!file) {
@@ -53,7 +84,7 @@ exports.get = function(req, res) {
 				// otherwise, check acl
 				acl.isAllowed(req.user.email, 'files', 'download', function(err, granted) {
 					if (err) {
-						logger.error('[storage] Error checking ACLs for <%s>: %s', req.user.email, err, {});
+						logger.error('[ctrl|storage] Error checking ACLs for <%s>: %s', req.user.email, err, {});
 						return res.status(500).end();
 					}
 					if (!granted) {
@@ -63,7 +94,7 @@ exports.get = function(req, res) {
 					// and the quota
 					quota.isAllowed(req, res, file, function(err, granted) {
 						if (err) {
-							logger.error('[storage] Error checking quota for <%s>: %s', req.user.email, err, {});
+							logger.error('[ctrl|storage] Error checking quota for <%s>: %s', req.user.email, err, {});
 							return res.status(500).end();
 						}
 						if (!granted) {

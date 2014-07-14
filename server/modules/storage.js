@@ -21,16 +21,18 @@ function Storage() {
 	var that = this;
 
 	// create necessary paths..
-	_.each(this.variations, function(variations, fileType) {
-		_.each(variations, function(variation) {
-			var variationPath = path.resolve(config.vpdb.storage, variation.name);
-			if (!fs.existsSync(variationPath)) {
-				logger.info('[storage] Creating non-existant path for variation "%s" at %s', variation.name, variationPath);
-				fs.mkdirSync(variationPath);
-			}
-			if (!_.contains(that.variationNames), variation.name) {
-				that.variationNames.push(variation.name);
-			}
+	_.each(this.variations, function(items) {
+		_.each(items, function(variations) {
+			_.each(variations, function(variation) {
+				var variationPath = path.resolve(config.vpdb.storage, variation.name);
+				if (!fs.existsSync(variationPath)) {
+					logger.info('[storage] Creating non-existant path for variation "%s" at %s', variation.name, variationPath);
+					fs.mkdirSync(variationPath);
+				}
+				if (!_.contains(that.variationNames), variation.name) {
+					that.variationNames.push(variation.name);
+				}
+			});
 		});
 	});
 
@@ -55,12 +57,14 @@ function Storage() {
 util.inherits(Storage, events.EventEmitter);
 
 Storage.prototype.variations = {
-	backglass: [
-		{ name: 'medium',    width: 364, height: 291 },
-		{ name: 'medium-2x', width: 728, height: 582 },
-		{ name: 'small',     width: 253, height: 202 },
-		{ name: 'small-2x',  width: 506, height: 404 }
-	]
+	image: {
+		backglass: [
+			{ name: 'medium',    width: 364, height: 291 },
+			{ name: 'medium-2x', width: 728, height: 582 },
+			{ name: 'small',     width: 253, height: 202 },
+			{ name: 'small-2x',  width: 506, height: 404 }
+		]
+	}
 };
 
 Storage.prototype.whenProcessed = function(file, variationName, callback) {
@@ -127,15 +131,15 @@ Storage.prototype.postprocess = function(file, done) {
 
 	switch(type) {
 		case 'image':
-			if (this.variations[file.fileType]) {
+			if (this.variations[type][file.fileType]) {
 
 				// mark all variations of being processed.
-				_.each(this.variations[file.fileType], function(variation, next) {
+				_.each(this.variations[type][file.fileType], function(variation, next) {
 					that.emit('postProcessStarted', file, variation);
 				});
 
 				// process variations
-				async.eachSeries(this.variations[file.fileType], function(variation, next) {
+				async.eachSeries(this.variations[type][file.fileType], function(variation, next) {
 
 					var filepath = file.getPath(variation.name);
 					var writeStream = fs.createWriteStream(filepath);
@@ -170,7 +174,8 @@ Storage.prototype.postprocess = function(file, done) {
 					var writeStream = fs.createWriteStream(tmppath);
 					writeStream.on('finish', function() {
 						logger.info('[storage] All done, switching images..');
-						done();
+						fs.unlinkSync(file.getPath());
+						fs.rename(tmppath, file.getPath(), done);
 					});
 
 					var quanter = new PngQuant([128]);

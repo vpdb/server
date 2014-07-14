@@ -17,7 +17,8 @@ var fields = {
 	fileType:     { type: String, required: true },
 	metadata:     { type: Schema.Types.Mixed },
 	public:       { type: Boolean, required: true, default: false },
-	active:       { type: Boolean, required: true, default: false }
+	active:       { type: Boolean, required: true, default: false },
+	variations:   { type: Schema.Types.Mixed }
 };
 
 var FileSchema = new Schema(fields);

@@ -145,8 +145,29 @@ Storage.prototype.postprocess = function(file, done) {
 					var writeStream = fs.createWriteStream(filepath);
 					writeStream.on('finish', function() {
 						logger.info('[storage] Saved resized image to "%s".', filepath);
-						that.emit('postProcessFinished', file, variation);
-						next();
+						if (!file.variations) {
+							file.variations = {};
+						}
+						// update database with new variation
+						gm(filepath).identify(function(err, value) {
+							if (err) {
+								logger.warn('[storage] Error reading metadata from image: %s', err);
+								return next();
+							}
+
+							logger.warn('[storage] Saving to variations key "%s"', variation.name);
+							file.variations[variation.name] = {
+								size: fs.statSync(filepath).size,
+								width: value.size.width,
+								height: value.size.height
+							};
+
+							// change to file.save when fixed: https://github.com/LearnBoost/mongoose/issues/1694
+							File.findOneAndUpdate({ _id: file._id.toString() }, _.omit(file.toJSON(), [ '_id', '__v' ]), {}, function(err, f) {
+								that.emit('postProcessFinished', file, variation);
+								next(err);
+							});
+						});
 					});
 
 					if (subtype == 'png') {
@@ -163,6 +184,7 @@ Storage.prototype.postprocess = function(file, done) {
 					}
 				}, function(err) {
 					if (err) {
+						logger.error('[storage] Error processing variations: %s', err, {});
 						return done(err);
 					}
 					if (subtype != 'png') {

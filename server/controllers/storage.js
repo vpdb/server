@@ -11,7 +11,7 @@ var acl = require('../acl');
 var serve = function(req, res, file, size) {
 	res.writeHead(200, {
 		'Content-Type': file.mimeType,
-		'Content-Length': file.bytes
+		'Content-Length':  fs.statSync(file.getPath(size))["size"]  // TODO optimize (aka "cache")
 	});
 	var stream = fs.createReadStream(file.getPath(size));
 	stream.pipe(res);

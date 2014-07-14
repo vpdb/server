@@ -155,9 +155,8 @@ Storage.prototype.postprocess = function(file, done) {
 								return next();
 							}
 
-							logger.warn('[storage] Saving to variations key "%s"', variation.name);
 							file.variations[variation.name] = {
-								size: fs.statSync(filepath).size,
+								bytes: fs.statSync(filepath).size,
 								width: value.size.width,
 								height: value.size.height
 							};

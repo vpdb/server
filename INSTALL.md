@@ -75,6 +75,15 @@ Upgrade ``npm`` to latest and prevent self-signed certificate error
 ### Image Tools
 
 	sudo apt-get -y install graphicsmagick pngquant
+	
+OptiPNG needs manual compilation since in Ubuntu's repo there's only an outdated, vulnerable version:
+
+	cd /usr/local/src
+	wget http://downloads.sourceforge.net/project/optipng/OptiPNG/optipng-0.7.5/optipng-0.7.5.tar.gz
+	tar xvfz optipng-0.7.5.tar.gz 
+	cd optipng-0.7.5
+	./configure && make
+	sudo make install
 
 ### MongoDB
 

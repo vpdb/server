@@ -72,6 +72,8 @@ Prerequisites:
   your ``PATH``.
 * Download and install [pngquant](http://pngquant.org/) and make sure that the binary is in
   your ``PATH``.
+* Download and install [OptiPNG](http://optipng.sourceforge.net/) and make sure that the binary is in
+  your ``PATH``.
 * Install the Grunt command line tool: ``npm install -g grunt-cli``
 
 Install Node.js and Git, then open a command line and type:

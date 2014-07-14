@@ -44,18 +44,22 @@ function Storage() {
 	this.on('postProcessFinished', function(file, variation) {
 		var key = file._id.toString() + '/' + variation.name;
 		logger.info('[storage] Post-processing of %s done, running %d callback(s).', key, that.processingFiles[key].length);
-		_.each(that.processingFiles[key], function(callback) {
+
+		var callbacks = that.processingFiles[key];
+		delete that.processingFiles[key];
+		_.each(callbacks, function(callback) {
 			callback(that.info(file, variation.name));
 		});
-		delete that.processingFiles[key];
 	});
 }
 util.inherits(Storage, events.EventEmitter);
 
 Storage.prototype.variations = {
 	backglass: [
-		{ name: 'small',   width: 253, height: 202 },
-		{ name: 'small-2x', width: 506, height: 404 }
+		{ name: 'medium',    width: 364, height: 291 },
+		{ name: 'medium-2x', width: 728, height: 582 },
+		{ name: 'small',     width: 253, height: 202 },
+		{ name: 'small-2x',  width: 506, height: 404 }
 	]
 };
 
@@ -124,9 +128,15 @@ Storage.prototype.postprocess = function(file, done) {
 	switch(type) {
 		case 'image':
 			if (this.variations[file.fileType]) {
+
+				// mark all variations of being processed.
+				_.each(this.variations[file.fileType], function(variation, next) {
+					that.emit('postProcessStarted', file, variation);
+				});
+
+				// process variations
 				async.eachSeries(this.variations[file.fileType], function(variation, next) {
 
-					that.emit('postProcessStarted', file, variation);
 					var filepath = file.getPath(variation.name);
 					var writeStream = fs.createWriteStream(filepath);
 					writeStream.on('finish', function() {
@@ -147,7 +157,29 @@ Storage.prototype.postprocess = function(file, done) {
 						logger.info('[storage] Resizing "%s" for %s %s...', file.name, variation.name, file.fileType);
 						gm(file.getPath()).resize(variation.width, variation.height).stream().pipe(writeStream);
 					}
-				}, done);
+				}, function(err) {
+					if (err) {
+						return done(err);
+					}
+					if (subtype != 'png') {
+						return done();
+					}
+
+					// now we're done with the variations, optimize the actual image.
+					var tmppath = file.getPath() + '_tmp';
+					var writeStream = fs.createWriteStream(tmppath);
+					writeStream.on('finish', function() {
+						logger.info('[storage] All done, switching images..');
+						done();
+					});
+
+					var quanter = new PngQuant([128]);
+					var optimizer = new OptiPng(['-o7']);
+
+					logger.info('[storage] Optimizing %s "%s"...', file.fileType, file.name);
+					fs.createReadStream(file.getPath()).pipe(quanter).pipe(optimizer).pipe(writeStream);
+
+				});
 			} else {
 				done();
 			}
@@ -163,14 +195,22 @@ Storage.prototype.url = function(file, variation) {
 
 Storage.prototype.info = function(file, variationName) {
 
+	var key = file._id.toString() + '/' + variationName;
 	if (variationName && !_.contains(this.variationNames, variationName)) {
 		return null;
+	}
+	if (this.processingFiles[key]) {
+		logger.info('[storage] Item %s being processed, returning null', key);
+		return null;
+	} else {
+		logger.info('[storage] Item %s not being processed.', key);
 	}
 
 	// TODO optimize (aka "cache" and make it async, this is called frequently)
 	if (variationName && fs.existsSync(file.getPath(variationName))) {
 		return fs.statSync(file.getPath(variationName));
 
+	// fallback to non-variation.
 	} else if (fs.existsSync(file.getPath())) {
 		return fs.statSync(file.getPath());
 	}

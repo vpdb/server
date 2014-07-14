@@ -53,7 +53,8 @@ exports.upload = function(req, res) {
 					var f = _.pick(file, '_id', 'name', 'bytes', 'created', 'mimeType', 'fileType');
 					f.url = ctrl.appendToken(file.getUrl(), res);
 					f.variations = {
-						small: ctrl.appendToken(file.getUrl('small'), res)
+						small: ctrl.appendToken(file.getUrl('small'), res),
+						medium: ctrl.appendToken(file.getUrl('medium'), res)
 					};
 					f.metadata = shortMetadata;
 

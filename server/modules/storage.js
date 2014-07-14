@@ -10,27 +10,33 @@ var logger = require('winston');
 var File = require('mongoose').model('File');
 var config = require('./settings').current;
 
-var dimensions = {
-	backglass: [
-		{ name: 'small',   width: 253, height: 202 },
-		{ name: 'small2x', width: 506, height: 404 }
-	]
-};
-
-
 function Storage() {
 
+	this.variationNames = [];
+	var that = this;
+
 	// create necessary paths..
-	_.each(dimensions, function(dimTypes, dimType) {
-		_.each(dimTypes, function(dim) {
-			var p = path.resolve(config.vpdb.storage, dim.name);
-			if (!fs.existsSync(p)) {
-				logger.info('[storage] Creating non-existant %s path %s', dimType, p);
-				fs.mkdirSync(p);
+	_.each(this.variations, function(variations, fileType) {
+		_.each(variations, function(variation) {
+			var variationPath = path.resolve(config.vpdb.storage, variation.name);
+			if (!fs.existsSync(variationPath)) {
+				logger.info('[storage] Creating non-existant path for variation "%s" at %s', variation.name, variationPath);
+				fs.mkdirSync(variationPath);
+			}
+			if (!_.contains(that.variationNames), variation.name) {
+				that.variationNames.push(variation.name);
 			}
 		});
 	});
 }
+
+Storage.prototype.variations = {
+	backglass: [
+		{ name: 'small',   width: 253, height: 202 },
+		{ name: 'small-2x', width: 506, height: 404 }
+	]
+};
+
 
 Storage.prototype.cleanup = function(graceperiod, done) {
 	graceperiod = graceperiod ? graceperiod : 0;
@@ -84,21 +90,28 @@ Storage.prototype.postprocess = function(file, done) {
 
 	switch(type) {
 		case 'image':
-			if (dimensions[file.fileType]) {
-				async.eachSeries(dimensions[file.fileType], function(dimension, next) {
+			if (this.variations[file.fileType]) {
+				async.eachSeries(this.variations[file.fileType], function(variation, next) {
 
-					var quanter = new PngQuant([128]);
-					var optimizer = new OptiPng(['-o7']);
-
-					var filepath = file.getPath(dimension.name);
+					var filepath = file.getPath(variation.name);
 					var writeStream = fs.createWriteStream(filepath);
 					writeStream.on('finish', function() {
-						logger.info('[storage] Saved quantered and optimized image to "%s".', filepath);
+						logger.info('[storage] Saved resized image to "%s".', filepath);
 						next();
 					});
-					logger.info('[storage] Optimizing "%s" for %s %s...', file.name, dimension.name, file.fileType);
-					gm(file.getPath()).resize(dimension.width, dimension.height).stream().pipe(quanter).pipe(optimizer).pipe(writeStream);
 
+					if (subtype == 'png') {
+						var quanter = new PngQuant([128]);
+						var optimizer = new OptiPng(['-o7']);
+
+						logger.info('[storage] Resizing and optimizing "%s" for %s %s...', file.name, variation.name, file.fileType);
+						gm(file.getPath()).resize(variation.width, variation.height).stream().pipe(quanter).pipe(optimizer).pipe(writeStream);
+
+					} else {
+
+						logger.info('[storage] Resizing "%s" for %s %s...', file.name, variation.name, file.fileType);
+						gm(file.getPath()).resize(variation.width, variation.height).stream().pipe(writeStream);
+					}
 				}, done);
 			} else {
 				done();
@@ -109,8 +122,24 @@ Storage.prototype.postprocess = function(file, done) {
 	}
 };
 
-Storage.prototype.url = function(obj, size) {
-	return obj ? '/storage/' + obj._id + (size ? '/' + size : '') : null;
+Storage.prototype.url = function(file, variation) {
+	return file ? '/storage/' + file._id + (variation ? '/' + variation : '') : null;
 };
+
+Storage.prototype.info = function(file, variation) {
+
+	if (variation && !_.contains(this.variationNames, variation)) {
+		return null;
+	}
+
+	// TODO optimize (aka "cache")
+	if (variation && fs.existsSync(file.getPath(variation))) {
+		return fs.statSync(file.getPath(variation));
+
+	} else if (fs.existsSync(file.getPath())) {
+		return fs.statSync(file.getPath());
+	}
+	return null;
+}
 
 module.exports = new Storage();

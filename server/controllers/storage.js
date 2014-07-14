@@ -6,15 +6,24 @@ var logger = require('winston');
 var File = require('mongoose').model('File');
 var config = require('../modules/settings').current;
 var quota = require('../modules/quota');
+var storage = require('../modules/storage');
 var acl = require('../acl');
 
-var serve = function(req, res, file, size) {
-	res.writeHead(200, {
-		'Content-Type': file.mimeType,
-		'Content-Length':  fs.statSync(file.getPath(size))["size"]  // TODO optimize (aka "cache")
-	});
-	var stream = fs.createReadStream(file.getPath(size));
-	stream.pipe(res);
+var serve = function(req, res, file, variation) {
+
+	var info = storage.info(file, variation);
+
+	if (info) {
+		res.writeHead(200, {
+			'Content-Type': file.mimeType,
+			'Content-Length':  info.size
+		});
+		var stream = fs.createReadStream(file.getPath(variation));
+		stream.pipe(res);
+	} else {
+		res.writeHead(404).end();
+	}
+
 };
 
 exports.get = function(req, res) {
@@ -60,7 +69,7 @@ exports.get = function(req, res) {
 						if (!granted) {
 							return res.status(403).end();
 						}
-						serve(req, res, file, req.params.size);
+						serve(req, res, file, req.params.variation);
 					});
 				});
 			}
@@ -73,7 +82,7 @@ exports.get = function(req, res) {
 				return res.status(404).end();
 			}
 			// otherwise, serve.
-			serve(req, res, file, req.params.size);
+			serve(req, res, file, req.params.variation);
 		}
 		if (!file.public && !req.user) {
 			return res.status(403).end();

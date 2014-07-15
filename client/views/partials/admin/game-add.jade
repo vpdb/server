@@ -77,14 +77,14 @@
 							i.fa.fa-exclamation-triangle.space-right
 							| {{ errors.game_id }}
 
-				.form-group(ng-show="!yearFetched || errors.year", ng-class="{ error: errors.year }")
+				.form-group(ng-show="!yearFetched", ng-class="{ error: errors.year }")
 					label.col-sm-3.control-label(for="year") Year
 					.col-sm-3.col-md-2
 						input#year.form-control(type="text", ng-model="game.year")
 					.col-sm-6.col-md-7
 						span.help-block Release year of this game (no info on IPDB.org)
 
-				.alert.alert-danger.alert--shifted-up-2x(ng-show="errors.year")
+				.alert.alert-danger.alert--shifted-up-2x(ng-show="errors.year && !yearFetched")
 					.row
 						.col-sm-9.col-sm-offset-3
 							i.fa.fa-exclamation-triangle.space-right

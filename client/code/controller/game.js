@@ -67,9 +67,6 @@ ctrl.controller('AdminGameAddCtrl', function($scope, $upload, $modal, $window, A
 	$scope.theme('light');
 	$scope.setMenu('admin');
 
-	$scope.idValidated = false;
-	$scope.dataFetched = false;
-	$scope.yearFetched = true;
 
 	$scope.openUploadDialog = function(selector) {
 		angular.element(selector).trigger('click');
@@ -90,6 +87,10 @@ ctrl.controller('AdminGameAddCtrl', function($scope, $upload, $modal, $window, A
 		$scope.logoUploadText = dropText.logo;
 		$scope.backglassUploadProgress = 0;
 		$scope.logoUploadProgress = 0;
+		$scope.dataFetched = false;
+		$scope.yearFetched = true;
+		$scope.idValidated = false;
+
 	};
 
 	var fetchIpdb = function(ipdbId, done) {

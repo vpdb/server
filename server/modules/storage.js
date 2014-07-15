@@ -161,11 +161,21 @@ Storage.prototype.postprocess = function(file, done) {
 								height: value.size.height
 							};
 
-							// change to file.save when fixed: https://github.com/LearnBoost/mongoose/issues/1694
-							File.findOneAndUpdate({ _id: file._id.toString() }, _.omit(file.toJSON(), [ '_id', '__v' ]), {}, function(err, f) {
-								that.emit('postProcessFinished', file, variation);
-								next(err);
+
+							// re-fetch so we're sure no updates are lost
+							File.findById(file._id, function(err, file) {
+								if (err) {
+									logger.warn('[storage] Error re-fetching image: %s', err);
+									return next(err);
+								}
+
+								// change to file.save when fixed: https://github.com/LearnBoost/mongoose/issues/1694
+								File.findOneAndUpdate({ _id: file._id.toString() }, _.omit(file.toJSON(), [ '_id', '__v' ]), {}, function(err, f) {
+									that.emit('postProcessFinished', file, variation);
+									next(err);
+								});
 							});
+
 						});
 					});
 

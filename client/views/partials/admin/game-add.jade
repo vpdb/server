@@ -9,7 +9,7 @@
 			h1 1. enter title
 			hr
 			.form-group(ng-class="{ error: errors.title }")
-				input.form-control.input-lg(type="text", placeholder="Title", ng-model="game.title")
+				input.form-control.input-lg(type="text", placeholder="Title", ng-model="game.title", on-enter="searchOnIpdb()")
 				.alert.alert-danger(ng-show="errors.title")
 					i.fa.fa-exclamation-triangle.space-right
 					| {{ errors.title }}
@@ -37,15 +37,15 @@
 			//----------------------
 			//- form for recreations
 			//----------------------
-			p(ng-show="game.origin == 'recreation'") Search IPDB.org and it will populate the following fields. You can also add additional data if you have
-				| more info available.
+			p(ng-show="game.origin == 'recreation'") Search IPDB.org and locate the IPDB number. Paste it into the
+				| field below and hit "fetch". If the correct game info is displayed, you're done in here.
 
 			.form-horizontal(ng-show="game.origin == 'recreation'")
 				.form-group(ng-class="{ error: errors['ipdb.number'] }")
 					label.col-sm-3.control-label(for="ipdbUrl") IPDB
 					.col-sm-6
-						input#ipdbUrl.form-control(type="text", ng-model="ipdbUrl", placeholder="URL or Number")
-						a(href="http://www.ipdb.org/search.pl?any={{ game.title | escape }}&search=Search+Database&searchtype=quick", target="_blank")
+						input#ipdbUrl.form-control(type="text", ng-model="ipdbUrl", placeholder="URL or Number", on-enter="refresh()")
+						a#ipdbLink(href="http://www.ipdb.org/search.pl?any={{ game.title | escape }}&search=Search+Database&searchtype=quick", target="_blank")
 							i.fa.fa-external-link.space-right
 							| Search title on IPDB.org
 					.col-sm-3
@@ -63,7 +63,7 @@
 					label.col-sm-3.control-label(for="gameId1") Game ID
 					.col-sm-6
 						.input-group
-							input#gameId1.form-control(type="text", ng-model="game.game_id", placeholder="Common Abbreviation", ng-change="idValidated = false")
+							input#gameId1.form-control(type="text", ng-model="game.game_id", placeholder="Common Abbreviation", ng-change="idValidated = false", on-enter="check()")
 							span.input-group-addon(ng-class="{ transparent: !idValidated }"): i.fa(class="{{ idValid ? 'fa-check': 'fa-times'}}")
 						span.help-block Must be unique and contain only letters and dashes.
 					.col-sm-3
@@ -77,8 +77,21 @@
 							i.fa.fa-exclamation-triangle.space-right
 							| {{ errors.game_id }}
 
+				.form-group(ng-show="!yearFetched || errors.year", ng-class="{ error: errors.year }")
+					label.col-sm-3.control-label(for="year") Year
+					.col-sm-3.col-md-2
+						input#year.form-control(type="text", ng-model="game.year")
+					.col-sm-6.col-md-7
+						span.help-block Release year of this game (no info on IPDB.org)
+
+				.alert.alert-danger.alert--shifted-up-2x(ng-show="errors.year")
+					.row
+						.col-sm-9.col-sm-offset-3
+							i.fa.fa-exclamation-triangle.space-right
+							| {{ errors.year }}
+
 			.col-md-offset-2.col-md-8.col-sm-offset-1.col-sm-10(ng-show="game.origin == 'recreation'")
-				.panel(ng-show="game.year")
+				.panel(ng-show="dataFetched")
 					.panel-heading
 						h2.h--small.text-center {{ game.title }}
 					.panel-body
@@ -104,7 +117,7 @@
 							dd(ng-show="game.designers") {{ game.designers.join(', ') }}
 							dt(ng-show="game.artists") Art design
 							dd(ng-show="game.artists") {{ game.artists.join(', ') }}
-				.panel.panel--fixed-height-300.panel--blank(ng-hide="game.year")
+				.panel.panel--fixed-height-300.panel--blank(ng-hide="dataFetched")
 					.panel-content
 						i.icon.icon-ipdb.icon-ipdb--huge.space-right
 						span INFO
@@ -200,12 +213,18 @@
 			.row.padder-top
 				.col-sm-6
 					.panel.panel--blank(ng-file-drop="onBackglassUpload($files)", ng-file-drag-over-class="panel--dragging")
-						.panel-body
+						input#uploadBackglass.hide(type='file', ng-file-select='onBackglassUpload($files)')
+						.panel-body.a.a--darker(ng-click="openUploadDialog('#uploadBackglass')")
 							.img.img--ar-bg.loaded(img-bg="uploadedBackglass")
-								.text-center.vertical-center--100(ng-hide="uploadedBackglass")
+								.text-center.vertical-center--100
 									progressbar.progress-striped.active(value="backglassUploadProgress", ng-show="backglassUploading")
-									i.fa.fa-picture-o.fa-3x(ng-class="{ transparent: backglassUploading }")
-									p {{ backglassUploadText }}
+									.span(ng-show="!img.url")
+										i.fa.fa-picture-o.fa-3x(ng-class="{ transparent: backglassUploading }")
+										p {{ backglassUploadText }}
+									.span(ng-show="img.loading")
+										i.fa.fa-cog.fa-3x.fa-spin--slow
+										p Generating thumbnails...
+
 				.col-sm-6
 					h4.h--large.h--no-margin Backglass
 					i A few guidelines:
@@ -230,16 +249,21 @@
 				i.fa.fa-exclamation-triangle.space-right
 				| {{ errors['media.backglass'] }}
 
-
 			.row.padder-top
 				.col-sm-6
 					.panel.panel--blank(ng-file-drop="onLogoUpload($files)", ng-file-drag-over-class="panel--dragging")
-						.panel-body
+						input#uploadLogo.hide(type='file', ng-file-select='onLogoUpload($files)')
+						.panel-body.a.a--darker(ng-click="openUploadDialog('#uploadLogo')")
 							.img.img--ar-logo.loaded(img-bg="uploadedLogo")
-								.text-center.vertical-center--100(ng-hide="uploadedLogo")
-									progressbar.progress-striped.active(value="logoUploadProgress", type="success", ng-show="logoUploading")
-									i.fa.fa-picture-o.fa-3x
-									p Drop logo here
+								.text-center.vertical-center--100
+									progressbar.progress-striped.active(value="logoUploadProgress", ng-show="logoUploading")
+									.span(ng-show="!img.url")
+										i.fa.fa-picture-o.fa-3x(ng-class="{ transparent: logoUploading }")
+										p {{ logoUploadText }}
+									.span(ng-show="img.loading")
+										i.fa.fa-cog.fa-3x.fa-spin--slow
+										p Generating thumbnails...
+
 				.col-sm-6
 					h4.h--large.h--no-margin Logo
 					ul

@@ -36,7 +36,7 @@ var fields = {
 	},
 	media: {
 		backglass: { type: Schema.Types.ObjectId, ref: 'File', required: 'Backglass image must be provided.' },
-		logo: { type: Schema.Types.ObjectId, ref: 'File' }
+		logo:      { type: Schema.Types.ObjectId, ref: 'File' }
 	}
 };
 var GameSchema = new Schema(fields);
@@ -44,15 +44,30 @@ var GameSchema = new Schema(fields);
 GameSchema.plugin(uniqueValidator, { message: 'The {PATH} "{VALUE}" is already taken.' });
 
 // validations
-GameSchema.path('game_type').validate(function() {
+GameSchema.path('game_type').validate(function(gameType, callback) {
 
 	var ipdb = this.ipdb ? this.ipdb.number : null;
 
 	// only check if not an original game.
 	if (this.game_type != 'og' && (!ipdb || !validator.isInt(ipdb))) {
 		this.invalidate('ipdb.number', 'IPDB Number is mandatory for recreations and must be a postive integer.');
+		return callback(true);
 	}
-	return true;
+
+	var that = this;
+	if (this.game_type != 'og') {
+		mongoose.model('Game').findOne({ 'ipdb.number': ipdb }, function(err, g) {
+			if (err) {
+				logger.error('[model] Error fetching game %s.');
+				return callback(false);
+			}
+			if (g) {
+				console.log('dupe game = ' + require('util').inspect(g));
+				that.invalidate('ipdb.number', 'The game "' + g.title + '" is already in the database and cannot be added twice.');
+			}
+			callback();
+		});
+	}
 });
 
 // validations

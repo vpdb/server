@@ -28,6 +28,21 @@ directives.directive('authHeader', function($rootScope, $location, AuthService) 
 	}
 });
 
+directives.directive('onEnter', function() {
+	return {
+		link: function(scope, element, attrs) {
+			element.bind("keypress", function (event) {
+				if (event.which === 13) {
+					scope.$apply(function () {
+						scope.$eval(attrs.onEnter);
+					});
+					event.preventDefault();
+				}
+			});
+		}
+	};
+});
+
 
 directives.directive('ratingbox', function($parse) {
 	return {
@@ -166,21 +181,27 @@ directives.directive('user', function($compile, $modal) {
 
 directives.directive('imgBg', function($parse) {
 	return {
+		scope: true,
 		restrict: 'A',
 		link: function(scope, element, attrs) {
 
+			scope.img = { url: false, loading: false };
 			var setImg = function(value) {
 
 				// check for empty
 				if (value === false) {
+					scope.img = { url: false, loading: false };
 					element.css('background-image', 'none');
 
 				} else {
+					scope.img = { url: value, loading: true };
 					element.css('background-image', "url('" + value + "')");
 					element.waitForImages({
 						each: function() {
 							var that = $(this);
 							that.addClass('loaded');
+							scope.img.loading = false;
+							scope.$apply();
 						},
 						waitForAll: true
 					});
@@ -195,13 +216,12 @@ directives.directive('imgBg', function($parse) {
 			} else {
 				var value = $parse(attrs.imgBg);
 				scope.$watch(value, function() {
-					var v = value(scope)
+					var v = value(scope);
 					if (v || v === false) {
 						setImg(v);
 					}
 				});
 			}
-
 		}
 	};
 });

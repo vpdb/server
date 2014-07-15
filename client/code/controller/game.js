@@ -55,16 +55,25 @@ ctrl.controller('RequestModPermissionModalCtrl', function($scope, $modalInstance
 	};
 });
 
-ctrl.controller('AdminGameAddCtrl', function($scope, $upload, $modal, ApiHelper, IpdbResource, GameResource) {
+ctrl.controller('AdminGameAddCtrl', function($scope, $upload, $modal, $window, ApiHelper, IpdbResource, GameResource) {
 
 	var maxAspectRatioDifference = 0.2;
-	var dropText = 'Drop backglass image here';
+	var dropText = {
+		backglass: 'Click or drag and drop backglass image here',
+		logo: 'Click or drag and drop logo here'
+	};
 	var uploadText = 'Uploading...';
 
 	$scope.theme('light');
 	$scope.setMenu('admin');
 
 	$scope.idValidated = false;
+	$scope.dataFetched = false;
+	$scope.yearFetched = true;
+
+	$scope.openUploadDialog = function(selector) {
+		angular.element(selector).trigger('click');
+	};
 
 	$scope.reset = function() {
 		$scope.game = {
@@ -77,8 +86,8 @@ ctrl.controller('AdminGameAddCtrl', function($scope, $upload, $modal, ApiHelper,
 		$scope.uploadedLogo = false;
 		$scope.errors = {};
 		$scope.error = null;
-		$scope.backglassUploadText = dropText;
-		$scope.logoUploadText = dropText;
+		$scope.backglassUploadText = dropText.backglass;
+		$scope.logoUploadText = dropText.logo;
 		$scope.backglassUploadProgress = 0;
 		$scope.logoUploadProgress = 0;
 	};
@@ -92,8 +101,13 @@ ctrl.controller('AdminGameAddCtrl', function($scope, $upload, $modal, ApiHelper,
 			if ($scope.game.short) {
 				$scope.game.game_id = $scope.game.short[0].replace(/[^a-z0-9\s\-]+/gi, '').replace(/\s+/g, '-').toLowerCase();
 			} else {
-				$scope.game.game_id = $scope.game.name.replace(/[^a-z0-9\s\-]+/gi, '').replace(/\s+/g, '-').toLowerCase();
+				$scope.game.game_id = $scope.game.title.replace(/[^a-z0-9\s\-]+/gi, '').replace(/\s+/g, '-').toLowerCase();
 			}
+			$scope.errors = {};
+			$scope.error = null;
+			$scope.dataFetched = true;
+			$scope.yearFetched = game.year ? true : false;
+
 			if (done) {
 				done(null, $scope.game);
 			}
@@ -219,7 +233,7 @@ ctrl.controller('AdminGameAddCtrl', function($scope, $upload, $modal, ApiHelper,
 					data: event.target.result
 				}).then(function(response) {
 					$scope[type + 'Uploading'] = false;
-					$scope[type + 'UploadText'] = dropText;
+					$scope[type + 'UploadText'] = dropText[type];
 					done(response);
 				}, ApiHelper.handleErrorsInDialog($scope, 'Error uploading image.'), function (evt) {
 						$scope[type + 'UploadProgress'] = parseInt(100.0 * evt.loaded / evt.total);
@@ -250,9 +264,11 @@ ctrl.controller('AdminGameAddCtrl', function($scope, $upload, $modal, ApiHelper,
 		var bg = response.data;
 		$scope.uploadedLogo = bg.url;
 		$scope.game.media.logo = bg._id;
-
 	});
 
+	$scope.searchOnIpdb = function() {
+		$window.open(angular.element('#ipdbLink').attr('href'));
+	};
 
 	$scope.reset();
 });

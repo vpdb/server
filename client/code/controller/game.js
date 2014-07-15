@@ -75,6 +75,7 @@ ctrl.controller('AdminGameAddCtrl', function($scope, $upload, $modal, $window, A
 	$scope.reset = function() {
 		$scope.game = {
 			origin: 'recreation',
+			links: [ { label: '', url: '' }],
 			media: {}
 		};
 		$scope.ipdbUrl = '';
@@ -259,6 +260,10 @@ ctrl.controller('AdminGameAddCtrl', function($scope, $upload, $modal, $window, A
 			arDiff: Math.round(arDiff * 100)
 		};
 	});
+
+	$scope.removeLink = function(link) {
+		
+	}
 
 	$scope.onLogoUpload = onImageUpload('logo', function(response) {
 

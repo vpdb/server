@@ -203,6 +203,34 @@
 
 
 			.clearfix
+			h4
+				i.fa.fa-link.space-right
+				| Links
+			hr.hr--light
+
+			.col-sm-3: label Type
+			.col-sm-8: label URL
+
+			.form-group(ng-repeat="link in game.links")
+
+				.col-sm-3
+					select.form-control
+						option -- Select --
+						option Wikipedia
+						option WIP Thread
+						option Discussion Thread
+						option Pinside Link
+						option Table Homepage
+				.col-sm-8
+					input.form-control(type="text", placeholder="http://...", ng-model="link.url")
+				.col-sm-1
+					i.fa.fa-trash-o(ng-click="removeLink(link)")
+
+			button.btn.btn-secondary.padder-top-2x.padder-bottom
+				i.fa.fa-plus-circle.space-right
+				| Add Another
+
+			.clearfix
 			h1 4. Upload Media
 			hr
 			p Upload high quality artwork here. The backglass is mandatory but also the logo is strongly recommended.

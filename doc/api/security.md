@@ -21,7 +21,7 @@ has several advantages:
    a list of tokens and expire them; it only checks the signature and 
    accepts or drops.
  * Compared to cookie-based sessions, security problems related to cross
-   site requests don't exist due to the nature of the non-persistent header
+   site requests don't exist due to the nature of the non-persistent headers
  * Easy non-browser implementation: Cookie or Simple HTTP-based 
    authentication is not ideal when working with native mobile clients or
    other non-browser based applications.
@@ -50,8 +50,8 @@ In return, you'll get the token along with your user profile:
 	    "active": true,
 	    "roles": [ "root" ],
 	    "permissions": {
-	    "roles": [ "*" ],
-	    "users": [ "update", "list", "view" ],
+	      "roles": [ "*" ],
+	      "users": [ "update", "list", "view" ],
 	      "files": [ "upload", "download" ],
 	      "ipdb": [ "view" ],
 	      "games": [ "update", "add" ],
@@ -61,7 +61,7 @@ In return, you'll get the token along with your user profile:
 	  }
 	}
 	
-The token you then include as a bearer token in the `Authorization` header. For
+The token is then included as a bearer token in the `Authorization` header. For
 example, when retrieving the user profile, the client would send:
 
 	GET https://vpdb.ch/api/user

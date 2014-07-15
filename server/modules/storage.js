@@ -100,7 +100,7 @@ Storage.prototype.cleanup = function(graceperiod, done) {
 };
 
 Storage.prototype.metadata = function(file, done) {
-	var mime = file.mimeType.split('/');
+	var mime = file.mime_type.split('/');
 	var type = mime[0];
 	var subtype = mime[1];
 
@@ -115,13 +115,13 @@ Storage.prototype.metadata = function(file, done) {
 			});
 			break;
 		default:
-			logger.warning('[storage] No metadata parser for mime type "%s".', file.mimeType);
+			logger.warning('[storage] No metadata parser for mime type "%s".', file.mime_type);
 			done();
 	}
 };
 
 Storage.prototype.postprocess = function(file, done) {
-	var mime = file.mimeType.split('/');
+	var mime = file.mime_type.split('/');
 	var type = mime[0];
 	var subtype = mime[1];
 
@@ -131,15 +131,15 @@ Storage.prototype.postprocess = function(file, done) {
 
 	switch(type) {
 		case 'image':
-			if (this.variations[type][file.fileType]) {
+			if (this.variations[type][file.file_type]) {
 
 				// mark all variations of being processed.
-				_.each(this.variations[type][file.fileType], function(variation, next) {
+				_.each(this.variations[type][file.file_type], function(variation, next) {
 					that.emit('postProcessStarted', file, variation);
 				});
 
 				// process variations
-				async.eachSeries(this.variations[type][file.fileType], function(variation, next) {
+				async.eachSeries(this.variations[type][file.file_type], function(variation, next) {
 
 					var filepath = file.getPath(variation.name);
 					var writeStream = fs.createWriteStream(filepath);
@@ -173,12 +173,12 @@ Storage.prototype.postprocess = function(file, done) {
 						var quanter = new PngQuant([128]);
 						var optimizer = new OptiPng(['-o7']);
 
-						logger.info('[storage] Resizing and optimizing "%s" for %s %s...', file.name, variation.name, file.fileType);
+						logger.info('[storage] Resizing and optimizing "%s" for %s %s...', file.name, variation.name, file.file_type);
 						gm(file.getPath()).resize(variation.width, variation.height).stream().pipe(quanter).pipe(optimizer).pipe(writeStream);
 
 					} else {
 
-						logger.info('[storage] Resizing "%s" for %s %s...', file.name, variation.name, file.fileType);
+						logger.info('[storage] Resizing "%s" for %s %s...', file.name, variation.name, file.file_type);
 						gm(file.getPath()).resize(variation.width, variation.height).stream().pipe(writeStream);
 					}
 				}, function(err) {
@@ -202,7 +202,7 @@ Storage.prototype.postprocess = function(file, done) {
 					var quanter = new PngQuant([128]);
 					var optimizer = new OptiPng(['-o7']);
 
-					logger.info('[storage] Optimizing %s "%s"...', file.fileType, file.name);
+					logger.info('[storage] Optimizing %s "%s"...', file.file_type, file.name);
 					fs.createReadStream(file.getPath()).pipe(quanter).pipe(optimizer).pipe(writeStream);
 
 				});

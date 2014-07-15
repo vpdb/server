@@ -27,10 +27,10 @@ exports.upload = function(req, res) {
 	var file = new File({
 		name: req.headers['content-disposition'].match(/filename=([^;\z]+)/i)[1].replace(/(^"|^'|"$|'$)/g, ''),
 		bytes: req.headers['content-length'],
-		created: new Date(),
+		created_at: new Date(),
 		author: req.user._id,
-		mimeType: req.headers['content-type'],
-		fileType: req.query.type
+		mime_type: req.headers['content-type'],
+		file_type: req.query.type
 	});
 
 	file.validate(function(err) {
@@ -50,7 +50,7 @@ exports.upload = function(req, res) {
 						api.sanitizeObject(metadata);
 						file.metadata = metadata;
 					}
-					var f = _.pick(file, '_id', 'name', 'bytes', 'created', 'mimeType', 'fileType');
+					var f = _.pick(file, '_id', 'name', 'bytes', 'created_at', 'mime_type', 'file_type');
 					f.url = ctrl.appendToken(file.getUrl(), res);
 					f.variations = {
 						small: ctrl.appendToken(file.getUrl('small'), res),

@@ -46,7 +46,7 @@ exports.create = function(req, res) {
 						}
 						logger.info('[api|user:create] %s <%s> successfully created.', count ? 'User' : 'Root user', newUser.email);
 						acl.addUserRoles(newUser.email, newUser.roles);
-						return api.success(res, _.omit(newUser.toJSON(), 'passwordHash', 'passwordSalt'), 201);
+						return api.success(res, _.omit(newUser.toJSON(), 'password_hash', 'password_salt'), 201);
 					});
 				});
 			} else {
@@ -89,14 +89,14 @@ exports.authenticate = function(req, res) {
 			api.success(res, {
 				token: token,
 				expires: expires,
-				user: _.extend(_.omit(user.toJSON(), 'passwordHash', 'passwordSalt', 'uploadedFiles'), acls)
+				user: _.extend(_.omit(user.toJSON(), 'password_hash', 'password_salt', 'uploaded_files'), acls)
 			}, 200);
 		});
 	});
 };
 
 exports.list = function(req, res) {
-	var query = User.find().select('-passwordHash -passwordSalt -__v');
+	var query = User.find().select('-password_hash -password_salt -__v');
 
 	// text search
 	if (req.query.q) {
@@ -139,7 +139,7 @@ exports.profile = function(req, res) {
 			return api.fail(res, err, 500);
 		}
 		api.success(res, _.extend(
-			_.omit(req.user.toJSON(), 'passwordHash', 'passwordSalt', 'uploadedFiles'),
+			_.omit(req.user.toJSON(), 'password_hash', 'password_salt', 'uploaded_files'),
 			acls
 		), 200);
 	});
@@ -148,7 +148,7 @@ exports.profile = function(req, res) {
 
 exports.update = function(req, res) {
 	var updateableFields = [ 'name', 'email', 'username', 'active', 'roles' ];
-	User.findById(req.params.id, '-passwordHash -passwordSalt -__v', function(err, user) {
+	User.findById(req.params.id, '-password_hash -password_salt -__v', function(err, user) {
 		if (err) {
 			logger.error('[api|user:update] Error: %s', err, {});
 			return api.fail(res, err, 500);

@@ -24,12 +24,12 @@ exports.init = function() {
 exports.isAllowed = function(req, res, file, callback) {
 
 	// undefined mime types are free
-	if (quotaConfig.costs[file.mimeType] == null) {
+	if (quotaConfig.costs[file.mime_type] == null) {
 		return callback(null, true);
 	}
 
 	// return directly if file is free
-	if (quotaConfig.costs[file.mimeType] === 0) {
+	if (quotaConfig.costs[file.mime_type] === 0) {
 		return callback(null, true);
 	}
 
@@ -50,7 +50,7 @@ exports.isAllowed = function(req, res, file, callback) {
 
 	this.quota[quotaConfig.plans[plan].per].apply({
 			identifier: req.user._id.toString(),
-			weight: quotaConfig.costs[file.mimeType],
+			weight: quotaConfig.costs[file.mime_type],
 			allow: quotaConfig.plans[plan].credits
 		},
 		function(err, result) {

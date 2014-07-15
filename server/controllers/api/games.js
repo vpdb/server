@@ -20,8 +20,8 @@ exports.head = function(req, res) {
 exports.create = function(req, res) {
 
 	var newGame = new Game(req.body);
-	var ok = api.ok('game', 'create', newGame.gameId, res);
-	var okk = api.ok('game', 'create', newGame.gameId, res, function(done) {
+	var ok = api.ok('game', 'create', newGame.game_id, res);
+	var okk = api.ok('game', 'create', newGame.game_id, res, function(done) {
 		newGame.remove(done);
 	});
 	logger.info('[api|game:create] %s', util.inspect(req.body));
@@ -31,7 +31,7 @@ exports.create = function(req, res) {
 			return api.fail(res, err, 422);
 		}
 		logger.info('[api|game:create] Validations passed.');
-		Game.findOne({ gameId: newGame.gameId }).exec(ok(function(game) {
+		Game.findOne({ game_id: newGame.game_id }).exec(ok(function(game) {
 			if (!game) {
 				newGame.save(ok(function(game) {
 					logger.info('[api|game:create] Game "%s" created.', game.title);
@@ -59,7 +59,7 @@ exports.create = function(req, res) {
 				}, 'Error saving game "%s": %s'));
 			} else {
 				logger.warn('[api|game:create] Game <%s> already in database, aborting.', newGame.email);
-				return api.fail(res, 'Game "' + newGame.gameId + '" already exists.', 409);
+				return api.fail(res, 'Game "' + newGame.game_id + '" already exists.', 409);
 			}
 		}, 'Error finding game with id "%s": %s'));
 	});
@@ -87,7 +87,7 @@ exports.list = function(req, res) {
 		}
 		games = _.map(games, function(game) {
 			return _.extend(
-				_.pick(game, 'gameId', 'title', 'manufacturer', 'year', 'gameType', 'ipdb'),
+				_.pick(game, 'game_id', 'title', 'manufacturer', 'year', 'game_type', 'ipdb'),
 				{ media: {
 					backglass: storage.url(game.media.backglass, 'small'),
 					logo: storage.url(game.media.logo)

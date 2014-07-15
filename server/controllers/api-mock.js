@@ -654,7 +654,7 @@ var games = {
 		units: 3361,
 		gamedesign: [ 'George Gomez' ],
 		artdesign: [ 'Kevin O\'Connor'],
-		gametype: 'ss',
+		game_type: 'ss',
 		rating: 8.8,
 		votes: 21,
 		views: 7615,

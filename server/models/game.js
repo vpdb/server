@@ -12,23 +12,23 @@ var maxAspectRatioDifference = 0.2;
 
 // schema
 var fields = {
-	gameId:        { type: String, required: 'Game ID must be provided.', index: true, unique: true },
-	title:         { type: String, required: 'Title must be provided.', index: true },
-	year:          { type: Number, required: 'Year must be provided.', index: true },
-	manufacturer:  { type: String, required: 'Manufacturer must be provided.', index: true },
-	gameType:      { type: String, required: true, enum: { values: gameTypes, message: 'Invalid game type. Valid game types are: ["' +  gameTypes.join('", "') + '"].' }},
-	short:         Array,
-	description:   String,
-	instructions:  String,
-	producedUnits: Number,
-	modelNumber:   String,
-	themes:        Array,
-	designers:     Array,
-	artists:       Array,
-	features:      String,
-	notes:         String,
-	toys:          String,
-	slogans:       String,
+	game_id:        { type: String, required: 'Game ID must be provided.', index: true, unique: true },
+	title:          { type: String, required: 'Title must be provided.', index: true },
+	year:           { type: Number, required: 'Year must be provided.', index: true },
+	manufacturer:   { type: String, required: 'Manufacturer must be provided.', index: true },
+	game_type:      { type: String, required: true, enum: { values: gameTypes, message: 'Invalid game type. Valid game types are: ["' +  gameTypes.join('", "') + '"].' }},
+	short:          Array,
+	description:    String,
+	instructions:   String,
+	produced_units: Number,
+	model_number:   String,
+	themes:         Array,
+	designers:      Array,
+	artists:        Array,
+	features:       String,
+	notes:          String,
+	toys:           String,
+	slogans:        String,
 	ipdb: {
 		number: Number,
 		rating: Number,
@@ -44,12 +44,12 @@ var GameSchema = new Schema(fields);
 GameSchema.plugin(uniqueValidator, { message: 'The {PATH} "{VALUE}" is already taken.' });
 
 // validations
-GameSchema.path('gameType').validate(function(gameType) {
+GameSchema.path('game_type').validate(function() {
 
 	var ipdb = this.ipdb ? this.ipdb.number : null;
 
 	// only check if not an original game.
-	if (this.gameType != 'og' && (!ipdb || !validator.isInt(ipdb))) {
+	if (this.game_type != 'og' && (!ipdb || !validator.isInt(ipdb))) {
 		this.invalidate('ipdb.number', 'IPDB Number is mandatory for recreations and must be a postive integer.');
 	}
 	return true;
@@ -72,7 +72,6 @@ GameSchema.path('media.backglass').validate(function(backglass, callback) {
 
 		var ar = Math.round(backglass.metadata.size.width / backglass.metadata.size.height * 1000) / 1000;
 		var arDiff = Math.abs(ar / 1.25 - 1);
-		console.log('AR: %s, diff: %s', ar, arDiff)
 		callback(arDiff < maxAspectRatioDifference);
 	});
 }, 'Aspect ratio of backglass must be smaller than 1:1.5 and greater than 1:1.05.');
@@ -88,7 +87,7 @@ GameSchema.methods = {
 	 * @api public
 	 */
 	getUrl: function() {
-		return '/game/' + this.gameId;
+		return '/game/' + this.game_id;
 	}
 };
 

@@ -10,17 +10,17 @@ var Schema = mongoose.Schema;
 
 // schema
 var fields = {
-	name:          { type: String, index: true, required: 'Name must be provided.' }, // display name, equals username when locally registering
-	username:      { type: String, index: true, unique: true, sparse: true },
-	email:         { type: String, index: true, unique: true, lowercase: true, required: 'Email must be provided.' },
-	roles:         [ String ],
-	plan:          { type: String, required: false },
-	provider:      { type: String, required: true },
-	passwordHash:  { type: String },
-	passwordSalt:  { type: String },
-	thumb:         { type: String },
-	active:        { type: Boolean, required: true, default: true },
-	uploadedFiles: [{ type: Schema.Types.ObjectId, ref: 'File' }]
+	name:            { type: String, index: true, required: 'Name must be provided.' }, // display name, equals username when locally registering
+	username:        { type: String, index: true, unique: true, sparse: true },
+	email:           { type: String, index: true, unique: true, lowercase: true, required: 'Email must be provided.' },
+	roles:           [ String ],
+	plan:            { type: String, required: false },
+	provider:        { type: String, required: true },
+	password_hash:   { type: String },
+	password_salt:   { type: String },
+	thumb:           { type: String },
+	active:          { type: Boolean, required: true, default: true },
+	uploaded_files:  [{ type: Schema.Types.ObjectId, ref: 'File' }]
 };
 
 // provider data fields
@@ -40,8 +40,8 @@ UserSchema.index({ name: 'text', username: 'text', email: 'text' });
 UserSchema.virtual('password')
 	.set(function(password) {
 		this._password = password;
-		this.passwordSalt = this.makeSalt();
-		this.passwordHash = this.encryptPassword(password);
+		this.password_salt = this.makeSalt();
+		this.password_hash = this.encryptPassword(password);
 	})
 	.get(function() {
 		return this._password
@@ -117,7 +117,7 @@ UserSchema.path('provider').validate(function(provider) {
 	}
 }, null);
 
-UserSchema.path('passwordHash').validate(function() {
+UserSchema.path('password_hash').validate(function() {
 	// here we check the length. remember that the virtual _password field is
 	// the one that triggers the hashing.
 	if (this.isNew && this._password && !validator.isLength(this._password, 6)) {
@@ -137,7 +137,7 @@ UserSchema.methods = {
 	 * @api public
 	 */
 	authenticate: function(plainText) {
-		return this.encryptPassword(plainText) === this.passwordHash;
+		return this.encryptPassword(plainText) === this.password_hash;
 	},
 
 	/**
@@ -161,7 +161,7 @@ UserSchema.methods = {
 		if (!password) {
 			return '';
 		}
-		return crypto.createHmac('sha1', this.passwordSalt).update(password).digest('hex');
+		return crypto.createHmac('sha1', this.password_salt).update(password).digest('hex');
 	}
 };
 

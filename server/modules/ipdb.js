@@ -49,10 +49,10 @@ function parseDetails(body, done) {
 		} else {
 			game.manufacturer = 'Unknown ID ' + game.ipdb.mfg;
 		}
-		game.modelno = firstMatch(body, /Model Number:\s*<\/b><\/td><td[^>]*>(\d+)/i);
+		game.model_number = firstMatch(body, /Model Number:\s*<\/b><\/td><td[^>]*>(\d+)/i);
 		game.year = firstMatch(body, /href="machine\.cgi\?id=\d+">\d+<\/a>\s*<I>[^<]*?(\d{4})/i);
 
-		game.gameType = firstMatch(body, /Type:\s*<\/b><\/td><td[^>]*>([^<]+)/i, function(m) {
+		game.game_type = firstMatch(body, /Type:\s*<\/b><\/td><td[^>]*>([^<]+)/i, function(m) {
 			var mm = m.match(/\((..)\)/);
 			return mm ? mm[1] : null;
 		});
@@ -61,7 +61,7 @@ function parseDetails(body, done) {
 		game.short = firstMatch(body, /Common Abbreviations:\s*<\/b><\/td><td[^>]*>([^<]+)/i, function(m) {
 			return m.split(/,\s*/);
 		});
-		game.producedUnits = firstMatch(body, /Production:\s*<\/b><\/td><td[^>]*>([\d,]+)\s*units/i, function(m) {
+		game.produced_units = firstMatch(body, /Production:\s*<\/b><\/td><td[^>]*>([\d,]+)\s*units/i, function(m) {
 			return parseInt(m.replace(/,/g, ''));
 		});
 		game.themes = firstMatch(body, /Theme:\s*<\/b><\/td><td[^>]*>([^<]+)/i, function(m) {

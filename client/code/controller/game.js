@@ -90,9 +90,9 @@ ctrl.controller('AdminGameAddCtrl', function($scope, $upload, $modal, ApiHelper,
 
 			$scope.game = _.extend($scope.game, game);
 			if ($scope.game.short) {
-				$scope.game.gameId = $scope.game.short[0].replace(/[^a-z0-9\s\-]+/gi, '').replace(/\s+/g, '-').toLowerCase();
+				$scope.game.game_id = $scope.game.short[0].replace(/[^a-z0-9\s\-]+/gi, '').replace(/\s+/g, '-').toLowerCase();
 			} else {
-				$scope.game.gameId = $scope.game.name.replace(/[^a-z0-9\s\-]+/gi, '').replace(/\s+/g, '-').toLowerCase();
+				$scope.game.game_id = $scope.game.name.replace(/[^a-z0-9\s\-]+/gi, '').replace(/\s+/g, '-').toLowerCase();
 			}
 			if (done) {
 				done(null, $scope.game);
@@ -133,13 +133,13 @@ ctrl.controller('AdminGameAddCtrl', function($scope, $upload, $modal, ApiHelper,
 
 	$scope.check = function() {
 
-		if (!$scope.game.gameId) {
+		if (!$scope.game.game_id) {
 			$scope.idValid = false;
 			$scope.idValidated = true;
 			return;
 		}
 
-		GameResource.head({ id: $scope.game.gameId }, function() {
+		GameResource.head({ id: $scope.game.game_id }, function() {
 			$scope.idValid = false;
 			$scope.idValidated = true;
 		}, function() {
@@ -152,9 +152,9 @@ ctrl.controller('AdminGameAddCtrl', function($scope, $upload, $modal, ApiHelper,
 
 		var submit = function() {
 
-			$scope.game.gameType =
+			$scope.game.game_type =
 					$scope.game.origin == 'originalGame' ? 'og' : (
-					$scope.game.gameType ? $scope.game.gameType.toLowerCase() : 'na'
+					$scope.game.game_type ? $scope.game.game_type.toLowerCase() : 'na'
 				);
 
 			var game = GameResource.save($scope.game, function() {

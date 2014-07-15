@@ -59,11 +59,11 @@
 							i.fa.fa-exclamation-triangle.space-right
 							| {{ errors['ipdb.number'] }}
 
-				.form-group(ng-class="{ error: errors.gameId }")
+				.form-group(ng-class="{ error: errors.game_id }")
 					label.col-sm-3.control-label(for="gameId1") Game ID
 					.col-sm-6
 						.input-group
-							input#gameId1.form-control(type="text", ng-model="game.gameId", placeholder="Common Abbreviation", ng-change="idValidated = false")
+							input#gameId1.form-control(type="text", ng-model="game.game_id", placeholder="Common Abbreviation", ng-change="idValidated = false")
 							span.input-group-addon(ng-class="{ transparent: !idValidated }"): i.fa(class="{{ idValid ? 'fa-check': 'fa-times'}}")
 						span.help-block Must be unique and contain only letters and dashes.
 					.col-sm-3
@@ -71,11 +71,11 @@
 							i.fa.fa-check.space-right
 							| Check
 
-				.alert.alert-danger.alert--shifted-up-2x(ng-show="errors.gameId")
+				.alert.alert-danger.alert--shifted-up-2x(ng-show="errors.game_id")
 					.row
 						.col-sm-9.col-sm-offset-3
 							i.fa.fa-exclamation-triangle.space-right
-							| {{ errors.gameId }}
+							| {{ errors.game_id }}
 
 			.col-md-offset-2.col-md-8.col-sm-offset-1.col-sm-10(ng-show="game.origin == 'recreation'")
 				.panel(ng-show="game.year")
@@ -88,16 +88,16 @@
 							dt Year
 							dd {{ game.year }}
 							dt
-						hr.hr--margin-small(ng-show="game.units || game.ipdb.rating || game.gameType || game.modelno")
-						dl(ng-show="game.units || game.ipdb.rating || game.type || game.modelno").dl-horizontal.dl--centered
+						hr.hr--margin-small(ng-show="game.units || game.ipdb.rating || game.game_type || game.model_number")
+						dl(ng-show="game.produced_units || game.ipdb.rating || game.type || game.model_number").dl-horizontal.dl--centered
 							dt(ng-show="game.ipdb.rating") IPDB Rating
 							dd(ng-show="game.ipdb.rating") {{ game.ipdb.rating }}
-							dt(ng-show="game.producedUnits") Production
-							dd(ng-show="game.producedUnits") {{ game.producedUnits | number }} units
-							dt(ng-show="game.gameType") Game Type
-							dd(ng-show="game.gameType") {{ game.gameType | gametype }}
-							dt(ng-show="game.modelno") Model Number
-							dd(ng-show="game.modelno") {{ game.modelno }}
+							dt(ng-show="game.produced_units") Production
+							dd(ng-show="game.produced_units") {{ game.produced_units | number }} units
+							dt(ng-show="game.game_type") Game Type
+							dd(ng-show="game.game_type") {{ game.game_type | gametype }}
+							dt(ng-show="game.model_number") Model Number
+							dd(ng-show="game.model_number") {{ game.model_number }}
 						hr.hr--margin-small(ng-show="game.designers || game.artists")
 						dl(ng-show="game.designers || game.artists").dl-horizontal.dl--centered
 							dt(ng-show="game.designers") Game Design
@@ -119,11 +119,11 @@
 
 			.form-horizontal(ng-show="game.origin == 'originalGame'")
 
-				.form-group(ng-class="{ error: errors.gameId }")
+				.form-group(ng-class="{ error: errors.game_id }")
 					label.col-sm-3.control-label(for="gameId2") Game ID
 					.col-sm-6
 						.input-group
-							input#gameId2.form-control(type="text", ng-model="game.gameId", placeholder="Common Abbreviation", ng-change="idValidated = false")
+							input#gameId2.form-control(type="text", ng-model="game.game_id", placeholder="Common Abbreviation", ng-change="idValidated = false")
 							span.input-group-addon(ng-class="{ transparent: !idValidated }"): i.fa(class="{{ idValid ? 'fa-check': 'fa-times'}}")
 						span.help-block Must be unique and contain only letters and dashes.
 					.col-sm-3
@@ -131,11 +131,11 @@
 							i.fa.fa-check.space-right
 							| Check
 
-				.alert.alert-danger.alert--shifted-up-2x(ng-show="errors.gameId")
+				.alert.alert-danger.alert--shifted-up-2x(ng-show="errors.game_id")
 					.row
 						.col-sm-9.col-sm-offset-3
 							i.fa.fa-exclamation-triangle.space-right
-							| {{ errors.gameId }}
+							| {{ errors.game_id }}
 
 				.form-group
 					label.col-sm-3.control-label(for='author', ng-class="{ error: errors.manufacturer }") Author

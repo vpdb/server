@@ -16,7 +16,7 @@ var serve = function(req, res, file, variationName) {
 	if (info && info.size > 0) {
 		logger.info('[ctrl|storage] Returning %s/%s to client...', file._id.toString(), variationName);
 		res.writeHead(200, {
-			'Content-Type': file.mimeType,
+			'Content-Type': file.mime_type,
 			'Content-Length':  info.size
 		});
 		var stream = fs.createReadStream(file.getPath(variationName));
@@ -48,7 +48,7 @@ var serve = function(req, res, file, variationName) {
 			}
 			logger.info('[ctrl|storage] Streaming freshly processed item back to client.');
 			res.writeHead(200, {
-				'Content-Type': file.mimeType,
+				'Content-Type': file.mime_type,
 				'Content-Length':  info.size
 			});
 			var stream = fs.createReadStream(file.getPath(variationName));

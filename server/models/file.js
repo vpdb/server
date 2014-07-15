@@ -11,10 +11,10 @@ var Schema = mongoose.Schema;
 var fields = {
 	name:         { type: String, required: 'Filename must be provided.' },
 	bytes:        { type: Number, required: true },
-	created:      { type: Date, required: true },
+	created_at:   { type: Date, required: true },
 	author:       { type: Schema.ObjectId, required: true, ref: 'User' },
-	mimeType:     { type: String, required: true, enum: { values: _.keys(mimeTypes), message: 'Invalid MIME type. Valid MIME types are: ["' +  _.keys(mimeTypes).join('", "') + '"].' }},
-	fileType:     { type: String, required: true },
+	mime_type:    { type: String, required: true, enum: { values: _.keys(mimeTypes), message: 'Invalid MIME type. Valid MIME types are: ["' +  _.keys(mimeTypes).join('", "') + '"].' }},
+	file_type:    { type: String, required: true },
 	metadata:     { type: Schema.Types.Mixed },
 	public:       { type: Boolean, required: true, default: false },
 	active:       { type: Boolean, required: true, default: false },

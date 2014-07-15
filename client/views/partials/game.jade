@@ -14,9 +14,9 @@
 				span.votes {{ $parent.game.votes | number }} vote{{ $parent.game.votes == 1 ? '' : 's' }}
 		hr
 
-		label.label--block(ng-show="game.gametype") {{ game.gametype | gametype }}
+		label.label--block(ng-show="game.game_type") {{ game.game_type | gametype }}
 		label(ng-show="game.units") {{ game.units | number }} units sold
-		hr(ng-show="game.gametype || game.units")
+		hr(ng-show="game.game_type || game.units")
 
 		label.label-name.label--block(ng-show="game.gamedesign") Game Design
 		label.label-value(ng-show="game.gamedesign") {{ game.gamedesign.join(', ') }}

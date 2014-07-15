@@ -29,7 +29,7 @@ function Storage() {
 					logger.info('[storage] Creating non-existant path for variation "%s" at %s', variation.name, variationPath);
 					fs.mkdirSync(variationPath);
 				}
-				if (!_.contains(that.variationNames), variation.name) {
+				if (!_.contains(that.variationNames, variation.name)) {
 					that.variationNames.push(variation.name);
 				}
 			});

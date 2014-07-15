@@ -2,6 +2,7 @@ var _ = require('underscore');
 var path = require('path');
 var logger = require('winston');
 var mongoose = require('mongoose');
+var shortId = require('shortid');
 var config = require('./../modules/settings').current;
 var mimeTypes = require('./../modules/mimetypes');
 
@@ -9,6 +10,7 @@ var Schema = mongoose.Schema;
 
 // schema
 var fields = {
+	_id:          { type: String, unique: true, 'default': shortId.generate},
 	name:         { type: String, required: 'Filename must be provided.' },
 	bytes:        { type: Number, required: true },
 	created_at:   { type: Date, required: true },
@@ -34,9 +36,10 @@ FileSchema.methods = {
 	 * @api public
 	 */
 	getPath: function(variationName) {
+		var ext = '.' + mimeTypes[this.mime_type].ext;
 		return variationName
-			? path.resolve(config.vpdb.storage, variationName, this._id.toString())
-			: path.resolve(config.vpdb.storage, this._id.toString());
+			? path.resolve(config.vpdb.storage, variationName, this._id.toString()) + ext
+			: path.resolve(config.vpdb.storage, this._id.toString()) + ext;
 	},
 
 	/**
@@ -49,6 +52,14 @@ FileSchema.methods = {
 		return variationName
 			? '/storage/' + this._id.toString() + '/' + variationName
 			: '/storage/' + this._id.toString();
+	},
+
+	getMimeType: function() {
+		return this.mime_type.split('/')[0];
+	},
+
+	getMimeSubtype: function() {
+		return this.mime_type.split('/')[1];
 	}
 };
 

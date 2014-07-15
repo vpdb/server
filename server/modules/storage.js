@@ -100,11 +100,8 @@ Storage.prototype.cleanup = function(graceperiod, done) {
 };
 
 Storage.prototype.metadata = function(file, done) {
-	var mime = file.mime_type.split('/');
-	var type = mime[0];
-	var subtype = mime[1];
 
-	switch(type) {
+	switch(file.getMimeType()) {
 		case 'image':
 			gm(file.getPath()).identify(function(err, value) {
 				if (err) {
@@ -227,6 +224,17 @@ Storage.prototype.postprocess = function(file, done) {
 
 Storage.prototype.url = function(file, variation) {
 	return file ? '/storage/' + file._id + (variation ? '/' + variation : '') : null;
+};
+
+Storage.prototype.urls = function(file) {
+	var that = this;
+	var variations = {};
+	if (file && this.variations[file.getMimeType()] && this.variations[file.getMimeType()][file.file_type]) {
+		_.each(this.variations[file.getMimeType()][file.file_type], function(variation) {
+			variations[variation.name] = that.url(file, variation.name);
+		});
+	}
+	return variations;
 };
 
 Storage.prototype.info = function(file, variationName) {

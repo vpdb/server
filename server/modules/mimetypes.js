@@ -3,21 +3,31 @@
  */
 module.exports = {
 	'image/jpeg': {
-		name: 'JPEG image'
+		name: 'JPEG image',
+		ext: 'jpg'
 	},
 	'image/png': {
-		name: 'PNG image'
+		name: 'PNG image',
+		ext: 'png'
 	},
 	'application/zip': {
-		name: 'ZIP-compressed file'
+		name: 'ZIP-compressed file',
+		ext: 'zip'
 	},
 	'application/x-visual-pinball-table': {
-		name: 'Visual Pinball Table'
+		name: 'Visual Pinball Table v9.x',
+		ext: 'vpt'
+	},
+	'application/x-visual-pinball-table-x': {
+		name: 'Visual Pinball Table v10.x',
+		ext: 'vpx'
 	},
 	'video/mp4': {
-		name: 'MP4 video'
+		name: 'MP4 video',
+		ext: 'mp4'
 	},
 	'video/x-flv': {
-		name: 'Flash video'
+		name: 'Flash video',
+		ext: 'flv'
 	}
 };

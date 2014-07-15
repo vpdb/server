@@ -35,8 +35,8 @@ var fields = {
 		mfg: Number
 	},
 	media: {
-		backglass: { type: Schema.Types.ObjectId, ref: 'File', required: 'Backglass image must be provided.' },
-		logo:      { type: Schema.Types.ObjectId, ref: 'File' }
+		backglass: { type: String, ref: 'File', required: 'Backglass image must be provided.' },
+		logo:      { type: String, ref: 'File' }
 	}
 };
 var GameSchema = new Schema(fields);
@@ -62,7 +62,6 @@ GameSchema.path('game_type').validate(function(gameType, callback) {
 				return callback(false);
 			}
 			if (g) {
-				console.log('dupe game = ' + require('util').inspect(g));
 				that.invalidate('ipdb.number', 'The game "' + g.title + '" is already in the database and cannot be added twice.');
 			}
 			callback();

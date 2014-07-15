@@ -67,7 +67,7 @@ exports.create = function(req, res) {
 
 exports.list = function(req, res) {
 
-	var query = Game.find().select('-__v').populate('media.backglass', '_').populate('media.logo');
+	var query = Game.find().select('-__v').populate({ path: 'media.backglass' }).populate({ path: 'media.logo' });
 
 	// text search
 	if (req.query.q) {
@@ -76,7 +76,7 @@ exports.list = function(req, res) {
 		var regex = new RegExp(q, 'i');
 		query.or([
 			{ title: regex },
-			{ gameid: regex },
+			{ gameid: regex }
 		]);
 	}
 
@@ -89,8 +89,14 @@ exports.list = function(req, res) {
 			return _.extend(
 				_.pick(game, 'game_id', 'title', 'manufacturer', 'year', 'game_type', 'ipdb'),
 				{ media: {
-					backglass: storage.url(game.media.backglass, 'small'),
-					logo: storage.url(game.media.logo)
+					backglass: {
+						url: storage.url(game.media.backglass),
+						variations: storage.urls(game.media.backglass)
+					},
+					logo: {
+						url: storage.url(game.media.logo),
+						variations: storage.urls(game.media.logo)
+					}
 				}});
 		});
 		api.success(res, games);

@@ -238,8 +238,6 @@ Storage.prototype.info = function(file, variationName) {
 	if (this.processingFiles[key]) {
 		logger.info('[storage] Item %s being processed, returning null', key);
 		return null;
-	} else {
-		logger.info('[storage] Item %s not being processed.', key);
 	}
 
 	// TODO optimize (aka "cache" and make it async, this is called frequently)

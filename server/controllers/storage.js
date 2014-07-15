@@ -14,7 +14,6 @@ var serve = function(req, res, file, variationName) {
 	var info = storage.info(file, variationName);
 
 	if (info && info.size > 0) {
-		logger.info('[ctrl|storage] Returning %s/%s to client...', file._id.toString(), variationName);
 		res.writeHead(200, {
 			'Content-Type': file.mime_type,
 			'Content-Length':  info.size

@@ -74,7 +74,12 @@ module.exports = function(grunt) {
 			minify: {
 				expand: false,
 				cwd: '.',
-				src: [ 'client/static/css/lib/*.css', 'client/static/css/fonts.css', cssRoot + '/*.css' ],
+				src: [
+					'client/static/css/lib/*.css',
+					'client/static/css/fonts.css',
+					'client/static/css/hljs-pojoaque.css',
+					cssRoot + '/*.css'
+				],
 				dest: cssGlobal,
 				ext: '.css'
 			}

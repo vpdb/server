@@ -43,7 +43,7 @@ exports.anon = function(done) {
  * Returns a JSON-serialized object to the client and a 200 status code.
  * @param res Response object
  * @param result Object to serialize
- * @param code (optional) HTTP status code (defaults to 200)
+ * @param [code=200] HTTP status code (defaults to 200)
  */
 exports.success = function(res, result, code) {
 	if (!code) {
@@ -58,7 +58,7 @@ exports.success = function(res, result, code) {
  * Returns a JSON-serialized error object to the client and 500 status code per default.
  * @param res Response object
  * @param err Error message
- * @param code (optional) HTTP status code (defaults to 500)
+ * @param [code=500] HTTP status code (defaults to 500)
  */
 exports.fail = function(res, err, code) {
 	if (!code) {
@@ -107,7 +107,7 @@ exports.handleParseError = function(err, req, res, next) {
  * @param action Method of the module (for logging)
  * @param ref First param passed to provided error message
  * @param res Result object
- * @param rollback Rollback function
+ * @param [rollback=null] Rollback function
  * @returns {Function}
  */
 exports.ok = function(type, action, ref, res, rollback) {

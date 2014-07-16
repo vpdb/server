@@ -37,6 +37,7 @@ module.exports = function(app, config, passport) {
 	app.put('/api/files',         api.auth(api.files.upload, 'files', 'upload'));
 
 	app.get('/api/games',         api.anon(api.games.list));
+	app.get('/api/games/:id',     api.anon(api.games.view));
 	app.head('/api/games/:id',    api.anon(api.games.head));
 	app.post('/api/games',        api.auth(api.games.create, 'games', 'add'));
 

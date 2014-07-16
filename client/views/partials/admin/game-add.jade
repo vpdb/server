@@ -202,33 +202,34 @@
 								label.tab__label(ng-show="!game.instructions || game.instructions.length == 0") Nothing to preview.
 
 
-			.clearfix
-			h4
-				i.fa.fa-link.space-right
-				| Links
-			hr.hr--light
+			//- URLs (let's do that another time)
+				.clearfix
+				h4
+					i.fa.fa-link.space-right
+					| Links
+				hr.hr--light
 
-			.col-sm-3: label Type
-			.col-sm-8: label URL
+				.col-sm-3: label Type
+				.col-sm-8: label URL
 
-			.form-group(ng-repeat="link in game.links")
+				.form-group(ng-repeat="link in game.links")
 
-				.col-sm-3
-					select.form-control
-						option -- Select --
-						option Wikipedia
-						option WIP Thread
-						option Discussion Thread
-						option Pinside Link
-						option Table Homepage
-				.col-sm-8
-					input.form-control(type="text", placeholder="http://...", ng-model="link.url")
-				.col-sm-1
-					i.fa.fa-trash-o(ng-click="removeLink(link)")
+					.col-sm-3
+						select.form-control
+							option -- Select --
+							option Wikipedia
+							option WIP Thread
+							option Discussion Thread
+							option Pinside Link
+							option Table Homepage
+					.col-sm-8
+						input.form-control(type="text", placeholder="http://...", ng-model="link.url")
+					.col-sm-1
+						i.fa.fa-trash-o(ng-click="removeLink(link)")
 
-			button.btn.btn-secondary.padder-top-2x.padder-bottom
-				i.fa.fa-plus-circle.space-right
-				| Add Another
+				button.btn.btn-secondary.padder-top-2x.padder-bottom
+					i.fa.fa-plus-circle.space-right
+					| Add Another
 
 			.clearfix
 			h1 4. Upload Media
@@ -298,11 +299,6 @@
 						li Use the PNG format
 						li Background should be transparent
 						li There should be enough contrast on white as well as on black background.
-
-			//- input(type='file', ng-file-select='onFileSelect($files)')
-			//- div(ng-file-drop='onFileSelect($files)', ng-file-drag-over-class='optional-css-class', ng-show='dropSupported') drop files here
-			//- div(ng-file-drop-available='dropSupported=true', ng-show='!dropSupported') HTML5 Drop File is not supported!
-			//- button(ng-click='upload.abort()') Cancel Upload
 
 			hr
 			button.btn.btn-default.btn-lg(ng-click="reset()") Reset

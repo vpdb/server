@@ -8,7 +8,7 @@ var api = require('./api');
 var storage = require('../../modules/storage');
 
 exports.head = function(req, res) {
-	Game.findOne({ gameId: req.params.id }, '-__v', function(err, game) {
+	Game.findOne({ game_id: req.params.id }, '-__v', function(err, game) {
 		if (err) {
 			logger.error('[api|game:head] Error finding game "%s": %s', req.params.id, err, {});
 			return api.fail(res, err, 500);
@@ -76,7 +76,7 @@ exports.list = function(req, res) {
 		var regex = new RegExp(q, 'i');
 		query.or([
 			{ title: regex },
-			{ gameid: regex }
+			{ game_id: regex }
 		]);
 	}
 
@@ -86,23 +86,50 @@ exports.list = function(req, res) {
 			return api.fail(res, err, 500);
 		}
 		games = _.map(games, function(game) {
-			return _.extend(
-				_.pick(game, 'game_id', 'title', 'manufacturer', 'year', 'game_type', 'ipdb'),
-				{ media: {
-					backglass: {
-						url: storage.url(game.media.backglass),
-						variations: storage.urls(game.media.backglass)
-					},
-					logo: {
-						url: storage.url(game.media.logo),
-						variations: storage.urls(game.media.logo)
-					}
-				}});
+			return jsonSimple(game);
 		});
 		api.success(res, games);
 	});
 };
 
-exports.update = function(req, res) {
+exports.view = function(req, res) {
+
+	var query = Game.findOne({ game_id: req.params.id })
+		.select('-__v')
+		.populate({ path: 'media.backglass' })
+		.populate({ path: 'media.logo' });
+
+	query.exec(function(err, game) {
+		if (err) {
+			logger.error('[api|game:head] Error finding game "%s": %s', req.params.id, err, {});
+			return api.fail(res, err, 500);
+		}
+		if (!game) {
+			return api.fail(res, 'No such game with ID "' + req.params.id + '".', 404);
+		}
+		return api.success(res, jsonDetailed(game));
+	});
 };
 
+
+function jsonSimple(game) {
+	return _.extend(_.pick(game, 'game_id', 'title', 'manufacturer', 'year', 'game_type', 'ipdb'),
+		{
+			media:
+				{
+				backglass: {
+					url: storage.url(game.media.backglass),
+					variations: storage.urls(game.media.backglass)
+				},
+				logo: {
+					url: storage.url(game.media.logo),
+					variations: storage.urls(game.media.logo)
+				}
+			}
+		}
+	);
+};
+
+function jsonDetailed(game) {
+	return _.extend(jsonSimple(game), _.pick(game, 'model_number', 'produced_units', 'features', 'artists', 'designers', 'themes'));
+};

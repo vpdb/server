@@ -31,6 +31,7 @@ server {
 	}
 
 	location / {
+		limit_req zone=one burst=30 nodelay;
 		client_max_body_size 200M;
 		proxy_redirect off;
 		proxy_set_header X-Real-IP         $remote_addr;
@@ -51,5 +52,5 @@ server {
 		root /var/www/staging/shared/cache/html;
 		access_log off;
 		expires max;
-    }
+	}
 }

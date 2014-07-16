@@ -50,7 +50,7 @@ function Storage() {
 		var callbacks = that.processingFiles[key];
 		delete that.processingFiles[key];
 		_.each(callbacks, function(callback) {
-			callback(that.info(file, variation.name));
+			callback(that.fstat(file, variation.name));
 		});
 	});
 }
@@ -237,7 +237,7 @@ Storage.prototype.urls = function(file) {
 	return variations;
 };
 
-Storage.prototype.info = function(file, variationName) {
+Storage.prototype.fstat = function(file, variationName) {
 
 	var key = file._id.toString() + '/' + variationName;
 	if (variationName && !_.contains(this.variationNames, variationName)) {

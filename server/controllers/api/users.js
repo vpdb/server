@@ -18,7 +18,6 @@ exports.create = function(req, res) {
 
 	var newUser = new User(req.body);
 	newUser.provider = 'local';
-	logger.info('[api|user:create] %s', util.inspect(req.body));
 	newUser.validate(function(err) {
 		if (err) {
 			logger.warn('[api|user:create] Validations failed: %s', util.inspect(_.map(err.errors, function(value, key) { return key; })));

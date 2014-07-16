@@ -4,6 +4,7 @@ var logger = require('winston');
 var quotaModule = require('volos-quota-memory');
 var quotaConfig = require('./settings').current.vpdb.quota;
 
+// TODO remove init and put logic into constructor.
 exports.init = function() {
 	logger.info('[quota] Initializing quotas...');
 	var duration;

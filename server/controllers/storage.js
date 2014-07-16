@@ -11,15 +11,32 @@ var acl = require('../acl');
 
 var serve = function(req, res, file, variationName) {
 
-	var info = storage.info(file, variationName);
+	var serveFile = function(fstat) {
 
-	if (info && info.size > 0) {
+		// check if we should return 304 not modified
+		var modified = new Date(fstat.mtime);
+		var ifmodifiedsince = req.headers['if-modified-since'] ? new Date(req.headers['if-modified-since']) : false;
+		if (ifmodifiedsince && modified.getTime() >= ifmodifiedsince.getTime()) {
+			res.writeHead(304);
+			res.end();
+			return;
+		}
+
+		// otherwise set headers and stream the file
 		res.writeHead(200, {
 			'Content-Type': file.mime_type,
-			'Content-Length':  info.size
+			'Content-Length':  fstat.size,
+			'Cache-Control': 'private',
+			'Last-Modified': modified
 		});
 		var stream = fs.createReadStream(file.getPath(variationName));
 		stream.pipe(res);
+	};
+
+	var fstat = storage.fstat(file, variationName);
+
+	if (fstat && fstat.size > 0) {
+		serveFile(fstat);
 
 	} else {
 		/*
@@ -40,21 +57,15 @@ var serve = function(req, res, file, variationName) {
 		 * delivered.
 		 */
 		logger.info('[ctrl|storage] Waiting for %s/%s to be processed...', file._id.toString(), variationName);
-		storage.whenProcessed(file, variationName, function(info) {
-			if (!info) {
+		storage.whenProcessed(file, variationName, function(fstat) {
+			if (!fstat) {
 				logger.info('[ctrl|storage] No processing, returning 404.');
 				return res.writeHead(404);
 			}
 			logger.info('[ctrl|storage] Streaming freshly processed item back to client.');
-			res.writeHead(200, {
-				'Content-Type': file.mime_type,
-				'Content-Length':  info.size
-			});
-			var stream = fs.createReadStream(file.getPath(variationName));
-			stream.pipe(res);
+			serveFile(fstat);
 		});
 	}
-
 };
 
 exports.get = function(req, res) {

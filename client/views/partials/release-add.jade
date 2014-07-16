@@ -1,0 +1,39 @@
+.row.row--fullheight(ng-controller="ReleaseAddCtrl")
+	.col-sm-9.col--main
+		h1.h--primary add new release
+		hr
+		p Note that a game is completely decoupled from its releases. Data appearing in here is common to all releases
+			| that are linked to that game, but kept as a separate and independent data set.
+
+		h1 1. Upload Files
+		hr
+
+		p Drag and drop the files of the release below into the box. You can also put a .zip file, which will then be
+			| extracted on server side.
+		.panel.panel--dropzone(ng-file-drop="onFilesUpload($files)", ng-file-drag-over-class="panel--dragging")
+			label.center-block.text-center: small: i Drop your files in here.
+
+		p Note that files of a release are structured, i.e. there are only certain file types allowed:
+		ul
+			li <code>.vpt</code> or <code>.vpx</code> - The table file of the release. You can upload multiple of those
+				| if you have multiple flavors ready (see section 3 below)
+			li <code>.png</code>/<code>.jpg</code> files - Playfield screen shots
+			li <code>.mp4</code> files - Playfield videos or game play videos
+
+		p You can add text files as well. However, your release will be in any case packaged with a README file
+			| generated from the description you provide below. There will also be a file about authors and
+			| acknowledgements distributed with every download. Thus, it is recommended to use text files only for
+			| configuration or other technical usages when necessary.
+		h1 2. Name your Release
+		hr
+		.form-group(ng-class="{ error: errors.title }")
+			input.form-control.input-lg(type="text", placeholder="Title", ng-model="game.title", on-enter="searchOnIpdb()")
+			.alert.alert-danger(ng-show="errors.title")
+				i.fa.fa-exclamation-triangle.space-right
+				| {{ errors.title }}
+			span.help-block No year, manufacturer or anything else, just the title. Example: <i>The Addams Family</i>.
+
+	.col-sm-3.col--menu
+		h1 drafts
+		hr
+		p None

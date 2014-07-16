@@ -12,6 +12,7 @@ module.exports = function(app, config, passport) {
 	app.get('/game', web.index());
 	app.get('/game/*', web.index());
 	app.get('/games/add', web.index());
+	app.get('/releases/add', web.index());
 	app.get('/admin/users', web.index());
 	app.get('/styleguide/sections/*', web.styleguide());
 

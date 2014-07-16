@@ -159,12 +159,36 @@
 		border-bottom-radius($border-radius-small)
 
 
+// Drag & Drop Zone
+//
+// Markup:
+// <div class="panel padder {$modifiers}">
+//   <p>Panel Content</p>
+//  </div>
+//
+// .panel--dropzone         - Drop Zone
+//
+// Styleguide 17.5
+.panel--dropzone
+	margin-left -30px
+	margin-right -30px
+	border-radius 0
+	padding-left 30px
+	padding-right 30px
+	border-top-style dashed
+	border-top-width 2px
+	border-bottom-style dashed
+	border-bottom-width 2px
+	> label
+		margin-top 45px
+
+
 // Panel Groups
 //
 // Use panel groups for either the accordion effect or simply for grouping
 // several panels together. Both use the `accordion` directive from Bootstrap UI.
 //
-// Styleguide 17.5
+// Styleguide 17.6
 
 
 // Groups
@@ -187,7 +211,7 @@
 //
 // .panel-group - "Normal" panel group
 //
-// Styleguide 17.5.2
+// Styleguide 17.6.2
 .panel-group
 	.panel
 		border-radius $border-radius-large
@@ -217,7 +241,7 @@
 //
 // .panel-group--accordion     - Accordion
 //
-// Styleguide 17.5.1
+// Styleguide 17.6.1
 .panel-group--accordion
 	.panel
 		border-top-radius($border-radius-large)

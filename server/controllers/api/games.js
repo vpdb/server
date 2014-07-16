@@ -7,6 +7,12 @@ var File = require('mongoose').model('File');
 var api = require('./api');
 var storage = require('../../modules/storage');
 
+
+/**
+ * Returns either 200 or 404. Useful for checking if a given game ID already exists.
+ * @param req Request object
+ * @param res Response object
+ */
 exports.head = function(req, res) {
 	Game.findOne({ game_id: req.params.id }, '-__v', function(err, game) {
 		if (err) {
@@ -17,6 +23,12 @@ exports.head = function(req, res) {
 	});
 };
 
+
+/**
+ * Creates a new game.
+ * @param req Request object
+ * @param res Response object
+ */
 exports.create = function(req, res) {
 
 	var newGame = new Game(req.body);
@@ -65,6 +77,12 @@ exports.create = function(req, res) {
 	});
 };
 
+
+/**
+ * Lists all games.
+ * @param req Request object
+ * @param res Response object
+ */
 exports.list = function(req, res) {
 
 	var query = Game.find().select('-__v').populate({ path: 'media.backglass' }).populate({ path: 'media.logo' });
@@ -92,6 +110,12 @@ exports.list = function(req, res) {
 	});
 };
 
+
+/**
+ * Lists a game of a given game ID.
+ * @param req Request object
+ * @param res Response object
+ */
 exports.view = function(req, res) {
 
 	var query = Game.findOne({ game_id: req.params.id })
@@ -112,6 +136,11 @@ exports.view = function(req, res) {
 };
 
 
+/**
+ * Creates the returned JSON in a simple format (i.e. for listing games).
+ * @param game
+ * @returns {object}
+ */
 function jsonSimple(game) {
 	return _.extend(_.pick(game, 'game_id', 'title', 'manufacturer', 'year', 'game_type', 'ipdb'),
 		{
@@ -130,6 +159,12 @@ function jsonSimple(game) {
 	);
 };
 
+
+/**
+ * Creates the returnes JSON in a detailed format (i.e. for game details).
+ * @param game
+ * @returns {object}
+ */
 function jsonDetailed(game) {
 	return _.extend(jsonSimple(game), _.pick(game, 'model_number', 'produced_units', 'features', 'artists', 'designers', 'themes'));
 };

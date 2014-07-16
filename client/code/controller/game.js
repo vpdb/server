@@ -12,10 +12,9 @@ ctrl.controller('GameController', function($scope, $http, $routeParams, $modal, 
 
 	$http({
 		method: 'GET',
-		url: '/api-mock/games/' + $scope.gameId
+		url: '/api/games/' + $scope.gameId
 
-	}).success(function(data, status, headers, config) {
-		var game = data.result;
+	}).success(function(game, status, headers, config) {
 		game.lastrelease = new Date(game.lastrelease).getTime();
 
 		$scope.game = game;
@@ -262,7 +261,7 @@ ctrl.controller('AdminGameAddCtrl', function($scope, $upload, $modal, $window, A
 	});
 
 	$scope.removeLink = function(link) {
-		
+
 	}
 
 	$scope.onLogoUpload = onImageUpload('logo', function(response) {

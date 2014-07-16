@@ -2,7 +2,7 @@
 
 	// right column
 	.col-sm-3.col-sm-push-9.col-lg-2.col-lg-push-10.col--menu.text-center
-		img.img--logo(ng-src="{{ game.thumbs.logo }}")
+		img.img--logo(ng-src="{{ game.media.logo.url }}")
 
 		.ratingbox(rating-avg="$parent.game.rating", rating-votes="$parent.game.votes", ng-mouseenter="editing=true", ng-mouseleave="editing=false")
 			.ratingbox__left-col
@@ -15,16 +15,16 @@
 		hr
 
 		label.label--block(ng-show="game.game_type") {{ game.game_type | gametype }}
-		label(ng-show="game.units") {{ game.units | number }} units sold
+		label(ng-show="game.produced_units") {{ game.produced_units | number }} units produced
 		hr(ng-show="game.game_type || game.units")
 
-		label.label-name.label--block(ng-show="game.gamedesign") Game Design
-		label.label-value(ng-show="game.gamedesign") {{ game.gamedesign.join(', ') }}
-		hr(ng-show="game.gamedesign")
+		label.label-name.label--block(ng-show="game.designers") Game Design
+		label.label-value(ng-show="game.designers") {{ game.designers.join(', ') }}
+		hr(ng-show="game.designers")
 
-		label.label-name.label--block(ng-show="game.artdesign") Art Design
-		label.label-value(ng-show="game.artdesign")  {{ game.artdesign.join(', ') }}
-		hr(ng-show="game.artdesign")
+		label.label-name.label--block(ng-show="game.artists") Art Design
+		label.label-value(ng-show="game.artists")  {{ game.artists.join(', ') }}
+		hr(ng-show="game.artists")
 
 		label.label-name(ng-show="game.ipdb")
 			a.a--lighter(href="http://www.ipdb.org/machine.cgi?id={{ game.ipdb.no  }}", target="_blank")
@@ -46,7 +46,7 @@
 
 	// left column (main content)
 	.col-sm-9.col-sm-pull-3.col-lg-10.col-lg-pull-2.col--main
-		h1.h--primary {{ game.name }}
+		h1.h--primary {{ game.title }}
 		h1.h--small.pull-right {{ game.manufacturer }} &middot; {{ game.year }}
 		hr
 		h1 Releases

@@ -14,11 +14,11 @@
 /*noinspection CssUnknownTarget*/
 @font-face {
 	font-family: 'icons';
-	src:url('/fonts/icons.eot?-lrmp0w');
-	src:url('/fonts/icons.svg?-lrmp0w#icons') format('svg'),
-	url('/fonts/icons.eot?#iefix-lrmp0w') format('embedded-opentype'),
-	url('/fonts/icons.woff?-lrmp0w') format('woff'),
-	url('/fonts/icons.ttf?-lrmp0w') format('truetype');
+	src:url('/fonts/icons.eot?-2ty35j');
+	src:url('/fonts/icons.svg?-2ty35j#icons') format('svg'),
+	url('/fonts/icons.eot?#iefix-2ty35j') format('embedded-opentype'),
+	url('/fonts/icons.woff?-2ty35j') format('woff'),
+	url('/fonts/icons.ttf?-2ty35j') format('truetype');
 	font-weight: normal;
 	font-style: normal;
 }
@@ -37,7 +37,33 @@
 	-moz-osx-font-smoothing: grayscale;
 }
 
-
+.icon-ext:before {
+	content: "\e61d";
+}
+.icon-ext-audio:before {
+	content: "\e61e";
+}
+.icon-ext-code:before {
+	content: "\e61f";
+}
+.icon-ext-image:before {
+	content: "\e620";
+}
+.icon-ext-txt:before {
+	content: "\e621";
+}
+.icon-ext-video:before {
+	content: "\e622";
+}
+.icon-ext-vpt:before {
+	content: "\e623";
+}
+.icon-ext-vpx:before {
+	content: "\e624";
+}
+.icon-ext-zip:before {
+	content: "\e625";
+}
 .icon-markdown:before {
 	content: "\e600";
 }
@@ -124,4 +150,7 @@
 }
 .icon-exit:before {
 	content: "\e61c";
+}
+.icon-trash:before {
+	content: "\e626";
 }

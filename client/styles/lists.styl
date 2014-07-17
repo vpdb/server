@@ -71,6 +71,28 @@
 			&.asc:before
 				content '\f106'
 
+ul.list--files
+	padding 0
+	> li
+		border-radius $border-radius-large
+		margin-top 15px
+		margin-bottom 0
+		list-style-image none
+		padding 3px
+
+	.col--list-files-left
+		float left
+		> .icon
+			font-size 72px
+			margin-left 7px
+
+	.col--list-files-right
+		margin-left 72px
+		.block:first-child
+			margin-top 5px
+			margin-bottom -5px
+
+
 // List group within panel-body
 // @todo refactor, this was done for the style guide panel, the game filter panels look different.
 .panel-body > .list-group

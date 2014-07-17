@@ -11,6 +11,15 @@
 		p Drag and drop the files of the release below into the box. You can also put a .zip file, which will then be
 			| extracted on server side.
 		.panel.panel--dropzone(ng-file-drop="onFilesUpload($files)", ng-file-drag-over-class="panel--dragging")
+
+			ul.list--files
+				li.panel(ng-repeat="file in files")
+					.col--list-files-left
+						i.icon(class="icon-ext{{ file.icon ? '-' + file.icon : '' }}")
+					.col--list-files-right
+						.block.big: strong {{ file.name }}
+						.block.big {{ file.bytes | bytes }}
+
 			label.center-block.text-center: small: i Drop your files in here.
 
 		p Note that files of a release are structured, i.e. there are only certain file types allowed:

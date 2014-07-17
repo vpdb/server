@@ -22,6 +22,10 @@ module.exports = {
 		name: 'Visual Pinball Table v10.x',
 		ext: 'vpx'
 	},
+	'application/vbscript': {
+		name: 'Visual Basic Script',
+		ext: 'vbs'
+	},
 	'video/mp4': {
 		name: 'MP4 video',
 		ext: 'mp4'

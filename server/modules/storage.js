@@ -105,14 +105,14 @@ Storage.prototype.metadata = function(file, done) {
 		case 'image':
 			gm(file.getPath()).identify(function(err, value) {
 				if (err) {
-					logger.warning('[storage] Error reading metadata from image: %s', err);
+					logger.warn('[storage] Error reading metadata from image: %s', err);
 					return done();
 				}
 				done(null, value, _.pick(value, 'format', 'size', 'depth', 'JPEG-Quality'));
 			});
 			break;
 		default:
-			logger.warning('[storage] No metadata parser for mime type "%s".', file.mime_type);
+			logger.warn('[storage] No metadata parser for mime type "%s".', file.mime_type);
 			done();
 	}
 };

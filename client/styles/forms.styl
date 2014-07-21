@@ -83,6 +83,11 @@ textarea
 
 // Radio Buttons
 //
+// Styled radios.
+//
+// Styleguide 5.2
+
+
 // Huge custom buttons
 //
 // Markup:
@@ -101,7 +106,7 @@ textarea
 //
 // .radio--lg - Large buttons
 //
-// Styleguide 5.2
+// Styleguide 5.2.1
 .radio--lg
 	cursor default
 	input[type=radio]
@@ -135,6 +140,29 @@ textarea
 				cursor default
 				content "\e607" /* Radio Checked */
 
+// Two-liners
+//
+// Huge with two-line label.
+//
+// Markup:
+// <div class="radio-inline {$modifiers}">
+//   <label>
+//     <input type="radio" name="yesorno" checked>
+//     <span>Yeah</span>
+//     <span>Really.</span>
+//   </label>
+// </div>
+// <div class="radio-inline {$modifiers}">
+//   <label>
+//     <input type="radio" name="yesorno">
+//     <span>Nope</span>
+//     <span>Don't think so</span>
+//   </label>
+// </div>
+//
+// .radio--lg-twoliner - Large buttons
+//
+// Styleguide 5.2.2
 .radio--lg-twoliner
 	@extend .radio--lg
 	input[type=radio]

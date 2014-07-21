@@ -47,7 +47,7 @@
 				| such as <i>FS Night Mod</i>, but choose a name that brings across the nature of your virtual table.
 				| If you're out of ideas, <i>Ultimate Edition</i> always seems to work. ;)
 
-		h1 3. Define your Flavor
+		h1 3. Define your Flavors
 		hr
 		ul.list--files
 			li.panel(ng-repeat="file in files | fileext:['vpt','vpx']")
@@ -67,6 +67,53 @@
 										span: i {{ flavorVal.other }}
 
 		i(ng-show="(files | fileext:['vpt','vpx']).length == 0") Upload any VP tables under 1) before defining flavors.
+
+		h1 4. Describe your Release
+		hr
+		.form-group
+			tabset.tabset--light
+				label.label--small.pull-right(markdown-info="Markdown enabled.")
+				tab
+					tab-heading
+						i.fa.fa-edit(title="Write")
+					textarea.textarea--full.msd-elastic(placeholder="Description of the release", ng-model="release.description")
+				tab
+					tab-heading
+						i.fa.fa-eye(title="Preview")
+					div.markdown(markdown="game.description")
+					label.tab__label(ng-show="!release.description || release.description.length == 0") Nothing to preview.
+			i This will show up globally under your release.
+
+		.form-group
+			label.control-label(for="version") Version
+			.row
+				.col-sm-2: input#version.form-control(type="text", ng-model="release.version", placeholder="x.x.x")
+				.col.sm-10: i Using the semantic versioning syntax is recommended.
+		.clearfix
+
+		.form-group
+			label.control-label(for="version") Release Information
+			tabset.tabset--light
+				label.label--small.pull-right(markdown-info="Markdown enabled.")
+				tab
+					tab-heading
+						i.fa.fa-edit(title="Write")
+					textarea.textarea--full.msd-elastic(placeholder="Release Information", ng-model="release.information")
+				tab
+					tab-heading
+						i.fa.fa-eye(title="Preview")
+					div.markdown(markdown="game.description")
+					label.tab__label(ng-show="!release.description || release.description.length == 0") Nothing to preview.
+			i This will show up in the release's change log
+
+
+		hr
+		button.btn.btn-default.btn-lg(ng-click="reset()") Reset
+		button.btn.btn-primary.btn-lg.pull-right(ng-click="submit()") Add New Release
+		.clearfix
+
+		//- TODO fix
+		p &nbsp;
 
 	.col-sm-3.col--menu
 		h1 drafts

@@ -20,6 +20,7 @@
 						.block.big: strong {{ file.name }}
 						.block.big(ng-hide="file.uploading") {{ file.bytes | bytes }}
 						progressbar.progress-striped.active(value="file.progress", ng-show="file.uploading")
+					i.icon.icon-trash(ng-click="remove(file)")
 
 			label.center-block.text-center: small: i Drop your files in here.
 

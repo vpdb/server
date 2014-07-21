@@ -1,10 +1,27 @@
 
-ctrl.controller('ReleaseAddCtrl', function($scope, $upload, $modal, $window, ApiHelper, DisplayService) {
+ctrl.controller('ReleaseAddCtrl', function($scope, $upload, $modal, $window, ApiHelper, FileResource, DisplayService) {
 
 	$scope.theme('light');
 	$scope.setMenu('admin');
 
-	$scope.files = [];
+	$scope.files = [
+//		{
+//			name: 'Filename',
+//			bytes: 1337,
+//			icon: DisplayService.fileIcon(),
+//			uploaded: true,
+//			uploading: false,
+//			progress: 100,
+//			storage: { _id: 123 }
+//		}
+	];
+
+	$scope.remove = function(file) {
+		FileResource.delete({ id: file.storage._id }, function() {
+			$scope.files.splice($scope.files.indexOf(file), 1);
+
+		}, ApiHelper.handleErrorsInDialog($scope, 'Error removing file.'));
+	};
 
 	$scope.onFilesUpload = function($files) {
 
@@ -57,7 +74,6 @@ ctrl.controller('ReleaseAddCtrl', function($scope, $upload, $modal, $window, Api
 					progress: 0
 				};
 				$scope.files.push(file);
-				console.log('uploading %s..', upload.name);
 				$upload.http({
 					url: '/api/files',
 					method: 'PUT',

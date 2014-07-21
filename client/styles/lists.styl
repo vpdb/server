@@ -71,6 +71,26 @@
 			&.asc:before
 				content '\f106'
 
+
+// File List
+//
+// Used in the drop zone of release upload.
+//
+// Markup:
+// <ul class="{$modifiers}">
+//   <li class="panel">
+//     <div class="col--list-files-left"><i class="icon icon-ext"></i></div>
+//     <div class="col--list-files-right">
+//       <div class="block big">First line</div>
+//       <div class="block big">Second line</div>
+//       <i class="icon icon-trash"></i>
+//     </div>
+//   </li>
+// </ul>
+//
+// .list--files    - List Files
+//
+// Styleguide 12.3
 ul.list--files
 	padding 0
 	> li
@@ -79,6 +99,12 @@ ul.list--files
 		margin-bottom 0
 		list-style-image none
 		padding 3px
+		> i
+			font-size 20px
+			position absolute
+			right 14px
+			top 28px
+			cursor pointer
 
 	.col--list-files-left
 		float left

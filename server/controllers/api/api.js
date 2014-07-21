@@ -49,8 +49,12 @@ exports.success = function(res, result, code) {
 	if (!code) {
 		code = 200;
 	}
-	res.setHeader('Content-Type', 'application/json');
-	res.status(code).json(result);
+	if (result) {
+		res.setHeader('Content-Type', 'application/json');
+		res.status(code).json(result);
+	} else {
+		res.status(code).end();
+	}
 };
 
 

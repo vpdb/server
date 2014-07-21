@@ -23,15 +23,16 @@ var init = function(next) {
 			roles: 'contributor',
 			allows: [
 				{ resources: 'games', permissions: [ 'update', 'add' ]},
-				{ resources: 'ipdb', permissions: 'view' },
-				{ resources: 'files', permissions: 'upload' }
+				{ resources: 'ipdb', permissions: 'view' }
 			]
 		}, {
 			roles: 'member',
 			allows: [
 				{ resources: 'user', permissions: 'profile' },
 				{ resources: 'users', permissions: 'view' },
-				{ resources: 'files', permissions: 'download' }
+				{ resources: 'files', permissions: 'download' },
+				{ resources: 'files', permissions: 'upload' },
+				{ resources: 'files', permissions: 'delete' } // only own/inactive files
 			]
 		}, {
 			roles: 'mocha',

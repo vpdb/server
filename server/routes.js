@@ -36,6 +36,7 @@ module.exports = function(app, config, passport) {
 	app.get('/api/ipdb/:id',      api.auth(api.ipdb.view, 'ipdb', 'view'));
 
 	app.put('/api/files',         api.auth(api.files.upload, 'files', 'upload'));
+	app.delete('/api/files/:id',  api.auth(api.files.delete, 'files', 'delete'));
 
 	app.get('/api/games',         api.anon(api.games.list));
 	app.get('/api/games/:id',     api.anon(api.games.view));

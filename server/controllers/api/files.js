@@ -9,6 +9,7 @@ var File = require('mongoose').model('File');
 var config = require('../../modules/settings').current;
 var storage = require('../../modules/storage');
 
+
 exports.upload = function(req, res) {
 
 	if (!req.headers['content-type']) {
@@ -75,6 +76,40 @@ exports.upload = function(req, res) {
 				});
 			});
 			req.pipe(writeStream);
+		});
+	});
+};
+
+
+exports.delete = function(req, res) {
+	File.findById(req.params.id, function(err, file) {
+		if (err) {
+			logger.error('[api|file:delete] Error getting file "%s": %s', req.params.id, err, {});
+			return api.fail(res, err, 500);
+		}
+		if (!file) {
+			return api.fail(res, 'No such file.', 404);
+		}
+
+		console.log(require('util').inspect(file, null, 2, true));
+
+		// only allow deleting own files (for now)
+		if (!file.author.equals(req.user._id)) {
+			return api.fail(res, 'Permission denied, must be owner.', 403);
+		}
+
+		// only allow inactive files (for now)
+		if (file.active !== false) {
+			return api.fail(res, 'Cannot remove active file.', 400);
+		}
+
+		file.remove(function(err) {
+			if (err) {
+				logger.error('[api|file:delete] Error deleting file "%s" (%s): %s', file.name, file._id, err, {});
+				return api.fail(res, err, 500);
+			}
+			logger.info('[api|file:delete] File "%s" (%s) successfully deleted.', file.name, file._id);
+			api.success(res, null, 204);
 		});
 	});
 };

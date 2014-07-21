@@ -39,6 +39,12 @@ services.factory('GameResource', function($resource) {
 	});
 });
 
+services.factory('FileResource', function($resource) {
+	return $resource('/api/files/:id', {}, {
+	});
+});
+
+
 
 services.factory('ApiHelper', function($modal) {
 	return {

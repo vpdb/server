@@ -75,7 +75,7 @@
 							td(ng-repeat="flavorVal in flavor.values")
 								.radio--lg-twoliner.radio-inline
 									label
-										input(type="radio", name="{{ flavor.header }}", value="{{ flavorVal.value }}", ng-model="file.flavor[flavor.name]")
+										input(type="radio", name="{{ file.name + flavor.header }}", value="{{ flavorVal.value }}", ng-model="file.flavor[flavor.name]")
 										span {{ flavorVal.name }}
 										span: i {{ flavorVal.other }}
 		i(ng-show="(files | fileext:['vpt','vpx']).length == 0") Upload any VP tables under 1) before defining flavors.

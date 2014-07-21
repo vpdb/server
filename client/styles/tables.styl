@@ -40,17 +40,36 @@ table.table
 		&.td-dlbtn
 			width 50px
 
-	&.table-striped tr
-		& > td.nostripe
-			padding-left 5px
-
-	&.table--selectable tr
-		& > td
-			cursor pointer
-			transition all $animation-shorter
-
 	tr.inactive > td
 		text-decoration line-through
+
+.table-striped tr
+	& > td.nostripe
+		padding-left 5px
+
+.table--selectable tr
+	& > td
+		cursor pointer
+		transition all $animation-shorter
+
+.table--inner-border
+	margin-bottom 10px
+	tr
+		> td, > th
+			border-bottom-style solid
+			border-bottom-width 2px
+	tr:last-child
+		> td, > th
+			border-bottom none
+	tr th
+		border-right-style solid
+		border-right-width 2px
+		padding-right 15px
+	tr td
+		padding-top 5px
+	tr:first-child td
+		padding-top 0
+
 
 // Padding is screwed up otherwise.
 .table-wrapper

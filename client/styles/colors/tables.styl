@@ -25,10 +25,17 @@
 		tr > th
 			color $color-lighter-inv
 
-		&.table-striped tr:nth-child(odd) > td
-			background-color $color-dark
-			&.nostripe
-				background-color transparent
+	.table-striped tr:nth-child(odd) > td
+		background-color $color-dark
+		&.nostripe
+			background-color transparent
 
-		&.table--selectable tr:hover td
-			color $color-lightest-inv
+	.table--selectable tr:hover td
+		color $color-lightest-inv
+
+	.table--inner-border
+		tr
+			> td, > th
+				border-bottom-color $color-darker-inv
+		tr th
+			border-right-color $color-darker-inv

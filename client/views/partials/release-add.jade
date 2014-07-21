@@ -17,8 +17,8 @@
 					.col--list-files-left
 						i.icon(ng-class="file.icon")
 					.col--list-files-right
-						.block.big: strong {{ file.name }}
-						.block.big(ng-hide="file.uploading") {{ file.bytes | bytes }}
+						.block.text--large: strong {{ file.name }}
+						.block.text--large(ng-hide="file.uploading") {{ file.bytes | bytes }}
 						progressbar.progress-striped.active(value="file.progress", ng-show="file.uploading")
 					i.icon.icon-trash(ng-click="remove(file)")
 
@@ -46,6 +46,27 @@
 				| distinguishes your release from others of the same game. Don't put anything you already describe below
 				| such as <i>FS Night Mod</i>, but choose a name that brings across the nature of your virtual table.
 				| If you're out of ideas, <i>Ultimate Edition</i> always seems to work. ;)
+
+		h1 3. Define your Flavor
+		hr
+		ul.list--files
+			li.panel(ng-repeat="file in files | fileext:['vpt','vpx']")
+				.col--list-files-left
+					i.icon(ng-class="file.icon")
+				.col--list-files-right
+					.block.text--large: strong {{ file.name }}
+					hr
+					table.table--inner-border
+						tr(ng-repeat="flavor in flavors")
+							th.text--large {{ flavor.header }}
+							td(ng-repeat="flavorVal in flavor.values")
+								.radio--lg-twoliner.radio-inline
+									label
+										input(type="radio", name="{{ flavor.header }}", value="{{ flavorVal.value }}", ng-model="file.flavor[flavor.name]")
+										span {{ flavorVal.name }}
+										span: i {{ flavorVal.other }}
+
+		i(ng-show="(files | fileext:['vpt','vpx']).length == 0") Upload any VP tables under 1) before defining flavors.
 
 	.col-sm-3.col--menu
 		h1 drafts

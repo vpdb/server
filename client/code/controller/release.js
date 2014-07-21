@@ -5,15 +5,44 @@ ctrl.controller('ReleaseAddCtrl', function($scope, $upload, $modal, $window, Api
 	$scope.setMenu('admin');
 
 	$scope.files = [
-//		{
-//			name: 'Filename',
-//			bytes: 1337,
-//			icon: DisplayService.fileIcon(),
-//			uploaded: true,
-//			uploading: false,
-//			progress: 100,
-//			storage: { _id: 123 }
-//		}
+		{
+			name: 'Filename.vpt',
+			bytes: 1337,
+			icon: DisplayService.fileIcon('application/x-visual-pinball-table'),
+			uploaded: true,
+			uploading: false,
+			progress: 100,
+			storage: { _id: 123 },
+			flavor: {}
+		},
+		{
+			name: 'Filename.jpg',
+			bytes: 3321,
+			icon: DisplayService.fileIcon('image/jpeg'),
+			uploaded: true,
+			uploading: false,
+			progress: 100,
+			storage: { _id: 123 },
+			flavor: {}
+		}
+	];
+
+	$scope.flavors = [
+		{
+			header: 'Orientation',
+			name: 'orientation',
+			values: [
+				{ name: 'Desktop', other: 'Landscape', value: 'ws' },
+				{ name: 'Landscape', other: 'Portrait', value: 'fs' }
+			]
+		}, {
+			header: 'Lightning',
+			name: 'lightning',
+			values: [
+				{ name: 'Night', other: 'Dark Playfield', value: 'night' },
+				{ name: 'Day', other: 'Illuminated Playfield', value: 'day' }
+			]
+		}
 	];
 
 	$scope.remove = function(file) {
@@ -71,7 +100,8 @@ ctrl.controller('ReleaseAddCtrl', function($scope, $upload, $modal, $window, Api
 					icon: DisplayService.fileIcon(type),
 					uploaded: false,
 					uploading: true,
-					progress: 0
+					progress: 0,
+					flavor: {}
 				};
 				$scope.files.push(file);
 				$upload.http({

@@ -161,8 +161,8 @@ filters.filter('manufacturer', function() {
 			return items;
 		}
 		return _.filter(items, function(game) {
-			var manufacturer;
-			for (var i = 0; i < manufacturers.length; i++) {
+				var manufacturer;
+				for (var i = 0; i < manufacturers.length; i++) {
 				manufacturer = manufacturers[i];
 				if (game.manufacturer.toLowerCase() == manufacturer.toLowerCase()) {
 					return true;
@@ -216,5 +216,15 @@ filters.filter('dlPack', function() {
 			pack.name
 		];
 	}
+});
+
+
+filters.filter('fileext', function() {
+	return function(files, exts) {
+		return _.filter(files, function(file) {
+			var ext = file.name.substr(file.name.lastIndexOf('.') + 1, file.name.length).toLowerCase();
+			return _.contains(exts, ext);
+		});
+	};
 });
 

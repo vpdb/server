@@ -91,8 +91,6 @@ exports.delete = function(req, res) {
 			return api.fail(res, 'No such file.', 404);
 		}
 
-		console.log(require('util').inspect(file, null, 2, true));
-
 		// only allow deleting own files (for now)
 		if (!file.author.equals(req.user._id)) {
 			return api.fail(res, 'Permission denied, must be owner.', 403);

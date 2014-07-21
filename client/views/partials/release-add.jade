@@ -15,10 +15,11 @@
 			ul.list--files
 				li.panel(ng-repeat="file in files")
 					.col--list-files-left
-						i.icon(class="icon-ext{{ file.icon ? '-' + file.icon : '' }}")
+						i.icon(ng-class="file.icon")
 					.col--list-files-right
 						.block.big: strong {{ file.name }}
-						.block.big {{ file.bytes | bytes }}
+						.block.big(ng-hide="file.uploading") {{ file.bytes | bytes }}
+						progressbar.progress-striped.active(value="file.progress", ng-show="file.uploading")
 
 			label.center-block.text-center: small: i Drop your files in here.
 

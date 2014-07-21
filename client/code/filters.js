@@ -38,9 +38,9 @@ filters.filter('escape', function() {
 	return window.escape;
 });
 
-filters.filter('mediatype', function(display) {
+filters.filter('mediatype', function(DisplayService) {
 	return function(type) {
-		return display.media(type);
+		return DisplayService.media(type);
 	}
 });
 
@@ -198,13 +198,13 @@ filters.filter('dlBackglass', function() {
 	}
 });
 
-filters.filter('dlMedia', function(display) {
+filters.filter('dlMedia', function(DisplayService) {
 	return function(data) {
 		var game = data[0];
 		var media = data[1];
 		return [
 			game.name,
-			display.media(media.type) + ' (' + media.format + ') by <strong>' + media.author.user + '</strong>'
+			DisplayService.media(media.type) + ' (' + media.format + ') by <strong>' + media.author.user + '</strong>'
 		];
 	}
 });

@@ -26,6 +26,10 @@ module.exports = {
 		name: 'Visual Basic Script',
 		ext: 'vbs'
 	},
+	'audio/mpeg': {
+		name: 'MP3',
+		ext: 'mp3'
+	},
 	'video/mp4': {
 		name: 'MP4 video',
 		ext: 'mp4'
@@ -33,5 +37,9 @@ module.exports = {
 	'video/x-flv': {
 		name: 'Flash video',
 		ext: 'flv'
+	},
+	'text/plain': {
+		name: 'Plain text',
+		ext: 'txt'
 	}
 };

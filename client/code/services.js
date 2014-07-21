@@ -3,7 +3,7 @@
 /* Services */
 var services = angular.module('vpdb.services', []);
 
-services.factory('display', function() {
+services.factory('DisplayService', function() {
 	return {
 		media: function(type) {
 			switch (type) {
@@ -15,6 +15,21 @@ services.factory('display', function() {
 					return 'Instruction Card';
 				default:
 					return 'Unknown';
+			}
+		},
+
+		fileIcon: function(mimeType) {
+			switch (mimeType) {
+				case 'application/x-visual-pinball-table':   return 'icon-ext-vpt';
+				case 'application/x-visual-pinball-table-x': return 'icon-ext-vpx';
+				case 'application/vbscript':                 return 'icon-ext-code';
+				case 'audio/mpeg':                           return 'icon-ext-audio';
+				case 'image/jpeg':
+				case 'image/png':                            return 'icon-ext-image';
+				case 'text/plain':                           return 'icon-ext-txt';
+				case 'video/mp4':
+				case 'video/x-flv':                          return 'icon-ext-video';
+				default:                                     return 'icon-ext';
 			}
 		}
 	}

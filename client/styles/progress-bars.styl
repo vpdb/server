@@ -1,31 +1,61 @@
 // Progress Bars
 //
 // Styleguide 19
-
-
-// Image Upload
-//
-// Indicator when image was dropped into the browser.
-//
-// Markup:
-// <div class="alert {$modifiers}">
-//   <i class="fa fa-exclamation-triangle space-right"></i>
-//   Hello, I'm an alert!
-// </div>
-//
-// .alert-danger  - Danger
-// .alert-success - Success
-//
-// Styleguide 19.1
 .progress
-	position absolute
-	top 20px
-	left 50%
-	margin-left -100px
-	width 200px
 	height 24px
 	padding 5px 4px
 
 	.progress-bar
 		border-left-radius(2px)
 		box-shadow none
+
+// Absolute/Fixed
+//
+// Progress bars when uploading images into a blank panel. It's vertically
+// centered relative to its parent (hence the `vertical-center-100` element).
+// Also it has a fixed width of `200px`.
+//
+// Markup:
+// <div class="panel panel--fixed-height-300">
+//   <div class="panel-content">
+//     <div class="vertical-center--100">
+//       <progressbar class="progress-striped progress--fixed-absolute active" value="80"></progressbar>
+//     </div>
+//   </div>
+// </div>
+//
+// .progress--fixed-absolute - In panel with fixed height
+//
+// Styleguide 19.1
+.progress.progress--fixed-absolute
+	position absolute
+	top 20px
+	left 50%
+	margin-left -100px
+	width 200px
+
+
+// In Dropzone
+//
+// Progress bar replaces a oneliner
+//
+// Markup:
+// <div class="panel panel--dropzone">
+//   <ul class="list--files">
+//     <li class="panel">
+//       <div class="col--list-files-left"><i class="icon icon-ext"></i></div>
+//       <div class="col--list-files-right">
+//         <progressbar class="progress-striped active" value="80"></progressbar>
+//         <div class="block big">28.4 MB</div>
+//       </div>
+//     </li>
+//   </ul>
+// </div>
+//
+// .progress - Oneliner
+//
+// Styleguide 19.2
+.panel--dropzone .progress
+	margin-bottom 0
+	margin-right 10px
+	margin-top 11px

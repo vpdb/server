@@ -246,7 +246,7 @@
 						.panel-body.a.a--darker(ng-click="openUploadDialog('#uploadBackglass')")
 							.img.img--ar-bg.loaded(img-bg="uploadedBackglass")
 								.text-center.vertical-center--100
-									progressbar.progress-striped.active(value="backglassUploadProgress", ng-show="backglassUploading")
+									progressbar.progress--fixed-absolute.progress-striped.active(value="backglassUploadProgress", ng-show="backglassUploading")
 									.span(ng-show="!img.url")
 										i.fa.fa-picture-o.fa-3x(ng-class="{ transparent: backglassUploading }")
 										p {{ backglassUploadText }}
@@ -285,7 +285,7 @@
 						.panel-body.a.a--darker(ng-click="openUploadDialog('#uploadLogo')")
 							.img.img--ar-logo.loaded(img-bg="uploadedLogo")
 								.text-center.vertical-center--100
-									progressbar.progress-striped.active(value="logoUploadProgress", ng-show="logoUploading")
+									progressbar.progress--fixed-absolute.progress-striped.active(value="logoUploadProgress", ng-show="logoUploading")
 									.span(ng-show="!img.url")
 										i.fa.fa-picture-o.fa-3x(ng-class="{ transparent: logoUploading }")
 										p {{ logoUploadText }}

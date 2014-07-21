@@ -4,8 +4,6 @@ ctrl.controller('ReleaseAddCtrl', function($scope, $upload, $modal, $window, Api
 	$scope.theme('light');
 	$scope.setMenu('admin');
 
-	$scope.release = {};
-
 	$scope.files = [
 		{
 			name: 'Filename.vpt',
@@ -48,8 +46,12 @@ ctrl.controller('ReleaseAddCtrl', function($scope, $upload, $modal, $window, Api
 	];
 
 	$scope.reset = function() {
+		$scope.release = {
+			authors: [
 
-	}
+			]
+		};
+	};
 
 	$scope.remove = function(file) {
 		FileResource.delete({ id: file.storage._id }, function() {
@@ -128,4 +130,6 @@ ctrl.controller('ReleaseAddCtrl', function($scope, $upload, $modal, $window, Api
 			};
 		});
 	};
+
+	$scope.reset();
 });

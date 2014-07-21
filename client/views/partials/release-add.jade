@@ -1,15 +1,22 @@
 .row.row--fullheight(ng-controller="ReleaseAddCtrl")
 	.col-sm-9.col--main
-		h1.h--primary add new release
-		hr
-		p Note that a game is completely decoupled from its releases. Data appearing in here is common to all releases
-			| that are linked to that game, but kept as a separate and independent data set.
 
+		h1.h--primary Add a new Release
+		hr
+
+		p Welcome to the largest web form on earth! We've tried our best to make it as easy as possible for you to
+			| upload your release and add the necessary information so it can correctly be categorized, indexed and
+			| found by the community.
+
+		p Below are seven steps until you can hit the big button. If this is the first time you're uploading a release,
+			| read carefully through the instructions. So let's get started!
+
+		//---------------------------------------------------------------------
 		h1 1. Upload Files
 		hr
 
-		p Drag and drop the files of the release below into the box. You can also put a .zip file, which will then be
-			| extracted on server side.
+		p Drag and drop your files from the file explorer into the box below. You can also put a .zip file, which will
+			| then be extracted on server side and show up here as individual files.
 		.panel.panel--dropzone(ng-file-drop="onFilesUpload($files)", ng-file-drag-over-class="panel--dragging")
 
 			ul.list--files
@@ -27,7 +34,7 @@
 		p Note that files of a release are structured, i.e. there are only certain file types allowed:
 		ul
 			li <code>.vpt</code> or <code>.vpx</code> - The table file of the release. You can upload multiple of those
-				| if you have multiple flavors ready (see section 3 below)
+				| if you have multiple flavors ready (see step 3 below)
 			li <code>.png</code>/<code>.jpg</code> files - Playfield screen shots
 			li <code>.mp4</code> files - Playfield videos or game play videos
 
@@ -35,6 +42,8 @@
 			| generated from the description you provide below. There will also be a file about authors and
 			| acknowledgements distributed with every download. Thus, it is recommended to use text files only for
 			| configuration or other technical usages when necessary.
+
+		//---------------------------------------------------------------------
 		h1 2. Name your Release
 		hr
 		.form-group(ng-class="{ error: errors.title }")
@@ -44,11 +53,15 @@
 				| {{ errors.title }}
 			span.help-block This is what will show up when your release gets listed under the game. It is basically what
 				| distinguishes your release from others of the same game. Don't put anything you already describe below
-				| such as <i>FS Night Mod</i>, but choose a name that brings across the nature of your virtual table.
-				| If you're out of ideas, <i>Ultimate Edition</i> always seems to work. ;)
+				| such as <i>"FS Night Mod"</i>, but choose a name that brings across the nature of your virtual table.
+				| If you're out of ideas, <i>"Ultimate Edition"</i> often seems to work. ;)
 
+		//---------------------------------------------------------------------
 		h1 3. Define your Flavors
 		hr
+		p A flavor defines attributes that are relevant to every release, so users can set defaults which version to
+			| download or search for. You can upload multiple flavors by adding several <code>.vpt</code> or
+			| <code>.vpx</code> files in step 1.
 		ul.list--files
 			li.panel(ng-repeat="file in files | fileext:['vpt','vpx']")
 				.col--list-files-left
@@ -65,9 +78,10 @@
 										input(type="radio", name="{{ flavor.header }}", value="{{ flavorVal.value }}", ng-model="file.flavor[flavor.name]")
 										span {{ flavorVal.name }}
 										span: i {{ flavorVal.other }}
-
 		i(ng-show="(files | fileext:['vpt','vpx']).length == 0") Upload any VP tables under 1) before defining flavors.
 
+
+		//---------------------------------------------------------------------
 		h1 4. Describe your Release
 		hr
 		.form-group
@@ -106,6 +120,40 @@
 					label.tab__label(ng-show="!release.description || release.description.length == 0") Nothing to preview.
 			i This will show up in the release's change log
 
+		//- AUTHORS
+		//---------------------------------------------------------------------
+		h4
+			i.icon.icon-user.space-right
+			| Authors
+		hr.hr--light
+		p: i Add your authors here.
+
+		//- TAGS
+		//---------------------------------------------------------------------
+		h4
+			i.fa.fa-tags.space-right
+			| Tags
+		hr.hr--light
+		p: i Assign your tags here.
+
+		//- LINKS
+		//---------------------------------------------------------------------
+		h4
+			i.fa.fa-link.space-right
+			| Links
+		hr.hr--light
+		p: i Add your links here.
+
+		//---------------------------------------------------------------------
+		h1 5. Set Compatibility
+
+		hr
+		//---------------------------------------------------------------------
+		h1 6. Give Credits
+
+		hr
+		//---------------------------------------------------------------------
+		h1 7. Upload Media
 
 		hr
 		button.btn.btn-default.btn-lg(ng-click="reset()") Reset

@@ -1,5 +1,5 @@
 
-ctrl.controller('ReleaseAddCtrl', function($scope, $upload, $modal, $window, ApiHelper, FileResource, DisplayService) {
+ctrl.controller('ReleaseAddCtrl', function($scope, $upload, $modal, $window, AuthService, ApiHelper, FileResource, DisplayService) {
 
 	$scope.theme('light');
 	$scope.setMenu('admin');
@@ -48,7 +48,26 @@ ctrl.controller('ReleaseAddCtrl', function($scope, $upload, $modal, $window, Api
 	$scope.reset = function() {
 		$scope.release = {
 			authors: [
-
+				{
+					user: AuthService.getUser(),
+					roles: [ 'Table Creator' ]
+				},
+				{
+					user: AuthService.getUser(),
+					roles: [ 'Table Creator' ]
+				},
+				{
+					user: AuthService.getUser(),
+					roles: [ 'Table Creator' ]
+				},
+				{
+					user: AuthService.getUser(),
+					roles: [ 'Table Creator' ]
+				},
+				{
+					user: AuthService.getUser(),
+					roles: [ 'Table Creator' ]
+				}
 			]
 		};
 	};
@@ -124,7 +143,9 @@ ctrl.controller('ReleaseAddCtrl', function($scope, $upload, $modal, $window, Api
 				}).then(function(response) {
 					file.uploading = false;
 					file.storage = response.data;
-				}, ApiHelper.handleErrorsInDialog($scope, 'Error uploading file.'), function (evt) {
+				}, ApiHelper.handleErrorsInDialog($scope, 'Error uploading file.', function() {
+					$scope.files.splice($scope.files.indexOf(file), 1);
+				}), function (evt) {
 					file.progress = parseInt(100.0 * evt.loaded / evt.total);
 				});
 			};

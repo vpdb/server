@@ -43,8 +43,7 @@
 		button.btn.btn-default.btn-block.padder-bottom
 			i.fa.fa-star.space-right
 			| Follow
-
-		a.btn.btn-primary(href="/game/{{game.game_id}}/add-release").padder-bottom
+		a.btn.btn-primary.padder-bottom(href="/game/{{game.game_id}}/add-release", ng-show="auth.hasPermission('releases/add')")
 			i.fa.fa-plus-circle.btn-.space-right
 			| Add Release
 

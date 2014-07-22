@@ -51,7 +51,12 @@ services.factory('AuthService', function($window, $localStorage, $sessionStorage
 		 * @param token JWT, as string
 		 */
 		tokenUpdated: function(token) {
-			this.saveToken(token);
+			// only update if there already is a token. this is to avoid refreshing the token
+			// when the server didn't send a refresh token but browser still passes the header
+			// due to a 302.
+			if (this.hasToken()) {
+				this.saveToken(token);
+			}
 		},
 
 		/**
@@ -179,6 +184,7 @@ services.factory('AuthService', function($window, $localStorage, $sessionStorage
 			delete $localStorage.jwt;
 			delete $localStorage.user;
 			delete $localStorage.tokenExpires;
+			delete $localStorage.tokenCreated;
 		},
 
 		setAuthHeader: function(authHeader) {

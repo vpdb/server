@@ -64,7 +64,7 @@ services.factory('ApiHelper', function($modal) {
 			}
 		},
 
-		handleErrorsInDialog: function(scope, title) {
+		handleErrorsInDialog: function(scope, title, callback) {
 			return function(response) {
 				scope.setLoading(false);
 				$modal.open({
@@ -75,6 +75,9 @@ services.factory('ApiHelper', function($modal) {
 						errorMessage: function() { return response.data.error; }
 					}
 				});
+				if (callback) {
+					callback(response);
+				}
 			}
 		}
 	};

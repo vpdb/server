@@ -120,13 +120,27 @@
 					label.tab__label(ng-show="!release.description || release.description.length == 0") Nothing to preview.
 			i This will show up in the release's change log
 
+
 		//- AUTHORS
 		//---------------------------------------------------------------------
 		h4
 			i.icon.icon-user.space-right
 			| Authors
 		hr.hr--light
-		p: i Add your authors here.
+
+		.row--fullwidth
+			.media.media--mini.media--mini-noborders.col-sm-4(ng-repeat="author in release.authors", ng-mouseenter="hovering=true", ng-mouseleave="hovering=false")
+				.img-avatar.img-avatar--sm.avatar-placeholder.avatar-placeholder--sm.pull-left(ng-hide="author.user.avatar")
+				.img.img-avatar.img-avatar--sm.pull-left(ng-show="author.user.avatar", img-bg="author.user.avatar")
+				.media-body
+					h6.h--no-margin.h--lighter.media-heading {{ author.user.name }}
+					span {{ author.roles.join(', ') }}
+				i.fa.fa-pencil.a(ng-show="hovering")
+				i.icon.icon-trash.a(ng-show="hovering")
+
+		.clearfix.padder-bottom-2x
+
+
 
 		//- TAGS
 		//---------------------------------------------------------------------

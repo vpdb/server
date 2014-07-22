@@ -82,29 +82,25 @@ Install Node.js and Git, then open a command line and type:
 	cd node-vpdb
 	npm install
 	grunt build
-	node app
+	grunt serve
 
 Open your browser and connect to ``http://localhost:3000/``.
 
-For CSS live regeneration while developing, open shell and launch:
+For live reload and automatic app restart while developing, open a shell and launch:
 
 	grunt dev
+	
+There are some command line arguments you can supply:
 
-If you're deploying to a remote service like OpenShift that doesn't have GraphicsMagick installed, SSH into your app
-and type:
-
-	mkdir $OPENSHIFT_DATA_DIR/src
-	cd $OPENSHIFT_DATA_DIR/src
-	wget ftp://ftp.graphicsmagick.org/pub/GraphicsMagick/1.3/GraphicsMagick-1.3.19.tar.gz
-	tar xvfz GraphicsMagick-1.3.19.tar.gz
-	cd GraphicsMagick-1.3.19
-	./configure --prefix=$OPENSHIFT_DATA_DIR
-	make && make install
-
-In OpenShift's case, there's a pre-build script which links the ``gm`` executable to Node.js' binary folder which is 
-part of the app's ``$PATH`` variable.
-
-If you want to setup a production environment from scratch, see the [Installation Guide](INSTALL.md).
+ * `--port=<port>` - Makes the app listen on a given port. Default: `3000`.
+ * `--config=<path>` - Uses a different settings file. This has different defaults depending on how Grunt is launched:
+   * When launched as `dev` or `serve`, the default is `server/config/settings.js`
+   * When launched as `test`, `test-client` or `test-server`, the default is `server/config/settings-test.js`. See 
+     *Tests* below for additional parameters.
+   
+Note that both settings may also be provided by setting the `PORT` and `APP_SETTINGS` environment variable.
+ 	
+If you plan to setup a production environment from scratch, see the [Installation Guide](INSTALL.md).
 
 ## Status
 
@@ -112,7 +108,24 @@ See [changelog](CHANGELOG.md).
 
 ## Tests
 
-Test coverage is mainly API tests. Make sure your database is clean and run them with `npm test`.
+Test coverage for now are API integration tests. A test run requires a clean environment. For this purpose, there is an
+included settings file at `server/config/settings-test.js` which is used when running tests. Basically it's a 
+stripped-down config that uses a different database.
+ 
+There are a few ways you can run tests:
+
+ * `grunt test --force` - Fires up the test server and launches API tests. Re-runs tests when tests change and restarts server 
+   and runs tests when server-code changes.
+ * `grunt test-server` - Fires up the test server. Restarts server when server-code changes.
+ * `grunt test-client --force` - Runs tests and re-runs them if they change or server restarts.
+   
+The `test-client` goal accepts additional command-line parameters:
+
+ * `--server=<url>` - Server URL for API integration tests. Default: `http://localhost:3000/`.
+ * `--basic-auth=<user>:<password>` - Adds a basic authentication header to every request.
+ * `--auth-header=<header>` - Authorization header. Default: `Authorization`.
+ 
+The `--force` parameter is necessary if you want to keep watching files even when tests fail.
 
 ## Credits
 

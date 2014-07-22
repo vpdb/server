@@ -184,7 +184,10 @@ module.exports = {
 				/**
 				 * The client ID of the generated application.
 				 */
-				clientID: function(id) {
+				clientID: function(id, settings) {
+					if (!settings.vpdb.passport.enabled) {
+						return;
+					}
 					if (id.length == 0) {
 						return 'Your client ID must be longer than 0 characters. Please consult https://github.com/settings/applications/ in order to obtain GitHub\'s client ID';
 					}
@@ -196,7 +199,10 @@ module.exports = {
 				/**
 				 * The client secret of the generated application.
 				 */
-				clientSecret: function(secret) {
+				clientSecret: function(secret, settings) {
+					if (!settings.vpdb.passport.enabled) {
+						return;
+					}
 					if (secret.length == 0) {
 						return 'Your client secret must be longer than 0 characters. Please consult https://github.com/settings/applications/ in order to obtain GitHub\'s client secret';
 					}

@@ -42,14 +42,21 @@ serverDomain.run(function() {
 	require('./server/acl').init(function(err) {
 
 		if (err) {
-			return logger.error('[app] Aborting.');
+			logger.error('[app] Aborting.');
+			return process.exit(1);
 		}
 
-		// bootstrap passport config
-		require('./server/passport')(config, passport);
+		try {
+			// bootstrap passport config
+			require('./server/passport')(config, passport);
 
-		// express settings
-		require('./server/express')(app, config, passport);
+			// express settings
+			require('./server/express')(app, config, passport);
+
+		} catch (e) {
+			logger.error('[app] ERROR: ' + e.message);
+			return process.exit(1);
+		}
 
 		// and lastly, startup scripts - stuff that is run at start.
 		require('./server/startup')(function(err) {
@@ -59,9 +66,11 @@ serverDomain.run(function() {
 				return process.exit(1);
 			}
 
+
 			// now we start the server.
+			logger.info('[app] Starting Express server at %s:%d', app.get('ipaddress'), app.get('port'));
 			app.listen(app.get('port'), app.get('ipaddress'), function() {
-				logger.info('[app] Express server listening at %s:%d', app.get('ipaddress'), app.get('port'));
+				logger.info('[app] Server listening at %s:%d', app.get('ipaddress'), app.get('port'));
 				if (process.send) {
 					process.send('online');
 				}

@@ -33,10 +33,10 @@ exports.setupUsers = function(request, config, done) {
 				.send(user)
 				.end(function(err, res) {
 					if (err) {
-						return next(err.body.error);
+						return next(err.body ? err.body.error : err);
 					}
 					if (res.status != 201) {
-						return next(res.body.error);
+						return next(err.body ? err.body.error : err);
 					}
 
 					user = _.extend(user, res.body);
@@ -86,11 +86,11 @@ exports.setupUsers = function(request, config, done) {
 	// create super user first and then the rest
 	createUser(superuser, { roles: ['root', 'mocha' ] })(function(err) {
 		if (err) {
-			throw err;
+			throw new Error(err);
 		}
 		async.series(users, function(err) {
 			if (err) {
-				throw err;
+				throw new Error(err);
 			}
 			done();
 		});
@@ -125,12 +125,12 @@ exports.teardownUsers = function(request, done) {
 
 	async.series(users, function(err) {
 		if (err) {
-			throw err;
+			throw new Error(err);
 		}
 		// lastly, delete super user.
 		deleteUser(superuser, true)(function(err) {
 			if (err) {
-				throw err;
+				throw new Error(err);
 			}
 			done();
 		});

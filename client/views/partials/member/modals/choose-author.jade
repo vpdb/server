@@ -1,0 +1,24 @@
+.theme-light
+	.modal-header
+		h1.h--no-margin.h--small
+			i.icon.icon-user.space-right
+			| &nbsp;Add Author
+	.modal-body
+		h4 Choose User
+		hr.hr--margin-small.hr--light
+		p Authors must be registered users. Start typing below in order to search.
+
+
+
+
+		h4.padder-top-2x Add Roles
+		hr.hr--margin-small.hr--light
+		p Every author can have one or more roles in the creation process. You can
+			| assign up to three roles per author.
+
+		.clearfix
+
+
+	.modal-footer
+		button.btn.btn-default(ng-click="$close()") Cancel
+		button.btn.btn--secondary(ng-click="add()") Add

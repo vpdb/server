@@ -4,12 +4,7 @@ var expect = require('expect.js');
 var superagentTest = require('../modules/superagent-test');
 var hlp = require('../modules/helper');
 
-superagentTest(request, {
-	host: 'localhost',
-	port: 3000,
-	path: '/api',
-	authHeader: 'Authorization'
-});
+superagentTest(request, { path: '/api' });
 
 describe('The VPDB `user` API', function() {
 

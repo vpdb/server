@@ -10,6 +10,7 @@ var expressBodyParser = require('body-parser');
 var expressCompression = require('compression');
 var expressErrorhandler = require('errorhandler');
 
+// TODO re-enable
 var domainError = require('express-domain-errors');
 var gracefulExit = require('express-graceful-exit');
 
@@ -25,7 +26,11 @@ module.exports = function(app, config, passport) {
 
 	logger.info('[express] Setting up Express for running %s in %s mode.', runningLocal ? 'locally' : 'remotely', runningDev ? 'development' : 'production');
 
-	app.set('port', process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || 3000);
+	if (!process.env.PORT) {
+		throw new Error('Environment variable `PORT` not found, server cannot start on unknown port.');
+	}
+
+	app.set('port', process.env.PORT);
 	app.set('ipaddress', process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1');
 	app.set('views', path.resolve(__dirname, '../client/views'));
 	app.set('view engine', 'jade');

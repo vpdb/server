@@ -14,25 +14,32 @@ module.exports = {
 
 		/**
 		 * Public host name of the server.
+		 *
+		 * This is used to construct URLs. The actual server always listens on
+		 * `localhost`.
 		 */
 		host: 'localhost',
 
 		/**
-		 * The public port of the server. Note that this isn't what defines on which port
-		 * the app listens, for that set the PORT environment variable.
+		 * The public port of the server.
+		 *
+		 * Note that this is NOT what defines on which port the app listens,
+		 * for that set the `PORT` environment variable. However, when running
+		 * the server via Grunt, it will read this variable and set the env
+		 * accordingly IF unset.
 		 */
 		port: 80,
-
-		/**
-		 * Database configuration. Must point to a MongoDB schema.
-		 */
-		db: 'mongodb://localhost/vpdb',
 
 		/**
 		 * True if the host defined above is reachable via https. It is highly encouraged
 		 * to enable HTTPS!
 		 */
 		httpsEnabled: true,
+
+		/**
+		 * Database configuration. Must point to a MongoDB schema.
+		 */
+		db: 'mongodb://localhost/vpdb',
 
 		/**
 		 * Session timeout in milliseconds (technically it's the expiration length of the JWT)

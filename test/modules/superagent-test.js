@@ -1,10 +1,11 @@
 module.exports = function(superagent, options) {
 
-	options.schema = options.schema || 'http';
-	options.host = options.host || 'localhost';
-	options.port = options.port || 80;
+	options.schema = options.schema || process.env.HTTP_SCHEMA || 'http';
+	options.host = options.host || process.env.HOST || 'localhost';
+	options.port = options.port || process.env.PORT || 7357;
+	options.authHeader = options.authHeader || process.env.AUTH_HEADER || 'Authentication';
+
 	options.path = options.path || '';
-	options.authHeader = options.authHeader || 'Authentication';
 
 	var Request = superagent.Request;
 

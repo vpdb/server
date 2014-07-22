@@ -51,22 +51,6 @@ ctrl.controller('ReleaseAddCtrl', function($scope, $upload, $modal, $window, Aut
 				{
 					user: AuthService.getUser(),
 					roles: [ 'Table Creator' ]
-				},
-				{
-					user: AuthService.getUser(),
-					roles: [ 'Table Creator' ]
-				},
-				{
-					user: AuthService.getUser(),
-					roles: [ 'Table Creator' ]
-				},
-				{
-					user: AuthService.getUser(),
-					roles: [ 'Table Creator' ]
-				},
-				{
-					user: AuthService.getUser(),
-					roles: [ 'Table Creator' ]
 				}
 			]
 		};
@@ -152,5 +136,20 @@ ctrl.controller('ReleaseAddCtrl', function($scope, $upload, $modal, $window, Aut
 		});
 	};
 
+	$scope.chooseAuthor = function() {
+		return $modal.open({
+			templateUrl: 'partials/member/modals/choose-author',
+			controller: 'ChooseAuthorCtrl',
+			resolve: {
+				release: function() { return $scope.release; }
+			}
+		});
+	}
+
 	$scope.reset();
+});
+
+
+ctrl.controller('ChooseAuthorCtrl', function($scope, $modalInstance) {
+
 });

@@ -10,29 +10,15 @@ var validations = require(path_.resolve(__dirname, '../config/settings-validate'
 var dryRun = false;
 
 function Settings() {
-	var msg;
 
-	// 1. check for env variable
-	if (process.env.APP_SETTINGS) {
-		if (fs.existsSync(process.env.APP_SETTINGS)) {
-			this.filePath = process.env.APP_SETTINGS;
+	if (!process.env.APP_SETTINGS || !fs.existsSync(process.env.APP_SETTINGS)) {
+		if (process.env.APP_SETTINGS) {
+			throw new Error('Cannot find settings at "' + process.env.APP_SETTINGS + '". Copy server/config/settings-dist.js to server/config/settings.js or point `APP_SETTINGS` environment variable to correct path.');
 		} else {
-			msg = 'Cannot find settings at "' + process.env.APP_SETTINGS + '", check your env variable APP_SETTINGS.';
-			logger.error('[settings] %s', msg);
-			throw msg;
-		}
-
-	// 2. read from server/config
-	} else {
-		var filePath = path_.resolve(__dirname, '../config/settings.js');
-		if (fs.existsSync(filePath)) {
-			this.filePath = filePath;
-		} else {
-			msg = 'Cannot find settings at "' + filePath + '", copy server/config/settings-dist.js to server/config/settings.js or point APP_SETTINGS env variable to correct path.';
-			logger.error('[settings] %s', msg);
-			throw msg;
+			throw new Error('Settings location not found. Please set the `APP_SETTINGS` environment variable to your configuration file and retry.');
 		}
 	}
+	this.filePath = process.env.APP_SETTINGS;
 	this.current = require(this.filePath.substr(0, this.filePath.length - 3));
 }
 
@@ -64,7 +50,7 @@ Settings.prototype.validate = function() {
 
 				// validation function
 				if (_.isFunction(validation[s])) {
-					if (_.isUndefined(setting[s])) {
+					if (_.isUndefined(setting[s]) && setting.enabled !== false) {
 						logger.error('[settings] %s [KO]: Setting is missing.', p);
 						success = false;
 					} else {

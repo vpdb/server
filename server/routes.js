@@ -19,6 +19,7 @@ module.exports = function(app, config, passport) {
 	// serve index and view partials
 	app.get('/partials/:name', web.partials());
 	app.get('/partials/member/release-add', web.partials('member/release-add', 'releases', 'add'));
+	app.get('/partials/member/modals/choose-author', web.partials('member/modals/choose-author', 'releases', 'add'));
 	app.get('/partials/admin/users', web.partials('admin/users', 'users', 'update'));
 	app.get('/partials/admin/game-add', web.partials('admin/game-add', 'games', 'update'));
 	app.get('/partials/admin/modals/:name', web.partials('admin/modals', 'users', 'update'));

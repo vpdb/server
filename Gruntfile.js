@@ -1,4 +1,5 @@
 var _ = require('underscore');
+var fs = require('fs');
 var path = require('path');
 var writeable = require('./server/modules/writeable');
 var assets = require('./server/config/assets');
@@ -21,6 +22,12 @@ module.exports = function(grunt) {
 			},
 			styleguide: {
 				src: [ 'styleguide/**/*.html']
+			}
+		},
+
+		execute: {
+			target: {
+				src: ['app.js']
 			}
 		},
 
@@ -112,13 +119,13 @@ module.exports = function(grunt) {
 				files: 'client/styles/**/*.styl',
 				tasks: [ 'stylus', 'kss' ],
 				options: {
-					livereload: true
+					livereload: grunt.option('no-reload') || process.env.NO_RELOAD ? false : true
 				}
 			},
 			server: {
 				files: ['.rebooted', 'client/code/**/*.js', 'client/views/**/*.jade'],
 				options: {
-					livereload: true
+					livereload: grunt.option('no-reload') || process.env.NO_RELOAD ? false : true
 				}
 			},
 			styleguide: {
@@ -128,6 +135,10 @@ module.exports = function(grunt) {
 					'doc/styleguide.md'
 				],
 				tasks: [ 'kss' ]
+			},
+			test: {
+				files: ['.rebooted', 'test/**/*.js'],
+				tasks: ['waitServer', 'mochaTest']
 			}
 		},
 
@@ -136,8 +147,15 @@ module.exports = function(grunt) {
 		},
 
 		concurrent: {
-			dev: {
-				tasks: ['nodemon', 'watch'],
+			server: {
+				tasks: [ 'nodemon', 'watch:branch', 'watch:stylesheets', 'watch:server', 'watch:styleguide' ],
+				options: {
+					logConcurrentOutput: true
+				}
+			},
+
+			test: {
+				tasks: ['nodemon', 'watch:branch', 'watch:stylesheets', 'watch:server', 'watch:styleguide', 'test-client'],
 				options: {
 					logConcurrentOutput: true
 				}
@@ -166,22 +184,49 @@ module.exports = function(grunt) {
 					}
 				}
 			}
+		},
+
+		env: {
+			dev: envParams(grunt),
+			test: envParams(grunt, true),
+			testClient: envParams(grunt, true, true)
+		},
+
+		waitServer: {
+			server: {
+				options: {
+					url: 'http://localhost:' + envParams(grunt, true).PORT
+				}
+			}
+		},
+
+		mochaTest: {
+			api: {
+				options: {
+					reporter: 'spec'
+				},
+				src: ['test/api/*.test.js']
+			}
 		}
 	};
-
 	grunt.config.init(config);
 
 	// load the tasks
-	grunt.loadNpmTasks('grunt-mkdir');
+	grunt.loadNpmTasks('grunt-concurrent');
 	grunt.loadNpmTasks('grunt-contrib-clean');
 	grunt.loadNpmTasks('grunt-contrib-stylus');
 	grunt.loadNpmTasks('grunt-contrib-jade');
 	grunt.loadNpmTasks('grunt-contrib-cssmin');
 	grunt.loadNpmTasks('grunt-contrib-uglify');
 	grunt.loadNpmTasks('grunt-contrib-watch');
-	grunt.loadNpmTasks('grunt-nodemon');
+	grunt.loadNpmTasks('grunt-env');
+	grunt.loadNpmTasks('grunt-execute');
 	grunt.loadNpmTasks('grunt-gitinfo');
-	grunt.loadNpmTasks('grunt-concurrent');
+	grunt.loadNpmTasks('grunt-nodemon');
+	grunt.loadNpmTasks('grunt-mkdir');
+	grunt.loadNpmTasks('grunt-mocha-test');
+	grunt.loadNpmTasks('grunt-wait-server');
+
 	grunt.loadTasks('./server/grunt-tasks');
 
 	// tasks
@@ -206,5 +251,35 @@ module.exports = function(grunt) {
 		'Compiles all of the assets to the cache directory.',
 		[ 'clean:build', 'mkdir', 'stylus', 'cssmin', 'uglify', 'git', 'kssrebuild', 'jade' ]
 	);
-	grunt.registerTask('dev', [ 'build', 'concurrent' ]);
+	grunt.registerTask('serve', [ 'env:dev', 'execute' ]);
+	grunt.registerTask('dev', [ 'env:dev', 'build', 'concurrent:server' ]);
+	grunt.registerTask('test', [ 'env:test', 'build', 'concurrent:test' ]);
+	grunt.registerTask('test-server', [ 'env:test', 'concurrent:server' ]);
+	grunt.registerTask('test-client', [ 'env:testClient', 'waitServer', 'mochaTest', 'watch:test' ]);
 };
+
+function envParams(grunt, test, testClient) {
+
+	var defaultPath = test ? 'server/config/settings-test.js' : 'server/config/settings.js';
+	var settingsPath = path.resolve(__dirname, grunt.option('config') ? grunt.option('config') : defaultPath);
+	if (!fs.existsSync(settingsPath)) {
+		throw 'Cannot find "' + settingsPath + '".';
+	}
+	var settings = require(settingsPath);
+
+	var env = {
+		APP_SETTINGS: settingsPath,
+		PORT: grunt.option('port') || process.env.PORT || settings.vpdb.port || 3000
+	};
+
+	if (test) {
+		env.NO_RELOAD = true;
+	}
+
+	if (testClient) {
+		env.HTTP_SCHEMA = 'http' + (settings && settings.vpdb.httpsEnabled ? 's' : '');
+		env.AUTH_HEADER = settings ? settings.vpdb.authorizationHeader : 'Authorization';
+	}
+
+	return env;
+}

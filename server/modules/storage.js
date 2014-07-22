@@ -38,13 +38,13 @@ function Storage() {
 
 	// collect processing files
 	this.on('postProcessStarted', function(file, variation) {
-		var key = file._id.toString() + '/' + variation.name;
+		var key = file._id + '/' + variation.name;
 		logger.info('[storage] Post-processing of %s started.', key);
 		that.processingFiles[key] = [];
 	});
 
 	this.on('postProcessFinished', function(file, variation) {
-		var key = file._id.toString() + '/' + variation.name;
+		var key = file._id + '/' + variation.name;
 		logger.info('[storage] Post-processing of %s done, running %d callback(s).', key, that.processingFiles[key].length);
 
 		var callbacks = that.processingFiles[key];
@@ -68,7 +68,7 @@ Storage.prototype.variations = {
 };
 
 Storage.prototype.whenProcessed = function(file, variationName, callback) {
-	var key = file._id.toString() + '/' + variationName;
+	var key = file._id + '/' + variationName;
 	if (!this.processingFiles[key]) {
 		logger.warn('[storage] No such file being processed: %s', key);
 		return callback(null);
@@ -90,7 +90,7 @@ Storage.prototype.cleanup = function(graceperiod, done) {
 		}
 
 		async.eachSeries(files, function(file, next) {
-			logger.info('[storage] Cleanup: Removing inactive file "%s" by <%s> (%s).', file.name, file.author.email, file._id.toString());
+			logger.info('[storage] Cleanup: Removing inactive file "%s" by <%s> (%s).', file.name, file.author.email, file._id);
 			if (fs.existsSync(file.getPath())) {
 				fs.unlinkSync(file.getPath());
 			}
@@ -167,7 +167,7 @@ Storage.prototype.postprocess = function(file, done) {
 								}
 
 								// change to file.save when fixed: https://github.com/LearnBoost/mongoose/issues/1694
-								File.findOneAndUpdate({ _id: file._id.toString() }, _.omit(file.toJSON(), [ '_id', '__v' ]), {}, function(err, f) {
+								File.findOneAndUpdate({ _id: file._id }, _.omit(file.toJSON(), [ '_id', '__v' ]), {}, function(err, f) {
 									that.emit('postProcessFinished', file, variation);
 									next(err);
 								});
@@ -239,7 +239,7 @@ Storage.prototype.urls = function(file) {
 
 Storage.prototype.fstat = function(file, variationName) {
 
-	var key = file._id.toString() + '/' + variationName;
+	var key = file._id + '/' + variationName;
 	if (variationName && !_.contains(this.variationNames, variationName)) {
 		return null;
 	}

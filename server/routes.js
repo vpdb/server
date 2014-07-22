@@ -28,7 +28,7 @@ module.exports = function(app, config, passport) {
 	// JSON API
 	app.post('/api/authenticate', api.users.authenticate);
 	app.post('/api/users',        api.users.create);
-	app.get('/api/users',         api.auth(api.users.list, 'users', 'list'));
+	app.get('/api/users',         api.auth(api.users.list, 'users', 'search'));
 	app.put('/api/users/:id',     api.auth(api.users.update, 'users', 'update'));
 	app.delete('/api/users/:id',  api.auth(api.users.delete, 'users', 'delete'));
 	app.get('/api/user',          api.auth(api.users.profile, 'user', 'profile'));

@@ -33,6 +33,14 @@ describe('The ACLs of the VPDB API', function() {
 					done();
 				});
 		});
+		it('should deny access to user search', function(done) {
+			request
+				.get('/users?q=123')
+				.end(function(err, res) {
+					expect(res.status).to.be(401);
+					done();
+				});
+		});
 
 		// app.put('/api/users/:id',     api.auth(api.users.update, 'users', 'update'));
 		it('should deny access to user update', function(done) {
@@ -153,6 +161,36 @@ describe('The ACLs of the VPDB API', function() {
 				.as('member')
 				.end(function(err, res) {
 					expect(res.status).to.be(403);
+					done();
+				});
+		});
+		it('should deny access to user search for less than 3 chars', function(done) {
+			request
+				.get('/users?q=12')
+				.as('member')
+				.end(function(err, res) {
+					expect(res.status).to.be(403);
+					done();
+				});
+		});
+		it('should allow access to user search for more than 2 chars', function(done) {
+			request
+				.get('/users?q=123')
+				.as('member')
+				.end(function(err, res) {
+					expect(res.status).to.be(200);
+					done();
+				});
+		});
+		it('should only return minmal user info when listing other users', function(done) {
+			request
+				.get('/users?q=' + hlp.getUser('member').name.substr(0, 3))
+				.as('member')
+				.end(function(err, res) {
+					expect(res.status).to.be(200);
+					expect(res.body.length).to.be.above(0);
+					expect(res.body[0]).to.not.have.property('email');
+					expect(res.body[0]).to.have.property('name');
 					done();
 				});
 		});
@@ -280,6 +318,36 @@ describe('The ACLs of the VPDB API', function() {
 					done();
 				});
 		});
+		it('should deny access to user search for less than 3 chars', function(done) {
+			request
+				.get('/users?q=12')
+				.as('contributor')
+				.end(function(err, res) {
+					expect(res.status).to.be(403);
+					done();
+				});
+		});
+		it('should allow access to user search for more than 2 chars', function(done) {
+			request
+				.get('/users?q=123')
+				.as('contributor')
+				.end(function(err, res) {
+					expect(res.status).to.be(200);
+					done();
+				});
+		});
+		it('should only return minmal user info when listing other users', function(done) {
+			request
+				.get('/users?q=' + hlp.getUser('member').name.substr(0, 3))
+				.as('contributor')
+				.end(function(err, res) {
+					expect(res.status).to.be(200);
+					expect(res.body.length).to.be.above(0);
+					expect(res.body[0]).to.not.have.property('email');
+					expect(res.body[0]).to.have.property('name');
+					done();
+				});
+		});
 
 		it('should deny access to user update', function(done) {
 			request
@@ -392,6 +460,36 @@ describe('The ACLs of the VPDB API', function() {
 				.as('admin')
 				.end(function(err, res) {
 					expect(res.status).to.be(200);
+					done();
+				});
+		});
+		it('should allow access to user search for less than 3 chars', function(done) {
+			request
+				.get('/users?q=12')
+				.as('admin')
+				.end(function(err, res) {
+					expect(res.status).to.be(200);
+					done();
+				});
+		});
+		it('should allow access to user search for more than 2 chars', function(done) {
+			request
+				.get('/users?q=123')
+				.as('admin')
+				.end(function(err, res) {
+					expect(res.status).to.be(200);
+					done();
+				});
+		});
+		it('should return detailed user info when listing other users', function(done) {
+			request
+				.get('/users?q=' + hlp.getUser('member').name.substr(0, 3))
+				.as('admin')
+				.end(function(err, res) {
+					expect(res.status).to.be(200);
+					expect(res.body.length).to.be.above(0);
+					expect(res.body[0]).to.have.property('email');
+					expect(res.body[0]).to.have.property('name');
 					done();
 				});
 		});
@@ -521,6 +619,36 @@ describe('The ACLs of the VPDB API', function() {
 				.as('root')
 				.end(function(err, res) {
 					expect(res.status).to.be(200);
+					done();
+				});
+		});
+		it('should allow access to user search for less than 3 chars', function(done) {
+			request
+				.get('/users?q=12')
+				.as('root')
+				.end(function(err, res) {
+					expect(res.status).to.be(200);
+					done();
+				});
+		});
+		it('should allow access to user search for more than 2 chars', function(done) {
+			request
+				.get('/users?q=123')
+				.as('root')
+				.end(function(err, res) {
+					expect(res.status).to.be(200);
+					done();
+				});
+		});
+		it('should return detailed user info when listing other users', function(done) {
+			request
+				.get('/users?q=' + hlp.getUser('member').name.substr(0, 3))
+				.as('root')
+				.end(function(err, res) {
+					expect(res.status).to.be(200);
+					expect(res.body.length).to.be.above(0);
+					expect(res.body[0]).to.have.property('email');
+					expect(res.body[0]).to.have.property('name');
 					done();
 				});
 		});

@@ -11,7 +11,7 @@ var config = require('../../modules/settings').current;
 
 exports.fields = {
 	pub: ['_id', 'name', 'username', 'thumb'],
-	adm: ['email', 'active', 'roles']
+	adm: ['email', 'active', 'roles', 'github']
 };
 
 exports.create = function(req, res) {
@@ -95,40 +95,68 @@ exports.authenticate = function(req, res) {
 };
 
 exports.list = function(req, res) {
-	var query = User.find().select('-password_hash -password_salt -__v');
 
-	// text search
-	if (req.query.q) {
-		// sanitize and build regex
-		var q = req.query.q.trim().replace(/[^a-z0-9]+/gi, ' ').replace(/\s+/g, '.*');
-		var regex = new RegExp(q, 'i');
-		query.or([
-			{ name: regex },
-			{ username: regex },
-			{ email: regex }
-		]);
-	}
+	acl.isAllowed(req.user.email, 'users', 'list', function(err, canList) {
+		acl.isAllowed(req.user.email, 'users', 'full-details', function(err, fullDetails) {
 
-	// filter by role
-	if (req.query.roles) {
-		// sanitze and split
-		var roles = req.query.roles.trim().replace(/[^a-z0-9,]+/gi, '').split(',');
-		query.where('roles').in(roles);
-	}
-
-	query.exec(function(err, users) {
-		if (err) {
-			logger.error('[api|user:list] Error: %s', err, {});
-			return api.fail(res, err, 500);
-		}
-		// reduce
-		users = _.map(users, function(user) {
-			if (!_.isEmpty(user.github)) {
-				user.github = _.pick(user.github, 'id', 'login', 'email', 'avatar_url', 'html_url');
+			if (err) {
+				return api.fail(res, err, 500);
 			}
-			return user;
+
+			// if no list privileges, user must provide at least a 3-char search query.
+			if (!canList && (!req.query.q || req.query.q.length < 3)) {
+				return api.fail(res, 'Please provide a search query with at least three characters.', 403);
+			}
+
+			var query = User.find().select('-password_hash -password_salt -__v');
+
+			// text search
+			if (req.query.q) {
+				// sanitize and build regex
+				var q = req.query.q.trim().replace(/[^a-z0-9]+/gi, ' ').replace(/\s+/g, '.*');
+				var regex = new RegExp(q, 'i');
+				if (canList) {
+					query.or([
+						{ name: regex },
+						{ username: regex },
+						{ email: regex }
+					]);
+				} else {
+					query.or([
+						{ name: regex },
+						{ username: regex }
+					]);
+				}
+			}
+
+			// filter by role
+			if (canList && req.query.roles) {
+				// sanitze and split
+				var roles = req.query.roles.trim().replace(/[^a-z0-9,]+/gi, '').split(',');
+				query.where('roles').in(roles);
+			}
+
+			query.exec(function(err, users) {
+				if (err) {
+					logger.error('[api|user:list] Error: %s', err, {});
+					return api.fail(res, err, 500);
+				}
+
+				// reduce
+				var fields = exports.fields.pub;
+				if (fullDetails) {
+					fields = fields.concat(exports.fields.adm);
+				}
+				users = _.map(users, function(user) {
+					user = _.pick(user.toJSON(), fields);
+					if (!_.isEmpty(user.github)) {
+						user.github = _.pick(user.github, 'id', 'login', 'email', 'avatar_url', 'html_url');
+					}
+					return user;
+				});
+				api.success(res, users);
+			});
 		});
-		api.success(res, users);
 	});
 };
 
@@ -144,13 +172,15 @@ exports.profile = function(req, res) {
 	});
 };
 
-
 exports.update = function(req, res) {
 	var updateableFields = [ 'name', 'email', 'username', 'active', 'roles' ];
 	User.findById(req.params.id, '-password_hash -password_salt -__v', function(err, user) {
 		if (err) {
 			logger.error('[api|user:update] Error: %s', err, {});
 			return api.fail(res, err, 500);
+		}
+		if (!user) {
+			return api.fail(res, 'No such user.', 404);
 		}
 		var updatedUser = req.body;
 		var originalEmail = user.email;
@@ -169,7 +199,7 @@ exports.update = function(req, res) {
 			logger.info('[api|user:update] Checking for privilage escalation. Added roles: [%s], Removed roles: [%s].', addedRoles.join(' '), removedRoles.join(' '));
 
 			// if user to be updated is already root or admin, deny (unless it's the same user).
-			if (!user._id.equals(req.user._id) && (_.contains(currentUserRoles, 'root') || _.contains(currentUserRoles, 'admin'))) {
+			if (user._id !== req.user._id && (_.contains(currentUserRoles, 'root') || _.contains(currentUserRoles, 'admin'))) {
 				logger.error('[api|user:update] PRIVILEGE ESCALATION: Non-root user <%s> [%s] tried to update user <%s> [%s].', req.user.email, callerRoles.join(' '), user.email, currentUserRoles.join(' '));
 				return api.fail(res, 'You are now allowed to update administrators or root users.', 403);
 			}
@@ -222,7 +252,7 @@ exports.update = function(req, res) {
 				}
 
 				// 6. if changer is not changed user, mark user as dirty
-				if (!req.user._id.equals(user._id)) {
+				if (req.user._id !== user._id) {
 					logger.info('[api|user:update] Marking user <%s> as dirty.', user.email);
 					redis.set('dirty_user_' + user._id, new Date().getTime(), function() {
 						redis.expire('dirty_user_' + user._id, 10000, function() {

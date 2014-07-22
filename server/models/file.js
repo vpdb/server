@@ -10,7 +10,7 @@ var Schema = mongoose.Schema;
 
 // schema
 var fields = {
-	_id:          { type: String, unique: true, 'default': shortId.generate},
+	_id:          { type: String, unique: true, 'default': shortId.generate },
 	name:         { type: String, required: 'Filename must be provided.' },
 	bytes:        { type: Number, required: true },
 	created_at:   { type: Date, required: true },
@@ -39,7 +39,7 @@ FileSchema.methods = {
 		var ext = '.' + mimeTypes[this.mime_type].ext;
 		return variationName
 			? path.resolve(config.vpdb.storage, variationName, this._id.toString()) + ext
-			: path.resolve(config.vpdb.storage, this._id.toString()) + ext;
+			: path.resolve(config.vpdb.storage, this._id) + ext;
 	},
 
 	/**
@@ -50,8 +50,8 @@ FileSchema.methods = {
 	 */
 	getUrl: function(variationName) {
 		return variationName
-			? '/storage/' + this._id.toString() + '/' + variationName
-			: '/storage/' + this._id.toString();
+			? '/storage/' + this._id + '/' + variationName
+			: '/storage/' + this._id;
 	},
 
 	getMimeType: function() {

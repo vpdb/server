@@ -108,15 +108,15 @@ See [changelog](CHANGELOG.md).
 
 ## Tests
 
-Test coverage for now are API integration tests. A test run requires a clean environment. For this purpose, there is an
-included settings file at `server/config/settings-test.js` which is used when running tests. Basically it's a 
-stripped-down config that uses a different database.
+Tests currently cover API tests only. A test run requires a clean environment. For this purpose, there is an included 
+settings file at `server/config/settings-test.js` which is used when running tests. Basically it's a stripped-down 
+config that uses a different database.
  
 There are a few ways you can run tests:
 
  * `grunt test --force` - Fires up the test server and launches API tests. Re-runs tests when tests change and restarts server 
    and runs tests when server-code changes.
- * `grunt test-server` - Fires up the test server. Restarts server when server-code changes.
+ * `grunt test-server` - Fires up the server with the test config. Restarts server when server-code changes.
  * `grunt test-client --force` - Runs tests and re-runs them if they change or server restarts.
    
 The `test-client` goal accepts additional command-line parameters:

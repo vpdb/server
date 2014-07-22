@@ -1,4 +1,5 @@
 var _ = require('underscore');
+var util = require('util');
 var async = require('async');
 var debug = require('debug')('test-helper');
 var faker = require('faker');
@@ -139,4 +140,8 @@ exports.teardownUsers = function(request, done) {
 
 exports.getUser = function(name) {
 	return this.users[name];
-}
+};
+
+exports.dump = function(res) {
+	console.log('         RESPONSE: %s', util.inspect(res.body, null, 3, true));
+};

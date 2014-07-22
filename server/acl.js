@@ -15,8 +15,7 @@ var init = function(next) {
 		{
 			roles: 'admin',
 			allows: [
-				{ resources: 'users', permissions: [ 'list', 'update' ] },
-				{ resources: 'users', permissions: 'update' },
+				{ resources: 'users', permissions: [ 'update', 'list', 'full-details' ]},
 				{ resources: 'roles', permissions: '*' }
 			]
 		}, {
@@ -29,11 +28,11 @@ var init = function(next) {
 			roles: 'member',
 			allows: [
 				{ resources: 'user', permissions: 'profile' },
-				{ resources: 'users', permissions: 'view' },
+				{ resources: 'users', permissions: [ 'view', 'search' ]},
 				{ resources: 'files', permissions: 'download' },
 				{ resources: 'files', permissions: 'upload' },
-				{ resources: 'files', permissions: 'delete' },
-				{ resources: 'releases', permissions: 'add' } // only own/inactive files
+				{ resources: 'files', permissions: 'delete' },  // only own/inactive files
+				{ resources: 'releases', permissions: 'add' }
 			]
 		}, {
 			roles: 'mocha',

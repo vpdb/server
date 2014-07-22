@@ -113,19 +113,22 @@ module.exports = function(grunt) {
 		watch: {
 			branch: {
 				files: '.git/HEAD',
-				tasks: [ 'git' ]
+				tasks: [ 'git' ],
+				options: { spawn: false }
 			},
 			stylesheets: {
 				files: 'client/styles/**/*.styl',
 				tasks: [ 'stylus', 'kss' ],
 				options: {
-					livereload: grunt.option('no-reload') || process.env.NO_RELOAD ? false : true
+					livereload: grunt.option('no-reload') || process.env.NO_RELOAD ? false : true,
+					spawn: false
 				}
 			},
 			server: {
 				files: ['.rebooted', 'client/code/**/*.js', 'client/views/**/*.jade'],
 				options: {
-					livereload: grunt.option('no-reload') || process.env.NO_RELOAD ? false : true
+					livereload: grunt.option('no-reload') || process.env.NO_RELOAD ? false : true,
+					spawn: false
 				}
 			},
 			styleguide: {
@@ -134,11 +137,13 @@ module.exports = function(grunt) {
 					'client/views/partials/styleguide-section.jade',
 					'doc/styleguide.md'
 				],
-				tasks: [ 'kss' ]
+				tasks: [ 'kss' ],
+				options: { spawn: false }
 			},
 			test: {
 				files: ['.rebooted', 'test/**/*.js'],
-				tasks: ['waitServer', 'mochaTest']
+				tasks: ['waitServer', 'mochaTest'],
+				options: { spawn: false }
 			}
 		},
 
@@ -203,7 +208,8 @@ module.exports = function(grunt) {
 		mochaTest: {
 			api: {
 				options: {
-					reporter: 'spec'
+					reporter: 'spec',
+					clearRequireCache: true
 				},
 				src: ['test/api/*.test.js']
 			}

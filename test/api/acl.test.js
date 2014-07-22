@@ -94,6 +94,16 @@ describe('The ACLs of the VPDB API', function() {
 				});
 		});
 
+		// app.delete('/api/files/:id',  api.auth(api.files.delete, 'files', 'delete'));
+		it('should deny access to file deletion', function(done) {
+			request
+				.del('/files/123456789')
+				.end(function(err, res) {
+					expect(res.status).to.be(401);
+					done();
+				});
+		});
+
 		// app.head('/api/games/:id',    api.anon(api.games.head));
 		it('should allow check for existing games', function(done) {
 			request
@@ -197,12 +207,23 @@ describe('The ACLs of the VPDB API', function() {
 				});
 		});
 
-		it('should deny access to file upload', function(done) {
+		it('should allow access to file upload', function(done) {
 			request
 				.put('/files')
 				.as('member')
 				.end(function(err, res) {
-					expect(res.status).to.be(403);
+					expect(res.status).to.be(422);
+					done();
+				});
+		});
+
+		// app.delete('/api/files/:id',  api.auth(api.files.delete, 'files', 'delete'));
+		it('should allow access to file deletion', function(done) {
+			request
+				.del('/files/123456789')
+				.as('member')
+				.end(function(err, res) {
+					expect(res.status).to.be(404);
 					done();
 				});
 		});
@@ -448,13 +469,13 @@ describe('The ACLs of the VPDB API', function() {
 				});
 		});
 
-		it('should deny access to file upload', function(done) {
+		it('should allow access to file upload', function(done) {
 			request
 				.put('/files')
 				.as('admin')
 				.send({})
 				.end(function(err, res) {
-					expect(res.status).to.be(403);
+					expect(res.status).to.be(422);
 					done();
 				});
 		});

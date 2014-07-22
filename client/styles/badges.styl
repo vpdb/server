@@ -1,0 +1,31 @@
+// Badges
+//
+// Styleguide 20
+
+
+// Removable Badges
+//
+// Small items you can only remove, not edit.
+//
+// Markup:
+// <div class="badge">
+//   I'm small! <span class="a">&times;</span>
+// </div>
+//
+// .badge        - Default badge
+//
+// Styleguide 20.1
+.badge
+	font-weight $font-weight-normal
+	font-size $font-size-normal
+	border-radius $border-radius-large
+	padding-bottom 0
+	padding-left 10px
+	span
+		font-size 26px
+		padding-left 5px
+		vertical-align text-bottom
+
+	+ .badge
+		margin-left 5px
+

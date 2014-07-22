@@ -219,7 +219,7 @@ exports.update = function(req, res) {
 		// 3. validate
 		user.validate(function(err) {
 			if (err) {
-				logger.warn('[api|user:update] Validations failed: %s', util.inspect(_.map(err.errors, function(value, key) {
+				logger.warn('[api|user:update] Validations failed: %s', JSON.stringify(_.map(err.errors, function(value, key) {
 					return key;
 				})));
 				return api.fail(res, err, 422);

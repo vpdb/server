@@ -6,6 +6,8 @@
 			| that are linked to that game, but kept as a separate and independent data set.
 
 		form(role="form")
+
+			//-----------------------------------------------------------------
 			h1 1. enter title
 			hr
 			.form-group(ng-class="{ error: errors.title }")
@@ -14,6 +16,8 @@
 					i.fa.fa-exclamation-triangle.space-right
 					| {{ errors.title }}
 				span.help-block No year, manufacturer or anything else, just the title. Example: <i>The Addams Family</i>.
+
+			//-----------------------------------------------------------------
 			h1 2. origin
 			hr
 			p If you’ve created the game by yourself, it’s an original game. I’ve you built a game that exists in real
@@ -34,9 +38,8 @@
 			h1 3. game info
 			hr
 
-			//----------------------
 			//- form for recreations
-			//----------------------
+			//-----------------------------------------------------------------
 			p(ng-show="game.origin == 'recreation'") Search IPDB.org and locate the IPDB number. Paste it into the
 				| field below and hit "fetch". If the correct game info is displayed, you're done in here.
 
@@ -125,9 +128,8 @@
 							i Click "Fetch" to load data.
 
 
-			//-------------------------
 			//- form for original games
-			//-------------------------
+			//-----------------------------------------------------------------
 			p(ng-show="game.origin == 'originalGame'") Provide some more information about your table.
 
 			.form-horizontal(ng-show="game.origin == 'originalGame'")
@@ -230,8 +232,9 @@
 				button.btn.btn-secondary.padder-top-2x.padder-bottom
 					i.fa.fa-plus-circle.space-right
 					| Add Another
-
 			.clearfix
+
+			//-----------------------------------------------------------------
 			h1 4. Upload Media
 			hr
 			p Upload high quality artwork here. The backglass is mandatory but also the logo is strongly recommended.

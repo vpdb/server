@@ -182,7 +182,7 @@ describe('The ACLs of the VPDB API', function() {
 					done();
 				});
 		});
-		it('should only return minmal user info when listing other users', function(done) {
+		it('should only return minmal user info when searching other users', function(done) {
 			request
 				.get('/users?q=' + hlp.getUser('member').name.substr(0, 3))
 				.as('member')
@@ -336,7 +336,7 @@ describe('The ACLs of the VPDB API', function() {
 					done();
 				});
 		});
-		it('should only return minmal user info when listing other users', function(done) {
+		it('should only return minmal user info when searching other users', function(done) {
 			request
 				.get('/users?q=' + hlp.getUser('member').name.substr(0, 3))
 				.as('contributor')

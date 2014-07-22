@@ -137,19 +137,53 @@ ctrl.controller('ReleaseAddCtrl', function($scope, $upload, $modal, $window, Aut
 	};
 
 	$scope.chooseAuthor = function() {
-		return $modal.open({
+		$modal.open({
 			templateUrl: 'partials/member/modals/choose-author',
 			controller: 'ChooseAuthorCtrl',
 			resolve: {
 				release: function() { return $scope.release; }
 			}
+		}).result.then(function(author) {
+			$scope.release.authors.push(author);
 		});
-	}
+	};
+
 
 	$scope.reset();
 });
 
 
-ctrl.controller('ChooseAuthorCtrl', function($scope, $modalInstance) {
+ctrl.controller('ChooseAuthorCtrl', function($scope, $modalInstance, $http, UserResource) {
 
+	$scope.user = null;
+	$scope.roles = [];
+	$scope.isValidUser = false;
+
+	$scope.findUser = function(val) {
+		return UserResource.query({ q: val }).$promise;
+	};
+
+	$scope.userSelected = function(item, model) {
+		$scope.user = model;
+		$scope.isValidUser = true;
+	};
+
+	$scope.queryChange = function() {
+		$scope.isValidUser = false;
+	};
+
+	$scope.addRole = function(role) {
+		if (role) {
+			$scope.roles.push(role);
+		}
+	};
+
+	$scope.removeRole = function(role) {
+		$scope.roles.splice($scope.roles.indexOf(role), 1);
+	};
+
+	$scope.add = function() {
+		// TODO validations
+		$modalInstance.close({ user: $scope.user, roles: $scope.roles });
+	}
 });

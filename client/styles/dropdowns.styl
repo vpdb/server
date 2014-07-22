@@ -36,6 +36,7 @@
 // semi-transparent layer for dropdown
 .dropdown-menu
 	border-radius $border-radius-small
+	width 100%
 	&:after
 		border-radius $border-radius-small
 		content ""
@@ -45,10 +46,25 @@
 		top 0
 		width 100%
 		z-index -1
-
+	li
+		transition all $animation-short
+		cursor pointer
+		padding-top 1px
+		margin-top -1px
 
 // Typography
 .dropdown-menu
 	font-size $font-size-small
 	> li > a
 		font-weight $font-weight-normal
+
+// Media inside dropdown
+.dropdown-menu
+	.media
+		margin-left 10px
+		margin-right 10px
+		margin-top 7px
+		padding-bottom 0
+
+	li:last-child .media
+		border-bottom none

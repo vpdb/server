@@ -35,7 +35,9 @@ serverDomain.run(function() {
 	// bootstrap models
 	var modelsPath = path.resolve(__dirname, 'server/models');
 	fs.readdirSync(modelsPath).forEach(function(file) {
-		require(modelsPath + '/' + file);
+		if (!fs.lstatSync(modelsPath + '/' + file).isDirectory()) {
+			require(modelsPath + '/' + file);
+		}
 	});
 
 	// load ACLs

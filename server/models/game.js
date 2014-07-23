@@ -3,6 +3,9 @@ var logger = require('winston');
 var mongoose = require('mongoose');
 var validator = require('validator');
 var uniqueValidator = require('mongoose-unique-validator');
+var fileRef = require('../models/plugins/fileRef');
+
+var storage = require('../modules/storage');
 
 var Schema = mongoose.Schema;
 
@@ -39,9 +42,16 @@ var fields = {
 		logo:      { type: Schema.ObjectId, ref: 'File' }
 	}
 };
+
+// what's returned in the API
+var apiFields = {
+	simple: [ 'id', 'title', 'manufacturer', 'year', 'game_type', 'ipdb', 'media' ] // fields returned in lists
+};
+
 var GameSchema = new Schema(fields);
 
 GameSchema.plugin(uniqueValidator, { message: 'The {PATH} "{VALUE}" is already taken.' });
+GameSchema.plugin(fileRef, { fields: [ 'media.backglass', 'media.logo' ]});
 
 // validations
 GameSchema.path('game_type').validate(function(gameType, callback) {
@@ -58,7 +68,7 @@ GameSchema.path('game_type').validate(function(gameType, callback) {
 	if (this.game_type != 'og') {
 		mongoose.model('Game').findOne({ 'ipdb.number': ipdb }, function(err, g) {
 			if (err) {
-				logger.error('[model] Error fetching game %s.');
+				logger.error('[model|game] Error fetching game %s.');
 				return callback(false);
 			}
 			if (g) {
@@ -76,11 +86,9 @@ GameSchema.path('media.backglass').validate(function(backglass, callback) {
 		return;
 	}
 
-	var File = mongoose.model('File');
-
-	File.findOne({ id: backglass }, function(err, backglass) {
+	mongoose.model('File').findOne({ _id: backglass }, function(err, backglass) {
 		if (err) {
-			logger.error('[model] Error fetching backglass %s.');
+			logger.error('[model|game] Error fetching backglass %s.');
 			return callback(false);
 		}
 
@@ -89,6 +97,40 @@ GameSchema.path('media.backglass').validate(function(backglass, callback) {
 		callback(arDiff < maxAspectRatioDifference);
 	});
 }, 'Aspect ratio of backglass must be smaller than 1:1.5 and greater than 1:1.05.');
+
+
+GameSchema.statics.getInstance = function(game, callback) {
+
+	var Game = mongoose.model('Game');
+	var File = mongoose.model('File');
+
+	// update backglass references
+	var files = [];
+	game.media = game.media || {};
+	if (game.media.backglass) {
+		files.push(game.media.backglass);
+	}
+	if (game.media.logo) {
+		files.push(game.media.logo);
+	}
+	File.find({ id: { $in: files }}, function(err, files) {
+		if (err) {
+			logger.error('[model|game] Error finding reference files: %s', err);
+			return callback(err);
+		}
+
+		_.each(files, function(file) {
+			if (file.id == game.media.backglass) {
+				game.media.backglass = file._id;
+			}
+			if (file.id == game.media.logo) {
+				game.media.logo = file._id;
+			}
+		});
+		callback(null, new Game(game));
+	});
+};
+
 
 // methods
 GameSchema.methods = {
@@ -101,7 +143,39 @@ GameSchema.methods = {
 	 */
 	getUrl: function() {
 		return '/game/' + this.id;
+	},
+
+	getMedia: function() {
+		return {
+			backglass: {
+				url: storage.url(game.media.backglass),
+				variations: storage.urls(game.media.backglass)
+			},
+			logo: {
+				url: storage.url(game.media.logo),
+				variations: storage.urls(game.media.logo)
+			}
+		};
+	},
+
+	toSimple: function() {
+		return _.pick(this.toObject(), apiFields.simple);
+	},
+
+	toDetailed: function() {
+		return this.toObject();
 	}
+};
+
+GameSchema.set('toObject', { virtuals: true });
+if (!GameSchema.options.toObject) {
+	GameSchema.options.toObject = {};
+}
+GameSchema.options.toObject.transform = function(doc, game) {
+	delete game._id;
+	delete game.__v;
+//	game.url = game.getUrl();
+//	game.media = game.getMedia();
 };
 
 mongoose.model('Game', GameSchema);

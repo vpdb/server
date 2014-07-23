@@ -16,7 +16,7 @@ var init = function(next) {
 			roles: 'admin',
 			allows: [
 				{ resources: 'users', permissions: [ 'update', 'list', 'full-details' ]},
-				{ resources: 'roles', permissions: '*' }
+				{ resources: 'roles', permissions: 'list' }
 			]
 		}, {
 			roles: 'contributor',

@@ -25,6 +25,12 @@ var fields = {
 	uploaded_files:  [{ type: Schema.Types.ObjectId, ref: 'File' }]
 };
 
+// what's returned in the API
+var apiFields = {
+	reduced: [ 'id', 'name', 'username', 'thumb', 'gravatar_id'], // "member" search result
+	simple: [ 'email', 'github', 'active', 'plan' ]               // "admin" lists
+};
+
 // provider data fields
 if (config.vpdb.passport.github.enabled) {
 	fields['github'] = {};
@@ -53,10 +59,6 @@ UserSchema.virtual('gravatar_id')
 	.get(function() {
 		return this.email ? crypto.createHash('md5').update(this.email.toLowerCase()).digest('hex') : null;
 	});
-
-UserSchema.set('toJSON', {
-	virtuals: true
-});
 
 // middleware
 UserSchema.pre('validate', function(next) {
@@ -173,8 +175,42 @@ UserSchema.methods = {
 			return '';
 		}
 		return crypto.createHmac('sha1', this.password_salt).update(password).digest('hex');
+	},
+
+	toReduced: function() {
+		return _.pick(this.toObject(), apiFields.reduced);
+	},
+
+	toSimple: function() {
+		var user = _.pick(this.toObject(), apiFields.reduced.concat(apiFields.simple));
+		if (!_.isEmpty(user.github)) {
+			user.github = _.pick(user.github, 'id', 'login', 'email', 'avatar_url', 'html_url');
+		}
+		return user;
+	},
+
+	toDetailed: function() {
+		var user = this.toObject();
+		if (!_.isEmpty(user.github)) {
+			user.github = _.pick(user.github, 'id', 'login', 'email', 'avatar_url', 'html_url');
+		}
+		return user;
 	}
 };
+
+
+UserSchema.set('toObject', { virtuals: true });
+if (!UserSchema.options.toObject) {
+	UserSchema.options.toObject = {};
+}
+UserSchema.options.toObject.transform = function(doc, user) {
+	delete user._id;
+	delete user.__v;
+	delete user.password_hash;
+	delete user.password_salt;
+	delete user.password;
+};
+
 
 mongoose.model('User', UserSchema);
 logger.info('[model] Model "user" registered.');

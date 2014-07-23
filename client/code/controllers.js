@@ -82,47 +82,6 @@ ctrl.controller('AppCtrl', function($scope, $rootScope, $location, $modal, UserR
             windowClass: 'theme-light'
 		});
 	};
-
-//	$rootScope.logout = function() {
-//		UserResource.logout(function() {
-//			$rootScope.auth.isAuthenticated = false;
-//			$rootScope.auth.user = null;
-//			$rootScope.auth.permissions = {};
-//			$rootScope.auth.roles = [];
-//		});
-//	};
-//
-//
-//	$rootScope.loggedIn = function(user) {
-//		$rootScope.auth.isAuthenticated = true;
-//		$rootScope.auth.user = user;
-//		$rootScope.auth.permissions = user.permissions;
-//		$rootScope.auth.roles = user.rolesAll;
-//		delete $rootScope.auth.user.permissions;
-//		delete $rootScope.auth.user.rolesAll;
-//	};
-//
-//	$rootScope.hasPermission = function(resourcePermission) {
-//		var p = resourcePermission.split('/');
-//		var resource = p[0];
-//		var permission = p[1];
-//		return $rootScope.auth && $rootScope.auth.permissions && _.contains($rootScope.auth.permissions[resource], permission);
-//	};
-//
-//	$rootScope.hasRole = function(role) {
-//		if (_.isArray(role)) {
-//			for (var i = 0; i < role.length; i++) {
-//				if ($rootScope.auth && $rootScope.auth.roles && _.contains($rootScope.auth.roles, role[i])) {
-//					return true;
-//				}
-//			}
-//			return false;
-//		} else {
-//			return $rootScope.auth && $rootScope.auth.roles && _.contains($rootScope.auth.roles, role);
-//		}
-//
-//	};
-
 });
 
 ctrl.controller('LoginCtrl', function($scope, $rootScope, $modalInstance, ApiHelper, AuthService, AuthResource, UserResource) {

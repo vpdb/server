@@ -14,7 +14,7 @@ services.factory('AuthService', function($window, $localStorage, $sessionStorage
 			this.user = this.getUser();
 			this.isAuthenticated = this.user ? true : false;
 			this.permissions = this.user ? this.user.permissions : null;
-			this.roles = this.user ? this.user.rolesAll : null;
+			this.roles = this.user ? this.user.roles: null;
 			var that = this;
 			$rootScope.$on('userUpdated', function(event, user) {
 				that.saveUser(user);
@@ -119,7 +119,7 @@ services.factory('AuthService', function($window, $localStorage, $sessionStorage
 			this.isAuthenticated = true;
 			this.user = user;
 			this.permissions = user.permissions;
-			this.roles = user.rolesAll;
+			this.roles = user.roles;
 		},
 
 		/**

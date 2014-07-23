@@ -9,10 +9,6 @@ var api = require('./api');
 var ctrl = require('../ctrl');
 var config = require('../../modules/settings').current;
 
-exports.fields = {
-	pub: ['id', 'name', 'username', 'thumb', 'gravatar_id'],
-	adm: ['email', 'active', 'roles', 'github']
-};
 
 exports.create = function(req, res) {
 
@@ -45,7 +41,7 @@ exports.create = function(req, res) {
 						}
 						logger.info('[api|user:create] %s <%s> successfully created.', count ? 'User' : 'Root user', newUser.email);
 						acl.addUserRoles(newUser.email, newUser.roles);
-						return api.success(res, _.omit(newUser.toJSON(), 'password_hash', 'password_salt'), 201);
+						return api.success(res, newUser.toDetailed(), 201);
 					});
 				});
 			} else {
@@ -62,7 +58,7 @@ exports.authenticate = function(req, res) {
 		logger.warn('[api|user:authenticate] Ignoring empty authentication request.');
 		return api.fail(res, 'You must supply a username and password.', 400)
 	}
-	User.findOne({ username: req.body.username }, '-__v', function(err, user) {
+	User.findOne({ username: req.body.username }, function(err, user) {
 		if (err) {
 			logger.error('[api|user:authenticate] Error finding user "%s": %s', req.body.username, err, {});
 			return api.fail(res, err, 500);
@@ -88,7 +84,7 @@ exports.authenticate = function(req, res) {
 			api.success(res, {
 				token: token,
 				expires: expires,
-				user: _.extend(_.omit(user.toJSON(), 'password_hash', 'password_salt', 'uploaded_files'), acls)
+				user: _.extend(user.toSimple(), acls)
 			}, 200);
 		});
 	});
@@ -108,7 +104,7 @@ exports.list = function(req, res) {
 				return api.fail(res, 'Please provide a search query with at least three characters.', 403);
 			}
 
-			var query = User.find().select('-password_hash -password_salt -__v');
+			var query = User.find();
 
 			// text search
 			if (req.query.q) {
@@ -143,16 +139,8 @@ exports.list = function(req, res) {
 				}
 
 				// reduce
-				var fields = exports.fields.pub;
-				if (fullDetails) {
-					fields = fields.concat(exports.fields.adm);
-				}
 				users = _.map(users, function(user) {
-					user = _.pick(user.toJSON(), fields);
-					if (!_.isEmpty(user.github)) {
-						user.github = _.pick(user.github, 'id', 'login', 'email', 'avatar_url', 'html_url');
-					}
-					return user;
+					return fullDetails ? user.toSimple() : user.toReduced();
 				});
 				api.success(res, users);
 			});
@@ -165,16 +153,13 @@ exports.profile = function(req, res) {
 		if (err) {
 			return api.fail(res, err, 500);
 		}
-		api.success(res, _.extend(
-			_.omit(req.user.toJSON(), 'password_hash', 'password_salt', 'uploaded_files'),
-			acls
-		), 200);
+		api.success(res, _.extend(req.user.toDetailed(), acls), 200);
 	});
 };
 
 exports.update = function(req, res) {
 	var updateableFields = [ 'name', 'email', 'username', 'active', 'roles' ];
-	User.findOne({ id: req.params.id }, '-password_hash -password_salt -__v', function(err, user) {
+	User.findOne({ id: req.params.id }, function(err, user) {
 		if (err) {
 			logger.error('[api|user:update] Error: %s', err, {});
 			return api.fail(res, err, 500);
@@ -256,13 +241,12 @@ exports.update = function(req, res) {
 					logger.info('[api|user:update] Marking user <%s> as dirty.', user.email);
 					redis.set('dirty_user_' + user.id, new Date().getTime(), function() {
 						redis.expire('dirty_user_' + user.id, 10000, function() {
-							api.success(res, user, 200);
+							api.success(res, user.toSimple(), 200);
 						});
 					});
 				} else {
-					api.success(res, user, 200);
+					api.success(res, user.toSimple(), 200);
 				}
-
 			});
 		});
 	});
@@ -284,7 +268,7 @@ exports.delete = function(req, res) {
 			}
 			acl.removeUserRoles(user.email, user.roles);
 			logger.info('[api|user:delete] User <%s> successfully deleted.', user.email);
-			api.success(res, null, 204);
+			res.send(204);
 		});
 	});
 };
@@ -305,7 +289,7 @@ function getACLs(user, done) {
 					logger.error('[api|user:profile] Error reading permissions for user <%s>: %s', user.email, err, {});
 					return done(err);
 				}
-				return done(null, { permissions: permissions, rolesAll: roles });
+				return done(null, { permissions: permissions });
 			});
 		});
 	});

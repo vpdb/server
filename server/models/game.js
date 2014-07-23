@@ -12,7 +12,7 @@ var maxAspectRatioDifference = 0.2;
 
 // schema
 var fields = {
-	game_id:        { type: String, required: 'Game ID must be provided.', index: true, unique: true },
+	id:             { type: String, required: 'Game ID must be provided.', unique: true },
 	title:          { type: String, required: 'Title must be provided.', index: true },
 	year:           { type: Number, required: 'Year must be provided.', index: true },
 	manufacturer:   { type: String, required: 'Manufacturer must be provided.', index: true },
@@ -35,8 +35,8 @@ var fields = {
 		mfg: Number
 	},
 	media: {
-		backglass: { type: String, ref: 'File', required: 'Backglass image must be provided.' },
-		logo:      { type: String, ref: 'File' }
+		backglass: { type: Schema.ObjectId, ref: 'File', required: 'Backglass image must be provided.' },
+		logo:      { type: Schema.ObjectId, ref: 'File' }
 	}
 };
 var GameSchema = new Schema(fields);
@@ -78,7 +78,7 @@ GameSchema.path('media.backglass').validate(function(backglass, callback) {
 
 	var File = mongoose.model('File');
 
-	File.findById(backglass, function(err, backglass) {
+	File.findOne({ id: backglass }, function(err, backglass) {
 		if (err) {
 			logger.error('[model] Error fetching backglass %s.');
 			return callback(false);
@@ -90,7 +90,6 @@ GameSchema.path('media.backglass').validate(function(backglass, callback) {
 	});
 }, 'Aspect ratio of backglass must be smaller than 1:1.5 and greater than 1:1.05.');
 
-
 // methods
 GameSchema.methods = {
 
@@ -101,7 +100,7 @@ GameSchema.methods = {
 	 * @api public
 	 */
 	getUrl: function() {
-		return '/game/' + this.game_id;
+		return '/game/' + this.id;
 	}
 };
 

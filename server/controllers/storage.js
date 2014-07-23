@@ -56,7 +56,7 @@ var serve = function(req, res, file, variationName) {
 		 * That means that the client's request for the image is delayed until the image is ready and then instantly
 		 * delivered.
 		 */
-		logger.info('[ctrl|storage] Waiting for %s/%s to be processed...', file._id.toString(), variationName);
+		logger.info('[ctrl|storage] Waiting for %s/%s to be processed...', file.id, variationName);
 		storage.whenProcessed(file, variationName, function(fstat) {
 			if (!fstat) {
 				logger.info('[ctrl|storage] No processing, returning 404.');
@@ -70,7 +70,7 @@ var serve = function(req, res, file, variationName) {
 
 exports.get = function(req, res) {
 
-	File.findById(req.params.id, function(err, file) {
+	File.findOne({ id: req.params.id }, function(err, file) {
 		if (err) {
 			logger.error('[ctrl|storage] Error getting file "%s": %s', req.params.id, err, {});
 			return res.status(500).end();

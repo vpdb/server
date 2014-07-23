@@ -14,12 +14,13 @@ var storage = require('../../modules/storage');
  * @param res Response object
  */
 exports.head = function(req, res) {
-	Game.findOne({ game_id: req.params.id }, '-__v', function(err, game) {
+	Game.findOne({ id: req.params.id }, '-__v', function(err, game) {
 		if (err) {
 			logger.error('[api|game:head] Error finding game "%s": %s', req.params.id, err, {});
 			return api.fail(res, err, 500);
 		}
-		return api.success(res, null, game ? 200 : 404);
+		res.set('Content-Length', 0);
+		return res.status(game ? 200 : 404).end();
 	});
 };
 
@@ -32,8 +33,8 @@ exports.head = function(req, res) {
 exports.create = function(req, res) {
 
 	var newGame = new Game(req.body);
-	var ok = api.ok('game', 'create', newGame.game_id, res);
-	var okk = api.ok('game', 'create', newGame.game_id, res, function(done) {
+	var ok = api.ok('game', 'create', newGame.id, res);
+	var okk = api.ok('game', 'create', newGame.id, res, function(done) {
 		newGame.remove(done);
 	});
 	logger.info('[api|game:create] %s', util.inspect(req.body));
@@ -43,19 +44,19 @@ exports.create = function(req, res) {
 			return api.fail(res, err, 422);
 		}
 		logger.info('[api|game:create] Validations passed.');
-		Game.findOne({ game_id: newGame.game_id }).exec(ok(function(game) {
+		Game.findOne({ id: newGame.id }).exec(ok(function(game) {
 			if (!game) {
 				newGame.save(ok(function(game) {
 					logger.info('[api|game:create] Game "%s" created.', game.title);
 
 					// set media to active
-					File.findById(newGame.media.backglass, okk(function(backglass) {
+					File.findOne({ id: newGame.media.backglass}, okk(function(backglass) {
 						backglass.active = true;
 						backglass.public = true;
 						backglass.save(okk(function(backglass) {
 							logger.info('[api|game:create] Set backglass to active.');
 							if (newGame.media.logo) {
-								File.findById(newGame.media.logo, okk(function(logo) {
+								File.findOne({ id: newGame.media.logo }, okk(function(logo) {
 									logo.active = true;
 									logo.public = true;
 									logo.save(okk(function(logo) {
@@ -71,7 +72,7 @@ exports.create = function(req, res) {
 				}, 'Error saving game "%s": %s'));
 			} else {
 				logger.warn('[api|game:create] Game <%s> already in database, aborting.', newGame.email);
-				return api.fail(res, 'Game "' + newGame.game_id + '" already exists.', 409);
+				return api.fail(res, 'Game "' + newGame.id + '" already exists.', 409);
 			}
 		}, 'Error finding game with id "%s": %s'));
 	});
@@ -118,7 +119,7 @@ exports.list = function(req, res) {
  */
 exports.view = function(req, res) {
 
-	var query = Game.findOne({ game_id: req.params.id })
+	var query = Game.findOne({ id: req.params.id })
 		.select('-__v')
 		.populate({ path: 'media.backglass' })
 		.populate({ path: 'media.logo' });
@@ -142,7 +143,7 @@ exports.view = function(req, res) {
  * @returns {object}
  */
 function jsonSimple(game) {
-	return _.extend(_.pick(game, 'game_id', 'title', 'manufacturer', 'year', 'game_type', 'ipdb'),
+	return _.extend(_.pick(game, 'id', 'title', 'manufacturer', 'year', 'game_type', 'ipdb'),
 		{
 			media:
 				{
@@ -157,7 +158,7 @@ function jsonSimple(game) {
 			}
 		}
 	);
-};
+}
 
 
 /**
@@ -167,4 +168,4 @@ function jsonSimple(game) {
  */
 function jsonDetailed(game) {
 	return _.extend(jsonSimple(game), _.pick(game, 'model_number', 'produced_units', 'features', 'artists', 'designers', 'themes'));
-};
+}

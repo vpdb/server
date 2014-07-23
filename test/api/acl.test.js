@@ -496,7 +496,7 @@ describe('The ACLs of the VPDB API', function() {
 
 		it('should allow user update of non-admin', function(done) {
 			request
-				.put('/users/' + hlp.getUser('member')._id)
+				.put('/users/' + hlp.getUser('member').id)
 				.as('admin')
 				.send({})
 				.end(function(err, res) {
@@ -507,7 +507,7 @@ describe('The ACLs of the VPDB API', function() {
 
 		it('should deny user update of admin', function(done) {
 			request
-				.put('/users/' + hlp.getUser('admin2')._id)
+				.put('/users/' + hlp.getUser('admin2').id)
 				.as('admin')
 				.send({})
 				.end(function(err, res) {
@@ -518,7 +518,7 @@ describe('The ACLs of the VPDB API', function() {
 
 		it('should deny user update himself', function(done) {
 			request
-				.put('/users/' + hlp.getUser('admin')._id)
+				.put('/users/' + hlp.getUser('admin').id)
 				.as('admin')
 				.send({})
 				.end(function(err, res) {
@@ -655,7 +655,7 @@ describe('The ACLs of the VPDB API', function() {
 
 		it('should allow user update of non-admin', function(done) {
 			request
-				.put('/users/' + hlp.getUser('member')._id)
+				.put('/users/' + hlp.getUser('member').id)
 				.as('root')
 				.send({})
 				.end(function(err, res) {
@@ -666,7 +666,7 @@ describe('The ACLs of the VPDB API', function() {
 
 		it('should allow user update of admin', function(done) {
 			request
-				.put('/users/' + hlp.getUser('admin')._id)
+				.put('/users/' + hlp.getUser('admin').id)
 				.as('root')
 				.send({})
 				.end(function(err, res) {
@@ -677,7 +677,7 @@ describe('The ACLs of the VPDB API', function() {
 
 		it('should allow update himself', function(done) {
 			request
-				.put('/users/' + hlp.getUser('root')._id)
+				.put('/users/' + hlp.getUser('root').id)
 				.as('root')
 				.send({})
 				.end(function(err, res) {

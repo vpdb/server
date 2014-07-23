@@ -10,7 +10,7 @@ var ctrl = require('../ctrl');
 var config = require('../../modules/settings').current;
 
 exports.fields = {
-	pub: ['_id', 'name', 'username', 'thumb'],
+	pub: ['id', 'name', 'username', 'thumb', 'gravatar_id'],
 	adm: ['email', 'active', 'roles', 'github']
 };
 
@@ -174,7 +174,7 @@ exports.profile = function(req, res) {
 
 exports.update = function(req, res) {
 	var updateableFields = [ 'name', 'email', 'username', 'active', 'roles' ];
-	User.findById(req.params.id, '-password_hash -password_salt -__v', function(err, user) {
+	User.findOne({ id: req.params.id }, '-password_hash -password_salt -__v', function(err, user) {
 		if (err) {
 			logger.error('[api|user:update] Error: %s', err, {});
 			return api.fail(res, err, 500);
@@ -199,7 +199,7 @@ exports.update = function(req, res) {
 			logger.info('[api|user:update] Checking for privilage escalation. Added roles: [%s], Removed roles: [%s].', addedRoles.join(' '), removedRoles.join(' '));
 
 			// if user to be updated is already root or admin, deny (unless it's the same user).
-			if (user._id !== req.user._id && (_.contains(currentUserRoles, 'root') || _.contains(currentUserRoles, 'admin'))) {
+			if (!user._id.equals(req.user._id) && (_.contains(currentUserRoles, 'root') || _.contains(currentUserRoles, 'admin'))) {
 				logger.error('[api|user:update] PRIVILEGE ESCALATION: Non-root user <%s> [%s] tried to update user <%s> [%s].', req.user.email, callerRoles.join(' '), user.email, currentUserRoles.join(' '));
 				return api.fail(res, 'You are now allowed to update administrators or root users.', 403);
 			}
@@ -252,10 +252,10 @@ exports.update = function(req, res) {
 				}
 
 				// 6. if changer is not changed user, mark user as dirty
-				if (req.user._id !== user._id) {
+				if (!req.user._id.equals(user._id)) {
 					logger.info('[api|user:update] Marking user <%s> as dirty.', user.email);
-					redis.set('dirty_user_' + user._id, new Date().getTime(), function() {
-						redis.expire('dirty_user_' + user._id, 10000, function() {
+					redis.set('dirty_user_' + user.id, new Date().getTime(), function() {
+						redis.expire('dirty_user_' + user.id, 10000, function() {
 							api.success(res, user, 200);
 						});
 					});
@@ -269,7 +269,7 @@ exports.update = function(req, res) {
 };
 
 exports.delete = function(req, res) {
-	User.findById(req.params.id, function(err, user) {
+	User.findOne({ id: req.params.id }, function(err, user) {
 		if (err) {
 			logger.error('[api|user:delete] Error finding user "%s": %s', req.params.id, err, {});
 			return api.fail(res, err, 500);

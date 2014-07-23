@@ -41,8 +41,12 @@ module.exports = function(app, config, passport) {
 	app.delete('/api/files/:id',  api.auth(api.files.delete, 'files', 'delete'));
 
 	app.get('/api/games',         api.anon(api.games.list));
-	app.get('/api/games/:id',     api.anon(api.games.view));
 	app.head('/api/games/:id',    api.anon(api.games.head));
+//	app.head('/api/games/:id',    function(req, res, next) {
+//		res.send(499);
+//	});
+	app.get('/api/games/:id',     api.anon(api.games.view));
+
 	app.post('/api/games',        api.auth(api.games.create, 'games', 'add'));
 
 	app.get('/api/ping',          api.anon(api.ping));

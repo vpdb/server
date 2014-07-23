@@ -12,7 +12,7 @@ ctrl.controller('ReleaseAddCtrl', function($scope, $upload, $modal, $window, Aut
 			uploaded: true,
 			uploading: false,
 			progress: 100,
-			storage: { _id: 123 },
+			storage: { id: 123 },
 			flavor: {}
 		},
 		{
@@ -22,7 +22,7 @@ ctrl.controller('ReleaseAddCtrl', function($scope, $upload, $modal, $window, Aut
 			uploaded: true,
 			uploading: false,
 			progress: 100,
-			storage: { _id: 123 },
+			storage: { id: 123 },
 			flavor: {}
 		}
 	];
@@ -57,7 +57,7 @@ ctrl.controller('ReleaseAddCtrl', function($scope, $upload, $modal, $window, Aut
 	};
 
 	$scope.remove = function(file) {
-		FileResource.delete({ id: file.storage._id }, function() {
+		FileResource.delete({ id: file.storage.id }, function() {
 			$scope.files.splice($scope.files.indexOf(file), 1);
 
 		}, ApiHelper.handleErrorsInDialog($scope, 'Error removing file.'));

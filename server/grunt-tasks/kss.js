@@ -22,10 +22,10 @@ module.exports = function(grunt) {
 			var rootRefs = [];
 
 			// print out files to be generated
-			grunt.log.writeln('Parsed stylesheets:');
-			grunt.log.writeln(styleguide.data.files.map(function(file) {
-				return '  - ' + file
-			}).join('\n'));
+			grunt.log.writeln('Parsed stylesheets.');
+//			grunt.log.writeln(styleguide.data.files.map(function(file) {
+//				return '  - ' + file
+//			}).join('\n'));
 
 			// accumulate all of the sections' first indexes in case they don't have a root element.
 			_.each(styleguide.section('*.'), function(rootSection) {
@@ -38,7 +38,7 @@ module.exports = function(grunt) {
 			var sectionTemplate = jade.compile(fs.readFileSync('client/views/partials/styleguide-section.jade'), { pretty: true });
 
 			var renderSection = function(rootSection, reference, sections, next) {
-				grunt.log.writeln('Generating %s %s"', reference, rootSection ? rootSection.header() : 'Unnamed');
+				//grunt.log.writeln('Generating %s %s"', reference, rootSection ? rootSection.header() : 'Unnamed');
 				serializesSections(sections, function(err, sections) {
 					if (err) {
 						grunt.log.error(err);
@@ -53,7 +53,7 @@ module.exports = function(grunt) {
 					grunt.log.ok();
 					next();
 				});
-			}
+			};
 
 
 			// now, group all of the sections by their root reference, and make a page for each.
@@ -68,7 +68,6 @@ module.exports = function(grunt) {
 				if (err) {
 					return done(false);
 				}
-
 
 				// render index
 				var indexHtml = jade.renderFile('client/views/styleguide.jade', {
@@ -95,7 +94,7 @@ module.exports = function(grunt) {
 
 				// render overview
 				filename = path.normalize('styleguide/overview.html');
-				grunt.log.write('Writing "%s"... ', filename);
+				//grunt.log.write('Writing "%s"... ', filename);
 				fs.writeFileSync(filename, marked(fs.readFileSync('doc/styleguide.md').toString()));
 				grunt.log.ok();
 				done();

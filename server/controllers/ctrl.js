@@ -73,7 +73,7 @@ exports.auth = function(resource, permission, done) {
 		}
 
 		// here we're authenticated (token is valid and not expired). So update user and check ACL if necessary
-		User.findById(decoded.iss, '-__v', function(err, user) {
+		User.findOne({ id: decoded.iss }, '-__v', function(err, user) {
 			if (err) {
 				logger.error('[ctrl|auth] Error finding user %s: %s', decoded.iss, err);
 				return deny({ code: 500, message: err });
@@ -115,13 +115,13 @@ exports.auth = function(resource, permission, done) {
 			};
 
 			// set dirty header if necessary
-			redis.get('dirty_user_' + user._id, function(err, result) {
+			redis.get('dirty_user_' + user.id, function(err, result) {
 				if (err) {
 					logger.warn('[ctrl|auth] Error checking if user <%s> is dirty: %s', user.email, err);
 				} else if (result) {
 					logger.info('[ctrl|auth] User <%s> is dirty, telling him in header.', user.email);
 					res.setHeader('X-User-Dirty', result);
-					redis.del('dirty_user_' + user._id, checkACLs);
+					redis.del('dirty_user_' + user.id, checkACLs);
 				} else {
 					res.setHeader('X-User-Dirty', 0);
 					checkACLs();
@@ -139,7 +139,7 @@ exports.auth = function(resource, permission, done) {
  */
 exports.generateToken = function(user, now) {
 	return jwt.encode({
-		iss: user._id,
+		iss: user.id,
 		iat: now,
 		exp: new Date(now.getTime() + config.vpdb.sessionTimeout)
 	}, config.vpdb.secret)
@@ -230,7 +230,7 @@ exports.renderError = function(code, message) {
 		// for API calls, return json
 		if (req.originalUrl.substr(0, 5) == '/api/') {
 			res.setHeader('Content-Type', 'application/json');
-			res.status(code).end(JSON.stringify({ error: message }));
+			res.send(code, { error: message });
 
 		// for partials, return a partial
 		} else if (req.originalUrl.substr(0, 10) == '/partials/') {

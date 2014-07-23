@@ -100,9 +100,9 @@ ctrl.controller('AdminGameAddCtrl', function($scope, $upload, $modal, $window, A
 
 			$scope.game = _.extend($scope.game, game);
 			if ($scope.game.short) {
-				$scope.game.game_id = $scope.game.short[0].replace(/[^a-z0-9\s\-]+/gi, '').replace(/\s+/g, '-').toLowerCase();
+				$scope.game.id = $scope.game.short[0].replace(/[^a-z0-9\s\-]+/gi, '').replace(/\s+/g, '-').toLowerCase();
 			} else {
-				$scope.game.game_id = $scope.game.title.replace(/[^a-z0-9\s\-]+/gi, '').replace(/\s+/g, '-').toLowerCase();
+				$scope.game.id = $scope.game.title.replace(/[^a-z0-9\s\-]+/gi, '').replace(/\s+/g, '-').toLowerCase();
 			}
 			$scope.errors = {};
 			$scope.error = null;
@@ -148,13 +148,13 @@ ctrl.controller('AdminGameAddCtrl', function($scope, $upload, $modal, $window, A
 
 	$scope.check = function() {
 
-		if (!$scope.game.game_id) {
+		if (!$scope.game.id) {
 			$scope.idValid = false;
 			$scope.idValidated = true;
 			return;
 		}
 
-		GameResource.head({ id: $scope.game.game_id }, function() {
+		GameResource.head({ id: $scope.game.id }, function() {
 			$scope.idValid = false;
 			$scope.idValidated = true;
 		}, function() {
@@ -247,7 +247,7 @@ ctrl.controller('AdminGameAddCtrl', function($scope, $upload, $modal, $window, A
 
 		var bg = response.data;
 		$scope.uploadedBackglass = bg.variations.medium;
-		$scope.game.media.backglass = bg._id;
+		$scope.game.media.backglass = bg.id;
 
 		var ar = Math.round(bg.metadata.size.width / bg.metadata.size.height * 1000) / 1000;
 		var arDiff = Math.abs(ar / 1.25 - 1);
@@ -262,13 +262,13 @@ ctrl.controller('AdminGameAddCtrl', function($scope, $upload, $modal, $window, A
 
 	$scope.removeLink = function(link) {
 
-	}
+	};
 
 	$scope.onLogoUpload = onImageUpload('logo', function(response) {
 
 		var bg = response.data;
 		$scope.uploadedLogo = bg.url;
-		$scope.game.media.logo = bg._id;
+		$scope.game.media.logo = bg.id;
 	});
 
 	$scope.searchOnIpdb = function() {

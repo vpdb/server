@@ -51,7 +51,7 @@ exports.upload = function(req, res) {
 						api.sanitizeObject(metadata);
 						file.metadata = metadata;
 					}
-					var f = _.pick(file, '_id', 'name', 'bytes', 'created_at', 'mime_type', 'file_type');
+					var f = _.pick(file, 'id', 'name', 'bytes', 'created_at', 'mime_type', 'file_type');
 					f.url = ctrl.appendToken(file.getUrl(), res);
 					f.variations = {
 						small: ctrl.appendToken(file.getUrl('small'), res),
@@ -82,7 +82,7 @@ exports.upload = function(req, res) {
 
 
 exports.delete = function(req, res) {
-	File.findById(req.params.id, function(err, file) {
+	File.findOne({ id: req.params.id }, function(err, file) {
 		if (err) {
 			logger.error('[api|file:delete] Error getting file "%s": %s', req.params.id, err, {});
 			return api.fail(res, err, 500);
@@ -103,10 +103,10 @@ exports.delete = function(req, res) {
 
 		file.remove(function(err) {
 			if (err) {
-				logger.error('[api|file:delete] Error deleting file "%s" (%s): %s', file.name, file._id, err, {});
+				logger.error('[api|file:delete] Error deleting file "%s" (%s): %s', file.name, file.id, err, {});
 				return api.fail(res, err, 500);
 			}
-			logger.info('[api|file:delete] File "%s" (%s) successfully deleted.', file.name, file._id);
+			logger.info('[api|file:delete] File "%s" (%s) successfully deleted.', file.name, file.id);
 			api.success(res, null, 204);
 		});
 	});

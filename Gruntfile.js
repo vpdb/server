@@ -118,18 +118,8 @@ module.exports = function(grunt) {
 			},
 			stylesheets: {
 				files: 'client/styles/**/*.styl',
-				tasks: [ 'stylus', 'kss' ],
-				options: {
-					livereload: grunt.option('no-reload') || process.env.NO_RELOAD ? false : true,
-					spawn: false
-				}
-			},
-			server: {
-				files: ['.rebooted', 'client/code/**/*.js', 'client/views/**/*.jade'],
-				options: {
-					livereload: grunt.option('no-reload') || process.env.NO_RELOAD ? false : true,
-					spawn: false
-				}
+				tasks: [ 'stylus', 'kss', 'reload' ],
+				options: { spawn: false }
 			},
 			styleguide: {
 				files: [
@@ -139,6 +129,13 @@ module.exports = function(grunt) {
 				],
 				tasks: [ 'kss' ],
 				options: { spawn: false }
+			},
+			livereload: {
+				files: ['.rebooted', '.reload', 'client/code/**/*.js', 'client/views/**/*.jade' ],
+				options: {
+					spawn: false,
+					livereload: grunt.option('no-reload') || process.env.NO_RELOAD ? false : true
+				}
 			},
 			test: {
 				files: ['.rebooted', 'test/**/*.js'],
@@ -153,14 +150,14 @@ module.exports = function(grunt) {
 
 		concurrent: {
 			server: {
-				tasks: [ 'nodemon', 'watch:branch', 'watch:stylesheets', 'watch:server', 'watch:styleguide' ],
+				tasks: [ 'nodemon', 'watch:branch', 'watch:stylesheets', 'watch:styleguide', 'watch:livereload' ],
 				options: {
 					logConcurrentOutput: true
 				}
 			},
 
 			test: {
-				tasks: ['nodemon', 'watch:branch', 'watch:stylesheets', 'watch:server', 'watch:styleguide', 'test-client'],
+				tasks: [ 'nodemon', 'watch:branch', 'watch:stylesheets', 'watch:styleguide', 'watch:livereload', 'test-client'],
 				options: {
 					logConcurrentOutput: true
 				}
@@ -183,7 +180,7 @@ module.exports = function(grunt) {
 						nodemon.on('restart', function () {
 							// Delay before server listens on port
 							setTimeout(function() {
-								require('fs').writeFileSync('.rebooted', new Date());
+								fs.writeFileSync('.rebooted', new Date());
 							}, 1000);
 						});
 					}
@@ -248,6 +245,9 @@ module.exports = function(grunt) {
 		// dump to disk
 		grunt.file.write(gitsave.output, JSON.stringify(gitinfo, null, "\t"));
 		grunt.log.writeln("Gitinfo written to %s.", gitsave.output);
+	});
+	grunt.registerTask('reload', function() {
+		fs.writeFileSync('.reload', new Date());
 	});
 
 	grunt.registerTask('kssrebuild', [ 'clean:styleguide', 'kss']);

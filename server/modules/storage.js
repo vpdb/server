@@ -38,13 +38,13 @@ function Storage() {
 
 	// collect processing files
 	this.on('postProcessStarted', function(file, variation) {
-		var key = file._id + '/' + variation.name;
+		var key = file.id + '/' + variation.name;
 		logger.info('[storage] Post-processing of %s started.', key);
 		that.processingFiles[key] = [];
 	});
 
 	this.on('postProcessFinished', function(file, variation) {
-		var key = file._id + '/' + variation.name;
+		var key = file.id + '/' + variation.name;
 		logger.info('[storage] Post-processing of %s done, running %d callback(s).', key, that.processingFiles[key].length);
 
 		var callbacks = that.processingFiles[key];
@@ -68,7 +68,7 @@ Storage.prototype.variations = {
 };
 
 Storage.prototype.whenProcessed = function(file, variationName, callback) {
-	var key = file._id + '/' + variationName;
+	var key = file.id + '/' + variationName;
 	if (!this.processingFiles[key]) {
 		logger.warn('[storage] No such file being processed: %s', key);
 		return callback(null);
@@ -90,7 +90,7 @@ Storage.prototype.cleanup = function(graceperiod, done) {
 		}
 
 		async.eachSeries(files, function(file, next) {
-			logger.info('[storage] Cleanup: Removing inactive file "%s" by <%s> (%s).', file.name, file.author.email, file._id);
+			logger.info('[storage] Cleanup: Removing inactive file "%s" by <%s> (%s).', file.name, file.author.email, file.id);
 			if (fs.existsSync(file.getPath())) {
 				fs.unlinkSync(file.getPath());
 			}
@@ -158,7 +158,6 @@ Storage.prototype.postprocess = function(file, done) {
 								height: value.size.height
 							};
 
-
 							// re-fetch so we're sure no updates are lost
 							File.findById(file._id, function(err, file) {
 								if (err) {
@@ -172,7 +171,6 @@ Storage.prototype.postprocess = function(file, done) {
 									next(err);
 								});
 							});
-
 						});
 					});
 
@@ -223,7 +221,7 @@ Storage.prototype.postprocess = function(file, done) {
 };
 
 Storage.prototype.url = function(file, variation) {
-	return file ? '/storage/' + file._id + (variation ? '/' + variation : '') : null;
+	return file ? '/storage/' + file.id + (variation ? '/' + variation : '') : null;
 };
 
 Storage.prototype.urls = function(file) {
@@ -239,7 +237,7 @@ Storage.prototype.urls = function(file) {
 
 Storage.prototype.fstat = function(file, variationName) {
 
-	var key = file._id + '/' + variationName;
+	var key = file.id + '/' + variationName;
 	if (variationName && !_.contains(this.variationNames, variationName)) {
 		return null;
 	}

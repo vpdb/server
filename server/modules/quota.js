@@ -59,7 +59,7 @@ exports.isAllowed = function(req, res, file, callback) {
 				logger.error('[quota] Error checking quota for <%s>: %s', req.user.email, err, {});
 				return res.status(500).end();
 			}
-			logger.info('[quota] Quota check %s on <%s> for %s with %d quota left for another %d seconds.', result.isAllowed ? 'passed' : 'FAILED', req.user.email, file._id, result.allowed - result.used, Math.round(result.expiryTime / 1000));
+			logger.info('[quota] Quota check %s on <%s> for %s with %d quota left for another %d seconds.', result.isAllowed ? 'passed' : 'FAILED', req.user.email, file.id, result.allowed - result.used, Math.round(result.expiryTime / 1000));
 			res.set({
 				'X-RateLimit-Limit': result.allowed,
 				'X-RateLimit-Remaining': result.allowed - result.used,

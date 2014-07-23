@@ -11,7 +11,7 @@ var Schema = mongoose.Schema;
 
 // schema
 var fields = {
-	_id:             { type: String, unique: true, 'default': shortId.generate },
+	id:              { type: String, required: true, unique: true, 'default': shortId.generate },
 	name:            { type: String, index: true, required: 'Name must be provided.' }, // display name, equals username when locally registering
 	username:        { type: String, index: true, unique: true, sparse: true },
 	email:           { type: String, index: true, unique: true, lowercase: true, required: 'Email must be provided.' },
@@ -46,8 +46,17 @@ UserSchema.virtual('password')
 		this.password_hash = this.encryptPassword(password);
 	})
 	.get(function() {
-		return this._password
+		return this._password;
 	});
+
+UserSchema.virtual('gravatar_id')
+	.get(function() {
+		return this.email ? crypto.createHash('md5').update(this.email.toLowerCase()).digest('hex') : null;
+	});
+
+UserSchema.set('toJSON', {
+	virtuals: true
+});
 
 // middleware
 UserSchema.pre('validate', function(next) {

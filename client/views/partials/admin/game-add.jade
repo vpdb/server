@@ -62,11 +62,11 @@
 							i.fa.fa-exclamation-triangle.space-right
 							| {{ errors['ipdb.number'] }}
 
-				.form-group(ng-class="{ error: errors.game_id }")
+				.form-group(ng-class="{ error: errors.id }")
 					label.col-sm-3.control-label(for="gameId1") Game ID
 					.col-sm-6
 						.input-group
-							input#gameId1.form-control(type="text", ng-model="game.game_id", placeholder="Common Abbreviation", ng-change="idValidated = false", on-enter="check()")
+							input#gameId1.form-control(type="text", ng-model="game.id", placeholder="Common Abbreviation", ng-change="idValidated = false", on-enter="check()")
 							span.input-group-addon(ng-class="{ transparent: !idValidated }"): i.fa(class="{{ idValid ? 'fa-check': 'fa-times'}}")
 						span.help-block Must be unique and contain only letters and dashes.
 					.col-sm-3
@@ -74,11 +74,11 @@
 							i.fa.fa-check.space-right
 							| Check
 
-				.alert.alert-danger.alert--shifted-up-2x(ng-show="errors.game_id")
+				.alert.alert-danger.alert--shifted-up-2x(ng-show="errors.id")
 					.row
 						.col-sm-9.col-sm-offset-3
 							i.fa.fa-exclamation-triangle.space-right
-							| {{ errors.game_id }}
+							| {{ errors.id }}
 
 				.form-group(ng-show="!yearFetched", ng-class="{ error: errors.year }")
 					label.col-sm-3.control-label(for="year") Year
@@ -134,11 +134,11 @@
 
 			.form-horizontal(ng-show="game.origin == 'originalGame'")
 
-				.form-group(ng-class="{ error: errors.game_id }")
+				.form-group(ng-class="{ error: errors.id }")
 					label.col-sm-3.control-label(for="gameId2") Game ID
 					.col-sm-6
 						.input-group
-							input#gameId2.form-control(type="text", ng-model="game.game_id", placeholder="Common Abbreviation", ng-change="idValidated = false")
+							input#gameId2.form-control(type="text", ng-model="game.id", placeholder="Common Abbreviation", ng-change="idValidated = false")
 							span.input-group-addon(ng-class="{ transparent: !idValidated }"): i.fa(class="{{ idValid ? 'fa-check': 'fa-times'}}")
 						span.help-block Must be unique and contain only letters and dashes.
 					.col-sm-3
@@ -146,11 +146,11 @@
 							i.fa.fa-check.space-right
 							| Check
 
-				.alert.alert-danger.alert--shifted-up-2x(ng-show="errors.game_id")
+				.alert.alert-danger.alert--shifted-up-2x(ng-show="errors.id")
 					.row
 						.col-sm-9.col-sm-offset-3
 							i.fa.fa-exclamation-triangle.space-right
-							| {{ errors.game_id }}
+							| {{ errors.id }}
 
 				.form-group
 					label.col-sm-3.control-label(for='author', ng-class="{ error: errors.manufacturer }") Author

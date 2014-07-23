@@ -62,7 +62,7 @@ exports.setupUsers = function(request, config, done) {
 							debug('%s <%s>: Updating user...', name, user.email);
 							user.roles = config.roles;
 							request
-								.put('/users/' + user._id)
+								.put('/users/' + user.id)
 								.as(superuser)
 								.send(user)
 								.end(function(err, res) {
@@ -108,7 +108,7 @@ exports.teardownUsers = function(request, done) {
 				return next();
 			}
 			request
-				.del('/users/' + that.users[name]._id)
+				.del('/users/' + that.users[name].id)
 				.as(superuser)
 				.end(function(err, res) {
 					if (err) {
@@ -143,5 +143,5 @@ exports.getUser = function(name) {
 };
 
 exports.dump = function(res) {
-	console.log('         RESPONSE: %s', util.inspect(res.body, null, 3, true));
+	console.log('         RESPONSE: %s', util.inspect(res.body ? res.body : res, null, 2, true));
 };

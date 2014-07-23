@@ -36,6 +36,7 @@ module.exports = function(app, config, passport) {
 	app.set('view engine', 'jade');
 	app.set('json spaces', "\t");
 	app.set('showStackError', runningDev);
+	app.disable('x-powered-by');
 
 	// add reverse proxy config for non-local
 	if (!runningLocal) {

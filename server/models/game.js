@@ -50,9 +50,6 @@ var apiFields = {
 
 var GameSchema = new Schema(fields);
 
-GameSchema.plugin(uniqueValidator, { message: 'The {PATH} "{VALUE}" is already taken.' });
-GameSchema.plugin(fileRef, { model: 'Game', fields: [ 'media.backglass', 'media.logo' ]});
-
 // validations
 GameSchema.path('game_type').validate(function(gameType, callback) {
 
@@ -97,8 +94,6 @@ GameSchema.path('media.backglass').validate(function(backglass, callback) {
 		callback(arDiff < maxAspectRatioDifference);
 	});
 }, 'Aspect ratio of backglass must be smaller than 1:1.5 and greater than 1:1.05.');
-
-
 
 // methods
 GameSchema.methods = {
@@ -145,6 +140,11 @@ GameSchema.options.toObject.transform = function(doc, game) {
 //	game.url = game.getUrl();
 //	game.media = game.getMedia();
 };
+
+
+// plugins
+GameSchema.plugin(uniqueValidator, { message: 'The {PATH} "{VALUE}" is already taken.' });
+GameSchema.plugin(fileRef, { model: 'Game', fields: [ 'media.backglass', 'media.logo' ]});
 
 mongoose.model('Game', GameSchema);
 logger.info('[model] Model "game" registered.');

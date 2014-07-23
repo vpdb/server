@@ -1,9 +1,9 @@
 var _ = require('underscore');
 var util = require('util');
+var async = require('async');
+var logger = require('winston');
 var mongoose = require('mongoose');
 var objectPath = require('object-path');
-
-
 
 module.exports = exports = function(schema, options) {
 
@@ -14,6 +14,13 @@ module.exports = exports = function(schema, options) {
 		throw new Error('Fileref plugin needs file reference fields. Please provide.');
 	}
 
+	/**
+	 * Replaces API IDs with database IDs and returns a new instance of the
+	 * configured model.
+	 *
+	 * @param obj Object, directly from API client
+	 * @param callback Called with (`err`, `ModelInstance`)
+	 */
 	schema.statics.getInstance = function(obj, callback) {
 
 		var Model = mongoose.model(options.model);
@@ -35,7 +42,6 @@ module.exports = exports = function(schema, options) {
 			_.each(files, function(file) {
 				_.each(options.fields, function(path) {
 					if (file.id == objectPath.get(obj, path)) {
-						console.log('############# setting %s to %s', path, file._id.toString());
 						objectPath.set(obj, path, file._id);
 					}
 				});
@@ -44,28 +50,45 @@ module.exports = exports = function(schema, options) {
 		});
 	};
 
+	/**
+	 * Sets the referenced files to active. Call this after creating a new
+	 * instance.
+	 *
+	 * @param callback (`err`)
+	 * @returns {*}
+	 */
+	schema.methods.activateFiles = function(done) {
 
-	schema.pre('validate', function(next) {
-		console.log('********* post-validate: ' + util.inspect(this, null, 4, true));
-		console.log('********* Replacing short IDs of ' + options.fields + " with real IDs.");
-		var attr = getAttr(this, 'media.backglass');
-		console.log('********* backglass = ' + attr);
-		next();
-	});
+		var File = mongoose.model('File');
 
-	if (options && options.fields) {
-		console.log('********* Added reference support to ' + options.fields);
-	}
+		var ids = [];
+		var obj = this;
+		_.each(options.fields, function(path) {
+			var id = objectPath.get(obj, path);
+			if (id) {
+				ids.push(id)
+			}
+		});
+		File.find({ _id: { $in: ids }}, function(err, files) {
+			if (err) {
+				logger.error('[model] Error finding referenced files: %s', err);
+				return done(err);
+			}
+
+			// update
+			async.each(files, function(file, next) {
+				var publc = false;
+				switch (file.getMimeSubtype()) {
+					case 'image':
+					case 'text':
+						publc = true;
+						break;
+				}
+				file.active = true;
+				file.public = publc;
+				file.save(next);
+			}, done);
+		});
+		return this;
+	};
 };
-
-function getAttr(obj, attr) {
-	if (~attr.indexOf('.')) {
-		var attrs = attr.split('.');
-		if (!obj[attrs[0]]) {
-			obj[attrs[0]] = {};
-		}
-		return getAttr(obj[attrs[0]], attrs.splice(0, 1).join('.'))
-	} else {
-		return obj[attr];
-	}
-}

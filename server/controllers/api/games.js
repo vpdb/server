@@ -48,32 +48,18 @@ exports.create = function(req, res) {
 				return api.fail(res, err, 422);
 			}
 			logger.info('[api|game:create] Validations passed.');
-			Game.findOne({ id: newGame.id }).exec(ok(function(game) {
+			Game.findOne({ id: newGame.id }, ok(function(game) {
 				if (!game) {
-					newGame.save(ok(function(game) {
+					newGame.save(function(err, game) {
 						logger.info('[api|game:create] Game "%s" created.', game.title);
 
 						// set media to active
-						File.findOne({ _id: newGame.media.backglass}, okk(function(backglass) {
-							backglass.active = true;
-							backglass.public = true;
-							backglass.save(okk(function(backglass) {
-								logger.info('[api|game:create] Set backglass to active.');
-								if (newGame.media.logo) {
-									File.findOne({ _id: newGame.media.logo }, okk(function(logo) {
-										logo.active = true;
-										logo.public = true;
-										logo.save(okk(function(logo) {
-											logger.info('[api|game:create] Set logo to active.');
-											return api.success(res, newGame.toJSON(), 201);
-										}, 'Error saving logo for game "%s": %s'));
-									}, 'Error finding logo for game "%s": %s'));
-								} else {
-									return api.success(res, newGame.toJSON(), 201);
-								}
-							}, 'Error saving backglass for game "%s": %s'));
-						}, 'Error finding backglass for game "%s": %s'));
-					}, 'Error saving game "%s": %s'));
+						game.activateFiles(okk(function() {
+							logger.info('[api|game:create] All referenced files activated, returning object to client.');
+							return api.success(res, game.toDetailed(), 201);
+
+						}, 'Error activating files for game "%s": %s'));
+					});
 				} else {
 					logger.warn('[api|game:create] Game <%s> already in database, aborting.', newGame.email);
 					return api.fail(res, 'Game "' + newGame.id + '" already exists.', 409);

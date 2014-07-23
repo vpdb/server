@@ -51,7 +51,7 @@ var apiFields = {
 var GameSchema = new Schema(fields);
 
 GameSchema.plugin(uniqueValidator, { message: 'The {PATH} "{VALUE}" is already taken.' });
-GameSchema.plugin(fileRef, { fields: [ 'media.backglass', 'media.logo' ]});
+GameSchema.plugin(fileRef, { model: 'Game', fields: [ 'media.backglass', 'media.logo' ]});
 
 // validations
 GameSchema.path('game_type').validate(function(gameType, callback) {
@@ -98,38 +98,6 @@ GameSchema.path('media.backglass').validate(function(backglass, callback) {
 	});
 }, 'Aspect ratio of backglass must be smaller than 1:1.5 and greater than 1:1.05.');
 
-
-GameSchema.statics.getInstance = function(game, callback) {
-
-	var Game = mongoose.model('Game');
-	var File = mongoose.model('File');
-
-	// update backglass references
-	var files = [];
-	game.media = game.media || {};
-	if (game.media.backglass) {
-		files.push(game.media.backglass);
-	}
-	if (game.media.logo) {
-		files.push(game.media.logo);
-	}
-	File.find({ id: { $in: files }}, function(err, files) {
-		if (err) {
-			logger.error('[model|game] Error finding reference files: %s', err);
-			return callback(err);
-		}
-
-		_.each(files, function(file) {
-			if (file.id == game.media.backglass) {
-				game.media.backglass = file._id;
-			}
-			if (file.id == game.media.logo) {
-				game.media.logo = file._id;
-			}
-		});
-		callback(null, new Game(game));
-	});
-};
 
 
 // methods

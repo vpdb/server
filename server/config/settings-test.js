@@ -29,7 +29,7 @@ module.exports = {
 				'video/x-flv': 1
 			}
 		},
-		tmp: '/tmp',
+		tmp: '.',
 		authorizationHeader: 'Authorization',
 		passport: {
 			github: { enabled: false },

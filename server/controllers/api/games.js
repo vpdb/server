@@ -78,8 +78,8 @@ exports.create = function(req, res) {
 exports.list = function(req, res) {
 
 	var query = Game.find()
-		.populate({ path: 'media.backglass' })
-		.populate({ path: 'media.logo' });
+		.populate({ path: 'media_ref.backglass' })
+		.populate({ path: 'media_ref.logo' });
 
 	// text search
 	if (req.query.q) {
@@ -113,8 +113,8 @@ exports.list = function(req, res) {
 exports.view = function(req, res) {
 
 	var query = Game.findOne({ id: req.params.id })
-		.populate({ path: 'media.backglass' })
-		.populate({ path: 'media.logo' });
+		.populate({ path: 'media_ref.backglass' })
+		.populate({ path: 'media_ref.logo' });
 
 	query.exec(function(err, game) {
 		if (err) {

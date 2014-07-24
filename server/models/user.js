@@ -9,7 +9,9 @@ var uniqueValidator = require('mongoose-unique-validator');
 var config = require('../modules/settings').current;
 var Schema = mongoose.Schema;
 
-// schema
+//-----------------------------------------------------------------------------
+// SCHEMA
+//-----------------------------------------------------------------------------
 var fields = {
 	id:              { type: String, required: true, unique: true, 'default': shortId.generate },
 	name:            { type: String, index: true, required: 'Name must be provided.' }, // display name, equals username when locally registering
@@ -24,13 +26,6 @@ var fields = {
 	active:          { type: Boolean, required: true, default: true },
 	uploaded_files:  [{ type: Schema.Types.ObjectId, ref: 'File' }]
 };
-
-// what's returned in the API
-var apiFields = {
-	reduced: [ 'id', 'name', 'username', 'thumb', 'gravatar_id'], // "member" search result
-	simple: [ 'email', 'github', 'active', 'plan' ]               // "admin" lists
-};
-
 // provider data fields
 if (config.vpdb.passport.github.enabled) {
 	fields['github'] = {};
@@ -41,10 +36,22 @@ _.each(config.vpdb.passport.ipboard, function(ipbConfig) {
 	}
 });
 var UserSchema = new Schema(fields);
-UserSchema.plugin(uniqueValidator, { message: 'The {PATH} "{VALUE}" is already taken.' });
 UserSchema.index({ name: 'text', username: 'text', email: 'text' });
+UserSchema.plugin(uniqueValidator, { message: 'The {PATH} "{VALUE}" is already taken.' });
 
-// virtuals
+
+//-----------------------------------------------------------------------------
+// API FIELDS
+//-----------------------------------------------------------------------------
+var apiFields = {
+	reduced: [ 'id', 'name', 'username', 'thumb', 'gravatar_id'], // "member" search result
+	simple: [ 'email', 'github', 'active', 'plan' ]               // "admin" lists
+};
+
+
+//-----------------------------------------------------------------------------
+// VIRTUALS
+//-----------------------------------------------------------------------------
 UserSchema.virtual('password')
 	.set(function(password) {
 		this._password = password;
@@ -60,7 +67,10 @@ UserSchema.virtual('gravatar_id')
 		return this.email ? crypto.createHash('md5').update(this.email.toLowerCase()).digest('hex') : null;
 	});
 
-// middleware
+
+//-----------------------------------------------------------------------------
+// MIDDLEWARE
+//-----------------------------------------------------------------------------
 UserSchema.pre('validate', function(next) {
 	var user = this.toJSON();
 	if (this.isNew && !this.name) {
@@ -79,7 +89,10 @@ UserSchema.pre('validate', function(next) {
 	next();
 });
 
-// validations
+
+//-----------------------------------------------------------------------------
+// VALIDATIONS
+//-----------------------------------------------------------------------------
 UserSchema.path('name').validate(function(name) {
 	// if you are authenticating by any of the oauth strategies, don't validate
 	if (this.provider != 'local') {
@@ -139,66 +152,68 @@ UserSchema.path('password_hash').validate(function() {
 }, null);
 
 
-// methods
-UserSchema.methods = {
+//-----------------------------------------------------------------------------
+// METHODS
+//-----------------------------------------------------------------------------
 
-	/**
-	 * Authenticate - check if the passwords are the same
-	 *
-	 * @param {String} plainText
-	 * @return {Boolean}
-	 * @api public
-	 */
-	authenticate: function(plainText) {
-		return this.encryptPassword(plainText) === this.password_hash;
-	},
-
-	/**
-	 * Make salt
-	 *
-	 * @return {String}
-	 * @api public
-	 */
-	makeSalt: function() {
-		return Math.round((new Date().valueOf() * Math.random())) + '';
-	},
-
-	/**
-	 * Encrypt password
-	 *
-	 * @param {String} password
-	 * @return {String}
-	 * @api public
-	 */
-	encryptPassword: function(password) {
-		if (!password) {
-			return '';
-		}
-		return crypto.createHmac('sha1', this.password_salt).update(password).digest('hex');
-	},
-
-	toReduced: function() {
-		return _.pick(this.toObject(), apiFields.reduced);
-	},
-
-	toSimple: function() {
-		var user = _.pick(this.toObject(), apiFields.reduced.concat(apiFields.simple));
-		if (!_.isEmpty(user.github)) {
-			user.github = _.pick(user.github, 'id', 'login', 'email', 'avatar_url', 'html_url');
-		}
-		return user;
-	},
-
-	toDetailed: function() {
-		var user = this.toObject();
-		if (!_.isEmpty(user.github)) {
-			user.github = _.pick(user.github, 'id', 'login', 'email', 'avatar_url', 'html_url');
-		}
-		return user;
-	}
+/**
+ * Authenticate - check if the passwords are the same
+ *
+ * @param {String} plainText
+ * @return {Boolean}
+ * @api public
+ */
+UserSchema.methods.authenticate = function(plainText) {
+	return this.encryptPassword(plainText) === this.password_hash;
 };
 
+/**
+ * Make salt
+ *
+ * @return {String}
+ * @api public
+ */
+UserSchema.methods.makeSalt = function() {
+	return Math.round((new Date().valueOf() * Math.random())) + '';
+};
 
+/**
+ * Encrypt password
+ *
+ * @param {String} password
+ * @return {String}
+ * @api public
+ */
+UserSchema.methods.encryptPassword = function(password) {
+	if (!password) {
+		return '';
+	}
+	return crypto.createHmac('sha1', this.password_salt).update(password).digest('hex');
+};
+
+UserSchema.methods.toReduced = function() {
+	return _.pick(this.toObject(), apiFields.reduced);
+};
+
+UserSchema.methods.toSimple = function() {
+	var user = _.pick(this.toObject(), apiFields.reduced.concat(apiFields.simple));
+	if (!_.isEmpty(user.github)) {
+		user.github = _.pick(user.github, 'id', 'login', 'email', 'avatar_url', 'html_url');
+	}
+	return user;
+};
+
+UserSchema.methods.toDetailed = function() {
+	var user = this.toObject();
+	if (!_.isEmpty(user.github)) {
+		user.github = _.pick(user.github, 'id', 'login', 'email', 'avatar_url', 'html_url');
+	}
+	return user;
+};
+
+//-----------------------------------------------------------------------------
+// OPTIONS
+//-----------------------------------------------------------------------------
 UserSchema.set('toObject', { virtuals: true });
 if (!UserSchema.options.toObject) {
 	UserSchema.options.toObject = {};

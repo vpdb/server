@@ -13,7 +13,10 @@ var gameTypes = [ 'ss', 'em', 'pm', 'og', 'na'];
 
 var maxAspectRatioDifference = 0.2;
 
-// schema
+
+//-----------------------------------------------------------------------------
+// SCHEMA
+//-----------------------------------------------------------------------------
 var fields = {
 	id:             { type: String, required: 'Game ID must be provided.', unique: true },
 	title:          { type: String, required: 'Title must be provided.', index: true },
@@ -37,20 +40,55 @@ var fields = {
 		rating: Number,
 		mfg: Number
 	},
-	media: {
+	media_ref: {
 		backglass: { type: Schema.ObjectId, ref: 'File', required: 'Backglass image must be provided.' },
 		logo:      { type: Schema.ObjectId, ref: 'File' }
 	}
 };
+var GameSchema = new Schema(fields);
 
-// what's returned in the API
+
+//-----------------------------------------------------------------------------
+// PLUGINS
+//-----------------------------------------------------------------------------
+GameSchema.plugin(uniqueValidator, { message: 'The {PATH} "{VALUE}" is already taken.' });
+GameSchema.plugin(fileRef, { model: 'Game', fields: [ 'media_ref.backglass', 'media_ref.logo' ]});
+
+
+//-----------------------------------------------------------------------------
+// API FIELDS
+//-----------------------------------------------------------------------------
 var apiFields = {
 	simple: [ 'id', 'title', 'manufacturer', 'year', 'game_type', 'ipdb', 'media' ] // fields returned in lists
 };
 
-var GameSchema = new Schema(fields);
 
-// validations
+//-----------------------------------------------------------------------------
+// VIRTUALS
+//-----------------------------------------------------------------------------
+GameSchema.virtual('url')
+	.get(function() {
+		return '/game/' + this.id;
+	});
+
+GameSchema.virtual('media')
+	.get(function() {
+		return {
+			backglass: {
+				url: storage.url(this.media_ref.backglass),
+				variations: storage.urls(this.media_ref.backglass)
+			},
+			logo: {
+				url: storage.url(this.media_ref.logo),
+				variations: storage.urls(this.media_ref.logo)
+			}
+		};
+	});
+
+
+//-----------------------------------------------------------------------------
+// VALIDATIONS
+//-----------------------------------------------------------------------------
 GameSchema.path('game_type').validate(function(gameType, callback) {
 
 	var ipdb = this.ipdb ? this.ipdb.number : null;
@@ -76,8 +114,7 @@ GameSchema.path('game_type').validate(function(gameType, callback) {
 	}
 });
 
-// validations
-GameSchema.path('media.backglass').validate(function(backglass, callback) {
+GameSchema.path('media_ref.backglass').validate(function(backglass, callback) {
 
 	if (!backglass) {
 		return;
@@ -97,41 +134,22 @@ GameSchema.path('media.backglass').validate(function(backglass, callback) {
 	});
 }, 'Aspect ratio of backglass must be smaller than 1:1.5 and greater than 1:1.05.');
 
-// methods
-GameSchema.methods = {
 
-	/**
-	 * Returns the URL of the file.
-	 *
-	 * @return {String}
-	 * @api public
-	 */
-	getUrl: function() {
-		return '/game/' + this.id;
-	},
-
-	getMedia: function() {
-		return {
-			backglass: {
-				url: storage.url(game.media.backglass),
-				variations: storage.urls(game.media.backglass)
-			},
-			logo: {
-				url: storage.url(game.media.logo),
-				variations: storage.urls(game.media.logo)
-			}
-		};
-	},
-
-	toSimple: function() {
-		return _.pick(this.toObject(), apiFields.simple);
-	},
-
-	toDetailed: function() {
-		return this.toObject();
-	}
+//-----------------------------------------------------------------------------
+// METHODS
+//-----------------------------------------------------------------------------
+GameSchema.methods.toSimple = function() {
+	return _.pick(this.toObject(), apiFields.simple);
 };
 
+GameSchema.methods.toDetailed = function() {
+	return this.toObject();
+};
+
+
+//-----------------------------------------------------------------------------
+// OPTIONS
+//-----------------------------------------------------------------------------
 GameSchema.set('toObject', { virtuals: true });
 if (!GameSchema.options.toObject) {
 	GameSchema.options.toObject = {};
@@ -139,14 +157,7 @@ if (!GameSchema.options.toObject) {
 GameSchema.options.toObject.transform = function(doc, game) {
 	delete game._id;
 	delete game.__v;
-//	game.url = game.getUrl();
-//	game.media = game.getMedia();
 };
-
-
-// plugins
-GameSchema.plugin(uniqueValidator, { message: 'The {PATH} "{VALUE}" is already taken.' });
-GameSchema.plugin(fileRef, { model: 'Game', fields: [ 'media.backglass', 'media.logo' ]});
 
 mongoose.model('Game', GameSchema);
 logger.info('[model] Model "game" registered.');

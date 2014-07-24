@@ -50,7 +50,7 @@ exports.create = function(req, res) {
 			logger.info('[api|game:create] Validations passed.');
 			Game.findOne({ id: newGame.id }, ok(function(game) {
 				if (!game) {
-					newGame.save(function(err, game) {
+					newGame.save(ok(function(game) {
 						logger.info('[api|game:create] Game "%s" created.', game.title);
 
 						// set media to active
@@ -59,14 +59,13 @@ exports.create = function(req, res) {
 							return api.success(res, game.toDetailed(), 201);
 
 						}, 'Error activating files for game "%s": %s'));
-					});
+					}, 'Error saving game with id "%s": %s'));
 				} else {
 					logger.warn('[api|game:create] Game <%s> already in database, aborting.', newGame.email);
 					return api.fail(res, 'Game "' + newGame.id + '" already exists.', 409);
 				}
 			}, 'Error finding game with id "%s": %s'));
 		});
-
 	});
 };
 

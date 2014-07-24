@@ -88,10 +88,12 @@ GameSchema.path('media.backglass').validate(function(backglass, callback) {
 			logger.error('[model|game] Error fetching backglass %s.');
 			return callback(false);
 		}
-
-		var ar = Math.round(backglass.metadata.size.width / backglass.metadata.size.height * 1000) / 1000;
-		var arDiff = Math.abs(ar / 1.25 - 1);
-		callback(arDiff < maxAspectRatioDifference);
+		if (backglass) {
+			var ar = Math.round(backglass.metadata.size.width / backglass.metadata.size.height * 1000) / 1000;
+			var arDiff = Math.abs(ar / 1.25 - 1);
+			return callback(arDiff < maxAspectRatioDifference);
+		}
+		callback(true);
 	});
 }, 'Aspect ratio of backglass must be smaller than 1:1.5 and greater than 1:1.05.');
 

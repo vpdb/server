@@ -33,20 +33,41 @@ module.exports = exports = function(schema, options) {
 				shortIds.push(shortId)
 			}
 		});
+		var invalidations = [];
+
+		// find files with submitted shortIds
 		File.find({ id: { $in: shortIds }}, function(err, files) {
 			if (err) {
 				logger.error('[model] Error finding referenced files: %s', err);
 				return callback(err);
 			}
-			// switch id with _id
-			_.each(files, function(file) {
-				_.each(options.fields, function(path) {
-					if (file.id == objectPath.get(obj, path)) {
+			_.each(options.fields, function(path) {
+				var hit = false;
+				var shortId = objectPath.get(obj, path);
+				_.each(files, function(file) {
+
+					// if match, switch shortId with _id
+					if (file.id == shortId) {
 						objectPath.set(obj, path, file._id);
+						hit = true;
 					}
 				});
+				// no match, add invalidation
+				if (!hit) {
+					if (shortId) {
+						logger.warn('[model] File ID %s not found in database for field %s.', objectPath.get(obj, path), path);
+						invalidations.push({ path: path, message: 'No such file with ID "' + objectPath.get(obj, path) + '".' });
+						objectPath.set(obj, path, '000000000000000000000000');
+					}
+				}
 			});
-			callback(null, new Model(obj));
+			var model = new Model(obj);
+
+			// for invalid IDs, invalidate instantly so we can provide which value is wrong.
+			_.each(invalidations, function(invalidation) {
+				model.invalidate(invalidation.path, invalidation.message);
+			});
+			callback(null, model);
 		});
 	};
 
@@ -54,7 +75,7 @@ module.exports = exports = function(schema, options) {
 	 * Sets the referenced files to active. Call this after creating a new
 	 * instance.
 	 *
-	 * @param callback (`err`)
+	 * @param done (`err`)
 	 * @returns {*}
 	 */
 	schema.methods.activateFiles = function(done) {

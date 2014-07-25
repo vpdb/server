@@ -277,9 +277,9 @@
 						i.fa.fa-warning.space-right
 						| Dimensions are {{ backglass.dimensions }}, where the aspect ratio is <code>1:{{ backglass.ar }}</code> and <strong>{{ backglass.arDiff }}%</strong> off the ideal <code>1:1.25</code>. Please crop the image and try again.
 
-			.alert.alert-danger.alert--shifted-up(ng-show="errors['media_ref.backglass']")
+			.alert.alert-danger.alert--shifted-up(ng-show="errors['_media.backglass']")
 				i.fa.fa-exclamation-triangle.space-right
-				| {{ errors['media_ref.backglass'] }}
+				| {{ errors['_media.backglass'] }}
 
 			.row.padder-top
 				.col-sm-6

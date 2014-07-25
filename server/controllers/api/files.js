@@ -29,9 +29,9 @@ exports.upload = function(req, res) {
 		name: req.headers['content-disposition'].match(/filename=([^;\z]+)/i)[1].replace(/(^"|^'|"$|'$)/g, ''),
 		bytes: req.headers['content-length'],
 		created_at: new Date(),
-		author: req.user._id,
 		mime_type: req.headers['content-type'],
-		file_type: req.query.type
+		file_type: req.query.type,
+		_author: req.user._id
 	});
 
 	file.validate(function(err) {
@@ -92,7 +92,7 @@ exports.delete = function(req, res) {
 		}
 
 		// only allow deleting own files (for now)
-		if (!file.author.equals(req.user._id)) {
+		if (!file._author.equals(req.user._id)) {
 			return api.fail(res, 'Permission denied, must be owner.', 403);
 		}
 

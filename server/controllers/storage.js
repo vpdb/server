@@ -88,7 +88,7 @@ exports.get = function(req, res) {
 			} else {
 
 				// if inactive and user isn't the owner, refuse directly
-				if (!file.active && !file.author.equals(req.user._id)) {
+				if (!file.active && !file._author.equals(req.user._id)) {
 					return res.status(404).end();
 				}
 
@@ -120,7 +120,7 @@ exports.get = function(req, res) {
 		} else {
 
 			// but not active and user isn't the owner
-			if (!file.active && (!req.user || file.author.equals(req.user._id))) {
+			if (!file.active && (!req.user || file._author.equals(req.user._id))) {
 				return res.status(404).end();
 			}
 			// otherwise, serve.

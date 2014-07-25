@@ -82,7 +82,7 @@ Storage.prototype.cleanup = function(graceperiod, done) {
 	graceperiod = graceperiod ? graceperiod : 0;
 
 	File.find({ active: false, created: { $lt: new Date(new Date().getTime() - graceperiod)} })
-		.populate('author').
+		.populate('_author').
 		exec(function(err, files) {
 		if (err) {
 			logger.error('[storage] Error getting files for cleanup: %s', err);
@@ -90,7 +90,7 @@ Storage.prototype.cleanup = function(graceperiod, done) {
 		}
 
 		async.eachSeries(files, function(file, next) {
-			logger.info('[storage] Cleanup: Removing inactive file "%s" by <%s> (%s).', file.name, file.author.email, file.id);
+			logger.info('[storage] Cleanup: Removing inactive file "%s" by <%s> (%s).', file.name, file._author.email, file.id);
 			if (fs.existsSync(file.getPath())) {
 				fs.unlinkSync(file.getPath());
 			}
@@ -142,21 +142,13 @@ Storage.prototype.postprocess = function(file, done) {
 					var writeStream = fs.createWriteStream(filepath);
 					writeStream.on('finish', function() {
 						logger.info('[storage] Saved resized image to "%s".', filepath);
-						if (!file.variations) {
-							file.variations = {};
-						}
+
 						// update database with new variation
 						gm(filepath).identify(function(err, value) {
 							if (err) {
 								logger.warn('[storage] Error reading metadata from image: %s', err);
 								return next();
 							}
-
-							file.variations[variation.name] = {
-								bytes: fs.statSync(filepath).size,
-								width: value.size.width,
-								height: value.size.height
-							};
 
 							// re-fetch so we're sure no updates are lost
 							File.findById(file._id, function(err, file) {
@@ -165,6 +157,16 @@ Storage.prototype.postprocess = function(file, done) {
 									return next(err);
 								}
 
+								if (!file.variations) {
+									file.variations = {};
+								}
+								file.variations[variation.name] = {
+									bytes: fs.statSync(filepath).size,
+									width: value.size.width,
+									height: value.size.height
+								};
+
+								logger.info('[storage] Updating file "%s" with variation %s.', file.id, variation.name);
 								// change to file.save when fixed: https://github.com/LearnBoost/mongoose/issues/1694
 								File.findOneAndUpdate({ _id: file._id }, _.omit(file.toJSON(), [ '_id', '__v' ]), {}, function(err, f) {
 									that.emit('postProcessFinished', file, variation);

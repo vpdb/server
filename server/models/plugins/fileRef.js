@@ -87,7 +87,7 @@ module.exports = exports = function(schema, options) {
 		_.each(options.fields, function(path) {
 			var id = objectPath.get(obj, path);
 			if (id) {
-				ids.push(id)
+				ids.push(id);
 			}
 		});
 		File.find({ _id: { $in: ids }}, function(err, files) {
@@ -99,7 +99,7 @@ module.exports = exports = function(schema, options) {
 			// update
 			async.each(files, function(file, next) {
 				var publc = false;
-				switch (file.getMimeSubtype()) {
+				switch (file.getMimeType()) {
 					case 'image':
 					case 'text':
 						publc = true;
@@ -108,7 +108,12 @@ module.exports = exports = function(schema, options) {
 				file.active = true;
 				file.public = publc;
 				file.save(next);
-			}, done);
+			}, function(err) {
+				if (err) {
+					return done(err);
+				}
+				obj.populate(options.fields.join(' '), done);
+			});
 		});
 		return this;
 	};

@@ -9,6 +9,7 @@ var uniqueValidator = require('mongoose-unique-validator');
 var config = require('../modules/settings').current;
 var Schema = mongoose.Schema;
 
+
 //-----------------------------------------------------------------------------
 // SCHEMA
 //-----------------------------------------------------------------------------
@@ -23,8 +24,7 @@ var fields = {
 	password_hash:   { type: String },
 	password_salt:   { type: String },
 	thumb:           { type: String },
-	active:          { type: Boolean, required: true, default: true },
-	uploaded_files:  [{ type: Schema.Types.ObjectId, ref: 'File' }]
+	active:          { type: Boolean, required: true, default: true }
 };
 // provider data fields
 if (config.vpdb.passport.github.enabled) {
@@ -210,6 +210,7 @@ UserSchema.methods.toDetailed = function() {
 	}
 	return user;
 };
+
 
 //-----------------------------------------------------------------------------
 // OPTIONS

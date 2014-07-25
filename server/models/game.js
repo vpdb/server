@@ -40,7 +40,7 @@ var fields = {
 		rating: Number,
 		mfg: Number
 	},
-	media_ref: {
+	_media: {
 		backglass: { type: Schema.ObjectId, ref: 'File', required: 'Backglass image must be provided.' },
 		logo:      { type: Schema.ObjectId, ref: 'File' }
 	}
@@ -52,7 +52,7 @@ var GameSchema = new Schema(fields);
 // PLUGINS
 //-----------------------------------------------------------------------------
 GameSchema.plugin(uniqueValidator, { message: 'The {PATH} "{VALUE}" is already taken.' });
-GameSchema.plugin(fileRef, { model: 'Game', fields: [ 'media_ref.backglass', 'media_ref.logo' ]});
+GameSchema.plugin(fileRef, { model: 'Game', fields: [ '_media.backglass', '_media.logo' ]});
 
 
 //-----------------------------------------------------------------------------
@@ -73,16 +73,20 @@ GameSchema.virtual('url')
 
 GameSchema.virtual('media')
 	.get(function() {
-		return {
-			backglass: {
-				url: storage.url(this.media_ref.backglass),
-				variations: storage.urls(this.media_ref.backglass)
-			},
-			logo: {
-				url: storage.url(this.media_ref.logo),
-				variations: storage.urls(this.media_ref.logo)
+		var media = {};
+		if (this.populated('_media.backglass')) {
+			media.backglass = {
+				url: storage.url(this._media.backglass),
+				variations: storage.urls(this._media.backglass)
 			}
-		};
+		}
+		if (this.populated('_media.logo')) {
+			media.logo = {
+				url: storage.url(this._media.logo),
+				variations: storage.urls(this._media.logo)
+			}
+		}
+		return media;
 	});
 
 
@@ -114,7 +118,7 @@ GameSchema.path('game_type').validate(function(gameType, callback) {
 	}
 });
 
-GameSchema.path('media_ref.backglass').validate(function(backglass, callback) {
+GameSchema.path('_media.backglass').validate(function(backglass, callback) {
 
 	if (!backglass) {
 		return;
@@ -155,8 +159,9 @@ if (!GameSchema.options.toObject) {
 	GameSchema.options.toObject = {};
 }
 GameSchema.options.toObject.transform = function(doc, game) {
-	delete game._id;
 	delete game.__v;
+	delete game._id;
+	delete game._media;
 };
 
 mongoose.model('Game', GameSchema);

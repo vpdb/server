@@ -54,7 +54,7 @@ exports.create = function(req, res) {
 						logger.info('[api|game:create] Game "%s" created.', game.title);
 
 						// set media to active
-						game.activateFiles(okk(function() {
+						game.activateFiles(okk(function(game) {
 							logger.info('[api|game:create] All referenced files activated, returning object to client.');
 							return api.success(res, game.toDetailed(), 201);
 
@@ -78,8 +78,8 @@ exports.create = function(req, res) {
 exports.list = function(req, res) {
 
 	var query = Game.find()
-		.populate({ path: 'media_ref.backglass' })
-		.populate({ path: 'media_ref.logo' });
+		.populate({ path: '_media.backglass' })
+		.populate({ path: '_media.logo' });
 
 	// text search
 	if (req.query.q) {
@@ -113,8 +113,8 @@ exports.list = function(req, res) {
 exports.view = function(req, res) {
 
 	var query = Game.findOne({ id: req.params.id })
-		.populate({ path: 'media_ref.backglass' })
-		.populate({ path: 'media_ref.logo' });
+		.populate({ path: '_media.backglass' })
+		.populate({ path: '_media.logo' });
 
 	query.exec(function(err, game) {
 		if (err) {

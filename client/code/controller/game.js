@@ -75,7 +75,7 @@ ctrl.controller('AdminGameAddCtrl', function($scope, $upload, $modal, $window, A
 		$scope.game = {
 			origin: 'recreation',
 			links: [ { label: '', url: '' }],
-			media_ref: {}
+			_media: {}
 		};
 		$scope.ipdbUrl = '';
 		$scope.backglass = {};
@@ -247,7 +247,7 @@ ctrl.controller('AdminGameAddCtrl', function($scope, $upload, $modal, $window, A
 
 		var bg = response.data;
 		$scope.uploadedBackglass = bg.variations.medium;
-		$scope.game.media_ref.backglass = bg.id;
+		$scope.game._media.backglass = bg.id;
 
 		var ar = Math.round(bg.metadata.size.width / bg.metadata.size.height * 1000) / 1000;
 		var arDiff = Math.abs(ar / 1.25 - 1);
@@ -268,7 +268,7 @@ ctrl.controller('AdminGameAddCtrl', function($scope, $upload, $modal, $window, A
 
 		var bg = response.data;
 		$scope.uploadedLogo = bg.url;
-		$scope.game.media_ref.logo = bg.id;
+		$scope.game._media.logo = bg.id;
 	});
 
 	$scope.searchOnIpdb = function() {

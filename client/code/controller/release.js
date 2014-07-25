@@ -141,23 +141,26 @@ ctrl.controller('ReleaseAddCtrl', function($scope, $upload, $modal, $window, Aut
 			templateUrl: 'partials/member/modals/choose-author',
 			controller: 'ChooseAuthorCtrl',
 			resolve: {
-				release: function() { return $scope.release; }
+				release: function() {
+					return $scope.release;
+				}
 			}
 		}).result.then(function(author) {
 			$scope.release.authors.push(author);
 		});
 	};
 
-
 	$scope.reset();
 });
 
 
-ctrl.controller('ChooseAuthorCtrl', function($scope, $modalInstance, $http, UserResource) {
+ctrl.controller('ChooseAuthorCtrl', function($scope, $modalInstance, UserResource, release) {
 
 	$scope.user = null;
 	$scope.roles = [];
 	$scope.isValidUser = false;
+	$scope.errors = {};
+	$scope.release = release;
 
 	$scope.findUser = function(val) {
 		return UserResource.query({ q: val }).$promise;
@@ -173,7 +176,7 @@ ctrl.controller('ChooseAuthorCtrl', function($scope, $modalInstance, $http, User
 	};
 
 	$scope.addRole = function(role) {
-		if (role) {
+		if (role && !~$scope.roles.indexOf(role)) {
 			$scope.roles.push(role);
 		}
 	};
@@ -183,7 +186,29 @@ ctrl.controller('ChooseAuthorCtrl', function($scope, $modalInstance, $http, User
 	};
 
 	$scope.add = function() {
-		// TODO validations
-		$modalInstance.close({ user: $scope.user, roles: $scope.roles });
+		var valid = true;
+		if (!$scope.isValidUser) {
+			$scope.errors.user = 'You must select a user. Typing after selecting a user erases the selected user.';
+			valid = false;
+		} else if (_.filter($scope.release.authors, function(author) { return author.user.id == $scope.user.id; }).length > 0) {
+			$scope.errors.user = 'User "' + $scope.user.name + '" is already added as author.';
+			valid = false;
+		} else {
+			delete $scope.errors.user;
+		}
+
+		if ($scope.roles.length == 0) {
+			$scope.errors.roles = 'Please add at least one role.';
+			valid = false;
+		} else if ($scope.roles.length > 3) {
+			$scope.errors.roles = 'Three is the maxmimal number of roles an author can have. Please group roles if that\'s not enough.';
+			valid = false;
+		} else {
+			delete $scope.errors.roles;
+		}
+
+		if (valid) {
+			$modalInstance.close({ user: $scope.user, roles: $scope.roles });
+		}
 	}
 });

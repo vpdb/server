@@ -128,6 +128,7 @@
 			| Authors
 		hr.hr--light.hr--margin-small
 
+		i.pull-left(ng-show="release.authors.length == 0") No authors added.
 		.row--fullwidth
 			.media.media--mini.media--mini-noborders.col-sm-4(ng-repeat="author in release.authors", ng-mouseenter="hovering=true", ng-mouseleave="hovering=false")
 				.img-avatar.img-avatar--sm.avatar-placeholder.avatar-placeholder--sm.pull-left(ng-hide="author.user.avatar")
@@ -135,10 +136,10 @@
 				.media-body
 					h6.h--no-margin.h--lighter.media-heading {{ author.user.name }}
 					span {{ author.roles.join(', ') }}
-				i.fa.fa-pencil.a.fade-animation(ng-show="hovering")
-				i.icon.icon-trash.a.fade-animation(ng-show="hovering")
+				i.fa.fa-pencil.a.fade-animation(ng-show="hovering", ng-click="addAuthor(author)")
+				i.icon.icon-trash.a.fade-animation(ng-show="hovering", ng-click="removeAuthor(author)")
 
-		button.btn.btn-default.padder-top.pull-right(ng-click="chooseAuthor()")
+		button.btn.btn-default.padder-top.pull-right(ng-click="addAuthor()")
 			i.fa.fa-plus-circle.space-right
 			| Add Author
 

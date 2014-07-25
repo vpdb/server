@@ -136,31 +136,49 @@ ctrl.controller('ReleaseAddCtrl', function($scope, $upload, $modal, $window, Aut
 		});
 	};
 
-	$scope.chooseAuthor = function() {
+	$scope.addAuthor = function(author) {
 		$modal.open({
-			templateUrl: 'partials/member/modals/choose-author',
+			templateUrl: 'partials/member/modals/author-add',
 			controller: 'ChooseAuthorCtrl',
 			resolve: {
-				release: function() {
-					return $scope.release;
-				}
+				release: function() { return $scope.release; },
+				author: function() { return author; }
 			}
-		}).result.then(function(author) {
-			$scope.release.authors.push(author);
+		}).result.then(function(newAuthor) {
+			if (author) {
+				$scope.release.authors[$scope.release.authors.indexOf(author)] = newAuthor;
+			} else {
+				$scope.release.authors.push(newAuthor);
+			}
+
 		});
+	};
+
+	$scope.removeAuthor = function(author) {
+		$scope.release.authors.splice($scope.release.authors.indexOf(author), 1);
 	};
 
 	$scope.reset();
 });
 
 
-ctrl.controller('ChooseAuthorCtrl', function($scope, $modalInstance, UserResource, release) {
+ctrl.controller('ChooseAuthorCtrl', function($scope, $modalInstance, UserResource, release, author) {
 
-	$scope.user = null;
-	$scope.roles = [];
-	$scope.isValidUser = false;
+	if (author) {
+		$scope.author = author;
+		$scope.user = author.user;
+		$scope.roles = author.roles.slice();
+		$scope.query = author.user.name;
+		$scope.isValidUser = true;
+	} else {
+		$scope.user = null;
+		$scope.roles = [];
+		$scope.isValidUser = false;
+	}
+	$scope.adding = author ? false : true;
 	$scope.errors = {};
 	$scope.release = release;
+
 
 	$scope.findUser = function(val) {
 		return UserResource.query({ q: val }).$promise;
@@ -186,11 +204,14 @@ ctrl.controller('ChooseAuthorCtrl', function($scope, $modalInstance, UserResourc
 	};
 
 	$scope.add = function() {
+		$scope.addRole($scope.role);
+
 		var valid = true;
 		if (!$scope.isValidUser) {
 			$scope.errors.user = 'You must select a user. Typing after selecting a user erases the selected user.';
 			valid = false;
-		} else if (_.filter($scope.release.authors, function(author) { return author.user.id == $scope.user.id; }).length > 0) {
+		} else if (_.filter($scope.release.authors, function(author) { return author.user.id == $scope.user.id; }).length > 0 &&
+		          ($scope.adding || $scope.user.id != $scope.author.user.id)) {
 			$scope.errors.user = 'User "' + $scope.user.name + '" is already added as author.';
 			valid = false;
 		} else {

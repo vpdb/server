@@ -2,7 +2,7 @@
 	.modal-header
 		h1.h--no-margin.h--small
 			i.icon.icon-user.space-right
-			| &nbsp;Add Author
+			| &nbsp;{{ adding ? 'Add' : 'Edit' }} Author
 	.modal-body
 		h4 Choose User
 		hr.hr--margin-small.hr--light
@@ -53,7 +53,7 @@
 
 	.modal-footer
 		button.btn.btn-default(ng-click="$dismiss()") Cancel
-		button.btn.btn--secondary(ng-click="add()") Add Author
+		button.btn.btn--secondary(ng-click="add()") {{ adding ? 'Add' : 'Update' }} Author
 
 	script#userListItem(type="text/ng-template")
 		div.media.media--mini

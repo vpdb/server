@@ -30,7 +30,7 @@ module.exports = exports = function(schema, options) {
 		_.each(options.fields, function(path) {
 			var shortId = objectPath.get(obj, path);
 			if (shortId) {
-				shortIds.push(shortId)
+				shortIds.push(shortId);
 			}
 		});
 		var invalidations = [];

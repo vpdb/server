@@ -178,7 +178,7 @@ ctrl.controller('ChooseAuthorCtrl', function($scope, $modalInstance, UserResourc
 	$scope.adding = author ? false : true;
 	$scope.errors = {};
 	$scope.release = release;
-
+	$scope.role = '';
 
 	$scope.findUser = function(val) {
 		return UserResource.query({ q: val }).$promise;
@@ -197,6 +197,7 @@ ctrl.controller('ChooseAuthorCtrl', function($scope, $modalInstance, UserResourc
 		if (role && !~$scope.roles.indexOf(role)) {
 			$scope.roles.push(role);
 		}
+		$scope.role = '';
 	};
 
 	$scope.removeRole = function(role) {

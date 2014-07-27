@@ -143,15 +143,17 @@
 			i.fa.fa-plus-circle.space-right
 			| Add Author
 
-		.clearfix.padder-bottom-2x
+		.clearfix.padder-bottom
 
 		//- TAGS
 		//---------------------------------------------------------------------
 		h4
 			i.fa.fa-tags.space-right
 			| Tags
-		hr.hr--light
-		.row
+		hr.hr--light.hr--margin-small
+		p Tags highlight special characteristic or features of your release. There are already a bunch of them but you
+			| can also define new ones.
+		.row.padder-top
 			.col-sm-6
 
 				//- SELECTED
@@ -164,7 +166,9 @@
 						.badge.badge--tag(ng-model="release.tags",
 							data-drag="true",
 							data-jqyoui-options="{ revert: 'invalid' }",
-							jqyoui-draggable="{ animate: true, index: {{$index}} }") {{ tag.name }}
+							jqyoui-draggable="{ animate: true, index: {{$index}} }")
+								| {{ tag.name }}
+								i.fa.fa-times-circle.space-left.a(ng-click="removeTag(tag)")
 						i.space-left {{ tag.description }}
 					i(ng-show="release.tags.length == 0") No tags selected. Drag and drop them from the right hand pane in here.
 			.col-sm-6
@@ -186,6 +190,8 @@
 							tooltip-trigger="click",
 							tooltip-popup-delay="200")
 					i(ng-show="tags.length == 0") No more tags available.
+
+			.clearfix.padder-bottom
 
 
 		//- LINKS

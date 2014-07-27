@@ -160,6 +160,12 @@ ctrl.controller('ReleaseAddCtrl', function($scope, $upload, $modal, $window, Aut
 		$scope.release.authors.splice($scope.release.authors.indexOf(author), 1);
 	};
 
+
+	$scope.removeTag = function(tag) {
+		$scope.release.tags.splice($scope.release.tags.indexOf(tag), 1);
+		$scope.tags.push(tag);
+	};
+
 	$scope.reset();
 });
 

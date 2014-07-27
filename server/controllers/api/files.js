@@ -31,7 +31,7 @@ exports.upload = function(req, res) {
 		created_at: new Date(),
 		mime_type: req.headers['content-type'],
 		file_type: req.query.type,
-		_author: req.user._id
+		_created_by: req.user._id
 	});
 
 	file.validate(function(err) {
@@ -92,12 +92,12 @@ exports.delete = function(req, res) {
 		}
 
 		// only allow deleting own files (for now)
-		if (!file._author.equals(req.user._id)) {
+		if (!file._created_by.equals(req.user._id)) {
 			return api.fail(res, 'Permission denied, must be owner.', 403);
 		}
 
 		// only allow inactive files (for now)
-		if (file.active !== false) {
+		if (file.is_active !== false) {
 			return api.fail(res, 'Cannot remove active file.', 400);
 		}
 

@@ -9,11 +9,11 @@
 				.col-sm-7
 					input.form-control(ng-model="user.name", ng-required)
 
-			.form-group(ng-class="{ error: errors.active }")
+			.form-group(ng-class="{ error: errors.is_active }")
 				label.col-sm-3.control-label(for="userActive") Active
 				.col-sm-8
 					.checkbox
-						input#userActive(type="checkbox", ng-model="user.active")
+						input#userActive(type="checkbox", ng-model="user.is_active")
 
 			.form-group(ng-class="{ error: errors.username }")
 				label.col-sm-3.control-label Username

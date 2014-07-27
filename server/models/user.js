@@ -24,7 +24,8 @@ var fields = {
 	password_hash:   { type: String },
 	password_salt:   { type: String },
 	thumb:           { type: String },
-	active:          { type: Boolean, required: true, default: true }
+	created_at:      { type: Date, required: true },
+	is_active:       { type: Boolean, required: true, default: true }
 };
 // provider data fields
 if (config.vpdb.passport.github.enabled) {
@@ -44,8 +45,8 @@ UserSchema.plugin(uniqueValidator, { message: 'The {PATH} "{VALUE}" is already t
 // API FIELDS
 //-----------------------------------------------------------------------------
 var apiFields = {
-	reduced: [ 'id', 'name', 'username', 'thumb', 'gravatar_id'], // "member" search result
-	simple: [ 'email', 'github', 'active', 'plan' ]               // "admin" lists
+	reduced: [ 'id', 'name', 'username', 'thumb', 'gravatar_id'],               // "member" search result
+	simple: [ 'email', 'is_active', 'roles', 'plan', 'created_at', 'github' ]   // "admin" lists & profile
 };
 
 

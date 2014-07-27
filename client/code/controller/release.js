@@ -161,6 +161,16 @@ ctrl.controller('ReleaseAddCtrl', function($scope, $upload, $modal, $window, Aut
 	};
 
 
+	$scope.createTag = function() {
+		$modal.open({
+			templateUrl: 'partials/member/modals/tag-create',
+			controller: 'CreateTagCtrl'
+		}).result.then(function(newTag) {
+			$scope.tags.push(newTag);
+		});
+	};
+
+
 	$scope.removeTag = function(tag) {
 		$scope.release.tags.splice($scope.release.tags.indexOf(tag), 1);
 		$scope.tags.push(tag);
@@ -241,4 +251,9 @@ ctrl.controller('ChooseAuthorCtrl', function($scope, $modalInstance, UserResourc
 			$modalInstance.close({ user: $scope.user, roles: $scope.roles });
 		}
 	}
+});
+
+
+ctrl.controller('CreateTagCtrl', function($scope, $modalInstance) {
+
 });

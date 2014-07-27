@@ -23,7 +23,7 @@
 		hr
 
 		table.table.table-striped.table--selectable
-			tr(ng-repeat="user in users", ng-click="edit(user)", ng-class="{ inactive: !user.active }")
+			tr(ng-repeat="user in users", ng-click="edit(user)", ng-class="{ inactive: !user.is_active }")
 				td {{ user.name }}
 				td {{ user.email }}
 				td {{ user.roles.join(' ') }}

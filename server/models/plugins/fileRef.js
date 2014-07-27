@@ -105,8 +105,8 @@ module.exports = exports = function(schema, options) {
 						publc = true;
 						break;
 				}
-				file.active = true;
-				file.public = publc;
+				file.is_active = true;
+				file.is_public = publc;
 				file.save(next);
 			}, function(err) {
 				if (err) {

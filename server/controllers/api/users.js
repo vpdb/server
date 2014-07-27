@@ -14,6 +14,7 @@ exports.create = function(req, res) {
 
 	var newUser = new User(req.body);
 	newUser.provider = 'local';
+	newUser.created_at = new Date();
 	newUser.validate(function(err) {
 		if (err) {
 			logger.warn('[api|user:create] Validations failed: %s', util.inspect(_.map(err.errors, function(value, key) { return key; })));
@@ -67,7 +68,7 @@ exports.authenticate = function(req, res) {
 			logger.warn('[api|user:authenticate] Authentication denied for user "%s" (%s).', req.body.username, user ? 'password' : 'username');
 			return api.fail(res, 'Wrong username or password.', 401);
 		}
-		if (!user.active) {
+		if (!user.is_active) {
 			logger.warn('[api|user:authenticate] Authentication denied for inactive user "%s".', req.body.username);
 			return api.fail(res, 'Inactive account. Please contact an administrator.', 401);
 		}
@@ -158,7 +159,7 @@ exports.profile = function(req, res) {
 };
 
 exports.update = function(req, res) {
-	var updateableFields = [ 'name', 'email', 'username', 'active', 'roles' ];
+	var updateableFields = [ 'name', 'email', 'username', 'is_active', 'roles' ];
 	User.findOne({ id: req.params.id }, function(err, user) {
 		if (err) {
 			logger.error('[api|user:update] Error: %s', err, {});

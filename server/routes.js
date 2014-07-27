@@ -20,6 +20,7 @@ module.exports = function(app, config, passport) {
 	app.get('/partials/:name', web.partials());
 	app.get('/partials/member/release-add', web.partials('member/release-add', 'releases', 'add'));
 	app.get('/partials/member/modals/author-add', web.partials('member/modals/author-add', 'releases', 'add'));
+	app.get('/partials/member/modals/tag-create', web.partials('member/modals/tag-create', 'releases', 'add'));
 	app.get('/partials/admin/users', web.partials('admin/users', 'users', 'update'));
 	app.get('/partials/admin/game-add', web.partials('admin/game-add', 'games', 'update'));
 	app.get('/partials/admin/modals/:name', web.partials('admin/modals', 'users', 'update'));

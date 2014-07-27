@@ -80,7 +80,7 @@ exports.get = function(req, res) {
 		}
 
 		// file is not public (i.e. user must be logged in order to download)
-		if (!file.public) {
+		if (!file.is_public) {
 
 			// if not logged, deny
 			if (!req.user) {
@@ -88,7 +88,7 @@ exports.get = function(req, res) {
 			} else {
 
 				// if inactive and user isn't the owner, refuse directly
-				if (!file.active && !file._author.equals(req.user._id)) {
+				if (!file.is_active && !file._created_by.equals(req.user._id)) {
 					return res.status(404).end();
 				}
 
@@ -120,13 +120,13 @@ exports.get = function(req, res) {
 		} else {
 
 			// but not active and user isn't the owner
-			if (!file.active && (!req.user || file._author.equals(req.user._id))) {
+			if (!file.is_active && (!req.user || file._created_by.equals(req.user._id))) {
 				return res.status(404).end();
 			}
 			// otherwise, serve.
 			serve(req, res, file, req.params.variation);
 		}
-		if (!file.public && !req.user) {
+		if (!file.is_public && !req.user) {
 			return res.status(403).end();
 		}
 	});

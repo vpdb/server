@@ -81,8 +81,8 @@ Storage.prototype.whenProcessed = function(file, variationName, callback) {
 Storage.prototype.cleanup = function(graceperiod, done) {
 	graceperiod = graceperiod ? graceperiod : 0;
 
-	File.find({ active: false, created: { $lt: new Date(new Date().getTime() - graceperiod)} })
-		.populate('_author').
+	File.find({ is_active: false, created_at: { $lt: new Date(new Date().getTime() - graceperiod)} })
+		.populate('_created_by').
 		exec(function(err, files) {
 		if (err) {
 			logger.error('[storage] Error getting files for cleanup: %s', err);
@@ -90,8 +90,9 @@ Storage.prototype.cleanup = function(graceperiod, done) {
 		}
 
 		async.eachSeries(files, function(file, next) {
-			logger.info('[storage] Cleanup: Removing inactive file "%s" by <%s> (%s).', file.name, file._author.email, file.id);
+			logger.info('[storage] Cleanup: Removing inactive file "%s" by <%s> (%s).', file.name, file._created_by.email, file.id);
 			if (fs.existsSync(file.getPath())) {
+				// TODO remove variations
 				fs.unlinkSync(file.getPath());
 			}
 			file.remove(next);

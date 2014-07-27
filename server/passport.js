@@ -47,7 +47,8 @@ module.exports = function(config, passport) {
 							email: profile.emails[0].value,
 							provider: provider,
 							roles: count ? [ 'member' ] : [ 'root' ],
-							plan: count ? settings.current.vpdb.quota.defaultPlan : 'unlimited'
+							plan: count ? settings.current.vpdb.quota.defaultPlan : 'unlimited',
+							created_at: new Date()
 						});
 
 						// save original data to separate field

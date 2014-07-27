@@ -15,7 +15,8 @@ var Schema = mongoose.Schema;
 var fields = {
 	id:           { type: String, required: true, unique: true, 'default': shortId.generate },
 	name:         { type: String, required: 'Name must be provided.', unique: true },
-	description:  { type: String }
+	description:  { type: String },
+	is_active:    { type: Boolean, required: true, default: false }
 };
 var TagSchema = new Schema(fields);
 

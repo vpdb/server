@@ -15,14 +15,14 @@ var fields = {
 	id:           { type: String, required: true, unique: true, 'default': shortId.generate },
 	name:         { type: String, required: 'Filename must be provided.' },
 	bytes:        { type: Number, required: true },
-	created_at:   { type: Date, required: true },
 	mime_type:    { type: String, required: true, enum: { values: _.keys(mimeTypes), message: 'Invalid MIME type. Valid MIME types are: ["' +  _.keys(mimeTypes).join('", "') + '"].' }},
 	file_type:    { type: String, required: true },
 	metadata:     { type: Schema.Types.Mixed },
-	public:       { type: Boolean, required: true, default: false },
-	active:       { type: Boolean, required: true, default: false },
 	variations:   { type: Schema.Types.Mixed },
-	_author:      { type: Schema.ObjectId, required: true, ref: 'User' }
+	is_public:    { type: Boolean, required: true, default: false },
+	is_active:    { type: Boolean, required: true, default: false },
+	created_at:   { type: Date, required: true },
+	_created_by:  { type: Schema.ObjectId, required: true, ref: 'User' }
 };
 var FileSchema = new Schema(fields);
 
@@ -30,10 +30,10 @@ var FileSchema = new Schema(fields);
 //-----------------------------------------------------------------------------
 // VIRTUALS
 //-----------------------------------------------------------------------------
-FileSchema.virtual('author')
+FileSchema.virtual('created_by')
 	.get(function() {
-		if (this.populated('_author')) {
-			return this._author.toReduced();
+		if (this.populated('_created_by')) {
+			return this._created_by.toReduced();
 		}
 	});
 
@@ -94,7 +94,7 @@ if (!FileSchema.options.toObject) {
 FileSchema.options.toObject.transform = function(doc, file) {
 	delete file.__v;
 	delete file._id;
-	delete file._author;
+	delete file._created_by;
 };
 
 mongoose.model('File', FileSchema);

@@ -167,6 +167,7 @@
 //  </div>
 //
 // .panel--dropzone         - Drop Zone
+// .panel--dropzone-alt     - Drop Zone (alternative)
 //
 // Styleguide 17.5
 .panel--dropzone
@@ -181,6 +182,41 @@
 	border-bottom-width 2px
 	> label
 		margin-top 45px
+
+.panel--dropzone-alt
+	border-radius $border-radius-large
+	border-style solid
+	border-width 2px
+	padding 15px
+	transition all $animation-long
+
+	.padder-top:first-child
+		margin-top 0
+
+.panel--dropzone-alt-2
+	display relative
+	border none
+	margin-left -10px
+	margin-bottom -10px
+	padding-left 10px
+	padding-top 2px
+	padding-bottom 10px
+	transition background-color $animation-long, border-color $animation-long, opacity $animation-long
+	&:before
+		transition background-color $animation-long, border-color $animation-long, opacity $animation-long
+		opacity 0
+		content " "
+		position: absolute;
+		top -12px
+		right 15px
+		bottom -15px
+		left 5px
+		border-radius $border-radius-large
+		border-style solid
+		border-width 2px
+	&.active:before
+		opacity 1
+
 
 // Panel Groups
 //

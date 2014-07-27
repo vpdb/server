@@ -145,8 +145,6 @@
 
 		.clearfix.padder-bottom-2x
 
-
-
 		//- TAGS
 		//---------------------------------------------------------------------
 		h4
@@ -155,17 +153,47 @@
 		hr.hr--light
 		.row
 			.col-sm-6
+
+				//- SELECTED
+				h5.h--shift-up.hr--margin-small Selected Tags
+				.panel--dropzone-alt(ng-model="release.tags",
+				  data-drop="true",
+				  data-jqyoui-options="{ accept: '.badge:not([ng-model=release.tags])', activeClass: 'active', 'hoverClass': 'hover' }",
+				  jqyoui-droppable="{ multiple:true }")
+					div.padder-top(ng-repeat="tag in release.tags")
+						.badge.badge--tag(ng-model="release.tags",
+							data-drag="true",
+							data-jqyoui-options="{ revert: 'invalid' }",
+							jqyoui-draggable="{ animate: true, index: {{$index}} }") {{ tag.name }}
+						i.space-left {{ tag.description }}
+					i(ng-show="release.tags.length == 0") No tags selected. Drag and drop them from the right hand pane in here.
 			.col-sm-6
-				h5.hr--margin-small	 Existing Tags
-				.badge.badge--tag DOF
-				.badge.badge--tag High Definition
+				.panel--dropzone-alt-2(ng-model="tags",
+				  data-drop="true",
+				  data-jqyoui-options="{ accept:':not([ng-model=tags])', activeClass: 'active', hoverClass: 'hover' }",
+				  jqyoui-droppable="{ multiple:true }")
+
+					//- EXISTING
+					h5.hr--margin-small.h--shift-up Existing Tags
+					.badge.badge--tag(ng-repeat="tag in tags", ng-model="tags",
+					  data-drag="true",
+					  data-jqyoui-options="{ revert: 'invalid' }",
+					  jqyoui-draggable='{ animate: true, index: {{$index}} }')
+						| {{ tag.name }}
+						i.fa.fa-question-circle.space-left.a.a--darker(
+							tooltip="{{tag.description}}",
+							tooltip-append-to-body="true",
+							tooltip-trigger="click",
+							tooltip-popup-delay="200")
+					i(ng-show="tags.length == 0") No more tags available.
+
 
 		//- LINKS
 		//---------------------------------------------------------------------
 		h4
 			i.fa.fa-link.space-right
 			| Links
-		hr.hr--light
+		hr.hr--light.hr--margin-small
 		p: i Add your links here.
 
 		//---------------------------------------------------------------------

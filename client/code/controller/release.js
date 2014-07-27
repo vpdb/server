@@ -27,6 +27,12 @@ ctrl.controller('ReleaseAddCtrl', function($scope, $upload, $modal, $window, Aut
 		}
 	];
 
+	$scope.tags = [
+		{ name: 'DOF', description: 'Support for Direct Output Framework.' },
+		{ name: 'HD', description: 'All textures render crispy at Full HD resolution.' },
+		{ name: '3D', description: 'Table is modeled entirely in 3D, no 2D sprites are used.' }
+	];
+
 	$scope.flavors = [
 		{
 			header: 'Orientation',
@@ -47,12 +53,8 @@ ctrl.controller('ReleaseAddCtrl', function($scope, $upload, $modal, $window, Aut
 
 	$scope.reset = function() {
 		$scope.release = {
-			authors: [
-				{
-					user: AuthService.getUser(),
-					roles: [ 'Table Creator' ]
-				}
-			]
+			authors: [{ user: AuthService.getUser(), roles: [ 'Table Creator' ]}],
+			tags: []
 		};
 	};
 

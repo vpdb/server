@@ -27,6 +27,7 @@ exports.auth = function(resource, permission, done) {
 	return function(req, res) {
 		var token;
 		var headerName = config.vpdb.authorizationHeader;
+		delete req.user;
 
 		var deny = function(error) {
 			done(error, req, res);

@@ -1,5 +1,5 @@
 
-ctrl.controller('ReleaseAddCtrl', function($scope, $upload, $modal, $window, AuthService, ApiHelper, FileResource, DisplayService) {
+ctrl.controller('ReleaseAddCtrl', function($scope, $upload, $modal, $window, AuthService, ApiHelper, FileResource, TagResource, DisplayService) {
 
 	$scope.theme('light');
 	$scope.setMenu('admin');
@@ -27,11 +27,7 @@ ctrl.controller('ReleaseAddCtrl', function($scope, $upload, $modal, $window, Aut
 		}
 	];
 
-	$scope.tags = [
-		{ name: 'DOF', description: 'Support for Direct Output Framework.' },
-		{ name: 'HD', description: 'All textures render crispy at Full HD resolution.' },
-		{ name: '3D', description: 'Table is modeled entirely in 3D (no 2D sprites are used).' }
-	];
+	$scope.tags = TagResource.query();
 
 	$scope.flavors = [
 		{
@@ -254,6 +250,12 @@ ctrl.controller('ChooseAuthorCtrl', function($scope, $modalInstance, UserResourc
 });
 
 
-ctrl.controller('CreateTagCtrl', function($scope, $modalInstance) {
+ctrl.controller('CreateTagCtrl', function($scope, $modalInstance, ApiHelper, TagResource) {
+	$scope.tag = {};
+	$scope.create = function() {
+		TagResource.save($scope.tag, function(tag) {
+			$modalInstance.close(tag);
 
+		}, ApiHelper.handleErrors($scope));
+	}
 });

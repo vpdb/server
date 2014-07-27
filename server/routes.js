@@ -31,21 +31,21 @@ module.exports = function(app, config, passport) {
 	app.post('/api/users',        api.users.create);
 	app.get('/api/users',         api.auth(api.users.list, 'users', 'search'));
 	app.put('/api/users/:id',     api.auth(api.users.update, 'users', 'update'));
-	app.delete('/api/users/:id',  api.auth(api.users.delete, 'users', 'delete'));
+	app.delete('/api/users/:id',  api.auth(api.users.del, 'users', 'delete'));
 	app.get('/api/user',          api.auth(api.users.profile, 'user', 'profile'));
 
 	app.get('/api/roles',         api.auth(api.roles.list, 'roles', 'list'));
 
 	app.get('/api/ipdb/:id',      api.auth(api.ipdb.view, 'ipdb', 'view'));
 
+	app.get('/api/tags',          api.anon(api.tags.list));
+	app.post('/api/tags',         api.auth(api.tags.create, 'tags', 'add'));
+
 	app.put('/api/files',         api.auth(api.files.upload, 'files', 'upload'));
-	app.delete('/api/files/:id',  api.auth(api.files.delete, 'files', 'delete'));
+	app.delete('/api/files/:id',  api.auth(api.files.del, 'files', 'delete'));
 
 	app.get('/api/games',         api.anon(api.games.list));
 	app.head('/api/games/:id',    api.anon(api.games.head));
-//	app.head('/api/games/:id',    function(req, res, next) {
-//		res.send(499);
-//	});
 	app.get('/api/games/:id',     api.anon(api.games.view));
 
 	app.post('/api/games',        api.auth(api.games.create, 'games', 'add'));

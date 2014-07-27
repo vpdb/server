@@ -33,7 +33,9 @@ exports.auth = function(done, resource, permission) {
  * @returns {Function} Middleware function
  */
 exports.anon = function(done) {
-	return ctrl.auth(null, null, function(err, req, res) {
+	// auth is only called in order to populate the req.user object, if credentials are provided.
+	return ctrl.auth(null, null, function(authErr, req, res) {
+		// authErr is ignored since we're in anon.
 		done(req, res);
 	});
 };

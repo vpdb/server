@@ -126,6 +126,7 @@ describe('The ACLs of the VPDB API', function() {
 		it('should deny access to game creation', function(done) {
 			request
 				.post('/games')
+				.send({})
 				.end(function(err, res) {
 					expect(res.status).to.be(401);
 					done();
@@ -138,6 +139,27 @@ describe('The ACLs of the VPDB API', function() {
 				.get('/ping')
 				.end(function(err, res) {
 					expect(res.status).to.be(200);
+					done();
+				});
+		});
+
+		// app.get('/api/tags',          api.anon(api.tags.list));
+		it('should allow to list tags', function(done) {
+			request
+				.get('/tags')
+				.end(function(err, res) {
+					expect(res.status).to.be(200);
+					done();
+				});
+		});
+
+		// app.post('/api/tags',         api.auth(api.tags.create, 'tags', 'add'));
+		it('should deny access to create tags', function(done) {
+			request
+				.post('/tags')
+				.send({})
+				.end(function(err, res) {
+					expect(res.status).to.be(401);
 					done();
 				});
 		});
@@ -279,6 +301,7 @@ describe('The ACLs of the VPDB API', function() {
 		it('should deny access to game creation', function(done) {
 			request
 				.post('/games')
+				.send({})
 				.as('member')
 				.end(function(err, res) {
 					expect(res.status).to.be(403);
@@ -292,6 +315,28 @@ describe('The ACLs of the VPDB API', function() {
 				.as('member')
 				.end(function(err, res) {
 					expect(res.status).to.be(200);
+					done();
+				});
+		});
+
+		it('should allow to list tags', function(done) {
+			request
+				.get('/tags')
+				.as('member')
+				.end(function(err, res) {
+					expect(res.status).to.be(200);
+					done();
+				});
+		});
+
+		// app.post('/api/tags',         api.auth(api.tags.create, 'tags', 'add'));
+		it('should allow to create tags', function(done) {
+			request
+				.post('/tags')
+				.send({})
+				.as('member')
+				.end(function(err, res) {
+					expect(res.status).to.be(422);
 					done();
 				});
 		});
@@ -423,8 +468,8 @@ describe('The ACLs of the VPDB API', function() {
 		it('should allow to create games', function(done) {
 			request
 				.post('/games')
-				.as('contributor')
 				.send({})
+				.as('contributor')
 				.end(function(err, res) {
 					expect(res.status).to.be(422);
 					done();
@@ -591,8 +636,8 @@ describe('The ACLs of the VPDB API', function() {
 		it('should deny to create games', function(done) {
 			request
 				.post('/games')
-				.as('admin')
 				.send({})
+				.as('admin')
 				.end(function(err, res) {
 					expect(res.status).to.be(403);
 					done();
@@ -750,8 +795,8 @@ describe('The ACLs of the VPDB API', function() {
 		it('should allow to create games', function(done) {
 			request
 				.post('/games')
-				.as('root')
 				.send({})
+				.as('root')
 				.end(function(err, res) {
 					expect(res.status).to.be(422);
 					done();

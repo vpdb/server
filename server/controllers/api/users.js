@@ -253,7 +253,7 @@ exports.update = function(req, res) {
 	});
 };
 
-exports.delete = function(req, res) {
+exports.del = function(req, res) {
 	User.findOne({ id: req.params.id }, function(err, user) {
 		if (err) {
 			logger.error('[api|user:delete] Error finding user "%s": %s', req.params.id, err, {});

@@ -19,13 +19,17 @@ var maxAspectRatioDifference = 0.2;
 var fields = {
 	id:           { type: String, required: true, unique: true, 'default': shortId.generate },
 	name:         { type: String, required: 'Name must be provided.' },
-	version:      { type: String, required: 'Version must be provided.' },
 	description:  { type: String },
-	release_info: { type: String },
-	flavors: [
+	versions: [
 		{
-			orientation: { type: String, required: true, enum: { values: [ 'ws', 'fs' ], message: 'Invalid orientation. Valid orientation are: ["ws", "fs"].' }},
-			lightning:   { type: String, required: true, enum: { values: [ 'day', 'night' ], message: 'Invalid lightning. Valid options are: ["day", "night"].' }}
+			version:      { type: String, required: 'Version must be provided.' },
+			release_info: { type: String },
+			flavors: [
+				{
+					orientation: { type: String, required: true, enum: { values: [ 'ws', 'fs' ], message: 'Invalid orientation. Valid orientation are: ["ws", "fs"].' }},
+					lightning:   { type: String, required: true, enum: { values: [ 'day', 'night' ], message: 'Invalid lightning. Valid options are: ["day", "night"].' }}
+				}
+			]
 		}
 	],
 	authors: [

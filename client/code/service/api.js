@@ -44,6 +44,11 @@ services.factory('FileResource', function($resource) {
 	});
 });
 
+services.factory('TagResource', function($resource) {
+	return $resource('/api/tags/:id', {}, {
+	});
+});
+
 
 
 services.factory('ApiHelper', function($modal) {

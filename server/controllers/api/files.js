@@ -81,7 +81,7 @@ exports.upload = function(req, res) {
 };
 
 
-exports.delete = function(req, res) {
+exports.del = function(req, res) {
 	File.findOne({ id: req.params.id }, function(err, file) {
 		if (err) {
 			logger.error('[api|file:delete] Error getting file "%s": %s', req.params.id, err, {});

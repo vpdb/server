@@ -7,4 +7,5 @@ exports.files = require('./files');
 exports.games = require('./games');
 exports.ipdb = require('./ipdb');
 exports.roles = require('./roles');
+exports.tags = require('./tags');
 exports.users = require('./users');

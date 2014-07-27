@@ -29,10 +29,9 @@ var init = function(next) {
 			allows: [
 				{ resources: 'user', permissions: 'profile' },
 				{ resources: 'users', permissions: [ 'view', 'search' ]},
-				{ resources: 'files', permissions: 'download' },
-				{ resources: 'files', permissions: 'upload' },
-				{ resources: 'files', permissions: 'delete' },  // only own/inactive files
-				{ resources: 'releases', permissions: 'add' }
+				{ resources: 'files', permissions: ['download', 'upload', 'delete' ] },  // delete: only own/inactive files
+				{ resources: 'releases', permissions: 'add' },
+				{ resources: 'tags', permissions: 'add' }
 			]
 		}, {
 			roles: 'mocha',

@@ -5,6 +5,24 @@
 			| &nbsp;Create A New Tag
 	.modal-body
 		p Tags need a unique name and a description.
+		form.form-horizontal(role="form")
+
+			.form-group(ng-class="{ error: errors.name }")
+				label.col-sm-3.control-label Name
+				.col-sm-7
+					input.form-control(ng-model="tag.name", ng-required)
+			div.alert.alert-danger.padder-bottom(ng-show="errors.name")
+				i.fa.fa-exclamation-triangle.space-right
+				| {{ errors.name }}
+
+			.form-group(ng-class="{ error: errors.description }")
+				label.col-sm-3.control-label Description
+				.col-sm-7
+					textarea.form-control(ng-model="tag.description", ng-required)
+			div.alert.alert-danger(ng-show="errors.description")
+				i.fa.fa-exclamation-triangle.space-right
+				| {{ errors.description }}
+
 
 	.modal-footer
 		button.btn.btn-default(ng-click="$dismiss()") Cancel

@@ -194,7 +194,6 @@ services.factory('AuthService', function($window, $localStorage, $sessionStorage
 		getAuthHeader: function() {
 			return this.authHeader;
 		}
-
 	};
 });
 

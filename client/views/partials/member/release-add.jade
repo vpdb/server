@@ -151,7 +151,7 @@
 			i.fa.fa-tags.space-right
 			| Tags
 		hr.hr--light.hr--margin-small
-		p Tags highlight special characteristic or features of your release. There are already a bunch of them but you
+		p Tags highlight special characteristics or features of your release. There are already a bunch of them but you
 			| can also define new ones.
 		.row.padder-top
 			.col-sm-6
@@ -172,24 +172,29 @@
 						i.space-left {{ tag.description }}
 					i(ng-show="release.tags.length == 0") No tags selected. Drag and drop them from the right hand pane in here.
 			.col-sm-6
-				.panel--dropzone-alt-2(ng-model="tags",
-				  data-drop="true",
-				  data-jqyoui-options="{ accept:':not([ng-model=tags])', activeClass: 'active', hoverClass: 'hover' }",
-				  jqyoui-droppable="{ multiple:true }")
+				.rel-pos
+					.panel--dropzone-alt-2(ng-model="tags",
+					  data-drop="true",
+					  data-jqyoui-options="{ accept:':not([ng-model=tags])', activeClass: 'active', hoverClass: 'hover' }",
+					  jqyoui-droppable="{ multiple:true }")
 
-					//- EXISTING
-					h5.hr--margin-small.h--shift-up Existing Tags
-					.badge.badge--tag(ng-repeat="tag in tags", ng-model="tags",
-					  data-drag="true",
-					  data-jqyoui-options="{ revert: 'invalid' }",
-					  jqyoui-draggable='{ animate: true, index: {{$index}} }')
-						| {{ tag.name }}
-						i.fa.fa-question-circle.space-left.a.a--darker(
-							tooltip="{{tag.description}}",
-							tooltip-append-to-body="true",
-							tooltip-trigger="click",
-							tooltip-popup-delay="200")
-					i(ng-show="tags.length == 0") No more tags available.
+						//- EXISTING
+						h5.hr--margin-small.h--shift-up Existing Tags
+						.badge.badge--tag(ng-repeat="tag in tags", ng-model="tags",
+						  data-drag="true",
+						  data-jqyoui-options="{ revert: 'invalid' }",
+						  jqyoui-draggable='{ animate: true, index: {{$index}} }')
+							| {{ tag.name }}
+							i.fa.fa-question-circle.space-left.a.a--darker(
+								tooltip="{{tag.description}}",
+								tooltip-append-to-body="true",
+								tooltip-trigger="click",
+								tooltip-popup-delay="200")
+						i(ng-show="tags.length == 0") No more tags available.
+
+				button.btn.btn-default.padder-top.pull-right
+					i.fa.fa-plus-circle.space-right
+					| Create New Tag
 
 			.clearfix.padder-bottom
 

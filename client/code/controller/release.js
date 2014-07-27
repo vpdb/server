@@ -30,7 +30,7 @@ ctrl.controller('ReleaseAddCtrl', function($scope, $upload, $modal, $window, Aut
 	$scope.tags = [
 		{ name: 'DOF', description: 'Support for Direct Output Framework.' },
 		{ name: 'HD', description: 'All textures render crispy at Full HD resolution.' },
-		{ name: '3D', description: 'Table is modeled entirely in 3D, no 2D sprites are used.' }
+		{ name: '3D', description: 'Table is modeled entirely in 3D (no 2D sprites are used).' }
 	];
 
 	$scope.flavors = [

@@ -50,7 +50,8 @@ ctrl.controller('ReleaseAddCtrl', function($scope, $upload, $modal, $window, Aut
 	$scope.reset = function() {
 		$scope.release = {
 			authors: [{ user: AuthService.getUser(), roles: [ 'Table Creator' ]}],
-			tags: []
+			tags: [],
+			links: []
 		};
 	};
 
@@ -171,6 +172,18 @@ ctrl.controller('ReleaseAddCtrl', function($scope, $upload, $modal, $window, Aut
 		$scope.release.tags.splice($scope.release.tags.indexOf(tag), 1);
 		$scope.tags.push(tag);
 	};
+
+
+	$scope.addLink = function(link) {
+		$scope.release.links.push(link);
+		return {};
+	};
+
+	$scope.removeLink = function(link) {
+		$scope.release.links.splice($scope.release.links.indexOf(link), 1);
+	};
+
+
 
 	$scope.reset();
 });

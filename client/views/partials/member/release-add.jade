@@ -205,7 +205,30 @@
 			i.fa.fa-link.space-right
 			| Links
 		hr.hr--light.hr--margin-small
-		p: i Add your links here.
+		p You can add additional links to your release, such as to your WIP thread or other interesting resources.
+
+		.row.row--fullwidth.row--no-margin
+			.form-group.col-sm-3
+				label Label
+			.form-group.col-sm-9
+				label URL
+		.row.row--fullwidth(ng-repeat="link in release.links")
+			.form-group.col-sm-3
+				input.form-control(type='text', ng-model="link.label")
+			.form-group.col-sm-9
+				.input-group
+					input.form-control(type='text', ng-model="link.url")
+					span.input-group-addon: i.icon.icon-trash.a(ng-click="removeLink(link)")
+
+		.row.row--fullwidth(init="newLink={}")
+			.form-group.col-sm-3
+				input.form-control(type='text', ng-model="newLink.label")
+			.form-group.col-sm-9
+				.input-group
+					input.form-control(type='text', ng-model="newLink.url", on-enter="newLink=addLink(newLink)")
+					span.input-group-addon: i.fa.fa-plus-circle.a(ng-click="newLink=addLink(newLink)")
+
+
 
 		//---------------------------------------------------------------------
 		h1 5. Set Compatibility

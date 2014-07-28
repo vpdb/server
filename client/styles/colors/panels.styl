@@ -37,13 +37,19 @@
 
 	// Accordion panels
 	accordion
-		& > .panel-group
-			& > .panel
-				background-color $color-light
-				& > .panel-heading
-					background-color $color-light
+		> .panel-group
+			> .panel
+				background none
+				> .panel-heading
+					border none
+					background-color $color-darkest-inv
+					margin-top 2px
 					a:hover
 						color $color-lightish-inv
+				.panel-body
+					background-color $color-lighter
+			> .panel:first-child > .panel-heading
+				margin-top 0px
 
 	// Blank panels have a low-contrast color
 	.panel--blank

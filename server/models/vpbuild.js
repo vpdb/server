@@ -12,28 +12,32 @@ var Schema = mongoose.Schema;
 //-----------------------------------------------------------------------------
 var fields = {
 	id:           { type: String, required: true, unique: true },
-	name:         { type: String, required: 'Name must be provided.', unique: true },
-	description:  { type: String, required: 'Description must be provided.' },
+	label:        { type: String, required: 'A label must be provided.', unique: true },
+	download_url: { type: String },
+	support_url:  { type: String },
+	description:  { type: String },
+	built_at:     { type: Date },
+	type:         { type: String, required: true, enum: { values: [ 'release', 'nightly', 'experimental' ], message: 'Invalid type. Valid orientation are: ["release", "nightly", "experimental"].' }},
+	is_range:     { type: Boolean, required: true, default: false },
 	is_active:    { type: Boolean, required: true, default: false },
 	created_at:   { type: Date, required: true },
-	_created_by:  { type: Schema.ObjectId, ref: 'User' },
-	_releases:    [ { type: Schema.ObjectId, ref: 'Release' } ]
+	_created_by:  { type: Schema.ObjectId, ref: 'User' }
 };
-var TagSchema = new Schema(fields);
+var VPBuildSchema = new Schema(fields);
 
 
 //-----------------------------------------------------------------------------
 // API FIELDS
 //-----------------------------------------------------------------------------
 var apiFields = {
-	simple: [ 'id', 'name', 'description' ]
+	simple: [ 'id', 'label', 'url', 'description', 'type', 'is_range' ]
 };
 
 
 //-----------------------------------------------------------------------------
 // VIRTUALS
 //-----------------------------------------------------------------------------
-TagSchema.virtual('created_by')
+VPBuildSchema.virtual('created_by')
 	.get(function() {
 		if (this._created_by && this.populated('_created_by')) {
 			return this._created_by.toReduced();
@@ -44,7 +48,7 @@ TagSchema.virtual('created_by')
 //-----------------------------------------------------------------------------
 // METHODS
 //-----------------------------------------------------------------------------
-TagSchema.methods.toSimple = function() {
+VPBuildSchema.methods.toSimple = function() {
 	return _.pick(this.toObject(), apiFields.simple);
 };
 
@@ -52,33 +56,28 @@ TagSchema.methods.toSimple = function() {
 //-----------------------------------------------------------------------------
 // VALIDATIONS
 //-----------------------------------------------------------------------------
-TagSchema.path('name').validate(function(name) {
-	return validator.isLength(name ? name.trim() : '', 2);
-}, 'Name must contain at least two characters.');
-
-TagSchema.path('description').validate(function(description) {
-	return validator.isLength(description ? description.trim() : description, 5);
-}, 'Name must contain at least 5 characters.');
+VPBuildSchema.path('label').validate(function(label) {
+	return validator.isLength(label ? label.trim() : '', 3);
+}, 'Label must contain at least three characters.');
 
 
 //-----------------------------------------------------------------------------
 // PLUGINS
 //-----------------------------------------------------------------------------
-TagSchema.plugin(uniqueValidator, { message: 'The {PATH} "{VALUE}" is already taken.' });
+VPBuildSchema.plugin(uniqueValidator, { message: 'The {PATH} "{VALUE}" is already taken.' });
 
 
 //-----------------------------------------------------------------------------
 // OPTIONS
 //-----------------------------------------------------------------------------
-if (!TagSchema.options.toObject) {
-	TagSchema.options.toObject = {};
+if (!VPBuildSchema.options.toObject) {
+	VPBuildSchema.options.toObject = {};
 }
-TagSchema.options.toObject.transform = function(doc, tag) {
-	delete tag.__v;
-	delete tag._id;
-	delete tag._created_by;
-	delete tag._releases;
+VPBuildSchema.options.toObject.transform = function(doc, vpbuild) {
+	delete vpbuild.__v;
+	delete vpbuild._id;
+	delete vpbuild._created_by;
 };
 
-mongoose.model('Tag', TagSchema);
-logger.info('[model] Model "tag" registered.');
+mongoose.model('VPBuild', VPBuildSchema);
+logger.info('[model] Model "vpbuild" registered.');

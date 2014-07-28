@@ -14,11 +14,11 @@
 /*noinspection CssUnknownTarget*/
 @font-face {
 	font-family: 'icons';
-	src:url('/fonts/icons.eot?-q6rd05');
-	src:url('/fonts/icons.svg?-q6rd05#icons') format('svg'),
-	url('/fonts/icons.eot?#iefix-q6rd05') format('embedded-opentype'),
-	url('/fonts/icons.woff?-q6rd05') format('woff'),
-	url('/fonts/icons.ttf?-q6rd05') format('truetype');
+	src:url('/fonts/icons.eot?-k99f4l');
+	src:url('/fonts/icons.svg?-k99f4l#icons') format('svg'),
+	url('/fonts/icons.eot?#iefix-k99f4l') format('embedded-opentype'),
+	url('/fonts/icons.woff?-k99f4l') format('woff'),
+	url('/fonts/icons.ttf?-k99f4l') format('truetype');
 	font-weight: normal;
 	font-style: normal;
 }
@@ -146,11 +146,17 @@
 .icon-db:before {
 	content: "\e603";
 }
+.icon-package:before {
+	content: "\f0c4";
+}
 .icon-user:before {
 	content: "\e61b";
 }
 .icon-exit:before {
 	content: "\e61c";
+}
+.icon-moon:before {
+	content: "\e627";
 }
 .icon-trash:before {
 	content: "\e626";

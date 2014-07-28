@@ -229,11 +229,63 @@
 					span.input-group-addon: i.fa.fa-plus-circle.a(ng-click="newLink=addLink(newLink)")
 
 
-
 		//---------------------------------------------------------------------
 		h1 5. Set Compatibility
-
 		hr
+		p Here you can let users know which versions of Visual Pinball your release supports. There are three levels
+			| described below.
+
+		.row
+			.col-sm-4
+				h4 Developed with
+				hr.hr--no-margin
+				tabset.tabset--light
+					tab
+						tab-heading: i.icon.icon-package(title="Official Builds")
+						h4.h--no-margin Official Builds
+					tab
+						tab-heading: i.icon.icon-moon(title="Nightly Builds")
+						h4.h--no-margin Nightly Builds
+					tab
+						tab-heading: i.fa.fa-flask(title="Test Builds")
+						h4.h--no-margin Test Builds
+				p.padder-top: i The VP build was used while building the table. It is considered the most playable version. If
+					| there's a glitch, it’s surely not because of VP.
+
+			.col-sm-4
+				h4 Tested with
+				hr.hr--no-margin
+				tabset.tabset--light
+					tab
+						tab-heading: i.icon.icon-package(title="Official Builds")
+						h4.h--no-margin Official Builds
+					tab
+						tab-heading: i.icon.icon-moon(title="Nightly Builds")
+						h4.h--no-margin Nightly Builds
+					tab
+						tab-heading: i.fa.fa-flask(title="Test Builds")
+						h4.h--no-margin Test Builds
+				p.padder-top: i The author extensively tested the table with this VP build(s), but minor bugs or
+					| glitches might occur, though unlikely.
+
+			.col-sm-4
+				h4 Not Designed For
+				hr.hr--no-margin
+				tabset.tabset--light
+					tab
+						tab-heading: i.icon.icon-package(title="Official Builds")
+						h4.h--no-margin Official Builds
+					tab
+						tab-heading: i.icon.icon-moon(title="Nightly Builds")
+						h4.h--no-margin Nightly Builds
+					tab
+						tab-heading: i.fa.fa-flask(title="Test Builds")
+						h4.h--no-margin Test Builds
+
+				p.padder-top: i These VP builds shouldn't be used, since they have significant changes in the physics or
+					| graphics engine.
+
+
 		//---------------------------------------------------------------------
 		h1 6. Give Credits
 

@@ -11,7 +11,6 @@ exports.list = function(req, res) {
 	if (req.user) {
 		// logged users also get their own tags even if inactive.
 		q = { $or: [{ is_active: true }, { _created_by: req.user._id }] };
-		console.log('***** including for tags from user ' + req.user._id);
 	} else {
 		q = { is_active: true };
 	}

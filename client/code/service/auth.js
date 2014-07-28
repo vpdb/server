@@ -201,6 +201,11 @@ services.factory('AuthInterceptor', function(AuthService) {
 	return {
 		request: function(config) {
 			config.headers = config.headers || {};
+
+			if (config.url.substr(0, 5) == '/api/') {
+				// dont "internally cache" (as in: don't make the request at all) anything from the api.
+				config.cache = false;
+			}
 			if (AuthService.hasToken()) {
 				config.headers[AuthService.getAuthHeader()] = 'Bearer ' + AuthService.getToken();
 			}
@@ -212,7 +217,9 @@ services.factory('AuthInterceptor', function(AuthService) {
 				return response;
 			}
 			var token = response.headers('x-token-refresh');
-			if (token) {
+
+			// only for api calls we can be sure that the token is not cached and therefore correct.
+			if (token && response.config.url.substr(0, 5) == '/api/') {
 				var dirty = parseInt(response.headers('x-user-dirty'));
 				if (dirty > 0) {
 					// force user update

@@ -19,7 +19,6 @@ var ctrl = require('./ctrl');
  */
 var auth = function(resource, permission, successFct, errFct) {
 	if (resource && permission) {
-
 		return ctrl.auth(resource, permission, function(err, req, res) {
 			if (err) {
 				return errFct(req, res, err);

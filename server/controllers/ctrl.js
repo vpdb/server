@@ -2,6 +2,7 @@ var _ = require('underscore');
 var jwt = require('jwt-simple');
 var redis = require('redis-mock').createClient();
 var logger = require('winston');
+var debug = require('debug')('auth');
 
 var acl = require('../acl');
 var assets = require('../config/assets');
@@ -66,6 +67,8 @@ exports.auth = function(resource, permission, done) {
 			return deny({ code: 401,  message: 'Bad JSON Web Token: ' + e.message });
 		}
 
+		debug('1. %s %s - GOT TOKEN (%s)', req.method, req.path, decoded.iss);
+
 		// check for expiration
 		var now = new Date();
 		var tokenExp = new Date(decoded.exp);
@@ -84,13 +87,16 @@ exports.auth = function(resource, permission, done) {
 				return deny({ code: 500, message: 'No user with ID ' + decoded.iss + ' found.' });
 			}
 
+
 			// this will be useful for the rest of the stack
 			req.user = user;
+
+			debug('2. %s %s - GOT USER <%s> (%s)', req.method, req.path, req.user.email, req.user.id);
 
 			// generate new token if it's a short term token.
 			var tokenIssued = new Date(decoded.iat);
 			if (tokenExp.getTime() - tokenIssued.getTime() == config.vpdb.sessionTimeout) {
-				res.setHeader('X-Token-Refresh', exports.generateToken(user, now));
+				res.setHeader('X-Token-Refresh', exports.generateToken(user, now, req.method + ' ' + req.path));
 			}
 
 			var checkACLs = function(err) {
@@ -138,7 +144,8 @@ exports.auth = function(resource, permission, done) {
  * @param now
  * @returns {*}
  */
-exports.generateToken = function(user, now) {
+exports.generateToken = function(user, now, dbg) {
+	debug('3. %s - GEN-TOKEN <%s> (%s)', dbg, user.email, user.id);
 	return jwt.encode({
 		iss: user.id,
 		iat: now,

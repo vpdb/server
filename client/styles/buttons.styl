@@ -24,7 +24,7 @@
 .btn
 
 	// border and padding
-	padding 1px 20px 0px
+	padding 1px 15px 0px
 	border none
 
 	// typography
@@ -41,6 +41,9 @@
 	> i.icon-pin-on, > i.icon-pin-off
 		font-size 24px // icon
 		line-height 12px
+
+	> i.fa, > i.icon
+		margin-left -3px
 
 	// get rid of that dotted box..
 	&:focus, &:active:focus
@@ -81,9 +84,13 @@
 
 	// icon tweaks
 	.fa
-		font-size 20px // icon
+		font-size 20px
+		margin-top 1px
+		vertical-align text-top
+		&.space-right
+			margin-right 7px
 	&.btn-default .fa
-		font-size 18px // icon
+		font-size 18px
 
 // Buttton with fixed medium width
 .btn--width-med

@@ -21,6 +21,7 @@ module.exports = function(app, config, passport) {
 	app.get('/partials/member/release-add', web.partials('member/release-add', 'releases', 'add'));
 	app.get('/partials/member/modals/author-add', web.partials('member/modals/author-add', 'releases', 'add'));
 	app.get('/partials/member/modals/tag-create', web.partials('member/modals/tag-create', 'releases', 'add'));
+	app.get('/partials/member/modals/vpbuild-create', web.partials('member/modals/vpbuild-create', 'releases', 'add'));
 	app.get('/partials/admin/users', web.partials('admin/users', 'users', 'update'));
 	app.get('/partials/admin/game-add', web.partials('admin/game-add', 'games', 'update'));
 	app.get('/partials/admin/modals/:name', web.partials('admin/modals', 'users', 'update'));
@@ -40,6 +41,9 @@ module.exports = function(app, config, passport) {
 
 	app.get('/api/tags',          api.anon(api.tags.list));
 	app.post('/api/tags',         api.auth(api.tags.create, 'tags', 'add'));
+
+	app.get('/api/vpbuilds',      api.anon(api.vpbuilds.list));
+	app.post('/api/vpbuilds',     api.auth(api.vpbuilds.create, 'vpbuilds', 'add'));
 
 	app.put('/api/files',         api.auth(api.files.upload, 'files', 'upload'));
 	app.delete('/api/files/:id',  api.auth(api.files.del, 'files', 'delete'));

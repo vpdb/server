@@ -68,3 +68,33 @@
 
 	li:last-child .media
 		border-bottom none
+
+
+.datepicker + .dropdown-menu
+	width inherit
+	min-width -moz-max-content // ff hack
+	li
+		cursor default
+		margin-top  0
+		padding-top 0
+		background none
+		&:hover
+			background none !important
+
+	table tr
+		button.btn.btn-default
+			font-family $font-content
+			font-size $font-size-small
+			background-color $color-darkest-inv
+			border-radius 0
+			padding 3px 10px
+		th > small
+			text-transform uppercase
+			font-size $font-size-smaller
+			color $color-light-inv
+		td
+			padding 1px
+			em
+				font-size $font-size-small
+				font-weight $font-weight-normal
+				color $color-dark-inv

@@ -31,7 +31,8 @@ var init = function(next) {
 				{ resources: 'users', permissions: [ 'view', 'search' ]},
 				{ resources: 'files', permissions: ['download', 'upload', 'delete' ] },  // delete: only own/inactive files
 				{ resources: 'releases', permissions: 'add' },
-				{ resources: 'tags', permissions: 'add' }
+				{ resources: 'tags', permissions: 'add' },
+				{ resources: 'vpbuilds', permissions: 'add' }
 			]
 		}, {
 			roles: 'mocha',

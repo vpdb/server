@@ -49,6 +49,11 @@ services.factory('TagResource', function($resource) {
 	});
 });
 
+services.factory('VPBuildResource', function($resource) {
+	return $resource('/api/vpbuilds/:id', {}, {
+	});
+});
+
 
 
 services.factory('ApiHelper', function($modal) {

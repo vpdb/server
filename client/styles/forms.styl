@@ -182,11 +182,49 @@ textarea
 		cursor pointer
 
 
+
+// Checkboxes
+//
+// Huge with two-line label.
+//
+// Markup:
+// <div>
+//   <input id="box1" type="checkbox" />
+//   <label for="box1">Checkbox 1</label>
+//   <input id="box2" type="checkbox" />
+//   <label for="box2">Checkbox 2</label>
+// </div>
+//
+// . - Checkboxes
+//
+// Styleguide 5.3
+input[type=checkbox]
+	display none
+	+ label
+		margin-left 23px
+		cursor pointer
+		transition color $animation-short
+		&:before
+			cursor pointer
+			font-family FontAwesome
+			display inline-block
+			content "\f096"
+			position absolute
+			margin-left -22px
+			margin-top 1px
+			transition color $animation-short
+
+	&:checked + label:before
+		content "\f14a"
+		margin-top 0px
+		margin-left -23px
+
+
 // Errors
 //
 // For errors, wrap your element into a `.form-group` element and add the error class.
 //
-// Styleguide 5.3
+// Styleguide 5.4
 
 
 // Erroneous Text Input
@@ -205,7 +243,7 @@ textarea
 //
 // .form-group.error - Erroneous field
 //
-// Styleguide 5.3.1
+// Styleguide 5.4.1
 .form-group
 	&.error .form-control, &.error .input-group-addon, .error.form-control, .error.input-group-addon
 		border-style solid

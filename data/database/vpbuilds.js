@@ -7,7 +7,7 @@ exports.rows = [
 		support_url: '',
 		built_at: '2014-04-29T00:00:00.000Z',
 		description: '*This is the first release based on DirectX 9.*\n\n\
-Please take a look at the [Table Ugrade Guide](https://github.com/c-f-h/vpinball/wiki/Table-Upgrade-Guide) for some additional help with problematic VP 9.2.1 (or lower) tables (and more).\n\
+Please take a look at the [Table Upgrade Guide](https://github.com/c-f-h/vpinball/wiki/Table-Upgrade-Guide) for some additional help with problematic VP 9.2.1 (or lower) tables (and more).\n\
 In case your setup cannot handle VP 9.9.0 properly for whatever reason, please download VP 9.2.1 instead, which was the last release still based on DirectX 7.\n\
 \n\
 ### Changelog\n\
@@ -151,6 +151,7 @@ This version also has the latest updates from VP 9.9.0.',
 		id: '-9.2.1',
 		label: '< v9.2.1',
 		description: 'v9.2.1 or lower',
+		built_at: '2014-03-21T00:00:00.000Z',
 		type: 'release',
 		is_range: true,
 		is_active: true
@@ -159,6 +160,7 @@ This version also has the latest updates from VP 9.9.0.',
 		id: '-9.9.0',
 		label: '< v9.9.0',
 		description: 'v9.9.0 or lower',
+		built_at: '2014-04-29T00:00:00.000Z',
 		type: 'release',
 		is_range: true,
 		is_active: true
@@ -167,6 +169,7 @@ This version also has the latest updates from VP 9.9.0.',
 		id: '8.x',
 		label: 'v8.x',
 		description: 'Any v8.* build',
+		built_at: '2009-02-07T15:23:00.000Z',
 		type: 'release',
 		is_range: true,
 		is_active: true

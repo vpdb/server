@@ -1,5 +1,5 @@
-
-ctrl.controller('ReleaseAddCtrl', function($scope, $upload, $modal, $window, AuthService, ApiHelper, FileResource, TagResource, DisplayService) {
+ctrl.controller('ReleaseAddCtrl', function($scope, $upload, $modal, $window, AuthService, ApiHelper, FileResource, TagResource, VPBuildResource, DisplayService) {
+	"use strict";
 
 	$scope.theme('light');
 	$scope.setMenu('admin');
@@ -51,11 +51,34 @@ ctrl.controller('ReleaseAddCtrl', function($scope, $upload, $modal, $window, Aut
 		$scope.release = {
 			authors: [{ user: AuthService.getUser(), roles: [ 'Table Creator' ]}],
 			tags: [],
-			links: []
+			links: [],
+			vpbuilds: {
+				developed: [],
+				tested: [],
+				incompat: []
+			}
 		};
 	};
 
-	$scope.remove = function(file) {
+	var vpbuilds = VPBuildResource.query(function() {
+		$scope.builds = {};
+		var types = [];
+		_.each(vpbuilds, function(vpbuild) {
+			if (!$scope.builds[vpbuild.type]) {
+				$scope.builds[vpbuild.type] = [];
+				types.push(vpbuild.type);
+			}
+			vpbuild.built_at = new Date(vpbuild.built_at);
+			$scope.builds[vpbuild.type].push(vpbuild);
+		});
+		_.each(types, function(type) {
+			$scope.builds[type].sort(function(a, b) {
+				return a.built_at.getTime() === b.built_at.getTime() ? 0 : (a.built_at.getTime() > b.built_at.getTime() ? -1 : 1);
+			});
+		});
+	});
+
+	$scope.removeFile = function(file) {
 		FileResource.delete({ id: file.storage.id }, function() {
 			$scope.files.splice($scope.files.indexOf(file), 1);
 
@@ -69,7 +92,9 @@ ctrl.controller('ReleaseAddCtrl', function($scope, $upload, $modal, $window, Aut
 			var file = $files[i];
 			var ext = file.name.substr(file.name.lastIndexOf('.') + 1, file.name.length);
 
+
 			if (!_.contains(['image/jpeg', 'image/png'], file.type) && !_.contains(['vpt', 'vpx', 'vbs'], ext)) {
+				//noinspection JSHint
 				return $modal.open({
 					templateUrl: 'partials/modals/info',
 					controller: 'InfoModalCtrl',
@@ -184,12 +209,22 @@ ctrl.controller('ReleaseAddCtrl', function($scope, $upload, $modal, $window, Aut
 	};
 
 
+	$scope.addVPBuild = function() {
+		$modal.open({
+			templateUrl: 'partials/member/modals/vpbuild-create',
+			controller: 'AddVPBuildCtrl',
+			size: 'lg'
+		}).result.then(function(newTag) {
+			$scope.tags.push(newTag);
+		});
+	};
 
 	$scope.reset();
 });
 
 
 ctrl.controller('ChooseAuthorCtrl', function($scope, $modalInstance, UserResource, release, author) {
+	"use strict";
 
 	if (author) {
 		$scope.author = author;
@@ -238,15 +273,15 @@ ctrl.controller('ChooseAuthorCtrl', function($scope, $modalInstance, UserResourc
 		if (!$scope.isValidUser) {
 			$scope.errors.user = 'You must select a user. Typing after selecting a user erases the selected user.';
 			valid = false;
-		} else if (_.filter($scope.release.authors, function(author) { return author.user.id == $scope.user.id; }).length > 0 &&
-		          ($scope.adding || $scope.user.id != $scope.author.user.id)) {
+		} else if (_.filter($scope.release.authors, function(author) { return author.user.id === $scope.user.id; }).length > 0 &&
+		          ($scope.adding || $scope.user.id !== $scope.author.user.id)) {
 			$scope.errors.user = 'User "' + $scope.user.name + '" is already added as author.';
 			valid = false;
 		} else {
 			delete $scope.errors.user;
 		}
 
-		if ($scope.roles.length == 0) {
+		if ($scope.roles.length === 0) {
 			$scope.errors.roles = 'Please add at least one role.';
 			valid = false;
 		} else if ($scope.roles.length > 3) {
@@ -259,16 +294,40 @@ ctrl.controller('ChooseAuthorCtrl', function($scope, $modalInstance, UserResourc
 		if (valid) {
 			$modalInstance.close({ user: $scope.user, roles: $scope.roles });
 		}
-	}
+	};
 });
 
 
 ctrl.controller('CreateTagCtrl', function($scope, $modalInstance, ApiHelper, TagResource) {
+	"use strict";
+
 	$scope.tag = {};
 	$scope.create = function() {
 		TagResource.save($scope.tag, function(tag) {
 			$modalInstance.close(tag);
 
 		}, ApiHelper.handleErrors($scope));
-	}
+	};
+});
+
+
+ctrl.controller('AddVPBuildCtrl', function($scope, $modalInstance, ApiHelper, VPBuildResource) {
+	"use strict";
+
+	$scope.vpbuild = {};
+	$scope.showWeeks = false;
+
+	$scope.openCalendar = function($event) {
+		$event.preventDefault();
+		$event.stopPropagation();
+
+		$scope.calendarOpened = true;
+	};
+
+	$scope.add = function() {
+		VPBuildResource.save($scope.tag, function(tag) {
+			$modalInstance.close(tag);
+
+		}, ApiHelper.handleErrors($scope));
+	};
 });

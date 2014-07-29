@@ -108,7 +108,7 @@ See [changelog](CHANGELOG.md).
 
 ## Tests
 
-Tests currently cover API tests only. A test run requires a clean environment. For this purpose, there is an included 
+The automated tests cover the API. A test run requires a clean environment. For this purpose, there is an included 
 settings file at `server/config/settings-test.js` which is used when running tests. Basically it's a stripped-down 
 config that uses a different database.
  

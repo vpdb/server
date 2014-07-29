@@ -9,3 +9,4 @@ exports.ipdb = require('./ipdb');
 exports.roles = require('./roles');
 exports.tags = require('./tags');
 exports.users = require('./users');
+exports.vpbuilds = require('./vpbuilds');

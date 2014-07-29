@@ -30,7 +30,7 @@ var VPBuildSchema = new Schema(fields);
 // API FIELDS
 //-----------------------------------------------------------------------------
 var apiFields = {
-	simple: [ 'id', 'label', 'url', 'description', 'type', 'is_range' ]
+	simple: [ 'id', 'label', 'download_url', 'description', 'built_at', 'type', 'is_range' ]
 };
 
 

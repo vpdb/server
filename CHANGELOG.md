@@ -1,5 +1,22 @@
 # VPDB Changelog
 
+## v0.0.6 (unreleased)
+
+*Client Changes*:
+
+* Added page for adding a new release
+* Games list and game details aren't mocked anymore
+
+*Server Changes*:
+
+* API:
+  * Tag resource (`create`, `list`)
+  * 
+* Added automatic thumbnail generation on file upload
+* Added sample data generation when starting the first time
+* Added Mongoose plugin for automatically referencing files
+* Bugfixes
+
 ## v0.0.5
 
 *Server Changes*:

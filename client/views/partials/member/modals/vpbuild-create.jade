@@ -1,0 +1,85 @@
+.theme-light
+	.modal-header
+		h1.h--no-margin.h--small
+			i.icon.icon-package.space-right
+			| &nbsp;Add A New Visual Pinball Build
+	.modal-body
+		p Tags need a unique name and a description.
+		form.form-horizontal(role="form")
+
+
+			//- LABEL
+			//-----------------------------------------------------------------
+			.form-group(ng-class="{ error: errors.label }")
+				label.col-sm-3.control-label Label
+				.col-sm-7
+					input.form-control(ng-model="vpbuild.label", placeholder="Version or build name...", ng-required)
+			div.alert.alert-danger.padder-bottom(ng-show="errors.name")
+				i.fa.fa-exclamation-triangle.space-right
+				| {{ errors.label }}
+
+
+			//- BUILD DATE
+			//-----------------------------------------------------------------
+			.form-group(ng-class="{ error: errors.built_at }")
+				label.col-sm-3.control-label Release/Build Date
+				.col-sm-3
+					.input-group
+						input.form-control.datepicker(type='text', ng-model='vpbuild.built_at', ng-required='true',
+							datepicker-popup="shortDate",
+							is-open="calendarOpened",
+							close-text="Close",
+							show-weeks="showWeeks",
+							starting-day="1")
+						span.input-group-addon: i.fa.fa-calendar.a(ng-click='openCalendar($event)')
+
+			div.alert.alert-danger.padder-bottom(ng-show="errors.built_at")
+				i.fa.fa-exclamation-triangle.space-right
+				| {{ errors.built_at }}
+
+
+			//- DESCRIPTION
+			//-----------------------------------------------------------------
+			.form-group(ng-class="{ error: errors.description }")
+				label.col-sm-3.control-label Description
+				.col-sm-7
+					tabset.tabset--light
+						label.label--small.pull-right(markdown-info="Markdown enabled.")
+						tab
+							tab-heading
+								i.fa.fa-edit(title="Write")
+							textarea.textarea--full.msd-elastic(placeholder="Description of the build", ng-model="vpbuild.description")
+						tab
+							tab-heading
+								i.fa.fa-eye(title="Preview")
+							div.markdown(markdown="vpbuild.description")
+							label.tab__label(ng-show="!vpbuild.description || vpbuild.description.length == 0") Nothing to preview.
+			div.alert.alert-danger(ng-show="errors.description")
+				i.fa.fa-exclamation-triangle.space-right
+				| {{ errors.description }}
+
+
+			//- DOWNLOAD URL
+			//-----------------------------------------------------------------
+			.form-group(ng-class="{ error: errors.download_url }")
+				label.col-sm-3.control-label Download URL
+				.col-sm-7
+					input.form-control(ng-model="vpbuild.download_url", ng-required)
+			div.alert.alert-danger.padder-bottom(ng-show="errors.download_url")
+				i.fa.fa-exclamation-triangle.space-right
+				| {{ errors.download_url }}
+
+
+			//- SUPPORT URL
+			//-----------------------------------------------------------------
+			.form-group(ng-class="{ error: errors.support_url }")
+				label.col-sm-3.control-label Support URL
+				.col-sm-7
+					input.form-control(ng-model="vpbuild.support_url", ng-required)
+			div.alert.alert-danger.padder-bottom(ng-show="errors.support_url")
+				i.fa.fa-exclamation-triangle.space-right
+				| {{ errors.support_url }}
+
+	.modal-footer
+		button.btn.btn-default(ng-click="$dismiss()") Cancel
+		button.btn.btn--secondary(ng-click="create()") Create

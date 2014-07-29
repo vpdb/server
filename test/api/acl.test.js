@@ -164,6 +164,27 @@ describe('The ACLs of the VPDB API', function() {
 				});
 		});
 
+		// app.get('/api/vpbuilds',      api.anon(api.vpbuilds.list));
+		it('should allow to list vpbuilds', function(done) {
+			request
+				.get('/vpbuilds')
+				.end(function(err, res) {
+					expect(res.status).to.be(200);
+					done();
+				});
+		});
+
+		// app.post('/api/vpbuilds',     api.auth(api.vpbuilds.create, 'vpbuilds', 'add'));
+		it('should deny access to create vpbuilds', function(done) {
+			request
+				.post('/vpbuilds')
+				.send({})
+				.end(function(err, res) {
+					expect(res.status).to.be(401);
+					done();
+				});
+		});
+
 	});
 
 	describe('for logged clients (role member)', function() {
@@ -329,12 +350,32 @@ describe('The ACLs of the VPDB API', function() {
 				});
 		});
 
-		// app.post('/api/tags',         api.auth(api.tags.create, 'tags', 'add'));
 		it('should allow to create tags', function(done) {
 			request
 				.post('/tags')
 				.send({})
 				.as('member')
+				.end(function(err, res) {
+					expect(res.status).to.be(422);
+					done();
+				});
+		});
+
+		it('should allow to list vpbuilds', function(done) {
+			request
+				.get('/vpbuilds')
+				.as('member')
+				.end(function(err, res) {
+					expect(res.status).to.be(200);
+					done();
+				});
+		});
+
+		it('should allow to create vpbuilds', function(done) {
+			request
+				.post('/vpbuilds')
+				.as('member')
+				.send({})
 				.end(function(err, res) {
 					expect(res.status).to.be(422);
 					done();
@@ -482,6 +523,48 @@ describe('The ACLs of the VPDB API', function() {
 				.as('contributor')
 				.end(function(err, res) {
 					expect(res.status).to.be(200);
+					done();
+				});
+		});
+
+		it('should allow to list tags', function(done) {
+			request
+				.get('/tags')
+				.as('contributor')
+				.end(function(err, res) {
+					expect(res.status).to.be(200);
+					done();
+				});
+		});
+
+		it('should allow to create tags', function(done) {
+			request
+				.post('/tags')
+				.send({})
+				.as('contributor')
+				.end(function(err, res) {
+					expect(res.status).to.be(422);
+					done();
+				});
+		});
+
+		it('should allow to list vpbuilds', function(done) {
+			request
+				.get('/vpbuilds')
+				.as('contributor')
+				.end(function(err, res) {
+					expect(res.status).to.be(200);
+					done();
+				});
+		});
+
+		it('should allow to create vpbuilds', function(done) {
+			request
+				.post('/vpbuilds')
+				.as('contributor')
+				.send({})
+				.end(function(err, res) {
+					expect(res.status).to.be(422);
 					done();
 				});
 		});
@@ -654,6 +737,48 @@ describe('The ACLs of the VPDB API', function() {
 				});
 		});
 
+		it('should allow to list tags', function(done) {
+			request
+				.get('/tags')
+				.as('admin')
+				.end(function(err, res) {
+					expect(res.status).to.be(200);
+					done();
+				});
+		});
+
+		it('should allow to create tags', function(done) {
+			request
+				.post('/tags')
+				.send({})
+				.as('admin')
+				.end(function(err, res) {
+					expect(res.status).to.be(422);
+					done();
+				});
+		});
+
+		it('should allow to list vpbuilds', function(done) {
+			request
+				.get('/vpbuilds')
+				.as('admin')
+				.end(function(err, res) {
+					expect(res.status).to.be(200);
+					done();
+				});
+		});
+
+		it('should allow to create vpbuilds', function(done) {
+			request
+				.post('/vpbuilds')
+				.as('admin')
+				.send({})
+				.end(function(err, res) {
+					expect(res.status).to.be(422);
+					done();
+				});
+		});
+
 	});
 
 	describe('for the root user', function() {
@@ -809,6 +934,48 @@ describe('The ACLs of the VPDB API', function() {
 				.as('root')
 				.end(function(err, res) {
 					expect(res.status).to.be(200);
+					done();
+				});
+		});
+
+		it('should allow to list tags', function(done) {
+			request
+				.get('/tags')
+				.as('root')
+				.end(function(err, res) {
+					expect(res.status).to.be(200);
+					done();
+				});
+		});
+
+		it('should allow to create tags', function(done) {
+			request
+				.post('/tags')
+				.send({})
+				.as('root')
+				.end(function(err, res) {
+					expect(res.status).to.be(422);
+					done();
+				});
+		});
+
+		it('should allow to list vpbuilds', function(done) {
+			request
+				.get('/vpbuilds')
+				.as('root')
+				.end(function(err, res) {
+					expect(res.status).to.be(200);
+					done();
+				});
+		});
+
+		it('should allow to create vpbuilds', function(done) {
+			request
+				.post('/vpbuilds')
+				.as('root')
+				.send({})
+				.end(function(err, res) {
+					expect(res.status).to.be(422);
 					done();
 				});
 		});

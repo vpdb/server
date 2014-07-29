@@ -58,6 +58,19 @@
 		color $color-dark-inv
 		background-color $color-lighter
 
+	input[type=checkbox]
+		+ label
+			color $color-lighter-inv
+			&:before
+				color $color-lighter-inv
+		+ label:hover
+			color $color-lightest-inv
+			&:before
+				color $color-lightest-inv
+
+		&:checked + label:hover:before
+			color $color-lighter-inv
+
 	textarea
 		background-color $color-light
 

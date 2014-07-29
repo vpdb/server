@@ -1,10 +1,7 @@
-'use strict';
+"use strict";
 
 /* Controllers */
-
 var ctrl = angular.module('vpdb.controllers', []);
-
-
 ctrl.controller('AppCtrl', function($scope, $rootScope, $location, $modal, UserResource, AuthService, ProfileService, PingResource) {
 
 	$rootScope.themeName = 'theme-dark';
@@ -35,7 +32,7 @@ ctrl.controller('AppCtrl', function($scope, $rootScope, $location, $modal, UserR
 	};
 
 	$scope.toggleTheme = function() {
-		$rootScope.themeName = $rootScope.themeName == 'theme-dark' ? 'theme-light' : 'theme-dark';
+		$rootScope.themeName = $rootScope.themeName === 'theme-dark' ? 'theme-light' : 'theme-dark';
 	};
 
 	$scope.setLoading = function(loading) {
@@ -54,6 +51,7 @@ ctrl.controller('AppCtrl', function($scope, $rootScope, $location, $modal, UserR
 				$scope.$broadcast('downloadPinned', download);
 			}
 		} else {
+			//noinspection JSHint
 			alert('Here\'s the file! You\'re welcome!	');
 		}
 	};
@@ -66,6 +64,7 @@ ctrl.controller('AppCtrl', function($scope, $rootScope, $location, $modal, UserR
 	};
 
 	$scope.downloadPinned = function() {
+		//noinspection JSHint
 		alert('You would now get a zip file with everthing included.');
 	};
 

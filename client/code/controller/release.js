@@ -1,5 +1,7 @@
+"use strict";
+
+/*global ctrl, _*/
 ctrl.controller('ReleaseAddCtrl', function($scope, $upload, $modal, $window, AuthService, ApiHelper, FileResource, TagResource, VPBuildResource, DisplayService) {
-	"use strict";
 
 	$scope.theme('light');
 	$scope.setMenu('admin');
@@ -224,7 +226,6 @@ ctrl.controller('ReleaseAddCtrl', function($scope, $upload, $modal, $window, Aut
 
 
 ctrl.controller('ChooseAuthorCtrl', function($scope, $modalInstance, UserResource, release, author) {
-	"use strict";
 
 	if (author) {
 		$scope.author = author;
@@ -299,7 +300,6 @@ ctrl.controller('ChooseAuthorCtrl', function($scope, $modalInstance, UserResourc
 
 
 ctrl.controller('CreateTagCtrl', function($scope, $modalInstance, ApiHelper, TagResource) {
-	"use strict";
 
 	$scope.tag = {};
 	$scope.create = function() {
@@ -312,7 +312,6 @@ ctrl.controller('CreateTagCtrl', function($scope, $modalInstance, ApiHelper, Tag
 
 
 ctrl.controller('AddVPBuildCtrl', function($scope, $modalInstance, ApiHelper, VPBuildResource) {
-	"use strict";
 
 	$scope.vpbuild = {};
 	$scope.showWeeks = false;

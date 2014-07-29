@@ -1,4 +1,6 @@
+"use strict";
 
+/*global services, _*/
 services.factory('AuthResource', function($resource) {
 	return $resource('/api/authenticate', {}, {
 		authenticate: { method: 'POST' }
@@ -71,7 +73,7 @@ services.factory('ApiHelper', function($modal) {
 				if (response.data.error) {
 					scope.error = response.data.error;
 				}
-			}
+			};
 		},
 
 		handleErrorsInDialog: function(scope, title, callback) {
@@ -88,7 +90,7 @@ services.factory('ApiHelper', function($modal) {
 				if (callback) {
 					callback(response);
 				}
-			}
+			};
 		}
 	};
 });

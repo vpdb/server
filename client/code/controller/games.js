@@ -1,3 +1,6 @@
+"use strict";
+
+/*global ctrl, _*/
 ctrl.controller('GameListController', function($scope, $rootScope, $http, $location, $templateCache, $route) {
 
 	$scope.theme('dark');
@@ -20,7 +23,7 @@ ctrl.controller('GameListController', function($scope, $rootScope, $http, $locat
 		$scope.template = '/partials/game-' + $scope.viewtype;
 	};
 	$scope.switchview = function(view) {
-		if ($scope.viewtype == view) {
+		if ($scope.viewtype === view) {
 			return;
 		}
 		$location.hash(view);
@@ -57,7 +60,7 @@ ctrl.controller('GameListController', function($scope, $rootScope, $http, $locat
 
 	$scope.$on('dataChangeSort', function(event, field, direction) {
 		$scope.sort = field;
-		$scope.sortReverse = direction == 'desc';
+		$scope.sortReverse = direction === 'desc';
 		$scope.$apply();
 	});
 
@@ -66,7 +69,7 @@ ctrl.controller('GameListController', function($scope, $rootScope, $http, $locat
 	var lastPath = $location.path();
 	$scope.$on('$locationChangeSuccess', function() {
 		// "undo" route change if path didn't change (only hashes or params)
-		if ($location.path() == lastPath) {
+		if ($location.path() === lastPath) {
 			$route.current = lastRoute;
 		}
 	});

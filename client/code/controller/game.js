@@ -1,3 +1,6 @@
+"use strict";
+
+/*global ctrl, _*/
 ctrl.controller('GameController', function($scope, $http, $routeParams, $modal, $log) {
 
 	$scope.theme('dark');
@@ -160,7 +163,7 @@ ctrl.controller('AdminGameAddCtrl', function($scope, $upload, $modal, $window, A
 		}, function() {
 			$scope.idValid = true;
 			$scope.idValidated = true;
-		})
+		});
 	};
 
 	$scope.submit = function() {
@@ -168,7 +171,7 @@ ctrl.controller('AdminGameAddCtrl', function($scope, $upload, $modal, $window, A
 		var submit = function() {
 
 			$scope.game.game_type =
-					$scope.game.origin == 'originalGame' ? 'og' : (
+					$scope.game.origin === 'originalGame' ? 'og' : (
 					$scope.game.game_type ? $scope.game.game_type.toLowerCase() : 'na'
 				);
 
@@ -189,7 +192,7 @@ ctrl.controller('AdminGameAddCtrl', function($scope, $upload, $modal, $window, A
 
 		// if not yet refreshed, do that first.
 		var ipdbId = readIpdbId();
-		if ($scope.game.origin == 'recreation' && ipdbId && (!$scope.game.ipdb || !$scope.game.ipdb.number)) {
+		if ($scope.game.origin === 'recreation' && ipdbId && (!$scope.game.ipdb || !$scope.game.ipdb.number)) {
 			fetchIpdb(ipdbId, submit);
 		} else {
 			submit();
@@ -254,7 +257,7 @@ ctrl.controller('AdminGameAddCtrl', function($scope, $upload, $modal, $window, A
 
 		$scope.backglass = {
 			dimensions: bg.metadata.size.width + '×' + bg.metadata.size.height,
-			test: ar == 1.25 ? 'optimal' : (arDiff < maxAspectRatioDifference ? 'warning' : 'error'),
+			test: ar === 1.25 ? 'optimal' : (arDiff < maxAspectRatioDifference ? 'warning' : 'error'),
 			ar: ar,
 			arDiff: Math.round(arDiff * 100)
 		};

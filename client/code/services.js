@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 /* Services */
 var services = angular.module('vpdb.services', []);
@@ -32,7 +32,7 @@ services.factory('DisplayService', function() {
 				default:                                     return 'icon-ext';
 			}
 		}
-	}
+	};
 });
 
 services.factory('ProfileService', function($rootScope, ProfileResource) {
@@ -48,5 +48,5 @@ services.factory('ProfileService', function($rootScope, ProfileResource) {
 				});
 			});
 		}
-	}
+	};
 });

@@ -1,7 +1,6 @@
-'use strict';
+"use strict"; /*global Showdown*/
 
 /* Directives */
-
 var directives = angular.module('vpdb.directives', []);
 
 directives.directive('auth', function($rootScope, $location, AuthService) {
@@ -16,7 +15,7 @@ directives.directive('auth', function($rootScope, $location, AuthService) {
 				AuthService.tokenReceived(auth.jwt);
 			}
 		}
-	}
+	};
 });
 
 directives.directive('authHeader', function($rootScope, $location, AuthService) {
@@ -25,7 +24,7 @@ directives.directive('authHeader', function($rootScope, $location, AuthService) 
 		link: function(scope, element, attrs) {
 			AuthService.setAuthHeader(attrs.authHeader);
 		}
-	}
+	};
 });
 
 directives.directive('onEnter', function() {
@@ -75,7 +74,7 @@ directives.directive('ratingbox', function($parse) {
 				{ stateOn: 'fa fa-star star-right star-on', stateOff: 'fa fa-star star-right star-off' }
 			];
 		}
-	}
+	};
 });
 
 directives.directive('flipbox', function($timeout) {
@@ -101,7 +100,7 @@ directives.directive('flipbox', function($timeout) {
 				}, 650, true);
 			});
 		}
-	}
+	};
 });
 
 directives.directive('stars', function() {
@@ -209,7 +208,7 @@ directives.directive('imgBg', function($parse) {
 			};
 
 			// check for constant
-			if (attrs.imgBg.substr(0, 1) == '/') {
+			if (attrs.imgBg.substr(0, 1) === '/') {
 				setImg(attrs.imgBg);
 
 			// otherwise, watch scope for expression.
@@ -249,7 +248,7 @@ directives.directive('markdownInfo', function($parse) {
 			var icon = '<i class="icon icon-markdown"></i>&nbsp;&nbsp;';
 			element.html(icon + attrs.markdownInfo.replace(/markdown/gi, '<a href="http://daringfireball.net/projects/markdown/syntax" target="_blank">Markdown</a>'));
 		}
-	}
+	};
 });
 
 directives.directive('filterDecade', function() {
@@ -302,17 +301,17 @@ directives.directive('download', function($parse) {
 				scope.$apply();
 			});
 			scope.$on('downloadUnpinned', function(event, download) {
-				if (download.id == dl.id) {
+				if (download.id === dl.id) {
 					scope.dlPinned = false;
 				}
 			});
 			scope.$on('downloadPinned', function(event, download) {
-				if (download.id == dl.id) {
+				if (download.id === dl.id) {
 					scope.dlPinned = true;
 				}
 			});
 		}
-	}
+	};
 });
 
 directives.directive('sort', function() {
@@ -327,7 +326,7 @@ directives.directive('sort', function() {
 					element.siblings().removeClass('selected');
 					element.addClass('selected');
 					element.addClass('asc');
-					if (attrs.d == 'asc') {
+					if (attrs.d === 'asc') {
 						element.addClass('asc');
 						element.removeClass('desc');
 					} else {

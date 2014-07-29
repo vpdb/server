@@ -1,4 +1,6 @@
+"use strict";
 
+/*global services, _*/
 services.factory('AuthService', function($window, $localStorage, $sessionStorage, $rootScope, $location) {
 	return {
 
@@ -133,7 +135,7 @@ services.factory('AuthService', function($window, $localStorage, $sessionStorage
 			if (!exp) {
 				return true;
 			}
-			return new Date(exp).getTime() < new Date().getTime()
+			return new Date(exp).getTime() < new Date().getTime();
 		},
 
 		/**
@@ -169,7 +171,7 @@ services.factory('AuthService', function($window, $localStorage, $sessionStorage
 			$localStorage.jwt = token;
 			$localStorage.tokenExpires = claims.exp;
 			$localStorage.tokenCreated = claims.iat;
-			return claims.iss
+			return claims.iss;
 		},
 
 		/**
@@ -202,7 +204,7 @@ services.factory('AuthInterceptor', function(AuthService) {
 		request: function(config) {
 			config.headers = config.headers || {};
 
-			if (config.url.substr(0, 5) == '/api/') {
+			if (config.url.substr(0, 5) === '/api/') {
 				// dont "internally cache" (as in: don't make the request at all) anything from the api.
 				config.cache = false;
 			}
@@ -219,7 +221,7 @@ services.factory('AuthInterceptor', function(AuthService) {
 			var token = response.headers('x-token-refresh');
 
 			// only for api calls we can be sure that the token is not cached and therefore correct.
-			if (token && response.config.url.substr(0, 5) == '/api/') {
+			if (token && response.config.url.substr(0, 5) === '/api/') {
 				var dirty = parseInt(response.headers('x-user-dirty'));
 				if (dirty > 0) {
 					// force user update

@@ -1,3 +1,6 @@
+"use strict";
+
+/*global ctrl, _*/
 ctrl.controller('HomeController', function($scope, $http) {
 
 	$scope.theme('dark');

@@ -1,3 +1,6 @@
+"use strict";
+/*global services, _*/
+
 /**
  * @see http://jsfiddle.net/lrlopez/dFeuf/
  */
@@ -33,7 +36,7 @@ services.service('timeAgoService', function($timeout) {
 			$timeout(ref.doTimeout, ref.settings.refreshMillis);
 		},
 		init: function() {
-			if (this.initted == false) {
+			if (this.initted === false) {
 				this.initted = true;
 				this.nowTime = (new Date()).getTime();
 				ref = this;
@@ -79,5 +82,5 @@ services.service('timeAgoService', function($timeout) {
 			var separator = $l.wordSeparator === undefined ? " " : $l.wordSeparator;
 			return $.trim([prefix, words, suffix].join(separator));
 		}
-	}
+	};
 });

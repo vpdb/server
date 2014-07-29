@@ -1,3 +1,6 @@
+"use strict";
+
+/*global ctrl, _*/
 ctrl.controller('AdminUserCtrl', function($scope, $modal, UserResource, RolesResource) {
 
 	$scope.theme('light');
@@ -78,7 +81,7 @@ ctrl.controller('AdminUserEditCtrl', function($scope, $rootScope, $modalInstance
 	$scope.save = function() {
 		UserResource.update({ userid: $scope.user.id }, $scope.user, function() {
 			angular.copy($scope.user, user);
-			if ($rootScope.auth.user.id == $scope.user.id) {
+			if ($rootScope.auth.user.id === $scope.user.id) {
 				$rootScope.auth.user = $scope.user;
 			}
 			$modalInstance.close();

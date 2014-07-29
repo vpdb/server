@@ -148,7 +148,7 @@ exports.ok = function(type, action, ref, res, rollback) {
  * to store non-structured objects in MongoDB.
  *
  * @param object Object that is going to end up in MongoDB
- * @param replacement (optional) Replacement character
+ * @param [replacement=-] (optional) Replacement character
  */
 exports.sanitizeObject = function(object, replacement) {
 	replacement = replacement || '-';

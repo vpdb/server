@@ -91,7 +91,7 @@ exports.get = function(req, res) {
 
 				// if inactive and user isn't the owner, refuse directly
 				if (!file.is_active && !file._created_by.equals(req.user._id)) {
-					return res.status(404).end();
+					return res.status(403).end();
 				}
 
 				// otherwise, check acl
@@ -104,6 +104,11 @@ exports.get = function(req, res) {
 						return res.status(403).end();
 					}
 
+					// if the user is the owner, serve directly (owned files don't count as credits)
+					if (file._created_by.equals(req.user._id)) {
+						return serve(req, res, file, req.params.variation);
+					}
+
 					// and the quota
 					quota.isAllowed(req, res, file, function(err, granted) {
 						if (err) {
@@ -113,7 +118,7 @@ exports.get = function(req, res) {
 						if (!granted) {
 							return res.status(403).end();
 						}
-						serve(req, res, file, req.params.variation);
+						return serve(req, res, file, req.params.variation);
 					});
 				});
 			}
@@ -122,14 +127,16 @@ exports.get = function(req, res) {
 		} else {
 
 			// but not active and user isn't the owner
-			if (!file.is_active && (!req.user || file._created_by.equals(req.user._id))) {
-				return res.status(404).end();
+			if (!file.is_active) {
+				if (!req.user) {
+					return res.status(401).end();
+				}
+				if (!file._created_by.equals(req.user._id)) {
+					return res.status(403).end();
+				}
 			}
 			// otherwise, serve.
-			serve(req, res, file, req.params.variation);
-		}
-		if (!file.is_public && !req.user) {
-			return res.status(403).end();
+			return serve(req, res, file, req.params.variation);
 		}
 	});
 };

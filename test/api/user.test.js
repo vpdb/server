@@ -6,7 +6,7 @@ var expect = require('expect.js');
 var superagentTest = require('../modules/superagent-test');
 var hlp = require('../modules/helper');
 
-superagentTest(request, { path: '/api' });
+superagentTest(request);
 
 describe('The VPDB `user` API', function() {
 
@@ -24,7 +24,7 @@ describe('The VPDB `user` API', function() {
 
 	it('should display the user profile', function(done) {
 		request
-			.get('/user')
+			.get('/api/user')
 			.as('root')
 			.end(function(err, res) {
 				expect(err).to.eql(null);
@@ -39,7 +39,7 @@ describe('The VPDB `user` API', function() {
 
 	it('should return a token refresh header when user changed', function(done) {
 		request
-			.get('/ping')
+			.get('/api/ping')
 			.as('admin')
 			.end(function(err, res) {
 				expect(res.headers['x-token-refresh']).not.to.be.empty();

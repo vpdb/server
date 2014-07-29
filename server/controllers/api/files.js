@@ -53,22 +53,13 @@ exports.upload = function(req, res) {
 						api.sanitizeObject(metadata);
 						file.metadata = metadata;
 					}
-					var f = _.pick(file, 'id', 'name', 'bytes', 'created_at', 'mime_type', 'file_type');
-					f.url = ctrl.appendToken(file.getUrl(), res);
-					f.variations = {
-						small: ctrl.appendToken(file.getUrl('small'), res),
-						medium: ctrl.appendToken(file.getUrl('medium'), res)
-					};
-					f.metadata = shortMetadata;
 
-					api.success(res, f);
-
-					// do the rest non-blocking in the background.
-					file.save(function(err) {
+					file.save(function(err, file) {
 						if (err) {
 							logger.error('[api|file:save] Error saving metadata: %s', err, {});
 							logger.error('[api|file:save] Metadata: %s', require('util').inspect(metadata));
 						}
+						api.success(res, file.toDetailed());
 					});
 					storage.postprocess(file, function(err) {
 						if (err) {

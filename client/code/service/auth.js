@@ -189,6 +189,23 @@ services.factory('AuthService', function($window, $localStorage, $sessionStorage
 			delete $localStorage.tokenCreated;
 		},
 
+
+		/**
+		 * Appends the auth token to the URL as query parameter. This is for
+		 * resources where we can't put it into the header because of the
+		 * browser doing the request (like /storage paths).
+		 *
+		 * @param baseUrl URL to append to
+		 * @param isProtected Only add if set true
+		 * @returns {string} URL with appended auth token if `isProtected` was true.
+		 */
+		setUrlParam: function(baseUrl, isProtected) {
+			if (!isProtected) {
+				return baseUrl;
+			}
+			return baseUrl + (~baseUrl.indexOf('?') ? '&' : '?') + 'jwt=' + this.getToken();
+		},
+
 		setAuthHeader: function(authHeader) {
 			this.authHeader = authHeader;
 		},

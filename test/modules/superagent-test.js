@@ -1,11 +1,12 @@
+"use strict";
+
 module.exports = function(superagent, options) {
 
+	options = options || {};
 	options.schema = options.schema || process.env.HTTP_SCHEMA || 'http';
 	options.host = options.host || process.env.HOST || 'localhost';
 	options.port = options.port || process.env.PORT || 7357;
 	options.authHeader = options.authHeader || process.env.AUTH_HEADER || 'Authentication';
-
-	options.path = options.path || '';
 
 	var Request = superagent.Request;
 
@@ -13,7 +14,7 @@ module.exports = function(superagent, options) {
 	Request.prototype.request = function () {
 		this.request = oldRequest;
 		if (this.url[0] === '/') {
-			this.url = options.schema + '://' + options.host + ':' + options.port + options.path + this.url;
+			this.url = options.schema + '://' + options.host + ':' + options.port + this.url;
 		}
 		return this.request();
 	};

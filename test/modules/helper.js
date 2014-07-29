@@ -32,7 +32,7 @@ exports.setupUsers = function(request, config, done) {
 			// 1. create user
 			debug('%s <%s>: Creating user...', name, user.email);
 			request
-				.post('/users')
+				.post('/api/users')
 				.send(user)
 				.end(function(err, res) {
 					if (err) {
@@ -48,7 +48,7 @@ exports.setupUsers = function(request, config, done) {
 					// 2. retrieve root user token
 					debug('%s <%s>: Authenticating user...', name, user.email);
 					request
-						.post('/authenticate')
+						.post('/api/authenticate')
 						.send(_.pick(user, 'username', 'password'))
 						.end(function(err, res) {
 							if (err) {
@@ -64,7 +64,7 @@ exports.setupUsers = function(request, config, done) {
 							debug('%s <%s>: Updating user...', name, user.email);
 							user.roles = config.roles;
 							request
-								.put('/users/' + user.id)
+								.put('/api/users/' + user.id)
 								.as(superuser)
 								.send(user)
 								.end(function(err, res) {
@@ -110,7 +110,7 @@ exports.teardownUsers = function(request, done) {
 				return next();
 			}
 			request
-				.del('/users/' + that.users[name].id)
+				.del('/api/users/' + that.users[name].id)
 				.as(superuser)
 				.end(function(err, res) {
 					if (err) {

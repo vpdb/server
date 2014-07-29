@@ -6,7 +6,7 @@ var expect = require('expect.js');
 var superagentTest = require('../modules/superagent-test');
 var hlp = require('../modules/helper');
 
-superagentTest(request, { path: '/api' });
+superagentTest(request);
 
 describe('The ACLs of the VPDB API', function() {
 
@@ -29,7 +29,7 @@ describe('The ACLs of the VPDB API', function() {
 		// app.get('/api/users',         api.auth(api.users.list, 'users', 'list'));
 		it('should deny access to user list', function(done) {
 			request
-				.get('/users')
+				.get('/api/users')
 				.end(function(err, res) {
 					expect(res.status).to.be(401);
 					done();
@@ -37,7 +37,7 @@ describe('The ACLs of the VPDB API', function() {
 		});
 		it('should deny access to user search', function(done) {
 			request
-				.get('/users?q=123')
+				.get('/api/users?q=123')
 				.end(function(err, res) {
 					expect(res.status).to.be(401);
 					done();
@@ -47,7 +47,7 @@ describe('The ACLs of the VPDB API', function() {
 		// app.put('/api/users/:id',     api.auth(api.users.update, 'users', 'update'));
 		it('should deny access to user update', function(done) {
 			request
-				.put('/users/1234567890abcdef')
+				.put('/api/users/1234567890abcdef')
 				.end(function(err, res) {
 					expect(res.status).to.be(401);
 					done();
@@ -57,7 +57,7 @@ describe('The ACLs of the VPDB API', function() {
 		// app.delete('/api/users/:id',  api.auth(api.users.delete, 'users', 'delete'));
 		it('should deny access to user delete', function(done) {
 			request
-				.del('/users/1234567890abcdef')
+				.del('/api/users/1234567890abcdef')
 				.end(function(err, res) {
 					expect(res.status).to.be(401);
 					done();
@@ -67,7 +67,7 @@ describe('The ACLs of the VPDB API', function() {
 		// app.get('/api/user',          api.auth(api.users.profile, 'user', 'profile'));
 		it('should deny access to user profile', function(done) {
 			request
-				.get('/user')
+				.get('/api/user')
 				.end(function(err, res) {
 					expect(res.status).to.be(401);
 					done();
@@ -77,7 +77,7 @@ describe('The ACLs of the VPDB API', function() {
 		// app.get('/api/roles',         api.auth(api.roles.list, 'roles', 'list'));
 		it('should deny access to roles list', function(done) {
 			request
-				.get('/roles')
+				.get('/api/roles')
 				.end(function(err, res) {
 					expect(res.status).to.be(401);
 					done();
@@ -87,7 +87,7 @@ describe('The ACLs of the VPDB API', function() {
 		// app.get('/api/ipdb/:id',      api.auth(api.ipdb.view, 'ipdb', 'view'));
 		it('should deny access to ipdb query', function(done) {
 			request
-				.get('/ipdb/4441')
+				.get('/api/ipdb/4441')
 				.end(function(err, res) {
 					expect(res.status).to.be(401);
 					done();
@@ -97,7 +97,7 @@ describe('The ACLs of the VPDB API', function() {
 		// app.put('/api/files',         api.auth(api.files.upload, 'files', 'upload'));
 		it('should deny access to file upload', function(done) {
 			request
-				.put('/files')
+				.put('/api/files')
 				.end(function(err, res) {
 					expect(res.status).to.be(401);
 					done();
@@ -107,7 +107,7 @@ describe('The ACLs of the VPDB API', function() {
 		// app.delete('/api/files/:id',  api.auth(api.files.delete, 'files', 'delete'));
 		it('should deny access to file deletion', function(done) {
 			request
-				.del('/files/123456789')
+				.del('/api/files/123456789')
 				.end(function(err, res) {
 					expect(res.status).to.be(401);
 					done();
@@ -117,7 +117,7 @@ describe('The ACLs of the VPDB API', function() {
 		// app.head('/api/games/:id',    api.anon(api.games.head));
 		it('should allow check for existing games', function(done) {
 			request
-				.head('/games/mb')
+				.head('/api/games/mb')
 				.end(function(err, res) {
 					expect(res.status).to.be(404);
 					done();
@@ -127,7 +127,7 @@ describe('The ACLs of the VPDB API', function() {
 		// app.post('/api/games',        api.auth(api.games.create, 'games', 'add'));
 		it('should deny access to game creation', function(done) {
 			request
-				.post('/games')
+				.post('/api/games')
 				.send({})
 				.end(function(err, res) {
 					expect(res.status).to.be(401);
@@ -138,7 +138,7 @@ describe('The ACLs of the VPDB API', function() {
 		// app.get('/api/ping',          api.anon(api.ping));
 		it('should allow access to ping', function(done) {
 			request
-				.get('/ping')
+				.get('/api/ping')
 				.end(function(err, res) {
 					expect(res.status).to.be(200);
 					done();
@@ -148,7 +148,7 @@ describe('The ACLs of the VPDB API', function() {
 		// app.get('/api/tags',          api.anon(api.tags.list));
 		it('should allow to list tags', function(done) {
 			request
-				.get('/tags')
+				.get('/api/tags')
 				.end(function(err, res) {
 					expect(res.status).to.be(200);
 					done();
@@ -158,7 +158,7 @@ describe('The ACLs of the VPDB API', function() {
 		// app.post('/api/tags',         api.auth(api.tags.create, 'tags', 'add'));
 		it('should deny access to create tags', function(done) {
 			request
-				.post('/tags')
+				.post('/api/tags')
 				.send({})
 				.end(function(err, res) {
 					expect(res.status).to.be(401);
@@ -169,7 +169,7 @@ describe('The ACLs of the VPDB API', function() {
 		// app.get('/api/vpbuilds',      api.anon(api.vpbuilds.list));
 		it('should allow to list vpbuilds', function(done) {
 			request
-				.get('/vpbuilds')
+				.get('/api/vpbuilds')
 				.end(function(err, res) {
 					expect(res.status).to.be(200);
 					done();
@@ -179,7 +179,7 @@ describe('The ACLs of the VPDB API', function() {
 		// app.post('/api/vpbuilds',     api.auth(api.vpbuilds.create, 'vpbuilds', 'add'));
 		it('should deny access to create vpbuilds', function(done) {
 			request
-				.post('/vpbuilds')
+				.post('/api/vpbuilds')
 				.send({})
 				.end(function(err, res) {
 					expect(res.status).to.be(401);
@@ -202,7 +202,7 @@ describe('The ACLs of the VPDB API', function() {
 		 */
 		it('should deny access to user list', function(done) {
 			request
-				.get('/users')
+				.get('/api/users')
 				.as('member')
 				.end(function(err, res) {
 					expect(res.status).to.be(403);
@@ -211,7 +211,7 @@ describe('The ACLs of the VPDB API', function() {
 		});
 		it('should deny access to user search for less than 3 chars', function(done) {
 			request
-				.get('/users?q=12')
+				.get('/api/users?q=12')
 				.as('member')
 				.end(function(err, res) {
 					expect(res.status).to.be(403);
@@ -220,7 +220,7 @@ describe('The ACLs of the VPDB API', function() {
 		});
 		it('should allow access to user search for more than 2 chars', function(done) {
 			request
-				.get('/users?q=123')
+				.get('/api/users?q=123')
 				.as('member')
 				.end(function(err, res) {
 					expect(res.status).to.be(200);
@@ -229,7 +229,7 @@ describe('The ACLs of the VPDB API', function() {
 		});
 		it('should only return minmal user info when searching other users', function(done) {
 			request
-				.get('/users?q=' + hlp.getUser('member').name.substr(0, 3))
+				.get('/api/users?q=' + hlp.getUser('member').name.substr(0, 3))
 				.as('member')
 				.end(function(err, res) {
 					expect(res.status).to.be(200);
@@ -242,7 +242,7 @@ describe('The ACLs of the VPDB API', function() {
 
 		it('should deny access to user update', function(done) {
 			request
-				.put('/users/1234567890abcdef')
+				.put('/api/users/1234567890abcdef')
 				.as('member')
 				.end(function(err, res) {
 					expect(res.status).to.be(403);
@@ -252,7 +252,7 @@ describe('The ACLs of the VPDB API', function() {
 
 		it('should deny access to user delete', function(done) {
 			request
-				.del('/users/1234567890abcdef')
+				.del('/api/users/1234567890abcdef')
 				.as('member')
 				.end(function(err, res) {
 					expect(res.status).to.be(403);
@@ -262,7 +262,7 @@ describe('The ACLs of the VPDB API', function() {
 
 		it('should allow access to user profile', function(done) {
 			request
-				.get('/user')
+				.get('/api/user')
 				.as('member')
 				.end(function(err, res) {
 					expect(res.status).to.be(200);
@@ -272,7 +272,7 @@ describe('The ACLs of the VPDB API', function() {
 
 		it('should deny access to roles list', function(done) {
 			request
-				.get('/roles')
+				.get('/api/roles')
 				.as('member')
 				.end(function(err, res) {
 					expect(res.status).to.be(403);
@@ -282,7 +282,7 @@ describe('The ACLs of the VPDB API', function() {
 
 		it('should deny access to ipdb query', function(done) {
 			request
-				.get('/ipdb/4441')
+				.get('/api/ipdb/4441')
 				.as('member')
 				.end(function(err, res) {
 					expect(res.status).to.be(403);
@@ -292,7 +292,7 @@ describe('The ACLs of the VPDB API', function() {
 
 		it('should allow access to file upload', function(done) {
 			request
-				.put('/files')
+				.put('/api/files')
 				.as('member')
 				.end(function(err, res) {
 					expect(res.status).to.be(422);
@@ -303,7 +303,7 @@ describe('The ACLs of the VPDB API', function() {
 		// app.delete('/api/files/:id',  api.auth(api.files.delete, 'files', 'delete'));
 		it('should allow access to file deletion', function(done) {
 			request
-				.del('/files/123456789')
+				.del('/api/files/123456789')
 				.as('member')
 				.end(function(err, res) {
 					expect(res.status).to.be(404);
@@ -313,7 +313,7 @@ describe('The ACLs of the VPDB API', function() {
 
 		it('should allow check for existing games', function(done) {
 			request
-				.head('/games/mb')
+				.head('/api/games/mb')
 				.as('member')
 				.end(function(err, res) {
 					expect(res.status).to.be(404);
@@ -323,7 +323,7 @@ describe('The ACLs of the VPDB API', function() {
 
 		it('should deny access to game creation', function(done) {
 			request
-				.post('/games')
+				.post('/api/games')
 				.send({})
 				.as('member')
 				.end(function(err, res) {
@@ -334,7 +334,7 @@ describe('The ACLs of the VPDB API', function() {
 
 		it('should allow access to ping', function(done) {
 			request
-				.get('/ping')
+				.get('/api/ping')
 				.as('member')
 				.end(function(err, res) {
 					expect(res.status).to.be(200);
@@ -344,7 +344,7 @@ describe('The ACLs of the VPDB API', function() {
 
 		it('should allow to list tags', function(done) {
 			request
-				.get('/tags')
+				.get('/api/tags')
 				.as('member')
 				.end(function(err, res) {
 					expect(res.status).to.be(200);
@@ -354,7 +354,7 @@ describe('The ACLs of the VPDB API', function() {
 
 		it('should allow to create tags', function(done) {
 			request
-				.post('/tags')
+				.post('/api/tags')
 				.send({})
 				.as('member')
 				.end(function(err, res) {
@@ -365,7 +365,7 @@ describe('The ACLs of the VPDB API', function() {
 
 		it('should allow to list vpbuilds', function(done) {
 			request
-				.get('/vpbuilds')
+				.get('/api/vpbuilds')
 				.as('member')
 				.end(function(err, res) {
 					expect(res.status).to.be(200);
@@ -375,7 +375,7 @@ describe('The ACLs of the VPDB API', function() {
 
 		it('should allow to create vpbuilds', function(done) {
 			request
-				.post('/vpbuilds')
+				.post('/api/vpbuilds')
 				.as('member')
 				.send({})
 				.end(function(err, res) {
@@ -399,7 +399,7 @@ describe('The ACLs of the VPDB API', function() {
 		 */
 		it('should deny access to user list', function(done) {
 			request
-				.get('/users')
+				.get('/api/users')
 				.as('contributor')
 				.end(function(err, res) {
 					expect(res.status).to.be(403);
@@ -408,7 +408,7 @@ describe('The ACLs of the VPDB API', function() {
 		});
 		it('should deny access to user search for less than 3 chars', function(done) {
 			request
-				.get('/users?q=12')
+				.get('/api/users?q=12')
 				.as('contributor')
 				.end(function(err, res) {
 					expect(res.status).to.be(403);
@@ -417,7 +417,7 @@ describe('The ACLs of the VPDB API', function() {
 		});
 		it('should allow access to user search for more than 2 chars', function(done) {
 			request
-				.get('/users?q=123')
+				.get('/api/users?q=123')
 				.as('contributor')
 				.end(function(err, res) {
 					expect(res.status).to.be(200);
@@ -426,7 +426,7 @@ describe('The ACLs of the VPDB API', function() {
 		});
 		it('should only return minmal user info when searching other users', function(done) {
 			request
-				.get('/users?q=' + hlp.getUser('member').name.substr(0, 3))
+				.get('/api/users?q=' + hlp.getUser('member').name.substr(0, 3))
 				.as('contributor')
 				.end(function(err, res) {
 					expect(res.status).to.be(200);
@@ -439,7 +439,7 @@ describe('The ACLs of the VPDB API', function() {
 
 		it('should deny access to user update', function(done) {
 			request
-				.put('/users/1234567890abcdef')
+				.put('/api/users/1234567890abcdef')
 				.as('contributor')
 				.end(function(err, res) {
 					expect(res.status).to.be(403);
@@ -449,7 +449,7 @@ describe('The ACLs of the VPDB API', function() {
 
 		it('should deny access to user delete', function(done) {
 			request
-				.del('/users/1234567890abcdef')
+				.del('/api/users/1234567890abcdef')
 				.as('contributor')
 				.end(function(err, res) {
 					expect(res.status).to.be(403);
@@ -459,7 +459,7 @@ describe('The ACLs of the VPDB API', function() {
 
 		it('should allow access to user profile', function(done) {
 			request
-				.get('/user')
+				.get('/api/user')
 				.as('contributor')
 				.end(function(err, res) {
 					expect(res.status).to.be(200);
@@ -469,7 +469,7 @@ describe('The ACLs of the VPDB API', function() {
 
 		it('should deny access to roles list', function(done) {
 			request
-				.get('/roles')
+				.get('/api/roles')
 				.as('contributor')
 				.end(function(err, res) {
 					expect(res.status).to.be(403);
@@ -479,7 +479,7 @@ describe('The ACLs of the VPDB API', function() {
 
 		it('should allow access to ipdb query', function(done) {
 			request
-				.get('/ipdb/4441?dryrun=1')
+				.get('/api/ipdb/4441?dryrun=1')
 				.as('contributor')
 				.end(function(err, res) {
 					expect(res.status).to.be(200);
@@ -489,7 +489,7 @@ describe('The ACLs of the VPDB API', function() {
 
 		it('should allow access to file upload', function(done) {
 			request
-				.put('/files')
+				.put('/api/files')
 				.as('contributor')
 				.send({})
 				.end(function(err, res) {
@@ -500,7 +500,7 @@ describe('The ACLs of the VPDB API', function() {
 
 		it('should allow check for existing games', function(done) {
 			request
-				.head('/games/mb')
+				.head('/api/games/mb')
 				.as('contributor')
 				.end(function(err, res) {
 					expect(res.status).to.be(404);
@@ -510,7 +510,7 @@ describe('The ACLs of the VPDB API', function() {
 
 		it('should allow to create games', function(done) {
 			request
-				.post('/games')
+				.post('/api/games')
 				.send({})
 				.as('contributor')
 				.end(function(err, res) {
@@ -521,7 +521,7 @@ describe('The ACLs of the VPDB API', function() {
 
 		it('should allow access to ping', function(done) {
 			request
-				.get('/ping')
+				.get('/api/ping')
 				.as('contributor')
 				.end(function(err, res) {
 					expect(res.status).to.be(200);
@@ -531,7 +531,7 @@ describe('The ACLs of the VPDB API', function() {
 
 		it('should allow to list tags', function(done) {
 			request
-				.get('/tags')
+				.get('/api/tags')
 				.as('contributor')
 				.end(function(err, res) {
 					expect(res.status).to.be(200);
@@ -541,7 +541,7 @@ describe('The ACLs of the VPDB API', function() {
 
 		it('should allow to create tags', function(done) {
 			request
-				.post('/tags')
+				.post('/api/tags')
 				.send({})
 				.as('contributor')
 				.end(function(err, res) {
@@ -552,7 +552,7 @@ describe('The ACLs of the VPDB API', function() {
 
 		it('should allow to list vpbuilds', function(done) {
 			request
-				.get('/vpbuilds')
+				.get('/api/vpbuilds')
 				.as('contributor')
 				.end(function(err, res) {
 					expect(res.status).to.be(200);
@@ -562,7 +562,7 @@ describe('The ACLs of the VPDB API', function() {
 
 		it('should allow to create vpbuilds', function(done) {
 			request
-				.post('/vpbuilds')
+				.post('/api/vpbuilds')
 				.as('contributor')
 				.send({})
 				.end(function(err, res) {
@@ -586,7 +586,7 @@ describe('The ACLs of the VPDB API', function() {
 		 */
 		it('should allow to list users', function(done) {
 			request
-				.get('/users')
+				.get('/api/users')
 				.as('admin')
 				.end(function(err, res) {
 					expect(res.status).to.be(200);
@@ -595,7 +595,7 @@ describe('The ACLs of the VPDB API', function() {
 		});
 		it('should allow access to user search for less than 3 chars', function(done) {
 			request
-				.get('/users?q=12')
+				.get('/api/users?q=12')
 				.as('admin')
 				.end(function(err, res) {
 					expect(res.status).to.be(200);
@@ -604,7 +604,7 @@ describe('The ACLs of the VPDB API', function() {
 		});
 		it('should allow access to user search for more than 2 chars', function(done) {
 			request
-				.get('/users?q=123')
+				.get('/api/users?q=123')
 				.as('admin')
 				.end(function(err, res) {
 					expect(res.status).to.be(200);
@@ -613,7 +613,7 @@ describe('The ACLs of the VPDB API', function() {
 		});
 		it('should return detailed user info when listing other users', function(done) {
 			request
-				.get('/users?q=' + hlp.getUser('member').name.substr(0, 3))
+				.get('/api/users?q=' + hlp.getUser('member').name.substr(0, 3))
 				.as('admin')
 				.end(function(err, res) {
 					expect(res.status).to.be(200);
@@ -626,7 +626,7 @@ describe('The ACLs of the VPDB API', function() {
 
 		it('should allow user update of non-admin', function(done) {
 			request
-				.put('/users/' + hlp.getUser('member').id)
+				.put('/api/users/' + hlp.getUser('member').id)
 				.as('admin')
 				.send({})
 				.end(function(err, res) {
@@ -637,7 +637,7 @@ describe('The ACLs of the VPDB API', function() {
 
 		it('should deny user update of admin', function(done) {
 			request
-				.put('/users/' + hlp.getUser('admin2').id)
+				.put('/api/users/' + hlp.getUser('admin2').id)
 				.as('admin')
 				.send({})
 				.end(function(err, res) {
@@ -648,7 +648,7 @@ describe('The ACLs of the VPDB API', function() {
 
 		it('should deny user update himself', function(done) {
 			request
-				.put('/users/' + hlp.getUser('admin').id)
+				.put('/api/users/' + hlp.getUser('admin').id)
 				.as('admin')
 				.send({})
 				.end(function(err, res) {
@@ -659,7 +659,7 @@ describe('The ACLs of the VPDB API', function() {
 
 		it('should deny access to user delete', function(done) {
 			request
-				.del('/users/1234567890abcdef')
+				.del('/api/users/1234567890abcdef')
 				.as('admin')
 				.end(function(err, res) {
 					expect(res.status).to.be(403);
@@ -669,7 +669,7 @@ describe('The ACLs of the VPDB API', function() {
 
 		it('should allow access to user profile', function(done) {
 			request
-				.get('/user')
+				.get('/api/user')
 				.as('admin')
 				.end(function(err, res) {
 					expect(res.status).to.be(200);
@@ -679,7 +679,7 @@ describe('The ACLs of the VPDB API', function() {
 
 		it('should allow access to roles list', function(done) {
 			request
-				.get('/roles')
+				.get('/api/roles')
 				.as('admin')
 				.end(function(err, res) {
 					expect(res.status).to.be(200);
@@ -689,7 +689,7 @@ describe('The ACLs of the VPDB API', function() {
 
 		it('should deny access to ipdb query', function(done) {
 			request
-				.get('/ipdb/4441?dryrun=1')
+				.get('/api/ipdb/4441?dryrun=1')
 				.as('admin')
 				.end(function(err, res) {
 					expect(res.status).to.be(403);
@@ -699,7 +699,7 @@ describe('The ACLs of the VPDB API', function() {
 
 		it('should allow access to file upload', function(done) {
 			request
-				.put('/files')
+				.put('/api/files')
 				.as('admin')
 				.send({})
 				.end(function(err, res) {
@@ -710,7 +710,7 @@ describe('The ACLs of the VPDB API', function() {
 
 		it('should allow check for existing games', function(done) {
 			request
-				.head('/games/mb')
+				.head('/api/games/mb')
 				.as('admin')
 				.end(function(err, res) {
 					expect(res.status).to.be(404);
@@ -720,7 +720,7 @@ describe('The ACLs of the VPDB API', function() {
 
 		it('should deny to create games', function(done) {
 			request
-				.post('/games')
+				.post('/api/games')
 				.send({})
 				.as('admin')
 				.end(function(err, res) {
@@ -731,7 +731,7 @@ describe('The ACLs of the VPDB API', function() {
 
 		it('should allow access to ping', function(done) {
 			request
-				.get('/ping')
+				.get('/api/ping')
 				.as('admin')
 				.end(function(err, res) {
 					expect(res.status).to.be(200);
@@ -741,7 +741,7 @@ describe('The ACLs of the VPDB API', function() {
 
 		it('should allow to list tags', function(done) {
 			request
-				.get('/tags')
+				.get('/api/tags')
 				.as('admin')
 				.end(function(err, res) {
 					expect(res.status).to.be(200);
@@ -751,7 +751,7 @@ describe('The ACLs of the VPDB API', function() {
 
 		it('should allow to create tags', function(done) {
 			request
-				.post('/tags')
+				.post('/api/tags')
 				.send({})
 				.as('admin')
 				.end(function(err, res) {
@@ -762,7 +762,7 @@ describe('The ACLs of the VPDB API', function() {
 
 		it('should allow to list vpbuilds', function(done) {
 			request
-				.get('/vpbuilds')
+				.get('/api/vpbuilds')
 				.as('admin')
 				.end(function(err, res) {
 					expect(res.status).to.be(200);
@@ -772,7 +772,7 @@ describe('The ACLs of the VPDB API', function() {
 
 		it('should allow to create vpbuilds', function(done) {
 			request
-				.post('/vpbuilds')
+				.post('/api/vpbuilds')
 				.as('admin')
 				.send({})
 				.end(function(err, res) {
@@ -787,7 +787,7 @@ describe('The ACLs of the VPDB API', function() {
 
 		it('should allow to list users', function(done) {
 			request
-				.get('/users')
+				.get('/api/users')
 				.as('root')
 				.end(function(err, res) {
 					expect(res.status).to.be(200);
@@ -796,7 +796,7 @@ describe('The ACLs of the VPDB API', function() {
 		});
 		it('should allow access to user search for less than 3 chars', function(done) {
 			request
-				.get('/users?q=12')
+				.get('/api/users?q=12')
 				.as('root')
 				.end(function(err, res) {
 					expect(res.status).to.be(200);
@@ -805,7 +805,7 @@ describe('The ACLs of the VPDB API', function() {
 		});
 		it('should allow access to user search for more than 2 chars', function(done) {
 			request
-				.get('/users?q=123')
+				.get('/api/users?q=123')
 				.as('root')
 				.end(function(err, res) {
 					expect(res.status).to.be(200);
@@ -814,7 +814,7 @@ describe('The ACLs of the VPDB API', function() {
 		});
 		it('should return detailed user info when listing other users', function(done) {
 			request
-				.get('/users?q=' + hlp.getUser('member').name.substr(0, 3))
+				.get('/api/users?q=' + hlp.getUser('member').name.substr(0, 3))
 				.as('root')
 				.end(function(err, res) {
 					expect(res.status).to.be(200);
@@ -827,7 +827,7 @@ describe('The ACLs of the VPDB API', function() {
 
 		it('should allow user update of non-admin', function(done) {
 			request
-				.put('/users/' + hlp.getUser('member').id)
+				.put('/api/users/' + hlp.getUser('member').id)
 				.as('root')
 				.send({})
 				.end(function(err, res) {
@@ -838,7 +838,7 @@ describe('The ACLs of the VPDB API', function() {
 
 		it('should allow user update of admin', function(done) {
 			request
-				.put('/users/' + hlp.getUser('admin').id)
+				.put('/api/users/' + hlp.getUser('admin').id)
 				.as('root')
 				.send({})
 				.end(function(err, res) {
@@ -849,7 +849,7 @@ describe('The ACLs of the VPDB API', function() {
 
 		it('should allow update himself', function(done) {
 			request
-				.put('/users/' + hlp.getUser('root').id)
+				.put('/api/users/' + hlp.getUser('root').id)
 				.as('root')
 				.send({})
 				.end(function(err, res) {
@@ -860,7 +860,7 @@ describe('The ACLs of the VPDB API', function() {
 
 		it('should deny access to user delete', function(done) {
 			request
-				.del('/users/1234567890abcdef')
+				.del('/api/users/1234567890abcdef')
 				.as('root')
 				.end(function(err, res) {
 					expect(res.status).to.be(403);
@@ -870,7 +870,7 @@ describe('The ACLs of the VPDB API', function() {
 
 		it('should allow access to user profile', function(done) {
 			request
-				.get('/user')
+				.get('/api/user')
 				.as('root')
 				.end(function(err, res) {
 					expect(res.status).to.be(200);
@@ -880,7 +880,7 @@ describe('The ACLs of the VPDB API', function() {
 
 		it('should allow access to roles list', function(done) {
 			request
-				.get('/roles')
+				.get('/api/roles')
 				.as('root')
 				.end(function(err, res) {
 					expect(res.status).to.be(200);
@@ -890,7 +890,7 @@ describe('The ACLs of the VPDB API', function() {
 
 		it('should allow access to ipdb query', function(done) {
 			request
-				.get('/ipdb/4441?dryrun=1')
+				.get('/api/ipdb/4441?dryrun=1')
 				.as('root')
 				.end(function(err, res) {
 					expect(res.status).to.be(200);
@@ -900,7 +900,7 @@ describe('The ACLs of the VPDB API', function() {
 
 		it('should allow access to file upload', function(done) {
 			request
-				.put('/files')
+				.put('/api/files')
 				.as('root')
 				.send({})
 				.end(function(err, res) {
@@ -911,7 +911,7 @@ describe('The ACLs of the VPDB API', function() {
 
 		it('should allow check for existing games', function(done) {
 			request
-				.head('/games/mb')
+				.head('/api/games/mb')
 				.as('root')
 				.end(function(err, res) {
 					expect(res.status).to.be(404);
@@ -921,7 +921,7 @@ describe('The ACLs of the VPDB API', function() {
 
 		it('should allow to create games', function(done) {
 			request
-				.post('/games')
+				.post('/api/games')
 				.send({})
 				.as('root')
 				.end(function(err, res) {
@@ -932,7 +932,7 @@ describe('The ACLs of the VPDB API', function() {
 
 		it('should allow access to ping', function(done) {
 			request
-				.get('/ping')
+				.get('/api/ping')
 				.as('root')
 				.end(function(err, res) {
 					expect(res.status).to.be(200);
@@ -942,7 +942,7 @@ describe('The ACLs of the VPDB API', function() {
 
 		it('should allow to list tags', function(done) {
 			request
-				.get('/tags')
+				.get('/api/tags')
 				.as('root')
 				.end(function(err, res) {
 					expect(res.status).to.be(200);
@@ -952,7 +952,7 @@ describe('The ACLs of the VPDB API', function() {
 
 		it('should allow to create tags', function(done) {
 			request
-				.post('/tags')
+				.post('/api/tags')
 				.send({})
 				.as('root')
 				.end(function(err, res) {
@@ -963,7 +963,7 @@ describe('The ACLs of the VPDB API', function() {
 
 		it('should allow to list vpbuilds', function(done) {
 			request
-				.get('/vpbuilds')
+				.get('/api/vpbuilds')
 				.as('root')
 				.end(function(err, res) {
 					expect(res.status).to.be(200);
@@ -973,7 +973,7 @@ describe('The ACLs of the VPDB API', function() {
 
 		it('should allow to create vpbuilds', function(done) {
 			request
-				.post('/vpbuilds')
+				.post('/api/vpbuilds')
 				.as('root')
 				.send({})
 				.end(function(err, res) {

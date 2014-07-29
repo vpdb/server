@@ -9,7 +9,6 @@ var async = require('async');
 var logger = require('winston');
 var events = require('events');
 
-var File = require('mongoose').model('File');
 var config = require('./settings').current;
 
 function Storage() {
@@ -81,6 +80,7 @@ Storage.prototype.whenProcessed = function(file, variationName, callback) {
 Storage.prototype.cleanup = function(graceperiod, done) {
 	graceperiod = graceperiod ? graceperiod : 0;
 
+	var File = require('mongoose').model('File');
 	File.find({ is_active: false, created_at: { $lt: new Date(new Date().getTime() - graceperiod)} })
 		.populate('_created_by').
 		exec(function(err, files) {
@@ -109,12 +109,23 @@ Storage.prototype.metadata = function(file, done) {
 					logger.warn('[storage] Error reading metadata from image: %s', err);
 					return done();
 				}
-				done(null, value, _.pick(value, 'format', 'size', 'depth', 'JPEG-Quality'));
+				done(null, value, Storage.prototype.metadataShort(file, value));
 			});
 			break;
 		default:
 			logger.warn('[storage] No metadata parser for mime type "%s".', file.mime_type);
 			done();
+	}
+};
+
+Storage.prototype.metadataShort = function(file, metadata) {
+
+	var data = metadata ? metadata : file.metadata;
+	switch(file.getMimeType()) {
+		case 'image':
+			return _.pick(data, 'format', 'size', 'depth', 'JPEG-Quality');
+		default:
+			return data;
 	}
 };
 
@@ -124,6 +135,7 @@ Storage.prototype.postprocess = function(file, done) {
 	var subtype = mime[1];
 
 	var that = this;
+	var File = require('mongoose').model('File');
 	var PngQuant = require('pngquant');
 	var OptiPng = require('optipng');
 
@@ -223,16 +235,33 @@ Storage.prototype.postprocess = function(file, done) {
 	}
 };
 
+/**
+ * Returns the absolute URL of a given file.
+ * @param file
+ * @param variation
+ * @returns {string}
+ */
 Storage.prototype.url = function(file, variation) {
 	return file ? '/storage/' + file.id + (variation ? '/' + variation : '') : null;
 };
 
+/**
+ * Returns URLs of all variations of a given file.
+ * @param file
+ * @returns {object} Keys are the variation name, values are the urls
+ */
 Storage.prototype.urls = function(file) {
+	if (!file) {
+		return {};
+	}
 	var that = this;
-	var variations = {};
-	if (file && this.variations[file.getMimeType()] && this.variations[file.getMimeType()][file.file_type]) {
+	var variations = file.variations ? file.variations : {};
+	if (this.variations[file.getMimeType()] && this.variations[file.getMimeType()][file.file_type]) {
 		_.each(this.variations[file.getMimeType()][file.file_type], function(variation) {
-			variations[variation.name] = that.url(file, variation.name);
+			if (!variations[variation.name]) {
+				variations[variation.name] = {};
+			}
+			variations[variation.name].url = that.url(file, variation.name);
 		});
 	}
 	return variations;

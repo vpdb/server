@@ -57,7 +57,7 @@ ctrl.controller('RequestModPermissionModalCtrl', function($scope, $modalInstance
 	};
 });
 
-ctrl.controller('AdminGameAddCtrl', function($scope, $upload, $modal, $window, ApiHelper, IpdbResource, GameResource) {
+ctrl.controller('AdminGameAddCtrl', function($scope, $upload, $modal, $window, ApiHelper, AuthService, IpdbResource, GameResource) {
 
 	var maxAspectRatioDifference = 0.2;
 	var dropText = {
@@ -249,7 +249,7 @@ ctrl.controller('AdminGameAddCtrl', function($scope, $upload, $modal, $window, A
 	$scope.onBackglassUpload = onImageUpload('backglass', function(response) {
 
 		var bg = response.data;
-		$scope.uploadedBackglass = bg.variations.medium;
+		$scope.uploadedBackglass = AuthService.setUrlParam(bg.variations.medium.url, bg.is_protected);
 		$scope.game._media.backglass = bg.id;
 
 		var ar = Math.round(bg.metadata.size.width / bg.metadata.size.height * 1000) / 1000;
@@ -269,9 +269,9 @@ ctrl.controller('AdminGameAddCtrl', function($scope, $upload, $modal, $window, A
 
 	$scope.onLogoUpload = onImageUpload('logo', function(response) {
 
-		var bg = response.data;
-		$scope.uploadedLogo = bg.url;
-		$scope.game._media.logo = bg.id;
+		var logo = response.data;
+		$scope.uploadedLogo = AuthService.setUrlParam(logo.url, logo.is_protected);
+		$scope.game._media.logo = logo.id;
 	});
 
 	$scope.searchOnIpdb = function() {

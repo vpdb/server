@@ -6,7 +6,9 @@ var logger = require('winston');
 var mongoose = require('mongoose');
 var shortId = require('shortid');
 var config = require('./../modules/settings').current;
-var mimeTypes = require('./../modules/mimetypes');
+
+var storage = require('../modules/storage');
+var mimeTypes = require('../modules/mimetypes');
 
 var Schema = mongoose.Schema;
 
@@ -28,6 +30,13 @@ var fields = {
 };
 var FileSchema = new Schema(fields);
 
+//-----------------------------------------------------------------------------
+// API FIELDS
+//-----------------------------------------------------------------------------
+var apiFields = {
+	simple: [ 'url', 'variations', 'is_protected' ], // fields returned in references
+	detailed: [ 'id', 'name', 'bytes', 'created_at', 'mime_type', 'file_type', 'metadata' ]
+};
 
 //-----------------------------------------------------------------------------
 // VIRTUALS
@@ -39,10 +48,27 @@ FileSchema.virtual('created_by')
 		}
 	});
 
+FileSchema.virtual('url')
+	.get(function() {
+		return storage.url(this);
+	});
+
+FileSchema.virtual('is_protected')
+	.get(function() {
+		return !this.is_active || !this.is_public;
+	});
+
 
 //-----------------------------------------------------------------------------
 // METHODS
 //-----------------------------------------------------------------------------
+
+FileSchema.methods.toSimple = function() {
+	return _.pick(this.toObject(), apiFields.simple);
+};
+FileSchema.methods.toDetailed = function() {
+	return _.pick(this.toObject(), apiFields.detailed.concat(apiFields.simple));
+};
 
 /**
  * Returns the physical location of the file.
@@ -97,6 +123,8 @@ FileSchema.options.toObject.transform = function(doc, file) {
 	delete file.__v;
 	delete file._id;
 	delete file._created_by;
+	file.variations = storage.urls(doc);
+	file.metadata = storage.metadataShort(doc);
 };
 
 mongoose.model('File', FileSchema);

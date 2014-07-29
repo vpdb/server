@@ -1,3 +1,5 @@
+"use strict"; /*global describe, before, after, it*/
+
 var request = require('superagent');
 var expect = require('expect.js');
 

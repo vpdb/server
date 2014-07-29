@@ -1,3 +1,5 @@
+"use strict";
+
 var _ = require('underscore');
 var util = require('util');
 var async = require('async');
@@ -36,7 +38,7 @@ exports.setupUsers = function(request, config, done) {
 					if (err) {
 						return next(err.body ? err.body.error : err);
 					}
-					if (res.status != 201) {
+					if (res.status !== 201) {
 						return next(err.body ? err.body.error : err);
 					}
 
@@ -52,7 +54,7 @@ exports.setupUsers = function(request, config, done) {
 							if (err) {
 								return next(err.body.error);
 							}
-							if (res.status != 200) {
+							if (res.status !== 200) {
 								debug('%s <%s>: ERROR: %s', name, user.email, res.body.error);
 								return next(res.body.error);
 							}
@@ -69,7 +71,7 @@ exports.setupUsers = function(request, config, done) {
 									if (err) {
 										return next(err.body.error);
 									}
-									if (res.status != 200) {
+									if (res.status !== 200) {
 										return next(res.body.error);
 									}
 									debug('%s <%s>: All good, next!', name, user.email);
@@ -77,7 +79,7 @@ exports.setupUsers = function(request, config, done) {
 								});
 						});
 				});
-		}
+		};
 	};
 
 	var users = _.map(config, function(config, name) {
@@ -104,7 +106,7 @@ exports.teardownUsers = function(request, done) {
 	var deleteUser = function(name, force) {
 		return function(next) {
 			// don't cut off the branch we're sitting on...
-			if (!force && name == superuser) {
+			if (!force && name === superuser) {
 				return next();
 			}
 			request
@@ -117,7 +119,7 @@ exports.teardownUsers = function(request, done) {
 					expect(res.status).to.eql(204);
 					next();
 				});
-		}
+		};
 	};
 
 	var users = _.map(this.users, function(config, name) {

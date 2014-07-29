@@ -1,3 +1,5 @@
+"use strict";
+
 var path = require('path');
 var logger = require('winston');
 try {

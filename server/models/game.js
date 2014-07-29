@@ -1,3 +1,5 @@
+"use strict";
+
 var _ = require('underscore');
 var logger = require('winston');
 var mongoose = require('mongoose');
@@ -78,13 +80,13 @@ GameSchema.virtual('media')
 			media.backglass = {
 				url: storage.url(this._media.backglass),
 				variations: storage.urls(this._media.backglass)
-			}
+			};
 		}
 		if (this.populated('_media.logo')) {
 			media.logo = {
 				url: storage.url(this._media.logo),
 				variations: storage.urls(this._media.logo)
-			}
+			};
 		}
 		return media;
 	});
@@ -98,13 +100,13 @@ GameSchema.path('game_type').validate(function(gameType, callback) {
 	var ipdb = this.ipdb ? this.ipdb.number : null;
 
 	// only check if not an original game.
-	if (this.game_type != 'og' && (!ipdb || !validator.isInt(ipdb))) {
+	if (this.game_type !== 'og' && (!ipdb || !validator.isInt(ipdb))) {
 		this.invalidate('ipdb.number', 'IPDB Number is mandatory for recreations and must be a postive integer.');
 		return callback(true);
 	}
 
 	var that = this;
-	if (this.game_type != 'og') {
+	if (this.game_type !== 'og') {
 		mongoose.model('Game').findOne({ 'ipdb.number': ipdb }, function(err, g) {
 			if (err) {
 				logger.error('[model|game] Error fetching game %s.');

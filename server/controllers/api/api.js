@@ -1,3 +1,5 @@
+"use strict";
+
 var _ = require('underscore');
 var logger = require('winston');
 
@@ -88,7 +90,7 @@ exports.fail = function(res, err, code) {
 
 
 exports.checkApiContentType = function(req, res, next) {
-	if (req.path.substr(0, 5) == '/api/' && req.get('content-type') != 'application/json') {
+	if (req.path.substr(0, 5) === '/api/' && req.get('content-type') !== 'application/json') {
 		res.setHeader('Content-Type', 'application/json');
 		res.status(415).json({ error: 'Sorry, the API only talks JSON. Did you forget to set your "Content-Type" header correctly?' });
 	} else {
@@ -97,7 +99,7 @@ exports.checkApiContentType = function(req, res, next) {
 };
 
 exports.handleParseError = function(err, req, res, next) {
-	if (err instanceof SyntaxError && req.get('content-type') == 'application/json' && req.path.substr(0, 5) == '/api/') {
+	if (err instanceof SyntaxError && req.get('content-type') === 'application/json' && req.path.substr(0, 5) === '/api/') {
 		res.setHeader('Content-Type', 'application/json');
 		res.status(400).json({ error: 'Parsing error: ' + err.message });
 	} else {
@@ -137,8 +139,8 @@ exports.ok = function(type, action, ref, res, rollback) {
 			} else {
 				successFct(result);
 			}
-		}
-	}
+		};
+	};
 };
 
 /**
@@ -157,9 +159,9 @@ exports.sanitizeObject = function(object, replacement) {
 				oldProp = property;
 				property = oldProp.replace(/\.|\$/g, replacement);
 				object[property] = object[oldProp];
-				delete object[oldProp]
+				delete object[oldProp];
 			}
-			if (typeof object[property] == "object"){
+			if (typeof object[property] === "object"){
 				exports.sanitizeObject(object[property]);
 			}
 		}

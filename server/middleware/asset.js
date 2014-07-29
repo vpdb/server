@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 var _ = require('underscore');
 var asset = require('../modules/asset');
@@ -29,5 +29,5 @@ exports.middleware = function() {
 		} else {
 			next();
 		}
-	}
+	};
 };

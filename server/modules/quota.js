@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 var logger = require('winston');
 var quotaModule = require('volos-quota-memory');
@@ -11,13 +11,15 @@ exports.init = function() {
 	this.quota = {};
 	// we create a quota module for each duration
 	for (var plan in quotaConfig.plans) {
-		if (quotaConfig.plans[plan].unlimited) {
-			continue;
-		}
-		duration = quotaConfig.plans[plan].per;
-		if (!this.quota[duration]) {
-			logger.info('[quota] Creating quota for credits per %s...', duration);
-			this.quota[duration] = quotaModule.create({ timeUnit: duration, interval: 1 });
+		if (quotaConfig.hasOwnProperty(plan)) {
+			if (quotaConfig.plans[plan].unlimited) {
+				continue;
+			}
+			duration = quotaConfig.plans[plan].per;
+			if (!this.quota[duration]) {
+				logger.info('[quota] Creating quota for credits per %s...', duration);
+				this.quota[duration] = quotaModule.create({ timeUnit: duration, interval: 1 });
+			}
 		}
 	}
 };
@@ -25,6 +27,7 @@ exports.init = function() {
 exports.isAllowed = function(req, res, file, callback) {
 
 	// undefined mime types are free
+	//noinspection JSHint
 	if (quotaConfig.costs[file.mime_type] == null) {
 		return callback(null, true);
 	}
@@ -40,6 +43,7 @@ exports.isAllowed = function(req, res, file, callback) {
 	}
 
 	var plan = req.user.plan ? req.user.plan : quotaConfig.defaultPlan;
+	//noinspection JSHint
 	if (quotaConfig.plans[plan] == null) {
 		return callback('No quota defined for plan "' + plan + '".');
 	}

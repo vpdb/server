@@ -1,3 +1,5 @@
+"use strict";
+
 var _ = require('underscore');
 var path = require('path');
 var logger = require('winston');
@@ -50,9 +52,9 @@ FileSchema.virtual('created_by')
  */
 FileSchema.methods.getPath = function(variationName) {
 	var ext = '.' + mimeTypes[this.mime_type].ext;
-	return variationName
-		? path.resolve(config.vpdb.storage, variationName, this.id) + ext
-		: path.resolve(config.vpdb.storage, this.id) + ext;
+	return variationName ?
+		path.resolve(config.vpdb.storage, variationName, this.id) + ext :
+		path.resolve(config.vpdb.storage, this.id) + ext;
 };
 
 /**
@@ -62,9 +64,9 @@ FileSchema.methods.getPath = function(variationName) {
  * @api public
  */
 FileSchema.methods.getUrl = function(variationName) {
-	return variationName
-		? '/storage/' + this.id + '/' + variationName
-		: '/storage/' + this.id;
+	return variationName ?
+		'/storage/' + this.id + '/' + variationName :
+		'/storage/' + this.id;
 };
 
 /**

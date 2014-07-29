@@ -1,3 +1,5 @@
+"use strict";
+
 var _ = require('underscore');
 var util = require('util');
 var logger = require('winston');
@@ -32,7 +34,6 @@ exports.list = function(req, res) {
 exports.create = function(req, res) {
 
 	var newTag = new Tag(req.body);
-
 	newTag.id = newTag.name ? newTag.name.replace(/(^[^a-z0-9]+)|([^a-z0-9]+$)/gi, '').replace(/[^a-z0-9]+/gi, '-').toLowerCase() : '-';
 	newTag.is_active = false;
 	newTag.created_at = new Date();

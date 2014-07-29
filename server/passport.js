@@ -1,3 +1,5 @@
+"use strict";
+
 var _ = require('underscore');
 var logger = require('winston');
 var mongoose = require('mongoose');

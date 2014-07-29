@@ -1,3 +1,5 @@
+"use strict";
+
 var _ = require('underscore');
 var util = require('util');
 var logger = require('winston');
@@ -57,7 +59,7 @@ exports.authenticate = function(req, res) {
 
 	if (!req.body.username || !req.body.password) {
 		logger.warn('[api|user:authenticate] Ignoring empty authentication request.');
-		return api.fail(res, 'You must supply a username and password.', 400)
+		return api.fail(res, 'You must supply a username and password.', 400);
 	}
 	User.findOne({ username: req.body.username }, function(err, user) {
 		if (err) {
@@ -150,6 +152,7 @@ exports.list = function(req, res) {
 };
 
 exports.profile = function(req, res) {
+
 	getACLs(req.user, function(err, acls) {
 		if (err) {
 			return api.fail(res, err, 500);
@@ -159,6 +162,7 @@ exports.profile = function(req, res) {
 };
 
 exports.update = function(req, res) {
+
 	var updateableFields = [ 'name', 'email', 'username', 'is_active', 'roles' ];
 	User.findOne({ id: req.params.id }, function(err, user) {
 		if (err) {
@@ -221,7 +225,7 @@ exports.update = function(req, res) {
 				logger.info('[api|user:update] Success!');
 
 				// 5. update ACLs if email or roles changed
-				if (originalEmail != user.email) {
+				if (originalEmail !== user.email) {
 					logger.info('[api|user:update] Email changed, removing ACLs for <%s> and creating new ones for <%s>.', originalEmail, user.email);
 					acl.removeUserRoles(originalEmail, '*');
 					acl.addUserRoles(user.email, user.roles);
@@ -254,6 +258,7 @@ exports.update = function(req, res) {
 };
 
 exports.del = function(req, res) {
+
 	User.findOne({ id: req.params.id }, function(err, user) {
 		if (err) {
 			logger.error('[api|user:delete] Error finding user "%s": %s', req.params.id, err, {});
@@ -275,6 +280,7 @@ exports.del = function(req, res) {
 };
 
 function getACLs(user, done) {
+
 	acl.userRoles(user.email, function(err, roles) {
 		if (err) {
 			logger.error('[api|user:profile] Error reading roles for user <%s>: %s', user.email, err, {});

@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 var fs = require('fs');
 var gm = require('gm');
@@ -20,7 +20,7 @@ var disableCache = false;
  */
 exports.square = function(context, type, key, size) {
 
-	if (type == 'release') {
+	if (type === 'release') {
 		var p = __dirname + '/../../data/assets/cabinet/' + key + '.png';
 
 		asset(context, p, function(gm, callback) {
@@ -31,7 +31,7 @@ exports.square = function(context, type, key, size) {
 				var scale = srcSize.height / 1920;
 				gm.rotate('black', -30);
 				gm.crop(590 * scale, 590 * scale, 800 * scale, 1100 * scale);
-				if (size != null) {
+				if (size !== null) {
 					gm.resize(size, size);
 				}
 				callback(gm);
@@ -121,7 +121,7 @@ var asset = function(context, p, processFct, type, key, size, defaultName) {
 					if (err) {
 						return logger.error('[asset] Error while posting image to tinypng: %s', err);
 					}
-					if (response.statusCode != 201) {
+					if (response.statusCode !== 201) {
 						return logger.error('[asset] Error shrinking image (%d): %s', response.statusCode, util.inspect(json));
 					}
 					request(json.output.url).pipe(fs.createWriteStream(filename));

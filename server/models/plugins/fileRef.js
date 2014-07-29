@@ -1,3 +1,5 @@
+"use strict";
+
 var _ = require('underscore');
 var util = require('util');
 var async = require('async');
@@ -47,7 +49,7 @@ module.exports = exports = function(schema, options) {
 				_.each(files, function(file) {
 
 					// if match, switch shortId with _id
-					if (file.id == shortId) {
+					if (file.id === shortId) {
 						objectPath.set(obj, path, file._id);
 						hit = true;
 					}

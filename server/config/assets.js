@@ -1,9 +1,12 @@
+"use strict";
+
 var _ = require('underscore');
 var fs = require('fs');
 var path = require('path');
 var writeable = require('../modules/writeable');
 
 function Assets() {
+
 	var jsRoot = path.resolve(__dirname, '../../client/code');
 	var cssRoot = path.resolve(__dirname, '../../client/static/css');
 	var cacheRoot = writeable.cacheRoot;

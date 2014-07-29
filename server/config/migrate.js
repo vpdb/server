@@ -1,3 +1,5 @@
+"use strict";
+
 var path = require('path');
 var logger = require('winston');
 try {
@@ -17,7 +19,7 @@ settings.migrate(function(result) {
 		}
 	}
 	if (importantSettings.length > 0) {
-		logger.warn('[settings] New important setting%s: [%s]', importantSettings.length == 1 ? '' : 's', importantSettings.join(', '));
+		logger.warn('[settings] New important setting%s: [%s]', importantSettings.length === 1 ? '' : 's', importantSettings.join(', '));
 		return process.exit(1);
 	}
 	process.exit(0);

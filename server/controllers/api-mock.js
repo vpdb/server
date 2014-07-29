@@ -1,3 +1,5 @@
+"use strict";
+
 var _ = require('underscore');
 
 /*
@@ -1031,15 +1033,17 @@ var users = [
 ];
 
 exports.games = function(req, res) {
+
 	res.json({
 		result: data
 	});
 };
 
 exports.game = function(req, res) {
+
 	res.json({
 		result: _.find(data, function(game) {
-			return game.id == req.params.id;
+			return game.id === req.params.id;
 		})
 	});
 };
@@ -1113,6 +1117,7 @@ exports.releases = function(req, res) {
 	mb.game = _.pick(games.mb, gameAttrs);
 	t2.game = _.pick(games.t2, gameAttrs);
 
+	//noinspection JSHint
 	switch (req.query.show) {
 		case 'new':
 			ret = [ ij, afm, mb, centaur, t2, cv ];
@@ -1129,6 +1134,7 @@ exports.releases = function(req, res) {
 };
 
 exports.feed = function(req, res) {
+
 	res.json({
 		result: [
 			{
@@ -1226,7 +1232,6 @@ exports.feed = function(req, res) {
 };
 
 exports.users = function(req, res) {
-
 	res.json({
 		result: users.slice(0, 4)
 	});
@@ -1235,7 +1240,7 @@ exports.users = function(req, res) {
 exports.user = function(req, res) {
 	res.json({
 		result: _.find(users, function(user) {
-			return user.user == req.params.user;
+			return user.user === req.params.user;
 		})
 	});
 };

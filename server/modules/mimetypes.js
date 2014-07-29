@@ -1,3 +1,5 @@
+"use strict";
+
 /**
  * This are the allowed MIME types.
  */

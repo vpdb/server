@@ -1,3 +1,5 @@
+"use strict";
+
 var path = require('path');
 var http = require('http');
 var flash = require('connect-flash');
@@ -21,8 +23,8 @@ var apiCtrl = require('./controllers/api/api');
 
 module.exports = function(app, config, passport) {
 
-	var runningLocal = !process.env.APP_NAME || (process.env.APP_NAME != 'production' && process.env.APP_NAME != 'staging');
-	var runningDev = process.env.NODE_ENV != 'production';
+	var runningLocal = !process.env.APP_NAME || (process.env.APP_NAME !== 'production' && process.env.APP_NAME !== 'staging');
+	var runningDev = process.env.NODE_ENV !== 'production';
 
 	logger.info('[express] Setting up Express for running %s in %s mode.', runningLocal ? 'locally' : 'remotely', runningDev ? 'development' : 'production');
 

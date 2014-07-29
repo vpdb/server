@@ -1,3 +1,5 @@
+"use strict";
+
 var _ = require('underscore');
 
 module.exports = function(app, config, passport) {

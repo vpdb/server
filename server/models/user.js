@@ -1,3 +1,5 @@
+"use strict";
+
 var _ = require('underscore');
 var crypto = require('crypto');
 var logger = require('winston');
@@ -29,7 +31,7 @@ var fields = {
 };
 // provider data fields
 if (config.vpdb.passport.github.enabled) {
-	fields['github'] = {};
+	fields.github = {};
 }
 _.each(config.vpdb.passport.ipboard, function(ipbConfig) {
 	if (ipbConfig.enabled) {
@@ -96,7 +98,7 @@ UserSchema.pre('validate', function(next) {
 //-----------------------------------------------------------------------------
 UserSchema.path('name').validate(function(name) {
 	// if you are authenticating by any of the oauth strategies, don't validate
-	if (this.provider != 'local') {
+	if (this.provider !== 'local') {
 		return true;
 	}
 	return validator.isLength(name, 3, 30);
@@ -104,7 +106,7 @@ UserSchema.path('name').validate(function(name) {
 
 UserSchema.path('email').validate(function(email) {
 	// if you are authenticating by any of the oauth strategies, don't validate
-	if (this.provider != 'local') {
+	if (this.provider !== 'local') {
 		return true;
 	}
 	return validator.isEmail(email);
@@ -112,7 +114,7 @@ UserSchema.path('email').validate(function(email) {
 
 UserSchema.path('username').validate(function(username) {
 	// if you are authenticating by any of the oauth strategies, don't validate
-	if (this.provider != 'local') {
+	if (this.provider !== 'local') {
 		return true;
 	}
 	if (!validator.matches(username, /^[a-z0-9\._]+$/i)) {
@@ -129,7 +131,7 @@ UserSchema.path('provider').validate(function(provider) {
 	// below because it's not run when there's no value (and it can be null,
 	// if auth strategy is not local). so do it here, invalidate password if
 	// necessary but return true so provider passes.
-	if (this.isNew && provider == 'local') {
+	if (this.isNew && provider === 'local') {
 		if (!this._password) {
 			this.invalidate('password', 'Password is required.');
 		}

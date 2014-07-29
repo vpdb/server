@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 var _ = require('underscore');
 var ACL = require('acl');
@@ -43,9 +43,9 @@ var init = function(next) {
 	])
 
 	// hierarchy
-	.then(function() { return acl.addRoleParents('root', [ 'admin', 'contributor' ]) })
-	.then(function() { return acl.addRoleParents('admin', [ 'member' ]) })
-	.then(function() { return acl.addRoleParents('contributor', [ 'member' ]) })
+	.then(function() { return acl.addRoleParents('root', [ 'admin', 'contributor' ]); })
+	.then(function() { return acl.addRoleParents('admin', [ 'member' ]); })
+	.then(function() { return acl.addRoleParents('contributor', [ 'member' ]); })
 
 	// apply to all users
 	.then(function() {

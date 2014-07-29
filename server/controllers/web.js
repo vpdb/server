@@ -1,3 +1,5 @@
+"use strict";
+
 var _ = require('underscore');
 var fs = require('fs');
 var path = require('path');
@@ -49,7 +51,7 @@ exports.styleguide = function() {
 		res.writeHead(200);
 		var stream = fs.createReadStream(path.resolve(__dirname, '../../styleguide/index.html'));
 		stream.pipe(res);
-	}
+	};
 };
 
 exports.partials = function(subfolder, resource, permission) {

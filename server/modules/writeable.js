@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 var fs = require('fs');
 var path = require('path');
@@ -12,16 +12,16 @@ function Writeable() {
 	this.htmlRoot = path.resolve(this.cacheRoot, 'html');
 
 	if (!fs.existsSync(this.jsRoot)) {
-		fs.mkdirSync(this.jsRoot)
+		fs.mkdirSync(this.jsRoot);
 	}
 	if (!fs.existsSync(this.cssRoot)) {
-		fs.mkdirSync(this.cssRoot)
+		fs.mkdirSync(this.cssRoot);
 	}
 	if (!fs.existsSync(this.imgRoot)) {
-		fs.mkdirSync(this.imgRoot)
+		fs.mkdirSync(this.imgRoot);
 	}
 	if (!fs.existsSync(this.htmlRoot)) {
-		fs.mkdirSync(this.htmlRoot)
+		fs.mkdirSync(this.htmlRoot);
 	}
 }
 

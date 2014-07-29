@@ -1,3 +1,5 @@
+"use strict";
+
 var _ = require('underscore');
 var jwt = require('jwt-simple');
 var redis = require('redis-mock').createClient();
@@ -25,6 +27,7 @@ var User = require('mongoose').model('User');
  * @returns {Function} Middleware function
  */
 exports.auth = function(resource, permission, done) {
+
 	return function(req, res) {
 		var token;
 		var headerName = config.vpdb.authorizationHeader;
@@ -43,7 +46,7 @@ exports.auth = function(resource, permission, done) {
 
 				// validate format
 				var parts = req.headers[headerName.toLowerCase()].split(' ');
-				if (parts.length == 2) {
+				if (parts.length === 2) {
 					var scheme = parts[0];
 					var credentials = parts[1];
 					if (/^Bearer$/i.test(scheme)) {
@@ -61,8 +64,9 @@ exports.auth = function(resource, permission, done) {
 		}
 
 		// validate token
+		var decoded;
 		try {
-			var decoded = jwt.decode(token, config.vpdb.secret);
+			decoded = jwt.decode(token, config.vpdb.secret);
 		} catch (e) {
 			return deny({ code: 401,  message: 'Bad JSON Web Token: ' + e.message });
 		}
@@ -95,7 +99,7 @@ exports.auth = function(resource, permission, done) {
 
 			// generate new token if it's a short term token.
 			var tokenIssued = new Date(decoded.iat);
-			if (tokenExp.getTime() - tokenIssued.getTime() == config.vpdb.sessionTimeout) {
+			if (tokenExp.getTime() - tokenIssued.getTime() === config.vpdb.sessionTimeout) {
 				res.setHeader('X-Token-Refresh', exports.generateToken(user, now, req.method + ' ' + req.path));
 			}
 
@@ -135,7 +139,7 @@ exports.auth = function(resource, permission, done) {
 				}
 			});
 		});
-	}
+	};
 };
 
 /**
@@ -150,7 +154,7 @@ exports.generateToken = function(user, now, dbg) {
 		iss: user.id,
 		iat: now,
 		exp: new Date(now.getTime() + config.vpdb.sessionTimeout)
-	}, config.vpdb.secret)
+	}, config.vpdb.secret);
 };
 
 /**
@@ -213,7 +217,7 @@ exports.viewParams = function(req, done) {
 		authStrategies: {
 			local: true,
 			github: config.vpdb.passport.github.enabled,
-			ipboard: _.map(_.filter(config.vpdb.passport.ipboard, function(ipbConfig) { return ipbConfig.enabled }), function(ipbConfig) {
+			ipboard: _.map(_.filter(config.vpdb.passport.ipboard, function(ipbConfig) { return ipbConfig.enabled; }), function(ipbConfig) {
 				return {
 					name: ipbConfig.name,
 					icon: ipbConfig.icon,
@@ -236,12 +240,12 @@ exports.renderError = function(code, message) {
 	return function(req, res) {
 
 		// for API calls, return json
-		if (req.originalUrl.substr(0, 5) == '/api/') {
+		if (req.originalUrl.substr(0, 5) === '/api/') {
 			res.setHeader('Content-Type', 'application/json');
 			res.send(code, { error: message });
 
 		// for partials, return a partial
-		} else if (req.originalUrl.substr(0, 10) == '/partials/') {
+		} else if (req.originalUrl.substr(0, 10) === '/partials/') {
 			// return 200 because otherwise angular doesn't render the partial view.
 			res.status(200).send('<h1>Oops!</h1><p>' + message + '</p>');
 
@@ -252,5 +256,5 @@ exports.renderError = function(code, message) {
 				res.status(code).render('errors/' + tpl, _.extend(params, { url: req.originalUrl, code: code, message: message }));
 			});
 		}
-	}
+	};
 };

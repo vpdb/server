@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 var _ = require('underscore');
 var gm = require('gm');
@@ -177,7 +177,7 @@ Storage.prototype.postprocess = function(file, done) {
 						});
 					});
 
-					if (subtype == 'png') {
+					if (subtype === 'png') {
 						var quanter = new PngQuant([128]);
 						var optimizer = new OptiPng(['-o7']);
 
@@ -194,7 +194,7 @@ Storage.prototype.postprocess = function(file, done) {
 						logger.error('[storage] Error processing variations: %s', err, {});
 						return done(err);
 					}
-					if (subtype != 'png') {
+					if (subtype !== 'png') {
 						return done();
 					}
 

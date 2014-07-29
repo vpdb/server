@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 var _ = require('underscore');
 var fs = require('fs');
@@ -43,7 +43,7 @@ Settings.prototype.validate = function() {
 			} else {
 				logger.error('[settings] %s [KO]: %s (%s).', p, error, s);
 			}
-		}
+		};
 		for (var s in validation) {
 			if (validation.hasOwnProperty(s)) {
 				p = (path + '.' + s).substr(1);
@@ -59,6 +59,7 @@ Settings.prototype.validate = function() {
 							logger.info('[settings] %s [OK]', p);
 						} else {
 							if (_.isArray(validationError)) {
+								//noinspection JSHint
 								_.each(validationError, function(error) {
 									logError(p, error, setting[s]);
 								});
@@ -116,7 +117,7 @@ Settings.prototype.migrate = function(callback) {
 	var settingsCurr = fs.readFileSync(this.filePath, { encoding: 'utf8' }).trim().replace(/\x0D\x0A/gi, '\n');
 	var result = { added: [], errors: [] };
 
-	if (settingsCurr != settingsDist) {
+	if (settingsCurr !== settingsDist) {
 
 		logger.info('[settings] Checking for new settings.');
 
@@ -198,10 +199,12 @@ Settings.prototype.migrate = function(callback) {
 		// 1. retrieve added properties
 		var oldTree = {};
 		var newTree = {};
+		//noinspection JSHint
 		eval(settingsCurr.replace(/module\.exports\s*=\s*\{/, 'oldTree = {'));
+		//noinspection JSHint
 		eval(settingsDist.replace(/module\.exports\s*=\s*\{/, 'newTree = {'));
 		var newProps = diff(oldTree, newTree);
-		if (newProps.length == 0) {
+		if (newProps.length === 0) {
 			logger.info('[settings] No new settings found.');
 			return callback(result);
 		}
@@ -214,12 +217,13 @@ Settings.prototype.migrate = function(callback) {
 		var settingsPatched = _.clone(settingsCurr);
 		var settingsNew = _.pick(nodesNew, newProps);
 		var settingsNewKeys = _.keys(settingsNew);
+		var ast;
 		for (var i = 0; i < settingsNewKeys.length; i++) {
 			var path = settingsNewKeys[i]; // path in settings to be added
 			var node = settingsNew[path];  // ast node corresponding to the setting to be added
 			try {
 				// analyze current settings, so we know where to inject
-				var ast = analyze(uglify.parse(settingsPatched));
+				ast = analyze(uglify.parse(settingsPatched));
 			} catch (err) {
 				logger.error('[settings] Error parsing patched file: ' + err);
 				result.errors.push({
@@ -245,8 +249,9 @@ Settings.prototype.migrate = function(callback) {
 //				logger.info('settingsDist:\n%s', settingsDist);
 
 				// inject at the end of an element
+				var parentPath;
 				if (path.indexOf('.') > 0) {
-					var parentPath = path.substr(0, path.lastIndexOf('.'));
+					parentPath = path.substr(0, path.lastIndexOf('.'));
 					settingsPatched = patch(settingsPatched, codeBlock, ast[parentPath].end.pos, parentPath);
 
 				// inject the end of the file.
@@ -301,7 +306,7 @@ Settings.prototype.publicUrl = function(config) {
 		(config.vpdb.httpsEnabled ? 's' : '') +
 		'://' +
 		config.vpdb.host +
-		(config.vpdb.httpsEnabled || config.vpdb.port == 80 ? '' : ':' + config.vpdb.port)
+		(config.vpdb.httpsEnabled || config.vpdb.port === 80 ? '' : ':' + config.vpdb.port);
 };
 
 module.exports = new Settings();

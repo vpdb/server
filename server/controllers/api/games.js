@@ -1,3 +1,5 @@
+"use strict";
+
 var _ = require('underscore');
 var util = require('util');
 var logger = require('winston');
@@ -14,6 +16,7 @@ var storage = require('../../modules/storage');
  * @param res Response object
  */
 exports.head = function(req, res) {
+
 	Game.findOne({ id: req.params.id }, function(err, game) {
 		if (err) {
 			logger.error('[api|game:head] Error finding game "%s": %s', req.params.id, err, {});

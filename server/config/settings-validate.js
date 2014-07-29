@@ -1,3 +1,5 @@
+"use strict";
+
 var _ = require('underscore');
 var fs = require('fs');
 var mimeTypes = require('../modules/mimetypes');
@@ -31,7 +33,7 @@ module.exports = {
 		 */
 		port: function(port) {
 			if (!parseInt(port) || parseInt(port) > 65535 || parseInt(port) < 1) {
-				return 'Port must be an integer between 1 and 65535'
+				return 'Port must be an integer between 1 and 65535';
 			}
 		},
 
@@ -59,7 +61,7 @@ module.exports = {
 		 */
 		sessionTimeout: function(timeout) {
 			if (!parseInt(timeout) || parseInt(timeout) < 1) {
-				return 'Session timeout must be a number greater than 0'
+				return 'Session timeout must be a number greater than 0';
 			}
 		},
 
@@ -71,7 +73,7 @@ module.exports = {
 			if (secret.length < 10) {
 				return 'Your secret must be longer than 10 characters. Please use a generator, e.g. http://strongpasswordgenerator.com/';
 			}
-			if (secret == 'alongsecret') {
+			if (secret === 'alongsecret') {
 				return 'You\'re using the default secret. Please use a generator, e.g. http://strongpasswordgenerator.com/';
 			}
 		},
@@ -130,7 +132,7 @@ module.exports = {
 
 			defaultPlan: function(defaultPlan, settings) {
 				if (!settings.vpdb.quota.plans[defaultPlan]) {
-					return 'Default plan must exist in the "vpdb.quota.plans" setting.'
+					return 'Default plan must exist in the "vpdb.quota.plans" setting.';
 				}
 			},
 
@@ -188,10 +190,10 @@ module.exports = {
 					if (!settings.vpdb.passport.enabled) {
 						return;
 					}
-					if (id.length == 0) {
+					if (id.length === 0) {
 						return 'Your client ID must be longer than 0 characters. Please consult https://github.com/settings/applications/ in order to obtain GitHub\'s client ID';
 					}
-					if (id == 'CLIENT_ID') {
+					if (id === 'CLIENT_ID') {
 						return 'You\'re using the default client ID. Please consult https://github.com/settings/applications/ in order to obtain GitHub\'s client ID';
 					}
 				},
@@ -203,10 +205,10 @@ module.exports = {
 					if (!settings.vpdb.passport.enabled) {
 						return;
 					}
-					if (secret.length == 0) {
+					if (secret.length === 0) {
 						return 'Your client secret must be longer than 0 characters. Please consult https://github.com/settings/applications/ in order to obtain GitHub\'s client secret';
 					}
-					if (secret == 'CLIENT_SECRET') {
+					if (secret === 'CLIENT_SECRET') {
 						return 'You\'re using the default client secret. Please consult https://github.com/settings/applications/ in order to obtain GitHub\'s client secret';
 					}
 				}
@@ -232,7 +234,7 @@ module.exports = {
 				 */
 				id: function(id) {
 					if (!/^[a-z0-9]+$/.test(id)) {
-						return 'ID must be alphanumeric'
+						return 'ID must be alphanumeric';
 					}
 				},
 
@@ -244,7 +246,7 @@ module.exports = {
 					if (urlErr) {
 						return urlErr;
 					}
-					if (url == 'https://localhost/forums/index.php') {
+					if (url === 'https://localhost/forums/index.php') {
 						return 'You\'re using the default base URL';
 					}
 				},
@@ -253,10 +255,10 @@ module.exports = {
 				 * The client ID of the generated application.
 				 */
 				clientID: function(id) {
-					if (id.length == 0) {
+					if (id.length === 0) {
 						return 'Your client ID must be longer than 0 characters';
 					}
-					if (id == 'CLIENT_ID') {
+					if (id === 'CLIENT_ID') {
 						return 'You\'re using the default client ID';
 					}
 				},
@@ -265,10 +267,10 @@ module.exports = {
 				 * The client secret of the generated application.
 				 */
 				clientSecret: function(secret) {
-					if (secret.length == 0) {
+					if (secret.length === 0) {
 						return 'Your client secret must be longer than 0 characters';
 					}
-					if (secret == 'CLIENT_SECRET') {
+					if (secret === 'CLIENT_SECRET') {
 						return 'You\'re using the default client secret';
 					}
 				},

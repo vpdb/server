@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 var util = require('util');
 var OAuth2Strategy = require('passport-oauth').OAuth2Strategy;

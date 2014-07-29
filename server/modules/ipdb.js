@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 var ent = require('ent');
 var logger = require('winston');
@@ -22,7 +22,7 @@ Ipdb.prototype.details = function(ipdbNo, done) {
 			return done(err);
 		}
 
-		if (response.statusCode != 200) {
+		if (response.statusCode !== 200) {
 			logger.error('[ipdb] Wrong response code, got %s instead of 200. Body: %s', response.statusCode, body);
 			return done('Wrong response data from IPDB.');
 		}
@@ -97,11 +97,11 @@ function firstMatch(str, regex, postFn) {
 }
 
 function trim(str) {
-	return str.replace(/[^\w\d\s\.\-,:_'"()]/ig, '');
+	return str.replace(/[^-\w\d\s\.,:_'"()]/ig, '');
 }
 
 function striptags(str) {
-	return str.replace(/<(?:.|\n)*?>/gm, '')
+	return str.replace(/<(?:.|\n)*?>/gm, '');
 }
 
 var manufacturerNames = {

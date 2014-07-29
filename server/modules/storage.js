@@ -90,7 +90,7 @@ Storage.prototype.cleanup = function(graceperiod, done) {
 		}
 
 		async.eachSeries(files, function(file, next) {
-			logger.info('[storage] Cleanup: Removing inactive file "%s" by <%s> (%s).', file.name, file._created_by.email, file.id);
+			logger.info('[storage] Cleanup: Removing inactive file "%s" by <%s> (%s).', file.name, file._created_by ? file._created_by.email : 'unknown', file.id);
 			if (fs.existsSync(file.getPath())) {
 				// TODO remove variations
 				fs.unlinkSync(file.getPath());

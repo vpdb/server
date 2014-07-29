@@ -59,7 +59,7 @@ exports.upload = function(req, res) {
 							logger.error('[api|file:save] Error saving metadata: %s', err, {});
 							logger.error('[api|file:save] Metadata: %s', require('util').inspect(metadata));
 						}
-						api.success(res, file.toDetailed());
+						api.success(res, file.toDetailed(), 201);
 					});
 					storage.postprocess(file, function(err) {
 						if (err) {

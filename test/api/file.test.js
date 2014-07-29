@@ -1,5 +1,7 @@
 "use strict"; /*global describe, before, after, it*/
 
+var fs = require('fs');
+var path = require('path');
 var request = require('superagent');
 var expect = require('expect.js');
 
@@ -9,6 +11,8 @@ var hlp = require('../modules/helper');
 superagentTest(request);
 
 describe('The VPDB `file` API', function() {
+
+	var backglass = path.resolve(__dirname, '../../data/test/files/backglass.png');
 
 	before(function(done) {
 		hlp.setupUsers(request, {
@@ -51,7 +55,8 @@ describe('The VPDB `file` API', function() {
 
 	it('should fail when providing wrong mime type in header', function(done) {
 		request
-			.put('/api/files?type=foo')
+			.put('/api/files')
+			.query({ type: 'foo' })
 			.as('member')
 			.set('Content-Disposition','attachment; filename="foo.bar"')
 			.send('xxx')
@@ -70,14 +75,15 @@ describe('The VPDB `file` API', function() {
 		var name = "text.txt";
 		var text = "I'm the content of a test text file.";
 		request
-			.put('/api/files?type=' + fileType)
+			.put('/api/files')
+			.query({ type: fileType })
 			.as('member')
 			.set('Content-Type', mimeType)
 			.set('Content-Disposition', 'attachment; filename="' + name + '"')
 			.send(text)
 			.end(function(err, res) {
 				expect(err).to.eql(null);
-				expect(res.status).to.be(200);
+				expect(res.status).to.be(201);
 				expect(res.body.id).to.be.ok();
 				expect(res.body.name).to.be(name);
 				expect(res.body.bytes).to.be(text.length);
@@ -94,14 +100,15 @@ describe('The VPDB `file` API', function() {
 		var name = "text.txt";
 		var text = "I'm the content of a test text file.";
 		request
-			.put('/api/files?type=' + fileType)
+			.put('/api/files')
+			.query({ type: fileType })
 			.as('member')
 			.set('Content-Type', mimeType)
 			.set('Content-Disposition', 'attachment; filename="' + name + '"')
 			.send(text)
 			.end(function(err, res) {
 				expect(err).to.eql(null);
-				expect(res.status).to.be(200);
+				expect(res.status).to.be(201);
 				expect(res.body.url).to.be.ok();
 				request
 					.get(res.body.url)
@@ -120,21 +127,22 @@ describe('The VPDB `file` API', function() {
 		var name = "text.txt";
 		var text = "I'm the content of a test text file.";
 		request
-			.put('/api/files?type=' + fileType)
+			.put('/api/files')
+			.query({ type: fileType })
 			.as('member')
 			.set('Content-Type', mimeType)
 			.set('Content-Disposition', 'attachment; filename="' + name + '"')
 			.send(text)
 			.end(function(err, res) {
 				expect(err).to.eql(null);
-				expect(res.status).to.be(200);
+				expect(res.status).to.be(201);
 				expect(res.body.url).to.be.ok();
 				request
 					.get(res.body.url)
 					.as('anothermember')
 					.end(function(err, res) {
 						expect(err).to.eql(null);
-						expect(res.status).to.be(401);
+						expect(res.status).to.be(403);
 						done();
 					});
 			});
@@ -143,17 +151,18 @@ describe('The VPDB `file` API', function() {
 	it('should fail retrieving an uploaded text file as anonymous', function(done) {
 		var fileType = 'mooh';
 		var mimeType = 'text/plain';
-		var name = "text.txt";
+		var name = 'text.txt';
 		var text = "I'm the content of a test text file.";
 		request
-			.put('/api/files?type=' + fileType)
+			.put('/api/files')
+			.query({ type: fileType })
 			.as('member')
 			.set('Content-Type', mimeType)
 			.set('Content-Disposition', 'attachment; filename="' + name + '"')
 			.send(text)
 			.end(function(err, res) {
 				expect(err).to.eql(null);
-				expect(res.status).to.be(200);
+				expect(res.status).to.be(201);
 				expect(res.body.url).to.be.ok();
 				request
 					.get(res.body.url)
@@ -163,6 +172,27 @@ describe('The VPDB `file` API', function() {
 						done();
 					});
 			});
+	});
+
+	it('should successfully upload a backglass file', function(done) {
+		var data = fs.createReadStream(backglass);
+		var fileType = 'backglass';
+		var mimeType = 'image/png';
+		var name = 'backglass.png';
+		var req = request
+			.put('/api/files')
+			.query({ type: fileType })
+			.as('member')
+			.set('Content-Type', mimeType)
+			.set('Content-Disposition', 'attachment; filename="' + name + '"');
+
+		req.on('response', function(res) {
+			console.log(res.body);
+			expect(res.status).to.be(201);
+			done();
+		});
+
+		data.pipe(req);
 	});
 
 

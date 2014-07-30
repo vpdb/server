@@ -50,7 +50,7 @@ exports.upload = function(req, res) {
 			writeStream.on('finish', function() {
 				storage.metadata(file, function(err, metadata, shortMetadata) {
 					if (err) {
-						return api.fail(res, 'Metadata parsing for MIME type "' + file.mime_type +  '" failed. Upload corrupted or weird format?', 422);
+						return api.fail(res, 'Metadata parsing for MIME type "' + file.mime_type +  '" failed. Upload corrupted or weird format?', 400);
 					}
 					if (metadata) {
 						api.sanitizeObject(metadata);

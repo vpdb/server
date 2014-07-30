@@ -157,6 +157,14 @@ exports.cleanupFiles = function(request, fileIds, done) {
 	}, done);
 };
 
+exports.status = function(code, next) {
+	return function(err, res) {
+		expect(err).to.eql(null);
+		expect(res.status).to.be(code);
+		next();
+	};
+};
+
 exports.getUser = function(name) {
 	return this.users[name];
 };

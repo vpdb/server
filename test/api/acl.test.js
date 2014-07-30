@@ -94,10 +94,10 @@ describe('The ACLs of the VPDB API', function() {
 				});
 		});
 
-		// app.put('/api/files',         api.auth(api.files.upload, 'files', 'upload'));
+		// app.post('/api/files',         api.auth(api.files.upload, 'files', 'upload'));
 		it('should deny access to file upload', function(done) {
 			request
-				.put('/api/files')
+				.post('/api/files')
 				.end(function(err, res) {
 					expect(res.status).to.be(401);
 					done();
@@ -292,7 +292,7 @@ describe('The ACLs of the VPDB API', function() {
 
 		it('should allow access to file upload', function(done) {
 			request
-				.put('/api/files')
+				.post('/api/files')
 				.as('member')
 				.end(function(err, res) {
 					expect(res.status).to.be(422);
@@ -489,7 +489,7 @@ describe('The ACLs of the VPDB API', function() {
 
 		it('should allow access to file upload', function(done) {
 			request
-				.put('/api/files')
+				.post('/api/files')
 				.as('contributor')
 				.send({})
 				.end(function(err, res) {
@@ -699,7 +699,7 @@ describe('The ACLs of the VPDB API', function() {
 
 		it('should allow access to file upload', function(done) {
 			request
-				.put('/api/files')
+				.post('/api/files')
 				.as('admin')
 				.send({})
 				.end(function(err, res) {
@@ -900,7 +900,7 @@ describe('The ACLs of the VPDB API', function() {
 
 		it('should allow access to file upload', function(done) {
 			request
-				.put('/api/files')
+				.post('/api/files')
 				.as('root')
 				.send({})
 				.end(function(err, res) {

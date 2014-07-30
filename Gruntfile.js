@@ -1,3 +1,5 @@
+"use strict";
+
 var _ = require('underscore');
 var fs = require('fs');
 var path = require('path');
@@ -34,7 +36,7 @@ module.exports = function(grunt) {
 		mkdir: {
 			all: {
 				options: {
-					mode: 0770,
+					mode: 504, // 0770,
 					create: [ cssRoot, jsRoot ]
 				}
 			}

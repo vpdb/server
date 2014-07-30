@@ -49,7 +49,10 @@ exports.upload = function(req, res) {
 			var writeStream = fs.createWriteStream(file.getPath());
 			writeStream.on('finish', function() {
 				storage.metadata(file, function(err, metadata, shortMetadata) {
-					if (!err && metadata) {
+					if (err) {
+						return api.fail(res, 'Metadata parsing for MIME type "' + file.mime_type +  '" failed. Upload corrupted or weird format?', 422);
+					}
+					if (metadata) {
 						api.sanitizeObject(metadata);
 						file.metadata = metadata;
 					}
@@ -61,11 +64,8 @@ exports.upload = function(req, res) {
 						}
 						api.success(res, file.toDetailed(), 201);
 					});
-					storage.postprocess(file, function(err) {
-						if (err) {
-							logger.error('[api|file:postprocess] Error post-processing file: %s', err, {});
-						}
-					});
+					// do this in the background.
+					storage.postprocess(file);
 				});
 			});
 			req.pipe(writeStream);
@@ -102,6 +102,9 @@ exports.del = function(req, res) {
 			}
 			logger.info('[api|file:delete] File "%s" (%s) successfully deleted.', file.name, file.id);
 			api.success(res, null, 204);
+
+			// remove from disk (in background)
+			storage.remove(file);
 		});
 	});
 };

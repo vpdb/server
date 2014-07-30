@@ -228,7 +228,7 @@ ctrl.controller('AdminGameAddCtrl', function($scope, $upload, $modal, $window, A
 				console.log(file);
 				$upload.http({
 					url: '/api/files',
-					method: 'PUT',
+					method: 'POST',
 					params: { type: type },
 					headers: {
 						'Content-Type': file.type,

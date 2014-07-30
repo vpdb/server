@@ -47,7 +47,7 @@ module.exports = function(app, config, passport) {
 	app.get('/api/vpbuilds',      api.anon(api.vpbuilds.list));
 	app.post('/api/vpbuilds',     api.auth(api.vpbuilds.create, 'vpbuilds', 'add'));
 
-	app.put('/api/files',         api.auth(api.files.upload, 'files', 'upload'));
+	app.post('/api/files',        api.auth(api.files.upload, 'files', 'upload'));
 	app.delete('/api/files/:id',  api.auth(api.files.del, 'files', 'delete'));
 
 	app.get('/api/games',         api.anon(api.games.list));

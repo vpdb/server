@@ -20,7 +20,7 @@ var fields = {
 	name:         { type: String, required: 'Filename must be provided.' },
 	bytes:        { type: Number, required: true },
 	mime_type:    { type: String, required: true, enum: { values: _.keys(mimeTypes), message: 'Invalid MIME type. Valid MIME types are: ["' +  _.keys(mimeTypes).join('", "') + '"].' }},
-	file_type:    { type: String, required: true },
+	file_type:    { type: String, required: true }, // TODO make enum
 	metadata:     { type: Schema.Types.Mixed },
 	variations:   { type: Schema.Types.Mixed },
 	is_public:    { type: Boolean, required: true, default: false },

@@ -140,6 +140,23 @@ exports.teardownUsers = function(request, done) {
 	});
 };
 
+exports.cleanupFiles = function(request, fileIds, done) {
+	async.eachSeries(_.keys(fileIds), function(user, nextUser) {
+		async.each(fileIds[user], function(fileId, next) {
+			request
+				.del('/api/files/' + fileId)
+				.as(user)
+				.end(function(err, res) {
+					if (err) {
+						return next(err);
+					}
+					expect(res.status).to.eql(204);
+					next();
+				});
+		}, nextUser);
+	}, done);
+};
+
 exports.getUser = function(name) {
 	return this.users[name];
 };

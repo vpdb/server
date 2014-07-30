@@ -14,6 +14,8 @@ describe('The VPDB `file` API', function() {
 
 	var backglass = path.resolve(__dirname, '../../data/test/files/backglass.png');
 
+	var fileIds = { member: [] };
+
 	before(function(done) {
 		hlp.setupUsers(request, {
 			member: { roles: [ 'member' ]},
@@ -22,13 +24,14 @@ describe('The VPDB `file` API', function() {
 	});
 
 	after(function(done) {
-		hlp.teardownUsers(request, done);
-		// also clean all files
+		hlp.cleanupFiles(request, fileIds, function() {
+			hlp.teardownUsers(request, done);
+		});
 	});
 
 	it('should fail when no "Content-Disposition" header is provided', function(done) {
 		request
-			.put('/api/files')
+			.post('/api/files')
 			.as('member')
 			.send('xxx')
 			.end(function(err, res) {
@@ -41,7 +44,7 @@ describe('The VPDB `file` API', function() {
 
 	it('should fail when no "type" query parameter is provided', function(done) {
 		request
-			.put('/api/files')
+			.post('/api/files')
 			.as('member')
 			.set('Content-Disposition','attachment; filename="foo.bar"')
 			.send('xxx')
@@ -55,7 +58,7 @@ describe('The VPDB `file` API', function() {
 
 	it('should fail when providing wrong mime type in header', function(done) {
 		request
-			.put('/api/files')
+			.post('/api/files')
 			.query({ type: 'foo' })
 			.as('member')
 			.set('Content-Disposition','attachment; filename="foo.bar"')
@@ -75,15 +78,16 @@ describe('The VPDB `file` API', function() {
 		var name = "text.txt";
 		var text = "I'm the content of a test text file.";
 		request
-			.put('/api/files')
+			.post('/api/files')
 			.query({ type: fileType })
 			.as('member')
-			.set('Content-Type', mimeType)
+			.type(mimeType)
 			.set('Content-Disposition', 'attachment; filename="' + name + '"')
 			.send(text)
 			.end(function(err, res) {
 				expect(err).to.eql(null);
 				expect(res.status).to.be(201);
+				fileIds.member.push(res.body.id);
 				expect(res.body.id).to.be.ok();
 				expect(res.body.name).to.be(name);
 				expect(res.body.bytes).to.be(text.length);
@@ -100,15 +104,16 @@ describe('The VPDB `file` API', function() {
 		var name = "text.txt";
 		var text = "I'm the content of a test text file.";
 		request
-			.put('/api/files')
+			.post('/api/files')
 			.query({ type: fileType })
 			.as('member')
-			.set('Content-Type', mimeType)
+			.type(mimeType)
 			.set('Content-Disposition', 'attachment; filename="' + name + '"')
 			.send(text)
 			.end(function(err, res) {
 				expect(err).to.eql(null);
 				expect(res.status).to.be(201);
+				fileIds.member.push(res.body.id);
 				expect(res.body.url).to.be.ok();
 				request
 					.get(res.body.url)
@@ -127,15 +132,16 @@ describe('The VPDB `file` API', function() {
 		var name = "text.txt";
 		var text = "I'm the content of a test text file.";
 		request
-			.put('/api/files')
+			.post('/api/files')
 			.query({ type: fileType })
 			.as('member')
-			.set('Content-Type', mimeType)
+			.type(mimeType)
 			.set('Content-Disposition', 'attachment; filename="' + name + '"')
 			.send(text)
 			.end(function(err, res) {
 				expect(err).to.eql(null);
 				expect(res.status).to.be(201);
+				fileIds.member.push(res.body.id);
 				expect(res.body.url).to.be.ok();
 				request
 					.get(res.body.url)
@@ -154,15 +160,16 @@ describe('The VPDB `file` API', function() {
 		var name = 'text.txt';
 		var text = "I'm the content of a test text file.";
 		request
-			.put('/api/files')
+			.post('/api/files')
 			.query({ type: fileType })
 			.as('member')
-			.set('Content-Type', mimeType)
+			.type(mimeType)
 			.set('Content-Disposition', 'attachment; filename="' + name + '"')
 			.send(text)
 			.end(function(err, res) {
 				expect(err).to.eql(null);
 				expect(res.status).to.be(201);
+				fileIds.member.push(res.body.id);
 				expect(res.body.url).to.be.ok();
 				request
 					.get(res.body.url)
@@ -175,25 +182,27 @@ describe('The VPDB `file` API', function() {
 	});
 
 	it('should successfully upload a backglass file', function(done) {
-		var data = fs.createReadStream(backglass);
+		var data = fs.readFileSync(backglass);
 		var fileType = 'backglass';
 		var mimeType = 'image/png';
 		var name = 'backglass.png';
-		var req = request
-			.put('/api/files')
+
+		request
+			.post('/api/files')
 			.query({ type: fileType })
+			.type(mimeType)
+			.set('Content-Disposition', 'attachment; filename="' + name + '"')
+			.set('Content-Length', data.length)
+			.send(data)
 			.as('member')
-			.set('Content-Type', mimeType)
-			.set('Content-Disposition', 'attachment; filename="' + name + '"');
-
-		req.on('response', function(res) {
-			console.log(res.body);
-			expect(res.status).to.be(201);
-			done();
-		});
-
-		data.pipe(req);
+			.end(function(res) {
+				expect(res.status).to.be(201);
+				fileIds.member.push(res.body.id);
+				expect(res.body.id).to.be.ok();
+				expect(res.body.variations.small).to.be.an('object');
+				expect(res.body.variations.medium).to.be.an('object');
+				done();
+			});
 	});
-
 
 });

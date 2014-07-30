@@ -6,9 +6,11 @@ module.exports = function(superagent, options) {
 	options.schema = options.schema || process.env.HTTP_SCHEMA || 'http';
 	options.host = options.host || process.env.HOST || 'localhost';
 	options.port = options.port || process.env.PORT || 7357;
-	options.authHeader = options.authHeader || process.env.AUTH_HEADER || 'Authentication';
+	options.authHeader = options.authHeader || process.env.AUTH_HEADER || 'Authorization';
 
 	var Request = superagent.Request;
+
+	//console.log('Initializing super agent with server %s://%s:%s/\n', options.schema, options.host, options.port);
 
 	var oldRequest = Request.prototype.request;
 	Request.prototype.request = function () {

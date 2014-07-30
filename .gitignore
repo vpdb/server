@@ -19,6 +19,7 @@ npm-debug.log
 node_modules
 
 .rebooted
+.reload
 .idea/compiler.xml
 .idea/copyright/
 .idea/dictionaries/

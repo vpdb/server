@@ -91,13 +91,27 @@ Storage.prototype.cleanup = function(graceperiod, done) {
 
 		async.eachSeries(files, function(file, next) {
 			logger.info('[storage] Cleanup: Removing inactive file "%s" by <%s> (%s).', file.name, file._created_by ? file._created_by.email : 'unknown', file.id);
-			if (fs.existsSync(file.getPath())) {
-				// TODO remove variations
-				fs.unlinkSync(file.getPath());
-			}
+			Storage.prototype.remove(file);
 			file.remove(next);
 		}, done);
 	});
+};
+
+Storage.prototype.remove = function(file) {
+	var filePath = file.getPath();
+	if (fs.existsSync(filePath)) {
+		logger.info('[storage] Removing file %s..', filePath);
+		fs.unlinkSync(filePath);
+	}
+	if (this.variations[file.getMimeType()] && this.variations[file.getMimeType()][file.file_type]) {
+		_.each(this.variations[file.getMimeType()][file.file_type], function(variation) {
+			filePath = file.getPath(variation.name);
+			if (fs.existsSync(filePath)) {
+				logger.info('[storage] Removing file variation %s..', filePath);
+				fs.unlinkSync(filePath);
+			}
+		});
+	}
 };
 
 Storage.prototype.metadata = function(file, done) {
@@ -107,7 +121,7 @@ Storage.prototype.metadata = function(file, done) {
 			gm(file.getPath()).identify(function(err, value) {
 				if (err) {
 					logger.warn('[storage] Error reading metadata from image: %s', err);
-					return done();
+					return done(err);
 				}
 				done(null, value, Storage.prototype.metadataShort(file, value));
 			});
@@ -121,6 +135,9 @@ Storage.prototype.metadata = function(file, done) {
 Storage.prototype.metadataShort = function(file, metadata) {
 
 	var data = metadata ? metadata : file.metadata;
+	if (!data) {
+		return {};
+	}
 	switch(file.getMimeType()) {
 		case 'image':
 			return _.pick(data, 'format', 'size', 'depth', 'JPEG-Quality');
@@ -130,6 +147,7 @@ Storage.prototype.metadataShort = function(file, metadata) {
 };
 
 Storage.prototype.postprocess = function(file, done) {
+	done = done || function() {};
 	var mime = file.mime_type.split('/');
 	var type = mime[0];
 	var subtype = mime[1];
@@ -153,6 +171,9 @@ Storage.prototype.postprocess = function(file, done) {
 
 					var filepath = file.getPath(variation.name);
 					var writeStream = fs.createWriteStream(filepath);
+					var handleErr = function(err) {
+						next(err);
+					};
 					writeStream.on('finish', function() {
 						logger.info('[storage] Saved resized image to "%s".', filepath);
 
@@ -164,10 +185,14 @@ Storage.prototype.postprocess = function(file, done) {
 							}
 
 							// re-fetch so we're sure no updates are lost
+							var fileId = file.id;
 							File.findById(file._id, function(err, file) {
 								if (err) {
 									logger.warn('[storage] Error re-fetching image: %s', err);
 									return next(err);
+								}
+								if (!file) {
+									return next('File "' + fileId + '" gone, has been deleted up before processing finished.');
 								}
 
 								if (!file.variations) {
@@ -188,18 +213,22 @@ Storage.prototype.postprocess = function(file, done) {
 							});
 						});
 					});
+					writeStream.on('error', handleErr);
 
 					if (subtype === 'png') {
 						var quanter = new PngQuant([128]);
 						var optimizer = new OptiPng(['-o7']);
 
 						logger.info('[storage] Resizing and optimizing "%s" for %s %s...', file.name, variation.name, file.file_type);
-						gm(file.getPath()).resize(variation.width, variation.height).stream().pipe(quanter).pipe(optimizer).pipe(writeStream);
+						gm(file.getPath()).resize(variation.width, variation.height).stream()
+							.pipe(quanter).on('error', handleErr)
+							.pipe(optimizer).on('error', handleErr)
+							.pipe(writeStream).on('error', handleErr);
 
 					} else {
 
 						logger.info('[storage] Resizing "%s" for %s %s...', file.name, variation.name, file.file_type);
-						gm(file.getPath()).resize(variation.width, variation.height).stream().pipe(writeStream);
+						gm(file.getPath()).resize(variation.width, variation.height).stream().pipe(writeStream).on('error', handleErr);
 					}
 				}, function(err) {
 					if (err) {

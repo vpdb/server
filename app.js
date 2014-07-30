@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 var fs = require('fs');
 var path = require('path');
@@ -7,6 +7,13 @@ var domain = require('domain');
 var express = require('express');
 var passport = require('passport');
 var mongoose = require('mongoose');
+
+if (process.env.COVERAGE) {
+	console.log('[app] Hook loader for coverage enabled.');
+	require('istanbul-middleware').hookLoader(__dirname);
+	// cover all files except under node_modules
+	// see API for other options
+}
 
 var settings = require('./server/modules/settings');
 
@@ -24,6 +31,8 @@ if (!settings.validate()) {
 }
 
 serverDomain.run(function() {
+
+	logger.info('[app] Server location is at %s (CWD = %s)', path.resolve(__dirname), process.cwd());
 
 	var app = express();
 

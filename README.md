@@ -97,9 +97,19 @@ There are some command line arguments you can supply:
    * When launched as `dev` or `serve`, the default is `server/config/settings.js`
    * When launched as `test`, `test-client` or `test-server`, the default is `server/config/settings-test.js`. See 
      *Tests* below for additional parameters.
-   
+
 Note that both settings may also be provided by setting the `PORT` and `APP_SETTINGS` environment variable.
- 	
+ 
+### Grunt Task Overview
+
+Here's an overview how you can launch the server and what the different behaviors are:
+
+|              | Assets Minified | Coverage Enabled | Automatic Asset Compilation | Config    |
+|--------------|-----------------|------------------|-----------------------------|-----------|
+| `serve`      | yes             | no               | no                          | *default* |
+| `dev`        | no              | no               | yes                         | *default* |
+| `serve-test` | no              | yes              | no                          | *test*    |
+
 If you plan to setup a production environment from scratch, see the [Installation Guide](INSTALL.md).
 
 ## Status

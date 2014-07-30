@@ -4,6 +4,7 @@ var path = require('path');
 var http = require('http');
 var flash = require('connect-flash');
 var logger = require('winston');
+
 var express = require('express');
 var expressMorgan  = require('morgan');
 var expressFavion = require('serve-favicon');
@@ -124,6 +125,12 @@ module.exports = function(app, config, passport) {
 	if (runningDev) {
 		app.use(expressErrorhandler());
 		app.locals.pretty = true;
+	}
+
+	// add the coverage handler
+	if (process.env.COVERAGE) {
+		//enable coverage endpoints under /coverage
+		app.use('/coverage', require('istanbul-middleware').createHandler());
 	}
 
 	// assume "not found" in the error msgs

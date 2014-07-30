@@ -242,7 +242,7 @@ exports.renderError = function(code, message) {
 		// for API calls, return json
 		if (req.originalUrl.substr(0, 5) === '/api/') {
 			res.setHeader('Content-Type', 'application/json');
-			res.send(code, { error: message });
+			res.status(code).send({ error: message });
 
 		// for partials, return a partial
 		} else if (req.originalUrl.substr(0, 10) === '/partials/') {

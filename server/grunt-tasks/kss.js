@@ -1,3 +1,5 @@
+"use strict";
+
 var _ = require('underscore');
 var fs = require('fs');
 var kss = require('kss');
@@ -76,7 +78,7 @@ module.exports = function(grunt) {
 							id: rootRef,
 							title: styleguide.section(rootRef) ? styleguide.section(rootRef).header() : 'Unnamed',
 							childSections: styleguide.section(new RegExp('^' + rootRef + '\\.\\d+$'))
-						}
+						};
 					}).sort(function(a, b) {
 						return parseInt(a.id) > parseInt(b.id);
 					}),
@@ -191,8 +193,9 @@ function sectionSort(a, b) {
 	var arrB = b.reference().split('.');
 	var i = 0;
 	while (parseInt(arrA[i]) === parseInt(arrB[i])) {
-		if (++i > arrA.length)
+		if (++i > arrA.length) {
 			return 0;
+		}
 	}
 	return parseInt(arrA[i]) < parseInt(arrB[i]);
 }

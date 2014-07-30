@@ -127,6 +127,10 @@ The `test-client` goal accepts additional command-line parameters:
  
 The `--force` parameter is necessary if you want to keep watching files even when tests fail.
 
+### JSHint
+
+If you want to run the server code through JSHint, type `grunt jshint`.
+
 ## Credits
 
 * To Mukuste. He gave the community such a nice momentum and I thought I could add a little bit to it.

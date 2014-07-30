@@ -34,7 +34,7 @@ Settings.prototype.validate = function() {
 
 	var validate = function(validation, setting, path) {
 		var success = true;
-		var validationError, p, i;
+		var validationError, p, i, j;
 		var logError = function(p, error, setting) {
 			setting = !_.isUndefined(error.setting) ? error.setting : setting;
 			var s = _.isObject(setting) ? JSON.stringify(setting) : setting;
@@ -59,10 +59,9 @@ Settings.prototype.validate = function() {
 							logger.info('[settings] %s [OK]', p);
 						} else {
 							if (_.isArray(validationError)) {
-								//noinspection JSHint
-								_.each(validationError, function(error) {
-									logError(p, error, setting[s]);
-								});
+								for (j = 0; j < validationError.length; j++) {
+									logError(p, validationError[j], setting[s]);
+								}
 							} else {
 								logError(p, validationError, setting[s]);
 							}

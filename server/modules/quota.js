@@ -27,8 +27,7 @@ exports.init = function() {
 exports.isAllowed = function(req, res, file, callback) {
 
 	// undefined mime types are free
-	//noinspection JSHint
-	if (quotaConfig.costs[file.mime_type] == null) {
+	if (!quotaConfig.costs[file.mime_type] && quotaConfig.costs[file.mime_type] !== 0) {
 		return callback(null, true);
 	}
 
@@ -43,8 +42,7 @@ exports.isAllowed = function(req, res, file, callback) {
 	}
 
 	var plan = req.user.plan ? req.user.plan : quotaConfig.defaultPlan;
-	//noinspection JSHint
-	if (quotaConfig.plans[plan] == null) {
+	if (!quotaConfig.plans[plan] && quotaConfig.plans[plan] !== 0) {
 		return callback('No quota defined for plan "' + plan + '".');
 	}
 

@@ -212,8 +212,22 @@ module.exports = function(grunt) {
 				},
 				src: ['test/api/*.test.js']
 			}
+		},
+
+		jshint: {
+			options: {
+				jshintrc: 'test/.jshintrc',
+				ignores: [ ]
+			},
+			files: {
+				src: [ 'server/**/*.js', 'test/**/*.js' ]
+			},
+			gruntfile: {
+				src: 'Gruntfile.js'
+			}
 		}
 	};
+
 	grunt.config.init(config);
 
 	// load the tasks
@@ -221,6 +235,7 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-clean');
 	grunt.loadNpmTasks('grunt-contrib-stylus');
 	grunt.loadNpmTasks('grunt-contrib-jade');
+	grunt.loadNpmTasks('grunt-contrib-jshint');
 	grunt.loadNpmTasks('grunt-contrib-cssmin');
 	grunt.loadNpmTasks('grunt-contrib-uglify');
 	grunt.loadNpmTasks('grunt-contrib-watch');

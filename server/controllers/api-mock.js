@@ -1122,7 +1122,10 @@ exports.releases = function(req, res) {
 		case 'new':
 			ret = [ ij, afm, mb, centaur, t2, cv ];
 			break;
+
 		case 'updated':
+			ret = [ t2, cv, mb, ij, afm, centaur ];
+			break;
 		default:
 			ret = [ t2, cv, mb, ij, afm, centaur ];
 			break;

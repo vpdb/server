@@ -271,7 +271,7 @@ function envParams(grunt, test, testClient) {
 	var defaultPath = test ? 'server/config/settings-test.js' : 'server/config/settings.js';
 	var settingsPath = path.resolve(__dirname, grunt.option('config') ? grunt.option('config') : defaultPath);
 	if (!fs.existsSync(settingsPath)) {
-		throw 'Cannot find "' + settingsPath + '".';
+		return {};
 	}
 	var settings = require(settingsPath);
 

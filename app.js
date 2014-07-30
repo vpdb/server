@@ -1,7 +1,6 @@
 'use strict';
 
 var fs = require('fs');
-var http = require('http');
 var path = require('path');
 var logger = require('winston');
 var domain = require('domain');

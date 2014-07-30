@@ -5,9 +5,7 @@ var util = require('util');
 var logger = require('winston');
 
 var Game = require('mongoose').model('Game');
-var File = require('mongoose').model('File');
 var api = require('./api');
-var storage = require('../../modules/storage');
 
 
 /**

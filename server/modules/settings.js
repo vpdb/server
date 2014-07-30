@@ -109,6 +109,7 @@ Settings.prototype.validate = function() {
 	return validate(validations, settings, '');
 };
 
+
 Settings.prototype.migrate = function(callback) {
 
 	var settingsCurrName = path_.basename(this.filePath);

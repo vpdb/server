@@ -1,7 +1,6 @@
 "use strict";
 
 var _ = require('underscore');
-var util = require('util');
 var async = require('async');
 var logger = require('winston');
 var mongoose = require('mongoose');

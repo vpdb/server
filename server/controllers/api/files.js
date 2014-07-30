@@ -1,14 +1,10 @@
 "use strict";
 
-var _ = require('underscore');
 var fs = require('fs');
-var path = require('path');
 var logger = require('winston');
 
 var api = require('./api');
-var ctrl = require('../ctrl');
 var File = require('mongoose').model('File');
-var config = require('../../modules/settings').current;
 var storage = require('../../modules/storage');
 
 
@@ -48,7 +44,7 @@ exports.upload = function(req, res) {
 
 			var writeStream = fs.createWriteStream(file.getPath());
 			writeStream.on('finish', function() {
-				storage.metadata(file, function(err, metadata, shortMetadata) {
+				storage.metadata(file, function(err, metadata) {
 					if (err) {
 						return api.fail(res, 'Metadata parsing for MIME type "' + file.mime_type +  '" failed. Upload corrupted or weird format?', 400);
 					}

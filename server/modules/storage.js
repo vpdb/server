@@ -123,7 +123,7 @@ Storage.prototype.metadata = function(file, done) {
 					logger.warn('[storage] Error reading metadata from image: %s', err);
 					return done(err);
 				}
-				done(null, value, Storage.prototype.metadataShort(file, value));
+				done(null, value);
 			});
 			break;
 		default:

@@ -318,7 +318,7 @@ function localEnv(grunt, test) {
 		env.NO_RELOAD = true;
 		env.COVERAGE = true;
 		env.COVERALLS_SERVICE_NAME = 'Local Test Runner';
-		env.COVERALLS_REPO_TOKEN = '';
+		// env.COVERALLS_REPO_TOKEN = '';
 		env.HTTP_SCHEMA = 'http' + (settings && settings.vpdb.httpsEnabled ? 's' : '');
 		env.AUTH_HEADER = settings ? settings.vpdb.authorizationHeader : 'Authorization';
 	}

@@ -162,6 +162,7 @@ module.exports = function(grunt) {
 		env: {
 			dev: localEnv(grunt),
 			test: localEnv(grunt, true),
+			ci: localEnv(grunt, true, true),
 			prod: { NODE_ENV: 'production', APP_SETTINGS: process.env.APP_SETTINGS ||  path.resolve(__dirname, 'server/config/settings.js'), PORT: process.env.PORT || 3000 }
 		},
 
@@ -273,24 +274,19 @@ module.exports = function(grunt) {
 	grunt.registerTask('serve-test', [ 'env:test', 'express:test' ]);
 	grunt.registerTask('express-dev', [ 'env:dev',  'express:dev', 'watch:express' ]);
 
-
 	grunt.registerTask('git', [ 'gitinfo', 'gitsave']);
 	grunt.registerTask('kssrebuild', [ 'clean:styleguide', 'kss' ]);
-
-
-
 
 	grunt.registerTask('test-client-coverage', [ 'restart', 'sleep', 'env:test', 'clean:coverage', 'mkdir:coverage', 'waitServer',
 		'mochaTest', 'istanbul-middleware:download', 'coveralls:api' ]);
 
 	grunt.registerTask('ci', [ 'concurrent:ci' ]);
-	grunt.registerTask('ci-server', [ 'env:test', 'express:ci' ]);
-	grunt.registerTask('ci-client', [ 'env:test', 'clean:coverage', 'mkdir:coverage', 'waitServer',
-		'mochaTest', 'istanbul-middleware:download', /*'coveralls:api',*/ 'stop' ]);
-
+	grunt.registerTask('ci-server', [ 'env:ci', 'express:ci' ]);
+	grunt.registerTask('ci-client', [ 'env:ci', 'clean:coverage', 'mkdir:coverage', 'waitServer',
+		'mochaTest', 'istanbul-middleware:download', 'coveralls:api', 'stop' ]);
 };
 
-function localEnv(grunt, test) {
+function localEnv(grunt, test, ci) {
 
 	var defaultPath = test ? 'server/config/settings-test.js' : 'server/config/settings.js';
 	var settingsPath = path.resolve(__dirname, grunt.option('config') ? grunt.option('config') : defaultPath);
@@ -307,8 +303,7 @@ function localEnv(grunt, test) {
 	if (test) {
 		env.NO_RELOAD = true;
 		env.COVERAGE = true;
-		env.COVERALLS_SERVICE_NAME = 'Local Test Runner';
-		// env.COVERALLS_REPO_TOKEN = '';
+		env.COVERALLS_SERVICE_NAME = ci ? 'Travis CI' : 'Local Test Runner';
 		env.HTTP_SCHEMA = 'http' + (settings && settings.vpdb.httpsEnabled ? 's' : '');
 		env.AUTH_HEADER = settings ? settings.vpdb.authorizationHeader : 'Authorization';
 	}

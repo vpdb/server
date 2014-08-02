@@ -1,11 +1,14 @@
 language: node_js
 node_js:
-  - "0.10"
+- '0.10'
 services:
-  - mongodb
+- mongodb
 before_install:
-  - sudo apt-get update -qq
-  - sudo apt-get install -y graphicsmagick pngquant optipng
+- sudo apt-get update -qq
+- sudo apt-get install -y graphicsmagick pngquant optipng
 before_script:
-  - npm install -g grunt-cli
-  - grunt build
+- npm install -g grunt-cli
+- grunt build
+env:
+  global:
+    secure: he13bEicdzpoLGeoj+xaU2kIkKsw1/m+Ejcm5YanhGicECrCWVvFOu0O7vGHPDDj3s/xnTgBhhUPzIS3SdcIVqfTS+nP+CJNtzOm4zOdPvmfbfCvuIukLmCLtADrrz2HUxO1en1vfpH1trkUP5gwdo4vAGli7hOD4MsncRYaYio=

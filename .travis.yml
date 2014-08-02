@@ -1,9 +1,8 @@
- language: node_js
- node_js:
-   - "0.10"
- services:
-   - mongodb
+language: node_js
+node_js:
+  - "0.10"
+services:
+  - mongodb
 before_script:
-   - npm install -g grunt-cli
-   - grunt build
-   
+  - npm install -g grunt-cli
+  - grunt build

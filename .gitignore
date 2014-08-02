@@ -11,14 +11,13 @@ lib-cov
 pids
 logs
 results
-data/storage
 server/config/settings.js
 
 gitinfo.json
 npm-debug.log
 node_modules
 
-.rebooted
+.restart
 .reload
 .idea/compiler.xml
 .idea/copyright/

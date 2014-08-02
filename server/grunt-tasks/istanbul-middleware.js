@@ -21,7 +21,7 @@ module.exports = function(grunt) {
 		switch (this.target) {
 			case 'download':
 				var dest = this.data.dest;
-				var baseDir = path.resolve(__dirname, '../..') + '\\';
+				var baseDir = path.resolve(__dirname, '../..') + '/';
 				var zipfile = path.resolve(baseDir, dest, 'coverage.zip');
 				var extractTo = path.resolve(baseDir, dest);
 				grunt.log.writeln('Downloading coverage zip file from %s', options.url + '/download');
@@ -35,8 +35,8 @@ module.exports = function(grunt) {
 						zip.extractAllTo(extractTo, true);
 
 						var lcovinfo = fs.readFileSync(extractTo + '/lcov.info');
-						lcovinfo = replaceAll(lcovinfo.toString(), baseDir, '');
-						lcovinfo = replaceAll(lcovinfo, '\\', '/');
+						lcovinfo = replaceAll(lcovinfo.toString(), '\\', '/');
+						lcovinfo = replaceAll(lcovinfo, baseDir, '');
 						fs.writeFileSync(extractTo + '/lcov.info', lcovinfo);
 						done();
 					})

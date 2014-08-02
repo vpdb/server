@@ -1,7 +1,7 @@
 # vpdb
 *A database for VP10 tables.*
 
-[![Build Status](https://travis-ci.org/freezy/node-vpdb.svg?branch=master)](https://travis-ci.org/freezy/node-vpdb) [![Coverage Status](https://coveralls.io/repos/freezy/node-vpdb/badge.png?branch=coverage)](https://coveralls.io/r/freezy/node-vpdb?branch=coverage)
+[![Build Status](https://travis-ci.org/freezy/node-vpdb.svg?branch=master)](https://travis-ci.org/freezy/node-vpdb) [![Coverage Status](https://coveralls.io/repos/freezy/node-vpdb/badge.png?branch=coverage)](https://coveralls.io/r/freezy/node-vpdb?branch=coverage) [![Dependency Status](https://gemnasium.com/freezy/node-vpdb.svg)](https://gemnasium.com/freezy/node-vpdb)
 
 
 ## What is it?

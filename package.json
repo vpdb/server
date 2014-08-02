@@ -101,7 +101,7 @@
 		"node": "0.10.x"
 	},
 	"scripts": {
-		"test": "mocha test/api/*.test.js --watch"
+		"test": "grunt ci"
 	},
 	"mod-project-name": "vpdb"
 }

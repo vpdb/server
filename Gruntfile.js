@@ -138,6 +138,10 @@ module.exports = function(grunt) {
 			dev: {
 				tasks: [ 'express-dev', 'watch:server', 'watch:branch', 'watch:stylesheets', 'watch:styleguide', 'watch:livereload' ],
 				options: { logConcurrentOutput: true }
+			},
+			ci: {
+				tasks: [ 'ci-server', 'ci-client' ],
+				options: { logConcurrentOutput: true }
 			}
 		},
 
@@ -165,7 +169,8 @@ module.exports = function(grunt) {
 			options: { output: 'Server listening at' },
 			dev:     { options: { script: 'app.js', port: localEnv(grunt).PORT } },
 			test:    { options: { script: 'app.js', port: localEnv(grunt, true).PORT } },
-			prod:    { options: { script: 'app.js', background: false } }
+			prod:    { options: { script: 'app.js', background: false } },
+			ci:      { options: { script: 'app.js', background: false, port: localEnv(grunt, true).PORT } }
 		},
 
 		gitsave: { output: 'gitinfo.json' },
@@ -273,10 +278,15 @@ module.exports = function(grunt) {
 	grunt.registerTask('kssrebuild', [ 'clean:styleguide', 'kss' ]);
 
 
-	//grunt.registerTask('test', [ 'env:test', 'build', 'concurrent:coverage' ]);
+
 
 	grunt.registerTask('test-client-coverage', [ 'restart', 'sleep', 'env:test', 'clean:coverage', 'mkdir:coverage', 'waitServer',
 		'mochaTest', 'istanbul-middleware:download', 'coveralls:api' ]);
+
+	grunt.registerTask('ci', [ 'concurrent:ci' ]);
+	grunt.registerTask('ci-server', [ 'env:test', 'express:ci' ]);
+	grunt.registerTask('ci-client', [ 'env:test', 'clean:coverage', 'mkdir:coverage', 'waitServer',
+		'mochaTest', 'istanbul-middleware:download', /*'coveralls:api',*/ 'express:ci:stop' ]);
 
 };
 

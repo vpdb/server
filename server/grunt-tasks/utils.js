@@ -1,6 +1,7 @@
 "use strict";
 
 var fs = require('fs');
+var request = require('request');
 
 module.exports = function(grunt) {
 
@@ -28,6 +29,13 @@ module.exports = function(grunt) {
 
 	grunt.registerTask('restart', function() {
 		fs.writeFileSync('.restart', new Date());
+	});
+
+	grunt.registerTask('stop', function() {
+		var done = this.async();
+		var url = 'http://127.0.0.1:' + process.env.PORT + '/kill';
+		grunt.log.writeln("Killing off server at %s", url);
+		request.post(url, done);
 	});
 
 

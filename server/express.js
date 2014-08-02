@@ -127,6 +127,15 @@ module.exports = function(app, config, passport) {
 		app.locals.pretty = true;
 	}
 
+	if (runningLocal) {
+		// kill switch for CI
+		logger.warn('[express] Enabling kill switch for continueous integration.');
+		app.post('/kill', function(req, res) {
+			res.status(200).end();
+			process.exit(0);
+		});
+	}
+
 	// add the coverage handler
 	if (process.env.COVERAGE) {
 		//enable coverage endpoints under /coverage

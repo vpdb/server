@@ -286,7 +286,7 @@ module.exports = function(grunt) {
 	grunt.registerTask('ci', [ 'concurrent:ci' ]);
 	grunt.registerTask('ci-server', [ 'env:test', 'express:ci' ]);
 	grunt.registerTask('ci-client', [ 'env:test', 'clean:coverage', 'mkdir:coverage', 'waitServer',
-		'mochaTest', 'istanbul-middleware:download', /*'coveralls:api',*/ 'express:ci:stop' ]);
+		'mochaTest', 'istanbul-middleware:download', /*'coveralls:api',*/ 'stop' ]);
 
 };
 

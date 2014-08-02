@@ -5,10 +5,8 @@ services:
   - mongodb
 before_install:
   - sudo apt-get update -qq
-  - sudo apt-get install -y graphicsmagick
-  - wget http://http.us.debian.org/debian/pool/main/p/pngquant/pngquant_2.1.0-1_i386.deb
+  - sudo apt-get install -y graphicsmagick pngquant
   - wget http://http.us.debian.org/debian/pool/main/o/optipng/optipng_0.7.5-1_i386.deb
-  - sudo dpkg -i pngquant_2.1.0-1_i386.deb
   - sudo dpkg -i optipng_0.7.5-1_i386.deb
 before_script:
   - npm install -g grunt-cli

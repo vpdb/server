@@ -86,26 +86,6 @@ module.exports = function(grunt) {
 					}
 				}
 			},
-			coverage: {
-				script: 'test/coverage/instrument/app.js',
-				options: {
-					cwd: __dirname,
-					watch: [ '.restart' ],
-					callback: function (nodemon) {
-						nodemon.on('log', function (event) {
-							console.log(event.colour);
-						});
-
-						// refreshes browser when server restarts
-						nodemon.on('restart', function () {
-							// Delay before server listens on port
-							setTimeout(function() {
-								fs.writeFileSync('.reload', new Date());
-							}, 1000);
-						});
-					}
-				}
-			}
 		},
 
 

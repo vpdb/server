@@ -1,7 +1,8 @@
 # vpdb
 *A database for VP10 tables.*
 
-Live demo [here](http://vpdb.ch/).
+[![Build Status](https://travis-ci.org/freezy/node-vpdb.svg?branch=master)](https://travis-ci.org/freezy/node-vpdb) [![Coverage Status](https://coveralls.io/repos/freezy/node-vpdb/badge.png?branch=coverage)](https://coveralls.io/r/freezy/node-vpdb?branch=coverage)
+
 
 ## What is it?
 A free and open source web application that makes downloading Visual Pinball tables as effective and pleasant as 

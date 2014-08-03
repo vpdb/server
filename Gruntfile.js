@@ -137,7 +137,7 @@ module.exports = function(grunt) {
 		concurrent: {
 			dev: {
 				tasks: [ 'express-dev', 'watch:server', 'watch:branch', 'watch:stylesheets', 'watch:styleguide', 'watch:livereload' ],
-				options: { logConcurrentOutput: true }
+				options: { logConcurrentOutput: true, limit: 6 }
 			},
 			ci: {
 				tasks: [ 'ci-server', 'ci-client' ],
@@ -226,7 +226,7 @@ module.exports = function(grunt) {
 		watch: {
 			express:     { files: '.restart',                options: { spawn: false, debounceDelay: 100 }, tasks: [ 'express:dev' ] },
 			coverage:    { files: '.restart',                options: { spawn: false, debounceDelay: 100 }, tasks: [ 'express:coverage' ] },
-			server:      { files: 'server/**/*.js',          options: { spawn: false, debounceDelay: 100 }, tasks: [ 'restart' ] },
+			server:      { files: 'server/**/*.js',          options: { spawn: false, debounceDelay: 100 }, tasks: [ 'restart', 'reload' ] },
 			branch:      { files: '.git/HEAD',               options: { spawn: false, debounceDelay: 0 },   tasks: [ 'git', 'restart' ] },
 			stylesheets: { files: 'client/styles/**/*.styl', options: { spawn: false, debounceDelay: 100 }, tasks: [ 'stylus', 'kss', 'reload' ] },
 			styleguide:  { files: [ 'client/views/styleguide.jade', 'client/views/partials/styleguide-section.jade', 'doc/styleguide.md' ],
@@ -260,11 +260,8 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-mkdir');
 	grunt.loadNpmTasks('grunt-mocha-test');
 	grunt.loadNpmTasks('grunt-wait-server');
-
 	grunt.loadTasks('./server/grunt-tasks');
 
-
-	// working
 
 	grunt.registerTask('build', 'What run on production before switching code.',
 		[ 'clean:build', 'mkdir:server', 'stylus', 'cssmin', 'uglify', 'git', 'kssrebuild', 'jade' ]
@@ -280,6 +277,7 @@ module.exports = function(grunt) {
 	grunt.registerTask('test-client-coverage', [ 'restart', 'sleep', 'env:test', 'clean:coverage', 'mkdir:coverage', 'waitServer',
 		'mochaTest', 'istanbul-middleware:download', 'coveralls:api' ]);
 
+	// continuous integration
 	grunt.registerTask('ci', [ 'concurrent:ci' ]);
 	grunt.registerTask('ci-server', [ 'env:ci', 'express:ci' ]);
 	grunt.registerTask('ci-client', [ 'env:ci', 'clean:coverage', 'mkdir:coverage', 'waitServer',

@@ -139,7 +139,9 @@ module.exports = function(app, config, passport) {
 	// add the coverage handler
 	if (process.env.COVERAGE) {
 		//enable coverage endpoints under /coverage
-		app.use('/coverage', require('istanbul-middleware').createHandler());
+		app.use('/_coverage', require('istanbul-middleware').createHandler());
+		app.use('/coverage', express.static(path.resolve(__dirname, '../test/coverage/lcov-report'), { maxAge: 3600*24*30*1000 }));
+
 	}
 
 	// assume "not found" in the error msgs

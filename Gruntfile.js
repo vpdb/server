@@ -131,13 +131,17 @@ module.exports = function(grunt) {
 		clean: {
 			build:      { src: [ cssRoot, jsRoot ] },
 			styleguide: { src: ['styleguide/**/*.html'] },
-			coverage:   { src: ['test/coverage/'] }
+			coverage:   { src: ['test/coverage/**'] }
 		},
 
 		concurrent: {
 			dev: {
-				tasks: [ 'express-dev', 'watch:server', 'watch:branch', 'watch:stylesheets', 'watch:styleguide', 'watch:livereload' ],
+				tasks: [ 'watch-dev', 'watch:server', 'watch:branch', 'watch:stylesheets', 'watch:styleguide', 'watch:livereload' ],
 				options: { logConcurrentOutput: true, limit: 6 }
+			},
+			test: {
+				tasks: [ 'watch-test', 'watch:server', 'watch:livereload' ],
+				options: { logConcurrentOutput: true }
 			},
 			ci: {
 				tasks: [ 'ci-server', 'ci-client' ],
@@ -177,7 +181,7 @@ module.exports = function(grunt) {
 		gitsave: { output: 'gitinfo.json' },
 
 		'istanbul-middleware': {
-			options:  { url: 'http://127.0.0.1:' + localEnv(grunt, true).PORT + '/coverage' },
+			options:  { url: 'http://127.0.0.1:' + localEnv(grunt, true).PORT + '/_coverage' },
 			download: { dest: 'test/coverage' },
 			reset: { }
 		},
@@ -224,18 +228,26 @@ module.exports = function(grunt) {
 		},
 
 		watch: {
-			express:     { files: '.restart',                options: { spawn: false, debounceDelay: 100 }, tasks: [ 'express:dev' ] },
-			coverage:    { files: '.restart',                options: { spawn: false, debounceDelay: 100 }, tasks: [ 'express:coverage' ] },
+
+			// restart/reload watches
+			'express-dev':     { files: '.restart',                options: { spawn: false, debounceDelay: 100 }, tasks: [ 'express:dev' ] },
+			'express-test':    { files: '.restart',                options: { spawn: false, debounceDelay: 100 }, tasks: [ 'express:test' ] },
+			livereload:        { files: [ '.reload', 'client/code/**/*.js', 'client/views/**/*.jade' ],
+			          options: { spawn: false, debounceDelay: 100, livereload: grunt.option('no-reload') ? false : true }
+			},
+
+			// server watches
 			server:      { files: 'server/**/*.js',          options: { spawn: false, debounceDelay: 100 }, tasks: [ 'restart', 'reload' ] },
 			branch:      { files: '.git/HEAD',               options: { spawn: false, debounceDelay: 0 },   tasks: [ 'git', 'restart' ] },
+
+			// client watches
 			stylesheets: { files: 'client/styles/**/*.styl', options: { spawn: false, debounceDelay: 100 }, tasks: [ 'stylus', 'kss', 'reload' ] },
 			styleguide:  { files: [ 'client/views/styleguide.jade', 'client/views/partials/styleguide-section.jade', 'doc/styleguide.md' ],
-			               options: { spawn: false, debounceDelay: 100 }, tasks: [ 'kss', 'reload' ]
-			},
-			livereload:  { files: [ '.reload', 'client/code/**/*.js', 'client/views/**/*.jade' ],
-			               options: { spawn: false, debounceDelay: 100, livereload: grunt.option('no-reload') || process.env.NO_RELOAD ? false : true }
-			},
-			test:        { files: [ '.reload', 'test/**/*.js'], options: { spawn: false, debounceDelay: 100 }, tasks: [ 'sleep', 'waitServer', 'mochaTest' ] }
+			               options: { spawn: false, debounceDelay: 100 }, tasks: [ 'kss', 'reload' ] },
+
+			// test watch
+			test:        { files: [ 'test/**/*.js'], options: { spawn: false, debounceDelay: 100, atBegin: true },
+			             tasks:   [ 'clean:coverage', 'mkdir:coverage', 'waitServer', 'mochaTest', 'istanbul-middleware:download', 'restart', 'reload' ] }
 		}
 	};
 
@@ -263,19 +275,25 @@ module.exports = function(grunt) {
 	grunt.loadTasks('./server/grunt-tasks');
 
 
+	// pre-compilation
 	grunt.registerTask('build', 'What run on production before switching code.',
 		[ 'clean:build', 'mkdir:server', 'stylus', 'cssmin', 'uglify', 'git', 'kssrebuild', 'jade' ]
 	);
-	grunt.registerTask('dev', [ 'build', 'concurrent:dev' ]);
-	grunt.registerTask('serve', [ 'env:prod', 'express:prod' ]);
-	grunt.registerTask('serve-test', [ 'env:test', 'express:test' ]);
-	grunt.registerTask('express-dev', [ 'env:dev',  'express:dev', 'watch:express' ]);
+	// server tasks
+	grunt.registerTask('dev', [ 'build', 'env:dev',  'concurrent:dev' ]);  // dev mode, watch everything
+	grunt.registerTask('serve-test',   [ 'env:test', 'concurrent:test' ]); // test mode, watch only server
+	grunt.registerTask('serve',        [ 'env:prod', 'express:prod' ]);    // prod, watch nothing
 
+	// watchers
+	grunt.registerTask('watch-dev',    [ 'express:dev',  'watch:express-dev' ]);
+	grunt.registerTask('watch-test',   [ 'express:test', 'watch:express-test' ]);
+
+	// assets
 	grunt.registerTask('git', [ 'gitinfo', 'gitsave']);
 	grunt.registerTask('kssrebuild', [ 'clean:styleguide', 'kss' ]);
 
-	grunt.registerTask('test-client-coverage', [ 'restart', 'sleep', 'env:test', 'clean:coverage', 'mkdir:coverage', 'waitServer',
-		'mochaTest', 'istanbul-middleware:download', 'coveralls:api' ]);
+	// tests
+	grunt.registerTask('test', [ 'env:test', 'watch:test' ]);
 
 	// continuous integration
 	grunt.registerTask('ci', [ 'concurrent:ci' ]);
@@ -299,7 +317,6 @@ function localEnv(grunt, test, ci) {
 	};
 
 	if (test) {
-		env.NO_RELOAD = true;
 		env.COVERAGE = true;
 		env.COVERALLS_SERVICE_NAME = ci ? 'Travis CI' : 'Local Test Runner';
 		env.HTTP_SCHEMA = 'http' + (settings && settings.vpdb.httpsEnabled ? 's' : '');

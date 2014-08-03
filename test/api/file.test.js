@@ -45,6 +45,20 @@ describe('The VPDB `file` API', function() {
 				});
 		});
 
+		it('should fail when a bogus "Content-Disposition" header is provided', function(done) {
+			request
+				.post('/api/files')
+				.as('member')
+				.set('Content-Disposition', 'zurg!!')
+				.send('xxx')
+				.end(function(err, res) {
+					expect(err).to.eql(null);
+					expect(res.status).to.be(422);
+					expect(res.body.error).to.contain('Content-Disposition');
+					done();
+				});
+		});
+
 		it('should fail when no "type" query parameter is provided', function(done) {
 			request
 				.post('/api/files')

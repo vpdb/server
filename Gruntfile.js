@@ -194,7 +194,7 @@ module.exports = function(grunt) {
 
 	// continuous integration
 	grunt.registerTask('ci', [ 'concurrent:ci' ]);
-	grunt.registerTask('ci-server', [ 'env:ci', 'express:ci' ]);
+	grunt.registerTask('ci-server', [ 'env:ci', 'mkdir:test', 'express:ci' ]);
 	grunt.registerTask('ci-client', [ 'env:ci', 'clean:coverage', 'mkdir:coverage', 'waitServer',
 		'mochaTest', 'istanbul-middleware:download', 'coveralls:api', 'stop' ]);
 };

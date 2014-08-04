@@ -148,6 +148,8 @@ exports.teardownUsers = function(request, done) {
 			if (err) {
 				throw new Error(err);
 			}
+			// reset local list
+			that.users = {};
 			done();
 		});
 	});
@@ -190,6 +192,8 @@ exports.doomGame = function(user, gameId) {
  * @param done Callback
  */
 exports.cleanup = function(request, done) {
+
+	var that = this;
 	var doomedFiles = this.doomedFiles;
 	var doomedGames = this.doomedGames;
 
@@ -216,7 +220,11 @@ exports.cleanup = function(request, done) {
 							next();
 						});
 				}, nextUser);
-			}, next);
+
+			}, function(err) {
+				that.doomedFiles = {};
+				next(err);
+			});
 		},
 
 		// 2. cleanup games
@@ -240,7 +248,11 @@ exports.cleanup = function(request, done) {
 							next();
 						});
 				}, nextGame);
-			}, next);
+
+			}, function(err) {
+				that.doomedGames = {};
+				next(err);
+			});
 		},
 
 		// lastly, teardown users

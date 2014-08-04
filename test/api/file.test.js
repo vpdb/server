@@ -467,6 +467,7 @@ describe('The VPDB `file` API', function() {
 						.as('contributor')
 						.send({ id: "bbb", title: "Big Bang Bar", origin: "recreation", manufacturer: "Capcom", year: 1996, game_type: "ss", ipdb: { number: 4001 }, _media: { backglass: id } })
 						.end(hlp.status(201, next));
+					hlp.doomGame('contributor', 'bbb');
 				},
 				// 3. try to delete
 				function(next) {

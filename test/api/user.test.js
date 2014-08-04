@@ -19,7 +19,7 @@ describe('The VPDB `user` API', function() {
 	});
 
 	after(function(done) {
-		hlp.teardownUsers(request, done);
+		hlp.cleanup(request, done);
 	});
 
 	it('should display the user profile', function(done) {

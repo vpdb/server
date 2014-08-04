@@ -27,7 +27,7 @@ describe('The VPDB `game` API', function() {
 
 	describe('when posting a new game', function() {
 
-		it.only('should succeed if provided data is correct', function(done) {
+		it('should succeed if provided data is correct', function(done) {
 
 			var data = fs.readFileSync(backglass);
 			var fileType = 'backglass';
@@ -47,7 +47,7 @@ describe('The VPDB `game` API', function() {
 					request
 						.post('/api/games')
 						.as('contributor')
-						.send({ id: "bbb", title: "Big Bang Bar", origin: "recreation", manufacturer: "Capcom", year: 1996, model_number: 3003, game_type: "ss", short: [ "BBB" ], produced_units: 14, themes: [ "Outer Space" ], designers: [ "Rob Morrison" ], artists: [ "Paul Mazur", "Stan Fukuoka" ], ipdb: { number: 4001, mfg: 76, rating: 7.2 }, _media: { backglass: res.body.id } })
+						.send({ id: "bbb", _media: { backglass: res.body.id }, title: "Big Bang Bar", origin: "recreation", manufacturer: "Capcom", year: 1996, model_number: 3003, game_type: "ss", short: [ "BBB" ], produced_units: 14, themes: [ "Outer Space" ], designers: [ "Rob Morrison" ], artists: [ "Paul Mazur", "Stan Fukuoka" ], ipdb: { number: 4001, mfg: 76, rating: 7.2 } })
 						.end(function(err, res) {
 							expect(err).to.eql(null);
 							expect(res.status).to.be(201);
@@ -57,9 +57,9 @@ describe('The VPDB `game` API', function() {
 				});
 		});
 
-		it('should fail if a referenced file is not of the same owner', function(done) {
-			expect().fail("TODO");
-		});
+		it('should fail if a referenced file is not of the same owner');
+		it('should fail if a referenced file is already referenced');
+
 	});
 
 	describe('when deleting a game', function() {

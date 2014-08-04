@@ -15,6 +15,9 @@ module.exports = function(grunt) {
 	var cssGlobal = path.resolve(cssRoot, 'global.min.css');
 	var jsGlobal = path.resolve(jsRoot, 'global.min.js');
 
+	var devConfig = settings(grunt, false);
+	var testConfig = settings(grunt, true);
+
 	// configure the tasks
 	var config = {
 
@@ -54,25 +57,25 @@ module.exports = function(grunt) {
 		},
 
 		env: {
-			dev: localEnv(grunt),
-			test: localEnv(grunt, true),
-			ci: localEnv(grunt, true, true),
+			dev: localEnv(grunt, devConfig),
+			test: localEnv(grunt, testConfig),
+			ci: localEnv(grunt, testConfig, true),
 			prod: { NODE_ENV: 'production', APP_SETTINGS: process.env.APP_SETTINGS ||  path.resolve(__dirname, 'server/config/settings.js'), PORT: process.env.PORT || 3000 }
 		},
 
 		express: {
 			options: { output: 'Server listening at' },
-			dev:     { options: { script: 'app.js', port: localEnv(grunt).PORT } },
-			test:    { options: { script: 'app.js', port: localEnv(grunt, true).PORT } },
+			dev:     { options: { script: 'app.js', port: localEnv(grunt, devConfig).PORT } },
+			test:    { options: { script: 'app.js', port: localEnv(grunt, testConfig).PORT } },
 			prod:    { options: { script: 'app.js', background: false } },
-			ci:      { options: { script: 'app.js', background: false, port: localEnv(grunt, true).PORT } }
+			ci:      { options: { script: 'app.js', background: false, port: localEnv(grunt, testConfig).PORT } }
 		},
 
 		gitsave: { output: 'gitinfo.json' },
 
 		'istanbul-middleware': {
-			options:  { url: 'http://127.0.0.1:' + localEnv(grunt, true).PORT + '/_coverage' },
-			download: { dest: 'test/coverage' },
+			options:  { url: 'http://127.0.0.1:' + localEnv(grunt, testConfig).PORT + '/_coverage' },
+			download: { dest: 'test/coverage' }
 		},
 
 		jade: {
@@ -94,7 +97,8 @@ module.exports = function(grunt) {
 
 		mkdir: {
 			server:   { options: { mode: 504, create: [ cssRoot, jsRoot ] } },
-			coverage: { options: { mode: 504, create: [ 'test/coverage' ] } }
+			coverage: { options: { mode: 504, create: [ 'test/coverage' ] } },
+			test:     { options: { mode: 504, create: [ testConfig.vpdb.storage ] }}
 		},
 
 		mochaTest: {
@@ -118,7 +122,7 @@ module.exports = function(grunt) {
 		},
 
 		waitServer: {
-			test: { options: { url: 'http://localhost:' + localEnv(grunt, true).PORT } }
+			test: { options: { url: 'http://127.0.0.1:' + localEnv(grunt, testConfig).PORT } }
 		},
 
 		watch: {
@@ -173,8 +177,8 @@ module.exports = function(grunt) {
 		[ 'clean:build', 'mkdir:server', 'stylus', 'cssmin', 'uglify', 'git', 'kssrebuild', 'jade' ]
 	);
 	// server tasks
-	grunt.registerTask('dev', [ 'build', 'env:dev',  'jshint', 'concurrent:dev' ]);  // dev mode, watch everything
-	grunt.registerTask('serve-test',   [ 'env:test', 'jshint', 'concurrent:test' ]); // test mode, watch only server
+	grunt.registerTask('dev', [ 'build', 'env:dev',  'jshint',               'concurrent:dev' ]);  // dev mode, watch everything
+	grunt.registerTask('serve-test',   [ 'env:test', 'jshint', 'mkdir:test', 'concurrent:test' ]); // test mode, watch only server
 	grunt.registerTask('serve',        [ 'env:prod', 'express:prod' ]);              // prod, watch nothing
 
 	// watchers
@@ -195,26 +199,36 @@ module.exports = function(grunt) {
 		'mochaTest', 'istanbul-middleware:download', 'coveralls:api', 'stop' ]);
 };
 
-function localEnv(grunt, test, ci) {
-
-	var defaultPath = test ? 'server/config/settings-test.js' : 'server/config/settings.js';
-	var settingsPath = path.resolve(__dirname, grunt.option('config') ? grunt.option('config') : defaultPath);
-	if (!fs.existsSync(settingsPath)) {
-		return {};
-	}
-	var settings = require(settingsPath);
+function localEnv(grunt, settings, ci) {
 
 	var env = {
-		APP_SETTINGS: settingsPath,
+		APP_SETTINGS: settings.settingsPath,
 		PORT: grunt.option('port') || process.env.PORT || settings.vpdb.port || 3000
 	};
 
-	if (test) {
+	if (settings.settingsTestmode) {
 		env.COVERAGE = true;
 		env.COVERALLS_SERVICE_NAME = ci ? 'Travis CI' : 'Local Test Runner';
-		env.HTTP_SCHEMA = 'http' + (settings && settings.vpdb.httpsEnabled ? 's' : '');
-		env.AUTH_HEADER = settings ? settings.vpdb.authorizationHeader : 'Authorization';
+		env.HTTP_SCHEMA = 'http' + (settings.vpdb.httpsEnabled ? 's' : '');
+		env.AUTH_HEADER = settings.vpdb.authorizationHeader;
 	}
 
 	return env;
+}
+
+function settings(grunt, forTest) {
+	var settingsPath;
+	if (forTest) {
+		settingsPath = path.resolve(__dirname, 'server/config/settings-test.js');
+	} else {
+		settingsPath = path.resolve(__dirname, grunt.option('config') || process.env.APP_SETTINGS || 'server/config/settings.js');
+	}
+	if (!fs.existsSync(settingsPath)) {
+		throw new Error('Cannot find any settings. Please set `APP_SETTINGS` correctly or provide it via `--config=<path-to-settings>`.');
+	}
+	var s = require(settingsPath);
+	s.settingsPath = settingsPath;
+	s.settingsTestmode = forTest ? true : false;
+
+	return s;
 }

@@ -10,7 +10,7 @@ module.exports = {
 		db: 'mongodb://localhost/vpdb-test',
 		sessionTimeout: 3600000,
 		secret: 'do-not-run-this-config-in-production!',
-		storage: './data/storage',
+		storage: './data/storage-test',
 		quota: {
 			plans: {
 				free:   { credits: 5, per: 'day' },

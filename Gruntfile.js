@@ -73,7 +73,6 @@ module.exports = function(grunt) {
 		'istanbul-middleware': {
 			options:  { url: 'http://127.0.0.1:' + localEnv(grunt, true).PORT + '/_coverage' },
 			download: { dest: 'test/coverage' },
-			reset: { }
 		},
 
 		jade: {
@@ -125,15 +124,15 @@ module.exports = function(grunt) {
 		watch: {
 
 			// restart/reload watches
-			'express-dev':     { files: '.restart',                options: { spawn: false, debounceDelay: 100 }, tasks: [ 'express:dev' ] },
-			'express-test':    { files: '.restart',                options: { spawn: false, debounceDelay: 100 }, tasks: [ 'express:test' ] },
+			'express-dev':     { files: '.restart', options: { spawn: false, debounceDelay: 100 }, tasks: [ 'express:dev' ] },
+			'express-test':    { files: '.restart', options: { spawn: false, debounceDelay: 100 }, tasks: [ 'express:test' ] },
 			livereload:        { files: [ '.reload', 'client/code/**/*.js', 'client/views/**/*.jade' ],
 			          options: { spawn: false, debounceDelay: 100, livereload: grunt.option('no-reload') ? false : true }
 			},
 
 			// server watches
-			server:      { files: 'server/**/*.js',          options: { spawn: false, debounceDelay: 100 }, tasks: [ 'restart', 'reload' ] },
-			branch:      { files: '.git/HEAD',               options: { spawn: false, debounceDelay: 0 },   tasks: [ 'git', 'restart' ] },
+			server:      { files: 'server/**/*.js', options: { spawn: false, debounceDelay: 100 }, tasks: [ 'restart', 'reload' ] },
+			branch:      { files: '.git/HEAD',      options: { spawn: false, debounceDelay: 0 },   tasks: [ 'git', 'restart' ] },
 
 			// client watches
 			stylesheets: { files: 'client/styles/**/*.styl', options: { spawn: false, debounceDelay: 100 }, tasks: [ 'stylus', 'kss', 'reload' ] },
@@ -141,7 +140,7 @@ module.exports = function(grunt) {
 			               options: { spawn: false, debounceDelay: 100 }, tasks: [ 'kss', 'reload' ] },
 
 			// test watch
-			test:        { files: [ 'test/**/*.js'], options: { spawn: false, debounceDelay: 100, atBegin: true },
+			test:        { files: [ 'test/**/*.js'], options: { spawn: true, debounceDelay: 100, atBegin: true },
 			             tasks:   [ 'clean:coverage', 'mkdir:coverage', 'waitServer', 'mochaTest', 'istanbul-middleware:download', 'restart', 'reload' ] }
 		}
 	};

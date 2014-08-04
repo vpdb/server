@@ -114,6 +114,17 @@ describe('The ACLs of the VPDB API', function() {
 				});
 		});
 
+		// app.get('/api/files/:id',     api.anon(api.files.view));
+		it('should allow access to file details', function(done) {
+			request
+				.get('/api/files/123456789')
+				.end(function(err, res) {
+					expect(res.status).to.be(404);
+					expect(res.body.error).to.contain('No such file');
+					done();
+				});
+		});
+
 		// app.head('/api/games/:id',    api.anon(api.games.head));
 		it('should allow check for existing games', function(done) {
 			request
@@ -300,13 +311,23 @@ describe('The ACLs of the VPDB API', function() {
 				});
 		});
 
-		// app.delete('/api/files/:id',  api.auth(api.files.delete, 'files', 'delete'));
 		it('should allow access to file deletion', function(done) {
 			request
 				.del('/api/files/123456789')
 				.as('member')
 				.end(function(err, res) {
 					expect(res.status).to.be(404);
+					done();
+				});
+		});
+
+		it('should allow access to file details', function(done) {
+			request
+				.get('/api/files/123456789')
+				.as('member')
+				.end(function(err, res) {
+					expect(res.status).to.be(404);
+					expect(res.body.error).to.contain('No such file');
 					done();
 				});
 		});

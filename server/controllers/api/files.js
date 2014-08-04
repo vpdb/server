@@ -5,8 +5,8 @@ var logger = require('winston');
 
 var api = require('./api');
 var File = require('mongoose').model('File');
-var storage = require('../../modules/storage');
 
+var storage = require('../../modules/storage');
 
 exports.upload = function(req, res) {
 
@@ -102,5 +102,30 @@ exports.del = function(req, res) {
 			// remove from disk (in background)
 			storage.remove(file);
 		});
+	});
+};
+
+exports.view = function(req, res) {
+
+	File.findOne({ id: req.params.id }, function(err, file) {
+		if (err) {
+			logger.error('[api|file:view] Error finding file "%s": %s', req.params.id, err, {});
+			return api.fail(res, err, 500);
+		}
+		if (!file) {
+			return api.fail(res, 'No such file with ID "' + req.params.id + '".', 404);
+		}
+
+		var isOwner = req.user && file._created_by.equals(req.user._id);
+
+		if (!file.is_active && (!req.user || !isOwner)) {
+			return api.fail(res, 'File "' + req.params.id + '" is inactive.', req.user ? 403 : 401);
+		}
+		if (!file.is_public && (!req.user || !isOwner)) {
+			return api.fail(res, 'File "' + req.params.id + '" is not public.', req.user ? 403 : 401);
+		}
+
+
+		return api.success(res, file.toDetailed());
 	});
 };

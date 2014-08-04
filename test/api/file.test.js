@@ -222,6 +222,92 @@ describe('The VPDB `file` API', function() {
 				});
 		});
 
+		it('should be able to retrieve the file details', function(done) {
+			var fileType = 'mooh';
+			var mimeType = 'text/plain';
+			var name = "text.txt";
+			var text = "I'm the content of a test text file.";
+			request
+				.post('/api/files')
+				.query({ type: fileType })
+				.as('member')
+				.type(mimeType)
+				.set('Content-Disposition', 'attachment; filename="' + name + '"')
+				.send(text)
+				.end(function(err, res) {
+					expect(err).to.eql(null);
+					expect(res.status).to.be(201);
+					fileIds.member.push(res.body.id);
+					expect(res.body.url).to.be.ok();
+					request
+						.get('/api/files/' + res.body.id)
+						.as('member')
+						.end(function(err, res) {
+							expect(err).to.eql(null);
+							expect(res.status).to.be(200);
+							expect(res.body.file_type).to.be(fileType);
+							done();
+						});
+				});
+		});
+
+		it('should fail to retrieve the file details as anonymous', function(done) {
+			var fileType = 'mooh';
+			var mimeType = 'text/plain';
+			var name = "text.txt";
+			var text = "I'm the content of a test text file.";
+			request
+				.post('/api/files')
+				.query({ type: fileType })
+				.as('member')
+				.type(mimeType)
+				.set('Content-Disposition', 'attachment; filename="' + name + '"')
+				.send(text)
+				.end(function(err, res) {
+					expect(err).to.eql(null);
+					expect(res.status).to.be(201);
+					fileIds.member.push(res.body.id);
+					expect(res.body.url).to.be.ok();
+					request
+						.get('/api/files/' + res.body.id)
+						.end(function(err, res) {
+							expect(err).to.eql(null);
+							expect(res.status).to.be(401);
+							expect(res.body.error).to.contain('is inactive');
+							done();
+						});
+				});
+		});
+
+		it('should fail to retrieve the file details as a different user', function(done) {
+			var fileType = 'mooh';
+			var mimeType = 'text/plain';
+			var name = "text.txt";
+			var text = "I'm the content of a test text file.";
+			request
+				.post('/api/files')
+				.query({ type: fileType })
+				.as('member')
+				.type(mimeType)
+				.set('Content-Disposition', 'attachment; filename="' + name + '"')
+				.send(text)
+				.end(function(err, res) {
+					expect(err).to.eql(null);
+					expect(res.status).to.be(201);
+					fileIds.member.push(res.body.id);
+					expect(res.body.url).to.be.ok();
+					request
+						.get('/api/files/' + res.body.id)
+						.as('anothermember')
+						.end(function(err, res) {
+							expect(err).to.eql(null);
+							expect(res.status).to.be(403);
+							expect(res.body.error).to.contain('is inactive');
+							done();
+						});
+				});
+		});
+
 		it('should fail when trying to retrieve the file as a different user', function(done) {
 			var fileType = 'mooh';
 			var mimeType = 'text/plain';
@@ -276,6 +362,7 @@ describe('The VPDB `file` API', function() {
 						});
 				});
 		});
+
 	});
 
 	describe('when deleting a file', function() {

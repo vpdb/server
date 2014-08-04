@@ -119,7 +119,7 @@ exports.view = function(req, res) {
 
 	query.exec(function(err, game) {
 		if (err) {
-			logger.error('[api|game:head] Error finding game "%s": %s', req.params.id, err, {});
+			logger.error('[api|game:view] Error finding game "%s": %s', req.params.id, err, {});
 			return api.fail(res, err, 500);
 		}
 		if (!game) {

@@ -191,13 +191,19 @@ Storage.prototype.postprocess = function(file, done) {
 									logger.warn('[storage] Error re-fetching image: %s', err);
 									return next(err);
 								}
+
+								// check that file hasn't been erased meanwhile (hello, tests!)
 								if (!file) {
-									return next('File "' + fileId + '" gone, has been deleted up before processing finished.');
+									return next('File "' + fileId + '" gone, has been removed before processing finished.');
+								}
+								if (!fs.existsSync(filepath)) {
+									return next('File "' + filepath + '" gone, has been deleted before processing finished.');
 								}
 
 								if (!file.variations) {
 									file.variations = {};
 								}
+
 								file.variations[variation.name] = {
 									bytes: fs.statSync(filepath).size,
 									width: value.size.width,

@@ -46,7 +46,12 @@ exports.upload = function(req, res) {
 			writeStream.on('finish', function() {
 				storage.metadata(file, function(err, metadata) {
 					if (err) {
-						return api.fail(res, 'Metadata parsing for MIME type "' + file.mime_type +  '" failed. Upload corrupted or weird format?', 400);
+						return file.remove(function(err) {
+							if (err) {
+								logger.error('[api|file:save] Removing file due to erroneous metadata: %s', err, {});
+							}
+							api.fail(res, 'Metadata parsing for MIME type "' + file.mime_type +  '" failed. Upload corrupted or weird format?', 400);
+						});
 					}
 					if (metadata) {
 						api.sanitizeObject(metadata);
@@ -96,7 +101,7 @@ exports.del = function(req, res) {
 				logger.error('[api|file:delete] Error deleting file "%s" (%s): %s', file.name, file.id, err, {});
 				return api.fail(res, err, 500);
 			}
-			logger.info('[api|file:delete] File "%s" (%s) successfully deleted.', file.name, file.id);
+			logger.info('[api|file:delete] File "%s" (%s) successfully removed.', file.name, file.id);
 			api.success(res, null, 204);
 		});
 	});

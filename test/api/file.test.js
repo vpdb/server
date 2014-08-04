@@ -93,7 +93,7 @@ describe('The VPDB `file` API', function() {
 			var fileType = 'mooh';
 			var mimeType = 'text/plain';
 			var name = "text.txt";
-			var text = "I'm the content of a test text file.";
+			var text = "should return an object with the same parameters as provided in the headers";
 			request
 				.post('/api/files')
 				.query({ type: fileType })
@@ -194,7 +194,7 @@ describe('The VPDB `file` API', function() {
 			var fileType = 'mooh';
 			var mimeType = 'text/plain';
 			var name = "text.txt";
-			var text = "I'm the content of a test text file.";
+			var text = "should be able to retrieve the file";
 			request
 				.post('/api/files')
 				.query({ type: fileType })
@@ -223,7 +223,7 @@ describe('The VPDB `file` API', function() {
 			var fileType = 'mooh';
 			var mimeType = 'text/plain';
 			var name = "text.txt";
-			var text = "I'm the content of a test text file.";
+			var text = "should be able to retrieve the file details";
 			request
 				.post('/api/files')
 				.query({ type: fileType })
@@ -252,7 +252,7 @@ describe('The VPDB `file` API', function() {
 			var fileType = 'mooh';
 			var mimeType = 'text/plain';
 			var name = "text.txt";
-			var text = "I'm the content of a test text file.";
+			var text = "should fail to retrieve the file details as anonymous";
 			request
 				.post('/api/files')
 				.query({ type: fileType })
@@ -280,7 +280,7 @@ describe('The VPDB `file` API', function() {
 			var fileType = 'mooh';
 			var mimeType = 'text/plain';
 			var name = "text.txt";
-			var text = "I'm the content of a test text file.";
+			var text = "should fail to retrieve the file details as a different user";
 			request
 				.post('/api/files')
 				.query({ type: fileType })
@@ -309,7 +309,7 @@ describe('The VPDB `file` API', function() {
 			var fileType = 'mooh';
 			var mimeType = 'text/plain';
 			var name = "text.txt";
-			var text = "I'm the content of a test text file.";
+			var text = "should fail when trying to retrieve the file as a different user";
 			request
 				.post('/api/files')
 				.query({ type: fileType })
@@ -337,7 +337,7 @@ describe('The VPDB `file` API', function() {
 			var fileType = 'mooh';
 			var mimeType = 'text/plain';
 			var name = 'text.txt';
-			var text = "I'm the content of a test text file.";
+			var text = "should fail when trying to retrieve the file as anonymous";
 			request
 				.post('/api/files')
 				.query({ type: fileType })
@@ -368,7 +368,7 @@ describe('The VPDB `file` API', function() {
 			var fileType = 'mooh';
 			var mimeType = 'text/plain';
 			var name = "text.txt";
-			var text = "I'm the content of a test text file.";
+			var text = "should succeed as owner of the file";
 			var id, url;
 			async.series([
 				// 1. upload
@@ -408,7 +408,7 @@ describe('The VPDB `file` API', function() {
 			var fileType = 'mooh';
 			var mimeType = 'text/plain';
 			var name = "text.txt";
-			var text = "I'm the content of a test text file.";
+			var text = "should fail if not owner of the file";
 			var id, url;
 			async.series([
 				// 1. upload
@@ -423,7 +423,9 @@ describe('The VPDB `file` API', function() {
 						.end(function(err, res) {
 							expect(err).to.eql(null);
 							expect(res.status).to.be(201);
+							expect(res.body.id).to.be.ok();
 							expect(res.body.url).to.be.ok();
+							hlp.doomFile('member', res.body.id);
 							id = res.body.id;
 							url = res.body.url;
 							next();

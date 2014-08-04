@@ -165,9 +165,9 @@ When running the server in development or test mode, the code is linted using [J
 the code doesn't pass, tests fail. You can run the linting manually with the `jshint` task.
 
 As you can see by the badge on top of this README, continuous integration is set up using 
-[Travis CI](https://travis-ci.org/freezy/node-vpdb). After every test run, code coverage stats are sent to 
-[Coveralls.io](https://coveralls.io/r/freezy/node-vpdb). Note that both CI and code coverage only concern 
-server-side code.
+[Travis CI](https://travis-ci.org/freezy/node-vpdb) and [Codeship](https://www.codeship.io/). After every test run, code
+coverage stats are sent to [Coveralls.io](https://coveralls.io/r/freezy/node-vpdb). Note that both CI and code coverage 
+only concern server-side code.
 
 ## Credits
 

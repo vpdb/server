@@ -122,7 +122,7 @@ module.exports = exports = function(schema, options) {
 	};
 
 	/**
-	 * Physically remove the files from the disk
+	 * Remove file references from database
 	 */
 	schema.post('remove', function(obj, done) {
 
@@ -140,11 +140,10 @@ module.exports = exports = function(schema, options) {
 				logger.error('[model] Error finding referenced files: %s', err);
 				return done(err);
 			}
-
-			_.each(files, function(file) {
-				storage.remove(file);
-			});
-			done();
+			// remove file references from db
+			async.each(files, function(file, next) {
+				file.remove(next);
+			}, done);
 		});
 	});
 };

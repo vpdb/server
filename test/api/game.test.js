@@ -47,7 +47,7 @@ describe('The VPDB `game` API', function() {
 					request
 						.post('/api/games')
 						.as('contributor')
-						.send({ id: "bbb", _media: { backglass: res.body.id }, title: "Big Bang Bar", origin: "recreation", manufacturer: "Capcom", year: 1996, model_number: 3003, game_type: "ss", short: [ "BBB" ], produced_units: 14, themes: [ "Outer Space" ], designers: [ "Rob Morrison" ], artists: [ "Paul Mazur", "Stan Fukuoka" ], ipdb: { number: 4001, mfg: 76, rating: 7.2 } })
+						.send(hlp.game.getGame({ _media: { backglass: res.body.id }}))
 						.end(function(err, res) {
 							expect(err).to.eql(null);
 							expect(res.status).to.be(201);

@@ -10,6 +10,8 @@ var expect = require('expect.js');
 
 var superuser = '__superuser';
 
+exports.game = require('./game-helper');
+
 /**
  * Sets up a bunch of users for a given test suite.
  *

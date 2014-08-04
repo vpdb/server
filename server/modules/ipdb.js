@@ -1,5 +1,6 @@
 "use strict";
 
+var _ = require('underscore');
 var ent = require('ent');
 var logger = require('winston');
 var request = require('request');
@@ -42,19 +43,21 @@ function parseDetails(body, done) {
 	var game = { ipdb: {}};
 	if (m) {
 		game.title = trim(m[2]);
-		game.ipdb.number = m[1];
-		game.ipdb.mfg = firstMatch(body, /Manufacturer:\s*<\/b>.*?mfgid=(\d+)/i);
+		game.ipdb.number = number(m[1]);
+		game.ipdb.mfg = number(firstMatch(body, /Manufacturer:\s*<\/b>.*?mfgid=(\d+)/i));
 		if (game.ipdb.mfg && manufacturerNames[game.ipdb.mfg]) {
 			game.manufacturer = manufacturerNames[game.ipdb.mfg];
 		} else {
-			game.manufacturer = 'Unknown ID ' + game.ipdb.mfg;
+			game.manufacturer = firstMatch(body, />Manufacturer:.*?<a href="search\.pl\?searchtype=advanced&amp;mfgid=\d+">([^<]+)/i, function(m) {
+				return m.replace(/[\s,]+$/, '');
+			});
 		}
 		game.model_number = firstMatch(body, /Model Number:\s*<\/b><\/td><td[^>]*>(\d+)/i);
-		game.year = firstMatch(body, /href="machine\.cgi\?id=\d+">\d+<\/a>\s*<I>[^<]*?(\d{4})/i);
+		game.year = number(firstMatch(body, /href="machine\.cgi\?id=\d+">\d+<\/a>\s*<I>[^<]*?(\d{4})/i));
 
 		game.game_type = firstMatch(body, /Type:\s*<\/b><\/td><td[^>]*>([^<]+)/i, function(m) {
 			var mm = m.match(/\((..)\)/);
-			return mm ? mm[1] : null;
+			return mm ? mm[1].toLowerCase() : null;
 		});
 
 		game.ipdb.rating = firstMatch(body, /Average Fun Rating:.*?Click for comments[^\d]*([\d\.]+)/i);
@@ -62,7 +65,7 @@ function parseDetails(body, done) {
 			return m.split(/,\s*/);
 		});
 		game.produced_units = firstMatch(body, /Production:\s*<\/b><\/td><td[^>]*>([\d,]+)\s*units/i, function(m) {
-			return parseInt(m.replace(/,/g, ''));
+			return number(m.replace(/,/g, ''));
 		});
 		game.themes = firstMatch(body, /Theme:\s*<\/b><\/td><td[^>]*>([^<]+)/i, function(m) {
 			return m.split(/\s+-\s+/gi);
@@ -81,7 +84,11 @@ function parseDetails(body, done) {
 
 		done(null, game);
 	} else {
-		done('Cannot parse game details from page body. Are you sure the provided IPDB No. exists?');
+		if (/<\/script>\s*<hr width="80%">/.test(body)) {
+			done('Empty page. Looks like IPDB number doens\'t exist.');
+		} else {
+			done('Cannot parse game details from page body. Are you sure the provided IPDB No. exists?');
+		}
 	}
 }
 
@@ -92,8 +99,15 @@ function firstMatch(str, regex, postFn) {
 	} else if (m) {
 		return m[1].replace(/&nbsp;/gi, ' ');
 	} else {
-		return null;
+		return undefined;
 	}
+}
+
+function number(str) {
+	if (_.isUndefined(str)) {
+		return undefined;
+	}
+	return parseInt(str);
 }
 
 function trim(str) {

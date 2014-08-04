@@ -212,7 +212,6 @@ function localEnv(grunt, settings, ci) {
 		env.HTTP_SCHEMA = 'http' + (settings.vpdb.httpsEnabled ? 's' : '');
 		env.AUTH_HEADER = settings.vpdb.authorizationHeader;
 	}
-
 	return env;
 }
 
@@ -224,7 +223,7 @@ function settings(grunt, forTest) {
 		settingsPath = path.resolve(__dirname, grunt.option('config') || process.env.APP_SETTINGS || 'server/config/settings.js');
 	}
 	if (!fs.existsSync(settingsPath)) {
-		throw new Error('Cannot find any settings. Please set `APP_SETTINGS` correctly or provide it via `--config=<path-to-settings>`.');
+		throw new Error('Cannot find any settings at ' + settingsPath + '. Please set `APP_SETTINGS` correctly or provide it via `--config=<path-to-settings>`.');
 	}
 	var s = require(settingsPath);
 	s.settingsPath = settingsPath;

@@ -111,8 +111,8 @@ While developing, you probably want to have your assets recompile automatically 
 was changed. In order to do that, launch the server in *development mode* by typing `grunt dev`, which will:
 
  * Compile all `.styl` stylesheets to `.css` and regenerate the style guide when a stylesheet changes
- * Regenerate the style guide if the style guide template changes
- * Restart the server if server code changes
+ * Regenerate the style guide when a style guide template changes
+ * Restart the server when server code changes
  * Trigger a [Livereload](http://livereload.com/) event on any of the above
  
 ### Grunt Task Overview
@@ -138,24 +138,26 @@ For the server tasks, we have:
 
 ### Tests
 
-The automated tests cover the API. A test run requires a clean environment. For this purpose, there is an included 
-settings file at `server/config/settings-test.js` which is used when running tests. Basically it's a stripped-down 
-config that uses a different database.
+A test run requires a clean environment. For this purpose, there is an included settings file at 
+`server/config/settings-test.js` which is used when running tests. Basically it's a stripped-down config that uses a 
+different database, runs on a different HTTP port and enable code coverage. 
  
-There are a few ways you can run tests:
+If you want to run the tests, you'll need to open up two shells. In the first shell, run the server in test mode:
 
- * `grunt test --force` - Fires up the test server and launches API tests. Re-runs tests when tests change and restarts server 
-   and runs tests when server-code changes.
- * `grunt test-server` - Fires up the server with the test config. Restarts server when server-code changes.
- * `grunt test-client --force` - Runs tests and re-runs them if they change or server restarts.
-   
-The `test-client` goal accepts additional command-line parameters:
+	grunt serve-test
+	
+In the second shell, run the API tests:
 
- * `--server=<url>` - Server URL for API integration tests. Default: `http://localhost:3000/`.
+	grunt test --force
+	
+The `--force` parameter is necessary if you want to keep watching files for changes even though tests fail. There are
+some additional command-line parameters:
+
+ * `--server=<url>` - Server URL. Default: `http://localhost:7357/`.
  * `--basic-auth=<user>:<password>` - Adds a basic authentication header to every request.
  * `--auth-header=<header>` - Authorization header. Default: `Authorization`.
- 
-The `--force` parameter is necessary if you want to keep watching files even when tests fail.
+
+When running in test mode, a local test coverage report is available under [/coverage](http://localhost:7357/coverage/).
 
 ### Code Quality
 

@@ -208,7 +208,7 @@ function localEnv(grunt, settings, ci) {
 
 	if (settings.settingsTestmode) {
 		env.COVERAGE = true;
-		env.COVERALLS_SERVICE_NAME = ci ? 'Travis CI' : 'Local Test Runner';
+		env.COVERALLS_SERVICE_NAME = process.env.BUILDER || 'Local Test Runner';
 		env.HTTP_SCHEMA = 'http' + (settings.vpdb.httpsEnabled ? 's' : '');
 		env.AUTH_HEADER = settings.vpdb.authorizationHeader;
 	}

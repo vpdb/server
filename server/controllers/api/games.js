@@ -2,10 +2,13 @@
 
 var _ = require('underscore');
 var util = require('util');
+var async = require('async');
 var logger = require('winston');
 
 var Game = require('mongoose').model('Game');
 var api = require('./api');
+
+var storage = require('../../modules/storage');
 
 
 /**
@@ -70,6 +73,40 @@ exports.create = function(req, res) {
 	});
 };
 
+
+/**
+ * Deletes a game.
+ * @param req
+ * @param res
+ */
+exports.del = function(req, res) {
+
+	var query = Game.findOne({ id: req.params.id })
+		.populate({ path: '_media.backglass' })
+		.populate({ path: '_media.logo' });
+
+	query.exec(function(err, game) {
+		if (err) {
+			logger.error('[api|game:delete] Error getting game "%s": %s', req.params.id, err, {});
+			return api.fail(res, err, 500);
+		}
+		if (!game) {
+			return api.fail(res, 'No such game.', 404);
+		}
+
+		// TODO check for linked releases and refuse if referenced
+
+		// remove from db
+		game.remove(function(err) {
+			if (err) {
+				logger.error('[api|game:delete] Error deleting game "%s" (%s): %s', game.title, game.id, err, {});
+				return api.fail(res, err, 500);
+			}
+			logger.info('[api|game:delete] Game "%s" (%s) successfully deleted.', game.title, game.id);
+			api.success(res, null, 204);
+		});
+	});
+};
 
 /**
  * Lists all games.

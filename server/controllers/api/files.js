@@ -98,9 +98,6 @@ exports.del = function(req, res) {
 			}
 			logger.info('[api|file:delete] File "%s" (%s) successfully deleted.', file.name, file.id);
 			api.success(res, null, 204);
-
-			// remove from disk (in background)
-			storage.remove(file);
 		});
 	});
 };

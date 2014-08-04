@@ -6,6 +6,8 @@ var logger = require('winston');
 var mongoose = require('mongoose');
 var objectPath = require('object-path');
 
+var storage = require('../../modules/storage');
+
 module.exports = exports = function(schema, options) {
 
 	if (!options || !options.model) {
@@ -118,4 +120,31 @@ module.exports = exports = function(schema, options) {
 		});
 		return this;
 	};
+
+	/**
+	 * Physically remove the files from the disk
+	 */
+	schema.post('remove', function(obj, done) {
+
+		var File = mongoose.model('File');
+
+		var ids = [];
+		_.each(options.fields, function(path) {
+			var id = objectPath.get(obj, path);
+			if (id) {
+				ids.push(id);
+			}
+		});
+		File.find({ _id: { $in: ids }}, function(err, files) {
+			if (err) {
+				logger.error('[model] Error finding referenced files: %s', err);
+				return done(err);
+			}
+
+			_.each(files, function(file) {
+				storage.remove(file);
+			});
+			done();
+		});
+	});
 };

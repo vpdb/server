@@ -10,6 +10,13 @@ var expect = require('expect.js');
 
 var superuser = '__superuser';
 
+/**
+ * Sets up a bunch of users for a given test suite.
+ *
+ * @param request
+ * @param config
+ * @param done
+ */
 exports.setupUsers = function(request, config, done) {
 
 	debug('Setting up %d user(s)...', _.keys(config).length);
@@ -101,6 +108,12 @@ exports.setupUsers = function(request, config, done) {
 
 };
 
+/**
+ * Removes previously created users.
+ *
+ * @param request Superagent object
+ * @param done Callback
+ */
 exports.teardownUsers = function(request, done) {
 	var that = this;
 	var deleteUser = function(name, force) {
@@ -140,31 +153,133 @@ exports.teardownUsers = function(request, done) {
 	});
 };
 
-exports.cleanupFiles = function(request, fileIds, done) {
-	async.eachSeries(_.keys(fileIds), function(user, nextUser) {
-		async.each(fileIds[user], function(fileId, next) {
-			request
-				.del('/api/files/' + fileId)
-				.as(user)
-				.end(function(err, res) {
-					if (err) {
-						return next(err);
-					}
-					expect(res.status).to.eql(204);
-					next();
-				});
-		}, nextUser);
-	}, done);
+/**
+ * Marks a file to be cleaned up in teardown.
+ * @param user User with which the file was created
+ * @param fileId ID of the file
+ */
+exports.doomFile = function(user, fileId) {
+	if (!this.doomedFiles) {
+		this.doomedFiles = {};
+	}
+	if (!this.doomedFiles[user]) {
+		this.doomedFiles[user] = [];
+	}
+	this.doomedFiles[user].unshift(fileId);
 };
 
-exports.status = function(code, next) {
+/**
+ * Marks a game to be cleaned up in teardown.
+ * @param user User with which the game was created
+ * @param gameId ID of the game
+ */
+exports.doomGame = function(user, gameId) {
+	if (!this.doomedGames) {
+		this.doomedGames = {};
+	}
+	if (!this.doomedGames[user]) {
+		this.doomedGames[user] = [];
+	}
+	this.doomedGames[user].unshift(gameId);
+};
+
+/**
+ * Cleans up files, games and users.
+ *
+ * @param request Superagent object
+ * @param done Callback
+ */
+exports.cleanup = function(request, done) {
+	var doomedFiles = this.doomedFiles;
+	var doomedGames = this.doomedGames;
+
+	async.series([
+
+		// 1. cleanup files
+		function(next) {
+			if (!doomedFiles) {
+				return next();
+			}
+			async.eachSeries(_.keys(doomedFiles), function(user, nextUser) {
+				async.each(doomedFiles[user], function(fileId, next) {
+					request
+						.del('/api/files/' + fileId)
+						.as(user)
+						.end(function(err, res) {
+							if (err) {
+								return next(err);
+							}
+							if (res.status !== 204) {
+								console.log(res.body);
+							}
+							expect(res.status).to.eql(204);
+							next();
+						});
+				}, nextUser);
+			}, next);
+		},
+
+		// 2. cleanup games
+		function(next) {
+			if (!doomedGames) {
+				return next();
+			}
+			async.eachSeries(_.keys(doomedGames), function(user, nextGame) {
+				async.each(doomedGames[user], function(gameId, next) {
+					request
+						.del('/api/games/' + gameId)
+						.as(user)
+						.end(function(err, res) {
+							if (err) {
+								return next(err);
+							}
+							if (res.status !== 204) {
+								console.log(res.body);
+							}
+							expect(res.status).to.eql(204);
+							next();
+						});
+				}, nextGame);
+			}, next);
+		},
+
+		// lastly, teardown users
+		function(next) {
+			exports.teardownUsers(request, next);
+		}
+	], done);
+};
+
+/**
+ * Asserts that a response contains a given status code and no error
+ * @param code Status code to assert
+ * @param contains
+ * @param [next=null] callback
+ * @returns {Function} Function passed to end()
+ */
+exports.status = function(code, contains, next) {
+	if (_.isFunction(contains)) {
+		next = contains;
+		contains = false;
+	}
 	return function(err, res) {
 		expect(err).to.eql(null);
+		if (res.status !== code) {
+			console.warn(res.body);
+		}
 		expect(res.status).to.be(code);
+		if (contains) {
+			expect(res.body.error).to.contain(contains);
+		}
 		next();
 	};
 };
 
+/**
+ * Returns a user previously created with setupUsers();
+ * @param name
+ * @returns {*}
+ */
 exports.getUser = function(name) {
 	return this.users[name];
 };

@@ -54,8 +54,8 @@ module.exports = function(app, config, passport) {
 	app.get('/api/games',         api.anon(api.games.list));
 	app.head('/api/games/:id',    api.anon(api.games.head));
 	app.get('/api/games/:id',     api.anon(api.games.view));
-
 	app.post('/api/games',        api.auth(api.games.create, 'games', 'add'));
+	app.delete('/api/games/:id',  api.auth(api.games.del, 'games', 'delete'));
 
 	app.get('/api/ping',          api.anon(api.ping));
 

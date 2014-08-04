@@ -2,6 +2,7 @@
 
 var _ = require('underscore');
 var logger = require('winston');
+var async = require('async');
 var mongoose = require('mongoose');
 var validator = require('validator');
 var uniqueValidator = require('mongoose-unique-validator');
@@ -151,6 +152,33 @@ GameSchema.methods.toSimple = function() {
 GameSchema.methods.toDetailed = function() {
 	return this.toObject();
 };
+
+
+//-----------------------------------------------------------------------------
+// TRIGGERS
+//-----------------------------------------------------------------------------
+GameSchema.pre('remove', function(next) {
+	var File = require('mongoose').model('File');
+	var removeFile = function(ref) {
+		return function(next) {
+			var remove = function(err, file) {
+				if (err) {
+					return next(err);
+				}
+				file.remove(next);
+			};
+			if (!ref) {
+				return next();
+			}
+			if (!ref.id) {
+				File.findById(ref._id, remove);
+			} else {
+				remove(null, ref);
+			}
+		};
+	};
+	async.parallel([ removeFile(this._media.backglass), removeFile(this._media.logo) ], next);
+});
 
 
 //-----------------------------------------------------------------------------

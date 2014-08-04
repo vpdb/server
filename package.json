@@ -55,7 +55,7 @@
 		"kss": "^1.0.0",
 		"marked": "^0.3.2",
 		"md5": "^1.0.0",
-		"mongoose": "~3.8.12",
+		"mongoose": "LearnBoost/mongoose",
 		"mongoose-unique-validator": "~0.3.0",
 		"morgan": "^1.1.1",
 		"nib": "^1.0.0",

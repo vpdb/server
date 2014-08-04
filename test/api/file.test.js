@@ -15,19 +15,16 @@ describe('The VPDB `file` API', function() {
 
 	var backglass = path.resolve(__dirname, '../../data/test/files/backglass_half_blank.png');
 
-	var fileIds = { member: [] };
-
 	before(function(done) {
 		hlp.setupUsers(request, {
 			member: { roles: [ 'member' ]},
+			contributor: { roles: [ 'contributor' ]},
 			anothermember: { roles: [ 'member' ]}
 		}, done);
 	});
 
 	after(function(done) {
-		hlp.cleanupFiles(request, fileIds, function() {
-			hlp.teardownUsers(request, done);
-		});
+		hlp.cleanup(request, done);
 	});
 
 	describe('before trying to upload a file', function() {
@@ -107,7 +104,7 @@ describe('The VPDB `file` API', function() {
 				.end(function(err, res) {
 					expect(err).to.eql(null);
 					expect(res.status).to.be(201);
-					fileIds.member.push(res.body.id);
+					hlp.doomFile('member', res.body.id);
 					expect(res.body.id).to.be.ok();
 					expect(res.body.name).to.be(name);
 					expect(res.body.bytes).to.be(text.length);
@@ -137,7 +134,7 @@ describe('The VPDB `file` API', function() {
 				.as('member')
 				.end(function(res) {
 					expect(res.status).to.be(201);
-					fileIds.member.push(res.body.id);
+					hlp.doomFile('member', res.body.id);
 					expect(res.body.id).to.be.ok();
 					expect(res.body.metadata.size.width).to.be(640);
 					expect(res.body.metadata.size.height).to.be(512);
@@ -208,7 +205,7 @@ describe('The VPDB `file` API', function() {
 				.end(function(err, res) {
 					expect(err).to.eql(null);
 					expect(res.status).to.be(201);
-					fileIds.member.push(res.body.id);
+					hlp.doomFile('member', res.body.id);
 					expect(res.body.url).to.be.ok();
 					request
 						.get(res.body.url)
@@ -237,7 +234,7 @@ describe('The VPDB `file` API', function() {
 				.end(function(err, res) {
 					expect(err).to.eql(null);
 					expect(res.status).to.be(201);
-					fileIds.member.push(res.body.id);
+					hlp.doomFile('member', res.body.id);
 					expect(res.body.url).to.be.ok();
 					request
 						.get('/api/files/' + res.body.id)
@@ -266,7 +263,7 @@ describe('The VPDB `file` API', function() {
 				.end(function(err, res) {
 					expect(err).to.eql(null);
 					expect(res.status).to.be(201);
-					fileIds.member.push(res.body.id);
+					hlp.doomFile('member', res.body.id);
 					expect(res.body.url).to.be.ok();
 					request
 						.get('/api/files/' + res.body.id)
@@ -294,7 +291,7 @@ describe('The VPDB `file` API', function() {
 				.end(function(err, res) {
 					expect(err).to.eql(null);
 					expect(res.status).to.be(201);
-					fileIds.member.push(res.body.id);
+					hlp.doomFile('member', res.body.id);
 					expect(res.body.url).to.be.ok();
 					request
 						.get('/api/files/' + res.body.id)
@@ -323,7 +320,7 @@ describe('The VPDB `file` API', function() {
 				.end(function(err, res) {
 					expect(err).to.eql(null);
 					expect(res.status).to.be(201);
-					fileIds.member.push(res.body.id);
+					hlp.doomFile('member', res.body.id);
 					expect(res.body.url).to.be.ok();
 					request
 						.get(res.body.url)
@@ -351,7 +348,7 @@ describe('The VPDB `file` API', function() {
 				.end(function(err, res) {
 					expect(err).to.eql(null);
 					expect(res.status).to.be(201);
-					fileIds.member.push(res.body.id);
+					hlp.doomFile('member', res.body.id);
 					expect(res.body.url).to.be.ok();
 					request
 						.get(res.body.url)
@@ -434,6 +431,50 @@ describe('The VPDB `file` API', function() {
 				},
 				function(next) {
 					request.del('/api/files/' + id).as('anothermember').end(hlp.status(403, next));
+				}
+			], done);
+		});
+
+		it('should fail if the file is active', function(done) {
+
+			var data = fs.readFileSync(backglass);
+			var fileType = 'backglass';
+			var mimeType = 'image/png';
+			var name = 'backglass.png';
+			var id;
+
+			async.series([
+				// 1. upload
+				function(next) {
+					request
+						.post('/api/files')
+						.query({ type: fileType })
+						.type(mimeType)
+						.set('Content-Disposition', 'attachment; filename="' + name + '"')
+						.set('Content-Length', data.length)
+						.send(data)
+						.as('contributor')
+						.end(function(res) {
+							expect(res.status).to.be(201);
+							id = res.body.id;
+							next();
+						});
+				},
+				// 2. create reference (let's take a game)
+				function(next) {
+					request
+						.post('/api/games')
+						.as('contributor')
+						.send({ id: "bbb", title: "Big Bang Bar", origin: "recreation", manufacturer: "Capcom", year: 1996, game_type: "ss", ipdb: { number: 4001 }, _media: { backglass: id } })
+						.end(hlp.status(201, next));
+				},
+				// 3. try to delete
+				function(next) {
+					request.del('/api/files/' + id).as('contributor').end(function(res) {
+						expect(res.status).to.be(400);
+						expect(res.body.error).to.contain('Cannot remove active file');
+						next();
+					});
 				}
 			], done);
 		});

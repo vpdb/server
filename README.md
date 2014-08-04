@@ -67,17 +67,21 @@ Server runs on [Node.js](http://nodejs.org/) with [Express](http://expressjs.com
 and [Jade](http://jade-lang.com/). Client uses [AngularJS](https://angularjs.org/) with CSS based on 
 [Twitter Bootstrap](http://getbootstrap.com/).
 
+## Status
+
+See [changelog](CHANGELOG.md).
+
 ## Installation
 
 Prerequisites:
 
 * Download and install [GraphicsMagick](http://www.graphicsmagick.org/) and make sure that the binary is in
-  your ``PATH``.
+  your `PATH`.
 * Download and install [pngquant](http://pngquant.org/) and make sure that the binary is in
-  your ``PATH``.
+  your `PATH`.
 * Download and install [OptiPNG](http://optipng.sourceforge.net/) and make sure that the binary is in
-  your ``PATH``.
-* Install the Grunt command line tool: ``npm install -g grunt-cli``
+  your `PATH`.
+* Install the Grunt command line tool: `npm install -g grunt-cli`
 
 Install Node.js and Git, then open a command line and type:
 
@@ -87,39 +91,52 @@ Install Node.js and Git, then open a command line and type:
 	grunt build
 	grunt serve
 
-Open your browser and connect to ``http://localhost:3000/``.
-
-For live reload and automatic app restart while developing, open a shell and launch:
-
-	grunt dev
-	
-There are some command line arguments you can supply:
+Open your browser and connect to `http://localhost:3000/`. There are some command line arguments you can supply:
 
  * `--port=<port>` - Makes the app listen on a given port. Default: `3000`.
- * `--config=<path>` - Uses a different settings file. This has different defaults depending on how Grunt is launched:
+ * `--config=<path>` - Uses a different settings file. Note that the settings location has different defaults depending 
+   on how Grunt is launched:
    * When launched as `dev` or `serve`, the default is `server/config/settings.js`
-   * When launched as `test`, `test-client` or `test-server`, the default is `server/config/settings-test.js`. See 
-     *Tests* below for additional parameters.
+   * When launched as `test` or `serve-test`, the default is `server/config/settings-test.js`. See *Tests* under 
+     *Development* below for additional parameters.
 
-Note that both settings may also be provided by setting the `PORT` and `APP_SETTINGS` environment variable.
- 
-### Grunt Task Overview
-
-Here's an overview how you can launch the server and what the different behaviors are:
-
-|              | Assets Minified | Coverage Enabled | Automatic Asset Compilation | Config    |
-|--------------|-----------------|------------------|-----------------------------|-----------|
-| `serve`      | yes             | no               | no                          | *default* |
-| `dev`        | no              | no               | yes                         | *default* |
-| `serve-test` | no              | yes              | no                          | *test*    |
+Note that both settings may also be provided by setting the `PORT` and `APP_SETTINGS` environment variable (providing
+it via command line arguments will override the though).
 
 If you plan to setup a production environment from scratch, see the [Installation Guide](INSTALL.md).
 
-## Status
+## Development
 
-See [changelog](CHANGELOG.md).
+While developing, you probably want to have your assets recompile automatically and re-launch the server if server code
+was changed. In order to do that, launch the server in *development mode* by typing `grunt dev`, which will:
 
-## Tests
+ * Compile all `.styl` stylesheets to `.css` and regenerate the style guide when a stylesheet changes
+ * Regenerate the style guide if the style guide template changes
+ * Restart the server if server code changes
+ * Trigger a [Livereload](http://livereload.com/) event on any of the above
+ 
+### Grunt Task Overview
+
+Here are the relevant Grunt tasks:
+
+| Task         | Description                         | Notes                                                                                                         |
+|--------------|-------------------------------------|---------------------------------------------------------------------------------------------------------------|
+| `build`      | Builds assets for production        | Compiles and minifies styles, minifies client-side scripts, generates style guide, renders static error pages |
+| `serve`      | Launches server in production mode  | Serves minified styles and scripts                                                                            |
+| `dev`        | Launches server in development mode | Recompiles assets on the fly, restarts server on code change and live-reloads the browser                     |
+| `serve-test` | Launches server in test mode        | Enables code coverage and watches for server changes                                                          |
+| `test`       | Runs API tests                      | Server must be running as `serve-test`                                                                        |
+
+For the server tasks, we have:
+
+|              | Assets Minified | Coverage Enabled | Automatic Asset Compilation | Linted | Config    |
+|--------------|-----------------|------------------|-----------------------------|--------|-----------|
+| `serve`      | yes             | no               | no                          | no     | *default* |
+| `dev`        | no              | no               | yes                         | yes    | *default* |
+| `serve-test` | no              | yes              | no                          | yes    | *test*    |
+
+
+### Tests
 
 The automated tests cover the API. A test run requires a clean environment. For this purpose, there is an included 
 settings file at `server/config/settings-test.js` which is used when running tests. Basically it's a stripped-down 
@@ -140,9 +157,15 @@ The `test-client` goal accepts additional command-line parameters:
  
 The `--force` parameter is necessary if you want to keep watching files even when tests fail.
 
-### JSHint
+### Code Quality
 
-If you want to run the server code through JSHint, type `grunt jshint`.
+When running the server in development or test mode, the code is linted using [JSHint](http://www.jshint.com/about/). If
+the code doesn't pass, tests fail. You can run the linting manually with the `jshint` task.
+
+As you can see by the badge on top of this README, continuous integration is set up using 
+[Travis CI](https://travis-ci.org/freezy/node-vpdb). After every test run, code coverage stats are sent to 
+[Coveralls.io](https://coveralls.io/r/freezy/node-vpdb). Note that both CI and code coverage only concern 
+server-side code.
 
 ## Credits
 
@@ -151,4 +174,4 @@ If you want to run the server code through JSHint, type `grunt jshint`.
 
 ## License
 
-GPLv2, see LICENSE.
+GPLv2, see [LICENSE](LICENSE).

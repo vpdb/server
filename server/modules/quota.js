@@ -11,7 +11,7 @@ exports.init = function() {
 	this.quota = {};
 	// we create a quota module for each duration
 	for (var plan in quotaConfig.plans) {
-		if (quotaConfig.hasOwnProperty(plan)) {
+		if (quotaConfig.plans.hasOwnProperty(plan)) {
 			if (quotaConfig.plans[plan].unlimited) {
 				continue;
 			}

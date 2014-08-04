@@ -16,116 +16,6 @@ module.exports = function(grunt) {
 	var jsGlobal = path.resolve(jsRoot, 'global.min.js');
 
 	// configure the tasks
-	var configold = {
-
-		execute: {
-			target: {
-				src: ['app.js']
-			}
-		},
-
-		watch: {
-			branch: {
-				files: '.git/HEAD',
-				tasks: [ 'git' ],
-				options: { spawn: false }
-			},
-			stylesheets: {
-				files: 'client/styles/**/*.styl',
-				tasks: [ 'stylus', 'kss', 'reload' ],
-				options: { spawn: false }
-			},
-			styleguide: {
-				files: [
-					'client/views/styleguide.jade',
-					'client/views/partials/styleguide-section.jade',
-					'doc/styleguide.md'
-				],
-				tasks: [ 'kss' ],
-				options: { spawn: false }
-			},
-			livereload: {
-				files: [ '.reload', 'client/code/**/*.js', 'client/views/**/*.jade' ],
-				options: {
-					spawn: false,
-					livereload: grunt.option('no-reload') || process.env.NO_RELOAD ? false : true
-				}
-			},
-			test: {
-				files: ['.reload', 'test/**/*.js'],
-				tasks: ['waitServer', 'mochaTest' ],
-				options: { spawn: false }
-			},
-			coverage: {
-				files:  [ '**/*.js' ],
-				tasks:  [ 'express:dev' ],
-				options: {
-					nospawn: true
-				}
-			}
-		},
-
-		nodemon: {
-			dev: {
-				script: 'app.js',
-				options: {
-					cwd: __dirname,
-					watch: [ 'server', 'gitinfo.json', 'app.js' ],
-					callback: function (nodemon) {
-						nodemon.on('log', function (event) {
-							console.log(event.colour);
-						});
-
-						// refreshes browser when server restarts
-						nodemon.on('restart', function () {
-							// Delay before server listens on port
-							setTimeout(function() {
-								fs.writeFileSync('.reload', new Date());
-							}, 1000);
-						});
-					}
-				}
-			},
-		},
-
-
-		jshint: {
-			options: {
-				jshintrc: 'test/.jshintrc',
-				ignores: [ ]
-			},
-			files: {
-				src: [ 'server/**/*.js', 'test/**/*.js' ]
-			},
-			gruntfile: {
-				src: 'Gruntfile.js'
-			}
-		},
-
-		concurrent: {
-			server: {
-				tasks: [ 'nodemon:dev', 'watch:branch', 'watch:stylesheets', 'watch:styleguide', 'watch:livereload' ],
-				options: {
-					logConcurrentOutput: true
-				}
-			},
-
-			test: {
-				tasks: [ 'nodemon:dev', 'watch:branch', 'watch:stylesheets', 'watch:styleguide', 'watch:livereload', 'test-client' ],
-				options: {
-					logConcurrentOutput: true
-				}
-			},
-
-			coverage: {
-				tasks: [ 'test-server-coverage', 'test-client' ],
-				options: {
-					logConcurrentOutput: true
-				}
-			}
-		}
-	};
-
 	var config = {
 
 		clean: {
@@ -196,6 +86,11 @@ module.exports = function(grunt) {
 				} },
 				files: [ { expand: true, cwd: 'client/views/errors', src: [ '*.jade' ], dest: htmlRoot, ext: '.html' } ]
 			}
+		},
+
+		jshint: { options: { jshintrc: 'test/.jshintrc', ignores: [ 'test/coverage/**/*.js'] },
+		          files: { src: [ 'server/**/*.js', 'test/**/*.js' ] },
+		          gruntfile: { src: 'Gruntfile.js' }
 		},
 
 		mkdir: {
@@ -280,9 +175,9 @@ module.exports = function(grunt) {
 		[ 'clean:build', 'mkdir:server', 'stylus', 'cssmin', 'uglify', 'git', 'kssrebuild', 'jade' ]
 	);
 	// server tasks
-	grunt.registerTask('dev', [ 'build', 'env:dev',  'concurrent:dev' ]);  // dev mode, watch everything
-	grunt.registerTask('serve-test',   [ 'env:test', 'concurrent:test' ]); // test mode, watch only server
-	grunt.registerTask('serve',        [ 'env:prod', 'express:prod' ]);    // prod, watch nothing
+	grunt.registerTask('dev', [ 'build', 'env:dev',  'jshint', 'concurrent:dev' ]);  // dev mode, watch everything
+	grunt.registerTask('serve-test',   [ 'env:test', 'jshint', 'concurrent:test' ]); // test mode, watch only server
+	grunt.registerTask('serve',        [ 'env:prod', 'express:prod' ]);              // prod, watch nothing
 
 	// watchers
 	grunt.registerTask('watch-dev',    [ 'express:dev',  'watch:express-dev' ]);

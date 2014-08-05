@@ -18,10 +18,12 @@ module.exports = function(superagent, options) {
 		if (this.url[0] === '/') {
 			this.url = options.schema + '://' + options.host + ':' + options.port + this.url;
 		}
+		this.timeout(10000);
 		return this.request();
 	};
 
 	Request.prototype.as = function(name) {
+
 		if (!name) {
 			return this;
 		}

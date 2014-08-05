@@ -117,12 +117,18 @@ exports.list = function(req, res) {
 
 	// text search
 	if (req.query.q) {
+
+		if (req.query.q.trim().length < 2) {
+			return api.fail(res, 'Query must contain at least two characters.', 400);
+		}
+
 		// sanitize and build regex
-		var q = req.query.q.trim().replace(/[^a-z0-9]+/gi, ' ').replace(/\s+/g, '.*');
-		var regex = new RegExp(q, 'i');
+		var titleQuery = req.query.q.trim().replace(/[^a-z0-9-\s]+/gi, '').replace(/\s+/g, '.*?');
+		var titleRegex = new RegExp(titleQuery, 'i');
+		var idQuery = req.query.q.trim().replace(/[^a-z0-9-]+/gi, ''); // TODO tune
 		query.or([
-			{ title: regex },
-			{ game_id: regex }
+			{ title: titleRegex },
+			{ id: idQuery }
 		]);
 	}
 

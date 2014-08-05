@@ -1,5 +1,6 @@
 "use strict"; /*global describe, before, after, it*/
 
+var _ = require('underscore');
 var fs = require('fs');
 var path = require('path');
 var async = require('async');
@@ -220,6 +221,124 @@ describe('The VPDB `game` API', function() {
 					expect(res.body).to.have.length(count);
 					done();
 				});
+		});
+
+		it('should refuse queries with less than two characters', function(done) {
+			request.get('/api/games?q=a').end(hlp.status(400, 'must contain at least two characters', done));
+		});
+
+		it('should find game by game id', function(done) {
+			// find added game with shortest id
+			var game = _.sortBy(games, function(game) {
+				return game.id.length;
+			})[0];
+
+			request
+				.get('/api/games?q=' + game.id)
+				.end(function(err, res) {
+					hlp.expectStatus(err, res, 200);
+					expect(res.body).to.be.an('array');
+					expect(res.body.length).to.be.above(0);
+					var found = false;
+					_.each(res.body, function(g) {
+						if (g.id === game.id) {
+							found = true;
+						}
+					});
+					expect(found).to.be(true);
+					done();
+				});
+		});
+
+		it('should find games by title', function(done) {
+			// find added game with longest title
+			var game = _.sortBy(games, function(game) {
+				return -game.title.length;
+			})[0];
+
+			request
+				.get('/api/games?q=' + game.title.match(/[0-9a-z]{3}/i)[0])
+				.end(function(err, res) {
+					hlp.expectStatus(err, res, 200);
+					expect(res.body).to.be.an('array');
+					expect(res.body.length).to.be.above(0);
+					var found = false;
+					_.each(res.body, function(g) {
+						if (g.id === game.id) {
+							found = true;
+						}
+					});
+					expect(found).to.be(true);
+					done();
+				});
+		});
+
+
+		it('should find games by title if split', function(done) {
+			// find added game with longest title
+			var game = _.sortBy(games, function(game) {
+				return -game.title.length;
+			})[0];
+
+			request
+				.get('/api/games?q=' + game.title.match(/[0-9a-z]{2}/i)[0] + '+' + game.title.match(/.*([0-9a-z]{2})/i)[1])
+				.end(function(err, res) {
+					hlp.expectStatus(err, res, 200);
+					console.log(res.body);
+					expect(res.body).to.be.an('array');
+					expect(res.body.length).to.be.above(0);
+					var found = false;
+					_.each(res.body, function(g) {
+						if (g.id === game.id) {
+							found = true;
+						}
+					});
+					expect(found).to.be(true);
+					done();
+				});
+		});
+	});
+
+	describe('when retrieving a game', function() {
+
+		var user = 'contributor';
+		var game;
+
+		before(function(done) {
+			hlp.setupUsers(request, {
+				contributor: { roles: [ user ]}
+			}, function() {
+				hlp.game.createGame(user, request, function(_game) {
+					game = _game;
+					done();
+				});
+			});
+		});
+
+		after(function(done) {
+			hlp.cleanup(request, done);
+		});
+
+		it('should return full game details', function(done) {
+			request
+				.get('/api/games/' + game.id)
+				.end(function(err, res) {
+					hlp.expectStatus(err, res, 200);
+					console.log(res.body);
+					expect(res.body).to.be.an('object');
+					expect(res.body.title).to.be(game.title);
+					expect(res.body.manufacturer).to.be(game.manufacturer);
+					expect(res.body.year).to.be(game.year);
+					expect(res.body.game_type).to.be(game.game_type);
+					expect(res.body.media).to.be.an('object');
+					expect(res.body.media.backglass).to.be.an('object');
+					expect(res.body.media.backglass.variations).to.be.an('object');
+					done();
+				});
+		});
+
+		it('that does not exist should return a 404', function(done) {
+			request.get('/api/games/01234567890123456789').end(hlp.status(404, done));
 		});
 	});
 

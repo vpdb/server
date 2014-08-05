@@ -18,7 +18,6 @@ module.exports = function(superagent, options) {
 		if (this.url[0] === '/') {
 			this.url = options.schema + '://' + options.host + ':' + options.port + this.url;
 		}
-		this.timeout(10000);
 		return this.request();
 	};
 
@@ -31,7 +30,6 @@ module.exports = function(superagent, options) {
 			throw new Error('Cannot find JWT for role "' + name + '".');
 		}
 		this.set(options.authHeader, 'Bearer ' + superagent.tokens[name]);
-		this.timeout(10000);
 		return this;
 	};
 

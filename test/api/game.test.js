@@ -274,7 +274,7 @@ describe('The VPDB `game` API', function() {
 		});
 
 
-		it('should find games by title if split', function(done) {
+		it('should find games by title split by a white space', function(done) {
 			// find added game with longest title
 			var game = _.sortBy(games, function(game) {
 				return -game.title.length;
@@ -284,7 +284,6 @@ describe('The VPDB `game` API', function() {
 				.get('/api/games?q=' + game.title.match(/[0-9a-z]{2}/i)[0] + '+' + game.title.match(/.*([0-9a-z]{2})/i)[1])
 				.end(function(err, res) {
 					hlp.expectStatus(err, res, 200);
-					console.log(res.body);
 					expect(res.body).to.be.an('array');
 					expect(res.body.length).to.be.above(0);
 					var found = false;
@@ -324,7 +323,6 @@ describe('The VPDB `game` API', function() {
 				.get('/api/games/' + game.id)
 				.end(function(err, res) {
 					hlp.expectStatus(err, res, 200);
-					console.log(res.body);
 					expect(res.body).to.be.an('object');
 					expect(res.body.title).to.be(game.title);
 					expect(res.body.manufacturer).to.be(game.manufacturer);

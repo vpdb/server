@@ -102,7 +102,7 @@ module.exports = function(grunt) {
 		},
 
 		mochaTest: {
-			api: { options: { reporter: 'spec', clearRequireCache: true, timeout: 10000 }, src: ['test/api/*.test.js'] }
+			api: { options: { reporter: 'spec', clearRequireCache: true, timeout: 30000 }, src: ['test/api/*.test.js'] }
 		},
 
 		stylus: {

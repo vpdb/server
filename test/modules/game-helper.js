@@ -37,6 +37,7 @@ exports.createGame = function(user, request, done) {
 };
 
 exports.createGames = function(user, request, count, done) {
+	// do this in parallel
 	async.times(count, function(n, next) {
 		exports.createGame(user, request, function(game) {
 			next(null, game);

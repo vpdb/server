@@ -11,6 +11,7 @@ var expect = require('expect.js');
 var superuser = '__superuser';
 
 exports.game = require('./game-helper');
+exports.file = require('./file-helper');
 
 /**
  * Sets up a bunch of users for a given test suite.
@@ -36,7 +37,6 @@ exports.setupUsers = function(request, config, done) {
 	var createUser = function(name, config) {
 		return function(next) {
 			var user = genUser();
-
 
 			// 1. create user
 			debug('%s <%s>: Creating user...', name, user.email);
@@ -208,7 +208,7 @@ exports.cleanup = function(request, done) {
 			}
 			async.eachSeries(_.keys(doomedFiles), function(user, nextUser) {
 				async.each(doomedFiles[user], function(fileId, next) {
-					request
+					var req = request
 						.del('/api/files/' + fileId)
 						.as(user)
 						.end(function(err, res) {
@@ -216,6 +216,7 @@ exports.cleanup = function(request, done) {
 								return next(err);
 							}
 							if (res.status !== 204) {
+								console.log(req.method + ' ' + req.url);
 								console.log(res.body);
 							}
 							expect(res.status).to.eql(204);
@@ -277,7 +278,7 @@ exports.status = function(code, contains, next) {
 		contains = false;
 	}
 	return function(err, res) {
-		expect(err).to.eql(null);
+		expect(err).to.not.be.ok();
 		if (res.status !== code) {
 			console.warn(res.body);
 		}
@@ -287,6 +288,17 @@ exports.status = function(code, contains, next) {
 		}
 		next();
 	};
+};
+
+exports.expectStatus = function(err, res, code, contains) {
+	if (res.status !== code) {
+		console.log(res.body);
+	}
+	expect(err).to.not.be.ok();
+	expect(res.status).to.be(code);
+	if (contains) {
+		expect(res.body.error).to.contain(contains);
+	}
 };
 
 /**

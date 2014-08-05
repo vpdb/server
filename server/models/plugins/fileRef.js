@@ -58,8 +58,9 @@ module.exports = exports = function(schema, options) {
 				// no match, add invalidation
 				if (!hit) {
 					if (shortId) {
-						logger.warn('[model] File ID %s not found in database for field %s.', objectPath.get(obj, path), path);
-						invalidations.push({ path: path, message: 'No such file with ID "' + objectPath.get(obj, path) + '".' });
+						var value = objectPath.get(obj, path);
+						logger.warn('[model] File ID %s not found in database for field %s.', value, path);
+						invalidations.push({ path: path, message: 'No such file with ID "' + value + '".', value: value });
 						objectPath.set(obj, path, '000000000000000000000000');
 					}
 				}
@@ -68,11 +69,44 @@ module.exports = exports = function(schema, options) {
 
 			// for invalid IDs, invalidate instantly so we can provide which value is wrong.
 			_.each(invalidations, function(invalidation) {
-				model.invalidate(invalidation.path, invalidation.message);
+				model.invalidate(invalidation.path, invalidation.message, invalidation.value);
 			});
 			callback(null, model);
 		});
 	};
+
+
+	//-----------------------------------------------------------------------------
+	// VALIDATIONS
+	//-----------------------------------------------------------------------------
+	_.each(options.fields, function(path) {
+
+		schema.path(path).validate(function(fileId, callback) {
+			var referer = this;
+			if (!fileId || !referer._created_by) {
+				return callback(true);
+			}
+			mongoose.model('File').findOne({ _id: fileId }, function(err, file) {
+				if (err) {
+					logger.error('[model] Error fetching file "%s".', fileId);
+					return callback(true);
+				}
+				if (!file) {
+					return callback(true);
+				}
+
+				// let's invalidate manually because we want to provide `id` instead of `_id` as value
+				if (!file._created_by.equals(referer._created_by)) {
+					referer.invalidate(path, 'Referenced file must be of the same owner as referer.', file.id);
+				}
+				if (referer.isNew && file.is_active) {
+					referer.invalidate(path, 'Cannot reference active files. If a file is active that means that is has been referenced elsewhere, in which case you cannot reference it again.', file.id);
+				}
+				callback(true);
+			});
+		});
+	});
+
 
 	/**
 	 * Sets the referenced files to active. Call this after creating a new

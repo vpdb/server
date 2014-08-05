@@ -43,6 +43,8 @@ var fields = {
 		rating: Number,
 		mfg: Number
 	},
+	created_at:    { type: Date, required: true },
+	_created_by:   { type: Schema.ObjectId, required: true, ref: 'User' },
 	_media: {
 		backglass: { type: Schema.ObjectId, ref: 'File', required: 'Backglass image must be provided.' },
 		logo:      { type: Schema.ObjectId, ref: 'File' }
@@ -78,16 +80,10 @@ GameSchema.virtual('media')
 	.get(function() {
 		var media = {};
 		if (this.populated('_media.backglass')) {
-			media.backglass = {
-				url: storage.url(this._media.backglass),
-				variations: storage.urls(this._media.backglass)
-			};
+			media.backglass = this._media.backglass.toSimple();
 		}
 		if (this.populated('_media.logo')) {
-			media.logo = {
-				url: storage.url(this._media.logo),
-				variations: storage.urls(this._media.logo)
-			};
+			media.logo = this._media.logo.toSimple();
 		}
 		return media;
 	});
@@ -122,11 +118,9 @@ GameSchema.path('game_type').validate(function(gameType, callback) {
 });
 
 GameSchema.path('_media.backglass').validate(function(backglass, callback) {
-
 	if (!backglass) {
 		return;
 	}
-
 	mongoose.model('File').findOne({ _id: backglass }, function(err, backglass) {
 		if (err) {
 			logger.error('[model|game] Error fetching backglass %s.');

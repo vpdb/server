@@ -234,11 +234,14 @@ Storage.prototype.postprocess = function(file, done) {
 						var optimizer = new OptiPng(['-o7']);
 
 						logger.info('[storage] Resizing and optimizing "%s" for %s %s...', file.name, variation.name, file.file_type);
+						if (!fs.existsSync(file.getPath())) {
+							logger.error('[storage] File "%s" not available anymore, aborting.', file.getPath());
+							return done('File "' + file.getPath() + '" not available anymore, aborting.');
+						}
 						gm(file.getPath()).resize(variation.width, variation.height).stream()
 							.pipe(quanter).on('error', handleErr)
 							.pipe(optimizer).on('error', handleErr)
 							.pipe(writeStream).on('error', handleErr);
-
 					} else {
 
 						logger.info('[storage] Resizing "%s" for %s %s...', file.name, variation.name, file.file_type);

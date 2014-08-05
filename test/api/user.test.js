@@ -27,12 +27,9 @@ describe('The VPDB `user` API', function() {
 			.get('/api/user')
 			.as('root')
 			.end(function(err, res) {
-				expect(err).to.eql(null);
-				expect(res.status).to.eql(200);
-
+				hlp.expectStatus(err, res, 200);
 				expect(res.body.email).to.eql(hlp.getUser('root').email);
 				expect(res.body.name).to.eql(hlp.getUser('root').name);
-
 				done();
 			});
 	});

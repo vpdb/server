@@ -144,7 +144,7 @@ describe('The ACLs of the VPDB API', function() {
 				.get('/api/users?q=' + hlp.getUser('member').name.substr(0, 3))
 				.as('member')
 				.end(function(err, res) {
-					expect(res.status).to.be(200);
+					hlp.expectStatus(err, res, 200);
 					expect(res.body.length).to.be.above(0);
 					expect(res.body[0]).to.not.have.property('email');
 					expect(res.body[0]).to.have.property('name');
@@ -246,7 +246,7 @@ describe('The ACLs of the VPDB API', function() {
 				.get('/api/users?q=' + hlp.getUser('member').name.substr(0, 3))
 				.as('contributor')
 				.end(function(err, res) {
-					expect(res.status).to.be(200);
+					hlp.expectStatus(err, res, 200);
 					expect(res.body.length).to.be.above(0);
 					expect(res.body[0]).to.not.have.property('email');
 					expect(res.body[0]).to.have.property('name');
@@ -340,7 +340,7 @@ describe('The ACLs of the VPDB API', function() {
 				.get('/api/users?q=' + hlp.getUser('member').name.substr(0, 3))
 				.as('admin')
 				.end(function(err, res) {
-					expect(res.status).to.be(200);
+					hlp.expectStatus(err, res, 200);
 					expect(res.body.length).to.be.above(0);
 					expect(res.body[0]).to.have.property('email');
 					expect(res.body[0]).to.have.property('name');
@@ -430,7 +430,7 @@ describe('The ACLs of the VPDB API', function() {
 				.get('/api/users?q=' + hlp.getUser('member').name.substr(0, 3))
 				.as('root')
 				.end(function(err, res) {
-					expect(res.status).to.be(200);
+					hlp.expectStatus(err, res, 200);
 					expect(res.body.length).to.be.above(0);
 					expect(res.body[0]).to.have.property('email');
 					expect(res.body[0]).to.have.property('name');

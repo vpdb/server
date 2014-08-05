@@ -36,7 +36,10 @@ exports.head = function(req, res) {
  */
 exports.create = function(req, res) {
 
-	Game.getInstance(req.body, function(err, newGame) {
+	Game.getInstance(_.extend(req.body, {
+		_created_by: req.user._id,
+		created_at: new Date()
+	}), function(err, newGame) {
 		if (err) {
 			logger.error('[api|game:create] Error creating game instance: %s', err, {});
 			return api.fail(res, err, 500);
@@ -52,23 +55,16 @@ exports.create = function(req, res) {
 				return api.fail(res, err, 422);
 			}
 			logger.info('[api|game:create] Validations passed.');
-			Game.findOne({ id: newGame.id }, ok(function(game) {
-				if (!game) {
-					newGame.save(ok(function(game) {
-						logger.info('[api|game:create] Game "%s" created.', game.title);
+			newGame.save(ok(function(game) {
+				logger.info('[api|game:create] Game "%s" created.', game.title);
 
-						// set media to active
-						game.activateFiles(okk(function(game) {
-							logger.info('[api|game:create] All referenced files activated, returning object to client.');
-							return api.success(res, game.toDetailed(), 201);
+				// set media to active
+				game.activateFiles(okk(function(game) {
+					logger.info('[api|game:create] All referenced files activated, returning object to client.');
+					return api.success(res, game.toDetailed(), 201);
 
-						}, 'Error activating files for game "%s": %s'));
-					}, 'Error saving game with id "%s": %s'));
-				} else {
-					logger.warn('[api|game:create] Game <%s> already in database, aborting.', newGame.email);
-					return api.fail(res, 'Game "' + newGame.id + '" already exists.', 409);
-				}
-			}, 'Error finding game with id "%s": %s'));
+				}, 'Error activating files for game "%s": %s'));
+			}, 'Error saving game with id "%s": %s'));
 		});
 	});
 };

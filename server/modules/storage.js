@@ -177,6 +177,10 @@ Storage.prototype.postprocess = function(file, done) {
 				// process variations
 				async.eachSeries(this.variations[type][file.file_type], function(variation, next) {
 
+					if (!fs.existsSync(file.getPath())) {
+						return next('File "' + file.getPath() + '" gone, has been removed before processing finished.');
+					}
+
 					var filepath = file.getPath(variation.name);
 					var writeStream = fs.createWriteStream(filepath);
 					var handleErr = function(err) {
@@ -249,7 +253,10 @@ Storage.prototype.postprocess = function(file, done) {
 					}
 				}, function(err) {
 					if (err) {
-						logger.error('[storage] Error processing variations: %s', err, {});
+						logger.warn('[storage] Error processing variations: %s', err, {});
+						if (fs.existsSync(file.getPath())) {
+							fs.unlinkSync(file.getPath());
+						}
 						return done(err);
 					}
 					if (subtype !== 'png') {

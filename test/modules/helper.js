@@ -45,10 +45,10 @@ exports.setupUsers = function(request, config, done) {
 				.send(user)
 				.end(function(err, res) {
 					if (err) {
-						return next(err.body ? err.body.error : err);
+						return next(res.body ? res.body.error : err);
 					}
 					if (res.status !== 201) {
-						return next(err.body ? err.body.error : err);
+						return next(res.body ? res.body.error : res.body);
 					}
 
 					user = _.extend(user, res.body);

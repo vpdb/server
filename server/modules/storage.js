@@ -261,8 +261,14 @@ Storage.prototype.postprocess = function(file, done) {
 					var writeStream = fs.createWriteStream(tmppath);
 					writeStream.on('finish', function() {
 						logger.info('[storage] All done, switching images..');
-						fs.unlinkSync(file.getPath());
-						fs.rename(tmppath, file.getPath(), done);
+						if (fs.existsSync(file.getPath())) {
+							fs.unlinkSync(file.getPath());
+						}
+						if (fs.existsSync(tmppath)) {
+							fs.rename(tmppath, file.getPath(), done);
+						} else {
+							done();
+						}
 					});
 
 					var quanter = new PngQuant([128]);

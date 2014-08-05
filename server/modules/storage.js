@@ -101,14 +101,22 @@ Storage.prototype.remove = function(file) {
 	var filePath = file.getPath();
 	if (fs.existsSync(filePath)) {
 		logger.info('[storage] Removing file %s..', filePath);
-		fs.unlinkSync(filePath);
+		try {
+			fs.unlinkSync(filePath);
+		} catch (err) {
+			logger.error('[storage] %s', err);
+		}
 	}
 	if (this.variations[file.getMimeType()] && this.variations[file.getMimeType()][file.file_type]) {
 		_.each(this.variations[file.getMimeType()][file.file_type], function(variation) {
 			filePath = file.getPath(variation.name);
 			if (fs.existsSync(filePath)) {
 				logger.info('[storage] Removing file variation %s..', filePath);
-				fs.unlinkSync(filePath);
+				try {
+					fs.unlinkSync(filePath);
+				} catch (err) {
+					logger.error('[storage] %s', err);
+				}
 			}
 		});
 	}

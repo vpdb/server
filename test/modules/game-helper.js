@@ -3,7 +3,7 @@
 var _ = require('underscore');
 var path = require('path');
 
-var ipdb;
+var ipdb = require(path.resolve(__dirname, '../../data/ipdb.json'));
 
 exports.getGame = function(attrs) {
 	var game = popRandomGame();
@@ -12,18 +12,13 @@ exports.getGame = function(attrs) {
 	} else {
 		game.id = game.title.replace(/[^a-z0-9\s\-]+/gi, '').replace(/\s+/g, '-').toLowerCase();
 	}
+	game.year = game.year || 1900;
+	game.manufacturer = game.manufacturer || 'unknown';
+
 	return attrs ? _.extend(game, attrs) : game;
 };
 
-function getIpdb() {
-	if (!ipdb) {
-		ipdb = require(path.resolve(__dirname, '../../data/ipdb.json'));
-	}
-	return ipdb;
-}
-
 function popRandomGame() {
-	var ipdb = getIpdb();
 	return ipdb.splice(randomInt(ipdb.length), 1)[0];
 }
 

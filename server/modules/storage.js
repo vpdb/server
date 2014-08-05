@@ -246,10 +246,16 @@ Storage.prototype.postprocess = function(file, done) {
 							logger.error('[storage] File "%s" not available anymore, aborting.', file.getPath());
 							return done('File "' + file.getPath() + '" not available anymore, aborting.');
 						}
-						gm(file.getPath()).resize(variation.width, variation.height).stream()
-							.pipe(quanter).on('error', handleErr)
-							.pipe(optimizer).on('error', handleErr)
-							.pipe(writeStream).on('error', handleErr);
+						if (config.vpdb.skipImageOptimizations) {
+							gm(file.getPath()).resize(variation.width, variation.height).stream()
+								.pipe(writeStream).on('error', handleErr);
+						} else {
+							gm(file.getPath()).resize(variation.width, variation.height).stream()
+								.pipe(quanter).on('error', handleErr)
+								.pipe(optimizer).on('error', handleErr)
+								.pipe(writeStream).on('error', handleErr);
+						}
+
 					} else {
 
 						logger.info('[storage] Resizing "%s" for %s %s...', file.name, variation.name, file.file_type);
@@ -286,8 +292,11 @@ Storage.prototype.postprocess = function(file, done) {
 					var optimizer = new OptiPng(['-o7']);
 
 					logger.info('[storage] Optimizing %s "%s"...', file.file_type, file.name);
-					fs.createReadStream(file.getPath()).pipe(quanter).pipe(optimizer).pipe(writeStream);
-
+					if (config.vpdb.skipImageOptimizations) {
+						fs.createReadStream(file.getPath()).pipe(writeStream);
+					} else {
+						fs.createReadStream(file.getPath()).pipe(quanter).pipe(optimizer).pipe(writeStream);
+					}
 				});
 			} else {
 				done();

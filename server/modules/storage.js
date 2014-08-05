@@ -189,6 +189,10 @@ Storage.prototype.postprocess = function(file, done) {
 					writeStream.on('finish', function() {
 						logger.info('[storage] Saved resized image to "%s".', filepath);
 
+						if (!fs.existsSync(filepath)) {
+							return next('File "' + filepath + '" gone, has been removed before processing finished.');
+						}
+
 						// update database with new variation
 						gm(filepath).identify(function(err, value) {
 							if (err) {

@@ -11,6 +11,7 @@ module.exports = {
 		sessionTimeout: 3600000,
 		secret: 'do-not-run-this-config-in-production!',
 		storage: './data/storage-test',
+		skipImageOptimizations: true,
 		quota: {
 			plans: {
 				free:   { credits: 5, per: 'day' },

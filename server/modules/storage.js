@@ -275,6 +275,12 @@ Storage.prototype.postprocess = function(file, done) {
 					}
 
 					// now we're done with the variations, optimize the actual image.
+					if (config.vpdb.skipImageOptimizations) {
+						return;
+					}
+					if (!fs.existsSync(file.getPath())) {
+						return;
+					}
 					var tmppath = file.getPath() + '_tmp';
 					var writeStream = fs.createWriteStream(tmppath);
 					writeStream.on('finish', function() {
@@ -292,14 +298,8 @@ Storage.prototype.postprocess = function(file, done) {
 					var quanter = new PngQuant([128]);
 					var optimizer = new OptiPng(['-o7']);
 
-
-					if (config.vpdb.skipImageOptimizations) {
-						logger.info('[storage] Saving %s "%s"...', file.file_type, file.name);
-						fs.createReadStream(file.getPath()).pipe(writeStream);
-					} else {
-						logger.info('[storage] Optimizing %s "%s"...', file.file_type, file.name);
-						fs.createReadStream(file.getPath()).pipe(quanter).pipe(optimizer).pipe(writeStream);
-					}
+					logger.info('[storage] Optimizing %s "%s"...', file.file_type, file.name);
+					fs.createReadStream(file.getPath()).pipe(quanter).pipe(optimizer).pipe(writeStream);
 				});
 			} else {
 				done();

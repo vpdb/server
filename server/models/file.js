@@ -19,12 +19,12 @@ var fields = {
 	id:           { type: String, required: true, unique: true, 'default': shortId.generate },
 	name:         { type: String, required: 'Filename must be provided.' },
 	bytes:        { type: Number, required: true },
-	mime_type:    { type: String, required: true, enum: { values: _.keys(mimeTypes), message: 'Invalid MIME type. Valid MIME types are: ["' +  _.keys(mimeTypes).join('", "') + '"].' }},
+	mime_type:    { type: String, required: true, 'enum': { values: _.keys(mimeTypes), message: 'Invalid MIME type. Valid MIME types are: ["' +  _.keys(mimeTypes).join('", "') + '"].' }},
 	file_type:    { type: String, required: true }, // TODO make enum
 	metadata:     { type: Schema.Types.Mixed },
 	variations:   { type: Schema.Types.Mixed },
-	is_public:    { type: Boolean, required: true, default: false },
-	is_active:    { type: Boolean, required: true, default: false },
+	is_public:    { type: Boolean, required: true, 'default': false },
+	is_active:    { type: Boolean, required: true, 'default': false },
 	created_at:   { type: Date, required: true },
 	_created_by:  { type: Schema.ObjectId, required: true, ref: 'User' }
 };

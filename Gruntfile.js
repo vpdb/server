@@ -145,7 +145,7 @@ module.exports = function(grunt) {
 
 			// test watch
 			test:        { files: [ 'test/**/*.js'], options: { spawn: true, debounceDelay: 100, atBegin: true },
-			             tasks:   [ 'clean:coverage', 'mkdir:coverage', 'waitServer', 'mochaTest', 'istanbul-middleware:download', 'restart', 'reload' ] }
+			             tasks:   [ 'mkdir:coverage', 'waitServer', 'mochaTest', 'istanbul-middleware:download', 'restart', 'reload' ] }
 		}
 	};
 

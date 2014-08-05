@@ -53,11 +53,13 @@ exports.upload = function(req, res) {
 							api.fail(res, 'Metadata parsing for MIME type "' + file.mime_type +  '" failed. Upload corrupted or weird format?', 400);
 						});
 					}
-					if (metadata) {
-						api.sanitizeObject(metadata);
-						file.metadata = metadata;
+					if (!metadata) {
+						// no need to re-save
+						return api.success(res, file.toDetailed(), 201);
 					}
 
+					api.sanitizeObject(metadata);
+					file.metadata = metadata;
 					file.save(function(err, file) {
 						if (err) {
 							logger.error('[api|file:save] Error saving metadata: %s', err, {});
@@ -68,6 +70,10 @@ exports.upload = function(req, res) {
 					// do this in the background.
 					storage.postprocess(file);
 				});
+			});
+			writeStream.on('error', function(err) {
+				logger.error('[api|file:save] Error saving data: %s', err, {});
+				api.fail(res, 'Error saving data: ' + err, 500);
 			});
 			req.pipe(writeStream);
 		});

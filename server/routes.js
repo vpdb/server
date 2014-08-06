@@ -84,4 +84,9 @@ module.exports = function(app, config, passport) {
 			app.get('/auth/' + ipbConfig.id + '/callback', passport.authenticate(ipbConfig.id, { failureRedirect: '/', successRedirect: '/' }));
 		}
 	});
+
+	// mock route for simulating oauth2 callbacks
+	if (process.env.NODE_ENV !== 'production') {
+		app.post('/auth/mock', ctrl.passportMock(web));
+	}
 };

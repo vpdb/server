@@ -22,7 +22,7 @@ describe('The VPDB `user` API', function() {
 		hlp.cleanup(request, done);
 	});
 
-	it('should display the user profile', function(done) {
+	it('should display the user profile when logged', function(done) {
 		request
 			.get('/api/user')
 			.as('root')

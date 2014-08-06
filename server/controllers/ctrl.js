@@ -183,7 +183,7 @@ exports.appendToken = function(url, res) {
  */
 exports.passport = function(strategy, passport, web) {
 	return function (req, res, next) {
-		passport.authenticate(strategy, function(err, user, info) {
+		passport.authenticate(strategy, function(err, user) {
 			if (err) {
 				return next(err);
 			}
@@ -201,6 +201,20 @@ exports.passport = function(strategy, passport, web) {
 		})(req, res, next);
 	};
 };
+
+exports.passportMock = function(web) {
+	return function(req, res) {
+		require('../passport').updateProfile(req.body.profile.provider, req.body.profile.providerName)(null, null, req.body.profile, function(err, user) {
+			web.index({
+				auth: {
+					redirect: '/',
+					jwt: exports.generateToken(user, new Date())
+				}
+			})(req, res);
+		});
+	};
+};
+
 
 /**
  * Returns the parameter object that is accessible when rendering the views.

@@ -92,7 +92,7 @@ module.exports = function(app, config, passport) {
 	app.use(express.static(path.resolve(__dirname, '../data/assets'), { maxAge: 3600*24*30*1000 }));
 	app.use(asset.middleware());
 
-	// use passport session
+	// initialize passport
 	app.use(passport.initialize());
 
 	// connect flash for flash messages

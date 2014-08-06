@@ -49,6 +49,7 @@ exports.init = function(config, passport) {
 exports.updateProfile = function(strategy, providerName) {
 	var provider = providerName ? providerName : strategy;
 	var logtag = providerName ? strategy + ':' + providerName : strategy;
+
 	return function(accessToken, refreshToken, profile, done) {
 
 		var providerMatch = {};
@@ -63,42 +64,29 @@ exports.updateProfile = function(strategy, providerName) {
 				return done(err);
 			}
 			if (!user) {
-				User.count(function(err, count) {
+
+				var newUser = {
+					provider: provider,
+					name: profile.displayName || profile.username,
+					email: profile.emails[0].value,
+				};
+				// optional data
+				if (profile.photos && profile.photos.length > 0) {
+					newUser.thumb = profile.photos[0].value;
+				}
+				newUser[provider] = profile._json; // save original data to separate field
+
+				User.createUser(newUser, function(err, user, validationErr) {
 					if (err) {
-						logger.error('[passport|%s] Error counting users: %s', logtag, err, {});
 						return done(err);
 					}
-					logger.info('[passport|%s] Saving %s user %s <%s>', logtag, count ? 'new' : 'first', profile.username, profile.emails[0].value);
-
-					var userObj = {
-						name: profile.displayName || profile.username,
-						email: profile.emails[0].value,
-						provider: provider,
-						roles: count ? [ 'member' ] : [ 'root' ],
-						plan: count ? settings.current.vpdb.quota.defaultPlan : 'unlimited',
-						created_at: new Date()
-					};
-
-					// mandatory data
-					user = new User(userObj);
-
-					// save original data to separate field
-					user[provider] = profile._json;
-					//user[provider].id = profile._json.id.toString();
-
-					// optional data
-					if (profile.photos && profile.photos.length > 0) {
-						user.thumb = profile.photos[0].value;
+					if (validationErr) {
+						logger.error('[passport|%s] Validation error for user from "%s". This should not be happening.', logtag, logtag, err);
+						return done('Validation error.');
 					}
-
-					// now save and return
-					user.save(function(err) {
-						if (err) {
-							logger.error('[passport|%s] Error creating user: %s', logtag, err);
-						}
-						return done(err, user);
-					});
+					done(null, user);
 				});
+
 			} else {
 				if (!user[provider]) {
 					logger.info('[passport|%s] Adding profile from %s to user.', logtag, provider, profile.emails[0].value);

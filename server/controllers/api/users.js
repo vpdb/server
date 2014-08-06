@@ -13,44 +13,29 @@ var config = require('../../modules/settings').current;
 
 
 exports.create = function(req, res) {
+	var newUser = _.extend(req.body, {
+		provider: 'local'
+	});
 
-	var newUser = new User(req.body);
-	newUser.provider = 'local';
-	newUser.created_at = new Date();
-	newUser.validate(function(err) {
+	// TODO make sure newUser.email is sane (comes from user directly)
+	User.findOne({ email: newUser.email }, function(err, user) {
 		if (err) {
-			logger.warn('[api|user:create] Validations failed: %s', util.inspect(_.map(err.errors, function(value, key) { return key; })));
-			return api.fail(res, err, 422);
+			logger.error('[api|user:create] Error finding user with email <%s>: %s', newUser.email, err, {});
+			return api.fail(res, err);
 		}
-		logger.info('[api|user:create] Validations passed, checking for existing user.');
-		User.findOne({ email: newUser.email }).exec(function(err, user) {
+		if (user) {
+			logger.warn('[api|user:create] User <%s> already in database, aborting.', newUser.email);
+			return api.fail(res, 'User with email <' + newUser.email + '> already exists.', 409);
+		}
+		User.createUser(newUser, function(err, user, validationErr) {
+			if (validationErr) {
+				logger.warn('[api|user:create] Validations failed: %s', util.inspect(_.map(validationErr.errors, function(value, key) { return key; })));
+				return api.fail(res, validationErr, 422);
+			}
 			if (err) {
-				logger.error('[api|user:create] Error finding user with email <%s>: %s', newUser.email, err, {});
-				return api.fail(res, err);
+				return api.fail(res, err, 500);
 			}
-			if (!user) {
-				// check if it's the first user
-				User.count(function(err, count) {
-					if (err) {
-						logger.error('[api|user:create] Error counting users: %s', err, {});
-						return api.fail(res, err, 500);
-					}
-					newUser.roles = count ? [ 'member' ] : [ 'root' ];
-					newUser.plan = count ? config.vpdb.quota.defaultPlan : 'unlimited';
-					newUser.save(function(err) {
-						if (err) {
-							logger.error('[api|user:create] Error saving user <%s>: %s', newUser.email, err, {});
-							return api.fail(res, err, 500);
-						}
-						logger.info('[api|user:create] %s <%s> successfully created.', count ? 'User' : 'Root user', newUser.email);
-						acl.addUserRoles(newUser.email, newUser.roles);
-						return api.success(res, newUser.toDetailed(), 201);
-					});
-				});
-			} else {
-				logger.warn('[api|user:create] User <%s> already in database, aborting.', newUser.email);
-				return api.fail(res, 'User with email "' + newUser.email + '" already exists.', 409);
-			}
+			return api.success(res, user, 201);
 		});
 	});
 };

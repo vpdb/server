@@ -216,6 +216,48 @@ UserSchema.methods.toDetailed = function() {
 
 
 //-----------------------------------------------------------------------------
+// STATIC METHODS
+//-----------------------------------------------------------------------------
+
+UserSchema.statics.createUser = function(userObj, done) {
+	var User = mongoose.model('User');
+	var user = new User(_.extend(userObj, {
+		created_at: new Date()
+	}));
+
+	user.validate(function(err) {
+		if (err) {
+			return done(null, null, err);
+		}
+		User.count(function(err, count) {
+			if (err) {
+				logger.error('[model|user] Error counting users: %s', err, {});
+				return done(err);
+			}
+
+			user.roles = count ? [ 'member' ] : [ 'root' ];
+			user.plan = count ? config.vpdb.quota.defaultPlan : 'unlimited';
+
+			user.save(function(err) {
+				if (err) {
+					logger.error('[model|user] Error saving user <%s>: %s', user.email, err, {});
+					return done(err);
+				}
+				require('../acl').addUserRoles(user.email, user.roles, function(err) {
+					if (err) {
+						logger.error('[model|user] Error updating ACLs for <%s>: %s', user.email, err, {});
+						return done(err);
+					}
+					logger.info('[model|user] %s <%s> successfully created.', count ? 'User' : 'Root user', user.email);
+					done(null, user);
+				});
+			});
+		});
+	});
+};
+
+
+//-----------------------------------------------------------------------------
 // OPTIONS
 //-----------------------------------------------------------------------------
 UserSchema.set('toObject', { virtuals: true });

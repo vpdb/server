@@ -80,8 +80,8 @@ module.exports = function(app, config, passport) {
 	}
 	_.each(config.vpdb.passport.ipboard, function(ipbConfig) {
 		if (ipbConfig.enabled) {
-			app.get('/auth/' + ipbConfig.id, passport.authenticate(ipbConfig.id, { failureRedirect: '/' }));
-			app.get('/auth/' + ipbConfig.id + '/callback', passport.authenticate(ipbConfig.id, { failureRedirect: '/', successRedirect: '/' }));
+			app.get('/auth/' + ipbConfig.id, passport.authenticate(ipbConfig.id, { failureRedirect: '/', session: false }));
+			app.get('/auth/' + ipbConfig.id + '/callback', ctrl.passport(ipbConfig.id, passport, web));
 		}
 	});
 

@@ -33,7 +33,7 @@ exports.init = function(config, passport) {
 		if (ipbConfig.enabled) {
 
 			var callbackUrl = settings.publicUrl(config) + '/auth/' +  ipbConfig.id + '/callback';
-			logger.info('[passport|ipboard:' + ipbConfig.id + '] Enabling IP.Board authentication strategy for "%s".', ipbConfig.name);
+			logger.info('[passport|ipboard:' + ipbConfig.id + '] Enabling IP.Board authentication strategy for "%s" at %s.', ipbConfig.name, ipbConfig.baseURL);
 			passport.use(new IPBoardStrategy({
 					name: ipbConfig.id,
 					baseURL: ipbConfig.baseURL,
@@ -52,6 +52,7 @@ exports.updateProfile = function(strategy, providerName) {
 
 	return function(accessToken, refreshToken, profile, done) {
 
+		console.log(profile);
 		var providerMatch = {};
 		providerMatch[provider + '.id'] = profile.id;
 		var condition = [providerMatch, {'email': profile.emails[0].value }];
@@ -68,7 +69,7 @@ exports.updateProfile = function(strategy, providerName) {
 				var newUser = {
 					provider: provider,
 					name: profile.displayName || profile.username,
-					email: profile.emails[0].value,
+					email: profile.emails[0].value
 				};
 				// optional data
 				if (profile.photos && profile.photos.length > 0) {

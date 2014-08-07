@@ -3,6 +3,7 @@
 var util = require('util');
 var OAuth2Strategy = require('passport-oauth').OAuth2Strategy;
 var InternalOAuthError = require('passport-oauth').InternalOAuthError;
+var logger = require('winston');
 
 /**
  * `Strategy` constructor.
@@ -53,7 +54,7 @@ function Strategy(options, verify) {
 
 	options.authorizationURL = options.baseURL + '?app=oauth2&module=server&section=authorize';
 	options.tokenURL = options.baseURL + '?app=oauth2&module=server&section=token';
-	options.state = true;
+//	options.state = false;
 	options.customHeaders = options.customHeaders || {};
 
 	if (!options.customHeaders['User-Agent']) {
@@ -89,6 +90,7 @@ util.inherits(Strategy, OAuth2Strategy);
  */
 Strategy.prototype.userProfile = function(accessToken, done) {
 	var that = this;
+	logger.info('[passport-ipboard] Getting profile for user at %s', this._userProfileURL);
 	this._oauth2.get(this._userProfileURL, accessToken, function (err, body, res) {
 		if (err) { return done(new InternalOAuthError('failed to fetch user profile', err)); }
 
@@ -105,7 +107,7 @@ Strategy.prototype.userProfile = function(accessToken, done) {
 				_raw: body,
 				_json: json
 			};
-			if (json.avatar) {
+			if (json.avatar && json.avatar.full && json.avatar.full.height) {
 				profile.photos = [{ value: json.avatar.thumb.url }];
 			}
 

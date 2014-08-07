@@ -156,158 +156,38 @@ Storage.prototype.metadataShort = function(file, metadata) {
 
 Storage.prototype.postprocess = function(file, done) {
 	done = done || function() {};
-	var mime = file.mime_type.split('/');
-	var type = mime[0];
-	var subtype = mime[1];
-
+	var type = file.getMimeType();
 	var that = this;
-	var File = require('mongoose').model('File');
-	var PngQuant = require('pngquant');
-	var OptiPng = require('optipng');
 
+	var postprocessor;
 	switch(type) {
 		case 'image':
-			if (this.variations[type][file.file_type]) {
-
-				// mark all variations of being processed.
-				_.each(this.variations[type][file.file_type], function(variation, next) {
-					that.emit('postProcessStarted', file, variation);
-				});
-
-				// process variations
-				async.eachSeries(this.variations[type][file.file_type], function(variation, next) {
-
-					if (!fs.existsSync(file.getPath())) {
-						return next('File "' + file.getPath() + '" gone, has been removed before processing finished.');
-					}
-
-					var filepath = file.getPath(variation.name);
-					var writeStream = fs.createWriteStream(filepath);
-					var handleErr = function(err) {
-						next(err);
-					};
-					writeStream.on('finish', function() {
-						logger.info('[storage] Saved resized image to "%s".', filepath);
-
-						if (!fs.existsSync(filepath)) {
-							return next('File "' + filepath + '" gone, has been removed before processing finished.');
-						}
-
-						// update database with new variation
-						gm(filepath).identify(function(err, value) {
-							if (err) {
-								logger.warn('[storage] Error reading metadata from image: %s', err);
-								return next();
-							}
-
-							// re-fetch so we're sure no updates are lost
-							var fileId = file.id;
-							File.findById(file._id, function(err, file) {
-								if (err) {
-									logger.warn('[storage] Error re-fetching image: %s', err);
-									return next(err);
-								}
-
-								// check that file hasn't been erased meanwhile (hello, tests!)
-								if (!file) {
-									return next('File "' + fileId + '" gone, has been removed before processing finished.');
-								}
-								if (!fs.existsSync(filepath)) {
-									return next('File "' + filepath + '" gone, has been deleted before processing finished.');
-								}
-
-								if (!file.variations) {
-									file.variations = {};
-								}
-
-								file.variations[variation.name] = {
-									bytes: fs.statSync(filepath).size,
-									width: value.size.width,
-									height: value.size.height
-								};
-
-								logger.info('[storage] Updating file "%s" with variation %s.', file.id, variation.name);
-								// change to file.save when fixed: https://github.com/LearnBoost/mongoose/issues/1694
-								File.findOneAndUpdate({ _id: file._id }, _.omit(file.toJSON(), [ '_id', '__v' ]), {}, function(err, f) {
-									that.emit('postProcessFinished', file, variation);
-									next(err);
-								});
-							});
-						});
-					});
-					writeStream.on('error', handleErr);
-
-					if (subtype === 'png') {
-						var quanter = new PngQuant([128]);
-						var optimizer = new OptiPng(['-o7']);
-
-						if (!fs.existsSync(file.getPath())) {
-							logger.error('[storage] File "%s" not available anymore, aborting.', file.getPath());
-							return done('File "' + file.getPath() + '" not available anymore, aborting.');
-						}
-						if (config.vpdb.skipImageOptimizations) {
-							logger.info('[storage] Resizing "%s" for %s %s...', file.name, variation.name, file.file_type);
-							gm(file.getPath()).resize(variation.width, variation.height).stream()
-								.pipe(writeStream).on('error', handleErr);
-						} else {
-							logger.info('[storage] Resizing and optimizing "%s" for %s %s...', file.name, variation.name, file.file_type);
-							gm(file.getPath()).resize(variation.width, variation.height).stream()
-								.pipe(quanter).on('error', handleErr)
-								.pipe(optimizer).on('error', handleErr)
-								.pipe(writeStream).on('error', handleErr);
-						}
-
-					} else {
-
-						logger.info('[storage] Resizing "%s" for %s %s...', file.name, variation.name, file.file_type);
-						gm(file.getPath()).resize(variation.width, variation.height).stream().pipe(writeStream).on('error', handleErr);
-					}
-				}, function(err) {
-					if (err) {
-						logger.warn('[storage] Error processing variations: %s', err, {});
-						if (fs.existsSync(file.getPath())) {
-							fs.unlinkSync(file.getPath());
-						}
-						return done(err);
-					}
-					if (subtype !== 'png') {
-						return done();
-					}
-
-					// now we're done with the variations, optimize the actual image.
-					if (config.vpdb.skipImageOptimizations) {
-						return;
-					}
-					if (!fs.existsSync(file.getPath())) {
-						return;
-					}
-					var tmppath = file.getPath() + '_tmp';
-					var writeStream = fs.createWriteStream(tmppath);
-					writeStream.on('finish', function() {
-						logger.info('[storage] All done, switching images..');
-						if (fs.existsSync(file.getPath())) {
-							fs.unlinkSync(file.getPath());
-						}
-						if (fs.existsSync(tmppath)) {
-							fs.rename(tmppath, file.getPath(), done);
-						} else {
-							done();
-						}
-					});
-
-					var quanter = new PngQuant([128]);
-					var optimizer = new OptiPng(['-o7']);
-
-					logger.info('[storage] Optimizing %s "%s"...', file.file_type, file.name);
-					fs.createReadStream(file.getPath()).pipe(quanter).pipe(optimizer).pipe(writeStream);
-				});
-			} else {
-				done();
-			}
+			postprocessor = require('./storage/pp-image');
 			break;
 		default:
-			done();
+			postprocessor = null;
 	}
+	if (!postprocessor) {
+		return done();
+	}
+	var tasks = [];
+
+	// prepare variation processing
+	if (this.variations[type][file.file_type]) {
+		_.each(this.variations[type][file.file_type], function(variation) {
+			tasks.push(function(next) {
+				postprocessor.postprocessVariation(that, file, variation, next);
+			});
+		});
+	}
+
+	// add actual file processing
+	tasks.push(function(next) {
+		postprocessor.postprocess(that, file, next);
+	});
+
+	// go!
+	async.parallel(tasks, done);
 };
 
 /**

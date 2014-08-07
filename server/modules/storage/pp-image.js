@@ -1,0 +1,147 @@
+"use strict";
+
+var _ = require('underscore');
+var fs = require('fs');
+var gm = require('gm');
+var logger = require('winston');
+
+var File = require('mongoose').model('File');
+var PngQuant = require('pngquant');
+var OptiPng = require('optipng');
+
+var config = require('../settings').current;
+
+exports.postprocess = function(storage, file, done) {
+
+	if (config.vpdb.skipImageOptimizations) {
+		return done();
+	}
+	if (file.getMimeSubtype() !== 'png') {
+		return done();
+	}
+	if (!fs.existsSync(file.getPath())) {
+		return done();
+	}
+
+	var handleErr = function(err) {
+		done(err);
+	};
+
+	var tmppath = file.getPath() + '_tmp';
+	var writeStream = fs.createWriteStream(tmppath);
+	writeStream.on('finish', function() {
+		logger.info('[storage] All done, switching images..');
+		if (fs.existsSync(file.getPath())) {
+			fs.unlinkSync(file.getPath());
+		}
+		if (fs.existsSync(tmppath)) {
+			fs.rename(tmppath, file.getPath(), done);
+		} else {
+			done();
+		}
+	});
+	writeStream.on('error', handleErr);
+
+	var quanter = new PngQuant([128]);
+	var optimizer = new OptiPng(['-o7']);
+
+	logger.info('[storage] Optimizing %s "%s"...', file.file_type, file.name);
+	fs.createReadStream(file.getPath())
+		.pipe(quanter).on('error', handleErr)
+		.pipe(optimizer).on('error', handleErr)
+		.pipe(writeStream).on('error', handleErr);
+};
+
+
+exports.postprocessVariation = function(storage, file, variation, next) {
+
+	storage.emit('postProcessStarted', file, variation);
+
+	if (!fs.existsSync(file.getPath())) {
+		logger.error('[storage] File "%s" not available anymore, aborting.', file.getPath());
+		return next('File "' + file.getPath() + '" gone, has been removed before processing finished.');
+	}
+
+	var filepath = file.getPath(variation.name);
+	var writeStream = fs.createWriteStream(filepath);
+	var handleErr = function(err) {
+		next(err);
+	};
+	writeStream.on('finish', function() {
+		logger.info('[storage] Saved resized image to "%s".', filepath);
+
+		if (!fs.existsSync(filepath)) {
+			return next('File "' + filepath + '" gone, has been removed before processing finished.');
+		}
+
+		// update database with new variation
+		gm(filepath).identify(function(err, value) {
+			if (err) {
+				logger.warn('[storage] Error reading metadata from image: %s', err);
+				return next();
+			}
+
+			// re-fetch so we're sure no updates are lost
+			var fileId = file.id;
+			File.findById(file._id, function(err, file) {
+				if (err) {
+					logger.warn('[storage] Error re-fetching image: %s', err);
+					return next(err);
+				}
+
+				// check that file hasn't been erased meanwhile (hello, tests!)
+				if (!file) {
+					return next('File "' + fileId + '" gone, has been removed before processing finished.');
+				}
+				if (!fs.existsSync(filepath)) {
+					return next('File "' + filepath + '" gone, has been deleted before processing finished.');
+				}
+
+				if (!file.variations) {
+					file.variations = {};
+				}
+
+				file.variations[variation.name] = {
+					bytes: fs.statSync(filepath).size,
+					width: value.size.width,
+					height: value.size.height
+				};
+
+				logger.info('[storage] Updating file "%s" with variation %s.', file.id, variation.name);
+
+				// change to file.save when fixed: https://github.com/LearnBoost/mongoose/issues/1694
+				File.findOneAndUpdate({ _id: file._id }, _.omit(file.toJSON(), [ '_id', '__v' ]), {}, function(err) {
+					storage.emit('postProcessFinished', file, variation);
+					next(err);
+				});
+			});
+		});
+	});
+	writeStream.on('error', handleErr);
+
+	if (file.getMimeSubtype() === 'png') {
+
+		if (config.vpdb.skipImageOptimizations) {
+			logger.info('[storage] Resizing "%s" for %s %s...', file.name, variation.name, file.file_type);
+			gm(file.getPath()).resize(variation.width, variation.height).stream()
+				.pipe(writeStream).on('error', handleErr);
+
+		} else {
+			var quanter = new PngQuant([128]);
+			var optimizer = new OptiPng(['-o7']);
+
+			logger.info('[storage] Resizing and optimizing "%s" for %s %s...', file.name, variation.name, file.file_type);
+			gm(file.getPath()).resize(variation.width, variation.height).stream()
+				.pipe(quanter).on('error', handleErr)
+				.pipe(optimizer).on('error', handleErr)
+				.pipe(writeStream).on('error', handleErr);
+		}
+
+	} else {
+
+		logger.info('[storage] Resizing "%s" for %s %s...', file.name, variation.name, file.file_type);
+		gm(file.getPath())
+			.resize(variation.width, variation.height).stream()
+			.pipe(writeStream).on('error', handleErr);
+	}
+};

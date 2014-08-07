@@ -141,6 +141,23 @@ exports.teardownUsers = function(request, done) {
 		return deleteUser(name);
 	});
 
+	if (this.doomedUsers) {
+		users = users.concat(_.map(this.doomedUsers, function(userId) {
+			return function(next) {
+				request
+					.del('/api/users/' + userId)
+					.as(superuser)
+					.end(function(err, res) {
+						if (err) {
+							return next(err);
+						}
+						expect(res.status).to.eql(204);
+						next();
+					});
+			};
+		}));
+	}
+
 	async.series(users, function(err) {
 		if (err) {
 			throw new Error(err);
@@ -152,6 +169,7 @@ exports.teardownUsers = function(request, done) {
 			}
 			// reset local list
 			that.users = {};
+			that.doomedUsers = [];
 			done();
 		});
 	});
@@ -185,6 +203,18 @@ exports.doomGame = function(user, gameId) {
 		this.doomedGames[user] = [];
 	}
 	this.doomedGames[user].unshift(gameId);
+};
+
+/**
+ * Marks a user to be cleaned up in teardown. Note that this is only for users
+ * created in tests, the users in the before() method are cleaned automatically.
+ * @param userId ID of the user
+ */
+exports.doomUser = function(userId) {
+	if (!this.doomedUsers) {
+		this.doomedUsers = [];
+	}
+	this.doomedUsers.unshift(userId);
 };
 
 /**

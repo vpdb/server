@@ -11,7 +11,15 @@ superagentTest(request);
 
 describe('The authentication of the VPDB API', function() {
 
-	describe.skip('when authenticating with a third-party site', function() {
+	before(function(done) {
+		hlp.setupUsers(request, {}, done);
+	});
+
+	after(function(done) {
+		hlp.cleanup(request, done);
+	});
+
+	describe('when authenticating with a third-party site', function() {
 
 		it('should return a valid JWT', function(done) {
 			request
@@ -23,7 +31,7 @@ describe('The authentication of the VPDB API', function() {
 						displayName: null,
 						username: 'mockuser',
 						profileUrl: 'https://github.com/mockuser',
-						emails: [ { value: 'mockuser@vpdb.ch' }],
+						emails: [ { value: 'mockuser@vpdb.ch' } ],
 						_raw: '(not mocked)',
 						_json: { not: 'mocked '}
 					}
@@ -32,7 +40,11 @@ describe('The authentication of the VPDB API', function() {
 					hlp.expectStatus(err, res, 200);
 					var auth = JSON.parse(ent.decode(res.text.match(/auth="([^"]+)/)[1]));
 					var authHeader = res.text.match(/auth-header="([^"]+)/)[1];
-					request.get('/api/user').set(authHeader, 'Bearer ' + auth.jwt).end(hlp.status(200, done));
+					request.get('/api/user').set(authHeader, 'Bearer ' + auth.jwt).end(function(err, res) {
+						hlp.expectStatus(err, res, 200);
+						hlp.doomUser(res.body.id);
+						done();
+					});
 				});
 		});
 

@@ -259,7 +259,7 @@ exports.del = function(req, res) {
 			}
 			acl.removeUserRoles(user.email, user.roles);
 			logger.info('[api|user:delete] User <%s> successfully deleted.', user.email);
-			res.send(204);
+			res.status(204).end();
 		});
 	});
 };

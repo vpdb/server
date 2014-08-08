@@ -182,39 +182,45 @@ exports.appendToken = function(url, res) {
  * @returns {Function}
  */
 exports.passport = function(strategy, passport, web) {
-	return function (req, res, next) {
-		passport.authenticate(strategy, function(err, user) {
-			if (err) {
-				return next(err);
-			}
-			if (!user) {
-				// TODO handle error
-				return res.redirect('/');
-			}
-			// don't do a HTTP redirect because we need Angular to read the JWT first
-			web.index({
-				auth: {
-					redirect: '/',
-					jwt: exports.generateToken(user, new Date())
-				}
-			})(req, res);
-		})(req, res, next);
+	return function(req, res, next) {
+		passport.authenticate(strategy, _passportCallback(web, req, res, next))(req, res, next);
 	};
 };
 
+/**
+ * Skips passport authentication and processes the user profile directly.
+ * @param web Web controller
+ * @returns {Function}
+ */
 exports.passportMock = function(web) {
-	return function(req, res) {
-		require('../passport').updateProfile(req.body.profile.provider, req.body.profile.providerName)(null, null, req.body.profile, function(err, user) {
-			web.index({
-				auth: {
-					redirect: '/',
-					jwt: exports.generateToken(user, new Date())
-				}
-			})(req, res);
-		});
+	return function(req, res, next) {
+		var profile = req.body.profile;
+		profile._json = {
+			_yes: 'This mock data and is more complete otherwise.',
+			id: req.body.profile.id
+		};
+		require('../passport').verifyCallbackOAuth(req.body.provider, req.body.providerName)(null, null, profile, _passportCallback(web, req, res, next));
 	};
 };
 
+function _passportCallback(web, req, res, next) {
+	return function(err, user) {
+		if (err) {
+			return next(err);
+		}
+		if (!user) {
+			// TODO handle error
+			return res.redirect('/');
+		}
+		// don't do a HTTP redirect because we need Angular to read the JWT first
+		web.index({
+			auth: {
+				redirect: '/',
+				jwt: exports.generateToken(user, new Date())
+			}
+		})(req, res);
+	};
+}
 
 /**
  * Returns the parameter object that is accessible when rendering the views.

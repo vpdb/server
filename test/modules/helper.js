@@ -10,8 +10,9 @@ var expect = require('expect.js');
 
 var superuser = '__superuser';
 
-exports.game = require('./game-helper');
+exports.auth = require('./auth-helper');
 exports.file = require('./file-helper');
+exports.game = require('./game-helper');
 
 /**
  * Sets up a bunch of users for a given test suite.
@@ -214,7 +215,10 @@ exports.doomUser = function(userId) {
 	if (!this.doomedUsers) {
 		this.doomedUsers = [];
 	}
-	this.doomedUsers.unshift(userId);
+	// only add if not already there.
+	if (!~this.doomedUsers.indexOf(userId)) {
+		this.doomedUsers.unshift(userId);
+	}
 };
 
 /**

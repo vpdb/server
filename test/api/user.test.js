@@ -22,26 +22,36 @@ describe('The VPDB `user` API', function() {
 		hlp.cleanup(request, done);
 	});
 
-	it('should display the user profile when logged', function(done) {
-		request
-			.get('/api/user')
-			.as('root')
-			.end(function(err, res) {
-				hlp.expectStatus(err, res, 200);
-				expect(res.body.email).to.eql(hlp.getUser('root').email);
-				expect(res.body.name).to.eql(hlp.getUser('root').name);
-				done();
-			});
+	describe('when providing a valid authentication token', function() {
+
+		it('should display the user profile', function(done) {
+			request
+				.get('/api/user')
+				.as('root')
+				.end(function(err, res) {
+					hlp.expectStatus(err, res, 200);
+					expect(res.body.email).to.eql(hlp.getUser('root').email);
+					expect(res.body.name).to.eql(hlp.getUser('root').name);
+					done();
+				});
+		});
+
+		it('should return a token refresh header in any API response', function(done) {
+			request
+				.get('/api/ping')
+				.as('admin')
+				.end(function(err, res) {
+					expect(res.headers['x-token-refresh']).not.to.be.empty();
+					done();
+				});
+		});
 	});
 
-	it('should return a token refresh header when user changed', function(done) {
-		request
-			.get('/api/ping')
-			.as('admin')
-			.end(function(err, res) {
-				expect(res.headers['x-token-refresh']).not.to.be.empty();
-				done();
-			});
+
+	describe('when a user changes its password', function() {
+
+		it('should grant authentication with new password');
+		it('should deny authentication with old password');
 	});
 
 });

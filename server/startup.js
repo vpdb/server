@@ -32,6 +32,7 @@ module.exports = function(done) {
 
 				// check if empty
 				Model.count({}, function(err, num) {
+					/* istanbul ignore if  */
 					if (err) {
 						return next(err);
 					}

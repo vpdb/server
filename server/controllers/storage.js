@@ -73,6 +73,7 @@ var serve = function(req, res, file, variationName) {
 exports.get = function(req, res) {
 
 	File.findOne({ id: req.params.id }, function(err, file) {
+		/* istanbul ignore if  */
 		if (err) {
 			logger.error('[ctrl|storage] Error getting file "%s": %s', req.params.id, err, {});
 			return res.status(500).end();
@@ -96,6 +97,7 @@ exports.get = function(req, res) {
 
 				// otherwise, check acl
 				acl.isAllowed(req.user.email, 'files', 'download', function(err, granted) {
+					/* istanbul ignore if  */
 					if (err) {
 						logger.error('[ctrl|storage] Error checking ACLs for <%s>: %s', req.user.email, err, {});
 						return res.status(500).end();
@@ -111,6 +113,7 @@ exports.get = function(req, res) {
 
 					// and the quota
 					quota.isAllowed(req, res, file, function(err, granted) {
+						/* istanbul ignore if  */
 						if (err) {
 							logger.error('[ctrl|storage] Error checking quota for <%s>: %s', req.user.email, err, {});
 							return res.status(500).end();

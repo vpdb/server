@@ -82,6 +82,7 @@ exports.auth = function(resource, permission, done) {
 
 		// here we're authenticated (token is valid and not expired). So update user and check ACL if necessary
 		User.findOne({ id: decoded.iss }, '-__v', function(err, user) {
+			/* istanbul ignore if  */
 			if (err) {
 				logger.error('[ctrl|auth] Error finding user %s: %s', decoded.iss, err);
 				return deny({ code: 500, message: err });
@@ -104,11 +105,13 @@ exports.auth = function(resource, permission, done) {
 			}
 
 			var checkACLs = function(err) {
+				/* istanbul ignore if  */
 				if (err) {
 					logger.warn('[ctrl|auth] Error deleting dirty key from redis: %s', err);
 				}
 				if (resource && permission) {
 					acl.isAllowed(user.email, resource, permission, function(err, granted) {
+						/* istanbul ignore if  */
 						if (err) {
 							logger.error('[ctrl|auth] Error checking ACLs for user <%s>: %s', user.email, err);
 							return deny({ code: 500, message: err });
@@ -127,16 +130,18 @@ exports.auth = function(resource, permission, done) {
 
 			// set dirty header if necessary
 			redis.get('dirty_user_' + user.id, function(err, result) {
+				/* istanbul ignore if  */
 				if (err) {
 					logger.warn('[ctrl|auth] Error checking if user <%s> is dirty: %s', user.email, err);
-				} else if (result) {
+					return;
+				}
+				if (result) {
 					logger.info('[ctrl|auth] User <%s> is dirty, telling him in header.', user.email);
 					res.setHeader('X-User-Dirty', result);
-					redis.del('dirty_user_' + user.id, checkACLs);
-				} else {
-					res.setHeader('X-User-Dirty', 0);
-					checkACLs();
+					return redis.del('dirty_user_' + user.id, checkACLs);
 				}
+				res.setHeader('X-User-Dirty', 0);
+				checkACLs();
 			});
 		});
 	};

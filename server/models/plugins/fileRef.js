@@ -40,6 +40,7 @@ module.exports = exports = function(schema, options) {
 
 		// find files with submitted shortIds
 		File.find({ id: { $in: shortIds }}, function(err, files) {
+			/* istanbul ignore if  */
 			if (err) {
 				logger.error('[model] Error finding referenced files: %s', err);
 				return callback(err);
@@ -87,6 +88,7 @@ module.exports = exports = function(schema, options) {
 				return callback(true);
 			}
 			mongoose.model('File').findOne({ _id: fileId }, function(err, file) {
+				/* istanbul ignore if  */
 				if (err) {
 					logger.error('[model] Error fetching file "%s".', fileId);
 					return callback(true);
@@ -128,6 +130,7 @@ module.exports = exports = function(schema, options) {
 			}
 		});
 		File.find({ _id: { $in: ids }}, function(err, files) {
+			/* istanbul ignore if  */
 			if (err) {
 				logger.error('[model] Error finding referenced files: %s', err);
 				return done(err);

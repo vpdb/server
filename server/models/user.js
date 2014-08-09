@@ -230,6 +230,7 @@ UserSchema.statics.createUser = function(userObj, done) {
 			return done(null, null, err);
 		}
 		User.count(function(err, count) {
+			/* istanbul ignore if  */
 			if (err) {
 				logger.error('[model|user] Error counting users: %s', err, {});
 				return done(err);
@@ -239,11 +240,13 @@ UserSchema.statics.createUser = function(userObj, done) {
 			user.plan = count ? config.vpdb.quota.defaultPlan : 'unlimited';
 
 			user.save(function(err) {
+				/* istanbul ignore if  */
 				if (err) {
 					logger.error('[model|user] Error saving user <%s>: %s', user.email, err, {});
 					return done(err);
 				}
 				require('../acl').addUserRoles(user.email, user.roles, function(err) {
+					/* istanbul ignore if  */
 					if (err) {
 						logger.error('[model|user] Error updating ACLs for <%s>: %s', user.email, err, {});
 						return done(err);

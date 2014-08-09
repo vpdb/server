@@ -19,6 +19,7 @@ exports.create = function(req, res) {
 
 	// TODO make sure newUser.email is sane (comes from user directly)
 	User.findOne({ email: newUser.email }, function(err, user) {
+		/* istanbul ignore if  */
 		if (err) {
 			logger.error('[api|user:create] Error finding user with email <%s>: %s', newUser.email, err, {});
 			return api.fail(res, err);
@@ -32,6 +33,7 @@ exports.create = function(req, res) {
 				logger.warn('[api|user:create] Validations failed: %s', util.inspect(_.map(validationErr.errors, function(value, key) { return key; })));
 				return api.fail(res, validationErr, 422);
 			}
+			/* istanbul ignore if  */
 			if (err) {
 				return api.fail(res, err, 500);
 			}
@@ -47,6 +49,7 @@ exports.authenticate = function(req, res) {
 		return api.fail(res, 'You must supply a username and password.', 400);
 	}
 	User.findOne({ username: req.body.username }, function(err, user) {
+		/* istanbul ignore if  */
 		if (err) {
 			logger.error('[api|user:authenticate] Error finding user "%s": %s', req.body.username, err, {});
 			return api.fail(res, err, 500);
@@ -66,6 +69,7 @@ exports.authenticate = function(req, res) {
 
 		logger.info('[api|user:authenticate] User <%s> successfully authenticated.', user.email);
 		getACLs(user, function(err, acls) {
+			/* istanbul ignore if  */
 			if (err) {
 				return api.fail(res, err, 500);
 			}
@@ -83,6 +87,7 @@ exports.list = function(req, res) {
 	acl.isAllowed(req.user.email, 'users', 'list', function(err, canList) {
 		acl.isAllowed(req.user.email, 'users', 'full-details', function(err, fullDetails) {
 
+			/* istanbul ignore if  */
 			if (err) {
 				return api.fail(res, err, 500);
 			}
@@ -121,6 +126,7 @@ exports.list = function(req, res) {
 			}
 
 			query.exec(function(err, users) {
+				/* istanbul ignore if  */
 				if (err) {
 					logger.error('[api|user:list] Error: %s', err, {});
 					return api.fail(res, err, 500);
@@ -150,6 +156,7 @@ exports.update = function(req, res) {
 
 	var updateableFields = [ 'name', 'email', 'username', 'is_active', 'roles' ];
 	User.findOne({ id: req.params.id }, function(err, user) {
+		/* istanbul ignore if  */
 		if (err) {
 			logger.error('[api|user:update] Error: %s', err, {});
 			return api.fail(res, err, 500);
@@ -203,6 +210,7 @@ exports.update = function(req, res) {
 
 			// 4. save
 			user.save(function(err) {
+				/* istanbul ignore if  */
 				if (err) {
 					logger.error('[api|user:update] Error updating user <%s>: %s', updatedUser.email, err, {});
 					return api.fail(res, err, 500);
@@ -245,6 +253,7 @@ exports.update = function(req, res) {
 exports.del = function(req, res) {
 
 	User.findOne({ id: req.params.id }, function(err, user) {
+		/* istanbul ignore if  */
 		if (err) {
 			logger.error('[api|user:delete] Error finding user "%s": %s', req.params.id, err, {});
 			return api.fail(res, err, 500);
@@ -253,6 +262,7 @@ exports.del = function(req, res) {
 			return api.fail(res, 'No such user.', 404);
 		}
 		user.remove(function(err) {
+			/* istanbul ignore if  */
 			if (err) {
 				logger.error('[api|user:delete] Error deleting user <%s>: %s', user.email, err, {});
 				return api.fail(res, err, 500);

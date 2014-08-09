@@ -50,6 +50,7 @@ var init = function(next) {
 	// apply to all users
 	.then(function() {
 		User.find({}, function(err, users) {
+			/* istanbul ignore if  */
 			if (err) {
 				logger.error('[acl] Error finding users for ACLs: ', err);
 				return next(err);

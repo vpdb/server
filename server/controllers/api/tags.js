@@ -17,6 +17,7 @@ exports.list = function(req, res) {
 		q = { is_active: true };
 	}
 	Tag.find(q, function(err, tags) {
+		/* istanbul ignore if  */
 		if (err) {
 			logger.error('[api|tag:list] Error: %s', err, {});
 			return api.fail(res, err, 500);
@@ -45,6 +46,7 @@ exports.create = function(req, res) {
 			return api.fail(res, err, 422);
 		}
 		newTag.save(function(err) {
+			/* istanbul ignore if  */
 			if (err) {
 				logger.error('[api|tag:create] Error saving tag "%s": %s', newTag.name, err, {});
 				return api.fail(res, err, 500);

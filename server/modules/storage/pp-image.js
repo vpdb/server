@@ -84,6 +84,7 @@ exports.postprocessVariation = function(storage, file, variation, next) {
 			// re-fetch so we're sure no updates are lost
 			var fileId = file.id;
 			File.findById(file._id, function(err, file) {
+				/* istanbul ignore if  */
 				if (err) {
 					logger.warn('[storage] Error re-fetching image: %s', err);
 					return next(err);

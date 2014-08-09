@@ -105,6 +105,7 @@ GameSchema.path('game_type').validate(function(gameType, callback) {
 	var that = this;
 	if (this.game_type !== 'og') {
 		mongoose.model('Game').findOne({ 'ipdb.number': ipdb }, function(err, g) {
+			/* istanbul ignore if  */
 			if (err) {
 				logger.error('[model|game] Error fetching game %s.');
 				return callback(false);
@@ -122,6 +123,7 @@ GameSchema.path('_media.backglass').validate(function(backglass, callback) {
 		return;
 	}
 	mongoose.model('File').findOne({ _id: backglass }, function(err, backglass) {
+		/* istanbul ignore if  */
 		if (err) {
 			logger.error('[model|game] Error fetching backglass %s.');
 			return callback(false);
@@ -156,6 +158,7 @@ GameSchema.pre('remove', function(next) {
 	var removeFile = function(ref) {
 		return function(next) {
 			var remove = function(err, file) {
+				/* istanbul ignore if  */
 				if (err) {
 					return next(err);
 				}

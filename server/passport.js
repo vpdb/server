@@ -138,6 +138,7 @@ exports.verifyCallbackOAuth = function(strategy, providerName) {
 				newUser[provider] = profile._json; // save original data to separate field
 
 				User.createUser(newUser, function(err, user, validationErr) {
+					/* istanbul ignore if  */
 					if (err) {
 						return done(err);
 					}

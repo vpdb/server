@@ -17,6 +17,7 @@ exports.list = function(req, res) {
 		q = { is_active: true };
 	}
 	VPBuild.find(q, function(err, vpbuilds) {
+		/* istanbul ignore if  */
 		if (err) {
 			logger.error('[api|vpbuild:list] Error: %s', err, {});
 			return api.fail(res, err, 500);
@@ -46,6 +47,7 @@ exports.create = function(req, res) {
 			return api.fail(res, err, 422);
 		}
 		newBuild.save(function(err) {
+			/* istanbul ignore if  */
 			if (err) {
 				logger.error('[api|vpbuild:create] Error saving vpbuild "%s": %s', newBuild.name, err, {});
 				return api.fail(res, err, 500);

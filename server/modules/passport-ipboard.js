@@ -92,7 +92,9 @@ Strategy.prototype.userProfile = function(accessToken, done) {
 	var that = this;
 	logger.info('[passport-ipboard] Getting profile for user at %s', this._userProfileURL);
 	this._oauth2.get(this._userProfileURL, accessToken, function (err, body, res) {
-		if (err) { return done(new InternalOAuthError('failed to fetch user profile', err)); }
+		if (err) {
+			return done(new InternalOAuthError('failed to fetch user profile', err));
+		}
 
 		try {
 			var json = JSON.parse(body);

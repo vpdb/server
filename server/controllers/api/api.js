@@ -118,6 +118,7 @@ exports.handleParseError = function(err, req, res, next) {
 exports.ok = function(type, action, ref, res, rollback) {
 	return function(successFct, message) {
 		return function(err, result) {
+			/* istanbul ignore if */
 			if (err) {
 				logger.error('[api|%s:%s] ' + message, type, action, ref, err, {});
 				if (rollback) {

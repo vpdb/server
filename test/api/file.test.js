@@ -142,30 +142,6 @@ describe('The VPDB `file` API', function() {
 
 	describe('after successfully uploading a file', function() {
 
-		it('should be able to retrieve the file', function(done) {
-			var text = "should be able to retrieve the file";
-			request
-				.post('/api/files')
-				.query({ type: 'mooh' })
-				.as('member')
-				.type('text/plain')
-				.set('Content-Disposition', 'attachment; filename="text.txt"')
-				.send(text)
-				.end(function(err, res) {
-					hlp.expectStatus(err, res, 201);
-					hlp.doomFile('member', res.body.id);
-					expect(res.body.url).to.be.ok();
-					request
-						.get(res.body.url)
-						.as('member')
-						.end(function(err, res) {
-							hlp.expectStatus(err, res, 200);
-							expect(res.text).to.be(text);
-							done();
-						});
-				});
-		});
-
 		it('should be able to retrieve the file details', function(done) {
 			var fileType = 'mooh';
 			var mimeType = 'text/plain';
@@ -193,6 +169,8 @@ describe('The VPDB `file` API', function() {
 						});
 				});
 		});
+
+		it('should contain the links of the variations in the response of the file upload');
 
 		it('should fail to retrieve the file details as anonymous', function(done) {
 			request
@@ -223,22 +201,6 @@ describe('The VPDB `file` API', function() {
 					hlp.doomFile('member', res.body.id);
 					expect(res.body.url).to.be.ok();
 					request.get('/api/files/' + res.body.id).as('anothermember').end(hlp.status(403, 'is inactive', done));
-				});
-		});
-
-		it('should fail when trying to retrieve the file as a different user', function(done) {
-			request
-				.post('/api/files')
-				.query({ type: 'mooh' })
-				.as('member')
-				.type('text/plain')
-				.set('Content-Disposition', 'attachment; filename="text.txt"')
-				.send('should fail when trying to retrieve the file as a different user')
-				.end(function(err, res) {
-					hlp.expectStatus(err, res, 201);
-					hlp.doomFile('member', res.body.id);
-					expect(res.body.url).to.be.ok();
-					request.get(res.body.url).as('anothermember').end(hlp.status(403, done));
 				});
 		});
 

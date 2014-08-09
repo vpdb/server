@@ -89,7 +89,7 @@ exports.auth = function(resource, permission, done) {
 			}
 			if (!user) {
 				logger.error('[ctrl|auth] No user with ID %s found.', decoded.iss);
-				return deny({ code: 500, message: 'No user with ID ' + decoded.iss + ' found.' });
+				return deny({ code: 403, message: 'No user with ID ' + decoded.iss + ' found.' });
 			}
 
 

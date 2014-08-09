@@ -10,9 +10,11 @@ var storage = require('../../modules/storage');
 
 module.exports = exports = function(schema, options) {
 
+	/* istanbul ignore if  */
 	if (!options || !options.model) {
 		throw new Error('Fileref plugin needs model. Please provide.');
 	}
+	/* istanbul ignore if  */
 	if (!options.fields || !_.isArray(options.fields)) {
 		throw new Error('Fileref plugin needs file reference fields. Please provide.');
 	}
@@ -149,6 +151,7 @@ module.exports = exports = function(schema, options) {
 				file.is_public = publc;
 				file.save(next);
 			}, function(err) {
+				/* istanbul ignore if  */
 				if (err) {
 					return done(err);
 				}
@@ -173,6 +176,7 @@ module.exports = exports = function(schema, options) {
 			}
 		});
 		File.find({ _id: { $in: ids }}, function(err, files) {
+			/* istanbul ignore if  */
 			if (err) {
 				logger.error('[model] Error finding referenced files: %s', err);
 				return done(err);

@@ -14,8 +14,8 @@ var expressCompression = require('compression');
 var expressErrorhandler = require('errorhandler');
 
 // TODO re-enable
-var domainError = require('express-domain-errors');
-var gracefulExit = require('express-graceful-exit');
+//var domainError = require('express-domain-errors');
+//var gracefulExit = require('express-graceful-exit');
 
 var writeable = require('./modules/writeable');
 var asset = require('./middleware/asset');
@@ -29,6 +29,7 @@ module.exports = function(app, config, passport) {
 
 	logger.info('[express] Setting up Express for running %s in %s mode.', runningLocal ? 'locally' : 'remotely', runningDev ? 'development' : 'production');
 
+	/* istanbul ignore if  */
 	if (!process.env.PORT) {
 		throw new Error('Environment variable `PORT` not found, server cannot start on unknown port.');
 	}
@@ -41,6 +42,7 @@ module.exports = function(app, config, passport) {
 	app.set('showStackError', runningDev);
 	app.disable('x-powered-by');
 
+	/* istanbul ignore if  */
 	// add reverse proxy config for non-local
 	if (!runningLocal) {
 		app.enable('trust proxy');
@@ -50,6 +52,7 @@ module.exports = function(app, config, passport) {
 		gracefulExit.gracefulExitHandler(app);
 	}));*/
 
+	/* istanbul ignore if  */
 	// log to file if env APP_ACCESS_LOG is set
 	if (process.env.APP_ACCESS_LOG) {
 		app.use(expressWinston.logger({
@@ -116,6 +119,7 @@ module.exports = function(app, config, passport) {
 		]
 	}));
 
+	/* istanbul ignore if  */
 	// production only
 	if (!runningDev) {
 		http.globalAgent.maxSockets = 500; // set this high, if you use httpClient or request anywhere (defaults to 5)
@@ -130,6 +134,7 @@ module.exports = function(app, config, passport) {
 	if (runningLocal) {
 		// kill switch for CI
 		logger.warn('[express] Enabling kill switch for continueous integration.');
+		/* istanbul ignore next  */
 		app.post('/kill', function(req, res) {
 			res.status(200).end();
 			process.exit(0);
@@ -163,8 +168,8 @@ module.exports = function(app, config, passport) {
 	app.use(ctrl.renderError(404, 'Not found.'));
 };
 
-function sendOfflineMsg() {
-	if (process.send) {
-		process.send('offline');
-	}
-}
+//function sendOfflineMsg() {
+//	if (process.send) {
+//		process.send('offline');
+//	}
+//}

@@ -22,6 +22,7 @@ module.exports = {
 		host: function(host) {
 			var validIp = !/^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$/.test(host);
 			var validHost = /^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$/.test(host);
+			/* istanbul ignore if */
 			if (!validIp && !validHost) {
 				return 'Must be a valid host or IP address';
 			}
@@ -32,6 +33,7 @@ module.exports = {
 		 * the app listens, for that set the PORT environment variable.
 		 */
 		port: function(port) {
+			/* istanbul ignore if */
 			if (!parseInt(port) || parseInt(port) > 65535 || parseInt(port) < 1) {
 				return 'Port must be an integer between 1 and 65535';
 			}
@@ -41,6 +43,7 @@ module.exports = {
 		 * Database configuration. Must point to a MongoDB schema.
 		 */
 		db: function(db) {
+			/* istanbul ignore if */
 			if (!/mongodb:\/\/[^\/]+\/[a-z0-9]+/i.test(db)) {
 				return 'Database must fit the scheme "mongodb://<host>/<db-name>"';
 			}
@@ -51,6 +54,7 @@ module.exports = {
 		 * to enable HTTPS!
 		 */
 		httpsEnabled: function(httpsEnabled) {
+			/* istanbul ignore if */
 			if (!_.isBoolean(httpsEnabled)) {
 				return 'Must be a boolean value';
 			}
@@ -60,6 +64,7 @@ module.exports = {
 		 * Session timeout in milliseconds.
 		 */
 		sessionTimeout: function(timeout) {
+			/* istanbul ignore if */
 			if (!parseInt(timeout) || parseInt(timeout) < 1) {
 				return 'Session timeout must be a number greater than 0';
 			}
@@ -70,9 +75,11 @@ module.exports = {
 		 * @important
 		 */
 		secret: function(secret) {
+			/* istanbul ignore if */
 			if (secret.length < 10) {
 				return 'Your secret must be longer than 10 characters. Please use a generator, e.g. http://strongpasswordgenerator.com/';
 			}
+			/* istanbul ignore if */
 			if (secret === 'alongsecret') {
 				return 'You\'re using the default secret. Please use a generator, e.g. http://strongpasswordgenerator.com/';
 			}
@@ -83,10 +90,11 @@ module.exports = {
 		 * @important
 		 */
 		storage: function(path) {
+			/* istanbul ignore if */
 			if (!fs.existsSync(path)) {
 				return 'Storage path does not exist. Please point it to an existing folder or create the mentioned path';
 			}
-
+			/* istanbul ignore if */
 			if (!fs.lstatSync(path).isDirectory()) {
 				return 'Storage path is not a folder. Please make it point to a folder';
 			}
@@ -99,6 +107,7 @@ module.exports = {
 		quota: {
 			plans: function(plans) {
 				var durations = ['minute', 'hour', 'day', 'week'];
+				/* istanbul ignore if */
 				if (_.keys(plans).length < 1) {
 					return 'Quota plans must contain at least one plan.';
 				}
@@ -108,6 +117,7 @@ module.exports = {
 					if (plans.hasOwnProperty(key)) {
 						plan = plans[key];
 						if (plan.unlimited !== true) {
+							/* istanbul ignore if */
 							if (!_.contains(durations, plan.per)) {
 								errors.push({
 									path: key + '.per',
@@ -115,6 +125,7 @@ module.exports = {
 									setting: plan.per
 								});
 							}
+							/* istanbul ignore if */
 							if (!_.isNumber(parseInt(plan.credits)) || parseInt(plan.credits) < 0) {
 								errors.push({
 									path: key + '.credits',
@@ -125,12 +136,14 @@ module.exports = {
 						}
 					}
 				}
+				/* istanbul ignore if */
 				if (errors.length > 0) {
 					return errors;
 				}
 			},
 
 			defaultPlan: function(defaultPlan, settings) {
+				/* istanbul ignore if */
 				if (!settings.vpdb.quota.plans[defaultPlan]) {
 					return 'Default plan must exist in the "vpdb.quota.plans" setting.';
 				}
@@ -141,6 +154,7 @@ module.exports = {
 				for (var mimeType in costs) {
 					if (costs.hasOwnProperty(mimeType)) {
 						cost = costs[mimeType];
+						/* istanbul ignore if */
 						if (!_.contains(_.keys(mimeTypes), mimeType)) {
 							errors.push({
 								path: mimeType,
@@ -148,6 +162,7 @@ module.exports = {
 								setting: mimeType
 							});
 						}
+						/* istanbul ignore if */
 						if (!_.isNumber(parseInt(cost)) || parseInt(cost) < 0) {
 							errors.push({
 								path: mimeType,
@@ -157,6 +172,7 @@ module.exports = {
 						}
 					}
 				}
+				/* istanbul ignore if */
 				if (errors.length > 0) {
 					return errors;
 				}
@@ -178,6 +194,7 @@ module.exports = {
 				 * Set false to disable.
 				 */
 				enabled: function(isEnabled) {
+					/* istanbul ignore if */
 					if (!_.isBoolean(isEnabled)) {
 						return 'Enabled flag must be either true or false';
 					}
@@ -187,12 +204,15 @@ module.exports = {
 				 * The client ID of the generated application.
 				 */
 				clientID: function(id, settings) {
+					/* istanbul ignore if */
 					if (!settings.vpdb.passport.enabled) {
 						return;
 					}
+					/* istanbul ignore if */
 					if (id.length === 0) {
 						return 'Your client ID must be longer than 0 characters. Please consult https://github.com/settings/applications/ in order to obtain GitHub\'s client ID';
 					}
+					/* istanbul ignore if */
 					if (id === 'CLIENT_ID') {
 						return 'You\'re using the default client ID. Please consult https://github.com/settings/applications/ in order to obtain GitHub\'s client ID';
 					}
@@ -202,12 +222,15 @@ module.exports = {
 				 * The client secret of the generated application.
 				 */
 				clientSecret: function(secret, settings) {
+					/* istanbul ignore if */
 					if (!settings.vpdb.passport.enabled) {
 						return;
 					}
+					/* istanbul ignore if */
 					if (secret.length === 0) {
 						return 'Your client secret must be longer than 0 characters. Please consult https://github.com/settings/applications/ in order to obtain GitHub\'s client secret';
 					}
+					/* istanbul ignore if */
 					if (secret === 'CLIENT_SECRET') {
 						return 'You\'re using the default client secret. Please consult https://github.com/settings/applications/ in order to obtain GitHub\'s client secret';
 					}
@@ -224,6 +247,7 @@ module.exports = {
 				 * Set false to disable.
 				 */
 				enabled: function(isEnabled) {
+					/* istanbul ignore if */
 					if (!_.isBoolean(isEnabled)) {
 						return 'Enabled flag must be either true or false';
 					}
@@ -233,6 +257,7 @@ module.exports = {
 				 * Must contain only letters from a-z (no spaces or special chars).
 				 */
 				id: function(id) {
+					/* istanbul ignore if */
 					if (!/^[a-z0-9]+$/.test(id)) {
 						return 'ID must be alphanumeric';
 					}
@@ -243,9 +268,11 @@ module.exports = {
 				 */
 				baseURL: function(url) {
 					var urlErr = checkUrl(url);
+					/* istanbul ignore if */
 					if (urlErr) {
 						return urlErr;
 					}
+					/* istanbul ignore if */
 					if (url === 'https://localhost/forums/index.php') {
 						return 'You\'re using the default base URL';
 					}
@@ -255,9 +282,11 @@ module.exports = {
 				 * The client ID of the generated application.
 				 */
 				clientID: function(id) {
+					/* istanbul ignore if */
 					if (id.length === 0) {
 						return 'Your client ID must be longer than 0 characters';
 					}
+					/* istanbul ignore if */
 					if (id === 'CLIENT_ID') {
 						return 'You\'re using the default client ID';
 					}
@@ -267,9 +296,11 @@ module.exports = {
 				 * The client secret of the generated application.
 				 */
 				clientSecret: function(secret) {
+					/* istanbul ignore if */
 					if (secret.length === 0) {
 						return 'Your client secret must be longer than 0 characters';
 					}
+					/* istanbul ignore if */
 					if (secret === 'CLIENT_SECRET') {
 						return 'You\'re using the default client secret';
 					}
@@ -284,10 +315,12 @@ module.exports = {
 		 * @important
 		 */
 		tmp: function(path) {
+			/* istanbul ignore if */
 			if (!fs.existsSync(path)) {
 				return 'Temp path does not exist. Please point it to an existing folder or create the mentioned path';
 			}
 
+			/* istanbul ignore if */
 			if (!fs.lstatSync(path).isDirectory()) {
 				return 'Temp path is not a folder. Please make it point to a folder';
 			}
@@ -299,6 +332,7 @@ module.exports = {
 		 * different name for the authorization header.
 		 */
 		authorizationHeader: function(header) {
+			/* istanbul ignore if */
 			if (header.length === 0) {
 				return 'Your authorization header must be longer than 0 characters';
 			}
@@ -336,6 +370,7 @@ function checkUrl(str) {
 			"(?:/[^\\s]*)?" +
 			"$", "i"
 	);
+	/* istanbul ignore if */
 	if (!pattern.test(str)) {
 		return 'Must be a valid URL';
 	}

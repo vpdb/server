@@ -1,17 +1,14 @@
 "use strict";
 
-var _ = require('underscore');
 var fs = require('fs');
-var path = require('path');
 var logger = require('winston');
 
 var File = require('mongoose').model('File');
-var config = require('../modules/settings').current;
 var quota = require('../modules/quota');
 var storage = require('../modules/storage');
 var acl = require('../acl');
 
-var serve = function(req, res, file, variationName) {
+function serve(req, res, file, variationName) {
 
 	var serveFile = function(fstat) {
 
@@ -68,7 +65,7 @@ var serve = function(req, res, file, variationName) {
 			serveFile(fstat);
 		});
 	}
-};
+}
 
 exports.get = function(req, res) {
 
@@ -82,64 +79,55 @@ exports.get = function(req, res) {
 			return res.status(404).end();
 		}
 
-		// file is not public (i.e. user must be logged in order to download)
-		if (!file.is_public) {
+		// file is not public - user must be logged in.
+		if (!file.is_public && !req.user) {
+			return res.status(401).end();
+		}
 
-			// if not logged, deny
+		// if inactive and user is not logged or not the owner, refuse.
+		if (!file.is_active) {
 			if (!req.user) {
 				return res.status(401).end();
-			} else {
-
-				// if inactive and user isn't the owner, refuse directly
-				if (!file.is_active && !file._created_by.equals(req.user._id)) {
-					return res.status(403).end();
-				}
-
-				// otherwise, check acl
-				acl.isAllowed(req.user.email, 'files', 'download', function(err, granted) {
-					/* istanbul ignore if  */
-					if (err) {
-						logger.error('[ctrl|storage] Error checking ACLs for <%s>: %s', req.user.email, err, {});
-						return res.status(500).end();
-					}
-					if (!granted) {
-						return res.status(403).end();
-					}
-
-					// if the user is the owner, serve directly (owned files don't count as credits)
-					if (file._created_by.equals(req.user._id)) {
-						return serve(req, res, file, req.params.variation);
-					}
-
-					// and the quota
-					quota.isAllowed(req, res, file, function(err, granted) {
-						/* istanbul ignore if  */
-						if (err) {
-							logger.error('[ctrl|storage] Error checking quota for <%s>: %s', req.user.email, err, {});
-							return res.status(500).end();
-						}
-						if (!granted) {
-							return res.status(403).end();
-						}
-						return serve(req, res, file, req.params.variation);
-					});
-				});
 			}
-
-		// file is public
-		} else {
-
-			// but not active and user isn't the owner
-			if (!file.is_active) {
-				if (!req.user) {
-					return res.status(401).end();
-				}
-				if (!file._created_by.equals(req.user._id)) {
-					return res.status(403).end();
-				}
+			if (!file._created_by.equals(req.user._id)) {
+				return res.status(403).end();
 			}
-			// otherwise, serve.
+		}
+
+		// at this point, we can serve the file if it's public
+		if (file.is_public) {
 			return serve(req, res, file, req.params.variation);
 		}
+
+		// so here we determined the file isn't public, so we need to check ACLs and quota.
+		acl.isAllowed(req.user.email, 'files', 'download', function(err, granted) {
+			/* istanbul ignore if  */
+			if (err) {
+				logger.error('[ctrl|storage] Error checking ACLs for <%s>: %s', req.user.email, err, {});
+				return res.status(500).end();
+			}
+			if (!granted) {
+				return res.status(403).end();
+			}
+
+			// if the user is the owner, serve directly (owned files don't count as credits)
+			if (file._created_by.equals(req.user._id)) {
+				return serve(req, res, file, req.params.variation);
+			}
+
+			// and the quota
+			quota.isAllowed(req, res, file, function(err, granted) {
+				/* istanbul ignore if  */
+				if (err) {
+					logger.error('[ctrl|storage] Error checking quota for <%s>: %s', req.user.email, err, {});
+					return res.status(500).end();
+				}
+				if (!granted) {
+					return res.status(403).end();
+				}
+				return serve(req, res, file, req.params.variation);
+			});
+		});
+
 	});
 };

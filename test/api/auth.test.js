@@ -8,7 +8,7 @@ var hlp = require('../modules/helper');
 
 superagentTest(request);
 
-describe('The VPDB API', function() {
+describe('The authentication logic of the VPDB API', function() {
 
 	describe('when authorization is provided in the header', function() {
 

@@ -18,7 +18,7 @@ describe('The OAuth2 client of VPDB', function() {
 		hlp.cleanup(request, done);
 	});
 
-	describe.only('when authenticating via GitHub', function() {
+	describe('when authenticating via GitHub', function() {
 
 		it('should create a new user and inject the authentication token into the HTML element', function(done) {
 			request

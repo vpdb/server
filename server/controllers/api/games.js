@@ -19,6 +19,7 @@ var storage = require('../../modules/storage');
 exports.head = function(req, res) {
 
 	Game.findOne({ id: req.params.id }, function(err, game) {
+		/* istanbul ignore if  */
 		if (err) {
 			logger.error('[api|game:head] Error finding game "%s": %s', req.params.id, err, {});
 			return api.fail(res, err, 500);
@@ -82,6 +83,7 @@ exports.del = function(req, res) {
 		.populate({ path: '_media.logo' });
 
 	query.exec(function(err, game) {
+		/* istanbul ignore if  */
 		if (err) {
 			logger.error('[api|game:delete] Error getting game "%s": %s', req.params.id, err, {});
 			return api.fail(res, err, 500);
@@ -94,6 +96,7 @@ exports.del = function(req, res) {
 
 		// remove from db
 		game.remove(function(err) {
+			/* istanbul ignore if  */
 			if (err) {
 				logger.error('[api|game:delete] Error deleting game "%s" (%s): %s', game.title, game.id, err, {});
 				return api.fail(res, err, 500);
@@ -133,6 +136,7 @@ exports.list = function(req, res) {
 	}
 
 	query.exec(function(err, games) {
+		/* istanbul ignore if  */
 		if (err) {
 			logger.error('[api|game:list] Error: %s', err, {});
 			return api.fail(res, err, 500);
@@ -157,6 +161,7 @@ exports.view = function(req, res) {
 		.populate({ path: '_media.logo' });
 
 	query.exec(function(err, game) {
+		/* istanbul ignore if  */
 		if (err) {
 			logger.error('[api|game:view] Error finding game "%s": %s', req.params.id, err, {});
 			return api.fail(res, err, 500);

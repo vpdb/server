@@ -38,6 +38,7 @@ exports.upload = function(req, res) {
 		}
 
 		file.save(function(err, file) {
+			/* istanbul ignore if  */
 			if (err) {
 				return api.fail(res, err, 500);
 			}
@@ -47,6 +48,7 @@ exports.upload = function(req, res) {
 				storage.metadata(file, function(err, metadata) {
 					if (err) {
 						return file.remove(function(err) {
+							/* istanbul ignore if  */
 							if (err) {
 								logger.error('[api|file:save] Removing file due to erroneous metadata: %s', err, {});
 							}
@@ -61,6 +63,7 @@ exports.upload = function(req, res) {
 					api.sanitizeObject(metadata);
 					file.metadata = metadata;
 					file.save(function(err, file) {
+						/* istanbul ignore if  */
 						if (err) {
 							logger.error('[api|file:save] Error saving metadata: %s', err, {});
 							logger.error('[api|file:save] Metadata: %s', require('util').inspect(metadata));
@@ -71,6 +74,7 @@ exports.upload = function(req, res) {
 					storage.postprocess(file);
 				});
 			});
+			/* istanbul ignore next */
 			writeStream.on('error', function(err) {
 				logger.error('[api|file:save] Error saving data: %s', err, {});
 				api.fail(res, 'Error saving data: ' + err, 500);
@@ -84,6 +88,7 @@ exports.upload = function(req, res) {
 exports.del = function(req, res) {
 
 	File.findOne({ id: req.params.id }, function(err, file) {
+		/* istanbul ignore if  */
 		if (err) {
 			logger.error('[api|file:delete] Error getting file "%s": %s', req.params.id, err, {});
 			return api.fail(res, err, 500);
@@ -103,6 +108,7 @@ exports.del = function(req, res) {
 		}
 
 		file.remove(function(err) {
+			/* istanbul ignore if  */
 			if (err) {
 				logger.error('[api|file:delete] Error deleting file "%s" (%s): %s', file.name, file.id, err, {});
 				return api.fail(res, err, 500);
@@ -116,6 +122,7 @@ exports.del = function(req, res) {
 exports.view = function(req, res) {
 
 	File.findOne({ id: req.params.id }, function(err, file) {
+		/* istanbul ignore if  */
 		if (err) {
 			logger.error('[api|file:view] Error finding file "%s": %s', req.params.id, err, {});
 			return api.fail(res, err, 500);
@@ -132,7 +139,6 @@ exports.view = function(req, res) {
 		if (!file.is_public && (!req.user || !isOwner)) {
 			return api.fail(res, 'File "' + req.params.id + '" is not public.', req.user ? 403 : 401);
 		}
-
 
 		return api.success(res, file.toDetailed());
 	});

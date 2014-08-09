@@ -120,6 +120,7 @@ exports.verifyCallbackOAuth = function(strategy, providerName) {
 			 *  The "right" solution would be to merge the two profiles.
 			 */
 
+			/* istanbul ignore if  */
 			if (err) {
 				logger.error('[passport|%s] Error checking for user <%s> in database: %s', logtag, profile.emails[0].value, err, {});
 				return done(err);
@@ -164,6 +165,7 @@ exports.verifyCallbackOAuth = function(strategy, providerName) {
 
 				// save and return
 				user.save(function(err, user) {
+					/* istanbul ignore if  */
 					if (err) {
 						logger.error('[passport|%s] Error updating user: %s', logtag, err);
 						return done(err);

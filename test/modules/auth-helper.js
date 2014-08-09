@@ -5,11 +5,18 @@ var ent = require('ent');
 var path = require('path');
 var expect = require('expect.js');
 
+
+exports.getTokenFromHtml = function(res) {
+	var match = res.text.match(/auth="([^"]+)/);
+	var attr = match ? match[1] : false;
+	return attr ? JSON.parse(ent.decode(attr)) : false;
+};
+
 exports.assertToken = function(request, done) {
 	var hlp = require('./helper');
 	return function(err, res) {
 		hlp.expectStatus(err, res, 200);
-		var auth = JSON.parse(ent.decode(res.text.match(/auth="([^"]+)/)[1]));
+		var auth = exports.getTokenFromHtml(res);
 		var authHeader = res.text.match(/auth-header="([^"]+)/)[1];
 		expect(authHeader).to.be.ok();
 		expect(auth).to.be.an('object');

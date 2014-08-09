@@ -195,10 +195,12 @@ exports.passport = function(strategy, passport, web) {
 exports.passportMock = function(web) {
 	return function(req, res, next) {
 		var profile = req.body.profile;
-		profile._json = {
-			_yes: 'This mock data and is more complete otherwise.',
-			id: req.body.profile.id
-		};
+		if (profile) {
+			profile._json = {
+				_yes: 'This mock data and is more complete otherwise.',
+				id: req.body.profile ? req.body.profile.id : null
+			};
+		}
 		require('../passport').verifyCallbackOAuth(req.body.provider, req.body.providerName)(null, null, profile, _passportCallback(web, req, res, next));
 	};
 };

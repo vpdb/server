@@ -69,6 +69,27 @@ module.exports = {
 		},
 
 		/**
+		 * Redis configuration.
+		 */
+		redis: {
+			host: function(host) {
+				var validIp = !/^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$/.test(host);
+				var validHost = /^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$/.test(host);
+				/* istanbul ignore if */
+				if (!validIp && !validHost) {
+					return 'Must be a valid host or IP address';
+				}
+			},
+
+			port: function(port) {
+				/* istanbul ignore if */
+				if (!parseInt(port) || parseInt(port) > 65535 || parseInt(port) < 1) {
+					return 'Port must be an integer between 1 and 65535';
+				}
+			}
+		},
+
+		/**
 		 * True if the host defined above is reachable via https. It is highly encouraged
 		 * to enable HTTPS!
 		 */

@@ -42,6 +42,14 @@ module.exports = {
 		db: 'mongodb://localhost/vpdb',
 
 		/**
+		 * Redis configuration.
+		 */
+		redis: {
+			host: '127.0.0.1',
+			port: 6379
+		},
+
+		/**
 		 * Session timeout in milliseconds (technically it's the expiration length of the JWT)
 		 */
 		sessionTimeout: 3600000,

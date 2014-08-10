@@ -82,6 +82,9 @@ Prerequisites:
 * Download and install [OptiPNG](http://optipng.sourceforge.net/) and make sure that the binary is in
   your `PATH`.
 * Install the Grunt command line tool: `npm install -g grunt-cli`
+* Download and install [Redis](http://redis.io/). *Windows*: Get binary [here](https://github.com/MSOpenTech/redis/tree/2.8/bin/release),
+  extract it to somewhere, open a shell and run `redis-server --service-install redis.windows.conf --loglevel verbose --maxheap 500m`
+  (for a local dev setup).
 
 Install Node.js and Git, then open a command line and type:
 

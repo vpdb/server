@@ -35,19 +35,19 @@ function serve(req, res, file, variationName) {
 		var modified = new Date(fstat.mtime);
 		var ifmodifiedsince = req.headers['if-modified-since'] ? new Date(req.headers['if-modified-since']) : false;
 		if (ifmodifiedsince && modified.getTime() >= ifmodifiedsince.getTime()) {
-			res.writeHead(304);
-			res.end();
-			return;
+			return res.status(304).end();
 		}
 
 		// otherwise set headers and stream the file
+		var filePath = file.getPath(variationName);
 		res.writeHead(200, {
 			'Content-Type': file.mime_type,
 			'Content-Length':  fstat.size,
 			'Cache-Control': 'private',
 			'Last-Modified': modified
 		});
-		var stream = fs.createReadStream(file.getPath(variationName));
+
+		var stream = fs.createReadStream(filePath);
 		stream.pipe(res);
 	};
 
@@ -78,7 +78,7 @@ function serve(req, res, file, variationName) {
 		storage.whenProcessed(file, variationName, function(fstat) {
 			if (!fstat) {
 				logger.info('[ctrl|storage] No processing, returning 404.');
-				return res.writeHead(404);
+				return res.status(404).end();
 			}
 			logger.info('[ctrl|storage] Streaming freshly processed item back to client.');
 			serveFile(fstat);

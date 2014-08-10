@@ -25,6 +25,7 @@ var async = require('async');
 var logger = require('winston');
 
 var storage = require('./modules/storage');
+var queue = require('./modules/queue');
 var quota = require('./modules/quota');
 
 module.exports = function(done) {
@@ -34,6 +35,9 @@ module.exports = function(done) {
 
 	// init quota
 	quota.init();
+
+	// clear queues
+	queue.empty();
 
 	// cleanup inactive storage
 	asyncStartup.push(function(next) {

@@ -8,6 +8,7 @@ module.exports = {
 		port: 7357,
 		httpsEnabled: false,
 		db: 'mongodb://localhost/vpdb-test',
+		redis: { host: '127.0.0.1', port: 6379 },
 		sessionTimeout: 3600000,
 		secret: 'do-not-run-this-config-in-production!',
 		storage: './data/storage-test',

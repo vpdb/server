@@ -22,19 +22,16 @@
 var _ = require('underscore');
 var gm = require('gm');
 var fs = require('fs');
-var util  = require('util');
 var path = require('path');
 var async = require('async');
 var logger = require('winston');
-var events = require('events');
 
+var queue = require('./queue');
 var config = require('./settings').current;
 
 function Storage() {
 
-	events.EventEmitter.call(this);
 	this.variationNames = [];
-	this.processingFiles = {}; // contains callbacks for potential controller requests of not-yet-processed files
 
 	var that = this;
 
@@ -54,26 +51,7 @@ function Storage() {
 			});
 		});
 	});
-
-	// collect processing files
-	this.on('postProcessStarted', function(file, variation) {
-		var key = file.id + '/' + variation.name;
-		logger.info('[storage] Post-processing of %s started.', key);
-		that.processingFiles[key] = [];
-	});
-
-	this.on('postProcessFinished', function(file, variation) {
-		var key = file.id + '/' + variation.name;
-		logger.info('[storage] Post-processing of %s done, running %d callback(s).', key, that.processingFiles[key].length);
-
-		var callbacks = that.processingFiles[key];
-		delete that.processingFiles[key];
-		_.each(callbacks, function(callback) {
-			callback(that.fstat(file, variation.name));
-		});
-	});
 }
-util.inherits(Storage, events.EventEmitter);
 
 Storage.prototype.variations = {
 	image: {
@@ -91,16 +69,13 @@ Storage.prototype.variations = {
 };
 
 Storage.prototype.whenProcessed = function(file, variationName, callback) {
-	var key = file.id + '/' + variationName;
 	/* istanbul ignore if */
-	if (!this.processingFiles[key]) {
-		logger.warn('[storage] No such file being processed: %s', key);
+	if (!queue.isQueued(file, variationName)) {
+		logger.warn('[storage] No such file being processed: %s', file.id + '/' + variationName);
 		return callback(null);
 	}
-	logger.info('[storage] Added %s to queue for post-post-processing.', key);
-	this.processingFiles[key].push(callback);
+	queue.addCallback(file, variationName, callback);
 };
-
 
 Storage.prototype.cleanup = function(graceperiod, done) {
 	graceperiod = graceperiod ? graceperiod : 0;
@@ -182,40 +157,33 @@ Storage.prototype.metadataShort = function(file, metadata) {
 	}
 };
 
-Storage.prototype.postprocess = function(file, done) {
-	done = done || function() {};
+Storage.prototype.postprocess = function(file) {
 	var type = file.getMimeType();
-	var that = this;
-
-	var postprocessor;
-	switch(type) {
+	var q, processor;
+	switch (type) {
 		case 'image':
-			postprocessor = require('./storage/pp-image');
+			processor = 'pp-image';
+			q = queue.image;
+			break;
+		case 'video':
+			processor = 'pp-video';
+			q = queue.video;
 			break;
 		default:
-			postprocessor = null;
+			return;
 	}
-	if (!postprocessor) {
-		return done();
-	}
-	var tasks = [];
 
-	// prepare variation processing
+	// add variations to queue
 	if (this.variations[type][file.file_type]) {
 		_.each(this.variations[type][file.file_type], function(variation) {
-			tasks.push(function(next) {
-				postprocessor.postprocessVariation(that, file, variation, next);
-			});
+			queue.emit('queued', file, variation);
+			q.add({ fileId: file._id, variation: variation }, { processor: processor });
 		});
 	}
 
-	// add actual file processing
-	tasks.push(function(next) {
-		postprocessor.postprocess(that, file, next);
-	});
-
-	// go!
-	async.parallel(tasks, done);
+	// add actual file to queue
+	queue.emit('queued', file);
+	q.add({ fileId: file._id }, { processor: processor });
 };
 
 /**
@@ -252,11 +220,16 @@ Storage.prototype.urls = function(file) {
 
 Storage.prototype.fstat = function(file, variationName) {
 
+	if (!variationName) {
+		return fs.statSync(file.getPath());
+	}
+
 	var key = file.id + '/' + variationName;
 	if (variationName && !_.contains(this.variationNames, variationName)) {
 		return null;
 	}
-	if (this.processingFiles[key]) {
+
+	if (queue.isQueued(file, variationName)) {
 		logger.info('[storage] Item %s being processed, returning null', key);
 		return null;
 	}
@@ -264,10 +237,6 @@ Storage.prototype.fstat = function(file, variationName) {
 	// TODO optimize (aka "cache" and make it async, this is called frequently)
 	if (variationName && fs.existsSync(file.getPath(variationName))) {
 		return fs.statSync(file.getPath(variationName));
-
-	// fallback to non-variation.
-	} else if (fs.existsSync(file.getPath())) {
-		return fs.statSync(file.getPath());
 	}
 	return null;
 };

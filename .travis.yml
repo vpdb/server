@@ -3,9 +3,10 @@ node_js:
 - '0.10'
 services:
 - mongodb
+- redis-server
 before_install:
 - sudo apt-get update -qq
-- sudo apt-get install -y graphicsmagick pngquant optipng
+- sudo apt-get install -y graphicsmagick pngquant optipng ffmpeg libavcodec-extra-* libav-tools
 before_script:
 - npm install -g grunt-cli
 - grunt build

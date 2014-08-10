@@ -37,7 +37,7 @@ ctrl.controller('ReleaseAddCtrl', function($scope, $upload, $modal, $window, Aut
 			name: 'orientation',
 			values: [
 				{ name: 'Desktop', other: 'Landscape', value: 'ws' },
-				{ name: 'Landscape', other: 'Portrait', value: 'fs' }
+				{ name: 'Cabinet', other: 'Portrait', value: 'fs' }
 			]
 		}, {
 			header: 'Lightning',
@@ -58,7 +58,8 @@ ctrl.controller('ReleaseAddCtrl', function($scope, $upload, $modal, $window, Aut
 				developed: [],
 				tested: [],
 				incompat: []
-			}
+			},
+			_media: {}
 		};
 	};
 
@@ -219,6 +220,53 @@ ctrl.controller('ReleaseAddCtrl', function($scope, $upload, $modal, $window, Aut
 		}).result.then(function(newTag) {
 			$scope.tags.push(newTag);
 		});
+	};
+
+	$scope.mediaFile = {};
+
+
+	$scope.onMediaUpload = function($files) {
+
+		var file = $files[0];
+
+		// upload image
+		var fileReader = new FileReader();
+		fileReader.readAsArrayBuffer(file);
+		fileReader.onload = function(event) {
+			$scope.mediaFile.uploaded = false;
+			$scope.mediaFile.uploading = true;
+			$scope.mediaFile.status = 'Uploading file...';
+			$upload.http({
+				url: '/storage',
+				method: 'POST',
+				params: { type: 'playfield' },
+				headers: {
+					'Content-Type': file.type,
+					'Content-Disposition': 'attachment; filename="' + file.name + '"'
+				},
+				data: event.target.result
+			}).then(function(response) {
+				$scope.mediaFile.uploading = false;
+				$scope.mediaFile.status = 'Uploaded';
+
+				var playfield = response.data;
+				$scope.mediaFile.url = AuthService.setUrlParam(playfield.variations.medium.url, playfield.is_protected);
+				$scope.release._media.backglass = playfield.id;
+
+				var ar = Math.round(playfield.metadata.size.width / playfield.metadata.size.height * 1000) / 1000;
+				var arDiff = Math.abs(ar / 1.25 - 1);
+
+				$scope.mediaFile.info = {
+					dimensions: playfield.metadata.size.width + '×' + playfield.metadata.size.height,
+					test: ar === 1.25 ? 'optimal' : (arDiff < maxAspectRatioDifference ? 'warning' : 'error'),
+					ar: ar,
+					arDiff: Math.round(arDiff * 100)
+				};
+
+			}, ApiHelper.handleErrorsInDialog($scope, 'Error uploading image.'), function (evt) {
+				$scope.mediaFile.progress = parseInt(100.0 * evt.loaded / evt.total);
+			});
+		};
 	};
 
 	$scope.reset();

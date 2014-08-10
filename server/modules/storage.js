@@ -82,6 +82,10 @@ Storage.prototype.variations = {
 			{ name: 'medium-2x', width: 728, height: 582 },
 			{ name: 'small',     width: 253, height: 202 },
 			{ name: 'small-2x',  width: 506, height: 404 }
+		],
+		playfield: [
+			{ name: 'medium',    width: 393, height: 233 },
+			{ name: 'medium-2x', width: 786, height: 466 }
 		]
 	}
 };

@@ -13,6 +13,11 @@ body
 
 // Headings
 //
+// Styleguide 2.1
+
+
+// Standard Headings
+//
 // Your standard, everyday headings. The pure headers define font, weight and absolute
 // size, while the modifiers take care of color, relative size and special positioning.
 // Note that `.h4` headers are usually used by panel headers. Also note that headers are
@@ -25,7 +30,7 @@ body
 // .h--primary   - Header in primary color
 // .h--lighter   - Header in lighter color
 // .h--small     - Small font size (only `h1` and `h2` affected)
-// .h--smaller   - Smaller font size (only `h1` affected)
+// .h--smaller   - Smaller font size (only `h1` and `h2` affected)
 // .h--no-margin - Without margin, when padding is given by parent.
 //
 // Markup:
@@ -36,7 +41,7 @@ body
 // <h5 class="{$modifiers}">Heading h5</h5>
 // <h6 class="{$modifiers}">Heading h6</h6>
 //
-// Styleguide 2.1
+// Styleguide 2.1.1
 
 // Page headers, Sidebar header, anything that is upper case and title font
 h1
@@ -85,8 +90,31 @@ h2.h--small
 	font-size $font-size-larger
 h1.h--smaller
 	font-size $font-size-small-alt
+h2.h--smaller
+	font-size $font-size-large
 h4.h--large
 	font-size $font-size-large
+
+
+// Pre Headings
+//
+// Sometime you want to prefix a heading with something. Works well with `h4`:
+//
+// Markup:
+// <span class="{$modifiers}">Playfield</span>
+// <h4 class="h--large">Screenshot</h4>
+//
+// .pre-h4            - Header prefix
+//
+// Styleguide 2.1.2
+.pre-h4
+	text-transform uppercase
+	font-size $font-size-smaller
+	font-weight $font-weight-normal
+	display block
+	margin-bottom -10px
+
+
 
 // Make all headings oneliner with ellipsis (except h4, which causes weird behavior in panel heading)
 h1, h2, h3, h5, h6
@@ -105,6 +133,10 @@ h1, h2, h3, h4, h5, h6
 h1 + h1.pull-right
 	margin-top -48px
 	margin-bottom 0
+
+// icons within h2
+h2.h--smaller > .fa-2x
+	font-size 30px
 
 .text--large
 	font-size $font-size-large

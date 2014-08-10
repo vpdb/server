@@ -41,15 +41,18 @@
 //
 // .img--ar-square          - Square (1:1)
 // .img--ar-bg              - Backglass (5:4)
+// .img--ar-ws              - Widescreen (16:9)
 // .img--ar-logo            - Logo
 //
 // Styleguide 7.2
-.img--ar-bg, .img--ar-logo, .img--ar-square
+.img--ar-bg, .img--ar-logo, .img--ar-square, .img--ar-ws
 	position relative
 	width 100%
 	height 0
 .img--ar-bg
 	padding-bottom 80% // % of width, defines aspect ratio
+.img--ar-ws
+	padding-bottom 56%
 .img--ar-logo
 	padding-bottom 40%
 .img--ar-square

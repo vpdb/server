@@ -54,7 +54,7 @@
 			span.help-block This is what will show up when your release gets listed under the game. It is basically what
 				| distinguishes your release from others of the same game. Don't put anything you already describe below
 				| such as <i>"FS Night Mod"</i>, but choose a name that brings across the nature of your virtual table.
-				| If you're out of ideas, <i>"Ultimate Edition"</i> often seems to work. ;)
+				| Be creative, but if you're out of ideas, <i>"Ultimate Edition"</i> often seems to work. ;)
 
 		//---------------------------------------------------------------------
 		h1 3. Define your Flavors
@@ -329,9 +329,9 @@
 		hr.hr--light.hr--margin-small
 
 		.row
-			.col-md-8
+			.col-sm-8
 				p Is this a mod of another release?
-			.col-md-4.text-right
+			.col-sm-4.text-right
 				.radio-inline.radio--lg
 					label
 						input.input-lg(type="radio", name="ismod", value="true", ng-model="release.isMod")
@@ -376,7 +376,41 @@
 
 		//---------------------------------------------------------------------
 		h1 7. Upload Media
+		hr
 
+		p These show off your work. You should provide both image and video at full HD resolution at <i>1920x1080</i>.
+			| For every table file you’ve provided in step 1, at least the screenshot is mandatory. The video should
+			| show the table in attract mode (no gameplay).
+
+		span(ng-repeat="file in files | fileext:['vpt','vpx']")
+			h2.h--smaller
+				i.icon.fa-2x.space-right(ng-class="file.icon")
+				| {{ file.name }}
+			hr.hr--light.hr--shifted-up
+			.row
+				.col-sm-6
+					span.pre-h4 Playfield
+					h4.h--large Screenshot
+					.panel.panel--blank(ng-file-drop="onMediaUpload($files)", ng-file-drag-over-class="panel--dragging")
+						input#uploadBackglass.hide(type='file', ng-file-select='onMediaUpload($files)')
+						.panel-body.a.a--darker(ng-click="openUploadDialog('#uploadBackglass')")
+							.img.img--ar-ws.loaded(img-bg="mediaFile.url")
+								.text-center.vertical-center--100
+									progressbar.progress--fixed-absolute.progress-striped.active(value="mediaFile.progress", ng-show="mediaFile.uploading")
+									.span(ng-show="!img.url")
+										i.fa.fa-picture-o.fa-3x(ng-class="{ transparent: mediaFile.uploading }")
+										p Click or drag and drop here
+									.span(ng-show="img.loading")
+										i.fa.fa-cog.fa-3x.fa-spin--slow
+										p Generating thumbnails...
+
+				.col-sm-6
+					span.pre-h4 Playfield
+					h4.h--large Video
+
+
+		//------------------------- FINISH LINE -------------------------------
+		//---------------------------------------------------------------------
 		hr
 		button.btn.btn-default.btn-lg(ng-click="reset()") Reset
 		button.btn.btn-primary.btn-lg.pull-right(ng-click="submit()") Add New Release

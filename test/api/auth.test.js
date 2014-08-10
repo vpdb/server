@@ -61,13 +61,15 @@ describe('The authentication logic of the VPDB API', function() {
 
 		it('should grant access to the user profile if the token is valid', function(done) {
 			request
-				.get('/api/user?jwt=' + request.tokens.member)
+				.get('/api/user')
+				.query({ jwt: request.tokens.member })
 				.end(hlp.status(200, done));
 		});
 
 		it('should fail if the token is corrupt or unreadable', function(done) {
 			request
-				.get('/api/user?jwt=abcd.123.xyz')
+				.get('/api/user')
+				.query({ jwt: 'abcd.123.xyz' })
 				.end(hlp.status(401, 'Bad JSON Web Token', done));
 		});
 	});

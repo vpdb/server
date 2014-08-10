@@ -128,23 +128,25 @@ exports.auth = function(resource, permission, done) {
 				if (err) {
 					logger.warn('[ctrl|auth] Error deleting dirty key from redis: %s', err);
 				}
-				if (resource && permission) {
-					acl.isAllowed(user.email, resource, permission, function(err, granted) {
-						/* istanbul ignore if  */
-						if (err) {
-							logger.error('[ctrl|auth] Error checking ACLs for user <%s>: %s', user.email, err);
-							return deny({ code: 500, message: err });
-						}
-						if (granted) {
-							done(false, req, res);
-						} else {
-							logger.warn('[ctrl|auth] User <%s> tried to access `%s` but was access denied due to missing permissions to %s/%s.', user.email, req.url, resource, permission);
-							return deny({ code: 403, message: 'Access denied.' });
-						}
-					});
-				} else {
-					done(false, req, res);
+
+				// no ACLs set, grant.
+				if (!resource || !permission) {
+					return done(false, req, res);
 				}
+
+				acl.isAllowed(user.email, resource, permission, function(err, granted) {
+					/* istanbul ignore if  */
+					if (err) {
+						logger.error('[ctrl|auth] Error checking ACLs for user <%s>: %s', user.email, err);
+						return deny({ code: 500, message: err });
+					}
+
+					if (!granted) {
+						logger.warn('[ctrl|auth] User <%s> tried to access `%s` but was access denied due to missing permissions to %s/%s.', user.email, req.url, resource, permission);
+						return deny({ code: 403, message: 'Access denied.' });
+					}
+					done(false, req, res);
+				});
 			};
 
 			// set dirty header if necessary
@@ -182,22 +184,6 @@ exports.generateToken = function(user, now, dbg) {
 };
 
 /**
- * Appends the JWT to an url as query parameter, so protected non-api resources (such as storage)
- * can be accessed. The JWT is read from the response, so make sure you're in a call that went
- * through {@link exports.auth}.
- *
- * @param url Base URL
- * @param res Current response object
- * @returns {string}
- */
-exports.appendToken = function(url, res) {
-	var token = res.get('X-Token-Refresh');
-	var sep = ~url.indexOf('?') ? '&' : '?';
-	return token ? url + sep + 'jwt=' + token : url;
-};
-
-
-/**
  * Handles a passport callback from an authentication via OAuth2.
  *
  * @param strategy Strategy used
@@ -206,6 +192,7 @@ exports.appendToken = function(url, res) {
  * @returns {Function}
  */
 exports.passport = function(strategy, passport, web) {
+	/* istanbul ignore next */
 	return function(req, res, next) {
 		passport.authenticate(strategy, _passportCallback(web, req, res, next))(req, res, next);
 	};

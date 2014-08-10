@@ -12,7 +12,7 @@ describe('The VPDB web application', function() {
 
 	before(function(done) {
 		hlp.setupUsers(request, {
-			member: { roles: [ 'member' ]},
+			member: { roles: [ 'member' ]}
 		}, done);
 	});
 
@@ -38,6 +38,31 @@ describe('The VPDB web application', function() {
 
 		it('allow access to non-public partials');
 
+	});
+
+	describe('when accessing a non-existent page', function() {
+
+		it('should return a complete HTML page for a non-existent page', function(done) {
+			request
+				.get('/foobar')
+				.end(function(err, res) {
+					hlp.expectStatus(err, res, 404);
+					expect(res.text).to.contain('<html');
+					expect(res.text).to.contain('that page does not exist.</p>');
+					done();
+				});
+		});
+
+		it('should return a partial HTML page for a non-existent partial', function(done) {
+			request
+				.get('/partials/foobar')
+				.end(function(err, res) {
+					hlp.expectStatus(err, res, 200);
+					expect(res.text).to.not.contain('<html');
+					expect(res.text).to.contain('<p>Not found');
+					done();
+				});
+		});
 	});
 
 });

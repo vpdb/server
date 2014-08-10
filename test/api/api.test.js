@@ -25,4 +25,10 @@ describe('The VPDB API', function() {
 				.send('{')
 				.end(hlp.status(400, 'Parsing error', done));
 		});
+
+		it('should return a HTTP 404 and a JSON message if the resource is not found', function(done) {
+			request
+				.get('/api/foobar')
+				.end(hlp.status(404, 'Not found', done));
+		});
 });

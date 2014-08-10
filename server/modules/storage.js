@@ -43,6 +43,7 @@ function Storage() {
 		_.each(items, function(variations) {
 			_.each(variations, function(variation) {
 				var variationPath = path.resolve(config.vpdb.storage, variation.name);
+				/* istanbul ignore if */
 				if (!fs.existsSync(variationPath)) {
 					logger.info('[storage] Creating non-existant path for variation "%s" at %s', variation.name, variationPath);
 					fs.mkdirSync(variationPath);
@@ -87,6 +88,7 @@ Storage.prototype.variations = {
 
 Storage.prototype.whenProcessed = function(file, variationName, callback) {
 	var key = file.id + '/' + variationName;
+	/* istanbul ignore if */
 	if (!this.processingFiles[key]) {
 		logger.warn('[storage] No such file being processed: %s', key);
 		return callback(null);
@@ -100,14 +102,15 @@ Storage.prototype.cleanup = function(graceperiod, done) {
 	graceperiod = graceperiod ? graceperiod : 0;
 
 	var File = require('mongoose').model('File');
-	File.find({ is_active: false, created_at: { $lt: new Date(new Date().getTime() - graceperiod)} })
-		.populate('_created_by').
-		exec(function(err, files) {
+	var condition = { is_active: false, created_at: { $lt: new Date(new Date().getTime() - graceperiod)} };
+	File.find(condition).populate('_created_by').exec(function(err, files) {
+		/* istanbul ignore if */
 		if (err) {
 			logger.error('[storage] Error getting files for cleanup: %s', err);
 			return done(err);
 		}
 
+		/* istanbul ignore next */
 		async.eachSeries(files, function(file, next) {
 			logger.info('[storage] Cleanup: Removing inactive file "%s" by <%s> (%s).', file.name, file._created_by ? file._created_by.email : 'unknown', file.id);
 			Storage.prototype.remove(file);
@@ -123,6 +126,7 @@ Storage.prototype.remove = function(file) {
 		try {
 			fs.unlinkSync(filePath);
 		} catch (err) {
+			/* istanbul ignore next */
 			logger.error('[storage] %s', err);
 		}
 	}
@@ -134,6 +138,7 @@ Storage.prototype.remove = function(file) {
 				try {
 					fs.unlinkSync(filePath);
 				} catch (err) {
+					/* istanbul ignore next */
 					logger.error('[storage] %s', err);
 				}
 			}

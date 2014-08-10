@@ -84,10 +84,12 @@ FileSchema.virtual('is_protected')
  *
  * Note that "is public" currently equals to "is free", meaning we can't have
  * files that don't hit the user's quota and are not served to anonymous.
+ *
+ * Also note that undefined MIME types are public by default.
  */
 FileSchema.virtual('is_public')
 	.get(function() {
-		return config.vpdb.quota.costs[this.mime_type] !== 0;
+		return config.vpdb.quota.costs[this.mime_type] ? false : true;
 	});
 
 //-----------------------------------------------------------------------------

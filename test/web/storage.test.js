@@ -13,6 +13,7 @@ describe('The storage engine of VPDB', function() {
 	before(function(done) {
 		hlp.setupUsers(request, {
 			member: { roles: [ 'member' ]},
+			contributor: { roles: [ 'contributor' ]},
 			anothermember: { roles: [ 'member' ]}
 		}, done);
 	});
@@ -125,16 +126,53 @@ describe('The storage engine of VPDB', function() {
 					});
 			});
 
-			it('should block until the file is finished processing when requesting the variation');
+			it('should block until the file is finished processing when requesting the variation', function(done) {
+
+				hlp.file.createBackglass('member', request, function(backglass) {
+					request.get(backglass.variations['small-2x'].url).as('member').end(function(err, res) {
+						hlp.expectStatus(err, res, 200);
+						hlp.doomFile('member', backglass.id);
+						expect(res.headers['content-length']).to.be.greaterThan(0);
+						done();
+					});
+				});
+			});
 		});
 
 		describe('when the file is active', function() {
 
-			it('should block until the file is finished processing when requesting the variation');
+			it('should block until the file is finished processing when requesting the variation', function(done) {
 
-			it('should grant access to anonymous users');
+				hlp.game.createGame('contributor', request, function(game) {
+					request.get(game.media.backglass.variations['small-2x'].url).end(function(err, res) {
+						hlp.expectStatus(err, res, 200);
+						expect(res.headers['content-length']).to.be.greaterThan(0);
+						done();
+					});
+				});
+			});
 
-			it('should grant access to logged users');
+			it('should grant access to anonymous users', function(done) {
+
+				hlp.game.createGame('contributor', request, function(game) {
+					request.get(game.media.backglass.url).end(function(err, res) {
+						hlp.expectStatus(err, res, 200);
+						expect(res.headers['content-length']).to.be.greaterThan(0);
+						done();
+					});
+				});
+			});
+
+			it('should grant access to logged users', function(done) {
+
+				hlp.game.createGame('contributor', request, function(game) {
+					request.get(game.media.backglass.url).as('member').end(function(err, res) {
+						hlp.expectStatus(err, res, 200);
+						expect(res.headers['content-length']).to.be.greaterThan(0);
+						done();
+					});
+				});
+			});
 
 		});
 	});
@@ -150,6 +188,8 @@ describe('The storage engine of VPDB', function() {
 		});
 
 		describe('when the file has a quota applied', function() {
+
+			it('should contain the X-RateLimit- "Limit", "Remaining" and "Reset" headers');
 
 			it('should grant access to the user if enough quota is available');
 

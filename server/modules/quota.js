@@ -61,13 +61,14 @@ exports.isAllowed = function(req, res, file, callback) {
 	}
 
 	var plan = req.user.plan ? req.user.plan : quotaConfig.defaultPlan;
-	if (!quotaConfig.plans[plan] && quotaConfig.plans[plan] !== 0) {
-		return callback('No quota defined for plan "' + plan + '".');
-	}
 
 	// allow unlimited plans
 	if (quotaConfig.plans[plan].unlimited === true) {
 		return callback(null, true);
+	}
+
+	if (!quotaConfig.plans[plan] && quotaConfig.plans[plan] !== 0) {
+		return callback('No quota defined for plan "' + plan + '".');
 	}
 
 	this.quota[quotaConfig.plans[plan].per].apply({

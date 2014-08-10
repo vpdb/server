@@ -325,8 +325,11 @@ exports.status = function(code, contains, next) {
 };
 
 exports.expectStatus = function(err, res, code, contains) {
-	if (res.status !== code) {
+	if (res && res.status !== code) {
 		console.log(res.body);
+	}
+	if (err) {
+		console.log(err);
 	}
 	expect(err).to.not.be.ok();
 	expect(res.status).to.be(code);

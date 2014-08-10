@@ -104,13 +104,12 @@ exports.fail = function(res, err, code) {
 	}
 };
 
-
 exports.checkApiContentType = function(req, res, next) {
-	if (req.path.substr(0, 5) === '/api/' && req.get('content-type') !== 'application/json') {
-		res.setHeader('Content-Type', 'application/json');
-		res.status(415).json({ error: 'Sorry, the API only talks JSON. Did you forget to set your "Content-Type" header correctly?' });
+	var hasBody = req.method === 'POST' || req.method === 'PUT' ||req.method === 'PATCH';
+	if (req.path.substr(0, 5) === '/api/' && hasBody && req.get('content-type') !== 'application/json') {
+		res.json(415, { error: 'Sorry, the API only talks JSON. Did you forget to set the "Content-Type" header correctly?' });
 	} else {
-		next(req, res, next);
+		next();
 	}
 };
 
@@ -119,7 +118,7 @@ exports.handleParseError = function(err, req, res, next) {
 		res.setHeader('Content-Type', 'application/json');
 		res.status(400).json({ error: 'Parsing error: ' + err.message });
 	} else {
-		next(err, req, res, next);
+		next();
 	}
 };
 

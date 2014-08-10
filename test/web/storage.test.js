@@ -34,7 +34,7 @@ describe('The storage engine of VPDB', function() {
 			it('should be able to retrieve the file as the owner', function(done) {
 				var text = "should be able to retrieve the file";
 				request
-					.post('/api/files')
+					.post('/storage')
 					.query({ type: 'mooh' })
 					.as('member')
 					.type('text/plain')
@@ -57,7 +57,7 @@ describe('The storage engine of VPDB', function() {
 
 			it('should fail with HTTP 403 when trying to retrieve the file as a different user', function(done) {
 				request
-					.post('/api/files')
+					.post('/storage')
 					.query({ type: 'mooh' })
 					.as('member')
 					.type('text/plain')
@@ -73,7 +73,7 @@ describe('The storage engine of VPDB', function() {
 
 			it('should fail with HTTP 401 when trying to retrieve the file as a anonymous', function(done) {
 				request
-					.post('/api/files')
+					.post('/storage')
 					.query({ type: 'mooh' })
 					.as('member')
 					.type('text/plain')

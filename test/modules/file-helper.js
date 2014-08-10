@@ -16,7 +16,7 @@ exports.createBackglass = function(user, request, done) {
 			throw err;
 		}
 		request
-			.post('/api/files')
+			.post('/storage')
 			.query({ type: fileType })
 			.type(mimeType)
 			.set('Content-Disposition', 'attachment; filename="' + name + '"')

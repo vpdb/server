@@ -121,7 +121,7 @@ module.exports = function(app, config, passport) {
 	app.use(flash());
 
 	// api pre-checks
-//	app.use(apiCtrl.checkApiContentType);
+	app.use(apiCtrl.checkApiContentType);
 
 	app.use('/styleguide', express.static(path.resolve(__dirname, '../styleguide')));
 

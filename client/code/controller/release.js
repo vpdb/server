@@ -142,7 +142,7 @@ ctrl.controller('ReleaseAddCtrl', function($scope, $upload, $modal, $window, Aut
 				};
 				$scope.files.push(file);
 				$upload.http({
-					url: '/api/files',
+					url: '/storage',
 					method: 'POST',
 					params: { type: 'release' },
 					headers: {

@@ -146,8 +146,8 @@ module.exports = function(grunt) {
 			               options: { spawn: false, debounceDelay: 100 }, tasks: [ 'kss', 'reload' ] },
 
 			// test watch
-			test:        { files: [ 'test/**/*.js'], options: { spawn: true, debounceDelay: 100, atBegin: true },
-			             tasks:   [ 'mkdir:coverage', 'waitServer', 'mochaTest', 'istanbul-middleware:download', 'restart', 'reload' ] }
+			test: { files: [ 'test/api/**/*.js', 'test/modules/**/*.js' ,'test/web/**/*.js' ], options: { spawn: true, debounceDelay: 100, atBegin: true },
+			      tasks:   [ 'mkdir:coverage', 'waitServer', 'mochaTest', 'istanbul-middleware:download', 'restart', 'reload' ] }
 		}
 	};
 

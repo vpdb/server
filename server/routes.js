@@ -66,7 +66,6 @@ module.exports = function(app, config, passport) {
 	app.get('/api/vpbuilds',      api.anon(api.vpbuilds.list));
 	app.post('/api/vpbuilds',     api.auth(api.vpbuilds.create, 'vpbuilds', 'add'));
 
-	app.post('/api/files',        api.auth(api.files.upload, 'files', 'upload'));
 	app.get('/api/files/:id',     api.anon(api.files.view));
 	app.delete('/api/files/:id',  api.auth(api.files.del, 'files', 'delete'));
 
@@ -79,6 +78,7 @@ module.exports = function(app, config, passport) {
 	app.get('/api/ping',          api.anon(api.ping));
 
 	// Storage
+	app.post('/storage',               api.auth(api.files.upload, 'files', 'upload'));
 	app.get('/storage/:id',            api.anon(storage.get));  // permission/quota handling is inside.
 	app.get('/storage/:id/:variation', api.anon(storage.get));
 

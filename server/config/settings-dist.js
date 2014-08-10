@@ -103,6 +103,7 @@ module.exports = {
 			costs: {
 				'image/jpeg': 0,
 				'image/png': 0,
+				'text/plain': 0,
 				'application/zip': 1,
 				'application/x-visual-pinball-table': 1,
 				'video/mp4': 1,

@@ -42,7 +42,6 @@ var fields = {
 	file_type:    { type: String, required: true }, // TODO make enum
 	metadata:     { type: Schema.Types.Mixed },
 	variations:   { type: Schema.Types.Mixed },
-	is_public:    { type: Boolean, required: true, 'default': false },
 	is_active:    { type: Boolean, required: true, 'default': false },
 	created_at:   { type: Date, required: true },
 	_created_by:  { type: Schema.ObjectId, required: true, ref: 'User' }
@@ -72,11 +71,24 @@ FileSchema.virtual('url')
 		return storage.url(this);
 	});
 
+/**
+ * `protected` means that the file is served only to logged users
+ */
 FileSchema.virtual('is_protected')
 	.get(function() {
 		return !this.is_active || !this.is_public;
 	});
 
+/**
+ * `public` means that the file is also served to anonymous users
+ *
+ * Note that "is public" currently equals to "is free", meaning we can't have
+ * files that don't hit the user's quota and are not served to anonymous.
+ */
+FileSchema.virtual('is_public')
+	.get(function() {
+		return config.vpdb.quota.costs[this.mime_type] !== 0;
+	});
 
 //-----------------------------------------------------------------------------
 // METHODS

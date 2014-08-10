@@ -29,11 +29,11 @@ var storage = require('../../modules/storage');
 
 module.exports = exports = function(schema, options) {
 
-	/* istanbul ignore if  */
+	/* istanbul ignore if */
 	if (!options || !options.model) {
 		throw new Error('Fileref plugin needs model. Please provide.');
 	}
-	/* istanbul ignore if  */
+	/* istanbul ignore if */
 	if (!options.fields || !_.isArray(options.fields)) {
 		throw new Error('Fileref plugin needs file reference fields. Please provide.');
 	}
@@ -109,7 +109,7 @@ module.exports = exports = function(schema, options) {
 				return callback(true);
 			}
 			mongoose.model('File').findOne({ _id: fileId }, function(err, file) {
-				/* istanbul ignore if  */
+				/* istanbul ignore if */
 				if (err) {
 					logger.error('[model] Error fetching file "%s".', fileId);
 					return callback(true);
@@ -151,7 +151,7 @@ module.exports = exports = function(schema, options) {
 			}
 		});
 		File.find({ _id: { $in: ids }}, function(err, files) {
-			/* istanbul ignore if  */
+			/* istanbul ignore if */
 			if (err) {
 				logger.error('[model] Error finding referenced files: %s', err);
 				return done(err);
@@ -159,18 +159,10 @@ module.exports = exports = function(schema, options) {
 
 			// update
 			async.each(files, function(file, next) {
-				var publc = false;
-				switch (file.getMimeType()) {
-					case 'image':
-					case 'text':
-						publc = true;
-						break;
-				}
 				file.is_active = true;
-				file.is_public = publc;
 				file.save(next);
 			}, function(err) {
-				/* istanbul ignore if  */
+				/* istanbul ignore if */
 				if (err) {
 					return done(err);
 				}
@@ -195,7 +187,7 @@ module.exports = exports = function(schema, options) {
 			}
 		});
 		File.find({ _id: { $in: ids }}, function(err, files) {
-			/* istanbul ignore if  */
+			/* istanbul ignore if */
 			if (err) {
 				logger.error('[model] Error finding referenced files: %s', err);
 				return done(err);

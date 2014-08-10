@@ -29,3 +29,18 @@ exports.createBackglass = function(user, request, done) {
 			});
 	});
 };
+
+exports.createTextfile = function(user, request, done) {
+	var fileType = 'readme';
+	request
+		.post('/storage')
+		.query({ type: fileType })
+		.type('text/plain')
+		.set('Content-Disposition', 'attachment; filename="README.txt"')
+		.send('You are looking at a text file generated during a test.')
+		.as(user)
+		.end(function(res) {
+			expect(res.status).to.be(201);
+			done(res.body);
+		});
+};

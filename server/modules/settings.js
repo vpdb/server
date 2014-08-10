@@ -30,6 +30,7 @@ var dryRun = false;
 
 function Settings() {
 
+	/* istanbul ignore next */
 	if (!process.env.APP_SETTINGS || !fs.existsSync(process.env.APP_SETTINGS)) {
 		if (process.env.APP_SETTINGS) {
 			throw new Error('Cannot find settings at "' + process.env.APP_SETTINGS + '". Copy server/config/settings-dist.js to server/config/settings.js or point `APP_SETTINGS` environment variable to correct path.');
@@ -41,6 +42,7 @@ function Settings() {
 	this.current = require(this.filePath.substr(0, this.filePath.length - 3));
 }
 
+/* istanbul ignore next */
 /**
  * Checks that all settings are available and runs validation on each.
  *
@@ -127,7 +129,7 @@ Settings.prototype.validate = function() {
 	return validate(validations, settings, '');
 };
 
-
+/* istanbul ignore next */
 Settings.prototype.migrate = function(callback) {
 
 	var settingsCurrName = path_.basename(this.filePath);

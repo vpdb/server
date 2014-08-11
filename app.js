@@ -8,7 +8,7 @@ var express = require('express');
 var passport = require('passport');
 var mongoose = require('mongoose');
 
-if (false && process.env.COVERAGE) {
+if (process.env.COVERAGE) {
 	console.log('[app] Hook loader for coverage enabled.');
 	require('istanbul-middleware').hookLoader(__dirname);
 	// cover all files except under node_modules

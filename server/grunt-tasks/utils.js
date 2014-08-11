@@ -63,4 +63,21 @@ module.exports = function(grunt) {
 		setTimeout(done, 2000);
 	});
 
+
+	grunt.registerTask('dropdb', 'drop the database', function() {
+		var mongoose = require('mongoose');
+		var done = this.async();
+		mongoose.connect(grunt.config.get('mongodb'), { server: { socketOptions: { keepAlive: 1 } } });
+		mongoose.connection.on('open', function () {
+			mongoose.connection.db.dropDatabase(function(err) {
+				if (err) {
+					console.log(err);
+				} else {
+					console.log('Successfully dropped db');
+				}
+				mongoose.connection.close(done);
+			});
+		});
+	});
+
 };

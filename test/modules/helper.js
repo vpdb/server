@@ -348,5 +348,5 @@ exports.getUser = function(name) {
 };
 
 exports.dump = function(res) {
-	console.log('         RESPONSE: %s', util.inspect(res.body ? res.body : res, null, 2, true));
+	console.log('         RESPONSE: %s', util.inspect(res.body ? res.body : res, null, 4, true));
 };

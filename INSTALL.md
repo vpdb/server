@@ -85,6 +85,15 @@ OptiPNG needs manual compilation since in Ubuntu's repo there's only an outdated
 	./configure && make
 	sudo make install
 
+### Video Tools
+
+ffmpeg was removed from Ubuntu and replaced by libav. Our Node wrapper needs ffmpeg, duh.
+
+	sudo apt-add-repository ppa:jon-severinsson/ffmpeg
+    sudo apt-get update
+    sudo apt-get install ffmpeg
+
+
 ### MongoDB
 
 Install 2.6 from repo:
@@ -117,6 +126,14 @@ Restart and go back to normal user:
 	stop mongod
     start mongod
 	exit
+
+### Redis
+
+Install latest from repo:
+
+	sudo apt-add-repository ppa:chris-lea/redis-server
+	sudo apt-get update
+	sudo apt-get install redis-server
 
 ## Create Node.js Startup Scripts
 

@@ -59,7 +59,7 @@ module.exports = function(grunt) {
 		env: {
 			dev: localEnv(grunt, devConfig),
 			test: localEnv(grunt, testConfig),
-			ci: localEnv(grunt, testConfig, true),
+			ci: localEnv(grunt, testConfig),
 			prod: { NODE_ENV: 'production', APP_SETTINGS: process.env.APP_SETTINGS ||  path.resolve(__dirname, 'server/config/settings.js'), PORT: process.env.PORT || 3000 }
 		},
 
@@ -107,6 +107,8 @@ module.exports = function(grunt) {
 			] }
 		},
 
+		mongodb: testConfig.vpdb.db,
+
 		stylus: {
 			build: {
 				options: { paths: [ 'styles' ], linenos: false, compress: false },
@@ -147,7 +149,7 @@ module.exports = function(grunt) {
 
 			// test watch
 			test: { files: [ 'test/api/**/*.js', 'test/modules/**/*.js' ,'test/web/**/*.js' ], options: { spawn: true, debounceDelay: 100, atBegin: true },
-			      tasks:   [ 'mkdir:coverage', 'waitServer', 'mochaTest', 'istanbul-middleware:download', 'restart', 'reload' ] }
+			      tasks:   [ 'mkdir:coverage', 'waitServer', 'mochaTest', 'istanbul-middleware:download'/*, 'restart', 'reload' */] }
 		}
 	};
 
@@ -179,9 +181,9 @@ module.exports = function(grunt) {
 		[ 'clean:build', 'mkdir:server', 'stylus', 'cssmin', 'uglify', 'git', 'kssrebuild', 'jade' ]
 	);
 	// server tasks
-	grunt.registerTask('dev', [ 'build', 'env:dev',  'jshint',               'concurrent:dev' ]);  // dev mode, watch everything
-	grunt.registerTask('serve-test',   [ 'env:test', 'jshint', 'mkdir:test', 'concurrent:test' ]); // test mode, watch only server
-	grunt.registerTask('serve',        [ 'env:prod', 'express:prod' ]);              // prod, watch nothing
+	grunt.registerTask('dev', [ 'build', 'env:dev',            'jshint',               'concurrent:dev' ]);  // dev mode, watch everything
+	grunt.registerTask('serve-test',   [ 'env:test', 'dropdb', 'jshint', 'mkdir:test', 'concurrent:test' ]); // test mode, watch only server
+	grunt.registerTask('serve',        [ 'env:prod', 'express:prod' ]);                                      // prod, watch nothing
 
 	// watchers
 	grunt.registerTask('watch-dev',    [ 'express:dev',  'watch:express-dev' ]);
@@ -201,7 +203,7 @@ module.exports = function(grunt) {
 		'mochaTest', 'istanbul-middleware:download', 'coveralls:api', 'stop' ]);
 };
 
-function localEnv(grunt, settings, ci) {
+function localEnv(grunt, settings) {
 
 	var env = {
 		APP_SETTINGS: settings.settingsPath,

@@ -22,6 +22,7 @@
 var _ = require('underscore');
 var fs = require('fs');
 var logger = require('winston');
+var ffmpeg = require('fluent-ffmpeg');
 
 var File = require('mongoose').model('File');
 
@@ -35,7 +36,33 @@ exports.postprocess = function(queue, file, done) {
 	done();
 };
 
-
 exports.postprocessVariation = function(queue, file, variation, next) {
-	next();
+
+	queue.emit('started', file, variation);
+	logger.info('[storage|video] Starting video processing of "%s" variation "%s"...', file.id, variation.name);
+
+	if (!fs.existsSync(file.getPath())) {
+		logger.warn('[storage|video] File "%s" not available anymore, aborting.', file.getPath());
+		return next('File "' + file.getPath() + '" gone, has been removed before processing finished.');
+	}
+
+	var filepath = file.getPath(variation.name);
+	var started = new Date().getTime();
+	ffmpeg(file.getPath())
+		.noAudio()
+		.videoCodec('libx264')
+		.size(variation.height + 'x' + variation.width)
+		.videoFilters('transpose=2')
+		.on('error', function(err) {
+			logger.error('[storage|video] ' + err);
+			next(err);
+		})
+		.on('progress', function(progress) {
+			logger.info('[storage|video] Processing: %s% at %skbps', progress.percent, progress.currentKbps);
+		})
+		.on('end', function() {
+			logger.info('[storage|video] Transcoding succeeded after %dms, written to %s', new Date().getTime() - started, filepath);
+			next();
+		})
+		.save(filepath);
 };

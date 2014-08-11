@@ -66,6 +66,12 @@ Storage.prototype.variations = {
 			{ name: 'medium',    width: 393, height: 233 },
 			{ name: 'medium-2x', width: 786, height: 466 }
 		]
+	},
+
+	video: {
+		playfield: [
+			{ name: 'small', width: 480, height: 270 }
+		]
 	}
 };
 
@@ -162,6 +168,22 @@ Storage.prototype.metadataShort = function(file, metadata) {
 	switch(file.getMimeType()) {
 		case 'image':
 			return _.pick(data, 'format', 'size', 'depth', 'JPEG-Quality');
+		case 'video':
+			var short = {};
+			if (data.format) {
+				short = _.pick(data.format, 'format_name', 'format_long_name', 'duration', 'bit_rate');
+			}
+			if (data.streams) {
+				_.each(data.streams, function(stream) {
+					if (stream.codec_type === 'video' && !short.video) {
+						short.video = _.pick(stream, 'codec_name', 'width', 'height', 'display_aspect_ratio', 'bit_rate');
+					}
+					if (stream.codec_type === 'audio' && !short.audio) {
+						short.video = _.pick(stream, 'codec_name', 'sample_rate', 'channels', 'bit_rate');
+					}
+				});
+			}
+			return short;
 		default:
 			return data;
 	}

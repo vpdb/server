@@ -148,7 +148,7 @@ describe('The VPDB `file` API', function() {
 			var fileType = 'playfield';
 			var mimeType = 'video/mp4';
 			var name = 'test.mp4';
-			var data = fs.readFileSync('Bone Busters (Gottlieb 1989).f4v');
+			var data = fs.readFileSync('E:/Pinball/HyperPin/Media/Visual Pinball/Table Videos/Attack from Mars (Bally 1995).f4v');
 			request
 				.post('/storage')
 				.query({ type: fileType })
@@ -159,7 +159,9 @@ describe('The VPDB `file` API', function() {
 				.as(user)
 				.end(function(err, res) {
 					hlp.expectStatus(err, res, 201);
-					done(res.body);
+					//hlp.doomFile(user, res.body.id);
+					hlp.dump(res);
+					done();
 				});
 		});
 	});

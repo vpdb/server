@@ -6,7 +6,7 @@ services:
 - redis-server
 before_install:
 - sudo apt-get update -qq
-- sudo apt-get install -y graphicsmagick pngquant optipng libav-tools ffmpeg libavcodec-extra-53
+- sudo apt-get install -y graphicsmagick pngquant optipng libavcodec53 libavdevice53  libavfilter2 libavformat53 libavutil51 libpostproc52 libswscale2  libav-tools ffmpeg libavcodec-extra-53
 before_script:
 - npm install -g grunt-cli
 - grunt build

@@ -39,7 +39,7 @@ function Queue() {
 	this.video = queue('video transcoding', config.vpdb.redis.port, config.vpdb.redis.host);
 
 	this.image.on('failed', function(job, err) {
-		logger.error('[storage] Error in image queue: %s', err.message);
+		logger.error('[storage] Error in image queue: %s', err);
 	});
 
 	this.image.process(function(job, done) {

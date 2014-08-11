@@ -35,6 +35,7 @@ function Queue() {
 
 	this.queuedFiles = {}; // contains callbacks for potential controller requests of not-yet-processed files
 
+	// have have two queues
 	this.image = queue('image transcoding', config.vpdb.redis.port, config.vpdb.redis.host);
 	this.video = queue('video transcoding', config.vpdb.redis.port, config.vpdb.redis.host);
 
@@ -42,7 +43,11 @@ function Queue() {
 		logger.warn('[storage] From image queue: %s', err);
 	});
 
-	this.image.process(function(job, done) {
+	this.video.on('failed', function(job, err) {
+		logger.warn('[storage] From video queue: %s', err);
+	});
+
+	var processFile = function(job, done) {
 
 		var opts = JSON.parse(job.opts);
 		var processor = require('./storage/' + opts.processor);
@@ -60,17 +65,20 @@ function Queue() {
 			if (job.data.variation) {
 				processor.postprocessVariation(that, file, job.data.variation, done);
 			} else {
-				processor.postprocess(file, done);
+				processor.postprocess(that, file, done);
 			}
 		});
-	});
+	};
+
+	// setup workers
+	this.image.process(processFile);
+	this.video.process(processFile);
 
 	this.on('queued', function(file, variation) {
 		var key = variation ? file.id + '/' + variation.name : file.id;
 		logger.info('[queue] File %s added to queue.', key);
 		that.queuedFiles[key] = [];
 	});
-
 
 	this.on('started', function(file, variation) {
 		var key = variation ? file.id + '/' + variation.name : file.id;

@@ -140,6 +140,30 @@ describe('The VPDB `file` API', function() {
 		});
 	});
 
+	describe('when uploading a video', function() {
+
+		it.skip('should return the correct dimensions', function(done) {
+
+			var user = 'contributor';
+			var fileType = 'playfield';
+			var mimeType = 'video/mp4';
+			var name = 'test.mp4';
+			var data = fs.readFileSync('Bone Busters (Gottlieb 1989).f4v');
+			request
+				.post('/storage')
+				.query({ type: fileType })
+				.type(mimeType)
+				.set('Content-Disposition', 'attachment; filename="' + name + '"')
+				.set('Content-Length', data.length)
+				.send(data)
+				.as(user)
+				.end(function(err, res) {
+					hlp.expectStatus(err, res, 201);
+					done(res.body);
+				});
+		});
+	});
+
 	describe('after successfully uploading a file', function() {
 
 		it('should be able to retrieve the file details', function(done) {

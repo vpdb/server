@@ -30,7 +30,7 @@ var OptiPng = require('optipng');
 
 var config = require('../settings').current;
 
-exports.postprocess = function(file, done) {
+exports.postprocess = function(queue, file, done) {
 
 	if (config.vpdb.skipImageOptimizations) {
 		return done();

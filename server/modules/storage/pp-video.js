@@ -27,7 +27,7 @@ var File = require('mongoose').model('File');
 
 var config = require('../settings').current;
 
-exports.postprocess = function(storage, file, done) {
+exports.postprocess = function(queue, file, done) {
 
 	if (!fs.existsSync(file.getPath())) {
 		return done();
@@ -36,6 +36,6 @@ exports.postprocess = function(storage, file, done) {
 };
 
 
-exports.postprocessVariation = function(storage, file, variation, next) {
+exports.postprocessVariation = function(queue, file, variation, next) {
 	next();
 };

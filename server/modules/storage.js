@@ -25,6 +25,7 @@ var fs = require('fs');
 var path = require('path');
 var async = require('async');
 var logger = require('winston');
+var ffmpeg = require('fluent-ffmpeg');
 
 var queue = require('./queue');
 var config = require('./settings').current;
@@ -129,12 +130,21 @@ Storage.prototype.metadata = function(file, done) {
 
 	switch(file.getMimeType()) {
 		case 'image':
-			gm(file.getPath()).identify(function(err, value) {
+			gm(file.getPath()).identify(function(err, metadata) {
 				if (err) {
 					logger.warn('[storage] Error reading metadata from image: %s', err);
 					return done(err);
 				}
-				done(null, value);
+				done(null, metadata);
+			});
+			break;
+		case 'video':
+			ffmpeg.ffprobe(file.getPath(), function(err, metadata) {
+				if (err) {
+					logger.warn('[storage] Error reading metadata from video (%s): %s', file.getPath(), err);
+					return done(err);
+				}
+				done(null, metadata);
 			});
 			break;
 		default:
@@ -174,7 +184,7 @@ Storage.prototype.postprocess = function(file) {
 	}
 
 	// add variations to queue
-	if (this.variations[type][file.file_type]) {
+	if (this.variations[type] && this.variations[type][file.file_type]) {
 		_.each(this.variations[type][file.file_type], function(variation) {
 			queue.emit('queued', file, variation);
 			q.add({ fileId: file._id, variation: variation }, { processor: processor });

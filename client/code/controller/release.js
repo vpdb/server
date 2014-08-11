@@ -1,7 +1,7 @@
 "use strict";
 
 /*global ctrl, _*/
-ctrl.controller('ReleaseAddCtrl', function($scope, $upload, $modal, $window, AuthService, ApiHelper, FileResource, TagResource, VPBuildResource, DisplayService) {
+ctrl.controller('ReleaseAddCtrl', function($scope, $upload, $modal, $window, $localStorage, AuthService, ApiHelper, FileResource, TagResource, VPBuildResource, DisplayService) {
 
 	$scope.theme('light');
 	$scope.setMenu('admin');
@@ -50,7 +50,7 @@ ctrl.controller('ReleaseAddCtrl', function($scope, $upload, $modal, $window, Aut
 	];
 
 	$scope.reset = function() {
-		$scope.release = {
+		$scope.release = $localStorage.release = {
 			authors: [{ user: AuthService.getUser(), roles: [ 'Table Creator' ]}],
 			tags: [],
 			links: [],
@@ -59,7 +59,8 @@ ctrl.controller('ReleaseAddCtrl', function($scope, $upload, $modal, $window, Aut
 				tested: [],
 				incompat: []
 			},
-			_media: {}
+			_media: {},
+			mediaFile: { url: false }
 		};
 	};
 
@@ -94,7 +95,6 @@ ctrl.controller('ReleaseAddCtrl', function($scope, $upload, $modal, $window, Aut
 		for (var i = 0; i < $files.length; i++) {
 			var file = $files[i];
 			var ext = file.name.substr(file.name.lastIndexOf('.') + 1, file.name.length);
-
 
 			if (!_.contains(['image/jpeg', 'image/png'], file.type) && !_.contains(['vpt', 'vpx', 'vbs'], ext)) {
 				//noinspection JSHint
@@ -233,6 +233,8 @@ ctrl.controller('ReleaseAddCtrl', function($scope, $upload, $modal, $window, Aut
 		var fileReader = new FileReader();
 		fileReader.readAsArrayBuffer(file);
 		fileReader.onload = function(event) {
+
+			$scope.release.mediaFile.url = false;
 			$scope.mediaFile.uploaded = false;
 			$scope.mediaFile.uploading = true;
 			$scope.mediaFile.status = 'Uploading file...';
@@ -250,7 +252,7 @@ ctrl.controller('ReleaseAddCtrl', function($scope, $upload, $modal, $window, Aut
 				$scope.mediaFile.status = 'Uploaded';
 
 				var playfield = response.data;
-				$scope.mediaFile.url = AuthService.setUrlParam(playfield.variations.medium.url, playfield.is_protected);
+				$scope.release.mediaFile.url = AuthService.setUrlParam(playfield.variations.medium.url, playfield.is_protected);
 				$scope.release._media.backglass = playfield.id;
 
 				var ar = Math.round(playfield.metadata.size.width / playfield.metadata.size.height * 1000) / 1000;
@@ -258,7 +260,7 @@ ctrl.controller('ReleaseAddCtrl', function($scope, $upload, $modal, $window, Aut
 
 				$scope.mediaFile.info = {
 					dimensions: playfield.metadata.size.width + '×' + playfield.metadata.size.height,
-					test: ar === 1.25 ? 'optimal' : (arDiff < maxAspectRatioDifference ? 'warning' : 'error'),
+//					test: ar === 1.25 ? 'optimal' : (arDiff < maxAspectRatioDifference ? 'warning' : 'error'),
 					ar: ar,
 					arDiff: Math.round(arDiff * 100)
 				};
@@ -269,7 +271,11 @@ ctrl.controller('ReleaseAddCtrl', function($scope, $upload, $modal, $window, Aut
 		};
 	};
 
-	$scope.reset();
+	if ($localStorage.release) {
+		$scope.release  = $localStorage.release;
+	} else {
+		$scope.reset();
+	}
 });
 
 

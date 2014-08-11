@@ -47,7 +47,7 @@
 		h1 2. Name your Release
 		hr
 		.form-group(ng-class="{ error: errors.title }")
-			input.form-control.input-lg(type="text", placeholder="Title", ng-model="game.title", on-enter="searchOnIpdb()")
+			input.form-control.input-lg(type="text", placeholder="Title", ng-model="release.title", on-enter="searchOnIpdb()")
 			.alert.alert-danger(ng-show="errors.title")
 				i.fa.fa-exclamation-triangle.space-right
 				| {{ errors.title }}
@@ -388,13 +388,13 @@
 				| {{ file.name }}
 			hr.hr--light.hr--shifted-up
 			.row
-				.col-sm-6
+				.col-sm-6.rotateme(make-loaded='loaded')
 					span.pre-h4 Playfield
 					h4.h--large Screenshot
 					.panel.panel--blank(ng-file-drop="onMediaUpload($files)", ng-file-drag-over-class="panel--dragging")
 						input#uploadBackglass.hide(type='file', ng-file-select='onMediaUpload($files)')
 						.panel-body.a.a--darker(ng-click="openUploadDialog('#uploadBackglass')")
-							.img.img--ar-ws.loaded(img-bg="mediaFile.url")
+							.img.img--ar-ws.loaded(img-bg="release.mediaFile.url")
 								.text-center.vertical-center--100
 									progressbar.progress--fixed-absolute.progress-striped.active(value="mediaFile.progress", ng-show="mediaFile.uploading")
 									.span(ng-show="!img.url")

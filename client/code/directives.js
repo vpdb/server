@@ -177,6 +177,22 @@ directives.directive('user', function($compile, $modal) {
 	};
 });
 
+directives.directive('makeLoaded', function($parse) {
+	return {
+		scope: true,
+		restrict: 'A',
+		link: function (scope, element, attrs) {
+			scope.$on('imageLoaded', function(event) {
+				event.stopPropagation();
+				element.addClass(attrs.makeLoaded);
+			});
+			scope.$on('imageUnloaded', function(event) {
+				event.stopPropagation();
+				element.removeClass(attrs.makeLoaded);
+			});
+		}
+	};
+});
 
 directives.directive('imgBg', function($parse) {
 	return {
@@ -191,6 +207,8 @@ directives.directive('imgBg', function($parse) {
 				if (value === false) {
 					scope.img = { url: false, loading: false };
 					element.css('background-image', 'none');
+					//element.removeClass('loaded');
+					scope.$emit('imageUnloaded');
 
 				} else {
 					scope.img = { url: value, loading: true };
@@ -199,6 +217,7 @@ directives.directive('imgBg', function($parse) {
 						each: function() {
 							var that = $(this);
 							that.addClass('loaded');
+							scope.$emit('imageLoaded');
 							scope.img.loading = false;
 							scope.$apply();
 						},

@@ -245,8 +245,8 @@ exports.viewParams = function(req, done) {
 		deployment: process.env.APP_NAME || 'staging',
 		environment: process.env.NODE_ENV || 'development',
 		gitinfo: gitinfo,
-		jsFiles: assets.getJS(),
-		cssFiles: assets.getCSS(),
+		jsFiles: assets.getJs(),
+		cssFiles: assets.getCss(),
 		authStrategies: {
 			local: true,
 			github: config.vpdb.passport.github.enabled,

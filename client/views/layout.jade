@@ -12,7 +12,7 @@ html(ng-app="vpdb", auth=JSON.stringify(auth), auth-header=authHeader)
 			link(rel="stylesheet", href="/css/global.min.css")
 		else
 			- each css in cssFiles
-				link(rel="stylesheet", href=css)
+				link(rel="stylesheet", href=css.web)
 
 	body(ng-controller="AppCtrl", ng-class="themeName")
 		block body
@@ -20,4 +20,4 @@ html(ng-app="vpdb", auth=JSON.stringify(auth), auth-header=authHeader)
 			script(type="text/javascript", src="/js/global.min.js")
 		else
 			- each js in jsFiles
-				script(type="text/javascript", src=js)
+				script(type="text/javascript", src=js.web)

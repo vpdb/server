@@ -104,8 +104,8 @@ module.exports = function(grunt) {
 					pretty: true,
 					deployment: process.env.APP_NAME || 'staging',
 					environment: process.env.NODE_ENV || 'development',
-					jsFiles: assets.getJS(),
-					cssFiles: assets.getCSS()
+					jsFiles: assets.getJs(),
+					cssFiles: assets.getCss()
 				});
 
 				var filename = path.normalize('styleguide/index.html');

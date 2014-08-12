@@ -9,8 +9,8 @@ var assets = require('./server/config/assets');
 module.exports = function(grunt) {
 
 	var cacheRoot = writeable.cacheRoot;
-	var cssRoot = path.resolve(cacheRoot, 'css/');
-	var jsRoot = path.resolve(cacheRoot, 'js/');
+	var cssRoot = path.resolve(cacheRoot, 'css');
+	var jsRoot = path.resolve(cacheRoot, 'js');
 	var htmlRoot = path.resolve(cacheRoot, 'html/');
 	var cssGlobal = path.resolve(cssRoot, 'global.min.css');
 	var jsGlobal = path.resolve(jsRoot, 'global.min.js');
@@ -22,7 +22,7 @@ module.exports = function(grunt) {
 	var config = {
 
 		clean: {
-			build:      { src: [ cssRoot, jsRoot ] },
+			build:      { src: [ cacheRoot + '/*', "!.gitignore", "!img" ] },
 			styleguide: { src: ['styleguide/**/*.html'] },
 			coverage:   { src: ['test/coverage/**'] }
 		},
@@ -42,18 +42,25 @@ module.exports = function(grunt) {
 			}
 		},
 
+		copy: {
+			assets: {
+				files: _.map(assets.vendor(), function(dep) {
+					return { expand: false, nonull: true, src: dep.src, dest: dep.dest };
+				})
+			},
+			'static': {
+				files: [ { expand: true, cwd: 'client/static/', src: [ '**' ], dest: cacheRoot } ]
+			}
+
+		},
+
 		coveralls: {
 			options: { force: false },
 			api: { src: path.resolve(__dirname, 'test/coverage/lcov.info') }
 		},
 
 		cssmin: {
-			minify: { expand: false, cwd: '.', dest: cssGlobal, ext: '.css', src: [
-				'client/static/css/lib/*.css',
-				'client/static/css/fonts.css',
-				'client/static/css/hljs-pojoaque.css',
-				cssRoot + '/*.css'
-			] }
+			minify: { expand: false, cwd: '.', dest: cssGlobal, ext: '.css', src: _.pluck(assets.getCss(), 'src') }
 		},
 
 		env: {
@@ -83,8 +90,8 @@ module.exports = function(grunt) {
 				options: { data: {
 					deployment: process.env.APP_NAME || 'staging',
 					environment: process.env.NODE_ENV || 'development',
-					jsFiles: assets.getJS(),
-					cssFiles: assets.getCSS()
+					jsFiles: assets.getJs(),
+					cssFiles: assets.getCss()
 				} },
 				files: [ { expand: true, cwd: 'client/views/errors', src: [ '*.jade' ], dest: htmlRoot, ext: '.html' } ]
 			}
@@ -118,11 +125,9 @@ module.exports = function(grunt) {
 
 		uglify: {
 			build: {
-				options: { mangle: false, compress: false, beautify: false },
-				files: [ { expand: false, cwd: '.', dest: jsGlobal,
-					src: _.map(assets.js, function(js) {
-						return path.resolve('client/code', js);
-			}) }] }
+				options: { mangle: false, compress: false, beautify: false, sourceMap: true },
+				files: [ { expand: false, cwd: '.', dest: jsGlobal, src: _.pluck(assets.getJs(), 'src') }]
+			}
 		},
 
 		waitServer: {
@@ -152,13 +157,13 @@ module.exports = function(grunt) {
 			      tasks:   [ 'mkdir:coverage', 'waitServer', 'mochaTest', 'istanbul-middleware:download'/*, 'restart', 'reload' */] }
 		}
 	};
-
 	grunt.config.init(config);
 
 	// load the tasks
 	grunt.loadNpmTasks('grunt-bower-task');
 	grunt.loadNpmTasks('grunt-concurrent');
 	grunt.loadNpmTasks('grunt-contrib-clean');
+	grunt.loadNpmTasks('grunt-contrib-copy');
 	grunt.loadNpmTasks('grunt-contrib-stylus');
 	grunt.loadNpmTasks('grunt-contrib-jade');
 	grunt.loadNpmTasks('grunt-contrib-jshint');
@@ -176,12 +181,11 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-wait-server');
 	grunt.loadTasks('./server/grunt-tasks');
 
-
 	// pre-compilation
 	grunt.registerTask('build', 'What run on production before switching code.',
-		[ 'clean:build', 'mkdir:server', 'stylus', 'cssmin', 'uglify', 'git', 'kssrebuild', 'jade' ]
+		[ 'clean:build', 'mkdir:server', 'copy:assets', 'copy:static', 'stylus', 'cssmin', 'uglify', 'git', 'kssrebuild', 'jade' ]
 	);
-	// server tasks
+	// server tasksgut
 	grunt.registerTask('dev', [ 'build', 'env:dev',            'jshint',               'concurrent:dev' ]);  // dev mode, watch everything
 	grunt.registerTask('serve-test',   [ 'env:test', 'dropdb', 'jshint', 'mkdir:test', 'concurrent:test' ]); // test mode, watch only server
 	grunt.registerTask('serve',        [ 'env:prod', 'express:prod' ]);                                      // prod, watch nothing
@@ -190,7 +194,7 @@ module.exports = function(grunt) {
 	grunt.registerTask('watch-dev',    [ 'express:dev',  'watch:express-dev' ]);
 	grunt.registerTask('watch-test',   [ 'express:test', 'watch:express-test' ]);
 
-	// assets
+	// generate
 	grunt.registerTask('git', [ 'gitinfo', 'gitsave']);
 	grunt.registerTask('kssrebuild', [ 'clean:styleguide', 'kss' ]);
 

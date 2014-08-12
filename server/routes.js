@@ -20,8 +20,11 @@
 "use strict";
 
 var _ = require('underscore');
+var passport = require('passport');
 
-module.exports = function(app, config, passport) {
+var config = require('./modules/settings').current;
+
+module.exports = function(app) {
 
 	var api = require('./controllers/api');
 	var web = require('./controllers/web');

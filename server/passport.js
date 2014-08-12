@@ -22,19 +22,18 @@
 var _ = require('underscore');
 var logger = require('winston');
 var mongoose = require('mongoose');
+var passport = require('passport');
 var GitHubStrategy = require('passport-github').Strategy;
 var IPBoardStrategy = require('./modules/passport-ipboard').Strategy;
 
 var settings = require('./modules/settings');
+var config = settings.current;
 var User = mongoose.model('User');
 
 /**
  * Defines the authentication strategies and user serialization.
- *
- * @param config Passport configuration from settings
- * @param passport Passport module
  */
-exports.configure = function(config, passport) {
+exports.configure = function() {
 
 	// use github strategy
 	if (config.vpdb.passport.github.enabled) {
@@ -42,7 +41,7 @@ exports.configure = function(config, passport) {
 		passport.use(new GitHubStrategy({
 				clientID: config.vpdb.passport.github.clientID,
 				clientSecret: config.vpdb.passport.github.clientSecret,
-				callbackURL: settings.publicUrl(config) + '/auth/github/callback'
+				callbackURL: settings.publicUrl() + '/auth/github/callback'
 			}, exports.verifyCallbackOAuth('github')
 		));
 	}
@@ -51,7 +50,7 @@ exports.configure = function(config, passport) {
 	_.each(config.vpdb.passport.ipboard, function(ipbConfig) {
 		if (ipbConfig.enabled) {
 
-			var callbackUrl = settings.publicUrl(config) + '/auth/' +  ipbConfig.id + '/callback';
+			var callbackUrl = settings.publicUrl() + '/auth/' +  ipbConfig.id + '/callback';
 			logger.info('[passport|ipboard:' + ipbConfig.id + '] Enabling IP.Board authentication strategy for "%s" at %s.', ipbConfig.name, ipbConfig.baseURL);
 			passport.use(new IPBoardStrategy({
 					name: ipbConfig.id,

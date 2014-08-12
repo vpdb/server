@@ -30,7 +30,7 @@ var html2jade = require('html2jade');
 var highlight = require('highlight.js');
 
 var debug = require('debug')('grunt-kss');
-var assets = require('../config/assets');
+var assets = require('../modules/assets');
 
 module.exports = function(grunt) {
 

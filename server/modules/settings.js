@@ -322,12 +322,12 @@ Settings.prototype.migrate = function(callback) {
 	}
 };
 
-Settings.prototype.publicUrl = function(config) {
+Settings.prototype.publicUrl = function() {
 	return 'http' +
-		(config.vpdb.httpsEnabled ? 's' : '') +
+		(this.current.vpdb.httpsEnabled ? 's' : '') +
 		'://' +
-		config.vpdb.host +
-		(config.vpdb.httpsEnabled || config.vpdb.port === 80 ? '' : ':' + config.vpdb.port);
+		this.current.vpdb.host +
+		(this.current.vpdb.httpsEnabled || this.current.vpdb.port === 80 ? '' : ':' + this.current.vpdb.port);
 };
 
 module.exports = new Settings();

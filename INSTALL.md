@@ -9,7 +9,7 @@
 * [Upstart](http://upstart.ubuntu.com/) as Node.js service wrapper
 * [Naught](https://github.com/andrewrk/naught) for zero downtime code deployment
 * [MongoDB](https://www.mongodb.org/) for data storage
-* [Redis](http://redis.io/) for session storage
+* [Redis](http://redis.io/) for message queue, quota and ACLs 
 
 ## Install Ubuntu
 

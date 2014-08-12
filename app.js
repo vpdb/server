@@ -5,7 +5,6 @@ var path = require('path');
 var logger = require('winston');
 var domain = require('domain');
 var express = require('express');
-var passport = require('passport');
 var mongoose = require('mongoose');
 
 if (process.env.COVERAGE) {
@@ -16,7 +15,6 @@ if (process.env.COVERAGE) {
 }
 
 var settings = require('./server/modules/settings');
-
 var serverDomain = domain.create();
 
 // early init
@@ -58,10 +56,10 @@ serverDomain.run(function() {
 
 		try {
 			// bootstrap passport config
-			require('./server/passport').configure(config, passport);
+			require('./server/passport').configure();
 
 			// express settings
-			require('./server/express')(app, config, passport);
+			require('./server/express').configure(app);
 
 		} catch (e) {
 			logger.error('[app] ERROR: ' + e.message);
@@ -69,13 +67,12 @@ serverDomain.run(function() {
 		}
 
 		// and lastly, startup scripts - stuff that is run at start.
-		require('./server/startup')(function(err) {
+		require('./server/startup').init(function(err) {
 
 			if (err) {
 				logger.error('[app] Error executing startup scripts: %s', err);
 				return process.exit(1);
 			}
-
 
 			// now we start the server.
 			logger.info('[app] Starting Express server at %s:%d', app.get('ipaddress'), app.get('port'));

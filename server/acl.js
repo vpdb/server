@@ -25,9 +25,18 @@ var logger = require('winston');
 var mongoose = require('mongoose');
 
 var User = mongoose.model('User');
-var acl = new ACL(new ACL.memoryBackend());
+var config = require('./modules/settings').current;
+
+var redis = require('redis').createClient(config.vpdb.redis.port, config.vpdb.redis.host, { no_ready_check: true });
+var acl = new ACL(new ACL.redisBackend(redis, 'acl'));
 
 var init = function(next) {
+
+	// do at least one error check on redis
+	redis.on('error', function(err) {
+		logger.error('[app] Error connecting to Redis: ' + err);
+		process.exit(1);
+	});
 
 	// permissions
 	acl.allow([
@@ -83,7 +92,6 @@ var init = function(next) {
 			next(null, acl);
 		});
 	});
-
 };
 
 acl.init = init;

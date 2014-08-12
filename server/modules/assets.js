@@ -23,9 +23,10 @@ var _ = require('underscore');
 var fs = require('fs');
 var glob = require('glob');
 var path = require('path');
+var logger = require('winston');
 var wiredep = require('wiredep');
 
-var writeable = require('../modules/writeable');
+var writeable = require('./writeable');
 
 function Assets() {
 
@@ -56,12 +57,13 @@ function Assets() {
 	var dep, bowerDir = path.resolve(__dirname, '../../bower_components');
 	if (fs.existsSync(bowerDir)) {
 		dep = wiredep({
+			cwd: path.resolve(__dirname, '../../'),
 			directory: bowerDir,
 			bowerJson: require(path.resolve(__dirname, '../../bower.json'))
 		});
 	}
-	if (!dep || !dep.packages || !dep.packages.length) { // don't bother if bower deps weren't installed yet
-		return;
+	if (!dep || !dep.packages) { // don't bother if bower deps weren't installed yet
+		return logger.warn('[assets] No Bower directory found or wiredep came up empty (%s)', dep);
 	}
 	var n = 0;
 	_.each(dep.packages, function(pak, name) {
@@ -101,6 +103,7 @@ function Assets() {
 			});
 		});
 	});
+	logger.info('[assets] Found %d CSS, %d JavaScripts, %d fonts and %d other Bower dependencies.', this.deps.css.length, this.deps.js.length, this.deps.fonts.length, this.deps.public.length);
 
 	// now re-sort by index
 	this.deps.js.sort(function(a, b) {

@@ -3,8 +3,9 @@
 var _ = require('underscore');
 var fs = require('fs');
 var path = require('path');
+
 var writeable = require('./server/modules/writeable');
-var assets = require('./server/config/assets');
+var assets = require('./server/modules/assets');
 
 module.exports = function(grunt) {
 
@@ -172,7 +173,6 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-watch');
 	grunt.loadNpmTasks('grunt-coveralls');
 	grunt.loadNpmTasks('grunt-env');
-	grunt.loadNpmTasks('grunt-exec');
 	grunt.loadNpmTasks('grunt-express-server');
 	grunt.loadNpmTasks('grunt-gitinfo');
 	grunt.loadNpmTasks('grunt-istanbul');

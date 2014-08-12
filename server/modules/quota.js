@@ -20,8 +20,9 @@
 "use strict";
 
 var logger = require('winston');
-var quotaModule = require('volos-quota-memory');
-var quotaConfig = require('./settings').current.vpdb.quota;
+var quotaModule = require('volos-quota-redis');
+var config = require('./settings').current;
+var quotaConfig = config.vpdb.quota;
 
 // TODO remove init and put logic into constructor.
 exports.init = function() {
@@ -37,7 +38,12 @@ exports.init = function() {
 			duration = quotaConfig.plans[plan].per;
 			if (!this.quota[duration]) {
 				logger.info('[quota] Creating quota for credits per %s...', duration);
-				this.quota[duration] = quotaModule.create({ timeUnit: duration, interval: 1 });
+				this.quota[duration] = quotaModule.create({
+					timeUnit: duration,
+					interval: 1,
+					host: config.vpdb.redis.host,
+					port: config.vpdb.redis.port
+				});
 			}
 		}
 	}

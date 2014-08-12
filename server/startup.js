@@ -28,7 +28,7 @@ var storage = require('./modules/storage');
 var queue = require('./modules/queue');
 var quota = require('./modules/quota');
 
-module.exports = function(done) {
+exports.init = function(done) {
 
 	var asyncStartup = [];
 	logger.info('[startup] Executing startup scripts...');

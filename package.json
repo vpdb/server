@@ -71,7 +71,7 @@
 		"passport-oauth": "latest",
 		"pkginfo": "^0.3.0",
 		"pngquant": "^0.1.5",
-		"redis-mock": "~0.3.0",
+		"redis": "^0.12.1",
 		"request": "^2.36.0s",
 		"serve-favicon": "^2.0.1",
 		"shortid": "^2.0.1",
@@ -79,7 +79,7 @@
 		"uglify-js": "^2.4.0",
 		"underscore": "^1.6.0",
 		"validator": "^3.14.1",
-		"volos-quota-memory": "^0.9.3",
+		"volos-quota-redis": "^0.9.6",
 		"winston": "^0.7.3",
 		"wiredep": "^1.8.2"
 	},

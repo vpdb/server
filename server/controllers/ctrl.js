@@ -21,15 +21,15 @@
 
 var _ = require('underscore');
 var jwt = require('jwt-simple');
-var redis = require('redis-mock').createClient();
 var logger = require('winston');
 var debug = require('debug')('auth');
 
 var acl = require('../acl');
-var assets = require('../config/assets');
+var assets = require('../modules/assets');
 var config = require('../modules/settings').current;
 var gitinfo = require('../modules/gitinfo').info;
 
+var redis = require('redis').createClient(config.vpdb.redis.port, config.vpdb.redis.host, { no_ready_check: true });
 var User = require('mongoose').model('User');
 
 /**

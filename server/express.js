@@ -24,6 +24,7 @@ var http = require('http');
 var flash = require('connect-flash');
 var logger = require('winston');
 
+var passport = require('passport');
 var express = require('express');
 var expressMorgan  = require('morgan');
 var expressFavion = require('serve-favicon');
@@ -36,12 +37,13 @@ var expressErrorhandler = require('errorhandler');
 //var domainError = require('express-domain-errors');
 //var gracefulExit = require('express-graceful-exit');
 
+var config = require('./modules/settings').current;
 var writeable = require('./modules/writeable');
 var asset = require('./middleware/asset');
 var ctrl = require('./controllers/ctrl');
 var apiCtrl = require('./controllers/api/api');
 
-module.exports = function(app, config, passport) {
+exports.configure = function(app) {
 
 	var runningLocal = !process.env.APP_NAME || (process.env.APP_NAME !== 'production' && process.env.APP_NAME !== 'staging');
 	var runningDev = process.env.NODE_ENV !== 'production';
@@ -126,7 +128,7 @@ module.exports = function(app, config, passport) {
 	app.use('/styleguide', express.static(path.resolve(__dirname, '../styleguide')));
 
 	// bootstrap routes
-	require('./routes')(app, config, passport);
+	require('./routes')(app);
 
 	// api errors
 	app.use(apiCtrl.handleParseError);

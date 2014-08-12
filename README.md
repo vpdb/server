@@ -89,6 +89,7 @@ Install Node.js and Git, then open a command line and type:
 	git clone https://github.com/freezy/node-vpdb.git
 	cd node-vpdb
 	npm install
+	bower install
 	grunt build
 	grunt serve
 

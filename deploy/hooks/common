@@ -75,15 +75,18 @@ repo_checkout_branch() {
 }
 
 npm_install() {
-	echo Installing Node.js dependencies...
+	echo "Installing Node.js dependencies..."
 	cd ${DEPLOY_ROOT}/${DEPLOY_ENV}/$1
 	npm install
 	test $? -eq 0 || rollback_abort $1 "Failed to run npm install. Manually fix and relaunch deployment.".
+	echo "Installing Bower dependencies..."
+	bower install --force-latest
+	test $? -eq 0 || rollback_abort $1 "Failed to run bower install. Manually fix and relaunch deployment.".
 }
 
 grunt_build() {
-	echo Running build with Grunt...
 	cd ${DEPLOY_ROOT}/${DEPLOY_ENV}/$1
+	echo "Running build with Grunt..."
 	NODE_ENV=production APP_CACHEDIR=${DEPLOY_ROOT}/${DEPLOY_ENV}/shared/cache grunt build --force
 	test $? -eq 0 || rollback_abort $1 "Grunt build failed. Fix and redeploy."
 }

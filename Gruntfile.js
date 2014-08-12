@@ -70,10 +70,6 @@ module.exports = function(grunt) {
 			prod: { NODE_ENV: 'production', APP_SETTINGS: process.env.APP_SETTINGS ||  path.resolve(__dirname, 'server/config/settings.js'), PORT: process.env.PORT || 3000 }
 		},
 
-		exec: {
-			bower: 'bower install --force-latest'
-		},
-
 		express: {
 			options: { output: 'Server listening at' },
 			dev:     { options: { script: 'app.js', port: localEnv(grunt, devConfig).PORT } },
@@ -187,7 +183,7 @@ module.exports = function(grunt) {
 
 	// build
 	grunt.registerTask('build', 'What run on production before switching code.',
-		[ 'clean:build', 'exec:bower', 'mkdir:server', 'copy:assets', 'copy:static', 'stylus', 'cssmin', 'uglify', 'git', 'kssrebuild', 'jade' ]
+		[ 'clean:build', 'mkdir:server', 'copy:assets', 'copy:static', 'stylus', 'cssmin', 'uglify', 'git', 'kssrebuild', 'jade' ]
 	);
 	// server tasksgut
 	grunt.registerTask('dev', [ 'build', 'env:dev',            'jshint',               'concurrent:dev' ]);  // dev mode, watch everything

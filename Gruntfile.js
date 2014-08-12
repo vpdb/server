@@ -70,6 +70,10 @@ module.exports = function(grunt) {
 			prod: { NODE_ENV: 'production', APP_SETTINGS: process.env.APP_SETTINGS ||  path.resolve(__dirname, 'server/config/settings.js'), PORT: process.env.PORT || 3000 }
 		},
 
+		exec: {
+			bower: 'bower install'
+		},
+
 		express: {
 			options: { output: 'Server listening at' },
 			dev:     { options: { script: 'app.js', port: localEnv(grunt, devConfig).PORT } },
@@ -172,7 +176,7 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-watch');
 	grunt.loadNpmTasks('grunt-coveralls');
 	grunt.loadNpmTasks('grunt-env');
-	grunt.loadNpmTasks('grunt-execute');
+	grunt.loadNpmTasks('grunt-exec');
 	grunt.loadNpmTasks('grunt-express-server');
 	grunt.loadNpmTasks('grunt-gitinfo');
 	grunt.loadNpmTasks('grunt-istanbul');
@@ -181,9 +185,9 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-wait-server');
 	grunt.loadTasks('./server/grunt-tasks');
 
-	// pre-compilation
+	// build
 	grunt.registerTask('build', 'What run on production before switching code.',
-		[ 'clean:build', 'mkdir:server', 'copy:assets', 'copy:static', 'stylus', 'cssmin', 'uglify', 'git', 'kssrebuild', 'jade' ]
+		[ 'clean:build', 'exec:bower', 'mkdir:server', 'copy:assets', 'copy:static', 'stylus', 'cssmin', 'uglify', 'git', 'kssrebuild', 'jade' ]
 	);
 	// server tasksgut
 	grunt.registerTask('dev', [ 'build', 'env:dev',            'jshint',               'concurrent:dev' ]);  // dev mode, watch everything

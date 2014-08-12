@@ -66,7 +66,7 @@ Upgrade ``npm`` to latest and prevent self-signed certificate error
 
     sudo npm config set ca ""
     sudo npm install -g npm
-    sudo npm install -g grunt-cli
+    sudo npm install -g grunt-cli bower
 
 #### Node Deps
 

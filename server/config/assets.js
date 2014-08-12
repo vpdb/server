@@ -21,7 +21,11 @@
 
 var _ = require('underscore');
 var fs = require('fs');
+var glob = require('glob');
 var path = require('path');
+var async = require('async');
+var wiredep = require('wiredep');
+
 var writeable = require('../modules/writeable');
 
 function Assets() {
@@ -95,6 +99,53 @@ function Assets() {
 		return _.map(_.union(assets.css, assets.cssCache), function(css) {
 			return '/css/' + css;
 		});
+	};
+
+	assets.testBower = function() {
+
+		var dep = wiredep();
+
+		var deps = {
+			js: [],
+			css: [],
+			fonts: [],
+			other: []
+		};
+
+		async.eachSeries(_.keys(dep.packages), function(name, next) {
+			async.eachSeries(dep.packages[name].main, function(file, next) {
+				glob(file, {}, function (er, files) {
+					_.each(files, function(file) {
+
+						var ext = path.extname(file.toLowerCase());
+
+						var key;
+						if (ext === '.js') {
+							key = 'js';
+						} else if (ext === '.css') {
+							key = 'css';
+						} else if (_.contains(['.woff', '.ttf', '.svg', '.eot', '.otf'], ext)) {
+							key = 'fonts';
+						} else {
+							key = 'other';
+						}
+						var web = key + '/lib/' + name + '/' + path.basename(file);
+						var f = {
+							src: path.resolve(file),
+							dest: path.resolve(writeable.cacheRoot, web),
+							web: '/' + web
+						};
+						deps[key].push(f);
+					});
+					next();
+				});
+			}, next);
+		}, function(err) {
+			console.log(require('util').inspect(deps, null, 4, true));
+		});
+
+
+
 	};
 
 	this.assets = assets;

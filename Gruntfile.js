@@ -156,6 +156,7 @@ module.exports = function(grunt) {
 	grunt.config.init(config);
 
 	// load the tasks
+	grunt.loadNpmTasks('grunt-bower-task');
 	grunt.loadNpmTasks('grunt-concurrent');
 	grunt.loadNpmTasks('grunt-contrib-clean');
 	grunt.loadNpmTasks('grunt-contrib-stylus');

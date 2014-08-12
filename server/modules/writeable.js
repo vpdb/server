@@ -29,6 +29,7 @@ function Writeable() {
 	this.cssRoot = path.resolve(this.cacheRoot, 'css');
 	this.imgRoot = path.resolve(this.cacheRoot, 'img');
 	this.htmlRoot = path.resolve(this.cacheRoot, 'html');
+	this.fontsRoot = path.resolve(this.cacheRoot, 'fonts');
 
 	/* istanbul ignore if */
 	if (!fs.existsSync(this.jsRoot)) {
@@ -45,6 +46,10 @@ function Writeable() {
 	/* istanbul ignore if */
 	if (!fs.existsSync(this.htmlRoot)) {
 		fs.mkdirSync(this.htmlRoot);
+	}
+	/* istanbul ignore if */
+	if (!fs.existsSync(this.fontsRoot)) {
+		fs.mkdirSync(this.fontsRoot);
 	}
 }
 

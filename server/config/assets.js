@@ -30,10 +30,6 @@ var writeable = require('../modules/writeable');
 function Assets() {
 
 	var that = this;
-	var dep = wiredep({
-		directory: path.resolve(__dirname, '../../bower_components'),
-		bowerJson: require(path.resolve(__dirname, '../../bower.json'))
-	});
 	var jsRoot = path.resolve(__dirname, '../../client/code');
 	var cssRoot = path.resolve(writeable.cacheRoot, 'css');
 
@@ -57,6 +53,13 @@ function Assets() {
 	});
 
 	// vendor libs from bower
+	var dep, bowerDir = path.resolve(__dirname, '../../bower_components');
+	if (fs.existsSync(bowerDir)) {
+		dep = wiredep({
+			directory: bowerDir,
+			bowerJson: require(path.resolve(__dirname, '../../bower.json'))
+		});
+	}
 	if (!dep || !dep.packages || !dep.packages.length) { // don't bother if bower deps weren't installed yet
 		return;
 	}

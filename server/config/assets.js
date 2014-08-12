@@ -30,7 +30,10 @@ var writeable = require('../modules/writeable');
 function Assets() {
 
 	var that = this;
-	var dep = wiredep();
+	var dep = wiredep({
+		directory: path.resolve(__dirname, '../../bower_components'),
+		bowerJson: require(path.resolve(__dirname, '../../bower.json'))
+	});
 	var jsRoot = path.resolve(__dirname, '../../client/code');
 	var cssRoot = path.resolve(writeable.cacheRoot, 'css');
 

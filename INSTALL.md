@@ -209,7 +209,7 @@ For client documentation, check the [deployment guide](DEPLOY.md).
 	sudo mkdir -p /var/www/staging/shared/logs /var/www/staging/shared/cache /var/www/staging/shared/data /var/www/staging/config
 	sudo mkdir -p /repos/production /repos/staging
 
-	sudo chmod 770 /var/www/production /var/www/staging -R
+	sudo chmod 770 /var/www /var/www/production /var/www/staging -R
 	sudo chmod 700 /repos/production /repos/staging
 
 	sudo ln -s /var/log/upstart/vpdb-production.log /var/www/production/shared/logs/upstart

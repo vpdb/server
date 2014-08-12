@@ -71,7 +71,7 @@ module.exports = function(grunt) {
 		},
 
 		exec: {
-			bower: 'bower install'
+			bower: 'bower install --force-latest'
 		},
 
 		express: {

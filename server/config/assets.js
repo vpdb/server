@@ -57,6 +57,9 @@ function Assets() {
 	});
 
 	// vendor libs from bower
+	if (!dep || !dep.packages || !dep.packages.length) { // don't bother if bower deps weren't installed yet
+		return;
+	}
 	var n = 0;
 	_.each(dep.packages, function(pak, name) {
 		_.each(pak.main, function(file) {

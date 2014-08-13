@@ -1,7 +1,6 @@
 server {
 
 	listen 80;
-
 	server_name staging.vpdb;
 
 	location ~ ^/(css/|fonts/|images/|js/global|json/|lib/|robots.txt|humans.txt|favicon.ico) {

@@ -91,7 +91,7 @@ ffmpeg was removed from Ubuntu and replaced by libav. Our Node wrapper needs ffm
 
 	sudo apt-add-repository ppa:jon-severinsson/ffmpeg
     sudo apt-get update
-    sudo apt-get install ffmpeg
+    sudo apt-get install -y ffmpeg
 
 
 ### MongoDB
@@ -133,7 +133,7 @@ Install latest from repo:
 
 	sudo apt-add-repository ppa:chris-lea/redis-server
 	sudo apt-get update
-	sudo apt-get install redis-server
+	sudo apt-get install -y redis-server
 
 ## Create Node.js Startup Scripts
 

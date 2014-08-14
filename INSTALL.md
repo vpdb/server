@@ -389,7 +389,16 @@ Add repo and install:
 	wget http://apt.izzysoft.de/izzysoft.asc
 	sudo apt-key add izzysoft.asc
 	sudo apt-get update
-	sudo apt-get install -y monitorix
+	sudo apt-get install -y monitorix lm-sensors
+	
+Not all plugins seem to with that package, so link the Git repo into its lib directory:
+
+	cd /usr/local/src
+	sudo git clone https://github.com/mikaku/Monitorix.git monitorix
+	sudo mv /usr/lib/monitorix /usr/lib/monitorix-deb
+	sudo ln -s /usr/local/src/monitorix/lib /usr/lib/monitorix
+	sudo mv /usr/bin/monitorix /usr/bin/monitorix-deb
+	sudo ln -s /usr/local/src/monitorix/monitorix /usr/bin/monitorix
 
 Secure access:
 	

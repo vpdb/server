@@ -379,7 +379,28 @@ Restart nginx and we're good:
 
 	sudo /etc/init.d/nginx restart
 
+### Monitorix
 
+*A free, open source, lightweight system monitoring tool* 
+
+Add repo and install:
+
+	sudo echo deb http://apt.izzysoft.de/ubuntu generic universe >> /etc/apt/sources.list
+	wget http://apt.izzysoft.de/izzysoft.asc
+	sudo apt-key add izzysoft.asc
+	sudo apt-get update
+	sudo apt-get install -y monitorix
+
+Secure access:
+	
+	sudo htpasswd -c /etc/monitorix/.htpasswd vpdb
+	sudo chown www-data:www-data /etc/monitorix/.htpasswd
+
+Setup nginx:
+
+	sudo cp /repos/source/deploy/nginx/sites/admin /etc/nginx/sites-available/admin
+	sudo ln -s /etc/nginx/sites-available/admin /etc/nginx/sites-enabled/admin
+	
 ## Links
 
 * [DIY Node.js Server on Amazon EC2](http://cuppster.com/2011/05/12/diy-node-js-server-on-amazon-ec2/)

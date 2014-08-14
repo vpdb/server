@@ -2,13 +2,12 @@ server {
 
 	listen 80;
 	listen 443 ssl;
+	server_name production.vpdb;
 
 	ssl_certificate /etc/nginx/ssl/vpdb.crt;
 	ssl_certificate_key /etc/nginx/ssl/vpdb.key;
 	ssl_protocols SSLv3 TLSv1;
 	ssl_ciphers HIGH:!aNULL:!MD5;
-
-	server_name production.vpdb;
 
 	location ~ ^/(css/|fonts/|images/|js/global|json/|lib/|robots.txt|humans.txt|favicon.ico) {
 		root /var/www/production/shared/cache;

@@ -29,7 +29,7 @@ Make sure you enable OpenSSH. Once done, login and update the system:
 	sudo wget https://gist.githubusercontent.com/jirutka/3742890/raw/c025b0b8c58af49aa9644982c459314c9adba157/rules-both.iptables
 	sudo vi rules-both.iptables
 
-Update to your taste, then create symlinks and apply:
+Update to your taste (unblock port 80, 443, 8088, 8089), then create symlinks and apply:
 
 	sudo ln -s rules-both.iptables rules.v4
     sudo ln -s rules-both.iptables rules.v6
@@ -381,7 +381,7 @@ Restart nginx and we're good:
 
 ### Monitorix
 
-*A free, open source, lightweight system monitoring tool* 
+*A free, open source, lightweight system monitoring tool.* 
 
 Add repo and install:
 
@@ -390,8 +390,9 @@ Add repo and install:
 	sudo apt-key add izzysoft.asc
 	sudo apt-get update
 	sudo apt-get install -y monitorix lm-sensors
+	sudo cp /repos/source/deploy/conf/monitorix.conf /etc/monitorix/
 	
-Not all plugins seem to with that package, so link the Git repo into its lib directory:
+Not all plugins seem to with that package, so let's link the Git repo into its lib directory:
 
 	cd /usr/local/src
 	sudo git clone https://github.com/mikaku/Monitorix.git monitorix

@@ -47,6 +47,13 @@ exports.metadataShort = function(metadata) {
 	return _.pick(metadata, 'format', 'size', 'depth', 'JPEG-Quality');
 };
 
+exports.variationData = function(metadata) {
+	return {
+		width: metadata.size.width,
+		height: metadata.size.height
+	};
+};
+
 exports.postprocess = function(queue, file, done) {
 
 	if (config.vpdb.skipImageOptimizations) {
@@ -91,8 +98,6 @@ exports.postprocess = function(queue, file, done) {
 
 exports.postprocessVariation = function(queue, file, variation, next) {
 
-	var File = require('mongoose').model('File');
-
 	queue.emit('started', file, variation);
 	logger.info('[storage|image] Starting image processing of "%s" variation "%s"...', file.id, variation.name);
 
@@ -110,54 +115,8 @@ exports.postprocessVariation = function(queue, file, variation, next) {
 	};
 	writeStream.on('finish', function() {
 		logger.info('[storage|image] Saved resized image to "%s".', filepath);
-
-		if (!fs.existsSync(filepath)) {
-			return next('File "' + filepath + '" gone, has been removed before processing finished.');
-		}
-
-		// update database with new variation
-		gm(filepath).identify(function(err, value) {
-			if (err) {
-				logger.warn('[storage|image] Error reading metadata from image: %s', err);
-				return next();
-			}
-
-			// re-fetch so we're sure no updates are lost
-			var fileId = file.id;
-			File.findById(file._id, function(err, file) {
-				/* istanbul ignore if */
-				if (err) {
-					logger.warn('[storage|image] Error re-fetching image: %s', err);
-					return next(err);
-				}
-
-				// check that file hasn't been erased meanwhile (hello, tests!)
-				if (!file) {
-					return next('File "' + fileId + '" gone, has been removed before processing finished.');
-				}
-				if (!fs.existsSync(filepath)) {
-					return next('File "' + filepath + '" gone, has been deleted before processing finished.');
-				}
-
-				if (!file.variations) {
-					file.variations = {};
-				}
-
-				file.variations[variation.name] = {
-					bytes: fs.statSync(filepath).size,
-					width: value.size.width,
-					height: value.size.height
-				};
-
-				logger.info('[storage|image] Updating file "%s" with variation %s.', file.id, variation.name);
-
-				// change to file.save when fixed: https://github.com/LearnBoost/mongoose/issues/1694
-				File.findOneAndUpdate({ _id: file._id }, _.omit(file.toJSON(), [ '_id', '__v' ]), {}, function(err) {
-					queue.emit('finished', file, variation);
-					next(err);
-				});
-			});
-		});
+		queue.emit('processed', file, variation, 'image');
+		next();
 	});
 	writeStream.on('error', handleErr);
 

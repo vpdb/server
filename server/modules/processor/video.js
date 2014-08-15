@@ -59,6 +59,12 @@ exports.metadataShort = function(metadata) {
 	return short;
 };
 
+exports.variationData = function(metadata) {
+	return {
+	};
+};
+
+
 exports.postprocess = function(queue, file, done) {
 
 	if (!fs.existsSync(file.getPath())) {

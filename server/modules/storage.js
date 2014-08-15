@@ -36,7 +36,6 @@ var processors = {
 function Storage() {
 
 	this.variationNames = [];
-
 	var that = this;
 
 	// create necessary paths..
@@ -55,6 +54,9 @@ function Storage() {
 			});
 		});
 	});
+
+	// setup callback for treatment after post-processing
+	queue.on('processed', this.onProcessed);
 }
 
 Storage.prototype.variations = {
@@ -166,14 +168,63 @@ Storage.prototype.postprocess = function(file) {
 	// add variations to queue
 	if (this.variations[type] && this.variations[type][file.file_type]) {
 		_.each(this.variations[type][file.file_type], function(variation) {
-			queue.emit('queued', file, variation);
-			queue[type].add({ fileId: file._id, variation: variation }, { processor: type });
+			queue.add(file, variation, type);
 		});
 	}
 
 	// add actual file to queue
-	queue.emit('queued', file);
-	queue[type].add({ fileId: file._id }, { processor: type });
+	queue.add(file, undefined, type);
+};
+
+Storage.prototype.onProcessed = function(file, variation, processorName) {
+
+	var filepath = file.getPath(variation);
+	var done = function(err) {
+		if (err) {
+			return queue.emit('error', err, file, variation);
+		}
+		queue.emit('finished', file, variation);
+	};
+
+	if (!fs.existsSync(filepath)) {
+		return done('File "' + filepath + '" gone, has been removed before processing finished.');
+	}
+
+	// update database with new variation
+	processors[processorName].metadata(file, variation, function(err, metadata) {
+		if (err) {
+			return;
+		}
+
+		// re-fetch so we're sure no updates are lost
+		var fileId = file.id;
+		var File = require('mongoose').model('File');
+		File.findById(file._id, function(err, file) {
+			/* istanbul ignore if */
+			if (err) {
+				logger.warn('[storage] Error re-fetching file: %s', err);
+				return done(err);
+			}
+
+			// check that file hasn't been erased meanwhile (hello, tests!)
+			if (!file) {
+				return done('File "' + fileId + '" gone, has been removed before processing finished.');
+			}
+			if (!fs.existsSync(filepath)) {
+				return done('File "' + filepath + '" gone, has been deleted before processing finished.');
+			}
+
+			if (!file.variations) {
+				file.variations = {};
+			}
+			file.variations[variation.name] = _.extend(processors[processorName].variationData(metadata),  { bytes: fs.statSync(filepath).size });
+
+			logger.info('[storage] Updating file "%s" with variation %s.', file.id, variation.name);
+
+			// change to file.save when fixed: https://github.com/LearnBoost/mongoose/issues/1694
+			File.findOneAndUpdate({ _id: file._id }, _.omit(file.toJSON(), [ '_id', '__v' ]), {}, done);
+		});
+	});
 };
 
 /**

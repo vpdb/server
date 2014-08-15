@@ -27,6 +27,28 @@ var logger = require('winston');
 
 var config = require('./settings').current;
 
+/**
+ * The processing queue. This is used for post-processing uploaded files and is executed asynchronously after the
+ * response has already been returned to the client.
+ *
+ * Lifecycle:
+ *
+ * 1. A new file was uploaded and Queue##add is called.
+ * 2. A job is added to the Bull queue that contains the file id, variation if set and the processor name.
+ * 3. At some point, the processFile method below gets called. It:
+ *    - Fetches the file object from the DB using the file id
+ *    - Instantiates the processor using the name
+ *    - Executes the processor with the file
+ * 4. The processor does its thing and emits the "processed" event.
+ * 5. The storage module, which is subscribed to the "processed" event finishes the processing by
+ *    - retrieving meta-data of the new file
+ *    - updating the "variations" field of the file
+ *    - saving the file to the DB
+ * 6. The storage module emits the "finished" event on the queue module.
+ * 7. The queue module checks for eventual callbacks and calls them if necessary, otherwise concludes the life cycle.
+ *
+ * @constructor
+ */
 function Queue() {
 
 	events.EventEmitter.call(this);
@@ -36,14 +58,16 @@ function Queue() {
 	this.queuedFiles = {}; // contains callbacks for potential controller requests of not-yet-processed files
 
 	// have have two queues
-	this.image = queue('image transcoding', config.vpdb.redis.port, config.vpdb.redis.host);
-	this.video = queue('video transcoding', config.vpdb.redis.port, config.vpdb.redis.host);
+	this.queues = {
+		image: queue('image transcoding', config.vpdb.redis.port, config.vpdb.redis.host),
+		video: queue('video transcoding', config.vpdb.redis.port, config.vpdb.redis.host)
+	};
 
-	this.image.on('failed', function(job, err) {
+	this.queues.image.on('failed', function(job, err) {
 		logger.warn('[queue] From image queue: %s', err);
 	});
 
-	this.video.on('failed', function(job, err) {
+	this.queues.video.on('failed', function(job, err) {
 		logger.warn('[queue] From video queue: %s', err);
 	});
 
@@ -71,14 +95,8 @@ function Queue() {
 	};
 
 	// setup workers
-	this.image.process(processFile);
-	this.video.process(processFile);
-
-	this.on('queued', function(file, variation) {
-		var key = variation ? file.id + '/' + variation.name : file.id;
-		logger.info('[queue] File %s added to queue.', key);
-		that.queuedFiles[key] = [];
-	});
+	this.queues.image.process(processFile);
+	this.queues.video.process(processFile);
 
 	this.on('started', function(file, variation) {
 		var key = variation ? file.id + '/' + variation.name : file.id;
@@ -86,6 +104,7 @@ function Queue() {
 	});
 
 	this.on('finished', function(file, variation) {
+
 		var key = variation ? file.id + '/' + variation.name : file.id;
 		logger.info('[queue] File %s finished processing, running %d callback(s).', key, that.queuedFiles[key].length);
 
@@ -96,9 +115,29 @@ function Queue() {
 			callback(storage.fstat(file, variation.name));
 		});
 	});
+
+	this.on('error', function(err, file, variation) {
+		var key = variation ? file.id + '/' + variation.name : file.id;
+		logger.error('[queue] Error processing file %s: %s', key, err);
+		var callbacks = that.queuedFiles[key];
+		delete that.queuedFiles[key];
+		_.each(callbacks, function(callback) {
+			callback(null);
+		});
+	});
 }
 util.inherits(Queue, events.EventEmitter);
 
+
+Queue.prototype.add = function(file, variation, processorName) {
+	if (!this.queues[processorName]) {
+		throw new Error('There is no queue named "' + processorName + '".');
+	}
+	var key = variation ? file.id + '/' + variation.name : file.id;
+	this.queuedFiles[key] = [];
+	this.queues[processorName].add({ fileId: file._id, variation: variation }, { processor: processorName });
+	logger.info('[queue] File %s added to queue.', key);
+};
 
 Queue.prototype.isQueued = function(file, variationName) {
 	var key = file.id + '/' + variationName;
@@ -113,11 +152,11 @@ Queue.prototype.addCallback = function(file, variationName, callback) {
 
 Queue.prototype.empty = function() {
 	var that = this;
-	this.image.count().then(function(count) {
+	this.queues.image.count().then(function(count) {
 		logger.info('[queue] Cleaning %d entries out of image queue.', count);
 		that.image.empty();
 	});
-	this.video.count().then(function(count) {
+	this.queues.video.count().then(function(count) {
 		logger.info('[queue] Cleaning %d entries out of video queue.', count);
 		that.video.empty();
 	});

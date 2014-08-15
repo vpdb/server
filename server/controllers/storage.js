@@ -77,7 +77,7 @@ function serve(req, res, file, variationName) {
 		logger.info('[ctrl|storage] Waiting for %s/%s to be processed...', file.id, variationName);
 		storage.whenProcessed(file, variationName, function(fstat) {
 			if (!fstat) {
-				logger.info('[ctrl|storage] No processing, returning 404.');
+				logger.info('[ctrl|storage] No processing or error, returning 404.');
 				return res.status(404).end();
 			}
 			logger.info('[ctrl|storage] Streaming freshly processed item back to client.');

@@ -106,10 +106,11 @@ FileSchema.methods.toDetailed = function() {
 /**
  * Returns the physical location of the file.
  *
- * @return {String}
+ * @return {Object|String} Either variation name or object containing attribute "name"
  * @api public
  */
-FileSchema.methods.getPath = function(variationName) {
+FileSchema.methods.getPath = function(variation) {
+	var variationName = _.isObject(variation) ? variation.name : variation;
 	var ext = '.' + mimeTypes[this.mime_type].ext;
 	return variationName ?
 		path.resolve(config.vpdb.storage, variationName, this.id) + ext :
@@ -119,10 +120,11 @@ FileSchema.methods.getPath = function(variationName) {
 /**
  * Returns the URL of the file.
  *
- * @return {String}
+ * @return {Object|String} Either variation name or object containing attribute "name"
  * @api public
  */
-FileSchema.methods.getUrl = function(variationName) {
+FileSchema.methods.getUrl = function(variation) {
+	var variationName = _.isObject(variation) ? variation.name : variation;
 	return variationName ?
 		'/storage/' + this.id + '/' + variationName :
 		'/storage/' + this.id;

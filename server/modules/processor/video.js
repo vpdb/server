@@ -24,9 +24,40 @@ var fs = require('fs');
 var logger = require('winston');
 var ffmpeg = require('fluent-ffmpeg');
 
-var File = require('mongoose').model('File');
-
 var config = require('../settings').current;
+
+exports.metadata = function(file, variation, done) {
+	if (_.isFunction(variation)) {
+		done = variation;
+		variation = undefined;
+	}
+
+	ffmpeg.ffprobe(file.getPath(variation), function(err, metadata) {
+		if (err) {
+			logger.warn('[storage] Error reading metadata from video (%s): %s', file.getPath(), err);
+			return done(err);
+		}
+		done(null, metadata);
+	});
+};
+
+exports.metadataShort = function(metadata) {
+	var short = {};
+	if (metadata.format) {
+		short = _.pick(metadata.format, 'format_name', 'format_long_name', 'duration', 'bit_rate');
+	}
+	if (metadata.streams) {
+		_.each(metadata.streams, function(stream) {
+			if (stream.codec_type === 'video' && !short.video) {
+				short.video = _.pick(stream, 'codec_name', 'width', 'height', 'display_aspect_ratio', 'bit_rate');
+			}
+			if (stream.codec_type === 'audio' && !short.audio) {
+				short.video = _.pick(stream, 'codec_name', 'sample_rate', 'channels', 'bit_rate');
+			}
+		});
+	}
+	return short;
+};
 
 exports.postprocess = function(queue, file, done) {
 

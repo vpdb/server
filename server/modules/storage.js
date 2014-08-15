@@ -20,15 +20,18 @@
 "use strict";
 
 var _ = require('underscore');
-var gm = require('gm');
 var fs = require('fs');
 var path = require('path');
 var async = require('async');
 var logger = require('winston');
-var ffmpeg = require('fluent-ffmpeg');
 
 var queue = require('./queue');
 var config = require('./settings').current;
+
+var processors = {
+	image: require('./processor/image'),
+	video: require('./processor/video')
+};
 
 function Storage() {
 
@@ -55,6 +58,7 @@ function Storage() {
 }
 
 Storage.prototype.variations = {
+
 	image: {
 		backglass: [
 			{ name: 'medium',    width: 364, height: 291 },
@@ -133,89 +137,43 @@ Storage.prototype.remove = function(file) {
 };
 
 Storage.prototype.metadata = function(file, done) {
-
-	switch(file.getMimeType()) {
-		case 'image':
-			gm(file.getPath()).identify(function(err, metadata) {
-				if (err) {
-					logger.warn('[storage] Error reading metadata from image: %s', err);
-					return done(err);
-				}
-				done(null, metadata);
-			});
-			break;
-		case 'video':
-			ffmpeg.ffprobe(file.getPath(), function(err, metadata) {
-				if (err) {
-					logger.warn('[storage] Error reading metadata from video (%s): %s', file.getPath(), err);
-					return done(err);
-				}
-				done(null, metadata);
-			});
-			break;
-		default:
-			logger.warn('[storage] No metadata parser for mime type "%s".', file.mime_type);
-			done();
+	var type = file.getMimeType();
+	if (!processors[type]) {
+		logger.warn('[storage] No metadata parser for mime type "%s".', file.mime_type);
+		return done();
 	}
+	processors[type].metadata(file, done);
 };
 
 Storage.prototype.metadataShort = function(file, metadata) {
-
 	var data = metadata ? metadata : file.metadata;
+	var type = file.getMimeType();
 	if (!data) {
 		return {};
 	}
-	switch(file.getMimeType()) {
-		case 'image':
-			return _.pick(data, 'format', 'size', 'depth', 'JPEG-Quality');
-		case 'video':
-			var short = {};
-			if (data.format) {
-				short = _.pick(data.format, 'format_name', 'format_long_name', 'duration', 'bit_rate');
-			}
-			if (data.streams) {
-				_.each(data.streams, function(stream) {
-					if (stream.codec_type === 'video' && !short.video) {
-						short.video = _.pick(stream, 'codec_name', 'width', 'height', 'display_aspect_ratio', 'bit_rate');
-					}
-					if (stream.codec_type === 'audio' && !short.audio) {
-						short.video = _.pick(stream, 'codec_name', 'sample_rate', 'channels', 'bit_rate');
-					}
-				});
-			}
-			return short;
-		default:
-			return data;
+	if (!processors[type]) {
+		return data;
 	}
+	return processors[type].metadataShort(data);
 };
 
 Storage.prototype.postprocess = function(file) {
 	var type = file.getMimeType();
-	var q, processor;
-	switch (type) {
-		case 'image':
-			processor = 'pp-image';
-			q = queue.image;
-			break;
-		case 'video':
-			processor = 'pp-video';
-			q = queue.video;
-			break;
-		default:
-			return;
+	if (!processors[type]) {
+		return;
 	}
 
 	// add variations to queue
 	if (this.variations[type] && this.variations[type][file.file_type]) {
 		_.each(this.variations[type][file.file_type], function(variation) {
 			queue.emit('queued', file, variation);
-			q.add({ fileId: file._id, variation: variation }, { processor: processor });
+			queue[type].add({ fileId: file._id, variation: variation }, { processor: type });
 		});
 	}
 
 	// add actual file to queue
 	queue.emit('queued', file);
-	q.add({ fileId: file._id }, { processor: processor });
+	queue[type].add({ fileId: file._id }, { processor: type });
 };
 
 /**

@@ -24,11 +24,28 @@ var fs = require('fs');
 var gm = require('gm');
 var logger = require('winston');
 
-var File = require('mongoose').model('File');
 var PngQuant = require('pngquant');
 var OptiPng = require('optipng');
 
 var config = require('../settings').current;
+
+exports.metadata = function(file, variation, done) {
+	if (_.isFunction(variation)) {
+		done = variation;
+		variation = undefined;
+	}
+	gm(file.getPath(variation)).identify(function(err, metadata) {
+		if (err) {
+			logger.warn('[storage] Error reading metadata from image: %s', err);
+			return done(err);
+		}
+		done(null, metadata);
+	});
+};
+
+exports.metadataShort = function(metadata) {
+	return _.pick(metadata, 'format', 'size', 'depth', 'JPEG-Quality');
+};
 
 exports.postprocess = function(queue, file, done) {
 
@@ -73,6 +90,8 @@ exports.postprocess = function(queue, file, done) {
 
 
 exports.postprocessVariation = function(queue, file, variation, next) {
+
+	var File = require('mongoose').model('File');
 
 	queue.emit('started', file, variation);
 	logger.info('[storage|image] Starting image processing of "%s" variation "%s"...', file.id, variation.name);

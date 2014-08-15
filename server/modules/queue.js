@@ -40,17 +40,17 @@ function Queue() {
 	this.video = queue('video transcoding', config.vpdb.redis.port, config.vpdb.redis.host);
 
 	this.image.on('failed', function(job, err) {
-		logger.warn('[storage] From image queue: %s', err);
+		logger.warn('[queue] From image queue: %s', err);
 	});
 
 	this.video.on('failed', function(job, err) {
-		logger.warn('[storage] From video queue: %s', err);
+		logger.warn('[queue] From video queue: %s', err);
 	});
 
 	var processFile = function(job, done) {
 
 		var opts = JSON.parse(job.opts);
-		var processor = require('./storage/' + opts.processor);
+		var processor = require('./processor/' + opts.processor);
 		var File = require('mongoose').model('File');
 		File.findById(job.data.fileId, function(err, file) {
 			/* istanbul ignore if */

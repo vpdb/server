@@ -65,12 +65,20 @@ function Queue() {
 
 	this.queues.image.on('failed', function(job, err) {
 		logger.warn('[queue] From image queue: %s', err);
+		// todo check for file id and process queue if possible
 	});
 
 	this.queues.video.on('failed', function(job, err) {
 		logger.warn('[queue] From video queue: %s', err);
 	});
 
+	/**
+	 * Unserializes file ID into file and processor name into processor
+	 * instance and starts processing.
+	 *
+	 * @param job
+	 * @param done
+	 */
 	var processFile = function(job, done) {
 
 		var opts = JSON.parse(job.opts);
@@ -94,6 +102,18 @@ function Queue() {
 		});
 	};
 
+	/**
+	 * Processes callback queue
+	 */
+	var processQueue = function(file, variation, storage) {
+		var key = variation ? file.id + '/' + variation.name : file.id;
+		var callbacks = that.queuedFiles[key];
+		delete that.queuedFiles[key];
+		_.each(callbacks, function(callback) {
+			callback(storage ? storage.fstat(file, variation.name) : null);
+		});
+	};
+
 	// setup workers
 	this.queues.image.process(processFile);
 	this.queues.video.process(processFile);
@@ -104,26 +124,15 @@ function Queue() {
 	});
 
 	this.on('finished', function(file, variation) {
-
 		var key = variation ? file.id + '/' + variation.name : file.id;
 		logger.info('[queue] File %s finished processing, running %d callback(s).', key, that.queuedFiles[key].length);
-
-		var callbacks = that.queuedFiles[key];
-		delete that.queuedFiles[key];
-		var storage = require('./storage');
-		_.each(callbacks, function(callback) {
-			callback(storage.fstat(file, variation.name));
-		});
+		processQueue(file, variation, require('./storage'));
 	});
 
 	this.on('error', function(err, file, variation) {
 		var key = variation ? file.id + '/' + variation.name : file.id;
 		logger.error('[queue] Error processing file %s: %s', key, err);
-		var callbacks = that.queuedFiles[key];
-		delete that.queuedFiles[key];
-		_.each(callbacks, function(callback) {
-			callback(null);
-		});
+		processQueue(file, variation);
 	});
 }
 util.inherits(Queue, events.EventEmitter);

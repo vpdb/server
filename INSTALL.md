@@ -422,6 +422,7 @@ If you want to change the name of the host, do the following:
 	
 For the relay, do [the following](http://premium-documentation.boundary.com/relays)
 
+	sudo npm install graphdat-relay -g
 	sudo mkdir -p /etc/graphdat-relay
 	cd /etc/graphdat-relay
 	sudo graphdat-relay -e "your email address" -t "your api token"
@@ -437,6 +438,20 @@ following:
 	
 Then add your plugins like described [here](http://premium-support.boundary.com/customer/portal/articles/1635550-plugins---how-to?b_id=4456).
 	
+
+### New Relic integration
+
+Pollers:
+
+	sudo apt-get install -y python-pip
+	sudo pip install newrelic-plugin-agent
+	sudo pip install newrelic-plugin-agent[mongodb]
+	sudo cp /opt/newrelic-plugin-agent/newrelic-plugin-agent.cfg /etc/newrelic/newrelic-plugin-agent.cfg
+	sudo vi /etc/newrelic/newrelic-plugin-agent.cfg
+	sudo mkdir /var/run/newrelic
+	sudo chown newrelic /var/run/newrelic
+	sudo newrelic-plugin-agent -c /etc/newrelic/newrelic-plugin-agent.cfg
+
 	
 ## Links
 

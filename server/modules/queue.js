@@ -31,6 +31,15 @@ var config = require('./settings').current;
  * The processing queue. This is used for post-processing uploaded files and is executed asynchronously after the
  * response has already been returned to the client.
  *
+ * A processing module can implement two processing passes.
+ *
+ * - PASS 1 is spawned instantly and processed in parallel. It is only executed for variations, since the goal
+ *   of pass 1 is to obtain a new variation as soon as possible (for images, that would be the resizing).
+ *   If this pass is implemented, the callbacks of waiting requests will be executed after completion.
+ * - PASS 2 is added to the message queue and processed one after another. The goal of pass 2 is to further optimize
+ *   the file, which could be processor-intensive (for images, that would be the PNG crunching). If pass 1 is not
+ *   implemented, the callbacks of waiting requests will be executed after this pass.
+ *
  * Lifecycle:
  *
  * 1. A new file was uploaded and Queue##add is called.
@@ -65,7 +74,6 @@ function Queue() {
 
 	this.queues.image.on('failed', function(job, err) {
 		logger.warn('[queue] From image queue: %s', err);
-		// todo check for file id and process queue if possible
 	});
 
 	this.queues.video.on('failed', function(job, err) {
@@ -94,11 +102,17 @@ function Queue() {
 				logger.warn('[storage|queue] File "%s" already gone, aborting.', job.data.fileId);
 				return done();
 			}
-			if (job.data.variation) {
-				processor.postprocessVariation(that, file, job.data.variation, done);
-			} else {
-				processor.postprocess(that, file, done);
-			}
+			var variation = job.data.variation;
+			processor.pass2(file, variation, function(err) {
+				if (err) {
+					that.emit('error', err, file, variation);
+					return done(err);
+				}
+				logger.info('[queue] Pass 2 done for %s "%s" (%s).', file.file_type, file.id, variation ? variation.name : 'original');
+				that.emit('processed', file, variation, opts.processor, 'finishedPass2');
+				done();
+			});
+
 		});
 	};
 
@@ -107,6 +121,9 @@ function Queue() {
 	 */
 	var processQueue = function(file, variation, storage) {
 		var key = variation ? file.id + '/' + variation.name : file.id;
+		if (!that.queuedFiles[key]) {
+			return;
+		}
 		var callbacks = that.queuedFiles[key];
 		delete that.queuedFiles[key];
 		_.each(callbacks, function(callback) {
@@ -118,14 +135,28 @@ function Queue() {
 	this.queues.image.process(processFile);
 	this.queues.video.process(processFile);
 
-	this.on('started', function(file, variation) {
-		var key = variation ? file.id + '/' + variation.name : file.id;
-		logger.info('[queue] File %s started processing.', key);
+	this.on('started', function(file, variation, processorName) {
+		if (variation) {
+			logger.info('[queue] Starting %s processing of "%s" variation "%s"...', processorName, file.id, variation.name);
+		} else {
+			logger.info('[queue] Starting %s processing of "%s"...', processorName, file.id);
+		}
 	});
 
-	this.on('finished', function(file, variation) {
+	this.on('finishedPass1', function(file, variation, processorName) {
 		var key = variation ? file.id + '/' + variation.name : file.id;
-		logger.info('[queue] File %s finished processing, running %d callback(s).', key, that.queuedFiles[key].length);
+		var processor = require('./processor/' + processorName);
+		// run pass 2
+		if (processor.pass2) {
+			this.queues[processorName].add({ fileId: file._id, variation: variation }, { processor: processorName });
+			logger.info('[queue] Pass 1 done (or skipped), adding %s "%s" (%s) to queue (%d callbacks).', file.file_type, file.id, variation ? variation.name : 'original', that.queuedFiles[key] ? that.queuedFiles[key].length : 0);
+		}
+		processQueue(file, variation, require('./storage'));
+	});
+
+	this.on('finishedPass2', function(file, variation) {
+		var key = variation ? file.id + '/' + variation.name : file.id;
+		logger.info('[queue] File %s finished processing, running %d callback(s).', key, that.queuedFiles[key] ? that.queuedFiles[key].length : 0);
 		processQueue(file, variation, require('./storage'));
 	});
 
@@ -134,18 +165,32 @@ function Queue() {
 		logger.error('[queue] Error processing file %s: %s', key, err);
 		processQueue(file, variation);
 	});
+
 }
 util.inherits(Queue, events.EventEmitter);
 
 
 Queue.prototype.add = function(file, variation, processorName) {
-	if (!this.queues[processorName]) {
-		throw new Error('There is no queue named "' + processorName + '".');
-	}
+
+	var that = this;
 	var key = variation ? file.id + '/' + variation.name : file.id;
+	var processor = require('./processor/' + processorName);
+
+	// mark file as being processed
 	this.queuedFiles[key] = [];
-	this.queues[processorName].add({ fileId: file._id, variation: variation }, { processor: processorName });
-	logger.info('[queue] File %s added to queue.', key);
+
+	// run pass 1 if available in processor
+	if (processor.pass1 && variation) {
+		processor.pass1(file, variation, function(err) {
+			if (err) {
+				return that.emit('error', err, file, variation);
+			}
+			that.emit('processed', file, variation, processorName, 'finishedPass1');
+		});
+
+	} else {
+		that.emit('finishedPass1', file, variation, processorName);
+	}
 };
 
 Queue.prototype.isQueued = function(file, variationName) {

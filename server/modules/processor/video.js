@@ -61,6 +61,7 @@ exports.metadataShort = function(metadata) {
 
 exports.variationData = function(metadata) {
 	return {
+		todo: 'no joke.'
 	};
 };
 
@@ -99,6 +100,7 @@ exports.postprocessVariation = function(queue, file, variation, next) {
 		})
 		.on('end', function() {
 			logger.info('[storage|video] Transcoding succeeded after %dms, written to %s', new Date().getTime() - started, filepath);
+			queue.emit('processed', file, variation, 'image');
 			next();
 		})
 		.save(filepath);

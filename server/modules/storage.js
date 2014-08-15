@@ -176,14 +176,14 @@ Storage.prototype.postprocess = function(file) {
 	queue.add(file, undefined, type);
 };
 
-Storage.prototype.onProcessed = function(file, variation, processorName) {
+Storage.prototype.onProcessed = function(file, variation, processorName, nextEvent) {
 
 	var filepath = file.getPath(variation);
 	var done = function(err) {
 		if (err) {
 			return queue.emit('error', err, file, variation);
 		}
-		queue.emit('finished', file, variation);
+		queue.emit(nextEvent, file, variation, processorName);
 	};
 
 	if (!fs.existsSync(filepath)) {
@@ -214,12 +214,20 @@ Storage.prototype.onProcessed = function(file, variation, processorName) {
 				return done('File "' + filepath + '" gone, has been deleted before processing finished.');
 			}
 
-			if (!file.variations) {
-				file.variations = {};
-			}
-			file.variations[variation.name] = _.extend(processors[processorName].variationData(metadata),  { bytes: fs.statSync(filepath).size });
+			// check what we're dealing with
+			if (variation) {
 
-			logger.info('[storage] Updating file "%s" with variation %s.', file.id, variation.name);
+				if (!file.variations) {
+					file.variations = {};
+				}
+				file.variations[variation.name] = _.extend(processors[processorName].variationData(metadata),  { bytes: fs.statSync(filepath).size });
+				logger.info('[storage] Updating %s "%s" with variation %s.', file.file_type, file.id, variation.name);
+
+			} else {
+				File.sanitizeObject(metadata);
+				file.metadata = metadata;
+				logger.info('[storage] Updating metadata of %s "%s"', file.file_type, file.id);
+			}
 
 			// change to file.save when fixed: https://github.com/LearnBoost/mongoose/issues/1694
 			File.findOneAndUpdate({ _id: file._id }, _.omit(file.toJSON(), [ '_id', '__v' ]), {}, done);

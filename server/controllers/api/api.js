@@ -159,31 +159,6 @@ exports.ok = function(type, action, ref, res, rollback) {
 	};
 };
 
-/**
- * A helper method that replaces the "$" and "." character in order to be able
- * to store non-structured objects in MongoDB.
- *
- * @param object Object that is going to end up in MongoDB
- * @param [replacement=-] (optional) Replacement character
- */
-exports.sanitizeObject = function(object, replacement) {
-	replacement = replacement || '-';
-	var oldProp;
-	for (var property in object) {
-		if (object.hasOwnProperty(property)) {
-			if (/\.|\$/.test(property)) {
-				oldProp = property;
-				property = oldProp.replace(/\.|\$/g, replacement);
-				object[property] = object[oldProp];
-				delete object[oldProp];
-			}
-			if (typeof object[property] === "object"){
-				exports.sanitizeObject(object[property]);
-			}
-		}
-	}
-};
-
 exports.ping = function(req, res) {
 	exports.success(res, { result: 'pong' });
 };

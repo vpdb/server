@@ -54,96 +54,80 @@ exports.variationData = function(metadata) {
 	};
 };
 
-exports.postprocess = function(queue, file, done) {
 
-	if (config.vpdb.skipImageOptimizations) {
-		return done();
-	}
-	if (file.getMimeSubtype() !== 'png') {
-		return done();
-	}
+exports.pass1 = function(file, variation, done) {
+
+	// check for source file availability
 	if (!fs.existsSync(file.getPath())) {
-		return done();
+		logger.warn('[image|pass1] File "%s" not available anymore, aborting.', file.getPath());
+		return done('File "' + file.getPath() + '" gone, has been removed before processing finished.');
 	}
 
+	// create destination stream
+	var dest = file.getPath(variation);
+	var writeStream = fs.createWriteStream(dest);
+	logger.info('[image|pass1] Setup write stream at %s.', dest);
 	var handleErr = function(err) {
+		logger.error('[image|pass1] Error processing %s "%s" (%s)...', file.file_type, file.id, variation.name);
 		done(err);
 	};
-
-	var tmppath = file.getPath() + '_tmp';
-	var writeStream = fs.createWriteStream(tmppath);
 	writeStream.on('finish', function() {
-		logger.info('[storage|image] All done, switching images..');
-		if (fs.existsSync(file.getPath())) {
-			fs.unlinkSync(file.getPath());
-		}
-		if (fs.existsSync(tmppath)) {
-			fs.rename(tmppath, file.getPath(), done);
-		} else {
-			done();
-		}
+		logger.info('[image|pass1] Saved resized image to "%s".', dest);
+		done();
 	});
 	writeStream.on('error', handleErr);
 
-	var quanter = new PngQuant([128]);
-	var optimizer = new OptiPng(['-o7']);
-
-	logger.info('[storage|image] Optimizing %s "%s"...', file.file_type, file.name);
-	fs.createReadStream(file.getPath())
-		.pipe(quanter).on('error', handleErr)
-		.pipe(optimizer).on('error', handleErr)
+	var srcPath = file.getPath();
+	logger.info('[image|pass1] Resizing %s "%s" (%s)...', file.file_type, file.id, variation.name);
+	gm(srcPath).resize(variation.width, variation.height)
+		.stream().on('error', handleErr)
 		.pipe(writeStream).on('error', handleErr);
 };
 
 
-exports.postprocessVariation = function(queue, file, variation, next) {
+exports.pass2 = function(file, variation, done) {
 
-	queue.emit('started', file, variation);
-	logger.info('[storage|image] Starting image processing of "%s" variation "%s"...', file.id, variation.name);
-
-	if (!fs.existsSync(file.getPath())) {
-		logger.warn('[storage|image] File "%s" not available anymore, aborting.', file.getPath());
-		return next('File "' + file.getPath() + '" gone, has been removed before processing finished.');
+	// check for source file availability
+	var variationLogName = variation ? variation.name : 'original';
+	var src = file.getPath(variation);
+	if (!fs.existsSync(src)) {
+		logger.warn('[image|pass2] File "%s" not available anymore, aborting.', src);
+		return done('File "' + src + '" gone, has been removed before processing finished.');
 	}
 
-	var filepath = file.getPath(variation.name);
-	var writeStream = fs.createWriteStream(filepath);
-	logger.info('[storage|image] Setup write stream at %s.', filepath);
-	var handleErr = function(err) {
-		logger.error('[storage|image] Error: ' + err);
-		next(err);
-	};
+	if (file.getMimeSubtype() !== 'png') {
+		return done('Skipping pass 2 for image type "' + file.getMimeSubtype() + '".');
+	}
+
+	// create destination stream
+	var dest = src + '_processing';
+	var writeStream = fs.createWriteStream(dest);
+
+	// setup success handler
 	writeStream.on('finish', function() {
-		logger.info('[storage|image] Saved resized image to "%s".', filepath);
-		queue.emit('processed', file, variation, 'image');
-		next();
+		logger.info('[image|pass2] Finished pass 2 for %s "%s" (%s)...', file.file_type, file.id, variationLogName);
+		if (fs.existsSync(src) && fs.existsSync(dest)) {
+			fs.unlinkSync(src);
+			fs.rename(dest, src, done);
+		} else {
+			done();
+		}
 	});
+
+	// setup error handler
+	var handleErr = function(err) {
+		logger.error('[image|pass2] Error processing %s "%s" (%s)...', file.file_type, file.id, variationLogName);
+		done(err);
+	};
 	writeStream.on('error', handleErr);
 
-	if (file.getMimeSubtype() === 'png') {
+	// do the processing
+	var quanter = new PngQuant([128]);
+	var optimizer = new OptiPng(['-o7']);
 
-		if (config.vpdb.skipImageOptimizations) {
-			var srcPath = file.getPath();
-			logger.info('[storage|image] Resizing "%s" for %s %s...', file.name, variation.name, file.file_type);
-			gm(srcPath).resize(variation.width, variation.height)
-				.stream().on('error', handleErr)
-				.pipe(writeStream).on('error', handleErr);
-
-		} else {
-			var quanter = new PngQuant([128]);
-			var optimizer = new OptiPng(['-o7']);
-
-			logger.info('[storage|image] Resizing and optimizing "%s" for %s %s...', file.name, variation.name, file.file_type);
-			gm(file.getPath()).resize(variation.width, variation.height).stream()
-				.pipe(quanter).on('error', handleErr)
-				.pipe(optimizer).on('error', handleErr)
-				.pipe(writeStream).on('error', handleErr);
-		}
-
-	} else {
-		logger.info('[storage|image] Resizing "%s" for %s %s...', file.name, variation.name, file.file_type);
-		gm(file.getPath())
-			.resize(variation.width, variation.height).stream()
-			.pipe(writeStream).on('error', handleErr);
-	}
+	logger.info('[image|pass2] Optimizing %s "%s" (%s)...', file.file_type, file.id, variationLogName);
+	fs.createReadStream(src)
+		.pipe(quanter).on('error', handleErr)
+		.pipe(optimizer).on('error', handleErr)
+		.pipe(writeStream).on('error', handleErr);
 };

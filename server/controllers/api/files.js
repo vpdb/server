@@ -79,7 +79,7 @@ exports.upload = function(req, res) {
 						return api.success(res, file.toDetailed(), 201);
 					}
 
-					api.sanitizeObject(metadata);
+					File.sanitizeObject(metadata);
 					file.metadata = metadata;
 					file.save(function(err, file) {
 						/* istanbul ignore if */

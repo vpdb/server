@@ -148,6 +148,36 @@ FileSchema.methods.getMimeSubtype = function() {
 
 
 //-----------------------------------------------------------------------------
+// STATIC METHODS
+//-----------------------------------------------------------------------------
+
+/**
+ * A helper method that replaces the "$" and "." character in order to be able
+ * to store non-structured objects in MongoDB.
+ *
+ * @param object Object that is going to end up in MongoDB
+ * @param [replacement=-] (optional) Replacement character
+ */
+FileSchema.statics.sanitizeObject = function(object, replacement) {
+	replacement = replacement || '-';
+	var oldProp;
+	for (var property in object) {
+		if (object.hasOwnProperty(property)) {
+			if (/\.|\$/.test(property)) {
+				oldProp = property;
+				property = oldProp.replace(/\.|\$/g, replacement);
+				object[property] = object[oldProp];
+				delete object[oldProp];
+			}
+			if (typeof object[property] === "object"){
+				FileSchema.statics.sanitizeObject(object[property]);
+			}
+		}
+	}
+};
+
+
+//-----------------------------------------------------------------------------
 // TRIGGERS
 //-----------------------------------------------------------------------------
 FileSchema.post('remove', function(obj, done) {

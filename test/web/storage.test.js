@@ -126,12 +126,12 @@ describe('The storage engine of VPDB', function() {
 					});
 			});
 
-			it('should block until the file is finished processing when requesting the variation', function(done) {
+			it.only('should block until the file is finished processing when requesting the variation', function(done) {
 
 				hlp.file.createBackglass('member', request, function(backglass) {
 					request.get(backglass.variations['small-2x'].url).as('member').end(function(err, res) {
 						hlp.expectStatus(err, res, 200);
-						hlp.doomFile('member', backglass.id);
+						//hlp.doomFile('member', backglass.id);
 						expect(res.headers['content-length']).to.be.greaterThan(0);
 						done();
 					});

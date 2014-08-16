@@ -29,7 +29,36 @@ var OptiPng = require('optipng');
 
 var config = require('../settings').current;
 
-exports.metadata = function(file, variation, done) {
+
+/**
+ * Image processor.
+ *
+ * Pass 1
+ * Resizes the image
+ *
+ * Pass 2
+ * Crunches PNG files using pngquant and optipng.
+ *
+ * @constructor
+ */
+function ImageProcessor() {
+	this.name = 'image';
+
+	this.variations = {
+		backglass: [
+			{ name: 'medium',    width: 364, height: 291 },
+			{ name: 'medium-2x', width: 728, height: 582 },
+			{ name: 'small',     width: 253, height: 202 },
+			{ name: 'small-2x',  width: 506, height: 404 }
+		],
+		playfield: [
+			{ name: 'medium',    width: 393, height: 233 },
+			{ name: 'medium-2x', width: 786, height: 466 }
+		]
+	};
+}
+
+ImageProcessor.prototype.metadata = function(file, variation, done) {
 	if (_.isFunction(variation)) {
 		done = variation;
 		variation = undefined;
@@ -43,19 +72,26 @@ exports.metadata = function(file, variation, done) {
 	});
 };
 
-exports.metadataShort = function(metadata) {
+ImageProcessor.prototype.metadataShort = function(metadata) {
 	return _.pick(metadata, 'format', 'size', 'depth', 'JPEG-Quality');
 };
 
-exports.variationData = function(metadata) {
+ImageProcessor.prototype.variationData = function(metadata) {
 	return {
 		width: metadata.size.width,
 		height: metadata.size.height
 	};
 };
 
-
-exports.pass1 = function(file, variation, done) {
+/**
+ * Resizes the image
+ *
+ * @param file
+ * @param variation
+ * @param done
+ * @returns {*}
+ */
+ImageProcessor.prototype.pass1 = function(file, variation, done) {
 
 	// check for source file availability
 	if (!fs.existsSync(file.getPath())) {
@@ -84,8 +120,15 @@ exports.pass1 = function(file, variation, done) {
 		.pipe(writeStream).on('error', handleErr);
 };
 
-
-exports.pass2 = function(file, variation, done) {
+/**
+ * If PNG image, crunches the image down.
+ *
+ * @param file
+ * @param variation
+ * @param done
+ * @returns {*}
+ */
+ImageProcessor.prototype.pass2 = function(file, variation, done) {
 
 	// check for source file availability
 	var variationLogName = variation ? variation.name : 'original';
@@ -131,3 +174,5 @@ exports.pass2 = function(file, variation, done) {
 		.pipe(optimizer).on('error', handleErr)
 		.pipe(writeStream).on('error', handleErr);
 };
+
+module.exports = new ImageProcessor();

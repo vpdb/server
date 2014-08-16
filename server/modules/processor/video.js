@@ -26,7 +26,28 @@ var ffmpeg = require('fluent-ffmpeg');
 
 var config = require('../settings').current;
 
-exports.metadata = function(file, variation, done) {
+/**
+ * Video processor.
+ *
+ * Pass 1
+ * Creates the screenshots from the video
+ *
+ * Pass 2
+ * Re-encodes the video if necessary and processes video-resizes
+ *
+ * @constructor
+ */
+function VideoProcessor() {
+	this.name = 'video';
+
+	this.variations = {
+		playfield: [
+			{ name: 'small', width: 480, height: 270 }
+		]
+	};
+}
+
+VideoProcessor.prototype.metadata = function(file, variation, done) {
 	if (_.isFunction(variation)) {
 		done = variation;
 		variation = undefined;
@@ -41,7 +62,7 @@ exports.metadata = function(file, variation, done) {
 	});
 };
 
-exports.metadataShort = function(metadata) {
+VideoProcessor.prototype.metadataShort = function(metadata) {
 	var short = {};
 	if (metadata.format) {
 		short = _.pick(metadata.format, 'format_name', 'format_long_name', 'duration', 'bit_rate');
@@ -59,14 +80,14 @@ exports.metadataShort = function(metadata) {
 	return short;
 };
 
-exports.variationData = function(metadata) {
+VideoProcessor.prototype.variationData = function(metadata) {
 	return {
 		todo: 'no joke.'
 	};
 };
 
 
-exports.postprocess = function(queue, file, done) {
+VideoProcessor.prototype.postprocess = function(queue, file, done) {
 
 	if (!fs.existsSync(file.getPath())) {
 		return done();
@@ -74,7 +95,7 @@ exports.postprocess = function(queue, file, done) {
 	done();
 };
 
-exports.postprocessVariation = function(queue, file, variation, next) {
+VideoProcessor.prototype.postprocessVariation = function(queue, file, variation, next) {
 
 	queue.emit('started', file, variation);
 	logger.info('[storage|video] Starting video processing of "%s" variation "%s"...', file.id, variation.name);

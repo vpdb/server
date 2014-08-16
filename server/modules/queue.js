@@ -28,33 +28,48 @@ var logger = require('winston');
 var config = require('./settings').current;
 
 /**
- * The processing queue. This is used for post-processing uploaded files and is executed asynchronously after the
- * response has already been returned to the client.
+ * The processing queue.
+ *
+ * This is used for post-processing of uploaded files and is executed asynchronously after the response has already been
+ * returned to the client. For the processing, a MIME type dependent processing module is used.
  *
  * A processing module can implement two processing passes.
  *
  * - PASS 1 is spawned instantly and processed in parallel. It is only executed for variations, since the goal
  *   of pass 1 is to obtain a new variation as soon as possible (for images, that would be the resizing).
  *   If this pass is implemented, the callbacks of waiting requests will be executed after completion.
- * - PASS 2 is added to the message queue and processed one after another. The goal of pass 2 is to further optimize
+ * - PASS 2 is added to the message queue and processed only one by one. The goal of pass 2 is to further optimize
  *   the file, which could be processor-intensive (for images, that would be the PNG crunching). If pass 1 is not
  *   implemented, the callbacks of waiting requests will be executed after this pass.
  *
  * Lifecycle:
  *
- * 1. A new file was uploaded and Queue##add is called.
- * 2. A job is added to the Bull queue that contains the file id, variation if set and the processor name.
- * 3. At some point, the processFile method below gets called. It:
- *    - Fetches the file object from the DB using the file id
- *    - Instantiates the processor using the name
- *    - Executes the processor with the file
- * 4. The processor does its thing and emits the "processed" event.
- * 5. The storage module, which is subscribed to the "processed" event finishes the processing by
+ * 1. A new file was uploaded and Queue##add is called. this.queuedFiles is updated so we know it's being processed.
+ * 2. Pass 1 is instantly executed on the appropriate processor.
+ * 3. When pass 1 is finished, the "processed" event is emitted.
+ * 4. The storage module, which is subscribed to the "processed" event finishes pass 1 by
  *    - retrieving meta-data of the new file
  *    - updating the "variations" field of the file
  *    - saving the file to the DB
- * 6. The storage module emits the "finished" event on the queue module.
- * 7. The queue module checks for eventual callbacks and calls them if necessary, otherwise concludes the life cycle.
+ *    - emitting the "finishedPass1" event
+ * 5. The "finishedPass1" triggers does two things:
+ *    - Run eventual callbacks at this.queuedFiles, since now we have a file to offer
+ *    - Start pass 2, which adds a job to the Bull queue containing the file id, variation if set and the processor name.
+ * 6. At some point, the processFile method below gets called. It:
+ *    - Fetches the file object from the DB using the file id
+ *    - Instantiates the processor using the name
+ *    - Executes the processor with the file
+ * 7. The processor does its thing and emits the "processed" event.
+ * 8. Again, the storage module catches the event, retrieves metadata, updates the database, but this time emits the
+ *    "finishedPass2" event.
+ * 9. The queue module checks for eventual callbacks and calls them if necessary, otherwise concludes the life cycle.
+ *
+ * A few notes:
+ *  - This flow is repeated for each variation plus the original file.
+ *  - If the processor module does not defined a pass1() method, step 2.-4. are skipped and pass 2 is started
+ *    immediately.
+ *  - If there is no pass2() in the processor, the flow finishes with step 5.
+ *  - See comments of each processing module what is done in pass1 and pass2.
  *
  * @constructor
  */
@@ -109,7 +124,7 @@ function Queue() {
 					return done(err);
 				}
 				logger.info('[queue] Pass 2 done for %s "%s" (%s).', file.file_type, file.id, variation ? variation.name : 'original');
-				that.emit('processed', file, variation, opts.processor, 'finishedPass2');
+				that.emit('processed', file, variation, processor, 'finishedPass2');
 				done();
 			});
 
@@ -143,12 +158,11 @@ function Queue() {
 		}
 	});
 
-	this.on('finishedPass1', function(file, variation, processorName) {
+	this.on('finishedPass1', function(file, variation, processor) {
 		var key = variation ? file.id + '/' + variation.name : file.id;
-		var processor = require('./processor/' + processorName);
 		// run pass 2
 		if (processor.pass2) {
-			this.queues[processorName].add({ fileId: file._id, variation: variation }, { processor: processorName });
+			this.queues[processor.name].add({ fileId: file._id, variation: variation }, { processor: processor.name });
 			logger.info('[queue] Pass 1 done (or skipped), adding %s "%s" (%s) to queue (%d callbacks).', file.file_type, file.id, variation ? variation.name : 'original', that.queuedFiles[key] ? that.queuedFiles[key].length : 0);
 		}
 		processQueue(file, variation, require('./storage'));
@@ -170,11 +184,10 @@ function Queue() {
 util.inherits(Queue, events.EventEmitter);
 
 
-Queue.prototype.add = function(file, variation, processorName) {
+Queue.prototype.add = function(file, variation, processor) {
 
 	var that = this;
 	var key = variation ? file.id + '/' + variation.name : file.id;
-	var processor = require('./processor/' + processorName);
 
 	// mark file as being processed
 	this.queuedFiles[key] = [];
@@ -185,11 +198,11 @@ Queue.prototype.add = function(file, variation, processorName) {
 			if (err) {
 				return that.emit('error', err, file, variation);
 			}
-			that.emit('processed', file, variation, processorName, 'finishedPass1');
+			that.emit('processed', file, variation, processor, 'finishedPass1');
 		});
 
 	} else {
-		that.emit('finishedPass1', file, variation, processorName);
+		that.emit('finishedPass1', file, variation, processor);
 	}
 };
 

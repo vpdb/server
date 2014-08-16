@@ -60,25 +60,8 @@ function Storage() {
 }
 
 Storage.prototype.variations = {
-
-	image: {
-		backglass: [
-			{ name: 'medium',    width: 364, height: 291 },
-			{ name: 'medium-2x', width: 728, height: 582 },
-			{ name: 'small',     width: 253, height: 202 },
-			{ name: 'small-2x',  width: 506, height: 404 }
-		],
-		playfield: [
-			{ name: 'medium',    width: 393, height: 233 },
-			{ name: 'medium-2x', width: 786, height: 466 }
-		]
-	},
-
-	video: {
-		playfield: [
-			{ name: 'small', width: 480, height: 270 }
-		]
-	}
+	image: processors.image.variations,
+	video: processors.video.variations
 };
 
 /**
@@ -205,12 +188,12 @@ Storage.prototype.postprocess = function(file) {
 	// add variations to queue
 	if (this.variations[type] && this.variations[type][file.file_type]) {
 		_.each(this.variations[type][file.file_type], function(variation) {
-			queue.add(file, variation, type);
+			queue.add(file, variation, processors[type]);
 		});
 	}
 
 	// add actual file to queue
-	queue.add(file, undefined, type);
+	queue.add(file, undefined, processors[type]);
 };
 
 
@@ -223,17 +206,17 @@ Storage.prototype.postprocess = function(file) {
  *
  * @param {File} file - File that finished processing
  * @param {object} variation - Variation of the file, null if original file
- * @param {string} processorName - Name of the processor
+ * @param {Object} processor - Processor instance
  * @param {string} nextEvent - Which event to call on the queue in order to continue the flow
  */
-Storage.prototype.onProcessed = function(file, variation, processorName, nextEvent) {
+Storage.prototype.onProcessed = function(file, variation, processor, nextEvent) {
 
 	var filepath = file.getPath(variation);
 	var done = function(err) {
 		if (err) {
 			return queue.emit('error', err, file, variation);
 		}
-		queue.emit(nextEvent, file, variation, processorName);
+		queue.emit(nextEvent, file, variation, processor);
 	};
 
 	if (!fs.existsSync(filepath)) {
@@ -241,7 +224,7 @@ Storage.prototype.onProcessed = function(file, variation, processorName, nextEve
 	}
 
 	// update database with new variation
-	processors[processorName].metadata(file, variation, function(err, metadata) {
+	processor.metadata(file, variation, function(err, metadata) {
 		if (err) {
 			return;
 		}
@@ -270,7 +253,7 @@ Storage.prototype.onProcessed = function(file, variation, processorName, nextEve
 				if (!file.variations) {
 					file.variations = {};
 				}
-				file.variations[variation.name] = _.extend(processors[processorName].variationData(metadata),  { bytes: fs.statSync(filepath).size });
+				file.variations[variation.name] = _.extend(processor.variationData(metadata),  { bytes: fs.statSync(filepath).size });
 				logger.info('[storage] Updating %s "%s" with variation %s.', file.file_type, file.id, variation.name);
 
 			} else {

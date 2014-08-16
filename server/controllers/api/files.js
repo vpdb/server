@@ -126,6 +126,7 @@ exports.del = function(req, res) {
 			return api.fail(res, 'Cannot remove active file.', 400);
 		}
 
+		// note: physical rm on disk is triggered by mongoose.
 		file.remove(function(err) {
 			/* istanbul ignore if */
 			if (err) {

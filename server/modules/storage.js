@@ -115,6 +115,24 @@ Storage.prototype.remove = function(file) {
 		} catch (err) {
 			/* istanbul ignore next */
 			logger.error('[storage] %s', err);
+
+			// if this is a busy problem, try again in a few.
+			var retries = 0;
+			var intervalId = setInterval(function() {
+				if (!fs.existsSync(filePath)) {
+					return clearInterval(intervalId);
+				}
+				if (++retries > 10) {
+					logger.error('[storage] Still could not unlink %s, giving up.', filePath);
+					return clearInterval(intervalId);
+				}
+				try {
+					fs.unlinkSync(filePath);
+					clearInterval(intervalId);
+				} catch (err) {
+					logger.warn('[storage] Still could not unlink %s (try %d): %s', filePath, retries, err.toString());
+				}
+			}, 500);
 		}
 	}
 	if (this.variations[file.getMimeType()] && this.variations[file.getMimeType()][file.file_type]) {
@@ -214,20 +232,21 @@ Storage.prototype.onProcessed = function(file, variation, processor, nextEvent) 
 	var filepath = file.getPath(variation);
 	var done = function(err) {
 		if (err) {
-			logger.info('[storage] Error when writing back metadata to database, aborting post-processing for %s.', file.toString(variation));
+			logger.warn('[storage] Error when writing back metadata to database, aborting post-processing for %s.', file.toString(variation));
 			return queue.emit('error', err, file, variation);
 		}
 		queue.emit(nextEvent, file, variation, processor);
 	};
 
 	if (!fs.existsSync(filepath)) {
-		return done('File "' + filepath + '" gone, has been removed before processing finished.');
+		// we don't care here, it's possible that a pass was simply skipped.
+		return done();
 	}
 
 	// update database with new variation
 	processor.metadata(file, variation, function(err, metadata) {
 		if (err) {
-			return;
+			return done(err);
 		}
 
 		// re-fetch so we're sure no updates are lost
@@ -245,6 +264,7 @@ Storage.prototype.onProcessed = function(file, variation, processor, nextEvent) 
 				return done('File "' + fileId + '" gone, has been removed before processing finished.');
 			}
 			if (!fs.existsSync(filepath)) {
+				// here we care: we came so far, so this was definitely deleted while we were away
 				return done('File "' + filepath + '" gone, has been deleted before processing finished.');
 			}
 

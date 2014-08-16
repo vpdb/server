@@ -109,7 +109,7 @@ VideoProcessor.prototype.pass1 = function(src, dest, file, variation, done) {
 		.frames(1)
 		.seek(variation.position || '0:01')
 		.on('error', function(err) {
-			logger.error('[video|pass1] %s', err);
+			logger.error('[video|pass1] %s', err.message, err);
 			done(err);
 		})
 		.on('progress', function(progress) {

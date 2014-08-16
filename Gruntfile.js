@@ -155,7 +155,7 @@ module.exports = function(grunt) {
 
 			// test watch
 			test: { files: [ 'test/api/**/*.js', 'test/modules/**/*.js' ,'test/web/**/*.js' ], options: { spawn: true, debounceDelay: 100, atBegin: true },
-			      tasks:   [ 'mkdir:coverage', 'waitServer', 'mochaTest', 'istanbul-middleware:download'/*, 'restart', 'reload' */] }
+			      tasks:   [ 'mkdir:coverage', 'waitServer', 'mochaTest', 'istanbul-middleware:download', 'restart', 'reload' ] }
 		}
 	};
 	grunt.config.init(config);

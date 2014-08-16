@@ -120,8 +120,15 @@ function Queue() {
 				return done();
 			}
 			// define paths
+			var postRename = true;
 			var src = file.getPath(variation);
 			var dest = file.getPath(variation, '_processing');
+
+			if (!fs.existsSync(src)) { // no processed file could also mean first pass skipped, so try with original -> variation
+				postRename = false;
+				src = file.getPath();
+				dest = file.getPath(variation);
+			}
 
 			if (!fs.existsSync(src)) {
 				logger.warn('[queue|pass2] Aborting before pass 2, %s is not on file system.', file.toString(variation));
@@ -137,9 +144,13 @@ function Queue() {
 					return done(err);
 				}
 				// switch images
-				if (fs.existsSync(src) && fs.existsSync(dest)) {
-					fs.unlinkSync(src);
-					fs.renameSync(dest, src);
+				if (postRename && fs.existsSync(src) && fs.existsSync(dest)) {
+					try {
+						fs.unlinkSync(src);
+						fs.renameSync(dest, src);
+					} catch (err) {
+						logger.error('[queue] Error switching %s to %s: ', dest, src, err);
+					}
 				}
 				logger.info('[queue|pass2] Pass 2 done for %s', file.toString(variation));
 				that.emit('processed', file, variation, processor, 'finishedPass2');
@@ -189,7 +200,7 @@ function Queue() {
 	});
 
 	this.on('error', function(err, file, variation) {
-		logger.error('[queue] Error processing %s: %s', file.toString(variation), err);
+		logger.warn('[queue] Error processing %s: %s', file.toString(variation), err);
 		processQueue(file, variation);
 	});
 

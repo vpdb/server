@@ -81,6 +81,18 @@ Storage.prototype.variations = {
 	}
 };
 
+/**
+ * This is called when we get a request for a storage item that exists in the
+ * database but not on the file system.
+ * It checks if the item in question is being processed and adds the callback
+ * to a queue that is executed when the item has finished processing. If not,
+ * the callback is executed immediately.
+ *
+ * @param file File to check
+ * @param variationName Variation of the file
+ * @param callback Callback to execute upon processing or error
+ * @returns {*}
+ */
 Storage.prototype.whenProcessed = function(file, variationName, callback) {
 	/* istanbul ignore if */
 	if (!queue.isQueued(file, variationName)) {
@@ -138,6 +150,17 @@ Storage.prototype.remove = function(file) {
 	}
 };
 
+/**
+ * Metadata callback function
+ * @callback metadataCallback
+ * @param {Error} If set, an error has occurred
+ * @param {object} Metadata
+ */
+/**
+ * Retrieves metadata for a given file using the processor of the file type.
+ * @param {File} file
+ * @param {metadataCallback} done Callback
+ */
 Storage.prototype.metadata = function(file, done) {
 	var type = file.getMimeType();
 	if (!processors[type]) {
@@ -147,6 +170,14 @@ Storage.prototype.metadata = function(file, done) {
 	processors[type].metadata(file, done);
 };
 
+/**
+ * Strips the original metadata down to something that is sent to the client
+ * via the API.
+ *
+ * @param {File} file
+ * @param {Object} metadata
+ * @returns {object} Reduced metadata
+ */
 Storage.prototype.metadataShort = function(file, metadata) {
 	var data = metadata ? metadata : file.metadata;
 	var type = file.getMimeType();
@@ -159,6 +190,12 @@ Storage.prototype.metadataShort = function(file, metadata) {
 	return processors[type].metadataShort(data);
 };
 
+/**
+ * Starts post-processing an uploaded file. See the `queue` module for a
+ * complete description of the flow.
+ *
+ * @param {File} file
+ */
 Storage.prototype.postprocess = function(file) {
 	var type = file.getMimeType();
 	if (!processors[type]) {
@@ -176,6 +213,19 @@ Storage.prototype.postprocess = function(file) {
 	queue.add(file, undefined, type);
 };
 
+
+/**
+ * Gets called when a processor has produced a new version of a file, or a
+ * variation of it. It reads the metadata and updates the file entry in the
+ * database.
+ *
+ * This is executed after each processing pass for each file and variation.
+ *
+ * @param {File} file - File that finished processing
+ * @param {object} variation - Variation of the file, null if original file
+ * @param {string} processorName - Name of the processor
+ * @param {string} nextEvent - Which event to call on the queue in order to continue the flow
+ */
 Storage.prototype.onProcessed = function(file, variation, processorName, nextEvent) {
 
 	var filepath = file.getPath(variation);
@@ -237,8 +287,8 @@ Storage.prototype.onProcessed = function(file, variation, processorName, nextEve
 
 /**
  * Returns the absolute URL of a given file.
- * @param file
- * @param variation
+ * @param {File} file
+ * @param {object} variation
  * @returns {string}
  */
 Storage.prototype.url = function(file, variation) {
@@ -247,7 +297,7 @@ Storage.prototype.url = function(file, variation) {
 
 /**
  * Returns URLs of all variations of a given file.
- * @param file
+ * @param {File} file
  * @returns {object} Keys are the variation name, values are the urls
  */
 Storage.prototype.urls = function(file) {

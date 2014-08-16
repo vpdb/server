@@ -126,7 +126,7 @@ describe('The storage engine of VPDB', function() {
 					});
 			});
 
-			it.only('should block until the file is finished processing when requesting the variation', function(done) {
+			it('should block until the file is finished processing when requesting the variation', function(done) {
 
 				hlp.file.createBackglass('member', request, function(backglass) {
 					request.get(backglass.variations['small-2x'].url).as('member').end(function(err, res) {

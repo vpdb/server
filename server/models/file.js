@@ -109,12 +109,14 @@ FileSchema.methods.toDetailed = function() {
  * @return {Object|String} Either variation name or object containing attribute "name"
  * @api public
  */
-FileSchema.methods.getPath = function(variation) {
+FileSchema.methods.getPath = function(variation, tmpSuffix) {
 	var variationName = _.isObject(variation) ? variation.name : variation;
-	var ext = '.' + mimeTypes[this.mime_type].ext;
+	var mimeType = _.isObject(variation) && variation.mimeType ? variation.mimeType : this.mime_type;
+	var suffix = tmpSuffix || '';
+	var ext = '.' + mimeTypes[mimeType].ext;
 	return variationName ?
-		path.resolve(config.vpdb.storage, variationName, this.id) + ext :
-		path.resolve(config.vpdb.storage, this.id) + ext;
+		path.resolve(config.vpdb.storage, variationName, this.id) + suffix + ext :
+		path.resolve(config.vpdb.storage, this.id) + suffix + ext;
 };
 
 /**
@@ -146,6 +148,9 @@ FileSchema.methods.getMimeSubtype = function() {
 	return this.mime_type.split('/')[1];
 };
 
+FileSchema.methods.toString = function(variation) {
+	return this.file_type + ' "' + this.id + '"' + (variation ? ' (' + variation.name + ')' : '');
+};
 
 //-----------------------------------------------------------------------------
 // STATIC METHODS

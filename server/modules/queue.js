@@ -20,6 +20,7 @@
 "use strict";
 
 var _ = require('underscore');
+var fs = require('fs');
 var queue = require('bull');
 var util  = require('util');
 var events = require('events');
@@ -110,20 +111,37 @@ function Queue() {
 		File.findById(job.data.fileId, function(err, file) {
 			/* istanbul ignore if */
 			if (err) {
-				logger.error('[storage|queue] Error getting file with ID "%s".', job.data.fileId);
-				return done();
-			}
-			if (!file) {
-				logger.warn('[storage|queue] File "%s" already gone, aborting.', job.data.fileId);
+				logger.error('[queue|pass2] Error getting file with ID "%s".', job.data.fileId);
 				return done();
 			}
 			var variation = job.data.variation;
-			processor.pass2(file, variation, function(err) {
+			if (!file) {
+				logger.warn('[queue|pass2] Aborting before pass 2, file "%s" is not in database.', job.data.fileId);
+				return done();
+			}
+			// define paths
+			var src = file.getPath(variation);
+			var dest = file.getPath(variation, '_processing');
+
+			if (!fs.existsSync(src)) {
+				logger.warn('[queue|pass2] Aborting before pass 2, %s is not on file system.', file.toString(variation));
+				return done();
+			}
+
+			processor.pass2(src, dest, file, variation, function(err) {
 				if (err) {
+					if (fs.existsSync(dest)) {
+						fs.unlinkSync(dest);
+					}
 					that.emit('error', err, file, variation);
 					return done(err);
 				}
-				logger.info('[queue] Pass 2 done for %s "%s" (%s).', file.file_type, file.id, variation ? variation.name : 'original');
+				// switch images
+				if (fs.existsSync(src) && fs.existsSync(dest)) {
+					fs.unlinkSync(src);
+					fs.renameSync(dest, src);
+				}
+				logger.info('[queue|pass2] Pass 2 done for %s', file.toString(variation));
 				that.emit('processed', file, variation, processor, 'finishedPass2');
 				done();
 			});
@@ -151,11 +169,7 @@ function Queue() {
 	this.queues.video.process(processFile);
 
 	this.on('started', function(file, variation, processorName) {
-		if (variation) {
-			logger.info('[queue] Starting %s processing of "%s" variation "%s"...', processorName, file.id, variation.name);
-		} else {
-			logger.info('[queue] Starting %s processing of "%s"...', processorName, file.id);
-		}
+		logger.info('[queue] Starting %s processing of %s', processorName, file.toString(variation));
 	});
 
 	this.on('finishedPass1', function(file, variation, processor) {
@@ -163,20 +177,19 @@ function Queue() {
 		// run pass 2
 		if (processor.pass2) {
 			this.queues[processor.name].add({ fileId: file._id, variation: variation }, { processor: processor.name });
-			logger.info('[queue] Pass 1 done (or skipped), adding %s "%s" (%s) to queue (%d callbacks).', file.file_type, file.id, variation ? variation.name : 'original', that.queuedFiles[key] ? that.queuedFiles[key].length : 0);
+			logger.info('[queue] Pass 1 done (or skipped), adding %s to queue (%d callbacks).', file.toString(variation), that.queuedFiles[key] ? that.queuedFiles[key].length : 0);
 		}
 		processQueue(file, variation, require('./storage'));
 	});
 
 	this.on('finishedPass2', function(file, variation) {
 		var key = variation ? file.id + '/' + variation.name : file.id;
-		logger.info('[queue] File %s finished processing, running %d callback(s).', key, that.queuedFiles[key] ? that.queuedFiles[key].length : 0);
+		logger.info('[queue] Finished processing of %s, running %d callback(s).', file.toString(variation), that.queuedFiles[key] ? that.queuedFiles[key].length : 0);
 		processQueue(file, variation, require('./storage'));
 	});
 
 	this.on('error', function(err, file, variation) {
-		var key = variation ? file.id + '/' + variation.name : file.id;
-		logger.error('[queue] Error processing file %s: %s', key, err);
+		logger.error('[queue] Error processing %s: %s', file.toString(variation), err);
 		processQueue(file, variation);
 	});
 
@@ -194,7 +207,14 @@ Queue.prototype.add = function(file, variation, processor) {
 
 	// run pass 1 if available in processor
 	if (processor.pass1 && variation) {
-		processor.pass1(file, variation, function(err) {
+
+		// check for source file availability
+		if (!fs.existsSync(file.getPath())) {
+			logger.warn('[queue|pass1] Aborting before pass 1, %s is not on file system.', file.toString(variation));
+			return that.emit('error', 'File gone before pass 1 could start.', file, variation);
+		}
+
+		processor.pass1(file.getPath(), file.getPath(variation), file, variation, function(err) {
 			if (err) {
 				return that.emit('error', err, file, variation);
 			}

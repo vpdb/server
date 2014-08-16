@@ -214,6 +214,7 @@ Storage.prototype.onProcessed = function(file, variation, processor, nextEvent) 
 	var filepath = file.getPath(variation);
 	var done = function(err) {
 		if (err) {
+			logger.info('[storage] Error when writing back metadata to database, aborting post-processing for %s.', file.toString(variation));
 			return queue.emit('error', err, file, variation);
 		}
 		queue.emit(nextEvent, file, variation, processor);

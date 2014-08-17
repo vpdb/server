@@ -33,7 +33,6 @@
 		"angulartics": "~0.16.1",
 		"ng-file-upload": "~1.6.5",
 		"ngstorage": "~0.3.0",
-		"underscore": "~1.6.0",
 		"showdown": "~0.3.1",
 		"magnific-popup": "~0.9.9",
 		"waitForImages": "alexanderdickson/waitForImages#~1.4.2",
@@ -46,7 +45,8 @@
 		"videogular-controls": "~0.4.2",
 		"videogular-buffering": "~0.4.2",
 		"videogular-overlay-play": "~0.4.2",
-		"videogular-poster": "~0.4.2"
+		"videogular-poster": "~0.4.2",
+		"lodash": "~2.4.1"
 	},
 	"overrides": {
 		"showdown": {

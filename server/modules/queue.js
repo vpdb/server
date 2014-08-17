@@ -19,7 +19,7 @@
 
 "use strict";
 
-var _ = require('underscore');
+var _ = require('lodash');
 var fs = require('fs');
 var queue = require('bull');
 var util  = require('util');

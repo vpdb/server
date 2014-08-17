@@ -1,7 +1,7 @@
 "use strict";
 
 /*global ctrl, _*/
-ctrl.controller('ReleaseAddCtrl', function($scope, $upload, $modal, $window, $localStorage, AuthService, ApiHelper, FileResource, TagResource, VPBuildResource, DisplayService) {
+ctrl.controller('ReleaseAddCtrl', function($scope, $upload, $modal, $window, $localStorage, AuthService, ApiHelper, FileResource, TagResource, VPBuildResource, DisplayService, MimeTypeService) {
 
 	$scope.theme('light');
 	$scope.setMenu('admin');
@@ -231,6 +231,7 @@ ctrl.controller('ReleaseAddCtrl', function($scope, $upload, $modal, $window, $lo
 	$scope.onMediaUpload = function(id, $files) {
 
 		var file = $files[0];
+		var mimeType = MimeTypeService.fromFile(file);
 
 		$scope.mediaFile[id] = {};
 
@@ -239,7 +240,7 @@ ctrl.controller('ReleaseAddCtrl', function($scope, $upload, $modal, $window, $lo
 		fileReader.readAsArrayBuffer(file);
 		fileReader.onload = function(event) {
 
-			$scope.release.mediaFile[id].url = false;
+			$scope.release.mediaFile[id] = { url: false };
 			$scope.mediaFile[id].uploaded = false;
 			$scope.mediaFile[id].uploading = true;
 			$scope.mediaFile[id].status = 'Uploading file...';
@@ -248,7 +249,7 @@ ctrl.controller('ReleaseAddCtrl', function($scope, $upload, $modal, $window, $lo
 				method: 'POST',
 				params: { type: 'playfield' },
 				headers: {
-					'Content-Type': file.type,
+					'Content-Type': mimeType,
 					'Content-Disposition': 'attachment; filename="' + file.name + '"'
 				},
 				data: event.target.result
@@ -256,21 +257,25 @@ ctrl.controller('ReleaseAddCtrl', function($scope, $upload, $modal, $window, $lo
 				$scope.mediaFile[id].uploading = false;
 				$scope.mediaFile[id].status = 'Uploaded';
 
-				var playfield = response.data;
-				$scope.release.mediaFile[id].url = AuthService.setUrlParam(playfield.variations.medium.url, playfield.is_protected);
-				$scope.release._media.backglass = playfield.id;
+				var mediaResult = response.data;
+				$scope.release.mediaFile[id].url = AuthService.setUrlParam(mediaResult.url, mediaResult.is_protected);
+				$scope.release.mediaFile[id].variations = AuthService.setUrlParam(mediaResult.variations, mediaResult.is_protected);
+				$scope.release._media.backglass = mediaResult.id;
 
-				var ar = Math.round(playfield.metadata.size.width / playfield.metadata.size.height * 1000) / 1000;
+				var ar = Math.round(mediaResult.metadata.size.width / mediaResult.metadata.size.height * 1000) / 1000;
 				var arDiff = Math.abs(ar / 1.25 - 1);
 
 				$scope.mediaFile[id].info = {
-					dimensions: playfield.metadata.size.width + '×' + playfield.metadata.size.height,
+					dimensions: mediaResult.metadata.size.width + '×' + mediaResult.metadata.size.height,
 //					test: ar === 1.25 ? 'optimal' : (arDiff < maxAspectRatioDifference ? 'warning' : 'error'),
 					ar: ar,
 					arDiff: Math.round(arDiff * 100)
 				};
 
-			}, ApiHelper.handleErrorsInDialog($scope, 'Error uploading image.'), function (evt) {
+			}, ApiHelper.handleErrorsInDialog($scope, 'Error uploading image.', function() {
+				$scope.mediaFile[id] = {};
+
+			}), function (evt) {
 				$scope.mediaFile[id].progress = parseInt(100.0 * evt.loaded / evt.total);
 			});
 		};

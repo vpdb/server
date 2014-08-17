@@ -19,7 +19,7 @@
 
 "use strict";
 
-var _ = require('underscore');
+var _ = require('lodash');
 var path = require('path');
 var logger = require('winston');
 var mongoose = require('mongoose');

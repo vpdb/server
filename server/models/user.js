@@ -19,7 +19,7 @@
 
 "use strict";
 
-var _ = require('underscore');
+var _ = require('lodash');
 var crypto = require('crypto');
 var logger = require('winston');
 var shortId = require('shortid');

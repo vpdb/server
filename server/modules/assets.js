@@ -19,7 +19,7 @@
 
 "use strict";
 
-var _ = require('underscore');
+var _ = require('lodash');
 var fs = require('fs');
 var glob = require('glob');
 var path = require('path');

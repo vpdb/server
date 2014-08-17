@@ -19,7 +19,7 @@
 
 "use strict";
 
-var _ = require('underscore');
+var _ = require('lodash');
 var jwt = require('jwt-simple');
 var logger = require('winston');
 var debug = require('debug')('auth');

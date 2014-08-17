@@ -19,7 +19,7 @@
 
 "use strict";
 
-var _ = require('underscore');
+var _ = require('lodash');
 var passport = require('passport');
 
 var config = require('./modules/settings').current;

@@ -200,9 +200,13 @@ services.factory('AuthService', function($window, $localStorage, $sessionStorage
 		 * @returns {string} URL with appended auth token if `isProtected` was true.
 		 */
 		setUrlParam: function(baseUrl, isProtected) {
+			if (!baseUrl) {
+				return false;
+			}
 			if (!isProtected) {
 				return baseUrl;
 			}
+			if (_.isObject(baseUrl))
 			return baseUrl + (~baseUrl.indexOf('?') ? '&' : '?') + 'jwt=' + this.getToken();
 		},
 

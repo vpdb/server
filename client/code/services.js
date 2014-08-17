@@ -35,6 +35,25 @@ services.factory('DisplayService', function() {
 	};
 });
 
+services.factory('MimeTypeService', function() {
+	return {
+		fromFile: function(file) {
+			// check if the browser already set it
+			if (file.type) {
+				return file.type;
+			}
+			var ext = file.name.substr(file.name.lastIndexOf('.'));
+			switch (ext) {
+				case '.f4v':
+					return 'video/x-flv';
+				default:
+					return null;
+			}
+		}
+	};
+});
+
+
 services.factory('ProfileService', function($rootScope, ProfileResource) {
 	return {
 		init: function() {

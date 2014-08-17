@@ -408,6 +408,19 @@
 					span.pre-h4 Playfield
 					h4.h--large Video
 
+					.panel.panel--blank(ng-file-drop="onMediaUpload('playfieldVideo', $files)", ng-file-drag-over-class="panel--dragging")
+						input#uploadBackglass.hide(type="file", ng-file-select="onMediaUpload('playfieldVideo', $files)")
+						.panel-body.a.a--darker(ng-click="openUploadDialog('playfieldVideo', '#uploadBackglass')")
+							.img.img--ar-ws.loaded(img-bg="release.mediaFile.playfieldVideo.url")
+								.text-center.vertical-center--100
+									progressbar.progress--fixed-absolute.progress-striped.active(value="mediaFile.playfieldVideo.progress", ng-show="mediaFile.playfieldVideo.uploading")
+									.span(ng-show="!img.url")
+										i.fa.fa-picture-o.fa-3x(ng-class="{ transparent: mediaFile.playfieldVideo.uploading }")
+										p Click or drag and drop here
+									.span(ng-show="img.loading")
+										i.fa.fa-cog.fa-3x.fa-spin--slow
+										p Generating thumbnails...
+
 					videogular(ng-hide="true", vg-width="config.width", vg-height="config.height", vg-theme="config.theme")
 						video.videoPlayer(controls="", preload="none")
 							source(src="{{ playfieldVideo }}", type="video/mp4")

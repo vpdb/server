@@ -13,6 +13,7 @@ logs
 data/storage*
 results
 server/config/settings.js
+test/coverage
 
 gitinfo.json
 npm-debug.log

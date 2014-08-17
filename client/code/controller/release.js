@@ -60,7 +60,10 @@ ctrl.controller('ReleaseAddCtrl', function($scope, $upload, $modal, $window, $lo
 				incompat: []
 			},
 			_media: {},
-			mediaFile: { url: false }
+			mediaFile: {
+				playfieldImage: { url: false },
+				playfieldVideo: { url: false }
+			}
 		};
 	};
 
@@ -225,19 +228,21 @@ ctrl.controller('ReleaseAddCtrl', function($scope, $upload, $modal, $window, $lo
 	$scope.mediaFile = {};
 
 
-	$scope.onMediaUpload = function($files) {
+	$scope.onMediaUpload = function(id, $files) {
 
 		var file = $files[0];
+
+		$scope.mediaFile[id] = {};
 
 		// upload image
 		var fileReader = new FileReader();
 		fileReader.readAsArrayBuffer(file);
 		fileReader.onload = function(event) {
 
-			$scope.release.mediaFile.url = false;
-			$scope.mediaFile.uploaded = false;
-			$scope.mediaFile.uploading = true;
-			$scope.mediaFile.status = 'Uploading file...';
+			$scope.release.mediaFile[id].url = false;
+			$scope.mediaFile[id].uploaded = false;
+			$scope.mediaFile[id].uploading = true;
+			$scope.mediaFile[id].status = 'Uploading file...';
 			$upload.http({
 				url: '/storage',
 				method: 'POST',
@@ -248,17 +253,17 @@ ctrl.controller('ReleaseAddCtrl', function($scope, $upload, $modal, $window, $lo
 				},
 				data: event.target.result
 			}).then(function(response) {
-				$scope.mediaFile.uploading = false;
-				$scope.mediaFile.status = 'Uploaded';
+				$scope.mediaFile[id].uploading = false;
+				$scope.mediaFile[id].status = 'Uploaded';
 
 				var playfield = response.data;
-				$scope.release.mediaFile.url = AuthService.setUrlParam(playfield.variations.medium.url, playfield.is_protected);
+				$scope.release.mediaFile[id].url = AuthService.setUrlParam(playfield.variations.medium.url, playfield.is_protected);
 				$scope.release._media.backglass = playfield.id;
 
 				var ar = Math.round(playfield.metadata.size.width / playfield.metadata.size.height * 1000) / 1000;
 				var arDiff = Math.abs(ar / 1.25 - 1);
 
-				$scope.mediaFile.info = {
+				$scope.mediaFile[id].info = {
 					dimensions: playfield.metadata.size.width + '×' + playfield.metadata.size.height,
 //					test: ar === 1.25 ? 'optimal' : (arDiff < maxAspectRatioDifference ? 'warning' : 'error'),
 					ar: ar,
@@ -266,10 +271,12 @@ ctrl.controller('ReleaseAddCtrl', function($scope, $upload, $modal, $window, $lo
 				};
 
 			}, ApiHelper.handleErrorsInDialog($scope, 'Error uploading image.'), function (evt) {
-				$scope.mediaFile.progress = parseInt(100.0 * evt.loaded / evt.total);
+				$scope.mediaFile[id].progress = parseInt(100.0 * evt.loaded / evt.total);
 			});
 		};
 	};
+
+	$scope.playfieldVideo = '';
 
 	if ($localStorage.release) {
 		$scope.release  = $localStorage.release;

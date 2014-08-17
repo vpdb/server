@@ -46,7 +46,8 @@
 		"videogular-buffering": "~0.4.2",
 		"videogular-overlay-play": "~0.4.2",
 		"videogular-poster": "~0.4.2",
-		"lodash": "~2.4.1"
+		"lodash": "~2.4.1",
+		"traverse": "~0.6.7"
 	},
 	"overrides": {
 		"showdown": {

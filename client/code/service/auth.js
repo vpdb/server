@@ -1,6 +1,5 @@
-"use strict";
+"use strict"; /* global services, _, traverse */
 
-/*global services, _*/
 services.factory('AuthService', function($window, $localStorage, $sessionStorage, $rootScope, $location) {
 	return {
 
@@ -195,7 +194,7 @@ services.factory('AuthService', function($window, $localStorage, $sessionStorage
 		 * resources where we can't put it into the header because of the
 		 * browser doing the request (like /storage paths).
 		 *
-		 * @param baseUrl URL to append to
+		 * @param {string|object} baseUrl URL to append to. If an object is passed, all props with key `url` will be updated.
 		 * @param isProtected Only add if set true
 		 * @returns {string} URL with appended auth token if `isProtected` was true.
 		 */
@@ -206,8 +205,17 @@ services.factory('AuthService', function($window, $localStorage, $sessionStorage
 			if (!isProtected) {
 				return baseUrl;
 			}
-			if (_.isObject(baseUrl))
-			return baseUrl + (~baseUrl.indexOf('?') ? '&' : '?') + 'jwt=' + this.getToken();
+			if (_.isObject(baseUrl)) {
+				var that = this;
+				return traverse.map(baseUrl, function(url) {
+					if (this.key === 'url') {
+						this.update(url + (~url.indexOf('?') ? '&' : '?') + 'jwt=' + that.getToken());
+					}
+				});
+			} else {
+				return baseUrl + (~baseUrl.indexOf('?') ? '&' : '?') + 'jwt=' + this.getToken();
+			}
+
 		},
 
 		setAuthHeader: function(authHeader) {

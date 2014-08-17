@@ -408,7 +408,7 @@
 					span.pre-h4 Playfield
 					h4.h--large Video
 
-					.panel.panel--blank(ng-file-drop="onMediaUpload('playfieldVideo', $files)", ng-file-drag-over-class="panel--dragging")
+					.panel.panel--blank(ng-hide="true", ng-file-drop="onMediaUpload('playfieldVideo', $files)", ng-file-drag-over-class="panel--dragging")
 						input#uploadBackglass.hide(type="file", ng-file-select="onMediaUpload('playfieldVideo', $files)")
 						.panel-body.a.a--darker(ng-click="openUploadDialog('playfieldVideo', '#uploadBackglass')")
 							.img.img--ar-ws.loaded(img-bg="release.mediaFile.playfieldVideo.variations['still'].url")
@@ -421,9 +421,12 @@
 										i.fa.fa-cog.fa-3x.fa-spin--slow
 										p Generating thumbnails...
 
-					videogular(ng-hide="true", vg-width="config.width", vg-height="config.height", vg-theme="config.theme")
-						video.videoPlayer(controls="", preload="none")
-							source(src="{{ playfieldVideo }}", type="video/mp4")
+					.panel.panel--blank(ng-file-drop="onMediaUpload('playfieldVideo', $files)", ng-file-drag-over-class="panel--dragging", style="width:234px")
+						.panel-body.a.a--darker(ng-click="openUploadDialog('playfieldVideo', '#uploadBackglass')")
+							.img.img--ar-fs.loaded
+								videogular(vg-theme="vgConfig.theme", vg-width="vgConfig.width", vg-stretch="fill", vg-responsive="vgConfig.responsive")
+									video.videoPlayer(controls="", preload="metadata")
+										source(src="{{ release.mediaFile.playfieldVideo.variations['small-rotated'].url }}", type="video/mp4")
 
 
 

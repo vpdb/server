@@ -252,11 +252,14 @@ Queue.prototype.empty = function() {
 	var that = this;
 	this.queues.image.count().then(function(count) {
 		logger.info('[queue] Cleaning %d entries out of image queue.', count);
-		that.image.empty();
+		that.queues.image.empty();
 	});
 	this.queues.video.count().then(function(count) {
-		logger.info('[queue] Cleaning %d entries out of video queue.', count);
-		that.video.empty();
+		if (that.video) {
+			logger.info('[queue] Cleaning %d entries out of video queue.', count);
+			that.queues.video.empty();
+		}
+
 	});
 };
 

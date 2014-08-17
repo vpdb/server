@@ -42,8 +42,8 @@ function VideoProcessor() {
 
 	this.variations = {
 		playfield: [
-			{ name: 'still', screenshot: true, position: '0:0.500', mimeType: 'image/png' },
-			{ name: 'small-rotated', width: 480, height: 270, rotate: true }
+			{ name: 'still', mimeType: 'image/png', screenshot: true, position: '0:0.500' },
+			{ name: 'small-rotated', mimeType: 'video/mp4', width: 393, height: 233, rotate: true }
 		]
 	};
 }

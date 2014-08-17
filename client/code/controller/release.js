@@ -6,6 +6,12 @@ ctrl.controller('ReleaseAddCtrl', function($scope, $upload, $modal, $window, $lo
 	$scope.theme('light');
 	$scope.setMenu('admin');
 
+	$scope.vgConfig = {
+		theme: '',
+		width: '100%',
+		responsive: true
+	};
+
 	$scope.files = [
 		{
 			name: 'Filename.vpt',

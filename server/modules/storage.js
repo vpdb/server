@@ -135,8 +135,8 @@ Storage.prototype.remove = function(file) {
 			}, 500);
 		}
 	}
-	if (this.variations[file.getMimeType()] && this.variations[file.getMimeType()][file.file_type]) {
-		_.each(this.variations[file.getMimeType()][file.file_type], function(variation) {
+	if (this.variations[file.getMimeTypePrimary()] && this.variations[file.getMimeTypePrimary()][file.file_type]) {
+		_.each(this.variations[file.getMimeTypePrimary()][file.file_type], function(variation) {
 			filePath = file.getPath(variation.name);
 			if (fs.existsSync(filePath)) {
 				logger.info('[storage] Removing file variation %s..', filePath);
@@ -163,7 +163,7 @@ Storage.prototype.remove = function(file) {
  * @param {metadataCallback} done Callback
  */
 Storage.prototype.metadata = function(file, done) {
-	var type = file.getMimeType();
+	var type = file.getMimeTypePrimary();
 	if (!processors[type]) {
 		logger.warn('[storage] No metadata parser for mime type "%s".', file.mime_type);
 		return done();
@@ -181,7 +181,7 @@ Storage.prototype.metadata = function(file, done) {
  */
 Storage.prototype.metadataShort = function(file, metadata) {
 	var data = metadata ? metadata : file.metadata;
-	var type = file.getMimeType();
+	var type = file.getMimeTypePrimary();
 	if (!data) {
 		return {};
 	}
@@ -198,7 +198,7 @@ Storage.prototype.metadataShort = function(file, metadata) {
  * @param {File} file
  */
 Storage.prototype.postprocess = function(file) {
-	var type = file.getMimeType();
+	var type = file.getMimeTypePrimary();
 	if (!processors[type]) {
 		return;
 	}
@@ -275,6 +275,9 @@ Storage.prototype.onProcessed = function(file, variation, processor, nextEvent) 
 					file.variations = {};
 				}
 				file.variations[variation.name] = _.extend(processor.variationData(metadata),  { bytes: fs.statSync(filepath).size });
+				if (variation.mimeType) {
+					file.variations[variation.name].mime_type = variation.mimeType;
+				}
 				logger.info('[storage] Updating %s "%s" with variation %s.', file.file_type, file.id, variation.name);
 
 			} else {
@@ -310,8 +313,8 @@ Storage.prototype.urls = function(file) {
 	}
 	var that = this;
 	var variations = file.variations ? file.variations : {};
-	if (this.variations[file.getMimeType()] && this.variations[file.getMimeType()][file.file_type]) {
-		_.each(this.variations[file.getMimeType()][file.file_type], function(variation) {
+	if (this.variations[file.getMimeTypePrimary()] && this.variations[file.getMimeTypePrimary()][file.file_type]) {
+		_.each(this.variations[file.getMimeTypePrimary()][file.file_type], function(variation) {
 			if (!variations[variation.name]) {
 				variations[variation.name] = {};
 			}
@@ -327,13 +330,14 @@ Storage.prototype.fstat = function(file, variationName) {
 		return fs.statSync(file.getPath());
 	}
 
-	var key = file.id + '/' + variationName;
+	// check for valid variation name
 	if (variationName && !_.contains(this.variationNames, variationName)) {
+		logger.warn('[storage] Unknown variation "%s".', variationName);
 		return null;
 	}
 
 	if (queue.isQueued(file, variationName)) {
-		logger.info('[storage] Item %s being processed, returning null', key);
+		logger.info('[storage] Item %s/%s being processed, returning null', file.id, variationName);
 		return null;
 	}
 
@@ -341,6 +345,7 @@ Storage.prototype.fstat = function(file, variationName) {
 	if (variationName && fs.existsSync(file.getPath(variationName))) {
 		return fs.statSync(file.getPath(variationName));
 	}
+	logger.warn('[storage] Cannot find %s at %s', file.toString(variationName), file.getPath(variationName));
 	return null;
 };
 

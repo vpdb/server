@@ -104,14 +104,22 @@ FileSchema.methods.toDetailed = function() {
 };
 
 /**
- * Returns the physical location of the file.
  *
- * @return {Object|String} Either variation name or object containing attribute "name"
+ * @param {Object|String} Either variation name or object containing attribute "name".
+ *                        Note that for non-standard (i.e. not equal file) variation mime types,
+ *                        the object is mandatory.
+ * @param {string} [tmpSuffix=] If set, this is suffixed to the file name before the extension.
+ * @returns {string} Absolute path to file.
  * @api public
  */
 FileSchema.methods.getPath = function(variation, tmpSuffix) {
+
+	// variation name
 	var variationName = _.isObject(variation) ? variation.name : variation;
-	var mimeType = _.isObject(variation) && variation.mimeType ? variation.mimeType : this.mime_type;
+
+	// mime type: check in db first for variation
+	var mimeType = this.getMimeType(variation);
+
 	var suffix = tmpSuffix || '';
 	var ext = '.' + mimeTypes[mimeType].ext;
 	return variationName ?
@@ -122,7 +130,8 @@ FileSchema.methods.getPath = function(variation, tmpSuffix) {
 /**
  * Returns the URL of the file.
  *
- * @return {Object|String} Either variation name or object containing attribute "name"
+ * @param {Object|String} variation - Either variation name or object containing attribute "name"
+ * @returns {string}
  * @api public
  */
 FileSchema.methods.getUrl = function(variation) {
@@ -133,10 +142,27 @@ FileSchema.methods.getUrl = function(variation) {
 };
 
 /**
+ * Returns the MIME type for a given variation (or for the main file if not specified).
+ *
+ * @param {Object|String} variation Either variation name or object containing attribute "name"
+ * @returns {string}
+ */
+FileSchema.methods.getMimeType = function(variation) {
+	var variationName = _.isObject(variation) ? variation.name : variation;
+	if (variation && this.variations && this.variations[variationName] && this.variations[variationName].mime_type) {
+		return this.variations[variationName].mime_type;
+	} else if (_.isObject(variation) && variation.mimeType) {
+		return variation.mimeType;
+	} else {
+		return this.mime_type;
+	}
+};
+
+/**
  * Returns the "primary" type (the part before the `/`) of the mime type.
  * @returns {string}
  */
-FileSchema.methods.getMimeType = function() {
+FileSchema.methods.getMimeTypePrimary = function() {
 	return this.mime_type.split('/')[0];
 };
 
@@ -149,7 +175,8 @@ FileSchema.methods.getMimeSubtype = function() {
 };
 
 FileSchema.methods.toString = function(variation) {
-	return this.file_type + ' "' + this.id + '"' + (variation ? ' (' + variation.name + ')' : '');
+	var v = _.isObject(variation) ? variation.name : variation;
+	return this.file_type + ' "' + this.id + '"' + (v ? ' (' + v + ')' : '');
 };
 
 //-----------------------------------------------------------------------------

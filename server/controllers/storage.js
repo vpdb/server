@@ -41,7 +41,7 @@ function serve(req, res, file, variationName) {
 		// otherwise set headers and stream the file
 		var filePath = file.getPath(variationName);
 		res.writeHead(200, {
-			'Content-Type': file.mime_type,
+			'Content-Type': file.getMimeType(variationName),
 			'Content-Length':  fstat.size,
 			'Cache-Control': 'private',
 			'Last-Modified': modified
@@ -75,7 +75,7 @@ function serve(req, res, file, variationName) {
 		 * delivered.
 		 */
 		logger.info('[ctrl|storage] Waiting for %s/%s to be processed...', file.id, variationName);
-		storage.whenProcessed(file, variationName, function (fstat) {
+		storage.whenProcessed(file, variationName, function(fstat) {
 			if (!fstat) {
 				logger.info('[ctrl|storage] No processing or error, returning 404.');
 				return res.status(404).end();

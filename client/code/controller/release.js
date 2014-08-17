@@ -260,17 +260,18 @@ ctrl.controller('ReleaseAddCtrl', function($scope, $upload, $modal, $window, $lo
 				var mediaResult = response.data;
 				$scope.release.mediaFile[id].url = AuthService.setUrlParam(mediaResult.url, mediaResult.is_protected);
 				$scope.release.mediaFile[id].variations = AuthService.setUrlParam(mediaResult.variations, mediaResult.is_protected);
+				$scope.release.mediaFile[id].metadata = mediaResult.metadata;
 				$scope.release._media.backglass = mediaResult.id;
 
-				var ar = Math.round(mediaResult.metadata.size.width / mediaResult.metadata.size.height * 1000) / 1000;
-				var arDiff = Math.abs(ar / 1.25 - 1);
-
-				$scope.mediaFile[id].info = {
-					dimensions: mediaResult.metadata.size.width + '×' + mediaResult.metadata.size.height,
+//				var ar = Math.round(mediaResult.metadata.size.width / mediaResult.metadata.size.height * 1000) / 1000;
+//				var arDiff = Math.abs(ar / 1.25 - 1);
+//
+//				$scope.mediaFile[id].info = {
+//					dimensions: mediaResult.metadata.size.width + '×' + mediaResult.metadata.size.height
 //					test: ar === 1.25 ? 'optimal' : (arDiff < maxAspectRatioDifference ? 'warning' : 'error'),
-					ar: ar,
-					arDiff: Math.round(arDiff * 100)
-				};
+//					ar: ar,
+//					arDiff: Math.round(arDiff * 100)
+//				};
 
 			}, ApiHelper.handleErrorsInDialog($scope, 'Error uploading image.', function() {
 				$scope.mediaFile[id] = {};

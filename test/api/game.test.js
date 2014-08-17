@@ -189,6 +189,7 @@ describe('The VPDB `game` API', function() {
 			], done);
 		});
 
+		it('should fail if the referenced file type for backglass is not backglass.');
 	});
 
 	describe('when listing games', function() {

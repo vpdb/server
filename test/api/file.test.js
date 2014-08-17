@@ -140,6 +140,8 @@ describe('The VPDB `file` API', function() {
 				.as('member')
 				.end(hlp.status(400, 'corrupted', done));
 		});
+
+		it('should fail if the aspect ratio too much off');
 	});
 
 	describe('when uploading a video', function() {

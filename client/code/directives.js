@@ -1,4 +1,4 @@
-"use strict"; /*global Showdown*/
+"use strict"; /* global Showdown, videojs */
 
 /* Directives */
 var directives = angular.module('vpdb.directives', []);
@@ -355,6 +355,50 @@ directives.directive('sort', function() {
 				}
 				scope.$emit('dataChangeSort', attrs.sort, element.hasClass('asc') ? 'asc' : 'desc');
 			});
+		}
+	};
+});
+
+directives.directive('videojs', function($parse) {
+	return {
+		restrict: 'A',
+		link: function(scope, element, attrs) {
+
+			attrs.type = attrs.type || "video/mp4";
+			var src =  $parse(attrs.src);
+
+			var setup = {
+				techOrder: ['html5', 'flash'],
+				controls: true,
+				preload: 'metadata',
+				autoplay: false,
+				width: 233,
+				height: 393
+			};
+
+			var videoid = 107;
+			attrs.id = "videojs" + videoid;
+			element.attr('id', attrs.id);
+
+			var player = null;
+			attrs.$observe('src', function(value) {
+				if (value && !player) {
+					console.log('src changed to %s', value);
+					player = videojs(attrs.id, setup, function() {
+						this.src({type: attrs.type, src: value });
+					});
+				}
+			});
+
+			scope.$on('$destroy', function() {
+				if (player) {
+					player.dispose();
+				}
+			});
+
+
+//			//element.attr('poster', "http://10.1.21.36:8080/Testube/media/" + videoid + ".jpg");
+//
 		}
 	};
 });

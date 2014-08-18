@@ -98,10 +98,10 @@ GameSchema.virtual('url')
 GameSchema.virtual('media')
 	.get(function() {
 		var media = {};
-		if (this.populated('_media.backglass')) {
+		if (this.populated('_media.backglass') && this._media.backglass) {
 			media.backglass = this._media.backglass.toSimple();
 		}
-		if (this.populated('_media.logo')) {
+		if (this.populated('_media.logo') && this._media.logo) {
 			media.logo = this._media.logo.toSimple();
 		}
 		return media;

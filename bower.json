@@ -41,13 +41,10 @@
 		"fontawesome": "~4.1.0",
 		"bootstrap": "~3.2.0",
 		"FileAPI": "~2.0.6",
-		"videogular": "~0.4.2",
-		"videogular-controls": "~0.4.2",
-		"videogular-buffering": "~0.4.2",
-		"videogular-overlay-play": "~0.4.2",
-		"videogular-poster": "~0.4.2",
 		"lodash": "~2.4.1",
-		"traverse": "~0.6.7"
+		"traverse": "~0.6.7",
+		"videojs": "~4.7.2",
+		"videojs-sublime-skin": "~1.0.0"
 	},
 	"overrides": {
 		"showdown": {
@@ -99,7 +96,18 @@
 				"dist/FileAPI.js",
 				"dist/FileAPI.flash.swf"
 			]
+		},
+		"videojs": {
+			"main": [
+				"dist/video-js/video.js"
+			]
+		},
+		"videojs-sublime-skin": {
+			"main": [
+				"dist/videojs-sublime-skin.css"
+			]
 		}
+
 	},
 	"resolutions": {
 		"jquery": "~2.1.1",

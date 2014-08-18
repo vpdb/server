@@ -421,12 +421,10 @@
 										i.fa.fa-cog.fa-3x.fa-spin--slow
 										p Generating thumbnails...
 
-					.panel.panel--blank(ng-file-drop="onMediaUpload('playfieldVideo', $files)", ng-file-drag-over-class="panel--dragging", style="width:234px")
+					.panel.panel--blank.cloak(ng-file-drop="onMediaUpload('playfieldVideo', $files)", ng-file-drag-over-class="panel--dragging", style="width:234px")
 						.panel-body.a.a--darker(ng-click="openUploadDialog('playfieldVideo', '#uploadBackglass')")
 							.img.img--ar-fs.loaded
-								videogular(vg-theme="vgConfig.theme", vg-width="vgConfig.width", vg-stretch="fill", vg-responsive="vgConfig.responsive")
-									video.videoPlayer(controls="", preload="metadata")
-										source(src="{{ release.mediaFile.playfieldVideo.variations['small-rotated'].url }}", type="video/mp4")
+								video.video-js.vjs-sublime-skin(videojs, ng-src="{{ release.mediaFile.playfieldVideo.variations['small-rotated'].url }}")
 
 
 

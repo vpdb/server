@@ -6,7 +6,7 @@ ctrl.controller('ReleaseAddCtrl', function($scope, $upload, $modal, $window, $lo
 	$scope.theme('light');
 	$scope.setMenu('admin');
 
-	$scope.files = [
+		$scope.files = [
 		{
 			name: 'Filename.vpt',
 			bytes: 1337,

@@ -132,7 +132,7 @@ module.exports = function(grunt) {
 		},
 
 		waitServer: {
-			test: { options: { url: 'http://127.0.0.1:' + localEnv(grunt, testConfig).PORT } }
+			test: { options: { url: 'http://127.0.0.1:' + localEnv(grunt, testConfig).PORT, timeout: 30000 } }
 		},
 
 		watch: {
@@ -141,7 +141,7 @@ module.exports = function(grunt) {
 			'express-dev':     { files: '.restart', options: { spawn: false, debounceDelay: 100 }, tasks: [ 'express:dev' ] },
 			'express-test':    { files: '.restart', options: { spawn: false, debounceDelay: 100 }, tasks: [ 'express:test' ] },
 			livereload:        { files: [ '.reload', 'client/code/**/*.js', 'client/views/**/*.jade' ],
-			          options: { spawn: false, debounceDelay: 100, timeout: 30000, livereload: grunt.option('no-reload') ? false : true }
+			          options: { spawn: false, debounceDelay: 100, livereload: grunt.option('no-reload') ? false : true }
 			},
 
 			// server watches

@@ -177,18 +177,31 @@ directives.directive('user', function($compile, $modal) {
 	};
 });
 
-directives.directive('makeLoaded', function($parse) {
+directives.directive('makeLoaded', function($timeout, $parse) {
 	return {
 		scope: true,
 		restrict: 'A',
 		link: function (scope, element, attrs) {
+			var postVar;
+			if (attrs.makeLoadedPost) {
+				postVar = $parse(attrs.makeLoadedPost);
+				postVar.assign(scope, false);
+			}
 			scope.$on('imageLoaded', function(event) {
 				event.stopPropagation();
 				element.addClass(attrs.makeLoaded);
+				if (postVar) {
+					$timeout(function() {
+						postVar.assign(scope, true);
+					}, 350);
+				}
 			});
 			scope.$on('imageUnloaded', function(event) {
 				event.stopPropagation();
 				element.removeClass(attrs.makeLoaded);
+				if (postVar) {
+					postVar.assign(scope, false);
+				}
 			});
 		}
 	};

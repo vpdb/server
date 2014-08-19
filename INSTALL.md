@@ -429,6 +429,8 @@ For the relay, do [the following](http://premium-documentation.boundary.com/rela
 	sudo wget https://gist.github.com/codemoran/7441959/raw/bb3aa37c0052f87736f8b3ba57c3edccca520c07/graphdat-relay-debian-init
 	sudo chmod +x graphdat-relay-debian-init
 	sudo mv graphdat-relay-debian-init /etc/init.d/graphdat-relay
+	sudo update-rc.d graphdat-relay defaults 
+	
 
 Where the API token is "Your API token", not the agent's or the embeded. If you want to change the name, do the 
 following:

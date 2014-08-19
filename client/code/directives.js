@@ -372,8 +372,9 @@ directives.directive('videojs', function($parse) {
 				controls: true,
 				preload: 'metadata',
 				autoplay: false,
-				width: 233,
-				height: 393
+				loop: true,
+				width: 203,
+				height: 364
 			};
 
 			var videoid = 107;

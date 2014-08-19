@@ -13,8 +13,6 @@ superagentTest(request);
 
 describe('The VPDB `file` API', function() {
 
-	var video = path.resolve(__dirname, '../../data/test/files/afm.f4v');
-
 	before(function(done) {
 		hlp.setupUsers(request, {
 			member: { roles: [ 'member' ]},
@@ -147,27 +145,12 @@ describe('The VPDB `file` API', function() {
 	describe('when uploading a video', function() {
 
 		it('should return the correct dimensions', function(done) {
-
-			var user = 'contributor';
-			var fileType = 'playfield';
-			var mimeType = 'video/mp4';
-			var name = 'test.mp4';
-			var data = fs.readFileSync(video);
-			request
-				.post('/storage')
-				.query({ type: fileType })
-				.type(mimeType)
-				.set('Content-Disposition', 'attachment; filename="' + name + '"')
-				.set('Content-Length', data.length)
-				.send(data)
-				.as(user)
-				.end(function(err, res) {
-					hlp.expectStatus(err, res, 201);
-					hlp.doomFile(user, res.body.id);
-					expect(res.body.metadata.video.width).to.be(1920);
-					expect(res.body.metadata.video.height).to.be(1080);
-					done();
-				});
+			hlp.file.createVideo('contributor', request, function(video) {
+				hlp.doomFile('contributor', video.id);
+				expect(video.metadata.video.width).to.be(1920);
+				expect(video.metadata.video.height).to.be(1080);
+				done();
+			});
 		});
 	});
 

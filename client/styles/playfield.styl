@@ -1,0 +1,28 @@
+.playfield--rotate-on-upload
+	&.loaded
+		.panel
+			transition all $animation-long
+			transform rotate(-90deg)
+			margin-left -21%
+			margin-top 23%
+			margin-bottom 25%
+		.panel
+			transition all $animation-long
+
+.playfield--video
+	width 58.25%
+
+/* Small devices (tablets, 768px and up) */
+@media (min-width: $bootstrap-screen-sm-min)
+	.playfield--video
+		width 146px
+
+/* Medium devices (desktops, 992px and up) */
+@media (min-width: $bootstrap-screen-md-min)
+	.playfield--video
+		width 193px
+
+/* Large devices (large desktops, 1200px and up) */
+@media (min-width: $bootstrap-screen-lg-min)
+	.playfield--video
+		width 234px

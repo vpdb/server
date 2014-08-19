@@ -388,7 +388,7 @@
 				| {{ file.name }}
 			hr.hr--light.hr--shifted-up
 			.row
-				.col-sm-6.rotateme(make-loaded='loaded')
+				.col-sm-6.playfield--rotate-on-upload(make-loaded='loaded')
 					span.pre-h4 Playfield
 					h4.h--large Screenshot
 					.panel.panel--blank(ng-file-drop="onMediaUpload('playfieldImage', $files)", ng-file-drag-over-class="panel--dragging")
@@ -421,10 +421,11 @@
 										i.fa.fa-cog.fa-3x.fa-spin--slow
 										p Generating thumbnails...
 
-					.panel.panel--blank.cloak(ng-file-drop="onMediaUpload('playfieldVideo', $files)", ng-file-drag-over-class="panel--dragging", style="width:234px")
+					.panel.panel--blank.cloak.playfield--video(ng-file-drop="onMediaUpload('playfieldVideo', $files)", ng-file-drag-over-class="panel--dragging")
 						.panel-body.a.a--darker(ng-click="openUploadDialog('playfieldVideo', '#uploadBackglass')")
 							.img.img--ar-fs.loaded
-								video.video-js.vjs-sublime-skin(videojs, ng-src="{{ release.mediaFile.playfieldVideo.variations['small-rotated'].url }}")
+								.video-wrapper
+									video.video-js.vjs-sublime-skin(videojs, width="100%", height="100%", ng-src="{{ release.mediaFile.playfieldVideo.variations['small-rotated'].url }}")
 
 
 

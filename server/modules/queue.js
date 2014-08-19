@@ -183,14 +183,23 @@ function Queue() {
 		logger.info('[queue] Starting %s processing of %s', processorName, file.toString(variation));
 	});
 
-	this.on('finishedPass1', function(file, variation, processor) {
+	this.on('finishedPass1', function(file, variation, processor, processed) {
 		var key = variation ? file.id + '/' + variation.name : file.id;
 		// run pass 2
 		if (processor.pass2) {
 			this.queues[processor.name].add({ fileId: file._id, variation: variation }, { processor: processor.name });
-			logger.info('[queue] Pass 1 done (or skipped), adding %s to queue (%d callbacks).', file.toString(variation), that.queuedFiles[key] ? that.queuedFiles[key].length : 0);
+			if (processed) {
+				logger.info('[queue] Pass 1 finished, adding %s to queue (%d callbacks).', file.toString(variation), that.queuedFiles[key] ? that.queuedFiles[key].length : 0);
+			} else {
+				logger.info('[queue] Pass 1 skipped, continuing %s with pass 2.', file.toString(variation));
+			}
 		}
-		processQueue(file, variation, require('./storage'));
+
+		// only process callback queue if there actually was some result in pass 1
+		if (processed) {
+			processQueue(file, variation, require('./storage'));
+		}
+
 	});
 
 	this.on('finishedPass2', function(file, variation) {
@@ -225,21 +234,25 @@ Queue.prototype.add = function(file, variation, processor) {
 			return that.emit('error', 'File gone before pass 1 could start.', file, variation);
 		}
 
-		processor.pass1(file.getPath(), file.getPath(variation), file, variation, function(err) {
+		processor.pass1(file.getPath(), file.getPath(variation), file, variation, function(err, skipped) {
 			if (err) {
 				return that.emit('error', err, file, variation);
 			}
-			that.emit('processed', file, variation, processor, 'finishedPass1');
+			if (skipped) {
+				that.emit('finishedPass1', file, variation, processor, false);
+			} else {
+				that.emit('processed', file, variation, processor, 'finishedPass1');
+			}
 		});
 
 	} else {
-		that.emit('finishedPass1', file, variation, processor);
+		that.emit('finishedPass1', file, variation, processor, false);
 	}
 };
 
 Queue.prototype.isQueued = function(file, variationName) {
 	var key = file.id + '/' + variationName;
-	return this.queuedFiles[key] ? true: false;
+	return this.queuedFiles[key] ? true : false;
 };
 
 Queue.prototype.addCallback = function(file, variationName, callback) {

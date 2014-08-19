@@ -180,6 +180,22 @@ describe('The storage engine of VPDB', function() {
 	describe('after successfully uploading a non-public file', function() {
 		// needs release upload working first
 
+		describe('when the file is still inactive', function() {
+
+			it('should block a video variation until processing is finished', function(done) {
+
+				hlp.file.createVideo('contributor', request, function(video) {
+					request.get(video.variations['small-rotated'].url).as('contributor').end(function(err, res) {
+						hlp.expectStatus(err, res, 200);
+						hlp.doomFile('contributor', video.id);
+						expect(res.headers['content-length']).to.be.greaterThan(0);
+						done();
+					});
+				});
+			});
+
+		});
+
 		describe('when the file is active', function() {
 
 			it('should deny access to anonymous users');

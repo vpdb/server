@@ -42,7 +42,7 @@ function VideoProcessor() {
 
 	this.variations = {
 		playfield: [
-			{ name: 'still', mimeType: 'image/png', screenshot: true, position: '0:0.500' },
+			{ name: 'still',         mimeType: 'image/png', screenshot: true, position: '0:0.500' },
 			{ name: 'small-rotated', mimeType: 'video/mp4', width: 393, height: 233, rotate: true }
 		]
 	};
@@ -99,7 +99,7 @@ VideoProcessor.prototype.pass1 = function(src, dest, file, variation, done) {
 
 	// only do screenshots in first pass.
 	if (!variation.screenshot) {
-		return done();
+		return done(null, true);
 	}
 
 	logger.info('[video|pass1] Starting processing %s at %s.', file.toString(variation), dest);

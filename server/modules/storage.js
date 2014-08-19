@@ -79,7 +79,7 @@ Storage.prototype.variations = {
 Storage.prototype.whenProcessed = function(file, variationName, callback) {
 	/* istanbul ignore if */
 	if (!queue.isQueued(file, variationName)) {
-		logger.warn('[storage] No such file being processed: %s', file.id + '/' + variationName);
+		logger.error('[storage] No such file being processed: %s', file.id + '/' + variationName);
 		return callback(null);
 	}
 	queue.addCallback(file, variationName, callback);
@@ -235,7 +235,7 @@ Storage.prototype.onProcessed = function(file, variation, processor, nextEvent) 
 			logger.warn('[storage] Error when writing back metadata to database, aborting post-processing for %s.', file.toString(variation));
 			return queue.emit('error', err, file, variation);
 		}
-		queue.emit(nextEvent, file, variation, processor);
+		queue.emit(nextEvent, file, variation, processor, true);
 	};
 
 	if (!fs.existsSync(filepath)) {

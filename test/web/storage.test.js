@@ -183,7 +183,6 @@ describe('The storage engine of VPDB', function() {
 		describe('when the file is still inactive', function() {
 
 			it('should block a video variation until processing is finished', function(done) {
-
 				hlp.file.createVideo('contributor', request, function(video) {
 					request.get(video.variations['small-rotated'].url).as('contributor').end(function(err, res) {
 						hlp.expectStatus(err, res, 200);

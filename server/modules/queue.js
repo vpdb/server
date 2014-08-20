@@ -84,8 +84,8 @@ function Queue() {
 
 	// have have two queues
 	this.queues = {
-		image: queue('image transcoding', config.vpdb.redis.port, config.vpdb.redis.host),
-		video: queue('video transcoding', config.vpdb.redis.port, config.vpdb.redis.host)
+		image: queue('image', config.vpdb.redis.port, config.vpdb.redis.host),
+		video: queue('video', config.vpdb.redis.port, config.vpdb.redis.host)
 	};
 
 	this.queues.image.on('failed', function(job, err) {

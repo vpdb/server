@@ -144,7 +144,7 @@ Storage.prototype.remove = function(file) {
 					fs.unlinkSync(filePath);
 				} catch (err) {
 					/* istanbul ignore next */
-					logger.error('[storage] %s', err);
+					logger.error('[storage] Error deleting file (ignoring): %s', err);
 				}
 			}
 		});

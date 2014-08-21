@@ -32,8 +32,8 @@ Make sure you enable OpenSSH. Once done, login and update the system:
 Update to your taste (unblock port 80, 443, 8088, 8089), then create symlinks and apply:
 
 	sudo ln -s rules-both.iptables rules.v4
-    sudo ln -s rules-both.iptables rules.v6
-    sudo service iptables-persistent start
+	sudo ln -s rules-both.iptables rules.v6
+	sudo service iptables-persistent start
 
 ### Harden System Security
 
@@ -64,9 +64,9 @@ Set:
 
 Upgrade ``npm`` to latest and prevent self-signed certificate error
 
-    sudo npm config set ca ""
-    sudo npm install -g npm
-    sudo npm install -g grunt-cli bower
+	sudo npm config set ca ""
+	sudo npm install -g npm
+	sudo npm install -g grunt-cli bower
 
 #### Node Deps
 
@@ -87,12 +87,7 @@ OptiPNG needs manual compilation since in Ubuntu's repo there's only an outdated
 
 ### Video Tools
 
-ffmpeg was removed from Ubuntu and replaced by libav. Our Node wrapper needs ffmpeg, duh.
-
-	sudo apt-add-repository ppa:jon-severinsson/ffmpeg
-    sudo apt-get update
-    sudo apt-get install -y ffmpeg
-
+	sudo apt-get install -y libav-tools
 
 ### MongoDB
 

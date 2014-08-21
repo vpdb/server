@@ -22,8 +22,8 @@
 var _ = require('lodash');
 var fs = require('fs');
 var logger = require('winston');
-var ffmpeg = require('fluent-ffmpeg');
 
+var libav = require('../libav');
 var config = require('../settings').current;
 
 /**
@@ -43,7 +43,7 @@ function VideoProcessor() {
 	this.variations = {
 		playfield: [
 			{ name: 'still',         mimeType: 'image/png', screenshot: true, position: '0:0.500' },
-			{ name: 'small-rotated', mimeType: 'video/mp4', width: 393, height: 233, rotate: true }
+			{ name: 'small-rotated', mimeType: 'video/mp4', width: 394, height: 234, rotate: true }
 		]
 	};
 }
@@ -54,9 +54,9 @@ VideoProcessor.prototype.metadata = function(file, variation, done) {
 		variation = undefined;
 	}
 
-	ffmpeg.ffprobe(file.getPath(variation), function(err, metadata) {
+	libav(file.getPath(variation), { logger: logger }).probe(function(err, metadata) {
 		if (err) {
-			logger.warn('[storage] Error reading metadata from video (%s): %s', file.getPath(), err);
+			logger.warn('[video] Error reading metadata from video (%s): %s', file.getPath(), err);
 			return done(err);
 		}
 		done(null, metadata);
@@ -104,7 +104,7 @@ VideoProcessor.prototype.pass1 = function(src, dest, file, variation, done) {
 
 	logger.info('[video|pass1] Starting processing %s at %s.', file.toString(variation), dest);
 	var started = new Date().getTime();
-	ffmpeg(src)
+	libav(src, { logger: logger })
 		.noAudio()
 		.frames(1)
 		.seek(variation.position || '0:01')
@@ -149,7 +149,7 @@ VideoProcessor.prototype.pass2 = function(src, dest, file, variation, done) {
 	}
 
 	var started = new Date().getTime();
-	var proc = ffmpeg(src)
+	var proc = libav(src, { logger: logger })
 		.noAudio()
 		.videoCodec('libx264')
 		.on('error', function(err) {
@@ -157,17 +157,17 @@ VideoProcessor.prototype.pass2 = function(src, dest, file, variation, done) {
 			done(err);
 		})
 		.on('progress', function(progress) {
-			logger.info('[video|pass2] Processing: %s% at %skbps', progress.percent, progress.currentKbps);
+			logger.info('[video|pass2] Processing: %s%', progress.percent);
 		})
 		.on('end', function() {
 			logger.info('[video|pass2] Transcoding succeeded after %dms, written to %s', new Date().getTime() - started, dest);
 			done();
 		});
 	if (variation && variation.height && variation.width) {
-		proc.size(variation.height + 'x' + variation.width);
+		proc.size(variation.height, variation.width);
 	}
 	if (variation && variation.rotate) {
-		proc.videoFilters('transpose=2');
+		proc.transpose(2);
 	}
 	proc.save(dest);
 };

@@ -11,10 +11,12 @@
 
 * API:
   * Tag resource (`create`, `list`)
-  * 
+  * VP build resource (`create`, `list`)
 * Added automatic thumbnail generation on file upload
 * Added sample data generation when starting the first time
 * Added Mongoose plugin for automatically referencing files
+* Added FFmpeg integration for video transcoding
+* Switched to Redis for ACLs, message queue, user dirty header and quota
 * Bugfixes
 
 ## v0.0.5

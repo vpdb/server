@@ -45,6 +45,7 @@ exports.upload = function(req, res) {
 	var file = new File({
 		name: req.headers['content-disposition'].match(/filename=([^;\z]+)/i)[1].replace(/(^"|^'|"$|'$)/g, ''),
 		bytes: req.headers['content-length'],
+		variations: {},
 		created_at: new Date(),
 		mime_type: req.headers['content-type'],
 		file_type: req.query.type,

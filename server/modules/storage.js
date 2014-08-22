@@ -269,25 +269,22 @@ Storage.prototype.onProcessed = function(file, variation, processor, nextEvent) 
 			}
 
 			// check what we're dealing with
+			var data = {};
 			if (variation) {
-
-				if (!file.variations) {
-					file.variations = {};
-				}
-				file.variations[variation.name] = _.extend(processor.variationData(metadata),  { bytes: fs.statSync(filepath).size });
+				var fieldPath = 'variations.' + variation.name;
+				data[fieldPath] = _.extend(processor.variationData(metadata),  { bytes: fs.statSync(filepath).size });
 				if (variation.mimeType) {
-					file.variations[variation.name].mime_type = variation.mimeType;
+					data[fieldPath].mime_type = variation.mimeType;
 				}
-				logger.info('[storage] Updating %s "%s" with variation %s.', file.file_type, file.id, variation.name);
 
 			} else {
 				File.sanitizeObject(metadata);
-				file.metadata = metadata;
-				logger.info('[storage] Updating metadata of %s "%s"', file.file_type, file.id);
+				data.metadata = metadata;
 			}
+			logger.info('[storage] Updating metadata of %s', file.toString(variation));
 
-			// change to file.save when fixed: https://github.com/LearnBoost/mongoose/issues/1694
-			File.findOneAndUpdate({ _id: file._id }, _.omit(file.toJSON(), [ '_id', '__v' ]), {}, done);
+			// only update `metadata` (other data might has changed meanwhile)
+			File.update({ _id: file._id }, data, done);
 		});
 	});
 };

@@ -159,8 +159,8 @@ module.exports = exports = function(schema, options) {
 
 			// update
 			async.each(files, function(file, next) {
-				file.is_active = true;
-				file.save(next);
+				// only update `is_active` (other data might has changed meanwhile)
+				File.update({ _id: file._id }, { 'is_active': true }, next);
 			}, function(err) {
 				/* istanbul ignore if */
 				if (err) {

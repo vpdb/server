@@ -90,7 +90,7 @@ module.exports = {
 
 			db: function(db) {
 				/* istanbul ignore if */
-				if (!parseInt(db) || parseInt(db) > 15 || parseInt(db) < 0) {
+				if (db !== 0 || parseInt(db) > 15 || parseInt(db) < 0) {
 					return 'Redis database must be an integer between 0 and 15';
 				}
 			}

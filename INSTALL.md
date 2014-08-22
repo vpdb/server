@@ -87,7 +87,12 @@ OptiPNG needs manual compilation since in Ubuntu's repo there's only an outdated
 
 ### Video Tools
 
-	sudo apt-get install -y libav-tools
+FFmpeg was removed from Ubuntu and replaced by Libav. Duh.
+
+	sudo apt-get purge -y libav ffmpeg
+	sudo apt-add-repository -y ppa:jon-severinsson/ffmpeg
+	sudo apt-get update
+	sudo apt-get install -y ffmpeg
 
 ### MongoDB
 

@@ -20,7 +20,6 @@
 "use strict";
 
 var _ = require('lodash');
-var fs = require('fs');
 var util = require('util');
 var events = require('events');
 var avconv = require('avconv');

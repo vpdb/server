@@ -21,7 +21,6 @@
 	"dependencies": {
 		"acl": "~0.4.2",
 		"async": "~0.9.0",
-		"avconv": "^2.0.0",
 		"body-parser": "^1.4.3",
 		"bull": "^0.1.7",
 		"compression": "^1.0.8",
@@ -34,6 +33,7 @@
 		"express-domain-errors": "0.0.x",
 		"express-graceful-exit": "0.1.x",
 		"express-winston": "~0.2.6",
+		"fluent-ffmpeg": "fluent-ffmpeg/node-fluent-ffmpeg",
 		"glob": "^4.0.5",
 		"gm": "~1.16.0",
 		"grunt": "latest",

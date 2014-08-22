@@ -24,8 +24,7 @@ var quotaModule = require('volos-quota-redis');
 var config = require('./settings').current;
 var quotaConfig = config.vpdb.quota;
 
-// TODO remove init and put logic into constructor.
-exports.init = function() {
+function Quota() {
 	logger.info('[quota] Initializing quotas...');
 	var duration;
 	this.quota = {};
@@ -42,14 +41,15 @@ exports.init = function() {
 					timeUnit: duration,
 					interval: 1,
 					host: config.vpdb.redis.host,
-					port: config.vpdb.redis.port
+					port: config.vpdb.redis.port,
+					db: config.vpdb.redis.db
 				});
 			}
 		}
 	}
-};
+}
 
-exports.isAllowed = function(req, res, file, callback) {
+Quota.prototype.isAllowed = function(req, res, file, callback) {
 
 	// undefined mime types are free
 	if (!quotaConfig.costs[file.mime_type] && quotaConfig.costs[file.mime_type] !== 0) {
@@ -78,7 +78,7 @@ exports.isAllowed = function(req, res, file, callback) {
 	}
 
 	this.quota[quotaConfig.plans[plan].per].apply({
-			identifier: req.user._id,
+			identifier: req.user.id,
 			weight: quotaConfig.costs[file.mime_type],
 			allow: quotaConfig.plans[plan].credits
 		},
@@ -97,3 +97,5 @@ exports.isAllowed = function(req, res, file, callback) {
 		}
 	);
 };
+
+module.exports = new Quota();

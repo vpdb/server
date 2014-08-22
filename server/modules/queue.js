@@ -82,10 +82,19 @@ function Queue() {
 
 	this.queuedFiles = {}; // contains callbacks for potential controller requests of not-yet-processed files
 
+	var redisOpts = {
+		redis: {
+			port: config.vpdb.redis.port,
+			host: config.vpdb.redis.host,
+			opts: {},
+			DB: config.vpdb.redis.db
+		}
+	};
+
 	// have have two queues
 	this.queues = {
-		image: queue('image', config.vpdb.redis.port, config.vpdb.redis.host),
-		video: queue('video', config.vpdb.redis.port, config.vpdb.redis.host)
+		image: queue('image', redisOpts),
+		video: queue('video', redisOpts)
 	};
 
 	this.queues.image.on('failed', function(job, err) {

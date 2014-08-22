@@ -86,6 +86,13 @@ module.exports = {
 				if (!parseInt(port) || parseInt(port) > 65535 || parseInt(port) < 1) {
 					return 'Port must be an integer between 1 and 65535';
 				}
+			},
+
+			db: function(db) {
+				/* istanbul ignore if */
+				if (!parseInt(db) || parseInt(db) > 15 || parseInt(db) < 0) {
+					return 'Redis database must be an integer between 0 and 15';
+				}
 			}
 		},
 

@@ -30,6 +30,7 @@ var config = require('../modules/settings').current;
 var gitinfo = require('../modules/gitinfo').info;
 
 var redis = require('redis').createClient(config.vpdb.redis.port, config.vpdb.redis.host, { no_ready_check: true });
+    redis.select(config.vpdb.redis.db);
 var User = require('mongoose').model('User');
 
 /**

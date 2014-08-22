@@ -28,6 +28,7 @@ var User = mongoose.model('User');
 var config = require('./modules/settings').current;
 
 var redis = require('redis').createClient(config.vpdb.redis.port, config.vpdb.redis.host, { no_ready_check: true });
+    redis.select(config.vpdb.redis.db);
 var acl = new ACL(new ACL.redisBackend(redis, 'acl'));
 
 var init = function(next) {

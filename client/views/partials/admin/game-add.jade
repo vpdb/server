@@ -47,7 +47,7 @@
 				.form-group(ng-class="{ error: errors['ipdb.number'] }")
 					label.col-sm-3.control-label(for="ipdbUrl") IPDB
 					.col-sm-6
-						input#ipdbUrl.form-control(type="text", ng-model="ipdbUrl", placeholder="URL or Number", on-enter="refresh()")
+						input#ipdbUrl.form-control(type="text", ng-model="game.ipdbUrl", placeholder="URL or Number", on-enter="refresh()")
 						a#ipdbLink(href="http://www.ipdb.org/search.pl?any={{ game.title | escape }}&search=Search+Database&searchtype=quick", target="_blank")
 							i.fa.fa-external-link.space-right
 							| Search title on IPDB.org
@@ -66,11 +66,11 @@
 					label.col-sm-3.control-label(for="gameId1") Game ID
 					.col-sm-6
 						.input-group
-							input#gameId1.form-control(type="text", ng-model="game.id", placeholder="Common Abbreviation", ng-change="idValidated = false", on-enter="check()")
-							span.input-group-addon(ng-class="{ transparent: !idValidated }"): i.fa(class="{{ idValid ? 'fa-check': 'fa-times'}}")
+							input#gameId1.form-control(type="text", ng-model="game.id", placeholder="Common Abbreviation", ng-change="game.data.idValidated = false", on-enter="check()")
+							span.input-group-addon(ng-class="{ transparent: !game.data.idValidated }"): i.fa(class="{{ game.data.idValid ? 'fa-check': 'fa-times'}}")
 						span.help-block Must be unique and contain only letters and dashes.
 					.col-sm-3
-						button.btn.btn-default.btn--width-med.pull-right(ng-click="check()", ng-disabled="idValidated")
+						button.btn.btn-default.btn--width-med.pull-right(ng-click="check()", ng-disabled="game.data.idValidated")
 							i.fa.fa-check.space-right
 							| Check
 
@@ -80,21 +80,21 @@
 							i.fa.fa-exclamation-triangle.space-right
 							| {{ errors.id }}
 
-				.form-group(ng-show="!yearFetched", ng-class="{ error: errors.year }")
+				.form-group(ng-show="!game.data.year", ng-class="{ error: errors.year }")
 					label.col-sm-3.control-label(for="year") Year
 					.col-sm-3.col-md-2
 						input#year.form-control(type="text", ng-model="game.year")
 					.col-sm-6.col-md-7
 						span.help-block Release year of this game (no info on IPDB.org)
 
-				.alert.alert-danger.alert--shifted-up-2x(ng-show="errors.year && !yearFetched")
+				.alert.alert-danger.alert--shifted-up-2x(ng-show="errors.year && !game.data.year")
 					.row
 						.col-sm-9.col-sm-offset-3
 							i.fa.fa-exclamation-triangle.space-right
 							| {{ errors.year }}
 
 			.col-md-offset-2.col-md-8.col-sm-offset-1.col-sm-10(ng-show="game.origin == 'recreation'")
-				.panel(ng-show="dataFetched")
+				.panel(ng-show="game.data.fetched")
 					.panel-heading
 						h2.h--small.text-center {{ game.title }}
 					.panel-body
@@ -120,7 +120,7 @@
 							dd(ng-show="game.designers") {{ game.designers.join(', ') }}
 							dt(ng-show="game.artists") Art design
 							dd(ng-show="game.artists") {{ game.artists.join(', ') }}
-				.panel.panel--fixed-height-300.panel--blank(ng-hide="dataFetched")
+				.panel.panel--fixed-height-300.panel--blank(ng-hide="game.data.fetched")
 					.panel-content
 						i.icon.icon-ipdb.icon-ipdb--huge.space-right
 						span INFO
@@ -138,11 +138,11 @@
 					label.col-sm-3.control-label(for="gameId2") Game ID
 					.col-sm-6
 						.input-group
-							input#gameId2.form-control(type="text", ng-model="game.id", placeholder="Common Abbreviation", ng-change="idValidated = false")
-							span.input-group-addon(ng-class="{ transparent: !idValidated }"): i.fa(class="{{ idValid ? 'fa-check': 'fa-times'}}")
+							input#gameId2.form-control(type="text", ng-model="game.id", placeholder="Common Abbreviation", ng-change="game.data.idValidated = false")
+							span.input-group-addon(ng-class="{ transparent: !game.data.idValidated }"): i.fa(class="{{ game.data.idValid ? 'fa-check': 'fa-times'}}")
 						span.help-block Must be unique and contain only letters and dashes.
 					.col-sm-3
-						button.btn.btn-default.btn--width-med.pull-right(ng-click="check()", ng-disabled="idValidated")
+						button.btn.btn-default.btn--width-med.pull-right(ng-click="check()", ng-disabled="game.data.idValidated")
 							i.fa.fa-check.space-right
 							| Check
 
@@ -244,15 +244,15 @@
 
 			.row.padder-top
 				.col-sm-6
-					.panel.panel--blank(ng-file-drop="onMediaUpload('backglass', $files, onBackglassUpload)", ng-file-drag-over-class="panel--dragging")
-						input#uploadBackglass.hide(type='file', ng-file-select="onMediaUpload('backglass', $files, onBackglassUpload)")
+					.panel.panel--blank(ng-file-drop="onMediaUpload('backglass', 'backglass', 'image', $files, onBackglassUpload)", ng-file-drag-over-class="panel--dragging")
+						input#uploadBackglass.hide(type='file', ng-file-select="onMediaUpload('backglass', 'backglass', 'image', $files, onBackglassUpload)")
 						.panel-body.a.a--darker(ng-click="openUploadDialog('#uploadBackglass')")
 							.img.img--ar-bg.loaded(img-bg="game.mediaFile.backglass.variations['medium-2x'].url")
 								.text-center.vertical-center--100
 									progressbar.progress--fixed-absolute.progress-striped.active(value="mediaFile.backglass.progress", ng-show="mediaFile.backglass.uploading")
 									.span(ng-show="!img.url")
 										i.fa.fa-picture-o.fa-3x(ng-class="{ transparent: mediaFile.backglass.uploading }")
-										p {{ backglassUploadText }}
+										p {{ mediaFile.backglass.uploadText }}
 									.span(ng-show="img.loading")
 										i.fa.fa-cog.fa-3x.fa-spin--slow
 										p Generating thumbnails...
@@ -283,15 +283,15 @@
 
 			.row.padder-top
 				.col-sm-6
-					.panel.panel--blank(ng-file-drop="onMediaUpload('logo', $files, onLogoUpload)", ng-file-drag-over-class="panel--dragging")
-						input#uploadLogo.hide(type='file', ng-file-select="onMediaUpload('logo', $files, onLogoUpload)")
+					.panel.panel--blank(ng-file-drop="onMediaUpload('logo', 'logo', 'image', $files, onLogoUpload)", ng-file-drag-over-class="panel--dragging")
+						input#uploadLogo.hide(type='file', ng-file-select="onMediaUpload('logo', 'logo', 'image', $files, onLogoUpload)")
 						.panel-body.a.a--darker(ng-click="openUploadDialog('#uploadLogo')")
-							.img.img--ar-logo.loaded(img-bg="uploadedLogo")
+							.img.img--ar-logo.loaded(img-bg="game.mediaFile.logo.url")
 								.text-center.vertical-center--100
 									progressbar.progress--fixed-absolute.progress-striped.active(value="mediaFile.logo.progress", ng-show="mediaFile.logo.uploading")
 									.span(ng-show="!img.url")
 										i.fa.fa-picture-o.fa-3x(ng-class="{ transparent: mediaFile.logo.uploading }")
-										p {{ logoUploadText }}
+										p {{ mediaFile.logo.uploadText }}
 									.span(ng-show="img.loading")
 										i.fa.fa-cog.fa-3x.fa-spin--slow
 										p Generating thumbnails...

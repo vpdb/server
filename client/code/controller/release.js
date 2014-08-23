@@ -311,8 +311,6 @@ ctrl.controller('ReleaseAddCtrl', function($scope, $upload, $modal, $window, $lo
 		};
 	};
 
-	$scope.playfieldVideo = '';
-
 	if ($localStorage.release) {
 		$scope.release  = $localStorage.release;
 	} else {

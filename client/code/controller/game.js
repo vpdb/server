@@ -56,14 +56,13 @@ ctrl.controller('RequestModPermissionModalCtrl', function($scope, $modalInstance
 	};
 });
 
-ctrl.controller('AdminGameAddCtrl', function($scope, $upload, $modal, $window, $localStorage, ApiHelper, AuthService, MimeTypeService, IpdbResource, GameResource, FileResource) {
+ctrl.controller('AdminGameAddCtrl', function($scope, $upload, $modal, $window, $localStorage, $location, $anchorScroll, ApiHelper, AuthService, MimeTypeService, IpdbResource, GameResource, FileResource) {
 
 	var maxAspectRatioDifference = 0.2;
 	var dropText = {
 		backglass: 'Click or drag and drop backglass image here',
 		logo: 'Click or drag and drop logo here'
 	};
-	var uploadText = 'Uploading...';
 
 	$scope.theme('light');
 	$scope.setMenu('admin');
@@ -73,9 +72,37 @@ ctrl.controller('AdminGameAddCtrl', function($scope, $upload, $modal, $window, $
 	};
 
 	$scope.reset = function() {
-		$scope.game = $localStorage.game = {
+		$scope.resetGame();
+		$scope.resetMedia();
+	};
+
+	$scope.resetMedia = function() {
+		$scope.mediaFile = {
+			backglass: {
+				uploadText: dropText.backglass
+			},
+			logo: {
+				uploadText: dropText.logo
+			}
+		};
+	};
+
+	$scope.resetGame = function() {
+
+		// delete media if already uploaded
+		if (!$scope.game.submitted) {
+			if ($scope.game.mediaFile.backglass.id) {
+				FileResource.delete({ id: $scope.game.mediaFile.backglass.id});
+			}
+			if ($scope.game.mediaFile.logo.id) {
+				FileResource.delete({ id: $scope.game.mediaFile.logo.id});
+			}
+		}
+
+		$scope.game = $localStorage.newGame = {
 			origin: 'recreation',
-			links: [ { label: '', url: '' }],
+			ipdbUrl: '',
+			links: [{ label: '', url: '' }],
 			_media: {},
 
 			mediaFile: {
@@ -88,24 +115,13 @@ ctrl.controller('AdminGameAddCtrl', function($scope, $upload, $modal, $window, $
 				logo: {
 					url: false
 				}
+			},
+			data: {
+				fetched: false,
+				year: true,
+				idValidated: false
 			}
 		};
-		$scope.ipdbUrl = '';
-		$scope.backglass = {};
-		$scope.uploadedBackglass = false;
-		$scope.uploadedLogo = false;
-		$scope.errors = {};
-		$scope.error = null;
-		$scope.backglassUploadText = dropText.backglass;
-		$scope.logoUploadText = dropText.logo;
-		$scope.backglassUploadProgress = 0;
-		$scope.logoUploadProgress = 0;
-		$scope.dataFetched = false;
-		$scope.yearFetched = true;
-		$scope.idValidated = false;
-
-		$scope.mediaFile = {};
-
 	};
 
 	var fetchIpdb = function(ipdbId, done) {
@@ -121,8 +137,8 @@ ctrl.controller('AdminGameAddCtrl', function($scope, $upload, $modal, $window, $
 			}
 			$scope.errors = {};
 			$scope.error = null;
-			$scope.dataFetched = true;
-			$scope.yearFetched = game.year ? true : false;
+			$scope.game.data.fetched = true;
+			$scope.game.data.year = game.year ? true : false;
 
 			if (done) {
 				done(null, $scope.game);
@@ -131,12 +147,12 @@ ctrl.controller('AdminGameAddCtrl', function($scope, $upload, $modal, $window, $
 	};
 
 	var readIpdbId = function() {
-		if (/id=\d+/i.test($scope.ipdbUrl)) {
-			var m = $scope.ipdbUrl.match(/id=(\d+)/i);
+		if (/id=\d+/i.test($scope.game.ipdbUrl)) {
+			var m = $scope.game.ipdbUrl.match(/id=(\d+)/i);
 			return m[1];
 
-		} else if (parseInt($scope.ipdbUrl)) {
-			return $scope.ipdbUrl;
+		} else if (parseInt($scope.game.ipdbUrl)) {
+			return $scope.game.ipdbUrl;
 		} else {
 			return false;
 		}
@@ -164,17 +180,17 @@ ctrl.controller('AdminGameAddCtrl', function($scope, $upload, $modal, $window, $
 	$scope.check = function() {
 
 		if (!$scope.game.id) {
-			$scope.idValid = false;
-			$scope.idValidated = true;
+			$scope.game.data.idValid = false;
+			$scope.game.data.idValidated = true;
 			return;
 		}
 
 		GameResource.head({ id: $scope.game.id }, function() {
-			$scope.idValid = false;
-			$scope.idValidated = true;
+			$scope.game.data.idValid = false;
+			$scope.game.data.idValidated = true;
 		}, function() {
-			$scope.idValid = true;
-			$scope.idValidated = true;
+			$scope.game.data.idValid = true;
+			$scope.game.data.idValidated = true;
 		});
 	};
 
@@ -183,11 +199,12 @@ ctrl.controller('AdminGameAddCtrl', function($scope, $upload, $modal, $window, $
 		var submit = function() {
 
 			$scope.game.game_type =
-					$scope.game.origin === 'originalGame' ? 'og' : (
-					$scope.game.game_type ? $scope.game.game_type.toLowerCase() : 'na'
-				);
+				$scope.game.origin === 'originalGame' ? 'og' : (
+				$scope.game.game_type ? $scope.game.game_type.toLowerCase() : 'na'
+			);
 
-			var game = GameResource.save($scope.game, function() {
+			var game = GameResource.save(_.omit($scope.game, ['data', 'mediaFile']), function() {
+				$scope.game.submitted = true;
 				$scope.reset();
 				$modal.open({
 					templateUrl: 'partials/modals/info',
@@ -199,6 +216,9 @@ ctrl.controller('AdminGameAddCtrl', function($scope, $upload, $modal, $window, $
 						message: function() { return 'The game has been successfully created.'; }
 					}
 				});
+				$location.hash('top');
+				$anchorScroll();
+
 			}, ApiHelper.handleErrors($scope));
 		};
 
@@ -211,19 +231,32 @@ ctrl.controller('AdminGameAddCtrl', function($scope, $upload, $modal, $window, $
 		}
 	};
 
-	$scope.onMediaUpload = function(id, $files, onSuccess) {
+	$scope.onMediaUpload = function(id, type, restrictMime, $files, onSuccess) {
 
 		var file = $files[0];
 		var mimeType = MimeTypeService.fromFile(file);
 
-		// TODO Mime type check
+		// check for mime type
+		var primaryMime = mimeType.split('/')[0];
+		if (primaryMime !== restrictMime) {
+			return $modal.open({
+				templateUrl: 'partials/modals/info',
+				controller: 'InfoModalCtrl',
+				resolve: {
+					icon: function() { return 'fa-file-image-o'; },
+					title: function() { return 'Image Upload'; },
+					subtitle: function() { return 'Wrong file type!'; },
+					message: function() { return 'Please upload a JPEG or PNG image.'; }
+				}
+			});
+		}
 
 		// $scope.mediaFile is where the progress stuff is stored, while $scope.game.mediaFile contains the result
 		$scope.mediaFile[id] = {};
 
+		// reset status
 		if ($scope.game.mediaFile[id] && $scope.game.mediaFile[id].id) {
 			FileResource.delete({ id : $scope.game.mediaFile[id].id });
-
 			$scope.game.mediaFile[id] = {
 				url: false,
 				variations: {
@@ -245,7 +278,7 @@ ctrl.controller('AdminGameAddCtrl', function($scope, $upload, $modal, $window, $
 			$upload.http({
 				url: '/storage',
 				method: 'POST',
-				params: { type: 'backglass' },
+				params: { type: type },
 				headers: {
 					'Content-Type': mimeType,
 					'Content-Disposition': 'attachment; filename="' + file.name + '"'
@@ -262,6 +295,7 @@ ctrl.controller('AdminGameAddCtrl', function($scope, $upload, $modal, $window, $
 				$scope.game.mediaFile[id].variations = AuthService.setUrlParam(mediaResult.variations, mediaResult.is_protected);
 				$scope.game.mediaFile[id].metadata = mediaResult.metadata;
 
+				// run callback
 				if (onSuccess) {
 					onSuccess(response);
 				}
@@ -275,59 +309,9 @@ ctrl.controller('AdminGameAddCtrl', function($scope, $upload, $modal, $window, $
 		};
 	};
 
-
-	var onImageUpload = function(type, done) {
-		var cType = type.charAt(0).toUpperCase() + type.slice(1);
-
-		return function($files) {
-			var file = $files[0];
-
-			// check for image mime type
-			if (!_.contains(['image/jpeg', 'image/png'], file.type)) {
-				return $modal.open({
-					templateUrl: 'partials/modals/info',
-					controller: 'InfoModalCtrl',
-					resolve: {
-						icon: function() { return 'fa-file-image-o'; },
-						title: function() { return 'Image Upload'; },
-						subtitle: function() { return 'Wrong file type!'; },
-						message: function() { return 'Please upload a JPEG or PNG image.'; }
-					}
-				});
-			}
-
-			// upload image
-			var fileReader = new FileReader();
-			fileReader.readAsArrayBuffer(file);
-			fileReader.onload = function(event) {
-				$scope['uploaded' + cType] = false;
-				$scope[type + 'Uploading'] = true;
-				$scope[type + 'UploadText'] = uploadText;
-				console.log(file);
-				$upload.http({
-					url: '/storage',
-					method: 'POST',
-					params: { type: type },
-					headers: {
-						'Content-Type': file.type,
-						'Content-Disposition': 'attachment; filename="' + file.name + '"'
-					},
-					data: event.target.result
-				}).then(function(response) {
-					$scope[type + 'Uploading'] = false;
-					$scope[type + 'UploadText'] = dropText[type];
-					done(response);
-				}, ApiHelper.handleErrorsInDialog($scope, 'Error uploading image.'), function (evt) {
-						$scope[type + 'UploadProgress'] = parseInt(100.0 * evt.loaded / evt.total);
-				});
-			};
-		};
-	};
-
 	$scope.onBackglassUpload = function(response) {
 
 		var bg = response.data;
-		$scope.uploadedBackglass = AuthService.setUrlParam(bg.variations.medium.url, bg.is_protected);
 		$scope.game._media.backglass = bg.id;
 
 		var ar = Math.round(bg.metadata.size.width / bg.metadata.size.height * 1000) / 1000;
@@ -342,9 +326,7 @@ ctrl.controller('AdminGameAddCtrl', function($scope, $upload, $modal, $window, $
 	};
 
 	$scope.onLogoUpload = function(response) {
-
 		var logo = response.data;
-		$scope.uploadedLogo = AuthService.setUrlParam(logo.url, logo.is_protected);
 		$scope.game._media.logo = logo.id;
 	};
 
@@ -358,5 +340,11 @@ ctrl.controller('AdminGameAddCtrl', function($scope, $upload, $modal, $window, $
 		$window.open(angular.element('#ipdbLink').attr('href'));
 	};
 
-	$scope.reset();
+
+	$scope.resetMedia();
+	if ($localStorage.game) {
+		$scope.game  = $localStorage.newGame;
+	} else {
+		$scope.resetGame();
+	}
 });

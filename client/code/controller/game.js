@@ -45,7 +45,6 @@ ctrl.controller('GameController', function($scope, $http, $routeParams, $modal, 
 	};
 });
 
-
 ctrl.controller('RequestModPermissionModalCtrl', function($scope, $modalInstance) {
 
 	$scope.ok = function () {
@@ -57,7 +56,7 @@ ctrl.controller('RequestModPermissionModalCtrl', function($scope, $modalInstance
 	};
 });
 
-ctrl.controller('AdminGameAddCtrl', function($scope, $upload, $modal, $window, ApiHelper, AuthService, IpdbResource, GameResource) {
+ctrl.controller('AdminGameAddCtrl', function($scope, $upload, $modal, $window, $localStorage, ApiHelper, AuthService, MimeTypeService, IpdbResource, GameResource, FileResource) {
 
 	var maxAspectRatioDifference = 0.2;
 	var dropText = {
@@ -69,16 +68,27 @@ ctrl.controller('AdminGameAddCtrl', function($scope, $upload, $modal, $window, A
 	$scope.theme('light');
 	$scope.setMenu('admin');
 
-
 	$scope.openUploadDialog = function(selector) {
 		angular.element(selector).trigger('click');
 	};
 
 	$scope.reset = function() {
-		$scope.game = {
+		$scope.game = $localStorage.game = {
 			origin: 'recreation',
 			links: [ { label: '', url: '' }],
-			_media: {}
+			_media: {},
+
+			mediaFile: {
+				backglass: {
+					url: false,
+					variations: {
+						'medium-2x': { url: false }
+					}
+				},
+				logo: {
+					url: false
+				}
+			}
 		};
 		$scope.ipdbUrl = '';
 		$scope.backglass = {};
@@ -93,6 +103,8 @@ ctrl.controller('AdminGameAddCtrl', function($scope, $upload, $modal, $window, A
 		$scope.dataFetched = false;
 		$scope.yearFetched = true;
 		$scope.idValidated = false;
+
+		$scope.mediaFile = {};
 
 	};
 
@@ -199,8 +211,74 @@ ctrl.controller('AdminGameAddCtrl', function($scope, $upload, $modal, $window, A
 		}
 	};
 
+	$scope.onMediaUpload = function(id, $files, onSuccess) {
+
+		var file = $files[0];
+		var mimeType = MimeTypeService.fromFile(file);
+
+		// TODO Mime type check
+
+		// $scope.mediaFile is where the progress stuff is stored, while $scope.game.mediaFile contains the result
+		$scope.mediaFile[id] = {};
+
+		if ($scope.game.mediaFile[id] && $scope.game.mediaFile[id].id) {
+			FileResource.delete({ id : $scope.game.mediaFile[id].id });
+
+			$scope.game.mediaFile[id] = {
+				url: false,
+				variations: {
+					'medium-2x': { url: false }
+				}
+			};
+			this.$emit('imageUnloaded');
+		}
+
+		// upload image
+		var fileReader = new FileReader();
+		fileReader.readAsArrayBuffer(file);
+		fileReader.onload = function(event) {
+
+			$scope.game.mediaFile[id] = { url: false };
+			$scope.mediaFile[id].uploaded = false;
+			$scope.mediaFile[id].uploading = true;
+			$scope.mediaFile[id].status = 'Uploading file...';
+			$upload.http({
+				url: '/storage',
+				method: 'POST',
+				params: { type: 'backglass' },
+				headers: {
+					'Content-Type': mimeType,
+					'Content-Disposition': 'attachment; filename="' + file.name + '"'
+				},
+				data: event.target.result
+			})
+			.then(function(response) {
+				$scope.mediaFile[id].uploading = false;
+				$scope.mediaFile[id].status = 'Uploaded';
+
+				var mediaResult = response.data;
+				$scope.game.mediaFile[id].id = mediaResult.id;
+				$scope.game.mediaFile[id].url = AuthService.setUrlParam(mediaResult.url, mediaResult.is_protected);
+				$scope.game.mediaFile[id].variations = AuthService.setUrlParam(mediaResult.variations, mediaResult.is_protected);
+				$scope.game.mediaFile[id].metadata = mediaResult.metadata;
+
+				if (onSuccess) {
+					onSuccess(response);
+				}
+
+			}, ApiHelper.handleErrorsInDialog($scope, 'Error uploading image.', function() {
+				$scope.mediaFile[id] = {};
+
+			}), function (evt) {
+				$scope.mediaFile[id].progress = parseInt(100.0 * evt.loaded / evt.total);
+			});
+		};
+	};
+
+
 	var onImageUpload = function(type, done) {
 		var cType = type.charAt(0).toUpperCase() + type.slice(1);
+
 		return function($files) {
 			var file = $files[0];
 
@@ -246,7 +324,7 @@ ctrl.controller('AdminGameAddCtrl', function($scope, $upload, $modal, $window, A
 		};
 	};
 
-	$scope.onBackglassUpload = onImageUpload('backglass', function(response) {
+	$scope.onBackglassUpload = function(response) {
 
 		var bg = response.data;
 		$scope.uploadedBackglass = AuthService.setUrlParam(bg.variations.medium.url, bg.is_protected);
@@ -261,18 +339,20 @@ ctrl.controller('AdminGameAddCtrl', function($scope, $upload, $modal, $window, A
 			ar: ar,
 			arDiff: Math.round(arDiff * 100)
 		};
-	});
+	};
+
+	$scope.onLogoUpload = function(response) {
+
+		var logo = response.data;
+		$scope.uploadedLogo = AuthService.setUrlParam(logo.url, logo.is_protected);
+		$scope.game._media.logo = logo.id;
+	};
+
 
 	$scope.removeLink = function(link) {
 
 	};
 
-	$scope.onLogoUpload = onImageUpload('logo', function(response) {
-
-		var logo = response.data;
-		$scope.uploadedLogo = AuthService.setUrlParam(logo.url, logo.is_protected);
-		$scope.game._media.logo = logo.id;
-	});
 
 	$scope.searchOnIpdb = function() {
 		$window.open(angular.element('#ipdbLink').attr('href'));

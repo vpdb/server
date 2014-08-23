@@ -6,7 +6,7 @@ ctrl.controller('ReleaseAddCtrl', function($scope, $upload, $modal, $window, $lo
 	$scope.theme('light');
 	$scope.setMenu('admin');
 
-		$scope.files = [
+	$scope.files = [
 		{
 			name: 'Filename.vpt',
 			bytes: 1337,
@@ -50,6 +50,8 @@ ctrl.controller('ReleaseAddCtrl', function($scope, $upload, $modal, $window, $lo
 	];
 
 	$scope.reset = function() {
+
+		$scope.mediaFile = {};
 		$scope.release = $localStorage.release = {
 			authors: [{ user: AuthService.getUser(), roles: [ 'Table Creator' ]}],
 			tags: [],
@@ -60,12 +62,25 @@ ctrl.controller('ReleaseAddCtrl', function($scope, $upload, $modal, $window, $lo
 				incompat: []
 			},
 			_media: {},
+
 			mediaFile: {
-				playfieldImage: { url: false },
-				playfieldVideo: { url: false }
+				playfieldImage: {
+					url: false,
+					variations: {
+						'medium-2x': { url: false }
+					}
+				},
+				playfieldVideo: {
+					url: false,
+					variations: {
+						'still': { url: false },
+						'small-rotated': { url: undefined }
+					}
+				}
 			}
 		};
 	};
+
 
 	var vpbuilds = VPBuildResource.query(function() {
 		$scope.builds = {};
@@ -225,7 +240,7 @@ ctrl.controller('ReleaseAddCtrl', function($scope, $upload, $modal, $window, $lo
 		});
 	};
 
-	$scope.mediaFile = {};
+
 
 
 	$scope.onMediaUpload = function(id, $files) {
@@ -234,6 +249,18 @@ ctrl.controller('ReleaseAddCtrl', function($scope, $upload, $modal, $window, $lo
 		var mimeType = MimeTypeService.fromFile(file);
 
 		$scope.mediaFile[id] = {};
+
+		if ($scope.release.mediaFile[id] && $scope.release.mediaFile[id].id) {
+			FileResource.delete({ id : $scope.release.mediaFile[id].id });
+
+			$scope.release.mediaFile[id] = {
+				url: false,
+				variations: {
+					'medium-2x': { url: false }
+				}
+			};
+			this.$emit('imageUnloaded');
+		}
 
 		// upload image
 		var fileReader = new FileReader();
@@ -258,10 +285,12 @@ ctrl.controller('ReleaseAddCtrl', function($scope, $upload, $modal, $window, $lo
 				$scope.mediaFile[id].status = 'Uploaded';
 
 				var mediaResult = response.data;
+				$scope.release.mediaFile[id].id = mediaResult.id;
 				$scope.release.mediaFile[id].url = AuthService.setUrlParam(mediaResult.url, mediaResult.is_protected);
 				$scope.release.mediaFile[id].variations = AuthService.setUrlParam(mediaResult.variations, mediaResult.is_protected);
 				$scope.release.mediaFile[id].metadata = mediaResult.metadata;
-				$scope.release._media.backglass = mediaResult.id;
+
+//				$scope.release._media[id] = mediaResult.id;
 
 //				var ar = Math.round(mediaResult.metadata.size.width / mediaResult.metadata.size.height * 1000) / 1000;
 //				var arDiff = Math.abs(ar / 1.25 - 1);

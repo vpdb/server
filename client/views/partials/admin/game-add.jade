@@ -244,14 +244,14 @@
 
 			.row.padder-top
 				.col-sm-6
-					.panel.panel--blank(ng-file-drop="onBackglassUpload($files)", ng-file-drag-over-class="panel--dragging")
-						input#uploadBackglass.hide(type='file', ng-file-select='onBackglassUpload($files)')
+					.panel.panel--blank(ng-file-drop="onMediaUpload('backglass', $files, onBackglassUpload)", ng-file-drag-over-class="panel--dragging")
+						input#uploadBackglass.hide(type='file', ng-file-select="onMediaUpload('backglass', $files, onBackglassUpload)")
 						.panel-body.a.a--darker(ng-click="openUploadDialog('#uploadBackglass')")
-							.img.img--ar-bg.loaded(img-bg="uploadedBackglass")
+							.img.img--ar-bg.loaded(img-bg="game.mediaFile.backglass.variations['medium-2x'].url")
 								.text-center.vertical-center--100
-									progressbar.progress--fixed-absolute.progress-striped.active(value="backglassUploadProgress", ng-show="backglassUploading")
+									progressbar.progress--fixed-absolute.progress-striped.active(value="mediaFile.backglass.progress", ng-show="mediaFile.backglass.uploading")
 									.span(ng-show="!img.url")
-										i.fa.fa-picture-o.fa-3x(ng-class="{ transparent: backglassUploading }")
+										i.fa.fa-picture-o.fa-3x(ng-class="{ transparent: mediaFile.backglass.uploading }")
 										p {{ backglassUploadText }}
 									.span(ng-show="img.loading")
 										i.fa.fa-cog.fa-3x.fa-spin--slow
@@ -283,14 +283,14 @@
 
 			.row.padder-top
 				.col-sm-6
-					.panel.panel--blank(ng-file-drop="onLogoUpload($files)", ng-file-drag-over-class="panel--dragging")
-						input#uploadLogo.hide(type='file', ng-file-select='onLogoUpload($files)')
+					.panel.panel--blank(ng-file-drop="onMediaUpload('logo', $files, onLogoUpload)", ng-file-drag-over-class="panel--dragging")
+						input#uploadLogo.hide(type='file', ng-file-select="onMediaUpload('logo', $files, onLogoUpload)")
 						.panel-body.a.a--darker(ng-click="openUploadDialog('#uploadLogo')")
 							.img.img--ar-logo.loaded(img-bg="uploadedLogo")
 								.text-center.vertical-center--100
-									progressbar.progress--fixed-absolute.progress-striped.active(value="logoUploadProgress", ng-show="logoUploading")
+									progressbar.progress--fixed-absolute.progress-striped.active(value="mediaFile.logo.progress", ng-show="mediaFile.logo.uploading")
 									.span(ng-show="!img.url")
-										i.fa.fa-picture-o.fa-3x(ng-class="{ transparent: logoUploading }")
+										i.fa.fa-picture-o.fa-3x(ng-class="{ transparent: mediaFile.logo.uploading }")
 										p {{ logoUploadText }}
 									.span(ng-show="img.loading")
 										i.fa.fa-cog.fa-3x.fa-spin--slow

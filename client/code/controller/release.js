@@ -49,6 +49,7 @@ ctrl.controller('ReleaseAddCtrl', function($scope, $upload, $modal, $window, $lo
 		}
 	];
 
+	$scope.mediaFile = {};
 	$scope.reset = function() {
 
 		$scope.mediaFile = {};

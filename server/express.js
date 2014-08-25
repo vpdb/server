@@ -27,7 +27,6 @@ var logger = require('winston');
 var passport = require('passport');
 var express = require('express');
 var expressMorgan  = require('morgan');
-var expressFavion = require('serve-favicon');
 var expressWinston = require('express-winston');
 var expressBodyParser = require('body-parser');
 var expressCompression = require('compression');
@@ -107,12 +106,14 @@ exports.configure = function(app) {
 	app.use(expressBodyParser.json());
 	//app.use(expressBodyParser.urlencoded());
 	//app.use(expressMethodOverride()); // npm install --save method-override
-	app.use(expressFavion(path.resolve(__dirname, '../client/static/images/favicon.png')));
 
 	// static file serving
-	app.use(express.static(writeable.cacheRoot, { maxAge: 3600*24*30*1000 }));
-	app.use(express.static(path.resolve(__dirname, '../client/static'), { maxAge: 3600*24*30*1000 }));
-	app.use('/js', express.static(path.resolve(__dirname, '../client/code'), { maxAge: 3600*24*30*1000 }));
+	if (runningLocal) {
+		app.use(express.static(writeable.cacheRoot, { maxAge: 3600*24*30*1000 }));
+		app.use(express.static(path.resolve(__dirname, '../client/static'), { maxAge: 3600*24*30*1000 }));
+		app.use(express.static(path.resolve(__dirname, '../client/static/images/favicon'), { maxAge: 3600*24*30*1000 }));
+		app.use('/js', express.static(path.resolve(__dirname, '../client/code'), { maxAge: 3600*24*30*1000 }));
+	}
 	app.use(express.static(path.resolve(__dirname, '../data/assets'), { maxAge: 3600*24*30*1000 }));
 	app.use(asset.middleware());
 

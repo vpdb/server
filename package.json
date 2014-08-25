@@ -73,7 +73,6 @@
 		"pngquant": "0.1.5",
 		"redis": "0.12.1",
 		"request": "2.40.0",
-		"serve-favicon": "2.0.1",
 		"shortid": "2.0.1",
 		"stylus": "0.48.1",
 		"uglify-js": "2.4.15",

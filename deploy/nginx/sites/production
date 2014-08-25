@@ -15,6 +15,12 @@ server {
 		expires max;
 	}
 
+	location ~ ^/(favicon|mstile|apple-touch-icon) {
+		root /var/www/staging/shared/cache/images/favicon;
+		access_log off;
+		expires max;
+	}
+
 	location ~ ^/js/ {
 		root /var/www/production/current/client/code;
 		rewrite ^/js/(.*)$ /$1 break;

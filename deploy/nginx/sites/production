@@ -9,14 +9,14 @@ server {
 	ssl_protocols SSLv3 TLSv1;
 	ssl_ciphers HIGH:!aNULL:!MD5;
 
-	location ~ ^/(css/|fonts/|images/|js/global|json/|lib/|robots.txt|humans.txt|favicon.ico) {
+	location ~ ^/(css/|fonts/|images/|js/global|json/|lib/|robots.txt|humans.txt) {
 		root /var/www/production/shared/cache;
 		access_log off;
 		expires max;
 	}
 
 	location ~ ^/(favicon|mstile|apple-touch-icon) {
-		root /var/www/staging/shared/cache/images/favicon;
+		root /var/www/production/shared/cache/images/favicon;
 		access_log off;
 		expires max;
 	}

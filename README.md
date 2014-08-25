@@ -1,10 +1,9 @@
 # vpdb
 *A database for VP10 tables.*
 
-[![Build Status](https://travis-ci.org/freezy/node-vpdb.svg?branch=master)](https://travis-ci.org/freezy/node-vpdb)
-[![Coverage Status](http://img.shields.io/coveralls/freezy/node-vpdb/master.svg)](https://coveralls.io/r/freezy/node-vpdb)
-[![Dependencies](https://david-dm.org/freezy/node-vpdb.svg)](https://david-dm.org/freezy/node-vpdb)
-
+[![Build Status][travis-image]][travis-url]
+[![Test Coverage][coveralls-image]][coveralls-url]
+[![Dependencies][dependencies-image]][dependencies-url]
 
 ## What is it?
 A free and open source web application that makes downloading Visual Pinball tables as effective and pleasant as 
@@ -179,3 +178,10 @@ only concern server-side code.
 ## License
 
 GPLv2, see [LICENSE](LICENSE).
+
+[travis-image]: https://img.shields.io/travis/freezy/node-vpdb.svg?style=flat
+[travis-url]: https://travis-ci.orgfreezy/node-vpdb
+[coveralls-image]: https://img.shields.io/coveralls/freezy/node-vpdb.svg?style=flat
+[coveralls-url]: https://coveralls.io/r/freezy/node-vpdb?branch=master
+[dependencies-image]: https://david-dm.org/freezy/node-vpdb.svg?style=flat
+[dependencies-url]: https://david-dm.org/freezy/node-vpdb

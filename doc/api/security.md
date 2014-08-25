@@ -14,9 +14,9 @@ directly:
 Restricted resources however need an access token. VPDB authenticates using 
 [JSON Web Tokens](http://tools.ietf.org/html/draft-ietf-oauth-json-web-token)
 via the `Authorization` header. Compared to other authentication schemes, this
-has several advantages:
+approach has several advantages:
 
- * Credentials are only sent once over the wire when requesting the token
+ * Credentials are only sent once over the wire when requesting the token.
  * Token is self-containing, i.e. the server is not required to maintain
    a list of tokens and expire them; it only checks the signature and 
    accepts or drops.

@@ -4,6 +4,7 @@
 ctrl.controller('GameListController', function($scope, $rootScope, $http, $location, $templateCache, $route) {
 
 	$scope.theme('dark');
+	$scope.setTitle('Games');
 	$scope.setMenu('games');
 
 	$scope.filterDecades = [];

@@ -1,10 +1,13 @@
-"use strict";
+"use strict"; /* global ctrl, _ */
 
-/*global ctrl, _*/
-ctrl.controller('ReleaseAddCtrl', function($scope, $upload, $modal, $window, $localStorage, AuthService, ApiHelper, FileResource, TagResource, VPBuildResource, DisplayService, MimeTypeService) {
+ctrl.controller('ReleaseAddCtrl', function($scope, $upload, $modal, $window, $localStorage, $routeParams,
+                                           AuthService, ApiHelper,
+                                           FileResource, TagResource, VPBuildResource, GameResource,
+                                           DisplayService, MimeTypeService) {
 
 	$scope.theme('light');
 	$scope.setMenu('admin');
+	$scope.setTitle('Add Release');
 
 	$scope.files = [
 		{
@@ -48,6 +51,11 @@ ctrl.controller('ReleaseAddCtrl', function($scope, $upload, $modal, $window, $lo
 			]
 		}
 	];
+
+	$scope.game = GameResource.get({ id: $routeParams.id }, function() {
+		$scope.game.lastrelease = new Date($scope.game.lastrelease).getTime();
+		$scope.setTitle('Add Release - ' + $scope.game.title);
+	});
 
 	$scope.mediaFile = {};
 	$scope.reset = function() {
@@ -242,8 +250,6 @@ ctrl.controller('ReleaseAddCtrl', function($scope, $upload, $modal, $window, $lo
 	};
 
 
-
-
 	$scope.onMediaUpload = function(id, $files) {
 
 		var file = $files[0];
@@ -290,18 +296,6 @@ ctrl.controller('ReleaseAddCtrl', function($scope, $upload, $modal, $window, $lo
 				$scope.release.mediaFile[id].url = AuthService.setUrlParam(mediaResult.url, mediaResult.is_protected);
 				$scope.release.mediaFile[id].variations = AuthService.setUrlParam(mediaResult.variations, mediaResult.is_protected);
 				$scope.release.mediaFile[id].metadata = mediaResult.metadata;
-
-//				$scope.release._media[id] = mediaResult.id;
-
-//				var ar = Math.round(mediaResult.metadata.size.width / mediaResult.metadata.size.height * 1000) / 1000;
-//				var arDiff = Math.abs(ar / 1.25 - 1);
-//
-//				$scope.mediaFile[id].info = {
-//					dimensions: mediaResult.metadata.size.width + '×' + mediaResult.metadata.size.height
-//					test: ar === 1.25 ? 'optimal' : (arDiff < maxAspectRatioDifference ? 'warning' : 'error'),
-//					ar: ar,
-//					arDiff: Math.round(arDiff * 100)
-//				};
 
 			}, ApiHelper.handleErrorsInDialog($scope, 'Error uploading image.', function() {
 				$scope.mediaFile[id] = {};

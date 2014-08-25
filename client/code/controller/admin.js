@@ -4,6 +4,7 @@
 ctrl.controller('AdminUserCtrl', function($scope, $modal, UserResource, RolesResource) {
 
 	$scope.theme('light');
+	$scope.setTitle('Users');
 	$scope.setMenu('admin');
 	$scope.users = UserResource.query();
 	$scope.roles = RolesResource.query();

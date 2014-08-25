@@ -23,6 +23,10 @@ ctrl.controller('AppCtrl', function($scope, $rootScope, $location, $modal, UserR
 		$location.path('/game/' + key);
 	};
 
+	$scope.setTitle = function(title) {
+		$scope.pageTitle = title;
+	};
+
 	$scope.setMenu = function(menu) {
 		$scope.menu = menu;
 	};

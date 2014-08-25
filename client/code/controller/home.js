@@ -5,6 +5,7 @@ ctrl.controller('HomeController', function($scope, $http) {
 
 	$scope.theme('dark');
 	$scope.setMenu('home');
+	$scope.setTitle('Home');
 
 	$scope.packs = [];
 	$scope.newReleases = [];

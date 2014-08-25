@@ -1,7 +1,7 @@
 "use strict";
 
 /*global ctrl, _*/
-ctrl.controller('GameController', function($scope, $http, $routeParams, $modal, $log) {
+ctrl.controller('GameController', function($scope, $http, $routeParams, $modal, $log, GameResource) {
 
 	$scope.theme('dark');
 	$scope.setMenu('games');
@@ -13,14 +13,10 @@ ctrl.controller('GameController', function($scope, $http, $routeParams, $modal, 
 		isFirstOpen: true
 	};
 
-	$http({
-		method: 'GET',
-		url: '/api/games/' + $scope.gameId
+	$scope.game = GameResource.get({ id: $scope.gameId }, function() {
 
-	}).success(function(game, status, headers, config) {
-		game.lastrelease = new Date(game.lastrelease).getTime();
+		$scope.game.lastrelease = new Date($scope.game.lastrelease).getTime();
 
-		$scope.game = game;
 		setTimeout(function() {
 			$('.image-link').magnificPopup({
 				type: 'image',
@@ -29,6 +25,7 @@ ctrl.controller('GameController', function($scope, $http, $routeParams, $modal, 
 			});
 		}, 0);
 		$scope.pageLoading = false;
+		$scope.setTitle($scope.game.title);
 	});
 
 	$scope.requestModPermission = function(release) {
@@ -65,6 +62,7 @@ ctrl.controller('AdminGameAddCtrl', function($scope, $upload, $modal, $window, $
 	};
 
 	$scope.theme('light');
+	$scope.setTitle('Add Game');
 	$scope.setMenu('admin');
 
 	$scope.openUploadDialog = function(selector) {

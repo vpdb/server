@@ -1,5 +1,5 @@
 doctype html
-html(ng-app="vpdb", auth=JSON.stringify(auth), auth-header=authHeader)
+html(ng-app="vpdb", ng-controller="AppCtrl", auth=JSON.stringify(auth), auth-header=authHeader)
 	head
 		meta(charset='utf8')
 		meta(name="viewport", content="width=device-width, initial-scale=1")
@@ -7,14 +7,14 @@ html(ng-app="vpdb", auth=JSON.stringify(auth), auth-header=authHeader)
 		link(rel="icon", type="image/png", href="/images/favicon.png")
 		script(type="text/javascript", src="//use.typekit.net/xhi7wnv.js")
 		script(type="text/javascript") try{Typekit.load();}catch(e){}
-		title vpdb
+		title(ng-bind="pageTitle")
 		if environment == 'production'
 			link(rel="stylesheet", href="/css/global.min.css")
 		else
 			- each css in cssFiles
 				link(rel="stylesheet", href=css.web)
 
-	body#top(ng-controller="AppCtrl", ng-class="themeName")
+	body#top(ng-class="themeName")
 		block body
 		if environment == 'production'
 			script(type="text/javascript", src="/js/global.min.js")

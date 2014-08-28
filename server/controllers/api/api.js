@@ -22,6 +22,7 @@
 var _ = require('lodash');
 var logger = require('winston');
 
+var auth = require('../auth');
 var ctrl = require('../ctrl');
 
 /**
@@ -34,7 +35,7 @@ var ctrl = require('../ctrl');
  * @returns {Function} Middleware function
  */
 exports.auth = function(done, resource, permission) {
-	return ctrl.auth(resource, permission, function(err, req, res) {
+	return auth.auth(resource, permission, function(err, req, res) {
 		if (err) {
 			return exports.fail(res, err.message, err.code);
 		}
@@ -52,7 +53,7 @@ exports.auth = function(done, resource, permission) {
  */
 exports.anon = function(done) {
 	// auth is only called in order to populate the req.user object, if credentials are provided.
-	return ctrl.auth(null, null, function(authErr, req, res) {
+	return auth.auth(null, null, function(authErr, req, res) {
 		// authErr is ignored since we're in anon.
 		done(req, res);
 	});

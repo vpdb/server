@@ -6,6 +6,7 @@ var path = require('path');
 
 var writeable = require('./server/modules/writeable');
 var assets = require('./server/modules/assets');
+var ctrl = require('./server/controllers/ctrl');
 
 module.exports = function(grunt) {
 
@@ -18,6 +19,8 @@ module.exports = function(grunt) {
 
 	var devConfig = settings(grunt, false);
 	var testConfig = settings(grunt, true);
+
+	var viewParams = ctrl.viewParams(devConfig);
 
 	// configure the tasks
 	var config = {
@@ -95,6 +98,10 @@ module.exports = function(grunt) {
 					cssFiles: assets.getCss()
 				} },
 				files: [ { expand: true, cwd: 'client/views/errors', src: [ '*.jade' ], dest: htmlRoot, ext: '.html' } ]
+			},
+			site: {
+				options: { data: _.extend(_.pick(viewParams, 'deployment', 'gitinfo', 'authStrategies'), { environment: 'production' }) },
+				files: [ { expand: true, cwd: 'client/views', src: [ '**/*.jade', '!layout.jade', '!**/styleguide*' ], dest: htmlRoot, ext: '.html' } ]
 			}
 		},
 
@@ -111,7 +118,7 @@ module.exports = function(grunt) {
 
 		mochaTest: {
 			api: { options: { reporter: 'spec', clearRequireCache: true, timeout: 60000 }, src: [
-				'test/api/*.test.js','test/web/*.test.js',
+				'test/api/*.test.js','test/web/*.test.js'
 			] }
 		},
 

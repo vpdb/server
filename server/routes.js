@@ -28,6 +28,7 @@ module.exports = function(app) {
 
 	var api = require('./controllers/api');
 	var web = require('./controllers/web');
+	var auth = require('./controllers/auth');
 	var ctrl = require('./controllers/ctrl');
 	var storage = require('./controllers/storage');
 
@@ -98,17 +99,17 @@ module.exports = function(app) {
 	// authentication routes
 	if (config.vpdb.passport.github.enabled) {
 		app.get('/auth/github', passport.authenticate('github', { failureRedirect: '/', session: false }));
-		app.get('/auth/github/callback', ctrl.passport('github', passport, web));
+		app.get('/auth/github/callback', auth.passport('github', passport, web));
 	}
 	_.each(config.vpdb.passport.ipboard, function(ipbConfig) {
 		if (ipbConfig.enabled) {
 			app.get('/auth/' + ipbConfig.id, passport.authenticate(ipbConfig.id, { failureRedirect: '/', session: false }));
-			app.get('/auth/' + ipbConfig.id + '/callback', ctrl.passport(ipbConfig.id, passport, web));
+			app.get('/auth/' + ipbConfig.id + '/callback', auth.passport(ipbConfig.id, passport, web));
 		}
 	});
 
 	// mock route for simulating oauth2 callbacks
 	if (process.env.NODE_ENV !== 'production') {
-		app.post('/auth/mock', ctrl.passportMock(web));
+		app.post('/auth/mock', auth.passportMock(web));
 	}
 };

@@ -36,8 +36,8 @@ module.exports = function(grunt) {
 		gitinfo.local.branch.current.lastCommitTime = gitinfo.local.branch.current.lastCommitTime.replace(/"/g, '');
 
 		// dump to disk
-		grunt.file.write(gitsave.output, JSON.stringify(gitinfo, null, "\t"));
-		grunt.log.writeln("Gitinfo written to %s.", gitsave.output);
+		grunt.file.write(gitsave.dest, JSON.stringify(gitinfo, null, "\t"));
+		grunt.log.writeln("Gitinfo written to %s.", gitsave.dest);
 	});
 
 

@@ -82,7 +82,7 @@ module.exports = function(grunt) {
 			ci:      { options: { script: 'app.js', background: false, port: localEnv(grunt, testConfig).PORT } }
 		},
 
-		gitsave: { output: 'gitinfo.json' },
+		gitsave: { dest: 'gitinfo.json' },
 
 		'istanbul-middleware': {
 			options:  { url: 'http://127.0.0.1:' + localEnv(grunt, testConfig).PORT + '/_coverage' },
@@ -100,7 +100,7 @@ module.exports = function(grunt) {
 				files: [ { expand: true, cwd: 'client/views/errors', src: [ '*.jade' ], dest: htmlRoot, ext: '.html' } ]
 			},
 			site: {
-				options: { data: _.extend(_.pick(viewParams, 'deployment', 'gitinfo', 'authStrategies'), { environment: 'production' }) },
+				options: { data: _.extend(_.pick(viewParams, 'deployment', 'authStrategies'), { environment: 'production', gitinfo: '<%= gitinfo %>' }) },
 				files: [ { expand: true, cwd: 'client/views', src: [ '**/*.jade', '!layout.jade', '!**/styleguide*' ], dest: htmlRoot, ext: '.html' } ]
 			}
 		},

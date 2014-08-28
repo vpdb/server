@@ -21,9 +21,14 @@
 
 var fs = require('fs');
 var path = require('path');
+var logger = require('winston');
 
 function Gitinfo() {
-	this.info = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../../gitinfo.json')));
+	var filepath = path.resolve(__dirname, '../../gitinfo.json');
+	if (!fs.existsSync(filepath)) {
+		return logger.warn('Cannot read gitinfo.json at from "%s", returning empty gitinfo.', filepath);
+	}
+	this.info = JSON.parse(fs.readFileSync(filepath));
 }
 
 var gitinfo = new Gitinfo();

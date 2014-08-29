@@ -127,9 +127,13 @@ ctrl.controller('LoginCtrl', function($scope, $rootScope, $modalInstance, ApiHel
 
 });
 
-ctrl.controller('AuthCallbackCtrl', function($routeParams, AuthResource) {
+ctrl.controller('AuthCallbackCtrl', function($routeParams, $location, AuthResource, AuthService) {
 	AuthResource.authenticateCallback($routeParams, function(result) {
-		console.log(result);
+		AuthService.authenticated(result);
+		$location.path('/');
+		$location.replace();
+	}, function(err) {
+
 	});
 });
 

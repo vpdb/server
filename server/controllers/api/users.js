@@ -111,11 +111,25 @@ exports.authenticateOAuth2 = function(req, res, next) {
 			return api.fail(res, 'Authentication via ' + req.params.strategy + ' failed: ' + err.message, 401);
 		}
 		if (!user) {
-			logger.error('[api|%s:authenticate] No user object in passport callback. This should not happen.');
+			logger.error('[api|%s:authenticate] No user object in passport callback. This should not happen.', req.params.strategy);
 			return api.fail(res, 'Could not retrieve user object.', 500);
 		}
-		api.success(res, {
-			jwt: auth.generateToken(user, new Date())
+
+		var now = new Date();
+		var expires = new Date(now.getTime() + config.vpdb.sessionTimeout);
+		var token = auth.generateToken(user, now);
+
+		logger.info('[api|%s:authenticate] User <%s> successfully authenticated.', req.params.strategy, user.email);
+		getACLs(user, function(err, acls) {
+			/* istanbul ignore if  */
+			if (err) {
+				return api.fail(res, err, 500);
+			}
+			api.success(res, {
+				token: token,
+				expires: expires,
+				user: _.extend(user.toSimple(), acls)
+			}, 200);
 		});
 	})(req, res, next);
 };

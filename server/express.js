@@ -26,6 +26,7 @@ var logger = require('winston');
 
 var passport = require('passport');
 var express = require('express');
+var jadeStatic = require('connect-jade-static');
 var expressMorgan  = require('morgan');
 var expressWinston = require('express-winston');
 var expressBodyParser = require('body-parser');
@@ -130,6 +131,15 @@ exports.configure = function(app) {
 
 	// bootstrap routes
 	require('./routes')(app);
+
+	// TODO: fix this
+	app.use(jadeStatic({
+		baseDir: path.join(__dirname, '/views/partials'),
+		baseUrl: '/partials',
+		jade: {
+			pretty: true
+		}
+	}));
 
 	// api errors
 	app.use(apiCtrl.handleParseError);

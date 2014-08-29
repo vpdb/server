@@ -33,6 +33,7 @@ app.config(function($routeProvider, $locationProvider, $httpProvider) {
 	}});
 	$routeProvider.when('/auth/:strategy/callback', { templateUrl: 'partials/authenticating' });
 
+	$routeProvider.otherwise({templateUrl:'errors/404'});
 
 	$locationProvider.html5Mode(true);
 	$httpProvider.interceptors.push('AuthInterceptor');

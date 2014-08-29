@@ -127,13 +127,22 @@ ctrl.controller('LoginCtrl', function($scope, $rootScope, $modalInstance, ApiHel
 
 });
 
-ctrl.controller('AuthCallbackCtrl', function($routeParams, $location, AuthResource, AuthService) {
+ctrl.controller('AuthCallbackCtrl', function($routeParams, $location, $modal, AuthResource, AuthService) {
 	AuthResource.authenticateCallback($routeParams, function(result) {
 		AuthService.authenticated(result);
-		$location.path('/');
+		$location.url('/');
 		$location.replace();
 	}, function(err) {
-
+		$location.url('/');
+		$location.replace();
+		$modal.open({
+			templateUrl: 'partials/modals/error',
+			controller: 'ErrorModalCtrl',
+			resolve: {
+				errorTitle: function() { return 'Could not login.'; },
+				errorMessage: function() { return err.data.error; }
+			}
+		});
 	});
 });
 

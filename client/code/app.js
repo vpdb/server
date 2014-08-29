@@ -31,6 +31,9 @@ app.config(function($routeProvider, $locationProvider, $httpProvider) {
 	$routeProvider.when('/styleguide/sections/:section', { templateUrl: function(route) {
 		return '/styleguide/sections/' + route.section + '.html';
 	}});
+	$routeProvider.when('/auth/:strategy/callback', { templateUrl: 'partials/authenticating' });
+
+
 	$locationProvider.html5Mode(true);
 	$httpProvider.interceptors.push('AuthInterceptor');
 });

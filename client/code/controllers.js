@@ -127,6 +127,12 @@ ctrl.controller('LoginCtrl', function($scope, $rootScope, $modalInstance, ApiHel
 
 });
 
+ctrl.controller('AuthCallbackCtrl', function($routeParams, AuthResource) {
+	AuthResource.authenticateCallback($routeParams, function(result) {
+		console.log(result);
+	});
+});
+
 ctrl.controller('CollapseCtrl', function($scope) {
 	$scope.isCollapsed  = false;
 });
@@ -172,7 +178,6 @@ ctrl.controller('CommentCtrl', function($scope) {
 		$scope.editing = false;
 	};
 });
-
 
 ctrl.controller('UserDetailCtrl', function($scope, $http, username) {
 

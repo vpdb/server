@@ -22,6 +22,7 @@
 var _ = require('lodash');
 var util = require('util');
 var logger = require('winston');
+var passport = require('passport');
 
 var User = require('mongoose').model('User');
 var acl = require('../../acl');
@@ -101,6 +102,22 @@ exports.authenticate = function(req, res) {
 			}, 200);
 		});
 	});
+};
+
+exports.authenticateOAuth2 = function(req, res, next) {
+	passport.authenticate(req.params.strategy, function(err, user) {
+		if (err) {
+			logger.warn('[api|%s:authenticate] %s -', req.params.strategy, err.message, err.oauthError);
+			return api.fail(res, 'Authentication via ' + req.params.strategy + ' failed: ' + err.message, 401);
+		}
+		if (!user) {
+			logger.error('[api|%s:authenticate] No user object in passport callback. This should not happen.');
+			return api.fail(res, 'Could not retrieve user object.', 500);
+		}
+		api.success(res, {
+			jwt: auth.generateToken(user, new Date())
+		});
+	})(req, res, next);
 };
 
 exports.list = function(req, res) {

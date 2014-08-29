@@ -2,8 +2,9 @@
 
 /*global services, _*/
 services.factory('AuthResource', function($resource) {
-	return $resource('/api/authenticate', {}, {
-		authenticate: { method: 'POST' }
+	return $resource('/api/authenticate/:strategy', {}, {
+		authenticate: { method: 'POST' },
+		authenticateCallback: { method: 'GET' }
 	});
 });
 

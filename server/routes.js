@@ -54,6 +54,7 @@ module.exports = function(app) {
 
 	// JSON API
 	app.post('/api/authenticate', api.users.authenticate);
+	app.get('/api/authenticate/:strategy', api.users.authenticateOAuth2);
 	app.post('/api/users',        api.users.create);
 	app.get('/api/users',         api.auth(api.users.list, 'users', 'search'));
 	app.put('/api/users/:id',     api.auth(api.users.update, 'users', 'update'));
@@ -99,7 +100,8 @@ module.exports = function(app) {
 	// authentication routes
 	if (config.vpdb.passport.github.enabled) {
 		app.get('/auth/github', passport.authenticate('github', { failureRedirect: '/', session: false }));
-		app.get('/auth/github/callback', auth.passport('github', passport, web));
+		app.get('/auth/github/callback', web.index());
+		//app.get('/auth/github/callback', auth.passport('github', passport, web));
 	}
 	_.each(config.vpdb.passport.ipboard, function(ipbConfig) {
 		if (ipbConfig.enabled) {

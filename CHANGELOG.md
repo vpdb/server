@@ -6,6 +6,7 @@
 
 * Added page for adding a new release
 * Games list and game details aren't mocked anymore
+* Markup is now 100% static while all data comes from API
 
 *Server Changes*:
 
@@ -17,6 +18,7 @@
 * Added Mongoose plugin for automatically referencing files
 * Added FFmpeg integration for video transcoding
 * Switched to Redis for ACLs, message queue, user dirty header and quota
+* Added Continuous Integration on Travis CI and Codeship
 * Bugfixes
 
 ## v0.0.5

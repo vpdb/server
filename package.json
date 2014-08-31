@@ -79,7 +79,7 @@
 		"passport-local": "1.0.0",
 		"passport-oauth": "1.0.0",
 		"pkginfo": "0.3.0",
-		"pleasejs": "git://github.com/Fooidge/PleaseJS",
+		"pleasejs": "git://github.com/Fooidge/PleaseJS#06e677f2d5210512eba87de73d0efd7a5ad210a7",
 		"pngquant": "0.1.5",
 		"randomstring": "1.0.3",
 		"redis": "0.12.1",

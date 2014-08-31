@@ -340,7 +340,7 @@ ctrl.controller('AdminGameAddCtrl', function($scope, $upload, $modal, $window, $
 
 
 	$scope.resetMedia();
-	if ($localStorage.game) {
+	if ($localStorage.newGame) {
 		$scope.game  = $localStorage.newGame;
 	} else {
 		$scope.resetGame();

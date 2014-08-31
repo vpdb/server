@@ -88,7 +88,7 @@ ctrl.controller('AdminGameAddCtrl', function($scope, $upload, $modal, $window, $
 	$scope.resetGame = function() {
 
 		// delete media if already uploaded
-		if (!$scope.game.submitted) {
+		if ($scope.game && !$scope.game.submitted) {
 			if ($scope.game.mediaFile.backglass.id) {
 				FileResource.delete({ id: $scope.game.mediaFile.backglass.id});
 			}

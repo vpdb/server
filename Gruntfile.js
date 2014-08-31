@@ -133,7 +133,7 @@ module.exports = function(grunt) {
 
 		uglify: {
 			build: {
-				options: { mangle: false, compress: false, beautify: false, sourceMap: true },
+				options: { mangle: false, compress: false, beautify: false, sourceMap: true, sourceMapIncludeSources: true },
 				files: [ { expand: false, cwd: '.', dest: jsGlobal, src: _.pluck(assets.getJs(), 'src') }]
 			}
 		},

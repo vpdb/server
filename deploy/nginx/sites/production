@@ -14,7 +14,8 @@ server {
 	auth_basic_user_file /var/www/.htpasswd;
 
 	# this goes to node, everything else is static file serving
-	location ~ (^/(api(-mock)?|storage|avatars|asset|packs)/|^/auth/[^/]+$) {
+	location ~ (^/(api(-mock)?|avatars|asset|packs)/|^/storage|^/auth/[^/]+$) {
+		client_max_body_size 200M;
 		proxy_pass http://vpdb_production_upstream;
 		proxy_redirect off;
 		proxy_set_header X-Real-IP         $remote_addr;

@@ -1,12 +1,11 @@
 server {
 
-	# if you have a spare IP, set this to 443
-	listen 1000 ssl;
-	server_name staging.vpdb;
+	listen $vpdb_staging_serverport ssl;
+	server_name $vpdb_staging_servername;
 
 	# path to your certs
-	ssl_certificate      /etc/nginx/ssl/staging.vpdb.crt;
-	ssl_certificate_key  /etc/nginx/ssl/staging.vpdb.key;
+	ssl_certificate      $vpdb_staging_ssl_certificate;
+	ssl_certificate_key  $vpdb_staging_ssl_certificate_key;
 
 	# protect this
 	auth_basic "Restricted";
@@ -14,34 +13,35 @@ server {
 
 	# these are the static assets
 	location ~ ^/(css/|fonts/|images/|js/global|json/|lib/|robots.txt|humans.txt) {
-		root /var/www/staging/shared/cache;
+		root $vpdb_staging_path_cache;
 		access_log off;
 		expires max;
 	}
 
 	# favicons
 	location ~ ^/(favicon|mstile|apple-touch-icon) {
-		root /var/www/staging/shared/cache/images/favicon;
+		root $vpdb_staging_path_cache/images/favicon;
 		access_log off;
 		expires max;
 	}
 
 	# javascripts
 	location ~ ^/js/ {
-		root /var/www/staging/current/client/code;
+		root $vpdb_staging_path_current/client/code;
 		rewrite ^/js/(.*)$ /$1 break;
 		access_log off;
 		expires max;
 	}
 
-	# partials are served statically as well
-	location ~ ^/partials/ {
-		root /var/www/staging/shared/cache/html;
-		try_files $uri $uri/ $uri.html;
+	# static html files
+	location ~ .*\.html$ {
+		root $vpdb_staging_path_cache/html;
+		access_log off;
+		expires max;
 	}
 
 	# api (remove -mock and the rest when fake data is gone)
-	location ~ ^/(api(-mock)?|avatars|asset|packs)/ {
+	location ~ ^/(api(-mock)?|storage|avatars|asset|packs)/ {
 		proxy_redirect off;
 		proxy_set_header X-Real-IP         $remote_addr;
 		proxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;
@@ -62,22 +62,15 @@ server {
 
 	# style guide
 	location ~ ^/styleguide {
-		root /var/www/staging/current;
+		root $vpdb_staging_path_current;
 		try_files $uri /styleguide/index.html;
 		access_log off;
 		expires max;
 	}
 
-	# static error pages
-	location ~ ^/errors {
-		root /var/www/staging/shared/cache/html;
-		access_log off;
-		expires max;
-	}
-
-	# if no hit, serve index (need to whitelist this)
+	# if no hit, serve index
 	location / {
-		root /var/www/staging/shared/cache/html;
+		root $vpdb_staging_path_cache/html;
 		try_files /index.html =404;
 	}
 
@@ -86,6 +79,6 @@ server {
 # redirect to https
 server {
 	listen 80;
-	server_name staging.vpdb;
-	return 301 https://staging.vpdb.ch:1000$request_uri;
+	server_name $vpdb_staging_servername;
+	return 301 $vpdb_staging_serverurl:$vpdb_staging_serverport$request_uri;
 }

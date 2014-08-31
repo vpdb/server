@@ -320,16 +320,17 @@ Generate an SSL certificate:
 Update the configuration and add the sites:
 
 	sudo cp /repos/source/deploy/nginx/nginx.conf /etc/nginx/nginx.conf
+	sudo cp /repos/source/deploy/nginx/conf/* /etc/nginx/conf.d
 	sudo cp /repos/source/deploy/nginx/sites/production /etc/nginx/sites-available/vpdb-production
 	sudo cp /repos/source/deploy/nginx/sites/staging /etc/nginx/sites-available/vpdb-staging
 	sudo ln -s /etc/nginx/sites-available/vpdb-production /etc/nginx/sites-enabled/vpdb-production
 	sudo ln -s /etc/nginx/sites-available/vpdb-staging /etc/nginx/sites-enabled/vpdb-staging
 	sudo rm /etc/nginx/sites-enabled/default
 
-Update ``server_name`` to the correct domain:
+Update configuration:
 
-	sudo vi /etc/nginx/sites-available/vpdb-production
-	sudo vi /etc/nginx/sites-available/vpdb-staging
+	sudo vi /etc/nginx/conf.d/production.conf
+	sudo vi /etc/nginx/conf.d/staging.conf
 
 Then restart nginx:
 

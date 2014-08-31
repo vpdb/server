@@ -316,8 +316,8 @@ Generate an SSL certificate:
 	rm -v vpdb.original
 	openssl x509 -req -days 365 -in vpdb.csr -signkey vpdb.key -out vpdb.crt
 	exit
-
-Update the configuration and add the sites:
+	
+Do the same for `staging.key` and `staging.crt`. Then update the configuration and add the sites:
 
 	sudo cp /repos/source/deploy/nginx/nginx.conf /etc/nginx/nginx.conf
 	sudo cp /repos/source/deploy/nginx/sites/production /etc/nginx/sites-available/vpdb-production

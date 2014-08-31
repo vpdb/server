@@ -1,58 +1,21 @@
 server {
 
-	set $vpdb_serverurl            https://staging.vpdb;
-	set $vpdb_servername           staging.vpdb;
-	set $vpdb_serverport           1000;
+	set $build_directory    /var/www/staging/shared/cache;
+	set $project_directory  /var/www/staging/current;
 
-	set $vpdb_path_cache           /var/www/staging/shared/cache;
-	set $vpdb_path_current         /var/www/staging/current;
-
-	set $vpdb_ssl_certificate      /etc/nginx/ssl/staging.vpdb.crt;
-	set $vpdb_ssl_certificate_key  /etc/nginx/ssl/staging.vpdb.key;
-
-
-	listen $vpdb_serverport ssl;
-	server_name $vpdb_servername;
+	listen 1000 ssl;
 
 	# path to your certs
-	ssl_certificate      $vpdb_ssl_certificate;
-	ssl_certificate_key  $vpdb_ssl_certificate_key;
+	ssl_certificate      /etc/nginx/ssl/staging.crt;
+	ssl_certificate_key  /etc/nginx/ssl/staging.key;
 
 	# protect this
 	auth_basic "Restricted";
 	auth_basic_user_file /var/www/.htpasswd;
 
-	# these are the static assets
-	location ~ ^/(css/|fonts/|images/|js/global|json/|lib/|robots.txt|humans.txt) {
-		root $vpdb_path_cache;
-		access_log off;
-		expires max;
-	}
-
-	# favicons
-	location ~ ^/(favicon|mstile|apple-touch-icon) {
-		root $vpdb_path_cache/images/favicon;
-		access_log off;
-		expires max;
-	}
-
-	# javascripts
-	location ~ ^/js/ {
-		root $vpdb_path_current/client/code;
-		rewrite ^/js/(.*)$ /$1 break;
-		access_log off;
-		expires max;
-	}
-
-	# static html files
-	location ~ .*\.html$ {
-		root $vpdb_path_cache/html;
-		access_log off;
-		expires max;
-	}
-
-	# api (remove -mock and the rest when fake data is gone)
+	# this goes to node, everything else is static file serving
 	location ~ ^/(api(-mock)?|storage|avatars|asset|packs)/ {
+		proxy_pass http://vpdb_staging_upstream;
 		proxy_redirect off;
 		proxy_set_header X-Real-IP         $remote_addr;
 		proxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;
@@ -60,36 +23,52 @@ server {
 		proxy_set_header Host              $http_host;
 		proxy_set_header X-NginX-Proxy     true;
 		proxy_set_header Connection "";
+		proxy_pass_request_headers         on;
 		proxy_http_version 1.1;
-		#proxy_cache one;
-		#proxy_cache_key vpdb$request_uri$scheme;
-		proxy_pass http://vpdb_staging_upstream;
-
-		error_page 403 /errors/403.html;
-		error_page 404 /errors/404.html;
-		error_page 500 /errors/500.html;
-		error_page 502 /errors/502.html;
 	}
 
 	# style guide
 	location ~ ^/styleguide {
-		root $vpdb_path_current;
+		root $project_directory;
 		try_files $uri /styleguide/index.html;
 		access_log off;
 		expires max;
 	}
 
-	# if no hit, serve index
+	# map html files to root
+	location ~ \.html$ {
+		root $build_directory/html;
+		expires max;
+	}
+
+	# map files to build folder
 	location / {
-		root $vpdb_path_cache/html;
+		root $build_directory;
+	}
+
+	# map root to index
+	location = / {
+		root $build_directory/html;
 		try_files /index.html =404;
 	}
 
+	# map directories to index
+	location ~ \/[^\.]*$ {
+		root $build_directory/html;
+		try_files /index.html =404;
+	}
+
+	# map favicons to root
+	location ~ ^/(favicon|mstile|apple-touch-icon) {
+		root $build_directory/images/favicon;
+		access_log off;
+		expires max;
+	}
 }
 
 # redirect to https
 server {
 	listen 80;
-	server_name $vpdb_servername;
-	return 301 $vpdb_serverurl:$vpdb_serverport$request_uri;
+	server_name staging.vpdb;
+	return 301 https://staging.vpdb:1000$request_uri;
 }

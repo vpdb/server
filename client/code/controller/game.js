@@ -30,7 +30,7 @@ ctrl.controller('GameController', function($scope, $http, $routeParams, $modal, 
 
 	$scope.requestModPermission = function(release) {
 		var modalInstance = $modal.open({
-			templateUrl: 'partials/modals/requestModPermission',
+			templateUrl: 'partials/modals/requestModPermission.html',
 			controller: 'RequestModPermissionModalCtrl'
 		});
 
@@ -163,7 +163,7 @@ ctrl.controller('AdminGameAddCtrl', function($scope, $upload, $modal, $window, $
 			fetchIpdb(ipdbId, done);
 		} else {
 			$modal.open({
-				templateUrl: 'partials/modals/info',
+				templateUrl: 'partials/modals/info.html',
 				controller: 'InfoModalCtrl',
 				resolve: {
 					icon: function() { return 'fa-warning'; },
@@ -205,7 +205,7 @@ ctrl.controller('AdminGameAddCtrl', function($scope, $upload, $modal, $window, $
 				$scope.game.submitted = true;
 				$scope.reset();
 				$modal.open({
-					templateUrl: 'partials/modals/info',
+					templateUrl: 'partials/modals/info.html',
 					controller: 'InfoModalCtrl',
 					resolve: {
 						icon: function() { return 'fa-check-circle-o'; },
@@ -238,7 +238,7 @@ ctrl.controller('AdminGameAddCtrl', function($scope, $upload, $modal, $window, $
 		var primaryMime = mimeType.split('/')[0];
 		if (primaryMime !== restrictMime) {
 			return $modal.open({
-				templateUrl: 'partials/modals/info',
+				templateUrl: 'partials/modals/info.html',
 				controller: 'InfoModalCtrl',
 				resolve: {
 					icon: function() { return 'fa-file-image-o'; },

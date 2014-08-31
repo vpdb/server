@@ -163,7 +163,7 @@ directives.directive('user', function($compile, $modal) {
 		link: function(scope, element) {
 			element.click(function() {
 				$modal.open({
-					templateUrl: 'partials/modals/userDetails',
+					templateUrl: 'partials/modals/userDetails.html',
 					controller: 'UserDetailCtrl',
 					resolve: {
 						username: function() {

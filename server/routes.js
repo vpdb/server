@@ -101,18 +101,9 @@ module.exports = function(app) {
 	app.get('/storage/:id/:variation', api.anon(storage.get));
 
 
+	// Authentication
+	// ========================================================================
 
-	// JSON API (mock)
-	var apiMock = require('./controllers/api-mock');
-	app.get('/api-mock/games/:id', apiMock.game);
-	app.get('/api-mock/games', apiMock.games);
-	app.get('/api-mock/packs', apiMock.packs);
-	app.get('/api-mock/releases', apiMock.releases);
-	app.get('/api-mock/feed', apiMock.feed);
-	app.get('/api-mock/users', apiMock.users);
-	app.get('/api-mock/users/:user', apiMock.user);
-
-	// authentication routes
 	if (config.vpdb.passport.github.enabled) {
 		app.get('/auth/github', passport.authenticate('github', { failureRedirect: '/', session: false }));
 		app.get('/auth/github/callback', web.index());
@@ -128,4 +119,18 @@ module.exports = function(app) {
 	if (process.env.NODE_ENV !== 'production') {
 		app.post('/auth/mock', auth.passportMock(web));
 	}
+
+
+	// Legacy
+	// ========================================================================
+
+	// JSON API (mock)
+	var apiMock = require('./controllers/api-mock');
+	app.get('/api-mock/games/:id', apiMock.game);
+	app.get('/api-mock/games', apiMock.games);
+	app.get('/api-mock/packs', apiMock.packs);
+	app.get('/api-mock/releases', apiMock.releases);
+	app.get('/api-mock/feed', apiMock.feed);
+	app.get('/api-mock/users', apiMock.users);
+	app.get('/api-mock/users/:user', apiMock.user);
 };

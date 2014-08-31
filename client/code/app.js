@@ -31,7 +31,7 @@ app.config(function($routeProvider, $locationProvider, $httpProvider) {
 	$routeProvider.when('/styleguide/sections/:section', { templateUrl: function(route) {
 		return '/styleguide/sections/' + route.section + '.html';
 	}});
-	$routeProvider.when('/auth/:strategy/callback', { templateUrl: 'partials/authenticating' });
+	$routeProvider.when('/auth/:strategy/callback', { templateUrl: 'partials/authenticating.html' });
 
 	$routeProvider.otherwise({templateUrl:'errors/404.html'});
 

@@ -81,7 +81,7 @@ services.factory('ApiHelper', function($modal) {
 			return function(response) {
 				scope.setLoading(false);
 				$modal.open({
-					templateUrl: 'partials/modals/error',
+					templateUrl: 'partials/modals/error.html',
 					controller: 'ErrorModalCtrl',
 					resolve: {
 						errorTitle: function() { return title; },

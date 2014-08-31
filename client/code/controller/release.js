@@ -126,7 +126,7 @@ ctrl.controller('ReleaseAddCtrl', function($scope, $upload, $modal, $window, $lo
 			if (!_.contains(['image/jpeg', 'image/png'], file.type) && !_.contains(['vpt', 'vpx', 'vbs'], ext)) {
 				//noinspection JSHint
 				return $modal.open({
-					templateUrl: 'partials/modals/info',
+					templateUrl: 'partials/modals/info.html',
 					controller: 'InfoModalCtrl',
 					resolve: {
 						icon: function() { return 'fa-file-image-o'; },
@@ -192,7 +192,7 @@ ctrl.controller('ReleaseAddCtrl', function($scope, $upload, $modal, $window, $lo
 
 	$scope.addAuthor = function(author) {
 		$modal.open({
-			templateUrl: 'partials/member/modals/author-add',
+			templateUrl: 'partials/member/modals/author-add.html',
 			controller: 'ChooseAuthorCtrl',
 			resolve: {
 				release: function() { return $scope.release; },
@@ -215,7 +215,7 @@ ctrl.controller('ReleaseAddCtrl', function($scope, $upload, $modal, $window, $lo
 
 	$scope.createTag = function() {
 		$modal.open({
-			templateUrl: 'partials/member/modals/tag-create',
+			templateUrl: 'partials/member/modals/tag-create.html',
 			controller: 'CreateTagCtrl'
 		}).result.then(function(newTag) {
 			$scope.tags.push(newTag);
@@ -241,7 +241,7 @@ ctrl.controller('ReleaseAddCtrl', function($scope, $upload, $modal, $window, $lo
 
 	$scope.addVPBuild = function() {
 		$modal.open({
-			templateUrl: 'partials/member/modals/vpbuild-create',
+			templateUrl: 'partials/member/modals/vpbuild-create.html',
 			controller: 'AddVPBuildCtrl',
 			size: 'lg'
 		}).result.then(function(newTag) {

@@ -15,7 +15,7 @@ ctrl.controller('AdminUserCtrl', function($scope, $modal, UserResource, RolesRes
 
 	$scope.edit = function(user) {
 		$modal.open({
-			templateUrl: 'partials/admin/modals/user-edit',
+			templateUrl: 'partials/admin/modals/user-edit.html',
 			controller: 'AdminUserEditCtrl',
 			size: 'lg',
 			resolve: {

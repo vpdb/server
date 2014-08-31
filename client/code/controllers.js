@@ -74,13 +74,13 @@ ctrl.controller('AppCtrl', function($scope, $rootScope, $location, $modal, UserR
 
 	$scope.helpPinnedDownloads = function() {
 		$modal.open({
-			templateUrl: 'partials/modals/helpPinnedDownloads'
+			templateUrl: 'partials/modals/helpPinnedDownloads.html'
 		});
 	};
 
 	$rootScope.login = function() {
 		$modal.open({
-			templateUrl: 'partials/modals/auth',
+			templateUrl: 'partials/modals/auth.html',
 			controller: 'LoginCtrl',
             windowClass: 'theme-light'
 		});
@@ -136,7 +136,7 @@ ctrl.controller('AuthCallbackCtrl', function($routeParams, $location, $modal, Au
 		$location.url('/');
 		$location.replace();
 		$modal.open({
-			templateUrl: 'partials/modals/error',
+			templateUrl: 'partials/modals/error.html',
 			controller: 'ErrorModalCtrl',
 			resolve: {
 				errorTitle: function() { return 'Could not login.'; },

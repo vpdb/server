@@ -1,11 +1,20 @@
 server {
 
+	set $vpdb_serverurl            https://production.vpdb;
+	set $vpdb_servername           production.vpdb;
+
+	set $vpdb_path_cache           /var/www/production/shared/cache;
+	set $vpdb_path_current         /var/www/production/current;
+
+	set $vpdb_ssl_certificate      /etc/nginx/ssl/production.vpdb.crt;
+	set $vpdb_ssl_certificate_key  /etc/nginx/ssl/production.vpdb.key;
+
 	listen 443 ssl;
-	server_name $vpdb_production_servername;
+	server_name $vpdb_servername;
 
 	# path to your certs
-	ssl_certificate      $vpdb_production_ssl_certificate;
-	ssl_certificate_key  $vpdb_production_ssl_certificate_key;
+	ssl_certificate      $vpdb_ssl_certificate;
+	ssl_certificate_key  $vpdb_ssl_certificate_key;
 
 	# protect this
 	auth_basic "Restricted";
@@ -13,21 +22,21 @@ server {
 
 	# these are the static assets
 	location ~ ^/(css/|fonts/|images/|js/global|json/|lib/|robots.txt|humans.txt) {
-		root $vpdb_production_path_cache;
+		root $vpdb_path_cache;
 		access_log off;
 		expires max;
 	}
 
 	# favicons
 	location ~ ^/(favicon|mstile|apple-touch-icon) {
-		root $vpdb_production_path_cache/images/favicon;
+		root $vpdb_path_cache/images/favicon;
 		access_log off;
 		expires max;
 	}
 
 	# javascripts
 	location ~ ^/js/ {
-		root $vpdb_production_path_current/client/code;
+		root $vpdb_path_current/client/code;
 		rewrite ^/js/(.*)$ /$1 break;
 		access_log off;
 		expires max;
@@ -35,7 +44,7 @@ server {
 
 	# static html files
 	location ~ .*\.html$ {
-		root $vpdb_production_path_cache/html;
+		root $vpdb_path_cache/html;
 		access_log off;
 		expires max;
 	}
@@ -62,7 +71,7 @@ server {
 
 	# style guide
 	location ~ ^/styleguide {
-		root $vpdb_production_path_current;
+		root $vpdb_path_current;
 		try_files $uri /styleguide/index.html;
 		access_log off;
 		expires max;
@@ -70,7 +79,7 @@ server {
 
 	# if no hit, serve index
 	location / {
-		root $vpdb_production_path_cache/html;
+		root $vpdb_path_cache/html;
 		try_files /index.html =404;
 	}
 
@@ -79,6 +88,6 @@ server {
 # redirect to https
 server {
 	listen 80;
-	server_name $vpdb_production_servername;
-	return 301 $vpdb_production_serverurl:$request_uri;
+	server_name $vpdb_servername;
+	return 301 $vpdb_serverurl:$request_uri;
 }

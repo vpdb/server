@@ -320,7 +320,6 @@ Generate an SSL certificate:
 Update the configuration and add the sites:
 
 	sudo cp /repos/source/deploy/nginx/nginx.conf /etc/nginx/nginx.conf
-	sudo cp /repos/source/deploy/nginx/conf/* /etc/nginx/conf.d
 	sudo cp /repos/source/deploy/nginx/sites/production /etc/nginx/sites-available/vpdb-production
 	sudo cp /repos/source/deploy/nginx/sites/staging /etc/nginx/sites-available/vpdb-staging
 	sudo ln -s /etc/nginx/sites-available/vpdb-production /etc/nginx/sites-enabled/vpdb-production
@@ -329,8 +328,8 @@ Update the configuration and add the sites:
 
 Update configuration:
 
-	sudo vi /etc/nginx/conf.d/production.conf
-	sudo vi /etc/nginx/conf.d/staging.conf
+	sudo vi /etc/nginx/sites-available/vpdb-production
+	sudo vi /etc/nginx/sites-available/vpdb-staging
 
 Then restart nginx:
 
@@ -343,7 +342,7 @@ If you want to (temporarily) protect your site:
 	sudo chown www-data:www-data /var/www/.htpasswd
 	sudo vi /etc/nginx/sites-available/vpdb-staging
 
-Add this to the ``server { ... }`` block
+Add this to the `server { ... }` block
 
 	auth_basic "Restricted";
 	auth_basic_user_file /var/www/.htpasswd;

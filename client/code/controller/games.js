@@ -15,13 +15,13 @@ ctrl.controller('GameListController', function($scope, $rootScope, $http, $locat
 
 	// preload partials
 	_.each(['compact', 'extended', 'list'], function(view) {
-		$http.get( '/partials/game-' + view, { cache:$templateCache });
+		$http.get( '/partials/game-' + view + '.html', { cache:$templateCache });
 	});
 
 	var hash = $location.hash();
 	$scope.viewtype = _.contains([ 'extended', 'list' ], hash) ? hash : 'compact';
 	$scope.setView = function() {
-		$scope.template = '/partials/game-' + $scope.viewtype;
+		$scope.template = '/partials/game-' + $scope.viewtype + '.html';
 	};
 	$scope.switchview = function(view) {
 		if ($scope.viewtype === view) {

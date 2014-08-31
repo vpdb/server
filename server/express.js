@@ -19,9 +19,9 @@
 
 "use strict";
 
+var _ = require('lodash');
 var path = require('path');
 var http = require('http');
-var flash = require('connect-flash');
 var logger = require('winston');
 
 var passport = require('passport');
@@ -105,41 +105,39 @@ exports.configure = function(app) {
 
 	// general stuff
 	app.use(expressBodyParser.json());
-	//app.use(expressBodyParser.urlencoded());
-	//app.use(expressMethodOverride()); // npm install --save method-override
 
 	// static file serving
 	if (runningLocal) {
+
+		// markup (which is pre-compiled in production)
+		app.use(jadeStatic({
+			baseDir: path.resolve(__dirname, '../client/views'),
+			baseUrl: '/',
+			jade: _.extend(ctrl.viewParams(), {
+				pretty: true
+			})
+		}));
+		// other static files
 		app.use(express.static(writeable.cacheRoot, { maxAge: 3600*24*30*1000 }));
 		app.use(express.static(path.resolve(__dirname, '../client/static'), { maxAge: 3600*24*30*1000 }));
 		app.use(express.static(path.resolve(__dirname, '../client/static/images/favicon'), { maxAge: 3600*24*30*1000 }));
 		app.use('/js', express.static(path.resolve(__dirname, '../client/code'), { maxAge: 3600*24*30*1000 }));
 	}
+
+	// mock
 	app.use(express.static(path.resolve(__dirname, '../data/assets'), { maxAge: 3600*24*30*1000 }));
 	app.use(asset.middleware());
 
 	// initialize passport
 	app.use(passport.initialize());
 
-	// connect flash for flash messages
-	app.use(flash());
-
 	// api pre-checks
 	app.use(apiCtrl.checkApiContentType);
 
 	app.use('/styleguide', express.static(path.resolve(__dirname, '../styleguide')));
 
-	// bootstrap routes
+	// dynamic routes
 	require('./routes')(app);
-
-	// TODO: fix this
-	app.use(jadeStatic({
-		baseDir: path.join(__dirname, '/views/partials'),
-		baseUrl: '/partials',
-		jade: {
-			pretty: true
-		}
-	}));
 
 	// api errors
 	app.use(apiCtrl.handleParseError);
@@ -178,7 +176,13 @@ exports.configure = function(app) {
 		//enable coverage endpoints under /coverage
 		app.use('/_coverage', require('istanbul-middleware').createHandler());
 		app.use('/coverage', express.static(path.resolve(__dirname, '../test/coverage/lcov-report'), { maxAge: 3600*24*30*1000 }));
+	}
 
+	if (runningLocal) {
+		// per default, serve index and let Angular.JS figure out if it's a valid route (nginx does this in production).
+		app.use(function(req, res) {
+			res.status(200).render('index', ctrl.viewParams());
+		});
 	}
 
 	// assume "not found" in the error msgs

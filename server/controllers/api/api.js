@@ -106,8 +106,8 @@ exports.fail = function(res, err, code) {
 };
 
 exports.checkApiContentType = function(req, res, next) {
-	var hasBody = req.method === 'POST' || req.method === 'PUT' ||req.method === 'PATCH';
-	if (req.path.substr(0, 5) === '/api/' && hasBody && !~req.get('content-type').indexOf('application/json')) {
+	var hasBody = req.method === 'POST' || req.method === 'PUT' || req.method === 'PATCH';
+	if (hasBody && req.path.substr(0, 5) === '/api/' && !~req.get('content-type').indexOf('application/json')) {
 		res.status(415).json({ error: 'Sorry, the API only talks JSON. Did you forget to set the "Content-Type" header correctly?' });
 	} else {
 		next();

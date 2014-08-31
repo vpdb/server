@@ -21,19 +21,19 @@ var app = angular.module('vpdb', [
 
 app.config(function($routeProvider, $locationProvider, $httpProvider) {
 
-	$routeProvider.when('/', { templateUrl: 'partials/home' });
-	$routeProvider.when('/games', { templateUrl: 'partials/games' });
-	$routeProvider.when('/game/:id', { templateUrl: 'partials/game' });
-	$routeProvider.when('/game/:id/add-release', { templateUrl: 'partials/member/release-add' });
-	$routeProvider.when('/games/add', { templateUrl: 'partials/admin/game-add' });
-	$routeProvider.when('/admin/users', { templateUrl: 'partials/admin/users' });
+	$routeProvider.when('/', { templateUrl: 'partials/home.html' });
+	$routeProvider.when('/games', { templateUrl: 'partials/games.html' });
+	$routeProvider.when('/game/:id', { templateUrl: 'partials/game.html' });
+	$routeProvider.when('/game/:id/add-release', { templateUrl: 'partials/member/release-add.html' });
+	$routeProvider.when('/games/add', { templateUrl: 'partials/admin/game-add.html' });
+	$routeProvider.when('/admin/users', { templateUrl: 'partials/admin/users.html' });
 	$routeProvider.when('/styleguide', { templateUrl: '/styleguide/overview.html' });
 	$routeProvider.when('/styleguide/sections/:section', { templateUrl: function(route) {
 		return '/styleguide/sections/' + route.section + '.html';
 	}});
 	$routeProvider.when('/auth/:strategy/callback', { templateUrl: 'partials/authenticating' });
 
-	$routeProvider.otherwise({templateUrl:'errors/404'});
+	$routeProvider.otherwise({templateUrl:'errors/404.html'});
 
 	$locationProvider.html5Mode(true);
 	$httpProvider.interceptors.push('AuthInterceptor');

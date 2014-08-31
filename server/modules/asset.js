@@ -105,7 +105,6 @@ var asset = function(context, p, processFct, type, key, size, defaultName) {
 			});
 		});
 
-		// FIXME don't process twice (tried to fix, but when chaining write() after stream(), the unprocessed image gets saved).
 		// save to cache
 		processFct(gm(p), function(gm) {
 			gm.write(filename, function(err) {
@@ -113,21 +112,6 @@ var asset = function(context, p, processFct, type, key, size, defaultName) {
 					return logger.error('[asset] Error writing asset cache to %s: %s', filename, err);
 				}
 				logger.info('[asset] Successfully wrote asset cache to %s.', filename);
-
-				// now shrink it
-				fs.createReadStream(filename).pipe(request.post({
-					url: 'https://api.tinypng.com/shrink',
-					json: true,
-					headers: { 'Authorization' : 'Basic ' + new Buffer('key:X6JiKxeLNoN8Fgnpz0F7ervRS7Z8SIfW').toString('base64') }
-				}, function(err, response, json) {
-					if (err) {
-						return logger.error('[asset] Error while posting image to tinypng: %s', err);
-					}
-					if (response.statusCode !== 201) {
-						return logger.error('[asset] Error shrinking image (%d): %s', response.statusCode, util.inspect(json));
-					}
-					request(json.output.url).pipe(fs.createWriteStream(filename));
-				}));
 			});
 		});
 

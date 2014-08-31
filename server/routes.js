@@ -94,6 +94,12 @@ module.exports = function(app) {
 	app.post('/api/vpbuilds',     api.auth(api.vpbuilds.create, 'vpbuilds', 'add'));
 
 
+	// or else fail
+	app.all('/api/*', function(req, res) {
+		res.setHeader('Content-Type', 'application/json');
+		res.status(404).send({ error: 'No such resource.' });
+	});
+
 	// Storage
 	// ========================================================================
 	app.post('/storage',               api.auth(api.files.upload, 'files', 'upload'));

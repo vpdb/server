@@ -29,6 +29,6 @@ describe('The VPDB API', function() {
 		it('should return a HTTP 404 and a JSON message if the resource is not found', function(done) {
 			request
 				.get('/api/foobar')
-				.end(hlp.status(404, 'Not found', done));
+				.end(hlp.status(404, 'No such resource', done));
 		});
 });

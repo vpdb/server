@@ -36,7 +36,7 @@ var config = require('./modules/settings').current;
  *
  * 	- `/api/**`     API
  * 	- `/storage/**` Downloads
- * 	- `/auth/**`    OAuth routes of Passport
+ * 	- `/auth/*`     OAuth routes of Passport
  *
  * Everything else is static and is defined in `express.js`.
  *

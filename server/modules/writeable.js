@@ -27,9 +27,10 @@ function Writeable() {
 	this.buildRoot = process.env.APP_BUILDDIR ? process.env.APP_BUILDDIR : path.resolve(__dirname, "../../build");
 	this.cacheRoot = process.env.APP_CACHEDIR ? process.env.APP_CACHEDIR : path.resolve(__dirname, "../../cache");
 
+	this.imgCache = path.resolve(this.cacheRoot, 'img');
+
 	this.jsRoot = path.resolve(this.buildRoot, 'js');
 	this.cssRoot = path.resolve(this.buildRoot, 'css');
-	this.imgRoot = path.resolve(this.buildRoot, 'img');
 	this.htmlRoot = path.resolve(this.buildRoot, 'html');
 	this.fontsRoot = path.resolve(this.buildRoot, 'fonts');
 
@@ -46,16 +47,17 @@ function Writeable() {
 		fs.mkdirSync(this.cssRoot);
 	}
 	/* istanbul ignore if */
-	if (!fs.existsSync(this.imgRoot)) {
-		fs.mkdirSync(this.imgRoot);
-	}
-	/* istanbul ignore if */
 	if (!fs.existsSync(this.htmlRoot)) {
 		fs.mkdirSync(this.htmlRoot);
 	}
 	/* istanbul ignore if */
 	if (!fs.existsSync(this.fontsRoot)) {
 		fs.mkdirSync(this.fontsRoot);
+	}
+
+	/* istanbul ignore if */
+	if (!fs.existsSync(this.imgCache)) {
+		fs.mkdirSync(this.imgCache);
 	}
 }
 
@@ -64,6 +66,7 @@ exports.cacheRoot = writeable.cacheRoot;
 exports.buildRoot = writeable.buildRoot;
 exports.jsRoot = writeable.jsRoot;
 exports.cssRoot = writeable.cssRoot;
-exports.imgRoot = writeable.imgRoot;
 exports.htmlRoot = writeable.htmlRoot;
 exports.fontsRoot = writeable.fontsRoot;
+
+exports.imgCache = writeable.imgCache;

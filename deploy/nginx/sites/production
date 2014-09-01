@@ -45,6 +45,18 @@ server {
 	# map files to build folder
 	location / {
 		root $build_directory;
+		access_log off;
+		expires -1;
+
+		location /css/ {
+			expires max;
+		}
+		location /js/ {
+			expires max;
+		}
+		location /images/ {
+			expires 24h;
+		}
 	}
 
 	# map root to index

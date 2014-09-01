@@ -29,7 +29,7 @@ html(ng-app="vpdb", ng-controller="AppCtrl", auth=JSON.stringify(auth), auth-hea
 		script(type="text/javascript") try{Typekit.load();}catch(e){}
 		title(ng-bind="pageTitle")
 
-	body#top(ng-class="themeName")
+	body#top(ng-class="themeName", auth-header=authHeader)
 		block body
 		if environment == 'production'
 			script(type="text/javascript", src="/js/global.min.js?#{gitinfo.local.branch.current.shortSHA}")

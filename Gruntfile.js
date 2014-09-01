@@ -70,7 +70,7 @@ module.exports = function(grunt) {
 			dev: localEnv(grunt, devConfig),
 			test: localEnv(grunt, testConfig),
 			ci: localEnv(grunt, testConfig),
-			prod: { NODE_ENV: 'production', APP_SETTINGS: process.env.APP_SETTINGS ||  path.resolve(__dirname, 'server/config/settings.js'), PORT: process.env.PORT || 3000 }
+			prod: { NODE_ENV: 'production', APP_SETTINGS: process.env.APP_SETTINGS || path.resolve(__dirname, 'server/config/settings.js'), PORT: process.env.PORT || 3000 }
 		},
 
 		express: {

@@ -43,8 +43,8 @@ function serve(req, res, file, variationName) {
 		res.writeHead(200, {
 			'Content-Type': file.getMimeType(variationName),
 			'Content-Length':  fstat.size,
-			'Cache-Control': 'private',
-			'Last-Modified': modified
+			'Cache-Control': 'max-age=315360000',
+			'Last-Modified': modified.toISOString().replace(/T/, ' ').replace(/\..+/, '')
 		});
 
 		var stream = fs.createReadStream(filePath);

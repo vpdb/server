@@ -50,7 +50,7 @@ function Assets() {
 	// application css (only one file)
 	this.app.css.push({
 		src: path.resolve(cssRoot, 'vpdb.css'),
-		web: '/css/vpdb.css?'
+		web: '/css/vpdb.css'
 	});
 
 	// vendor libs from bower

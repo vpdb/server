@@ -24,19 +24,17 @@ var _ = require('lodash');
 /**
  * Returns the parameter object that is accessible when rendering the views.
  * @param {object} [conf] Conf
- * @param {function} [done] Callback, first parameter `params` object, no errors. If not provided, returns params synchronously.
+ * @param {boolean} [gitInfoFromGrunt] If true, don't require gitinfo but put a Grunt placeholder.
  */
-exports.viewParams = function(config, done) {
+exports.viewParams = function(config, gitInfoFromGrunt) {
+
+	config = config || require('../modules/settings').current;
 
 	var assets = require('../modules/assets');
-
-	done = _.isFunction(config) ? config : done;
-	config = _.isObject(config) && !_.isFunction(config) ? config : require('../modules/settings').current;
-
 	var params = {
 		deployment: process.env.APP_NAME || 'staging',
 		environment: process.env.NODE_ENV || 'development',
-		gitinfo: require('../modules/gitinfo').info,
+		gitinfo: gitInfoFromGrunt ? '<%= gitinfo %>' : require('../modules/gitinfo').info,
 		jsFiles: assets.getJs(),
 		cssFiles: assets.getCss(),
 		authStrategies: {
@@ -52,9 +50,6 @@ exports.viewParams = function(config, done) {
 		},
 		authHeader: config.vpdb.authorizationHeader
 	};
-	if (done) {
-		return done(params);
-	}
 	return params;
 };
 

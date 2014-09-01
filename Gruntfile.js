@@ -20,7 +20,7 @@ module.exports = function(grunt) {
 	var devConfig = settings(grunt, false);
 	var testConfig = settings(grunt, true);
 
-	var viewParams = ctrl.viewParams(devConfig);
+	var viewParams = ctrl.viewParams(devConfig, true);
 
 	// configure the tasks
 	var config = {
@@ -178,7 +178,7 @@ module.exports = function(grunt) {
 
 	// build
 	grunt.registerTask('build', 'What run on production before switching code.',
-		[ 'clean:build', 'git', 'mkdir:server', 'copy:assets', 'copy:static', 'stylus', 'cssmin', 'uglify', 'kssrebuild', 'jade' ]
+		[ 'git', 'env:prod', 'clean:build', 'mkdir:server', 'copy:assets', 'copy:static', 'stylus', 'cssmin', 'uglify', 'kssrebuild', 'jade' ]
 	);
 	// server tasksgut
 	grunt.registerTask('dev', [ 'build', 'env:dev',            'jshint',               'concurrent:dev' ]);  // dev mode, watch everything

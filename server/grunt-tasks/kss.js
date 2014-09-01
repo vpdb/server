@@ -30,7 +30,8 @@ var html2jade = require('html2jade');
 var highlight = require('highlight.js');
 
 var debug = require('debug')('grunt-kss');
-var assets = require('../modules/assets');
+
+var ctrl = require('../controllers/ctrl');
 
 module.exports = function(grunt) {
 
@@ -91,7 +92,7 @@ module.exports = function(grunt) {
 				}
 
 				// render index
-				var indexHtml = jade.renderFile('client/views/styleguide.jade', {
+				var indexHtml = jade.renderFile('client/views/styleguide.jade', _.extend({
 					sections: _.map(rootRefs, function(rootRef) {
 						return {
 							id: rootRef,
@@ -101,12 +102,8 @@ module.exports = function(grunt) {
 					}).sort(function(a, b) {
 						return parseInt(a.id) > parseInt(b.id);
 					}),
-					pretty: true,
-					deployment: process.env.APP_NAME || 'staging',
-					environment: process.env.NODE_ENV || 'development',
-					jsFiles: assets.getJs(),
-					cssFiles: assets.getCss()
-				});
+					pretty: true
+				}, ctrl.viewParams()));
 
 				var filename = path.normalize('styleguide/index.html');
 				grunt.log.write('Writing "%s"... ', filename);

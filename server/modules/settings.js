@@ -327,7 +327,7 @@ Settings.prototype.publicUrl = function() {
 		(this.current.vpdb.httpsEnabled ? 's' : '') +
 		'://' +
 		this.current.vpdb.host +
-		(this.current.vpdb.httpsEnabled || this.current.vpdb.port === 80 ? '' : ':' + this.current.vpdb.port);
+		(this.current.vpdb.port === 80 || this.current.vpdb.port === 443 ? '' : ':' + this.current.vpdb.port);
 };
 
 module.exports = new Settings();

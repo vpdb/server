@@ -32,7 +32,7 @@ function Assets() {
 
 	var that = this;
 	var jsRoot = path.resolve(__dirname, '../../client/code');
-	var cssRoot = path.resolve(writeable.cacheRoot, 'css');
+	var cssRoot = writeable.cssRoot;
 
 	this.app = { js: [], css: [] };
 	this.deps = { js: [], css: [], fonts: [], 'public': [] };
@@ -95,7 +95,7 @@ function Assets() {
 				}
 				var f = {
 					src: path.resolve(file),
-					dest: path.resolve(writeable.cacheRoot, web),
+					dest: path.resolve(writeable.buildRoot, web),
 					web: '/' + web,
 					index: shift + n++
 				};
@@ -103,7 +103,7 @@ function Assets() {
 			});
 		});
 	});
-	logger.info('[assets] Found %d CSS, %d JavaScripts, %d fonts and %d other Bower dependencies.', this.deps.css.length, this.deps.js.length, this.deps.fonts.length, this.deps.public.length);
+	//logger.info('[assets] Found %d CSS, %d JavaScripts, %d fonts and %d other Bower dependencies.', this.deps.css.length, this.deps.js.length, this.deps.fonts.length, this.deps.public.length);
 
 	// now re-sort by index
 	this.deps.js.sort(function(a, b) {

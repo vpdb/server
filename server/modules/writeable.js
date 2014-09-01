@@ -23,14 +23,20 @@ var fs = require('fs');
 var path = require('path');
 
 function Writeable() {
+
+	this.buildRoot = process.env.APP_BUILDDIR ? process.env.APP_BUILDDIR : path.resolve(__dirname, "../../build");
 	this.cacheRoot = process.env.APP_CACHEDIR ? process.env.APP_CACHEDIR : path.resolve(__dirname, "../../cache");
 
-	this.jsRoot = path.resolve(this.cacheRoot, 'js');
-	this.cssRoot = path.resolve(this.cacheRoot, 'css');
-	this.imgRoot = path.resolve(this.cacheRoot, 'img');
-	this.htmlRoot = path.resolve(this.cacheRoot, 'html');
-	this.fontsRoot = path.resolve(this.cacheRoot, 'fonts');
+	this.jsRoot = path.resolve(this.buildRoot, 'js');
+	this.cssRoot = path.resolve(this.buildRoot, 'css');
+	this.imgRoot = path.resolve(this.buildRoot, 'img');
+	this.htmlRoot = path.resolve(this.buildRoot, 'html');
+	this.fontsRoot = path.resolve(this.buildRoot, 'fonts');
 
+	/* istanbul ignore if */
+	if (!fs.existsSync(this.buildRoot)) {
+		fs.mkdirSync(this.buildRoot);
+	}
 	/* istanbul ignore if */
 	if (!fs.existsSync(this.jsRoot)) {
 		fs.mkdirSync(this.jsRoot);
@@ -55,3 +61,9 @@ function Writeable() {
 
 var writeable = new Writeable();
 exports.cacheRoot = writeable.cacheRoot;
+exports.buildRoot = writeable.buildRoot;
+exports.jsRoot = writeable.jsRoot;
+exports.cssRoot = writeable.cssRoot;
+exports.imgRoot = writeable.imgRoot;
+exports.htmlRoot = writeable.htmlRoot;
+exports.fontsRoot = writeable.fontsRoot;

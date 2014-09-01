@@ -10,10 +10,10 @@ var ctrl = require('./server/controllers/ctrl');
 
 module.exports = function(grunt) {
 
-	var cacheRoot = writeable.cacheRoot;
-	var cssRoot = path.resolve(cacheRoot, 'css');
-	var jsRoot = path.resolve(cacheRoot, 'js');
-	var htmlRoot = path.resolve(cacheRoot, 'html/');
+	var buildRoot = writeable.buildRoot;
+	var cssRoot = writeable.cssRoot;
+	var jsRoot = writeable.jsRoot;
+	var htmlRoot = writeable.htmlRoot;
 	var cssGlobal = path.resolve(cssRoot, 'global.min.css');
 	var jsGlobal = path.resolve(jsRoot, 'global.min.js');
 
@@ -26,8 +26,8 @@ module.exports = function(grunt) {
 	var config = {
 
 		clean: {
-			build:      { src: [ cacheRoot + '/*', "!.gitignore", "!img" ] },
-			styleguide: { src: ['styleguide/**/*.html'] },
+			build:      { src: [ buildRoot + '/*', "!.gitignore", "!img" ] },
+			styleguide: { src: [ buildRoot + '/styleguide/**/*.html'] },
 			coverage:   { src: ['test/coverage/**'] }
 		},
 
@@ -53,9 +53,8 @@ module.exports = function(grunt) {
 				})
 			},
 			'static': {
-				files: [ { expand: true, cwd: 'client/static/', src: [ '**' ], dest: cacheRoot } ]
+				files: [ { expand: true, cwd: 'client/static/', src: [ '**' ], dest: buildRoot } ]
 			}
-
 		},
 
 		coveralls: {
@@ -90,15 +89,6 @@ module.exports = function(grunt) {
 		},
 
 		jade: {
-			errors: {
-				options: { data: {
-					deployment: process.env.APP_NAME || 'staging',
-					environment: process.env.NODE_ENV || 'development',
-					jsFiles: assets.getJs(),
-					cssFiles: assets.getCss()
-				} },
-				files: [ { expand: true, cwd: 'client/views/errors', src: [ '*.jade' ], dest: htmlRoot, ext: '.html' } ]
-			},
 			site: {
 				options: { data: _.extend(_.pick(viewParams, 'deployment', 'authStrategies'), { environment: 'production', gitinfo: '<%= gitinfo %>' }) },
 				files: [ { expand: true, cwd: 'client/views', src: [ '**/*.jade', '!layout.jade', '!**/styleguide*' ], dest: htmlRoot, ext: '.html' } ]

@@ -20,9 +20,9 @@ html(ng-app="vpdb", ng-controller="AppCtrl", auth=JSON.stringify(auth), auth-hea
 		meta(name="msapplication-TileColor", content="#ec843d")
 		meta(name="msapplication-TileImage", content="/mstile-144x144.png")
 		if environment == 'production'
-			link(rel="stylesheet", href="/css/global.min.css")
+			link(rel="stylesheet", href="/css/global.min.css?#{gitinfo.local.branch.current.shortSHA}")
 		else
-			- each css in cssFiles
+			for css in cssFiles
 				link(rel="stylesheet", href=css.web)
 		script(type="text/javascript", src="//use.typekit.net/xhi7wnv.js")
 		script(type="text/javascript") try{Typekit.load();}catch(e){}
@@ -31,7 +31,7 @@ html(ng-app="vpdb", ng-controller="AppCtrl", auth=JSON.stringify(auth), auth-hea
 	body#top(ng-class="themeName")
 		block body
 		if environment == 'production'
-			script(type="text/javascript", src="/js/global.min.js")
+			script(type="text/javascript", src="/js/global.min.js?#{gitinfo.local.branch.current.shortSHA}")
 		else
-			- each js in jsFiles
+			for js in jsFiles
 				script(type="text/javascript", src=js.web)

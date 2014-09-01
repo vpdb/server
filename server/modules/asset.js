@@ -10,6 +10,7 @@ var path = require('path');
 var logger = require('winston');
 var request = require('request');
 
+var writeable = require('./writeable');
 var disableCache = false;
 
 /**
@@ -48,17 +49,6 @@ exports.square = function(context, type, key, size) {
 
 var asset = function(context, p, processFct, type, key, size, defaultName) {
 
-	// setup cache dir
-	var cacheImg;
-	var cacheRoot = process.env.APP_CACHEDIR ? process.env.APP_CACHEDIR : path.normalize(__dirname + '../../../cache');
-	if (fs.existsSync(cacheRoot)) {
-		cacheImg = cacheRoot + '/img';
-		if (!fs.existsSync(cacheImg)) {
-			fs.mkdirSync(cacheImg);
-		}
-	} else {
-		cacheImg = null;
-	}
 
 	if (p && fs.existsSync(p)) {
 
@@ -74,15 +64,13 @@ var asset = function(context, p, processFct, type, key, size, defaultName) {
 		}
 
 		// file caching
-		if (cacheImg) {
-			var hash = md5.digest_s(type + ':' + ':' + key + ':' + size);
-			var filename = cacheImg + '/' + hash + '.png';
-			if (fs.existsSync(filename)) {
-				//logger.info('[asset] File cache hit, returning ' + filename);
-				return file(context, filename);
-			} else {
-				logger.info('[asset] No cache hit for ' + filename);
-			}
+		var hash = md5.digest_s(type + ':' + ':' + key + ':' + size);
+		var filename = writeable.imgCache + '/' + hash + '.png';
+		if (fs.existsSync(filename)) {
+			//logger.info('[asset] File cache hit, returning ' + filename);
+			return file(context, filename);
+		} else {
+			logger.info('[asset] No cache hit for ' + filename);
 		}
 
 		// cache, process.

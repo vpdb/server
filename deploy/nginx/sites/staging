@@ -33,37 +33,54 @@ server {
 		root $project_directory;
 		try_files $uri /styleguide/index.html;
 		access_log off;
-		expires max;
+		expires -1;
 	}
 
 	# map html files to root
 	location ~ \.html$ {
 		root $build_directory/html;
-		expires max;
+		access_log off;
+		expires -1;
 	}
 
 	# map files to build folder
 	location / {
 		root $build_directory;
+		access_log off;
+		expires -1;
+
+		location /css/ {
+			expires max;
+		}
+		location /js/ {
+			expires max;
+		}
+		location /images/ {
+			expires 24h;
+		}
 	}
 
 	# map root to index
 	location = / {
 		root $build_directory/html;
 		try_files /index.html =404;
+		access_log off;
+		expires -1;
 	}
 
 	# map directories to index
 	location ~ \/[^\.]*$ {
 		root $build_directory/html;
 		try_files /index.html =404;
+		access_log off;
+		expires -1;
 	}
 
 	# map favicons to root
 	location ~ ^/(favicon|mstile|apple-touch-icon) {
 		root $build_directory/images/favicon;
 		access_log off;
-		expires max;
+		expires 1w;
 	}
 }
 

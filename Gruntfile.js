@@ -178,7 +178,7 @@ module.exports = function(grunt) {
 
 	// build
 	grunt.registerTask('build', 'What run on production before switching code.',
-		[ 'clean:build', 'mkdir:server', 'copy:assets', 'copy:static', 'stylus', 'cssmin', 'uglify', 'git', 'kssrebuild', 'jade' ]
+		[ 'clean:build', 'git', 'mkdir:server', 'copy:assets', 'copy:static', 'stylus', 'cssmin', 'uglify', 'kssrebuild', 'jade' ]
 	);
 	// server tasksgut
 	grunt.registerTask('dev', [ 'build', 'env:dev',            'jshint',               'concurrent:dev' ]);  // dev mode, watch everything

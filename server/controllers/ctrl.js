@@ -73,10 +73,9 @@ exports.renderError = function(code, message) {
 
 		// otherwise, return the full page.
 		} else {
-			exports.viewParams(function(params) {
-				var tpl = _.contains([403, 404, 500, 502], code) ? code : '000';
-				res.status(code).render('errors/' + tpl, _.extend(params, { url: req.originalUrl, code: code, message: message }));
-			});
+			var params = exports.viewParams();
+			var tpl = _.contains([403, 404, 500, 502], code) ? code : '000';
+			res.status(code).render('errors/' + tpl, _.extend(params, { url: req.originalUrl, code: code, message: message }));
 		}
 	};
 };

@@ -45,24 +45,18 @@ var authenticate = function(resource, permission, successFct, errFct) {
 			if (err) {
 				return errFct(req, res, err);
 			}
-			ctrl.viewParams(function(params) {
-				successFct(req, res, params);
-			});
+			successFct(req, res, ctrl.viewParams());
 		});
 	} else {
 		return function(req, res) {
-			ctrl.viewParams(function(params) {
-				successFct(req, res, params);
-			});
+			successFct(req, res, ctrl.viewParams());
 		};
 	}
 };
 
-exports.index = function(params1) {
+exports.index = function(params) {
 	return function(req, res) {
-		ctrl.viewParams(function(params2) {
-			res.render('index', _.extend({}, params1, params2));
-		});
+			res.render('index', _.extend({}, params, ctrl.viewParams()));
 	};
 };
 

@@ -3,7 +3,7 @@
 cd /usr/local/src
 
 # deps
-sudo apt-get -y install build-essential checkinstall zlib1g-dev libpcre3 libpcre3-dev libbz2-dev libssl-dev tar
+apt-get -y install build-essential checkinstall zlib1g-dev libpcre3 libpcre3-dev libbz2-dev libssl-dev tar
 
 # download source, plus naxsi, headers-more and pagespeed.
 wget http://nginx.org/download/nginx-1.7.4.tar.gz
@@ -68,10 +68,10 @@ make
 
 # install
 checkinstall --install=no -y
-sudo dpkg -i nginx_1.7.4-1_amd64.deb
-sudo cp /repos/source/deploy/init/nginx /etc/init.d/
-sudo update-rc.d -f nginx defaults
+dpkg -i nginx_1.7.4-1_amd64.deb
+cp /repos/source/deploy/init/nginx /etc/init.d/
+update-rc.d -f nginx defaults
 
 # folders
-sudo mkdir -p /var/log/nginx /var/cache/nginx
-sudo chown www-data:www-data /var/log/nginx /var/cache/nginx
+mkdir -p /var/log/nginx /var/cache/nginx
+chown www-data:www-data /var/log/nginx /var/cache/nginx

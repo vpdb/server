@@ -287,6 +287,7 @@ Copy needed vendor config files:
 
 Our config and the sites:
 
+	sudo mkdir -p /etc/nginx/sites-available /etc/nginx/sites-enabled /etc/nginx/conf.d
 	sudo cp /repos/source/deploy/nginx/nginx.conf /etc/nginx
 	sudo cp /repos/source/deploy/nginx/proxy_params.conf /etc/nginx/proxy_params
 	sudo cp /repos/source/deploy/nginx/sites/production /etc/nginx/sites-available/vpdb-production

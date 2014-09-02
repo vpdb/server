@@ -249,11 +249,11 @@ Once VPDB gets a first release tag and you've pushed to production as well, don'
 ### Compile Nginx
 
 Since Nginx doesn't support external modules (by design), you'll need need to compile it with the desired modules.
-See the [compile script](deploy/nginx/compile.sh) how to do that. Once done, you should be able to start Nginx with
+See the [compile script](deploy/nginx/compile.sh) how to do that.
 
-	service nginx start
+### SSL Certificates
 
-However, first you should generate your SSL certificates:
+We'll only run on `https`, so go create a few certs:
 
 	sudo /bin/bash
 	mkdir -p /etc/nginx/ssl /etc/nginx/sites-available /etc/nginx/sites-enabled /etc/nginx/conf.d/
@@ -277,25 +277,33 @@ Do the same for `staging.key` and `staging.crt`:
 	openssl x509 -req -days 365 -in staging.csr -signkey staging.key -out staging.crt
 	exit
 
-Then update the configuration and add the sites:
+### Configure Nginx
 
-	sudo cp /repos/source/deploy/nginx/nginx.conf /etc/nginx/nginx.conf
+Copy needed vendor config files:
+
+	sudo cp /usr/local/src/naxsi-master/naxsi_config/naxsi_core.rules /etc/nginx/
+	sudo mv /etc/nginx/mime.types.default /etc/nginx/mime.types
+	sudo mv /etc/nginx/fastcgi_params.default /etc/nginx/fastcgi_params
+
+Our config and the sites:
+
+	sudo cp /repos/source/deploy/nginx/nginx.conf /etc/nginx
+	sudo cp /repos/source/deploy/nginx/proxy_params.conf /etc/nginx/proxy_params
 	sudo cp /repos/source/deploy/nginx/sites/production /etc/nginx/sites-available/vpdb-production
 	sudo cp /repos/source/deploy/nginx/sites/staging /etc/nginx/sites-available/vpdb-staging
 	sudo ln -s /etc/nginx/sites-available/vpdb-production /etc/nginx/sites-enabled/vpdb-production
 	sudo ln -s /etc/nginx/sites-available/vpdb-staging /etc/nginx/sites-enabled/vpdb-staging
-	sudo rm /etc/nginx/sites-enabled/default
 
 Update configuration:
 
 	sudo vi /etc/nginx/sites-available/vpdb-production
 	sudo vi /etc/nginx/sites-available/vpdb-staging
 
-Then restart nginx:
+Then start nginx:
 
-	sudo /etc/init.d/nginx restart
+	service nginx start
 
-If you want to (temporarily) protect your site:
+If you want to protect your site:
 
 	sudo apt-get -y install apache2-utils
 	sudo htpasswd -c /var/www/.htpasswd vpdb

@@ -48,7 +48,7 @@ exports.viewParams = function(config, gitInfoFromGrunt) {
 				};
 			})
 		},
-		authHeader: config.vpdb.authorizationHeader
+		authHeader: config.vpdb ? config.vpdb.authorizationHeader : 'Authorization'
 	};
 };
 

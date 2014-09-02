@@ -71,4 +71,7 @@ checkinstall --install=no -y
 sudo dpkg -i nginx_1.7.4-1_amd64.deb
 sudo cp /repos/source/deploy/init/nginx /etc/init.d/
 sudo update-rc.d -f nginx defaults
-sudo cp ../naxsi-master/naxsi_config/naxsi_core.rules /etc/nginx/
+
+# folders
+sudo mkdir -p /var/log/nginx
+sudo chown www-data:www-data /var/log/nginx

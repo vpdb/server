@@ -29,9 +29,9 @@ var _ = require('lodash');
 exports.viewParams = function(config, gitInfoFromGrunt) {
 
 	config = config || require('../modules/settings').current;
-
 	var assets = require('../modules/assets');
-	var params = {
+
+	return {
 		deployment: process.env.APP_NAME || 'staging',
 		environment: process.env.NODE_ENV || 'development',
 		gitinfo: gitInfoFromGrunt ? '<%= gitinfo %>' : require('../modules/gitinfo').info,
@@ -39,8 +39,8 @@ exports.viewParams = function(config, gitInfoFromGrunt) {
 		cssFiles: assets.getCss(),
 		authStrategies: {
 			local: true,
-			github: config.vpdb.passport.github.enabled,
-			ipboard: _.map(_.filter(config.vpdb.passport.ipboard, function(ipbConfig) { return ipbConfig.enabled; }), function(ipbConfig) {
+			github: config ? config.vpdb.passport.github.enabled : false,
+			ipboard: _.map(_.filter(config ? config.vpdb.passport.ipboard : [], function(ipbConfig) { return ipbConfig.enabled; }), function(ipbConfig) {
 				return {
 					name: ipbConfig.name,
 					icon: ipbConfig.icon,
@@ -50,7 +50,6 @@ exports.viewParams = function(config, gitInfoFromGrunt) {
 		},
 		authHeader: config.vpdb.authorizationHeader
 	};
-	return params;
 };
 
 /**

@@ -4,10 +4,18 @@ server {
 	set $project_directory  /var/www/production/current;
 
 	listen 443 ssl;
+	server_name production.vpdb;
 
 	# path to your certs
 	ssl_certificate      /etc/nginx/ssl/vpdb.crt;
 	ssl_certificate_key  /etc/nginx/ssl/vpdb.key;
+
+	ssl_ciphers               ALL:!ADH:!EXP:!LOW:!RC2:!3DES:!SEED:!RC4:+HIGH:+MEDIUM;
+	ssl_prefer_server_ciphers on;
+	ssl_session_cache         builtin:1000 shared:SSL:10m;
+	ssl_session_timeout 10m;
+
+	keepalive_timeout 120;
 
 	# protect this
 	auth_basic "Restricted";
@@ -33,12 +41,14 @@ server {
 		root $project_directory;
 		try_files $uri /styleguide/index.html;
 		access_log off;
+		add_header Cache-Control public;
 		expires max;
 	}
 
 	# map html files to root
 	location ~ \.html$ {
 		root $build_directory/html;
+		add_header Cache-Control public;
 		expires max;
 	}
 
@@ -47,6 +57,7 @@ server {
 		root $build_directory;
 		access_log off;
 		expires -1;
+		add_header Cache-Control public;
 
 		location /css/ {
 			expires max;
@@ -63,12 +74,14 @@ server {
 	location = / {
 		root $build_directory/html;
 		try_files /index.html =404;
+		add_header Cache-Control public;
 	}
 
 	# map directories to index
 	location ~ \/[^\.]*$ {
 		root $build_directory/html;
 		try_files /index.html =404;
+		add_header Cache-Control public;
 	}
 
 	# map favicons to root
@@ -76,6 +89,7 @@ server {
 		root $build_directory/images/favicon;
 		access_log off;
 		expires max;
+		add_header Cache-Control public;
 	}
 }
 

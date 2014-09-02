@@ -3,12 +3,21 @@ server {
 	set $build_directory    /var/www/staging/current/build;
 	set $project_directory  /var/www/staging/current;
 
-	listen 443 ssl;
+	listen 443 ssl spdy;
 	server_name staging.vpdb;
 
 	# path to your certs
 	ssl_certificate      /etc/nginx/ssl/staging.crt;
 	ssl_certificate_key  /etc/nginx/ssl/staging.key;
+
+	ssl_ciphers               ALL:!ADH:!EXP:!LOW:!RC2:!3DES:!SEED:!RC4:+HIGH:+MEDIUM;
+	ssl_prefer_server_ciphers on;
+	ssl_protocols             TLSv1 TLSv1.1 TLSv1.2;
+
+	# if you're using a signed certificate
+	#ssl_stapling              on;
+	#ssl_stapling_verify       on;
+	#ssl_trusted_certificate   /etc/ssl/staging.chain.pem;
 
 	# protect this
 	auth_basic "Restricted";
@@ -34,14 +43,15 @@ server {
 		root $project_directory;
 		try_files $uri /styleguide/index.html;
 		access_log off;
-		expires -1;
+		add_header Cache-Control public;
+		expires max;
 	}
 
 	# map html files to root
 	location ~ \.html$ {
 		root $build_directory/html;
-		access_log off;
-		expires -1;
+		add_header Cache-Control public;
+		expires max;
 	}
 
 	# map files to build folder
@@ -49,6 +59,7 @@ server {
 		root $build_directory;
 		access_log off;
 		expires -1;
+		add_header Cache-Control public;
 
 		location /css/ {
 			expires max;
@@ -65,23 +76,22 @@ server {
 	location = / {
 		root $build_directory/html;
 		try_files /index.html =404;
-		access_log off;
-		expires -1;
+		add_header Cache-Control public;
 	}
 
 	# map directories to index
 	location ~ \/[^\.]*$ {
 		root $build_directory/html;
 		try_files /index.html =404;
-		access_log off;
-		expires -1;
+		add_header Cache-Control public;
 	}
 
 	# map favicons to root
 	location ~ ^/(favicon|mstile|apple-touch-icon) {
 		root $build_directory/images/favicon;
 		access_log off;
-		expires 1w;
+		expires max;
+		add_header Cache-Control public;
 	}
 }
 

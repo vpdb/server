@@ -73,5 +73,5 @@ sudo cp /repos/source/deploy/init/nginx /etc/init.d/
 sudo update-rc.d -f nginx defaults
 
 # folders
-sudo mkdir -p /var/log/nginx
-sudo chown www-data:www-data /var/log/nginx
+sudo mkdir -p /var/log/nginx /var/cache/nginx
+sudo chown www-data:www-data /var/log/nginx /var/cache/nginx

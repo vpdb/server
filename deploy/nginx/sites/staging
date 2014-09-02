@@ -3,7 +3,8 @@ server {
 	set $build_directory    /var/www/staging/current/build;
 	set $project_directory  /var/www/staging/current;
 
-	listen 1000 ssl;
+	listen 443 ssl;
+	server_name staging.vpdb;
 
 	# path to your certs
 	ssl_certificate      /etc/nginx/ssl/staging.crt;
@@ -88,5 +89,5 @@ server {
 server {
 	listen 80;
 	server_name staging.vpdb;
-	return 301 https://staging.vpdb:1000$request_uri;
+	return 301 https://staging.vpdb$request_uri;
 }

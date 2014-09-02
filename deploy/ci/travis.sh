@@ -30,7 +30,7 @@ echo travis_fold:end:npm-install
 
 # Build application
 echo travis_fold:start:grunt-build
-grunt build
+grunt git
 echo travis_fold:end:grunt-build
 
 # Run tests

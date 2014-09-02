@@ -18,4 +18,4 @@ echo "ffmpeg version: $(ffmpeg -version)"
 
 # Install grunt-cli for running your tests or other tasks
 npm install grunt-cli
-grunt build
+grunt git

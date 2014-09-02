@@ -135,69 +135,6 @@ Install latest from repo:
 	sudo apt-get update
 	sudo apt-get install -y redis-server
 
-## Create Node.js Startup Scripts
-
-	sudo vi /etc/init/vpdb-staging.conf
-
-Paste this:
-
-```bash
-description "Visual Pinball Database (staging)"
-author "freezy"
-
-# Configuration
-env APP_NAME=staging
-env APP_ROOT=/var/www/staging
-env APP_HOME=/var/www/staging/current
-env APP_CACHEDIR=/var/www/staging/shared/cache
-env APP_ACCESS_LOG=/var/www/staging/shared/logs/access
-env APP_NUMWORKERS=1
-env PORT=8124
-
-# Application settings
-env APP_SETTINGS=/var/www/staging/settings.js
-
-# Node Environment is production
-env NODE_ENV=production
-
-# User to run as
-setuid www-data
-setgid www-data
-
-# Make sure network and fs is up, and start in runlevels 2-5
-start on (net-device-up
-          and local-filesystems
-          and runlevel [2345])
-# Stop in runlevels 0,1 and 6
-stop on runlevel [016]
-
-# automatically respawn, but if its respwaning too fast (5 times in 60 seconds, don't do that)
-respawn
-respawn limit 5 60
-
-# make sure node is there, the code directory is there
-pre-start script
-    test -x /usr/bin/node || { stop; exit 0; }
-    test -e $APP_ROOT/shared/logs || { stop; exit 0; }
-    test -e $APP_HOME/app.js || { stop; exit 0; }
-end script
-
-# cd to code path and run naught
-script
-	echo Starting staging server for VPDB at ${APP_HOME}...
-	umask 0007
-	IPC=$APP_ROOT/shared/naught.ipc
-	rm -f $IPC
-	exec /usr/bin/naught start --ipc-file $IPC --log $APP_ROOT/shared/logs/naught --stdout $APP_ROOT/shared/logs/$APP_NAME.out --stderr $APP_ROOT/shared/logs/$APP_NAME.err --max-log-size 10485760 --cwd $APP_HOME --daemon-mode false --worker-count $APP_NUMWORKERS $APP_HOME/app.js
-end script
-```
-
-Then do the same for the production script:
-
-	sudo cp /etc/init/vpdb-staging.conf /etc/init/vpdb-production.conf
-	sudo sed -i 's/staging/production/g' /etc/init/vpdb-production.conf
-	sudo sed -i 's/8124/9124/g' /etc/init/vpdb-production.conf
-	sudo sed -i 's/APP_NUMWORKERS=1/APP_NUMWORKERS=2/g' /etc/init/vpdb-production.conf
 
 ## Setup Push Deployment
 
@@ -267,6 +204,16 @@ Also add ``scripts`` folder to the path for easy deployment commands.
 
 	echo PATH="\$HOME/source/deploy/scripts:\$PATH" >> ~/.profile
 
+### Create Node.js Startup Scripts
+
+	sudo cp /repos/source/deploy/init/vpdb-staging.conf /etc/init/
+	sudo cp /etc/init/vpdb-production.conf /etc/init/vpdb-production.conf
+	sudo sed -i 's/staging/production/g' /etc/init/vpdb-production.conf
+	sudo sed -i 's/8124/9124/g' /etc/init/vpdb-production.conf
+	sudo sed -i 's/APP_NUMWORKERS=1/APP_NUMWORKERS=2/g' /etc/init/vpdb-production.conf
+	update-rc.d vpdb-production default
+	update-rc.d vpdb-staging default
+
 ## Upload Code
 
 Still as user ``deployer``, create configuration file
@@ -299,13 +246,66 @@ Once VPDB gets a first release tag and you've pushed to production as well, don'
 
 ## Setup Reverse Proxy
 
-	sudo apt-get -y install nginx nginx-naxsi
-	sudo mkdir -p /var/cache/nginx
+### Compile Nginx
+
+Since Nginx doesn't support external modules (by design), you'll need need to compile it with the desired modules.
+
+	sudo apt-get -y install build-essential zlib1g-dev libpcre3 libpcre3-dev libbz2-dev libssl-dev tar unzip
+	cd /usr/local/src
+	wget http://nginx.org/download/nginx-1.7.4.tar.gz
+	wget https://github.com/nbs-system/naxsi/archive/master.tar.gz -O naxsi-master.tar.gz
+	wget https://github.com/openresty/headers-more-nginx-module/archive/v0.25.tar.gz -O headers-more-0.25.tar.gz
+	wget https://github.com/pagespeed/ngx_pagespeed/archive/v1.8.31.4-beta.tar.gz -O pagespeed-1.8.31.4-beta.tar.gz
+	
+	tar xvfz nginx-1.7.4.tar.gz
+	tar xvfz headers-more-0.25.tar.gz
+	tar xvfz naxsi-master.tar.gz
+	tar xvfz pagespeed-1.8.31.4-beta.tar.gz
+	
+	cd ngx_pagespeed-*
+	grep psol README.md
+	wget https://dl.google.com/dl/page-speed/psol/1.8.31.4.tar.gz -O psol-1.8.31.4.tar.gz
+	tar xvfz psol-1.8.31.4.tar.gz
+	
+	cd nginx-1.7.4
+	./configure \
+		--add-module=../naxsi-master/naxsi_src \
+		--prefix=/usr/local/nginx \
+		--conf-path=/etc/nginx/nginx.conf  \
+		--pid-path=/var/run/nginx.pid \
+		--lock-path=/var/lock/nginx.lock \
+		--error-log-path=/var/log/nginx/error.log \
+		--http-log-path=/var/log/nginx/access.log \
+		--user=www-data \
+		--group=www-data \
+		--without-mail_pop3_module \
+		--without-mail_imap_module \
+		--without-mail_smtp_module \
+		--with-http_realip_module \
+		--with-http_ssl_module \
+		--with-http_sub_module \
+		--with-http_spdy_module \
+		--with-http_flv_module \
+		--with-http_mp4_module \
+		--with-http_spdy_module \
+		--with-http_gunzip_module \
+		--with-http_gzip_static_module \
+		--with-http_random_index_module \
+		--with-http_secure_link_module \
+		--with-http_stub_status_module \
+		--with-http_auth_request_module \
+		--with-file-aio \
+		--add-module=../ngx_pagespeed-1.8.31.4-beta
+	make
+	sudo make install
+	sudo cp /repos/source/deploy/init/nginx /etc/init.d/
+	sudo update-rc.d -f nginx defaults
+	sudo cp ../naxsi-master/naxsi_config/naxsi_core.rules /etc/nginx/
 
 Generate an SSL certificate:
 
 	sudo /bin/bash
-	mkdir /etc/nginx/ssl
+	mkdir -p /etc/nginx/ssl /etc/nginx/sites-available /etc/nginx/sites-enabled /etc/nginx/conf.d/
 	chgrp www-data /etc/nginx/ssl
 	chmod 770 /etc/nginx/ssl
 	cd /etc/nginx/ssl

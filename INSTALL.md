@@ -249,60 +249,11 @@ Once VPDB gets a first release tag and you've pushed to production as well, don'
 ### Compile Nginx
 
 Since Nginx doesn't support external modules (by design), you'll need need to compile it with the desired modules.
+See the [compile script](deploy/nginx/compile.sh) how to do that. Once done, you should be able to start Nginx with
 
-	sudo apt-get -y install build-essential zlib1g-dev libpcre3 libpcre3-dev libbz2-dev libssl-dev tar unzip
-	cd /usr/local/src
-	wget http://nginx.org/download/nginx-1.7.4.tar.gz
-	wget https://github.com/nbs-system/naxsi/archive/master.tar.gz -O naxsi-master.tar.gz
-	wget https://github.com/openresty/headers-more-nginx-module/archive/v0.25.tar.gz -O headers-more-0.25.tar.gz
-	wget https://github.com/pagespeed/ngx_pagespeed/archive/v1.8.31.4-beta.tar.gz -O pagespeed-1.8.31.4-beta.tar.gz
-	
-	tar xvfz nginx-1.7.4.tar.gz
-	tar xvfz headers-more-0.25.tar.gz
-	tar xvfz naxsi-master.tar.gz
-	tar xvfz pagespeed-1.8.31.4-beta.tar.gz
-	
-	cd ngx_pagespeed-*
-	grep psol README.md
-	wget https://dl.google.com/dl/page-speed/psol/1.8.31.4.tar.gz -O psol-1.8.31.4.tar.gz
-	tar xvfz psol-1.8.31.4.tar.gz
-	
-	cd nginx-1.7.4
-	./configure \
-		--add-module=../naxsi-master/naxsi_src \
-		--prefix=/usr/local/nginx \
-		--conf-path=/etc/nginx/nginx.conf  \
-		--pid-path=/var/run/nginx.pid \
-		--lock-path=/var/lock/nginx.lock \
-		--error-log-path=/var/log/nginx/error.log \
-		--http-log-path=/var/log/nginx/access.log \
-		--user=www-data \
-		--group=www-data \
-		--without-mail_pop3_module \
-		--without-mail_imap_module \
-		--without-mail_smtp_module \
-		--with-http_realip_module \
-		--with-http_ssl_module \
-		--with-http_sub_module \
-		--with-http_spdy_module \
-		--with-http_flv_module \
-		--with-http_mp4_module \
-		--with-http_spdy_module \
-		--with-http_gunzip_module \
-		--with-http_gzip_static_module \
-		--with-http_random_index_module \
-		--with-http_secure_link_module \
-		--with-http_stub_status_module \
-		--with-http_auth_request_module \
-		--with-file-aio \
-		--add-module=../ngx_pagespeed-1.8.31.4-beta
-	make
-	sudo make install
-	sudo cp /repos/source/deploy/init/nginx /etc/init.d/
-	sudo update-rc.d -f nginx defaults
-	sudo cp ../naxsi-master/naxsi_config/naxsi_core.rules /etc/nginx/
+	service nginx start
 
-Generate an SSL certificate:
+However, first you should generate your SSL certificates:
 
 	sudo /bin/bash
 	mkdir -p /etc/nginx/ssl /etc/nginx/sites-available /etc/nginx/sites-enabled /etc/nginx/conf.d/
@@ -315,9 +266,18 @@ Generate an SSL certificate:
 	openssl rsa -in vpdb.original -out vpdb.key
 	rm -v vpdb.original
 	openssl x509 -req -days 365 -in vpdb.csr -signkey vpdb.key -out vpdb.crt
-	exit
 	
-Do the same for `staging.key` and `staging.crt`. Then update the configuration and add the sites:
+Do the same for `staging.key` and `staging.crt`:
+ 
+	openssl genrsa -des3 -out staging.key 2048
+	openssl req -new -key staging.key -out staging.csr
+	cp -v staging.{key,original}
+	openssl rsa -in staging.original -out staging.key
+	rm -v staging.original
+	openssl x509 -req -days 365 -in staging.csr -signkey staging.key -out staging.crt
+	exit
+
+Then update the configuration and add the sites:
 
 	sudo cp /repos/source/deploy/nginx/nginx.conf /etc/nginx/nginx.conf
 	sudo cp /repos/source/deploy/nginx/sites/production /etc/nginx/sites-available/vpdb-production

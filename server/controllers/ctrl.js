@@ -39,8 +39,8 @@ exports.viewParams = function(config, gitInfoFromGrunt) {
 		cssFiles: assets.getCss(),
 		authStrategies: {
 			local: true,
-			github: config ? config.vpdb.passport.github.enabled : false,
-			ipboard: _.map(_.filter(config ? config.vpdb.passport.ipboard : [], function(ipbConfig) { return ipbConfig.enabled; }), function(ipbConfig) {
+			github: config.vpdb ? config.vpdb.passport.github.enabled : false,
+			ipboard: _.map(_.filter(config.vpdb ? config.vpdb.passport.ipboard : [], function(ipbConfig) { return ipbConfig.enabled; }), function(ipbConfig) {
 				return {
 					name: ipbConfig.name,
 					icon: ipbConfig.icon,

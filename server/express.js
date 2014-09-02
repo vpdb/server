@@ -107,23 +107,20 @@ exports.configure = function(app) {
 	app.use(expressBodyParser.json());
 
 	// static file serving
-	if (runningLocal) {
-
-		// markup (which is pre-compiled in production)
-		app.use(jadeStatic({
-			baseDir: path.resolve(__dirname, '../client/views'),
-			baseUrl: '/',
-			jade: _.extend(ctrl.viewParams(), {
-				pretty: true
-			})
-		}));
-		// other static files
-		app.use(express.static(writeable.cacheRoot, { maxAge: 3600*24*30*1000 }));
-		app.use(express.static(writeable.buildRoot, { maxAge: 3600*24*30*1000 }));
-		app.use(express.static(path.resolve(__dirname, '../client/static'), { maxAge: 3600*24*30*1000 }));
-		app.use(express.static(path.resolve(__dirname, '../client/static/images/favicon'), { maxAge: 3600*24*30*1000 }));
-		app.use('/js', express.static(path.resolve(__dirname, '../client/code'), { maxAge: 3600*24*30*1000 }));
-	}
+	// markup (which is pre-compiled in production)
+	app.use(jadeStatic({
+		baseDir: path.resolve(__dirname, '../client/views'),
+		baseUrl: '/',
+		jade: _.extend(ctrl.viewParams(), {
+			pretty: true
+		})
+	}));
+	// other static files
+	app.use(express.static(writeable.cacheRoot, { maxAge: 3600*24*30*1000 }));
+	app.use(express.static(writeable.buildRoot, { maxAge: 3600*24*30*1000 }));
+	app.use(express.static(path.resolve(__dirname, '../client/static'), { maxAge: 3600*24*30*1000 }));
+	app.use(express.static(path.resolve(__dirname, '../client/static/images/favicon'), { maxAge: 3600*24*30*1000 }));
+	app.use('/js', express.static(path.resolve(__dirname, '../client/code'), { maxAge: 3600*24*30*1000 }));
 
 	// mock
 	app.use(express.static(path.resolve(__dirname, '../data/assets'), { maxAge: 3600*24*30*1000 }));
@@ -179,12 +176,10 @@ exports.configure = function(app) {
 		app.use('/coverage', express.static(path.resolve(__dirname, '../test/coverage/lcov-report'), { maxAge: 3600*24*30*1000 }));
 	}
 
-	if (runningLocal) {
-		// per default, serve index and let Angular.JS figure out if it's a valid route (nginx does this in production).
-		app.use(function(req, res) {
-			res.status(200).render('index', ctrl.viewParams());
-		});
-	}
+	// per default, serve index and let Angular.JS figure out if it's a valid route (nginx does this in production).
+	app.use(function(req, res) {
+		res.status(200).render('index', ctrl.viewParams());
+	});
 
 	// assume "not found" in the error msgs
 	// is a 404. this is somewhat silly, but

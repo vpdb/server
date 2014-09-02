@@ -73,5 +73,5 @@ cp /repos/source/deploy/init/nginx /etc/init.d/
 update-rc.d -f nginx defaults
 
 # folders
-mkdir -p /var/log/nginx /var/cache/nginx
-chown www-data:www-data /var/log/nginx /var/cache/nginx
+mkdir -p /var/log/nginx /var/cache/nginx /var/cache/nginx-pagespeed
+chown www-data:www-data /var/log/nginx /var/cache/nginx /var/cache/nginx-pagespeed

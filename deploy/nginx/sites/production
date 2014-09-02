@@ -1,5 +1,14 @@
 server {
 
+	pagespeed on;
+	pagespeed FileCachePath /var/cache/nginx-pagespeed;
+	# Ensure requests for pagespeed optimized resources go to the pagespeed handler and no extraneous headers get set.
+	location ~ "\.pagespeed\.([a-z]\.)?[a-z]{2}\.[^.]{10}\.[^.]+" {
+		add_header "" "";
+	}
+	location ~ "^/pagespeed_static/" { }
+	location ~ "^/ngx_pagespeed_beacon$" { }
+
 	set $build_directory    /var/www/production/current/build;
 	set $project_directory  /var/www/production/current;
 

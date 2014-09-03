@@ -435,3 +435,4 @@ Pollers:
 * [Why we don't use a CDN](https://thethemefoundry.com/blog/why-we-dont-use-a-cdn-spdy-ssl/)
 * [5 Easy Tips to Accelerate SSL](http://unhandledexpression.com/2013/01/25/5-easy-tips-to-accelerate-ssl/)
 * [Guide to Nginx + SSL + SPDY](https://www.mare-system.de/guide-to-nginx-ssl-spdy-hsts/)
+* [SSL Test](https://www.ssllabs.com/ssltest/index.html)

@@ -14,8 +14,8 @@ module.exports = function(grunt) {
 	var cssRoot = writeable.cssRoot;
 	var jsRoot = writeable.jsRoot;
 	var htmlRoot = writeable.htmlRoot;
-	var cssGlobal = path.resolve(cssRoot, 'global.min.css');
-	var jsGlobal = path.resolve(jsRoot, 'global.min.js');
+	var cssGlobal = path.resolve(cssRoot, 'global_<%= gitinfo.local.branch.current.shortSHA %>.min.css');
+	var jsGlobal = path.resolve(jsRoot, 'global_<%= gitinfo.local.branch.current.shortSHA %>.min.js');
 
 	var devConfig = settings(grunt, false);
 	var testConfig = settings(grunt, true);

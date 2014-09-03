@@ -4,7 +4,7 @@ block body
 	if deployment != 'production'
 		.staging-bar
 		.staging-bar
-	nav.navbar.navbar-default.navbar-fixed-top
+	nav.navbar.navbar-default.navbar-fixed-top(ng-cloak)
 		.container
 			.navbar-header
 				span.navbar-brand
@@ -83,13 +83,13 @@ block body
 											td Download
 											td {{ pinnedDownloadSize | bytes }}
 
-	.container.container--topmost
+	.container.container--topmost(ng-cloak)
 		div(ng-view)
 
-	.spinner-overlay.fade-animation(ng-show="loading")
+	.spinner-overlay.fade-animation(ng-show="loading")(ng-cloak)
 		.spinner
 
-	section.footer
+	section.footer(ng-cloak)
 		p
 			a(href="https://github.com/freezy/node-vpdb", target="_blank")
 				i.fa.fa-github-alt

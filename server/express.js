@@ -178,7 +178,9 @@ exports.configure = function(app) {
 
 	// per default, serve index and let Angular.JS figure out if it's a valid route (nginx does this in production).
 	app.use(function(req, res) {
-		res.status(200).render('index', ctrl.viewParams());
+		res.status(200).render('index',  _.extend(ctrl.viewParams(), {
+			pretty: true
+		}));
 	});
 
 	// assume "not found" in the error msgs

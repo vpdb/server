@@ -51,6 +51,10 @@ module.exports = {
 		name: 'MP3',
 		ext: 'mp3'
 	},
+	'video/avi': {
+		name: 'AVI video',
+		ext: 'avi'
+	},
 	'video/mp4': {
 		name: 'MP4 video',
 		ext: 'mp4'

@@ -145,7 +145,7 @@ describe('The VPDB `file` API', function() {
 	describe('when uploading a video', function() {
 
 		it('should return the correct dimensions', function(done) {
-			hlp.file.createVideo('contributor', request, function(video) {
+			hlp.file.createMp4('contributor', request, function(video) {
 				hlp.doomFile('contributor', video.id);
 				expect(video.metadata.video.width).to.be(1920);
 				expect(video.metadata.video.height).to.be(1080);

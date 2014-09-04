@@ -230,12 +230,16 @@ Storage.prototype.postprocess = function(file) {
 Storage.prototype.onProcessed = function(file, variation, processor, nextEvent) {
 
 	var filepath = file.getPath(variation);
-	var done = function(err) {
+	var done = function(err, updatedFile) {
 		if (err) {
-			logger.warn('[storage] Error when writing back metadata to database, aborting post-processing for %s.', file.toString(variation));
-			return queue.emit('error', err, file, variation);
+			logger.warn('[storage] Error when writing back metadata to database, aborting post-processing for %s.', updatedFile ? updatedFile.toString(variation) : '[null]');
+			return queue.emit('error', err, updatedFile, variation);
 		}
-		queue.emit(nextEvent, file, variation, processor, true);
+		if (updatedFile) {
+			queue.emit(nextEvent, updatedFile, variation, processor, true);
+		} else {
+			logger.warn('[storage] Could not find %s in database after updating metadata, aborting.', file.toString(variation));
+		}
 	};
 
 	if (!fs.existsSync(filepath)) {
@@ -284,7 +288,7 @@ Storage.prototype.onProcessed = function(file, variation, processor, nextEvent) 
 			logger.info('[storage] Updating metadata of %s', file.toString(variation));
 
 			// only update `metadata` (other data might has changed meanwhile)
-			File.update({ _id: file._id }, data, done);
+			File.findByIdAndUpdate(file._id, { $set: data }, done);
 		});
 	});
 };
@@ -300,7 +304,9 @@ Storage.prototype.url = function(file, variation) {
 };
 
 /**
- * Returns URLs of all variations of a given file.
+ * Enriches a file's variations with the URLs (or creates the `variations` property
+ * if non-existent).
+ *
  * @param {File} file
  * @returns {object} Keys are the variation name, values are the urls
  */

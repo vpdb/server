@@ -183,7 +183,18 @@ describe('The storage engine of VPDB', function() {
 		describe('when the file is still inactive', function() {
 
 			it('should block a video variation until processing is finished', function(done) {
-				hlp.file.createVideo('contributor', request, function(video) {
+				hlp.file.createMp4('contributor', request, function(video) {
+					request.get(video.variations['small-rotated'].url).as('contributor').end(function(err, res) {
+						hlp.expectStatus(err, res, 200);
+						hlp.doomFile('contributor', video.id);
+						expect(res.headers['content-length']).to.be.greaterThan(0);
+						done();
+					});
+				});
+			});
+
+			it.only('should block a video variation with a different MIME type until processing is finished', function(done) {
+				hlp.file.createAvi('contributor', request, function(video) {
 					request.get(video.variations['small-rotated'].url).as('contributor').end(function(err, res) {
 						hlp.expectStatus(err, res, 200);
 						hlp.doomFile('contributor', video.id);

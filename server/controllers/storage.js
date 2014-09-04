@@ -29,7 +29,7 @@ var acl = require('../acl');
 
 function serve(req, res, file, variationName) {
 
-	var serveFile = function(fstat) {
+	var serveFile = function(file, fstat) {
 
 		// check if we should return 304 not modified
 		var modified = new Date(fstat.mtime);
@@ -40,15 +40,26 @@ function serve(req, res, file, variationName) {
 
 		// otherwise set headers and stream the file
 		var filePath = file.getPath(variationName);
+
+		if (!fs.existsSync(filePath)) {
+			return res.json(500, { error: 'Error streaming ' + file.toString(variationName) + ' from storage. Please contact an admin.' });
+		}
+
+		var stream = fs.createReadStream(filePath);
+		stream.on('error', function(err) {
+			logger.error('[ctrl|storage] Error before streaming %s from storage: %s', file.toString(variationName), err);
+			res.end();
+		});
 		res.writeHead(200, {
 			'Content-Type': file.getMimeType(variationName),
 			'Content-Length':  fstat.size,
 			'Cache-Control': 'max-age=315360000',
 			'Last-Modified': modified.toISOString().replace(/T/, ' ').replace(/\..+/, '')
 		});
-
-		var stream = fs.createReadStream(filePath);
-		stream.pipe(res);
+		stream.pipe(res).on('error', function(err) {
+			logger.error('[ctrl|storage] Error while streaming %s from storage: %s', file.toString(variationName), err);
+			res.end();
+		});
 	};
 
 	var fstat = storage.fstat(file, variationName);
@@ -75,13 +86,13 @@ function serve(req, res, file, variationName) {
 		 * delivered.
 		 */
 		logger.info('[ctrl|storage] Waiting for %s/%s to be processed...', file.id, variationName);
-		storage.whenProcessed(file, variationName, function(fstat) {
+		storage.whenProcessed(file, variationName, function(file, fstat) {
 			if (!fstat) {
 				logger.info('[ctrl|storage] No processing or error, returning 404.');
 				return res.status(404).end();
 			}
 			logger.info('[ctrl|storage] Streaming freshly processed item back to client.');
-			serveFile(fstat);
+			serveFile(file, fstat);
 		});
 	}
 }

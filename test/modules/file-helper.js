@@ -6,7 +6,8 @@ var path = require('path');
 var expect = require('expect.js');
 var pleasejs = require('pleasejs');
 
-var video = path.resolve(__dirname, '../../data/test/files/afm.f4v');
+var mp4 = path.resolve(__dirname, '../../data/test/files/afm.f4v');
+var avi = path.resolve(__dirname, '../../data/test/files/afm.avi');
 
 exports.createBackglass = function(user, request, done) {
 
@@ -47,14 +48,31 @@ exports.createTextfile = function(user, request, done) {
 		});
 };
 
-exports.createVideo = function(user, request, done) {
+exports.createMp4 = function(user, request, done) {
 
-	var data = fs.readFileSync(video);
+	var data = fs.readFileSync(mp4);
 	request
 		.post('/storage')
 		.query({ type: 'playfield' })
 		.type('video/mp4')
 		.set('Content-Disposition', 'attachment; filename="playfield.mp4"')
+		.set('Content-Length', data.length)
+		.send(data)
+		.as(user)
+		.end(function(err, res) {
+			expect(res.status).to.be(201);
+			done(res.body);
+		});
+};
+
+exports.createAvi = function(user, request, done) {
+
+	var data = fs.readFileSync(avi);
+	request
+		.post('/storage')
+		.query({ type: 'playfield' })
+		.type('video/avi')
+		.set('Content-Disposition', 'attachment; filename="playfield.avi"')
 		.set('Content-Length', data.length)
 		.send(data)
 		.as(user)

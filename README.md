@@ -1,5 +1,5 @@
 # vpdb
-*A database for VP10 tables.*
+*A database for Visual Pinball tables.*
 
 [![Build Status][travis-image]][travis-url]
 [![Test Coverage][coveralls-image]][coveralls-url]

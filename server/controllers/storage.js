@@ -27,7 +27,7 @@ var quota = require('../modules/quota');
 var storage = require('../modules/storage');
 var acl = require('../acl');
 
-function serve(req, res, file, variationName) {
+function serve(req, res, file, variationName, headOnly) {
 
 	var serveFile = function(file, fstat) {
 
@@ -38,28 +38,40 @@ function serve(req, res, file, variationName) {
 			return res.status(304).end();
 		}
 
-		// otherwise set headers and stream the file
-		var filePath = file.getPath(variationName);
+		if (!headOnly) {
 
-		if (!fs.existsSync(filePath)) {
-			return res.json(500, { error: 'Error streaming ' + file.toString(variationName) + ' from storage. Please contact an admin.' });
+			// set headers and stream the file
+			var filePath = file.getPath(variationName);
+
+			if (!fs.existsSync(filePath)) {
+				return res.json(500, { error: 'Error streaming ' + file.toString(variationName) + ' from storage. Please contact an admin.' });
+			}
+			var stream = fs.createReadStream(filePath);
+			stream.on('error', function(err) {
+				logger.error('[ctrl|storage] Error before streaming %s from storage: %s', file.toString(variationName), err);
+				res.end();
+			});
+			res.writeHead(200, {
+				'Content-Type': file.getMimeType(variationName),
+				'Content-Length': fstat.size,
+				'Cache-Control': 'max-age=315360000',
+				'Last-Modified': modified.toISOString().replace(/T/, ' ').replace(/\..+/, '')
+			});
+			stream.pipe(res).on('error', function(err) {
+				logger.error('[ctrl|storage] Error while streaming %s from storage: %s', file.toString(variationName), err);
+				res.end();
+			});
+
+		// only return the header if request was HEAD
+		} else {
+			res.writeHead(200, {
+				'Content-Type': file.getMimeType(variationName),
+				'Content-Length': 0,
+				'Cache-Control': 'max-age=315360000',
+				'Last-Modified': modified.toISOString().replace(/T/, ' ').replace(/\..+/, '')
+			});
+			return res.end();
 		}
-
-		var stream = fs.createReadStream(filePath);
-		stream.on('error', function(err) {
-			logger.error('[ctrl|storage] Error before streaming %s from storage: %s', file.toString(variationName), err);
-			res.end();
-		});
-		res.writeHead(200, {
-			'Content-Type': file.getMimeType(variationName),
-			'Content-Length':  fstat.size,
-			'Cache-Control': 'max-age=315360000',
-			'Last-Modified': modified.toISOString().replace(/T/, ' ').replace(/\..+/, '')
-		});
-		stream.pipe(res).on('error', function(err) {
-			logger.error('[ctrl|storage] Error while streaming %s from storage: %s', file.toString(variationName), err);
-			res.end();
-		});
 	};
 
 	var fstat = storage.fstat(file, variationName);
@@ -91,13 +103,12 @@ function serve(req, res, file, variationName) {
 				logger.info('[ctrl|storage] No processing or error, returning 404.');
 				return res.status(404).end();
 			}
-			logger.info('[ctrl|storage] Streaming freshly processed item back to client.');
 			serveFile(file, fstat);
 		});
 	}
 }
 
-exports.get = function(req, res) {
+function find(req, res, callback) {
 
 	File.findOne({ id: req.params.id }, function(err, file) {
 		/* istanbul ignore if  */
@@ -126,7 +137,7 @@ exports.get = function(req, res) {
 
 		// at this point, we can serve the file if it's public
 		if (file.is_public) {
-			return serve(req, res, file, req.params.variation);
+			return callback(file, true);
 		}
 
 		// so here we determined the file isn't public, so we need to check ACLs and quota.
@@ -142,22 +153,39 @@ exports.get = function(req, res) {
 
 			// if the user is the owner, serve directly (owned files don't count as credits)
 			if (file._created_by.equals(req.user._id)) {
-				return serve(req, res, file, req.params.variation);
+				return callback(file, true);
 			}
+			callback(file);
 
-			// and the quota
-			quota.isAllowed(req, res, file, function(err, granted) {
-				/* istanbul ignore if  */
-				if (err) {
-					logger.error('[ctrl|storage] Error checking quota for <%s>: %s', req.user.email, err, {});
-					return res.status(500).end();
-				}
-				if (!granted) {
-					return res.status(403).end();
-				}
-				return serve(req, res, file, req.params.variation);
-			});
 		});
+	});
+}
 
+exports.get = function(req, res) {
+
+	find(req, res, function(file, isPublic) {
+
+		if (isPublic) {
+			return serve(req, res, file, req.params.variation);
+		}
+
+		// check the quota
+		quota.isAllowed(req, res, file, function(err, granted) {
+			/* istanbul ignore if  */
+			if (err) {
+				logger.error('[ctrl|storage] Error checking quota for <%s>: %s', req.user.email, err, {});
+				return res.status(500).end();
+			}
+			if (!granted) {
+				return res.status(403).end();
+			}
+			serve(req, res, file, req.params.variation);
+		});
+	});
+};
+
+exports.head = function(req, res) {
+	find(req, res, function(file) {
+		return serve(req, res, file, req.params.variation, true);
 	});
 };

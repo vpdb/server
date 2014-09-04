@@ -49,6 +49,17 @@ function Quota() {
 	}
 }
 
+/**
+ * Checks if there is enough quota for the given file and consumes a credit.
+ *
+ * It also adds the rate limit headers to the request.
+ *
+ * @param {object} req Request
+ * @param {object} res Response
+ * @param {File} file File to check for
+ * @param {function} callback Callback with `err` and `isAllowed`
+ * @returns {*}
+ */
 Quota.prototype.isAllowed = function(req, res, file, callback) {
 
 	// undefined mime types are free
@@ -66,7 +77,7 @@ Quota.prototype.isAllowed = function(req, res, file, callback) {
 		return callback(null, false);
 	}
 
-	var plan = req.user.plan ? req.user.plan : quotaConfig.defaultPlan;
+	var plan = req.user.plan || quotaConfig.defaultPlan;
 
 	// allow unlimited plans
 	if (quotaConfig.plans[plan].unlimited === true) {
@@ -77,6 +88,7 @@ Quota.prototype.isAllowed = function(req, res, file, callback) {
 		return callback('No quota defined for plan "' + plan + '".');
 	}
 
+	// https://github.com/apigee-127/volos/tree/master/quota/common#quotaapplyoptions-callback
 	this.quota[quotaConfig.plans[plan].per].apply({
 			identifier: req.user.id,
 			weight: quotaConfig.costs[file.mime_type],

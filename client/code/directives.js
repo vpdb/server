@@ -397,7 +397,7 @@ directives.directive('videojs', function($parse) {
 				if (value && !player) {
 					console.log('src changed to %s', value);
 					player = videojs(attrs.id, setup, function() {
-						this.src({type: attrs.type, src: value });
+						this.src({ type: 'video/mp4', src: value });
 					});
 				}
 			});

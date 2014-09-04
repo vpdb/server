@@ -100,11 +100,14 @@ module.exports = function(app) {
 		res.status(404).send({ error: 'No such resource.' });
 	});
 
+
 	// Storage
 	// ========================================================================
-	app.post('/storage',               api.auth(api.files.upload, 'files', 'upload'));
-	app.get('/storage/:id',            api.anon(storage.get));  // permission/quota handling is inside.
-	app.get('/storage/:id/:variation', api.anon(storage.get));
+	app.post('/storage',                api.auth(api.files.upload, 'files', 'upload'));
+	app.head('/storage/:id',            api.anon(storage.head));
+	app.head('/storage/:id/:variation', api.anon(storage.head));
+	app.get('/storage/:id',             api.anon(storage.get));  // permission/quota handling is inside.
+	app.get('/storage/:id/:variation',  api.anon(storage.get));
 
 
 	// Authentication

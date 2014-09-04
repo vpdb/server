@@ -137,6 +137,33 @@ describe('The storage engine of VPDB', function() {
 					});
 				});
 			});
+
+			it('should only return the header when requesting a HEAD on the storage URL', function(done) {
+
+				hlp.file.createTextfile('member', request, function(backglass) {
+					request.head(backglass.url).as('member').end(function(err, res) {
+						hlp.expectStatus(err, res, 200);
+						hlp.doomFile('member', backglass.id);
+						expect(res.headers['content-length']).to.be('0');
+						expect(res.text).to.not.be.ok();
+						done();
+					});
+				});
+			});
+
+			it('should block until the file is finished processing when requesting the HEAD of a variation', function(done) {
+
+				hlp.file.createBackglass('member', request, function(backglass) {
+					request.head(backglass.variations['small-2x'].url).as('member').end(function(err, res) {
+						hlp.expectStatus(err, res, 200);
+						hlp.doomFile('member', backglass.id);
+						expect(res.headers['content-length']).to.be('0');
+						expect(res.text).to.not.be.ok();
+						done();
+					});
+				});
+			});
+
 		});
 
 		describe('when the file is active', function() {
@@ -199,6 +226,18 @@ describe('The storage engine of VPDB', function() {
 						hlp.expectStatus(err, res, 200);
 						hlp.doomFile('contributor', video.id);
 						expect(res.headers['content-length']).to.be.greaterThan(0);
+						done();
+					});
+				});
+			});
+
+			it('should block HEAD of a video variation with a different MIME type until processing is finished', function(done) {
+				hlp.file.createAvi('contributor', request, function(video) {
+					request.head(video.variations['small-rotated'].url).as('contributor').end(function(err, res) {
+						hlp.expectStatus(err, res, 200);
+						hlp.doomFile('contributor', video.id);
+						expect(res.headers['content-length']).to.be('0');
+						expect(res.text).to.not.be.ok();
 						done();
 					});
 				});

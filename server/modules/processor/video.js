@@ -167,7 +167,7 @@ VideoProcessor.prototype.pass2 = function(src, dest, file, variation, done) {
 			done(err);
 		})
 		.on('progress', function(progress) {
-			logger.info('[video|pass2] Processing: %s%', Math.round(progress.percent * 100) / 100);
+			logger.info('[video|pass2] Processing %s: %s%', file.toString(variation), Math.round(progress.percent * 100) / 100);
 		})
 		.on('end', function() {
 			logger.info('[video|pass2] Transcoding succeeded after %dms, written to %s', new Date().getTime() - started, dest);

@@ -122,6 +122,8 @@ FileSchema.methods.getPath = function(variation, tmpSuffix) {
 
 	var suffix = tmpSuffix || '';
 	var ext = '.' + mimeTypes[mimeType].ext;
+	//console.log('-------- mime type (%s) = %s; ext = %s', variationName, mimeType, ext);
+	console.trace('-------- mime type (%s) = %s; ext = %s', variationName, mimeType, ext);
 	return variationName ?
 		path.resolve(config.vpdb.storage, variationName, this.id) + suffix + ext :
 		path.resolve(config.vpdb.storage, this.id) + suffix + ext;
@@ -150,6 +152,7 @@ FileSchema.methods.getUrl = function(variation) {
 FileSchema.methods.getMimeType = function(variation) {
 	var variationName = _.isObject(variation) ? variation.name : variation;
 	if (variation && this.variations && this.variations[variationName] && this.variations[variationName].mime_type) {
+		console.log('----- mime_type of variation "%s" = %s', variationName, this.variations[variationName].mime_type);
 		return this.variations[variationName].mime_type;
 	} else if (_.isObject(variation) && variation.mimeType) {
 		return variation.mimeType;

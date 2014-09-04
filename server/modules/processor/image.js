@@ -151,7 +151,7 @@ ImageProcessor.prototype.pass2 = function(src, dest, file, variation, done) {
 	var optimizer = new OptiPng(['-o7']);
 
 	logger.info('[image|pass2] Optimizing %s', file.toString(variation));
-	fs.createReadStream(src)
+	fs.createReadStream(src).on('error', handleErr)
 		.pipe(quanter).on('error', handleErr)
 		.pipe(optimizer).on('error', handleErr)
 		.pipe(writeStream).on('error', handleErr);

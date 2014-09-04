@@ -47,8 +47,13 @@ function serve(req, res, file, variationName) {
 			'Last-Modified': modified.toISOString().replace(/T/, ' ').replace(/\..+/, '')
 		});
 
+		console.log('~~~~~~~ storage[50] fs.createReadStream(%s)', filePath);
 		var stream = fs.createReadStream(filePath);
-		stream.pipe(res);
+		stream.pipe(res).on('error', function(err) {
+			console.log('**********************************************');
+			console.log(err);
+			console.log('**********************************************');
+		});
 	};
 
 	var fstat = storage.fstat(file, variationName);

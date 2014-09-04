@@ -230,12 +230,20 @@ Storage.prototype.postprocess = function(file) {
 Storage.prototype.onProcessed = function(file, variation, processor, nextEvent) {
 
 	var filepath = file.getPath(variation);
-	var done = function(err) {
+	var done = function(err, updatedFile) {
+		console.log(file);
+		console.log('--------------------------------------------------------------------------------');
+		console.log(updatedFile);
 		if (err) {
-			logger.warn('[storage] Error when writing back metadata to database, aborting post-processing for %s.', file.toString(variation));
-			return queue.emit('error', err, file, variation);
+			logger.warn('[storage] Error when writing back metadata to database, aborting post-processing for %s.', updatedFile ? updatedFile.toString(variation) : '[null]');
+			return queue.emit('error', err, updatedFile, variation);
 		}
-		queue.emit(nextEvent, file, variation, processor, true);
+		if (updatedFile) {
+			console.log('*********** EMITTING EVENT %s (%s, %s, %s, %s)', nextEvent, updatedFile, variation, processor, true);
+			queue.emit(nextEvent, updatedFile, variation, processor, true);
+		} else {
+			logger.warn('[storage] Could not find %s in database after updating metadata, aborting.', file.toString(variation));
+		}
 	};
 
 	if (!fs.existsSync(filepath)) {
@@ -272,6 +280,7 @@ Storage.prototype.onProcessed = function(file, variation, processor, nextEvent) 
 			var data = {};
 			if (variation) {
 				var fieldPath = 'variations.' + variation.name;
+				console.log('~~~~~~~ storage[277] fs.statSync(%s)', filepath);
 				data[fieldPath] = _.extend(processor.variationData(metadata),  { bytes: fs.statSync(filepath).size });
 				if (variation.mimeType) {
 					data[fieldPath].mime_type = variation.mimeType;
@@ -284,7 +293,7 @@ Storage.prototype.onProcessed = function(file, variation, processor, nextEvent) 
 			logger.info('[storage] Updating metadata of %s', file.toString(variation));
 
 			// only update `metadata` (other data might has changed meanwhile)
-			File.update({ _id: file._id }, data, done);
+			File.findByIdAndUpdate(file._id, { $set: data }, done);
 		});
 	});
 };
@@ -324,6 +333,7 @@ Storage.prototype.urls = function(file) {
 Storage.prototype.fstat = function(file, variationName) {
 
 	if (!variationName) {
+		console.log('~~~~~~~ storage[329] fs.statSync(%s)', file.getPath());
 		return fs.statSync(file.getPath());
 	}
 
@@ -340,6 +350,7 @@ Storage.prototype.fstat = function(file, variationName) {
 
 	// TODO optimize (aka "cache" and make it async, this is called frequently)
 	if (variationName && fs.existsSync(file.getPath(variationName))) {
+		console.log('~~~~~~~ storage[346] fs.statSync(%s)', file.getPath(variationName));
 		return fs.statSync(file.getPath(variationName));
 	}
 	logger.warn('[storage] Cannot find %s at %s', file.toString(variationName), file.getPath(variationName));

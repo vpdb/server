@@ -129,14 +129,13 @@ function Queue() {
 				return done();
 			}
 			// define paths
-			var postRename = true;
 			var src = file.getPath(variation);
 			var dest = file.getPath(variation, '_processing');
+			var finalDest = false;
 
 			if (!fs.existsSync(src)) { // no processed file could also mean first pass skipped, so try with original -> variation
-				postRename = false;
 				src = file.getPath();
-				dest = file.getPath(variation);
+				finalDest = file.getPath(variation);
 			}
 
 			if (!fs.existsSync(src)) {
@@ -153,12 +152,21 @@ function Queue() {
 					return done(err);
 				}
 				// switch images
-				if (postRename && fs.existsSync(src) && fs.existsSync(dest)) {
+				if (fs.existsSync(src) && fs.existsSync(dest)) {
+					var mvSrc = dest;
+					var mvDest = src;
 					try {
-						fs.unlinkSync(src);
-						fs.renameSync(dest, src);
+						if (finalDest === false) {
+							logger.info('[queue] Removing "%s".', mvDest);
+							fs.unlinkSync(mvDest);
+						} else {
+							mvDest = finalDest;
+						}
+						logger.info('[queue] Renaming "%s" to "%s".', mvSrc, mvDest);
+						fs.renameSync(mvSrc, mvDest);
+						logger.info('[queue] Renamed "%s" to "%s".', mvSrc, mvDest);
 					} catch (err) {
-						logger.error('[queue] Error switching %s to %s: ', dest, src, err);
+						logger.error('[queue] Error switching %s to %s: ', mvSrc, mvDest, err);
 					}
 				}
 				logger.info('[queue|pass2] Pass 2 done for %s', file.toString(variation));
@@ -173,6 +181,9 @@ function Queue() {
 	 * Processes callback queue
 	 */
 	var processQueue = function(file, variation, storage) {
+		if (!file) {
+			return;
+		}
 		var key = variation ? file.id + '/' + variation.name : file.id;
 		if (!that.queuedFiles[key]) {
 			return;
@@ -218,7 +229,7 @@ function Queue() {
 	});
 
 	this.on('error', function(err, file, variation) {
-		logger.warn('[queue] Error processing %s: %s', file.toString(variation), err);
+		logger.warn('[queue] Error processing %s: %s', file ? file.toString(variation) : '[null]', err);
 		processQueue(file, variation);
 	});
 

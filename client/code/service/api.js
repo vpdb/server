@@ -8,31 +8,8 @@ services.factory('AuthResource', function($resource) {
 	});
 });
 
-services.factory('UserResource', function($resource) {
-	return $resource('/api/users/:userid', {}, {
-		update: { method: 'PUT' },
-		register: { method: 'POST' },
-		login: { method: 'POST', params: { userid : 'login'} },
-		logout: { method: 'POST', params: { userid : 'logout'} }
-	});
-});
-
-services.factory('ProfileResource', function($resource) {
-	return $resource('/api/user', {}, {});
-});
-
-services.factory('PingResource', function($resource) {
-	return $resource('/api/ping', {}, {});
-});
-
-
-services.factory('RolesResource', function($resource) {
-	return $resource('/api/roles/:role', {}, {
-	});
-});
-
-services.factory('IpdbResource', function($resource) {
-	return $resource('/api/ipdb/:id', {}, {
+services.factory('FileResource', function($resource) {
+	return $resource('/api/files/:id', {}, {
 	});
 });
 
@@ -42,13 +19,36 @@ services.factory('GameResource', function($resource) {
 	});
 });
 
-services.factory('FileResource', function($resource) {
-	return $resource('/api/files/:id', {}, {
+services.factory('IpdbResource', function($resource) {
+	return $resource('/api/ipdb/:id', {}, {
+	});
+});
+
+services.factory('PingResource', function($resource) {
+	return $resource('/api/ping', {}, {});
+});
+
+
+services.factory('ProfileResource', function($resource) {
+	return $resource('/api/user', {}, {});
+});
+
+services.factory('RolesResource', function($resource) {
+	return $resource('/api/roles/:role', {}, {
 	});
 });
 
 services.factory('TagResource', function($resource) {
 	return $resource('/api/tags/:id', {}, {
+	});
+});
+
+services.factory('UserResource', function($resource) {
+	return $resource('/api/users/:userid', {}, {
+		update: { method: 'PUT' },
+		register: { method: 'POST' },
+		login: { method: 'POST', params: { userid : 'login'} },
+		logout: { method: 'POST', params: { userid : 'logout'} }
 	});
 });
 

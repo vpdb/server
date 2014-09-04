@@ -372,7 +372,7 @@ directives.directive('sort', function() {
 	};
 });
 
-directives.directive('videojs', function($parse) {
+directives.directive('videojs', function($parse, $http) {
 	return {
 		restrict: 'A',
 		link: function(scope, element, attrs) {
@@ -393,12 +393,21 @@ directives.directive('videojs', function($parse) {
 			element.attr('id', attrs.id);
 
 			var player = null;
-			attrs.$observe('src', function(value) {
+			attrs.$observe('source', function(value) {
 				if (value && !player) {
 					console.log('src changed to %s', value);
-					player = videojs(attrs.id, setup, function() {
-						this.src({ type: 'video/mp4', src: value });
-					});
+					console.log(new Date() + ' Starting HEAD');
+					$http({ method: 'HEAD', url: value })
+						.success(function() {
+							console.log(new Date() + ' Back from HEAD');
+							player = videojs(attrs.id, setup, function() {
+								this.src({ type: 'video/mp4', src: value });
+							});
+						});
+				}
+
+				if (!value && player) {
+					console.log('RESET?');
 				}
 			});
 

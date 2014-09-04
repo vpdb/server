@@ -108,7 +108,7 @@ exports.del = function(req, res) {
 			return api.fail(res, err, 500);
 		}
 		if (!game) {
-			return api.fail(res, 'No such game.', 404);
+			return api.fail(res, 'No such game with ID "' + req.params.id + '".', 404);
 		}
 
 		// TODO check for linked releases and refuse if referenced

@@ -65,7 +65,7 @@ function serve(req, res, file, variationName) {
 	var fstat = storage.fstat(file, variationName);
 
 	if (fstat && fstat.size > 0) {
-		serveFile(fstat);
+		serveFile(file, fstat);
 
 	} else {
 		/*

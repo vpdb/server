@@ -193,7 +193,7 @@ describe('The storage engine of VPDB', function() {
 				});
 			});
 
-			it.only('should block a video variation with a different MIME type until processing is finished', function(done) {
+			it('should block a video variation with a different MIME type until processing is finished', function(done) {
 				hlp.file.createAvi('contributor', request, function(video) {
 					request.get(video.variations['small-rotated'].url).as('contributor').end(function(err, res) {
 						hlp.expectStatus(err, res, 200);

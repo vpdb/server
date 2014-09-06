@@ -26,6 +26,8 @@ var logger = require('winston');
 var api = require('./api');
 var VPBuild = require('mongoose').model('VPBuild');
 
+var error = require('../../modules/error')('ctrl', 'tag').error;
+
 exports.list = function(req, res) {
 
 	var q;
@@ -38,8 +40,7 @@ exports.list = function(req, res) {
 	VPBuild.find(q, function(err, vpbuilds) {
 		/* istanbul ignore if  */
 		if (err) {
-			logger.error('[api|vpbuild:list] Error: %s', err, {});
-			return api.fail(res, err, 500);
+			return api.fail(res, error(err, 'Error finding vpbuilds').log('list'), 500);
 		}
 
 		// reduce
@@ -62,14 +63,12 @@ exports.create = function(req, res) {
 
 	newBuild.validate(function(err) {
 		if (err) {
-			logger.warn('[api|vpbuild:create] Validations failed: %s', util.inspect(_.map(err.errors, function(value, key) { return key; })));
-			return api.fail(res, err, 422);
+			return api.fail(res, error('Validations failed: %j', err.errors).errors(err.errors).warn('create'), 422);
 		}
 		newBuild.save(function(err) {
 			/* istanbul ignore if  */
 			if (err) {
-				logger.error('[api|vpbuild:create] Error saving vpbuild "%s": %s', newBuild.name, err, {});
-				return api.fail(res, err, 500);
+				return api.fail(res, error(err, 'Error saving vpbuild "%s"', newBuild.name).log('create'), 500);
 			}
 			logger.info('[api|vpbuild:create] VPBuild "%s" successfully created.', newBuild.name);
 			return api.success(res, newBuild.toSimple(), 201);

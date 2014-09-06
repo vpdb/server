@@ -26,6 +26,7 @@ var logger = require('winston');
 
 var storage = require('./modules/storage');
 var queue = require('./modules/queue');
+var error = require('./modules/error')('startup').error;
 
 exports.init = function(done) {
 
@@ -53,7 +54,7 @@ exports.init = function(done) {
 				Model.count({}, function(err, num) {
 					/* istanbul ignore if  */
 					if (err) {
-						return next(err);
+						return next(error(err, 'Error counting rows in collection "%s".', data.model));
 					}
 					if (num) {
 						logger.info('[startup] Skipping data population for model "%s", table is not empty.', data.model);

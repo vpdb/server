@@ -220,10 +220,8 @@ Settings.prototype.migrate = function(callback) {
 		// 1. retrieve added properties
 		var oldTree = {};
 		var newTree = {};
-		//noinspection JSHint
-		eval(settingsCurr.replace(/module\.exports\s*=\s*\{/, 'oldTree = {'));
-		//noinspection JSHint
-		eval(settingsDist.replace(/module\.exports\s*=\s*\{/, 'newTree = {'));
+		eval(settingsCurr.replace(/module\.exports\s*=\s*\{/, 'oldTree = {')); // jshint ignore:line
+		eval(settingsDist.replace(/module\.exports\s*=\s*\{/, 'newTree = {')); // jshint ignore:line
 		var newProps = diff(oldTree, newTree);
 		if (newProps.length === 0) {
 			logger.info('[settings] No new settings found.');

@@ -27,6 +27,7 @@ var mongoose = require('mongoose');
 var validator = require('validator');
 var uniqueValidator = require('mongoose-unique-validator');
 
+var error = require('../modules/error')('model', 'user').error;
 var config = require('../modules/settings').current;
 var Schema = mongoose.Schema;
 
@@ -251,8 +252,7 @@ UserSchema.statics.createUser = function(userObj, done) {
 		User.count(function(err, count) {
 			/* istanbul ignore if  */
 			if (err) {
-				logger.error('[model|user] Error counting users: %s', err, {});
-				return done(err);
+				return done(error(err, 'Error counting users').log());
 			}
 
 			user.roles = count ? [ 'member' ] : [ 'root' ];
@@ -261,14 +261,12 @@ UserSchema.statics.createUser = function(userObj, done) {
 			user.save(function(err) {
 				/* istanbul ignore if  */
 				if (err) {
-					logger.error('[model|user] Error saving user <%s>: %s', user.email, err, {});
-					return done(err);
+					return done(error(err, 'Error saving user <%s>', user.email).log());
 				}
 				require('../acl').addUserRoles(user.email, user.roles, function(err) {
 					/* istanbul ignore if  */
 					if (err) {
-						logger.error('[model|user] Error updating ACLs for <%s>: %s', user.email, err, {});
-						return done(err);
+						return done(error(err, 'Error updating ACLs for <%s>', user.email).log());
 					}
 					logger.info('[model|user] %s <%s> successfully created.', count ? 'User' : 'Root user', user.email);
 					done(null, user);

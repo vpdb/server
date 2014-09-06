@@ -26,20 +26,21 @@ var api = require('./api');
 var File = require('mongoose').model('File');
 
 var storage = require('../../modules/storage');
+var error = require('../../modules/error')('api', 'file').error;
 
 exports.upload = function(req, res) {
 
 	if (!req.headers['content-type']) {
-		return api.fail(res, 'Header "Content-Type" must be provided.', 422);
+		return api.fail(res, error('Header "Content-Type" must be provided.'), 422);
 	}
 	if (!req.headers['content-disposition']) {
-		return api.fail(res, 'Header "Content-Disposition" must be provided.', 422);
+		return api.fail(res, error('Header "Content-Disposition" must be provided.'), 422);
 	}
 	if (!/filename=([^;\z]+)/i.test(req.headers['content-disposition'])) {
-		return api.fail(res, 'Header "Content-Disposition" must contain file name.', 422);
+		return api.fail(res, error('Header "Content-Disposition" must contain file name.'), 422);
 	}
 	if (!req.query.type) {
-		return api.fail(res, 'Query parameter "type" must be provided.', 422);
+		return api.fail(res, error('Query parameter "type" must be provided.'), 422);
 	}
 
 	var file = new File({
@@ -54,13 +55,13 @@ exports.upload = function(req, res) {
 
 	file.validate(function(err) {
 		if (err) {
-			return api.fail(res, err, 422);
+			return api.fail(res, error('Validations failed: %j', err.errors).errors(err.errors).warn('create'), 422);
 		}
 
 		file.save(function(err, file) {
 			/* istanbul ignore if */
 			if (err) {
-				return api.fail(res, err, 500);
+				return api.fail(res, error(err, 'Unable to save file'), 500);
 			}
 
 			var writeStream = fs.createWriteStream(file.getPath());
@@ -72,7 +73,7 @@ exports.upload = function(req, res) {
 							if (err) {
 								logger.error('[api|file:save] Removing file due to erroneous metadata: %s', err, {});
 							}
-							api.fail(res, 'Metadata parsing for MIME type "' + file.mime_type +  '" failed. Upload corrupted or weird format?', 400);
+							return api.fail(res, error('Metadata parsing for MIME type "%s" failed. Upload corrupted or weird format?', file.mime_type), 400);
 						});
 					}
 					if (!metadata) {
@@ -96,8 +97,7 @@ exports.upload = function(req, res) {
 			});
 			/* istanbul ignore next */
 			writeStream.on('error', function(err) {
-				logger.error('[api|file:save] Error saving data: %s', err, {});
-				api.fail(res, 'Error saving data: ' + err, 500);
+				return api.fail(res, error(err, 'Error saving data').log('save'), 500);
 			});
 			req.pipe(writeStream);
 		});
@@ -110,29 +110,27 @@ exports.del = function(req, res) {
 	File.findOne({ id: req.params.id }, function(err, file) {
 		/* istanbul ignore if */
 		if (err) {
-			logger.error('[api|file:delete] Error getting file "%s": %s', req.params.id, err, {});
-			return api.fail(res, err, 500);
+			return api.fail(res, error(err, 'Error getting file "%s"', req.params.id).log(), 500);
 		}
 		if (!file) {
-			return api.fail(res, 'No such file.', 404);
+			return api.fail(res, error('No such file.'), 404);
 		}
 
 		// only allow deleting own files (for now)
 		if (!file._created_by.equals(req.user._id)) {
-			return api.fail(res, 'Permission denied, must be owner.', 403);
+			return api.fail(res, error('Permission denied, must be owner.'), 403);
 		}
 
 		// only allow inactive files (for now)
 		if (file.is_active !== false) {
-			return api.fail(res, 'Cannot remove active file.', 400);
+			return api.fail(res, error('Cannot remove active file.'), 400);
 		}
 
 		// note: physical rm on disk is triggered by mongoose.
 		file.remove(function(err) {
 			/* istanbul ignore if */
 			if (err) {
-				logger.error('[api|file:delete] Error deleting file "%s" (%s): %s', file.name, file.id, err, {});
-				return api.fail(res, err, 500);
+				return api.fail(res, error(err, 'Error deleting file "%s" at `%s`)', file.name, file.id).log('delete'), 500);
 			}
 			logger.info('[api|file:delete] File "%s" (%s) successfully removed.', file.name, file.id);
 			api.success(res, null, 204);
@@ -145,20 +143,19 @@ exports.view = function(req, res) {
 	File.findOne({ id: req.params.id }, function(err, file) {
 		/* istanbul ignore if */
 		if (err) {
-			logger.error('[api|file:view] Error finding file "%s": %s', req.params.id, err, {});
-			return api.fail(res, err, 500);
+			return api.fail(res, error(err, 'Error finding file "%s"', req.params.id).log('view'), 500);
 		}
 		if (!file) {
-			return api.fail(res, 'No such file with ID "' + req.params.id + '".', 404);
+			return api.fail(res, error('No such file with ID "%s".', req.params.id), 404);
 		}
 
 		var isOwner = req.user && file._created_by.equals(req.user._id);
 
 		if (!file.is_active && (!req.user || !isOwner)) {
-			return api.fail(res, 'File "' + req.params.id + '" is inactive.', req.user ? 403 : 401);
+			return api.fail(res, error('File "%s" is inactive.', req.params.id), req.user ? 403 : 401);
 		}
 		if (!file.is_public && (!req.user || !isOwner)) {
-			return api.fail(res, 'File "' + req.params.id + '" is not public.', req.user ? 403 : 401);
+			return api.fail(res, error('File "%s" is not public.', req.params.id), req.user ? 403 : 401);
 		}
 
 		return api.success(res, file.toDetailed());

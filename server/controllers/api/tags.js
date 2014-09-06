@@ -23,6 +23,7 @@ var _ = require('lodash');
 var util = require('util');
 var logger = require('winston');
 
+var error = require('../../modules/error')('ctrl', 'tag').error;
 var api = require('./api');
 var Tag = require('mongoose').model('Tag');
 
@@ -38,8 +39,7 @@ exports.list = function(req, res) {
 	Tag.find(q, function(err, tags) {
 		/* istanbul ignore if  */
 		if (err) {
-			logger.error('[api|tag:list] Error: %s', err, {});
-			return api.fail(res, err, 500);
+			return api.fail(res, error(err, 'Error listing tags').log('list'), 500);
 		}
 
 		// reduce
@@ -61,14 +61,12 @@ exports.create = function(req, res) {
 
 	newTag.validate(function(err) {
 		if (err) {
-			logger.warn('[api|tag:create] Validations failed: %s', util.inspect(_.map(err.errors, function(value, key) { return key; })));
-			return api.fail(res, err, 422);
+			return api.fail(res, error('Validations failed: %j', err.errors).errors(err.errors).warn('create'), 422);
 		}
 		newTag.save(function(err) {
 			/* istanbul ignore if  */
 			if (err) {
-				logger.error('[api|tag:create] Error saving tag "%s": %s', newTag.name, err, {});
-				return api.fail(res, err, 500);
+				return api.fail(res, error(err, 'Error saving tag "%s"', newTag.name).log('create'), 500);
 			}
 			logger.info('[api|tag:create] Tag "%s" successfully created.', newTag.name);
 			return api.success(res, newTag.toSimple(), 201);

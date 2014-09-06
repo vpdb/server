@@ -229,7 +229,7 @@ function Queue() {
 	});
 
 	this.on('error', function(err, file, variation) {
-		logger.warn('[queue] Error processing %s: %s', file ? file.toString(variation) : '[null]', err);
+		logger.warn('[queue] Error processing %s: %s', file ? file.toString(variation) : '[null]', err.message);
 		processQueue(file, variation);
 	});
 

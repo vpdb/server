@@ -25,6 +25,7 @@ var logger = require('winston');
 var ffmpeg = require('fluent-ffmpeg');
 
 var config = require('../settings').current;
+var error = require('../error')('processor', 'video').error;
 
 /**
  * Video processor.
@@ -56,8 +57,7 @@ VideoProcessor.prototype.metadata = function(file, variation, done) {
 
 	ffmpeg.ffprobe(file.getPath(variation), function(err, metadata) {
 		if (err) {
-			logger.warn('[video] Error reading metadata from video (%s): %s', file.getPath(), err);
-			return done(err);
+			return done(error(err, 'Error reading metadata from video `%s`', file.getPath(variation)).warn());
 		}
 		done(null, metadata);
 	});
@@ -115,7 +115,7 @@ VideoProcessor.prototype.pass1 = function(src, dest, file, variation, done) {
 			logger.error('[video|pass1] ' + err);
 			logger.error('[ffmpeg|stdout] ' + stdout);
 			logger.error('[ffmpeg|stderr] ' + stderr);
-			done(err);
+			done(error(err, 'Error processing video'));
 		})
 		.on('progress', function(progress) {
 			logger.info('[video|pass1] Processing: %s% at %skbps', progress.percent, progress.currentKbps);
@@ -164,7 +164,7 @@ VideoProcessor.prototype.pass2 = function(src, dest, file, variation, done) {
 			logger.error('[video|pass2] ' + err);
 			logger.error('[ffmpeg|stdout] ' + stdout);
 			logger.error('[ffmpeg|stderr] ' + stderr);
-			done(err);
+			done(error(err, 'Error processing video'));
 		})
 		.on('progress', function(progress) {
 			logger.info('[video|pass2] Processing %s: %s%', file.toString(variation), Math.round(progress.percent * 100) / 100);

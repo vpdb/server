@@ -28,6 +28,7 @@ var Game = require('mongoose').model('Game');
 var api = require('./api');
 
 var storage = require('../../modules/storage');
+var error = require('../../modules/error')('api', 'game').error;
 
 
 /**
@@ -40,8 +41,7 @@ exports.head = function(req, res) {
 	Game.findOne({ id: req.params.id }, function(err, game) {
 		/* istanbul ignore if  */
 		if (err) {
-			logger.error('[api|game:head] Error finding game "%s": %s', req.params.id, err, {});
-			return api.fail(res, err, 500);
+			return api.fail(res, error(err, 'Error finding game "%s"', req.params.id).log('head'), 500);
 		}
 		res.set('Content-Length', 0);
 		return res.status(game ? 200 : 404).end();
@@ -61,18 +61,16 @@ exports.create = function(req, res) {
 		created_at: new Date()
 	}), function(err, newGame) {
 		if (err) {
-			logger.error('[api|game:create] Error creating game instance: %s', err, {});
-			return api.fail(res, err, 500);
+			return api.fail(res, error(err, 'Error creating game instance').log('create'), 500);
 		}
-		var ok = api.ok('game', 'create', newGame.id, res);
-		var okk = api.ok('game', 'create', newGame.id, res, function(done) {
+		var ok = api.ok(error, 'create', newGame.id, res);
+		var okk = api.ok(error, 'create', newGame.id, res, function(done) {
 			newGame.remove(done);
 		});
 		logger.info('[api|game:create] %s', util.inspect(req.body));
 		newGame.validate(function(err) {
 			if (err) {
-				logger.warn('[api|game:create] Validations failed: %s', JSON.stringify(_.map(err.errors, function(value, key) { return key; })));
-				return api.fail(res, err, 422);
+				return api.fail(res, error('Validations failed: %j', err.errors).errors(err.errors).warn('create'), 422);
 			}
 			logger.info('[api|game:create] Validations passed.');
 			newGame.save(ok(function(game) {
@@ -83,8 +81,8 @@ exports.create = function(req, res) {
 					logger.info('[api|game:create] All referenced files activated, returning object to client.');
 					return api.success(res, game.toDetailed(), 201);
 
-				}, 'Error activating files for game "%s": %s'));
-			}, 'Error saving game with id "%s": %s'));
+				}, 'Error activating files for game "%s"'));
+			}, 'Error saving game with id "%s"'));
 		});
 	});
 };
@@ -104,11 +102,10 @@ exports.del = function(req, res) {
 	query.exec(function(err, game) {
 		/* istanbul ignore if  */
 		if (err) {
-			logger.error('[api|game:delete] Error getting game "%s": %s', req.params.id, err, {});
-			return api.fail(res, err, 500);
+			return api.fail(res, error(err, 'Error getting game "%s"', req.params.id).log('delete'), 500);
 		}
 		if (!game) {
-			return api.fail(res, 'No such game with ID "' + req.params.id + '".', 404);
+			return api.fail(res, error('No such game with ID "%s".', req.params.id), 404);
 		}
 
 		// TODO check for linked releases and refuse if referenced
@@ -117,8 +114,7 @@ exports.del = function(req, res) {
 		game.remove(function(err) {
 			/* istanbul ignore if  */
 			if (err) {
-				logger.error('[api|game:delete] Error deleting game "%s" (%s): %s', game.title, game.id, err, {});
-				return api.fail(res, err, 500);
+				return api.fail(res, error(err, 'Error deleting game "%s" (%s)', game.id, game.title).log('delete'), 500);
 			}
 			logger.info('[api|game:delete] Game "%s" (%s) successfully deleted.', game.title, game.id);
 			api.success(res, null, 204);
@@ -141,7 +137,7 @@ exports.list = function(req, res) {
 	if (req.query.q) {
 
 		if (req.query.q.trim().length < 2) {
-			return api.fail(res, 'Query must contain at least two characters.', 400);
+			return api.fail(res, error('Query must contain at least two characters.'), 400);
 		}
 
 		// sanitize and build regex
@@ -157,8 +153,7 @@ exports.list = function(req, res) {
 	query.exec(function(err, games) {
 		/* istanbul ignore if  */
 		if (err) {
-			logger.error('[api|game:list] Error: %s', err, {});
-			return api.fail(res, err, 500);
+			return api.fail(res, error(err, 'Error listing games').log('list'), 500);
 		}
 		games = _.map(games, function(game) {
 			return game.toSimple();
@@ -182,11 +177,10 @@ exports.view = function(req, res) {
 	query.exec(function(err, game) {
 		/* istanbul ignore if  */
 		if (err) {
-			logger.error('[api|game:view] Error finding game "%s": %s', req.params.id, err, {});
-			return api.fail(res, err, 500);
+			return api.fail(res, error(err, 'Error finding game "%s"', req.params.id).log('view'), 500);
 		}
 		if (!game) {
-			return api.fail(res, 'No such game with ID "' + req.params.id + '".', 404);
+			return api.fail(res, error('No such game with ID "%s"', req.params.id), 404);
 		}
 		return api.success(res, game.toDetailed());
 	});

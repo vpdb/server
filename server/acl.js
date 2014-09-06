@@ -25,6 +25,7 @@ var logger = require('winston');
 var mongoose = require('mongoose');
 
 var User = mongoose.model('User');
+var error = require('./modules/error')('acl').error;
 var config = require('./modules/settings').current;
 
 var redis = require('redis').createClient(config.vpdb.redis.port, config.vpdb.redis.host, { no_ready_check: true });
@@ -81,8 +82,7 @@ var init = function(next) {
 		User.find({}, function(err, users) {
 			/* istanbul ignore if  */
 			if (err) {
-				logger.error('[acl] Error finding users for ACLs: ', err);
-				return next(err);
+				return next(error(err, 'Error finding users for ACLs').log());
 			}
 
 			logger.info('[acl] Applying ACLs to %d users...', users.length);

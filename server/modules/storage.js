@@ -27,6 +27,7 @@ var logger = require('winston');
 
 var queue = require('./queue');
 var config = require('./settings').current;
+var error = require('./error')('storage').error;
 
 var processors = {
 	image: require('./processor/image'),
@@ -93,8 +94,7 @@ Storage.prototype.cleanup = function(graceperiod, done) {
 	File.find(condition).populate('_created_by').exec(function(err, files) {
 		/* istanbul ignore if */
 		if (err) {
-			logger.error('[storage] Error getting files for cleanup: %s', err);
-			return done(err);
+			return done(error(err, 'Error getting files for cleanup').log());
 		}
 
 		/* istanbul ignore next */
@@ -259,17 +259,16 @@ Storage.prototype.onProcessed = function(file, variation, processor, nextEvent) 
 		File.findById(file._id, function(err, file) {
 			/* istanbul ignore if */
 			if (err) {
-				logger.warn('[storage] Error re-fetching file: %s', err);
-				return done(err);
+				return done(error(err, 'Error re-fetching file').warn());
 			}
 
 			// check that file hasn't been erased meanwhile (hello, tests!)
 			if (!file) {
-				return done('File "' + fileId + '" gone, has been removed before processing finished.');
+				return done(error('File "%s" gone, has been removed before processing finished.', fileId));
 			}
 			if (!fs.existsSync(filepath)) {
 				// here we care: we came so far, so this was definitely deleted while we were away
-				return done('File "' + filepath + '" gone, has been deleted before processing finished.');
+				return done(error('File "%s" gone, has been deleted before processing finished.', filepath));
 			}
 
 			// check what we're dealing with

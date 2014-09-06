@@ -26,6 +26,7 @@ var passport = require('passport');
 var GitHubStrategy = require('passport-github').Strategy;
 var IPBoardStrategy = require('./modules/passport-ipboard').Strategy;
 
+var error = require('./modules/error')('passport').error;
 var settings = require('./modules/settings');
 var config = settings.current;
 var User = mongoose.model('User');
@@ -140,8 +141,7 @@ exports.verifyCallbackOAuth = function(strategy, providerName) {
 
 			/* istanbul ignore if  */
 			if (err) {
-				logger.error('[passport|%s] Error checking for user <%s> in database: %s', logtag, profile.emails[0].value, err, {});
-				return done(err);
+				return done(error(err, 'Error checking for user <%s> in database', profile.emails[0].value).log(logtag));
 			}
 			if (!user) {
 				var newUser = {
@@ -158,11 +158,10 @@ exports.verifyCallbackOAuth = function(strategy, providerName) {
 				User.createUser(newUser, function(err, user, validationErr) {
 					/* istanbul ignore if  */
 					if (err) {
-						return done(err);
+						return done(error(err, 'Error creating new user'));
 					}
 					if (validationErr) {
-						logger.error('[passport|%s] Validation error for user from "%s". This should not be happening.', logtag, logtag, err);
-						return done('Validation error.');
+						return done(error(validationErr, 'Validation error').log(logtag));
 					}
 					done(null, user);
 				});
@@ -186,8 +185,7 @@ exports.verifyCallbackOAuth = function(strategy, providerName) {
 				user.save(function(err, user) {
 					/* istanbul ignore if  */
 					if (err) {
-						logger.error('[passport|%s] Error updating user: %s', logtag, err);
-						return done(err);
+						return done(error(err, 'Error updating user').log(logtag));
 					}
 
 					// all good.

@@ -24,6 +24,8 @@ var ent = require('ent');
 var logger = require('winston');
 var request = require('request');
 
+var error = require('./error')('ipdb').error;
+
 function Ipdb() {
 }
 
@@ -33,18 +35,16 @@ Ipdb.prototype.details = function(ipdbNo, done) {
 	request({ url: url, timeout: 30000 }, function(err, response, body) {
 
 		if (!response) {
-			logger.error('[ipdb] Timeout while trying to reach IPDB.org.');
-			return done('Timeout while trying to reach IPDB.org. Please try again later.');
+			return done(error('Timeout while trying to reach IPDB.org. Please try again later.').log());
 		}
 
 		if (err) {
-			logger.error('[ipdb] Error fetching %s: %s', url, err);
-			return done(err);
+			return done(error(err, 'Error fetching %s', url).log());
 		}
 
 		if (response.statusCode !== 200) {
 			logger.error('[ipdb] Wrong response code, got %s instead of 200. Body: %s', response.statusCode, body);
-			return done('Wrong response data from IPDB.');
+			return done(error('Wrong response data from IPDB.'));
 		}
 
 		parseDetails(body, done);
@@ -104,9 +104,9 @@ function parseDetails(body, done) {
 		done(null, game);
 	} else {
 		if (/<\/script>\s*<hr width="80%">/.test(body)) {
-			done('Empty page. Looks like IPDB number doens\'t exist.');
+			done(error('Empty page. Looks like IPDB number doens\'t exist.'));
 		} else {
-			done('Cannot parse game details from page body. Are you sure the provided IPDB No. exists?');
+			done(error('Cannot parse game details from page body. Are you sure the provided IPDB No. exists?'));
 		}
 	}
 }

@@ -37,7 +37,7 @@ var ctrl = require('../ctrl');
 exports.auth = function(done, resource, permission) {
 	return auth.auth(resource, permission, function(err, req, res) {
 		if (err) {
-			return exports.fail(res, err.message, err.code);
+			return exports.fail(res, err, err.code);
 		}
 		done(req, res);
 	}, false);
@@ -81,18 +81,17 @@ exports.success = function(res, result, code) {
 
 /**
  * Returns a JSON-serialized error object to the client and 500 status code per default.
- * @param res Response object
- * @param err Error message
- * @param [code=500] HTTP status code (defaults to 500)
+ * @param {object} res Response object
+ * @param {Err} err Error object
+ * @param {number} [code=500] HTTP status code (defaults to 500)
  */
 exports.fail = function(res, err, code) {
-	if (!code) {
-		code = 500;
-	}
+
+	code = code || err.code || 500;
 	res.setHeader('Content-Type', 'application/json');
-	if (err.errors) {
+	if (err.errs) {
 		var arr = [];
-		_.each(err.errors, function(error) {
+		_.each(err.errs, function(error) {
 			arr.push({
 				message: error.message,
 				field: error.path,
@@ -101,7 +100,7 @@ exports.fail = function(res, err, code) {
 		});
 		res.status(code).json({ errors: arr });
 	} else {
-		res.status(code).json({ error: err instanceof Error ? err.message : err });
+		res.status(code).json({ error: err.msg() });
 	}
 };
 
@@ -127,31 +126,30 @@ exports.handleParseError = function(err, req, res, next) {
  * Returns a helper method that checks for errors after a database statement. If rollback
  * is provided, it is executed on error.
  *
- * @param type Type of the module (for logging)
- * @param action Method of the module (for logging)
- * @param ref First param passed to provided error message
- * @param res Result object
- * @param [rollback=null] Rollback function
+ * @param {function} error Error object
+ * @param {string} prefix String appended to log tag
+ * @param {*} ref First param passed to provided error message
+ * @param {object} res Result object
+ * @param {function} [rollback=null] Rollback function
  * @returns {Function}
  */
-exports.ok = function(type, action, ref, res, rollback) {
+exports.ok = function(error, prefix, ref, res, rollback) {
 	return function(successFct, message) {
 		return function(err, result) {
 			/* istanbul ignore if */
 			if (err) {
-				logger.error('[api|%s:%s] ' + message, type, action, ref, err, {});
 				if (rollback) {
-					logger.error('[api|%s:%s] ROLLING BACK.', type, action);
+					logger.error('[api|%s] ROLLING BACK.', prefix);
 					rollback(function(rollbackErr) {
 						if (rollbackErr) {
-							logger.error('[api|%s:%s] Error rolling back: %s', type, action, rollbackErr);
+							error(rollbackErr, 'Error rolling back').log(prefix);
 						} else {
-							logger.error('[api|%s:%s] Rollback successful.', type, action);
+							logger.error('[api|%s] Rollback successful.', prefix);
 						}
-						exports.fail(res, err);
+						exports.fail(res, error(err, message, ref).log(prefix));
 					});
 				} else {
-					exports.fail(res, err);
+					exports.fail(res, error(err, message, ref).log(prefix));
 				}
 			} else {
 				successFct(result);

@@ -26,6 +26,7 @@ var mongoose = require('mongoose');
 var objectPath = require('object-path');
 
 var storage = require('../../modules/storage');
+var error = require('../../modules/error')('model', 'file-ref').error;
 
 module.exports = exports = function(schema, options) {
 
@@ -153,8 +154,7 @@ module.exports = exports = function(schema, options) {
 		File.find({ _id: { $in: ids }}, function(err, files) {
 			/* istanbul ignore if */
 			if (err) {
-				logger.error('[model] Error finding referenced files: %s', err);
-				return done(err);
+				return done(error(err, 'Error finding referenced files').log());
 			}
 
 			// update
@@ -164,7 +164,7 @@ module.exports = exports = function(schema, options) {
 			}, function(err) {
 				/* istanbul ignore if */
 				if (err) {
-					return done(err);
+					return done(error(err, 'Error updating attribute `is_active`'));
 				}
 				obj.populate(options.fields.join(' '), done);
 			});
@@ -189,8 +189,7 @@ module.exports = exports = function(schema, options) {
 		File.find({ _id: { $in: ids }}, function(err, files) {
 			/* istanbul ignore if */
 			if (err) {
-				logger.error('[model] Error finding referenced files: %s', err);
-				return done(err);
+				return done(error(err, 'Error finding referenced files').log());
 			}
 			// remove file references from db
 			async.each(files, function(file, next) {

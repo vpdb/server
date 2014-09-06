@@ -36,6 +36,7 @@
 		"express-domain-errors": "0.0.x",
 		"express-graceful-exit": "0.1.x",
 		"express-winston": "0.2.6",
+		"extsprintf": "1.2.0",
 		"faker": "1.1.0",
 		"fluent-ffmpeg": "2.0.0-rc2",
 		"glob": "4.0.5",
@@ -91,6 +92,7 @@
 		"supertest": "0.13.0",
 		"uglify-js": "2.4.15",
 		"validator": "3.17.1",
+		"verror": "1.4.0",
 		"volos-quota-redis": "0.10.0",
 		"winston": "0.7.3",
 		"wiredep": "1.8.5"

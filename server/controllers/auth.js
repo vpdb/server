@@ -25,6 +25,7 @@ var logger = require('winston');
 var debug = require('debug')('auth');
 
 var acl = require('../acl');
+var error = require('../modules/error')('ctrl', 'auth').error;
 var config = require('../modules/settings').current;
 
 var redis = require('redis').createClient(config.vpdb.redis.port, config.vpdb.redis.host, { no_ready_check: true });
@@ -70,15 +71,14 @@ exports.auth = function(resource, permission, done) {
 					if (/^Bearer$/i.test(scheme)) {
 						token = credentials;
 					} else {
-						return deny({ code: 401, message: 'Bad Authorization header. Format is "' + headerName + ': Bearer [token]"' });
+						return deny(error('Bad Authorization header. Format is "%s: Bearer [token]"', headerName).status(401));
 					}
 				} else {
-					return deny({ code: 401, message: 'Bad Authorization header. Format is "' + headerName + ': Bearer [token]"' });
+					return deny(error('Bad Authorization header. Format is "%s: Bearer [token]"', headerName).status(401));
 				}
 			}
-
 		} else {
-			return deny({ code: 401, message: 'Unauthorized. You need to provide credentials for this resource.' });
+			return deny(error('Unauthorized. You need to provide credentials for this resource').status(401));
 		}
 
 		// validate token
@@ -86,7 +86,7 @@ exports.auth = function(resource, permission, done) {
 		try {
 			decoded = jwt.decode(token, config.vpdb.secret);
 		} catch (e) {
-			return deny({ code: 401,  message: 'Bad JSON Web Token: ' + e.message });
+			return deny(error(e, 'Bad JSON Web Token').status(401));
 		}
 
 		debug('1. %s %s - GOT TOKEN (%s)', req.method, req.path, decoded.iss);
@@ -95,19 +95,17 @@ exports.auth = function(resource, permission, done) {
 		var now = new Date();
 		var tokenExp = new Date(decoded.exp);
 		if (tokenExp.getTime() < now.getTime()) {
-			return deny({ code: 401, message: 'JSON Web Token has expired.' });
+			return deny(error('JSON Web Token has expired').status(401));
 		}
 
 		// here we're authenticated (token is valid and not expired). So update user and check ACL if necessary
 		User.findOne({ id: decoded.iss }, '-__v', function(err, user) {
 			/* istanbul ignore if  */
 			if (err) {
-				logger.error('[ctrl|auth] Error finding user %s: %s', decoded.iss, err);
-				return deny({ code: 500, message: err });
+				return deny(error(err, 'Error finding user "%s"', decoded.iss).status(500).log());
 			}
 			if (!user) {
-				logger.error('[ctrl|auth] No user with ID %s found.', decoded.iss);
-				return deny({ code: 403, message: 'No user with ID ' + decoded.iss + ' found.' });
+				return deny(error('No user with ID %s found.', decoded.iss).status(403).log());
 			}
 
 
@@ -130,21 +128,19 @@ exports.auth = function(resource, permission, done) {
 
 				// no ACLs set, grant.
 				if (!resource || !permission) {
-					return done(false, req, res);
+					return done(null, req, res);
 				}
 
 				acl.isAllowed(user.email, resource, permission, function(err, granted) {
 					/* istanbul ignore if  */
 					if (err) {
-						logger.error('[ctrl|auth] Error checking ACLs for user <%s>: %s', user.email, err);
-						return deny({ code: 500, message: err });
+						return deny(error(err, 'Error checking ACLs for user <%s>', user.email).status(500).log());
 					}
 
 					if (!granted) {
-						logger.warn('[ctrl|auth] User <%s> tried to access `%s` but was access denied due to missing permissions to %s/%s.', user.email, req.url, resource, permission);
-						return deny({ code: 403, message: 'Access denied.' });
+						return deny(error('User <%s> tried to access `%s` but was denied access due to missing permissions to %s/%s.', user.email, req.url, resource, permission).display('Access denied').status(403).log());
 					}
-					done(false, req, res);
+					done(null, req, res);
 				});
 			};
 

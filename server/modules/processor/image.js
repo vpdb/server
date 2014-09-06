@@ -28,7 +28,7 @@ var PngQuant = require('pngquant');
 var OptiPng = require('optipng');
 
 var config = require('../settings').current;
-
+var error = require('../error')('processor', 'image').error;
 
 /**
  * Image processor.
@@ -65,8 +65,7 @@ ImageProcessor.prototype.metadata = function(file, variation, done) {
 	}
 	gm(file.getPath(variation)).identify(function(err, metadata) {
 		if (err) {
-			logger.warn('[storage] Error reading metadata from image: %s', err);
-			return done(err);
+			return done(error(err, 'Error reading metadata from image').warn());
 		}
 		done(null, metadata);
 	});
@@ -84,33 +83,34 @@ ImageProcessor.prototype.variationData = function(metadata) {
 };
 
 /**
- * Resizes the image
+ * Resizes the image.
  *
- * @param {File} file
- * @param {object} variation
- * @param done Callback
+ * @param {string} src Path to source file
+ * @param {string} dest Path to destination
+ * @param {File} file File to process
+ * @param {object} variation Variation of the file to process
+ * @param {function} done Callback, ran with none or {Err} object as parameter.
  */
 ImageProcessor.prototype.pass1 = function(src, dest, file, variation, done) {
 
 	// create destination stream
 	var writeStream = fs.createWriteStream(dest);
-	logger.info('[image|pass1] Starting processing %s at %s.', file.toString(variation), dest);
+	logger.info('[processor|image|pass1] Starting processing %s at %s.', file.toString(variation), dest);
 
 	// setup error handler
 	var handleErr = function(err) {
-		logger.error('[image|pass1] Error processing %s "%s" (%s)...', file.file_type, file.id, variation.name);
-		done(err);
+		done(error(err, 'Error processing %s', file.toString(variation)).log('pass1'));
 	};
 
 	// setup success handler
 	writeStream.on('finish', function() {
-		logger.info('[image|pass1] Saved resized image to "%s".', dest);
+		logger.info('[processor|image|pass1] Saved resized image to "%s".', dest);
 		done();
 	});
 	writeStream.on('error', handleErr);
 
 	// do the processing
-	logger.info('[image|pass1] Resizing %s "%s" (%s)...', file.file_type, file.id, variation.name);
+	logger.info('[processor|image|pass1] Resizing %s "%s" (%s)...', file.file_type, file.id, variation.name);
 	gm(src).resize(variation.width, variation.height)
 		.stream().on('error', handleErr)
 		.pipe(writeStream).on('error', handleErr);
@@ -119,10 +119,11 @@ ImageProcessor.prototype.pass1 = function(src, dest, file, variation, done) {
 /**
  * If PNG image, crunches the image down.
  *
- * @param {File} file
- * @param {object} variation
- * @param {string} dest Where the file should be written to
- * @param done Callback
+ * @param {string} src Path to source file
+ * @param {string} dest Path to destination
+ * @param {File} file File to process
+ * @param {object} variation Variation of the file to process
+ * @param {function} done Callback, ran with none or {Err} object as parameter.
  */
 ImageProcessor.prototype.pass2 = function(src, dest, file, variation, done) {
 
@@ -135,14 +136,13 @@ ImageProcessor.prototype.pass2 = function(src, dest, file, variation, done) {
 
 	// setup success handler
 	writeStream.on('finish', function() {
-		logger.info('[image|pass2] Finished pass 2 for %s', file.toString(variation));
+		logger.info('[processor|image|pass2] Finished pass 2 for %s', file.toString(variation));
 		done();
 	});
 
 	// setup error handler
 	var handleErr = function(err) {
-		logger.error('[image|pass2] Error processing %s', file.toString(variation));
-		done(err);
+		done(error(err, 'Error processing %s', file.toString(variation)).log('pass2'));
 	};
 	writeStream.on('error', handleErr);
 
@@ -150,7 +150,7 @@ ImageProcessor.prototype.pass2 = function(src, dest, file, variation, done) {
 	var quanter = new PngQuant([128]);
 	var optimizer = new OptiPng(['-o7']);
 
-	logger.info('[image|pass2] Optimizing %s', file.toString(variation));
+	logger.info('[processor|image|pass2] Optimizing %s', file.toString(variation));
 	fs.createReadStream(src).on('error', handleErr)
 		.pipe(quanter).on('error', handleErr)
 		.pipe(optimizer).on('error', handleErr)

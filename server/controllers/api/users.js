@@ -29,6 +29,7 @@ var acl = require('../../acl');
 var api = require('./api');
 var auth = require('../auth');
 var ctrl = require('../ctrl');
+var error = require('../../modules/error')('ctrl', 'user').error;
 var config = require('../../modules/settings').current;
 var redis = require('redis').createClient(config.vpdb.redis.port, config.vpdb.redis.host, { no_ready_check: true });
     redis.select(config.vpdb.redis.db);
@@ -43,17 +44,14 @@ exports.create = function(req, res) {
 	User.findOne({ email: newUser.email }, function(err, user) {
 		/* istanbul ignore if  */
 		if (err) {
-			logger.error('[api|user:create] Error finding user with email <%s>: %s', newUser.email, err, {});
-			return api.fail(res, err);
+			return api.fail(res, error(err, 'Error finding user with email <%s>', newUser.email).log('create'));
 		}
 		if (user) {
-			logger.warn('[api|user:create] User <%s> already in database, aborting.', newUser.email);
-			return api.fail(res, 'User with email <' + newUser.email + '> already exists.', 409);
+			return api.fail(res, error('User with email <%s> already exists.', newUser.email).warn('create'), 409);
 		}
 		User.createUser(newUser, function(err, user, validationErr) {
 			if (validationErr) {
-				logger.warn('[api|user:create] Validations failed: %s', util.inspect(_.map(validationErr.errors, function(value, key) { return key; })));
-				return api.fail(res, validationErr, 422);
+				return api.fail(res, error('Validations failed: %j', validationErr.errors).errors(validationErr.errors).warn('create'), 422);
 			}
 			/* istanbul ignore if  */
 			if (err) {
@@ -67,22 +65,29 @@ exports.create = function(req, res) {
 exports.authenticate = function(req, res) {
 
 	if (!req.body.username || !req.body.password) {
-		logger.warn('[api|user:authenticate] Ignoring empty authentication request.');
-		return api.fail(res, 'You must supply a username and password.', 400);
+		logger.warn('[api|user:authenticate] .');
+		return api.fail(res, error('Ignored incomplete authentication request')
+			.display('You must supply a username and password')
+			.warn('authenticate'),
+		400);
 	}
 	User.findOne({ username: req.body.username }, function(err, user) {
 		/* istanbul ignore if  */
 		if (err) {
-			logger.error('[api|user:authenticate] Error finding user "%s": %s', req.body.username, err, {});
-			return api.fail(res, err, 500);
+			// TODO check error message. We might not want to reveal too much here.
+			return api.fail(res, error(err, 'Error while searching for "%s"', req.body.username).log('authenticate'), 500);
 		}
 		if (!user || !user.authenticate(req.body.password)) {
-			logger.warn('[api|user:authenticate] Authentication denied for user "%s" (%s).', req.body.username, user ? 'password' : 'username');
-			return api.fail(res, 'Wrong username or password.', 401);
+			return api.fail(res, error('Authentication denied for user "%s" (%s)', req.body.username, user ? 'password' : 'username')
+					.display('Wrong username or password')
+					.warn('authenticate'),
+				401);
 		}
 		if (!user.is_active) {
-			logger.warn('[api|user:authenticate] Authentication denied for inactive user "%s".', req.body.username);
-			return api.fail(res, 'Inactive account. Please contact an administrator.', 401);
+			return api.fail(res, error('User <%s> is disabled, refusing access', user.email)
+				.display('Inactive account. Please contact an administrator')
+				.warn('authenticate'),
+			401);
 		}
 
 		var now = new Date();
@@ -93,6 +98,7 @@ exports.authenticate = function(req, res) {
 		getACLs(user, function(err, acls) {
 			/* istanbul ignore if  */
 			if (err) {
+				// TODO check if it's clever to reveal anything here
 				return api.fail(res, err, 500);
 			}
 			api.success(res, {
@@ -107,12 +113,15 @@ exports.authenticate = function(req, res) {
 exports.authenticateOAuth2 = function(req, res, next) {
 	passport.authenticate(req.params.strategy, function(err, user) {
 		if (err) {
-			logger.warn('[api|%s:authenticate] %s -', req.params.strategy, err.message, err.oauthError);
-			return api.fail(res, 'Authentication via ' + req.params.strategy + ' failed: ' + err.message, 401);
+			return api.fail(res, error(err, 'Authentication via %s failed: %j', req.params.strategy, err.oauthError)
+				.warn('authenticate', req.params.strategy),
+			401);
 		}
 		if (!user) {
-			logger.error('[api|%s:authenticate] No user object in passport callback. This should not happen.', req.params.strategy);
-			return api.fail(res, 'Could not retrieve user object.', 500);
+			return api.fail(res, error('No user object in passport callback.')
+				.display('Could not retrieve user object.')
+				.log('authenticate', req.params.strategy),
+			500);
 		}
 
 		var now = new Date();
@@ -123,6 +132,7 @@ exports.authenticateOAuth2 = function(req, res, next) {
 		getACLs(user, function(err, acls) {
 			/* istanbul ignore if  */
 			if (err) {
+				// TODO check if it's clever to reveal anything here
 				return api.fail(res, err, 500);
 			}
 			api.success(res, {
@@ -141,12 +151,13 @@ exports.list = function(req, res) {
 
 			/* istanbul ignore if  */
 			if (err) {
-				return api.fail(res, err, 500);
+				// TODO check if it's clever to reveal anything here
+				return api.fail(res, error(err, 'Error checking ACLs').log('list'), 500);
 			}
 
 			// if no list privileges, user must provide at least a 3-char search query.
 			if (!canList && (!req.query.q || req.query.q.length < 3)) {
-				return api.fail(res, 'Please provide a search query with at least three characters.', 403);
+				return api.fail(res, error('Please provide a search query with at least three characters.'), 403);
 			}
 
 			var query = User.find();
@@ -180,8 +191,7 @@ exports.list = function(req, res) {
 			query.exec(function(err, users) {
 				/* istanbul ignore if  */
 				if (err) {
-					logger.error('[api|user:list] Error: %s', err, {});
-					return api.fail(res, err, 500);
+					return api.fail(res, error(err, 'Error listing users').log('list'), 500);
 				}
 
 				// reduce
@@ -198,6 +208,7 @@ exports.profile = function(req, res) {
 
 	getACLs(req.user, function(err, acls) {
 		if (err) {
+			// TODO check if it's clever to reveal anything here
 			return api.fail(res, err, 500);
 		}
 		api.success(res, _.extend(req.user.toDetailed(), acls), 200);
@@ -210,11 +221,10 @@ exports.update = function(req, res) {
 	User.findOne({ id: req.params.id }, function(err, user) {
 		/* istanbul ignore if  */
 		if (err) {
-			logger.error('[api|user:update] Error: %s', err, {});
-			return api.fail(res, err, 500);
+			return api.fail(res, error(err, 'Error finding user "%s"', req.params.id).log('update'), 500);
 		}
 		if (!user) {
-			return api.fail(res, 'No such user.', 404);
+			return api.fail(res, error('No such user.'), 404);
 		}
 		var updatedUser = req.body;
 		var originalEmail = user.email;
@@ -234,14 +244,18 @@ exports.update = function(req, res) {
 
 			// if user to be updated is already root or admin, deny (unless it's the same user).
 			if (!user._id.equals(req.user._id) && (_.contains(currentUserRoles, 'root') || _.contains(currentUserRoles, 'admin'))) {
-				logger.error('[api|user:update] PRIVILEGE ESCALATION: Non-root user <%s> [%s] tried to update user <%s> [%s].', req.user.email, callerRoles.join(' '), user.email, currentUserRoles.join(' '));
-				return api.fail(res, 'You are now allowed to update administrators or root users.', 403);
+				return api.fail(res, error('PRIVILEGE ESCALATION: Non-root user <%s> [%s] tried to update user <%s> [%s].', req.user.email, callerRoles.join(' '), user.email, currentUserRoles.join(' '))
+					.display('You are not allowed to update administrators or root users.')
+					.log('update'),
+				403);
 			}
 
 			// if new roles contain root or admin, deny (even when removing)
 			if (_.contains(addedRoles, 'root') || _.contains(addedRoles, 'admin') || _.contains(removedRoles, 'root') || _.contains(removedRoles, 'admin')) {
-				logger.error('[api|user:update] PRIVILEGE ESCALATION: User <%s> [%s] tried to update user <%s> [%s] with new roles [%s].', req.user.email, callerRoles.join(' '), user.email, currentUserRoles.join(' '), updatedUserRoles.join(' '));
-				return api.fail(res, 'You are now allowed change the admin or root role for anyone.', 403);
+				return api.fail(res, error('PRIVILEGE ESCALATION: User <%s> [%s] tried to update user <%s> [%s] with new roles [%s].', req.user.email, callerRoles.join(' '), user.email, currentUserRoles.join(' '), updatedUserRoles.join(' '))
+					.display('You are not allowed change the admin or root role for anyone.')
+					.log('update'),
+				403);
 			}
 		}
 
@@ -253,10 +267,7 @@ exports.update = function(req, res) {
 		// 3. validate
 		user.validate(function(err) {
 			if (err) {
-				logger.warn('[api|user:update] Validations failed: %s', JSON.stringify(_.map(err.errors, function(value, key) {
-					return key;
-				})));
-				return api.fail(res, err, 422);
+				return api.fail(res, error('Validations failed: %j', err.errors).errors(err.errors).warn('create'), 422);
 			}
 			logger.info('[api|user:update] Validations passed, updating user.');
 
@@ -264,8 +275,7 @@ exports.update = function(req, res) {
 			user.save(function(err) {
 				/* istanbul ignore if  */
 				if (err) {
-					logger.error('[api|user:update] Error updating user <%s>: %s', updatedUser.email, err, {});
-					return api.fail(res, err, 500);
+					return api.fail(res, error(err, 'Error updating user <%s>', updatedUser.email).log('update'), 500);
 				}
 				logger.info('[api|user:update] Success!');
 
@@ -307,17 +317,15 @@ exports.del = function(req, res) {
 	User.findOne({ id: req.params.id }, function(err, user) {
 		/* istanbul ignore if  */
 		if (err) {
-			logger.error('[api|user:delete] Error finding user "%s": %s', req.params.id, err, {});
-			return api.fail(res, err, 500);
+			return api.fail(res, error(err, 'Error finding user "%s"', req.params.id).log('delete'), 500);
 		}
 		if (!user) {
-			return api.fail(res, 'No such user.', 404);
+			return api.fail(res, error('No such user.'), 404);
 		}
 		user.remove(function(err) {
 			/* istanbul ignore if  */
 			if (err) {
-				logger.error('[api|user:delete] Error deleting user <%s>: %s', user.email, err, {});
-				return api.fail(res, err, 500);
+				return api.fail(res, error(err, 'Error deleting user <%s>', user.email).log('delete'), 500);
 			}
 			acl.removeUserRoles(user.email, user.roles);
 			logger.info('[api|user:delete] User <%s> successfully deleted.', user.email);
@@ -330,18 +338,15 @@ function getACLs(user, done) {
 
 	acl.userRoles(user.email, function(err, roles) {
 		if (err) {
-			logger.error('[api|user:profile] Error reading roles for user <%s>: %s', user.email, err, {});
-			return done(err);
+			return done(error(err, 'Error reading roles for user <%s>', user.email).log('profile'));
 		}
 		acl.whatResources(roles, function(err, resources) {
 			if (err) {
-				logger.error('[api|user:profile] Error reading resources: %s', err, {});
-				return done(err);
+				return done(error(err, 'Error reading resources').log('profile'));
 			}
 			acl.allowedPermissions(user.email, _.keys(resources), function(err, permissions) {
 				if (err) {
-					logger.error('[api|user:profile] Error reading permissions for user <%s>: %s', user.email, err, {});
-					return done(err);
+					return done(error(err, 'Error reading permissions for user <%s>', user.email).log('profile'));
 				}
 				return done(null, { permissions: permissions });
 			});

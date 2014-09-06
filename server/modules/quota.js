@@ -21,6 +21,8 @@
 
 var logger = require('winston');
 var quotaModule = require('volos-quota-redis');
+
+var error = require('./error')('quota').error;
 var config = require('./settings').current;
 var quotaConfig = config.vpdb.quota;
 
@@ -85,7 +87,7 @@ Quota.prototype.isAllowed = function(req, res, file, callback) {
 	}
 
 	if (!quotaConfig.plans[plan] && quotaConfig.plans[plan] !== 0) {
-		return callback('No quota defined for plan "' + plan + '".');
+		return callback(error('No quota defined for plan "%s"', plan));
 	}
 
 	// https://github.com/apigee-127/volos/tree/master/quota/common#quotaapplyoptions-callback

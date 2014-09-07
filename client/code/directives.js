@@ -403,6 +403,9 @@ directives.directive('videojs', function($parse, $http) {
 							player = videojs(attrs.id, setup, function() {
 								this.src({ type: 'video/mp4', src: value });
 							});
+						})
+						.error(function(data, status, headers, config) {
+							alert('Error fetching HEAD of uploaded video: ' + status);
 						});
 				}
 

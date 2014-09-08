@@ -250,6 +250,17 @@ ctrl.controller('ReleaseAddCtrl', function($scope, $upload, $modal, $window, $lo
 	};
 
 
+	/**
+	 * Statuses
+	 *
+	 * - uploading
+	 * - extracting still
+	 * - generating thumb
+	 * - finished
+	 *
+	 * @param id
+	 * @param $files
+	 */
 	$scope.onMediaUpload = function(id, $files) {
 
 		var file = $files[0];

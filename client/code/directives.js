@@ -177,6 +177,22 @@ directives.directive('user', function($compile, $modal) {
 	};
 });
 
+/**
+ * Updates scope on child events.
+ *
+ * The goal of this directive is to add/remove a class and set/unset a scope
+ * variable depending on a child's emitted events. Concretely, we have:
+ *
+ * 	- `make-loaded`: The class that is added removed to the DOM
+ * 	- `make-loaded-post`: The scope variable that is set to true or false
+ * 	- `make-loaded-event`: The event prefix that enables/disables the class and variable.
+ *
+ * For example, if we have `<div make-loaded="loaded" make-loaded-event="image" make-loaded-post="loadingFinished"/>`,
+ * that means if a `imageLoaded` event is received, the `<div>` gets the
+ * `loaded` class added and the `loadingFinished` scope variable is set to true.
+ * The `imageUnloaded` event would then remove the class and set
+ * `loadingFinished` to  `false`.
+ */
 directives.directive('makeLoaded', function($timeout, $parse) {
 	return {
 		scope: true,
@@ -187,7 +203,8 @@ directives.directive('makeLoaded', function($timeout, $parse) {
 				postVar = $parse(attrs.makeLoadedPost);
 				postVar.assign(scope, false);
 			}
-			scope.$on('imageLoaded', function(event) {
+			var eventPrefix = attrs.makeLoadedEvent || 'image';
+			scope.$on(eventPrefix + 'Loaded', function(event) {
 				event.stopPropagation();
 				element.addClass(attrs.makeLoaded);
 				if (postVar) {
@@ -196,7 +213,7 @@ directives.directive('makeLoaded', function($timeout, $parse) {
 					}, 350);
 				}
 			});
-			scope.$on('imageUnloaded', function(event) {
+			scope.$on(eventPrefix + 'Unloaded', function(event) {
 				event.stopPropagation();
 				element.removeClass(attrs.makeLoaded);
 				if (postVar) {
@@ -403,14 +420,18 @@ directives.directive('videojs', function($parse, $http) {
 							player = videojs(attrs.id, setup, function() {
 								this.src({ type: 'video/mp4', src: value });
 							});
+
+							scope.$emit('videoLoaded');
 						})
 						.error(function(data, status, headers, config) {
-							alert('Error fetching HEAD of uploaded video: ' + status);
+							console.error('Error fetching HEAD of uploaded video: ' + status);
+							console.error(data);
 						});
 				}
 
 				if (!value && player) {
-					console.log('RESET?');
+					scope.$emit('videoUnloaded');
+					player.dispose();
 				}
 			});
 

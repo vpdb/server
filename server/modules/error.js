@@ -57,6 +57,14 @@ Err.prototype.warn = function() {
 	return this;
 };
 
+/**
+ * Prints with additional prefixes if provided.
+ *
+ * @private
+ * @param {function} fct Print function, i.e. `logger.warn`
+ * @param {object} args The `arguments` variable of the caller
+ * @private
+ */
 Err.prototype._log = function(fct, args) {
 
 	if (_.values(args).length) {
@@ -84,7 +92,7 @@ Err.prototype.status = function(code) {
 
 /**
  * Sets the message that is sent to the end user (as opposed to the message logged).
- * @param  Message to display to the end-user. Supports `sprintf` syntax.
+ * @param {*} [arguments] Message to display to the end-user. Supports `sprintf` syntax.
  * @returns {Err}
  */
 Err.prototype.display = function() {
@@ -105,6 +113,13 @@ Err.prototype.msg = function() {
 	return this.displayMessage || this.message;
 };
 
+
+/**
+ * The wrapper holds the log prefixes and instantiates {Err} objects with them
+ *
+ * @param {array} [args] Prefixes
+ * @constructor
+ */
 function ErrWrapper(args) {
 	ErrWrapper.prototype.args = _.values(args);
 }

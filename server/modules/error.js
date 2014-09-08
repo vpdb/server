@@ -43,18 +43,7 @@ util.inherits(Err, verr.VError);
  * @returns {Err}
  */
 Err.prototype.log = function() {
-
-	// clone current prefixes
-	if (_.values(arguments).length) {
-		var prefixes = this.prefixes.slice(0).concat(_.values(arguments));
-		var oldName = this.name;
-
-		this.name = '[' + prefixes.join('|') + ']';
-		logger.error(this.toString());
-		this.name = oldName;
-	} else {
-		logger.error(this.toString());
-	}
+	this._log(logger.error, arguments);
 	return this;
 };
 
@@ -64,18 +53,23 @@ Err.prototype.log = function() {
  * @returns {Err}
  */
 Err.prototype.warn = function() {
-	// clone current prefixes
-	if (_.values(arguments).length) {
-		var prefixes = this.prefixes.slice(0).concat(_.values(arguments));
+	this._log(logger.warn, arguments);
+	return this;
+};
+
+Err.prototype._log = function(fct, args) {
+
+	if (_.values(args).length) {
+		// clone current prefixes
+		var prefixes = this.prefixes.slice(0).concat(_.values(args));
 		var oldName = this.name;
 
 		this.name = '[' + prefixes.join('|') + ']';
-		logger.warn(this.toString());
+		fct(this.toString());
 		this.name = oldName;
 	} else {
-		logger.warn(this.toString());
+		fct(this.toString());
 	}
-	return this;
 };
 
 /**
@@ -90,10 +84,10 @@ Err.prototype.status = function(code) {
 
 /**
  * Sets the message that is sent to the end user (as opposed to the message logged).
- * @param {string} message Message to display to the end-user. Supports `sprintf` syntax.
+ * @param  Message to display to the end-user. Supports `sprintf` syntax.
  * @returns {Err}
  */
-Err.prototype.display = function(message) {
+Err.prototype.display = function() {
 	this.displayMessage = extsprintf.sprintf.apply(null, _.values(arguments));
 	return this;
 };

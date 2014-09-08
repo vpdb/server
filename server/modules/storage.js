@@ -72,9 +72,9 @@ Storage.prototype.variations = {
  * to a queue that is executed when the item has finished processing. If not,
  * the callback is executed immediately.
  *
- * @param file File to check
- * @param variationName Variation of the file
- * @param callback Callback to execute upon processing or error
+ * @param {File} file File to check
+ * @param {string} variationName Variation of the file
+ * @param {function} callback Callback to execute upon processing or error
  * @returns {*}
  */
 Storage.prototype.whenProcessed = function(file, variationName, callback) {
@@ -222,14 +222,21 @@ Storage.prototype.postprocess = function(file) {
  *
  * This is executed after each processing pass for each file and variation.
  *
- * @param {File} file - File that finished processing
- * @param {object} variation - Variation of the file, null if original file
- * @param {Object} processor - Processor instance
- * @param {string} nextEvent - Which event to call on the queue in order to continue the flow
+ * @param {File} file File that finished processing
+ * @param {object} variation Variation of the file, null if original file
+ * @param {object} processor Processor instance
+ * @param {string} nextEvent Which event to call on the queue in order to continue the flow
  */
 Storage.prototype.onProcessed = function(file, variation, processor, nextEvent) {
 
 	var filepath = file.getPath(variation);
+
+	/**
+	 * Wraps the event results into a callback function.
+	 * @param {Err} [err=null] Error object, null if success
+	 * @param {File} [updatedFile=null] Refreshed file from database. If null, operation is aborted.
+	 * @void
+	 */
 	var done = function(err, updatedFile) {
 		if (err) {
 			logger.warn('[storage] Error when writing back metadata to database, aborting post-processing for %s.', updatedFile ? updatedFile.toString(variation) : '[null]');

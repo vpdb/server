@@ -20,7 +20,6 @@
 "use strict";
 
 var _ = require('lodash');
-var util = require('util');
 var logger = require('winston');
 var passport = require('passport');
 
@@ -28,7 +27,6 @@ var User = require('mongoose').model('User');
 var acl = require('../../acl');
 var api = require('./api');
 var auth = require('../auth');
-var ctrl = require('../ctrl');
 var error = require('../../modules/error')('ctrl', 'user').error;
 var config = require('../../modules/settings').current;
 var redis = require('redis').createClient(config.vpdb.redis.port, config.vpdb.redis.host, { no_ready_check: true });

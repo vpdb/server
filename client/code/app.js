@@ -12,6 +12,7 @@ var app = angular.module('vpdb', [
 	'ui.bootstrap',
 	'angulartics',
 	'angulartics.google.analytics',
+	'monospaced.elastic',
 	'sun.scrollable',
 	'vpdb.controllers',
 	'vpdb.filters',

@@ -122,6 +122,12 @@ exports.configure = function(app) {
 	app.use(express.static(path.resolve(__dirname, '../client/static/images/favicon'), { maxAge: 3600*24*30*1000 }));
 	app.use('/js', express.static(path.resolve(__dirname, '../client/code'), { maxAge: 3600*24*30*1000 }));
 
+	// only for the source map, see https://github.com/gruntjs/grunt-contrib-stylus/pull/117
+	if (runningLocal) {
+		app.use('/css/client/styles/vpdb.css.map', express.static(path.resolve(writeable.buildRoot, 'css/vpdb.css.map'), { maxAge: 3600 * 24 * 30 * 1000 }));
+		app.use('/css/client/styles', express.static(path.resolve(__dirname, '../client/styles'), { maxAge: 3600 * 24 * 30 * 1000 }));
+	}
+
 	// mock
 	app.use(express.static(path.resolve(__dirname, '../data/assets'), { maxAge: 3600*24*30*1000 }));
 	app.use(asset.middleware());

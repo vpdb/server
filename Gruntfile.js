@@ -116,7 +116,7 @@ module.exports = function(grunt) {
 
 		stylus: {
 			build: {
-				options: { paths: [ 'styles' ], linenos: false, compress: false },
+				options: { paths: [ 'styles' ], linenos: false, compress: false, sourcemap: { sourceRoot: '/css' } },
 				files: [ { expand: true, cwd: 'client/styles', src: [ 'vpdb.styl' ], dest: cssRoot, ext: '.css' } ]
 			}
 		},

@@ -274,7 +274,8 @@ ctrl.controller('ReleaseAddCtrl', function($scope, $upload, $modal, $window, $lo
 			$scope.release.mediaFile[id] = {
 				url: false,
 				variations: {
-					'medium-2x': { url: false }
+					'medium-2x': { url: false },
+					'still': { url: false }
 				}
 			};
 			this.$emit('imageUnloaded');

@@ -29,8 +29,14 @@ exports.setupUsers = function(request, config, done) {
 
 	var that = this;
 	var genUser = function() {
+		
+		var username = '';
+		do {
+			username = faker.Internet.userName().replace(/[^a-z0-9\._]+/gi, '');
+		} while (username.length < 3);
+
 		return {
-			username: faker.Internet.userName().replace(/[^a-z0-9\._]+/gi, ''),
+			username: username,
 			password: randomstring.generate(10),
 			email: faker.Internet.email().toLowerCase()
 		};

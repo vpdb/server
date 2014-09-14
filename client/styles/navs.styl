@@ -72,9 +72,13 @@
 			> a,  > a:hover,  > a:focus
 				border none
 		a
-			padding 4px 15px
+			padding-top 0px
+			padding-bottom 4px
+			padding-right 15px
+			padding-left 15px
 			font-size 20px  // tab icons
 			border none
+			line-height 33px
 			border-top-radius($border-radius-large)
 
 	// the markdown notice
@@ -82,16 +86,14 @@
 		margin-top 7px
 
 	tab-heading
+		> i
+			vertical-align middle
 		> .icon-package
 			font-size 23px
-			vertical-align bottom
 		> .icon-moon
 			font-size 22px
-			line-height 27px
-			vertical-align top
 		> .fa-flask
 			font-size 21px
-			vertical-align baseline
 
 // content panel
 .tab-content

@@ -1,6 +1,6 @@
 "use strict"; /* global directives, videojs */
 
-directives.directive('videojs', function($parse, $http) {
+directives.directive('videojs', function($parse, $http, $timeout) {
 	return {
 		restrict: 'A',
 		link: function(scope, element, attrs) {
@@ -25,13 +25,19 @@ directives.directive('videojs', function($parse, $http) {
 				if (value && !player) {
 					console.log('src changed to %s', value);
 					console.log(new Date() + ' Starting HEAD');
+
+					var timeout = $timeout(function() {
+						scope.videoLoading = true;
+					}, 1000);
+
 					$http({ method: 'HEAD', url: value })
 						.success(function() {
 							console.log(new Date() + ' Back from HEAD');
 							player = videojs(attrs.id, setup, function() {
 								this.src({ type: 'video/mp4', src: value });
 							});
-
+							$timeout.cancel(timeout);
+							scope.videoLoading = false;
 							scope.$emit('videoLoaded');
 						})
 						.error(function(data, status, headers, config) {

@@ -57,10 +57,14 @@ ctrl.controller('ReleaseAddCtrl', function($scope, $upload, $modal, $window, $lo
 		$scope.setTitle('Add Release - ' + $scope.game.title);
 	});
 
-	$scope.mediaFile = {};
+	$scope.mediaFile = {
+		playfieldVideo: {
+			status: 'Click or drag and drop here'
+		}
+	};
+
 	$scope.reset = function() {
 
-		$scope.mediaFile = {};
 		$scope.release = $localStorage.release = {
 			authors: [{ user: AuthService.getUser(), roles: [ 'Table Creator' ]}],
 			tags: [],
@@ -109,12 +113,14 @@ ctrl.controller('ReleaseAddCtrl', function($scope, $upload, $modal, $window, $lo
 		});
 	});
 
+
 	$scope.removeFile = function(file) {
 		FileResource.delete({ id: file.storage.id }, function() {
 			$scope.files.splice($scope.files.indexOf(file), 1);
 
 		}, ApiHelper.handleErrorsInDialog($scope, 'Error removing file.'));
 	};
+
 
 	$scope.onFilesUpload = function($files) {
 
@@ -190,6 +196,7 @@ ctrl.controller('ReleaseAddCtrl', function($scope, $upload, $modal, $window, $lo
 		});
 	};
 
+
 	$scope.addAuthor = function(author) {
 		$modal.open({
 			templateUrl: 'partials/member/modals/author-add.html',
@@ -207,6 +214,7 @@ ctrl.controller('ReleaseAddCtrl', function($scope, $upload, $modal, $window, $lo
 
 		});
 	};
+
 
 	$scope.removeAuthor = function(author) {
 		$scope.release.authors.splice($scope.release.authors.indexOf(author), 1);
@@ -234,10 +242,10 @@ ctrl.controller('ReleaseAddCtrl', function($scope, $upload, $modal, $window, $lo
 		return {};
 	};
 
+
 	$scope.removeLink = function(link) {
 		$scope.release.links.splice($scope.release.links.indexOf(link), 1);
 	};
-
 
 	$scope.addVPBuild = function() {
 		$modal.open({

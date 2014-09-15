@@ -422,7 +422,7 @@
 									progressbar.progress--fixed-absolute.progress-striped.active(value="mediaFile.playfieldVideo.progress", ng-show="mediaFile.playfieldVideo.uploading")
 									span(ng-show="!img.url")
 										i.fa.fa-picture-o.fa-3x(ng-class="{ transparent: mediaFile.playfieldVideo.uploading }")
-										p Click or drag and drop here
+										p {{ mediaFile.playfieldVideo.status }}
 									span(ng-show="img.loading")
 										i.fa.fa-cog.fa-3x.fa-spin--slow
 										p Creating video screenshot...

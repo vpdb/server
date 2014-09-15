@@ -1,6 +1,5 @@
-"use strict";
+"use strict"; /* global ctrl, _*/
 
-/*global ctrl, _*/
 ctrl.controller('GameController', function($scope, $http, $routeParams, $modal, $log, GameResource) {
 
 	$scope.theme('dark');

@@ -16,6 +16,7 @@ module.exports = function(grunt) {
 	var htmlRoot = writeable.htmlRoot;
 	var cssGlobal = path.resolve(cssRoot, 'global_<%= gitinfo.local.branch.current.shortSHA %>.min.css');
 	var jsGlobal = path.resolve(jsRoot, 'global_<%= gitinfo.local.branch.current.shortSHA %>.min.js');
+	var jsGlobalAnnotated = path.resolve(jsRoot, 'global.annotated.js');
 
 	var devConfig = settings(grunt, false);
 	var testConfig = settings(grunt, true);
@@ -114,6 +115,11 @@ module.exports = function(grunt) {
 
 		mongodb: testConfig.vpdb.db,
 
+		ngAnnotate: {
+			options: { singleQuotes: true },
+			app: { files: [ { src: [ _.pluck(assets.getJs(), 'src') ], dest: jsGlobalAnnotated } ] }
+		},
+
 		stylus: {
 			build: {
 				options: { paths: [ 'styles' ], linenos: false, compress: false, sourcemap: { sourceRoot: '/css' } },
@@ -123,8 +129,8 @@ module.exports = function(grunt) {
 
 		uglify: {
 			build: {
-				options: { mangle: false, compress: false, beautify: false, sourceMap: true, sourceMapIncludeSources: true },
-				files: [ { expand: false, cwd: '.', dest: jsGlobal, src: _.pluck(assets.getJs(), 'src') }]
+				options: { mangle: true, compress: true, beautify: false, sourceMap: true, sourceMapIncludeSources: false },
+				files: [ { expand: false, cwd: '.', dest: jsGlobal, src: jsGlobalAnnotated }]
 			}
 		},
 
@@ -173,12 +179,13 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-gitinfo');
 	grunt.loadNpmTasks('grunt-mkdir');
 	grunt.loadNpmTasks('grunt-mocha-test');
+	grunt.loadNpmTasks('grunt-ng-annotate');
 	grunt.loadNpmTasks('grunt-wait-server');
 	grunt.loadTasks('./server/grunt-tasks');
 
 	// build
 	grunt.registerTask('build', 'What run on production before switching code.',
-		[ 'git', 'env:prod', 'clean:build', 'mkdir:server', 'copy:assets', 'copy:static', 'stylus', 'cssmin', 'uglify', 'kssrebuild', 'jade' ]
+		[ 'git', 'env:prod', 'clean:build', 'mkdir:server', 'copy:assets', 'copy:static', 'stylus', 'cssmin', 'ngAnnotate', 'uglify', 'kssrebuild', 'jade' ]
 	);
 	// server tasksgut
 	grunt.registerTask('dev', [          'env:dev',            'jshint',               'concurrent:dev' ]);  // dev mode, watch everything

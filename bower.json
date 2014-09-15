@@ -100,7 +100,7 @@
 		},
 		"videojs": {
 			"main": [
-				"dist/video-js/video.js"
+				"dist/video-js/video.dev.js"
 			]
 		},
 		"videojs-sublime-skin": {

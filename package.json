@@ -58,6 +58,7 @@
 		"grunt-gitinfo": "0.1.6",
 		"grunt-mkdir": "0.1.2",
 		"grunt-mocha-test": "0.11.0",
+		"grunt-ng-annotate": "^0.3.2",
 		"grunt-wait-server": "0.1.2",
 		"highlight.js": "8.2.0",
 		"html2jade": "0.7.8",

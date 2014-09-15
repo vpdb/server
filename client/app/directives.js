@@ -231,22 +231,22 @@ directives.directive('download', function($parse) {
 		scope: true,
 		template: '<i class="{{ downloadsPinned ? (dlPinned ? \'icon icon-pin-on\' : \'icon icon-pin-off\') : \'fa fa-download\' }} space-right"></i><span ng-transclude></span> ',
 		link: function(scope, element, attrs) {
-			var dl = $parse(attrs.download)(scope);
-			scope.dlPinned = scope.pinnedDownloads[dl.id] ? true : false;
-			element.click(function() {
-				scope.download(dl, $parse(attrs.downloadInfo)(scope));
-				scope.$apply();
-			});
-			scope.$on('downloadUnpinned', function(event, download) {
-				if (download.id === dl.id) {
-					scope.dlPinned = false;
-				}
-			});
-			scope.$on('downloadPinned', function(event, download) {
-				if (download.id === dl.id) {
-					scope.dlPinned = true;
-				}
-			});
+//			var dl = $parse(attrs.download)(scope);
+//			scope.dlPinned = scope.pinnedDownloads[dl.id] ? true : false;
+//			element.click(function() {
+//				scope.download(dl, $parse(attrs.downloadInfo)(scope));
+//				scope.$apply();
+//			});
+//			scope.$on('downloadUnpinned', function(event, download) {
+//				if (download.id === dl.id) {
+//					scope.dlPinned = false;
+//				}
+//			});
+//			scope.$on('downloadPinned', function(event, download) {
+//				if (download.id === dl.id) {
+//					scope.dlPinned = true;
+//				}
+//			});
 		}
 	};
 });

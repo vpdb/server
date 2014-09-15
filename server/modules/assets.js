@@ -31,7 +31,7 @@ var writeable = require('./writeable');
 function Assets() {
 
 	var that = this;
-	var jsRoot = path.resolve(__dirname, '../../client/code');
+	var jsRoot = path.resolve(__dirname, '../../client/app');
 	var cssRoot = writeable.cssRoot;
 
 	this.app = { js: [], css: [] };

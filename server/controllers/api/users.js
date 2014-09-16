@@ -108,16 +108,25 @@ exports.authenticate = function(req, res) {
 	});
 };
 
+/**
+ * Authentication route for third party strategies.
+ *
+ * @param {object} req Request object
+ * @param {object} res Response object
+ * @param {function} next
+ */
 exports.authenticateOAuth2 = function(req, res, next) {
-	passport.authenticate(req.params.strategy, function(err, user) {
+
+	// use passport with a custom callback: http://passportjs.org/guide/authenticate/
+	passport.authenticate(req.params.strategy, function(err, user, info) {
 		if (err) {
 			return api.fail(res, error(err, 'Authentication via %s failed: %j', req.params.strategy, err.oauthError)
 				.warn('authenticate', req.params.strategy),
 			401);
 		}
 		if (!user) {
-			return api.fail(res, error('No user object in passport callback.')
-				.display('Could not retrieve user object.')
+			return api.fail(res, error('No user object in passport callback. More info: %j', info)
+				.display('Could not retrieve user from %s.', req.params.strategy)
 				.log('authenticate', req.params.strategy),
 			500);
 		}

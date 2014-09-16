@@ -57,11 +57,7 @@ ctrl.controller('ReleaseAddCtrl', function($scope, $upload, $modal, $window, $lo
 		$scope.setTitle('Add Release - ' + $scope.game.title);
 	});
 
-	$scope.mediaFile = {
-		playfieldVideo: {
-			status: 'Click or drag and drop here'
-		}
-	};
+
 
 	$scope.reset = function() {
 
@@ -92,8 +88,16 @@ ctrl.controller('ReleaseAddCtrl', function($scope, $upload, $modal, $window, $lo
 				}
 			}
 		};
+		$scope.resetStatus();
 	};
 
+	$scope.resetStatus = function() {
+		$scope.mediaFile = {
+			playfieldVideo: {
+				status: 'Click or drag and drop here'
+			}
+		};
+	};
 
 	var vpbuilds = VPBuildResource.query(function() {
 		$scope.builds = {};
@@ -328,6 +332,7 @@ ctrl.controller('ReleaseAddCtrl', function($scope, $upload, $modal, $window, $lo
 
 	if ($localStorage.release) {
 		$scope.release  = $localStorage.release;
+		$scope.resetStatus();
 	} else {
 		$scope.reset();
 	}

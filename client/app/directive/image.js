@@ -72,7 +72,7 @@ directives.directive('imgBg', function($parse) {
 							that.addClass('loaded');
 							scope.$emit('imageLoaded');
 							scope.img.loading = false;
-							scope.$apply();
+							//scope.$apply();
 						},
 						waitForAll: true
 					});

@@ -22,9 +22,8 @@ directives.directive('videojs', function($parse, $http, $timeout) {
 
 			var player = null;
 			attrs.$observe('source', function(value) {
-				if (value && !player) {
-					console.log('src changed to %s', value);
-					console.log(new Date() + ' Starting HEAD');
+//				console.log('src changed to "%s", player = %s', value, player);
+				if (value) {
 
 					var timeout = $timeout(function() {
 						scope.videoLoading = true;
@@ -32,10 +31,16 @@ directives.directive('videojs', function($parse, $http, $timeout) {
 
 					$http({ method: 'HEAD', url: value })
 						.success(function() {
-							console.log(new Date() + ' Back from HEAD');
-							player = videojs(attrs.id, setup, function() {
-								this.src({ type: 'video/mp4', src: value });
-							});
+//							console.log(new Date() + ' Back from HEAD, id = %s', attrs.id);
+							var src = { type: 'video/mp4', src: value };
+							if (!player) {
+								player = videojs(attrs.id, setup, function() {
+									this.src(src);
+								});
+							} else {
+								player.src(src);
+							}
+
 							$timeout.cancel(timeout);
 							scope.videoLoading = false;
 							scope.$emit('videoLoaded');
@@ -48,19 +53,15 @@ directives.directive('videojs', function($parse, $http, $timeout) {
 
 				if (!value && player) {
 					scope.$emit('videoUnloaded');
-					player.dispose();
 				}
 			});
 
 			scope.$on('$destroy', function() {
 				if (player) {
 					player.dispose();
+					player = null;
 				}
 			});
-
-
-//			//element.attr('poster', "http://10.1.21.36:8080/Testube/media/" + videoid + ".jpg");
-//
 		}
 	};
 });

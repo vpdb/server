@@ -21,13 +21,11 @@
 
 var _ = require('lodash');
 var logger = require('winston');
-var passport = require('passport');
 
 var User = require('mongoose').model('User');
 var acl = require('../../acl');
 var api = require('./api');
-var auth = require('../auth');
-var error = require('../../modules/error')('api', 'user');
+var error = require('../../modules/error')('api', 'users');
 var config = require('../../modules/settings').current;
 var redis = require('redis').createClient(config.vpdb.redis.port, config.vpdb.redis.host, { no_ready_check: true });
     redis.select(config.vpdb.redis.db);
@@ -61,98 +59,6 @@ exports.create = function(req, res) {
 		}, 'Error creating user <%s>.'));
 
 	}, 'Error finding user with email <%s>'));
-};
-
-
-/**
- * Authenticates a set of given credentials.
- *
- * @param {object} req Request object
- * @param {object} res Response object
- */
-exports.authenticate = function(req, res) {
-
-	if (!req.body.username || !req.body.password) {
-		return api.fail(res, error('Ignored incomplete authentication request')
-			.display('You must supply a username and password')
-			.warn('authenticate'),
-		400);
-	}
-	var assert = api.assert(error, 'authenticate', req.body.username, res);
-	User.findOne({ username: req.body.username }, assert(function(user) {
-
-		if (!user || !user.authenticate(req.body.password)) {
-			return api.fail(res, error('Authentication denied for user "%s" (%s)', req.body.username, user ? 'password' : 'username')
-					.display('Wrong username or password')
-					.warn('authenticate'),
-				401);
-		}
-		if (!user.is_active) {
-			return api.fail(res, error('User <%s> is disabled, refusing access', user.email)
-				.display('Inactive account. Please contact an administrator')
-				.warn('authenticate'),
-			401);
-		}
-
-		var now = new Date();
-		var expires = new Date(now.getTime() + config.vpdb.sessionTimeout);
-		var token = auth.generateToken(user, now);
-
-		logger.info('[api|user:authenticate] User <%s> successfully authenticated.', user.email);
-		getACLs(user, assert(function(acls) {
-			// all good!
-			api.success(res, {
-				token: token,
-				expires: expires,
-				user: _.extend(user.toSimple(), acls)
-			}, 200);
-		}, 'Error retrieving ACLs for user "%s"'));
-
-	}, 'Error while searching for "%s"'));// TODO check error message. We might not want to reveal too much here.
-};
-
-
-/**
- * Authentication route for third party strategies.
- *
- * @param {object} req Request object
- * @param {object} res Response object
- * @param {function} next
- */
-exports.authenticateOAuth2 = function(req, res, next) {
-
-	// use passport with a custom callback: http://passportjs.org/guide/authenticate/
-	passport.authenticate(req.params.strategy, function(err, user, info) {
-		if (err) {
-			return api.fail(res, error(err, 'Authentication via %s failed: %j', req.params.strategy, err.oauthError)
-				.warn('authenticate', req.params.strategy),
-			401);
-		}
-		if (!user) {
-			return api.fail(res, error('No user object in passport callback. More info: %j', info)
-				.display('Could not retrieve user from %s.', req.params.strategy)
-				.log('authenticate', req.params.strategy),
-			500);
-		}
-
-		var now = new Date();
-		var expires = new Date(now.getTime() + config.vpdb.sessionTimeout);
-		var token = auth.generateToken(user, now);
-
-		logger.info('[api|%s:authenticate] User <%s> successfully authenticated.', req.params.strategy, user.email);
-		getACLs(user, function(err, acls) {
-			/* istanbul ignore if  */
-			if (err) {
-				// TODO check if it's clever to reveal anything here
-				return api.fail(res, err, 500);
-			}
-			api.success(res, {
-				token: token,
-				expires: expires,
-				user: _.extend(user.toSimple(), acls)
-			}, 200);
-		});
-	})(req, res, next);
 };
 
 
@@ -211,24 +117,6 @@ exports.list = function(req, res) {
 
 		}, 'Error checking for ACL "users/full-details"'));
 	}, 'Error checking for ACL "users/list".'));
-};
-
-
-/**
- * Returns the current user's profile.
- *
- * @param {object} req Request object
- * @param {object} res Response object
- */
-exports.profile = function(req, res) {
-
-	getACLs(req.user, function(err, acls) {
-		if (err) {
-			// TODO check if it's clever to reveal anything here
-			return api.fail(res, err, 500);
-		}
-		api.success(res, _.extend(req.user.toDetailed(), acls), 200);
-	});
 };
 
 
@@ -353,29 +241,3 @@ exports.del = function(req, res) {
 
 	}, 'Error finding user "%s"'));
 };
-
-/**
- * Returns the ACLs for a given user.
- *
- * @param {User} user
- * @param {function} done done(Error, object}
- */
-function getACLs(user, done) {
-
-	acl.userRoles(user.email, function(err, roles) {
-		if (err) {
-			return done(error(err, 'Error reading roles for user <%s>', user.email).log('profile'));
-		}
-		acl.whatResources(roles, function(err, resources) {
-			if (err) {
-				return done(error(err, 'Error reading resources').log('profile'));
-			}
-			acl.allowedPermissions(user.email, _.keys(resources), function(err, permissions) {
-				if (err) {
-					return done(error(err, 'Error reading permissions for user <%s>', user.email).log('profile'));
-				}
-				return done(null, { permissions: permissions });
-			});
-		});
-	});
-}

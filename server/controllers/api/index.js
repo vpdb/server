@@ -27,5 +27,6 @@ exports.games = require('./games');
 exports.ipdb = require('./ipdb');
 exports.roles = require('./roles');
 exports.tags = require('./tags');
+exports.user = require('./user');
 exports.users = require('./users');
 exports.vpbuilds = require('./vpbuilds');

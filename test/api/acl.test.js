@@ -26,7 +26,6 @@ describe('The ACLs of the VPDB API', function() {
 
 	describe('for anonymous clients', function() {
 
-		// app.get('/api/users',         api.auth(api.users.list, 'users', 'list'));
 		it('should deny access to user list', function(done) {
 			request.get('/api/users').end(hlp.status(401, done));
 		});
@@ -34,82 +33,70 @@ describe('The ACLs of the VPDB API', function() {
 			request.get('/api/users?q=123').end(hlp.status(401, done));
 		});
 
-		// app.put('/api/users/:id',     api.auth(api.users.update, 'users', 'update'));
 		it('should deny access to user update', function(done) {
 			request.put('/api/users/1234567890abcdef').send({}).end(hlp.status(401, done));
 		});
 
-		// app.delete('/api/users/:id',  api.auth(api.users.delete, 'users', 'delete'));
 		it('should deny access to user delete', function(done) {
 			request.del('/api/users/1234567890abcdef').end(hlp.status(401, done));
 		});
 
-		// app.get('/api/user',          api.auth(api.users.profile, 'user', 'profile'));
 		it('should deny access to user profile', function(done) {
 			request.get('/api/user').end(hlp.status(401, done));
 		});
 
-		// app.get('/api/roles',         api.auth(api.roles.list, 'roles', 'list'));
+		it('should deny updates of user profile', function(done) {
+			request.put('/api/user').send({}).end(hlp.status(401, done));
+		});
+
 		it('should deny access to roles list', function(done) {
 			request.get('/api/roles').end(hlp.status(401, done));
 		});
 
-		// app.get('/api/ipdb/:id',      api.auth(api.ipdb.view, 'ipdb', 'view'));
 		it('should deny access to ipdb query', function(done) {
 			request.get('/api/ipdb/4441').end(hlp.status(401, done));
 		});
 
-		// app.post('/storage',         api.auth(api.files.upload, 'files', 'upload'));
 		it('should deny access to file upload', function(done) {
 			request.post('/storage').end(hlp.status(401, done));
 		});
 
-		// app.delete('/api/files/:id',  api.auth(api.files.delete, 'files', 'delete'));
 		it('should deny access to file deletion', function(done) {
 			request.del('/api/files/123456789').end(hlp.status(401, done));
 		});
 
-		// app.get('/api/files/:id',     api.anon(api.files.view));
 		it('should allow access to file details', function(done) {
 			request.get('/api/files/123456789').end(hlp.status(404, 'No such file', done));
 		});
 
-		// app.head('/api/games/:id',    api.anon(api.games.head));
 		it('should allow check for existing games', function(done) {
 			request.head('/api/games/mb').end(hlp.status(404, done));
 		});
 
-		// app.post('/api/games',        api.auth(api.games.create, 'games', 'add'));
 		it('should deny access to game creation', function(done) {
 			request.post('/api/games').send({}).end(hlp.status(401, done));
 		});
 
-		// app.delete('/api/games/:id',  api.auth(api.files.del, 'games', 'delete'));
 		it('should deny access to game deletion', function(done) {
 			request.del('/api/games/mb').send({}).end(hlp.status(401, done));
 		});
 
-		// app.get('/api/ping',          api.anon(api.ping));
 		it('should allow access to ping', function(done) {
 			request.get('/api/ping').end(hlp.status(200, done));
 		});
 
-		// app.get('/api/tags',          api.anon(api.tags.list));
 		it('should allow to list tags', function(done) {
 			request.get('/api/tags').end(hlp.status(200, done));
 		});
 
-		// app.post('/api/tags',         api.auth(api.tags.create, 'tags', 'add'));
 		it('should deny access to create tags', function(done) {
 			request.post('/api/tags').send({}).end(hlp.status(401, done));
 		});
 
-		// app.get('/api/vpbuilds',      api.anon(api.vpbuilds.list));
 		it('should allow to list vpbuilds', function(done) {
 			request.get('/api/vpbuilds').end(hlp.status(200, done));
 		});
 
-		// app.post('/api/vpbuilds',     api.auth(api.vpbuilds.create, 'vpbuilds', 'add'));
 		it('should deny access to create vpbuilds', function(done) {
 			request.post('/api/vpbuilds').send({}).end(hlp.status(401, done));
 		});

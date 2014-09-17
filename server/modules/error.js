@@ -67,16 +67,29 @@ Err.prototype.warn = function() {
  */
 Err.prototype._log = function(fct, args) {
 
+	var that = this;
+	var log = function() {
+		fct(that.toString());
+
+		// also log validation errors; if not desired, launch your log()/warn() before errors().
+		if (that.errs) {
+			var errs = _.values(that.errs);
+			for (var i = 0; i < errs.length; i++) {
+				fct(that.name + ': Validation: ' + JSON.stringify(errs[i]));
+			}
+		}
+	};
+
 	if (_.values(args).length) {
 		// clone current prefixes
 		var prefixes = this.prefixes.slice(0).concat(_.values(args));
 		var oldName = this.name;
 
 		this.name = '[' + prefixes.join('|') + ']';
-		fct(this.toString());
+		log();
 		this.name = oldName;
 	} else {
-		fct(this.toString());
+		log();
 	}
 };
 
@@ -149,7 +162,7 @@ ErrWrapper.prototype.error = function() {
  * Returns an error factory able to easily instantiate errors.
  *
  * @param {*} [arguments] Zero or more prefixes that will show up in the error log.
- * @returns {ErrWrapper}
+ * @returns {ErrWrapper.error}
  */
 module.exports = function() {
 	var wrapper = new ErrWrapper(_.values(arguments));

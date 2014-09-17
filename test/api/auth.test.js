@@ -57,6 +57,13 @@ describe('The authentication logic of the VPDB API', function() {
 				.end(hlp.status(401, 'Inactive account', done));
 		});
 
+		it('should succeed if credentials are correct', function(done) {
+			request
+				.post('/api/authenticate')
+				.send({ username: hlp.getUser('member').name, password: hlp.getUser('member').password })
+				.end(hlp.status(200, done));
+		});
+
 	});
 
 	describe('when authorization is provided in the header', function() {

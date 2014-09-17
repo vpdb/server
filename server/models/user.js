@@ -169,7 +169,7 @@ UserSchema.path('provider').validate(function(provider) {
 UserSchema.path('password_hash').validate(function() {
 	// here we check the length. remember that the virtual _password field is
 	// the one that triggers the hashing.
-	if (this.isNew && this._password && !validator.isLength(this._password, 6)) {
+	if (this._password && !validator.isLength(this._password, 6)) {
 		this.invalidate('password', 'Password must be at least 6 characters.');
 	}
 }, null);

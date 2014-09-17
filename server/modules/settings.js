@@ -142,81 +142,6 @@ Settings.prototype.migrate = function(callback) {
 
 		logger.info('[settings] Checking for new settings.');
 
-		/**
-		 * Returns an array of path names (sepearted separated by ".") for all
-		 * attributes in newTree that are not in oldTree.
-		 *
-		 * @param oldTree Settings object before
-		 * @param newTree Settings object after
-		 * @param parent Parent path, only needed when called recursively.
-		 * @returns {Array}
-		 */
-		var diff = function (oldTree, newTree, parent) {
-			parent = parent ? parent : '';
-			var newProps = _.difference(_.keys(newTree), _.keys(oldTree));
-			var comProps = _.intersection(_.keys(newTree), _.keys(oldTree));
-			var newValues = _.map(newProps, function (key) {
-				return parent ? parent + '.' + key : key;
-			});
-			for (var i = 0; i < comProps.length; i++) {
-				var prop = oldTree[comProps[i]];
-				if (_.isObject(prop)) {
-					var p = parent ? parent + '.' + comProps[i] : comProps[i];
-					newValues = newValues.concat(diff(oldTree[comProps[i]], newTree[comProps[i]], p));
-				}
-			}
-			return newValues;
-		};
-
-		/**
-		 * Takes the AST object and hacks it into sub-objects per property. Returns
-		 * a dictionary with path separated by "." as key, and sub-tree as value.
-		 *
-		 * Since this is a recursive function, only the first parameter must be
-		 * provided at first run.
-		 *
-		 * @param tree Current subtree
-		 * @param path Current path
-		 * @param node If property found, this is the subtree
-		 * @returns {Object}
-		 */
-		var analyze = function (tree, path, node) {
-			var nodes = {};
-			if (node) {
-				nodes[path] = node;
-			}
-			var i;
-			if (tree.right) {
-				_.extend(nodes, analyze(tree.right, path));
-			} else if (tree.properties) {
-				for (i = 0; i < tree.properties.length; i++) {
-					var nextPath = (path ? path + '.' : '') + tree.properties[i].key;
-					_.extend(nodes, analyze(tree.properties[i].value, nextPath, tree.properties[i]));
-				}
-			} else if (tree.body) {
-				if (_.isArray(tree.body)) {
-					for (i = 0; i < tree.body.length; i++) {
-						_.extend(nodes, analyze(tree.body[i], path));
-					}
-				} else {
-					_.extend(nodes, analyze(tree.body, path));
-				}
-			}
-			return nodes;
-		};
-
-		var patch = function (settingsPatched, codeBlock, pos, parentPath) {
-//			console.log('PATCHING:\n--- code ---\n%s\n--- /code ---\nat pos %d below "%s"', codeBlock, pos, parentPath);
-			var before = settingsPatched.substr(0, pos);
-			var after = settingsPatched.substr(pos);
-			var level = parentPath ? parentPath.split('.').length : 0;
-			var indent = '';
-			for (var i = 0; i < level; i++) {
-				indent += '\t';
-			}
-			return before.trim() + ',\n\n\t' + indent + codeBlock.trim().replace(/,$/, '') + '\n' + indent + after.trim();
-		};
-
 		// 1. retrieve added properties
 		var oldTree = {};
 		var newTree = {};
@@ -319,6 +244,84 @@ Settings.prototype.migrate = function(callback) {
 		callback(result);
 	}
 };
+
+
+/**
+ * Takes the AST object and hacks it into sub-objects per property. Returns
+ * a dictionary with path separated by "." as key, and sub-tree as value.
+ *
+ * Since this is a recursive function, only the first parameter must be
+ * provided at first run.
+ *
+ * @param {object} tree Current subtree
+ * @param {string} [path] Current path
+ * @param [node] If property found, this is the subtree
+ * @returns {Object}
+ */
+function analyze(tree, path, node) {
+	var nodes = {};
+	if (node) {
+		nodes[path] = node;
+	}
+	var i;
+	if (tree.right) {
+		_.extend(nodes, analyze(tree.right, path));
+	} else if (tree.properties) {
+		for (i = 0; i < tree.properties.length; i++) {
+			var nextPath = (path ? path + '.' : '') + tree.properties[i].key;
+			_.extend(nodes, analyze(tree.properties[i].value, nextPath, tree.properties[i]));
+		}
+	} else if (tree.body) {
+		if (_.isArray(tree.body)) {
+			for (i = 0; i < tree.body.length; i++) {
+				_.extend(nodes, analyze(tree.body[i], path));
+			}
+		} else {
+			_.extend(nodes, analyze(tree.body, path));
+		}
+	}
+	return nodes;
+}
+
+
+/**
+ * Returns an array of path names (sepearted separated by ".") for all
+ * attributes in newTree that are not in oldTree.
+ *
+ * @param oldTree Settings object before
+ * @param newTree Settings object after
+ * @param parent Parent path, only needed when called recursively.
+ * @returns {Array}
+ */
+function diff(oldTree, newTree, parent) {
+	parent = parent ? parent : '';
+	var newProps = _.difference(_.keys(newTree), _.keys(oldTree));
+	var comProps = _.intersection(_.keys(newTree), _.keys(oldTree));
+	var newValues = _.map(newProps, function (key) {
+		return parent ? parent + '.' + key : key;
+	});
+	for (var i = 0; i < comProps.length; i++) {
+		var prop = oldTree[comProps[i]];
+		if (_.isObject(prop)) {
+			var p = parent ? parent + '.' + comProps[i] : comProps[i];
+			newValues = newValues.concat(diff(oldTree[comProps[i]], newTree[comProps[i]], p));
+		}
+	}
+	return newValues;
+}
+
+
+function patch(settingsPatched, codeBlock, pos, parentPath) {
+//	console.log('PATCHING:\n--- code ---\n%s\n--- /code ---\nat pos %d below "%s"', codeBlock, pos, parentPath);
+	var before = settingsPatched.substr(0, pos);
+	var after = settingsPatched.substr(pos);
+	var level = parentPath ? parentPath.split('.').length : 0;
+	var indent = '';
+	for (var i = 0; i < level; i++) {
+		indent += '\t';
+	}
+	return before.trim() + ',\n\n\t' + indent + codeBlock.trim().replace(/,$/, '') + '\n' + indent + after.trim();
+}
 
 Settings.prototype.publicUrl = function() {
 	return 'http' +

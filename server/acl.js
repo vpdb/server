@@ -57,9 +57,9 @@ var init = function(next) {
 		}, {
 			roles: 'member',
 			allows: [
-				{ resources: 'user', permissions: 'profile' },
-				{ resources: 'users', permissions: [ 'view', 'search' ]},
-				{ resources: 'files', permissions: ['download', 'upload', 'delete' ] },  // delete: only own/inactive files
+				{ resources: 'user', permissions: [ 'view', 'update' ]}, // profile
+				{ resources: 'users', permissions: [ 'view', 'search' ]}, // any other user
+				{ resources: 'files', permissions: [ 'download', 'upload', 'delete' ]},  // delete: only own/inactive files
 				{ resources: 'releases', permissions: 'add' },
 				{ resources: 'tags', permissions: 'add' },
 				{ resources: 'vpbuilds', permissions: 'add' }

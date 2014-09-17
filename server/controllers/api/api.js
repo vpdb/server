@@ -126,7 +126,7 @@ exports.handleParseError = function(err, req, res, next) {
  * is provided, it is executed on error.
  *
  * @param {function} error Error object
- * @param {string} prefix String appended to log tag
+ * @param {string} [prefix] String appended to log tag
  * @param {*} ref First param passed to provided error message
  * @param {object} res Result object
  * @param {function} [rollback=null] Rollback function

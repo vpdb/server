@@ -53,8 +53,8 @@ module.exports = function(app) {
 	// ========================================================================
 
 	// authentication
-	app.post('/api/authenticate', api.users.authenticate);
-	app.get('/api/authenticate/:strategy', api.users.authenticateOAuth2);
+	app.post('/api/authenticate', api.user.authenticate);
+	app.get('/api/authenticate/:strategy', api.user.authenticateOAuth2);
 
 	// files
 	app.get('/api/files/:id',     api.anon(api.files.view));
@@ -73,9 +73,6 @@ module.exports = function(app) {
 	// ping
 	app.get('/api/ping',          api.anon(api.ping));
 
-	// profile
-	app.get('/api/user',          api.auth(api.users.profile, 'user', 'profile'));
-
 	// roles
 	app.get('/api/roles',         api.auth(api.roles.list, 'roles', 'list'));
 
@@ -83,7 +80,11 @@ module.exports = function(app) {
 	app.get('/api/tags',          api.anon(api.tags.list));
 	app.post('/api/tags',         api.auth(api.tags.create, 'tags', 'add'));
 
-	// users
+	// user (own profile)
+	app.get('/api/user',          api.auth(api.user.view, 'user', 'view'));
+	app.put('/api/user',          api.auth(api.user.update, 'user', 'update'));
+
+	// users (any other user)
 	app.post('/api/users',        api.users.create);
 	app.get('/api/users',         api.auth(api.users.list, 'users', 'search'));
 	app.put('/api/users/:id',     api.auth(api.users.update, 'users', 'update'));

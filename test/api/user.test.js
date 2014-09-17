@@ -14,7 +14,9 @@ describe('The VPDB `user` API', function() {
 		hlp.setupUsers(request, {
 			root: { roles: [ 'root' ]},
 			admin: { roles: [ 'admin' ]},
-			member: { roles: [ 'member' ]}
+			member: { roles: [ 'member' ]},
+			chpass1: { roles: [ 'member' ]},
+			chpass2: { roles: [ 'member' ]}
 		}, done);
 	});
 
@@ -50,8 +52,85 @@ describe('The VPDB `user` API', function() {
 
 	describe('when a user changes its password', function() {
 
-		it('should grant authentication with new password');
-		it('should deny authentication with old password');
+		it('should fail if the current password is not provided', function(done) {
+			request
+				.put('/api/user')
+				.as('member')
+				.send({})
+				.end(function(err, res) {
+					hlp.expectStatus(err, res, 401);
+					expect(res.body.errors).to.be.an('array');
+					expect(res.body.errors).to.have.length(1);
+					expect(res.body.errors[0].field).to.be('currentPassword');
+					expect(res.body.errors[0].message).to.contain('must provide your current password');
+					done();
+				});
+		});
+
+		it('should fail if the current password is invalid', function(done) {
+			request
+				.put('/api/user')
+				.as('member')
+				.send({ currentPassword: 'xxx'})
+				.end(function(err, res) {
+					hlp.expectStatus(err, res, 401);
+					expect(res.body.errors).to.be.an('array');
+					expect(res.body.errors).to.have.length(1);
+					expect(res.body.errors[0].field).to.be('currentPassword');
+					expect(res.body.errors[0].message).to.contain('Invalid password');
+					done();
+				});
+		});
+
+		it('should fail if the new password is invalid', function(done) {
+			request
+				.put('/api/user')
+				.as('member')
+				.send({
+					currentPassword: hlp.getUser('member').password,
+					password: 'xxx'
+				})
+				.end(function(err, res) {
+					hlp.expectStatus(err, res, 422);
+					expect(res.body.errors).to.be.an('array');
+					expect(res.body.errors).to.have.length(1);
+					expect(res.body.errors[0].field).to.be('password');
+					expect(res.body.errors[0].message).to.contain('at least 6 characters');
+					done();
+				});
+		});
+
+		it('should grant authentication with new password', function(done) {
+			var user = hlp.getUser('chpass1');
+			var newPass = '12345678';
+			request
+				.put('/api/user')
+				.as('chpass1')
+				.send({ currentPassword: user.password, password: newPass })
+				.end(hlp.status(200, function() {
+
+					request
+						.post('/api/authenticate')
+						.send({ username: user.name, password: newPass })
+						.end(hlp.status(200, done));
+				}));
+		});
+
+		it('should deny authentication with old password', function(done) {
+			var user = hlp.getUser('chpass2');
+			var newPass = '12345678';
+			request
+				.put('/api/user')
+				.as('chpass2')
+				.send({ currentPassword: user.password, password: newPass })
+				.end(hlp.status(200, function() {
+
+					request
+						.post('/api/authenticate')
+						.send({ username: user.name, password: user.password })
+						.end(hlp.status(401, 'Wrong username or password', done));
+				}));
+		});
 	});
 
 });

@@ -61,8 +61,8 @@ exports.create = function(req, res) {
 		if (err) {
 			return api.fail(res, error(err, 'Error creating game instance').log('create'), 500);
 		}
-		var ok = api.ok(error, 'create', newGame.id, res);
-		var okk = api.ok(error, 'create', newGame.id, res, function(done) {
+		var assert = api.assert(error, 'create', newGame.id, res);
+		var assertRb = api.assert(error, 'create', newGame.id, res, function(done) {
 			newGame.remove(done);
 		});
 		logger.info('[api|game:create] %s', util.inspect(req.body));
@@ -71,11 +71,11 @@ exports.create = function(req, res) {
 				return api.fail(res, error('Validations failed: %j', err.errors).errors(err.errors).warn('create'), 422);
 			}
 			logger.info('[api|game:create] Validations passed.');
-			newGame.save(ok(function(game) {
+			newGame.save(assert(function(game) {
 				logger.info('[api|game:create] Game "%s" created.', game.title);
 
 				// set media to active
-				game.activateFiles(okk(function(game) {
+				game.activateFiles(assertRb(function(game) {
 					logger.info('[api|game:create] All referenced files activated, returning object to client.');
 					return api.success(res, game.toDetailed(), 201);
 

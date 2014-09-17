@@ -130,11 +130,26 @@ exports.handleParseError = function(err, req, res, next) {
  * @param {*} ref First param passed to provided error message
  * @param {object} res Result object
  * @param {function} [rollback=null] Rollback function
- * @returns {Function}
+ * @return {function}
  */
-exports.ok = function(error, prefix, ref, res, rollback) {
+exports.assert = function(error, prefix, ref, res, rollback) {
+
+	/**
+	 * Returns a function that asserts the result received.
+	 *
+	 * @param {function} successFct Success function which is called with all args but the first
+	 * @param {string} [message] Message logged and returned to the user. If not set, message from received error is sent.
+	 * @return {function}
+	 */
 	return function(successFct, message) {
-		return function(err, result) {
+
+		/**
+		 * Checks result and either calls `successFct` if first param is falsely or replies
+		 * directly to client otherwise.
+		 */
+		return function() {
+			var args = Array.prototype.slice.call(arguments);
+			var err = args[0];
 			/* istanbul ignore if */
 			if (err) {
 				if (rollback) {
@@ -145,13 +160,23 @@ exports.ok = function(error, prefix, ref, res, rollback) {
 						} else {
 							logger.error('[api|%s] Rollback successful.', prefix);
 						}
-						exports.fail(res, error(err, message, ref).log(prefix));
+						if (message) {
+							exports.fail(res, error(err, message, ref).log(prefix));
+						} else {
+							exports.fail(res, err);
+						}
 					});
 				} else {
-					exports.fail(res, error(err, message, ref).log(prefix));
+					if (message) {
+						exports.fail(res, error(err, message, ref).log(prefix));
+					} else {
+						exports.fail(res, err);
+					}
 				}
 			} else {
-				successFct(result);
+				args.shift();
+				//console.log('---------- calling success(' + args + ')');
+				successFct.apply(null, args);
 			}
 		};
 	};

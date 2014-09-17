@@ -44,27 +44,23 @@ exports.create = function(req, res) {
 	var newUser = _.extend(req.body, {
 		provider: 'local'
 	});
+	var assert = api.assert(error, 'create', newUser.email, res);
 
 	// TODO make sure newUser.email is sane (comes from user directly)
-	User.findOne({ email: newUser.email }, function(err, user) {
-		/* istanbul ignore if  */
-		if (err) {
-			return api.fail(res, error(err, 'Error finding user with email <%s>', newUser.email).log('create'));
-		}
+	User.findOne({ email: newUser.email }, assert(function(user) {
+
 		if (user) {
 			return api.fail(res, error('User with email <%s> already exists.', newUser.email).warn('create'), 409);
 		}
-		User.createUser(newUser, function(err, user, validationErr) {
+		User.createUser(newUser, assert(function(user, validationErr) {
 			if (validationErr) {
 				return api.fail(res, error('Validations failed: %j', validationErr.errors).errors(validationErr.errors).warn('create'), 422);
 			}
-			/* istanbul ignore if  */
-			if (err) {
-				return api.fail(res, err, 500);
-			}
 			return api.success(res, user, 201);
-		});
-	});
+
+		}, 'Error creating user <%s>.'));
+
+	}, 'Error finding user with email <%s>'));
 };
 
 
@@ -82,12 +78,9 @@ exports.authenticate = function(req, res) {
 			.warn('authenticate'),
 		400);
 	}
-	User.findOne({ username: req.body.username }, function(err, user) {
-		/* istanbul ignore if  */
-		if (err) {
-			// TODO check error message. We might not want to reveal too much here.
-			return api.fail(res, error(err, 'Error while searching for "%s"', req.body.username).log('authenticate'), 500);
-		}
+	var assert = api.assert(error, 'authenticate', req.body.username, res);
+	User.findOne({ username: req.body.username }, assert(function(user) {
+
 		if (!user || !user.authenticate(req.body.password)) {
 			return api.fail(res, error('Authentication denied for user "%s" (%s)', req.body.username, user ? 'password' : 'username')
 					.display('Wrong username or password')
@@ -106,19 +99,16 @@ exports.authenticate = function(req, res) {
 		var token = auth.generateToken(user, now);
 
 		logger.info('[api|user:authenticate] User <%s> successfully authenticated.', user.email);
-		getACLs(user, function(err, acls) {
-			/* istanbul ignore if  */
-			if (err) {
-				// TODO check if it's clever to reveal anything here
-				return api.fail(res, err, 500);
-			}
+		getACLs(user, assert(function(acls) {
+			// all good!
 			api.success(res, {
 				token: token,
 				expires: expires,
 				user: _.extend(user.toSimple(), acls)
 			}, 200);
-		});
-	});
+		}, 'Error retrieving ACLs for user "%s"'));
+
+	}, 'Error while searching for "%s"'));// TODO check error message. We might not want to reveal too much here.
 };
 
 
@@ -174,20 +164,14 @@ exports.authenticateOAuth2 = function(req, res, next) {
  */
 exports.list = function(req, res) {
 
-	acl.isAllowed(req.user.email, 'users', 'list', function(err, canList) {
-		acl.isAllowed(req.user.email, 'users', 'full-details', function(err, fullDetails) {
-
-			/* istanbul ignore if  */
-			if (err) {
-				// TODO check if it's clever to reveal anything here
-				return api.fail(res, error(err, 'Error checking ACLs').log('list'), 500);
-			}
+	var assert = api.assert(error, 'list', null, res);
+	acl.isAllowed(req.user.email, 'users', 'list', assert(function(canList) {
+		acl.isAllowed(req.user.email, 'users', 'full-details', assert(function(fullDetails) {
 
 			// if no list privileges, user must provide at least a 3-char search query.
 			if (!canList && (!req.query.q || req.query.q.length < 3)) {
 				return api.fail(res, error('Please provide a search query with at least three characters.'), 403);
 			}
-
 			var query = User.find();
 
 			// text search
@@ -216,20 +200,17 @@ exports.list = function(req, res) {
 				query.where('roles').in(roles);
 			}
 
-			query.exec(function(err, users) {
-				/* istanbul ignore if  */
-				if (err) {
-					return api.fail(res, error(err, 'Error listing users').log('list'), 500);
-				}
-
+			query.exec(assert(function(users) {
 				// reduce
 				users = _.map(users, function(user) {
 					return fullDetails ? user.toSimple() : user.toReduced();
 				});
 				api.success(res, users);
-			});
-		});
-	});
+
+			}, 'Error listing users'));
+
+		}, 'Error checking for ACL "users/full-details"'));
+	}, 'Error checking for ACL "users/list".'));
 };
 
 
@@ -260,11 +241,9 @@ exports.profile = function(req, res) {
 exports.update = function(req, res) {
 
 	var updateableFields = [ 'name', 'email', 'username', 'is_active', 'roles' ];
-	User.findOne({ id: req.params.id }, function(err, user) {
-		/* istanbul ignore if  */
-		if (err) {
-			return api.fail(res, error(err, 'Error finding user "%s"', req.params.id).log('update'), 500);
-		}
+	var assert = api.assert(error, 'update', req.params.id, res);
+
+	User.findOne({ id: req.params.id }, assert(function(user) {
 		if (!user) {
 			return api.fail(res, error('No such user.'), 404);
 		}
@@ -314,11 +293,7 @@ exports.update = function(req, res) {
 			logger.info('[api|user:update] Validations passed, updating user.');
 
 			// 4. save
-			user.save(function(err) {
-				/* istanbul ignore if  */
-				if (err) {
-					return api.fail(res, error(err, 'Error updating user <%s>', updatedUser.email).log('update'), 500);
-				}
+			user.save(assert(function() {
 				logger.info('[api|user:update] Success!');
 
 				// 5. update ACLs if email or roles changed
@@ -349,9 +324,9 @@ exports.update = function(req, res) {
 				} else {
 					api.success(res, user.toSimple(), 200);
 				}
-			});
+			}, 'Error updating user "%s"'));
 		});
-	});
+	}, 'Error finding user "%s"'));
 };
 
 
@@ -363,24 +338,20 @@ exports.update = function(req, res) {
  */
 exports.del = function(req, res) {
 
-	User.findOne({ id: req.params.id }, function(err, user) {
-		/* istanbul ignore if  */
-		if (err) {
-			return api.fail(res, error(err, 'Error finding user "%s"', req.params.id).log('delete'), 500);
-		}
+	var assert = api.assert(error, 'delete', req.params.id, res);
+
+	User.findOne({ id: req.params.id }, assert(function(user) {
 		if (!user) {
-			return api.fail(res, error('No such user.'), 404);
+			return api.fail(res, error('No such user'), 404);
 		}
-		user.remove(function(err) {
-			/* istanbul ignore if  */
-			if (err) {
-				return api.fail(res, error(err, 'Error deleting user <%s>', user.email).log('delete'), 500);
-			}
+		user.remove(assert(function() {
 			acl.removeUserRoles(user.email, user.roles);
 			logger.info('[api|user:delete] User <%s> successfully deleted.', user.email);
 			res.status(204).end();
-		});
-	});
+
+		}, 'Error deleting user "%s"'));
+
+	}, 'Error finding user "%s"'));
 };
 
 /**

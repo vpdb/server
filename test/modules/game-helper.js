@@ -4,6 +4,7 @@ var _ = require('lodash');
 var path = require('path');
 var async = require('async');
 var expect = require('expect.js');
+var randomstring = require('randomstring');
 
 var ipdb = require(path.resolve(__dirname, '../../data/ipdb.json'));
 
@@ -12,7 +13,7 @@ exports.getGame = function(attrs) {
 	if (game.short) {
 		game.id = game.short[0].replace(/[^a-z0-9\s\-]+/gi, '').replace(/\s+/g, '-').toLowerCase();
 	} else {
-		game.id = game.title.replace(/[^a-z0-9\s\-]+/gi, '').replace(/\s+/g, '-').toLowerCase();
+		game.id = /unknown/i.test(game.title) ? randomstring.generate(7) : game.title.replace(/[^a-z0-9\s\-]+/gi, '').replace(/\s+/g, '-').toLowerCase();
 	}
 	game.year = game.year || 1900;
 	game.game_type = game.game_type || 'na';

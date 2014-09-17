@@ -19,19 +19,16 @@
 
 "use strict";
 
-var _ = require('lodash');
 var logger = require('winston');
 var shortId = require('shortid');
 var mongoose = require('mongoose');
 var validator = require('validator');
 var uniqueValidator = require('mongoose-unique-validator');
-var fileRef = require('../models/plugins/fileRef');
-
-var storage = require('../modules/storage');
+//var fileRef = require('../models/plugins/fileRef');
 
 var Schema = mongoose.Schema;
 
-var maxAspectRatioDifference = 0.2;
+//var maxAspectRatioDifference = 0.2;
 
 
 //-----------------------------------------------------------------------------

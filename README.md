@@ -189,7 +189,7 @@ Code is also run through Code Climate, with the following result: [![Code Climat
 GPLv2, see [LICENSE](LICENSE).
 
 [travis-image]: https://img.shields.io/travis/freezy/node-vpdb.svg?style=flat-square
-[travis-url]: https://travis-ci.orgfreezy/node-vpdb
+[travis-url]: https://travis-ci.org/freezy/node-vpdb
 [coveralls-image]: https://img.shields.io/coveralls/freezy/node-vpdb.svg?style=flat-square
 [coveralls-url]: https://coveralls.io/r/freezy/node-vpdb?branch=master
 [dependencies-image]: https://david-dm.org/freezy/node-vpdb.svg?style=flat-square

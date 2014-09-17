@@ -5,10 +5,7 @@
 var fs = require('fs');
 var gm = require('gm');
 var md5 = require('md5');
-var util = require('util');
-var path = require('path');
 var logger = require('winston');
-var request = require('request');
 
 var writeable = require('./writeable');
 var disableCache = false;

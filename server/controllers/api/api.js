@@ -23,7 +23,6 @@ var _ = require('lodash');
 var logger = require('winston');
 
 var auth = require('../auth');
-var ctrl = require('../ctrl');
 
 /**
  * Protects a resource, meaning there must be valid JWT. If additionally

@@ -27,8 +27,6 @@ var validator = require('validator');
 var uniqueValidator = require('mongoose-unique-validator');
 var fileRef = require('../models/plugins/fileRef');
 
-var storage = require('../modules/storage');
-
 var Schema = mongoose.Schema;
 
 var gameTypes = [ 'ss', 'em', 'pm', 'og', 'na'];

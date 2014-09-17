@@ -20,11 +20,9 @@
 "use strict";
 
 var _ = require('lodash');
-var fs = require('fs');
 var logger = require('winston');
 var ffmpeg = require('fluent-ffmpeg');
 
-var config = require('../settings').current;
 var error = require('../error')('processor', 'video').error;
 
 /**

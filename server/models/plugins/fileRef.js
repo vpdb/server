@@ -25,7 +25,6 @@ var logger = require('winston');
 var mongoose = require('mongoose');
 var objectPath = require('object-path');
 
-var storage = require('../../modules/storage');
 var error = require('../../modules/error')('model', 'file-ref').error;
 
 module.exports = exports = function(schema, options) {

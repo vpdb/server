@@ -37,7 +37,6 @@ var expressErrorhandler = require('errorhandler');
 //var domainError = require('express-domain-errors');
 //var gracefulExit = require('express-graceful-exit');
 
-var config = require('./modules/settings').current;
 var writeable = require('./modules/writeable');
 var asset = require('./middleware/asset');
 var ctrl = require('./controllers/ctrl');

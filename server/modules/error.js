@@ -121,7 +121,7 @@ Err.prototype.msg = function() {
  * @constructor
  */
 function ErrWrapper(args) {
-	ErrWrapper.prototype.args = _.values(args);
+	this.args = _.values(args);
 }
 
 /**
@@ -131,10 +131,11 @@ function ErrWrapper(args) {
  * @returns {Err}
  */
 ErrWrapper.prototype.error = function() {
+
 	var err = Object.create(Err.prototype);
 	Err.apply(err, _.values(arguments));
 
-	var args = ErrWrapper.prototype.args || [];
+	var args = this.args || [];
 	if (args.length > 0) {
 		err.prefixes = args;
 		err.name = '[' + args.join('|') + ']';
@@ -151,5 +152,6 @@ ErrWrapper.prototype.error = function() {
  * @returns {ErrWrapper}
  */
 module.exports = function() {
-	return new ErrWrapper(_.values(arguments));
+	var wrapper = new ErrWrapper(_.values(arguments));
+	return ErrWrapper.prototype.error.bind(wrapper);
 };

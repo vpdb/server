@@ -78,7 +78,7 @@ exports.setupUsers = function(request, config, done) {
 
 							// 3. update user
 							debug('%s <%s>: Updating user...', name, user.email);
-							user.roles = config.roles;
+							user = _.extend(user, config);
 							request
 								.put('/api/users/' + user.id)
 								.as(superuser)

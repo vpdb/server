@@ -23,7 +23,7 @@ var _ = require('lodash');
 var logger = require('winston');
 var ffmpeg = require('fluent-ffmpeg');
 
-var error = require('../error')('processor', 'video').error;
+var error = require('../error')('processor', 'video');
 
 /**
  * Video processor.

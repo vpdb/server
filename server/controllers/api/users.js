@@ -27,7 +27,7 @@ var User = require('mongoose').model('User');
 var acl = require('../../acl');
 var api = require('./api');
 var auth = require('../auth');
-var error = require('../../modules/error')('ctrl', 'user').error;
+var error = require('../../modules/error')('api', 'user');
 var config = require('../../modules/settings').current;
 var redis = require('redis').createClient(config.vpdb.redis.port, config.vpdb.redis.host, { no_ready_check: true });
     redis.select(config.vpdb.redis.db);
@@ -77,7 +77,6 @@ exports.create = function(req, res) {
 exports.authenticate = function(req, res) {
 
 	if (!req.body.username || !req.body.password) {
-		logger.warn('[api|user:authenticate] .');
 		return api.fail(res, error('Ignored incomplete authentication request')
 			.display('You must supply a username and password')
 			.warn('authenticate'),

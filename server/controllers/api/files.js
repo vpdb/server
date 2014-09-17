@@ -26,7 +26,7 @@ var api = require('./api');
 var File = require('mongoose').model('File');
 
 var storage = require('../../modules/storage');
-var error = require('../../modules/error')('api', 'file').error;
+var error = require('../../modules/error')('api', 'file');
 
 exports.upload = function(req, res) {
 

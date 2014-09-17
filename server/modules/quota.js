@@ -22,7 +22,7 @@
 var logger = require('winston');
 var quotaModule = require('volos-quota-redis');
 
-var error = require('./error')('quota').error;
+var error = require('./error')('quota');
 var config = require('./settings').current;
 var quotaConfig = config.vpdb.quota;
 

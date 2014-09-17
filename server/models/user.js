@@ -27,7 +27,7 @@ var mongoose = require('mongoose');
 var validator = require('validator');
 var uniqueValidator = require('mongoose-unique-validator');
 
-var error = require('../modules/error')('model', 'user').error;
+var error = require('../modules/error')('model', 'user');
 var config = require('../modules/settings').current;
 var Schema = mongoose.Schema;
 

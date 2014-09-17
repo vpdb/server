@@ -25,7 +25,7 @@ var logger = require('winston');
 var api = require('./api');
 var VPBuild = require('mongoose').model('VPBuild');
 
-var error = require('../../modules/error')('ctrl', 'tag').error;
+var error = require('../../modules/error')('api', 'tag');
 
 exports.list = function(req, res) {
 

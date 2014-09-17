@@ -27,7 +27,7 @@ var logger = require('winston');
 var PngQuant = require('pngquant');
 var OptiPng = require('optipng');
 
-var error = require('../error')('processor', 'image').error;
+var error = require('../error')('processor', 'image');
 
 /**
  * Image processor.

@@ -12,7 +12,8 @@ describe('The authentication logic of the VPDB API', function() {
 
 	before(function(done) {
 		hlp.setupUsers(request, {
-			member: { roles: [ 'member' ]}
+			member: { roles: [ 'member' ] },
+			disabled: { roles: [ 'member' ], is_active: false }
 		}, done);
 	});
 
@@ -24,6 +25,38 @@ describe('The authentication logic of the VPDB API', function() {
 		request
 			.get('/api/user')
 			.end(hlp.status(401, done));
+	});
+
+	describe('when sending an authentication request', function() {
+
+		it('should fail if no credentials are posted', function(done) {
+			request
+				.post('/api/authenticate')
+				.send({})
+				.end(hlp.status(400, 'must supply a username', done));
+		});
+
+		it('should fail if username is non-existent', function(done) {
+			request
+				.post('/api/authenticate')
+				.send({ username: '_______________', password: 'xxx' })
+				.end(hlp.status(401, 'Wrong username or password', done));
+		});
+
+		it('should fail if username exists but wrong password is supplied', function(done) {
+			request
+				.post('/api/authenticate')
+				.send({ username: hlp.getUser('member').name, password: 'xxx' })
+				.end(hlp.status(401, 'Wrong username or password', done));
+		});
+
+		it('should fail if credentials are correct but user is disabled', function(done) {
+			request
+				.post('/api/authenticate')
+				.send({ username: hlp.getUser('disabled').name, password: hlp.getUser('disabled').password })
+				.end(hlp.status(401, 'Inactive account', done));
+		});
+
 	});
 
 	describe('when authorization is provided in the header', function() {

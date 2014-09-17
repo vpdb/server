@@ -26,7 +26,7 @@ var passport = require('passport');
 var GitHubStrategy = require('passport-github').Strategy;
 var IPBoardStrategy = require('./modules/passport-ipboard').Strategy;
 
-var error = require('./modules/error')('passport').error;
+var error = require('./modules/error')('passport');
 var settings = require('./modules/settings');
 var config = settings.current;
 var User = mongoose.model('User');

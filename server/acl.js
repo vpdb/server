@@ -25,7 +25,7 @@ var logger = require('winston');
 var mongoose = require('mongoose');
 
 var User = mongoose.model('User');
-var error = require('./modules/error')('acl').error;
+var error = require('./modules/error')('acl');
 var config = require('./modules/settings').current;
 
 var redis = require('redis').createClient(config.vpdb.redis.port, config.vpdb.redis.host, { no_ready_check: true });

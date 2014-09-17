@@ -26,7 +26,7 @@ var logger = require('winston');
 var Game = require('mongoose').model('Game');
 var api = require('./api');
 
-var error = require('../../modules/error')('api', 'game').error;
+var error = require('../../modules/error')('api', 'game');
 
 
 /**

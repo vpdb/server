@@ -22,7 +22,7 @@
 var _ = require('lodash');
 var logger = require('winston');
 
-var error = require('../../modules/error')('ctrl', 'tag').error;
+var error = require('../../modules/error')('api', 'tag');
 var api = require('./api');
 var Tag = require('mongoose').model('Tag');
 

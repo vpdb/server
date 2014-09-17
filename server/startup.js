@@ -26,7 +26,7 @@ var logger = require('winston');
 
 var storage = require('./modules/storage');
 var queue = require('./modules/queue');
-var error = require('./modules/error')('startup').error;
+var error = require('./modules/error')('startup');
 
 exports.init = function(done) {
 

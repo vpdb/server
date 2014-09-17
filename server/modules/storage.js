@@ -27,7 +27,7 @@ var logger = require('winston');
 
 var queue = require('./queue');
 var config = require('./settings').current;
-var error = require('./error')('storage').error;
+var error = require('./error')('storage');
 
 var processors = {
 	image: require('./processor/image'),

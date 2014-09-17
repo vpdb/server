@@ -24,7 +24,7 @@ var ent = require('ent');
 var logger = require('winston');
 var request = require('request');
 
-var error = require('./error')('ipdb').error;
+var error = require('./error')('ipdb');
 
 function Ipdb() {
 }
@@ -109,7 +109,7 @@ function parseDetails(body, done) {
 			done(error('Cannot parse game details from page body. Are you sure the provided IPDB No. exists?'));
 		}
 	}
-};
+}
 
 function firstMatch(str, regex, postFn) {
 	var m = str.match(regex);

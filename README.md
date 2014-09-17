@@ -166,11 +166,18 @@ When running in test mode, a local test coverage report is available under [/cov
 When running the server in development or test mode, the code is linted using [JSHint](http://www.jshint.com/about/). If
 the code doesn't pass, tests fail. You can run the linting manually with the `jshint` task.
 
-As you can see by the badge on top of this README, continuous integration is set up using not only
-[Travis CI](https://travis-ci.org/freezy/node-vpdb) but also [Codeship](https://www.codeship.io/) and 
-[drone.io](https://drone.io/github.com/freezy/node-vpdb/latest). After every test run, code
-coverage stats are sent to [Coveralls.io](https://coveralls.io/r/freezy/node-vpdb). Note that both CI and code coverage 
-only concern server-side code.
+There's also continuous integration running on three services:
+
+|           | Status                                                   |
+|-----------|----------------------------------------------------------|
+| Travis CI | [![Build Status Travis CI][travis-image]][travis-url]    |
+| Codeship  | [![Build Status Codeship][codeship-image]][codeship-url] |
+| drone.io  | [![Build Status drone.io][droneio-image]][droneio-url]   |
+
+After every test run, code coverage stats are sent to [Coveralls.io](https://coveralls.io/r/freezy/node-vpdb). Note that 
+both CI and code coverage only concern server-side code.
+
+Code is also run through Code Climate, with the following result: [![Code Climate][codeclimate-image]][codeclimate-url]
 
 ## Credits
 
@@ -181,9 +188,15 @@ only concern server-side code.
 
 GPLv2, see [LICENSE](LICENSE).
 
-[travis-image]: https://img.shields.io/travis/freezy/node-vpdb.svg?style=flat
+[travis-image]: https://img.shields.io/travis/freezy/node-vpdb.svg?style=flat-square
 [travis-url]: https://travis-ci.orgfreezy/node-vpdb
-[coveralls-image]: https://img.shields.io/coveralls/freezy/node-vpdb.svg?style=flat
+[coveralls-image]: https://img.shields.io/coveralls/freezy/node-vpdb.svg?style=flat-square
 [coveralls-url]: https://coveralls.io/r/freezy/node-vpdb?branch=master
-[dependencies-image]: https://david-dm.org/freezy/node-vpdb.svg?style=flat
+[dependencies-image]: https://david-dm.org/freezy/node-vpdb.svg?style=flat-square
 [dependencies-url]: https://david-dm.org/freezy/node-vpdb
+[codeship-image]: http://img.shields.io/codeship/e5a24c40-fe39-0131-f546-4ebc8a94177b.svg?style=flat-square
+[codeship-url]: https://www.codeship.io/projects/29544
+[droneio-image]: https://drone.io/github.com/freezy/node-vpdb/status.png
+[droneio-url]: https://drone.io/github.com/freezy/node-vpdb/latest
+[codeclimate-image]: http://img.shields.io/codeclimate/github/freezy/node-vpdb.svg?style=flat-square
+[codeclimate-url]: https://codeclimate.com/github/freezy/node-vpdb

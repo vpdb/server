@@ -32,6 +32,13 @@ var config = require('../../modules/settings').current;
 var redis = require('redis').createClient(config.vpdb.redis.port, config.vpdb.redis.host, { no_ready_check: true });
     redis.select(config.vpdb.redis.db);
 
+
+/**
+ * Creates a new user.
+ *
+ * @param {object} req Request object
+ * @param {object} res Response object
+ */
 exports.create = function(req, res) {
 
 	var newUser = _.extend(req.body, {
@@ -60,6 +67,13 @@ exports.create = function(req, res) {
 	});
 };
 
+
+/**
+ * Authenticates a set of given credentials.
+ *
+ * @param {object} req Request object
+ * @param {object} res Response object
+ */
 exports.authenticate = function(req, res) {
 
 	if (!req.body.username || !req.body.password) {
@@ -108,6 +122,7 @@ exports.authenticate = function(req, res) {
 	});
 };
 
+
 /**
  * Authentication route for third party strategies.
  *
@@ -151,6 +166,13 @@ exports.authenticateOAuth2 = function(req, res, next) {
 	})(req, res, next);
 };
 
+
+/**
+ * Lists users.
+ *
+ * @param {object} req Request object
+ * @param {object} res Response object
+ */
 exports.list = function(req, res) {
 
 	acl.isAllowed(req.user.email, 'users', 'list', function(err, canList) {
@@ -211,6 +233,13 @@ exports.list = function(req, res) {
 	});
 };
 
+
+/**
+ * Returns the current user's profile.
+ *
+ * @param {object} req Request object
+ * @param {object} res Response object
+ */
 exports.profile = function(req, res) {
 
 	getACLs(req.user, function(err, acls) {
@@ -222,6 +251,13 @@ exports.profile = function(req, res) {
 	});
 };
 
+
+/**
+ * Updates an existing user.
+ *
+ * @param {object} req Request object
+ * @param {object} res Response object
+ */
 exports.update = function(req, res) {
 
 	var updateableFields = [ 'name', 'email', 'username', 'is_active', 'roles' ];
@@ -319,6 +355,13 @@ exports.update = function(req, res) {
 	});
 };
 
+
+/**
+ * Deletes an existing user.
+ *
+ * @param {object} req Request object
+ * @param {object} res Response object
+ */
 exports.del = function(req, res) {
 
 	User.findOne({ id: req.params.id }, function(err, user) {
@@ -341,6 +384,12 @@ exports.del = function(req, res) {
 	});
 };
 
+/**
+ * Returns the ACLs for a given user.
+ *
+ * @param {User} user
+ * @param {function} done done(Error, object}
+ */
 function getACLs(user, done) {
 
 	acl.userRoles(user.email, function(err, roles) {

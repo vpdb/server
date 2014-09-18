@@ -117,6 +117,7 @@ exports.handleParseError = function(err, req, res, next) {
 		res.setHeader('Content-Type', 'application/json');
 		res.status(400).json({ error: 'Parsing error: ' + err.message });
 	} else {
+		logger.error(err.stack);
 		next();
 	}
 };

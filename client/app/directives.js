@@ -3,21 +3,6 @@
 /* Directives */
 var directives = angular.module('vpdb.directives', []);
 
-directives.directive('auth', function($rootScope, $location, AuthService) {
-	return {
-		restrict: 'A',
-		link: function(scope, element, attrs) {
-			var auth = JSON.parse(attrs.auth);
-			if (auth.redirect) {
-				$location.url(auth.redirect);
-			}
-			if (auth.jwt) {
-				AuthService.tokenReceived(auth.jwt);
-			}
-		}
-	};
-});
-
 directives.directive('authHeader', function($rootScope, $location, AuthService) {
 	return {
 		restrict: 'A',
@@ -41,7 +26,6 @@ directives.directive('onEnter', function() {
 		}
 	};
 });
-
 
 directives.directive('ratingbox', function($parse) {
 	return {

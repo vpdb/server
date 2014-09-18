@@ -109,7 +109,11 @@ Err.prototype.status = function(code) {
  * @returns {Err}
  */
 Err.prototype.display = function() {
-	this.displayMessage = extsprintf.sprintf.apply(null, _.values(arguments));
+	try {
+		this.displayMessage = extsprintf.sprintf.apply(null, _.values(arguments));
+	} catch (e) {
+		this.displayMessage = arguments[0];
+	}
 	return this;
 };
 

@@ -78,32 +78,32 @@ exports.configure = function() {
  *
  *  Note however that if profile data is incomplete, callback will fail.
  *
- * @param strategy Name of the strategy (e.g. "GitHub", "IPBoard")
- * @param [providerName=null] For IPBoard we can have multiple configurations, (e.g. "Gameex", "VP*", ...)
- * @returns {Function} "Verify Callback" function that is passed to passport
+ * @param {string} strategy Name of the strategy (e.g. "GitHub", "IPBoard")
+ * @param {string} [providerName] For IPBoard we can have multiple configurations, (e.g. "Gameex", "VP*", ...)
+ * @returns {function} "Verify Callback" function that is passed to passport
  * @see http://passportjs.org/guide/oauth/
  */
 exports.verifyCallbackOAuth = function(strategy, providerName) {
 	var provider = providerName || strategy;
 	var logtag = providerName ? strategy + ':' + providerName : strategy;
 
-	return function(accessToken, refreshToken, profile, done) {
+	return function(accessToken, refreshToken, profile, callback) { // accessToken and refreshToken are ignored
 
 		if (!profile) {
 			logger.warn('[passport|%s] No profile data received.', logtag);
-			return done(null, false, { message: 'No profile received from ' + logtag + '.'});
+			return callback(null, false, { message: 'No profile received from ' + logtag + '.'});
 		}
 		if (!profile.emails || !profile.emails.length) {
 			logger.warn('[passport|%s] Profile data does not contain any email address: %s', logtag, JSON.stringify(profile));
-			return done(null, false, { message: 'Received profile from ' + logtag + ' does not contain email address.' });
+			return callback(null, false, { message: 'Received profile from ' + logtag + ' does not contain any email address.' });
 		}
 		if (!profile.id) {
 			logger.warn('[passport|%s] Profile data does not contain any user ID: %s', logtag, JSON.stringify(profile));
-			return done(null, false, { message: 'Received profile from ' + logtag + ' does not contain user id.' });
+			return callback(null, false, { message: 'Received profile from ' + logtag + ' does not contain user id.' });
 		}
 		if (!profile.displayName && !profile.username) {
 			logger.warn('[passport|%s] Profile data does contain neither display name nor username: %s', logtag, JSON.stringify(profile));
-			return done(null, false, { message: 'Received profile from ' + logtag + ' does contain neither display name nor username.' });
+			return callback(null, false, { message: 'Received profile from ' + logtag + ' does contain neither display name nor username.' });
 		}
 
 		// create query condition
@@ -141,7 +141,7 @@ exports.verifyCallbackOAuth = function(strategy, providerName) {
 
 			/* istanbul ignore if  */
 			if (err) {
-				return done(error(err, 'Error checking for user <%s> in database', profile.emails[0].value).log(logtag));
+				return callback(error(err, 'Error checking for user <%s> in database', profile.emails[0].value).log(logtag));
 			}
 			if (!user) {
 				var newUser = {
@@ -158,12 +158,13 @@ exports.verifyCallbackOAuth = function(strategy, providerName) {
 				User.createUser(newUser, function(err, user, validationErr) {
 					/* istanbul ignore if  */
 					if (err) {
-						return done(error(err, 'Error creating new user'));
+						return callback(error(err, 'Error creating new user'));
 					}
 					if (validationErr) {
-						return done(error(validationErr, 'Validation error').log(logtag));
+						return callback(error('Validation error').errors(validationErr.errors).log(logtag));
 					}
-					done(null, user);
+					logger.info('[passport|%s] New user <%s> created.', logtag, user.email);
+					callback(null, user);
 				});
 
 			} else {
@@ -185,11 +186,12 @@ exports.verifyCallbackOAuth = function(strategy, providerName) {
 				user.save(function(err, user) {
 					/* istanbul ignore if  */
 					if (err) {
-						return done(error(err, 'Error updating user').log(logtag));
+						return callback(error(err, 'Error updating user').log(logtag));
 					}
 
 					// all good.
-					done(null, user);
+					logger.info('[passport|%s] User <%s> updated.', logtag, user.email);
+					callback(null, user);
 				});
 			}
 		});

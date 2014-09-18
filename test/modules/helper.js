@@ -324,9 +324,9 @@ exports.status = function(code, contains, next) {
 		}
 		expect(res.status).to.be(code);
 		if (contains) {
-			expect(res.body.error).to.contain(contains);
+			expect(res.body.error.message || res.body.error).to.contain(contains);
 		}
-		next();
+		next(null, res.body);
 	};
 };
 

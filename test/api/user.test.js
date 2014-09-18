@@ -49,8 +49,7 @@ describe('The VPDB `user` API', function() {
 		});
 	});
 
-
-	describe('when a user changes its password', function() {
+	describe('when a local user changes its password', function() {
 
 		it('should fail if the current password is not provided', function(done) {
 			request
@@ -100,7 +99,7 @@ describe('The VPDB `user` API', function() {
 				});
 		});
 
-		it('should grant authentication with new password', function(done) {
+		it('should grant authentication with the new password', function(done) {
 			var user = hlp.getUser('chpass1');
 			var newPass = '12345678';
 			request
@@ -108,7 +107,6 @@ describe('The VPDB `user` API', function() {
 				.as('chpass1')
 				.send({ currentPassword: user.password, password: newPass })
 				.end(hlp.status(200, function() {
-
 					request
 						.post('/api/authenticate')
 						.send({ username: user.name, password: newPass })
@@ -124,13 +122,18 @@ describe('The VPDB `user` API', function() {
 				.as('chpass2')
 				.send({ currentPassword: user.password, password: newPass })
 				.end(hlp.status(200, function() {
-
 					request
 						.post('/api/authenticate')
 						.send({ username: user.name, password: user.password })
 						.end(hlp.status(401, 'Wrong username or password', done));
 				}));
 		});
+	});
+
+	describe('when a non-local user sets its password', function() {
+
+		it('should succeed without providing a current password');
+		it('should fail the second time without providng a current password');
 	});
 
 });

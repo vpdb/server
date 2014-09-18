@@ -33,8 +33,8 @@ var config = require('../../modules/settings').current;
 /**
  * Authenticates a set of given credentials.
  *
- * @param {object} req Request object
- * @param {object} res Response object
+ * @param {Request} req
+ * @param {Response} res
  */
 exports.authenticate = function(req, res) {
 
@@ -81,22 +81,54 @@ exports.authenticate = function(req, res) {
 /**
  * Authentication route for third party strategies.
  *
- * @param {object} req Request object
- * @param {object} res Response object
+ * Note that this is passed as-is to passport, so the URL params should be the
+ * same as the ones from the third party provider.
+ *
+ * @api /api/authenticate/:strategy
+ * @param {Request} req
+ * @param {Response} res
  * @param {function} next
  */
 exports.authenticateOAuth2 = function(req, res, next) {
 
 	// use passport with a custom callback: http://passportjs.org/guide/authenticate/
-	passport.authenticate(req.params.strategy, function(err, user, info) {
+	passport.authenticate(req.params.strategy, passportCallback(req, res))(req, res, next);
+};
+
+/**
+ * Skips passport authentication and processes the user profile directly.
+ * @returns {Function}
+ */
+exports.authenticateOAuth2Mock = function(req, res) {
+	logger.log('[api|user:auth-mock] Processing mock authentication via %s...', req.body.provider);
+	var profile = req.body.profile;
+	if (profile) {
+		profile._json = {
+			info: 'This mock data and is more complete otherwise.',
+			id: req.body.profile ? req.body.profile.id : null
+		};
+	}
+	require('../../passport').verifyCallbackOAuth(req.body.provider, req.body.providerName)(null, null, profile, passportCallback(req, res));
+};
+
+/**
+ * Returns a custom callback function for passport. It basically checks if the
+ * user object was populated, enriches it and returns it or fails.
+ *
+ * @param {Request} req
+ * @param {Response} res
+ * @returns {Function}
+ */
+function passportCallback(req, res) {
+	return function(err, user, info) {
 		if (err) {
-			return api.fail(res, error(err, 'Authentication via %s failed: %j', req.params.strategy, err.oauthError)
+			return api.fail(res, error(err, 'Authentication failed: %j', err.oauthError)
 					.warn('authenticate', req.params.strategy),
 				401);
 		}
 		if (!user) {
 			return api.fail(res, error('No user object in passport callback. More info: %j', info)
-					.display('Could not retrieve user from %s.', req.params.strategy)
+					.display(info ? info : 'Could not retrieve user.')
 					.log('authenticate', req.params.strategy),
 				500);
 		}
@@ -118,15 +150,14 @@ exports.authenticateOAuth2 = function(req, res, next) {
 				user: _.extend(user.toSimple(), acls)
 			}, 200);
 		});
-	})(req, res, next);
-};
-
+	};
+}
 
 /**
  * Returns the current user's profile.
  *
- * @param {object} req Request object
- * @param {object} res Response object
+ * @param {Request} req
+ * @param {Response} res
  */
 exports.view = function(req, res) {
 
@@ -143,8 +174,8 @@ exports.view = function(req, res) {
 /**
  * Updates the current user's profile. For now it suports only password change, which might change in the future.
  *
- * @param {object} req Request object
- * @param {object} res Response object
+ * @param {Request} req
+ * @param {Response} res
  */
 exports.update = function(req, res) {
 

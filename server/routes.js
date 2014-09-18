@@ -54,6 +54,9 @@ module.exports = function(app) {
 
 	// authentication
 	app.post('/api/authenticate', api.user.authenticate);
+	if (process.env.NODE_ENV !== 'production') {
+		app.post('/api/authenticate/mock', api.user.authenticateOAuth2Mock); // mock route for simulating oauth2 callbacks
+	}
 	app.get('/api/authenticate/:strategy', api.user.authenticateOAuth2);
 
 	// files
@@ -124,11 +127,6 @@ module.exports = function(app) {
 			app.get('/auth/' + ipbConfig.id + '/callback', web.index());
 		}
 	});
-
-	// mock route for simulating oauth2 callbacks
-	if (process.env.NODE_ENV !== 'production') {
-		app.post('/auth/mock', auth.passportMock(web));
-	}
 
 
 	// Legacy

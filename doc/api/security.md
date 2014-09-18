@@ -12,9 +12,8 @@ directly:
 	curl https://vpdb.ch/api/ping
 
 Restricted resources however need an access token. VPDB authenticates using 
-[JSON Web Tokens](http://tools.ietf.org/html/draft-ietf-oauth-json-web-token)
-via the `Authorization` header. Compared to other authentication schemes, this
-approach has several advantages:
+[JSON Web Tokens][jwt] via the `Authorization` header. Compared to other 
+authentication schemes, this approach has several advantages:
 
  * Credentials are only sent once over the wire when requesting the token.
  * Token is self-containing, i.e. the server is not required to maintain
@@ -61,8 +60,8 @@ In return, you'll get the token along with your user profile:
 	  }
 	}
 	
-The token is then included as a bearer token in the `Authorization` header. For
-example, when retrieving the user profile, the client would send:
+The token should then be included as a bearer token in the `Authorization` 
+header. For example, when retrieving the user profile, the client would send:
 
 	GET https://vpdb.ch/api/user
 	
@@ -80,6 +79,21 @@ That's why for authenticated API calls, the API returns a new token in the
 `X-Token-Refresh` header. The client is free to use the new token for the next
 request, resulting in the user having to relogin only after 15 minutes of 
 inactivity.
+
+
+### Authenticate with a Third Party Using OAuth2
+
+You can also obtain a token by authenticating against GitHub or IP.Board. In
+this case, you should point your browser to the redirection URL, e.g.
+`https://vpdb.ch/auth/github`, which will redirect the user to GitHub, where he
+can confirm authorization request. On success, GitHub will redirect the user 
+back to your site with an access token. That access token can be used by the 
+API to obtain an authorization token:
+
+	GET https://vpdb.ch/api/authenticate/github?code=0123456789abcdef0123
+
+Which returns the same response as `/api/authenticate` would have, including
+an access token.
 
 
 ### Authorization
@@ -109,3 +123,5 @@ To be updated for next bunch of resources.
 The API currently doesn't have an enforces rate limit (in production, there
 will be IP-based limiting by NGINX). However, quotas will be applied on the
 storage API.
+
+[jwt]: http://tools.ietf.org/html/draft-ietf-oauth-json-web-token

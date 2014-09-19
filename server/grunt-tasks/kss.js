@@ -32,6 +32,7 @@ var highlight = require('highlight.js');
 var debug = require('debug')('grunt-kss');
 
 var ctrl = require('../controllers/ctrl');
+var writeable = require('../modules/writeable');
 
 module.exports = function(grunt) {
 
@@ -45,9 +46,7 @@ module.exports = function(grunt) {
 
 			// print out files to be generated
 			grunt.log.writeln('Parsed stylesheets.');
-//			grunt.log.writeln(styleguide.data.files.map(function(file) {
-//				return '  - ' + file
-//			}).join('\n'));
+//			grunt.log.writeln(styleguide.data.files.map(function(file) { return '  - ' + file }).join('\n'));
 
 			// accumulate all of the sections' first indexes in case they don't have a root element.
 			_.each(styleguide.section('*.'), function(rootSection) {
@@ -57,16 +56,16 @@ module.exports = function(grunt) {
 				}
 			});
 			rootRefs.sort();
-			var sectionTemplate = jade.compile(fs.readFileSync('client/views/partials/styleguide-section.jade'), { pretty: true });
+			var sectionTemplate = jade.compile(fs.readFileSync('client/views/devsite/partials/styleguide-section.jade'), { pretty: true });
 
 			var renderSection = function(rootSection, reference, sections, next) {
 				//grunt.log.writeln('Generating %s %s"', reference, rootSection ? rootSection.header() : 'Unnamed');
-				serializesSections(sections, function(err, sections) {
+				serializeSections(sections, function(err, sections) {
 					if (err) {
 						grunt.log.error(err);
 						return next(err);
 					}
-					var filename = path.normalize('styleguide/sections/' + reference + '.html');
+					var filename = path.resolve(writeable.devsiteRoot, 'partials/styleguide/' + reference + '.html');
 					grunt.log.write('Writing "%s"... ', filename);
 					fs.writeFileSync(filename, sectionTemplate({
 						styleguide: styleguide,
@@ -92,7 +91,7 @@ module.exports = function(grunt) {
 				}
 
 				// render index
-				var indexHtml = jade.renderFile('client/views/styleguide.jade', _.extend({
+				var indexHtml = jade.renderFile('client/views/devsite/index.jade', _.extend({
 					sections: _.map(rootRefs, function(rootRef) {
 						return {
 							id: rootRef,
@@ -105,13 +104,13 @@ module.exports = function(grunt) {
 					pretty: true
 				}, ctrl.viewParams()));
 
-				var filename = path.normalize('styleguide/index.html');
+				var filename = path.resolve(writeable.devsiteRoot, 'index.html');
 				grunt.log.write('Writing "%s"... ', filename);
 				fs.writeFileSync(filename, indexHtml);
 				grunt.log.ok();
 
 				// render overview
-				filename = path.normalize('styleguide/overview.html');
+				filename = path.resolve(writeable.devsiteRoot, 'partials/styleguide.html');
 				//grunt.log.write('Writing "%s"... ', filename);
 				fs.writeFileSync(filename, marked(fs.readFileSync('doc/styleguide.md').toString()));
 				grunt.log.ok();
@@ -127,7 +126,7 @@ module.exports = function(grunt) {
  * @param done
  * @returns {*}
  */
-function serializesSections(sections, done) {
+function serializeSections(sections, done) {
 	debug('serializing %d sections..', sections.length);
 	async.mapSeries(sections, function(section, next) {
 		debug('serializing section %s', section.reference());
@@ -156,7 +155,7 @@ function serializesSections(sections, done) {
 			});
 		});
 	}, function(err, result) {
-		debug('serializesSections finished.');
+		debug('serializeSections finished.');
 		done(err, result);
 	});
 }

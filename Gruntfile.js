@@ -11,6 +11,7 @@ var ctrl = require('./server/controllers/ctrl');
 module.exports = function(grunt) {
 
 	var buildRoot = writeable.buildRoot;
+	var devsiteRoot = writeable.devsiteRoot;
 	var cssRoot = writeable.cssRoot;
 	var jsRoot = writeable.jsRoot;
 	var htmlRoot = writeable.htmlRoot;
@@ -28,8 +29,8 @@ module.exports = function(grunt) {
 
 		clean: {
 			build:      { src: [ buildRoot + '/*', "!.gitignore", "!img" ] },
-			styleguide: { src: [ buildRoot + '/styleguide/**/*.html'] },
-			coverage:   { src: ['test/coverage/**'] }
+			coverage:   { src: ['test/coverage/**'] },
+			devsite:    { src: [ devsiteRoot ] }
 		},
 
 		concurrent: {
@@ -55,6 +56,9 @@ module.exports = function(grunt) {
 			},
 			'static': {
 				files: [ { expand: true, cwd: 'client/static/', src: [ '**' ], dest: buildRoot } ]
+			},
+			devsite: {
+				files: [ { expand: true, cwd: buildRoot, src: [ '**', '!html/**' ], dest: devsiteRoot } ]
 			}
 		},
 
@@ -89,10 +93,14 @@ module.exports = function(grunt) {
 			download: { dest: 'test/coverage' }
 		},
 
+		'http-server': {
+			devsite: { root: devsiteRoot, port: 4000, host: '127.0.0.1', showDir: false, autoIndex: true, ext: "html", runInBackground: false }
+		},
+
 		jade: {
 			site: {
 				options: { data: _.extend(viewParams, { environment: 'production', gitinfo: '<%= gitinfo %>' }) },
-				files: [ { expand: true, cwd: 'client/views', src: [ '**/*.jade', '!layout.jade', '!**/styleguide*' ], dest: htmlRoot, ext: '.html' } ]
+				files: [ { expand: true, cwd: 'client/views', src: [ '**/*.jade', '!layout.jade', '!**/devsite/**' ], dest: htmlRoot, ext: '.html' } ]
 			}
 		},
 
@@ -104,7 +112,8 @@ module.exports = function(grunt) {
 		mkdir: {
 			server:   { options: { mode: 504, create: [ cssRoot, jsRoot ] } },
 			coverage: { options: { mode: 504, create: [ 'test/coverage' ] } },
-			test:     { options: { mode: 504, create: [ testConfig.vpdb.storage ] }}
+			test:     { options: { mode: 504, create: [ testConfig.vpdb.storage ] }},
+			devsite:  { options: { mode: 504, create: [ devsiteRoot + '/partials/styleguide' ] } }
 		},
 
 		mochaTest: {
@@ -153,7 +162,7 @@ module.exports = function(grunt) {
 
 			// client watches
 			stylesheets: { files: 'client/styles/**/*.styl', options: { spawn: false, debounceDelay: 100 }, tasks: [ 'stylus', 'kss', 'reload' ] },
-			styleguide:  { files: [ 'client/views/styleguide.jade', 'client/views/partials/styleguide-section.jade', 'doc/styleguide.md' ],
+			devsite:     { files: [ 'client/views/devsite/**', 'doc/styleguide.md' ],
 			               options: { spawn: false, debounceDelay: 100 }, tasks: [ 'kss', 'reload' ] },
 
 			// test watch
@@ -177,6 +186,7 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-env');
 	grunt.loadNpmTasks('grunt-express-server');
 	grunt.loadNpmTasks('grunt-gitinfo');
+	grunt.loadNpmTasks('grunt-http-server');
 	grunt.loadNpmTasks('grunt-mkdir');
 	grunt.loadNpmTasks('grunt-mocha-test');
 	grunt.loadNpmTasks('grunt-ng-annotate');
@@ -185,7 +195,7 @@ module.exports = function(grunt) {
 
 	// build
 	grunt.registerTask('build', 'What run on production before switching code.',
-		[ 'git', 'env:prod', 'clean:build', 'mkdir:server', 'copy:assets', 'copy:static', 'stylus', 'cssmin', 'ngAnnotate', 'uglify', 'kssrebuild', 'jade' ]
+		[ 'git', 'env:prod', 'clean:build', 'mkdir:server', 'copy:assets', 'copy:static', 'stylus', 'cssmin', 'ngAnnotate', 'uglify', 'jade' ]
 	);
 	// server tasksgut
 	grunt.registerTask('dev', [          'env:dev',            'jshint',               'concurrent:dev' ]);  // dev mode, watch everything
@@ -198,7 +208,7 @@ module.exports = function(grunt) {
 
 	// generate
 	grunt.registerTask('git', [ 'gitinfo', 'gitsave']);
-	grunt.registerTask('kssrebuild', [ 'clean:styleguide', 'kss' ]);
+	grunt.registerTask('devsite', [ 'env:prod', /*'clean:devsite',*/ 'copy:devsite', 'mkdir:devsite', 'kss', 'http-server:devsite' ]);
 
 	// tests
 	grunt.registerTask('test', [ 'env:test', 'watch:test' ]);

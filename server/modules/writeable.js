@@ -25,6 +25,7 @@ var path = require('path');
 function Writeable() {
 
 	this.buildRoot = process.env.APP_BUILDDIR ? process.env.APP_BUILDDIR : path.resolve(__dirname, "../../build");
+	this.devsiteRoot = process.env.APP_BUILDDIR ? process.env.APP_DEVSITEDIR : path.resolve(__dirname, "../../devsite");
 	this.cacheRoot = process.env.APP_CACHEDIR ? process.env.APP_CACHEDIR : path.resolve(__dirname, "../../cache");
 
 	this.imgCache = path.resolve(this.cacheRoot, 'img');
@@ -37,6 +38,9 @@ function Writeable() {
 	/* istanbul ignore if */
 	if (!fs.existsSync(this.buildRoot)) {
 		fs.mkdirSync(this.buildRoot);
+	}
+	if (!fs.existsSync(this.devsiteRoot)) {
+		fs.mkdirSync(this.devsiteRoot);
 	}
 	/* istanbul ignore if */
 	if (!fs.existsSync(this.jsRoot)) {
@@ -64,6 +68,7 @@ function Writeable() {
 var writeable = new Writeable();
 exports.cacheRoot = writeable.cacheRoot;
 exports.buildRoot = writeable.buildRoot;
+exports.devsiteRoot = writeable.devsiteRoot;
 exports.jsRoot = writeable.jsRoot;
 exports.cssRoot = writeable.cssRoot;
 exports.htmlRoot = writeable.htmlRoot;

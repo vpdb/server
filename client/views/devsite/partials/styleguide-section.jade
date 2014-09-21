@@ -1,0 +1,35 @@
+.row.row--fullheight
+	.col-sm-3.col--menu
+		h1 Contents
+		hr
+		h4.padder-top: a(href="/styleguide")
+			i.fa.fa-home.space-right
+			| Overview
+		accordion.panel-group--accordion(close-others="false")
+			- each section, i in sections
+				accordion-group.panel--inner(heading=section.title, is-open="sgIsOpen#{i}", ng-init="sgIsOpen#{i}=#{section.id}==section")
+					ul.list-group.list-group--simple
+						- each subsection in section.childSections
+							li.list-group-item: a(href="/styleguide/sections/#{subsection.reference()}", ng-class="{ active: subsection == '#{subsection.reference()}' }")=subsection.header()
+		button.btn.btn-primary.btn--styleguide-toggle-theme(ng-click="toggleTheme()"): i.fa.fa-adjust
+	.col-sm-9.col--main
+
+		article#kss-content
+
+			- for section in sections
+				section(id="#{section.reference}")
+					h1 #{section.header}
+					hr
+				div!=section.description
+
+				- for modifier in section.modifiers
+					h1.code=modifier.className
+					div!=modifier.description
+					div!=modifier.markup
+					tabset
+						tab
+							tab-heading HTML
+							pre!=modifier.markupHighlighted
+						tab
+							tab-heading Jade
+							pre!=modifier.jade

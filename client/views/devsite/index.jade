@@ -1,0 +1,33 @@
+extends ../layout
+
+block body
+	if deployment != 'production'
+		.staging-bar
+		.staging-bar
+	nav.navbar.navbar-default.navbar-fixed-top
+		.container
+			.navbar-header
+				span.navbar-brand
+					a(href="/", target="_self")
+						i.icon.icon-vpdb-logo-o
+						i.icon.icon-vp
+						i.icon.icon-db
+
+			ul.nav.navbar-nav
+				li(ng-class="{ active: menu == 'home' }")
+					a(href="/styleguide") Style Guide
+
+			ul.nav.navbar-nav.navbar-right
+				li
+					a(href="/", target="_self")
+						i.fa.fa-caret-left.space-right-2x
+						span.space-right Back to Site
+
+	.container.container--topmost.styleguide(ng-controller="DevsiteCtrl")
+		div(ng-view)
+
+	section.footer
+		p
+			a(href="https://github.com/freezy/node-vpdb", target="_blank")
+				i.fa.fa-github-alt
+				| <strong>Fork me</strong> on GitHub

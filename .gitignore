@@ -10,8 +10,8 @@ lib-cov
 
 pids
 logs
-build
-devsite
+/build
+/devsite
 data/storage*
 gfx/export
 results

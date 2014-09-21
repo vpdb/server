@@ -215,7 +215,7 @@ ctrl.controller('InfoModalCtrl', function($scope, title, subtitle, message, icon
 	$scope.icon = icon;
 });
 
-ctrl.controller('StyleguideCtrl', function($scope, $location, $rootScope) {
+ctrl.controller('DevsiteCtrl', function($scope, $location, $rootScope) {
 	if (/(\d+)\.\d+$/.test($location.path())) {
 		$scope.section = $location.path().match(/(\d+)\.\d+$/)[1];
 	}

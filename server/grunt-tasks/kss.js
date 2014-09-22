@@ -59,7 +59,7 @@ module.exports = function(grunt) {
 			var sectionTemplate = jade.compile(fs.readFileSync('client/views/devsite/partials/styleguide-section.jade'), { pretty: true });
 
 			var renderSection = function(rootSection, reference, sections, next) {
-				//grunt.log.writeln('Generating %s %s"', reference, rootSection ? rootSection.header() : 'Unnamed');
+//				grunt.log.writeln('Generating %s %s"', reference, rootSection ? rootSection.header() : 'Unnamed');
 				serializeSections(sections, function(err, sections) {
 					if (err) {
 						grunt.log.error(err);

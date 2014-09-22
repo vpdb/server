@@ -12,8 +12,8 @@ pids
 logs
 /build
 /devsite
-data/storage*
-gfx/export
+/data/storage*
+/gfx/export
 results
 server/config/settings.js
 test/coverage

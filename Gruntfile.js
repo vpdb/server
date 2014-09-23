@@ -24,6 +24,14 @@ module.exports = function(grunt) {
 
 	var viewParams = ctrl.viewParams(devConfig, true);
 
+	var markdown = {
+		gfm: true,
+		smartypants: true,
+		highlight: function(code) {
+			return require('highlight.js').highlightAuto(code).value;
+		}
+	};
+
 	// configure the tasks
 	var config = {
 
@@ -109,6 +117,18 @@ module.exports = function(grunt) {
 		          gruntfile: { src: 'Gruntfile.js' }
 		},
 
+		metalsmith: {
+			build: {
+				dest: 'devsite/partials',
+				src: 'doc',
+				options: {
+					clean: false, metadata: {}, plugins: {
+						'metalsmith-markdown': markdown
+					}
+				}
+			}
+		},
+
 		mkdir: {
 			server:   { options: { mode: 504, create: [ cssRoot, jsRoot ] } },
 			coverage: { options: { mode: 504, create: [ 'test/coverage' ] } },
@@ -187,6 +207,7 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-express-server');
 	grunt.loadNpmTasks('grunt-gitinfo');
 	grunt.loadNpmTasks('grunt-http-server');
+	grunt.loadNpmTasks('grunt-metalsmith');
 	grunt.loadNpmTasks('grunt-mkdir');
 	grunt.loadNpmTasks('grunt-mocha-test');
 	grunt.loadNpmTasks('grunt-ng-annotate');

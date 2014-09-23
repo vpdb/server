@@ -16,7 +16,7 @@ ctrl.controller('AppCtrl', function($scope, $rootScope, $location, $modal, UserR
 
 	AuthService.init();
 	ProfileService.init();
-	PingResource.get();
+	//PingResource.get();
 
 	$scope.navGame = function(key) {
 		$location.hash('');

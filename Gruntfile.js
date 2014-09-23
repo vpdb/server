@@ -43,7 +43,7 @@ module.exports = function(grunt) {
 
 		concurrent: {
 			dev: {
-				tasks: [ 'watch-dev', 'watch:server', 'watch:branch', 'watch:stylesheets', 'watch:styleguide', 'watch:livereload' ],
+				tasks: [ 'watch-dev', 'watch:server', 'watch:branch', 'watch:stylesheets', 'watch:livereload' ],
 				options: { logConcurrentOutput: true, limit: 6 }
 			},
 			test: {
@@ -52,6 +52,10 @@ module.exports = function(grunt) {
 			},
 			ci: {
 				tasks: [ 'ci-server', 'ci-client' ],
+				options: { logConcurrentOutput: true }
+			},
+			devsite: {
+				tasks: [ 'watch:devsite', 'watch:stylesheets', 'watch:livereload', 'http-server:devsite' ],
 				options: { logConcurrentOutput: true }
 			}
 		},
@@ -123,7 +127,8 @@ module.exports = function(grunt) {
 				src: 'doc',
 				options: {
 					clean: false, metadata: {}, plugins: {
-						'metalsmith-markdown': markdown
+						'metalsmith-markdown': markdown,
+						'metalsmith-templates': { engine: 'jade', directory: 'client/views/devsite' }
 					}
 				}
 			}
@@ -182,12 +187,12 @@ module.exports = function(grunt) {
 
 			// client watches
 			stylesheets: { files: 'client/styles/**/*.styl', options: { spawn: false, debounceDelay: 100 }, tasks: [ 'stylus', 'kss', 'reload' ] },
-			devsite:     { files: [ 'client/views/devsite/**', 'doc/styleguide.md' ],
-			               options: { spawn: false, debounceDelay: 100 }, tasks: [ 'kss', 'reload' ] },
+			devsite:     { files: [ 'client/views/devsite/**', 'doc/**' ],
+			               options: { spawn: false, debounceDelay: 100 }, tasks: [ 'metalsmith', 'reload' ] },
 
 			// test watch
 			test: { files: [ 'test/api/**/*.js', 'test/modules/**/*.js' ,'test/web/**/*.js' ], options: { spawn: true, debounceDelay: 100, atBegin: true },
-			      tasks:   [ 'mkdir:coverage', 'waitServer', 'mochaTest', 'istanbul-middleware:download', 'restart', 'reload' ] }
+			        tasks: [ 'mkdir:coverage', 'waitServer', 'mochaTest', 'istanbul-middleware:download', 'restart', 'reload' ] }
 		}
 	};
 	grunt.config.init(config);
@@ -229,7 +234,7 @@ module.exports = function(grunt) {
 
 	// generate
 	grunt.registerTask('git', [ 'gitinfo', 'gitsave']);
-	grunt.registerTask('devsite', [ 'env:prod', /*'clean:devsite',*/ 'copy:devsite', 'mkdir:devsite', 'kss', 'http-server:devsite' ]);
+	grunt.registerTask('devsite', [ 'env:prod', /*'clean:devsite',*/ 'copy:devsite', 'mkdir:devsite', 'kss', 'metalsmith', 'concurrent:devsite' ]);
 
 	// tests
 	grunt.registerTask('test', [ 'env:test', 'watch:test' ]);

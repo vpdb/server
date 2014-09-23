@@ -19,7 +19,10 @@
 * Added FFmpeg integration for video transcoding
 * Switched to Redis for ACLs, message queue, user dirty header and quota
 * Added Continuous Integration on Travis CI and Codeship
+* Separated application logic from client, web app is now 100% static
+* Added first version of the developer site
 * Bugfixes
+
 
 ## v0.0.5
 

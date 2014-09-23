@@ -72,6 +72,7 @@
     "marked": "0.3.2",
     "md5": "1.0.0",
     "metalsmith-markdown": "^0.2.1",
+    "metalsmith-templates": "^0.5.2",
     "mocha": "1.21.4",
     "mongoose": "3.9.1",
     "mongoose-unique-validator": "0.3.0",

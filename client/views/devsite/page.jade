@@ -1,0 +1,26 @@
+.row.row--fullheight
+
+	// right column
+	.col-sm-3.col--menu
+		h1 Menu
+		hr
+
+		block menu
+			if section && subsections[section]
+				h1 Sections
+				hr
+				ul.nav.subnav
+					for subsection in subsections[section]
+						li(class="#{ title == subsection.title ? 'active' : '' }")
+							a(href=subsection.link)
+								| #{subsection.title}
+								if subsection.private
+									i.glyphicon.glyphicon-lock
+
+	// right column
+	.col-sm-9.col--main
+		a(id="top")
+		h1.h--primary= title
+		hr
+		block body
+			div!= contents

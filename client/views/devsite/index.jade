@@ -1,5 +1,8 @@
 extends ../layout
 
+block root
+	- var appname = 'devsite'
+
 block body
 	if deployment != 'production'
 		.staging-bar

@@ -1,7 +1,6 @@
-"use strict"; /*global ga, _*/
+"use strict"; /* global ga, _ */
 
-// Declare app level module which depends on filters, and services
-var app = angular.module('vpdb', [
+var deps = [
 	'ngRoute',
 	'ngAnimate',
 	'ngSanitize',
@@ -18,8 +17,15 @@ var app = angular.module('vpdb', [
 	'vpdb.filters',
 	'vpdb.services',
 	'vpdb.directives'
-]);
+];
 
+// Declare app level modules which depends on filters, and services
+var app = angular.module('vpdb', deps);
+var devsite = angular.module('devsite', deps);
+
+/*
+ * Configuration for the web application
+ */
 app.config(function($routeProvider, $locationProvider, $httpProvider) {
 
 	$routeProvider.when('/', { templateUrl: 'partials/home.html' });
@@ -39,6 +45,18 @@ app.config(function($routeProvider, $locationProvider, $httpProvider) {
 	$locationProvider.html5Mode(true);
 	$httpProvider.interceptors.push('AuthInterceptor');
 });
+
+
+/*
+ * Configuration for the developer site
+ */
+devsite.config(function($routeProvider, $locationProvider, $httpProvider) {
+
+	$routeProvider.when('/', { templateUrl: 'partials/home.html' });
+	$routeProvider.otherwise({templateUrl:'errors/404.html'});
+	$locationProvider.html5Mode(true);
+});
+
 
 window.requestAnimFrame = (function() {
 	return window.requestAnimationFrame    ||

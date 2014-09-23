@@ -1,7 +1,7 @@
 ## Security
 
-The VPDB is partly publicly available, partly restricted to logged users and 
-partly restricted to users with a certain role.
+The VPDB API is partly publicly available, partly restricted to logged users 
+and partly restricted to users with a certain role.
 
 
 ### Authentication
@@ -20,7 +20,7 @@ authentication schemes, this approach has several advantages:
    a list of tokens and expire them; it only checks the signature and 
    accepts or drops.
  * Compared to cookie-based sessions, security problems related to cross
-   site requests don't exist due to the nature of the non-persistent headers
+   site requests don't exist due to the nature of the non-persistent headers.
  * Easy non-browser implementation: Cookie or Simple HTTP-based 
    authentication is not ideal when working with native mobile clients or
    other non-browser based applications.

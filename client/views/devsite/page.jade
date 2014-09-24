@@ -2,7 +2,7 @@
 
 	// right column
 	.col-sm-3.col--menu
-		h1 Menu
+		h1 Sections
 		hr
 
 		block menu
@@ -16,6 +16,7 @@
 								| #{subsection.title}
 								if subsection.private
 									i.glyphicon.glyphicon-lock
+		p.padder-top-3x
 
 	// right column
 	.col-sm-9.col--main
@@ -23,4 +24,7 @@
 		h1.h--primary= title
 		hr
 		block body
-			div!= contents
+			div.markdown!= contents
+
+		p.padder-top-3x
+

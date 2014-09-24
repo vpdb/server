@@ -1,8 +1,12 @@
-# This is VPDB's style guide.
+---
+title: Style Guide
+template: page.jade
+menuIndex: 1
+---
 
-It's the internal style guide, designated for people who want to contribute
-to VPDB. Of course it also helps explaining stuff that you might wrote a few
-months back and forgot about it by now. :)
+This is VPDB's style guide. It's the internal style guide, designated for 
+people who want to contribute to VPDB. Of course it also helps explaining
+stuff that you might wrote a few months back and forgot about it by now. :)
 
 This is a living style guide, i.e. the content is entirely generated from the
 style sheet comments of the current version of the app you're browsing using

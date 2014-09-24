@@ -1,18 +1,22 @@
-# Architecture
+---
+title: Architecture
+template: page.jade
+menuIndex: 1
+---
 
-## Overview
+# Overview
 
-VPDB consists of three different tiers: the API, the storage engine and the web application that is running in your 
-browser.
+VPDB consists of three different tiers: the **API**, the **storage engine** and the **web application** that is running in 
+your browser.
+ 
 
-
-### The API
+## The API
 
 The API is VPDB's interface to its application logic. It is a RESTful HTTP service that can be accessed by any type of
 client that can talk JSON over HTTP. There's a whole section about it [here][api].
 
 
-### The Storage Engine
+## The Storage Engine
 
 The storage engine handles everything file-related, such as:
 
@@ -24,7 +28,7 @@ The storage engine handles everything file-related, such as:
 Check out the [storage section][storage], which contains information how the interface works and how the code is 
 organized.
  
-### The Web Application
+## The Web Application
  
 This is the site you see at [https://vpdb.ch/][vpdb]. Markup, styles and assets are all served statically, while dynamic 
 data is obtained from the API. We use [AngularJS][angular] as our web application framework and styles based on 
@@ -32,7 +36,7 @@ data is obtained from the API. We use [AngularJS][angular] as our web applicatio
 [here][webapp].
 
 
-## Server Code
+# Server Code
 
 Both the API and the storage code live in the `./server` sub folder. We won't get into much detail here, but briefly the
 structure is the following:
@@ -44,7 +48,7 @@ structure is the following:
  - Generic application logic sits at `modules`.
  
 
-## Client Code
+# Client Code
 
 While the API and the storage engine are both part of the server component, the client code lives in a different sub 
 folder called `./client`. The structure is as follows:

@@ -1,5 +1,8 @@
-FORMAT: 1A
-HOST: https://vpdb.gameex.com/api
+---
+title: API
+template: page.jade
+menuIndex: 1
+---
 
 # VPDB RESTful API
 This is the API documentation for the [VPDB](https://github.com/freezy/node-vpdb)

@@ -186,7 +186,7 @@ module.exports = function(grunt) {
 			branch:      { files: '.git/HEAD',      options: { spawn: false, debounceDelay: 0 },   tasks: [ 'git', 'restart' ] },
 
 			// client watches
-			stylesheets: { files: 'client/styles/**/*.styl', options: { spawn: false, debounceDelay: 100 }, tasks: [ 'stylus', 'kss', 'reload' ] },
+			stylesheets: { files: 'client/styles/**/*.styl', options: { spawn: false, debounceDelay: 100 }, tasks: [ 'stylus', 'kss', 'copy:devsite', 'reload' ] },
 			devsite:     { files: [ 'client/views/devsite/**', 'doc/**' ],
 			               options: { spawn: false, debounceDelay: 100 }, tasks: [ 'metalsmith', 'reload' ] },
 

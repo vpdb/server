@@ -55,7 +55,7 @@ module.exports = function(grunt) {
 				options: { logConcurrentOutput: true }
 			},
 			devsite: {
-				tasks: [ 'watch:devsite', 'watch:stylesheets', 'watch:livereload', 'http-server:devsite' ],
+				tasks: [ 'watch:devsite', 'watch:stylesheets', 'watch:livereload', 'devsite-serve' ],
 				options: { logConcurrentOutput: true }
 			}
 		},
@@ -83,6 +83,10 @@ module.exports = function(grunt) {
 			minify: { expand: false, cwd: '.', dest: cssGlobal, ext: '.css', src: _.pluck(assets.getCss(), 'src') }
 		},
 
+		'devsite-serve': { options: { root: devsiteRoot, port: 4000, runInBackground: false, map: {
+			'/js': path.resolve(__dirname, 'client/app')
+		}}},
+
 		env: {
 			dev: localEnv(grunt, devConfig),
 			test: localEnv(grunt, testConfig),
@@ -103,10 +107,6 @@ module.exports = function(grunt) {
 		'istanbul-middleware': {
 			options:  { url: 'http://127.0.0.1:' + localEnv(grunt, testConfig).PORT + '/_coverage' },
 			download: { dest: 'test/coverage' }
-		},
-
-		'http-server': {
-			devsite: { root: devsiteRoot, port: 4000, host: '127.0.0.1', showDir: false, autoIndex: true, ext: "html", runInBackground: false }
 		},
 
 		jade: {
@@ -211,7 +211,6 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-env');
 	grunt.loadNpmTasks('grunt-express-server');
 	grunt.loadNpmTasks('grunt-gitinfo');
-	grunt.loadNpmTasks('grunt-http-server');
 	grunt.loadNpmTasks('grunt-metalsmith');
 	grunt.loadNpmTasks('grunt-mkdir');
 	grunt.loadNpmTasks('grunt-mocha-test');
@@ -234,7 +233,7 @@ module.exports = function(grunt) {
 
 	// generate
 	grunt.registerTask('git', [ 'gitinfo', 'gitsave']);
-	grunt.registerTask('devsite', [ 'env:prod', /*'clean:devsite',*/ 'copy:devsite', 'mkdir:devsite', 'kss', 'metalsmith', 'concurrent:devsite' ]);
+	grunt.registerTask('devsite', [ 'env:dev', /*'clean:devsite',*/ 'copy:devsite', 'mkdir:devsite', 'kss', 'metalsmith', 'concurrent:devsite' ]);
 
 	// tests
 	grunt.registerTask('test', [ 'env:test', 'watch:test' ]);

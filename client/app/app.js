@@ -28,19 +28,19 @@ var devsite = angular.module('devsite', deps);
  */
 app.config(function($routeProvider, $locationProvider, $httpProvider) {
 
-	$routeProvider.when('/', { templateUrl: 'partials/home.html' });
-	$routeProvider.when('/games', { templateUrl: 'partials/games.html' });
-	$routeProvider.when('/game/:id', { templateUrl: 'partials/game.html' });
-	$routeProvider.when('/game/:id/add-release', { templateUrl: 'partials/member/release-add.html' });
-	$routeProvider.when('/games/add', { templateUrl: 'partials/admin/game-add.html' });
-	$routeProvider.when('/admin/users', { templateUrl: 'partials/admin/users.html' });
-	$routeProvider.when('/styleguide', { templateUrl: '/styleguide/overview.html' });
+	$routeProvider.when('/',                        { templateUrl: 'partials/home.html' });
+	$routeProvider.when('/games',                   { templateUrl: 'partials/games.html' });
+	$routeProvider.when('/game/:id',                { templateUrl: 'partials/game.html' });
+	$routeProvider.when('/game/:id/add-release',    { templateUrl: 'partials/member/release-add.html' });
+	$routeProvider.when('/games/add',               { templateUrl: 'partials/admin/game-add.html' });
+	$routeProvider.when('/admin/users',             { templateUrl: 'partials/admin/users.html' });
+	$routeProvider.when('/styleguide',              { templateUrl: '/styleguide/overview.html' });
 	$routeProvider.when('/styleguide/sections/:section', { templateUrl: function(route) {
 		return '/styleguide/sections/' + route.section + '.html';
 	}});
 	$routeProvider.when('/auth/:strategy/callback', { templateUrl: 'partials/authenticating.html' });
 
-	$routeProvider.otherwise({templateUrl:'errors/404.html'});
+	$routeProvider.otherwise({ templateUrl:'errors/404.html' });
 
 	$locationProvider.html5Mode(true);
 	$httpProvider.interceptors.push('AuthInterceptor');
@@ -52,8 +52,11 @@ app.config(function($routeProvider, $locationProvider, $httpProvider) {
  */
 devsite.config(function($routeProvider, $locationProvider, $httpProvider) {
 
-	$routeProvider.when('/', { templateUrl: 'partials/home.html' });
-	$routeProvider.otherwise({templateUrl:'errors/404.html'});
+	$routeProvider.when('/',       { templateUrl: 'partials/home.html' });
+	$routeProvider.when('/:path',  { templateUrl: function(params) {
+		return 'partials/' + params.path + '.html';
+	} });
+	$routeProvider.otherwise({ templateUrl:'errors/404.html' });
 	$locationProvider.html5Mode(true);
 });
 

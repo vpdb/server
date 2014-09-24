@@ -7,8 +7,6 @@
 
 		block menu
 			if section && subsections[section]
-				h1 Sections
-				hr
 				ul.nav.subnav
 					for subsection in subsections[section]
 						li(class="#{ title == subsection.title ? 'active' : '' }")
@@ -16,7 +14,7 @@
 								| #{subsection.title}
 								if subsection.private
 									i.glyphicon.glyphicon-lock
-		p.padder-top-3x
+		p.padder-top-2x
 
 	// right column
 	.col-sm-9.col--main
@@ -26,5 +24,5 @@
 		block body
 			div.markdown!= contents
 
-		p.padder-top-3x
+		p.padder-top-2x
 

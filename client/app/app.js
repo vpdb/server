@@ -34,6 +34,7 @@ app.config(function($routeProvider, $locationProvider, $httpProvider) {
 	$routeProvider.when('/game/:id/add-release',    { templateUrl: 'partials/member/release-add.html' });
 	$routeProvider.when('/games/add',               { templateUrl: 'partials/admin/game-add.html' });
 	$routeProvider.when('/admin/users',             { templateUrl: 'partials/admin/users.html' });
+	$routeProvider.when('/auth/:strategy/callback', { templateUrl: 'partials/authenticating.html' });
 
 	$routeProvider.otherwise({ templateUrl:'errors/404.html' });
 
@@ -47,12 +48,21 @@ app.config(function($routeProvider, $locationProvider, $httpProvider) {
  */
 devsite.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
 
+	$locationProvider.html5Mode(true);
+
 	$stateProvider.state('home', {
-		url: '',
+		url: '/',
 		templateUrl: 'partials/home.html'
 	});
 
-	console.log('Application initialized.');
+//	$stateProvider.state('api',          { url: '/api',          templateUrl: 'partials/api.html' });
+//	$stateProvider.state('styleguide',   { url: '/styleguide',   templateUrl: 'partials/styleguide.html' });
+//	$stateProvider.state('architecture', { url: '/architecture', templateUrl: 'partials/architecture.html' });
+
+	$stateProvider.state('dynamic', { url: '/:path', templateUrl: function($stateParams) {
+		return 'partials/' + $stateParams.path + '.html';
+	}});
+
 
 /*	$routeProvider.when('/',       { templateUrl: 'partials/home.html' });
 	$routeProvider.when('/:path',  { templateUrl: function(params) {
@@ -62,13 +72,12 @@ devsite.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
 	$routeProvider.when('/styleguide/sections/:section', { templateUrl: function(route) {
 		return '/styleguide/sections/' + route.section + '.html';
 	}});
-	$routeProvider.when('/auth/:strategy/callback', { templateUrl: 'partials/authenticating.html' });
+
 	$routeProvider.when('/styleguide',              { templateUrl: '/styleguide/overview.html' });
 
 	$routeProvider.otherwise({ templateUrl:'errors/404.html' });*/
 
 	//$urlRouterProvider.otherwise("/state1");
-	//$locationProvider.html5Mode(true);
 });
 
 

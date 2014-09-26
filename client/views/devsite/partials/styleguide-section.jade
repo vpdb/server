@@ -6,7 +6,7 @@
 			i.fa.fa-home.space-right
 			| Overview
 		accordion.panel-group--accordion(close-others="false")
-			- each section, i in sections
+			for section, i in sections
 				accordion-group.panel--inner(heading=section.title, is-open="sgIsOpen#{i}", ng-init="sgIsOpen#{i}=#{section.id}==section")
 					ul.list-group.list-group--simple
 						if section.childSections
@@ -16,7 +16,6 @@
 	.col-sm-9.col--main
 
 		article#kss-content
-
 			for section in sections
 				section(id="#{section.reference}")
 					h1 #{section.header}

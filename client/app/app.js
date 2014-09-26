@@ -21,7 +21,7 @@ var deps = [
 
 // Declare app level modules which depends on filters, and services
 var app = angular.module('vpdb', deps);
-var devsite = angular.module('devsite', deps.concat([ 'ui.router' ]));
+var devsite = angular.module('devsite', [ 'ui.router' ].concat(deps));
 
 /*
  * Configuration for the web application
@@ -34,11 +34,6 @@ app.config(function($routeProvider, $locationProvider, $httpProvider) {
 	$routeProvider.when('/game/:id/add-release',    { templateUrl: 'partials/member/release-add.html' });
 	$routeProvider.when('/games/add',               { templateUrl: 'partials/admin/game-add.html' });
 	$routeProvider.when('/admin/users',             { templateUrl: 'partials/admin/users.html' });
-	$routeProvider.when('/styleguide',              { templateUrl: '/styleguide/overview.html' });
-	$routeProvider.when('/styleguide/sections/:section', { templateUrl: function(route) {
-		return '/styleguide/sections/' + route.section + '.html';
-	}});
-	$routeProvider.when('/auth/:strategy/callback', { templateUrl: 'partials/authenticating.html' });
 
 	$routeProvider.otherwise({ templateUrl:'errors/404.html' });
 
@@ -50,14 +45,30 @@ app.config(function($routeProvider, $locationProvider, $httpProvider) {
 /*
  * Configuration for the developer site
  */
-devsite.config(function($routeProvider, $locationProvider) {
+devsite.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
 
-	$routeProvider.when('/',       { templateUrl: 'partials/home.html' });
+	$stateProvider.state('home', {
+		url: '',
+		templateUrl: 'partials/home.html'
+	});
+
+	console.log('Application initialized.');
+
+/*	$routeProvider.when('/',       { templateUrl: 'partials/home.html' });
 	$routeProvider.when('/:path',  { templateUrl: function(params) {
 		return 'partials/' + params.path + '.html';
 	}});
-	$routeProvider.otherwise({ templateUrl:'errors/404.html' });
-	$locationProvider.html5Mode(true);
+
+	$routeProvider.when('/styleguide/sections/:section', { templateUrl: function(route) {
+		return '/styleguide/sections/' + route.section + '.html';
+	}});
+	$routeProvider.when('/auth/:strategy/callback', { templateUrl: 'partials/authenticating.html' });
+	$routeProvider.when('/styleguide',              { templateUrl: '/styleguide/overview.html' });
+
+	$routeProvider.otherwise({ templateUrl:'errors/404.html' });*/
+
+	//$urlRouterProvider.otherwise("/state1");
+	//$locationProvider.html5Mode(true);
 });
 
 

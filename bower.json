@@ -31,6 +31,7 @@
 		"angular-dragdrop": "~1.0.7",
 		"angular-scrollable": "~0.2.5",
 		"angular-nanoscroller": "~0.2.1",
+		"angular-ui-router": "~0.2.11",
 		"angulartics": "~0.16.1",
 		"ng-file-upload": "~1.6.5",
 		"ngstorage": "~0.3.0",

@@ -21,7 +21,7 @@ var deps = [
 
 // Declare app level modules which depends on filters, and services
 var app = angular.module('vpdb', deps);
-var devsite = angular.module('devsite', deps);
+var devsite = angular.module('devsite', deps.concat([ 'ui.router' ]));
 
 /*
  * Configuration for the web application
@@ -50,12 +50,12 @@ app.config(function($routeProvider, $locationProvider, $httpProvider) {
 /*
  * Configuration for the developer site
  */
-devsite.config(function($routeProvider, $locationProvider, $httpProvider) {
+devsite.config(function($routeProvider, $locationProvider) {
 
 	$routeProvider.when('/',       { templateUrl: 'partials/home.html' });
 	$routeProvider.when('/:path',  { templateUrl: function(params) {
 		return 'partials/' + params.path + '.html';
-	} });
+	}});
 	$routeProvider.otherwise({ templateUrl:'errors/404.html' });
 	$locationProvider.html5Mode(true);
 });

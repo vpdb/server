@@ -1,6 +1,6 @@
 ---
 title: Style Guide
-template: page.jade
+template: styleguide.jade
 menuIndex: 1
 ---
 

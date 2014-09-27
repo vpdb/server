@@ -1,7 +1,6 @@
 "use strict"; /* global ga, _ */
 
 var deps = [
-	'ngRoute',
 	'ngAnimate',
 	'ngSanitize',
 	'ngResource',
@@ -20,7 +19,7 @@ var deps = [
 ];
 
 // Declare app level modules which depends on filters, and services
-var app = angular.module('vpdb', deps);
+var app = angular.module('vpdb', [ 'ngRoute' ].concat(deps));
 var devsite = angular.module('devsite', [ 'ui.router' ].concat(deps));
 
 /*
@@ -36,7 +35,7 @@ app.config(function($routeProvider, $locationProvider, $httpProvider) {
 	$routeProvider.when('/admin/users',             { templateUrl: 'partials/admin/users.html' });
 	$routeProvider.when('/auth/:strategy/callback', { templateUrl: 'partials/authenticating.html' });
 
-	$routeProvider.otherwise({ templateUrl:'errors/404.html' });
+	$routeProvider.otherwise({ templateUrl: 'errors/404.html' });
 
 	$locationProvider.html5Mode(true);
 	$httpProvider.interceptors.push('AuthInterceptor');
@@ -56,6 +55,7 @@ devsite.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
 	});
 
 	$stateProvider.state('styleguide', {
+		abstract: true,
 		url: '/styleguide',
 		templateUrl: 'partials/styleguide-main.html'
 	});
@@ -63,7 +63,6 @@ devsite.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
 	$stateProvider.state('styleguide.main', {
 		url: '',
 		templateUrl: function($stateParams) {
-			console.log('matched main section');
 			return 'partials/styleguide.html';
 		}
 	});
@@ -71,7 +70,6 @@ devsite.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
 	$stateProvider.state('styleguide.section', {
 		url: '/{section:[\\d\\.]+}',
 		templateUrl: function($stateParams) {
-			console.log('matched section %s', $stateParams.section);
 			return 'partials/styleguide/' + $stateParams.section + '.html';
 		}
 	});

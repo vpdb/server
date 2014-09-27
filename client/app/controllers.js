@@ -215,13 +215,19 @@ ctrl.controller('InfoModalCtrl', function($scope, title, subtitle, message, icon
 	$scope.icon = icon;
 });
 
-ctrl.controller('DevsiteCtrl', function($scope, $location, $rootScope) {
-	if (/(\d+)\.\d+$/.test($location.path())) {
-		$scope.section = $location.path().match(/(\d+)\.\d+$/)[1];
-	}
-	$rootScope.$on('$routeChangeSuccess', function(event, route) {
-		$scope.subsection = route.params.section;
+ctrl.controller('DevsiteCtrl', function($scope, $location, $rootScope, $stateParams, $state) {
+
+	$rootScope.$on('$stateChangeStart', function(event, toState, toParams) {
+		$rootScope.section = toState.name;
+		if (toState.name === 'styleguide.section') {
+			$rootScope.subsection = toParams.section;
+		}
+		if (toState.name === 'styleguide.main') {
+			$rootScope.subsection = 'main';
+		}
+		console.log('%s/%s - %s', $rootScope.section, $rootScope.subsection, $rootScope.subsection.substr(0, $rootScope.subsection.indexOf('.')));
 	});
+
 	$scope.scrollTo = function(id) {
 		var old = $location.hash();
 		$location.hash(id);

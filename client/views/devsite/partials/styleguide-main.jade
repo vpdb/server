@@ -2,17 +2,17 @@
 	.col-sm-3.col--menu
 		h1 Contents
 		hr
-		h4.padder-top: a(href="/styleguide")
+		h4.padder-top: a(href="/styleguide", ng-class="{ 'color-primary': subsection == 'main' }")
 			i.fa.fa-home.space-right
 			| Overview
-		accordion.panel-group--accordion(close-others="false")
+		accordion.panel-group--accordion(close-others="true")
 			for section, i in sections
-				accordion-group.panel--inner(heading=section.title, is-open="sgIsOpen#{i}", ng-init="sgIsOpen#{i}=#{section.id}==section")
+				accordion-group.panel--inner(heading=section.title, is-open="sgIsOpen#{i}", ng-init="sgIsOpen#{i}=#{section.id}==subsection.substr(0, subsection.indexOf('.'))")
 					ul.list-group.list-group--simple
 						if section.childSections
 							for subsection in section.childSections
-								li.list-group-item: a(href="/styleguide/#{subsection.reference()}", ng-class="{ active: subsection == '#{subsection.reference()}' }")=subsection.header()
+								li.list-group-item: a(ui-sref='styleguide.section({ section: "#{subsection.reference()}"})', ng-class="{ active: subsection == '#{subsection.reference()}' }")=subsection.header()
 		button.btn.btn-primary.btn--styleguide-toggle-theme(ng-click="toggleTheme()"): i.fa.fa-adjust
+
 	.col-sm-9.col--main
-		h1 content here
-		div(ui-view)
+		| <div ui-view></div>

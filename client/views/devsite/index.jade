@@ -17,8 +17,14 @@ block body
 						i.icon.icon-db
 
 			ul.nav.navbar-nav
-				li(ng-class="{ active: menu == 'home' }")
-					a(href="/styleguide") Style Guide
+				li(ng-class="{ active: section == 'home' }")
+					a(ui-sref="home") Home
+				li(ng-class="{ active: section == 'api' }")
+					a(href="/api") Api
+				li(ng-class="{ active: section == 'styleguide' }")
+					a(ui-sref="styleguide.main") Style Guide
+				li(ng-class="{ active: section == 'architecture' }")
+					a(href="/architecture") Code
 
 			ul.nav.navbar-nav.navbar-right
 				li

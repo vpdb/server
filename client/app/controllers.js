@@ -218,14 +218,19 @@ ctrl.controller('InfoModalCtrl', function($scope, title, subtitle, message, icon
 ctrl.controller('DevsiteCtrl', function($scope, $location, $rootScope, $stateParams, $state) {
 
 	$rootScope.$on('$stateChangeStart', function(event, toState, toParams) {
-		$rootScope.section = toState.name;
+		$rootScope.section = ~toState.name.indexOf('.') ? toState.name.substr(0, toState.name.indexOf('.')) : toState.name;
 		if (toState.name === 'styleguide.section') {
 			$rootScope.subsection = toParams.section;
 		}
 		if (toState.name === 'styleguide.main') {
 			$rootScope.subsection = 'main';
 		}
-		console.log('%s/%s - %s', $rootScope.section, $rootScope.subsection, $rootScope.subsection.substr(0, $rootScope.subsection.indexOf('.')));
+		if (toState.name === 'default') {
+			var p = toParams.path.split('/');
+			$rootScope.section = p[0];
+			$rootScope.subsection = p[1];
+		}
+		console.log('%s/%s', $rootScope.section, $rootScope.subsection);
 	});
 
 	$scope.scrollTo = function(id) {

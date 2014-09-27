@@ -45,7 +45,7 @@ module.exports = function(grunt) {
 			app.use(key, express.static(val));
 		});
 		app.use(function(req, res, next) {
-			if (/\/[^\.]*$/.test(req.path)) {
+			if (/\/[^\.]*$/.test(req.path) || /\.\d+$/.test(req.path)) {
 				res.sendFile(defaultPage);
 			} else {
 				next();

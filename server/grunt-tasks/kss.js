@@ -90,8 +90,7 @@ module.exports = function(grunt) {
 					return done(false);
 				}
 
-				// render index
-				var indexHtml = jade.renderFile('client/views/devsite/index.jade', _.extend({
+				var data = _.extend({
 					sections: _.map(rootRefs, function(rootRef) {
 						return {
 							id: rootRef,
@@ -102,17 +101,23 @@ module.exports = function(grunt) {
 						return parseInt(a.id) > parseInt(b.id);
 					}),
 					pretty: true
-				}, ctrl.viewParams()));
+				}, ctrl.viewParams());
 
+				// render index
+				var indexHtml = jade.renderFile('client/views/devsite/index.jade', data);
+				var styleguideMain = jade.renderFile('client/views/devsite/partials/styleguide-main.jade', data);
+
+
+				// render index (move that to grunt directly)
 				var filename = path.resolve(writeable.devsiteRoot, 'index.html');
 				grunt.log.write('Writing "%s"... ', filename);
 				fs.writeFileSync(filename, indexHtml);
 				grunt.log.ok();
 
-				// render overview
-				filename = path.resolve(writeable.devsiteRoot, 'partials/styleguide.html');
+				// render main
+				filename = path.resolve(writeable.devsiteRoot, 'partials/styleguide-main.html');
 				//grunt.log.write('Writing "%s"... ', filename);
-				fs.writeFileSync(filename, marked(fs.readFileSync('doc/styleguide.md').toString()));
+				fs.writeFileSync(filename, styleguideMain);
 				grunt.log.ok();
 				done();
 			});

@@ -55,13 +55,35 @@ devsite.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
 		templateUrl: 'partials/home.html'
 	});
 
-//	$stateProvider.state('api',          { url: '/api',          templateUrl: 'partials/api.html' });
-//	$stateProvider.state('styleguide',   { url: '/styleguide',   templateUrl: 'partials/styleguide.html' });
-//	$stateProvider.state('architecture', { url: '/architecture', templateUrl: 'partials/architecture.html' });
+	$stateProvider.state('styleguide', {
+		url: '/styleguide',
+		templateUrl: 'partials/styleguide-main.html'
+	});
 
-	$stateProvider.state('dynamic', { url: '/:path', templateUrl: function($stateParams) {
-		return 'partials/' + $stateParams.path + '.html';
-	}});
+	$stateProvider.state('styleguide.main', {
+		url: '',
+		templateUrl: function($stateParams) {
+			console.log('matched main section');
+			return 'partials/styleguide.html';
+		}
+	});
+
+	$stateProvider.state('styleguide.section', {
+		url: '/{section:[\\d\\.]+}',
+		templateUrl: function($stateParams) {
+			console.log('matched section %s', $stateParams.section);
+			return 'partials/styleguide/' + $stateParams.section + '.html';
+		}
+	});
+
+	// default routing
+	$stateProvider.state('default', {
+		url: '/{path:.*}',
+		templateUrl: function($stateParams) {
+			return 'partials/' + $stateParams.path + '.html';
+		}
+	});
+
 
 
 /*	$routeProvider.when('/',       { templateUrl: 'partials/home.html' });

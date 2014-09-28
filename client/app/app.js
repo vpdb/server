@@ -74,13 +74,7 @@ devsite.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
 		}
 	});
 
-	// static documentation
-//	$stateProvider.state('code', {
-//		url: '/code',
-//		templateUrl: 'partials/code/index.html'
-//	});
-
-
+	// static doc
 	$stateProvider.state('doc', {
 		abstract: true,
 		url: '/{section}',
@@ -101,7 +95,6 @@ devsite.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
 		}
 	});
 
-
 	// default routing
 	$stateProvider.state('default', {
 		url: '/{path:.*}',
@@ -110,22 +103,7 @@ devsite.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
 		}
 	});
 
-
-
-/*	$routeProvider.when('/',       { templateUrl: 'partials/home.html' });
-	$routeProvider.when('/:path',  { templateUrl: function(params) {
-		return 'partials/' + params.path + '.html';
-	}});
-
-	$routeProvider.when('/styleguide/sections/:section', { templateUrl: function(route) {
-		return '/styleguide/sections/' + route.section + '.html';
-	}});
-
-	$routeProvider.when('/styleguide',              { templateUrl: '/styleguide/overview.html' });
-
-	$routeProvider.otherwise({ templateUrl:'errors/404.html' });*/
-
-	//$urlRouterProvider.otherwise("/state1");
+	// TODO $urlRouterProvider.otherwise(..)
 });
 
 

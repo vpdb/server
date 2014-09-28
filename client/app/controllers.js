@@ -222,11 +222,12 @@ ctrl.controller('DevsiteCtrl', function($scope, $location, $rootScope, $statePar
 		if (toState.name === 'styleguide.section') {
 			$rootScope.subsection = toParams.section;
 		}
-		if (toState.name === 'styleguide.main') {
-			$rootScope.subsection = 'main';
+		if (toState.name === 'styleguide.index') {
+			$rootScope.subsection = 'index';
 		}
-		if (toState.name === 'doc.main' || toState.name === 'doc.section') {
+		if (toState.name === 'doc.index' || toState.name === 'doc.section') {
 			$rootScope.section = toParams.section;
+			$rootScope.subsection = toState.name === 'doc.section' ? toParams.path.split('/')[0] : 'main';
 		}
 		if (toState.name === 'default') {
 			var p = toParams.path.split('/');

@@ -61,7 +61,7 @@ devsite.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
 		url: '/styleguide',
 		templateUrl: 'partials/styleguide-main.html'
 	});
-	$stateProvider.state('styleguide.main', {
+	$stateProvider.state('styleguide.index', {
 		url: '',
 		templateUrl: function() {
 			return 'partials/styleguide.html';
@@ -88,7 +88,7 @@ devsite.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
 			return 'partials/' + $stateParams.section + '/menu.html';
 		}
 	});
-	$stateProvider.state('doc.main', {
+	$stateProvider.state('doc.index', {
 		url: '',
 		templateUrl: function($stateParams) {
 			return 'partials/' + $stateParams.section + '/index.html';

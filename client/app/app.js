@@ -49,30 +49,58 @@ devsite.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
 
 	$locationProvider.html5Mode(true);
 
+	// home page
 	$stateProvider.state('home', {
 		url: '/',
 		templateUrl: 'partials/home.html'
 	});
 
+	// style guide
 	$stateProvider.state('styleguide', {
 		abstract: true,
 		url: '/styleguide',
 		templateUrl: 'partials/styleguide-main.html'
 	});
-
 	$stateProvider.state('styleguide.main', {
 		url: '',
-		templateUrl: function($stateParams) {
+		templateUrl: function() {
 			return 'partials/styleguide.html';
 		}
 	});
-
 	$stateProvider.state('styleguide.section', {
 		url: '/{section:[\\d\\.]+}',
 		templateUrl: function($stateParams) {
 			return 'partials/styleguide/' + $stateParams.section + '.html';
 		}
 	});
+
+	// static documentation
+//	$stateProvider.state('code', {
+//		url: '/code',
+//		templateUrl: 'partials/code/index.html'
+//	});
+
+
+	$stateProvider.state('doc', {
+		abstract: true,
+		url: '/{section}',
+		templateUrl: function($stateParams) {
+			return 'partials/' + $stateParams.section + '/menu.html';
+		}
+	});
+	$stateProvider.state('doc.main', {
+		url: '',
+		templateUrl: function($stateParams) {
+			return 'partials/' + $stateParams.section + '/index.html';
+		}
+	});
+	$stateProvider.state('doc.section', {
+		url: '/{path:.*}',
+		templateUrl: function($stateParams) {
+			return 'partials/' + $stateParams.section + '/' + $stateParams.path + '.html';
+		}
+	});
+
 
 	// default routing
 	$stateProvider.state('default', {

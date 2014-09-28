@@ -55,7 +55,9 @@ module.exports = function(grunt) {
 					rootRefs.push(currentRoot);
 				}
 			});
-			rootRefs.sort();
+			rootRefs.sort(function(a, b) {
+				return parseInt(a) - parseInt(b);
+			});
 			var sectionTemplate = jade.compile(fs.readFileSync('client/views/devsite/partials/styleguide-section.jade'), { pretty: true });
 
 			var renderSection = function(rootSection, reference, sections, next) {
@@ -97,8 +99,6 @@ module.exports = function(grunt) {
 							title: styleguide.section(rootRef) ? styleguide.section(rootRef).header() : 'Unnamed',
 							childSections: styleguide.section(new RegExp('^' + rootRef + '\\.\\d+$'))
 						};
-					}).sort(function(a, b) {
-						return parseInt(a.id) > parseInt(b.id);
 					}),
 					pretty: true
 				}, ctrl.viewParams());

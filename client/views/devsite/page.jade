@@ -1,28 +1,7 @@
-.row.row--fullheight
+a(id="top")
+h1.h--primary= title
+hr
+block body
+	div.markdown!= contents
 
-	// right column
-	.col-sm-3.col--menu
-		h1 Sections
-		hr
-
-		block menu
-			if section && subsections[section]
-				ul.nav.subnav
-					for subsection in subsections[section]
-						li(class="#{ title == subsection.title ? 'active' : '' }")
-							a(href=subsection.link)
-								| #{subsection.title}
-								if subsection.private
-									i.glyphicon.glyphicon-lock
-		p.padder-top-2x
-
-	// right column
-	.col-sm-9.col--main
-		a(id="top")
-		h1.h--primary= title
-		hr
-		block body
-			div.markdown!= contents
-
-		p.padder-top-2x
-
+p.padder-top-2x

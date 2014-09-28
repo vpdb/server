@@ -122,15 +122,11 @@ module.exports = function(grunt) {
 		},
 
 		metalsmith: {
-			build: {
+			options: {
+				clean: false,
 				dest: 'devsite/partials',
 				src: 'doc',
-				options: {
-					clean: false, metadata: {}, plugins: {
-						'metalsmith-markdown': markdown,
-						'metalsmith-templates': { engine: 'jade', directory: 'client/views/devsite' }
-					}
-				}
+				markdown: markdown
 			}
 		},
 
@@ -211,7 +207,6 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-env');
 	grunt.loadNpmTasks('grunt-express-server');
 	grunt.loadNpmTasks('grunt-gitinfo');
-	grunt.loadNpmTasks('grunt-metalsmith');
 	grunt.loadNpmTasks('grunt-mkdir');
 	grunt.loadNpmTasks('grunt-mocha-test');
 	grunt.loadNpmTasks('grunt-ng-annotate');

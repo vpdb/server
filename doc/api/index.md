@@ -1,3 +1,10 @@
+---
+title: API
+template: page.jade
+menuIndex: 1
+subsectionIndex: 1
+---
+
 ## Security
 
 The VPDB API is partly publicly available, partly restricted to logged users 

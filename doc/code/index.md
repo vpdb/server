@@ -1,7 +1,8 @@
 ---
-title: Architecture
+title: Code
 template: page.jade
 menuIndex: 1
+subsectionIndex: 1
 ---
 
 # Overview

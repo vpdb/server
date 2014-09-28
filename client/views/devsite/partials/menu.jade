@@ -1,0 +1,21 @@
+.row.row--fullheight
+
+	// right column
+	.col-sm-3.col--menu
+		h1 Sections
+		hr
+
+		block menu
+			if section && subsections[section]
+				ul.nav.subnav
+					for subsection in subsections[section]
+						li
+							a(href=subsection.link)
+								| #{subsection.title}
+
+		p.padder-top-2x
+
+	// right column
+	.col-sm-9.col--main
+		| <div ui-view></div>
+

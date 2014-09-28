@@ -225,6 +225,9 @@ ctrl.controller('DevsiteCtrl', function($scope, $location, $rootScope, $statePar
 		if (toState.name === 'styleguide.main') {
 			$rootScope.subsection = 'main';
 		}
+		if (toState.name === 'doc.main' || toState.name === 'doc.section') {
+			$rootScope.section = toParams.section;
+		}
 		if (toState.name === 'default') {
 			var p = toParams.path.split('/');
 			$rootScope.section = p[0];

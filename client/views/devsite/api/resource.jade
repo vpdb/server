@@ -1,0 +1,170 @@
+mixin resource(resource)
+	.panel.panel-white
+		.panel-heading
+			h4.panel-title
+				a.block.collapsed(data-toggle='collapse', href='#panel_#{resource.uniqueId}')
+					if resource.methods
+						each method in resource.methods
+							span.badge(id='#{method.method}_#{resource.uniqueId}', class="badge_#{method.method}") #{method.method} #{helpers.lock(method.securedBy)} !{helpers.lock(method.isPrivate)}
+						span.parent=resource.parentUrl
+						| #{resource.relativeUri}
+						| !{helpers.lock(resource.isPrivate)}
+		.panel-collapse.collapse(id='panel_#{resource.uniqueId}')
+			.panel-body
+				.list-group
+					if resource.methods
+						each method in resource.methods
+							a.list-group-item(href='#', data-toggle='modal', data-target='##{resource.uniqueId}_#{method.method}')
+								span.badge(class='badge_#{method.method}') #{method.method} #{helpers.lock(method.securedBy)} !{helpers.lock(method.isPrivate)}
+								span!=method.descriptionShort
+
+		if resource.methods
+			each method in resource.methods
+				.modal.fade(id='#{resource.uniqueId}_#{method.method}')
+					.modal-dialog.modal-lg
+						.modal-content
+							.modal-header
+								button.close(type='button', data-dismiss='modal', aria-hidden='true') &#x274c;
+								h4.modal-title
+									span.badge(class='badge_#{method.method}') #{method.method} #{helpers.lock(method.securedBy)} !{helpers.lock(method.isPrivate)}
+									| &nbsp;&nbsp;
+									span.parent=resource.parentUrl
+									| #{resource.relativeUri}
+							.modal-body
+								if method.is
+									each is in method.is
+										if is.protected
+											.alert.alert-warning: p: small
+												|Scope required:&nbsp;
+												b= is.protected.scope
+
+								// Nav tabs
+								ul.nav.nav-tabs
+									li.active: a(href='##{resource.uniqueId}_#{method.method}_description', data-toggle='tab') Description
+									li: a(href='##{resource.uniqueId}_#{method.method}_request', data-toggle='tab') Request
+									if method.responses
+										li: a(href='##{resource.uniqueId}_#{method.method}_response', data-toggle='tab') Response
+
+								// Tab panes
+								.tab-content
+									.tab-pane.active(id='#{resource.uniqueId}_#{method.method}_description')
+										span!=method.description
+									.tab-pane(id='#{resource.uniqueId}_#{method.method}_request')
+										if resource.allUriParameters && resource.allUriParameters.length > 0
+											h3 URI Parameters
+											ul
+												each param in resource.allUriParameters
+													li 
+														strong=param.displayName
+														| 
+														em (#{param.type})
+														if param.pattern
+															| 
+															code #{param.pattern}
+
+										if method.queryParameters
+											h3 Query Parameters
+											ul
+												each param, key in method.queryParameters
+													li.markdown
+														strong=key
+														em
+															if param.required && param.required == 'true'
+																|  required
+															if param.enum
+																|  one of (#{param.enum})
+															else
+																|  (#{param.type})
+															if param.default
+																|  (defaults to #{param.default})
+
+														| !{param.description}
+														if param.schema
+															p: small
+																strong Schema:
+																code!=param.schema
+
+														if param.example
+															p: small
+																strong Example:
+																code!=param.example
+
+										if method.headers
+											h3 Headers
+											ul
+												each header, headername in method.headers
+													li.markdown
+														strong=(header.displayName ? header.displayName : headername)
+														em
+															if header.required
+																strong  required
+															if header.enum
+																|  one of (#{header.enum})
+															else
+																|  (#{header.type})
+														if header.description
+															| !{header.description}
+
+										if method.body
+											h3 Body
+											each b, key in method.body
+												p: strong Type: #{key}
+												if formParameters
+													strong Form Parameters
+													ul
+														each param in formParameters
+															li.markdown
+																strong=key
+																em
+																	if param.required
+																		|  required
+																	if param.enum
+																		|  one of (#{param.enum})
+																	else
+																		|  (#{param.type})
+																| !{description}
+																if param.schema
+																	p:small
+																		strong Schema:
+																		code!=param.schema
+																if param.example
+																	p: small
+																		strong Example:
+																		code!=param.example
+												if b.schema
+													+jsonSchema(b.schema, resource.uniqueId + '_' + method.method + '_request')
+
+												if b.example
+													pre!=helpers.highlight(b.example)
+
+									if method.responses
+										.tab-pane(id='#{resource.uniqueId}_#{method.method}_response')
+											each response, statusCode in method.responses
+												h2 HTTP status code&nbsp;
+													a(href='http://httpstatus.es/#{statusCode}', target='_blank')=statusCode
+												| !{response.description}
+
+												if response.headers
+													h3 Headers
+													ul
+														each header, headername in response.headers
+															li
+																strong=headername
+																| : #{header.type}
+																if header.description
+																	| !{header.description}
+												if response.body
+													h3 Body
+													each rb, contentType in response.body
+														p
+															strong Type: #{contentType}
+														if rb && rb.schema
+															+jsonSchema(rb.schema, resource.uniqueId + '_' + method.method + '_response_' + statusCode)
+														if rb && rb.example
+															pre!=helpers.highlight(rb.example)
+	//- recursively traverse sub-resources
+	if resource.resources
+		each subResource in resource.resources
+			+resource(subResource)
+
++resource(resource)

@@ -58,7 +58,7 @@ module.exports = function(grunt) {
 			rootRefs.sort(function(a, b) {
 				return parseInt(a) - parseInt(b);
 			});
-			var sectionTemplate = jade.compile(fs.readFileSync('client/views/devsite/partials/styleguide-section.jade'), { pretty: true });
+			var sectionTemplate = jade.compile(fs.readFileSync('client/views/devsite/styleguide-section.jade'), { pretty: true });
 
 			var renderSection = function(rootSection, reference, sections, next) {
 //				grunt.log.writeln('Generating %s %s"', reference, rootSection ? rootSection.header() : 'Unnamed');
@@ -105,7 +105,7 @@ module.exports = function(grunt) {
 
 				// render index
 				var indexHtml = jade.renderFile('client/views/devsite/index.jade', data);
-				var styleguideMain = jade.renderFile('client/views/devsite/partials/styleguide-main.jade', data);
+				var styleguideMain = jade.renderFile('client/views/devsite/styleguide-main.jade', data);
 
 
 				// render index (move that to grunt directly)

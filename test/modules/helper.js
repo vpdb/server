@@ -28,22 +28,10 @@ exports.setupUsers = function(request, config, done) {
 	request.tokens = {};
 
 	var that = this;
-	var genUser = function() {
-		
-		var username = '';
-		do {
-			username = faker.Internet.userName().replace(/[^a-z0-9\._]+/gi, '');
-		} while (username.length < 3);
 
-		return {
-			username: username,
-			password: randomstring.generate(10),
-			email: faker.Internet.email().toLowerCase()
-		};
-	};
 	var createUser = function(name, config) {
 		return function(next) {
-			var user = genUser();
+			var user = exports.genUser();
 
 			// 1. create user
 			debug('%s <%s>: Creating user...', name, user.email);
@@ -114,7 +102,20 @@ exports.setupUsers = function(request, config, done) {
 			done();
 		});
 	});
+};
 
+exports.genUser = function() {
+
+	var username = '';
+	do {
+		username = faker.Internet.userName().replace(/[^a-z0-9\._]+/gi, '');
+	} while (username.length < 3);
+
+	return {
+		username: username,
+		password: randomstring.generate(10),
+		email: faker.Internet.email().toLowerCase()
+	};
 };
 
 /**

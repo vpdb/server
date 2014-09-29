@@ -1,0 +1,22 @@
+{
+	"$schema": "http://json-schema.org/schema",
+	"title": "User",
+	"description": "A user is a registrated person or client interacting with the VPDB API.",
+	"type": "object",
+	"properties": {
+		"id": {
+			"description": "Unique identifier for a user.",
+			"type": "string",
+			"pattern": "^[a-z0-9_-]{7,}$",
+			"readOnly": true
+		},
+		"name": {
+			"description": "Username used when locally logging in.",
+			"type": "string",
+			"minLength": 3,
+			"maxLength": 30,
+			"unique": true
+		}
+	},
+	"required": ["name", "color", "categoryKey", "imageKey"]
+}

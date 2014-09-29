@@ -46,7 +46,7 @@ module.exports = function(opts) {
 		for (var i = 0; i < metadata[opts.name].length; i++) {
 			sectionIndex = metadata[opts.name][i];
 			var html = jade.renderFile(opts.src, _.extend(
-				_.pick(metadata, 'subsections'),
+				_.pick(metadata, 'subsections', 'api'),
 				_.pick(sectionIndex, 'section'),
 				options
 			));

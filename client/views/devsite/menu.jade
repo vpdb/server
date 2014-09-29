@@ -13,6 +13,16 @@
 							a(href=subsection.link)
 								| #{subsection.title}
 
+			if section === 'api' && api.resources
+				h1 Resources
+				hr
+				ul.nav.subnav
+					each resource in api.resources
+						li
+							h4=resource.displayName
+							a(href='/api/reference/#{resource.uniqueId.substr(1)}')
+								span=resource.relativeUri
+
 		p.padder-top-2x
 
 	// right column

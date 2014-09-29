@@ -1,0 +1,19 @@
+201 Created
+Accept-Encoding: gzip, deflate
+Content-Length: 76
+Content-Type: application/json
+
+{
+  "plan": "free",
+  "name": "Adalberto",
+  "username": "Adalberto",
+  "email": "freddy@jarret.com",
+  "provider": "local",
+  "created_at": "2014-09-29T14:24:16.069Z",
+  "is_active": true,
+  "roles": [
+    "member"
+  ],
+  "id": "-1MEN2XfE",
+  "gravatar_id": "7701de9028d293d6eeb1aa69d6c245df"
+}

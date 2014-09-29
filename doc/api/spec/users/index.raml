@@ -1,0 +1,12 @@
+displayName: Users
+description: Registrated users.
+post:
+  description: Registers a new user.
+  body:
+    application/json:
+      example: !include post-req.json
+  responses:
+    201:
+      body:
+        application/json:
+          example: !include post-res-201.json

@@ -63,14 +63,35 @@ devsite.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
 	});
 	$stateProvider.state('styleguide.index', {
 		url: '',
-		templateUrl: function() {
-			return 'partials/styleguide.html';
-		}
+		templateUrl: 'partials/styleguide.html'
 	});
 	$stateProvider.state('styleguide.section', {
 		url: '/{section:[\\d\\.]+}',
 		templateUrl: function($stateParams) {
 			return 'partials/styleguide/' + $stateParams.section + '.html';
+		}
+	});
+
+	// api doc
+	$stateProvider.state('api', {
+		abstract: true,
+		url: '/api',
+		templateUrl: 'partials/api/menu.html'
+	});
+	$stateProvider.state('api.index', {
+		url: '',
+		templateUrl: 'partials/api/index.html'
+	});
+	$stateProvider.state('api.reference', {
+		url: '/reference/{ref}',
+		templateUrl: function($stateParams) {
+			return 'partials/api/reference/' + $stateParams.ref + '.html';
+		}
+	});
+	$stateProvider.state('api.section', {
+		url: '/{path:.*}',
+		templateUrl: function($stateParams) {
+			return 'partials/api/' + $stateParams.path + '.html';
 		}
 	});
 
@@ -88,6 +109,17 @@ devsite.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
 			return 'partials/' + $stateParams.section + '/index.html';
 		}
 	});
+
+//	$stateProvider.state('doc.api', {
+//		url: '/reference',
+//		templateUrl: function($stateParams) {
+//			if ($stateParams.section === 'api') {
+//				return 'partials/api/reference/index.html';
+//			} else {
+//				return 'partials/' + $stateParams.section + '/' + $stateParams.path + '.html';
+//			}
+//		}
+//	});
 	$stateProvider.state('doc.section', {
 		url: '/{path:.*}',
 		templateUrl: function($stateParams) {

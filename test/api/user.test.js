@@ -1,5 +1,6 @@
 "use strict"; /*global describe, before, after, it*/
 
+var _ = require('lodash');
 var request = require('superagent');
 var expect = require('expect.js');
 
@@ -22,6 +23,23 @@ describe('The VPDB `user` API', function() {
 
 	after(function(done) {
 		hlp.cleanup(request, done);
+	});
+
+	describe('when a user registrates', function() {
+
+		it.only('should be able to retrieve an authentication token', function(done) {
+			var user = hlp.genUser();
+			request
+				.post('/api/users')
+				.save({ path: 'users/post' })
+				.send(user)
+				.end(function(err, res) {
+					hlp.expectStatus(err, res, 201);
+					hlp.doomUser(res.body.id);
+					// try to obtain a token
+					request.post('/api/authenticate').send(_.pick(user, 'username', 'password')).end(hlp.status(200, done));
+				});
+		});
 	});
 
 	describe('when providing a valid authentication token', function() {

@@ -38,6 +38,7 @@ module.exports = function(grunt) {
 		var markdown = require('metalsmith-markdown');
 		var sections = require('metalsmith-sections');
 		var templates = require('metalsmith-templates');
+		var raml = require('./metalsmith/raml');
 		var links = require('./metalsmith/links');
 		var menu = require('./metalsmith/menu');
 
@@ -75,10 +76,21 @@ module.exports = function(grunt) {
 		 */
 		metalsmith.use(links({ absolute: true, noext: true }));
 
+		/* generates the api doc */
+		metalsmith.use(raml({
+			src: 'doc',
+			files: {
+				'core': { src: 'api/spec/index.raml', dest: 'api/reference' }
+			},
+			template: 'client/views/devsite/api/resource.jade'
+//			marked: markdown
+//			section: 'api',
+		}));
+
 		/* loops through metalsmith.sections and renders a given template on it */
 		metalsmith.use(menu({
 			name: 'sections',
-			src: 'client/views/devsite/partials/menu.jade',
+			src: 'client/views/devsite/menu.jade',
 			dest: 'menu.html'
 		}));
 

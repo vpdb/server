@@ -1,0 +1,157 @@
+mixin jsonSchemaTable(schema)
+	.jsonSchemaLevel
+		if schema.type == 'array'
+			if schema.title
+				h4= schema.title
+			if schema.description
+				p= schema.description
+			+jsonSchemaTable(schema.items)
+		else
+			- itemSchemas = []
+			table.table.table-striped
+				if schema.title || schema.description
+					caption
+						h4= schema.title
+						if schema.description
+							p= schema.description
+				thead
+					tr
+						th Property
+						th Type
+						th Constraints
+						th Description
+				tbody
+					each property, name in schema.properties
+						if property.items
+							- itemSchemas.push(property.items)
+						tr
+							td
+								if schema.required && schema.required.indexOf(name) > -1
+									strong= name
+								else
+									= name
+							td= property.type
+							td
+								ul
+									if property.readOnly
+										li
+											em read-only
+											|  
+									if property.writeOnly
+										li
+											em write-only
+											|  
+									if property.unique
+										li
+											strong
+												em unique
+											|  
+									if property.pattern
+										li
+											code(style="white-space: nowrap;")
+												| /
+												= property.pattern
+												| /
+									if property.format == 'date-time'
+										li
+											a(href='http://en.wikipedia.org/wiki/ISO_8601') ISO-8601 date
+									else if property.format == 'uri'
+										li
+											| must be a valid URL
+									if property.minimum || property.maximum
+										li
+											if property.minimum !== undefined || property.maximum !== undefined
+												if property.minimum === property.maximum
+													| must be 
+													= property.minimum
+												else if property.minimum !== undefined && property.maximum !== undefined
+													| between 
+													= property.minimum
+													if property.exclusiveMinimum
+														|  (exclusive)
+													else
+														|  (inclusive)
+													|  and 
+													= property.maximum
+													if property.exclusiveMaximum
+														|  (exclusive)
+													else
+														|  (inclusive)
+												else if property.minimum !== undefined
+													| must be 
+													if property.exclusiveMinimum
+														| greater than 
+													else
+														| greater than or equal to 
+													= property.minimum
+												else
+													| must be 
+													if property.exclusiveMaximum
+														| smaller than 
+													else
+														| smaller than or equal to 
+													= property.maximum
+									if property.minLength && property.maxLength
+										li
+											if property.minLength === property.maxLength
+												= property.minLength
+												if property.minLength === 1
+													|  char
+												else
+													|  chars
+											else
+												= property.minLength
+												| -
+												= property.maxLength
+												|  chars
+									if property.enum
+										li
+											if property.enum.length === 1
+												| must be 
+												code= property.enum[0]
+											else
+												| one of
+												each value, i in property.enum
+													if i != 0
+														| , 
+													else
+														|  
+													code= value
+									if property.minItems || property.maxItems
+										li
+											if property.minItems && property.maxItems
+												if property.minItems === 1
+													| exactly 1 item
+												else
+													| exactly 
+													= property.minItems
+													|  items
+											else if property.minItems
+												if property.minItems === 1
+													| at least 1 item
+												else
+													| at least 
+													= property.minItems
+													|  items
+											else if property.maxItems
+												if property.maxItems === 1
+													| at most 1 item
+												else
+													| at most 
+													= property.maxItems
+													|  items
+							td= property.description
+
+			small
+				p
+					| Property names in 
+					strong bold
+					|  indicate that the property is required. Properties marked as 
+					em read-only
+					|  are provided by the server once a resource has been created or is in the correct state. Properties marked as 
+					em write-only
+					|  can be given in requests but are never shown in responses for security reasons.
+
+			if itemSchemas.length
+				each itemSchema in itemSchemas
+					+jsonSchemaTable(itemSchema)

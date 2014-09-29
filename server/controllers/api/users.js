@@ -54,7 +54,7 @@ exports.create = function(req, res) {
 			if (validationErr) {
 				return api.fail(res, error('Validations failed: %j', validationErr.errors).errors(validationErr.errors).warn('create'), 422);
 			}
-			return api.success(res, user, 201);
+			return api.success(res, user.toDetailed(), 201);
 
 		}, 'Error creating user <%s>.'));
 

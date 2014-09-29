@@ -1,0 +1,19 @@
+include resource.jade
+include json-schema.jade
+
+.page-header
+	small
+	b Endpoint: &nbsp;&nbsp;
+	= baseUri
+
+each mainResource in resources
+	.panel.panel-default
+		.panel-heading
+			h3.panel-title(id=mainResource.uniqueId)=mainResource.displayName ? mainResource.displayName : mainResource.relativeUri
+		.panel-body
+			if mainResource.description
+				.resource-description!=mainResource.description
+			.panel-group
+				+resource(mainResource)
+		.panel-footer
+			a(href="#top").btn Back to top

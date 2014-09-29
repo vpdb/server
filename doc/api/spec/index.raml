@@ -5,5 +5,10 @@ baseUri: https://vpdb.ch/api
 protocols: [HTTPS]
 mediaType: application/json
 
+securitySchemes:
+  - oauth2: !include _securitySchemes/oauth2.raml
+
+traits:
+  - root-protected: !include _traits/root-protected.raml
 
 /users: !include users/index.raml

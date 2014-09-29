@@ -65,3 +65,31 @@
 
 	+ .badge--tag
 		margin-left 25px
+
+
+// APIDoc verb
+//
+// Verb in the APIDoc, like GET, POST, PUT etc
+//
+// Markup:
+// <div class="badge {$modifiers}">
+//   GET
+// </div>
+//
+// badge--verb        - Tag
+//
+// Styleguide 20.3
+.badge--verb
+	float left
+	width 100px
+	margin-top 5px
+	margin-bottom 10px
+	margin-right 15px
+	padding-top 5px
+	padding-bottom 5px
+	font-weight $font-weight-bold
+	text-transform uppercase
+	border-radius $border-radius-small
+
+	+ div
+		padding-top 5px

@@ -23,6 +23,7 @@ var _ = require('lodash');
 var jade = require('jade');
 var async = require('async');
 var debug = require('debug')('metalsmith-raml');
+var marked = require('marked');
 var raml2obj = require('raml2obj');
 var relative = require('path').relative;
 var normalize = require('path').normalize;
@@ -41,7 +42,11 @@ module.exports = function(opts) {
 		configuredFiles[normalize(value.src)] = { dest: value.dest, name: key };
 	});
 
-	return function (files, metalsmith, done) {
+	if (opts.markdown) {
+		marked.setOptions(opts.markdown);
+	}
+
+	return function(files, metalsmith, done) {
 
 		var filepath;
 		var srcFiles = {};
@@ -72,7 +77,7 @@ module.exports = function(opts) {
 					var dest = destFolder + '/' + resource.uniqueId.substr(1) + '.html';
 
 					try {
-						var html = jade.renderFile(opts.template, { resource: resource, helpers: helpers() });
+						var html = jade.renderFile(opts.template, { resource: resource, hlp: helpers(opts) });
 						files[dest] = { contents: new Buffer(html) };
 					} catch (e) {
 						console.err(e);
@@ -80,6 +85,7 @@ module.exports = function(opts) {
 					}
 				});
 				metadata.api = obj;
+				require('fs').writeFileSync('raml.json', JSON.stringify(obj, null, '\t'));
 				next();
 			}, next);
 		}, done);
@@ -87,24 +93,42 @@ module.exports = function(opts) {
 	};
 };
 
-function helpers() {
+function helpers(opts) {
 	return {
-		lock: function(securedBy) {
-			if (securedBy && securedBy.length) {
-				var index = securedBy.indexOf(null);
-				if (index !== -1) {
-					securedBy.splice(index, 1);
-				}
-				if (securedBy.length) {
-					return ' <span class="glyphicon glyphicon-lock" title="Authentication required"></span>';
-				}
-			}
-			if (securedBy) {
-				return ' <i class="glyphicon glyphicon-lock" title="Internal"></i>';
-			}
-		},
 		highlight: function(code) {
 			return code;
+		},
+		markdown: function(md) {
+			return marked(md);
+		},
+		authscope: function(securedBy) {
+			if (!securedBy || !securedBy.length || !securedBy[0].oauth2 || !securedBy[0].oauth2.scopes || !securedBy[0].oauth2.scopes.length) {
+				return '<i class="icon icon-globe"></i>';
+			}
+			var icons = '';
+			_.each(securedBy[0].oauth2.scopes, function(scope) {
+				var klass = '';
+				switch (scope) {
+					case 'ROOT':
+						klass = 'icon icon-crown';
+						break;
+					case 'ADMIN':
+						klass = 'icon icon-badge';
+						break;
+					case 'CONTRIB':
+						klass = 'icon icon-diamond';
+						break;
+					case 'MEMBER':
+						klass = 'icon icon-user';
+						break;
+					case 'ANON':
+						klass = 'icon icon-globe';
+						break;
+				}
+				icons += '<i class="' + klass + '"></i>';
+			});
+			return icons;
+
 		}
 	};
 }

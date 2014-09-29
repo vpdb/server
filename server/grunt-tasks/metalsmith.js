@@ -82,8 +82,8 @@ module.exports = function(grunt) {
 			files: {
 				'core': { src: 'api/spec/index.raml', dest: 'api/reference' }
 			},
-			template: 'client/views/devsite/api/resource.jade'
-//			marked: markdown
+			template: 'client/views/devsite/api/resource.jade',
+			markdown: markdown
 //			section: 'api',
 		}));
 

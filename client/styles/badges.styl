@@ -67,18 +67,38 @@
 		margin-left 25px
 
 
+// Small Badge
+//
+// Looks good inline.
+//
+// Markup:
+// <p>This is a <span class="badge {$modifiers}">required</span> attribute.</p>
+//
+// badge--small        - Small Badge
+//
+// Styleguide 20.3
+.badge--small
+	font-size 80%
+	padding 3px 5px
+	text-transform uppercase
+	border-radius $border-radius-small
+
+
 // APIDoc verb
 //
 // Verb in the APIDoc, like GET, POST, PUT etc
 //
 // Markup:
-// <div class="badge {$modifiers}">
-//   GET
-// </div>
+// <div class="badge {$modifiers} badge--verb--get">GET</div>
+// <div class="badge {$modifiers} badge--verb--post">POST</div>
+// <div class="badge {$modifiers} badge--verb--put">PUT</div>
+// <div class="badge {$modifiers} badge--verb--delete">DELETE</div>
+// <div class="badge {$modifiers} badge--verb--patch">PATCH</div>
+// <div class="clearfix"></div>
 //
-// badge--verb        - Tag
+// badge--verb - HTTP Verb
 //
-// Styleguide 20.3
+// Styleguide 20.4
 .badge--verb
 	float left
 	width 100px

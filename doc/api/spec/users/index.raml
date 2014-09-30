@@ -1,7 +1,11 @@
 displayName: Users
 description: Registered users. **Markdown** *test*.
 post:
-  description: Registers a new user.
+  description: |
+    Register a new user.
+
+    New users post their username, email and password to this resource and
+    receive their profile in return.
   body:
     application/json:
       example: !include post-req.json
@@ -12,5 +16,36 @@ post:
           example: !include post-res-201.json
 
 get:
-  description: List all users.
+  description: |
+    List all users.
+
+    Note that only admin can really *list* all users, anonymous must provide a
+    search query.
   securedBy: [ oauth2: { scopes: [ ADMIN, ANON ] } ]
+  queryParameters:
+    q:
+      description: |
+        Search query. As administrator, any length is allowed, anonymous must
+        provide at least three characters.
+      required: true
+      minLength: 3
+      type: string
+      example: "freez"
+
+/{user_id}:
+  description: User entity
+  get:
+    description: Get the user with a given ID.
+    headers:
+      Zencoder-Api-Key:
+        displayName: ZEncoder API Key
+      X-Zencoder-Job-Metadata:
+        description: |
+          Field names prefixed with `X-Zencoder-Job-Metadata` contain user-specified metadata.
+          The API does not validate or use this data. All metadata headers will be stored
+          with the job and returned to the client when this resource is queried.
+        type: string
+        required: true
+        minLength: 30
+        maxLength: 30
+        example: abcdefghijabcdefghijabcdefghij

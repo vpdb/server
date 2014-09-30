@@ -1,10 +1,11 @@
 mixin resource(resource)
 
-	h1.h--primary=resource.displayName
-	hr
-	.markdown!=hlp.markdown(resource.description)
+	if !resource.parentUrl
+		h1.h--primary=resource.displayName
+		hr
+		.markdown!=hlp.markdown(resource.description)
 
-	h2.h--code.h--small=resource.relativeUri
+	h2.h--code.h--small=resource.parentUrl + resource.relativeUri
 	hr
 
 	each method in resource.methods
@@ -12,52 +13,118 @@ mixin resource(resource)
 		.apidoc-method-wrapper(ng-controller="MethodCollapseCtrl")
 			.apidoc-method(ng-click="isCollapsed = !isCollapsed")
 				.badge.badge--verb(class="badge--verb--#{method.method}")=method.method
-				div
-					| !{method.description}
-					.pull-right!=hlp.authscope(method.securedBy, [ 'space-left' ])
+				| !{hlp.short(method.description)}
+				.pull-right!=hlp.authscope(method.securedBy, [ 'space-left' ])
 			.clearfix
 			div(collapse="isCollapsed")
 				.well.well--full-width
 					tabset.tabset--transparent
+
+						//------------------------------------------
+						//- OVERVIEW
+						//------------------------------------------
 						tab(heading="Overview")
-							p Overview Content
+							span!=hlp.markdown(method.description)
+
+						//------------------------------------------
+						//- REQUEST
+						//------------------------------------------
 						tab(heading="Request")
+
+							//------------------------------------------
+							//- uri parameters
+							//------------------------------------------
+							if resource.allUriParameters && resource.allUriParameters.length > 0
+								p: u URI Parameters:
+								ul.list
+									each param in resource.allUriParameters
+										li
+											strong=param.displayName
+											| &nbsp;
+											em (#{param.type})
+											if param.pattern
+												code #{param.pattern}
+
+							//------------------------------------------
+							//- query parameters
+							//------------------------------------------
+							if method.queryParameters
+								p: u Query Parameters:
+								ul.list
+									each param, key in method.queryParameters
+										li.markdown
+											strong=key
+											if param.required
+												| &nbsp;
+												span.badge.badge--small required
+											if param.enum
+												| &nbsp;
+												em one of (#{param.enum})
+											else
+												| &nbsp;
+												em (#{param.type})
+											if param.default
+												| &nbsp;
+												| (defaults to #{param.default})
+
+											if param.description
+												| !{hlp.markdown(param.description)}
+											if param.schema
+												p: small
+													strong Schema:
+													code!=param.schema
+
+											if param.example
+												p: small
+													em Example:
+													| &nbsp;
+													code!=param.example
+
+							//------------------------------------------
+							//- headers
+							//------------------------------------------
+							if method.headers
+								p: u Headers:
+								ul.list
+									each header, headername in method.headers
+										li.markdown
+											strong=headername
+											if header.required
+												| &nbsp;
+												span.badge.badge--small required
+											if header.enum
+												| &nbsp;
+												em one of (#{header.enum})
+											else
+												| &nbsp;
+												em (#{header.type})
+											if header.displayName && header.displayName != headername
+												| &nbsp;&mdash;
+												| #{header.displayName}
+											if header.description
+												| !{hlp.markdown(header.description)}
+
+							//------------------------------------------
+							//- request body
+							//------------------------------------------
 							if method.body
-								h3 Body
+								p: u Example Request:
 								each b, key in method.body
-									if formParameters
-										strong Form Parameters
-										ul
-											each param in formParameters
-												li.markdown
-													strong=key
-													em
-														if param.required
-															|  required
-														if param.enum
-															|  one of (#{param.enum})
-														else
-															|  (#{param.type})
-													| !{description}
-													if param.schema
-														p:small
-															strong Schema:
-															code!=param.schema
-													if param.example
-														p: small
-															strong Example:
-															code!=param.example
 									if b.example
 										tabset
+											code.code--dark.pull-right=key
 											tab(heading="HTTP")
 												pre!=hlp.highlight(b.example, true)
 											tab(heading="Curl")
 												pre!=hlp.toCurl(b.example)
 
+						//------------------------------------------
+						//- RESPONSE
+						//------------------------------------------
 						tab(heading="Response")
 							p Response Content
 
-
+	p.padder-bottom
 
 	//- recursively traverse sub-resources
 	if resource.resources

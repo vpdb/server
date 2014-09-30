@@ -112,6 +112,12 @@ function helpers(opts) {
 			return code ? highlight.highlightAuto(code).value : '';
 		},
 
+		short: function(text) {
+			// create short description
+			var dot = text.indexOf('.');
+			return marked(text.substring(0, dot > 0 ? dot: text.length));
+		},
+
 		toCurl: function(req) {
 			var line, words, method;
 			var split = splitReq(req);

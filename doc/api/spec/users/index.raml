@@ -31,6 +31,18 @@ get:
       minLength: 3
       type: string
       example: "freez"
+  body:
+      application/json:
+        example: !include list-req.json
+  responses:
+    200:
+      body:
+        application/json:
+          example: !include list-res-200.json
+    401:
+      body:
+        application/json:
+          example: !include list-res-401.json
 
 /{user_id}:
   description: User entity

@@ -25,7 +25,7 @@ module.exports = function(superagent, options) {
 	options.saveHost = options.saveHost || 'vpdb.ch';
 	options.saveRoot = options.saveRoot || 'doc/api/spec';
 	options.saveReqHeaders = options.saveReqHeaders || [ 'accept-encoding', 'content-length', 'content-type' ];
-	options.saveResHeaders = options.saveResHeaders || [ 'content-length', '' ];
+	options.saveResHeaders = options.saveResHeaders || [ 'content-length' ];
 
 	var Request = superagent.Request;
 
@@ -67,7 +67,7 @@ module.exports = function(superagent, options) {
 		if (this._saveRes) {
 			dest = options.saveRoot + '/' + this._saveRes.path + '-res-' + this.res.statusCode + '.json';
 			dump = this.res.statusCode + ' ' + statusMessage[this.res.statusCode] + '\r\n';
-			headers = this._saveRes.headers || options.saveReqHeaders;
+			headers = this._saveRes.headers || options.saveResHeaders;
 			for (i = 0; i < headers.length; i++) {
 				if (this.req._headers[headers[i]]) {
 					dump += headers[i].replace(/-(.)|^(.)/g, uppercase) + ': ' + this.req._headers[headers[i]] + '\r\n';

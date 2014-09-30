@@ -1,0 +1,83 @@
+200 OK
+
+[
+  {
+    "id": "Zky85BB7V",
+    "name": "Lora",
+    "username": "Lora",
+    "gravatar_id": "52f16234564c706e667d3322cd65a715",
+    "email": "kelsie@ansley.us",
+    "is_active": true,
+    "roles": [
+      "root",
+      "mocha"
+    ],
+    "plan": "unlimited",
+    "created_at": "2014-09-30T22:25:10.154Z"
+  },
+  {
+    "id": "Zy7y89SrmV",
+    "name": "Isabella",
+    "username": "Isabella",
+    "gravatar_id": "bd2587637449a8ea9009de1f6ec41124",
+    "email": "carlos@kenyon.io",
+    "is_active": true,
+    "roles": [
+      "root"
+    ],
+    "plan": "free",
+    "created_at": "2014-09-30T22:25:10.172Z"
+  },
+  {
+    "id": "ZkPyIcBBXV",
+    "name": "Eloise.Krajcik",
+    "username": "Eloise.Krajcik",
+    "gravatar_id": "5b3d412b69c9e5597e1ca30ec2289ace",
+    "email": "kian_wolf@shanel.us",
+    "is_active": true,
+    "roles": [
+      "admin"
+    ],
+    "plan": "free",
+    "created_at": "2014-09-30T22:25:10.191Z"
+  },
+  {
+    "id": "b1s1U9Hr7N",
+    "name": "Neal",
+    "username": "Neal",
+    "gravatar_id": "a8c4477dabcc5801a60d3dfb3d03c02c",
+    "email": "shaina@jermey.co.uk",
+    "is_active": true,
+    "roles": [
+      "member"
+    ],
+    "plan": "free",
+    "created_at": "2014-09-30T22:25:10.208Z"
+  },
+  {
+    "id": "-1ygy8crHmE",
+    "name": "Vern",
+    "username": "Vern",
+    "gravatar_id": "36c591735562d2aeb982fa72c62e0845",
+    "email": "eden_schroeder@athena.tv",
+    "is_active": true,
+    "roles": [
+      "member"
+    ],
+    "plan": "free",
+    "created_at": "2014-09-30T22:25:10.229Z"
+  },
+  {
+    "id": "W1Qe18cHSXE",
+    "name": "Emery_Schulist",
+    "username": "Emery_Schulist",
+    "gravatar_id": "162ddb5b6d76cc91b2ec8e9daa96fe98",
+    "email": "jamey.balistreri@archibald.me",
+    "is_active": true,
+    "roles": [
+      "member"
+    ],
+    "plan": "free",
+    "created_at": "2014-09-30T22:25:10.249Z"
+  }
+]

@@ -121,8 +121,22 @@ mixin resource(resource)
 						//------------------------------------------
 						//- RESPONSE
 						//------------------------------------------
-						tab(heading="Response")
-							p Response Content
+						if method.responses
+							tab(heading="Response")
+
+								//------------------------------------------
+								//- response body
+								//------------------------------------------
+
+								p: u Example Response:
+								tabset
+									code.code--dark.pull-right application/json
+									each response, statusCode in method.responses
+										if response.body
+											each rb, contentType in response.body
+												if rb && rb.example
+													tab(heading=statusCode)
+														pre!=hlp.highlight(rb.example, true)
 
 	p.padder-bottom
 

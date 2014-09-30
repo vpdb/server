@@ -25,9 +25,26 @@ describe('The VPDB `user` API', function() {
 		hlp.cleanup(request, done);
 	});
 
+	describe('when listing all users', function() {
+
+		it('the number of current users should be returned', function(done) {
+			request
+				.get('/api/users')
+				.as('admin')
+				.save({ path: 'users/list' })
+				.end(function(err, res) {
+					hlp.expectStatus(err, res, 200);
+					expect(res.body).to.be.an('array');
+					expect(res.body).to.have.length(_.keys(hlp.users).length);
+					done();
+				});
+		});
+	});
+
+
 	describe('when a user registrates', function() {
 
-		it.only('should be able to retrieve an authentication token', function(done) {
+		it('should be able to retrieve an authentication token', function(done) {
 			var user = hlp.genUser();
 			request
 				.post('/api/users')

@@ -20,12 +20,14 @@
 "use strict";
 
 var _ = require('lodash');
+var url = require('url');
 var jade = require('jade');
 var async = require('async');
 var debug = require('debug')('metalsmith-raml');
 var marked = require('marked');
 var raml2obj = require('raml2obj');
 var relative = require('path').relative;
+var highlight = require('highlight.js');
 var normalize = require('path').normalize;
 
 
@@ -77,7 +79,7 @@ module.exports = function(opts) {
 					var dest = destFolder + '/' + resource.uniqueId.substr(1) + '.html';
 
 					try {
-						var html = jade.renderFile(opts.template, { resource: resource, hlp: helpers(opts) });
+						var html = jade.renderFile(opts.template, { resource: resource, hlp: helpers(_.extend(opts, { api: obj })) });
 						files[dest] = { contents: new Buffer(html) };
 					} catch (e) {
 						console.err(e);
@@ -95,40 +97,102 @@ module.exports = function(opts) {
 
 function helpers(opts) {
 	return {
-		highlight: function(code) {
-			return code;
-		},
 		markdown: function(md) {
 			return marked(md);
 		},
-		authscope: function(securedBy) {
+
+		highlight: function(code, isHttp) {
+			if (!code) {
+				return code;
+			}
+			if (isHttp) {
+				var split = splitReq(code);
+				return highlight.highlight('http', split.headers).value + '\r\n\r\n' + highlight.highlight('json', split.body).value;
+			}
+			return code ? highlight.highlightAuto(code).value : '';
+		},
+
+		toCurl: function(req) {
+			var line, words, method;
+			var split = splitReq(req);
+			var lines = split.headers.split(/\r\n/);
+			var cmd = 'curl';
+			var validHeaders = [ 'content-type', 'authorization' ];
+			for (var i = 0; i < lines.length; i++) {
+				line = lines[i];
+				if (i === 0) {
+					words = line.split(/\s/);
+					method = words[0];
+					if (method !== 'GET') {
+						cmd += ' -X "' + method + '"';
+					}
+					cmd += ' ' + url.resolve(opts.api.baseUri, words[1]);
+				} else {
+					words = line.split(/:/);
+					if (_.contains(validHeaders, words[0].toLowerCase())) {
+						cmd += ' \\\n   -H "' + line.replace(/"/g, '\\"') + '"';
+					}
+				}
+			}
+			if (split.body) {
+				try {
+					cmd += ' \\\n   -d \'' + JSON.stringify(JSON.parse(split.body)).replace(/'/g, "\\'") + '\'';
+				} catch (e) {
+					cmd = 'Cannot parse JSON body: \n' + e;
+				}
+			}
+			return highlight.highlight('bash', cmd).value;
+		},
+
+		authscope: function(securedBy, additionalClasses) {
+			additionalClasses = additionalClasses || [];
 			if (!securedBy || !securedBy.length || !securedBy[0].oauth2 || !securedBy[0].oauth2.scopes || !securedBy[0].oauth2.scopes.length) {
-				return '<i class="icon icon-globe"></i>';
+				return '<i class="icon icon-globe' + (additionalClasses.length ? ' ' : '') + additionalClasses.join(' ') + '" title="Anonymous access granted"></i>';
 			}
 			var icons = '';
 			_.each(securedBy[0].oauth2.scopes, function(scope) {
-				var klass = '';
+				var classes = '';
+				var title = '';
 				switch (scope) {
 					case 'ROOT':
-						klass = 'icon icon-crown';
+						classes = 'icon icon-crown';
+						title = 'Root role needed';
 						break;
 					case 'ADMIN':
-						klass = 'icon icon-badge';
+						classes = 'icon icon-badge';
+						title = 'Administrator role needed';
 						break;
 					case 'CONTRIB':
-						klass = 'icon icon-diamond';
+						classes = 'icon icon-diamond';
+						title = 'Contributor role needed';
 						break;
 					case 'MEMBER':
-						klass = 'icon icon-user';
+						classes = 'icon icon-user';
+						title = 'Registered User role needed';
 						break;
 					case 'ANON':
-						klass = 'icon icon-globe';
+						classes = 'icon icon-globe';
+						title = 'Anonymous access granted';
 						break;
 				}
-				icons += '<i class="' + klass + '"></i>';
+				icons += '<i class="' + classes + (additionalClasses.length ? ' ' : '') + additionalClasses.join(' ') + '" title="' + title + '"></i>';
 			});
 			return icons;
-
 		}
 	};
+}
+
+function splitReq(req) {
+	if (/\r\n\r\n/.test(req)) {
+		var c = req.split(/\r\n\r\n/);
+		return {
+			headers: c[0],
+			body: c[1]
+		};
+	} else {
+		return {
+			headers: req,
+			body: ''
+		};
+	}
 }

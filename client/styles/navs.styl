@@ -95,6 +95,24 @@
 		> .fa-flask
 			font-size 21px
 
+.tabset--transparent
+	> .nav.nav-tabs
+		margin-top 0
+		li
+			a, &.active a
+				background-color transparent !important
+				margin 0
+			&:first-child a
+				padding-left 0
+
+	> .tab-content
+		background-color transparent !important
+		padding-left 0
+		padding-right 0
+		border-top-style solid
+		border-top-width 2px
+		border-radius 0 !important
+
 // content panel
 .tab-content
 	padding 10px 15px 15px 13px
@@ -112,3 +130,7 @@
 	border-width 9px 9px 9px 0
 	border-style solid
 	transition background-color animation-short
+
+// remove margin when putting code into a tab
+.tab-pane > pre
+	margin 0

@@ -1,6 +1,5 @@
-"use strict";
+"use strict"; /* global ctrl, _*/
 
-/*global ctrl, _*/
 ctrl.controller('AdminUserCtrl', function($scope, $modal, UserResource, RolesResource) {
 
 	$scope.theme('light');

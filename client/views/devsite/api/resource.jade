@@ -8,11 +8,55 @@ mixin resource(resource)
 	hr
 
 	each method in resource.methods
-		.badge.badge--verb(class="badge--verb--#{method.method}")=method.method
-		div
-			| !{method.description}
-			.pull-right!=hlp.authscope(method.securedBy)
 		.clearfix
+		.apidoc-method-wrapper(ng-controller="MethodCollapseCtrl")
+			.apidoc-method(ng-click="isCollapsed = !isCollapsed")
+				.badge.badge--verb(class="badge--verb--#{method.method}")=method.method
+				div
+					| !{method.description}
+					.pull-right!=hlp.authscope(method.securedBy, [ 'space-left' ])
+			.clearfix
+			div(collapse="isCollapsed")
+				.well.well--full-width
+					tabset.tabset--transparent
+						tab(heading="Overview")
+							p Overview Content
+						tab(heading="Request")
+							if method.body
+								h3 Body
+								each b, key in method.body
+									if formParameters
+										strong Form Parameters
+										ul
+											each param in formParameters
+												li.markdown
+													strong=key
+													em
+														if param.required
+															|  required
+														if param.enum
+															|  one of (#{param.enum})
+														else
+															|  (#{param.type})
+													| !{description}
+													if param.schema
+														p:small
+															strong Schema:
+															code!=param.schema
+													if param.example
+														p: small
+															strong Example:
+															code!=param.example
+									if b.example
+										tabset
+											tab(heading="HTTP")
+												pre!=hlp.highlight(b.example, true)
+											tab(heading="Curl")
+												pre!=hlp.toCurl(b.example)
+
+						tab(heading="Response")
+							p Response Content
+
 
 
 	//- recursively traverse sub-resources

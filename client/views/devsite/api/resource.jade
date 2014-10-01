@@ -1,3 +1,5 @@
+include schema.jade
+
 mixin resource(resource)
 
 	if !resource.parentUrl
@@ -5,7 +7,9 @@ mixin resource(resource)
 		hr
 		.markdown!=hlp.markdown(resource.description)
 
-	h2.h--code.h--small=resource.parentUrl + resource.relativeUri
+	h2.h--code.h--small
+		| #{resource.parentUrl}
+		span.h--lighter=resource.relativeUri
 	hr
 
 	each method in resource.methods
@@ -14,7 +18,9 @@ mixin resource(resource)
 			.apidoc-method(ng-click="isCollapsed = !isCollapsed")
 				.badge.badge--verb(class="badge--verb--#{method.method}")=method.method
 				| !{hlp.short(method.description)}
-				.pull-right!=hlp.authscope(method.securedBy, [ 'space-left' ])
+				.pull-right
+					each scope in hlp.authscopes(method.securedBy)
+						i.space-left(class=hlp.authscope(scope).classes, title=hlp.authscope(scope).title)
 			.clearfix
 			div(collapse="isCollapsed")
 				.well.well--full-width
@@ -25,6 +31,12 @@ mixin resource(resource)
 						//------------------------------------------
 						tab(heading="Overview")
 							span!=hlp.markdown(method.description)
+
+							p: u Authorization:
+							each scope in hlp.authscopes(method.securedBy)
+								i.space-right(class=hlp.authscope(scope).classes)
+								.nobreak !{hlp.markdown(hlp.authscope(scope).description)}
+								br
 
 						//------------------------------------------
 						//- REQUEST
@@ -108,9 +120,17 @@ mixin resource(resource)
 							//- request body
 							//------------------------------------------
 							if method.body
-								p: u Example Request:
 								each b, key in method.body
+									if b.schema
+										p: u Schema:
+										tabset.padder-bottom-2x
+											tab(heading="Schema")
+												+jsonSchema(JSON.parse(b.schema))
+											tab(heading="Raw")
+												pre!=hlp.highlight(b.schema)
+
 									if b.example
+										p: u Example Request:
 										tabset
 											code.code--dark.pull-right=key
 											tab(heading="HTTP")

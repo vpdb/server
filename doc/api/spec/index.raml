@@ -6,7 +6,7 @@ protocols: [HTTPS]
 mediaType: application/json
 
 securitySchemes:
-  - oauth2: !include _securitySchemes/oauth2.raml
+  - jwt: !include _securitySchemes/jwt.raml
 
 traits:
   - root-protected: !include _traits/root-protected.raml

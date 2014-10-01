@@ -82,6 +82,7 @@ module.exports = function(opts) {
 						var html = jade.renderFile(opts.template, { resource: resource, hlp: helpers(_.extend(opts, { api: obj })) });
 						files[dest] = { contents: new Buffer(html) };
 					} catch (e) {
+						console.err('Error rendering.');
 						console.err(e);
 						return next(e);
 					}
@@ -150,13 +151,55 @@ function helpers(opts) {
 			return highlight.highlight('bash', cmd).value;
 		},
 
-		authscope: function(securedBy, additionalClasses) {
+		authscopes: function(securedBy) {
+			if (!securedBy || !securedBy.length || !securedBy[0].jwt || !securedBy[0].jwt.scopes || !securedBy[0].jwt.scopes.length) {
+				return [ 'ANON' ];
+			}
+			return securedBy[0].jwt.scopes;
+		},
+
+		authscope: function(scope) {
+			switch (scope) {
+				case 'ROOT':
+					return {
+						classes: 'icon icon-crown',
+						title: 'Root role needed',
+						description: 'You must be **root** in order to access this resource.'
+					};
+				case 'ADMIN':
+					return {
+						classes: 'icon icon-badge',
+						title: 'Administrator role needed',
+						description: 'You must be an **administrator** in order to access this resource.'
+					};
+				case 'CONTRIB':
+					return {
+						classes: 'icon icon-diamond',
+						title: 'Contributor role needed',
+						description: 'You must be a **contributor** in order to access this resource.'
+					};
+				case 'MEMBER':
+					return {
+						classes: 'icon icon-user',
+						title: 'Registered User role needed',
+						description: 'You must be a **registrated user** in order to access this resource.'
+					};
+				default:
+					return {
+						classes: 'icon icon-globe',
+						title: 'Anonymous access granted',
+						description: 'This is a public resource that doesn\'t need any authentication.'
+					};
+			}
+		},
+
+		authscope2: function(securedBy, additionalClasses) {
 			additionalClasses = additionalClasses || [];
-			if (!securedBy || !securedBy.length || !securedBy[0].oauth2 || !securedBy[0].oauth2.scopes || !securedBy[0].oauth2.scopes.length) {
+			if (!securedBy || !securedBy.length || !securedBy[0].jwt || !securedBy[0].jwt.scopes || !securedBy[0].jwt.scopes.length) {
 				return '<i class="icon icon-globe' + (additionalClasses.length ? ' ' : '') + additionalClasses.join(' ') + '" title="Anonymous access granted"></i>';
 			}
 			var icons = '';
-			_.each(securedBy[0].oauth2.scopes, function(scope) {
+			_.each(securedBy[0].jwt.scopes, function(scope) {
 				var classes = '';
 				var title = '';
 				switch (scope) {

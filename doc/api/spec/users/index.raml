@@ -8,6 +8,7 @@ post:
     receive their profile in return.
   body:
     application/json:
+      schema: !include schema-detailed.json
       example: !include post-req.json
   responses:
     201:
@@ -19,9 +20,9 @@ get:
   description: |
     List all users.
 
-    Note that only admin can really *list* all users, anonymous must provide a
-    search query.
-  securedBy: [ oauth2: { scopes: [ ADMIN, ANON ] } ]
+    Note that only administrators can really *list* all users, anonymous users
+    must provide a search query and will get limited user info.
+  securedBy: [ jwt: { scopes: [ ADMIN, ANON ] } ]
   queryParameters:
     q:
       description: |
@@ -30,7 +31,7 @@ get:
       required: true
       minLength: 3
       type: string
-      example: "freez"
+      example: freez
   body:
       application/json:
         example: !include list-req.json

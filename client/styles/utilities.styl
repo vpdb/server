@@ -47,6 +47,7 @@
 .transparent
 	color transparent !important
 
+
 // Misc
 // ----------------------------------------------------------
 
@@ -66,6 +67,13 @@
 	overflow hidden
 	text-overflow ellipsis
 	white-space nowrap
+
+// Sometimes, we'd like to wrap markdown-rendered text without breaking lines
+.nobreak
+	display inline
+	> p
+		display inline
+
 
 // line-height hack
 div

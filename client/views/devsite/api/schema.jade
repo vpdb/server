@@ -1,22 +1,17 @@
-mixin jsonSchemaTable(schema)
+mixin jsonSchema(schema)
 	.jsonSchemaLevel
 		if schema.type == 'array'
 			if schema.title
 				h4= schema.title
 			if schema.description
 				p= schema.description
-			+jsonSchemaTable(schema.items)
+			+jsonSchema(schema.items)
 		else
 			- itemSchemas = []
 			table.table.table-striped
-				if schema.title || schema.description
-					caption
-						h4= schema.title
-						if schema.description
-							p= schema.description
 				thead
 					tr
-						th Property
+						th Name
 						th Type
 						th Constraints
 						th Description
@@ -32,20 +27,20 @@ mixin jsonSchemaTable(schema)
 									= name
 							td= property.type
 							td
-								ul
+								ul.list
 									if property.readOnly
 										li
 											em read-only
-											|  
+											|
 									if property.writeOnly
 										li
 											em write-only
-											|  
+											|
 									if property.unique
 										li
 											strong
 												em unique
-											|  
+											|
 									if property.pattern
 										li
 											code(style="white-space: nowrap;")
@@ -62,34 +57,34 @@ mixin jsonSchemaTable(schema)
 										li
 											if property.minimum !== undefined || property.maximum !== undefined
 												if property.minimum === property.maximum
-													| must be 
+													| must be
 													= property.minimum
 												else if property.minimum !== undefined && property.maximum !== undefined
-													| between 
+													| between
 													= property.minimum
 													if property.exclusiveMinimum
 														|  (exclusive)
 													else
 														|  (inclusive)
-													|  and 
+													|  and
 													= property.maximum
 													if property.exclusiveMaximum
 														|  (exclusive)
 													else
 														|  (inclusive)
 												else if property.minimum !== undefined
-													| must be 
+													| must be
 													if property.exclusiveMinimum
-														| greater than 
+														| greater than
 													else
-														| greater than or equal to 
+														| greater than or equal to
 													= property.minimum
 												else
-													| must be 
+													| must be
 													if property.exclusiveMaximum
-														| smaller than 
+														| smaller than
 													else
-														| smaller than or equal to 
+														| smaller than or equal to
 													= property.maximum
 									if property.minLength && property.maxLength
 										li
@@ -107,15 +102,15 @@ mixin jsonSchemaTable(schema)
 									if property.enum
 										li
 											if property.enum.length === 1
-												| must be 
+												| must be
 												code= property.enum[0]
 											else
 												| one of
 												each value, i in property.enum
 													if i != 0
-														| , 
+														| ,
 													else
-														|  
+														|
 													code= value
 									if property.minItems || property.maxItems
 										li
@@ -123,35 +118,25 @@ mixin jsonSchemaTable(schema)
 												if property.minItems === 1
 													| exactly 1 item
 												else
-													| exactly 
+													| exactly
 													= property.minItems
 													|  items
 											else if property.minItems
 												if property.minItems === 1
 													| at least 1 item
 												else
-													| at least 
+													| at least
 													= property.minItems
 													|  items
 											else if property.maxItems
 												if property.maxItems === 1
 													| at most 1 item
 												else
-													| at most 
+													| at most
 													= property.maxItems
 													|  items
 							td= property.description
 
-			small
-				p
-					| Property names in 
-					strong bold
-					|  indicate that the property is required. Properties marked as 
-					em read-only
-					|  are provided by the server once a resource has been created or is in the correct state. Properties marked as 
-					em write-only
-					|  can be given in requests but are never shown in responses for security reasons.
-
 			if itemSchemas.length
 				each itemSchema in itemSchemas
-					+jsonSchemaTable(itemSchema)
+					+jsonSchema(itemSchema)

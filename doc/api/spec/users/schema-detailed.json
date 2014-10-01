@@ -18,5 +18,5 @@
 			"unique": true
 		}
 	},
-	"required": ["name", "color", "categoryKey", "imageKey"]
+	"required": ["id", "name" ]
 }

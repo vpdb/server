@@ -31,7 +31,9 @@ authentication schemes, this approach has several advantages:
  * Easy non-browser implementation: Cookie or Simple HTTP-based 
    authentication is not ideal when working with native mobile clients or
    other non-browser based applications.
-  
+
+See also article [here][blog-ng-jwt] and [here][blog-token-vs-cookies].
+
 In order to get a token, you need to post your credentials to this resource:
 
 	POST https://vpdb.ch/api/authenticate
@@ -132,3 +134,5 @@ will be IP-based limiting by NGINX). However, quotas will be applied on the
 storage API.
 
 [jwt]: http://tools.ietf.org/html/draft-ietf-oauth-json-web-token
+[blog-ng-jwt]: https://auth0.com/blog/2014/01/07/angularjs-authentication-with-cookies-vs-token/
+[blog-token-vs-cookies]: https://auth0.com/blog/2014/01/27/ten-things-you-should-know-about-tokens-and-cookies/

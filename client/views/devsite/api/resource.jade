@@ -117,7 +117,7 @@ mixin resource(resource)
 												| !{hlp.markdown(header.description)}
 
 							//------------------------------------------
-							//- request body
+							//- schema
 							//------------------------------------------
 							if method.body
 								each b, key in method.body
@@ -129,6 +129,9 @@ mixin resource(resource)
 											tab(heading="Raw")
 												pre!=hlp.highlight(b.schema)
 
+									//------------------------------------------
+									//- request body
+									//------------------------------------------
 									if b.example
 										p: u Example Request:
 										tabset
@@ -144,10 +147,37 @@ mixin resource(resource)
 						if method.responses
 							tab(heading="Response")
 
+								each response, statusCode in method.responses
+
+									//------------------------------------------
+									//- headers
+									//------------------------------------------
+									if response.headers
+										p: u Headers:
+										ul.list
+											each header, headername in response.headers
+												li
+													strong=headername
+													| : #{header.type}
+													if header.description
+														| !{hlp.markdown(header.description)}
+
+									//------------------------------------------
+									//- schema
+									//------------------------------------------
+									if response.body
+										each rb, contentType in response.body
+											if rb && rb.schema
+												p: u Schema:
+												tabset.padder-bottom-2x
+													tab(heading="Schema")
+														+jsonSchema(JSON.parse(rb.schema))
+													tab(heading="Raw")
+														pre!=hlp.highlight(rb.schema)
+
 								//------------------------------------------
 								//- response body
 								//------------------------------------------
-
 								p: u Example Response:
 								tabset
 									code.code--dark.pull-right application/json

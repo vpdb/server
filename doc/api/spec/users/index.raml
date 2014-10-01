@@ -8,12 +8,13 @@ post:
     receive their profile in return.
   body:
     application/json:
-      schema: !include schema-detailed.json
+      schema: !include schema-register.json
       example: !include post-req.json
   responses:
     201:
       body:
         application/json:
+          schema: !include schema-detailed.json
           example: !include post-res-201.json
 
 get:

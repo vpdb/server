@@ -31,7 +31,7 @@ mixin jsonSchema(schema)
 									if property.readOnly
 										li
 											em read-only
-											|
+											| &nbsp;
 									if property.writeOnly
 										li
 											em write-only
@@ -99,6 +99,10 @@ mixin jsonSchema(schema)
 												| -
 												= property.maxLength
 												|  chars
+									else if property.minLength
+										li 
+											= property.minLength
+											| + chars
 									if property.enum
 										li
 											if property.enum.length === 1
@@ -135,6 +139,8 @@ mixin jsonSchema(schema)
 													| at most
 													= property.maxItems
 													|  items
+									if property.format === 'email'
+										li Email address
 							td= property.description
 
 			if itemSchemas.length

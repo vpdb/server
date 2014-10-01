@@ -1,0 +1,27 @@
+{
+	"$schema": "http://json-schema.org/schema",
+	"title": "User Registration",
+	"description": "Entity sent when creating a new user",
+	"type": "object",
+	"properties": {
+		"username": {
+			"description": "Username used when locally logging in.",
+			"type": "string",
+			"minLength": 3,
+			"maxLength": 30,
+			"unique": true
+		},
+		"password": {
+			"description": "A password for identifying the user.",
+			"type": "string",
+			"minLength": 6
+		},
+		"email": {
+			"description": "The email address of the user",
+			"type": "string",
+			"unique": true,
+			"format": "email"
+		}
+	},
+	"required": ["username", "password", "email" ]
+}

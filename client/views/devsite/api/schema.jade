@@ -27,7 +27,7 @@ mixin jsonSchema(schema)
 									= name
 							td= property.type
 							td
-								ul.list
+								ul.list.list--noindent
 									if property.readOnly
 										li
 											em read-only
@@ -109,13 +109,7 @@ mixin jsonSchema(schema)
 												| must be
 												code= property.enum[0]
 											else
-												| one of
-												each value, i in property.enum
-													if i != 0
-														| ,
-													else
-														| &nbsp;
-													code= value
+												| one of <code>!{ property.enum.join('</code> <code>')}</code>
 									if property.minItems || property.maxItems
 										li
 											if property.minItems && property.maxItems
@@ -141,7 +135,7 @@ mixin jsonSchema(schema)
 													|  items
 									if property.format === 'email'
 										li Email address
-							td= property.description
+							td!= hlp.markdown(property.description || "")
 
 			if itemSchemas.length
 				each itemSchema in itemSchemas

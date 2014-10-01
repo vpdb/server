@@ -118,7 +118,7 @@ UserSchema.pre('validate', function(next) {
 //-----------------------------------------------------------------------------
 UserSchema.path('name').validate(function(name) {
 	// if you are authenticating by any of the oauth strategies, don't validate
-	if (this.provider !== 'local') {
+	if (this.provider !== 'local' || this.isNew) {
 		return true;
 	}
 	return validator.isLength(name, 3, 30);

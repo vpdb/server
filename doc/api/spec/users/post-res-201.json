@@ -1,17 +1,18 @@
 201 Created
-Content-Length: 89
+Content-Type: application/json; charset=utf-8
+Content-Length: 281
 
 {
   "plan": "free",
-  "name": "Marvin.Hamill",
-  "username": "Marvin.Hamill",
-  "email": "ara_stiedemann@esther.name",
+  "name": "Mafalda",
+  "username": "Mafalda",
+  "email": "gaylord@brendon.com",
   "provider": "local",
-  "created_at": "2014-09-30T22:25:10.276Z",
+  "created_at": "2014-10-01T21:35:32.181Z",
   "is_active": true,
   "roles": [
     "member"
   ],
-  "id": "bkYe8qSBX4",
-  "gravatar_id": "7bcfd1a0820910ca589a4f935fbeaeb8"
+  "id": "W1qixHWzNE",
+  "gravatar_id": "d54e52be1ef75672eb129f39bebe1a95"
 }

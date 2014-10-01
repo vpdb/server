@@ -16,6 +16,10 @@ post:
         application/json:
           schema: !include schema-detailed.json
           example: !include post-res-201.json
+    422:
+      body:
+        application/json:
+          example: !include post-res-422.json
 
 get:
   description: |

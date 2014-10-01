@@ -1,5 +1,6 @@
 "use strict";
 
+var _ = require('lodash');
 var fs = require('fs');
 
 var statusMessage = {
@@ -24,8 +25,8 @@ module.exports = function(superagent, options) {
 	options.authHeader = options.authHeader || process.env.AUTH_HEADER || 'Authorization';
 	options.saveHost = options.saveHost || 'vpdb.ch';
 	options.saveRoot = options.saveRoot || 'doc/api/spec';
-	options.saveReqHeaders = options.saveReqHeaders || [ 'accept-encoding', 'content-length', 'content-type' ];
-	options.saveResHeaders = options.saveResHeaders || [ 'content-length' ];
+	options.ignoreReqHeaders = options.ignoreReqHeaders || [ 'cookie', 'host', 'user-agent' ];
+	options.ignoreResHeaders = options.ignoreResHeaders || [ 'x-token-refresh', 'x-user-dirty', 'vary', 'connection', 'transfer-encoding', 'date' ];
 
 	var Request = superagent.Request;
 
@@ -46,17 +47,18 @@ module.exports = function(superagent, options) {
 	// automatic doc request/response generation
 	Request.prototype.callback = function() {
 		this.callback = oldCallback;
-		var dest, dump, headers, i;
+		var dest, dump, forceHeaders;
+		var that = this;
 		if (this._saveReq) {
 			dest = options.saveRoot + '/' + this._saveReq.path + '-req.json';
 			dump = this.req.method + ' ' + this.req.path + ' HTTP/1.1\r\n';
-			headers = this._saveReq.headers || options.saveReqHeaders;
+			forceHeaders = this._saveReq.headers || [];
 			dump += 'Host: ' + options.saveHost + '\r\n';
-			for (i = 0; i < headers.length; i++) {
-				if (this.req._headers[headers[i]]) {
-					dump += this.req._headerNames[headers[i]] + ': ' + this.req._headers[headers[i]] + '\r\n';
+			_.each(this.req._headers, function(headerVal, header) {
+				if (_.contains(forceHeaders, header) || !_.contains(options.ignoreReqHeaders, header)) {
+					dump += that.req._headerNames[header] + ': ' + headerVal + '\r\n';
 				}
-			}
+			});
 			dump += '\r\n';
 			if (this._data) {
 				dump += JSON.stringify(this._data, null, '  ');
@@ -67,12 +69,12 @@ module.exports = function(superagent, options) {
 		if (this._saveRes) {
 			dest = options.saveRoot + '/' + this._saveRes.path + '-res-' + this.res.statusCode + '.json';
 			dump = this.res.statusCode + ' ' + statusMessage[this.res.statusCode] + '\r\n';
-			headers = this._saveRes.headers || options.saveResHeaders;
-			for (i = 0; i < headers.length; i++) {
-				if (this.req._headers[headers[i]]) {
-					dump += headers[i].replace(/-(.)|^(.)/g, uppercase) + ': ' + this.req._headers[headers[i]] + '\r\n';
+			forceHeaders = this._saveRes.headers || [];
+			_.each(this.res.headers, function(headerVal, header) {
+				if (_.contains(forceHeaders, header) || !_.contains(options.ignoreResHeaders, header)) {
+					dump += header.replace(/-(.)|^(.)/g, uppercase) + ': ' + headerVal + '\r\n';
 				}
-			}
+			});
 			dump += '\r\n';
 			if (this.res.body) {
 				dump += JSON.stringify(this.res.body, null, '  ');

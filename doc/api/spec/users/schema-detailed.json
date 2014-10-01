@@ -10,13 +10,55 @@
 			"pattern": "^[a-z0-9_-]{7,}$",
 			"readOnly": true
 		},
-		"name": {
+		"email": {
+			"description": "The email address of the user",
+			"type": "string",
+			"unique": true,
+			"format": "email"
+		},
+		"username": {
 			"description": "Username used when locally logging in.",
 			"type": "string",
 			"minLength": 3,
 			"maxLength": 30,
 			"unique": true
+		},
+		"name": {
+			"description": "Display name, initially set to user name.",
+			"type": "string",
+			"minLength": 3,
+			"maxLength": 30
+		},
+		"provider": {
+			"description": "How the user is authenticated. For local accounts this is set to `local`, otherwise to the name of the OAuth2 provider.",
+			"type": "string",
+			"enum": ["local", "github"],
+			"readOnly": true
+		},
+		"roles": {
+			"description": "List of roles the user belongs to.",
+			"type": "array",
+			"enum": ["root", "admin", "contributor", "member"]
+		},
+		"is_active": {
+			"description": "Whether the user is able to login. Set to `false` to ban a user.",
+			"type": "boolean"
+		},
+		"plan": {
+			"description": "The user's current subscription plan.",
+			"type": "string"
+		},
+		"created_at": {
+			"description": "Timestamp when the user was created.",
+			"type": "date",
+			"readOnly": true
+		},
+		"gravatar_id": {
+			"description": "Gravatar ID, see [documentation](https://en.gravatar.com/site/implement/).",
+			"type": "string",
+			"pattern": "^[a-f0-9]{32}$",
+			"readOnly": true
 		}
 	},
-	"required": ["id", "name" ]
+	"required": ["id", "email", "username", "provider" ]
 }

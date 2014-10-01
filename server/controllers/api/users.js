@@ -39,7 +39,7 @@ var redis = require('redis').createClient(config.vpdb.redis.port, config.vpdb.re
  */
 exports.create = function(req, res) {
 
-	var newUser = _.extend(req.body, {
+	var newUser = _.extend(_.pick(req.body, 'username', 'password', 'email'), {
 		provider: 'local'
 	});
 	var assert = api.assert(error, 'create', newUser.email, res);

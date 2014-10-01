@@ -57,6 +57,22 @@ describe('The VPDB `user` API', function() {
 					request.post('/api/authenticate').send(_.pick(user, 'username', 'password')).end(hlp.status(200, done));
 				});
 		});
+
+		it('should fail when invalid parameters', function(done) {
+			request
+				.post('/api/users')
+				.saveResponse({ path: 'users/post' })
+				.send({
+					username: 'x',
+					password: 'xxx',
+					email: 'xxx'
+				}).end(function(err, res) {
+					hlp.expectStatus(err, res, 422);
+					expect(res.body.errors).to.be.an('array');
+					expect(res.body.errors).to.have.length(3);
+					done();
+				});
+		});
 	});
 
 	describe('when providing a valid authentication token', function() {

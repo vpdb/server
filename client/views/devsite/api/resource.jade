@@ -122,7 +122,7 @@ mixin resource(resource)
 							if method.body
 								each b, key in method.body
 									if b.schema
-										p: u Schema:
+										p: u Fields:
 										tabset.padder-bottom-2x
 											tab(heading="Schema")
 												+jsonSchema(JSON.parse(b.schema))
@@ -168,7 +168,7 @@ mixin resource(resource)
 									if response.body
 										each rb, contentType in response.body
 											if rb && rb.schema
-												p: u Schema:
+												p: u Fields:
 												tabset.padder-bottom-2x
 													tab(heading="Schema")
 														+jsonSchema(JSON.parse(rb.schema))

@@ -26,6 +26,36 @@
 	border none
 
 
+// Unordered Lists
+//
+// .list          - Default list
+//
+// Markup:
+// <ul class="list">
+//   <li>One</li>
+//   <li>Two</li>
+//   <li>Three</li>
+//   <li>Four</li>
+// </ul>
+//
+// Styleguide 12.2
+ul.list
+	position relative
+	> li
+		list-style none
+		&:before
+			content "·"
+			font-size 45px
+			margin-left -16px
+			margin-top -21px
+			position absolute
+
+
+// e.g. lists in tables shouldn't be indented.
+ul.list--noindent > li
+	margin-left -25px
+
+
 // Sort Option List
 //
 // A list where you can toggle sort options. Clicking once on an item will
@@ -46,7 +76,7 @@
 //
 // .list--sort-options    - Sort Option List
 //
-// Styleguide 12.2
+// Styleguide 12.3
 .list--sort-options
 	padding-left 20px
 	> li
@@ -90,7 +120,7 @@
 //
 // .list--files    - List Files
 //
-// Styleguide 12.3
+// Styleguide 12.4
 ul.list--files
 	padding 0
 	> li

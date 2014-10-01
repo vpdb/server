@@ -66,31 +66,34 @@ module.exports = function(opts) {
 
 		// for each  api
 		async.each(_.keys(srcFiles), function(file, next) {
+
 			var path = relative(process.cwd(), metalsmith.join(opts.src, file));
 
 			// process raml
 			debug('Processing RAML file at %s...', path);
 			raml2obj.parse(path, function(obj) {
-				debug(require('util').inspect(obj));
+				try {
+					debug(require('util').inspect(obj));
 
-				// render each resource
-				_.each(obj.resources, function(resource) {
-					var destFolder = srcFiles[file].dest.replace(/\\/g, '/');
-					var dest = destFolder + '/' + resource.uniqueId.substr(1) + '.html';
+					// render each resource
+					_.each(obj.resources, function (resource) {
+							var destFolder = srcFiles[file].dest.replace(/\\/g, '/');
+							var dest = destFolder + '/' + resource.uniqueId.substr(1) + '.html';
+							var html = jade.renderFile(opts.template, { resource: resource, hlp: helpers(_.extend(opts, { api: obj })) });
 
-					try {
-						var html = jade.renderFile(opts.template, { resource: resource, hlp: helpers(_.extend(opts, { api: obj })) });
-						files[dest] = { contents: new Buffer(html) };
-					} catch (e) {
-						console.err('Error rendering.');
-						console.err(e);
-						return next(e);
-					}
-				});
-				metadata.api = obj;
-				require('fs').writeFileSync('raml.json', JSON.stringify(obj, null, '\t'));
-				next();
-			}, next);
+							files[dest] = { contents: new Buffer(html) };
+					});
+					metadata.api = obj;
+					require('fs').writeFileSync('raml.json', JSON.stringify(obj, null, '\t'));
+					next();
+
+				} catch (e) {
+					return next(e);
+				}
+			}, function(err) {
+				console.error(err);
+				next(err);
+			});
 		}, done);
 
 	};

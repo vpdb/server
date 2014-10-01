@@ -84,7 +84,6 @@ module.exports = function(grunt) {
 			},
 			template: 'client/views/devsite/api/resource.jade',
 			markdown: markdown
-//			section: 'api',
 		}));
 
 		/* loops through metalsmith.sections and renders a given template on it */

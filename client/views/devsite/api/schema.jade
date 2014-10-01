@@ -35,12 +35,12 @@ mixin jsonSchema(schema)
 									if property.writeOnly
 										li
 											em write-only
-											|
+											| &nbsp;
 									if property.unique
 										li
 											strong
 												em unique
-											|
+											| &nbsp;
 									if property.pattern
 										li
 											code(style="white-space: nowrap;")
@@ -110,7 +110,7 @@ mixin jsonSchema(schema)
 													if i != 0
 														| ,
 													else
-														|
+														| &nbsp;
 													code= value
 									if property.minItems || property.maxItems
 										li

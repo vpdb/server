@@ -1,6 +1,7 @@
 displayName: Users
 description: Registered users. **Markdown** *test*.
 post:
+  is: [ validated ]
   description: |
     Register a new user.
 
@@ -22,18 +23,19 @@ post:
           example: !include post-res-422.json
 
 get:
+  is: [ protected ]
   description: |
     List all users.
 
     Note that only administrators can really *list* all users, anonymous users
     must provide a search query and will get limited user info.
-  securedBy: [ jwt: { scopes: [ ADMIN, ANON ] } ]
+  securedBy: [ jwt: { scopes: [ ADMIN, MEMBER ] } ]
   queryParameters:
     q:
       description: |
         Search query. As administrator, any length is allowed, anonymous must
         provide at least three characters.
-      required: true
+      required: false
       minLength: 3
       type: string
       example: freez
@@ -49,10 +51,17 @@ get:
       body:
         application/json:
           example: !include list-res-401.json
+    403:
+      description: You tried to list all users as a member. Members must provide a search query.
+      body:
+        application/json:
+          example: !include list-res-403.json
 
 /{user_id}:
   description: User entity
   get:
+    is: [ protected ]
+    securedBy: [ jwt: { scopes: [ ADMIN ] } ]
     description: Get the user with a given ID.
     headers:
       Zencoder-Api-Key:
@@ -66,4 +75,13 @@ get:
         required: true
         minLength: 30
         maxLength: 30
-        example: abcdefghijabcdefghijabcdefghij
+        example: abcdefghijabcdefghijabcdefghij$
+    body:
+      application/json:
+        example: !include details-req.json
+    responses:
+      200:
+        body:
+          application/json:
+            example: !include details-res-200.json
+  

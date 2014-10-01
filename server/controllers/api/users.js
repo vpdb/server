@@ -72,7 +72,7 @@ exports.list = function(req, res) {
 
 	var assert = api.assert(error, 'list', null, res);
 	acl.isAllowed(req.user.email, 'users', 'list', assert(function(canList) {
-		acl.isAllowed(req.user.email, 'users', 'full-details', assert(function(fullDetails) {
+		acl.isAllowed(req.user.email, 'users', 'view', assert(function(fullDetails) {
 
 			// if no list privileges, user must provide at least a 3-char search query.
 			if (!canList && (!req.query.q || req.query.q.length < 3)) {
@@ -115,7 +115,7 @@ exports.list = function(req, res) {
 
 			}, 'Error listing users'));
 
-		}, 'Error checking for ACL "users/full-details"'));
+		}, 'Error checking for ACL "users/view"'));
 	}, 'Error checking for ACL "users/list".'));
 };
 
@@ -214,6 +214,26 @@ exports.update = function(req, res) {
 				}
 			}, 'Error updating user "%s"'));
 		});
+	}, 'Error finding user "%s"'));
+};
+
+
+/**
+ * Returns user details for a given ID
+ *
+ * @param {Request} req
+ * @param {Response} res
+ */
+exports.view = function(req, res) {
+
+	var assert = api.assert(error, 'view', req.params.id, res);
+
+	User.findOne({ id: req.params.id }, assert(function(user) {
+		if (!user) {
+			return api.fail(res, error('No such user'), 404);
+		}
+		return api.success(res, user.toDetailed());
+
 	}, 'Error finding user "%s"'));
 };
 

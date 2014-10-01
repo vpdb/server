@@ -41,6 +41,20 @@ describe('The VPDB `user` API', function() {
 		});
 	});
 
+	describe('when fetching a user', function() {
+
+		it('should return full details', function(done) {
+			request
+				.get('/api/users/' + hlp.getUser('member').id)
+				.save({ path: 'users/details' })
+				.as('admin')
+				.end(function(err, res) {
+					hlp.expectStatus(err, res, 200);
+					expect(res.body).to.be.an('object');
+					done();
+				});
+		});
+	});
 
 	describe('when a user registrates', function() {
 

@@ -45,7 +45,7 @@ var init = function(next) {
 		{
 			roles: 'admin',
 			allows: [
-				{ resources: 'users', permissions: [ 'update', 'list', 'full-details' ]},
+				{ resources: 'users', permissions: [ 'update', 'list', 'view' ]},
 				{ resources: 'roles', permissions: 'list' }
 			]
 		}, {

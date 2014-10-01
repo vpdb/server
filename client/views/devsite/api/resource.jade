@@ -175,6 +175,15 @@ mixin resource(resource)
 													tab(heading="Raw")
 														pre!=hlp.highlight(rb.schema)
 
+								p: u Error Codes:
+								ul.list
+									each response, statusCode in method.responses
+										if statusCode > 299
+											li 
+												a(href='http://httpstatus.es/#{statusCode}', target='_blank'): code=statusCode
+												if (response.description)
+													.nobreak &nbsp;&mdash; !{hlp.markdown(response.description)}
+
 								//------------------------------------------
 								//- response body
 								//------------------------------------------

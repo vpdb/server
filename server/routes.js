@@ -90,6 +90,7 @@ module.exports = function(app) {
 	// users (any other user)
 	app.post('/api/users',        api.users.create);
 	app.get('/api/users',         api.auth(api.users.list, 'users', 'search'));
+	app.get('/api/users/:id',     api.auth(api.users.view, 'users', 'view'));
 	app.put('/api/users/:id',     api.auth(api.users.update, 'users', 'update'));
 	app.delete('/api/users/:id',  api.auth(api.users.del, 'users', 'delete'));
 

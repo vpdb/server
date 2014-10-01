@@ -1,0 +1,8 @@
+403 Forbidden
+Content-Type: application/json; charset=utf-8
+Content-Length: 77
+Etag: W/"4d-3889605915"
+
+{
+  "error": "Please provide a search query with at least three characters."
+}

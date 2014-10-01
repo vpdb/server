@@ -105,11 +105,17 @@ module.exports = function(superagent, options) {
 	};
 
 	Request.prototype.saveRequest = function(opts) {
+		if (_.isString(opts)) {
+			opts = { path: opts };
+		}
 		this._saveReq = opts;
 		return this;
 	};
 
 	Request.prototype.saveResponse = function(opts) {
+		if (_.isString(opts)) {
+			opts = { path: opts };
+		}
 		this._saveRes = opts;
 		return this;
 	};

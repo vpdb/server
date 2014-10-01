@@ -29,12 +29,17 @@ describe('The ACLs of the VPDB API', function() {
 		it('should deny access to user list', function(done) {
 			request.get('/api/users').saveResponse({ path: 'users/list' }).end(hlp.status(401, done));
 		});
+
 		it('should deny access to user search', function(done) {
 			request.get('/api/users?q=123').end(hlp.status(401, done));
 		});
 
+		it('should deny access to user details', function(done) {
+			request.get('/api/users/' + hlp.getUser('member').id).send({}).end(hlp.status(401, done));
+		});
+
 		it('should deny access to user update', function(done) {
-			request.put('/api/users/1234567890abcdef').send({}).end(hlp.status(401, done));
+			request.put('/api/users/' + hlp.getUser('member').id).send({}).end(hlp.status(401, done));
 		});
 
 		it('should deny access to user delete', function(done) {
@@ -106,7 +111,7 @@ describe('The ACLs of the VPDB API', function() {
 	describe('for logged clients (role member)', function() {
 
 		it('should deny access to user list', function(done) {
-			request.get('/api/users').as('member').end(hlp.status(403, done));
+			request.get('/api/users').as('member').saveResponse({ path: 'users/list' }).end(hlp.status(403, done));
 		});
 
 		it('should deny access to user search for less than 3 chars', function(done) {
@@ -130,8 +135,12 @@ describe('The ACLs of the VPDB API', function() {
 				});
 		});
 
+		it('should deny access to user details', function(done) {
+			request.get('/api/users/' + hlp.getUser('member').id).as('member').send({}).end(hlp.status(403, done));
+		});
+
 		it('should deny access to user update', function(done) {
-			request.put('/api/users/1234567890abcdef').as('member').send({}).end(hlp.status(403, done));
+			request.put('/api/users/' + hlp.getUser('member').id).as('member').send({}).end(hlp.status(403, done));
 		});
 
 		it('should deny access to user delete', function(done) {
@@ -223,12 +232,16 @@ describe('The ACLs of the VPDB API', function() {
 				});
 		});
 
+		it('should deny access to user details', function(done) {
+			request.get('/api/users/' + hlp.getUser('member').id).as('contributor').send({}).end(hlp.status(403, done));
+		});
+
 		it('should deny access to user update', function(done) {
-			request.put('/api/users/1234567890abcdef').as('contributor').send({}).end(hlp.status(403, done));
+			request.put('/api/users/' + hlp.getUser('member').id).as('contributor').send({}).end(hlp.status(403, done));
 		});
 
 		it('should deny access to user delete', function(done) {
-			request.del('/api/users/1234567890abcdef').as('contributor').end(hlp.status(403, done));
+			request.del('/api/users/' + hlp.getUser('member').id).as('contributor').end(hlp.status(403, done));
 		});
 
 		it('should allow access to user profile', function(done) {
@@ -306,6 +319,10 @@ describe('The ACLs of the VPDB API', function() {
 					expect(res.body[0]).to.have.property('name');
 					done();
 				});
+		});
+
+		it('should grant access to user details', function(done) {
+			request.get('/api/users/' + hlp.getUser('member').id).as('admin').send({}).end(hlp.status(200, done));
 		});
 
 		it('should allow user update of non-admin', function(done) {
@@ -396,6 +413,10 @@ describe('The ACLs of the VPDB API', function() {
 					expect(res.body[0]).to.have.property('name');
 					done();
 				});
+		});
+
+		it('should grant access to user details', function(done) {
+			request.get('/api/users/' + hlp.getUser('member').id).as('root').send({}).end(hlp.status(200, done));
 		});
 
 		it('should allow user update of non-admin', function(done) {

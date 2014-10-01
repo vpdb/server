@@ -9,6 +9,7 @@ securitySchemes:
   - jwt: !include _securitySchemes/jwt.raml
 
 traits:
-  - root-protected: !include _traits/root-protected.raml
+  - protected: !include _traits/protected.raml
+  - validated: !include _traits/validated.raml
 
 /users: !include users/index.raml

@@ -1,0 +1,21 @@
+422 Unprocessable Entity
+Content-Type: application/json; charset=utf-8
+Content-Length: 314
+
+{
+  "errors": [
+    {
+      "message": "Email must be in the correct format.",
+      "field": "email",
+      "value": "xxx"
+    },
+    {
+      "message": "Password must be at least 6 characters.",
+      "field": "password"
+    },
+    {
+      "message": "Length of username must be between 3 and 30 characters.",
+      "field": "username"
+    }
+  ]
+}

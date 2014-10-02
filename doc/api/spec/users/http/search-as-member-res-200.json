@@ -1,0 +1,13 @@
+200 OK
+Content-Type: application/json; charset=utf-8
+Content-Length: 128
+Etag: W/"80-809402739"
+
+[
+  {
+    "id": "Z1zgVNl8p4E",
+    "name": "Meagan",
+    "username": "Meagan",
+    "gravatar_id": "b7f8f35030d642e65a1ee2bd9fcfb8c6"
+  }
+]

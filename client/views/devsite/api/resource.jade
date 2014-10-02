@@ -132,7 +132,7 @@ mixin resource(resource)
 									//------------------------------------------
 									//- request body
 									//------------------------------------------
-									if b.example
+									//if b.example
 										p: u Example Request:
 										tabset
 											code.code--dark.pull-right=key
@@ -140,6 +140,16 @@ mixin resource(resource)
 												pre!=hlp.highlight(b.example, true)
 											tab(heading="Curl")
 												pre!=hlp.toCurl(b.example)
+								- var n = 0;
+								each r, name in hlp.requestByType(method.body)
+									p(class=n ? 'padder-top' : ''): u= name === 'default' ? 'Example Request:' : name + ':'
+									- n++;
+									tabset
+										i.pull-right(class=hlp.authscope(r.role).classes, title="With #{hlp.authscope(r.role).title}")
+										tab(heading="HTTP")
+											pre!=hlp.highlight(r.request.example, true)
+										tab(heading="Curl")
+											pre!=hlp.toCurl(r.request.example)
 
 						//------------------------------------------
 						//- RESPONSE
@@ -180,25 +190,26 @@ mixin resource(resource)
 									each response, statusCode in method.responses
 										if statusCode > 299
 											li 
-												a(href='http://httpstatus.es/#{statusCode}', target='_blank'): code=statusCode
+												a.a--lighter(href='http://httpstatus.es/#{statusCode}', target='_blank'): strong=statusCode
 												if (response.description)
 													.nobreak &nbsp;&mdash; !{hlp.markdown(response.description)}
 
 								//------------------------------------------
 								//- response body
 								//------------------------------------------
-								- var n = 0
-								each response, statusCode in method.responses
-									if response.body
-										each rb, contentType in response.body
-											if !n
-												p: u Example Response:
-													tabset
-														code.code--dark.pull-right application/json
-											- n++
-											if rb && rb.example
-												tab(heading=statusCode)
-													pre!=hlp.highlight(rb.example, true)
+								- var n = 0;
+								each responses, name in hlp.responseByType(method.responses)
+									p(class=n ? 'padder-top' : ''): u= name === 'default' ? 'Example Response:' : name + ':'
+									- n++;
+									tabset
+										each r in responses
+											tab
+												tab-heading
+													i.space-right(class=hlp.authscope(r.role).classes, title="#{hlp.authscope(r.role).title} results in...")
+													i.icon.icon-arrow-right.space-right
+													span #{r.code}
+												pre!=hlp.highlight(r.response.example, true)
+
 
 	p.padder-bottom
 

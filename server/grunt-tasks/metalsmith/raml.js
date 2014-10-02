@@ -162,7 +162,7 @@ function helpers(opts) {
 		},
 
 		authscope: function(scope) {
-			switch (scope.toUpperCase()) {
+			switch (scope ? scope.toUpperCase() : 'ANON') {
 				case 'ROOT':
 					return {
 						classes: 'icon icon-crown',
@@ -194,8 +194,78 @@ function helpers(opts) {
 						description: 'This is a public resource that doesn\'t need any authentication.'
 					};
 			}
+		},
+
+		requestByType: function(body) {
+			if (!_.isObject(body)) {
+				return {};
+			}
+			var byType = {};
+			_.each(body, function(request, type) {
+
+				// ignore requests without example
+				if (!request.example) {
+					return;
+				}
+				var t = splitType(type);
+				byType[t.name] = {
+					role: t.role,
+					request: request
+				};
+			});
+			return byType;
+		},
+
+		responseByType: function(responses) {
+			if (!_.isObject(responses)) {
+				return {};
+			}
+			var byType = {};
+			_.each(responses, function(block, code) {
+				if (block.body) {
+					_.each(block.body, function(response, type) {
+
+						// ignore responses without example
+						if (!response.example) {
+							return;
+						}
+						var t = splitType(type);
+						if (!byType[t.name]) {
+							byType[t.name] = [];
+						}
+						byType[t.name].push({
+							code: code,
+							role: t.role,
+							response: response
+						});
+
+					});
+				}
+			});
+			return byType;
 		}
 	};
+}
+
+/**
+ * Extracts role and name from our "custom type".
+ *
+ * Example: type = "role/member-Search-for-User"
+ *        result = { role: 'member', name: 'Search for User' }
+ *
+ * @param type Full content type from RAML
+ * @returns {{role: string, name: string}}
+ */
+function splitType(type) {
+	var name, t = type.split('/')[1].split('-');
+	var role = t[0];
+	if (t.length > 1) {
+		t.splice(0, 1);
+		name = t.join(' ');
+	} else {
+		name = 'default';
+	}
+	return { role: role, name: name };
 }
 
 function splitReq(req) {

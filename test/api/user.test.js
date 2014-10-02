@@ -45,9 +45,9 @@ describe('The VPDB `user` API', function() {
 
 		describe('at least one user should be returned', function() {
 
-			it.only('with full details as admin', function(done) {
+			it('with full details as admin', function(done) {
 				request
-					.get('/api/users?q=' + hlp.getUser('member').name.substr(0, 2))
+					.get('/api/users?q=' + hlp.getUser('member').name.substr(0, 3))
 					.saveResponse({ path: 'users/search-as-admin' })
 					.as('admin')
 					.end(function(err, res) {
@@ -59,7 +59,7 @@ describe('The VPDB `user` API', function() {
 					});
 			});
 
-			it.only('with minimal infos as member', function(done) {
+			it('with minimal infos as member', function(done) {
 				request
 					.get('/api/users?q=' + hlp.getUser('member').name.substr(0, 3))
 					.save({ path: 'users/search-as-member' })

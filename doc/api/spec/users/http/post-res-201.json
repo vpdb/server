@@ -1,18 +1,18 @@
 201 Created
 Content-Type: application/json; charset=utf-8
-Content-Length: 298
+Content-Length: 285
 
 {
   "plan": "free",
-  "name": "Libbie_OConnell",
-  "username": "Libbie_OConnell",
-  "email": "dylan.zulauf@bo.name",
+  "name": "Toney",
+  "username": "Toney",
+  "email": "chelsie.lockman@jeremie.ca",
   "provider": "local",
-  "created_at": "2014-10-02T12:43:49.078Z",
+  "created_at": "2014-10-02T18:09:07.598Z",
   "is_active": true,
   "roles": [
     "member"
   ],
-  "id": "Z1OVTBUcVE",
-  "gravatar_id": "88fae0df2d171f98c91caec2b1a48520"
+  "id": "b1-gSEl8p4E",
+  "gravatar_id": "760bc26c8e2baa75e756594de3055020"
 }

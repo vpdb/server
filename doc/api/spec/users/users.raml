@@ -78,6 +78,14 @@ get:
           role/admin:
             schema: user
             example: !include http/view-res-200.json
+      401:
+        body:
+          role/anon:
+            example: !include http/view-res-401.json
+      403:
+        body:
+          role/member:
+            example: !include http/view-res-403.json
   put:
     is: [ protected, validated ]
     securedBy: [ jwt: { scopes: [ ADMIN ] } ]
@@ -85,6 +93,26 @@ get:
     body:
       role/admin:
         schema: user
+        example: !include http/update-req.json
+    responses:
+      200:
+        body:
+          role/admin:
+            schema: user
+            example: !include http/update-res-200.json
+      401:
+        body:
+          role/anon:
+            example: !include http/update-res-401.json
+      403:
+        body:
+          role/member:
+            example: !include http/update-res-403.json
+      422:
+        body:
+          role/admin:
+            example: !include http/update-res-422.json
+
   delete:
     is: [ protected ]
     securedBy: [ jwt: { scopes: [ ROOT ] } ]
@@ -93,3 +121,12 @@ get:
 
       Note that deleting users is only supported for tests. Thus, the user
       must assign itself the `mocha` role first.
+    responses:
+      401:
+        body:
+          role/anon:
+            example: !include http/del-res-401.json
+      403:
+        body:
+          role/member:
+            example: !include http/del-res-403.json

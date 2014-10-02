@@ -1,0 +1,7 @@
+401 Unauthorized
+Content-Type: application/json; charset=utf-8
+Content-Length: 79
+
+{
+  "error": "Unauthorized. You need to provide credentials for this resource"
+}

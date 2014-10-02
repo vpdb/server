@@ -1,5 +1,16 @@
-GET /api/users/b1bVJo41HV HTTP/1.1
+PUT /api/users/b1bVJo41HV HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
 Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiItMXlsbTFvNGtTRSIsImlhdCI6IjIwMTQtMTAtMDJUMjE6Mzg6MjkuMDUyWiIsImV4cCI6IjIwMTQtMTAtMDJUMjI6Mzg6MjkuMDUyWiJ9.0tnWomXkn4IWPWyQ3C29BGERoDe5OuB8lYHYjCsZD40
+Content-Type: application/json
+Content-Length: 124
 
+{
+  "email": "harry_wuckert@eloisa.com",
+  "username": "Adriel.OConner",
+  "name": "Adriel.OConner",
+  "is_active": true,
+  "roles": [
+    "member"
+  ]
+}

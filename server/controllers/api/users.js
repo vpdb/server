@@ -128,6 +128,7 @@ exports.list = function(req, res) {
  */
 exports.update = function(req, res) {
 
+	// TODO move into model
 	var updateableFields = [ 'name', 'email', 'username', 'is_active', 'roles' ];
 	var assert = api.assert(error, 'update', req.params.id, res);
 
@@ -138,7 +139,13 @@ exports.update = function(req, res) {
 		var updatedUser = req.body;
 		var originalEmail = user.email;
 
-		// 1. check for permission escalation
+		// 1. check for changed read-only fields
+		var readOnlyFieldErrors = api.checkReadOnlyFields(req.body, user, updateableFields);
+		if (readOnlyFieldErrors) {
+			return api.fail(res, error('User tried to update read-only fields').errors(readOnlyFieldErrors).log('update'), 422);
+		}
+
+		// 2. check for permission escalation
 		var callerRoles = req.user.roles || [];
 		var currentUserRoles = user.roles || [];
 		var updatedUserRoles = updatedUser.roles || [];
@@ -168,23 +175,23 @@ exports.update = function(req, res) {
 			}
 		}
 
-		// 2. copy over new values
+		// 3. copy over new values
 		_.each(updateableFields, function(field) {
 			user[field] = updatedUser[field];
 		});
 
-		// 3. validate
+		// 4. validate
 		user.validate(function(err) {
 			if (err) {
 				return api.fail(res, error('Validations failed: %j', err.errors).errors(err.errors).warn('create'), 422);
 			}
 			logger.info('[api|user:update] Validations passed, updating user.');
 
-			// 4. save
+			// 5. save
 			user.save(assert(function() {
 				logger.info('[api|user:update] Success!');
 
-				// 5. update ACLs if email or roles changed
+				// 6. update ACLs if email or roles changed
 				if (originalEmail !== user.email) {
 					logger.info('[api|user:update] Email changed, removing ACLs for <%s> and creating new ones for <%s>.', originalEmail, user.email);
 					acl.removeUserRoles(originalEmail, '*');
@@ -201,7 +208,7 @@ exports.update = function(req, res) {
 					}
 				}
 
-				// 6. if changer is not changed user, mark user as dirty
+				// 7. if changer is not changed user, mark user as dirty
 				if (!req.user._id.equals(user._id)) {
 					logger.info('[api|user:update] Marking user <%s> as dirty.', user.email);
 					redis.set('dirty_user_' + user.id, new Date().getTime(), function() {

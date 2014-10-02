@@ -8,3 +8,7 @@ responses:
     description: |
       Authentication credentials are missing or invalid.
       Maybe you forgot to add the `Authorization` header, or it has the wrong value.
+  403:
+    description: |
+      Valid credentials are provided but the user doesn't have access to the 
+      resource. Only re-logging as a **different** user will solve this problem.

@@ -35,15 +35,15 @@ describe('The ACLs of the VPDB API', function() {
 		});
 
 		it('should deny access to user details', function(done) {
-			request.get('/api/users/' + hlp.getUser('member').id).send({}).end(hlp.status(401, done));
+			request.get('/api/users/' + hlp.getUser('member').id).saveResponse({ path: 'users/view' }).send({}).end(hlp.status(401, done));
 		});
 
 		it('should deny access to user update', function(done) {
-			request.put('/api/users/' + hlp.getUser('member').id).send({}).end(hlp.status(401, done));
+			request.put('/api/users/' + hlp.getUser('member').id).saveResponse({ path: 'users/update' }).send({}).end(hlp.status(401, done));
 		});
 
 		it('should deny access to user delete', function(done) {
-			request.del('/api/users/1234567890abcdef').end(hlp.status(401, done));
+			request.del('/api/users/1234567890abcdef').saveResponse({ path: 'users/del' }).end(hlp.status(401, done));
 		});
 
 		it('should deny access to user profile', function(done) {
@@ -136,7 +136,7 @@ describe('The ACLs of the VPDB API', function() {
 		});
 
 		it('should deny access to user details', function(done) {
-			request.get('/api/users/' + hlp.getUser('member').id).as('member').send({}).end(hlp.status(403, done));
+			request.get('/api/users/' + hlp.getUser('member').id).saveResponse({ path: 'users/view' }).as('member').send({}).end(hlp.status(403, done));
 		});
 
 		it('should deny access to user update', function(done) {
@@ -144,7 +144,7 @@ describe('The ACLs of the VPDB API', function() {
 		});
 
 		it('should deny access to user delete', function(done) {
-			request.del('/api/users/1234567890abcdef').as('member').end(hlp.status(403, done));
+			request.del('/api/users/1234567890abcdef').saveResponse({ path: 'users/del' }).as('member').end(hlp.status(403, done));
 		});
 
 		it('should allow access to user profile', function(done) {

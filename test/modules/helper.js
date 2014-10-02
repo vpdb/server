@@ -70,7 +70,7 @@ exports.setupUsers = function(request, config, done) {
 							request
 								.put('/api/users/' + user.id)
 								.as(superuser)
-								.send(user)
+								.send(_.pick(user, [ 'name', 'email', 'username', 'is_active', 'roles' ]))
 								.end(function(err, res) {
 									if (err) {
 										return next(err.body.error);

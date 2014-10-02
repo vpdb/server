@@ -1,19 +1,19 @@
 200 OK
 Content-Type: application/json; charset=utf-8
-Content-Length: 292
-Etag: W/"124-778383358"
+Content-Length: 291
+Etag: W/"123-2811636821"
 
 {
   "plan": "free",
-  "name": "Meagan",
-  "username": "Meagan",
-  "email": "timothy.satterfield@cornell.biz",
+  "name": "Elinore_Ferry",
+  "username": "Elinore_Ferry",
+  "email": "kenyatta@jaime.tv",
   "provider": "local",
-  "created_at": "2014-10-02T18:09:07.525Z",
+  "created_at": "2014-10-02T21:38:29.063Z",
   "is_active": true,
   "roles": [
     "member"
   ],
-  "id": "Z1zgVNl8p4E",
-  "gravatar_id": "b7f8f35030d642e65a1ee2bd9fcfb8c6"
+  "id": "b1bVJo41HV",
+  "gravatar_id": "34d3027304fc09fdd64433fd9ac78e24"
 }

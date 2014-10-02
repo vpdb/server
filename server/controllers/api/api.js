@@ -183,6 +183,22 @@ exports.assert = function(error, prefix, ref, res, rollback) {
 	};
 };
 
+exports.checkReadOnlyFields = function(newObj, oldObj, allowedFields) {
+	var errors = [];
+	_.each(_.difference(_.keys(newObj), allowedFields), function(field) {
+		if (newObj[field] && newObj[field] !== oldObj[field]) {
+			errors.push({
+				message: 'This field is read-only and cannot be changed.',
+				path: field,
+				value: newObj[field]
+			});
+		}
+	});
+
+	//console.log(result.errors);
+	return errors.length ? errors : false;
+};
+
 exports.ping = function(req, res) {
 	exports.success(res, { result: 'pong' });
 };

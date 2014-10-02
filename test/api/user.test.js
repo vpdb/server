@@ -75,7 +75,6 @@ describe('The VPDB `user` API', function() {
 		});
 	});
 
-
 	describe('when fetching a user', function() {
 
 		it('should return full details', function(done) {
@@ -234,6 +233,74 @@ describe('The VPDB `user` API', function() {
 
 		it('should succeed without providing a current password');
 		it('should fail the second time without providng a current password');
+	});
+
+	describe('when an admin updates a user', function() {
+
+		it('should work providing the minimal field set', function(done) {
+			var changedUser = hlp.genUser();
+			request
+				.put('/api/users/' + hlp.getUser('member').id)
+				.save({ path: 'users/update' })
+				.as('admin')
+				.send({
+					email: changedUser.email,
+					username: changedUser.username,
+					name: changedUser.username,
+					is_active: true,
+					roles: [ 'member' ]
+				})
+				.end(function(err, res) {
+					hlp.expectStatus(err, res, 200);
+					request.get('/api/users/' + hlp.getUser('member').id).as('admin').end(function(err, res) {
+						hlp.expectStatus(err, res, 200);
+						expect(res.body).to.be.an('object');
+						expect(res.body.email).to.be(changedUser.email);
+						expect(res.body.username).to.be(changedUser.username);
+						done();
+					});
+				});
+		});
+
+		it('should fail if mandatory fields are missing', function(done) {
+			request
+				.put('/api/users/' + hlp.getUser('member').id)
+				.saveResponse({ path: 'users/update' })
+				.as('admin')
+				.send({})
+				.end(function(err, res) {
+					hlp.expectStatus(err, res, 422);
+					expect(res.body).to.be.an('object');
+					expect(res.body).to.have.property('errors');
+					expect(res.body.errors).to.have.length(5);
+					done();
+				});
+		});
+
+		it('should fail if read-only fields are provided', function(done) {
+			var changedUser = hlp.genUser();
+			request
+				.put('/api/users/' + hlp.getUser('member').id)
+				.as('admin')
+				.send({
+					email: changedUser.email,
+					username: changedUser.username,
+					name: changedUser.username,
+					is_active: true,
+					roles: [ 'member' ],
+					id: '123456789',
+					provider: 'github',
+					created_at: new Date(),
+					gravatar_id: 'cca50395f5c76fe4aab0fa6657ec84a3'
+				})
+				.end(function(err, res) {
+					hlp.expectStatus(err, res, 422);
+					expect(res.body).to.be.an('object');
+					expect(res.body).to.have.property('errors');
+					expect(res.body.errors).to.have.length(4);
+					done();
+				});
+		});
 	});
 
 });

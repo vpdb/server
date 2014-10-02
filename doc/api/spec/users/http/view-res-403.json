@@ -1,0 +1,8 @@
+403 Forbidden
+Content-Type: application/json; charset=utf-8
+Content-Length: 29
+Etag: W/"1d-2669459283"
+
+{
+  "error": "Access denied"
+}

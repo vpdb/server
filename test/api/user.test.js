@@ -41,12 +41,47 @@ describe('The VPDB `user` API', function() {
 		});
 	});
 
+	describe('when searching for a user', function() {
+
+		describe('at least one user should be returned', function() {
+
+			it.only('with full details as admin', function(done) {
+				request
+					.get('/api/users?q=' + hlp.getUser('member').name.substr(0, 2))
+					.saveResponse({ path: 'users/search-as-admin' })
+					.as('admin')
+					.end(function(err, res) {
+						hlp.expectStatus(err, res, 200);
+						expect(res.body).to.be.an('array');
+						expect(res.body.length).to.be.greaterThan(0);
+						expect(res.body[0]).to.have.property('email');
+						done();
+					});
+			});
+
+			it.only('with minimal infos as member', function(done) {
+				request
+					.get('/api/users?q=' + hlp.getUser('member').name.substr(0, 3))
+					.save({ path: 'users/search-as-member' })
+					.as('member')
+					.end(function(err, res) {
+						hlp.expectStatus(err, res, 200);
+						expect(res.body).to.be.an('array');
+						expect(res.body.length).to.be.greaterThan(0);
+						expect(res.body[0]).not.to.have.property('email');
+						done();
+					});
+			});
+		});
+	});
+
+
 	describe('when fetching a user', function() {
 
 		it('should return full details', function(done) {
 			request
 				.get('/api/users/' + hlp.getUser('member').id)
-				.save({ path: 'users/details' })
+				.save({ path: 'users/view' })
 				.as('admin')
 				.end(function(err, res) {
 					hlp.expectStatus(err, res, 200);

@@ -5,6 +5,10 @@ baseUri: https://vpdb.ch/api
 protocols: [HTTPS]
 mediaType: application/json
 
+schemas:
+  - user: !include _schemas/user.json
+  - user-register: !include _schemas/user-register.json
+
 securitySchemes:
   - jwt: !include _securitySchemes/jwt.raml
 
@@ -12,4 +16,4 @@ traits:
   - protected: !include _traits/protected.raml
   - validated: !include _traits/validated.raml
 
-/users: !include users/index.raml
+/users: !include users/users.raml

@@ -121,13 +121,13 @@ module.exports = function(superagent, options) {
 	};
 };
 
-function saveRoot(saveRoot, savePath, suffix) {
+function saveRoot(root, savePath, suffix) {
 	var p = savePath.split('/', 2);
-	saveRoot = saveRoot + '/' + p[0] + '/http';
-	if (!fs.existsSync(saveRoot)) {
-		fs.mkdirSync(saveRoot);
+	root = root + '/' + p[0] + '/http';
+	if (!fs.existsSync(root)) {
+		fs.mkdirSync(root);
 	}
-	return saveRoot + '/' + p[1] + suffix;
+	return root + '/' + p[1] + suffix;
 }
 
 function uppercase(m) {

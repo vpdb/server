@@ -187,15 +187,18 @@ mixin resource(resource)
 								//------------------------------------------
 								//- response body
 								//------------------------------------------
-								p: u Example Response:
-								tabset
-									code.code--dark.pull-right application/json
-									each response, statusCode in method.responses
-										if response.body
-											each rb, contentType in response.body
-												if rb && rb.example
-													tab(heading=statusCode)
-														pre!=hlp.highlight(rb.example, true)
+								- var n = 0
+								each response, statusCode in method.responses
+									if response.body
+										each rb, contentType in response.body
+											if !n
+												p: u Example Response:
+													tabset
+														code.code--dark.pull-right application/json
+											- n++
+											if rb && rb.example
+												tab(heading=statusCode)
+													pre!=hlp.highlight(rb.example, true)
 
 	p.padder-bottom
 

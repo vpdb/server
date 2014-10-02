@@ -162,74 +162,38 @@ function helpers(opts) {
 		},
 
 		authscope: function(scope) {
-			switch (scope) {
+			switch (scope.toUpperCase()) {
 				case 'ROOT':
 					return {
 						classes: 'icon icon-crown',
-						title: 'Root role needed',
+						title: 'Root Access',
 						description: 'You must be **root** in order to access this resource.'
 					};
 				case 'ADMIN':
 					return {
 						classes: 'icon icon-badge',
-						title: 'Administrator role needed',
+						title: 'Administrator Access',
 						description: 'You must be an **administrator** in order to access this resource.'
 					};
 				case 'CONTRIB':
 					return {
 						classes: 'icon icon-diamond',
-						title: 'Contributor role needed',
+						title: 'Contributor Access',
 						description: 'You must be a **contributor** in order to access this resource.'
 					};
 				case 'MEMBER':
 					return {
 						classes: 'icon icon-user',
-						title: 'Registered User role needed',
+						title: 'Registered User',
 						description: 'You must be a **registrated user** in order to access this resource.'
 					};
 				default:
 					return {
 						classes: 'icon icon-globe',
-						title: 'Anonymous access granted',
+						title: 'Anonymous Access',
 						description: 'This is a public resource that doesn\'t need any authentication.'
 					};
 			}
-		},
-
-		authscope2: function(securedBy, additionalClasses) {
-			additionalClasses = additionalClasses || [];
-			if (!securedBy || !securedBy.length || !securedBy[0].jwt || !securedBy[0].jwt.scopes || !securedBy[0].jwt.scopes.length) {
-				return '<i class="icon icon-globe' + (additionalClasses.length ? ' ' : '') + additionalClasses.join(' ') + '" title="Anonymous access granted"></i>';
-			}
-			var icons = '';
-			_.each(securedBy[0].jwt.scopes, function(scope) {
-				var classes = '';
-				var title = '';
-				switch (scope) {
-					case 'ROOT':
-						classes = 'icon icon-crown';
-						title = 'Root role needed';
-						break;
-					case 'ADMIN':
-						classes = 'icon icon-badge';
-						title = 'Administrator role needed';
-						break;
-					case 'CONTRIB':
-						classes = 'icon icon-diamond';
-						title = 'Contributor role needed';
-						break;
-					case 'MEMBER':
-						classes = 'icon icon-user';
-						title = 'Registered User role needed';
-						break;
-					case 'ANON':
-						classes = 'icon icon-globe';
-						title = 'Anonymous access granted';
-						break;
-				}
-				icons += '<i class="' + classes + (additionalClasses.length ? ' ' : '') + additionalClasses.join(' ') + '" title="' + title + '"></i>';
-			});
-			return icons;
 		}
 	};
 }

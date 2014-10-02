@@ -1,0 +1,19 @@
+200 OK
+Content-Type: application/json; charset=utf-8
+Content-Length: 285
+Etag: W/"11d-3744118016"
+
+{
+  "plan": "free",
+  "name": "Vicky",
+  "username": "Vicky",
+  "email": "tristian.harann@helen.co.uk",
+  "provider": "local",
+  "created_at": "2014-10-02T12:43:48.982Z",
+  "is_active": true,
+  "roles": [
+    "member"
+  ],
+  "id": "bJzmpSL5NE",
+  "gravatar_id": "e78a49ecbe8ade4d49eecf11b8701336"
+}

@@ -60,5 +60,5 @@
 			"readOnly": true
 		}
 	},
-	"required": ["id", "email", "username", "provider" ]
+	"required": [ "email", "username", "name", "roles", "is_active" ]
 }

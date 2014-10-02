@@ -40,7 +40,7 @@ var fields = {
 	name:            { type: String, index: true, required: 'Name must be provided.' }, // display name, equals username when locally registering
 	username:        { type: String, index: true, unique: true, sparse: true },
 	email:           { type: String, index: true, unique: true, lowercase: true, required: 'Email must be provided.' },
-	roles:           [ String ],
+	roles:           { type: [ String ], required: true },
 	plan:            { type: String, required: false },
 	provider:        { type: String, required: true },
 	password_hash:   { type: String },
@@ -242,7 +242,8 @@ UserSchema.methods.toDetailed = function() {
 UserSchema.statics.createUser = function(userObj, done) {
 	var User = mongoose.model('User');
 	var user = new User(_.extend(userObj, {
-		created_at: new Date()
+		created_at: new Date(),
+		roles: [ 'member' ]
 	}));
 
 	user.validate(function(err) {

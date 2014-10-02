@@ -20,7 +20,7 @@ var deps = [
 
 // Declare app level modules which depends on filters, and services
 var app = angular.module('vpdb', [ 'ngRoute' ].concat(deps));
-var devsite = angular.module('devsite', [ 'ui.router' ].concat(deps));
+var devsite = angular.module('devsite', [ 'ui.router' ].concat(deps).concat([ 'duScroll' ]));
 
 /*
  * Configuration for the web application

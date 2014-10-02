@@ -15,7 +15,7 @@ mixin resource(resource)
 	each method in resource.methods
 		.clearfix
 		.apidoc-method-wrapper(ng-controller="MethodCollapseCtrl")
-			.apidoc-method(ng-click="isCollapsed = !isCollapsed")
+			.apidoc-method(ng-click="isCollapsed = !isCollapsed", ng-init="resource= { method: '#{method.method}', parentUrl: '#{resource.parentUrl}' }")
 				.badge.badge--verb(class="badge--verb--#{method.method}")=method.method
 				| !{hlp.short(method.description)}
 				.pull-right

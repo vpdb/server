@@ -125,7 +125,7 @@ mixin resource(resource)
 										p: u Fields:
 										tabset.padder-bottom-2x
 											tab(heading="Schema")
-												+jsonSchema(JSON.parse(b.schema))
+												+jsonSchema(hlp.filterSchema(JSON.parse(b.schema), { readOnly: false }))
 											tab(heading="Raw")
 												pre!=hlp.highlight(b.schema)
 

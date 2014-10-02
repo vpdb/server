@@ -243,6 +243,17 @@ function helpers(opts) {
 				}
 			});
 			return byType;
+		},
+
+		filterSchema: function(schema, opts) {
+			var props = schema.properties;
+			_.each(opts, function(filterVal, filterKey) {
+				props = _.pick(props, function(propValue) {
+					return _.isUndefined(propValue[filterKey]) || propValue[filterKey] === filterVal;
+				});
+			});
+			schema.properties = props;
+			return schema;
 		}
 	};
 }

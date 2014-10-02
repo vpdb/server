@@ -260,3 +260,14 @@ directives.directive('sort', function() {
 		}
 	};
 });
+
+directives.directive('apiToken', function($rootScope) {
+	return {
+		restrict: 'E',
+		replace: true,
+		template: '<span>{{ $storage.apiToken || defaultApiToken }}</span>',
+		link: function(scope, element, attrs) {
+			scope.defaultApiToken = attrs.default;
+		}
+	};
+});

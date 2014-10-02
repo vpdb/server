@@ -111,7 +111,9 @@ function helpers(opts) {
 			}
 			if (isHttp) {
 				var split = splitReq(code);
-				return highlight.highlight('http', split.headers).value + '\r\n\r\n' + highlight.highlight('json', split.body).value;
+				var headers = highlight.highlight('http', split.headers).value;
+				headers = headers.replace(/Bearer\s+([^\s<>]+)/g, 'Bearer <api-token default="$1"></api-token>');
+				return headers + '\r\n\r\n' + highlight.highlight('json', split.body).value;
 			}
 			return code ? highlight.highlightAuto(code).value : '';
 		},
@@ -151,7 +153,9 @@ function helpers(opts) {
 					cmd = 'Cannot parse JSON body: \n' + e;
 				}
 			}
-			return highlight.highlight('bash', cmd).value;
+			var highlighted = highlight.highlight('bash', cmd).value;
+			highlighted = highlighted.replace(/\sBearer\s+([^\s"]+)/g, ' Bearer <api-token default="$1"></api-token>');
+			return highlighted;
 		},
 
 		authscopes: function(securedBy) {

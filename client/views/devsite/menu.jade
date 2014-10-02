@@ -14,8 +14,16 @@
 								| #{subsection.title}
 
 			if section === 'api' && api.resources
+				.input-group.padder-top
+					span.input-group-addon
+						i.fa.fa-key
+					input.form-control(type="text", placeholder="API Token", ng-model="$storage.apiToken")
+					span.input-group-btn
+						button.btn.btn-default(type="button", ng-click="$storage.apiToken = ''") &times;
+				small: i Updates example code snippets.
 				h1 Resources
 				hr
+
 				ul.nav.subnav
 					each resource in api.resources
 						li

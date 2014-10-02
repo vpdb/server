@@ -29,12 +29,16 @@ get:
     List all users.
 
     Note that only administrators can really *list* all users, anonymous users
-    must provide a search query and will get limited user info.
+    must provide a search query and will get limited user info (see response
+    examples).
   queryParameters:
     q:
       description: |
-        Search query. As administrator, any length is allowed, anonymous must
-        provide at least three characters.
+        Search query. Searches in *username* and *name*.
+
+         - Members must provide at least three characters.
+         - As administrator, it additionally searches email addresses. Also,
+           there is no minimal query length.
       required: false
       minLength: 3
       type: string

@@ -1,0 +1,18 @@
+201 Created
+Content-Type: application/json; charset=utf-8
+Content-Length: 292
+
+{
+  "plan": "free",
+  "name": "Michaela",
+  "username": "Michaela",
+  "email": "jacques.buckridge@jamil.com",
+  "provider": "local",
+  "created_at": "2014-10-02T11:22:18.524Z",
+  "is_active": true,
+  "roles": [
+    "member"
+  ],
+  "id": "Z1gxc2L5tEE",
+  "gravatar_id": "68e1197cdfdea9412073feb7fdf7e3b0"
+}

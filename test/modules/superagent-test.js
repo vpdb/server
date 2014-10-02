@@ -50,7 +50,7 @@ module.exports = function(superagent, options) {
 		var dest, dump, forceHeaders;
 		var that = this;
 		if (this._saveReq) {
-			dest = options.saveRoot + '/' + this._saveReq.path + '-req.json';
+			dest = saveRoot(options.saveRoot, this._saveReq.path, '-req.json');
 			dump = this.req.method + ' ' + this.req.path + ' HTTP/1.1\r\n';
 			forceHeaders = this._saveReq.headers || [];
 			dump += 'Host: ' + options.saveHost + '\r\n';
@@ -67,7 +67,7 @@ module.exports = function(superagent, options) {
 			delete this._saveReq;
 		}
 		if (this._saveRes) {
-			dest = options.saveRoot + '/' + this._saveRes.path + '-res-' + this.res.statusCode + '.json';
+			dest = saveRoot(options.saveRoot, this._saveRes.path, '-res-' + this.res.statusCode + '.json');
 			dump = this.res.statusCode + ' ' + statusMessage[this.res.statusCode] + '\r\n';
 			forceHeaders = this._saveRes.headers || [];
 			_.each(this.res.headers, function(headerVal, header) {
@@ -120,6 +120,15 @@ module.exports = function(superagent, options) {
 		return this;
 	};
 };
+
+function saveRoot(saveRoot, savePath, suffix) {
+	var p = savePath.split('/', 2);
+	saveRoot = saveRoot + '/' + p[0] + '/http';
+	if (!fs.existsSync(saveRoot)) {
+		fs.mkdirSync(saveRoot);
+	}
+	return saveRoot + '/' + p[1] + suffix;
+}
 
 function uppercase(m) {
 	return m.toUpperCase();

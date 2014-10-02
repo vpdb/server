@@ -1,0 +1,11 @@
+POST /api/users HTTP/1.1
+Host: vpdb.ch
+Accept-Encoding: gzip, deflate
+Content-Type: application/json
+Content-Length: 85
+
+{
+  "username": "Michaela",
+  "password": "KH0IHGCYNd",
+  "email": "jacques.buckridge@jamil.com"
+}

@@ -1,5 +1,0 @@
-GET /api/users/b1uxnMydNV HTTP/1.1
-Host: vpdb.ch
-Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiIteTRsbk1rZFZOIiwiaWF0IjoiMjAxNC0xMC0wMlQwODoxNjoxNS45MTRaIiwiZXhwIjoiMjAxNC0xMC0wMlQwOToxNjoxNS45MTRaIn0.yYTYBKggVOln6Wu2pKWTfB6KEhrOxgydvIFeabeCqOQ
-

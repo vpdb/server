@@ -249,13 +249,19 @@ function helpers(opts) {
 			return byType;
 		},
 
-		filterSchema: function(schema, opts) {
+		schema: function(schemaStr, opts) {
+			var schema = JSON.parse(schemaStr);
 			var props = schema.properties;
-			_.each(opts, function(filterVal, filterKey) {
-				props = _.pick(props, function(propValue) {
-					return _.isUndefined(propValue[filterKey]) || propValue[filterKey] === filterVal;
+
+			// custom filters
+			if (opts.filter) {
+				_.each(opts.filter, function(filterVal, filterKey) {
+					props = _.pick(props, function(propValue) {
+						return _.isUndefined(propValue[filterKey]) || propValue[filterKey] === filterVal;
+					});
 				});
-			});
+			}
+
 			schema.properties = props;
 			return schema;
 		}

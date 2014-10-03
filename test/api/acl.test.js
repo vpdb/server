@@ -47,7 +47,7 @@ describe('The ACLs of the VPDB API', function() {
 		});
 
 		it('should deny access to user profile', function(done) {
-			request.get('/api/user').end(hlp.status(401, done));
+			request.get('/api/user').saveResponse({ path: 'user/view' }).end(hlp.status(401, done));
 		});
 
 		it('should deny updates of user profile', function(done) {
@@ -148,7 +148,7 @@ describe('The ACLs of the VPDB API', function() {
 		});
 
 		it('should allow access to user profile', function(done) {
-			request.get('/api/user').as('member').end(hlp.status(200, done));
+			request.get('/api/user').save({ path: 'user/view' }).as('member').end(hlp.status(200, done));
 		});
 
 		it('should deny access to roles list', function(done) {

@@ -125,7 +125,7 @@ mixin resource(resource)
 										p: u Fields:
 										tabset.padder-bottom-2x
 											tab(heading="Schema")
-												+jsonSchema(hlp.filterSchema(JSON.parse(b.schema), { readOnly: false }))
+												+jsonSchema(hlp.schema(b.schema, { request: method, filter: { readOnly: false }}))
 											tab(heading="Raw")
 												pre!=hlp.highlight(b.schema)
 
@@ -181,7 +181,7 @@ mixin resource(resource)
 												p: u Fields:
 												tabset.padder-bottom-2x
 													tab(heading="Schema")
-														+jsonSchema(JSON.parse(rb.schema))
+														+jsonSchema(hlp.schema(rb.schema, { response: method }))
 													tab(heading="Raw")
 														pre!=hlp.highlight(rb.schema)
 

@@ -220,22 +220,33 @@ ctrl.controller('DevsiteCtrl', function($scope, $location, $rootScope, $statePar
 
 	$rootScope.$on('$stateChangeStart', function(event, toState, toParams) {
 		$rootScope.section = ~toState.name.indexOf('.') ? toState.name.substr(0, toState.name.indexOf('.')) : toState.name;
-		if (toState.name === 'styleguide.section') {
-			$rootScope.subsection = toParams.section;
+		switch (toState.name) {
+			case 'styleguide.section':
+				$rootScope.subsection = toParams.section;
+				break;
+			case 'styleguide.index':
+				$rootScope.subsection = 'index';
+				break;
+			case 'doc.index':
+			case 'doc.section':
+				$rootScope.section = toParams.section;
+				$rootScope.subsection = toState.name === 'doc.section' ? toParams.path.split('/')[0] : 'main';
+				break;
+			case 'api.reference':
+				$rootScope.section = 'api';
+				$rootScope.subsection = 'ref/' + toParams.ref;
+				break;
+			case 'default':
+				var p = toParams.path.split('/');
+				$rootScope.section = p[0];
+				$rootScope.subsection = p[1];
+				break;
+			default:
+				$rootScope.section = toState.name.split('.')[0];
+				$rootScope.subsection = toParams.path || 'index';
+				break;
 		}
-		if (toState.name === 'styleguide.index') {
-			$rootScope.subsection = 'index';
-		}
-		if (toState.name === 'doc.index' || toState.name === 'doc.section') {
-			$rootScope.section = toParams.section;
-			$rootScope.subsection = toState.name === 'doc.section' ? toParams.path.split('/')[0] : 'main';
-		}
-		if (toState.name === 'default') {
-			var p = toParams.path.split('/');
-			$rootScope.section = p[0];
-			$rootScope.subsection = p[1];
-		}
-		console.log('%s/%s', $rootScope.section, $rootScope.subsection);
+		console.log('%s/%s (%s)', $rootScope.section, $rootScope.subsection, toState.name);
 	});
 
 	$scope.scrollTo = function(id) {

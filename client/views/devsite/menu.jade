@@ -14,9 +14,10 @@
 								| #{subsection.title}
 
 			if section === 'api' && api.resources
-				.input-group.padder-top
+				hr
+				.input-group.padder-top-2x
 					span.input-group-addon
-						i.fa.fa-key
+						i.icon.icon-key
 					input.form-control(type="text", placeholder="API Token", ng-model="$storage.apiToken")
 					span.input-group-btn
 						button.btn.btn-default(type="button", ng-click="$storage.apiToken = ''") &times;
@@ -27,9 +28,7 @@
 				ul.nav.subnav
 					each resource in api.resources
 						li
-							h4=resource.displayName
-							a(href='/api/reference/#{resource.uniqueId.substr(1)}')
-								span=resource.relativeUri
+							a(href='/api/reference/#{resource.uniqueId.substr(1)}')= resource.displayName || resource.relativeUri
 
 		p.padder-top-2x
 

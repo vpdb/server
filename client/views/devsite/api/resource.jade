@@ -125,7 +125,7 @@ mixin resource(resource)
 										p: u Fields:
 										tabset.padder-bottom-2x
 											tab(heading="Schema")
-												+jsonSchema(hlp.schema(b.schema, { request: method, filter: { readOnly: false }}))
+												+jsonSchema(hlp.schema(b.schema, { method: method.method, type: 'request', path: resource.parentUrl + resource.relativeUri, filter: { readOnly: false }}))
 											tab(heading="Raw")
 												pre!=hlp.highlight(b.schema)
 
@@ -181,7 +181,7 @@ mixin resource(resource)
 												p: u Fields:
 												tabset.padder-bottom-2x
 													tab(heading="Schema")
-														+jsonSchema(hlp.schema(rb.schema, { response: method }))
+														+jsonSchema(hlp.schema(rb.schema, { method: method.method, type: 'response', path: resource.parentUrl + resource.relativeUri }))
 													tab(heading="Raw")
 														pre!=hlp.highlight(rb.schema)
 

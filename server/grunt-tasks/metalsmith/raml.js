@@ -253,11 +253,32 @@ function helpers(opts) {
 			var schema = JSON.parse(schemaStr);
 			var props = schema.properties;
 
-			// custom filters
+			// "onlyIn" filtering
+			props = _.pick(props, function(prop, name) {
+				if (!_.isArray(prop.onlyIn)) {
+					return true;
+				}
+				for (var i = 0; i < prop.onlyIn.length; i++) {
+					var onlyIn = prop.onlyIn[i];
+					if (onlyIn.type && onlyIn.type !== opts.type) {
+						continue;
+					}
+					if (onlyIn.method && onlyIn.method.toLowerCase() !== opts.method.toLowerCase()) {
+						continue;
+					}
+					if (onlyIn.path && onlyIn.path !== opts.path) {
+						continue;
+					}
+					return true;
+				}
+				return false;
+			});
+
+			// custom filtering
 			if (opts.filter) {
 				_.each(opts.filter, function(filterVal, filterKey) {
-					props = _.pick(props, function(propValue) {
-						return _.isUndefined(propValue[filterKey]) || propValue[filterKey] === filterVal;
+					props = _.pick(props, function(prop) {
+						return _.isUndefined(prop[filterKey]) || prop[filterKey] === filterVal;
 					});
 				});
 			}

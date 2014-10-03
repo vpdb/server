@@ -1,0 +1,24 @@
+displayName: Profile
+description: | 
+  This resource is about self-managing an authenticated user's account.
+get:
+  is: [ protected ]
+  securedBy: [ jwt: { scopes: [ MEMBER ] } ]
+  description: |
+    Returns authenticated user's profile.
+
+    Contrarily to `/users/{user_id}`, this also contains all resolved 
+    permissions of the user.
+  body:
+    role/member:
+      example: !include http/view-req.json
+  responses:
+    200:
+      body:
+        role/member:
+          schema: user
+          example: !include http/view-res-200.json
+    401:
+      body:
+        role/anon:
+          example: !include http/view-res-401.json

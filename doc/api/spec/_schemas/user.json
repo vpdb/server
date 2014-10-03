@@ -62,7 +62,8 @@
 		"permissions": {
 			"description": "Set of permissions for that user, see [permission](/api/permissions).",
 			"type": "object",
-			"onlyIn": [ { "type": "response", "method": "GET", "path": "/user" } ]
+			"onlyIn": [ { "type": "response", "method": "GET", "path": "/user" } ],
+			"readOnly": true
 		}
 	},
 	"required": [ "email", "username", "name", "roles", "is_active" ]

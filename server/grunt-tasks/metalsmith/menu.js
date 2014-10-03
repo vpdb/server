@@ -29,29 +29,36 @@ module.exports = function(opts) {
 	var options = opts.options || {};
 
 	return function(files, metalsmith, done) {
+		try {
 
-		if (!opts.name) {
-			return done('Need a name.');
-		}
-		if (!opts.src) {
-			return done('Need a source template.');
-		}
-		if (!opts.dest) {
-			return done('Need a destination path.');
-		}
+			if (!opts.name) {
+				return done('Need a name.');
+			}
+			if (!opts.src) {
+				return done('Need a source template.');
+			}
+			if (!opts.dest) {
+				return done('Need a destination path.');
+			}
 
-		var metadata = metalsmith.metadata();
-		var sectionIndex;
+			var metadata = metalsmith.metadata();
+			var sectionIndex;
 
-		for (var i = 0; i < metadata[opts.name].length; i++) {
-			sectionIndex = metadata[opts.name][i];
-			var html = jade.renderFile(opts.src, _.extend(
-				_.pick(metadata, 'subsections', 'api'),
-				_.pick(sectionIndex, 'section'),
-				options
-			));
-			files[sectionIndex.section + '/' + opts.dest] = { contents: new Buffer(html) };
+			for (var i = 0; i < metadata[opts.name].length; i++) {
+				sectionIndex = metadata[opts.name][i];
+				var html = jade.renderFile(opts.src, _.extend(
+					_.pick(metadata, 'subsections', 'api'),
+					_.pick(sectionIndex, 'section'),
+					options,
+					{
+						inspect: require('util').inspect
+					}
+				));
+				files[sectionIndex.section + '/' + opts.dest] = { contents: new Buffer(html) };
+			}
+			done();
+		} catch (e) {
+			done(e);
 		}
-		done();
 	};
 };

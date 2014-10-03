@@ -246,6 +246,7 @@ ctrl.controller('DevsiteCtrl', function($scope, $location, $rootScope, $statePar
 				$rootScope.subsection = toParams.path || 'index';
 				break;
 		}
+		$rootScope.path = $location.path();
 		console.log('%s/%s (%s)', $rootScope.section, $rootScope.subsection, toState.name);
 	});
 

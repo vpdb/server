@@ -1,5 +1,6 @@
 "use strict"; /* global ga, _ */
 
+// common deps
 var deps = [
 	'ngAnimate',
 	'ngSanitize',
@@ -11,134 +12,46 @@ var deps = [
 	'angulartics',
 	'angulartics.google.analytics',
 	'monospaced.elastic',
-	'sun.scrollable',
-	'vpdb.controllers',
-	'vpdb.filters',
-	'vpdb.services',
-	'vpdb.directives'
+	'sun.scrollable'
 ];
 
-// Declare app level modules which depends on filters, and services
-var app = angular.module('vpdb', [ 'ngRoute' ].concat(deps));
-var devsite = angular.module('devsite', [ 'ui.router' ].concat(deps).concat([ 'duScroll' ]));
+// main application
+var appDeps = [
+	'vpdb.auth',
+	'vpdb.home',
+	'vpdb.games.list',
+	'vpdb.games.details',
+	'vpdb.games.add',
+	'vpdb.releases.add',
+	'vpdb.users.list',
+	'vpdb.users.edit'
+];
 
-/*
- * Configuration for the web application
+/**
+ * The VPDB main application.
  */
-app.config(function($routeProvider, $locationProvider, $httpProvider) {
+var app = angular.module('vpdb',  [ 'ngRoute' ].concat(deps).concat(appDeps))
 
-	$routeProvider.when('/',                        { templateUrl: 'partials/home.html' });
-	$routeProvider.when('/games',                   { templateUrl: 'partials/games.html' });
-	$routeProvider.when('/game/:id',                { templateUrl: 'partials/game.html' });
-	$routeProvider.when('/game/:id/add-release',    { templateUrl: 'partials/member/release-add.html' });
-	$routeProvider.when('/games/add',               { templateUrl: 'partials/admin/game-add.html' });
-	$routeProvider.when('/admin/users',             { templateUrl: 'partials/admin/users.html' });
-	$routeProvider.when('/auth/:strategy/callback', { templateUrl: 'partials/authenticating.html' });
+	.config(function($routeProvider, $locationProvider) {
 
-	$routeProvider.otherwise({ templateUrl: 'errors/404.html' });
-
-	$locationProvider.html5Mode(true);
-	$httpProvider.interceptors.push('AuthInterceptor');
-});
+		$routeProvider.otherwise({ templateUrl: 'errors/404.html' });
+		$locationProvider.html5Mode(true);
+	});
 
 
-/*
- * Configuration for the developer site
+/**
+ * The developer site
  */
-devsite.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
+angular.module('devsite', [ 'ui.router' ].concat(deps).concat([ 'duScroll', 'vpdb.devsite' ]))
 
-	$locationProvider.html5Mode(true);
+	.config(function($routeProvider, $locationProvider) {
 
-	// home page
-	$stateProvider.state('home', {
-		url: '/',
-		templateUrl: 'partials/home.html'
+		$routeProvider.otherwise({ templateUrl: 'errors/404.html' });
+		$locationProvider.html5Mode(true);
 	});
 
-	// style guide
-	$stateProvider.state('styleguide', {
-		abstract: true,
-		url: '/styleguide',
-		templateUrl: 'partials/styleguide-main.html'
-	});
-	$stateProvider.state('styleguide.index', {
-		url: '',
-		templateUrl: 'partials/styleguide.html'
-	});
-	$stateProvider.state('styleguide.section', {
-		url: '/{section:[\\d\\.]+}',
-		templateUrl: function($stateParams) {
-			return 'partials/styleguide/' + $stateParams.section + '.html';
-		}
-	});
 
-	// api doc
-	$stateProvider.state('api', {
-		abstract: true,
-		url: '/api',
-		templateUrl: 'partials/api/menu.html'
-	});
-	$stateProvider.state('api.index', {
-		url: '',
-		templateUrl: 'partials/api/index.html'
-	});
-	$stateProvider.state('api.reference', {
-		url: '/reference/{ref}',
-		templateUrl: function($stateParams) {
-			return 'partials/api/reference/' + $stateParams.ref + '.html';
-		}
-	});
-	$stateProvider.state('api.section', {
-		url: '/{path:.*}',
-		templateUrl: function($stateParams) {
-			return 'partials/api/' + $stateParams.path + '.html';
-		}
-	});
-
-	// static doc
-	$stateProvider.state('doc', {
-		abstract: true,
-		url: '/{section}',
-		templateUrl: function($stateParams) {
-			return 'partials/' + $stateParams.section + '/menu.html';
-		}
-	});
-	$stateProvider.state('doc.index', {
-		url: '',
-		templateUrl: function($stateParams) {
-			return 'partials/' + $stateParams.section + '/index.html';
-		}
-	});
-
-//	$stateProvider.state('doc.api', {
-//		url: '/reference',
-//		templateUrl: function($stateParams) {
-//			if ($stateParams.section === 'api') {
-//				return 'partials/api/reference/index.html';
-//			} else {
-//				return 'partials/' + $stateParams.section + '/' + $stateParams.path + '.html';
-//			}
-//		}
-//	});
-	$stateProvider.state('doc.section', {
-		url: '/{path:.*}',
-		templateUrl: function($stateParams) {
-			return 'partials/' + $stateParams.section + '/' + $stateParams.path + '.html';
-		}
-	});
-
-	// default routing
-	$stateProvider.state('default', {
-		url: '/{path:.*}',
-		templateUrl: function($stateParams) {
-			return 'partials/' + $stateParams.path + '.html';
-		}
-	});
-
-	// TODO $urlRouterProvider.otherwise(..)
-});
-
-
+// http://www.paulirish.com/2011/requestanimationframe-for-smart-animating/
 window.requestAnimFrame = (function() {
 	return window.requestAnimationFrame    ||
 		window.webkitRequestAnimationFrame ||
@@ -148,16 +61,3 @@ window.requestAnimFrame = (function() {
 		};
 })();
 
-
-(function(i,s,o,g,r,a,m)//noinspection JSHint
-{//noinspection JSHint
-	i['GoogleAnalyticsObject']=r;//noinspection JSHint
-	i[r]=i[r]||function()//noinspection JSHint
-	{
-	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();//noinspection JSHint
-	a=s.createElement(o),
-	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-ga('create', 'UA-49887651-1', 'vpdb.ch');
-///ga('send', 'pageview');

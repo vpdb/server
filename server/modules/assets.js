@@ -38,7 +38,7 @@ function Assets() {
 	this.deps = { js: [], css: [], fonts: [], 'public': [] };
 
 	// application javascripts
-	_.each([ 'app.js', 'controllers.js', 'directives.js', 'filters.js', 'services.js', '/*/**.js' ], function(ptrn) {
+	_.each([ 'app.js', '/*/**.js' ], function(ptrn) {
 		_.each(glob.sync(jsRoot + '/' + ptrn), function(file) {
 			that.app.js.push({
 				src: path.resolve(file),

@@ -56,7 +56,7 @@ exports.configure = function(app) {
 
 	app.set('port', process.env.PORT);
 	app.set('ipaddress', process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1');
-	app.set('views', path.resolve(__dirname, '../client/views'));
+	app.set('views', path.resolve(__dirname, '../client/app'));
 	app.set('view engine', 'jade');
 	app.set('json spaces', "\t");
 	app.set('showStackError', runningDev);
@@ -108,7 +108,7 @@ exports.configure = function(app) {
 	// static file serving
 	// markup (which is pre-compiled in production)
 	app.use(jadeStatic({
-		baseDir: path.resolve(__dirname, '../client/views'),
+		baseDir: path.resolve(__dirname, '../client/app'),
 		baseUrl: '/',
 		jade: _.extend(ctrl.viewParams(), {
 			pretty: true
@@ -183,9 +183,13 @@ exports.configure = function(app) {
 
 	// per default, serve index and let Angular.JS figure out if it's a valid route (nginx does this in production).
 	app.use(function(req, res) {
-		res.status(200).render('index',  _.extend(ctrl.viewParams(), {
-			pretty: true
-		}));
+		if (!/\.html$/.test(req.path)) {
+			res.status(200).render('index',  _.extend(ctrl.viewParams(), {
+				pretty: true
+			}));
+		} else {
+			res.status(404).end();
+		}
 	});
 
 	// assume "not found" in the error msgs

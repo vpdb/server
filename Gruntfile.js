@@ -112,7 +112,7 @@ module.exports = function(grunt) {
 		jade: {
 			site: {
 				options: { data: _.extend(viewParams, { environment: 'production', gitinfo: '<%= gitinfo %>' }) },
-				files: [ { expand: true, cwd: 'client/views', src: [ '**/*.jade', '!layout.jade', '!**/devsite/**' ], dest: htmlRoot, ext: '.html' } ]
+				files: [ { expand: true, cwd: 'client/app', src: [ '**/*.jade', '!layout.jade', '!**/devsite/**' ], dest: htmlRoot, ext: '.html' } ]
 			}
 		},
 

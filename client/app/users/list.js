@@ -2,13 +2,6 @@
 
 angular.module('vpdb.users.list', [])
 
-	.config(function($routeProvider) {
-		// route
-		$routeProvider.when('/admin/users', {
-			templateUrl: 'users/list.html'
-		});
-	})
-
 	.controller('AdminUserCtrl', function($scope, $modal, UserResource, RolesResource) {
 
 		$scope.theme('light');

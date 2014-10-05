@@ -15,7 +15,7 @@ var deps = [
 	'sun.scrollable'
 ];
 
-// main application
+// main application modules
 var appDeps = [
 	'vpdb.auth',
 	'vpdb.home',
@@ -33,6 +33,15 @@ var appDeps = [
 var app = angular.module('vpdb',  [ 'ngRoute' ].concat(deps).concat(appDeps))
 
 	.config(function($routeProvider, $locationProvider) {
+
+		// routes
+		$routeProvider.when('/',                        { templateUrl: 'home/home.html' });
+		$routeProvider.when('/games',                   { templateUrl: 'games/list.html' });
+		$routeProvider.when('/game/:id',                { templateUrl: 'games/details.html' });
+		$routeProvider.when('/games/add',               { templateUrl: 'games/add.html' });
+		$routeProvider.when('/game/:id/add-release',    { templateUrl: 'releases/add.html' });
+		$routeProvider.when('/admin/users',             { templateUrl: 'users/list.html' });
+		$routeProvider.when('/auth/:strategy/callback', { templateUrl: 'auth/authenticating.html' });
 
 		$routeProvider.otherwise({ templateUrl: 'errors/404.html' });
 		$locationProvider.html5Mode(true);

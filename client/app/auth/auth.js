@@ -2,11 +2,7 @@
 
 angular.module('vpdb.auth', [])
 
-	.config(function($routeProvider, $httpProvider) {
-		// route
-		$routeProvider.when('/auth/:strategy/callback', {
-			templateUrl: 'auth/authenticating.html'
-		});
+	.config(function($httpProvider) {
 		$httpProvider.interceptors.push('AuthInterceptor');
 	})
 

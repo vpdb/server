@@ -2,13 +2,6 @@
 
 angular.module('vpdb.releases.add', [])
 
-	.config(function($routeProvider) {
-		// route
-		$routeProvider.when('/game/:id/add-release', {
-			templateUrl: 'releases/add.html'
-		});
-	})
-
 	.controller('ReleaseAddCtrl', function($scope, $upload, $modal, $window, $localStorage, $routeParams,
 										   AuthService, ApiHelper,
 										   FileResource, TagResource, VPBuildResource, GameResource,

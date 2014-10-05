@@ -2,13 +2,6 @@
 
 angular.module('vpdb.games.list', [])
 
-	.config(function($routeProvider) {
-		// route
-		$routeProvider.when('/games', {
-			templateUrl: 'games/list.html'
-		});
-	})
-
 	.controller('GameListController', function($scope, $rootScope, $http, $location, $templateCache, $route) {
 
 		$scope.theme('dark');

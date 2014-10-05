@@ -5,13 +5,6 @@
  */
 angular.module('vpdb.home', [])
 
-	.config(function($routeProvider, $locationProvider, $httpProvider) {
-		// route
-		$routeProvider.when('/', {
-			templateUrl: 'home/home.html'
-		});
-	})
-
 	.controller('HomeController', function($scope, $http) {
 
 		$scope.theme('dark');

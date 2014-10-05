@@ -2,13 +2,6 @@
 
 angular.module('vpdb.games.add', [])
 
-	.config(function($routeProvider) {
-		// route
-		$routeProvider.when('/games/add', {
-			templateUrl: 'games/add.html'
-		});
-	})
-
 	.controller('AdminGameAddCtrl', function($scope, $upload, $modal, $window, $localStorage, $location, $anchorScroll, ApiHelper, AuthService, MimeTypeService, IpdbResource, GameResource, FileResource) {
 
 		var maxAspectRatioDifference = 0.2;

@@ -56,15 +56,6 @@ server {
 		}
 	}
 
-	# style guide
-	location ~ ^/styleguide {
-		root $project_directory;
-		try_files $uri /styleguide/index.html;
-		access_log off;
-		add_header Cache-Control public;
-		expires max;
-	}
-
 	# map html files to root
 	location ~ \.html$ {
 		root $build_directory/html;

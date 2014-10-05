@@ -87,7 +87,6 @@ npm_install() {
 grunt_build() {
 	cd ${DEPLOY_ROOT}/${DEPLOY_ENV}/$1
 	echo "Running build with Grunt..."
-	${DEPLOY_ROOT}/${DEPLOY_ENV}/settings.js
 	APP_SETTINGS=${DEPLOY_ROOT}/${DEPLOY_ENV}/settings.js APP_NAME=${DEPLOY_ENV} NODE_ENV=production APP_CACHEDIR=${DEPLOY_ROOT}/${DEPLOY_ENV}/shared/cache grunt build
 	test $? -eq 0 || rollback_abort $1 "Grunt build failed. Fix and redeploy."
 }

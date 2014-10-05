@@ -1,0 +1,75 @@
+server {
+
+	set $build_directory    /var/www/staging/current/devsite;
+
+	listen 443 ssl spdy;
+	server_name developer.vpdb;
+
+	charset utf-8;
+
+	# path to your certs
+	ssl_certificate      /etc/nginx/ssl/staging-devsite.crt;
+	ssl_certificate_key  /etc/nginx/ssl/staging-devsite.key;
+
+	ssl_ciphers               ECDH+AESGCM:DH+AESGCM:ECDH+AES256:DH+AES256:ECDH+AES128:DH+AES:ECDH+3DES:DH+3DES:RSA+AESGCM:RSA+AES:RSA+3DES:!aNULL:!MD5:!DSS;
+	ssl_buffer_size           8k;
+	ssl_prefer_server_ciphers on;
+	ssl_protocols             TLSv1 TLSv1.1 TLSv1.2;
+
+	# if you're using a signed certificate
+	#ssl_stapling              on;
+	#ssl_stapling_verify       on;
+	#ssl_trusted_certificate   /etc/nginx/ssl/staging.chain.pem;
+
+	# protect this
+	auth_basic "Restricted";
+	auth_basic_user_file /var/www/.htpasswd;
+
+	# map files to build folder
+	location / {
+		root $build_directory;
+		access_log off;
+		expires -1;
+		add_header Cache-Control public;
+
+		location /css/ {
+			expires max;
+		}
+		location /js/ {
+			expires max;
+		}
+		location /images/ {
+			expires 24h;
+		}
+	}
+
+	# map root to index
+	location = / {
+		root $build_directory;
+		try_files /index.html =404;
+		add_header Cache-Control public;
+	}
+
+	# map directories to index
+	location ~ \/[^\.]*$ {
+		root $build_directory;
+		try_files /index.html =404;
+		add_header Cache-Control public;
+	}
+
+	# map favicons to root
+	location ~ ^/(favicon|mstile|apple-touch-icon) {
+		root $build_directory/images/favicon;
+		access_log off;
+		expires max;
+		add_header Cache-Control public;
+	}
+}
+
+# redirect to https
+server {
+	listen 80;
+	server_name developer.vpdb;
+	return 301 https://developer.vpdb$request_uri;
+}
+

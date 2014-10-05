@@ -275,7 +275,27 @@ Do the same for `staging.key` and `staging.crt`:
 	openssl rsa -in staging.original -out staging.key
 	rm -v staging.original
 	openssl x509 -req -days 365 -in staging.csr -signkey staging.key -out staging.crt
+	
+And `staging-devsite.key` and `staging-devsite.crt`:
+
+	openssl genrsa -des3 -out staging-devsite.key 2048
+	openssl req -new -key staging-devsite.key -out staging-devsite.csr
+	cp -v staging-devsite.{key,original}
+	openssl rsa -in staging-devsite.original -out staging-devsite.key
+	rm -v staging-devsite.original
+	openssl x509 -req -days 365 -in staging-devsite.csr -signkey staging-devsite.key -out staging-devsite.crt
 	exit
+
+#### Signed Certificate Example
+
+	cd /etc/nginx/ssl
+	openssl req -new -days 365 -nodes -keyout developer.vpdb.ch.key -out developer.vpdb.ch.csr
+	
+Submit `developer.vpdb.ch.csr` to signing authority, then paste received certificate into `developer-signed.crt`. Then
+build the key chain:
+
+	cat developer-signed.crt startssl-sub.class1.server.ca.pem startssl-ca.pem > developer.vpdb.ch.crt
+
 
 ### Configure Nginx
 
@@ -292,13 +312,16 @@ Our config and the sites:
 	sudo cp /repos/source/deploy/nginx/proxy_params.conf /etc/nginx/proxy_params
 	sudo cp /repos/source/deploy/nginx/sites/production /etc/nginx/sites-available/vpdb-production
 	sudo cp /repos/source/deploy/nginx/sites/staging /etc/nginx/sites-available/vpdb-staging
+	sudo cp /repos/source/deploy/nginx/sites/staging-devsite /etc/nginx/sites-available/vpdb-staging-devsite
 	sudo ln -s /etc/nginx/sites-available/vpdb-production /etc/nginx/sites-enabled/vpdb-production
 	sudo ln -s /etc/nginx/sites-available/vpdb-staging /etc/nginx/sites-enabled/vpdb-staging
+	sudo ln -s /etc/nginx/sites-available/vpdb-staging-devsite /etc/nginx/sites-enabled/vpdb-staging-devsite
 
 Update configuration:
 
 	sudo vi /etc/nginx/sites-available/vpdb-production
 	sudo vi /etc/nginx/sites-available/vpdb-staging
+	sudo vi /etc/nginx/sites-available/vpdb-staging-devsite
 
 Then start nginx:
 

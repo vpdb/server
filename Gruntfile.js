@@ -215,7 +215,11 @@ module.exports = function(grunt) {
 
 	// build
 	grunt.registerTask('build', 'What run on production before switching code.',
-		[ 'git', 'env:prod', 'clean:build', 'mkdir:server', 'copy:assets', 'copy:static', 'stylus', 'cssmin', 'ngAnnotate', 'uglify', 'jade' ]
+		[ 'git', 'env:prod', 'clean:build', 'mkdir:server',       // clean and create folder structure
+			'copy:assets', 'copy:static',                         // copy static stuff
+			'stylus', 'cssmin',                                   // render & minify css
+			'ngAnnotate', 'uglify', 'jade',                       // treat javascripts
+			'copy:devsite', 'mkdir:devsite', 'kss', 'metalsmith'] // create devsite
 	);
 	// server tasksgut
 	grunt.registerTask('dev', [          'env:dev',            'jshint',               'concurrent:dev' ]);  // dev mode, watch everything

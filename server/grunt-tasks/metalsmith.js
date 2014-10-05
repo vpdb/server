@@ -82,14 +82,14 @@ module.exports = function(grunt) {
 			files: {
 				'core': { src: 'api/spec/index.raml', dest: 'api/reference' }
 			},
-			template: 'client/views/devsite/api/resource.jade',
+			template: 'client/app/devsite/api-resource.jade',
 			markdown: markdown
 		}));
 
 		/* loops through metalsmith.sections and renders a given template on it */
 		metalsmith.use(menu({
 			name: 'sections',
-			src: 'client/views/devsite/menu.jade',
+			src: 'client/app/devsite/menu.jade',
 			dest: 'menu.html'
 		}));
 
@@ -97,7 +97,7 @@ module.exports = function(grunt) {
 		metalsmith.use(markdown(options.markdown));
 
 		/* puts all .html files into a jade template. */
-		metalsmith.use(templates({ engine: 'jade', directory: 'client/views/devsite' }));
+		metalsmith.use(templates({ engine: 'jade', directory: 'client/app/devsite' }));
 
 		// build
 		metalsmith.build(done);

@@ -58,20 +58,20 @@ exports.index = function(params) {
 			res.render('index', _.extend({}, params, ctrl.viewParams()));
 	};
 };
-
-exports.styleguide = function() {
-	return function(req, res) {
-		res.writeHead(200);
-		var stream = fs.createReadStream(path.resolve(__dirname, '../../styleguide/index.html'));
-		stream.pipe(res);
-	};
-};
-
-exports.partials = function(subfolder, resource, permission) {
-	var prefix = 'partials' + (subfolder ? '/' + subfolder : '');
-	return authenticate(resource, permission, function(req, res, params) {
-		res.render(prefix + (req.params.name ? '/' + req.params.name : ''), params);
-	}, function(req, res, err) {
-		ctrl.renderError(err.code, err.message)(req, res);
-	});
-};
+//
+//exports.styleguide = function() {
+//	return function(req, res) {
+//		res.writeHead(200);
+//		var stream = fs.createReadStream(path.resolve(__dirname, '../../styleguide/index.html'));
+//		stream.pipe(res);
+//	};
+//};
+//
+//exports.partials = function(subfolder, resource, permission) {
+//	var prefix = 'partials' + (subfolder ? '/' + subfolder : '');
+//	return authenticate(resource, permission, function(req, res, params) {
+//		res.render(prefix + (req.params.name ? '/' + req.params.name : ''), params);
+//	}, function(req, res, err) {
+//		ctrl.renderError(err.code, err.message)(req, res);
+//	});
+//};

@@ -1,6 +1,6 @@
 "use strict"; /* global app, _ */
 
-app
+common
 	.controller('AppCtrl', function($scope, $rootScope, $location, $modal, $localStorage, UserResource, AuthService, ProfileService, PingResource) {
 
 		$rootScope.themeName = 'theme-dark';

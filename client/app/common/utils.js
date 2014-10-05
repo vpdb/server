@@ -1,6 +1,6 @@
 "use strict"; /* global app, _ */
 
-app
+common
 
 	/**
 	 * Converts byte size into something more readable.

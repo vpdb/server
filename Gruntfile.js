@@ -124,7 +124,7 @@ module.exports = function(grunt) {
 		metalsmith: {
 			options: {
 				clean: false,
-				dest: 'devsite/partials',
+				dest: 'devsite/html',
 				src: 'doc',
 				markdown: markdown
 			}
@@ -134,7 +134,7 @@ module.exports = function(grunt) {
 			server:   { options: { mode: 504, create: [ cssRoot, jsRoot ] } },
 			coverage: { options: { mode: 504, create: [ 'test/coverage' ] } },
 			test:     { options: { mode: 504, create: [ testConfig.vpdb.storage ] }},
-			devsite:  { options: { mode: 504, create: [ devsiteRoot + '/partials/styleguide' ] } }
+			devsite:  { options: { mode: 504, create: [ devsiteRoot + '/html/styleguide' ] } }
 		},
 
 		mochaTest: {

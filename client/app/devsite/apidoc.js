@@ -9,23 +9,23 @@ angular.module('vpdb.devsite', [])
 		// home page
 		$stateProvider.state('home', {
 			url: '/',
-			templateUrl: 'partials/home.html'
+			templateUrl: 'html/home.html'
 		});
 
 		// style guide
 		$stateProvider.state('styleguide', {
 			abstract: true,
 			url: '/styleguide',
-			templateUrl: 'partials/styleguide-main.html'
+			templateUrl: 'html/styleguide-main.html'
 		});
 		$stateProvider.state('styleguide.index', {
 			url: '',
-			templateUrl: 'partials/styleguide.html'
+			templateUrl: 'html/styleguide.html'
 		});
 		$stateProvider.state('styleguide.section', {
 			url: '/{section:[\\d\\.]+}',
 			templateUrl: function($stateParams) {
-				return 'partials/styleguide/' + $stateParams.section + '.html';
+				return 'html/styleguide/' + $stateParams.section + '.html';
 			}
 		});
 
@@ -33,22 +33,22 @@ angular.module('vpdb.devsite', [])
 		$stateProvider.state('api', {
 			abstract: true,
 			url: '/api',
-			templateUrl: 'partials/api/menu.html'
+			templateUrl: 'html/api/menu.html'
 		});
 		$stateProvider.state('api.index', {
 			url: '',
-			templateUrl: 'partials/api/index.html'
+			templateUrl: 'html/api/index.html'
 		});
 		$stateProvider.state('api.reference', {
 			url: '/reference/{ref}',
 			templateUrl: function($stateParams) {
-				return 'partials/api/reference/' + $stateParams.ref + '.html';
+				return 'html/api/reference/' + $stateParams.ref + '.html';
 			}
 		});
 		$stateProvider.state('api.section', {
 			url: '/{path:.*}',
 			templateUrl: function($stateParams) {
-				return 'partials/api/' + $stateParams.path + '.html';
+				return 'html/api/' + $stateParams.path + '.html';
 			}
 		});
 
@@ -57,30 +57,19 @@ angular.module('vpdb.devsite', [])
 			abstract: true,
 			url: '/{section}',
 			templateUrl: function($stateParams) {
-				return 'partials/' + $stateParams.section + '/menu.html';
+				return 'html/' + $stateParams.section + '/menu.html';
 			}
 		});
 		$stateProvider.state('doc.index', {
 			url: '',
 			templateUrl: function($stateParams) {
-				return 'partials/' + $stateParams.section + '/index.html';
+				return 'html/' + $stateParams.section + '/index.html';
 			}
 		});
-
-//	$stateProvider.state('doc.api', {
-//		url: '/reference',
-//		templateUrl: function($stateParams) {
-//			if ($stateParams.section === 'api') {
-//				return 'partials/api/reference/index.html';
-//			} else {
-//				return 'partials/' + $stateParams.section + '/' + $stateParams.path + '.html';
-//			}
-//		}
-//	});
 		$stateProvider.state('doc.section', {
 			url: '/{path:.*}',
 			templateUrl: function($stateParams) {
-				return 'partials/' + $stateParams.section + '/' + $stateParams.path + '.html';
+				return 'html/' + $stateParams.section + '/' + $stateParams.path + '.html';
 			}
 		});
 
@@ -88,13 +77,12 @@ angular.module('vpdb.devsite', [])
 		$stateProvider.state('default', {
 			url: '/{path:.*}',
 			templateUrl: function($stateParams) {
-				return 'partials/' + $stateParams.path + '.html';
+				return 'html/' + $stateParams.path + '.html';
 			}
 		});
 
 		// TODO $urlRouterProvider.otherwise(..)
 	})
-
 
 	.controller('MethodCollapseCtrl', function($document, $element, $scope, $rootScope, $location, $timeout) {
 

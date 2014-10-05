@@ -19,6 +19,7 @@ var deps = [
 var appDeps = [
 	'vpdb.auth',
 	'vpdb.home',
+	'vpdb.commons',
 	'vpdb.games.list',
 	'vpdb.games.details',
 	'vpdb.games.add',
@@ -30,7 +31,7 @@ var appDeps = [
 /**
  * The VPDB main application.
  */
-var app = angular.module('vpdb',  [ 'ngRoute' ].concat(deps).concat(appDeps))
+angular.module('vpdb',  [ 'ngRoute' ].concat(deps).concat(appDeps))
 
 	.config(function($routeProvider, $locationProvider) {
 
@@ -46,16 +47,14 @@ var app = angular.module('vpdb',  [ 'ngRoute' ].concat(deps).concat(appDeps))
 		$routeProvider.otherwise({ templateUrl: 'errors/404.html' });
 		$locationProvider.html5Mode(true);
 	});
-
+var common = angular.module('vpdb.commons', []);
 
 /**
  * The developer site
  */
-angular.module('devsite', [ 'ui.router' ].concat(deps).concat([ 'duScroll', 'vpdb.devsite' ]))
+angular.module('devsite', [ 'ui.router' ].concat(deps).concat(appDeps).concat([ 'duScroll', 'vpdb.devsite' ]))
 
-	.config(function($routeProvider, $locationProvider) {
-
-		$routeProvider.otherwise({ templateUrl: 'errors/404.html' });
+	.config(function($locationProvider) {
 		$locationProvider.html5Mode(true);
 	});
 

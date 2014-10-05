@@ -1,6 +1,7 @@
 "use strict"; /* global app, videojs */
 
-app
+common
+
 	.directive('videojs', function($parse, $http, $timeout) {
 		return {
 			restrict: 'A',

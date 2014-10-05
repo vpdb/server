@@ -1,6 +1,6 @@
 "use strict"; /* global app, _ */
 
-app
+common
 	.controller('LoginCtrl', function($scope, $rootScope, $modalInstance, ApiHelper, AuthService, AuthResource, UserResource) {
 
 		$scope.registering = false;

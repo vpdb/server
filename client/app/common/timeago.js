@@ -3,7 +3,7 @@
 /**
  * @see http://jsfiddle.net/lrlopez/dFeuf/
  */
-app
+common
 	.service('TimeagoService', function($timeout) {
 		var ref;
 		return {

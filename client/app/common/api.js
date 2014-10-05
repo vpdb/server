@@ -1,6 +1,6 @@
 "use strict"; /* global app, _ */
 
-app
+common
 	.factory('AuthResource', function($resource) {
 		return $resource('/api/authenticate/:strategy', {}, {
 			authenticate: { method: 'POST' },

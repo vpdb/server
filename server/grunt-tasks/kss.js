@@ -58,7 +58,7 @@ module.exports = function(grunt) {
 			rootRefs.sort(function(a, b) {
 				return parseInt(a) - parseInt(b);
 			});
-			var sectionTemplate = jade.compile(fs.readFileSync('client/views/devsite/styleguide-section.jade'), { pretty: true });
+			var sectionTemplate = jade.compile(fs.readFileSync('client/app/devsite/styleguide-section.jade'), { pretty: true });
 
 			var renderSection = function(rootSection, reference, sections, next) {
 //				grunt.log.writeln('Generating %s %s"', reference, rootSection ? rootSection.header() : 'Unnamed');
@@ -67,7 +67,7 @@ module.exports = function(grunt) {
 						grunt.log.error(err);
 						return next(err);
 					}
-					var filename = path.resolve(writeable.devsiteRoot, 'partials/styleguide/' + reference + '.html');
+					var filename = path.resolve(writeable.devsiteRoot, 'html/styleguide/' + reference + '.html');
 					grunt.log.write('Writing "%s"... ', filename);
 					fs.writeFileSync(filename, sectionTemplate({
 						styleguide: styleguide,
@@ -104,8 +104,8 @@ module.exports = function(grunt) {
 				}, ctrl.viewParams());
 
 				// render index
-				var indexHtml = jade.renderFile('client/views/devsite/index.jade', data);
-				var styleguideMain = jade.renderFile('client/views/devsite/styleguide-main.jade', data);
+				var indexHtml = jade.renderFile('client/app/devsite/index.jade', data);
+				var styleguideMain = jade.renderFile('client/app/devsite/styleguide-main.jade', data);
 
 
 				// render index (move that to grunt directly)
@@ -115,7 +115,7 @@ module.exports = function(grunt) {
 				grunt.log.ok();
 
 				// render main
-				filename = path.resolve(writeable.devsiteRoot, 'partials/styleguide-main.html');
+				filename = path.resolve(writeable.devsiteRoot, 'html/styleguide-main.html');
 				//grunt.log.write('Writing "%s"... ', filename);
 				fs.writeFileSync(filename, styleguideMain);
 				grunt.log.ok();

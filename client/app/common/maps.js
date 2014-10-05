@@ -1,7 +1,6 @@
 "use strict"; /* global app */
 
-
-app
+common
 	.factory('DisplayService', function() {
 		return {
 			media: function(type) {

@@ -1,7 +1,7 @@
 "use strict"; /* global app, Showdown, _ */
 
 
-app
+common
 	.directive('ratingbox', function($parse) {
 		return {
 			restrict: 'C',

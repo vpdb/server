@@ -67,7 +67,7 @@ exports.renderError = function(code, message) {
 			res.status(code).send({ error: message });
 
 		// for partials, return a partial
-		} else if (req.originalUrl.substr(0, 10) === '/partials/') {
+		} else if (req.originalUrl.substr(0, 6) === '/html/') {
 			// return 200 because otherwise angular doesn't render the partial view.
 			res.status(200).send('<h1>Oops!</h1><p>' + message + '</p>');
 

@@ -16,7 +16,7 @@
  * The `imageUnloaded` event would then remove the class and set
  * `loadingFinished` to  `false`.
  */
-app
+common
 	.directive('makeLoaded', function($timeout, $parse) {
 		return {
 			scope: true,

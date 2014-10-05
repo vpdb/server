@@ -54,12 +54,11 @@ structure is the following:
 While the API and the storage engine are both part of the server component, the client code lives in a different sub 
 folder called `./client`. The structure is as follows:
 
- - Javascript code is in the `app` folder. In production it gets concatenated with the vendor libs and minified.
+ - Application logic can be found in the `app` folder. The application code is separated *by feature* and you'll find
+   Javascript code as well as the [Jade][jade] templates.
  - Everything in `static` gets just copied over to the site root directory.
  - The `styles` folder contains the [Stylus][stylus] files. It gets also minified in production, along with the styles
    from the vendor libraries.
- - The `views` directory holds all the markup as [Jade][jade] templates. In production they are pre-compiled and
-   statically hosted by Nginx.
 
 
 ## Other Folders
@@ -78,8 +77,8 @@ There are also a few generated folders:
 
 
 [api]: /api
-[storage]: /storage
-[webapp]: /webapp
+[storage]: /code/storage
+[webapp]: /code/webapp
 [vpdb]: https://vpdb.ch/
 [angular]: https://angularjs.org/
 [bootstrap]: http://getbootstrap.com/

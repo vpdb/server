@@ -1,19 +1,19 @@
 200 OK
 Content-Type: application/json; charset=utf-8
-Content-Length: 291
-Etag: W/"123-2811636821"
+Content-Length: 300
+Etag: W/"12c-6db12d94"
 
 {
   "plan": "free",
-  "name": "Elinore_Ferry",
-  "username": "Elinore_Ferry",
-  "email": "kenyatta@jaime.tv",
+  "name": "Cydney.Boehm",
+  "username": "Cydney.Boehm",
+  "email": "jeromy_kovacek54@hotmail.com",
   "provider": "local",
-  "created_at": "2014-10-02T21:38:29.063Z",
+  "created_at": "2014-10-06T07:58:09.942Z",
   "is_active": true,
   "roles": [
     "member"
   ],
-  "id": "b1bVJo41HV",
-  "gravatar_id": "34d3027304fc09fdd64433fd9ac78e24"
+  "id": "ZkqErEd2D4",
+  "gravatar_id": "e397f76acbc8376da2d7b3720b68edee"
 }

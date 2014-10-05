@@ -28,6 +28,7 @@ var marked = require('marked');
 var raml2obj = require('raml2obj');
 var relative = require('path').relative;
 var highlight = require('highlight.js');
+var resolve = require('path').resolve;
 var normalize = require('path').normalize;
 
 
@@ -67,7 +68,7 @@ module.exports = function(opts) {
 		// for each  api
 		async.each(_.keys(srcFiles), function(file, next) {
 
-			var path = relative(process.cwd(), metalsmith.join(opts.src, file));
+			var path = relative(process.cwd(), resolve(opts.src, file));
 
 			// process raml
 			debug('Processing RAML file at %s...', path);

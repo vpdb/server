@@ -1,19 +1,13 @@
 200 OK
 Content-Type: application/json; charset=utf-8
-Content-Length: 267
-Etag: W/"10b-821740839"
+Content-Length: 139
+Etag: W/"8b-5dbffdd2"
 
 [
   {
-    "id": "-1ylm1o4kSE",
-    "name": "Adelia",
-    "username": "Adelia",
-    "gravatar_id": "9d046863b8f7a5a3d5ff5eeb314600b7"
-  },
-  {
-    "id": "b1bVJo41HV",
-    "name": "Elinore_Ferry",
-    "username": "Elinore_Ferry",
-    "gravatar_id": "34d3027304fc09fdd64433fd9ac78e24"
+    "id": "ZkqErEd2D4",
+    "name": "Cydney.Boehm",
+    "username": "Cydney.Boehm",
+    "gravatar_id": "e397f76acbc8376da2d7b3720b68edee"
   }
 ]

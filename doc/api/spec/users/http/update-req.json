@@ -1,14 +1,14 @@
-PUT /api/users/b1bVJo41HV HTTP/1.1
+PUT /api/users/ZkqErEd2D4 HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiItMXlsbTFvNGtTRSIsImlhdCI6IjIwMTQtMTAtMDJUMjE6Mzg6MjkuMDUyWiIsImV4cCI6IjIwMTQtMTAtMDJUMjI6Mzg6MjkuMDUyWiJ9.0tnWomXkn4IWPWyQ3C29BGERoDe5OuB8lYHYjCsZD40
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJaSkxOSEV1bnc0IiwiaWF0IjoiMjAxNC0xMC0wNlQwNzo1ODowOS45MjVaIiwiZXhwIjoiMjAxNC0xMC0wNlQwODo1ODowOS45MjVaIn0.fCtc6hLohMAvt4ccngwdljhWFLosj0PPa0t1rgw_gWM
 Content-Type: application/json
-Content-Length: 124
+Content-Length: 121
 
 {
-  "email": "harry_wuckert@eloisa.com",
-  "username": "Adriel.OConner",
-  "name": "Adriel.OConner",
+  "email": "thomas_feeney46@yahoo.com",
+  "username": "Arno_Corkery",
+  "name": "Arno_Corkery",
   "is_active": true,
   "roles": [
     "member"

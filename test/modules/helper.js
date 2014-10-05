@@ -108,13 +108,13 @@ exports.genUser = function() {
 
 	var username = '';
 	do {
-		username = faker.Internet.userName().replace(/[^a-z0-9\._]+/gi, '');
+		username = faker.internet.userName().replace(/[^a-z0-9\._]+/gi, '');
 	} while (username.length < 3);
 
 	return {
 		username: username,
 		password: randomstring.generate(10),
-		email: faker.Internet.email().toLowerCase()
+		email: faker.internet.email().toLowerCase()
 	};
 };
 

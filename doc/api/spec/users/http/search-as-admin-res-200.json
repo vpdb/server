@@ -1,33 +1,20 @@
 200 OK
 Content-Type: application/json; charset=utf-8
-Content-Length: 555
-Etag: W/"22b-1716650524"
+Content-Length: 295
+Etag: W/"127-f1e6c89c"
 
 [
   {
-    "id": "-1ylm1o4kSE",
-    "name": "Adelia",
-    "username": "Adelia",
-    "gravatar_id": "9d046863b8f7a5a3d5ff5eeb314600b7",
-    "email": "erick@genesis.us",
-    "is_active": true,
-    "roles": [
-      "admin"
-    ],
-    "plan": "free",
-    "created_at": "2014-10-02T21:38:29.047Z"
-  },
-  {
-    "id": "b1bVJo41HV",
-    "name": "Elinore_Ferry",
-    "username": "Elinore_Ferry",
-    "gravatar_id": "34d3027304fc09fdd64433fd9ac78e24",
-    "email": "kenyatta@jaime.tv",
+    "id": "ZkqErEd2D4",
+    "name": "Cydney.Boehm",
+    "username": "Cydney.Boehm",
+    "gravatar_id": "e397f76acbc8376da2d7b3720b68edee",
+    "email": "jeromy_kovacek54@hotmail.com",
     "is_active": true,
     "roles": [
       "member"
     ],
     "plan": "free",
-    "created_at": "2014-10-02T21:38:29.063Z"
+    "created_at": "2014-10-06T07:58:09.942Z"
   }
 ]

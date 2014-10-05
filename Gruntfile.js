@@ -173,7 +173,7 @@ module.exports = function(grunt) {
 			// restart/reload watches
 			'express-dev':     { files: '.restart', options: { spawn: false, debounceDelay: 100 }, tasks: [ 'express:dev' ] },
 			'express-test':    { files: '.restart', options: { spawn: false, debounceDelay: 100 }, tasks: [ 'express:test' ] },
-			livereload:        { files: [ '.reload', 'client/app/**/*.js', 'client/views/**/*.jade' ],
+			livereload:        { files: [ '.reload', 'client/app/**/*.js', 'client/app/**/*.jade' ],
 			          options: { spawn: false, debounceDelay: 100, livereload: grunt.option('no-reload') ? false : true }
 			},
 
@@ -183,7 +183,7 @@ module.exports = function(grunt) {
 
 			// client watches
 			stylesheets: { files: 'client/styles/**/*.styl', options: { spawn: false, debounceDelay: 100 }, tasks: [ 'stylus', 'kss', 'copy:devsite', 'reload' ] },
-			devsite:     { files: [ 'client/views/devsite/**', 'doc/**' ],
+			devsite:     { files: [ 'client/app/devsite/**', 'doc/**' ],
 			               options: { spawn: false, debounceDelay: 100 }, tasks: [ 'metalsmith', 'reload' ] },
 
 			// test watch

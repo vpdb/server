@@ -65,6 +65,7 @@ as follows:
  - The `styles` folder contains the [Stylus][stylus] files. It gets also 
    minified in production, along with the styles from the vendor libraries.
 
+For more information, check out the [Web Application section][webapp]
 
 ## Other Folders
 

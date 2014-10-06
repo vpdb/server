@@ -275,6 +275,7 @@
 // </accordion>
 //
 // .panel-group--accordion     - Accordion
+// .panel-group--transparent   - Transparent Accordion - See menu at the left ;)
 //
 // Styleguide 17.6.1
 .panel-group--accordion
@@ -290,3 +291,31 @@
 			border-radius 0
 	.panel:last-child
 		border-bottom-radius($border-radius-large)
+
+// Transparent Accordion
+.panel-group--transparent
+	.panel
+		background-color transparent !important
+		border-radius 0
+	.panel-heading
+		background-color transparent !important
+		margin-left 15px
+		margin-right 15px
+		a
+			line-height 28.5667px
+	.panel-group
+		margin-left -15px
+		margin-right -15px
+		.panel
+			> .panel-heading
+				padding 3px 10px
+			.panel-body
+				background-color rgba(black, 0.24)
+		.list-group-item
+			margin-left 30px
+	.panel-title
+		text-transform none
+		font-weight $font-weight-normal
+
+	.panel-group .panel + .panel
+		margin-top 0

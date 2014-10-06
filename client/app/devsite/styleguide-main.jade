@@ -2,12 +2,12 @@
 	.col-sm-3.col--menu
 		h1 Contents
 		hr
-		h4.padder-top: a(href="/styleguide", ng-class="{ 'color-primary': subsection == 'main' }")
-			i.fa.fa-home.space-right
-			| Overview
-		accordion.panel-group--accordion(close-others="true")
+
+		ul.nav.subnav
+			li: a(href="/styleguide", ng-class="{ 'color-primary': subsection == 'index' }") Overview
+		accordion.panel-group--transparent(close-others="true")
 			for section, i in sections
-				accordion-group.panel--inner(heading=section.title, is-open="sgIsOpen#{i}", ng-init="sgIsOpen#{i}=#{section.id}==subsection.substr(0, subsection.indexOf('.'))")
+				accordion-group(heading=section.title, is-open="sgIsOpen#{i}", ng-init="sgIsOpen#{i}=#{section.id}==subsection.substr(0, subsection.indexOf('.'))")
 					ul.list-group.list-group--simple
 						if section.childSections
 							for subsection in section.childSections

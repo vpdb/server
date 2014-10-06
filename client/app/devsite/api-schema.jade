@@ -18,6 +18,8 @@ mixin jsonSchema(schema)
 				each property, name in schema.properties
 					if property.items
 						- itemSchemas.push(property.items)
+					if property.type === 'object' && property.properties
+						- itemSchemas.push(property)
 					tr
 						td
 							if schema.required && schema.required.indexOf(name) > -1
@@ -138,4 +140,5 @@ mixin jsonSchema(schema)
 
 		if itemSchemas.length
 			each itemSchema in itemSchemas
+				p.padder-top-2x: u !{itemSchema.title}:
 				+jsonSchema(itemSchema)

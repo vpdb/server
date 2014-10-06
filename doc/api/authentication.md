@@ -85,8 +85,7 @@ In return, you'll get the token along with your user profile:
 The token should then be included as a bearer token in the `Authorization` 
 header. For example, when retrieving the user profile, the client would send:
 
-	GET https://vpdb.ch/api/user
-	
+	GET /api/user HTTP/1.1
 	Accept: application/json
 	Accept-Encoding: gzip, deflate
 	Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI1M2MyNTJkMThiNDcyMjdjMjZjZmUxYjgiLCJpYXQiOiIyMDE0LTA3LTEzVDA5OjM1OjE2LjQ0NloiLCJleHAiOiIyMDE0LTA3LTEzVDEwOjM1OjE2LjQ0NloifQ.8RyvT14Ga2gpfmiyVbx45RcqbFHxSgWjgC-4OaLh9Vc
@@ -111,7 +110,7 @@ page of the OAuth2 provider. In case the user allowed access to VPDB, the
 callback will contain a `code` parameter, which the web application can then
 use to authenticate with [VPDB's API][api-auth-oauth2]:
 
-	GET https://vpdb.ch/api/authenticate/github?code=0123456789abcdef0123
+	GET /api/authenticate/github?code=0123456789abcdef0123 HTTP/1.1
 
 Which returns the same response as `/api/authenticate` would have, including
 an access token.

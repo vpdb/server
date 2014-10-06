@@ -1,0 +1,21 @@
+{
+	"$schema": "http://json-schema.org/schema",
+	"title": "User Authentication",
+	"description": "Entity sent when authenticating locally.",
+	"type": "object",
+	"properties": {
+		"username": {
+			"description": "A unique username.",
+			"type": "string",
+			"minLength": 3,
+			"maxLength": 30,
+			"unique": true
+		},
+		"password": {
+			"description": "A password for identifying the user.",
+			"type": "string",
+			"minLength": 6
+		}
+	},
+	"required": ["username", "password" ]
+}

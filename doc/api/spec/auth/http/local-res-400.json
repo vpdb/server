@@ -1,0 +1,7 @@
+400 Bad Request
+Content-Type: application/json; charset=utf-8
+Content-Length: 55
+
+{
+  "error": "You must supply a username and password"
+}

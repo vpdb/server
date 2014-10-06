@@ -1,0 +1,7 @@
+401 Unauthorized
+Content-Type: application/json; charset=utf-8
+Content-Length: 42
+
+{
+  "error": "Wrong username or password"
+}

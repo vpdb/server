@@ -29,9 +29,10 @@ module.exports = function(opts) {
 		var contents, changed;
 		for (var filepath in files) {
 			if (files.hasOwnProperty(filepath)) {
-				if (filepath.substr(filepath.length - 5, filepath.length) == '.html') {
+				if (filepath.substr(filepath.length - 5, filepath.length) === '.html') {
 					contents = files[filepath].contents.toString();
 					changed = false;
+					//noinspection JSHint
 					contents = contents.replace(/\s+href="api:\/\/([^\/]+)[^"]+"/gi, function(match) {
 						var apiName, apiPath, link, method, resource;
 						match = match.match(/api:\/\/([^\/]+)\/([^"]*)"/i);
@@ -46,7 +47,6 @@ module.exports = function(opts) {
 								method = null;
 							}
 							resource = apiPath[0];
-
 
 							apiPath.pop();
 

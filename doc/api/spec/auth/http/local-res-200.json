@@ -1,0 +1,44 @@
+200 OK
+Content-Type: application/json; charset=utf-8
+Content-Length: 820
+
+{
+  "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJXa1FlTG9FTTd1NCIsImlhdCI6IjIwMTQtMTAtMDZUMjA6MDE6NTcuMzk4WiIsImV4cCI6IjIwMTQtMTAtMDZUMjE6MDE6NTcuMzk4WiJ9.1_hhNR1ITqG--jrJM4426k-2Jx5AuQhNUCtJtHk17ds",
+  "expires": "2014-10-06T21:01:57.398Z",
+  "user": {
+    "id": "WkQeLoEM7u4",
+    "name": "Erling_Weissnat73",
+    "username": "Erling_Weissnat73",
+    "gravatar_id": "453aa023ca505fe370916fccfeec5abd",
+    "email": "kevin.ziemann19@yahoo.com",
+    "is_active": true,
+    "roles": [
+      "member"
+    ],
+    "plan": "free",
+    "created_at": "2014-10-06T20:01:57.330Z",
+    "permissions": {
+      "files": [
+        "upload",
+        "delete",
+        "download"
+      ],
+      "user": [
+        "update",
+        "view"
+      ],
+      "users": [
+        "search"
+      ],
+      "vpbuilds": [
+        "add"
+      ],
+      "tags": [
+        "add"
+      ],
+      "releases": [
+        "add"
+      ]
+    }
+  }
+}

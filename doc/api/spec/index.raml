@@ -6,8 +6,10 @@ protocols: [HTTPS]
 mediaType: application/json
 
 schemas:
+  - auth: !include _schemas/auth.json
   - user: !include _schemas/user.json
   - user-register: !include _schemas/user-register.json
+  - user-authenticate: !include _schemas/user-authenticate.json
 
 securitySchemes:
   - jwt: !include _securitySchemes/jwt.raml
@@ -18,3 +20,4 @@ traits:
 
 /users: !include users/users.raml
 /user: !include user/user.raml
+/authenticate: !include auth/auth.raml

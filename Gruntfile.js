@@ -5,6 +5,7 @@ var fs = require('fs');
 var path = require('path');
 
 var writeable = require('./server/modules/writeable');
+var markdown = require('./server/config/marked');
 var assets = require('./server/modules/assets');
 var ctrl = require('./server/controllers/ctrl');
 
@@ -23,14 +24,6 @@ module.exports = function(grunt) {
 	var testConfig = settings(grunt, true);
 
 	var viewParams = ctrl.viewParams(devConfig, true);
-
-	var markdown = {
-		gfm: true,
-		smartypants: true,
-		highlight: function(code) {
-			return require('highlight.js').highlightAuto(code).value;
-		}
-	};
 
 	// configure the tasks
 	var config = {
@@ -117,7 +110,7 @@ module.exports = function(grunt) {
 		},
 
 		jshint: { options: { jshintrc: 'test/.jshintrc', ignores: [ 'test/coverage/**/*.js'] },
-		          files: { src: [ 'server/**/*.js', 'test/**/*.js' ] },
+		          files: { src: [ 'server/**/*.js', 'test/**/*.js', '!server/grunt-tasks/**' ] },
 		          gruntfile: { src: 'Gruntfile.js' }
 		},
 

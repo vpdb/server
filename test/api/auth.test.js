@@ -32,6 +32,7 @@ describe('The authentication engine of the VPDB API', function() {
 		it('should fail if no credentials are posted', function(done) {
 			request
 				.post('/api/authenticate')
+				.saveResponse({ path: 'auth/local' })
 				.send({})
 				.end(hlp.status(400, 'must supply a username', done));
 		});
@@ -39,6 +40,7 @@ describe('The authentication engine of the VPDB API', function() {
 		it('should fail if username is non-existent', function(done) {
 			request
 				.post('/api/authenticate')
+				.saveResponse({ path: 'auth/local' })
 				.send({ username: '_______________', password: 'xxx' })
 				.end(hlp.status(401, 'Wrong username or password', done));
 		});
@@ -60,6 +62,7 @@ describe('The authentication engine of the VPDB API', function() {
 		it('should succeed if credentials are correct', function(done) {
 			request
 				.post('/api/authenticate')
+				.save({ path: 'auth/local' })
 				.send({ username: hlp.getUser('member').name, password: hlp.getUser('member').password })
 				.end(hlp.status(200, done));
 		});

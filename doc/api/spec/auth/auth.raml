@@ -1,0 +1,28 @@
+displayName: Authenticate
+description: | 
+  Use this resource in order to obtain an authentication token for the API.
+post:
+  description: |
+    Generates a token based on user's credentials.
+
+    The user has to be registered locally.
+  body:
+    role/anon:
+      schema: user-authenticate
+      example: !include http/local-req.json
+  responses:
+    200:
+      body:
+        role/anon:
+          schema: auth
+          example: !include http/local-res-200.json
+    400:
+      description: If an empty request was posted.
+      body:
+        role/anon:
+          example: !include http/local-res-400.json
+    401:
+      description: When authentication fails
+      body:
+        role/anon:
+          example: !include http/local-res-401.json

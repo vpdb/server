@@ -1,19 +1,19 @@
 200 OK
 Content-Type: application/json; charset=utf-8
-Content-Length: 300
-Etag: W/"12c-6db12d94"
+Content-Length: 285
+Etag: W/"11d-13962e50"
 
 {
   "plan": "free",
-  "name": "Cydney.Boehm",
-  "username": "Cydney.Boehm",
-  "email": "jeromy_kovacek54@hotmail.com",
+  "name": "Jaylen13",
+  "username": "Jaylen13",
+  "email": "london_koch@gmail.com",
   "provider": "local",
-  "created_at": "2014-10-06T07:58:09.942Z",
+  "created_at": "2014-10-06T20:02:01.066Z",
   "is_active": true,
   "roles": [
     "member"
   ],
-  "id": "ZkqErEd2D4",
-  "gravatar_id": "e397f76acbc8376da2d7b3720b68edee"
+  "id": "ZJZhaNfmuE",
+  "gravatar_id": "cc6445df1fbb26a3fa322064fde8857f"
 }

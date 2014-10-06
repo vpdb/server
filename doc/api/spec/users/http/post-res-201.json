@@ -1,18 +1,18 @@
 201 Created
 Content-Type: application/json; charset=utf-8
-Content-Length: 291
+Content-Length: 316
 
 {
   "plan": "free",
-  "name": "Howard92",
-  "username": "Howard92",
-  "email": "carolanne_lynch81@gmail.com",
+  "name": "Wellington.Schmeler",
+  "username": "Wellington.Schmeler",
+  "email": "vaughn.cartwright36@gmail.com",
   "provider": "local",
-  "created_at": "2014-10-06T07:58:10.074Z",
+  "created_at": "2014-10-06T20:02:01.145Z",
   "is_active": true,
   "roles": [
     "member"
   ],
-  "id": "WJbUSNOnPE",
-  "gravatar_id": "9fba2b5b7825aa758666eea8bdddfbda"
+  "id": "by9lnpVfmOV",
+  "gravatar_id": "f309538640ee78e63e9090354b4898f0"
 }

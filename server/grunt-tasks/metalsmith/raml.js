@@ -31,7 +31,6 @@ var highlight = require('highlight.js');
 var resolve = require('path').resolve;
 var normalize = require('path').normalize;
 
-
 module.exports = function(opts) {
 
 	opts = opts || {};
@@ -80,7 +79,7 @@ module.exports = function(opts) {
 					_.each(obj.resources, function (resource) {
 							var destFolder = srcFiles[file].dest.replace(/\\/g, '/');
 							var dest = destFolder + '/' + resource.uniqueId.substr(1) + '.html';
-							var html = jade.renderFile(opts.template, { resource: resource, hlp: helpers(_.extend(opts, { api: obj })) });
+							var html = jade.renderFile(opts.template, { resource: resource, hlp: helpers(_.extend(opts, { api: obj })), print: print });
 
 							files[dest] = { contents: new Buffer(html) };
 					});
@@ -324,4 +323,8 @@ function splitReq(req) {
 			body: ''
 		};
 	}
+}
+
+function print(obj) {
+	console.log(require('util').inspect(obj, false, true));
 }

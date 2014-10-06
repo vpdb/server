@@ -2,7 +2,12 @@
 title: Pagination
 template: page.jade
 menuIndex: 1
-subsectionIndex: 2
+subsectionIndex: 3
 ---
 
-Some info about pagination.
+URL rendering tests:
+
+ - [/users](api://core/users)
+ - [GET /users](api://core/get/users)
+ - [GET /users/{user_id}](api://core/get/users/{user_id})
+ 

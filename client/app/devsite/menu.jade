@@ -11,7 +11,7 @@
 					for subsection in subsections[section]
 						li
 							a(href=subsection.link, ng-class="{ active: '#{subsection.link}' === path }" )
-								| #{subsection.title}
+								| #{subsection.header || subsection.title}
 
 			if section === 'api' && api.resources
 				hr

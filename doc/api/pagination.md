@@ -1,5 +1,6 @@
 ---
-title: Pagination
+title: API Pagination
+header: Pagination
 template: page.jade
 menuIndex: 1
 subsectionIndex: 3

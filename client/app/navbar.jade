@@ -1,0 +1,36 @@
+extends layout
+
+block root
+	- var appname = 'vpdb'
+
+block body
+	if deployment != 'production'
+		.staging-bar
+		.staging-bar
+	nav.navbar.navbar-default.navbar-fixed-top(ng-cloak)
+		.container
+			.navbar-header
+				button.navbar-toggle(type='button', ng-init='navCollapsed = true', ng-click='navCollapsed = !navCollapsed')
+					i.fa.fa-bars.space-right
+					| Menu
+				span.navbar-brand
+					a(href="/")
+						i.icon.icon-vpdb-logo-o
+						i.icon.icon-vp
+						i.icon.icon-db
+
+			.collapse.navbar-collapse(ng-class="{ 'in': !navCollapsed }", ng-click="navCollapsed = true")
+				block navbar
+
+	block content
+
+	section.footer(ng-cloak)
+		p
+			a(href="https://github.com/freezy/node-vpdb", target="_blank")
+				i.fa.fa-github-alt
+				| <strong>Fork me</strong> on GitHub
+			if deployment != 'production'
+				| &nbsp;&#8212;
+				a(href="https://github.com/freezy/node-vpdb/commit/#{gitinfo.local.branch.current.SHA}", target="_blank")=gitinfo.local.branch.current.shortSHA
+				| &nbsp;@&nbsp;
+				a(href="https://github.com/freezy/node-vpdb/tree/#{gitinfo.local.branch.current.name}", target="_blank")=gitinfo.local.branch.current.name

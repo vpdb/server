@@ -1,5 +1,6 @@
 ---
-title: VPDB Developers
+title: Developer
+header: VPDB Developer
 template: home.jade
 menuIndex: 1
 ---

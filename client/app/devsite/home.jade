@@ -1,5 +1,5 @@
 
-.text-center
+.text-center(page-title="Developer")
 
 	h3.h--primary.padder-top-3x.padder-bottom-2x So you want to contribute.
 
@@ -12,21 +12,26 @@
 		br
 		| Here are a few links to get you started.
 
-hr.hr--light.padder-top-3x.padder-bottom-2x
+hr.hr--light.padder-top-3x.padder-bottom-2x.hidden-xs
+hr.hr--light.padder-top-3x.visible-xs-block
 
 .row
 	a.a--lighter.col-sm-4.text-center(href="/api")
-		i.fa.fa-gears.fa-2x
+		p: i.fa.fa-gears.fa-2x
 		h1.h--primary API
 		p Want to integrate VPDB into your app? Check out the API.
 
+	hr.hr--light.visible-xs-block
+
 	a.a--lighter.col-sm-4.text-center(href="/styleguide")
-		i.fa.fa-paint-brush.fa-2x
+		p: i.fa.fa-paint-brush.fa-2x
 		h1.h--primary Style Guide
 		p Found a quirk in the UI? The style guide is your friend.
 
+	hr.hr--light.visible-xs-block
+
 	a.a--lighter.col-sm-4.text-center(href="/code")
-		i.fa.fa-code-fork.fa-2x
+		p: i.fa.fa-code-fork.fa-2x
 		h1.h--primary Code
 		p Missing a feature? Clone the repo and start coding.
 

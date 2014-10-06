@@ -1,20 +1,9 @@
-extends ../layout
+extends ../navbar
 
 block root
 	- var appname = 'devsite'
 
-block body
-	if deployment != 'production'
-		.staging-bar
-		.staging-bar
-	nav.navbar.navbar-default.navbar-fixed-top
-		.container
-			.navbar-header
-				span.navbar-brand
-					a(ui-sref="home")
-						i.icon.icon-vpdb-logo-o
-						i.icon.icon-vp
-						i.icon.icon-db
+block navbar
 
 			ul.nav.navbar-nav
 				li(ng-class="{ active: section == 'home' }")
@@ -32,11 +21,6 @@ block body
 						i.fa.fa-caret-left.space-right-2x
 						span.space-right Back to Site
 
-	.container.container--topmost.documentation(ng-controller="DevsiteCtrl")
+block content
+	.container.container--topmost.documentation(ng-controller="DevsiteCtrl", page-title="Developer")
 		| <div ui-view></div>
-
-	section.footer
-		p
-			a(href="https://github.com/freezy/node-vpdb", target="_blank")
-				i.fa.fa-github-alt
-				| <strong>Fork me</strong> on GitHub

@@ -51,6 +51,16 @@
 		background-color $color-navbar
 		border-color $color-primary
 
+		// responsive toggle button
+		.navbar-toggle
+			transition color $animation-short
+			&:focus
+				color $color-primary
+			&:hover
+				color $color-lightest
+		.navbar-collapse, .navbar-form
+			border-color $color-primary
+
 
 //
 // Light theme

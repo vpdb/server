@@ -1,5 +1,6 @@
 ---
-title: Authentication
+title: API Authentication
+header: Authentication
 template: page.jade
 menuIndex: 1
 subsectionIndex: 2

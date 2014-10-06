@@ -1,5 +1,6 @@
 ---
-title: Overview
+title: API
+header: Overview
 template: page.jade
 menuIndex: 1
 subsectionIndex: 1

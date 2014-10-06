@@ -1,104 +1,80 @@
-extends layout
+extends navbar
 
-block root
-	- var appname = 'vpdb'
+block navbar
+	ul.nav.navbar-nav
+		li(ng-class="{ active: menu == 'home' }")
+			a(href="/") Home
+		li(ng-class="{ active: menu == 'games' }")
+			a(href="/games") Games
+		li.dropdown(ng-class="{ active: menu == 'admin' }", ng-show="auth.hasRole(['root', 'admin'])", on-toggle="toggled(open)")
+			a.space-right.dropdown-toggle
+				span.space-right-2x Admin
+				i.fa.fa-angle-down
+			ul.dropdown-menu
+				li
+					a(href="/admin/users")
+						i.fa.fa-users
+						span.space-left-abs Users
 
-block body
-	if deployment != 'production'
-		.staging-bar
-		.staging-bar
-	nav.navbar.navbar-default.navbar-fixed-top(ng-cloak)
-		.container
-			.navbar-header
-				span.navbar-brand
-					a(href="/")
-						i.icon.icon-vpdb-logo-o
-						i.icon.icon-vp
-						i.icon.icon-db
+	ul.nav.navbar-nav.navbar-right
+		li(ng-hide="auth.isAuthenticated")
+			a(ng-click="login()")
+				i.fa.fa-lock.space-right-2x
+				span.space-right Login
+		li.dropdown(ng-show="auth.isAuthenticated", on-toggle="toggled(open)")
+			a.space-right.dropdown-toggle
+				span.space-right-2x {{ auth.user.name }}
+				i.fa.fa-angle-down
+			ul.dropdown-menu
+				li
+					a(ng-click="auth.logout()")
+						i.icon.icon-exit
+						span.space-left-abs Logout
+				li
+					a
+						i.fa.fa-user.space-right
+						span.space-left-abs Profile
 
-			ul.nav.navbar-nav
-				li(ng-class="{ active: menu == 'home' }")
-					a(href="/") Home
-				li(ng-class="{ active: menu == 'games' }")
-					a(href="/games") Games
-				li.dropdown(ng-class="{ active: menu == 'admin' }", ng-show="auth.hasRole(['root', 'admin'])", on-toggle="toggled(open)")
-					a.space-right.dropdown-toggle
-						span.space-right-2x Admin
-						i.fa.fa-angle-down
-					ul.dropdown-menu
-						li
-							a(href="/admin/users")
-								i.fa.fa-users
-								span.space-left-abs Users
 
-			ul.nav.navbar-nav.navbar-right
-				li(ng-hide="auth.isAuthenticated")
-					a(ng-click="login()")
-						i.fa.fa-lock.space-right-2x
-						span.space-right Login
-				li.dropdown(ng-show="auth.isAuthenticated", on-toggle="toggled(open)")
-					a.space-right.dropdown-toggle
-						span.space-right-2x {{ auth.user.name }}
-						i.fa.fa-angle-down
-					ul.dropdown-menu
-						li
-							a(ng-click="auth.logout()")
-								i.icon.icon-exit
-								span.space-left-abs Logout
-						li
-							a
-								i.fa.fa-user.space-right
-								span.space-left-abs Profile
+		//- li.ng-cloak
+			.btn-group.btn-group-flex
+				button.btn.btn-pin(type="button", class="{{ downloadsPinned ? 'btn-primary' : 'btn-default' }}", ng-model="downloadsPinned", btn-checkbox, btn-checkbox-true="1", btn-checkbox-false="0")
+					i.icon.space-right(class="{{ downloadsPinned ? 'icon-pin-on' : 'icon-pin-off' }}")
+					| Pin Downloads
+					span.badge(ng-show="downloadsPinned || pinnedDownloadCount") {{ pinnedDownloadCount }}
+				button.btn.dropdown-toggle(type="button", class="{{ downloadsPinned ? 'btn-primary' : 'btn-default' }}", data-toggle="dropdown")
+					i.fa.fa-angle-down
+					span.sr-only Toggle Dropdown
+				ul.dropdown-menu(role="menu")
+					li
+						table
+							tbody
+								tr.divider-bottom(ng-click="helpPinnedDownloads()")
+									td.ic
+										i.fa.fa-question-circle
+									td What's this?
+									td
+								tr.divider-none(ng-hide="pinnedDownloadCount")
+									td(colspan="3") No pinned downloads.
 
-				//- li.ng-cloak
-					.btn-group.btn-group-flex
-						button.btn.btn-pin(type="button", class="{{ downloadsPinned ? 'btn-primary' : 'btn-default' }}", ng-model="downloadsPinned", btn-checkbox, btn-checkbox-true="1", btn-checkbox-false="0")
-							i.icon.space-right(class="{{ downloadsPinned ? 'icon-pin-on' : 'icon-pin-off' }}")
-							| Pin Downloads
-							span.badge(ng-show="downloadsPinned || pinnedDownloadCount") {{ pinnedDownloadCount }}
-						button.btn.dropdown-toggle(type="button", class="{{ downloadsPinned ? 'btn-primary' : 'btn-default' }}", data-toggle="dropdown")
-							i.fa.fa-angle-down
-							span.sr-only Toggle Dropdown
-						ul.dropdown-menu(role="menu")
-							li
-								table
-									tbody
-										tr.divider-bottom(ng-click="helpPinnedDownloads()")
-											td.ic
-												i.fa.fa-question-circle
-											td What's this?
-											td
-										tr.divider-none(ng-hide="pinnedDownloadCount")
-											td(colspan="3") No pinned downloads.
+								tr(ng-repeat="(id, dl) in pinnedDownloads")
+									td.ic
+										i.fa.fa-trash-o(ng-click="unpinDownload(dl);$event.stopPropagation()")
+									td
+										p {{ dl.info[0] }}
+										p
+											span(bind-html-unsafe="dl.info[1]")
+											| &nbsp;	 - v{{ dl.version }}
+									td {{ dl.size | bytes }}
+								tr.divider-top(ng-show="pinnedDownloadCount > 0", ng-click="downloadPinned()")
+									td.ic
+										i.fa.fa-download
+									td Download
+									td {{ pinnedDownloadSize | bytes }}
 
-										tr(ng-repeat="(id, dl) in pinnedDownloads")
-											td.ic
-												i.fa.fa-trash-o(ng-click="unpinDownload(dl);$event.stopPropagation()")
-											td
-												p {{ dl.info[0] }}
-												p
-													span(bind-html-unsafe="dl.info[1]")
-													| &nbsp;	 - v{{ dl.version }}
-											td {{ dl.size | bytes }}
-										tr.divider-top(ng-show="pinnedDownloadCount > 0", ng-click="downloadPinned()")
-											td.ic
-												i.fa.fa-download
-											td Download
-											td {{ pinnedDownloadSize | bytes }}
-
+block content
 	.container.container--topmost(ng-cloak)
 		div(ng-view)
 
 	.spinner-overlay.fade-animation(ng-show="loading", ng-cloak)
 		.spinner
-
-	section.footer(ng-cloak)
-		p
-			a(href="https://github.com/freezy/node-vpdb", target="_blank")
-				i.fa.fa-github-alt
-				| <strong>Fork me</strong> on GitHub
-			if deployment != 'production'
-				| &nbsp;&#8212;
-				a(href="https://github.com/freezy/node-vpdb/commit/#{gitinfo.local.branch.current.SHA}", target="_blank")=gitinfo.local.branch.current.shortSHA
-				| &nbsp;@&nbsp;
-				a(href="https://github.com/freezy/node-vpdb/tree/#{gitinfo.local.branch.current.name}", target="_blank")=gitinfo.local.branch.current.name

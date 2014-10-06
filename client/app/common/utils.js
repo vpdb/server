@@ -48,5 +48,15 @@ common
 				});
 			}
 		};
+	})
+
+	.directive('pageTitle', function($rootScope) {
+		return {
+			restrict: 'A',
+			link: function(scope, element, attrs) {
+				$rootScope.pageTitle = attrs.pageTitle;
+			}
+		};
 	});
+
 

@@ -283,4 +283,3 @@ angular.module('vpdb.auth', [])
 	});
 
 
-

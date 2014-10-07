@@ -4,9 +4,8 @@
 module.exports = {
 
 	vpdb: {
-		host: 'localhost',
-		port: 7357,
-		httpsEnabled: false,
+		api: { host: 'localhost', port: 7357, scheme: 'http', path: '/api/v1', storagePath: '/storage/v1' },
+		webapp: { host: 'localhost', port: 7357, scheme: 'http' },
 		db: 'mongodb://localhost/vpdb-test',
 		redis: { host: '127.0.0.1', port: 6379, db: 7 },
 		sessionTimeout: 3600000,

@@ -38,20 +38,20 @@ var ctrl = require('./ctrl');
  * @param errFct Called on error. Params: `req`, `res`, `code`, where code is a HTTP error code.
  * @returns {Function}
  */
-var authenticate = function(resource, permission, successFct, errFct) {
-	if (resource && permission) {
-		return auth.auth(resource, permission, function(err, req, res) {
-			if (err) {
-				return errFct(req, res, err);
-			}
-			successFct(req, res, ctrl.viewParams());
-		});
-	} else {
-		return function(req, res) {
-			successFct(req, res, ctrl.viewParams());
-		};
-	}
-};
+//var authenticate = function(resource, permission, successFct, errFct) {
+//	if (resource && permission) {
+//		return auth.auth(resource, permission, function(err, req, res) {
+//			if (err) {
+//				return errFct(req, res, err);
+//			}
+//			successFct(req, res, ctrl.viewParams());
+//		});
+//	} else {
+//		return function(req, res) {
+//			successFct(req, res, ctrl.viewParams());
+//		};
+//	}
+//};
 
 exports.index = function(params) {
 	return function(req, res) {

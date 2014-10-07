@@ -13,28 +13,39 @@ module.exports = {
 	vpdb: {
 
 		/**
-		 * Public host name of the server.
+		 * Public URI of the API.
 		 *
 		 * This is used to construct URLs. The actual server always listens on
 		 * `localhost`.
-		 */
-		host: 'localhost',
-
-		/**
-		 * The public port of the server.
 		 *
-		 * Note that this is NOT what defines on which port the app listens,
+		 * Note that the port is NOT what defines on which port the app listens,
 		 * for that set the `PORT` environment variable. However, when running
 		 * the server via Grunt, it will read this variable and set the env
 		 * accordingly IF unset.
+		 *
+		 * @important
 		 */
-		port: 80,
+		api: {
+			host: 'localhost',
+			port: 3000,
+			scheme: 'https',
+			path: '/api/v1',
+			storagePath: '/storage/v1'
+		},
 
 		/**
-		 * True if the host defined above is reachable via https. It is highly encouraged
-		 * to enable HTTPS!
+		 * Public URI of the web application.
+		 *
+		 * This is used to construct URLs. The actual server always listens on
+		 * `localhost`.
+		 *
+		 * @important
 		 */
-		httpsEnabled: true,
+		webapp: {
+			host: 'localhost',
+			port: 3000,
+			scheme: 'https'
+		},
 
 		/**
 		 * Database configuration. Must point to a MongoDB schema.

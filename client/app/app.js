@@ -28,6 +28,19 @@ var appDeps = [
 	'vpdb.users.edit'
 ];
 
+var common = angular.module('vpdb.commons', [])
+	.directive('siteConfig', function($rootScope, $location, AuthService) {
+		return {
+			restrict: 'A',
+			link: function(scope, element, attrs) {
+				var config = JSON.parse(attrs.siteConfig);
+				AuthService.setAuthHeader(config.authHeader);
+				$rootScope.config = config;
+			}
+		};
+	});
+
+
 /**
  * The VPDB main application.
  */
@@ -47,7 +60,6 @@ angular.module('vpdb',  [ 'ngRoute' ].concat(deps).concat(appDeps))
 		$routeProvider.otherwise({ templateUrl: 'errors/404.html' });
 		$locationProvider.html5Mode(true);
 	});
-var common = angular.module('vpdb.commons', []);
 
 /**
  * The developer site

@@ -22,7 +22,8 @@
 var _ = require('lodash');
 var passport = require('passport');
 
-var config = require('./modules/settings').current;
+var settings = require('./modules/settings');
+var config = settings.current;
 
 /**
  * Defines server-side routing.
@@ -53,66 +54,70 @@ module.exports = function(app) {
 	// ========================================================================
 
 	// authentication
-	app.post('/api/authenticate', api.user.authenticate);
+	app.post(settings.apiPath('/authenticate'), api.user.authenticate);
 	if (process.env.NODE_ENV !== 'production') {
-		app.post('/api/authenticate/mock', api.user.authenticateOAuth2Mock); // mock route for simulating oauth2 callbacks
+		app.post(settings.apiPath('/authenticate/mock'), api.user.authenticateOAuth2Mock); // mock route for simulating oauth2 callbacks
 	}
-	app.get('/api/authenticate/:strategy', api.user.authenticateOAuth2);
+	app.get(settings.apiPath('/authenticate/:strategy'), api.user.authenticateOAuth2);
 
 	// files
-	app.get('/api/files/:id',     api.anon(api.files.view));
-	app.delete('/api/files/:id',  api.auth(api.files.del, 'files', 'delete'));
+	app.get(settings.apiPath('/files/:id'),     api.anon(api.files.view));
+	app.delete(settings.apiPath('/files/:id'),  api.auth(api.files.del, 'files', 'delete'));
 
 	// games
-	app.get('/api/games',         api.anon(api.games.list));
-	app.head('/api/games/:id',    api.anon(api.games.head));
-	app.get('/api/games/:id',     api.anon(api.games.view));
-	app.post('/api/games',        api.auth(api.games.create, 'games', 'add'));
-	app.delete('/api/games/:id',  api.auth(api.games.del, 'games', 'delete'));
+	app.get(settings.apiPath('/games'),         api.anon(api.games.list));
+	app.head(settings.apiPath('/games/:id'),    api.anon(api.games.head));
+	app.get(settings.apiPath('/games/:id'),     api.anon(api.games.view));
+	app.post(settings.apiPath('/games'),        api.auth(api.games.create, 'games', 'add'));
+	app.delete(settings.apiPath('/games/:id'),  api.auth(api.games.del, 'games', 'delete'));
 
 	// ipdb
-	app.get('/api/ipdb/:id',      api.auth(api.ipdb.view, 'ipdb', 'view'));
+	app.get(settings.apiPath('/ipdb/:id'),      api.auth(api.ipdb.view, 'ipdb', 'view'));
 
 	// ping
-	app.get('/api/ping',          api.anon(api.ping));
+	app.get(settings.apiPath('/ping'),          api.anon(api.ping));
 
 	// roles
-	app.get('/api/roles',         api.auth(api.roles.list, 'roles', 'list'));
+	app.get(settings.apiPath('/roles'),         api.auth(api.roles.list, 'roles', 'list'));
 
 	// tags
-	app.get('/api/tags',          api.anon(api.tags.list));
-	app.post('/api/tags',         api.auth(api.tags.create, 'tags', 'add'));
+	app.get(settings.apiPath('/tags'),          api.anon(api.tags.list));
+	app.post(settings.apiPath('/tags'),         api.auth(api.tags.create, 'tags', 'add'));
 
 	// user (own profile)
-	app.get('/api/user',          api.auth(api.user.view, 'user', 'view'));
-	app.put('/api/user',          api.auth(api.user.update, 'user', 'update'));
+	app.get(settings.apiPath('/user'),          api.auth(api.user.view, 'user', 'view'));
+	app.put(settings.apiPath('/user'),          api.auth(api.user.update, 'user', 'update'));
 
 	// users (any other user)
-	app.post('/api/users',        api.users.create);
-	app.get('/api/users',         api.auth(api.users.list, 'users', 'search'));
-	app.get('/api/users/:id',     api.auth(api.users.view, 'users', 'view'));
-	app.put('/api/users/:id',     api.auth(api.users.update, 'users', 'update'));
-	app.delete('/api/users/:id',  api.auth(api.users.del, 'users', 'delete'));
+	app.post(settings.apiPath('/users'),        api.users.create);
+	app.get(settings.apiPath('/users'),         api.auth(api.users.list, 'users', 'search'));
+	app.get(settings.apiPath('/users/:id'),     api.auth(api.users.view, 'users', 'view'));
+	app.put(settings.apiPath('/users/:id'),     api.auth(api.users.update, 'users', 'update'));
+	app.delete(settings.apiPath('/users/:id'),  api.auth(api.users.del, 'users', 'delete'));
 
 	// vpbuilds
-	app.get('/api/vpbuilds',      api.anon(api.vpbuilds.list));
-	app.post('/api/vpbuilds',     api.auth(api.vpbuilds.create, 'vpbuilds', 'add'));
+	app.get(settings.apiPath('/vpbuilds'),      api.anon(api.vpbuilds.list));
+	app.post(settings.apiPath('/vpbuilds'),     api.auth(api.vpbuilds.create, 'vpbuilds', 'add'));
 
 
 	// or else fail
-	app.all('/api/*', function(req, res) {
+	app.all(settings.apiPath('/*'), function(req, res) {
 		res.setHeader('Content-Type', 'application/json');
 		res.status(404).send({ error: 'No such resource.' });
+	});
+	app.all(/^\/api\/[^v][^\d]+/i, function(req, res) {
+		res.setHeader('Content-Type', 'application/json');
+		res.status(404).send({ error: 'No such resource. Forgot to add the version to the path?' });
 	});
 
 
 	// Storage
 	// ========================================================================
-	app.post('/storage',                api.auth(api.files.upload, 'files', 'upload'));
-	app.head('/storage/:id',            api.anon(storage.head));
-	app.head('/storage/:id/:variation', api.anon(storage.head));
-	app.get('/storage/:id',             api.anon(storage.get));  // permission/quota handling is inside.
-	app.get('/storage/:id/:variation',  api.anon(storage.get));
+	app.post(settings.storagePath('/'),                api.auth(api.files.upload, 'files', 'upload'));
+	app.head(settings.storagePath('/:id'),            api.anon(storage.head));
+	app.head(settings.storagePath('/:id/:variation'), api.anon(storage.head));
+	app.get(settings.storagePath('/:id'),             api.anon(storage.get));  // permission/quota handling is inside.
+	app.get(settings.storagePath('/:id/:variation'),  api.anon(storage.get));
 
 
 	// Authentication

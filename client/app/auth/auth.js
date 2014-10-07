@@ -273,13 +273,5 @@ angular.module('vpdb.auth', [])
 		};
 	})
 
-	.directive('authHeader', function($rootScope, $location, AuthService) {
-		return {
-			restrict: 'A',
-			link: function(scope, element, attrs) {
-				AuthService.setAuthHeader(attrs.authHeader);
-			}
-		};
-	});
 
 

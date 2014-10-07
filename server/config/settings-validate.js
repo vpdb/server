@@ -36,25 +36,67 @@ module.exports = {
 	vpdb: {
 
 		/**
-		 * Public host name of the server.
+		 * Public URI of the API.
+		 *
+		 * This is used to construct URLs. The actual server always listens on
+		 * `localhost`.
+		 *
+		 * Note that the port is NOT what defines on which port the app listens,
+		 * for that set the `PORT` environment variable. However, when running
+		 * the server via Grunt, it will read this variable and set the env
+		 * accordingly IF unset.
+		 *
+		 * @important
 		 */
-		host: function(host) {
-			var validIp = !/^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$/.test(host);
-			var validHost = /^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$/.test(host);
-			/* istanbul ignore if */
-			if (!validIp && !validHost) {
-				return 'Must be a valid host or IP address';
+		api: {
+			host: checkHost,
+			port: function(port) {
+				/* istanbul ignore if */
+				if (!parseInt(port) || parseInt(port) > 65535 || parseInt(port) < 1) {
+					return 'Port must be an integer between 1 and 65535';
+				}
+			},
+			scheme: function(schema) {
+				/* istanbul ignore if */
+				if (schema === 'http' || schema === 'https') {
+					return;
+				}
+				return 'Schema must be either "http" or "https".';
+			},
+			path: function(path) {
+				if (!_.isString(path) || path[0] !== '/') {
+					return 'API path must start with "/".';
+				}
+			},
+			storagePath: function(path) {
+				if (!_.isString(path) || path[0] !== '/') {
+					return 'Storage path must start with "/".';
+				}
 			}
 		},
 
 		/**
-		 * The public port of the server. Note that this isn't what defines on which port
-		 * the app listens, for that set the PORT environment variable.
+		 * Public URI of the web application.
+		 *
+		 * This is used to construct URLs. The actual server always listens on
+		 * `localhost`.
+		 *
+		 * @important
 		 */
-		port: function(port) {
-			/* istanbul ignore if */
-			if (!parseInt(port) || parseInt(port) > 65535 || parseInt(port) < 1) {
-				return 'Port must be an integer between 1 and 65535';
+		webapp: {
+			host: checkHost,
+			port: function(port) {
+				/* istanbul ignore if */
+				if (!parseInt(port) || parseInt(port) > 65535 || parseInt(port) < 1) {
+					return 'Port must be an integer between 1 and 65535';
+				}
+			},
+			scheme: function(schema) {
+				/* istanbul ignore if */
+				if (schema === 'http' || schema === 'https') {
+					return;
+				}
+				return 'Schema must be either "http" or "https".';
 			}
 		},
 
@@ -93,17 +135,6 @@ module.exports = {
 				if (parseInt(db) > 15 || parseInt(db) < 0) {
 					return 'Redis database must be an integer between 0 and 15';
 				}
-			}
-		},
-
-		/**
-		 * True if the host defined above is reachable via https. It is highly encouraged
-		 * to enable HTTPS!
-		 */
-		httpsEnabled: function(httpsEnabled) {
-			/* istanbul ignore if */
-			if (!_.isBoolean(httpsEnabled)) {
-				return 'Must be a boolean value';
 			}
 		},
 
@@ -420,6 +451,15 @@ function checkUrl(str) {
 	/* istanbul ignore if */
 	if (!pattern.test(str)) {
 		return 'Must be a valid URL';
+	}
+}
+
+function checkHost(host) {
+	var validIp = !/^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$/.test(host);
+	var validHost = /^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$/.test(host);
+	/* istanbul ignore if */
+	if (!validIp && !validHost) {
+		return 'Must be a valid host or IP address';
 	}
 }
 

@@ -310,7 +310,6 @@ function diff(oldTree, newTree, parent) {
 	return newValues;
 }
 
-
 function patch(settingsPatched, codeBlock, pos, parentPath) {
 //	console.log('PATCHING:\n--- code ---\n%s\n--- /code ---\nat pos %d below "%s"', codeBlock, pos, parentPath);
 	var before = settingsPatched.substr(0, pos);
@@ -323,12 +322,25 @@ function patch(settingsPatched, codeBlock, pos, parentPath) {
 	return before.trim() + ',\n\n\t' + indent + codeBlock.trim().replace(/,$/, '') + '\n' + indent + after.trim();
 }
 
-Settings.prototype.publicUrl = function() {
-	return 'http' +
-		(this.current.vpdb.httpsEnabled ? 's' : '') +
-		'://' +
-		this.current.vpdb.host +
-		(this.current.vpdb.port === 80 || this.current.vpdb.port === 443 ? '' : ':' + this.current.vpdb.port);
+Settings.prototype.apiUri = function(path) {
+	return this.current.vpdb.api.scheme + '://' +
+	       this.current.vpdb.api.host +
+	      (this.current.vpdb.api.port === 80 || this.current.vpdb.api.port === 443 ? '' : ':' + this.current.vpdb.api.port) +
+	       this.current.vpdb.api.path + (path || '');
+};
+
+Settings.prototype.apiPath = function(path) {
+	return this.current.vpdb.api.path + (path || '');
+};
+
+Settings.prototype.storagePath = function(path) {
+	return this.current.vpdb.api.storagePath + (path || '');
+};
+
+Settings.prototype.webUri = function() {
+	return this.current.vpdb.webapp.scheme + '://' +
+	       this.current.vpdb.webapp.host +
+	      (this.current.vpdb.webapp.port === 80 || this.current.vpdb.webapp.port === 443 ? '' : ':' + this.current.vpdb.webapp.port);
 };
 
 module.exports = new Settings();

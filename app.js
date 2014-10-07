@@ -63,6 +63,7 @@ serverDomain.run(function() {
 
 		} catch (e) {
 			logger.error('[app] ERROR: ' + e.message);
+			logger.error(e.stack);
 			return process.exit(1);
 		}
 
@@ -77,7 +78,8 @@ serverDomain.run(function() {
 			// now we start the server.
 			logger.info('[app] Starting Express server at %s:%d', app.get('ipaddress'), app.get('port'));
 			app.listen(app.get('port'), app.get('ipaddress'), function() {
-				logger.info('[app] Server listening at %s:%d', app.get('ipaddress'), app.get('port'));
+				logger.info('[app] Web application ready at %s', settings.webUri());
+				logger.info('[app] API ready at %s', settings.apiUri());
 				if (process.send) {
 					process.send('online');
 				}

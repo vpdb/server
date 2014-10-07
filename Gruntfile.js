@@ -241,13 +241,13 @@ function localEnv(grunt, settings) {
 
 	var env = {
 		APP_SETTINGS: settings.settingsPath,
-		PORT: grunt.option('port') || process.env.PORT || settings.vpdb.port || 3000
+		PORT: grunt.option('port') || process.env.PORT || settings.vpdb.webapp.port || 3000
 	};
 
 	if (settings.settingsTestmode) {
 		env.COVERAGE = true;
 		env.COVERALLS_SERVICE_NAME = process.env.BUILDER || 'Local Test Runner';
-		env.HTTP_SCHEMA = 'http' + (settings.vpdb.httpsEnabled ? 's' : '');
+		env.HTTP_SCHEMA = settings.vpdb.webapp.schema;
 		env.AUTH_HEADER = settings.vpdb.authorizationHeader;
 	}
 	return env;

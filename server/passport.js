@@ -42,7 +42,7 @@ exports.configure = function() {
 		passport.use(new GitHubStrategy({
 				clientID: config.vpdb.passport.github.clientID,
 				clientSecret: config.vpdb.passport.github.clientSecret,
-				callbackURL: settings.publicUrl() + '/auth/github/callback'
+				callbackURL: settings.webUri() + '/auth/github/callback'
 			}, exports.verifyCallbackOAuth('github')
 		));
 	}
@@ -51,7 +51,7 @@ exports.configure = function() {
 	_.each(config.vpdb.passport.ipboard, function(ipbConfig) {
 		if (ipbConfig.enabled) {
 
-			var callbackUrl = settings.publicUrl() + '/auth/' +  ipbConfig.id + '/callback';
+			var callbackUrl = settings.webUri() + '/auth/' +  ipbConfig.id + '/callback';
 			logger.info('[passport|ipboard:' + ipbConfig.id + '] Enabling IP.Board authentication strategy for "%s" at %s.', ipbConfig.name, ipbConfig.baseURL);
 			passport.use(new IPBoardStrategy({
 					name: ipbConfig.id,

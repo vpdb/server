@@ -2,7 +2,7 @@
 
 angular.module('vpdb.games.list', [])
 
-	.controller('GameListController', function($scope, $rootScope, $http, $location, $templateCache, $route) {
+	.controller('GameListController', function($scope, $rootScope, $http, $location, $templateCache, $route, GameResource) {
 
 		$scope.theme('dark');
 		$scope.setTitle('Games');
@@ -16,7 +16,7 @@ angular.module('vpdb.games.list', [])
 
 		// preload partials
 		_.each(['compact', 'extended', 'table'], function(view) {
-			$http.get( '/games/list-' + view + '.html', { cache:$templateCache });
+			$http.get('/games/list-' + view + '.html', { cache:$templateCache });
 		});
 
 		// todo use ui-router for this
@@ -35,13 +35,8 @@ angular.module('vpdb.games.list', [])
 		};
 		$scope.setView();
 
-		$http({
-			method: 'GET',
-			url: '/api/games'
 
-		}).success(function(data, status, headers, config) {
-			$scope.games = data;
-		});
+		$scope.games = GameResource.get();
 
 		$scope.$on('dataToggleDecade', function(event, decade) {
 			if (_.contains($scope.filterDecades, decade)) {

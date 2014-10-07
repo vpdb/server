@@ -1,6 +1,6 @@
 doctype html
 block root
-html(ng-app=appname, ng-controller="AppCtrl", auth-header=authHeader)
+html(ng-app=appname, ng-controller="AppCtrl", site-config=JSON.stringify(config))
 	head
 		meta(charset='utf8')
 		meta(name="viewport", content="width=device-width, initial-scale=1")

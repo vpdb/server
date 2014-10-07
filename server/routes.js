@@ -105,7 +105,7 @@ module.exports = function(app) {
 		res.setHeader('Content-Type', 'application/json');
 		res.status(404).send({ error: 'No such resource.' });
 	});
-	app.all(/^\/api\/[^v][^\d]+/i, function(req, res) {
+	app.all(/^\/(api|storage)\/[^v][^\d]+/i, function(req, res) {
 		res.setHeader('Content-Type', 'application/json');
 		res.status(404).send({ error: 'No such resource. Forgot to add the version to the path?' });
 	});

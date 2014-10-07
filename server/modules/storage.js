@@ -26,8 +26,9 @@ var async = require('async');
 var logger = require('winston');
 
 var queue = require('./queue');
-var config = require('./settings').current;
 var error = require('./error')('storage');
+var settings = require('./settings');
+var config = settings.current;
 
 var processors = {
 	image: require('./processor/image'),
@@ -306,7 +307,7 @@ Storage.prototype.onProcessed = function(file, variation, processor, nextEvent) 
  * @returns {string}
  */
 Storage.prototype.url = function(file, variation) {
-	return file ? '/storage/' + file.id + (variation ? '/' + variation : '') : null;
+	return file ? settings.storagePath('/' + file.id + (variation ? '/' + variation : '')) : null;
 };
 
 /**

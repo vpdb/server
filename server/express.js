@@ -37,6 +37,7 @@ var expressErrorhandler = require('errorhandler');
 //var domainError = require('express-domain-errors');
 //var gracefulExit = require('express-graceful-exit');
 
+var settings = require('./modules/settings');
 var writeable = require('./modules/writeable');
 var asset = require('./middleware/asset');
 var ctrl = require('./controllers/ctrl');
@@ -114,12 +115,14 @@ exports.configure = function(app) {
 			pretty: true
 		})
 	}));
+
 	// other static files
 	app.use(express.static(writeable.cacheRoot, { maxAge: 3600*24*30*1000 }));
 	app.use(express.static(writeable.buildRoot, { maxAge: 3600*24*30*1000 }));
 	app.use(express.static(path.resolve(__dirname, '../client/static'), { maxAge: 3600*24*30*1000 }));
 	app.use(express.static(path.resolve(__dirname, '../client/static/images/favicon'), { maxAge: 3600*24*30*1000 }));
 	app.use('/js', express.static(path.resolve(__dirname, '../client/app'), { maxAge: 3600*24*30*1000 }));
+	app.use('/js/config.js', express.static(path.resolve(writeable.jsRoot, settings.clientConfigName()), { maxAge: 3600 * 24 * 30 * 1000 }));
 
 	// only for the source map, see https://github.com/gruntjs/grunt-contrib-stylus/pull/117
 	if (runningLocal) {

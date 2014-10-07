@@ -29,7 +29,7 @@ describe('The VPDB `file` API', function() {
 
 		it('should fail when no "Content-Disposition" header is provided', function(done) {
 			request
-				.post('/storage')
+				.post('/storage/v1')
 				.as('member')
 				.send('xxx')
 				.end(hlp.status(422, 'Content-Disposition', done));
@@ -37,7 +37,7 @@ describe('The VPDB `file` API', function() {
 
 		it('should fail when a bogus "Content-Disposition" header is provided', function(done) {
 			request
-				.post('/storage')
+				.post('/storage/v1')
 				.as('member')
 				.set('Content-Disposition', 'zurg!!')
 				.send('xxx')
@@ -46,7 +46,7 @@ describe('The VPDB `file` API', function() {
 
 		it('should fail when no "type" query parameter is provided', function(done) {
 			request
-				.post('/storage')
+				.post('/storage/v1')
 				.as('member')
 				.set('Content-Disposition','attachment; filename="foo.bar"')
 				.send('xxx')
@@ -60,7 +60,7 @@ describe('The VPDB `file` API', function() {
 
 		it('should fail when providing wrong mime type in header', function(done) {
 			request
-				.post('/storage')
+				.post('/storage/v1')
 				.query({ type: 'foo' })
 				.as('member')
 				.set('Content-Disposition','attachment; filename="foo.bar"')
@@ -82,7 +82,7 @@ describe('The VPDB `file` API', function() {
 			var name = "text.txt";
 			var text = "should return an object with the same parameters as provided in the headers";
 			request
-				.post('/storage')
+				.post('/storage/v1')
 				.query({ type: fileType })
 				.as('member')
 				.type(mimeType)
@@ -118,7 +118,7 @@ describe('The VPDB `file` API', function() {
 
 		it('should fail if the upload is not an png image', function(done) {
 			request
-				.post('/storage')
+				.post('/storage/v1')
 				.query({ type: 'backglass' })
 				.type('image/png')
 				.set('Content-Disposition', 'attachment; filename="backglass.png"')
@@ -130,7 +130,7 @@ describe('The VPDB `file` API', function() {
 
 		it('should fail if the upload is not a jpeg image', function(done) {
 			request
-				.post('/storage')
+				.post('/storage/v1')
 				.query({ type: 'backglass' })
 				.type('image/jpeg')
 				.set('Content-Disposition', 'attachment; filename="backglass.jpg"')
@@ -161,7 +161,7 @@ describe('The VPDB `file` API', function() {
 			var mimeType = 'text/plain';
 			var name = 'text.txt';
 			request
-				.post('/storage')
+				.post('/storage/v1')
 				.query({ type: fileType })
 				.as('member')
 				.type(mimeType)
@@ -172,7 +172,7 @@ describe('The VPDB `file` API', function() {
 					hlp.doomFile('member', res.body.id);
 					expect(res.body.url).to.be.ok();
 					request
-						.get('/api/files/' + res.body.id)
+						.get('/api/v1/files/' + res.body.id)
 						.as('member')
 						.end(function(err, res) {
 							hlp.expectStatus(err, res, 200);
@@ -188,7 +188,7 @@ describe('The VPDB `file` API', function() {
 
 		it('should fail to retrieve the file details as anonymous', function(done) {
 			request
-				.post('/storage')
+				.post('/storage/v1')
 				.query({ type: 'mooh' })
 				.as('member')
 				.type('text/plain')
@@ -198,13 +198,13 @@ describe('The VPDB `file` API', function() {
 					hlp.expectStatus(err, res, 201);
 					hlp.doomFile('member', res.body.id);
 					expect(res.body.url).to.be.ok();
-					request.get('/api/files/' + res.body.id).end(hlp.status(401, 'is inactive', done));
+					request.get('/api/v1/files/' + res.body.id).end(hlp.status(401, 'is inactive', done));
 				});
 		});
 
 		it('should fail to retrieve the file details as a different user', function(done) {
 			request
-				.post('/storage')
+				.post('/storage/v1')
 				.query({ type: 'mooh' })
 				.as('member')
 				.type('text/plain')
@@ -214,13 +214,13 @@ describe('The VPDB `file` API', function() {
 					hlp.expectStatus(err, res, 201);
 					hlp.doomFile('member', res.body.id);
 					expect(res.body.url).to.be.ok();
-					request.get('/api/files/' + res.body.id).as('anothermember').end(hlp.status(403, 'is inactive', done));
+					request.get('/api/v1/files/' + res.body.id).as('anothermember').end(hlp.status(403, 'is inactive', done));
 				});
 		});
 
 		it('should fail when trying to retrieve the file as anonymous', function(done) {
 			request
-				.post('/storage')
+				.post('/storage/v1')
 				.query({ type: 'mooh' })
 				.as('member')
 				.type('text/plain')
@@ -244,7 +244,7 @@ describe('The VPDB `file` API', function() {
 				// 1. upload
 				function(next) {
 					request
-						.post('/storage')
+						.post('/storage/v1')
 						.query({ type: 'mooh' })
 						.as(user)
 						.type('text/plain')
@@ -264,7 +264,7 @@ describe('The VPDB `file` API', function() {
 				},
 				// 3. delete
 				function(next) {
-					request.del('/api/files/' + id).as(user).end(hlp.status(204, next));
+					request.del('/api/v1/files/' + id).as(user).end(hlp.status(204, next));
 				},
 				// 4. check it's not there
 				function(next) {
@@ -279,7 +279,7 @@ describe('The VPDB `file` API', function() {
 				// 1. upload
 				function(next) {
 					request
-						.post('/storage')
+						.post('/storage/v1')
 						.query({ type: 'mooh' })
 						.as(user)
 						.type('text/plain')
@@ -296,7 +296,7 @@ describe('The VPDB `file` API', function() {
 						});
 				},
 				function(next) {
-					request.del('/api/files/' + id).as('anothermember').end(hlp.status(403, next));
+					request.del('/api/v1/files/' + id).as('anothermember').end(hlp.status(403, next));
 				}
 			], done);
 		});
@@ -304,7 +304,7 @@ describe('The VPDB `file` API', function() {
 		it('should fail if the file is active', function(done) {
 			var user = 'contributor';
 			hlp.game.createGame(user, request, function(game) {
-				request.del('/api/files/' + game.media.backglass.id).as(user).end(hlp.status(400, 'Cannot remove active file', done));
+				request.del('/api/v1/files/' + game.media.backglass.id).as(user).end(hlp.status(400, 'Cannot remove active file', done));
 			});
 		});
 

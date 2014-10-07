@@ -1,5 +1,6 @@
 "use strict"; /* global ga, _ */
 
+// TODO isolate namespace
 // common deps
 var deps = [
 	'ngAnimate',
@@ -28,18 +29,7 @@ var appDeps = [
 	'vpdb.users.edit'
 ];
 
-var common = angular.module('vpdb.commons', [])
-	.directive('siteConfig', function($rootScope, $location, AuthService) {
-		return {
-			restrict: 'A',
-			link: function(scope, element, attrs) {
-				var config = JSON.parse(attrs.siteConfig);
-				AuthService.setAuthHeader(config.authHeader);
-				$rootScope.config = config;
-			}
-		};
-	});
-
+var common = angular.module('vpdb.commons', []);
 
 /**
  * The VPDB main application.

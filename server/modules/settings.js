@@ -21,7 +21,9 @@
 
 var _ = require('lodash');
 var fs = require('fs');
+var util = require('util');
 var path_ = require('path');
+var crypto = require('crypto');
 var logger = require('winston');
 var uglify = require('uglify-js');
 
@@ -35,7 +37,9 @@ function Settings() {
 		if (process.env.APP_SETTINGS) {
 			throw new Error('Cannot find settings at "' + process.env.APP_SETTINGS + '". Copy server/config/settings-dist.js to server/config/settings.js or point `APP_SETTINGS` environment variable to correct path.');
 		} else {
-			throw new Error('Settings location not found. Please set the `APP_SETTINGS` environment variable to your configuration file and retry.');
+			var e = new Error('Settings location not found. Please set the `APP_SETTINGS` environment variable to your configuration file and retry.');
+			console.error(e.stack);
+			throw e;
 		}
 	}
 	this.filePath = process.env.APP_SETTINGS;
@@ -341,6 +345,21 @@ Settings.prototype.webUri = function() {
 	return this.current.vpdb.webapp.scheme + '://' +
 	       this.current.vpdb.webapp.host +
 	      (this.current.vpdb.webapp.port === 80 || this.current.vpdb.webapp.port === 443 ? '' : ':' + this.current.vpdb.webapp.port);
+};
+
+Settings.prototype.clientConfig = function() {
+	return {
+		authHeader: this.current.vpdb.authorizationHeader,
+		apiUri: this.current.vpdb.api,
+		webUri: this.current.vpdb.webapp
+	};
+};
+
+Settings.prototype.clientConfigName = function() {
+	var data = util.inspect(this.clientConfig());
+	var md5sum = crypto.createHash('md5');
+	md5sum.update(data);
+	return 'config_' + md5sum.digest('hex').substr(0, 7) + '.js';
 };
 
 module.exports = new Settings();

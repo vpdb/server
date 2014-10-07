@@ -1,41 +1,41 @@
 200 OK
 Content-Type: application/json; charset=utf-8
-Content-Length: 540
-Etag: W/"21c-86f6877f"
+Content-Length: 516
+Etag: W/"204-72ea9a9f"
 
 {
   "plan": "free",
-  "name": "Rachael.Torphy",
-  "username": "Rachael.Torphy",
-  "email": "mellie_pfannerstill@gmail.com",
+  "name": "Corene94",
+  "username": "Corene94",
+  "email": "seamus72@yahoo.com",
   "provider": "local",
-  "created_at": "2014-10-06T20:01:56.716Z",
+  "created_at": "2014-10-08T10:22:55.358Z",
   "is_active": true,
   "roles": [
     "member"
   ],
-  "id": "ZJ5xjEzQ_V",
-  "gravatar_id": "cc42c543cc0cc8dafc3cc0587ff0b7a0",
+  "id": "WyitBX_F4",
+  "gravatar_id": "b8029ba11348082b9ba96f0612714ae5",
   "permissions": {
-    "files": [
-      "upload",
-      "delete",
-      "download"
-    ],
     "user": [
       "update",
       "view"
     ],
-    "users": [
-      "search"
-    ],
-    "vpbuilds": [
-      "add"
-    ],
     "tags": [
       "add"
     ],
+    "users": [
+      "search"
+    ],
     "releases": [
+      "add"
+    ],
+    "files": [
+      "download",
+      "upload",
+      "delete"
+    ],
+    "vpbuilds": [
       "add"
     ]
   }

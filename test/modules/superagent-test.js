@@ -19,7 +19,7 @@ var statusMessage = {
 module.exports = function(superagent, options) {
 
 	options = options || {};
-	options.schema = options.schema || process.env.HTTP_SCHEMA || 'http';
+	options.scheme = options.scheme || process.env.HTTP_SCHEME || 'http';
 	options.host = options.host || process.env.HOST || 'localhost';
 	options.port = options.port || process.env.PORT || 7357;
 	options.authHeader = options.authHeader || process.env.AUTH_HEADER || 'Authorization';
@@ -30,14 +30,14 @@ module.exports = function(superagent, options) {
 
 	var Request = superagent.Request;
 
-	//console.log('Initializing super agent with server %s://%s:%s/\n', options.schema, options.host, options.port);
+	//console.log('Initializing super agent with server %s://%s:%s/\n', options.scheme, options.host, options.port);
 
 	var oldRequest = Request.prototype.request;
 
 	Request.prototype.request = function () {
 		this.request = oldRequest;
 		if (this.url[0] === '/') {
-			this.url = options.schema + '://' + options.host + ':' + options.port + this.url;
+			this.url = options.scheme + '://' + options.host + ':' + options.port + this.url;
 		}
 		return this.request();
 	};

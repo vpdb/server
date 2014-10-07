@@ -26,6 +26,7 @@ var path = require('path');
 var logger = require('winston');
 var wiredep = require('wiredep');
 
+var settings = require('./settings');
 var writeable = require('./writeable');
 
 function Assets() {
@@ -36,6 +37,12 @@ function Assets() {
 
 	this.app = { js: [], css: [] };
 	this.deps = { js: [], css: [], fonts: [], 'public': [] };
+
+	// client config
+	this.app.js.push({
+		src: path.resolve(writeable.jsRoot, settings.clientConfigName()),
+		web: '/js/config.js'
+	});
 
 	// application javascripts
 	_.each([ 'app.js', '/*/**.js' ], function(ptrn) {

@@ -23,12 +23,11 @@ var _ = require('lodash');
 
 /**
  * Returns the parameter object that is accessible when rendering the views.
- * @param {object} [conf] Conf
  * @param {boolean} [gitInfoFromGrunt] If true, don't require gitinfo but put a Grunt placeholder.
  */
-exports.viewParams = function(config, gitInfoFromGrunt) {
+exports.viewParams = function(gitInfoFromGrunt) {
 
-	config = config || require('../modules/settings').current;
+	var config = require('../modules/settings').current;
 	var assets = require('../modules/assets');
 
 	return {
@@ -47,11 +46,6 @@ exports.viewParams = function(config, gitInfoFromGrunt) {
 					url: '/auth/' + ipbConfig.id
 				};
 			})
-		},
-		config: {
-			authHeader: config.vpdb.authorizationHeader,
-			apiUri: config.vpdb.api,
-			webUri: config.vpdb.webapp
 		}
 	};
 };

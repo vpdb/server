@@ -1,49 +1,49 @@
 "use strict"; /* global common, _ */
 
 common
-	.factory('AuthResource', function($resource) {
-		return $resource($rootScope.config.apiUri.path + '/authenticate/:strategy', {}, {
+	.factory('AuthResource', function($resource, ConfigService) {
+		return $resource(ConfigService.apiUri('/authenticate/:strategy'), {}, {
 			authenticate: { method: 'POST' },
 			authenticateCallback: { method: 'GET' }
 		});
 	})
 
-	.factory('FileResource', function($resource, $rootScope) {
-		return $resource($rootScope.config.apiUri.path + '/files/:id', {}, {
+	.factory('FileResource', function($resource, ConfigService) {
+		return $resource(ConfigService.apiUri('/files/:id'), {}, {
 		});
 	})
 
-	.factory('GameResource', function($resource, $rootScope) {
-		return $resource($rootScope.config.apiUri.path + '/games/:id', {}, {
+	.factory('GameResource', function($resource, ConfigService) {
+		return $resource(ConfigService.apiUri('/games/:id'), {}, {
 			head: { method: 'HEAD' }
 		});
 	})
 
-	.factory('IpdbResource', function($resource, $rootScope) {
-		return $resource($rootScope.config.apiUri.path + '/ipdb/:id', {}, {
+	.factory('IpdbResource', function($resource, ConfigService) {
+		return $resource(ConfigService.apiUri('/ipdb/:id'), {}, {
 		});
 	})
 
-	.factory('PingResource', function($resource, $rootScope) {
-		return $resource($rootScope.config.apiUri.path + '/ping', {}, {});
+	.factory('PingResource', function($resource, ConfigService) {
+		return $resource(ConfigService.apiUri('/ping'), {}, {});
 	})
 
-	.factory('ProfileResource', function($resource, $rootScope) {
-		return $resource($rootScope.config.apiUri.path + '/user', {}, {});
+	.factory('ProfileResource', function($resource, ConfigService) {
+		return $resource(ConfigService.apiUri('/user'), {}, {});
 	})
 
-	.factory('RolesResource', function($resource, $rootScope) {
-		return $resource($rootScope.config.apiUri.path + '/roles/:role', {}, {
+	.factory('RolesResource', function($resource, ConfigService) {
+		return $resource(ConfigService.apiUri('/roles/:role'), {}, {
 		});
 	})
 
-	.factory('TagResource', function($resource, $rootScope) {
-		return $resource($rootScope.config.apiUri.path + '/tags/:id', {}, {
+	.factory('TagResource', function($resource, ConfigService) {
+		return $resource(ConfigService.apiUri('/tags/:id'), {}, {
 		});
 	})
 
-	.factory('UserResource', function($resource, $rootScope) {
-		return $resource($rootScope.config.apiUri.path + '/users/:userid', {}, {
+	.factory('UserResource', function($resource, ConfigService) {
+		return $resource(ConfigService.apiUri('/users/:userid'), {}, {
 			update: { method: 'PUT' },
 			register: { method: 'POST' },
 			login: { method: 'POST', params: { userid : 'login'} },
@@ -51,8 +51,8 @@ common
 		});
 	})
 
-	.factory('VPBuildResource', function($resource, $rootScope) {
-		return $resource($rootScope.config.apiUri.path + '/vpbuilds/:id', {}, {
+	.factory('VPBuildResource', function($resource, ConfigService) {
+		return $resource(ConfigService.apiUri('/vpbuilds/:id'), {}, {
 		});
 	})
 

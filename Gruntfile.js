@@ -4,12 +4,15 @@ var _ = require('lodash');
 var fs = require('fs');
 var path = require('path');
 
-var writeable = require('./server/modules/writeable');
-var markdown = require('./server/config/marked');
-var assets = require('./server/modules/assets');
-var ctrl = require('./server/controllers/ctrl');
-
 module.exports = function(grunt) {
+
+	setEnv(grunt);
+	var config = require('./server/modules/settings').current;
+
+	var writeable = require('./server/modules/writeable');
+	var markdown = require('./server/config/marked');
+	var assets = require('./server/modules/assets');
+	var ctrl = require('./server/controllers/ctrl');
 
 	var buildRoot = writeable.buildRoot;
 	var devsiteRoot = writeable.devsiteRoot;
@@ -20,13 +23,21 @@ module.exports = function(grunt) {
 	var jsGlobal = path.resolve(jsRoot, 'global_<%= gitinfo.local.branch.current.shortSHA %>.min.js');
 	var jsGlobalAnnotated = path.resolve(jsRoot, 'global.annotated.js');
 
-	var devConfig = settings(grunt, false);
-	var testConfig = settings(grunt, true);
-
-	var viewParams = ctrl.viewParams(devConfig, true);
+	var viewParams = ctrl.viewParams(true);
 
 	// configure the tasks
-	var config = {
+	var taskConfig = {
+
+		config: {
+			buildRoot: writeable.buildRoot,
+			devsiteRoot: writeable.devsiteRoot,
+			cssRoot: writeable.cssRoot,
+			jsRoot: writeable.jsRoot,
+			htmlRoot: writeable.htmlRoot,
+			cssGlobal: path.resolve(cssRoot, 'global_<%= gitinfo.local.branch.current.shortSHA %>.min.css'),
+			jsGlobal: path.resolve(jsRoot, 'global_<%= gitinfo.local.branch.current.shortSHA %>.min.js'),
+			jsGlobalAnnotated: path.resolve(jsRoot, 'global.annotated.js')
+		},
 
 		clean: {
 			build:      { src: [ buildRoot + '/*', "!.gitignore", "!img" ] },
@@ -81,24 +92,23 @@ module.exports = function(grunt) {
 		}}},
 
 		env: {
-			dev: localEnv(grunt, devConfig),
-			test: localEnv(grunt, testConfig),
-			ci: localEnv(grunt, testConfig),
-			prod: { NODE_ENV: 'production', APP_SETTINGS: process.env.APP_SETTINGS || path.resolve(__dirname, 'server/config/settings.js'), PORT: process.env.PORT || 3000 }
+			dev: env(grunt, config),
+			test: testEnv(grunt, config),
+			prod: env(grunt, config, { NODE_ENV: 'production' })
 		},
 
 		express: {
 			options: { output: 'Server listening at' },
-			dev:     { options: { script: 'app.js', port: localEnv(grunt, devConfig).PORT } },
-			test:    { options: { script: 'app.js', port: localEnv(grunt, testConfig).PORT } },
+			dev:     { options: { script: 'app.js', port: config.vpdb.webapp.port } },
+			test:    { options: { script: 'app.js', port: config.vpdb.webapp.port } },
 			prod:    { options: { script: 'app.js', background: false } },
-			ci:      { options: { script: 'app.js', background: false, port: localEnv(grunt, testConfig).PORT } }
+			ci:      { options: { script: 'app.js', background: false, port: config.vpdb.webapp.port } }
 		},
 
 		gitsave: { dest: 'gitinfo.json' },
 
 		'istanbul-middleware': {
-			options:  { url: 'http://127.0.0.1:' + localEnv(grunt, testConfig).PORT + '/_coverage' },
+			options:  { url: 'http://127.0.0.1:' + config.vpdb.webapp.port + '/_coverage' },
 			download: { dest: 'test/coverage' }
 		},
 
@@ -126,7 +136,7 @@ module.exports = function(grunt) {
 		mkdir: {
 			server:   { options: { mode: 504, create: [ cssRoot, jsRoot ] } },
 			coverage: { options: { mode: 504, create: [ 'test/coverage' ] } },
-			test:     { options: { mode: 504, create: [ testConfig.vpdb.storage ] }},
+			test:     { options: { mode: 504, create: [ config.vpdb.storage ] }},
 			devsite:  { options: { mode: 504, create: [ devsiteRoot + '/html/styleguide' ] } }
 		},
 
@@ -136,7 +146,7 @@ module.exports = function(grunt) {
 			] }
 		},
 
-		mongodb: testConfig.vpdb.db,
+		mongodb: config.vpdb.db,
 
 		ngAnnotate: {
 			options: { singleQuotes: true },
@@ -158,7 +168,7 @@ module.exports = function(grunt) {
 		},
 
 		waitServer: {
-			test: { options: { url: 'http://127.0.0.1:' + localEnv(grunt, testConfig).PORT, timeout: 30000 } }
+			test: { options: { url: 'http://127.0.0.1:' + config.vpdb.webapp.port, timeout: 30000 } }
 		},
 
 		watch: {
@@ -184,7 +194,7 @@ module.exports = function(grunt) {
 			        tasks: [ 'mkdir:coverage', 'waitServer', 'mochaTest', 'istanbul-middleware:download', 'restart', 'reload' ] }
 		}
 	};
-	grunt.config.init(config);
+	grunt.config.init(taskConfig);
 
 	// load the tasks
 	grunt.loadNpmTasks('grunt-concurrent');
@@ -211,10 +221,12 @@ module.exports = function(grunt) {
 		[ 'git', 'env:prod', 'clean:build', 'mkdir:server',       // clean and create folder structure
 			'copy:assets', 'copy:static',                         // copy static stuff
 			'stylus', 'cssmin',                                   // render & minify css
-			'ngAnnotate', 'uglify', 'jade',                       // treat javascripts
-			'copy:devsite', 'mkdir:devsite', 'kss', 'metalsmith'] // create devsite
+			'client-config', 'ngAnnotate', 'uglify', 'jade',      // treat javascripts
+			'copy:devsite', 'mkdir:devsite', 'kss', 'metalsmith'  // create devsite
+		]
 	);
-	// server tasksgut
+
+	// server tasks
 	grunt.registerTask('dev', [          'env:dev',            'jshint',               'concurrent:dev' ]);  // dev mode, watch everything
 	grunt.registerTask('serve-test',   [ 'env:test', 'dropdb', 'jshint', 'mkdir:test', 'concurrent:test' ]); // test mode, watch only server
 	grunt.registerTask('serve',        [ 'env:prod', 'express:prod' ]);                                      // prod, watch nothing
@@ -232,40 +244,53 @@ module.exports = function(grunt) {
 
 	// continuous integration
 	grunt.registerTask('ci', [ 'concurrent:ci' ]);
-	grunt.registerTask('ci-server', [ 'env:ci', 'mkdir:test', 'express:ci' ]);
-	grunt.registerTask('ci-client', [ 'env:ci', 'clean:coverage', 'mkdir:coverage', 'waitServer',
+	grunt.registerTask('ci-server', [ 'env:test', 'mkdir:test', 'express:ci' ]);
+	grunt.registerTask('ci-client', [ 'env:test', 'clean:coverage', 'mkdir:coverage', 'waitServer',
 		'mochaTest', 'istanbul-middleware:download', 'coveralls:api', 'stop' ]);
 };
 
-function localEnv(grunt, settings) {
 
-	var env = {
-		APP_SETTINGS: settings.settingsPath,
-		PORT: grunt.option('port') || process.env.PORT || settings.vpdb.webapp.port || 3000
-	};
-
-	if (settings.settingsTestmode) {
-		env.COVERAGE = true;
-		env.COVERALLS_SERVICE_NAME = process.env.BUILDER || 'Local Test Runner';
-		env.HTTP_SCHEMA = settings.vpdb.webapp.schema;
-		env.AUTH_HEADER = settings.vpdb.authorizationHeader;
-	}
-	return env;
-}
-
-function settings(grunt, forTest) {
+/**
+ * Sets APP_SETTINGS and APP_TESTING depending on which task was executed. This
+ * guarantees that grunt tasks can be setup with values from settings.js BEFORE
+ * any task is launched.
+ *
+ * @param grunt
+ */
+function setEnv(grunt) {
 	var settingsPath;
-	if (forTest) {
+	var cmdLineTask = process.argv[2];
+
+	// check for tasks that need test environment
+	if (_.contains([ 'serve-test', 'test', 'ci', 'ci-server', 'ci-client' ], cmdLineTask)) {
 		settingsPath = path.resolve(__dirname, 'server/config/settings-test.js');
+		process.env.APP_TESTING = true;
+		grunt.log.writeln('Test environment enabled.');
 	} else {
 		settingsPath = path.resolve(__dirname, grunt.option('config') || process.env.APP_SETTINGS || (fs.existsSync('server/config/settings.js') ? 'server/config/settings.js' : 'server/config/settings-dist.js' ));
+		process.env.APP_TESTING = false;
 	}
 	if (!fs.existsSync(settingsPath)) {
 		throw new Error('Cannot find any settings at ' + settingsPath + '. Please set `APP_SETTINGS` correctly or provide it via `--config=<path-to-settings>`.');
 	}
-	var s = require(settingsPath);
-	s.settingsPath = settingsPath;
-	s.settingsTestmode = forTest ? true : false;
+	process.env.APP_SETTINGS = settingsPath;
+	grunt.log.writeln('Using settings at "%s"...', settingsPath);
+}
 
-	return s;
+function env(grunt, config, more) {
+	return _.extend({
+		PORT: grunt.option('port') || process.env.PORT || config.vpdb.webapp.port || 3000,
+		HTTP_SCHEME: config.vpdb.webapp.scheme,
+		AUTH_HEADER: config.vpdb.authorizationHeader
+	}, more || {});
+}
+
+function testEnv(grunt, config, more) {
+	var e = env(grunt, config, more);
+
+	if (e.COVERALLS_REPO_TOKEN) {
+		e.COVERAGE = true;
+		e.COVERALLS_SERVICE_NAME = process.env.BUILDER || 'Local Test Runner';
+	}
+	return e;
 }

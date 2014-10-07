@@ -26,7 +26,7 @@ exports.createGame = function(user, request, done) {
 	var hlp = require('./helper');
 	hlp.file.createBackglass(user, request, function(backglass) {
 		request
-			.post('/api/games')
+			.post('/api/v1/games')
 			.as(user)
 			.send(exports.getGame({ _media: { backglass: backglass.id }}))
 			.end(function(err, res) {

@@ -29,7 +29,7 @@ describe('The VPDB `user` API', function() {
 
 		it('the number of current users should be returned', function(done) {
 			request
-				.get('/api/users')
+				.get('/api/v1/users')
 				.as('admin')
 				.save({ path: 'users/list' })
 				.end(function(err, res) {
@@ -47,7 +47,7 @@ describe('The VPDB `user` API', function() {
 
 			it('with full details as admin', function(done) {
 				request
-					.get('/api/users?q=' + hlp.getUser('member').name.substr(0, 3))
+					.get('/api/v1/users?q=' + hlp.getUser('member').name.substr(0, 3))
 					.saveResponse({ path: 'users/search-as-admin' })
 					.as('admin')
 					.end(function(err, res) {
@@ -61,7 +61,7 @@ describe('The VPDB `user` API', function() {
 
 			it('with minimal infos as member', function(done) {
 				request
-					.get('/api/users?q=' + hlp.getUser('member').name.substr(0, 3))
+					.get('/api/v1/users?q=' + hlp.getUser('member').name.substr(0, 3))
 					.save({ path: 'users/search-as-member' })
 					.as('member')
 					.end(function(err, res) {
@@ -79,7 +79,7 @@ describe('The VPDB `user` API', function() {
 
 		it('should return full details', function(done) {
 			request
-				.get('/api/users/' + hlp.getUser('member').id)
+				.get('/api/v1/users/' + hlp.getUser('member').id)
 				.save({ path: 'users/view' })
 				.as('admin')
 				.end(function(err, res) {
@@ -95,20 +95,20 @@ describe('The VPDB `user` API', function() {
 		it('should be able to retrieve an authentication token', function(done) {
 			var user = hlp.genUser();
 			request
-				.post('/api/users')
+				.post('/api/v1/users')
 				.save({ path: 'users/post' })
 				.send(user)
 				.end(function(err, res) {
 					hlp.expectStatus(err, res, 201);
 					hlp.doomUser(res.body.id);
 					// try to obtain a token
-					request.post('/api/authenticate').send(_.pick(user, 'username', 'password')).end(hlp.status(200, done));
+					request.post('/api/v1/authenticate').send(_.pick(user, 'username', 'password')).end(hlp.status(200, done));
 				});
 		});
 
 		it('should fail when invalid parameters', function(done) {
 			request
-				.post('/api/users')
+				.post('/api/v1/users')
 				.saveResponse({ path: 'users/post' })
 				.send({
 					username: 'x',
@@ -127,7 +127,7 @@ describe('The VPDB `user` API', function() {
 
 		it('should display the user profile', function(done) {
 			request
-				.get('/api/user')
+				.get('/api/v1/user')
 				.as('root')
 				.end(function(err, res) {
 					hlp.expectStatus(err, res, 200);
@@ -139,7 +139,7 @@ describe('The VPDB `user` API', function() {
 
 		it('should return a token refresh header in any API response', function(done) {
 			request
-				.get('/api/ping')
+				.get('/api/v1/ping')
 				.as('admin')
 				.end(function(err, res) {
 					expect(res.headers['x-token-refresh']).not.to.be.empty();
@@ -152,7 +152,7 @@ describe('The VPDB `user` API', function() {
 
 		it('should fail if the current password is not provided', function(done) {
 			request
-				.put('/api/user')
+				.put('/api/v1/user')
 				.as('member')
 				.send({})
 				.end(function(err, res) {
@@ -167,7 +167,7 @@ describe('The VPDB `user` API', function() {
 
 		it('should fail if the current password is invalid', function(done) {
 			request
-				.put('/api/user')
+				.put('/api/v1/user')
 				.as('member')
 				.send({ currentPassword: 'xxx'})
 				.end(function(err, res) {
@@ -182,7 +182,7 @@ describe('The VPDB `user` API', function() {
 
 		it('should fail if the new password is invalid', function(done) {
 			request
-				.put('/api/user')
+				.put('/api/v1/user')
 				.as('member')
 				.send({
 					currentPassword: hlp.getUser('member').password,
@@ -202,12 +202,12 @@ describe('The VPDB `user` API', function() {
 			var user = hlp.getUser('chpass1');
 			var newPass = '12345678';
 			request
-				.put('/api/user')
+				.put('/api/v1/user')
 				.as('chpass1')
 				.send({ currentPassword: user.password, password: newPass })
 				.end(hlp.status(200, function() {
 					request
-						.post('/api/authenticate')
+						.post('/api/v1/authenticate')
 						.send({ username: user.name, password: newPass })
 						.end(hlp.status(200, done));
 				}));
@@ -217,12 +217,12 @@ describe('The VPDB `user` API', function() {
 			var user = hlp.getUser('chpass2');
 			var newPass = '12345678';
 			request
-				.put('/api/user')
+				.put('/api/v1/user')
 				.as('chpass2')
 				.send({ currentPassword: user.password, password: newPass })
 				.end(hlp.status(200, function() {
 					request
-						.post('/api/authenticate')
+						.post('/api/v1/authenticate')
 						.send({ username: user.name, password: user.password })
 						.end(hlp.status(401, 'Wrong username or password', done));
 				}));
@@ -240,7 +240,7 @@ describe('The VPDB `user` API', function() {
 		it('should work providing the minimal field set', function(done) {
 			var changedUser = hlp.genUser();
 			request
-				.put('/api/users/' + hlp.getUser('member').id)
+				.put('/api/v1/users/' + hlp.getUser('member').id)
 				.save({ path: 'users/update' })
 				.as('admin')
 				.send({
@@ -252,7 +252,7 @@ describe('The VPDB `user` API', function() {
 				})
 				.end(function(err, res) {
 					hlp.expectStatus(err, res, 200);
-					request.get('/api/users/' + hlp.getUser('member').id).as('admin').end(function(err, res) {
+					request.get('/api/v1/users/' + hlp.getUser('member').id).as('admin').end(function(err, res) {
 						hlp.expectStatus(err, res, 200);
 						expect(res.body).to.be.an('object');
 						expect(res.body.email).to.be(changedUser.email);
@@ -264,7 +264,7 @@ describe('The VPDB `user` API', function() {
 
 		it('should fail if mandatory fields are missing', function(done) {
 			request
-				.put('/api/users/' + hlp.getUser('member').id)
+				.put('/api/v1/users/' + hlp.getUser('member').id)
 				.saveResponse({ path: 'users/update' })
 				.as('admin')
 				.send({})
@@ -280,7 +280,7 @@ describe('The VPDB `user` API', function() {
 		it('should fail if read-only fields are provided', function(done) {
 			var changedUser = hlp.genUser();
 			request
-				.put('/api/users/' + hlp.getUser('member').id)
+				.put('/api/v1/users/' + hlp.getUser('member').id)
 				.as('admin')
 				.send({
 					email: changedUser.email,

@@ -36,11 +36,11 @@ exports.setupUsers = function(request, config, done) {
 			// 1. create user
 			debug('%s <%s>: Creating user...', name, user.email);
 			request
-				.post('/api/users')
+				.post('/api/v1/users')
 				.send(user)
 				.end(function(err, res) {
 					if (err) {
-						return next(res.body ? res.body.error : err);
+						return next(res && res.body ? res.body.error : err);
 					}
 					if (res.status !== 201) {
 						return next(res.body ? res.body.error : res.body);
@@ -52,7 +52,7 @@ exports.setupUsers = function(request, config, done) {
 					// 2. retrieve root user token
 					debug('%s <%s>: Authenticating user...', name, user.email);
 					request
-						.post('/api/authenticate')
+						.post('/api/v1/authenticate')
 						.send(_.pick(user, 'username', 'password'))
 						.end(function(err, res) {
 							if (err) {
@@ -68,7 +68,7 @@ exports.setupUsers = function(request, config, done) {
 							debug('%s <%s>: Updating user...', name, user.email);
 							user = _.extend(user, config);
 							request
-								.put('/api/users/' + user.id)
+								.put('/api/v1/users/' + user.id)
 								.as(superuser)
 								.send(_.pick(user, [ 'name', 'email', 'username', 'is_active', 'roles' ]))
 								.end(function(err, res) {
@@ -133,7 +133,7 @@ exports.teardownUsers = function(request, done) {
 				return next();
 			}
 			request
-				.del('/api/users/' + that.users[name].id)
+				.del('/api/v1/users/' + that.users[name].id)
 				.as(superuser)
 				.end(function(err, res) {
 					if (err) {
@@ -153,7 +153,7 @@ exports.teardownUsers = function(request, done) {
 		users = users.concat(_.map(this.doomedUsers, function(userId) {
 			return function(next) {
 				request
-					.del('/api/users/' + userId)
+					.del('/api/v1/users/' + userId)
 					.as(superuser)
 					.end(function(err, res) {
 						if (err) {
@@ -250,7 +250,7 @@ exports.cleanup = function(request, done) {
 			async.eachSeries(_.keys(doomedFiles), function(user, nextUser) {
 				async.each(doomedFiles[user], function(fileId, next) {
 					var req = request
-						.del('/api/files/' + fileId)
+						.del('/api/v1/files/' + fileId)
 						.as(user)
 						.end(function(err, res) {
 							if (err) {
@@ -279,7 +279,7 @@ exports.cleanup = function(request, done) {
 			async.eachSeries(_.keys(doomedGames), function(user, nextGame) {
 				async.each(doomedGames[user], function(gameId, next) {
 					request
-						.del('/api/games/' + gameId)
+						.del('/api/v1/games/' + gameId)
 						.as(user)
 						.end(function(err, res) {
 							if (err) {

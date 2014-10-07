@@ -36,7 +36,7 @@ angular.module('vpdb.games.list', [])
 		$scope.setView();
 
 
-		$scope.games = GameResource.get();
+		$scope.games = GameResource.query();
 
 		$scope.$on('dataToggleDecade', function(event, decade) {
 			if (_.contains($scope.filterDecades, decade)) {

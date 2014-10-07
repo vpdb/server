@@ -23,7 +23,7 @@ describe('The authentication engine of the VPDB API', function() {
 
 	it('should deny access to the user profile if there is neither a token in the header nor the URL', function(done) {
 		request
-			.get('/api/user')
+			.get('/api/v1/user')
 			.end(hlp.status(401, done));
 	});
 
@@ -31,7 +31,7 @@ describe('The authentication engine of the VPDB API', function() {
 
 		it('should fail if no credentials are posted', function(done) {
 			request
-				.post('/api/authenticate')
+				.post('/api/v1/authenticate')
 				.saveResponse({ path: 'auth/local' })
 				.send({})
 				.end(hlp.status(400, 'must supply a username', done));
@@ -39,7 +39,7 @@ describe('The authentication engine of the VPDB API', function() {
 
 		it('should fail if username is non-existent', function(done) {
 			request
-				.post('/api/authenticate')
+				.post('/api/v1/authenticate')
 				.saveResponse({ path: 'auth/local' })
 				.send({ username: '_______________', password: 'xxx' })
 				.end(hlp.status(401, 'Wrong username or password', done));
@@ -47,21 +47,21 @@ describe('The authentication engine of the VPDB API', function() {
 
 		it('should fail if username exists but wrong password is supplied', function(done) {
 			request
-				.post('/api/authenticate')
+				.post('/api/v1/authenticate')
 				.send({ username: hlp.getUser('member').name, password: 'xxx' })
 				.end(hlp.status(401, 'Wrong username or password', done));
 		});
 
 		it('should fail if credentials are correct but user is disabled', function(done) {
 			request
-				.post('/api/authenticate')
+				.post('/api/v1/authenticate')
 				.send({ username: hlp.getUser('disabled').name, password: hlp.getUser('disabled').password })
 				.end(hlp.status(401, 'Inactive account', done));
 		});
 
 		it('should succeed if credentials are correct', function(done) {
 			request
-				.post('/api/authenticate')
+				.post('/api/v1/authenticate')
 				.save({ path: 'auth/local' })
 				.send({ username: hlp.getUser('member').name, password: hlp.getUser('member').password })
 				.end(hlp.status(200, done));
@@ -73,28 +73,28 @@ describe('The authentication engine of the VPDB API', function() {
 
 		it('should grant access to the user profile if the token is valid', function(done) {
 			request
-				.get('/api/user')
+				.get('/api/v1/user')
 				.set('Authorization', 'Bearer ' + request.tokens.member)
 				.end(hlp.status(200, done));
 		});
 
 		it('should fail if the authorization header has no type', function(done) {
 			request
-				.get('/api/user')
+				.get('/api/v1/user')
 				.set('Authorization', request.tokens.member)
 				.end(hlp.status(401, 'Bad Authorization header', done));
 		});
 
 		it('should fail if the authorization header has a different type than "Bearer"', function(done) {
 			request
-				.get('/api/user')
+				.get('/api/v1/user')
 				.set('Authorization', 'Token ' + request.tokens.member)
 				.end(hlp.status(401, 'Bad Authorization header', done));
 		});
 
 		it('should fail if the token is corrupt or unreadable', function(done) {
 			request
-				.get('/api/user')
+				.get('/api/v1/user')
 				.set('Authorization', 'Bearer abcd.123.xyz')
 				.end(hlp.status(401, 'Bad JSON Web Token', done));
 		});
@@ -104,14 +104,14 @@ describe('The authentication engine of the VPDB API', function() {
 
 		it('should grant access to the user profile if the token is valid', function(done) {
 			request
-				.get('/api/user')
+				.get('/api/v1/user')
 				.query({ jwt: request.tokens.member })
 				.end(hlp.status(200, done));
 		});
 
 		it('should fail if the token is corrupt or unreadable', function(done) {
 			request
-				.get('/api/user')
+				.get('/api/v1/user')
 				.query({ jwt: 'abcd.123.xyz' })
 				.end(hlp.status(401, 'Bad JSON Web Token', done));
 		});
@@ -121,7 +121,7 @@ describe('The authentication engine of the VPDB API', function() {
 
 		it('should create a new user and return the user profile along with a valid token', function (done) {
 			request
-				.post('/api/authenticate/mock')
+				.post('/api/v1/authenticate/mock')
 				.send({
 					provider: 'github',
 					profile: {
@@ -141,7 +141,7 @@ describe('The authentication engine of the VPDB API', function() {
 		it('should match the same already registered Github user even though email and name are different', function(done) {
 			var githubId = '65465';
 			request
-				.post('/api/authenticate/mock')
+				.post('/api/v1/authenticate/mock')
 				.send({
 					provider: 'github',
 					profile: { provider: 'github', id: githubId, displayName: null, username: 'mockuser', profileUrl: 'https://github.com/mockuser',
@@ -150,7 +150,7 @@ describe('The authentication engine of the VPDB API', function() {
 				}).end(hlp.auth.assertToken(request, function(err, profile1) {
 
 					request
-						.post('/api/authenticate/mock')
+						.post('/api/v1/authenticate/mock')
 						.send({
 							provider: 'github',
 							profile: { provider: 'github', id: githubId, displayName: 'bleh', username: 'foo',
@@ -166,7 +166,7 @@ describe('The authentication engine of the VPDB API', function() {
 		it('should match an already registered local user with the same email address', function(done) {
 			var localUser = hlp.getUser('member');
 			request
-				.post('/api/authenticate/mock')
+				.post('/api/v1/authenticate/mock')
 				.send({
 					provider: 'github',
 					profile: { provider: 'github', id: '1234xyz', displayName: null, username: 'mockuser', profileUrl: 'https://github.com/mockuser',
@@ -186,7 +186,7 @@ describe('The authentication engine of the VPDB API', function() {
 
 		it('should create a new user and return the user profile along with a valid token', function(done) {
 			request
-				.post('/api/authenticate/mock')
+				.post('/api/v1/authenticate/mock')
 				.send({
 					provider: 'ipboard',
 					providerName: 'ipbtest',
@@ -206,7 +206,7 @@ describe('The authentication engine of the VPDB API', function() {
 		it('should match an already registered GitHub user with the same email address', function(done) {
 			var email = 'imthesame@vpdb.ch';
 			request
-				.post('/api/authenticate/mock')
+				.post('/api/v1/authenticate/mock')
 				.send({
 					provider: 'ipboard',
 					providerName: 'ipbtest',
@@ -216,7 +216,7 @@ describe('The authentication engine of the VPDB API', function() {
 				}).end(hlp.auth.assertToken(request, function(err, profile) {
 					var userId = profile.id;
 					request
-						.post('/api/authenticate/mock')
+						.post('/api/v1/authenticate/mock')
 						.send({
 							provider: 'github',
 							profile: { provider: 'github', id: '1234abcd', displayName: null, username: 'mockuser', profileUrl: 'https://github.com/mockuser',
@@ -234,7 +234,7 @@ describe('The authentication engine of the VPDB API', function() {
 			var username = 'doofus';
 			var displayname = 'Doof Us';
 			request
-				.post('/api/authenticate/mock')
+				.post('/api/v1/authenticate/mock')
 				.send({
 					provider: 'ipboard',
 					providerName: 'ipbtest',
@@ -244,7 +244,7 @@ describe('The authentication engine of the VPDB API', function() {
 				}).end(hlp.auth.assertToken(request, function(err, profile) {
 					var userId = profile.id;
 					request
-						.post('/api/authenticate/mock')
+						.post('/api/v1/authenticate/mock')
 						.send({
 							provider: 'github',
 							profile: { provider: 'github', id: id, username: username, displayName: displayname, profileUrl: 'https://github.com/mockuser',
@@ -259,7 +259,7 @@ describe('The authentication engine of the VPDB API', function() {
 
 		it('should deny access if received profile data is empty', function(done) {
 			request
-				.post('/api/authenticate/mock')
+				.post('/api/v1/authenticate/mock')
 				.send({
 					provider: 'ipboard',
 					providerName: 'ipbtest',
@@ -269,7 +269,7 @@ describe('The authentication engine of the VPDB API', function() {
 
 		it('should deny access if received profile data does not contain email address', function(done) {
 			request
-				.post('/api/authenticate/mock')
+				.post('/api/v1/authenticate/mock')
 				.send({
 					provider: 'ipboard',
 					providerName: 'ipbtest',
@@ -281,7 +281,7 @@ describe('The authentication engine of the VPDB API', function() {
 
 		it('should deny access if received profile data does not contain user id', function(done) {
 			request
-				.post('/api/authenticate/mock')
+				.post('/api/v1/authenticate/mock')
 				.send({
 					provider: 'ipboard',
 					providerName: 'ipbtest',
@@ -293,7 +293,7 @@ describe('The authentication engine of the VPDB API', function() {
 
 		it('should deny access if received profile data does contain neither display name nor username', function(done) {
 			request
-				.post('/api/authenticate/mock')
+				.post('/api/v1/authenticate/mock')
 				.send({
 					provider: 'ipboard',
 					providerName: 'ipbtest',

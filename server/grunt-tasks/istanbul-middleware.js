@@ -39,6 +39,10 @@ module.exports = function(grunt) {
 
 		switch (this.target) {
 			case 'download':
+				if (!process.env.COVERALLS_REPO_TOKEN) {
+					grunt.log.writeln('Skipping coverage, no COVERALLS_REPO_TOKEN found.');
+					return done();
+				}
 				var dest = this.data.dest;
 				var baseDir = path.resolve(__dirname, '../..') + '/';
 				var zipfile = path.resolve(baseDir, dest, 'coverage.zip');

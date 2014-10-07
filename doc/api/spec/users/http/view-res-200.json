@@ -1,19 +1,19 @@
 200 OK
 Content-Type: application/json; charset=utf-8
-Content-Length: 285
-Etag: W/"11d-13962e50"
+Content-Length: 309
+Etag: W/"135-85791e9e"
 
 {
   "plan": "free",
-  "name": "Jaylen13",
-  "username": "Jaylen13",
-  "email": "london_koch@gmail.com",
+  "name": "Serena_Buckridge",
+  "username": "Serena_Buckridge",
+  "email": "jarrell_daugherty@hotmail.com",
   "provider": "local",
-  "created_at": "2014-10-06T20:02:01.066Z",
+  "created_at": "2014-10-08T10:23:02.592Z",
   "is_active": true,
   "roles": [
     "member"
   ],
-  "id": "ZJZhaNfmuE",
-  "gravatar_id": "cc6445df1fbb26a3fa322064fde8857f"
+  "id": "WJV7ArQdtN",
+  "gravatar_id": "bee4890acb380803ce01a3b10fa9981b"
 }

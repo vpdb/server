@@ -13,7 +13,7 @@ exports.assertToken = function(request, done, noDoom) {
 		if (!noDoom) {
 			hlp.doomUser(res.body.user.id);
 		}
-		request.get('/api/user').set('Authorization', 'Bearer ' + res.body.token).end(hlp.status(200, done));
+		request.get('/api/v1/user').set('Authorization', 'Bearer ' + res.body.token).end(hlp.status(200, done));
 	};
 
 };

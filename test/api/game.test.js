@@ -32,7 +32,7 @@ describe('The VPDB `game` API', function() {
 			var user = 'contributor';
 			hlp.file.createBackglass(user, request, function(backglass) {
 				request
-					.post('/api/games')
+					.post('/api/v1/games')
 					.as(user)
 					.send(hlp.game.getGame({ _media: { backglass: backglass.id }}))
 					.end(function(err, res) {
@@ -72,7 +72,7 @@ describe('The VPDB `game` API', function() {
 				// 3. re-post game 1
 				function(next) {
 					request
-						.post('/api/games')
+						.post('/api/v1/games')
 						.as(user)
 						.send(game)
 						.end(function(err, res) {
@@ -114,7 +114,7 @@ describe('The VPDB `game` API', function() {
 				// 3. post game 2
 				function(next) {
 					request
-						.post('/api/games')
+						.post('/api/v1/games')
 						.as(user)
 						.send(game)
 						.end(function(err, res) {
@@ -145,7 +145,7 @@ describe('The VPDB `game` API', function() {
 				// 2. post game as "contributor"
 				function(next) {
 					request
-						.post('/api/games')
+						.post('/api/v1/games')
 						.as('contributor')
 						.send(hlp.game.getGame({ _media: { backglass: backglassId }}))
 						.end(function(err, res) {
@@ -175,7 +175,7 @@ describe('The VPDB `game` API', function() {
 				// 2. try to re-use backglass in another game
 				function(next) {
 					request
-						.post('/api/games')
+						.post('/api/v1/games')
 						.as('contributor')
 						.send(hlp.game.getGame({ _media: { backglass: backglassId }}))
 						.end(function(err, res) {
@@ -215,7 +215,7 @@ describe('The VPDB `game` API', function() {
 
 		it('should list all games if number of games is smaller or equal to page size', function(done) {
 			request
-				.get('/api/games')
+				.get('/api/v1/games')
 				.end(function(err, res) {
 					hlp.expectStatus(err, res, 200);
 					expect(res.body).to.be.an('array');
@@ -225,7 +225,7 @@ describe('The VPDB `game` API', function() {
 		});
 
 		it('should refuse queries with less than two characters', function(done) {
-			request.get('/api/games?q=a').end(hlp.status(400, 'must contain at least two characters', done));
+			request.get('/api/v1/games?q=a').end(hlp.status(400, 'must contain at least two characters', done));
 		});
 
 		it('should find game by game id', function(done) {
@@ -235,7 +235,7 @@ describe('The VPDB `game` API', function() {
 			})[0];
 
 			request
-				.get('/api/games?q=' + game.id)
+				.get('/api/v1/games?q=' + game.id)
 				.end(function(err, res) {
 					hlp.expectStatus(err, res, 200);
 					expect(res.body).to.be.an('array');
@@ -258,7 +258,7 @@ describe('The VPDB `game` API', function() {
 			})[0];
 
 			request
-				.get('/api/games?q=' + game.title.match(/[0-9a-z]{3}/i)[0])
+				.get('/api/v1/games?q=' + game.title.match(/[0-9a-z]{3}/i)[0])
 				.end(function(err, res) {
 					hlp.expectStatus(err, res, 200);
 					expect(res.body).to.be.an('array');
@@ -282,7 +282,7 @@ describe('The VPDB `game` API', function() {
 			})[0];
 
 			request
-				.get('/api/games?q=' + game.title.match(/[0-9a-z]{2}/i)[0] + '+' + game.title.match(/.*([0-9a-z]{2})/i)[1])
+				.get('/api/v1/games?q=' + game.title.match(/[0-9a-z]{2}/i)[0] + '+' + game.title.match(/.*([0-9a-z]{2})/i)[1])
 				.end(function(err, res) {
 					hlp.expectStatus(err, res, 200);
 					expect(res.body).to.be.an('array');
@@ -321,7 +321,7 @@ describe('The VPDB `game` API', function() {
 
 		it('should return full game details', function(done) {
 			request
-				.get('/api/games/' + game.id)
+				.get('/api/v1/games/' + game.id)
 				.end(function(err, res) {
 					hlp.expectStatus(err, res, 200);
 					expect(res.body).to.be.an('object');
@@ -337,7 +337,7 @@ describe('The VPDB `game` API', function() {
 		});
 
 		it('that does not exist should return a 404', function(done) {
-			request.get('/api/games/01234567890123456789').end(hlp.status(404, done));
+			request.get('/api/v1/games/01234567890123456789').end(hlp.status(404, done));
 		});
 	});
 

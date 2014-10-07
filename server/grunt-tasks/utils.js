@@ -20,6 +20,8 @@
 "use strict";
 
 var fs = require('fs');
+var path = require('path');
+var util = require('util');
 var request = require('request');
 
 module.exports = function(grunt) {
@@ -40,6 +42,12 @@ module.exports = function(grunt) {
 		grunt.log.writeln("Gitinfo written to %s.", gitsave.dest);
 	});
 
+	grunt.registerTask('client-config', function() {
+		var settings = require('../modules/settings');
+		var configPath = path.resolve(grunt.config.get('config.jsRoot'), settings.clientConfigName());
+		grunt.log.writeln('Writing client config to "%s"...', configPath);
+		fs.writeFileSync(configPath, '// our only namespace raping\nvar vpdbConfig = ' + util.inspect(settings.clientConfig()) + ';');
+	});
 
 	grunt.registerTask('reload', function() {
 		fs.writeFileSync('.reload', new Date());
@@ -57,14 +65,15 @@ module.exports = function(grunt) {
 		request.post(url, done);
 	});
 
-
 	grunt.registerTask('sleep', function() {
 		var done = this.async();
 		setTimeout(done, 2000);
 	});
 
-
 	grunt.registerTask('dropdb', 'drop the database', function() {
+		if (!process.env.APP_TESTING) {
+			throw new Error('Will not drop database if env APP_TESTING is not set.');
+		}
 		var mongoose = require('mongoose');
 		var done = this.async();
 		mongoose.connect(grunt.config.get('mongodb'), { server: { socketOptions: { keepAlive: 1 } } });

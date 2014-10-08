@@ -56,15 +56,24 @@ with `main` pointing to the non-minified version (there already are a bunch).
 
 ## Configuration
 
-For now, the web application assumes that the API sits on the same host. It 
-would be entirely possible to access an API from a different server by 
-introducing a set of configuration parameters. However, the only config the 
-web application receives for now is the name of the authorization header.
+Although the webapp is pretty much decoupled from the server, it still needs 
+to know where to connect to when accessing the API. For this reason, a config 
+file is built on server side that is included by the client. It contains an 
+object with the following properties:
 
-In order to pass this value to the Angular app, we have an `authHeader` 
-directive that sits in the DOM and gets set by the template engine, which 
-receives the parameter from `settings.js`. Should we need additional 
-parameters in the future, this directive will probably become more generic.
+ * `authHeader` - The name of the API's authorization header. Setting it to
+   something different than `Authorization` allows protecting the whole API
+   with let's say HTTP basic authentication.
+ * `apiUri` - An object containing `host`, `port`, `scheme`, `path` and 
+   `storagePath` which point to the API.
+ * `webUri` - An object containing `host`, `port`, `scheme` pointing to the web
+   application (i.e. to itself).
+
+The config object is retrieved as a constant in Angular and can be injected 
+with the name `Config` where needed.
+
+Note that keeping host and port configurable allows you to test the webapp 
+locally while connecting to the production API, which can be useful.
 
 
 ## Deployment

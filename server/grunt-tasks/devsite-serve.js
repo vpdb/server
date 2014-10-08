@@ -23,6 +23,9 @@ var _ = require('lodash');
 var path = require('path');
 var express = require('express');
 
+var settings = require('../modules/settings');
+var writeable = require('../modules/writeable');
+
 module.exports = function(grunt) {
 
 	grunt.registerTask('devsite-serve', function() {
@@ -51,6 +54,7 @@ module.exports = function(grunt) {
 				next();
 			}
 		});
+		app.use('/js/config.js', express.static(path.resolve(writeable.jsRoot, settings.clientConfigName()), { maxAge: 3600 * 24 * 30 * 1000 }));
 
 		// start express
 		app.listen(port);

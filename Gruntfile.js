@@ -227,7 +227,7 @@ module.exports = function(grunt) {
 	);
 
 	// server tasks
-	grunt.registerTask('dev', [          'env:dev',            'jshint',               'concurrent:dev' ]);  // dev mode, watch everything
+	grunt.registerTask('dev',          [ 'env:dev',            'jshint',               'concurrent:dev' ]);  // dev mode, watch everything
 	grunt.registerTask('serve-test',   [ 'env:test', 'dropdb', 'jshint', 'mkdir:test', 'concurrent:test' ]); // test mode, watch only server
 	grunt.registerTask('serve',        [ 'env:prod', 'express:prod' ]);                                      // prod, watch nothing
 
@@ -246,7 +246,7 @@ module.exports = function(grunt) {
 	grunt.registerTask('ci', [ 'concurrent:ci' ]);
 	grunt.registerTask('ci-server', [ 'env:test', 'mkdir:test', 'express:ci' ]);
 	grunt.registerTask('ci-client', [ 'env:test', 'clean:coverage', 'mkdir:coverage', 'waitServer',
-		'mochaTest', 'istanbul-middleware:download', 'coveralls:api', 'stop' ]);
+		'mochaTest', 'istanbul-middleware:download', 'stop' ]);
 };
 
 
@@ -286,11 +286,8 @@ function env(grunt, config, more) {
 }
 
 function testEnv(grunt, config, more) {
-	var e = env(grunt, config, more);
-
-	if (e.COVERALLS_REPO_TOKEN) {
-		e.COVERAGE = true;
-		e.COVERALLS_SERVICE_NAME = process.env.BUILDER || 'Local Test Runner';
-	}
-	return e;
+	return _.extend(env(grunt, config, more), {
+		COVERAGE_ENABLED: true,
+		COVERALLS_SERVICE_NAME: process.env.BUILDER || 'Local Test Runner'
+	});
 }

@@ -35,3 +35,4 @@ echo travis_fold:end:grunt-build
 
 # Run tests
 grunt ci
+grunt coveralls:api

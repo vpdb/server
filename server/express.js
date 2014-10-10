@@ -178,7 +178,7 @@ exports.configure = function(app) {
 	}
 
 	// add the coverage handler
-	if (process.env.COVERAGE) {
+	if (process.env.COVERAGE_ENABLED) {
 		//enable coverage endpoints under /coverage
 		app.use('/_coverage', require('istanbul-middleware').createHandler());
 		app.use('/coverage', express.static(path.resolve(__dirname, '../test/coverage/lcov-report'), { maxAge: 3600*24*30*1000 }));

@@ -15,7 +15,7 @@ like rendered in the DOM or Javascript.
 
 The root of the API is the following:
 
-	https://vpdb.ch/api
+	https://vpdb.ch/api/v1
 
 Only HTTPS is allowed. Data is sent and received in JSON, so unless specified
 otherwise, requests and responses should contain the
@@ -32,12 +32,12 @@ Generally, when requesting an individual resource, a *detailed representation*
 is returned. For example, when [requesting your own user profile][api-profile],
 you'll receive all available fields including your permissions:
 
-	GET /api/user HTTP/1.1
+	GET /api/v1/user HTTP/1.1
 
 However, when [retrieving a list of users][api-users], only a subset of fields
 are returned:
 
-	GET /api/users HTTP/1.1
+	GET /api/v1/users HTTP/1.1
 
 This *summary representation* is due to a few reasons. First of all, the
 physical payload for some resources would grow immensely if details were

@@ -1,14 +1,14 @@
-PUT /api/v1/users/ZkIg1fzXBnN HTTP/1.1
+PUT /api/v1/users/ZJyeIQKwrnN HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJaa3psSk1HbUJoRSIsImlhdCI6IjIwMTQtMTAtMTFUMjA6MTY6MzguMjMzWiIsImV4cCI6IjIwMTQtMTAtMTFUMjE6MTY6MzguMjMzWiJ9.rZJ49RxbwsYqm5BebYrlm5fZQmDPQJZveCmpaiI-nF0
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJaeW84bVl2cjNWIiwiaWF0IjoiMjAxNC0xMC0xMVQyMDo0Njo1OC4xMTlaIiwiZXhwIjoiMjAxNC0xMC0xMVQyMTo0Njo1OC4xMTlaIn0.Ephpn7q2BJIOwoXk9xTIDEW30vnFQzUD6fJFdQw2Q_I
 Content-Type: application/json
-Content-Length: 129
+Content-Length: 120
 
 {
-  "email": "korbin.willms12@gmail.com",
-  "username": "Clemmie.Effertz5",
-  "name": "Clemmie.Effertz5",
+  "email": "mireya19@gmail.com",
+  "username": "Camren.Torphy69",
+  "name": "Camren.Torphy69",
   "is_active": true,
   "roles": [
     "member"

@@ -17,7 +17,7 @@ and partly restricted to users with a certain role.
 Public resources don't need any further authentication, you can access them 
 directly:
 
-	curl https://vpdb.ch/api/ping
+	curl https://vpdb.ch/api/v1/ping
 
 
 # Restricted Resources
@@ -50,7 +50,7 @@ authenticate with a third party provider via OAuth2 such as GitHub or IP.Board
 In order to get a token, you need to post your credentials to 
 [this resource][api-auth]:
 
-	POST https://vpdb.ch/api/authenticate
+	POST https://vpdb.ch/api/v1/authenticate
 	
 	{
 	  "username": "<username>",
@@ -86,7 +86,7 @@ In return, you'll get the token along with your user profile:
 The token should then be included as a bearer token in the `Authorization` 
 header. For example, when retrieving the user profile, the client would send:
 
-	GET /api/user HTTP/1.1
+	GET /api/v1/user HTTP/1.1
 	Accept: application/json
 	Accept-Encoding: gzip, deflate
 	Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI1M2MyNTJkMThiNDcyMjdjMjZjZmUxYjgiLCJpYXQiOiIyMDE0LTA3LTEzVDA5OjM1OjE2LjQ0NloiLCJleHAiOiIyMDE0LTA3LTEzVDEwOjM1OjE2LjQ0NloifQ.8RyvT14Ga2gpfmiyVbx45RcqbFHxSgWjgC-4OaLh9Vc
@@ -111,7 +111,7 @@ page of the OAuth2 provider. In case the user allowed access to VPDB, the
 callback will contain a `code` parameter, which the web application can then
 use to authenticate with [VPDB's API][api-auth-oauth2]:
 
-	GET /api/authenticate/github?code=0123456789abcdef0123 HTTP/1.1
+	GET /api/v1/authenticate/github?code=0123456789abcdef0123 HTTP/1.1
 
 Which returns the same response as `/api/authenticate` would have, including
 an access token.
@@ -123,18 +123,18 @@ Some resources are more heavily protected than others, meaning you need a
 special role to access it. Here's a table of the resources and roles you'll 
 need to access them.
 
-|                     | `GET`       | `POST`      | `PUT`       | `HEAD` |
-|---------------------|-------------|-------------|-------------|--------|
-| `/api/authenticate` |             | *anon*      |             |        |
-| `/api/users`        | admin       | *anon*      |             |        |
-| `/api/users/:id`    |             |             | admin       |        |
-| `/api/user`         | *logged*    |             |             |        |
-| `/api/roles`        | admin       |             |             |        |
-| `/api/ipdb/:id`     | contributor |             |             |        |
-| `/api/files`        |             |             | contributor |        |
-| `/api/games`        |             | contributor |             |        |
-| `/api/games/:id`    |             |             |             | *anon* |
-| `/api/ping`         | *anon*      |             |             |        |
+|                        | `GET`       | `POST`      | `PUT`       | `HEAD` |
+|------------------------|-------------|-------------|-------------|--------|
+| `/api/v1/authenticate` |             | *anon*      |             |        |
+| `/api/v1/users`        | admin       | *anon*      |             |        |
+| `/api/v1/users/:id`    |             |             | admin       |        |
+| `/api/v1/user`         | *logged*    |             |             |        |
+| `/api/v1/roles`        | admin       |             |             |        |
+| `/api/v1/ipdb/:id`     | contributor |             |             |        |
+| `/api/v1/files`        |             |             | contributor |        |
+| `/api/v1/games`        |             | contributor |             |        |
+| `/api/v1/games/:id`    |             |             |             | *anon* |
+| `/api/v1/ping`         | *anon*      |             |             |        |
 
 To be updated for next bunch of resources.
 

@@ -81,7 +81,7 @@ module.exports = function(grunt) {
 
 		coveralls: {
 			options: { force: false },
-			api: { src: path.resolve(__dirname, '<%= config.coverageRoot %>/lcov.info') }
+			api: { src: '<%= config.coverageRoot %>/lcov.info' }
 		},
 
 		cssmin: {

@@ -1,18 +1,18 @@
 201 Created
 Content-Type: application/json; charset=utf-8
-Content-Length: 286
+Content-Length: 287
 
 {
   "plan": "free",
-  "name": "Sedrick13",
-  "username": "Sedrick13",
-  "email": "jacinto53@gmail.com",
+  "name": "Trever33",
+  "username": "Trever33",
+  "email": "christophe37@yahoo.com",
   "provider": "local",
-  "created_at": "2014-10-08T10:23:02.730Z",
+  "created_at": "2014-10-11T20:16:38.324Z",
   "is_active": true,
   "roles": [
     "member"
   ],
-  "id": "W11g4CHXuK4",
-  "gravatar_id": "434868d7f8a72d1c74cec7cd741be7a2"
+  "id": "-1SlefMXr3E",
+  "gravatar_id": "74ef11725fd94bd831035374489c60a2"
 }

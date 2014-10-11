@@ -36,12 +36,13 @@ module.exports = function(grunt) {
 			htmlRoot: writeable.htmlRoot,
 			cssGlobal: path.resolve(cssRoot, 'global_<%= gitinfo.local.branch.current.shortSHA %>.min.css'),
 			jsGlobal: path.resolve(jsRoot, 'global_<%= gitinfo.local.branch.current.shortSHA %>.min.js'),
-			jsGlobalAnnotated: path.resolve(jsRoot, 'global.annotated.js')
+			jsGlobalAnnotated: path.resolve(jsRoot, 'global.annotated.js'),
+			coverageRoot: path.resolve(__dirname, 'coverage')
 		},
 
 		clean: {
 			build:      { src: [ buildRoot + '/*', "!.gitignore", "!img" ] },
-			coverage:   { src: ['test/coverage/**'] },
+			coverage:   { src: [ '<%= config.coverageRoot %>/**'] },
 			devsite:    { src: [ devsiteRoot ] }
 		},
 
@@ -80,7 +81,7 @@ module.exports = function(grunt) {
 
 		coveralls: {
 			options: { force: false },
-			api: { src: path.resolve(__dirname, 'test/coverage/lcov.info') }
+			api: { src: path.resolve(__dirname, '<%= config.coverageRoot %>/lcov.info') }
 		},
 
 		cssmin: {
@@ -109,7 +110,7 @@ module.exports = function(grunt) {
 
 		'istanbul-middleware': {
 			options:  { url: 'http://127.0.0.1:' + config.vpdb.webapp.port + '/_coverage' },
-			download: { dest: 'test/coverage' }
+			download: { dest: '<%= config.coverageRoot %>' }
 		},
 
 		jade: {
@@ -119,7 +120,7 @@ module.exports = function(grunt) {
 			}
 		},
 
-		jshint: { options: { jshintrc: 'test/.jshintrc', ignores: [ 'test/coverage/**/*.js'] },
+		jshint: { options: { jshintrc: 'test/.jshintrc', ignores: [ '<%= config.coverageRoot %>/**/*.js'] },
 		          files: { src: [ 'server/**/*.js', 'test/**/*.js', '!server/grunt-tasks/**' ] },
 		          gruntfile: { src: 'Gruntfile.js' }
 		},
@@ -135,7 +136,7 @@ module.exports = function(grunt) {
 
 		mkdir: {
 			server:   { options: { mode: 504, create: [ cssRoot, jsRoot ] } },
-			coverage: { options: { mode: 504, create: [ 'test/coverage' ] } },
+			coverage: { options: { mode: 504, create: [ '<%= config.coverageRoot %>' ] } },
 			test:     { options: { mode: 504, create: [ config.vpdb.storage ] }},
 			devsite:  { options: { mode: 504, create: [ devsiteRoot + '/html/styleguide' ] } }
 		},

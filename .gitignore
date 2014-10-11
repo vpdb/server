@@ -12,6 +12,7 @@ pids
 logs
 /build
 /devsite
+/coverage
 /data/storage*
 /gfx/export
 results

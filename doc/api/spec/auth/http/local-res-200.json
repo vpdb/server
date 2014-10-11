@@ -1,42 +1,42 @@
 200 OK
 Content-Type: application/json; charset=utf-8
-Content-Length: 806
+Content-Length: 810
 
 {
-  "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJXMWJZY3JRZEtOIiwiaWF0IjoiMjAxNC0xMC0wOFQxMDoyMjo1Ni44OTVaIiwiZXhwIjoiMjAxNC0xMC0wOFQxMToyMjo1Ni44OTVaIn0.iL4Nk-Xk7BmubE80EI-gBpnJNLOriR6-Kd1hWDguDV0",
-  "expires": "2014-10-08T11:22:56.895Z",
+  "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJia0t5ZlhCaDQiLCJpYXQiOiIyMDE0LTEwLTExVDIwOjE2OjM0LjQzMFoiLCJleHAiOiIyMDE0LTEwLTExVDIxOjE2OjM0LjQzMFoifQ.5usKp3ATc53M77r8l643iXnc35uIGZTir7rvJ4C4CAI",
+  "expires": "2014-10-11T21:16:34.430Z",
   "user": {
-    "id": "W1bYcrQdKN",
-    "name": "Grace_Watsica76",
-    "username": "Grace_Watsica76",
-    "gravatar_id": "7aa49b6e8f547b3652af3d25565ce3b5",
-    "email": "heath30@yahoo.com",
+    "id": "bkKyfXBh4",
+    "name": "Zander_Keebler67",
+    "username": "Zander_Keebler67",
+    "gravatar_id": "9008582f3480301dbe1f48612ff96240",
+    "email": "melyna_dach@yahoo.com",
     "is_active": true,
     "roles": [
       "member"
     ],
     "plan": "free",
-    "created_at": "2014-10-08T10:22:56.782Z",
+    "created_at": "2014-10-11T20:16:34.359Z",
     "permissions": {
+      "files": [
+        "upload",
+        "delete",
+        "download"
+      ],
       "user": [
         "update",
         "view"
       ],
-      "tags": [
-        "add"
-      ],
       "users": [
         "search"
       ],
-      "releases": [
+      "vpbuilds": [
         "add"
       ],
-      "files": [
-        "download",
-        "upload",
-        "delete"
+      "tags": [
+        "add"
       ],
-      "vpbuilds": [
+      "releases": [
         "add"
       ]
     }

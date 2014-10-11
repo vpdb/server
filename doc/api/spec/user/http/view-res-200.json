@@ -1,41 +1,41 @@
 200 OK
 Content-Type: application/json; charset=utf-8
-Content-Length: 516
-Etag: W/"204-72ea9a9f"
+Content-Length: 546
+Etag: W/"222-775e900c"
 
 {
   "plan": "free",
-  "name": "Corene94",
-  "username": "Corene94",
-  "email": "seamus72@yahoo.com",
+  "name": "Katelyn_Cartwright46",
+  "username": "Katelyn_Cartwright46",
+  "email": "retha.lynch@hotmail.com",
   "provider": "local",
-  "created_at": "2014-10-08T10:22:55.358Z",
+  "created_at": "2014-10-11T20:16:33.726Z",
   "is_active": true,
   "roles": [
     "member"
   ],
-  "id": "WyitBX_F4",
-  "gravatar_id": "b8029ba11348082b9ba96f0612714ae5",
+  "id": "-ypMyzmSn4",
+  "gravatar_id": "2dad3c1b079afa74f1912a1bae538943",
   "permissions": {
+    "files": [
+      "upload",
+      "delete",
+      "download"
+    ],
     "user": [
       "update",
       "view"
     ],
-    "tags": [
-      "add"
-    ],
     "users": [
       "search"
     ],
-    "releases": [
+    "vpbuilds": [
       "add"
     ],
-    "files": [
-      "download",
-      "upload",
-      "delete"
+    "tags": [
+      "add"
     ],
-    "vpbuilds": [
+    "releases": [
       "add"
     ]
   }

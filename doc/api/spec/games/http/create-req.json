@@ -1,27 +1,36 @@
 POST /api/v1/games HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiItMThKcW05TTZOIiwiaWF0IjoiMjAxNC0xMC0xMlQyMDo0NTowMC42MTNaIiwiZXhwIjoiMjAxNC0xMC0xMlQyMTo0NTowMC42MTNaIn0.TSrRY_lN5oGdBrvXzp0yfM3KD3C-Da3ADm4ljS-HPs8
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJieVBOdk9INTZWIiwiaWF0IjoiMjAxNC0xMC0xM1QxMDo0Njo0NS4xNTlaIiwiZXhwIjoiMjAxNC0xMC0xM1QxMTo0Njo0NS4xNTlaIn0.nBi4g6skBe1suGYBOEfr7HUECBmgt44KTXnnncDZ3R4
 Content-Type: application/json
-Content-Length: 366
+Content-Length: 739
 
 {
   "ipdb": {
-    "number": 4938,
-    "mfg": 448
+    "number": 855,
+    "mfg": 47,
+    "rating": "7.2"
   },
-  "title": "Sinbad",
-  "manufacturer": "Electromatic",
+  "title": "Firecracker",
+  "manufacturer": "Bally",
+  "model_number": "895",
+  "year": 1970,
+  "game_type": "em",
+  "produced_units": 2800,
   "themes": [
-    "Fantasy",
-    "Myth and Legend"
+    "Celebration",
+    "Festivities"
   ],
-  "features": "Drop Targets(10), bumpers(2), rollovers(4), bullseye targets(2), stacked flippers(4), swing target(1).",
-  "notes": "Same design as Gottlieb's 1978 'Sinbad'.",
-  "id": "sinbad",
-  "year": 1900,
-  "game_type": "na",
+  "designers": [
+    "Harry Williams"
+  ],
+  "artists": [
+    "Christian Marche"
+  ],
+  "features": "Flippers (2), Pop bumpers (3), Slingshots (2), Standup targets (6), Kick-out holes (3), Right-side ball return gate, Left outlane kickback.Maximum displayed point score is 99,990 points per player.",
+  "notes": "A special version was produced for Germany with the same project number and project release date.  The schematic part number for the US version was W-1042-89a and the German version was W-1042-90a.",
+  "id": "firecracker",
   "_media": {
-    "backglass": "-yokq7qMaN"
+    "backglass": "byXHP_rcaV"
   }
 }

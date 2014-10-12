@@ -1,0 +1,8 @@
+400 Bad Request
+Content-Type: application/json; charset=utf-8
+Content-Length: 59
+Etag: W/"3b-a2af173d"
+
+{
+  "error": "Query must contain at least two characters."
+}

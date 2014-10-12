@@ -1,41 +1,41 @@
 200 OK
 Content-Type: application/json; charset=utf-8
-Content-Length: 516
-Etag: W/"204-de6a472e"
+Content-Length: 533
+Etag: W/"215-37fab0ae"
 
 {
   "plan": "free",
-  "name": "Ramona8",
-  "username": "Ramona8",
-  "email": "katarina0@yahoo.com",
+  "name": "May_Gutmann33",
+  "username": "May_Gutmann33",
+  "email": "ubaldo.brown41@yahoo.com",
   "provider": "local",
-  "created_at": "2014-10-12T20:44:58.670Z",
+  "created_at": "2014-10-13T10:46:41.516Z",
   "is_active": true,
   "roles": [
     "member"
   ],
-  "id": "-yf2d79M6N",
-  "gravatar_id": "b24b1927a6519180c38e2a3c2a3a6f9a",
+  "id": "-1SeH_B9a4",
+  "gravatar_id": "8999f0e419f630cfe9bc074584dda8e9",
   "permissions": {
-    "files": [
-      "upload",
-      "delete",
-      "download"
-    ],
     "user": [
       "update",
       "view"
     ],
-    "users": [
-      "search"
-    ],
-    "vpbuilds": [
-      "add"
-    ],
     "tags": [
       "add"
     ],
+    "users": [
+      "search"
+    ],
     "releases": [
+      "add"
+    ],
+    "files": [
+      "download",
+      "upload",
+      "delete"
+    ],
+    "vpbuilds": [
       "add"
     ]
   }

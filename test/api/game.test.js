@@ -217,6 +217,7 @@ describe('The VPDB `game` API', function() {
 		it('should list all games if number of games is smaller or equal to page size', function(done) {
 			request
 				.get('/api/v1/games')
+				.save({ path: 'games/list' })
 				.end(function(err, res) {
 					hlp.expectStatus(err, res, 200);
 					expect(res.body).to.be.an('array');
@@ -226,7 +227,7 @@ describe('The VPDB `game` API', function() {
 		});
 
 		it('should refuse queries with less than two characters', function(done) {
-			request.get('/api/v1/games?q=a').end(hlp.status(400, 'must contain at least two characters', done));
+			request.get('/api/v1/games?q=a').saveResponse({ path: 'games/search' }).end(hlp.status(400, 'must contain at least two characters', done));
 		});
 
 		it('should find game by game id', function(done) {

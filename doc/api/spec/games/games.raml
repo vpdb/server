@@ -12,6 +12,7 @@ description: |
   mandatory are not.
 
   [release]: api://core/release
+
 post:
   is: [ validated ]
   securedBy: [ jwt: { scopes: [ CONTRIB ] } ]
@@ -30,3 +31,32 @@ post:
         role/contrib:
           schema: game
           example: !include http/create-res-201.json
+get:
+  securedBy: [ ]
+  description: |
+    List all games.
+
+    Using query parameters described in the *Request* tab, this resource also
+    allows searching for games.
+  queryParameters:
+    q:
+      description: |
+        Search query. Searches in `id` and `title`.
+      required: false
+      minLength: 2
+      type: string
+      example: sttng
+  body:
+    role/anon:
+      example: !include http/list-req.json
+  responses:
+    200:
+      body:
+        role/anon:
+          example: !include http/list-res-200.json
+    400:
+      description: Invalid query parameters provided.
+      body:
+        role/anon-Search-for-a-Game:
+          example: !include http/search-res-400.json
+

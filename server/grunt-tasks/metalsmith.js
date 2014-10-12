@@ -84,7 +84,7 @@ module.exports = function(grunt) {
 				core: { src: 'api/spec/index.raml', dest: 'api/reference' }
 			},
 			template: 'client/app/devsite/api-resource.jade',
-			markdown: markdown
+			markdown: options.markdown
 		}));
 
 		/* loops through metalsmith.sections and renders a given template on it */

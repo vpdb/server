@@ -1,42 +1,42 @@
 200 OK
 Content-Type: application/json; charset=utf-8
-Content-Length: 799
+Content-Length: 804
 
 {
-  "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJaa3pYWVE1emE0IiwiaWF0IjoiMjAxNC0xMC0xMlQyMDo0NDo1OS40MzhaIiwiZXhwIjoiMjAxNC0xMC0xMlQyMTo0NDo1OS40MzhaIn0.wRVXNFOxygWtgEWtbBaJb4A_tTmamY831ivUp1fulzQ",
-  "expires": "2014-10-12T21:44:59.438Z",
+  "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJXSldnVWRyOVRWIiwiaWF0IjoiMjAxNC0xMC0xM1QxMDo0Njo0My4xODdaIiwiZXhwIjoiMjAxNC0xMC0xM1QxMTo0Njo0My4xODdaIn0.5ivAPP2Fs7xrJF4ZlA8YBGUvh-mO5wNsY40AjhMI6UQ",
+  "expires": "2014-10-13T11:46:43.187Z",
   "user": {
-    "id": "ZkzXYQ5za4",
-    "name": "Alyce42",
-    "username": "Alyce42",
-    "gravatar_id": "35940d9a80edfc7b796013cbc0eeb7fe",
-    "email": "jessy.schimmel93@yahoo.com",
+    "id": "WJWgUdr9TV",
+    "name": "Norma.Gibson6",
+    "username": "Norma.Gibson6",
+    "gravatar_id": "a4e651cd11b538865e4a10ac32fc2547",
+    "email": "ambrose51@gmail.com",
     "is_active": true,
     "roles": [
       "member"
     ],
     "plan": "free",
-    "created_at": "2014-10-12T20:44:59.377Z",
+    "created_at": "2014-10-13T10:46:43.081Z",
     "permissions": {
-      "files": [
-        "upload",
-        "delete",
-        "download"
-      ],
       "user": [
         "update",
         "view"
       ],
-      "users": [
-        "search"
-      ],
-      "vpbuilds": [
-        "add"
-      ],
       "tags": [
         "add"
       ],
+      "users": [
+        "search"
+      ],
       "releases": [
+        "add"
+      ],
+      "files": [
+        "download",
+        "upload",
+        "delete"
+      ],
+      "vpbuilds": [
         "add"
       ]
     }

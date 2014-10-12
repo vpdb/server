@@ -1,18 +1,18 @@
 201 Created
 Content-Type: application/json; charset=utf-8
-Content-Length: 295
+Content-Length: 307
 
 {
   "plan": "free",
-  "name": "Tomas.Maggio",
-  "username": "Tomas.Maggio",
-  "email": "lessie_lang@hotmail.com",
+  "name": "Maybelle.Cruickshank",
+  "username": "Maybelle.Cruickshank",
+  "email": "mitchel91@gmail.com",
   "provider": "local",
-  "created_at": "2014-10-12T20:45:03.386Z",
+  "created_at": "2014-10-13T10:46:49.298Z",
   "is_active": true,
   "roles": [
     "member"
   ],
-  "id": "-1EssQ9MpV",
-  "gravatar_id": "4f9530b5b6b1d469c80cb6cf49c7559a"
+  "id": "-1BRFuHcpV",
+  "gravatar_id": "d609bad88f44ae790141053c726573c7"
 }

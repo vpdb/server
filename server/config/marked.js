@@ -35,6 +35,12 @@ renderer.table = function(header, body) {
 		'</table>\n';
 };
 
+renderer.list = function(body, ordered) {
+	var type = ordered ? 'ol' : 'ul';
+	var cssClass = ordered ? '' : ' class="list"';
+	return '<' + type + cssClass + '>\n' + body + '</' + type + '>\n';
+};
+
 module.exports = {
 	gfm: true,
 	smartypants: true,

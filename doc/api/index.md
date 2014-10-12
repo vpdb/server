@@ -137,12 +137,48 @@ When referencing other objects, the field pointing to the ID of the reference
 object is suffixed with `_`. This eliminates ambiguity between an ID versus the
 full object.
 
-For instance, when creating a new game, client uses `_media` to link the game
-to previously submitted media:
+For instance, when creating a new game, the client uses `_media` to link the 
+game to previously submitted media:
 
+    POST /api/v1/games HTTP/1.1
+
+    {
+      "id": "sinbad",
+      "title": "Sinbad",
+      "manufacturer": "Electromatic",
+      "year": 1978,
+      "game_type": "em",
+      "_media": {
+        "backglass": "Ayokq7qMaN"
+      }
+    }
 
 While *returned* game data contains the populated `media` attribute:
 
+    201 Created
+
+    {
+      "id": "sinbad",
+      "title": "Sinbad",
+      "manufacturer": "Electromatic",
+      "year": 1978,
+      "game_type": "em",
+      "media": {
+        "backglass": {
+          "is_protected": false,
+          "variations": { 
+            "small-2x": { "url": "/storage/v1/Ayokq7qMaN/small-2x" },
+            "small": { "url": "/storage/v1/Ayokq7qMaN/small" },
+            "medium-2x": { "url": "/storage/v1/Ayokq7qMaN/medium-2x" },
+            "medium": { "url": "/storage/v1/Ayokq7qMaN/medium" }
+          },
+          "url": "/storage/v1/Ayokq7qMaN",
+          "id": "Ayokq7qMaN"
+        }
+      },
+      "url": "/game/sinbad",
+      "created_at": "2014-10-12T20:45:00.698Z"
+    }
 
 # Pagination
 

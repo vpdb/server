@@ -15,8 +15,9 @@ mixin jsonSchema(schema)
 					th Constraints
 					th Description
 			tbody
+
 				each property, name in schema.properties
-					if property.items
+					if property.items && property.items.properties
 						- itemSchemas.push(property.items)
 					if property.type === 'object' && property.properties
 						- itemSchemas.push(property)
@@ -59,34 +60,34 @@ mixin jsonSchema(schema)
 										if property.minimum !== undefined || property.maximum !== undefined
 											if property.minimum === property.maximum
 												| must be
-												= property.minimum
+												= ' ' + property.minimum
 											else if property.minimum !== undefined && property.maximum !== undefined
 												| between
-												= property.minimum
+												= ' ' + property.minimum
 												if property.exclusiveMinimum
-													|  (exclusive)
+													| #{' '}(exclusive)
 												else
-													|  (inclusive)
+													| #{' '}(inclusive)
 												|  and
-												= property.maximum
+												= ' ' + property.maximum
 												if property.exclusiveMaximum
-													|  (exclusive)
+													| #{' '}(exclusive)
 												else
-													|  (inclusive)
+													| #{' '}(inclusive)
 											else if property.minimum !== undefined
 												| must be
 												if property.exclusiveMinimum
 													| greater than
 												else
 													| greater than or equal to
-												= property.minimum
+												= ' ' + property.minimum
 											else
 												| must be
 												if property.exclusiveMaximum
 													| smaller than
 												else
 													| smaller than or equal to
-												= property.maximum
+												= ' ' + property.maximum
 								if property.minLength && property.maxLength
 									li
 										if property.minLength === property.maxLength

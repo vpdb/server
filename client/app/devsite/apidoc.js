@@ -152,4 +152,17 @@ angular.module('vpdb.devsite', [])
 
 		$scope.$watch('resource', updateCollapseState);
 		$rootScope.$on('$locationChangeSuccess', updateCollapseState);
+	})
+
+
+	.directive('apiToken', function() {
+			return {
+				restrict: 'E',
+				replace: true,
+				template: '<span>{{ $storage.apiToken || defaultApiToken }}</span>',
+				link: function(scope, element, attrs) {
+					scope.defaultApiToken = attrs.default;
+				}
+			};
 	});
+

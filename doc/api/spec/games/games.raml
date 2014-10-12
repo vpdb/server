@@ -1,0 +1,32 @@
+displayName: Games
+description: |
+  A game is a *pinball table*.
+
+  A game describes the nature of a pinball table independently from its digital
+  recreation. It is *decoupled* from its actual [release][release] but acts as
+  parent, meaning every release is linked to a game.
+
+  A game usually exists in the real world and the data that can be found in
+  this entity reflect that factor. However, for *original games* this might not
+  be the case. For this reason, some of the fields you might expect to be
+  mandatory are not.
+
+  [release]: api://core/release
+post:
+  is: [ validated ]
+  securedBy: [ jwt: { scopes: [ CONTRIB ] } ]
+  description: |
+    Create a new game.
+
+    Note that prior to that request, the needed media needs to be uploaded so
+    it can be referenced.
+  body:
+    role/contrib:
+      schema: game
+      example: !include http/create-req.json
+  responses:
+    201:
+      body:
+        role/contrib:
+          schema: game
+          example: !include http/create-res-201.json

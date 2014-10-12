@@ -33,6 +33,7 @@ describe('The VPDB `game` API', function() {
 			hlp.file.createBackglass(user, request, function(backglass) {
 				request
 					.post('/api/v1/games')
+					.save({ path: 'games/create'})
 					.as(user)
 					.send(hlp.game.getGame({ _media: { backglass: backglass.id }}))
 					.end(function(err, res) {

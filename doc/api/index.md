@@ -131,6 +131,19 @@ The second type are *validation errors*. They come with a
 		]
 	}
 
+# Referenced Fields
+
+When referencing other objects, the field pointing to the ID of the reference
+object is suffixed with `_`. This eliminates ambiguity between an ID versus the
+full object.
+
+For instance, when creating a new game, client uses `_media` to link the game
+to previously submitted media:
+
+
+While *returned* game data contains the populated `media` attribute:
+
+
 # Pagination
 
 # Dates

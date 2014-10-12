@@ -1,0 +1,48 @@
+201 Created
+Content-Type: application/json; charset=utf-8
+Content-Length: 956
+
+{
+  "title": "Sinbad",
+  "manufacturer": "Electromatic",
+  "features": "Drop Targets(10), bumpers(2), rollovers(4), bullseye targets(2), stacked flippers(4), swing target(1).",
+  "notes": "Same design as Gottlieb's 1978 'Sinbad'.",
+  "id": "sinbad",
+  "year": 1900,
+  "game_type": "na",
+  "_created_by": "543ae84c2507449028b5cf32",
+  "created_at": "2014-10-12T20:45:00.698Z",
+  "ipdb": {
+    "number": 4938,
+    "mfg": 448
+  },
+  "artists": [],
+  "designers": [],
+  "themes": [
+    "Fantasy",
+    "Myth and Legend"
+  ],
+  "short": [],
+  "media": {
+    "backglass": {
+      "is_protected": false,
+      "variations": {
+        "small-2x": {
+          "url": "/storage/v1/-yokq7qMaN/small-2x"
+        },
+        "small": {
+          "url": "/storage/v1/-yokq7qMaN/small"
+        },
+        "medium-2x": {
+          "url": "/storage/v1/-yokq7qMaN/medium-2x"
+        },
+        "medium": {
+          "url": "/storage/v1/-yokq7qMaN/medium"
+        }
+      },
+      "url": "/storage/v1/-yokq7qMaN",
+      "id": "-yokq7qMaN"
+    }
+  },
+  "url": "/game/sinbad"
+}

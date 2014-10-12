@@ -1,18 +1,18 @@
 201 Created
 Content-Type: application/json; charset=utf-8
-Content-Length: 292
+Content-Length: 295
 
 {
   "plan": "free",
-  "name": "Kavon.Paucek70",
-  "username": "Kavon.Paucek70",
-  "email": "tre60@gmail.com",
+  "name": "Tomas.Maggio",
+  "username": "Tomas.Maggio",
+  "email": "lessie_lang@hotmail.com",
   "provider": "local",
-  "created_at": "2014-10-11T20:46:58.196Z",
+  "created_at": "2014-10-12T20:45:03.386Z",
   "is_active": true,
   "roles": [
     "member"
   ],
-  "id": "WkGlD7FDB3E",
-  "gravatar_id": "98580a7ca4cd01ea4a37aa5c23c868ea"
+  "id": "-1EssQ9MpV",
+  "gravatar_id": "4f9530b5b6b1d469c80cb6cf49c7559a"
 }

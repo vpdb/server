@@ -1,14 +1,14 @@
-PUT /api/v1/users/ZJyeIQKwrnN HTTP/1.1
+PUT /api/v1/users/-1Y9jQqGaE HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJaeW84bVl2cjNWIiwiaWF0IjoiMjAxNC0xMC0xMVQyMDo0Njo1OC4xMTlaIiwiZXhwIjoiMjAxNC0xMC0xMVQyMTo0Njo1OC4xMTlaIn0.Ephpn7q2BJIOwoXk9xTIDEW30vnFQzUD6fJFdQw2Q_I
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJXeUg1czc5ZlROIiwiaWF0IjoiMjAxNC0xMC0xMlQyMDo0NTowMy4yODdaIiwiZXhwIjoiMjAxNC0xMC0xMlQyMTo0NTowMy4yODdaIn0.MkYTzXQKcOBL9uWW-q_gFnB8S5BTjtUhtIYQS6aJ4QE
 Content-Type: application/json
-Content-Length: 120
+Content-Length: 106
 
 {
-  "email": "mireya19@gmail.com",
-  "username": "Camren.Torphy69",
-  "name": "Camren.Torphy69",
+  "email": "kristina.emard@gmail.com",
+  "username": "Eula3",
+  "name": "Eula3",
   "is_active": true,
   "roles": [
     "member"

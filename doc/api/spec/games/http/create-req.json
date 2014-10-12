@@ -1,0 +1,27 @@
+POST /api/v1/games HTTP/1.1
+Host: vpdb.ch
+Accept-Encoding: gzip, deflate
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiItMThKcW05TTZOIiwiaWF0IjoiMjAxNC0xMC0xMlQyMDo0NTowMC42MTNaIiwiZXhwIjoiMjAxNC0xMC0xMlQyMTo0NTowMC42MTNaIn0.TSrRY_lN5oGdBrvXzp0yfM3KD3C-Da3ADm4ljS-HPs8
+Content-Type: application/json
+Content-Length: 366
+
+{
+  "ipdb": {
+    "number": 4938,
+    "mfg": 448
+  },
+  "title": "Sinbad",
+  "manufacturer": "Electromatic",
+  "themes": [
+    "Fantasy",
+    "Myth and Legend"
+  ],
+  "features": "Drop Targets(10), bumpers(2), rollovers(4), bullseye targets(2), stacked flippers(4), swing target(1).",
+  "notes": "Same design as Gottlieb's 1978 'Sinbad'.",
+  "id": "sinbad",
+  "year": 1900,
+  "game_type": "na",
+  "_media": {
+    "backglass": "-yokq7qMaN"
+  }
+}

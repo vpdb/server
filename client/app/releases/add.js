@@ -23,6 +23,16 @@ angular.module('vpdb.releases.add', [])
 				flavor: {}
 			},
 			{
+				name: 'Anotherfile.vpx',
+				bytes: 12213,
+				icon: DisplayService.fileIcon('application/x-visual-pinball-table-x'),
+				uploaded: true,
+				uploading: false,
+				progress: 100,
+				storage: { id: 123 },
+				flavor: {}
+			},
+			{
 				name: 'Filename.jpg',
 				bytes: 3321,
 				icon: DisplayService.fileIcon('image/jpeg'),
@@ -33,8 +43,6 @@ angular.module('vpdb.releases.add', [])
 				flavor: {}
 			}
 		];
-
-		$scope.tags = TagResource.query();
 
 		$scope.flavors = [
 			{
@@ -54,11 +62,12 @@ angular.module('vpdb.releases.add', [])
 			}
 		];
 
+		$scope.tags = TagResource.query();
+
 		$scope.game = GameResource.get({ id: $routeParams.id }, function() {
 			$scope.game.lastrelease = new Date($scope.game.lastrelease).getTime();
 			$scope.setTitle('Add Release - ' + $scope.game.title);
 		});
-
 
 
 		$scope.reset = function() {
@@ -341,7 +350,6 @@ angular.module('vpdb.releases.add', [])
 	})
 
 
-
 	.controller('ChooseAuthorCtrl', function($scope, $modalInstance, UserResource, release, author) {
 
 		if (author) {
@@ -426,7 +434,6 @@ angular.module('vpdb.releases.add', [])
 			}, ApiHelper.handleErrors($scope));
 		};
 	})
-
 
 
 	.controller('AddVPBuildCtrl', function($scope, $modalInstance, ApiHelper, VPBuildResource) {

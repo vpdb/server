@@ -13,7 +13,7 @@
 							a(href=subsection.link, ng-class="{ active: '#{subsection.link}' === path }" )
 								| #{subsection.header || subsection.title}
 
-			if section === 'api' && api.resources
+			if api && api.resources
 				hr
 				.input-group.padder-top-2x
 					span.input-group-addon
@@ -28,7 +28,7 @@
 				ul.nav.subnav
 					each resource in api.resources
 						li
-							a(href='/api/reference/#{resource.uniqueId.substr(1)}', ng-class="{ active: 'ref/#{resource.uniqueId.substr(1)}' === subsection }")= resource.displayName || resource.relativeUri
+							a(href='/#{section}/v1/#{resource.uniqueId.substr(1)}', ng-class="{ active: 'ref/#{resource.uniqueId.substr(1)}' === subsection }")= resource.displayName || resource.relativeUri
 
 		p.padder-top-2x
 

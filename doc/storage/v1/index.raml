@@ -1,0 +1,17 @@
+#%RAML 0.8
+---
+title: VPDB API
+baseUri: https://vpdb.ch/storage/v1
+protocols: [HTTPS]
+mediaType: application/json
+
+/upload:
+  displayName: Upload
+  post:
+    description: Upload a file.
+
+/download:
+  displayName: Download
+  /{storage_id}:
+    get:
+      description: Download a file.

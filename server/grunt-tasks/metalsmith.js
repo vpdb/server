@@ -81,7 +81,8 @@ module.exports = function(grunt) {
 		metalsmith.use(raml({
 			src: 'doc',
 			files: {
-				core: { src: 'api/spec/index.raml', dest: 'api/reference' }
+				api:     { src: 'api/v1/index.raml',     dest: 'api/v1' },
+				storage: { src: 'storage/v1/index.raml', dest: 'storage/v1' }
 			},
 			template: 'client/app/devsite/api-resource.jade',
 			markdown: options.markdown
@@ -101,7 +102,7 @@ module.exports = function(grunt) {
 		metalsmith.use(templates({ engine: 'jade', directory: 'client/app/devsite' }));
 
 		/* replaces api://.. links with real references */
-		metalsmith.use(apilinks({ core: { path: '/api/reference'} }));
+		metalsmith.use(apilinks({ core: { path: '/api/v1'} }));
 
 		// build
 		metalsmith.build(done);

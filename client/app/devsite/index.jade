@@ -5,21 +5,23 @@ block root
 
 block navbar
 
-			ul.nav.navbar-nav
-				li(ng-class="{ active: section == 'home' }")
-					a(ui-sref="home") Home
-				li(ng-class="{ active: section == 'api' }")
-					a(href="/api") Api
-				li(ng-class="{ active: section == 'styleguide' }")
-					a(ui-sref="styleguide.index") Style Guide
-				li(ng-class="{ active: section == 'code' }")
-					a(href="/code") Code
+	ul.nav.navbar-nav
+		li(ng-class="{ active: section == 'home' }")
+			a(ui-sref="home") Home
+		li(ng-class="{ active: section == 'api' }")
+			a(href="/api") Api
+		li(ng-class="{ active: section == 'storage' }")
+			a(href="/storage") Storage
+		li(ng-class="{ active: section == 'styleguide' }")
+			a(ui-sref="styleguide.index") Style Guide
+		li(ng-class="{ active: section == 'code' }")
+			a(href="/code") Code
 
-			ul.nav.navbar-nav.navbar-right
-				li
-					a(href="/", target="_self")
-						i.fa.fa-caret-left.space-right-2x
-						span.space-right Back to Site
+	ul.nav.navbar-nav.navbar-right
+		li
+			a(href="/", target="_self")
+				i.fa.fa-caret-left.space-right-2x
+				span.space-right Back to Site
 
 block content
 	.container.container--topmost.documentation(ng-controller="DevsiteCtrl", page-title="Developer")

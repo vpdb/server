@@ -63,6 +63,9 @@ module.exports = function(opts) {
 		}
 
 		var metadata = metalsmith.metadata();
+		if (!metadata.api) {
+			metadata.api = {};
+		}
 
 		// for each  api
 		async.each(_.keys(srcFiles), function(file, next) {
@@ -73,17 +76,19 @@ module.exports = function(opts) {
 			debug('Processing RAML file at %s...', path);
 			raml2obj.parse(path, function(obj) {
 				try {
-					debug(require('util').inspect(obj));
-
 					// render each resource
 					_.each(obj.resources, function (resource) {
 							var destFolder = srcFiles[file].dest.replace(/\\/g, '/');
 							var dest = destFolder + '/' + resource.uniqueId.substr(1) + '.html';
-							var html = jade.renderFile(opts.template, { resource: resource, hlp: helpers(_.extend(opts, { api: obj })), print: print });
+							var html = jade.renderFile(opts.template, {
+								resource: resource,
+								hlp: helpers(_.extend(opts, { api: obj })),
+								print: print
+							});
 
 							files[dest] = { contents: new Buffer(html) };
 					});
-					metadata.api = obj;
+					metadata.api[srcFiles[file].name] = obj;
 					require('fs').writeFileSync('raml.json', JSON.stringify(obj, null, '\t'));
 					next();
 
@@ -102,7 +107,7 @@ module.exports = function(opts) {
 function helpers(opts) {
 	return {
 		markdown: function(md) {
-			return marked(md);
+			return md ? marked(md) : '';
 		},
 
 		highlight: function(code, isHttp) {

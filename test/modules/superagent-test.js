@@ -24,7 +24,7 @@ module.exports = function(superagent, options) {
 	options.port = options.port || process.env.PORT || 7357;
 	options.authHeader = options.authHeader || process.env.AUTH_HEADER || 'Authorization';
 	options.saveHost = options.saveHost || 'vpdb.ch';
-	options.saveRoot = options.saveRoot || 'doc/api/spec';
+	options.saveRoot = options.saveRoot || 'doc/api/v1';
 	options.ignoreReqHeaders = options.ignoreReqHeaders || [ 'cookie', 'host', 'user-agent' ];
 	options.ignoreResHeaders = options.ignoreResHeaders || [ 'x-token-refresh', 'x-user-dirty', 'vary', 'connection', 'transfer-encoding', 'date' ];
 

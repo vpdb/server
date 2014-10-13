@@ -29,6 +29,7 @@ module.exports = function(opts) {
 	var options = opts.options || {};
 
 	return function(files, metalsmith, done) {
+		var data;
 		try {
 
 			if (!opts.name) {
@@ -46,14 +47,18 @@ module.exports = function(opts) {
 
 			for (var i = 0; i < metadata[opts.name].length; i++) {
 				sectionIndex = metadata[opts.name][i];
-				var html = jade.renderFile(opts.src, _.extend(
-					_.pick(metadata, 'subsections', 'api'),
+				data =  _.extend(
+					_.pick(metadata, 'subsections'),
 					_.pick(sectionIndex, 'section'),
 					options,
-					{
-						inspect: require('util').inspect
-					}
-				));
+					{ inspect: require('util').inspect }
+				);
+
+				if (metadata.api[sectionIndex.section]) {
+					data.api = metadata.api[sectionIndex.section];
+
+				}
+				var html = jade.renderFile(opts.src, data);
 				files[sectionIndex.section + '/' + opts.dest] = { contents: new Buffer(html) };
 			}
 			done();

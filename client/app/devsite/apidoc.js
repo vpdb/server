@@ -30,26 +30,28 @@ angular.module('vpdb.devsite', [])
 		});
 
 		// api doc
-		$stateProvider.state('api', {
-			abstract: true,
-			url: '/api',
-			templateUrl: 'html/api/menu.html'
-		});
-		$stateProvider.state('api.index', {
-			url: '',
-			templateUrl: 'html/api/index.html'
-		});
-		$stateProvider.state('api.reference', {
-			url: '/reference/{ref}',
-			templateUrl: function($stateParams) {
-				return 'html/api/reference/' + $stateParams.ref + '.html';
-			}
-		});
-		$stateProvider.state('api.section', {
-			url: '/{path:.*}',
-			templateUrl: function($stateParams) {
-				return 'html/api/' + $stateParams.path + '.html';
-			}
+		_.each(['api', 'storage'], function(api) {
+			$stateProvider.state(api, {
+				abstract: true,
+				url: '/' + api,
+				templateUrl: 'html/' + api + '/menu.html'
+			});
+			$stateProvider.state(api + '.index', {
+				url: '',
+				templateUrl: 'html/' + api + '/index.html'
+			});
+			$stateProvider.state(api + '.reference', {
+				url: '/v1/{ref}',
+				templateUrl: function($stateParams) {
+					return 'html/' + api + '/v1/' + $stateParams.ref + '.html';
+				}
+			});
+			$stateProvider.state(api + '.section', {
+				url: '/{path:.*}',
+				templateUrl: function($stateParams) {
+					return 'html/' + api + '/' + $stateParams.path + '.html';
+				}
+			});
 		});
 
 		// static doc
@@ -104,12 +106,17 @@ angular.module('vpdb.devsite', [])
 					$rootScope.section = 'api';
 					$rootScope.subsection = 'ref/' + toParams.ref;
 					break;
+				case 'storage.reference':
+					$rootScope.section = 'storage';
+					$rootScope.subsection = 'ref/' + toParams.ref;
+					break;
 				case 'default':
 					var p = toParams.path.split('/');
 					$rootScope.section = p[0];
 					$rootScope.subsection = p[1];
 					break;
 				default:
+					console.log('duh...');
 					$rootScope.section = toState.name.split('.')[0];
 					$rootScope.subsection = toParams.path || 'index';
 					break;

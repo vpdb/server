@@ -202,10 +202,16 @@ function toJade(html, done) {
 	if (!html) {
 		return done(null, html);
 	}
-	var result = html2jade.convertHtml(html, {}, done);
-	if (result) {
-		done(result);
-	}
+	// TODO re-enable when those are fixed:
+	// 		https://github.com/chad3814/CSSStyleDeclaration/issues/20
+	//		https://github.com/chad3814/CSSStyleDeclaration/issues/19
+	return done(null, html);
+//	html2jade.convertHtml(html, {}, function(err, jade) {
+//		if (err) {
+//			return done(err);
+//		}
+//		done(null, jade);
+//	});
 }
 
 function sectionSort(a, b) {

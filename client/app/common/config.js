@@ -7,22 +7,22 @@ common
 	.factory('ConfigService', function(Config) {
 
 		var apiSameHost =
-			Config.webUri.scheme === Config.apiUri.scheme &&
-			Config.webUri.host === Config.apiUri.host &&
+			Config.webUri.protocol === Config.apiUri.protocol &&
+			Config.webUri.hostname === Config.apiUri.hostname &&
 			Config.webUri.port === Config.apiUri.port;
 
 		return {
 			apiUri: function(path) {
 				if (apiSameHost) {
-					return Config.apiUri.path + path;
+					return Config.apiUri.pathname + path;
 				} else {
 					return this.uri(Config.apiUri);
 				}
 			},
 
 			uri: function(uri) {
-				var port = (uri.scheme === 'http' && uri.port === 80) || (uri.scheme === 'https' && uri.port === 443) ? false : uri.port;
-				return uri.scheme + '://' + uri.host + (port ? ':' + port : '') + uri.path;
+				var port = (uri.protocol === 'http' && uri.port === 80) || (uri.protocol === 'https' && uri.port === 443) ? false : uri.port;
+				return uri.protocol + '://' + uri.hostname + (port ? ':' + port : '') + uri.path;
 			}
 		};
 	});

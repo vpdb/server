@@ -49,30 +49,20 @@ module.exports = {
 		 * @important
 		 */
 		api: {
-			host: checkHost,
-			port: function(port) {
-				/* istanbul ignore if */
-				if (!parseInt(port) || parseInt(port) > 65535 || parseInt(port) < 1) {
-					return 'Port must be an integer between 1 and 65535';
-				}
-			},
-			scheme: function(schema) {
-				/* istanbul ignore if */
-				if (schema === 'http' || schema === 'https') {
-					return;
-				}
-				return 'Schema must be either "http" or "https".';
-			},
-			path: function(path) {
-				if (!_.isString(path) || path[0] !== '/') {
-					return 'API path must start with "/".';
-				}
-			},
-			storagePath: function(path) {
-				if (!_.isString(path) || path[0] !== '/') {
-					return 'Storage path must start with "/".';
-				}
-			}
+			hostname: checkHost, port: checkPort, protocol: checkProtocol, pathname: checkPath
+		},
+
+
+		/**
+		 * Public URI of the Storage API.
+		 *
+		 * This is used to construct URLs. The actual server always listens on
+		 * `localhost`.
+		 *
+		 * @important
+		 */
+		storageApi: {
+			hostname: checkHost, port: checkPort, protocol: checkProtocol, pathname: checkPath
 		},
 
 		/**
@@ -84,20 +74,7 @@ module.exports = {
 		 * @important
 		 */
 		webapp: {
-			host: checkHost,
-			port: function(port) {
-				/* istanbul ignore if */
-				if (!parseInt(port) || parseInt(port) > 65535 || parseInt(port) < 1) {
-					return 'Port must be an integer between 1 and 65535';
-				}
-			},
-			scheme: function(schema) {
-				/* istanbul ignore if */
-				if (schema === 'http' || schema === 'https') {
-					return;
-				}
-				return 'Schema must be either "http" or "https".';
-			}
+			hostname: checkHost, port: checkPort, protocol: checkProtocol
 		},
 
 		/**
@@ -141,7 +118,7 @@ module.exports = {
 		/**
 		 * Session timeout in milliseconds.
 		 */
-		sessionTimeout: function(timeout) {
+		tokenLifetime: function(timeout) {
 			/* istanbul ignore if */
 			if (!parseInt(timeout) || parseInt(timeout) < 1) {
 				return 'Session timeout must be a number greater than 0';
@@ -463,5 +440,22 @@ function checkHost(host) {
 	}
 }
 
+function checkPort(port) {
+	/* istanbul ignore if */
+	if (!parseInt(port) || parseInt(port) > 65535 || parseInt(port) < 1) {
+		return 'Port must be an integer between 1 and 65535';
+	}
+}
 
+function checkProtocol(protocol) {
+	/* istanbul ignore if */
+	if (protocol !== 'http' && protocol !== 'https') {
+		return 'Schema must be either "http" or "https".';
+	}
+}
 
+function checkPath(path) {
+	if (!_.isString(path) || path[0] !== '/') {
+		return 'Path must start with "/".';
+	}
+}

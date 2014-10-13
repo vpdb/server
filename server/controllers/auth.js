@@ -115,7 +115,7 @@ exports.auth = function(resource, permission, done) {
 
 			// generate new token if it's a short term token.
 			var tokenIssued = new Date(decoded.iat);
-			if (tokenExp.getTime() - tokenIssued.getTime() === config.vpdb.sessionTimeout) {
+			if (tokenExp.getTime() - tokenIssued.getTime() === config.vpdb.tokenLifetime) {
 				res.setHeader('X-Token-Refresh', exports.generateToken(user, now, req.method + ' ' + req.path));
 			}
 
@@ -173,6 +173,6 @@ exports.generateToken = function(user, now, dbg) {
 	return jwt.encode({
 		iss: user.id,
 		iat: now,
-		exp: new Date(now.getTime() + config.vpdb.sessionTimeout)
+		exp: new Date(now.getTime() + config.vpdb.tokenLifetime)
 	}, config.vpdb.secret);
 };

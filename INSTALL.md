@@ -403,35 +403,6 @@ Setup nginx:
 	sudo cp /repos/source/deploy/nginx/sites/admin /etc/nginx/sites-available/admin
 	sudo ln -s /etc/nginx/sites-available/admin /etc/nginx/sites-enabled/admin
 	
-	
-### Boundary integration
-
-Login, click the settings icon and paste the `curl` command under *Installation* into the shell. This installs the agent.
-If you want to change the name of the host, do the following:
-
-	sudo vi /etc/graphdat.conf
-	sudo /etc/init.d/graphdat restart
-	
-For the relay, do [the following](http://premium-documentation.boundary.com/relays)
-
-	sudo npm install graphdat-relay -g
-	sudo mkdir -p /etc/graphdat-relay
-	cd /etc/graphdat-relay
-	sudo graphdat-relay -e "your email address" -t "your api token"
-	sudo wget https://gist.github.com/codemoran/7441959/raw/bb3aa37c0052f87736f8b3ba57c3edccca520c07/graphdat-relay-debian-init
-	sudo chmod +x graphdat-relay-debian-init
-	sudo mv graphdat-relay-debian-init /etc/init.d/graphdat-relay
-	sudo update-rc.d graphdat-relay defaults 
-	
-
-Where the API token is "Your API token", not the agent's or the embeded. If you want to change the name, do the 
-following:
-
-	sudo vi /etc/graphdat-relay/config.json
-	sudo /etc/init.d/graphdat-relay restart
-	
-Then add your plugins like described [here](http://premium-support.boundary.com/customer/portal/articles/1635550-plugins---how-to?b_id=4456).
-	
 
 ### New Relic integration
 

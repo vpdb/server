@@ -281,7 +281,7 @@ function setEnv(grunt) {
 function env(grunt, config, more) {
 	return _.extend({
 		PORT: grunt.option('port') || process.env.PORT || config.vpdb.webapp.port || 3000,
-		HTTP_SCHEME: config.vpdb.webapp.scheme,
+		HTTP_SCHEME: config.vpdb.webapp.protocol,
 		AUTH_HEADER: config.vpdb.authorizationHeader
 	}, more || {});
 }

@@ -18,20 +18,23 @@ module.exports = {
 		 * This is used to construct URLs. The actual server always listens on
 		 * `localhost`.
 		 *
-		 * Note that the port is NOT what defines on which port the app listens,
-		 * for that set the `PORT` environment variable. However, when running
-		 * the server via Grunt, it will read this variable and set the env
-		 * accordingly IF unset.
+		 * Note that for now, the API and the storage API are the same
+		 * application. However, that might change in the future so we might
+		 * as well set it up flexible enough in the first place.
 		 *
 		 * @important
 		 */
-		api: {
-			host: 'localhost',
-			port: 3000,
-			scheme: 'https',
-			path: '/api/v1',
-			storagePath: '/storage/v1'
-		},
+		api: { protocol: 'https', hostname: 'localhost', port: 3000, pathname: '/api/v1' },
+
+		/**
+		 * Public URI of the Storage API.
+		 *
+		 * This is used to construct URLs. The actual server always listens on
+		 * `localhost`.
+		 *
+		 * @important
+		 */
+		storageApi: { protocol: 'https', hostname: 'localhost', port: 3000, pathname: '/storage/v1' },
 
 		/**
 		 * Public URI of the web application.
@@ -41,11 +44,7 @@ module.exports = {
 		 *
 		 * @important
 		 */
-		webapp: {
-			host: 'localhost',
-			port: 3000,
-			scheme: 'https'
-		},
+		webapp: { protocol: 'https', hostname: 'localhost', port: 3000 },
 
 		/**
 		 * Database configuration. Must point to a MongoDB schema.
@@ -62,9 +61,9 @@ module.exports = {
 		},
 
 		/**
-		 * Session timeout in milliseconds (technically it's the expiration length of the JWT)
+		 * Lifetime of the JSON Web Token in milliseconds.
 		 */
-		sessionTimeout: 3600000,
+		tokenLifetime: 3600000,
 
 		/**
 		 * Secret for hashing and signing. Create something long here: http://strongpasswordgenerator.com/

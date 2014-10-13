@@ -61,7 +61,7 @@ exports.authenticate = function(req, res) {
 		}
 
 		var now = new Date();
-		var expires = new Date(now.getTime() + config.vpdb.sessionTimeout);
+		var expires = new Date(now.getTime() + config.vpdb.tokenLifetime);
 		var token = auth.generateToken(user, now);
 
 		logger.info('[api|user:authenticate] User <%s> successfully authenticated.', user.email);
@@ -134,7 +134,7 @@ function passportCallback(req, res) {
 		}
 
 		var now = new Date();
-		var expires = new Date(now.getTime() + config.vpdb.sessionTimeout);
+		var expires = new Date(now.getTime() + config.vpdb.tokenLifetime);
 		var token = auth.generateToken(user, now);
 
 		logger.info('[api|%s:authenticate] User <%s> successfully authenticated.', req.params.strategy, user.email);

@@ -327,23 +327,23 @@ function patch(settingsPatched, codeBlock, pos, parentPath) {
 }
 
 Settings.prototype.apiUri = function(path) {
-	return this.current.vpdb.api.scheme + '://' +
-	       this.current.vpdb.api.host +
+	return this.current.vpdb.api.protocol + '://' +
+	       this.current.vpdb.api.hostname +
 	      (this.current.vpdb.api.port === 80 || this.current.vpdb.api.port === 443 ? '' : ':' + this.current.vpdb.api.port) +
-	       this.current.vpdb.api.path + (path || '');
+	       this.current.vpdb.api.pathname + (path || '');
 };
 
 Settings.prototype.apiPath = function(path) {
-	return this.current.vpdb.api.path + (path || '');
+	return this.current.vpdb.api.pathname + (path || '');
 };
 
 Settings.prototype.storagePath = function(path) {
-	return this.current.vpdb.api.storagePath + (path || '');
+	return this.current.vpdb.storageApi.pathname + (path || '');
 };
 
 Settings.prototype.webUri = function() {
-	return this.current.vpdb.webapp.scheme + '://' +
-	       this.current.vpdb.webapp.host +
+	return this.current.vpdb.webapp.protocol + '://' +
+	       this.current.vpdb.webapp.hostname +
 	      (this.current.vpdb.webapp.port === 80 || this.current.vpdb.webapp.port === 443 ? '' : ':' + this.current.vpdb.webapp.port);
 };
 
@@ -351,6 +351,7 @@ Settings.prototype.clientConfig = function() {
 	return {
 		authHeader: this.current.vpdb.authorizationHeader,
 		apiUri: this.current.vpdb.api,
+		storageUri: this.current.vpdb.storageApi,
 		webUri: this.current.vpdb.webapp
 	};
 };

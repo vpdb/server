@@ -108,7 +108,7 @@ exports.configure = function(app) {
 
 	// static file serving
 	// markup (which is pre-compiled in production)
-	app.use(jadeStatic({
+	app.use(/.*\.html$/i, jadeStatic({
 		baseDir: path.resolve(__dirname, '../client/app'),
 		baseUrl: '/',
 		jade: _.extend(ctrl.viewParams(), {

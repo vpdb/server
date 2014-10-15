@@ -1,4 +1,4 @@
-"use strict"; /* global app */
+"use strict"; /* global common */
 
 /**
  * @see http://jsfiddle.net/lrlopez/dFeuf/

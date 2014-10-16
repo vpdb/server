@@ -94,7 +94,7 @@ module.exports = function(grunt) {
 
 		env: {
 			dev: env(grunt, config),
-			test: testEnv(grunt, config),
+			test: testEnv(grunt, config, { NODE_ENV: 'production' }),
 			prod: env(grunt, config, { NODE_ENV: 'production' })
 		},
 
@@ -154,6 +154,22 @@ module.exports = function(grunt) {
 			app: { files: [ { src: [ _.pluck(assets.getJs(), 'src') ], dest: jsGlobalAnnotated } ] }
 		},
 
+		protractor: {
+			options: {
+				keepAlive: true, // If false, the grunt process stops when the test fails.
+				noColor: false, // If true, protractor will not use colors in its output.
+				args: {
+					// Arguments passed to the command
+				}
+			},
+			all: {   // Grunt requires at least one target to run so you can simply put 'all: {}' here too.
+				options: {
+					configFile: "test/protractor.js", // Target-specific config file
+					args: {} // Target-specific arguments
+				}
+			}
+		},
+
 		stylus: {
 			build: {
 				options: { paths: [ 'styles' ], linenos: false, compress: false, sourcemap: { sourceRoot: '/css' } },
@@ -191,8 +207,10 @@ module.exports = function(grunt) {
 			               options: { spawn: false, debounceDelay: 100 }, tasks: [ 'metalsmith', 'reload' ] },
 
 			// test watch
-			test: { files: [ 'test/api/**/*.js', 'test/modules/**/*.js' ,'test/web/**/*.js' ], options: { spawn: true, debounceDelay: 100, atBegin: true },
-			        tasks: [ 'mkdir:coverage', 'waitServer', 'mochaTest', 'istanbul-middleware:download', 'restart', 'reload' ] }
+			test: { files: [ 'test/api/**/*.js', 'test/modules/**/*.js' , 'test/storage/**/*.js' ], options: { spawn: true, debounceDelay: 100, atBegin: true },
+			        tasks: [ 'mkdir:coverage', 'waitServer', 'mochaTest', 'istanbul-middleware:download', 'restart', 'reload' ] },
+			protractor: { files: [ 'test/web/**/*.js', 'test/modules/**/*.js' ], options: { spawn: true, debounceDelay: 100, atBegin: true },
+			              tasks: [ 'waitServer', 'protractor', 'restart', 'reload' ] }
 		}
 	};
 	grunt.config.init(taskConfig);
@@ -214,12 +232,16 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-mkdir');
 	grunt.loadNpmTasks('grunt-mocha-test');
 	grunt.loadNpmTasks('grunt-ng-annotate');
+	grunt.loadNpmTasks('grunt-protractor-runner');
 	grunt.loadNpmTasks('grunt-wait-server');
 	grunt.loadTasks('./server/grunt-tasks');
 
 	// build
 	grunt.registerTask('build', 'What run on production before switching code.',
-		[ 'git', 'env:prod', 'clean:build', 'mkdir:server',       // clean and create folder structure
+		[ 'env:prod', 'build-all' ]
+	);
+	grunt.registerTask('build-all', [
+			'git', 'clean:build', 'mkdir:server',                 // clean and create folder structure
 			'copy:assets', 'copy:static',                         // copy static stuff
 			'stylus', 'cssmin',                                   // render & minify css
 			'client-config', 'ngAnnotate', 'uglify', 'jade',      // treat javascripts
@@ -228,9 +250,9 @@ module.exports = function(grunt) {
 	);
 
 	// server tasks
-	grunt.registerTask('dev',          [ 'env:dev',            'jshint',               'concurrent:dev' ]);  // dev mode, watch everything
-	grunt.registerTask('serve-test',   [ 'env:test', 'dropdb', 'jshint', 'mkdir:test', 'concurrent:test' ]); // test mode, watch only server
-	grunt.registerTask('serve',        [ 'env:prod', 'express:prod' ]);                                      // prod, watch nothing
+	grunt.registerTask('dev',          [ 'env:dev',                         'jshint',               'concurrent:dev' ]);  // dev mode, watch everything
+	grunt.registerTask('serve-test',   [ 'env:test', 'build-all', 'dropdb', 'jshint', 'mkdir:test', 'concurrent:test' ]); // test mode, watch only server
+	grunt.registerTask('serve',        [ 'env:prod', 'express:prod' ]);                                                   // prod, watch nothing
 
 	// watchers
 	grunt.registerTask('watch-dev',    [ 'express:dev',  'watch:express-dev' ]);
@@ -242,6 +264,7 @@ module.exports = function(grunt) {
 
 	// tests
 	grunt.registerTask('test', [ 'env:test', 'watch:test' ]);
+	grunt.registerTask('test-web', [ 'env:test', 'watch:protractor' ]);
 
 	// continuous integration
 	grunt.registerTask('ci', [ 'concurrent:ci' ]);

@@ -9,10 +9,9 @@
 			li(ng-class="{ active: viewtype == 'list' }")
 				i.icon.icon-th-list-list(ng-click="switchview('list')")
 		hr
-		div.ng-cloak
-			.row.row-data
-				label(ng-show="(games | filter:query | decade:filterDecades | manufacturer:filterManufacturer).length == 0") No results found for query <strong>{{ query }}</strong>.
-				.fade2-animation(ng-include="template")
+		p(ng-show="(games | filter:query | decade:filterDecades | manufacturer:filterManufacturer).length == 0") No games found.
+		.row.row-data.ng-cloak
+			.fade2-animation(ng-include="template")
 
 	.col-sm-3.col--menu
 		h1 Filter
@@ -24,53 +23,42 @@
 				i.fa.fa-search
 			input.form-control.input--search(ng-model="query", type="text", placeholder="Search")
 
-		accordion(close-others="false")
+		accordion.panel-group--transparent(close-others="false")
 
 			// year filter
 			accordion-group.panel--inner(is-open="filterYearOpen")
-				accordion-heading
-					| Year
-					i.fa.pull-right(ng-class="{'fa-chevron-circle-up': filterYearOpen, 'fa-chevron-circle-down': !filterYearOpen}")
-
-				ul.list-group
-					li.list-group-item(filter-decade="1960") 1960s
-					li.list-group-item(filter-decade="1970") 1970s
-					li.list-group-item(filter-decade="1980") 1980s
-				ul.list-group
-					li.list-group-item(filter-decade="1990") 1990s
-					li.list-group-item(filter-decade="2000") 2000s
-					li.list-group-item(filter-decade="2010") 2010s
+				accordion-heading by Year
+				.row
+					.col-xs-6.text-center.a(filter-decade="1960") 1960s
+					.col-xs-6.text-center.a(filter-decade="1970") 1970s
+					.col-xs-6.text-center.a(filter-decade="1980") 1980s
+					.col-xs-6.text-center.a(filter-decade="1990") 1990s
+					.col-xs-6.text-center.a(filter-decade="2000") 2000s
+					.col-xs-6.text-center.a(filter-decade="2010") 2010s
 
 			// manufacturer filter
 			accordion-group.panel--inner(is-open="filterManufacturerOpen")
-				accordion-heading
-					| Manufacturer
-					i.fa.pull-right(ng-class="{'fa-chevron-circle-up': filterManufacturerOpen, 'fa-chevron-circle-down': !filterManufacturerOpen}")
-
-				ul.list-group
-					li.list-group-item(filter-manufacturer="bally") Bally
-					li.list-group-item(filter-manufacturer="capcom") Capcom
-				ul.list-group
-					li.list-group-item(filter-manufacturer="midway") Midway
-					li.list-group-item(filter-manufacturer="williams") Williams
+				accordion-heading by Manufacturer
+				.row
+					.col-xs-6.text-center.a(filter-manufacturer="bally") Bally
+					.col-xs-6.text-center.a(filter-manufacturer="capcom") Capcom
+					.col-xs-6.text-center.a(filter-manufacturer="midway") Midway
+					.col-xs-6.text-center.a(filter-manufacturer="williams") Williams
 
 			// author filter
 			accordion-group.panel--inner(is-open="filterAuthorOpen")
-				accordion-heading
-					| Author
-					i.fa.pull-right(ng-class="{'fa-chevron-circle-up': filterAuthorOpen, 'fa-chevron-circle-down': !filterAuthorOpen}")
-
+				accordion-heading by Author
 				p here are the authors
 
 		h1 Sort
 		hr
 		ul.list--sort-options
-			li(sort="name", d="desc") Date Added
-			li(sort="year", d="asc") Original Release
-			li.selected.asc(sort="name", d="asc") Name
-			li(sort="rating", d="desc") Rating
-			li(sort="views", d="desc") Views
-			li(sort="gamedownloads", d="desc") Downloads
+			li.a(sort="name", d="desc") Date Added
+			li.a(sort="year", d="asc") Original Release
+			li.a.selected.asc(sort="name", d="asc") Name
+			li.a(sort="rating", d="desc") Rating
+			li.a(sort="views", d="desc") Views
+			li.a(sort="gamedownloads", d="desc") Downloads
 
 		span(ng-show="auth.hasPermission('games/add')")
 			h1 Content

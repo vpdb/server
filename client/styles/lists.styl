@@ -66,12 +66,12 @@ ul.list--noindent > li
 //
 // Markup:
 // <ul class="{$modifiers}">
-//   <li d="desc" sort="name">Date Added</li>
-//   <li d="asc" sort="year">Original Release</li>
-//   <li d="asc" sort="name" class="asc selected">Name</li>
-//   <li d="desc" sort="rating">Rating</li>
-//   <li d="desc" sort="views">Views</li>
-//   <li d="desc" sort="gamedownloads">Downloads</li>
+//   <li class="a" d="desc" sort="name">Date Added</li>
+//   <li class="a" d="asc" sort="year">Original Release</li>
+//   <li class="a" d="asc" sort="name" class="asc selected">Name</li>
+//   <li class="a" d="desc" sort="rating">Rating</li>
+//   <li class="a" d="desc" sort="views">Views</li>
+//   <li class="a" d="desc" sort="gamedownloads">Downloads</li>
 // </ul>
 //
 // .list--sort-options    - Sort Option List
@@ -84,7 +84,6 @@ ul.list--noindent > li
 		transition all $animation-shorter
 		cursor pointer
 		&.selected
-			font-weight $font-weight-bold
 			margin-left -20px
 			&:before
 				display inline-block

@@ -17,6 +17,12 @@
 		margin-bottom -99999px
 		padding-bottom 99999px
 
+@media (max-width: $bootstrap-screen-sm-min)
+	.container--topmost
+		border-bottom-radius(0)
+	.row--fullheight
+		border-bottom-radius(0)
+
 // A row that doesn't pad
 .row--fullwidth
 	margin-left -15px
@@ -30,6 +36,11 @@
 	padding-left 30px
 	padding-right 30px
 	position relative
+@media (max-width: $bootstrap-screen-sm-min)
+	.col--main
+		padding-left 15px
+		padding-right 15px
+
 .col--menu
 	padding-bottom 25px
 

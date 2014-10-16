@@ -1,9 +1,10 @@
-"use strict";  /* global browser */
+"use strict";  /* global browser, element, by */
 
 var _ = require('lodash');
 
 function AbstractPage() {
-
+	this.menuHome = element(by.linkText('Home'));
+	this.menuGames = element(by.css('.navbar-nav')).element(by.linkText('Games'));
 }
 
 /**
@@ -12,8 +13,7 @@ function AbstractPage() {
  * @returns {AbstractPage}
  */
 AbstractPage.prototype.get = function() {
-	browser.get(this.expectedPath || '/');
-	return this;
+	return browser.get(this.path || '/');
 };
 
 AbstractPage.prototype.title = function() {

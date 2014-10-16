@@ -13,7 +13,7 @@ If you want to execute the tests, run the server in test mode:
 When running in test mode, a local test coverage report is available under [/coverage](http://localhost:7357/coverage/).
 
 
-# Backend Tests
+## Backend Tests
  
 Backend are API tests that query the API and make sure that it returns what it's supposed to. You can run them by
 executing this is a second terminal:
@@ -28,7 +28,7 @@ There are some additional command-line parameters:
  * `--auth-header=<header>` - Authorization header. Default: `Authorization`.
 
 
-# Frontend Tests
+## Frontend Tests
 
 Frontend tests use a real browser and test end-to-end scenarios.
 
@@ -38,6 +38,9 @@ You'll need protractor installed and running:
 	webdriver-manager update
 	webdriver-manager start
 
+You can then run the tests by typing
+
+	grunt protractor
 
 [mocha]: http://visionmedia.github.io/mocha/
 [protractor]: http://angular.github.io/protractor/

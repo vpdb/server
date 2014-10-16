@@ -140,7 +140,7 @@ For the server tasks, we have:
 
 ### Tests
 
-See [tests][TESTS.md]. Spoiler: There are automated API tests as well as end-to-end Selenium tests.
+See [tests](TESTS.md). Spoiler: There are automated API tests as well as end-to-end Selenium tests.
 
 
 ### Code Quality

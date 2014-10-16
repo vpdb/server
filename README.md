@@ -140,26 +140,8 @@ For the server tasks, we have:
 
 ### Tests
 
-A test run requires a clean environment. For this purpose, there is an included settings file at 
-`server/config/settings-test.js` which is used when running tests. Basically it's a stripped-down config that uses a 
-different database, runs on a different HTTP port and enable code coverage. 
- 
-If you want to run the tests, you'll need to open up two shells. In the first shell, run the server in test mode:
+See [tests][TESTS.md]. Spoiler: There are automated API tests as well as end-to-end Selenium tests.
 
-	grunt serve-test
-	
-In the second shell, run the API tests:
-
-	grunt test --force
-	
-The `--force` parameter is necessary if you want to keep watching files for changes even though tests fail. There are
-some additional command-line parameters:
-
- * `--server=<url>` - Server URL. Default: `http://localhost:7357/`.
- * `--basic-auth=<user>:<password>` - Adds a basic authentication header to every request.
- * `--auth-header=<header>` - Authorization header. Default: `Authorization`.
-
-When running in test mode, a local test coverage report is available under [/coverage](http://localhost:7357/coverage/).
 
 ### Code Quality
 

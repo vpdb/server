@@ -94,7 +94,7 @@ module.exports = function(grunt) {
 
 		env: {
 			dev: env(grunt, config),
-			test: testEnv(grunt, config, { NODE_ENV: 'production' }),
+			test: testEnv(grunt, config),
 			prod: env(grunt, config, { NODE_ENV: 'production' })
 		},
 

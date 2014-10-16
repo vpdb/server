@@ -80,7 +80,7 @@ common
 
 		$rootScope.login = function() {
 			$modal.open({
-				templateUrl: 'partials/modals/auth.html',
+				templateUrl: 'auth/modal-login.html',
 				controller: 'LoginCtrl',
 				windowClass: 'theme-light'
 			});

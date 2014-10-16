@@ -59,6 +59,7 @@
 		"grunt-mkdir": "0.1.2",
 		"grunt-mocha-test": "0.12.1",
 		"grunt-ng-annotate": "0.4.0",
+		"grunt-protractor-runner": "1.1.4",
 		"grunt-wait-server": "0.1.2",
 		"highlight.js": "8.2.0",
 		"html2jade": "0.8.0",

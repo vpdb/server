@@ -16,7 +16,7 @@ describe('The home page', function() {
 		var gameListPage = new GameListPage();
 		gameListPage.get();
 
-		expect(gameListPage.title()).toEqual('Games2');
+		expect(gameListPage.title()).toEqual('Games');
 
 //		element(by.model('todoText')).sendKeys('write a protractor test');
 //		element(by.css('[value="add"]')).click();

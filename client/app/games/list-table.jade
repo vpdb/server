@@ -5,6 +5,6 @@
 				td.name {{ game.name }}
 				td {{ game.manufacturer }} ({{ game.year }})
 				td
-					time-ago(from-time="{{ game.lastrelease }}")
+					span(am-time-ago="game.lastrelease")
 				td
 					span.stars(value="{{ game.rating }}")

@@ -64,7 +64,7 @@
 			.img.img-avatar.img-avatar--lg.pull-left(ng-show="item.user.avatar", img-bg="item.user.avatar")
 			.media-body
 				label.label--block
-					time-ago(from-time="{{ item.timestamp }}")
+					span(am-time-ago="item.timestamp")
 				label.label--block
 					i.fa.space-right(class="{{ item | feedIcon }}")
 					strong {{ item.user.user }}

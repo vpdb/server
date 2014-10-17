@@ -19,10 +19,12 @@ results
 server/config/settings.js
 test/coverage
 
-gitinfo.json
 npm-debug.log
 node_modules
 bower_components
+
+gitinfo.json
+raml.json
 
 .restart
 .reload

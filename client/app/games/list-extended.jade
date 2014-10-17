@@ -20,7 +20,7 @@
 
 			label.pull-right
 				i.fa.fa-arrow-circle-up
-				time-ago(from-time="{{ game.lastrelease }}")
+				span(am-time-ago="game.lastrelease")
 
 			.ratingbox.ratingbox--sticky-top-right.hidden-xs(rating-avg="game.rating")
 				.ratingbox__left-col

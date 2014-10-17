@@ -9,6 +9,7 @@ var deps = [
 	'ngStorage',
 	'ngDragDrop',
 	'angularFileUpload',
+	'angularMoment',
 	'ui.bootstrap',
 	'angulartics',
 	'angulartics.google.analytics',

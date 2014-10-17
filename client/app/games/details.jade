@@ -76,7 +76,7 @@
 								user {{ release.submitter.user }}
 						label
 							i.fa.fa-arrow-circle-up.space-right
-							time-ago(from-time="{{ release.lastversion.timestamp }}")
+							span(am-time-ago="release.lastversion.timestamp")
 						label
 							i.fa.fa-arrow-circle-down.space-right
 							span {{ release.lastversion.downloads | number }} downloads
@@ -102,7 +102,7 @@
 										| Version
 										label.label--version {{ version.download.version }}
 										.pull-right
-											time-ago.small.space-right(from-time="{{ version.timestamp }}")
+											span.small.space-right(am-time-ago="version.timestamp")
 											button.btn.btn-default.btn-xs.btn-dl(download="version.download", download-info="[ game, release ] | dlRelease", title="{{ version.download.size | bytes }}")
 									hr
 									div.markdown(markdown="version.changes")
@@ -164,7 +164,7 @@
 								label
 								strong {{ comment.author.user }}
 								| &nbsp;commented
-								time-ago(from-time="{{ comment.timestamp }}")
+								span(am-time-ago="comment.timestamp")
 								.pull-right(ng-hide="editing")
 									i.a.fa.fa-pencil.space-right(ng-click="editComment()")
 									i.a.fa.fa-times-circle(ng-click="deleteComment()")

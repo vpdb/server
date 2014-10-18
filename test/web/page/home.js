@@ -7,6 +7,7 @@ var AbstractPage = require('./abstract');
 function HomePage() {
 	AbstractPage.call(this);
 	this.path = '/';
+	this.pageTitle = 'Home';
 }
 
 util.inherits(HomePage, AbstractPage);

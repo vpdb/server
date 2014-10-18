@@ -3,8 +3,8 @@
 var _ = require('lodash');
 
 function AbstractPage() {
-	this.menuHome = element(by.linkText('Home'));
-	this.menuGames = element(by.css('.navbar-nav')).element(by.linkText('Games'));
+	this.menuHome = element.all(by.css('.navbar-nav > li > a')).get(0);
+	this.menuGames = element.all(by.css('.navbar-nav > li > a')).get(1);
 }
 
 /**

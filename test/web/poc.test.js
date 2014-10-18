@@ -12,25 +12,24 @@ superagentTest(request);
 
 describe('The home page', function() {
 
-	var ptor = protractor.getInstance();
+	it('should have "home" in the title.', function() {
 
-	iit('should navigate to games', function() {
+		var homePage = new HomePage();
+		homePage.get();
+
+		expect(homePage.title()).toEqual(homePage.pageTitle);
+	});
+
+	it('should navigate to games', function() {
 
 		var homePage = new HomePage();
 		var gameListPage = new GameListPage();
 
 		homePage.get().then(function() {
 			homePage.menuGames.click();
-			console.log('checking %j against %s', ptor.getCurrentUrl(), gameListPage.path);
-			expect(ptor.getCurrentUrl()).toEqual('/games');
+			expect(homePage.title()).toEqual(gameListPage.pageTitle);
 		});
 	});
 
-	it('should have "home" in the title.', function() {
 
-		var gameListPage = new GameListPage();
-		gameListPage.get();
-
-		expect(gameListPage.title()).toEqual('Games');
-	});
 });

@@ -5,7 +5,7 @@ angular.module('vpdb.releases.add', [])
 	.controller('ReleaseAddCtrl', function($scope, $upload, $modal, $window, $localStorage, $routeParams,
 										   AuthService, ApiHelper,
 										   FileResource, TagResource, VPBuildResource, GameResource,
-										   DisplayService, MimeTypeService) {
+										   ConfigService, DisplayService, MimeTypeService) {
 
 		$scope.theme('light');
 		$scope.setMenu('admin');
@@ -19,7 +19,7 @@ angular.module('vpdb.releases.add', [])
 				uploaded: true,
 				uploading: false,
 				progress: 100,
-				storage: { id: 123 },
+				storage: { id: 'abcd' },
 				flavor: {}
 			},
 			{
@@ -29,7 +29,7 @@ angular.module('vpdb.releases.add', [])
 				uploaded: true,
 				uploading: false,
 				progress: 100,
-				storage: { id: 123 },
+				storage: { id: 'asdf' },
 				flavor: {}
 			},
 			{
@@ -39,7 +39,7 @@ angular.module('vpdb.releases.add', [])
 				uploaded: true,
 				uploading: false,
 				progress: 100,
-				storage: { id: 123 },
+				storage: { id: '1234' },
 				flavor: {}
 			}
 		];
@@ -72,6 +72,22 @@ angular.module('vpdb.releases.add', [])
 
 		$scope.reset = function() {
 
+			var emptyMedia = {
+				playfieldImage: {
+					url: false,
+					variations: {
+						'medium-2x': { url: false }
+					}
+				},
+				playfieldVideo: {
+					url: false,
+					variations: {
+						'still': { url: false },
+						'small-rotated': { url: undefined }
+					}
+				}
+			};
+
 			$scope.release = $localStorage.release = {
 				authors: [{ user: AuthService.getUser(), roles: [ 'Table Creator' ]}],
 				tags: [],
@@ -82,30 +98,9 @@ angular.module('vpdb.releases.add', [])
 					incompat: []
 				},
 				_media: {},
-
-				mediaFile: {
-					playfieldImage: {
-						url: false,
-						variations: {
-							'medium-2x': { url: false }
-						}
-					},
-					playfieldVideo: {
-						url: false,
-						variations: {
-							'still': { url: false },
-							'small-rotated': { url: undefined }
-						}
-					}
-				}
-			};
-			$scope.resetStatus();
-		};
-
-		$scope.resetStatus = function() {
-			$scope.mediaFile = {
-				playfieldVideo: {
-					status: 'Click or drag and drop here'
+				mediaFiles: {
+					'abcd': _.cloneDeep(emptyMedia),
+					'asdf': _.cloneDeep(emptyMedia)
 				}
 			};
 		};
@@ -281,20 +276,25 @@ angular.module('vpdb.releases.add', [])
 		 * - generating thumb
 		 * - finished
 		 *
-		 * @param id
+		 * @param type Media type, e.g. "playfieldImage" or "playfieldVideo"
 		 * @param $files
 		 */
-		$scope.onMediaUpload = function(id, $files) {
+		$scope.onMediaUpload = function(tableFileId, type, $files) {
 
 			var file = $files[0];
 			var mimeType = MimeTypeService.fromFile(file);
 
-			$scope.mediaFile[id] = {};
+			// init
+			_.defaults($scope, { mediaFiles: {}});
+			if (!$scope.mediaFiles[tableFileId]) {
+				$scope.mediaFiles[tableFileId] = {};
+			}
+			$scope.mediaFiles[tableFileId][type] = {};
 
-			if ($scope.release.mediaFile[id] && $scope.release.mediaFile[id].id) {
-				FileResource.delete({ id : $scope.release.mediaFile[id].id });
+			if ($scope.release.mediaFiles[tableFileId][type] && $scope.release.mediaFiles[tableFileId][type].id) {
+				FileResource.delete({ id : $scope.release.mediaFiles[tableFileId][type].id });
 
-				$scope.release.mediaFile[id] = {
+				$scope.release.mediaFiles[tableFileId][type] = {
 					url: false,
 					variations: {
 						'medium-2x': { url: false },
@@ -309,12 +309,15 @@ angular.module('vpdb.releases.add', [])
 			fileReader.readAsArrayBuffer(file);
 			fileReader.onload = function(event) {
 
-				$scope.release.mediaFile[id] = { url: false };
-				$scope.mediaFile[id].uploaded = false;
-				$scope.mediaFile[id].uploading = true;
-				$scope.mediaFile[id].status = 'Uploading file...';
+				if (!$scope.release.mediaFiles[tableFileId]) {
+					$scope.release.mediaFiles[tableFileId] = {};
+				}
+				$scope.release.mediaFiles[tableFileId][type] = { url: false };
+				$scope.mediaFiles[tableFileId][type].uploaded = false;
+				$scope.mediaFiles[tableFileId][type].uploading = true;
+				$scope.mediaFiles[tableFileId][type].status = 'Uploading file...';
 				$upload.http({
-					url: '/storage',
+					url: ConfigService.storageUri(),
 					method: 'POST',
 					params: { type: 'playfield' },
 					headers: {
@@ -323,27 +326,26 @@ angular.module('vpdb.releases.add', [])
 					},
 					data: event.target.result
 				}).then(function(response) {
-					$scope.mediaFile[id].uploading = false;
-					$scope.mediaFile[id].status = 'Uploaded';
+					$scope.mediaFiles[tableFileId][type].uploading = false;
+					$scope.mediaFiles[tableFileId][type].status = 'Uploaded';
 
 					var mediaResult = response.data;
-					$scope.release.mediaFile[id].id = mediaResult.id;
-					$scope.release.mediaFile[id].url = AuthService.setUrlParam(mediaResult.url, mediaResult.is_protected);
-					$scope.release.mediaFile[id].variations = AuthService.setUrlParam(mediaResult.variations, mediaResult.is_protected);
-					$scope.release.mediaFile[id].metadata = mediaResult.metadata;
+					$scope.release.mediaFiles[tableFileId][type].id = mediaResult.id;
+					$scope.release.mediaFiles[tableFileId][type].url = AuthService.setUrlParam(mediaResult.url, mediaResult.is_protected);
+					$scope.release.mediaFiles[tableFileId][type].variations = AuthService.setUrlParam(mediaResult.variations, mediaResult.is_protected);
+					$scope.release.mediaFiles[tableFileId][type].metadata = mediaResult.metadata;
 
 				}, ApiHelper.handleErrorsInDialog($scope, 'Error uploading image.', function() {
-					$scope.mediaFile[id] = {};
+					$scope.mediaFiles[tableFileId][type] = {};
 
 				}), function (evt) {
-					$scope.mediaFile[id].progress = parseInt(100.0 * evt.loaded / evt.total);
+					$scope.mediaFiles[tableFileId][type].progress = parseInt(100.0 * evt.loaded / evt.total);
 				});
 			};
 		};
 
 		if ($localStorage.release) {
 			$scope.release  = $localStorage.release;
-			$scope.resetStatus();
 		} else {
 			$scope.reset();
 		}

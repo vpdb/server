@@ -18,7 +18,7 @@ common
 					loop: true
 				};
 
-				var videoid = 107;
+				var videoid = Math.round(Math.random() * 1000000);
 				attrs.id = "videojs" + videoid;
 				element.attr('id', attrs.id);
 

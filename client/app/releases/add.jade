@@ -391,15 +391,15 @@
 				.col-sm-6.playfield--rotate-on-upload(make-loaded="loaded")
 					span.pre-h4 Playfield
 					h4.h--large Screenshot
-					.panel.panel--blank.playfield--image(ng-file-drop="onMediaUpload('playfieldImage', $files)", ng-file-drag-over-class="panel--dragging")
-						input#uploadBackglass.hide(type="file", ng-file-select="onMediaUpload('playfieldImage', $files)")
+					.panel.panel--blank.playfield--image(ng-file-drop="onMediaUpload(file.storage.id, 'playfieldImage', $files)", ng-file-drag-over-class="panel--dragging")
+						input#uploadBackglass.hide(type="file", ng-file-select="onMediaUpload(file.storage.id, 'playfieldImage', $files)")
 						.panel-body.a.a--darker(ng-click="openUploadDialog('playfieldImage', '#uploadBackglass')")
-							.img.img--ar-ws.loaded(img-bg="release.mediaFile.playfieldImage.variations['medium-2x'].url")
+							.img.img--ar-ws.loaded(img-bg="release.mediaFiles[file.storage.id].playfieldImage.variations['medium-2x'].url")
 								.text-center.vertical-center--100
-									progressbar.progress--fixed-absolute.progress-striped.active(value="mediaFile.playfieldImage.progress", ng-show="mediaFile.playfieldImage.uploading")
+									progressbar.progress--fixed-absolute.progress-striped.active(value="mediaFiles[file.storage.id].playfieldImage.progress", ng-show="mediaFiles[file.storage.id].playfieldImage.uploading")
 									.span(ng-show="!img.url")
-										i.fa.fa-picture-o.fa-3x(ng-class="{ transparent: mediaFile.playfieldImage.uploading }")
-										p Click or drag and drop here
+										i.fa.fa-picture-o.fa-3x(ng-class="{ transparent: mediaFiles[file.storage.id].playfieldImage.uploading }")
+										p {{ mediaFiles[file.storage.id].playfieldImage.status || 'Click or drag and drop here' }}
 									.span(ng-show="img.loading")
 										i.fa.fa-cog.fa-3x.fa-spin--slow
 										p Generating thumbnails...
@@ -408,21 +408,21 @@
 					span.pre-h4 Playfield
 					h4.h--large Video
 
-					.panel.panel--blank.playfield--video(ng-show="loadingFinished", ng-file-drop="onMediaUpload('playfieldVideo', $files)", ng-file-drag-over-class="panel--dragging")
+					.panel.panel--blank.playfield--video(ng-show="loadingFinished", ng-file-drop="onMediaUpload(file.storage.id, 'playfieldVideo', $files)", ng-file-drag-over-class="panel--dragging")
 						.panel-body.a.a--darker(ng-click="openUploadDialog('playfieldVideo', '#uploadBackglass')")
 							.img.img--ar-fs.loaded
 								.video-wrapper
-									video.video-js.vjs-sublime-skin(videojs, width="100%", height="100%", source="{{ release.mediaFile.playfieldVideo.variations['small-rotated'].url }}")
+									video.video-js.vjs-sublime-skin(videojs, width="100%", height="100%", source="{{ release.mediaFiles[file.storage.id].playfieldVideo.variations['small-rotated'].url }}")
 
-					.panel.panel--blank.playfield--image(ng-hide="loadingFinished", ng-file-drop="onMediaUpload('playfieldVideo', $files)", ng-file-drag-over-class="panel--dragging")
-						input#uploadBackglass.hide(type="file", ng-file-select="onMediaUpload('playfieldVideo', $files)")
+					.panel.panel--blank.playfield--image(ng-hide="loadingFinished", ng-file-drop="onMediaUpload(file.storage.id, 'playfieldVideo', $files)", ng-file-drag-over-class="panel--dragging")
+						input#uploadBackglass.hide(type="file", ng-file-select="onMediaUpload(file.storage.id, 'playfieldVideo', $files)")
 						.panel-body.a.a--darker(ng-click="openUploadDialog('playfieldVideo', '#uploadBackglass')")
-							.img.img--ar-ws.loaded(img-bg="release.mediaFile.playfieldVideo.variations['still'].url")
+							.img.img--ar-ws.loaded(img-bg="release.mediaFiles[file.storage.id].playfieldVideo.variations['still'].url")
 								.text-center.vertical-center--100
-									progressbar.progress--fixed-absolute.progress-striped.active(value="mediaFile.playfieldVideo.progress", ng-show="mediaFile.playfieldVideo.uploading")
+									progressbar.progress--fixed-absolute.progress-striped.active(value="mediaFiles[file.storage.id].playfieldVideo.progress", ng-show="mediaFiles[file.storage.id].playfieldVideo.uploading")
 									span(ng-show="!img.url")
-										i.fa.fa-picture-o.fa-3x(ng-class="{ transparent: mediaFile.playfieldVideo.uploading }")
-										p {{ mediaFile.playfieldVideo.status }}
+										i.fa.fa-picture-o.fa-3x(ng-class="{ transparent: mediaFiles[file.storage.id].playfieldVideo.uploading }")
+										p {{ mediaFiles[file.storage.id].playfieldVideo.status || 'Click or drag and drop here' }}
 									span(ng-show="img.loading")
 										i.fa.fa-cog.fa-3x.fa-spin--slow
 										p Creating video screenshot...

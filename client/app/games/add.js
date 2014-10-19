@@ -2,7 +2,9 @@
 
 angular.module('vpdb.games.add', [])
 
-	.controller('AdminGameAddCtrl', function($scope, $upload, $modal, $window, $localStorage, $location, $anchorScroll, ApiHelper, AuthService, MimeTypeService, IpdbResource, GameResource, FileResource) {
+	.controller('AdminGameAddCtrl', function($scope, $upload, $modal, $window, $localStorage, $location, $anchorScroll,
+											 ApiHelper, AuthService, ConfigService, MimeTypeService,
+											 IpdbResource, GameResource, FileResource) {
 
 		var maxAspectRatioDifference = 0.2;
 		var dropText = {
@@ -223,7 +225,7 @@ angular.module('vpdb.games.add', [])
 				$scope.mediaFile[id].uploading = true;
 				$scope.mediaFile[id].status = 'Uploading file...';
 				$upload.http({
-					url: '/storage',
+					url: ConfigService.storageUri(),
 					method: 'POST',
 					params: { type: type },
 					headers: {

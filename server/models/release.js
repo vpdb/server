@@ -24,7 +24,7 @@ var shortId = require('shortid');
 var mongoose = require('mongoose');
 var validator = require('validator');
 var uniqueValidator = require('mongoose-unique-validator');
-//var fileRef = require('../models/plugins/fileRef');
+var fileRef = require('../models/plugins/fileRef');
 
 var Schema = mongoose.Schema;
 
@@ -38,26 +38,41 @@ var fields = {
 	id:           { type: String, required: true, unique: true, 'default': shortId.generate },
 	name:         { type: String, required: 'Name must be provided.' },
 	description:  { type: String },
-	versions: [
-		{
-			version:      { type: String, required: 'Version must be provided.' },
-			release_info: { type: String },
+	versions: [ {
+		version:      { type: String, required: 'Version must be provided.' },
+		release_info: { type: String },
+		files: [ {
+			_file:  { type: Schema.ObjectId, required: true, ref: 'File' },
 			flavors: [
 				{
 					orientation: { type: String, required: true, enum: { values: [ 'ws', 'fs' ], message: 'Invalid orientation. Valid orientation are: ["ws", "fs"].' }},
 					lightning:   { type: String, required: true, enum: { values: [ 'day', 'night' ], message: 'Invalid lightning. Valid options are: ["day", "night"].' }}
 				}
-			]
+			],
+			compatibility: [ { type: Schema.ObjectId, ref: 'VPBuild' } ],
+			_media: {
+				playfield_image: { type: Schema.ObjectId, ref: 'File', required: 'Playfield image must be provided.' },
+				playfield_video: { type: Schema.ObjectId, ref: 'File' }
+			}
+		} ]
+	} ],
+	authors: [ {
+		_user: { type: Schema.ObjectId, required: true, ref: 'User' },
+		roles: [ String ]
+	} ],
+	_tags: [ { type: Schema.ObjectId, required: true, ref: 'Tag' } ],
+	urls: [ {
+		label: { type: String },
+		url: { type: String }
+	} ],
+	acknowledgements: { type: String },
+	original_version: {
+		_ref: { type: Schema.ObjectId, ref: 'Release' },
+		release: {
+			name: { type: String },
+			url: { type: String }
 		}
-	],
-	authors: [
-		{
-			_user: { type: Schema.ObjectId, required: true, ref: 'User' },
-			roles: [ String ]
-		}
-	],
-	_tags: [ { type: Schema.ObjectId, required: true, ref: 'Tag' } ]
-
+	}
 };
 var ReleaseSchema = new Schema(fields);
 
@@ -66,6 +81,7 @@ var ReleaseSchema = new Schema(fields);
 // PLUGINS
 //-----------------------------------------------------------------------------
 ReleaseSchema.plugin(uniqueValidator, { message: 'The {PATH} "{VALUE}" is already taken.' });
+ReleaseSchema.plugin(fileRef, { model: 'Release', fields: [ 'versions.files._media.playfield_image', 'versions.files._media.playfield_video' ]});
 
 
 //-----------------------------------------------------------------------------

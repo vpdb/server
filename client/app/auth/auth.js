@@ -225,7 +225,7 @@ angular.module('vpdb.auth', [])
 
 			/**
 			 * Returns the authorization header from the app configuration.
-			 * @returns {*}
+			 * @returns {string}
 			 */
 			getAuthHeader: function() {
 				return Config.authHeader;

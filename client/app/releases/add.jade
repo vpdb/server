@@ -232,89 +232,40 @@
 		//---------------------------------------------------------------------
 		h1 5. Set Compatibility
 		hr
-		p Here you can let users know which versions of Visual Pinball your release supports. There are three levels
-			| described below.
+		p Here you can let users know which versions of Visual Pinball your release supports. For every uploaded file,
+			| check which VP build you feel confident with.
 
-		.row
-			.col-md-4.col.col-sm-6
-				h4 Developed with
-				hr.hr--no-margin
-				tabset.tabset--light
-					tab
-						tab-heading: i.icon.icon-package(title="Official Builds")
-						h4.h--no-margin Official Releases
-						div.simple-list(ng-repeat="build in builds.release | filter:{is_range:false}", )
-							input(id="dev-{{ build.id }}", type="checkbox")
-							label(for="dev-{{ build.id }}") {{ build.label }}
-						button.btn.btn-default.btn-xs.pull-right(ng-click="addVPBuild()")
-							i.fa.fa-plus-circle.space-right
-							| Add
-						.clearfix
-					tab
-						tab-heading: i.icon.icon-moon(title="Nightly Builds")
-						h4.h--no-margin Nightly Builds
-						div.simple-list(ng-repeat="build in builds.nightly | filter:{is_range:false}", )
-							input(id="dev-{{ build.id }}", type="checkbox")
-							label(for="dev-{{ build.id }}") {{ build.label }}
-					tab
-						tab-heading: i.fa.fa-flask(title="Experimental Builds")
-						h4.h--no-margin Test Builds
-						div.simple-list(ng-repeat="build in builds.experimental | filter:{is_range:false}", )
-							input(id="dev-{{ build.id }}", type="checkbox")
-							label(for="dev-{{ build.id }}") {{ build.label }}
-				p.padder-top: i The VP build was used while building the table. It is considered the most playable version. If
-					| there's a glitch, it’s surely not because of VP.
+		ul.list--files
+			li.panel(ng-repeat="file in files | fileext:['vpt','vpx']")
+				.col--list-files-left
+					i.icon(ng-class="file.icon")
+				.col--list-files-right
+					.block.text--large: strong {{ file.name }}
+					hr
+					.row
+						.col-md-4
+							span
+								span Official Releases
+							hr.hr--thin.hr--margin-small
+							.simple-list(ng-repeat="build in builds.release | filter:{is_range:false}")
+								input.checkbox--check(id="dev-{{ file.storage.id }}-{{ build.id }}", type="checkbox")
+								label(for="dev-{{ file.storage.id }}-{{ build.id }}") {{ build.label }}
+						.col-md-4
+							span
+								span Nightly Builds
+							hr.hr--thin.hr--margin-small
+							.simple-list(ng-repeat="build in builds.nightly | filter:{is_range:false}")
+								input.checkbox--check(id="dev-{{ file.storage.id }}-{{ build.id }}", type="checkbox")
+								label(for="dev-{{ file.storage.id }}-{{ build.id }}") {{ build.label }}
+						.col-md-4
+							span
+								span Test Builds
+							hr.hr--thin.hr--margin-small
+							.simple-list(ng-repeat="build in builds.experimental | filter:{is_range:false}")
+								input.checkbox--check(id="dev-{{ file.storage.id }}-{{ build.id }}", type="checkbox")
+								label(for="dev-{{ file.storage.id }}-{{ build.id }}") {{ build.label }}
+				p.padder-top
 
-			.col-md-4.col.col-sm-6
-				h4 Tested with
-				hr.hr--no-margin
-				tabset.tabset--light
-					tab
-						tab-heading: i.icon.icon-package(title="Official Builds")
-						h4.h--no-margin Official Releases
-						div.simple-list(ng-repeat="build in builds.release | filter:{is_range:false}", )
-							input(id="tested-{{ build.id }}", type="checkbox")
-							label(for="tested-{{ build.id }}") {{ build.label }}
-					tab
-						tab-heading: i.icon.icon-moon(title="Nightly Builds")
-						h4.h--no-margin Nightly Builds
-						div.simple-list(ng-repeat="build in builds.nightly | filter:{is_range:false}", )
-							input(id="tested-{{ build.id }}", type="checkbox")
-							label(for="tested-{{ build.id }}") {{ build.label }}
-					tab
-						tab-heading: i.fa.fa-flask(title="Experimental Builds")
-						h4.h--no-margin Test Builds
-						div.simple-list(ng-repeat="build in builds.experimental | filter:{is_range:false}", )
-							input(id="tested-{{ build.id }}", type="checkbox")
-							label(for="tested-{{ build.id }}") {{ build.label }}
-				p.padder-top: i The author extensively tested the table with this VP build(s), but minor bugs or
-					| glitches might occur, though unlikely.
-
-			.col-md-4.col.col-sm-6
-				h4 Not Designed For
-				hr.hr--no-margin
-				tabset.tabset--light
-					tab
-						tab-heading: i.icon.icon-package(title="Official Builds")
-						h4.h--no-margin Official Releases
-						div.simple-list(ng-repeat="build in builds.release | filter:{is_range:true}", )
-							input(id="incomp-{{ build.id }}", type="checkbox")
-							label(for="incomp-{{ build.id }}") {{ build.label }}
-					tab
-						tab-heading: i.icon.icon-moon(title="Nightly Builds")
-						h4.h--no-margin Nightly Builds
-						div.simple-list(ng-repeat="build in builds.nightly | filter:{is_range:false}", )
-							input(id="incomp-{{ build.id }}", type="checkbox")
-							label(for="incomp-{{ build.id }}") {{ build.label }}
-					tab
-						tab-heading: i.fa.fa-flask(title="Experimental Builds")
-						h4.h--no-margin Test Builds
-						div.simple-list(ng-repeat="build in builds.experimental | filter:{is_range:false}", )
-							input(id="incomp-{{ build.id }}", type="checkbox")
-							label(for="incomp-{{ build.id }}") {{ build.label }}
-
-				p.padder-top: i These VP builds shouldn't be used, since they have significant changes in the physics or
-					| graphics engine that make the release incompatible.
 
 
 		//---------------------------------------------------------------------

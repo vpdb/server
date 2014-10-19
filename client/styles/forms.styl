@@ -227,12 +227,10 @@ textarea
 // Typical checkbox, only add the class.
 //
 // Markup:
-// <div>
-//   <input class="{$modifiers}" id="box1" type="checkbox" />
-//   <label for="box1">Checkbox 1</label><br/>
-//   <input class="{$modifiers}" id="box2" type="checkbox" />
-//   <label for="box2">Checkbox 2</label>
-// </div>
+// <input class="{$modifiers}" id="box1" type="checkbox" />
+// <label for="box1">Checkbox 1</label><br/>
+// <input class="{$modifiers}" id="box2" type="checkbox" />
+// <label for="box2">Checkbox 2</label>
 //
 // .checkbox--check - Check
 //
@@ -246,6 +244,7 @@ input.checkbox--check
 		&:before
 			cursor pointer
 			font-family FontAwesome
+			font-size 21px
 			display inline-block
 			content "\f096"
 			position absolute
@@ -264,9 +263,9 @@ input.checkbox--check
 // This one needs an additional `<label>` element.
 //
 // Markup:
-//   <label for="box3">Activate me</label>
-//   <input class="{$modifiers}" id="box3" type="checkbox" />
-//   <label for="box3"></label><br/>
+// <label for="box3">Activate me:</label>
+// <input class="{$modifiers}" id="box3" type="checkbox" />
+// <label for="box3"></label><br/>
 //
 // .checkbox--toggle - Toggle
 //

@@ -23,6 +23,18 @@
 			&:hover
 				background-color $color-dark
 
+	input.checkbox--toggle
+		+ label
+			background-color transparent
+			&:before
+				background-color #121110
+			&:after
+				background-color $color-darker
+		&:checked + label
+			background-color $color-primary
+			&:after
+				background-color $color-primary
+
 	textarea
 		background-color $color-darkest
 

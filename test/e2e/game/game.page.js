@@ -2,7 +2,7 @@
 
 var util = require('util');
 
-var AbstractPage = require('./abstract');
+var AbstractPage = require('../abstract.page');
 
 function GameDetailsPage() {
 	AbstractPage.call(this);

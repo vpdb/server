@@ -11,38 +11,40 @@ angular.module('vpdb.releases.add', [])
 		$scope.setMenu('admin');
 		$scope.setTitle('Add Release');
 
-		$scope.files = [
-			{
-				name: 'Filename.vpt',
-				bytes: 1337,
-				icon: DisplayService.fileIcon('application/x-visual-pinball-table'),
-				uploaded: true,
-				uploading: false,
-				progress: 100,
-				storage: { id: 'abcd' },
-				flavor: {}
-			},
-			{
-				name: 'Anotherfile.vpx',
-				bytes: 12213,
-				icon: DisplayService.fileIcon('application/x-visual-pinball-table-x'),
-				uploaded: true,
-				uploading: false,
-				progress: 100,
-				storage: { id: 'asdf' },
-				flavor: {}
-			},
-			{
-				name: 'Filename.jpg',
-				bytes: 3321,
-				icon: DisplayService.fileIcon('image/jpeg'),
-				uploaded: true,
-				uploading: false,
-				progress: 100,
-				storage: { id: '1234' },
-				flavor: {}
-			}
-		];
+		$scope.files = [];
+
+//		$scope.files = [
+//			{
+//				name: 'Filename.vpt',
+//				bytes: 1337,
+//				icon: DisplayService.fileIcon('application/x-visual-pinball-table'),
+//				uploaded: true,
+//				uploading: false,
+//				progress: 100,
+//				storage: { id: 'abcd' },
+//				flavor: {}
+//			},
+//			{
+//				name: 'Anotherfile.vpx',
+//				bytes: 12213,
+//				icon: DisplayService.fileIcon('application/x-visual-pinball-table-x'),
+//				uploaded: true,
+//				uploading: false,
+//				progress: 100,
+//				storage: { id: 'asdf' },
+//				flavor: {}
+//			},
+//			{
+//				name: 'Filename.jpg',
+//				bytes: 3321,
+//				icon: DisplayService.fileIcon('image/jpeg'),
+//				uploaded: true,
+//				uploading: false,
+//				progress: 100,
+//				storage: { id: '1234' },
+//				flavor: {}
+//			}
+//		];
 
 		$scope.flavors = [
 			{

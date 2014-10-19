@@ -186,7 +186,24 @@ exports.assert = function(error, prefix, ref, res, rollback) {
 exports.checkReadOnlyFields = function(newObj, oldObj, allowedFields) {
 	var errors = [];
 	_.each(_.difference(_.keys(newObj), allowedFields), function(field) {
-		if (newObj[field] && newObj[field] !== oldObj[field]) {
+		var newVal, oldVal;
+
+		// for dates we want to compare the time stamp
+		if (oldObj[field] instanceof Date) {
+			newVal = newObj[field] ? new Date(newObj[field]).getTime() : undefined;
+			oldVal = oldObj[field] ? new Date(oldObj[field]).getTime() : undefined;
+
+		// for objects, serialize first.
+		} else if (_.isObject(oldObj[field])) {
+			newVal = newObj[field] ? JSON.stringify(newObj[field]) : undefined;
+			oldVal = oldObj[field] ? JSON.stringify(_.pick(oldObj[field], _.keys(newObj[field] || {}))) : undefined;
+
+		// otherwise, take raw values.
+		} else {
+			newVal = newObj[field];
+			oldVal = oldObj[field];
+		}
+		if (newVal && newVal !== oldVal) {
 			errors.push({
 				message: 'This field is read-only and cannot be changed.',
 				path: field,

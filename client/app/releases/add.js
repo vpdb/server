@@ -70,6 +70,25 @@ angular.module('vpdb.releases.add', [])
 		});
 
 
+		var vpbuilds = VPBuildResource.query(function() {
+			$scope.builds = {};
+			var types = [];
+			_.each(vpbuilds, function(vpbuild) {
+				if (!$scope.builds[vpbuild.type]) {
+					$scope.builds[vpbuild.type] = [];
+					types.push(vpbuild.type);
+				}
+				vpbuild.built_at = new Date(vpbuild.built_at);
+				$scope.builds[vpbuild.type].push(vpbuild);
+			});
+			_.each(types, function(type) {
+				$scope.builds[type].sort(function(a, b) {
+					return a.built_at.getTime() === b.built_at.getTime() ? 0 : (a.built_at.getTime() > b.built_at.getTime() ? -1 : 1);
+				});
+			});
+		});
+
+
 		$scope.reset = function() {
 
 			var emptyMedia = {
@@ -104,24 +123,6 @@ angular.module('vpdb.releases.add', [])
 				}
 			};
 		};
-
-		var vpbuilds = VPBuildResource.query(function() {
-			$scope.builds = {};
-			var types = [];
-			_.each(vpbuilds, function(vpbuild) {
-				if (!$scope.builds[vpbuild.type]) {
-					$scope.builds[vpbuild.type] = [];
-					types.push(vpbuild.type);
-				}
-				vpbuild.built_at = new Date(vpbuild.built_at);
-				$scope.builds[vpbuild.type].push(vpbuild);
-			});
-			_.each(types, function(type) {
-				$scope.builds[type].sort(function(a, b) {
-					return a.built_at.getTime() === b.built_at.getTime() ? 0 : (a.built_at.getTime() > b.built_at.getTime() ? -1 : 1);
-				});
-			});
-		});
 
 
 		$scope.removeFile = function(file) {
@@ -257,6 +258,7 @@ angular.module('vpdb.releases.add', [])
 			$scope.release.links.splice($scope.release.links.indexOf(link), 1);
 		};
 
+
 		$scope.addVPBuild = function() {
 			$modal.open({
 				templateUrl: 'releases/modal-vpbuild-create.html',
@@ -276,8 +278,9 @@ angular.module('vpdb.releases.add', [])
 		 * - generating thumb
 		 * - finished
 		 *
-		 * @param type Media type, e.g. "playfieldImage" or "playfieldVideo"
-		 * @param $files
+		 * @param {string} tableFileId Storage ID of the uploaded vpt
+		 * @param {string} type Media type, e.g. "playfieldImage" or "playfieldVideo"
+		 * @param {array} $files Uploaded file(s), assuming that one was chosen.
 		 */
 		$scope.onMediaUpload = function(tableFileId, type, $files) {
 
@@ -344,6 +347,8 @@ angular.module('vpdb.releases.add', [])
 			};
 		};
 
+
+		// either copy data from local storage or reset release data.
 		if ($localStorage.release) {
 			$scope.release  = $localStorage.release;
 		} else {

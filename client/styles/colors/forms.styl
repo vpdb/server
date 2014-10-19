@@ -49,7 +49,7 @@
 
 	// <input>, <textarea>, and <select> elements
 	.form-control
-		color $color-lighter-inv
+		color $color-lightest-inv
 		background-color $color-lighter
 
 	// On error:
@@ -68,7 +68,7 @@
 		color $color-dark-inv
 		background-color $color-lighter
 
-	input[type=checkbox]
+	input.checkbox--check
 		+ label
 			color $color-lighter-inv
 			&:before
@@ -80,6 +80,18 @@
 
 		&:checked + label:hover:before
 			color $color-lighter-inv
+
+	input.checkbox--toggle
+		+ label
+			background-color transparent
+			&:before
+				background-color #f0efee
+			&:after
+				background-color $color-darker-inv
+		&:checked + label
+			background-color $color-primary-black
+			&:after
+				background-color $color-primary-black
 
 	textarea
 		background-color $color-light

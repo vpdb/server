@@ -100,6 +100,51 @@ ul.list--noindent > li
 			&.asc:before
 				content '\f106'
 
+// Checkbox List
+//
+// Checkable items usually with title and description.
+//
+// Markup:
+// <ul class="{$modifiers}">
+//   <li>
+//     <input id="cb1" class="checkbox--check" type="checkbox">
+//     <label for="cb1">
+//       <h4 class="h--no-margin h--lighter ng-binding">Line One</h4>
+//       <div>This can be a long description spanning over multiple lines.</div>
+//     </label>
+//   </li>
+//   <li>
+//     <input id="cb2" class="checkbox--check" type="checkbox">
+//     <label for="cb2">
+//       <h4 class="h--no-margin h--lighter ng-binding">Line Two</h4>
+//       <div>This can still be a long description spanning over multiple lines.</div>
+//     </label>
+//   </li>
+// </ul>
+//
+// .list--checkboxes    - Checkbox list
+//
+// Styleguide 12.4
+ul.list--checkboxes
+	li
+		list-style none
+		margin-top 8px
+	input[type="checkbox"]
+		clear both
+		+ label
+			float left
+			margin-top -3px
+			margin-left -10px
+			> div
+				white-space normal
+				line-height 22px
+				margin-bottom 15px
+
+	input.checkbox--check + label:before
+		margin-top -3px
+		margin-left -30px
+		margin-bottom 15px
+
 
 // File List
 //
@@ -119,7 +164,7 @@ ul.list--noindent > li
 //
 // .list--files    - List Files
 //
-// Styleguide 12.4
+// Styleguide 12.5
 ul.list--files
 	padding 0
 	> li

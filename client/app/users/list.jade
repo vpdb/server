@@ -4,17 +4,15 @@
 		hr
 		// search box
 		.input-group.padder-bottom
-			span.input-group-addon
+			span.input-group-addon.input-group-addon--search
 				i.fa.fa-search
 			input.form-control.input--search(ng-model="query", type="text", placeholder="Search")
 
-		accordion(close-others="false")
+		accordion.panel-group--transparent(close-others="false")
 
 			// role filter
 			accordion-group(is-open="filterYearOpen")
-				accordion-heading
-					| Role
-					i.fa.pull-right.space-right(ng-class="{'fa-chevron-circle-up': filterYearOpen, 'fa-chevron-circle-down': !filterYearOpen}")
+				accordion-heading by Role
 				ul.list-group.list-group--simple
 					li.a.a--lighter.list-group-item(ng-repeat="role in roles", filter-role="{{ role.name }}") {{ role.name }}
 

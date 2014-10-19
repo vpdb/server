@@ -12,8 +12,8 @@
 			.form-group(ng-class="{ error: errors.is_active }")
 				label.col-sm-3.control-label(for="userActive") Active
 				.col-sm-8
-					.checkbox
-						input#userActive(type="checkbox", ng-model="user.is_active")
+					input#userActive.checkbox--toggle(type="checkbox", ng-model="user.is_active")
+					label(for="userActive")
 
 			.form-group(ng-class="{ error: errors.username }")
 				label.col-sm-3.control-label Username
@@ -28,11 +28,12 @@
 			.form-group(ng-class="{ error: errors.roles }")
 				label.col-sm-3.control-label Roles
 				.col-sm-8
-					.checkbox(ng-repeat="role in roles", ng-hide="!auth.hasRole('root') && (role.name == 'root' || role.name == 'admin')")
-						label
-							input(type="checkbox", name="selectedRoles[]", value="{{ role.name }}", ng-checked="user.roles.indexOf(role.name) > -1", ng-click="toggleSelection(role.name)")
-							h4.h--no-margin.h--lighter {{ role.name }}
-							div {{ role.description }}
+					ul.list--checkboxes
+						li(ng-repeat="role in roles", ng-hide="!auth.hasRole('root') && (role.name == 'root' || role.name == 'admin')")
+							input.checkbox--check(id="checked-{{ role.name }}", type="checkbox", name="selectedRoles[]", value="{{ role.name }}", ng-checked="user.roles.indexOf(role.name) > -1", ng-click="toggleSelection(role.name)")
+							label(for="checked-{{ role.name }}")
+								h4.h--no-margin.h--lighter {{ role.name }}
+								div {{ role.description }}
 
 			div.alert.alert-danger(ng-show="errors.name")
 				i.fa.fa-exclamation-triangle.space-right

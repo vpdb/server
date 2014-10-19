@@ -20,6 +20,7 @@
 	border none
 	box-shadow none
 	font-size $font-size-normal
+	font-weight $font-weight-normal
 	&:focus
 		box-shadow none
 // Large input box
@@ -82,7 +83,7 @@
 .input-group
 	> .input-group-addon
 		padding 0 10px
-	> .form-control
+	> .form-control:nth-child(2)
 		padding-left 0
 	> .input-group-btn .btn
 		margin-left 0
@@ -217,20 +218,26 @@ textarea
 
 // Checkboxes
 //
-// Huge with two-line label.
+// Custom check boxes in two flavors: "check" and "toggle".
+//
+// Styleguide 5.3
+
+// Check
+//
+// Typical checkbox, only add the class.
 //
 // Markup:
 // <div>
-//   <input id="box1" type="checkbox" />
-//   <label for="box1">Checkbox 1</label>
-//   <input id="box2" type="checkbox" />
+//   <input class="{$modifiers}" id="box1" type="checkbox" />
+//   <label for="box1">Checkbox 1</label><br/>
+//   <input class="{$modifiers}" id="box2" type="checkbox" />
 //   <label for="box2">Checkbox 2</label>
 // </div>
 //
-// . - Checkboxes
+// .checkbox--check - Check
 //
-// Styleguide 5.3
-input[type=checkbox]
+// Styleguide 5.3.1
+input.checkbox--check
 	display none
 	+ label
 		margin-left 23px
@@ -251,6 +258,61 @@ input[type=checkbox]
 		margin-top 0px
 		margin-left -23px
 
+
+// Toggle
+//
+// This one needs an additional `<label>` element.
+//
+// Markup:
+//   <label for="box3">Activate me</label>
+//   <input class="{$modifiers}" id="box3" type="checkbox" />
+//   <label for="box3"></label><br/>
+//
+// .checkbox--toggle - Toggle
+//
+// Styleguide 5.3.2
+input.checkbox--toggle
+	position absolute
+	margin-left -9999px
+	visibility hidden
+
+	+ label
+
+		display block
+		position relative
+		cursor pointer
+		outline none
+		user-select none
+
+		padding 2px
+		width 40px
+		height 25px
+		border-radius 60px
+		transition background $animation-short
+		overflow inherit
+
+		&:before, &:after
+			display block
+			position absolute
+			content ""
+
+		&:before
+			top 2px
+			left 2px
+			bottom 2px
+			right 2px
+			border-radius 60px
+			transition background $animation-short
+		&:after
+			top 4px
+			left 4px
+			bottom 4px
+			width 17px
+			border-radius 52px
+			transition margin $animation-short, background $animation-short
+
+	&:checked + label:after
+		margin-left 15px
 
 // Errors
 //
@@ -282,7 +344,3 @@ input[type=checkbox]
 		border-width 1px
 	&.error .input-group-addon
 		border-left-style none
-
-// Normal line breaks for descriptions after label
-.checkbox > label div
-	white-space normal

@@ -142,7 +142,7 @@ exports.update = function(req, res) {
 		// 1. check for changed read-only fields
 		var readOnlyFieldErrors = api.checkReadOnlyFields(req.body, user, updateableFields);
 		if (readOnlyFieldErrors) {
-			return api.fail(res, error('User tried to update read-only fields').errors(readOnlyFieldErrors).log('update'), 422);
+			return api.fail(res, error('User tried to update read-only fields').errors(readOnlyFieldErrors).warn('update'), 422);
 		}
 
 		// 2. check for permission escalation

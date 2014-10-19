@@ -1,4 +1,4 @@
-"use strict"; /* global app, videojs */
+"use strict"; /* global common, videojs */
 
 common
 

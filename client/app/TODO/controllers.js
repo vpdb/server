@@ -50,7 +50,7 @@ common
 			$location.url('/');
 			$location.replace();
 			$modal.open({
-				templateUrl: 'partials/modals/error.html',
+				templateUrl: 'common/modal-error.html',
 				controller: 'ErrorModalCtrl',
 				resolve: {
 					errorTitle: function() { return 'Could not login.'; },

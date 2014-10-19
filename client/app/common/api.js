@@ -78,7 +78,7 @@ common
 				return function(response) {
 					scope.setLoading(false);
 					$modal.open({
-						templateUrl: 'partials/modals/error.html',
+						templateUrl: 'common/modal-error.html',
 						controller: 'ErrorModalCtrl',
 						resolve: {
 							errorTitle: function() { return title; },

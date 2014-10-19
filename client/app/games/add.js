@@ -112,7 +112,7 @@ angular.module('vpdb.games.add', [])
 				fetchIpdb(ipdbId, done);
 			} else {
 				$modal.open({
-					templateUrl: 'partials/modals/info.html',
+					templateUrl: 'common/modal-info.html',
 					controller: 'InfoModalCtrl',
 					resolve: {
 						icon: function() { return 'fa-warning'; },
@@ -154,7 +154,7 @@ angular.module('vpdb.games.add', [])
 					$scope.game.submitted = true;
 					$scope.reset();
 					$modal.open({
-						templateUrl: 'partials/modals/info.html',
+						templateUrl: 'common/modal-info.html',
 						controller: 'InfoModalCtrl',
 						resolve: {
 							icon: function() { return 'fa-check-circle-o'; },
@@ -187,7 +187,7 @@ angular.module('vpdb.games.add', [])
 			var primaryMime = mimeType.split('/')[0];
 			if (primaryMime !== restrictMime) {
 				return $modal.open({
-					templateUrl: 'partials/modals/info.html',
+					templateUrl: 'common/modal-info.html',
 					controller: 'InfoModalCtrl',
 					resolve: {
 						icon: function() { return 'fa-file-image-o'; },

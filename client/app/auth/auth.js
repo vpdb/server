@@ -6,14 +6,13 @@ angular.module('vpdb.auth', [])
 		$httpProvider.interceptors.push('AuthInterceptor');
 	})
 
-	.factory('AuthService', function($window, $localStorage, $sessionStorage, $rootScope, $location) {
+	.factory('AuthService', function($window, $localStorage, $sessionStorage, $rootScope, $location, Config) {
 
 		return {
 
 			user: null,
 			isAuthenticated: false,
 			timeout: null,
-			authHeader: 'Authorization',
 
 			/**
 			 * Should be called when the app initializes. Reads data from storage into Angular.
@@ -222,15 +221,14 @@ angular.module('vpdb.auth', [])
 				} else {
 					return baseUrl + (~baseUrl.indexOf('?') ? '&' : '?') + 'jwt=' + this.getToken();
 				}
-
 			},
 
-			setAuthHeader: function(authHeader) {
-				this.authHeader = authHeader;
-			},
-
+			/**
+			 * Returns the authorization header from the app configuration.
+			 * @returns {*}
+			 */
 			getAuthHeader: function() {
-				return this.authHeader;
+				return Config.authHeader;
 			}
 		};
 	})

@@ -293,15 +293,15 @@
 			.col-sm-4.text-right
 				.radio-inline.radio--lg
 					label
-						input.input-lg(type="radio", name="ismod", ng-value="true", ng-model="release.isMod")
+						input.input-lg(type="radio", name="ismod", ng-value="true", ng-model="meta.isMod")
 						span Yes
 
 				.radio-inline.radio--lg
 					label
-						input(type="radio", name="ismod", ng-value="false", ng-model="release.isMod")
+						input(type="radio", name="ismod", ng-value="false", ng-model="meta.isMod")
 						span No
 
-		button.btn.btn-default.pull-right(ng-show="release.isMod")
+		button.btn.btn-default.pull-right(ng-show="meta.isMod")
 			i.fa.fa-search.space-right
 			| Find
 		.clearfix

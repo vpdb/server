@@ -353,7 +353,7 @@
 					.panel.panel--blank.playfield--image(ng-file-drop="onMediaUpload(file.storage.id, 'playfieldImage', $files)", ng-file-drag-over-class="panel--dragging")
 						input#uploadBackglass.hide(type="file", ng-file-select="onMediaUpload(file.storage.id, 'playfieldImage', $files)")
 						.panel-body.a.a--darker(ng-click="openUploadDialog('playfieldImage', '#uploadBackglass')")
-							.img.img--ar-ws.loaded(img-bg="release.mediaFiles[file.storage.id].playfieldImage.variations['medium-2x'].url")
+							.img.img--ar-ws.loaded(img-bg="meta.mediaFiles[file.storage.id].playfieldImage.variations['medium-2x'].url")
 								.text-center.vertical-center--100
 									progressbar.progress--fixed-absolute.progress-striped.active(value="mediaFiles[file.storage.id].playfieldImage.progress", ng-show="mediaFiles[file.storage.id].playfieldImage.uploading")
 									.span(ng-show="!img.url")
@@ -371,12 +371,12 @@
 						.panel-body.a.a--darker(ng-click="openUploadDialog('playfieldVideo', '#uploadBackglass')")
 							.img.img--ar-fs.loaded
 								.video-wrapper
-									video.video-js.vjs-sublime-skin(videojs, width="100%", height="100%", source="{{ release.mediaFiles[file.storage.id].playfieldVideo.variations['small-rotated'].url }}")
+									video.video-js.vjs-sublime-skin(videojs, width="100%", height="100%", source="{{ meta.mediaFiles[file.storage.id].playfieldVideo.variations['small-rotated'].url }}")
 
 					.panel.panel--blank.playfield--image(ng-hide="loadingFinished", ng-file-drop="onMediaUpload(file.storage.id, 'playfieldVideo', $files)", ng-file-drag-over-class="panel--dragging")
 						input#uploadBackglass.hide(type="file", ng-file-select="onMediaUpload(file.storage.id, 'playfieldVideo', $files)")
 						.panel-body.a.a--darker(ng-click="openUploadDialog('playfieldVideo', '#uploadBackglass')")
-							.img.img--ar-ws.loaded(img-bg="release.mediaFiles[file.storage.id].playfieldVideo.variations['still'].url")
+							.img.img--ar-ws.loaded(img-bg="meta.mediaFiles[file.storage.id].playfieldVideo.variations['still'].url")
 								.text-center.vertical-center--100
 									progressbar.progress--fixed-absolute.progress-striped.active(value="mediaFiles[file.storage.id].playfieldVideo.progress", ng-show="mediaFiles[file.storage.id].playfieldVideo.uploading")
 									span(ng-show="!img.url")

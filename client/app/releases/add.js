@@ -95,6 +95,16 @@ angular.module('vpdb.releases.add', [])
 			});
 		});
 
+		var updateMedia = function(mediaFiles, release) {
+			_.each(mediaFiles, function(mediaFile, fileId) {
+				var file = _.find(release.versions[0].files, { _file: fileId });
+				file._media = {};
+				_.each(mediaFile, function(f, type) {
+					file._media[type] = f.id;
+				});
+			});
+		};
+
 
 		$scope.reset = function() {
 
@@ -137,9 +147,10 @@ angular.module('vpdb.releases.add', [])
 			 * is not part of the release object.
 			 */
 			$scope.meta = $localStorage.release_meta = {
-				users: { },  // serves only for displaying purposes. key: id, value: full object
-				files: [ ],  // that's the "driving" object, i.e. stuff gets pulled from this and also the view loops over it.
-				tags: [ ]    // also driving object. on drop and remove, ids get copied into release object from here.
+				users: {},     // serves only for displaying purposes. key: id, value: full object
+				files: [],     // that's the "driving" object, i.e. stuff gets pulled from this and also the view loops over it.
+				tags: [],      // also driving object. on drop and remove, ids get copied into release object from here.
+				mediaFiles: {} // also driving object.
 			};
 			$scope.meta.users[currentUser.id] = currentUser;
 
@@ -373,11 +384,14 @@ angular.module('vpdb.releases.add', [])
 				$scope.mediaFiles[tableFileId] = {};
 			}
 			$scope.mediaFiles[tableFileId][type] = {};
+			if (!$scope.meta.mediaFiles[tableFileId]) {
+				$scope.meta.mediaFiles[tableFileId] = {};
+			}
 
-			if ($scope.release.mediaFiles[tableFileId][type] && $scope.release.mediaFiles[tableFileId][type].id) {
-				FileResource.delete({ id : $scope.release.mediaFiles[tableFileId][type].id });
+			if ($scope.meta.mediaFiles[tableFileId][type] && $scope.meta.mediaFiles[tableFileId][type].id) {
+				FileResource.delete({ id : $scope.meta.mediaFiles[tableFileId][type].id });
 
-				$scope.release.mediaFiles[tableFileId][type] = {
+				$scope.meta.mediaFiles[tableFileId][type] = {
 					url: false,
 					variations: {
 						'medium-2x': { url: false },
@@ -392,10 +406,7 @@ angular.module('vpdb.releases.add', [])
 			fileReader.readAsArrayBuffer(file);
 			fileReader.onload = function(event) {
 
-				if (!$scope.release.mediaFiles[tableFileId]) {
-					$scope.release.mediaFiles[tableFileId] = {};
-				}
-				$scope.release.mediaFiles[tableFileId][type] = { url: false };
+				$scope.meta.mediaFiles[tableFileId][type] = { url: false };
 				$scope.mediaFiles[tableFileId][type].uploaded = false;
 				$scope.mediaFiles[tableFileId][type].uploading = true;
 				$scope.mediaFiles[tableFileId][type].status = 'Uploading file...';
@@ -413,10 +424,11 @@ angular.module('vpdb.releases.add', [])
 					$scope.mediaFiles[tableFileId][type].status = 'Uploaded';
 
 					var mediaResult = response.data;
-					$scope.release.mediaFiles[tableFileId][type].id = mediaResult.id;
-					$scope.release.mediaFiles[tableFileId][type].url = AuthService.setUrlParam(mediaResult.url, mediaResult.is_protected);
-					$scope.release.mediaFiles[tableFileId][type].variations = AuthService.setUrlParam(mediaResult.variations, mediaResult.is_protected);
-					$scope.release.mediaFiles[tableFileId][type].metadata = mediaResult.metadata;
+					$scope.meta.mediaFiles[tableFileId][type].id = mediaResult.id;
+					$scope.meta.mediaFiles[tableFileId][type].url = AuthService.setUrlParam(mediaResult.url, mediaResult.is_protected);
+					$scope.meta.mediaFiles[tableFileId][type].variations = AuthService.setUrlParam(mediaResult.variations, mediaResult.is_protected);
+					$scope.meta.mediaFiles[tableFileId][type].metadata = mediaResult.metadata;
+					updateMedia($scope.meta.mediaFiles, $scope.release);
 
 				}, ApiHelper.handleErrorsInDialog($scope, 'Error uploading image.', function() {
 					$scope.mediaFiles[tableFileId][type] = {};

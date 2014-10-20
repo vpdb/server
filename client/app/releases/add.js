@@ -11,9 +11,7 @@ angular.module('vpdb.releases.add', [])
 		$scope.setMenu('admin');
 		$scope.setTitle('Add Release');
 
-		$scope.files = [];
-
-//		$scope.files = [
+//		$scope.meta.files = [
 //			{
 //				name: 'Filename.vpt',
 //				bytes: 1337,
@@ -64,7 +62,14 @@ angular.module('vpdb.releases.add', [])
 			}
 		];
 
-		$scope.tags = TagResource.query();
+		$scope.tags = TagResource.query(function() {
+			if ($scope.release && $scope.release._tags.length > 0) {
+				// only push tags that aren't assigned yet.
+				$scope.tags = _.filter($scope.tags, function(tag) {
+					return !_.contains($scope.release._tags, tag.id);
+				});
+			}
+		});
 
 		$scope.game = GameResource.get({ id: $routeParams.id }, function() {
 			$scope.game.lastrelease = new Date($scope.game.lastrelease).getTime();
@@ -93,6 +98,8 @@ angular.module('vpdb.releases.add', [])
 
 		$scope.reset = function() {
 
+			var currentUser = AuthService.getUser();
+
 			var emptyMedia = {
 				playfieldImage: {
 					url: false,
@@ -109,27 +116,57 @@ angular.module('vpdb.releases.add', [])
 				}
 			};
 
+//			$scope.release = $localStorage.release = {
+//				authors: [{ user: AuthService.getUser(), roles: [ 'Table Creator' ]}],
+//				tags: [],
+//				links: [],
+//				vpbuilds: {
+//					developed: [],
+//					tested: [],
+//					incompat: []
+//				},
+//				_media: {},
+//				mediaFiles: {
+//					'abcd': _.cloneDeep(emptyMedia),
+//					'asdf': _.cloneDeep(emptyMedia)
+//				}
+//			};
+//
+			/*
+			 * Meta is all the data we need for displaying the page but that
+			 * is not part of the release object.
+			 */
+			$scope.meta = $localStorage.release_meta = {
+				users: { },  // serves only for displaying purposes. key: id, value: full object
+				files: [ ],  // that's the "driving" object, i.e. stuff gets pulled from this and also the view loops over it.
+				tags: [ ]    // also driving object. on drop and remove, ids get copied into release object from here.
+			};
+			$scope.meta.users[currentUser.id] = currentUser;
+
 			$scope.release = $localStorage.release = {
-				authors: [{ user: AuthService.getUser(), roles: [ 'Table Creator' ]}],
-				tags: [],
-				links: [],
-				vpbuilds: {
-					developed: [],
-					tested: [],
-					incompat: []
-				},
-				_media: {},
-				mediaFiles: {
-					'abcd': _.cloneDeep(emptyMedia),
-					'asdf': _.cloneDeep(emptyMedia)
-				}
+				name: '',
+				description: '',
+				versions: [ {
+					version: '',
+					changes: '*Initial release.*',
+					files: [ ]
+				} ],
+				authors: [ {
+					_user: currentUser.id,
+					roles: [ 'Table Creator' ]
+				} ],
+				_tags: [ ],
+				links: [ ],
+				acknowledgements: '',
+				original_version: null
 			};
 		};
 
 
 		$scope.removeFile = function(file) {
 			FileResource.delete({ id: file.storage.id }, function() {
-				$scope.files.splice($scope.files.indexOf(file), 1);
+				$scope.meta.files.splice($scope.meta.files.indexOf(file), 1);
+				$scope.release.versions[0].files.splice(_.indexOf($scope.release.versions[0].files, _.findWhere($scope.release.versions[0].files, { id : file.storage.id })), 1);
 
 			}, ApiHelper.handleErrorsInDialog($scope, 'Error removing file.'));
 		};
@@ -162,16 +199,18 @@ angular.module('vpdb.releases.add', [])
 				var fileReader = new FileReader();
 				fileReader.readAsArrayBuffer(upload);
 				fileReader.onload = function(event) {
-					var key = upload.name; // TODO use another id, such as a hash or whatever so we can upload files with the same filename.
 					var ext = upload.name.substr(upload.name.lastIndexOf('.') + 1, upload.name.length);
 					var type = upload.type;
+					var isTable = false;
 					if (!type) {
 						switch (ext) {
 							case 'vpt':
 								type = 'application/x-visual-pinball-table';
+								isTable = true;
 								break;
 							case 'vpx':
 								type = 'application/x-visual-pinball-table-x';
+								isTable = true;
 								break;
 							case 'vbs':
 								type = 'application/vbscript';
@@ -185,11 +224,12 @@ angular.module('vpdb.releases.add', [])
 						uploaded: false,
 						uploading: true,
 						progress: 0,
-						flavor: {}
+						flavor: {},
+						vpbuilds: []
 					};
-					$scope.files.push(file);
+					$scope.meta.files.push(file);
 					$upload.http({
-						url: '/storage',
+						url: ConfigService.storageUri(),
 						method: 'POST',
 						params: { type: 'release' },
 						headers: {
@@ -200,8 +240,22 @@ angular.module('vpdb.releases.add', [])
 					}).then(function(response) {
 						file.uploading = false;
 						file.storage = response.data;
+						if (!isTable) {
+							$scope.release.versions[0].files.push({ _file: response.data.id });
+						} else {
+							$scope.release.versions[0].files.push({
+								_file: response.data.id,
+								flavor: file.flavor,
+								compatibility: file.vpbuilds,
+								_media: {
+									playfield_image: null,
+									playfield_video: null
+								}
+							});
+						}
+
 					}, ApiHelper.handleErrorsInDialog($scope, 'Error uploading file.', function() {
-						$scope.files.splice($scope.files.indexOf(file), 1);
+						$scope.meta.files.splice($scope.meta.files.indexOf(file), 1);
 					}), function (evt) {
 						file.progress = parseInt(100.0 * evt.loaded / evt.total);
 					});
@@ -210,22 +264,32 @@ angular.module('vpdb.releases.add', [])
 		};
 
 
+		/**
+		 * Adds OR edits an author.
+		 * @param {object} author If set, edit this author, otherwise add a new one.
+		 */
 		$scope.addAuthor = function(author) {
 			$modal.open({
 				templateUrl: 'releases/modal-author-add.html',
 				controller: 'ChooseAuthorCtrl',
 				resolve: {
 					release: function() { return $scope.release; },
+					meta: function() { return $scope.meta; },
 					author: function() { return author; }
 				}
 			}).result.then(function(newAuthor) {
-					if (author) {
-						$scope.release.authors[$scope.release.authors.indexOf(author)] = newAuthor;
-					} else {
-						$scope.release.authors.push(newAuthor);
-					}
 
-				});
+				// here we're getting the full object, so store the user object in meta.
+				var authorRef = { _user: newAuthor.user.id, roles: newAuthor.roles };
+				$scope.meta.users[newAuthor.user.id] = newAuthor.user;
+
+				// add or edit?
+				if (author) {
+					$scope.release.authors[$scope.release.authors.indexOf(author)] = authorRef;
+				} else {
+					$scope.release.authors.push(authorRef);
+				}
+			});
 		};
 
 
@@ -244,9 +308,15 @@ angular.module('vpdb.releases.add', [])
 		};
 
 
+		$scope.tagDropped = function() {
+			$scope.release._tags = _.pluck($scope.meta.tags, 'id');
+		};
+
+
 		$scope.removeTag = function(tag) {
-			$scope.release.tags.splice($scope.release.tags.indexOf(tag), 1);
+			$scope.meta.tags.splice($scope.meta.tags.indexOf(tag), 1);
 			$scope.tags.push(tag);
+			$scope.release._tags = _.pluck($scope.meta.tags, 'id');
 		};
 
 
@@ -260,15 +330,23 @@ angular.module('vpdb.releases.add', [])
 			$scope.release.links.splice($scope.release.links.indexOf(link), 1);
 		};
 
+		$scope.toggleVPBuild = function(file, vpbuild) {
+			var idx = file.vpbuilds.indexOf(vpbuild.id);
+			if (idx > -1) {
+				file.vpbuilds.splice(idx, 1);
+			} else {
+				file.vpbuilds.push(vpbuild.id);
+			}
+		};
 
 		$scope.addVPBuild = function() {
 			$modal.open({
 				templateUrl: 'releases/modal-vpbuild-create.html',
 				controller: 'AddVPBuildCtrl',
 				size: 'lg'
-			}).result.then(function(newTag) {
-					$scope.tags.push(newTag);
-				});
+			}).result.then(function(newBuild) {
+				// todo
+			});
 		};
 
 
@@ -352,20 +430,28 @@ angular.module('vpdb.releases.add', [])
 
 		// either copy data from local storage or reset release data.
 		if ($localStorage.release) {
-			$scope.release  = $localStorage.release;
+			$scope.release = $localStorage.release;
+			$scope.meta = $localStorage.release_meta;
+
+			// update references
+			_.each($scope.release.versions[0].files, function(file) {
+				var metaFile = _.find($scope.meta.files, function(f) { return f.storage.id === file._file; });
+				file.compatibility = metaFile.vpbuilds;
+				file.flavor = metaFile.flavor;
+			});
 		} else {
 			$scope.reset();
 		}
 	})
 
 
-	.controller('ChooseAuthorCtrl', function($scope, $modalInstance, UserResource, release, author) {
+	.controller('ChooseAuthorCtrl', function($scope, $modalInstance, UserResource, release, meta, author) {
 
 		if (author) {
 			$scope.author = author;
-			$scope.user = author.user;
+			$scope.user = meta.users[author._user];
 			$scope.roles = author.roles.slice();
-			$scope.query = author.user.name;
+			$scope.query = meta.users[author._user].name;
 			$scope.isValidUser = true;
 		} else {
 			$scope.user = null;
@@ -405,17 +491,20 @@ angular.module('vpdb.releases.add', [])
 			$scope.addRole($scope.role);
 
 			var valid = true;
+
+			// user validations
 			if (!$scope.isValidUser) {
 				$scope.errors.user = 'You must select a user. Typing after selecting a user erases the selected user.';
 				valid = false;
-			} else if (_.filter($scope.release.authors, function(author) { return author.user.id === $scope.user.id; }).length > 0 &&
-				($scope.adding || $scope.user.id !== $scope.author.user.id)) {
+			} else if (_.filter($scope.release.authors, function(author) { return author._user === $scope.user.id; }).length > 0 &&
+				($scope.adding || $scope.user.id !== $scope.author._user)) {
 				$scope.errors.user = 'User "' + $scope.user.name + '" is already added as author.';
 				valid = false;
 			} else {
 				delete $scope.errors.user;
 			}
 
+			// scope validations
 			if ($scope.roles.length === 0) {
 				$scope.errors.roles = 'Please add at least one role.';
 				valid = false;

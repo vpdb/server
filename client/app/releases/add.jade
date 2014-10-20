@@ -21,7 +21,7 @@
 		.panel.panel--dropzone(ng-file-drop="onFilesUpload($files)", ng-file-drag-over-class="panel--dragging")
 
 			ul.list--files
-				li.panel(ng-repeat="file in files")
+				li.panel(ng-repeat="file in meta.files")
 					.col--list-files-left
 						i.icon(ng-class="file.icon")
 					.col--list-files-right
@@ -48,7 +48,7 @@
 		h1 2. Name your Release
 		hr
 		.form-group(ng-class="{ error: errors.title }")
-			input.form-control.input-lg(type="text", placeholder="Title", ng-model="release.title", on-enter="searchOnIpdb()")
+			input.form-control.input-lg(type="text", placeholder="Title", ng-model="release.name", on-enter="searchOnIpdb()")
 			.alert.alert-danger(ng-show="errors.title")
 				i.fa.fa-exclamation-triangle.space-right
 				| {{ errors.title }}
@@ -65,7 +65,7 @@
 			| download or search for. You can upload multiple flavors by adding several <code>.vpt</code> or
 			| <code>.vpx</code> files in step 1.
 		ul.list--files
-			li.panel(ng-repeat="file in files | fileext:['vpt','vpx']")
+			li.panel(ng-repeat="file in meta.files | fileext:['vpt','vpx']")
 				.col--list-files-left
 					i.icon(ng-class="file.icon")
 				.col--list-files-right
@@ -80,7 +80,7 @@
 										input(type="radio", name="{{ file.name + flavor.header }}", value="{{ flavorVal.value }}", ng-model="file.flavor[flavor.name]")
 										span {{ flavorVal.name }}
 										span: i {{ flavorVal.other }}
-		.text-center(ng-show="(files | fileext:['vpt','vpx']).length == 0")
+		.text-center(ng-show="(meta.files | fileext:['vpt','vpx']).length == 0")
 			i.fa.fa-warning.space-right
 			i Upload any VP tables under 1. before defining flavors.
 
@@ -105,7 +105,7 @@
 		.form-group
 			label.control-label(for="version") Version
 			.row
-				.col-sm-2: input#version.form-control(type="text", ng-model="release.version", placeholder="x.x.x")
+				.col-sm-2: input#version.form-control(type="text", ng-model="release.versions[0].version", placeholder="x.x.x")
 				.col.sm-10: i Using the semantic versioning syntax is recommended.
 		.clearfix
 
@@ -116,12 +116,12 @@
 				tab
 					tab-heading
 						i.fa.fa-edit(title="Write")
-					textarea.textarea--full.msd-elastic(placeholder="Release Information", ng-model="release.information")
+					textarea.textarea--full.msd-elastic(placeholder="Release Information", ng-model="release.versions[0].changes")
 				tab
 					tab-heading
 						i.fa.fa-eye(title="Preview")
-					div.markdown(markdown="game.description")
-					label.tab__label(ng-show="!release.description || release.description.length == 0") Nothing to preview.
+					div.markdown(markdown="release.versions[0].changes")
+					label.tab__label(ng-show="!release.versions[0].changes || release.versions[0].changes.length == 0") Nothing to preview.
 			i This will show up in the release's change log
 
 
@@ -135,10 +135,10 @@
 		i.pull-left(ng-show="release.authors.length == 0") No authors added.
 		.row--fullwidth
 			.media.media--mini.media--mini-noborders.col-sm-4(ng-repeat="author in release.authors", ng-mouseenter="hovering=true", ng-mouseleave="hovering=false")
-				.img-avatar.img-avatar--sm.avatar-placeholder.avatar-placeholder--sm.pull-left(ng-hide="author.user.avatar")
-				.img.img-avatar.img-avatar--sm.pull-left(ng-show="author.user.avatar", img-bg="author.user.avatar")
+				.img-avatar.img-avatar--sm.avatar-placeholder.avatar-placeholder--sm.pull-left(ng-hide="meta.users[author._user].avatar")
+				.img.img-avatar.img-avatar--sm.pull-left(ng-show="meta.users[author._user].avatar", img-bg="meta.users[author._user].avatar")
 				.media-body
-					h6.h--no-margin.h--lighter.media-heading {{ author.user.name }}
+					h6.h--no-margin.h--lighter.media-heading {{ meta.users[author._user].name }}
 					span {{ author.roles.join(', ') }}
 				i.fa.fa-pencil.a.fade-animation(ng-show="hovering", ng-click="addAuthor(author)")
 				i.icon.icon-trash.a.fade-animation(ng-show="hovering", ng-click="removeAuthor(author)")
@@ -162,25 +162,25 @@
 
 				//- SELECTED
 				h5.h--shift-up.hr--margin-small Selected Tags
-				.panel--dropzone-alt(ng-model="release.tags",
+				.panel--dropzone-alt(ng-model="meta.tags",
 				  data-drop="true",
-				  data-jqyoui-options="{ accept: '.badge:not([ng-model=release.tags])', activeClass: 'active', 'hoverClass': 'hover' }",
-				  jqyoui-droppable="{ multiple:true }")
-					div.padder-top(ng-repeat="tag in release.tags")
-						.badge.badge--tag(ng-model="release.tags",
+				  data-jqyoui-options="{ accept: '.badge:not([ng-model=meta.tags])', activeClass: 'active', 'hoverClass': 'hover' }",
+				  jqyoui-droppable="{ multiple: true, onDrop: 'tagDropped' }")
+					div.padder-top(ng-repeat="tag in meta.tags")
+						.badge.badge--tag(ng-model="meta.tags",
 							data-drag="true",
 							data-jqyoui-options="{ revert: 'invalid' }",
 							jqyoui-draggable="{ animate: true, index: {{$index}} }")
 								| {{ tag.name }}
 								i.fa.fa-times-circle.space-left.a(ng-click="removeTag(tag)")
 						i.space-left {{ tag.description }}
-					i(ng-show="release.tags.length == 0") No tags selected. Drag and drop them from the right hand pane in here.
+					i(ng-show="meta.tags.length == 0") No tags selected. Drag and drop them from the right hand pane in here.
 			.col-sm-6
 				.rel-pos
 					.panel--dropzone-alt-2(ng-model="tags",
 					  data-drop="true",
 					  data-jqyoui-options="{ accept:':not([ng-model=tags])', activeClass: 'active', hoverClass: 'hover' }",
-					  jqyoui-droppable="{ multiple:true }")
+					  jqyoui-droppable="{ multiple: true, onDrop: 'tagDropped' }")
 
 						//- EXISTING
 						h5.hr--margin-small.h--shift-up Existing Tags
@@ -218,18 +218,18 @@
 				label URL
 		.row.row--fullwidth(ng-repeat="link in release.links")
 			.form-group.col-sm-3
-				input.form-control(type='text', ng-model="link.label")
+				input.form-control(type="text", ng-model="link.label")
 			.form-group.col-sm-9
 				.input-group
-					input.form-control(type='text', ng-model="link.url")
+					input.form-control(type="text", ng-model="link.url")
 					span.input-group-addon: i.icon.icon-trash.a(ng-click="removeLink(link)")
 
 		.row.row--fullwidth(init="newLink={}")
 			.form-group.col-sm-3
-				input.form-control(type='text', ng-model="newLink.label")
+				input.form-control(type="text", ng-model="newLink.label")
 			.form-group.col-sm-9
 				.input-group
-					input.form-control(type='text', ng-model="newLink.url", on-enter="newLink=addLink(newLink)")
+					input.form-control(type="text", ng-model="newLink.url", on-enter="newLink=addLink(newLink)")
 					span.input-group-addon: i.fa.fa-plus-circle.a(ng-click="newLink=addLink(newLink)")
 
 
@@ -240,7 +240,7 @@
 			| check which VP build you feel confident with.
 
 		ul.list--files
-			li.panel(ng-repeat="file in files | fileext:['vpt','vpx']")
+			li.panel(ng-repeat="file in meta.files | fileext:['vpt','vpx']")
 				.col--list-files-left
 					i.icon(ng-class="file.icon")
 				.col--list-files-right
@@ -252,25 +252,25 @@
 								span Official Releases
 							hr.hr--thin.hr--margin-small
 							.simple-list(ng-repeat="build in builds.release | filter:{is_range:false}")
-								input.checkbox--check(id="dev-{{ file.storage.id }}-{{ build.id }}", type="checkbox")
+								input.checkbox--check(ng-checked="file.vpbuilds.indexOf(build.id) > -1", ng-click="toggleVPBuild(file, build)", id="dev-{{ file.storage.id }}-{{ build.id }}", type="checkbox")
 								label(for="dev-{{ file.storage.id }}-{{ build.id }}") {{ build.label }}
 						.col-md-4
 							span
 								span Nightly Builds
 							hr.hr--thin.hr--margin-small
 							.simple-list(ng-repeat="build in builds.nightly | filter:{is_range:false}")
-								input.checkbox--check(id="dev-{{ file.storage.id }}-{{ build.id }}", type="checkbox")
+								input.checkbox--check(ng-checked="file.vpbuilds.indexOf(build.id) > -1", ng-click="toggleVPBuild(file, build)", id="dev-{{ file.storage.id }}-{{ build.id }}", type="checkbox")
 								label(for="dev-{{ file.storage.id }}-{{ build.id }}") {{ build.label }}
 						.col-md-4
 							span
 								span Test Builds
 							hr.hr--thin.hr--margin-small
 							.simple-list(ng-repeat="build in builds.experimental | filter:{is_range:false}")
-								input.checkbox--check(id="dev-{{ file.storage.id }}-{{ build.id }}", type="checkbox")
+								input.checkbox--check(ng-checked="file.vpbuilds.indexOf(build.id) > -1", ng-click="toggleVPBuild(file, build)", id="dev-{{ file.storage.id }}-{{ build.id }}", type="checkbox")
 								label(for="dev-{{ file.storage.id }}-{{ build.id }}") {{ build.label }}
 				p.padder-top
 
-		.text-center(ng-show="(files | fileext:['vpt','vpx']).length == 0")
+		.text-center(ng-show="(meta.files | fileext:['vpt','vpx']).length == 0")
 			i.fa.fa-warning.space-right
 			i Upload any VP tables under 1. before setting compatibility.
 
@@ -341,7 +341,7 @@
 			| For every table file you’ve provided in step 1, at least the screenshot is mandatory. If you provide a video,
 			| it should show the table in attract mode (no gameplay).
 
-		span(ng-repeat="file in files | fileext:['vpt','vpx']")
+		span(ng-repeat="file in meta.files | fileext:['vpt','vpx']")
 			h2.h--smaller
 				i.icon.fa-2x.space-right(ng-class="file.icon")
 				| {{ file.name }}
@@ -389,7 +389,7 @@
 										i.fa.fa-cog.fa-3x.fa-spin--slow
 										p Generating video thumbnail...
 
-		.text-center(ng-show="(files | fileext:['vpt','vpx']).length == 0")
+		.text-center(ng-show="(meta.files | fileext:['vpt','vpx']).length == 0")
 			i.fa.fa-warning.space-right
 			i Upload any VP tables under 1. before uploading media.
 

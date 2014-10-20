@@ -39,16 +39,14 @@ var fields = {
 	name:         { type: String, required: 'Name must be provided.' },
 	description:  { type: String },
 	versions: [ {
-		version:      { type: String, required: 'Version must be provided.' },
-		release_info: { type: String },
+		version: { type: String, required: 'Version must be provided.' },
+		changes: { type: String },
 		files: [ {
 			_file:  { type: Schema.ObjectId, required: true, ref: 'File' },
-			flavors: [
-				{
-					orientation: { type: String, required: true, enum: { values: [ 'ws', 'fs' ], message: 'Invalid orientation. Valid orientation are: ["ws", "fs"].' }},
-					lightning:   { type: String, required: true, enum: { values: [ 'day', 'night' ], message: 'Invalid lightning. Valid options are: ["day", "night"].' }}
-				}
-			],
+			flavor: {
+				orientation: { type: String, required: true, enum: { values: [ 'ws', 'fs' ], message: 'Invalid orientation. Valid orientation are: ["ws", "fs"].' }},
+				lightning:   { type: String, required: true, enum: { values: [ 'day', 'night' ], message: 'Invalid lightning. Valid options are: ["day", "night"].' }}
+			},
 			compatibility: [ { type: Schema.ObjectId, ref: 'VPBuild' } ],
 			_media: {
 				playfield_image: { type: Schema.ObjectId, ref: 'File', required: 'Playfield image must be provided.' },
@@ -61,7 +59,7 @@ var fields = {
 		roles: [ String ]
 	} ],
 	_tags: [ { type: Schema.ObjectId, required: true, ref: 'Tag' } ],
-	urls: [ {
+	links: [ {
 		label: { type: String },
 		url: { type: String }
 	} ],
@@ -81,7 +79,11 @@ var ReleaseSchema = new Schema(fields);
 // PLUGINS
 //-----------------------------------------------------------------------------
 ReleaseSchema.plugin(uniqueValidator, { message: 'The {PATH} "{VALUE}" is already taken.' });
-ReleaseSchema.plugin(fileRef, { model: 'Release', fields: [ 'versions.files._media.playfield_image', 'versions.files._media.playfield_video' ]});
+ReleaseSchema.plugin(fileRef, { model: 'Release', fields: [
+	'versions.0.files.0._file',
+	'versions.0.files.0._media.playfield_image',
+	'versions.0.files.0._media.playfield_video'
+]});
 
 
 //-----------------------------------------------------------------------------

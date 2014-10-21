@@ -1,4 +1,4 @@
-"use strict"; /*global describe, before, after, it*/
+"use strict"; /* global describe, before, after, it */
 
 var _ = require('lodash');
 var fs = require('fs');

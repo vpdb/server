@@ -70,7 +70,9 @@ var fields = {
 			name: { type: String },
 			url: { type: String }
 		}
-	}
+	},
+	created_at:    { type: Date, required: true },
+	_created_by:   { type: Schema.ObjectId, required: true, ref: 'User' }
 };
 var ReleaseSchema = new Schema(fields);
 

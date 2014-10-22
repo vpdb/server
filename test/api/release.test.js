@@ -27,7 +27,7 @@ describe('The VPDB `release` API', function() {
 			hlp.cleanup(request, done);
 		});
 
-		it('should fail', function(done) {
+		it.only('should fail', function(done) {
 
 			request
 				.post('/api/v1/releases')

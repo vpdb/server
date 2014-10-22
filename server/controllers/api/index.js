@@ -25,6 +25,7 @@ exports.ping = api.ping;
 exports.files = require('./files');
 exports.games = require('./games');
 exports.ipdb = require('./ipdb');
+exports.releases = require('./releases');
 exports.roles = require('./roles');
 exports.tags = require('./tags');
 exports.user = require('./user');

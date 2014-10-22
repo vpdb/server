@@ -77,6 +77,9 @@ module.exports = function(app) {
 	// ping
 	app.get(settings.apiPath('/ping'),          api.anon(api.ping));
 
+	// release
+	app.post(settings.apiPath('/releases'),     api.auth(api.releases.create, 'releases', 'add'));
+
 	// roles
 	app.get(settings.apiPath('/roles'),         api.auth(api.roles.list, 'roles', 'list'));
 

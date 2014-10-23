@@ -25,46 +25,57 @@
 module.exports = {
 	'image/jpeg': {
 		name: 'JPEG image',
-		ext: 'jpg'
+		ext: 'jpg',
+		category: 'image'
 	},
 	'image/png': {
 		name: 'PNG image',
-		ext: 'png'
+		ext: 'png',
+		category: 'image'
 	},
 	'application/zip': {
 		name: 'ZIP-compressed file',
-		ext: 'zip'
+		ext: 'zip',
+		category: 'archive'
 	},
 	'application/x-visual-pinball-table': {
 		name: 'Visual Pinball Table v9.x',
-		ext: 'vpt'
+		ext: 'vpt',
+		category: 'table'
 	},
 	'application/x-visual-pinball-table-x': {
 		name: 'Visual Pinball Table v10.x',
-		ext: 'vpx'
+		ext: 'vpx',
+		category: 'table'
 	},
 	'application/vbscript': {
 		name: 'Visual Basic Script',
-		ext: 'vbs'
+		ext: 'vbs',
+		category: 'script'
 	},
 	'audio/mpeg': {
 		name: 'MP3',
-		ext: 'mp3'
+		ext: 'mp3',
+		category: 'audio'
 	},
 	'video/avi': {
 		name: 'AVI video',
-		ext: 'avi'
+		ext: 'avi',
+		category: 'video'
 	},
 	'video/mp4': {
 		name: 'MP4 video',
-		ext: 'mp4'
+		ext: 'mp4',
+		category: 'video'
 	},
 	'video/x-flv': {
 		name: 'Flash video',
-		ext: 'flv'
+		ext: 'flv',
+		category: 'video'
 	},
 	'text/plain': {
 		name: 'Plain text',
-		ext: 'txt'
+		ext: 'txt',
+		category: 'text'
 	}
 };

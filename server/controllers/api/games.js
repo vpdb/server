@@ -68,7 +68,7 @@ exports.create = function(req, res) {
 		logger.info('[api|game:create] %s', util.inspect(req.body));
 		newGame.validate(function(err) {
 			if (err) {
-				return api.fail(res, error('Validations failed: %j', err.errors).errors(err.errors).warn('create'), 422);
+				return api.fail(res, error('Validations failed. See below for details.').errors(err.errors).warn('create'), 422);
 			}
 			logger.info('[api|game:create] Validations passed.');
 			newGame.save(assert(function(game) {

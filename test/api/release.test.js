@@ -59,14 +59,41 @@ describe('The VPDB `release` API', function() {
 					files: [ {} ]
 				} ] })
 				.end(function(err, res) {
-					hlp.dump(res);
 					hlp.expectValidationError(err, res, 'versions.0.files.0._file', 'must provide a file reference');
-					hlp.expectValidationError(err, res, 'versions.0.files.0._media.playfield_image', 'must be provided');
 					hlp.expectNoValidationError(err, res, 'versions.0.files.0.flavor.orientation');
 					hlp.expectNoValidationError(err, res, 'versions.0.files.0.flavor.lightning');
+					hlp.expectNoValidationError(err, res, 'versions.0.files.0._media.playfield_image');
 					done();
 				});
 		});
+
+		it('should fail validations when providing valid file reference', function(done) {
+			hlp.file.createVpt('member', request, function(vptfile) {
+				request
+					.post('/api/v1/releases')
+					.as('member')
+					.send({ versions: [ {
+						files: [
+							{ _file: vptfile.id },
+							{ _file: vptfile.id, flavor: {} },
+							{ _file: vptfile.id, flavor: { orientation: 'invalid' } }
+						]
+					} ] })
+					.end(function(err, res) {
+
+						hlp.doomFile('member', vptfile.id);
+						hlp.dump(res);
+						hlp.expectValidationError(err, res, 'versions.0.files.0.flavor.orientation', 'must be provided');
+						hlp.expectValidationError(err, res, 'versions.0.files.0.flavor.lightning', 'must be provided');
+						hlp.expectValidationError(err, res, 'versions.0.files.1.flavor.orientation', 'must be provided');
+						hlp.expectValidationError(err, res, 'versions.0.files.1.flavor.lightning', 'must be provided');
+						hlp.expectValidationError(err, res, 'versions.0.files.2.flavor.orientation', 'invalid orientation');
+						hlp.expectValidationError(err, res, 'versions.0.files.0._media.playfield_image', 'must be provided');
+						done();
+					});
+			});
+		});
+
 
 	});
 });

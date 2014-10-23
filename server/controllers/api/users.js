@@ -52,7 +52,7 @@ exports.create = function(req, res) {
 		}
 		User.createUser(newUser, assert(function(user, validationErr) {
 			if (validationErr) {
-				return api.fail(res, error('Validations failed: %j', validationErr.errors).errors(validationErr.errors).warn('create'), 422);
+				return api.fail(res, error('Validations failed. See below for details.').errors(validationErr.errors).warn('create'), 422);
 			}
 			return api.success(res, user.toDetailed(), 201);
 
@@ -183,7 +183,7 @@ exports.update = function(req, res) {
 		// 4. validate
 		user.validate(function(err) {
 			if (err) {
-				return api.fail(res, error('Validations failed: %j', err.errors).errors(err.errors).warn('create'), 422);
+				return api.fail(res, error('Validations failed. See below for details.').errors(err.errors).warn('create'), 422);
 			}
 			logger.info('[api|user:update] Validations passed, updating user.');
 

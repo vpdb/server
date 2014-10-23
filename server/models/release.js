@@ -26,6 +26,7 @@ var mongoose = require('mongoose');
 var validator = require('validator');
 var uniqueValidator = require('mongoose-unique-validator');
 var fileRef = require('../models/plugins/fileRef');
+var mimetypes = require('../modules/mimetypes');
 
 var Schema = mongoose.Schema;
 
@@ -47,7 +48,7 @@ var fields = {
 			},
 			compatibility: [ { type: Schema.ObjectId, ref: 'VPBuild' } ],
 			_media: {
-				playfield_image: { type: Schema.ObjectId, ref: 'File', required: 'Playfield image must be provided.' },
+				playfield_image: { type: Schema.ObjectId, ref: 'File' },
 				playfield_video: { type: Schema.ObjectId, ref: 'File' }
 			}
 		} ] }
@@ -101,13 +102,40 @@ function containsVpTable(files) {
 }
 
 ReleaseSchema.path('versions.0.files.0._file').validate(function(file, callback) {
-	if (this._file) {
-		_.each(fields.versions[0].files[0].flavor, function(flavor) {
-			if (!this.flavor[flavor]) {
-				this.invalidate('flavor.' + flavor, 'Flavor `' + flavor + '` must be provided.');
+	var that = this;
+	if (that._file) {
+
+		mongoose.model('File').findOne({ _id: that._file }, function(err, file) {
+			/* istanbul ignore if */
+			if (err) {
+				logger.error('[model] Error fetching file "%s".', that._file);
+				return callback(true);
 			}
+			if (!file) {
+				// this is already validated by the file reference
+				return callback(true);
+			}
+
+			// table checks
+			if (file.getMimeCategory() === 'table') {
+
+				// flavor
+				that.flavor = that.flavor || {};
+				_.each(fields.versions.type[0].files.type[0].flavor, function(obj, flavor) {
+
+					if (!that.flavor[flavor]) {
+						that.invalidate('flavor.' + flavor, 'Flavor `' + flavor + '` must be provided.');
+					}
+				});
+
+				// media
+				if (!that._media || !that._media.playfield_image) {
+					that.invalidate('_media.playfield_image', 'Playfield image must be provided.');
+				}
+
+			}
+			callback(true);
 		});
-		callback();
 	}
 });
 

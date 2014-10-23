@@ -55,7 +55,7 @@ exports.upload = function(req, res) {
 
 	file.validate(function(err) {
 		if (err) {
-			return api.fail(res, error('Validations failed: %j', err.errors).errors(err.errors).warn('create'), 422);
+			return api.fail(res, error('Validations failed. See below for details.').errors(err.errors).warn('create'), 422);
 		}
 
 		file.save(function(err, file) {

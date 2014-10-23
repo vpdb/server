@@ -174,6 +174,12 @@ FileSchema.methods.getMimeSubtype = function() {
 	return this.mime_type.split('/')[1];
 };
 
+FileSchema.methods.getMimeCategory = function() {
+	return mimeTypes[this.mime_type].category;
+};
+
+
+
 FileSchema.methods.toString = function(variation) {
 	var v = _.isObject(variation) ? variation.name : variation;
 	return this.file_type + ' "' + this.id + '"' + (v ? ' (' + v + ')' : '');

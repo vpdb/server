@@ -62,7 +62,7 @@ exports.create = function(req, res) {
 
 	newBuild.validate(function(err) {
 		if (err) {
-			return api.fail(res, error('Validations failed: %j', err.errors).errors(err.errors).warn('create'), 422);
+			return api.fail(res, error('Validations failed. See below for details.').errors(err.errors).warn('create'), 422);
 		}
 		newBuild.save(function(err) {
 			/* istanbul ignore if  */

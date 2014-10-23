@@ -140,10 +140,10 @@ describe('The storage engine of VPDB', function() {
 
 			it('should only return the header when requesting a HEAD on the storage URL', function(done) {
 
-				hlp.file.createTextfile('member', request, function(backglass) {
-					request.head(backglass.url).as('member').end(function(err, res) {
+				hlp.file.createTextfile('member', request, function(textfile) {
+					request.head(textfile.url).as('member').end(function(err, res) {
 						hlp.expectStatus(err, res, 200);
-						hlp.doomFile('member', backglass.id);
+						hlp.doomFile('member', textfile.id);
 						expect(res.headers['content-length']).to.be('0');
 						expect(res.text).to.not.be.ok();
 						done();

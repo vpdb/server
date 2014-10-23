@@ -50,8 +50,11 @@ module.exports = exports = function(schema, options) {
 		var Model = mongoose.model(options.model);
 		var File = mongoose.model('File');
 
+		// explode arrays
+		var fields = explodeArrays(obj, options.fields);
+
 		var shortIds = [];
-		_.each(options.fields, function(path) {
+		_.each(fields, function(path) {
 			var shortId = objectPath.get(obj, path);
 			if (shortId) {
 				shortIds.push(shortId);
@@ -66,7 +69,7 @@ module.exports = exports = function(schema, options) {
 				logger.error('[model] Error finding referenced files: %s', err);
 				return callback(err);
 			}
-			_.each(options.fields, function(path) {
+			_.each(fields, function(path) {
 				var hit = false;
 				var shortId = objectPath.get(obj, path);
 				_.each(files, function(file) {
@@ -83,7 +86,7 @@ module.exports = exports = function(schema, options) {
 						var value = objectPath.get(obj, path);
 						logger.warn('[model] File ID %s not found in database for field %s.', value, path);
 						invalidations.push({ path: path, message: 'No such file with ID "' + value + '".', value: value });
-						objectPath.set(obj, path, '000000000000000000000000');
+						objectPath.set(obj, path, '000000000000000000000000'); // otherwise we'll get another "required" validation error on "_id" field.
 					}
 				}
 			});
@@ -197,3 +200,34 @@ module.exports = exports = function(schema, options) {
 		});
 	});
 };
+
+function explodeArrays(obj, fields) {
+
+	var appendNext = function(obj, parts, level, path) {
+		level = level || 0;
+		var paths = [];
+		var objPath = parts[level];
+		if (!objPath) {
+			return [];
+		}
+		path = path || '';
+		path += (path ? '.' : '') + objPath;
+		if (!parts[level + 1]) {
+			paths.push(path);
+		}
+		var subObj = objectPath.get(obj, objPath);
+		if (subObj) {
+			for (var i = 0; i < subObj.length; i++) {
+				paths = paths.concat(appendNext(subObj[i], parts, level + 1, path + '.' + i));
+			}
+		}
+		return paths;
+	};
+
+	var paths = [];
+	_.each(fields, function (field) {
+		var parts = field.split(/\.\d+\.?/);
+		paths = paths.concat(appendNext(obj, parts));
+	});
+	return paths;
+}

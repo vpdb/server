@@ -51,7 +51,7 @@ exports.create = function(req, res) {
 		logger.info('[api|release:create] %s', util.inspect(req.body));
 		newRelease.validate(function(err) {
 			if (err) {
-				return api.fail(res, error('Validations failed: %j', err.errors).errors(err.errors).warn('create'), 422);
+				return api.fail(res, error('Validations failed. See below for details.').errors(err.errors).warn('create'), 422);
 			}
 			logger.info('[api|release:create] Validations passed.');
 			newRelease.save(assert(function(release) {

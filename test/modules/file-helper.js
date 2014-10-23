@@ -8,6 +8,7 @@ var pleasejs = require('pleasejs');
 
 var mp4 = path.resolve(__dirname, '../../data/test/files/afm.f4v');
 var avi = path.resolve(__dirname, '../../data/test/files/afm.avi');
+var vpt = path.resolve(__dirname, '../../data/test/files/empty.vpt');
 
 exports.createBackglass = function(user, request, done) {
 
@@ -73,6 +74,23 @@ exports.createAvi = function(user, request, done) {
 		.query({ type: 'playfield' })
 		.type('video/avi')
 		.set('Content-Disposition', 'attachment; filename="playfield.avi"')
+		.set('Content-Length', data.length)
+		.send(data)
+		.as(user)
+		.end(function(err, res) {
+			expect(res.status).to.be(201);
+			done(res.body);
+		});
+};
+
+exports.createVpt = function(user, request, done) {
+
+	var data = fs.readFileSync(vpt);
+	request
+		.post('/storage/v1')
+		.query({ type: 'release' })
+		.type('application/x-visual-pinball-table')
+		.set('Content-Disposition', 'attachment; filename="test-table.vpt"')
 		.set('Content-Length', data.length)
 		.send(data)
 		.as(user)

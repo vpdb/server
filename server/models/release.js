@@ -54,7 +54,7 @@ var fields = {
 		} ] }
 	} ] },
 	authors: { validate: [ nonEmptyArray, 'You must provide at least one author.' ], type: [ {
-		_user: { type: Schema.ObjectId, required: true, ref: 'User' },
+		_user: { type: String, required: 'Reference to user must be provided.', ref: 'User' },
 		roles: [ String ]
 	} ] },
 	_tags: [ { type: Schema.ObjectId, required: true, ref: 'Tag' } ],
@@ -101,6 +101,44 @@ function containsVpTable(files) {
 	}
 }
 
+ReleaseSchema.path('versions.0').validate(function(file, callback) {
+	var that = this;
+
+	var ids = _.pluck(_.flatten(_.pluck(that.versions, 'files')), '_file');
+
+	mongoose.model('File').find({ _id: { $in: ids }}, function(err, files) {
+		/* istanbul ignore if */
+		if (err) {
+			logger.error('[model] Error fetching files [ %s ].', that.ids);
+			return callback(true);
+		}
+
+		// validate that every version has a table file
+		_.each(that.versions, function(version, i) {
+
+			var versionIds = _.pluck(version.files, '_file');
+			var versionFiles = _.map(versionIds, function(id) {
+				return _.find(files, { _id: id });
+			});
+
+			var tableFiles = _.filter(versionFiles, function(file) {
+				return file.getMimeCategory() === 'table';
+			});
+
+			if (tableFiles.length === 0) {
+				that.invalidate('versions.' + i + '.files', 'At least one table file must be provided.');
+			}
+		});
+
+		// validate that files are not referenced more than once
+		if (_.uniq(ids).length !== ids.length) {
+			that.invalidate('versions', 'You cannot reference a file multiple times.');
+		}
+
+		callback(true);
+	});
+});
+
 ReleaseSchema.path('versions.0.files.0._file').validate(function(file, callback) {
 	var that = this;
 	if (that._file) {
@@ -132,12 +170,19 @@ ReleaseSchema.path('versions.0.files.0._file').validate(function(file, callback)
 				if (!that._media || !that._media.playfield_image) {
 					that.invalidate('_media.playfield_image', 'Playfield image must be provided.');
 				}
-
 			}
 			callback(true);
 		});
 	}
 });
+
+
+//-----------------------------------------------------------------------------
+// METHODS
+//-----------------------------------------------------------------------------
+ReleaseSchema.methods.toDetailed = function() {
+	return this.toObject();
+};
 
 
 //-----------------------------------------------------------------------------

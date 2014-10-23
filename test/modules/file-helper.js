@@ -34,6 +34,30 @@ exports.createBackglass = function(user, request, done) {
 	});
 };
 
+exports.createPlayfield = function(user, request, done) {
+
+	var fileType = 'playfield';
+	var mimeType = 'image/png';
+	var name = 'playfield.png';
+	gm(1920, 1080, pleasejs.make_color()).toBuffer('PNG', function(err, data) {
+		if (err) {
+			throw err;
+		}
+		request
+			.post('/storage/v1')
+			.query({ type: fileType })
+			.type(mimeType)
+			.set('Content-Disposition', 'attachment; filename="' + name + '"')
+			.set('Content-Length', data.length)
+			.send(data)
+			.as(user)
+			.end(function(res) {
+				expect(res.status).to.be(201);
+				done(res.body);
+			});
+	});
+};
+
 exports.createTextfile = function(user, request, done) {
 	var fileType = 'readme';
 	request

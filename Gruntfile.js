@@ -250,13 +250,14 @@ module.exports = function(grunt) {
 	);
 
 	// server tasks
-	grunt.registerTask('dev',          [ 'env:dev',                         'jshint',               'concurrent:dev' ]);  // dev mode, watch everything
-	grunt.registerTask('serve-test',   [ 'env:test', 'build-all', 'dropdb', 'jshint', 'mkdir:test', 'concurrent:test' ]); // test mode, watch only server
-	grunt.registerTask('serve',        [ 'env:prod', 'express:prod' ]);                                                   // prod, watch nothing
+	grunt.registerTask('dev',        [ 'env:dev',                         'jshint',               'concurrent:dev' ]);  // dev mode, watch everything
+	grunt.registerTask('serve-test', [ 'env:test', 'build-all', 'dropdb', 'jshint', 'mkdir:test', 'concurrent:test' ]); // test mode, watch only server
+	grunt.registerTask('srv-tst',    [ 'env:test', 'dropdb', 'concurrent:test' ]);
+	grunt.registerTask('serve',      [ 'env:prod', 'express:prod' ]);                                                   // prod, watch nothing
 
 	// watchers
-	grunt.registerTask('watch-dev',    [ 'express:dev',  'watch:express-dev' ]);
-	grunt.registerTask('watch-test',   [ 'express:test', 'watch:express-test' ]);
+	grunt.registerTask('watch-dev',  [ 'express:dev',  'watch:express-dev' ]);
+	grunt.registerTask('watch-test', [ 'express:test', 'watch:express-test' ]);
 
 	// generate
 	grunt.registerTask('git', [ 'gitinfo', 'gitsave']);
@@ -286,7 +287,7 @@ function setEnv(grunt) {
 	var cmdLineTask = process.argv[2];
 
 	// check for tasks that need test environment
-	if (_.contains([ 'serve-test', 'test', 'ci', 'ci-server', 'ci-client' ], cmdLineTask)) {
+	if (_.contains([ 'serve-test', 'srv-tst', 'test', 'ci', 'ci-server', 'ci-client' ], cmdLineTask)) {
 		settingsPath = path.resolve(__dirname, 'server/config/settings-test.js');
 		process.env.APP_TESTING = true;
 		grunt.log.writeln('Test environment enabled.');

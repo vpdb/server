@@ -43,7 +43,7 @@ describe('The VPDB `release` API', function() {
 			request
 				.post('/api/v1/releases')
 				.as('member')
-				.send({ versions: [ {} ]})
+				.send({ versions: [ { } ] })
 				.end(function(err, res) {
 					hlp.expectValidationError(err, res, 'versions.0.version', 'must be provided');
 					hlp.expectValidationError(err, res, 'versions.0.files', 'at least one');
@@ -55,9 +55,7 @@ describe('The VPDB `release` API', function() {
 			request
 				.post('/api/v1/releases')
 				.as('member')
-				.send({ versions: [ {
-					files: [ {} ]
-				} ] })
+				.send({ versions: [ { files: [ { } ] } ] })
 				.end(function(err, res) {
 					hlp.expectValidationError(err, res, 'versions.0.files.0._file', 'must provide a file reference');
 					hlp.expectNoValidationError(err, res, 'versions.0.files.0.flavor.orientation');
@@ -80,9 +78,8 @@ describe('The VPDB `release` API', function() {
 						]
 					} ] })
 					.end(function(err, res) {
-
 						hlp.doomFile('member', vptfile.id);
-						hlp.dump(res);
+						hlp.expectValidationError(err, res, 'versions', 'reference a file multiple times');
 						hlp.expectValidationError(err, res, 'versions.0.files.0.flavor.orientation', 'must be provided');
 						hlp.expectValidationError(err, res, 'versions.0.files.0.flavor.lightning', 'must be provided');
 						hlp.expectValidationError(err, res, 'versions.0.files.1.flavor.orientation', 'must be provided');
@@ -94,6 +91,66 @@ describe('The VPDB `release` API', function() {
 			});
 		});
 
+		it('should fail accordingly when providing only non-table files', function (done) {
+			hlp.file.createTextfile('member', request, function (textfile1) {
+				hlp.file.createTextfile('member', request, function (textfile2) {
+					hlp.file.createVpt('member', request, function (vptfile) {
+						request
+							.post('/api/v1/releases')
+							.as('member')
+							.send({ versions: [
+								{ files: [
+									{ _file: textfile1.id },
+									{ _file: vptfile.id }
+								] },
+								{ files: [
+									{ _file: textfile2.id }
+								] }
+							] })
+							.end(function (err, res) {
+								hlp.doomFile('member', textfile1.id);
+								hlp.doomFile('member', textfile2.id);
+								hlp.doomFile('member', vptfile.id);
+								hlp.expectValidationError(err, res, 'versions.1.files', 'at least one table file');
+								hlp.expectNoValidationError(err, res, 'versions.1.files.0.flavor.orientation', 'must be provided');
+								hlp.expectNoValidationError(err, res, 'versions.1.files.0.flavor.lightning', 'must be provided');
+								hlp.expectNoValidationError(err, res, 'versions.1.files.0._media.playfield_image', 'must be provided');
+								done();
+							});
+					});
+				});
+			});
+		});
+
+		it.skip('should succeed when providing minimal data', function(done) {
+			hlp.file.createVpt('member', request, function(vptfile) {
+				hlp.file.createPlayfield('member', request, function(playfield) {
+					request
+						.post('/api/v1/releases')
+						.as('member')
+						.send({
+							name: 'release',
+							versions: [
+								{
+									files: [ {
+										_file: vptfile.id,
+										_media: { playfield_image: playfield.id },
+										flavor: { orientation: 'fs', lightning: 'night' } }
+									],
+									version: '1.0.0'
+								}
+							],
+							authors: [ { _user: hlp.getUser('member').id, roles: [ 'Table Creator' ] } ]
+						})
+						.end(function (err, res) {
+							hlp.doomFile('member', vptfile.id);
+							hlp.doomFile('member', playfield.id);
+							hlp.expectStatus(err, res, 201);
+							done();
+						});
+				});
+			});
+		});
 
 	});
 });

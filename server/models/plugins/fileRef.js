@@ -70,18 +70,13 @@ module.exports = exports = function(schema, options) {
 				return callback(err);
 			}
 			_.each(fields, function(path) {
-				var hit = false;
 				var shortId = objectPath.get(obj, path);
-				_.each(files, function(file) {
-
-					// if match, switch shortId with _id
-					if (file.id === shortId) {
-						objectPath.set(obj, path, file._id);
-						hit = true;
-					}
+				var hits = _.filter(files, { id: shortId });
+				_.each(hits, function(file) {
+					objectPath.set(obj, path, file._id);
 				});
 				// no match, add invalidation
-				if (!hit) {
+				if (hits.length === 0) {
 					if (shortId) {
 						var value = objectPath.get(obj, path);
 						logger.warn('[model] File ID %s not found in database for field %s.', value, path);

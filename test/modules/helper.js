@@ -345,6 +345,41 @@ exports.expectStatus = function(err, res, code, contains) {
 	}
 };
 
+exports.expectValidationError = function(err, res, field, contains) {
+	if (err) {
+		console.log(err);
+	}
+	expect(err).to.not.be.ok();
+	expect(res.status).to.be(422);
+	expect(res.body.errors).to.be.an('array');
+	var fieldErrors = _.filter(res.body.errors, { field: field });
+	expect(fieldErrors.length).to.be.greaterThan(0);
+	if (contains) {
+		var matchedErrors = _.filter(fieldErrors, function(val) {
+			return val.message.toLowerCase().indexOf(contains.toLowerCase()) > -1;
+		});
+		expect(matchedErrors.length).to.be(1);
+	}
+};
+
+exports.expectNoValidationError = function(err, res, field, contains) {
+	if (err) {
+		console.log(err);
+	}
+	expect(err).to.not.be.ok();
+	if (_.isArray(res.body.errors)) {
+		var fieldErrors = _.filter(res.body.errors, { field: field });
+		if (contains) {
+			var matchedErrors = _.filter(fieldErrors, function(val) {
+				return val.message.toLowerCase().indexOf(contains.toLowerCase()) > -1;
+			});
+			expect(matchedErrors.length).to.be(0);
+		} else {
+			expect(fieldErrors.length).to.be(0);
+		}
+	}
+};
+
 /**
  * Returns a user previously created with setupUsers();
  * @param name

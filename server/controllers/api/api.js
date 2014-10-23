@@ -90,10 +90,10 @@ exports.fail = function(res, err, code) {
 	res.setHeader('Content-Type', 'application/json');
 	if (err.errs) {
 		var arr = [];
-		_.each(err.errs, function(error) {
+		_.each(err.errs, function(error, path) {
 			arr.push({
 				message: error.message,
-				field: error.path,
+				field: _.isArray(err.errs) ? error.path : path,
 				value: error.value
 			});
 		});
@@ -105,7 +105,17 @@ exports.fail = function(res, err, code) {
 
 exports.checkApiContentType = function(req, res, next) {
 	var hasBody = req.method === 'POST' || req.method === 'PUT' || req.method === 'PATCH';
-	if (hasBody && req.path.substr(0, 5) === '/api/' && !~req.get('content-type').indexOf('application/json')) {
+
+	// todo fix use config instead of "/api".
+	if (req.path.substr(0, 5) !== '/api/') {
+		return next();
+	}
+
+	if (hasBody && !req.get('content-type')) {
+		return res.status(415).json({ error: 'You need to set the "Content-Type" header.' });
+	}
+
+	if (hasBody && !~req.get('content-type').indexOf('application/json')) {
 		res.status(415).json({ error: 'Sorry, the API only talks JSON. Did you forget to set the "Content-Type" header correctly?' });
 	} else {
 		next();

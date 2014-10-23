@@ -19,6 +19,7 @@
 
 "use strict";
 
+var _ = require('lodash');
 var logger = require('winston');
 var shortId = require('shortid');
 var mongoose = require('mongoose');
@@ -28,9 +29,6 @@ var fileRef = require('../models/plugins/fileRef');
 
 var Schema = mongoose.Schema;
 
-//var maxAspectRatioDifference = 0.2;
-
-
 //-----------------------------------------------------------------------------
 // SCHEMA
 //-----------------------------------------------------------------------------
@@ -38,26 +36,26 @@ var fields = {
 	id:           { type: String, required: true, unique: true, 'default': shortId.generate },
 	name:         { type: String, required: 'Name must be provided.' },
 	description:  { type: String },
-	versions: [ {
+	versions: { validate: [ nonEmptyArray, 'You must provide at least one version for the release.' ], type: [ {
 		version: { type: String, required: 'Version must be provided.' },
 		changes: { type: String },
-		files: [ {
-			_file:  { type: Schema.ObjectId, required: true, ref: 'File' },
+		files: { validate: [ containsVpTable, 'You must reference at least one VPT/VPX file.' ], type: [ {
+			_file:  { type: Schema.ObjectId, required: 'You must provide a file reference.', ref: 'File' },
 			flavor: {
-				orientation: { type: String, required: true, enum: { values: [ 'ws', 'fs' ], message: 'Invalid orientation. Valid orientation are: ["ws", "fs"].' }},
-				lightning:   { type: String, required: true, enum: { values: [ 'day', 'night' ], message: 'Invalid lightning. Valid options are: ["day", "night"].' }}
+				orientation: { type: String, enum: { values: [ 'ws', 'fs' ], message: 'Invalid orientation. Valid orientation are: ["ws", "fs"].' }},
+				lightning:   { type: String, enum: { values: [ 'day', 'night' ], message: 'Invalid lightning. Valid options are: ["day", "night"].' }}
 			},
 			compatibility: [ { type: Schema.ObjectId, ref: 'VPBuild' } ],
 			_media: {
 				playfield_image: { type: Schema.ObjectId, ref: 'File', required: 'Playfield image must be provided.' },
 				playfield_video: { type: Schema.ObjectId, ref: 'File' }
 			}
-		} ]
-	} ],
-	authors: [ {
+		} ] }
+	} ] },
+	authors: { validate: [ nonEmptyArray, 'You must provide at least one author.' ], type: [ {
 		_user: { type: Schema.ObjectId, required: true, ref: 'User' },
 		roles: [ String ]
-	} ],
+	} ] },
 	_tags: [ { type: Schema.ObjectId, required: true, ref: 'Tag' } ],
 	links: [ {
 		label: { type: String },
@@ -74,6 +72,7 @@ var fields = {
 	created_at:    { type: Date, required: true },
 	_created_by:   { type: Schema.ObjectId, required: true, ref: 'User' }
 };
+
 var ReleaseSchema = new Schema(fields);
 
 
@@ -86,6 +85,31 @@ ReleaseSchema.plugin(fileRef, { model: 'Release', fields: [
 	'versions.0.files.0._media.playfield_image',
 	'versions.0.files.0._media.playfield_video'
 ]});
+
+
+//-----------------------------------------------------------------------------
+// VALIDATIONS
+//-----------------------------------------------------------------------------
+function nonEmptyArray(value) {
+	return _.isArray(value) && value.length > 0;
+}
+
+function containsVpTable(files) {
+	if (!_.isArray(files) || files.length === 0) {
+		return false;
+	}
+}
+
+ReleaseSchema.path('versions.0.files.0._file').validate(function(file, callback) {
+	if (this._file) {
+		_.each(fields.versions[0].files[0].flavor, function(flavor) {
+			if (!this.flavor[flavor]) {
+				this.invalidate('flavor.' + flavor, 'Flavor `' + flavor + '` must be provided.');
+			}
+		});
+		callback();
+	}
+});
 
 
 //-----------------------------------------------------------------------------

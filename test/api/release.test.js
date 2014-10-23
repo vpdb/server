@@ -18,8 +18,7 @@ describe('The VPDB `release` API', function() {
 
 		before(function(done) {
 			hlp.setupUsers(request, {
-				member: { roles: [ 'member' ] },
-				contributor: { roles: [ 'contributor' ] }
+				member: { roles: [ 'member' ] }
 			}, done);
 		});
 
@@ -27,16 +26,47 @@ describe('The VPDB `release` API', function() {
 			hlp.cleanup(request, done);
 		});
 
-		it.only('should fail', function(done) {
-
+		it('should fail validations for empty release', function(done) {
 			request
 				.post('/api/v1/releases')
 				.as('member')
 				.send({})
 				.end(function(err, res) {
-					hlp.expectStatus(err, res, 422);
+					hlp.expectValidationError(err, res, 'name', 'must be provided');
+					hlp.expectValidationError(err, res, 'versions', 'at least one version');
+					hlp.expectValidationError(err, res, 'authors', 'at least one author');
 					done();
 				});
 		});
+
+		it('should fail validations for empty version', function(done) {
+			request
+				.post('/api/v1/releases')
+				.as('member')
+				.send({ versions: [ {} ]})
+				.end(function(err, res) {
+					hlp.expectValidationError(err, res, 'versions.0.version', 'must be provided');
+					hlp.expectValidationError(err, res, 'versions.0.files', 'at least one');
+					done();
+				});
+		});
+
+		it('should fail validations for empty file', function(done) {
+			request
+				.post('/api/v1/releases')
+				.as('member')
+				.send({ versions: [ {
+					files: [ {} ]
+				} ] })
+				.end(function(err, res) {
+					hlp.dump(res);
+					hlp.expectValidationError(err, res, 'versions.0.files.0._file', 'must provide a file reference');
+					hlp.expectValidationError(err, res, 'versions.0.files.0._media.playfield_image', 'must be provided');
+					hlp.expectNoValidationError(err, res, 'versions.0.files.0.flavor.orientation');
+					hlp.expectNoValidationError(err, res, 'versions.0.files.0.flavor.lightning');
+					done();
+				});
+		});
+
 	});
 });

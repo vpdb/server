@@ -347,5 +347,7 @@ describe('The VPDB `game` API', function() {
 
 		it('should succeed if game is not referenced');
 
+		it('should fail if there is a release attached to that game');
+
 	});
 });

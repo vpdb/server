@@ -1,55 +1,44 @@
 201 Created
 Content-Type: application/json; charset=utf-8
-Content-Encoding: gzip
+Content-Length: 775
 
 {
-  "title": "Firecracker",
-  "manufacturer": "Bally",
-  "model_number": "895",
-  "year": 1970,
-  "game_type": "em",
-  "produced_units": 2800,
-  "features": "Flippers (2), Pop bumpers (3), Slingshots (2), Standup targets (6), Kick-out holes (3), Right-side ball return gate, Left outlane kickback.Maximum displayed point score is 99,990 points per player.",
-  "notes": "A special version was produced for Germany with the same project number and project release date.  The schematic part number for the US version was W-1042-89a and the German version was W-1042-90a.",
-  "id": "firecracker",
-  "_created_by": "543bad9592b1372c356d95f6",
-  "created_at": "2014-10-13T10:46:45.299Z",
+  "title": "Cuckoo",
+  "manufacturer": "J. H. Singer",
+  "game_type": "pm",
+  "notes": "Circa 1890's.",
+  "id": "cuckoo",
+  "year": 1900,
+  "_created_by": "544ae3fc8ec4b5883f7887e3",
+  "created_at": "2014-10-24T23:42:52.371Z",
   "ipdb": {
-    "number": 855,
-    "mfg": 47,
-    "rating": 7.2
+    "number": 5356,
+    "mfg": 418
   },
-  "artists": [
-    "Christian Marche"
-  ],
-  "designers": [
-    "Harry Williams"
-  ],
-  "themes": [
-    "Celebration",
-    "Festivities"
-  ],
+  "artists": [],
+  "designers": [],
+  "themes": [],
   "short": [],
   "media": {
     "backglass": {
       "is_protected": false,
       "variations": {
         "small-2x": {
-          "url": "/storage/v1/byXHP_rcaV/small-2x"
+          "url": "/storage/v1/b1t3P_DMvB/small-2x"
         },
         "small": {
-          "url": "/storage/v1/byXHP_rcaV/small"
+          "url": "/storage/v1/b1t3P_DMvB/small"
         },
         "medium-2x": {
-          "url": "/storage/v1/byXHP_rcaV/medium-2x"
+          "url": "/storage/v1/b1t3P_DMvB/medium-2x"
         },
         "medium": {
-          "url": "/storage/v1/byXHP_rcaV/medium"
+          "url": "/storage/v1/b1t3P_DMvB/medium"
         }
       },
-      "url": "/storage/v1/byXHP_rcaV",
-      "id": "byXHP_rcaV"
+      "url": "/storage/v1/b1t3P_DMvB",
+      "id": "b1t3P_DMvB"
     }
   },
-  "url": "/game/firecracker"
+  "url": "/game/cuckoo"
 }

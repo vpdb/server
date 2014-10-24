@@ -20,8 +20,10 @@
 "use strict";
 
 var _ = require('lodash');
+var url = require('url');
 var logger = require('winston');
 
+var settings = require('../../modules/settings');
 var auth = require('../auth');
 
 /**
@@ -65,9 +67,39 @@ exports.anon = function(done) {
  * @param result Object to serialize
  * @param [code=200] HTTP status code (defaults to 200)
  */
-exports.success = function(res, result, code) {
+exports.success = function(res, result, code, opts) {
+	opts = opts || {};
 	if (!code) {
 		code = 200;
+	}
+	if (opts.pagination) {
+		var pageLinks = {};
+		var currentUrl = url.parse(settings.apiHost() + res.req.url, true);
+		delete currentUrl.search;
+		var paginatedUrl = function(page, perPage) {
+			currentUrl.query = _.extend(currentUrl.query, { page: page, per_page: perPage });
+			return url.format(currentUrl);
+		};
+
+		var lastPage = Math.floor(opts.pagination.count / opts.pagination.perPage);
+		if (opts.pagination.page > 2) {
+			pageLinks.first = paginatedUrl(1, opts.pagination.perPage);
+		}
+		if (opts.pagination.page > 1) {
+			pageLinks.prev = paginatedUrl(opts.pagination.page - 1, opts.pagination.perPage);
+		}
+		if (opts.pagination.page < lastPage) {
+			pageLinks.next = paginatedUrl(opts.pagination.page + 1, opts.pagination.perPage);
+		}
+		if (opts.pagination.page < lastPage - 1) {
+			pageLinks.last = paginatedUrl(lastPage, opts.pagination.perPage);
+		}
+		var link = _.values(_.map(pageLinks, function(link, rel) {
+			return '<' + link + '>; rel="' + rel + '"';
+		})).join(',\r\n      ');
+		if (link.length > 0) {
+			res.setHeader('Link', link);
+		}
 	}
 	if (result) {
 		res.setHeader('Content-Type', 'application/json');

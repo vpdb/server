@@ -1,43 +1,44 @@
 200 OK
 Content-Type: application/json; charset=utf-8
-Content-Length: 804
+Content-Length: 825
 
 {
-  "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJXSldnVWRyOVRWIiwiaWF0IjoiMjAxNC0xMC0xM1QxMDo0Njo0My4xODdaIiwiZXhwIjoiMjAxNC0xMC0xM1QxMTo0Njo0My4xODdaIn0.5ivAPP2Fs7xrJF4ZlA8YBGUvh-mO5wNsY40AjhMI6UQ",
-  "expires": "2014-10-13T11:46:43.187Z",
+  "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJiSnFXd3VEZndTIiwiaWF0IjoiMjAxNC0xMC0yNFQyMzo0Mjo1MS4yNTJaIiwiZXhwIjoiMjAxNC0xMC0yNVQwMDo0Mjo1MS4yNTJaIn0.lEkGBItn2ZBFhqNyGyRZiipNTJ-Wz1hMquFu46iMBW8",
+  "expires": "2014-10-25T00:42:51.252Z",
   "user": {
-    "id": "WJWgUdr9TV",
-    "name": "Norma.Gibson6",
-    "username": "Norma.Gibson6",
-    "gravatar_id": "a4e651cd11b538865e4a10ac32fc2547",
-    "email": "ambrose51@gmail.com",
+    "id": "bJqWwuDfwS",
+    "name": "Jedediah_Lakin5",
+    "username": "Jedediah_Lakin5",
+    "gravatar_id": "9bd7dff3f25ebf4abbce363907fe3174",
+    "email": "marcelle30@hotmail.com",
     "is_active": true,
     "roles": [
       "member"
     ],
     "plan": "free",
-    "created_at": "2014-10-13T10:46:43.081Z",
+    "created_at": "2014-10-24T23:42:51.201Z",
     "permissions": {
+      "files": [
+        "upload",
+        "delete",
+        "download"
+      ],
       "user": [
         "update",
         "view"
       ],
-      "tags": [
-        "add"
-      ],
       "users": [
         "search"
       ],
-      "releases": [
-        "add"
-      ],
-      "files": [
-        "download",
-        "upload",
-        "delete"
-      ],
       "vpbuilds": [
         "add"
+      ],
+      "tags": [
+        "add"
+      ],
+      "releases": [
+        "add",
+        "delete"
       ]
     }
   }

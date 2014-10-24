@@ -1,14 +1,14 @@
-PUT /api/v1/users/Zyb6tOH5aV HTTP/1.1
+PUT /api/v1/users/WJOxsFuPfPS HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJiSnQyS19yNVRFIiwiaWF0IjoiMjAxNC0xMC0xM1QxMDo0Njo0OS4xNTFaIiwiZXhwIjoiMjAxNC0xMC0xM1QxMTo0Njo0OS4xNTFaIn0.vSY2TZemSdUrRKDAylLf7rxHv1H_kkh55msCYVYvHRg
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJaeUVsaktfd2ZEQiIsImlhdCI6IjIwMTQtMTAtMjRUMjM6NDI6NTUuNDIzWiIsImV4cCI6IjIwMTQtMTAtMjVUMDA6NDI6NTUuNDIzWiJ9.9UoYPRTub6MEX8LkaJULz9v6XcY8xkkn4Y3XTdvYNfM
 Content-Type: application/json
-Content-Length: 119
+Content-Length: 135
 
 {
-  "email": "alize88@yahoo.com",
-  "username": "Allene_Reilly43",
-  "name": "Allene_Reilly43",
+  "email": "derrick.ferry95@hotmail.com",
+  "username": "Cordell_Champlin29",
+  "name": "Cordell_Champlin29",
   "is_active": true,
   "roles": [
     "member"

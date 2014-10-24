@@ -33,6 +33,7 @@ post:
           example: !include http/create-res-201.json
 get:
   securedBy: [ ]
+  is: [ paginated: { defaultPerPage: 12, maxPerPage: 60 } ]
   description: |
     List all games.
 
@@ -41,11 +42,31 @@ get:
   queryParameters:
     q:
       description: |
-        Search query. Searches in `id` and `title`.
+        Search query. Searches `title` and matches `id`.
       required: false
       minLength: 2
       type: string
       example: sttng
+    mfg:
+      description: |
+        Filter by manufacturer. Can be a comma-separated list which results in
+        an `or` expression.
+
+        Note that the names are case-sensitive, i.e. you should use "Gottlieb"
+        instead of "gottlieb".
+      required: false
+      type: string
+      example: Gottlieb,Capcom
+    decade:
+      description: |
+        Filter by decade. Can be a comma-separated list which results in an
+        `or` expression.
+
+        Note that the decade is defined by its first year. The full year should
+        be provided.
+      required: false
+      type: string
+      example: 1990,2010
   body:
     role/anon:
       example: !include http/list-req.json

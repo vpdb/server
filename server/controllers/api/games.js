@@ -130,9 +130,11 @@ exports.del = function(req, res) {
  */
 exports.list = function(req, res) {
 
-	var query = Game.find()
-		.populate({ path: '_media.backglass' })
-		.populate({ path: '_media.logo' });
+	var pagination = {
+		defaultPerPage: 12,
+		maxPerPage: 60
+	};
+	var q, query = [];
 
 	// text search
 	if (req.query.q) {
@@ -145,13 +147,45 @@ exports.list = function(req, res) {
 		var titleQuery = req.query.q.trim().replace(/[^a-z0-9-\s]+/gi, '').replace(/\s+/g, '.*?');
 		var titleRegex = new RegExp(titleQuery, 'i');
 		var idQuery = req.query.q.trim().replace(/[^a-z0-9-]+/gi, ''); // TODO tune
-		query.or([
-			{ title: titleRegex },
-			{ id: idQuery }
-		]);
+
+		query.push({ $or: [ { title: titleRegex }, { id: idQuery } ] });
 	}
 
-	query.exec(function(err, games) {
+	// filter by manufacturer
+	if (req.query.mfg) {
+		var mfgs = req.query.mfg.split(',');
+		query.push({ manufacturer: mfgs.length === 1 ? mfgs[0] : { $in: mfgs } });
+	}
+
+	// filter by decade
+	if (req.query.decade) {
+		var decades = req.query.decade.split(',');
+		var d = [];
+		_.each(decades, function(decade) {
+			d.push({ year: { $gte: parseInt(decade), $lt: parseInt(decade) + 10 }});
+		});
+		if (d.length === 1) {
+			query.push(d[0]);
+		} else {
+			query.push({ $or: d });
+		}
+	}
+
+	// pagination
+	var page = Math.max(req.query.page, 1) || 1;
+	var perPage = Math.max(pagination.defaultPerPage, Math.min(req.query.per_page, pagination.maxPerPage)) || pagination.defaultPerPage;
+
+	// construct query object
+	if (query.length === 0) {
+		q = {};
+	} else if (query.length === 1) {
+		q = query[0];
+	} else {
+		q = { $and: query };
+	}
+	logger.info('[api|game:list] query: %j', util.inspect(q));
+	Game.paginate(q, page, perPage, function(err, pageCount, games, count) {
+
 		/* istanbul ignore if  */
 		if (err) {
 			return api.fail(res, error(err, 'Error listing games').log('list'), 500);
@@ -159,8 +193,9 @@ exports.list = function(req, res) {
 		games = _.map(games, function(game) {
 			return game.toSimple();
 		});
-		api.success(res, games);
-	});
+		api.success(res, games, 200, { pagination: { page: page, perPage: perPage, count: count }});
+
+	}, { populate: [ '_media.backglass', '_media.logo' ]});
 };
 
 

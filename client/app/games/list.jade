@@ -9,7 +9,7 @@
 			li(ng-class="{ active: viewtype == 'list' }")
 				i.icon.icon-th-list-list(ng-click="switchview('list')")
 		hr
-		p(ng-show="(games | filter:query | decade:filterDecades | manufacturer:filterManufacturer).length == 0") No games found.
+		p(ng-show="!games.length") No games found.
 		.row.row-data.ng-cloak
 			.fade2-animation(ng-include="template")
 
@@ -21,7 +21,7 @@
 		.input-group.padder-bottom
 			span.input-group-addon.input-group-addon--search
 				i.fa.fa-search
-			input.form-control.input--search(ng-model="query", type="text", placeholder="Search")
+			input.form-control.input--search(ng-model="q", type="text", placeholder="Search")
 
 		accordion.panel-group--transparent(close-others="false")
 
@@ -40,10 +40,12 @@
 			accordion-group.panel--inner(is-open="filterManufacturerOpen")
 				accordion-heading by Manufacturer
 				.row
-					.col-xs-6.text-center.a(filter-manufacturer="bally") Bally
-					.col-xs-6.text-center.a(filter-manufacturer="capcom") Capcom
-					.col-xs-6.text-center.a(filter-manufacturer="midway") Midway
-					.col-xs-6.text-center.a(filter-manufacturer="williams") Williams
+					.col-xs-6.text-center.a(filter-manufacturer="Bally") Bally
+					.col-xs-6.text-center.a(filter-manufacturer="Capcom") Capcom
+					.col-xs-6.text-center.a(filter-manufacturer="Midway") Midway
+					.col-xs-6.text-center.a(filter-manufacturer="Williams") Williams
+					.col-xs-6.text-center.a(filter-manufacturer="Gottlieb") Gottlieb
+					.col-xs-6.text-center.a(filter-manufacturer="Data East") Data East
 
 			// author filter
 			accordion-group.panel--inner(is-open="filterAuthorOpen")

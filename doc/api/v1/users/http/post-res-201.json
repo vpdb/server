@@ -1,18 +1,18 @@
 201 Created
 Content-Type: application/json; charset=utf-8
-Content-Length: 307
+Content-Length: 296
 
 {
   "plan": "free",
-  "name": "Maybelle.Cruickshank",
-  "username": "Maybelle.Cruickshank",
-  "email": "mitchel91@gmail.com",
+  "name": "Jazmyne.Kunde2",
+  "username": "Jazmyne.Kunde2",
+  "email": "finn.howe@yahoo.com",
   "provider": "local",
-  "created_at": "2014-10-13T10:46:49.298Z",
+  "created_at": "2014-10-24T23:42:55.501Z",
   "is_active": true,
   "roles": [
     "member"
   ],
-  "id": "-1BRFuHcpV",
-  "gravatar_id": "d609bad88f44ae790141053c726573c7"
+  "id": "ZJzlnY_vfvH",
+  "gravatar_id": "0d38b804c8b02c85c915f95bcf261633"
 }

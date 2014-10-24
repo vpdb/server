@@ -77,6 +77,7 @@
 		"metalsmith-templates": "0.6.0",
 		"mocha": "1.21.4",
 		"mongoose": "3.9.1",
+		"mongoose-paginate": "^3.1.3",
 		"mongoose-unique-validator": "0.4.1",
 		"morgan": "1.3.2",
 		"nib": "1.0.4",

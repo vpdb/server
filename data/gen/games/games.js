@@ -16,7 +16,7 @@ exports.upload = function() {
 		function(callback) {
 			request
 				.post('http://localhost:3000/api/v1/authenticate')
-				.send({ username: 'test', password: '' })
+				.send({ username: 'test', password: 'testtest' })
 				.end(function(err, res) {
 					if (err) {
 						console.error('Error obtaining token: %s', err.message);

@@ -146,18 +146,6 @@ common
 		};
 	})
 
-	.directive('filterDecade', function() {
-		return {
-			restrict: 'A',
-			link: function(scope, element, attrs) {
-				element.click(function() {
-					element.toggleClass('active');
-					scope.$emit('dataToggleDecade', parseInt(attrs.filterDecade), element.hasClass('active'));
-				});
-			}
-		};
-	})
-
 	.directive('filterRole', function() {
 		return {
 			restrict: 'A',
@@ -170,17 +158,7 @@ common
 		};
 	})
 
-	.directive('filterManufacturer', function() {
-		return {
-			restrict: 'A',
-			link: function(scope, element, attrs) {
-				element.click(function() {
-					element.toggleClass('active');
-					scope.$emit('dataToggleManufacturer', attrs.filterManufacturer, element.hasClass('active'));
-				});
-			}
-		};
-	})
+
 
 	.directive('download', function($parse) {
 		return {

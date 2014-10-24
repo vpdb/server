@@ -24,7 +24,10 @@ var logger = require('winston');
 var async = require('async');
 var mongoose = require('mongoose');
 var validator = require('validator');
+
+var paginate = require('mongoose-paginate');
 var uniqueValidator = require('mongoose-unique-validator');
+
 var fileRef = require('../models/plugins/fileRef');
 
 var Schema = mongoose.Schema;
@@ -75,7 +78,7 @@ var GameSchema = new Schema(fields);
 //-----------------------------------------------------------------------------
 GameSchema.plugin(uniqueValidator, { message: 'The {PATH} "{VALUE}" is already taken.' });
 GameSchema.plugin(fileRef, { model: 'Game', fields: [ '_media.backglass', '_media.logo' ]});
-
+GameSchema.plugin(paginate);
 
 //-----------------------------------------------------------------------------
 // API FIELDS

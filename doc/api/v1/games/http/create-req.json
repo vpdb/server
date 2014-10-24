@@ -1,36 +1,22 @@
 POST /api/v1/games HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJieVBOdk9INTZWIiwiaWF0IjoiMjAxNC0xMC0xM1QxMDo0Njo0NS4xNTlaIiwiZXhwIjoiMjAxNC0xMC0xM1QxMTo0Njo0NS4xNTlaIn0.nBi4g6skBe1suGYBOEfr7HUECBmgt44KTXnnncDZ3R4
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJaa1YyRHV2enZTIiwiaWF0IjoiMjAxNC0xMC0yNFQyMzo0Mjo1Mi4yOTBaIiwiZXhwIjoiMjAxNC0xMC0yNVQwMDo0Mjo1Mi4yOTBaIn0.iuTFaYZ4fXIQ1nSrdJokK6ejb51zPN6XS6hQSMsHx5I
 Content-Type: application/json
-Content-Length: 739
+Content-Length: 184
 
 {
   "ipdb": {
-    "number": 855,
-    "mfg": 47,
-    "rating": "7.2"
+    "number": 5356,
+    "mfg": 418
   },
-  "title": "Firecracker",
-  "manufacturer": "Bally",
-  "model_number": "895",
-  "year": 1970,
-  "game_type": "em",
-  "produced_units": 2800,
-  "themes": [
-    "Celebration",
-    "Festivities"
-  ],
-  "designers": [
-    "Harry Williams"
-  ],
-  "artists": [
-    "Christian Marche"
-  ],
-  "features": "Flippers (2), Pop bumpers (3), Slingshots (2), Standup targets (6), Kick-out holes (3), Right-side ball return gate, Left outlane kickback.Maximum displayed point score is 99,990 points per player.",
-  "notes": "A special version was produced for Germany with the same project number and project release date.  The schematic part number for the US version was W-1042-89a and the German version was W-1042-90a.",
-  "id": "firecracker",
+  "title": "Cuckoo",
+  "manufacturer": "J. H. Singer",
+  "game_type": "pm",
+  "notes": "Circa 1890's.",
+  "id": "cuckoo",
+  "year": 1900,
   "_media": {
-    "backglass": "byXHP_rcaV"
+    "backglass": "b1t3P_DMvB"
   }
 }

@@ -8,6 +8,7 @@ angular.module('vpdb.games.list', [])
 		$scope.setTitle('Games');
 		$scope.setMenu('games');
 
+		$scope.$query = null;
 		$scope.filterDecades = [];
 		$scope.filterManufacturer = [];
 		$scope.sort = 'name';
@@ -36,7 +37,43 @@ angular.module('vpdb.games.list', [])
 		$scope.setView();
 
 
-		$scope.games = GameResource.query();
+		// QUERY LOGIC
+		// --------------------------------------------------------------------
+
+		var refresh = function() {
+			var query = {};
+
+			// search query
+			if ($scope.q && $scope.q.length > 2) {
+				query.q = $scope.q;
+			}
+			if (!$scope.q) {
+				delete query.q;
+			}
+
+			// filter by decade
+			if ($scope.filterDecades.length) {
+				query.decade = $scope.filterDecades.join(',');
+			} else {
+				delete query.decade;
+			}
+
+			// filter by manufacturer
+			if ($scope.filterManufacturer.length) {
+				query.mfg = $scope.filterManufacturer.join(',');
+			} else {
+				delete query.mfg;
+			}
+
+
+			// refresh if changes
+			if (!_.isEqual($scope.$query, query)) {
+				$scope.games = GameResource.query(query);
+				$scope.$query = query;
+			}
+		};
+
+		$scope.$watch('q', refresh);
 
 		$scope.$on('dataToggleDecade', function(event, decade) {
 			if (_.contains($scope.filterDecades, decade)) {
@@ -44,7 +81,7 @@ angular.module('vpdb.games.list', [])
 			} else {
 				$scope.filterDecades.push(decade);
 			}
-			$scope.$apply();
+			refresh();
 		});
 
 		$scope.$on('dataToggleManufacturer', function(event, manufacturer) {
@@ -53,7 +90,7 @@ angular.module('vpdb.games.list', [])
 			} else {
 				$scope.filterManufacturer.push(manufacturer);
 			}
-			$scope.$apply();
+			refresh();
 		});
 
 		$scope.$on('dataChangeSort', function(event, field, direction) {
@@ -91,20 +128,26 @@ angular.module('vpdb.games.list', [])
 		};
 	})
 
-	.filter('manufacturer', function() {
-		return function(items, manufacturers) {
-			if (!items || !manufacturers || !manufacturers.length) {
-				return items;
+	.directive('filterDecade', function() {
+		return {
+			restrict: 'A',
+			link: function(scope, element, attrs) {
+				element.click(function() {
+					element.toggleClass('active');
+					scope.$emit('dataToggleDecade', parseInt(attrs.filterDecade), element.hasClass('active'));
+				});
 			}
-			return _.filter(items, function(game) {
-				var manufacturer;
-				for (var i = 0; i < manufacturers.length; i++) {
-					manufacturer = manufacturers[i];
-					if (game.manufacturer.toLowerCase() === manufacturer.toLowerCase()) {
-						return true;
-					}
-				}
-				return false;
-			});
+		};
+	})
+
+	.directive('filterManufacturer', function() {
+		return {
+			restrict: 'A',
+			link: function(scope, element, attrs) {
+				element.click(function() {
+					element.toggleClass('active');
+					scope.$emit('dataToggleManufacturer', attrs.filterManufacturer, element.hasClass('active'));
+				});
+			}
 		};
 	});

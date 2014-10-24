@@ -14,6 +14,8 @@ logs
 /devsite
 /coverage
 /data/storage*
+/data/gen/games/backglass
+/data/gen/games/logo
 /gfx/export
 results
 server/config/settings.js

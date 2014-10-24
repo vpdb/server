@@ -326,11 +326,14 @@ function patch(settingsPatched, codeBlock, pos, parentPath) {
 	return before.trim() + ',\n\n\t' + indent + codeBlock.trim().replace(/,$/, '') + '\n' + indent + after.trim();
 }
 
-Settings.prototype.apiUri = function(path) {
+Settings.prototype.apiHost = function() {
 	return this.current.vpdb.api.protocol + '://' +
 	       this.current.vpdb.api.hostname +
-	      (this.current.vpdb.api.port === 80 || this.current.vpdb.api.port === 443 ? '' : ':' + this.current.vpdb.api.port) +
-	       this.current.vpdb.api.pathname + (path || '');
+	      (this.current.vpdb.api.port === 80 || this.current.vpdb.api.port === 443 ? '' : ':' + this.current.vpdb.api.port);
+};
+
+Settings.prototype.apiUri = function(path) {
+	return this.apiHost() + this.current.vpdb.api.pathname + (path || '');
 };
 
 Settings.prototype.apiPath = function(path) {

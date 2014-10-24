@@ -1,42 +1,43 @@
 200 OK
 Content-Type: application/json; charset=utf-8
-Content-Length: 533
-Etag: W/"215-37fab0ae"
+Content-Length: 531
+Etag: W/"213-fb2b5e4d"
 
 {
   "plan": "free",
-  "name": "May_Gutmann33",
-  "username": "May_Gutmann33",
-  "email": "ubaldo.brown41@yahoo.com",
+  "name": "Kendall13",
+  "username": "Kendall13",
+  "email": "madge11@yahoo.com",
   "provider": "local",
-  "created_at": "2014-10-13T10:46:41.516Z",
+  "created_at": "2014-10-24T23:42:50.522Z",
   "is_active": true,
   "roles": [
     "member"
   ],
-  "id": "-1SeH_B9a4",
-  "gravatar_id": "8999f0e419f630cfe9bc074584dda8e9",
+  "id": "ZJ6qIOPfvB",
+  "gravatar_id": "ece67e88ac27f8e78b1a6c7bdcda8f5a",
   "permissions": {
+    "files": [
+      "upload",
+      "delete",
+      "download"
+    ],
     "user": [
       "update",
       "view"
     ],
-    "tags": [
-      "add"
-    ],
     "users": [
       "search"
     ],
-    "releases": [
-      "add"
-    ],
-    "files": [
-      "download",
-      "upload",
-      "delete"
-    ],
     "vpbuilds": [
       "add"
+    ],
+    "tags": [
+      "add"
+    ],
+    "releases": [
+      "add",
+      "delete"
     ]
   }
 }

@@ -60,7 +60,7 @@ var init = function(next) {
 				{ resources: 'user', permissions: [ 'view', 'update' ]}, // profile
 				{ resources: 'users', permissions: [ 'search' ]},        // any other user
 				{ resources: 'files', permissions: [ 'download', 'upload', 'delete' ]},  // delete: only own/inactive files
-				{ resources: 'releases', permissions: 'add' },
+				{ resources: 'releases', permissions: [ 'add', 'delete' ] }, // only own releases and only for a given period
 				{ resources: 'tags', permissions: 'add' },
 				{ resources: 'vpbuilds', permissions: 'add' }
 			]

@@ -61,46 +61,47 @@ module.exports = function(app) {
 	app.get(settings.apiPath('/authenticate/:strategy'), api.user.authenticateOAuth2);
 
 	// files
-	app.get(settings.apiPath('/files/:id'),     api.anon(api.files.view));
-	app.delete(settings.apiPath('/files/:id'),  api.auth(api.files.del, 'files', 'delete'));
+	app.get(settings.apiPath('/files/:id'),       api.anon(api.files.view));
+	app.delete(settings.apiPath('/files/:id'),    api.auth(api.files.del, 'files', 'delete'));
 
 	// games
-	app.get(settings.apiPath('/games'),         api.anon(api.games.list));
-	app.head(settings.apiPath('/games/:id'),    api.anon(api.games.head));
-	app.get(settings.apiPath('/games/:id'),     api.anon(api.games.view));
-	app.post(settings.apiPath('/games'),        api.auth(api.games.create, 'games', 'add'));
-	app.delete(settings.apiPath('/games/:id'),  api.auth(api.games.del, 'games', 'delete'));
+	app.get(settings.apiPath('/games'),           api.anon(api.games.list));
+	app.head(settings.apiPath('/games/:id'),      api.anon(api.games.head));
+	app.get(settings.apiPath('/games/:id'),       api.anon(api.games.view));
+	app.post(settings.apiPath('/games'),          api.auth(api.games.create, 'games', 'add'));
+	app.delete(settings.apiPath('/games/:id'),    api.auth(api.games.del, 'games', 'delete'));
 
 	// ipdb
-	app.get(settings.apiPath('/ipdb/:id'),      api.auth(api.ipdb.view, 'ipdb', 'view'));
+	app.get(settings.apiPath('/ipdb/:id'),        api.auth(api.ipdb.view, 'ipdb', 'view'));
 
 	// ping
-	app.get(settings.apiPath('/ping'),          api.anon(api.ping));
+	app.get(settings.apiPath('/ping'),            api.anon(api.ping));
 
 	// release
-	app.post(settings.apiPath('/releases'),     api.auth(api.releases.create, 'releases', 'add'));
+	app.post(settings.apiPath('/releases'),       api.auth(api.releases.create, 'releases', 'add'));
+	app.delete(settings.apiPath('/releases/:id'), api.auth(api.releases.del, 'releases', 'delete'));
 
 	// roles
-	app.get(settings.apiPath('/roles'),         api.auth(api.roles.list, 'roles', 'list'));
+	app.get(settings.apiPath('/roles'),           api.auth(api.roles.list, 'roles', 'list'));
 
 	// tags
-	app.get(settings.apiPath('/tags'),          api.anon(api.tags.list));
-	app.post(settings.apiPath('/tags'),         api.auth(api.tags.create, 'tags', 'add'));
+	app.get(settings.apiPath('/tags'),            api.anon(api.tags.list));
+	app.post(settings.apiPath('/tags'),           api.auth(api.tags.create, 'tags', 'add'));
 
 	// user (own profile)
-	app.get(settings.apiPath('/user'),          api.auth(api.user.view, 'user', 'view'));
-	app.put(settings.apiPath('/user'),          api.auth(api.user.update, 'user', 'update'));
+	app.get(settings.apiPath('/user'),            api.auth(api.user.view, 'user', 'view'));
+	app.put(settings.apiPath('/user'),            api.auth(api.user.update, 'user', 'update'));
 
 	// users (any other user)
-	app.post(settings.apiPath('/users'),        api.users.create);
-	app.get(settings.apiPath('/users'),         api.auth(api.users.list, 'users', 'search'));
-	app.get(settings.apiPath('/users/:id'),     api.auth(api.users.view, 'users', 'view'));
-	app.put(settings.apiPath('/users/:id'),     api.auth(api.users.update, 'users', 'update'));
-	app.delete(settings.apiPath('/users/:id'),  api.auth(api.users.del, 'users', 'delete'));
+	app.post(settings.apiPath('/users'),          api.users.create);
+	app.get(settings.apiPath('/users'),           api.auth(api.users.list, 'users', 'search'));
+	app.get(settings.apiPath('/users/:id'),       api.auth(api.users.view, 'users', 'view'));
+	app.put(settings.apiPath('/users/:id'),       api.auth(api.users.update, 'users', 'update'));
+	app.delete(settings.apiPath('/users/:id'),    api.auth(api.users.del, 'users', 'delete'));
 
 	// vpbuilds
-	app.get(settings.apiPath('/vpbuilds'),      api.anon(api.vpbuilds.list));
-	app.post(settings.apiPath('/vpbuilds'),     api.auth(api.vpbuilds.create, 'vpbuilds', 'add'));
+	app.get(settings.apiPath('/vpbuilds'),        api.anon(api.vpbuilds.list));
+	app.post(settings.apiPath('/vpbuilds'),       api.auth(api.vpbuilds.create, 'vpbuilds', 'add'));
 
 
 	// or else fail

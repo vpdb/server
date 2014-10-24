@@ -24,12 +24,14 @@ var path = require('path');
 var logger = require('winston');
 var mongoose = require('mongoose');
 var shortId = require('shortid');
-var config = require('./../modules/settings').current;
+var settings = require('./../modules/settings');
 
 var storage = require('../modules/storage');
 var mimeTypes = require('../modules/mimetypes');
 
 var Schema = mongoose.Schema;
+var config = settings.current;
+
 
 //-----------------------------------------------------------------------------
 // SCHEMA
@@ -104,12 +106,13 @@ FileSchema.methods.toDetailed = function() {
 };
 
 /**
+ * Returns the local path where the file is stored.
  *
- * @param {Object|String} Either variation name or object containing attribute "name".
- *                        Note that for non-standard (i.e. not equal file) variation mime types,
- *                        the object is mandatory.
- * @param {string} [tmpSuffix=] If set, this is suffixed to the file name before the extension.
- * @returns {string} Absolute path to file.
+ * @param {Object|String} variation Either variation name or object containing attribute "name".
+ *                                  Note that for non-standard (i.e. not equal file) variation mime types,
+ *                                  the object is mandatory.
+ * @param {string} [tmpSuffix=]     If set, this is suffixed to the file name before the extension.
+ * @returns {string}                Absolute path to file.
  * @api public
  */
 FileSchema.methods.getPath = function(variation, tmpSuffix) {
@@ -128,7 +131,7 @@ FileSchema.methods.getPath = function(variation, tmpSuffix) {
 };
 
 /**
- * Returns the URL of the file.
+ * Returns the public URL of the file.
  *
  * @param {Object|String} variation - Either variation name or object containing attribute "name"
  * @returns {string}
@@ -137,8 +140,8 @@ FileSchema.methods.getPath = function(variation, tmpSuffix) {
 FileSchema.methods.getUrl = function(variation) {
 	var variationName = _.isObject(variation) ? variation.name : variation;
 	return variationName ?
-		'/storage/' + this.id + '/' + variationName :
-		'/storage/' + this.id;
+		settings.storagePath('/' + this.id + '/' + variationName) :
+		settings.storagePath('/' + this.id);
 };
 
 /**
@@ -174,16 +177,24 @@ FileSchema.methods.getMimeSubtype = function() {
 	return this.mime_type.split('/')[1];
 };
 
+/**
+ * Returns the file category.
+ * @returns {string}
+ */
 FileSchema.methods.getMimeCategory = function() {
 	return mimeTypes[this.mime_type].category;
 };
 
-
-
+/**
+ * Returns something useful for logging.
+ * @param {object|string} variation Variation name or whole object
+ * @returns {string}
+ */
 FileSchema.methods.toString = function(variation) {
 	var v = _.isObject(variation) ? variation.name : variation;
 	return this.file_type + ' "' + this.id + '"' + (v ? ' (' + v + ')' : '');
 };
+
 
 //-----------------------------------------------------------------------------
 // STATIC METHODS
@@ -193,8 +204,8 @@ FileSchema.methods.toString = function(variation) {
  * A helper method that replaces the "$" and "." character in order to be able
  * to store non-structured objects in MongoDB.
  *
- * @param object Object that is going to end up in MongoDB
- * @param [replacement=-] (optional) Replacement character
+ * @param {object} object Object that is going to end up in MongoDB
+ * @param {string} [replacement=-] (optional) Replacement character
  */
 FileSchema.statics.sanitizeObject = function(object, replacement) {
 	replacement = replacement || '-';

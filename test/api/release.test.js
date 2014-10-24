@@ -18,7 +18,8 @@ describe('The VPDB `release` API', function() {
 
 		before(function(done) {
 			hlp.setupUsers(request, {
-				member: { roles: [ 'member' ] }
+				member: { roles: [ 'member' ] },
+				contributor: { roles: [ 'contributor' ] }
 			}, done);
 		});
 
@@ -32,6 +33,7 @@ describe('The VPDB `release` API', function() {
 				.as('member')
 				.send({})
 				.end(function(err, res) {
+					hlp.expectValidationError(err, res, '_game', 'must be provided');
 					hlp.expectValidationError(err, res, 'name', 'must be provided');
 					hlp.expectValidationError(err, res, 'versions', 'at least one version');
 					hlp.expectValidationError(err, res, 'authors', 'at least one author');
@@ -122,32 +124,38 @@ describe('The VPDB `release` API', function() {
 			});
 		});
 
-		it.skip('should succeed when providing minimal data', function(done) {
-			hlp.file.createVpt('member', request, function(vptfile) {
-				hlp.file.createPlayfield('member', request, function(playfield) {
-					request
-						.post('/api/v1/releases')
-						.as('member')
-						.send({
-							name: 'release',
-							versions: [
-								{
-									files: [ {
-										_file: vptfile.id,
-										_media: { playfield_image: playfield.id },
-										flavor: { orientation: 'fs', lightning: 'night' } }
-									],
-									version: '1.0.0'
-								}
-							],
-							authors: [ { _user: hlp.getUser('member').id, roles: [ 'Table Creator' ] } ]
-						})
-						.end(function (err, res) {
-							hlp.doomFile('member', vptfile.id);
-							hlp.doomFile('member', playfield.id);
-							hlp.expectStatus(err, res, 201);
-							done();
-						});
+		it('should succeed when providing minimal data', function(done) {
+			var user = 'member';
+			hlp.game.createGame('contributor', request, function(game) {
+				hlp.doomGame('contributor', game.id);
+
+				hlp.file.createVpt(user, request, function(vptfile) {
+					hlp.file.createPlayfield(user, request, function(playfield) {
+
+						request
+							.post('/api/v1/releases')
+							.as(user)
+							.send({
+								name: 'release',
+								_game: game.id,
+								versions: [
+									{
+										files: [ {
+											_file: vptfile.id,
+											_media: { playfield_image: playfield.id },
+											flavor: { orientation: 'fs', lightning: 'night' } }
+										],
+										version: '1.0.0'
+									}
+								],
+								authors: [ { _user: hlp.getUser(user).id, roles: [ 'Table Creator' ] } ]
+							})
+							.end(function (err, res) {
+								hlp.doomRelease(user, res.body.id);
+								hlp.expectStatus(err, res, 201);
+								done();
+							});
+					});
 				});
 			});
 		});

@@ -83,7 +83,7 @@ describe('The ACLs of the VPDB API', function() {
 		});
 
 		it('should deny access to game deletion', function(done) {
-			request.del('/api/v1/games/mb').send({}).end(hlp.status(401, done));
+			request.del('/api/v1/games/mb').end(hlp.status(401, done));
 		});
 
 		it('should allow access to ping', function(done) {
@@ -104,6 +104,14 @@ describe('The ACLs of the VPDB API', function() {
 
 		it('should deny access to create vpbuilds', function(done) {
 			request.post('/api/v1/vpbuilds').send({}).end(hlp.status(401, done));
+		});
+
+		it('should deny access to create releases', function(done) {
+			request.post('/api/v1/releases').send({}).end(hlp.status(401, done));
+		});
+
+		it('should deny access to release deletion', function(done) {
+			request.del('/api/v1/releases/123456').end(hlp.status(401, done));
 		});
 
 	});
@@ -203,6 +211,14 @@ describe('The ACLs of the VPDB API', function() {
 			request.post('/api/v1/vpbuilds').as('member').send({}).end(hlp.status(422, done));
 		});
 
+		it('should allow to create releases', function(done) {
+			request.post('/api/v1/releases').as('member').send({}).end(hlp.status(422, done));
+		});
+
+		it('should allow to delete releases', function(done) {
+			request.del('/api/v1/releases/123456').as('member').end(hlp.status(404, done));
+		});
+
 	});
 
 	describe('for members with the `contributor` role', function() {
@@ -290,6 +306,14 @@ describe('The ACLs of the VPDB API', function() {
 
 		it('should allow to create vpbuilds', function(done) {
 			request.post('/api/v1/vpbuilds').as('contributor').send({}).end(hlp.status(422, done));
+		});
+
+		it('should allow to create releases', function(done) {
+			request.post('/api/v1/releases').as('contributor').send({}).end(hlp.status(422, done));
+		});
+
+		it('should allow to delete releases', function(done) {
+			request.del('/api/v1/releases/123456').as('contributor').end(hlp.status(404, done));
 		});
 
 	});
@@ -389,6 +413,14 @@ describe('The ACLs of the VPDB API', function() {
 			request.post('/api/v1/vpbuilds').as('admin').send({}).end(hlp.status(422, done));
 		});
 
+		it('should allow to create releases', function(done) {
+			request.post('/api/v1/releases').as('admin').send({}).end(hlp.status(422, done));
+		});
+
+		it('should allow to delete releases', function(done) {
+			request.del('/api/v1/releases/123456').as('admin').end(hlp.status(404, done));
+		});
+
 	});
 
 	describe('for the root user', function() {
@@ -481,6 +513,14 @@ describe('The ACLs of the VPDB API', function() {
 
 		it('should allow to create vpbuilds', function(done) {
 			request.post('/api/v1/vpbuilds').as('root').send({}).end(hlp.status(422, done));
+		});
+
+		it('should allow to create releases', function(done) {
+			request.post('/api/v1/releases').as('root').send({}).end(hlp.status(422, done));
+		});
+
+		it('should allow to delete releases', function(done) {
+			request.del('/api/v1/releases/123456').as('root').end(hlp.status(404, done));
 		});
 
 	});

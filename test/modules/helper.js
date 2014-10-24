@@ -214,6 +214,21 @@ exports.doomGame = function(user, gameId) {
 };
 
 /**
+ * Marks a release to be cleaned up in teardown.
+ * @param user User with which the game was created
+ * @param releaseId ID of the release
+ */
+exports.doomRelease = function(user, releaseId) {
+	if (!this.doomedReleases) {
+		this.doomedReleases = {};
+	}
+	if (!this.doomedReleases[user]) {
+		this.doomedReleases[user] = [];
+	}
+	this.doomedReleases[user].unshift(releaseId);
+};
+
+/**
  * Marks a user to be cleaned up in teardown. Note that this is only for users
  * created in tests, the users in the before() method are cleaned automatically.
  * @param userId ID of the user
@@ -239,6 +254,7 @@ exports.cleanup = function(request, done) {
 	var that = this;
 	var doomedFiles = this.doomedFiles;
 	var doomedGames = this.doomedGames;
+	var doomedReleases = this.doomedReleases;
 
 	async.series([
 
@@ -271,7 +287,35 @@ exports.cleanup = function(request, done) {
 			});
 		},
 
-		// 2. cleanup games
+		// 2. cleanup releases
+		function(next) {
+			if (!doomedReleases) {
+				return next();
+			}
+			async.eachSeries(_.keys(doomedReleases), function(user, nextRelease) {
+				async.each(doomedReleases[user], function(releaseId, next) {
+					request
+						.del('/api/v1/releases/' + releaseId)
+						.as(user)
+						.end(function(err, res) {
+							if (err) {
+								return next(err);
+							}
+							if (res.status !== 204) {
+								console.log(res.body);
+							}
+							expect(res.status).to.eql(204);
+							next();
+						});
+				}, nextRelease);
+
+			}, function(err) {
+				that.doomedReleases = {};
+				next(err);
+			});
+		},
+
+		// 3. cleanup games
 		function(next) {
 			if (!doomedGames) {
 				return next();

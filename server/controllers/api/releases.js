@@ -67,3 +67,45 @@ exports.create = function(req, res) {
 		});
 	});
 };
+
+
+/**
+ * Deletes a release.
+ *
+ * @param {Request} req
+ * @param {Response} res
+ */
+exports.del = function(req, res) {
+
+	var query = Release.findOne({ id: req.params.id })
+		.populate({ path: 'versions.0.files.0._file' })
+		.populate({ path: 'versions.0.files.0._media.playfield_image' })
+		.populate({ path: 'versions.0.files.0._media.playfield_video' });
+
+	query.exec(function(err, release) {
+		/* istanbul ignore if  */
+		if (err) {
+			return api.fail(res, error(err, 'Error getting release "%s"', req.params.id).log('delete'), 500);
+		}
+		if (!release) {
+			return api.fail(res, error('No such release with ID "%s".', req.params.id), 404);
+		}
+
+		// only allow deleting own files (for now)
+		if (!release._created_by.equals(req.user._id)) {
+			return api.fail(res, error('Permission denied, must be owner.'), 403);
+		}
+
+		// todo check if there are references (comments, etc)
+
+		// remove from db
+		release.remove(function(err) {
+			/* istanbul ignore if  */
+			if (err) {
+				return api.fail(res, error(err, 'Error deleting release "%s" (%s)', release.id, release.name).log('delete'), 500);
+			}
+			logger.info('[api|release:delete] Release "%s" (%s) successfully deleted.', release.name, release.id);
+			api.success(res, null, 204);
+		});
+	});
+};

@@ -31,8 +31,8 @@ var error = require('../../modules/error')('api', 'game');
 
 /**
  * Returns either 200 or 404. Useful for checking if a given game ID already exists.
- * @param req Request object
- * @param res Response object
+ * @param {Request} req
+ * @param {Response} res
  */
 exports.head = function(req, res) {
 
@@ -49,8 +49,8 @@ exports.head = function(req, res) {
 
 /**
  * Creates a new game.
- * @param req Request object
- * @param res Response object
+ * @param {Request} req
+ * @param {Response} res
  */
 exports.create = function(req, res) {
 
@@ -88,8 +88,8 @@ exports.create = function(req, res) {
 
 /**
  * Deletes a game.
- * @param req
- * @param res
+ * @param {Request} req
+ * @param {Response} res
  */
 exports.del = function(req, res) {
 
@@ -106,7 +106,9 @@ exports.del = function(req, res) {
 			return api.fail(res, error('No such game with ID "%s".', req.params.id), 404);
 		}
 
-		// TODO check for linked releases and refuse if referenced
+		// TODO check for linked releases (& ROMs, etc) and refuse if referenced
+
+		// TODO delete referenced files
 
 		// remove from db
 		game.remove(function(err) {
@@ -120,10 +122,11 @@ exports.del = function(req, res) {
 	});
 };
 
+
 /**
  * Lists all games.
- * @param req Request object
- * @param res Response object
+ * @param {Request} req
+ * @param {Response} res
  */
 exports.list = function(req, res) {
 
@@ -163,8 +166,8 @@ exports.list = function(req, res) {
 
 /**
  * Lists a game of a given game ID.
- * @param req Request object
- * @param res Response object
+ * @param {Request} req
+ * @param {Response} res
  */
 exports.view = function(req, res) {
 

@@ -35,12 +35,13 @@ var Schema = mongoose.Schema;
 //-----------------------------------------------------------------------------
 var fields = {
 	id:           { type: String, required: true, unique: true, 'default': shortId.generate },
+	_game:        { type: String, required: 'Reference to game must be provided.', ref: 'Game' },
 	name:         { type: String, required: 'Name must be provided.' },
 	description:  { type: String },
 	versions: { validate: [ nonEmptyArray, 'You must provide at least one version for the release.' ], type: [ {
 		version: { type: String, required: 'Version must be provided.' },
 		changes: { type: String },
-		files: { validate: [ containsVpTable, 'You must reference at least one VPT/VPX file.' ], type: [ {
+		files: { validate: [ nonEmptyArray, 'You must provide at least one file.' ], type: [ {
 			_file:  { type: Schema.ObjectId, required: 'You must provide a file reference.', ref: 'File' },
 			flavor: {
 				orientation: { type: String, enum: { values: [ 'ws', 'fs' ], message: 'Invalid orientation. Valid orientation are: ["ws", "fs"].' }},
@@ -57,7 +58,7 @@ var fields = {
 		_user: { type: String, required: 'Reference to user must be provided.', ref: 'User' },
 		roles: [ String ]
 	} ] },
-	_tags: [ { type: Schema.ObjectId, required: true, ref: 'Tag' } ],
+	_tags: [ { type: Schema.ObjectId, ref: 'Tag' } ],
 	links: [ {
 		label: { type: String },
 		url: { type: String }

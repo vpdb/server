@@ -1,6 +1,6 @@
 .row.row--fullheight(ng-controller="GameListController")
 	.col-sm-9.col--main
-		h1.h--primary All Games
+		h1.h--primary Games
 		ul.nav-icons
 			li(ng-class="{ active: viewtype == 'compact' }")
 				i.fa.fa-th-large(ng-click="switchview('compact')")
@@ -9,6 +9,12 @@
 			li(ng-class="{ active: viewtype == 'list' }")
 				i.icon.icon-th-list-list(ng-click="switchview('list')")
 		hr
+		.pull-right
+			span {{ pagination.count }} Games
+			i.a.fa.fa-angle-left.space-left-2x(ng-show="pagination.links.prev", ng-click="paginate(pagination.links.prev)")
+			i.a.fa.fa-angle-right.space-left-2x(ng-show="pagination.links.next", ng-click="paginate(pagination.links.next)")
+
+		.clearfix.padder-bottom
 		p(ng-show="!games.length") No games found.
 		.row.row-data.ng-cloak
 			.fade2-animation(ng-include="template")
@@ -42,15 +48,10 @@
 				.row
 					.col-xs-6.text-center.a(filter-manufacturer="Bally") Bally
 					.col-xs-6.text-center.a(filter-manufacturer="Capcom") Capcom
-					.col-xs-6.text-center.a(filter-manufacturer="Midway") Midway
+					.col-xs-6.text-center.a(filter-manufacturer="Stern") Stern
 					.col-xs-6.text-center.a(filter-manufacturer="Williams") Williams
 					.col-xs-6.text-center.a(filter-manufacturer="Gottlieb") Gottlieb
 					.col-xs-6.text-center.a(filter-manufacturer="Data East") Data East
-
-			// author filter
-			accordion-group.panel--inner(is-open="filterAuthorOpen")
-				accordion-heading by Author
-				p here are the authors
 
 		h1 Sort
 		hr

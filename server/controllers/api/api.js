@@ -94,12 +94,13 @@ exports.success = function(res, result, code, opts) {
 		if (opts.pagination.page < lastPage - 1) {
 			pageLinks.last = paginatedUrl(lastPage, opts.pagination.perPage);
 		}
-		var link = _.values(_.map(pageLinks, function(link, rel) {
-			return '<' + link + '>; rel="' + rel + '"';
-		})).join(',\r\n      ');
-		if (link.length > 0) {
-			res.setHeader('Link', link);
+
+		if (_.values(pageLinks).length > 0) {
+			res.setHeader('Link', _.values(_.map(pageLinks, function(link, rel) {
+				return '<' + link + '>; rel="' + rel + '"';
+			})).join(', '));
 		}
+		res.setHeader('X-List-Count', opts.pagination.count);
 	}
 	if (result) {
 		res.setHeader('Content-Type', 'application/json');

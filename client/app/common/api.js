@@ -1,4 +1,4 @@
-"use strict"; /* global common, _ */
+"use strict"; /* global common, parseUri, _ */
 
 common
 	.factory('AuthResource', function($resource, ConfigService) {
@@ -58,6 +58,27 @@ common
 
 	.factory('ApiHelper', function($modal) {
 		return {
+
+			handlePagination: function(scope) {
+				return function(items, headers) {
+					scope.pagination = {};
+					if (headers('x-list-count')) {
+						scope.pagination.count = headers('x-list-count');
+					}
+					if (headers('link')) {
+						var links = {};
+						_.map(headers('link').split(','), function(link) {
+							var m = link.match(/<([^>]+)>\s*;\s*rel="([^"]+)"/);
+							links[m[2]] = {
+								url: m[1],
+								query: parseUri(m[1]).queryKey
+							};
+						});
+						scope.pagination.links = links;
+					}
+				};
+			},
+
 			handleErrors: function(scope) {
 				return function(response) {
 					scope.message = null;

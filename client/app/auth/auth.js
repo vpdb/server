@@ -269,7 +269,7 @@ angular.module('vpdb.auth', [])
 				return response;
 			}
 		};
-	})
+	});
 
 
 

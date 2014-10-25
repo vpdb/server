@@ -2,7 +2,7 @@
 
 angular.module('vpdb.games.list', [])
 
-	.controller('GameListController', function($scope, $rootScope, $http, $location, $templateCache, $route, GameResource) {
+	.controller('GameListController', function($scope, $rootScope, $http, $location, $templateCache, $route, ApiHelper, GameResource) {
 
 		$scope.theme('dark');
 		$scope.setTitle('Games');
@@ -40,8 +40,9 @@ angular.module('vpdb.games.list', [])
 		// QUERY LOGIC
 		// --------------------------------------------------------------------
 
-		var refresh = function() {
+		var refresh = function(queryOverride) {
 			var query = {};
+			queryOverride = queryOverride || {};
 
 			// search query
 			if ($scope.q && $scope.q.length > 2) {
@@ -65,15 +66,21 @@ angular.module('vpdb.games.list', [])
 				delete query.mfg;
 			}
 
+			query = _.extend(query, queryOverride);
+
 
 			// refresh if changes
 			if (!_.isEqual($scope.$query, query)) {
-				$scope.games = GameResource.query(query);
+				$scope.games = GameResource.query(query, ApiHelper.handlePagination($scope));
 				$scope.$query = query;
 			}
 		};
 
 		$scope.$watch('q', refresh);
+
+		$scope.paginate = function(link) {
+			refresh(link.query);
+		};
 
 		$scope.$on('dataToggleDecade', function(event, decade) {
 			if (_.contains($scope.filterDecades, decade)) {

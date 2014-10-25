@@ -56,12 +56,9 @@
 		h1 Sort
 		hr
 		ul.list--sort-options
-			li.a(sort="name", d="desc") Date Added
-			li.a(sort="year", d="asc") Original Release
-			li.a.selected.asc(sort="name", d="asc") Name
-			li.a(sort="rating", d="desc") Rating
-			li.a(sort="views", d="desc") Views
-			li.a(sort="gamedownloads", d="desc") Downloads
+			li.a.selected.asc(sort="title", d="asc") Name
+			li.a(sort="created_at", d="desc") Date Added
+			li.a(sort="year", d="asc") Year
 
 		span(ng-show="auth.hasPermission('games/add')")
 			h1 Content

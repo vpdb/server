@@ -11,7 +11,7 @@ angular.module('vpdb.games.list', [])
 		$scope.$query = null;
 		$scope.filterDecades = [];
 		$scope.filterManufacturer = [];
-		$scope.sort = 'name';
+		$scope.sort = 'title';
 
 		$scope.sortReverse = false;
 
@@ -41,7 +41,7 @@ angular.module('vpdb.games.list', [])
 		// --------------------------------------------------------------------
 
 		var refresh = function(queryOverride) {
-			var query = {};
+			var query = { sort: $scope.sort };
 			queryOverride = queryOverride || {};
 
 			// search query
@@ -65,9 +65,7 @@ angular.module('vpdb.games.list', [])
 			} else {
 				delete query.mfg;
 			}
-
 			query = _.extend(query, queryOverride);
-
 
 			// refresh if changes
 			if (!_.isEqual($scope.$query, query)) {
@@ -81,6 +79,11 @@ angular.module('vpdb.games.list', [])
 		$scope.paginate = function(link) {
 			refresh(link.query);
 		};
+
+		$scope.$on('dataChangeSort', function(event, field, direction) {
+			$scope.sort = (direction === 'desc' ? '-' : '') + field;
+			refresh();
+		});
 
 		$scope.$on('dataToggleDecade', function(event, decade) {
 			if (_.contains($scope.filterDecades, decade)) {
@@ -98,12 +101,6 @@ angular.module('vpdb.games.list', [])
 				$scope.filterManufacturer.push(manufacturer);
 			}
 			refresh();
-		});
-
-		$scope.$on('dataChangeSort', function(event, field, direction) {
-			$scope.sort = field;
-			$scope.sortReverse = direction === 'desc';
-			$scope.$apply();
 		});
 
 		// don't relead
@@ -154,6 +151,32 @@ angular.module('vpdb.games.list', [])
 				element.click(function() {
 					element.toggleClass('active');
 					scope.$emit('dataToggleManufacturer', attrs.filterManufacturer, element.hasClass('active'));
+				});
+			}
+		};
+	})
+
+	.directive('sort', function() {
+		return {
+			restrict: 'A',
+			link: function(scope, element, attrs) {
+				element.click(function() {
+					if (element.hasClass('selected')) {
+						element.toggleClass('asc');
+						element.toggleClass('desc');
+					} else {
+						element.siblings().removeClass('selected');
+						element.addClass('selected');
+						element.addClass('asc');
+						if (attrs.d === 'asc') {
+							element.addClass('asc');
+							element.removeClass('desc');
+						} else {
+							element.removeClass('asc');
+							element.addClass('desc');
+						}
+					}
+					scope.$emit('dataChangeSort', attrs.sort, element.hasClass('asc') ? 'asc' : 'desc');
 				});
 			}
 		};

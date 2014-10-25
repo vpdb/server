@@ -175,6 +175,19 @@ exports.list = function(req, res) {
 	var page = Math.max(req.query.page, 1) || 1;
 	var perPage = Math.max(pagination.defaultPerPage, Math.min(req.query.per_page, pagination.maxPerPage)) || pagination.defaultPerPage;
 
+	// sorting
+	var sortBy = {};
+	if (req.query.sort) {
+		var s = req.query.sort.match(/^(-?)([a-z0-9_-]+)+$/);
+		if (s) {
+			sortBy[s[2]] = s[1] ? -1 : 1;
+		} else {
+			sortBy.title = -1;
+		}
+	} else {
+		sortBy.title = 1;
+	}
+
 	// construct query object
 	if (query.length === 0) {
 		q = {};
@@ -183,7 +196,7 @@ exports.list = function(req, res) {
 	} else {
 		q = { $and: query };
 	}
-	logger.info('[api|game:list] query: %j', util.inspect(q));
+	logger.info('[api|game:list] query: %j, sort: %j', util.inspect(q), util.inspect(sortBy));
 	Game.paginate(q, page, perPage, function(err, pageCount, games, count) {
 
 		/* istanbul ignore if  */
@@ -195,7 +208,7 @@ exports.list = function(req, res) {
 		});
 		api.success(res, games, 200, { pagination: { page: page, perPage: perPage, count: count }});
 
-	}, { populate: [ '_media.backglass', '_media.logo' ]});
+	}, { populate: [ '_media.backglass', '_media.logo' ], sortBy: sortBy });
 };
 
 

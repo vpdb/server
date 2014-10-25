@@ -81,7 +81,7 @@ exports.success = function(res, result, code, opts) {
 			return url.format(currentUrl);
 		};
 
-		var lastPage = Math.floor(opts.pagination.count / opts.pagination.perPage);
+		var lastPage = Math.ceil(opts.pagination.count / opts.pagination.perPage);
 		if (opts.pagination.page > 2) {
 			pageLinks.first = paginatedUrl(1, opts.pagination.perPage);
 		}

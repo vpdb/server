@@ -13,7 +13,8 @@ angular.module('vpdb.games.list', [])
 		$scope.filterManufacturer = [];
 		$scope.sort = 'title';
 
-		$scope.sortReverse = false;
+		// stuff we need in the view
+		$scope.Math = window.Math;
 
 		// preload partials
 		_.each(['compact', 'extended', 'table'], function(view) {

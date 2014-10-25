@@ -63,8 +63,11 @@ common
 				return function(items, headers) {
 					scope.pagination = {};
 					if (headers('x-list-count')) {
-						scope.pagination.count = headers('x-list-count');
+						scope.pagination.count = parseInt(headers('x-list-count'));
+						scope.pagination.page = parseInt(headers('x-list-page'));
+						scope.pagination.size = parseInt(headers('x-list-size'));
 					}
+
 					if (headers('link')) {
 						var links = {};
 						_.map(headers('link').split(','), function(link) {

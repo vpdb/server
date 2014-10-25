@@ -100,6 +100,8 @@ exports.success = function(res, result, code, opts) {
 				return '<' + link + '>; rel="' + rel + '"';
 			})).join(', '));
 		}
+		res.setHeader('X-List-Page', opts.pagination.page);
+		res.setHeader('X-List-Size', opts.pagination.perPage);
 		res.setHeader('X-List-Count', opts.pagination.count);
 	}
 	if (result) {

@@ -9,12 +9,16 @@
 			li(ng-class="{ active: viewtype == 'list' }")
 				i.icon.icon-th-list-list(ng-click="switchview('list')")
 		hr
-		.pull-right
-			span {{ pagination.count }} Games
-			i.a.fa.fa-angle-left.space-left-2x(ng-show="pagination.links.prev", ng-click="paginate(pagination.links.prev)")
-			i.a.fa.fa-angle-right.space-left-2x(ng-show="pagination.links.next", ng-click="paginate(pagination.links.next)")
+		.pull-left(ng-show="games.length > 0")
+			span.small {{ pagination.count }} GAMES
+		.pull-right(ng-show="games.length > 0")
+			i.a.a--lighter.fa.fa-angle-left.space-left-2x(ng-show="pagination.links.first", ng-click="paginate(pagination.links.first)")
+			i.a.a--lighter.fa.fa-angle-left.space-left-2x(ng-show="pagination.links.prev", ng-click="paginate(pagination.links.prev)")
+			span.small.space-left-2x PAGE &nbsp; {{ pagination.page }} / {{ Math.ceil(pagination.count / pagination.size) }}
+			i.a.a--lighter.fa.fa-angle-right.space-left-2x(ng-show="pagination.links.next", ng-click="paginate(pagination.links.next)")
+			i.a.a--lighter.fa.fa-angle-right.space-left-2x(ng-show="pagination.links.last", ng-click="paginate(pagination.links.last)")
 
-		.clearfix.padder-bottom
+		.clearfix.padder-bottom(ng-show="games.length > 0")
 		p(ng-show="!games.length") No games found.
 		.row.row-data.ng-cloak
 			.fade2-animation(ng-include="template")

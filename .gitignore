@@ -17,6 +17,9 @@ logs
 /data/gen/games/backglass
 /data/gen/games/logo
 /gfx/export
+/gfx/mockups
+/gfx/favicon
+
 results
 server/config/settings.js
 test/coverage

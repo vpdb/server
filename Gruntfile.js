@@ -37,13 +37,15 @@ module.exports = function(grunt) {
 			cssGlobal: path.resolve(cssRoot, 'global_<%= gitinfo.local.branch.current.shortSHA %>.min.css'),
 			jsGlobal: path.resolve(jsRoot, 'global_<%= gitinfo.local.branch.current.shortSHA %>.min.js'),
 			jsGlobalAnnotated: path.resolve(jsRoot, 'global.annotated.js'),
-			coverageRoot: path.resolve(__dirname, 'coverage')
+			coverageRoot: path.resolve(__dirname, 'coverage'),
+			tmpRoot: config.vpdb.tmp
 		},
 
 		clean: {
-			build:      { src: [ buildRoot + '/*', "!.gitignore", "!img" ] },
+			build:      { src: [ '<%= config.buildRoot %>/*', "!.gitignore", "!img" ] },
 			coverage:   { src: [ '<%= config.coverageRoot %>/**'] },
-			devsite:    { src: [ devsiteRoot ] }
+			devsite:    { src: [ '<%= config.devsiteRoot %>' ] },
+			svg:        { src: [ '<%= config.tmpRoot %>/vpdb-svg/**', './gfx/svg-defs.svg' ], options: { force: true } }
 		},
 
 		concurrent: {
@@ -76,6 +78,11 @@ module.exports = function(grunt) {
 			},
 			devsite: {
 				files: [ { expand: true, cwd: buildRoot, src: [ '**', '!html/**' ], dest: devsiteRoot } ]
+			},
+			svg: {
+				files: [ { expand: true, flatten: true, src: [ 'gfx/icons/*.svg' ], dest: '<%= config.tmpRoot %>/vpdb-svg/', rename: function(dest, src) {
+					return dest + src.replace(/^[^_]+_/, '');
+				} }]
 			}
 		},
 
@@ -116,7 +123,7 @@ module.exports = function(grunt) {
 		jade: {
 			site: {
 				options: { data: _.extend(viewParams, { environment: 'production', gitinfo: '<%= gitinfo %>' }) },
-				files: [ { expand: true, cwd: 'client/app', src: [ '**/*.jade', '!layout.jade', '!**/devsite/**' ], dest: htmlRoot, ext: '.html' } ]
+				files: [ { expand: true, cwd: 'client/app', src: [ '**/*.jade', '!layout.jade', '!**/devsite/**', '!_*.jade' ], dest: htmlRoot, ext: '.html' } ]
 			}
 		},
 
@@ -138,7 +145,8 @@ module.exports = function(grunt) {
 			server:   { options: { mode: 504, create: [ cssRoot, jsRoot ] } },
 			coverage: { options: { mode: 504, create: [ '<%= config.coverageRoot %>' ] } },
 			test:     { options: { mode: 504, create: [ config.vpdb.storage ] }},
-			devsite:  { options: { mode: 504, create: [ devsiteRoot + '/html/styleguide' ] } }
+			devsite:  { options: { mode: 504, create: [ devsiteRoot + '/html/styleguide' ] } },
+			svg:      { options: { mode: 504, create: [ '<%= config.tmpRoot %>/vpdb-svg' ]}}
 		},
 
 		mochaTest: {
@@ -175,6 +183,14 @@ module.exports = function(grunt) {
 				options: { paths: [ 'styles' ], linenos: false, compress: false, sourcemap: { sourceRoot: '/css' } },
 				files: [ { expand: true, cwd: 'client/styles', src: [ 'vpdb.styl' ], dest: cssRoot, ext: '.css' } ]
 			}
+		},
+
+		svgstore: {
+			options: {
+				prefix : 'icon-',
+				svg: {  viewBox : '0 0 100 100', xmlns: 'http://www.w3.org/2000/svg' }
+			},
+			all: { files: { './gfx/svg-defs.svg': [ '<%= config.tmpRoot %>/vpdb-svg/*.svg' ] } }
 		},
 
 		uglify: {
@@ -216,24 +232,7 @@ module.exports = function(grunt) {
 	grunt.config.init(taskConfig);
 
 	// load the tasks
-	grunt.loadNpmTasks('grunt-concurrent');
-	grunt.loadNpmTasks('grunt-contrib-clean');
-	grunt.loadNpmTasks('grunt-contrib-copy');
-	grunt.loadNpmTasks('grunt-contrib-stylus');
-	grunt.loadNpmTasks('grunt-contrib-jade');
-	grunt.loadNpmTasks('grunt-contrib-jshint');
-	grunt.loadNpmTasks('grunt-contrib-cssmin');
-	grunt.loadNpmTasks('grunt-contrib-uglify');
-	grunt.loadNpmTasks('grunt-contrib-watch');
-	grunt.loadNpmTasks('grunt-coveralls');
-	grunt.loadNpmTasks('grunt-env');
-	grunt.loadNpmTasks('grunt-express-server');
-	grunt.loadNpmTasks('grunt-gitinfo');
-	grunt.loadNpmTasks('grunt-mkdir');
-	grunt.loadNpmTasks('grunt-mocha-test');
-	grunt.loadNpmTasks('grunt-ng-annotate');
-	grunt.loadNpmTasks('grunt-protractor-runner');
-	grunt.loadNpmTasks('grunt-wait-server');
+	require('load-grunt-tasks')(grunt);
 	grunt.loadTasks('./server/grunt-tasks');
 
 	// build
@@ -244,7 +243,8 @@ module.exports = function(grunt) {
 			'git', 'clean:build', 'mkdir:server',                 // clean and create folder structure
 			'copy:assets', 'copy:static',                         // copy static stuff
 			'stylus', 'cssmin',                                   // render & minify css
-			'client-config', 'ngAnnotate', 'uglify', 'jade',      // treat javascripts
+			'client-config', 'ngAnnotate', 'uglify',              // treat javascripts
+			'svg', 'jade',                                        // icons and html
 			'copy:devsite', 'mkdir:devsite', 'kss', 'metalsmith'  // create devsite
 		]
 	);
@@ -261,6 +261,7 @@ module.exports = function(grunt) {
 
 	// generate
 	grunt.registerTask('git', [ 'gitinfo', 'gitsave']);
+	grunt.registerTask('svg', [ 'clean:svg', 'mkdir:svg', 'copy:svg', 'svgstore' ]);
 	grunt.registerTask('devsite', [ 'env:dev', /*'clean:devsite',*/ 'copy:devsite', 'mkdir:devsite', 'kss', 'metalsmith', 'concurrent:devsite' ]);
 
 	// tests

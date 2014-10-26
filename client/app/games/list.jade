@@ -1,3 +1,5 @@
+include ../template/_mixins
+
 .row.row--fullheight(ng-controller="GameListController")
 	.col-sm-9.col--main
 		h1.h--primary Games
@@ -9,6 +11,9 @@
 			li(ng-class="{ active: viewtype == 'list' }")
 				i.icon.icon-th-list-list(ng-click="switchview('list')")
 		hr
+
+		+icon('search')
+
 		.pull-left(ng-show="games.length > 0")
 			span.small {{ pagination.count }} GAMES
 		.pull-right(ng-show="games.length > 0")

@@ -46,7 +46,8 @@ exports.viewParams = function(gitInfoFromGrunt) {
 					url: '/auth/' + ipbConfig.id
 				};
 			})
-		}
+		},
+		svgDefs: config.vpdb.tmp + '/vpdb-svg/_svg-defs.svg'
 	};
 };
 

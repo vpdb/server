@@ -1,0 +1,13 @@
+
+.svg-icon
+	height 20px
+	transition fill $animation-short
+
+body > svg
+	display none
+
+body.theme-dark .svg-icon
+	fill $color-lighter
+
+body.theme-light .svg-icon
+	fill $color-lighter-inv

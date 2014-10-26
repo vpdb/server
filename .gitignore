@@ -19,6 +19,8 @@ logs
 /gfx/export
 /gfx/mockups
 /gfx/favicon
+/gfx/svg-defs.svg
+/vpdb-svg
 
 results
 server/config/settings.js

@@ -12,16 +12,15 @@ include ../template/_mixins
 				i.icon.icon-th-list-list(ng-click="switchview('list')")
 		hr
 
-		+icon('search')
-
 		.pull-left(ng-show="games.length > 0")
 			span.small {{ pagination.count }} GAMES
 		.pull-right(ng-show="games.length > 0")
-			i.a.a--lighter.fa.fa-angle-left.space-left-2x(ng-show="pagination.links.first", ng-click="paginate(pagination.links.first)")
-			i.a.a--lighter.fa.fa-angle-left.space-left-2x(ng-show="pagination.links.prev", ng-click="paginate(pagination.links.prev)")
-			span.small.space-left-2x PAGE &nbsp; {{ pagination.page }} / {{ Math.ceil(pagination.count / pagination.size) }}
-			i.a.a--lighter.fa.fa-angle-right.space-left-2x(ng-show="pagination.links.next", ng-click="paginate(pagination.links.next)")
-			i.a.a--lighter.fa.fa-angle-right.space-left-2x(ng-show="pagination.links.last", ng-click="paginate(pagination.links.last)")
+
+			span(ng-show="pagination.links.first", ng-click="paginate(pagination.links.first)"): +icon('angle-left-skip').smaller.a.a--lighter
+			span.space-left(ng-show="pagination.links.prev", ng-click="paginate(pagination.links.prev)"): +icon('angle-left').smaller.a.a--lighter
+			span.small.space-left PAGE &nbsp; {{ pagination.page }} / {{ Math.ceil(pagination.count / pagination.size) }}
+			span.space-left(ng-show="pagination.links.next", ng-click="paginate(pagination.links.next)"): +icon('angle-right').smaller.a.a--lighter
+			span.space-left(ng-show="pagination.links.last", ng-click="paginate(pagination.links.last)"): +icon('angle-right-skip').smaller.a.a--lighter
 
 		.clearfix.padder-bottom(ng-show="games.length > 0")
 		p(ng-show="!games.length") No games found.
@@ -73,5 +72,5 @@ include ../template/_mixins
 			h1 Content
 			hr
 			a.btn.btn-primary(href="/games/add").padder-bottom
-				i.fa.fa-plus-circle.space-right
+				+icon('circle-plus').space-right
 				| Add Game

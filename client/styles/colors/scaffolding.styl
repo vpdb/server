@@ -22,6 +22,24 @@
 		&:hover .h--primary
 			color $color-primary-light
 
+	.a.svg-icon
+		fill $color-light
+		&:hover
+			fill $color-lighter
+		&.a--lighter
+			fill $color-lighter
+			&:hover
+				fill $color-lightest
+		&.a--darker
+			fill $color-dark
+			&:hover
+				fill $color-light
+		&.active, &.selected
+			fill $color-primary
+
+		&:hover .h--primary
+			fill $color-primary-light
+
 	// code
 	pre
 		color $color-lighter

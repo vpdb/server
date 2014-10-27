@@ -1,13 +1,21 @@
 
 .svg-icon
-	height 20px
+	height 24px
+	width 24px
+	vertical-align middle
 	transition fill $animation-short
+
+	&.smaller
+		height 16px
+		width 16px
+		margin-top -5px
+
 
 body > svg
 	display none
 
-body.theme-dark .svg-icon
+.theme-dark .svg-icon
 	fill $color-lighter
 
-body.theme-light .svg-icon
+.theme-light .svg-icon
 	fill $color-lighter-inv

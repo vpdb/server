@@ -59,6 +59,24 @@ switch the color theme with the button on the bottom right of this page. Note
 that not all styles are defined for all color themes since styles are only
 written when they are actually used in the web application.
 
+## Icons
+
+While [FontAwesome][fa] & co are an elegant way to use vector-based fonts, it 
+became really cumbersome when adding new icons that weren't part of the 
+FontAwesome package.
+
+Due to [additional][tenreasons] [reasons][svgvsif], we decided to go for 
+another approach: SVG icons. The idea is to include an SVG containing 
+definitions only in the main HTML layout  file and then reference these
+definitions in the code using the `<use>` element.
+
+For this, we keep [one illustrator file][ai-icons] and explode the artboards
+into [single `.svg` files][icon-folder]. During build, we run [svgmin][svgmin]
+on them and compile them into one defintion file at `gfx/svg-defs.svg`. The 
+content of this file is then rendered into the main layout file. Whenever we 
+use an icon in the DOM, we can render it by calling the `icon(svg-name)` Jade
+mixin. Color can be set by defining the `fill` CSS property.
+
 
 [kss]: https://github.com/kneath/kss
 [bem]: http://bem.info/method/
@@ -67,3 +85,9 @@ written when they are actually used in the web application.
 [sre]: http://drewbarontini.com/articles/single-responsibility/
 [vpdb.styl]: https://github.com/freezy/node-vpdb/blob/master/client/styles/vpdb.styl
 [stylus]: http://learnboost.github.io/stylus/
+[fa]: http://fontawesome.io/
+[tenreasons]: http://ianfeather.co.uk/ten-reasons-we-switched-from-an-icon-font-to-svg/
+[svgvsif]: http://css-tricks.com/icon-fonts-vs-svg/
+[ai-icons]: https://github.com/freezy/node-vpdb/blob/master/gfx/icons.ai
+[icon-folder]: https://github.com/freezy/node-vpdb/tree/master/gfx/icons
+[svgmin]: https://github.com/sindresorhus/grunt-svgmin

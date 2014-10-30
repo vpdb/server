@@ -25,20 +25,30 @@
 	> li a
 		background-color transparent
 		color $color-lighter
+		.svg-icon
+			fill $color-lighter
 		&:hover, &:focus
 			color $color-lightest
+			.svg-icon
+				fill $color-lightest
 	> .active > a
 		background-color $color-darkest
 		color $color-primary
+		.svg-icon
+			fill $color-primary
 		&:hover, &:focus
 			background-color $color-darkest
 			color $color-primary
+			.svg-icon
+				fill $color-primary
 
 // Dropdown menu states
 .navbar-default .navbar-nav > .open
 	& > a, & > a:hover, & > a:focus
 		color $color-primary
 		background-color transparent
+		.svg-icon
+			fill $color-primary
 
 
 //

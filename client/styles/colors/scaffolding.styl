@@ -4,41 +4,50 @@
 .theme-dark
 
 	// links
-	a, .a
+	a, .a, button
 		color $color-light
 		&:hover
 			color $color-lighter
+			.svg-icon
+				fill $color-lighter
 		&.a--lighter
 			color $color-lighter
+			.svg-icon
+				fill $color-lighter
 			&:hover
 				color $color-lightest
+				.svg-icon
+					fill $color-lightest
 		&.a--darker
 			color $color-dark
+			.svg-icon
+				fill $color-dark
 			&:hover
 				color $color-light
+				.svg-icon
+					fill $color-light
 		&.active, &.selected
 			color $color-primary
+			.svg-icon
+				fill $color-primary-light
 
 		&:hover .h--primary
 			color $color-primary-light
 
+		&.svg-icon
+			fill $color-light
+			&.a--lighter
+				fill $color-lighter
+			&.a--darker
+				fill $color-dark
+
 	.a.svg-icon
-		fill $color-light
 		&:hover
 			fill $color-lighter
-		&.a--lighter
-			fill $color-lighter
-			&:hover
-				fill $color-lightest
+		&.a--lighter:hover
+			fill $color-lightest
 		&.a--darker
-			fill $color-dark
-			&:hover
-				fill $color-light
-		&.active, &.selected
-			fill $color-primary
-
-		&:hover .h--primary
-			fill $color-primary-light
+			fill $color-light
 
 	// code
 	pre

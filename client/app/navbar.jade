@@ -10,8 +10,8 @@ block body
 	nav.navbar.navbar-default.navbar-fixed-top(ng-cloak)
 		.container
 			.navbar-header
-				button.navbar-toggle(type='button', ng-init='navCollapsed = true', ng-click='navCollapsed = !navCollapsed')
-					i.fa.fa-bars.space-right
+				button.a--lighter.navbar-toggle(type='button', ng-init='navCollapsed = true', ng-click='navCollapsed = !navCollapsed')
+					+icon('bars').space-right
 					| Menu
 				span.navbar-brand
 					a(href="/")

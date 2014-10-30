@@ -1,3 +1,4 @@
+include template/_mixins
 extends navbar
 
 block navbar
@@ -9,31 +10,31 @@ block navbar
 		li.dropdown(ng-class="{ active: menu == 'admin' }", ng-show="auth.hasRole(['root', 'admin'])", on-toggle="toggled(open)")
 			a.space-right.dropdown-toggle
 				span.space-right-2x Admin
-				i.fa.fa-angle-down
+				+icon('angle-down').smaller
 			ul.dropdown-menu
 				li
 					a(href="/admin/users")
-						i.fa.fa-users
-						span.space-left-abs Users
+						+icon('users').space-right
+						span Users
 
 	ul.nav.navbar-nav.navbar-right
 		li(ng-hide="auth.isAuthenticated")
 			a(ng-click="login()")
-				i.fa.fa-lock.space-right-2x
+				+icon('lock').small.space-right
 				span.space-right Login
 		li.dropdown(ng-show="auth.isAuthenticated", on-toggle="toggled(open)")
 			a.space-right.dropdown-toggle
 				span.space-right-2x {{ auth.user.name }}
-				i.fa.fa-angle-down
+				+icon('angle-down').smaller
 			ul.dropdown-menu
 				li
 					a(ng-click="auth.logout()")
-						i.icon.icon-exit
-						span.space-left-abs Logout
+						+icon('exit').space-right
+						span Logout
 				li
 					a
-						i.fa.fa-user.space-right
-						span.space-left-abs Profile
+						+icon('user').space-right
+						span Profile
 
 
 		//- li.ng-cloak

@@ -1,3 +1,4 @@
+include ../template/_mixins
 extends ../layout
 block body
 	.center-middle.center-middle-errorpage
@@ -9,5 +10,5 @@ block body
 			| We're sorry about that.
 
 		a(href="/", target="_self")
-			i.fa.fa-arrow-circle-left.space-right
+			+icon('arrow-circle-left').shift-up-2x.space-right
 			|GO HOME

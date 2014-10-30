@@ -1,18 +1,20 @@
+include ../template/_mixins
+
 .theme-light
 	.modal-header
 		h1.h--no-margin.h--small
-			i.fa.fa-lock.space-right
+			+icon('lock').space-right
 			| &nbsp;Login
 	.modal-body
 		h3.h--shift-up Login with
 		.text-center
 			for ipb in authStrategies.ipboard
 				a.btn.btn--secondary.btn-lg(href=ipb.url, target="_self")
-					i.space-right(class=ipb.icon)
+					+icon(ipb.icon).space-right
 					| #{ipb.name}
 			if authStrategies.github
 				a.btn.btn--secondary.btn-lg(href="/auth/github", target="_self")
-					i.fa.fa-github.space-right
+					+icon('github').space-right
 					| GitHub
 		hr.hr--light.padder-top-2x
 		.clearfix
@@ -44,19 +46,19 @@
 					.col-sm-6
 						input.form-control(ng-model="registerUser.password", type="password")
 		div.alert.alert-danger(ng-show="errors.email")
-			i.fa.fa-exclamation-triangle.space-right
+			+icon('warning').space-right.shift-up
 			| {{ errors.email }}
 		div.alert.alert-danger(ng-show="errors.username")
-			i.fa.fa-exclamation-triangle.space-right
+			+icon('warning').space-right.shift-up
 			| {{ errors.username }}
 		div.alert.alert-danger(ng-show="errors.password")
-			i.fa.fa-exclamation-triangle.space-right
+			+icon('warning').space-right.shift-up
 			| {{ errors.password }}
 		div.alert.alert-danger(ng-show="error")
-			i.fa.fa-exclamation-triangle.space-right
+			+icon('warning').space-right.shift-up
 			| {{ error }}
 		div.alert.alert-success(ng-show="message")
-			i.fa.fa-info-circle.space-right
+			+icon('warning').space-right.shift-up
 			| {{ message }}
 
 	.modal-footer

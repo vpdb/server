@@ -1,9 +1,10 @@
+include ../template/_mixins
 
 .text-center(page-title="Developer")
 
 	h3.h--primary.padder-top-3x.padder-bottom-2x So you want to contribute.
 
-	i.icon.icon-vpdb-logo-o.fa-3x
+	+icon('vpdb-o').svg-4x
 
 	p.padder-top-2x
 		| Great!
@@ -17,21 +18,21 @@ hr.hr--light.padder-top-3x.visible-xs-block
 
 .row
 	a.a--lighter.col-sm-4.text-center(href="/api")
-		p: i.fa.fa-gears.fa-2x
+		p: +icon('gears').svg-3x
 		h1.h--primary API
 		p Want to integrate VPDB into your app? Check out the API.
 
 	hr.hr--light.visible-xs-block
 
 	a.a--lighter.col-sm-4.text-center(href="/styleguide")
-		p: i.fa.fa-paint-brush.fa-2x
+		p: +icon('palette').svg-3x
 		h1.h--primary Style Guide
 		p Found a quirk in the UI? The style guide is your friend.
 
 	hr.hr--light.visible-xs-block
 
 	a.a--lighter.col-sm-4.text-center(href="/code")
-		p: i.fa.fa-code-fork.fa-2x
+		p: +icon('code-fork').svg-3x
 		h1.h--primary Code
 		p Missing a feature? Clone the repo and start coding.
 

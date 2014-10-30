@@ -1,4 +1,4 @@
-"use strict"; /* global app, _ */
+"use strict"; /* global common, _ */
 
 common
 	.controller('AppCtrl', function($scope, $rootScope, $location, $modal, $localStorage, UserResource, AuthService, ProfileService, PingResource) {
@@ -6,6 +6,7 @@ common
 		$rootScope.themeName = 'theme-dark';
 		$rootScope.auth = AuthService;
 		$rootScope.$storage = $localStorage;
+		$rootScope.currentUrl = $location.path();
 
 		$scope.menu = 'home';
 		$scope.downloadsPinned = false;

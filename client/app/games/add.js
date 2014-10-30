@@ -117,7 +117,7 @@ angular.module('vpdb.games.add', [])
 					templateUrl: 'common/modal-info.html',
 					controller: 'InfoModalCtrl',
 					resolve: {
-						icon: function() { return 'fa-warning'; },
+						icon: function() { return 'warning'; },
 						title: function() { return 'IPDB Fetch'; },
 						subtitle: function() { return 'Sorry!'; },
 						message: function() { return 'You need to put either the IPDB number or the URL with an ID.'; }

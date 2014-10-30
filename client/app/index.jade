@@ -20,7 +20,7 @@ block navbar
 	ul.nav.navbar-nav.navbar-right
 		li(ng-hide="auth.isAuthenticated")
 			a(ng-click="login()")
-				+icon('lock').small.space-right
+				+icon('lock').small.space-right.shift-up
 				span.space-right Login
 		li.dropdown(ng-show="auth.isAuthenticated", on-toggle="toggled(open)")
 			a.space-right.dropdown-toggle

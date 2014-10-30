@@ -1,7 +1,9 @@
+include ../template/_mixins
+
 .theme-light
 	.modal-header
 		h1.h--no-margin.h--small
-			i.fa.space-right(ng-class="icon")
+			+icon('info').space-right
 			| {{ title }}
 	.modal-body
 		h4 {{ subtitle }}

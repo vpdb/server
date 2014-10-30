@@ -1,7 +1,9 @@
+include ../template/_mixins
+
 .theme-light
 	.modal-header
 		h1.h--no-margin.h--small
-			i.fa.fa-exclamation-triangle.space-right
+			+icon('warning').space-right
 			| &nbsp;Ooops!
 	.modal-body
 		h4 {{ errorTitle }}

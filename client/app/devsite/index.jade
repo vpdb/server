@@ -1,3 +1,4 @@
+include ../template/_mixins
 extends ../navbar
 
 block root
@@ -20,7 +21,7 @@ block navbar
 	ul.nav.navbar-nav.navbar-right
 		li
 			a(href="/", target="_self")
-				i.fa.fa-caret-left.space-right-2x
+				+icon('angle-left').small.shift-up.space-right-2x
 				span.space-right Back to Site
 
 block content

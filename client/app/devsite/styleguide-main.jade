@@ -1,3 +1,5 @@
+include ../template/_mixins
+
 .row.row--fullheight
 	.col-sm-3.col--menu
 		h1 Contents
@@ -12,7 +14,7 @@
 						if section.childSections
 							for subsection in section.childSections
 								li.list-group-item: a(ui-sref='styleguide.section({ section: "#{subsection.reference()}"})', ng-class="{ active: subsection == '#{subsection.reference()}' }")=subsection.header()
-		button.btn.btn-primary.btn--styleguide-toggle-theme(ng-click="toggleTheme()"): i.fa.fa-adjust
+		button.btn.btn-primary.btn--styleguide-toggle-theme(ng-click="toggleTheme()"): +icon('adjust')
 
 	.col-sm-9.col--main
 		| <div ui-view></div>

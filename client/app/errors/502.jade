@@ -1,3 +1,4 @@
+include ../template/_mixins
 extends ../layout
 block body
 	.center-middle.center-middle-errorpage
@@ -8,5 +9,5 @@ block body
 			| this regularily, please drop me a mail at <href="mailto:freezy@xbmc.org">freezy@xbmc.org</a>.
 
 		a(href=".", target="_self")
-			i.fa.fa-refresh.space-right
+			+icon('arrow-circle-left').shift-up-2x.space-right
 			|RETRY

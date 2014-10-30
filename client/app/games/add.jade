@@ -1,3 +1,5 @@
+include ../template/_mixins
+
 .row.row--fullheight(ng-controller="AdminGameAddCtrl")
 	.col-sm-9.col--main
 		h1.h--primary add new game
@@ -8,17 +10,17 @@
 		form(role="form")
 
 			//-----------------------------------------------------------------
-			h1 1. enter title
+			h1 1. Enter Title
 			hr
 			.form-group(ng-class="{ error: errors.title }")
 				input.form-control.input-lg(type="text", placeholder="Title", ng-model="game.title", on-enter="searchOnIpdb()")
 				.alert.alert-danger(ng-show="errors.title")
-					i.fa.fa-exclamation-triangle.space-right
+					+icon('warning').shift-up.space-right
 					| {{ errors.title }}
 				span.help-block No year, manufacturer or anything else, just the title. Example: <i>The Addams Family</i>.
 
 			//-----------------------------------------------------------------
-			h1 2. origin
+			h1 2. Origin
 			hr
 			p If you’ve created the game by yourself, it’s an original game. I’ve you built a game that exists in real
 				| life, it’s called a recreation. Recreations must be on IPDB.org.
@@ -35,7 +37,7 @@
 						span Original Game
 
 			.clearfix
-			h1 3. game info
+			h1 3. Game Info
 			hr
 
 			//- form for recreations
@@ -59,7 +61,7 @@
 				.alert.alert-danger.alert--shifted-up(ng-show="errors['ipdb.number']")
 					.row
 						.col-sm-9.col-sm-offset-3
-							i.fa.fa-exclamation-triangle.space-right
+							+icon('warning').shift-up.space-right
 							| {{ errors['ipdb.number'] }}
 
 				.form-group(ng-class="{ error: errors.id }")
@@ -77,7 +79,7 @@
 				.alert.alert-danger.alert--shifted-up-2x(ng-show="errors.id")
 					.row
 						.col-sm-9.col-sm-offset-3
-							i.fa.fa-exclamation-triangle.space-right
+							+icon('warning').shift-up.space-right
 							| {{ errors.id }}
 
 				.form-group(ng-show="!game.data.year", ng-class="{ error: errors.year }")
@@ -90,7 +92,7 @@
 				.alert.alert-danger.alert--shifted-up-2x(ng-show="errors.year && !game.data.year")
 					.row
 						.col-sm-9.col-sm-offset-3
-							i.fa.fa-exclamation-triangle.space-right
+							+icon('warning').shift-up.space-right
 							| {{ errors.year }}
 
 			.col-md-offset-2.col-md-8.col-sm-offset-1.col-sm-10(ng-show="game.origin == 'recreation'")
@@ -149,7 +151,7 @@
 				.alert.alert-danger.alert--shifted-up-2x(ng-show="errors.id")
 					.row
 						.col-sm-9.col-sm-offset-3
-							i.fa.fa-exclamation-triangle.space-right
+							+icon('warning').shift-up.space-right
 							| {{ errors.id }}
 
 				.form-group
@@ -164,13 +166,13 @@
 				.alert.alert-danger.alert--shifted-up(ng-show="errors.manufacturer")
 					.row
 						.col-sm-9.col-sm-offset-3
-							i.fa.fa-exclamation-triangle.space-right
+							+icon('warning').shift-up.space-right
 							| {{ errors.manufacturer }}
 
 				.alert.alert-danger.alert--shifted-up(ng-show="errors.year")
 					.row
 						.col-sm-9.col-sm-offset-3
-							i.fa.fa-exclamation-triangle.space-right
+							+icon('warning').shift-up.space-right
 							| {{ errors.year }}
 
 				.form-group

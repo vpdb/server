@@ -60,6 +60,7 @@
 		"grunt-mocha-test": "0.12.1",
 		"grunt-ng-annotate": "0.4.0",
 		"grunt-protractor-runner": "1.1.4",
+		"grunt-svgmin": "^1.0.0",
 		"grunt-svgstore": "^0.3.6",
 		"grunt-wait-server": "0.1.2",
 		"highlight.js": "8.2.0",

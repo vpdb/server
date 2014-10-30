@@ -145,8 +145,7 @@ module.exports = function(grunt) {
 			server:   { options: { mode: 504, create: [ cssRoot, jsRoot ] } },
 			coverage: { options: { mode: 504, create: [ '<%= config.coverageRoot %>' ] } },
 			test:     { options: { mode: 504, create: [ config.vpdb.storage ] }},
-			devsite:  { options: { mode: 504, create: [ devsiteRoot + '/html/styleguide' ] } },
-			svg:      { options: { mode: 504, create: [ '<%= config.tmpRoot %>/vpdb-svg' ]}}
+			devsite:  { options: { mode: 504, create: [ devsiteRoot + '/html/styleguide' ] } }
 		},
 
 		mochaTest: {
@@ -182,6 +181,13 @@ module.exports = function(grunt) {
 			build: {
 				options: { paths: [ 'styles' ], linenos: false, compress: false, sourcemap: { sourceRoot: '/css' } },
 				files: [ { expand: true, cwd: 'client/styles', src: [ 'vpdb.styl' ], dest: cssRoot, ext: '.css' } ]
+			}
+		},
+
+		svgmin: {
+			build: {
+				options: { full: true, plugins: [ { removeDoctype: true }, { removeXMLProcInst: true }, { removeComments: true }, { removeMetadata: true }, { removeEditorsNSData: true }, { cleanupAttrs: true }, { convertStyleToAttrs: true }, { removeRasterImages: true }, { cleanupNumericValues: true }, { convertColors: true }, { removeUnknownsAndDefaults: true }, { removeNonInheritableGroupAttrs: true }, { removeUselessStrokeAndFill: true }, { removeViewBox: true }, { cleanupEnableBackground: true }, { removeHiddenElems: true }, { removeEmptyText: true }, { convertShapeToPath: true }, { moveElemsAttrsToGroup: true }, { moveGroupAttrsToElems: true }, { collapseGroups: true }, { convertPathData: true }, { convertTransform: true }, { removeEmptyAttrs: true }, { removeEmptyContainers: true }, { mergePaths: true }, { cleanupIDs: true }, { removeUnusedNS: true }, { transformsWithOnePath: false }, { sortAttrs: true }, { removeTitle: true } ] },
+				files: [ { expand: true, cwd: '<%= config.tmpRoot %>/vpdb-svg/', src: [ '*.svg' ], dest: '<%= config.tmpRoot %>/vpdb-svg/' } ]
 			}
 		},
 
@@ -261,7 +267,7 @@ module.exports = function(grunt) {
 
 	// generate
 	grunt.registerTask('git', [ 'gitinfo', 'gitsave']);
-	grunt.registerTask('svg', [ 'clean:svg', 'mkdir:svg', 'copy:svg', 'svgstore' ]);
+	grunt.registerTask('svg', [ 'clean:svg', 'copy:svg', 'svgmin', 'svgstore' ]);
 	grunt.registerTask('devsite', [ 'env:dev', /*'clean:devsite',*/ 'copy:devsite', 'mkdir:devsite', 'kss', 'metalsmith', 'concurrent:devsite' ]);
 
 	// tests

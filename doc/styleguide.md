@@ -61,21 +61,33 @@ written when they are actually used in the web application.
 
 ## Icons
 
-While [FontAwesome][fa] & co are an elegant way to use vector-based fonts, it 
+While [FontAwesome][fa] & co are an elegant way to use vector-based icons, it 
 became really cumbersome when adding new icons that weren't part of the 
 FontAwesome package.
 
-Due to [additional][tenreasons] [reasons][svgvsif], we decided to go for 
+Due to [additional][tenreasons] [reasons][svgvsif], I decided to go for 
 another approach: SVG icons. The idea is to include an SVG containing 
-definitions only in the main HTML layout  file and then reference these
-definitions in the code using the `<use>` element.
+only definitions in the HTML layout and then reference these definitions
+in the DOM using the `<use>` element. This method is also known as 
+[SVG Sprites][svgsprites].
 
-For this, we keep [one illustrator file][ai-icons] and explode the artboards
-into [single `.svg` files][icon-folder]. During build, we run [svgmin][svgmin]
-on them and compile them into one defintion file at `gfx/svg-defs.svg`. The 
-content of this file is then rendered into the main layout file. Whenever we 
-use an icon in the DOM, we can render it by calling the `icon(svg-name)` Jade
-mixin. Color can be set by defining the `fill` CSS property.
+For this, we keep [one Illustrator file][ai-icons] and explode the artboards
+into [multiple `.svg` files][icon-folder]. During build, we run 
+[svgmin][svgmin] on them and [compile them][svgstore] into one defintion file
+at `gfx/svg-defs.svg`. The content of this file is then rendered into the HTML 
+DOM. Whenever we use an icon in the DOM, we can render it by calling the 
+`icon(svg-name)` Jade mixin. Color can be set by defining the `fill` CSS 
+property.
+
+However, since the SVG is in the DOM, we can't use it purely in a CSS class. 
+For example, putting an SVG as background-image into an element via CSS isn't
+possible without re-defining the SVG in the CSS. But even if we had the SVG in
+the CSS or loaded it externally, we wouldn't be able to style it dynamically, 
+since the SVG wouldn't be part of the DOM. This is why tools like 
+[Grunticon][grunticon] or [Iconizr][iconizr] are of very limited use.
+
+So for the six icons (checkbox on/off, radio on/off, sort caret up/down), we'll
+continue using an icon font.
 
 
 [kss]: https://github.com/kneath/kss
@@ -91,3 +103,7 @@ mixin. Color can be set by defining the `fill` CSS property.
 [ai-icons]: https://github.com/freezy/node-vpdb/blob/master/gfx/icons.ai
 [icon-folder]: https://github.com/freezy/node-vpdb/tree/master/gfx/icons
 [svgmin]: https://github.com/sindresorhus/grunt-svgmin
+[svgstore]: https://github.com/FWeinb/grunt-svgstore
+[svgsprites]: http://css-tricks.com/svg-sprites-use-better-icon-fonts/
+[grunticon]: https://github.com/filamentgroup/grunticon
+[iconizr]: https://github.com/jkphl/grunt-iconizr

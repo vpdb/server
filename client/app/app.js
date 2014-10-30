@@ -20,6 +20,7 @@ var deps = [
 // main application modules
 var appDeps = [
 	'vpdb.auth',
+	'vpdb.login',
 	'vpdb.home',
 	'vpdb.commons',
 	'vpdb.games.list',

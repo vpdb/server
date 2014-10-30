@@ -10,11 +10,11 @@ block navbar
 		li.dropdown(ng-class="{ active: menu == 'admin' }", ng-show="auth.hasRole(['root', 'admin'])", on-toggle="toggled(open)")
 			a.space-right.dropdown-toggle
 				span.space-right-2x Admin
-				+icon('angle-down').smaller
+				+icon('angle-down').smaller.shift-up
 			ul.dropdown-menu
 				li
 					a(href="/admin/users")
-						+icon('users').space-right
+						+icon('users').space-right.shift-up
 						span Users
 
 	ul.nav.navbar-nav.navbar-right
@@ -25,15 +25,15 @@ block navbar
 		li.dropdown(ng-show="auth.isAuthenticated", on-toggle="toggled(open)")
 			a.space-right.dropdown-toggle
 				span.space-right-2x {{ auth.user.name }}
-				+icon('angle-down').smaller
+				+icon('angle-down').smaller.shift-up
 			ul.dropdown-menu
 				li
 					a(ng-click="auth.logout()")
-						+icon('exit').space-right
+						+icon('exit').space-right.shift-up
 						span Logout
 				li
 					a
-						+icon('user').space-right
+						+icon('user').space-right.shift-up
 						span Profile
 
 
@@ -44,7 +44,7 @@ block navbar
 					| Pin Downloads
 					span.badge(ng-show="downloadsPinned || pinnedDownloadCount") {{ pinnedDownloadCount }}
 				button.btn.dropdown-toggle(type="button", class="{{ downloadsPinned ? 'btn-primary' : 'btn-default' }}", data-toggle="dropdown")
-					i.fa.fa-angle-down
+					+icon('angle-down').smaller.shift-up
 					span.sr-only Toggle Dropdown
 				ul.dropdown-menu(role="menu")
 					li

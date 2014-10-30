@@ -1,3 +1,4 @@
+include template/_mixins
 extends layout
 
 block root
@@ -27,7 +28,7 @@ block body
 	section.footer(ng-cloak)
 		p
 			a(href="https://github.com/freezy/node-vpdb", target="_blank")
-				i.fa.fa-github-alt
+				+icon('github').shift-up.space-right
 				| <strong>Fork me</strong> on GitHub
 			if deployment != 'production'
 				| &nbsp;&#8212;

@@ -1,3 +1,3 @@
 mixin icon(ref)
-	svg.svg-icon(class!=attributes.class)
+	svg.svg-icon(class!=attributes.class, ng-click!=attributes['ng-click'])
 		use(xlink:href="#icon-#{ref}")

@@ -1,6 +1,5 @@
 
 .svg-icon
-	margin-top -5px
 	height 24px
 	width 24px
 	vertical-align middle
@@ -14,6 +13,20 @@
 		height 16px
 		width 16px
 
+	&.svg-3x
+		height 75px
+		width 75px
+
+	&.shift-up
+		margin-top -5px
+
+&.svg-spin
+	animation svg-spin 2s infinite linear
+@keyframes svg-spin
+	0%
+		transform rotate(0deg)
+	100%
+		transform rotate(359deg)
 
 body > svg
 	display none

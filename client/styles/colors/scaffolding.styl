@@ -108,17 +108,32 @@ body.theme-dark
 		color $color-light-inv
 		&:hover
 			color $color-lighter-inv
+			.svg-icon
+				fill $color-lighter-inv
 		&.a--lighter
 			color $color-lighter-inv
 			&:hover
 				color $color-lightest-inv
+				.svg-icon
+					fill $color-lightest-inv
 		&.a--darker
 			color $color-dark-inv
+			.svg-icon
+				fill $color-dark-inv
 			&:hover
 				color $color-light-inv
+				.svg-icon
+					fill $color-light-inv
 
 		&:hover .h--primary
 			color $color-primary-black-light
+
+		&.svg-icon, .svg-icon
+			fill $color-light-inv
+			&.a--lighter
+				fill $color-lighter-inv
+			&.a--darker
+				fill $color-dark-inv
 
 	// code
 	pre

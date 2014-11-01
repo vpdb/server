@@ -1,3 +1,5 @@
+include ../template/_mixins
+
 .row.ng-cloak.row--fullheight.fade-animation(ng-controller="GameController", ng-show="!pageLoading")
 
 	// right column
@@ -182,13 +184,11 @@
 						tabset
 							label.label--small.pull-right Comments are parsed with <a href="http://daringfireball.net/projects/markdown/syntax" target="_blank">Markdown</a>.
 							tab
-								tab-heading
-									i.fa.fa-edit(title="Write")
+								tab-heading(title="Write"): +icon('edit')
 									.panel-triangle
 								textarea.textarea--full.msd-elastic(placeholder="Leave a comment", ng-model="$parent.newComment")
 							tab
-								tab-heading
-									i.fa.fa-eye(title="Preview")
+								tab-heading(title="Preview"): +icon('eye')
 								div.markdown(markdown="$parent.newComment")
 								label.tab__label(ng-show="!newComment || newComment.length == 0") Nothing to preview.
 

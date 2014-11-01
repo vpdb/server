@@ -1,3 +1,5 @@
+include ../template/_mixins
+
 .theme-light
 	.modal-header
 		h1.h--no-margin.h--small
@@ -46,12 +48,10 @@
 					tabset.tabset--light
 						label.label--small.pull-right(markdown-info="Markdown enabled.")
 						tab
-							tab-heading
-								i.fa.fa-edit(title="Write")
+							tab-heading(title="Write"): +icon('edit')
 							textarea.textarea--full.msd-elastic(placeholder="Description of the build", ng-model="vpbuild.description")
 						tab
-							tab-heading
-								i.fa.fa-eye(title="Preview")
+							tab-heading(title="Preview"): +icon('eye')
 							div.markdown(markdown="vpbuild.description")
 							label.tab__label(ng-show="!vpbuild.description || vpbuild.description.length == 0") Nothing to preview.
 			div.alert.alert-danger(ng-show="errors.description")

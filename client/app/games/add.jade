@@ -51,11 +51,11 @@ include ../template/_mixins
 					.col-sm-6
 						input#ipdbUrl.form-control(type="text", ng-model="game.ipdbUrl", placeholder="URL or Number", on-enter="refresh()")
 						a#ipdbLink(href="http://www.ipdb.org/search.pl?any={{ game.title | escape }}&search=Search+Database&searchtype=quick", target="_blank")
-							i.fa.fa-external-link.space-right
+							+icon('external-link').small.shift-up.space-right
 							| Search title on IPDB.org
 					.col-sm-3
 						button.btn.btn-default.btn--width-med.pull-right(ng-click="refresh()")
-							i.fa.fa-refresh.space-right
+							+icon('refresh').space-right
 							| Fetch
 
 				.alert.alert-danger.alert--shifted-up(ng-show="errors['ipdb.number']")
@@ -69,11 +69,13 @@ include ../template/_mixins
 					.col-sm-6
 						.input-group
 							input#gameId1.form-control(type="text", ng-model="game.id", placeholder="Common Abbreviation", ng-change="game.data.idValidated = false", on-enter="check()")
-							span.input-group-addon(ng-class="{ transparent: !game.data.idValidated }"): i.fa(class="{{ game.data.idValid ? 'fa-check': 'fa-times'}}")
+							span.input-group-addon(ng-class="{ transparent: !game.data.idValidated }")
+								+icon('check').small(ng-show="game.data.idValid")
+								+icon('times').small(ng-hide="game.data.idValid")
 						span.help-block Must be unique and contain only letters and dashes.
 					.col-sm-3
 						button.btn.btn-default.btn--width-med.pull-right(ng-click="check()", ng-disabled="game.data.idValidated")
-							i.fa.fa-check.space-right
+							+icon('check').space-right
 							| Check
 
 				.alert.alert-danger.alert--shifted-up-2x(ng-show="errors.id")
@@ -141,11 +143,13 @@ include ../template/_mixins
 					.col-sm-6
 						.input-group
 							input#gameId2.form-control(type="text", ng-model="game.id", placeholder="Common Abbreviation", ng-change="game.data.idValidated = false")
-							span.input-group-addon(ng-class="{ transparent: !game.data.idValidated }"): i.fa(class="{{ game.data.idValid ? 'fa-check': 'fa-times'}}")
+							span.input-group-addon(ng-class="{ transparent: !game.data.idValidated }")
+								+icon('check').small(ng-show="game.data.idValid")
+								+icon('times').small(ng-hide="game.data.idValid")
 						span.help-block Must be unique and contain only letters and dashes.
 					.col-sm-3
 						button.btn.btn-default.btn--width-med.pull-right(ng-click="check()", ng-disabled="game.data.idValidated")
-							i.fa.fa-check.space-right
+							+icon('check').space-right
 							| Check
 
 				.alert.alert-danger.alert--shifted-up-2x(ng-show="errors.id")
@@ -181,12 +185,10 @@ include ../template/_mixins
 						tabset.tabset--light
 							label.label--small.pull-right(markdown-info="Markdown enabled.")
 							tab
-								tab-heading
-									i.fa.fa-edit(title="Write")
+								tab-heading(title="Write"): +icon('edit')
 								textarea.textarea--full.msd-elastic(placeholder="Description of the original table", ng-model="game.description")
 							tab
-								tab-heading
-									i.fa.fa-eye(title="Preview")
+								tab-heading(title="Preview"): +icon('eye')
 								div.markdown(markdown="game.description")
 								label.tab__label(ng-show="!game.description || game.description.length == 0") Nothing to preview.
 
@@ -196,12 +198,10 @@ include ../template/_mixins
 						tabset.tabset--light
 							label.label--small.pull-right(markdown-info="Markdown enabled.")
 							tab
-								tab-heading
-									i.fa.fa-edit(title="Write")
+								tab-heading(title="Write"): +icon('edit')
 								textarea.textarea--full.msd-elastic(placeholder="Put game instructions here", ng-model="game.instructions")
 							tab
-								tab-heading
-									i.fa.fa-eye(title="Preview")
+								tab-heading(title="Preview"): +icon('eye')
 								div.markdown(markdown="game.instructions")
 								label.tab__label(ng-show="!game.instructions || game.instructions.length == 0") Nothing to preview.
 
@@ -209,7 +209,7 @@ include ../template/_mixins
 			//- URLs (let's do that another time)
 				.clearfix
 				h4
-					i.fa.fa-link.space-right
+					+icon('link').space-right
 					| Links
 				hr.hr--light
 
@@ -229,10 +229,10 @@ include ../template/_mixins
 					.col-sm-8
 						input.form-control(type="text", placeholder="http://...", ng-model="link.url")
 					.col-sm-1
-						i.fa.fa-trash-o(ng-click="removeLink(link)")
+						+icon('trash')(ng-click="removeLink(link)")
 
 				button.btn.btn-secondary.padder-top-2x.padder-bottom
-					i.fa.fa-plus-circle.space-right
+					+icon('plus-circle').space-right
 					| Add Another
 			.clearfix
 
@@ -253,10 +253,10 @@ include ../template/_mixins
 								.text-center.vertical-center--100
 									progressbar.progress--fixed-absolute.progress-striped.active(value="mediaFile.backglass.progress", ng-show="mediaFile.backglass.uploading")
 									.span(ng-show="!img.url")
-										i.fa.fa-picture-o.fa-3x(ng-class="{ transparent: mediaFile.backglass.uploading }")
+										+icon('photo').svg-4x(ng-class="{ transparent: mediaFile.backglass.uploading }")
 										p {{ mediaFile.backglass.uploadText }}
 									.span(ng-show="img.loading")
-										i.fa.fa-cog.fa-3x.fa-spin--slow
+										+icon('gear').svg-3x.svg-spin--slow
 										p Generating thumbnails...
 
 				.col-sm-6
@@ -270,17 +270,17 @@ include ../template/_mixins
 
 					// info boxes
 					.alert.alert-success.alert--inverted.alert--shifted-up.padder-top(ng-show="backglass.test == 'optimal'")
-						i.fa.fa-check-circle.space-right
+						+icon('check-circle').shift-up.space-right
 						| Dimensions are {{ backglass.dimensions }}, which is optimal.
 					.alert.alert-warning.alert--inverted.alert--shifted-up.padder-top(ng-show="backglass.test == 'warning'")
-						i.fa.fa-warning.space-right
+						+icon('warning').shift-up.space-right
 						| Dimensions are {{ backglass.dimensions }}, where the aspect ratio is <code>1:{{ backglass.ar }}</code> and {{ backglass.arDiff }}% off the ideal <code>1:1.25</code>. Some content will be cropped off.
 					.alert.alert-danger.alert--inverted.alert--shifted-up.padder-top(ng-show="backglass.test == 'error'")
-						i.fa.fa-warning.space-right
+						+icon('warning').shift-up.space-right
 						| Dimensions are {{ backglass.dimensions }}, where the aspect ratio is <code>1:{{ backglass.ar }}</code> and <strong>{{ backglass.arDiff }}%</strong> off the ideal <code>1:1.25</code>. Please crop the image and try again.
 
 			.alert.alert-danger.alert--shifted-up(ng-show="errors['_media.backglass']")
-				i.fa.fa-exclamation-triangle.space-right
+				+icon('warning').shift-up.space-right
 				| {{ errors['_media.backglass'] }}
 
 			.row.padder-top
@@ -292,10 +292,10 @@ include ../template/_mixins
 								.text-center.vertical-center--100
 									progressbar.progress--fixed-absolute.progress-striped.active(value="mediaFile.logo.progress", ng-show="mediaFile.logo.uploading")
 									.span(ng-show="!img.url")
-										i.fa.fa-picture-o.fa-3x(ng-class="{ transparent: mediaFile.logo.uploading }")
+										+icon('photo').svg-4x(ng-class="{ transparent: mediaFile.logo.uploading }")
 										p {{ mediaFile.logo.uploadText }}
 									.span(ng-show="img.loading")
-										i.fa.fa-cog.fa-3x.fa-spin--slow
+										+icon('gear').svg-3x.svg-spin--slow
 										p Generating thumbnails...
 
 				.col-sm-6

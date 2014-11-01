@@ -154,10 +154,11 @@ body.theme-dark
 		&, a
 			color $color-lighter
 		.svg-icon
-			fill
-				color $color-lighter
+			fill $color-lighter
 		a:hover
 			color $color-lightest
+			.svg-icon
+				fill $color-lightest
 
 	::selection
 		color rgba(white,0.9)

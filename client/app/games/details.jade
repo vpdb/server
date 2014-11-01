@@ -45,8 +45,8 @@ include ../template/_mixins
 		button.btn.btn-default.btn-block.padder-bottom
 			i.fa.fa-star.space-right
 			| Follow
-		a.btn.btn-primary.padder-bottom(href="/game/{{game.id}}/add-release", ng-show="auth.hasPermission('releases/add')")
-			i.fa.fa-plus-circle.btn-.space-right
+		a.btn.btn-primary.btn-block.padder-bottom(href="/game/{{game.id}}/add-release", ng-show="auth.hasPermission('releases/add')")
+			i.fa.fa-plus-circle.space-right
 			| Add Release
 
 	// left column (main content)

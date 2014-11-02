@@ -143,7 +143,7 @@ include ../template/_mixins
 					+icon('trash').pos-trash.a.smaller(ng-click="removeAuthor(author)")
 
 		button.btn.btn-default.padder-top.pull-right(ng-click="addAuthor()")
-			i.fa.fa-plus-circle.space-right
+			+icon('circle-plus').space-right
 			| Add Author
 
 		.clearfix.padder-bottom
@@ -196,7 +196,7 @@ include ../template/_mixins
 						i(ng-show="tags.length == 0") No more tags available.
 
 				button.btn.btn-default.padder-top.pull-right(ng-click="createTag()")
-					i.fa.fa-plus-circle.space-right
+					+icon('circle-plus').space-right
 					| Create New Tag
 
 			.clearfix.padder-bottom

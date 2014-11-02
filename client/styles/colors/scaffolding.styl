@@ -104,7 +104,7 @@ body.theme-dark
 	color $color-lighter-inv
 
 	// links
-	a, .a
+	a, .a, button
 		color $color-light-inv
 		&:hover
 			color $color-lighter-inv
@@ -128,12 +128,20 @@ body.theme-dark
 		&:hover .h--primary
 			color $color-primary-black-light
 
-		&.svg-icon, .svg-icon
+		.svg-icon
 			fill $color-light-inv
+		&.svg-icon
+			fill $color-light-inv
+			&:hover
+				fill $color-lighter-inv
 			&.a--lighter
 				fill $color-lighter-inv
+				&:hover
+					fill $color-lightest-inv
 			&.a--darker
 				fill $color-dark-inv
+				&:hover
+					fill $color-light-inv
 
 	// code
 	pre

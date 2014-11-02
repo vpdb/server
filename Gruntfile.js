@@ -251,7 +251,7 @@ module.exports = function(grunt) {
 			'stylus', 'cssmin',                                   // render & minify css
 			'client-config', 'ngAnnotate', 'uglify',              // treat javascripts
 			'svg', 'jade',                                        // icons and html
-			'copy:devsite', 'mkdir:devsite', 'kss', 'metalsmith'  // create devsite
+			'copy:devsite', 'mkdir:devsite', 'kss'//, 'metalsmith'  // create devsite
 		]
 	);
 

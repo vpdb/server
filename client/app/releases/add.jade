@@ -52,7 +52,7 @@ include ../template/_mixins
 		.form-group(ng-class="{ error: errors.title }")
 			input.form-control.input-lg(type="text", placeholder="Title", ng-model="release.name", on-enter="searchOnIpdb()")
 			.alert.alert-danger(ng-show="errors.title")
-				i.fa.fa-exclamation-triangle.space-right
+				+icon('warning').shift-up.space-right
 				| {{ errors.title }}
 			span.help-block This is what will show up when your release gets listed under the game. It is basically what
 				| distinguishes your release from others of the same game. Don't put the game name or anything you
@@ -83,7 +83,7 @@ include ../template/_mixins
 										span {{ flavorVal.name }}
 										span: i {{ flavorVal.other }}
 		.text-center(ng-show="(meta.files | fileext:['vpt','vpx']).length == 0")
-			i.fa.fa-warning.space-right
+			+icon('warning').shift-up.space-right
 			i Upload any VP tables under 1. before defining flavors.
 
 
@@ -138,8 +138,9 @@ include ../template/_mixins
 				.media-body
 					h6.h--no-margin.h--lighter.media-heading {{ meta.users[author._user].name }}
 					span {{ author.roles.join(', ') }}
-				i.fa.fa-pencil.a.fade-animation(ng-show="hovering", ng-click="addAuthor(author)")
-				i.icon.icon-trash.a.fade-animation(ng-show="hovering", ng-click="removeAuthor(author)")
+				.fade-admination(ng-show="hovering")
+					+icon('pencil').pos-pencil.a.smaller(ng-click="addAuthor(author)")
+					+icon('trash').pos-trash.a.smaller(ng-click="removeAuthor(author)")
 
 		button.btn.btn-default.padder-top.pull-right(ng-click="addAuthor()")
 			i.fa.fa-plus-circle.space-right
@@ -269,7 +270,7 @@ include ../template/_mixins
 				p.padder-top
 
 		.text-center(ng-show="(meta.files | fileext:['vpt','vpx']).length == 0")
-			i.fa.fa-warning.space-right
+			+icon('warning').shift-up.space-right
 			i Upload any VP tables under 1. before setting compatibility.
 
 
@@ -386,7 +387,7 @@ include ../template/_mixins
 										p Generating video thumbnail...
 
 		.text-center(ng-show="(meta.files | fileext:['vpt','vpx']).length == 0")
-			i.fa.fa-warning.space-right
+			+icon('warning').shift-up.space-right
 			i Upload any VP tables under 1. before uploading media.
 
 

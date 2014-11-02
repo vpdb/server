@@ -32,7 +32,7 @@ include ../template/_mixins
 			a.a--lighter(href="http://www.ipdb.org/machine.cgi?id={{ game.ipdb.no  }}", target="_blank")
 				span.space-right
 					strong IPDB
-				i.fa.fa-external-link
+				+icon('external-link').shift-up
 		dl.dl--oneliner(ng-show="game.ipdb.rating")
 			dt Rating
 			dd(title="{{ game.ipdb.votes | number }} vote{{ game.ipdb.votes == 1 ? '' : 's' }}")

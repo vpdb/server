@@ -1,3 +1,5 @@
+include ../template/_mixins
+
 .theme-light
 	.modal-header
 		h1.h--no-margin.h--small
@@ -12,7 +14,7 @@
 				.col-sm-7
 					input.form-control(ng-model="tag.name", ng-required)
 			div.alert.alert-danger.padder-bottom(ng-show="errors.name")
-				i.fa.fa-exclamation-triangle.space-right
+				+icon('warning').shift-up.space-right
 				| {{ errors.name }}
 
 			.form-group(ng-class="{ error: errors.description }")
@@ -20,7 +22,7 @@
 				.col-sm-7
 					textarea.form-control(ng-model="tag.description", ng-required)
 			div.alert.alert-danger(ng-show="errors.description")
-				i.fa.fa-exclamation-triangle.space-right
+				+icon('warning').shift-up.space-right
 				| {{ errors.description }}
 
 

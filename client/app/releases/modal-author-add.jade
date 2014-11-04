@@ -1,7 +1,9 @@
+include ../template/_mixins
+
 .theme-light
 	.modal-header
 		h1.h--no-margin.h--small
-			i.icon.icon-user.space-right
+			+icon('user').space-right
 			| &nbsp;{{ adding ? 'Add' : 'Edit' }} Author
 	.modal-body
 		h4 Choose User
@@ -19,11 +21,13 @@
 					typeahead-template-url="userListItem",
 					typeahead-min-length="3",
 					typeahead-wait-ms="250")
-				span.input-group-addon(ng-show="searching"): i.fa.fa-circle-o-notch.fa-spin
-				span.input-group-addon(ng-hide="searching"): i.fa(ng-class="{ 'fa-check' : isValidUser, 'fa-times': !isValidUser }")
+				span.input-group-addon
+					+icon('circle-o-notch').small.svg-spin(ng-show="searching")
+					+icon('check').smaller(ng-show="!searching && isValidUser")
+					+icon('times').smaller(ng-show="!searching && !isValidUser")
 
 		div.alert.alert-danger.text-left(ng-show="errors.user")
-			i.fa.fa-exclamation-triangle.space-right
+			+icon('warning').shift-up.space-right
 			| {{ errors.user }}
 
 		h4.padder-top-2x Add Roles
@@ -38,7 +42,7 @@
 					input#role.form-control(type="text", ng-model="role", placeholder="3D Models, Playfield, Scripts, ...")
 				.col-sm-3
 					button.btn.btn-default.pull-right(ng-click="addRole(role)")
-						i.fa.fa-plus-circle.space-right
+						+icon('plus-circle').space-right
 						| Add
 			.form-group(ng-show="roles.length > 0")
 				label.col-sm-2.control-label Roles
@@ -48,7 +52,7 @@
 
 		.clearfix
 		div.alert.alert-danger.text-left(ng-show="errors.roles")
-			i.fa.fa-exclamation-triangle.space-right
+			+icon('warning').shift-up.space-right
 			| {{ errors.roles }}
 
 	.modal-footer

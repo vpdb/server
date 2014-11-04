@@ -271,6 +271,11 @@ include ../template/_mixins
 						.simple-list(ng-repeat="build in builds.experimental | filter:{is_range:false}")
 							input.checkbox--check(ng-checked="file.vpbuilds.indexOf(build.id) > -1", ng-click="toggleVPBuild(file, build)", id="dev-{{ file.storage.id }}-{{ build.id }}", type="checkbox")
 							label(for="dev-{{ file.storage.id }}-{{ build.id }}") {{ build.label }}
+					.col-md-12
+						p.padder-top
+						button.btn.btn-default.pull-right(ng-click="addVPBuild()")
+							+icon('plus-circle').space-right
+							| Add Another
 				.clearfix
 				p.padder-top
 
@@ -345,7 +350,7 @@ include ../template/_mixins
 
 		span(ng-repeat="file in meta.files | fileext:['vpt','vpx']")
 			h2.h--smaller
-				i.icon.fa-2x.space-right(ng-class="file.icon")
+				+icon('{{ file.icon }}').svg-2x.shift-up
 				| {{ file.name }}
 			hr.hr--light.hr--shifted-up
 			.row
@@ -359,10 +364,10 @@ include ../template/_mixins
 								.text-center.vertical-center--100
 									progressbar.progress--fixed-absolute.progress-striped.active(value="mediaFiles[file.storage.id].playfieldImage.progress", ng-show="mediaFiles[file.storage.id].playfieldImage.uploading")
 									.span(ng-show="!img.url")
-										i.fa.fa-picture-o.fa-3x(ng-class="{ transparent: mediaFiles[file.storage.id].playfieldImage.uploading }")
+										+icon('photo').svg-4x(ng-class="{ transparent: mediaFiles[file.storage.id].playfieldImage.uploading }")
 										p {{ mediaFiles[file.storage.id].playfieldImage.status || 'Click or drag and drop here' }}
 									.span(ng-show="img.loading")
-										i.fa.fa-cog.fa-3x.fa-spin--slow
+										+icon('gear').svg-3x.svg-spin--slow
 										p Generating thumbnails...
 
 				.col-sm-6.playfield--rotate-on-upload(make-loaded="loaded", make-loaded-event="video", make-loaded-post="loadingFinished")
@@ -382,13 +387,13 @@ include ../template/_mixins
 								.text-center.vertical-center--100
 									progressbar.progress--fixed-absolute.progress-striped.active(value="mediaFiles[file.storage.id].playfieldVideo.progress", ng-show="mediaFiles[file.storage.id].playfieldVideo.uploading")
 									span(ng-show="!img.url")
-										i.fa.fa-video-camera.fa-3x(ng-class="{ transparent: mediaFiles[file.storage.id].playfieldVideo.uploading }")
+										+icon('video-camera').svg-4x(ng-class="{ transparent: mediaFiles[file.storage.id].playfieldVideo.uploading }")
 										p {{ mediaFiles[file.storage.id].playfieldVideo.status || 'Click or drag and drop here' }}
 									span(ng-show="img.loading")
-										i.fa.fa-cog.fa-3x.fa-spin--slow
+										+icon('gear').svg-3x.svg-spin--slow
 										p Creating video screenshot...
 									span(ng-show="videoLoading").progress-note--with-background
-										i.fa.fa-cog.fa-3x.fa-spin--slow
+										+icon('gear').svg-3x.svg-spin--slow
 										p Generating video thumbnail...
 
 		.text-center(ng-show="(meta.files | fileext:['vpt','vpx']).length == 0")

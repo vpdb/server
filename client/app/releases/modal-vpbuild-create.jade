@@ -3,7 +3,7 @@ include ../template/_mixins
 .theme-light
 	.modal-header
 		h1.h--no-margin.h--small
-			i.icon.icon-package.space-right
+			+icon('package').space-right.svg-2x
 			| &nbsp;Add A New Visual Pinball Build
 	.modal-body
 		p Tags need a unique name and a description.
@@ -17,7 +17,7 @@ include ../template/_mixins
 				.col-sm-7
 					input.form-control(ng-model="vpbuild.label", placeholder="Version or build name...", ng-required)
 			div.alert.alert-danger.padder-bottom(ng-show="errors.name")
-				i.fa.fa-exclamawtion-triangle.space-right
+				+icon('warning').shift-up.space-right
 				| {{ errors.label }}
 
 
@@ -33,10 +33,10 @@ include ../template/_mixins
 							close-text="Close",
 							show-weeks="showWeeks",
 							starting-day="1")
-						span.input-group-addon: i.fa.fa-calendar.a(ng-click='openCalendar($event)')
+						span.input-group-addon: +icon('calendar').a(ng-click='openCalendar($event)')
 
 			div.alert.alert-danger.padder-bottom(ng-show="errors.built_at")
-				i.fa.fa-exclamation-triangle.space-right
+				+icon('warning').shift-up.space-right
 				| {{ errors.built_at }}
 
 
@@ -55,7 +55,7 @@ include ../template/_mixins
 							div.markdown(markdown="vpbuild.description")
 							label.tab__label(ng-show="!vpbuild.description || vpbuild.description.length == 0") Nothing to preview.
 			div.alert.alert-danger(ng-show="errors.description")
-				i.fa.fa-exclamation-triangle.space-right
+				+icon('warning').shift-up.space-right
 				| {{ errors.description }}
 
 
@@ -66,7 +66,7 @@ include ../template/_mixins
 				.col-sm-7
 					input.form-control(ng-model="vpbuild.download_url", ng-required)
 			div.alert.alert-danger.padder-bottom(ng-show="errors.download_url")
-				i.fa.fa-exclamation-triangle.space-right
+				+icon('warning').shift-up.space-right
 				| {{ errors.download_url }}
 
 
@@ -77,7 +77,7 @@ include ../template/_mixins
 				.col-sm-7
 					input.form-control(ng-model="vpbuild.support_url", ng-required)
 			div.alert.alert-danger.padder-bottom(ng-show="errors.support_url")
-				i.fa.fa-exclamation-triangle.space-right
+				+icon('warning').shift-up.space-right
 				| {{ errors.support_url }}
 
 	.modal-footer

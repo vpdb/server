@@ -4,7 +4,7 @@ include ../template/_mixins
 	.col-sm-9.col--main
 
 		h1.h--primary Add a new Release
-		hr
+		hr.hr--primary
 
 		p Welcome to the release upload page. We've tried our best to make it as easy as possible for you to
 			| upload your release and add the necessary information so it can correctly be categorized, indexed and
@@ -25,6 +25,7 @@ include ../template/_mixins
 			ul.list--files
 				li.panel(ng-repeat="file in meta.files")
 					.col--list-files-left
+						+icon('{{ file.icon }}')
 						i.icon(ng-class="file.icon")
 					.col--list-files-right
 						.block.text--large: strong {{ file.name }}
@@ -126,7 +127,7 @@ include ../template/_mixins
 		//- AUTHORS
 		//---------------------------------------------------------------------
 		h4
-			i.icon.icon-user.space-right
+			+icon('user').shift-up.space-right
 			| Authors
 		hr.hr--light.hr--margin-small
 
@@ -143,7 +144,7 @@ include ../template/_mixins
 					+icon('trash').pos-trash.a.smaller(ng-click="removeAuthor(author)")
 
 		button.btn.btn-default.padder-top.pull-right(ng-click="addAuthor()")
-			+icon('circle-plus').space-right
+			+icon('plus-circle').space-right
 			| Add Author
 
 		.clearfix.padder-bottom
@@ -151,7 +152,7 @@ include ../template/_mixins
 		//- TAGS
 		//---------------------------------------------------------------------
 		h4
-			i.fa.fa-tags.space-right
+			+icon('tags').shift-up.space-right
 			| Tags
 		hr.hr--light.hr--margin-small
 		p Tags highlight special characteristics or features of your release. There are already a bunch of them but you
@@ -171,7 +172,7 @@ include ../template/_mixins
 							data-jqyoui-options="{ revert: 'invalid' }",
 							jqyoui-draggable="{ animate: true, index: {{$index}} }")
 								| {{ tag.name }}
-								i.fa.fa-times-circle.space-left.a(ng-click="removeTag(tag)")
+								+icon('times-circle').small.shift-up.space-left.a(ng-click="removeTag(tag)")
 						i.space-left {{ tag.description }}
 					i(ng-show="meta.tags.length == 0") No tags selected. Drag and drop them from the right hand pane in here.
 			.col-sm-6
@@ -188,15 +189,15 @@ include ../template/_mixins
 						  data-jqyoui-options="{ revert: 'invalid' }",
 						  jqyoui-draggable='{ animate: true, index: {{$index}} }')
 							| {{ tag.name }}
-							i.fa.fa-question-circle.space-left.a.a--darker(
+							+icon('question-circle').small.shift-up.space-left.a(
 								tooltip="{{tag.description}}",
-								tooltip-append-to-body="true",
+								tooltip-append-to-body="false",
 								tooltip-trigger="click",
 								tooltip-popup-delay="200")
 						i(ng-show="tags.length == 0") No more tags available.
 
 				button.btn.btn-default.padder-top.pull-right(ng-click="createTag()")
-					+icon('circle-plus').space-right
+					+icon('plus-circle').space-right
 					| Create New Tag
 
 			.clearfix.padder-bottom
@@ -205,7 +206,7 @@ include ../template/_mixins
 		//- LINKS
 		//---------------------------------------------------------------------
 		h4
-			i.fa.fa-link.space-right
+			+icon('link').shift-up.space-right
 			| Links
 		hr.hr--light.hr--margin-small
 		p You can add additional links to your release, such as to your WIP thread or other interesting resources.
@@ -221,7 +222,7 @@ include ../template/_mixins
 			.form-group.col-sm-9
 				.input-group
 					input.form-control(type="text", ng-model="link.url")
-					span.input-group-addon: i.icon.icon-trash.a(ng-click="removeLink(link)")
+					span.input-group-addon: +icon('trash').smaller.a(ng-click="removeLink(link)")
 
 		.row.row--fullwidth(init="newLink={}")
 			.form-group.col-sm-3
@@ -229,7 +230,8 @@ include ../template/_mixins
 			.form-group.col-sm-9
 				.input-group
 					input.form-control(type="text", ng-model="newLink.url", on-enter="newLink=addLink(newLink)")
-					span.input-group-addon: i.fa.fa-plus-circle.a(ng-click="newLink=addLink(newLink)")
+					span.input-group-addon: +icon('plus-circle').smaller.a(ng-click="newLink=addLink(newLink)")
+
 
 
 		//---------------------------------------------------------------------
@@ -282,7 +284,7 @@ include ../template/_mixins
 		//- MOD
 		//---------------------------------------------------------------------
 		h4
-			i.fa.fa-wrench.space-right
+			+icon('wrench').shift-up.space-right
 			| Mod
 		hr.hr--light.hr--margin-small
 
@@ -301,7 +303,7 @@ include ../template/_mixins
 						span No
 
 		button.btn.btn-default.pull-right(ng-show="meta.isMod")
-			i.fa.fa-search.space-right
+			+icon('search').space-right
 			| Find
 		.clearfix
 
@@ -309,7 +311,7 @@ include ../template/_mixins
 		//- ACKNOWLEDGEMENTS
 		//---------------------------------------------------------------------
 		h4
-			i.fa.fa-heart.space-right
+			+icon('heart').shift-up.space-right
 			| Acknowledgements
 		hr.hr--light.hr--margin-small
 

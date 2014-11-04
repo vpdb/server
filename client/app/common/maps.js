@@ -18,16 +18,16 @@ common
 
 			fileIcon: function(mimeType) {
 				switch (mimeType) {
-					case 'application/x-visual-pinball-table':   return 'icon-ext-vpt';
-					case 'application/x-visual-pinball-table-x': return 'icon-ext-vpx';
-					case 'application/vbscript':                 return 'icon-ext-code';
-					case 'audio/mpeg':                           return 'icon-ext-audio';
+					case 'application/x-visual-pinball-table':   return 'ext-vpt';
+					case 'application/x-visual-pinball-table-x': return 'ext-vpx';
+					case 'application/vbscript':                 return 'ext-code';
+					case 'audio/mpeg':                           return 'ext-audio';
 					case 'image/jpeg':
-					case 'image/png':                            return 'icon-ext-image';
-					case 'text/plain':                           return 'icon-ext-txt';
+					case 'image/png':                            return 'ext-image';
+					case 'text/plain':                           return 'ext-txt';
 					case 'video/mp4':
-					case 'video/x-flv':                          return 'icon-ext-video';
-					default:                                     return 'icon-ext';
+					case 'video/x-flv':                          return 'ext-video';
+					default:                                     return 'ext';
 				}
 			}
 		};

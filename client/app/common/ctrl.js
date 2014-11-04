@@ -44,6 +44,10 @@ common
 			$scope.loading = loading;
 		};
 
+		$scope.icon = function(icon) {
+			return '#icon-' + icon;
+		};
+
 		$scope.download = function(download, info) {
 			if ($scope.downloadsPinned) {
 				download.info = info;

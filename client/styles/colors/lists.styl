@@ -40,10 +40,10 @@
 
 	ul.list--files
 		color $color-lightish-inv
-		.col--list-files-left > .icon
-			color $color-light-inv
-		> li > i
+		.col--list-files-left > .svg-icon
+			fill $color-light-inv
+		> li > .svg-icon
 			transition all $animation-short
-			color $color-dark-inv
+			fill $color-dark-inv
 			&:hover
-				color $color-danger
+				fill $color-danger

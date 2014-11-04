@@ -1,3 +1,7 @@
 mixin icon(ref)
 	svg.svg-icon(class!=attributes.class, ng-click!=attributes['ng-click'], ng-show!=attributes['ng-show'], ng-hide!=attributes['ng-hide'])
-		use(xlink:href="#icon-#{ref}")
+		if ref[0] === "{"
+			use(xlink:href="{{ icon(#{ref.match(/^\{\{\s*(.*?)\s*\}\}$/)[1]}) }}")
+		else
+			use(xlink:href="#icon-#{ref}")
+

@@ -1,4 +1,4 @@
-"use strict"; /* global common, parseUri, _ */
+"use strict"; /* global common, parseUri, objectPath, _ */
 
 common
 	.factory('AuthResource', function($resource, ConfigService) {
@@ -34,6 +34,11 @@ common
 
 	.factory('RolesResource', function($resource, ConfigService) {
 		return $resource(ConfigService.apiUri('/roles/:role'), {}, {
+		});
+	})
+
+	.factory('ReleaseResource', function($resource, ConfigService) {
+		return $resource(ConfigService.apiUri('/releases/:release'), {}, {
 		});
 	})
 
@@ -82,18 +87,31 @@ common
 				};
 			},
 
-			handleErrors: function(scope) {
+			/**
+			 * Updates the scope with received errors from the API.
+			 *
+			 * If there were validation errors, an `errors` tree is created
+			 * with the field names as property names, otherwise the `error`
+			 * variable is just set to the received error.
+			 *
+			 * @param {object} scope Scope where to create the error variables
+			 * @param {function} [fct] Executed if provided with given scope as argument.
+			 */
+			handleErrors: function(scope, fct) {
 				return function(response) {
 					scope.message = null;
 					scope.errors = {};
 					scope.error = null;
 					if (response.data.errors) {
 						_.each(response.data.errors, function(err) {
-							scope.errors[err.field] = err.message;
+							objectPath.set(scope.errors, err.field, err.message);
 						});
 					}
 					if (response.data.error) {
 						scope.error = response.data.error;
+					}
+					if (fct) {
+						fct(scope);
 					}
 				};
 			},

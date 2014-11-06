@@ -42,8 +42,11 @@
 		color $color-lightish-inv
 		.col--list-files-left > .svg-icon
 			fill $color-light-inv
-		> li > .svg-icon
-			transition all $animation-short
-			fill $color-dark-inv
-			&:hover
-				fill $color-danger
+		> li
+			> .svg-icon
+				transition all $animation-short
+				fill $color-dark-inv
+				&:hover
+					fill $color-danger
+			&.error
+				border-color $color-danger

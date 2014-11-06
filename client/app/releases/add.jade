@@ -20,7 +20,7 @@ include ../template/_mixins
 
 		p Drag and drop your files from the file explorer into the box below. You can also put a .zip file, which will
 			| then be extracted on server side and show up here as individual files.
-		.panel.panel--dropzone(ng-file-drop="onFilesUpload($files)", ng-file-drag-over-class="panel--dragging")
+		.panel.panel--dropzone(ng-file-drop="onFilesUpload($files)", ng-file-drag-over-class="panel--dragging", ng-class="{ error: angular.isString(errors.versions[0].files) }")
 
 			ul.list--files
 				li.panel(ng-repeat="file in meta.files")
@@ -34,6 +34,9 @@ include ../template/_mixins
 					+icon('trash')(ng-click="removeFile(file)")
 
 			label.center-block.text-center: small: i Drop your files in here.
+		.alert.alert-danger.padder-bottom(ng-show="angular.isString(errors.versions[0].files)")
+			+icon('warning').shift-up.space-right
+			| {{ errors.versions[0].files }}
 
 		p Note that files of a release are structured, i.e. there are only certain file types allowed:
 		ul
@@ -50,11 +53,11 @@ include ../template/_mixins
 		//---------------------------------------------------------------------
 		h1 2. Name your Release
 		hr
-		.form-group(ng-class="{ error: errors.title }")
-			input.form-control.input-lg(type="text", placeholder="Title", ng-model="release.name", on-enter="searchOnIpdb()")
-			.alert.alert-danger(ng-show="errors.title")
+		.form-group(ng-class="{ error: errors.name }")
+			input.form-control.input-lg(type="text", placeholder="Title", ng-model="release.name")
+			.alert.alert-danger(ng-show="errors.name")
 				+icon('warning').shift-up.space-right
-				| {{ errors.title }}
+				| {{ errors.name }}
 			span.help-block This is what will show up when your release gets listed under the game. It is basically what
 				| distinguishes your release from others of the same game. Don't put the game name or anything you
 				| already describe below such as <i>"FS Night Mod"</i>, but choose a name that brings across the nature
@@ -68,7 +71,7 @@ include ../template/_mixins
 			| download or search for. You can upload multiple flavors by adding several <code>.vpt</code> or
 			| <code>.vpx</code> files in step 1.
 		ul.list--files
-			li.panel(ng-repeat="file in meta.files | fileext:['vpt','vpx']")
+			li.panel(ng-repeat="file in meta.files | fileext:['vpt','vpx']", ng-class="{ error: errors.versions[0].files[meta.files.indexOf(file)].flavor }")
 				.col--list-files-left
 					+icon('{{ file.icon }}').svg-4x
 				.col--list-files-right
@@ -84,6 +87,13 @@ include ../template/_mixins
 											input(type="radio", name="{{ file.name + flavor.header }}", value="{{ flavorVal.value }}", ng-model="file.flavor[flavor.name]")
 											span {{ flavorVal.name }}
 											span: i {{ flavorVal.other }}
+				.clearfix
+				.alert.alert-danger(ng-show="errors.versions[0].files[meta.files.indexOf(file)].flavor.orientation")
+					+icon('warning').shift-up.space-right
+					| {{ errors.versions[0].files[meta.files.indexOf(file)].flavor.orientation }}
+				.alert.alert-danger(ng-show="errors.versions[0].files[meta.files.indexOf(file)].flavor.lightning")
+					+icon('warning').shift-up.space-right
+					| {{ errors.versions[0].files[meta.files.indexOf(file)].flavor.lightning }}
 		.text-center(ng-show="(meta.files | fileext:['vpt','vpx']).length == 0")
 			+icon('warning').shift-up.space-right
 			i Upload any VP tables under 1. before defining flavors.
@@ -104,11 +114,14 @@ include ../template/_mixins
 					label.tab__label(ng-show="!release.description || release.description.length == 0") Nothing to preview.
 			i This will show up globally under your release.
 
-		.form-group
+		.form-group(ng-class="{ error: errors.versions[0].version }")
 			label.control-label(for="version") Version
 			.row
 				.col-sm-2: input#version.form-control(type="text", ng-model="release.versions[0].version", placeholder="x.x.x")
 				.col.sm-10: i Using the semantic versioning syntax is recommended.
+			.alert.alert-danger(ng-show="errors.versions[0].version")
+				+icon('warning').shift-up.space-right
+				| {{ errors.versions[0].version }}
 		.clearfix
 
 		.form-group
@@ -149,6 +162,9 @@ include ../template/_mixins
 			| Add Author
 
 		.clearfix.padder-bottom
+		.alert.alert-danger.padder-bottom(ng-show="errors.authors")
+			+icon('warning').shift-up.space-right
+			| {{ errors.authors }}
 
 		//- TAGS
 		//---------------------------------------------------------------------
@@ -357,7 +373,7 @@ include ../template/_mixins
 				.col-sm-6.playfield--rotate-on-upload(make-loaded="loaded")
 					span.pre-h4 Playfield
 					h4.h--large Screenshot
-					.panel.panel--blank.playfield--image(ng-file-drop="onMediaUpload(file.storage.id, 'playfieldImage', $files)", ng-file-drag-over-class="panel--dragging")
+					.panel.panel--blank.playfield--image(ng-file-drop="onMediaUpload(file.storage.id, 'playfieldImage', $files)", ng-file-drag-over-class="panel--dragging", ng-class="{ error: errors.versions[0].files[meta.files.indexOf(file)]._media.playfield_image }")
 						input#uploadBackglass.hide(type="file", ng-file-select="onMediaUpload(file.storage.id, 'playfieldImage', $files)")
 						.panel-body.a.a--darker(ng-click="openUploadDialog('playfieldImage', '#uploadBackglass')")
 							.img.img--ar-ws.loaded(img-bg="meta.mediaFiles[file.storage.id].playfieldImage.variations['medium-2x'].url")
@@ -396,6 +412,10 @@ include ../template/_mixins
 										+icon('gear').svg-3x.svg-spin--slow
 										p Generating video thumbnail...
 
+			.alert.alert-danger(ng-show="errors.versions[0].files[meta.files.indexOf(file)]._media.playfield_image")
+				+icon('warning').shift-up.space-right
+				| {{ errors.versions[0].files[meta.files.indexOf(file)]._media.playfield_image }}
+
 		.text-center(ng-show="(meta.files | fileext:['vpt','vpx']).length == 0")
 			+icon('warning').shift-up.space-right
 			i Upload any VP tables under 1. before uploading media.
@@ -404,6 +424,9 @@ include ../template/_mixins
 		//------------------------- FINISH LINE -------------------------------
 		//---------------------------------------------------------------------
 		hr
+		.alert.alert-danger.alert--inverted.padder-bottom(ng-show="errors")
+			+icon('warning').shift-up.space-right
+			| There were errors while submitting your release. Please scroll up and fix the marked fields.
 		button.btn.btn-default.btn-lg(ng-click="reset()") Reset
 		button.btn.btn-primary.btn-lg.pull-right(ng-click="submit()") Add New Release
 		.clearfix

@@ -1,4 +1,4 @@
-"use strict"; /* global app, Showdown, _ */
+"use strict"; /* global common, Showdown, _ */
 
 
 common

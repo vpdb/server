@@ -7,8 +7,9 @@ angular.module('vpdb.releases.add', [])
 	 * Main controller containing the form for adding a new release.
 	 */
 	.controller('ReleaseAddCtrl', function($scope, $upload, $modal, $window, $localStorage, $routeParams,
+										   $location, $anchorScroll, $timeout,
 										   AuthService, ApiHelper,
-										   FileResource, TagResource, VPBuildResource, GameResource,
+										   ReleaseResource, FileResource, TagResource, VPBuildResource, GameResource,
 										   ConfigService, DisplayService, MimeTypeService) {
 
 		$scope.theme('light');
@@ -70,6 +71,7 @@ angular.module('vpdb.releases.add', [])
 		// fetch game info
 		$scope.game = GameResource.get({ id: $routeParams.id }, function() {
 			$scope.game.lastrelease = new Date($scope.game.lastrelease).getTime();
+			$scope.release._game = $scope.game.id;
 			$scope.setTitle('Add Release - ' + $scope.game.title);
 		});
 
@@ -480,6 +482,40 @@ angular.module('vpdb.releases.add', [])
 		};
 
 
+		/**
+		 * Posts the release add form to the server.
+		 */
+		$scope.submit = function() {
+			ReleaseResource.save($scope.release, function(){
+				$scope.release.submitted = true;
+				$scope.reset();
+				$modal.open({
+					templateUrl: 'common/modal-info.html',
+					controller: 'InfoModalCtrl',
+					resolve: {
+						icon: function() { return 'fa-check-circle-o'; },
+						title: function() { return 'Release Created!'; },
+						subtitle: function() { return $scope.game.title; },
+						message: function() { return 'The release has been successfully created.'; }
+					}
+				});
+
+				// scroll to top
+				$location.hash('top');
+				$anchorScroll();
+
+			}, ApiHelper.handleErrors($scope, function() {
+
+				// scroll to bottom - timeout because at this point the dom isn't rendered with the new errors
+				$timeout(function() {
+					$location.hash('bottom');
+					$anchorScroll();
+				}, 500);
+
+			}));
+		};
+
+
 		// either copy data from local storage or reset release data.
 		if ($localStorage.release) {
 			$scope.release = $localStorage.release;
@@ -491,6 +527,7 @@ angular.module('vpdb.releases.add', [])
 				file.compatibility = metaFile.vpbuilds;
 				file.flavor = metaFile.flavor;
 			});
+
 		} else {
 			$scope.reset();
 		}

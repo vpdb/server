@@ -2,6 +2,10 @@
 
 angular.module('vpdb.releases.add', [])
 
+
+	/**
+	 * Main controller containing the form for adding a new release.
+	 */
 	.controller('ReleaseAddCtrl', function($scope, $upload, $modal, $window, $localStorage, $routeParams,
 										   AuthService, ApiHelper,
 										   FileResource, TagResource, VPBuildResource, GameResource,
@@ -44,6 +48,7 @@ angular.module('vpdb.releases.add', [])
 //			}
 //		];
 
+		// define flavors
 		$scope.flavors = [
 			{
 				header: 'Orientation',
@@ -62,6 +67,13 @@ angular.module('vpdb.releases.add', [])
 			}
 		];
 
+		// fetch game info
+		$scope.game = GameResource.get({ id: $routeParams.id }, function() {
+			$scope.game.lastrelease = new Date($scope.game.lastrelease).getTime();
+			$scope.setTitle('Add Release - ' + $scope.game.title);
+		});
+
+		// retrieve available tags
 		$scope.tags = TagResource.query(function() {
 			if ($scope.release && $scope.release._tags.length > 0) {
 				// only push tags that aren't assigned yet.
@@ -71,12 +83,7 @@ angular.module('vpdb.releases.add', [])
 			}
 		});
 
-		$scope.game = GameResource.get({ id: $routeParams.id }, function() {
-			$scope.game.lastrelease = new Date($scope.game.lastrelease).getTime();
-			$scope.setTitle('Add Release - ' + $scope.game.title);
-		});
-
-
+		// retrieve available vp builds
 		var vpbuilds = VPBuildResource.query(function() {
 			$scope.builds = {};
 			var types = [];
@@ -95,6 +102,12 @@ angular.module('vpdb.releases.add', [])
 			});
 		});
 
+
+		/**
+		 * Copies ids from media files into the release object
+		 * @param {array} mediaFiles
+		 * @param {object} release
+		 */
 		var updateMedia = function(mediaFiles, release) {
 			_.each(mediaFiles, function(mediaFile, fileId) {
 				var file = _.find(release.versions[0].files, { _file: fileId });
@@ -106,6 +119,9 @@ angular.module('vpdb.releases.add', [])
 		};
 
 
+		/**
+		 * Resets all entered data
+		 */
 		$scope.reset = function() {
 
 			var currentUser = AuthService.getUser();
@@ -126,24 +142,8 @@ angular.module('vpdb.releases.add', [])
 				}
 			};
 
-//			$scope.release = $localStorage.release = {
-//				authors: [{ user: AuthService.getUser(), roles: [ 'Table Creator' ]}],
-//				tags: [],
-//				links: [],
-//				vpbuilds: {
-//					developed: [],
-//					tested: [],
-//					incompat: []
-//				},
-//				_media: {},
-//				mediaFiles: {
-//					'abcd': _.cloneDeep(emptyMedia),
-//					'asdf': _.cloneDeep(emptyMedia)
-//				}
-//			};
-//
 			/*
-			 * Meta is all the data we need for displaying the page but that
+			 * `meta` is all the data we need for displaying the page but that
 			 * is not part of the release object.
 			 */
 			$scope.meta = $localStorage.release_meta = {
@@ -174,6 +174,10 @@ angular.module('vpdb.releases.add', [])
 		};
 
 
+		/**
+		 * Deletes an uploaded file from the server and removes it from the list
+		 * @param {object} file
+		 */
 		$scope.removeFile = function(file) {
 			FileResource.delete({ id: file.storage.id }, function() {
 				$scope.meta.files.splice($scope.meta.files.indexOf(file), 1);
@@ -183,6 +187,10 @@ angular.module('vpdb.releases.add', [])
 		};
 
 
+		/**
+		 * When file(s) are dropped to the upload drop zone
+		 * @param {array} $files
+		 */
 		$scope.onFilesUpload = function($files) {
 
 			// 1. validate file types
@@ -304,11 +312,18 @@ angular.module('vpdb.releases.add', [])
 		};
 
 
+		/**
+		 * Removes an author
+		 * @param {object} author
+		 */
 		$scope.removeAuthor = function(author) {
 			$scope.release.authors.splice($scope.release.authors.indexOf(author), 1);
 		};
 
 
+		/**
+		 * Opens the create tag dialog
+		 */
 		$scope.createTag = function() {
 			$modal.open({
 				templateUrl: 'releases/modal-tag-create.html',
@@ -319,11 +334,18 @@ angular.module('vpdb.releases.add', [])
 		};
 
 
+		/**
+		 * When a tag is dropped
+		 */
 		$scope.tagDropped = function() {
 			$scope.release._tags = _.pluck($scope.meta.tags, 'id');
 		};
 
 
+		/**
+		 * Removes a tag from the release
+		 * @param {object} tag
+		 */
 		$scope.removeTag = function(tag) {
 			$scope.meta.tags.splice($scope.meta.tags.indexOf(tag), 1);
 			$scope.tags.push(tag);
@@ -331,16 +353,29 @@ angular.module('vpdb.releases.add', [])
 		};
 
 
+		/**
+		 * Adds a link to the release
+		 * @param {object} link
+		 * @returns {{}}
+		 */
 		$scope.addLink = function(link) {
 			$scope.release.links.push(link);
 			return {};
 		};
 
-
+		/**
+		 * Removes a link from the release
+		 * @param {object} link
+		 */
 		$scope.removeLink = function(link) {
 			$scope.release.links.splice($scope.release.links.indexOf(link), 1);
 		};
 
+		/**
+		 * Adds or removes a VP build to/from to a given file of the release
+		 * @param {object} file
+		 * @param {object} vpbuild
+		 */
 		$scope.toggleVPBuild = function(file, vpbuild) {
 			var idx = file.vpbuilds.indexOf(vpbuild.id);
 			if (idx > -1) {
@@ -350,6 +385,9 @@ angular.module('vpdb.releases.add', [])
 			}
 		};
 
+		/**
+		 * Opens the dialog for creating a new VP build.
+		 */
 		$scope.addVPBuild = function() {
 			$modal.open({
 				templateUrl: 'releases/modal-vpbuild-create.html',
@@ -362,6 +400,8 @@ angular.module('vpdb.releases.add', [])
 
 
 		/**
+		 * When an image or video is dropped in the media section
+		 *
 		 * Statuses
 		 *
 		 * - uploading

@@ -267,7 +267,7 @@ angular.module('vpdb.releases.add', [])
 							$scope.release.versions[0].files.push({
 								_file: response.data.id,
 								flavor: file.flavor,
-								compatibility: file.vpbuilds,
+								_compatibility: file.vpbuilds,
 								_media: {
 									playfield_image: null,
 									playfield_video: null
@@ -524,7 +524,7 @@ angular.module('vpdb.releases.add', [])
 			// update references
 			_.each($scope.release.versions[0].files, function(file) {
 				var metaFile = _.find($scope.meta.files, function(f) { return f.storage.id === file._file; });
-				file.compatibility = metaFile.vpbuilds;
+				file._compatibility = metaFile.vpbuilds;
 				file.flavor = metaFile.flavor;
 			});
 

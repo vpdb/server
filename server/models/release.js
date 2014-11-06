@@ -20,6 +20,7 @@
 "use strict";
 
 var _ = require('lodash');
+var async = require('async');
 var logger = require('winston');
 var shortId = require('shortid');
 var mongoose = require('mongoose');
@@ -47,7 +48,7 @@ var fields = {
 				orientation: { type: String, enum: { values: [ 'ws', 'fs' ], message: 'Invalid orientation. Valid orientation are: ["ws", "fs"].' }},
 				lightning:   { type: String, enum: { values: [ 'day', 'night' ], message: 'Invalid lightning. Valid options are: ["day", "night"].' }}
 			},
-			compatibility: [ { type: Schema.ObjectId, ref: 'VPBuild' } ],
+			_compatibility: [ { type: String, ref: 'VPBuild' } ],
 			_media: {
 				playfield_image: { type: Schema.ObjectId, ref: 'File' },
 				playfield_video: { type: Schema.ObjectId, ref: 'File' }
@@ -96,12 +97,6 @@ function nonEmptyArray(value) {
 	return _.isArray(value) && value.length > 0;
 }
 
-function containsVpTable(files) {
-	if (!_.isArray(files) || files.length === 0) {
-		return false;
-	}
-}
-
 ReleaseSchema.path('versions.0').validate(function(file, callback) {
 	var that = this;
 
@@ -123,7 +118,7 @@ ReleaseSchema.path('versions.0').validate(function(file, callback) {
 			});
 
 			var tableFiles = _.filter(versionFiles, function(file) {
-				return file.getMimeCategory() === 'table';
+				return file && file.getMimeCategory() === 'table';
 			});
 
 			if (tableFiles.length === 0) {
@@ -144,7 +139,9 @@ ReleaseSchema.path('versions.0.files.0._file').validate(function(file, callback)
 	var that = this;
 	if (that._file) {
 
-		mongoose.model('File').findOne({ _id: that._file }, function(err, file) {
+		mongoose.model('File').findById(that._file, function(err, file) {
+			console.log('-------------------');
+			console.log(that);
 			/* istanbul ignore if */
 			if (err) {
 				logger.error('[model] Error fetching file "%s".', that._file);
@@ -157,6 +154,8 @@ ReleaseSchema.path('versions.0.files.0._file').validate(function(file, callback)
 
 			// table checks
 			if (file.getMimeCategory() === 'table') {
+
+				console.log('    -- is table.');
 
 				// flavor
 				that.flavor = that.flavor || {};
@@ -171,10 +170,43 @@ ReleaseSchema.path('versions.0.files.0._file').validate(function(file, callback)
 				if (!that._media || !that._media.playfield_image) {
 					that.invalidate('_media.playfield_image', 'Playfield image must be provided.');
 				}
+
+				var r = Math.random();
+				// compatibility (in here because it applies only to table files.)
+				if (!_.isArray(that._compatibility) || !that._compatibility.length) {
+					console.log('    -- no compat (%s).', r);
+					that.invalidate('_compatibility', 'At least one VP build must be provided (' + r + ')');
+				} else {
+					console.log('    -- compat.');
+				}
 			}
 			callback(true);
 		});
 	}
+});
+
+ReleaseSchema.path('versions.0.files.0._compatibility').validate(function(vpbuilds, callback) {
+	var i = 0;
+	var that = this;
+	if (!_.isArray(vpbuilds) || vpbuilds.length === 0) {
+		return callback();
+	}
+	async.eachSeries(vpbuilds, function(id, next) {
+		mongoose.model('VPBuild').findOne({ id: id }, function(err, vpbuild) {
+			/* istanbul ignore if */
+			if (err) {
+				logger.error('[model] Error fetching VPBuild "%s".', id);
+				return next();
+			}
+			if (!vpbuild) {
+				that.invalidate('_compatibility.' + i, 'No such VP build with ID "' + id + '".');
+			}
+			i++;
+			next();
+		});
+	}, function() {
+		callback(true);
+	});
 });
 
 

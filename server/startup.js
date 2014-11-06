@@ -38,8 +38,8 @@ exports.init = function(done) {
 
 	// cleanup inactive storage
 	asyncStartup.push(function(next) {
-		logger.info('[startup] Cleaning up inactive storage files older than one hour.');
-		storage.cleanup(3600000, next);
+		logger.info('[startup] Cleaning up inactive storage files older than one week.');
+		storage.cleanup(3600000 * 24 * 7, next);
 	});
 
 	// populate database

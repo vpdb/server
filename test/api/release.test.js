@@ -67,7 +67,7 @@ describe('The VPDB `release` API', function() {
 				});
 		});
 
-		it('should fail validations when providing valid file reference', function(done) {
+		it.only('should fail validations when providing valid file reference with invalid meta data', function(done) {
 			hlp.file.createVpt('member', request, function(vptfile) {
 				request
 					.post('/api/v1/releases')
@@ -76,21 +76,38 @@ describe('The VPDB `release` API', function() {
 						files: [
 							{ _file: vptfile.id },
 							{ _file: vptfile.id, flavor: {} },
-							{ _file: vptfile.id, flavor: { orientation: 'invalid' } }
+							{ _file: vptfile.id, flavor: { orientation: 'invalid' } },
+							{ _file: vptfile.id },
+							{ _file: vptfile.id, _compatibility: [ 'non-existent' ] }
 						]
 					} ] })
 					.end(function(err, res) {
+						hlp.dump(res);
 						hlp.doomFile('member', vptfile.id);
 						hlp.expectValidationError(err, res, 'versions', 'reference a file multiple times');
 						hlp.expectValidationError(err, res, 'versions.0.files.0.flavor.orientation', 'must be provided');
 						hlp.expectValidationError(err, res, 'versions.0.files.0.flavor.lightning', 'must be provided');
+						hlp.expectValidationError(err, res, 'versions.0.files.0._compatibility', 'must be provided');
 						hlp.expectValidationError(err, res, 'versions.0.files.1.flavor.orientation', 'must be provided');
 						hlp.expectValidationError(err, res, 'versions.0.files.1.flavor.lightning', 'must be provided');
 						hlp.expectValidationError(err, res, 'versions.0.files.2.flavor.orientation', 'invalid orientation');
+						hlp.expectValidationError(err, res, 'versions.0.files.3._compatibility', 'must be provided');
+						hlp.expectValidationError(err, res, 'versions.0.files.4._compatibility.0', 'such vp build');
 						hlp.expectValidationError(err, res, 'versions.0.files.0._media.playfield_image', 'must be provided');
 						done();
 					});
 			});
+		});
+
+		it('should fail validations when providing invalid file references', function(done) {
+			request
+				.post('/api/v1/releases')
+				.as('member')
+				.send({ versions: [ { files: [ { _file: 'non-existent' } ] } ] })
+				.end(function(err, res) {
+					hlp.expectValidationError(err, res, 'versions.0.files.0._file', 'no such file');
+					done();
+				});
 		});
 
 		it('should fail accordingly when providing only non-table files', function (done) {

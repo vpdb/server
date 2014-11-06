@@ -132,7 +132,7 @@ exports.fail = function(res, err, code) {
 				value: error.value
 			});
 		});
-		res.status(code).json({ errors: arr });
+		res.status(code).json({ errors: _.sortBy(arr, 'field') });
 	} else {
 		res.status(code).json({ error: err.msg() });
 	}

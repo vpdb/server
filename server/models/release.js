@@ -172,6 +172,7 @@ ReleaseSchema.path('versions.0.files').validate(function(files, callback) {
 						});
 					}
 				} else {
+					i++;
 					next();
 				}
 

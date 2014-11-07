@@ -5,24 +5,24 @@ Content-Length: 413
 {
   "errors": [
     {
-      "message": "Name must be provided.",
-      "field": "name"
-    },
-    {
       "message": "Email must be provided.",
       "field": "email"
-    },
-    {
-      "message": "Length of username must be between 3 and 30 characters.",
-      "field": "username"
     },
     {
       "message": "Path `is_active` is required.",
       "field": "is_active"
     },
     {
+      "message": "Name must be provided.",
+      "field": "name"
+    },
+    {
       "message": "Path `roles` is required.",
       "field": "roles"
+    },
+    {
+      "message": "Length of username must be between 3 and 30 characters.",
+      "field": "username"
     }
   ]
 }

@@ -1,44 +1,44 @@
 200 OK
 Content-Type: application/json; charset=utf-8
-Content-Length: 825
+Content-Length: 812
 
 {
-  "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJiSnFXd3VEZndTIiwiaWF0IjoiMjAxNC0xMC0yNFQyMzo0Mjo1MS4yNTJaIiwiZXhwIjoiMjAxNC0xMC0yNVQwMDo0Mjo1MS4yNTJaIn0.lEkGBItn2ZBFhqNyGyRZiipNTJ-Wz1hMquFu46iMBW8",
-  "expires": "2014-10-25T00:42:51.252Z",
+  "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJXSkIyY0V6Qy1MIiwiaWF0IjoiMjAxNC0xMS0wN1QwMDoxNDowNS45NDFaIiwiZXhwIjoiMjAxNC0xMS0wN1QwMToxNDowNS45NDFaIn0.a7lU2s3IYj71S5L1n7TDEKul2V7BedFe2Y_5MfDq58k",
+  "expires": "2014-11-07T01:14:05.941Z",
   "user": {
-    "id": "bJqWwuDfwS",
-    "name": "Jedediah_Lakin5",
-    "username": "Jedediah_Lakin5",
-    "gravatar_id": "9bd7dff3f25ebf4abbce363907fe3174",
-    "email": "marcelle30@hotmail.com",
+    "id": "WJB2cEzC-L",
+    "name": "Krystel49",
+    "username": "Krystel49",
+    "gravatar_id": "4de2a4569f74b407e80825021e589f21",
+    "email": "celestino75@yahoo.com",
     "is_active": true,
     "roles": [
       "member"
     ],
     "plan": "free",
-    "created_at": "2014-10-24T23:42:51.201Z",
+    "created_at": "2014-11-07T00:14:05.890Z",
     "permissions": {
-      "files": [
-        "upload",
-        "delete",
-        "download"
+      "users": [
+        "search"
+      ],
+      "releases": [
+        "add",
+        "delete"
       ],
       "user": [
         "update",
         "view"
       ],
-      "users": [
-        "search"
-      ],
-      "vpbuilds": [
-        "add"
-      ],
       "tags": [
         "add"
       ],
-      "releases": [
-        "add",
-        "delete"
+      "files": [
+        "upload",
+        "delete",
+        "download"
+      ],
+      "vpbuilds": [
+        "add"
       ]
     }
   }

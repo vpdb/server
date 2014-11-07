@@ -1,14 +1,14 @@
-PUT /api/v1/users/WJOxsFuPfPS HTTP/1.1
+PUT /api/v1/users/Z19tp4G0WI HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJaeUVsaktfd2ZEQiIsImlhdCI6IjIwMTQtMTAtMjRUMjM6NDI6NTUuNDIzWiIsImV4cCI6IjIwMTQtMTAtMjVUMDA6NDI6NTUuNDIzWiJ9.9UoYPRTub6MEX8LkaJULz9v6XcY8xkkn4Y3XTdvYNfM
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJXMUl0YTRNMFdJIiwiaWF0IjoiMjAxNC0xMS0wN1QwMDoxNDoxMC4zOTJaIiwiZXhwIjoiMjAxNC0xMS0wN1QwMToxNDoxMC4zOTJaIn0.d1wgDMZGzvL0G65EBZ1mLcPl_evgwx97GM5iC32IsZQ
 Content-Type: application/json
-Content-Length: 135
+Content-Length: 114
 
 {
-  "email": "derrick.ferry95@hotmail.com",
-  "username": "Cordell_Champlin29",
-  "name": "Cordell_Champlin29",
+  "email": "sylvia.mcglynn27@hotmail.com",
+  "username": "Maiya51",
+  "name": "Maiya51",
   "is_active": true,
   "roles": [
     "member"

@@ -67,7 +67,7 @@ describe('The VPDB `release` API', function() {
 				});
 		});
 
-		it.only('should fail validations when providing valid file reference with invalid meta data', function(done) {
+		it('should fail validations when providing valid file reference with invalid meta data', function(done) {
 			hlp.file.createVpt('member', request, function(vptfile) {
 				request
 					.post('/api/v1/releases')
@@ -82,7 +82,6 @@ describe('The VPDB `release` API', function() {
 						]
 					} ] })
 					.end(function(err, res) {
-						hlp.dump(res);
 						hlp.doomFile('member', vptfile.id);
 						hlp.expectValidationError(err, res, 'versions', 'reference a file multiple times');
 						hlp.expectValidationError(err, res, 'versions.0.files.0.flavor.orientation', 'must be provided');
@@ -144,11 +143,8 @@ describe('The VPDB `release` API', function() {
 		it('should succeed when providing minimal data', function(done) {
 			var user = 'member';
 			hlp.game.createGame('contributor', request, function(game) {
-				hlp.doomGame('contributor', game.id);
-
 				hlp.file.createVpt(user, request, function(vptfile) {
 					hlp.file.createPlayfield(user, request, function(playfield) {
-
 						request
 							.post('/api/v1/releases')
 							.as(user)
@@ -160,6 +156,7 @@ describe('The VPDB `release` API', function() {
 										files: [ {
 											_file: vptfile.id,
 											_media: { playfield_image: playfield.id },
+											_compatibility: [ '9.9.0' ],
 											flavor: { orientation: 'fs', lightning: 'night' } }
 										],
 										version: '1.0.0'
@@ -168,8 +165,9 @@ describe('The VPDB `release` API', function() {
 								authors: [ { _user: hlp.getUser(user).id, roles: [ 'Table Creator' ] } ]
 							})
 							.end(function (err, res) {
-								hlp.doomRelease(user, res.body.id);
 								hlp.expectStatus(err, res, 201);
+								hlp.doomRelease(user, res.body.id);
+								hlp.doomGame('contributor', game.id);
 								done();
 							});
 					});

@@ -97,114 +97,92 @@ function nonEmptyArray(value) {
 	return _.isArray(value) && value.length > 0;
 }
 
-ReleaseSchema.path('versions.0').validate(function(file, callback) {
-	var that = this;
-
-	var ids = _.pluck(_.flatten(_.pluck(that.versions, 'files')), '_file');
-
-	mongoose.model('File').find({ _id: { $in: ids }}, function(err, files) {
-		/* istanbul ignore if */
-		if (err) {
-			logger.error('[model] Error fetching files [ %s ].', that.ids);
-			return callback(true);
-		}
-
-		// validate that every version has a table file
-		_.each(that.versions, function(version, i) {
-
-			var versionIds = _.pluck(version.files, '_file');
-			var versionFiles = _.map(versionIds, function(id) {
-				return _.find(files, { _id: id });
-			});
-
-			var tableFiles = _.filter(versionFiles, function(file) {
-				return file && file.getMimeCategory() === 'table';
-			});
-
-			if (tableFiles.length === 0) {
-				that.invalidate('versions.' + i + '.files', 'At least one table file must be provided.');
-			}
-		});
-
-		// validate that files are not referenced more than once
-		if (_.uniq(ids).length !== ids.length) {
-			that.invalidate('versions', 'You cannot reference a file multiple times.');
-		}
-
-		callback(true);
-	});
-});
-
-ReleaseSchema.path('versions.0.files.0._file').validate(function(file, callback) {
-	var that = this;
-	if (that._file) {
-
-		mongoose.model('File').findById(that._file, function(err, file) {
-			console.log('-------------------');
-			console.log(that);
-			/* istanbul ignore if */
-			if (err) {
-				logger.error('[model] Error fetching file "%s".', that._file);
-				return callback(true);
-			}
-			if (!file) {
-				// this is already validated by the file reference
-				return callback(true);
-			}
-
-			// table checks
-			if (file.getMimeCategory() === 'table') {
-
-				console.log('    -- is table.');
-
-				// flavor
-				that.flavor = that.flavor || {};
-				_.each(fields.versions.type[0].files.type[0].flavor, function(obj, flavor) {
-
-					if (!that.flavor[flavor]) {
-						that.invalidate('flavor.' + flavor, 'Flavor `' + flavor + '` must be provided.');
-					}
-				});
-
-				// media
-				if (!that._media || !that._media.playfield_image) {
-					that.invalidate('_media.playfield_image', 'Playfield image must be provided.');
-				}
-
-				var r = Math.random();
-				// compatibility (in here because it applies only to table files.)
-				if (!_.isArray(that._compatibility) || !that._compatibility.length) {
-					console.log('    -- no compat (%s).', r);
-					that.invalidate('_compatibility', 'At least one VP build must be provided (' + r + ')');
-				} else {
-					console.log('    -- compat.');
-				}
-			}
-			callback(true);
-		});
+ReleaseSchema.path('versions').validate(function(file) {
+	var ids = _.compact(_.pluck(_.flatten(_.pluck(this.versions, 'files')), '_file'));
+	if (_.uniq(ids).length !== ids.length) {
+		this.invalidate('versions', 'You cannot reference a file multiple times.');
 	}
+	return true;
 });
 
-ReleaseSchema.path('versions.0.files.0._compatibility').validate(function(vpbuilds, callback) {
+ReleaseSchema.path('versions.0.files').validate(function(files, callback) {
+
 	var i = 0;
 	var that = this;
-	if (!_.isArray(vpbuilds) || vpbuilds.length === 0) {
-		return callback();
+	if (!_.isArray(files) || files.length === 0) {
+		return callback(true);
 	}
-	async.eachSeries(vpbuilds, function(id, next) {
-		mongoose.model('VPBuild').findOne({ id: id }, function(err, vpbuild) {
-			/* istanbul ignore if */
-			if (err) {
-				logger.error('[model] Error fetching VPBuild "%s".', id);
-				return next();
-			}
-			if (!vpbuild) {
-				that.invalidate('_compatibility.' + i, 'No such VP build with ID "' + id + '".');
-			}
-			i++;
+	var hasTableFile = false;
+	async.eachSeries(files, function(f, next) {
+		if (f._file) {
+
+			mongoose.model('File').findById(f._file, function(err, file) {
+				/* istanbul ignore if */
+				if (err) {
+					logger.error('[model] Error fetching file "%s".', f._file);
+					return next();
+				}
+				if (!file) {
+					// this is already validated by the file reference
+					return next();
+				}
+
+				// table checks
+				if (file.getMimeCategory() === 'table') {
+
+					hasTableFile = true;
+
+					// flavor
+					f.flavor = f.flavor || {};
+					_.each(fields.versions.type[0].files.type[0].flavor, function(obj, flavor) {
+						if (!f.flavor[flavor]) {
+							that.invalidate('files.' + i + '.flavor.' + flavor, 'Flavor `' + flavor + '` must be provided.');
+						}
+					});
+
+					// media
+					if (!f._media || !f._media.playfield_image) {
+						that.invalidate('files.' + i + '._media.playfield_image', 'Playfield image must be provided.');
+					}
+
+					// compatibility (in here because it applies only to table files.)
+					if (!_.isArray(f._compatibility) || !f._compatibility.length) {
+						that.invalidate('files.' + i + '._compatibility', 'At least one VP build must be provided.');
+						i++;
+						next();
+					} else {
+
+						var j = 0;
+						async.eachSeries(f._compatibility, function(vpbuildId, nxt) {
+							mongoose.model('VPBuild').findOne({ id: vpbuildId }, function(err, vpbuild) {
+								/* istanbul ignore if */
+								if (err) {
+									logger.error('[model] Error fetching VPBuild "%s".', vpbuildId);
+									return next();
+								}
+								if (!vpbuild) {
+									that.invalidate('files.' + i + '._compatibility.' + j, 'No such VP build with ID "' + vpbuildId + '".');
+								}
+								j++;
+								nxt();
+							});
+						}, function() {
+							i++;
+							next();
+						});
+					}
+				} else {
+					next();
+				}
+
+			});
+		} else {
 			next();
-		});
+		}
 	}, function() {
+		if (!hasTableFile) {
+			that.invalidate('files', 'At least one table file must be provided.');
+		}
 		callback(true);
 	});
 });

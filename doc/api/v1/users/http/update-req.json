@@ -1,14 +1,14 @@
-PUT /api/v1/users/Z19tp4G0WI HTTP/1.1
+PUT /api/v1/users/m1gMVEs_ HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJXMUl0YTRNMFdJIiwiaWF0IjoiMjAxNC0xMS0wN1QwMDoxNDoxMC4zOTJaIiwiZXhwIjoiMjAxNC0xMS0wN1QwMToxNDoxMC4zOTJaIn0.d1wgDMZGzvL0G65EBZ1mLcPl_evgwx97GM5iC32IsZQ
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJRa25iRVZqZCIsImlhdCI6IjIwMTQtMTEtMDdUMjI6MDg6NTcuOTAyWiIsImV4cCI6IjIwMTQtMTEtMDdUMjM6MDg6NTcuOTAyWiJ9.0iFEwx7ruLuBHkTWactjhIolOw5__HQpmixodJYcrkk
 Content-Type: application/json
-Content-Length: 114
+Content-Length: 123
 
 {
-  "email": "sylvia.mcglynn27@hotmail.com",
-  "username": "Maiya51",
-  "name": "Maiya51",
+  "email": "jerry_kertzmann@hotmail.com",
+  "username": "Amara_Klocko",
+  "name": "Amara_Klocko",
   "is_active": true,
   "roles": [
     "member"

@@ -3,51 +3,43 @@ Content-Type: application/json; charset=utf-8
 Content-Encoding: gzip
 
 {
-  "title": "Freedom",
-  "manufacturer": "Bally",
-  "model_number": "1066",
-  "year": 1975,
+  "title": "Big Game",
+  "manufacturer": "Rock-ola",
+  "year": 1935,
   "game_type": "em",
-  "produced_units": 5080,
-  "features": "Flippers (2), Pop bumpers (3), Slingshots (2), 5-bank drop targets (1), Kick-out holes (2), Spinning targets (2), Standup target (1).The Early Production version has a fourth pop bumper instead of the two slingshots.",
-  "notes": "'Freedom' was produced in both EM and SS versions. See the SS version as Bally's 1976 'Freedom'.According to the Encyclopedia of Pinball Volume 1, the original lower playfield design, shown in the flyer, was redesigned early in production in response to European buyers who did not like the pop bumper between the flippers. Later, the production backglass was altered to remove \"1776\" and \"1976\" in response to American operators who felt that showing dates on the game would soon give it an outdated look, thus reducing its profitability over time.We previously showed Claude Fernandez as the designer of this game, but he has stated in The Pinball Compendium 1970-1981 that his first game was Williams' 1980 'Blackout'. Greg Kmiec told us he did not design this game either, but seems to remember it was designed by George Christian under the direction of Norm Clark.",
-  "slogans": "\"Start a Revolution! A Profit Revolution!\"",
-  "id": "freedom",
-  "_created_by": "545c0ece4ff53b988f26dc61",
-  "created_at": "2014-11-07T00:14:07.014Z",
+  "features": "1 cent play. Backglass light animation and synthesized sound. A ball skillfully landing in the \"trigger hole\" caused backglass flashing lights to highlight the hunter whose rifle shot is then heard (caused by a dashpot snapped by a magnet). Measures 39 1/2 long, 19 1/2 inches wide, and 9 1/2 inches high. Powered by a dry cell battery.",
+  "notes": "This is the first game with \"synthesized\" sound, described in US Patent No. 2,103,870 applied for August 23, 1935 and patented December 28, 1937 (David C. Rockola, assigned to Rock-Old Mfg. Corp.). It was seen as a gimmick and was soon dropped from Rock-Ola's games.",
+  "id": "big-game",
+  "_created_by": "545d42f75afc6ab09e98f6ca",
+  "created_at": "2014-11-07T22:08:55.159Z",
   "ipdb": {
-    "number": 952,
-    "mfg": 47,
-    "rating": 7.5
+    "number": 248,
+    "mfg": 269
   },
-  "artists": [
-    "Christian Marche"
-  ],
+  "artists": [],
   "designers": [],
-  "themes": [
-    "American Bicentennial"
-  ],
+  "themes": [],
   "short": [],
   "media": {
     "backglass": {
       "is_protected": false,
       "variations": {
         "small-2x": {
-          "url": "/storage/v1/-yuUsVMRZL/small-2x"
+          "url": "/storage/v1/7JGf-Vid/small-2x"
         },
         "small": {
-          "url": "/storage/v1/-yuUsVMRZL/small"
+          "url": "/storage/v1/7JGf-Vid/small"
         },
         "medium-2x": {
-          "url": "/storage/v1/-yuUsVMRZL/medium-2x"
+          "url": "/storage/v1/7JGf-Vid/medium-2x"
         },
         "medium": {
-          "url": "/storage/v1/-yuUsVMRZL/medium"
+          "url": "/storage/v1/7JGf-Vid/medium"
         }
       },
-      "url": "/storage/v1/-yuUsVMRZL",
-      "id": "-yuUsVMRZL"
+      "url": "/storage/v1/7JGf-Vid",
+      "id": "7JGf-Vid"
     }
   },
-  "url": "/game/freedom"
+  "url": "/game/big-game"
 }

@@ -1,22 +1,22 @@
 200 OK
 Content-Type: application/json; charset=utf-8
-Content-Length: 812
+Content-Length: 821
 
 {
-  "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJXSkIyY0V6Qy1MIiwiaWF0IjoiMjAxNC0xMS0wN1QwMDoxNDowNS45NDFaIiwiZXhwIjoiMjAxNC0xMS0wN1QwMToxNDowNS45NDFaIn0.a7lU2s3IYj71S5L1n7TDEKul2V7BedFe2Y_5MfDq58k",
-  "expires": "2014-11-07T01:14:05.941Z",
+  "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJRSklRbE5qdSIsImlhdCI6IjIwMTQtMTEtMDdUMjI6MDg6NTQuMTE5WiIsImV4cCI6IjIwMTQtMTEtMDdUMjM6MDg6NTQuMTE5WiJ9.TEzRhjdqpH-TReXXS8ibXhmtzWeWc3iGaFeHWAe1cLM",
+  "expires": "2014-11-07T23:08:54.119Z",
   "user": {
-    "id": "WJB2cEzC-L",
-    "name": "Krystel49",
-    "username": "Krystel49",
-    "gravatar_id": "4de2a4569f74b407e80825021e589f21",
-    "email": "celestino75@yahoo.com",
+    "id": "QJIQlNju",
+    "name": "Everette.Leffler",
+    "username": "Everette.Leffler",
+    "gravatar_id": "9eeebf5269e02d6057042bf18c0becaf",
+    "email": "jeff_dooley@gmail.com",
     "is_active": true,
     "roles": [
       "member"
     ],
     "plan": "free",
-    "created_at": "2014-11-07T00:14:05.890Z",
+    "created_at": "2014-11-07T22:08:54.062Z",
     "permissions": {
       "users": [
         "search"

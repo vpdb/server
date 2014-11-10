@@ -100,11 +100,12 @@ common
 			handleErrors: function(scope, fct) {
 				return function(response) {
 					scope.message = null;
-					scope.errors = {};
+					scope.errors = { __count: 0 };
 					scope.error = null;
 					if (response.data.errors) {
 						_.each(response.data.errors, function(err) {
 							objectPath.set(scope.errors, err.field, err.message);
+							scope.errors.__count++;
 						});
 					}
 					if (response.data.error) {

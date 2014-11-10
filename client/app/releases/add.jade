@@ -427,7 +427,7 @@ include ../template/_mixins
 		//------------------------- FINISH LINE -------------------------------
 		//---------------------------------------------------------------------
 		hr
-		.alert.alert-danger.alert--inverted.padder-bottom(ng-show="errors")
+		.alert.alert-danger.alert--inverted.padder-bottom(ng-show="errors && errors.__count")
 			+icon('warning').shift-up.space-right
 			| There were errors while submitting your release. Please scroll up and fix the marked fields.
 		button.btn.btn-default.btn-lg(ng-click="reset()") Reset

@@ -173,6 +173,8 @@ angular.module('vpdb.releases.add', [])
 				acknowledgements: '',
 				original_version: null
 			};
+
+			$scope.errors = {};
 		};
 
 

@@ -44,8 +44,8 @@ exports.create = function(req, res) {
 		if (err) {
 			return api.fail(res, error(err, 'Error creating release instance').log('create'), 500);
 		}
-		var assert = api.assert(error, 'create', newRelease.id, res);
-		var assertRb = api.assert(error, 'create', newRelease.id, res, function(done) {
+		var assert = api.assert(error, 'create', newRelease.name, res);
+		var assertRb = api.assert(error, 'create', newRelease.name, res, function(done) {
 			newRelease.remove(done);
 		});
 		logger.info('[api|release:create] %s', util.inspect(req.body));

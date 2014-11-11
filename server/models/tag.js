@@ -102,4 +102,4 @@ TagSchema.options.toObject.transform = function(doc, tag) {
 };
 
 mongoose.model('Tag', TagSchema);
-logger.info('[model] Model "tag" registered.');
+logger.info('[model] Schema "Tag" registered.');

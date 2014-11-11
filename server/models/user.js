@@ -295,4 +295,4 @@ UserSchema.options.toObject.transform = function(doc, user) {
 
 
 mongoose.model('User', UserSchema);
-logger.info('[model] Model "user" registered.');
+logger.info('[model] Schema "User" registered.');

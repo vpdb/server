@@ -91,7 +91,7 @@ describe('The VPDB `release` API', function() {
 						hlp.expectValidationError(err, res, 'versions.0.files.1.flavor.lightning', 'must be provided');
 						hlp.expectValidationError(err, res, 'versions.0.files.2.flavor.orientation', 'invalid orientation');
 						hlp.expectValidationError(err, res, 'versions.0.files.3._compatibility', 'must be provided');
-						hlp.expectValidationError(err, res, 'versions.0.files.4._compatibility.0', 'such vp build');
+						hlp.expectValidationError(err, res, 'versions.0.files.4._compatibility.0', 'no such vpbuild');
 						hlp.expectValidationError(err, res, 'versions.0.files.0._media.playfield_image', 'must be provided');
 						done();
 					});
@@ -108,6 +108,19 @@ describe('The VPDB `release` API', function() {
 					done();
 				});
 		});
+
+		it('should fail validations when providing invalid tag references', function(done) {
+			request
+				.post('/api/v1/releases')
+				.as('member')
+				.send({ _tags: [ 'dof', 'non-existent' ] })
+				.end(function(err, res) {
+					hlp.expectValidationError(err, res, '_tags.1', 'no such tag');
+					done();
+				});
+		});
+
+		it('should fail validations when providing the same flavor combination more than once.');
 
 		it('should fail accordingly when providing only non-table files', function (done) {
 			hlp.file.createTextfile('member', request, function (textfile1) {
@@ -170,6 +183,47 @@ describe('The VPDB `release` API', function() {
 								hlp.doomGame('contributor', game.id);
 								done();
 							});
+					});
+				});
+			});
+		});
+
+		it('should success when providing full data', function(done) {
+			var user = 'member';
+			hlp.game.createGame('contributor', request, function(game) {
+				hlp.file.createVpt(user, request, function(vptfile) {
+					hlp.file.createPlayfield(user, request, function(playfieldImage) {
+						hlp.file.createMp4(user, request, function(playfieldVideo) {
+							request
+								.post('/api/v1/releases')
+								.as(user)
+								.send({
+									name: 'release',
+									_game: game.id,
+									versions: [
+										{
+											files: [ {
+												_file: vptfile.id,
+												_media: {
+													playfield_image: playfieldImage.id,
+													playfield_video: playfieldVideo.id
+												},
+												_compatibility: [ '9.9.0' ],
+												flavor: { orientation: 'fs', lightning: 'night' } }
+											],
+											version: '1.0.0'
+										}
+									],
+									authors: [ { _user: hlp.getUser(user).id, roles: [ 'Table Creator' ] } ],
+									_tags: [ 'hd', 'dof' ]
+								})
+								.end(function (err, res) {
+									hlp.expectStatus(err, res, 201);
+									hlp.doomRelease(user, res.body.id);
+									hlp.doomGame('contributor', game.id);
+									done();
+								});
+						});
 					});
 				});
 			});

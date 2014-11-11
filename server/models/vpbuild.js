@@ -101,4 +101,4 @@ VPBuildSchema.options.toObject.transform = function(doc, vpbuild) {
 };
 
 mongoose.model('VPBuild', VPBuildSchema);
-logger.info('[model] Model "vpbuild" registered.');
+logger.info('[model] Schema "VPBuild" registered.');

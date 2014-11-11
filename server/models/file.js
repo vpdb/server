@@ -251,4 +251,4 @@ FileSchema.options.toObject.transform = function(doc, file) {
 };
 
 mongoose.model('File', FileSchema);
-logger.info('[model] Model "file" registered.');
+logger.info('[model] Schema "File" registered.');

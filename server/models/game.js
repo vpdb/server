@@ -28,7 +28,8 @@ var validator = require('validator');
 var paginate = require('mongoose-paginate');
 var uniqueValidator = require('mongoose-unique-validator');
 
-var fileRef = require('../models/plugins/fileRef');
+var prettyId = require('./plugins/pretty-id');
+var fileRef = require('./plugins/file-ref');
 
 var Schema = mongoose.Schema;
 
@@ -77,6 +78,7 @@ var GameSchema = new Schema(fields);
 // PLUGINS
 //-----------------------------------------------------------------------------
 GameSchema.plugin(uniqueValidator, { message: 'The {PATH} "{VALUE}" is already taken.' });
+GameSchema.plugin(prettyId, { model: 'Game', ignore: [ '_created_by' ] });
 GameSchema.plugin(fileRef, { model: 'Game', fields: [ '_media.backglass', '_media.logo' ]});
 GameSchema.plugin(paginate);
 
@@ -212,4 +214,4 @@ GameSchema.options.toObject.transform = function(doc, game) {
 };
 
 mongoose.model('Game', GameSchema);
-logger.info('[model] Model "game" registered.');
+logger.info('[model] Schema "Game" registered.');

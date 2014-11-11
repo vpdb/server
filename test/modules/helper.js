@@ -397,12 +397,16 @@ exports.expectValidationError = function(err, res, field, contains) {
 	expect(res.status).to.be(422);
 	expect(res.body.errors).to.be.an('array');
 	var fieldErrors = _.filter(res.body.errors, { field: field });
-	expect(fieldErrors.length).to.be.greaterThan(0);
+	if (!fieldErrors.length) {
+		throw new Error('Expected validation error on field "' + field + '" but got none.');
+	}
 	if (contains) {
 		var matchedErrors = _.filter(fieldErrors, function(val) {
 			return val.message.toLowerCase().indexOf(contains.toLowerCase()) > -1;
 		});
-		expect(matchedErrors.length).to.be(1);
+		if (!matchedErrors.length) {
+			throw new Error('Expected validation error on field "' + field + '" to contain "' + contains.toLowerCase() + '".');
+		}
 	}
 };
 

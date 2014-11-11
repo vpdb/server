@@ -25,8 +25,12 @@ var logger = require('winston');
 var shortId = require('shortid');
 var mongoose = require('mongoose');
 var validator = require('validator');
+
 var uniqueValidator = require('mongoose-unique-validator');
-var fileRef = require('../models/plugins/fileRef');
+
+var prettyId = require('./plugins/pretty-id');
+var fileRef = require('./plugins/file-ref');
+
 var mimetypes = require('../modules/mimetypes');
 
 var Schema = mongoose.Schema;
@@ -36,7 +40,7 @@ var Schema = mongoose.Schema;
 //-----------------------------------------------------------------------------
 var fields = {
 	id:           { type: String, required: true, unique: true, 'default': shortId.generate },
-	_game:        { type: String, required: 'Reference to game must be provided.', ref: 'Game' },
+	_game:        { type: Schema.ObjectId, required: 'Reference to game must be provided.', ref: 'Game' },
 	name:         { type: String, required: 'Name must be provided.' },
 	description:  { type: String },
 	versions: { validate: [ nonEmptyArray, 'You must provide at least one version for the release.' ], type: [ {
@@ -48,7 +52,7 @@ var fields = {
 				orientation: { type: String, enum: { values: [ 'ws', 'fs' ], message: 'Invalid orientation. Valid orientation are: ["ws", "fs"].' }},
 				lightning:   { type: String, enum: { values: [ 'day', 'night' ], message: 'Invalid lightning. Valid options are: ["day", "night"].' }}
 			},
-			_compatibility: [ { type: String, ref: 'VPBuild' } ],
+			_compatibility: [ { type: Schema.ObjectId, ref: 'VPBuild' } ],
 			_media: {
 				playfield_image: { type: Schema.ObjectId, ref: 'File' },
 				playfield_video: { type: Schema.ObjectId, ref: 'File' }
@@ -56,7 +60,7 @@ var fields = {
 		} ] }
 	} ] },
 	authors: { validate: [ nonEmptyArray, 'You must provide at least one author.' ], type: [ {
-		_user: { type: String, required: 'Reference to user must be provided.', ref: 'User' },
+		_user: { type: Schema.ObjectId, required: 'Reference to user must be provided.', ref: 'User' },
 		roles: [ String ]
 	} ] },
 	_tags: [ { type: Schema.ObjectId, ref: 'Tag' } ],
@@ -88,6 +92,7 @@ ReleaseSchema.plugin(fileRef, { model: 'Release', fields: [
 	'versions.0.files.0._media.playfield_image',
 	'versions.0.files.0._media.playfield_video'
 ]});
+ReleaseSchema.plugin(prettyId, { model: 'Release', ignore: [ '_created_by' ] });
 
 
 //-----------------------------------------------------------------------------
@@ -98,7 +103,9 @@ function nonEmptyArray(value) {
 }
 
 ReleaseSchema.path('versions').validate(function(file) {
-	var ids = _.compact(_.pluck(_.flatten(_.pluck(this.versions, 'files')), '_file'));
+	var ids = _.map(_.compact(_.pluck(_.flatten(_.pluck(this.versions, 'files')), '_file')), function(id) {
+		return id.toString();
+	});
 	if (_.uniq(ids).length !== ids.length) {
 		this.invalidate('versions', 'You cannot reference a file multiple times.');
 	}
@@ -120,10 +127,12 @@ ReleaseSchema.path('versions.0.files').validate(function(files, callback) {
 				/* istanbul ignore if */
 				if (err) {
 					logger.error('[model] Error fetching file "%s".', f._file);
+					i++;
 					return next();
 				}
 				if (!file) {
 					// this is already validated by the file reference
+					i++;
 					return next();
 				}
 
@@ -148,36 +157,13 @@ ReleaseSchema.path('versions.0.files').validate(function(files, callback) {
 					// compatibility (in here because it applies only to table files.)
 					if (!_.isArray(f._compatibility) || !f._compatibility.length) {
 						that.invalidate('files.' + i + '._compatibility', 'At least one VP build must be provided.');
-						i++;
-						next();
-					} else {
-
-						var j = 0;
-						async.eachSeries(f._compatibility, function(vpbuildId, nxt) {
-							mongoose.model('VPBuild').findOne({ id: vpbuildId }, function(err, vpbuild) {
-								/* istanbul ignore if */
-								if (err) {
-									logger.error('[model] Error fetching VPBuild "%s".', vpbuildId);
-									return next();
-								}
-								if (!vpbuild) {
-									that.invalidate('files.' + i + '._compatibility.' + j, 'No such VP build with ID "' + vpbuildId + '".');
-								}
-								j++;
-								nxt();
-							});
-						}, function() {
-							i++;
-							next();
-						});
 					}
-				} else {
-					i++;
-					next();
 				}
-
+				i++;
+				next();
 			});
 		} else {
+			i++;
 			next();
 		}
 	}, function() {
@@ -210,4 +196,4 @@ ReleaseSchema.options.toObject.transform = function(doc, release) {
 };
 
 mongoose.model('Release', ReleaseSchema);
-logger.info('[model] Model "release" registered.');
+logger.info('[model] Schema "Release" registered.');

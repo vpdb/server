@@ -38,64 +38,6 @@ module.exports = exports = function(schema, options) {
 		throw new Error('Fileref plugin needs file reference fields. Please provide.');
 	}
 
-	/**
-	 * Replaces API IDs with database IDs and returns a new instance of the
-	 * configured model.
-	 *
-	 * @param obj Object, directly from API client
-	 * @param callback Called with (`err`, `ModelInstance`)
-	 */
-	schema.statics.getInstance = function(obj, callback) {
-
-		var Model = mongoose.model(options.model);
-		var File = mongoose.model('File');
-
-		// explode arrays
-		var fields = explodeArrays(obj, options.fields);
-
-		var shortIds = [];
-		_.each(fields, function(path) {
-			var shortId = objectPath.get(obj, path);
-			if (shortId) {
-				shortIds.push(shortId);
-			}
-		});
-		var invalidations = [];
-
-		// find files with submitted shortIds
-		File.find({ id: { $in: shortIds }}, function(err, files) {
-			/* istanbul ignore if  */
-			if (err) {
-				logger.error('[model] Error finding referenced files: %s', err);
-				return callback(err);
-			}
-			_.each(fields, function(path) {
-				var shortId = objectPath.get(obj, path);
-				var hits = _.filter(files, { id: shortId });
-				_.each(hits, function(file) {
-					objectPath.set(obj, path, file._id);
-				});
-				// no match, add invalidation
-				if (hits.length === 0) {
-					if (shortId) {
-						var value = objectPath.get(obj, path);
-						logger.warn('[model] File ID %s not found in database for field %s.', value, path);
-						invalidations.push({ path: path, message: 'No such file with ID "' + value + '".', value: value });
-						objectPath.set(obj, path, '000000000000000000000000'); // otherwise we'll get another "required" validation error on "_id" field.
-					}
-				}
-			});
-			var model = new Model(obj);
-
-			// for invalid IDs, invalidate instantly so we can provide which value is wrong.
-			_.each(invalidations, function(invalidation) {
-				model.invalidate(invalidation.path, invalidation.message, invalidation.value);
-			});
-			callback(null, model);
-		});
-	};
-
-
 	//-----------------------------------------------------------------------------
 	// VALIDATIONS
 	//-----------------------------------------------------------------------------
@@ -195,34 +137,3 @@ module.exports = exports = function(schema, options) {
 		});
 	});
 };
-
-function explodeArrays(obj, fields) {
-
-	var appendNext = function(obj, parts, level, path) {
-		level = level || 0;
-		var paths = [];
-		var objPath = parts[level];
-		if (!objPath) {
-			return [];
-		}
-		path = path || '';
-		path += (path ? '.' : '') + objPath;
-		if (!parts[level + 1]) {
-			paths.push(path);
-		}
-		var subObj = objectPath.get(obj, objPath);
-		if (subObj) {
-			for (var i = 0; i < subObj.length; i++) {
-				paths = paths.concat(appendNext(subObj[i], parts, level + 1, path + '.' + i));
-			}
-		}
-		return paths;
-	};
-
-	var paths = [];
-	_.each(fields, function (field) {
-		var parts = field.split(/\.\d+\.?/);
-		paths = paths.concat(appendNext(obj, parts));
-	});
-	return paths;
-}

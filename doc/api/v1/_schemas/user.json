@@ -31,7 +31,7 @@
 		},
 		"provider": {
 			"description": "How the user is authenticated. For local accounts this is set to `local`, otherwise to the name of the OAuth2 provider.",
-			"type": "string",
+			"type": "enum",
 			"enum": ["local", "github"],
 			"readOnly": true
 		},

@@ -1,0 +1,185 @@
+{
+	"$schema": "http://json-schema.org/schema",
+	"title": "Release",
+	"description": "A release is a digital construction of a pinball game.",
+	"type": "object",
+	"properties": {
+		"id": {
+			"description": "Unique identifier for a release. Gets generated automatically on creation.",
+			"type": "string",
+			"pattern": "^[a-z0-9-]{7,}$",
+			"readOnly": true
+		},
+		"_game": {
+			"description": "Reference to the game.",
+			"type": "string"
+		},
+		"name": {
+			"description": "Name of the release.",
+			"type": "string",
+			"minLength": 3
+		},
+		"description": {
+			"description": "A short description of the release. Will be Markdown formatted.",
+			"type": "string"
+		},
+		"versions": {
+			"description": "A version of the release.",
+			"type": "array",
+			"items": {
+				"title": "Version",
+				"type": "object",
+				"properties": {
+					"version": {
+						"description": "Version number. Semantic versioning recommended (major.minor.patch).",
+						"type": "string",
+						"minLength": 1
+					},
+					"changes": {
+						"description": "Changelog. A list of changes for this version.",
+						"type": "string"
+					},
+					"files": {
+						"type": "array",
+						"items": {
+							"title": "File",
+							"properties": {
+								"_file": {
+									"description": "Reference to the file.",
+									"type": "string"
+								},
+								"flavor": {
+									"title": "Flavor",
+									"description": "Defines the flavor of the file.",
+									"type": "object",
+									"properties": {
+										"orientation": {
+											"description": "Table orientation. Values:\n\n* `ws` - Widescreen, for playing on desktop PCs.\n* `fs` - Fullscreen or portrait, used on cabinets.",
+											"type": "enum",
+											"enum": [ "ws", "fs" ]
+										},
+										"lightning": {
+											"description": "Playfield illumination. Values:\n\n* `day` - Illuminated playfield.\n* `night` - Dark playfield.",
+											"type": "enum",
+											"enum": [ "day", "night" ]
+										}
+									}
+								},
+								"_compatibility": {
+									"type": "array",
+									"description": "Reference to one or more compatible VP builds.",
+									"items": {
+										"title": "VP Build",
+										"type": "string"
+									}
+								},
+								"_media": {
+									"title": "Media References",
+									"description": "References to media related to the file.",
+									"type": "object",
+									"properties": {
+										"playfield_image": {
+											"description": "Reference to the playfield image.",
+											"type": "string"
+										},
+										"playfield_video": {
+											"description": "Reference to the playfield video.",
+											"type": "string"
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"authors": {
+			"description": "One or more authors of this release.",
+			"type": "array",
+			"items": {
+				"title": "Author",
+				"type": "object",
+				"properties": {
+					"_user": {
+						"description": "Reference to the user.",
+						"type": "string"
+					},
+					"roles": {
+						"description": "One or more roles of the user.",
+						"type": "array",
+						"items": {
+							"type": "string"
+						}
+					}
+				}
+			}
+		},
+		"_tags": {
+			"description": "None, one or multiple reference to tags.",
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"links": {
+			"description": "A list of links related to this release.",
+			"type": "array",
+			"items": {
+				"title": "Link",
+				"type": "object",
+				"properties": {
+					"label": {
+						"description": "A short label describing the link",
+						"type": "string"
+					},
+					"url": {
+						"description": "The full URL.",
+						"type": "string"
+					}
+				}
+			}
+		},
+		"acknowledgements": {
+			"description": "Free text describing people who helped creating this release but are not considered as authors.",
+			"type": "string"
+		},
+		"original_version": {
+			"title": "Original Release",
+			"description": "In case of a mod, this refers to the original version of the release (i.e. the \"modded release\").\n\nIt can either be a direct link within VPDB, or a label and URL to an external resource.",
+			"type": "object",
+			"properties": {
+				"_ref": {
+					"description": "Reference to the original version within VPDB.",
+					"type": "string"
+				},
+				"release": {
+					"title": "External Release Resource",
+					"description": "In case the modded release is not on VPDB, this links to an external resource.",
+					"type": "object",
+					"properties": {
+						"name": {
+							"description": "Name of the modded release",
+							"type": "string"
+						},
+						"url": {
+							"description": "URL when the modded release can be found.",
+							"type": "string"
+						}
+					}
+				}
+			}
+		},
+		"created_at": {
+			"description": "Timestamp when the release was added to the database.",
+			"type": "date",
+			"readOnly": true
+		},
+		"_created_by": {
+			"description": "Reference to the user which created this release. Only visible by contributors and above.",
+			"type": "string",
+			"readOnly": true
+		}
+	},
+	"required": [ "name", "versions.0.version" ]
+}

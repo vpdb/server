@@ -488,7 +488,7 @@ angular.module('vpdb.releases.add', [])
 		 * Posts the release add form to the server.
 		 */
 		$scope.submit = function() {
-			ReleaseResource.save($scope.release, function(){
+			ReleaseResource.save($scope.release, function() {
 				$scope.release.submitted = true;
 				$scope.reset();
 				$modal.open({

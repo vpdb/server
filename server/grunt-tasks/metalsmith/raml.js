@@ -124,6 +124,9 @@ function helpers(opts) {
 		},
 
 		short: function(text) {
+			if (!text) {
+				return text;
+			}
 			// create short description
 			var dot = text.indexOf('.');
 			return marked(text.substring(0, dot > 0 ? dot: text.length));

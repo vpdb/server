@@ -11,6 +11,7 @@ schemas:
   - user-register: !include _schemas/user-register.json
   - user-authenticate: !include _schemas/user-authenticate.json
   - game: !include _schemas/game.json
+  - release: !include _schemas/release.json
 
 securitySchemes:
   - jwt: !include _securitySchemes/jwt.raml
@@ -20,7 +21,8 @@ traits:
   - validated: !include _traits/validated.raml
   - paginated: !include _traits/paginated.raml
 
+/games: !include games/games.raml
+/releases: !include releases/releases.raml
 /users: !include users/users.raml
 /user: !include user/user.raml
 /authenticate: !include auth/auth.raml
-/games: !include games/games.raml

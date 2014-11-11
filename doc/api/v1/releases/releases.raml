@@ -1,0 +1,18 @@
+displayName: Releases
+description: !include releases.md
+post:
+  is: [ validated ]
+  securedBy: [ jwt: { scopes: [ MEMBER ] } ]
+  description: |
+    Create a new release.
+
+    Note that prior to that request, files and media need to be uploaded so it
+    can be referenced.
+  body:
+    role/member:
+      schema: release
+  responses:
+    201:
+      body:
+        role/member:
+          schema: release

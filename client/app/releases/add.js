@@ -509,10 +509,10 @@ angular.module('vpdb.releases.add', [])
 			}, ApiHelper.handleErrors($scope, function() {
 
 				// scroll to bottom - timeout because at this point the dom isn't rendered with the new errors
-				$timeout(function() {
-					$location.hash('bottom');
-					$anchorScroll();
-				}, 500);
+//				$timeout(function() {
+//					$location.hash('bottom');
+//					$anchorScroll();
+//				}, 500);
 
 			}));
 		};

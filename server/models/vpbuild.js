@@ -26,7 +26,7 @@ var validator = require('validator');
 var uniqueValidator = require('mongoose-unique-validator');
 
 var Schema = mongoose.Schema;
-
+var types =  [ 'release', 'nightly', 'experimental' ];
 
 //-----------------------------------------------------------------------------
 // SCHEMA
@@ -38,8 +38,8 @@ var fields = {
 	support_url:  { type: String },
 	description:  { type: String },
 	built_at:     { type: Date },
-	type:         { type: String, required: true, enum: { values: [ 'release', 'nightly', 'experimental' ], message: 'Invalid type. Valid orientation are: ["release", "nightly", "experimental"].' }},
-	is_range:     { type: Boolean, required: true, default: false },
+	type:         { type: String, required: 'The type of the VP build must be provided.', enum: { values: types, message: 'Invalid type. Valid types are: [ "' + types.join('", "') + '" ].' }},
+	is_range:     { type: Boolean, required: 'You need to provide if the build is a range of versions or one specific version.', default: false },
 	is_active:    { type: Boolean, required: true, default: false },
 	created_at:   { type: Date, required: true },
 	_created_by:  { type: Schema.ObjectId, ref: 'User' }
@@ -80,6 +80,12 @@ VPBuildSchema.methods.toSimple = function() {
 VPBuildSchema.path('label').validate(function(label) {
 	return validator.isLength(label ? label.trim() : '', 3);
 }, 'Label must contain at least three characters.');
+
+VPBuildSchema.path('built_at').validate(function(dateString) {
+	// TODO fix, doesn't seem to work.
+	//console.log('--------------- Checking date "%s": %s', dateString, validator.isDate(dateString));
+	return validator.isDate(dateString);
+}, 'Date must be a string parseable by Javascript.');
 
 
 //-----------------------------------------------------------------------------

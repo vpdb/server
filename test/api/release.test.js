@@ -188,7 +188,7 @@ describe('The VPDB `release` API', function() {
 			});
 		});
 
-		it('should success when providing full data', function(done) {
+		it('should succeed when providing full data', function(done) {
 			var user = 'member';
 			hlp.game.createGame('contributor', request, function(game) {
 				hlp.file.createVpt(user, request, function(vptfile) {
@@ -229,6 +229,8 @@ describe('The VPDB `release` API', function() {
 				});
 			});
 		});
+
+		it('should activate tags and VPBuilds if created');
 
 	});
 });

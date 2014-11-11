@@ -1,21 +1,21 @@
 200 OK
 Content-Type: application/json; charset=utf-8
-Content-Length: 554
-Etag: W/"22a-dfe5d0c"
+Content-Length: 572
+Etag: W/"23c-ccc4548a"
 
 {
   "plan": "free",
-  "name": "Destinee14",
-  "username": "Destinee14",
-  "email": "vella_carter@yahoo.com",
+  "name": "Alaina_Trantow",
+  "username": "Alaina_Trantow",
+  "email": "jake5@gmail.com",
   "provider": "local",
-  "created_at": "2014-11-11T16:15:55.022Z",
+  "created_at": "2014-11-11T20:29:32.613Z",
   "is_active": true,
   "roles": [
     "member"
   ],
-  "id": "7kQeBdRD4",
-  "gravatar_id": "b6293bbb4f86e8f439b9be8d21fc897d",
+  "id": "71QxIJcsV",
+  "gravatar_id": "1b844b080d854d334f9ced641f1bd3cb",
   "permissions": {
     "users": [
       "search"
@@ -38,6 +38,7 @@ Etag: W/"22a-dfe5d0c"
       "download"
     ],
     "vpbuilds": [
+      "delete-own",
       "add"
     ]
   }

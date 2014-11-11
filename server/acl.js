@@ -53,7 +53,8 @@ var init = function(next) {
 			allows: [
 				{ resources: 'games', permissions: [ 'update', 'add', 'delete' ]},
 				{ resources: 'ipdb', permissions: 'view' },
-				{ resources: 'tags', permissions: 'delete' }
+				{ resources: 'tags', permissions: 'delete' },
+				{ resources: 'vpbuilds', permissions: 'delete' }
 			]
 		}, {
 			roles: 'member',
@@ -63,7 +64,7 @@ var init = function(next) {
 				{ resources: 'files', permissions: [ 'download', 'upload', 'delete' ]},  // delete: only own/inactive files
 				{ resources: 'releases', permissions: [ 'add', 'delete' ] }, // only own releases and only for a given period
 				{ resources: 'tags', permissions: [ 'add', 'delete-own' ] },
-				{ resources: 'vpbuilds', permissions: 'add' }
+				{ resources: 'vpbuilds', permissions: [ 'add', 'delete-own' ] }
 			]
 		}, {
 			roles: 'mocha',

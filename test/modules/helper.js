@@ -225,6 +225,16 @@ exports.doomTag = function(user, tagId) {
 };
 
 /**
+ * Marks a vpbuild to be cleaned up in teardown.
+ * @param {string} user User with which the file was created
+ * @param {string} vpbuildId ID of the vpbuild
+ */
+exports.doomVPBuild = function(user, vpbuildId) {
+	objectPath.ensureExists(this, "doomedVPBuilds." + user, []);
+	this.doomedVPBuilds[user].unshift(vpbuildId);
+};
+
+/**
  * Marks a user to be cleaned up in teardown. Note that this is only for users
  * created in tests, the users in the before() method are cleaned automatically.
  * @param {string} userId ID of the user
@@ -252,6 +262,7 @@ exports.cleanup = function(request, done) {
 	var doomedGames = this.doomedGames;
 	var doomedReleases = this.doomedReleases;
 	var doomedTags = this.doomedTags;
+	var doomedVPBuilds = this.doomedVPBuilds;
 
 	async.series([
 
@@ -364,6 +375,34 @@ exports.cleanup = function(request, done) {
 
 			}, function(err) {
 				that.doomedTags = {};
+				next(err);
+			});
+		},
+
+		// 5. cleanup vpbuilds
+		function(next) {
+			if (!doomedVPBuilds) {
+				return next();
+			}
+			async.eachSeries(_.keys(doomedVPBuilds), function(user, nextVPBuild) {
+				async.each(doomedVPBuilds[user], function(vpbuildId, next) {
+					request
+						.del('/api/v1/vpbuilds/' + vpbuildId)
+						.as(user)
+						.end(function(err, res) {
+							if (err) {
+								return next(err);
+							}
+							if (res.status !== 204) {
+								console.log(res.body);
+							}
+							expect(res.status).to.eql(204);
+							next();
+						});
+				}, nextVPBuild);
+
+			}, function(err) {
+				that.doomedVPBuilds = {};
 				next(err);
 			});
 		},

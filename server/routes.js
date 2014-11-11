@@ -103,6 +103,7 @@ module.exports = function(app) {
 	// vpbuilds
 	app.get(settings.apiPath('/vpbuilds'),        api.anon(api.vpbuilds.list));
 	app.post(settings.apiPath('/vpbuilds'),       api.auth(api.vpbuilds.create, 'vpbuilds', 'add'));
+	app.delete(settings.apiPath('/vpbuilds/:id'), api.auth(api.vpbuilds.del, 'vpbuilds', 'delete-own'));
 
 
 	// or else fail

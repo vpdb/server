@@ -1,36 +1,26 @@
 POST /api/v1/games HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJYazBfSXVSRFYiLCJpYXQiOiIyMDE0LTExLTExVDE2OjE1OjU2Ljc1MloiLCJleHAiOiIyMDE0LTExLTExVDE3OjE1OjU2Ljc1MloifQ.J7Pl7zw7Bma2tk4wIMJm2tG3Vqsg9sJMrARqIObxjiM
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI3a2M0ZEo5aVYiLCJpYXQiOiIyMDE0LTExLTExVDIwOjI5OjM0LjM4MFoiLCJleHAiOiIyMDE0LTExLTExVDIxOjI5OjM0LjM4MFoifQ.FsqR8rrq01q1DRNPgMISD61J5kpfgcsGZDwLadyVHq0
 Content-Type: application/json
-Content-Length: 486
+Content-Length: 480
 
 {
   "ipdb": {
-    "number": 530,
-    "mfg": 93,
-    "rating": "8.3"
+    "number": 316,
+    "mfg": 356
   },
-  "title": "Classy Bowler",
-  "manufacturer": "Gottlieb",
-  "model_number": "116",
-  "year": 1956,
-  "game_type": "em",
-  "produced_units": 1100,
+  "title": "Blackbelt",
+  "manufacturer": "Zaccaria",
+  "year": 1986,
+  "game_type": "ss",
   "themes": [
-    "Sports",
-    "Bowling"
+    "Martial Arts"
   ],
-  "designers": [
-    "Wayne Neyens"
-  ],
-  "artists": [
-    "Roy Parker"
-  ],
-  "features": "Flippers (2), Pop bumpers (4), Gobble holes (2).",
-  "notes": "The backglass carries Gottlieb's famous phrase: Amusement Pinballs, as American as Baseball and Hot Dogs!",
-  "id": "classy-bowler",
+  "features": "Flippers (2), Pop bumpers (2), 5-bank drop targets (1), 4-bank drop-targets (1), Horseshoe lane (1), Carousel roto-targets.",
+  "notes": "It uses a 1B1165/2 MPU, five 1B11150/0 (8 Digit) Display boards, a 1B11178 Sound board, a 1B1166 driver board, and a 1B11167/0 Power Supply board.",
+  "id": "blackbelt",
   "_media": {
-    "backglass": "mJeDu0PV"
+    "backglass": "7kkHOJ5jN"
   }
 }

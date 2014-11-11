@@ -1,14 +1,14 @@
-PUT /api/v1/users/QyZu9uAP4 HTTP/1.1
+PUT /api/v1/users/712f3J5oV HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJteWFQOV8wdk4iLCJpYXQiOiIyMDE0LTExLTExVDE2OjE2OjAwLjUxMVoiLCJleHAiOiIyMDE0LTExLTExVDE3OjE2OjAwLjUxMVoifQ.SHvgHltF68KHcrMl_u0QZXebYKqJLXGu8AggbWY15GY
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJYSk9NMko1ajQiLCJpYXQiOiIyMDE0LTExLTExVDIwOjI5OjM4LjA2NFoiLCJleHAiOiIyMDE0LTExLTExVDIxOjI5OjM4LjA2NFoifQ.6xEDAxRMx3FL0nrzi5qgwi0_deba8-p2alxCdJXvhcc
 Content-Type: application/json
-Content-Length: 100
+Content-Length: 116
 
 {
-  "email": "owen94@hotmail.com",
-  "username": "Dee66",
-  "name": "Dee66",
+  "email": "olaf80@gmail.com",
+  "username": "Terry_Gutmann7",
+  "name": "Terry_Gutmann7",
   "is_active": true,
   "roles": [
     "member"

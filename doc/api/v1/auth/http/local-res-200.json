@@ -1,22 +1,22 @@
 200 OK
 Content-Type: application/json; charset=utf-8
-Content-Length: 834
+Content-Length: 849
 
 {
-  "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJRSkNPQnVSUE4iLCJpYXQiOiIyMDE0LTExLTExVDE2OjE1OjU1Ljc1OVoiLCJleHAiOiIyMDE0LTExLTExVDE3OjE1OjU1Ljc1OVoifQ.PUsPeZurAF-tL1mBh7GTi5vGporqjpYbxgILz0Zr578",
-  "expires": "2014-11-11T17:15:55.759Z",
+  "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI3SnBVdkpjaVYiLCJpYXQiOiIyMDE0LTExLTExVDIwOjI5OjMzLjM3MFoiLCJleHAiOiIyMDE0LTExLTExVDIxOjI5OjMzLjM3MFoifQ.5p1ata8RALjhPGdXwFdEsYrdFHgTjtjs4wt6x6P5MHE",
+  "expires": "2014-11-11T21:29:33.370Z",
   "user": {
-    "id": "QJCOBuRPN",
-    "name": "Shanny.Huel",
-    "username": "Shanny.Huel",
-    "gravatar_id": "f9af989baf8f68db8a694ab43b00c3f3",
-    "email": "elsie.quigley@yahoo.com",
+    "id": "7JpUvJciV",
+    "name": "Noemy.Kihn5",
+    "username": "Noemy.Kihn5",
+    "gravatar_id": "bfcbddf6d91e3d4c17d68cae68747f37",
+    "email": "kenyatta41@yahoo.com",
     "is_active": true,
     "roles": [
       "member"
     ],
     "plan": "free",
-    "created_at": "2014-11-11T16:15:55.702Z",
+    "created_at": "2014-11-11T20:29:33.307Z",
     "permissions": {
       "users": [
         "search"
@@ -39,6 +39,7 @@ Content-Length: 834
         "download"
       ],
       "vpbuilds": [
+        "delete-own",
         "add"
       ]
     }

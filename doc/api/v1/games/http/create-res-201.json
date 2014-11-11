@@ -3,31 +3,23 @@ Content-Type: application/json; charset=utf-8
 Content-Encoding: gzip
 
 {
-  "title": "Classy Bowler",
-  "manufacturer": "Gottlieb",
-  "model_number": "116",
-  "year": 1956,
-  "game_type": "em",
-  "produced_units": 1100,
-  "features": "Flippers (2), Pop bumpers (4), Gobble holes (2).",
-  "notes": "The backglass carries Gottlieb's famous phrase: Amusement Pinballs, as American as Baseball and Hot Dogs!",
-  "id": "classy-bowler",
-  "_created_by": "5462363c268b711c86ba7f96",
-  "created_at": "2014-11-11T16:15:56.839Z",
+  "title": "Blackbelt",
+  "manufacturer": "Zaccaria",
+  "year": 1986,
+  "game_type": "ss",
+  "features": "Flippers (2), Pop bumpers (2), 5-bank drop targets (1), 4-bank drop-targets (1), Horseshoe lane (1), Carousel roto-targets.",
+  "notes": "It uses a 1B1165/2 MPU, five 1B11150/0 (8 Digit) Display boards, a 1B11178 Sound board, a 1B1166 driver board, and a 1B11167/0 Power Supply board.",
+  "id": "blackbelt",
+  "_created_by": "546271ae828f4b70b17b5a09",
+  "created_at": "2014-11-11T20:29:34.471Z",
   "ipdb": {
-    "number": 530,
-    "mfg": 93,
-    "rating": 8.3
+    "number": 316,
+    "mfg": 356
   },
-  "artists": [
-    "Roy Parker"
-  ],
-  "designers": [
-    "Wayne Neyens"
-  ],
+  "artists": [],
+  "designers": [],
   "themes": [
-    "Sports",
-    "Bowling"
+    "Martial Arts"
   ],
   "short": [],
   "media": {
@@ -35,21 +27,21 @@ Content-Encoding: gzip
       "is_protected": false,
       "variations": {
         "small-2x": {
-          "url": "/storage/v1/mJeDu0PV/small-2x"
+          "url": "/storage/v1/7kkHOJ5jN/small-2x"
         },
         "small": {
-          "url": "/storage/v1/mJeDu0PV/small"
+          "url": "/storage/v1/7kkHOJ5jN/small"
         },
         "medium-2x": {
-          "url": "/storage/v1/mJeDu0PV/medium-2x"
+          "url": "/storage/v1/7kkHOJ5jN/medium-2x"
         },
         "medium": {
-          "url": "/storage/v1/mJeDu0PV/medium"
+          "url": "/storage/v1/7kkHOJ5jN/medium"
         }
       },
-      "url": "/storage/v1/mJeDu0PV",
-      "id": "mJeDu0PV"
+      "url": "/storage/v1/7kkHOJ5jN",
+      "id": "7kkHOJ5jN"
     }
   },
-  "url": "/game/classy-bowler"
+  "url": "/game/blackbelt"
 }

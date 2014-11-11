@@ -1,18 +1,18 @@
 201 Created
 Content-Type: application/json; charset=utf-8
-Content-Length: 304
+Content-Length: 287
 
 {
   "plan": "free",
-  "name": "Jabari_Kohler71",
-  "username": "Jabari_Kohler71",
-  "email": "salma_kassulke6@hotmail.com",
+  "name": "Natalia68",
+  "username": "Natalia68",
+  "email": "krystal_bode@yahoo.com",
   "provider": "local",
-  "created_at": "2014-11-11T16:16:00.608Z",
+  "created_at": "2014-11-11T20:29:38.137Z",
   "is_active": true,
   "roles": [
     "member"
   ],
-  "id": "XJqt5_0vV",
-  "gravatar_id": "605474e8b66c8b1a1cc221e396257024"
+  "id": "mkSE3ycsE",
+  "gravatar_id": "bb2092d5e98c9eb24813a8e2bc494113"
 }

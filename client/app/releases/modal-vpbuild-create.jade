@@ -16,7 +16,7 @@ include ../template/_mixins
 				label.col-sm-3.control-label Label
 				.col-sm-7
 					input.form-control(ng-model="vpbuild.label", placeholder="Version or build name...", ng-required)
-			div.alert.alert-danger.padder-bottom(ng-show="errors.name")
+			div.alert.alert-danger.padder-bottom(ng-show="errors.label")
 				+icon('warning').shift-up.space-right
 				| {{ errors.label }}
 

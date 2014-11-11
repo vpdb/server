@@ -3,270 +3,227 @@ X-List-Page: 1
 X-List-Size: 12
 X-List-Count: 10
 Content-Type: application/json; charset=utf-8
-Etag: W/"zMjKLQaybJfpCTJNG88ldg=="
+Etag: W/"VQqJvBtsjfUKW3Z0Y8XuWQ=="
 Content-Encoding: gzip
 
 [
   {
-    "id": "city-ship",
-    "title": "City Ship",
-    "manufacturer": "Esteban",
-    "year": 1978,
-    "game_type": "em",
+    "id": "acdc-pro",
+    "title": "ACDC (Pro)",
+    "manufacturer": "Stern",
+    "year": 2012,
+    "game_type": "ss",
     "ipdb": {
-      "number": 5130,
-      "mfg": 482
+      "number": 5767,
+      "mfg": 303,
+      "rating": 8
     },
     "media": {
       "backglass": {
         "is_protected": false,
         "variations": {
           "medium-2x": {
-            "url": "/storage/v1/mkvPu_0P4/medium-2x",
+            "url": "/storage/v1/QJJz5J9o4/medium-2x",
             "bytes": 2561,
             "height": 582,
             "width": 728
           },
           "small-2x": {
-            "url": "/storage/v1/mkvPu_0P4/small-2x",
+            "url": "/storage/v1/QJJz5J9o4/small-2x",
             "bytes": 1505,
             "height": 404,
             "width": 505
           },
           "medium": {
-            "url": "/storage/v1/mkvPu_0P4/medium",
+            "url": "/storage/v1/QJJz5J9o4/medium",
             "bytes": 965,
             "height": 291,
             "width": 364
           },
           "small": {
-            "url": "/storage/v1/mkvPu_0P4/small",
+            "url": "/storage/v1/QJJz5J9o4/small",
             "bytes": 619,
             "height": 202,
             "width": 253
           }
         },
-        "url": "/storage/v1/mkvPu_0P4",
-        "id": "mkvPu_0P4"
+        "url": "/storage/v1/QJJz5J9o4",
+        "id": "QJJz5J9o4"
       }
     }
   },
   {
-    "id": "crack-shot",
-    "title": "Crack Shot",
-    "manufacturer": "Century Manufacturing Company",
-    "year": 1934,
-    "game_type": "em",
-    "ipdb": {
-      "number": 584,
-      "mfg": 80
-    },
-    "media": {
-      "backglass": {
-        "is_protected": false,
-        "variations": {
-          "medium-2x": {
-            "url": "/storage/v1/myWLOOAvV/medium-2x",
-            "bytes": 2561,
-            "height": 582,
-            "width": 728
-          },
-          "small-2x": {
-            "url": "/storage/v1/myWLOOAvV/small-2x",
-            "bytes": 1505,
-            "height": 404,
-            "width": 505
-          },
-          "medium": {
-            "url": "/storage/v1/myWLOOAvV/medium",
-            "bytes": 965,
-            "height": 291,
-            "width": 364
-          },
-          "small": {
-            "url": "/storage/v1/myWLOOAvV/small",
-            "bytes": 619,
-            "height": 202,
-            "width": 253
-          }
-        },
-        "url": "/storage/v1/myWLOOAvV",
-        "id": "myWLOOAvV"
-      }
-    }
-  },
-  {
-    "id": "fantastic-world",
-    "title": "Fantastic World",
-    "manufacturer": "Peyper",
-    "year": 1900,
-    "game_type": "em",
-    "ipdb": {
-      "number": 5593,
-      "mfg": 249
-    },
-    "media": {
-      "backglass": {
-        "is_protected": false,
-        "variations": {
-          "small-2x": {
-            "url": "/storage/v1/mk89u_CDN/small-2x"
-          },
-          "small": {
-            "url": "/storage/v1/mk89u_CDN/small"
-          },
-          "medium-2x": {
-            "url": "/storage/v1/mk89u_CDN/medium-2x"
-          },
-          "medium": {
-            "url": "/storage/v1/mk89u_CDN/medium"
-          }
-        },
-        "url": "/storage/v1/mk89u_CDN",
-        "id": "mk89u_CDN"
-      }
-    }
-  },
-  {
-    "id": "junior",
-    "title": "Junior",
-    "manufacturer": "G. M. Laboratories, Incorporated",
-    "year": 1935,
+    "id": "arc-en-ciel",
+    "title": "Arc En Ciel",
+    "manufacturer": "Scott, Adickes & Cie",
+    "year": 1933,
     "game_type": "pm",
     "ipdb": {
-      "number": 4260,
-      "mfg": 125
+      "number": 5259,
+      "mfg": 445
     },
     "media": {
       "backglass": {
         "is_protected": false,
         "variations": {
           "medium-2x": {
-            "url": "/storage/v1/Xk94__0vN/medium-2x",
+            "url": "/storage/v1/myfsKyci4/medium-2x",
             "bytes": 2561,
             "height": 582,
             "width": 728
           },
           "small-2x": {
-            "url": "/storage/v1/Xk94__0vN/small-2x",
+            "url": "/storage/v1/myfsKyci4/small-2x",
             "bytes": 1505,
             "height": 404,
             "width": 505
           },
           "medium": {
-            "url": "/storage/v1/Xk94__0vN/medium",
+            "url": "/storage/v1/myfsKyci4/medium",
             "bytes": 965,
             "height": 291,
             "width": 364
           },
           "small": {
-            "url": "/storage/v1/Xk94__0vN/small",
+            "url": "/storage/v1/myfsKyci4/small",
             "bytes": 619,
             "height": 202,
             "width": 253
           }
         },
-        "url": "/storage/v1/Xk94__0vN",
-        "id": "Xk94__0vN"
+        "url": "/storage/v1/myfsKyci4",
+        "id": "myfsKyci4"
       }
     }
   },
   {
-    "id": "pentogram",
-    "title": "Pentogram",
-    "manufacturer": "Stern",
-    "year": 1900,
-    "game_type": "ss",
-    "ipdb": {
-      "number": 4352,
-      "mfg": 302
-    },
-    "media": {
-      "backglass": {
-        "is_protected": false,
-        "variations": {
-          "medium-2x": {
-            "url": "/storage/v1/m10uddRD4/medium-2x",
-            "bytes": 2561,
-            "height": 582,
-            "width": 728
-          },
-          "small-2x": {
-            "url": "/storage/v1/m10uddRD4/small-2x",
-            "bytes": 1504,
-            "height": 404,
-            "width": 505
-          },
-          "medium": {
-            "url": "/storage/v1/m10uddRD4/medium",
-            "bytes": 965,
-            "height": 291,
-            "width": 364
-          },
-          "small": {
-            "url": "/storage/v1/m10uddRD4/small",
-            "bytes": 618,
-            "height": 202,
-            "width": 253
-          }
-        },
-        "url": "/storage/v1/m10uddRD4",
-        "id": "m10uddRD4"
-      }
-    }
-  },
-  {
-    "id": "pool-champion",
-    "title": "Pool Champion",
-    "manufacturer": "Zaccaria",
-    "year": 1985,
-    "game_type": "ss",
-    "ipdb": {
-      "number": 3311,
-      "mfg": 356
-    },
-    "media": {
-      "backglass": {
-        "is_protected": false,
-        "variations": {
-          "medium-2x": {
-            "url": "/storage/v1/7ynWuORwN/medium-2x",
-            "bytes": 2561,
-            "height": 582,
-            "width": 728
-          },
-          "small-2x": {
-            "url": "/storage/v1/7ynWuORwN/small-2x",
-            "bytes": 1504,
-            "height": 404,
-            "width": 505
-          },
-          "medium": {
-            "url": "/storage/v1/7ynWuORwN/medium",
-            "bytes": 965,
-            "height": 291,
-            "width": 364
-          },
-          "small": {
-            "url": "/storage/v1/7ynWuORwN/small",
-            "bytes": 618,
-            "height": 202,
-            "width": 253
-          }
-        },
-        "url": "/storage/v1/7ynWuORwN",
-        "id": "7ynWuORwN"
-      }
-    }
-  },
-  {
-    "id": "safari",
-    "title": "Safari",
-    "manufacturer": "Bally",
-    "year": 1969,
+    "id": "carnival",
+    "title": "Carnival",
+    "manufacturer": "Marvel",
+    "year": 1947,
     "game_type": "em",
     "ipdb": {
-      "number": 3307,
+      "number": 454,
+      "mfg": 206
+    },
+    "media": {
+      "backglass": {
+        "is_protected": false,
+        "variations": {
+          "medium-2x": {
+            "url": "/storage/v1/71dl5kqoN/medium-2x",
+            "bytes": 2561,
+            "height": 582,
+            "width": 728
+          },
+          "small-2x": {
+            "url": "/storage/v1/71dl5kqoN/small-2x",
+            "bytes": 1505,
+            "height": 404,
+            "width": 505
+          },
+          "medium": {
+            "url": "/storage/v1/71dl5kqoN/medium",
+            "bytes": 965,
+            "height": 291,
+            "width": 364
+          },
+          "small": {
+            "url": "/storage/v1/71dl5kqoN/small",
+            "bytes": 619,
+            "height": 202,
+            "width": 253
+          }
+        },
+        "url": "/storage/v1/71dl5kqoN",
+        "id": "71dl5kqoN"
+      }
+    }
+  },
+  {
+    "id": "chicago-express",
+    "title": "Chicago Express",
+    "manufacturer": "Daval Mfg Company Incorporated, G.B.",
+    "year": 1935,
+    "game_type": "em",
+    "ipdb": {
+      "number": 503,
+      "mfg": 99
+    },
+    "media": {
+      "backglass": {
+        "is_protected": false,
+        "variations": {
+          "medium-2x": {
+            "url": "/storage/v1/XJ87q19j4/medium-2x",
+            "bytes": 2561,
+            "height": 582,
+            "width": 728
+          },
+          "small-2x": {
+            "url": "/storage/v1/XJ87q19j4/small-2x",
+            "bytes": 1504,
+            "height": 404,
+            "width": 505
+          },
+          "medium": {
+            "url": "/storage/v1/XJ87q19j4/medium",
+            "bytes": 965,
+            "height": 291,
+            "width": 364
+          },
+          "small": {
+            "url": "/storage/v1/XJ87q19j4/small",
+            "bytes": 618,
+            "height": 202,
+            "width": 253
+          }
+        },
+        "url": "/storage/v1/XJ87q19j4",
+        "id": "XJ87q19j4"
+      }
+    }
+  },
+  {
+    "id": "glockenbomber",
+    "title": "Glockenbomber",
+    "manufacturer": "Tura Automatenfabrik Gmbh",
+    "year": 1938,
+    "game_type": "em",
+    "ipdb": {
+      "number": 3999,
+      "mfg": 320
+    },
+    "media": {
+      "backglass": {
+        "is_protected": false,
+        "variations": {
+          "small-2x": {
+            "url": "/storage/v1/7J4LqJciN/small-2x"
+          },
+          "small": {
+            "url": "/storage/v1/7J4LqJciN/small"
+          },
+          "medium-2x": {
+            "url": "/storage/v1/7J4LqJciN/medium-2x"
+          },
+          "medium": {
+            "url": "/storage/v1/7J4LqJciN/medium"
+          }
+        },
+        "url": "/storage/v1/7J4LqJciN",
+        "id": "7J4LqJciN"
+      }
+    }
+  },
+  {
+    "id": "greyhound",
+    "title": "Greyhound",
+    "manufacturer": "Bally",
+    "year": 1932,
+    "game_type": "pm",
+    "ipdb": {
+      "number": 1086,
       "mfg": 47
     },
     "media": {
@@ -274,165 +231,205 @@ Content-Encoding: gzip
         "is_protected": false,
         "variations": {
           "medium-2x": {
-            "url": "/storage/v1/71Sl_dRvV/medium-2x",
+            "url": "/storage/v1/myl51qoE/medium-2x",
             "bytes": 2561,
             "height": 582,
             "width": 728
           },
           "small-2x": {
-            "url": "/storage/v1/71Sl_dRvV/small-2x",
+            "url": "/storage/v1/myl51qoE/small-2x",
             "bytes": 1504,
             "height": 404,
             "width": 505
           },
           "medium": {
-            "url": "/storage/v1/71Sl_dRvV/medium",
+            "url": "/storage/v1/myl51qoE/medium",
             "bytes": 965,
             "height": 291,
             "width": 364
           },
           "small": {
-            "url": "/storage/v1/71Sl_dRvV/small",
+            "url": "/storage/v1/myl51qoE/small",
             "bytes": 618,
             "height": 202,
             "width": 253
           }
         },
-        "url": "/storage/v1/71Sl_dRvV",
-        "id": "71Sl_dRvV"
+        "url": "/storage/v1/myl51qoE",
+        "id": "myl51qoE"
       }
     }
   },
   {
-    "id": "solids-n-stripes",
-    "title": "Solids N Stripes",
+    "id": "laura",
+    "title": "Laura",
     "manufacturer": "Williams",
-    "year": 1971,
+    "year": 1945,
     "game_type": "em",
     "ipdb": {
-      "number": 2240,
-      "mfg": 351,
-      "rating": 6.1
+      "number": 1418,
+      "mfg": 352
     },
     "media": {
       "backglass": {
         "is_protected": false,
         "variations": {
           "medium-2x": {
-            "url": "/storage/v1/m1rQuuCDE/medium-2x",
-            "bytes": 2561,
-            "height": 582,
-            "width": 728
-          },
-          "small": {
-            "url": "/storage/v1/m1rQuuCDE/small",
-            "bytes": 619,
-            "height": 202,
-            "width": 253
-          },
-          "small-2x": {
-            "url": "/storage/v1/m1rQuuCDE/small-2x",
-            "bytes": 1505,
-            "height": 404,
-            "width": 505
-          },
-          "medium": {
-            "url": "/storage/v1/m1rQuuCDE/medium",
-            "bytes": 965,
-            "height": 291,
-            "width": 364
-          }
-        },
-        "url": "/storage/v1/m1rQuuCDE",
-        "id": "m1rQuuCDE"
-      }
-    }
-  },
-  {
-    "id": "strike",
-    "title": "Strike",
-    "manufacturer": "Zaccaria",
-    "year": 1900,
-    "game_type": "em",
-    "ipdb": {
-      "number": 5156,
-      "mfg": 356
-    },
-    "media": {
-      "backglass": {
-        "is_protected": false,
-        "variations": {
-          "medium-2x": {
-            "url": "/storage/v1/QyboD_CwV/medium-2x",
+            "url": "/storage/v1/QyE_Yk5oV/medium-2x",
             "bytes": 2561,
             "height": 582,
             "width": 728
           },
           "small-2x": {
-            "url": "/storage/v1/QyboD_CwV/small-2x",
-            "bytes": 1505,
-            "height": 404,
-            "width": 505
-          },
-          "medium": {
-            "url": "/storage/v1/QyboD_CwV/medium",
-            "bytes": 965,
-            "height": 291,
-            "width": 364
-          },
-          "small": {
-            "url": "/storage/v1/QyboD_CwV/small",
-            "bytes": 619,
-            "height": 202,
-            "width": 253
-          }
-        },
-        "url": "/storage/v1/QyboD_CwV",
-        "id": "QyboD_CwV"
-      }
-    }
-  },
-  {
-    "id": "zip",
-    "title": "Zip",
-    "manufacturer": "Genco",
-    "year": 1938,
-    "game_type": "em",
-    "ipdb": {
-      "number": 2838,
-      "mfg": 130
-    },
-    "media": {
-      "backglass": {
-        "is_protected": false,
-        "variations": {
-          "medium-2x": {
-            "url": "/storage/v1/71Lqw_AvE/medium-2x",
-            "bytes": 2561,
-            "height": 582,
-            "width": 728
-          },
-          "small-2x": {
-            "url": "/storage/v1/71Lqw_AvE/small-2x",
+            "url": "/storage/v1/QyE_Yk5oV/small-2x",
             "bytes": 1504,
             "height": 404,
             "width": 505
           },
           "medium": {
-            "url": "/storage/v1/71Lqw_AvE/medium",
+            "url": "/storage/v1/QyE_Yk5oV/medium",
             "bytes": 965,
             "height": 291,
             "width": 364
           },
           "small": {
-            "url": "/storage/v1/71Lqw_AvE/small",
+            "url": "/storage/v1/QyE_Yk5oV/small",
             "bytes": 618,
             "height": 202,
             "width": 253
           }
         },
-        "url": "/storage/v1/71Lqw_AvE",
-        "id": "71Lqw_AvE"
+        "url": "/storage/v1/QyE_Yk5oV",
+        "id": "QyE_Yk5oV"
+      }
+    }
+  },
+  {
+    "id": "northern-lights",
+    "title": "Northern Lights",
+    "manufacturer": "Bally",
+    "year": 1936,
+    "game_type": "em",
+    "ipdb": {
+      "number": 1684,
+      "mfg": 47
+    },
+    "media": {
+      "backglass": {
+        "is_protected": false,
+        "variations": {
+          "medium-2x": {
+            "url": "/storage/v1/XJoYYJ9iV/medium-2x",
+            "bytes": 2561,
+            "height": 582,
+            "width": 728
+          },
+          "small-2x": {
+            "url": "/storage/v1/XJoYYJ9iV/small-2x",
+            "bytes": 1505,
+            "height": 404,
+            "width": 505
+          },
+          "medium": {
+            "url": "/storage/v1/XJoYYJ9iV/medium",
+            "bytes": 965,
+            "height": 291,
+            "width": 364
+          },
+          "small": {
+            "url": "/storage/v1/XJoYYJ9iV/small",
+            "bytes": 619,
+            "height": 202,
+            "width": 253
+          }
+        },
+        "url": "/storage/v1/XJoYYJ9iV",
+        "id": "XJoYYJ9iV"
+      }
+    }
+  },
+  {
+    "id": "st-louis",
+    "title": "St. Louis",
+    "manufacturer": "Williams",
+    "year": 1949,
+    "game_type": "em",
+    "ipdb": {
+      "number": 2409,
+      "mfg": 352
+    },
+    "media": {
+      "backglass": {
+        "is_protected": false,
+        "variations": {
+          "medium-2x": {
+            "url": "/storage/v1/7y6E51cs4/medium-2x"
+          },
+          "small-2x": {
+            "url": "/storage/v1/7y6E51cs4/small-2x",
+            "bytes": 1505,
+            "height": 404,
+            "width": 505
+          },
+          "medium": {
+            "url": "/storage/v1/7y6E51cs4/medium",
+            "bytes": 965,
+            "height": 291,
+            "width": 364
+          },
+          "small": {
+            "url": "/storage/v1/7y6E51cs4/small",
+            "bytes": 619,
+            "height": 202,
+            "width": 253
+          }
+        },
+        "url": "/storage/v1/7y6E51cs4",
+        "id": "7y6E51cs4"
+      }
+    }
+  },
+  {
+    "id": "stevo-ball-no-4",
+    "title": "Stevo-Ball No. 4",
+    "manufacturer": "A. J. Stephens and Company",
+    "year": 1932,
+    "game_type": "pm",
+    "ipdb": {
+      "number": 5211,
+      "mfg": 3
+    },
+    "media": {
+      "backglass": {
+        "is_protected": false,
+        "variations": {
+          "medium-2x": {
+            "url": "/storage/v1/m1YDtJ9oE/medium-2x",
+            "bytes": 2561,
+            "height": 582,
+            "width": 728
+          },
+          "small-2x": {
+            "url": "/storage/v1/m1YDtJ9oE/small-2x",
+            "bytes": 1505,
+            "height": 404,
+            "width": 505
+          },
+          "medium": {
+            "url": "/storage/v1/m1YDtJ9oE/medium",
+            "bytes": 965,
+            "height": 291,
+            "width": 364
+          },
+          "small": {
+            "url": "/storage/v1/m1YDtJ9oE/small",
+            "bytes": 619,
+            "height": 202,
+            "width": 253
+          }
+        },
+        "url": "/storage/v1/m1YDtJ9oE",
+        "id": "m1YDtJ9oE"
       }
     }
   }

@@ -1,21 +1,21 @@
 POST /api/v1/releases HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJteVNIS18wd04iLCJpYXQiOiIyMDE0LTExLTExVDE2OjE1OjU5LjE1NVoiLCJleHAiOiIyMDE0LTExLTExVDE3OjE1OjU5LjE1NVoifQ.nC_C7CHu_uAMFnPfml6oIQB6XKOltRrK-z6UGgufKBc
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJta2NwY2tjc1YiLCJpYXQiOiIyMDE0LTExLTExVDIwOjI5OjM2Ljc3MloiLCJleHAiOiIyMDE0LTExLTExVDIxOjI5OjM2Ljc3MloifQ.GvBxhaJ43jp3XS1MndddDMAMe6Zm1mnXWnQmUYGwJkg
 Content-Type: application/json
-Content-Length: 327
+Content-Length: 326
 
 {
   "name": "release",
-  "_game": "viking",
+  "_game": "zip",
   "versions": [
     {
       "files": [
         {
-          "_file": "Xyuc_0vV",
+          "_file": "myMrsy9sE",
           "_media": {
-            "playfield_image": "m1c9_ADN",
-            "playfield_video": "QkhlquRvV"
+            "playfield_image": "7kvSsk5j4",
+            "playfield_video": "Q1ULj1qjN"
           },
           "_compatibility": [
             "9.9.0"
@@ -31,7 +31,7 @@ Content-Length: 327
   ],
   "authors": [
     {
-      "_user": "mySHK_0wN",
+      "_user": "mkcpckcsV",
       "roles": [
         "Table Creator"
       ]

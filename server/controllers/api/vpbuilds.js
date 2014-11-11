@@ -22,6 +22,7 @@
 var _ = require('lodash');
 var logger = require('winston');
 
+var acl = require('../../acl');
 var api = require('./api');
 var VPBuild = require('mongoose').model('VPBuild');
 
@@ -55,7 +56,7 @@ exports.create = function(req, res) {
 
 	var newBuild = new VPBuild(req.body);
 
-	newBuild.id = newBuild.name ? newBuild.name.replace(/(^[^a-z0-9]+)|([^a-z0-9]+$)/gi, '').replace(/[^a-z0-9]+/gi, '-').toLowerCase() : '-';
+	newBuild.id = newBuild.label ? newBuild.label.replace(/(^[^a-z0-9\._-]+)|([^a-z0-9\._-]+$)/gi, '').replace(/[^a-z0-9\._-]+/gi, '-').toLowerCase() : '-';
 	newBuild.is_active = false;
 	newBuild.created_at = new Date();
 	newBuild._created_by = req.user._id;
@@ -67,10 +68,47 @@ exports.create = function(req, res) {
 		newBuild.save(function(err) {
 			/* istanbul ignore if  */
 			if (err) {
-				return api.fail(res, error(err, 'Error saving vpbuild "%s"', newBuild.name).log('create'), 500);
+				return api.fail(res, error(err, 'Error saving vpbuild "%s"', newBuild.label).log('create'), 500);
 			}
-			logger.info('[api|vpbuild:create] VPBuild "%s" successfully created.', newBuild.name);
+			logger.info('[api|vpbuild:create] VPBuild "%s" successfully created.', newBuild.label);
 			return api.success(res, newBuild.toSimple(), 201);
 		});
 	});
+};
+
+
+/**
+ * Deletes a VP build.
+ *
+ * @param {Request} req
+ * @param {Response} res
+ */
+exports.del = function(req, res) {
+
+	var assert = api.assert(error, 'delete', req.params.id, res);
+	acl.isAllowed(req.user.email, 'vpbuilds', 'delete', assert(function(canDelete) {
+		VPBuild.findOne({ id: req.params.id }, assert(function(vpbuild) {
+
+			if (!vpbuild) {
+				return api.fail(res, error('No such vpbuild with ID "%s".', req.params.id), 404);
+			}
+
+			// only allow deleting own vpbuilds
+			if (!canDelete && !vpbuild._created_by.equals(req.user._id)) {
+				return api.fail(res, error('Permission denied, must be owner.'), 403);
+			}
+
+			// todo check if there are references
+
+			// remove from db
+			vpbuild.remove(function(err) {
+				/* istanbul ignore if  */
+				if (err) {
+					return api.fail(res, error(err, 'Error deleting vpbuild "%s" (%s)', vpbuild.id, vpbuild.label).log('delete'), 500);
+				}
+				logger.info('[api|vpbuild:delete] VP build "%s" (%s) successfully deleted.', vpbuild.label, vpbuild.id);
+				api.success(res, null, 204);
+			});
+		}), 'Error getting vpbuild "%s"');
+	}, 'Error checking for ACL "vpbuilds/delete".'));
 };

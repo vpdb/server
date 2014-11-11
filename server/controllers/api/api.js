@@ -221,7 +221,6 @@ exports.assert = function(error, prefix, ref, res, rollback) {
 				}
 			} else {
 				args.shift();
-				//console.log('---------- calling success(' + args + ')');
 				successFct.apply(null, args);
 			}
 		};
@@ -257,7 +256,6 @@ exports.checkReadOnlyFields = function(newObj, oldObj, allowedFields) {
 		}
 	});
 
-	//console.log(result.errors);
 	return errors.length ? errors : false;
 };
 

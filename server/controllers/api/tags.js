@@ -85,11 +85,8 @@ exports.del = function(req, res) {
 
 	var assert = api.assert(error, 'delete', req.params.id, res);
 	acl.isAllowed(req.user.email, 'tags', 'delete', assert(function(canDelete) {
-		Tag.findOne({ id: req.params.id }, function(err, tag) {
-			/* istanbul ignore if  */
-			if (err) {
-				return api.fail(res, error(err, 'Error getting tag "%s"', req.params.id).log('delete'), 500);
-			}
+		Tag.findOne({ id: req.params.id }, assert(function(tag) {
+
 			if (!tag) {
 				return api.fail(res, error('No such tag with ID "%s".', req.params.id), 404);
 			}
@@ -110,6 +107,6 @@ exports.del = function(req, res) {
 				logger.info('[api|tag:delete] Tag "%s" (%s) successfully deleted.', tag.name, tag.id);
 				api.success(res, null, 204);
 			});
-		});
-	}));
+		}), 'Error getting tag "%s"');
+	}, 'Error checking for ACL "tags/delete".'));
 };

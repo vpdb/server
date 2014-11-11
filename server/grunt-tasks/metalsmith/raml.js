@@ -30,6 +30,7 @@ var relative = require('path').relative;
 var highlight = require('highlight.js');
 var resolve = require('path').resolve;
 var normalize = require('path').normalize;
+var uuid = require('node-uuid');
 
 module.exports = function(opts) {
 
@@ -89,6 +90,7 @@ module.exports = function(opts) {
 							files[dest] = { contents: new Buffer(html) };
 					});
 					metadata.api[srcFiles[file].name] = obj;
+					postman(obj);
 					require('fs').writeFileSync('raml.json', JSON.stringify(obj, null, '\t'));
 					next();
 
@@ -335,4 +337,75 @@ function splitReq(req) {
 
 function print(obj) {
 	console.log(require('util').inspect(obj, false, true));
+}
+
+function postman(obj) {
+
+	var short = function(text) {
+		if (!text) {
+			return text;
+		}
+		var dot = text.indexOf('.');
+		return text.substring(0, dot > 0 ? dot: text.length);
+	};
+	var collectionId = uuid.v4();
+	var data = {
+		version: 1,
+		collections: [ {
+			id: collectionId,
+			name: 'VPDB API v1',
+			timestamp: new Date().getTime(),
+			order: [],
+			requests: []
+		}],
+		environments: [
+			{
+				id: "b70e4529-c693-15fb-2879-eafa6a02fa46",
+				name: "Local",
+				values: [
+					{ key: "baseUri", value: "http://localhost:3000/api/v1", type: "text" },
+					{ key: "authHeader", value: "Authorization", type: "text" }],
+				timestamp: 1415744594305
+			},
+			{
+				id: "5c14b55c-5588-5319-8352-973d5dba43a5",
+				name: "Staging",
+				values: [
+					{ key: "baseUri", value: "https://staging.vpdb.ch/api/v1", type: "text" },
+					{ key: "authHeader", value: "X-Authorization", type: "text" }],
+				timestamp: 1415744614897
+			}
+		],
+		headerPresets: [],
+		globals: [ { key: "jwt", value: "xxx", type: "text" } ]
+	};
+
+	_.each(obj.resources, function(resource) {
+		_.each(resource.methods, function(method) {
+			var requestId = uuid.v4();
+			var request = {
+				collectionId: collectionId,
+				id: requestId,
+				name: resource.displayName + ' - ' + short(method.description),
+				description: '', //method.description,
+				url: '{{baseUri}}' + resource.relativeUri,
+				method: method.method.toUpperCase(),
+				headers: 'Content-Type: application/json\n',
+				dataMode: "raw",
+				timestamp: 0,
+				version: 2,
+				time: new Date().getTime()
+			};
+			if (method.securedBy && _.compact(method.securedBy).length) {
+				request.headers += '{{authHeader}}: Bearer {{jwt}}\n';
+			}
+			if (_.contains(['put', 'post'], method.method) && _.keys(method.body).length && method.body[_.keys(method.body)[0]].example) {
+				var example = splitReq(method.body[_.keys(method.body)[0]].example);
+				request.data = example.body;
+			}
+			data.collections[0].requests.push(request);
+			data.collections[0].order.push(requestId);
+		});
+	});
+	require('fs').writeFileSync('postman.json', JSON.stringify(data, null, '\t'));
 }

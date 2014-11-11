@@ -34,14 +34,14 @@ module.exports = exports = function(schema, options) {
 		throw new Error('Fileref plugin needs model. Please provide.');
 	}
 
-	var fileRefPaths = _.omit(traversePaths(schema), function(schemaType, path) {
+	var fileRefPaths = _.keys(_.omit(traversePaths(schema), function(schemaType, path) {
 		return _.contains(options.ignore, path);
-	});
+	}));
 
 	//-----------------------------------------------------------------------------
 	// VALIDATIONS
 	//-----------------------------------------------------------------------------
-	_.each(_.keys(fileRefPaths), function(path) {
+	_.each(fileRefPaths, function(path) {
 
 		schema.path(path).validate(function(fileId, callback) {
 			var that = this;
@@ -84,7 +84,7 @@ module.exports = exports = function(schema, options) {
 
 		var ids = [];
 		var obj = this;
-		_.each(_.keys(fileRefPaths), function(path) {
+		_.each(fileRefPaths, function(path) {
 			var id = objectPath.get(obj, path);
 			if (id) {
 				ids.push(id);
@@ -105,7 +105,7 @@ module.exports = exports = function(schema, options) {
 				if (err) {
 					return done(error(err, 'Error updating attribute `is_active`'));
 				}
-				obj.populate(_.keys(fileRefPaths).join(' '), done);
+				obj.populate(fileRefPaths.join(' '), done);
 			});
 		});
 		return this;
@@ -119,7 +119,7 @@ module.exports = exports = function(schema, options) {
 		var File = mongoose.model('File');
 
 		var ids = [];
-		_.each(_.keys(fileRefPaths), function(path) {
+		_.each(fileRefPaths, function(path) {
 			var id = objectPath.get(obj, path);
 			if (id) {
 				ids.push(id);

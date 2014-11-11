@@ -24,14 +24,10 @@ var async = require('async');
 var logger = require('winston');
 var shortId = require('shortid');
 var mongoose = require('mongoose');
-var validator = require('validator');
 
 var uniqueValidator = require('mongoose-unique-validator');
-
 var prettyId = require('./plugins/pretty-id');
 var fileRef = require('./plugins/file-ref');
-
-var mimetypes = require('../modules/mimetypes');
 
 var Schema = mongoose.Schema;
 

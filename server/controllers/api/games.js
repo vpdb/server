@@ -162,7 +162,7 @@ exports.list = function(req, res) {
 		var decades = req.query.decade.split(',');
 		var d = [];
 		_.each(decades, function(decade) {
-			d.push({ year: { $gte: parseInt(decade), $lt: parseInt(decade) + 10 }});
+			d.push({ year: { $gte: parseInt(decade, 10), $lt: parseInt(decade, 10) + 10 }});
 		});
 		if (d.length === 1) {
 			query.push(d[0]);

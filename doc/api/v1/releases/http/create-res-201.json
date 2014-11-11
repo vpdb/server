@@ -4,18 +4,18 @@ Content-Encoding: gzip
 
 {
   "name": "release",
-  "_game": "546278c4facaa07cae77f5f0",
-  "_created_by": "546278c4facaa07cae77f5ca",
-  "created_at": "2014-11-11T20:59:49.055Z",
+  "_game": "546279c644e6d9189a16d8b3",
+  "_created_by": "546279c544e6d9189a16d88d",
+  "created_at": "2014-11-11T21:04:06.847Z",
   "links": [],
   "_tags": [
-    "546278bffacaa07cae77f564",
-    "546278bffacaa07cae77f563"
+    "546279c044e6d9189a16d827",
+    "546279c044e6d9189a16d826"
   ],
   "authors": [
     {
-      "_user": "546278c4facaa07cae77f5ca",
-      "_id": "546278c5facaa07cae77f5f5",
+      "_user": "546279c544e6d9189a16d88d",
+      "_id": "546279c644e6d9189a16d8b8",
       "roles": [
         "Table Creator"
       ]
@@ -24,31 +24,31 @@ Content-Encoding: gzip
   "versions": [
     {
       "version": "1.0.0",
-      "_id": "546278c5facaa07cae77f5f6",
+      "_id": "546279c644e6d9189a16d8b9",
       "files": [
         {
           "_file": {
-            "_id": "546278c4facaa07cae77f5f1",
+            "_id": "546279c644e6d9189a16d8b4",
             "name": "test-table.vpt",
             "bytes": 135168,
-            "created_at": "2014-11-11T20:59:48.731Z",
+            "created_at": "2014-11-11T21:04:06.529Z",
             "mime_type": "application/x-visual-pinball-table",
             "file_type": "release",
-            "_created_by": "546278c4facaa07cae77f5ca",
+            "_created_by": "546279c544e6d9189a16d88d",
             "__v": 0,
             "is_active": true,
-            "id": "7y4iAl-nN"
+            "id": "71RIeZfn4"
           },
-          "_id": "546278c5facaa07cae77f5f7",
+          "_id": "546279c644e6d9189a16d8ba",
           "_media": {
             "playfield_image": {
-              "_id": "546278c4facaa07cae77f5f2",
+              "_id": "546279c644e6d9189a16d8b5",
               "name": "playfield.png",
               "bytes": 347,
-              "created_at": "2014-11-11T20:59:48.761Z",
+              "created_at": "2014-11-11T21:04:06.560Z",
               "mime_type": "image/png",
               "file_type": "playfield",
-              "_created_by": "546278c4facaa07cae77f5ca",
+              "_created_by": "546279c544e6d9189a16d88d",
               "__v": 0,
               "metadata": {
                 "Format": "PNG (Portable Network Graphics)",
@@ -69,26 +69,26 @@ Content-Encoding: gzip
                 },
                 "Channel Statistics": {
                   "Red": {
-                    "Minimum": "38550.00 (0.5882)",
-                    "Maximum": "38550.00 (0.5882)",
-                    "Mean": "38550.00 (0.5882)",
-                    "Standard Deviation": "0.00 (0.0000)"
-                  },
-                  "Green": {
                     "Minimum": "49087.00 (0.7490)",
                     "Maximum": "49087.00 (0.7490)",
                     "Mean": "49087.00 (0.7490)",
                     "Standard Deviation": "0.00 (0.0000)"
                   },
-                  "Blue": {
+                  "Green": {
                     "Minimum": "29298.00 (0.4471)",
                     "Maximum": "29298.00 (0.4471)",
                     "Mean": "29298.00 (0.4471)",
                     "Standard Deviation": "0.00 (0.0000)"
+                  },
+                  "Blue": {
+                    "Minimum": "48573.00 (0.7412)",
+                    "Maximum": "48573.00 (0.7412)",
+                    "Mean": "48573.00 (0.7412)",
+                    "Standard Deviation": "0.00 (0.0000)"
                   }
                 },
                 "Colors": {
-                  "0": "(150,191,114)\t  #96BF72"
+                  "0": "(191,114,189)\t  #BF72BD"
                 },
                 "color": 1,
                 "Filesize": "347",
@@ -102,9 +102,10 @@ Content-Encoding: gzip
                 "Dispose": "Undefined",
                 "Iterations": "0",
                 "Compression": "Zip",
-                "Signature": "1bb453709bd34dbf134f7be910e99ecccbe2d08270278ab1cb6d880fbdf98430",
+                "Signature": "5a6be58a351ea1cd72dcbfae5a1d14860054f9f4eb3e35f455d6562a941f74a9",
                 "Tainted": "False",
-                "path": "D:\\dev\\node-vpdb\\data\\storage-test\\QkYiCxWn4.png",
+                "User Time": "0.078u",
+                "path": "D:\\dev\\node-vpdb\\data\\storage-test\\7k4DgWz3E.png",
                 "Png:IHDR-color-type-orig": "3",
                 "Png:IHDR-bit-depth-orig": "1"
               },
@@ -116,16 +117,16 @@ Content-Encoding: gzip
                 }
               },
               "is_active": true,
-              "id": "QkYiCxWn4"
+              "id": "7k4DgWz3E"
             },
             "playfield_video": {
-              "_id": "546278c4facaa07cae77f5f3",
+              "_id": "546279c644e6d9189a16d8b6",
               "name": "playfield.mp4",
               "bytes": 537368,
-              "created_at": "2014-11-11T20:59:48.955Z",
+              "created_at": "2014-11-11T21:04:06.752Z",
               "mime_type": "video/mp4",
               "file_type": "playfield",
-              "_created_by": "546278c4facaa07cae77f5ca",
+              "_created_by": "546279c544e6d9189a16d88d",
               "__v": 0,
               "metadata": {
                 "streams": [
@@ -181,7 +182,7 @@ Content-Encoding: gzip
                   }
                 ],
                 "format": {
-                  "filename": "D:\\dev\\node-vpdb\\data\\storage-test\\Q1cy-ZnE.mp4",
+                  "filename": "D:\\dev\\node-vpdb\\data\\storage-test\\Q1J_xZfn4.mp4",
                   "nb_streams": 1,
                   "nb_programs": 0,
                   "format_name": "mov,mp4,m4a,3gp,3g2,mj2",
@@ -200,11 +201,11 @@ Content-Encoding: gzip
                 }
               },
               "is_active": true,
-              "id": "Q1cy-ZnE"
+              "id": "Q1J_xZfn4"
             }
           },
           "_compatibility": [
-            "546278bffacaa07cae77f566"
+            "546279c044e6d9189a16d829"
           ],
           "flavor": {
             "orientation": "fs",
@@ -214,5 +215,5 @@ Content-Encoding: gzip
       ]
     }
   ],
-  "id": "QyVgkbZhN"
+  "id": "Xy_ZWMhV"
 }

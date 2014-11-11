@@ -1,7 +1,7 @@
 POST /api/v1/tags HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI3MVBRMS0tbjQiLCJpYXQiOiIyMDE0LTExLTExVDIwOjU5OjQ5LjE4MloiLCJleHAiOiIyMDE0LTExLTExVDIxOjU5OjQ5LjE4MloifQ.xWTLqFHxo5U-Mz7XzVnvMDD8tq9Hv92eDXH5UXvsU2k
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJYa2VRYldmMzQiLCJpYXQiOiIyMDE0LTExLTExVDIxOjA0OjA2Ljk5NloiLCJleHAiOiIyMDE0LTExLTExVDIyOjA0OjA2Ljk5NloifQ.Mjmr7rvAIKwqNdqmZnfpOITTObL4vFCWTaJw1DeFcho
 Content-Type: application/json
 Content-Length: 70
 

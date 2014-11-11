@@ -1,0 +1,22 @@
+200 OK
+Content-Type: application/json; charset=utf-8
+Content-Length: 317
+Etag: W/"13d-bde78282"
+
+[
+  {
+    "id": "dof",
+    "name": "DOF",
+    "description": "Support for Direct Output Framework."
+  },
+  {
+    "id": "hd",
+    "name": "HD",
+    "description": "All textures render crispy at Full HD resolution."
+  },
+  {
+    "id": "3d",
+    "name": "3D",
+    "description": "Table is modeled entirely in 3D (no 2D sprites are used)."
+  }
+]

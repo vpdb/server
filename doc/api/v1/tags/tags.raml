@@ -28,6 +28,23 @@ post:
         role/member:
           example: !include http/create-res-422.json
 
+get:
+  securedBy: [ ]
+  description: |
+    List all tags.
+
+    Note that this resource isn't paginated, there should only a few dozen
+    of tags for some time.
+  body:
+    role/anon:
+      example: !include http/list-req.json
+  responses:
+    200:
+      body:
+        role/anon:
+          example: !include http/list-res-200.json
+
+
 /{tag_id}:
   delete:
     is: [ protected ]

@@ -1,22 +1,22 @@
 200 OK
 Content-Type: application/json; charset=utf-8
-Content-Length: 859
+Content-Length: 857
 
 {
-  "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJReXFPY2wtMkUiLCJpYXQiOiIyMDE0LTExLTExVDIwOjU5OjQ0LjYxNloiLCJleHAiOiIyMDE0LTExLTExVDIxOjU5OjQ0LjYxNloifQ.CFvIEbxT2jl8zZS0bLrOsowm-VtC79vII-bXC5HO8h0",
-  "expires": "2014-11-11T21:59:44.616Z",
+  "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI3eUtEM3h6bk4iLCJpYXQiOiIyMDE0LTExLTExVDIxOjA0OjAyLjUzNFoiLCJleHAiOiIyMDE0LTExLTExVDIyOjA0OjAyLjUzNFoifQ.QvFjapyFzpgrboAMFM1f0ON0O2fH9oRGMCu8VN2P75A",
+  "expires": "2014-11-11T22:04:02.534Z",
   "user": {
-    "id": "QyqOcl-2E",
-    "name": "Mina_Romaguera15",
-    "username": "Mina_Romaguera15",
-    "gravatar_id": "d0ee5e8cd2c463a71a65fc53d61e189a",
-    "email": "eda.ernser@gmail.com",
+    "id": "7yKD3xznN",
+    "name": "Erica.Aufderhar64",
+    "username": "Erica.Aufderhar64",
+    "gravatar_id": "50c8d6495ba52bb9a5a9028e332f409b",
+    "email": "jett76@gmail.com",
     "is_active": true,
     "roles": [
       "member"
     ],
     "plan": "free",
-    "created_at": "2014-11-11T20:59:44.552Z",
+    "created_at": "2014-11-11T21:04:02.472Z",
     "permissions": {
       "users": [
         "search"

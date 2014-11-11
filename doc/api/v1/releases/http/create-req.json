@@ -1,21 +1,21 @@
 POST /api/v1/releases HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJtMWVIMGdaMjQiLCJpYXQiOiIyMDE0LTExLTExVDIwOjU5OjQ4LjEyMloiLCJleHAiOiIyMDE0LTExLTExVDIxOjU5OjQ4LjEyMloifQ.2V-QENFe6bw49xqBjhfwRroICTX-5cThNCcPTOjUFlo
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI3eVBsbFpHbjQiLCJpYXQiOiIyMDE0LTExLTExVDIxOjA0OjA1Ljk0MVoiLCJleHAiOiIyMDE0LTExLTExVDIyOjA0OjA1Ljk0MVoifQ.StzD4i-jpiHDQQ1dJ7unsHQZ3yGfjSABQmTHkON9vYk
 Content-Type: application/json
-Content-Length: 331
+Content-Length: 338
 
 {
   "name": "release",
-  "_game": "trap-lite",
+  "_game": "chicago-express",
   "versions": [
     {
       "files": [
         {
-          "_file": "7y4iAl-nN",
+          "_file": "71RIeZfn4",
           "_media": {
-            "playfield_image": "QkYiCxWn4",
-            "playfield_video": "Q1cy-ZnE"
+            "playfield_image": "7k4DgWz3E",
+            "playfield_video": "Q1J_xZfn4"
           },
           "_compatibility": [
             "9.9.0"
@@ -31,7 +31,7 @@ Content-Length: 331
   ],
   "authors": [
     {
-      "_user": "m1eH0gZ24",
+      "_user": "7yPllZGn4",
       "roles": [
         "Table Creator"
       ]

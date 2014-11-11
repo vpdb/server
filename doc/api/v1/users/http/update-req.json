@@ -1,14 +1,14 @@
-PUT /api/v1/users/QkcI1W-nV HTTP/1.1
+PUT /api/v1/users/Xk7UbbGh4 HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJYa1VVSi0taEUiLCJpYXQiOiIyMDE0LTExLTExVDIwOjU5OjQ5LjQwOVoiLCJleHAiOiIyMDE0LTExLTExVDIxOjU5OjQ5LjQwOVoifQ.u-qdRmYuqZwY2JtA2wQF3AR2RnXyQhovOZQnkIpS5Gs
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJYMXlVYldHbk4iLCJpYXQiOiIyMDE0LTExLTExVDIxOjA0OjA3LjIzOFoiLCJleHAiOiIyMDE0LTExLTExVDIyOjA0OjA3LjIzOFoifQ.r_bfTJolo78E_2rDVtC_KWXi3fvohM0XYx03OwtDsm8
 Content-Type: application/json
-Content-Length: 124
+Content-Length: 126
 
 {
-  "email": "wade97@hotmail.com",
-  "username": "Leila.VonRueden24",
-  "name": "Leila.VonRueden24",
+  "email": "brooks.quigley@gmail.com",
+  "username": "Roslyn.Heller43",
+  "name": "Roslyn.Heller43",
   "is_active": true,
   "roles": [
     "member"

@@ -1,22 +1,35 @@
 POST /api/v1/games HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJRMVB3c2VablYiLCJpYXQiOiIyMDE0LTExLTExVDIwOjU5OjQ1LjYxMVoiLCJleHAiOiIyMDE0LTExLTExVDIxOjU5OjQ1LjYxMVoifQ.lwrqgTsOOlzkQP_PhLEuoy6FPKwpTSStdZv4TQxES20
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJYeVFVVGVmM1YiLCJpYXQiOiIyMDE0LTExLTExVDIxOjA0OjAzLjU0N1oiLCJleHAiOiIyMDE0LTExLTExVDIyOjA0OjAzLjU0N1oifQ.W6JXGrk57imtkEIrlS9fIsr4MaKeXnHyADgRC1TGRjs
 Content-Type: application/json
-Content-Length: 492
+Content-Length: 358
 
 {
   "ipdb": {
-    "number": 4758,
-    "mfg": 187
+    "number": 128,
+    "mfg": 257,
+    "rating": "6.0"
   },
-  "title": "Hy-Ball",
-  "manufacturer": "Lindstrom Tool and Toy Company",
-  "year": 1932,
-  "game_type": "pm",
-  "notes": "Lindstrom's first bagatelle game.  A square, wood model measuring 23\" x 14 3/4\".When Hy-Ball was released, it was noted that it resembled the famous Gottlieb \"Baffle Ball\" from 1931. Actually, it was based on the game \"Play Threes\" made in 1928 by \"Modern Games and Novelty Co.\" of Akron, Ohio.",
-  "id": "hy-ball",
+  "title": "Bad Girls",
+  "manufacturer": "Premier",
+  "model_number": "717",
+  "year": 1988,
+  "game_type": "ss",
+  "produced_units": 2500,
+  "themes": [
+    "Billiards"
+  ],
+  "designers": [
+    "Jon Norris"
+  ],
+  "artists": [
+    "Constantino Mitchell",
+    "Jeanine Mitchell"
+  ],
+  "features": "Photographic translite.",
+  "id": "bad-girls",
   "_media": {
-    "backglass": "7JhvieWhV"
+    "backglass": "X1dITgfhE"
   }
 }

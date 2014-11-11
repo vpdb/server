@@ -1,18 +1,18 @@
 201 Created
 Content-Type: application/json; charset=utf-8
-Content-Length: 299
+Content-Length: 282
 
 {
   "plan": "free",
-  "name": "Tyrese_Cronin22",
-  "username": "Tyrese_Cronin22",
-  "email": "bernadette21@gmail.com",
+  "name": "Giles67",
+  "username": "Giles67",
+  "email": "estelle76@hotmail.com",
   "provider": "local",
-  "created_at": "2014-11-11T20:59:49.497Z",
+  "created_at": "2014-11-11T21:04:07.345Z",
   "is_active": true,
   "roles": [
     "member"
   ],
-  "id": "7kQukWb3V",
-  "gravatar_id": "39d07ed37fc3993a16a17e30b72f2e4a"
+  "id": "7knPbZM3N",
+  "gravatar_id": "82cba2d4a125f363e7636f5c0e4e8cd7"
 }

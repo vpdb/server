@@ -73,6 +73,22 @@ describe('The VPDB `tag` API', function() {
 	});
 
 
+	describe('when listing all tags', function() {
+
+		it('should list the initially added tags', function(done) {
+			request
+				.get('/api/v1/tags')
+				.save({ path: 'tags/list'})
+				.end(function(err, res) {
+					hlp.expectStatus(err, res, 200);
+					expect(res.body).to.be.an('array');
+					expect(res.body).to.not.be.empty();
+					done();
+				});
+		});
+	});
+
+
 	describe('when deleting a tag', function() {
 
 		before(function(done) {

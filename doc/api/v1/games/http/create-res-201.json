@@ -1,44 +1,54 @@
 201 Created
 Content-Type: application/json; charset=utf-8
-Content-Encoding: gzip
+Content-Length: 931
 
 {
-  "title": "Hy-Ball",
-  "manufacturer": "Lindstrom Tool and Toy Company",
-  "year": 1932,
-  "game_type": "pm",
-  "notes": "Lindstrom's first bagatelle game.  A square, wood model measuring 23\" x 14 3/4\".When Hy-Ball was released, it was noted that it resembled the famous Gottlieb \"Baffle Ball\" from 1931. Actually, it was based on the game \"Play Threes\" made in 1928 by \"Modern Games and Novelty Co.\" of Akron, Ohio.",
-  "id": "hy-ball",
-  "_created_by": "546278c1facaa07cae77f59f",
-  "created_at": "2014-11-11T20:59:45.703Z",
+  "title": "Bad Girls",
+  "manufacturer": "Premier",
+  "model_number": "717",
+  "year": 1988,
+  "game_type": "ss",
+  "produced_units": 2500,
+  "features": "Photographic translite.",
+  "id": "bad-girls",
+  "_created_by": "546279c344e6d9189a16d862",
+  "created_at": "2014-11-11T21:04:03.644Z",
   "ipdb": {
-    "number": 4758,
-    "mfg": 187
+    "number": 128,
+    "mfg": 257,
+    "rating": 6
   },
-  "artists": [],
-  "designers": [],
-  "themes": [],
+  "artists": [
+    "Constantino Mitchell",
+    "Jeanine Mitchell"
+  ],
+  "designers": [
+    "Jon Norris"
+  ],
+  "themes": [
+    "Billiards"
+  ],
   "short": [],
   "media": {
     "backglass": {
       "is_protected": false,
       "variations": {
         "small-2x": {
-          "url": "/storage/v1/7JhvieWhV/small-2x"
+          "url": "/storage/v1/X1dITgfhE/small-2x"
         },
         "small": {
-          "url": "/storage/v1/7JhvieWhV/small"
+          "url": "/storage/v1/X1dITgfhE/small"
         },
         "medium-2x": {
-          "url": "/storage/v1/7JhvieWhV/medium-2x"
+          "url": "/storage/v1/X1dITgfhE/medium-2x"
         },
         "medium": {
-          "url": "/storage/v1/7JhvieWhV/medium"
+          "url": "/storage/v1/X1dITgfhE/medium"
         }
       },
-      "url": "/storage/v1/7JhvieWhV",
-      "id": "7JhvieWhV"
+      "url": "/storage/v1/X1dITgfhE",
+      "id": "X1dITgfhE"
     }
   },
-  "url": "/game/hy-ball"
+  "url": "/game/bad-girls"
 }

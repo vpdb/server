@@ -129,13 +129,13 @@ angular.module('vpdb.releases.add', [])
 			var currentUser = AuthService.getUser();
 
 			var emptyMedia = {
-				playfieldImage: {
+				playfield_image: {
 					url: false,
 					variations: {
 						'medium-2x': { url: false }
 					}
 				},
-				playfieldVideo: {
+				playfield_video: {
 					url: false,
 					variations: {
 						'still': { url: false },
@@ -414,7 +414,7 @@ angular.module('vpdb.releases.add', [])
 		 * - finished
 		 *
 		 * @param {string} tableFileId Storage ID of the uploaded vpt
-		 * @param {string} type Media type, e.g. "playfieldImage" or "playfieldVideo"
+		 * @param {string} type Media type, e.g. "playfield_image" or "playfield_video"
 		 * @param {array} $files Uploaded file(s), assuming that one was chosen.
 		 */
 		$scope.onMediaUpload = function(tableFileId, type, $files) {

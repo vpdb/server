@@ -186,53 +186,48 @@ exports.teardownUsers = function(request, done) {
 
 /**
  * Marks a file to be cleaned up in teardown.
- * @param user User with which the file was created
- * @param fileId ID of the file
+ * @param {string} user User with which the file was created
+ * @param {string} fileId ID of the file
  */
 exports.doomFile = function(user, fileId) {
-	if (!this.doomedFiles) {
-		this.doomedFiles = {};
-	}
-	if (!this.doomedFiles[user]) {
-		this.doomedFiles[user] = [];
-	}
+	objectPath.ensureExists(this, "doomedFiles." + user, []);
 	this.doomedFiles[user].unshift(fileId);
 };
 
 /**
  * Marks a game to be cleaned up in teardown.
- * @param user User with which the game was created
- * @param gameId ID of the game
+ * @param {string} user User with which the game was created
+ * @param {string} gameId ID of the game
  */
 exports.doomGame = function(user, gameId) {
-	if (!this.doomedGames) {
-		this.doomedGames = {};
-	}
-	if (!this.doomedGames[user]) {
-		this.doomedGames[user] = [];
-	}
+	objectPath.ensureExists(this, "doomedGames." + user, []);
 	this.doomedGames[user].unshift(gameId);
 };
 
 /**
  * Marks a release to be cleaned up in teardown.
- * @param user User with which the game was created
- * @param releaseId ID of the release
+ * @param {string} user User with which the game was created
+ * @param {string} releaseId ID of the release
  */
 exports.doomRelease = function(user, releaseId) {
-	if (!this.doomedReleases) {
-		this.doomedReleases = {};
-	}
-	if (!this.doomedReleases[user]) {
-		this.doomedReleases[user] = [];
-	}
+	objectPath.ensureExists(this, "doomedReleases." + user, []);
 	this.doomedReleases[user].unshift(releaseId);
+};
+
+/**
+ * Marks a tag to be cleaned up in teardown.
+ * @param {string} user User with which the file was created
+ * @param {string} tagId ID of the tag
+ */
+exports.doomTag = function(user, tagId) {
+	objectPath.ensureExists(this, "doomedTags." + user, []);
+	this.doomedTags[user].unshift(tagId);
 };
 
 /**
  * Marks a user to be cleaned up in teardown. Note that this is only for users
  * created in tests, the users in the before() method are cleaned automatically.
- * @param userId ID of the user
+ * @param {string} userId ID of the user
  */
 exports.doomUser = function(userId) {
 	if (!this.doomedUsers) {
@@ -243,17 +238,6 @@ exports.doomUser = function(userId) {
 		this.doomedUsers.unshift(userId);
 	}
 };
-
-/**
- * Marks a tag to be cleaned up in teardown.
- * @param user User with which the file was created
- * @param tagId ID of the tag
- */
-exports.doomTag = function(user, tagId) {
-	objectPath.ensureExists(this, "doomedTags." + user, []);
-	this.doomedTags[user].unshift(tagId);
-};
-
 
 /**
  * Cleans up files, games and users.
@@ -393,9 +377,10 @@ exports.cleanup = function(request, done) {
 
 /**
  * Asserts that a response contains a given status code and no error
- * @param code Status code to assert
- * @param contains
- * @param [next=null] callback
+ *
+ * @param {int} code Status code to assert
+ * @param {string} contains
+ * @param {function} [next=null] callback
  * @returns {Function} Function passed to end()
  */
 exports.status = function(code, contains, next) {

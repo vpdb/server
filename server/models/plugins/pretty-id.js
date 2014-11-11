@@ -105,8 +105,6 @@ module.exports = exports = function(schema, options) {
 				return callback(err);
 			}
 
-			console.log('------------ FINAL OBJECT:');
-			console.log(require('util').inspect(obj, { colors: true, depth: null }));
 			var model = new Model(obj);
 
 			// for invalid IDs, invalidate instantly so we can provide which value is wrong.

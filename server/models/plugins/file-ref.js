@@ -105,7 +105,7 @@ module.exports = exports = function(schema, options) {
 				if (err) {
 					return done(error(err, 'Error updating attribute `is_active`'));
 				}
-				obj.populate(options.fields.join(' '), done);
+				obj.populate(_.keys(fileRefPaths).join(' '), done);
 			});
 		});
 		return this;

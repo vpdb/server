@@ -1,0 +1,218 @@
+201 Created
+Content-Type: application/json; charset=utf-8
+Content-Encoding: gzip
+
+{
+  "name": "release",
+  "_game": "54621da03dea8b9c2b3bc603",
+  "_created_by": "54621da03dea8b9c2b3bc5dd",
+  "created_at": "2014-11-11T14:30:57.055Z",
+  "links": [],
+  "_tags": [
+    "54621d9b3dea8b9c2b3bc577",
+    "54621d9b3dea8b9c2b3bc576"
+  ],
+  "authors": [
+    {
+      "_user": "54621da03dea8b9c2b3bc5dd",
+      "_id": "54621da13dea8b9c2b3bc608",
+      "roles": [
+        "Table Creator"
+      ]
+    }
+  ],
+  "versions": [
+    {
+      "version": "1.0.0",
+      "_id": "54621da13dea8b9c2b3bc609",
+      "files": [
+        {
+          "_file": {
+            "_id": "54621da03dea8b9c2b3bc604",
+            "name": "test-table.vpt",
+            "bytes": 135168,
+            "created_at": "2014-11-11T14:30:56.712Z",
+            "mime_type": "application/x-visual-pinball-table",
+            "file_type": "release",
+            "_created_by": "54621da03dea8b9c2b3bc5dd",
+            "__v": 0,
+            "is_active": true,
+            "id": "Q1i990SL4"
+          },
+          "_id": "54621da13dea8b9c2b3bc60a",
+          "_media": {
+            "playfield_image": {
+              "_id": "54621da03dea8b9c2b3bc605",
+              "name": "playfield.png",
+              "bytes": 347,
+              "created_at": "2014-11-11T14:30:56.743Z",
+              "mime_type": "image/png",
+              "file_type": "playfield",
+              "_created_by": "54621da03dea8b9c2b3bc5dd",
+              "__v": 0,
+              "metadata": {
+                "Format": "PNG (Portable Network Graphics)",
+                "format": "PNG",
+                "Geometry": "1920x1080",
+                "size": {
+                  "width": 1920,
+                  "height": 1080
+                },
+                "Class": "PseudoClass",
+                "Type": "palette",
+                "Depth": "8 bits-per-pixel component",
+                "depth": 8,
+                "Channel Depths": {
+                  "Red": "8 bits",
+                  "Green": "8 bits",
+                  "Blue": "8 bits"
+                },
+                "Channel Statistics": {
+                  "Red": {
+                    "Minimum": "29298.00 (0.4471)",
+                    "Maximum": "29298.00 (0.4471)",
+                    "Mean": "29298.00 (0.4471)",
+                    "Standard Deviation": "0.00 (0.0000)"
+                  },
+                  "Green": {
+                    "Minimum": "46260.00 (0.7059)",
+                    "Maximum": "46260.00 (0.7059)",
+                    "Mean": "46260.00 (0.7059)",
+                    "Standard Deviation": "0.00 (0.0000)"
+                  },
+                  "Blue": {
+                    "Minimum": "49087.00 (0.7490)",
+                    "Maximum": "49087.00 (0.7490)",
+                    "Mean": "49087.00 (0.7490)",
+                    "Standard Deviation": "0.00 (0.0000)"
+                  }
+                },
+                "Colors": {
+                  "0": "(114,180,191)\t  #72B4BF"
+                },
+                "color": 1,
+                "Filesize": "347",
+                "Interlace": "No",
+                "Orientation": "Unknown",
+                "Background Color": "white",
+                "Border Color": "#DFDFDF",
+                "Matte Color": "#BDBDBD",
+                "Page geometry": "1920x1080+0+0",
+                "Compose": "Over",
+                "Dispose": "Undefined",
+                "Iterations": "0",
+                "Compression": "Zip",
+                "Signature": "d2c93171385115329e26984fb73bd27f53ba0a07746eb8ea3e5de1a9f4ded2b6",
+                "Tainted": "False",
+                "path": "D:\\dev\\node-vpdb\\data\\storage-test\\71Miq0H84.png",
+                "Png:IHDR-color-type-orig": "3",
+                "Png:IHDR-bit-depth-orig": "1"
+              },
+              "variations": {
+                "medium": {
+                  "bytes": 808,
+                  "height": 221,
+                  "width": 393
+                }
+              },
+              "is_active": true,
+              "id": "71Miq0H84"
+            },
+            "playfield_video": {
+              "_id": "54621da03dea8b9c2b3bc606",
+              "name": "playfield.mp4",
+              "bytes": 537368,
+              "created_at": "2014-11-11T14:30:56.933Z",
+              "mime_type": "video/mp4",
+              "file_type": "playfield",
+              "_created_by": "54621da03dea8b9c2b3bc5dd",
+              "__v": 0,
+              "metadata": {
+                "streams": [
+                  {
+                    "index": 0,
+                    "codec_name": "h264",
+                    "codec_long_name": "H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10",
+                    "profile": "High",
+                    "codec_type": "video",
+                    "codec_time_base": "1001/60000",
+                    "codec_tag_string": "avc1",
+                    "codec_tag": "0x31637661",
+                    "width": 1920,
+                    "height": 1080,
+                    "has_b_frames": 2,
+                    "sample_aspect_ratio": "0:1",
+                    "display_aspect_ratio": "0:1",
+                    "pix_fmt": "yuv420p",
+                    "level": 40,
+                    "color_range": "N/A",
+                    "color_space": "unknown",
+                    "timecode": "N/A",
+                    "id": "N/A",
+                    "r_frame_rate": "30000/1001",
+                    "avg_frame_rate": "30000/1001",
+                    "time_base": "1/30000",
+                    "start_pts": 1980,
+                    "start_time": 0.066,
+                    "duration_ts": 30030,
+                    "duration": 1.001,
+                    "bit_rate": 4285050,
+                    "max_bit_rate": "N/A",
+                    "nb_frames": 30,
+                    "nb_read_frames": "N/A",
+                    "nb_read_packets": "N/A",
+                    "tags": {
+                      "language": "und",
+                      "handler_name": "VideoHandler"
+                    },
+                    "disposition": {
+                      "default": 1,
+                      "dub": 0,
+                      "original": 0,
+                      "comment": 0,
+                      "lyrics": 0,
+                      "karaoke": 0,
+                      "forced": 0,
+                      "hearing_impaired": 0,
+                      "visual_impaired": 0,
+                      "clean_effects": 0,
+                      "attached_pic": 0
+                    }
+                  }
+                ],
+                "format": {
+                  "filename": "D:\\dev\\node-vpdb\\data\\storage-test\\XkEsCrL4.mp4",
+                  "nb_streams": 1,
+                  "nb_programs": 0,
+                  "format_name": "mov,mp4,m4a,3gp,3g2,mj2",
+                  "format_long_name": "QuickTime / MOV",
+                  "start_time": 0.066,
+                  "duration": 1.001,
+                  "size": 537368,
+                  "bit_rate": 4294649,
+                  "probe_score": 100,
+                  "tags": {
+                    "major_brand": "f4v ",
+                    "minor_version": "512",
+                    "compatible_brands": "isomiso2avc1",
+                    "encoder": "Lavf56.0.100"
+                  }
+                }
+              },
+              "is_active": true,
+              "id": "XkEsCrL4"
+            }
+          },
+          "_compatibility": [
+            "54621d9b3dea8b9c2b3bc579"
+          ],
+          "flavor": {
+            "orientation": "fs",
+            "lightning": "night"
+          }
+        }
+      ]
+    }
+  ],
+  "id": "QJAoAHUE"
+}

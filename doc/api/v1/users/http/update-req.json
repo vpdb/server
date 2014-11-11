@@ -1,14 +1,14 @@
-PUT /api/v1/users/Qk-_LrZN HTTP/1.1
+PUT /api/v1/users/myCXoCSIN HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJYa3NPdjhIYlYiLCJpYXQiOiIyMDE0LTExLTExVDA4OjQ3OjI1Ljc2NloiLCJleHAiOiIyMDE0LTExLTExVDA5OjQ3OjI1Ljc2NloifQ.kApNL1-vMfU12xFRF5yIQEslVx0uB7S9dUs-CB9YfGg
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJRMWNYaTBySTQiLCJpYXQiOiIyMDE0LTExLTExVDE0OjMwOjU3LjI1OFoiLCJleHAiOiIyMDE0LTExLTExVDE1OjMwOjU3LjI1OFoifQ.sh45O63yGzg2DgfuxdSAfy8CYiEpFoE8gCPalOQ9GY4
 Content-Type: application/json
-Content-Length: 127
+Content-Length: 120
 
 {
-  "email": "lemuel.rice@hotmail.com",
-  "username": "Bell_Bergstrom76",
-  "name": "Bell_Bergstrom76",
+  "email": "claude_witting@yahoo.com",
+  "username": "Beth.White70",
+  "name": "Beth.White70",
   "is_active": true,
   "roles": [
     "member"

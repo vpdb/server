@@ -196,6 +196,7 @@ describe('The VPDB `release` API', function() {
 						hlp.file.createMp4(user, request, function(playfieldVideo) {
 							request
 								.post('/api/v1/releases')
+								.save({ path: 'releases/create'})
 								.as(user)
 								.send({
 									name: 'release',

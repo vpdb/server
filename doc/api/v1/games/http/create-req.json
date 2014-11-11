@@ -1,22 +1,21 @@
 POST /api/v1/games HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJYeWtTTkxTVzQiLCJpYXQiOiIyMDE0LTExLTExVDA4OjQ3OjIyLjM1NFoiLCJleHAiOiIyMDE0LTExLTExVDA5OjQ3OjIyLjM1NFoifQ._HwLsD3MiC12eCwlvdaQ8ERmF37bHhusmnHhfM-04WE
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI3eW5PdkNIVVYiLCJpYXQiOiIyMDE0LTExLTExVDE0OjMwOjUzLjc1NloiLCJleHAiOiIyMDE0LTExLTExVDE1OjMwOjUzLjc1NloifQ.KEMCNVurG8s9qQXiKOW44bNb68l_cL8bABC_NZrgPvk
 Content-Type: application/json
-Content-Length: 245
+Content-Length: 170
 
 {
   "ipdb": {
-    "number": 5069,
-    "mfg": 472
+    "number": 2752,
+    "mfg": 268
   },
-  "title": "Pla-Mor",
-  "manufacturer": "V. P. Distributing Company",
-  "year": 1944,
-  "game_type": "em",
-  "notes": "'Pla-Mor' was a conversion of Chicago Coin's 1940 'Sporty'.",
-  "id": "pla-mor",
+  "title": "Wang-Poo",
+  "manufacturer": "Richwine and Company",
+  "year": 1932,
+  "game_type": "pm",
+  "id": "wang-poo",
   "_media": {
-    "backglass": "QkVH4USW4"
+    "backglass": "QkedRHI4"
   }
 }

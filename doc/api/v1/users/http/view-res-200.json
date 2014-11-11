@@ -1,19 +1,19 @@
 200 OK
 Content-Type: application/json; charset=utf-8
-Content-Length: 303
-Etag: W/"12f-d6d338b5"
+Content-Length: 302
+Etag: W/"12e-9991f538"
 
 {
   "plan": "free",
-  "name": "Harrison.Renner50",
-  "username": "Harrison.Renner50",
-  "email": "justine.kulas@yahoo.com",
+  "name": "Johnnie_Schuppe",
+  "username": "Johnnie_Schuppe",
+  "email": "maymie.marvin78@yahoo.com",
   "provider": "local",
-  "created_at": "2014-11-11T08:47:25.786Z",
+  "created_at": "2014-11-11T14:30:57.274Z",
   "is_active": true,
   "roles": [
     "member"
   ],
-  "id": "Qk-_LrZN",
-  "gravatar_id": "c203cc36ee5b97c5398296b974b21462"
+  "id": "myCXoCSIN",
+  "gravatar_id": "fd35613b18d4f50ea02e7e665cdf26d8"
 }

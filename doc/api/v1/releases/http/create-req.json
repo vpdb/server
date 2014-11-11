@@ -1,0 +1,44 @@
+POST /api/v1/releases HTTP/1.1
+Host: vpdb.ch
+Accept-Encoding: gzip, deflate
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJta05FcTBySUUiLCJpYXQiOiIyMDE0LTExLTExVDE0OjMwOjU2LjEwMVoiLCJleHAiOiIyMDE0LTExLTExVDE1OjMwOjU2LjEwMVoifQ.nI7V4Bst1S5aWngXqXIssfVmcr-LsSMSFsY-BGmS_wk
+Content-Type: application/json
+Content-Length: 332
+
+{
+  "name": "release",
+  "_game": "silver-cup",
+  "versions": [
+    {
+      "files": [
+        {
+          "_file": "Q1i990SL4",
+          "_media": {
+            "playfield_image": "71Miq0H84",
+            "playfield_video": "XkEsCrL4"
+          },
+          "_compatibility": [
+            "9.9.0"
+          ],
+          "flavor": {
+            "orientation": "fs",
+            "lightning": "night"
+          }
+        }
+      ],
+      "version": "1.0.0"
+    }
+  ],
+  "authors": [
+    {
+      "_user": "mkNEq0rIE",
+      "roles": [
+        "Table Creator"
+      ]
+    }
+  ],
+  "_tags": [
+    "hd",
+    "dof"
+  ]
+}

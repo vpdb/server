@@ -1,22 +1,22 @@
 200 OK
 Content-Type: application/json; charset=utf-8
-Content-Length: 807
+Content-Length: 830
 
 {
-  "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJRSkJEWFVCYjQiLCJpYXQiOiIyMDE0LTExLTExVDA4OjQ3OjIxLjQ0NFoiLCJleHAiOiIyMDE0LTExLTExVDA5OjQ3OjIxLjQ0NFoifQ.AUy4cUEosZw5YHHk6-rZs31CVVyvCI4t8rmbpDbHgME",
-  "expires": "2014-11-11T09:47:21.444Z",
+  "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJYeTZkVUNCTEUiLCJpYXQiOiIyMDE0LTExLTExVDE0OjMwOjUyLjgwMFoiLCJleHAiOiIyMDE0LTExLTExVDE1OjMwOjUyLjgwMFoifQ.9L7Ld-cfUFwJhcIX6aFSIsI-QTuGYfGOrLriGDqe9mc",
+  "expires": "2014-11-11T15:30:52.800Z",
   "user": {
-    "id": "QJBDXUBb4",
-    "name": "Bennie70",
-    "username": "Bennie70",
-    "gravatar_id": "9b4bf8a2c4f7ca8f0538912a6d02439c",
-    "email": "theresia92@gmail.com",
+    "id": "Xy6dUCBLE",
+    "name": "Terence_Bruen12",
+    "username": "Terence_Bruen12",
+    "gravatar_id": "b48bf69b2ac6b8ff3518ebdf71ce43d9",
+    "email": "carlotta.bradtke3@hotmail.com",
     "is_active": true,
     "roles": [
       "member"
     ],
     "plan": "free",
-    "created_at": "2014-11-11T08:47:21.389Z",
+    "created_at": "2014-11-11T14:30:52.743Z",
     "permissions": {
       "users": [
         "search"

@@ -1,19 +1,18 @@
 201 Created
 Content-Type: application/json; charset=utf-8
-Content-Length: 832
+Content-Length: 750
 
 {
-  "title": "Pla-Mor",
-  "manufacturer": "V. P. Distributing Company",
-  "year": 1944,
-  "game_type": "em",
-  "notes": "'Pla-Mor' was a conversion of Chicago Coin's 1940 'Sporty'.",
-  "id": "pla-mor",
-  "_created_by": "5461cd1a88e8530ca62bacbf",
-  "created_at": "2014-11-11T08:47:22.446Z",
+  "title": "Wang-Poo",
+  "manufacturer": "Richwine and Company",
+  "year": 1932,
+  "game_type": "pm",
+  "id": "wang-poo",
+  "_created_by": "54621d9d3dea8b9c2b3bc5b2",
+  "created_at": "2014-11-11T14:30:53.857Z",
   "ipdb": {
-    "number": 5069,
-    "mfg": 472
+    "number": 2752,
+    "mfg": 268
   },
   "artists": [],
   "designers": [],
@@ -24,21 +23,21 @@ Content-Length: 832
       "is_protected": false,
       "variations": {
         "small-2x": {
-          "url": "/storage/v1/QkVH4USW4/small-2x"
+          "url": "/storage/v1/QkedRHI4/small-2x"
         },
         "small": {
-          "url": "/storage/v1/QkVH4USW4/small"
+          "url": "/storage/v1/QkedRHI4/small"
         },
         "medium-2x": {
-          "url": "/storage/v1/QkVH4USW4/medium-2x"
+          "url": "/storage/v1/QkedRHI4/medium-2x"
         },
         "medium": {
-          "url": "/storage/v1/QkVH4USW4/medium"
+          "url": "/storage/v1/QkedRHI4/medium"
         }
       },
-      "url": "/storage/v1/QkVH4USW4",
-      "id": "QkVH4USW4"
+      "url": "/storage/v1/QkedRHI4",
+      "id": "QkedRHI4"
     }
   },
-  "url": "/game/pla-mor"
+  "url": "/game/wang-poo"
 }

@@ -1,23 +1,22 @@
 POST /api/v1/games HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJtSnBXV05zTyIsImlhdCI6IjIwMTQtMTEtMDdUMjI6MDg6NTUuMDc0WiIsImV4cCI6IjIwMTQtMTEtMDdUMjM6MDg6NTUuMDc0WiJ9.PYR0uQe8qXVT_fesh0mjjdO3ayauZWcdHh9i_sht5lM
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJYeWtTTkxTVzQiLCJpYXQiOiIyMDE0LTExLTExVDA4OjQ3OjIyLjM1NFoiLCJleHAiOiIyMDE0LTExLTExVDA5OjQ3OjIyLjM1NFoifQ._HwLsD3MiC12eCwlvdaQ8ERmF37bHhusmnHhfM-04WE
 Content-Type: application/json
-Content-Length: 788
+Content-Length: 245
 
 {
   "ipdb": {
-    "number": 248,
-    "mfg": 269
+    "number": 5069,
+    "mfg": 472
   },
-  "title": "Big Game",
-  "manufacturer": "Rock-ola",
-  "year": 1935,
+  "title": "Pla-Mor",
+  "manufacturer": "V. P. Distributing Company",
+  "year": 1944,
   "game_type": "em",
-  "features": "1 cent play. Backglass light animation and synthesized sound. A ball skillfully landing in the \"trigger hole\" caused backglass flashing lights to highlight the hunter whose rifle shot is then heard (caused by a dashpot snapped by a magnet). Measures 39 1/2 long, 19 1/2 inches wide, and 9 1/2 inches high. Powered by a dry cell battery.",
-  "notes": "This is the first game with \"synthesized\" sound, described in US Patent No. 2,103,870 applied for August 23, 1935 and patented December 28, 1937 (David C. Rockola, assigned to Rock-Old Mfg. Corp.). It was seen as a gimmick and was soon dropped from Rock-Ola's games.",
-  "id": "big-game",
+  "notes": "'Pla-Mor' was a conversion of Chicago Coin's 1940 'Sporty'.",
+  "id": "pla-mor",
   "_media": {
-    "backglass": "7JGf-Vid"
+    "backglass": "QkVH4USW4"
   }
 }

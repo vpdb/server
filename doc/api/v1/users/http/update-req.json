@@ -1,14 +1,14 @@
-PUT /api/v1/users/m1gMVEs_ HTTP/1.1
+PUT /api/v1/users/Qk-_LrZN HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJRa25iRVZqZCIsImlhdCI6IjIwMTQtMTEtMDdUMjI6MDg6NTcuOTAyWiIsImV4cCI6IjIwMTQtMTEtMDdUMjM6MDg6NTcuOTAyWiJ9.0iFEwx7ruLuBHkTWactjhIolOw5__HQpmixodJYcrkk
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJYa3NPdjhIYlYiLCJpYXQiOiIyMDE0LTExLTExVDA4OjQ3OjI1Ljc2NloiLCJleHAiOiIyMDE0LTExLTExVDA5OjQ3OjI1Ljc2NloifQ.kApNL1-vMfU12xFRF5yIQEslVx0uB7S9dUs-CB9YfGg
 Content-Type: application/json
-Content-Length: 123
+Content-Length: 127
 
 {
-  "email": "jerry_kertzmann@hotmail.com",
-  "username": "Amara_Klocko",
-  "name": "Amara_Klocko",
+  "email": "lemuel.rice@hotmail.com",
+  "username": "Bell_Bergstrom76",
+  "name": "Bell_Bergstrom76",
   "is_active": true,
   "roles": [
     "member"

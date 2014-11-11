@@ -1,19 +1,19 @@
 200 OK
 Content-Type: application/json; charset=utf-8
-Content-Length: 301
-Etag: W/"12d-72ecfeef"
+Content-Length: 303
+Etag: W/"12f-d6d338b5"
 
 {
   "plan": "free",
-  "name": "Abigale_Powlowski0",
-  "username": "Abigale_Powlowski0",
-  "email": "hulda_kub@gmail.com",
+  "name": "Harrison.Renner50",
+  "username": "Harrison.Renner50",
+  "email": "justine.kulas@yahoo.com",
   "provider": "local",
-  "created_at": "2014-11-07T22:08:57.909Z",
+  "created_at": "2014-11-11T08:47:25.786Z",
   "is_active": true,
   "roles": [
     "member"
   ],
-  "id": "m1gMVEs_",
-  "gravatar_id": "e9d439c924c11d4173be3ce23e60d1f0"
+  "id": "Qk-_LrZN",
+  "gravatar_id": "c203cc36ee5b97c5398296b974b21462"
 }

@@ -1,18 +1,18 @@
 201 Created
 Content-Type: application/json; charset=utf-8
-Content-Length: 309
+Content-Length: 299
 
 {
   "plan": "free",
-  "name": "Alexandre_Hagenes64",
-  "username": "Alexandre_Hagenes64",
-  "email": "heloise.bosco@hotmail.com",
+  "name": "Emmett.OReilly",
+  "username": "Emmett.OReilly",
+  "email": "austen.purdy85@yahoo.com",
   "provider": "local",
-  "created_at": "2014-11-07T22:08:57.966Z",
+  "created_at": "2014-11-11T08:47:25.890Z",
   "is_active": true,
   "roles": [
     "member"
   ],
-  "id": "QJF7NEo_",
-  "gravatar_id": "95a7dcabefe0f0cbcec820cbea4b1aab"
+  "id": "7y9g_LHW4",
+  "gravatar_id": "6dbc07f43e24863815df5e8ac56ad24a"
 }

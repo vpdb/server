@@ -1,20 +1,19 @@
 201 Created
 Content-Type: application/json; charset=utf-8
-Content-Encoding: gzip
+Content-Length: 832
 
 {
-  "title": "Big Game",
-  "manufacturer": "Rock-ola",
-  "year": 1935,
+  "title": "Pla-Mor",
+  "manufacturer": "V. P. Distributing Company",
+  "year": 1944,
   "game_type": "em",
-  "features": "1 cent play. Backglass light animation and synthesized sound. A ball skillfully landing in the \"trigger hole\" caused backglass flashing lights to highlight the hunter whose rifle shot is then heard (caused by a dashpot snapped by a magnet). Measures 39 1/2 long, 19 1/2 inches wide, and 9 1/2 inches high. Powered by a dry cell battery.",
-  "notes": "This is the first game with \"synthesized\" sound, described in US Patent No. 2,103,870 applied for August 23, 1935 and patented December 28, 1937 (David C. Rockola, assigned to Rock-Old Mfg. Corp.). It was seen as a gimmick and was soon dropped from Rock-Ola's games.",
-  "id": "big-game",
-  "_created_by": "545d42f75afc6ab09e98f6ca",
-  "created_at": "2014-11-07T22:08:55.159Z",
+  "notes": "'Pla-Mor' was a conversion of Chicago Coin's 1940 'Sporty'.",
+  "id": "pla-mor",
+  "_created_by": "5461cd1a88e8530ca62bacbf",
+  "created_at": "2014-11-11T08:47:22.446Z",
   "ipdb": {
-    "number": 248,
-    "mfg": 269
+    "number": 5069,
+    "mfg": 472
   },
   "artists": [],
   "designers": [],
@@ -25,21 +24,21 @@ Content-Encoding: gzip
       "is_protected": false,
       "variations": {
         "small-2x": {
-          "url": "/storage/v1/7JGf-Vid/small-2x"
+          "url": "/storage/v1/QkVH4USW4/small-2x"
         },
         "small": {
-          "url": "/storage/v1/7JGf-Vid/small"
+          "url": "/storage/v1/QkVH4USW4/small"
         },
         "medium-2x": {
-          "url": "/storage/v1/7JGf-Vid/medium-2x"
+          "url": "/storage/v1/QkVH4USW4/medium-2x"
         },
         "medium": {
-          "url": "/storage/v1/7JGf-Vid/medium"
+          "url": "/storage/v1/QkVH4USW4/medium"
         }
       },
-      "url": "/storage/v1/7JGf-Vid",
-      "id": "7JGf-Vid"
+      "url": "/storage/v1/QkVH4USW4",
+      "id": "QkVH4USW4"
     }
   },
-  "url": "/game/big-game"
+  "url": "/game/pla-mor"
 }

@@ -8,6 +8,10 @@ var request = require('superagent');
 
 exports.upload = function() {
 
+	var apiUri = 'https://staging.vpdb.ch/api/v1';
+	var storageUri = 'https://staging.vpdb.ch/storage/v1';
+	var authHeader = 'X-Authorization';
+
 	var token;
 	var ipdb = require('../../ipdb.json');
 
@@ -15,11 +19,11 @@ exports.upload = function() {
 	async.series([
 		function(callback) {
 			request
-				.post('http://localhost:3000/api/v1/authenticate')
+				.post(apiUri + '/authenticate')
 				.send({ username: 'test', password: 'testtest' })
 				.end(function(err, res) {
 					if (err) {
-						console.error('Error obtaining token: %s', err.message);
+						console.error('Error obtaining token: %s', err);
 						return callback(err);
 					}
 					if (res.status !== 200) {
@@ -52,23 +56,23 @@ exports.upload = function() {
 				var logo = fs.readFileSync(path.resolve(logoPrefix, game.logo));
 
 				request
-					.post('http://localhost:3000/storage/v1')
+					.post(storageUri)
 					.query({ type: 'backglass' })
 					.type('image/png')
 					.set('Content-Disposition', 'attachment; filename="' + game.bg + '"')
 					.set('Content-Length', bg.length)
-					.set('Authorization', 'Bearer ' + token)
+					.set(authHeader, 'Bearer ' + token)
 					.send(bg)
 					.end(function(res) {
 						var bgRef = res.body.id;
 
 						request
-							.post('http://localhost:3000/storage/v1')
+							.post(storageUri)
 							.query({ type: 'logo' })
 							.type('image/png')
 							.set('Content-Disposition', 'attachment; filename="' + game.logo + '"')
 							.set('Content-Length', logo.length)
-							.set('Authorization', 'Bearer ' + token)
+							.set(authHeader, 'Bearer ' + token)
 							.send(logo)
 							.end(function(res) {
 								var logoRef = res.body.id;
@@ -84,9 +88,9 @@ exports.upload = function() {
 								data._media = { backglass: bgRef, logo: logoRef };
 
 								request
-									.post('http://localhost:3000/api/v1/games')
+									.post(apiUri + '/games')
 									.type('application/json')
-									.set('Authorization', 'Bearer ' + token)
+									.set(authHeader, 'Bearer ' + token)
 									.send(data)
 									.end(function(res) {
 										console.log(res.body);

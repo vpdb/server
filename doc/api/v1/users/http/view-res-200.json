@@ -1,19 +1,19 @@
 200 OK
 Content-Type: application/json; charset=utf-8
-Content-Length: 296
-Etag: W/"128-74f1e8b5"
+Content-Length: 298
+Etag: W/"12a-2778364d"
 
 {
   "plan": "free",
-  "name": "Rey_Spencer27",
-  "username": "Rey_Spencer27",
-  "email": "stephen.boehm@gmail.com",
+  "name": "Grant_Hermann",
+  "username": "Grant_Hermann",
+  "email": "bryana.lehner64@yahoo.com",
   "provider": "local",
-  "created_at": "2014-11-11T20:29:38.077Z",
+  "created_at": "2014-11-11T20:59:49.418Z",
   "is_active": true,
   "roles": [
     "member"
   ],
-  "id": "712f3J5oV",
-  "gravatar_id": "95105a154a896fb63bedee51d0df6213"
+  "id": "QkcI1W-nV",
+  "gravatar_id": "439fb109406b81dc2a8c94c302f65e64"
 }

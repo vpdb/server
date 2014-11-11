@@ -1,21 +1,21 @@
 POST /api/v1/releases HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJta2NwY2tjc1YiLCJpYXQiOiIyMDE0LTExLTExVDIwOjI5OjM2Ljc3MloiLCJleHAiOiIyMDE0LTExLTExVDIxOjI5OjM2Ljc3MloifQ.GvBxhaJ43jp3XS1MndddDMAMe6Zm1mnXWnQmUYGwJkg
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJtMWVIMGdaMjQiLCJpYXQiOiIyMDE0LTExLTExVDIwOjU5OjQ4LjEyMloiLCJleHAiOiIyMDE0LTExLTExVDIxOjU5OjQ4LjEyMloifQ.2V-QENFe6bw49xqBjhfwRroICTX-5cThNCcPTOjUFlo
 Content-Type: application/json
-Content-Length: 326
+Content-Length: 331
 
 {
   "name": "release",
-  "_game": "zip",
+  "_game": "trap-lite",
   "versions": [
     {
       "files": [
         {
-          "_file": "myMrsy9sE",
+          "_file": "7y4iAl-nN",
           "_media": {
-            "playfield_image": "7kvSsk5j4",
-            "playfield_video": "Q1ULj1qjN"
+            "playfield_image": "QkYiCxWn4",
+            "playfield_video": "Q1cy-ZnE"
           },
           "_compatibility": [
             "9.9.0"
@@ -31,7 +31,7 @@ Content-Length: 326
   ],
   "authors": [
     {
-      "_user": "mkcpckcsV",
+      "_user": "m1eH0gZ24",
       "roles": [
         "Table Creator"
       ]

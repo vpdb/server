@@ -1,0 +1,16 @@
+POST /api/v1/vpbuilds HTTP/1.1
+Host: vpdb.ch
+Accept-Encoding: gzip, deflate
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI3MXRxSmJXM1YiLCJpYXQiOiIyMDE0LTExLTExVDIwOjU5OjQ5LjYzMFoiLCJleHAiOiIyMDE0LTExLTExVDIxOjU5OjQ5LjYzMFoifQ.t_5Ri_10rNwIIjXNMEzST89g-fBlzt6nQTEJRturw6g
+Content-Type: application/json
+Content-Length: 196
+
+{
+  "label": "v1.0.1",
+  "type": "release",
+  "description": "The very first release.",
+  "download_url": "http://download_url/",
+  "support_url": "http://support_url/",
+  "built_at": "2000-01-01 12:21",
+  "is_range": false
+}

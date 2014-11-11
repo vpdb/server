@@ -4,18 +4,18 @@ Content-Encoding: gzip
 
 {
   "name": "release",
-  "_game": "546271b1828f4b70b17b5a5a",
-  "_created_by": "546271b0828f4b70b17b5a34",
-  "created_at": "2014-11-11T20:29:37.647Z",
+  "_game": "546278c4facaa07cae77f5f0",
+  "_created_by": "546278c4facaa07cae77f5ca",
+  "created_at": "2014-11-11T20:59:49.055Z",
   "links": [],
   "_tags": [
-    "5462719b5cad5398915b45ce",
-    "5462719b5cad5398915b45cd"
+    "546278bffacaa07cae77f564",
+    "546278bffacaa07cae77f563"
   ],
   "authors": [
     {
-      "_user": "546271b0828f4b70b17b5a34",
-      "_id": "546271b1828f4b70b17b5a5f",
+      "_user": "546278c4facaa07cae77f5ca",
+      "_id": "546278c5facaa07cae77f5f5",
       "roles": [
         "Table Creator"
       ]
@@ -24,31 +24,31 @@ Content-Encoding: gzip
   "versions": [
     {
       "version": "1.0.0",
-      "_id": "546271b1828f4b70b17b5a60",
+      "_id": "546278c5facaa07cae77f5f6",
       "files": [
         {
           "_file": {
-            "_id": "546271b1828f4b70b17b5a5b",
+            "_id": "546278c4facaa07cae77f5f1",
             "name": "test-table.vpt",
             "bytes": 135168,
-            "created_at": "2014-11-11T20:29:37.325Z",
+            "created_at": "2014-11-11T20:59:48.731Z",
             "mime_type": "application/x-visual-pinball-table",
             "file_type": "release",
-            "_created_by": "546271b0828f4b70b17b5a34",
+            "_created_by": "546278c4facaa07cae77f5ca",
             "__v": 0,
             "is_active": true,
-            "id": "myMrsy9sE"
+            "id": "7y4iAl-nN"
           },
-          "_id": "546271b1828f4b70b17b5a61",
+          "_id": "546278c5facaa07cae77f5f7",
           "_media": {
             "playfield_image": {
-              "_id": "546271b1828f4b70b17b5a5c",
+              "_id": "546278c4facaa07cae77f5f2",
               "name": "playfield.png",
               "bytes": 347,
-              "created_at": "2014-11-11T20:29:37.355Z",
+              "created_at": "2014-11-11T20:59:48.761Z",
               "mime_type": "image/png",
               "file_type": "playfield",
-              "_created_by": "546271b0828f4b70b17b5a34",
+              "_created_by": "546278c4facaa07cae77f5ca",
               "__v": 0,
               "metadata": {
                 "Format": "PNG (Portable Network Graphics)",
@@ -69,26 +69,26 @@ Content-Encoding: gzip
                 },
                 "Channel Statistics": {
                   "Red": {
-                    "Minimum": "29298.00 (0.4471)",
-                    "Maximum": "29298.00 (0.4471)",
-                    "Mean": "29298.00 (0.4471)",
+                    "Minimum": "38550.00 (0.5882)",
+                    "Maximum": "38550.00 (0.5882)",
+                    "Mean": "38550.00 (0.5882)",
                     "Standard Deviation": "0.00 (0.0000)"
                   },
                   "Green": {
-                    "Minimum": "40606.00 (0.6196)",
-                    "Maximum": "40606.00 (0.6196)",
-                    "Mean": "40606.00 (0.6196)",
-                    "Standard Deviation": "0.00 (0.0000)"
-                  },
-                  "Blue": {
                     "Minimum": "49087.00 (0.7490)",
                     "Maximum": "49087.00 (0.7490)",
                     "Mean": "49087.00 (0.7490)",
                     "Standard Deviation": "0.00 (0.0000)"
+                  },
+                  "Blue": {
+                    "Minimum": "29298.00 (0.4471)",
+                    "Maximum": "29298.00 (0.4471)",
+                    "Mean": "29298.00 (0.4471)",
+                    "Standard Deviation": "0.00 (0.0000)"
                   }
                 },
                 "Colors": {
-                  "0": "(114,158,191)\t  #729EBF"
+                  "0": "(150,191,114)\t  #96BF72"
                 },
                 "color": 1,
                 "Filesize": "347",
@@ -102,23 +102,30 @@ Content-Encoding: gzip
                 "Dispose": "Undefined",
                 "Iterations": "0",
                 "Compression": "Zip",
-                "Signature": "7b24cfbf29bb10080ec54f23919bacf77249c826afc12a0600cfe7cedf8e3a11",
+                "Signature": "1bb453709bd34dbf134f7be910e99ecccbe2d08270278ab1cb6d880fbdf98430",
                 "Tainted": "False",
-                "path": "D:\\dev\\node-vpdb\\data\\storage-test\\7kvSsk5j4.png",
+                "path": "D:\\dev\\node-vpdb\\data\\storage-test\\QkYiCxWn4.png",
                 "Png:IHDR-color-type-orig": "3",
                 "Png:IHDR-bit-depth-orig": "1"
               },
+              "variations": {
+                "medium": {
+                  "bytes": 808,
+                  "height": 221,
+                  "width": 393
+                }
+              },
               "is_active": true,
-              "id": "7kvSsk5j4"
+              "id": "QkYiCxWn4"
             },
             "playfield_video": {
-              "_id": "546271b1828f4b70b17b5a5d",
+              "_id": "546278c4facaa07cae77f5f3",
               "name": "playfield.mp4",
               "bytes": 537368,
-              "created_at": "2014-11-11T20:29:37.555Z",
+              "created_at": "2014-11-11T20:59:48.955Z",
               "mime_type": "video/mp4",
               "file_type": "playfield",
-              "_created_by": "546271b0828f4b70b17b5a34",
+              "_created_by": "546278c4facaa07cae77f5ca",
               "__v": 0,
               "metadata": {
                 "streams": [
@@ -174,7 +181,7 @@ Content-Encoding: gzip
                   }
                 ],
                 "format": {
-                  "filename": "D:\\dev\\node-vpdb\\data\\storage-test\\Q1ULj1qjN.mp4",
+                  "filename": "D:\\dev\\node-vpdb\\data\\storage-test\\Q1cy-ZnE.mp4",
                   "nb_streams": 1,
                   "nb_programs": 0,
                   "format_name": "mov,mp4,m4a,3gp,3g2,mj2",
@@ -193,11 +200,11 @@ Content-Encoding: gzip
                 }
               },
               "is_active": true,
-              "id": "Q1ULj1qjN"
+              "id": "Q1cy-ZnE"
             }
           },
           "_compatibility": [
-            "5462719b5cad5398915b45d0"
+            "546278bffacaa07cae77f566"
           ],
           "flavor": {
             "orientation": "fs",
@@ -207,5 +214,5 @@ Content-Encoding: gzip
       ]
     }
   ],
-  "id": "m1T8jy5sN"
+  "id": "QyVgkbZhN"
 }

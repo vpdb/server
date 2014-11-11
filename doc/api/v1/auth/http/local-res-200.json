@@ -1,22 +1,22 @@
 200 OK
 Content-Type: application/json; charset=utf-8
-Content-Length: 849
+Content-Length: 859
 
 {
-  "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI3SnBVdkpjaVYiLCJpYXQiOiIyMDE0LTExLTExVDIwOjI5OjMzLjM3MFoiLCJleHAiOiIyMDE0LTExLTExVDIxOjI5OjMzLjM3MFoifQ.5p1ata8RALjhPGdXwFdEsYrdFHgTjtjs4wt6x6P5MHE",
-  "expires": "2014-11-11T21:29:33.370Z",
+  "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJReXFPY2wtMkUiLCJpYXQiOiIyMDE0LTExLTExVDIwOjU5OjQ0LjYxNloiLCJleHAiOiIyMDE0LTExLTExVDIxOjU5OjQ0LjYxNloifQ.CFvIEbxT2jl8zZS0bLrOsowm-VtC79vII-bXC5HO8h0",
+  "expires": "2014-11-11T21:59:44.616Z",
   "user": {
-    "id": "7JpUvJciV",
-    "name": "Noemy.Kihn5",
-    "username": "Noemy.Kihn5",
-    "gravatar_id": "bfcbddf6d91e3d4c17d68cae68747f37",
-    "email": "kenyatta41@yahoo.com",
+    "id": "QyqOcl-2E",
+    "name": "Mina_Romaguera15",
+    "username": "Mina_Romaguera15",
+    "gravatar_id": "d0ee5e8cd2c463a71a65fc53d61e189a",
+    "email": "eda.ernser@gmail.com",
     "is_active": true,
     "roles": [
       "member"
     ],
     "plan": "free",
-    "created_at": "2014-11-11T20:29:33.307Z",
+    "created_at": "2014-11-11T20:59:44.552Z",
     "permissions": {
       "users": [
         "search"

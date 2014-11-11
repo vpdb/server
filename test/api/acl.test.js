@@ -110,6 +110,10 @@ describe('The ACLs of the VPDB API', function() {
 			request.post('/api/v1/vpbuilds').send({}).end(hlp.status(401, done));
 		});
 
+		it('should deny access to delete vpbuilds', function(done) {
+			request.del('/api/v1/vpbuilds/mybuild').saveResponse({ path: 'vpbuilds/del'}).end(hlp.status(401, done));
+		});
+
 		it('should deny access to create releases', function(done) {
 			request.post('/api/v1/releases').send({}).end(hlp.status(401, done));
 		});
@@ -217,6 +221,10 @@ describe('The ACLs of the VPDB API', function() {
 
 		it('should allow to create vpbuilds', function(done) {
 			request.post('/api/v1/vpbuilds').as('member').send({}).end(hlp.status(422, done));
+		});
+
+		it('should allow access to vpbuilds deletion', function(done) {
+			request.del('/api/v1/vpbuilds/myvpbuild').as('member').end(hlp.status(404, done));
 		});
 
 		it('should allow to create releases', function(done) {

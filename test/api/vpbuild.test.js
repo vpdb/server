@@ -106,6 +106,20 @@ describe('The VPDB `VPBuild` API', function() {
 		});
 	});
 
+	describe('when listing all VPBuilds', function() {
+
+		it('should list the initially added builds', function(done) {
+			request
+				.get('/api/v1/vpbuilds')
+				.save({ path: 'vpbuilds/list'})
+				.end(function(err, res) {
+					hlp.expectStatus(err, res, 200);
+					expect(res.body).to.be.an('array');
+					expect(res.body).to.not.be.empty();
+					done();
+				});
+		});
+	});
 
 	describe('when deleting a vpbuild', function() {
 

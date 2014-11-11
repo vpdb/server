@@ -1,0 +1,52 @@
+{
+	"$schema": "http://json-schema.org/schema",
+	"title": "VPBuild",
+	"description": "A Visual Pinball build.",
+	"type": "object",
+	"properties": {
+		"id": {
+			"description": "Unique identifier for a VP build. Gets generated automatically on creation.",
+			"type": "string",
+			"pattern": "^[a-z0-9._-]{2,}$",
+			"readOnly": true
+		},
+		"label": {
+			"description": "Label of the VP build. Typically contains the version of the release, the revision number of daily builds and a short name for experimental builds.",
+			"type": "string",
+			"minLength": 3
+		},
+		"type": {
+			"description": "Type of the VP build. Values:\n* `release` - Official releases from the Visual Pinball dev team\n* `nightly` - Automatic nightly builds\n* `experimental` - Test builds, built by devs or others, very instable and bleeding edge.",
+			"type": "enum",
+			"enum": [ "release", "nightly", "experimental" ]
+		},
+		"description": {
+			"description": "A description of the build. Contains changelog for official releases. Is Markdown formatted.",
+			"type": "string"
+		},
+		"built_at": {
+			"description": "Date when the build was, well, built.",
+			"type": "date"
+		},
+		"is_range": {
+			"description": "Instead of covering one single release, it's also possible to create builds that cover a range of releases (e.g. `v8.x.x`).",
+			"type": "boolean"
+		},
+		"is_active": {
+			"description": "When creating a new VP build, it first becomes inactive. When linking a release to the build, it becomes active.",
+			"type": "boolean",
+			"readOnly": true
+		},
+		"created_at": {
+			"description": "Timestamp when the VP build was added to the database.",
+			"type": "date",
+			"readOnly": true
+		},
+		"_created_by": {
+			"description": "Reference to the user who created this VP build. Only visible by contributors and above.",
+			"type": "string",
+			"readOnly": true
+		}
+	},
+	"required": [ "id", "label", "type" ]
+}

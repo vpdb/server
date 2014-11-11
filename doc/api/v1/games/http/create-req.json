@@ -1,26 +1,22 @@
 POST /api/v1/games HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI3a2M0ZEo5aVYiLCJpYXQiOiIyMDE0LTExLTExVDIwOjI5OjM0LjM4MFoiLCJleHAiOiIyMDE0LTExLTExVDIxOjI5OjM0LjM4MFoifQ.FsqR8rrq01q1DRNPgMISD61J5kpfgcsGZDwLadyVHq0
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJRMVB3c2VablYiLCJpYXQiOiIyMDE0LTExLTExVDIwOjU5OjQ1LjYxMVoiLCJleHAiOiIyMDE0LTExLTExVDIxOjU5OjQ1LjYxMVoifQ.lwrqgTsOOlzkQP_PhLEuoy6FPKwpTSStdZv4TQxES20
 Content-Type: application/json
-Content-Length: 480
+Content-Length: 492
 
 {
   "ipdb": {
-    "number": 316,
-    "mfg": 356
+    "number": 4758,
+    "mfg": 187
   },
-  "title": "Blackbelt",
-  "manufacturer": "Zaccaria",
-  "year": 1986,
-  "game_type": "ss",
-  "themes": [
-    "Martial Arts"
-  ],
-  "features": "Flippers (2), Pop bumpers (2), 5-bank drop targets (1), 4-bank drop-targets (1), Horseshoe lane (1), Carousel roto-targets.",
-  "notes": "It uses a 1B1165/2 MPU, five 1B11150/0 (8 Digit) Display boards, a 1B11178 Sound board, a 1B1166 driver board, and a 1B11167/0 Power Supply board.",
-  "id": "blackbelt",
+  "title": "Hy-Ball",
+  "manufacturer": "Lindstrom Tool and Toy Company",
+  "year": 1932,
+  "game_type": "pm",
+  "notes": "Lindstrom's first bagatelle game.  A square, wood model measuring 23\" x 14 3/4\".When Hy-Ball was released, it was noted that it resembled the famous Gottlieb \"Baffle Ball\" from 1931. Actually, it was based on the game \"Play Threes\" made in 1928 by \"Modern Games and Novelty Co.\" of Akron, Ohio.",
+  "id": "hy-ball",
   "_media": {
-    "backglass": "7kkHOJ5jN"
+    "backglass": "7JhvieWhV"
   }
 }

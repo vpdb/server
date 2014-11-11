@@ -4,18 +4,18 @@ Content-Encoding: gzip
 
 {
   "name": "release",
-  "_game": "54621da03dea8b9c2b3bc603",
-  "_created_by": "54621da03dea8b9c2b3bc5dd",
-  "created_at": "2014-11-11T14:30:57.055Z",
+  "_game": "5462363f268b711c86ba7fe7",
+  "_created_by": "5462363f268b711c86ba7fc1",
+  "created_at": "2014-11-11T16:16:00.145Z",
   "links": [],
   "_tags": [
-    "54621d9b3dea8b9c2b3bc577",
-    "54621d9b3dea8b9c2b3bc576"
+    "5462363a268b711c86ba7f5b",
+    "5462363a268b711c86ba7f5a"
   ],
   "authors": [
     {
-      "_user": "54621da03dea8b9c2b3bc5dd",
-      "_id": "54621da13dea8b9c2b3bc608",
+      "_user": "5462363f268b711c86ba7fc1",
+      "_id": "54623640268b711c86ba7fec",
       "roles": [
         "Table Creator"
       ]
@@ -24,31 +24,31 @@ Content-Encoding: gzip
   "versions": [
     {
       "version": "1.0.0",
-      "_id": "54621da13dea8b9c2b3bc609",
+      "_id": "54623640268b711c86ba7fed",
       "files": [
         {
           "_file": {
-            "_id": "54621da03dea8b9c2b3bc604",
+            "_id": "5462363f268b711c86ba7fe8",
             "name": "test-table.vpt",
             "bytes": 135168,
-            "created_at": "2014-11-11T14:30:56.712Z",
+            "created_at": "2014-11-11T16:15:59.794Z",
             "mime_type": "application/x-visual-pinball-table",
             "file_type": "release",
-            "_created_by": "54621da03dea8b9c2b3bc5dd",
+            "_created_by": "5462363f268b711c86ba7fc1",
             "__v": 0,
             "is_active": true,
-            "id": "Q1i990SL4"
+            "id": "Xyuc_0vV"
           },
-          "_id": "54621da13dea8b9c2b3bc60a",
+          "_id": "54623640268b711c86ba7fee",
           "_media": {
             "playfield_image": {
-              "_id": "54621da03dea8b9c2b3bc605",
+              "_id": "5462363f268b711c86ba7fe9",
               "name": "playfield.png",
               "bytes": 347,
-              "created_at": "2014-11-11T14:30:56.743Z",
+              "created_at": "2014-11-11T16:15:59.844Z",
               "mime_type": "image/png",
               "file_type": "playfield",
-              "_created_by": "54621da03dea8b9c2b3bc5dd",
+              "_created_by": "5462363f268b711c86ba7fc1",
               "__v": 0,
               "metadata": {
                 "Format": "PNG (Portable Network Graphics)",
@@ -75,9 +75,9 @@ Content-Encoding: gzip
                     "Standard Deviation": "0.00 (0.0000)"
                   },
                   "Green": {
-                    "Minimum": "46260.00 (0.7059)",
-                    "Maximum": "46260.00 (0.7059)",
-                    "Mean": "46260.00 (0.7059)",
+                    "Minimum": "29555.00 (0.4510)",
+                    "Maximum": "29555.00 (0.4510)",
+                    "Mean": "29555.00 (0.4510)",
                     "Standard Deviation": "0.00 (0.0000)"
                   },
                   "Blue": {
@@ -88,7 +88,7 @@ Content-Encoding: gzip
                   }
                 },
                 "Colors": {
-                  "0": "(114,180,191)\t  #72B4BF"
+                  "0": "(114,115,191)\t  #7273BF"
                 },
                 "color": 1,
                 "Filesize": "347",
@@ -102,30 +102,30 @@ Content-Encoding: gzip
                 "Dispose": "Undefined",
                 "Iterations": "0",
                 "Compression": "Zip",
-                "Signature": "d2c93171385115329e26984fb73bd27f53ba0a07746eb8ea3e5de1a9f4ded2b6",
+                "Signature": "e15e9a838df6b99ab138c5f8ddc4f9b993b5617cc017566992b9fe4088b73244",
                 "Tainted": "False",
-                "path": "D:\\dev\\node-vpdb\\data\\storage-test\\71Miq0H84.png",
+                "path": "D:\\dev\\node-vpdb\\data\\storage-test\\m1c9_ADN.png",
                 "Png:IHDR-color-type-orig": "3",
                 "Png:IHDR-bit-depth-orig": "1"
               },
               "variations": {
                 "medium": {
-                  "bytes": 808,
+                  "bytes": 807,
                   "height": 221,
                   "width": 393
                 }
               },
               "is_active": true,
-              "id": "71Miq0H84"
+              "id": "m1c9_ADN"
             },
             "playfield_video": {
-              "_id": "54621da03dea8b9c2b3bc606",
+              "_id": "54623640268b711c86ba7fea",
               "name": "playfield.mp4",
               "bytes": 537368,
-              "created_at": "2014-11-11T14:30:56.933Z",
+              "created_at": "2014-11-11T16:16:00.057Z",
               "mime_type": "video/mp4",
               "file_type": "playfield",
-              "_created_by": "54621da03dea8b9c2b3bc5dd",
+              "_created_by": "5462363f268b711c86ba7fc1",
               "__v": 0,
               "metadata": {
                 "streams": [
@@ -181,7 +181,7 @@ Content-Encoding: gzip
                   }
                 ],
                 "format": {
-                  "filename": "D:\\dev\\node-vpdb\\data\\storage-test\\XkEsCrL4.mp4",
+                  "filename": "D:\\dev\\node-vpdb\\data\\storage-test\\QkhlquRvV.mp4",
                   "nb_streams": 1,
                   "nb_programs": 0,
                   "format_name": "mov,mp4,m4a,3gp,3g2,mj2",
@@ -200,11 +200,11 @@ Content-Encoding: gzip
                 }
               },
               "is_active": true,
-              "id": "XkEsCrL4"
+              "id": "QkhlquRvV"
             }
           },
           "_compatibility": [
-            "54621d9b3dea8b9c2b3bc579"
+            "5462363a268b711c86ba7f5d"
           ],
           "flavor": {
             "orientation": "fs",
@@ -214,5 +214,5 @@ Content-Encoding: gzip
       ]
     }
   ],
-  "id": "QJAoAHUE"
+  "id": "mJUZcdAP4"
 }

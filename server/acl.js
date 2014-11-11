@@ -52,7 +52,8 @@ var init = function(next) {
 			roles: 'contributor',
 			allows: [
 				{ resources: 'games', permissions: [ 'update', 'add', 'delete' ]},
-				{ resources: 'ipdb', permissions: 'view' }
+				{ resources: 'ipdb', permissions: 'view' },
+				{ resources: 'tags', permissions: 'delete' }
 			]
 		}, {
 			roles: 'member',
@@ -61,7 +62,7 @@ var init = function(next) {
 				{ resources: 'users', permissions: [ 'search' ]},        // any other user
 				{ resources: 'files', permissions: [ 'download', 'upload', 'delete' ]},  // delete: only own/inactive files
 				{ resources: 'releases', permissions: [ 'add', 'delete' ] }, // only own releases and only for a given period
-				{ resources: 'tags', permissions: 'add' },
+				{ resources: 'tags', permissions: [ 'add', 'delete-own' ] },
 				{ resources: 'vpbuilds', permissions: 'add' }
 			]
 		}, {

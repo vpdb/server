@@ -23,6 +23,7 @@ var _ = require('lodash');
 var logger = require('winston');
 
 var error = require('../../modules/error')('api', 'tag');
+var acl = require('../../acl');
 var api = require('./api');
 var Tag = require('mongoose').model('Tag');
 
@@ -71,4 +72,44 @@ exports.create = function(req, res) {
 			return api.success(res, newTag.toSimple(), 201);
 		});
 	});
+};
+
+
+/**
+ * Deletes a tag.
+ *
+ * @param {Request} req
+ * @param {Response} res
+ */
+exports.del = function(req, res) {
+
+	var assert = api.assert(error, 'delete', req.params.id, res);
+	acl.isAllowed(req.user.email, 'tags', 'delete', assert(function(canDelete) {
+		Tag.findOne({ id: req.params.id }, function(err, tag) {
+			/* istanbul ignore if  */
+			if (err) {
+				return api.fail(res, error(err, 'Error getting tag "%s"', req.params.id).log('delete'), 500);
+			}
+			if (!tag) {
+				return api.fail(res, error('No such tag with ID "%s".', req.params.id), 404);
+			}
+
+			// only allow deleting own tags
+			if (!canDelete && !tag._created_by.equals(req.user._id)) {
+				return api.fail(res, error('Permission denied, must be owner.'), 403);
+			}
+
+			// todo check if there are references
+
+			// remove from db
+			tag.remove(function(err) {
+				/* istanbul ignore if  */
+				if (err) {
+					return api.fail(res, error(err, 'Error deleting tag "%s" (%s)', tag.id, tag.name).log('delete'), 500);
+				}
+				logger.info('[api|tag:delete] Tag "%s" (%s) successfully deleted.', tag.name, tag.id);
+				api.success(res, null, 204);
+			});
+		});
+	}));
 };

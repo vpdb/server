@@ -87,6 +87,7 @@ module.exports = function(app) {
 	// tags
 	app.get(settings.apiPath('/tags'),            api.anon(api.tags.list));
 	app.post(settings.apiPath('/tags'),           api.auth(api.tags.create, 'tags', 'add'));
+	app.delete(settings.apiPath('/tags/:id'),     api.auth(api.tags.del, 'tags', 'delete-own'));
 
 	// user (own profile)
 	app.get(settings.apiPath('/user'),            api.auth(api.user.view, 'user', 'view'));

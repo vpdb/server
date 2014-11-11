@@ -18,3 +18,18 @@ post:
         role/member:
           schema: release
           example: !include http/create-res-201.json
+
+/{release_id}:
+  delete:
+    is: [ protected ]
+    securedBy: [ jwt: { scopes: [ CONTRIBUTOR ] } ]
+    description: |
+      Delete a release of a given ID.
+
+      Note that deleting releases is only possible in the first 24 hours after
+      creation.
+    responses:
+      401:
+        body:
+           role/anon:
+            example: !include http/del-res-401.json

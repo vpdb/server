@@ -1,0 +1,16 @@
+422 Unprocessable Entity
+Content-Type: application/json; charset=utf-8
+Content-Length: 168
+
+{
+  "errors": [
+    {
+      "message": "Description must be provided.",
+      "field": "description"
+    },
+    {
+      "message": "Name must be provided.",
+      "field": "name"
+    }
+  ]
+}

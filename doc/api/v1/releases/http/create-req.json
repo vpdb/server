@@ -1,21 +1,21 @@
 POST /api/v1/releases HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJta05FcTBySUUiLCJpYXQiOiIyMDE0LTExLTExVDE0OjMwOjU2LjEwMVoiLCJleHAiOiIyMDE0LTExLTExVDE1OjMwOjU2LjEwMVoifQ.nI7V4Bst1S5aWngXqXIssfVmcr-LsSMSFsY-BGmS_wk
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJteVNIS18wd04iLCJpYXQiOiIyMDE0LTExLTExVDE2OjE1OjU5LjE1NVoiLCJleHAiOiIyMDE0LTExLTExVDE3OjE1OjU5LjE1NVoifQ.nC_C7CHu_uAMFnPfml6oIQB6XKOltRrK-z6UGgufKBc
 Content-Type: application/json
-Content-Length: 332
+Content-Length: 327
 
 {
   "name": "release",
-  "_game": "silver-cup",
+  "_game": "viking",
   "versions": [
     {
       "files": [
         {
-          "_file": "Q1i990SL4",
+          "_file": "Xyuc_0vV",
           "_media": {
-            "playfield_image": "71Miq0H84",
-            "playfield_video": "XkEsCrL4"
+            "playfield_image": "m1c9_ADN",
+            "playfield_video": "QkhlquRvV"
           },
           "_compatibility": [
             "9.9.0"
@@ -31,7 +31,7 @@ Content-Length: 332
   ],
   "authors": [
     {
-      "_user": "mkNEq0rIE",
+      "_user": "mySHK_0wN",
       "roles": [
         "Table Creator"
       ]

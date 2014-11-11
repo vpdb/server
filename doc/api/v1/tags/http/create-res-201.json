@@ -1,0 +1,9 @@
+201 Created
+Content-Type: application/json; charset=utf-8
+Content-Length: 93
+
+{
+  "id": "mytag",
+  "name": "mytag",
+  "description": "A tag, generated for testing purpose."
+}

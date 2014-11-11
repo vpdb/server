@@ -134,7 +134,7 @@
 			}
 		},
 		"_created_by": {
-			"description": "Reference to the user which created this game. Only visible by contributors and above.",
+			"description": "Reference to the user who created this game. Only visible by contributors and above.",
 			"type": "string",
 			"readOnly": true
 		}

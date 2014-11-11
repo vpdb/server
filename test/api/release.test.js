@@ -120,7 +120,7 @@ describe('The VPDB `release` API', function() {
 				});
 		});
 
-		it('should fail validations when providing the same flavor combination more than once.');
+		it('should fail validations when providing the same flavor/compat combination more than once.');
 
 		it('should fail accordingly when providing only non-table files', function (done) {
 			hlp.file.createTextfile('member', request, function (textfile1) {

@@ -1,0 +1,11 @@
+POST /api/v1/tags HTTP/1.1
+Host: vpdb.ch
+Accept-Encoding: gzip, deflate
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJYMVI0cU9DRE4iLCJpYXQiOiIyMDE0LTExLTExVDE2OjE2OjAwLjI4MloiLCJleHAiOiIyMDE0LTExLTExVDE3OjE2OjAwLjI4MloifQ.-Y1ww_Fr33mUySXvmsq13hPE_zMK3ynNQN6aA45Nk-o
+Content-Type: application/json
+Content-Length: 70
+
+{
+  "name": "mytag",
+  "description": "A tag, generated for testing purpose."
+}

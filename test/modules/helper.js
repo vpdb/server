@@ -5,6 +5,7 @@ var util = require('util');
 var async = require('async');
 var debug = require('debug')('test-helper');
 var faker = require('faker');
+var objectPath = require("object-path");
 var randomstring = require('randomstring');
 var expect = require('expect.js');
 
@@ -244,6 +245,17 @@ exports.doomUser = function(userId) {
 };
 
 /**
+ * Marks a tag to be cleaned up in teardown.
+ * @param user User with which the file was created
+ * @param tagId ID of the tag
+ */
+exports.doomTag = function(user, tagId) {
+	objectPath.ensureExists(this, "doomedTags." + user, []);
+	this.doomedTags[user].unshift(tagId);
+};
+
+
+/**
  * Cleans up files, games and users.
  *
  * @param request Superagent object
@@ -255,6 +267,7 @@ exports.cleanup = function(request, done) {
 	var doomedFiles = this.doomedFiles;
 	var doomedGames = this.doomedGames;
 	var doomedReleases = this.doomedReleases;
+	var doomedTags = this.doomedTags;
 
 	async.series([
 
@@ -339,6 +352,34 @@ exports.cleanup = function(request, done) {
 
 			}, function(err) {
 				that.doomedGames = {};
+				next(err);
+			});
+		},
+
+		// 4. cleanup tags
+		function(next) {
+			if (!doomedTags) {
+				return next();
+			}
+			async.eachSeries(_.keys(doomedTags), function(user, nextTag) {
+				async.each(doomedTags[user], function(tagId, next) {
+					request
+						.del('/api/v1/tags/' + tagId)
+						.as(user)
+						.end(function(err, res) {
+							if (err) {
+								return next(err);
+							}
+							if (res.status !== 204) {
+								console.log(res.body);
+							}
+							expect(res.status).to.eql(204);
+							next();
+						});
+				}, nextTag);
+
+			}, function(err) {
+				that.doomedTags = {};
 				next(err);
 			});
 		},

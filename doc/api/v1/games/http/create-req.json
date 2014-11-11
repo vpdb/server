@@ -1,21 +1,36 @@
 POST /api/v1/games HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI3eW5PdkNIVVYiLCJpYXQiOiIyMDE0LTExLTExVDE0OjMwOjUzLjc1NloiLCJleHAiOiIyMDE0LTExLTExVDE1OjMwOjUzLjc1NloifQ.KEMCNVurG8s9qQXiKOW44bNb68l_cL8bABC_NZrgPvk
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJYazBfSXVSRFYiLCJpYXQiOiIyMDE0LTExLTExVDE2OjE1OjU2Ljc1MloiLCJleHAiOiIyMDE0LTExLTExVDE3OjE1OjU2Ljc1MloifQ.J7Pl7zw7Bma2tk4wIMJm2tG3Vqsg9sJMrARqIObxjiM
 Content-Type: application/json
-Content-Length: 170
+Content-Length: 486
 
 {
   "ipdb": {
-    "number": 2752,
-    "mfg": 268
+    "number": 530,
+    "mfg": 93,
+    "rating": "8.3"
   },
-  "title": "Wang-Poo",
-  "manufacturer": "Richwine and Company",
-  "year": 1932,
-  "game_type": "pm",
-  "id": "wang-poo",
+  "title": "Classy Bowler",
+  "manufacturer": "Gottlieb",
+  "model_number": "116",
+  "year": 1956,
+  "game_type": "em",
+  "produced_units": 1100,
+  "themes": [
+    "Sports",
+    "Bowling"
+  ],
+  "designers": [
+    "Wayne Neyens"
+  ],
+  "artists": [
+    "Roy Parker"
+  ],
+  "features": "Flippers (2), Pop bumpers (4), Gobble holes (2).",
+  "notes": "The backglass carries Gottlieb's famous phrase: Amusement Pinballs, as American as Baseball and Hot Dogs!",
+  "id": "classy-bowler",
   "_media": {
-    "backglass": "QkedRHI4"
+    "backglass": "mJeDu0PV"
   }
 }

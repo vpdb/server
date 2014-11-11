@@ -98,6 +98,10 @@ describe('The ACLs of the VPDB API', function() {
 			request.post('/api/v1/tags').send({}).end(hlp.status(401, done));
 		});
 
+		it('should deny access to delete tags', function(done) {
+			request.del('/api/v1/tags/mytag').saveResponse({ path: 'tags/del'}).end(hlp.status(401, done));
+		});
+
 		it('should allow to list vpbuilds', function(done) {
 			request.get('/api/v1/vpbuilds').end(hlp.status(200, done));
 		});
@@ -111,7 +115,7 @@ describe('The ACLs of the VPDB API', function() {
 		});
 
 		it('should deny access to release deletion', function(done) {
-			request.del('/api/v1/releases/123456').end(hlp.status(401, done));
+			request.del('/api/v1/releases/123456').saveResponse({ path: 'releases/del' }).end(hlp.status(401, done));
 		});
 
 	});
@@ -201,6 +205,10 @@ describe('The ACLs of the VPDB API', function() {
 
 		it('should allow to create tags', function(done) {
 			request.post('/api/v1/tags').send({}).as('member').end(hlp.status(422, done));
+		});
+
+		it('should allow access to tag deletion', function(done) {
+			request.del('/api/v1/tags/mytag').as('member').end(hlp.status(404, done));
 		});
 
 		it('should allow to list vpbuilds', function(done) {

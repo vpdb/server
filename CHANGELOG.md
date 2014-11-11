@@ -11,7 +11,8 @@
 *Server Changes*:
 
 * API:
-  * Tag resource (`create`, `list`)
+  * Release resource (`create`, `delete`)
+  * Tag resource (`create`, `list`, `delete`)
   * VP build resource (`create`, `list`)
 * Added automatic thumbnail generation on file upload
 * Added sample data generation when starting the first time
@@ -21,6 +22,7 @@
 * Added Continuous Integration on Travis CI and Codeship
 * Separated application logic from client, web app is now 100% static
 * Added first version of the developer site
+* Started replacing icon font with SVG map
 * Bugfixes
 
 

@@ -1,19 +1,19 @@
 200 OK
 Content-Type: application/json; charset=utf-8
-Content-Length: 302
-Etag: W/"12e-9991f538"
+Content-Length: 294
+Etag: W/"126-25cabe3c"
 
 {
   "plan": "free",
-  "name": "Johnnie_Schuppe",
-  "username": "Johnnie_Schuppe",
-  "email": "maymie.marvin78@yahoo.com",
+  "name": "Cristobal1",
+  "username": "Cristobal1",
+  "email": "dessie.sporer67@hotmail.com",
   "provider": "local",
-  "created_at": "2014-11-11T14:30:57.274Z",
+  "created_at": "2014-11-11T16:16:00.519Z",
   "is_active": true,
   "roles": [
     "member"
   ],
-  "id": "myCXoCSIN",
-  "gravatar_id": "fd35613b18d4f50ea02e7e665cdf26d8"
+  "id": "QyZu9uAP4",
+  "gravatar_id": "65a25016e7a76c76f5db1bb21301d2f3"
 }

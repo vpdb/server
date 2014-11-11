@@ -176,7 +176,7 @@
 			"readOnly": true
 		},
 		"_created_by": {
-			"description": "Reference to the user which created this release. Only visible by contributors and above.",
+			"description": "Reference to the user who created this release. Only visible by contributors and above.",
 			"type": "string",
 			"readOnly": true
 		}

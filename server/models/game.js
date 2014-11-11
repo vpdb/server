@@ -79,7 +79,7 @@ var GameSchema = new Schema(fields);
 //-----------------------------------------------------------------------------
 GameSchema.plugin(uniqueValidator, { message: 'The {PATH} "{VALUE}" is already taken.' });
 GameSchema.plugin(prettyId, { model: 'Game', ignore: [ '_created_by' ] });
-GameSchema.plugin(fileRef, { model: 'Game', fields: [ '_media.backglass', '_media.logo' ]});
+GameSchema.plugin(fileRef, { model: 'Game' });
 GameSchema.plugin(paginate);
 
 //-----------------------------------------------------------------------------

@@ -41,6 +41,10 @@ module.exports = exports = function(schema, options) {
 		options.ignore = [ options.ignore ];
 	}
 
+	var paths = _.omit(traversePaths(schema), function(schemaType, path) {
+		return _.contains(options.ignore, path);
+	});
+
 	/**
 	 * Replaces API IDs with database IDs and returns a new instance of the
 	 * configured model.
@@ -54,9 +58,6 @@ module.exports = exports = function(schema, options) {
 		var models = {};
 		models[options.model] = Model;
 
-		var paths = _.omit(traversePaths(schema), function(schemaType, path) {
-			return _.contains(options.ignore, path);
-		});
 		var singleRefs = _.mapValues(_.pick(paths, function(schemaType) {
 			return schemaType.options && schemaType.options.ref;
 		}), function(schemaType) {
@@ -67,10 +68,6 @@ module.exports = exports = function(schema, options) {
 		}), function(schemaType) {
 			return schemaType.caster.options.ref;
 		});
-		console.log('------------ SINGLE REFS:');
-		console.log(singleRefs);
-		console.log('------------ ARRAY REFS:');
-		console.log(arrayRefs);
 
 		var objPaths = explodePaths(obj, singleRefs, arrayRefs);
 
@@ -99,7 +96,6 @@ module.exports = exports = function(schema, options) {
 				} else {
 					objectPath.set(obj, objPath, refObj._id);
 				}
-				//console.log('***** %s: %s -> %s', objPath, prettyId, refObj._id);
 				next();
 			});
 

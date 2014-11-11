@@ -33,19 +33,19 @@ module.exports = exports = function(schema, options) {
 	if (!options || !options.model) {
 		throw new Error('Fileref plugin needs model. Please provide.');
 	}
-	/* istanbul ignore if */
-	if (!options.fields || !_.isArray(options.fields)) {
-		throw new Error('Fileref plugin needs file reference fields. Please provide.');
-	}
+
+	var fileRefPaths = _.omit(traversePaths(schema), function(schemaType, path) {
+		return _.contains(options.ignore, path);
+	});
 
 	//-----------------------------------------------------------------------------
 	// VALIDATIONS
 	//-----------------------------------------------------------------------------
-	_.each(options.fields, function(path) {
+	_.each(_.keys(fileRefPaths), function(path) {
 
 		schema.path(path).validate(function(fileId, callback) {
-			var referer = this;
-			if (!fileId || !referer._created_by) {
+			var that = this;
+			if (!fileId || !that._created_by) {
 				return callback(true);
 			}
 			mongoose.model('File').findOne({ _id: fileId }, function(err, file) {
@@ -54,16 +54,16 @@ module.exports = exports = function(schema, options) {
 					logger.error('[model] Error fetching file "%s".', fileId);
 					return callback(true);
 				}
+				// this is already checked by pretty-id
 				if (!file) {
 					return callback(true);
 				}
 
-				// let's invalidate manually because we want to provide `id` instead of `_id` as value
-				if (!file._created_by.equals(referer._created_by)) {
-					referer.invalidate(path, 'Referenced file must be of the same owner as referer.', file.id);
+				if (!file._created_by.equals(that._created_by)) {
+					that.invalidate(path, 'Referenced file must be of the same owner as referer.', file.id);
 				}
-				if (referer.isNew && file.is_active) {
-					referer.invalidate(path, 'Cannot reference active files. If a file is active that means that is has been referenced elsewhere, in which case you cannot reference it again.', file.id);
+				if (that.isNew && file.is_active) {
+					that.invalidate(path, 'Cannot reference active files. If a file is active that means that is has been referenced elsewhere, in which case you cannot reference it again.', file.id);
 				}
 				callback(true);
 			});
@@ -84,7 +84,7 @@ module.exports = exports = function(schema, options) {
 
 		var ids = [];
 		var obj = this;
-		_.each(options.fields, function(path) {
+		_.each(_.keys(fileRefPaths), function(path) {
 			var id = objectPath.get(obj, path);
 			if (id) {
 				ids.push(id);
@@ -119,7 +119,7 @@ module.exports = exports = function(schema, options) {
 		var File = mongoose.model('File');
 
 		var ids = [];
-		_.each(options.fields, function(path) {
+		_.each(_.keys(fileRefPaths), function(path) {
 			var id = objectPath.get(obj, path);
 			if (id) {
 				ids.push(id);
@@ -137,3 +137,26 @@ module.exports = exports = function(schema, options) {
 		});
 	});
 };
+
+/**
+ * Returns all file reference paths.
+ * @param {object} schema
+ * @param {string} [prefix] Internal usage only
+ * @param {object} [paths] Internal usage only
+ * @returns {object} Keys: path, Values: Schema type
+ */
+function traversePaths(schema, prefix, paths) {
+	prefix = prefix || '';
+	paths = paths || {};
+	schema.eachPath(function(path, schemaType) {
+		var isArray = schemaType.options && _.isArray(schemaType.options.type);
+		var fullPath = prefix + (prefix ? '.' : '') + path + (isArray ? '.0' : '');
+		if (schemaType.options && schemaType.options.ref && schemaType.options.ref === 'File') {
+			paths[fullPath] = schemaType;
+		}
+		if (schemaType.schema) {
+			traversePaths(schemaType.schema, fullPath, paths);
+		}
+	});
+	return paths;
+}

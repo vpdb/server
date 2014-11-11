@@ -87,11 +87,7 @@ var ReleaseSchema = new Schema(fields);
 // PLUGINS
 //-----------------------------------------------------------------------------
 ReleaseSchema.plugin(uniqueValidator, { message: 'The {PATH} "{VALUE}" is already taken.' });
-ReleaseSchema.plugin(fileRef, { model: 'Release', fields: [
-	'versions.0.files.0._file',
-	'versions.0.files.0._media.playfield_image',
-	'versions.0.files.0._media.playfield_video'
-]});
+ReleaseSchema.plugin(fileRef, { model: 'Release' });
 ReleaseSchema.plugin(prettyId, { model: 'Release', ignore: [ '_created_by' ] });
 
 

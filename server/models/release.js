@@ -34,31 +34,37 @@ var Schema = mongoose.Schema;
 //-----------------------------------------------------------------------------
 // SCHEMA
 //-----------------------------------------------------------------------------
-var fields = {
+
+var fileFields = {
+	_file:  { type: Schema.ObjectId, required: 'You must provide a file reference.', ref: 'File' },
+	flavor: {
+		orientation: { type: String, enum: { values: [ 'ws', 'fs' ], message: 'Invalid orientation. Valid orientation are: ["ws", "fs"].' }},
+		lightning:   { type: String, enum: { values: [ 'day', 'night' ], message: 'Invalid lightning. Valid options are: ["day", "night"].' }}
+	},
+	_compatibility: [ { type: Schema.ObjectId, ref: 'VPBuild' } ],
+	_media: {
+		playfield_image: { type: Schema.ObjectId, ref: 'File' },
+		playfield_video: { type: Schema.ObjectId, ref: 'File' }
+	}
+};
+var FileSchema = new Schema(fileFields);
+
+var VersionSchema = new Schema({
+	version: { type: String, required: 'Version must be provided.' },
+	changes: { type: String },
+	files: { validate: [ nonEmptyArray, 'You must provide at least one file.' ], type: [ FileSchema ] }
+});
+var AuthorSchema = new Schema({
+	_user: { type: Schema.ObjectId, required: 'Reference to user must be provided.', ref: 'User' },
+	roles: [ String ]
+});
+var releaseFields = {
 	id:           { type: String, required: true, unique: true, 'default': shortId.generate },
 	_game:        { type: Schema.ObjectId, required: 'Reference to game must be provided.', ref: 'Game' },
 	name:         { type: String, required: 'Name must be provided.' },
 	description:  { type: String },
-	versions: { validate: [ nonEmptyArray, 'You must provide at least one version for the release.' ], type: [ {
-		version: { type: String, required: 'Version must be provided.' },
-		changes: { type: String },
-		files: { validate: [ nonEmptyArray, 'You must provide at least one file.' ], type: [ {
-			_file:  { type: Schema.ObjectId, required: 'You must provide a file reference.', ref: 'File' },
-			flavor: {
-				orientation: { type: String, enum: { values: [ 'ws', 'fs' ], message: 'Invalid orientation. Valid orientation are: ["ws", "fs"].' }},
-				lightning:   { type: String, enum: { values: [ 'day', 'night' ], message: 'Invalid lightning. Valid options are: ["day", "night"].' }}
-			},
-			_compatibility: [ { type: Schema.ObjectId, ref: 'VPBuild' } ],
-			_media: {
-				playfield_image: { type: Schema.ObjectId, ref: 'File' },
-				playfield_video: { type: Schema.ObjectId, ref: 'File' }
-			}
-		} ] }
-	} ] },
-	authors: { validate: [ nonEmptyArray, 'You must provide at least one author.' ], type: [ {
-		_user: { type: Schema.ObjectId, required: 'Reference to user must be provided.', ref: 'User' },
-		roles: [ String ]
-	} ] },
+	versions: { validate: [ nonEmptyArray, 'You must provide at least one version for the release.' ], type: [ VersionSchema ] },
+	authors: { validate: [ nonEmptyArray, 'You must provide at least one author.' ], type: [ AuthorSchema ] },
 	_tags: [ { type: Schema.ObjectId, ref: 'Tag' } ],
 	links: [ {
 		label: { type: String },
@@ -75,8 +81,7 @@ var fields = {
 	created_at:    { type: Date, required: true },
 	_created_by:   { type: Schema.ObjectId, required: true, ref: 'User' }
 };
-
-var ReleaseSchema = new Schema(fields);
+var ReleaseSchema = new Schema(releaseFields);
 
 
 //-----------------------------------------------------------------------------
@@ -85,6 +90,29 @@ var ReleaseSchema = new Schema(fields);
 ReleaseSchema.plugin(uniqueValidator, { message: 'The {PATH} "{VALUE}" is already taken.' });
 ReleaseSchema.plugin(fileRef, { model: 'Release' });
 ReleaseSchema.plugin(prettyId, { model: 'Release', ignore: [ '_created_by' ] });
+
+
+//-----------------------------------------------------------------------------
+// API FIELDS
+//-----------------------------------------------------------------------------
+var apiFields = {
+	simple: [ ] // fields returned in lists
+};
+
+
+//-----------------------------------------------------------------------------
+// VIRTUALS
+//-----------------------------------------------------------------------------
+//FileSchema.virtual('media').get(function() {
+//	var media = {};
+//	if (this.populated('_media.playfield_image') && this._media.playfield_image) {
+//		media.playfield_image = this._media.playfield_image.toSimple();
+//	}
+//	if (this.populated('_media.playfield_video') && this._media.playfield_video) {
+//		media.playfield_video = this._media.playfield_video.toSimple();
+//	}
+//	return media;
+//});
 
 
 //-----------------------------------------------------------------------------
@@ -135,7 +163,7 @@ ReleaseSchema.path('versions.0.files').validate(function(files, callback) {
 
 					// flavor
 					f.flavor = f.flavor || {};
-					_.each(fields.versions.type[0].files.type[0].flavor, function(obj, flavor) {
+					_.each(fileFields.flavor, function(obj, flavor) {
 						if (!f.flavor[flavor]) {
 							that.invalidate('files.' + i + '.flavor.' + flavor, 'Flavor `' + flavor + '` must be provided.');
 						}
@@ -179,12 +207,40 @@ ReleaseSchema.methods.toDetailed = function() {
 // OPTIONS
 //-----------------------------------------------------------------------------
 ReleaseSchema.set('toObject', { virtuals: true });
-if (!ReleaseSchema.options.toObject) {
-	ReleaseSchema.options.toObject = {};
-}
+VersionSchema.set('toObject', { virtuals: true });
+FileSchema.set('toObject', { virtuals: true });
+AuthorSchema.set('toObject', { virtuals: true });
+
 ReleaseSchema.options.toObject.transform = function(doc, release) {
+	release.tags = release._tags;
 	delete release.__v;
 	delete release._id;
+	delete release._created_by;
+	delete release._tags;
+	delete release._game;
+};
+VersionSchema.options.toObject.transform = function(doc, version) {
+	delete version.id;
+	delete version._id;
+};
+FileSchema.options.toObject.transform = function(doc, file) {
+	file.media = file._media;
+	file.compatibility = [];
+	var VPBuild = require('mongoose').model('VPBuild');
+	_.each(file._compatibility, function(compat) {
+		file.compatibility.push(VPBuild.toSimple(compat));
+	});
+	delete file.id;
+	delete file._id;
+	delete file._file;
+	delete file._media;
+	delete file._compatibility;
+};
+AuthorSchema.options.toObject.transform = function(doc, author) {
+	author.user = require('mongoose').model('User').toReduced(author._user);
+	delete author.id;
+	delete author._id;
+	delete author._user;
 };
 
 mongoose.model('Release', ReleaseSchema);

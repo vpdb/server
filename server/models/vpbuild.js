@@ -51,7 +51,7 @@ var VPBuildSchema = new Schema(fields);
 // API FIELDS
 //-----------------------------------------------------------------------------
 var apiFields = {
-	simple: [ 'id', 'label', 'download_url', 'description', 'built_at', 'type', 'is_range' ]
+	simple: [ 'id', 'label', 'download_url', 'built_at', 'type', 'is_range' ]
 };
 
 
@@ -70,9 +70,16 @@ VPBuildSchema.virtual('created_by')
 // METHODS
 //-----------------------------------------------------------------------------
 VPBuildSchema.methods.toSimple = function() {
-	return _.pick(this.toObject(), apiFields.simple);
+	return VPBuildSchema.statics.toSimple(this);
 };
 
+//-----------------------------------------------------------------------------
+// STATIC METHODS
+//-----------------------------------------------------------------------------
+VPBuildSchema.statics.toSimple = function(vpbuild) {
+	var obj = vpbuild.toObject ? vpbuild.toObject() : vpbuild;
+	return _.pick(obj, apiFields.simple);
+};
 
 //-----------------------------------------------------------------------------
 // VALIDATIONS
@@ -97,13 +104,12 @@ VPBuildSchema.plugin(uniqueValidator, { message: 'The {PATH} "{VALUE}" is alread
 //-----------------------------------------------------------------------------
 // OPTIONS
 //-----------------------------------------------------------------------------
-if (!VPBuildSchema.options.toObject) {
-	VPBuildSchema.options.toObject = {};
-}
+VPBuildSchema.set('toObject', { virtuals: true });
 VPBuildSchema.options.toObject.transform = function(doc, vpbuild) {
 	delete vpbuild.__v;
 	delete vpbuild._id;
 	delete vpbuild._created_by;
+	delete vpbuild.is_active;
 };
 
 mongoose.model('VPBuild', VPBuildSchema);

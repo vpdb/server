@@ -91,14 +91,13 @@ TagSchema.plugin(uniqueValidator, { message: 'The {PATH} "{VALUE}" is already ta
 //-----------------------------------------------------------------------------
 // OPTIONS
 //-----------------------------------------------------------------------------
-if (!TagSchema.options.toObject) {
-	TagSchema.options.toObject = {};
-}
+TagSchema.set('toObject', { virtuals: true });
 TagSchema.options.toObject.transform = function(doc, tag) {
 	delete tag.__v;
 	delete tag._id;
 	delete tag._created_by;
 	delete tag._releases;
+	delete tag.is_active;
 };
 
 mongoose.model('Tag', TagSchema);

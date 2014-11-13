@@ -363,7 +363,8 @@ Settings.prototype.clientConfigName = function() {
 	var data = util.inspect(this.clientConfig());
 	var md5sum = crypto.createHash('md5');
 	md5sum.update(data);
-	return 'config_' + md5sum.digest('hex').substr(0, 7) + '.js';
+	var hash = md5sum.digest('hex').substr(0, 7);
+	return 'config_' + hash + '.js';
 };
 
 module.exports = new Settings();

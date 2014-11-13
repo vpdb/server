@@ -157,6 +157,7 @@ angular.module('vpdb.releases.add', [])
 			$scope.meta.users[currentUser.id] = currentUser;
 
 			$scope.release = $localStorage.release = {
+				_game: $scope.game.id,
 				name: '',
 				description: '',
 				versions: [ {

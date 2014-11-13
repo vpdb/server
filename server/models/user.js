@@ -215,23 +215,15 @@ UserSchema.methods.encryptPassword = function(password) {
 };
 
 UserSchema.methods.toReduced = function() {
-	return _.pick(this.toObject(), apiFields.reduced);
+	return UserSchema.statics.toReduced(this);
 };
 
 UserSchema.methods.toSimple = function() {
-	var user = _.pick(this.toObject(), apiFields.reduced.concat(apiFields.simple));
-	if (!_.isEmpty(user.github)) {
-		user.github = _.pick(user.github, 'id', 'login', 'email', 'avatar_url', 'html_url');
-	}
-	return user;
+	return UserSchema.statics.toSimple(this);
 };
 
 UserSchema.methods.toDetailed = function() {
-	var user = this.toObject();
-	if (!_.isEmpty(user.github)) {
-		user.github = _.pick(user.github, 'id', 'login', 'email', 'avatar_url', 'html_url');
-	}
-	return user;
+	return UserSchema.statics.toDetailed(this);
 };
 
 
@@ -276,15 +268,33 @@ UserSchema.statics.createUser = function(userObj, done) {
 		});
 	});
 };
+UserSchema.statics.toReduced = function(user) {
+	var obj = user.toObject ? user.toObject() : user;
+	return _.pick(obj, apiFields.reduced);
+};
+
+UserSchema.statics.toSimple = function(user) {
+	var obj = user.toObject ? user.toObject() : user;
+	user = _.pick(obj, apiFields.reduced.concat(apiFields.simple));
+	if (!_.isEmpty(user.github)) {
+		user.github = _.pick(user.github, 'id', 'login', 'email', 'avatar_url', 'html_url');
+	}
+	return user;
+};
+
+UserSchema.statics.toDetailed = function(user) {
+	user = user.toObject ? user.toObject() : user;
+	if (!_.isEmpty(user.github)) {
+		user.github = _.pick(user.github, 'id', 'login', 'email', 'avatar_url', 'html_url');
+	}
+	return user;
+};
 
 
 //-----------------------------------------------------------------------------
 // OPTIONS
 //-----------------------------------------------------------------------------
 UserSchema.set('toObject', { virtuals: true });
-if (!UserSchema.options.toObject) {
-	UserSchema.options.toObject = {};
-}
 UserSchema.options.toObject.transform = function(doc, user) {
 	delete user._id;
 	delete user.__v;

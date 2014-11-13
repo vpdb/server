@@ -231,6 +231,12 @@ exports.view = function(req, res) {
 		if (!game) {
 			return api.fail(res, error('No such game with ID "%s"', req.params.id), 404);
 		}
-		return api.success(res, game.toDetailed());
+		game.toDetailed(function(err, game) {
+			/* istanbul ignore if  */
+			if (err) {
+				return api.fail(res, error(err, 'Error populating game "%s"', req.params.id).log('view'), 500);
+			}
+			return api.success(res, game);
+		});
 	});
 };

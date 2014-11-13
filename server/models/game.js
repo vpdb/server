@@ -167,8 +167,30 @@ GameSchema.methods.toSimple = function() {
 	return _.pick(this.toObject(), apiFields.simple);
 };
 
-GameSchema.methods.toDetailed = function() {
-	return this.toObject();
+GameSchema.methods.toDetailed = function(callback) {
+	if (!callback) {
+		return this.toObject();
+	} else {
+		var game = this.toObject();
+		var Release = require('mongoose').model('Release');
+
+		Release
+			.find({ _game: this._id })
+			.populate({ path: '_tags' })
+			.populate({ path: 'authors._user' })
+			.populate({ path: 'versions.files._media.playfield_image' })
+			.populate({ path: 'versions.files._media.playfield_video' })
+			.populate({ path: 'versions.files._compatibility' })
+			.exec(function (err, releases) {
+				if (err) {
+					return callback(err);
+				}
+				game.releases = _.map(releases, function(release) {
+					return release.toDetailed();
+				});
+				callback(null, game);
+			});
+	}
 };
 
 

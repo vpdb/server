@@ -99,10 +99,10 @@ FileSchema.virtual('is_public')
 //-----------------------------------------------------------------------------
 
 FileSchema.methods.toSimple = function() {
-	return _.pick(this.toObject(), apiFields.simple);
+	return FileSchema.statics.toSimple(this);
 };
 FileSchema.methods.toDetailed = function() {
-	return _.pick(this.toObject(), apiFields.detailed.concat(apiFields.simple));
+	return FileSchema.statics.toDetailed(this);
 };
 
 /**
@@ -224,6 +224,14 @@ FileSchema.statics.sanitizeObject = function(object, replacement) {
 		}
 	}
 };
+FileSchema.statics.toSimple = function(file) {
+	var obj = file.toObject ? file.toObject() : file;
+	return _.pick(obj, apiFields.simple);
+};
+FileSchema.statics.toDetailed = function(file) {
+	var obj = file.toObject ? file.toObject() : file;
+	return _.pick(obj, apiFields.detailed.concat(apiFields.simple));
+};
 
 
 //-----------------------------------------------------------------------------
@@ -246,6 +254,7 @@ FileSchema.options.toObject.transform = function(doc, file) {
 	delete file.__v;
 	delete file._id;
 	delete file._created_by;
+	delete file.is_protected;
 	file.variations = storage.urls(doc);
 	file.metadata = storage.metadataShort(doc);
 };

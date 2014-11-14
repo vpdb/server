@@ -192,10 +192,7 @@ module.exports = function(grunt) {
 		},
 
 		svgstore: {
-			options: {
-				prefix : 'icon-',
-				svg: {  viewBox : '0 0 100 100', xmlns: 'http://www.w3.org/2000/svg' }
-			},
+			options: { prefix : 'icon-' },
 			all: { files: { './gfx/svg-defs.svg': [ '<%= config.tmpRoot %>/vpdb-svg/*.svg' ] } }
 		},
 

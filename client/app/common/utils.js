@@ -1,4 +1,4 @@
-"use strict"; /* global app, _ */
+"use strict"; /* global common, _ */
 
 common
 
@@ -55,6 +55,16 @@ common
 			restrict: 'A',
 			link: function(scope, element, attrs) {
 				$rootScope.pageTitle = attrs.pageTitle;
+			}
+		};
+	})
+
+	.directive('fallbackIcon', function () {
+		return {
+			link: function postLink(scope, element, attrs) {
+				element.bind('error', function() {
+					angular.element(this).replaceWith('<svg class="svg-icon"><use xlink:href="#icon-' + attrs.fallbackIcon + '"></use></svg>');
+				});
 			}
 		};
 	});

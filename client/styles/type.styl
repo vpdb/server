@@ -30,7 +30,7 @@ body
 // .h--primary   - Header in primary color
 // .h--lighter   - Header in lighter color
 // .h--small     - Small font size (only `h1` and `h2` affected)
-// .h--smaller   - Smaller font size (only `h1` and `h2` affected)
+// .h--smaller   - Smaller font size (only `h1`, `h2` and `h3` affected)
 // .h--no-margin - Without margin, when padding is given by parent.
 // .h--code      - With code type face
 //
@@ -93,6 +93,9 @@ h1.h--smaller
 	font-size $font-size-small-alt
 h2.h--smaller
 	font-size $font-size-large
+h3.h--smaller
+	font-size $font-size-small-alt
+	font-weight $font-weight-normal
 h4.h--large
 	font-size $font-size-large
 .h--code

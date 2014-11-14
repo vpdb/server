@@ -11,6 +11,7 @@ var deps = [
 	'angularFileUpload',
 	'angularMoment',
 	'ui.bootstrap',
+	'ui.gravatar',
 	'angulartics',
 	'angulartics.google.analytics',
 	'monospaced.elastic',
@@ -41,16 +42,19 @@ angular.module('vpdb',  [ 'ngRoute' ].concat(deps).concat(appDeps))
 	.config(function($routeProvider, $locationProvider) {
 
 		// routes
-		$routeProvider.when('/',                        { templateUrl: 'home/home.html' });
-		$routeProvider.when('/games',                   { templateUrl: 'games/list.html' });
-		$routeProvider.when('/game/:id',                { templateUrl: 'games/details.html' });
-		$routeProvider.when('/games/add',               { templateUrl: 'games/add.html' });
-		$routeProvider.when('/game/:id/add-release',    { templateUrl: 'releases/add.html' });
-		$routeProvider.when('/admin/users',             { templateUrl: 'users/list.html' });
-		$routeProvider.when('/auth/:strategy/callback', { templateUrl: 'auth/authenticating.html' });
+		$routeProvider.when('/',                        { templateUrl: '/home/home.html' });
+		$routeProvider.when('/games',                   { templateUrl: '/games/list.html' });
+		$routeProvider.when('/game/:id',                { templateUrl: '/games/details.html' });
+		$routeProvider.when('/games/add',               { templateUrl: '/games/add.html' });
+		$routeProvider.when('/game/:id/add-release',    { templateUrl: '/releases/add.html' });
+		$routeProvider.when('/admin/users',             { templateUrl: '/users/list.html' });
+		$routeProvider.when('/auth/:strategy/callback', { templateUrl: '/auth/authenticating.html' });
 
 		$routeProvider.otherwise({ templateUrl: 'errors/404.html' });
-		$locationProvider.html5Mode(true);
+		$locationProvider.html5Mode({
+			enabled: true,
+			requireBase: false
+		});
 	});
 
 /**
@@ -59,7 +63,10 @@ angular.module('vpdb',  [ 'ngRoute' ].concat(deps).concat(appDeps))
 angular.module('devsite', [ 'ui.router' ].concat(deps).concat(appDeps).concat([ 'duScroll', 'vpdb.devsite' ]))
 
 	.config(function($locationProvider) {
-		$locationProvider.html5Mode(true);
+		$locationProvider.html5Mode({
+			enabled: true,
+			requireBase: false
+		});
 	});
 
 

@@ -4,18 +4,17 @@
 .theme-dark
 
 	// Avatar
-	.avatar-placeholder
-		background-color $color-darker
-		.avatar-placeholder:before
-			color $color-darker
-
+	.avatar
+		> svg.svg-icon
+			fill $color-darker
+			background-color $color-darker
 //
 // Light theme
 // --------------------------------------------------
 .theme-light
 
 	// Avatar
-	.avatar-placeholder
-		background-color $color-darker-inv
-		&:before
-			color $color-lighter
+	.avatar
+		> svg.svg-icon
+			fill $color-darker-inv
+			background-color $color-lighter

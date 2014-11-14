@@ -93,29 +93,6 @@ ReleaseSchema.plugin(prettyId, { model: 'Release', ignore: [ '_created_by' ] });
 
 
 //-----------------------------------------------------------------------------
-// API FIELDS
-//-----------------------------------------------------------------------------
-var apiFields = {
-	simple: [ ] // fields returned in lists
-};
-
-
-//-----------------------------------------------------------------------------
-// VIRTUALS
-//-----------------------------------------------------------------------------
-//FileSchema.virtual('media').get(function() {
-//	var media = {};
-//	if (this.populated('_media.playfield_image') && this._media.playfield_image) {
-//		media.playfield_image = this._media.playfield_image.toSimple();
-//	}
-//	if (this.populated('_media.playfield_video') && this._media.playfield_video) {
-//		media.playfield_video = this._media.playfield_video.toSimple();
-//	}
-//	return media;
-//});
-
-
-//-----------------------------------------------------------------------------
 // VALIDATIONS
 //-----------------------------------------------------------------------------
 function nonEmptyArray(value) {

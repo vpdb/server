@@ -18,6 +18,12 @@ angular.module('vpdb.games.details', [])
 
 			$scope.game.lastrelease = new Date($scope.game.lastrelease).getTime();
 
+			_.each($scope.game.releases, function(release) {
+
+				release.versions = _.sortBy(release.versions, 'version');
+				release.__latestVersion = release.versions[0];
+			});
+
 			setTimeout(function() {
 				$('.image-link').magnificPopup({
 					type: 'image',

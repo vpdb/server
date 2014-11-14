@@ -55,7 +55,11 @@ angular.module('vpdb',  [ 'ngRoute' ].concat(deps).concat(appDeps))
 			enabled: true,
 			requireBase: false
 		});
-	});
+	})
+
+	.config(['msdElasticConfig', function(config) {
+		config.append = '\n\n';
+	}]);
 
 /**
  * The developer site

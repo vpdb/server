@@ -3,7 +3,7 @@ include ../template/_mixins
 .row.ng-cloak.row--fullheight.fade-animation(ng-controller="GameController", ng-show="!pageLoading")
 
 	// right column
-	.col-sm-3.col-sm-push-9.col-lg-2.col-lg-push-10.col--menu.text-center
+	.col-sm-3.col-sm-push-9.col--menu.text-center
 		img.img--logo(ng-src="{{ game.media.logo.url }}")
 
 		.ratingbox(rating-avg="$parent.game.rating", rating-votes="$parent.game.votes", ng-mouseenter="editing=true", ng-mouseleave="editing=false")
@@ -29,7 +29,7 @@ include ../template/_mixins
 		hr(ng-show="game.artists")
 
 		label.label-name(ng-show="game.ipdb")
-			a.a--lighter(href="http://www.ipdb.org/machine.cgi?id={{ game.ipdb.no  }}", target="_blank")
+			a.a--lighter(href="http://www.ipdb.org/machine.cgi?id={{ game.ipdb.number  }}", target="_blank")
 				span.space-right
 					strong IPDB
 				+icon('external-link').shift-up
@@ -50,92 +50,88 @@ include ../template/_mixins
 			| Add Release
 
 	// left column (main content)
-	.col-sm-9.col-sm-pull-3.col-lg-10.col-lg-pull-2.col--main
+	.col-sm-9.col-sm-pull-3.col--main
 		h1.h--primary {{ game.title }}
 		h1.h--small.pull-right {{ game.manufacturer }} &middot; {{ game.year }}
 		hr
 		h1 Releases
 		label(ng-hide="game.releases.length > 0") No releases for this game available.
-		div(ng-repeat="release in game.releases")
-			.panel
-				.col-sm-4.col-md-3
-					a.image-link(href="{{ release.__latestVersion.files[0].media.playfield_image.url }}")
-						img.img.img-responsive.img--rounded(img-src="{{ release.__latestVersion.files[0].media.playfield_image.variations.medium.url }}")
-				.col-sm-8.col-md-9
-					h2.h--primary {{ release.name }} <small>{{ release.__latestVersion.version }}</small>
-					div.markdown(markdown="release.description", ng-show="release.description")
-					h3.h--smaller.h--primary Authors
-					.media(ng-repeat="author in release.authors")
-						.media-left.media-middle.avatar
-							img.img-avatar(gravatar-src="user.author.gravatar_id", gravatar-default="404", fallback-icon="user")
-						.media-body
-							user {{ author.user.name }} <br>
-							| {{ author.roles.join(', ') }}
+		.panel(ng-repeat="release in game.releases")
+			.col-sm-4.col-md-3
+				a.image-link(href="{{ release.__latestVersion.files[0].media.playfield_image.url }}")
+					img.img.img-responsive.img--rounded(img-src="{{ release.__latestVersion.files[0].media.playfield_image.variations.medium.url }}")
+			.col-sm-8.col-md-9
+				h2.h--primary {{ release.name }} <small>{{ release.__latestVersion.version }}</small>
+				div.markdown(markdown="release.description", ng-show="release.description")
+				h3.h--smaller.h--primary Authors
+				.media(ng-repeat="author in release.authors")
+					.media-left.media-middle.avatar
+						img.img-avatar(gravatar-src="user.author.gravatar_id", gravatar-default="404", fallback-icon="user")
+					.media-body
+						user {{ author.user.name }} <br>
+						| {{ author.roles.join(', ') }}
 
-					h3.h--smaller.h--primary(ng-show="release.acknowledgements") Acknowledgements
-					div.markdown(markdown="release.acknowledgements", ng-show="release.acknowledgements")
+				h3.h--smaller.h--primary(ng-show="release.acknowledgements") Acknowledgements
+				div.markdown(markdown="release.acknowledgements", ng-show="release.acknowledgements")
 
-					h3.h--smaller.h--primary Version History
-					p(ng-repeat="version in release.versions") <strong>{{ version.version }}</strong>
+				h3.h--smaller.h--primary Version History
+				p(ng-repeat="version in release.versions") <strong>{{ version.version }}</strong>
 
-					h3.h--smaller.h--primary(ng-show="release.links && release.links.length") Links
-					a(ng-repeat="link in release.links", ng-href="link.url") {{ link.label }}
+				h3.h--smaller.h--primary(ng-show="release.links && release.links.length") Links
+				a(ng-repeat="link in release.links", ng-href="link.url") {{ link.label }}
 
-				.col-sm-12
+			.col-sm-12
 
-					h1.h--small Available Flavors
-					hr
+				h1.h--small Available Flavors
+				hr
 
 
-					h1.h--small Comments
-					hr
+				h1.h--small Comments
+				hr
 
-					label(ng-show="!release.comments || release.comments.length == 0") No comments yet.
-					.media(ng-repeat="comment in release.comments", ng-controller="CommentCtrl")
-						.img-avatar.avatar-placeholder.pull-left(ng-hide="comment.author.avatar")
-						.img.img-avatar.pull-left(ng-show="comment.author.avatar", img-bg="comment.author.avatar")
-						.media-body
-							.panel.panel--inner
-								.panel-triangle
-								.panel-heading
-									label
-									strong {{ comment.author.user }}
-									| &nbsp;commented
-									span(am-time-ago="comment.timestamp")
-									.pull-right(ng-hide="editing")
-										i.a.fa.fa-pencil.space-right(ng-click="editComment()")
-										i.a.fa.fa-times-circle(ng-click="deleteComment()")
-								.panel-body
-									div.markdown(ng-hide="editing", markdown="comment.message")
-									textarea.textarea--full.msd-elastic(ng-show="editing", placeholder="Update comment", ng-model="updatedComment")
-								.panel-footer(ng-show="editing")
-									button.btn.btn-default.pull-left(ng-click="cancelEdit()") Cancel
-									button.btn.btn-default.pull-right(ng-click="saveComment()") Update Comment
-									.clearfix
+				label(ng-show="!release.comments || release.comments.length == 0") No comments yet.
+				.media(ng-repeat="comment in release.comments", ng-controller="CommentCtrl")
+					.img-avatar.avatar-placeholder.pull-left(ng-hide="comment.author.avatar")
+					.img.img-avatar.pull-left(ng-show="comment.author.avatar", img-bg="comment.author.avatar")
+					.media-body
+						.panel.panel--inner
+							.panel-triangle
+							.panel-heading
+								label
+								strong {{ comment.author.user }}
+								| &nbsp;commented
+								span(am-time-ago="comment.timestamp")
+								.pull-right(ng-hide="editing")
+									i.a.fa.fa-pencil.space-right(ng-click="editComment()")
+									i.a.fa.fa-times-circle(ng-click="deleteComment()")
+							.panel-body
+								div.markdown(ng-hide="editing", markdown="comment.message")
+								textarea.textarea--full.msd-elastic(ng-show="editing", placeholder="Update comment", ng-model="updatedComment")
+							.panel-footer(ng-show="editing")
+								button.btn.btn-default.pull-left(ng-click="cancelEdit()") Cancel
+								button.btn.btn-default.pull-right(ng-click="saveComment()") Update Comment
+								.clearfix
 
-					h3.h--smaller.h--primary(ng-show="auth.isAuthenticated") Add a Comment:
-					.media(ng-show="auth.isAuthenticated")
-						.media-left.avatar
-							img.img-avatar.pull-left(gravatar-src="auth.user.gravatar_id", gravatar-default="404", fallback-icon="user")
-						.media-body
-							tabset
-								label.label--small.pull-right Comments are parsed with <a href="http://daringfireball.net/projects/markdown/syntax" target="_blank">Markdown</a>.
-								tab
-									tab-heading(title="Write")
-										+icon('edit')
-										.panel-triangle
-									textarea.textarea--full.msd-elastic(placeholder="Leave a comment", ng-model="$parent.newComment")
-								tab
-									tab-heading(title="Preview"): +icon('eye')
-									div.markdown(markdown="$parent.newComment")
-									label.tab__label(ng-show="!newComment || newComment.length == 0") Nothing to preview.
-
+				h3.h--smaller.h--primary(ng-show="auth.isAuthenticated") Add a Comment:
+				.media(ng-show="auth.isAuthenticated")
+					.media-left.avatar
+						img.img-avatar.pull-left(gravatar-src="auth.user.gravatar_id", gravatar-default="404", fallback-icon="user")
+					.media-body.media--full-width
+						tabset
+							label.label--small.pull-right Comments are parsed with <a href="http://daringfireball.net/projects/markdown/syntax" target="_blank">Markdown</a>.
+							tab
+								tab-heading(title="Write")
+									+icon('edit')
+									.panel-triangle
+								textarea.textarea--full.animate(placeholder="Your comment", msd-elastic, ng-model="$parent.newComment")
+							tab
+								tab-heading(title="Preview"): +icon('eye')
+								div.markdown(markdown="$parent.newComment")
+								label.tab__label(ng-show="!$parent.newComment || $parent.newComment.length == 0") Nothing to preview.
 
 				button.btn.btn-default.padder-top.pull-right(ng-click="addComment()") Comment
-				.clearfix
-
-
-
+			.clearfix
+			p.padder-bottom
 
 
 

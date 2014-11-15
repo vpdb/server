@@ -13,6 +13,7 @@ var superuser = '__superuser';
 exports.auth = require('./auth-helper');
 exports.file = require('./file-helper');
 exports.game = require('./game-helper');
+exports.release = require('./release-helper');
 
 /**
  * Sets up a bunch of users for a given test suite.

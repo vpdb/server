@@ -15,7 +15,7 @@ module.exports = {
 		skipImageOptimizations: true,
 		quota: {
 			plans: {
-				free:   { credits: 5, per: 'day' },
+				free:   { credits: 3, per: 'day' },
 				bronze: { credits: 50, per: 'day' },
 				silver: { credits: 200, per: 'day' },
 				gold:   { credits: 5000, per: 'day' },

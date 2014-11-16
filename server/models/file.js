@@ -218,7 +218,7 @@ FileSchema.statics.sanitizeObject = function(object, replacement) {
 				object[property] = object[oldProp];
 				delete object[oldProp];
 			}
-			if (typeof object[property] === "object"){
+			if (typeof object[property] === "object") {
 				FileSchema.statics.sanitizeObject(object[property]);
 			}
 		}

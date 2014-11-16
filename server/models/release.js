@@ -204,9 +204,11 @@ FileSchema.options.toObject.transform = function(doc, file) {
 	file.media = file._media;
 	file.compatibility = [];
 	var VPBuild = require('mongoose').model('VPBuild');
+	var File = require('mongoose').model('File');
 	_.each(file._compatibility, function(compat) {
 		file.compatibility.push(VPBuild.toSimple(compat));
 	});
+	file.file = File.toSimple(file._file);
 	delete file.id;
 	delete file._id;
 	delete file._file;

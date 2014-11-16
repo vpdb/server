@@ -22,6 +22,7 @@ exports.createRelease = function(user, request, done) {
 								files: [ {
 									_file: vptfile.id,
 									_media: { playfield_image: playfield.id },
+									_compatibility: [ '9.9.0' ],
 									flavor: { orientation: 'fs', lightning: 'night' } }
 								],
 								version: '1.0.0'

@@ -1051,6 +1051,7 @@ var users = [
 	}
 ];
 
+/* istanbul ignore next */
 exports.games = function(req, res) {
 
 	res.json({
@@ -1058,6 +1059,7 @@ exports.games = function(req, res) {
 	});
 };
 
+/* istanbul ignore next */
 exports.game = function(req, res) {
 
 	res.json({
@@ -1067,6 +1069,7 @@ exports.game = function(req, res) {
 	});
 };
 
+/* istanbul ignore next */
 exports.packs = function(req, res) {
 
 	var gameAttrs = [ 'id', 'name' ];
@@ -1117,6 +1120,7 @@ exports.packs = function(req, res) {
 	});
 };
 
+/* istanbul ignore next */
 exports.releases = function(req, res) {
 
 	var gameAttrs = [ 'id', 'name', 'manufacturer', 'year', 'thumbs'];
@@ -1155,6 +1159,7 @@ exports.releases = function(req, res) {
 	});
 };
 
+/* istanbul ignore next */
 exports.feed = function(req, res) {
 
 	res.json({
@@ -1253,12 +1258,14 @@ exports.feed = function(req, res) {
 	});
 };
 
+/* istanbul ignore next */
 exports.users = function(req, res) {
 	res.json({
 		result: users.slice(0, 4)
 	});
 };
 
+/* istanbul ignore next */
 exports.user = function(req, res) {
 	res.json({
 		result: _.find(users, function(user) {

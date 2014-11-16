@@ -194,24 +194,6 @@ exports.configure = function(app) {
 			res.status(404).end();
 		}
 	});
-
-	// assume "not found" in the error msgs
-	// is a 404. this is somewhat silly, but
-	// valid, you can do whatever you like, set
-	// properties, use instanceof etc.
-	app.use(function(err, req, res, next) {
-		// treat as 404
-		if (~err.message.indexOf('not found')) {
-			return next();
-		}
-		logger.error('[express] %s', err.stack);
-
-		// error page
-		ctrl.renderError(500, 'Internal Server Error.')(req, res);
-	});
-
-	// assume 404 since no middleware responded
-	app.use(ctrl.renderError(404, 'Not found.'));
 };
 
 //function sendOfflineMsg() {

@@ -46,7 +46,6 @@ var config = settings.current;
 module.exports = function(app) {
 
 	var api = require('./controllers/api');
-	var web = require('./controllers/web');
 	var auth = require('./controllers/auth');
 	var storage = require('./controllers/storage');
 
@@ -131,12 +130,10 @@ module.exports = function(app) {
 
 	if (config.vpdb.passport.github.enabled) {
 		app.get('/auth/github', passport.authenticate('github', { failureRedirect: '/', session: false }));
-		app.get('/auth/github/callback', web.index());
 	}
 	_.each(config.vpdb.passport.ipboard, function(ipbConfig) {
 		if (ipbConfig.enabled) {
 			app.get('/auth/' + ipbConfig.id, passport.authenticate(ipbConfig.id, { failureRedirect: '/', session: false }));
-			app.get('/auth/' + ipbConfig.id + '/callback', web.index());
 		}
 	});
 

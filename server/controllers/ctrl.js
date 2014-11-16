@@ -50,31 +50,3 @@ exports.viewParams = function(gitInfoFromGrunt) {
 		svgDefs: config.vpdb.tmp + '/vpdb-svg/_svg-defs.svg'
 	};
 };
-
-/**
- * Renders an error. Depending of the path of the request, different
- * @param code
- * @param message
- * @returns {Function}
- */
-exports.renderError = function(code, message) {
-	return function(req, res) {
-
-		// for API calls, return json
-		if (req.originalUrl.substr(0, 5) === '/api/') {
-			res.setHeader('Content-Type', 'application/json');
-			res.status(code).send({ error: message });
-
-		// for partials, return a partial
-		} else if (req.originalUrl.substr(0, 6) === '/html/') {
-			// return 200 because otherwise angular doesn't render the partial view.
-			res.status(200).send('<h1>Oops!</h1><p>' + message + '</p>');
-
-		// otherwise, return the full page.
-		} else {
-			var params = exports.viewParams();
-			var tpl = _.contains([403, 404, 500, 502], code) ? code : '000';
-			res.status(code).render('errors/' + tpl, _.extend(params, { url: req.originalUrl, code: code, message: message }));
-		}
-	};
-};

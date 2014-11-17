@@ -18,6 +18,7 @@ var disableCache = false;
  * @param key Entity key or ID
  * @param size Size params, width and height.
  */
+/* istanbul ignore next */
 exports.square = function(context, type, key, size) {
 
 	if (type === 'release') {
@@ -43,7 +44,7 @@ exports.square = function(context, type, key, size) {
 		context.res.end('Unknown type "' + type + '".');
 	}
 };
-
+/* istanbul ignore next */
 var asset = function(context, p, processFct, type, key, size, defaultName) {
 
 
@@ -114,7 +115,7 @@ var asset = function(context, p, processFct, type, key, size, defaultName) {
 		}
 	}
 };
-
+/* istanbul ignore next */
 var file = function(context, path) {
 	context.res.writeHead(200, { 'Content-Type': 'image/png' });
 	var stream = fs.createReadStream(path);

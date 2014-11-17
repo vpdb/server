@@ -3,6 +3,7 @@
 var _ = require('lodash');
 var asset = require('../modules/asset');
 
+/* istanbul ignore next */
 exports.middleware = function() {
 
 	var sizes = {

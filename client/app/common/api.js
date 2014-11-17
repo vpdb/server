@@ -121,7 +121,7 @@ common
 				return function(response) {
 					scope.setLoading(false);
 					$modal.open({
-						templateUrl: 'common/modal-error.html',
+						templateUrl: '/common/modal-error.html',
 						controller: 'ErrorModalCtrl',
 						resolve: {
 							errorTitle: function() { return title; },

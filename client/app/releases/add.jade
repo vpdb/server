@@ -379,7 +379,7 @@ include ../template/_mixins
 					.panel.panel--blank.playfield--image(ng-file-drop="onMediaUpload(file.storage.id, 'playfield_image', $files)", ng-file-drag-over-class="panel--dragging", ng-class="{ error: errors.versions[0].files[meta.files.indexOf(file)]._media.playfield_image }")
 						input#uploadBackglass.hide(type="file", ng-file-select="onMediaUpload(file.storage.id, 'playfield_image', $files)")
 						.panel-body.a.a--darker(ng-click="openUploadDialog('playfield_image', '#uploadBackglass')")
-							.img.img--ar-ws.loaded(img-bg="meta.mediaFiles[file.storage.id].playfield_image.variations['medium-2x'].url")
+							.img.img--ar-ws.loaded(img-bg="meta.mediaFiles[file.storage.id].playfield_image.variations['medium-landscape'].url")
 								.text-center.vertical-center--100
 									progressbar.progress--fixed-absolute.progress-striped.active(value="mediaFiles[file.storage.id].playfield_image.progress", ng-show="mediaFiles[file.storage.id].playfield_image.uploading")
 									.span(ng-show="!img.url")

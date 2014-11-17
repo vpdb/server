@@ -79,13 +79,13 @@ common
 
 		$scope.helpPinnedDownloads = function() {
 			$modal.open({
-				templateUrl: 'partials/modals/helpPinnedDownloads.html'
+				templateUrl: '/partials/modals/helpPinnedDownloads.html'
 			});
 		};
 
 		$rootScope.login = function() {
 			$modal.open({
-				templateUrl: 'auth/modal-login.html',
+				templateUrl: '/auth/modal-login.html',
 				controller: 'LoginCtrl',
 				windowClass: 'theme-light'
 			});

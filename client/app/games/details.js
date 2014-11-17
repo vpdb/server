@@ -37,7 +37,7 @@ angular.module('vpdb.games.details', [])
 
 		$scope.requestModPermission = function(release) {
 			var modalInstance = $modal.open({
-				templateUrl: 'partials/modals/requestModPermission.html',
+				templateUrl: '/partials/modals/requestModPermission.html',
 				controller: 'RequestModPermissionModalCtrl'
 			});
 

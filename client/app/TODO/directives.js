@@ -122,7 +122,7 @@ common
 			link: function(scope, element) {
 				element.click(function() {
 					$modal.open({
-						templateUrl: 'users/modal-user-edit.html',
+						templateUrl: '/users/modal-user-edit.html',
 						controller: 'UserDetailCtrl',
 						resolve: {
 							username: function() {

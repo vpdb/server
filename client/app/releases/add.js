@@ -206,7 +206,7 @@ angular.module('vpdb.releases.add', [])
 				if (!_.contains(['image/jpeg', 'image/png'], file.type) && !_.contains(['vpt', 'vpx', 'vbs'], ext)) {
 					//noinspection JSHint
 					return $modal.open({
-						templateUrl: 'common/modal-info.html',
+						templateUrl: '/common/modal-info.html',
 						controller: 'InfoModalCtrl',
 						resolve: {
 							icon: function() { return 'fa-file-image-o'; },
@@ -294,7 +294,7 @@ angular.module('vpdb.releases.add', [])
 		 */
 		$scope.addAuthor = function(author) {
 			$modal.open({
-				templateUrl: 'releases/modal-author-add.html',
+				templateUrl: '/releases/modal-author-add.html',
 				controller: 'ChooseAuthorCtrl',
 				resolve: {
 					release: function() { return $scope.release; },
@@ -331,7 +331,7 @@ angular.module('vpdb.releases.add', [])
 		 */
 		$scope.createTag = function() {
 			$modal.open({
-				templateUrl: 'releases/modal-tag-create.html',
+				templateUrl: '/releases/modal-tag-create.html',
 				controller: 'CreateTagCtrl'
 			}).result.then(function(newTag) {
 					$scope.tags.push(newTag);
@@ -395,7 +395,7 @@ angular.module('vpdb.releases.add', [])
 		 */
 		$scope.addVPBuild = function() {
 			$modal.open({
-				templateUrl: 'releases/modal-vpbuild-create.html',
+				templateUrl: '/releases/modal-vpbuild-create.html',
 				controller: 'AddVPBuildCtrl',
 				size: 'lg'
 			}).result.then(function(newBuild) {
@@ -493,7 +493,7 @@ angular.module('vpdb.releases.add', [])
 				$scope.release.submitted = true;
 				$scope.reset();
 				$modal.open({
-					templateUrl: 'common/modal-info.html',
+					templateUrl: '/common/modal-info.html',
 					controller: 'InfoModalCtrl',
 					resolve: {
 						icon: function() { return 'fa-check-circle-o'; },

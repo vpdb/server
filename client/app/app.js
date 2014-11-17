@@ -50,7 +50,7 @@ angular.module('vpdb',  [ 'ngRoute' ].concat(deps).concat(appDeps))
 		$routeProvider.when('/admin/users',             { templateUrl: '/users/list.html' });
 		$routeProvider.when('/auth/:strategy/callback', { templateUrl: '/auth/authenticating.html' });
 
-		$routeProvider.otherwise({ templateUrl: 'errors/404.html' });
+		$routeProvider.otherwise({ templateUrl: '/errors/404.html' });
 		$locationProvider.html5Mode({
 			enabled: true,
 			requireBase: false

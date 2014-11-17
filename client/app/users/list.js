@@ -16,7 +16,7 @@ angular.module('vpdb.users.list', [])
 
 		$scope.edit = function(user) {
 			$modal.open({
-				templateUrl: 'users/modal-user-edit.html',
+				templateUrl: '/users/modal-user-edit.html',
 				controller: 'AdminUserEditCtrl',
 				size: 'lg',
 				resolve: {

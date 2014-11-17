@@ -51,7 +51,7 @@ angular.module('vpdb.login', [])
 			$location.url('/');
 			$location.replace();
 			$modal.open({
-				templateUrl: 'common/modal-error.html',
+				templateUrl: '/common/modal-error.html',
 				controller: 'ErrorModalCtrl',
 				resolve: {
 					errorTitle: function() { return 'Could not login.'; },

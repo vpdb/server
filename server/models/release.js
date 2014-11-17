@@ -51,6 +51,7 @@ var FileSchema = new Schema(fileFields);
 
 var VersionSchema = new Schema({
 	version: { type: String, required: 'Version must be provided.' },
+	released_at: { type: Date, required: true },
 	changes: { type: String },
 	files: { validate: [ nonEmptyArray, 'You must provide at least one file.' ], type: [ FileSchema ] }
 });
@@ -59,13 +60,13 @@ var AuthorSchema = new Schema({
 	roles: [ String ]
 });
 var releaseFields = {
-	id:           { type: String, required: true, unique: true, 'default': shortId.generate },
-	_game:        { type: Schema.ObjectId, required: 'Reference to game must be provided.', ref: 'Game' },
-	name:         { type: String, required: 'Name must be provided.' },
-	description:  { type: String },
-	versions: { validate: [ nonEmptyArray, 'You must provide at least one version for the release.' ], type: [ VersionSchema ] },
-	authors: { validate: [ nonEmptyArray, 'You must provide at least one author.' ], type: [ AuthorSchema ] },
-	_tags: [ { type: Schema.ObjectId, ref: 'Tag' } ],
+	id:          { type: String, required: true, unique: true, 'default': shortId.generate },
+	_game:       { type: Schema.ObjectId, required: 'Reference to game must be provided.', ref: 'Game' },
+	name:        { type: String, required: 'Name must be provided.' },
+	description: { type: String },
+	versions:    { type: [ VersionSchema ], validate: [ nonEmptyArray, 'You must provide at least one version for the release.' ] },
+	authors:     { type: [ AuthorSchema ], validate: [ nonEmptyArray, 'You must provide at least one author.' ] },
+	_tags:     [ { type: Schema.ObjectId, ref: 'Tag' } ],
 	links: [ {
 		label: { type: String },
 		url: { type: String }

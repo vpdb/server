@@ -37,9 +37,10 @@ var error = require('../../modules/error')('api', 'release');
  */
 exports.create = function(req, res) {
 
+	var now = new Date();
 	Release.getInstance(_.extend(req.body, {
 		_created_by: req.user._id,
-		created_at: new Date()
+		created_at: now
 	}), function(err, newRelease) {
 		if (err) {
 			return api.fail(res, error(err, 'Error creating release instance').log('create'), 500);
@@ -48,6 +49,10 @@ exports.create = function(req, res) {
 		var assertRb = api.assert(error, 'create', newRelease.name, res, function(done) {
 			newRelease.remove(done);
 		});
+		if (newRelease.versions[0]) {
+			newRelease.versions[0] = _.defaults(newRelease.versions[0], { released_at: now });
+		}
+
 		logger.info('[api|release:create] %s', util.inspect(req.body));
 		newRelease.validate(function(err) {
 			if (err) {

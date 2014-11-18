@@ -6,13 +6,18 @@
 // Add padding to body instead of media
 .media
 	position relative
+	> .pull-left
+		margin-right 0
+	> img.pull-left
+		padding 0
 .media--full-width
 	width 100%
 .media-body
 	padding-left 15px
-.media > .pull-left
-	margin-right 0
-
+.media--edit-panel
+	position absolute
+	top 0
+	right 0
 
 // News Flow
 //
@@ -71,6 +76,8 @@
 		margin-bottom 5px
 	h6
 		margin-top -5px
+	.media-left
+		padding-right 5px
 	.media-body
 		padding-left 10px
 		h6

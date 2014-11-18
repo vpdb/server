@@ -148,12 +148,12 @@ include ../template/_mixins
 		i.pull-left(ng-show="release.authors.length == 0") No authors added.
 		.row--fullwidth
 			.media.media--mini.media--mini-noborders.col-sm-4(ng-repeat="author in release.authors", ng-mouseenter="hovering=true", ng-mouseleave="hovering=false")
-				.img-avatar.img-avatar--sm.avatar-placeholder.avatar-placeholder--sm.pull-left(ng-hide="meta.users[author._user].avatar")
-				.img.img-avatar.img-avatar--sm.pull-left(ng-show="meta.users[author._user].avatar", img-bg="meta.users[author._user].avatar")
+				.media-left.media-middle.avatar
+					img.img-avatar.img-avatar--sm(gravatar-src="meta.users[author._user].gravatar_id", gravatar-default="404", fallback-icon="user")
 				.media-body
 					h6.h--no-margin.h--lighter.media-heading {{ meta.users[author._user].name }}
 					span {{ author.roles.join(', ') }}
-				.fade-admination(ng-show="hovering")
+				.media--edit-panel.fade-animation(ng-show="hovering")
 					+icon('pencil').pos-pencil.a.smaller(ng-click="addAuthor(author)")
 					+icon('trash').pos-trash.a.smaller(ng-click="removeAuthor(author)")
 

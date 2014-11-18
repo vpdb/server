@@ -44,7 +44,7 @@
 		"jquery-throttle-debounce": "*",
 		"highlightjs": "^8.3.0",
 		"fontawesome": "^4.2.0",
-		"bootstrap": "^3.2.1",
+		"bootstrap": "3.3.0",
 		"FileAPI": "^2.0.9",
 		"lodash": "^2.4.1",
 		"traverse": "^0.6.7",

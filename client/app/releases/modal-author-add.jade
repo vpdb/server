@@ -61,8 +61,7 @@ include ../template/_mixins
 
 	script#userListItem(type="text/ng-template")
 		div.media.media--mini
-			div.img-avatar.img-avatar--sm.avatar-placeholder.avatar-placeholder--sm.pull-left(ng-hide="match.model.thumb")
-			div.img.img-avatar.img-avatar--sm.pull-left(ng-show="match.model.thumb", img-bg="match.model.thumb")
+			img.img-avatar.img-avatar--sm.pull-left(gravatar-src="match.model.gravatar_id", gravatar-default="404", fallback-icon="user")
 			div.media-body
 				h3.h--no-margin.h--lighter {{ match.model.name }}
 

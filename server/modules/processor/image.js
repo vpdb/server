@@ -45,14 +45,26 @@ function ImageProcessor() {
 
 	this.variations = {
 		backglass: [
-			{ name: 'medium',    width: 364, height: 291 },
-			{ name: 'medium-2x', width: 728, height: 582 },
-			{ name: 'small',     width: 253, height: 202 },
-			{ name: 'small-2x',  width: 506, height: 404 }
+			{ name: 'medium',    width: 364, height: 291, mimeType: 'image/jpeg' },
+			{ name: 'medium-2x', width: 728, height: 582, mimeType: 'image/jpeg' },
+			{ name: 'small',     width: 253, height: 202, mimeType: 'image/jpeg' },
+			{ name: 'small-2x',  width: 506, height: 404, mimeType: 'image/jpeg' }
 		],
-		playfield: [
-			{ name: 'medium',    width: 393, height: 233 },
-			{ name: 'medium-2x', width: 786, height: 466 }
+		'playfield-fs': [
+			{ name: 'medium',              width: 393, height: 233, rotate: -90, mimeType: 'image/jpeg' },
+			{ name: 'medium-2x',           width: 786, height: 466, rotate: -90, mimeType: 'image/jpeg' },
+			{ name: 'medium-landscape',    width: 393, height: 233, mimeType: 'image/jpeg' },
+			{ name: 'medium-landscape-2x', width: 786, height: 466, mimeType: 'image/jpeg' },
+			{ name: 'square',    wideToSquare: true, size: 120, mimeType: 'image/jpeg' },
+			{ name: 'square-2x', wideToSquare: true, size: 240, mimeType: 'image/jpeg' }
+		],
+		'playfield-ws': [
+			{ name: 'medium',              width: 393, height: 233, rotate: -90, mimeType: 'image/jpeg' },
+			{ name: 'medium-2x',           width: 786, height: 466, rotate: -90, mimeType: 'image/jpeg' },
+			{ name: 'medium-landscape',    width: 393, height: 233, mimeType: 'image/jpeg' },
+			{ name: 'medium-landscape-2x', width: 786, height: 466, mimeType: 'image/jpeg' },
+			{ name: 'square',    wideToSquare: true, size: 120, mimeType: 'image/jpeg' },
+			{ name: 'square-2x', wideToSquare: true, size: 240, mimeType: 'image/jpeg' }
 		]
 	};
 }
@@ -110,7 +122,32 @@ ImageProcessor.prototype.pass1 = function(src, dest, file, variation, done) {
 
 	// do the processing
 	logger.info('[processor|image|pass1] Resizing %s "%s" (%s)...', file.file_type, file.id, variation.name);
-	gm(src).resize(variation.width, variation.height)
+	var isDesktopPlayfield = variation.isPlayfield;
+	var img = gm(src);
+
+	if (variation.width && variation.height) {
+		img.resize(variation.width, variation.height);
+	}
+
+	if (variation.rotate) {
+		img.rotate('black', variation.rotate);
+	}
+
+	if (variation.wideToSquare) {
+		var srcSize = file.metadata.size;
+		var scale = srcSize.width / 1920;
+		img.rotate('black', -120);
+		img.crop(590 * scale, 590 * scale, 800 * scale, 1100 * scale);
+		if (variation.size) {
+			img.resize(variation.size, variation.size);
+		}
+	}
+
+	if (file.getMimeSubtype() === 'jpeg') {
+		img.quality(85);
+	}
+
+	img
 		.stream().on('error', handleErr)
 		.pipe(writeStream).on('error', handleErr);
 };
@@ -140,8 +177,10 @@ ImageProcessor.prototype.pass2 = function(src, dest, file, variation, done) {
 	});
 
 	// setup error handler
-	var handleErr = function(err) {
-		done(error(err, 'Error processing %s', file.toString(variation)).log('pass2'));
+	var handleErr = function(what) {
+		return function(err) {
+			done(error(err, 'Error at %s while processing %s', what, file.toString(variation)).log('pass2'));
+		};
 	};
 	writeStream.on('error', handleErr);
 
@@ -150,10 +189,10 @@ ImageProcessor.prototype.pass2 = function(src, dest, file, variation, done) {
 	var optimizer = new OptiPng(['-o7']);
 
 	logger.info('[processor|image|pass2] Optimizing %s', file.toString(variation));
-	fs.createReadStream(src).on('error', handleErr)
-		.pipe(quanter).on('error', handleErr)
-		.pipe(optimizer).on('error', handleErr)
-		.pipe(writeStream).on('error', handleErr);
+	fs.createReadStream(src).on('error', handleErr('reading'))
+		.pipe(quanter).on('error', handleErr('quanter'))
+		.pipe(optimizer).on('error', handleErr('optimizer'))
+		.pipe(writeStream).on('error', handleErr('writing'));
 };
 
 module.exports = new ImageProcessor();

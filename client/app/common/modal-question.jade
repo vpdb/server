@@ -1,0 +1,14 @@
+include ../template/_mixins
+
+.theme-light
+	.modal-header
+		h1.h--no-margin.h--small
+			+icon('question-circle').space-right
+			| {{ question.title }}
+	.modal-body
+		p {{ question.message }}
+		p.text-center: b {{ question.question }}
+
+	.modal-footer
+		button.btn.btn-default(ng-click="$close(false)") {{ question.no }}
+		button.btn.btn--secondary(ng-click="$close(true)") {{ question.yes }}

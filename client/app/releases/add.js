@@ -16,39 +16,6 @@ angular.module('vpdb.releases.add', [])
 		$scope.setMenu('admin');
 		$scope.setTitle('Add Release');
 
-//		$scope.meta.files = [
-//			{
-//				name: 'Filename.vpt',
-//				bytes: 1337,
-//				icon: DisplayService.fileIcon('application/x-visual-pinball-table'),
-//				uploaded: true,
-//				uploading: false,
-//				progress: 100,
-//				storage: { id: 'abcd' },
-//				flavor: {}
-//			},
-//			{
-//				name: 'Anotherfile.vpx',
-//				bytes: 12213,
-//				icon: DisplayService.fileIcon('application/x-visual-pinball-table-x'),
-//				uploaded: true,
-//				uploading: false,
-//				progress: 100,
-//				storage: { id: 'asdf' },
-//				flavor: {}
-//			},
-//			{
-//				name: 'Filename.jpg',
-//				bytes: 3321,
-//				icon: DisplayService.fileIcon('image/jpeg'),
-//				uploaded: true,
-//				uploading: false,
-//				progress: 100,
-//				storage: { id: '1234' },
-//				flavor: {}
-//			}
-//		];
-
 		// define flavors
 		$scope.flavors = [
 			{
@@ -128,33 +95,20 @@ angular.module('vpdb.releases.add', [])
 
 			var currentUser = AuthService.getUser();
 
-			var emptyMedia = {
-				playfield_image: {
-					url: false,
-					variations: {
-						'medium-2x': { url: false }
-					}
-				},
-				playfield_video: {
-					url: false,
-					variations: {
-						'still': { url: false },
-						'small-rotated': { url: undefined }
-					}
-				}
-			};
-
 			/*
 			 * `meta` is all the data we need for displaying the page but that
 			 * is not part of the release object.
 			 */
 			$scope.meta = $localStorage.release_meta = {
-				users: {},     // serves only for displaying purposes. key: id, value: full object
-				files: [],     // that's the "driving" object, i.e. stuff gets pulled from this and also the view loops over it.
-				tags: [],      // also driving object. on drop and remove, ids get copied into release object from here.
-				mediaFiles: {} // also driving object.
+				users: {},      // serves only for displaying purposes. key: id, value: full object
+				files: [],      // that's the "driving" object, i.e. stuff gets pulled from this and also the view loops over it.
+				tags: [],       // also driving object. on drop and remove, ids get copied into release object from here.
+				mediaFiles: {}, // also driving object.
+				mediaLinks: {}  // only for display purposes.
 			};
 			$scope.meta.users[currentUser.id] = currentUser;
+
+			// TODO remove files via API
 
 			$scope.release = $localStorage.release = {
 				_game: $scope.game.id,
@@ -368,6 +322,7 @@ angular.module('vpdb.releases.add', [])
 			return {};
 		};
 
+
 		/**
 		 * Removes a link from the release
 		 * @param {object} link
@@ -375,6 +330,7 @@ angular.module('vpdb.releases.add', [])
 		$scope.removeLink = function(link) {
 			$scope.release.links.splice($scope.release.links.indexOf(link), 1);
 		};
+
 
 		/**
 		 * Adds or removes a VP build to/from to a given file of the release
@@ -389,6 +345,7 @@ angular.module('vpdb.releases.add', [])
 				file.vpbuilds.push(vpbuild.id);
 			}
 		};
+
 
 		/**
 		 * Opens the dialog for creating a new VP build.
@@ -405,6 +362,59 @@ angular.module('vpdb.releases.add', [])
 
 
 		/**
+		 * Confirms orientation change when media is already uploaded.
+		 *
+		 * @param {object} event Click event object
+		 * @param {object} flavor Which flavor is about to change
+		 */
+		$scope.flavorPreChange = function(event, flavor) {
+
+			// ignore everything non-orientation related
+			if (flavor.name !== 'orientation') {
+				return;
+			}
+
+			// only confirm if there's a media file uploaded
+			if ($scope.meta.mediaFiles[this.file.storage.id]) {
+				var scope = this;
+				event.preventDefault();
+				return $modal.open({
+					templateUrl: '/common/modal-question.html',
+					controller: 'QuestionModalCtrl',
+					resolve: { question: function() { return {
+						title: 'Change Orientation',
+						message: 'You\'re about to change orientation for a file for which you already have uploaded media. Changing orientation will remove media of the file which you\'re about to change.',
+						question: 'Do you want to change the orientation?',
+						yes: 'Yes',
+						no: 'No'
+					}; } }
+				}).result.then(function(change) {
+					if (change) {
+
+						// update flavor
+						scope.file.flavor[flavor.name] = scope.flavorVal.value;
+
+						// remove media files from server
+						var tableFileId = scope.file.storage.id;
+						var mediaFileIds = _.pluck(_.values($scope.meta.mediaFiles[tableFileId]), 'id');
+						_.each(mediaFileIds, function(id) {
+							FileResource.delete({ id: id });
+						});
+
+						// clear local media
+						delete $scope.meta.mediaFiles[tableFileId];
+						if ($scope.mediaFiles) {
+							delete $scope.mediaFiles[tableFileId];
+						}
+						
+						$scope.meta.mediaLinks[tableFileId] = { playfield_image: false, playfield_video: false };
+
+					}
+				});
+			}
+		};
+
+		/**
 		 * When an image or video is dropped in the media section
 		 *
 		 * Statuses
@@ -414,35 +424,27 @@ angular.module('vpdb.releases.add', [])
 		 * - generating thumb
 		 * - finished
 		 *
-		 * @param {string} tableFileId Storage ID of the uploaded vpt
+		 * @param {object} tableFile Table file uploaded above
 		 * @param {string} type Media type, e.g. "playfield_image" or "playfield_video"
 		 * @param {array} $files Uploaded file(s), assuming that one was chosen.
 		 */
-		$scope.onMediaUpload = function(tableFileId, type, $files) {
+		$scope.onMediaUpload = function(tableFile, type, $files) {
+
+			var tableFileId = tableFile.storage.id;
 
 			var file = $files[0];
 			var mimeType = MimeTypeService.fromFile(file);
 
 			// init
 			_.defaults($scope, { mediaFiles: {}});
-			if (!$scope.mediaFiles[tableFileId]) {
-				$scope.mediaFiles[tableFileId] = {};
-			}
+			$scope.mediaFiles[tableFileId] = $scope.mediaFiles[tableFileId] || {};
 			$scope.mediaFiles[tableFileId][type] = {};
-			if (!$scope.meta.mediaFiles[tableFileId]) {
-				$scope.meta.mediaFiles[tableFileId] = {};
-			}
+			$scope.meta.mediaFiles[tableFileId] = $scope.meta.mediaFiles[tableFileId] || {};
+			$scope.meta.mediaLinks[tableFileId] = $scope.meta.mediaLinks[tableFileId] || {};
 
 			if ($scope.meta.mediaFiles[tableFileId][type] && $scope.meta.mediaFiles[tableFileId][type].id) {
 				FileResource.delete({ id : $scope.meta.mediaFiles[tableFileId][type].id });
-
-				$scope.meta.mediaFiles[tableFileId][type] = {
-					url: false,
-					variations: {
-						'medium-2x': { url: false },
-						'still': { url: false }
-					}
-				};
+				$scope.meta.mediaLinks[tableFileId][type] = false;
 				this.$emit('imageUnloaded');
 			}
 
@@ -451,14 +453,15 @@ angular.module('vpdb.releases.add', [])
 			fileReader.readAsArrayBuffer(file);
 			fileReader.onload = function(event) {
 
-				$scope.meta.mediaFiles[tableFileId][type] = { url: false };
+				$scope.meta.mediaFiles[tableFileId][type] = { };
+				$scope.meta.mediaLinks[tableFileId][type] = false;
 				$scope.mediaFiles[tableFileId][type].uploaded = false;
 				$scope.mediaFiles[tableFileId][type].uploading = true;
 				$scope.mediaFiles[tableFileId][type].status = 'Uploading file...';
 				$upload.http({
 					url: ConfigService.storageUri(),
 					method: 'POST',
-					params: { type: 'playfield' },
+					params: { type: 'playfield-' + tableFile.flavor.orientation },
 					headers: {
 						'Content-Type': mimeType,
 						'Content-Disposition': 'attachment; filename="' + file.name + '"'
@@ -473,6 +476,7 @@ angular.module('vpdb.releases.add', [])
 					$scope.meta.mediaFiles[tableFileId][type].url = AuthService.setUrlParam(mediaResult.url, mediaResult.is_protected);
 					$scope.meta.mediaFiles[tableFileId][type].variations = AuthService.setUrlParam(mediaResult.variations, mediaResult.is_protected);
 					$scope.meta.mediaFiles[tableFileId][type].metadata = mediaResult.metadata;
+					$scope.meta.mediaLinks[tableFileId][type] = $scope.meta.mediaFiles[tableFileId][type].variations['medium-landscape'].url;
 					updateMedia($scope.meta.mediaFiles, $scope.release);
 
 				}, ApiHelper.handleErrorsInDialog($scope, 'Error uploading image.', function() {

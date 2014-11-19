@@ -83,7 +83,7 @@ include ../template/_mixins
 								th.text--large {{ flavor.header }}
 								td(ng-repeat="flavorVal in flavor.values")
 									.radio--lg-twoliner.radio-inline
-										label
+										label(ng-click="flavorPreChange($event, flavor)")
 											input(type="radio", name="{{ file.name + flavor.header }}", value="{{ flavorVal.value }}", ng-model="file.flavor[flavor.name]")
 											span {{ flavorVal.name }}
 											span: i {{ flavorVal.other }}
@@ -369,17 +369,17 @@ include ../template/_mixins
 
 		span(ng-repeat="file in meta.files | fileext:['vpt','vpx']")
 			h2.h--smaller
-				+icon('{{ file.icon }}').svg-2x.shift-up
+				+icon('{{ file.icon }}').svg-2x.shift-up.space-right-less
 				| {{ file.name }}
 			hr.hr--light.hr--shifted-up
-			.row
-				.col-sm-6.playfield--rotate-on-upload(make-loaded="loaded")
+			.row(ng-show="file.flavor.orientation")
+				.col-sm-6.playfield--rotate-on-upload(make-loaded="{ loaded: file.flavor.orientation === 'fs' }")
 					span.pre-h4 Playfield
 					h4.h--large Screenshot
-					.panel.panel--blank.playfield--image(ng-file-drop="onMediaUpload(file.storage.id, 'playfield_image', $files)", ng-file-drag-over-class="panel--dragging", ng-class="{ error: errors.versions[0].files[meta.files.indexOf(file)]._media.playfield_image }")
-						input#uploadBackglass.hide(type="file", ng-file-select="onMediaUpload(file.storage.id, 'playfield_image', $files)")
+					.panel.panel--blank.playfield--image(ng-file-drop="onMediaUpload(file, 'playfield_image', $files)", ng-file-drag-over-class="panel--dragging", ng-class="{ error: errors.versions[0].files[meta.files.indexOf(file)]._media.playfield_image }")
+						input#uploadBackglass.hide(type="file", ng-file-select="onMediaUpload(file, 'playfield_image', $files)")
 						.panel-body.a.a--darker(ng-click="openUploadDialog('playfield_image', '#uploadBackglass')")
-							.img.img--ar-ws.loaded(img-bg="meta.mediaFiles[file.storage.id].playfield_image.variations['medium-landscape'].url")
+							.img.img--ar-ws.loaded(img-bg="meta.mediaLinks[file.storage.id].playfield_image")
 								.text-center.vertical-center--100
 									progressbar.progress--fixed-absolute.progress-striped.active(value="mediaFiles[file.storage.id].playfield_image.progress", ng-show="mediaFiles[file.storage.id].playfield_image.uploading")
 									.span(ng-show="!img.url")
@@ -389,18 +389,18 @@ include ../template/_mixins
 										+icon('gear').svg-3x.svg-spin--slow
 										p Generating thumbnails...
 
-				.col-sm-6.playfield--rotate-on-upload(make-loaded="loaded", make-loaded-event="video", make-loaded-post="loadingFinished")
+				.col-sm-6.playfield--rotate-on-upload(make-loaded="{ loaded: file.flavor.orientation === 'fs' }", make-loaded-event="video", make-loaded-post="loadingFinished")
 					span.pre-h4 Playfield
 					h4.h--large Video
 
-					.panel.panel--blank.playfield--video(ng-show="loadingFinished", ng-file-drop="onMediaUpload(file.storage.id, 'playfield_video', $files)", ng-file-drag-over-class="panel--dragging")
+					.panel.panel--blank.playfield--video(ng-show="loadingFinished", ng-file-drop="onMediaUpload(file, 'playfield_video', $files)", ng-file-drag-over-class="panel--dragging")
 						.panel-body.a.a--darker(ng-click="openUploadDialog('playfield_video', '#uploadBackglass')")
 							.img.img--ar-fs.loaded
 								.video-wrapper
 									video.video-js.vjs-sublime-skin(videojs, width="100%", height="100%", source="{{ meta.mediaFiles[file.storage.id].playfield_video.variations['small-rotated'].url }}")
 
-					.panel.panel--blank.playfield--image(ng-hide="loadingFinished", ng-file-drop="onMediaUpload(file.storage.id, 'playfield_video', $files)", ng-file-drag-over-class="panel--dragging")
-						input#uploadBackglass.hide(type="file", ng-file-select="onMediaUpload(file.storage.id, 'playfield_video', $files)")
+					.panel.panel--blank.playfield--image(ng-hide="loadingFinished", ng-file-drop="onMediaUpload(file, 'playfield_video', $files)", ng-file-drag-over-class="panel--dragging")
+						input#uploadBackglass.hide(type="file", ng-file-select="onMediaUpload(file, 'playfield_video', $files)")
 						.panel-body.a.a--darker(ng-click="openUploadDialog('playfield_video', '#uploadBackglass')")
 							.img.img--ar-ws.loaded(img-bg="meta.mediaFiles[file.storage.id].playfield_video.variations['still'].url")
 								.text-center.vertical-center--100
@@ -414,6 +414,9 @@ include ../template/_mixins
 									span(ng-show="videoLoading").progress-note--with-background
 										+icon('gear').svg-3x.svg-spin--slow
 										p Generating video thumbnail...
+			.text-center(ng-hide="file.flavor.orientation")
+				+icon('warning').shift-up.space-right
+				i Pleased set the <b>orientation</b> of the file under 3. before uploading media.
 
 			.alert.alert-danger(ng-show="errors.versions[0].files[meta.files.indexOf(file)]._media.playfield_image")
 				+icon('warning').shift-up.space-right
@@ -421,7 +424,7 @@ include ../template/_mixins
 
 		.text-center(ng-show="(meta.files | fileext:['vpt','vpx']).length == 0")
 			+icon('warning').shift-up.space-right
-			i Upload any VP tables under 1. before uploading media.
+			i Upload any VP tables under 1. in order to upload media.
 
 
 		//------------------------- FINISH LINE -------------------------------

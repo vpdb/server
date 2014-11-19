@@ -70,3 +70,7 @@ common
 		$scope.message = message;
 		$scope.icon = icon;
 	})
+
+	.controller('QuestionModalCtrl', function($scope, question) {
+		$scope.question = question;
+	});

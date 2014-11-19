@@ -23,6 +23,11 @@ common
 			restrict: 'A',
 			link: function (scope, element, attrs) {
 				var postVar;
+				var filter = {};
+				scope.$watch(attrs.makeLoaded, function() {
+					filter = scope.$eval(attrs.makeLoaded);
+				}, true);
+
 				if (attrs.makeLoadedPost) {
 					postVar = $parse(attrs.makeLoadedPost);
 					postVar.assign(scope, false);
@@ -30,19 +35,27 @@ common
 				var eventPrefix = attrs.makeLoadedEvent || 'image';
 				scope.$on(eventPrefix + 'Loaded', function(event) {
 					event.stopPropagation();
-					element.addClass(attrs.makeLoaded);
-					if (postVar) {
-						$timeout(function() {
-							postVar.assign(scope, true);
-						}, 350);
-					}
+					_.each(filter, function(enabled, className) {
+						if (!enabled) {
+							return;
+						}
+						element.addClass(className);
+						if (postVar) {
+							$timeout(function() {
+								postVar.assign(scope, true);
+							}, 350);
+						}
+					});
 				});
 				scope.$on(eventPrefix + 'Unloaded', function(event) {
 					event.stopPropagation();
-					element.removeClass(attrs.makeLoaded);
-					if (postVar) {
-						postVar.assign(scope, false);
-					}
+					_.each(filter, function(enabled, className) {
+						element.removeClass(className);
+						if (postVar) {
+							postVar.assign(scope, false);
+						}
+					});
+
 				});
 			}
 		};
@@ -81,10 +94,10 @@ common
 				};
 
 				// check for constant
-				if (attrs.imgBg.substr(0, 1) === '/') {
+				if (attrs.imgBg[0] === '/') {
 					setImg(attrs.imgBg);
 
-					// otherwise, watch scope for expression.
+				// otherwise, watch scope for expression.
 				} else {
 					var value = $parse(attrs.imgBg);
 					scope.$watch(value, function() {

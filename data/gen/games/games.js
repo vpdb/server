@@ -6,11 +6,13 @@ var path = require('path');
 var async = require('async');
 var request = require('superagent');
 
-exports.upload = function() {
+exports.upload = function(config) {
 
-	var apiUri = 'https://staging.vpdb.ch/api/v1';
-	var storageUri = 'https://staging.vpdb.ch/storage/v1';
-	var authHeader = 'X-Authorization';
+	config = config || {};
+	var apiUri = config.apiUri || 'http://localhost:3000/api/v1';
+	var storageUri = config.storageUri || 'http://localhost:3000/storage/v1';
+	var authHeader = config.authHeader || 'Authorization';
+	var credentials = config.credentials || {};
 
 	var token;
 	var ipdb = require('../../ipdb.json');
@@ -20,7 +22,7 @@ exports.upload = function() {
 		function(callback) {
 			request
 				.post(apiUri + '/authenticate')
-				.send({ username: 'test', password: 'testtest' })
+				.send(credentials)
 				.end(function(err, res) {
 					if (err) {
 						console.error('Error obtaining token: %s', err);

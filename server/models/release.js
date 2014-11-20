@@ -209,7 +209,7 @@ FileSchema.options.toObject.transform = function(doc, file) {
 	_.each(file._compatibility, function(compat) {
 		file.compatibility.push(VPBuild.toSimple(compat));
 	});
-	file.file = File.toSimple(file._file);
+	file.file = File.toDetailed(file._file);
 	delete file.id;
 	delete file._id;
 	delete file._file;

@@ -174,10 +174,10 @@ GameSchema.methods.toDetailed = function(callback) {
 		var game = this.toObject();
 		var Release = require('mongoose').model('Release');
 
-		Release
-			.find({ _game: this._id })
+		Release.find({ _game: this._id })
 			.populate({ path: '_tags' })
 			.populate({ path: 'authors._user' })
+			.populate({ path: 'versions.files._file' })
 			.populate({ path: 'versions.files._media.playfield_image' })
 			.populate({ path: 'versions.files._media.playfield_video' })
 			.populate({ path: 'versions.files._compatibility' })

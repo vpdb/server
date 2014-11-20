@@ -2,7 +2,7 @@
 
 angular.module('vpdb.games.details', [])
 
-	.controller('GameController', function($scope, $http, $routeParams, $modal, $log, GameResource) {
+	.controller('GameController', function($scope, $http, $routeParams, $modal, $log, Flavors, GameResource) {
 
 		$scope.theme('dark');
 		$scope.setMenu('games');
@@ -13,6 +13,7 @@ angular.module('vpdb.games.details', [])
 		$scope.accordeon = {
 			isFirstOpen: true
 		};
+		$scope.flavors = Flavors;
 
 		$scope.game = GameResource.get({ id: $scope.gameId }, function() {
 
@@ -46,6 +47,10 @@ angular.module('vpdb.games.details', [])
 			}, function () {
 				$log.info('Modal dismissed at: ' + new Date());
 			});
+		};
+
+		$scope.tableFile = function(file) {
+			return file.file.mime_type && /^application\/x-visual-pinball-table/i.test(file.file.mime_type);
 		};
 	})
 

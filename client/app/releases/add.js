@@ -8,7 +8,7 @@ angular.module('vpdb.releases.add', [])
 	 */
 	.controller('ReleaseAddCtrl', function($scope, $upload, $modal, $window, $localStorage, $routeParams,
 										   $location, $anchorScroll, $timeout,
-										   AuthService, ApiHelper,
+										   AuthService, ApiHelper, Flavors,
 										   ReleaseResource, FileResource, TagResource, VPBuildResource, GameResource,
 										   ConfigService, DisplayService, MimeTypeService) {
 
@@ -17,23 +17,7 @@ angular.module('vpdb.releases.add', [])
 		$scope.setTitle('Add Release');
 
 		// define flavors
-		$scope.flavors = [
-			{
-				header: 'Orientation',
-				name: 'orientation',
-				values: [
-					{ name: 'Desktop', other: 'Landscape', value: 'ws' },
-					{ name: 'Cabinet', other: 'Portrait', value: 'fs' }
-				]
-			}, {
-				header: 'Lightning',
-				name: 'lightning',
-				values: [
-					{ name: 'Night', other: 'Dark Playfield', value: 'night' },
-					{ name: 'Day', other: 'Illuminated Playfield', value: 'day' }
-				]
-			}
-		];
+		$scope.flavors = _.values(Flavors);
 
 		// fetch game info
 		$scope.game = GameResource.get({ id: $routeParams.id }, function() {

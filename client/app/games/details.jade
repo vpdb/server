@@ -65,8 +65,8 @@ include ../template/_mixins
 				div.markdown(markdown="release.description", ng-show="release.description")
 				h3.h--smaller.h--primary Authors
 				.media(ng-repeat="author in release.authors")
-					.media-left.media-middle.avatar
-						img.img-avatar(gravatar-src="user.author.gravatar_id", gravatar-default="404", fallback-icon="user")
+					.media-left.media-middle
+						img.img-avatar.img-avatar--sm(gravatar-src="author.user.gravatar_id", gravatar-default="404", fallback-icon="user")
 					.media-body
 						user {{ author.user.name }} <br>
 						| {{ author.roles.join(', ') }}
@@ -84,6 +84,30 @@ include ../template/_mixins
 
 				h1.h--small Available Flavors
 				hr
+				table.table.table-striped
+					thead
+						tr
+							th
+							th Orientation
+							th Lightning
+							th Compatibility
+							th Version
+							th Size
+					tbody
+						tr(ng-repeat="file in release.__latestVersion.files | filter:tableFile")
+							td.td--img
+								img.img--rounded(ng-src="{{ file.media.playfield_image.variations.square.url }}")
+							td
+								| {{ flavors.orientation.values[file.flavor.orientation].name }} <br>
+								i {{ flavors.orientation.values[file.flavor.orientation].other }}
+							td
+								| {{ flavors.lightning.values[file.flavor.lightning].name }} <br>
+								i {{ flavors.lightning.values[file.flavor.lightning].other }}
+							td
+								span(ng-repeat="compat in file.compatibility") {{ compat.label }}
+							td {{ release.__latestVersion.version }}
+							td {{ file.file.bytes | bytes }}
+
 
 
 				h1.h--small Comments

@@ -247,9 +247,6 @@ FileSchema.post('remove', function(obj, done) {
 // OPTIONS
 //-----------------------------------------------------------------------------
 FileSchema.set('toObject', { virtuals: true });
-if (!FileSchema.options.toObject) {
-	FileSchema.options.toObject = {};
-}
 FileSchema.options.toObject.transform = function(doc, file) {
 	delete file.__v;
 	delete file._id;

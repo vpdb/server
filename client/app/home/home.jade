@@ -15,7 +15,7 @@
 					.row
 						.col-xs-12.col-sm-6.a.a--lighter.oneliner(ng-repeat="game in pack.releases", ng-click="navGame(game.id)") {{ game.name }}
 
-					button.btn.btn-default.btn-lg(download="pack.download", download-info="pack | dlPack")
+					button.btn.btn-default.btn-lg.btn-2d(download="pack.download", download-info="pack | dlPack")
 						| Download
 		.clearfix
 

@@ -16,6 +16,7 @@
 // .btn-primary         - Primary button
 // .btn-lg              - Large button
 // .btn-xs              - Extra small button
+// .btn-2d              - 2D button
 // :hover               - Highlight the button when hovered.
 // :disabled            - Make the button change appearance to reflect it being disabled.
 // :active              - "Press" the button down when clicked.
@@ -25,7 +26,11 @@
 
 	// border and padding
 	padding 1px 15px 0px
-	border none
+	border-top none
+	border-left none
+	border-right none
+	border-bottom-width 3px
+	border-bottom-style solid
 
 	// typography
 	font-family $font-header
@@ -49,6 +54,12 @@
 	&:focus, &:active:focus
 		outline none
 
+	// while pushing
+	&:active
+		transform translate(0px, 2px)
+		border-bottom-width 1px
+		margin-bottom 2px
+
 
 // Button Sizes
 // --------------------------------------------------
@@ -58,10 +69,17 @@
 	// border and padding
 	padding 2px 30px 1px
 	border-radius $border-radius-large
+	border-bottom-width 5px
 
 	// typography
 	font-size $font-size-small-alt // -alt
 	font-weight $font-weight-normal-alt
+
+	// while pushing
+	&:active
+		transform translate(0px, 3px)
+		border-bottom-width 2px
+		margin-bottom 3px
 
 	// icon tweaks
 	.svg-icon
@@ -101,8 +119,12 @@
 .btn--width-med
 	width 124px
 
-
-// Groups
+.btn-2d
+	border-bottom none
+	&:active
+		transform none
+		border-bottom-width 0
+		margin-bottom 0
 //
 // Use this if you want to span a `btn-group` over a 100% width.
 //

@@ -135,7 +135,7 @@ ImageProcessor.prototype.pass1 = function(src, dest, file, variation, done) {
 		srcSize = file.metadata.size;
 		scale = srcSize.width / 1920;
 		img.rotate('black', -120);
-		img.crop(590 * scale, 590 * scale, 800 * scale, 1100 * scale);
+		img.crop(300 * scale, 300 * scale, 950 * scale, 1300 * scale);
 		if (variation.size) {
 			img.resize(variation.size, variation.size);
 		}
@@ -144,7 +144,7 @@ ImageProcessor.prototype.pass1 = function(src, dest, file, variation, done) {
 		srcSize = file.metadata.size;
 		scale = srcSize.width / 1920;
 		img.rotate('black', -30);
-		img.crop(450 * scale, 450 * scale, 900 * scale, 800 * scale);
+		img.crop(220 * scale, 220 * scale, 1020 * scale, 970 * scale);
 		if (variation.size) {
 			img.resize(variation.size, variation.size);
 		}

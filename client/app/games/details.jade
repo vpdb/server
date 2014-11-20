@@ -58,11 +58,11 @@ include ../template/_mixins
 		label(ng-hide="game.releases.length > 0") No releases for this game available.
 		.panel(ng-repeat="release in game.releases")
 			.col-sm-4.col-md-3
-				carousel
+				carousel(interval="60000")
 					slide(ng-repeat="slide in release.__portraitShots", active="slide.active")
 						img(ng-src="{{ slide.url }}")
 
-				a.image-link(href="{{ release.__latestVersion.files[0].media.playfield_image.url }}")
+				//a.image-link(href="{{ release.__latestVersion.files[0].media.playfield_image.url }}")
 					img.img.img-responsive.img--rounded(img-src="{{ release.__latestVersion.files[0].media.playfield_image.variations.medium.url }}")
 			.col-sm-8.col-md-9
 				h2.h--primary {{ release.name }} <small>{{ release.__latestVersion.version }}</small>

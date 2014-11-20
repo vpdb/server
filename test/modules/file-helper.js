@@ -78,7 +78,7 @@ exports.createMp4 = function(user, request, done) {
 	var data = fs.readFileSync(mp4);
 	request
 		.post('/storage/v1')
-		.query({ type: 'playfield' })
+		.query({ type: 'playfield-fs' })
 		.type('video/mp4')
 		.set('Content-Disposition', 'attachment; filename="playfield.mp4"')
 		.set('Content-Length', data.length)
@@ -95,7 +95,7 @@ exports.createAvi = function(user, request, done) {
 	var data = fs.readFileSync(avi);
 	request
 		.post('/storage/v1')
-		.query({ type: 'playfield' })
+		.query({ type: 'playfield-fs' })
 		.type('video/avi')
 		.set('Content-Disposition', 'attachment; filename="playfield.avi"')
 		.set('Content-Length', data.length)

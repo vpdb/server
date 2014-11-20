@@ -58,10 +58,17 @@ include ../template/_mixins
 		label(ng-hide="game.releases.length > 0") No releases for this game available.
 		.panel(ng-repeat="release in game.releases")
 			.col-sm-4.col-md-3
+				carousel
+					slide(ng-repeat="slide in release.__portraitShots", active="slide.active")
+						img(ng-src="{{ slide.url }}")
+
 				a.image-link(href="{{ release.__latestVersion.files[0].media.playfield_image.url }}")
 					img.img.img-responsive.img--rounded(img-src="{{ release.__latestVersion.files[0].media.playfield_image.variations.medium.url }}")
 			.col-sm-8.col-md-9
 				h2.h--primary {{ release.name }} <small>{{ release.__latestVersion.version }}</small>
+				.badge.badge--tag.badge--small(ng-repeat="tag in release.tags", tooltip="{{tag.description}}") {{ tag.name }}
+
+				span.clearfix.padder-top(ng-show="release.tags && release.tags.length") &nbsp;
 				div.markdown(markdown="release.description", ng-show="release.description")
 				h3.h--smaller.h--primary Authors
 				.media(ng-repeat="author in release.authors")
@@ -274,3 +281,13 @@ include ../template/_mixins
 
 		p
 			br
+
+script(id="template/carousel/carousel.html", type="text/ng-template")
+	.carousel(ng-mouseenter="pause()", ng-mouseleave="play()", ng-swipe-right="prev()", ng-swipe-left="next()")
+		ol.carousel-indicators(ng-show="slides.length > 1")
+			li(ng-repeat="slide in slides track by $index", ng-class="{active: isActive(slide)}", ng-click="select(slide)")
+		.carousel-inner(ng-transclude="")
+		a.left.carousel-control(ng-click="prev()", ng-show="slides.length > 1")
+			+icon('angle-left')
+		a.right.carousel-control(ng-click="next()", ng-show="slides.length > 1")
+			+icon('angle-right')

@@ -23,6 +23,12 @@ angular.module('vpdb.games.details', [])
 
 				release.versions = _.sortBy(release.versions, 'version');
 				release.__latestVersion = release.versions[0];
+				release.__portraitShots = _.compact(_.map(release.__latestVersion.files, function(file) {
+					if (!file.media || !file.media.playfield_image || file.media.playfield_image.file_type !== 'playfield-fs') {
+						return null;
+					}
+					return { url: file.media.playfield_image.variations.medium.url };
+				}));
 			});
 
 			setTimeout(function() {
@@ -36,18 +42,18 @@ angular.module('vpdb.games.details', [])
 			$scope.setTitle($scope.game.title);
 		});
 
-		$scope.requestModPermission = function(release) {
-			var modalInstance = $modal.open({
-				templateUrl: '/partials/modals/requestModPermission.html',
-				controller: 'RequestModPermissionModalCtrl'
-			});
-
-			modalInstance.result.then(function (selectedItem) {
-				$scope.selected = selectedItem;
-			}, function () {
-				$log.info('Modal dismissed at: ' + new Date());
-			});
-		};
+//		$scope.requestModPermission = function(release) {
+//			var modalInstance = $modal.open({
+//				templateUrl: '/partials/modals/requestModPermission.html',
+//				controller: 'RequestModPermissionModalCtrl'
+//			});
+//
+//			modalInstance.result.then(function (selectedItem) {
+//				$scope.selected = selectedItem;
+//			}, function () {
+//				$log.info('Modal dismissed at: ' + new Date());
+//			});
+//		};
 
 		$scope.tableFile = function(file) {
 			return file.file.mime_type && /^application\/x-visual-pinball-table/i.test(file.file.mime_type);

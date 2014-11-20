@@ -10,6 +10,22 @@
 	.col--menu
 		background-color rgba(white, 0.04)
 
+	.carousel-indicators
+		.active
+			background-color $color-primary
+			border-color transparent
+			&:hover
+				border-color transparent
+		> li
+			border-color $color-lighter
+			&:hover
+				border-color $color-lightest
+
+	a.carousel-control:hover .svg-icon
+		fill $color-primary
+	a.carousel-control .svg-icon
+		fill $color-lighter
+
 
 //
 // Light theme

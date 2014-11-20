@@ -54,7 +54,6 @@
 	border-top-left-radius 0
 	border-bottom-left-radius 0
 	&:before
-		background-image url("/images/tag-head.svg")
 		background-repeat no-repeat
 		content " "
 		height 30px
@@ -83,6 +82,10 @@
 	text-transform uppercase
 	border-radius $border-radius-small
 
+	&.badge--tag:before
+		height 22px
+		margin-top -3px
+		margin-left -19px
 
 // APIDoc verb
 //

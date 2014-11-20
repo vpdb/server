@@ -40,9 +40,13 @@ function VideoProcessor() {
 	this.name = 'video';
 
 	this.variations = {
-		playfield: [
+		'playfield-fs': [
 			{ name: 'still',         mimeType: 'image/png', screenshot: true, position: '0:0.500' },
 			{ name: 'small-rotated', mimeType: 'video/mp4', width: 394, height: 234, rotate: true }
+		],
+		'playfield-ws': [
+			{ name: 'still',         mimeType: 'image/png', screenshot: true, position: '0:0.500' },
+			{ name: 'small-rotated', mimeType: 'video/mp4', width: 394, height: 234 }
 		]
 	};
 }

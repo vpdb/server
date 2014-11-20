@@ -406,7 +406,7 @@ angular.module('vpdb.releases.add', [])
 						if ($scope.mediaFiles) {
 							delete $scope.mediaFiles[tableFileId];
 						}
-						
+
 						$scope.meta.mediaLinks[tableFileId] = { playfield_image: false, playfield_video: false };
 
 					}
@@ -453,7 +453,7 @@ angular.module('vpdb.releases.add', [])
 			fileReader.readAsArrayBuffer(file);
 			fileReader.onload = function(event) {
 
-				$scope.meta.mediaFiles[tableFileId][type] = { };
+				$scope.meta.mediaFiles[tableFileId][type] = {};
 				$scope.meta.mediaLinks[tableFileId][type] = false;
 				$scope.mediaFiles[tableFileId][type].uploaded = false;
 				$scope.mediaFiles[tableFileId][type].uploading = true;
@@ -476,7 +476,18 @@ angular.module('vpdb.releases.add', [])
 					$scope.meta.mediaFiles[tableFileId][type].url = AuthService.setUrlParam(mediaResult.url, mediaResult.is_protected);
 					$scope.meta.mediaFiles[tableFileId][type].variations = AuthService.setUrlParam(mediaResult.variations, mediaResult.is_protected);
 					$scope.meta.mediaFiles[tableFileId][type].metadata = mediaResult.metadata;
-					$scope.meta.mediaLinks[tableFileId][type] = $scope.meta.mediaFiles[tableFileId][type].variations['medium-landscape'].url;
+
+					switch (type) {
+						case 'playfield_image':
+							$scope.meta.mediaLinks[tableFileId][type] = $scope.meta.mediaFiles[tableFileId][type].variations['medium-landscape'].url;
+							break;
+						case 'playfield_video':
+							$scope.meta.mediaLinks[tableFileId][type] = $scope.meta.mediaFiles[tableFileId][type].variations.still.url;
+							break;
+						default:
+							$scope.meta.mediaLinks[tableFileId][type] = $scope.meta.mediaFiles[tableFileId][type].url;
+					}
+
 					updateMedia($scope.meta.mediaFiles, $scope.release);
 
 				}, ApiHelper.handleErrorsInDialog($scope, 'Error uploading image.', function() {

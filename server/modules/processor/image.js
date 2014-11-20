@@ -55,12 +55,10 @@ function ImageProcessor() {
 			{ name: 'medium-2x',           width: 786, height: 466, rotate: -90, mimeType: 'image/jpeg' },
 			{ name: 'medium-landscape',    width: 393, height: 233, mimeType: 'image/jpeg' },
 			{ name: 'medium-landscape-2x', width: 786, height: 466, mimeType: 'image/jpeg' },
-			{ name: 'square',    wideToSquare: true, size: 120, mimeType: 'image/jpeg' },
-			{ name: 'square-2x', wideToSquare: true, size: 240, mimeType: 'image/jpeg' }
+			{ name: 'square',    portraitToSquare: true, size: 120, mimeType: 'image/jpeg' },
+			{ name: 'square-2x', portraitToSquare: true, size: 240, mimeType: 'image/jpeg' }
 		],
 		'playfield-ws': [
-			{ name: 'medium',              width: 393, height: 233, rotate: -90, mimeType: 'image/jpeg' },
-			{ name: 'medium-2x',           width: 786, height: 466, rotate: -90, mimeType: 'image/jpeg' },
 			{ name: 'medium-landscape',    width: 393, height: 233, mimeType: 'image/jpeg' },
 			{ name: 'medium-landscape-2x', width: 786, height: 466, mimeType: 'image/jpeg' },
 			{ name: 'square',    wideToSquare: true, size: 120, mimeType: 'image/jpeg' },
@@ -122,7 +120,6 @@ ImageProcessor.prototype.pass1 = function(src, dest, file, variation, done) {
 
 	// do the processing
 	logger.info('[processor|image|pass1] Resizing %s "%s" (%s)...', file.file_type, file.id, variation.name);
-	var isDesktopPlayfield = variation.isPlayfield;
 	var img = gm(src);
 
 	if (variation.width && variation.height) {
@@ -133,11 +130,21 @@ ImageProcessor.prototype.pass1 = function(src, dest, file, variation, done) {
 		img.rotate('black', variation.rotate);
 	}
 
-	if (variation.wideToSquare) {
-		var srcSize = file.metadata.size;
-		var scale = srcSize.width / 1920;
+	var srcSize, scale;
+	if (variation.portraitToSquare) {
+		srcSize = file.metadata.size;
+		scale = srcSize.width / 1920;
 		img.rotate('black', -120);
 		img.crop(590 * scale, 590 * scale, 800 * scale, 1100 * scale);
+		if (variation.size) {
+			img.resize(variation.size, variation.size);
+		}
+	}
+	if (variation.wideToSquare) {
+		srcSize = file.metadata.size;
+		scale = srcSize.width / 1920;
+		img.rotate('black', -30);
+		img.crop(450 * scale, 450 * scale, 900 * scale, 800 * scale);
 		if (variation.size) {
 			img.resize(variation.size, variation.size);
 		}
@@ -164,7 +171,8 @@ ImageProcessor.prototype.pass1 = function(src, dest, file, variation, done) {
 ImageProcessor.prototype.pass2 = function(src, dest, file, variation, done) {
 
 	if (file.getMimeSubtype() !== 'png') {
-		return done('Skipping pass 2 for image type "' + file.getMimeSubtype() + '".');
+		logger.info('[processor|image|pass2] Skipping pass 2 for %s (image type %s)', file.toString(variation), file.getMimeSubtype());
+		return done();
 	}
 
 	// create destination stream

@@ -402,7 +402,7 @@ include ../template/_mixins
 					.panel.panel--blank.playfield--image(ng-hide="loadingFinished", ng-file-drop="onMediaUpload(file, 'playfield_video', $files)", ng-file-drag-over-class="panel--dragging")
 						input#uploadBackglass.hide(type="file", ng-file-select="onMediaUpload(file, 'playfield_video', $files)")
 						.panel-body.a.a--darker(ng-click="openUploadDialog('playfield_video', '#uploadBackglass')")
-							.img.img--ar-ws.loaded(img-bg="meta.mediaFiles[file.storage.id].playfield_video.variations['still'].url")
+							.img.img--ar-ws.loaded(img-bg="meta.mediaLinks[file.storage.id].playfield_video")
 								.text-center.vertical-center--100
 									progressbar.progress--fixed-absolute.progress-striped.active(value="mediaFiles[file.storage.id].playfield_video.progress", ng-show="mediaFiles[file.storage.id].playfield_video.uploading")
 									span(ng-show="!img.url")

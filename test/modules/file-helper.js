@@ -3,6 +3,7 @@
 var fs = require('fs');
 var gm = require('gm');
 var path = require('path');
+var async = require('async');
 var expect = require('expect.js');
 var pleasejs = require('pleasejs');
 
@@ -35,26 +36,39 @@ exports.createBackglass = function(user, request, done) {
 };
 
 exports.createPlayfield = function(user, request, done) {
+	exports.createPlayfields(user, request, 1, function(playfields) {
+		done(playfields[0]);
+	});
+};
+
+exports.createPlayfields = function(user, request, times, done) {
 
 	var fileType = 'playfield';
 	var mimeType = 'image/png';
-	var name = 'playfield.png';
-	gm(1920, 1080, pleasejs.make_color()).toBuffer('PNG', function(err, data) {
-		if (err) {
-			throw err;
-		}
-		request
-			.post('/storage/v1')
-			.query({ type: fileType })
-			.type(mimeType)
-			.set('Content-Disposition', 'attachment; filename="' + name + '"')
-			.set('Content-Length', data.length)
-			.send(data)
-			.as(user)
-			.end(function(res) {
-				expect(res.status).to.be(201);
-				done(res.body);
-			});
+
+	async.times(times, function(n, next) {
+		var name = 'playfield-' + n + '.png';
+
+		gm(1920, 1080, pleasejs.make_color()).toBuffer('PNG', function(err, data) {
+			if (err) {
+				throw err;
+			}
+			request
+				.post('/storage/v1')
+				.query({ type: fileType })
+				.type(mimeType)
+				.set('Content-Disposition', 'attachment; filename="' + name + '"')
+				.set('Content-Length', data.length)
+				.send(data)
+				.as(user)
+				.end(function(res) {
+					expect(res.status).to.be(201);
+					next(null, res.body);
+				});
+		});
+
+	}, function(err, playfields) {
+		done(playfields);
 	});
 };
 
@@ -108,18 +122,29 @@ exports.createAvi = function(user, request, done) {
 };
 
 exports.createVpt = function(user, request, done) {
+	exports.createVpts(user, request, 1, function(vpts) {
+		done(vpts[0]);
+	});
+};
+
+exports.createVpts = function(user, request, times, done) {
 
 	var data = fs.readFileSync(vpt);
-	request
-		.post('/storage/v1')
-		.query({ type: 'release' })
-		.type('application/x-visual-pinball-table')
-		.set('Content-Disposition', 'attachment; filename="test-table.vpt"')
-		.set('Content-Length', data.length)
-		.send(data)
-		.as(user)
-		.end(function(err, res) {
-			expect(res.status).to.be(201);
-			done(res.body);
-		});
+	async.times(times, function(n, next) {
+		request
+			.post('/storage/v1')
+			.query({ type: 'release' })
+			.type('application/x-visual-pinball-table')
+			.set('Content-Disposition', 'attachment; filename="test-table-' + n + '.vpt"')
+			.set('Content-Length', data.length)
+			.send(data)
+			.as(user)
+			.end(function(err, res) {
+				expect(res.status).to.be(201);
+				next(null, res.body);
+			});
+	}, function(err, vpts) {
+		done(vpts);
+	});
+
 };

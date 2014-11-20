@@ -25,6 +25,7 @@ var logger = require('winston');
 var mongoose = require('mongoose');
 var objectPath = require('object-path');
 
+var common = require('./common');
 var error = require('../../modules/error')('model', 'pretty-id');
 
 module.exports = exports = function(schema, options) {
@@ -41,7 +42,7 @@ module.exports = exports = function(schema, options) {
 		options.ignore = [ options.ignore ];
 	}
 
-	var paths = _.omit(traversePaths(schema), function(schemaType, path) {
+	var paths = _.omit(common.traversePaths(schema), function(schemaType, path) {
 		return _.contains(options.ignore, path);
 	});
 
@@ -69,7 +70,7 @@ module.exports = exports = function(schema, options) {
 			return schemaType.caster.options.ref;
 		});
 
-		var objPaths = explodePaths(obj, singleRefs, arrayRefs);
+		var objPaths = common.explodePaths(obj, singleRefs, arrayRefs);
 
 		var invalidations = [];
 		async.eachSeries(_.keys(objPaths), function(objPath, next) {
@@ -116,106 +117,3 @@ module.exports = exports = function(schema, options) {
 		});
 	};
 };
-
-
-/**
- * Returns all paths of a given schema.
- * @param {object} schema
- * @param {string} [prefix] Internal usage only
- * @param {object} [paths] Internal usage only
- * @returns {object} Keys: path, Values: Schema type
- */
-function traversePaths(schema, prefix, paths) {
-	prefix = prefix || '';
-	paths = paths || {};
-	schema.eachPath(function(path, schemaType) {
-		var isArray = schemaType.options && _.isArray(schemaType.options.type);
-		var fullPath = prefix + (prefix ? '.' : '') + path + (isArray ? '.0' : '');
-		paths[fullPath] = schemaType;
-		if (schemaType.schema) {
-			traversePaths(schemaType.schema, fullPath, paths);
-		}
-	});
-	return paths;
-}
-
-/**
- * This applies the paths from the model to the actual object. If a path is
- * part of an array and the object contains multiple values, the path is
- * repeated as many times as in the object.
- *
- * For instance, if our model has the following paths:
- *
- * var singleRefs = {
- *    _game: 'Game',
- *    'original_version._ref': 'Release',
- *    _created_by: 'User',
- *    'versions.0.files.0._file': 'File',
- *    'versions.0.files.0._media.playfield_image': 'File',
- *    'versions.0.files.0._media.playfield_video': 'File'
- * };
- *
- * var arrayRefs = { _tags: 'Tag' }
- *
- * and the object contains 2 files and 2 tags, it would return:
- *
- * { _game: 'Game',
- *   'original_version._ref': 'Release',
- *   _created_by: 'User',
- *   'versions.0.files.0._file': 'File',
- *   'versions.0.files.1._file': 'File',
- *   'versions.0.files.0._media.playfield_image': 'File',
- *   'versions.0.files.1._media.playfield_image': 'File',
- *   'versions.0.files.0._media.playfield_video': 'File',
- *   'versions.0.files.1._media.playfield_video': 'File',
- *   '_tags.0': 'Tag',
- *   '_tags.1': 'Tag'
- * }
- *
- * @param {object} obj Submitted object from the user
- * @param {object} singleRefs Reference paths with one value
- * @param {object} arrayRefs Reference paths that contain an array of values
- * @returns {object} Exploded paths
- */
-function explodePaths(obj, singleRefs, arrayRefs) {
-
-	var appendNext = function(obj, parts, refModelName, level, path) {
-		level = level || 0;
-		var paths = {};
-		var objPath = parts[level];
-		if (!objPath) {
-			return {};
-		}
-		path = path || '';
-		path += (path ? '.' : '') + objPath;
-		if (!parts[level + 1]) {
-			paths[path] = refModelName;
-		}
-		var subObj = objectPath.get(obj, objPath);
-		if (subObj) {
-			for (var i = 0; i < subObj.length; i++) {
-				paths = _.extend(paths, appendNext(subObj[i], parts, refModelName, level + 1, path + '.' + i));
-			}
-		}
-		return paths;
-	};
-	var paths = {};
-	_.each(singleRefs, function(refModelName, path) {
-		paths = _.extend(paths, appendNext(obj, path.split(/\.\d+\.?/), refModelName));
-	});
-
-	var arrayPaths = {};
-	var arrayPathsExploded = {};
-	_.each(arrayRefs, function(refModelName, path) {
-		arrayPaths = _.extend(arrayPaths, appendNext(obj, path.split(/\.\d+\.?/), refModelName));
-	});
-	_.each(arrayPaths, function(refModelName, path) {
-		var subObj = objectPath.get(obj, path);
-		if (_.isArray(subObj) && subObj.length > 0) {
-			for (var i = 0; i < subObj.length; i++) {
-				arrayPathsExploded[path + '.' + i] = refModelName;
-			}
-		}
-	});
-	return _.extend(paths, arrayPathsExploded);
-}

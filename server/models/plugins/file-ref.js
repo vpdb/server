@@ -25,6 +25,7 @@ var logger = require('winston');
 var mongoose = require('mongoose');
 var objectPath = require('object-path');
 
+var common = require('./common');
 var error = require('../../modules/error')('model', 'file-ref');
 
 module.exports = exports = function(schema, options) {
@@ -34,14 +35,18 @@ module.exports = exports = function(schema, options) {
 		throw new Error('Fileref plugin needs model. Please provide.');
 	}
 
-	var fileRefPaths = _.keys(_.omit(traversePaths(schema), function(schemaType, path) {
+	// filter ignored paths
+	var paths = _.pick(common.traversePaths(schema), function(schemaType) {
+		return schemaType.options && schemaType.options.ref && schemaType.options.ref === 'File';
+	});
+	var fileRefs = _.omit(paths, function(schemaType, path) {
 		return _.contains(options.ignore, path);
-	}));
+	});
 
 	//-----------------------------------------------------------------------------
 	// VALIDATIONS
 	//-----------------------------------------------------------------------------
-	_.each(fileRefPaths, function(path) {
+	_.each(_.keys(fileRefs), function(path) {
 
 		schema.path(path).validate(function(fileId, callback) {
 			var that = this;
@@ -84,7 +89,9 @@ module.exports = exports = function(schema, options) {
 
 		var ids = [];
 		var obj = this;
-		_.each(fileRefPaths, function(path) {
+
+		var objPaths = _.keys(common.explodePaths(obj, fileRefs));
+		_.each(objPaths, function(path) {
 			var id = objectPath.get(obj, path);
 			if (id) {
 				ids.push(id);
@@ -105,7 +112,7 @@ module.exports = exports = function(schema, options) {
 				if (err) {
 					return done(error(err, 'Error updating attribute `is_active`'));
 				}
-				obj.populate(fileRefPaths.join(' '), done);
+				obj.populate(objPaths.join(' '), done);
 			});
 		});
 		return this;
@@ -118,8 +125,9 @@ module.exports = exports = function(schema, options) {
 
 		var File = mongoose.model('File');
 
+		var objPaths = _.keys(common.explodePaths(obj, fileRefs));
 		var ids = [];
-		_.each(fileRefPaths, function(path) {
+		_.each(objPaths, function(path) {
 			var id = objectPath.get(obj, path);
 			if (id) {
 				ids.push(id);
@@ -137,26 +145,3 @@ module.exports = exports = function(schema, options) {
 		});
 	});
 };
-
-/**
- * Returns all file reference paths.
- * @param {object} schema
- * @param {string} [prefix] Internal usage only
- * @param {object} [paths] Internal usage only
- * @returns {object} Keys: path, Values: Schema type
- */
-function traversePaths(schema, prefix, paths) {
-	prefix = prefix || '';
-	paths = paths || {};
-	schema.eachPath(function(path, schemaType) {
-		var isArray = schemaType.options && _.isArray(schemaType.options.type);
-		var fullPath = prefix + (prefix ? '.' : '') + path + (isArray ? '.0' : '');
-		if (schemaType.options && schemaType.options.ref && schemaType.options.ref === 'File') {
-			paths[fullPath] = schemaType;
-		}
-		if (schemaType.schema) {
-			traversePaths(schemaType.schema, fullPath, paths);
-		}
-	});
-	return paths;
-}

@@ -191,8 +191,8 @@ describe('The VPDB `release` API', function() {
 		it('should succeed when providing full data', function(done) {
 			var user = 'member';
 			hlp.game.createGame('contributor', request, function(game) {
-				hlp.file.createVpt(user, request, function(vptfile) {
-					hlp.file.createPlayfield(user, request, function(playfieldImage) {
+				hlp.file.createVpts(user, request, 2, function(vptfiles) {
+					hlp.file.createPlayfields(user, request, 2, function(playfieldImages) {
 						hlp.file.createMp4(user, request, function(playfieldVideo) {
 							request
 								.post('/api/v1/releases')
@@ -204,14 +204,22 @@ describe('The VPDB `release` API', function() {
 									versions: [
 										{
 											files: [ {
-												_file: vptfile.id,
+												_file: vptfiles[0].id,
 												_media: {
-													playfield_image: playfieldImage.id,
+													playfield_image: playfieldImages[0].id,
 													playfield_video: playfieldVideo.id
 												},
 												_compatibility: [ '9.9.0' ],
-												flavor: { orientation: 'fs', lightning: 'night' } }
-											],
+												flavor: { orientation: 'fs', lightning: 'night' }
+
+											}, {
+												_file: vptfiles[1].id,
+												_media: {
+													playfield_image: playfieldImages[1].id
+												},
+												_compatibility: [ '9.9.0' ],
+												flavor: { orientation: 'fs', lightning: 'day' }
+											} ],
 											version: '1.0.0'
 										}
 									],
@@ -219,9 +227,14 @@ describe('The VPDB `release` API', function() {
 									_tags: [ 'hd', 'dof' ]
 								})
 								.end(function (err, res) {
+									console.log(res.body.versions[0].files[1].media);
 									hlp.expectStatus(err, res, 201);
 									hlp.doomRelease(user, res.body.id);
 									hlp.doomGame('contributor', game.id);
+
+									expect(res.body.versions[0].files[0].media.playfield_image.is_active).to.be(true);
+									expect(res.body.versions[0].files[0].media.playfield_video.is_active).to.be(true);
+									expect(res.body.versions[0].files[1].media.playfield_image.is_active).to.be(true);
 									done();
 								});
 						});

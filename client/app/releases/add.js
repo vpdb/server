@@ -91,6 +91,7 @@ angular.module('vpdb.releases.add', [])
 				mediaLinks: {}  // only for display purposes.
 			};
 			$scope.meta.users[currentUser.id] = currentUser;
+			$scope.newLink = {};
 
 			// TODO remove files via API
 
@@ -488,6 +489,11 @@ angular.module('vpdb.releases.add', [])
 		 * Posts the release add form to the server.
 		 */
 		$scope.submit = function() {
+
+			// add link if user has started typing something.
+			if ($scope.newLink && ($scope.newLink.label || $scope.newLink.url)) {
+				$scope.addLink($scope.newLink);
+			}
 			ReleaseResource.save($scope.release, function() {
 				$scope.release.submitted = true;
 				$scope.reset();

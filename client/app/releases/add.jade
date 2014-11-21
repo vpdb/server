@@ -241,7 +241,7 @@ include ../template/_mixins
 					input.form-control(type="text", ng-model="link.url")
 					span.input-group-addon: +icon('trash').smaller.a(ng-click="removeLink(link)")
 
-		.row.row--fullwidth(init="newLink={}")
+		.row.row--fullwidth
 			.form-group.col-sm-3
 				input.form-control(type="text", ng-model="newLink.label")
 			.form-group.col-sm-9

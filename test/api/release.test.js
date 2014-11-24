@@ -227,7 +227,6 @@ describe('The VPDB `release` API', function() {
 									_tags: [ 'hd', 'dof' ]
 								})
 								.end(function (err, res) {
-									console.log(res.body.versions[0].files[1].media);
 									hlp.expectStatus(err, res, 201);
 									hlp.doomRelease(user, res.body.id);
 									hlp.doomGame('contributor', game.id);

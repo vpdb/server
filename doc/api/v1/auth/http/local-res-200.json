@@ -1,46 +1,46 @@
 200 OK
 Content-Type: application/json; charset=utf-8
-Content-Length: 857
+Content-Length: 858
 
 {
-  "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI3eUtEM3h6bk4iLCJpYXQiOiIyMDE0LTExLTExVDIxOjA0OjAyLjUzNFoiLCJleHAiOiIyMDE0LTExLTExVDIyOjA0OjAyLjUzNFoifQ.QvFjapyFzpgrboAMFM1f0ON0O2fH9oRGMCu8VN2P75A",
-  "expires": "2014-11-11T22:04:02.534Z",
+  "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI3eWk0ZGc2Rjh4IiwiaWF0IjoiMjAxNC0xMS0yNVQxMDowNjo1NC4xNDZaIiwiZXhwIjoiMjAxNC0xMS0yNVQxMTowNjo1NC4xNDZaIn0.VH-YSMv0yykVm8uss_5lkhZBANjNcvx1tRTic9Q0AJ8",
+  "expires": "2014-11-25T11:06:54.146Z",
   "user": {
-    "id": "7yKD3xznN",
-    "name": "Erica.Aufderhar64",
-    "username": "Erica.Aufderhar64",
-    "gravatar_id": "50c8d6495ba52bb9a5a9028e332f409b",
-    "email": "jett76@gmail.com",
+    "id": "7yi4dg6F8x",
+    "name": "Diamond_Howell",
+    "username": "Diamond_Howell",
+    "gravatar_id": "d82af3d722198c46a5a02c3c5894ce15",
+    "email": "krystel69@hotmail.com",
     "is_active": true,
     "roles": [
       "member"
     ],
     "plan": "free",
-    "created_at": "2014-11-11T21:04:02.472Z",
+    "created_at": "2014-11-25T10:06:54.095Z",
     "permissions": {
-      "users": [
-        "search"
+      "vpbuilds": [
+        "add",
+        "delete-own"
+      ],
+      "tags": [
+        "add",
+        "delete-own"
+      ],
+      "user": [
+        "view",
+        "update"
       ],
       "releases": [
         "add",
         "delete"
       ],
-      "user": [
-        "update",
-        "view"
-      ],
-      "tags": [
-        "delete-own",
-        "add"
+      "users": [
+        "search"
       ],
       "files": [
         "upload",
         "delete",
         "download"
-      ],
-      "vpbuilds": [
-        "delete-own",
-        "add"
       ]
     }
   }

@@ -1,5 +1,5 @@
-GET /api/v1/users?q=Chr HTTP/1.1
+GET /api/v1/users?q=Mat HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJYazdVYmJHaDQiLCJpYXQiOiIyMDE0LTExLTExVDIxOjA0OjA3LjI1MloiLCJleHAiOiIyMDE0LTExLTExVDIyOjA0OjA3LjI1MloifQ.YU2Vs-hpl8fLV9rB_BucbzCeMOkShnKYN1-awGaQaEs
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI3eWtESi1hRkxnIiwiaWF0IjoiMjAxNC0xMS0yNVQxMDowNzowMS40ODBaIiwiZXhwIjoiMjAxNC0xMS0yNVQxMTowNzowMS40ODBaIn0.HuxQbG1kGDiwmGEL6HsSJ-sUkCw3syep8_IwkxedtRM
 

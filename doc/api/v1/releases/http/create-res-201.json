@@ -4,216 +4,154 @@ Content-Encoding: gzip
 
 {
   "name": "release",
-  "_game": "546279c644e6d9189a16d8b3",
-  "_created_by": "546279c544e6d9189a16d88d",
-  "created_at": "2014-11-11T21:04:06.847Z",
+  "created_at": "2014-11-25T10:07:01.032Z",
   "links": [],
-  "_tags": [
-    "546279c044e6d9189a16d827",
-    "546279c044e6d9189a16d826"
-  ],
   "authors": [
     {
-      "_user": "546279c544e6d9189a16d88d",
-      "_id": "546279c644e6d9189a16d8b8",
       "roles": [
         "Table Creator"
-      ]
+      ],
+      "user": {
+        "id": "TtTÄz\t[´\u0011`ù¾"
+      }
     }
   ],
   "versions": [
     {
+      "released_at": "2014-11-25T10:07:01.032Z",
       "version": "1.0.0",
-      "_id": "546279c644e6d9189a16d8b9",
       "files": [
         {
-          "_file": {
-            "_id": "546279c644e6d9189a16d8b4",
-            "name": "test-table.vpt",
-            "bytes": 135168,
-            "created_at": "2014-11-11T21:04:06.529Z",
-            "mime_type": "application/x-visual-pinball-table",
-            "file_type": "release",
-            "_created_by": "546279c544e6d9189a16d88d",
-            "__v": 0,
-            "is_active": true,
-            "id": "71RIeZfn4"
-          },
-          "_id": "546279c644e6d9189a16d8ba",
-          "_media": {
-            "playfield_image": {
-              "_id": "546279c644e6d9189a16d8b5",
-              "name": "playfield.png",
-              "bytes": 347,
-              "created_at": "2014-11-11T21:04:06.560Z",
-              "mime_type": "image/png",
-              "file_type": "playfield",
-              "_created_by": "546279c544e6d9189a16d88d",
-              "__v": 0,
-              "metadata": {
-                "Format": "PNG (Portable Network Graphics)",
-                "format": "PNG",
-                "Geometry": "1920x1080",
-                "size": {
-                  "width": 1920,
-                  "height": 1080
-                },
-                "Class": "PseudoClass",
-                "Type": "palette",
-                "Depth": "8 bits-per-pixel component",
-                "depth": 8,
-                "Channel Depths": {
-                  "Red": "8 bits",
-                  "Green": "8 bits",
-                  "Blue": "8 bits"
-                },
-                "Channel Statistics": {
-                  "Red": {
-                    "Minimum": "49087.00 (0.7490)",
-                    "Maximum": "49087.00 (0.7490)",
-                    "Mean": "49087.00 (0.7490)",
-                    "Standard Deviation": "0.00 (0.0000)"
-                  },
-                  "Green": {
-                    "Minimum": "29298.00 (0.4471)",
-                    "Maximum": "29298.00 (0.4471)",
-                    "Mean": "29298.00 (0.4471)",
-                    "Standard Deviation": "0.00 (0.0000)"
-                  },
-                  "Blue": {
-                    "Minimum": "48573.00 (0.7412)",
-                    "Maximum": "48573.00 (0.7412)",
-                    "Mean": "48573.00 (0.7412)",
-                    "Standard Deviation": "0.00 (0.0000)"
-                  }
-                },
-                "Colors": {
-                  "0": "(191,114,189)\t  #BF72BD"
-                },
-                "color": 1,
-                "Filesize": "347",
-                "Interlace": "No",
-                "Orientation": "Unknown",
-                "Background Color": "white",
-                "Border Color": "#DFDFDF",
-                "Matte Color": "#BDBDBD",
-                "Page geometry": "1920x1080+0+0",
-                "Compose": "Over",
-                "Dispose": "Undefined",
-                "Iterations": "0",
-                "Compression": "Zip",
-                "Signature": "5a6be58a351ea1cd72dcbfae5a1d14860054f9f4eb3e35f455d6562a941f74a9",
-                "Tainted": "False",
-                "User Time": "0.078u",
-                "path": "D:\\dev\\node-vpdb\\data\\storage-test\\7k4DgWz3E.png",
-                "Png:IHDR-color-type-orig": "3",
-                "Png:IHDR-bit-depth-orig": "1"
-              },
-              "variations": {
-                "medium": {
-                  "bytes": 808,
-                  "height": 221,
-                  "width": 393
-                }
-              },
-              "is_active": true,
-              "id": "7k4DgWz3E"
-            },
-            "playfield_video": {
-              "_id": "546279c644e6d9189a16d8b6",
-              "name": "playfield.mp4",
-              "bytes": 537368,
-              "created_at": "2014-11-11T21:04:06.752Z",
-              "mime_type": "video/mp4",
-              "file_type": "playfield",
-              "_created_by": "546279c544e6d9189a16d88d",
-              "__v": 0,
-              "metadata": {
-                "streams": [
-                  {
-                    "index": 0,
-                    "codec_name": "h264",
-                    "codec_long_name": "H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10",
-                    "profile": "High",
-                    "codec_type": "video",
-                    "codec_time_base": "1001/60000",
-                    "codec_tag_string": "avc1",
-                    "codec_tag": "0x31637661",
-                    "width": 1920,
-                    "height": 1080,
-                    "has_b_frames": 2,
-                    "sample_aspect_ratio": "0:1",
-                    "display_aspect_ratio": "0:1",
-                    "pix_fmt": "yuv420p",
-                    "level": 40,
-                    "color_range": "N/A",
-                    "color_space": "unknown",
-                    "timecode": "N/A",
-                    "id": "N/A",
-                    "r_frame_rate": "30000/1001",
-                    "avg_frame_rate": "30000/1001",
-                    "time_base": "1/30000",
-                    "start_pts": 1980,
-                    "start_time": 0.066,
-                    "duration_ts": 30030,
-                    "duration": 1.001,
-                    "bit_rate": 4285050,
-                    "max_bit_rate": "N/A",
-                    "nb_frames": 30,
-                    "nb_read_frames": "N/A",
-                    "nb_read_packets": "N/A",
-                    "tags": {
-                      "language": "und",
-                      "handler_name": "VideoHandler"
-                    },
-                    "disposition": {
-                      "default": 1,
-                      "dub": 0,
-                      "original": 0,
-                      "comment": 0,
-                      "lyrics": 0,
-                      "karaoke": 0,
-                      "forced": 0,
-                      "hearing_impaired": 0,
-                      "visual_impaired": 0,
-                      "clean_effects": 0,
-                      "attached_pic": 0
-                    }
-                  }
-                ],
-                "format": {
-                  "filename": "D:\\dev\\node-vpdb\\data\\storage-test\\Q1J_xZfn4.mp4",
-                  "nb_streams": 1,
-                  "nb_programs": 0,
-                  "format_name": "mov,mp4,m4a,3gp,3g2,mj2",
-                  "format_long_name": "QuickTime / MOV",
-                  "start_time": 0.066,
-                  "duration": 1.001,
-                  "size": 537368,
-                  "bit_rate": 4294649,
-                  "probe_score": 100,
-                  "tags": {
-                    "major_brand": "f4v ",
-                    "minor_version": "512",
-                    "compatible_brands": "isomiso2avc1",
-                    "encoder": "Lavf56.0.100"
-                  }
-                }
-              },
-              "is_active": true,
-              "id": "Q1J_xZfn4"
-            }
-          },
-          "_compatibility": [
-            "546279c044e6d9189a16d829"
-          ],
           "flavor": {
             "orientation": "fs",
             "lightning": "night"
+          },
+          "media": {
+            "playfield_image": {
+              "name": "playfield-0.png",
+              "bytes": 347,
+              "created_at": "2014-11-25T10:07:00.718Z",
+              "mime_type": "image/png",
+              "file_type": "playfield",
+              "metadata": {
+                "format": "PNG",
+                "size": {
+                  "height": 1080,
+                  "width": 1920
+                },
+                "depth": 8
+              },
+              "is_active": true,
+              "id": "XJaSRgpKLx",
+              "is_public": true,
+              "is_protected": false,
+              "url": "/storage/v1/files/XJaSRgpKLx",
+              "variations": {}
+            },
+            "playfield_video": {
+              "name": "playfield.mp4",
+              "bytes": 537368,
+              "created_at": "2014-11-25T10:07:00.962Z",
+              "mime_type": "video/mp4",
+              "file_type": "playfield-fs",
+              "metadata": {
+                "format_name": "mov,mp4,m4a,3gp,3g2,mj2",
+                "format_long_name": "QuickTime / MOV",
+                "duration": 1.001,
+                "bit_rate": 4294649,
+                "video": {
+                  "codec_name": "h264",
+                  "width": 1920,
+                  "height": 1080,
+                  "display_aspect_ratio": "0:1",
+                  "bit_rate": 4285050
+                }
+              },
+              "is_active": true,
+              "id": "m1VkWaYIe",
+              "is_public": false,
+              "is_protected": true,
+              "url": "/storage/v1/files/m1VkWaYIe",
+              "variations": {
+                "still": {
+                  "url": "/storage/v1/files/m1VkWaYIe/still"
+                },
+                "small-rotated": {
+                  "url": "/storage/v1/files/m1VkWaYIe/small-rotated"
+                }
+              }
+            }
+          },
+          "compatibility": [
+            {
+              "id": "TtT»z\t[´\u0011`ùW"
+            }
+          ],
+          "file": {
+            "name": "test-table-0.vpt",
+            "bytes": 135168,
+            "created_at": "2014-11-25T10:07:00.682Z",
+            "mime_type": "application/x-visual-pinball-table",
+            "file_type": "release",
+            "metadata": {},
+            "id": "Q1FrCg6t8x",
+            "url": "/storage/v1/files/Q1FrCg6t8x",
+            "variations": {},
+            "is_protected": true
+          }
+        },
+        {
+          "flavor": {
+            "orientation": "fs",
+            "lightning": "day"
+          },
+          "media": {
+            "playfield_image": {
+              "name": "playfield-1.png",
+              "bytes": 347,
+              "created_at": "2014-11-25T10:07:00.719Z",
+              "mime_type": "image/png",
+              "file_type": "playfield",
+              "metadata": {
+                "format": "PNG",
+                "size": {
+                  "height": 1080,
+                  "width": 1920
+                },
+                "depth": 8
+              },
+              "is_active": true,
+              "id": "7yABClTY8e",
+              "is_public": true,
+              "is_protected": false,
+              "url": "/storage/v1/files/7yABClTY8e",
+              "variations": {}
+            }
+          },
+          "compatibility": [
+            {
+              "id": "TtT»z\t[´\u0011`ùW"
+            }
+          ],
+          "file": {
+            "name": "test-table-1.vpt",
+            "bytes": 135168,
+            "created_at": "2014-11-25T10:07:00.682Z",
+            "mime_type": "application/x-visual-pinball-table",
+            "file_type": "release",
+            "metadata": {},
+            "id": "XyqHRgaFUx",
+            "url": "/storage/v1/files/XyqHRgaFUx",
+            "variations": {},
+            "is_protected": true
           }
         }
       ]
     }
   ],
-  "id": "Xy_ZWMhV"
+  "id": "mJ1lJZpKUe",
+  "tags": [
+    "547454bb7a095bb41160f955",
+    "547454bb7a095bb41160f954"
+  ]
 }

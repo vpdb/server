@@ -63,7 +63,7 @@ describe('The ACLs of the VPDB API', function() {
 		});
 
 		it('should deny access to file upload', function(done) {
-			request.post('/storage/v1').end(hlp.status(401, done));
+			request.post('/storage/v1/files').end(hlp.status(401, done));
 		});
 
 		it('should deny access to file deletion', function(done) {
@@ -176,7 +176,7 @@ describe('The ACLs of the VPDB API', function() {
 		});
 
 		it('should allow access to file upload', function(done) {
-			request.post('/storage/v1').as('member').end(hlp.status(422, done));
+			request.post('/storage/v1/files').as('member').end(hlp.status(422, done));
 		});
 
 		it('should allow access to file deletion', function(done) {
@@ -289,7 +289,7 @@ describe('The ACLs of the VPDB API', function() {
 		});
 
 		it('should allow access to file upload', function(done) {
-			request.post('/storage/v1').as('contributor').send({}).end(hlp.status(422, done));
+			request.post('/storage/v1/files').as('contributor').send({}).end(hlp.status(422, done));
 		});
 
 		it('should allow check for existing games', function(done) {
@@ -394,7 +394,7 @@ describe('The ACLs of the VPDB API', function() {
 		});
 
 		it('should allow access to file upload', function(done) {
-			request.post('/storage/v1').as('admin').send({}).end(hlp.status(422, done));
+			request.post('/storage/v1/files').as('admin').send({}).end(hlp.status(422, done));
 		});
 
 		it('should allow check for existing games', function(done) {
@@ -496,7 +496,7 @@ describe('The ACLs of the VPDB API', function() {
 		});
 
 		it('should allow access to file upload', function(done) {
-			request.post('/storage/v1').as('root').send({}).end(hlp.status(422, done));
+			request.post('/storage/v1/files').as('root').send({}).end(hlp.status(422, done));
 		});
 
 		it('should allow check for existing games', function(done) {

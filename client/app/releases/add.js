@@ -192,7 +192,7 @@ angular.module('vpdb.releases.add', [])
 					};
 					$scope.meta.files.push(file);
 					$upload.http({
-						url: ConfigService.storageUri(),
+						url: ConfigService.storageUri('/files'),
 						method: 'POST',
 						params: { type: 'release' },
 						headers: {
@@ -444,7 +444,7 @@ angular.module('vpdb.releases.add', [])
 				$scope.mediaFiles[tableFileId][type].uploading = true;
 				$scope.mediaFiles[tableFileId][type].status = 'Uploading file...';
 				$upload.http({
-					url: ConfigService.storageUri(),
+					url: ConfigService.storageUri('/files'),
 					method: 'POST',
 					params: { type: 'playfield-' + tableFile.flavor.orientation },
 					headers: {

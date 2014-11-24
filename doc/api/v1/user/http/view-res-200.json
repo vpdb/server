@@ -1,45 +1,45 @@
 200 OK
 Content-Type: application/json; charset=utf-8
-Content-Length: 579
-Etag: W/"243-a8049f16"
+Content-Length: 570
+Etag: W/"23a-92b12821"
 
 {
   "plan": "free",
-  "name": "Carley.Block",
-  "username": "Carley.Block",
-  "email": "deshawn.senger@hotmail.com",
+  "name": "Marlene74",
+  "username": "Marlene74",
+  "email": "ruthe_lind81@gmail.com",
   "provider": "local",
-  "created_at": "2014-11-11T21:04:01.763Z",
+  "created_at": "2014-11-25T10:06:53.420Z",
   "is_active": true,
   "roles": [
     "member"
   ],
-  "id": "7kmgoeMhN",
-  "gravatar_id": "0c4a1687c5262f8ca52a3482a429e35c",
+  "id": "7JmeweTKUl",
+  "gravatar_id": "4a3ccdb29d84bd42cc4b564bc38bfb0f",
   "permissions": {
-    "users": [
-      "search"
+    "vpbuilds": [
+      "add",
+      "delete-own"
+    ],
+    "tags": [
+      "add",
+      "delete-own"
+    ],
+    "user": [
+      "view",
+      "update"
     ],
     "releases": [
       "add",
       "delete"
     ],
-    "user": [
-      "update",
-      "view"
-    ],
-    "tags": [
-      "delete-own",
-      "add"
+    "users": [
+      "search"
     ],
     "files": [
       "upload",
       "delete",
       "download"
-    ],
-    "vpbuilds": [
-      "delete-own",
-      "add"
     ]
   }
 }

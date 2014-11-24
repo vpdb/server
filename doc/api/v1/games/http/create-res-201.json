@@ -1,32 +1,32 @@
 201 Created
 Content-Type: application/json; charset=utf-8
-Content-Length: 931
+Content-Encoding: gzip
 
 {
-  "title": "Bad Girls",
-  "manufacturer": "Premier",
-  "model_number": "717",
-  "year": 1988,
-  "game_type": "ss",
-  "produced_units": 2500,
-  "features": "Photographic translite.",
-  "id": "bad-girls",
-  "_created_by": "546279c344e6d9189a16d862",
-  "created_at": "2014-11-11T21:04:03.644Z",
+  "title": "Hayburners",
+  "manufacturer": "Williams",
+  "model_number": "55",
+  "year": 1951,
+  "game_type": "em",
+  "features": "Flippers (2), Pop bumpers (6). Backbox animation (horses race).",
+  "notes": "The horse names are: Uncle Miltie, Lulu Bell, Whiz Kid, Louie II, Frustration, and Tizzie Liz.The one-ball version of this game is Williams' 1951 'Nags'.'Hayburners' was released again as Williams' 1951 'Jalopy', with an identical playfield design, different artwork, and an auto racing theme.",
+  "id": "hayburners",
+  "_created_by": "547454bf7a095bb41160f990",
+  "created_at": "2014-11-25T10:06:55.286Z",
   "ipdb": {
-    "number": 128,
-    "mfg": 257,
-    "rating": 6
+    "number": 1142,
+    "mfg": 352
   },
   "artists": [
-    "Constantino Mitchell",
-    "Jeanine Mitchell"
+    "George Molentin"
   ],
   "designers": [
-    "Jon Norris"
+    "Harry Williams",
+    "Sam Stern"
   ],
   "themes": [
-    "Billiards"
+    "Sports",
+    "Horse Racing"
   ],
   "short": [],
   "media": {
@@ -34,21 +34,21 @@ Content-Length: 931
       "is_protected": false,
       "variations": {
         "small-2x": {
-          "url": "/storage/v1/X1dITgfhE/small-2x"
+          "url": "/storage/v1/files/XJKmtxTK8x/small-2x"
         },
         "small": {
-          "url": "/storage/v1/X1dITgfhE/small"
+          "url": "/storage/v1/files/XJKmtxTK8x/small"
         },
         "medium-2x": {
-          "url": "/storage/v1/X1dITgfhE/medium-2x"
+          "url": "/storage/v1/files/XJKmtxTK8x/medium-2x"
         },
         "medium": {
-          "url": "/storage/v1/X1dITgfhE/medium"
+          "url": "/storage/v1/files/XJKmtxTK8x/medium"
         }
       },
-      "url": "/storage/v1/X1dITgfhE",
-      "id": "X1dITgfhE"
+      "url": "/storage/v1/files/XJKmtxTK8x",
+      "id": "XJKmtxTK8x"
     }
   },
-  "url": "/game/bad-girls"
+  "url": "/game/hayburners"
 }

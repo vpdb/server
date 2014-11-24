@@ -1,0 +1,21 @@
+displayName: Files
+description: |
+  The storage API for uploading and downloading individual files. Contrarily to
+  the API's [files resource][core-files], this deals with the *file content*, while the
+  core API deals with the file's *meta data*.
+
+  [core-files]: api://core/files
+
+post:
+  description: |
+    Upload a new file.
+
+/{storage_id}:
+  get:
+    description: |
+      Download an existing file.
+
+  /{variation_name}:
+    get:
+      description: |
+        Download a variation of an existing file.

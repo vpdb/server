@@ -21,7 +21,7 @@ exports.createBackglass = function(user, request, done) {
 			throw err;
 		}
 		request
-			.post('/storage/v1')
+			.post('/storage/v1/files')
 			.query({ type: fileType })
 			.type(mimeType)
 			.set('Content-Disposition', 'attachment; filename="' + name + '"')
@@ -54,7 +54,7 @@ exports.createPlayfields = function(user, request, times, done) {
 				throw err;
 			}
 			request
-				.post('/storage/v1')
+				.post('/storage/v1/files')
 				.query({ type: fileType })
 				.type(mimeType)
 				.set('Content-Disposition', 'attachment; filename="' + name + '"')
@@ -75,7 +75,7 @@ exports.createPlayfields = function(user, request, times, done) {
 exports.createTextfile = function(user, request, done) {
 	var fileType = 'readme';
 	request
-		.post('/storage/v1')
+		.post('/storage/v1/files')
 		.query({ type: fileType })
 		.type('text/plain')
 		.set('Content-Disposition', 'attachment; filename="README.txt"')
@@ -91,7 +91,7 @@ exports.createMp4 = function(user, request, done) {
 
 	var data = fs.readFileSync(mp4);
 	request
-		.post('/storage/v1')
+		.post('/storage/v1/files')
 		.query({ type: 'playfield-fs' })
 		.type('video/mp4')
 		.set('Content-Disposition', 'attachment; filename="playfield.mp4"')
@@ -108,7 +108,7 @@ exports.createAvi = function(user, request, done) {
 
 	var data = fs.readFileSync(avi);
 	request
-		.post('/storage/v1')
+		.post('/storage/v1/files')
 		.query({ type: 'playfield-fs' })
 		.type('video/avi')
 		.set('Content-Disposition', 'attachment; filename="playfield.avi"')
@@ -132,7 +132,7 @@ exports.createVpts = function(user, request, times, done) {
 	var data = fs.readFileSync(vpt);
 	async.times(times, function(n, next) {
 		request
-			.post('/storage/v1')
+			.post('/storage/v1/files')
 			.query({ type: 'release' })
 			.type('application/x-visual-pinball-table')
 			.set('Content-Disposition', 'attachment; filename="test-table-' + n + '.vpt"')

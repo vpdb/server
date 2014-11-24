@@ -87,6 +87,12 @@ Storage.prototype.whenProcessed = function(file, variationName, callback) {
 	queue.addCallback(file, variationName, callback);
 };
 
+/**
+ * Removes inactive files that have passed the grace period
+ *
+ * @param {int} graceperiod Grace period in milliseconds
+ * @param {function} done Callback
+ */
 Storage.prototype.cleanup = function(graceperiod, done) {
 	graceperiod = graceperiod ? graceperiod : 0;
 
@@ -107,6 +113,13 @@ Storage.prototype.cleanup = function(graceperiod, done) {
 	});
 };
 
+/**
+ * Removes a file and all its variations from storage.
+ *
+ * In case there are access exceptions, a retry mechanism is in place.
+ *
+ * @param file
+ */
 Storage.prototype.remove = function(file) {
 	var filePath = file.getPath();
 	if (fs.existsSync(filePath)) {
@@ -153,15 +166,9 @@ Storage.prototype.remove = function(file) {
 };
 
 /**
- * Metadata callback function
- * @callback metadataCallback
- * @param {Error} If set, an error has occurred
- * @param {object} Metadata
- */
-/**
  * Retrieves metadata for a given file using the processor of the file type.
  * @param {File} file
- * @param {metadataCallback} done Callback
+ * @param {function} done Callback
  */
 Storage.prototype.metadata = function(file, done) {
 	var type = file.getMimeTypePrimary();
@@ -307,7 +314,7 @@ Storage.prototype.onProcessed = function(file, variation, processor, nextEvent) 
  * @returns {string}
  */
 Storage.prototype.url = function(file, variation) {
-	return file ? settings.storagePath('/' + file.id + (variation ? '/' + variation : '')) : null;
+	return file ? settings.storagePath('/files/' + file.id + (variation ? '/' + variation : '')) : null;
 };
 
 /**

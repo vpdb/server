@@ -225,7 +225,7 @@ angular.module('vpdb.games.add', [])
 				$scope.mediaFile[id].uploading = true;
 				$scope.mediaFile[id].status = 'Uploading file...';
 				$upload.http({
-					url: ConfigService.storageUri(),
+					url: ConfigService.storageUri('/files'),
 					method: 'POST',
 					params: { type: type },
 					headers: {

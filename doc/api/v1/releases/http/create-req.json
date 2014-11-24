@@ -1,21 +1,21 @@
 POST /api/v1/releases HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI3eVBsbFpHbjQiLCJpYXQiOiIyMDE0LTExLTExVDIxOjA0OjA1Ljk0MVoiLCJleHAiOiIyMDE0LTExLTExVDIyOjA0OjA1Ljk0MVoifQ.StzD4i-jpiHDQQ1dJ7unsHQZ3yGfjSABQmTHkON9vYk
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJtMUQwZzZGTGciLCJpYXQiOiIyMDE0LTExLTI1VDEwOjA3OjAwLjA3NloiLCJleHAiOiIyMDE0LTExLTI1VDExOjA3OjAwLjA3NloifQ.6eKzWB9g_r4uNuS8_5nWCLWq341VMXuaprohAHOR82I
 Content-Type: application/json
-Content-Length: 338
+Content-Length: 477
 
 {
   "name": "release",
-  "_game": "chicago-express",
+  "_game": "campus-queen",
   "versions": [
     {
       "files": [
         {
-          "_file": "71RIeZfn4",
+          "_file": "Q1FrCg6t8x",
           "_media": {
-            "playfield_image": "7k4DgWz3E",
-            "playfield_video": "Q1J_xZfn4"
+            "playfield_image": "XJaSRgpKLx",
+            "playfield_video": "m1VkWaYIe"
           },
           "_compatibility": [
             "9.9.0"
@@ -24,6 +24,19 @@ Content-Length: 338
             "orientation": "fs",
             "lightning": "night"
           }
+        },
+        {
+          "_file": "XyqHRgaFUx",
+          "_media": {
+            "playfield_image": "7yABClTY8e"
+          },
+          "_compatibility": [
+            "9.9.0"
+          ],
+          "flavor": {
+            "orientation": "fs",
+            "lightning": "day"
+          }
         }
       ],
       "version": "1.0.0"
@@ -31,7 +44,7 @@ Content-Length: 338
   ],
   "authors": [
     {
-      "_user": "7yPllZGn4",
+      "_user": "m1D0g6FLg",
       "roles": [
         "Table Creator"
       ]

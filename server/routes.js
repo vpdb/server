@@ -118,11 +118,11 @@ module.exports = function(app) {
 
 	// Storage
 	// ========================================================================
-	app.post(settings.storagePath('/'),                api.auth(api.files.upload, 'files', 'upload'));
-	app.head(settings.storagePath('/:id'),            api.anon(storage.head));
-	app.head(settings.storagePath('/:id/:variation'), api.anon(storage.head));
-	app.get(settings.storagePath('/:id'),             api.anon(storage.get));  // permission/quota handling is inside.
-	app.get(settings.storagePath('/:id/:variation'),  api.anon(storage.get));
+	app.post(settings.storagePath('/files'),                api.auth(api.files.upload, 'files', 'upload'));
+	app.head(settings.storagePath('/files/:id'),            api.anon(storage.head));
+	app.head(settings.storagePath('/files/:id/:variation'), api.anon(storage.head));
+	app.get(settings.storagePath('/files/:id'),             api.anon(storage.get));  // permission/quota handling is inside.
+	app.get(settings.storagePath('/files/:id/:variation'),  api.anon(storage.get));
 
 
 	// Authentication

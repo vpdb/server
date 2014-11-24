@@ -1,19 +1,19 @@
 200 OK
 Content-Type: application/json; charset=utf-8
-Content-Length: 303
-Etag: W/"12f-c01a81de"
+Content-Length: 299
+Etag: W/"12b-dd9b2f2e"
 
 {
   "plan": "free",
-  "name": "Chris_Reichert",
-  "username": "Chris_Reichert",
-  "email": "audra.hermiston4@hotmail.com",
+  "name": "Matilde_Legros8",
+  "username": "Matilde_Legros8",
+  "email": "colt_lang97@yahoo.com",
   "provider": "local",
-  "created_at": "2014-11-11T21:04:07.247Z",
+  "created_at": "2014-11-25T10:07:01.475Z",
   "is_active": true,
   "roles": [
     "member"
   ],
-  "id": "Xk7UbbGh4",
-  "gravatar_id": "5ac5fe1ab7d83b1c4ca2c5b3e343387e"
+  "id": "7ykDJ-aFLg",
+  "gravatar_id": "aab4fbf843aa6aac5118cb407c0503fc"
 }

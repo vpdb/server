@@ -1,35 +1,35 @@
 POST /api/v1/games HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJYeVFVVGVmM1YiLCJpYXQiOiIyMDE0LTExLTExVDIxOjA0OjAzLjU0N1oiLCJleHAiOiIyMDE0LTExLTExVDIyOjA0OjAzLjU0N1oifQ.W6JXGrk57imtkEIrlS9fIsr4MaKeXnHyADgRC1TGRjs
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJYMVZYRmdhS0x4IiwiaWF0IjoiMjAxNC0xMS0yNVQxMDowNjo1NS4xOTBaIiwiZXhwIjoiMjAxNC0xMS0yNVQxMTowNjo1NS4xOTBaIn0.5XeDCN3iVw8x3pjqRNa_CFzTcnKt_f0tgNyLvzFsXps
 Content-Type: application/json
-Content-Length: 358
+Content-Length: 673
 
 {
   "ipdb": {
-    "number": 128,
-    "mfg": 257,
-    "rating": "6.0"
+    "number": 1142,
+    "mfg": 352
   },
-  "title": "Bad Girls",
-  "manufacturer": "Premier",
-  "model_number": "717",
-  "year": 1988,
-  "game_type": "ss",
-  "produced_units": 2500,
+  "title": "Hayburners",
+  "manufacturer": "Williams",
+  "model_number": "55",
+  "year": 1951,
+  "game_type": "em",
   "themes": [
-    "Billiards"
+    "Sports",
+    "Horse Racing"
   ],
   "designers": [
-    "Jon Norris"
+    "Harry Williams",
+    "Sam Stern"
   ],
   "artists": [
-    "Constantino Mitchell",
-    "Jeanine Mitchell"
+    "George Molentin"
   ],
-  "features": "Photographic translite.",
-  "id": "bad-girls",
+  "features": "Flippers (2), Pop bumpers (6). Backbox animation (horses race).",
+  "notes": "The horse names are: Uncle Miltie, Lulu Bell, Whiz Kid, Louie II, Frustration, and Tizzie Liz.The one-ball version of this game is Williams' 1951 'Nags'.'Hayburners' was released again as Williams' 1951 'Jalopy', with an identical playfield design, different artwork, and an auto racing theme.",
+  "id": "hayburners",
   "_media": {
-    "backglass": "X1dITgfhE"
+    "backglass": "XJKmtxTK8x"
   }
 }

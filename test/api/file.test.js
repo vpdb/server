@@ -29,7 +29,7 @@ describe('The VPDB `file` API', function() {
 
 		it('should fail when no "Content-Disposition" header is provided', function(done) {
 			request
-				.post('/storage/v1')
+				.post('/storage/v1/files')
 				.as('member')
 				.send('xxx')
 				.end(hlp.status(422, 'Content-Disposition', done));
@@ -37,7 +37,7 @@ describe('The VPDB `file` API', function() {
 
 		it('should fail when a bogus "Content-Disposition" header is provided', function(done) {
 			request
-				.post('/storage/v1')
+				.post('/storage/v1/files')
 				.as('member')
 				.set('Content-Disposition', 'zurg!!')
 				.send('xxx')
@@ -46,7 +46,7 @@ describe('The VPDB `file` API', function() {
 
 		it('should fail when no "type" query parameter is provided', function(done) {
 			request
-				.post('/storage/v1')
+				.post('/storage/v1/files')
 				.as('member')
 				.set('Content-Disposition','attachment; filename="foo.bar"')
 				.send('xxx')
@@ -60,7 +60,7 @@ describe('The VPDB `file` API', function() {
 
 		it('should fail when providing wrong mime type in header', function(done) {
 			request
-				.post('/storage/v1')
+				.post('/storage/v1/files')
 				.query({ type: 'foo' })
 				.as('member')
 				.set('Content-Disposition','attachment; filename="foo.bar"')
@@ -82,7 +82,7 @@ describe('The VPDB `file` API', function() {
 			var name = "text.txt";
 			var text = "should return an object with the same parameters as provided in the headers";
 			request
-				.post('/storage/v1')
+				.post('/storage/v1/files')
 				.query({ type: fileType })
 				.as('member')
 				.type(mimeType)
@@ -118,7 +118,7 @@ describe('The VPDB `file` API', function() {
 
 		it('should fail if the upload is not an png image', function(done) {
 			request
-				.post('/storage/v1')
+				.post('/storage/v1/files')
 				.query({ type: 'backglass' })
 				.type('image/png')
 				.set('Content-Disposition', 'attachment; filename="backglass.png"')
@@ -130,7 +130,7 @@ describe('The VPDB `file` API', function() {
 
 		it('should fail if the upload is not a jpeg image', function(done) {
 			request
-				.post('/storage/v1')
+				.post('/storage/v1/files')
 				.query({ type: 'backglass' })
 				.type('image/jpeg')
 				.set('Content-Disposition', 'attachment; filename="backglass.jpg"')
@@ -161,7 +161,7 @@ describe('The VPDB `file` API', function() {
 			var mimeType = 'text/plain';
 			var name = 'text.txt';
 			request
-				.post('/storage/v1')
+				.post('/storage/v1/files')
 				.query({ type: fileType })
 				.as('member')
 				.type(mimeType)
@@ -188,7 +188,7 @@ describe('The VPDB `file` API', function() {
 
 		it('should fail to retrieve the file details as anonymous', function(done) {
 			request
-				.post('/storage/v1')
+				.post('/storage/v1/files')
 				.query({ type: 'mooh' })
 				.as('member')
 				.type('text/plain')
@@ -204,7 +204,7 @@ describe('The VPDB `file` API', function() {
 
 		it('should fail to retrieve the file details as a different user', function(done) {
 			request
-				.post('/storage/v1')
+				.post('/storage/v1/files')
 				.query({ type: 'mooh' })
 				.as('member')
 				.type('text/plain')
@@ -220,7 +220,7 @@ describe('The VPDB `file` API', function() {
 
 		it('should fail when trying to retrieve the file as anonymous', function(done) {
 			request
-				.post('/storage/v1')
+				.post('/storage/v1/files')
 				.query({ type: 'mooh' })
 				.as('member')
 				.type('text/plain')
@@ -244,7 +244,7 @@ describe('The VPDB `file` API', function() {
 				// 1. upload
 				function(next) {
 					request
-						.post('/storage/v1')
+						.post('/storage/v1/files')
 						.query({ type: 'mooh' })
 						.as(user)
 						.type('text/plain')
@@ -279,7 +279,7 @@ describe('The VPDB `file` API', function() {
 				// 1. upload
 				function(next) {
 					request
-						.post('/storage/v1')
+						.post('/storage/v1/files')
 						.query({ type: 'mooh' })
 						.as(user)
 						.type('text/plain')

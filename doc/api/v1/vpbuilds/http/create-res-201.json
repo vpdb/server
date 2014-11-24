@@ -1,12 +1,11 @@
 201 Created
 Content-Type: application/json; charset=utf-8
-Content-Length: 204
+Content-Length: 161
 
 {
   "id": "v1.0.1",
   "label": "v1.0.1",
   "download_url": "http://download_url/",
-  "description": "The very first release.",
   "built_at": "2000-01-01T11:21:00.000Z",
   "type": "release",
   "is_range": false

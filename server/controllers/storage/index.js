@@ -18,3 +18,4 @@
  */
 
 exports.files = require('./files');
+exports.releases = require('./releases');

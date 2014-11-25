@@ -110,6 +110,16 @@ GameSchema.virtual('media')
 		return media;
 	});
 
+GameSchema.virtual('full_title')
+	.get(function() {
+		var fullTitle = this.title;
+		if (this.year || this.manufacturer) {
+			fullTitle += ' (' + this.manufacturer + ' ' + this.year + ')';
+		}
+		return fullTitle;
+	});
+
+
 
 //-----------------------------------------------------------------------------
 // VALIDATIONS
@@ -233,6 +243,7 @@ GameSchema.options.toObject.transform = function(doc, game) {
 	delete game.__v;
 	delete game._id;
 	delete game._media;
+	delete game.full_title;
 };
 
 mongoose.model('Game', GameSchema);

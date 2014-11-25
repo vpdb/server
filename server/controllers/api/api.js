@@ -56,7 +56,7 @@ exports.anon = function(done) {
 	// auth is only called in order to populate the req.user object, if credentials are provided.
 	return auth.auth(null, null, function(authErr, req, res) {
 		// authErr is ignored since we're in anon.
-		done(req, res);
+		done(req, res, authErr);
 	});
 };
 

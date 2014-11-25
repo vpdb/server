@@ -34,9 +34,9 @@ var acl = require('../../acl');
  * @param {Request} req
  * @param {Response} res
  */
-exports.get = function(req, res) {
+exports.get = function(req, res, authErr) {
 
-	find(req, res, function(file, isPublic) {
+	find(req, res, authErr, function(file, isPublic) {
 
 		if (isPublic) {
 			return serve(req, res, file, req.params.variation);
@@ -63,8 +63,8 @@ exports.get = function(req, res) {
  * @param {Request} req
  * @param {Response} res
  */
-exports.head = function(req, res) {
-	find(req, res, function(file) {
+exports.head = function(req, res, authErr) {
+	find(req, res, authErr, function(file) {
 		return serve(req, res, file, req.params.variation, true);
 	});
 };
@@ -78,7 +78,7 @@ exports.head = function(req, res) {
  * @param {Response} res
  * @param {function} callback Callback with {File} object as first argument (treats errors directly) and `isPublic` as second argument (no quota checking necessary if true).
  */
-function find(req, res, callback) {
+function find(req, res, authErr, callback) {
 
 	File.findOne({ id: req.params.id }, function(err, file) {
 		/* istanbul ignore if  */
@@ -92,16 +92,16 @@ function find(req, res, callback) {
 
 		// file is not public - user must be logged in.
 		if (!file.is_public && !req.user) {
-			return res.status(401).end();
+			return res.status(401).json({ error: 'You must valid credentials for non-public files.', cause: authErr.message }).end();
 		}
 
 		// if inactive and user is not logged or not the owner, refuse.
 		if (!file.is_active) {
 			if (!req.user) {
-				return res.status(401).end();
+				return res.status(401).json({ error: 'You must provide credentials for inactive files.', cause: authErr.message }).end();
 			}
 			if (!file._created_by.equals(req.user._id)) {
-				return res.status(403).end();
+				return res.status(403).json({ error: 'You must own inactive files in order to access them.' }).end();
 			}
 		}
 
@@ -118,12 +118,12 @@ function find(req, res, callback) {
 				return res.status(500).end();
 			}
 			if (!granted) {
-				return res.status(403).end();
+				return res.status(403).json({ error: 'Your ACLs do not allow downloading of any files.' }).end();
 			}
 
 			// if the user is the owner, serve directly (owned files don't count as credits)
 			if (file._created_by.equals(req.user._id)) {
-				return callback(file, true);
+				return callback(file, false);
 			}
 			callback(file);
 		});

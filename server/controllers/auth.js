@@ -56,11 +56,11 @@ exports.auth = function(resource, permission, done) {
 		};
 
 		// read headers
-		if ((req.headers && req.headers[headerName.toLowerCase()]) || (req.query && req.query.jwt)) {
+		if ((req.headers && req.headers[headerName.toLowerCase()]) || (req.query && req.query.token)) {
 
-			if (req.query.jwt) {
+			if (req.query.token) {
 				fromUrl = true;
-				token = req.query.jwt;
+				token = req.query.token;
 			} else {
 
 				fromUrl = false;
@@ -103,8 +103,8 @@ exports.auth = function(resource, permission, done) {
 		}
 
 		// check for path && method
-		if (decoded.path && (decoded.path !== req.originalUrl || req.method !== 'GET')) {
-			return deny(error('Token is only valid for "GET %s" but got "%s %s".', decoded.path, req.originalUrl, req.method).status(401));
+		if (decoded.path && (decoded.path !== req.path || req.method !== 'GET')) {
+			return deny(error('Token is only valid for "GET %s" but got "%s %s".', decoded.path, req.method, req.path).status(401));
 		}
 
 		// here we're authenticated (token is valid and not expired). So update user and check ACL if necessary

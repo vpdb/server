@@ -1,7 +1,6 @@
 "use strict";
 
 var fs = require('fs');
-var ent = require('ent');
 var path = require('path');
 var expect = require('expect.js');
 

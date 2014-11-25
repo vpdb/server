@@ -251,7 +251,6 @@ FileSchema.options.toObject.transform = function(doc, file) {
 	delete file.__v;
 	delete file._id;
 	delete file._created_by;
-//	delete file.is_protected;
 	file.variations = storage.urls(doc);
 	file.metadata = storage.metadataShort(doc);
 };

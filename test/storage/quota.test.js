@@ -29,21 +29,23 @@ describe('The quota engine of VPDB', function() {
 		it('should return the correct rate in the HTTP header', function(done) {
 
 			hlp.release.createRelease('contributor', request, function(release) {
-				request
-					.get(release.versions[0].files[0].file.url)
-					.query({ jwt: request.tokens.ratetest1 })
-					.end(function(err, res) {
-						hlp.expectStatus(err, res, 200);
-						expect(res.headers['x-ratelimit-limit']).to.be.ok();
-						expect(res.headers['x-ratelimit-remaining']).to.be.ok();
-						expect(res.headers['x-ratelimit-reset']).to.be.ok();
+				hlp.storageToken(request, 'ratetest1', release.versions[0].files[0].file.url, function(token) {
+					request
+						.get(release.versions[0].files[0].file.url)
+						.query({ token: token })
+						.end(function(err, res) {
+							hlp.expectStatus(err, res, 200);
+							expect(res.headers['x-ratelimit-limit']).to.be.ok();
+							expect(res.headers['x-ratelimit-remaining']).to.be.ok();
+							expect(res.headers['x-ratelimit-reset']).to.be.ok();
 
-						var limit = parseInt(res.headers['x-ratelimit-limit']);
-						var remaining = parseInt(res.headers['x-ratelimit-remaining']);
+							var limit = parseInt(res.headers['x-ratelimit-limit']);
+							var remaining = parseInt(res.headers['x-ratelimit-remaining']);
 
-						expect(limit - remaining).to.equal(1);
-						done();
-					});
+							expect(limit - remaining).to.equal(1);
+							done();
+						});
+				});
 			});
 		});
 
@@ -53,8 +55,7 @@ describe('The quota engine of VPDB', function() {
 				async.timesSeries(4, function(n, next) {
 					request
 						.get(release.versions[0].files[0].file.url)
-						.as('ratetest1')
-						.query({ jwt: request.tokens.member })
+						.as('ratetest2')
 						.end(function(err, res) {
 							if (n < 3) {
 								hlp.expectStatus(err, res, 200);

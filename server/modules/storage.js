@@ -329,13 +329,16 @@ Storage.prototype.urls = function(file) {
 		return {};
 	}
 	var that = this;
-	var variations = file.variations ? file.variations : {};
+	var variations = file.variations || {};
 	if (this.variations[file.getMimeTypePrimary()] && this.variations[file.getMimeTypePrimary()][file.file_type]) {
 		_.each(this.variations[file.getMimeTypePrimary()][file.file_type], function(variation) {
 			if (!variations[variation.name]) {
 				variations[variation.name] = {};
 			}
 			variations[variation.name].url = that.url(file, variation.name);
+			if (file.is_protected) {
+				variations[variation.name].is_protected = true;
+			}
 		});
 	}
 	return variations;

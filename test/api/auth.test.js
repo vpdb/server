@@ -103,16 +103,54 @@ describe('The authentication engine of the VPDB API', function() {
 	describe('when authorization is provided in the URL', function() {
 
 		it('should grant access to the user profile if the token is valid', function(done) {
+			var path = '/api/v1/user';
+			request
+				.post('/storage/v1/authenticate')
+				.as('member')
+				.send({ paths: path })
+				.end(function(err, res) {
+					hlp.expectStatus(err, res, 200);
+					expect(res.body).to.be.an('object');
+					expect(res.body).to.have.key(path);
+					request
+						.get(path)
+						.query({ token: res.body[path] })
+						.end(hlp.status(200, done));
+				});
+		});
+
+		it('should fail if the token is not path-restricted', function(done) {
 			request
 				.get('/api/v1/user')
-				.query({ jwt: request.tokens.member })
-				.end(hlp.status(200, done));
+				.query({ token: request.tokens.member })
+				.end(hlp.status(401, 'valid for any path cannot', done));
+		});
+
+		it('should fail if the token is for a different path', function(done) {
+			var path = '/storage/v1/files/12345';
+			hlp.storageToken(request, 'member', path, function(token) {
+				request
+					.get('/api/v1/user')
+					.query({ token: token })
+					.end(hlp.status(401, 'is only valid for', done));
+			});
+		});
+
+		it('should fail if the request method is not GET', function(done) {
+			var path = '/storage/v1/files';
+			hlp.storageToken(request, 'member', path, function(token) {
+				request
+					.post(path)
+					.query({ token: token })
+					.send({})
+					.end(hlp.status(401, 'is only valid for', done));
+			});
 		});
 
 		it('should fail if the token is corrupt or unreadable', function(done) {
 			request
 				.get('/api/v1/user')
-				.query({ jwt: 'abcd.123.xyz' })
+				.query({ token: 'abcd.123.xyz' })
 				.end(hlp.status(401, 'Bad JSON Web Token', done));
 		});
 	});
@@ -180,7 +218,6 @@ describe('The authentication engine of the VPDB API', function() {
 
 		it('should change the account type to "local" after setting a password');
 	});
-
 
 	describe('when authenticating via IPB', function() {
 

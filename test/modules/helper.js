@@ -185,6 +185,19 @@ exports.teardownUsers = function(request, done) {
 	});
 };
 
+exports.storageToken = function(request, user, path, done) {
+	request
+		.post('/storage/v1/authenticate')
+		.as(user)
+		.send({ paths: path })
+		.end(function(err, res) {
+			exports.expectStatus(err, res, 200);
+			expect(res.body).to.be.an('object');
+			expect(res.body).to.have.key(path);
+			done(res.body[path]);
+		});
+};
+
 /**
  * Marks a file to be cleaned up in teardown.
  * @param {string} user User with which the file was created

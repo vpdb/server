@@ -27,40 +27,44 @@ describe('The storage engine of VPDB', function() {
 		it('should return a "Last-Modified" header for all storage items.', function(done) {
 
 			hlp.file.createBackglass('member', request, function(backglass) {
-				request
-					.get(backglass.url)
-					.query({ jwt: request.tokens.member })
-					.end(function(err, res) {
-						hlp.expectStatus(err, res, 200);
-						hlp.doomFile('member', backglass.id);
+				hlp.storageToken(request, 'member', backglass.url, function(token) {
+					request
+						.get(backglass.url)
+						.query({ token: token })
+						.end(function(err, res) {
+							hlp.expectStatus(err, res, 200);
+							hlp.doomFile('member', backglass.id);
 
-						expect(res.headers['last-modified']).not.to.be.empty();
-						done();
-					});
+							expect(res.headers['last-modified']).not.to.be.empty();
+							done();
+						});
+				});
 			});
 		});
 
 		it('should return a HTTP 304 Not Modified if a file is requested with the "If-Modified-Since" header', function(done) {
 
 			hlp.file.createBackglass('member', request, function(backglass) {
-				request
-					.get(backglass.url)
-					.query({ jwt: request.tokens.member })
-					.end(function(err, res) {
-						hlp.expectStatus(err, res, 200);
-						hlp.doomFile('member', backglass.id);
+				hlp.storageToken(request, 'member', backglass.url, function(token) {
+					request
+						.get(backglass.url)
+						.query({ token: token })
+						.end(function(err, res) {
+							hlp.expectStatus(err, res, 200);
+							hlp.doomFile('member', backglass.id);
 
-						var lastModified = res.headers['last-modified'];
-						request
-							.get(backglass.url)
-							.query({ jwt: request.tokens.member })
-							.set('If-Modified-Since', lastModified)
-							.end(function(err, res) {
-								hlp.expectStatus(err, res, 304);
-								expect(res.body).to.be.empty();
-								done();
-							});
-					});
+							var lastModified = res.headers['last-modified'];
+							request
+								.get(backglass.url)
+								.query({ token: token })
+								.set('If-Modified-Since', lastModified)
+								.end(function(err, res) {
+									hlp.expectStatus(err, res, 304);
+									expect(res.body).to.be.empty();
+									done();
+								});
+						});
+				});
 			});
 		});
 

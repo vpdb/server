@@ -21,7 +21,6 @@
 
 var jwt = require('jwt-simple');
 var logger = require('winston');
-var debug = require('debug')('auth');
 
 var acl = require('../acl');
 var error = require('../modules/error')('ctrl', 'auth');
@@ -48,6 +47,7 @@ exports.auth = function(resource, permission, done) {
 
 	return function(req, res) {
 		var token;
+		var fromUrl = false;
 		var headerName = config.vpdb.authorizationHeader;
 		delete req.user;
 
@@ -59,8 +59,11 @@ exports.auth = function(resource, permission, done) {
 		if ((req.headers && req.headers[headerName.toLowerCase()]) || (req.query && req.query.jwt)) {
 
 			if (req.query.jwt) {
+				fromUrl = true;
 				token = req.query.jwt;
 			} else {
+
+				fromUrl = false;
 
 				// validate format
 				var parts = req.headers[headerName.toLowerCase()].split(' ');
@@ -88,13 +91,20 @@ exports.auth = function(resource, permission, done) {
 			return deny(error(e, 'Bad JSON Web Token').status(401));
 		}
 
-		debug('1. %s %s - GOT TOKEN (%s)', req.method, req.path, decoded.iss);
-
 		// check for expiration
 		var now = new Date();
 		var tokenExp = new Date(decoded.exp);
 		if (tokenExp.getTime() < now.getTime()) {
-			return deny(error('JSON Web Token has expired').status(401));
+			return deny(error('Token has expired').status(401));
+		}
+
+		if (fromUrl && !decoded.path) {
+			return deny(error('Tokens that are valid for any path cannot be provided as query parameter.').status(401));
+		}
+
+		// check for path && method
+		if (decoded.path && (decoded.path !== req.originalUrl || req.method !== 'GET')) {
+			return deny(error('Token is only valid for "GET %s" but got "%s %s".', decoded.path, req.originalUrl, req.method).status(401));
 		}
 
 		// here we're authenticated (token is valid and not expired). So update user and check ACL if necessary
@@ -107,16 +117,13 @@ exports.auth = function(resource, permission, done) {
 				return deny(error('No user with ID %s found.', decoded.iss).status(403).log());
 			}
 
-
 			// this will be useful for the rest of the stack
 			req.user = user;
 
-			debug('2. %s %s - GOT USER <%s> (%s)', req.method, req.path, req.user.email, req.user.id);
-
 			// generate new token if it's a short term token.
 			var tokenIssued = new Date(decoded.iat);
-			if (tokenExp.getTime() - tokenIssued.getTime() === config.vpdb.tokenLifetime) {
-				res.setHeader('X-Token-Refresh', exports.generateToken(user, now, req.method + ' ' + req.path));
+			if (tokenExp.getTime() - tokenIssued.getTime() === config.vpdb.apiTokenLifetime) {
+				res.setHeader('X-Token-Refresh', exports.generateApiToken(user, now));
 			}
 
 			var checkACLs = function(err) {
@@ -164,15 +171,34 @@ exports.auth = function(resource, permission, done) {
 
 /**
  * Creates a JSON Web Token for a given user and time.
- * @param user
- * @param now
- * @returns {*}
+ * @param {object} user
+ * @param {Date} now
+ * @returns {string}
  */
-exports.generateToken = function(user, now, dbg) {
-	debug('3. %s - GEN-TOKEN <%s> (%s)', dbg, user.email, user.id);
+exports.generateApiToken = function(user, now) {
 	return jwt.encode({
 		iss: user.id,
 		iat: now,
-		exp: new Date(now.getTime() + config.vpdb.tokenLifetime)
+		exp: new Date(now.getTime() + config.vpdb.apiTokenLifetime)
+	}, config.vpdb.secret);
+};
+
+/**
+ * Creates a media token.
+ *
+ * Media tokens are only valid for a given path and HTTP method and time out
+ * much faster (default 1 minute).
+ *
+ * @param {object} user
+ * @param {Date} now
+ * @paran {string} path
+ * @returns {string}
+ */
+exports.generateStorageToken = function(user, now, path) {
+	return jwt.encode({
+		iss: user.id,
+		iat: now,
+		exp: new Date(now.getTime() + config.vpdb.storageTokenLifetime),
+		path: path
 	}, config.vpdb.secret);
 };

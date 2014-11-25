@@ -53,7 +53,7 @@ exports.download = function(req, res) {
 		res.status(200);
 		res.set({
 			'Content-Type': 'application/zip',
-			'Content-disposition': 'attachment; filename="' + release._game.full_title + '.zip"'
+			'Content-Disposition': 'attachment; filename="' + release._game.full_title + '.zip"'
 		});
 		archive.pipe(res);
 

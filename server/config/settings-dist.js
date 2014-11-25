@@ -61,9 +61,14 @@ module.exports = {
 		},
 
 		/**
-		 * Lifetime of the JSON Web Token in milliseconds.
+		 * Lifetime of the API JWT in milliseconds.
 		 */
-		tokenLifetime: 3600000,
+		apiTokenLifetime: 3600000,
+
+		/**
+		 * Lifetime of the ticket token in the URL for images and videos, in milliseconds.
+		 */
+		storageTokenLifetime: 60000,
 
 		/**
 		 * Secret for hashing and signing. Create something long here: http://strongpasswordgenerator.com/

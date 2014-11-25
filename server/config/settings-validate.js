@@ -118,10 +118,20 @@ module.exports = {
 		/**
 		 * Session timeout in milliseconds.
 		 */
-		tokenLifetime: function(timeout) {
+		apiTokenLifetime: function(timeout) {
 			/* istanbul ignore if */
 			if (!parseInt(timeout) || parseInt(timeout) < 1) {
-				return 'Session timeout must be a number greater than 0';
+				return 'API token lifetime must be a number greater than 0';
+			}
+		},
+
+		/**
+		 * Session timeout in milliseconds.
+		 */
+		storageTokenLifetime: function(timeout) {
+			/* istanbul ignore if */
+			if (!parseInt(timeout) || parseInt(timeout) < 1) {
+				return 'Ticket token lifetime must be a number greater than 0';
 			}
 		},
 

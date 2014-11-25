@@ -61,8 +61,8 @@ exports.authenticate = function(req, res) {
 		}
 
 		var now = new Date();
-		var expires = new Date(now.getTime() + config.vpdb.tokenLifetime);
-		var token = auth.generateToken(user, now);
+		var expires = new Date(now.getTime() + config.vpdb.apiTokenLifetime);
+		var token = auth.generateApiToken(user, now);
 
 		logger.info('[api|user:authenticate] User <%s> successfully authenticated.', user.email);
 		getACLs(user, assert(function(acls) {
@@ -84,7 +84,6 @@ exports.authenticate = function(req, res) {
  * Note that this is passed as-is to passport, so the URL params should be the
  * same as the ones from the third party provider.
  *
- * @api /api/authenticate/:strategy
  * @param {Request} req
  * @param {Response} res
  * @param {function} next
@@ -134,8 +133,8 @@ function passportCallback(req, res) {
 		}
 
 		var now = new Date();
-		var expires = new Date(now.getTime() + config.vpdb.tokenLifetime);
-		var token = auth.generateToken(user, now);
+		var expires = new Date(now.getTime() + config.vpdb.apiTokenLifetime);
+		var token = auth.generateApiToken(user, now);
 
 		logger.info('[api|%s:authenticate] User <%s> successfully authenticated.', req.params.strategy, user.email);
 		getACLs(user, function(err, acls) {

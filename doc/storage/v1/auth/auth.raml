@@ -1,0 +1,15 @@
+displayName: Authentication
+description: |
+  Some storage items such as images and videos are usually not loaded with
+  Javascript but by the browser directly. However, when those items need
+  authentification (like images on an upload page), it's difficult for the
+  browser to provide the bearer token in the HTTP header.
+
+  For this reason, the storage API accepts so-called *storage tokens*.
+  Storage tokens can be put as a query string into the URL, are only valid a
+  very limited time (usually one minute), and are locked to a given URL path.
+
+post:
+  securedBy: [ jwt: { scopes: [ MEMBER ] } ]
+  description: |
+    Generate one or more storage tokens.

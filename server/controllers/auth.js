@@ -103,8 +103,8 @@ exports.auth = function(resource, permission, done) {
 		}
 
 		// check for path && method
-		if (decoded.path && (decoded.path !== req.path || req.method !== 'GET')) {
-			return deny(error('Token is only valid for "GET %s" but got "%s %s".', decoded.path, req.method, req.path).status(401));
+		if (decoded.path && (decoded.path !== req.path || (req.method !== 'GET' && req.method !== 'HEAD'))) {
+			return deny(error('Token is only valid for "GET/HEAD %s" but got "%s %s".', decoded.path, req.method, req.path).status(401));
 		}
 
 		// here we're authenticated (token is valid and not expired). So update user and check ACL if necessary

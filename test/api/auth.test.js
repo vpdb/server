@@ -136,7 +136,7 @@ describe('The authentication engine of the VPDB API', function() {
 			});
 		});
 
-		it('should fail if the request method is not GET', function(done) {
+		it('should fail if the request method is not GET or HEAD', function(done) {
 			var path = '/storage/v1/files';
 			hlp.storageToken(request, 'member', path, function(token) {
 				request

@@ -7,7 +7,7 @@ mediaType: application/json
 
 securitySchemes:
   - jwt: !include _securitySchemes/jwt.raml
-  
+
 traits:
   - protected: !include _traits/protected.raml
   - rateLimited: !include _traits/rate-limited.raml

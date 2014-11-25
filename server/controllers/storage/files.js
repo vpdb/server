@@ -23,11 +23,17 @@ var fs = require('fs');
 var logger = require('winston');
 
 var File = require('mongoose').model('File');
-var quota = require('../modules/quota');
-var storage = require('../modules/storage');
-var acl = require('../acl');
+var quota = require('../../modules/quota');
+var storage = require('../../modules/storage');
+var acl = require('../../acl');
 
 
+/**
+ * Downloads a single file.
+ *
+ * @param {Request} req
+ * @param {Response} res
+ */
 exports.get = function(req, res) {
 
 	find(req, res, function(file, isPublic) {
@@ -51,7 +57,12 @@ exports.get = function(req, res) {
 	});
 };
 
-
+/**
+ * Checks if a file exists.
+ *
+ * @param {Request} req
+ * @param {Response} res
+ */
 exports.head = function(req, res) {
 	find(req, res, function(file) {
 		return serve(req, res, file, req.params.variation, true);
@@ -63,8 +74,8 @@ exports.head = function(req, res) {
  * Retrieves a storage item and does all checks but the quota check. If any
  * check fails, it responds to the client.
  *
- * @param {object} req Request object
- * @param {object} res Response object
+ * @param {Request} req
+ * @param {Response} res
  * @param {function} callback Callback with {File} object as first argument (treats errors directly) and `isPublic` as second argument (no quota checking necessary if true).
  */
 function find(req, res, callback) {

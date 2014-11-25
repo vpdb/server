@@ -1,4 +1,4 @@
-"use strict"; /* global common */
+"use strict"; /* global common, _ */
 
 /**
  * Updates scope on child events.
@@ -61,7 +61,7 @@ common
 		};
 	})
 
-	.directive('imgBg', function($parse) {
+	.directive('imgBg', function($parse, AuthService) {
 		return {
 			scope: true,
 			restrict: 'A',
@@ -70,27 +70,38 @@ common
 				scope.img = { url: false, loading: false };
 				var setImg = function(value) {
 
+					var url = _.isObject(value) ? value.url : value;
+					var isProtected = _.isObject(value) ? value.is_protected : false;
+
 					// check for empty
-					if (value === false) {
+					if (url === false) {
 						scope.img = { url: false, loading: false };
 						element.css('background-image', 'none');
 						//element.removeClass('loaded');
 						scope.$emit('imageUnloaded');
 
 					} else {
-						scope.img = { url: value, loading: true };
-						element.css('background-image', "url('" + value + "')");
-						element.waitForImages({
-							each: function() {
-								var that = $(this);
-								that.addClass('loaded');
-								scope.$emit('imageLoaded');
-								scope.img.loading = false;
-								scope.$apply();
-							},
-							waitForAll: true
-						});
+						if (!isProtected) {
+							setImgUrl(url);
+						} else {
+							AuthService.addUrlToken(url, setImgUrl);
+						}
 					}
+				};
+
+				var setImgUrl = function(url) {
+					scope.img = { url: url, loading: true };
+					element.css('background-image', "url('" + url + "')");
+					element.waitForImages({
+						each: function() {
+							var that = $(this);
+							that.addClass('loaded');
+							scope.$emit('imageLoaded');
+							scope.img.loading = false;
+							scope.$apply();
+						},
+						waitForAll: true
+					});
 				};
 
 				// check for constant

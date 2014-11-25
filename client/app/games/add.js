@@ -233,28 +233,24 @@ angular.module('vpdb.games.add', [])
 						'Content-Disposition': 'attachment; filename="' + file.name + '"'
 					},
 					data: event.target.result
-				})
-					.then(function(response) {
-						$scope.mediaFile[id].uploading = false;
-						$scope.mediaFile[id].status = 'Uploaded';
 
-						var mediaResult = response.data;
-						$scope.game.mediaFile[id].id = mediaResult.id;
-						$scope.game.mediaFile[id].url = AuthService.setUrlParam(mediaResult.url, mediaResult.is_protected);
-						$scope.game.mediaFile[id].variations = AuthService.setUrlParam(mediaResult.variations, mediaResult.is_protected);
-						$scope.game.mediaFile[id].metadata = mediaResult.metadata;
+				}).then(function(response) {
+					$scope.mediaFile[id].uploading = false;
+					$scope.mediaFile[id].status = 'Uploaded';
+					$scope.game.mediaFile[id] = response.data;
+					AuthService.collectUrlProps(response.data, true);
 
-						// run callback
-						if (onSuccess) {
-							onSuccess(response);
-						}
+					// run callback
+					if (onSuccess) {
+						onSuccess(response);
+					}
 
-					}, ApiHelper.handleErrorsInDialog($scope, 'Error uploading image.', function() {
-						$scope.mediaFile[id] = {};
+				}, ApiHelper.handleErrorsInDialog($scope, 'Error uploading image.', function() {
+					$scope.mediaFile[id] = {};
 
-					}), function (evt) {
-						$scope.mediaFile[id].progress = parseInt(100.0 * evt.loaded / evt.total);
-					});
+				}), function (evt) {
+					$scope.mediaFile[id].progress = parseInt(100.0 * evt.loaded / evt.total);
+				});
 			};
 		};
 
@@ -293,6 +289,8 @@ angular.module('vpdb.games.add', [])
 		$scope.resetMedia();
 		if ($localStorage.newGame) {
 			$scope.game  = $localStorage.newGame;
+			AuthService.collectUrlProps($scope.game, true);
+
 		} else {
 			$scope.resetGame();
 		}

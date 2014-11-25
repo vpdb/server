@@ -61,7 +61,7 @@ angular.module('vpdb.releases.add', [])
 		 * @param {array} mediaFiles
 		 * @param {object} release
 		 */
-		var updateMedia = function(mediaFiles, release) {
+		var updateReleaseMedia = function(mediaFiles, release) {
 			_.each(mediaFiles, function(mediaFile, fileId) {
 				var file = _.find(release.versions[0].files, { _file: fileId });
 				file._media = {};
@@ -452,28 +452,27 @@ angular.module('vpdb.releases.add', [])
 						'Content-Disposition': 'attachment; filename="' + file.name + '"'
 					},
 					data: event.target.result
+
 				}).then(function(response) {
 					$scope.mediaFiles[tableFileId][type].uploading = false;
 					$scope.mediaFiles[tableFileId][type].status = 'Uploaded';
 
 					var mediaResult = response.data;
-					$scope.meta.mediaFiles[tableFileId][type].id = mediaResult.id;
-					$scope.meta.mediaFiles[tableFileId][type].url = AuthService.setUrlParam(mediaResult.url, mediaResult.is_protected);
-					$scope.meta.mediaFiles[tableFileId][type].variations = AuthService.setUrlParam(mediaResult.variations, mediaResult.is_protected);
-					$scope.meta.mediaFiles[tableFileId][type].metadata = mediaResult.metadata;
+					$scope.meta.mediaFiles[tableFileId][type] = mediaResult;
 
 					switch (type) {
 						case 'playfield_image':
-							$scope.meta.mediaLinks[tableFileId][type] = $scope.meta.mediaFiles[tableFileId][type].variations['medium-landscape'].url;
+							$scope.meta.mediaLinks[tableFileId][type] = mediaResult.variations['medium-landscape'];
 							break;
 						case 'playfield_video':
-							$scope.meta.mediaLinks[tableFileId][type] = $scope.meta.mediaFiles[tableFileId][type].variations.still.url;
+							$scope.meta.mediaLinks[tableFileId][type] = mediaResult.variations.still;
 							break;
 						default:
-							$scope.meta.mediaLinks[tableFileId][type] = $scope.meta.mediaFiles[tableFileId][type].url;
+							$scope.meta.mediaLinks[tableFileId][type] = mediaResult;
 					}
+					AuthService.collectUrlProps(mediaResult, true);
 
-					updateMedia($scope.meta.mediaFiles, $scope.release);
+					updateReleaseMedia($scope.meta.mediaFiles, $scope.release);
 
 				}, ApiHelper.handleErrorsInDialog($scope, 'Error uploading image.', function() {
 					$scope.mediaFiles[tableFileId][type] = {};
@@ -535,6 +534,7 @@ angular.module('vpdb.releases.add', [])
 				file._compatibility = metaFile.vpbuilds;
 				file.flavor = metaFile.flavor;
 			});
+			AuthService.collectUrlProps($scope.meta, true);
 
 		} else {
 			$scope.reset();

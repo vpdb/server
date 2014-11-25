@@ -1,4 +1,4 @@
-"use strict"; /* global _ */
+"use strict"; /* global traverse, _ */
 
 angular.module('vpdb.auth', [])
 
@@ -6,7 +6,7 @@ angular.module('vpdb.auth', [])
 		$httpProvider.interceptors.push('AuthInterceptor');
 	})
 
-	.factory('AuthService', function($window, $localStorage, $sessionStorage, $rootScope, $location, Config) {
+	.factory('AuthService', function($window, $localStorage, $sessionStorage, $rootScope, $location, $http, Config, ConfigService) {
 
 		return {
 
@@ -194,33 +194,80 @@ angular.module('vpdb.auth', [])
 				delete $localStorage.tokenCreated;
 			},
 
+			/**
+			 * Traverses an object and collects all values of the `url` property.
+			 *
+			 * @param {object} obj Object to deep-traverse
+			 * @param {boolean} [fetch] If set, directly fetch the tokens
+			 * @return {AuthService}
+			 */
+			collectUrlProps: function(obj, fetch) {
+				this.paths = this.paths || [];
+				var paths = [];
+				traverse.forEach(obj, function(value) {
+					if (this.key === 'url' && value) {
+						paths.push(value);
+					}
+				});
+				this.paths = _.unique(paths.concat(this.paths));
+				if (fetch) {
+					this.fetchUrlTokens();
+				}
+				return this;
+			},
 
 			/**
-			 * Appends the auth token to the URL as query parameter. This is for
-			 * resources where we can't put it into the header because of the
-			 * browser doing the request (like /storage paths).
-			 *
-			 * @param {string|object} baseUrl URL to append to. If an object is passed, all props with key `url` will be updated.
-			 * @param isProtected Only add if set true
-			 * @returns {string} URL with appended auth token if `isProtected` was true.
+			 * Requests storage tokens for previously collected URLs.
+			 * @see #collectUrlProps
+			 * @return {AuthService}
 			 */
-			setUrlParam: function(baseUrl, isProtected) {
-				if (!baseUrl) {
-					return false;
+			fetchUrlTokens: function() {
+				var that = this;
+				$http({
+					method: 'POST',
+					url: ConfigService.storageUri('/authenticate'),
+					data: { paths: this.paths }
+				}).success(function(data) {
+					that.storageTokens = data;
+					that.paths = [];
+					if (that.storageTokenCallbacks) {
+						_.each(data, function(token, path) {
+							if (that.storageTokenCallbacks[path]) {
+								that.storageTokenCallbacks[path](token);
+								delete that.storageTokenCallbacks[path];
+							}
+						});
+					}
+				}).error(function(data, status) {
+					console.error('Error fetching tokens: ' + status);
+					console.error(data);
+				});
+				return this;
+			},
+
+			/**
+			 * Appends the `token` parameter to an URL from previously
+			 * requested storage tokens.
+			 *
+			 * This is for resources where we can't put a token into the header
+			 * because of the browser doing the request (like image URLs).
+			 *
+			 * @param {string} url
+			 * @param {function} callback
+			 * @return {AuthService}
+			 */
+			addUrlToken: function(url, callback) {
+				if (this.storageTokens && this.storageTokens[url]) {
+					return callback(url + (~url.indexOf('?') ? '&' : '?') + 'token=' + this.storageTokens[url]);
 				}
-				if (!isProtected) {
-					return baseUrl;
+ 				if (!_.contains(this.paths, url)) {
+					return console.error('Path "%s" neither in collected paths nor in received tokens. Might forgot to collect URL props on some object?');
 				}
-				if (_.isObject(baseUrl)) {
-					var that = this;
-					return traverse.map(baseUrl, function(url) {
-						if (this.key === 'url') {
-							this.update(url + (~url.indexOf('?') ? '&' : '?') + 'jwt=' + that.getToken());
-						}
-					});
-				} else {
-					return baseUrl + (~baseUrl.indexOf('?') ? '&' : '?') + 'jwt=' + this.getToken();
-				}
+				this.storageTokenCallbacks = this.storageTokenCallbacks || [];
+				this.storageTokenCallbacks[url] = function(token) {
+					callback(url + (~url.indexOf('?') ? '&' : '?') + 'token=' + token);
+				};
+				return this;
 			},
 
 			/**
@@ -234,7 +281,7 @@ angular.module('vpdb.auth', [])
 	})
 
 
-	.factory('AuthInterceptor', function(AuthService) {
+	.factory('AuthInterceptor', function($injector) {
 		return {
 			request: function(config) {
 				config.headers = config.headers || {};
@@ -243,6 +290,7 @@ angular.module('vpdb.auth', [])
 					// dont "internally cache" (as in: don't make the request at all) anything from the api.
 					config.cache = false;
 				}
+				var AuthService = $injector.get('AuthService');
 				if (AuthService.hasToken()) {
 					config.headers[AuthService.getAuthHeader()] = 'Bearer ' + AuthService.getToken();
 				}
@@ -258,6 +306,7 @@ angular.module('vpdb.auth', [])
 				// only for api calls we can be sure that the token is not cached and therefore correct.
 				if (token && response.config.url.substr(0, 5) === '/api/') {
 					var dirty = parseInt(response.headers('x-user-dirty'));
+					var AuthService = $injector.get('AuthService');
 					if (dirty > 0) {
 						// force user update
 						AuthService.tokenReceived(token);

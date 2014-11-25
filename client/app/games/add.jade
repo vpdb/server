@@ -249,7 +249,7 @@ include ../template/_mixins
 					.panel.panel--blank(ng-file-drop="onMediaUpload('backglass', 'backglass', 'image', $files, onBackglassUpload)", ng-file-drag-over-class="panel--dragging")
 						input#uploadBackglass.hide(type='file', ng-file-select="onMediaUpload('backglass', 'backglass', 'image', $files, onBackglassUpload)")
 						.panel-body.a.a--darker(ng-click="openUploadDialog('#uploadBackglass')")
-							.img.img--ar-bg.loaded(img-bg="game.mediaFile.backglass.variations['medium-2x'].url")
+							.img.img--ar-bg.loaded(img-bg="game.mediaFile.backglass.variations['medium-2x']")
 								.text-center.vertical-center--100
 									progressbar.progress--fixed-absolute.progress-striped.active(value="mediaFile.backglass.progress", ng-show="mediaFile.backglass.uploading")
 									.span(ng-show="!img.url")
@@ -288,7 +288,7 @@ include ../template/_mixins
 					.panel.panel--blank(ng-file-drop="onMediaUpload('logo', 'logo', 'image', $files, onLogoUpload)", ng-file-drag-over-class="panel--dragging")
 						input#uploadLogo.hide(type='file', ng-file-select="onMediaUpload('logo', 'logo', 'image', $files, onLogoUpload)")
 						.panel-body.a.a--darker(ng-click="openUploadDialog('#uploadLogo')")
-							.img.img--ar-logo.loaded(img-bg="game.mediaFile.logo.url")
+							.img.img--ar-logo.loaded(img-bg="game.mediaFile.logo")
 								.text-center.vertical-center--100
 									progressbar.progress--fixed-absolute.progress-striped.active(value="mediaFile.logo.progress", ng-show="mediaFile.logo.uploading")
 									.span(ng-show="!img.url")

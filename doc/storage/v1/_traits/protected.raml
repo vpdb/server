@@ -1,0 +1,10 @@
+headers:
+  Authorization:
+    description: A valid *JSON Web Token*.
+    type: string
+    required: true
+responses:
+  401:
+    description: |
+      Authentication credentials are missing or invalid.
+      Maybe you forgot to add the `Authorization` header, or it has the wrong value.

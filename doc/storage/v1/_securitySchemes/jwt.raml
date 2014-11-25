@@ -1,0 +1,21 @@
+description: Bearer token authentication using JSON web tokens.
+type: x-jwt
+describedBy:
+    headers:
+        Authorization:
+            description: |
+                Used to send a valid JSON web token. For more information check
+                the [RFC draft](http://tools.ietf.org/html/draft-jones-json-web-token-10).
+            type: string
+    responses:
+        401:
+            description: |
+                Bad or expired token. To fix, you should re-authenticate the 
+                user.
+        403:
+            description: |
+                Acces denied. That means that the user was authenticated
+                successfully but hasn't permission to acess the resource. In 
+                this case, re-authenticating won't help.
+settings:
+    authorizationUri: https://vpdb.ch/api/authorize

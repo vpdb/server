@@ -1,0 +1,18 @@
+responses:
+  200:
+    headers:
+      X-RateLimit-Limit:
+        description: The maximum number of requests the user is permitted to make per day.
+        type: integer
+        required: true
+      X-RateLimit-Remaining:
+          description: The number of requests remaining in the current rate limit window.
+          type: integer
+          required: true
+      X-RateLimit-Reset:
+          description: The time until the current rate limit window resets, in milliseconds.
+          type: integer
+          required: true
+  403:
+    description: |
+      API rate limit exceeded for user

@@ -7,15 +7,25 @@ description: |
   [core-files]: api://core/files
 
 post:
+  securedBy: [ jwt: { scopes: [ MEMBER ] } ]
   description: |
     Upload a new file.
 
 /{storage_id}:
   get:
+    is: [ rateLimited ]
     description: |
       Download an existing file.
+  uriParameters:
+      storage_id:
+        displayName: Storage ID
+        type: string
 
   /{variation_name}:
     get:
       description: |
         Download a variation of an existing file.
+    uriParameters:
+        variation_name:
+          displayName: Variation name
+          type: string

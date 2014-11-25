@@ -5,4 +5,11 @@ baseUri: https://vpdb.ch/storage/v1
 protocols: [HTTPS]
 mediaType: application/json
 
+securitySchemes:
+  - jwt: !include _securitySchemes/jwt.raml
+  
+traits:
+  - protected: !include _traits/protected.raml
+  - rateLimited: !include _traits/rate-limited.raml
+
 /files: !include files/files.raml

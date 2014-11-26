@@ -26,9 +26,6 @@ var archiver = require('archiver');
 
 var Release = require('mongoose').model('Release');
 var quota = require('../../modules/quota');
-var storage = require('../../modules/storage');
-var acl = require('../../acl');
-
 
 /**
  * Downloads a release.
@@ -78,7 +75,8 @@ exports.download = function(req, res) {
 			_.each(files, function(file) {
 				archive.append(fs.createReadStream(file.getPath()), {
 					name: 'Visual Pinball/Tables/' + file.name,
-					date: file.created_at });
+					date: file.created_at
+				});
 			});
 			archive.append(release.name, { name: 'README.txt' });
 			archive.finalize();

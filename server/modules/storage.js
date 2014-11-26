@@ -204,8 +204,9 @@ Storage.prototype.metadataShort = function(file, metadata) {
  * complete description of the flow.
  *
  * @param {File} file
+ * @param {boolean} [onlyVariations] If set to `true`, only (re-)process variations.
  */
-Storage.prototype.postprocess = function(file) {
+Storage.prototype.postprocess = function(file, onlyVariations) {
 	var type = file.getMimeTypePrimary();
 	if (!processors[type]) {
 		return;
@@ -219,7 +220,9 @@ Storage.prototype.postprocess = function(file) {
 	}
 
 	// add actual file to queue
-	queue.add(file, undefined, processors[type]);
+	if (!onlyVariations) {
+		queue.add(file, undefined, processors[type]);
+	}
 };
 
 

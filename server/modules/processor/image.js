@@ -170,7 +170,7 @@ ImageProcessor.prototype.pass1 = function(src, dest, file, variation, done) {
  */
 ImageProcessor.prototype.pass2 = function(src, dest, file, variation, done) {
 
-	if (file.getMimeSubtype() !== 'png') {
+	if (file.getMimeSubtype(variation) !== 'png') {
 		logger.info('[processor|image|pass2] Skipping pass 2 for %s (image type %s)', file.toString(variation), file.getMimeSubtype());
 		return done();
 	}
@@ -196,7 +196,7 @@ ImageProcessor.prototype.pass2 = function(src, dest, file, variation, done) {
 	var quanter = new PngQuant([128]);
 	var optimizer = new OptiPng(['-o7']);
 
-	logger.info('[processor|image|pass2] Optimizing %s', file.toString(variation));
+	logger.info('[processor|image|pass2] Optimizing %s %s', file.getMimeSubtype(variation), file.toString(variation));
 	fs.createReadStream(src).on('error', handleErr('reading'))
 		.pipe(quanter).on('error', handleErr('quanter'))
 		.pipe(optimizer).on('error', handleErr('optimizer'))

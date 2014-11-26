@@ -163,18 +163,20 @@ FileSchema.methods.getMimeType = function(variation) {
 
 /**
  * Returns the "primary" type (the part before the `/`) of the mime type.
+ * @param {Object|String} variation Either variation name or object containing attribute "name"
  * @returns {string}
  */
-FileSchema.methods.getMimeTypePrimary = function() {
-	return this.mime_type.split('/')[0];
+FileSchema.methods.getMimeTypePrimary = function(variation) {
+	return this.getMimeType(variation).split('/')[0];
 };
 
 /**
  * Returns the sub type (the part after the `/`) of the mime type.
+ * @param {Object|String} variation Either variation name or object containing attribute "name"
  * @returns {string}
  */
-FileSchema.methods.getMimeSubtype = function() {
-	return this.mime_type.split('/')[1];
+FileSchema.methods.getMimeSubtype = function(variation) {
+	return this.getMimeType(variation).split('/')[1];
 };
 
 /**

@@ -33,7 +33,10 @@ var display = function(err, res) {
 	console.log(util.inspect(res, false, 4, true));
 };
 
-File.find({ variations: { $exists : true, $ne : null }}, function(err, files) {
+var args = process.argv.slice(2);
+var query = _.isArray(args) && args.length ? { id: { $in: args } } : { variations: { $exists : true, $ne : null }};
+console.log(query);
+File.find(query, function(err, files) {
 	if (err) {
 		return display(err, files);
 	}

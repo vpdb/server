@@ -62,6 +62,10 @@ include ../template/_mixins
 					slide(ng-repeat="slide in release.__portraitShots", active="slide.active")
 						img(ng-src="{{ slide.url }}")
 
+				button.btn.btn-primary.btn-block.padder-top-3x(ng-click="download(game, release)")
+					+icon('arrow-circle-down').space-right
+					| Download
+
 				//a.image-link(href="{{ release.__latestVersion.files[0].media.playfield_image.url }}")
 					img.img.img-responsive.img--rounded(img-src="{{ release.__latestVersion.files[0].media.playfield_image.variations.medium.url }}")
 			.col-sm-8.col-md-9

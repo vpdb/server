@@ -1,0 +1,39 @@
+include ../template/_mixins
+
+.theme-light
+	.modal-header
+		h1.h--no-margin.h--small
+			+icon('arrow-circle-down').space-right
+			| Download <strong>{{ game.title }}</strong>
+	.modal-body
+		h3.hr--margin-smaller Choose your flavors:
+
+		.row
+			.col-sm-3(ng-repeat="file in release.__latestVersion.files | filter:tableFile")
+				.flavor-item(ng-class="{ active: downloadList[file.file.id] }", ng-click="toggleFile(file)")
+					img.img.img-responsive.img--rounded-more(img-src="{{ file.media.playfield_image.variations['square-2x'].url }}")
+					.text-center.padder-top
+						label.label--block
+							strong {{ flavors.orientation.values[file.flavor.orientation].name }},
+							| &nbsp;{{ flavors.lightning.values[file.flavor.lightning].name }}
+						label.label--block
+							span(ng-repeat="compat in file.compatibility") {{ compat.label }}
+
+		p.padder-top-2x
+			input#includeGameMedia.checkbox--toggle(type="checkbox", ng-model="includeGameMedia")
+			label(for="includeGameMedia")
+			label(for="includeGameMedia") Include game media
+
+		p
+			input#includePlayfieldImage.checkbox--toggle(type="checkbox", ng-model="includePlayfieldImage")
+			label(for="includePlayfieldImage")
+			label(for="includePlayfieldImage") Include playfield shots
+
+		p
+			input#includePlayfieldVideo.checkbox--toggle(type="checkbox", ng-model="includePlayfieldVideo")
+			label(for="includePlayfieldVideo")
+			label(for="includePlayfieldVideo") Include playfield videos
+
+	.modal-footer
+		button.btn.btn-default(ng-click="$close()") Cancel
+		button.btn.btn-primary(ng-click="$close()") Download

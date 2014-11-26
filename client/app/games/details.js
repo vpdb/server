@@ -42,6 +42,22 @@ angular.module('vpdb.games.details', [])
 			$scope.setTitle($scope.game.title);
 		});
 
+		$scope.download = function(game, release) {
+			$modal.open({
+				templateUrl: '/games/modal-download.html',
+				controller: 'DownloadGameCtrl',
+				size: 'lg',
+				resolve: {
+					params: function() {
+						return {
+							game: game,
+							release: release
+						};
+					}
+				}
+			});
+		};
+
 //		$scope.requestModPermission = function(release) {
 //			var modalInstance = $modal.open({
 //				templateUrl: '/partials/modals/requestModPermission.html',
@@ -55,11 +71,36 @@ angular.module('vpdb.games.details', [])
 //			});
 //		};
 
+		// todo refactor (make it more useful)
 		$scope.tableFile = function(file) {
 			return file.file.mime_type && /^application\/x-visual-pinball-table/i.test(file.file.mime_type);
 		};
 	})
 
+
+	.controller('DownloadGameCtrl', function($scope, $modalInstance, Flavors, params) {
+		$scope.game = params.game;
+		$scope.release = params.release;
+		$scope.flavors = Flavors;
+
+		$scope.downloadList = {};
+		$scope.includeGameMedia = true;
+		$scope.includePlayfieldImage = true;
+		$scope.includePlayfieldVideo = false;
+
+		$scope.toggleFile = function(file) {
+			if ($scope.downloadList[file.file.id]) {
+				delete $scope.downloadList[file.file.id];
+			} else {
+				$scope.downloadList[file.file.id] = file;
+			}
+		};
+
+		// todo refactor (make it more useful)
+		$scope.tableFile = function(file) {
+			return file.file.mime_type && /^application\/x-visual-pinball-table/i.test(file.file.mime_type);
+		};
+	})
 
 	.controller('RequestModPermissionModalCtrl', function($scope, $modalInstance) {
 

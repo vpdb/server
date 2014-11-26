@@ -46,11 +46,11 @@ exports.get = function(req, res, authErr) {
 		quota.isAllowed(req, res, file, function(err, granted) {
 			/* istanbul ignore if  */
 			if (err) {
-				logger.error('[ctrl|storage] Error checking quota for <%s>: %s', req.user.email, err, {});
+				logger.error('[storage|files] Error checking quota for <%s>: %s', req.user.email, err, {});
 				return res.status(500).end();
 			}
 			if (!granted) {
-				return res.status(403).end();
+				return res.status(403).json({ error: 'No more quota left.' }).end();
 			}
 			serve(req, res, file, req.params.variation);
 		});
@@ -110,7 +110,7 @@ function find(req, res, authErr, callback) {
 			return callback(file, true);
 		}
 
-		// so here we determined the file isn't public, so we need to check ACLs and quota.
+		// so here we determined the file isn't public, so we need to check ACLs.
 		acl.isAllowed(req.user.email, 'files', 'download', function(err, granted) {
 			/* istanbul ignore if  */
 			if (err) {
@@ -123,9 +123,9 @@ function find(req, res, authErr, callback) {
 
 			// if the user is the owner, serve directly (owned files don't count as credits)
 			if (file._created_by.equals(req.user._id)) {
-				return callback(file, false);
+				return callback(file, true);
 			}
-			callback(file);
+			callback(file, false);
 		});
 	});
 }

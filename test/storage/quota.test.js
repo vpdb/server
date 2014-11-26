@@ -1,4 +1,4 @@
-"use strict"; /*global describe, before, after, beforeEach, afterEach, it*/
+"use strict"; /* global describe, before, after, beforeEach, afterEach, it */
 
 var request = require('superagent');
 var expect = require('expect.js');
@@ -76,6 +76,8 @@ describe('The quota engine of VPDB', function() {
 
 			});
 		});
+
+		it('should not decrement the quota if an owned file is downloaded');
 
 	});
 

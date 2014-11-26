@@ -19,6 +19,7 @@
 
 "use strict";
 
+var _ = require('lodash');
 var logger = require('winston');
 var quotaModule = require('volos-quota-redis');
 
@@ -58,42 +59,58 @@ function Quota() {
  *
  * @param {object} req Request
  * @param {object} res Response
- * @param {File} file File to check for
+ * @param {File|File[]} file File(s) to check for
  * @param {function} callback Callback with `err` and `isAllowed`
  * @returns {*}
  */
-Quota.prototype.isAllowed = function(req, res, file, callback) {
+Quota.prototype.isAllowed = function(req, res, files, callback) {
 
-	// undefined mime types are free
-	if (!quotaConfig.costs[file.mime_type] && quotaConfig.costs[file.mime_type] !== 0) {
+	if (!_.isArray(files)) {
+		files = [ files ];
+	}
+
+	var file, plan, sum = 0;
+	for (var i = 0; i < files.length; i++) {
+		file = files[i];
+
+		// undefined mime types are free
+		if (!quotaConfig.costs[file.mime_type] && quotaConfig.costs[file.mime_type] !== 0) {
+			continue;
+		}
+
+		// a free file
+		if (quotaConfig.costs[file.mime_type] === 0) {
+			continue;
+		}
+
+		// deny access to anon (wouldn't be here if there were only free files)
+		if (!req.user) {
+			return callback(null, false);
+		}
+
+		plan = req.user.plan || quotaConfig.defaultPlan;
+
+		// allow unlimited plans
+		if (quotaConfig.plans[plan].unlimited === true) {
+			return callback(null, true);
+		}
+
+		if (!quotaConfig.plans[plan] && quotaConfig.plans[plan] !== 0) {
+			return callback(error('No quota defined for plan "%s"', plan));
+		}
+
+		sum += quotaConfig.costs[file.mime_type];
+	}
+
+	if (sum === 0) {
 		return callback(null, true);
 	}
 
-	// return directly if file is free
-	if (quotaConfig.costs[file.mime_type] === 0) {
-		return callback(null, true);
-	}
-
-	// deny access to anon (free files would have been served by now)
-	if (!req.user) {
-		return callback(null, false);
-	}
-
-	var plan = req.user.plan || quotaConfig.defaultPlan;
-
-	// allow unlimited plans
-	if (quotaConfig.plans[plan].unlimited === true) {
-		return callback(null, true);
-	}
-
-	if (!quotaConfig.plans[plan] && quotaConfig.plans[plan] !== 0) {
-		return callback(error('No quota defined for plan "%s"', plan));
-	}
 
 	// https://github.com/apigee-127/volos/tree/master/quota/common#quotaapplyoptions-callback
 	this.quota[quotaConfig.plans[plan].per].apply({
 			identifier: req.user.id,
-			weight: quotaConfig.costs[file.mime_type],
+			weight: sum,
 			allow: quotaConfig.plans[plan].credits
 		},
 		function(err, result) {
@@ -101,7 +118,7 @@ Quota.prototype.isAllowed = function(req, res, file, callback) {
 				logger.error('[quota] Error checking quota for <%s>: %s', req.user.email, err, {});
 				return res.status(500).end();
 			}
-			logger.info('[quota] Quota check %s on <%s> for %s with %d quota left for another %d seconds.', result.isAllowed ? 'passed' : 'FAILED', req.user.email, file.id, result.allowed - result.used, Math.round(result.expiryTime / 1000));
+			logger.info('[quota] Quota check for %s credit(s) %s on <%s> for %d file(s) with %d quota left for another %d seconds.', sum, result.isAllowed ? 'passed' : 'FAILED', req.user.email, files.length, result.allowed - result.used, Math.round(result.expiryTime / 1000));
 			res.set({
 				'X-RateLimit-Limit': result.allowed,
 				'X-RateLimit-Remaining': result.allowed - result.used,

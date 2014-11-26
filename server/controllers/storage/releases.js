@@ -44,25 +44,47 @@ exports.download = function(req, res) {
 		.populate({ path: 'versions.files._file' });
 
 	query.exec(function(err, release) {
+		/* istanbul ignore if  */
 		if (err) {
 			return res.status(500).end();
 		}
+		if (!release) {
+			return res.status(404).json({ error: 'No such release with ID "' + req.params.release_id + '".' }).end();
+		}
 		var files = _.pluck(_.flatten(_.pluck(release.versions, 'files')), '_file');
-		var archive = archiver('zip');
 
-		res.status(200);
-		res.set({
-			'Content-Type': 'application/zip',
-			'Content-Disposition': 'attachment; filename="' + release._game.full_title + '.zip"'
+		// check the quota
+		quota.isAllowed(req, res, files, function(err, granted) {
+			/* istanbul ignore if  */
+			if (err) {
+				logger.error('[storage|download] Error checking quota for <%s>: %s', req.user.email, err, {});
+				return res.status(500).end();
+			}
+			if (!granted) {
+				return res.status(403).json({ error: 'Not enough quota left.' }).end();
+			}
+
+			// create zip stream
+			var archive = archiver('zip');
+
+			res.status(200);
+			res.set({
+				'Content-Type': 'application/zip',
+				'Content-Disposition': 'attachment; filename="' + release._game.full_title + '.zip"'
+			});
+			archive.pipe(res);
+
+			// add tables to stream
+			_.each(files, function(file) {
+				archive.append(fs.createReadStream(file.getPath()), {
+					name: 'Visual Pinball/Tables/' + file.name,
+					date: file.created_at });
+			});
+			archive.append(release.name, { name: 'README.txt' });
+			archive.finalize();
+
 		});
-		archive.pipe(res);
-
-		_.each(files, function(file) {
-			archive.append(fs.createReadStream(file.getPath()), { name: file.name, date: file.created_at });
-		});
-		archive.append(release.name, { name: 'README.txt' });
-		archive.finalize();
-
 	});
+
 };
 

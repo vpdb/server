@@ -354,7 +354,7 @@ include ../template/_mixins
 				label.label--small.pull-right(markdown-info="Markdown enabled.")
 				tab
 					tab-heading(title="Write"): +icon('edit')
-					textarea.textarea--full.msd-elastic(placeholder="Description of the release", ng-model="release.acknowledgements")
+					textarea.textarea--full.msd-elastic(placeholder="List of people to thank", ng-model="release.acknowledgements")
 				tab
 					tab-heading(title="Preview"): +icon('eye')
 					div.markdown(markdown="release.acknowledgements")

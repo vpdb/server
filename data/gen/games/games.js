@@ -41,6 +41,9 @@ exports.upload = function(config) {
 			var bgPrefix = path.resolve(__dirname, 'backglass');
 			var logoPrefix = path.resolve(__dirname, 'logo');
 
+			console.log('Reading backglasses from %s.', bgPrefix);
+			console.log('Reading logos from %s.', logoPrefix);
+
 			async.eachSeries(exports.data, function(game, next) {
 				var data = _.find(ipdb, function(g) { return g.ipdb.number === game.ipdb; });
 
@@ -54,11 +57,12 @@ exports.upload = function(config) {
 					return next();
 				}
 
+				console.log('Adding game "%s"...', data.title);
+
 				var bg = fs.readFileSync(path.resolve(bgPrefix, game.bg));
-				var logo = fs.readFileSync(path.resolve(logoPrefix, game.logo));
 
 				request
-					.post(storageUri)
+					.post(storageUri + '/files')
 					.query({ type: 'backglass' })
 					.type('image/png')
 					.set('Content-Disposition', 'attachment; filename="' + game.bg + '"')
@@ -67,9 +71,10 @@ exports.upload = function(config) {
 					.send(bg)
 					.end(function(res) {
 						var bgRef = res.body.id;
+						var logo = fs.readFileSync(path.resolve(logoPrefix, game.logo));
 
 						request
-							.post(storageUri)
+							.post(storageUri + '/files')
 							.query({ type: 'logo' })
 							.type('image/png')
 							.set('Content-Disposition', 'attachment; filename="' + game.logo + '"')
@@ -110,21 +115,6 @@ exports.upload = function(config) {
 		}
 		console.log('done!');
 	});
-
-
-
-
-//	request
-//		.post('/api/v1/games')
-//		.save({ path: 'games/create'})
-//		.as(user)
-//		.send(hlp.game.getGame({ _media: { backglass: backglass.id }}))
-//		.end(function(err, res) {
-//			hlp.expectStatus(err, res, 201);
-//			hlp.doomGame(user, res.body.id);
-//			done();
-//		});
-
 };
 
 exports.data = [
@@ -159,7 +149,7 @@ exports.data = [
 	{ bg: 'Getaway - High Speed II (Williams 1992).png', logo: 'Getaway - High Speed II (Williams 1992).png', ipdb: 1000 },
 	{ bg: null, logo: 'Guns and Roses (Data East 1994).png', ipdb: 1100 },
 	{ bg: null, logo: 'Haunted House (Gottlieb 1982).png', ipdb: 1133 },
-	{ bg: null, logo: 'Indiana Jones (Williams 1993).png', ipdb: 1267 },
+	{ bg: 'Indiana Jones (Williams 1993).png', logo: 'Indiana Jones (Williams 1993).png', ipdb: 1267 },
 	{ bg: 'Indianapolis 500 (Midway 1995).png', logo: 'Indianapolis 500 (Midway 1995).png', ipdb: 2853 },
 	{ bg: 'Johnny Mnemonic (Williams 1995).png', logo: 'Johnny Mnemonic (Williams 1995).png', ipdb: 3683 },
 	{ bg: 'Judge Dredd (Midway 1993).png', logo: 'Judge Dredd (Midway 1993).png', ipdb: 1322 },

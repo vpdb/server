@@ -1,5 +1,5 @@
 
-var games = require('./../../data/gen/games/games');
+var games = require('../../data/gen/games/games');
 
 var local = {
 	apiUri: 'http://localhost:3000/api/v1',

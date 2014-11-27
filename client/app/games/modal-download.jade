@@ -10,7 +10,7 @@ include ../template/_mixins
 
 		.row
 			.col-sm-3(ng-repeat="file in release.__latestVersion.files | filter:tableFile")
-				.flavor-item(ng-class="{ active: downloadList[file.file.id] }", ng-click="toggleFile(file)")
+				.flavor-item(ng-class="{ active: downloadFiles[file.file.id] }", ng-click="toggleFile(file)")
 					img.img.img-responsive.img--rounded-more(img-src="{{ file.media.playfield_image.variations['square-2x'].url }}")
 					.text-center.padder-top
 						label.label--block
@@ -20,20 +20,20 @@ include ../template/_mixins
 							span(ng-repeat="compat in file.compatibility") {{ compat.label }}
 
 		p.padder-top-2x
-			input#includeGameMedia.checkbox--toggle(type="checkbox", ng-model="includeGameMedia")
+			input#includeGameMedia.checkbox--toggle(type="checkbox", ng-model="downloadRequest.game_media")
 			label(for="includeGameMedia")
 			label(for="includeGameMedia") Include game media
 
 		p
-			input#includePlayfieldImage.checkbox--toggle(type="checkbox", ng-model="includePlayfieldImage")
+			input#includePlayfieldImage.checkbox--toggle(type="checkbox", ng-model="downloadRequest.media.playfield_image")
 			label(for="includePlayfieldImage")
 			label(for="includePlayfieldImage") Include playfield shots
 
 		p
-			input#includePlayfieldVideo.checkbox--toggle(type="checkbox", ng-model="includePlayfieldVideo")
+			input#includePlayfieldVideo.checkbox--toggle(type="checkbox", ng-model="downloadRequest.media.playfield_video")
 			label(for="includePlayfieldVideo")
 			label(for="includePlayfieldVideo") Include playfield videos
 
 	.modal-footer
-		button.btn.btn-default(ng-click="$close()") Cancel
-		button.btn.btn-primary(ng-click="$close()") Download
+		button.btn.btn-default(ng-click="$dismiss()") Cancel
+		button.btn.btn-primary(ng-click="download()") Download

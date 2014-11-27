@@ -120,14 +120,21 @@ FileSchema.methods.getPath = function(variation, tmpSuffix) {
 	// variation name
 	var variationName = _.isObject(variation) ? variation.name : variation;
 
-	// mime type: check in db first for variation
-	var mimeType = this.getMimeType(variation);
-
 	var suffix = tmpSuffix || '';
-	var ext = '.' + mimeTypes[mimeType].ext;
+	var ext = this.getExt(variation);
 	return variationName ?
 		path.resolve(config.vpdb.storage, variationName, this.id) + suffix + ext :
 		path.resolve(config.vpdb.storage, this.id) + suffix + ext;
+};
+
+/**
+ * Returns the file extension, inclusively the dot.
+ *
+ * @param {Object|String} variation Either variation name or object containing attribute "name"
+ * @returns {string} File extension
+ */
+FileSchema.methods.getExt = function(variation) {
+	return '.' + mimeTypes[this.getMimeType(variation)].ext;
 };
 
 /**

@@ -78,23 +78,46 @@ angular.module('vpdb.games.details', [])
 	})
 
 
-	.controller('DownloadGameCtrl', function($scope, $modalInstance, Flavors, params) {
+	.controller('DownloadGameCtrl', function($scope, $modalInstance, $http, Flavors, ConfigService, params) {
+
 		$scope.game = params.game;
 		$scope.release = params.release;
 		$scope.flavors = Flavors;
 
-		$scope.downloadList = {};
-		$scope.includeGameMedia = true;
-		$scope.includePlayfieldImage = true;
-		$scope.includePlayfieldVideo = false;
+		$scope.downloadFiles = {};
+		$scope.downloadRequest = {
+			files: [],
+			media: {
+				playfield_image: true,
+				playfield_video: false
+			},
+			game_media: true
+		};
+
+		$scope.download = function() {
+			$http({
+				method: 'POST',
+				url: ConfigService.storageUri('/releases/' + $scope.release.id),
+				data: $scope.downloadRequest
+			}).success(function(data) {
+				console.log('download successful.');
+			}).error(function(data, status) {
+				console.error('Error: ' + status);
+				console.error(data);
+			});
+			$modalInstance.close(true);
+		};
 
 		$scope.toggleFile = function(file) {
-			if ($scope.downloadList[file.file.id]) {
-				delete $scope.downloadList[file.file.id];
+			if ($scope.downloadFiles[file.file.id]) {
+				delete $scope.downloadFiles[file.file.id];
 			} else {
-				$scope.downloadList[file.file.id] = file;
+				$scope.downloadFiles[file.file.id] = file;
 			}
+			$scope.downloadRequest.files = _.values(_.pluck(_.pluck($scope.downloadFiles, 'file'), 'id'));
 		};
+
+
 
 		// todo refactor (make it more useful)
 		$scope.tableFile = function(file) {

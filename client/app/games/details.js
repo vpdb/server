@@ -78,7 +78,7 @@ angular.module('vpdb.games.details', [])
 	})
 
 
-	.controller('DownloadGameCtrl', function($scope, $modalInstance, $http, Flavors, ConfigService, params) {
+	.controller('DownloadGameCtrl', function($scope, $modalInstance, $http, $timeout, Flavors, ConfigService, AuthService, params) {
 
 		$scope.game = params.game;
 		$scope.release = params.release;
@@ -95,17 +95,18 @@ angular.module('vpdb.games.details', [])
 		};
 
 		$scope.download = function() {
-			$http({
-				method: 'POST',
-				url: ConfigService.storageUri('/releases/' + $scope.release.id),
-				data: $scope.downloadRequest
-			}).success(function(data) {
-				console.log('download successful.');
-			}).error(function(data, status) {
-				console.error('Error: ' + status);
-				console.error(data);
+			var path = '/releases/' + $scope.release.id;
+			var url = ConfigService.storageUri(path);
+			AuthService.fetchUrlTokens(url, function(err, tokens) {
+				// todo treat error
+				$scope.downloadLink = ConfigService.storageUri(path, true);
+				$scope.downloadBody= JSON.stringify($scope.downloadRequest);
+				$scope.downloadToken = tokens[url];
+				$timeout(function() {
+					angular.element('#downloadForm').submit();
+					$modalInstance.close(true);
+				}, 0);
 			});
-			$modalInstance.close(true);
 		};
 
 		$scope.toggleFile = function(file) {

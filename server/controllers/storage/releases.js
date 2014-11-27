@@ -35,8 +35,18 @@ var quota = require('../../modules/quota');
  */
 exports.download = function(req, res) {
 
-	logger.log('[download] RELEASE: %s', JSON.stringify(req.body));
-	if (!req.body || !_.isArray(req.body.files) || !req.body.files.length) {
+	var body = null;
+	try {
+		if (req.query.body) {
+			body = JSON.parse(req.query.body);
+		}
+	} catch (e) {
+		return res.status(400).json({ error: 'Error parsing JSON from URL query.', cause: e.message }).end();
+	}
+	body = body || req.body;
+
+	logger.log('[download] RELEASE: %s', JSON.stringify(body));
+	if (!body || !_.isArray(body.files) || !body.files.length) {
 		return res.status(422).json({ error: 'You need to provide which files you want to include in the download.' }).end();
 	}
 
@@ -59,8 +69,8 @@ exports.download = function(req, res) {
 		}
 
 		var files = [];
-		var fileIds = req.body.files;
-		var media = req.body.media || {};
+		var fileIds = body.files;
+		var media = body.media || {};
 		_.each(release.versions, function(version) {
 
 			// check if there are table files for that version
@@ -90,7 +100,7 @@ exports.download = function(req, res) {
 		});
 
 		// add game media?
-//		if (req.body.game_media && release._game._media) {
+//		if (body.game_media && release._game._media) {
 //			if (release._game._media.backglass) {
 //				files.push(release._game._media.backglass);
 //			}

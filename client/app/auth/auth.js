@@ -219,15 +219,20 @@ angular.module('vpdb.auth', [])
 			/**
 			 * Requests storage tokens for previously collected URLs.
 			 * @see #collectUrlProps
+			 * @param {array} [paths]
+			 * @param {function} [callback]
 			 * @return {AuthService}
 			 */
-			fetchUrlTokens: function() {
+			fetchUrlTokens: function(paths, callback) {
 				var that = this;
 				$http({
 					method: 'POST',
 					url: ConfigService.storageUri('/authenticate'),
-					data: { paths: this.paths }
+					data: { paths: paths || this.paths }
 				}).success(function(data) {
+					if (callback) {
+						return callback(null, data);
+					}
 					that.storageTokens = data;
 					that.paths = [];
 					if (that.storageTokenCallbacks) {
@@ -239,6 +244,9 @@ angular.module('vpdb.auth', [])
 						});
 					}
 				}).error(function(data, status) {
+					if (callback) {
+						callback(status, data);
+					}
 					console.error('Error fetching tokens: ' + status);
 					console.error(data);
 				});

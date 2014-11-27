@@ -124,7 +124,8 @@ module.exports = function(app) {
 	app.head(settings.storagePath('/files/:id/:variation'), api.anon(storage.files.head));
 	app.get(settings.storagePath('/files/:id'),             api.anon(storage.files.get));  // permission/quota handling is inside.
 	app.get(settings.storagePath('/files/:id/:variation'),  api.anon(storage.files.get));
-	app.post(settings.storagePath('/releases/:release_id'), api.auth(storage.releases.download, 'files', 'download'));
+	app.get(settings.storagePath('/releases/:release_id'),  api.auth(storage.releases.download, 'files', 'download'));
+	app.post(settings.storagePath('/releases/:release_id'),  api.auth(storage.releases.download, 'files', 'download'));
 
 
 	// Authentication

@@ -21,21 +21,21 @@ common
 				if (apiSameHost) {
 					return Config.apiUri.pathname + (path || '');
 				} else {
-					return this.uri(Config.apiUri);
+					return this.uri(Config.apiUri) + (path || '');
 				}
 			},
 
-			storageUri: function(path) {
-				if (storageSameHost) {
+			storageUri: function(path, fullPath) {
+				if (storageSameHost && !fullPath) {
 					return Config.storageUri.pathname + (path || '');
 				} else {
-					return this.uri(Config.storageUri);
+					return this.uri(Config.storageUri) + (path || '');
 				}
 			},
 
 			uri: function(uri) {
 				var port = (uri.protocol === 'http' && uri.port === 80) || (uri.protocol === 'https' && uri.port === 443) ? false : uri.port;
-				return uri.protocol + '://' + uri.hostname + (port ? ':' + port : '') + uri.path;
+				return uri.protocol + '://' + uri.hostname + (port ? ':' + port : '') + uri.pathname;
 			}
 		};
 	});

@@ -1,19 +1,23 @@
 # VPDB Changelog
 
-## v0.0.6 (unreleased)
+## v0.0.6
 
 *Client Changes*:
 
 * Added page for adding a new release
 * Games list and game details aren't mocked anymore
 * Markup is now 100% static while all data comes from API
+* Added release details
+* Release download (incl artwork) is working
 
 *Server Changes*:
 
 * API:
+  * Games resource (`list`, `view`, `delete`)
   * Release resource (`create`, `delete`)
   * Tag resource (`create`, `list`, `delete`)
   * VP build resource (`create`, `list`)
+  * Refactored storage API
 * Added automatic thumbnail generation on file upload
 * Added sample data generation when starting the first time
 * Added Mongoose plugin for automatically referencing files
@@ -23,8 +27,8 @@
 * Separated application logic from client, web app is now 100% static
 * Added first version of the developer site
 * Started replacing icon font with SVG map
+* Switched to short-time token for URL-based tokens
 * Bugfixes
-
 
 ## v0.0.5
 

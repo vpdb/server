@@ -14,14 +14,23 @@ exports.upload = function(config) {
 	var authHeader = config.authHeader || 'Authorization';
 	var credentials = config.credentials || {};
 
+	if (config.httpSimple) {
+		var httpSimple = 'Basic ' + new Buffer(config.httpSimple.username + ':' + config.httpSimple.password).toString('base64');
+	}
+
 	var token;
 	var ipdb = require('../../ipdb.json');
 
 	console.log('Local index with %d entries loaded.', ipdb.length);
 	async.series([
 		function(callback) {
+			var headers = {};
+			if (httpSimple) {
+				headers.Authorization = httpSimple;
+			}
 			request
 				.post(apiUri + '/authenticate')
+				.set(headers)
 				.send(credentials)
 				.end(function(err, res) {
 					if (err) {
@@ -61,25 +70,38 @@ exports.upload = function(config) {
 
 				var bg = fs.readFileSync(path.resolve(bgPrefix, game.bg));
 
+				var headers = {
+					'Content-Disposition': 'attachment; filename="' + game.bg + '"',
+					'Content-Length': bg.length
+				};
+				headers[authHeader] = 'Bearer ' + token;
+				if (httpSimple) {
+					headers.Authorization = httpSimple;
+				}
 				request
 					.post(storageUri + '/files')
 					.query({ type: 'backglass' })
 					.type('image/png')
-					.set('Content-Disposition', 'attachment; filename="' + game.bg + '"')
-					.set('Content-Length', bg.length)
-					.set(authHeader, 'Bearer ' + token)
+					.set(headers)
 					.send(bg)
 					.end(function(res) {
 						var bgRef = res.body.id;
 						var logo = fs.readFileSync(path.resolve(logoPrefix, game.logo));
 
+						var headers = {
+							'Content-Disposition': 'attachment; filename="' + game.logo + '"',
+							'Content-Length': logo.length
+						};
+						headers[authHeader] = 'Bearer ' + token;
+						if (httpSimple) {
+							headers.Authorization = httpSimple;
+						}
+
 						request
 							.post(storageUri + '/files')
 							.query({ type: 'logo' })
 							.type('image/png')
-							.set('Content-Disposition', 'attachment; filename="' + game.logo + '"')
-							.set('Content-Length', logo.length)
-							.set(authHeader, 'Bearer ' + token)
+							.set(headers)
 							.send(logo)
 							.end(function(res) {
 								var logoRef = res.body.id;
@@ -94,10 +116,16 @@ exports.upload = function(config) {
 								data.manufacturer = data.manufacturer || 'unknown';
 								data._media = { backglass: bgRef, logo: logoRef };
 
+								var headers = {};
+								headers[authHeader] = 'Bearer ' + token;
+								if (httpSimple) {
+									headers.Authorization = httpSimple;
+								}
+
 								request
 									.post(apiUri + '/games')
 									.type('application/json')
-									.set(authHeader, 'Bearer ' + token)
+									.set(headers)
 									.send(data)
 									.end(function(res) {
 										console.log(res.body);

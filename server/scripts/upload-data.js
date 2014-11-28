@@ -13,5 +13,12 @@ var staging = {
 	authHeader: 'X-Authorization',
 	credentials: { username: 'test', password: 'xxxxxx' }
 };
-games.upload(local);
+var production = {
+	apiUri: 'https://vpdb.ch/api/v1',
+	storageUri: 'https://vpdb.ch/storage/v1',
+	authHeader: 'X-Authorization',
+	credentials: { username: 'uploader', password: 'xxxxxx' },
+	httpSimple: { username: 'vpdb', password: 'xxxxxx' }
+};
+games.upload(production);
 

@@ -1,6 +1,7 @@
 #!/bin/bash
 
 DEPLOY_ENV='staging'
+ROLLBACK=1
 
 . ./hooks/common
 

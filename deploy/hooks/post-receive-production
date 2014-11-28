@@ -1,6 +1,7 @@
 #!/bin/bash
 
 DEPLOY_ENV='production'
+ROLLBACK=0
 
 . ./hooks/common
 

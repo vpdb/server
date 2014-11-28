@@ -20,7 +20,7 @@ rollback_abort() {
 	echo "  $@" 1>&2
 	echo
 
-	if $ROLLBACK; then
+	if [ ${ROLLBACK} -eq 1 ]; then
 		local path=${DEPLOY_ROOT}/${DEPLOY_ENV}/$1
 		echo Removing ${path}
 		rm -r ${path}

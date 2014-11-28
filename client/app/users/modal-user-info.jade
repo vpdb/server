@@ -1,0 +1,12 @@
+include ../template/_mixins
+
+.theme-light
+	.modal-header
+		h1.h--small.h--no-margin
+			+icon('user').space-right
+			strong {{ user.name }}
+	.modal-body
+		p More info to come.
+
+	.modal-footer
+		button.btn.btn-default(ng-click="$close()") Close

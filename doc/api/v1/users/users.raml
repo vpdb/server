@@ -44,6 +44,12 @@ get:
       minLength: 3
       type: string
       example: freez
+    name:
+      description: Exact match by username.
+      required: false
+      minLength: 3
+      type: string
+      example: freezy
   body:
     role/admin:
       example: !include http/list-req.json

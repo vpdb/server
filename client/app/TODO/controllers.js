@@ -48,14 +48,9 @@ common
 		};
 	})
 
-	.controller('UserDetailCtrl', function($scope, $http, username) {
-
-		$scope.loading = true;
-		$http({
-			method: 'GET',
-			url: '/api-mock/users/' + username
-		}).success(function(data, status, headers, config) {
-			$scope.user = data.result;
+	.controller('UserDetailCtrl', function($scope, $http, UserResource, username) {
+		UserResource.query({ name: username }, function(users) {
+			$scope.user = users.length ? users[0] : {};
 		});
 	})
 

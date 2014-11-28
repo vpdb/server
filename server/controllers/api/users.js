@@ -98,6 +98,9 @@ exports.list = function(req, res) {
 					]);
 				}
 			}
+			if (req.query.name) {
+				query.where('name').equals(req.query.name);
+			}
 
 			// filter by role
 			if (canList && req.query.roles) {

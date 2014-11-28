@@ -79,7 +79,8 @@ include ../template/_mixins
 					.media-left.media-middle
 						img.img-avatar.img-avatar--sm(gravatar-src="author.user.gravatar_id", gravatar-default="404", fallback-icon="user")
 					.media-body
-						user {{ author.user.name }} <br>
+						user {{ author.user.name }}
+						br
 						| {{ author.roles.join(', ') }}
 
 				h3.h--smaller.h--primary(ng-show="release.acknowledgements") Acknowledgements

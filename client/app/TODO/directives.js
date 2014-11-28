@@ -96,7 +96,7 @@ common
 			restrict: 'AE',
 			link: function(scope, element, attrs) {
 				var linkUsers = function(html) {
-					return html.replace(/@([^\s]+)/g, '<user>$1</user>');
+					return html.replace(/@&#3[49];([^&]+)&#3[49];/g, '<user>$1</user>').replace(/@([^\s]+)/g, '<user>$1</user>');
 				};
 				if (attrs.markdown) {
 					scope.$watch(attrs.markdown, function(newVal) {
@@ -122,7 +122,7 @@ common
 			link: function(scope, element) {
 				element.click(function() {
 					$modal.open({
-						templateUrl: '/users/modal-user-edit.html',
+						templateUrl: '/users/modal-user-info.html',
 						controller: 'UserDetailCtrl',
 						resolve: {
 							username: function() {

@@ -69,7 +69,14 @@ include ../template/_mixins
 				//a.image-link(href="{{ release.__latestVersion.files[0].media.playfield_image.url }}")
 					img.img.img-responsive.img--rounded(img-src="{{ release.__latestVersion.files[0].media.playfield_image.variations.medium.url }}")
 			.col-sm-8.col-md-9
-				h2.h--primary {{ release.name }} <small>{{ release.__latestVersion.version }}</small>
+				.inline-edit(ng-class='{ open: editing }')
+					+icon('pencil-circle').a.icon-opener(ng-click="editing = true")
+					+icon('check-circle').a.icon-editing(ng-click="editing = false")
+					+icon('times-circle').a.icon-editing(ng-click="editing = false")
+				h2.h--primary(ng-show="editing")
+					.form-group.form--inline
+						input.form-control.input-lg(type="text", value="{{ release.name }}")
+				h2.h--primary(ng-hide="editing") {{ release.name }} <small>{{ release.__latestVersion.version }}</small>
 				.badge.badge--tag.badge--small(ng-repeat="tag in release.tags", tooltip="{{tag.description}}") {{ tag.name }}
 
 				span.clearfix.padder-top(ng-show="release.tags && release.tags.length") &nbsp;

@@ -1,5 +1,11 @@
 # VPDB Changelog
 
+## v0.0.7 (unreleased)
+
+*Client Changes*:
+
+* Added release inline editing
+
 ## v0.0.6
 
 *Client Changes*:

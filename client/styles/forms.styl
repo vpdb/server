@@ -23,10 +23,17 @@
 	font-weight $font-weight-normal
 	&:focus
 		box-shadow none
+
 // Large input box
 .input-lg
 	border-radius $border-radius-large
+	padding-left 12px
+	padding-right 12px
 
+// Input box within a header (for inline editing)
+h2 .form-control
+	@extend h2
+	height 50px
 
 // Search Box
 //
@@ -347,3 +354,6 @@ input.checkbox--toggle
 		border-width 2px
 	&.error .input-group-addon
 		border-left-style none
+
+	&.form--inline
+		margin-right 75px

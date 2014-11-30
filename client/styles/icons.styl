@@ -53,3 +53,22 @@ body > svg
 
 .theme-light .svg-icon
 	fill $color-lighter-inv
+
+.inline-edit
+	position absolute
+	right 15px
+	margin-top 30px
+	.icon-opener
+		opacity 1
+	.icon-editing
+		opacity 0
+	.svg-icon
+		transition all $animation-long
+		transform translateX(56px)
+	&.open
+		.svg-icon
+			transform translateX(0)
+		.icon-opener
+			opacity 0
+		.icon-editing
+			opacity 1

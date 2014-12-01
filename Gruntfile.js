@@ -171,6 +171,7 @@ module.exports = function(grunt) {
 			},
 			all: {   // Grunt requires at least one target to run so you can simply put 'all: {}' here too.
 				options: {
+					debug: false,
 					configFile: "test/protractor.js", // Target-specific config file
 					args: {} // Target-specific arguments
 				}

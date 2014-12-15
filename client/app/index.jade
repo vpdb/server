@@ -7,11 +7,11 @@ block navbar
 			a(href="/") Home
 		li(ng-class="{ active: menu == 'games' }")
 			a(href="/games") Games
-		li.dropdown(ng-class="{ active: menu == 'admin' }", ng-show="auth.hasRole(['root', 'admin'])", on-toggle="toggled(open)")
-			a.space-right.dropdown-toggle
+		li.dropdown(ng-class="{ active: menu == 'admin' }", ng-show="auth.hasRole(['root', 'admin'])", on-toggle="toggled(open)", dropdown)
+			a.space-right.dropdown-toggle(dropdown-toggle)
 				span.space-right-2x Admin
 				+icon('angle-down').smaller.shift-up
-			ul.dropdown-menu
+			ul.dropdown-menu(role="menu")
 				li
 					a(href="/admin/users")
 						+icon('users').space-right.shift-up
@@ -22,8 +22,8 @@ block navbar
 			a(ng-click="login()")
 				+icon('lock').small.space-right.shift-up
 				span.space-right Login
-		li.dropdown(ng-show="auth.isAuthenticated", on-toggle="toggled(open)")
-			a.space-right.dropdown-toggle
+		li.dropdown(ng-show="auth.isAuthenticated", on-toggle="toggled(open)", dropdown)
+			a.space-right.dropdown-toggle(dropdown-toggle)
 				span.space-right-2x {{ auth.user.name }}
 				+icon('angle-down').smaller.shift-up
 			ul.dropdown-menu

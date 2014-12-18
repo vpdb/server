@@ -27,6 +27,7 @@ var appDeps = [
 	'vpdb.games.list',
 	'vpdb.games.details',
 	'vpdb.games.add',
+	'vpdb.profile.settings',
 	'vpdb.releases.add',
 	'vpdb.users.list',
 	'vpdb.users.edit'
@@ -48,6 +49,7 @@ angular.module('vpdb',  [ 'ngRoute' ].concat(deps).concat(appDeps))
 		$routeProvider.when('/games/add',               { templateUrl: '/games/add.html' });
 		$routeProvider.when('/game/:id/add-release',    { templateUrl: '/releases/add.html' });
 		$routeProvider.when('/admin/users',             { templateUrl: '/users/list.html' });
+		$routeProvider.when('/profile/settings',        { templateUrl: '/profile/settings.html' });
 		$routeProvider.when('/auth/:strategy/callback', { templateUrl: '/auth/authenticating.html' });
 
 		$routeProvider.otherwise({ templateUrl: '/errors/404.html' });

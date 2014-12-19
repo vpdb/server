@@ -10,8 +10,16 @@ include ../template/_mixins
 		.color-primary Settings
 		span Stats
 
+		p.padder-bottom-2x
+
 
 	// content
 	.col-sm-9.col--main
 
-		p content goes here.
+		p.padder-top-2x
+		.media
+			.media-left.media-middle
+				img.img-avatar.img-avatar--xlg(gravatar-src="auth.user.gravatar_id", gravatar-default="404", fallback-icon="user")
+			.media-body
+				h3.h--large.h--shift-up {{ auth.user.name }}
+				.text--large.text--shift-up {{ auth.user.email }}

@@ -23,3 +23,23 @@ include ../template/_mixins
 			.media-body
 				h3.h--large.h--shift-up {{ auth.user.name }}
 				.text--large.text--shift-up {{ auth.user.email }}
+
+		form.form-horizontal.padder-top-3x(role="form")
+
+			.form-group(ng-class="{ error: errors.name }")
+				label.col-sm-3.control-label Name
+				.col-sm-7
+					.input-group
+						input.form-control(type="text", ng-model="editedUser.name", placeholder="Common Abbreviation")
+						span.input-group-addon
+							+icon('eye').small
+
+			.form-group(ng-class="{ error: errors.name }")
+				label.col-sm-3.control-label Location
+				.col-sm-7
+					input.form-control(ng-model="editedUser.location", ng-required)
+
+			.form-group(ng-class="{ error: errors.name }")
+				label.col-sm-3.control-label Email
+				.col-sm-7
+					input.form-control(ng-model="editedUser.email", ng-required)

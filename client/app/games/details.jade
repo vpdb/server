@@ -43,10 +43,10 @@ include ../template/_mixins
 		hr(ng-show="game.ipdb")
 
 		button.btn.btn-default.btn-block.padder-bottom
-			i.fa.fa-star.space-right
+			+icon('star').space-right
 			| Follow
 		a.btn.btn-primary.btn-block.padder-bottom(href="/game/{{game.id}}/add-release", ng-show="auth.hasPermission('releases/add')")
-			i.fa.fa-plus-circle.space-right
+			+icon('plus-circle').space-right
 			| Add Release
 
 	// left column (main content)
@@ -63,7 +63,7 @@ include ../template/_mixins
 						img(ng-src="{{ slide.url }}")
 
 				button.btn.btn-primary.btn-block.padder-top-3x(ng-click="download(game, release)")
-					+icon('arrow-circle-down').space-right
+					+icon('download').space-right
 					| Download
 
 				//a.image-link(href="{{ release.__latestVersion.files[0].media.playfield_image.url }}")

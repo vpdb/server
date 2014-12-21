@@ -1,3 +1,9 @@
+$input-background-dark = rgba(white, 0.08)
+$input-background-dark-focus = rgba(white, 0.11)
+
+$input-background-light-focus = rgba(white, 0.75)
+
+
 //
 // Dark theme
 // --------------------------------------------------
@@ -6,7 +12,11 @@
 	// <input>, <textarea>, and <select> elements
 	.form-control
 		color $color-lighter
-		background-color $color-darker
+		background-color $input-background-dark
+		&:focus
+			background-color $input-background-dark-focus
+		&.input--search:focus
+			background-color $input-background-dark
 
 	.h--primary .form-control
 		@extend .theme-dark .h--primary
@@ -20,9 +30,9 @@
 
 	.input-group
 		> .input-group-addon
-			background-color rgba(white, 0.08)
-		> .form-control
-			background-color rgba(white, 0.08)
+			background-color $input-background-dark
+		.form-control:focus + .input-group-addon
+			background-color $input-background-dark-focus
 		> .input-group-btn .btn
 			background-color $color-darker
 			&:hover
@@ -68,6 +78,8 @@
 	.form-control
 		color $color-lightest-inv
 		background-color $color-lighter
+		&:focus
+			background-color $color-lightest
 
 	// On error:
 	.form-group

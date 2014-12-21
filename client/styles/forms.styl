@@ -17,10 +17,12 @@
 // Styleguide 5.1
 .form-control
 	border-radius $border-radius-small
-	border none
+	border-color transparent
+	border-style none
 	box-shadow none
 	font-size $font-size-normal
 	font-weight $font-weight-normal
+	transition background-color $animation-short
 	&:focus
 		box-shadow none
 
@@ -60,6 +62,8 @@ h2 .form-control
 // Addon
 .input-group-addon
 	border none
+	border-radius $border-radius-small
+	transition background-color $animation-short
 .input-group-addon--search
 	padding-right 3px
 	border-radius 14px

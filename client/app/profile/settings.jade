@@ -30,16 +30,21 @@ include ../template/_mixins
 				label.col-sm-3.control-label Name
 				.col-sm-7
 					.input-group
-						input.form-control(type="text", ng-model="editedUser.name", placeholder="Common Abbreviation")
+						input.form-control(type="text", ng-model="editedUser.name")
 						span.input-group-addon
 							+icon('eye').small
 
 			.form-group(ng-class="{ error: errors.name }")
 				label.col-sm-3.control-label Location
 				.col-sm-7
-					input.form-control(ng-model="editedUser.location", ng-required)
+					.input-group
+						input.form-control(type="text", ng-model="editedUser.location")
+						span.input-group-addon
+							+icon('eye').small
 
 			.form-group(ng-class="{ error: errors.name }")
 				label.col-sm-3.control-label Email
 				.col-sm-7
-					input.form-control(ng-model="editedUser.email", ng-required)
+					input.form-control(ng-model="editedUser.email")
+
+		p.padder-bottom-2x

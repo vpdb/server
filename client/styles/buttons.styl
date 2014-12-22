@@ -17,6 +17,7 @@
 // .btn-lg              - Large button
 // .btn-xs              - Extra small button
 // .btn-2d              - 2D button
+// .btn-hollow          - 2D hollow button
 // :hover               - Highlight the button when hovered.
 // :disabled            - Make the button change appearance to reflect it being disabled.
 // :active              - "Press" the button down when clicked.
@@ -114,6 +115,13 @@
 			margin-right 7px
 	&.btn-default .fa
 		font-size 18px
+
+.btn-hollow
+	border-style solid
+	border-width 1px
+	font-family $font-content
+	font-size $font-size-smaller
+	font-weight $font-weight-normal
 
 // Buttton with fixed medium width
 .btn--width-med

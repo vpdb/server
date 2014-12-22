@@ -67,8 +67,8 @@ UserSchema.plugin(uniqueValidator, { message: 'The {PATH} "{VALUE}" is already t
 // API FIELDS
 //-----------------------------------------------------------------------------
 var apiFields = {
-	reduced: [ 'id', 'name', 'username', 'thumb', 'gravatar_id'],               // "member" search result
-	simple: [ 'email', 'is_active', 'roles', 'plan', 'created_at', 'github' ]   // "admin" lists & profile
+	reduced: [ 'id', 'name', 'username', 'thumb', 'gravatar_id'],                          // "member" search result
+	simple: [ 'email', 'is_active', 'provider', 'roles', 'plan', 'created_at', 'github' ]  // "admin" lists & profile
 };
 
 
@@ -277,7 +277,7 @@ UserSchema.statics.toSimple = function(user) {
 	var obj = user.toObject ? user.toObject() : user;
 	user = _.pick(obj, apiFields.reduced.concat(apiFields.simple));
 	if (!_.isEmpty(user.github)) {
-		user.github = _.pick(user.github, 'id', 'login', 'email', 'avatar_url', 'html_url');
+		user.github = UserSchema.statics.normalizeProviderData('github', user.github);
 	}
 	return user;
 };
@@ -285,9 +285,22 @@ UserSchema.statics.toSimple = function(user) {
 UserSchema.statics.toDetailed = function(user) {
 	user = user.toObject ? user.toObject() : user;
 	if (!_.isEmpty(user.github)) {
-		user.github = _.pick(user.github, 'id', 'login', 'email', 'avatar_url', 'html_url');
+		user.github = UserSchema.statics.normalizeProviderData('github', user.github);
 	}
 	return user;
+};
+
+UserSchema.statics.normalizeProviderData = function(provider, data) {
+	switch (provider) {
+		case 'github':
+			return {
+				id: data.id,
+				username: data.login,
+				email: data.email,
+				avatar_url: data.avatar_url,
+				html_url: data.html_url
+			};
+	}
 };
 
 

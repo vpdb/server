@@ -28,13 +28,13 @@ block navbar
 				+icon('angle-down').smaller.shift-up
 			ul.dropdown-menu
 				li
-					a(ng-click="auth.logout()")
-						+icon('exit').space-right.shift-up
-						span Logout
-				li
 					a(href="/profile/settings")
 						+icon('user').space-right.shift-up
 						span Profile
+				li
+					a(ng-click="auth.logout()")
+						+icon('exit').space-right.shift-up
+						span Logout
 
 
 		//- li.ng-cloak

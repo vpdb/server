@@ -30,21 +30,119 @@ include ../template/_mixins
 				label.col-sm-3.control-label Name
 				.col-sm-7
 					.input-group
-						input.form-control(type="text", ng-model="editedUser.name")
+						input.form-control(type="text", ng-model="updatedUser.name")
 						span.input-group-addon
 							+icon('eye').small
 
-			.form-group(ng-class="{ error: errors.name }")
+			.form-group(ng-class="{ error: errors.location }")
 				label.col-sm-3.control-label Location
 				.col-sm-7
 					.input-group
-						input.form-control(type="text", ng-model="editedUser.location")
+						input.form-control(type="text", ng-model="updatedUser.location")
 						span.input-group-addon
 							+icon('eye').small
 
-			.form-group(ng-class="{ error: errors.name }")
+			.form-group(ng-class="{ error: errors.email }")
 				label.col-sm-3.control-label Email
 				.col-sm-7
-					input.form-control(ng-model="editedUser.email")
+					input.form-control(type="email", ng-model="updatedUser.email")
+
+			.row
+				.col-sm-offset-3.col-sm-7
+					button.btn.btn-default.pull-right
+						+icon('check-circle').space-right
+						| Save
+			.clearfix
+
+		//- LOCAL REGISTRATUION
+		.span(ng-hide="auth.user.provider === 'local'")
+
+			h1 Local Credentials
+			hr
+
+			p: i You haven’t registered at VPDB yet, but you can add local credentials below, which allow you to login even if the third party provider is down or refuses your credentials.
+
+			form.form-horizontal.padder-top-3x(role="form")
+
+				.form-group(ng-class="{ error: errors.username }")
+					label.col-sm-3.control-label Username
+					.col-sm-7
+						input.form-control(type="text", ng-model="localUser.username")
+
+				.form-group(ng-class="{ error: errors.name }")
+					label.col-sm-3.control-label Password
+					.col-sm-7
+						input.form-control(type="password", ng-model="localUser.password1")
+
+				.form-group(ng-class="{ error: errors.name }")
+					label.col-sm-3.control-label Confirm Password
+					.col-sm-7
+						input.form-control(type="password", ng-model="localUser.password2")
+
+				.row
+					.col-sm-offset-3.col-sm-7
+						button.btn.btn-default.pull-right
+							+icon('plus-circle').space-right
+							| Create local credentials
+				.clearfix
+
+
+		//- CHANGE PASSWORD
+		.span(ng-show="auth.user.provider === 'local'")
+
+			h1 Change Password
+			hr
+
+			form.form-horizontal.padder-top-3x(role="form")
+
+				.form-group(ng-class="{ error: errors.username }")
+					label.col-sm-3.control-label Current Password
+					.col-sm-7
+						input.form-control(type="password", ng-model="localUser.currentPassword")
+
+				.form-group(ng-class="{ error: errors.name }")
+					label.col-sm-3.control-label New Password
+					.col-sm-7
+						input.form-control(type="password", ng-model="localUser.password1")
+
+				.form-group(ng-class="{ error: errors.name }")
+					label.col-sm-3.control-label Confirm Password
+					.col-sm-7
+						input.form-control(type="password", ng-model="localUser.password2")
+
+				.row
+					.col-sm-offset-3.col-sm-7
+						button.btn.btn-default.pull-right
+							+icon('check-circle').space-right
+							| Update Password
+				.clearfix
+
+		h1 Linked Accounts
+		hr
+
+		table.table.table-striped(ng-show="providers.length")
+			thead
+				tr
+					th Provider
+					th Username
+					th User ID
+					th Last logged
+					th
+			tbody
+				tr(ng-repeat="provider in providers")
+					td.td--big-icon
+						+icon('{{ provider.icon }}').space-right
+						b {{ provider.name }}
+					td {{ auth.user[provider.id].username }}
+					td {{ auth.user[provider.id].id }}
+					td -
+					td
+						button.btn.btn-2d.btn-xs.pull-right
+							+icon('times-circle').space-right
+							| Unlink
+
+		p(ng-hide="providers.length")
+			i No linked accounts. Linked accounts appear when you choose to
+				| login with one of the supported third party providers.
 
 		p.padder-bottom-2x

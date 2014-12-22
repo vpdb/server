@@ -284,6 +284,36 @@ angular.module('vpdb.auth', [])
 			 */
 			getAuthHeader: function() {
 				return Config.authHeader;
+			},
+
+			/**
+			 * Returns authentication providers. If a user is supplied, only
+			 * the providers of the user are returned.
+			 *
+			 * @param {User} [user]
+			 */
+			getProviders: function(user) {
+				var providers = [];
+
+				if (Config.authProviders.github) {
+					providers.push({
+						id: 'github',
+						icon: 'github',
+						name: 'GitHub',
+						url: '/auth/github'
+					});
+				}
+				if (_.isArray(Config.authProviders.ipboard)) {
+					providers = providers.concat(Config.authProviders.ipboard);
+				}
+
+				if (user) {
+					return _.filter(providers, function(provider) {
+						return user[provider.id] && !_.isEmpty(user[provider.id]);
+					});
+				} else {
+					return providers;
+				}
 			}
 		};
 	})

@@ -355,7 +355,19 @@ Settings.prototype.clientConfig = function() {
 		authHeader: this.current.vpdb.authorizationHeader,
 		apiUri: this.current.vpdb.api,
 		storageUri: this.current.vpdb.storageApi,
-		webUri: this.current.vpdb.webapp
+		webUri: this.current.vpdb.webapp,
+		authProviders: {
+			local: true,
+			github: this.current.vpdb ? this.current.vpdb.passport.github.enabled : false,
+			ipboard: _.map(_.filter(this.current.vpdb ? this.current.vpdb.passport.ipboard : [], function(ipbConfig) { return ipbConfig.enabled; }), function(ipbConfig) {
+				return {
+					id: ipbConfig.id,
+					name: ipbConfig.name,
+					icon: ipbConfig.icon,
+					url: '/auth/' + ipbConfig.id
+				};
+			})
+		}
 	};
 };
 

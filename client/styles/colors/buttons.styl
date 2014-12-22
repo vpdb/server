@@ -12,7 +12,7 @@
 		&, &.btn-default
 			color $color-light
 			background-color $color-dark
-			border-color rgba(black, 0.1)
+			border-color rgba(black, 0.2)
 			&:hover
 				color $color-lighter
 				background-color $color-light
@@ -33,6 +33,11 @@
 			.badge
 				background-color $color-background
 				color $color-lightest
+
+		// hollow button
+		&.btn-hollow
+			border-color $color-dark
+			background-color transparent
 
 	// panel footer buttons are darker
 	.panel-footer .btn

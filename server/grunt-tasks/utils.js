@@ -46,7 +46,7 @@ module.exports = function(grunt) {
 		var settings = require('../modules/settings');
 		var configPath = path.resolve(grunt.config.get('config.jsRoot'), settings.clientConfigName());
 		grunt.log.writeln('Writing client config to "%s"...', configPath);
-		fs.writeFileSync(configPath, '// our only namespace raping\nvar vpdbConfig = ' + util.inspect(settings.clientConfig()) + ';');
+		fs.writeFileSync(configPath, '// our only namespace raping\nvar vpdbConfig = ' + util.inspect(settings.clientConfig(), { depth: null }) + ';');
 	});
 
 	grunt.registerTask('reload', function() {

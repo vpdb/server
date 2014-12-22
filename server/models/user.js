@@ -46,6 +46,7 @@ var fields = {
 	password_hash:   { type: String },
 	password_salt:   { type: String },
 	thumb:           { type: String },
+	location:        { type: String },
 	created_at:      { type: Date, required: true },
 	is_active:       { type: Boolean, required: true, default: true }
 };

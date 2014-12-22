@@ -10,15 +10,25 @@ angular.module('vpdb.profile.settings', [])
 
 		var user = AuthService.getUser();
 
+		// user profile that will be sent for update
 		$scope.updatedUser = _.cloneDeep(user);
 
+		// local user for changing password
 		$scope.localUser = {};
 
-		if (user.github && !_.isEmpty(user.github)) {
-			$scope.localUser.username = user.github.username;
-		}
-
 		$scope.providers = AuthService.getProviders(user);
+
+		var allProviders = AuthService.getProviders();
+
+		// pre-fill (local) username from first provider we find.
+		var i, provider;
+		for (i = 0; i < allProviders.length; i++) {
+			provider = allProviders[i];
+			if (user[provider.id] && user[provider.id].username) {
+				$scope.localUser.username = user[provider.id].username;
+				break;
+			}
+		}
 
 	});
 

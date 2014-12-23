@@ -1,46 +1,47 @@
 200 OK
 Content-Type: application/json; charset=utf-8
-Content-Length: 858
+Content-Length: 876
 
 {
-  "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI3eWk0ZGc2Rjh4IiwiaWF0IjoiMjAxNC0xMS0yNVQxMDowNjo1NC4xNDZaIiwiZXhwIjoiMjAxNC0xMS0yNVQxMTowNjo1NC4xNDZaIn0.VH-YSMv0yykVm8uss_5lkhZBANjNcvx1tRTic9Q0AJ8",
-  "expires": "2014-11-25T11:06:54.146Z",
+  "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJteWNVbTJzX3NNIiwiaWF0IjoiMjAxNC0xMi0yM1QxMDoyNzowNS4yNjRaIiwiZXhwIjoiMjAxNC0xMi0yM1QxMToyNzowNS4yNjRaIn0.kh_8H95EgjBRSmIXu-ByqfKTVmY7h65X1UXbjF4jAhU",
+  "expires": "2014-12-23T11:27:05.264Z",
   "user": {
-    "id": "7yi4dg6F8x",
-    "name": "Diamond_Howell",
-    "username": "Diamond_Howell",
-    "gravatar_id": "d82af3d722198c46a5a02c3c5894ce15",
-    "email": "krystel69@hotmail.com",
+    "id": "mycUm2s_sM",
+    "name": "Manuel_OHara",
+    "username": "Manuel_OHara",
+    "gravatar_id": "8adccd59eca056c102cf49caecfd0483",
+    "email": "joseph42@hotmail.com",
     "is_active": true,
+    "provider": "local",
     "roles": [
       "member"
     ],
     "plan": "free",
-    "created_at": "2014-11-25T10:06:54.095Z",
+    "created_at": "2014-12-23T10:27:05.214Z",
     "permissions": {
-      "vpbuilds": [
-        "add",
-        "delete-own"
-      ],
-      "tags": [
-        "add",
-        "delete-own"
-      ],
-      "user": [
-        "view",
-        "update"
-      ],
-      "releases": [
-        "add",
+      "files": [
+        "upload",
+        "download",
         "delete"
       ],
       "users": [
         "search"
       ],
-      "files": [
-        "upload",
-        "delete",
-        "download"
+      "tags": [
+        "delete-own",
+        "add"
+      ],
+      "releases": [
+        "add",
+        "delete"
+      ],
+      "vpbuilds": [
+        "delete-own",
+        "add"
+      ],
+      "user": [
+        "update",
+        "view"
       ]
     }
   }

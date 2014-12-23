@@ -1,45 +1,45 @@
 200 OK
 Content-Type: application/json; charset=utf-8
-Content-Length: 570
-Etag: W/"23a-92b12821"
+Content-Length: 573
+Etag: W/"23d-166e4089"
 
 {
   "plan": "free",
-  "name": "Marlene74",
-  "username": "Marlene74",
-  "email": "ruthe_lind81@gmail.com",
+  "name": "Miles20",
+  "username": "Miles20",
+  "email": "garrick_keebler80@hotmail.com",
   "provider": "local",
-  "created_at": "2014-11-25T10:06:53.420Z",
+  "created_at": "2014-12-23T10:27:04.591Z",
   "is_active": true,
   "roles": [
     "member"
   ],
-  "id": "7JmeweTKUl",
-  "gravatar_id": "4a3ccdb29d84bd42cc4b564bc38bfb0f",
+  "id": "QJ7gMniOif",
+  "gravatar_id": "000613e6149e63794566c0384079d0fe",
   "permissions": {
-    "vpbuilds": [
-      "add",
-      "delete-own"
-    ],
-    "tags": [
-      "add",
-      "delete-own"
-    ],
-    "user": [
-      "view",
-      "update"
-    ],
-    "releases": [
-      "add",
+    "files": [
+      "upload",
+      "download",
       "delete"
     ],
     "users": [
       "search"
     ],
-    "files": [
-      "upload",
-      "delete",
-      "download"
+    "tags": [
+      "delete-own",
+      "add"
+    ],
+    "releases": [
+      "add",
+      "delete"
+    ],
+    "vpbuilds": [
+      "delete-own",
+      "add"
+    ],
+    "user": [
+      "update",
+      "view"
     ]
   }
 }

@@ -4,7 +4,7 @@ Content-Encoding: gzip
 
 {
   "name": "release",
-  "created_at": "2014-11-25T10:07:01.032Z",
+  "created_at": "2014-12-23T10:27:12.041Z",
   "links": [],
   "authors": [
     {
@@ -12,13 +12,13 @@ Content-Encoding: gzip
         "Table Creator"
       ],
       "user": {
-        "id": "TtTÄz\t[´\u0011`ù¾"
+        "id": "TC­óz,*8´"
       }
     }
   ],
   "versions": [
     {
-      "released_at": "2014-11-25T10:07:01.032Z",
+      "released_at": "2014-12-23T10:27:12.041Z",
       "version": "1.0.0",
       "files": [
         {
@@ -30,7 +30,7 @@ Content-Encoding: gzip
             "playfield_image": {
               "name": "playfield-0.png",
               "bytes": 347,
-              "created_at": "2014-11-25T10:07:00.718Z",
+              "created_at": "2014-12-23T10:27:11.747Z",
               "mime_type": "image/png",
               "file_type": "playfield",
               "metadata": {
@@ -42,16 +42,16 @@ Content-Encoding: gzip
                 "depth": 8
               },
               "is_active": true,
-              "id": "XJaSRgpKLx",
+              "id": "71oIths_sz",
               "is_public": true,
               "is_protected": false,
-              "url": "/storage/v1/files/XJaSRgpKLx",
+              "url": "/storage/v1/files/71oIths_sz",
               "variations": {}
             },
             "playfield_video": {
               "name": "playfield.mp4",
               "bytes": 537368,
-              "created_at": "2014-11-25T10:07:00.962Z",
+              "created_at": "2014-12-23T10:27:11.971Z",
               "mime_type": "video/mp4",
               "file_type": "playfield-fs",
               "metadata": {
@@ -68,34 +68,36 @@ Content-Encoding: gzip
                 }
               },
               "is_active": true,
-              "id": "m1VkWaYIe",
+              "id": "X1K5hsujG",
               "is_public": false,
               "is_protected": true,
-              "url": "/storage/v1/files/m1VkWaYIe",
+              "url": "/storage/v1/files/X1K5hsujG",
               "variations": {
                 "still": {
-                  "url": "/storage/v1/files/m1VkWaYIe/still"
+                  "url": "/storage/v1/files/X1K5hsujG/still",
+                  "is_protected": true
                 },
                 "small-rotated": {
-                  "url": "/storage/v1/files/m1VkWaYIe/small-rotated"
+                  "url": "/storage/v1/files/X1K5hsujG/small-rotated",
+                  "is_protected": true
                 }
               }
             }
           },
           "compatibility": [
             {
-              "id": "TtT»z\t[´\u0011`ùW"
+              "id": "T=²â \u000e\\1Í"
             }
           ],
           "file": {
             "name": "test-table-0.vpt",
             "bytes": 135168,
-            "created_at": "2014-11-25T10:07:00.682Z",
+            "created_at": "2014-12-23T10:27:11.708Z",
             "mime_type": "application/x-visual-pinball-table",
             "file_type": "release",
             "metadata": {},
-            "id": "Q1FrCg6t8x",
-            "url": "/storage/v1/files/Q1FrCg6t8x",
+            "id": "mk-IKhjOjG",
+            "url": "/storage/v1/files/mk-IKhjOjG",
             "variations": {},
             "is_protected": true
           }
@@ -109,7 +111,7 @@ Content-Encoding: gzip
             "playfield_image": {
               "name": "playfield-1.png",
               "bytes": 347,
-              "created_at": "2014-11-25T10:07:00.719Z",
+              "created_at": "2014-12-23T10:27:11.748Z",
               "mime_type": "image/png",
               "file_type": "playfield",
               "metadata": {
@@ -121,27 +123,27 @@ Content-Encoding: gzip
                 "depth": 8
               },
               "is_active": true,
-              "id": "7yABClTY8e",
+              "id": "QJ2UF2juif",
               "is_public": true,
               "is_protected": false,
-              "url": "/storage/v1/files/7yABClTY8e",
+              "url": "/storage/v1/files/QJ2UF2juif",
               "variations": {}
             }
           },
           "compatibility": [
             {
-              "id": "TtT»z\t[´\u0011`ùW"
+              "id": "T=²â \u000e\\1Í"
             }
           ],
           "file": {
             "name": "test-table-1.vpt",
             "bytes": 135168,
-            "created_at": "2014-11-25T10:07:00.682Z",
+            "created_at": "2014-12-23T10:27:11.709Z",
             "mime_type": "application/x-visual-pinball-table",
             "file_type": "release",
             "metadata": {},
-            "id": "XyqHRgaFUx",
-            "url": "/storage/v1/files/XyqHRgaFUx",
+            "id": "X1MLFhsdsM",
+            "url": "/storage/v1/files/X1MLFhsdsM",
             "variations": {},
             "is_protected": true
           }
@@ -149,9 +151,9 @@ Content-Encoding: gzip
       ]
     }
   ],
-  "id": "mJ1lJZpKUe",
+  "id": "XJMx53idsf",
   "tags": [
-    "547454bb7a095bb41160f955",
-    "547454bb7a095bb41160f954"
+    "54993db2e2200e5c819531cb",
+    "54993db2e2200e5c819531ca"
   ]
 }

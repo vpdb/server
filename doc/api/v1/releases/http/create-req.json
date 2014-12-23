@@ -1,21 +1,21 @@
 POST /api/v1/releases HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJtMUQwZzZGTGciLCJpYXQiOiIyMDE0LTExLTI1VDEwOjA3OjAwLjA3NloiLCJleHAiOiIyMDE0LTExLTI1VDExOjA3OjAwLjA3NloifQ.6eKzWB9g_r4uNuS8_5nWCLWq341VMXuaprohAHOR82I
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI3a0RLbmlfc00iLCJpYXQiOiIyMDE0LTEyLTIzVDEwOjI3OjExLjE0M1oiLCJleHAiOiIyMDE0LTEyLTIzVDExOjI3OjExLjE0M1oifQ.XbeEGhwHH9M2UhEf1L37petH---aoZvgyI6QMKINibE
 Content-Type: application/json
-Content-Length: 477
+Content-Length: 478
 
 {
   "name": "release",
-  "_game": "campus-queen",
+  "_game": "loop-the-loop",
   "versions": [
     {
       "files": [
         {
-          "_file": "Q1FrCg6t8x",
+          "_file": "mk-IKhjOjG",
           "_media": {
-            "playfield_image": "XJaSRgpKLx",
-            "playfield_video": "m1VkWaYIe"
+            "playfield_image": "71oIths_sz",
+            "playfield_video": "X1K5hsujG"
           },
           "_compatibility": [
             "9.9.0"
@@ -26,9 +26,9 @@ Content-Length: 477
           }
         },
         {
-          "_file": "XyqHRgaFUx",
+          "_file": "X1MLFhsdsM",
           "_media": {
-            "playfield_image": "7yABClTY8e"
+            "playfield_image": "QJ2UF2juif"
           },
           "_compatibility": [
             "9.9.0"
@@ -44,7 +44,7 @@ Content-Length: 477
   ],
   "authors": [
     {
-      "_user": "m1D0g6FLg",
+      "_user": "7kDKni_sM",
       "roles": [
         "Table Creator"
       ]

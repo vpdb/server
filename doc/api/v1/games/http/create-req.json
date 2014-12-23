@@ -1,35 +1,22 @@
 POST /api/v1/games HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJYMVZYRmdhS0x4IiwiaWF0IjoiMjAxNC0xMS0yNVQxMDowNjo1NS4xOTBaIiwiZXhwIjoiMjAxNC0xMS0yNVQxMTowNjo1NS4xOTBaIn0.5XeDCN3iVw8x3pjqRNa_CFzTcnKt_f0tgNyLvzFsXps
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJYSlk3RTJvX2pmIiwiaWF0IjoiMjAxNC0xMi0yM1QxMDoyNzowNi4yMDlaIiwiZXhwIjoiMjAxNC0xMi0yM1QxMToyNzowNi4yMDlaIn0.3ZL1hN8zwRvXloyuaSwK7OCx2pF1mBsvmc9JD1vIAlk
 Content-Type: application/json
-Content-Length: 673
+Content-Length: 203
 
 {
   "ipdb": {
-    "number": 1142,
+    "number": 5044,
     "mfg": 352
   },
-  "title": "Hayburners",
+  "title": "Big League Baseball",
   "manufacturer": "Williams",
-  "model_number": "55",
-  "year": 1951,
+  "model_number": "106",
+  "year": 1954,
   "game_type": "em",
-  "themes": [
-    "Sports",
-    "Horse Racing"
-  ],
-  "designers": [
-    "Harry Williams",
-    "Sam Stern"
-  ],
-  "artists": [
-    "George Molentin"
-  ],
-  "features": "Flippers (2), Pop bumpers (6). Backbox animation (horses race).",
-  "notes": "The horse names are: Uncle Miltie, Lulu Bell, Whiz Kid, Louie II, Frustration, and Tizzie Liz.The one-ball version of this game is Williams' 1951 'Nags'.'Hayburners' was released again as Williams' 1951 'Jalopy', with an identical playfield design, different artwork, and an auto racing theme.",
-  "id": "hayburners",
+  "id": "big-league-baseball",
   "_media": {
-    "backglass": "XJKmtxTK8x"
+    "backglass": "QkCmNhsOoM"
   }
 }

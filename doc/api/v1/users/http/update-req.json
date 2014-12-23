@@ -1,14 +1,14 @@
-PUT /api/v1/users/7ykDJ-aFLg HTTP/1.1
+PUT /api/v1/users/mkZwq2iOjf HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI3MWo4SldwdFVsIiwiaWF0IjoiMjAxNC0xMS0yNVQxMDowNzowMS40NjVaIiwiZXhwIjoiMjAxNC0xMS0yNVQxMTowNzowMS40NjVaIn0.Hx2bUR2nwuQI2I9e14hrAcxRAGJL8WKkUGGt5qiZlng
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI3MWFMY2hvZGlmIiwiaWF0IjoiMjAxNC0xMi0yM1QxMDoyNzoxMi40NTNaIiwiZXhwIjoiMjAxNC0xMi0yM1QxMToyNzoxMi40NTNaIn0.rIBu6kPLLHoDT29LtCrjdv0CCmWI001Ga4FpfOUnGJY
 Content-Type: application/json
 Content-Length: 126
 
 {
-  "email": "verona75@gmail.com",
-  "username": "Earnestine_Ebert33",
-  "name": "Earnestine_Ebert33",
+  "email": "carlee41@hotmail.com",
+  "username": "Idella.OConnell15",
+  "name": "Idella.OConnell15",
   "is_active": true,
   "roles": [
     "member"

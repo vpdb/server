@@ -1,21 +1,21 @@
 POST /api/v1/releases HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI3a0RLbmlfc00iLCJpYXQiOiIyMDE0LTEyLTIzVDEwOjI3OjExLjE0M1oiLCJleHAiOiIyMDE0LTEyLTIzVDExOjI3OjExLjE0M1oifQ.XbeEGhwHH9M2UhEf1L37petH---aoZvgyI6QMKINibE
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJYa0RPUU41c3oiLCJpYXQiOiIyMDE0LTEyLTIzVDEyOjExOjI1LjgyOVoiLCJleHAiOiIyMDE0LTEyLTIzVDEzOjExOjI1LjgyOVoifQ.gBqA7vzd6rhNQlYPu9Y4Zt1x093ElQUj49JJr14jLls
 Content-Type: application/json
-Content-Length: 478
+Content-Length: 471
 
 {
   "name": "release",
-  "_game": "loop-the-loop",
+  "_game": "poker",
   "versions": [
     {
       "files": [
         {
-          "_file": "mk-IKhjOjG",
+          "_file": "Xk-8umE5oz",
           "_media": {
-            "playfield_image": "71oIths_sz",
-            "playfield_video": "X1K5hsujG"
+            "playfield_image": "mJoL_m45oz",
+            "playfield_video": "X1CDu7Eqiz"
           },
           "_compatibility": [
             "9.9.0"
@@ -26,9 +26,9 @@ Content-Length: 478
           }
         },
         {
-          "_file": "X1MLFhsdsM",
+          "_file": "QyfUOmEqof",
           "_media": {
-            "playfield_image": "QJ2UF2juif"
+            "playfield_image": "QJc8OmNcoG"
           },
           "_compatibility": [
             "9.9.0"
@@ -44,7 +44,7 @@ Content-Length: 478
   ],
   "authors": [
     {
-      "_user": "7kDKni_sM",
+      "_user": "XkDOQN5sz",
       "roles": [
         "Table Creator"
       ]

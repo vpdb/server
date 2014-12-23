@@ -32,7 +32,7 @@ mixin resource(resource)
 							//- OVERVIEW
 							//------------------------------------------
 							tab(heading="Overview")
-								span!=hlp.markdown(method.description)
+								.markdown!=hlp.markdown(method.description)
 
 								p: u Authorization:
 								each scope in hlp.authscopes(method.securedBy)
@@ -124,24 +124,13 @@ mixin resource(resource)
 								if method.body
 									each b, key in method.body
 										if b.schema
-											p: u Fields:
+											p: u #{hlp.splitType(key, 'Fields').name}:
 											tabset.padder-bottom-2x
 												tab(heading="Schema")
 													+jsonSchema(hlp.schema(b.schema, { method: method.method, type: 'request', path: resource.parentUrl + resource.relativeUri, filter: { readOnly: false }}))
 												tab(heading="Raw")
 													pre!=hlp.highlight(b.schema)
 
-										//------------------------------------------
-										//- request body
-										//------------------------------------------
-										//if b.example
-											p: u Example Request:
-											tabset
-												code.code--dark.pull-right=key
-												tab(heading="HTTP")
-													pre!=hlp.highlight(b.example, true)
-												tab(heading="Curl")
-													pre!=hlp.toCurl(b.example)
 									- var n = 0;
 									each r, name in hlp.requestByType(method.body)
 										p(class=n ? 'padder-top' : ''): u= name === 'default' ? 'Example Request:' : name + ':'
@@ -180,7 +169,7 @@ mixin resource(resource)
 										if response.body
 											each rb, contentType in response.body
 												if rb && rb.schema
-													p: u Fields:
+													p: u #{hlp.splitType(contentType, 'Fields').name}:
 													tabset.padder-bottom-2x
 														tab(heading="Schema")
 															+jsonSchema(hlp.schema(rb.schema, { method: method.method, type: 'response', path: resource.parentUrl + resource.relativeUri }))

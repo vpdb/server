@@ -105,6 +105,11 @@ mixin jsonSchema(schema)
 									li
 										= property.minLength
 										| + chars
+								else if property.maxLength
+									li
+										| &le;&nbsp;
+										= property.maxLength
+										|  chars
 								if property.enum
 									li
 										if property.enum.length === 1

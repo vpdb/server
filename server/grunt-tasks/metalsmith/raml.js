@@ -211,6 +211,7 @@ function helpers(opts) {
 		},
 
 		requestByType: function(body) {
+			var that = this;
 			if (!_.isObject(body)) {
 				return {};
 			}
@@ -221,7 +222,7 @@ function helpers(opts) {
 				if (!request.example) {
 					return;
 				}
-				var t = splitType(type);
+				var t = that.splitType(type);
 				byType[t.name] = {
 					role: t.role,
 					request: request
@@ -231,6 +232,7 @@ function helpers(opts) {
 		},
 
 		responseByType: function(responses) {
+			var that = this;
 			if (!_.isObject(responses)) {
 				return {};
 			}
@@ -243,7 +245,7 @@ function helpers(opts) {
 						if (!response.example) {
 							return;
 						}
-						var t = splitType(type);
+						var t = that.splitType(type);
 						if (!byType[t.name]) {
 							byType[t.name] = [];
 						}
@@ -257,6 +259,28 @@ function helpers(opts) {
 				}
 			});
 			return byType;
+		},
+
+		/**
+		 * Extracts role and name from our "custom type".
+		 *
+		 * Example: type = "role/member-Search-for-User"
+		 *        result = { role: 'member', name: 'Search for User' }
+		 *
+		 * @param {string} type Full content type from RAML
+		 * @param {string} [defaultName] Name to be returned if none in type
+		 * @returns {{role: string, name: string}}
+		 */
+		splitType: function(type, defaultName) {
+			var name, t = type.split('/')[1].split('-');
+			var role = t[0];
+			if (t.length > 1) {
+				t.splice(0, 1);
+				name = t.join(' ');
+			} else {
+				name = defaultName || 'default';
+			}
+			return { role: role, name: name };
 		},
 
 		schema: function(schemaStr, opts) {
@@ -299,26 +323,7 @@ function helpers(opts) {
 	};
 }
 
-/**
- * Extracts role and name from our "custom type".
- *
- * Example: type = "role/member-Search-for-User"
- *        result = { role: 'member', name: 'Search for User' }
- *
- * @param type Full content type from RAML
- * @returns {{role: string, name: string}}
- */
-function splitType(type) {
-	var name, t = type.split('/')[1].split('-');
-	var role = t[0];
-	if (t.length > 1) {
-		t.splice(0, 1);
-		name = t.join(' ');
-	} else {
-		name = 'default';
-	}
-	return { role: role, name: name };
-}
+
 
 function splitReq(req) {
 	if (/\r\n\r\n/.test(req)) {

@@ -22,3 +22,48 @@ get:
       body:
         role/anon:
           example: !include http/view-res-401.json
+
+patch:
+  is: [ protected ]
+  securedBy: [ jwt: { scopes: [ MEMBER ] } ]
+  description: |
+    Updates the user's profile.
+
+    Besides updating the user's meta data such as location and display name,
+    this resource also allows changing the user's password and the creation of
+    local credentials.
+
+    ## Change Password
+
+    In order to change the password, add the `password` property for the new
+    password, along with `current_password` for your current password.
+
+    ## Create Local Credentials
+
+    If the user doesn't have local credentials because only third party OAuth
+    authentication was used, they can be created by providing the `username`
+    property, which then also requires the `password` property to be submitted.
+
+    This results in the user being able to login locally with the created
+    credentials while authentication with the third party OAuth provider
+    still remains functional.
+
+  body:
+    role/member-Update-Profile:
+      schema: user-update-profile
+      example: !include http/update-profile-req.json
+    role/member-Change-Password:
+      schema: user-chpass
+      example: !include http/update-password-req.json
+    role/member-Create-Local-Credentials:
+      schema: user-create-local
+  responses:
+    200:
+      body:
+        role/member-Update-Profile:
+          schema: user
+          example: !include http/update-profile-res-200.json
+    401:
+      body:
+        role/anon:
+          example: !include http/view-res-401.json

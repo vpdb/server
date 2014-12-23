@@ -3,435 +3,437 @@ X-List-Page: 1
 X-List-Size: 12
 X-List-Count: 10
 Content-Type: application/json; charset=utf-8
-Etag: W/"O+r2XFKG+5wRUps/CUEgIw=="
+Etag: W/"qU0PnYUjMcv7qn79sPIFKQ=="
 Content-Encoding: gzip
 
 [
   {
-    "id": "circus",
-    "title": "Circus",
-    "manufacturer": "Cedes S.A.",
-    "year": 1900,
-    "game_type": "em",
+    "id": "cftbl",
+    "title": "Creature from the Black Lagoon",
+    "manufacturer": "Bally",
+    "year": 1992,
+    "game_type": "ss",
     "ipdb": {
-      "number": 4629,
-      "mfg": 378
+      "number": 588,
+      "mfg": 214,
+      "rating": 8.2
+    },
+    "media": {
+      "backglass": {
+        "is_protected": false,
+        "variations": {
+          "small-2x": {
+            "url": "/storage/v1/files/m1qO4XN5sz/small-2x"
+          },
+          "small": {
+            "url": "/storage/v1/files/m1qO4XN5sz/small"
+          },
+          "medium-2x": {
+            "url": "/storage/v1/files/m1qO4XN5sz/medium-2x"
+          },
+          "medium": {
+            "url": "/storage/v1/files/m1qO4XN5sz/medium"
+          }
+        },
+        "url": "/storage/v1/files/m1qO4XN5sz",
+        "id": "m1qO4XN5sz"
+      }
+    }
+  },
+  {
+    "id": "avatar-le",
+    "title": "James Camerons Avatar (Limited Edition)",
+    "manufacturer": "Stern",
+    "year": 2010,
+    "game_type": "ss",
+    "ipdb": {
+      "number": 5653,
+      "mfg": 303,
+      "rating": 7.8
     },
     "media": {
       "backglass": {
         "is_protected": false,
         "variations": {
           "medium-2x": {
-            "url": "/storage/v1/files/7yjUBnjdsf/medium-2x",
-            "mime_type": "image/jpeg",
-            "bytes": 2561,
-            "height": 582,
-            "width": 728
+            "url": "/storage/v1/files/7yp84mVqsM/medium-2x"
           },
           "small-2x": {
-            "url": "/storage/v1/files/7yjUBnjdsf/small-2x",
+            "url": "/storage/v1/files/7yp84mVqsM/small-2x",
             "mime_type": "image/jpeg",
             "bytes": 1505,
             "height": 404,
             "width": 505
           },
           "medium": {
-            "url": "/storage/v1/files/7yjUBnjdsf/medium",
+            "url": "/storage/v1/files/7yp84mVqsM/medium",
             "mime_type": "image/jpeg",
             "bytes": 965,
             "height": 291,
             "width": 364
           },
           "small": {
-            "url": "/storage/v1/files/7yjUBnjdsf/small",
+            "url": "/storage/v1/files/7yp84mVqsM/small",
             "mime_type": "image/jpeg",
             "bytes": 619,
             "height": 202,
             "width": 253
           }
         },
-        "url": "/storage/v1/files/7yjUBnjdsf",
-        "id": "7yjUBnjdsf"
+        "url": "/storage/v1/files/7yp84mVqsM",
+        "id": "7yp84mVqsM"
       }
     }
   },
   {
-    "id": "fast-draw",
-    "title": "Fast Draw",
-    "manufacturer": "Europlay",
-    "year": 1900,
+    "id": "jd",
+    "title": "Judge Dredd",
+    "manufacturer": "Bally",
+    "year": 1993,
     "game_type": "ss",
     "ipdb": {
-      "number": 5441,
-      "mfg": 115
+      "number": 1322,
+      "mfg": 214,
+      "rating": 8.1
+    },
+    "media": {
+      "backglass": {
+        "is_protected": false,
+        "variations": {
+          "small-2x": {
+            "url": "/storage/v1/files/QyE8QQN9oM/small-2x",
+            "mime_type": "image/jpeg",
+            "bytes": 1505,
+            "height": 404,
+            "width": 505
+          },
+          "medium-2x": {
+            "url": "/storage/v1/files/QyE8QQN9oM/medium-2x",
+            "mime_type": "image/jpeg",
+            "bytes": 2561,
+            "height": 582,
+            "width": 728
+          },
+          "medium": {
+            "url": "/storage/v1/files/QyE8QQN9oM/medium",
+            "mime_type": "image/jpeg",
+            "bytes": 965,
+            "height": 291,
+            "width": 364
+          },
+          "small": {
+            "url": "/storage/v1/files/QyE8QQN9oM/small",
+            "mime_type": "image/jpeg",
+            "bytes": 619,
+            "height": 202,
+            "width": 253
+          }
+        },
+        "url": "/storage/v1/files/QyE8QQN9oM",
+        "id": "QyE8QQN9oM"
+      }
+    }
+  },
+  {
+    "id": "league-leader",
+    "title": "League Leader",
+    "manufacturer": "J. H. Keeney and Company Incorporated",
+    "year": 1958,
+    "game_type": "em",
+    "ipdb": {
+      "number": 3209,
+      "mfg": 162
+    },
+    "media": {
+      "backglass": {
+        "is_protected": false,
+        "variations": {
+          "small-2x": {
+            "url": "/storage/v1/files/7JdOQQN5jz/small-2x",
+            "mime_type": "image/jpeg",
+            "bytes": 1505,
+            "height": 404,
+            "width": 505
+          },
+          "medium-2x": {
+            "url": "/storage/v1/files/7JdOQQN5jz/medium-2x",
+            "mime_type": "image/jpeg",
+            "bytes": 2561,
+            "height": 582,
+            "width": 728
+          },
+          "medium": {
+            "url": "/storage/v1/files/7JdOQQN5jz/medium",
+            "mime_type": "image/jpeg",
+            "bytes": 965,
+            "height": 291,
+            "width": 364
+          },
+          "small": {
+            "url": "/storage/v1/files/7JdOQQN5jz/small",
+            "mime_type": "image/jpeg",
+            "bytes": 619,
+            "height": 202,
+            "width": 253
+          }
+        },
+        "url": "/storage/v1/files/7JdOQQN5jz",
+        "id": "7JdOQQN5jz"
+      }
+    }
+  },
+  {
+    "id": "lone-eagle",
+    "title": "Lone Eagle",
+    "manufacturer": "Lone Eagle Manufacturing Company",
+    "year": 1933,
+    "game_type": "pm",
+    "ipdb": {
+      "number": 3950,
+      "mfg": 189
     },
     "media": {
       "backglass": {
         "is_protected": false,
         "variations": {
           "medium-2x": {
-            "url": "/storage/v1/files/7kTB8hodiz/medium-2x",
+            "url": "/storage/v1/files/Q1vNNQV5jz/medium-2x",
             "mime_type": "image/jpeg",
             "bytes": 2561,
             "height": 582,
             "width": 728
           },
           "small-2x": {
-            "url": "/storage/v1/files/7kTB8hodiz/small-2x",
+            "url": "/storage/v1/files/Q1vNNQV5jz/small-2x",
+            "mime_type": "image/jpeg",
+            "bytes": 1505,
+            "height": 404,
+            "width": 505
+          },
+          "medium": {
+            "url": "/storage/v1/files/Q1vNNQV5jz/medium",
+            "mime_type": "image/jpeg",
+            "bytes": 965,
+            "height": 291,
+            "width": 364
+          },
+          "small": {
+            "url": "/storage/v1/files/Q1vNNQV5jz/small",
+            "mime_type": "image/jpeg",
+            "bytes": 619,
+            "height": 202,
+            "width": 253
+          }
+        },
+        "url": "/storage/v1/files/Q1vNNQV5jz",
+        "id": "Q1vNNQV5jz"
+      }
+    }
+  },
+  {
+    "id": "lucky",
+    "title": "Lucky",
+    "manufacturer": "Chicago Coin",
+    "year": 1939,
+    "game_type": "em",
+    "ipdb": {
+      "number": 1482,
+      "mfg": 81
+    },
+    "media": {
+      "backglass": {
+        "is_protected": false,
+        "variations": {
+          "medium-2x": {
+            "url": "/storage/v1/files/myqMVm4qiz/medium-2x",
+            "mime_type": "image/jpeg",
+            "bytes": 2561,
+            "height": 582,
+            "width": 728
+          },
+          "small-2x": {
+            "url": "/storage/v1/files/myqMVm4qiz/small-2x",
+            "mime_type": "image/jpeg",
+            "bytes": 1505,
+            "height": 404,
+            "width": 505
+          },
+          "medium": {
+            "url": "/storage/v1/files/myqMVm4qiz/medium",
+            "mime_type": "image/jpeg",
+            "bytes": 965,
+            "height": 291,
+            "width": 364
+          },
+          "small": {
+            "url": "/storage/v1/files/myqMVm4qiz/small",
+            "mime_type": "image/jpeg",
+            "bytes": 619,
+            "height": 202,
+            "width": 253
+          }
+        },
+        "url": "/storage/v1/files/myqMVm4qiz",
+        "id": "myqMVm4qiz"
+      }
+    }
+  },
+  {
+    "id": "mnf",
+    "title": "Monday Night Football",
+    "manufacturer": "Data East",
+    "year": 1989,
+    "game_type": "ss",
+    "ipdb": {
+      "number": 1616,
+      "mfg": 98,
+      "rating": 7.2
+    },
+    "media": {
+      "backglass": {
+        "is_protected": false,
+        "variations": {
+          "medium-2x": {
+            "url": "/storage/v1/files/XyfbNX4cof/medium-2x",
+            "mime_type": "image/jpeg",
+            "bytes": 2561,
+            "height": 582,
+            "width": 728
+          },
+          "small-2x": {
+            "url": "/storage/v1/files/XyfbNX4cof/small-2x",
+            "mime_type": "image/jpeg",
+            "bytes": 1505,
+            "height": 404,
+            "width": 505
+          },
+          "medium": {
+            "url": "/storage/v1/files/XyfbNX4cof/medium",
+            "mime_type": "image/jpeg",
+            "bytes": 965,
+            "height": 291,
+            "width": 364
+          },
+          "small": {
+            "url": "/storage/v1/files/XyfbNX4cof/small",
+            "mime_type": "image/jpeg",
+            "bytes": 619,
+            "height": 202,
+            "width": 253
+          }
+        },
+        "url": "/storage/v1/files/XyfbNX4cof",
+        "id": "XyfbNX4cof"
+      }
+    }
+  },
+  {
+    "id": "pat-hand",
+    "title": "Pat Hand",
+    "manufacturer": "Williams",
+    "year": 1975,
+    "game_type": "em",
+    "ipdb": {
+      "number": 1767,
+      "mfg": 351,
+      "rating": 6.9
+    },
+    "media": {
+      "backglass": {
+        "is_protected": false,
+        "variations": {
+          "medium-2x": {
+            "url": "/storage/v1/files/m1S4mm4cjG/medium-2x",
+            "mime_type": "image/jpeg",
+            "bytes": 2561,
+            "height": 582,
+            "width": 728
+          },
+          "medium": {
+            "url": "/storage/v1/files/m1S4mm4cjG/medium",
+            "mime_type": "image/jpeg",
+            "bytes": 965,
+            "height": 291,
+            "width": 364
+          },
+          "small-2x": {
+            "url": "/storage/v1/files/m1S4mm4cjG/small-2x",
+            "mime_type": "image/jpeg",
+            "bytes": 1505,
+            "height": 404,
+            "width": 505
+          },
+          "small": {
+            "url": "/storage/v1/files/m1S4mm4cjG/small",
+            "mime_type": "image/jpeg",
+            "bytes": 619,
+            "height": 202,
+            "width": 253
+          }
+        },
+        "url": "/storage/v1/files/m1S4mm4cjG",
+        "id": "m1S4mm4cjG"
+      }
+    }
+  },
+  {
+    "id": "rock",
+    "title": "Rock",
+    "manufacturer": "Premier",
+    "year": 1985,
+    "game_type": "ss",
+    "ipdb": {
+      "number": 1978,
+      "mfg": 257,
+      "rating": 6.6
+    },
+    "media": {
+      "backglass": {
+        "is_protected": false,
+        "variations": {
+          "medium-2x": {
+            "url": "/storage/v1/files/71grmm45sz/medium-2x",
+            "mime_type": "image/jpeg",
+            "bytes": 2561,
+            "height": 582,
+            "width": 728
+          },
+          "small-2x": {
+            "url": "/storage/v1/files/71grmm45sz/small-2x",
             "mime_type": "image/jpeg",
             "bytes": 1504,
             "height": 404,
             "width": 505
           },
-          "medium": {
-            "url": "/storage/v1/files/7kTB8hodiz/medium",
-            "mime_type": "image/jpeg",
-            "bytes": 965,
-            "height": 291,
-            "width": 364
-          },
           "small": {
-            "url": "/storage/v1/files/7kTB8hodiz/small",
+            "url": "/storage/v1/files/71grmm45sz/small",
             "mime_type": "image/jpeg",
             "bytes": 618,
             "height": 202,
             "width": 253
+          },
+          "medium": {
+            "url": "/storage/v1/files/71grmm45sz/medium",
+            "mime_type": "image/jpeg",
+            "bytes": 965,
+            "height": 291,
+            "width": 364
           }
         },
-        "url": "/storage/v1/files/7kTB8hodiz",
-        "id": "7kTB8hodiz"
+        "url": "/storage/v1/files/71grmm45sz",
+        "id": "71grmm45sz"
       }
     }
   },
   {
-    "id": "galactic-girl",
-    "title": "Galactic Girl",
-    "manufacturer": "unknown",
-    "year": 2010,
+    "id": "straight-flush",
+    "title": "Straight Flush",
+    "manufacturer": "Williams",
+    "year": 1970,
     "game_type": "em",
     "ipdb": {
-      "number": 5559
-    },
-    "media": {
-      "backglass": {
-        "is_protected": false,
-        "variations": {
-          "medium-2x": {
-            "url": "/storage/v1/files/mkBfI2sOjM/medium-2x",
-            "mime_type": "image/jpeg",
-            "bytes": 2561,
-            "height": 582,
-            "width": 728
-          },
-          "small-2x": {
-            "url": "/storage/v1/files/mkBfI2sOjM/small-2x",
-            "mime_type": "image/jpeg",
-            "bytes": 1505,
-            "height": 404,
-            "width": 505
-          },
-          "medium": {
-            "url": "/storage/v1/files/mkBfI2sOjM/medium",
-            "mime_type": "image/jpeg",
-            "bytes": 965,
-            "height": 291,
-            "width": 364
-          },
-          "small": {
-            "url": "/storage/v1/files/mkBfI2sOjM/small",
-            "mime_type": "image/jpeg",
-            "bytes": 619,
-            "height": 202,
-            "width": 253
-          }
-        },
-        "url": "/storage/v1/files/mkBfI2sOjM",
-        "id": "mkBfI2sOjM"
-      }
-    }
-  },
-  {
-    "id": "glamor",
-    "title": "Glamor",
-    "manufacturer": "Gottlieb",
-    "year": 1951,
-    "game_type": "em",
-    "ipdb": {
-      "number": 1012,
-      "mfg": 93
-    },
-    "media": {
-      "backglass": {
-        "is_protected": false,
-        "variations": {
-          "medium-2x": {
-            "url": "/storage/v1/files/7kAdB2susz/medium-2x",
-            "mime_type": "image/jpeg",
-            "bytes": 2561,
-            "height": 582,
-            "width": 728
-          },
-          "medium": {
-            "url": "/storage/v1/files/7kAdB2susz/medium",
-            "mime_type": "image/jpeg",
-            "bytes": 965,
-            "height": 291,
-            "width": 364
-          },
-          "small-2x": {
-            "url": "/storage/v1/files/7kAdB2susz/small-2x",
-            "mime_type": "image/jpeg",
-            "bytes": 1505,
-            "height": 404,
-            "width": 505
-          },
-          "small": {
-            "url": "/storage/v1/files/7kAdB2susz/small",
-            "mime_type": "image/jpeg",
-            "bytes": 619,
-            "height": 202,
-            "width": 253
-          }
-        },
-        "url": "/storage/v1/files/7kAdB2susz",
-        "id": "7kAdB2susz"
-      }
-    }
-  },
-  {
-    "id": "grosse-pointe",
-    "title": "Grosse Pointe",
-    "manufacturer": "unknown",
-    "year": 1900,
-    "game_type": "ss",
-    "ipdb": {
-      "number": 5596
-    },
-    "media": {
-      "backglass": {
-        "is_protected": false,
-        "variations": {
-          "medium-2x": {
-            "url": "/storage/v1/files/QJd3S2o_jM/medium-2x",
-            "mime_type": "image/jpeg",
-            "bytes": 2561,
-            "height": 582,
-            "width": 728
-          },
-          "small-2x": {
-            "url": "/storage/v1/files/QJd3S2o_jM/small-2x",
-            "mime_type": "image/jpeg",
-            "bytes": 1505,
-            "height": 404,
-            "width": 505
-          },
-          "medium": {
-            "url": "/storage/v1/files/QJd3S2o_jM/medium",
-            "mime_type": "image/jpeg",
-            "bytes": 965,
-            "height": 291,
-            "width": 364
-          },
-          "small": {
-            "url": "/storage/v1/files/QJd3S2o_jM/small",
-            "mime_type": "image/jpeg",
-            "bytes": 619,
-            "height": 202,
-            "width": 253
-          }
-        },
-        "url": "/storage/v1/files/QJd3S2o_jM",
-        "id": "QJd3S2o_jM"
-      }
-    }
-  },
-  {
-    "id": "gusher",
-    "title": "Gusher",
-    "manufacturer": "Exhibit",
-    "year": 1936,
-    "game_type": "em",
-    "ipdb": {
-      "number": 3132,
-      "mfg": 117
-    },
-    "media": {
-      "backglass": {
-        "is_protected": false,
-        "variations": {
-          "medium-2x": {
-            "url": "/storage/v1/files/QJ07Lns_sG/medium-2x",
-            "mime_type": "image/jpeg",
-            "bytes": 2561,
-            "height": 582,
-            "width": 728
-          },
-          "small-2x": {
-            "url": "/storage/v1/files/QJ07Lns_sG/small-2x",
-            "mime_type": "image/jpeg",
-            "bytes": 1505,
-            "height": 404,
-            "width": 505
-          },
-          "medium": {
-            "url": "/storage/v1/files/QJ07Lns_sG/medium",
-            "mime_type": "image/jpeg",
-            "bytes": 965,
-            "height": 291,
-            "width": 364
-          },
-          "small": {
-            "url": "/storage/v1/files/QJ07Lns_sG/small",
-            "mime_type": "image/jpeg",
-            "bytes": 619,
-            "height": 202,
-            "width": 253
-          }
-        },
-        "url": "/storage/v1/files/QJ07Lns_sG",
-        "id": "QJ07Lns_sG"
-      }
-    }
-  },
-  {
-    "id": "kod",
-    "title": "King of Diamonds",
-    "manufacturer": "Gottlieb",
-    "year": 1967,
-    "game_type": "em",
-    "ipdb": {
-      "number": 1372,
-      "mfg": 93,
-      "rating": 7.7
-    },
-    "media": {
-      "backglass": {
-        "is_protected": false,
-        "variations": {
-          "small-2x": {
-            "url": "/storage/v1/files/QyAwU3suiG/small-2x"
-          },
-          "small": {
-            "url": "/storage/v1/files/QyAwU3suiG/small"
-          },
-          "medium-2x": {
-            "url": "/storage/v1/files/QyAwU3suiG/medium-2x"
-          },
-          "medium": {
-            "url": "/storage/v1/files/QyAwU3suiG/medium"
-          }
-        },
-        "url": "/storage/v1/files/QyAwU3suiG",
-        "id": "QyAwU3suiG"
-      }
-    }
-  },
-  {
-    "id": "skillshot",
-    "title": "SkillShot",
-    "manufacturer": "HanaHo Games, Inc.",
-    "year": 1998,
-    "game_type": "ss",
-    "ipdb": {
-      "number": 5722,
-      "mfg": 601
-    },
-    "media": {
-      "backglass": {
-        "is_protected": false,
-        "variations": {
-          "medium-2x": {
-            "url": "/storage/v1/files/mJp5H3oOoG/medium-2x",
-            "mime_type": "image/jpeg",
-            "bytes": 2561,
-            "height": 582,
-            "width": 728
-          },
-          "small-2x": {
-            "url": "/storage/v1/files/mJp5H3oOoG/small-2x",
-            "mime_type": "image/jpeg",
-            "bytes": 1505,
-            "height": 404,
-            "width": 505
-          },
-          "medium": {
-            "url": "/storage/v1/files/mJp5H3oOoG/medium",
-            "mime_type": "image/jpeg",
-            "bytes": 965,
-            "height": 291,
-            "width": 364
-          },
-          "small": {
-            "url": "/storage/v1/files/mJp5H3oOoG/small",
-            "mime_type": "image/jpeg",
-            "bytes": 619,
-            "height": 202,
-            "width": 253
-          }
-        },
-        "url": "/storage/v1/files/mJp5H3oOoG",
-        "id": "mJp5H3oOoG"
-      }
-    }
-  },
-  {
-    "id": "sg",
-    "title": "Stargate",
-    "manufacturer": "Premier",
-    "year": 1995,
-    "game_type": "ss",
-    "ipdb": {
-      "number": 2847,
-      "mfg": 257,
-      "rating": 8
-    },
-    "media": {
-      "backglass": {
-        "is_protected": false,
-        "variations": {
-          "medium-2x": {
-            "url": "/storage/v1/files/Q1rlLhodjz/medium-2x",
-            "mime_type": "image/jpeg",
-            "bytes": 2561,
-            "height": 582,
-            "width": 728
-          },
-          "small-2x": {
-            "url": "/storage/v1/files/Q1rlLhodjz/small-2x",
-            "mime_type": "image/jpeg",
-            "bytes": 1505,
-            "height": 404,
-            "width": 505
-          },
-          "small": {
-            "url": "/storage/v1/files/Q1rlLhodjz/small",
-            "mime_type": "image/jpeg",
-            "bytes": 619,
-            "height": 202,
-            "width": 253
-          },
-          "medium": {
-            "url": "/storage/v1/files/Q1rlLhodjz/medium",
-            "mime_type": "image/jpeg",
-            "bytes": 965,
-            "height": 291,
-            "width": 364
-          }
-        },
-        "url": "/storage/v1/files/Q1rlLhodjz",
-        "id": "Q1rlLhodjz"
-      }
-    }
-  },
-  {
-    "id": "xs-os",
-    "title": "X's  O's",
-    "manufacturer": "Midway",
-    "year": 1984,
-    "game_type": "ss",
-    "ipdb": {
-      "number": 2822,
-      "mfg": 48,
+      "number": 2393,
+      "mfg": 351,
       "rating": 6.7
     },
     "media": {
@@ -439,36 +441,36 @@ Content-Encoding: gzip
         "is_protected": false,
         "variations": {
           "medium-2x": {
-            "url": "/storage/v1/files/m1LwBnjuoM/medium-2x",
+            "url": "/storage/v1/files/Q1-NmNcsG/medium-2x",
             "mime_type": "image/jpeg",
             "bytes": 2561,
             "height": 582,
             "width": 728
           },
           "small-2x": {
-            "url": "/storage/v1/files/m1LwBnjuoM/small-2x",
+            "url": "/storage/v1/files/Q1-NmNcsG/small-2x",
             "mime_type": "image/jpeg",
             "bytes": 1505,
             "height": 404,
             "width": 505
           },
-          "small": {
-            "url": "/storage/v1/files/m1LwBnjuoM/small",
-            "mime_type": "image/jpeg",
-            "bytes": 619,
-            "height": 202,
-            "width": 253
-          },
           "medium": {
-            "url": "/storage/v1/files/m1LwBnjuoM/medium",
+            "url": "/storage/v1/files/Q1-NmNcsG/medium",
             "mime_type": "image/jpeg",
             "bytes": 965,
             "height": 291,
             "width": 364
+          },
+          "small": {
+            "url": "/storage/v1/files/Q1-NmNcsG/small",
+            "mime_type": "image/jpeg",
+            "bytes": 619,
+            "height": 202,
+            "width": 253
           }
         },
-        "url": "/storage/v1/files/m1LwBnjuoM",
-        "id": "m1LwBnjuoM"
+        "url": "/storage/v1/files/Q1-NmNcsG",
+        "id": "Q1-NmNcsG"
       }
     }
   }

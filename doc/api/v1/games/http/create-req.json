@@ -1,22 +1,22 @@
 POST /api/v1/games HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJYSlk3RTJvX2pmIiwiaWF0IjoiMjAxNC0xMi0yM1QxMDoyNzowNi4yMDlaIiwiZXhwIjoiMjAxNC0xMi0yM1QxMToyNzowNi4yMDlaIn0.3ZL1hN8zwRvXloyuaSwK7OCx2pF1mBsvmc9JD1vIAlk
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJteXRmNzRxb0ciLCJpYXQiOiIyMDE0LTEyLTIzVDEyOjExOjE5Ljg0N1oiLCJleHAiOiIyMDE0LTEyLTIzVDEzOjExOjE5Ljg0N1oifQ.GG4HrpY-lN-Z5C35WnC4itHpYykdTVM_AJ4ylh0R6x0
 Content-Type: application/json
-Content-Length: 203
+Content-Length: 204
 
 {
   "ipdb": {
-    "number": 5044,
-    "mfg": 352
+    "number": 3000,
+    "mfg": 14
   },
-  "title": "Big League Baseball",
-  "manufacturer": "Williams",
-  "model_number": "106",
-  "year": 1954,
+  "title": "Carnival",
+  "manufacturer": "Alben",
+  "year": 1960,
   "game_type": "em",
-  "id": "big-league-baseball",
+  "notes": "Similar to Gottlieb's Around the World",
+  "id": "carnival",
   "_media": {
-    "backglass": "QkCmNhsOoM"
+    "backglass": "mJAf7N5jf"
   }
 }

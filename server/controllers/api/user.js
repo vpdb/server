@@ -186,17 +186,17 @@ exports.update = function(req, res) {
 	var errors = {};
 
 	// check for current password
-	if (req.body.password && !req.body.currentPassword) {
-		errors.currentPassword = { message: 'You must provide your current password.', path: 'currentPassword' };
+	if (req.body.password && !req.body.current_password) {
+		errors.current_password = { message: 'You must provide your current password.', path: 'current_password' };
 	}
 
 	// validate current password
-	if (req.body.password && req.body.currentPassword) {
+	if (req.body.password && req.body.current_password) {
 		// change password
-		if (user.authenticate(req.body.currentPassword)) {
+		if (user.authenticate(req.body.current_password)) {
 			user.password = req.body.password;
 		} else {
-			errors.currentPassword = { message: 'Invalid password.', path: 'currentPassword'};
+			errors.current_password = { message: 'Invalid password.', path: 'current_password'};
 			logger.warn('User <%s> provided wrong current password while changing.', req.user.email);
 		}
 	}

@@ -1,0 +1,14 @@
+PATCH /api/v1/user HTTP/1.1
+Host: vpdb.ch
+Accept-Encoding: gzip, deflate
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJta21TWW1OcW9NIiwiaWF0IjoiMjAxNC0xMi0yM1QxMjoxMToyNy4yMjVaIiwiZXhwIjoiMjAxNC0xMi0yM1QxMzoxMToyNy4yMjVaIn0.Nxmptqsab3s_hqyi1phbse_EVGMP85P6HeAn_hv6jCY
+Content-Type: application/json
+Content-Length: 133
+
+{
+  "name": "Taurean Reynolds",
+  "location": "Thereseton",
+  "email": "liam0@yahoo.com",
+  "current_password": "qhE9Be6rFh",
+  "password": "Yt9Ol3sTs6"
+}

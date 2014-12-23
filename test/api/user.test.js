@@ -4,6 +4,9 @@ var _ = require('lodash');
 var request = require('superagent');
 var expect = require('expect.js');
 
+var faker = require('faker');
+var randomstring = require('randomstring');
+
 var superagentTest = require('../modules/superagent-test');
 var hlp = require('../modules/helper');
 
@@ -157,18 +160,19 @@ describe('The VPDB `user` API', function() {
 
 		it('should succeed when updating all attributes', function(done) {
 			var user = hlp.getUser('chpass3');
-			var name = 'The Major';
-			var location = 'San Francisco';
-			var email = 'major@vpdb.ch';
-			var newPass = '12345678';
+			var name = faker.name.firstName() + ' ' + faker.name.lastName();
+			var location = faker.address.city();
+			var email = faker.internet.email().toLowerCase();
+			var newPass = randomstring.generate(10);
 			request
 				.patch('/api/v1/user')
 				.as('chpass3')
+				.save({ path: 'user/update-profile' })
 				.send({
 					name: name,
 					location: location,
 					email: email,
-					currentPassword: user.password,
+					current_password: user.password,
 					password: newPass
 				})
 				.end(function (err, res) {
@@ -176,7 +180,6 @@ describe('The VPDB `user` API', function() {
 
 					// check updated value
 					request.get('/api/v1/user').as('chpass3').end(function(err, res) {
-						hlp.dump(res);
 						hlp.expectStatus(err, res, 200);
 						expect(res.body.name).to.be(name);
 						expect(res.body.location).to.be(location);
@@ -196,7 +199,7 @@ describe('The VPDB `user` API', function() {
 	describe('when a user updates its name', function() {
 
 		it('should succeed when providing a valid name', function (done) {
-			var name = 'A new name with spaces';
+			var name = faker.name.firstName() + ' ' + faker.name.lastName();
 			request
 				.patch('/api/v1/user')
 				.as('member')
@@ -232,7 +235,6 @@ describe('The VPDB `user` API', function() {
 				.as('member')
 				.send({ name: null })
 				.end(function (err, res) {
-					hlp.dump(res);
 					hlp.expectValidationError(err, res, 'name', 'must be provided');
 					done();
 				});
@@ -254,7 +256,7 @@ describe('The VPDB `user` API', function() {
 	describe('when a user updates its location', function() {
 
 		it('should succeed when providing a valid location', function (done) {
-				var location = 'New York City';
+				var location = faker.address.city();
 				request
 					.patch('/api/v1/user')
 					.as('member')
@@ -288,7 +290,7 @@ describe('The VPDB `user` API', function() {
 	describe('when a user updates its email', function() {
 
 		it('should succeed when providing a valid email', function(done) {
-			var email = 'info@vpdb.ch';
+			var email = faker.internet.email().toLowerCase();
 			request
 				.patch('/api/v1/user')
 				.as('member')
@@ -345,7 +347,7 @@ describe('The VPDB `user` API', function() {
 				.as('member')
 				.send({ password: 'yyy' })
 				.end(function(err, res) {
-					hlp.expectValidationError(err, res, 'currentPassword', 'must provide your current password');
+					hlp.expectValidationError(err, res, 'current_password', 'must provide your current password');
 					done();
 				});
 		});
@@ -354,9 +356,9 @@ describe('The VPDB `user` API', function() {
 			request
 				.patch('/api/v1/user')
 				.as('member')
-				.send({ currentPassword: 'xxx', password: 'yyy' })
+				.send({ current_password: 'xxx', password: 'yyy' })
 				.end(function(err, res) {
-					hlp.expectValidationError(err, res, 'currentPassword', 'invalid password');
+					hlp.expectValidationError(err, res, 'current_password', 'invalid password');
 					done();
 				});
 		});
@@ -366,7 +368,7 @@ describe('The VPDB `user` API', function() {
 				.patch('/api/v1/user')
 				.as('member')
 				.send({
-					currentPassword: hlp.getUser('member').password,
+					current_password: hlp.getUser('member').password,
 					password: 'xxx'
 				})
 				.end(function(err, res) {
@@ -377,11 +379,12 @@ describe('The VPDB `user` API', function() {
 
 		it('should grant authentication with the new password', function(done) {
 			var user = hlp.getUser('chpass1');
-			var newPass = '12345678';
+			var newPass = randomstring.generate(10);
 			request
 				.patch('/api/v1/user')
 				.as('chpass1')
-				.send({ currentPassword: user.password, password: newPass })
+				.send({ current_password: user.password, password: newPass })
+				.saveRequest({ path: 'user/update-password' })
 				.end(hlp.status(200, function() {
 					request
 						.post('/api/v1/authenticate')
@@ -396,7 +399,7 @@ describe('The VPDB `user` API', function() {
 			request
 				.patch('/api/v1/user')
 				.as('chpass2')
-				.send({ currentPassword: user.password, password: newPass })
+				.send({ current_password: user.password, password: newPass })
 				.end(hlp.status(200, function() {
 					request
 						.post('/api/v1/authenticate')

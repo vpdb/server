@@ -12,8 +12,11 @@ schemas:
   - vpbuild: !include _schemas/vpbuild.json
   - auth: !include _schemas/auth.json
   - user: !include _schemas/user.json
-  - user-register: !include _schemas/user-register.json
   - user-authenticate: !include _schemas/user-authenticate.json
+  - user-chpass: !include _schemas/user-chpass.json
+  - user-create-local: !include _schemas/user-create-local.json
+  - user-register: !include _schemas/user-register.json
+  - user-update-profile: !include _schemas/user-update-profile.json
 
 securitySchemes:
   - jwt: !include _securitySchemes/jwt.raml

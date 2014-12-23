@@ -352,7 +352,7 @@ describe('The VPDB `user` API', function() {
 				});
 		});
 
-		it('should fail if the current password is invalid when providing new password', function(done) {
+		it('should fail if the current password is invalid', function(done) {
 			request
 				.patch('/api/v1/user')
 				.as('member')
@@ -393,7 +393,7 @@ describe('The VPDB `user` API', function() {
 				}));
 		});
 
-		it('should deny authentication with old password', function(done) {
+		it('should deny authentication with the old password', function(done) {
 			var user = hlp.getUser('chpass2');
 			var newPass = '12345678';
 			request
@@ -409,10 +409,118 @@ describe('The VPDB `user` API', function() {
 		});
 	});
 
-	describe('when a non-local user sets its password', function() {
+	describe('when a non-local user sets its username', function() {
 
-		it('should succeed without providing a current password');
-		it('should fail the second time without providng a current password');
+		it('should succeed when providing a valid password', function(done) {
+
+			// 1. create github user
+			var gen = hlp.genGithubUser();
+			request.post('/api/v1/authenticate/mock').send(gen).end(function(err, res) {
+
+				hlp.expectStatus(err, res, 200);
+				var user = res.body.user;
+				var pass = randomstring.generate(10);
+				var token = res.body.token;
+				hlp.doomUser(user.id);
+				expect(user.provider).to.be('github');
+
+				// 2. add local credentials
+				request
+					.patch('/api/v1/user')
+					.with(token)
+					.saveRequest({ path: 'user/update-create-local' })
+					.send({ username: gen.profile.username, password: pass })
+					.end(hlp.status(200, function(err, user) {
+
+						expect(user.provider).to.be('local');
+
+						// 3. assert local credentials
+						request
+							.post('/api/v1/authenticate')
+							.send({  username: gen.profile.username, password: pass })
+							.end(hlp.status(200, done));
+					}));
+			});
+		});
+
+		it('should fail when providing no password', function(done) {
+
+			// 1. create github user
+			var gen = hlp.genGithubUser();
+			request.post('/api/v1/authenticate/mock').send(gen).end(function(err, res) {
+
+				hlp.expectStatus(err, res, 200);
+				var user = res.body.user;
+				var token = res.body.token;
+				hlp.doomUser(user.id);
+
+				// 2. try setting local account
+				request
+					.patch('/api/v1/user')
+					.with(token)
+					.send({ username: gen.profile.username })
+					.end(function (err, res) {
+						hlp.expectValidationError(err, res, 'password', 'must provide your new password');
+						done();
+					});
+			});
+		});
+
+		it('should fail when providing an invalid password', function(done) {
+
+			// 1. create github user
+			var gen = hlp.genGithubUser();
+			request.post('/api/v1/authenticate/mock').send(gen).end(function(err, res) {
+
+				hlp.expectStatus(err, res, 200);
+				var user = res.body.user;
+				var token = res.body.token;
+				hlp.doomUser(user.id);
+
+				// 2. try setting local account
+				request
+					.patch('/api/v1/user')
+					.with(token)
+					.send({ username: gen.profile.username, password: '123' })
+					.end(function (err, res) {
+						hlp.expectValidationError(err, res, 'password', 'at least 6 characters');
+						done();
+					});
+			});
+		});
+
+		it('should fail the second time providing a username', function(done) {
+
+			// 1. create github user
+			var gen = hlp.genGithubUser();
+			request.post('/api/v1/authenticate/mock').send(gen).end(function(err, res) {
+
+				hlp.expectStatus(err, res, 200);
+				var user = res.body.user;
+				var pass = randomstring.generate(10);
+				var token = res.body.token;
+				hlp.doomUser(user.id);
+
+				// 2. add local credentials
+				request
+					.patch('/api/v1/user')
+					.with(token)
+					.send({ username: gen.profile.username, password: pass })
+					.end(hlp.status(200, function() {
+
+						// 3. add (again) local credentials
+						request
+							.patch('/api/v1/user')
+							.with(token)
+							.send({ username: gen.profile.username, password: pass })
+							.end(function (err, res) {
+								hlp.expectValidationError(err, res, 'username', 'cannot change username');
+								done();
+							});
+					}));
+			});
+		});
+
 	});
 
 	describe('when an admin updates a user', function() {

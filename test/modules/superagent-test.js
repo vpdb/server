@@ -98,6 +98,11 @@ module.exports = function(superagent, options) {
 		return this;
 	};
 
+	Request.prototype.with = function(token) {
+		this.set(options.authHeader, 'Bearer ' + token);
+		return this;
+	};
+
 	Request.prototype.save = function(opts) {
 		this.saveRequest(opts);
 		this.saveResponse(opts);

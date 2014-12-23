@@ -1,23 +1,23 @@
 200 OK
 Content-Type: application/json; charset=utf-8
-Content-Length: 866
+Content-Length: 875
 
 {
-  "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJYa2tZeG1OcWp6IiwiaWF0IjoiMjAxNC0xMi0yM1QxMjoxMToxOC44MjBaIiwiZXhwIjoiMjAxNC0xMi0yM1QxMzoxMToxOC44MjBaIn0._VQJi98voaEkc0sMqTcgnc13zdDsjINgnzFv4PZshjk",
-  "expires": "2014-12-23T13:11:18.820Z",
+  "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJYa2h4bzJPaWlmIiwiaWF0IjoiMjAxNC0xMi0yM1QxMzozOToxMi45MTNaIiwiZXhwIjoiMjAxNC0xMi0yM1QxNDozOToxMi45MTNaIn0.-i4HTguUDSz5XTAoyqf0vwjy0NFHlgLAOS6IXvKZPG0",
+  "expires": "2014-12-23T14:39:12.913Z",
   "user": {
-    "id": "XkkYxmNqjz",
-    "name": "Tyra2",
-    "username": "Tyra2",
-    "gravatar_id": "a9147385e29b8dfd391f9e875a555baa",
-    "email": "sadie_tremblay@gmail.com",
+    "id": "Xkhxo2Oiif",
+    "name": "Steve_Nolan43",
+    "username": "Steve_Nolan43",
+    "gravatar_id": "7bb4658582d574513b0a64994d8b6606",
+    "email": "arden12@gmail.com",
     "is_active": true,
     "provider": "local",
     "roles": [
       "member"
     ],
     "plan": "free",
-    "created_at": "2014-12-23T12:11:18.765Z",
+    "created_at": "2014-12-23T13:39:12.863Z",
     "permissions": {
       "files": [
         "upload",

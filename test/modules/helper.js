@@ -120,6 +120,23 @@ exports.genUser = function() {
 	};
 };
 
+exports.genGithubUser = function() {
+	var gen = exports.genUser();
+	return {
+		provider: 'github',
+		profile: {
+			provider: 'github',
+			id: Math.floor(Math.random() * 100000),
+			displayName: faker.name.firstName() + ' ' + faker.name.lastName(),
+			username: gen.username,
+			profileUrl: 'https://github.com/' + gen.username,
+			emails: [
+				{value: gen.email}
+			]
+		}
+	};
+};
+
 /**
  * Removes previously created users.
  *

@@ -1,0 +1,11 @@
+PATCH /api/v1/user HTTP/1.1
+Host: vpdb.ch
+Accept-Encoding: gzip, deflate
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJReTdxejZPb3NmIiwiaWF0IjoiMjAxNC0xMi0yM1QxMzozOToyMC40NzdaIiwiZXhwIjoiMjAxNC0xMi0yM1QxNDozOToyMC40NzdaIn0.r5vDD1JicdYD89eXXDbpfjysJnF1fiTgvrqkGnzEHn0
+Content-Type: application/json
+Content-Length: 46
+
+{
+  "username": "Ahmed48",
+  "password": "LaeIrpo868"
+}

@@ -185,19 +185,37 @@ exports.update = function(req, res) {
 
 	var errors = {};
 
-	// check for current password
-	if (req.body.password && !req.body.current_password) {
-		errors.current_password = { message: 'You must provide your current password.', path: 'current_password' };
+	// CHANGE PASSWORD
+	if (req.body.password && !req.body.username) {
+
+		// check for current password
+		if (!req.body.current_password) {
+			errors.current_password = { message: 'You must provide your current password.', path: 'current_password' };
+
+		} else  {
+			// change password
+			if (user.authenticate(req.body.current_password)) {
+				user.password = req.body.password;
+			} else {
+				errors.current_password = { message: 'Invalid password.', path: 'current_password' };
+				logger.warn('[api|user:update] User <%s> provided wrong current password while changing.', req.user.email);
+			}
+		}
 	}
 
-	// validate current password
-	if (req.body.password && req.body.current_password) {
-		// change password
-		if (user.authenticate(req.body.current_password)) {
-			user.password = req.body.password;
+	// CREATE LOCAL ACCOUNT
+	if (req.body.username) {
+
+		if (req.user.provider === 'local') {
+			errors.username = { message: 'Cannot change username for already local account.', path: 'username' };
+
+		} else if (!req.body.password) {
+			errors.password = { message: 'You must provide your new password.', path: 'password' };
+
 		} else {
-			errors.current_password = { message: 'Invalid password.', path: 'current_password'};
-			logger.warn('User <%s> provided wrong current password while changing.', req.user.email);
+			user.password = req.body.password;
+			user.username = req.body.username;
+			user.provider = 'local';
 		}
 	}
 
@@ -211,8 +229,20 @@ exports.update = function(req, res) {
 		// save
 		user.save(assert(function(user) {
 
+			// log
+			if (req.body.password) {
+				if (req.body.username) {
+					logger.info('[api|user:update] Successfully added local credentials with username "%s" to user <%s> (%s).', user.username, user.email, user.id);
+				} else {
+					logger.info('[api|user:update] Successfully changed password of user "%s".', user.username);
+				}
+			}
+			console.log(user);
+
 			// if all good, enrich with ACLs
-			getACLs(req.user, assert(function(acls) {
+			getACLs(user, assert(function(acls) {
+
+				console.log(user.toDetailed());
 				api.success(res, _.extend(user.toDetailed(), acls), 200);
 			}));
 		}));

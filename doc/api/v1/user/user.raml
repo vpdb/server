@@ -57,10 +57,11 @@ patch:
       example: !include http/update-password-req.json
     role/member-Create-Local-Credentials:
       schema: user-create-local
+      example: !include http/update-create-local-req.json
   responses:
     200:
       body:
-        role/member-Update-Profile:
+        role/member:
           schema: user
           example: !include http/update-profile-res-200.json
     401:

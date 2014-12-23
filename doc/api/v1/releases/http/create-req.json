@@ -1,21 +1,21 @@
 POST /api/v1/releases HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJYa0RPUU41c3oiLCJpYXQiOiIyMDE0LTEyLTIzVDEyOjExOjI1LjgyOVoiLCJleHAiOiIyMDE0LTEyLTIzVDEzOjExOjI1LjgyOVoifQ.gBqA7vzd6rhNQlYPu9Y4Zt1x093ElQUj49JJr14jLls
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJYa0RXNk9qb3oiLCJpYXQiOiIyMDE0LTEyLTIzVDEzOjM5OjE4LjkyNVoiLCJleHAiOiIyMDE0LTEyLTIzVDE0OjM5OjE4LjkyNVoifQ.CL31VcFxJ92HNbDlHUf8O-tRLdS9FJZOnmnzLXG44TU
 Content-Type: application/json
-Content-Length: 471
+Content-Length: 480
 
 {
   "name": "release",
-  "_game": "poker",
+  "_game": "silver-moon-jr",
   "versions": [
     {
       "files": [
         {
-          "_file": "Xk-8umE5oz",
+          "_file": "7kfI-pujjf",
           "_media": {
-            "playfield_image": "mJoL_m45oz",
-            "playfield_video": "X1CDu7Eqiz"
+            "playfield_image": "X1E8Zauisz",
+            "playfield_video": "7kCvWpOsoM"
           },
           "_compatibility": [
             "9.9.0"
@@ -26,9 +26,9 @@ Content-Length: 471
           }
         },
         {
-          "_file": "QyfUOmEqof",
+          "_file": "my-8Z6uoof",
           "_media": {
-            "playfield_image": "QJc8OmNcoG"
+            "playfield_image": "718UW6_iif"
           },
           "_compatibility": [
             "9.9.0"
@@ -44,7 +44,7 @@ Content-Length: 471
   ],
   "authors": [
     {
-      "_user": "XkDOQN5sz",
+      "_user": "XkDW6Ojoz",
       "roles": [
         "Table Creator"
       ]

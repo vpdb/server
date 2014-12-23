@@ -21,7 +21,7 @@ describe('The authentication engine of the VPDB API', function() {
 		hlp.teardownUsers(request, done);
 	});
 
-	it('should deny access to the user profile if there is neither a token in the header nor the URL', function(done) {
+	it('should deny access to the user profile if there is no token in the header', function(done) {
 		request
 			.get('/api/v1/user')
 			.end(hlp.status(401, done));
@@ -102,7 +102,7 @@ describe('The authentication engine of the VPDB API', function() {
 
 	describe('when authorization is provided in the URL', function() {
 
-		it('should grant access to the user profile if the token is valid', function(done) {
+		it('should able to get an access token if the auth token is valid', function(done) {
 			var path = '/api/v1/user';
 			request
 				.post('/storage/v1/authenticate')
@@ -216,7 +216,6 @@ describe('The authentication engine of the VPDB API', function() {
 				}, true));
 		});
 
-		it('should change the account type to "local" after setting a password');
 	});
 
 	describe('when authenticating via IPB', function() {

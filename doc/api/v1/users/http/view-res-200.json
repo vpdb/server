@@ -1,19 +1,19 @@
 200 OK
 Content-Type: application/json; charset=utf-8
-Content-Length: 297
-Etag: W/"129-67149d69"
+Content-Length: 302
+Etag: W/"12e-da14de6"
 
 {
   "plan": "free",
-  "name": "Alanis_Murray",
-  "username": "Alanis_Murray",
-  "email": "elnora_reilly@gmail.com",
+  "name": "Susanna_Streich",
+  "username": "Susanna_Streich",
+  "email": "willow.schuppe@gmail.com",
   "provider": "local",
-  "created_at": "2014-12-23T12:11:27.173Z",
+  "created_at": "2014-12-23T13:39:20.217Z",
   "is_active": true,
   "roles": [
     "member"
   ],
-  "id": "XJP4KQNcsG",
-  "gravatar_id": "3e8e45b77dfe041b43c9509687a80db2"
+  "id": "X1DLMpdjjG",
+  "gravatar_id": "0f74cf9fb9972ff06ae36f23fb5c5177"
 }

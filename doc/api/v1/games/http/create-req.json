@@ -1,9 +1,9 @@
 POST /api/v1/games HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJteXRmNzRxb0ciLCJpYXQiOiIyMDE0LTEyLTIzVDEyOjExOjE5Ljg0N1oiLCJleHAiOiIyMDE0LTEyLTIzVDEzOjExOjE5Ljg0N1oifQ.GG4HrpY-lN-Z5C35WnC4itHpYykdTVM_AJ4ylh0R6x0
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJteWozMl9pakciLCJpYXQiOiIyMDE0LTEyLTIzVDEzOjM5OjEzLjg4NVoiLCJleHAiOiIyMDE0LTEyLTIzVDE0OjM5OjEzLjg4NVoifQ.R6onEEGi_AydUlC_IGp6zGZSLgPQ9yafkPPoBRTrnYk
 Content-Type: application/json
-Content-Length: 204
+Content-Length: 205
 
 {
   "ipdb": {
@@ -17,6 +17,6 @@ Content-Length: 204
   "notes": "Similar to Gottlieb's Around the World",
   "id": "carnival",
   "_media": {
-    "backglass": "mJAf7N5jf"
+    "backglass": "71xxh2_oof"
   }
 }

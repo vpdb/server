@@ -137,7 +137,7 @@ exports.auth = function(resource, permission, done) {
 					return done(null, req, res);
 				}
 
-				acl.isAllowed(user.email, resource, permission, function(err, granted) {
+				acl.isAllowed(user.id, resource, permission, function(err, granted) {
 					/* istanbul ignore if  */
 					if (err) {
 						return deny(error(err, 'Error checking ACLs for user <%s>', user.email).status(500).log());

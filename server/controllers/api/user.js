@@ -228,17 +228,17 @@ exports.update = function(req, res) {
  */
 function getACLs(user, done) {
 
-	acl.userRoles(user.email, function(err, roles) {
+	acl.userRoles(user.id, function(err, roles) {
 		if (err) {
-			return done(error(err, 'Error reading roles for user <%s>', user.email).log('profile'));
+			return done(error(err, 'Error reading ACL roles for user <%s>', user.id).log('profile'));
 		}
 		acl.whatResources(roles, function(err, resources) {
 			if (err) {
-				return done(error(err, 'Error reading resources').log('profile'));
+				return done(error(err, 'Error ACL reading resources').log('profile'));
 			}
-			acl.allowedPermissions(user.email, _.keys(resources), function(err, permissions) {
+			acl.allowedPermissions(user.id, _.keys(resources), function(err, permissions) {
 				if (err) {
-					return done(error(err, 'Error reading permissions for user <%s>', user.email).log('profile'));
+					return done(error(err, 'Error reading ACL permissions for user <%s>', user.id).log('profile'));
 				}
 				return done(null, { permissions: permissions });
 			});

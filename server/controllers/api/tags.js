@@ -84,7 +84,7 @@ exports.create = function(req, res) {
 exports.del = function(req, res) {
 
 	var assert = api.assert(error, 'delete', req.params.id, res);
-	acl.isAllowed(req.user.email, 'tags', 'delete', assert(function(canDelete) {
+	acl.isAllowed(req.user.id, 'tags', 'delete', assert(function(canDelete) {
 		Tag.findOne({ id: req.params.id }, assert(function(tag) {
 
 			if (!tag) {

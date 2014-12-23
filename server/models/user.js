@@ -68,7 +68,7 @@ UserSchema.plugin(uniqueValidator, { message: 'The {PATH} "{VALUE}" is already t
 // API FIELDS
 //-----------------------------------------------------------------------------
 var apiFields = {
-	reduced: [ 'id', 'name', 'username', 'thumb', 'gravatar_id'],                          // "member" search result
+	reduced: [ 'id', 'name', 'username', 'thumb', 'gravatar_id', 'location' ],             // "member" search result
 	simple: [ 'email', 'is_active', 'provider', 'roles', 'plan', 'created_at', 'github' ]  // "admin" lists & profile
 };
 
@@ -145,6 +145,10 @@ UserSchema.path('username').validate(function(username) {
 		this.invalidate('username', 'Length of username must be between 3 and 30 characters.');
 	}
 }, null);
+
+UserSchema.path('location').validate(function(location) {
+	return validator.isLength(location, 0, 100);
+}, 'Location must not be longer than 100 characters.');
 
 UserSchema.path('provider').validate(function(provider) {
 
@@ -257,12 +261,12 @@ UserSchema.statics.createUser = function(userObj, done) {
 				if (err) {
 					return done(error(err, 'Error saving user <%s>', user.email).log());
 				}
-				require('../acl').addUserRoles(user.email, user.roles, function(err) {
+				require('../acl').addUserRoles(user.id, user.roles, function(err) {
 					/* istanbul ignore if  */
 					if (err) {
 						return done(error(err, 'Error updating ACLs for <%s>', user.email).log());
 					}
-					logger.info('[model|user] %s <%s> successfully created.', count ? 'User' : 'Root user', user.email);
+					logger.info('[model|user] %s <%s> successfully created with ID "%s".', count ? 'User' : 'Root user', user.email, user.id);
 					done(null, user);
 				});
 			});

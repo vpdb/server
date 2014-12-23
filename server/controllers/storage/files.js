@@ -111,7 +111,7 @@ function find(req, res, authErr, callback) {
 		}
 
 		// so here we determined the file isn't public, so we need to check ACLs.
-		acl.isAllowed(req.user.email, 'files', 'download', function(err, granted) {
+		acl.isAllowed(req.user.id, 'files', 'download', function(err, granted) {
 			/* istanbul ignore if  */
 			if (err) {
 				logger.error('[ctrl|storage] Error checking ACLs for <%s>: %s', req.user.email, err, {});

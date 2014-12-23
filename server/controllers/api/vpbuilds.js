@@ -86,7 +86,7 @@ exports.create = function(req, res) {
 exports.del = function(req, res) {
 
 	var assert = api.assert(error, 'delete', req.params.id, res);
-	acl.isAllowed(req.user.email, 'vpbuilds', 'delete', assert(function(canDelete) {
+	acl.isAllowed(req.user.id, 'vpbuilds', 'delete', assert(function(canDelete) {
 		VPBuild.findOne({ id: req.params.id }, assert(function(vpbuild) {
 
 			if (!vpbuild) {

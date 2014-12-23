@@ -150,9 +150,58 @@ describe('The VPDB `user` API', function() {
 
 	describe('when a user updates its profile', function() {
 
-		it('should succeed when sending an empty object', function(done) {
+		it('should succeed when sending an empty object', function (done) {
 			request.patch('/api/v1/user').as('member').send({}).end(hlp.status(200, done));
 		});
+
+	});
+
+	describe('when a user updates its location', function() {
+
+		it('should succeed when providing a valid location', function (done) {
+			var location = 'New York City';
+			request
+				.patch('/api/v1/user')
+				.as('member')
+				.send({location: location})
+				.end(function (err, res) {
+					hlp.expectStatus(err, res, 200);
+
+					// check updated value
+					request.get('/api/v1/user').as('member').end(function (err, res) {
+						hlp.expectStatus(err, res, 200);
+						expect(res.body.location).to.be(location);
+						done();
+					});
+				});
+		});
+	});
+
+	describe('when a user updates its email', function() {
+
+		it('should succeed when providing a valid email', function(done) {
+			var email = 'info@vpdb.ch';
+			request
+				.patch('/api/v1/user')
+				.as('member')
+				.send({ email: email })
+				.end(function(err, res) {
+					hlp.expectStatus(err, res, 200);
+
+					// check updated value
+					request.get('/api/v1/user').as('member').end(function(err, res) {
+						hlp.expectStatus(err, res, 200);
+						expect(res.body.email).to.be(email);
+						done();
+					});
+				});
+		});
+
+		it('should fail when providing an invalid email', function(done) {
+			done();
+		});
+
+		it('should fail when providing an email that already exists');
 
 	});
 

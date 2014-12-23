@@ -71,8 +71,8 @@ exports.create = function(req, res) {
 exports.list = function(req, res) {
 
 	var assert = api.assert(error, 'list', null, res);
-	acl.isAllowed(req.user.email, 'users', 'list', assert(function(canList) {
-		acl.isAllowed(req.user.email, 'users', 'view', assert(function(fullDetails) {
+	acl.isAllowed(req.user.id, 'users', 'list', assert(function(canList) {
+		acl.isAllowed(req.user.id, 'users', 'view', assert(function(fullDetails) {
 
 			// if no list privileges, user must provide at least a 3-char search query.
 			if (!canList && (!req.query.q || req.query.q.length < 3)) {
@@ -140,7 +140,6 @@ exports.update = function(req, res) {
 			return api.fail(res, error('No such user.'), 404);
 		}
 		var updatedUser = req.body;
-		var originalEmail = user.email;
 
 		// 1. check for changed read-only fields
 		var readOnlyFieldErrors = api.checkReadOnlyFields(req.body, user, updateableFields);
@@ -194,21 +193,14 @@ exports.update = function(req, res) {
 			user.save(assert(function() {
 				logger.info('[api|user:update] Success!');
 
-				// 6. update ACLs if email or roles changed
-				if (originalEmail !== user.email) {
-					logger.info('[api|user:update] Email changed, removing ACLs for <%s> and creating new ones for <%s>.', originalEmail, user.email);
-					acl.removeUserRoles(originalEmail, '*');
-					acl.addUserRoles(user.email, user.roles);
-
-				} else {
-					if (removedRoles.length > 0) {
-						logger.info('[api|user:update] Updating ACLs: Removing roles [%s] from user <%s>.', removedRoles.join(' '), user.email);
-						acl.removeUserRoles(user.email, removedRoles);
-					}
-					if (addedRoles.length > 0) {
-						logger.info('[api|user:update] Updating ACLs: Adding roles [%s] to user <%s>.', addedRoles.join(' '), user.email);
-						acl.addUserRoles(user.email, addedRoles);
-					}
+				// 6. update ACLs if roles changed
+				if (removedRoles.length > 0) {
+					logger.info('[api|user:update] Updating ACLs: Removing roles [%s] from user <%s>.', removedRoles.join(' '), user.email);
+					acl.removeUserRoles(user.id, removedRoles);
+				}
+				if (addedRoles.length > 0) {
+					logger.info('[api|user:update] Updating ACLs: Adding roles [%s] to user <%s>.', addedRoles.join(' '), user.email);
+					acl.addUserRoles(user.id, addedRoles);
 				}
 
 				// 7. if changer is not changed user, mark user as dirty
@@ -263,7 +255,7 @@ exports.del = function(req, res) {
 			return api.fail(res, error('No such user'), 404);
 		}
 		user.remove(assert(function() {
-			acl.removeUserRoles(user.email, user.roles);
+			acl.removeUserRoles(user.id, user.roles);
 			logger.info('[api|user:delete] User <%s> successfully deleted.', user.email);
 			res.status(204).end();
 

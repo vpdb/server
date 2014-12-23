@@ -215,9 +215,11 @@ exports.assert = function(error, prefix, ref, res, rollback) {
 				} else {
 					if (message) {
 						exports.fail(res, error(err, message, ref).log(prefix));
+
 					} else {
 						exports.fail(res, err);
 					}
+					logger.error('[api|%s] Stack: %s', prefix, new Error().stack);
 				}
 			} else {
 				args.shift();

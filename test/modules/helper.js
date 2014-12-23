@@ -432,7 +432,7 @@ exports.cleanup = function(request, done) {
  * Asserts that a response contains a given status code and no error
  *
  * @param {int} code Status code to assert
- * @param {string} contains
+ * @param {string|function} contains
  * @param {function} [next=null] callback
  * @returns {Function} Function passed to end()
  */
@@ -468,12 +468,12 @@ exports.expectStatus = function(err, res, code, contains) {
 	}
 };
 
-exports.expectValidationError = function(err, res, field, contains) {
+exports.expectValidationError = function(err, res, field, contains, code) {
 	if (err) {
 		console.log(err);
 	}
 	expect(err).to.not.be.ok();
-	expect(res.status).to.be(422);
+	expect(res.status).to.be(code || 422);
 	expect(res.body.errors).to.be.an('array');
 	var fieldErrors = _.filter(res.body.errors, { field: field });
 	if (!fieldErrors.length) {

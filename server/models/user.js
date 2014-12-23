@@ -80,7 +80,7 @@ UserSchema.virtual('password')
 	.set(function(password) {
 		this._password = password;
 		this.password_salt = this.makeSalt();
-		this.password_hash = this.encryptPassword(password);
+		this.password_hash = this.hashPassword(password);
 	})
 	.get(function() {
 		return this._password;
@@ -188,7 +188,7 @@ UserSchema.path('password_hash').validate(function() {
  * @api public
  */
 UserSchema.methods.authenticate = function(plainText) {
-	return this.encryptPassword(plainText) === this.password_hash;
+	return this.hashPassword(plainText) === this.password_hash;
 };
 
 /**
@@ -208,7 +208,7 @@ UserSchema.methods.makeSalt = function() {
  * @return {String}
  * @api public
  */
-UserSchema.methods.encryptPassword = function(password) {
+UserSchema.methods.hashPassword = function(password) {
 	if (!password) {
 		return '';
 	}

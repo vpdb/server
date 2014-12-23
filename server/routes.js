@@ -90,7 +90,7 @@ module.exports = function(app) {
 
 	// user (own profile)
 	app.get(settings.apiPath('/user'),            api.auth(api.user.view, 'user', 'view'));
-	app.put(settings.apiPath('/user'),            api.auth(api.user.update, 'user', 'update'));
+	app.patch(settings.apiPath('/user'),          api.auth(api.user.update, 'user', 'update'));
 
 	// users (any other user)
 	app.post(settings.apiPath('/users'),          api.users.create);

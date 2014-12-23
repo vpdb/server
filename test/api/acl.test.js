@@ -51,7 +51,7 @@ describe('The ACLs of the VPDB API', function() {
 		});
 
 		it('should deny updates of user profile', function(done) {
-			request.put('/api/v1/user').send({}).end(hlp.status(401, done));
+			request.patch('/api/v1/user').send({}).end(hlp.status(401, done));
 		});
 
 		it('should deny access to roles list', function(done) {

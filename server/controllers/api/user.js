@@ -178,27 +178,36 @@ exports.view = function(req, res) {
  */
 exports.update = function(req, res) {
 
-	var updateableFields = [ 'password' ];
+	var updateableFields = [ 'name', 'location', 'email' ];
 	var assert = api.assert(error, 'update', req.user.email, res);
 
+	var user = _.extend(req.user, _.pick(req.body, updateableFields));
+
+	var errors = {};
+
 	// check for current password
-	if (!req.body.currentPassword) {
-		return api.fail(res, error().errors([{ message: 'You must provide your current password.', path: 'currentPassword' }]), 401);
+	if (req.body.password && !req.body.currentPassword) {
+		errors.currentPassword = { message: 'You must provide your current password.', path: 'currentPassword' };
 	}
 
 	// validate current password
-	if (!req.user.authenticate(req.body.currentPassword)) {
-		return api.fail(res, error('User <%s> provided wrong current password while changing.', req.user.email)
-			.warn('update')
-			.errors([{ message: 'Invalid password.', path: 'currentPassword' }]),
-		401);
+	if (req.body.password && req.body.currentPassword) {
+		// change password
+		if (user.authenticate(req.body.currentPassword)) {
+			user.password = req.body.password;
+		} else {
+			errors.currentPassword = { message: 'Invalid password.', path: 'currentPassword'};
+			logger.warn('User <%s> provided wrong current password while changing.', req.user.email);
+		}
 	}
 
-	var user = _.extend(req.user, _.pick(req.body, updateableFields));
 	user.validate(function(validationErr) {
-		if (validationErr) {
-			return api.fail(res, error('Validation failed:').errors(validationErr.errors).warn('update'), 422);
+
+		if (validationErr || _.keys(errors).length) {
+			var errs = _.extend(errors, validationErr ? validationErr.errors : {});
+			return api.fail(res, error('Validation failed:').errors(errs).warn('update'), 422);
 		}
+
 		// save
 		user.save(assert(function(user) {
 

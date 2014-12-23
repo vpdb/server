@@ -148,52 +148,48 @@ describe('The VPDB `user` API', function() {
 		});
 	});
 
+	describe('when a user updates its profile', function() {
+
+		it('should succeed when sending an empty object', function(done) {
+			request.patch('/api/v1/user').as('member').send({}).end(hlp.status(200, done));
+		});
+
+	});
+
 	describe('when a local user changes its password', function() {
 
 		it('should fail if the current password is not provided', function(done) {
 			request
-				.put('/api/v1/user')
+				.patch('/api/v1/user')
 				.as('member')
-				.send({})
+				.send({ password: 'yyy' })
 				.end(function(err, res) {
-					hlp.expectStatus(err, res, 401);
-					expect(res.body.errors).to.be.an('array');
-					expect(res.body.errors).to.have.length(1);
-					expect(res.body.errors[0].field).to.be('currentPassword');
-					expect(res.body.errors[0].message).to.contain('must provide your current password');
+					hlp.expectValidationError(err, res, 'currentPassword', 'must provide your current password');
 					done();
 				});
 		});
 
-		it('should fail if the current password is invalid', function(done) {
+		it('should fail if the current password is invalid when providing new password', function(done) {
 			request
-				.put('/api/v1/user')
+				.patch('/api/v1/user')
 				.as('member')
-				.send({ currentPassword: 'xxx'})
+				.send({ currentPassword: 'xxx', password: 'yyy' })
 				.end(function(err, res) {
-					hlp.expectStatus(err, res, 401);
-					expect(res.body.errors).to.be.an('array');
-					expect(res.body.errors).to.have.length(1);
-					expect(res.body.errors[0].field).to.be('currentPassword');
-					expect(res.body.errors[0].message).to.contain('Invalid password');
+					hlp.expectValidationError(err, res, 'currentPassword', 'invalid password');
 					done();
 				});
 		});
 
 		it('should fail if the new password is invalid', function(done) {
 			request
-				.put('/api/v1/user')
+				.patch('/api/v1/user')
 				.as('member')
 				.send({
 					currentPassword: hlp.getUser('member').password,
 					password: 'xxx'
 				})
 				.end(function(err, res) {
-					hlp.expectStatus(err, res, 422);
-					expect(res.body.errors).to.be.an('array');
-					expect(res.body.errors).to.have.length(1);
-					expect(res.body.errors[0].field).to.be('password');
-					expect(res.body.errors[0].message).to.contain('at least 6 characters');
+					hlp.expectValidationError(err, res, 'password', 'at least 6 characters');
 					done();
 				});
 		});
@@ -202,7 +198,7 @@ describe('The VPDB `user` API', function() {
 			var user = hlp.getUser('chpass1');
 			var newPass = '12345678';
 			request
-				.put('/api/v1/user')
+				.patch('/api/v1/user')
 				.as('chpass1')
 				.send({ currentPassword: user.password, password: newPass })
 				.end(hlp.status(200, function() {
@@ -217,7 +213,7 @@ describe('The VPDB `user` API', function() {
 			var user = hlp.getUser('chpass2');
 			var newPass = '12345678';
 			request
-				.put('/api/v1/user')
+				.patch('/api/v1/user')
 				.as('chpass2')
 				.send({ currentPassword: user.password, password: newPass })
 				.end(hlp.status(200, function() {

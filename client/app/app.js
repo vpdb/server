@@ -15,7 +15,8 @@ var deps = [
 	'angulartics',
 	'angulartics.google.analytics',
 	'monospaced.elastic',
-	'sun.scrollable'
+	'sun.scrollable',
+	'growlNotifications'
 ];
 
 // main application modules

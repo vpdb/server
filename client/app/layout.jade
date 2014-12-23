@@ -30,7 +30,9 @@ html(ng-app=appname, ng-controller="AppCtrl", lang="en")
 		title(ng-bind="pageTitle")
 
 	body.theme-dark#top(ng-class="themeName")
+
 		block body
+		growl-notifications
 		if environment == 'production'
 			script(type="text/javascript", src="/js/global_#{gitinfo.local.branch.current.shortSHA}.min.js")
 		else

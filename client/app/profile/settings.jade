@@ -1,6 +1,10 @@
 include ../template/_mixins
 
+
 .row.row--fullheight(ng-controller="ProfileSettingsCtrl")
+
+	div(ng-repeat="(id, notification) in notifications track by id")
+		growl-notification.ns-box.ns-growl.ns-effect-slide.ns-type-notice.ns-show {{notification}}
 
 	// sidebar (left)
 	.col-sm-3.col--menu
@@ -25,45 +29,45 @@ include ../template/_mixins
 				.text--large.text--shift-up {{ auth.user.email }}
 
 		p.padder-top-3x
-			.form-group(ng-class="{ error: errors.name }")
-				label.col-sm-3.control-label Name
-				.col-sm-7
-					.input-group
-						input.form-control(type="text", ng-model="updatedUser.name")
-						span.input-group-addon
-							+icon('eye').small
+		.form-group(ng-class="{ error: errors.name }")
+			label.col-sm-3.control-label Name
+			.col-sm-7
+				.input-group
+					input.form-control(type="text", ng-model="updatedUser.name")
+					span.input-group-addon
+						+icon('eye').small
 
 			.clearfix
 			div.alert.alert-danger(ng-show="errors.name")
 				+icon('warning').shift-up.space-right
 				| {{ errors.name }}
 
-			.form-group(ng-class="{ error: errors.location }")
-				label.col-sm-3.control-label Location
-				.col-sm-7
-					.input-group
-						input.form-control(type="text", ng-model="updatedUser.location")
-						span.input-group-addon
-							+icon('eye').small
+		.form-group(ng-class="{ error: errors.location }")
+			label.col-sm-3.control-label Location
+			.col-sm-7
+				.input-group
+					input.form-control(type="text", ng-model="updatedUser.location")
+					span.input-group-addon
+						+icon('eye').small
 			.clearfix
 			div.alert.alert-danger(ng-show="errors.location")
 				+icon('warning').shift-up.space-right
 				| {{ errors.location }}
 
-			.form-group(ng-class="{ error: errors.email }")
-				label.col-sm-3.control-label Email
-				.col-sm-7
+		.form-group(ng-class="{ error: errors.email }")
+			label.col-sm-3.control-label Email
+			.col-sm-7
 				input.form-control(type="text", ng-model="updatedUser.email")
 			.clearfix
 			div.alert.alert-danger(ng-show="errors.email")
 				+icon('warning').shift-up.space-right
 				| {{ errors.email }}
 
-				.col-sm-offset-3.col-sm-7
+		.col-sm-offset-3.col-sm-7
 			button.btn.btn-default.pull-right(ng-click="createLocalCredentials()")
-						+icon('check-circle').space-right
-						| Save
-			.clearfix
+				+icon('check-circle').space-right
+				| Save
+		.clearfix
 
 		//- LOCAL REGISTRATUION
 		.span(ng-hide="auth.user.provider === 'local'")

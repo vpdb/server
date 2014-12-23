@@ -237,12 +237,9 @@ exports.update = function(req, res) {
 					logger.info('[api|user:update] Successfully changed password of user "%s".', user.username);
 				}
 			}
-			console.log(user);
 
 			// if all good, enrich with ACLs
 			getACLs(user, assert(function(acls) {
-
-				console.log(user.toDetailed());
 				api.success(res, _.extend(user.toDetailed(), acls), 200);
 			}));
 		}));
@@ -259,14 +256,17 @@ exports.update = function(req, res) {
 function getACLs(user, done) {
 
 	acl.userRoles(user.id, function(err, roles) {
+		/* istanbul ignore if  */
 		if (err) {
 			return done(error(err, 'Error reading ACL roles for user <%s>', user.id).log('profile'));
 		}
 		acl.whatResources(roles, function(err, resources) {
+			/* istanbul ignore if  */
 			if (err) {
 				return done(error(err, 'Error ACL reading resources').log('profile'));
 			}
 			acl.allowedPermissions(user.id, _.keys(resources), function(err, permissions) {
+				/* istanbul ignore if  */
 				if (err) {
 					return done(error(err, 'Error reading ACL permissions for user <%s>', user.id).log('profile'));
 				}

@@ -29,7 +29,9 @@ common
 	})
 
 	.factory('ProfileResource', function($resource, ConfigService) {
-		return $resource(ConfigService.apiUri('/user'), {}, {});
+		return $resource(ConfigService.apiUri('/user'), {}, {
+			patch: { method: 'PATCH' }
+		});
 	})
 
 	.factory('RolesResource', function($resource, ConfigService) {
@@ -132,6 +134,12 @@ common
 						callback(response);
 					}
 				};
+			},
+
+			clearErrors: function(scope) {
+				scope.message = null;
+				scope.errors = { __count: 0 };
+				scope.error = null;
 			}
 		};
 	});

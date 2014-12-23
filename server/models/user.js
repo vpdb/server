@@ -118,8 +118,8 @@ UserSchema.pre('validate', function(next) {
 // VALIDATIONS
 //-----------------------------------------------------------------------------
 UserSchema.path('name').validate(function(name) {
-	// if you are authenticating by any of the oauth strategies, don't validate
-	if (this.provider !== 'local' || this.isNew) {
+	// this gets default from username if not set anyway.
+	if (this.isNew) {
 		return true;
 	}
 	return validator.isLength(name, 3, 30);
@@ -127,7 +127,7 @@ UserSchema.path('name').validate(function(name) {
 
 UserSchema.path('email').validate(function(email) {
 	// if you are authenticating by any of the oauth strategies, don't validate
-	if (this.provider !== 'local') {
+	if (this.isNew && this.provider !== 'local') {
 		return true;
 	}
 	return validator.isEmail(email);
@@ -135,7 +135,7 @@ UserSchema.path('email').validate(function(email) {
 
 UserSchema.path('username').validate(function(username) {
 	// if you are authenticating by any of the oauth strategies, don't validate
-	if (this.provider !== 'local') {
+	if (this.isNew && this.provider !== 'local') {
 		return true;
 	}
 	if (!validator.matches(username, /^[a-z0-9\._]+$/i)) {

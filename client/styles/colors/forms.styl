@@ -21,6 +21,16 @@ $input-background-light-focus = rgba(white, 0.75)
 	.h--primary .form-control
 		@extend .theme-dark .h--primary
 
+	// On error:
+	.form-group
+		&.error .form-control, &.error .input-group-addon, .error.form-control, .error.input-group-addon
+			border-color $color-danger-dark
+
+		&.error
+			.input-group .form-control:first-child, .input-group-addon:first-child, .input-group-btn:first-child > .btn, .input-group-btn:first-child > .btn-group > .btn, .input-group-btn:first-child > .dropdown-toggle, .input-group-btn:last-child > .btn:not(:last-child):not(.dropdown-toggle), .input-group-btn:last-child > .btn-group:not(:last-child) > .btn
+				border-right none
+
+
 	// Addon has the same background-color as the form control
 	.input-group-addon
 		color $color-light

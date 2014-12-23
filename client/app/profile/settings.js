@@ -2,22 +2,23 @@
 
 angular.module('vpdb.profile.settings', [])
 
-	.controller('ProfileSettingsCtrl', function($scope, AuthService) {
+	.controller('ProfileSettingsCtrl', function($scope, AuthService, ApiHelper, ProfileResource) {
 
 		$scope.theme('dark');
 		$scope.setTitle('Your Profile');
 		//$scope.setMenu('admin');
 
+		$scope.notifications = {};
+
 		var user = AuthService.getUser();
 
 		// user profile that will be sent for update
-		$scope.updatedUser = _.cloneDeep(user);
+		$scope.updatedUser = _.pick(user, 'name', 'location', 'email');
 
 		// local user for changing password
 		$scope.localUser = {};
 
 		$scope.providers = AuthService.getProviders(user);
-
 		var allProviders = AuthService.getProviders();
 
 		// pre-fill (local) username from first provider we find.
@@ -29,6 +30,17 @@ angular.module('vpdb.profile.settings', [])
 				break;
 			}
 		}
+
+		$scope.createLocalCredentials = function() {
+			ProfileResource.patch($scope.updatedUser, function(user) {
+				AuthService.saveUser(user);
+				ApiHelper.clearErrors($scope);
+
+				var i = parseInt(_.max(_.keys($scope.notifications).concat(0))) + 1;
+				$scope.notifications[i] = 'User Profile successfully saved.';
+
+			}, ApiHelper.handleErrors($scope));
+		};
 
 	});
 

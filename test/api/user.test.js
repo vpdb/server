@@ -319,7 +319,7 @@ describe('The VPDB `user` API', function() {
 			request
 				.patch('/api/v1/user')
 				.as('member')
-				.send({ email: 'no-email' })
+				.send({ email: 'noemail' })
 				.end(function(err, res) {
 					hlp.expectValidationError(err, res, 'email', 'must be in the correct format');
 					done();

@@ -24,8 +24,7 @@ include ../template/_mixins
 				h3.h--large.h--shift-up {{ auth.user.name }}
 				.text--large.text--shift-up {{ auth.user.email }}
 
-		form.form-horizontal.padder-top-3x(role="form")
-
+		p.padder-top-3x
 			.form-group(ng-class="{ error: errors.name }")
 				label.col-sm-3.control-label Name
 				.col-sm-7
@@ -34,6 +33,11 @@ include ../template/_mixins
 						span.input-group-addon
 							+icon('eye').small
 
+			.clearfix
+			div.alert.alert-danger(ng-show="errors.name")
+				+icon('warning').shift-up.space-right
+				| {{ errors.name }}
+
 			.form-group(ng-class="{ error: errors.location }")
 				label.col-sm-3.control-label Location
 				.col-sm-7
@@ -41,15 +45,22 @@ include ../template/_mixins
 						input.form-control(type="text", ng-model="updatedUser.location")
 						span.input-group-addon
 							+icon('eye').small
+			.clearfix
+			div.alert.alert-danger(ng-show="errors.location")
+				+icon('warning').shift-up.space-right
+				| {{ errors.location }}
 
 			.form-group(ng-class="{ error: errors.email }")
 				label.col-sm-3.control-label Email
 				.col-sm-7
-					input.form-control(type="email", ng-model="updatedUser.email")
+				input.form-control(type="text", ng-model="updatedUser.email")
+			.clearfix
+			div.alert.alert-danger(ng-show="errors.email")
+				+icon('warning').shift-up.space-right
+				| {{ errors.email }}
 
-			.row
 				.col-sm-offset-3.col-sm-7
-					button.btn.btn-default.pull-right
+			button.btn.btn-default.pull-right(ng-click="createLocalCredentials()")
 						+icon('check-circle').space-right
 						| Save
 			.clearfix
@@ -69,12 +80,12 @@ include ../template/_mixins
 					.col-sm-7
 						input.form-control(type="text", ng-model="localUser.username")
 
-				.form-group(ng-class="{ error: errors.name }")
+				.form-group(ng-class="{ error: errors.password || errors.password1 }")
 					label.col-sm-3.control-label Password
 					.col-sm-7
 						input.form-control(type="password", ng-model="localUser.password1")
 
-				.form-group(ng-class="{ error: errors.name }")
+				.form-group(ng-class="{ error: errors.password || errors.password2 }")
 					label.col-sm-3.control-label Confirm Password
 					.col-sm-7
 						input.form-control(type="password", ng-model="localUser.password2")
@@ -100,12 +111,12 @@ include ../template/_mixins
 					.col-sm-7
 						input.form-control(type="password", ng-model="localUser.currentPassword")
 
-				.form-group(ng-class="{ error: errors.name }")
+				.form-group(ng-class="{ error: errors.password || errors.password1 }")
 					label.col-sm-3.control-label New Password
 					.col-sm-7
 						input.form-control(type="password", ng-model="localUser.password1")
 
-				.form-group(ng-class="{ error: errors.name }")
+				.form-group(ng-class="{ error: errors.password || errors.password2 }")
 					label.col-sm-3.control-label Confirm Password
 					.col-sm-7
 						input.form-control(type="password", ng-model="localUser.password2")

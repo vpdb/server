@@ -17,7 +17,8 @@ describe('The VPDB `user` API', function() {
 			admin: { roles: [ 'admin' ]},
 			member: { roles: [ 'member' ]},
 			chpass1: { roles: [ 'member' ]},
-			chpass2: { roles: [ 'member' ]}
+			chpass2: { roles: [ 'member' ]},
+			chpass3: { roles: [ 'member' ]}
 		}, done);
 	});
 
@@ -154,27 +155,134 @@ describe('The VPDB `user` API', function() {
 			request.patch('/api/v1/user').as('member').send({}).end(hlp.status(200, done));
 		});
 
+		it('should succeed when updating all attributes', function(done) {
+			var user = hlp.getUser('chpass3');
+			var name = 'The Major';
+			var location = 'San Francisco';
+			var email = 'major@vpdb.ch';
+			var newPass = '12345678';
+			request
+				.patch('/api/v1/user')
+				.as('chpass3')
+				.send({
+					name: name,
+					location: location,
+					email: email,
+					currentPassword: user.password,
+					password: newPass
+				})
+				.end(function (err, res) {
+					hlp.expectStatus(err, res, 200);
+
+					// check updated value
+					request.get('/api/v1/user').as('chpass3').end(function(err, res) {
+						hlp.dump(res);
+						hlp.expectStatus(err, res, 200);
+						expect(res.body.name).to.be(name);
+						expect(res.body.location).to.be(location);
+						expect(res.body.email).to.be(email);
+
+						// check password change
+						request
+							.post('/api/v1/authenticate')
+							.send({ username: user.name, password: newPass })
+							.end(hlp.status(200, done));
+					});
+				});
+		});
+
 	});
 
-	describe('when a user updates its location', function() {
+	describe('when a user updates its name', function() {
 
-		it('should succeed when providing a valid location', function (done) {
-			var location = 'New York City';
+		it('should succeed when providing a valid name', function (done) {
+			var name = 'A new name with spaces';
 			request
 				.patch('/api/v1/user')
 				.as('member')
-				.send({location: location})
+				.send({ name: name })
 				.end(function (err, res) {
 					hlp.expectStatus(err, res, 200);
 
 					// check updated value
 					request.get('/api/v1/user').as('member').end(function (err, res) {
+
 						hlp.expectStatus(err, res, 200);
-						expect(res.body.location).to.be(location);
+						expect(res.body.name).to.be(name);
 						done();
 					});
 				});
 		});
+
+		it('should fail when providing an empty name', function (done) {
+			var name = '';
+			request
+				.patch('/api/v1/user')
+				.as('member')
+				.send({ name: name })
+				.end(function (err, res) {
+					hlp.expectValidationError(err, res, 'name', 'must be provided');
+					done();
+				});
+		});
+
+		it('should fail when providing a null name', function (done) {
+			request
+				.patch('/api/v1/user')
+				.as('member')
+				.send({ name: null })
+				.end(function (err, res) {
+					hlp.dump(res);
+					hlp.expectValidationError(err, res, 'name', 'must be provided');
+					done();
+				});
+		});
+
+		it('should fail when providing a too long name', function (done) {
+			request
+				.patch('/api/v1/user')
+				.as('member')
+				.send({ name: '012345678901234567890123456789-' })
+				.end(function (err, res) {
+					hlp.expectValidationError(err, res, 'name', '30 characters');
+					done();
+				});
+		});
+
+	});
+
+	describe('when a user updates its location', function() {
+
+		it('should succeed when providing a valid location', function (done) {
+				var location = 'New York City';
+				request
+					.patch('/api/v1/user')
+					.as('member')
+					.send({ location: location })
+					.end(function (err, res) {
+						hlp.expectStatus(err, res, 200);
+
+						// check updated value
+						request.get('/api/v1/user').as('member').end(function (err, res) {
+							hlp.expectStatus(err, res, 200);
+							expect(res.body.location).to.be(location);
+							done();
+						});
+					});
+		});
+
+		it('should fail when providing an invalid location', function (done) {
+			var location = '01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890';
+			request
+				.patch('/api/v1/user')
+				.as('member')
+				.send({ location: location })
+				.end(function (err, res) {
+					hlp.expectValidationError(err, res, 'location', 'must not be longer than 100 characters');
+					done();
+				});
+		});
+
 	});
 
 	describe('when a user updates its email', function() {

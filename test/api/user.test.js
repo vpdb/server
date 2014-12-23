@@ -197,11 +197,35 @@ describe('The VPDB `user` API', function() {
 				});
 		});
 
-		it('should fail when providing an invalid email', function(done) {
-			done();
+		it('should succeed when providing the same email', function(done) {
+			request
+				.patch('/api/v1/user')
+				.as('member')
+				.send({ email: hlp.getUser('member').email })
+				.end(hlp.status(200, done));
 		});
 
-		it('should fail when providing an email that already exists');
+		it('should fail when providing an invalid email', function(done) {
+			request
+				.patch('/api/v1/user')
+				.as('member')
+				.send({ email: 'no-email' })
+				.end(function(err, res) {
+					hlp.expectValidationError(err, res, 'email', 'must be in the correct format');
+					done();
+				});
+		});
+
+		it('should fail when providing an email that already exists', function(done) {
+			request
+				.patch('/api/v1/user')
+				.as('member')
+				.send({ email: hlp.getUser('root').email })
+				.end(function(err, res) {
+					hlp.expectValidationError(err, res, 'email', 'is already taken');
+					done();
+				});
+		});
 
 	});
 

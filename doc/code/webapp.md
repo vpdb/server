@@ -68,9 +68,11 @@ object with the following properties:
    `storagePath` which point to the API.
  * `webUri` - An object containing `host`, `port`, `scheme` pointing to the web
    application (i.e. to itself).
+ * `authProviders` - Defines the third party OAuth providers that are allowed.
 
 The config object is retrieved as a constant in Angular and can be injected 
-with the name `Config` where needed.
+with the name `Config` where needed. If you want to debug it, type `vpdbConfig`
+in the devtools console.
 
 Note that keeping host and port configurable allows you to test the webapp 
 locally while connecting to the production API, which can be useful.

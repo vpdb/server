@@ -36,7 +36,7 @@ angular.module('vpdb.profile.settings', [])
 				AuthService.saveUser(user);
 				ApiHelper.clearErrors($scope);
 
-				var i = parseInt(_.max(_.keys($scope.notifications).concat(0))) + 1;
+				var i = _.max(_.map(_.keys($scope.notifications).concat(0), function(key) { return parseInt(key); })) + 1;
 				$scope.notifications[i] = 'User Profile successfully saved.';
 
 			}, ApiHelper.handleErrors($scope));

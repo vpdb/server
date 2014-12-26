@@ -119,6 +119,13 @@ common
 				};
 			},
 
+			/**
+			 * Displays a modal with the received errors from the API.
+			 * @param {object} scope Scope where to create the error variables
+			 * @param {string} title Title of the modal
+			 * @param {function} [callback] Executed if provided with given scope as argument.
+			 * @returns {Function}
+			 */
 			handleErrorsInDialog: function(scope, title, callback) {
 				return function(response) {
 					scope.setLoading(false);
@@ -136,6 +143,21 @@ common
 				};
 			},
 
+			/**
+			 * Manually sets an error to be displayed
+			 * @param {object} scope Scope where to create the error variables
+			 * @param {string} field Name of the field
+			 * @param {message} Error message
+			 */
+			setError: function(scope, field, message) {
+				scope.errors = scope.errors || { __count: 0 };
+				objectPath.set(scope.errors, field, message);
+			},
+
+			/**
+			 * Resets error tree.
+			 * @param {object} scope Scope of the error variables
+			 */
 			clearErrors: function(scope) {
 				scope.message = null;
 				scope.errors = { __count: 0 };

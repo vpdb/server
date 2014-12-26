@@ -66,7 +66,7 @@ include ../template/_mixins
 				| {{ errors.email }}
 
 		.col-sm-offset-3.col-sm-7
-			button.btn.btn-default.pull-right(ng-click="createLocalCredentials()")
+			button.btn.btn-default.pull-right(ng-click="updateUserProfile()")
 				+icon('check-circle').space-right
 				| Save
 		.clearfix
@@ -85,20 +85,32 @@ include ../template/_mixins
 					label.col-sm-3.control-label Username
 					.col-sm-7
 						input.form-control(type="text", ng-model="localUser.username")
+					.clearfix
+					div.alert.alert-danger(ng-show="errors.username")
+						+icon('warning').shift-up.space-right
+						| {{ errors.email }}
 
-				.form-group(ng-class="{ error: errors.password || errors.password1 }")
+				.form-group(ng-class="{ error: errors.password }")
 					label.col-sm-3.control-label Password
 					.col-sm-7
 						input.form-control(type="password", ng-model="localUser.password1")
+					.clearfix
+					div.alert.alert-danger(ng-show="errors.password")
+						+icon('warning').shift-up.space-right
+						| {{ errors.password }}
 
-				.form-group(ng-class="{ error: errors.password || errors.password2 }")
+				.form-group(ng-class="{ error: errors.password2 }")
 					label.col-sm-3.control-label Confirm Password
 					.col-sm-7
 						input.form-control(type="password", ng-model="localUser.password2")
+					.clearfix
+					div.alert.alert-danger(ng-show="errors.password2")
+						+icon('warning').shift-up.space-right
+						| {{ errors.password2 }}
 
 				.row
 					.col-sm-offset-3.col-sm-7
-						button.btn.btn-default.pull-right
+						button.btn.btn-default.pull-right(ng-click="createLocalCredentials()")
 							+icon('plus-circle').space-right
 							| Create local credentials
 				.clearfix

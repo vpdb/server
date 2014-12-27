@@ -79,7 +79,7 @@ include ../template/_mixins
 				.form-group(ng-class="{ error: errors.username }")
 					label.col-sm-3.control-label Username
 					.col-sm-7
-						input.form-control(type="text", ng-model="localUser.username")
+						input.form-control(type="text", ng-model="localCredentials.username")
 					.clearfix
 					div.alert.alert-danger(ng-show="errors.username")
 						+icon('warning').shift-up.space-right
@@ -88,7 +88,7 @@ include ../template/_mixins
 				.form-group(ng-class="{ error: errors.password }")
 					label.col-sm-3.control-label Password
 					.col-sm-7
-						input.form-control(type="password", ng-model="localUser.password1")
+						input.form-control(type="password", ng-model="localCredentials.password1")
 					.clearfix
 					div.alert.alert-danger(ng-show="errors.password")
 						+icon('warning').shift-up.space-right
@@ -97,7 +97,7 @@ include ../template/_mixins
 				.form-group(ng-class="{ error: errors.password2 }")
 					label.col-sm-3.control-label Confirm Password
 					.col-sm-7
-						input.form-control(type="password", ng-model="localUser.password2")
+						input.form-control(type="password", ng-model="localCredentials.password2")
 					.clearfix
 					div.alert.alert-danger(ng-show="errors.password2")
 						+icon('warning').shift-up.space-right
@@ -119,26 +119,38 @@ include ../template/_mixins
 
 			form.form-horizontal.padder-top-3x(role="form")
 
-				.form-group(ng-class="{ error: errors.username }")
+				.form-group(ng-class="{ error: errors.current_password }")
 					label.col-sm-3.control-label Current Password
 					.col-sm-7
 						input.form-control(type="password", ng-model="localUser.currentPassword")
+					.clearfix
+					div.alert.alert-danger(ng-show="errors.current_password")
+						+icon('warning').shift-up.space-right
+						| {{ errors.current_password }}
 
-				.form-group(ng-class="{ error: errors.password || errors.password1 }")
-					label.col-sm-3.control-label New Password
+				.form-group(ng-class="{ error: errors.password }")
+					label.col-sm-3.control-label Password
 					.col-sm-7
 						input.form-control(type="password", ng-model="localUser.password1")
+					.clearfix
+					div.alert.alert-danger(ng-show="errors.password")
+						+icon('warning').shift-up.space-right
+						| {{ errors.password }}
 
-				.form-group(ng-class="{ error: errors.password || errors.password2 }")
+				.form-group(ng-class="{ error: errors.password2 }")
 					label.col-sm-3.control-label Confirm Password
 					.col-sm-7
 						input.form-control(type="password", ng-model="localUser.password2")
+					.clearfix
+					div.alert.alert-danger(ng-show="errors.password2")
+						+icon('warning').shift-up.space-right
+						| {{ errors.password2 }}
 
 				.row
 					.col-sm-offset-3.col-sm-7
-						button.btn.btn-default.pull-right
+						button.btn.btn-default.pull-right(ng-click="changePassword()")
 							+icon('check-circle').space-right
-							| Update Password
+							| Change
 				.clearfix
 
 		h1 Linked Accounts
@@ -151,7 +163,6 @@ include ../template/_mixins
 					th Username
 					th User ID
 					th Last logged
-					th
 			tbody
 				tr(ng-repeat="provider in providers")
 					td.td--big-icon
@@ -160,13 +171,10 @@ include ../template/_mixins
 					td {{ auth.user[provider.id].username }}
 					td {{ auth.user[provider.id].id }}
 					td -
-					td
-						button.btn.btn-2d.btn-xs.pull-right
-							+icon('times-circle').space-right
-							| Unlink
 
 		p(ng-hide="providers.length")
-			i No linked accounts. Linked accounts appear when you choose to
-				| login with one of the supported third party providers.
+			i No linked accounts. Linked accounts appear when you choose to login with one of the supported third party
+				| providers. In order to link a third party account to this account, simply login using a third party
+				| account where you registered with the same email address.
 
 		p.padder-bottom-2x

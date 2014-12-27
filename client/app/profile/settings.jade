@@ -31,7 +31,7 @@ include ../template/_mixins
 			.col-sm-7
 				.input-group
 					input.form-control(type="text", ng-model="updatedUser.name")
-					span.input-group-addon
+					span.input-group-addon(tooltip="Name is publicly visible.", tooltip-placement="right", tooltip-append-to-body="true")
 						+icon('eye').small
 
 			.clearfix
@@ -44,7 +44,7 @@ include ../template/_mixins
 			.col-sm-7
 				.input-group
 					input.form-control(type="text", ng-model="updatedUser.location")
-					span.input-group-addon
+					span.input-group-addon(tooltip="Location is publicly visible.", tooltip-placement="right", tooltip-append-to-body="true")
 						+icon('eye').small
 			.clearfix
 			div.alert.alert-danger(ng-show="errors.location")

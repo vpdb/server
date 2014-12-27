@@ -8,8 +8,6 @@ angular.module('vpdb.profile.settings', [])
 		$scope.setTitle('Your Profile');
 		//$scope.setMenu('admin');
 
-		$scope.notifications = {};
-
 		var user = AuthService.getUser();
 
 		// user profile that will be sent for update
@@ -35,9 +33,7 @@ angular.module('vpdb.profile.settings', [])
 			ProfileResource.patch($scope.updatedUser, function(user) {
 				AuthService.saveUser(user);
 				ApiHelper.clearErrors($scope);
-
-				var i = _.max(_.map(_.keys($scope.notifications).concat(0), function(key) { return parseInt(key); })) + 1;
-				$scope.notifications[i] = 'User Profile successfully saved.';
+				$scope.showNotification('User Profile successfully saved.');
 
 			}, ApiHelper.handleErrors($scope));
 		};
@@ -46,18 +42,18 @@ angular.module('vpdb.profile.settings', [])
 
 			ApiHelper.clearErrors($scope);
 
+			// password match is checked locally, no such test on server side.
 			if (!$scope.localUser.password1) {
 				return ApiHelper.setError($scope, 'password', "You must provide your new password.");
 			}
-
 			if (!$scope.localUser.password2) {
 				return ApiHelper.setError($scope, 'password2', "You must confirm your new password.");
 			}
-
 			if ($scope.localUser.password1 !== $scope.localUser.password2) {
 				return ApiHelper.setError($scope, 'password2', "The second password must match the first password.");
 			}
 
+			// now patch user on server side
 			ProfileResource.patch({
 				username: $scope.localUser.username,
 				password: $scope.localUser.password1
@@ -65,11 +61,11 @@ angular.module('vpdb.profile.settings', [])
 				AuthService.saveUser(user);
 				ApiHelper.clearErrors($scope);
 
-				var i = _.max(_.map(_.keys($scope.notifications).concat(0), function(key) { return parseInt(key); })) + 1;
-				$scope.notifications[i] = 'User Profile successfully saved.';
+				$scope.showNotification('Local credentials successfully created. You may login with username <strong>' + $scope.localUser.username + '</strong> now.', 5000);
 
 			}, ApiHelper.handleErrors($scope));
 
 		};
+
 	});
 

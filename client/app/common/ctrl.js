@@ -14,6 +14,7 @@ common
 		$scope.pinnedDownloadCount = 0;
 		$scope.pinnedDownloadSize = 0;
 		$scope.loading = false;
+		$scope.notifications = {};
 
 		AuthService.init();
 		ProfileService.init();
@@ -63,6 +64,11 @@ common
 				//noinspection JSHint
 				alert('Here\'s the file! You\'re welcome!	');
 			}
+		};
+
+		$scope.showNotification = function(message, ttl) {
+			var i = _.max(_.map(_.keys($scope.notifications).concat(0), function(key) { return parseInt(key); })) + 1;
+			$scope.notifications[i] = { message: message, ttl: ttl || 3000 };
 		};
 
 		$scope.unpinDownload = function(download) {

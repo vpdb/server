@@ -3,11 +3,6 @@ include ../template/_mixins
 
 .row.row--fullheight(ng-controller="ProfileSettingsCtrl")
 
-	div(ng-repeat="(id, notification) in notifications track by id")
-		growl-notification(ttl="3000").ns-effect-slide.ns-type-notice
-			+icon('times').a.ns-close(ng-click="$growlNotification.remove()")
-			| {{notification}}
-
 	// sidebar (left)
 	.col-sm-3.col--menu
 		h1 Profile

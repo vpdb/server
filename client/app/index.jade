@@ -74,6 +74,10 @@ block navbar
 									td {{ pinnedDownloadSize | bytes }}
 
 block content
+	div(ng-repeat="(id, notification) in notifications track by id")
+		growl-notification(ttl="notification.ttl").ns-effect-slide.ns-type-notice
+			+icon('times').a.ns-close(ng-click="$growlNotification.remove()")
+			span(ng-bind-html="notification.message")
 	.container.container--topmost(ng-cloak)
 		div(ng-view)
 

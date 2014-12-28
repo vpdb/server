@@ -28,7 +28,8 @@ angular.module('vpdb.login', [])
 				$scope.errors = {};
 				$scope.error = null;
 				$scope.registerUser = {};
-				$scope.message = 'Registration successful. You can now login.';
+				$scope.message = 'Registration successful.';
+				$scope.message2 = 'You will get an email shortly.<br>Once you have confirmed it, you\'re good to go!';
 				$scope.registering = !$scope.registering;
 			}, ApiHelper.handleErrors($scope));
 		};
@@ -36,6 +37,7 @@ angular.module('vpdb.login', [])
 		$scope.swap = function() {
 			$scope.registering = !$scope.registering;
 			$scope.message = null;
+			$scope.message2 = null;
 			$scope.errors = {};
 			$scope.error = null;
 		};

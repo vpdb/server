@@ -54,10 +54,18 @@ exports.authenticate = function(req, res) {
 				401);
 		}
 		if (!user.is_active) {
-			return api.fail(res, error('User <%s> is disabled, refusing access', user.email)
-					.display('Inactive account. Please contact an administrator')
-					.warn('authenticate'),
-				401);
+			if (user.email_status && user.email_status.code === 'pending') {
+				return api.fail(res, error('User <%s> tried to login with unconfirmed email address.', user.email)
+						.display('Your account is inactive until you confirm your email address <%s>. If you did not get an email from <%s>, please contact an administrator.', user.email, config.vpdb.email.sender.email)
+						.warn('authenticate'),
+					401);
+
+			} else {
+				return api.fail(res, error('User <%s> is disabled, refusing access', user.email)
+						.display('Inactive account. Please contact an administrator')
+						.warn('authenticate'),
+					401);
+			}
 		}
 
 		var now = new Date();

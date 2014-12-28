@@ -61,6 +61,8 @@ include ../template/_mixins
 			+icon('warning').space-right.shift-up
 			| {{ message }}
 
+		.text-center.padder-top.i(ng-show="message2", ng-bind-html="message2")
+
 	.modal-footer
 		button.btn.btn-default.pull-left(ng-click="swap()") {{ registering ? "Login" : "Register" }}
 		button.btn.btn-default(ng-click="$close()") Cancel

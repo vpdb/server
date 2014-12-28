@@ -344,10 +344,11 @@ Settings.prototype.storagePath = function(path) {
 	return this.current.vpdb.storageApi.pathname + (path || '');
 };
 
-Settings.prototype.webUri = function() {
+Settings.prototype.webUri = function(path) {
 	return this.current.vpdb.webapp.protocol + '://' +
 	       this.current.vpdb.webapp.hostname +
-	      (this.current.vpdb.webapp.port === 80 || this.current.vpdb.webapp.port === 443 ? '' : ':' + this.current.vpdb.webapp.port);
+	      (this.current.vpdb.webapp.port === 80 || this.current.vpdb.webapp.port === 443 ? '' : ':' + this.current.vpdb.webapp.port) +
+	      (path || '');
 };
 
 Settings.prototype.clientConfig = function() {

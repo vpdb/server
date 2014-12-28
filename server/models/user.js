@@ -25,11 +25,13 @@ var logger = require('winston');
 var shortId = require('shortid');
 var mongoose = require('mongoose');
 var validator = require('validator');
+var randomstring = require('randomstring');
 var uniqueValidator = require('mongoose-unique-validator');
 
 var error = require('../modules/error')('model', 'user');
 var config = require('../modules/settings').current;
 var Schema = mongoose.Schema;
+
 
 
 //-----------------------------------------------------------------------------
@@ -40,6 +42,12 @@ var fields = {
 	name:            { type: String, index: true, required: 'Name must be provided.' }, // display name, equals username when locally registering
 	username:        { type: String, index: true, unique: true, sparse: true },
 	email:           { type: String, index: true, unique: true, lowercase: true, required: 'Email must be provided.' },
+	email_status:    {
+		code:        { type: String, enum: [ 'confirmed', 'pending' ], required: true },
+		token:       { type: String, unique: true },
+		expires_at:  { type: Date },
+		value:       { type: String }
+	},
 	roles:           { type: [ String ], required: true },
 	plan:            { type: String, required: false },
 	provider:        { type: String, required: true },
@@ -48,7 +56,7 @@ var fields = {
 	thumb:           { type: String },
 	location:        { type: String },
 	created_at:      { type: Date, required: true },
-	is_active:       { type: Boolean, required: true, default: true }
+	is_active:       { type: Boolean, required: true, default: false }
 };
 // provider data fields
 if (config.vpdb.passport.github.enabled) {
@@ -242,6 +250,18 @@ UserSchema.statics.createUser = function(userObj, done) {
 		created_at: new Date(),
 		roles: [ 'member' ]
 	}));
+
+	if (config.vpdb.email.confirmUserEmail) {
+		user.email_status = {
+			code: 'pending',
+			token: randomstring.generate(16),
+			expires_at: new Date(new Date().getTime() + 86400000), // 1d valid
+			value: userObj.email
+		};
+	} else {
+		user.email_status = { code: 'confirmed' };
+		user.is_active = true;
+	}
 
 	user.validate(function(err) {
 		if (err) {

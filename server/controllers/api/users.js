@@ -26,6 +26,7 @@ var User = require('mongoose').model('User');
 var acl = require('../../acl');
 var api = require('./api');
 var error = require('../../modules/error')('api', 'users');
+var mailer = require('../../modules/mailer');
 var config = require('../../modules/settings').current;
 var redis = require('redis').createClient(config.vpdb.redis.port, config.vpdb.redis.host, { no_ready_check: true });
     redis.select(config.vpdb.redis.db);
@@ -54,10 +55,13 @@ exports.create = function(req, res) {
 			if (validationErr) {
 				return api.fail(res, error('Validations failed. See below for details.').errors(validationErr.errors).warn('create'), 422);
 			}
-			return api.success(res, user.toDetailed(), 201);
 
+			// return result now and send email afterwards
+			api.success(res, user.toDetailed(), 201);
+
+			// user validated and created. time to send the activation email.
+			mailer.confirmation(user);
 		}, 'Error creating user <%s>.'));
-
 	}, 'Error finding user with email <%s>'));
 };
 

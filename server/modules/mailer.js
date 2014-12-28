@@ -21,7 +21,7 @@
 
 var fs = require('fs');
 var path = require('path');
-var randomstring = require('randomstring');
+var logger = require('winston');
 var nodemailer = require('nodemailer');
 var handlebars = require('handlebars');
 var smtpTransport = require('nodemailer-smtp-transport');
@@ -33,12 +33,14 @@ var templatesDir = path.resolve(__dirname, '../templates');
 
 exports.confirmation = function(user, done) {
 
+	done = done || function() {};
+
 	// generate content
 	var tpl = handlebars.compile(fs.readFileSync(path.resolve(templatesDir, 'confirmation-email.handlebars')).toString());
 	var text = tpl({
 		user: user,
-		token: randomstring.generate(10),
 		site: settings.webUri(),
+		confirmationUrl: settings.webUri('/confirm/' + user.email_status.token),
 		recipient: user.email
 	});
 
@@ -52,11 +54,14 @@ exports.confirmation = function(user, done) {
 
 	// send email
 	var transport = nodemailer.createTransport(smtpTransport(config.vpdb.email.nodemailer));
-	transport.sendMail(email, function(err, responseStatus) {
+	logger.info('[mailer] Sending confirmation email to <%s>...', user.email);
+	transport.sendMail(email, function(err, status) {
 		if (err) {
+			logger.error('[mailer] Error sending confirmation mail to <%s>:', user.email, status);
 			return done(err);
 		}
-		done(null, responseStatus);
+		logger.info('[mailer] Successfully sent confirmation mail to <%s> with message ID "%s" (%s).', user.email, status.messageId, status.response);
+		done(null, status);
 	});
 
 };

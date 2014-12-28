@@ -1,0 +1,19 @@
+<p>Hi {{ user.name }},</p>
+
+<p>Welcome and thanks for joining the VPDB!</p>
+
+<p>To finish signing up, you need to confirm that we got your email right.</p>
+
+<a href="{{ site }}/confirm/{{ token }}" target="_blank">Confirm my email</a>
+
+<p>You should then be able to login and get some pinball games!</p>
+
+<p>Have a nice day,</p>
+
+<p><i>-The VPDB Server.</i></p>
+
+<p><small>
+--
+This email was sent to {{ recipient }}. If it wasn’t you who registered
+at {{ site }}, please accept our apologies and discard this
+message.</small></p>

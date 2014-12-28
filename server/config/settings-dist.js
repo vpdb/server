@@ -77,6 +77,42 @@ module.exports = {
 		secret: 'alongsecret',
 
 		/**
+		 * Various mail settings.
+		 */
+		email: {
+
+			/**
+			 * If true, user email address is validated on registration and
+			 * change. Otherwise, email addresses are only syntactically
+			 * validated.
+			 */
+			confirmUserEmail: true,
+
+			/**
+			 * Sender of the automated mails
+			 */
+			sender: {
+				email: 'server@localhost',
+				name: 'VPDB Server'
+			},
+
+			/**
+			 * Options passed to Nodemailer
+			 *
+			 * @see https://github.com/andris9/nodemailer-smtp-transport
+			 * @important
+			 */
+			nodemailer: {
+				host: 'localhost',
+				port: 25,
+				auth: {
+					user: 'username',
+					pass: 'password'
+				}
+			}
+		},
+
+		/**
 		 * Where the files are stored.
 		 * @important
 		 */

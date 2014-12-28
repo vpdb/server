@@ -12,6 +12,7 @@ module.exports = {
 		apiTokenLifetime: 3600000,
 		storageTokenLifetime: 60000,
 		secret: 'do-not-run-this-config-in-production!',
+		email: { confirmUserEmail: false, nodemailer: { } },
 		storage: './data/storage-test',
 		skipImageOptimizations: true,
 		quota: {

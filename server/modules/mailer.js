@@ -19,10 +19,11 @@
 
 "use strict";
 
+var fs = require('fs');
 var path = require('path');
-var uuid = require('node-uuid');
+var randomstring = require('randomstring');
 var nodemailer = require('nodemailer');
-var emailTemplates = require('email-templates');
+var handlebars = require('handlebars');
 var smtpTransport = require('nodemailer-smtp-transport');
 
 var settings = require('./settings');
@@ -32,41 +33,30 @@ var templatesDir = path.resolve(__dirname, '../templates');
 
 exports.confirmation = function(user, done) {
 
-	emailTemplates(templatesDir, function(err, template) {
+	// generate content
+	var tpl = handlebars.compile(fs.readFileSync(path.resolve(templatesDir, 'confirmation-email.handlebars')).toString());
+	var text = tpl({
+		user: user,
+		token: randomstring.generate(10),
+		site: settings.webUri(),
+		recipient: user.email
+	});
 
+	// setup email
+	var email = {
+		from: { name: config.vpdb.email.sender.name, address: config.vpdb.email.sender.email },
+		to: { name: user.name, address: user.email },
+		subject: 'Please confirm your email',
+		text: text
+	};
+
+	// send email
+	var transport = nodemailer.createTransport(smtpTransport(config.vpdb.email.nodemailer));
+	transport.sendMail(email, function(err, responseStatus) {
 		if (err) {
 			return done(err);
 		}
-
-		// Prepare nodemailer transport object
-		var transport = nodemailer.createTransport(smtpTransport (config.vpdb.email.nodemailer));
-
-		// An example users object with formatted email function
-		var locals = {
-			user: user,
-			token: uuid.v4(),
-			site: settings.webUri(),
-			recipient: user.email
-		};
-
-		// Send a single email
-		template('confirmation-email', locals, function(err, html, text) {
-			if (err) {
-				return done(err);
-			}
-			var email = {
-				from: { name: config.vpdb.email.sender.name, address: config.vpdb.email.sender.email },
-				to: { name: user.name, address: user.email },
-				subject: 'Please confirm your email',
-				text: text
-			};
-			transport.sendMail(email, function(err, responseStatus) {
-				if (err) {
-					return done(err);
-				}
-				done(null, responseStatus);
-			});
-		});
-
+		done(null, responseStatus);
 	});
+
 };

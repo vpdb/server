@@ -22,6 +22,7 @@
 var _ = require('lodash');
 var fs = require('fs');
 var mimeTypes = require('../modules/mimetypes');
+var validator = require('validator');
 
 /**
  * Settings validations for VPFB
@@ -147,6 +148,55 @@ module.exports = {
 			/* istanbul ignore if */
 			if (secret === 'alongsecret') {
 				return 'You\'re using the default secret. Please use a generator, e.g. http://strongpasswordgenerator.com/';
+			}
+		},
+
+		/**
+		 * Various mail settings.
+		 */
+		email: {
+
+			/**
+			 * If true, user email address is validated on registration and
+			 * change. Otherwise, email addresses are only syntactically
+			 * validated.
+			 */
+			confirmUserEmail: function(bool) {
+				/* istanbul ignore if */
+				if (!_.isBoolean(bool)) {
+					return 'User email confirmation must be either true or false';
+				}
+			},
+
+			/**
+			 * Sender of the automated mails
+			 */
+			sender: {
+				email: function(email) {
+					/* istanbul ignore if */
+					if (!validator.isEmail(email)) {
+						return 'Sender email must be a valid email address.';
+					}
+				},
+				name: function(name) {
+					/* istanbul ignore if */
+					if (!validator.isLength(name, 1)) {
+						return 'Sender name must contain at least one character.';
+					}
+				}
+			},
+
+			/**
+			 * Options passed to Nodemailer
+			 *
+			 * @see https://github.com/andris9/nodemailer-smtp-transport
+			 * @important
+			 */
+			nodemailer: function(obj) {
+				/* istanbul ignore if */
+				if (!_.isObject(obj)) {
+					return 'Nodemailer configuration must be an object.';
+				}
 			}
 		},
 

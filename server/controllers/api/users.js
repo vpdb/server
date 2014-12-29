@@ -60,7 +60,10 @@ exports.create = function(req, res) {
 			api.success(res, user.toDetailed(), 201);
 
 			// user validated and created. time to send the activation email.
-			mailer.confirmation(user);
+			if (config.vpdb.email.confirmUserEmail) {
+				mailer.confirmation(user);
+			}
+			
 		}, 'Error creating user <%s>.'));
 	}, 'Error finding user with email <%s>'));
 };

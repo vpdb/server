@@ -52,20 +52,4 @@ common
 		UserResource.query({ name: username }, function(users) {
 			$scope.user = users.length ? users[0] : {};
 		});
-	})
-
-	.controller('ErrorModalCtrl', function($scope, errorTitle, errorMessage) {
-		$scope.errorTitle = errorTitle;
-		$scope.errorMessage = errorMessage;
-	})
-
-	.controller('InfoModalCtrl', function($scope, title, subtitle, message, icon) {
-		$scope.title = title;
-		$scope.subtitle = subtitle;
-		$scope.message = message;
-		$scope.icon = icon;
-	})
-
-	.controller('QuestionModalCtrl', function($scope, question) {
-		$scope.question = question;
 	});

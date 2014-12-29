@@ -10,7 +10,7 @@ angular.module('vpdb.releases.add', [])
 										   $location, $anchorScroll, $timeout,
 										   AuthService, ApiHelper, Flavors,
 										   ReleaseResource, FileResource, TagResource, VPBuildResource, GameResource,
-										   ConfigService, DisplayService, MimeTypeService) {
+										   ConfigService, DisplayService, MimeTypeService, ModalService) {
 
 		$scope.theme('light');
 		$scope.setMenu('admin');
@@ -143,16 +143,12 @@ angular.module('vpdb.releases.add', [])
 				var ext = file.name.substr(file.name.lastIndexOf('.') + 1, file.name.length);
 
 				if (!_.contains(['image/jpeg', 'image/png'], file.type) && !_.contains(['vpt', 'vpx', 'vbs'], ext)) {
-					//noinspection JSHint
-					return $modal.open({
-						templateUrl: '/common/modal-info.html',
-						controller: 'InfoModalCtrl',
-						resolve: {
-							icon: function() { return 'fa-file-image-o'; },
-							title: function() { return 'Image Upload'; },
-							subtitle: function() { return 'Wrong file type!'; },
-							message: function() { return 'Please upload a valid file type (more info to come).'; }
-						}
+					// TODO "more info to come"
+					return ModalService.info({
+						icon: 'ext-image',
+						title: 'Image Upload',
+						subtitle: 'Wrong file type!',
+						message: 'Please upload a valid file type (more info to come).'
 					});
 				}
 			}
@@ -363,16 +359,12 @@ angular.module('vpdb.releases.add', [])
 			if ($scope.meta.mediaFiles[this.file.storage.id]) {
 				var scope = this;
 				event.preventDefault();
-				return $modal.open({
-					templateUrl: '/common/modal-question.html',
-					controller: 'QuestionModalCtrl',
-					resolve: { question: function() { return {
-						title: 'Change Orientation',
-						message: 'You\'re about to change orientation for a file for which you already have uploaded media. Changing orientation will remove media of the file which you\'re about to change.',
-						question: 'Do you want to change the orientation?',
-						yes: 'Yes',
-						no: 'No'
-					}; } }
+
+				return ModalService.question({
+					title: 'Change Orientation',
+					message: 'You\'re about to change orientation for a file for which you already have uploaded media. Changing orientation will remove media of the file which you\'re about to change.',
+					question: 'Do you want to change the orientation?'
+
 				}).result.then(function(change) {
 					if (change) {
 
@@ -496,15 +488,12 @@ angular.module('vpdb.releases.add', [])
 			ReleaseResource.save($scope.release, function() {
 				$scope.release.submitted = true;
 				$scope.reset();
-				$modal.open({
-					templateUrl: '/common/modal-info.html',
-					controller: 'InfoModalCtrl',
-					resolve: {
-						icon: function() { return 'fa-check-circle-o'; },
-						title: function() { return 'Release Created!'; },
-						subtitle: function() { return $scope.game.title; },
-						message: function() { return 'The release has been successfully created.'; }
-					}
+
+				ModalService.info({
+					icon: 'check-circle',
+					title: 'Release created!',
+					subtitle: $scope.game.title,
+					message: 'The release has been successfully created.'
 				});
 
 				// scroll to top

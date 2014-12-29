@@ -64,7 +64,7 @@ common
 		});
 	})
 
-	.factory('ApiHelper', function($modal, $rootScope, $location) {
+	.factory('ApiHelper', function($modal, $rootScope, $location, ModalService, ModalFlashService) {
 		return {
 
 			handlePagination: function(scope) {
@@ -130,13 +130,9 @@ common
 			handleErrorsInDialog: function(scope, title, callback) {
 				return function(response) {
 					scope.setLoading(false);
-					$modal.open({
-						templateUrl: '/common/modal-error.html',
-						controller: 'ErrorModalCtrl',
-						resolve: {
-							errorTitle: function() { return title; },
-							errorMessage: function() { return response.data.error; }
-						}
+					ModalService.error({
+						subtitle: title,
+						message: response.data.error
 					});
 					if (callback) {
 						callback(response);
@@ -144,12 +140,18 @@ common
 				};
 			},
 
-			handleErrorsOnOtherPage: function(path, title) {
+			/**
+			 * Displays a modal with the received errors from the API, but on a different page
+			 * @param {string} path Page where to navigate before displaying the modal
+			 * @param {string} title Title of the modal
+			 * @returns {Function}
+			 */
+			handleErrorsInFlashDialog: function(path, title) {
 				return function(response) {
-					$rootScope.errorFlash = {
-						title: title,
-						response: response
-					};
+					ModalFlashService.error({
+						subtitle: title,
+						message: response.data.error
+					});
 					$location.path(path);
 				};
 			},

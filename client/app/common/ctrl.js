@@ -1,7 +1,9 @@
 "use strict"; /* global common, _ */
 
 common
-	.controller('AppCtrl', function($scope, $rootScope, $location, $modal, $localStorage, UserResource, AuthService, ProfileService) {
+	.controller('AppCtrl', function($scope, $rootScope, $location, $modal, $localStorage,
+									AuthService, ProfileService, ModalService, ModalFlashService,
+									UserResource) {
 
 		$rootScope.themeName = 'theme-dark';
 		$rootScope.auth = AuthService;
@@ -12,6 +14,9 @@ common
 			localOnly: false
 		};
 		$rootScope.errorFlash = null;
+		$rootScope.icon = function(icon) {
+			return '#icon-' + icon;
+		};
 
 		$scope.menu = 'home';
 		$scope.downloadsPinned = false;
@@ -26,20 +31,9 @@ common
 
 
 		// on every page
-		$scope.$on('$routeChangeSuccess', function() {
+		$rootScope.$on('$routeChangeSuccess', function() {
 
-			if ($rootScope.errorFlash) {
-				var flash = _.clone($rootScope.errorFlash);
-				$rootScope.errorFlash = null;
-				$modal.open({
-					templateUrl: '/common/modal-error.html',
-					controller: 'ErrorModalCtrl',
-					resolve: {
-						errorTitle: function() { return flash.title; },
-						errorMessage: function() { return flash.response.data.error; }
-					}
-				});
-			}
+			ModalFlashService.process();
 		});
 
 		$scope.navGame = function(key) {
@@ -65,10 +59,6 @@ common
 
 		$scope.setLoading = function(loading) {
 			$scope.loading = loading;
-		};
-
-		$scope.icon = function(icon) {
-			return '#icon-' + icon;
 		};
 
 		$scope.download = function(download, info) {

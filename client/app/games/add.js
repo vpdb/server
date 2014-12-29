@@ -3,7 +3,7 @@
 angular.module('vpdb.games.add', [])
 
 	.controller('AdminGameAddCtrl', function($scope, $upload, $modal, $window, $localStorage, $location, $anchorScroll,
-											 ApiHelper, AuthService, ConfigService, MimeTypeService,
+											 ApiHelper, AuthService, ConfigService, MimeTypeService, ModalService,
 											 IpdbResource, GameResource, FileResource) {
 
 		var maxAspectRatioDifference = 0.2;
@@ -113,15 +113,10 @@ angular.module('vpdb.games.add', [])
 			if (ipdbId) {
 				fetchIpdb(ipdbId, done);
 			} else {
-				$modal.open({
-					templateUrl: '/common/modal-info.html',
-					controller: 'InfoModalCtrl',
-					resolve: {
-						icon: function() { return 'warning'; },
-						title: function() { return 'IPDB Fetch'; },
-						subtitle: function() { return 'Sorry!'; },
-						message: function() { return 'You need to put either the IPDB number or the URL with an ID.'; }
-					}
+				ModalService.error({
+					title: 'IPDB Fetch',
+					subtitle: 'Sorry!',
+					message: 'You need to put either the IPDB number or the URL with an ID.'
 				});
 			}
 		};
@@ -155,15 +150,11 @@ angular.module('vpdb.games.add', [])
 				var game = GameResource.save(_.omit($scope.game, ['data', 'mediaFile']), function() {
 					$scope.game.submitted = true;
 					$scope.reset();
-					$modal.open({
-						templateUrl: '/common/modal-info.html',
-						controller: 'InfoModalCtrl',
-						resolve: {
-							icon: function() { return 'fa-check-circle-o'; },
-							title: function() { return 'Game Created!'; },
-							subtitle: function() { return game.title; },
-							message: function() { return 'The game has been successfully created.'; }
-						}
+					ModalService.info({
+						icon: 'check-circle',
+						title: 'Game Created!',
+						subtitle: game.title,
+						message: 'The game has been successfully created.'
 					});
 					$location.hash('top');
 					$anchorScroll();
@@ -188,15 +179,11 @@ angular.module('vpdb.games.add', [])
 			// check for mime type
 			var primaryMime = mimeType.split('/')[0];
 			if (primaryMime !== restrictMime) {
-				return $modal.open({
-					templateUrl: '/common/modal-info.html',
-					controller: 'InfoModalCtrl',
-					resolve: {
-						icon: function() { return 'fa-file-image-o'; },
-						title: function() { return 'Image Upload'; },
-						subtitle: function() { return 'Wrong file type!'; },
-						message: function() { return 'Please upload a JPEG or PNG image.'; }
-					}
+				ModalService.info({
+					icon: 'ext-image',
+					title: 'Image Upload',
+					subtitle: 'Wrong file type!',
+					message: 'Please upload a JPEG or PNG image.'
 				});
 			}
 

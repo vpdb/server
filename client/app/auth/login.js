@@ -47,7 +47,7 @@ angular.module('vpdb.login', [])
 		};
 	})
 
-	.controller('AuthCallbackCtrl', function($routeParams, $location, $modal, AuthResource, AuthService) {
+	.controller('AuthCallbackCtrl', function($routeParams, $location, $modal, AuthResource, AuthService, ModalService) {
 		AuthResource.authenticateCallback($routeParams, function(result) {
 			AuthService.authenticated(result);
 			$location.url('/');
@@ -55,13 +55,9 @@ angular.module('vpdb.login', [])
 		}, function(err) {
 			$location.url('/');
 			$location.replace();
-			$modal.open({
-				templateUrl: '/common/modal-error.html',
-				controller: 'ErrorModalCtrl',
-				resolve: {
-					errorTitle: function() { return 'Could not login.'; },
-					errorMessage: function() { return err.data.error; }
-				}
+			ModalService.error({
+				subtitle: 'Could not login.',
+				message: err.data.error
 			});
 		});
 	})
@@ -73,5 +69,5 @@ angular.module('vpdb.login', [])
 			$rootScope.loginParams.message = 'Email successully validated. You may login now.';
 			$location.path('/');
 
-		}, ApiHelper.handleErrorsOnOtherPage('/', 'Token validation error'));
+		}, ApiHelper.handleErrorsInFlashDialog('/', 'Token validation error'));
 	});

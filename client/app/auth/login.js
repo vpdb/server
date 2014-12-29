@@ -10,12 +10,16 @@ angular.module('vpdb.login', [])
 		$scope.message = null;
 		$scope.error = null;
 		$scope.errors = {};
+		$scope.topMessage = $rootScope.loginParams.message;
+
+		delete $rootScope.loginParams.message;
 
 		$scope.login = function() {
 
 			AuthResource.authenticate($scope.loginUser, function(result) {
 				$scope.errors = {};
 				$scope.error = null;
+				$scope.message2 = null;
 				AuthService.authenticated(result);
 				$modalInstance.close();
 
@@ -41,7 +45,6 @@ angular.module('vpdb.login', [])
 			$scope.errors = {};
 			$scope.error = null;
 		};
-
 	})
 
 	.controller('AuthCallbackCtrl', function($routeParams, $location, $modal, AuthResource, AuthService) {
@@ -61,4 +64,14 @@ angular.module('vpdb.login', [])
 				}
 			});
 		});
+	})
+
+	.controller('UserEmailConfirmationCtrl', function($routeParams, $location, $rootScope, ApiHelper, ProfileResource) {
+		ProfileResource.confirm({ id: $routeParams.token }, function() {
+			$rootScope.loginParams.open = true;
+			$rootScope.loginParams.localOnly = true;
+			$rootScope.loginParams.message = 'Email successully validated. You may login now.';
+			$location.path('/');
+
+		}, ApiHelper.handleErrorsOnOtherPage('/', 'Token validation error'));
 	});

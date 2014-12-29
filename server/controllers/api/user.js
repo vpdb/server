@@ -85,6 +85,43 @@ exports.authenticate = function(req, res) {
 	}, 'Error while searching for "%s"'));// TODO check error message. We might not want to reveal too much here.
 };
 
+/**
+ * Confirms user's email for a given token.
+ *
+ * @param {Request} req
+ * @param {Response} res
+ */
+exports.confirm = function(req, res) {
+
+	var assert = api.assert(error, 'confirm', req.params.tkn, res);
+	User.findOne({ 'email_status.token': req.params.tkn }, assert(function(user) {
+
+		var failMsg = 'No such token or token expired.';
+		if (!user) {
+			return api.fail(res, error('No user found with email token "%s".', req.params.tkn)
+				.display(failMsg)
+				.warn('confirm'),
+			404);
+		}
+		if (user.email_status.expires_at.getTime() < new Date().getTime()) {
+			return api.fail(res, error('Email token "%s" for user <%s> is expired (%s).', req.params.tkn, user.email, user.email_status.expires_at)
+				.display(failMsg)
+				.warn('confirm'),
+			404);
+		}
+
+		assert = api.assert(error, 'confirm', user.email, res);
+		user.email_status = { code: 'confirmed' };
+		user.is_active = true;
+
+		user.save(assert(function() {
+			api.success(res, { message: 'Email validated and user activated. You may login now.' });
+
+		}, 'Error saving user <%s>.'));
+	}, 'Error retrieving user with email token "%s".'));
+
+};
+
 
 /**
  * Authentication route for third party strategies.
@@ -249,8 +286,9 @@ exports.update = function(req, res) {
 			// if all good, enrich with ACLs
 			getACLs(user, assert(function(acls) {
 				api.success(res, _.extend(user.toDetailed(), acls), 200);
-			}));
-		}));
+
+			}, 'Error retrieving ACLs for user <%s>.'));
+		}, 'Error saving user <%s>.'));
 	});
 };
 

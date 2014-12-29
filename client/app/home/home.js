@@ -5,7 +5,7 @@
  */
 angular.module('vpdb.home', [])
 
-	.controller('HomeController', function($scope, $http) {
+	.controller('HomeController', function($scope, $rootScope, $http) {
 
 		$scope.theme('dark');
 		$scope.setMenu('home');
@@ -16,6 +16,11 @@ angular.module('vpdb.home', [])
 		$scope.updatedReleases = [];
 		$scope.feed = [];
 		$scope.users = [];
+
+		if ($rootScope.loginParams.open) {
+			$rootScope.loginParams.open = false;
+			$rootScope.login();
+		}
 
 		$http({
 			method: 'GET',

@@ -29,8 +29,9 @@ common
 	})
 
 	.factory('ProfileResource', function($resource, ConfigService) {
-		return $resource(ConfigService.apiUri('/user'), {}, {
-			patch: { method: 'PATCH' }
+		return $resource(ConfigService.apiUri('/user/:action/:id'), {}, {
+			patch: { method: 'PATCH' },
+			confirm: { method: 'GET', params: { action: 'confirm' }}
 		});
 	})
 
@@ -63,7 +64,7 @@ common
 		});
 	})
 
-	.factory('ApiHelper', function($modal) {
+	.factory('ApiHelper', function($modal, $rootScope, $location) {
 		return {
 
 			handlePagination: function(scope) {
@@ -140,6 +141,16 @@ common
 					if (callback) {
 						callback(response);
 					}
+				};
+			},
+
+			handleErrorsOnOtherPage: function(path, title) {
+				return function(response) {
+					$rootScope.errorFlash = {
+						title: title,
+						response: response
+					};
+					$location.path(path);
 				};
 			},
 

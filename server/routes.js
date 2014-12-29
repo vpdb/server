@@ -89,8 +89,9 @@ module.exports = function(app) {
 	app.delete(settings.apiPath('/tags/:id'),     api.auth(api.tags.del, 'tags', 'delete-own'));
 
 	// user (own profile)
-	app.get(settings.apiPath('/user'),            api.auth(api.user.view, 'user', 'view'));
-	app.patch(settings.apiPath('/user'),          api.auth(api.user.update, 'user', 'update'));
+	app.get(settings.apiPath('/user'),              api.auth(api.user.view, 'user', 'view'));
+	app.patch(settings.apiPath('/user'),            api.auth(api.user.update, 'user', 'update'));
+	app.get(settings.apiPath('/user/confirm/:tkn'), api.anon(api.user.confirm));
 
 	// users (any other user)
 	app.post(settings.apiPath('/users'),          api.users.create);

@@ -44,7 +44,7 @@ var fields = {
 	email:           { type: String, index: true, unique: true, lowercase: true, required: 'Email must be provided.' },
 	email_status:    {
 		code:        { type: String, enum: [ 'confirmed', 'pending' ], required: true },
-		token:       { type: String, unique: true },
+		token:       { type: String },
 		expires_at:  { type: Date },
 		value:       { type: String }
 	},
@@ -251,7 +251,7 @@ UserSchema.statics.createUser = function(userObj, done) {
 		roles: [ 'member' ]
 	}));
 
-	if (config.vpdb.email.confirmUserEmail) {
+	if (config.vpdb.email.confirmUserEmail && user.provider === 'local') {
 		user.email_status = {
 			code: 'pending',
 			token: randomstring.generate(16),

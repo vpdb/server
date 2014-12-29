@@ -2,7 +2,7 @@
 
 angular.module('vpdb.profile.settings', [])
 
-	.controller('ProfileSettingsCtrl', function($scope, AuthService, ApiHelper, ProfileResource) {
+	.controller('ProfileSettingsCtrl', function($scope, $rootScope, AuthService, ApiHelper, ProfileResource) {
 
 		$scope.theme('dark');
 		$scope.setTitle('Your Profile');
@@ -24,7 +24,7 @@ angular.module('vpdb.profile.settings', [])
 			ProfileResource.patch($scope.updatedUser, function(user) {
 				AuthService.saveUser(user);
 				ApiHelper.clearErrors($scope);
-				$scope.showNotification('User Profile successfully saved.');
+				$rootScope.showNotification('User Profile successfully saved.');
 
 			}, ApiHelper.handleErrors($scope));
 		};
@@ -50,7 +50,7 @@ angular.module('vpdb.profile.settings', [])
 			}, function() {
 				$scope.localUser = {};
 				ApiHelper.clearErrors($scope);
-				$scope.showNotification('Password successfully changed.', 3000);
+				$rootScope.showNotification('Password successfully changed.', 3000);
 
 			}, ApiHelper.handleErrors($scope));
 		};
@@ -77,7 +77,7 @@ angular.module('vpdb.profile.settings', [])
 			}, function(user) {
 				AuthService.saveUser(user);
 				ApiHelper.clearErrors($scope);
-				$scope.showNotification('Local credentials successfully created. You may login with username <strong>' + $scope.localCredentials.username + '</strong> now.', 5000);
+				$rootScope.showNotification('Local credentials successfully created. You may login with username <strong>' + $scope.localCredentials.username + '</strong> now.', 5000);
 
 			}, ApiHelper.handleErrors($scope));
 		};

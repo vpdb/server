@@ -6,21 +6,26 @@ include ../template/_mixins
 			+icon('lock').space-right
 			| &nbsp;Login
 	.modal-body
-		h3.h--shift-up Login with
-		.text-center
-			for ipb in authStrategies.ipboard
-				a.btn.btn--secondary.btn-lg(href=ipb.url, target="_self")
-					+icon(ipb.icon).space-right
-					| #{ipb.name}
-			if authStrategies.github
-				a.btn.btn--secondary.btn-lg(href="/auth/github", target="_self")
-					+icon('github').space-right
-					| GitHub
-		hr.hr--light.padder-top-2x
-		.clearfix
+		.span(ng-hide="loginParams.localOnly")
+			h3.h--shift-up Login with
+			.text-center
+				for ipb in authStrategies.ipboard
+					a.btn.btn--secondary.btn-lg(href=ipb.url, target="_self")
+						+icon(ipb.icon).space-right
+						| #{ipb.name}
+				if authStrategies.github
+					a.btn.btn--secondary.btn-lg(href="/auth/github", target="_self")
+						+icon('github').space-right
+						| GitHub
+			hr.hr--light.padder-top-2x
+			.clearfix
 
+		div.alert.alert-success.padder-bottom(ng-show="topMessage")
+			+icon('info').space-right.shift-up
+			| {{ topMessage }}
 		div(ng-hide="registering")
-			h3.h--shift-up Or, with your account:
+			h3.h--shift-up(ng-hide="loginParams.localOnly") Or, with your account:
+			h3.h--shift-up(ng-show="loginParams.localOnly") Login with your account:
 			form.form-horizontal(role='form')
 				.form-group
 					label.col-sm-4.control-label Username
@@ -30,7 +35,7 @@ include ../template/_mixins
 					label.col-sm-4.control-label Password
 					.col-sm-6
 						input.form-control(ng-model="loginUser.password", type="password")
-		div(ng-show="registering")
+		div(ng-show="registering && !loginParams.localOnly")
 			h3.h--shift-up Or, register with your Email:
 			form.form-horizontal(role="form")
 				.form-group(ng-class="{ error: errors.email }")
@@ -58,13 +63,13 @@ include ../template/_mixins
 			+icon('warning').space-right.shift-up
 			| {{ error }}
 		div.alert.alert-success(ng-show="message")
-			+icon('warning').space-right.shift-up
+			+icon('info').space-right.shift-up
 			| {{ message }}
 
 		.text-center.padder-top.i(ng-show="message2", ng-bind-html="message2")
 
 	.modal-footer
-		button.btn.btn-default.pull-left(ng-click="swap()") {{ registering ? "Login" : "Register" }}
+		button.btn.btn-default.pull-left(ng-click="swap()", ng-hide="loginParams.localOnly") {{ registering ? "Login" : "Register" }}
 		button.btn.btn-default(ng-click="$close()") Cancel
 		button.btn.btn--secondary(ng-hide="registering", ng-click="login()") Login
 		button.btn.btn--secondary(ng-show="registering", ng-click="register()") Register

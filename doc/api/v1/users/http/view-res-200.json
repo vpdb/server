@@ -1,19 +1,19 @@
 200 OK
 Content-Type: application/json; charset=utf-8
-Content-Length: 302
-Etag: W/"12e-da14de6"
+Content-Length: 290
+Etag: W/"122-616cc92d"
 
 {
   "plan": "free",
-  "name": "Susanna_Streich",
-  "username": "Susanna_Streich",
-  "email": "willow.schuppe@gmail.com",
+  "name": "Hershel74",
+  "username": "Hershel74",
+  "email": "dereck.jerde89@gmail.com",
   "provider": "local",
-  "created_at": "2014-12-23T13:39:20.217Z",
+  "created_at": "2014-12-30T00:21:29.482Z",
   "is_active": true,
   "roles": [
     "member"
   ],
-  "id": "X1DLMpdjjG",
-  "gravatar_id": "0f74cf9fb9972ff06ae36f23fb5c5177"
+  "id": "myiDQS_X4X",
+  "gravatar_id": "5c8fb124928e262725bec52784b8d04c"
 }

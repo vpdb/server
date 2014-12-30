@@ -1,19 +1,19 @@
 200 OK
 Content-Type: application/json; charset=utf-8
-Content-Length: 329
+Content-Length: 307
 
 {
-  "id": "X1DLMpdjjG",
-  "name": "Grady.Littel75",
-  "username": "Grady.Littel75",
-  "gravatar_id": "22ae4b5aebcb8055da682ed5e95f3365",
-  "location": "East Ruthberg",
-  "email": "ashley.parker@yahoo.com",
+  "id": "myiDQS_X4X",
+  "name": "Eldora55",
+  "username": "Eldora55",
+  "gravatar_id": "ff896579a7ebf05f2a084b99101e662b",
+  "location": "Roobville",
+  "email": "raina25@gmail.com",
   "is_active": true,
   "provider": "local",
   "roles": [
     "member"
   ],
   "plan": "free",
-  "created_at": "2014-12-23T13:39:20.217Z"
+  "created_at": "2014-12-30T00:21:29.482Z"
 }

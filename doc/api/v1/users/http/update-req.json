@@ -1,14 +1,14 @@
-PUT /api/v1/users/X1DLMpdjjG HTTP/1.1
+PUT /api/v1/users/myiDQS_X4X HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI3SlFVR2F1anNmIiwiaWF0IjoiMjAxNC0xMi0yM1QxMzozOToyMC4yMTBaIiwiZXhwIjoiMjAxNC0xMi0yM1QxNDozOToyMC4yMTBaIn0.ce_JCMkTllB8U-NnYiOJThsx1WdDyITHqBgQMVhefTQ
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI3SnZQWHJkN1Y3IiwiaWF0IjoiMjAxNC0xMi0zMFQwMDoyMToyOS40NzFaIiwiZXhwIjoiMjAxNC0xMi0zMFQwMToyMToyOS40NzFaIn0.JFgxQaQ7Kf2euBGQHm-J7oEr9b1Jn1J_gWIDVa4Rsik
 Content-Type: application/json
-Content-Length: 123
+Content-Length: 105
 
 {
-  "email": "ashley.parker@yahoo.com",
-  "username": "Grady.Littel75",
-  "name": "Grady.Littel75",
+  "email": "raina25@gmail.com",
+  "username": "Eldora55",
+  "name": "Eldora55",
   "is_active": true,
   "roles": [
     "member"

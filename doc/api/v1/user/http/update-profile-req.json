@@ -1,14 +1,14 @@
 PATCH /api/v1/user HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJteVF3R3Bfc2lNIiwiaWF0IjoiMjAxNC0xMi0yM1QxMzozOToyMC4yNjVaIiwiZXhwIjoiMjAxNC0xMi0yM1QxNDozOToyMC4yNjVaIn0.cOjSG1HMeBfsd9a_JDcE4Gl7UH9vBOLMRVGlPDtpP_I
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJtSnd1N1NfbVZtIiwiaWF0IjoiMjAxNC0xMi0zMFQwMDoyMToyOS41NDNaIiwiZXhwIjoiMjAxNC0xMi0zMFQwMToyMToyOS41NDNaIn0.xGnZsxdN-w0jORuomKPwyjSb7yjrn9Q9W5ZouMPRy1M
 Content-Type: application/json
-Content-Length: 130
+Content-Length: 141
 
 {
-  "name": "Gracie Terry",
-  "location": "New Emmet",
-  "email": "emmet90@yahoo.com",
-  "current_password": "6TbLukfuNw",
-  "password": "9sFfIW1UTi"
+  "name": "Tyrell Little",
+  "location": "Nikolausview",
+  "email": "oswald.bayer77@yahoo.com",
+  "current_password": "Xp12csGpPy",
+  "password": "59HtNoPo7b"
 }

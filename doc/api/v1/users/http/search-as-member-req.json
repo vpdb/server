@@ -1,5 +1,5 @@
-GET /api/v1/users?q=Sus HTTP/1.1
+GET /api/v1/users?q=Her HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJYMURMTXBkampHIiwiaWF0IjoiMjAxNC0xMi0yM1QxMzozOToyMC4yMjNaIiwiZXhwIjoiMjAxNC0xMi0yM1QxNDozOToyMC4yMjNaIn0.yZ8aKiGVhR4l7gSQmbGDlg_wFqN6OoPSKN9owf3JQws
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJteWlEUVNfWDRYIiwiaWF0IjoiMjAxNC0xMi0zMFQwMDoyMToyOS40OTBaIiwiZXhwIjoiMjAxNC0xMi0zMFQwMToyMToyOS40OTBaIn0.Hqn3dI2nKE6wn-uVq6y_l65iVSKaHbZZSnvpaGQPtbg
 

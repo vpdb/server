@@ -1,22 +1,26 @@
 POST /api/v1/games HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJteWozMl9pakciLCJpYXQiOiIyMDE0LTEyLTIzVDEzOjM5OjEzLjg4NVoiLCJleHAiOiIyMDE0LTEyLTIzVDE0OjM5OjEzLjg4NVoifQ.R6onEEGi_AydUlC_IGp6zGZSLgPQ9yafkPPoBRTrnYk
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI3MUxfbjRfWEVtIiwiaWF0IjoiMjAxNC0xMi0zMFQwMDoyMToyMi42MzdaIiwiZXhwIjoiMjAxNC0xMi0zMFQwMToyMToyMi42MzdaIn0.9-b4mjXeF-8OZJ96MfesMdHwukqijIlgFU8xIEetDG0
 Content-Type: application/json
-Content-Length: 205
+Content-Length: 584
 
 {
   "ipdb": {
-    "number": 3000,
-    "mfg": 14
+    "number": 5839,
+    "mfg": 275
   },
-  "title": "Carnival",
-  "manufacturer": "Alben",
-  "year": 1960,
-  "game_type": "em",
-  "notes": "Similar to Gottlieb's Around the World",
-  "id": "carnival",
+  "title": "Circus 388",
+  "manufacturer": "SIRMO Games S.A.",
+  "game_type": "ss",
+  "themes": [
+    "Circus/Carnival"
+  ],
+  "features": "Trap holes (25). Six cards. Game advertised as 132 cm long, 70 cm wide, and 202 cm high.",
+  "notes": "Made for export to Italy.The parts catalog shown in this listing is dated November 1997 on its cover and individual pages are dated from 1995 to 2001. It was presented on the manufacturer's website for 'Circus 388' but we did not see any specific reference to this game.",
+  "id": "circus-388",
+  "year": 1900,
   "_media": {
-    "backglass": "71xxh2_oof"
+    "backglass": "myiu24O7EQ"
   }
 }

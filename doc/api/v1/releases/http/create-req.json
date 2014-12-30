@@ -1,21 +1,21 @@
 POST /api/v1/releases HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJYa0RXNk9qb3oiLCJpYXQiOiIyMDE0LTEyLTIzVDEzOjM5OjE4LjkyNVoiLCJleHAiOiIyMDE0LTEyLTIzVDE0OjM5OjE4LjkyNVoifQ.CL31VcFxJ92HNbDlHUf8O-tRLdS9FJZOnmnzLXG44TU
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI3SnZHSF83NG0iLCJpYXQiOiIyMDE0LTEyLTMwVDAwOjIxOjI4LjE1NFoiLCJleHAiOiIyMDE0LTEyLTMwVDAxOjIxOjI4LjE1NFoifQ.7vBnFRpVKPA8HZhbvXKltHZHES-VXIorPLRyyM1Smsw
 Content-Type: application/json
-Content-Length: 480
+Content-Length: 479
 
 {
   "name": "release",
-  "_game": "silver-moon-jr",
+  "_game": "plus-or-minus",
   "versions": [
     {
       "files": [
         {
-          "_file": "7kfI-pujjf",
+          "_file": "QkbLfS_mVX",
           "_media": {
-            "playfield_image": "X1E8Zauisz",
-            "playfield_video": "7kCvWpOsoM"
+            "playfield_image": "XkVUfrO7EQ",
+            "playfield_video": "X1memHumNm"
           },
           "_compatibility": [
             "9.9.0"
@@ -26,9 +26,9 @@ Content-Length: 480
           }
         },
         {
-          "_file": "my-8Z6uoof",
+          "_file": "7Jf8MrO7EQ",
           "_media": {
-            "playfield_image": "718UW6_iif"
+            "playfield_image": "XyLUzHuXN7"
           },
           "_compatibility": [
             "9.9.0"
@@ -44,7 +44,7 @@ Content-Length: 480
   ],
   "authors": [
     {
-      "_user": "XkDW6Ojoz",
+      "_user": "7JvGH_74m",
       "roles": [
         "Table Creator"
       ]

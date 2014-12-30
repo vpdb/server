@@ -213,7 +213,6 @@ exports.confirm = function(req, res) {
 	var assert = api.assert(error, 'confirm', req.params.tkn, res);
 	User.findOne({ 'email_status.token': req.params.tkn }, assert(function(user) {
 
-		var currentCode = user.email_status.code;
 		var successMsg, failMsg = 'No such token or token expired.';
 		if (!user) {
 			return api.fail(res, error('No user found with email token "%s".', req.params.tkn)
@@ -228,14 +227,16 @@ exports.confirm = function(req, res) {
 			404);
 		}
 
+		var currentCode = user.email_status.code;
 		assert = api.assert(error, 'confirm', user.email, res);
-
 
 		if (currentCode === 'pending_registration') {
 			user.is_active = true;
-			successMsg = 'Email validated and user activated. You may login now.';
+			logger.log('[api|user:confirm] User email <%s> for pending registration confirmed.', user.email);
+			successMsg = 'Email successully validated. You may login now.';
 
 		} else if (currentCode === 'pending_update') {
+			logger.log('[api|user:confirm] User email <%s> for pending update confirmed.', user.email_status.value);
 			user.email = user.email_status.value;
 			successMsg = 'Email validated and updated.';
 

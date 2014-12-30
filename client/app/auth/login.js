@@ -23,7 +23,9 @@ angular.module('vpdb.login', [])
 				AuthService.authenticated(result);
 				$modalInstance.close();
 
-			}, ApiHelper.handleErrors($scope));
+			}, ApiHelper.handleErrors($scope, function() {
+				$scope.message2 = null;
+			}));
 		};
 
 		$scope.register = function() {
@@ -62,12 +64,29 @@ angular.module('vpdb.login', [])
 		});
 	})
 
-	.controller('UserEmailConfirmationCtrl', function($routeParams, $location, $rootScope, ApiHelper, ProfileResource) {
-		ProfileResource.confirm({ id: $routeParams.token }, function() {
-			$rootScope.loginParams.open = true;
-			$rootScope.loginParams.localOnly = true;
-			$rootScope.loginParams.message = 'Email successully validated. You may login now.';
-			$location.path('/');
+	.controller('UserEmailConfirmationCtrl', function($routeParams, $location, $rootScope, ApiHelper, ProfileResource, ModalFlashService, AuthService) {
+		ProfileResource.confirm({ id: $routeParams.token }, function(result) {
+			if (result.previous_code === 'pending_update') {
+
+				ModalFlashService.info({
+					title: 'Email Confirmation',
+					subtitle: 'Thanks!',
+					message: result.message
+				});
+
+				if (AuthService.isAuthenticated) {
+					$location.path('/profile/settings');
+				} else {
+					$location.path('/');
+				}
+
+			} else {
+				$rootScope.loginParams.open = true;
+				$rootScope.loginParams.localOnly = true;
+				$rootScope.loginParams.message = result.message;
+				$location.path('/');
+			}
+
 
 		}, ApiHelper.handleErrorsInFlashDialog('/', 'Token validation error'));
 	});

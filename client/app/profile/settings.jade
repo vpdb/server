@@ -54,11 +54,20 @@ include ../template/_mixins
 		.form-group(ng-class="{ error: errors.email }")
 			label.col-sm-3.control-label Email
 			.col-sm-7
-				input.form-control(type="text", ng-model="updatedUser.email")
+				input.form-control(type="text", ng-model="updatedUser.email", ng-disabled="auth.user.email_status.code === 'pending_update'")
 			.clearfix
+			.col-sm-offset-3.col-sm-7(ng-show="auth.user.email_status.code === 'pending_update'")
+				+icon('arrow-right').shift-up
+				| Email update pending ({{ auth.user.email_status.value }}).
+				a.pull-right
+					+icon('times').shift-up.space-right-less
+					| Cancel
+				p.padder-bottom
+
 			div.alert.alert-danger(ng-show="errors.email")
-				+icon('warning').shift-up.space-right
-				| {{ errors.email }}
+				p
+					+icon('warning').shift-up.space-right
+					| {{ errors.email }}
 
 		.col-sm-offset-3.col-sm-7
 			button.btn.btn-default.pull-right(ng-click="updateUserProfile()")

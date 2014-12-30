@@ -1,3 +1,4 @@
+$input-background-darker = rgba(white, 0.04)
 $input-background-dark = rgba(white, 0.08)
 $input-background-dark-focus = rgba(white, 0.11)
 
@@ -17,6 +18,9 @@ $input-background-light-focus = rgba(white, 0.75)
 			background-color $input-background-dark-focus
 		&.input--search:focus
 			background-color $input-background-dark
+		&[disabled="disabled"]
+			color $color-light
+			background-color $input-background-darker
 
 	.h--primary .form-control
 		@extend .theme-dark .h--primary

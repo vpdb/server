@@ -2,8 +2,7 @@
 
 common
 	.controller('AppCtrl', function($scope, $rootScope, $location, $modal, $localStorage,
-									AuthService, ProfileService, ModalService, ModalFlashService,
-									UserResource) {
+									AuthService, ProfileService, ModalService, ModalFlashService) {
 
 		$rootScope.themeName = 'theme-dark';
 		$rootScope.auth = AuthService;

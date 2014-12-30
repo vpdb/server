@@ -6,7 +6,7 @@ angular.module('vpdb.auth', [])
 		$httpProvider.interceptors.push('AuthInterceptor');
 	})
 
-	.factory('AuthService', function($window, $localStorage, $sessionStorage, $rootScope, $location, $http, Config, ConfigService) {
+	.factory('AuthService', function($window, $localStorage, $sessionStorage, $rootScope, $location, $http, Config, ConfigService, ProfileResource) {
 
 		return {
 
@@ -114,6 +114,19 @@ angular.module('vpdb.auth', [])
 			 */
 			getUser: function() {
 				return $localStorage.user;
+			},
+
+			/**
+			 * Reloads the user profile data from the server
+			 * @returns {promise}
+			 */
+			refreshUser: function() {
+				var that = this;
+				return ProfileResource.get(function(user) {
+					that.saveUser(user);
+				}, function(err) {
+					console.log('Error retrieving user profile: %s', err);
+				});
 			},
 
 			/**

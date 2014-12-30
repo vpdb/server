@@ -8,13 +8,15 @@ angular.module('vpdb.profile.settings', [])
 		$scope.setTitle('Your Profile');
 		//$scope.setMenu('admin');
 
-		var user = AuthService.getUser();
+		AuthService.refreshUser();
 
-		$scope.updatedUser = _.pick(user, 'name', 'location', 'email'); // user profile that will be sent for update
 		$scope.localUser = {};                                          // local user for changing password
 		$scope.localCredentials = {};                                   // local credentials object
+		$rootScope.$watch('auth.user', function(value) {
+			$scope.updatedUser = _.pick(value, 'name', 'location', 'email');
+		});
 
-		$scope.providers = AuthService.getProviders(user);
+		$scope.providers = AuthService.getProviders($scope.auth.user);
 		var allProviders = AuthService.getProviders();
 
 		/**
@@ -86,8 +88,8 @@ angular.module('vpdb.profile.settings', [])
 		var i, provider;
 		for (i = 0; i < allProviders.length; i++) {
 			provider = allProviders[i];
-			if (user[provider.id] && user[provider.id].username) {
-				$scope.localCredentials.username = user[provider.id].username;
+			if ($scope.auth.user[provider.id] && $scope.auth.user[provider.id].username) {
+				$scope.localCredentials.username = $scope.auth.user[provider.id].username;
 				break;
 			}
 		}

@@ -34,6 +34,7 @@ exports.setupUsers = function(request, config, done) {
 	var createUser = function(name, config) {
 		return function(next) {
 			var user = exports.genUser();
+			user.skipEmailConfirmation = true;
 
 			// 1. create user
 			debug('%s <%s>: Creating user...', name, user.email);
@@ -106,18 +107,18 @@ exports.setupUsers = function(request, config, done) {
 	});
 };
 
-exports.genUser = function() {
+exports.genUser = function(attrs) {
 
 	var username = '';
 	do {
 		username = faker.internet.userName().replace(/[^a-z0-9\._]+/gi, '');
 	} while (username.length < 3);
 
-	return {
+	return _.extend({
 		username: username,
 		password: randomstring.generate(10),
 		email: faker.internet.email().toLowerCase()
-	};
+	}, attrs || {});
 };
 
 exports.genGithubUser = function() {

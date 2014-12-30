@@ -54,8 +54,9 @@ module.exports = function(app) {
 
 	// authentication
 	app.post(settings.apiPath('/authenticate'), api.user.authenticate);
-	if (process.env.NODE_ENV !== 'production') {
-		app.post(settings.apiPath('/authenticate/mock'), api.user.authenticateOAuth2Mock); // mock route for simulating oauth2 callbacks
+	if (process.env.NODE_ENV === 'test') {
+		// mock route for simulating oauth2 callbacks
+		app.post(settings.apiPath('/authenticate/mock'), api.user.authenticateOAuth2Mock);
 	}
 	app.get(settings.apiPath('/authenticate/:strategy'), api.user.authenticateOAuth2);
 

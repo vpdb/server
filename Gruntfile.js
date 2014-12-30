@@ -318,6 +318,7 @@ function env(grunt, config, more) {
 function testEnv(grunt, config, more) {
 	return _.extend(env(grunt, config, more), {
 		COVERAGE_ENABLED: true,
-		COVERALLS_SERVICE_NAME: process.env.BUILDER || 'Local Test Runner'
+		COVERALLS_SERVICE_NAME: process.env.BUILDER || 'Local Test Runner',
+		NODE_ENV: 'test'
 	});
 }

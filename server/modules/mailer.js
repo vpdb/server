@@ -19,6 +19,7 @@
 
 "use strict";
 
+var _ = require('lodash');
 var fs = require('fs');
 var path = require('path');
 var logger = require('winston');
@@ -53,15 +54,25 @@ exports.confirmation = function(user, done) {
 	};
 
 	// send email
-	var transport = nodemailer.createTransport(smtpTransport(config.vpdb.email.nodemailer));
-	logger.info('[mailer] Sending confirmation email to <%s>...', user.email);
-	transport.sendMail(email, function(err, status) {
-		if (err) {
-			logger.error('[mailer] Error sending confirmation mail to <%s>:', user.email, status);
-			return done(err);
-		}
-		logger.info('[mailer] Successfully sent confirmation mail to <%s> with message ID "%s" (%s).', user.email, status.messageId, status.response);
-		done(null, status);
-	});
+	send(email, user, 'confirmation', done);
 
 };
+
+function send(email, user, what, done) {
+
+	if (_.isEmpty(config.vpdb.email.nodemailer)) {
+		logger.info('[mailer] NOT sending %s email to <%s> due to environment config.', what, user.email);
+		return done();
+	}
+
+	var transport = nodemailer.createTransport(smtpTransport(config.vpdb.email.nodemailer));
+	logger.info('[mailer] Sending %s email to <%s>...', what, user.email);
+	transport.sendMail(email, function(err, status) {
+		if (err) {
+			logger.error('[mailer] Error sending %s mail to <%s>:', what, user.email, status);
+			return done(err);
+		}
+		logger.info('[mailer] Successfully sent %s mail to <%s> with message ID "%s" (%s).', what, user.email, status.messageId, status.response);
+		done(null, status);
+	});
+}

@@ -43,6 +43,11 @@ exports.create = function(req, res) {
 	var newUser = _.extend(_.pick(req.body, 'username', 'password', 'email'), {
 		provider: 'local'
 	});
+
+	// api test behavior
+	var testMode = process.env.NODE_ENV === 'test';
+	var skipEmailConfirmation = testMode && req.body.skipEmailConfirmation;
+
 	var assert = api.assert(error, 'create', newUser.email, res);
 
 	// TODO make sure newUser.email is sane (comes from user directly)
@@ -51,19 +56,25 @@ exports.create = function(req, res) {
 		if (user) {
 			return api.fail(res, error('User with email <%s> already exists.', newUser.email).warn('create'), 409);
 		}
-		User.createUser(newUser, assert(function(user, validationErr) {
+		var confirmUserEmail = config.vpdb.email.confirmUserEmail && !skipEmailConfirmation;
+		User.createUser(newUser, confirmUserEmail, assert(function(user, validationErr) {
 			if (validationErr) {
 				return api.fail(res, error('Validations failed. See below for details.').errors(validationErr.errors).warn('create'), 422);
 			}
 
 			// return result now and send email afterwards
-			api.success(res, user.toDetailed(), 201);
+			if (testMode && req.body.returnEmailToken) {
+				api.success(res, _.extend(user.toDetailed(), { email_token: user.email_status.token }), 201);
+			} else {
+				api.success(res, user.toDetailed(), 201);
+			}
+
 
 			// user validated and created. time to send the activation email.
 			if (config.vpdb.email.confirmUserEmail) {
 				mailer.confirmation(user);
 			}
-			
+
 		}, 'Error creating user <%s>.'));
 	}, 'Error finding user with email <%s>'));
 };

@@ -1,18 +1,18 @@
 201 Created
 Content-Type: application/json; charset=utf-8
-Content-Length: 312
+Content-Length: 290
 
 {
   "plan": "free",
-  "name": "Maximus_Nicolas79",
-  "username": "Maximus_Nicolas79",
-  "email": "cristopher.jerde50@hotmail.com",
+  "name": "Randall_Moen",
+  "username": "Randall_Moen",
+  "email": "leora67@gmail.com",
   "provider": "local",
-  "created_at": "2014-12-23T13:39:20.301Z",
-  "is_active": true,
+  "created_at": "2014-12-30T00:21:29.592Z",
+  "is_active": false,
   "roles": [
     "member"
   ],
-  "id": "Q1B_fTOosf",
-  "gravatar_id": "fdf260e30106f46dce20881655cedd21"
+  "id": "Xy5KQHuQE7",
+  "gravatar_id": "21f7620d02065dd5b64909b1e8853133"
 }

@@ -13,7 +13,7 @@ module.exports = {
 		storageTokenLifetime: 60000,
 		secret: 'do-not-run-this-config-in-production!',
 		email: {
-			confirmUserEmail: false,
+			confirmUserEmail: true,
 			sender: { email: 'server@vpdb.local', name: 'VPDB Server' },
 			nodemailer: {}
 		},

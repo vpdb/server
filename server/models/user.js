@@ -244,14 +244,15 @@ UserSchema.methods.toDetailed = function() {
 // STATIC METHODS
 //-----------------------------------------------------------------------------
 
-UserSchema.statics.createUser = function(userObj, done) {
+UserSchema.statics.createUser = function(userObj, confirmUserEmail, done) {
+
 	var User = mongoose.model('User');
 	var user = new User(_.extend(userObj, {
 		created_at: new Date(),
 		roles: [ 'member' ]
 	}));
 
-	if (config.vpdb.email.confirmUserEmail && user.provider === 'local') {
+	if (confirmUserEmail) {
 		user.email_status = {
 			code: 'pending',
 			token: randomstring.generate(16),
@@ -339,6 +340,7 @@ UserSchema.options.toObject.transform = function(doc, user) {
 	delete user.password_hash;
 	delete user.password_salt;
 	delete user.password;
+	delete user.email_status;
 };
 
 

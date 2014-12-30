@@ -61,8 +61,8 @@ There are two behaviors that differ from the production environment:
 
 1. Users at VPDB must confirm their email address when registering locally.
    During tests we want to assert that behavior, but we won't be testing that
-   the email is actually sent. So when registering, the email body is returned
-   with the user entity.
+   the email is actually sent. So when registering, the email token is returned
+   with the user entity if the `returnEmailToken` property is provided.
 
 2. Since there are tens of test suites that each create their own users, want
    to be able to disable email confirmation completely. Thus, when registering,

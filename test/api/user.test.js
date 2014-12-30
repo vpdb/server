@@ -94,23 +94,9 @@ describe('The VPDB `user` API', function() {
 		});
 	});
 
-	describe('when a user registrates', function() {
+	describe('when a user registers', function() {
 
-		it('should be able to retrieve an authentication token', function(done) {
-			var user = hlp.genUser();
-			request
-				.post('/api/v1/users')
-				.save({ path: 'users/post' })
-				.send(user)
-				.end(function(err, res) {
-					hlp.expectStatus(err, res, 201);
-					hlp.doomUser(res.body.id);
-					// try to obtain a token
-					request.post('/api/v1/authenticate').send(_.pick(user, 'username', 'password')).end(hlp.status(200, done));
-				});
-		});
-
-		it('should fail when invalid parameters', function(done) {
+		it('should fail with invalid parameters', function(done) {
 			request
 				.post('/api/v1/users')
 				.saveResponse({ path: 'users/post' })
@@ -120,9 +106,66 @@ describe('The VPDB `user` API', function() {
 					email: 'xxx'
 				}).end(function(err, res) {
 					hlp.expectStatus(err, res, 422);
-					expect(res.body.errors).to.be.an('array');
 					expect(res.body.errors).to.have.length(3);
+					hlp.expectValidationError(err, res, 'email', 'email must be in the correct format');
+					hlp.expectValidationError(err, res, 'username', 'length of username');
+					hlp.expectValidationError(err, res, 'password', 'at least 6 characters');
 					done();
+				});
+		});
+
+		it('should fail retrieving an authentication token if email is unconfirmed', function(done) {
+			var user = hlp.genUser();
+			request
+				.post('/api/v1/users')
+				.save({ path: 'users/post' })
+				.send(user)
+				.end(function(err, res) {
+					hlp.expectStatus(err, res, 201);
+					hlp.doomUser(res.body.id);
+
+					// try to obtain auth token
+					request.post('/api/v1/authenticate').send(_.pick(user, 'username', 'password')).end(hlp.status(401, 'account is inactive', done));
+				});
+		});
+
+		it('should be able to retrieve an authentication token after email confirmation', function(done) {
+			var user = hlp.genUser({ returnEmailToken: true });
+			request
+				.post('/api/v1/users')
+				.send(user)
+				.end(function(err, res) {
+					hlp.expectStatus(err, res, 201);
+					hlp.doomUser(res.body.id);
+
+					// confirm email token
+					request.get('/api/v1/user/confirm/' + res.body.email_token).end(function(err, res) {
+						hlp.expectStatus(err, res, 200);
+
+						// try to obtain auth token
+						request.post('/api/v1/authenticate').send(_.pick(user, 'username', 'password')).end(hlp.status(200, done));
+					});
+
+				});
+		});
+
+		it('should fail to confirm an email token a second time', function(done) {
+			var user = hlp.genUser({ returnEmailToken: true });
+			request
+				.post('/api/v1/users')
+				.send(user)
+				.end(function(err, res) {
+					hlp.expectStatus(err, res, 201);
+					hlp.doomUser(res.body.id);
+
+					// confirm email token
+					var confirmPath = '/api/v1/user/confirm/' + res.body.email_token;
+					request.get(confirmPath).end(function(err, res) {
+						hlp.expectStatus(err, res, 200);
+
+						// try again
+						request.get(confirmPath).end(hlp.status(404, done));
+					});
 				});
 		});
 	});

@@ -30,49 +30,60 @@ var smtpTransport = require('nodemailer-smtp-transport');
 var settings = require('./settings');
 var config = settings.current;
 
-var templatesDir = path.resolve(__dirname, '../templates');
+var templatesDir = path.resolve(__dirname, '../email-templates');
 
-exports.confirmation = function(user, done) {
+exports.registrationConfirmation = function(user, done) {
+
+	confirmation(user, 'registration-confirmation', user.email, done);
+};
+
+exports.emailUpdateConfirmation = function(user, done) {
+
+	confirmation(user, 'email-update-confirmation', user.email_status.value, done);
+};
+
+function confirmation(user, template, recipient, done) {
 
 	done = done || function() {};
 
+	var name = template.replace(/-/g, ' ');
+	var tpl = handlebars.compile(fs.readFileSync(path.resolve(templatesDir, template + '.handlebars')).toString());
+
 	// generate content
-	var tpl = handlebars.compile(fs.readFileSync(path.resolve(templatesDir, 'confirmation-email.handlebars')).toString());
 	var text = tpl({
 		user: user,
 		site: settings.webUri(),
 		confirmationUrl: settings.webUri('/confirm/' + user.email_status.token),
-		recipient: user.email
+		recipient: recipient
 	});
 
 	// setup email
 	var email = {
 		from: { name: config.vpdb.email.sender.name, address: config.vpdb.email.sender.email },
-		to: { name: user.name, address: user.email },
+		to: { name: user.name, address: recipient },
 		subject: 'Please confirm your email',
 		text: text
 	};
 
 	// send email
-	send(email, user, 'confirmation', done);
+	send(email, name, done);
+}
 
-};
-
-function send(email, user, what, done) {
+function send(email, what, done) {
 
 	if (_.isEmpty(config.vpdb.email.nodemailer)) {
-		logger.info('[mailer] NOT sending %s email to <%s> due to environment config.', what, user.email);
+		logger.info('[mailer] NOT sending %s email to <%s> due to environment config.', what, email.to.address);
 		return done();
 	}
 
 	var transport = nodemailer.createTransport(smtpTransport(config.vpdb.email.nodemailer));
-	logger.info('[mailer] Sending %s email to <%s>...', what, user.email);
+	logger.info('[mailer] Sending %s email to <%s>...', what, email.to.address);
 	transport.sendMail(email, function(err, status) {
 		if (err) {
-			logger.error('[mailer] Error sending %s mail to <%s>:', what, user.email, status);
+			logger.error('[mailer] Error sending %s mail to <%s>:', what, email.to.address, status);
 			return done(err);
 		}
-		logger.info('[mailer] Successfully sent %s mail to <%s> with message ID "%s" (%s).', what, user.email, status.messageId, status.response);
+		logger.info('[mailer] Successfully sent %s mail to <%s> with message ID "%s" (%s).', what, email.to.address, status.messageId, status.response);
 		done(null, status);
 	});
 }

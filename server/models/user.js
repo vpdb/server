@@ -340,7 +340,12 @@ UserSchema.options.toObject.transform = function(doc, user) {
 	delete user.password_hash;
 	delete user.password_salt;
 	delete user.password;
-	delete user.email_status;
+	if (user.email_status.code === 'confirmed') {
+		delete user.email_status;
+	} else {
+		delete user.email_status.token;
+	}
+
 };
 
 

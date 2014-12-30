@@ -332,7 +332,7 @@ describe('The VPDB `user` API', function() {
 
 	describe('when a user updates its email', function() {
 
-		it('should succeed when providing a valid email', function(done) {
+		it.only('should succeed when providing a valid email', function(done) {
 			var email = faker.internet.email().toLowerCase();
 			request
 				.patch('/api/v1/user')
@@ -343,6 +343,7 @@ describe('The VPDB `user` API', function() {
 
 					// check updated value
 					request.get('/api/v1/user').as('member').end(function(err, res) {
+						hlp.dump(res);
 						hlp.expectStatus(err, res, 200);
 						expect(res.body.email).to.be(email);
 						done();

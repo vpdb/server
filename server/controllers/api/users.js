@@ -71,7 +71,7 @@ exports.create = function(req, res) {
 
 			// user validated and created. time to send the activation email.
 			if (config.vpdb.email.confirmUserEmail) {
-				mailer.confirmation(user);
+				mailer.registrationConfirmation(user);
 			}
 
 		}, 'Error creating user <%s>.'));

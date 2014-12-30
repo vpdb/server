@@ -22,13 +22,129 @@
 var _ = require('lodash');
 var logger = require('winston');
 var passport = require('passport');
+var randomstring = require('randomstring');
 
 var User = require('mongoose').model('User');
 var acl = require('../../acl');
 var api = require('./api');
 var auth = require('../auth');
+var mailer = require('../../modules/mailer');
 var error = require('../../modules/error')('api', 'user');
 var config = require('../../modules/settings').current;
+
+
+/**
+ * Returns the current user's profile.
+ *
+ * @param {Request} req
+ * @param {Response} res
+ */
+exports.view = function(req, res) {
+
+	getACLs(req.user, function(err, acls) {
+		if (err) {
+			// TODO check if it's clever to reveal anything here
+			return api.fail(res, err, 500);
+		}
+		api.success(res, _.extend(req.user.toDetailed(), acls), 200);
+	});
+};
+
+
+/**
+ * Updates the current user's profile. For now it suports only password change, which might change in the future.
+ *
+ * @param {Request} req
+ * @param {Response} res
+ */
+exports.update = function(req, res) {
+
+	var updateableFields = [ 'name', 'location', 'email' ];
+	var assert = api.assert(error, 'update', req.user.email, res);
+
+	User.findById(req.user._id, assert(function(user) {
+
+		_.extend(user, _.pick(req.body, updateableFields));
+
+		var errors = {};
+
+		// CHANGE PASSWORD
+		if (req.body.password && !req.body.username) {
+
+			// check for current password
+			if (!req.body.current_password) {
+				errors.current_password = { message: 'You must provide your current password.', path: 'current_password' };
+
+			} else  {
+				// change password
+				if (user.authenticate(req.body.current_password)) {
+					user.password = req.body.password;
+				} else {
+					errors.current_password = { message: 'Invalid password.', path: 'current_password' };
+					logger.warn('[api|user:update] User <%s> provided wrong current password while changing.', req.user.email);
+				}
+			}
+		}
+
+		// CREATE LOCAL ACCOUNT
+		if (req.body.username) {
+
+			if (req.user.provider === 'local') {
+				errors.username = { message: 'Cannot change username for already local account.', path: 'username' };
+
+			} else if (!req.body.password) {
+				errors.password = { message: 'You must provide your new password.', path: 'password' };
+
+			} else {
+				user.password = req.body.password;
+				user.username = req.body.username;
+				user.provider = 'local';
+			}
+		}
+
+		user.validate(function(validationErr) {
+
+			if (validationErr || _.keys(errors).length) {
+				var errs = _.extend(errors, validationErr ? validationErr.errors : {});
+				return api.fail(res, error('Validation failed:').errors(errs).warn('update'), 422);
+			}
+
+			// EMAIL CHANGE
+			if (req.user.email !== user.email) {
+				user.email_status = {
+					code: 'pending_update',
+					token: randomstring.generate(16),
+					expires_at: new Date(new Date().getTime() + 86400000), // 1d valid
+					value: user.email
+				};
+				user.email = req.user.email;
+				mailer.emailUpdateConfirmation(user);
+			}
+
+			// save
+			user.save(assert(function(user) {
+
+				// log
+				if (req.body.password) {
+					if (req.body.username) {
+						logger.info('[api|user:update] Successfully added local credentials with username "%s" to user <%s> (%s).', user.username, user.email, user.id);
+					} else {
+						logger.info('[api|user:update] Successfully changed password of user "%s".', user.username);
+					}
+				}
+				req.user = user;
+
+				// if all good, enrich with ACLs
+				getACLs(user, assert(function(acls) {
+					api.success(res, _.extend(user.toDetailed(), acls), 200);
+
+				}, 'Error retrieving ACLs for user <%s>.'));
+			}, 'Error saving user <%s>.'));
+		});
+
+	}, 'Error fetching current user <%s>.'));
+};
+
 
 /**
  * Authenticates a set of given credentials.
@@ -85,6 +201,7 @@ exports.authenticate = function(req, res) {
 	}, 'Error while searching for "%s"'));// TODO check error message. We might not want to reveal too much here.
 };
 
+
 /**
  * Confirms user's email for a given token.
  *
@@ -96,7 +213,8 @@ exports.confirm = function(req, res) {
 	var assert = api.assert(error, 'confirm', req.params.tkn, res);
 	User.findOne({ 'email_status.token': req.params.tkn }, assert(function(user) {
 
-		var failMsg = 'No such token or token expired.';
+		var currentCode = user.email_status.code;
+		var successMsg, failMsg = 'No such token or token expired.';
 		if (!user) {
 			return api.fail(res, error('No user found with email token "%s".', req.params.tkn)
 				.display(failMsg)
@@ -111,11 +229,27 @@ exports.confirm = function(req, res) {
 		}
 
 		assert = api.assert(error, 'confirm', user.email, res);
+
+
+		if (currentCode === 'pending_registration') {
+			user.is_active = true;
+			successMsg = 'Email validated and user activated. You may login now.';
+
+		} else if (currentCode === 'pending_update') {
+			user.email = user.email_status.value;
+			successMsg = 'Email validated and updated.';
+
+		} else {
+			/* istanbul ignore next  */
+			api.fail(res, error('Unknown email status code "%s"', user.email_status.code)
+				.display('Internal server error, please contact an administrator.')
+				.log(),
+			500);
+		}
 		user.email_status = { code: 'confirmed' };
-		user.is_active = true;
 
 		user.save(assert(function() {
-			api.success(res, { message: 'Email validated and user activated. You may login now.' });
+			api.success(res, { message: successMsg, previous_code: currentCode });
 
 		}, 'Error saving user <%s>.'));
 	}, 'Error retrieving user with email token "%s".'));
@@ -139,6 +273,7 @@ exports.authenticateOAuth2 = function(req, res, next) {
 	passport.authenticate(req.params.strategy, passportCallback(req, res))(req, res, next);
 };
 
+
 /**
  * Skips passport authentication and processes the user profile directly.
  * @returns {Function}
@@ -154,6 +289,7 @@ exports.authenticateOAuth2Mock = function(req, res) {
 	}
 	require('../../passport').verifyCallbackOAuth(req.body.provider, req.body.providerName)(null, null, profile, passportCallback(req, res));
 };
+
 
 /**
  * Returns a custom callback function for passport. It basically checks if the
@@ -196,101 +332,6 @@ function passportCallback(req, res) {
 		});
 	};
 }
-
-/**
- * Returns the current user's profile.
- *
- * @param {Request} req
- * @param {Response} res
- */
-exports.view = function(req, res) {
-
-	getACLs(req.user, function(err, acls) {
-		if (err) {
-			// TODO check if it's clever to reveal anything here
-			return api.fail(res, err, 500);
-		}
-		api.success(res, _.extend(req.user.toDetailed(), acls), 200);
-	});
-};
-
-
-/**
- * Updates the current user's profile. For now it suports only password change, which might change in the future.
- *
- * @param {Request} req
- * @param {Response} res
- */
-exports.update = function(req, res) {
-
-	var updateableFields = [ 'name', 'location', 'email' ];
-	var assert = api.assert(error, 'update', req.user.email, res);
-
-	var user = _.extend(req.user, _.pick(req.body, updateableFields));
-
-	var errors = {};
-
-	// CHANGE PASSWORD
-	if (req.body.password && !req.body.username) {
-
-		// check for current password
-		if (!req.body.current_password) {
-			errors.current_password = { message: 'You must provide your current password.', path: 'current_password' };
-
-		} else  {
-			// change password
-			if (user.authenticate(req.body.current_password)) {
-				user.password = req.body.password;
-			} else {
-				errors.current_password = { message: 'Invalid password.', path: 'current_password' };
-				logger.warn('[api|user:update] User <%s> provided wrong current password while changing.', req.user.email);
-			}
-		}
-	}
-
-	// CREATE LOCAL ACCOUNT
-	if (req.body.username) {
-
-		if (req.user.provider === 'local') {
-			errors.username = { message: 'Cannot change username for already local account.', path: 'username' };
-
-		} else if (!req.body.password) {
-			errors.password = { message: 'You must provide your new password.', path: 'password' };
-
-		} else {
-			user.password = req.body.password;
-			user.username = req.body.username;
-			user.provider = 'local';
-		}
-	}
-
-	user.validate(function(validationErr) {
-
-		if (validationErr || _.keys(errors).length) {
-			var errs = _.extend(errors, validationErr ? validationErr.errors : {});
-			return api.fail(res, error('Validation failed:').errors(errs).warn('update'), 422);
-		}
-
-		// save
-		user.save(assert(function(user) {
-
-			// log
-			if (req.body.password) {
-				if (req.body.username) {
-					logger.info('[api|user:update] Successfully added local credentials with username "%s" to user <%s> (%s).', user.username, user.email, user.id);
-				} else {
-					logger.info('[api|user:update] Successfully changed password of user "%s".', user.username);
-				}
-			}
-
-			// if all good, enrich with ACLs
-			getACLs(user, assert(function(acls) {
-				api.success(res, _.extend(user.toDetailed(), acls), 200);
-
-			}, 'Error retrieving ACLs for user <%s>.'));
-		}, 'Error saving user <%s>.'));
-	});
-};
 
 
 /**

@@ -4,7 +4,8 @@
 
 *Client Changes*:
 
-* Added release inline editing
+* Added email confirmation when registering locally
+* Added release inline editing (WIP)
 
 ## v0.0.6
 

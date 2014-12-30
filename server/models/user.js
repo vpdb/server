@@ -43,7 +43,7 @@ var fields = {
 	username:        { type: String, index: true, unique: true, sparse: true },
 	email:           { type: String, index: true, unique: true, lowercase: true, required: 'Email must be provided.' },
 	email_status:    {
-		code:        { type: String, enum: [ 'confirmed', 'pending' ], required: true },
+		code:        { type: String, enum: [ 'confirmed', 'pending_registration', 'pending_update' ], required: true },
 		token:       { type: String },
 		expires_at:  { type: Date },
 		value:       { type: String }
@@ -254,7 +254,7 @@ UserSchema.statics.createUser = function(userObj, confirmUserEmail, done) {
 
 	if (confirmUserEmail) {
 		user.email_status = {
-			code: 'pending',
+			code: 'pending_registration',
 			token: randomstring.generate(16),
 			expires_at: new Date(new Date().getTime() + 86400000), // 1d valid
 			value: userObj.email

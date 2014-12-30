@@ -92,7 +92,7 @@ module.exports = {
 			 * Sender of the automated mails
 			 */
 			sender: {
-				email: 'server@localhost',
+				email: 'server@vpdb.local',
 				name: 'VPDB Server'
 			},
 

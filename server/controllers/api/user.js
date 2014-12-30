@@ -54,7 +54,7 @@ exports.authenticate = function(req, res) {
 				401);
 		}
 		if (!user.is_active) {
-			if (user.email_status && user.email_status.code === 'pending') {
+			if (user.email_status && user.email_status.code === 'pending_registration') {
 				return api.fail(res, error('User <%s> tried to login with unconfirmed email address.', user.email)
 						.display('Your account is inactive until you confirm your email address <%s>. If you did not get an email from <%s>, please contact an administrator.', user.email, config.vpdb.email.sender.email)
 						.warn('authenticate'),

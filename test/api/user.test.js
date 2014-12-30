@@ -332,7 +332,7 @@ describe('The VPDB `user` API', function() {
 
 	describe('when a user updates its email', function() {
 
-		it.only('should succeed when providing a valid email', function(done) {
+		it.only('should fail when providing a valid email but email is unconfirmed', function(done) {
 			var email = faker.internet.email().toLowerCase();
 			request
 				.patch('/api/v1/user')
@@ -350,6 +350,8 @@ describe('The VPDB `user` API', function() {
 					});
 				});
 		});
+
+		it('should succeed when providing a valid email and email is confirmed');
 
 		it('should succeed when providing the same email', function(done) {
 			request
@@ -379,6 +381,17 @@ describe('The VPDB `user` API', function() {
 					hlp.expectValidationError(err, res, 'email', 'is already taken');
 					done();
 				});
+		});
+
+		it('should fail when providing an email that already exists but is still pending');
+
+		it('should directly set the email status to confirmed if the email has already been confirmed in the past');
+
+		describe('when there is already a pending email update for that user', function() {
+
+			it('should set back the email to confirmed when the submitted email is the same as the original one');
+			it('should ignore the email when the submitted email is the same as the pending one ');
+
 		});
 
 	});

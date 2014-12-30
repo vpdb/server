@@ -10,5 +10,5 @@ include ../template/_mixins
 		p.text-center: b {{ data.question }}
 
 	.modal-footer
-		button.btn.btn-default(ng-click="$close(false)") {{ data.no }}
-		button.btn.btn--secondary(ng-click="$close(true)") {{ data.yes }}
+		button.btn.btn-default(ng-click="$dismiss()") {{ data.no }}
+		button.btn.btn--secondary(ng-click="$close()") {{ data.yes }}

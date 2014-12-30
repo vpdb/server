@@ -12,11 +12,11 @@ angular.module('vpdb.modal', [])
 			/**
 			 * Displays an error dialog.
 			 * @param {object} data Scope variables. Properties:
-			 *     - `icon`: title bar icon, default 'warning'
-			 *     - `title`: title in dialog bar, default ""
-			 *     - `subtitle`: body title
-			 *     - `message`: body message
-			 *     - `close`: text of the close button
+			 *     <li> `icon`: title bar icon, default "warning"
+			 *     <li> `title`: title in dialog bar, default ""
+			 *     <li> `subtitle`: body title
+			 *     <li> `message`: body message
+			 *     <li> `close`: text of the close button
 			 * @param {boolean} [flash] If true, the dialog isn't displayed instantly but on the next page.
 			 */
 			error: function(data, flash) {
@@ -27,11 +27,11 @@ angular.module('vpdb.modal', [])
 			/**
 			 * Displays an error dialog.
 			 * @param {object} data Scope variables. Properties:
-			 *     - `icon`: title bar icon, default 'info'
-			 *     - `title`: title in dialog bar
-			 *     - `subtitle`: body title
-			 *     - `message`: body message
-			 *     - `close`: text of the close button, default "close".
+			 *     <li> `icon`: title bar icon, default "info"
+			 *     <li> `title`: title in dialog bar
+			 *     <li> `subtitle`: body title
+			 *     <li> `message`: body message
+			 *     <li> `close`: text of the close button, default "close".
 			 * @param {boolean} [flash] If true, the dialog isn't displayed instantly but on the next page.
 			 */
 			info: function(data, flash) {
@@ -42,12 +42,12 @@ angular.module('vpdb.modal', [])
 			/**
 			 * Displays a question dialog.
 			 * @param {object} data Scope variables. Properties:
-			 *     - `icon`: title bar icon, default 'question-circle'
-			 *     - `title`: title in dialog bar
-			 *     - `message`: message before the question
-			 *     - `question`: question (centered)
-			 *     - `yes`: text of the yes button, default "Yes"
-			 *     - `no`: text of the no button, default "No"
+			 *     <li> `icon`: title bar icon, default "question-circle"
+			 *     <li> `title`: title in dialog bar
+			 *     <li> `message`: message before the question
+			 *     <li> `question`: question (centered)
+			 *     <li> `yes`: text of the yes button, default "Yes"
+			 *     <li> `no`: text of the no button, default "No"
 			 */
 			question: function(data) {
 				var defaults = {

@@ -38,25 +38,26 @@ var Schema = mongoose.Schema;
 // SCHEMA
 //-----------------------------------------------------------------------------
 var fields = {
-	id:              { type: String, required: true, unique: true, 'default': shortId.generate },
-	name:            { type: String, index: true, required: 'Name must be provided.' }, // display name, equals username when locally registering
-	username:        { type: String, index: true, unique: true, sparse: true },
-	email:           { type: String, index: true, unique: true, lowercase: true, required: 'Email must be provided.' },
-	email_status:    {
-		code:        { type: String, enum: [ 'confirmed', 'pending_registration', 'pending_update' ], required: true },
-		token:       { type: String },
-		expires_at:  { type: Date },
-		value:       { type: String }
+	id:               { type: String, required: true, unique: true, 'default': shortId.generate },
+	name:             { type: String, index: true, required: 'Name must be provided.' }, // display name, equals username when locally registering
+	username:         { type: String, index: true, unique: true, sparse: true },
+	email:            { type: String, index: true, unique: true, lowercase: true, required: 'Email must be provided.' },
+	email_status: {
+		code:         { type: String, enum: [ 'confirmed', 'pending_registration', 'pending_update' ], required: true },
+		token:        { type: String },
+		expires_at:   { type: Date },
+		value:        { type: String }
 	},
-	roles:           { type: [ String ], required: true },
-	plan:            { type: String, required: false },
-	provider:        { type: String, required: true },
-	password_hash:   { type: String },
-	password_salt:   { type: String },
-	thumb:           { type: String },
-	location:        { type: String },
-	created_at:      { type: Date, required: true },
-	is_active:       { type: Boolean, required: true, default: false }
+	roles:            { type: [ String ], required: true },
+	plan:             { type: String, required: false },
+	provider:         { type: String, required: true },
+	password_hash:    { type: String },
+	password_salt:    { type: String },
+	thumb:            { type: String },
+	location:         { type: String },
+	created_at:       { type: Date, required: true },
+	is_active:        { type: Boolean, required: true, default: false },
+	validated_emails: { type: [ String ] } // TODO fill up and use
 };
 // provider data fields
 if (config.vpdb.passport.github.enabled) {

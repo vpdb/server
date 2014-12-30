@@ -62,9 +62,9 @@ exports.update = function(req, res) {
 	var updateableFields = [ 'name', 'location', 'email' ];
 	var assert = api.assert(error, 'update', req.user.email, res);
 
-	User.findById(req.user._id, assert(function(user) {
+	User.findById(req.user._id, assert(function(updatedUser) {
 
-		_.extend(user, _.pick(req.body, updateableFields));
+		_.extend(updatedUser, _.pick(req.body, updateableFields));
 
 		var errors = {};
 
@@ -77,8 +77,8 @@ exports.update = function(req, res) {
 
 			} else  {
 				// change password
-				if (user.authenticate(req.body.current_password)) {
-					user.password = req.body.password;
+				if (updatedUser.authenticate(req.body.current_password)) {
+					updatedUser.password = req.body.password;
 				} else {
 					errors.current_password = { message: 'Invalid password.', path: 'current_password' };
 					logger.warn('[api|user:update] User <%s> provided wrong current password while changing.', req.user.email);
@@ -96,13 +96,13 @@ exports.update = function(req, res) {
 				errors.password = { message: 'You must provide your new password.', path: 'password' };
 
 			} else {
-				user.password = req.body.password;
-				user.username = req.body.username;
-				user.provider = 'local';
+				updatedUser.password = req.body.password;
+				updatedUser.username = req.body.username;
+				updatedUser.provider = 'local';
 			}
 		}
 
-		user.validate(function(validationErr) {
+		updatedUser.validate(function(validationErr) {
 
 			if (validationErr || _.keys(errors).length) {
 				var errs = _.extend(errors, validationErr ? validationErr.errors : {});
@@ -110,19 +110,31 @@ exports.update = function(req, res) {
 			}
 
 			// EMAIL CHANGE
-			if (req.user.email !== user.email) {
-				user.email_status = {
+			if (req.user.email !== updatedUser.email) {
+				updatedUser.email_status = {
 					code: 'pending_update',
 					token: randomstring.generate(16),
 					expires_at: new Date(new Date().getTime() + 86400000), // 1d valid
-					value: user.email
+					value: updatedUser.email
 				};
-				user.email = req.user.email;
-				mailer.emailUpdateConfirmation(user);
+				updatedUser.email = req.user.email;
+				mailer.emailUpdateConfirmation(updatedUser);
+
+			} else if (req.body.email) {
+				// in here it's a special case:
+				// the email has been posted but it's the same as the current
+				// email. this situation is meant for aborting a pending
+				// confirmation request and set the email back to what it was.
+
+				// so IF we really are pending, simply set back the status to "confirmed".
+				if (req.user.email_status && req.user.email_status.code === 'pending_update') {
+					logger.warn('[api|user:update] Canceling email confirmation with token "%s" for user <%s> -> <%s> (%s).', req.user.email_status.token, req.user.email, req.user.email_status.value, req.user.id);
+					updatedUser.email_status = { code: 'confirmed' };
+				}
 			}
 
 			// save
-			user.save(assert(function(user) {
+			updatedUser.save(assert(function(user) {
 
 				// log
 				if (req.body.password) {

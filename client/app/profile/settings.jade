@@ -59,9 +59,9 @@ include ../template/_mixins
 			.col-sm-offset-3.col-sm-7(ng-show="auth.user.email_status.code === 'pending_update'")
 				+icon('arrow-right').shift-up
 				| Email update pending ({{ auth.user.email_status.value }}).
-				a.pull-right
+				a.pull-right(ng-click="abortEmailUpdate()")
 					+icon('times').shift-up.space-right-less
-					| Cancel
+					| Abort
 				p.padder-bottom
 
 			div.alert.alert-danger(ng-show="errors.email")

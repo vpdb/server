@@ -2,7 +2,7 @@
 
 angular.module('vpdb.profile.settings', [])
 
-	.controller('ProfileSettingsCtrl', function($scope, $rootScope, AuthService, ApiHelper, ProfileResource) {
+	.controller('ProfileSettingsCtrl', function($scope, $rootScope, AuthService, ApiHelper, ProfileResource, ModalService) {
 
 		$scope.theme('dark');
 		$scope.setTitle('Your Profile');
@@ -23,10 +23,17 @@ angular.module('vpdb.profile.settings', [])
 		 * First block: Update "public" user profile data
 		 */
 		$scope.updateUserProfile = function() {
-			ProfileResource.patch($scope.updatedUser, function(user) {
+
+			var updatedUser = AuthService.user.email_status && AuthService.user.email_status.code === 'pending_update' ? _.omit($scope.updatedUser, 'email') : $scope.updatedUser;
+			ProfileResource.patch(updatedUser, function(user) {
+
+				if (user.email_status && user.email_status.code === 'pending_update' && !AuthService.user.email_status) {
+					$rootScope.showNotification('User Profile successfully saved.<br>A confirmation mail has been sent to your new email address so we can make sure we got the right one.', 10000);
+				} else {
+					$rootScope.showNotification('User Profile successfully saved.');
+				}
 				AuthService.saveUser(user);
 				ApiHelper.clearErrors($scope);
-				$rootScope.showNotification('User Profile successfully saved.');
 
 			}, ApiHelper.handleErrors($scope));
 		};
@@ -82,6 +89,20 @@ angular.module('vpdb.profile.settings', [])
 				$rootScope.showNotification('Local credentials successfully created. You may login with username <strong>' + $scope.localCredentials.username + '</strong> now.', 5000);
 
 			}, ApiHelper.handleErrors($scope));
+		};
+
+		$scope.abortEmailUpdate = function() {
+			ModalService.question({
+				title: 'Cancel Email Update?',
+				message: 'You have asked to change your email address to "' + AuthService.user.email_status.value + '" but we\'re still waiting for you to confirm the mail we\'ve sent you.',
+				question: 'Do you want to set your email back to "' + AuthService.user.email + '"?'
+			}).result.then(function() {
+				ProfileResource.patch({ email: AuthService.user.email }, function(user) {
+					AuthService.saveUser(user);
+					ApiHelper.clearErrors($scope);
+					$rootScope.showNotification('Email is set back to <b>' + AuthService.user.email + '</b>.');
+				});
+			});
 		};
 
 		// pre-fill (local) username from first provider we find.

@@ -25,7 +25,8 @@ describe('The VPDB `user` API', function() {
 			chmail1: { roles: [ 'member' ]},
 			chmail2: { roles: [ 'member' ]},
 			chmail3: { roles: [ 'member' ]},
-			chmail4: { roles: [ 'member' ]}
+			chmail4: { roles: [ 'member' ]},
+			chmail5: { roles: [ 'member' ]}
 		}, done);
 	});
 
@@ -414,7 +415,58 @@ describe('The VPDB `user` API', function() {
 
 		it('should fail when providing an email that already exists but is still pending');
 
-		it('should directly set the email status to confirmed if the email has already been confirmed in the past');
+		it('should directly set the email status to confirmed if the email has already been confirmed in the past', function(done) {
+
+			var user = 'chmail5';
+			var oldMail = hlp.getUser(user).email;
+			var email1 = faker.internet.email().toLowerCase();
+			var email2 = faker.internet.email().toLowerCase();
+
+			// set email 1
+			request
+				.patch('/api/v1/user')
+				.as(user)
+				.send({ email: email1, returnEmailToken: true })
+				.end(function(err, res) {
+					hlp.expectStatus(err, res, 200);
+					expect(res.body.email).to.be(oldMail);
+					expect(res.body.email_status.code).to.be('pending_update');
+
+					// confirm email token 1
+					request.get('/api/v1/user/confirm/' + res.body.email_token).end(function(err, res) {
+						hlp.expectStatus(err, res, 200);
+
+						// set email 2
+						request
+							.patch('/api/v1/user')
+							.as(user)
+							.send({ email: email2, returnEmailToken: true })
+							.end(function(err, res) {
+								hlp.expectStatus(err, res, 200);
+								expect(res.body.email).to.be(email1);
+								expect(res.body.email_status.code).to.be('pending_update');
+
+								// confirm email token 2
+								request.get('/api/v1/user/confirm/' + res.body.email_token).end(function(err, res) {
+									hlp.expectStatus(err, res, 200);
+
+									// set email 1
+									request
+										.patch('/api/v1/user')
+										.as(user)
+										.send({ email: email1, returnEmailToken: true })
+										.end(function(err, res) {
+											hlp.expectStatus(err, res, 200);
+											hlp.dump(res);
+											expect(res.body.email).to.be(email1);
+											expect(res.body.email_status).to.not.be.ok();
+											done();
+										});
+								});
+							});
+					});
+				});
+		});
 
 		describe('when there is already a pending email update for that user', function() {
 

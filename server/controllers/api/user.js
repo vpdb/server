@@ -130,15 +130,20 @@ exports.update = function(req, res) {
 					}
 
 				} else {
-					updatedUser.email_status = {
-						code: 'pending_update',
-						token: randomstring.generate(16),
-						expires_at: new Date(new Date().getTime() + 86400000), // 1d valid
-						value: updatedUser.email
-					};
-					updatedUser.email = currentUser.email;
-					mailer.emailUpdateConfirmation(updatedUser);
+					// check if we've already validated this address
+					if (_.contains(currentUser.validated_emails, updatedUser.email)) {
+						updatedUser.email_status = { code: 'confirmed' };
 
+					} else {
+						updatedUser.email_status = {
+							code: 'pending_update',
+							token: randomstring.generate(16),
+							expires_at: new Date(new Date().getTime() + 86400000), // 1d valid
+							value: updatedUser.email
+						};
+						updatedUser.email = currentUser.email;
+						mailer.emailUpdateConfirmation(updatedUser);
+					}
 				}
 
 			} else if (req.body.email) {
@@ -281,12 +286,15 @@ exports.confirm = function(req, res) {
 
 		} else {
 			/* istanbul ignore next  */
-			api.fail(res, error('Unknown email status code "%s"', user.email_status.code)
+			return api.fail(res, error('Unknown email status code "%s"', user.email_status.code)
 				.display('Internal server error, please contact an administrator.')
 				.log(),
 			500);
 		}
 		user.email_status = { code: 'confirmed' };
+		user.validated_emails = user.validated_emails || [];
+		user.validated_emails.push(user.email);
+		user.validated_emails = _.uniq(user.validated_emails);
 
 		user.save(assert(function() {
 			api.success(res, { message: successMsg, previous_code: currentCode });

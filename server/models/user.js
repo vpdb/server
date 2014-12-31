@@ -57,7 +57,7 @@ var fields = {
 	location:         { type: String },
 	created_at:       { type: Date, required: true },
 	is_active:        { type: Boolean, required: true, default: false },
-	validated_emails: { type: [ String ] } // TODO fill up and use
+	validated_emails: { type: [ String ] }
 };
 // provider data fields
 if (config.vpdb.passport.github.enabled) {
@@ -263,6 +263,7 @@ UserSchema.statics.createUser = function(userObj, confirmUserEmail, done) {
 	} else {
 		user.email_status = { code: 'confirmed' };
 		user.is_active = true;
+		user.validated_emails = [ userObj.email ];
 	}
 
 	user.validate(function(err) {
@@ -341,6 +342,7 @@ UserSchema.options.toObject.transform = function(doc, user) {
 	delete user.password_hash;
 	delete user.password_salt;
 	delete user.password;
+	delete user.validated_emails;
 	if (user.email_status.code === 'confirmed') {
 		delete user.email_status;
 	} else {

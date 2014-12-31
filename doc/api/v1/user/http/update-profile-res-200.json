@@ -1,21 +1,27 @@
 200 OK
 Content-Type: application/json; charset=utf-8
-Content-Length: 611
+Content-Length: 757
 
 {
-  "location": "Nikolausview",
+  "location": "Jesusberg",
   "plan": "free",
-  "name": "Tyrell Little",
-  "username": "Haskell_Dickens",
-  "email": "oswald.bayer77@yahoo.com",
+  "name": "Esmeralda McGlynn",
+  "username": "Jamie.Graham",
+  "email": "dena55@yahoo.com",
   "provider": "local",
-  "created_at": "2014-12-30T00:21:29.536Z",
+  "created_at": "2014-12-31T01:36:18.473Z",
+  "validated_emails": [],
   "is_active": true,
   "roles": [
     "member"
   ],
-  "id": "mJwu7S_mVm",
-  "gravatar_id": "cc6f1ebe798a0b72c67083fc45d3fb6d",
+  "email_status": {
+    "code": "pending_update",
+    "expires_at": "2015-01-01T01:36:18.628Z",
+    "value": "marcia.mills@gmail.com"
+  },
+  "id": "mJBdhBjtSX",
+  "gravatar_id": "326909c0e5de4e60b5f9a8cb14d1bdf4",
   "permissions": {
     "user": [
       "update",

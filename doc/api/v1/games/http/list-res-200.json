@@ -3,469 +3,474 @@ X-List-Page: 1
 X-List-Size: 12
 X-List-Count: 10
 Content-Type: application/json; charset=utf-8
-Etag: W/"GxGcprYunZF+0UVtmw6fHQ=="
+Etag: W/"tN56ZI3Sw4ewEykyTjmn3Q=="
 Content-Encoding: gzip
 
 [
   {
-    "id": "arizona",
-    "title": "Arizona",
-    "manufacturer": "LTD",
-    "year": 1900,
-    "game_type": "ss",
-    "ipdb": {
-      "number": 5890,
-      "mfg": 467
-    },
-    "media": {
-      "backglass": {
-        "is_protected": false,
-        "variations": {
-          "medium-2x": {
-            "url": "/storage/v1/files/7kNTaEuQEX/medium-2x",
-            "mime_type": "image/jpeg",
-            "bytes": 2561,
-            "height": 582,
-            "width": 728
-          },
-          "small-2x": {
-            "url": "/storage/v1/files/7kNTaEuQEX/small-2x",
-            "mime_type": "image/jpeg",
-            "bytes": 1505,
-            "height": 404,
-            "width": 505
-          },
-          "medium": {
-            "url": "/storage/v1/files/7kNTaEuQEX/medium",
-            "mime_type": "image/jpeg",
-            "bytes": 965,
-            "height": 291,
-            "width": 364
-          },
-          "small": {
-            "url": "/storage/v1/files/7kNTaEuQEX/small",
-            "mime_type": "image/jpeg",
-            "bytes": 619,
-            "height": 202,
-            "width": 253
-          }
-        },
-        "url": "/storage/v1/files/7kNTaEuQEX",
-        "id": "7kNTaEuQEX"
-      }
-    }
-  },
-  {
-    "id": "cv",
-    "title": "Cirqus Voltaire",
+    "id": "centaur-ii",
+    "title": "Centaur II",
     "manufacturer": "Bally",
-    "year": 1997,
+    "year": 1983,
     "game_type": "ss",
     "ipdb": {
-      "number": 4059,
-      "mfg": 214,
-      "rating": 8.2
-    },
-    "media": {
-      "backglass": {
-        "is_protected": false,
-        "variations": {
-          "medium-2x": {
-            "url": "/storage/v1/files/711RaEuXVX/medium-2x",
-            "mime_type": "image/jpeg",
-            "bytes": 2561,
-            "height": 582,
-            "width": 728
-          },
-          "small-2x": {
-            "url": "/storage/v1/files/711RaEuXVX/small-2x",
-            "mime_type": "image/jpeg",
-            "bytes": 1505,
-            "height": 404,
-            "width": 505
-          },
-          "medium": {
-            "url": "/storage/v1/files/711RaEuXVX/medium",
-            "mime_type": "image/jpeg",
-            "bytes": 965,
-            "height": 291,
-            "width": 364
-          },
-          "small": {
-            "url": "/storage/v1/files/711RaEuXVX/small",
-            "mime_type": "image/jpeg",
-            "bytes": 619,
-            "height": 202,
-            "width": 253
-          }
-        },
-        "url": "/storage/v1/files/711RaEuXVX",
-        "id": "711RaEuXVX"
-      }
-    }
-  },
-  {
-    "id": "dolly-parton",
-    "title": "Dolly Parton",
-    "manufacturer": "Bally",
-    "year": 1978,
-    "game_type": "ss",
-    "ipdb": {
-      "number": 698,
+      "number": 477,
       "mfg": 47,
-      "rating": 6.8
-    },
-    "media": {
-      "backglass": {
-        "is_protected": false,
-        "variations": {
-          "small-2x": {
-            "url": "/storage/v1/files/my1CAN_XNm/small-2x"
-          },
-          "small": {
-            "url": "/storage/v1/files/my1CAN_XNm/small"
-          },
-          "medium-2x": {
-            "url": "/storage/v1/files/my1CAN_XNm/medium-2x"
-          },
-          "medium": {
-            "url": "/storage/v1/files/my1CAN_XNm/medium"
-          }
-        },
-        "url": "/storage/v1/files/my1CAN_XNm",
-        "id": "my1CAN_XNm"
-      }
-    }
-  },
-  {
-    "id": "ducks",
-    "title": "Ducks",
-    "manufacturer": "Playmatic",
-    "year": 1975,
-    "game_type": "em",
-    "ipdb": {
-      "number": 739,
-      "mfg": 255
+      "rating": 7.8
     },
     "media": {
       "backglass": {
         "is_protected": false,
         "variations": {
           "medium-2x": {
-            "url": "/storage/v1/files/7yy5CV_mNQ/medium-2x",
+            "url": "/storage/v1/files/XkG5wHitSX/medium-2x",
             "mime_type": "image/jpeg",
             "bytes": 2561,
             "height": 582,
             "width": 728
           },
           "small-2x": {
-            "url": "/storage/v1/files/7yy5CV_mNQ/small-2x",
-            "mime_type": "image/jpeg",
-            "bytes": 1505,
-            "height": 404,
-            "width": 505
-          },
-          "medium": {
-            "url": "/storage/v1/files/7yy5CV_mNQ/medium",
-            "mime_type": "image/jpeg",
-            "bytes": 965,
-            "height": 291,
-            "width": 364
-          },
-          "small": {
-            "url": "/storage/v1/files/7yy5CV_mNQ/small",
-            "mime_type": "image/jpeg",
-            "bytes": 619,
-            "height": 202,
-            "width": 253
-          }
-        },
-        "url": "/storage/v1/files/7yy5CV_mNQ",
-        "id": "7yy5CV_mNQ"
-      }
-    }
-  },
-  {
-    "id": "light-house",
-    "title": "Light House",
-    "manufacturer": "Scientific Machine Corporation",
-    "year": 1934,
-    "game_type": "em",
-    "ipdb": {
-      "number": 4195,
-      "mfg": 277
-    },
-    "media": {
-      "backglass": {
-        "is_protected": false,
-        "variations": {
-          "medium-2x": {
-            "url": "/storage/v1/files/7kQ8RVdQ47/medium-2x",
-            "mime_type": "image/jpeg",
-            "bytes": 2561,
-            "height": 582,
-            "width": 728
-          },
-          "small-2x": {
-            "url": "/storage/v1/files/7kQ8RVdQ47/small-2x",
+            "url": "/storage/v1/files/XkG5wHitSX/small-2x",
             "mime_type": "image/jpeg",
             "bytes": 1504,
             "height": 404,
             "width": 505
           },
+          "medium": {
+            "url": "/storage/v1/files/XkG5wHitSX/medium",
+            "mime_type": "image/jpeg",
+            "bytes": 965,
+            "height": 291,
+            "width": 364
+          },
           "small": {
-            "url": "/storage/v1/files/7kQ8RVdQ47/small",
+            "url": "/storage/v1/files/XkG5wHitSX/small",
             "mime_type": "image/jpeg",
             "bytes": 618,
             "height": 202,
             "width": 253
-          },
-          "medium": {
-            "url": "/storage/v1/files/7kQ8RVdQ47/medium",
-            "mime_type": "image/jpeg",
-            "bytes": 965,
-            "height": 291,
-            "width": 364
           }
         },
-        "url": "/storage/v1/files/7kQ8RVdQ47",
-        "id": "7kQ8RVdQ47"
+        "url": "/storage/v1/files/XkG5wHitSX",
+        "id": "XkG5wHitSX"
       }
     }
   },
   {
-    "id": "new-continental-golden",
-    "title": "New Continental Golden",
-    "manufacturer": "General Automatic Amusements",
+    "id": "drop-a-card",
+    "title": "Drop-A-Card",
+    "manufacturer": "Gottlieb",
+    "year": 1971,
+    "game_type": "em",
+    "ipdb": {
+      "number": 735,
+      "mfg": 93,
+      "rating": 7.8
+    },
+    "media": {
+      "backglass": {
+        "is_protected": false,
+        "variations": {
+          "medium-2x": {
+            "url": "/storage/v1/files/XJRIdHiKr7/medium-2x",
+            "mime_type": "image/jpeg",
+            "bytes": 2561,
+            "height": 582,
+            "width": 728
+          },
+          "medium": {
+            "url": "/storage/v1/files/XJRIdHiKr7/medium",
+            "mime_type": "image/jpeg",
+            "bytes": 965,
+            "height": 291,
+            "width": 364
+          },
+          "small-2x": {
+            "url": "/storage/v1/files/XJRIdHiKr7/small-2x",
+            "mime_type": "image/jpeg",
+            "bytes": 1505,
+            "height": 404,
+            "width": 505
+          },
+          "small": {
+            "url": "/storage/v1/files/XJRIdHiKr7/small",
+            "mime_type": "image/jpeg",
+            "bytes": 619,
+            "height": 202,
+            "width": 253
+          }
+        },
+        "url": "/storage/v1/files/XJRIdHiKr7",
+        "id": "XJRIdHiKr7"
+      }
+    }
+  },
+  {
+    "id": "electra-pool",
+    "title": "Electra-Pool",
+    "manufacturer": "Gottlieb",
+    "year": 1965,
+    "game_type": "em",
+    "ipdb": {
+      "number": 779,
+      "mfg": 93
+    },
+    "media": {
+      "backglass": {
+        "is_protected": false,
+        "variations": {
+          "medium-2x": {
+            "url": "/storage/v1/files/my5hwHoKr7/medium-2x",
+            "mime_type": "image/jpeg",
+            "bytes": 2561,
+            "height": 582,
+            "width": 728
+          },
+          "small-2x": {
+            "url": "/storage/v1/files/my5hwHoKr7/small-2x",
+            "mime_type": "image/jpeg",
+            "bytes": 1505,
+            "height": 404,
+            "width": 505
+          },
+          "medium": {
+            "url": "/storage/v1/files/my5hwHoKr7/medium",
+            "mime_type": "image/jpeg",
+            "bytes": 965,
+            "height": 291,
+            "width": 364
+          },
+          "small": {
+            "url": "/storage/v1/files/my5hwHoKr7/small",
+            "mime_type": "image/jpeg",
+            "bytes": 619,
+            "height": 202,
+            "width": 253
+          }
+        },
+        "url": "/storage/v1/files/my5hwHoKr7",
+        "id": "my5hwHoKr7"
+      }
+    }
+  },
+  {
+    "id": "full",
+    "title": "Full",
+    "manufacturer": "Interflip",
     "year": 1900,
     "game_type": "na",
     "ipdb": {
-      "number": 4045,
-      "mfg": 131
+      "number": 4375,
+      "mfg": 157
     },
     "media": {
       "backglass": {
         "is_protected": false,
         "variations": {
           "medium-2x": {
-            "url": "/storage/v1/files/7Jg2RNdXNX/medium-2x"
-          },
-          "small-2x": {
-            "url": "/storage/v1/files/7Jg2RNdXNX/small-2x",
-            "mime_type": "image/jpeg",
-            "bytes": 1505,
-            "height": 404,
-            "width": 505
-          },
-          "medium": {
-            "url": "/storage/v1/files/7Jg2RNdXNX/medium",
-            "mime_type": "image/jpeg",
-            "bytes": 965,
-            "height": 291,
-            "width": 364
-          },
-          "small": {
-            "url": "/storage/v1/files/7Jg2RNdXNX/small",
-            "mime_type": "image/jpeg",
-            "bytes": 619,
-            "height": 202,
-            "width": 253
-          }
-        },
-        "url": "/storage/v1/files/7Jg2RNdXNX",
-        "id": "7Jg2RNdXNX"
-      }
-    }
-  },
-  {
-    "id": "oxford",
-    "title": "Oxford",
-    "manufacturer": "Maresa",
-    "year": 1900,
-    "game_type": "em",
-    "ipdb": {
-      "number": 5758,
-      "mfg": 204
-    },
-    "media": {
-      "backglass": {
-        "is_protected": false,
-        "variations": {
-          "medium-2x": {
-            "url": "/storage/v1/files/mJxu0Vu7EQ/medium-2x",
+            "url": "/storage/v1/files/mkQSuSjKBX/medium-2x",
             "mime_type": "image/jpeg",
             "bytes": 2561,
             "height": 582,
             "width": 728
           },
           "small-2x": {
-            "url": "/storage/v1/files/mJxu0Vu7EQ/small-2x",
+            "url": "/storage/v1/files/mkQSuSjKBX/small-2x",
             "mime_type": "image/jpeg",
             "bytes": 1505,
             "height": 404,
             "width": 505
           },
           "medium": {
-            "url": "/storage/v1/files/mJxu0Vu7EQ/medium",
+            "url": "/storage/v1/files/mkQSuSjKBX/medium",
             "mime_type": "image/jpeg",
             "bytes": 965,
             "height": 291,
             "width": 364
           },
           "small": {
-            "url": "/storage/v1/files/mJxu0Vu7EQ/small",
+            "url": "/storage/v1/files/mkQSuSjKBX/small",
             "mime_type": "image/jpeg",
             "bytes": 619,
             "height": 202,
             "width": 253
           }
         },
-        "url": "/storage/v1/files/mJxu0Vu7EQ",
-        "id": "mJxu0Vu7EQ"
+        "url": "/storage/v1/files/mkQSuSjKBX",
+        "id": "mkQSuSjKBX"
       }
     }
   },
   {
-    "id": "shuffle-bowl",
-    "title": "Shuffle Bowl",
-    "manufacturer": "Exhibit",
-    "year": 1948,
-    "game_type": "em",
-    "ipdb": {
-      "number": 3246,
-      "mfg": 117
-    },
-    "media": {
-      "backglass": {
-        "is_protected": false,
-        "variations": {
-          "medium-2x": {
-            "url": "/storage/v1/files/XyKxAEumVQ/medium-2x",
-            "mime_type": "image/jpeg",
-            "bytes": 2561,
-            "height": 582,
-            "width": 728
-          },
-          "small-2x": {
-            "url": "/storage/v1/files/XyKxAEumVQ/small-2x",
-            "mime_type": "image/jpeg",
-            "bytes": 1505,
-            "height": 404,
-            "width": 505
-          },
-          "small": {
-            "url": "/storage/v1/files/XyKxAEumVQ/small",
-            "mime_type": "image/jpeg",
-            "bytes": 619,
-            "height": 202,
-            "width": 253
-          },
-          "medium": {
-            "url": "/storage/v1/files/XyKxAEumVQ/medium",
-            "mime_type": "image/jpeg",
-            "bytes": 965,
-            "height": 291,
-            "width": 364
-          }
-        },
-        "url": "/storage/v1/files/XyKxAEumVQ",
-        "id": "XyKxAEumVQ"
-      }
-    }
-  },
-  {
-    "id": "super-special",
-    "title": "Super Special",
-    "manufacturer": "Genco",
-    "year": 1933,
+    "id": "olympic-doubles",
+    "title": "Olympic Doubles",
+    "manufacturer": "Olympic Games Manufacturing Company",
+    "year": 1932,
     "game_type": "pm",
     "ipdb": {
-      "number": 2444,
-      "mfg": 130
+      "number": 5362,
+      "mfg": 238
     },
     "media": {
       "backglass": {
         "is_protected": false,
         "variations": {
           "medium-2x": {
-            "url": "/storage/v1/files/7JHVCNd7VQ/medium-2x",
+            "url": "/storage/v1/files/QJYuroKBQ/medium-2x",
             "mime_type": "image/jpeg",
             "bytes": 2561,
             "height": 582,
             "width": 728
           },
           "small-2x": {
-            "url": "/storage/v1/files/7JHVCNd7VQ/small-2x",
+            "url": "/storage/v1/files/QJYuroKBQ/small-2x",
             "mime_type": "image/jpeg",
-            "bytes": 1505,
+            "bytes": 1504,
             "height": 404,
             "width": 505
           },
           "medium": {
-            "url": "/storage/v1/files/7JHVCNd7VQ/medium",
+            "url": "/storage/v1/files/QJYuroKBQ/medium",
             "mime_type": "image/jpeg",
             "bytes": 965,
             "height": 291,
             "width": 364
           },
           "small": {
-            "url": "/storage/v1/files/7JHVCNd7VQ/small",
+            "url": "/storage/v1/files/QJYuroKBQ/small",
             "mime_type": "image/jpeg",
-            "bytes": 619,
+            "bytes": 618,
             "height": 202,
             "width": 253
           }
         },
-        "url": "/storage/v1/files/7JHVCNd7VQ",
-        "id": "7JHVCNd7VQ"
+        "url": "/storage/v1/files/QJYuroKBQ",
+        "id": "QJYuroKBQ"
       }
     }
   },
   {
-    "id": "three-point",
-    "title": "Three Point",
-    "manufacturer": "Chicago Vending Company",
-    "year": 1934,
-    "game_type": "pm",
+    "id": "pinball",
+    "title": "Pinball",
+    "manufacturer": "Stern",
+    "year": 1977,
+    "game_type": "em",
     "ipdb": {
-      "number": 2542,
-      "mfg": 82
+      "number": 4694,
+      "mfg": 302
     },
     "media": {
       "backglass": {
         "is_protected": false,
         "variations": {
           "medium-2x": {
-            "url": "/storage/v1/files/X1mGCNuQEX/medium-2x",
+            "url": "/storage/v1/files/X1p5wroFB7/medium-2x",
             "mime_type": "image/jpeg",
             "bytes": 2561,
             "height": 582,
             "width": 728
           },
           "small-2x": {
-            "url": "/storage/v1/files/X1mGCNuQEX/small-2x",
+            "url": "/storage/v1/files/X1p5wroFB7/small-2x",
             "mime_type": "image/jpeg",
             "bytes": 1505,
             "height": 404,
             "width": 505
           },
           "medium": {
-            "url": "/storage/v1/files/X1mGCNuQEX/medium",
+            "url": "/storage/v1/files/X1p5wroFB7/medium",
             "mime_type": "image/jpeg",
             "bytes": 965,
             "height": 291,
             "width": 364
           },
           "small": {
-            "url": "/storage/v1/files/X1mGCNuQEX/small",
+            "url": "/storage/v1/files/X1p5wroFB7/small",
             "mime_type": "image/jpeg",
             "bytes": 619,
             "height": 202,
             "width": 253
           }
         },
-        "url": "/storage/v1/files/X1mGCNuQEX",
-        "id": "X1mGCNuQEX"
+        "url": "/storage/v1/files/X1p5wroFB7",
+        "id": "X1p5wroFB7"
+      }
+    }
+  },
+  {
+    "id": "taxi",
+    "title": "Taxi",
+    "manufacturer": "Williams",
+    "year": 1988,
+    "game_type": "ss",
+    "ipdb": {
+      "number": 2505,
+      "mfg": 349,
+      "rating": 7.9
+    },
+    "media": {
+      "backglass": {
+        "is_protected": false,
+        "variations": {
+          "medium-2x": {
+            "url": "/storage/v1/files/XJQX_HiKBm/medium-2x",
+            "mime_type": "image/jpeg",
+            "bytes": 2561,
+            "height": 582,
+            "width": 728
+          },
+          "small-2x": {
+            "url": "/storage/v1/files/XJQX_HiKBm/small-2x",
+            "mime_type": "image/jpeg",
+            "bytes": 1504,
+            "height": 404,
+            "width": 505
+          },
+          "medium": {
+            "url": "/storage/v1/files/XJQX_HiKBm/medium",
+            "mime_type": "image/jpeg",
+            "bytes": 965,
+            "height": 291,
+            "width": 364
+          },
+          "small": {
+            "url": "/storage/v1/files/XJQX_HiKBm/small",
+            "mime_type": "image/jpeg",
+            "bytes": 618,
+            "height": 202,
+            "width": 253
+          }
+        },
+        "url": "/storage/v1/files/XJQX_HiKBm",
+        "id": "XJQX_HiKBm"
+      }
+    }
+  },
+  {
+    "id": "the-new-champ",
+    "title": "The New Champ",
+    "manufacturer": "Gottlieb",
+    "year": 1941,
+    "game_type": "em",
+    "ipdb": {
+      "number": 1668,
+      "mfg": 93
+    },
+    "media": {
+      "backglass": {
+        "is_protected": false,
+        "variations": {
+          "small-2x": {
+            "url": "/storage/v1/files/QJoqdHsFrX/small-2x"
+          },
+          "small": {
+            "url": "/storage/v1/files/QJoqdHsFrX/small"
+          },
+          "medium-2x": {
+            "url": "/storage/v1/files/QJoqdHsFrX/medium-2x"
+          },
+          "medium": {
+            "url": "/storage/v1/files/QJoqdHsFrX/medium"
+          }
+        },
+        "url": "/storage/v1/files/QJoqdHsFrX",
+        "id": "QJoqdHsFrX"
+      }
+    }
+  },
+  {
+    "id": "wild-fire",
+    "title": "Wild Fire",
+    "manufacturer": "Gottlieb",
+    "year": 1957,
+    "game_type": "em",
+    "ipdb": {
+      "number": 3773,
+      "mfg": 93
+    },
+    "media": {
+      "backglass": {
+        "is_protected": false,
+        "variations": {
+          "medium-2x": {
+            "url": "/storage/v1/files/71mZdBiYrX/medium-2x",
+            "mime_type": "image/jpeg",
+            "bytes": 2561,
+            "height": 582,
+            "width": 728
+          },
+          "small-2x": {
+            "url": "/storage/v1/files/71mZdBiYrX/small-2x",
+            "mime_type": "image/jpeg",
+            "bytes": 1504,
+            "height": 404,
+            "width": 505
+          },
+          "medium": {
+            "url": "/storage/v1/files/71mZdBiYrX/medium",
+            "mime_type": "image/jpeg",
+            "bytes": 965,
+            "height": 291,
+            "width": 364
+          },
+          "small": {
+            "url": "/storage/v1/files/71mZdBiYrX/small",
+            "mime_type": "image/jpeg",
+            "bytes": 618,
+            "height": 202,
+            "width": 253
+          }
+        },
+        "url": "/storage/v1/files/71mZdBiYrX",
+        "id": "71mZdBiYrX"
+      }
+    }
+  },
+  {
+    "id": "world-defender",
+    "title": "World Defender",
+    "manufacturer": "Bell Games",
+    "year": 1985,
+    "game_type": "ss",
+    "ipdb": {
+      "number": 3519,
+      "mfg": 235
+    },
+    "media": {
+      "backglass": {
+        "is_protected": false,
+        "variations": {
+          "medium-2x": {
+            "url": "/storage/v1/files/Q1iuOHiFrQ/medium-2x",
+            "mime_type": "image/jpeg",
+            "bytes": 2561,
+            "height": 582,
+            "width": 728
+          },
+          "medium": {
+            "url": "/storage/v1/files/Q1iuOHiFrQ/medium",
+            "mime_type": "image/jpeg",
+            "bytes": 965,
+            "height": 291,
+            "width": 364
+          },
+          "small-2x": {
+            "url": "/storage/v1/files/Q1iuOHiFrQ/small-2x",
+            "mime_type": "image/jpeg",
+            "bytes": 1505,
+            "height": 404,
+            "width": 505
+          },
+          "small": {
+            "url": "/storage/v1/files/Q1iuOHiFrQ/small",
+            "mime_type": "image/jpeg",
+            "bytes": 619,
+            "height": 202,
+            "width": 253
+          }
+        },
+        "url": "/storage/v1/files/Q1iuOHiFrQ",
+        "id": "Q1iuOHiFrQ"
       }
     }
   }

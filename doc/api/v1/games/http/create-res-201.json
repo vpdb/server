@@ -1,47 +1,44 @@
 201 Created
 Content-Type: application/json; charset=utf-8
-Content-Encoding: gzip
+Content-Length: 866
 
 {
-  "title": "Circus 388",
-  "manufacturer": "SIRMO Games S.A.",
-  "game_type": "ss",
-  "features": "Trap holes (25). Six cards. Game advertised as 132 cm long, 70 cm wide, and 202 cm high.",
-  "notes": "Made for export to Italy.The parts catalog shown in this listing is dated November 1997 on its cover and individual pages are dated from 1995 to 2001. It was presented on the manufacturer's website for 'Circus 388' but we did not see any specific reference to this game.",
-  "id": "circus-388",
-  "year": 1900,
-  "_created_by": "54a1f002c4781df0a0f7c174",
-  "created_at": "2014-12-30T00:21:22.722Z",
+  "title": "Big Top",
+  "manufacturer": "V. P. Distributing Company",
+  "year": 1944,
+  "game_type": "em",
+  "notes": "'Big Top' was a conversion of Gottlieb's 1940 'Big Show'.",
+  "id": "big-top",
+  "_created_by": "54a3530cff73f03455fc9221",
+  "created_at": "2014-12-31T01:36:12.505Z",
   "ipdb": {
-    "number": 5839,
-    "mfg": 275
+    "number": 5062,
+    "mfg": 472
   },
   "artists": [],
   "designers": [],
-  "themes": [
-    "Circus/Carnival"
-  ],
+  "themes": [],
   "short": [],
   "media": {
     "backglass": {
       "is_protected": false,
       "variations": {
         "small-2x": {
-          "url": "/storage/v1/files/myiu24O7EQ/small-2x"
+          "url": "/storage/v1/files/7J6HIrotHQ/small-2x"
         },
         "small": {
-          "url": "/storage/v1/files/myiu24O7EQ/small"
+          "url": "/storage/v1/files/7J6HIrotHQ/small"
         },
         "medium-2x": {
-          "url": "/storage/v1/files/myiu24O7EQ/medium-2x"
+          "url": "/storage/v1/files/7J6HIrotHQ/medium-2x"
         },
         "medium": {
-          "url": "/storage/v1/files/myiu24O7EQ/medium"
+          "url": "/storage/v1/files/7J6HIrotHQ/medium"
         }
       },
-      "url": "/storage/v1/files/myiu24O7EQ",
-      "id": "myiu24O7EQ"
+      "url": "/storage/v1/files/7J6HIrotHQ",
+      "id": "7J6HIrotHQ"
     }
   },
-  "url": "/game/circus-388"
+  "url": "/game/big-top"
 }

@@ -1,21 +1,21 @@
 POST /api/v1/releases HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI3SnZHSF83NG0iLCJpYXQiOiIyMDE0LTEyLTMwVDAwOjIxOjI4LjE1NFoiLCJleHAiOiIyMDE0LTEyLTMwVDAxOjIxOjI4LjE1NFoifQ.7vBnFRpVKPA8HZhbvXKltHZHES-VXIorPLRyyM1Smsw
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJReURpcnNZSFEiLCJpYXQiOiIyMDE0LTEyLTMxVDAxOjM2OjE3LjE4MFoiLCJleHAiOiIyMDE0LTEyLTMxVDAyOjM2OjE3LjE4MFoifQ.F0n9zzWKxeGp6eG8yPVRyLi7AHPwbNVYkOLr7pnjpvA
 Content-Type: application/json
-Content-Length: 479
+Content-Length: 471
 
 {
   "name": "release",
-  "_game": "plus-or-minus",
+  "_game": "tango",
   "versions": [
     {
       "files": [
         {
-          "_file": "QkbLfS_mVX",
+          "_file": "XkWUoSotrX",
           "_media": {
-            "playfield_image": "XkVUfrO7EQ",
-            "playfield_video": "X1memHumNm"
+            "playfield_image": "7yrUjSoFBX",
+            "playfield_video": "71-ehSjtSQ"
           },
           "_compatibility": [
             "9.9.0"
@@ -26,9 +26,9 @@ Content-Length: 479
           }
         },
         {
-          "_file": "7Jf8MrO7EQ",
+          "_file": "7kz8jHjtBX",
           "_media": {
-            "playfield_image": "XyLUzHuXN7"
+            "playfield_image": "my8LjHiKrX"
           },
           "_compatibility": [
             "9.9.0"
@@ -44,7 +44,7 @@ Content-Length: 479
   ],
   "authors": [
     {
-      "_user": "7JvGH_74m",
+      "_user": "QyDirsYHQ",
       "roles": [
         "Table Creator"
       ]

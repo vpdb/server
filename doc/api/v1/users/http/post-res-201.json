@@ -1,18 +1,24 @@
 201 Created
 Content-Type: application/json; charset=utf-8
-Content-Length: 290
+Content-Length: 453
 
 {
   "plan": "free",
-  "name": "Randall_Moen",
-  "username": "Randall_Moen",
-  "email": "leora67@gmail.com",
+  "name": "Tomas62",
+  "username": "Tomas62",
+  "email": "trevor.mitchell@gmail.com",
   "provider": "local",
-  "created_at": "2014-12-30T00:21:29.592Z",
+  "created_at": "2014-12-31T01:36:18.567Z",
+  "validated_emails": [],
   "is_active": false,
   "roles": [
     "member"
   ],
-  "id": "Xy5KQHuQE7",
-  "gravatar_id": "21f7620d02065dd5b64909b1e8853133"
+  "email_status": {
+    "code": "pending_registration",
+    "expires_at": "2015-01-01T01:36:18.567Z",
+    "value": "trevor.mitchell@gmail.com"
+  },
+  "id": "XJnc2SoKBm",
+  "gravatar_id": "d5ec41bf68381fde5823f753e59e7c68"
 }

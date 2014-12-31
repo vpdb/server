@@ -2,9 +2,9 @@ POST /api/v1/authenticate HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
 Content-Type: application/json
-Content-Length: 52
+Content-Length: 51
 
 {
-  "username": "Ila_VonRueden",
-  "password": "oyxZUIZxi1"
+  "username": "Donna.Casper",
+  "password": "79dJkHLsLr"
 }

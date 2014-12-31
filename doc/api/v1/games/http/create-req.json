@@ -1,26 +1,22 @@
 POST /api/v1/games HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI3MUxfbjRfWEVtIiwiaWF0IjoiMjAxNC0xMi0zMFQwMDoyMToyMi42MzdaIiwiZXhwIjoiMjAxNC0xMi0zMFQwMToyMToyMi42MzdaIn0.9-b4mjXeF-8OZJ96MfesMdHwukqijIlgFU8xIEetDG0
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI3MV9yTEJvWVNRIiwiaWF0IjoiMjAxNC0xMi0zMVQwMTozNjoxMi40MTRaIiwiZXhwIjoiMjAxNC0xMi0zMVQwMjozNjoxMi40MTRaIn0.ub4dmvSCM3b-4723WHgWXoEWL4dG57aB3osYmdmyxZg
 Content-Type: application/json
-Content-Length: 584
+Content-Length: 244
 
 {
   "ipdb": {
-    "number": 5839,
-    "mfg": 275
+    "number": 5062,
+    "mfg": 472
   },
-  "title": "Circus 388",
-  "manufacturer": "SIRMO Games S.A.",
-  "game_type": "ss",
-  "themes": [
-    "Circus/Carnival"
-  ],
-  "features": "Trap holes (25). Six cards. Game advertised as 132 cm long, 70 cm wide, and 202 cm high.",
-  "notes": "Made for export to Italy.The parts catalog shown in this listing is dated November 1997 on its cover and individual pages are dated from 1995 to 2001. It was presented on the manufacturer's website for 'Circus 388' but we did not see any specific reference to this game.",
-  "id": "circus-388",
-  "year": 1900,
+  "title": "Big Top",
+  "manufacturer": "V. P. Distributing Company",
+  "year": 1944,
+  "game_type": "em",
+  "notes": "'Big Top' was a conversion of Gottlieb's 1940 'Big Show'.",
+  "id": "big-top",
   "_media": {
-    "backglass": "myiu24O7EQ"
+    "backglass": "7J6HIrotHQ"
   }
 }

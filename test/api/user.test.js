@@ -425,7 +425,7 @@ describe('The VPDB `user` API', function() {
 			request
 				.patch('/api/v1/user')
 				.as(user1)
-				.send({ email: email, returnEmailToken: true })
+				.send({ email: email })
 				.end(function(err, res) {
 					hlp.expectStatus(err, res, 200);
 
@@ -433,7 +433,7 @@ describe('The VPDB `user` API', function() {
 					request
 						.patch('/api/v1/user')
 						.as(user2)
-						.send({ email: email, returnEmailToken: true })
+						.send({ email: email })
 						.end(function(err, res) {
 							hlp.expectValidationError(err, res, 'email', 'already taken');
 							done();

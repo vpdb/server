@@ -40,9 +40,9 @@ See also [these][blog-ng-jwt] [Articles][blog-token-vs-cookies] for more
 information.
 
 In order to obtain a token, you can either *locally* authenticate, which
-basically checks a set of credentials agains VPDB's local database, or you can
+basically checks a set of credentials against VPDB's local database, or you can
 authenticate with a third party provider via OAuth2 such as GitHub or IP.Board
-(where supported).
+([where supported][ipb-oauth2]).
 
 
 ## Local Authentication
@@ -66,7 +66,7 @@ In return, you'll get the token along with your user profile:
 	    "_id": "53c252d18b47227c26cfe1b8",
 	    "name": "test",
 	    "username": "test",
-	    "email": "test@test.com",
+	    "email": "test@vpdb.ch",
 	    "plan": "unlimited",
 	    "provider": "local",
 	    "active": true,
@@ -150,3 +150,4 @@ storage API.
 [blog-token-vs-cookies]: https://auth0.com/blog/2014/01/27/ten-things-you-should-know-about-tokens-and-cookies/
 [api-auth]: api://core/post/authenticate
 [api-auth-oauth2]: api://core/post/authenticate/{provider_name}
+[ipb-oauth2]: https://github.com/freezy/ipb-oauth2-server

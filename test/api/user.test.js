@@ -21,7 +21,11 @@ describe('The VPDB `user` API', function() {
 			member: { roles: [ 'member' ]},
 			chpass1: { roles: [ 'member' ]},
 			chpass2: { roles: [ 'member' ]},
-			chpass3: { roles: [ 'member' ]}
+			chpass3: { roles: [ 'member' ]},
+			chmail1: { roles: [ 'member' ]},
+			chmail2: { roles: [ 'member' ]},
+			chmail3: { roles: [ 'member' ]},
+			chmail4: { roles: [ 'member' ]}
 		}, done);
 	});
 
@@ -226,7 +230,7 @@ describe('The VPDB `user` API', function() {
 						hlp.expectStatus(err, res, 200);
 						expect(res.body.name).to.be(name);
 						expect(res.body.location).to.be(location);
-						expect(res.body.email).to.be(email);
+						expect(res.body.email_status.value).to.be(email);
 
 						// check password change
 						request
@@ -332,26 +336,51 @@ describe('The VPDB `user` API', function() {
 
 	describe('when a user updates its email', function() {
 
-		it.only('should fail when providing a valid email but email is unconfirmed', function(done) {
+		it('should fail when providing a valid email but email is unconfirmed', function(done) {
+			var user = 'chmail1';
 			var email = faker.internet.email().toLowerCase();
 			request
 				.patch('/api/v1/user')
-				.as('member')
+				.as(user)
 				.send({ email: email })
 				.end(function(err, res) {
 					hlp.expectStatus(err, res, 200);
 
 					// check updated value
-					request.get('/api/v1/user').as('member').end(function(err, res) {
-						hlp.dump(res);
+					request.get('/api/v1/user').as(user).end(function(err, res) {
 						hlp.expectStatus(err, res, 200);
-						expect(res.body.email).to.be(email);
+						expect(res.body.email).not.to.be(email);
+						expect(res.body.email_status.code).to.be('pending_update');
+						expect(res.body.email_status.value).to.be(email);
 						done();
 					});
 				});
 		});
 
-		it('should succeed when providing a valid email and email is confirmed');
+		it('should succeed when providing a valid email and email is confirmed', function(done) {
+			var user = 'chmail2';
+			var email = faker.internet.email().toLowerCase();
+			request
+				.patch('/api/v1/user')
+				.as(user)
+				.send({ email: email, returnEmailToken: true })
+				.end(function(err, res) {
+					hlp.expectStatus(err, res, 200);
+
+					// confirm email token
+					request.get('/api/v1/user/confirm/' + res.body.email_token).end(function(err, res) {
+						hlp.expectStatus(err, res, 200);
+
+						// check updated value
+						request.get('/api/v1/user').as(user).end(function(err, res) {
+							hlp.expectStatus(err, res, 200);
+							expect(res.body.email).to.be(email);
+							expect(res.body.email_status).to.not.be.ok();
+							done();
+						});
+					});
+				});
+		});
 
 		it('should succeed when providing the same email', function(done) {
 			request
@@ -389,8 +418,81 @@ describe('The VPDB `user` API', function() {
 
 		describe('when there is already a pending email update for that user', function() {
 
-			it('should set back the email to confirmed when the submitted email is the same as the original one');
-			it('should ignore the email when the submitted email is the same as the pending one ');
+			it('should set back the email to confirmed when the submitted email is the same as the original one', function(done) {
+				var oldEmail = hlp.getUser('member').email;
+				var newEmail = faker.internet.email().toLowerCase();
+
+				// set to new email
+				request
+					.patch('/api/v1/user')
+					.as('member')
+					.send({ email: newEmail })
+					.end(function(err, res) {
+						hlp.expectStatus(err, res, 200);
+
+						// set to old email
+						request
+							.patch('/api/v1/user')
+							.as('member')
+							.send({ email: oldEmail })
+							.end(function(err, res) {
+								hlp.expectStatus(err, res, 200);
+								expect(res.body.email).to.be(oldEmail);
+								expect(res.body.email_status).to.not.be.ok();
+								done();
+							});
+					});
+			});
+
+			it('should ignore the email when the submitted email is the same as the pending one', function(done) {
+				var user = 'chmail3';
+				var newEmail = faker.internet.email().toLowerCase();
+				// set to new email
+				request
+					.patch('/api/v1/user')
+					.as(user)
+					.send({ email: newEmail })
+					.end(function(err, res) {
+						hlp.expectStatus(err, res, 200);
+						var expiration = res.body.email_status.expires_at;
+
+						// set to old email
+						request
+							.patch('/api/v1/user')
+							.as(user)
+							.send({ email: newEmail })
+							.end(function(err, res) {
+								hlp.expectStatus(err, res, 200);
+								expect(res.body.email).not.to.be(newEmail);
+								expect(res.body.email_status.code).to.be('pending_update');
+								expect(res.body.email_status.value).to.be(newEmail);
+								expect(res.body.email_status.expires_at).to.be(expiration);
+								done();
+							});
+					});
+			});
+
+			it('should fail when the submitted email is neither the current nor the pending one', function(done) {
+				var user = 'chmail4';
+				var newEmail1 = faker.internet.email().toLowerCase();
+				var newEmail2 = faker.internet.email().toLowerCase();
+				request
+					.patch('/api/v1/user')
+					.as(user)
+					.send({ email: newEmail1 })
+					.end(function(err, res) {
+						hlp.expectStatus(err, res, 200);
+
+						request
+							.patch('/api/v1/user')
+							.as(user)
+							.send({ email: newEmail2 })
+							.end(function(err, res) {
+								hlp.expectValidationError(err, res, 'email', 'cannot update an email address that is still pending confirmation');
+								done();
+							});
+					});
+			});
 
 		});
 

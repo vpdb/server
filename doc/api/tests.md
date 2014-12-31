@@ -69,11 +69,18 @@ There are two behaviors that differ from the production environment:
    activate the user.
 
 Code-wise, both are implemented at [`api/users.js`][usersjs] in the `create()`
-method. This is the only case so far that could be easily done with a unit
-test.
+method for user *registration*. For email *update*, we don't provide
+`skipEmailConfirmation` since we don't need to bulk-update emails. However, the
+`returnEmailToken` property is implemented, at [`api/user.js`][userjs].
+
+Note that for user updates using the [users][apiusers] resource, there is no
+email confirmation because it can only be used by administrators. Also note
+that this is the only case so far that could be easily done with a unit test.
 
 
 [coverage]: https://github.com/freezy/node-vpdb/blob/master/app.js#L10
 [oauthmock]: https://github.com/freezy/node-vpdb/blob/master/server/routes.js#L58
 [ipdbtest]: https://github.com/freezy/node-vpdb/blob/master/test/api/ipdb.test.js#L26
 [usersjs]: https://github.com/freezy/node-vpdb/blob/master/server/controllers/api/users.js
+[userjs]: https://github.com/freezy/node-vpdb/blob/master/server/controllers/api/user.js
+[apiusers]: api://core/users/{user_id}/put

@@ -59,10 +59,15 @@ exports.view = function(req, res) {
  */
 exports.update = function(req, res) {
 
-	var updateableFields = [ 'name', 'location', 'email' ];
-	var assert = api.assert(error, 'update', req.user.email, res);
+	// api test behavior
+	var testMode = process.env.NODE_ENV === 'test';
 
-	User.findById(req.user._id, assert(function(updatedUser) {
+	var currentUser = req.user;
+	var updateableFields = [ 'name', 'location', 'email' ];
+	var assert = api.assert(error, 'update', currentUser.email, res);
+
+
+	User.findById(currentUser._id, assert(function(updatedUser) {
 
 		_.extend(updatedUser, _.pick(req.body, updateableFields));
 
@@ -81,7 +86,7 @@ exports.update = function(req, res) {
 					updatedUser.password = req.body.password;
 				} else {
 					errors.current_password = { message: 'Invalid password.', path: 'current_password' };
-					logger.warn('[api|user:update] User <%s> provided wrong current password while changing.', req.user.email);
+					logger.warn('[api|user:update] User <%s> provided wrong current password while changing.', currentUser.email);
 				}
 			}
 		}
@@ -89,7 +94,7 @@ exports.update = function(req, res) {
 		// CREATE LOCAL ACCOUNT
 		if (req.body.username) {
 
-			if (req.user.provider === 'local') {
+			if (currentUser.provider === 'local') {
 				errors.username = { message: 'Cannot change username for already local account.', path: 'username' };
 
 			} else if (!req.body.password) {
@@ -110,15 +115,31 @@ exports.update = function(req, res) {
 			}
 
 			// EMAIL CHANGE
-			if (req.user.email !== updatedUser.email) {
-				updatedUser.email_status = {
-					code: 'pending_update',
-					token: randomstring.generate(16),
-					expires_at: new Date(new Date().getTime() + 86400000), // 1d valid
-					value: updatedUser.email
-				};
-				updatedUser.email = req.user.email;
-				mailer.emailUpdateConfirmation(updatedUser);
+			if (currentUser.email !== updatedUser.email) {
+
+				// there ALREADY IS a pending request.
+				if (currentUser.email_status && currentUser.email_status.code === 'pending_update') {
+
+					// just ignore if it's a re-post of the same address (double patch for the same new email doesn't re-trigger the confirmation mail)
+					if (currentUser.email_status.value === updatedUser.email) {
+						updatedUser.email = currentUser.email;
+
+					// otherwise fail
+					} else {
+						return api.fail(res, error().errors([{ message: 'You cannot update an email address that is still pending confirmation. If your previous change was false, reset the email first by providing the original value.', path: 'email' }]), 422);
+					}
+
+				} else {
+					updatedUser.email_status = {
+						code: 'pending_update',
+						token: randomstring.generate(16),
+						expires_at: new Date(new Date().getTime() + 86400000), // 1d valid
+						value: updatedUser.email
+					};
+					updatedUser.email = currentUser.email;
+					mailer.emailUpdateConfirmation(updatedUser);
+
+				}
 
 			} else if (req.body.email) {
 				// in here it's a special case:
@@ -127,8 +148,8 @@ exports.update = function(req, res) {
 				// confirmation request and set the email back to what it was.
 
 				// so IF we really are pending, simply set back the status to "confirmed".
-				if (req.user.email_status && req.user.email_status.code === 'pending_update') {
-					logger.warn('[api|user:update] Canceling email confirmation with token "%s" for user <%s> -> <%s> (%s).', req.user.email_status.token, req.user.email, req.user.email_status.value, req.user.id);
+				if (currentUser.email_status && currentUser.email_status.code === 'pending_update') {
+					logger.warn('[api|user:update] Canceling email confirmation with token "%s" for user <%s> -> <%s> (%s).', currentUser.email_status.token, currentUser.email, currentUser.email_status.value, currentUser.id);
 					updatedUser.email_status = { code: 'confirmed' };
 				}
 			}
@@ -148,7 +169,13 @@ exports.update = function(req, res) {
 
 				// if all good, enrich with ACLs
 				getACLs(user, assert(function(acls) {
-					api.success(res, _.extend(user.toDetailed(), acls), 200);
+
+					// return result now and send email afterwards
+					if (testMode && req.body.returnEmailToken) {
+						api.success(res, _.extend(user.toDetailed(), acls, { email_token: user.email_status.token }), 200);
+					} else {
+						api.success(res, _.extend(user.toDetailed(), acls), 200);
+					}
 
 				}, 'Error retrieving ACLs for user <%s>.'));
 			}, 'Error saving user <%s>.'));

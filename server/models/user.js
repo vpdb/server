@@ -142,6 +142,22 @@ UserSchema.path('email').validate(function(email) {
 	return validator.isEmail(email);
 }, 'Email must be in the correct format.');
 
+UserSchema.path('email').validate(function(email, callback) {
+	if (!email) {
+		return callback(true);
+	}
+	var that = this;
+
+	mongoose.model('User').findOne({ 'email_status.value': email }, function(err, u) {
+		/* istanbul ignore if  */
+		if (err) {
+			logger.error('[model|user] Error fetching game %s.');
+			return callback(false);
+		}
+		callback(!u || u.id === that.id);
+	});
+}, 'The {PATH} "{VALUE}" is already taken.');
+
 UserSchema.path('username').validate(function(username) {
 	// if you are authenticating by any of the oauth strategies, don't validate
 	if (this.isNew && this.provider !== 'local') {

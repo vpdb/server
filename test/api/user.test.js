@@ -26,7 +26,8 @@ describe('The VPDB `user` API', function() {
 			chmail2: { roles: [ 'member' ]},
 			chmail3: { roles: [ 'member' ]},
 			chmail4: { roles: [ 'member' ]},
-			chmail5: { roles: [ 'member' ]}
+			chmail5: { roles: [ 'member' ]},
+			chmail6: { roles: [ 'member' ]}
 		}, done);
 	});
 
@@ -413,7 +414,32 @@ describe('The VPDB `user` API', function() {
 				});
 		});
 
-		it('should fail when providing an email that already exists but is still pending');
+		it('should fail when providing an email that already exists but is still pending', function(done) {
+
+			var user1 = 'chmail6';
+			var user2 = 'member';
+
+			var email = faker.internet.email().toLowerCase();
+
+			// change but don't confirm for user 1
+			request
+				.patch('/api/v1/user')
+				.as(user1)
+				.send({ email: email, returnEmailToken: true })
+				.end(function(err, res) {
+					hlp.expectStatus(err, res, 200);
+
+					// try to change for user 2
+					request
+						.patch('/api/v1/user')
+						.as(user2)
+						.send({ email: email, returnEmailToken: true })
+						.end(function(err, res) {
+							hlp.expectValidationError(err, res, 'email', 'already taken');
+							done();
+						});
+				});
+		});
 
 		it('should directly set the email status to confirmed if the email has already been confirmed in the past', function(done) {
 
@@ -457,7 +483,6 @@ describe('The VPDB `user` API', function() {
 										.send({ email: email1, returnEmailToken: true })
 										.end(function(err, res) {
 											hlp.expectStatus(err, res, 200);
-											hlp.dump(res);
 											expect(res.body.email).to.be(email1);
 											expect(res.body.email_status).to.not.be.ok();
 											done();

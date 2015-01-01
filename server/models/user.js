@@ -264,6 +264,8 @@ UserSchema.methods.toDetailed = function() {
 UserSchema.statics.createUser = function(userObj, confirmUserEmail, done) {
 
 	var User = mongoose.model('User');
+	var LogUser = mongoose.model('LogUser');
+
 	var user = new User(_.extend(userObj, {
 		created_at: new Date(),
 		roles: [ 'member' ]
@@ -306,6 +308,7 @@ UserSchema.statics.createUser = function(userObj, confirmUserEmail, done) {
 						return done(error(err, 'Error updating ACLs for <%s>', user.email).log());
 					}
 					logger.info('[model|user] %s <%s> successfully created with ID "%s".', count ? 'User' : 'Root user', user.email, user.id);
+					LogUser.log(user, 'registration', _.pick(user.toObject(), 'username', 'email'));
 					done(null, user);
 				});
 			});
@@ -346,6 +349,16 @@ UserSchema.statics.normalizeProviderData = function(provider, data) {
 			};
 	}
 };
+
+
+//-----------------------------------------------------------------------------
+// TRIGGERS
+//-----------------------------------------------------------------------------
+UserSchema.post('remove', function(obj, done) {
+	// also remove logs
+	var LogUser = mongoose.model('LogUser');
+	LogUser.remove({ _user: obj._id }, done);
+});
 
 
 //-----------------------------------------------------------------------------

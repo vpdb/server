@@ -2,7 +2,7 @@
 
 angular.module('vpdb.games.list', [])
 
-	.controller('GameListController', function($scope, $rootScope, $http, $location, $templateCache, $route, ApiHelper, GameResource) {
+	.controller('GameListController', function($scope, $rootScope, $http, $location, $templateCache, ApiHelper, GameResource) {
 
 		$scope.theme('dark');
 		$scope.setTitle('Games');
@@ -104,15 +104,15 @@ angular.module('vpdb.games.list', [])
 			refresh();
 		});
 
-		// don't relead
-		var lastRoute = $route.current;
-		var lastPath = $location.path();
-		$scope.$on('$locationChangeSuccess', function() {
-			// "undo" route change if path didn't change (only hashes or params)
-			if ($location.path() === lastPath) {
-				$route.current = lastRoute;
-			}
-		});
+		// FIXME don't relead
+		//var lastRoute = $route.current;
+		//var lastPath = $location.path();
+		//$scope.$on('$locationChangeSuccess', function() {
+		//	// "undo" route change if path didn't change (only hashes or params)
+		//	if ($location.path() === lastPath) {
+		//		$route.current = lastRoute;
+		//	}
+		//});
 	})
 
 	.filter('decade', function() {

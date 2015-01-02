@@ -2,12 +2,12 @@
 
 angular.module('vpdb.games.details', [])
 
-	.controller('GameController', function($scope, $http, $routeParams, $modal, $log, Flavors, GameResource) {
+	.controller('GameController', function($scope, $http, $stateParams, $modal, $log, Flavors, GameResource) {
 
 		$scope.theme('dark');
 		$scope.setMenu('games');
 
-		$scope.gameId = $routeParams.id;
+		$scope.gameId = $stateParams.id;
 		$scope.pageLoading = true;
 
 		$scope.accordeon = {

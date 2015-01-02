@@ -6,7 +6,7 @@ angular.module('vpdb.releases.add', [])
 	/**
 	 * Main controller containing the form for adding a new release.
 	 */
-	.controller('ReleaseAddCtrl', function($scope, $upload, $modal, $window, $localStorage, $routeParams,
+	.controller('ReleaseAddCtrl', function($scope, $upload, $modal, $window, $localStorage, $stateParams,
 										   $location, $anchorScroll, $timeout,
 										   AuthService, ApiHelper, Flavors,
 										   ReleaseResource, FileResource, TagResource, VPBuildResource, GameResource,
@@ -20,7 +20,7 @@ angular.module('vpdb.releases.add', [])
 		$scope.flavors = _.values(Flavors);
 
 		// fetch game info
-		$scope.game = GameResource.get({ id: $routeParams.id }, function() {
+		$scope.game = GameResource.get({ id: $stateParams.id }, function() {
 			$scope.game.lastrelease = new Date($scope.game.lastrelease).getTime();
 			$scope.release._game = $scope.game.id;
 			$scope.setTitle('Add Release - ' + $scope.game.title);

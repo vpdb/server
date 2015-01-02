@@ -49,8 +49,8 @@ angular.module('vpdb.login', [])
 		};
 	})
 
-	.controller('AuthCallbackCtrl', function($routeParams, $location, $modal, AuthResource, AuthService, ModalService) {
-		AuthResource.authenticateCallback($routeParams, function(result) {
+	.controller('AuthCallbackCtrl', function($stateParams, $location, $modal, AuthResource, AuthService, ModalService) {
+		AuthResource.authenticateCallback($stateParams, function(result) {
 			AuthService.authenticated(result);
 			$location.url('/');
 			$location.replace();
@@ -64,8 +64,8 @@ angular.module('vpdb.login', [])
 		});
 	})
 
-	.controller('UserEmailConfirmationCtrl', function($routeParams, $location, $rootScope, ApiHelper, ProfileResource, ModalFlashService, AuthService) {
-		ProfileResource.confirm({ id: $routeParams.token }, function(result) {
+	.controller('UserEmailConfirmationCtrl', function($stateParams, $location, $rootScope, ApiHelper, ProfileResource, ModalFlashService, AuthService) {
+		ProfileResource.confirm({ id: $stateParams.token }, function(result) {
 			if (result.previous_code === 'pending_update') {
 
 				ModalFlashService.info({

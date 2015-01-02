@@ -308,7 +308,6 @@ UserSchema.statics.createUser = function(userObj, confirmUserEmail, done) {
 						return done(error(err, 'Error updating ACLs for <%s>', user.email).log());
 					}
 					logger.info('[model|user] %s <%s> successfully created with ID "%s".', count ? 'User' : 'Root user', user.email, user.id);
-					LogUser.log(user, 'registration', _.pick(user.toObject(), 'username', 'email'));
 					done(null, user);
 				});
 			});

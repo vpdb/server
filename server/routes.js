@@ -134,11 +134,11 @@ module.exports = function(app) {
 	// ========================================================================
 
 	if (config.vpdb.passport.github.enabled) {
-		app.get('/auth/github', passport.authenticate('github', { failureRedirect: '/', session: false }));
+		app.get('/auth/github', passport.authenticate('github', { session: false }));
 	}
 	_.each(config.vpdb.passport.ipboard, function(ipbConfig) {
 		if (ipbConfig.enabled) {
-			app.get('/auth/' + ipbConfig.id, passport.authenticate(ipbConfig.id, { failureRedirect: '/', session: false }));
+			app.get('/auth/' + ipbConfig.id, passport.authenticate(ipbConfig.id, { session: false }));
 		}
 	});
 

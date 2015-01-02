@@ -30,6 +30,7 @@ var error = require('./modules/error')('passport');
 var settings = require('./modules/settings');
 var config = settings.current;
 var User = mongoose.model('User');
+var LogUser = mongoose.model('LogUser');
 
 /**
  * Defines the authentication strategies and user serialization.
@@ -163,14 +164,17 @@ exports.verifyCallbackOAuth = function(strategy, providerName) {
 					if (validationErr) {
 						return callback(error('Validation error').errors(validationErr.errors).log(logtag));
 					}
+					LogUser.success(null, user, 'registration', { provider: provider, email: newUser.email });
 					logger.info('[passport|%s] New user <%s> created.', logtag, user.email);
 					callback(null, user);
 				});
 
 			} else {
 				if (!user[provider]) {
+					LogUser.success(null, user, 'authenticate', { provider: provider, profile: profile._json });
 					logger.info('[passport|%s] Adding profile from %s to user.', logtag, provider, profile.emails[0].value);
 				} else {
+					LogUser.success(null, user, 'authenticate', { provider: provider });
 					logger.info('[passport|%s] Returning user %s', logtag, profile.emails[0].value);
 				}
 

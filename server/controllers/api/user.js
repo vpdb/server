@@ -25,6 +25,7 @@ var passport = require('passport');
 var randomstring = require('randomstring');
 
 var User = require('mongoose').model('User');
+var LogUser = require('mongoose').model('LogUser');
 var acl = require('../../acl');
 var api = require('./api');
 var auth = require('../auth');
@@ -66,7 +67,6 @@ exports.update = function(req, res) {
 	var updateableFields = [ 'name', 'location', 'email' ];
 	var assert = api.assert(error, 'update', currentUser.email, res);
 
-
 	User.findById(currentUser._id, assert(function(updatedUser) {
 
 		_.extend(updatedUser, _.pick(req.body, updateableFields));
@@ -84,6 +84,7 @@ exports.update = function(req, res) {
 				// change password
 				if (updatedUser.authenticate(req.body.current_password)) {
 					updatedUser.password = req.body.password;
+					LogUser.success(req, updatedUser, 'change_password');
 				} else {
 					errors.current_password = { message: 'Invalid password.', path: 'current_password' };
 					logger.warn('[api|user:update] User <%s> provided wrong current password while changing.', currentUser.email);
@@ -104,6 +105,7 @@ exports.update = function(req, res) {
 				updatedUser.password = req.body.password;
 				updatedUser.username = req.body.username;
 				updatedUser.provider = 'local';
+				LogUser.success(req, updatedUser, 'create_local_account', { username: req.body.username });
 			}
 		}
 
@@ -142,6 +144,7 @@ exports.update = function(req, res) {
 							value: updatedUser.email
 						};
 						updatedUser.email = currentUser.email;
+						LogUser.success(req, updatedUser, 'update_email_request', { 'old': { email: currentUser.email }, 'new': { email: updatedUser.email_status.value }});
 						mailer.emailUpdateConfirmation(updatedUser);
 					}
 				}
@@ -155,12 +158,15 @@ exports.update = function(req, res) {
 				// so IF we really are pending, simply set back the status to "confirmed".
 				if (currentUser.email_status && currentUser.email_status.code === 'pending_update') {
 					logger.warn('[api|user:update] Canceling email confirmation with token "%s" for user <%s> -> <%s> (%s).', currentUser.email_status.token, currentUser.email, currentUser.email_status.value, currentUser.id);
+					LogUser.success(req, updatedUser, 'cancel_email_update', { email: currentUser.email, email_canceled: currentUser.email_status.value });
 					updatedUser.email_status = { code: 'confirmed' };
 				}
 			}
 
 			// save
 			updatedUser.save(assert(function(user) {
+
+				LogUser.diff(req, updatedUser, 'update', _.pick(currentUser.toObject(), updateableFields), updatedUser);
 
 				// log
 				if (req.body.password) {
@@ -232,6 +238,7 @@ exports.authenticate = function(req, res) {
 		var expires = new Date(now.getTime() + config.vpdb.apiTokenLifetime);
 		var token = auth.generateApiToken(user, now);
 
+		LogUser.success(req, user, 'authenticate', { provider: 'local' });
 		logger.info('[api|user:authenticate] User <%s> successfully authenticated.', user.email);
 		getACLs(user, assert(function(acls) {
 			// all good!
@@ -257,7 +264,7 @@ exports.confirm = function(req, res) {
 	var assert = api.assert(error, 'confirm', req.params.tkn, res);
 	User.findOne({ 'email_status.token': req.params.tkn }, assert(function(user) {
 
-		var successMsg, failMsg = 'No such token or token expired.';
+		var logEvent, successMsg, failMsg = 'No such token or token expired.';
 		if (!user) {
 			return api.fail(res, error('No user found with email token "%s".', req.params.tkn)
 				.display(failMsg)
@@ -278,11 +285,13 @@ exports.confirm = function(req, res) {
 			user.is_active = true;
 			logger.log('[api|user:confirm] User email <%s> for pending registration confirmed.', user.email);
 			successMsg = 'Email successully validated. You may login now.';
+			logEvent = 'registration_email_confirmed';
 
 		} else if (currentCode === 'pending_update') {
 			logger.log('[api|user:confirm] User email <%s> for pending update confirmed.', user.email_status.value);
 			user.email = user.email_status.value;
 			successMsg = 'Email validated and updated.';
+			logEvent = 'email_confirmed';
 
 		} else {
 			/* istanbul ignore next  */
@@ -298,6 +307,7 @@ exports.confirm = function(req, res) {
 
 		user.save(assert(function() {
 			api.success(res, { message: successMsg, previous_code: currentCode });
+			LogUser.success(req, user, logEvent, { email: user.email });
 
 		}, 'Error saving user <%s>.'));
 	}, 'Error retrieving user with email token "%s".'));
@@ -365,6 +375,7 @@ function passportCallback(req, res) {
 		var expires = new Date(now.getTime() + config.vpdb.apiTokenLifetime);
 		var token = auth.generateApiToken(user, now);
 
+		LogUser.success(req, user, 'authenticate', { provider: req.params.strategy, ip: req.ip });
 		logger.info('[api|%s:authenticate] User <%s> successfully authenticated.', req.params.strategy, user.email);
 		getACLs(user, function(err, acls) {
 			/* istanbul ignore if  */

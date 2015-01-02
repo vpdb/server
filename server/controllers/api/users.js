@@ -23,6 +23,8 @@ var _ = require('lodash');
 var logger = require('winston');
 
 var User = require('mongoose').model('User');
+var LogUser = require('mongoose').model('LogUser');
+
 var acl = require('../../acl');
 var api = require('./api');
 var error = require('../../modules/error')('api', 'users');
@@ -68,6 +70,8 @@ exports.create = function(req, res) {
 			} else {
 				api.success(res, user.toDetailed(), 201);
 			}
+
+			LogUser.success(req, user, 'registration', { provider: 'local', email: newUser.email, username: newUser.username });
 
 			// user validated and created. time to send the activation email.
 			if (config.vpdb.email.confirmUserEmail) {

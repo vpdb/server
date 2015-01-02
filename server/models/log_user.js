@@ -19,6 +19,7 @@
 
 "use strict";
 
+var _ = require('lodash');
 var logger = require('winston');
 var mongoose = require('mongoose');
 
@@ -28,9 +29,13 @@ var Schema = mongoose.Schema;
 // SCHEMA
 //-----------------------------------------------------------------------------
 var fields = {
-	_user:     { type: Schema.ObjectId, required: 'Reference to user must be provided.', ref: 'User', index: true },
+	_user:     { type: Schema.ObjectId, required: true, ref: 'User', index: true },
+	_actor:    { type: Schema.ObjectId, required: true, ref: 'User', index: true },
 	event:     { type: String, index: true },
 	data:      { },
+	result:    { type: String, enum: [ 'success', 'failure' ], required: true },
+	message:   { type: String },
+	ip:        { type: String },
 	logged_at: { type: Date, required: true }
 };
 
@@ -41,13 +46,16 @@ var LogUserSchema = new Schema(fields);
 // STATIC METHODS
 //-----------------------------------------------------------------------------
 
-LogUserSchema.statics.log = function(user, event, data, done) {
+LogUserSchema.statics.success = function(req, user, event, data, actor, done) {
 	var LogUser = mongoose.model('LogUser');
-
+	actor = actor || user;
 	var log = new LogUser({
-		_user: user._id,
+		_user: user,
+		_actor: actor,
 		event: event,
 		data: data,
+		ip: req ? req.ip : null,
+		result: 'success',
 		logged_at: new Date()
 	});
 	log.save(function(err) {
@@ -58,6 +66,20 @@ LogUserSchema.statics.log = function(user, event, data, done) {
 			done(err);
 		}
 	});
+};
+
+LogUserSchema.statics.diff = function(req, user, event, obj1, obj2, actor, done) {
+
+	var diff = _.reduce(obj1, function(result, val, key) {
+		if (obj2[key] !== val) {
+			result.old[key] = val;
+			result.new[key] = obj2[key];
+		}
+		return result;
+	}, { 'old': {}, 'new': {} });
+	if (diff && !_.isEmpty(diff.new)) {
+		LogUserSchema.statics.success(req, user, event, diff, actor, done);
+	}
 };
 
 

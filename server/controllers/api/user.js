@@ -345,7 +345,7 @@ exports.authenticateOAuth2Mock = function(req, res) {
 			id: req.body.profile ? req.body.profile.id : null
 		};
 	}
-	require('../../passport').verifyCallbackOAuth(req.body.provider, req.body.providerName)(null, null, profile, passportCallback(req, res));
+	require('../../passport').verifyCallbackOAuth(req.body.provider, req.body.providerName)(req, null, null, profile, passportCallback(req, res));
 };
 
 

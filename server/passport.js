@@ -41,6 +41,7 @@ exports.configure = function() {
 	if (config.vpdb.passport.github.enabled) {
 		logger.info('[passport] Enabling GitHub authentication strategy.');
 		passport.use(new GitHubStrategy({
+				passReqToCallback: true,
 				clientID: config.vpdb.passport.github.clientID,
 				clientSecret: config.vpdb.passport.github.clientSecret,
 				callbackURL: settings.webUri() + '/auth/github/callback'
@@ -55,6 +56,7 @@ exports.configure = function() {
 			var callbackUrl = settings.webUri() + '/auth/' +  ipbConfig.id + '/callback';
 			logger.info('[passport|ipboard:' + ipbConfig.id + '] Enabling IP.Board authentication strategy for "%s" at %s.', ipbConfig.name, ipbConfig.baseURL);
 			passport.use(new IPBoardStrategy({
+					passReqToCallback: true,
 					name: ipbConfig.id,
 					baseURL: ipbConfig.baseURL,
 					clientID: ipbConfig.clientID,
@@ -88,7 +90,7 @@ exports.verifyCallbackOAuth = function(strategy, providerName) {
 	var provider = providerName || strategy;
 	var logtag = providerName ? strategy + ':' + providerName : strategy;
 
-	return function(accessToken, refreshToken, profile, callback) { // accessToken and refreshToken are ignored
+	return function(req, accessToken, refreshToken, profile, callback) { // accessToken and refreshToken are ignored
 
 		if (!profile) {
 			logger.warn('[passport|%s] No profile data received.', logtag);
@@ -164,17 +166,17 @@ exports.verifyCallbackOAuth = function(strategy, providerName) {
 					if (validationErr) {
 						return callback(error('Validation error').errors(validationErr.errors).log(logtag));
 					}
-					LogUser.success(null, user, 'registration', { provider: provider, email: newUser.email });
+					LogUser.success(req, user, 'registration', { provider: provider, email: newUser.email });
 					logger.info('[passport|%s] New user <%s> created.', logtag, user.email);
 					callback(null, user);
 				});
 
 			} else {
 				if (!user[provider]) {
-					LogUser.success(null, user, 'authenticate', { provider: provider, profile: profile._json });
+					LogUser.success(req, user, 'authenticate', { provider: provider, profile: profile._json });
 					logger.info('[passport|%s] Adding profile from %s to user.', logtag, provider, profile.emails[0].value);
 				} else {
-					LogUser.success(null, user, 'authenticate', { provider: provider });
+					LogUser.success(req, user, 'authenticate', { provider: provider });
 					logger.info('[passport|%s] Returning user %s', logtag, profile.emails[0].value);
 				}
 

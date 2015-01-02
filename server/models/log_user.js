@@ -35,7 +35,7 @@ var fields = {
 	data:      { },
 	result:    { type: String, enum: [ 'success', 'failure' ], required: true },
 	message:   { type: String },
-	ip:        { type: String },
+	ip:        { type: String, required: true },
 	logged_at: { type: Date, required: true }
 };
 
@@ -54,13 +54,13 @@ LogUserSchema.statics.success = function(req, user, event, data, actor, done) {
 		_actor: actor,
 		event: event,
 		data: data,
-		ip: req ? req.ip : null,
+		ip: req.ip || req.headers['x-forwarded-for'] || req.connection.remoteAddress || '0.0.0.0',
 		result: 'success',
 		logged_at: new Date()
 	});
 	log.save(function(err) {
 		if (err) {
-			logger.error('[model|loguser] Error saving log for "%s": %s', event, err.message);
+			logger.error('[model|loguser] Error saving log for "%s": %s', event, err.message, err);
 		}
 		if (done) {
 			done(err);

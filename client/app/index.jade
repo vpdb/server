@@ -79,7 +79,7 @@ block content
 			+icon('times').a.ns-close(ng-click="$growlNotification.remove()")
 			span(ng-bind-html="notification.message")
 	.container.container--topmost(ng-cloak)
-		div(ui-view)
+		| <div ui-view></div>
 
 	.spinner-overlay.fade-animation(ng-show="loading", ng-cloak)
 		.spinner

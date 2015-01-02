@@ -1,10 +1,11 @@
 "use strict"; /* global common, _ */
 
 common
-	.controller('AppCtrl', function($scope, $rootScope, $location, $modal, $localStorage,
+	.controller('AppCtrl', function($scope, $rootScope, $state, $location, $modal, $localStorage,
 									AuthService, ProfileService, ModalService, ModalFlashService) {
 
 		$rootScope.themeName = 'theme-dark';
+
 		$rootScope.auth = AuthService;
 		$rootScope.$storage = $localStorage;
 		$rootScope.currentUrl = $location.path();
@@ -30,8 +31,10 @@ common
 
 
 		// on every page
-		$rootScope.$on('$routeChangeSuccess', function() {
-
+		$rootScope.$on('$stateChangeStart', function(event, toState) {
+			$rootScope.state = toState;
+		});
+		$rootScope.$on('$stateChangeSuccess', function() {
 			ModalFlashService.process();
 		});
 

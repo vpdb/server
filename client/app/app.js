@@ -52,21 +52,13 @@ angular.module('vpdb', deps.concat(appDeps))
 		$stateProvider.state('addGame',          { url: '/games/add',                    templateUrl: '/games/add.html' });
 		$stateProvider.state('addRelease',       { url: '/game/:id/add-release',         templateUrl: '/releases/add.html' });
 		$stateProvider.state('adminUsers',       { url: '/admin/users',                  templateUrl: '/users/list.html' });
-		$stateProvider.state('profileSettings',  { url: '/profile/settings',             templateUrl: '/profile/settings.html' });
+		$stateProvider.state('profile',          { url: '/profile',                      templateUrl: '/profile/profile.html' });
+		$stateProvider.state('profile.settings',         { url: '/settings',             templateUrl: '/profile/settings.html', controller: 'ProfileSettingsCtrl' });
+		$stateProvider.state('profile.stats',            { url: '/stats',                templateUrl: '/profile/stats.html' });
 		$stateProvider.state('authCallback',     { url: '/auth/:strategy/callback?code', templateUrl: '/auth/authenticating.html' });
 		$stateProvider.state('confirmToken',     { url: '/confirm/:token',               templateUrl: '/auth/confirm.html' });
 
-		//$routeProvider.when('/',                        { templateUrl: '/home/home.html' });
-		//$routeProvider.when('/games',                   { templateUrl: '/games/list.html' });
-		//$routeProvider.when('/game/:id',                { templateUrl: '/games/details.html' });
-		//$routeProvider.when('/games/add',               { templateUrl: '/games/add.html' });
-		//$routeProvider.when('/game/:id/add-release',    { templateUrl: '/releases/add.html' });
-		//$routeProvider.when('/admin/users',             { templateUrl: '/users/list.html' });
-		//$routeProvider.when('/profile/settings',        { templateUrl: '/profile/settings.html' });
-		//$routeProvider.when('/auth/:strategy/callback', { templateUrl: '/auth/authenticating.html' });
-		//$routeProvider.when('/confirm/:token',          { templateUrl: '/auth/confirm.html' });
-
-
+		//$stateProvider.state('notfound', { templateUrl: '/auth/confirm.html' });
 		//$urlRouterProvider.otherwise('/state1'); // $routeProvider.otherwise({ templateUrl: '/errors/404.html' });
 		$locationProvider.html5Mode({
 			enabled: true,

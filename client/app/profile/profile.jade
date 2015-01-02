@@ -1,0 +1,25 @@
+include ../template/_mixins
+
+.row.row--fullheight
+
+	// sidebar (left)
+	.col-sm-3.col--menu
+		h1 Profile
+		hr
+		a(ui-sref="profile.settings", ng-class="{ 'active': state.name == 'profile.settings'}") Settings<br>
+		a(ui-sref="profile.stats", ng-class="{ 'color-primary': state.name == 'profile.stats'}") Stats<br>
+		p.padder-bottom-2x
+
+	// content
+	.col-sm-9.col--main
+		p.padder-top-2x
+		.media
+			.media-left.media-middle
+				img.img-avatar.img-avatar--xlg(gravatar-src="auth.user.gravatar_id", gravatar-default="404", fallback-icon="user")
+			.media-body
+				h3.h--large.h--shift-up {{ auth.user.name }}
+				.text--large.text--shift-up {{ auth.user.email }}
+		p.padder-top-3x
+
+		| <div ui-view></div>
+		p.padder-bottom-2x

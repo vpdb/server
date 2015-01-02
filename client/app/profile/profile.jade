@@ -6,8 +6,14 @@ include ../template/_mixins
 	.col-sm-3.col--menu
 		h1 Profile
 		hr
-		a(ui-sref="profile.settings", ng-class="{ 'active': state.name == 'profile.settings'}") Settings<br>
-		a(ui-sref="profile.stats", ng-class="{ 'color-primary': state.name == 'profile.stats'}") Stats<br>
+
+
+		p: a(ui-sref="profile.settings", ng-class="{ 'active': state.name == 'profile.settings'}")
+			+icon('settings').shift-up.space-right
+			| Settings
+		p: a(ui-sref="profile.stats", ng-class="{ 'active': state.name == 'profile.stats'}")
+			+icon('chart').shift-up.space-right
+			| Stats
 		p.padder-bottom-2x
 
 	// content

@@ -4,16 +4,16 @@ extends navbar
 block navbar
 	ul.nav.navbar-nav
 		li(ng-class="{ active: menu == 'home' }")
-			a(href="/") Home
+			a(ui-sref="home") Home
 		li(ng-class="{ active: menu == 'games' }")
-			a(href="/games") Games
+			a(ui-sref="games") Games
 		li.dropdown(ng-class="{ active: menu == 'admin' }", ng-show="auth.hasRole(['root', 'admin'])", on-toggle="toggled(open)", dropdown)
 			a.space-right.dropdown-toggle(dropdown-toggle)
 				span.space-right-2x Admin
 				+icon('angle-down').smaller.shift-up
 			ul.dropdown-menu(role="menu")
 				li
-					a(href="/admin/users")
+					a(ui-sref="adminUsers")
 						+icon('users').space-right.shift-up
 						span Users
 
@@ -28,7 +28,7 @@ block navbar
 				+icon('angle-down').smaller.shift-up
 			ul.dropdown-menu
 				li
-					a(href="/profile/settings")
+					a(ui-sref="profileSettings")
 						+icon('user').space-right.shift-up
 						span Profile
 				li

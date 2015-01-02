@@ -71,6 +71,6 @@ include ../template/_mixins
 		span(ng-show="auth.hasPermission('games/add')")
 			h1 Content
 			hr
-			a.btn.btn-primary(href="/games/add").padder-bottom
+			a.btn.btn-primary(ui-sref="addGame").padder-bottom
 				+icon('plus-circle').space-right
 				| Add Game

@@ -51,8 +51,8 @@ angular.module('vpdb', deps.concat(appDeps))
 		$stateProvider.state('gameDetails',      { url: '/game/:id',                     templateUrl: '/games/details.html' });
 		$stateProvider.state('addGame',          { url: '/games/add',                    templateUrl: '/games/add.html' });
 		$stateProvider.state('addRelease',       { url: '/game/:id/add-release',         templateUrl: '/releases/add.html' });
-		$stateProvider.state('adminusers',       { url: '/admin/users',                  templateUrl: '/users/list.html' });
-		$stateProvider.state('profilesettings',  { url: '/profile/settings',             templateUrl: '/profile/settings.html' });
+		$stateProvider.state('adminUsers',       { url: '/admin/users',                  templateUrl: '/users/list.html' });
+		$stateProvider.state('profileSettings',  { url: '/profile/settings',             templateUrl: '/profile/settings.html' });
 		$stateProvider.state('authCallback',     { url: '/auth/:strategy/callback?code', templateUrl: '/auth/authenticating.html' });
 		$stateProvider.state('confirmToken',     { url: '/confirm/:token',               templateUrl: '/auth/confirm.html' });
 

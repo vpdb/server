@@ -176,13 +176,20 @@ exports.update = function(req, res) {
 		var removedRoles = _.difference(currentUserRoles, updatedUserRoles);
 		var addedRoles = _.difference(updatedUserRoles, currentUserRoles);
 
+		var diff = LogUser.diff(_.pick(user.toObject(), updateableFields), updatedUser);
+
 		// if caller is not root..
 		if (!_.contains(callerRoles, 'root')) {
 
-			logger.info('[api|user:update] Checking for privilage escalation. Added roles: [%s], Removed roles: [%s].', addedRoles.join(' '), removedRoles.join(' '));
+			logger.info('[api|user:update] Checking for privilege escalation. Added roles: [%s], Removed roles: [%s].', addedRoles.join(' '), removedRoles.join(' '));
 
 			// if user to be updated is already root or admin, deny (unless it's the same user).
 			if (!user._id.equals(req.user._id) && (_.contains(currentUserRoles, 'root') || _.contains(currentUserRoles, 'admin'))) {
+
+				// log
+				LogUser.failure(req, user, 'update_user', diff, req.user, 'User is not allowed to update administrators or root users.');
+
+				// fail
 				return api.fail(res, error('PRIVILEGE ESCALATION: Non-root user <%s> [%s] tried to update user <%s> [%s].', req.user.email, callerRoles.join(' '), user.email, currentUserRoles.join(' '))
 					.display('You are not allowed to update administrators or root users.')
 					.log('update'),
@@ -191,6 +198,11 @@ exports.update = function(req, res) {
 
 			// if new roles contain root or admin, deny (even when removing)
 			if (_.contains(addedRoles, 'root') || _.contains(addedRoles, 'admin') || _.contains(removedRoles, 'root') || _.contains(removedRoles, 'admin')) {
+
+				// log
+				LogUser.failure(req, user, 'update_user', diff, req.user, 'User is not allowed change the admin or root role for anyone.');
+
+				// fail
 				return api.fail(res, error('PRIVILEGE ESCALATION: User <%s> [%s] tried to update user <%s> [%s] with new roles [%s].', req.user.email, callerRoles.join(' '), user.email, currentUserRoles.join(' '), updatedUserRoles.join(' '))
 					.display('You are not allowed change the admin or root role for anyone.')
 					.log('update'),
@@ -212,6 +224,8 @@ exports.update = function(req, res) {
 
 			// 5. save
 			user.save(assert(function() {
+
+				LogUser.successDiff(req, updatedUser, 'update', _.pick(user.toObject(), updateableFields), updatedUser, req.user);
 				logger.info('[api|user:update] Success!');
 
 				// 6. update ACLs if roles changed

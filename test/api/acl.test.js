@@ -370,7 +370,7 @@ describe('The ACLs of the VPDB API', function() {
 		});
 
 		it('should deny user update of admin', function(done) {
-			request.put('/api/v1/users/' + hlp.getUser('admin2').id).as('admin').send({}).end(hlp.status(403, done));
+			request.put('/api/v1/users/' + hlp.getUser('admin2').id).as('admin').send({ email: 'test@vpdb.ch' }).end(hlp.status(403, done));
 		});
 
 		it('should deny user update himself', function(done) {

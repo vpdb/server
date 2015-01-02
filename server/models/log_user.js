@@ -47,6 +47,14 @@ var LogUserSchema = new Schema(fields);
 //-----------------------------------------------------------------------------
 
 LogUserSchema.statics.success = function(req, user, event, data, actor, done) {
+	LogUserSchema.statics.log(req, user, 'success', event, data, actor, undefined, done);
+};
+
+LogUserSchema.statics.failure = function(req, user, event, data, actor, message, done) {
+	LogUserSchema.statics.log(req, user, 'failure', event, data, actor, message, done);
+};
+
+LogUserSchema.statics.log = function(req, user, result, event, data, actor, message, done) {
 	var LogUser = mongoose.model('LogUser');
 	actor = actor || user;
 	var log = new LogUser({
@@ -55,7 +63,8 @@ LogUserSchema.statics.success = function(req, user, event, data, actor, done) {
 		event: event,
 		data: data,
 		ip: req.ip || req.headers['x-forwarded-for'] || req.connection.remoteAddress || '0.0.0.0',
-		result: 'success',
+		result: result,
+		message: message,
 		logged_at: new Date()
 	});
 	log.save(function(err) {
@@ -68,18 +77,23 @@ LogUserSchema.statics.success = function(req, user, event, data, actor, done) {
 	});
 };
 
-LogUserSchema.statics.diff = function(req, user, event, obj1, obj2, actor, done) {
+LogUserSchema.statics.successDiff = function(req, user, event, obj1, obj2, actor, done) {
 
-	var diff = _.reduce(obj1, function(result, val, key) {
-		if (obj2[key] !== val) {
+	var diff = LogUserSchema.statics.diff(obj1, obj2);
+	if (diff && !_.isEmpty(diff.new)) {
+		LogUserSchema.statics.success(req, user, event, diff, actor, done);
+	}
+};
+
+LogUserSchema.statics.diff = function(obj1, obj2) {
+
+	return _.reduce(obj1, function(result, val, key) {
+		if (!_.isEqual(obj2[key], val)) {
 			result.old[key] = val;
 			result.new[key] = obj2[key];
 		}
 		return result;
 	}, { 'old': {}, 'new': {} });
-	if (diff && !_.isEmpty(diff.new)) {
-		LogUserSchema.statics.success(req, user, event, diff, actor, done);
-	}
 };
 
 

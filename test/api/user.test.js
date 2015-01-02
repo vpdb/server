@@ -793,10 +793,12 @@ describe('The VPDB `user` API', function() {
 				.as('admin')
 				.send({})
 				.end(function(err, res) {
-					hlp.expectStatus(err, res, 422);
-					expect(res.body).to.be.an('object');
-					expect(res.body).to.have.property('errors');
 					expect(res.body.errors).to.have.length(5);
+					hlp.expectValidationError(err, res, 'email', 'must be provided');
+					hlp.expectValidationError(err, res, 'is_active', 'is required');
+					hlp.expectValidationError(err, res, 'name', 'must be provided');
+					hlp.expectValidationError(err, res, 'roles', 'is required');
+					hlp.expectValidationError(err, res, 'username', 'must be between');
 					done();
 				});
 		});
@@ -818,13 +820,15 @@ describe('The VPDB `user` API', function() {
 					gravatar_id: 'cca50395f5c76fe4aab0fa6657ec84a3'
 				})
 				.end(function(err, res) {
-					hlp.expectStatus(err, res, 422);
-					expect(res.body).to.be.an('object');
-					expect(res.body).to.have.property('errors');
 					expect(res.body.errors).to.have.length(4);
+					hlp.expectValidationError(err, res, 'id', 'field is read-only');
+					hlp.expectValidationError(err, res, 'provider', 'field is read-only');
+					hlp.expectValidationError(err, res, 'created_at', 'field is read-only');
+					hlp.expectValidationError(err, res, 'gravatar_id', 'field is read-only');
 					done();
 				});
 		});
+
 	});
 
 });

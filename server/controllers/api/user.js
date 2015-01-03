@@ -214,6 +214,10 @@ exports.authenticate = function(req, res) {
 	User.findOne({ username: req.body.username }, assert(function(user) {
 
 		if (!user || !user.authenticate(req.body.password)) {
+			if (user) {
+				LogUser.failure(req, user, 'authenticate', { provider: 'local' }, null, 'Invalid password.');
+			}
+
 			return api.fail(res, error('Authentication denied for user "%s" (%s)', req.body.username, user ? 'password' : 'username')
 					.display('Wrong username or password')
 					.warn('authenticate'),
@@ -221,12 +225,14 @@ exports.authenticate = function(req, res) {
 		}
 		if (!user.is_active) {
 			if (user.email_status && user.email_status.code === 'pending_registration') {
+				LogUser.failure(req, user, 'authenticate', { provider: 'local' }, null, 'Inactive account due to pending email confirmation.');
 				return api.fail(res, error('User <%s> tried to login with unconfirmed email address.', user.email)
 						.display('Your account is inactive until you confirm your email address <%s>. If you did not get an email from <%s>, please contact an administrator.', user.email, config.vpdb.email.sender.email)
 						.warn('authenticate'),
 					401);
 
 			} else {
+				LogUser.failure(req, user, 'authenticate', { provider: 'local' }, null, 'Inactive account.');
 				return api.fail(res, error('User <%s> is disabled, refusing access', user.email)
 						.display('Inactive account. Please contact an administrator')
 						.warn('authenticate'),

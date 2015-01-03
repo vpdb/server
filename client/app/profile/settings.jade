@@ -142,14 +142,15 @@ hr
 table.table.table-striped(ng-show="providers.length")
 	thead
 		tr
-			th Provider
+			th(colspan="2") Provider
 			th Username
 			th User ID
 			th Last logged
 	tbody
 		tr(ng-repeat="provider in providers")
 			td.td--big-icon
-				+icon('{{ provider.icon }}').space-right
+				+icon('{{ provider.icon }}')
+			td
 				b {{ provider.name }}
 			td {{ auth.user[provider.id].username }}
 			td {{ auth.user[provider.id].id }}

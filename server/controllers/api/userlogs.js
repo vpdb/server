@@ -37,13 +37,11 @@ var config = require('../../modules/settings').current;
  */
 exports.list = function(req, res) {
 
-	var assert = api.assert(error, 'list', req.user.email, res);
-
 	var pagination = {
 		defaultPerPage: 30,
 		maxPerPage: 100
 	};
-	var q, query = [];
+	var q, query = [{ _user: req.user, _actor: req.user }];
 
 	// filter event
 	if (req.query.event) {
@@ -94,12 +92,10 @@ exports.list = function(req, res) {
 			if (providerInfo[log.data.provider]) {
 				log.data.providerInfo = providerInfo[log.data.provider];
 			}
-			log = log.toObject();
-			delete log.user;
-			return log;
+			return log.toObject();
 		});
 		api.success(res, logs, 200, { pagination: { page: page, perPage: perPage, count: count }});
 
-	}, { populate: [ '_user', '_actor' ], sortBy: { logged_at: -1 } });
+	}, { sortBy: { logged_at: -1 } });
 
 };

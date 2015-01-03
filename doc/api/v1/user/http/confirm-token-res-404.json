@@ -1,0 +1,8 @@
+404 Not Found
+Content-Type: application/json; charset=utf-8
+Content-Length: 47
+Etag: W/"2f-51f99616"
+
+{
+  "error": "No such token or token expired."
+}

@@ -1,22 +1,27 @@
 POST /api/v1/games HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI3MV9yTEJvWVNRIiwiaWF0IjoiMjAxNC0xMi0zMVQwMTozNjoxMi40MTRaIiwiZXhwIjoiMjAxNC0xMi0zMVQwMjozNjoxMi40MTRaIn0.ub4dmvSCM3b-4723WHgWXoEWL4dG57aB3osYmdmyxZg
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJtSmg4VkVXMnFYIiwiaWF0IjoiMjAxNS0wMS0wM1QyMzoxOToyMi41NDlaIiwiZXhwIjoiMjAxNS0wMS0wNFQwMDoxOToyMi41NDlaIn0.D9OBODeczZa11SvdnuvEH1X8old_XTOnbjWvNh0glf8
 Content-Type: application/json
-Content-Length: 244
+Content-Length: 252
 
 {
   "ipdb": {
-    "number": 5062,
-    "mfg": 472
+    "number": 3367,
+    "mfg": 350
   },
-  "title": "Big Top",
-  "manufacturer": "V. P. Distributing Company",
-  "year": 1944,
+  "title": "10th Inning",
+  "manufacturer": "Williams",
+  "model_number": "296",
+  "year": 1964,
   "game_type": "em",
-  "notes": "'Big Top' was a conversion of Gottlieb's 1940 'Big Show'.",
-  "id": "big-top",
+  "themes": [
+    "Sports",
+    "Baseball"
+  ],
+  "features": "Hanging targets (7).",
+  "id": "10th-inning",
   "_media": {
-    "backglass": "7J6HIrotHQ"
+    "backglass": "XJZvE4Whc7"
   }
 }

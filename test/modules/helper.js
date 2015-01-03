@@ -482,7 +482,7 @@ exports.expectStatus = function(err, res, code, contains) {
 	expect(err).to.not.be.ok();
 	expect(res.status).to.be(code);
 	if (contains) {
-		expect(res.body.error).to.contain(contains);
+		expect(res.body.error.toLowerCase()).to.contain(contains.toLowerCase());
 	}
 };
 

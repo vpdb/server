@@ -1,21 +1,21 @@
 POST /api/v1/releases HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJReURpcnNZSFEiLCJpYXQiOiIyMDE0LTEyLTMxVDAxOjM2OjE3LjE4MFoiLCJleHAiOiIyMDE0LTEyLTMxVDAyOjM2OjE3LjE4MFoifQ.F0n9zzWKxeGp6eG8yPVRyLi7AHPwbNVYkOLr7pnjpvA
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI3SndDVlpoNVgiLCJpYXQiOiIyMDE1LTAxLTAzVDIzOjE5OjMyLjQ3MVoiLCJleHAiOiIyMDE1LTAxLTA0VDAwOjE5OjMyLjQ3MVoifQ.fKyXPwixmEha0dobgtBZHnooWNIPFX3XKFw3lSBYaOE
 Content-Type: application/json
-Content-Length: 471
+Content-Length: 483
 
 {
   "name": "release",
-  "_game": "tango",
+  "_game": "skill-ball-junior",
   "versions": [
     {
       "files": [
         {
-          "_file": "XkWUoSotrX",
+          "_file": "71tZkBZ2qX",
           "_media": {
-            "playfield_image": "7yrUjSoFBX",
-            "playfield_video": "71-ehSjtSQ"
+            "playfield_image": "7kVz1rWnq7",
+            "playfield_video": "Q1UmyHW3qX"
           },
           "_compatibility": [
             "9.9.0"
@@ -26,9 +26,9 @@ Content-Length: 471
           }
         },
         {
-          "_file": "7kz8jHjtBX",
+          "_file": "7JcZ1SWnqQ",
           "_media": {
-            "playfield_image": "my8LjHiKrX"
+            "playfield_image": "7J7MyHb2cX"
           },
           "_compatibility": [
             "9.9.0"
@@ -44,7 +44,7 @@ Content-Length: 471
   ],
   "authors": [
     {
-      "_user": "QyDirsYHQ",
+      "_user": "7JwCVZh5X",
       "roles": [
         "Table Creator"
       ]

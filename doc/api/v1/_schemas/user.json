@@ -16,6 +16,30 @@
 			"unique": true,
 			"format": "email"
 		},
+		"email_status": {
+			"title": "Email Status",
+			"description": "Status of the email address (see below).",
+			"type": "object",
+			"readOnly": true,
+			"properties": {
+				"code": {
+					"description": "Status code of the email. The following are valid values:\n * `confirmed` - Email address is confirmed.\n * `pending_registration` - Email address is to be confirmed after registration.\n * `pending_update` - Email address is to be confirmed after profile update.\n\n",
+					"type": "string",
+					"enum": [ "confirmed", "pending_registration", "pending_update" ],
+					"readOnly": true
+				},
+				"expires_at": {
+					"description": "Timestamp when the token sent by email expires. Only set if code not equals `confirmed`.",
+					"type": "date",
+					"readOnly": true
+				},
+				"value": {
+					"description": "The new email address that is about to be confirmed. Only set if code not equals `confirmed`.",
+					"type": "string",
+					"readOnly": true
+				}
+			}
+		},
 		"username": {
 			"description": "Username used when locally logging in.",
 			"type": "string",

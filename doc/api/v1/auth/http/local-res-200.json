@@ -1,23 +1,23 @@
 200 OK
 Content-Type: application/json; charset=utf-8
-Content-Length: 878
+Content-Length: 873
 
 {
-  "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJYa2JESFNzWUhRIiwiaWF0IjoiMjAxNC0xMi0zMVQwMTozNjoxMS4zNDlaIiwiZXhwIjoiMjAxNC0xMi0zMVQwMjozNjoxMS4zNDlaIn0.64U7J7UOMUv3UFFipGZEv9FxZSSXynzM0TJE_-CFkSg",
-  "expires": "2014-12-31T02:36:11.349Z",
+  "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJYMTNQbVZaMjVtIiwiaWF0IjoiMjAxNS0wMS0wM1QyMzoxOToyMS41MjZaIiwiZXhwIjoiMjAxNS0wMS0wNFQwMDoxOToyMS41MjZaIn0.TY1xjQEUqsgYjmbT-CdJxywC0ibiaJVTDK06Mw-EN8Q",
+  "expires": "2015-01-04T00:19:21.526Z",
   "user": {
-    "id": "XkbDHSsYHQ",
-    "name": "Donna.Casper",
-    "username": "Donna.Casper",
-    "gravatar_id": "6f4d2dd8d894561368a2552f5465925c",
-    "email": "consuelo18@hotmail.com",
+    "id": "X13PmVZ25m",
+    "name": "Dino.Kuhn",
+    "username": "Dino.Kuhn",
+    "gravatar_id": "0981504b43c10de42d3e9f28186e17f4",
+    "email": "herminio.huel@gmail.com",
     "is_active": true,
     "provider": "local",
     "roles": [
       "member"
     ],
     "plan": "free",
-    "created_at": "2014-12-31T01:36:11.290Z",
+    "created_at": "2015-01-03T23:19:21.468Z",
     "permissions": {
       "user": [
         "update",

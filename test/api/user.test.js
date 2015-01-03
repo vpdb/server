@@ -174,6 +174,15 @@ describe('The VPDB `user` API', function() {
 					});
 				});
 		});
+
+		it('should fail to confirm an invalid email token', function(done) {
+
+			request.get('/api/v1/user/confirm/invalid').saveResponse({ path: 'user/confirm-token' }).end(function(err, res) {
+				hlp.expectStatus(err, res, 404, 'no such token');
+				done();
+			});
+		});
+
 	});
 
 	describe('when providing a valid authentication token', function() {
@@ -370,7 +379,7 @@ describe('The VPDB `user` API', function() {
 					hlp.expectStatus(err, res, 200);
 
 					// confirm email token
-					request.get('/api/v1/user/confirm/' + res.body.email_token).end(function(err, res) {
+					request.get('/api/v1/user/confirm/' + res.body.email_token).save({ path: 'user/confirm-token' }).end(function(err, res) {
 						hlp.expectStatus(err, res, 200);
 
 						// check updated value

@@ -1,20 +1,19 @@
 200 OK
 Content-Type: application/json; charset=utf-8
-Content-Length: 320
-Etag: W/"140-1d7c4219"
+Content-Length: 296
+Etag: W/"128-2bf3e35"
 
 {
   "plan": "free",
-  "name": "Ricardo_Pollich",
-  "username": "Ricardo_Pollich",
-  "email": "tatum10@gmail.com",
+  "name": "Armani_Waelchi4",
+  "username": "Armani_Waelchi4",
+  "email": "kayley83@gmail.com",
   "provider": "local",
-  "created_at": "2014-12-31T01:36:18.430Z",
-  "validated_emails": [],
+  "created_at": "2015-01-03T23:19:33.871Z",
   "is_active": true,
   "roles": [
     "member"
   ],
-  "id": "XkYP2rsKHX",
-  "gravatar_id": "b0bbce0a2f2275bada3b812d9763697d"
+  "id": "m1EelSZncX",
+  "gravatar_id": "c2da78366dc92944484c218ce0dfaf47"
 }

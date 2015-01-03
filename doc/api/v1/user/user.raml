@@ -68,3 +68,39 @@ patch:
       body:
         role/anon:
           example: !include http/view-res-401.json
+
+/logs:
+  get:
+    is: [ protected ]
+    securedBy: [ jwt: { scopes: [ MEMBER ] } ]
+    description: |
+      Retrieves the user log.
+
+      The user log keeps track of changes concerning the user.
+
+/confirm/{token}:
+  get:
+    description: |
+      Confirms a token.
+
+      The token was sent by email in order to validate that the user
+      is indeed owner of the provided email address.
+
+      There are two use cases for this:
+
+       1. Confirmation after local registration
+       2. Confirmation after profile update of email address
+    body:
+      role/anon:
+        example: !include http/confirm-token-req.json
+    responses:
+      200:
+        body:
+          role/anon:
+            schema: user-token-confirmation
+            example: !include http/confirm-token-res-200.json
+      404:
+        description: When an invalid token is provided
+        body:
+          role/anon-Invalid-Token:
+            example: !include http/confirm-token-res-404.json

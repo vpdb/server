@@ -1,24 +1,23 @@
 201 Created
 Content-Type: application/json; charset=utf-8
-Content-Length: 453
+Content-Length: 428
 
 {
   "plan": "free",
-  "name": "Tomas62",
-  "username": "Tomas62",
-  "email": "trevor.mitchell@gmail.com",
+  "name": "Shannon34",
+  "username": "Shannon34",
+  "email": "gilda_bosco44@gmail.com",
   "provider": "local",
-  "created_at": "2014-12-31T01:36:18.567Z",
-  "validated_emails": [],
+  "created_at": "2015-01-03T23:19:34.079Z",
   "is_active": false,
   "roles": [
     "member"
   ],
   "email_status": {
     "code": "pending_registration",
-    "expires_at": "2015-01-01T01:36:18.567Z",
-    "value": "trevor.mitchell@gmail.com"
+    "expires_at": "2015-01-04T23:19:34.079Z",
+    "value": "gilda_bosco44@gmail.com"
   },
-  "id": "XJnc2SoKBm",
-  "gravatar_id": "d5ec41bf68381fde5823f753e59e7c68"
+  "id": "m1-VlHbn5X",
+  "gravatar_id": "aeb069b6acee341625e47f4535ebadce"
 }

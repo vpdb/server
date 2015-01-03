@@ -1,14 +1,14 @@
 PATCH /api/v1/user HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJtSkJkaEJqdFNYIiwiaWF0IjoiMjAxNC0xMi0zMVQwMTozNjoxOC40NzlaIiwiZXhwIjoiMjAxNC0xMi0zMVQwMjozNjoxOC40NzlaIn0.F_6yMEQnSxtvW-kULZyXaDhPNzjcer2vOMjv8yqM91w
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJRMWxXZ1NiMzVRIiwiaWF0IjoiMjAxNS0wMS0wM1QyMzoxOTozMy45NDdaIiwiZXhwIjoiMjAxNS0wMS0wNFQwMDoxOTozMy45NDdaIn0.r9O8fKC_P1fxmUhfqjm6x2TM4ZeO0JtSNH-SJFyzXUc
 Content-Type: application/json
-Content-Length: 140
+Content-Length: 133
 
 {
-  "name": "Esmeralda McGlynn",
-  "location": "Jesusberg",
-  "email": "marcia.mills@gmail.com",
-  "current_password": "SfKwcoOb9k",
-  "password": "tDIgzB54oG"
+  "name": "Marshall Lind",
+  "location": "Faheyside",
+  "email": "arvel12@hotmail.com",
+  "current_password": "EpHHCNIitO",
+  "password": "xCpJQ3UsED"
 }

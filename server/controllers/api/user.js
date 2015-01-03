@@ -381,7 +381,6 @@ function passportCallback(req, res) {
 		var expires = new Date(now.getTime() + config.vpdb.apiTokenLifetime);
 		var token = auth.generateApiToken(user, now);
 
-		LogUser.success(req, user, 'authenticate', { provider: req.params.strategy, ip: req.ip });
 		logger.info('[api|%s:authenticate] User <%s> successfully authenticated.', req.params.strategy, user.email);
 		getACLs(user, function(err, acls) {
 			/* istanbul ignore if  */

@@ -1,7 +1,17 @@
-p Some stats here.
-p Some stats here.
-p Some stats here.
-p Some stats here.
-p Some stats here.
-p Some stats here.
-p Some stats here.
+include ../template/_mixins
+
+h1 Last Logins
+hr
+table.table.table-striped(ng-show="logins.length")
+	thead
+		tr
+			th Provider
+			th When
+			th IP Address
+	tbody
+		tr(ng-repeat="log in logins")
+			td.td--big-icon
+				+icon('{{ log.data.providerInfo.icon }}').space-right
+				b {{ log.data.providerInfo.name }}
+			td(am-time-ago="log.logged_at")
+			td {{ log.ip }}

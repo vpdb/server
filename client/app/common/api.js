@@ -31,7 +31,8 @@ common
 	.factory('ProfileResource', function($resource, ConfigService) {
 		return $resource(ConfigService.apiUri('/user/:action/:id'), {}, {
 			patch: { method: 'PATCH' },
-			confirm: { method: 'GET', params: { action: 'confirm' }}
+			confirm: { method: 'GET', params: { action: 'confirm' }},
+			logs: { method: 'GET', params: { action: 'logs' }, isArray: true }
 		});
 	})
 

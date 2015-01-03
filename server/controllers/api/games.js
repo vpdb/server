@@ -196,7 +196,7 @@ exports.list = function(req, res) {
 	} else {
 		q = { $and: query };
 	}
-	logger.info('[api|game:list] query: %j, sort: %j', util.inspect(q), util.inspect(sortBy));
+	logger.info('[api|game:list] query: %s, sort: %j', util.inspect(q), util.inspect(sortBy));
 	Game.paginate(q, page, perPage, function(err, pageCount, games, count) {
 
 		/* istanbul ignore if  */

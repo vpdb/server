@@ -30,4 +30,5 @@ exports.roles = require('./roles');
 exports.tags = require('./tags');
 exports.user = require('./user');
 exports.users = require('./users');
+exports.userlogs = require('./userlogs');
 exports.vpbuilds = require('./vpbuilds');

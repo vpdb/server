@@ -92,6 +92,7 @@ module.exports = function(app) {
 	// user (own profile)
 	app.get(settings.apiPath('/user'),              api.auth(api.user.view, 'user', 'view'));
 	app.patch(settings.apiPath('/user'),            api.auth(api.user.update, 'user', 'update'));
+	app.get(settings.apiPath('/user/logs'),         api.auth(api.userlogs.list, 'user', 'view'));
 	app.get(settings.apiPath('/user/confirm/:tkn'), api.anon(api.user.confirm));
 
 	// users (any other user)

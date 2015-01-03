@@ -22,6 +22,7 @@
 var _ = require('lodash');
 var logger = require('winston');
 var mongoose = require('mongoose');
+var paginate = require('mongoose-paginate');
 
 var Schema = mongoose.Schema;
 
@@ -41,6 +42,31 @@ var fields = {
 
 var LogUserSchema = new Schema(fields);
 
+
+//-----------------------------------------------------------------------------
+// PLUGINS
+//-----------------------------------------------------------------------------
+LogUserSchema.plugin(paginate);
+
+
+//-----------------------------------------------------------------------------
+// VIRTUALS
+//-----------------------------------------------------------------------------
+LogUserSchema.virtual('user')
+	.get(function() {
+		if (this.populated('_user') && this._user) {
+			return this._user.toReduced();
+		}
+		return undefined;
+	});
+
+LogUserSchema.virtual('actor')
+	.get(function() {
+		if (this.populated('_actor') && this._actor) {
+			return this._actor.toReduced();
+		}
+		return undefined;
+	});
 
 //-----------------------------------------------------------------------------
 // STATIC METHODS
@@ -101,8 +127,12 @@ LogUserSchema.statics.diff = function(obj1, obj2) {
 // OPTIONS
 //-----------------------------------------------------------------------------
 LogUserSchema.set('toObject', { virtuals: true });
-LogUserSchema.options.toObject.transform = function(doc, user) {
-	delete user._id;
+LogUserSchema.options.toObject.transform = function(doc, log) {
+	delete log.__v;
+	delete log._id;
+	delete log._user;
+	delete log._actor;
+	delete log.id;
 };
 
 

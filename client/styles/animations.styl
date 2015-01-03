@@ -168,29 +168,28 @@
 	100% { transform: translate3d(0,0,0); }
 }
 
-// ui view transitions
 
-[ui-view].ng-enter, [ui-view].ng-leave
-	transition all 2s ease-in-out
-	/*left 30px*/
-	/*right 0*/
-	/*position absolute*/
+.ui-view-wrapper
+	overflow hidden
+	transition height ease $animation-short
+	box-sizing border-box
 
+	> [ui-view]
 
-[ui-view].ng-enter
-	opacity 0
+		&.ng-leave, &.ng-enter
+			transition all $animation-short ease-in-out
+			left 30px
+			right 30px
+			position absolute
 
-[ui-view].ng-enter-active
-	opacity 1
+		&.ng-enter
+			opacity 0
 
+		&.ng-enter-active
+			opacity 1
 
-[ui-view].ng-leave
-	opacity 1
+		&.ng-leave
+			opacity 1
 
-[ui-view].ng-leave-active
-	opacity 0
-
-@keyframes moveToTop {
-	from { }
-	to { transform: translateY(-100%); }
-}
+		&.ng-leave-active
+			opacity 0

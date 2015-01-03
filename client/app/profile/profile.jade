@@ -27,5 +27,7 @@ include ../template/_mixins
 				.text--large.text--shift-up {{ auth.user.email }}
 		p.padder-top-3x
 
-		| <div ui-view></div>
+		.ui-view-wrapper
+			| <div ui-view class="height-animation"></div>
+
 		p.padder-bottom-2x

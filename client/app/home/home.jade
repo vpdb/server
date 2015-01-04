@@ -7,21 +7,43 @@ include ../template/_mixins
 		input.form-control.input--lighter(type="text", ng-model="query", focus-on)
 		+icon('search')
 	p.padder-top-2x
-	a.a--lighter.center-block(ng-click="whatsThis = !whatsThis")
-		+icon('vpdb-o').svg-3x
 
-	div(collapse="!whatsThis")
-		p <br><br>
-	.panel(collapse="whatsThis")
+	.relative
+		div(collapse="whatsThis")
+			p <br><br>
+		.panel(collapse="!whatsThis")
 
-		h3.h--large.h--primary What's this?
-		p Welcome to VPDB, the Visual Pinball Database. VPDB is a platform where people can share their digital
-		| recreations of virtual pinball tables that were created with the excellent Visual Pinball simulation game.
+			h3.h--large.h--primary What's this?
+			p.center-block
+				| Welcome to VPDB, the Visual Pinball Database. VPDB is a platform where people can share their digital
+				| recreations of virtual pinball tables that were created with the excellent Visual Pinball simulation game.
+
+			.row.padder-top-3x
+				.col-sm-4.text-center
+					p: +icon('github-alt').svg-3x
+					p VPDB is <a href="https://github.com/freezy/node-vpdb" class="a--primary">open source</a>. It can be deployed and improved by anyone interested.
+						hr.hr--light.visible-xs-block
+				.col-sm-4.text-center
+					p: +icon('palette').svg-3x
+					p VPDB is <a href="https://developer.vpdb.ch/api/v1/releases" class="a--primary">structured</a>. It uses its own database that is designed for exactly that purpose.
+						hr.hr--light.visible-xs-block
+				.col-sm-4.text-center
+					p: +icon('code-fork').svg-3x
+					p VPDB is <span class="color-primary">fast</span>. Various programming patterns ensure a fluid and pleasing experience.
+
+			p.padder-top-2x
+
+		a.a--lighter(ng-click="whatsThis = !whatsThis")
+			+icon('vpdb-o').svg-3x
+
+
 
 .row
 	.col-sm-12
 		h1.h--primary Latest Releases
 		hr
 		p There will be something here.
+
+
 
 p.padder-top

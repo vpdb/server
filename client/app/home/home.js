@@ -18,6 +18,9 @@ angular.module('vpdb.home', [])
 		$scope.feed = [];
 		$scope.users = [];
 
+		// stuff we need in the view
+		$scope.Math = window.Math;
+
 		if ($rootScope.loginParams.open) {
 			$rootScope.loginParams.open = false;
 			$rootScope.login();
@@ -64,7 +67,9 @@ angular.module('vpdb.home', [])
 			}
 		};
 
-
+		$scope.paginate = function(link) {
+			refresh(link.query);
+		};
 		$scope.$watch('q', refresh);
 
 		//$http({

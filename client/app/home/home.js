@@ -5,7 +5,7 @@
  */
 angular.module('vpdb.home', [])
 
-	.controller('HomeController', function($scope, $rootScope, $http, ApiHelper, GameResource) {
+	.controller('HomeController', function($scope, $rootScope, $http, $timeout, ApiHelper, GameResource) {
 
 		$scope.theme('dark');
 		$scope.setMenu('home');

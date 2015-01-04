@@ -7,6 +7,8 @@
 * Added email confirmation when registering locally
 * Added release inline editing (WIP)
 * Added user stats to profile page
+* New home page, featuring:
+  * Game search
 
 *Server Changes*:
 

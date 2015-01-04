@@ -13,6 +13,8 @@ include ../template/_mixins
 		.panel(collapse="!searchResult")
 			.container
 				.row.fade2-animation(ng-show="games.length > 0")
+					.clear
+						+icon('times')(ng-click="q = ''").a
 					.paginator(ng-show="pagination.count > 12")
 						span(ng-show="pagination.links.first", ng-click="paginate(pagination.links.first)"): +icon('angle-left-skip').shift-up.smaller.a.a--lighter
 						span.space-left(ng-show="pagination.links.prev", ng-click="paginate(pagination.links.prev)"): +icon('angle-left').shift-up.smaller.a.a--lighter
@@ -30,7 +32,7 @@ include ../template/_mixins
 				p.padder-bottom-2x(ng-show="!games.length && !searching"): i No games found containing "{{ q }}".
 				p.padder-bottom-2x(ng-show="!games.length && searching"): i Searching...
 
-		.searchbox
+		.searchbox.abs-center
 			form.form-inline
 				input.form-control.input--lighter(type="text", ng-model="q", focus-on)
 				+icon('search').space-left
@@ -41,6 +43,9 @@ include ../template/_mixins
 		div(collapse="whatsThis")
 			.spacer &nbsp;
 		.panel(collapse="!whatsThis")
+
+			.clear
+				+icon('times')(ng-click="whatsThis = false").a
 
 			h3.h--large.h--primary What's this?
 			p.center-block
@@ -62,8 +67,9 @@ include ../template/_mixins
 
 			p.padder-top-2x
 
-		a.a--lighter(ng-click="whatsThis = !whatsThis")
-			+icon('{{ searching ? "circle-o-notch" : "vpdb-o" }}')(ng-class="{ 'svg-spin': searching }").svg-3x
+		.abs-center
+			a.a--lighter(ng-click="whatsThis = !whatsThis")
+				+icon('{{ searching ? "circle-o-notch" : "vpdb-o" }}')(ng-class="{ 'svg-spin': searching }").svg-3x
 
 .row
 	//- RELEASES

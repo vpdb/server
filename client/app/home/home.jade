@@ -12,7 +12,7 @@ include ../template/_mixins
 			.spacer &nbsp;
 		.panel(collapse="!searchResult")
 			.container
-				.row(ng-show="games.length > 0")
+				.row.fade2-animation(ng-show="games.length > 0")
 					.col-md-3.col-sm-4.col-xs-6.fade-animation(ng-repeat="game in games", ng-click="navGame(game.id)")
 						.panel.panel--animated.ng-cloak
 							.img.img--ar-bg.img--rounded-top(img-bg="game.media.backglass.variations.small.url")
@@ -20,7 +20,8 @@ include ../template/_mixins
 								h1.h--small {{ game.title }}
 								label.label--subtitle {{ game.manufacturer }} &middot; {{ game.year }}
 
-				p.padder-bottom-2x(ng-hide="games.length > 0"): i No games found containing "{{ q }}".
+				p.padder-bottom-2x(ng-show="!games.length && !searching"): i No games found containing "{{ q }}".
+				p.padder-bottom-2x(ng-show="!games.length && searching"): i Searching...
 
 		.searchbox
 			form.form-inline
@@ -55,7 +56,7 @@ include ../template/_mixins
 			p.padder-top-2x
 
 		a.a--lighter(ng-click="whatsThis = !whatsThis")
-			+icon('vpdb-o').svg-3x
+			+icon('{{ searching ? "circle-o-notch" : "vpdb-o" }}')(ng-class="{ 'svg-spin': searching }").svg-3x
 
 .row
 	//- RELEASES

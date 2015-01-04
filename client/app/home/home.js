@@ -11,6 +11,7 @@ angular.module('vpdb.home', [])
 		$scope.setMenu('home');
 		$scope.setTitle('Home');
 
+		$scope.searching = false;
 		$scope.packs = [];
 		$scope.newReleases = [];
 		$scope.updatedReleases = [];
@@ -52,8 +53,10 @@ angular.module('vpdb.home', [])
 
 			// refresh if changes
 			if (!_.isEqual($scope.$query, query)) {
-				$scope.games = GameResource.query(query, ApiHelper.handlePagination($scope, function(games) {
+				$scope.searching = true;
+				$scope.games = GameResource.query(query, ApiHelper.handlePagination($scope, function() {
 					$scope.searchResult = true;
+					$scope.searching = false;
 				}));
 				$scope.$query = query;
 			} else {

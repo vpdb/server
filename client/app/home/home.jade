@@ -6,8 +6,17 @@ include ../template/_mixins
 	form.form-inline
 		input.form-control.input--lighter(type="text", ng-model="query", focus-on)
 		+icon('search')
-	p.padder-top-3x
-	+icon('vpdb-o').svg-3x
+	p.padder-top-2x
+	a.a--lighter.center-block(ng-click="whatsThis = !whatsThis")
+		+icon('vpdb-o').svg-3x
+
+	div(collapse="!whatsThis")
+		p <br><br>
+	.panel(collapse="whatsThis")
+
+		h3.h--large.h--primary What's this?
+		p Welcome to VPDB, the Visual Pinball Database. VPDB is a platform where people can share their digital
+		| recreations of virtual pinball tables that were created with the excellent Visual Pinball simulation game.
 
 .row
 	.col-sm-12

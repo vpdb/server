@@ -6,6 +6,16 @@
 
 * Added email confirmation when registering locally
 * Added release inline editing (WIP)
+* Added user stats to profile page
+
+*Server Changes*:
+
+* Added user profile updates:
+  * Local account creation for users logged via OAuth2
+  * Public profile data (added location)
+  * Password change
+* User updates result in a log entry (user log)
+
 
 ## v0.0.6
 

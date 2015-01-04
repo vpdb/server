@@ -5,7 +5,7 @@
  */
 angular.module('vpdb.home', [])
 
-	.controller('HomeController', function($scope, $rootScope, $http) {
+	.controller('HomeController', function($scope, $rootScope, $http, ApiHelper, GameResource) {
 
 		$scope.theme('dark');
 		$scope.setMenu('home');
@@ -22,8 +22,47 @@ angular.module('vpdb.home', [])
 			$rootScope.login();
 		}
 
+		$scope.searchResult = false;
 		$scope.whatsThis = false;
 
+
+		// QUERY LOGIC
+		// --------------------------------------------------------------------
+
+		var refresh = function(queryOverride) {
+
+			if (!$scope.q) {
+				$scope.searchResult = false;
+			}
+
+			// only fetch if a query
+			if (!$scope.q || $scope.q.length < 3) {
+				return;
+			}
+
+			var query = { };
+			queryOverride = queryOverride || {};
+
+			// search query
+			if ($scope.q) {
+				query.q = $scope.q;
+			}
+
+			query = _.extend(query, queryOverride);
+
+			// refresh if changes
+			if (!_.isEqual($scope.$query, query)) {
+				$scope.games = GameResource.query(query, ApiHelper.handlePagination($scope, function(games) {
+					$scope.searchResult = true;
+				}));
+				$scope.$query = query;
+			} else {
+				$scope.searchResult = true;
+			}
+		};
+
+
+		$scope.$watch('q', refresh);
 
 		//$http({
 		//	method: 'GET',

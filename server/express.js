@@ -164,7 +164,7 @@ exports.configure = function(app) {
 	// development only
 	if (runningDev) {
 		app.use(expressErrorhandler());
-		app.locals.pretty = true;
+		app.locals.pretty = false;
 	}
 
 	if (runningLocal) {

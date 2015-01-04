@@ -68,7 +68,7 @@ common
 	.factory('ApiHelper', function($modal, $rootScope, $location, ModalService, ModalFlashService) {
 		return {
 
-			handlePagination: function(scope) {
+			handlePagination: function(scope, callback) {
 				return function(items, headers) {
 					scope.pagination = {};
 					if (headers('x-list-count')) {
@@ -87,6 +87,10 @@ common
 							};
 						});
 						scope.pagination.links = links;
+					}
+
+					if (callback) {
+						callback(items, headers);
 					}
 				};
 			},

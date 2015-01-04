@@ -3,14 +3,35 @@ include ../template/_mixins
 .jumbotron
 
 	h3.h--larger Find your Game.
-	form.form-inline
-		input.form-control.input--lighter(type="text", ng-model="query", focus-on)
-		+icon('search')
-	p.padder-top-2x
 
-	.relative
+	//- SEARCH
+	//-------------------------------------------------------------------------
+	.collapse--search
+
+		div(collapse="searchResult")
+			.spacer &nbsp;
+		.panel(collapse="!searchResult")
+			.container
+				.row(ng-show="games.length > 0")
+					.col-md-3.col-sm-4.col-xs-6.fade-animation(ng-repeat="game in games", ng-click="navGame(game.id)")
+						.panel.panel--animated.ng-cloak
+							.img.img--ar-bg.img--rounded-top(img-bg="game.media.backglass.variations.small.url")
+							.text-center.padder-horizontal
+								h1.h--small {{ game.title }}
+								label.label--subtitle {{ game.manufacturer }} &middot; {{ game.year }}
+
+				p.padder-bottom-2x(ng-hide="games.length > 0"): i No games found containing "{{ q }}".
+
+		.searchbox
+			form.form-inline
+				input.form-control.input--lighter(type="text", ng-model="q", focus-on)
+				+icon('search').space-left
+
+	//- INFO
+	//-------------------------------------------------------------------------
+	.collapse--info
 		div(collapse="whatsThis")
-			p <br><br>
+			.spacer &nbsp;
 		.panel(collapse="!whatsThis")
 
 			h3.h--large.h--primary What's this?
@@ -36,14 +57,16 @@ include ../template/_mixins
 		a.a--lighter(ng-click="whatsThis = !whatsThis")
 			+icon('vpdb-o').svg-3x
 
-
-
 .row
+	//- RELEASES
+	//-------------------------------------------------------------------------
 	.col-sm-12
 		h1.h--primary Latest Releases
 		hr
 		p There will be something here.
 
+	//- GAMES
+	//-------------------------------------------------------------------------
 	.col-sm-12
 		h1.h--primary Popular Games
 		hr

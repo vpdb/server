@@ -23,26 +23,53 @@
 		border-radius 20px
 		font-weight $font-weight-bold
 
-	.relative
-		margin-top 75px
-		> a
-			position absolute
-			top -25px
-			margin-left -25px
-
-	.panel
+	.collapse--search > .panel, .collapse--info > .panel
 		margin-left -60px
 		margin-right -60px
-		padding-left 50px
-		padding-right 50px
 		margin-bottom 0
 		box-shadow inset 0 9px 8px -5px rgba(0,0,0,0.1);
 		border-radius 0
-		background-color $color-lightest-inv
 
-		h3
-			margin-top 40px
+	.collapse--search
+		position relative
 
-		p.center-block
-			margin-left 100px
-			margin-right 100px
+		.spacer
+			padding-top 80px
+
+		> .panel
+			background-color $color-lighter-inv
+
+			.container
+				margin-top 75px
+				padding-left 30px
+				padding-right 30px
+
+		.searchbox
+			position absolute
+			top 20px
+			left 0
+			right 0
+
+	.collapse--info
+		position relative
+
+		.spacer
+			padding-top 80px
+
+		> a
+			position absolute
+			top -25px
+			left 0
+			right 0
+
+		> .panel
+			padding-left 50px
+			padding-right 50px
+			background-color $color-lightest-inv
+
+			h3
+				margin-top 40px
+
+			p.center-block
+				margin-left 100px
+				margin-right 100px

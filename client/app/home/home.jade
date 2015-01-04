@@ -1,146 +1,18 @@
-.row.row--fullheight(ng-controller="HomeController")
-	.col-sm-9.col--main
-		h1.h--primary Packs
+include ../template/_mixins
+
+.jumbotron
+
+	h3.h--larger Find your Game.
+	form.form-inline
+		input.form-control.input--lighter(type="text", ng-model="query", focus-on)
+		+icon('search')
+	p.padder-top-3x
+	+icon('vpdb-o').svg-3x
+
+.row
+	.col-sm-12
+		h1.h--primary Latest Releases
 		hr
-		.row.row-data
-			.col-xs-12.fade-animation(ng-repeat="pack in packs", ng-click="details(game.id)")
-				.panel.panel--banner.ng-cloak
-					img(ng-src="{{ pack.banner }}")
-					h1.space-left-2x.space-right-2x
-						i.icon.icon--title.color-primary(class="{{ pack | manufacturerIcon }}")
-						span.pull-right
-							span.h--lighter(ng-bind-html="pack.name | smalls")
-							span  {{ pack.number }}
+		p There will be something here.
 
-					.row
-						.col-xs-12.col-sm-6.a.a--lighter.oneliner(ng-repeat="game in pack.releases", ng-click="navGame(game.id)") {{ game.name }}
-
-					button.btn.btn-default.btn-lg.btn-2d(download="pack.download", download-info="pack | dlPack")
-						| Download
-		.clearfix
-
-		h1.h--primary New Releases
-		hr
-		.row.row-data
-			.col-lg-6.col-md-12.fade-animation(ng-repeat="release in newReleases", ng-click="navGame(release.game.id)")
-				.panel.panel--animated.ng-cloak
-					.clearfix
-					.col--list-mini-left
-						.img.img--ar-square.img--rounded-left(img-bg="release.thumbs.square")
-					.col--list-mini-right
-						h1.h--small.h--no-margin {{ release.game.name }}
-						span
-							| {{ release.title }}
-							label.label--version {{ release.lastversion.version }}
-						label.label--block
-							i.icon.icon-user
-							| {{ release.submitter.user }}
-					.clearfix
-		.clearfix
-
-		h1.h--primary Updated Releases
-		hr
-		.row.row-data
-			.col-lg-6.col-md-12.fade-animation(ng-repeat="release in updatedReleases", ng-click="navGame(release.game.id)")
-				.panel.panel--animated.ng-cloak
-					.clearfix
-					.col--list-mini-left
-						.img.img--ar-square.img--rounded-left(img-bg="release.thumbs.square")
-					.col--list-mini-right
-						h1.h--small.h--no-margin {{ release.game.name }}
-						span
-							| {{ release.title }}
-							label.label--version {{ release.lastversion.version }}
-						label.label--block
-							i.icon.icon-user
-							| {{ release.submitter.user }}
-					.clearfix
-		.clearfix
-
-		h1.h--primary news feed
-		hr
-		.media.media--news(ng-repeat="item in feed | orderBy:'timestamp':true")
-			.img-avatar.img-avatar--lg.avatar-placeholder.avatar-placeholder--lg.pull-left(ng-hide="item.user.avatar")
-			.img.img-avatar.img-avatar--lg.pull-left(ng-show="item.user.avatar", img-bg="item.user.avatar")
-			.media-body
-				label.label--block
-					span(am-time-ago="item.timestamp")
-				label.label--block
-					i.fa.space-right(class="{{ item | feedIcon }}")
-					strong {{ item.user.user }}
-					span(ng-bind-html="item | feedAction")
-				label.label--block(ng-bind-html="item | feedMessage")
-			hr(ng-hide="$last")
-
-		.clearfix
-
-		// todo properly
-		p
-			br
-
-	.col-sm-3.col--menu
-		h1 Releases
-		hr
-		h5.h--primary Trending
-
-		.media.media--mini(ng-repeat="release in newReleases.slice(0,4)", ng-class="{ last: $last }")
-			.img.img--ar-square.img--sm.pull-left(img-bg="release.thumbs.square")
-			.media-body
-				h6.h--no-margin.h--lighter.media-heading {{ release.game.name }}
-				span {{ release.title }}
-
-		h5.h--primary Most Starred
-		.media.media--mini(ng-repeat="release in updatedReleases.slice(0,4)", ng-class="{ last: $last }")
-			.img.img--ar-square.img--sm.pull-left(img-bg="release.thumbs.square")
-			.media-body
-				h6.h--no-margin.h--lighter.media-heading {{ release.game.name }}
-				span {{ release.title }}
-
-		h5.h--primary Most Downloaded
-		.media.media--mini(ng-repeat="release in newReleases.slice(0,4)", ng-class="{ last: $last }")
-			.img.img--ar-square.img--sm.pull-left(img-bg="release.thumbs.square")
-			.media-body
-				h6.h--no-margin.h--lighter.media-heading {{ release.game.name }}
-				span {{ release.title }}
-
-		h1 People
-		hr
-		h5.h--primary Most Active Authors
-		.media.media--mini(ng-repeat="user in users | orderBy:'authored':true", ng-class="{ last: $last }")
-			.img-avatar.img-avatar--sm.avatar-placeholder.avatar-placeholder--sm.pull-left(ng-hide="user.avatar")
-			.img.img-avatar.img-avatar--sm.pull-left(ng-show="user.avatar", img-bg="user.avatar")
-			.media-body
-				h6.h--no-margin.h--lighter.media-heading {{ user.user }}
-				span
-					i.fa.fa-arrow-circle-up.space-right
-					| {{ user.authored| number }} releases
-
-		h5.h--primary Most Active Submitters
-		.media.media--mini(ng-repeat="user in users | orderBy:'submitted':true", ng-class="{ last: $last }")
-			.img-avatar.img-avatar--sm.avatar-placeholder.avatar-placeholder--sm.pull-left(ng-hide="user.avatar")
-			.img.img-avatar.img-avatar--sm.pull-left(ng-show="user.avatar", img-bg="user.avatar")
-			.media-body
-				h6.h--no-margin.h--lighter.media-heading {{ user.user }}
-				span
-					i.fa.fa-arrow-circle-up.space-right
-					| {{ user.submitted| number }} items
-
-		h5.h--primary Most Acknowledged
-		.media.media--mini(ng-repeat="user in users | orderBy:'acknowledged':true", ng-class="{ last: $last }")
-			.img-avatar.img-avatar--sm.avatar-placeholder.avatar-placeholder--sm.pull-left(ng-hide="user.avatar")
-			.img.img-avatar.img-avatar--sm.pull-left(ng-show="user.avatar", img-bg="user.avatar")
-			.media-body
-				h6.h--no-margin.h--lighter.media-heading {{ user.user }}
-				span
-					i.fa.fa-thumbs-up.space-right
-					| {{ user.acknowledged| number }} times
-
-		h5.h--primary Most Followed
-		.media.media--mini(ng-repeat="user in users | orderBy:'followers':true", ng-class="{ last: $last }")
-			.img-avatar.img-avatar--sm.avatar-placeholder.avatar-placeholder--sm.pull-left(ng-hide="user.avatar")
-			.img.img-avatar.img-avatar--sm.pull-left(ng-show="user.avatar", img-bg="user.avatar")
-			.media-body
-				h6.h--no-margin.h--lighter.media-heading {{ user.user }}
-				span
-					i.fa.fa-star.space-right
-					| {{ user.followers | number }} followers
+p.padder-top

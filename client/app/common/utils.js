@@ -50,6 +50,12 @@ common
 		};
 	})
 
+	.directive('focusOn', function() {
+		return function(scope, elem, attr) {
+			elem[0].focus();
+		};
+	})
+
 	.directive('pageTitle', function($rootScope) {
 		return {
 			restrict: 'A',

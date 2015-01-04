@@ -48,7 +48,7 @@ angular.module('vpdb', deps.concat(appDeps))
 	.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
 
 		// routes
-		$stateProvider.state('home',             { url: '/',                             templateUrl: '/home/home.html' });
+		$stateProvider.state('home',             { url: '/',                             templateUrl: '/home/home.html', controller: 'HomeController' });
 		$stateProvider.state('games',            { url: '/games',                        templateUrl: '/games/list.html' });
 		$stateProvider.state('gameDetails',      { url: '/game/:id',                     templateUrl: '/games/details.html' });
 		$stateProvider.state('addGame',          { url: '/games/add',                    templateUrl: '/games/add.html' });

@@ -22,7 +22,7 @@ angular.module('vpdb.home', [])
 			$rootScope.login();
 		}
 
-		$scope.whatsThis = true;
+		$scope.whatsThis = false;
 
 
 		//$http({

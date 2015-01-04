@@ -74,10 +74,10 @@ module.exports = function(grunt) {
 				})
 			},
 			'static': {
-				files: [ { expand: true, cwd: 'client/static/', src: [ '**' ], dest: buildRoot } ]
+				files: [ { expand: true, cwd: 'client/static/', src: [ '**' ], dest: '<%= config.buildRoot %>' } ]
 			},
 			devsite: {
-				files: [ { expand: true, cwd: buildRoot, src: [ '**', '!html/**' ], dest: devsiteRoot } ]
+				files: [ { expand: true, cwd: '<%= config.buildRoot %>', src: [ '**', '!html/**' ], dest: '<%= config.devsiteRoot %>' } ]
 			},
 			svg: {
 				files: [ { expand: true, flatten: true, src: [ 'gfx/icons/*.svg' ], dest: '<%= config.tmpRoot %>/vpdb-svg/', rename: function(dest, src) {
@@ -95,7 +95,7 @@ module.exports = function(grunt) {
 			minify: { expand: false, cwd: '.', dest: cssGlobal, ext: '.css', src: _.pluck(assets.getCss(), 'src') }
 		},
 
-		'devsite-serve': { options: { root: devsiteRoot, port: 4000, runInBackground: false, map: {
+		'devsite-serve': { options: { root: '<%= config.devsiteRoot %>', port: 4000, runInBackground: false, map: {
 			'/js': path.resolve(__dirname, 'client/app')
 		}}},
 
@@ -123,7 +123,7 @@ module.exports = function(grunt) {
 		jade: {
 			site: {
 				options: { data: _.extend(viewParams, { environment: 'production', gitinfo: '<%= gitinfo %>' }) },
-				files: [ { expand: true, cwd: 'client/app', src: [ '**/*.jade', '!layout.jade', '!**/devsite/**', '!_*.jade' ], dest: htmlRoot, ext: '.html' } ]
+				files: [ { expand: true, cwd: 'client/app', src: [ '**/*.jade', '!layout.jade', '!**/devsite/**', '!_*.jade' ], dest: '<%= config.htmlRoot %>', ext: '.html' } ]
 			}
 		},
 
@@ -142,10 +142,10 @@ module.exports = function(grunt) {
 		},
 
 		mkdir: {
-			server:   { options: { mode: 504, create: [ cssRoot, jsRoot ] } },
+			server:   { options: { mode: 504, create: [ '<%= config.cssRoot %>', '<%= config.jsRoot %>' ] } },
 			coverage: { options: { mode: 504, create: [ '<%= config.coverageRoot %>' ] } },
 			test:     { options: { mode: 504, create: [ config.vpdb.storage ] }},
-			devsite:  { options: { mode: 504, create: [ devsiteRoot + '/html/styleguide' ] } }
+			devsite:  { options: { mode: 504, create: [ '<%= config.devsiteRoot %>/html/styleguide' ] } }
 		},
 
 		mochaTest: {
@@ -158,7 +158,7 @@ module.exports = function(grunt) {
 
 		ngAnnotate: {
 			options: { singleQuotes: true },
-			app: { files: [ { src: [ _.pluck(assets.getJs(), 'src') ], dest: jsGlobalAnnotated } ] }
+			app: { files: [ { src: [ _.pluck(assets.getJs(), 'src') ], dest: '<%= config.jsGlobalAnnotated %>' } ] }
 		},
 
 		protractor: {
@@ -181,7 +181,7 @@ module.exports = function(grunt) {
 		stylus: {
 			build: {
 				options: { paths: [ 'styles' ], linenos: false, compress: false, sourcemap: { sourceRoot: '/css' } },
-				files: [ { expand: true, cwd: 'client/styles', src: [ 'vpdb.styl' ], dest: cssRoot, ext: '.css' } ]
+				files: [ { expand: true, cwd: 'client/styles', src: [ 'vpdb.styl' ], dest: '<%= config.cssRoot %>', ext: '.css' } ]
 			}
 		},
 
@@ -200,7 +200,7 @@ module.exports = function(grunt) {
 		uglify: {
 			build: {
 				options: { mangle: true, compress: true, beautify: false, sourceMap: true, sourceMapIncludeSources: false },
-				files: [ { expand: false, cwd: '.', dest: jsGlobal, src: jsGlobalAnnotated }]
+				files: [ { expand: false, cwd: '.', dest: '<%= config.jsGlobal %>', src: '<%= config.jsGlobalAnnotated %>' }]
 			}
 		},
 

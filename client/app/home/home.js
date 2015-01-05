@@ -57,7 +57,13 @@ angular.module('vpdb.home', [])
 			// refresh if changes
 			if (!_.isEqual($scope.$query, query)) {
 				$scope.searching = true;
-				$scope.games = GameResource.query(query, ApiHelper.handlePagination($scope, function() {
+
+				GameResource.query(query, ApiHelper.handlePagination($scope, function(games) {
+
+					// only update results if result is different to avoid flicker.
+					if (!_.isEqual(_.pluck($scope.games, 'id'), _.pluck(games, 'id'))) {
+						$scope.games = games;
+					}
 					$scope.searchResult = true;
 					$scope.searching = false;
 				}));

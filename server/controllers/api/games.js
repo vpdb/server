@@ -144,8 +144,8 @@ exports.list = function(req, res) {
 		}
 
 		// sanitize and build regex
-		var titleQuery = req.query.q.trim().replace(/[^a-z0-9-\s]+/gi, '').replace(/\s+/g, '.*?');
-		var titleRegex = new RegExp(titleQuery, 'i');
+		var titleQuery = req.query.q.trim().replace(/[^a-z0-9-]+/gi, '');
+		var titleRegex = new RegExp(titleQuery.split('').join('.*?'), 'i');
 		var idQuery = req.query.q.trim().replace(/[^a-z0-9-]+/gi, ''); // TODO tune
 
 		query.push({ $or: [ { title: titleRegex }, { id: idQuery } ] });

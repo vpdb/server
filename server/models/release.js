@@ -186,12 +186,14 @@ ReleaseSchema.methods.toDetailed = function() {
 ReleaseSchema.methods.toSimple = function(opts) {
 	opts = opts || {};
 	opts.flavor = opts.flavor || {};
-	opts.flavor.lightning = opts.flavor.lightning || 'night';
+	opts.flavor.lightning = opts.flavor.lightning || 'day';
 	opts.flavor.orientation = opts.flavor.orientation || 'fs';
 	opts.thumb = opts.thumb || 'original';
 
 	var i, file, thumb;
 	var rls = _.pick(this.toObject(), [ 'id', 'name', 'created_at', 'authors' ]);
+
+	rls.game = _.pick(this._game, ['id', 'title']);
 
 	// sort versions by release date
 	var versions = this.versions.sort(function(a, b) {
@@ -212,7 +214,6 @@ ReleaseSchema.methods.toSimple = function(opts) {
 		file = latestVersion.files[i];
 
 		if (_.isEqual(file.flavor.toObject(), opts.flavor)) {
-			console.log('*** GOT MATCH FOR %j', file.flavor);
 			break;
 		}
 	}

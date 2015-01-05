@@ -5,7 +5,7 @@
  */
 angular.module('vpdb.home', [])
 
-	.controller('HomeController', function($scope, $rootScope, $http, $timeout, ApiHelper, GameResource) {
+	.controller('HomeController', function($scope, $rootScope, $http, $timeout, ApiHelper, GameResource, ReleaseResource) {
 
 		$scope.theme('dark');
 		$scope.setMenu('home');
@@ -77,6 +77,9 @@ angular.module('vpdb.home', [])
 			refresh(link.query);
 		};
 		$scope.$watch('q', refresh);
+
+		// fetch latest games
+		$scope.releases = ReleaseResource.query({ thumb: 'square', per_page: 8 });
 
 		//$http({
 		//	method: 'GET',

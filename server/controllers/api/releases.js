@@ -150,7 +150,7 @@ exports.list = function(req, res) {
 		});
 		api.success(res, releases, 200, api.paginationOpts(pagination, count));
 
-	}, { populate: [ 'versions.files._media.playfield_image', 'authors._user' ], sortBy: sortBy }); // '_game.title', '_game.id'
+	}, { populate: [ '_game', 'versions.files._media.playfield_image', 'authors._user' ], sortBy: sortBy }); // '_game.title', '_game.id'
 };
 
 

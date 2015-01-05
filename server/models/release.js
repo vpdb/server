@@ -26,6 +26,8 @@ var shortId = require('shortid');
 var mongoose = require('mongoose');
 
 var uniqueValidator = require('mongoose-unique-validator');
+var paginate = require('mongoose-paginate');
+
 var prettyId = require('./plugins/pretty-id');
 var fileRef = require('./plugins/file-ref');
 
@@ -91,6 +93,7 @@ var ReleaseSchema = new Schema(releaseFields);
 ReleaseSchema.plugin(uniqueValidator, { message: 'The {PATH} "{VALUE}" is already taken.' });
 ReleaseSchema.plugin(fileRef, { model: 'Release' });
 ReleaseSchema.plugin(prettyId, { model: 'Release', ignore: [ '_created_by' ] });
+ReleaseSchema.plugin(paginate);
 
 
 //-----------------------------------------------------------------------------
@@ -178,6 +181,61 @@ ReleaseSchema.path('versions.0.files').validate(function(files, callback) {
 //-----------------------------------------------------------------------------
 ReleaseSchema.methods.toDetailed = function() {
 	return this.toObject();
+};
+
+ReleaseSchema.methods.toSimple = function(opts) {
+	opts = opts || {};
+	opts.flavor = opts.flavor || {};
+	opts.flavor.lightning = opts.flavor.lightning || 'night';
+	opts.flavor.orientation = opts.flavor.orientation || 'fs';
+	opts.thumb = opts.thumb || 'original';
+
+	var i, file, thumb;
+	var rls = _.pick(this.toObject(), [ 'id', 'name', 'created_at', 'authors' ]);
+
+	// sort versions by release date
+	var versions = this.versions.sort(function(a, b) {
+		var dateA = new Date(a.released_at).getTime();
+		var dateB = new Date(b.released_at).getTime();
+		if (dateA < dateB) { return 1; }
+		if (dateA > dateB) { return -1; }
+		return 0;
+	});
+	var latestVersion = versions[0];
+
+	// get the file to pull media from
+	for (i = 0; i < latestVersion.files.length; i++) {
+		if (!latestVersion.files[i].flavor) {
+			// skip non-table files
+			continue;
+		}
+		file = latestVersion.files[i];
+
+		if (_.isEqual(file.flavor.toObject(), opts.flavor)) {
+			console.log('*** GOT MATCH FOR %j', file.flavor);
+			break;
+		}
+	}
+
+	if (file._media.playfield_image.variations[opts.thumb]) {
+		thumb = _.pick(file._media.playfield_image.variations[opts.thumb], [ 'url', 'width', 'height' ]);
+	} else {
+		thumb = {
+			url: file._media.playfield_image.url,
+			width: file._media.playfield_image.metadata.size.width,
+			height: file._media.playfield_image.metadata.size.height
+		};
+	}
+
+	rls.latest_version = {
+		version: latestVersion.version,
+		thumb: {
+			image: thumb,
+			flavor: file.flavor
+		}
+	};
+
+	return rls;
 };
 
 

@@ -229,6 +229,33 @@ exports.assert = function(error, prefix, ref, res, rollback) {
 	};
 };
 
+/**
+ * Returns the pagination object.
+ *
+ * @param {Request} req
+ * @param {int} [defaultPerPage=10] Default number of items returned if not indicated - default 10.
+ * @param {int} [maxPerPage=50] Maximal number of items returned if not indicated - default 50.
+ * @return {object}
+ */
+exports.pagination = function(req, defaultPerPage, maxPerPage) {
+	return {
+		defaultPerPage: defaultPerPage,
+		maxPerPage: maxPerPage,
+		page: Math.max(req.query.page, 1) || 1,
+		perPage: Math.max(0, Math.min(req.query.per_page, maxPerPage)) || defaultPerPage
+	};
+};
+
+/**
+ * Adds item count to the pagination object.
+ * @param {object} pagination
+ * @param {int} count
+ * @returns {object}
+ */
+exports.paginationOpts = function(pagination, count) {
+	return { pagination: _.extend(pagination, { count: count }) };
+};
+
 exports.checkReadOnlyFields = function(newObj, oldObj, allowedFields) {
 	var errors = [];
 	_.each(_.difference(_.keys(newObj), allowedFields), function(field) {

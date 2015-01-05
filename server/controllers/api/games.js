@@ -130,10 +130,7 @@ exports.del = function(req, res) {
  */
 exports.list = function(req, res) {
 
-	var pagination = {
-		defaultPerPage: 12,
-		maxPerPage: 60
-	};
+	var pagination = api.pagination(req, 12, 60);
 	var q, query = [];
 
 	// text search
@@ -171,10 +168,6 @@ exports.list = function(req, res) {
 		}
 	}
 
-	// pagination
-	var page = Math.max(req.query.page, 1) || 1;
-	var perPage = Math.max(pagination.defaultPerPage, Math.min(req.query.per_page, pagination.maxPerPage)) || pagination.defaultPerPage;
-
 	// sorting
 	var sortBy = {};
 	if (req.query.sort) {
@@ -197,7 +190,7 @@ exports.list = function(req, res) {
 		q = { $and: query };
 	}
 	logger.info('[api|game:list] query: %s, sort: %j', util.inspect(q), util.inspect(sortBy));
-	Game.paginate(q, page, perPage, function(err, pageCount, games, count) {
+	Game.paginate(q, pagination.page, pagination.perPage, function(err, pageCount, games, count) {
 
 		/* istanbul ignore if  */
 		if (err) {
@@ -206,7 +199,7 @@ exports.list = function(req, res) {
 		games = _.map(games, function(game) {
 			return game.toSimple();
 		});
-		api.success(res, games, 200, { pagination: { page: page, perPage: perPage, count: count }});
+		api.success(res, games, 200, api.paginationOpts(pagination, count));
 
 	}, { populate: [ '_media.backglass', '_media.logo' ], sortBy: sortBy });
 };

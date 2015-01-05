@@ -37,10 +37,7 @@ var config = require('../../modules/settings').current;
  */
 exports.list = function(req, res) {
 
-	var pagination = {
-		defaultPerPage: 30,
-		maxPerPage: 100
-	};
+	var pagination = api.pagination(req, 30, 100);
 	var q, query = [{ _user: req.user, _actor: req.user }];
 
 	// filter event
@@ -57,10 +54,6 @@ exports.list = function(req, res) {
 		}
 	}
 
-	// pagination
-	var page = Math.max(req.query.page, 1) || 1;
-	var perPage = Math.max(0, Math.min(req.query.per_page, pagination.maxPerPage)) || pagination.defaultPerPage;
-
 	// construct query object
 	if (query.length === 0) {
 		q = {};
@@ -71,7 +64,7 @@ exports.list = function(req, res) {
 	}
 
 	// query
-	LogUser.paginate(q, page, perPage, function(err, pageCount, logs, count) {
+	LogUser.paginate(q, pagination.page, pagination.perPage, function(err, pageCount, logs, count) {
 
 		/* istanbul ignore if  */
 		if (err) {
@@ -94,7 +87,7 @@ exports.list = function(req, res) {
 			}
 			return log.toObject();
 		});
-		api.success(res, logs, 200, { pagination: { page: page, perPage: perPage, count: count }});
+		api.success(res, logs, 200, api.paginationOpts(pagination, count));
 
 	}, { sortBy: { logged_at: -1 } });
 

@@ -75,6 +75,86 @@ exports.create = function(req, res) {
 
 
 /**
+ * Lists all releases.
+ *
+ * @param {Request} req
+ * @param {Response} res
+ */
+exports.list = function(req, res) {
+
+	var pagination = api.pagination(req, 12, 60);
+	var q, query = [];
+
+	// flavor, thumb selection
+	var transformOpts = { flavor: {} };
+	if (req.query.flavor) {
+		// /api/v1/releases?flavor=orientation:fs,lighting:day
+		var flavorParams = req.query.flavor.split(',');
+		_.each(flavorParams, function(param) {
+			var f = param.split(':');
+			if (f[0] && f[1]) {
+				transformOpts.flavor[f[0]] = f[1];
+			}
+		});
+	}
+	if (req.query.thumb) {
+		transformOpts.thumb = req.query.thumb;
+	}
+
+	// text search
+	if (req.query.q) {
+
+		if (req.query.q.trim().length < 2) {
+			return api.fail(res, error('Query must contain at least two characters.'), 400);
+		}
+
+		// sanitize and build regex
+		var titleQuery = req.query.q.trim().replace(/[^a-z0-9-]+/gi, '');
+		var titleRegex = new RegExp(titleQuery.split('').join('.*?'), 'i');
+		var idQuery = req.query.q.trim().replace(/[^a-z0-9-]+/gi, ''); // TODO tune
+
+		query.push({ $or: [ { name: titleRegex }, { 'game.title': titleRegex}, { id: idQuery } ] });
+	}
+
+
+	// sorting
+	var sortBy = {};
+	if (req.query.sort) {
+		var s = req.query.sort.match(/^(-?)([a-z0-9_-]+)+$/);
+		if (s) {
+			sortBy[s[2]] = s[1] ? -1 : 1;
+		} else {
+			sortBy.released_at = -1;
+		}
+	} else {
+		sortBy.released_at = -1;
+	}
+
+	// construct query object
+	if (query.length === 0) {
+		q = {};
+	} else if (query.length === 1) {
+		q = query[0];
+	} else {
+		q = { $and: query };
+	}
+	logger.info('[api|release:list] query: %s, sort: %j', util.inspect(q), util.inspect(sortBy));
+	Release.paginate(q, pagination.page, pagination.perPage, function(err, pageCount, releases, count) {
+
+		/* istanbul ignore if  */
+		if (err) {
+			return api.fail(res, error(err, 'Error listing releases').log('list'), 500);
+		}
+		releases = _.map(releases, function(release) {
+			return release.toSimple(transformOpts);
+		});
+		api.success(res, releases, 200, api.paginationOpts(pagination, count));
+
+	}, { populate: [ 'versions.files._media.playfield_image', 'authors._user' ], sortBy: sortBy }); // '_game.title', '_game.id'
+};
+
+
+/**
  * Deletes a release.
  *
  * @param {Request} req

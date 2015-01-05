@@ -78,6 +78,7 @@ module.exports = function(app) {
 	app.get(settings.apiPath('/ping'),            api.anon(api.ping));
 
 	// release
+	app.get(settings.apiPath('/releases'),        api.anon(api.releases.list));
 	app.post(settings.apiPath('/releases'),       api.auth(api.releases.create, 'releases', 'add'));
 	app.delete(settings.apiPath('/releases/:id'), api.auth(api.releases.del, 'releases', 'delete'));
 

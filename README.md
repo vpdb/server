@@ -165,7 +165,10 @@ Code is also run through Code Climate, with the following result: [![Code Climat
 
 * To Mukuste. He gave the community such a nice momentum and I thought I could add a little bit to it.
 * To Tom for his support of this project and a certainly awesome PinballX integration!
-* To JetBrains for their awesome [![IntelliJ IDEA][idea-image]][idea-url]
+
+[![IntelliJ IDEA][idea-image]][idea-url]
+Thanks also to JetBrains for their awesome IDE and support of the Open Source Community!
+
 
 ## License
 

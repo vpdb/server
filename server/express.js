@@ -22,7 +22,6 @@
 var _ = require('lodash');
 var path = require('path');
 var http = require('http');
-var chalk = require('chalk');
 var logger = require('winston');
 var passport = require('passport');
 var express = require('express');

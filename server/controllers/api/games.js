@@ -168,19 +168,7 @@ exports.list = function(req, res) {
 		}
 	}
 
-	// sorting
-	var sortBy = {};
-	if (req.query.sort) {
-		var s = req.query.sort.match(/^(-?)([a-z0-9_-]+)+$/);
-		if (s) {
-			sortBy[s[2]] = s[1] ? -1 : 1;
-		} else {
-			sortBy.title = -1;
-		}
-	} else {
-		sortBy.title = 1;
-	}
-
+	var sortBy = api.sortParams(req);
 	var q = api.searchQuery(query);
 	logger.info('[api|game:list] query: %s, sort: %j', util.inspect(q), util.inspect(sortBy));
 	Game.paginate(q, pagination.page, pagination.perPage, function(err, pageCount, games, count) {

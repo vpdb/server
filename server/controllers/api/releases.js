@@ -116,20 +116,7 @@ exports.list = function(req, res) {
 		query.push({ $or: [ { name: titleRegex }, { 'game.title': titleRegex}, { id: idQuery } ] });
 	}
 
-
-	// sorting
-	var sortBy = {};
-	if (req.query.sort) {
-		var s = req.query.sort.match(/^(-?)([a-z0-9_-]+)+$/);
-		if (s) {
-			sortBy[s[2]] = s[1] ? -1 : 1;
-		} else {
-			sortBy.released_at = -1;
-		}
-	} else {
-		sortBy.released_at = -1;
-	}
-
+	var sortBy = api.sortParams(req);
 	var q = api.searchQuery(query);
 	logger.info('[api|release:list] query: %s, sort: %j', util.inspect(q), util.inspect(sortBy));
 	Release.paginate(q, pagination.page, pagination.perPage, function(err, pageCount, releases, count) {

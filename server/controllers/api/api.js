@@ -266,6 +266,21 @@ exports.searchQuery = function(query) {
 	}
 };
 
+exports.sortParams = function(req) {
+	var sortBy = {};
+	if (req.query.sort) {
+		var s = req.query.sort.match(/^(-?)([a-z0-9_-]+)+$/);
+		if (s) {
+			sortBy[s[2]] = s[1] ? -1 : 1;
+		} else {
+			sortBy.title = -1;
+		}
+	} else {
+		sortBy.title = 1;
+	}
+	return sortBy;
+};
+
 exports.checkReadOnlyFields = function(newObj, oldObj, allowedFields) {
 	var errors = [];
 	_.each(_.difference(_.keys(newObj), allowedFields), function(field) {

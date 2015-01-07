@@ -22,8 +22,8 @@
 var _ = require('lodash');
 var path = require('path');
 var http = require('http');
+var chalk = require('chalk');
 var logger = require('winston');
-
 var passport = require('passport');
 var express = require('express');
 var jadeStatic = require('connect-jade-static');
@@ -95,7 +95,17 @@ exports.configure = function(app) {
 		}));
 		logger.info('[express] Access log will be written to %s.', process.env.APP_ACCESS_LOG);
 	} else {
-		app.use(expressMorgan('dev'));
+		expressMorgan.token('colorReq', function(req) {
+			var str = req.method + ' ' + (req.originalUrl || req.url);
+			switch (req.method) {
+				case 'GET':    return str.white.blueBG;
+				case 'POST':   return str.white.greenBG;
+				case 'PUT':    return str.white.yellowBG;
+				case 'DELETE': return str.white.redBG;
+				default:       return str.white.greyBG;
+			}
+		});
+		app.use(expressMorgan(':date[iso] :colorReq :status :response-time ms - :res[content-length]'));
 	}
 
 	if (runningLocal) {

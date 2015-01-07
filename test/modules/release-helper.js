@@ -38,3 +38,16 @@ exports.createRelease = function(user, request, done) {
 		});
 	});
 };
+
+exports.createReleases = function(user, request, count, done) {
+	// do this in serie
+	async.timesSeries(count, function(n, next) {
+		exports.createRelease(user, request, function(release) {
+			next(null, release);
+		});
+	}, function(err, releases) {
+		expect(releases).to.be.an('array');
+		expect(releases).to.have.length(count);
+		done(releases);
+	});
+};

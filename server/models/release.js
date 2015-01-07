@@ -150,18 +150,46 @@ ReleaseSchema.path('versions.0.files').validate(function(files, callback) {
 						}
 					});
 
+					// compatibility (in here because it applies only to table files.)
+					if (!_.isArray(f._compatibility) || !f._compatibility.length) {
+						// TODO check if exists.
+						that.invalidate('files.' + i + '._compatibility', 'At least one VP build must be provided.');
+					}
+
 					// media
 					if (!f._media || !f._media.playfield_image) {
 						that.invalidate('files.' + i + '._media.playfield_image', 'Playfield image must be provided.');
+						i++;
+						return next();
 					}
 
-					// compatibility (in here because it applies only to table files.)
-					if (!_.isArray(f._compatibility) || !f._compatibility.length) {
-						that.invalidate('files.' + i + '._compatibility', 'At least one VP build must be provided.');
-					}
+					// check if exists
+					mongoose.model('File').findById(f._media.playfield_image, function(err, playfieldImage) {
+						/* istanbul ignore if */
+						if (err) {
+							logger.error('[model] Error fetching file "%s".', f._media.playfield_image);
+							i++;
+							return next();
+						}
+						if (!playfieldImage) {
+							that.invalidate('files.' + i + '._media.playfield_image', 'Playfield "' + f._media.playfield_image + '" does not exist.');
+							i++;
+							return next();
+						}
+						if (!_.contains(['playfield-fs', 'playfield-ws'], playfieldImage.file_type)) {
+							that.invalidate('files.' + i + '._media.playfield_image', 'Must reference a file with file_type "playfield-fs" or "playfield-ws".');
+						}
+
+						i++;
+						next();
+					});
+
+				} else {
+					i++;
+					next();
 				}
-				i++;
-				next();
+
+
 			});
 		} else {
 			i++;
@@ -218,13 +246,14 @@ ReleaseSchema.methods.toSimple = function(opts) {
 		}
 	}
 
-	if (file._media.playfield_image.variations[opts.thumb]) {
-		thumb = _.pick(file._media.playfield_image.variations[opts.thumb], [ 'url', 'width', 'height' ]);
+	var playfieldImage = file._media.playfield_image.toObject();
+	if (playfieldImage.variations[opts.thumb]) {
+		thumb = _.pick(playfieldImage.variations[opts.thumb], [ 'url', 'width', 'height' ]);
 	} else {
 		thumb = {
-			url: file._media.playfield_image.url,
-			width: file._media.playfield_image.metadata.size.width,
-			height: file._media.playfield_image.metadata.size.height
+			url: playfieldImage.url,
+			width: playfieldImage.metadata.size.width,
+			height: playfieldImage.metadata.size.height
 		};
 	}
 

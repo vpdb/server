@@ -106,12 +106,12 @@ describe('The VPDB `file` API', function() {
 
 		it('should return the correct dimensions and variations', function(done) {
 			hlp.file.createBackglass('member', request, function(backglass) {
+				hlp.doomFile('member', backglass.id);
 				expect(backglass.id).to.be.ok();
 				expect(backglass.metadata.size.width).to.be(640);
 				expect(backglass.metadata.size.height).to.be(512);
 				expect(backglass.variations.small).to.be.an('object');
 				expect(backglass.variations.medium).to.be.an('object');
-				hlp.doomFile('member', backglass.id);
 				done();
 			});
 		});
@@ -140,6 +140,25 @@ describe('The VPDB `file` API', function() {
 		});
 
 		it('should fail if the aspect ratio too much off');
+
+	});
+
+	describe('when uploading a playfield image', function() {
+
+		it('should return the correct variations', function(done) {
+			hlp.file.createPlayfield('member', request, function(playfield) {
+				hlp.doomFile('member', playfield.id);
+				expect(playfield.id).to.be.ok();
+				expect(playfield.variations).to.be.an('object');
+				expect(playfield.variations.medium).to.be.an('object');
+				expect(playfield.variations['medium-2x']).to.be.an('object');
+				expect(playfield.variations['medium-landscape']).to.be.an('object');
+				expect(playfield.variations['medium-landscape-2x']).to.be.an('object');
+				expect(playfield.variations.square).to.be.an('object');
+				expect(playfield.variations['square-2x']).to.be.an('object');
+				done();
+			});
+		});
 	});
 
 	describe('when uploading a video', function() {

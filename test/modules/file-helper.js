@@ -43,7 +43,7 @@ exports.createPlayfield = function(user, request, done) {
 
 exports.createPlayfields = function(user, request, times, done) {
 
-	var fileType = 'playfield';
+	var fileType = 'playfield-fs';
 	var mimeType = 'image/png';
 
 	async.times(times, function(n, next) {

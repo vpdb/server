@@ -46,7 +46,6 @@ var config = settings.current;
 module.exports = function(app) {
 
 	var api = require('./controllers/api');
-	var auth = require('./controllers/auth');
 	var storage = require('./controllers/storage');
 
 	// API

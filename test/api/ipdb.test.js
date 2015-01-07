@@ -23,10 +23,11 @@ describe('The VPDB `IPDB` API', function() {
 			hlp.cleanup(request, done);
 		});
 
-		it('should successfully fetch the data', function (done) {
+		it('should successfully fetch the data', function(done) {
 
 			var user = 'contributor';
-			hlp.file.createBackglass(user, request, function (backglass) {
+			hlp.file.createBackglass(user, request, function(backglass) {
+				hlp.doomFile(user, backglass.id);
 				request
 					.get('/api/v1/ipdb/4032')
 					.as(user)

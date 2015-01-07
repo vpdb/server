@@ -98,7 +98,7 @@ describe('The VPDB `release` API', function() {
 			});
 		});
 
-		it('should fail validations when providing invalid file references', function(done) {
+		it('should fail validations when providing a non-existing file reference', function(done) {
 			request
 				.post('/api/v1/releases')
 				.as('member')
@@ -152,6 +152,34 @@ describe('The VPDB `release` API', function() {
 				});
 			});
 		});
+
+		it('should fail validations when providing a different file type as playfield image', function(done) {
+			var user = 'member';
+			hlp.file.createVpt(user, request, function(vptfile) {
+				hlp.file.createBackglass(user, request, function(backglass) {
+					hlp.doomFile(user, backglass.id);
+					request
+						.post('/api/v1/releases')
+						.as(user)
+						.send({
+							versions: [ {
+								files: [ {
+									_file: vptfile.id,
+									_media: { playfield_image: backglass.id }
+								} ]
+							} ]
+						})
+						.end(function(err, res) {
+							hlp.expectValidationError(err, res, 'versions.0.files.0._media.playfield_image', 'file_type "playfield-fs" or "playfield-ws"');
+							done();
+						});
+				});
+			});
+		});
+
+		it('should fail validations when providing a different file type as playfield video');
+		it('should fail validations when providing a non-existent vp build');
+		it('should fail validations when providing a non-existent playfield video');
 
 		it('should succeed when providing minimal data', function(done) {
 			var user = 'member';
@@ -243,6 +271,34 @@ describe('The VPDB `release` API', function() {
 		});
 
 		it('should activate tags and VPBuilds if created');
+
+	});
+
+	describe('when listing releases', function() {
+
+		before(function(done) {
+			hlp.setupUsers(request, {
+				member: { roles: [ 'member' ] },
+				contributor: { roles: [ 'contributor' ] }
+			}, function() {
+				hlp.release.createReleases('member', request, 4, function(releases) {
+					done(null, releases);
+				});
+			});
+		});
+
+		after(function(done) {
+			hlp.cleanup(request, done);
+		});
+
+		it.skip('should list all fields', function(done) {
+			request
+				.get('/api/v1/releases')
+				.end(function(err, res) {
+					hlp.dump(res);
+					done();
+				});
+		});
 
 	});
 });

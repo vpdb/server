@@ -256,6 +256,16 @@ exports.paginationOpts = function(pagination, count) {
 	return { pagination: _.extend(pagination, { count: count }) };
 };
 
+exports.searchQuery = function(query) {
+	if (query.length === 0) {
+		return {};
+	} else if (query.length === 1) {
+		return query[0];
+	} else {
+		return { $and: query };
+	}
+};
+
 exports.checkReadOnlyFields = function(newObj, oldObj, allowedFields) {
 	var errors = [];
 	_.each(_.difference(_.keys(newObj), allowedFields), function(field) {

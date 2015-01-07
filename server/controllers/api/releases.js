@@ -83,7 +83,7 @@ exports.create = function(req, res) {
 exports.list = function(req, res) {
 
 	var pagination = api.pagination(req, 12, 60);
-	var q, query = [];
+	var query = [];
 
 	// flavor, thumb selection
 	var transformOpts = { flavor: {} };
@@ -130,14 +130,7 @@ exports.list = function(req, res) {
 		sortBy.released_at = -1;
 	}
 
-	// construct query object
-	if (query.length === 0) {
-		q = {};
-	} else if (query.length === 1) {
-		q = query[0];
-	} else {
-		q = { $and: query };
-	}
+	var q = api.searchQuery(query);
 	logger.info('[api|release:list] query: %s, sort: %j', util.inspect(q), util.inspect(sortBy));
 	Release.paginate(q, pagination.page, pagination.perPage, function(err, pageCount, releases, count) {
 

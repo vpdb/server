@@ -106,7 +106,7 @@ module.exports = function(grunt) {
 		},
 
 		express: {
-			options: { output: 'Server listening at' },
+			options: { output: '[app] API ready', args: ['--colors'] },
 			dev:     { options: { script: 'app.js', port: config.vpdb.webapp.port } },
 			test:    { options: { script: 'app.js', port: config.vpdb.webapp.port } },
 			prod:    { options: { script: 'app.js', background: false } },

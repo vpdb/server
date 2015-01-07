@@ -38,7 +38,7 @@ var config = require('../../modules/settings').current;
 exports.list = function(req, res) {
 
 	var pagination = api.pagination(req, 30, 100);
-	var q, query = [{ _user: req.user, _actor: req.user }];
+	var query = [{ _user: req.user, _actor: req.user }];
 
 	// filter event
 	if (req.query.event) {
@@ -54,17 +54,8 @@ exports.list = function(req, res) {
 		}
 	}
 
-	// construct query object
-	if (query.length === 0) {
-		q = {};
-	} else if (query.length === 1) {
-		q = query[0];
-	} else {
-		q = { $and: query };
-	}
-
 	// query
-	LogUser.paginate(q, pagination.page, pagination.perPage, function(err, pageCount, logs, count) {
+	LogUser.paginate(api.searchQuery(query), pagination.page, pagination.perPage, function(err, pageCount, logs, count) {
 
 		/* istanbul ignore if  */
 		if (err) {

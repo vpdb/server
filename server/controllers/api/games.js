@@ -131,7 +131,7 @@ exports.del = function(req, res) {
 exports.list = function(req, res) {
 
 	var pagination = api.pagination(req, 12, 60);
-	var q, query = [];
+	var query = [];
 
 	// text search
 	if (req.query.q) {
@@ -181,14 +181,7 @@ exports.list = function(req, res) {
 		sortBy.title = 1;
 	}
 
-	// construct query object
-	if (query.length === 0) {
-		q = {};
-	} else if (query.length === 1) {
-		q = query[0];
-	} else {
-		q = { $and: query };
-	}
+	var q = api.searchQuery(query);
 	logger.info('[api|game:list] query: %s, sort: %j', util.inspect(q), util.inspect(sortBy));
 	Game.paginate(q, pagination.page, pagination.perPage, function(err, pageCount, games, count) {
 

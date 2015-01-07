@@ -27,14 +27,13 @@ describe('The storage engine of VPDB', function() {
 		it('should return a "Last-Modified" header for all storage items.', function(done) {
 
 			hlp.file.createBackglass('member', request, function(backglass) {
+				hlp.doomFile('member', backglass.id);
 				hlp.storageToken(request, 'member', backglass.url, function(token) {
 					request
 						.get(backglass.url)
 						.query({ token: token })
 						.end(function(err, res) {
 							hlp.expectStatus(err, res, 200);
-							hlp.doomFile('member', backglass.id);
-
 							expect(res.headers['last-modified']).not.to.be.empty();
 							done();
 						});
@@ -45,13 +44,13 @@ describe('The storage engine of VPDB', function() {
 		it('should return a HTTP 304 Not Modified if a file is requested with the "If-Modified-Since" header', function(done) {
 
 			hlp.file.createBackglass('member', request, function(backglass) {
+				hlp.doomFile('member', backglass.id);
 				hlp.storageToken(request, 'member', backglass.url, function(token) {
 					request
 						.get(backglass.url)
 						.query({ token: token })
 						.end(function(err, res) {
 							hlp.expectStatus(err, res, 200);
-							hlp.doomFile('member', backglass.id);
 
 							var lastModified = res.headers['last-modified'];
 							request
@@ -133,9 +132,9 @@ describe('The storage engine of VPDB', function() {
 			it('should block until the file is finished processing when requesting the variation', function(done) {
 
 				hlp.file.createBackglass('member', request, function(backglass) {
+					hlp.doomFile('member', backglass.id);
 					request.get(backglass.variations['small-2x'].url).as('member').end(function(err, res) {
 						hlp.expectStatus(err, res, 200);
-						hlp.doomFile('member', backglass.id);
 						expect(res.headers['content-length']).to.be.greaterThan(0);
 						done();
 					});
@@ -158,9 +157,9 @@ describe('The storage engine of VPDB', function() {
 			it('should block until the file is finished processing when requesting the HEAD of a variation', function(done) {
 
 				hlp.file.createBackglass('member', request, function(backglass) {
+					hlp.doomFile('member', backglass.id);
 					request.head(backglass.variations['small-2x'].url).as('member').end(function(err, res) {
 						hlp.expectStatus(err, res, 200);
-						hlp.doomFile('member', backglass.id);
 						expect(res.headers['content-length']).to.be('0');
 						expect(res.text).to.not.be.ok();
 						done();

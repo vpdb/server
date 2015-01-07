@@ -165,8 +165,7 @@ Code is also run through Code Climate, with the following result: [![Code Climat
 
 * To Mukuste. He gave the community such a nice momentum and I thought I could add a little bit to it.
 * To Tom for his support of this project and a certainly awesome PinballX integration!
-
-<a href="//www.jetbrains.com/idea/" style="position: relative;display:block; width:120px; height:30px; border:0; margin:0;padding:0;text-decoration:none;text-indent:0;"><span style="margin: 0;padding: 0;position: absolute;top: -1px;left: 29px;font-size: 9px;cursor:pointer;  background-image:none;border:0;color: #0d3a9e; font-family: trebuchet ms,arial,sans-serif;font-weight: normal;text-align:left;">Developed with</span><img src="//www.jetbrains.com/idea/opensource/img/all/banners/idea120x30_white.gif" alt="The best Java IDE" border="0"/></a>
+* To JetBrains for their awesome [![IntelliJ IDEA][idea-image]][idea-url]
 
 ## License
 
@@ -184,3 +183,5 @@ GPLv2, see [LICENSE](LICENSE).
 [droneio-url]: https://drone.io/github.com/freezy/node-vpdb/latest
 [codeclimate-image]: http://img.shields.io/codeclimate/github/freezy/node-vpdb.svg?style=flat-square
 [codeclimate-url]: https://codeclimate.com/github/freezy/node-vpdb
+[idea-image]: https://www.jetbrains.com/idea/opensource/img/all/banners/idea120x30_white.gif
+[idea-url]: https://www.jetbrains.com/idea/

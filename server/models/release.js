@@ -43,7 +43,7 @@ var fileFields = {
 		orientation: { type: String, enum: { values: [ 'ws', 'fs' ], message: 'Invalid orientation. Valid orientation are: ["ws", "fs"].' }},
 		lightning:   { type: String, enum: { values: [ 'day', 'night' ], message: 'Invalid lightning. Valid options are: ["day", "night"].' }}
 	},
-	_compatibility: [ { type: Schema.ObjectId, ref: 'VPBuild' } ],
+	_compatibility: [ { type: Schema.ObjectId, ref: 'Build' } ],
 	_media: {
 		playfield_image: { type: Schema.ObjectId, ref: 'File' },
 		playfield_video: { type: Schema.ObjectId, ref: 'File' }
@@ -292,10 +292,10 @@ VersionSchema.options.toObject.transform = function(doc, version) {
 FileSchema.options.toObject.transform = function(doc, file) {
 	file.media = file._media;
 	file.compatibility = [];
-	var VPBuild = require('mongoose').model('VPBuild');
+	var Build = require('mongoose').model('Build');
 	var File = require('mongoose').model('File');
 	_.each(file._compatibility, function(compat) {
-		file.compatibility.push(VPBuild.toSimple(compat));
+		file.compatibility.push(Build.toSimple(compat));
 	});
 	file.file = File.toDetailed(file._file);
 	delete file.id;

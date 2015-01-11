@@ -22,6 +22,13 @@ exports.getGame = function(attrs) {
 	return attrs ? _.extend(game, attrs) : game;
 };
 
+/**
+ * Creates a new game. Automatically marks game for deletion after test (i.e. dooms it).
+ *
+ * @param {string} user User name with which the game should be created
+ * @param {Request} request HTTP client
+ * @param {function} done Callback
+ */
 exports.createGame = function(user, request, done) {
 	var hlp = require('./helper');
 	hlp.file.createBackglass(user, request, function(backglass) {

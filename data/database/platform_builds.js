@@ -1,4 +1,4 @@
-exports.model = 'VPBuild';
+exports.model = 'Build';
 exports.rows = [
 	{
 		id: '9.9.0',

@@ -44,7 +44,7 @@ var fields = {
 	created_at:   { type: Date, required: true },
 	_created_by:  { type: Schema.ObjectId, ref: 'User' }
 };
-var VPBuildSchema = new Schema(fields);
+var BuildSchema = new Schema(fields);
 
 
 //-----------------------------------------------------------------------------
@@ -58,7 +58,7 @@ var apiFields = {
 //-----------------------------------------------------------------------------
 // VIRTUALS
 //-----------------------------------------------------------------------------
-VPBuildSchema.virtual('created_by')
+BuildSchema.virtual('created_by')
 	.get(function() {
 		if (this._created_by && this.populated('_created_by')) {
 			return this._created_by.toReduced();
@@ -69,26 +69,26 @@ VPBuildSchema.virtual('created_by')
 //-----------------------------------------------------------------------------
 // METHODS
 //-----------------------------------------------------------------------------
-VPBuildSchema.methods.toSimple = function() {
-	return VPBuildSchema.statics.toSimple(this);
+BuildSchema.methods.toSimple = function() {
+	return BuildSchema.statics.toSimple(this);
 };
 
 //-----------------------------------------------------------------------------
 // STATIC METHODS
 //-----------------------------------------------------------------------------
-VPBuildSchema.statics.toSimple = function(vpbuild) {
-	var obj = vpbuild.toObject ? vpbuild.toObject() : vpbuild;
+BuildSchema.statics.toSimple = function(build) {
+	var obj = build.toObject ? build.toObject() : build;
 	return _.pick(obj, apiFields.simple);
 };
 
 //-----------------------------------------------------------------------------
 // VALIDATIONS
 //-----------------------------------------------------------------------------
-VPBuildSchema.path('label').validate(function(label) {
+BuildSchema.path('label').validate(function(label) {
 	return validator.isLength(label ? label.trim() : '', 3);
 }, 'Label must contain at least three characters.');
 
-VPBuildSchema.path('built_at').validate(function(dateString) {
+BuildSchema.path('built_at').validate(function(dateString) {
 	// TODO fix, doesn't seem to work.
 	//console.log('--------------- Checking date "%s": %s', dateString, validator.isDate(dateString));
 	return validator.isDate(dateString);
@@ -98,19 +98,19 @@ VPBuildSchema.path('built_at').validate(function(dateString) {
 //-----------------------------------------------------------------------------
 // PLUGINS
 //-----------------------------------------------------------------------------
-VPBuildSchema.plugin(uniqueValidator, { message: 'The {PATH} "{VALUE}" is already taken.' });
+BuildSchema.plugin(uniqueValidator, { message: 'The {PATH} "{VALUE}" is already taken.' });
 
 
 //-----------------------------------------------------------------------------
 // OPTIONS
 //-----------------------------------------------------------------------------
-VPBuildSchema.set('toObject', { virtuals: true });
-VPBuildSchema.options.toObject.transform = function(doc, vpbuild) {
-	delete vpbuild.__v;
-	delete vpbuild._id;
-	delete vpbuild._created_by;
-	delete vpbuild.is_active;
+BuildSchema.set('toObject', { virtuals: true });
+BuildSchema.options.toObject.transform = function(doc, build) {
+	delete build.__v;
+	delete build._id;
+	delete build._created_by;
+	delete build.is_active;
 };
 
-mongoose.model('VPBuild', VPBuildSchema);
-logger.info('[model] Schema "VPBuild" registered.');
+mongoose.model('Build', BuildSchema);
+logger.info('[model] Schema "Build" registered.');

@@ -257,13 +257,13 @@ exports.doomTag = function(user, tagId) {
 };
 
 /**
- * Marks a vpbuild to be cleaned up in teardown.
+ * Marks a build to be cleaned up in teardown.
  * @param {string} user User with which the file was created
- * @param {string} vpbuildId ID of the vpbuild
+ * @param {string} buildId ID of the build
  */
-exports.doomVPBuild = function(user, vpbuildId) {
-	objectPath.ensureExists(this, "doomedVPBuilds." + user, []);
-	this.doomedVPBuilds[user].unshift(vpbuildId);
+exports.doomBuild = function(user, buildId) {
+	objectPath.ensureExists(this, "doomedBuilds." + user, []);
+	this.doomedBuilds[user].unshift(buildId);
 };
 
 /**
@@ -294,7 +294,7 @@ exports.cleanup = function(request, done) {
 	var doomedGames = this.doomedGames;
 	var doomedReleases = this.doomedReleases;
 	var doomedTags = this.doomedTags;
-	var doomedVPBuilds = this.doomedVPBuilds;
+	var doomedBuilds = this.doomedBuilds;
 
 	async.series([
 
@@ -411,15 +411,15 @@ exports.cleanup = function(request, done) {
 			});
 		},
 
-		// 5. cleanup vpbuilds
+		// 5. cleanup builds
 		function(next) {
-			if (!doomedVPBuilds) {
+			if (!doomedBuilds) {
 				return next();
 			}
-			async.eachSeries(_.keys(doomedVPBuilds), function(user, nextVPBuild) {
-				async.each(doomedVPBuilds[user], function(vpbuildId, next) {
+			async.eachSeries(_.keys(doomedBuilds), function(user, nextBuild) {
+				async.each(doomedBuilds[user], function(buildId, next) {
 					request
-						.del('/api/v1/vpbuilds/' + vpbuildId)
+						.del('/api/v1/builds/' + buildId)
 						.as(user)
 						.end(function(err, res) {
 							if (err) {
@@ -431,10 +431,10 @@ exports.cleanup = function(request, done) {
 							expect(res.status).to.eql(204);
 							next();
 						});
-				}, nextVPBuild);
+				}, nextBuild);
 
 			}, function(err) {
-				that.doomedVPBuilds = {};
+				that.doomedBuilds = {};
 				next(err);
 			});
 		},

@@ -1,21 +1,21 @@
 POST /api/v1/releases HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJYa3RNZElzRU4iLCJpYXQiOiIyMDE1LTAxLTExVDEyOjM2OjA4LjE5MloiLCJleHAiOiIyMDE1LTAxLTExVDEzOjM2OjA4LjE5MloifQ.EwcVB0NnCbzVr7qFavYMtL3Ig79ye6c9Q7lgWAu0jpQ
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI3SktOeUZXQk4iLCJpYXQiOiIyMDE1LTAxLTExVDE5OjM2OjEwLjIxMVoiLCJleHAiOiIyMDE1LTAxLTExVDIwOjM2OjEwLjIxMVoifQ.ntK0VqMg9L5d34jgHIrfWXxy_ehILIay6UubjlR353I
 Content-Type: application/json
 Content-Length: 475
 
 {
   "name": "release",
-  "_game": "show-boat",
+  "_game": "high-speed",
   "versions": [
     {
       "files": [
         {
-          "_file": "myh-muUsE4",
+          "_file": "7kkMS1K-B4",
           "_media": {
-            "playfield_image": "XkxM7uUjEV",
-            "playfield_video": "71JEQ_8iVV"
+            "playfield_image": "7JdfSyKbSV",
+            "playfield_video": "Q1g8yKZBN"
           },
           "_compatibility": [
             "9.9.0"
@@ -26,9 +26,9 @@ Content-Length: 475
           }
         },
         {
-          "_file": "Xka-7d8j4V",
+          "_file": "Q1xzH1tZrE",
           "_media": {
-            "playfield_image": "XyMGXdUi4E"
+            "playfield_image": "X18fH1FZH4"
           },
           "_compatibility": [
             "9.9.0"
@@ -44,7 +44,7 @@ Content-Length: 475
   ],
   "authors": [
     {
-      "_user": "XktMdIsEN",
+      "_user": "7JKNyFWBN",
       "roles": [
         "Table Creator"
       ]

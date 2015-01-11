@@ -1,5 +1,5 @@
-GET /api/v1/users?q=Elo HTTP/1.1
+GET /api/v1/users?q=Zio HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJYeXJ1ZFVpVlYiLCJpYXQiOiIyMDE1LTAxLTExVDEyOjM2OjEzLjc5NloiLCJleHAiOiIyMDE1LTAxLTExVDEzOjM2OjEzLjc5NloifQ.43CcbFwo4OorR7cmu-CfkYV1q4IcxBihxUvBYw30OLY
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJRSjktY3l0LUJOIiwiaWF0IjoiMjAxNS0wMS0xMVQxOTozNjoxNS45NTFaIiwiZXhwIjoiMjAxNS0wMS0xMVQyMDozNjoxNS45NTFaIn0.QQTYhJiEbXGgT6XbpQ-j5_qF4F1Lw-MiqjtHBYnSB2o
 

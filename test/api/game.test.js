@@ -54,7 +54,6 @@ describe('The VPDB `game` API', function() {
 				function(next) {
 					hlp.game.createGame(user, request, function(createdGame) {
 						game = createdGame;
-						hlp.doomGame(user, game.id);
 						next();
 					});
 				},
@@ -96,7 +95,6 @@ describe('The VPDB `game` API', function() {
 				function(next) {
 					hlp.game.createGame(user, request, function(createdGame) {
 						game = createdGame;
-						hlp.doomGame(user, game.id);
 						next();
 					});
 				},
@@ -167,7 +165,6 @@ describe('The VPDB `game` API', function() {
 				// 1. upload game
 				function(next) {
 					hlp.game.createGame('contributor', request, function(game) {
-						hlp.doomGame('contributor', game.id);
 						backglassId = game.media.backglass.id;
 						next();
 					});

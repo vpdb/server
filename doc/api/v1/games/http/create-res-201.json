@@ -1,25 +1,26 @@
 201 Created
 Content-Type: application/json; charset=utf-8
-Content-Length: 838
+Content-Encoding: gzip
 
 {
-  "title": "Carnaval",
-  "manufacturer": "Unknown",
-  "game_type": "ss",
-  "features": "Six cards.",
-  "id": "carnaval",
+  "title": "Pin",
+  "manufacturer": "Maresa",
+  "game_type": "em",
+  "features": "Flippers (2), Pop bumpers (2), Slingshots (2), Standup targets (4), Kick-out holes (2), Spinning target (1), Right outlane ball return gate. Backbox animation (bowling balls kick into view). Last two digits of score are dummy zeroes. Transparent playfield surface.",
+  "notes": "This game has the same playfield layout and cabinet art as Maresa's '300' but the backglass art is different. We don't know what differences may exist between them. Both are copies of the 4-player Gottlieb's 1975 '\"300\"'. Both are replay games. Due to restrictions on foreign imports to Spain, pinball machines could not be imported from the U.S., but whether this game is a licensed copy or an illegal reproduction is unknown.",
+  "id": "pin",
   "year": 1900,
-  "_created_by": "54b26e33265e7b00005ec770",
-  "created_at": "2015-01-11T12:36:03.520Z",
+  "_created_by": "54b2d0a471397f0000df5a9b",
+  "created_at": "2015-01-11T19:36:04.785Z",
   "ipdb": {
-    "number": 5953,
-    "mfg": 328
+    "number": 5921,
+    "mfg": 204
   },
   "artists": [],
   "designers": [],
   "themes": [
-    "Carnival",
-    "Celebration"
+    "Sports",
+    "Bowling"
   ],
   "short": [],
   "media": {
@@ -27,21 +28,21 @@ Content-Length: 838
       "is_protected": false,
       "variations": {
         "small-2x": {
-          "url": "/storage/v1/files/7kaEpPIi44/small-2x"
+          "url": "/storage/v1/files/myHrRAO-rN/small-2x"
         },
         "small": {
-          "url": "/storage/v1/files/7kaEpPIi44/small"
+          "url": "/storage/v1/files/myHrRAO-rN/small"
         },
         "medium-2x": {
-          "url": "/storage/v1/files/7kaEpPIi44/medium-2x"
+          "url": "/storage/v1/files/myHrRAO-rN/medium-2x"
         },
         "medium": {
-          "url": "/storage/v1/files/7kaEpPIi44/medium"
+          "url": "/storage/v1/files/myHrRAO-rN/medium"
         }
       },
-      "url": "/storage/v1/files/7kaEpPIi44",
-      "id": "7kaEpPIi44"
+      "url": "/storage/v1/files/myHrRAO-rN",
+      "id": "myHrRAO-rN"
     }
   },
-  "url": "/game/carnaval"
+  "url": "/game/pin"
 }

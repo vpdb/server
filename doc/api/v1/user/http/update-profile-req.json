@@ -1,14 +1,14 @@
 PATCH /api/v1/user HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJtMS14T084c05WIiwiaWF0IjoiMjAxNS0wMS0xMVQxMjozNjoxMy44MzhaIiwiZXhwIjoiMjAxNS0wMS0xMVQxMzozNjoxMy44MzhaIn0.DmO6qYjUYei8s7b2WALOvN1WMZ4osoVlU23h6ZOb9h4
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJYMThHOTFZWkJWIiwiaWF0IjoiMjAxNS0wMS0xMVQxOTozNjoxNS45OTlaIiwiZXhwIjoiMjAxNS0wMS0xMVQyMDozNjoxNS45OTlaIn0.h4ep0s_TA11scRw4QxCnbgxL4JzsOlYbtXrrKUuPsrk
 Content-Type: application/json
-Content-Length: 142
+Content-Length: 135
 
 {
-  "name": "Theodore White",
-  "location": "Port Deionhaven",
-  "email": "casimer91@hotmail.com",
-  "current_password": "eD26WLebgE",
-  "password": "rnptr3pJk5"
+  "name": "Jaida Mann",
+  "location": "South Odell",
+  "email": "tara.yundt@hotmail.com",
+  "current_password": "APKMiDKxBZ",
+  "password": "MUlF4Th8mc"
 }

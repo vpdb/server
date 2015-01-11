@@ -9,7 +9,7 @@ schemas:
   - game: !include _schemas/game.json
   - release: !include _schemas/release.json
   - tag: !include _schemas/tag.json
-  - vpbuild: !include _schemas/vpbuild.json
+  - build: !include _schemas/build.json
   - auth: !include _schemas/auth.json
   - user: !include _schemas/user.json
   - user-authenticate: !include _schemas/user-authenticate.json
@@ -30,7 +30,7 @@ traits:
 /games: !include games/games.raml
 /releases: !include releases/releases.raml
 /tags: !include tags/tags.raml
-/vpbuilds: !include vpbuilds/vpbuilds.raml
+/builds: !include builds/builds.raml
 /users: !include users/users.raml
 /user: !include user/user.raml
 /authenticate: !include auth/auth.raml

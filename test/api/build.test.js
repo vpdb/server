@@ -12,9 +12,9 @@ var hlp = require('../modules/helper');
 
 superagentTest(request);
 
-describe('The VPDB `VPBuild` API', function() {
+describe('The VPDB `Build` API', function() {
 
-	describe('when posting a new VPBuild', function() {
+	describe('when posting a new build', function() {
 
 		before(function(done) {
 			hlp.setupUsers(request, {
@@ -28,8 +28,8 @@ describe('The VPDB `VPBuild` API', function() {
 
 		it('should fail validations for empty data', function(done) {
 			request
-				.post('/api/v1/vpbuilds')
-				.saveResponse({ path: 'vpbuilds/create'})
+				.post('/api/v1/builds')
+				.saveResponse({ path: 'builds/create'})
 				.as('member')
 				.send({})
 				.end(function(err, res) {
@@ -41,8 +41,8 @@ describe('The VPDB `VPBuild` API', function() {
 
 		it('should fail validations for invalid data', function(done) {
 			request
-				.post('/api/v1/vpbuilds')
-				.saveResponse({ path: 'vpbuilds/create'})
+				.post('/api/v1/builds')
+				.saveResponse({ path: 'builds/create'})
 				.as('member')
 				.send({ label: '1', type: 'non-existent', is_range: null, built_at: 'no-date' })
 				.end(function(err, res) {
@@ -53,16 +53,16 @@ describe('The VPDB `VPBuild` API', function() {
 				});
 		});
 
-		it('should fail if the VPBuild label already exists', function(done) {
+		it('should fail if the build label already exists', function(done) {
 			request
-				.post('/api/v1/vpbuilds')
+				.post('/api/v1/builds')
 				.as('member')
 				.send({ label: 'v1.0.0-dupetest', type: 'release' })
 				.end(function(err, res) {
 					hlp.expectStatus(err, res, 201);
-					hlp.doomVPBuild('member', res.body.id);
+					hlp.doomBuild('member', res.body.id);
 					request
-						.post('/api/v1/vpbuilds')
+						.post('/api/v1/builds')
 						.as('member')
 						.send({ label: 'v1.0.0-dupetest', type: 'release' })
 						.end(function(err, res) {
@@ -74,20 +74,20 @@ describe('The VPDB `VPBuild` API', function() {
 
 		it('should succeed with minimal data', function(done) {
 			request
-				.post('/api/v1/vpbuilds')
+				.post('/api/v1/builds')
 				.as('member')
 				.send({ label: 'v1.0.0', type: 'release' })
 				.end(function(err, res) {
 					hlp.expectStatus(err, res, 201);
-					hlp.doomVPBuild('member', res.body.id);
+					hlp.doomBuild('member', res.body.id);
 					done();
 				});
 		});
 
 		it('should succeed with full data', function(done) {
 			request
-				.post('/api/v1/vpbuilds')
-				.save({ path: 'vpbuilds/create'})
+				.post('/api/v1/builds')
+				.save({ path: 'builds/create'})
 				.as('member')
 				.send({
 					label: 'v1.0.1',
@@ -100,18 +100,18 @@ describe('The VPDB `VPBuild` API', function() {
 				})
 				.end(function(err, res) {
 					hlp.expectStatus(err, res, 201);
-					hlp.doomVPBuild('member', res.body.id);
+					hlp.doomBuild('member', res.body.id);
 					done();
 				});
 		});
 	});
 
-	describe('when listing all VPBuilds', function() {
+	describe('when listing all builds', function() {
 
 		it('should list the initially added builds', function(done) {
 			request
-				.get('/api/v1/vpbuilds')
-				.save({ path: 'vpbuilds/list'})
+				.get('/api/v1/builds')
+				.save({ path: 'builds/list'})
 				.end(function(err, res) {
 					hlp.expectStatus(err, res, 200);
 					expect(res.body).to.be.an('array');
@@ -121,7 +121,7 @@ describe('The VPDB `VPBuild` API', function() {
 		});
 	});
 
-	describe('when deleting a vpbuild', function() {
+	describe('when deleting a build', function() {
 
 		before(function(done) {
 			hlp.setupUsers(request, {
@@ -136,13 +136,13 @@ describe('The VPDB `VPBuild` API', function() {
 
 		it('should succeed as member and owner', function(done) {
 			request
-				.post('/api/v1/vpbuilds')
+				.post('/api/v1/builds')
 				.as('member')
 				.send({ label: 'delete-test-1', type: 'release' })
 				.end(function(err, res) {
 					hlp.expectStatus(err, res, 201);
 					request
-						.del('/api/v1/vpbuilds/' + res.body.id)
+						.del('/api/v1/builds/' + res.body.id)
 						.as('member')
 						.end(function(err, res) {
 							hlp.expectStatus(err, res, 204);
@@ -153,15 +153,15 @@ describe('The VPDB `VPBuild` API', function() {
 
 		it('should fail as member and not owner', function(done) {
 			request
-				.post('/api/v1/vpbuilds')
+				.post('/api/v1/builds')
 				.as('contributor')
 				.send({ label: 'delete-test-2', type: 'release' })
 				.end(function(err, res) {
 					hlp.expectStatus(err, res, 201);
-					hlp.doomVPBuild('contributor', res.body.id);
+					hlp.doomBuild('contributor', res.body.id);
 					request
-						.del('/api/v1/vpbuilds/' + res.body.id)
-						.saveResponse({ path: 'vpbuilds/del'})
+						.del('/api/v1/builds/' + res.body.id)
+						.saveResponse({ path: 'builds/del'})
 						.as('member')
 						.end(function(err, res) {
 							hlp.expectStatus(err, res, 403);
@@ -172,13 +172,13 @@ describe('The VPDB `VPBuild` API', function() {
 
 		it('should succeed as contributor and not owner', function(done) {
 			request
-				.post('/api/v1/vpbuilds')
+				.post('/api/v1/builds')
 				.as('member')
 				.send({ label: 'delete-test-3', type: 'release' })
 				.end(function(err, res) {
 					hlp.expectStatus(err, res, 201);
 					request
-						.del('/api/v1/vpbuilds/' + res.body.id)
+						.del('/api/v1/builds/' + res.body.id)
 						.as('contributor')
 						.end(function(err, res) {
 							hlp.expectStatus(err, res, 204);

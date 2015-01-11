@@ -9,7 +9,6 @@ var expect = require('expect.js');
 exports.createRelease = function(user, request, done) {
 	var hlp = require('./helper');
 	hlp.game.createGame('contributor', request, function(game) {
-		hlp.doomGame('contributor', game.id);
 		hlp.file.createVpt(user, request, function(vptfile) {
 			hlp.file.createPlayfield(user, request, function(playfield) {
 				request

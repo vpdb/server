@@ -24,7 +24,7 @@ var logger = require('winston');
 
 var acl = require('../../acl');
 var api = require('./api');
-var VPBuild = require('mongoose').model('VPBuild');
+var Build = require('mongoose').model('Build');
 
 var error = require('../../modules/error')('api', 'tag');
 
@@ -32,29 +32,29 @@ exports.list = function(req, res) {
 
 	var q;
 	if (req.user) {
-		// logged users also get their own vpbuilds even if inactive.
+		// logged users also get their own builds even if inactive.
 		q = { $or: [{ is_active: true }, { _created_by: req.user._id }] };
 	} else {
 		q = { is_active: true };
 	}
-	VPBuild.find(q, function(err, vpbuilds) {
+	Build.find(q, function(err, builds) {
 		/* istanbul ignore if  */
 		if (err) {
-			return api.fail(res, error(err, 'Error finding vpbuilds').log('list'), 500);
+			return api.fail(res, error(err, 'Error finding builds').log('list'), 500);
 		}
 
 		// reduce
-		vpbuilds = _.map(vpbuilds, function(vpbuild) {
-			return vpbuild.toSimple();
+		builds = _.map(builds, function(build) {
+			return build.toSimple();
 		});
-		api.success(res, vpbuilds);
+		api.success(res, builds);
 	});
 };
 
 
 exports.create = function(req, res) {
 
-	var newBuild = new VPBuild(req.body);
+	var newBuild = new Build(req.body);
 
 	newBuild.id = newBuild.label ? newBuild.label.replace(/(^[^a-z0-9\._-]+)|([^a-z0-9\._-]+$)/gi, '').replace(/[^a-z0-9\._-]+/gi, '-').toLowerCase() : '-';
 	newBuild.is_active = false;
@@ -68,9 +68,9 @@ exports.create = function(req, res) {
 		newBuild.save(function(err) {
 			/* istanbul ignore if  */
 			if (err) {
-				return api.fail(res, error(err, 'Error saving vpbuild "%s"', newBuild.label).log('create'), 500);
+				return api.fail(res, error(err, 'Error saving build "%s"', newBuild.label).log('create'), 500);
 			}
-			logger.info('[api|vpbuild:create] VPBuild "%s" successfully created.', newBuild.label);
+			logger.info('[api|build:create] Build "%s" successfully created.', newBuild.label);
 			return api.success(res, newBuild.toSimple(), 201);
 		});
 	});
@@ -86,29 +86,29 @@ exports.create = function(req, res) {
 exports.del = function(req, res) {
 
 	var assert = api.assert(error, 'delete', req.params.id, res);
-	acl.isAllowed(req.user.id, 'vpbuilds', 'delete', assert(function(canDelete) {
-		VPBuild.findOne({ id: req.params.id }, assert(function(vpbuild) {
+	acl.isAllowed(req.user.id, 'builds', 'delete', assert(function(canDelete) {
+		Build.findOne({ id: req.params.id }, assert(function(build) {
 
-			if (!vpbuild) {
-				return api.fail(res, error('No such vpbuild with ID "%s".', req.params.id), 404);
+			if (!build) {
+				return api.fail(res, error('No such builds with ID "%s".', req.params.id), 404);
 			}
 
-			// only allow deleting own vpbuilds
-			if (!canDelete && !vpbuild._created_by.equals(req.user._id)) {
+			// only allow deleting own builds
+			if (!canDelete && !build._created_by.equals(req.user._id)) {
 				return api.fail(res, error('Permission denied, must be owner.'), 403);
 			}
 
 			// todo check if there are references
 
 			// remove from db
-			vpbuild.remove(function(err) {
+			build.remove(function(err) {
 				/* istanbul ignore if  */
 				if (err) {
-					return api.fail(res, error(err, 'Error deleting vpbuild "%s" (%s)', vpbuild.id, vpbuild.label).log('delete'), 500);
+					return api.fail(res, error(err, 'Error deleting build "%s" (%s)', build.id, build.label).log('delete'), 500);
 				}
-				logger.info('[api|vpbuild:delete] VP build "%s" (%s) successfully deleted.', vpbuild.label, vpbuild.id);
+				logger.info('[api|build:delete] VP build "%s" (%s) successfully deleted.', build.label, build.id);
 				api.success(res, null, 204);
 			});
-		}), 'Error getting vpbuild "%s"');
-	}, 'Error checking for ACL "vpbuilds/delete".'));
+		}), 'Error getting Build "%s"');
+	}, 'Error checking for ACL "builds/delete".'));
 };

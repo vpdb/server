@@ -1,21 +1,21 @@
 200 OK
 Content-Type: application/json; charset=utf-8
-Content-Length: 581
-Etag: W/"245-756fd45d"
+Content-Length: 684
+Etag: W/"2ac-2e7bc50"
 
 {
   "plan": "free",
-  "name": "Tyra.Robel51",
-  "username": "Tyra.Robel51",
-  "email": "brooks_bartoletti@yahoo.com",
+  "name": "Austin_Schneider",
+  "username": "Austin_Schneider",
+  "email": "tre_rempel58@hotmail.com",
   "provider": "local",
-  "created_at": "2015-01-11T12:36:01.132Z",
+  "created_at": "2015-01-11T19:36:01.932Z",
   "is_active": true,
   "roles": [
     "member"
   ],
-  "id": "myXlow8jEN",
-  "gravatar_id": "eec463d5d646c1bee10dc6aea60cd4a1",
+  "id": "my7l2C_ZSN",
+  "gravatar_id": "cdad0a86888d6e80a9ef079178fa0fa9",
   "permissions": {
     "user": [
       "update",
@@ -26,7 +26,14 @@ Etag: W/"245-756fd45d"
       "upload",
       "delete"
     ],
-    "vpbuilds": [
+    "platformbuilds": [
+      "add",
+      "delete-own"
+    ],
+    "users": [
+      "search"
+    ],
+    "tags": [
       "delete-own",
       "add"
     ],
@@ -34,12 +41,13 @@ Etag: W/"245-756fd45d"
       "add",
       "delete"
     ],
-    "tags": [
+    "vpbuilds": [
       "delete-own",
       "add"
     ],
-    "users": [
-      "search"
+    "builds": [
+      "add",
+      "delete-own"
     ]
   }
 }

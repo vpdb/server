@@ -23,8 +23,8 @@ var settings = require('../../modules/settings');
 
 exports.register = function(app, api) {
 
-	app.get(settings.apiPath('/vpbuilds'),        api.anon(api.vpbuilds.list));
-	app.post(settings.apiPath('/vpbuilds'),       api.auth(api.vpbuilds.create, 'vpbuilds', 'add'));
-	app.delete(settings.apiPath('/vpbuilds/:id'), api.auth(api.vpbuilds.del, 'vpbuilds', 'delete-own'));
+	app.get(settings.apiPath('/builds'),        api.anon(api.builds.list));
+	app.post(settings.apiPath('/builds'),       api.auth(api.builds.create, 'builds', 'add'));
+	app.delete(settings.apiPath('/builds/:id'), api.auth(api.builds.del, 'builds', 'delete-own'));
 
 };

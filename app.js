@@ -2,6 +2,7 @@
 
 var fs = require('fs');
 var path = require('path');
+var util = require('util');
 var logger = require('winston');
 var domain = require('domain');
 var express = require('express');
@@ -62,9 +63,12 @@ serverDomain.run(function() {
 			require('./server/express').configure(app);
 
 		} catch (e) {
-			logger.error('[app] ERROR: ' + e.message);
-			logger.error(e.stack);
-			return process.exit(1);
+			logger.error('[app] ERROR: %s', e.message);
+			// dunno why the fuck it doesn't print the stack otherwise.
+			return setTimeout(function() {
+				logger.error('[app] STACK: %s', e.stack);
+				process.exit(1);
+			}, 0);
 		}
 
 		// and lastly, startup scripts - stuff that is run at start.

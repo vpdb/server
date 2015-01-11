@@ -91,7 +91,7 @@ describe('The VPDB `release` API', function() {
 						hlp.expectValidationError(err, res, 'versions.0.files.1.flavor.lightning', 'must be provided');
 						hlp.expectValidationError(err, res, 'versions.0.files.2.flavor.orientation', 'invalid orientation');
 						hlp.expectValidationError(err, res, 'versions.0.files.3._compatibility', 'must be provided');
-						hlp.expectValidationError(err, res, 'versions.0.files.4._compatibility.0', 'no such vpbuild');
+						hlp.expectValidationError(err, res, 'versions.0.files.4._compatibility.0', 'no such build');
 						hlp.expectValidationError(err, res, 'versions.0.files.0._media.playfield_image', 'must be provided');
 						done();
 					});
@@ -208,7 +208,6 @@ describe('The VPDB `release` API', function() {
 							.end(function (err, res) {
 								hlp.expectStatus(err, res, 201);
 								hlp.doomRelease(user, res.body.id);
-								hlp.doomGame('contributor', game.id);
 								done();
 							});
 					});
@@ -257,7 +256,6 @@ describe('The VPDB `release` API', function() {
 								.end(function (err, res) {
 									hlp.expectStatus(err, res, 201);
 									hlp.doomRelease(user, res.body.id);
-									hlp.doomGame('contributor', game.id);
 
 									expect(res.body.versions[0].files[0].media.playfield_image.is_active).to.be(true);
 									expect(res.body.versions[0].files[0].media.playfield_video.is_active).to.be(true);
@@ -270,7 +268,7 @@ describe('The VPDB `release` API', function() {
 			});
 		});
 
-		it('should activate tags and VPBuilds if created');
+		it('should activate tags and builds if created');
 
 	});
 

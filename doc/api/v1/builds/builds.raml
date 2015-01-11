@@ -22,13 +22,13 @@ post:
 
   body:
     role/member:
-      schema: vpbuild
+      schema: build
       example: !include http/create-req.json
   responses:
     201:
       body:
         role/member:
-          schema: vpbuild
+          schema: build
           example: !include http/create-res-201.json
     422:
       body:
@@ -51,7 +51,7 @@ get:
         role/anon:
           example: !include http/list-res-200.json
 
-/{vpbuild_id}:
+/{build_id}:
   delete:
     is: [ protected ]
     securedBy: [ jwt: { scopes: [ MEMBER, CONTRIB ] } ]

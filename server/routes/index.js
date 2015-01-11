@@ -57,7 +57,7 @@ module.exports = function(app) {
 	require('./api/tags').register(app, api);
 	require('./api/user').register(app, api);
 	require('./api/users').register(app, api);
-	require('./api/vpbuilds').register(app, api);
+	require('./api/builds').register(app, api);
 
 	// storage
 	require('./storage/auth').register(app, api, storage);

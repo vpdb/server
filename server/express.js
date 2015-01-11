@@ -38,7 +38,6 @@ var expressErrorhandler = require('errorhandler');
 
 var settings = require('./modules/settings');
 var writeable = require('./modules/writeable');
-var asset = require('./middleware/asset');
 var ctrl = require('./controllers/ctrl');
 var apiCtrl = require('./controllers/api/api');
 
@@ -138,10 +137,6 @@ exports.configure = function(app) {
 		app.use('/css/client/styles/vpdb.css.map', express.static(path.resolve(writeable.buildRoot, 'css/vpdb.css.map'), { maxAge: 3600 * 24 * 30 * 1000 }));
 		app.use('/css/client/styles', express.static(path.resolve(__dirname, '../client/styles'), { maxAge: 3600 * 24 * 30 * 1000 }));
 	}
-
-	// mock
-	app.use(express.static(path.resolve(__dirname, '../data/assets'), { maxAge: 3600*24*30*1000 }));
-	app.use(asset.middleware());
 
 	// initialize passport
 	app.use(passport.initialize());

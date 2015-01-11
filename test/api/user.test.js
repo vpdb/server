@@ -118,7 +118,6 @@ describe('The VPDB `user` API', function() {
 		it('should return the user log', function(done) {
 			request.get('/api/v1/user/logs').as('member').end(function(err, res) {
 				hlp.expectStatus(err, res, 200);
-				hlp.dump(res);
 				expect(res.body).to.be.an('array');
 				expect(res.body[0]).to.be.an('object');
 				expect(res.body[0].event).to.be.ok();

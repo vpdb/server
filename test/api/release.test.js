@@ -312,7 +312,6 @@ describe('The VPDB `release` API', function() {
 						expect(release.authors[0].user.name).to.be.ok();
 						expect(release.authors[0].user.username).to.be.ok();
 					});
-					hlp.dump(res);
 					done();
 				});
 		});

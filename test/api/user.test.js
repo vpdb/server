@@ -100,6 +100,37 @@ describe('The VPDB `user` API', function() {
 		});
 	});
 
+	describe('when fetching profile info', function() {
+
+		it('should return detailed user data', function(done) {
+			request.get('/api/v1/user').as('member').end(function(err, res) {
+				hlp.expectStatus(err, res, 200);
+				var user = hlp.getUser('member');
+				expect(res.body).to.be.an('object');
+				expect(res.body.email).to.be(user.email);
+				expect(res.body.username).to.be(user.username);
+				expect(res.body.roles).to.be.an('array');
+				expect(res.body.permissions).to.be.an('object');
+				done();
+			});
+		});
+
+		it('should return the user log', function(done) {
+			request.get('/api/v1/user/logs').as('member').end(function(err, res) {
+				hlp.expectStatus(err, res, 200);
+				hlp.dump(res);
+				expect(res.body).to.be.an('array');
+				expect(res.body[0]).to.be.an('object');
+				expect(res.body[0].event).to.be.ok();
+				expect(res.body[0].data).to.be.an('object');
+				expect(res.body[0].ip).to.be.ok();
+				expect(res.body[0].result).to.be.ok();
+				expect(res.body[0].logged_at).to.be.ok();
+				done();
+			});
+		});
+	});
+
 	describe('when a user registers', function() {
 
 		it('should fail with invalid parameters', function(done) {

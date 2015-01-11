@@ -3,6 +3,7 @@
 var _ = require('lodash');
 var path = require('path');
 var async = require('async');
+var faker = require('faker');
 var expect = require('expect.js');
 
 exports.createRelease = function(user, request, done) {
@@ -15,7 +16,7 @@ exports.createRelease = function(user, request, done) {
 					.post('/api/v1/releases')
 					.as(user)
 					.send({
-						name: 'release',
+						name: faker.company.catchPhraseAdjective() + ' Edition',
 						_game: game.id,
 						versions: [
 							{

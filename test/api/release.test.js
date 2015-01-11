@@ -276,12 +276,14 @@ describe('The VPDB `release` API', function() {
 
 	describe('when listing releases', function() {
 
+		var numReleases = 4;
+
 		before(function(done) {
 			hlp.setupUsers(request, {
 				member: { roles: [ 'member' ] },
 				contributor: { roles: [ 'contributor' ] }
 			}, function() {
-				hlp.release.createReleases('member', request, 4, function(releases) {
+				hlp.release.createReleases('member', request, numReleases, function(releases) {
 					done(null, releases);
 				});
 			});
@@ -291,10 +293,25 @@ describe('The VPDB `release` API', function() {
 			hlp.cleanup(request, done);
 		});
 
-		it.skip('should list all fields', function(done) {
+		it('should list all fields', function(done) {
 			request
 				.get('/api/v1/releases')
 				.end(function(err, res) {
+					hlp.expectStatus(err, res, 200);
+					expect(res.body).to.be.an('array');
+					expect(res.body).to.have.length(numReleases);
+					_.each(res.body, function(release) {
+						expect(release.id).to.be.ok();
+						expect(release.name).to.be.ok();
+						expect(release.created_at).to.be.ok();
+						expect(release.authors).to.be.an('array');
+						expect(release.authors[0]).to.be.an('object');
+						expect(release.authors[0].roles).to.be.an('array');
+						expect(release.authors[0].user).to.be.an('object');
+						expect(release.authors[0].user.id).to.be.ok();
+						expect(release.authors[0].user.name).to.be.ok();
+						expect(release.authors[0].user.username).to.be.ok();
+					});
 					hlp.dump(res);
 					done();
 				});

@@ -1,14 +1,14 @@
-PUT /api/v1/users/m1EelSZncX HTTP/1.1
+PUT /api/v1/users/XyrudUiVV HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJReWdsZXJaMzltIiwiaWF0IjoiMjAxNS0wMS0wM1QyMzoxOTozMy44NThaIiwiZXhwIjoiMjAxNS0wMS0wNFQwMDoxOTozMy44NThaIn0._zoXM1SiAqyeOXRwDkLpQaDVFBHOdgEkHp6xoB3MGXQ
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJYMS1kdUlqNE4iLCJpYXQiOiIyMDE1LTAxLTExVDEyOjM2OjEzLjc4MloiLCJleHAiOiIyMDE1LTAxLTExVDEzOjM2OjEzLjc4MloifQ.HA06NqC9ETdyvtYcdqatQmRdbOgQVlg1GuDcHmIsZ9E
 Content-Type: application/json
-Content-Length: 132
+Content-Length: 120
 
 {
-  "email": "joanne.waelchi96@hotmail.com",
-  "username": "Irwin.Weissnat15",
-  "name": "Irwin.Weissnat15",
+  "email": "emelie.blick@yahoo.com",
+  "username": "Damon_Flatley",
+  "name": "Damon_Flatley",
   "is_active": true,
   "roles": [
     "member"

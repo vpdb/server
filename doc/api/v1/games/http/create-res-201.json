@@ -1,26 +1,25 @@
 201 Created
 Content-Type: application/json; charset=utf-8
-Content-Length: 877
+Content-Length: 838
 
 {
-  "title": "10th Inning",
-  "manufacturer": "Williams",
-  "model_number": "296",
-  "year": 1964,
-  "game_type": "em",
-  "features": "Hanging targets (7).",
-  "id": "10th-inning",
-  "_created_by": "54a878fa79b65050dd2da7a5",
-  "created_at": "2015-01-03T23:19:22.650Z",
+  "title": "Carnaval",
+  "manufacturer": "Unknown",
+  "game_type": "ss",
+  "features": "Six cards.",
+  "id": "carnaval",
+  "year": 1900,
+  "_created_by": "54b26e33265e7b00005ec770",
+  "created_at": "2015-01-11T12:36:03.520Z",
   "ipdb": {
-    "number": 3367,
-    "mfg": 350
+    "number": 5953,
+    "mfg": 328
   },
   "artists": [],
   "designers": [],
   "themes": [
-    "Sports",
-    "Baseball"
+    "Carnival",
+    "Celebration"
   ],
   "short": [],
   "media": {
@@ -28,21 +27,21 @@ Content-Length: 877
       "is_protected": false,
       "variations": {
         "small-2x": {
-          "url": "/storage/v1/files/XJZvE4Whc7/small-2x"
+          "url": "/storage/v1/files/7kaEpPIi44/small-2x"
         },
         "small": {
-          "url": "/storage/v1/files/XJZvE4Whc7/small"
+          "url": "/storage/v1/files/7kaEpPIi44/small"
         },
         "medium-2x": {
-          "url": "/storage/v1/files/XJZvE4Whc7/medium-2x"
+          "url": "/storage/v1/files/7kaEpPIi44/medium-2x"
         },
         "medium": {
-          "url": "/storage/v1/files/XJZvE4Whc7/medium"
+          "url": "/storage/v1/files/7kaEpPIi44/medium"
         }
       },
-      "url": "/storage/v1/files/XJZvE4Whc7",
-      "id": "XJZvE4Whc7"
+      "url": "/storage/v1/files/7kaEpPIi44",
+      "id": "7kaEpPIi44"
     }
   },
-  "url": "/game/10th-inning"
+  "url": "/game/carnaval"
 }

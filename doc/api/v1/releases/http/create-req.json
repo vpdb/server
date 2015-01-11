@@ -1,21 +1,21 @@
 POST /api/v1/releases HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI3SndDVlpoNVgiLCJpYXQiOiIyMDE1LTAxLTAzVDIzOjE5OjMyLjQ3MVoiLCJleHAiOiIyMDE1LTAxLTA0VDAwOjE5OjMyLjQ3MVoifQ.fKyXPwixmEha0dobgtBZHnooWNIPFX3XKFw3lSBYaOE
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJYa3RNZElzRU4iLCJpYXQiOiIyMDE1LTAxLTExVDEyOjM2OjA4LjE5MloiLCJleHAiOiIyMDE1LTAxLTExVDEzOjM2OjA4LjE5MloifQ.EwcVB0NnCbzVr7qFavYMtL3Ig79ye6c9Q7lgWAu0jpQ
 Content-Type: application/json
-Content-Length: 483
+Content-Length: 475
 
 {
   "name": "release",
-  "_game": "skill-ball-junior",
+  "_game": "show-boat",
   "versions": [
     {
       "files": [
         {
-          "_file": "71tZkBZ2qX",
+          "_file": "myh-muUsE4",
           "_media": {
-            "playfield_image": "7kVz1rWnq7",
-            "playfield_video": "Q1UmyHW3qX"
+            "playfield_image": "XkxM7uUjEV",
+            "playfield_video": "71JEQ_8iVV"
           },
           "_compatibility": [
             "9.9.0"
@@ -26,9 +26,9 @@ Content-Length: 483
           }
         },
         {
-          "_file": "7JcZ1SWnqQ",
+          "_file": "Xka-7d8j4V",
           "_media": {
-            "playfield_image": "7J7MyHb2cX"
+            "playfield_image": "XyMGXdUi4E"
           },
           "_compatibility": [
             "9.9.0"
@@ -44,7 +44,7 @@ Content-Length: 483
   ],
   "authors": [
     {
-      "_user": "7JwCVZh5X",
+      "_user": "XktMdIsEN",
       "roles": [
         "Table Creator"
       ]

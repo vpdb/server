@@ -1,27 +1,26 @@
 POST /api/v1/games HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJtSmg4VkVXMnFYIiwiaWF0IjoiMjAxNS0wMS0wM1QyMzoxOToyMi41NDlaIiwiZXhwIjoiMjAxNS0wMS0wNFQwMDoxOToyMi41NDlaIn0.D9OBODeczZa11SvdnuvEH1X8old_XTOnbjWvNh0glf8
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI3a19WYVBVczRFIiwiaWF0IjoiMjAxNS0wMS0xMVQxMjozNjowMy4zOTdaIiwiZXhwIjoiMjAxNS0wMS0xMVQxMzozNjowMy4zOTdaIn0.G5JkKPEMzBzBrbCe1BdRzoETn3Tm_GIpAWIXOXQSjHw
 Content-Type: application/json
-Content-Length: 252
+Content-Length: 219
 
 {
   "ipdb": {
-    "number": 3367,
-    "mfg": 350
+    "number": 5953,
+    "mfg": 328
   },
-  "title": "10th Inning",
-  "manufacturer": "Williams",
-  "model_number": "296",
-  "year": 1964,
-  "game_type": "em",
+  "title": "Carnaval",
+  "manufacturer": "Unknown",
+  "game_type": "ss",
   "themes": [
-    "Sports",
-    "Baseball"
+    "Carnival",
+    "Celebration"
   ],
-  "features": "Hanging targets (7).",
-  "id": "10th-inning",
+  "features": "Six cards.",
+  "id": "carnaval",
+  "year": 1900,
   "_media": {
-    "backglass": "XJZvE4Whc7"
+    "backglass": "7kaEpPIi44"
   }
 }

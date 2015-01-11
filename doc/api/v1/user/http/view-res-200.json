@@ -1,21 +1,21 @@
 200 OK
 Content-Type: application/json; charset=utf-8
-Content-Length: 565
-Etag: W/"235-84bb168d"
+Content-Length: 581
+Etag: W/"245-756fd45d"
 
 {
   "plan": "free",
-  "name": "Sofia57",
-  "username": "Sofia57",
-  "email": "joany_mann24@yahoo.com",
+  "name": "Tyra.Robel51",
+  "username": "Tyra.Robel51",
+  "email": "brooks_bartoletti@yahoo.com",
   "provider": "local",
-  "created_at": "2015-01-03T23:19:20.779Z",
+  "created_at": "2015-01-11T12:36:01.132Z",
   "is_active": true,
   "roles": [
     "member"
   ],
-  "id": "7keXNW2q7",
-  "gravatar_id": "44af82f12958fa9f52d057989f190a51",
+  "id": "myXlow8jEN",
+  "gravatar_id": "eec463d5d646c1bee10dc6aea60cd4a1",
   "permissions": {
     "user": [
       "update",

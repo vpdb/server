@@ -1,23 +1,23 @@
 200 OK
 Content-Type: application/json; charset=utf-8
-Content-Length: 873
+Content-Length: 865
 
 {
-  "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJYMTNQbVZaMjVtIiwiaWF0IjoiMjAxNS0wMS0wM1QyMzoxOToyMS41MjZaIiwiZXhwIjoiMjAxNS0wMS0wNFQwMDoxOToyMS41MjZaIn0.TY1xjQEUqsgYjmbT-CdJxywC0ibiaJVTDK06Mw-EN8Q",
-  "expires": "2015-01-04T00:19:21.526Z",
+  "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJta1doRExzNE4iLCJpYXQiOiIyMDE1LTAxLTExVDEyOjM2OjAxLjgzNFoiLCJleHAiOiIyMDE1LTAxLTExVDEzOjM2OjAxLjgzNFoifQ.yb00kvjslXhPYOZJQN3Ip-zekmQW0BD3-AsfFfbE3oo",
+  "expires": "2015-01-11T13:36:01.834Z",
   "user": {
-    "id": "X13PmVZ25m",
-    "name": "Dino.Kuhn",
-    "username": "Dino.Kuhn",
-    "gravatar_id": "0981504b43c10de42d3e9f28186e17f4",
-    "email": "herminio.huel@gmail.com",
+    "id": "mkWhDLs4N",
+    "name": "Madonna58",
+    "username": "Madonna58",
+    "gravatar_id": "e3859c0d7a39ac7330c6c435a4d42b6c",
+    "email": "norma79@yahoo.com",
     "is_active": true,
     "provider": "local",
     "roles": [
       "member"
     ],
     "plan": "free",
-    "created_at": "2015-01-03T23:19:21.468Z",
+    "created_at": "2015-01-11T12:36:01.777Z",
     "permissions": {
       "user": [
         "update",

@@ -1,15 +1,19 @@
-displayName: VP Builds
+displayName: Builds
 description: |
   When submitting table files for a [release][release], every file must
   reference at least one compatible build of Visual Pinball.
 
-  A VP build can be an official release, a daily build or an experimental test
+  A build can be an official release, a daily build or an experimental test
   build.
 
   Note that this resource doesn't contain the actual build but acts as a
   marker, similar to [tags][tag]. The primary goal is to inform the user about
   the VP table's compatibility as well as easily filtering releases that
   contain table files for a given build.
+
+  Also note that even though we're explicitly talking about Visual Pinball builds,
+  the schema is ready for additional type of builds (Future Pinball, Unity 3D
+  Pinball, etc)
 
   [release]: api://core/releases
   [tag]: api://core/tags
@@ -18,7 +22,7 @@ post:
   is: [ validated ]
   securedBy: [ jwt: { scopes: [ MEMBER ] } ]
   description: |
-    Create a new VP build.
+    Create a new build.
 
   body:
     role/member:
@@ -38,10 +42,10 @@ post:
 get:
   securedBy: [ ]
   description: |
-    List VP builds.
+    List builds.
 
     Note that this resource isn't paginated, there should only a few dozen
-    of VP builds for some time.
+    of builds for some time.
   body:
     role/anon:
       example: !include http/list-req.json
@@ -56,9 +60,9 @@ get:
     is: [ protected ]
     securedBy: [ jwt: { scopes: [ MEMBER, CONTRIB ] } ]
     description: |
-      Delete a VP build of a given ID.
+      Delete a build of a given ID.
 
-      Members can only delete own VP builds, while contributors can delete any VP build.
+      Members can only delete own builds, while contributors can delete any build.
     responses:
       401:
         body:

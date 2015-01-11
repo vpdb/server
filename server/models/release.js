@@ -153,7 +153,7 @@ ReleaseSchema.path('versions.0.files').validate(function(files, callback) {
 					// compatibility (in here because it applies only to table files.)
 					if (!_.isArray(f._compatibility) || !f._compatibility.length) {
 						// TODO check if exists.
-						that.invalidate('files.' + i + '._compatibility', 'At least one VP build must be provided.');
+						that.invalidate('files.' + i + '._compatibility', 'At least one build must be provided.');
 					}
 
 					// media

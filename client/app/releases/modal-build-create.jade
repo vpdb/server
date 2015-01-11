@@ -6,16 +6,15 @@ include ../template/_mixins
 			+icon('package').space-right.svg-2x
 			| &nbsp;Add A New Visual Pinball Build
 	.modal-body
-		p Tags need a unique name and a description.
+		p Create a new reference to a Visual Pinball build.
 		form.form-horizontal(role="form")
-
 
 			//- LABEL
 			//-----------------------------------------------------------------
 			.form-group(ng-class="{ error: errors.label }")
 				label.col-sm-3.control-label Label
 				.col-sm-7
-					input.form-control(ng-model="vpbuild.label", placeholder="Version or build name...", ng-required)
+					input.form-control(ng-model="build.label", placeholder="Version or build name...", ng-required)
 			div.alert.alert-danger.padder-bottom(ng-show="errors.label")
 				+icon('warning').shift-up.space-right
 				| {{ errors.label }}
@@ -27,11 +26,11 @@ include ../template/_mixins
 				label.col-sm-3.control-label Release/Build Date
 				.col-sm-3
 					.input-group
-						input.form-control.datepicker(type='text', ng-model='vpbuild.built_at', ng-required='true',
+						input.form-control.datepicker(type='text', ng-model='build.built_at', ng-required='true',
 							datepicker-popup="shortDate",
 							is-open="calendarOpened",
 							close-text="Close",
-							show-weeks="showWeeks",
+							show-weeks="false",
 							starting-day="1")
 						span.input-group-addon: +icon('calendar').a(ng-click='openCalendar($event)')
 
@@ -49,11 +48,11 @@ include ../template/_mixins
 						label.label--small.pull-right(markdown-info="Markdown enabled.")
 						tab
 							tab-heading(title="Write"): +icon('edit')
-							textarea.textarea--full.msd-elastic(placeholder="Description of the build", ng-model="vpbuild.description")
+							textarea.textarea--full.msd-elastic(placeholder="Description of the build", ng-model="build.description")
 						tab
 							tab-heading(title="Preview"): +icon('eye')
-							div.markdown(markdown="vpbuild.description")
-							label.tab__label(ng-show="!vpbuild.description || vpbuild.description.length == 0") Nothing to preview.
+							div.markdown(markdown="build.description")
+							label.tab__label(ng-show="!build.description || build.description.length == 0") Nothing to preview.
 			div.alert.alert-danger(ng-show="errors.description")
 				+icon('warning').shift-up.space-right
 				| {{ errors.description }}
@@ -64,7 +63,7 @@ include ../template/_mixins
 			.form-group(ng-class="{ error: errors.download_url }")
 				label.col-sm-3.control-label Download URL
 				.col-sm-7
-					input.form-control(ng-model="vpbuild.download_url", ng-required)
+					input.form-control(ng-model="build.download_url", ng-required)
 			div.alert.alert-danger.padder-bottom(ng-show="errors.download_url")
 				+icon('warning').shift-up.space-right
 				| {{ errors.download_url }}
@@ -75,11 +74,11 @@ include ../template/_mixins
 			.form-group(ng-class="{ error: errors.support_url }")
 				label.col-sm-3.control-label Support URL
 				.col-sm-7
-					input.form-control(ng-model="vpbuild.support_url", ng-required)
+					input.form-control(ng-model="build.support_url", ng-required)
 			div.alert.alert-danger.padder-bottom(ng-show="errors.support_url")
 				+icon('warning').shift-up.space-right
 				| {{ errors.support_url }}
 
 	.modal-footer
 		button.btn.btn-default(ng-click="$dismiss()") Cancel
-		button.btn.btn--secondary(ng-click="create()") Create
+		button.btn.btn--secondary(ng-click="add()") Create

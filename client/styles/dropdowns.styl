@@ -71,10 +71,57 @@
 	li:last-child .media
 		border-bottom none
 
+.theme-light
+	.datepicker + .dropdown-menu
+		*
+			outline none
+
+		[datepicker]
+
+			button.btn.btn-default
+				background none
+				box-shadow none
+				border none
+				color $color-lightest-inv
+
+				.text-muted
+					color $color-light-inv
+				.text-info
+					color $color-primary-dark
+
+
+			table thead > tr:first-child th
+				background-color $color-darker-inv
+				button.btn.btn-default
+					color $color-light-inv
+					.svg-icon
+						fill $color-light-inv
+
+
 
 .datepicker + .dropdown-menu
+
+	padding-top 0
+	margin-top 0
 	width inherit
 	min-width -moz-max-content // ff hack
+
+	[datepicker]
+
+		button.btn.btn-default
+			.text-info
+				font-weight $font-weight-bold
+
+		table
+			thead > tr:nth-child(2) th
+				padding-top 30px
+
+			td:first-child, th:first-child
+				padding-left 15px
+			td:last-child, th:last-child
+				padding-right 30px
+
+
 	li
 		cursor default
 		margin-top  0

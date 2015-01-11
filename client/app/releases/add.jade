@@ -258,7 +258,7 @@ include ../template/_mixins
 		h1 5. Set Compatibility
 		hr
 		p Here you can let users know which versions of Visual Pinball your release supports. For every uploaded file,
-			| check which VP build you feel confident with.
+			| check which build you feel confident with.
 
 		ul.list--files
 			li.panel(ng-repeat="file in meta.files | fileext:['vpt','vpx']", , ng-class="{ error: errors.versions[0].files[meta.files.indexOf(file)]._compatibility }")
@@ -274,25 +274,25 @@ include ../template/_mixins
 							span Official Releases
 						hr.hr--thin.hr--margin-small
 						.simple-list(ng-repeat="build in builds.release | filter:{is_range:false}")
-							input.checkbox--check(ng-checked="file.vpbuilds.indexOf(build.id) > -1", ng-click="toggleVPBuild(file, build)", id="dev-{{ file.storage.id }}-{{ build.id }}", type="checkbox")
+							input.checkbox--check(ng-checked="file.builds.indexOf(build.id) > -1", ng-click="toggleBuild(file, build)", id="dev-{{ file.storage.id }}-{{ build.id }}", type="checkbox")
 							label(for="dev-{{ file.storage.id }}-{{ build.id }}") {{ build.label }}
 					.col-md-4
 						span
 							span Nightly Builds
 						hr.hr--thin.hr--margin-small
 						.simple-list(ng-repeat="build in builds.nightly | filter:{is_range:false}")
-							input.checkbox--check(ng-checked="file.vpbuilds.indexOf(build.id) > -1", ng-click="toggleVPBuild(file, build)", id="dev-{{ file.storage.id }}-{{ build.id }}", type="checkbox")
+							input.checkbox--check(ng-checked="file.builds.indexOf(build.id) > -1", ng-click="toggleBuild(file, build)", id="dev-{{ file.storage.id }}-{{ build.id }}", type="checkbox")
 							label(for="dev-{{ file.storage.id }}-{{ build.id }}") {{ build.label }}
 					.col-md-4
 						span
 							span Test Builds
 						hr.hr--thin.hr--margin-small
 						.simple-list(ng-repeat="build in builds.experimental | filter:{is_range:false}")
-							input.checkbox--check(ng-checked="file.vpbuilds.indexOf(build.id) > -1", ng-click="toggleVPBuild(file, build)", id="dev-{{ file.storage.id }}-{{ build.id }}", type="checkbox")
+							input.checkbox--check(ng-checked="file.builds.indexOf(build.id) > -1", ng-click="toggleBuild(file, build)", id="dev-{{ file.storage.id }}-{{ build.id }}", type="checkbox")
 							label(for="dev-{{ file.storage.id }}-{{ build.id }}") {{ build.label }}
 					.col-md-12
 						p.padder-top
-						button.btn.btn-default.pull-right(ng-click="addVPBuild()")
+						button.btn.btn-default.pull-right(ng-click="addBuild()")
 							+icon('plus-circle').space-right
 							| Add Another
 				.clearfix

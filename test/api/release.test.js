@@ -178,7 +178,7 @@ describe('The VPDB `release` API', function() {
 		});
 
 		it('should fail validations when providing a different file type as playfield video');
-		it('should fail validations when providing a non-existent vp build');
+		it('should fail validations when providing a non-existent build');
 		it('should fail validations when providing a non-existent playfield video');
 
 		it('should succeed when providing minimal data', function(done) {

@@ -9,7 +9,7 @@ angular.module('vpdb.releases.add', [])
 	.controller('ReleaseAddCtrl', function($scope, $upload, $modal, $window, $localStorage, $stateParams,
 										   $location, $anchorScroll, $timeout,
 										   AuthService, ApiHelper, Flavors,
-										   ReleaseResource, FileResource, TagResource, VPBuildResource, GameResource,
+										   ReleaseResource, FileResource, TagResource, BuildResource, GameResource,
 										   ConfigService, DisplayService, MimeTypeService, ModalService) {
 
 		$scope.theme('light');
@@ -37,16 +37,16 @@ angular.module('vpdb.releases.add', [])
 		});
 
 		// retrieve available vp builds
-		var vpbuilds = VPBuildResource.query(function() {
+		var builds = BuildResource.query(function() {
 			$scope.builds = {};
 			var types = [];
-			_.each(vpbuilds, function(vpbuild) {
-				if (!$scope.builds[vpbuild.type]) {
-					$scope.builds[vpbuild.type] = [];
-					types.push(vpbuild.type);
+			_.each(builds, function(build) {
+				if (!$scope.builds[build.type]) {
+					$scope.builds[build.type] = [];
+					types.push(build.type);
 				}
-				vpbuild.built_at = new Date(vpbuild.built_at);
-				$scope.builds[vpbuild.type].push(vpbuild);
+				build.built_at = new Date(build.built_at);
+				$scope.builds[build.type].push(build);
 			});
 			_.each(types, function(type) {
 				$scope.builds[type].sort(function(a, b) {
@@ -184,7 +184,7 @@ angular.module('vpdb.releases.add', [])
 						uploading: true,
 						progress: 0,
 						flavor: {},
-						vpbuilds: []
+						builds: []
 					};
 					$scope.meta.files.push(file);
 					$upload.http({
@@ -205,7 +205,7 @@ angular.module('vpdb.releases.add', [])
 							$scope.release.versions[0].files.push({
 								_file: response.data.id,
 								flavor: file.flavor,
-								_compatibility: file.vpbuilds,
+								_compatibility: file.builds,
 								_media: {
 									playfield_image: null,
 									playfield_video: null
@@ -314,27 +314,27 @@ angular.module('vpdb.releases.add', [])
 
 
 		/**
-		 * Adds or removes a VP build to/from to a given file of the release
+		 * Adds or removes a build to/from to a given file of the release
 		 * @param {object} file
-		 * @param {object} vpbuild
+		 * @param {object} build
 		 */
-		$scope.toggleVPBuild = function(file, vpbuild) {
-			var idx = file.vpbuilds.indexOf(vpbuild.id);
+		$scope.toggleBuild = function(file, build) {
+			var idx = file.builds.indexOf(build.id);
 			if (idx > -1) {
-				file.vpbuilds.splice(idx, 1);
+				file.builds.splice(idx, 1);
 			} else {
-				file.vpbuilds.push(vpbuild.id);
+				file.builds.push(build.id);
 			}
 		};
 
 
 		/**
-		 * Opens the dialog for creating a new VP build.
+		 * Opens the dialog for creating a new build.
 		 */
-		$scope.addVPBuild = function() {
+		$scope.addBuild = function() {
 			$modal.open({
-				templateUrl: '/releases/modal-vpbuild-create.html',
-				controller: 'AddVPBuildCtrl',
+				templateUrl: '/releases/modal-build-create.html',
+				controller: 'AddBuildCtrl',
 				size: 'lg'
 			}).result.then(function(newBuild) {
 				// todo
@@ -518,7 +518,7 @@ angular.module('vpdb.releases.add', [])
 			// update references
 			_.each($scope.release.versions[0].files, function(file) {
 				var metaFile = _.find($scope.meta.files, function(f) { return f.storage.id === file._file; });
-				file._compatibility = metaFile.vpbuilds;
+				file._compatibility = metaFile.builds;
 				file.flavor = metaFile.flavor;
 			});
 			AuthService.collectUrlProps($scope.meta, true);
@@ -618,10 +618,31 @@ angular.module('vpdb.releases.add', [])
 	})
 
 
-	.controller('AddVPBuildCtrl', function($scope, $modalInstance, ApiHelper, VPBuildResource) {
+	.controller('AddBuildCtrl', function($scope, $modalInstance, $templateCache, ApiHelper, BuildResource) {
 
-		$scope.vpbuild = {};
-		$scope.showWeeks = false;
+		$scope.build = {};
+
+		// monkey patch template so it takes svgs instead of glyphicons.
+		var dayTpl = $templateCache.get('template/datepicker/day.html');
+		if (/<i class="glyphicon/.test(dayTpl)) {
+
+			var monthTpl = $templateCache.get('template/datepicker/month.html');
+			var yearTpl = $templateCache.get('template/datepicker/year.html');
+
+			dayTpl = dayTpl.replace(/<i class="glyphicon glyphicon-chevron-left">/, '<svg class="svg-icon"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#icon-arrow-left"></use></svg>');
+			dayTpl = dayTpl.replace(/<i class="glyphicon glyphicon-chevron-right">/, '<svg class="svg-icon"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#icon-arrow-right"></use></svg>');
+
+			monthTpl = monthTpl.replace(/<i class="glyphicon glyphicon-chevron-right">/, '<svg class="svg-icon"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#icon-arrow-right"></use></svg>');
+			monthTpl = monthTpl.replace(/<i class="glyphicon glyphicon-chevron-left">/, '<svg class="svg-icon"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#icon-arrow-left"></use></svg>');
+
+			yearTpl = yearTpl.replace(/<i class="glyphicon glyphicon-chevron-right">/, '<svg class="svg-icon"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#icon-arrow-right"></use></svg>');
+			yearTpl = yearTpl.replace(/<i class="glyphicon glyphicon-chevron-left">/, '<svg class="svg-icon"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#icon-arrow-left"></use></svg>');
+
+			$templateCache.put('template/datepicker/day.html', dayTpl);
+			$templateCache.put('template/datepicker/month.html', monthTpl);
+			$templateCache.put('template/datepicker/year.html', yearTpl);
+		}
+
 
 		$scope.openCalendar = function($event) {
 			$event.preventDefault();
@@ -631,8 +652,8 @@ angular.module('vpdb.releases.add', [])
 		};
 
 		$scope.add = function() {
-			VPBuildResource.save($scope.tag, function(tag) {
-				$modalInstance.close(tag);
+			BuildResource.save($scope.build, function(build) {
+				$modalInstance.close(build);
 
 			}, ApiHelper.handleErrors($scope));
 		};

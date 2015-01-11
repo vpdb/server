@@ -78,7 +78,7 @@ exports.create = function(req, res) {
 
 
 /**
- * Deletes a VP build.
+ * Deletes a build.
  *
  * @param {Request} req
  * @param {Response} res
@@ -106,7 +106,7 @@ exports.del = function(req, res) {
 				if (err) {
 					return api.fail(res, error(err, 'Error deleting build "%s" (%s)', build.id, build.label).log('delete'), 500);
 				}
-				logger.info('[api|build:delete] VP build "%s" (%s) successfully deleted.', build.label, build.id);
+				logger.info('[api|build:delete] Build "%s" (%s) successfully deleted.', build.label, build.id);
 				api.success(res, null, 204);
 			});
 		}), 'Error getting Build "%s"');

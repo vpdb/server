@@ -8,6 +8,11 @@ common
 		});
 	})
 
+	.factory('BuildResource', function($resource, ConfigService) {
+		return $resource(ConfigService.apiUri('/builds/:id'), {}, {
+		});
+	})
+
 	.factory('FileResource', function($resource, ConfigService) {
 		return $resource(ConfigService.apiUri('/files/:id'), {}, {
 		});
@@ -57,11 +62,6 @@ common
 			register: { method: 'POST' },
 			login: { method: 'POST', params: { userid : 'login'} },
 			logout: { method: 'POST', params: { userid : 'logout'} }
-		});
-	})
-
-	.factory('VPBuildResource', function($resource, ConfigService) {
-		return $resource(ConfigService.apiUri('/vpbuilds/:id'), {}, {
 		});
 	})
 

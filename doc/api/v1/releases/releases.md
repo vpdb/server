@@ -46,9 +46,10 @@ Note that flavor types are hard-coded and cannot be changed with the API.
 ## Compatibility
 
 Every table file needs to be linked to at least one compatible 
-[VP build][vpbuild]. This allows authors to provide table files for multiple 
-versions of Visual Pinball in one single release. It also avoids confusion
-about which release is supposed to work with which version of Visual Pinball.
+[Visual Pinball build][build]. This allows authors to provide table files for
+multiple versions of Visual Pinball in one single release. It also avoids
+confusion about which release is supposed to work with which version of Visual
+Pinball.
 
 
 # Authors
@@ -70,6 +71,6 @@ A tag comes with a name and a description. Icons are conceivable in the future.
 
 
 [game]: api://core/games
-[vpbuild]: api://core/vpbuilds
+[build]: api://core/builds
 [tag]: api://core/tags
 [img-schema]: /images/schema-release.svg

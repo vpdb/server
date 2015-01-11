@@ -67,9 +67,9 @@
 								},
 								"_compatibility": {
 									"type": "array",
-									"description": "Reference to one or more compatible VP builds.",
+									"description": "Reference to one or more compatible builds.",
 									"items": {
-										"title": "VP Build",
+										"title": "Build",
 										"type": "string"
 									}
 								},

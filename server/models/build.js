@@ -38,7 +38,7 @@ var fields = {
 	support_url:  { type: String },
 	description:  { type: String },
 	built_at:     { type: Date },
-	type:         { type: String, required: 'The type of the VP build must be provided.', enum: { values: types, message: 'Invalid type. Valid types are: [ "' + types.join('", "') + '" ].' }},
+	type:         { type: String, required: 'The type of the build must be provided.', enum: { values: types, message: 'Invalid type. Valid types are: [ "' + types.join('", "') + '" ].' }},
 	is_range:     { type: Boolean, required: 'You need to provide if the build is a range of versions or one specific version.', default: false },
 	is_active:    { type: Boolean, required: true, default: false },
 	created_at:   { type: Date, required: true },

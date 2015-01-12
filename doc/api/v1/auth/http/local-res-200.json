@@ -3,21 +3,21 @@ Content-Type: application/json; charset=utf-8
 Content-Length: 968
 
 {
-  "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI3a2J0MlJPLXI0IiwiaWF0IjoiMjAxNS0wMS0xMVQxOTozNjowMi42OTVaIiwiZXhwIjoiMjAxNS0wMS0xMVQyMDozNjowMi42OTVaIn0.y6IvTLJS8__JBCATRXYTNYoyJ11TCPWV_KmZvIn7Xsc",
-  "expires": "2015-01-11T20:36:02.695Z",
+  "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI3MXREeWdET1VWIiwiaWF0IjoiMjAxNS0wMS0xMlQyMTozNzo1Ny40NDNaIiwiZXhwIjoiMjAxNS0wMS0xMlQyMjozNzo1Ny40NDNaIn0.060rQOw3HaXEOdmX7BA-3K_s5VLcQDjDsZg31-67p8A",
+  "expires": "2015-01-12T22:37:57.443Z",
   "user": {
-    "id": "7kbt2RO-r4",
-    "name": "Max44",
-    "username": "Max44",
-    "gravatar_id": "43314bb409205bc6c278b705c2517461",
-    "email": "pasquale27@gmail.com",
+    "id": "71tDygDOUV",
+    "name": "Ara20",
+    "username": "Ara20",
+    "gravatar_id": "1e3721c33c159f60725115f847baa2d7",
+    "email": "tristian74@yahoo.com",
     "is_active": true,
     "provider": "local",
     "roles": [
       "member"
     ],
     "plan": "free",
-    "created_at": "2015-01-11T19:36:02.626Z",
+    "created_at": "2015-01-12T21:37:57.384Z",
     "permissions": {
       "user": [
         "update",

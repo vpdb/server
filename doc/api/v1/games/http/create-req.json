@@ -1,27 +1,27 @@
 POST /api/v1/games HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI3MXhTQzB1YkhOIiwiaWF0IjoiMjAxNS0wMS0xMVQxOTozNjowNC42ODVaIiwiZXhwIjoiMjAxNS0wMS0xMVQyMDozNjowNC42ODVaIn0.3oe2IN1wkP55jVKOsd0t4MVUuxGfSLMbnhQQ8p0frPA
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI3MUpCYmx3T1U0IiwiaWF0IjoiMjAxNS0wMS0xMlQyMTozNzo1OS4zODlaIiwiZXhwIjoiMjAxNS0wMS0xMlQyMjozNzo1OS4zODlaIn0.Ge1NpsGV4N9FDy5Ed4sVmmBmLtAdVvYk4utjsOHGEXI
 Content-Type: application/json
-Content-Length: 896
+Content-Length: 548
 
 {
   "ipdb": {
-    "number": 5921,
-    "mfg": 204
+    "number": 1992,
+    "mfg": 46
   },
-  "title": "Pin",
-  "manufacturer": "Maresa",
+  "title": "Rockingham",
+  "manufacturer": "Bell Products Company",
+  "year": 1944,
   "game_type": "em",
   "themes": [
     "Sports",
-    "Bowling"
+    "Horse Racing"
   ],
-  "features": "Flippers (2), Pop bumpers (2), Slingshots (2), Standup targets (4), Kick-out holes (2), Spinning target (1), Right outlane ball return gate. Backbox animation (bowling balls kick into view). Last two digits of score are dummy zeroes. Transparent playfield surface.",
-  "notes": "This game has the same playfield layout and cabinet art as Maresa's '300' but the backglass art is different. We don't know what differences may exist between them. Both are copies of the 4-player Gottlieb's 1975 '\"300\"'. Both are replay games. Due to restrictions on foreign imports to Spain, pinball machines could not be imported from the U.S., but whether this game is a licensed copy or an illegal reproduction is unknown.",
-  "id": "pin",
-  "year": 1900,
+  "features": "Console cabinet.",
+  "notes": "'Rockingham' is a World War II conversion of these games:Bally's 1938 'Grandstand'Bally's 1939 'Grand National'and one or both of these games:Bally's 1938 'Pace Maker'Bally's 1939 'Pace Maker'The earliest Billboard ads that we have found for this game are dated January 1944 and include pictures.",
+  "id": "rockingham",
   "_media": {
-    "backglass": "myHrRAO-rN"
+    "backglass": "mkNHWxvuU4"
   }
 }

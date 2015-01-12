@@ -26,6 +26,7 @@ var validator = require('validator');
 var uniqueValidator = require('mongoose-unique-validator');
 
 var Schema = mongoose.Schema;
+var platforms =  [ 'vp' ];
 var types =  [ 'release', 'nightly', 'experimental' ];
 
 //-----------------------------------------------------------------------------
@@ -33,12 +34,13 @@ var types =  [ 'release', 'nightly', 'experimental' ];
 //-----------------------------------------------------------------------------
 var fields = {
 	id:           { type: String, required: true, unique: true },
+	platform:     { type: String, required: 'The platform must be provided.', 'enum': { values: platforms, message: 'Invalid platform. Valid platforms are: [ "' + platforms.join('", "') + '" ].' } },
 	label:        { type: String, required: 'A label must be provided.', unique: true },
 	download_url: { type: String },
 	support_url:  { type: String },
 	description:  { type: String },
 	built_at:     { type: Date },
-	type:         { type: String, required: 'The type of the build must be provided.', enum: { values: types, message: 'Invalid type. Valid types are: [ "' + types.join('", "') + '" ].' }},
+	type:         { type: String, required: 'The type of the build must be provided.', 'enum': { values: types, message: 'Invalid type. Valid types are: [ "' + types.join('", "') + '" ].' } },
 	is_range:     { type: Boolean, required: 'You need to provide if the build is a range of versions or one specific version.', default: false },
 	is_active:    { type: Boolean, required: true, default: false },
 	created_at:   { type: Date, required: true },
@@ -51,7 +53,7 @@ var BuildSchema = new Schema(fields);
 // API FIELDS
 //-----------------------------------------------------------------------------
 var apiFields = {
-	simple: [ 'id', 'label', 'download_url', 'built_at', 'type', 'is_range' ]
+	simple: [ 'id', 'label', 'platform', 'download_url', 'built_at', 'type', 'is_range' ]
 };
 
 

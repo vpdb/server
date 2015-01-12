@@ -1,14 +1,14 @@
 PATCH /api/v1/user HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJYMThHOTFZWkJWIiwiaWF0IjoiMjAxNS0wMS0xMVQxOTozNjoxNS45OTlaIiwiZXhwIjoiMjAxNS0wMS0xMVQyMDozNjoxNS45OTlaIn0.h4ep0s_TA11scRw4QxCnbgxL4JzsOlYbtXrrKUuPsrk
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJReWNHcGVET0xWIiwiaWF0IjoiMjAxNS0wMS0xMlQyMTozODoxMS4wNDhaIiwiZXhwIjoiMjAxNS0wMS0xMlQyMjozODoxMS4wNDhaIn0.chKiSf2ECkrtVIQK3XcaOmRjBF5juL8BhJoSK9vVvgs
 Content-Type: application/json
-Content-Length: 135
+Content-Length: 145
 
 {
-  "name": "Jaida Mann",
-  "location": "South Odell",
-  "email": "tara.yundt@hotmail.com",
-  "current_password": "APKMiDKxBZ",
-  "password": "MUlF4Th8mc"
+  "name": "Jane Goyette",
+  "location": "South Sarina",
+  "email": "martina_schroeder61@yahoo.com",
+  "current_password": "DHU2YN2YTY",
+  "password": "I7045tCRiy"
 }

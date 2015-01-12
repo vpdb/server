@@ -2,6 +2,7 @@ exports.model = 'Build';
 exports.rows = [
 	{
 		id: '9.9.0',
+		platform: 'vp',
 		label: 'v9.9.0',
 		download_url: 'http://www.vpforums.org/index.php?app=downloads&showfile=8793',
 		support_url: '',
@@ -41,6 +42,7 @@ In case your setup cannot handle VP 9.9.0 properly for whatever reason, please d
 	},
 	{
 		id: '9.2.1',
+		platform: 'vp',
 		label: 'v9.2.1',
 		download_url: 'http://www.vpforums.org/index.php?app=downloads&showfile=8793',
 		support_url: '',
@@ -96,6 +98,7 @@ all parameters are now: `PlaySound "name"`, `loopcount`, `volume`, `pan`, `rando
 	},
 	{
 		id: 'physmod2',
+		platform: 'vp',
 		label: 'physmod2',
 		download_url: 'http://www.vpforums.org/index.php?showtopic=27416&p=261813',
 		support_url: 'http://www.vpforums.org/index.php?showtopic=27416',
@@ -111,6 +114,7 @@ all parameters are now: `PlaySound "name"`, `loopcount`, `volume`, `pan`, `rando
 	},
 	{
 		id: 'physmod5',
+		platform: 'vp',
 		label: 'physmod5',
 		download_url: 'http://www.vpforums.org/index.php?showtopic=27416&page=32#entry266075',
 		support_url: 'http://www.vpforums.org/index.php?showtopic=27416',
@@ -128,6 +132,7 @@ This version also has the latest updates from VP 9.9.0.',
 	},
 	{
 		id: 'rubberdemo4',
+		platform: 'vp',
 		label: 'rubberdemo4',
 		download_url: 'http://www.vpforums.org/index.php?showtopic=27604&p=273142',
 		support_url: 'http://www.vpforums.org/index.php?showtopic=27604',
@@ -138,6 +143,7 @@ This version also has the latest updates from VP 9.9.0.',
 	},
 	{
 		id: '9.2.1-r932',
+		platform: 'vp',
 		label: 'v9.2.1 rev 932',
 		download_url: 'https://www.dropbox.com/sh/qx1yng3nm8cv8lr/AACbxkyAHpY1T5xjuum03dbZa/Daily%20VPinball%20Builds/VPinball%209.2.1%20rev932.exe',
 		support_url: '',
@@ -149,6 +155,7 @@ This version also has the latest updates from VP 9.9.0.',
 	},
 	{
 		id: '-9.2.1',
+		platform: 'vp',
 		label: '< v9.2.1',
 		description: 'v9.2.1 or lower',
 		built_at: '2014-03-21T00:00:00.000Z',
@@ -158,6 +165,7 @@ This version also has the latest updates from VP 9.9.0.',
 	},
 	{
 		id: '-9.9.0',
+		platform: 'vp',
 		label: '< v9.9.0',
 		description: 'v9.9.0 or lower',
 		built_at: '2014-04-29T00:00:00.000Z',
@@ -167,6 +175,7 @@ This version also has the latest updates from VP 9.9.0.',
 	},
 	{
 		id: '8.x',
+		platform: 'vp',
 		label: 'v8.x',
 		description: 'Any v8.* build',
 		built_at: '2009-02-07T15:23:00.000Z',

@@ -1,21 +1,21 @@
 POST /api/v1/releases HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI3SktOeUZXQk4iLCJpYXQiOiIyMDE1LTAxLTExVDE5OjM2OjEwLjIxMVoiLCJleHAiOiIyMDE1LTAxLTExVDIwOjM2OjEwLjIxMVoifQ.ntK0VqMg9L5d34jgHIrfWXxy_ehILIay6UubjlR353I
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJRSllQZURkVUUiLCJpYXQiOiIyMDE1LTAxLTEyVDIxOjM4OjA1LjM3OFoiLCJleHAiOiIyMDE1LTAxLTEyVDIyOjM4OjA1LjM3OFoifQ.vp89Fjg4E7SAVizJ98ysgFh6fJ92wxfd9NSP3xXIfjc
 Content-Type: application/json
-Content-Length: 475
+Content-Length: 476
 
 {
   "name": "release",
-  "_game": "high-speed",
+  "_game": "volley-ball",
   "versions": [
     {
       "files": [
         {
-          "_file": "7kkMS1K-B4",
+          "_file": "m1uMOlv_UN",
           "_media": {
-            "playfield_image": "7JdfSyKbSV",
-            "playfield_video": "Q1g8yKZBN"
+            "playfield_image": "mkymOgwOLE",
+            "playfield_video": "myctePuLE"
           },
           "_compatibility": [
             "9.9.0"
@@ -26,9 +26,9 @@ Content-Length: 475
           }
         },
         {
-          "_file": "Q1xzH1tZrE",
+          "_file": "7kKzuxP_8E",
           "_media": {
-            "playfield_image": "X18fH1FZH4"
+            "playfield_image": "QJ0GOxDuIN"
           },
           "_compatibility": [
             "9.9.0"
@@ -44,7 +44,7 @@ Content-Length: 475
   ],
   "authors": [
     {
-      "_user": "7JKNyFWBN",
+      "_user": "QJYPeDdUE",
       "roles": [
         "Table Creator"
       ]

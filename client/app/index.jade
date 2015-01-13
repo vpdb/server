@@ -7,6 +7,8 @@ block navbar
 			a(ui-sref="home") Home
 		li(ng-class="{ active: menu == 'games' }")
 			a(ui-sref="games") Games
+		li(ng-class="{ active: menu == 'releases' }")
+			a(ui-sref="releases") Releases
 		li.dropdown(ng-class="{ active: menu == 'admin' }", ng-show="auth.hasRole(['root', 'admin'])", on-toggle="toggled(open)", dropdown)
 			a.space-right.dropdown-toggle(dropdown-toggle)
 				span.space-right-2x Admin

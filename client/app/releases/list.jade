@@ -1,0 +1,69 @@
+include ../template/_mixins
+
+.row.row--fullheight(ng-controller="ReleaseListController")
+	.col-sm-9.col--main
+		h1.h--primary Releases
+		ul.nav-icons
+			li.a(ng-class="{ active: viewtype == 'compact' }")
+				+icon('th-compact')(ng-click="switchview('compact')")
+			li.a(ng-class="{ active: viewtype == 'extended' }")
+				+icon('th-extended')(ng-click="switchview('extended')")
+			li.a(ng-class="{ active: viewtype == 'table' }")
+				+icon('th-table')(ng-click="switchview('table')")
+		hr
+
+		.pull-left(ng-show="releases.length > 0")
+			span.small {{ pagination.count }} RELEASES
+		.pull-right(ng-show="releases.length > 0")
+
+			span(ng-show="pagination.links.first", ng-click="paginate(pagination.links.first)"): +icon('angle-left-skip').smaller.a.a--lighter
+			span.space-left(ng-show="pagination.links.prev", ng-click="paginate(pagination.links.prev)"): +icon('angle-left').smaller.a.a--lighter
+			span.small.space-left PAGE &nbsp; {{ pagination.page }} / {{ Math.ceil(pagination.count / pagination.size) }}
+			span.space-left(ng-show="pagination.links.next", ng-click="paginate(pagination.links.next)"): +icon('angle-right').smaller.a.a--lighter
+			span.space-left(ng-show="pagination.links.last", ng-click="paginate(pagination.links.last)"): +icon('angle-right-skip').smaller.a.a--lighter
+
+		.clearfix.padder-bottom(ng-show="releases.length > 0")
+		p(ng-show="!releases.length") No releases found.
+		.row.ng-cloak
+			.fade2-animation(ng-include="template")
+
+	.col-sm-3.col--menu
+		h1 Filter
+		hr
+
+		// search box
+		.input-group.padder-bottom
+			span.input-group-addon.input-group-addon--search
+				+icon('search').smaller
+			input.form-control.input--search(ng-model="q", type="text", placeholder="Search")
+
+		accordion.panel-group--transparent(close-others="false")
+
+			// year filter
+			accordion-group.panel--inner(is-open="filterYearOpen")
+				accordion-heading by Year
+				.row
+					.col-xs-6.text-center.a(filter-decade="1960") 1960s
+					.col-xs-6.text-center.a(filter-decade="1970") 1970s
+					.col-xs-6.text-center.a(filter-decade="1980") 1980s
+					.col-xs-6.text-center.a(filter-decade="1990") 1990s
+					.col-xs-6.text-center.a(filter-decade="2000") 2000s
+					.col-xs-6.text-center.a(filter-decade="2010") 2010s
+
+			// manufacturer filter
+			accordion-group.panel--inner(is-open="filterManufacturerOpen")
+				accordion-heading by Manufacturer
+				.row
+					.col-xs-6.text-center.a(filter-manufacturer="Bally") Bally
+					.col-xs-6.text-center.a(filter-manufacturer="Capcom") Capcom
+					.col-xs-6.text-center.a(filter-manufacturer="Stern") Stern
+					.col-xs-6.text-center.a(filter-manufacturer="Williams") Williams
+					.col-xs-6.text-center.a(filter-manufacturer="Gottlieb") Gottlieb
+					.col-xs-6.text-center.a(filter-manufacturer="Data East") Data East
+
+		h1 Sort
+		hr
+		ul.list--sort-options
+			li.a.selected.asc(sort="title", d="asc") Name
+			li.a(sort="created_at", d="desc") Date Added
+			li.a(sort="year", d="asc") Year

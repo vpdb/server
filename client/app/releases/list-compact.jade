@@ -1,0 +1,13 @@
+.col-md-4.col-sm-6.col-xs-12.fade-animation(ng-repeat="release in releases", ng-click="navGame(game.id)")
+	.panel.panel--animated.ng-cloak
+		.img.img--ar-fs.img--rounded-top(img-bg="release.latest_version.thumb.image.url")
+		.text-center.padder-horizontal
+			h1.h--small {{ release.game.title }}
+			label.label--subtitle {{ release.name }}
+			.center-block.padder-bottom-2x
+				img.img-avatar.img-avatar--xsm(
+					ng-repeat="author in release.authors",
+					gravatar-src="author.user.gravatar_id",
+					gravatar-default="404",
+					fallback-icon="user",
+					title="{{ author.user.name }}: {{ author.roles.join(', ') }}")

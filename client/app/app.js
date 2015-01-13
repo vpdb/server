@@ -34,6 +34,7 @@ var appDeps = [
 	'vpdb.profile.settings',
 	'vpdb.profile.stats',
 	'vpdb.releases.add',
+	'vpdb.releases.list',
 	'vpdb.users.list',
 	'vpdb.users.edit'
 ];
@@ -51,6 +52,7 @@ angular.module('vpdb', deps.concat(appDeps))
 		$stateProvider.state('home',             { url: '/',                             templateUrl: '/home/home.html', controller: 'HomeController' });
 		$stateProvider.state('games',            { url: '/games',                        templateUrl: '/games/list.html' });
 		$stateProvider.state('gameDetails',      { url: '/game/:id',                     templateUrl: '/games/details.html' });
+		$stateProvider.state('releases',         { url: '/releases',                     templateUrl: '/releases/list.html' });
 		$stateProvider.state('addGame',          { url: '/games/add',                    templateUrl: '/games/add.html' });
 		$stateProvider.state('addRelease',       { url: '/game/:id/add-release',         templateUrl: '/releases/add.html' });
 		$stateProvider.state('adminUsers',       { url: '/admin/users',                  templateUrl: '/users/list.html' });

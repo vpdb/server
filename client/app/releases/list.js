@@ -21,12 +21,20 @@
 
 angular.module('vpdb.releases.list', [])
 
-	.controller('ReleaseListController', function($scope, $rootScope, $http, $location, $templateCache, ApiHelper, ReleaseResource) {
+	.controller('ReleaseListController', function($scope, $rootScope, $http, $localStorage, $templateCache, ApiHelper, ReleaseResource) {
 
+		// view type config
+		var viewTypes = [ 'extended', 'table' ];
+		var defaultViewType = 'compact';
+
+		$localStorage.releases = $localStorage.releases || {};
+
+		// theme & menu
 		$scope.theme('dark');
 		$scope.setTitle('Releases');
 		$scope.setMenu('releases');
 
+		// query defaults
 		$scope.$query = null;
 		$scope.filterDecades = [];
 		$scope.filterManufacturer = [];
@@ -36,25 +44,25 @@ angular.module('vpdb.releases.list', [])
 		$scope.Math = window.Math;
 
 		// preload partials
-		_.each(['compact', 'extended', 'table'], function(view) {
+		_.each(['compact', 'extended' ], function(view) {
 			$http.get('/releases/list-' + view + '.html', { cache: $templateCache });
 		});
 
-		// todo use ui-router for this
-		var hash = $location.hash();
-		$scope.viewtype = _.contains([ 'extended', 'table' ], hash) ? hash : 'compact';
-		$scope.setView = function() {
-			$scope.template = '/releases/list-' + $scope.viewtype + '.html';
+		// view types logic
+		var viewtype = $localStorage.releases.viewtype || defaultViewType;
+		$scope.viewtype = _.contains(viewTypes, viewtype) ? viewtype : defaultViewType;
+		$scope.setViewTemplate = function(view) {
+			$scope.template = '/releases/list-' + view + '.html';
 		};
 		$scope.switchview = function(view) {
 			if ($scope.viewtype === view) {
 				return;
 			}
-			$location.hash(view);
+			$localStorage.releases.viewtype = view;
 			$scope.viewtype = view;
-			$scope.setView();
+			$scope.setViewTemplate(view);
 		};
-		$scope.setView();
+		$scope.setViewTemplate($scope.viewtype);
 
 
 		// QUERY LOGIC
@@ -122,16 +130,6 @@ angular.module('vpdb.releases.list', [])
 			}
 			refresh();
 		});
-
-		// FIXME don't relead
-		//var lastRoute = $route.current;
-		//var lastPath = $location.path();
-		//$scope.$on('$locationChangeSuccess', function() {
-		//	// "undo" route change if path didn't change (only hashes or params)
-		//	if ($location.path() === lastPath) {
-		//		$route.current = lastRoute;
-		//	}
-		//});
 	});
 
 

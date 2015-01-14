@@ -24,7 +24,7 @@ angular.module('vpdb.games.list', [])
 		// todo use ui-router for this
 		var hash = $location.hash();
 		$scope.viewtype = _.contains([ 'extended', 'table' ], hash) ? hash : 'compact';
-		$scope.setView = function() {
+		$scope.setViewTemplate = function() {
 			$scope.template = '/games/list-' + $scope.viewtype + '.html';
 		};
 		$scope.switchview = function(view) {
@@ -33,9 +33,9 @@ angular.module('vpdb.games.list', [])
 			}
 			$location.hash(view);
 			$scope.viewtype = view;
-			$scope.setView();
+			$scope.setViewTemplate();
 		};
-		$scope.setView();
+		$scope.setViewTemplate();
 
 
 		// QUERY LOGIC

@@ -33,7 +33,6 @@ var config = require('../modules/settings').current;
 var Schema = mongoose.Schema;
 
 
-
 //-----------------------------------------------------------------------------
 // SCHEMA
 //-----------------------------------------------------------------------------
@@ -55,6 +54,10 @@ var fields = {
 	password_salt:    { type: String },
 	thumb:            { type: String },
 	location:         { type: String },
+	preferences:      {
+		tablefile_name: { type: String },
+		flavor_tags:    { type: Schema.Types.Mixed }
+	},
 	created_at:       { type: Date, required: true },
 	is_active:        { type: Boolean, required: true, default: false },
 	validated_emails: { type: [ String ] }

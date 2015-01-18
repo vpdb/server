@@ -28,6 +28,8 @@ var childProcess = require('child_process');
 /**
  * A wrapper for Libav's `avconv` (fork of ffmpeg).
  *
+ * DEPREACATED. Using ffmpeg.
+ *
  * It is very basic and only supports features currently used by VPDB. The API
  * was inspired by the `fluent-ffmpeg` module.
  *

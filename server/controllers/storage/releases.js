@@ -62,12 +62,18 @@ exports.download = function(req, res) {
 	query.exec(function(err, release) {
 		/* istanbul ignore if  */
 		if (err) {
+			logger.log('[download] Error fetching release from database: %s', err.message);
 			return res.status(500).end();
 		}
 		if (!release) {
 			return res.status(404).json({ error: 'No such release with ID "' + req.params.release_id + '".' }).end();
 		}
 		release.populate({ path: '_game._media.logo _game._media.backglass', model: 'File' }, function(err, release) {
+			/* istanbul ignore if  */
+			if (err) {
+				logger.log('[download] Error populating media from database: %s', err.message);
+				return res.status(500).end();
+			}
 
 			var files = [];
 			var fileIds = body.files;

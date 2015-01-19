@@ -30,6 +30,17 @@ var quota = require('../../modules/quota');
 /**
  * Downloads a release.
  *
+ * You provide the release to download as well as the table file IDs for the
+ * release.
+ *
+ * Example:
+ *
+ *    GET https://vpdb.ch/storage/v1/releases/XkviQgQ6m?body={}&token=123
+ *
+ * where body is something like (url-encoded):
+ *
+ *    {"files":["XJejOk7p7"],"media":{"playfield_image":true,"playfield_video":false},"game_media":true}
+ *
  * @param {Request} req
  * @param {Response} res
  */
@@ -50,6 +61,7 @@ exports.download = function(req, res) {
 		return res.status(422).json({ error: 'You need to provide which files you want to include in the download.' }).end();
 	}
 
+	// get release first
 	var query = Release.findOne({ id: req.params.release_id })
 		.populate({ path: '_game' })
 		.populate({ path: '_game._media.backglass' })
@@ -57,7 +69,8 @@ exports.download = function(req, res) {
 		.populate({ path: 'authors._user' })
 		.populate({ path: 'versions.files._file' })
 		.populate({ path: 'versions.files._media.playfield_image' })
-		.populate({ path: 'versions.files._media.playfield_video' });
+		.populate({ path: 'versions.files._media.playfield_video' })
+		.populate({ path: 'versions.files._compatibility' });
 
 	query.exec(function(err, release) {
 		/* istanbul ignore if  */
@@ -68,40 +81,44 @@ exports.download = function(req, res) {
 		if (!release) {
 			return res.status(404).json({ error: 'No such release with ID "' + req.params.release_id + '".' }).end();
 		}
+
+		// populate game attributes since nested populates don't work: https://github.com/LearnBoost/mongoose/issues/1377
 		release.populate({ path: '_game._media.logo _game._media.backglass', model: 'File' }, function(err, release) {
 			/* istanbul ignore if  */
 			if (err) {
-				logger.log('[download] Error populating media from database: %s', err.message);
+				logger.log('[download] Error populating game from database: %s', err.message);
 				return res.status(500).end();
 			}
 
-			var files = [];
-			var fileIds = body.files;
+			var requestedFiles = [];
+			var requestedFileIds = body.files;
 			var media = body.media || {};
 			_.each(release.versions, function(version) {
 
-				// check if there are table files for that version
-				if (!_.intersection(_.pluck(_.pluck(version.files, '_file'), 'id'), fileIds).length) {
+				// check if there are requested table files for that version
+				if (!_.intersection(_.pluck(_.pluck(version.files, '_file'), 'id'), requestedFileIds).length) {
 					return; // continue
 				}
 				_.each(version.files, function(versionFile) {
 					var file = versionFile._file;
+					file.release_version = version.toObject();
+					file.release_file = versionFile.toObject();
 
 					if (file.getMimeCategory() === 'table') {
-						if (_.contains(fileIds, file.id)) {
-							files.push(file);
+						if (_.contains(requestedFileIds, file.id)) {
+							requestedFiles.push(file);
 
 							// add media if checked
 							_.each(versionFile._media, function(mediaFile, mediaName) {
 								if (media[mediaName]) {
-									files.push(mediaFile);
+									requestedFiles.push(mediaFile);
 								}
 							});
 						}
 
 					// always add any non-table files
 					} else {
-						files.push(file);
+						requestedFiles.push(file);
 					}
 				});
 			});
@@ -109,23 +126,23 @@ exports.download = function(req, res) {
 			// add game media?
 			if (body.game_media && release._game._media) {
 				if (release._game._media.backglass) {
-					files.push(release._game._media.backglass);
+					requestedFiles.push(release._game._media.backglass);
 				}
 				if (release._game._media.logo) {
-					files.push(release._game._media.logo);
+					requestedFiles.push(release._game._media.logo);
 				}
 			}
 
-			if (!files.length) {
-				return res.status(422).json({ error: 'Provided file IDs did not match any release file.' }).end();
+			if (!requestedFiles.length) {
+				return res.status(422).json({ error: 'Requested file IDs did not match any release file.' }).end();
 			}
 
 
 			// check the quota
-			quota.isAllowed(req, res, files, function(err, granted) {
+			quota.isAllowed(req, res, requestedFiles, function(err, granted) {
 				/* istanbul ignore if  */
 				if (err) {
-					logger.error('[storage|download] Error checking quota for <%s>: %s', req.user.email, err, {});
+					logger.error('[storage|download] Error checking quota for <%s>: %s', req.user.email, err.message);
 					return res.status(500).end();
 				}
 				if (!granted) {
@@ -144,7 +161,7 @@ exports.download = function(req, res) {
 				archive.pipe(res);
 
 				// add tables to stream
-				_.each(files, function (file) {
+				_.each(requestedFiles, function (file) {
 					var name = '';
 					switch (file.file_type) {
 						case 'logo':
@@ -163,7 +180,7 @@ exports.download = function(req, res) {
 							}
 							break;
 						case 'release':
-							name = 'Visual Pinball/Tables/' + file.name;
+							name = 'Visual Pinball/Tables/' + getTableFilename(req.user, release, file);
 							break;
 					}
 					// per default, put files into the root folder.
@@ -182,3 +199,37 @@ exports.download = function(req, res) {
 
 };
 
+/**
+ * Returns the name of the table file within the zip archive, depending on the
+ * user's preferences.
+ *
+ * @param user User object
+ * @param release Release object
+ * @param file File object
+ * @returns {string} File name
+ */
+function getTableFilename(user, release, file) {
+
+	var userPrefs = user.preferences || {};
+	var tableName = userPrefs.tablefile_name || '{game_title} ({game_manufacturer} {game_year})';
+	var flavorTags = userPrefs.flavor_tags || {
+			orientation: { fs: 'FS', ws: 'DT' },
+			lightning: { day: '', night: 'Nightmod' }
+		};
+
+	var data = {
+		game_title: release._game.title,
+		game_manufacturer: release._game.manufacturer,
+		game_year: release._game.year,
+		release_name: release.name,
+		release_version: file.release_version.version,
+		release_compatibility: _.pluck(file.release_file.compatibility, 'label').join(','),
+		release_flavor_orientation: flavorTags.orientation[file.release_file.flavor.orientation],
+		release_flavor_lightning: flavorTags.lightning[file.release_file.flavor.lightning],
+		original_filename: file.name
+	};
+
+	return tableName.replace(/(\{\s*([^}\s]+)\s*})/g, function(m1, m2, m3) {
+		return _.isUndefined(data[m3]) ? m1 : data[m3];
+	}) + file.getExt();
+}

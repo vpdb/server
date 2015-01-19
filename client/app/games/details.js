@@ -100,7 +100,7 @@ angular.module('vpdb.games.details', [])
 			AuthService.fetchUrlTokens(url, function(err, tokens) {
 				// todo treat error
 				$scope.downloadLink = ConfigService.storageUri(path, true);
-				$scope.downloadBody= JSON.stringify($scope.downloadRequest);
+				$scope.downloadBody = JSON.stringify($scope.downloadRequest);
 				$scope.downloadToken = tokens[url];
 				$timeout(function() {
 					angular.element('#downloadForm').submit();
@@ -117,8 +117,6 @@ angular.module('vpdb.games.details', [])
 			}
 			$scope.downloadRequest.files = _.values(_.pluck(_.pluck($scope.downloadFiles, 'file'), 'id'));
 		};
-
-
 
 		// todo refactor (make it more useful)
 		$scope.tableFile = function(file) {

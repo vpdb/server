@@ -179,17 +179,13 @@ ReleaseSchema.path('versions.0.files').validate(function(files, callback) {
 						if (!_.contains(['playfield-fs', 'playfield-ws'], playfieldImage.file_type)) {
 							that.invalidate('files.' + i + '._media.playfield_image', 'Must reference a file with file_type "playfield-fs" or "playfield-ws".');
 						}
-
 						i++;
 						next();
 					});
-
 				} else {
 					i++;
 					next();
 				}
-
-
 			});
 		} else {
 			i++;

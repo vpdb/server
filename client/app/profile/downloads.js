@@ -26,7 +26,10 @@ angular.module('vpdb.profile.downloads', [])
 		var exampleTable = {
 			game_title: 'Medieval Madness',
 			game_manufacturer: 'Williams',
-			game_year: 1998
+			game_year: 1998,
+			release_version: '1.0.0',
+			release_compatibility: 'vp10-alpha',
+			original_filename: 'Medieval-Madness_Night Mod_VP9.2_V1.2_FS_FOM_SUNKEN_RELEASE.vpt'
 		};
 
 		$scope.updatedProfile = {

@@ -161,6 +161,7 @@ exports.download = function(req, res) {
 				archive.pipe(res);
 
 				// add tables to stream
+				var releaseFiles = [];
 				_.each(requestedFiles, function (file) {
 					var name = '';
 					switch (file.file_type) {
@@ -180,7 +181,9 @@ exports.download = function(req, res) {
 							}
 							break;
 						case 'release':
-							name = 'Visual Pinball/Tables/' + getTableFilename(req.user, release, file);
+							var filename = getTableFilename(req.user, release, file, releaseFiles);
+							releaseFiles.push(filename);
+							name = 'Visual Pinball/Tables/' + filename;
 							break;
 					}
 					// per default, put files into the root folder.
@@ -206,9 +209,10 @@ exports.download = function(req, res) {
  * @param user User object
  * @param release Release object
  * @param file File object
+ * @param releaseFiles List of already used file names, in order to avoid dupes
  * @returns {string} File name
  */
-function getTableFilename(user, release, file) {
+function getTableFilename(user, release, file, releaseFiles) {
 
 	var userPrefs = user.preferences || {};
 	var tableName = userPrefs.tablefile_name || '{game_title} ({game_manufacturer} {game_year})';
@@ -229,7 +233,19 @@ function getTableFilename(user, release, file) {
 		original_filename: file.name
 	};
 
-	return tableName.replace(/(\{\s*([^}\s]+)\s*})/g, function(m1, m2, m3) {
+	var fileBaseName = tableName.replace(/(\{\s*([^}\s]+)\s*})/g, function(m1, m2, m3) {
 		return _.isUndefined(data[m3]) ? m1 : data[m3];
-	}) + file.getExt();
+	});
+	
+	// check for already used names and suffix with (n)
+	var newFilename, n = 0;
+	if (_.contains(releaseFiles, fileBaseName + file.getExt())) {
+		do {
+			n++;
+			newFilename = fileBaseName + ' (' + n + ')' + file.getExt();
+		} while (_.contains(releaseFiles, newFilename));
+		return newFilename;
+	} else {
+		return fileBaseName + file.getExt();
+	}
 }

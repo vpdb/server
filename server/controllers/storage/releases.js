@@ -233,19 +233,19 @@ function getTableFilename(user, release, file, releaseFiles) {
 		original_filename: file.name
 	};
 
-	var fileBaseName = tableName.replace(/(\{\s*([^}\s]+)\s*})/g, function(m1, m2, m3) {
+	var filebase = tableName.replace(/(\{\s*([^}\s]+)\s*})/g, function(m1, m2, m3) {
 		return _.isUndefined(data[m3]) ? m1 : data[m3];
 	});
-	
+
 	// check for already used names and suffix with (n)
 	var newFilename, n = 0;
-	if (_.contains(releaseFiles, fileBaseName + file.getExt())) {
+	if (_.contains(releaseFiles, filebase + file.getExt())) {
 		do {
 			n++;
-			newFilename = fileBaseName + ' (' + n + ')' + file.getExt();
+			newFilename = filebase + ' (' + n + ')' + file.getExt();
 		} while (_.contains(releaseFiles, newFilename));
 		return newFilename;
 	} else {
-		return fileBaseName + file.getExt();
+		return filebase + file.getExt();
 	}
 }

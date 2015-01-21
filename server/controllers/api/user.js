@@ -64,7 +64,7 @@ exports.update = function(req, res) {
 	var testMode = process.env.NODE_ENV === 'test';
 
 	var currentUser = req.user;
-	var updateableFields = [ 'name', 'location', 'email' ];
+	var updateableFields = [ 'name', 'location', 'email', 'preferences' ];
 	var assert = api.assert(error, 'update', currentUser.email, res);
 
 	User.findById(currentUser._id, assert(function(updatedUser) {

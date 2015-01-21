@@ -88,6 +88,16 @@
 			"type": "object",
 			"onlyIn": [ { "type": "response", "method": "GET", "path": "/user" } ],
 			"readOnly": true
+		},
+		"preferences": {
+			"title": "User preferences",
+			"type": "object",
+			"properties": {
+				"tablefile_name": {
+					"description": "A valid (Windows) file name for table names, without file extension. The following placeholders within curly brackets can be provided: `game_title`, `game_manufacturer`, `game_year`, `release_name`, `release_version`, `release_compatibility`, `release_flavor_orientation`, `release_flavor_lightning`, `original_filename`.",
+					"type": "string"
+				}
+			}
 		}
 	},
 	"required": [ "email", "username", "name", "roles", "is_active" ]

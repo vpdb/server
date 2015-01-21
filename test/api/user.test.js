@@ -27,7 +27,8 @@ describe('The VPDB `user` API', function() {
 			chmail3: { roles: [ 'member' ]},
 			chmail4: { roles: [ 'member' ]},
 			chmail5: { roles: [ 'member' ]},
-			chmail6: { roles: [ 'member' ]}
+			chmail6: { roles: [ 'member' ]},
+			chprofile: { roles: [ 'member' ]}
 		}, done);
 	});
 
@@ -369,6 +370,44 @@ describe('The VPDB `user` API', function() {
 				.send({ location: location })
 				.end(function (err, res) {
 					hlp.expectValidationError(err, res, 'location', 'must not be longer than 100 characters');
+					done();
+				});
+		});
+
+	});
+
+	describe('when a user updates its preferences', function() {
+
+		it('should fail when providing an empty preference', function (done) {
+			request
+				.patch('/api/v1/user')
+				.as('member')
+				.send({ preferences: { tablefile_name: ' ' } })
+				.end(function (err, res) {
+					hlp.expectValidationError(err, res, 'preferences.tablefile_name', 'must not be empty if set');
+					done();
+				});
+		});
+
+		it('should fail when providing a illegal file name', function (done) {
+			request
+				.patch('/api/v1/user')
+				.as('member')
+				.send({ preferences: { tablefile_name: '*.fail' } })
+				.end(function (err, res) {
+					hlp.expectValidationError(err, res, 'preferences.tablefile_name', 'valid windows filename');
+					done();
+				});
+		});
+
+		it('should succeed when providing a legal file name', function (done) {
+			request
+				.patch('/api/v1/user')
+				.as('chprofile')
+				.send({ preferences: { tablefile_name: '{release_name}' } })
+				.end(function (err, res) {
+					hlp.expectStatus(err, res, 200);
+					expect(res.body.preferences.tablefile_name).to.be('{release_name}');
 					done();
 				});
 		});

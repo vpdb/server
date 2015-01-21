@@ -80,8 +80,8 @@ UserSchema.plugin(uniqueValidator, { message: 'The {PATH} "{VALUE}" is already t
 // API FIELDS
 //-----------------------------------------------------------------------------
 var apiFields = {
-	reduced: [ 'id', 'name', 'username', 'thumb', 'gravatar_id', 'location' ],             // "member" search result
-	simple: [ 'email', 'is_active', 'provider', 'roles', 'plan', 'created_at', 'github' ]  // "admin" lists & profile
+	reduced: [ 'id', 'name', 'username', 'thumb', 'gravatar_id', 'location' ], // "member" search result
+	simple: [ 'email', 'is_active', 'provider', 'roles', 'plan', 'created_at', 'github', 'preferences' ]  // "admin" lists & profile
 };
 
 
@@ -197,7 +197,32 @@ UserSchema.path('provider').validate(function(provider) {
 		}
 		return true;
 	}
+
+	// TODO put this into separate validation when this is fixed: https://github.com/LearnBoost/mongoose/issues/1919
+	if (this.preferences && this.preferences.tablefile_name) {
+		if (!this.preferences.tablefile_name.trim()) {
+			console.log('validation for name failed.');
+			this.invalidate('preferences.tablefile_name', 'Must not be empty if set.');
+		}
+		var rg1 = /^[^\\/:\*\?"<>\|]+$/;                     // forbidden characters \ / : * ? " < > |
+		var rg2 = /^\./;                                     // cannot start with dot (.)
+		var rg3 = /^(nul|prn|con|lpt[0-9]|com[0-9])(\.|$)/i; // forbidden file names
+		if (!rg1.test(this.preferences.tablefile_name) || rg2.test(this.preferences.tablefile_name) || rg3.test(this.preferences.tablefile_name)) {
+			this.invalidate('preferences.tablefile_name', 'Must be a valid windows filename');
+		}
+	}
+
 }, null);
+
+
+UserSchema.path('preferences.tablefile_name').validate(function(name) {
+
+	var rg1 = /^[^\\/:\*\?"<>\|]+$/;                     // forbidden characters \ / : * ? " < > |
+	var rg2 = /^\./;                                     // cannot start with dot (.)
+	var rg3 = /^(nul|prn|con|lpt[0-9]|com[0-9])(\.|$)/i; // forbidden file names
+	return !rg1.test(name) || rg2.test(name) || rg3.test(name);
+
+}, 'Must be a valid windows filename');
 
 UserSchema.path('password_hash').validate(function() {
 	// here we check the length. remember that the virtual _password field is

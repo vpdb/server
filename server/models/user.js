@@ -208,21 +208,33 @@ UserSchema.path('provider').validate(function(provider) {
 		var rg2 = /^\./;                                     // cannot start with dot (.)
 		var rg3 = /^(nul|prn|con|lpt[0-9]|com[0-9])(\.|$)/i; // forbidden file names
 		if (!rg1.test(this.preferences.tablefile_name) || rg2.test(this.preferences.tablefile_name) || rg3.test(this.preferences.tablefile_name)) {
-			this.invalidate('preferences.tablefile_name', 'Must be a valid windows filename');
+			this.invalidate('preferences.tablefile_name', 'Must be a valid windows filename, which "' + this.preferences.tablefile_name + '" is not.');
+		}
+	}
+	if (this.preferences && this.preferences.flavor_tags) {
+		if (this.preferences.flavor_tags.orientation) {
+			if (_.isUndefined(this.preferences.flavor_tags.orientation.fs)) {
+				this.invalidate('preferences.flavor_tags.orientation.fs', 'Must be provided when providing preferences.flavor_tags.orientation.');
+			}
+			if (_.isUndefined(this.preferences.flavor_tags.orientation.ws)) {
+				this.invalidate('preferences.flavor_tags.orientation.ws', 'Must be provided when providing preferences.flavor_tags.orientation.');
+			}
+		} else {
+			this.invalidate('preferences.flavor_tags.orientation', 'Must be provided when providing preferences.flavor_tags.');
+		}
+		if (this.preferences.flavor_tags.lightning) {
+			if (_.isUndefined(this.preferences.flavor_tags.lightning.night)) {
+				this.invalidate('preferences.flavor_tags.lightning.night', 'Must be provided when providing preferences.flavor_tags.lightning.');
+			}
+			if (_.isUndefined(this.preferences.flavor_tags.lightning.day)) {
+				this.invalidate('preferences.flavor_tags.lightning.day', 'Must be provided when providing preferences.flavor_tags.lightning.');
+			}
+		} else {
+			this.invalidate('preferences.flavor_tags.lightning', 'Must be provided when providing preferences.flavor_tags.');
 		}
 	}
 
 }, null);
-
-
-UserSchema.path('preferences.tablefile_name').validate(function(name) {
-
-	var rg1 = /^[^\\/:\*\?"<>\|]+$/;                     // forbidden characters \ / : * ? " < > |
-	var rg2 = /^\./;                                     // cannot start with dot (.)
-	var rg3 = /^(nul|prn|con|lpt[0-9]|com[0-9])(\.|$)/i; // forbidden file names
-	return !rg1.test(name) || rg2.test(name) || rg3.test(name);
-
-}, 'Must be a valid windows filename');
 
 UserSchema.path('password_hash').validate(function() {
 	// here we check the length. remember that the virtual _password field is

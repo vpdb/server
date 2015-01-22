@@ -378,7 +378,7 @@ describe('The VPDB `user` API', function() {
 
 	describe('when a user updates its preferences', function() {
 
-		it('should fail when providing an empty preference', function (done) {
+		it('should fail when providing an empty table file name', function (done) {
 			request
 				.patch('/api/v1/user')
 				.as('member')
@@ -389,7 +389,7 @@ describe('The VPDB `user` API', function() {
 				});
 		});
 
-		it('should fail when providing a illegal file name', function (done) {
+		it('should fail when providing a illegal table file name', function (done) {
 			request
 				.patch('/api/v1/user')
 				.as('member')
@@ -400,7 +400,7 @@ describe('The VPDB `user` API', function() {
 				});
 		});
 
-		it('should succeed when providing a legal file name', function (done) {
+		it('should succeed when providing a valid table file name', function (done) {
 			request
 				.patch('/api/v1/user')
 				.as('chprofile')
@@ -408,6 +408,69 @@ describe('The VPDB `user` API', function() {
 				.end(function (err, res) {
 					hlp.expectStatus(err, res, 200);
 					expect(res.body.preferences.tablefile_name).to.be('{release_name}');
+					done();
+				});
+		});
+
+		it('should fail when providing empty table file name flavor tags', function (done) {
+			request
+				.patch('/api/v1/user')
+				.as('member')
+				.send({ preferences: { flavor_tags: {} } })
+				.end(function (err, res) {
+					hlp.expectValidationError(err, res, 'preferences.flavor_tags.lightning', 'must be provided');
+					hlp.expectValidationError(err, res, 'preferences.flavor_tags.orientation', 'must be provided');
+					done();
+				});
+		});
+
+		it('should fail when providing empty table file name lightning flavor tags', function (done) {
+			request
+				.patch('/api/v1/user')
+				.as('member')
+				.send({ preferences: { flavor_tags: { lightning: {} } } })
+				.end(function (err, res) {
+					hlp.expectValidationError(err, res, 'preferences.flavor_tags.lightning.day', 'must be provided');
+					hlp.expectValidationError(err, res, 'preferences.flavor_tags.lightning.night', 'must be provided');
+					done();
+				});
+		});
+
+		it('should fail when providing empty table file name orientation flavor tags', function (done) {
+			request
+				.patch('/api/v1/user')
+				.as('member')
+				.send({ preferences: { flavor_tags: { orientation: {} } } })
+				.end(function (err, res) {
+					hlp.expectValidationError(err, res, 'preferences.flavor_tags.orientation.fs', 'must be provided');
+					hlp.expectValidationError(err, res, 'preferences.flavor_tags.orientation.ws', 'must be provided');
+					done();
+				});
+		});
+
+		it('should succeed when providing empty fullscreen orientation flavor tag', function (done) {
+			request
+				.patch('/api/v1/user')
+				.as('chprofile')
+				.send({ preferences: { flavor_tags: { orientation: { fs: '', ws: 'dt' }, lightning: { day : '', night: 'nm' } } } })
+				.end(function (err, res) {
+					hlp.expectStatus(err, res, 200);
+					expect(res.body.preferences.flavor_tags.orientation.fs).to.be('');
+					done();
+				});
+		});
+
+		it('should succeed when providing all flavor tags', function (done) {
+			request
+				.patch('/api/v1/user')
+				.as('chprofile')
+				.send({ preferences: { flavor_tags: { orientation: { fs: 'fs', ws: 'dt' }, lightning: { day : 'day', night: 'nm' } } } })
+				.end(function (err, res) {
+					hlp.expectStatus(err, res, 200);
+					expect(res.body.preferences.flavor_tags.orientation.fs).to.be('fs');
+					expect(res.body.preferences.flavor_tags.orientation.ws).to.be('dt');
+					expect(res.body.preferences.flavor_tags.lightning.day).to.be('day');
+					expect(res.body.preferences.flavor_tags.lightning.night).to.be('nm');
 					done();
 				});
 		});

@@ -21,25 +21,49 @@
 
 angular.module('vpdb.profile.downloads', [])
 
-	.controller('ProfileDownloadsCtrl', function($scope, $rootScope, AuthService, ApiHelper, ProfileResource, ModalService) {
+	.controller('ProfileDownloadsCtrl', function($scope, $rootScope, AuthService, ApiHelper, ProfileResource) {
 
-		var exampleTable = {
-			game_title: 'Medieval Madness',
+		var init = function() {
+			$scope.updatedPreferences = AuthService.getUser().preferences || {};
+			$scope.updatedPreferences.tablefile_name = $scope.updatedPreferences.tablefile_name || '{game_title} ({game_manufacturer} {game_year})';
+			$scope.updatedPreferences.flavor_tags = $scope.updatedPreferences.flavor_tags || {
+				orientation: { fs: 'FS', ws: 'DT' },
+				lightning: { day: '', night: 'Nightmod' }
+			};
+		};
+		init();
+
+		var releaseData = {
+			game_title: 'Twilight Zone',
 			game_manufacturer: 'Williams',
-			game_year: 1998,
-			release_version: '1.0.0',
-			release_compatibility: 'vp10-alpha',
-			original_filename: 'Medieval-Madness_Night Mod_VP9.2_V1.2_FS_FOM_SUNKEN_RELEASE.vpt'
+			game_year: 1993,
+			release_name: 'Powerflip Edition',
+			release_version: '1.2.0',
+			release_compatibility: 'VP10-alpha',
+			original_filename: 'Twilight-Zone_Night Mod_VP9.2_V1.2_FS_APC FOM-UUP2_WMS'
 		};
 
-		$scope.updatedProfile = {
-			table_naming: '{game_title} ({game_manufacturer}, {game_year})'
-		};
-
-		$scope.$watch('updatedProfile.table_naming', function() {
-			$scope.exampleName = $scope.updatedProfile.table_naming.replace(/(\{([^\}]+)\})/g, function(m1, m2, m3) {
-				return exampleTable[m3] ? exampleTable[m3] : m1;
+		var updateExample = function() {
+			$scope.exampleName = $scope.updatedPreferences.tablefile_name.replace(/(\{([^\}]+)\})/g, function(m1, m2, m3) {
+				return releaseData[m3] ? releaseData[m3] : m1;
 			}) + '.vpx';
-		});
+			$scope.exampleName = $scope.exampleName.replace('{release_flavor_orientation}', $scope.updatedPreferences.flavor_tags.orientation.fs);
+			$scope.exampleName = $scope.exampleName.replace('{release_flavor_lightning}', $scope.updatedPreferences.flavor_tags.lightning.day);
+		};
+
+		$scope.$watch('updatedPreferences.tablefile_name', updateExample);
+		$scope.$watch('updatedPreferences.flavor_tags.orientation.fs', updateExample, true);
+		$scope.$watch('updatedPreferences.flavor_tags.lightning.day', updateExample, true);
+
+		$scope.updateUserPreferences = function() {
+			ProfileResource.patch({ preferences: $scope.updatedPreferences }, function(user) {
+
+				$rootScope.showNotification('User Preferences successfully saved');
+				AuthService.saveUser(user);
+				ApiHelper.clearErrors($scope);
+				init();
+
+			}, ApiHelper.handleErrors($scope));
+		};
 
 	});

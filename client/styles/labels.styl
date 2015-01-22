@@ -70,6 +70,7 @@ label
 	font-weight $font-weight-normal
 	margin-bottom 15px
 
+
 // Chaining
 //
 // Allow easy chaining of multiple spans in one single label, with a separator
@@ -96,9 +97,10 @@ label span
 			content ''
 
 // "Form" label is upper case and small
-.form-group > label
+.form-group > label, .control-label
 	text-transform uppercase
 	font-size $font-size-smaller
+	margin-top 4px
 
 // Special usages
 .tab__label // formerly: label-message

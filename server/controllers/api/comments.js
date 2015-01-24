@@ -29,7 +29,7 @@ var api = require('./api');
 
 var error = require('../../modules/error')('api', 'comment');
 
-exports.create = function(req, res) {
+exports.createForRelease = function(req, res) {
 
 	var assert = api.assert(error, 'create', req.user.email, res);
 	Release.findOne({ id: req.params.id }, assert(function(release) {
@@ -60,4 +60,29 @@ exports.create = function(req, res) {
 			}, 'Error saving comment from <%s>.'));
 		});
 	}, 'Error finding release in order to create comment from <%s>.'));
+};
+
+exports.listForRelease = function(req, res) {
+
+	var assert = api.assert(error, 'list', '', res);
+	var pagination = api.pagination(req, 10, 50);
+
+	Release.findOne({ id: req.params.id }, assert(function(release) {
+		if (!release) {
+			return api.fail(res, error('No such release with ID "%s"', req.params.id), 404);
+		}
+
+		Comment.paginate({ '_ref.release': release._id }, pagination.page, pagination.perPage, function(err, pageCount, comments, count) {
+			/* istanbul ignore if  */
+			if (err) {
+				return api.fail(res, error(err, 'Error listing comments').log('list'), 500);
+			}
+			 comments = _.map(comments, function(comment) {
+				return comment.toSimple();
+			});
+			api.success(res, comments, 200, api.paginationOpts(pagination, count));
+
+		}, { populate: [ '_from' ], sortBy: { created_at: -1 } });
+
+	}, 'Error finding release in order to list comments.'));
 };

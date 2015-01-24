@@ -69,6 +69,20 @@ describe('The VPDB `Comment` API', function() {
 				});
 		});
 
+		it('should list a comment under the release after creation', function(done) {
+			var msg = faker.company.catchPhrase();
+			request.post('/api/v1/releases/' + release.id + '/comments').as('member').send({ message: msg })
+				.end(function(err, res) {
+					hlp.expectStatus(err, res, 201);
+					request.get('/api/v1/releases/' + release.id + '/comments').end(function(err, res) {
+						hlp.expectStatus(err, res, 200);
+						expect(res.body).to.be.an('array');
+						expect(res.body[0].message).to.be(msg);
+						done();
+					});
+				});
+		});
+
 	});
 
 });

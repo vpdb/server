@@ -1,26 +1,26 @@
 200 OK
 Content-Type: application/json; charset=utf-8
-Content-Length: 850
+Content-Length: 862
 
 {
-  "location": "South Sarina",
+  "location": "Wintheiserside",
   "plan": "free",
-  "name": "Jane Goyette",
-  "username": "Rosetta.Stiedemann5",
-  "email": "rubye_okeefe@hotmail.com",
+  "name": "Tracy Bernhard",
+  "username": "Jayne.Maggio",
+  "email": "lilian27@gmail.com",
   "provider": "local",
-  "created_at": "2015-01-12T21:38:11.039Z",
+  "created_at": "2015-01-24T14:23:26.338Z",
   "is_active": true,
   "roles": [
     "member"
   ],
   "email_status": {
     "code": "pending_update",
-    "expires_at": "2015-01-13T21:38:11.281Z",
-    "value": "martina_schroeder61@yahoo.com"
+    "expires_at": "2015-01-25T14:23:26.639Z",
+    "value": "mathilde69@yahoo.com"
   },
-  "id": "QycGpeDOLV",
-  "gravatar_id": "68182fed7ff2a798b5af69375f21f319",
+  "id": "mynSOfm1IS",
+  "gravatar_id": "01d04de59bab2152f2332d7e4050ca3a",
   "permissions": {
     "user": [
       "update",
@@ -30,6 +30,9 @@ Content-Length: 850
       "download",
       "upload",
       "delete"
+    ],
+    "comments": [
+      "add"
     ],
     "platformbuilds": [
       "add",

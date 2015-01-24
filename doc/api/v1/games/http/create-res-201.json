@@ -1,26 +1,25 @@
 201 Created
 Content-Type: application/json; charset=utf-8
-Content-Encoding: gzip
+Content-Length: 947
 
 {
-  "title": "Rockingham",
-  "manufacturer": "Bell Products Company",
-  "year": 1944,
-  "game_type": "em",
-  "features": "Console cabinet.",
-  "notes": "'Rockingham' is a World War II conversion of these games:Bally's 1938 'Grandstand'Bally's 1939 'Grand National'and one or both of these games:Bally's 1938 'Pace Maker'Bally's 1939 'Pace Maker'The earliest Billboard ads that we have found for this game are dated January 1944 and include pictures.",
-  "id": "rockingham",
-  "_created_by": "54b43eb79ee11a0000ca3eed",
-  "created_at": "2015-01-12T21:37:59.479Z",
+  "title": "Carioca Beach",
+  "manufacturer": "John Gille Company",
+  "game_type": "ss",
+  "features": "Large, oversized score display. 25 holes.",
+  "notes": "Carioca Beach is located in Rio de Janeiro, Brazil.",
+  "id": "carioca-beach",
+  "year": 1900,
+  "_created_by": "54c3aad110d4170000d6ab28",
+  "created_at": "2015-01-24T14:23:13.252Z",
   "ipdb": {
-    "number": 1992,
-    "mfg": 46
+    "number": 5077,
+    "mfg": 473
   },
   "artists": [],
   "designers": [],
   "themes": [
-    "Sports",
-    "Horse Racing"
+    "World Places"
   ],
   "short": [],
   "media": {
@@ -28,21 +27,21 @@ Content-Encoding: gzip
       "is_protected": false,
       "variations": {
         "small-2x": {
-          "url": "/storage/v1/files/mkNHWxvuU4/small-2x"
+          "url": "/storage/v1/files/mymfsWXkLB/small-2x"
         },
         "small": {
-          "url": "/storage/v1/files/mkNHWxvuU4/small"
+          "url": "/storage/v1/files/mymfsWXkLB/small"
         },
         "medium-2x": {
-          "url": "/storage/v1/files/mkNHWxvuU4/medium-2x"
+          "url": "/storage/v1/files/mymfsWXkLB/medium-2x"
         },
         "medium": {
-          "url": "/storage/v1/files/mkNHWxvuU4/medium"
+          "url": "/storage/v1/files/mymfsWXkLB/medium"
         }
       },
-      "url": "/storage/v1/files/mkNHWxvuU4",
-      "id": "mkNHWxvuU4"
+      "url": "/storage/v1/files/mymfsWXkLB",
+      "id": "mymfsWXkLB"
     }
   },
-  "url": "/game/rockingham"
+  "url": "/game/carioca-beach"
 }

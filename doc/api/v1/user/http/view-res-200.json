@@ -1,21 +1,21 @@
 200 OK
 Content-Type: application/json; charset=utf-8
-Content-Length: 673
-Etag: W/"2a1-dc0ea96d"
+Content-Length: 713
+Etag: W/"2c9-df4d3e48"
 
 {
   "plan": "free",
-  "name": "Corrine79",
-  "username": "Corrine79",
-  "email": "ronny.bahringer@hotmail.com",
+  "name": "Ezekiel_Grimes",
+  "username": "Ezekiel_Grimes",
+  "email": "jesse_roberts11@hotmail.com",
   "provider": "local",
-  "created_at": "2015-01-12T21:37:56.677Z",
+  "created_at": "2015-01-24T14:23:09.153Z",
   "is_active": true,
   "roles": [
     "member"
   ],
-  "id": "QymeC1wuLE",
-  "gravatar_id": "7ffc4fdf479fa7d015e02486742597d4",
+  "id": "mJQlv-Xk8H",
+  "gravatar_id": "337a8998fcd6b42db907233f34daef9b",
   "permissions": {
     "user": [
       "update",
@@ -25,6 +25,9 @@ Etag: W/"2a1-dc0ea96d"
       "download",
       "upload",
       "delete"
+    ],
+    "comments": [
+      "add"
     ],
     "platformbuilds": [
       "add",

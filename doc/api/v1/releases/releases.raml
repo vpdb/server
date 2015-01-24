@@ -20,6 +20,10 @@ post:
           example: !include http/create-res-201.json
 
 /{release_id}:
+  uriParameters:
+   release_id:
+     displayName: Release ID
+     type: string
   delete:
     is: [ protected ]
     securedBy: [ jwt: { scopes: [ CONTRIBUTOR ] } ]
@@ -33,3 +37,20 @@ post:
         body:
            role/anon:
             example: !include http/del-res-401.json
+
+  /comments:
+    post:
+      is: [ validated ]
+      securedBy: [ jwt: { scopes: [ MEMBER ] } ]
+      description: |
+        Add a commentary to a release.
+      body:
+        role/member:
+          schema: comment
+          example: !include http/create-comment-req.json
+      responses:
+        201:
+          body:
+            role/member:
+              schema: comment
+              example: !include http/create-comment-res-201.json

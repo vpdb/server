@@ -58,6 +58,7 @@ describe('The VPDB `Comment` API', function() {
 			var msg = faker.company.catchPhrase();
 			request
 				.post('/api/v1/releases/' + release.id + '/comments')
+				.save({ path: 'releases/create-comment'})
 				.as('member')
 				.send({ message: msg })
 				.end(function(err, res) {

@@ -1,5 +1,5 @@
-GET /api/v1/users?q=Mil HTTP/1.1
+GET /api/v1/users?q=Kan HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJReUFicHhET0xOIiwiaWF0IjoiMjAxNS0wMS0xMlQyMTozODoxMS4wMDJaIiwiZXhwIjoiMjAxNS0wMS0xMlQyMjozODoxMS4wMDJaIn0.Hqa020d0d4O80PEhZ2z8CTFICldVAu_RIxsQcsCHG_A
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI3MWdydXpRSklyIiwiaWF0IjoiMjAxNS0wMS0yNFQxNDoyMzoyNi4yOTdaIiwiZXhwIjoiMjAxNS0wMS0yNFQxNToyMzoyNi4yOTdaIn0.BozECDsZdmnbdfm-T2PS-3Zocwc0_9aiVwEc8hOzgsQ
 

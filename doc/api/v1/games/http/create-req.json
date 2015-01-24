@@ -1,27 +1,26 @@
 POST /api/v1/games HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI3MUpCYmx3T1U0IiwiaWF0IjoiMjAxNS0wMS0xMlQyMTozNzo1OS4zODlaIiwiZXhwIjoiMjAxNS0wMS0xMlQyMjozNzo1OS4zODlaIn0.Ge1NpsGV4N9FDy5Ed4sVmmBmLtAdVvYk4utjsOHGEXI
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI3a0MtaldYMVVTIiwiaWF0IjoiMjAxNS0wMS0yNFQxNDoyMzoxMy4xMjVaIiwiZXhwIjoiMjAxNS0wMS0yNFQxNToyMzoxMy4xMjVaIn0.R6pw0ABraaUAUYf2RAup6PEHuYBrzGHtd-mTIBWJkr4
 Content-Type: application/json
-Content-Length: 548
+Content-Length: 323
 
 {
   "ipdb": {
-    "number": 1992,
-    "mfg": 46
+    "number": 5077,
+    "mfg": 473
   },
-  "title": "Rockingham",
-  "manufacturer": "Bell Products Company",
-  "year": 1944,
-  "game_type": "em",
+  "title": "Carioca Beach",
+  "manufacturer": "John Gille Company",
+  "game_type": "ss",
   "themes": [
-    "Sports",
-    "Horse Racing"
+    "World Places"
   ],
-  "features": "Console cabinet.",
-  "notes": "'Rockingham' is a World War II conversion of these games:Bally's 1938 'Grandstand'Bally's 1939 'Grand National'and one or both of these games:Bally's 1938 'Pace Maker'Bally's 1939 'Pace Maker'The earliest Billboard ads that we have found for this game are dated January 1944 and include pictures.",
-  "id": "rockingham",
+  "features": "Large, oversized score display. 25 holes.",
+  "notes": "Carioca Beach is located in Rio de Janeiro, Brazil.",
+  "id": "carioca-beach",
+  "year": 1900,
   "_media": {
-    "backglass": "mkNHWxvuU4"
+    "backglass": "mymfsWXkLB"
   }
 }

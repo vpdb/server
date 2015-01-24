@@ -1,21 +1,21 @@
 POST /api/v1/releases HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJRSllQZURkVUUiLCJpYXQiOiIyMDE1LTAxLTEyVDIxOjM4OjA1LjM3OFoiLCJleHAiOiIyMDE1LTAxLTEyVDIyOjM4OjA1LjM3OFoifQ.vp89Fjg4E7SAVizJ98ysgFh6fJ92wxfd9NSP3xXIfjc
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJtSnQtelhrOHIiLCJpYXQiOiIyMDE1LTAxLTI0VDE0OjIzOjE5LjcwMFoiLCJleHAiOiIyMDE1LTAxLTI0VDE1OjIzOjE5LjcwMFoifQ.JS1XrqYrf2uA1YXSXP7BPF8_9osu4moLpKo0ExLBH68
 Content-Type: application/json
-Content-Length: 476
+Content-Length: 499
 
 {
   "name": "release",
-  "_game": "volley-ball",
+  "_game": "professional-pinball-challenger-v",
   "versions": [
     {
       "files": [
         {
-          "_file": "m1uMOlv_UN",
+          "_file": "mJpemf7yUB",
           "_media": {
-            "playfield_image": "mkymOgwOLE",
-            "playfield_video": "myctePuLE"
+            "playfield_image": "7J5Z7M7J8H",
+            "playfield_video": "m1OM7f71Lr"
           },
           "_compatibility": [
             "9.9.0"
@@ -26,9 +26,9 @@ Content-Length: 476
           }
         },
         {
-          "_file": "7kKzuxP_8E",
+          "_file": "m1Mb7MmyLr",
           "_media": {
-            "playfield_image": "QJ0GOxDuIN"
+            "playfield_image": "X1hWXGQJIS"
           },
           "_compatibility": [
             "9.9.0"
@@ -44,7 +44,7 @@ Content-Length: 476
   ],
   "authors": [
     {
-      "_user": "QJYPeDdUE",
+      "_user": "mJt-zXk8r",
       "roles": [
         "Table Creator"
       ]

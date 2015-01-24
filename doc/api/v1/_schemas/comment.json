@@ -1,0 +1,31 @@
+{
+	"$schema": "http://json-schema.org/schema",
+	"title": "Comment",
+	"description": "A comment that is attached to an object (supported objects: release)",
+	"type": "object",
+	"properties": {
+		"id": {
+			"description": "Unique identifier for a build. Gets generated automatically on creation.",
+			"type": "string",
+			"pattern": "^[a-z0-9._-]{2,}$",
+			"readOnly": true
+		},
+		"from": {
+			"description": "User who wrote the comment",
+			"type": "object",
+			"readOnly": true
+		},
+		"message": {
+			"description": "Message",
+			"type": "string",
+			"minLength": 3,
+			"maxLength": 5000
+		},
+		"created_at": {
+			"description": "Timestamp when the comment was posted.",
+			"type": "date",
+			"readOnly": true
+		}
+	},
+	"required": [ "id", "message" ]
+}

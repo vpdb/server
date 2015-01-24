@@ -51,6 +51,11 @@ common
 		});
 	})
 
+	.factory('ReleaseCommentResource', function($resource, ConfigService) {
+		return $resource(ConfigService.apiUri('/releases/:releaseId/comments'), {}, {
+		});
+	})
+
 	.factory('TagResource', function($resource, ConfigService) {
 		return $resource(ConfigService.apiUri('/tags/:id'), {}, {
 		});

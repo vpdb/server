@@ -133,27 +133,22 @@ include ../template/_mixins
 				hr
 
 				label(ng-show="!release.comments || release.comments.length == 0") No comments yet.
-				.media(ng-repeat="comment in release.comments", ng-controller="CommentCtrl")
-					.img-avatar.avatar-placeholder.pull-left(ng-hide="comment.author.avatar")
-					.img.img-avatar.pull-left(ng-show="comment.author.avatar", img-bg="comment.author.avatar")
-					.media-body
-						.panel.panel--inner
-							.panel-triangle
-							.panel-heading
-								label
-								strong {{ comment.author.user }}
-								| &nbsp;commented
-								span(am-time-ago="comment.timestamp")
-								.pull-right(ng-hide="editing")
-									i.a.fa.fa-pencil.space-right(ng-click="editComment()")
-									i.a.fa.fa-times-circle(ng-click="deleteComment()")
-							.panel-body
-								div.markdown(ng-hide="editing", markdown="comment.message")
-								textarea.textarea--full.msd-elastic(ng-show="editing", placeholder="Update comment", ng-model="updatedComment")
-							.panel-footer(ng-show="editing")
-								button.btn.btn-default.pull-left(ng-click="cancelEdit()") Cancel
-								button.btn.btn-default.pull-right(ng-click="saveComment()") Update Comment
-								.clearfix
+				.media(ng-repeat="comment in release.comments", ng-controller="CommentCtrl", ng-init="show=true")
+					.collapse-in-animation(ng-show="show")
+						.collapse-in-animation-inner
+							.media-left.avatar
+								img.img-avatar.pull-left(gravatar-src="comment.from.gravatar_id", gravatar-default="404", fallback-icon="user")
+							.media-body.media--full-width
+								.panel.panel--inner
+									.panel-triangle
+									.panel-heading
+										label
+										strong {{ comment.from.name }}
+										| &nbsp;commented&nbsp;
+										span(am-time-ago="comment.created_at")
+									.panel-body
+										div.markdown(markdown="comment.message")
+					button.btn.btn-default(ng-click="show = !show") Toggle
 
 				h3.h--smaller.h--primary(ng-show="auth.isAuthenticated") Add a Comment:
 				.media(ng-show="auth.isAuthenticated")
@@ -166,13 +161,15 @@ include ../template/_mixins
 								tab-heading(title="Write")
 									+icon('edit')
 									.panel-triangle
-								textarea.textarea--full.animate(placeholder="Your comment", msd-elastic, ng-model="$parent.newComment")
+								textarea.textarea--full.animate(placeholder="Your comment", msd-elastic, ng-model="$parent.$parent.newComment")
 							tab
 								tab-heading(title="Preview"): +icon('eye')
-								div.markdown(markdown="$parent.newComment")
-								label.tab__label(ng-show="!$parent.newComment || $parent.newComment.length == 0") Nothing to preview.
+								div.markdown(markdown="$parent.$parent.newComment")
+								label.tab__label(ng-show="!$parent.$parent.newComment || $parent.$parent.newComment.length == 0") Nothing to preview.
 
-				button.btn.btn-default.padder-top.pull-right(ng-click="addComment()") Comment
+				button.btn.btn-default.padder-top.pull-right(ng-click="addComment(release.id)") Comment
+				.clearfix
+				p.padder-bottom
 			.clearfix
 			p.padder-bottom
 

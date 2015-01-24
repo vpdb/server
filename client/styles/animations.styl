@@ -193,3 +193,24 @@
 
 		&.ng-leave-active
 			opacity 0
+
+/**
+ * See directive for additional styles.
+ */
+.collapse-in-animation
+	overflow hidden
+
+	&.ng-hide-remove-active
+		transition height ease $animation-long
+		box-sizing border-box
+
+		> .collapse-in-animation-inner
+			transition $animation-long ease all
+
+	&.ng-hide-add, &.ng-hide-remove
+		transition $animation-long ease all
+		display block !important
+		opacity 1
+
+	&.ng-hide
+		opacity 0

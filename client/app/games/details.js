@@ -2,7 +2,7 @@
 
 angular.module('vpdb.games.details', [])
 
-	.controller('GameController', function($scope, $http, $stateParams, $modal, $log, Flavors, GameResource) {
+	.controller('GameController', function($scope, $http, $stateParams, $modal, $log, ApiHelper, Flavors, GameResource, ReleaseCommentResource) {
 
 		$scope.theme('dark');
 		$scope.setMenu('games');
@@ -29,6 +29,7 @@ angular.module('vpdb.games.details', [])
 					}
 					return { url: file.media.playfield_image.variations.medium.url };
 				}));
+				release.comments = ReleaseCommentResource.query({ releaseId: release.id });
 			});
 
 			setTimeout(function() {
@@ -56,6 +57,12 @@ angular.module('vpdb.games.details', [])
 					}
 				}
 			});
+		};
+
+		$scope.addComment = function(releaseId) {
+			ReleaseCommentResource.save({ releaseId: releaseId }, { message: $scope.newComment }, function(comment) {
+				$scope.newComment = '';
+			}, ApiHelper.handleErrors($scope));
 		};
 
 //		$scope.requestModPermission = function(release) {

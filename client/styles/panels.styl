@@ -20,7 +20,9 @@
 // Styleguide 17.1
 .panel
 	position relative
-	overflow hidden
+
+	// if hidden, .panel-triangle won't display.
+	// overflow hidden
 	border-radius $border-radius-small
 	transition background-color $animation-short, color $animation-short
 	&.error

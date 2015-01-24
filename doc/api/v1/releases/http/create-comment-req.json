@@ -1,0 +1,10 @@
+POST /api/v1/releases/7JexKbQk8r/comments HTTP/1.1
+Host: vpdb.ch
+Accept-Encoding: gzip, deflate
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI3a0dEX2I3MVVTIiwiaWF0IjoiMjAxNS0wMS0yNFQxNDoyMzoxMC42MDhaIiwiZXhwIjoiMjAxNS0wMS0yNFQxNToyMzoxMC42MDhaIn0.cPi8GK9srqAgkwsU6BKYfZbatgpxkKTFVLJNAk-6T3c
+Content-Type: application/json
+Content-Length: 51
+
+{
+  "message": "Grass-roots client-server utilisation"
+}

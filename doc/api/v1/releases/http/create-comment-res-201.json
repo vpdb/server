@@ -1,0 +1,14 @@
+201 Created
+Content-Type: application/json; charset=utf-8
+Content-Length: 231
+
+{
+  "from": {
+    "gravatar_id": "540bbede8e6d5d56db2b822c729cb5f4",
+    "username": "Kobe98",
+    "name": "Kobe98",
+    "id": "7kGD_b71US"
+  },
+  "message": "Grass-roots client-server utilisation",
+  "created_at": "2015-01-24T14:23:11.407Z"
+}

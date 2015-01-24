@@ -27,4 +27,6 @@ exports.register = function(app, api) {
 	app.post(settings.apiPath('/releases'),       api.auth(api.releases.create, 'releases', 'add'));
 	app.delete(settings.apiPath('/releases/:id'), api.auth(api.releases.del, 'releases', 'delete'));
 
+	app.post(settings.apiPath('/releases/:id/comments'), api.auth(api.comments.create, 'comments', 'add'));
+
 };

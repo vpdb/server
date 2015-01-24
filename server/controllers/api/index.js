@@ -19,13 +19,14 @@
 
 var api = require('./api');
 
-exports.auth = api.auth;
 exports.anon = api.anon;
+exports.auth = api.auth;
+exports.builds = require('./builds');
+exports.comments = require('./comments');
 exports.ping = api.ping;
 exports.files = require('./files');
 exports.games = require('./games');
 exports.ipdb = require('./ipdb');
-exports.builds = require('./builds');
 exports.releases = require('./releases');
 exports.roles = require('./roles');
 exports.tags = require('./tags');

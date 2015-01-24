@@ -266,6 +266,16 @@ ReleaseSchema.methods.toSimple = function(opts) {
 
 
 //-----------------------------------------------------------------------------
+// TRIGGERS
+//-----------------------------------------------------------------------------
+ReleaseSchema.pre('remove', function(next) {
+
+	// remove linked comments
+	mongoose.model('Comment').remove({ '_ref.release': this._id}).exec(next);
+});
+
+
+//-----------------------------------------------------------------------------
 // OPTIONS
 //-----------------------------------------------------------------------------
 ReleaseSchema.set('toObject', { virtuals: true });

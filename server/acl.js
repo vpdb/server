@@ -64,7 +64,8 @@ var init = function(next) {
 				{ resources: 'files', permissions: [ 'download', 'upload', 'delete' ]},  // delete: only own/inactive files
 				{ resources: 'releases', permissions: [ 'add', 'delete' ] }, // only own releases and only for a given period
 				{ resources: 'tags', permissions: [ 'add', 'delete-own' ] },
-				{ resources: 'builds', permissions: [ 'add', 'delete-own' ] }
+				{ resources: 'builds', permissions: [ 'add', 'delete-own' ] },
+				{ resources: 'comments', permissions: [ 'add' ] }
 			]
 		}, {
 			roles: 'mocha',

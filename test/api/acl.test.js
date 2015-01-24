@@ -130,6 +130,10 @@ describe('The ACLs of the VPDB API', function() {
 			request.del('/api/v1/releases/123456').saveResponse({ path: 'releases/del' }).end(hlp.status(401, done));
 		});
 
+		it('should deny access to release commenting', function(done) {
+			request.post('/api/v1/releases/123456/comments').send({}).end(hlp.status(401, done));
+		});
+
 	});
 
 	describe('for logged clients (role member)', function() {
@@ -249,6 +253,10 @@ describe('The ACLs of the VPDB API', function() {
 
 		it('should allow to delete releases', function(done) {
 			request.del('/api/v1/releases/123456').as('member').end(hlp.status(404, done));
+		});
+
+		it('should allow access to release commenting', function(done) {
+			request.post('/api/v1/releases/123456/comments').as('member').send({}).end(hlp.status(404, done));
 		});
 
 	});

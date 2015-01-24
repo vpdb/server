@@ -163,6 +163,7 @@ exports.del = function(req, res) {
 
 		// todo check if there are references (comments, etc)
 
+
 		// remove from db
 		release.remove(function(err) {
 			/* istanbul ignore if  */

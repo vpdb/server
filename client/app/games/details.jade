@@ -133,7 +133,7 @@ include ../template/_mixins
 				hr
 
 				label(ng-show="!release.comments || release.comments.length == 0") No comments yet.
-				.media.collapse-in-animation(ng-repeat="comment in release.comments track by comment.id", ng-controller="CommentCtrl", ng-init="show=true")
+				.media.media--no-margin.collapse-in-animation(ng-repeat="comment in release.comments track by comment.id", ng-controller="CommentCtrl", ng-init="show=true")
 					.collapse-in-animation-inner
 						.media-left.avatar
 							img.img-avatar.pull-left(gravatar-src="comment.from.gravatar_id", gravatar-default="404", fallback-icon="user")

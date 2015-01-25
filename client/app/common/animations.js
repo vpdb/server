@@ -55,12 +55,11 @@ angular.module('vpdb.animations', [])
 
 					// inner: move out of outer (not animated)
 					element.find('> .collapse-in-animation-inner').css('transform', 'translateY(-' + height + 'px)');
-					console.log('Element entering: %spx - %s', height, element.attr('class'));
-
 				});
 				done();
+
+				// if there's a better way run code *after* ng-enter-active has been added, i'd love to hear about it.
 				$timeout(function() {
-					console.log('Element animating(?): %s', height, element.attr('class'));
 
 					// outer: animate height to saved height
 					element.css('height', height + 'px');
@@ -71,16 +70,11 @@ angular.module('vpdb.animations', [])
 					// replace pixel height with auto (can't animate to auto)
 					$timeout(function() {
 						element.css('height', '');
-					}, 300);
+					}, 350);
 
 				}, 50);
 
 				// then animation starts: collapse-in-animation ng-animate ng-enter ng-enter-active
-			},
-
-			leave: function(element, done) {
-				console.log('Element leaving.');
-				done();
 			},
 
 			// classes: collapse-in-animation ng-hide ng-animate ng-hide-animate ng-hide-remove

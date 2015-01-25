@@ -98,11 +98,11 @@ function Queue() {
 	};
 
 	this.queues.image.on('failed', function(job, err) {
-		logger.warn('[queue] From image queue: %s', err);
+		logger.warn('[queue] From image queue: %s', err.message);
 	});
 
 	this.queues.video.on('failed', function(job, err) {
-		logger.warn('[queue] From video queue: %s', err);
+		logger.warn('[queue] From video queue: %s', err.message);
 	});
 
 	/**

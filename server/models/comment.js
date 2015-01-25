@@ -114,7 +114,6 @@ CommentSchema.options.toObject.transform = function(doc, comment) {
 	delete comment._id;
 	delete comment._ref;
 	delete comment._from;
-	delete comment.id;
 };
 
 mongoose.model('Comment', CommentSchema);

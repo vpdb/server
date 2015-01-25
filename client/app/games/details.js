@@ -2,7 +2,7 @@
 
 angular.module('vpdb.games.details', [])
 
-	.controller('GameController', function($scope, $http, $stateParams, $modal, $log, ApiHelper, Flavors, GameResource, ReleaseCommentResource) {
+	.controller('GameController', function($scope, $stateParams, $modal, $log, ApiHelper, Flavors, GameResource, ReleaseCommentResource) {
 
 		$scope.theme('dark');
 		$scope.setMenu('games');
@@ -59,11 +59,6 @@ angular.module('vpdb.games.details', [])
 			});
 		};
 
-		$scope.addComment = function(releaseId) {
-			ReleaseCommentResource.save({ releaseId: releaseId }, { message: $scope.newComment }, function(comment) {
-				$scope.newComment = '';
-			}, ApiHelper.handleErrors($scope));
-		};
 
 //		$scope.requestModPermission = function(release) {
 //			var modalInstance = $modal.open({
@@ -84,8 +79,25 @@ angular.module('vpdb.games.details', [])
 		};
 	})
 
+	.controller('ReleaseController', function($scope, ApiHelper, ReleaseCommentResource) {
 
-	.controller('DownloadGameCtrl', function($scope, $modalInstance, $http, $timeout, Flavors, ConfigService, AuthService, params) {
+		$scope.newComment = '';
+
+		$scope.addComment2 = function() {
+			var cmt = _.extend(_.cloneDeep($scope.release.comments[0]), { id: Math.round(Math.random() * 1000000), created_at: new Date() });
+			$scope.release.comments.unshift(cmt);
+		};
+
+		$scope.addComment = function(releaseId) {
+			ReleaseCommentResource.save({ releaseId: releaseId }, { message: $scope.newComment }, function(comment) {
+				$scope.release.comments.unshift(comment);
+				$scope.newComment = '';
+			}, ApiHelper.handleErrors($scope));
+		};
+	})
+
+
+	.controller('DownloadGameCtrl', function($scope, $modalInstance, $timeout, Flavors, ConfigService, AuthService, params) {
 
 		$scope.game = params.game;
 		$scope.release = params.release;

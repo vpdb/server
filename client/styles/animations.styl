@@ -194,6 +194,32 @@
 		&.ng-leave-active
 			opacity 0
 
+
+.collapse-in-animation
+	&.ng-enter, &.ng-leave, &.ng-move
+		transition $animation-long ease opacity
+
+	&.ng-enter
+		opacity 0
+
+		&.ng-enter-active
+			opacity 1
+			transition $animation-long ease all
+
+	&.ng-leave
+		opacity:1;
+
+		&.ng-leave-active
+			opacity:0;
+
+	&.ng-move
+		opacity:0.5;
+
+		&.ng-move-active
+			opacity:1;
+
+
+
 /**
  * See directive for additional styles.
  */

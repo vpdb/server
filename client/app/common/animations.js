@@ -40,8 +40,48 @@ angular.module('vpdb.animations', [])
 	.animation('.collapse-in-animation', function($timeout) {
 		var height;
 
-		// before: collapse-in-animation ng-hide
+		// before (hide -> show): collapse-in-animation ng-hide
+		// before (enter):        collapse-in-animation ng-animate ng-enter
 		return {
+
+			// classes: collapse-in-animation ng-animate ng-enter
+			enter: function(element, done) {
+				$timeout(function() {
+					// save height for later
+					height = element.get(0).offsetHeight;
+
+					// outer: measure, then set height to 0 (not animated)
+					element.css('height', '0px');
+
+					// inner: move out of outer (not animated)
+					element.find('> .collapse-in-animation-inner').css('transform', 'translateY(-' + height + 'px)');
+					console.log('Element entering: %spx - %s', height, element.attr('class'));
+
+				});
+				done();
+				$timeout(function() {
+					console.log('Element animating(?): %s', height, element.attr('class'));
+
+					// outer: animate height to saved height
+					element.css('height', height + 'px');
+
+					// inner: animate to no transformation
+					element.find('> .collapse-in-animation-inner').css('transform', '');
+
+					// replace pixel height with auto (can't animate to auto)
+					$timeout(function() {
+						element.css('height', '');
+					}, 300);
+
+				}, 50);
+
+				// then animation starts: collapse-in-animation ng-animate ng-enter ng-enter-active
+			},
+
+			leave: function(element, done) {
+				console.log('Element leaving.');
+				done();
+			},
 
 			// classes: collapse-in-animation ng-hide ng-animate ng-hide-animate ng-hide-remove
 			beforeRemoveClass: function(element, className, done) {

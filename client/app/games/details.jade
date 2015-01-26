@@ -175,6 +175,14 @@ include ../template/_mixins
 
 
 		h1 ROMs
+			button.btn.btn-primary.btn--round.pull-right(ng-click="romuploadCollapsed = !romuploadCollapsed")
+				+icon('plus')
+
+		.full-width
+			div(collapse="romuploadCollapsed", ng-init="romuploadCollapsed = true")
+				.well.well--full-width
+					label.center-block.text-center: small: i Drop ROM .zip files in here.
+
 		label(ng-hide="game.roms.length > 0") No ROMs available.
 		table.table.table-striped(ng-show="game.roms.length > 0")
 			thead
@@ -197,6 +205,7 @@ include ../template/_mixins
 					td {{ rom.download.size | bytes }}
 					td.nostripe.td-dlbtn
 						button.btn.btn-primary.btn-xs.btn-dl(download="rom.download", download-info="[ game, rom ] | dlRom")
+
 
 		h1 Backglasses
 		label(ng-hide="game.backglasses.length > 0") No backglasses available.

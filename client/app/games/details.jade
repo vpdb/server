@@ -180,7 +180,7 @@ include ../template/_mixins
 
 		.full-width
 			div(collapse="romuploadCollapsed", ng-init="romuploadCollapsed = true")
-				.well.well--full-width
+				.well.well--full-width.well--dropzone(ng-file-drop="onRomUpload($files)", drag-over-class="well--dragging")
 					label.center-block.text-center: small: i Drop ROM .zip files in here.
 
 		label(ng-hide="game.roms.length > 0") No ROMs available.

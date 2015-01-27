@@ -59,6 +59,10 @@ angular.module('vpdb.games.details', [])
 			});
 		};
 
+		$scope.onRomUpload = function($files) {
+
+		};
+
 
 //		$scope.requestModPermission = function(release) {
 //			var modalInstance = $modal.open({

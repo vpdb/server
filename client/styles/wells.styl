@@ -6,12 +6,19 @@
 	border-radius 0
 	margin-bottom 10px
 
-.well--full-width-left
-	margin-left -30px
-	margin-right -30px
-	margin-top 0
-	margin-bottom 0
-	padding-top 0
+.well--dropzone
 	padding-bottom 0
-	p:last-child
-		margin 0
+	transition all $animation-short
+	border-top-style dashed
+	border-top-width 2px
+	border-top-color rgba(0,0,0,0.01)
+	border-bottom-style dashed
+	border-bottom-width 2px
+	border-bottom-color rgba(0,0,0,0.01)
+
+	> label
+		margin-top 45px
+
+	&.well--dragging
+		border-top-color $color-primary
+		border-bottom-color $color-primary

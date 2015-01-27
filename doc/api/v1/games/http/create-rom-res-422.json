@@ -1,0 +1,16 @@
+422 Unprocessable Entity
+Content-Type: application/json; charset=utf-8
+Content-Length: 214
+
+{
+  "errors": [
+    {
+      "message": "File reference must be provided.",
+      "field": "_file"
+    },
+    {
+      "message": "ID must be provided. Use the name of the ROM file without file extension.",
+      "field": "id"
+    }
+  ]
+}

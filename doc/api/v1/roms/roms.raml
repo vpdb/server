@@ -1,0 +1,22 @@
+displayName: ROMs
+description: |
+  ROMs are the game code of modern pinball machines. It's the program that
+  runs while playing the table. ROMs are needed for recreations of solid state
+  games.
+
+  There are usually different versions and languages available. Every game can
+  have one or multiple game ROMs.
+
+  Note that the root resource refers to ROMs that are already uploaded. For
+  creating and listing ROMs, see the [game resource][games].
+
+  [games]: api://core/games
+
+/{rom_id}:
+  delete:
+    is: [ protected ]
+    securedBy: [ jwt: { scopes: [ MEMBER, CONTRIB ] } ]
+    description: |
+      Delete a ROM of a given ID.
+
+      Members can only delete own ROMs, while contributors can delete any ROM.      

@@ -21,9 +21,9 @@ post:
 
 /{release_id}:
   uriParameters:
-   release_id:
-     displayName: Release ID
-     type: string
+    release_id:
+      displayName: Release ID
+      type: string
   delete:
     is: [ protected ]
     securedBy: [ jwt: { scopes: [ CONTRIBUTOR ] } ]
@@ -35,7 +35,7 @@ post:
     responses:
       401:
         body:
-           role/anon:
+          role/anon:
             example: !include http/del-res-401.json
 
   /comments:

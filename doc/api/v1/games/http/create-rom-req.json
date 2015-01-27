@@ -1,0 +1,14 @@
+POST /api/v1/games/tura-circus/roms HTTP/1.1
+Host: vpdb.ch
+Accept-Encoding: gzip, deflate
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJRSlRaWFI3SHFCIiwiaWF0IjoiMjAxNS0wMS0yN1QyMjowNToxMi45NDBaIiwiZXhwIjoiMjAxNS0wMS0yN1QyMzowNToxMi45NDBaIn0.jN91NsZ1cv4poRwwTXiT6ABlKZYbM4Zu1niF3K85Rx0
+Content-Type: application/json
+Content-Length: 107
+
+{
+  "id": "tura-circus_10",
+  "version": "1.0",
+  "notes": "That is some ROM.",
+  "language": "en-US",
+  "_file": "QJZS7CmS9B"
+}

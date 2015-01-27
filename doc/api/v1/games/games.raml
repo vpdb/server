@@ -81,3 +81,9 @@ get:
         role/anon-Search-for-a-Game:
           example: !include http/search-res-400.json
 
+/{game_id}:
+  get:
+    description: |
+      List details of a game.
+
+  /roms: !include roms.raml

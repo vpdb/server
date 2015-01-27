@@ -62,6 +62,7 @@ describe('The VPDB `ROM` API', function() {
 			request
 				.post('/api/v1/games/' + game.id + '/roms')
 				.as('member')
+				.saveResponse({ path: 'games/create-rom' })
 				.send({})
 				.end(function(err, res) {
 					hlp.expectValidationError(err, res, 'id', 'must be provided');
@@ -154,6 +155,7 @@ describe('The VPDB `ROM` API', function() {
 		});
 
 		it('should succeed with full data', function(done) {
+			var id = game.id + '_10';
 			var user = 'member';
 			var version = '1.0';
 			var notes = 'That is some ROM.';
@@ -163,8 +165,9 @@ describe('The VPDB `ROM` API', function() {
 				request
 					.post('/api/v1/games/' + game.id + '/roms')
 					.as('member')
+					.save({ path: 'games/create-rom' })
 					.send({
-						id: 'hulk2',
+						id: id,
 						version: version,
 						notes: notes,
 						language: language,
@@ -173,7 +176,7 @@ describe('The VPDB `ROM` API', function() {
 					.end(function(err, res) {
 						hlp.expectStatus(err, res, 201);
 						hlp.doomRom(user, res.body.id);
-						expect(res.body.id).to.be('hulk2');
+						expect(res.body.id).to.be(id);
 						expect(res.body.file).to.be.an('object');
 						expect(res.body.file.url).to.be.ok();
 						expect(res.body.version).to.be(version);

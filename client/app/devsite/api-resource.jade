@@ -2,18 +2,16 @@ include api-schema.jade
 
 mixin resource(resource)
 
-	if resource.methods && resource.methods.length
-		if !resource.parentUrl
-			h1.h--primary=resource.displayName
-			hr
-			.markdown!=hlp.markdown(resource.description)
+	if !resource.parentUrl
+		h1.h--primary=resource.displayName
+		hr
+		.markdown!=hlp.markdown(resource.description)
 
+	if resource.methods && resource.methods.length
 		h2.h--code.h--small
 			| #{resource.parentUrl}
 			span.h--lighter=resource.relativeUri
 		hr
-
-
 		each method in resource.methods
 			.clearfix
 			.apidoc-method-wrapper(ng-controller="MethodCollapseCtrl")

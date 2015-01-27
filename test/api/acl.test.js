@@ -90,6 +90,14 @@ describe('The ACLs of the VPDB API', function() {
 			request.del('/api/v1/games/mb').end(hlp.status(401, done));
 		});
 
+		it('should deny access to rom creation', function(done) {
+			request.post('/api/v1/games/mb/roms').send({}).end(hlp.status(401, done));
+		});
+
+		it('should deny access to rom deletion', function(done) {
+			request.del('/api/v1/roms/1234').end(hlp.status(401, done));
+		});
+
 		it('should allow access to ping', function(done) {
 			request.get('/api/v1/ping').end(hlp.status(200, done));
 		});
@@ -213,6 +221,14 @@ describe('The ACLs of the VPDB API', function() {
 
 		it('should deny access to game deletion', function(done) {
 			request.del('/api/v1/games/mb').as('member').end(hlp.status(403, done));
+		});
+
+		it('should allow access to rom creation', function(done) {
+			request.post('/api/v1/games/mb/roms').as('member').send({}).end(hlp.status(404, done));
+		});
+
+		it('should allow access to rom deletion', function(done) {
+			request.del('/api/v1/roms/1234').as('member').end(hlp.status(404, done));
 		});
 
 		it('should allow access to ping', function(done) {

@@ -1,0 +1,21 @@
+post:
+  is: [ validated ]
+  securedBy: [ jwt: { scopes: [ MEMBER ] } ]
+  description: |
+    Post a new ROM for the game.
+
+    A ROM is some meta data as well as a link to one file. If a game needs
+    multiple files to run, post multiple ROM objects.
+  body:
+    role/member:
+      example: !include http/create-rom-req.json
+  responses:
+    200:
+      body:
+        role/member:
+          example: !include http/create-rom-res-201.json
+    422:
+      description: Validation errors
+      body:
+        role/member:
+          example: !include http/create-rom-res-422.json

@@ -29,6 +29,7 @@ exports.games = require('./games');
 exports.ipdb = require('./ipdb');
 exports.releases = require('./releases');
 exports.roles = require('./roles');
+exports.roms = require('./roms');
 exports.tags = require('./tags');
 exports.user = require('./user');
 exports.users = require('./users');

@@ -54,7 +54,8 @@ var init = function(next) {
 				{ resources: 'games', permissions: [ 'update', 'add', 'delete' ]},
 				{ resources: 'ipdb', permissions: 'view' },
 				{ resources: 'tags', permissions: 'delete' },
-				{ resources: 'builds', permissions: 'delete' }
+				{ resources: 'builds', permissions: 'delete' },
+				{ resources: 'roms', permissions: 'delete' }
 			]
 		}, {
 			roles: 'member',
@@ -65,7 +66,8 @@ var init = function(next) {
 				{ resources: 'releases', permissions: [ 'add', 'delete' ] }, // only own releases and only for a given period
 				{ resources: 'tags', permissions: [ 'add', 'delete-own' ] },
 				{ resources: 'builds', permissions: [ 'add', 'delete-own' ] },
-				{ resources: 'comments', permissions: [ 'add' ] }
+				{ resources: 'comments', permissions: [ 'add' ] },
+				{ resources: 'roms', permissions: [ 'add', 'delete-own' ] }
 			]
 		}, {
 			roles: 'mocha',

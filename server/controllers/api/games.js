@@ -108,8 +108,6 @@ exports.del = function(req, res) {
 
 		// TODO check for linked releases (& ROMs, etc) and refuse if referenced
 
-		// TODO delete referenced files
-
 		// remove from db
 		game.remove(function(err) {
 			/* istanbul ignore if  */

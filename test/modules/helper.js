@@ -267,6 +267,16 @@ exports.doomBuild = function(user, buildId) {
 };
 
 /**
+ * Marks a ROM to be cleaned up in teardown.
+ * @param {string} user User with which the file was created
+ * @param {string} romId ID of the ROM
+ */
+exports.doomRom = function(user, romId) {
+	objectPath.ensureExists(this, "doomedRoms." + user, []);
+	this.doomedRoms[user].unshift(romId);
+};
+
+/**
  * Marks a user to be cleaned up in teardown. Note that this is only for users
  * created in tests, the users in the before() method are cleaned automatically.
  * @param {string} userId ID of the user
@@ -295,6 +305,7 @@ exports.cleanup = function(request, done) {
 	var doomedReleases = this.doomedReleases;
 	var doomedTags = this.doomedTags;
 	var doomedBuilds = this.doomedBuilds;
+	var doomedRoms = this.doomedRoms;
 
 	async.series([
 
@@ -439,6 +450,34 @@ exports.cleanup = function(request, done) {
 			});
 		},
 
+		// 6. cleanup ROMs
+		function(next) {
+			if (!doomedRoms) {
+				return next();
+			}
+			async.eachSeries(_.keys(doomedRoms), function(user, nextRom) {
+				async.each(doomedRoms[user], function(romId, next) {
+					request
+						.del('/api/v1/roms/' + romId)
+						.as(user)
+						.end(function(err, res) {
+							if (err) {
+								return next(err);
+							}
+							if (res.status !== 204) {
+								console.log(res.body);
+							}
+							expect(res.status).to.eql(204);
+							next();
+						});
+				}, nextRom);
+
+			}, function(err) {
+				that.doomedRoms = {};
+				next(err);
+			});
+		},
+
 		// lastly, teardown users
 		function(next) {
 			exports.teardownUsers(request, next);
@@ -460,7 +499,9 @@ exports.status = function(code, contains, next) {
 		contains = false;
 	}
 	return function(err, res) {
-		expect(err).to.not.be.ok();
+		if (err) {
+			throw new Error('Error in request: ' + err.message);
+		}
 		if (res.status !== code) {
 			console.warn(res.body);
 		}
@@ -520,7 +561,9 @@ exports.expectNoValidationError = function(err, res, field, contains) {
 			});
 			expect(matchedErrors.length).to.be(0);
 		} else {
-			expect(fieldErrors.length).to.be(0);
+			if (fieldErrors.length !== 0) {
+				throw new Error('Expected no validation errors on field "' + field + '" but got ' + fieldErrors.length + '.');
+			}
 		}
 	}
 };

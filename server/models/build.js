@@ -44,7 +44,7 @@ var fields = {
 	is_range:     { type: Boolean, required: 'You need to provide if the build is a range of versions or one specific version.', default: false },
 	is_active:    { type: Boolean, required: true, default: false },
 	created_at:   { type: Date, required: true },
-	_created_by:  { type: Schema.ObjectId, ref: 'User' }
+	_created_by:  { type: Schema.ObjectId, ref: 'User', required: true }
 };
 var BuildSchema = new Schema(fields);
 

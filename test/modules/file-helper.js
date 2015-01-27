@@ -10,6 +10,7 @@ var pleasejs = require('pleasejs');
 var mp4 = path.resolve(__dirname, '../../data/test/files/afm.f4v');
 var avi = path.resolve(__dirname, '../../data/test/files/afm.avi');
 var vpt = path.resolve(__dirname, '../../data/test/files/empty.vpt');
+var rom = path.resolve(__dirname, '../../data/test/files/hulk.zip');
 
 exports.createBackglass = function(user, request, done) {
 
@@ -112,6 +113,24 @@ exports.createAvi = function(user, request, done) {
 		.query({ type: 'playfield-fs' })
 		.type('video/avi')
 		.set('Content-Disposition', 'attachment; filename="playfield.avi"')
+		.set('Content-Length', data.length)
+		.send(data)
+		.as(user)
+		.end(function(err, res) {
+			expect(res.status).to.be(201);
+			done(res.body);
+		});
+};
+
+
+exports.createRom = function(user, request, done) {
+
+	var data = fs.readFileSync(avi);
+	request
+		.post('/storage/v1/files')
+		.query({ type: 'rom' })
+		.type('application/zip')
+		.set('Content-Disposition', 'attachment; filename="hulk.zip"')
 		.set('Content-Length', data.length)
 		.send(data)
 		.as(user)

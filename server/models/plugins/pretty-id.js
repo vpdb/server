@@ -41,6 +41,7 @@ module.exports = exports = function(schema, options) {
 	if (_.isString(options.ignore)) {
 		options.ignore = [ options.ignore ];
 	}
+	options.validations = options.validations || [];
 
 	var paths = _.omit(common.traversePaths(schema), function(schemaType, path) {
 		return _.contains(options.ignore, path);
@@ -95,6 +96,18 @@ module.exports = exports = function(schema, options) {
 					invalidations.push({ path: objPath, message: 'No such ' + refModelName.toLowerCase() + ' with ID "' + prettyId + '".', value: prettyId });
 					objectPath.set(obj, objPath, '000000000000000000000000'); // to avoid class cast error to objectId
 				} else {
+					// validations
+					_.each (options.validations, function(validation) {
+						if (validation.path === objPath) {
+							if (validation.mimeType && refObj.mime_type !== validation.mimeType) {
+								invalidations.push({ path: objPath, message: validation.message, value: prettyId });
+							}
+							if (validation.fileType && refObj.file_type !== validation.fileType) {
+								invalidations.push({ path: objPath, message: validation.message, value: prettyId });
+							}
+						}
+					});
+
 					objectPath.set(obj, objPath, refObj._id);
 				}
 				next();

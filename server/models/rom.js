@@ -25,80 +25,83 @@ var mongoose = require('mongoose');
 var validator = require('validator');
 var uniqueValidator = require('mongoose-unique-validator');
 
-var Schema = mongoose.Schema;
+var prettyId = require('./plugins/pretty-id');
+var fileRef = require('./plugins/file-ref');
 
+var Schema = mongoose.Schema;
 
 //-----------------------------------------------------------------------------
 // SCHEMA
 //-----------------------------------------------------------------------------
 var fields = {
-	id:           { type: String, required: true, unique: true },
-	name:         { type: String, required: 'Name must be provided.', unique: true },
-	description:  { type: String, required: 'Description must be provided.' },
-	is_active:    { type: Boolean, required: true, default: false },
+	id:           { type: String, required: 'ID must be provided. Use the name of the ROM file without file extension.', unique: true },
+	_file:        { type: Schema.ObjectId, ref: 'File', required: 'File reference must be provided.' },
+	_game:        { type: Schema.ObjectId, ref: 'Game', required: 'Game reference must be provided.' },
+	version:      { type: String },
+	language:     { type: String },
+	notes:        { type: String },
 	created_at:   { type: Date, required: true },
-	_created_by:  { type: Schema.ObjectId, ref: 'User', required: true },
-	_releases:    [ { type: Schema.ObjectId, ref: 'Release' } ]
+	_created_by:  { type: Schema.ObjectId, ref: 'User', required: true }
 };
-var TagSchema = new Schema(fields);
-
+var RomSchema = new Schema(fields);
 
 //-----------------------------------------------------------------------------
 // API FIELDS
 //-----------------------------------------------------------------------------
 var apiFields = {
-	simple: [ 'id', 'name', 'description' ]
+	simple: [ 'id', 'file', 'version', 'notes', 'language' ]
 };
 
+//-----------------------------------------------------------------------------
+// PLUGINS
+//-----------------------------------------------------------------------------
+RomSchema.plugin(uniqueValidator, { message: 'The {PATH} "{VALUE}" is already taken.' });
+RomSchema.plugin(prettyId, { model: 'Rom', ignore: [ '_created_by', '_game' ], validations: [
+	{ path: '_file', mimeType: 'application/zip', message: 'Must be a ZIP archive.' },
+	{ path: '_file', fileType: 'rom', message: 'Must be a file of type "rom".' }
+] });
+RomSchema.plugin(fileRef, { model: 'Rom' });
 
 //-----------------------------------------------------------------------------
 // VIRTUALS
 //-----------------------------------------------------------------------------
-TagSchema.virtual('created_by')
+RomSchema.virtual('created_by')
 	.get(function() {
 		if (this._created_by && this.populated('_created_by')) {
 			return this._created_by.toReduced();
 		}
 	});
 
+RomSchema.virtual('file')
+	.get(function() {
+		if (this._file && this.populated('_file')) {
+			return this._file.toSimple();
+		}
+	});
 
 //-----------------------------------------------------------------------------
 // METHODS
 //-----------------------------------------------------------------------------
-TagSchema.methods.toSimple = function() {
+RomSchema.methods.toSimple = function() {
 	return _.pick(this.toObject(), apiFields.simple);
 };
-
 
 //-----------------------------------------------------------------------------
 // VALIDATIONS
 //-----------------------------------------------------------------------------
-TagSchema.path('name').validate(function(name) {
-	return validator.isLength(name ? name.trim() : '', 2);
-}, 'Name must contain at least two characters.');
-
-TagSchema.path('description').validate(function(description) {
-	return validator.isLength(description ? description.trim() : description, 5);
-}, 'Name must contain at least 5 characters.');
-
-
-//-----------------------------------------------------------------------------
-// PLUGINS
-//-----------------------------------------------------------------------------
-TagSchema.plugin(uniqueValidator, { message: 'The {PATH} "{VALUE}" is already taken.' });
-
+RomSchema.path('id').validate(function(id) {
+	return validator.isLength(id ? id.trim() : '', 4);
+}, 'ID must contain at least 4 characters.');
 
 //-----------------------------------------------------------------------------
 // OPTIONS
 //-----------------------------------------------------------------------------
-TagSchema.set('toObject', { virtuals: true });
-TagSchema.options.toObject.transform = function(doc, tag) {
+RomSchema.set('toObject', { virtuals: true });
+RomSchema.options.toObject.transform = function(doc, tag) {
 	delete tag.__v;
 	delete tag._id;
 	delete tag._created_by;
-	delete tag._releases;
-	delete tag.is_active;
 };
 
-mongoose.model('Tag', TagSchema);
-logger.info('[model] Schema "Tag" registered.');
+mongoose.model('Rom', RomSchema);
+logger.info('[model] Schema "Rom" registered.');

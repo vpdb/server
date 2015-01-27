@@ -1,56 +1,60 @@
 200 OK
 Content-Type: application/json; charset=utf-8
-Content-Length: 713
-Etag: W/"2c9-df4d3e48"
+Content-Length: 748
+Etag: W/"2ec-50892c8d"
 
 {
   "plan": "free",
-  "name": "Ezekiel_Grimes",
-  "username": "Ezekiel_Grimes",
-  "email": "jesse_roberts11@hotmail.com",
+  "name": "Cynthia_Haag39",
+  "username": "Cynthia_Haag39",
+  "email": "jarod51@hotmail.com",
   "provider": "local",
-  "created_at": "2015-01-24T14:23:09.153Z",
+  "created_at": "2015-01-27T22:34:24.550Z",
   "is_active": true,
   "roles": [
     "member"
   ],
-  "id": "mJQlv-Xk8H",
-  "gravatar_id": "337a8998fcd6b42db907233f34daef9b",
+  "id": "XJXe9jcB9B",
+  "gravatar_id": "76a966967cfaaa64f10d393f183d66d9",
   "permissions": {
-    "user": [
-      "update",
-      "view"
-    ],
-    "files": [
-      "download",
-      "upload",
-      "delete"
-    ],
-    "comments": [
-      "add"
-    ],
-    "platformbuilds": [
+    "builds": [
       "add",
       "delete-own"
     ],
     "users": [
       "search"
     ],
-    "tags": [
-      "delete-own",
-      "add"
-    ],
-    "releases": [
-      "add",
-      "delete"
-    ],
     "vpbuilds": [
-      "delete-own",
-      "add"
-    ],
-    "builds": [
       "add",
       "delete-own"
+    ],
+    "roms": [
+      "add",
+      "delete-own"
+    ],
+    "releases": [
+      "delete",
+      "add"
+    ],
+    "files": [
+      "delete",
+      "download",
+      "upload"
+    ],
+    "tags": [
+      "add",
+      "delete-own"
+    ],
+    "platformbuilds": [
+      "add",
+      "delete-own"
+    ],
+    "comments": [
+      "add"
+    ],
+    "user": [
+      "view",
+      "update"
     ]
   }
 }

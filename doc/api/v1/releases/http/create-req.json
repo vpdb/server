@@ -1,21 +1,21 @@
 POST /api/v1/releases HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJtSnQtelhrOHIiLCJpYXQiOiIyMDE1LTAxLTI0VDE0OjIzOjE5LjcwMFoiLCJleHAiOiIyMDE1LTAxLTI0VDE1OjIzOjE5LjcwMFoifQ.JS1XrqYrf2uA1YXSXP7BPF8_9osu4moLpKo0ExLBH68
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJteUZ1MnFyNUIiLCJpYXQiOiIyMDE1LTAxLTI3VDIyOjM0OjM4LjcwNloiLCJleHAiOiIyMDE1LTAxLTI3VDIzOjM0OjM4LjcwNloifQ.Q8mYTcLqXk-Bw_3zrrwWDKcWPFsB9-6Ma2guXUXvPNU
 Content-Type: application/json
-Content-Length: 499
+Content-Length: 473
 
 {
   "name": "release",
-  "_game": "professional-pinball-challenger-v",
+  "_game": "easy-aces",
   "versions": [
     {
       "files": [
         {
-          "_file": "mJpemf7yUB",
+          "_file": "X1wIt29S9B",
           "_media": {
-            "playfield_image": "7J5Z7M7J8H",
-            "playfield_video": "m1OM7f71Lr"
+            "playfield_image": "71h9nqrcB",
+            "playfield_video": "Qk3l5h9BqS"
           },
           "_compatibility": [
             "9.9.0"
@@ -26,9 +26,9 @@ Content-Length: 499
           }
         },
         {
-          "_file": "m1Mb7MmyLr",
+          "_file": "71uLF3cB9r",
           "_media": {
-            "playfield_image": "X1hWXGQJIS"
+            "playfield_image": "mk0qh5r5S"
           },
           "_compatibility": [
             "9.9.0"
@@ -44,7 +44,7 @@ Content-Length: 499
   ],
   "authors": [
     {
-      "_user": "mJt-zXk8r",
+      "_user": "myFu2qr5B",
       "roles": [
         "Table Creator"
       ]

@@ -1,14 +1,14 @@
 PATCH /api/v1/user HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJteW5TT2ZtMUlTIiwiaWF0IjoiMjAxNS0wMS0yNFQxNDoyMzoyNi4zNDRaIiwiZXhwIjoiMjAxNS0wMS0yNFQxNToyMzoyNi4zNDRaIn0.NUDrisb80ZMyL-FvJokPqNALtis5gW-bCup2yrOaiBw
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJRa3VhMGhxUzVCIiwiaWF0IjoiMjAxNS0wMS0yN1QyMjozNDo0NC42MDJaIiwiZXhwIjoiMjAxNS0wMS0yN1QyMzozNDo0NC42MDJaIn0.zHP_nGxTUP6Ag3qSK5QilE1qbt0tpIdYzDo-02yKAFU
 Content-Type: application/json
 Content-Length: 140
 
 {
-  "name": "Tracy Bernhard",
-  "location": "Wintheiserside",
-  "email": "mathilde69@yahoo.com",
-  "current_password": "qKVoTG6Pb1",
-  "password": "5HhYwwXPfV"
+  "name": "Zita Rempel",
+  "location": "Dickenshaven",
+  "email": "antonina_wisozk@yahoo.com",
+  "current_password": "MNmYRUwWWu",
+  "password": "A6WEy3zsJk"
 }

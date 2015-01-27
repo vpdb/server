@@ -1,14 +1,14 @@
-POST /api/v1/games/tura-circus/roms HTTP/1.1
+POST /api/v1/games/bingo-improved/roms HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJRSlRaWFI3SHFCIiwiaWF0IjoiMjAxNS0wMS0yN1QyMjowNToxMi45NDBaIiwiZXhwIjoiMjAxNS0wMS0yN1QyMzowNToxMi45NDBaIn0.jN91NsZ1cv4poRwwTXiT6ABlKZYbM4Zu1niF3K85Rx0
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJYSkNuOXJxSCIsImlhdCI6IjIwMTUtMDEtMjdUMjI6MzQ6NDMuNzgwWiIsImV4cCI6IjIwMTUtMDEtMjdUMjM6MzQ6NDMuNzgwWiJ9.zqsPvD_FqZW3nwzESdHE88SPQq_0-3lTuH8il7uiyec
 Content-Type: application/json
-Content-Length: 107
+Content-Length: 110
 
 {
-  "id": "tura-circus_10",
+  "id": "bingo-improved_10",
   "version": "1.0",
   "notes": "That is some ROM.",
   "language": "en-US",
-  "_file": "QJZS7CmS9B"
+  "_file": "XJ-MC3crqH"
 }

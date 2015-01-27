@@ -1,14 +1,14 @@
-PUT /api/v1/users/71gruzQJIr HTTP/1.1
+PUT /api/v1/users/m132C3qrcr HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJtSm5WT0dtMVVTIiwiaWF0IjoiMjAxNS0wMS0yNFQxNDoyMzoyNi4yNzhaIiwiZXhwIjoiMjAxNS0wMS0yNFQxNToyMzoyNi4yNzhaIn0.MuNw-4KR4jVEYSGt2Bx7dZW3FmijaY2myn0JblDUQGk
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJta3VoQTJjcjVyIiwiaWF0IjoiMjAxNS0wMS0yN1QyMjozNDo0NC41NDZaIiwiZXhwIjoiMjAxNS0wMS0yN1QyMzozNDo0NC41NDZaIn0._mx8kDOPXZYHj0zEs76dW9upntylk8k9jL7HE4PcQlY
 Content-Type: application/json
-Content-Length: 110
+Content-Length: 121
 
 {
-  "email": "cydney_kertzmann18@yahoo.com",
-  "username": "Kim67",
-  "name": "Kim67",
+  "email": "jerel_zieme24@hotmail.com",
+  "username": "Rico.Green92",
+  "name": "Rico.Green92",
   "is_active": true,
   "roles": [
     "member"

@@ -210,4 +210,61 @@ describe('The VPDB `ROM` API', function() {
 
 	});
 
+	describe('when deleting a ROM', function() {
+
+		var game;
+
+		before(function(done) {
+			hlp.setupUsers(request, {
+				member: { roles: [ 'member' ] },
+				member2: { roles: [ 'member' ] },
+				contributor: { roles: [ 'contributor' ] }
+			}, function() {
+				hlp.game.createGame('contributor', request, function(g) {
+					game = g;
+					done(null, g);
+				});
+			});
+		});
+
+		after(function(done) {
+			hlp.cleanup(request, done);
+		});
+
+		it('should succeed as member and owner', function(done) {
+			var user = 'member';
+			hlp.file.createRom(user, request, function(file) {
+				request.post('/api/v1/games/' + game.id + '/roms').as(user).send({ id: 'hulk', _file: file.id }).end(function(err, res) {
+					hlp.expectStatus(err, res, 201);
+					request.del('/api/v1/roms/' + res.body.id).save('roms/del').as(user).end(hlp.status(204, done));
+				});
+			});
+		});
+
+		it('should fail as member and not owner', function(done) {
+			var user = 'member';
+			var id = 'hulkdeleteme';
+			hlp.file.createRom(user, request, function(file) {
+				request.post('/api/v1/games/' + game.id + '/roms').as(user).send({ id: id, _file: file.id }).end(function(err, res) {
+					hlp.doomRom(user, id);
+					hlp.expectStatus(err, res, 201);
+					request.del('/api/v1/roms/' + res.body.id).as('member2').end(hlp.status(403, done));
+				});
+			});
+		});
+
+		it('should succeed as contributor and not owner', function(done) {
+			var user = 'member';
+			var id = 'hulk';
+			hlp.file.createRom(user, request, function(file) {
+				request.post('/api/v1/games/' + game.id + '/roms').as(user).send({ id: id, _file: file.id }).end(function(err, res) {
+					hlp.expectStatus(err, res, 201);
+					request.del('/api/v1/roms/' + res.body.id).as('contributor').end(hlp.status(204, done));
+				});
+			});
+
+		});
+
+	});
+
 });

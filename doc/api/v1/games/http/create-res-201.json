@@ -1,47 +1,44 @@
 201 Created
 Content-Type: application/json; charset=utf-8
-Content-Length: 947
+Content-Encoding: gzip
 
 {
-  "title": "Carioca Beach",
-  "manufacturer": "John Gille Company",
-  "game_type": "ss",
-  "features": "Large, oversized score display. 25 holes.",
-  "notes": "Carioca Beach is located in Rio de Janeiro, Brazil.",
-  "id": "carioca-beach",
+  "title": "Stella",
+  "manufacturer": "Unknown",
+  "game_type": "pm",
+  "notes": "A version of Keeney and Sons' 1932 'Rainbo', it has the name STELLA inscribed in blue at the top of the playfield along the curved ball arch. It has the same art design and colors. The differences are:All of the pockets are round, not oblong. The top hole has a painted white star around it. There are only two Free Play holes, not four. There is only one outhole trough at the bottom, not two.The pictures we saw of this playfield showed it leaned against a wall, so we could not gauge its size, nor could we see if leg holes were present to know if this game was a table top game or a pin table.",
+  "id": "stella",
   "year": 1900,
-  "_created_by": "54c3aad110d4170000d6ab28",
-  "created_at": "2015-01-24T14:23:13.252Z",
+  "_created_by": "54c8127356c96bc427b62316",
+  "created_at": "2015-01-27T22:34:27.862Z",
   "ipdb": {
-    "number": 5077,
-    "mfg": 473
+    "number": 5925,
+    "mfg": 328
   },
   "artists": [],
   "designers": [],
-  "themes": [
-    "World Places"
-  ],
+  "themes": [],
   "short": [],
   "media": {
     "backglass": {
       "is_protected": false,
       "variations": {
         "small-2x": {
-          "url": "/storage/v1/files/mymfsWXkLB/small-2x"
+          "url": "/storage/v1/files/7kgRj9SqH/small-2x"
         },
         "small": {
-          "url": "/storage/v1/files/mymfsWXkLB/small"
+          "url": "/storage/v1/files/7kgRj9SqH/small"
         },
         "medium-2x": {
-          "url": "/storage/v1/files/mymfsWXkLB/medium-2x"
+          "url": "/storage/v1/files/7kgRj9SqH/medium-2x"
         },
         "medium": {
-          "url": "/storage/v1/files/mymfsWXkLB/medium"
+          "url": "/storage/v1/files/7kgRj9SqH/medium"
         }
       },
-      "url": "/storage/v1/files/mymfsWXkLB",
-      "id": "mymfsWXkLB"
+      "url": "/storage/v1/files/7kgRj9SqH",
+      "id": "7kgRj9SqH"
     }
   },
-  "url": "/game/carioca-beach"
+  "url": "/game/stella"
 }

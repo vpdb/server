@@ -1,61 +1,65 @@
 200 OK
 Content-Type: application/json; charset=utf-8
-Content-Length: 862
+Content-Length: 915
 
 {
-  "location": "Wintheiserside",
+  "location": "Dickenshaven",
   "plan": "free",
-  "name": "Tracy Bernhard",
-  "username": "Jayne.Maggio",
-  "email": "lilian27@gmail.com",
+  "name": "Zita Rempel",
+  "username": "Heidi_Anderson",
+  "email": "rosalia_deckow88@gmail.com",
   "provider": "local",
-  "created_at": "2015-01-24T14:23:26.338Z",
+  "created_at": "2015-01-27T22:34:44.597Z",
   "is_active": true,
   "roles": [
     "member"
   ],
   "email_status": {
     "code": "pending_update",
-    "expires_at": "2015-01-25T14:23:26.639Z",
-    "value": "mathilde69@yahoo.com"
+    "expires_at": "2015-01-28T22:34:44.884Z",
+    "value": "antonina_wisozk@yahoo.com"
   },
-  "id": "mynSOfm1IS",
-  "gravatar_id": "01d04de59bab2152f2332d7e4050ca3a",
+  "id": "Qkua0hqS5B",
+  "gravatar_id": "c044e2ef6de06fd06f70b0b3c730838b",
   "permissions": {
-    "user": [
-      "update",
-      "view"
-    ],
-    "files": [
-      "download",
-      "upload",
-      "delete"
-    ],
-    "comments": [
-      "add"
-    ],
-    "platformbuilds": [
+    "builds": [
       "add",
       "delete-own"
     ],
     "users": [
       "search"
     ],
-    "tags": [
-      "delete-own",
-      "add"
-    ],
-    "releases": [
-      "add",
-      "delete"
-    ],
     "vpbuilds": [
-      "delete-own",
-      "add"
-    ],
-    "builds": [
       "add",
       "delete-own"
+    ],
+    "roms": [
+      "add",
+      "delete-own"
+    ],
+    "releases": [
+      "delete",
+      "add"
+    ],
+    "files": [
+      "delete",
+      "download",
+      "upload"
+    ],
+    "tags": [
+      "add",
+      "delete-own"
+    ],
+    "platformbuilds": [
+      "add",
+      "delete-own"
+    ],
+    "comments": [
+      "add"
+    ],
+    "user": [
+      "view",
+      "update"
     ]
   }
 }

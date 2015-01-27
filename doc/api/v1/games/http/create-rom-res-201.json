@@ -1,13 +1,13 @@
 201 Created
 Content-Type: application/json; charset=utf-8
-Content-Length: 200
+Content-Length: 203
 
 {
-  "id": "tura-circus_10",
+  "id": "bingo-improved_10",
   "file": {
     "is_protected": true,
-    "url": "/storage/v1/files/QJZS7CmS9B",
-    "id": "QJZS7CmS9B"
+    "url": "/storage/v1/files/XJ-MC3crqH",
+    "id": "XJ-MC3crqH"
   },
   "version": "1.0",
   "notes": "That is some ROM.",

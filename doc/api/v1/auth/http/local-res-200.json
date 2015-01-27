@@ -3,56 +3,60 @@ Content-Type: application/json; charset=utf-8
 Content-Encoding: gzip
 
 {
-  "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJRSlJlXy1RMUlTIiwiaWF0IjoiMjAxNS0wMS0yNFQxNDoyMzoxMC4wMjdaIiwiZXhwIjoiMjAxNS0wMS0yNFQxNToyMzoxMC4wMjdaIn0.weiJARC1KBQ1elpOD8STuHPS0agd1L8jxkyWdzjHtBo",
-  "expires": "2015-01-24T15:23:10.027Z",
+  "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJReUw4c281QmNCIiwiaWF0IjoiMjAxNS0wMS0yN1QyMjozNDoyNS4yOTBaIiwiZXhwIjoiMjAxNS0wMS0yN1QyMzozNDoyNS4yOTBaIn0.t25ecz2D95ZkxzaEx9lhfgsPEy4B6eSHn1o4drNIUD0",
+  "expires": "2015-01-27T23:34:25.290Z",
   "user": {
-    "id": "QJRe_-Q1IS",
-    "name": "Esperanza_Wilderman",
-    "username": "Esperanza_Wilderman",
-    "gravatar_id": "d62f5bc6bd8ad4fc8ca9647c5126f6b0",
-    "email": "jettie.zboncak93@hotmail.com",
+    "id": "QyL8so5BcB",
+    "name": "Cyrus_Cruickshank86",
+    "username": "Cyrus_Cruickshank86",
+    "gravatar_id": "48423305bc928089caa17df0a5a9d51b",
+    "email": "kian36@yahoo.com",
     "is_active": true,
     "provider": "local",
     "roles": [
       "member"
     ],
     "plan": "free",
-    "created_at": "2015-01-24T14:23:09.933Z",
+    "created_at": "2015-01-27T22:34:25.242Z",
     "permissions": {
-      "user": [
-        "update",
-        "view"
-      ],
-      "files": [
-        "download",
-        "upload",
-        "delete"
-      ],
-      "comments": [
-        "add"
-      ],
-      "platformbuilds": [
+      "builds": [
         "add",
         "delete-own"
       ],
       "users": [
         "search"
       ],
-      "tags": [
-        "delete-own",
-        "add"
-      ],
-      "releases": [
-        "add",
-        "delete"
-      ],
       "vpbuilds": [
-        "delete-own",
-        "add"
-      ],
-      "builds": [
         "add",
         "delete-own"
+      ],
+      "roms": [
+        "add",
+        "delete-own"
+      ],
+      "releases": [
+        "delete",
+        "add"
+      ],
+      "files": [
+        "delete",
+        "download",
+        "upload"
+      ],
+      "tags": [
+        "add",
+        "delete-own"
+      ],
+      "platformbuilds": [
+        "add",
+        "delete-own"
+      ],
+      "comments": [
+        "add"
+      ],
+      "user": [
+        "view",
+        "update"
       ]
     }
   }

@@ -1,26 +1,22 @@
 POST /api/v1/games HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI3a0MtaldYMVVTIiwiaWF0IjoiMjAxNS0wMS0yNFQxNDoyMzoxMy4xMjVaIiwiZXhwIjoiMjAxNS0wMS0yNFQxNToyMzoxMy4xMjVaIn0.R6pw0ABraaUAUYf2RAup6PEHuYBrzGHtd-mTIBWJkr4
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJYa2ZycG9xQnFIIiwiaWF0IjoiMjAxNS0wMS0yN1QyMjozNDoyNy43NjBaIiwiZXhwIjoiMjAxNS0wMS0yN1QyMzozNDoyNy43NjBaIn0.22vSpIsQxo1g4-j4FWZRn0Oqw5hqBexN7SlLqiuF2Yw
 Content-Type: application/json
-Content-Length: 323
+Content-Length: 762
 
 {
   "ipdb": {
-    "number": 5077,
-    "mfg": 473
+    "number": 5925,
+    "mfg": 328
   },
-  "title": "Carioca Beach",
-  "manufacturer": "John Gille Company",
-  "game_type": "ss",
-  "themes": [
-    "World Places"
-  ],
-  "features": "Large, oversized score display. 25 holes.",
-  "notes": "Carioca Beach is located in Rio de Janeiro, Brazil.",
-  "id": "carioca-beach",
+  "title": "Stella",
+  "manufacturer": "Unknown",
+  "game_type": "pm",
+  "notes": "A version of Keeney and Sons' 1932 'Rainbo', it has the name STELLA inscribed in blue at the top of the playfield along the curved ball arch. It has the same art design and colors. The differences are:All of the pockets are round, not oblong. The top hole has a painted white star around it. There are only two Free Play holes, not four. There is only one outhole trough at the bottom, not two.The pictures we saw of this playfield showed it leaned against a wall, so we could not gauge its size, nor could we see if leg holes were present to know if this game was a table top game or a pin table.",
+  "id": "stella",
   "year": 1900,
   "_media": {
-    "backglass": "mymfsWXkLB"
+    "backglass": "7kgRj9SqH"
   }
 }

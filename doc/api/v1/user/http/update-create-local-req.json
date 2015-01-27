@@ -1,11 +1,11 @@
 PATCH /api/v1/user HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJReU9NWUdRSklIIiwiaWF0IjoiMjAxNS0wMS0yNFQxNDoyMzoyNy4wMTdaIiwiZXhwIjoiMjAxNS0wMS0yNFQxNToyMzoyNy4wMTdaIn0.09sdm9oVdGGwXq5VIm3ZlNY4eqf3JIbxcP_P-dTzdN4
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJtSkRIeTZjSDVCIiwiaWF0IjoiMjAxNS0wMS0yN1QyMjozNDo0NS4zMTRaIiwiZXhwIjoiMjAxNS0wMS0yN1QyMzozNDo0NS4zMTRaIn0.WoE_7gu3zL1U65kijAdEA2fAMESZE_fnXqx91p1BM04
 Content-Type: application/json
-Content-Length: 50
+Content-Length: 54
 
 {
-  "username": "Ima.Streich",
-  "password": "JpmLq3hGxH"
+  "username": "Andre_Halvorson",
+  "password": "6PGOhVl28q"
 }

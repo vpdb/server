@@ -19,4 +19,12 @@ description: |
     description: |
       Delete a ROM of a given ID.
 
-      Members can only delete own ROMs, while contributors can delete any ROM.      
+      Members can only delete own ROMs, while contributors can delete any ROM.
+    body:
+        role/member:
+          example: !include http/del-req.json
+    responses:
+      200:
+        body:
+          role/member:
+            example: !include http/del-res-204.json

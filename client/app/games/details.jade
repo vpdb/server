@@ -147,7 +147,6 @@ include ../template/_mixins
 									span(am-time-ago="comment.created_at")
 								.panel-body
 									div.markdown(markdown="comment.message")
-				button.btn.btn-default(ng-click="addComment2()") New
 
 				h3.h--smaller.h--primary(ng-show="auth.isAuthenticated") Add a Comment:
 				.media(ng-show="auth.isAuthenticated")
@@ -175,12 +174,28 @@ include ../template/_mixins
 
 
 		h1 ROMs
-			button.btn.btn-primary.btn--round.pull-right(ng-click="romuploadCollapsed = !romuploadCollapsed")
+			button.btn.btn-primary.btn--round.pull-right(ng-click="romUploadCollapsed = !romUploadCollapsed")
 				+icon('plus')
 
 		.full-width
-			div(collapse="romuploadCollapsed", ng-init="romuploadCollapsed = true")
+			div(collapse="romUploadCollapsed")
 				.well.well--full-width.well--dropzone(ng-file-drop="onRomUpload($files)", drag-over-class="well--dragging")
+					ul.list--files
+						li.panel(ng-repeat="file in meta.romFiles")
+							.col--list-files-left
+								+icon('ext-rom').svg-4x
+							.col--list-files-right
+								.col-md-3(ng-show="!file.uploading")
+									.block.text--large: strong {{ file.name }}
+									.block.text--large {{ file.bytes | bytes }}
+								.col-md-3(ng-show="!file.uploading")
+									form
+										input.form-control(type="text")
+								.col-md-12(ng-show="file.uploading")
+									.block.text--large: strong {{ file.name }}
+									progressbar.progress-striped.active(value="file.progress")
+							+icon('trash')(ng-click="removeFile(file)")
+
 					label.center-block.text-center: small: i Drop ROM .zip files in here.
 
 		label(ng-hide="game.roms.length > 0") No ROMs available.

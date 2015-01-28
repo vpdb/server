@@ -21,7 +21,7 @@
 .panel
 	position relative
 
-	// if hidden, .panel-triangle won't display.
+	// if hidden, .panel-triangle won't display. exceptions see below.
 	// overflow hidden
 	border-radius $border-radius-small
 	transition background-color $animation-short, color $animation-short
@@ -38,6 +38,8 @@
 	> .panel-footer
 		border-bottom-radius($border-radius-small)
 
+.list--files > .panel
+	overflow hidden
 
 // Remove border from bootstrap
 .panel, .panel-default, .panel > .panel-heading + .panel-collapse .panel-body, .panel-footer

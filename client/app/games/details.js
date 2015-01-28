@@ -2,18 +2,52 @@
 
 angular.module('vpdb.games.details', [])
 
-	.controller('GameController', function($scope, $stateParams, $modal, $log, ApiHelper, Flavors, GameResource, ReleaseCommentResource) {
+	.controller('GameController', function($scope, $stateParams, $modal, $log, $upload, $localStorage,
+					ApiHelper, Flavors, ModalService, DisplayService, ConfigService,
+					GameResource, ReleaseCommentResource) {
 
 		$scope.theme('dark');
 		$scope.setMenu('games');
 
 		$scope.gameId = $stateParams.id;
 		$scope.pageLoading = true;
-
-		$scope.accordeon = {
-			isFirstOpen: true
-		};
 		$scope.flavors = Flavors;
+		$scope.newRoms = $localStorage.game_data && $localStorage.game_data[$scope.gameId] ? $localStorage.game_data[$scope.gameId].roms : [];
+		$scope.meta = $localStorage.game_meta && $localStorage.game_meta[$scope.gameId] ? $localStorage.game_meta[$scope.gameId] : {};
+		$scope.romUploadCollapsed = $scope.newRoms.length === 0;
+
+		/**
+		 * meta is data that is needed to render the view but not sent to the server
+		 * @returns {*}
+		 */
+		var meta = function() {
+			if (!$localStorage.game_meta) {
+				$localStorage.game_meta = {};
+			}
+			if (!$localStorage.game_meta[$scope.gameId]) {
+				$localStorage.game_meta[$scope.gameId] = {
+					romFiles: []
+				};
+			}
+			$scope.meta = $localStorage.game_meta[$scope.gameId];
+			return $localStorage.game_meta[$scope.gameId];
+		};
+		/**
+		 * data is sent to the server and serves as persistent storage in case of browser refresh
+		 * @returns {*}
+		 */
+		var data = function() {
+			if (!$localStorage.game_data) {
+				$localStorage.game_data = {};
+			}
+			if (!$localStorage.game_data[$scope.gameId]) {
+				$localStorage.game_data[$scope.gameId] = {
+					roms: []
+				};
+			}
+			$scope.newRoms = $localStorage.game_data[$scope.gameId].roms;
+			return $localStorage.game_data[$scope.gameId];
+		};
 
 		$scope.game = GameResource.get({ id: $scope.gameId }, function() {
 
@@ -59,8 +93,70 @@ angular.module('vpdb.games.details', [])
 			});
 		};
 
+		/**
+		 * When file(s) are dropped to the ROM upload drop zone
+		 * @param {array} $files
+		 */
 		$scope.onRomUpload = function($files) {
 
+			// 1. validate file types
+			for (var i = 0; i < $files.length; i++) {
+				var file = $files[i];
+				var ext = file.name.substr(file.name.lastIndexOf('.') + 1, file.name.length).toLowerCase();
+				if (!_.contains(['application/zip'], file.type) && !_.contains(['zip'], ext)) {
+					return ModalService.info({
+						icon: 'ext-rom',
+						title: 'ROM Upload',
+						subtitle: 'Wrong file type!',
+						message: 'Please upload a ZIP archive.'
+					});
+				}
+			}
+
+			// 2. upload files
+			_.each($files, function(upload) {
+				var fileReader = new FileReader();
+				fileReader.readAsArrayBuffer(upload);
+				fileReader.onload = function(event) {
+					var type = upload.type;
+					var file = {
+						name: upload.name,
+						bytes: upload.size,
+						icon: 'ext-rom',
+						uploaded: false,
+						uploading: true,
+						progress: 0
+					};
+					meta().romFiles.push(file);
+					$upload.http({
+						url: ConfigService.storageUri('/files'),
+						method: 'POST',
+						params: { type: 'rom' },
+						headers: {
+							'Content-Type': type || 'application/zip',
+							'Content-Disposition': 'attachment; filename="' + upload.name + '"'
+						},
+						data: event.target.result
+					}).then(function(response) {
+						file.uploading = false;
+						file.storage = response.data;
+						data().roms.push({
+							_file: response.data.id,
+							id: upload.name.substr(0, upload.name.lastIndexOf('.')),
+							version: '1.0',
+							notes: '',
+							language: 'en-US'
+						});
+						console.log('data().roms = ' + data().roms);
+						console.log('$scope.newRoms = ' + $scope.newRoms);
+
+					}, ApiHelper.handleErrorsInDialog($scope, 'Error uploading file.', function() {
+						meta().romFiles.splice(meta().romFiles.indexOf(file), 1);
+					}), function (evt) {
+						file.progress = parseInt(100.0 * evt.loaded / evt.total);
+					});
+				};
+			});
 		};
 
 
@@ -86,12 +182,6 @@ angular.module('vpdb.games.details', [])
 	.controller('ReleaseController', function($scope, ApiHelper, ReleaseCommentResource) {
 
 		$scope.newComment = '';
-
-		$scope.addComment2 = function() {
-			var cmt = _.extend(_.cloneDeep($scope.release.comments[0]), { id: Math.round(Math.random() * 1000000), created_at: new Date() });
-			$scope.release.comments.unshift(cmt);
-		};
-
 		$scope.addComment = function(releaseId) {
 			ReleaseCommentResource.save({ releaseId: releaseId }, { message: $scope.newComment }, function(comment) {
 				$scope.release.comments.unshift(comment);

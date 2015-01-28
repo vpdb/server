@@ -36,7 +36,7 @@ exports.upload = function(req, res) {
 	if (!req.headers['content-disposition']) {
 		return api.fail(res, error('Header "Content-Disposition" must be provided.'), 422);
 	}
-	if (!/filename=([^;\z]+)/i.test(req.headers['content-disposition'])) {
+	if (!/filename=([^;]+)/i.test(req.headers['content-disposition'])) {
 		return api.fail(res, error('Header "Content-Disposition" must contain file name.'), 422);
 	}
 	if (!req.query.type) {
@@ -44,7 +44,7 @@ exports.upload = function(req, res) {
 	}
 
 	var file = new File({
-		name: req.headers['content-disposition'].match(/filename=([^;\z]+)/i)[1].replace(/(^"|^'|"$|'$)/g, ''),
+		name: req.headers['content-disposition'].match(/filename=([^;]+)/i)[1].replace(/(^"|^'|"$|'$)/g, ''),
 		bytes: req.headers['content-length'],
 		variations: {},
 		created_at: new Date(),
@@ -89,6 +89,7 @@ exports.upload = function(req, res) {
 							logger.error('[api|file:save] Error saving metadata: %s', err, {});
 							logger.error('[api|file:save] Metadata: %s', require('util').inspect(metadata));
 						}
+						logger.info('[api|file:save] File upload of %s "%s" by <%s> successfully completed.', file.file_type, file.name, req.user.email);
 						api.success(res, file.toDetailed(), 201);
 					});
 					// do this in the background.

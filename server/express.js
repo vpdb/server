@@ -125,7 +125,6 @@ exports.configure = function(app) {
 	}));
 
 	// other static files
-	app.use(express.static(writeable.cacheRoot, { maxAge: 3600*24*30*1000 }));
 	app.use(express.static(writeable.buildRoot, { maxAge: 3600*24*30*1000 }));
 	app.use(express.static(path.resolve(__dirname, '../client/static'), { maxAge: 3600*24*30*1000 }));
 	app.use(express.static(path.resolve(__dirname, '../client/static/images/favicon'), { maxAge: 3600*24*30*1000 }));

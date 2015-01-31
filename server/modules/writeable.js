@@ -26,9 +26,6 @@ function Writeable() {
 
 	this.buildRoot = process.env.APP_BUILDDIR ? process.env.APP_BUILDDIR : path.resolve(__dirname, "../../build");
 	this.devsiteRoot = process.env.APP_BUILDDIR ? process.env.APP_DEVSITEDIR : path.resolve(__dirname, "../../devsite");
-	this.cacheRoot = process.env.APP_CACHEDIR ? process.env.APP_CACHEDIR : path.resolve(__dirname, "../../cache");
-
-	this.imgCache = path.resolve(this.cacheRoot, 'img');
 
 	this.jsRoot = path.resolve(this.buildRoot, 'js');
 	this.cssRoot = path.resolve(this.buildRoot, 'css');
@@ -58,20 +55,12 @@ function Writeable() {
 	if (!fs.existsSync(this.fontsRoot)) {
 		fs.mkdirSync(this.fontsRoot);
 	}
-
-	/* istanbul ignore if */
-	if (!fs.existsSync(this.imgCache)) {
-		fs.mkdirSync(this.imgCache);
-	}
 }
 
 var writeable = new Writeable();
-exports.cacheRoot = writeable.cacheRoot;
 exports.buildRoot = writeable.buildRoot;
 exports.devsiteRoot = writeable.devsiteRoot;
 exports.jsRoot = writeable.jsRoot;
 exports.cssRoot = writeable.cssRoot;
 exports.htmlRoot = writeable.htmlRoot;
 exports.fontsRoot = writeable.fontsRoot;
-
-exports.imgCache = writeable.imgCache;

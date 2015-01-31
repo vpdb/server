@@ -27,7 +27,7 @@ server {
 	auth_basic_user_file /var/www/.htpasswd;
 
 	# this goes to node, everything else is static file serving
-	location ~ (^/(api(-mock)?|avatars|asset|packs)/|^/storage|^/auth/[^/]+$) {
+	location ~ (^/api/|^/storage|^/auth/[^/]+$) {
 		client_max_body_size 200M;
 		proxy_pass http://vpdb_staging_upstream;
 		proxy_redirect off;
@@ -47,12 +47,6 @@ server {
 			proxy_pass http://vpdb_staging_upstream;
 			expires max;
 			add_header Cache-Control private;
-		}
-
-		location ~ ^/(api-mock|avatars|asset|packs)/ {
-			proxy_pass http://vpdb_staging_upstream;
-			expires max;
-			add_header Cache-Control public;
 		}
 	}
 

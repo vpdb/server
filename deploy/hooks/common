@@ -150,6 +150,6 @@ repo_last_tag() {
 
 node_cluster_reload() {
 	echo Deploying new code...
-	naught deploy ${DEPLOY_ROOT}/${DEPLOY_ENV}/shared/naught.ipc
+	passenger-config restart-app ${DEPLOY_ROOT}/${DEPLOY_ENV}/current
 	test $? -eq 0 || abort "Failed to trigger Node.js cluster reload."
 }

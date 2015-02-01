@@ -6,8 +6,7 @@
 * [Node.js](http://nodejs.org/) for dynamic page serving
 * [Nginx](http://nginx.org/) for static page serving and reverse proxy
 * [Git](http://git-scm.com/) for push deployments on client side
-* [Upstart](http://upstart.ubuntu.com/) as Node.js service wrapper
-* [Naught](https://github.com/andrewrk/naught) for zero downtime code deployment
+* [Phusion Passenger](https://www.phusionpassenger.com/) for Node process management within Nginx
 * [MongoDB](https://www.mongodb.org/) for data storage
 * [Redis](http://redis.io/) for message queue, quota and ACLs 
 
@@ -55,7 +54,7 @@ Set:
 ### General Stuff
 
 	sudo apt-get -y install rcconf git-core python-software-properties vim
-	sudo apt-get -y install build-essential checkinstall rake zlib1g-dev libpcre3 libpcre3-dev libbz2-dev libssl-dev tar
+	sudo apt-get -y install build-essential checkinstall rake zlib1g-dev libpcre3 libpcre3-dev libbz2-dev libssl-dev tar libcurl4-openssl-dev ruby-dev
 
 ### Node.js
 
@@ -174,14 +173,8 @@ For client documentation, check the [deployment guide](DEPLOY.md).
 
 	sudo mkdir -p /var/www/production/shared/logs /var/www/production/shared/cache /var/www/production/shared/data /var/www/production/config
 	sudo mkdir -p /var/www/staging/shared/logs /var/www/staging/shared/cache /var/www/staging/shared/data /var/www/staging/config
-	sudo mkdir -p /repos/production /repos/staging
 
 	sudo chmod 770 /var/www /var/www/production /var/www/staging -R
-	sudo chmod 700 /repos/production /repos/staging
-
-	sudo ln -s /var/log/upstart/vpdb-production.log /var/www/production/shared/logs/upstart
-	sudo ln -s /var/log/upstart/vpdb-staging.log /var/www/staging/shared/logs/upstart
-
 
 The ``shared`` folder contains the following:
 
@@ -195,7 +188,7 @@ folder.
 
 ### Create deployment user
 
-	sudo adduser deployer --home /repos --shell /bin/bash --ingroup www-data
+	sudo adduser deployer --home /repos --shell /bin/bash --ingroup www-data --disabled-password
 	sudo chown deployer:www-data /var/www /repos -R
 	sudo chown www-data:www-data /var/www/production/shared/cache /var/www/production/shared/data -R
 	sudo chown www-data:www-data /var/www/staging/shared/cache /var/www/staging/shared/data -R
@@ -209,11 +202,12 @@ Paste your pub key in there.
 
 ### Setup bare Git repositories
 
-Still as user ``deployer``:
+Still as user `deployer`:
 
 	cd ~
 	git clone --mirror https://github.com/freezy/node-vpdb.git staging
 	git clone --mirror https://github.com/freezy/node-vpdb.git production
+	chmod 700 /repos/production /repos/staging
 
 Setup deployment hooks:
 
@@ -224,13 +218,13 @@ Setup deployment hooks:
 	ln -s ~/source/deploy/hooks/common ~/production/hooks/common
 	ln -s ~/source/deploy/hooks/common ~/staging/hooks/common
 
-Also add ``scripts`` folder to the path for easy deployment commands.
+Also add `scripts` folder to the path for easy deployment commands.
 
 	echo PATH="\$HOME/source/deploy/scripts:\$PATH" >> ~/.profile
 
 ## Upload Code
 
-Still as user ``deployer``, create configuration file
+Still as user `deployer`, create configuration file
 
 	cd ~/source
 	cp server/config/settings-dist.js ~/initial-production-settings.js
@@ -240,28 +234,26 @@ Still as user ``deployer``, create configuration file
 	vi /var/www/production/settings.js
 	vi /var/www/staging/settings.js
 
-Update and double-check all ``@important`` settings. When done, run
+Update and double-check all `@important` settings. When done, run
 
 	npm install
 	APP_SETTINGS=/var/www/production/settings.js node server/config/validate.js
 	APP_SETTINGS=/var/www/staging/settings.js node server/config/validate.js
 
-Check if your settings are valid. Then push the code to the server as described [here](DEPLOY.md). Of course the code
-hot-swap will fail since there isn't anything running yet. However, code should be uploaded at the correct location, and
-you can now start the services:
+Check if your settings are valid. Then deploy a first time. Still as user `deployer`:
 
-	sudo /bin/bash
-	start vpdb-staging
-	exit
+	vpdb_staging_deploy
 
-Once VPDB gets a first release tag and you've pushed to production as well, don't forget to launch the service:
+Of course the code hot-swap will fail since there isn't anything running yet.
+However, code should be copied to the correct location, and you can now
+configure Nginx. For future deployements, refer to the [deployment guide](DEPLOY.md).
 
-	start vpdb-production
 
 ## Setup Reverse Proxy
 
 ### SSL Certs
 
+	mkdir /etc/nginx/ssl
 	cd /etc/nginx/ssl
 	openssl req -new -days 365 -nodes -keyout xxx.vpdb.ch.key -out xxx.vpdb.ch.csr
 

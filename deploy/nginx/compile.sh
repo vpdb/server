@@ -2,23 +2,18 @@
 
 cd /usr/local/src
 
-# deps
-apt-get -y install build-essential checkinstall rake zlib1g-dev libpcre3 libpcre3-dev libbz2-dev libssl-dev tar
-
 # download source, plus naxsi, headers-more and pagespeed.
 wget http://nginx.org/download/nginx-1.7.9.tar.gz
 wget https://github.com/nbs-system/naxsi/archive/master.tar.gz -O naxsi-master.tar.gz
 wget https://github.com/openresty/headers-more-nginx-module/archive/v0.25.tar.gz -O headers-more-0.25.tar.gz
 wget https://github.com/pagespeed/ngx_pagespeed/archive/v1.9.32.3-beta.tar.gz -O pagespeed-v1.9.32.3-beta.tar.gz
 wget https://github.com/FRiCKLE/ngx_cache_purge/archive/2.3.tar.gz -O cache_purge-2.3.tar.gz
-wget https://github.com/phusion/passenger/archive/release-5.0.0.beta2.tar.gz -O passenger-5.0.0.beta2.tar.gz
 
 tar xvfz nginx-1.7.9.tar.gz
 tar xvfz headers-more-0.25.tar.gz
 tar xvfz naxsi-master.tar.gz
 tar xvfz pagespeed-v1.9.32.3-beta.tar.gz
 tar xvfz cache_purge-2.3.tar.gz
-tar xvfz passenger-5.0.0.beta2.tar.gz
 
 # download pagespeed dep
 cd ngx_pagespeed-*
@@ -73,6 +68,7 @@ make
 checkinstall --install=no -y
 dpkg -i nginx_1.7.9-1_amd64.deb
 wget https://raw.githubusercontent.com/freezy/node-vpdb/master/deploy/init/nginx -O /etc/init.d/nginx
+chmod 755 /etc/init.d/nginx
 update-rc.d -f nginx defaults
 
 # folders

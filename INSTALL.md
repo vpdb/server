@@ -50,11 +50,12 @@ Set:
 	PermitRootLogin no
 
 
-## Get Deps
+## Install Deps
 
 ### General Stuff
 
 	sudo apt-get -y install rcconf git-core python-software-properties vim
+	sudo apt-get -y install build-essential checkinstall rake zlib1g-dev libpcre3 libpcre3-dev libbz2-dev libssl-dev tar
 
 ### Node.js
 
@@ -67,10 +68,6 @@ Upgrade ``npm`` to latest and prevent self-signed certificate error
 	sudo npm config set ca ""
 	sudo npm install -g npm
 	sudo npm install -g grunt-cli bower
-
-#### Node Deps
-
-	sudo npm install -g andrewrk/naught
 
 ### Image Tools
 
@@ -124,7 +121,7 @@ Paste this at the end of ``/etc/init/mongod.conf``:
 Restart and go back to normal user:
 
 	stop mongod
-    start mongod
+	start mongod
 	exit
 
 ### Redis
@@ -134,6 +131,39 @@ Install latest from repo:
 	sudo apt-add-repository ppa:chris-lea/redis-server
 	sudo apt-get update
 	sudo apt-get install -y redis-server
+
+### Nginx
+
+Since Nginx doesn't support external modules (by design), you'll need need to compile it with the desired modules.
+
+External modules:
+
+ * [Naxsi](https://github.com/nbs-system/naxsi) - Anti XSS & SQL Injection
+ * [Phusion Passenger](https://github.com/phusion/passenger) - A fast and robust web server and application server for Ruby, Python and Node.js (see below)
+ * [ngx_headers_more](https://github.com/openresty/headers-more-nginx-module) - Set, add, and clear arbitrary output headers
+ * [ngx_pagespeed](https://github.com/pagespeed/ngx_pagespeed) - Automatic PageSpeed optimization
+ * [ngx_cache_purge](https://github.com/FRiCKLE/ngx_cache_purge) - Purge content from FastCGI, proxy, SCGI and uWSGI caches.
+
+Note we use Passenger's master, since beta2 at time of writing didn't compile.
+As soon as v5 goes final, it should be the one.
+
+Setup Phusion Passenger:
+
+	cd /usr/local/src
+	git clone https://github.com/phusion/passenger.git
+
+Add `/opt/passenger/bin` to `PATH`:
+
+	ln -s /usr/local/src/passenger /opt/passenger
+	vi /etc/environment
+
+Download and compile Nginx. See [compile script](deploy/nginx/compile.sh) how to do that.
+
+Copy needed vendor config files:
+
+	sudo cp /usr/local/src/naxsi-master/naxsi_config/naxsi_core.rules /etc/nginx/
+	sudo mv /etc/nginx/mime.types.default /etc/nginx/mime.types
+	sudo mv /etc/nginx/fastcgi_params.default /etc/nginx/fastcgi_params
 
 
 ## Setup Push Deployment
@@ -198,16 +228,6 @@ Also add ``scripts`` folder to the path for easy deployment commands.
 
 	echo PATH="\$HOME/source/deploy/scripts:\$PATH" >> ~/.profile
 
-### Create Node.js Startup Scripts
-
-	sudo cp /repos/source/deploy/init/vpdb-staging.conf /etc/init/
-	sudo cp /etc/init/vpdb-production.conf /etc/init/vpdb-production.conf
-	sudo sed -i 's/staging/production/g' /etc/init/vpdb-production.conf
-	sudo sed -i 's/8124/9124/g' /etc/init/vpdb-production.conf
-	sudo sed -i 's/APP_NUMWORKERS=1/APP_NUMWORKERS=2/g' /etc/init/vpdb-production.conf
-	update-rc.d vpdb-production default
-	update-rc.d vpdb-staging default
-
 ## Upload Code
 
 Still as user ``deployer``, create configuration file
@@ -240,70 +260,20 @@ Once VPDB gets a first release tag and you've pushed to production as well, don'
 
 ## Setup Reverse Proxy
 
-### Compile Nginx
-
-Since Nginx doesn't support external modules (by design), you'll need need to compile it with the desired modules.
-See the [compile script](deploy/nginx/compile.sh) how to do that.
-
-### SSL Certificates
-
-We'll only run on `https`, so go create a few certs:
-
-	sudo /bin/bash
-	mkdir -p /etc/nginx/ssl /etc/nginx/sites-available /etc/nginx/sites-enabled /etc/nginx/conf.d/
-	chgrp www-data /etc/nginx/ssl
-	chmod 770 /etc/nginx/ssl
-	cd /etc/nginx/ssl
-	openssl genrsa -des3 -out vpdb.key 2048
-	openssl req -new -key vpdb.key -out vpdb.csr
-	cp -v vpdb.{key,original}
-	openssl rsa -in vpdb.original -out vpdb.key
-	rm -v vpdb.original
-	openssl x509 -req -days 365 -in vpdb.csr -signkey vpdb.key -out vpdb.crt
-	
-Do the same for `staging.key` and `staging.crt`:
- 
-	openssl genrsa -des3 -out staging.key 2048
-	openssl req -new -key staging.key -out staging.csr
-	cp -v staging.{key,original}
-	openssl rsa -in staging.original -out staging.key
-	rm -v staging.original
-	openssl x509 -req -days 365 -in staging.csr -signkey staging.key -out staging.crt
-	
-And `staging-devsite.key` and `staging-devsite.crt`:
-
-	openssl genrsa -des3 -out staging-devsite.key 2048
-	openssl req -new -key staging-devsite.key -out staging-devsite.csr
-	cp -v staging-devsite.{key,original}
-	openssl rsa -in staging-devsite.original -out staging-devsite.key
-	rm -v staging-devsite.original
-	openssl x509 -req -days 365 -in staging-devsite.csr -signkey staging-devsite.key -out staging-devsite.crt
-	exit
-
-#### Signed Certificate Example
+### SSL Certs
 
 	cd /etc/nginx/ssl
-	openssl req -new -days 365 -nodes -keyout developer.vpdb.ch.key -out developer.vpdb.ch.csr
-	
-Submit `developer.vpdb.ch.csr` to signing authority, then paste received certificate into `developer-signed.crt`. Then
+	openssl req -new -days 365 -nodes -keyout xxx.vpdb.ch.key -out xxx.vpdb.ch.csr
+
+Submit `xxx.vpdb.ch.csr` to signing authority, then paste received certificate into `xxx.vpdb.ch.crt`. Then
 build the key chain:
 
-	cat developer-signed.crt startssl-sub.class1.server.ca.pem startssl-ca.pem > developer.vpdb.ch.crt
-
+	cat xxx.vpdb.ch.crt startssl-sub.class1.server.ca.pem startssl-ca.pem > xxx.vpdb.ch-keychain.crt
 
 ### Configure Nginx
 
-Copy needed vendor config files:
-
-	sudo cp /usr/local/src/naxsi-master/naxsi_config/naxsi_core.rules /etc/nginx/
-	sudo mv /etc/nginx/mime.types.default /etc/nginx/mime.types
-	sudo mv /etc/nginx/fastcgi_params.default /etc/nginx/fastcgi_params
-
-Our config and the sites:
-
 	sudo mkdir -p /etc/nginx/sites-available /etc/nginx/sites-enabled /etc/nginx/conf.d
 	sudo cp /repos/source/deploy/nginx/nginx.conf /etc/nginx
-	sudo cp /repos/source/deploy/nginx/proxy_params.conf /etc/nginx/proxy_params
 	sudo cp /repos/source/deploy/nginx/sites/production /etc/nginx/sites-available/vpdb-production
 	sudo cp /repos/source/deploy/nginx/sites/staging /etc/nginx/sites-available/vpdb-staging
 	sudo cp /repos/source/deploy/nginx/sites/staging-devsite /etc/nginx/sites-available/vpdb-staging-devsite

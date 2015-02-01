@@ -1,7 +1,6 @@
 server {
 
 	set $build_directory    /var/www/staging/current/build;
-	set $project_directory  /var/www/staging/current;
 
 	listen 443 ssl spdy;
 	server_name staging.vpdb;
@@ -29,25 +28,18 @@ server {
 	# this goes to node, everything else is static file serving
 	location ~ (^/api/|^/storage|^/auth/[^/]+$) {
 		client_max_body_size 200M;
-		proxy_pass http://vpdb_staging_upstream;
-		proxy_redirect off;
-		proxy_set_header X-Real-IP         $remote_addr;
-		proxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;
-		proxy_set_header X-Forwarded-Proto $scheme;
-		proxy_set_header Host              $http_host;
-		proxy_set_header X-NginX-Proxy     true;
-		proxy_set_header Connection "";
-		proxy_pass_request_headers         on;
-		proxy_http_version 1.1;
-
 		expires 0;
 		add_header Cache-Control private;
 
-		location ~ ^/storage/ {
-			proxy_pass http://vpdb_staging_upstream;
-			expires max;
-			add_header Cache-Control private;
-		}
+		root /var/www/staging/current/build;
+		passenger_enabled on;
+		passenger_app_type node;
+		passenger_min_instances 1;
+		passenger_env_var PORT 3000;
+		passenger_env_var APP_NAME staging;
+		passenger_env_var APP_SETTINGS /var/www/staging/settings.js;
+		passenger_env_var APP_ACCESS_LOG /var/www/staging/shared/logs/access;
+
 	}
 
 	# map html files to root

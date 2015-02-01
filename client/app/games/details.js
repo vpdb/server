@@ -15,6 +15,14 @@ angular.module('vpdb.games.details', [])
 		$scope.newRoms = $localStorage.game_data && $localStorage.game_data[$scope.gameId] ? $localStorage.game_data[$scope.gameId].roms : [];
 		$scope.meta = $localStorage.game_meta && $localStorage.game_meta[$scope.gameId] ? $localStorage.game_meta[$scope.gameId] : {};
 		$scope.romUploadCollapsed = $scope.newRoms.length === 0;
+		$scope.romLanguages = [
+			{ value: 'en', label: 'English' },
+			{ value: 'es', label: 'Spanish' },
+			{ value: 'de', label: 'German' },
+			{ value: 'it', label: 'Italian' },
+			{ value: 'fr', label: 'French' }
+		];
+
 
 		/**
 		 * meta is data that is needed to render the view but not sent to the server

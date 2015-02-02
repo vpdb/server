@@ -1,10 +1,10 @@
-POST /api/v1/releases/Qyil3jqB5B/comments HTTP/1.1
+POST /api/v1/releases/m1Lr4L4zI/comments HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI3azUyc3M1U3FCIiwiaWF0IjoiMjAxNS0wMS0yN1QyMjozNDoyNS43NTFaIiwiZXhwIjoiMjAxNS0wMS0yN1QyMzozNDoyNS43NTFaIn0.FrK2obwAe4veiQ22WEfkq4syBqjaSxUJ-KdBN9qWx9k
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJtSkxTNEVMTno4IiwiaWF0IjoiMjAxNS0wMi0wMlQyMjo0NToxNC40MjFaIiwiZXhwIjoiMjAxNS0wMi0wMlQyMzo0NToxNC40MjFaIn0.F60a6JrmoWS05Q6URX2totNMJw57PBuf10okvRpgERM
 Content-Type: application/json
 Content-Length: 39
 
 {
-  "message": "Balanced dynamic function"
+  "message": "Sharable exuding forecast"
 }

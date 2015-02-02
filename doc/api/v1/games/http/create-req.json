@@ -1,22 +1,22 @@
 POST /api/v1/games HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJYa2ZycG9xQnFIIiwiaWF0IjoiMjAxNS0wMS0yN1QyMjozNDoyNy43NjBaIiwiZXhwIjoiMjAxNS0wMS0yN1QyMzozNDoyNy43NjBaIn0.22vSpIsQxo1g4-j4FWZRn0Oqw5hqBexN7SlLqiuF2Yw
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJYeXVFVTRJNEc4IiwiaWF0IjoiMjAxNS0wMi0wMlQyMjo0NToxNi42MzZaIiwiZXhwIjoiMjAxNS0wMi0wMlQyMzo0NToxNi42MzZaIn0.VEX__xE58WbaRVgW1mfsKFnB5Y_myK6fWXRK8GmgknM
 Content-Type: application/json
-Content-Length: 762
+Content-Length: 196
 
 {
   "ipdb": {
-    "number": 5925,
-    "mfg": 328
+    "number": 3408,
+    "mfg": 279
   },
-  "title": "Stella",
-  "manufacturer": "Unknown",
-  "game_type": "pm",
-  "notes": "A version of Keeney and Sons' 1932 'Rainbo', it has the name STELLA inscribed in blue at the top of the playfield along the curved ball arch. It has the same art design and colors. The differences are:All of the pockets are round, not oblong. The top hole has a painted white star around it. There are only two Free Play holes, not four. There is only one outhole trough at the bottom, not two.The pictures we saw of this playfield showed it leaned against a wall, so we could not gauge its size, nor could we see if leg holes were present to know if this game was a table top game or a pin table.",
-  "id": "stella",
-  "year": 1900,
+  "title": "Miss Nessie",
+  "manufacturer": "Sega",
+  "year": 1978,
+  "notes": "Release date is 3-1978.",
+  "id": "miss-nessie",
+  "game_type": "na",
   "_media": {
-    "backglass": "7kgRj9SqH"
+    "backglass": "X1pN8VUVG8"
   }
 }

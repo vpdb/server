@@ -1,13 +1,14 @@
 201 Created
 Content-Type: application/json; charset=utf-8
-Content-Length: 203
+Content-Length: 217
 
 {
-  "id": "bingo-improved_10",
+  "id": "west-wind_10",
   "file": {
     "is_protected": true,
-    "url": "/storage/v1/files/XJ-MC3crqH",
-    "id": "XJ-MC3crqH"
+    "bytes": 900174,
+    "url": "/storage/v1/files/QyLlMS84fU",
+    "id": "QyLlMS84fU"
   },
   "version": "1.0",
   "notes": "That is some ROM.",

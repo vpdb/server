@@ -1,19 +1,19 @@
 201 Created
 Content-Type: application/json; charset=utf-8
-Content-Encoding: gzip
+Content-Length: 839
 
 {
-  "title": "Stella",
-  "manufacturer": "Unknown",
-  "game_type": "pm",
-  "notes": "A version of Keeney and Sons' 1932 'Rainbo', it has the name STELLA inscribed in blue at the top of the playfield along the curved ball arch. It has the same art design and colors. The differences are:All of the pockets are round, not oblong. The top hole has a painted white star around it. There are only two Free Play holes, not four. There is only one outhole trough at the bottom, not two.The pictures we saw of this playfield showed it leaned against a wall, so we could not gauge its size, nor could we see if leg holes were present to know if this game was a table top game or a pin table.",
-  "id": "stella",
-  "year": 1900,
-  "_created_by": "54c8127356c96bc427b62316",
-  "created_at": "2015-01-27T22:34:27.862Z",
+  "title": "Miss Nessie",
+  "manufacturer": "Sega",
+  "year": 1978,
+  "notes": "Release date is 3-1978.",
+  "id": "miss-nessie",
+  "game_type": "na",
+  "_created_by": "54cffdfcf5da2b883abe11f4",
+  "created_at": "2015-02-02T22:45:16.736Z",
   "ipdb": {
-    "number": 5925,
-    "mfg": 328
+    "number": 3408,
+    "mfg": 279
   },
   "artists": [],
   "designers": [],
@@ -24,21 +24,22 @@ Content-Encoding: gzip
       "is_protected": false,
       "variations": {
         "small-2x": {
-          "url": "/storage/v1/files/7kgRj9SqH/small-2x"
+          "url": "/storage/v1/files/X1pN8VUVG8/small-2x"
         },
         "small": {
-          "url": "/storage/v1/files/7kgRj9SqH/small"
+          "url": "/storage/v1/files/X1pN8VUVG8/small"
         },
         "medium-2x": {
-          "url": "/storage/v1/files/7kgRj9SqH/medium-2x"
+          "url": "/storage/v1/files/X1pN8VUVG8/medium-2x"
         },
         "medium": {
-          "url": "/storage/v1/files/7kgRj9SqH/medium"
+          "url": "/storage/v1/files/X1pN8VUVG8/medium"
         }
       },
-      "url": "/storage/v1/files/7kgRj9SqH",
-      "id": "7kgRj9SqH"
+      "bytes": 135,
+      "url": "/storage/v1/files/X1pN8VUVG8",
+      "id": "X1pN8VUVG8"
     }
   },
-  "url": "/game/stella"
+  "url": "/game/miss-nessie"
 }

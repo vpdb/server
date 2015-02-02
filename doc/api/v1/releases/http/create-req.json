@@ -1,21 +1,21 @@
 POST /api/v1/releases HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJteUZ1MnFyNUIiLCJpYXQiOiIyMDE1LTAxLTI3VDIyOjM0OjM4LjcwNloiLCJleHAiOiIyMDE1LTAxLTI3VDIzOjM0OjM4LjcwNloifQ.Q8mYTcLqXk-Bw_3zrrwWDKcWPFsB9-6Ma2guXUXvPNU
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJtMXQyRUlWekwiLCJpYXQiOiIyMDE1LTAyLTAyVDIyOjQ1OjIyLjAyMVoiLCJleHAiOiIyMDE1LTAyLTAyVDIzOjQ1OjIyLjAyMVoifQ.MD6paOSS5hHgxdWrXlJvwcHo9IdvLL_2Nh04aY_QZGE
 Content-Type: application/json
-Content-Length: 473
+Content-Length: 480
 
 {
   "name": "release",
-  "_game": "easy-aces",
+  "_game": "diamond-flipper",
   "versions": [
     {
       "files": [
         {
-          "_file": "X1wIt29S9B",
+          "_file": "7yqea4LEzI",
           "_media": {
-            "playfield_image": "71h9nqrcB",
-            "playfield_video": "Qk3l5h9BqS"
+            "playfield_image": "Qy0laE8VML",
+            "playfield_video": "QkxANUVGL"
           },
           "_compatibility": [
             "9.9.0"
@@ -26,9 +26,9 @@ Content-Length: 473
           }
         },
         {
-          "_file": "71uLF3cB9r",
+          "_file": "71ixpEIEML",
           "_media": {
-            "playfield_image": "mk0qh5r5S"
+            "playfield_image": "QykZaEIVGI"
           },
           "_compatibility": [
             "9.9.0"
@@ -44,7 +44,7 @@ Content-Length: 473
   ],
   "authors": [
     {
-      "_user": "myFu2qr5B",
+      "_user": "m1t2EIVzL",
       "roles": [
         "Table Creator"
       ]

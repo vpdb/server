@@ -180,7 +180,7 @@ include ../template/_mixins
 
 		.full-width
 			div(collapse="romUploadCollapsed")
-				.well.well--full-width.well--dropzone(ng-file-drop="onRomUpload($files)", drag-over-class="well--dragging")
+				.well.well--full-width.well--dropzone(ng-file-drop="onRomUpload($files)", ng-multiple="true", drag-over-class="well--dragging")
 					ul.list--files
 						li.panel(ng-repeat="file in meta.romFiles")
 							.col--list-files-left
@@ -199,21 +199,28 @@ include ../template/_mixins
 											label.control-label.small Notes
 									.row
 										.col-xs-2
-											input.form-control(type="text")
+											input.form-control(type="text", ng-model="newRoms[file.id].version")
 										.col-xs-3
-											select.form-control(ng-model="language", ng-options="opt as opt.label for opt in romLanguages")
+											select.form-control.form-control--solid(ng-model="newRoms[file.id].language", ng-options="opt as opt.label for opt in romLanguages")
 										.col-xs-6
-											input.form-control(type="text", placeholder="Home Version? Profanity?")
+											input.form-control(type="text", ng-model="newRoms[file.id].notes", placeholder="Home Version? Profanity?")
 
 								.col-md-12(ng-show="file.uploading")
 									.block.text--large: strong {{ file.name }}
 									progressbar.progress-striped.active(value="file.progress")
-							+icon('trash')(ng-click="removeFile(file)")
+							+icon('trash')(ng-click="removeRom(file)")
+
+					.pull-right.padder-top(ng-show="meta.romFiles.length > 0")
+						button.btn.btn-default.space-right Clear
+						button.btn.btn-primary(ng-click="saveRoms()")
+							+icon('plus-circle').space-right
+							| Add
+					.clearfix(ng-show="meta.romFiles.length > 0")
 
 					label.center-block.text-center: small: i Drop ROM .zip files in here.
 
-		label(ng-hide="game.roms.length > 0") No ROMs available.
-		table.table.table-striped(ng-show="game.roms.length > 0")
+		label(ng-hide="roms.length > 0") No ROMs available.
+		table.table.table-striped(ng-show="roms.length > 0")
 			thead
 				tr
 					th Name
@@ -222,19 +229,14 @@ include ../template/_mixins
 					th.hidden-xs Notes
 					th DLs
 					th Size
-					th
 			tbody
-				tr(ng-repeat="rom in game.roms")
-					td
-						samp {{ rom.name }}
-					td {{ rom.download.version }}
+				tr(ng-repeat="rom in roms")
+					td: b {{ rom.id }}
+					td {{ rom.version }}
 					td.hidden-xs {{ rom.language }}
 					td.hidden-xs {{ rom.notes }}
 					td {{ rom.downloads | number }}
-					td {{ rom.download.size | bytes }}
-					td.nostripe.td-dlbtn
-						button.btn.btn-primary.btn-xs.btn-dl(download="rom.download", download-info="[ game, rom ] | dlRom")
-
+					td {{ rom.file.bytes | bytes }}
 
 		h1 Backglasses
 		label(ng-hide="game.backglasses.length > 0") No backglasses available.

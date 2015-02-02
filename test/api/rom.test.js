@@ -208,6 +208,31 @@ describe('The VPDB `ROM` API', function() {
 			});
 		});
 
+		it('should be listed under the game after success', function(done) {
+			var user = 'member';
+			hlp.file.createRom(user, request, function(file) {
+				request
+					.post('/api/v1/games/' + game.id + '/roms')
+					.as(user)
+					.send({
+						id: 'hulk4',
+						_file: file.id
+					})
+					.end(function(err, res) {
+						hlp.expectStatus(err, res, 201);
+						hlp.doomRom(user, res.body.id);
+						request.get('/api/v1/games/' + game.id + '/roms').end(function(err, res) {
+							hlp.expectStatus(err, res, 200);
+							expect(res.body).to.be.an('array');
+							expect(res.body.length).to.be.above(0);
+							expect(res.body[0].file).to.be.an('object');
+							expect(res.body[0].created_by).to.be.an('object');
+							done();
+						});
+					});
+			});
+		});
+
 	});
 
 	describe('when deleting a ROM', function() {

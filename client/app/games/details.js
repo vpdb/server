@@ -4,7 +4,7 @@ angular.module('vpdb.games.details', [])
 
 	.controller('GameController', function($scope, $stateParams, $modal, $log, $upload, $localStorage,
 					ApiHelper, Flavors, ModalService, DisplayService, ConfigService,
-					GameResource, ReleaseCommentResource) {
+					GameResource, ReleaseCommentResource, FileResource, RomResource) {
 
 		$scope.theme('dark');
 		$scope.setMenu('games');
@@ -14,7 +14,8 @@ angular.module('vpdb.games.details', [])
 		$scope.flavors = Flavors;
 		$scope.newRoms = $localStorage.game_data && $localStorage.game_data[$scope.gameId] ? $localStorage.game_data[$scope.gameId].roms : [];
 		$scope.meta = $localStorage.game_meta && $localStorage.game_meta[$scope.gameId] ? $localStorage.game_meta[$scope.gameId] : {};
-		$scope.romUploadCollapsed = $scope.newRoms.length === 0;
+		$scope.romUploadCollapsed = !$scope.meta || !$scope.meta.romFiles || $scope.meta.romFiles.length === 0;
+		$scope.roms = RomResource.query({ id : $scope.gameId });
 		$scope.romLanguages = [
 			{ value: 'en', label: 'English' },
 			{ value: 'es', label: 'Spanish' },
@@ -22,7 +23,6 @@ angular.module('vpdb.games.details', [])
 			{ value: 'it', label: 'Italian' },
 			{ value: 'fr', label: 'French' }
 		];
-
 
 		/**
 		 * meta is data that is needed to render the view but not sent to the server
@@ -40,6 +40,7 @@ angular.module('vpdb.games.details', [])
 			$scope.meta = $localStorage.game_meta[$scope.gameId];
 			return $localStorage.game_meta[$scope.gameId];
 		};
+
 		/**
 		 * data is sent to the server and serves as persistent storage in case of browser refresh
 		 * @returns {*}
@@ -50,7 +51,7 @@ angular.module('vpdb.games.details', [])
 			}
 			if (!$localStorage.game_data[$scope.gameId]) {
 				$localStorage.game_data[$scope.gameId] = {
-					roms: []
+					roms: {}
 				};
 			}
 			$scope.newRoms = $localStorage.game_data[$scope.gameId].roms;
@@ -147,16 +148,20 @@ angular.module('vpdb.games.details', [])
 						data: event.target.result
 					}).then(function(response) {
 						file.uploading = false;
-						file.storage = response.data;
-						data().roms.push({
+						file.id = response.data.id;
+
+						var basename = upload.name.substr(0, upload.name.lastIndexOf('.'));
+						var m = basename.match(/(\d{2,}.?)$/);
+						var version = m ? m[1][0]  + '.' + m[1].substr(1) : '';
+						var fileData = {
 							_file: response.data.id,
 							id: upload.name.substr(0, upload.name.lastIndexOf('.')),
-							version: '1.0',
+							version: version,
 							notes: '',
-							language: 'en-US'
-						});
-						console.log('data().roms = ' + data().roms);
-						console.log('$scope.newRoms = ' + $scope.newRoms);
+							language: $scope.romLanguages[0]
+						};
+
+						data().roms[response.data.id] = fileData;
 
 					}, ApiHelper.handleErrorsInDialog($scope, 'Error uploading file.', function() {
 						meta().romFiles.splice(meta().romFiles.indexOf(file), 1);
@@ -165,6 +170,45 @@ angular.module('vpdb.games.details', [])
 					});
 				};
 			});
+		};
+
+
+		/**
+		 * Posts all uploaded ROM files to the API
+		 */
+		$scope.saveRoms = function() {
+			_.each(data().roms, function(rom) {
+				if (_.isObject(rom.language)) {
+					rom.language = rom.language.value;
+				}
+				RomResource.save({ id: $scope.gameId }, rom, function() {
+					meta().romFiles.splice(_.indexOf(meta().romFiles, _.findWhere(meta().romFiles, { id : rom._file })), 1);
+					delete data().roms[rom._file];
+
+				}, function(error) {
+					console.error(error);
+				});
+			});
+
+ 		};
+
+
+		/**
+		 * Deletes an uploaded file from the server and removes it from the list
+		 * @param {object} file
+		 */
+		$scope.removeRom = function(file) {
+			FileResource.delete({ id: file.id }, function() {
+				meta().romFiles.splice(meta().romFiles.indexOf(file), 1);
+				delete data().roms[file.id];
+
+			}, ApiHelper.handleErrorsInDialog($scope, 'Error removing file.', function(response) {
+				if (response.status === 404) {
+					meta().romFiles.splice(meta().romFiles.indexOf(file), 1);
+					delete data().roms[file.id];
+					return true;
+				}
+			}));
 		};
 
 

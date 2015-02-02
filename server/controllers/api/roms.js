@@ -71,6 +71,37 @@ exports.create = function(req, res) {
 
 
 /**
+ * Lists all ROMs for a given game.
+ *
+ * @param {Request} req
+ * @param {Response} res
+ */
+exports.list = function(req, res) {
+
+	var assert = api.assert(error, 'list', '', res);
+	var pagination = api.pagination(req, 10, 50);
+
+	Game.findOne({ id: req.params.id }, assert(function(game) {
+		if (!game) {
+			return api.fail(res, error('No such game with ID "%s".', req.params.id), 404);
+		}
+		Rom.paginate({ '_game': game._id }, pagination.page, pagination.perPage, function(err, pageCount, roms, count) {
+			/* istanbul ignore if  */
+			if (err) {
+				return api.fail(res, error(err, 'Error listing roms').log('list'), 500);
+			}
+			roms = _.map(roms, function(rom) {
+				return rom.toSimple();
+			});
+			api.success(res, roms, 200, api.paginationOpts(pagination, count));
+
+		}, { populate: [ '_file', '_created_by' ], sortBy: { id: -1 } });
+
+	}, 'Error finding release in order to list comments.'));
+};
+
+
+/**
  * Deletes a ROM.
  *
  * @param {Request} req

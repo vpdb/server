@@ -22,6 +22,7 @@
 var _ = require('lodash');
 var logger = require('winston');
 var mongoose = require('mongoose');
+var paginate = require('mongoose-paginate');
 var validator = require('validator');
 var uniqueValidator = require('mongoose-unique-validator');
 
@@ -49,7 +50,7 @@ var RomSchema = new Schema(fields);
 // API FIELDS
 //-----------------------------------------------------------------------------
 var apiFields = {
-	simple: [ 'id', 'file', 'version', 'notes', 'language' ]
+	simple: [ 'id', 'file', 'version', 'notes', 'language', 'created_by' ]
 };
 
 //-----------------------------------------------------------------------------
@@ -61,6 +62,7 @@ RomSchema.plugin(prettyId, { model: 'Rom', ignore: [ '_created_by', '_game' ], v
 	{ path: '_file', fileType: 'rom', message: 'Must be a file of type "rom".' }
 ] });
 RomSchema.plugin(fileRef, { model: 'Rom' });
+RomSchema.plugin(paginate);
 
 //-----------------------------------------------------------------------------
 // VIRTUALS

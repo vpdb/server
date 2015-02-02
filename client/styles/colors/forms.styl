@@ -16,6 +16,12 @@ $input-background-light-focus = rgba(white, 0.75)
 		background-color $input-background-dark
 		&:focus
 			background-color $input-background-dark-focus
+		&::-webkit-input-placeholder
+			color $color-dark
+		&::-moz-placeholder
+			color $color-dark
+		&:-ms-input-placeholder
+			color $color-dark
 		&.input--search:focus
 			background-color $input-background-dark
 		&[disabled="disabled"]
@@ -24,6 +30,10 @@ $input-background-light-focus = rgba(white, 0.75)
 		&.input--lighter
 			background-color $color-lighter
 			color $color-lightest-inv
+		&.form-control--solid
+			background-color #333130
+			&:focus
+				background-color #3a3837
 
 	.h--primary .form-control
 		@extend .theme-dark .h--primary

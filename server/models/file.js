@@ -54,8 +54,8 @@ var FileSchema = new Schema(fields);
 // API FIELDS
 //-----------------------------------------------------------------------------
 var apiFields = {
-	simple: [ 'id', 'url', 'variations', 'is_protected' ], // fields returned in references
-	detailed: [ 'name', 'bytes', 'created_at', 'mime_type', 'file_type', 'metadata' ]
+	simple: [ 'id', 'url', 'bytes', 'variations', 'is_protected' ], // fields returned in references
+	detailed: [ 'name', 'created_at', 'mime_type', 'file_type', 'metadata' ]
 };
 
 //-----------------------------------------------------------------------------

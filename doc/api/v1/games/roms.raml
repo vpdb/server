@@ -1,6 +1,11 @@
+get:
+  securedBy: [ ]
+  is: [ paginated: { defaultPerPage: 10, maxPerPage: 50 } ]
+  description: |
+    List all ROMs for a given game.
 post:
-  is: [ validated ]
   securedBy: [ jwt: { scopes: [ MEMBER ] } ]
+  is: [ validated ]
   description: |
     Post a new ROM for the game.
 

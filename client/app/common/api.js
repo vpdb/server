@@ -46,6 +46,11 @@ common
 		});
 	})
 
+	.factory('RomResource', function($resource, ConfigService) {
+		return $resource(ConfigService.apiUri('/games/:id/roms'), {}, {
+		});
+	})
+
 	.factory('ReleaseResource', function($resource, ConfigService) {
 		return $resource(ConfigService.apiUri('/releases/:release'), {}, {
 		});
@@ -139,13 +144,16 @@ common
 			 */
 			handleErrorsInDialog: function(scope, title, callback) {
 				return function(response) {
-					scope.setLoading(false);
-					ModalService.error({
-						subtitle: title,
-						message: response.data.error
-					});
+					var skipError = false;
 					if (callback) {
-						callback(response);
+						skipError = callback(response);
+					}
+					scope.setLoading(false);
+					if (!skipError) {
+						ModalService.error({
+							subtitle: title,
+							message: response.data.error
+						});
 					}
 				};
 			},

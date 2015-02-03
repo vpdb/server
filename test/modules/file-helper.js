@@ -125,7 +125,7 @@ exports.createAvi = function(user, request, done) {
 
 exports.createRom = function(user, request, done) {
 
-	var data = fs.readFileSync(avi);
+	var data = fs.readFileSync(rom);
 	request
 		.post('/storage/v1/files')
 		.query({ type: 'rom' })

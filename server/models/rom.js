@@ -38,6 +38,11 @@ var fields = {
 	id:           { type: String, required: 'ID must be provided. Use the name of the ROM file without file extension.', unique: true },
 	_file:        { type: Schema.ObjectId, ref: 'File', required: 'File reference must be provided.' },
 	_game:        { type: Schema.ObjectId, ref: 'Game', required: 'Game reference must be provided.' },
+	rom_files: [ {
+		filename:     { type: String },
+		bytes:        { type: Number },
+		modified_at:  { type: Date }
+	} ],
 	version:      { type: String },
 	language:     { type: String },
 	notes:        { type: String },

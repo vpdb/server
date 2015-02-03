@@ -21,12 +21,14 @@
 
 var _ = require('lodash');
 var logger = require('winston');
+var Zip = require('adm-zip');
 
 var error = require('../../modules/error')('api', 'rom');
 var acl = require('../../acl');
 var api = require('./api');
 var Rom = require('mongoose').model('Rom');
 var Game = require('mongoose').model('Game');
+var File = require('mongoose').model('File');
 
 /**
  * Creates a new ROM.
@@ -55,15 +57,36 @@ exports.create = function(req, res) {
 				if (err) {
 					return api.fail(res, error('Validations failed. See below for details.').errors(err.errors).warn('create'), 422);
 				}
-				newRom.save(assert(function(rom) {
-					logger.info('[api|rom:create] Rom "%s" successfully added.', newRom.id);
 
-					rom.activateFiles(assert(function(rom) {
-						logger.info('[api|rom:create] Referenced file activated, returning object to client.');
-						return api.success(res, rom.toSimple(), 201);
+				File.findById(newRom._file, assert(function(file) {
 
-					}, 'Error activating file for game "%s"'));
-				}, 'Error saving rom for game "%s" (' + newRom.id + ')'));
+					// read zip file (also validates it's a zip)
+					try {
+						newRom.rom_files = [];
+						new Zip(file.getPath()).getEntries().forEach(function(zipEntry) {
+							if (!zipEntry.isDirectory) {
+								newRom.rom_files.push({
+									filename: zipEntry.name,
+									bytes: zipEntry.header.size,
+									modified_at: new Date(zipEntry.header.time)
+								});
+							}
+						});
+					} catch (err) {
+						api.fail(res, error('You referenced an invalid zip archive: %s', err.message).warn('create'), 422);
+					}
+
+					newRom.save(assert(function(rom) {
+						logger.info('[api|rom:create] Rom "%s" successfully added.', newRom.id);
+
+						rom.activateFiles(assert(function(rom) {
+							logger.info('[api|rom:create] Referenced file activated, returning object to client.');
+							return api.success(res, rom.toSimple(), 201);
+
+						}, 'Error activating file for game "%s"'));
+					}, 'Error saving rom for game "%s" (' + newRom.id + ')'));
+
+				}, 'Error finding file for ROM (%s).'));
 			});
 		}, 'Error creating rom instance for game "%s"'));
 	}, 'Error retrieving game "%s"'));

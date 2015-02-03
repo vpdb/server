@@ -133,6 +133,8 @@ describe('The VPDB `ROM` API', function() {
 				});
 		});
 
+		it('should fail validations for referenced zip-files that are not zip files');
+
 		it('should succeed with minimal data', function(done) {
 			var user = 'member';
 			hlp.file.createRom(user, request, function(file) {

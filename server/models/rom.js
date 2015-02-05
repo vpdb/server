@@ -41,6 +41,7 @@ var fields = {
 	rom_files: [ {
 		filename:     { type: String },
 		bytes:        { type: Number },
+		crc:          { type: String },
 		modified_at:  { type: Date }
 	} ],
 	version:      { type: String },
@@ -55,7 +56,7 @@ var RomSchema = new Schema(fields);
 // API FIELDS
 //-----------------------------------------------------------------------------
 var apiFields = {
-	simple: [ 'id', 'file', 'version', 'notes', 'language', 'created_by' ]
+	simple: [ 'id', 'file', 'version', 'notes', 'language', 'rom_files', 'created_by' ]
 };
 
 //-----------------------------------------------------------------------------

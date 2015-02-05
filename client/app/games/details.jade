@@ -220,7 +220,7 @@ include ../template/_mixins
 					label.center-block.text-center: small: i Drop ROM .zip files in here.
 
 		label(ng-hide="roms.length > 0") No ROMs available.
-		table.table.table-striped(ng-show="roms.length > 0")
+		table.table.table-double-striped(ng-show="roms.length > 0")
 			thead
 				tr
 					th Name
@@ -230,13 +230,22 @@ include ../template/_mixins
 					th DLs
 					th Size
 			tbody
-				tr(ng-repeat="rom in roms")
+				tr.selectable(ng-repeat-start="rom in roms", ng-click="isCollapsed = !isCollapsed", ng-init="isCollapsed=true")
 					td: b {{ rom.id }}
 					td {{ rom.version }}
 					td.hidden-xs {{ rom.language }}
 					td.hidden-xs {{ rom.notes }}
 					td {{ rom.downloads | number }}
 					td {{ rom.file.bytes | bytes }}
+				tr(ng-repeat-end, ng-class="{ collapsed: isCollapsed }")
+					td(colspan="6")
+						div(collapse="isCollapsed")
+							table.table
+								tbody
+									tr(ng-repeat="file in rom.rom_files")
+										td.code {{ file.filename }}
+										td.code {{ file.bytes }}
+										td.code {{ file.modified_at }}
 
 		h1 Backglasses
 		label(ng-hide="game.backglasses.length > 0") No backglasses available.

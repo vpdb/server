@@ -4,8 +4,10 @@
 .theme-dark
 
 	table.table
+		background-color transparent
 		tr > th
 			color $color-primary
+
 
 	tr.error td
 		color $color-danger-dark
@@ -17,8 +19,13 @@
 		&.nostripe
 			background-color transparent
 
-	.table--selectable tr:hover td
-		color $color-primary
+	.table-double-striped >	tbody
+		> tr:nth-child(4n + 1), > tr:nth-child(4n + 2)
+			background-color $color-darkest
+
+	.table--selectable tr:hover, tr.selectable:hover
+		td
+			color $color-lightest
 
 
 //

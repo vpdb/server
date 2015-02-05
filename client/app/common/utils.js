@@ -24,6 +24,11 @@ common
 		return window.escape;
 	})
 
+	.filter('hex', function() {
+		return function(data) {
+			return data ? data.toString(16) : '';
+		};
+	})
 
 	.filter('fileext', function() {
 		return function(files, exts) {

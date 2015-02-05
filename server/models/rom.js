@@ -41,7 +41,7 @@ var fields = {
 	rom_files: [ {
 		filename:     { type: String },
 		bytes:        { type: Number },
-		crc:          { type: String },
+		crc:          { type: Number },
 		modified_at:  { type: Date }
 	} ],
 	version:      { type: String },

@@ -68,12 +68,13 @@ exports.create = function(req, res) {
 								newRom.rom_files.push({
 									filename: zipEntry.name,
 									bytes: zipEntry.header.size,
+									crc: zipEntry.header.crc,
 									modified_at: new Date(zipEntry.header.time)
 								});
 							}
 						});
 					} catch (err) {
-						api.fail(res, error('You referenced an invalid zip archive: %s', err.message).warn('create'), 422);
+						return api.fail(res, error('You referenced an invalid zip archive: %s', err.message).warn('create'), 422);
 					}
 
 					newRom.save(assert(function(rom) {

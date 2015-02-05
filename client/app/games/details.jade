@@ -240,12 +240,13 @@ include ../template/_mixins
 				tr(ng-repeat-end, ng-class="{ collapsed: isCollapsed }")
 					td(colspan="6")
 						div(collapse="isCollapsed")
-							table.table
+							table.table.space-left-2x
 								tbody
 									tr(ng-repeat="file in rom.rom_files")
 										td.code {{ file.filename }}
-										td.code {{ file.bytes }}
-										td.code {{ file.modified_at }}
+										td.code {{ file.bytes | number }}
+										td.code {{ file.modified_at | date:'yyyy-MM-dd HH:mm' }}
+										td.code 0x{{ file.crc | hex }}
 
 		h1 Backglasses
 		label(ng-hide="game.backglasses.length > 0") No backglasses available.

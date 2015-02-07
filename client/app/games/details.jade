@@ -208,7 +208,7 @@ include ../template/_mixins
 								.col-md-12(ng-show="file.uploading")
 									.block.text--large: strong {{ file.name }}
 									progressbar.progress-striped.active(value="file.progress")
-							+icon('trash')(ng-click="removeRom(file)")
+							+icon('trash')(ng-click="removeRom(file)", ng-show="!file.uploading")
 
 					.pull-right.padder-top(ng-show="meta.romFiles.length > 0")
 						button.btn.btn-default.space-right Clear

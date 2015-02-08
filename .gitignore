@@ -44,3 +44,4 @@ postman*.json
 .idea/scopes/
 .idea/uiDesigner.xml
 .idea/workspace.xml
+.idea/mongoSettings.xml

@@ -270,6 +270,12 @@ Update configuration:
 	sudo vi /etc/nginx/sites-available/vpdb-staging
 	sudo vi /etc/nginx/sites-available/vpdb-staging-devsite
 
+Make `deployer` able to reload Passenger:
+
+	sudo chmod 640 /etc/sudoers
+	echo "deployer ALL=(ALL) NOPASSWD: /opt/passenger/bin/passenger-config" >> /etc/sudoers
+	sudo chmod 440 /etc/sudoers
+
 Then start nginx:
 
 	service nginx start

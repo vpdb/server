@@ -150,6 +150,6 @@ repo_last_tag() {
 
 node_cluster_reload() {
 	echo Deploying new code...
-	passenger-config restart-app ${DEPLOY_ROOT}/${DEPLOY_ENV}/current
-	test $? -eq 0 || abort "Failed to trigger Node.js cluster reload."
+	sudo /opt/passenger/bin/passenger-config restart-app ${DEPLOY_ROOT}/${DEPLOY_ENV}/current
+	test $? -eq 0 || abort "Failed to trigger Passenger reload."
 }

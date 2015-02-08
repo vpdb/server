@@ -2,6 +2,7 @@
 
 var _ = require('lodash');
 var fs = require('fs');
+var argv = require('yargs').argv;
 
 var statusMessage = {
 	200: 'OK',
@@ -18,10 +19,12 @@ var statusMessage = {
 
 module.exports = function(superagent, options) {
 
+	process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0;
+
 	options = options || {};
-	options.scheme = options.scheme || process.env.HTTP_SCHEME || 'http';
-	options.host = options.host || process.env.HOST || 'localhost';
-	options.port = options.port || process.env.PORT || 7357;
+	options.scheme = argv.scheme || options.scheme || process.env.HTTP_SCHEME || 'http';
+	options.host = argv.host || options.host || process.env.HOST || 'localhost';
+	options.port = argv.port || options.port || process.env.PORT || 7357;
 	options.authHeader = options.authHeader || process.env.AUTH_HEADER || 'Authorization';
 	options.saveHost = options.saveHost || 'vpdb.ch';
 	options.saveRoot = options.saveRoot || 'doc/api/v1';

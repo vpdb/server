@@ -110,7 +110,8 @@
 		"verror": "1.6.0",
 		"volos-quota-redis": "0.10.2",
 		"winston": "0.9.0",
-		"wiredep": "2.2.2"
+		"wiredep": "2.2.2",
+		"yargs": "2.3.0"
 	},
 	"engines": {
 		"node": "0.10.x"

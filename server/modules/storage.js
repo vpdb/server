@@ -365,7 +365,6 @@ Storage.prototype.fstat = function(file, variationName) {
 	}
 
 	// TODO optimize (aka "cache" and make it async, this is called frequently)
-	console.log('----- path to read: %s (%s)', file.getPath(variationName), require('util').inspect(variationName));
 	var filePath = file.getPath(variationName);
 	if (variationName && fs.existsSync(filePath)) {
 		return fs.statSync(filePath);

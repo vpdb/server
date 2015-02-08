@@ -18,8 +18,8 @@ tar xvfz cache_purge-2.3.tar.gz
 # download pagespeed dep
 cd ngx_pagespeed-*
 grep psol README.md
-wget https://dl.google.com/dl/page-speed/psol/1.8.31.4.tar.gz -O psol-1.8.31.4.tar.gz
-tar xvfz psol-1.8.31.4.tar.gz
+wget wget https://dl.google.com/dl/page-speed/psol/1.9.32.3.tar.gz
+tar xvfz 1.9.32.3.tar.gz
 cd ..
 
 # configure

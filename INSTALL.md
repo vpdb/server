@@ -70,16 +70,7 @@ Upgrade ``npm`` to latest and prevent self-signed certificate error
 
 ### Image Tools
 
-	sudo apt-get -y install graphicsmagick pngquant
-	
-OptiPNG needs manual compilation since in Ubuntu's repo there's only an outdated, vulnerable version:
-
-	cd /usr/local/src
-	wget http://downloads.sourceforge.net/project/optipng/OptiPNG/optipng-0.7.5/optipng-0.7.5.tar.gz
-	tar xvfz optipng-0.7.5.tar.gz 
-	cd optipng-0.7.5
-	./configure && make
-	sudo make install
+	sudo apt-get -y install graphicsmagick pngquant optipng
 
 ### Video Tools
 
@@ -106,7 +97,7 @@ Configure correctly. Also open `/etc/mongod.conf` and check that ``bind_ip = 127
 	sudo /bin/bash
 	echo "smallfiles = true" >> /etc/mongod.conf
 
-Paste this at the end of ``/etc/init/mongod.conf``:
+Paste this at the end of `/etc/init/mongod.conf`:
 
 	# Make sure we respawn if the physical server
 	# momentarily lies about disk space, but also
@@ -127,7 +118,7 @@ Restart and go back to normal user:
 
 Install latest from repo:
 
-	sudo apt-add-repository ppa:chris-lea/redis-server
+	sudo apt-add-repository -y ppa:chris-lea/redis-server
 	sudo apt-get update
 	sudo apt-get install -y redis-server
 
@@ -176,14 +167,14 @@ For client documentation, check the [deployment guide](DEPLOY.md).
 
 	sudo chmod 770 /var/www /var/www/production /var/www/staging -R
 
-The ``shared`` folder contains the following:
+The `shared` folder contains the following:
 
-* ``logs`` - Log files from the workers and naught
-* ``data`` - User-generated files.
-* ``cache`` - Auto-generated files.
+* `logs` - Log files from the workers and naught
+* `data` - User-generated files.
+* `cache` - Auto-generated files.
 
-Note that the deployment files in ``/var/www/[production|staging]/current`` are read-only (and owned by the ``deployer``
-user). All data *written* by the app (the ``www-data`` user) goes into either ``cache`` or ``data`` of the ``shared``
+Note that the deployment files in `/var/www/[production|staging]/current` are read-only (and owned by the `deployer`
+user). All data *written* by the app (the `www-data` user) goes into either `cache` or `data` of the `shared`
 folder.
 
 ### Create deployment user

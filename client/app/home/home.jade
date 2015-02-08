@@ -90,13 +90,14 @@ include ../template/_mixins
 						span.small.pull-right.space-right(am-time-ago="release.created_at")
 					.clearfix
 		.clearfix
+		p(ng-show="releases.length === 0") No releases in database yet.
 
 	//- GAMES
 	//-------------------------------------------------------------------------
 	.col-sm-12
 		h1.h--primary Popular Games
 		hr
-		p There will be something here too.
+		p There will be something here at some point.
 
 
 

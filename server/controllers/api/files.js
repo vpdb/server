@@ -89,7 +89,7 @@ exports.upload = function(req, res) {
 							logger.error('[api|file:save] Error saving metadata: %s', err, {});
 							logger.error('[api|file:save] Metadata: %s', require('util').inspect(metadata));
 						}
-						logger.info('[api|file:save] File upload of %s "%s" by <%s> successfully completed.', file.file_type, file.name, req.user.email);
+						logger.info('[api|file:save] File upload of %s by <%s> successfully completed.', file.toString(), req.user.email);
 						api.success(res, file.toDetailed(), 201);
 					});
 					// do this in the background.

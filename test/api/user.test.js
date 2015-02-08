@@ -143,10 +143,10 @@ describe('The VPDB `user` API', function() {
 					email: 'xxx'
 				}).end(function(err, res) {
 					hlp.expectStatus(err, res, 422);
-					expect(res.body.errors).to.have.length(3);
 					hlp.expectValidationError(err, res, 'email', 'email must be in the correct format');
 					hlp.expectValidationError(err, res, 'username', 'length of username');
 					hlp.expectValidationError(err, res, 'password', 'at least 6 characters');
+					expect(res.body.errors).to.have.length(3);
 					done();
 				});
 		});
@@ -934,12 +934,12 @@ describe('The VPDB `user` API', function() {
 				.as('admin')
 				.send({})
 				.end(function(err, res) {
-					expect(res.body.errors).to.have.length(5);
 					hlp.expectValidationError(err, res, 'email', 'must be provided');
 					hlp.expectValidationError(err, res, 'is_active', 'is required');
 					hlp.expectValidationError(err, res, 'name', 'must be provided');
 					hlp.expectValidationError(err, res, 'roles', 'is required');
 					hlp.expectValidationError(err, res, 'username', 'must be between');
+					expect(res.body.errors).to.have.length(5);
 					done();
 				});
 		});

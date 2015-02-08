@@ -23,6 +23,7 @@ var _ = require('lodash');
 var logger = require('winston');
 var mongoose = require('mongoose');
 var paginate = require('mongoose-paginate');
+var toObj = require('./plugins/to-object');
 
 var Schema = mongoose.Schema;
 
@@ -47,6 +48,7 @@ var LogUserSchema = new Schema(fields);
 // PLUGINS
 //-----------------------------------------------------------------------------
 LogUserSchema.plugin(paginate);
+LogUserSchema.plugin(toObj);
 
 
 //-----------------------------------------------------------------------------
@@ -126,13 +128,15 @@ LogUserSchema.statics.diff = function(obj1, obj2) {
 //-----------------------------------------------------------------------------
 // OPTIONS
 //-----------------------------------------------------------------------------
-LogUserSchema.set('toObject', { virtuals: true });
-LogUserSchema.options.toObject.transform = function(doc, log) {
-	delete log.__v;
-	delete log._id;
-	delete log._user;
-	delete log._actor;
-	delete log.id;
+LogUserSchema.options.toObject = {
+	virtuals: true,
+	transform: function(doc, log) {
+		delete log.__v;
+		delete log._id;
+		delete log._user;
+		delete log._actor;
+		delete log.id;
+	}
 };
 
 

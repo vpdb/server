@@ -146,16 +146,18 @@ angular.module('vpdb.games.details', [])
 							'Content-Disposition': 'attachment; filename="' + upload.name + '"'
 						},
 						data: event.target.result
+
 					}).then(function(response) {
 						file.uploading = false;
 						file.id = response.data.id;
+						file.romId = upload.name.substr(0, upload.name.lastIndexOf('.'));
 
 						var basename = upload.name.substr(0, upload.name.lastIndexOf('.'));
 						var m = basename.match(/(\d{2,}.?)$/);
 						var version = m ? m[1][0]  + '.' + m[1].substr(1) : '';
 						var fileData = {
 							_file: response.data.id,
-							id: upload.name.substr(0, upload.name.lastIndexOf('.')),
+							id: file.romId,
 							version: version,
 							notes: '',
 							language: $scope.romLanguages[0]
@@ -182,11 +184,16 @@ angular.module('vpdb.games.details', [])
 					rom.language = rom.language.value;
 				}
 				RomResource.save({ id: $scope.gameId }, rom, function() {
+					$scope.roms = RomResource.query({ id : $scope.gameId });
 					meta().romFiles.splice(_.indexOf(meta().romFiles, _.findWhere(meta().romFiles, { id : rom._file })), 1);
 					delete data().roms[rom._file];
 
-				}, function(error) {
-					console.error(error);
+				}, function(response) {
+					if (response.data.errors) {
+						_.each(response.data.errors, function(err) {
+							_.where(meta().romFiles, { romId: rom.id }).error = err;
+						});
+					}
 				});
 			});
 

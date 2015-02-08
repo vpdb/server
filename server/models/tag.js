@@ -24,6 +24,7 @@ var logger = require('winston');
 var mongoose = require('mongoose');
 var validator = require('validator');
 var uniqueValidator = require('mongoose-unique-validator');
+var toObj = require('./plugins/to-object');
 
 var Schema = mongoose.Schema;
 
@@ -41,6 +42,14 @@ var fields = {
 	_releases:    [ { type: Schema.ObjectId, ref: 'Release' } ]
 };
 var TagSchema = new Schema(fields);
+
+
+//-----------------------------------------------------------------------------
+// PLUGINS
+//-----------------------------------------------------------------------------
+TagSchema.plugin(uniqueValidator, { message: 'The {PATH} "{VALUE}" is already taken.' });
+TagSchema.plugin(toObj);
+
 
 
 //-----------------------------------------------------------------------------
@@ -66,7 +75,7 @@ TagSchema.virtual('created_by')
 // METHODS
 //-----------------------------------------------------------------------------
 TagSchema.methods.toSimple = function() {
-	return _.pick(this.toObject(), apiFields.simple);
+	return _.pick(this.obj(), apiFields.simple);
 };
 
 
@@ -83,21 +92,17 @@ TagSchema.path('description').validate(function(description) {
 
 
 //-----------------------------------------------------------------------------
-// PLUGINS
-//-----------------------------------------------------------------------------
-TagSchema.plugin(uniqueValidator, { message: 'The {PATH} "{VALUE}" is already taken.' });
-
-
-//-----------------------------------------------------------------------------
 // OPTIONS
 //-----------------------------------------------------------------------------
-TagSchema.set('toObject', { virtuals: true });
-TagSchema.options.toObject.transform = function(doc, tag) {
-	delete tag.__v;
-	delete tag._id;
-	delete tag._created_by;
-	delete tag._releases;
-	delete tag.is_active;
+TagSchema.options.toObject = {
+	virtuals: true,
+	transform: function(doc, tag) {
+		delete tag.__v;
+		delete tag._id;
+		delete tag._created_by;
+		delete tag._releases;
+		delete tag.is_active;
+	}
 };
 
 mongoose.model('Tag', TagSchema);

@@ -89,7 +89,7 @@ describe('The VPDB `ROM` API', function() {
 
 		it('should fail validations for referenced non-rom files', function(done) {
 			var user = 'member';
-			hlp.file.createTextfile(user, request, function(file) {
+			hlp.file.createZip(user, request, function(file) {
 				hlp.doomFile(user, file.id);
 				request
 					.post('/api/v1/games/' + game.id + '/roms')

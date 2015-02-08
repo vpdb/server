@@ -26,6 +26,7 @@ var mongoose = require('mongoose');
 var shortId = require('shortid');
 var settings = require('./../modules/settings');
 
+var toObj = require('./plugins/to-object');
 var storage = require('../modules/storage');
 var mimeTypes = require('../modules/mimetypes');
 
@@ -50,6 +51,13 @@ var fields = {
 };
 var FileSchema = new Schema(fields);
 
+
+//-----------------------------------------------------------------------------
+// PLUGINS
+//-----------------------------------------------------------------------------
+FileSchema.plugin(toObj);
+
+
 //-----------------------------------------------------------------------------
 // API FIELDS
 //-----------------------------------------------------------------------------
@@ -57,6 +65,7 @@ var apiFields = {
 	simple: [ 'id', 'url', 'bytes', 'variations', 'is_protected' ], // fields returned in references
 	detailed: [ 'name', 'created_at', 'mime_type', 'file_type', 'metadata' ]
 };
+
 
 //-----------------------------------------------------------------------------
 // VIRTUALS
@@ -94,6 +103,7 @@ FileSchema.virtual('is_public')
 		return config.vpdb.quota.costs[this.mime_type] ? false : true;
 	});
 
+
 //-----------------------------------------------------------------------------
 // METHODS
 //-----------------------------------------------------------------------------
@@ -108,11 +118,11 @@ FileSchema.methods.toDetailed = function() {
 /**
  * Returns the local path where the file is stored.
  *
- * @param {Object|String} variation Either variation name or object containing attribute "name".
- *                                  Note that for non-standard (i.e. not equal file) variation mime types,
- *                                  the object is mandatory.
- * @param {string} [tmpSuffix=]     If set, this is suffixed to the file name before the extension.
- * @returns {string}                Absolute path to file.
+ * @param {Object|String} [variation] Either variation name or object containing attribute "name".
+ *                                    Note that for non-standard (i.e. not equal file) variation mime types,
+ *                                    the object is mandatory.
+ * @param {string} [tmpSuffix=]       If set, this is suffixed to the file name before the extension.
+ * @returns {string}                  Absolute path to file.
  * @api public
  */
 FileSchema.methods.getPath = function(variation, tmpSuffix) {
@@ -234,11 +244,11 @@ FileSchema.statics.sanitizeObject = function(object, replacement) {
 	}
 };
 FileSchema.statics.toSimple = function(file) {
-	var obj = file.toObject ? file.toObject() : file;
+	var obj = file.obj ? file.obj() : file;
 	return _.pick(obj, apiFields.simple);
 };
 FileSchema.statics.toDetailed = function(file) {
-	var obj = file.toObject ? file.toObject() : file;
+	var obj = file.obj ? file.obj() : file;
 	return _.pick(obj, apiFields.detailed.concat(apiFields.simple));
 };
 
@@ -255,13 +265,15 @@ FileSchema.post('remove', function(obj, done) {
 //-----------------------------------------------------------------------------
 // OPTIONS
 //-----------------------------------------------------------------------------
-FileSchema.set('toObject', { virtuals: true });
-FileSchema.options.toObject.transform = function(doc, file) {
-	delete file.__v;
-	delete file._id;
-	delete file._created_by;
-	file.variations = storage.urls(doc);
-	file.metadata = storage.metadataShort(doc);
+FileSchema.options.toObject = {
+	virtuals: true,
+	transform:  function(doc, file) {
+		delete file.__v;
+		delete file._id;
+		delete file._created_by;
+		file.variations = storage.urls(doc);
+		file.metadata = storage.metadataShort(doc);
+	}
 };
 
 mongoose.model('File', FileSchema);

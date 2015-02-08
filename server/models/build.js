@@ -24,6 +24,7 @@ var logger = require('winston');
 var mongoose = require('mongoose');
 var validator = require('validator');
 var uniqueValidator = require('mongoose-unique-validator');
+var toObj = require('./plugins/to-object');
 
 var Schema = mongoose.Schema;
 var platforms =  [ 'vp' ];
@@ -79,7 +80,7 @@ BuildSchema.methods.toSimple = function() {
 // STATIC METHODS
 //-----------------------------------------------------------------------------
 BuildSchema.statics.toSimple = function(build) {
-	var obj = build.toObject ? build.toObject() : build;
+	var obj = build.obj ? build.obj() : build;
 	return _.pick(obj, apiFields.simple);
 };
 
@@ -101,17 +102,20 @@ BuildSchema.path('built_at').validate(function(dateString) {
 // PLUGINS
 //-----------------------------------------------------------------------------
 BuildSchema.plugin(uniqueValidator, { message: 'The {PATH} "{VALUE}" is already taken.' });
+BuildSchema.plugin(toObj, { message: 'The {PATH} "{VALUE}" is already taken.' });
 
 
 //-----------------------------------------------------------------------------
 // OPTIONS
 //-----------------------------------------------------------------------------
-BuildSchema.set('toObject', { virtuals: true });
-BuildSchema.options.toObject.transform = function(doc, build) {
-	delete build.__v;
-	delete build._id;
-	delete build._created_by;
-	delete build.is_active;
+BuildSchema.options.toObject = {
+	virtuals: true,
+	transform: function(doc, build) {
+		delete build.__v;
+		delete build._id;
+		delete build._created_by;
+		delete build.is_active;
+	}
 };
 
 mongoose.model('Build', BuildSchema);

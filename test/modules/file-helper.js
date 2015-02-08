@@ -11,6 +11,7 @@ var mp4 = path.resolve(__dirname, '../../data/test/files/afm.f4v');
 var avi = path.resolve(__dirname, '../../data/test/files/afm.avi');
 var vpt = path.resolve(__dirname, '../../data/test/files/empty.vpt');
 var rom = path.resolve(__dirname, '../../data/test/files/hulk.zip');
+var zip = path.resolve(__dirname, '../../data/test/files/empty.zip');
 
 exports.createBackglass = function(user, request, done) {
 
@@ -83,6 +84,22 @@ exports.createTextfile = function(user, request, done) {
 		.send('You are looking at a text file generated during a test.')
 		.as(user)
 		.end(function(res) {
+			expect(res.status).to.be(201);
+			done(res.body);
+		});
+};
+
+exports.createZip = function(user, request, done) {
+	var data = fs.readFileSync(zip);
+	request
+		.post('/storage/v1/files')
+		.query({ type: 'emptyzip' })
+		.type('application/zip')
+		.set('Content-Disposition', 'attachment; filename="empty.zip"')
+		.set('Content-Length', data.length)
+		.send(data)
+		.as(user)
+		.end(function(err, res) {
 			expect(res.status).to.be(201);
 			done(res.body);
 		});

@@ -25,6 +25,7 @@ var shortId = require('shortid');
 var mongoose = require('mongoose');
 var paginate = require('mongoose-paginate');
 var validator = require('validator');
+var toObj = require('./plugins/to-object');
 
 var Schema = mongoose.Schema;
 
@@ -50,6 +51,7 @@ var CommentSchema = new Schema(fields);
 // PLUGINS
 //-----------------------------------------------------------------------------
 CommentSchema.plugin(paginate);
+CommentSchema.plugin(toObj);
 
 
 //-----------------------------------------------------------------------------
@@ -96,11 +98,11 @@ CommentSchema.methods.toDetailed = function() {
 // STATIC METHODS
 //-----------------------------------------------------------------------------
 CommentSchema.statics.toSimple = function(comment) {
-	var obj = comment.toObject ? comment.toObject() : comment;
+	var obj = comment.obj ? comment.obj() : comment;
 	return _.pick(obj, apiFields.simple);
 };
 CommentSchema.statics.toDetailed = function(comment) {
-	var obj = comment.toObject ? comment.toObject() : comment;
+	var obj = comment.obj ? comment.obj() : comment;
 	return _.pick(obj, apiFields.detailed.concat(apiFields.simple));
 };
 
@@ -108,12 +110,14 @@ CommentSchema.statics.toDetailed = function(comment) {
 //-----------------------------------------------------------------------------
 // OPTIONS
 //-----------------------------------------------------------------------------
-CommentSchema.set('toObject', { virtuals: true });
-CommentSchema.options.toObject.transform = function(doc, comment) {
-	delete comment.__v;
-	delete comment._id;
-	delete comment._ref;
-	delete comment._from;
+CommentSchema.options.toObject = {
+	virtuals: true,
+	transform: function(doc, comment) {
+		delete comment.__v;
+		delete comment._id;
+		delete comment._ref;
+		delete comment._from;
+	}
 };
 
 mongoose.model('Comment', CommentSchema);

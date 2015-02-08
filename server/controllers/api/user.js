@@ -166,7 +166,7 @@ exports.update = function(req, res) {
 			// save
 			updatedUser.save(assert(function(user) {
 
-				LogUser.successDiff(req, updatedUser, 'update', _.pick(currentUser.toObject(), updateableFields), updatedUser);
+				LogUser.successDiff(req, updatedUser, 'update', _.pick(currentUser.obj(), updateableFields), updatedUser);
 
 				// log
 				if (req.body.password) {

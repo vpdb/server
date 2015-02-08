@@ -27,6 +27,7 @@ var mongoose = require('mongoose');
 var validator = require('validator');
 var randomstring = require('randomstring');
 var uniqueValidator = require('mongoose-unique-validator');
+var toObj = require('./plugins/to-object');
 
 var error = require('../modules/error')('model', 'user');
 var config = require('../modules/settings').current;
@@ -74,6 +75,12 @@ _.each(config.vpdb.passport.ipboard, function(ipbConfig) {
 var UserSchema = new Schema(fields);
 UserSchema.index({ name: 'text', username: 'text', email: 'text' });
 UserSchema.plugin(uniqueValidator, { message: 'The {PATH} "{VALUE}" is already taken.' });
+
+
+//-----------------------------------------------------------------------------
+// PLUGINS
+//-----------------------------------------------------------------------------
+UserSchema.plugin(toObj);
 
 
 //-----------------------------------------------------------------------------
@@ -161,19 +168,6 @@ UserSchema.path('email').validate(function(email, callback) {
 	});
 }, 'The {PATH} "{VALUE}" is already taken.');
 
-UserSchema.path('username').validate(function(username) {
-	// if you are authenticating by any of the oauth strategies, don't validate
-	if (this.isNew && this.provider !== 'local') {
-		return true;
-	}
-	if (!validator.matches(username, /^[a-z0-9\._]+$/i)) {
-		this.invalidate('username', 'Username must only contain alpha-numeric characters including dot and underscore.');
-	}
-	if (!validator.isLength(username, 3, 30)) {
-		this.invalidate('username', 'Length of username must be between 3 and 30 characters.');
-	}
-}, null);
-
 UserSchema.path('location').validate(function(location) {
 	return validator.isLength(location, 0, 100);
 }, 'Location must not be longer than 100 characters.');
@@ -195,7 +189,14 @@ UserSchema.path('provider').validate(function(provider) {
 		if (!this.email) {
 			this.invalidate('email', 'Email is required.');
 		}
-		return true;
+	}
+	if (provider === 'local') {
+		if (!validator.isLength(this.username, 3, 30)) {
+			this.invalidate('username', 'Length of username must be between 3 and 30 characters.');
+		}
+		if (!validator.matches(this.username, /^[a-z0-9\._]+$/i)) {
+			this.invalidate('username', 'Username must only contain alpha-numeric characters including dot and underscore.');
+		}
 	}
 
 	// TODO put this into separate validation when this is fixed: https://github.com/LearnBoost/mongoose/issues/1919
@@ -355,12 +356,12 @@ UserSchema.statics.createUser = function(userObj, confirmUserEmail, done) {
 	});
 };
 UserSchema.statics.toReduced = function(user) {
-	var obj = user.toObject ? user.toObject() : user;
+	var obj = user.obj ? user.obj() : user;
 	return _.pick(obj, apiFields.reduced);
 };
 
 UserSchema.statics.toSimple = function(user) {
-	var obj = user.toObject ? user.toObject() : user;
+	var obj = user.obj ? user.obj() : user;
 	user = _.pick(obj, apiFields.reduced.concat(apiFields.simple));
 	if (!_.isEmpty(user.github)) {
 		user.github = UserSchema.statics.normalizeProviderData('github', user.github);
@@ -369,7 +370,7 @@ UserSchema.statics.toSimple = function(user) {
 };
 
 UserSchema.statics.toDetailed = function(user) {
-	user = user.toObject ? user.toObject() : user;
+	user = user.obj ? user.obj() : user;
 	if (!_.isEmpty(user.github)) {
 		user.github = UserSchema.statics.normalizeProviderData('github', user.github);
 	}
@@ -403,20 +404,21 @@ UserSchema.post('remove', function(obj, done) {
 //-----------------------------------------------------------------------------
 // OPTIONS
 //-----------------------------------------------------------------------------
-UserSchema.set('toObject', { virtuals: true });
-UserSchema.options.toObject.transform = function(doc, user) {
-	delete user._id;
-	delete user.__v;
-	delete user.password_hash;
-	delete user.password_salt;
-	delete user.password;
-	delete user.validated_emails;
-	if (user.email_status.code === 'confirmed') {
-		delete user.email_status;
-	} else {
-		delete user.email_status.token;
+UserSchema.options.toObject = {
+	virtuals: true,
+	transform: function(doc, user) {
+		delete user._id;
+		delete user.__v;
+		delete user.password_hash;
+		delete user.password_salt;
+		delete user.password;
+		delete user.validated_emails;
+		if (user.email_status.code === 'confirmed') {
+			delete user.email_status;
+		} else {
+			delete user.email_status.token;
+		}
 	}
-
 };
 
 

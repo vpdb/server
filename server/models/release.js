@@ -30,6 +30,7 @@ var paginate = require('mongoose-paginate');
 
 var prettyId = require('./plugins/pretty-id');
 var fileRef = require('./plugins/file-ref');
+var toObj = require('./plugins/to-object');
 
 var Schema = mongoose.Schema;
 
@@ -94,6 +95,10 @@ ReleaseSchema.plugin(uniqueValidator, { message: 'The {PATH} "{VALUE}" is alread
 ReleaseSchema.plugin(fileRef, { model: 'Release' });
 ReleaseSchema.plugin(prettyId, { model: 'Release', ignore: [ '_created_by' ] });
 ReleaseSchema.plugin(paginate);
+ReleaseSchema.plugin(toObj);
+FileSchema.plugin(toObj);
+VersionSchema.plugin(toObj);
+AuthorSchema.plugin(toObj);
 
 
 //-----------------------------------------------------------------------------
@@ -204,7 +209,7 @@ ReleaseSchema.path('versions.0.files').validate(function(files, callback) {
 // METHODS
 //-----------------------------------------------------------------------------
 ReleaseSchema.methods.toDetailed = function() {
-	return this.toObject();
+	return this.obj();
 };
 
 ReleaseSchema.methods.toSimple = function(opts) {
@@ -215,7 +220,7 @@ ReleaseSchema.methods.toSimple = function(opts) {
 	opts.thumb = opts.thumb || 'original';
 
 	var i, file, thumb;
-	var rls = _.pick(this.toObject(), [ 'id', 'name', 'created_at', 'authors' ]);
+	var rls = _.pick(this.obj(), [ 'id', 'name', 'created_at', 'authors' ]);
 
 	rls.game = _.pick(this._game, ['id', 'title']);
 
@@ -237,12 +242,12 @@ ReleaseSchema.methods.toSimple = function(opts) {
 		}
 		file = latestVersion.files[i];
 
-		if (_.isEqual(file.flavor.toObject(), opts.flavor)) {
+		if (_.isEqual(file.flavor.obj(), opts.flavor)) {
 			break;
 		}
 	}
 
-	var playfieldImage = file._media.playfield_image.toObject();
+	var playfieldImage = file._media.playfield_image.obj();
 	if (playfieldImage.variations[opts.thumb]) {
 		thumb = _.pick(playfieldImage.variations[opts.thumb], [ 'url', 'width', 'height' ]);
 	} else {
@@ -278,43 +283,50 @@ ReleaseSchema.pre('remove', function(next) {
 //-----------------------------------------------------------------------------
 // OPTIONS
 //-----------------------------------------------------------------------------
-ReleaseSchema.set('toObject', { virtuals: true });
-VersionSchema.set('toObject', { virtuals: true });
-FileSchema.set('toObject', { virtuals: true });
-AuthorSchema.set('toObject', { virtuals: true });
-
-ReleaseSchema.options.toObject.transform = function(doc, release) {
-	release.tags = release._tags;
-	delete release.__v;
-	delete release._id;
-	delete release._created_by;
-	delete release._tags;
-	delete release._game;
+ReleaseSchema.options.toObject = {
+	virtuals: true,
+	transform: function(doc, release) {
+		release.tags = release._tags;
+		delete release.__v;
+		delete release._id;
+		delete release._created_by;
+		delete release._tags;
+		delete release._game;
+	}
 };
-VersionSchema.options.toObject.transform = function(doc, version) {
-	delete version.id;
-	delete version._id;
+VersionSchema.options.toObject = {
+	virtuals: true,
+	transform: function(doc, version) {
+		delete version.id;
+		delete version._id;
+	}
 };
-FileSchema.options.toObject.transform = function(doc, file) {
-	file.media = file._media;
-	file.compatibility = [];
-	var Build = require('mongoose').model('Build');
-	var File = require('mongoose').model('File');
-	_.each(file._compatibility, function(compat) {
-		file.compatibility.push(Build.toSimple(compat));
-	});
-	file.file = File.toDetailed(file._file);
-	delete file.id;
-	delete file._id;
-	delete file._file;
-	delete file._media;
-	delete file._compatibility;
+FileSchema.options.toObject = {
+	virtuals: true,
+	transform: function(doc, file) {
+		file.media = file._media;
+		file.compatibility = [];
+		var Build = require('mongoose').model('Build');
+		var File = require('mongoose').model('File');
+		_.each(file._compatibility, function(compat) {
+			file.compatibility.push(Build.toSimple(compat));
+		});
+		file.file = File.toDetailed(file._file);
+		delete file.id;
+		delete file._id;
+		delete file._file;
+		delete file._media;
+		delete file._compatibility;
+	}
 };
-AuthorSchema.options.toObject.transform = function(doc, author) {
-	author.user = require('mongoose').model('User').toReduced(author._user);
-	delete author.id;
-	delete author._id;
-	delete author._user;
+AuthorSchema.options.toObject = {
+	virtuals: true,
+	transform: function(doc, author) {
+		author.user = require('mongoose').model('User').toReduced(author._user);
+		delete author.id;
+		delete author._id;
+		delete author._user;
+	}
 };
 
 mongoose.model('Release', ReleaseSchema);

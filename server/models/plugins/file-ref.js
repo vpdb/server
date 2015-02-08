@@ -29,7 +29,7 @@ var common = require('./common');
 var error = require('../../modules/error')('model', 'file-ref');
 
 //noinspection JSUnresolvedVariable
-module.exports = exports = function(schema, options) {
+module.exports = function(schema, options) {
 
 	/* istanbul ignore if */
 	if (!options || !options.model) {

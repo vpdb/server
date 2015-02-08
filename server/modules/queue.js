@@ -254,6 +254,7 @@ Queue.prototype.add = function(file, variation, processor) {
 			return that.emit('error', 'File gone before pass 1 could start.', file, variation);
 		}
 
+		console.log('----- path to save: %s (%s)', file.getPath(variation), require('util').inspect(variation));
 		processor.pass1(file.getPath(), file.getPath(variation), file, variation, function(err, skipped) {
 			if (err) {
 				return that.emit('error', err, file, variation);

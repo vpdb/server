@@ -28,6 +28,7 @@ var uniqueValidator = require('mongoose-unique-validator');
 
 var prettyId = require('./plugins/pretty-id');
 var fileRef = require('./plugins/file-ref');
+var toObj = require('./plugins/to-object');
 
 var Schema = mongoose.Schema;
 
@@ -62,13 +63,14 @@ var apiFields = {
 //-----------------------------------------------------------------------------
 // PLUGINS
 //-----------------------------------------------------------------------------
-RomSchema.plugin(uniqueValidator, { message: 'The {PATH} "{VALUE}" is already taken.' });
+RomSchema.plugin(uniqueValidator, { message: 'The {PATH} "{VALUE}" is already taken.', code: 'duplicate_field' });
 RomSchema.plugin(prettyId, { model: 'Rom', ignore: [ '_created_by', '_game' ], validations: [
 	{ path: '_file', mimeType: 'application/zip', message: 'Must be a ZIP archive.' },
 	{ path: '_file', fileType: 'rom', message: 'Must be a file of type "rom".' }
 ] });
 RomSchema.plugin(fileRef, { model: 'Rom' });
 RomSchema.plugin(paginate);
+RomSchema.plugin(toObj);
 
 //-----------------------------------------------------------------------------
 // VIRTUALS
@@ -91,7 +93,7 @@ RomSchema.virtual('file')
 // METHODS
 //-----------------------------------------------------------------------------
 RomSchema.methods.toSimple = function() {
-	return _.pick(this.toObject(), apiFields.simple);
+	return _.pick(this.obj(), apiFields.simple);
 };
 
 //-----------------------------------------------------------------------------
@@ -104,11 +106,13 @@ RomSchema.path('id').validate(function(id) {
 //-----------------------------------------------------------------------------
 // OPTIONS
 //-----------------------------------------------------------------------------
-RomSchema.set('toObject', { virtuals: true });
-RomSchema.options.toObject.transform = function(doc, tag) {
-	delete tag.__v;
-	delete tag._id;
-	delete tag._created_by;
+RomSchema.options.toObject = {
+	virtuals: true,
+	transform: function(doc, tag) {
+		delete tag.__v;
+		delete tag._id;
+		delete tag._created_by;
+	}
 };
 
 mongoose.model('Rom', RomSchema);

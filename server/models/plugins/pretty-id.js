@@ -28,7 +28,7 @@ var objectPath = require('object-path');
 var common = require('./common');
 var error = require('../../modules/error')('model', 'pretty-id');
 
-module.exports = exports = function(schema, options) {
+module.exports = function(schema, options) {
 
 	options = options || {};
 
@@ -97,7 +97,7 @@ module.exports = exports = function(schema, options) {
 					objectPath.set(obj, objPath, '000000000000000000000000'); // to avoid class cast error to objectId
 				} else {
 					// validations
-					_.each (options.validations, function(validation) {
+					_.each(options.validations, function(validation) {
 						if (validation.path === objPath) {
 							if (validation.mimeType && refObj.mime_type !== validation.mimeType) {
 								invalidations.push({ path: objPath, message: validation.message, value: prettyId });

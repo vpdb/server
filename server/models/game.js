@@ -30,6 +30,7 @@ var uniqueValidator = require('mongoose-unique-validator');
 
 var prettyId = require('./plugins/pretty-id');
 var fileRef = require('./plugins/file-ref');
+var toObj = require('./plugins/to-object');
 
 var Schema = mongoose.Schema;
 
@@ -81,6 +82,7 @@ GameSchema.plugin(uniqueValidator, { message: 'The {PATH} "{VALUE}" is already t
 GameSchema.plugin(prettyId, { model: 'Game', ignore: [ '_created_by' ] });
 GameSchema.plugin(fileRef, { model: 'Game' });
 GameSchema.plugin(paginate);
+GameSchema.plugin(toObj);
 
 //-----------------------------------------------------------------------------
 // API FIELDS
@@ -174,14 +176,14 @@ GameSchema.path('_media.backglass').validate(function(backglass, callback) {
 // METHODS
 //-----------------------------------------------------------------------------
 GameSchema.methods.toSimple = function() {
-	return _.pick(this.toObject(), apiFields.simple);
+	return _.pick(this.obj(), apiFields.simple);
 };
 
 GameSchema.methods.toDetailed = function(callback) {
 	if (!callback) {
-		return this.toObject();
+		return this.obj();
 	} else {
-		var game = this.toObject();
+		var game = this.obj();
 		var Release = require('mongoose').model('Release');
 
 		Release.find({ _game: this._id })
@@ -235,15 +237,14 @@ GameSchema.pre('remove', function(next) {
 //-----------------------------------------------------------------------------
 // OPTIONS
 //-----------------------------------------------------------------------------
-GameSchema.set('toObject', { virtuals: true });
-if (!GameSchema.options.toObject) {
-	GameSchema.options.toObject = {};
-}
-GameSchema.options.toObject.transform = function(doc, game) {
-	delete game.__v;
-	delete game._id;
-	delete game._media;
-	delete game.full_title;
+GameSchema.options.toObject = {
+	virtuals: true,
+	transform: function(doc, game) {
+		delete game.__v;
+		delete game._id;
+		delete game._media;
+		delete game.full_title;
+	}
 };
 
 mongoose.model('Game', GameSchema);

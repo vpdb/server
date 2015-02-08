@@ -76,7 +76,6 @@ Storage.prototype.variations = {
  * @param {File} file File to check
  * @param {string} variationName Variation of the file
  * @param {function} callback Callback to execute upon processing or error
- * @returns {*}
  */
 Storage.prototype.whenProcessed = function(file, variationName, callback) {
 	/* istanbul ignore if */
@@ -305,7 +304,7 @@ Storage.prototype.onProcessed = function(file, variation, processor, nextEvent) 
 			logger.info('[storage] Updating metadata of %s', file.toString(variation));
 
 			// only update `metadata` (other data might has changed meanwhile)
-			File.findByIdAndUpdate(file._id, { $set: data }, done);
+			File.findByIdAndUpdate(file._id, { $set: data }, { 'new': true }, done);
 		});
 	});
 };
@@ -333,8 +332,9 @@ Storage.prototype.urls = function(file) {
 	}
 	var that = this;
 	var variations = file.variations || {};
-	if (this.variations[file.getMimeTypePrimary()] && this.variations[file.getMimeTypePrimary()][file.file_type]) {
-		_.each(this.variations[file.getMimeTypePrimary()][file.file_type], function(variation) {
+	var primaryMimeType = file.getMimeTypePrimary();
+	if (this.variations[primaryMimeType] && this.variations[primaryMimeType][file.file_type]) {
+		_.each(this.variations[primaryMimeType][file.file_type], function(variation) {
 			if (!variations[variation.name]) {
 				variations[variation.name] = {};
 			}
@@ -365,10 +365,12 @@ Storage.prototype.fstat = function(file, variationName) {
 	}
 
 	// TODO optimize (aka "cache" and make it async, this is called frequently)
-	if (variationName && fs.existsSync(file.getPath(variationName))) {
-		return fs.statSync(file.getPath(variationName));
+	console.log('----- path to read: %s (%s)', file.getPath(variationName), require('util').inspect(variationName));
+	var filePath = file.getPath(variationName);
+	if (variationName && fs.existsSync(filePath)) {
+		return fs.statSync(filePath);
 	}
-	logger.warn('[storage] Cannot find %s at %s', file.toString(variationName), file.getPath(variationName));
+	logger.warn('[storage] Cannot find %s at %s', file.toString(variationName), filePath);
 	return null;
 };
 

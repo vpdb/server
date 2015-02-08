@@ -84,6 +84,7 @@ VideoProcessor.prototype.metadataShort = function(metadata) {
 };
 
 VideoProcessor.prototype.variationData = function(metadata) {
+	// TODO
 	return {
 		todo: 'no joke.'
 	};

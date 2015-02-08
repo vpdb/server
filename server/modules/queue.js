@@ -98,11 +98,15 @@ function Queue() {
 	};
 
 	this.queues.image.on('failed', function(job, err) {
-		logger.warn('[queue] From image queue: %s', err.message);
+		// TODO treat waiting requests (to test: make pngquant fail, i.e. add pngquant's pngquant-bin dep).
+		logger.error('[queue] From image queue: %s', err.message);
+		logger.error(err.stack);
 	});
 
 	this.queues.video.on('failed', function(job, err) {
-		logger.warn('[queue] From video queue: %s', err.message);
+		// TODO treat waiting requests
+		logger.error('[queue] From video queue: %s', err.message);
+		logger.error(err.stack);
 	});
 
 	/**
@@ -114,7 +118,8 @@ function Queue() {
 	 */
 	var processFile = function(job, done) {
 
-		var opts = JSON.parse(job.opts);
+		//console.log('OPTS = %s, %s', require('util').inspect(job.opts), _.isObject(job.opts));
+		var opts = job.opts;
 		var processor = require('./processor/' + opts.processor);
 		var File = require('mongoose').model('File');
 		File.findById(job.data.fileId, function(err, file) {

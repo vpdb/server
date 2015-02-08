@@ -208,7 +208,6 @@ describe('The storage engine of VPDB', function() {
 	});
 
 	describe('after successfully uploading a non-public file', function() {
-		// needs release upload working first
 
 		describe('when the file is still inactive', function() {
 

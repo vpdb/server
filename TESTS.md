@@ -27,6 +27,23 @@ There are some additional command-line parameters:
  * `--basic-auth=<user>:<password>` - Adds a basic authentication header to every request.
  * `--auth-header=<header>` - Authorization header. Default: `Authorization`.
 
+### Remote API Tests
+
+You can also run the API tests against a remote host. If the server is running
+in production mode, some tests will fail, you need to set `email.confirmUserEmail`
+to `false` in `settings.js` and you must have an empty database. But it's a
+good way to test concurrency issues.
+
+Run your tests like this:
+
+	grunt mochaTest --scheme=https --host=staging.vpdb-local --port=443
+
+For a quick drop-and-create on server side, run:
+
+	mongo vpdb-staging --eval "db.dropDatabase()" && service nginx restart
+
+Which will drop the database and respawn the application processes.
+
 
 ## Frontend Tests
 

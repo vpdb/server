@@ -2,6 +2,7 @@
 
 var request = require('superagent');
 var expect = require('expect.js');
+var async = require('async');
 
 var superagentTest = require('../modules/superagent-test');
 var hlp = require('../modules/helper');
@@ -213,10 +214,16 @@ describe('The storage engine of VPDB', function() {
 
 			it('should block a video variation until processing is finished', function(done) {
 				hlp.file.createMp4('contributor', request, function(video) {
-					request.get(video.variations['small-rotated'].url).as('contributor').end(function(err, res) {
-						hlp.expectStatus(err, res, 200);
+
+					// now spawn 5 clients that try to retrieve this simultaneously
+					async.times(5, function(n, next){
+						request.get(video.variations['small-rotated'].url).as('contributor').end(function(err, res) {
+							hlp.expectStatus(err, res, 200);
+							expect(res.headers['content-length']).to.be.greaterThan(0);
+							next();
+						});
+					}, function() {
 						hlp.doomFile('contributor', video.id);
-						expect(res.headers['content-length']).to.be.greaterThan(0);
 						done();
 					});
 				});

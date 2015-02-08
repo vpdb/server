@@ -91,9 +91,10 @@ exports.upload = function(req, res) {
 						}
 						logger.info('[api|file:save] File upload of %s by <%s> successfully completed.', file.toString(), req.user.email);
 						api.success(res, file.toDetailed(), 201);
+
+						// do this in the background.
+						storage.postprocess(file);
 					});
-					// do this in the background.
-					storage.postprocess(file);
 				});
 			});
 			/* istanbul ignore next */

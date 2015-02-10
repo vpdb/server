@@ -23,6 +23,7 @@ var _ = require('lodash');
 var fs = require('fs');
 var queue = require('bull');
 var util  = require('util');
+var redis = require('redis');
 var events = require('events');
 var logger = require('winston');
 
@@ -96,6 +97,16 @@ function Queue() {
 		image: queue('image', redisOpts),
 		video: queue('video', redisOpts)
 	};
+
+	// we also have 3 redis clients
+	this.redis = {
+		subscriber: redis.createClient(config.vpdb.redis.port, config.vpdb.redis.host, { no_ready_check: true }),
+		publisher: redis.createClient(config.vpdb.redis.port, config.vpdb.redis.host, { no_ready_check: true }),
+		semaphore: redis.createClient(config.vpdb.redis.port, config.vpdb.redis.host, { no_ready_check: true })
+	};
+	_.each(this.redis, function(client) {
+		client.select(config.vpdb.redis.db);
+	});
 
 	this.queues.image.on('failed', function(job, err) {
 		// TODO treat waiting requests (to test: make pngquant fail, i.e. add pngquant's pngquant-bin dep).
@@ -189,14 +200,24 @@ function Queue() {
 		if (!file) {
 			return;
 		}
-		var key = variation ? file.id + '/' + variation.name : file.id;
+		var key = that.getQueryId(file, variation ? variation.name : null);
 		if (!that.queuedFiles[key]) {
 			return;
 		}
 		var callbacks = that.queuedFiles[key];
 		delete that.queuedFiles[key];
 		_.each(callbacks, function(callback) {
-			callback(file, storage ? storage.fstat(file, variation.name) : null);
+			if (storage) {
+				storage.fstat(file, variation.name, function(err, fstat) {
+					/* instanbul ignore if */
+					if (err) {
+						logger.error('[storage] Error fstating file %s: %s', file.toString(variationName), err.message);
+					}
+					callback(file, fstat);
+				});
+			} else {
+				callback(file);
+			}
 		});
 	};
 
@@ -209,7 +230,8 @@ function Queue() {
 	});
 
 	this.on('finishedPass1', function(file, variation, processor, processed) {
-		var key = variation ? file.id + '/' + variation.name : file.id;
+
+		var key = this.getQueryId(file, variation ? variation.name : null);
 		// run pass 2
 		if (processor.pass2) {
 			this.queues[processor.name].add({ fileId: file._id, variation: variation }, { processor: processor.name });
@@ -228,7 +250,7 @@ function Queue() {
 	});
 
 	this.on('finishedPass2', function(file, variation) {
-		var key = variation ? file.id + '/' + variation.name : file.id;
+		var key = this.getQueryId(file, variation ? variation.name : null);
 		logger.info('[queue] Finished processing of %s, running %d callback(s).', file.toString(variation), that.queuedFiles[key] ? that.queuedFiles[key].length : 0);
 		processQueue(file, variation, require('./storage'));
 	});
@@ -245,7 +267,7 @@ util.inherits(Queue, events.EventEmitter);
 Queue.prototype.add = function(file, variation, processor) {
 
 	var that = this;
-	var key = variation ? file.id + '/' + variation.name : file.id;
+	var key = this.getQueryId(file, variation ? variation.name : null);
 
 	// mark file as being processed
 	this.queuedFiles[key] = [];
@@ -275,15 +297,22 @@ Queue.prototype.add = function(file, variation, processor) {
 	}
 };
 
-Queue.prototype.isQueued = function(file, variationName) {
-	var key = file.id + '/' + variationName;
-	return this.queuedFiles[key] ? true : false;
+Queue.prototype.isQueued = function(file, variationName, done) {
+	var key = this.getQueryId(file, variationName);
+	done(null, this.queuedFiles[key] ? true : false);
 };
 
-Queue.prototype.addCallback = function(file, variationName, callback) {
-	var key = file.id + '/' + variationName;
+Queue.prototype.addCallback = function(file, variationName, callback, done) {
+	var key = this.getQueryId(file, variationName);
 	this.queuedFiles[key].push(callback);
 	logger.info('[queue] Added new callback to %s.', key);
+	if (done) {
+		done();
+	}
+};
+
+Queue.prototype.getQueryId = function(file, variationName) {
+	return variationName ? file.id + ':' + variationName : file.id;
 };
 
 Queue.prototype.empty = function() {

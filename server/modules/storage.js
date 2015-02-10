@@ -78,12 +78,18 @@ Storage.prototype.variations = {
  * @param {function} callback Callback to execute upon processing or error
  */
 Storage.prototype.whenProcessed = function(file, variationName, callback) {
-	/* istanbul ignore if */
-	if (!queue.isQueued(file, variationName)) {
-		logger.error('[storage] No such file being processed: %s', file.id + '/' + variationName);
-		return callback(null);
-	}
-	queue.addCallback(file, variationName, callback);
+	queue.isQueued(file, variationName, function(err, isQueued) {
+		/* istanbul ignore if */
+		if (err) {
+			logger.error('[storage] Error checking for queued file %s: %s', file.toString(variationName), err.message);
+			return callback();
+		}
+		if (!isQueued) {
+			logger.error('[storage] No such file being processed: %s', queue.getQueryId(file, variationName));
+			return callback();
+		}
+		queue.addCallback(file, variationName, callback);
+	});
 };
 
 /**
@@ -347,30 +353,38 @@ Storage.prototype.urls = function(file) {
 	return variations;
 };
 
-Storage.prototype.fstat = function(file, variationName) {
+Storage.prototype.fstat = function(file, variationName, callback) {
 
 	if (!variationName) {
-		return fs.statSync(file.getPath());
+		return fs.stat(file.getPath(), callback);
 	}
 
 	// check for valid variation name
 	if (variationName && !_.contains(this.variationNames, variationName)) {
 		logger.warn('[storage] Unknown variation "%s".', variationName);
-		return null;
+		return callback();
 	}
 
-	if (queue.isQueued(file, variationName)) {
-		logger.info('[storage] Item %s/%s being processed, returning null', file.id, variationName);
-		return null;
-	}
+	queue.isQueued(file, variationName, function(err, isQueued) {
+		/* istanbul ignore if */
+		if (err) {
+			logger.error('[storage] Error checking for queued file %s: %s', file.toString(variationName), err.message);
+			return callback();
+		}
 
-	// TODO optimize (aka "cache" and make it async, this is called frequently)
-	var filePath = file.getPath(variationName);
-	if (variationName && fs.existsSync(filePath)) {
-		return fs.statSync(filePath);
-	}
-	logger.warn('[storage] Cannot find %s at %s', file.toString(variationName), filePath);
-	return null;
+		if (isQueued) {
+			logger.info('[storage] Item %s/%s being processed, returning null', file.id, variationName);
+			return callback();
+		}
+
+		// TODO optimize (aka "cache" and make it async, this is called frequently)
+		var filePath = file.getPath(variationName);
+		if (variationName && fs.existsSync(filePath)) {
+			return fs.stat(filePath, callback);
+		}
+		logger.warn('[storage] Cannot find %s at %s', file.toString(variationName), filePath);
+		callback();
+	});
 };
 
 module.exports = new Storage();

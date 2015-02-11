@@ -353,7 +353,9 @@ Storage.prototype.urls = function(file) {
 	return variations;
 };
 
-Storage.prototype.fstat = function(file, variationName, callback) {
+Storage.prototype.fstat = function(file, variation, callback) {
+
+	var variationName = _.isObject(variation) ? variation.name : variation;
 
 	if (!variationName) {
 		return fs.stat(file.getPath(), callback);
@@ -373,7 +375,7 @@ Storage.prototype.fstat = function(file, variationName, callback) {
 		}
 
 		if (isQueued) {
-			logger.info('[storage] Item %s/%s being processed, returning null', file.id, variationName);
+			logger.info('[storage] Item %s/%s being processed, returning null.', file.id, variationName);
 			return callback();
 		}
 

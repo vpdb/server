@@ -106,6 +106,10 @@ function Queue() {
 	};
 	_.each(this.redis, function(client) {
 		client.select(config.vpdb.redis.db);
+		client.on('error', function(err) {
+			logger.error('[queue] Redis error: ' + err);
+			logger.error(err.stack);
+		});
 	});
 
 	this.queues.image.on('failed', function(job, err) {
@@ -178,7 +182,6 @@ function Queue() {
 						} else {
 							mvDest = finalDest;
 						}
-						logger.info('[queue] Renaming "%s" to "%s".', mvSrc, mvDest);
 						fs.renameSync(mvSrc, mvDest);
 						logger.info('[queue] Renamed "%s" to "%s".', mvSrc, mvDest);
 					} catch (err) {
@@ -200,24 +203,31 @@ function Queue() {
 		if (!file) {
 			return;
 		}
-		var key = that.getQueryId(file, variation ? variation.name : null);
+		var key = that.getQueryId(file, variation);
 		if (!that.queuedFiles[key]) {
 			return;
 		}
 		var callbacks = that.queuedFiles[key];
 		delete that.queuedFiles[key];
-		_.each(callbacks, function(callback) {
-			if (storage) {
-				storage.fstat(file, variation.name, function(err, fstat) {
-					/* instanbul ignore if */
-					if (err) {
-						logger.error('[storage] Error fstating file %s: %s', file.toString(variationName), err.message);
-					}
-					callback(file, fstat);
-				});
-			} else {
-				callback(file);
+		that.redis.semaphore.del(that.getRedisId(key), function(err) {
+			/* istanbul ignore if */
+			if (err) {
+				logger.error('[queue] Error deleting value "%s" from Redis: %s', that.getRedisId(key), err.message);
+				return;
 			}
+			_.each(callbacks, function(callback) {
+				if (storage) {
+					storage.fstat(file, variation, function(err, fstat) {
+						/* instanbul ignore if */
+						if (err) {
+							logger.error('[storage] Error fstating file %s: %s', file.toString(variation), err.message);
+						}
+						callback(file, fstat);
+					});
+				} else {
+					callback(file);
+				}
+			});
 		});
 	};
 
@@ -231,28 +241,42 @@ function Queue() {
 
 	this.on('finishedPass1', function(file, variation, processor, processed) {
 
-		var key = this.getQueryId(file, variation ? variation.name : null);
-		// run pass 2
-		if (processor.pass2) {
-			this.queues[processor.name].add({ fileId: file._id, variation: variation }, { processor: processor.name });
-			if (processed) {
-				logger.info('[queue] Pass 1 finished, adding %s to queue (%d callbacks).', file.toString(variation), that.queuedFiles[key] ? that.queuedFiles[key].length : 0);
-			} else {
-				logger.info('[queue] Pass 1 skipped, continuing %s with pass 2.', file.toString(variation));
+		var key = this.getQueryId(file, variation);
+		this.redis.semaphore.get(this.getRedisId(key), function(err, num) {
+			/* istanbul ignore if */
+			if (err) {
+				logger.error('[queue] Error getting value "%s" from Redis: %s', that.getRedisId(key), err.message);
+				return;
 			}
-		}
+			// run pass 2
+			if (processor.pass2) {
+				that.queues[processor.name].add({ fileId: file._id, variation: variation }, { processor: processor.name });
+				if (processed) {
+					logger.info('[queue] Pass 1 finished, adding %s to queue (%d callbacks).', file.toString(variation), num || 0);
+				} else {
+					logger.info('[queue] Pass 1 skipped, continuing %s with pass 2.', file.toString(variation));
+				}
+			}
 
-		// only process callback queue if there actually was some result in pass 1
-		if (processed) {
-			processQueue(file, variation, require('./storage'));
-		}
-
+			// only process callback queue if there actually was some result in pass 1
+			if (processed) {
+				processQueue(file, variation, require('./storage'));
+			}
+		});
 	});
 
 	this.on('finishedPass2', function(file, variation) {
-		var key = this.getQueryId(file, variation ? variation.name : null);
-		logger.info('[queue] Finished processing of %s, running %d callback(s).', file.toString(variation), that.queuedFiles[key] ? that.queuedFiles[key].length : 0);
-		processQueue(file, variation, require('./storage'));
+		var key = this.getQueryId(file, variation);
+		this.redis.semaphore.get(this.getRedisId(key), function(err, num) {
+			/* istanbul ignore if */
+			if (err) {
+				logger.error('[queue] Error getting value "%s" from Redis: %s', that.getRedisId(key), err.message);
+				return;
+			}
+			logger.info('[queue] Finished processing of %s, running %d callback(s).', file.toString(variation), num || 0);
+
+			processQueue(file, variation, require('./storage'));
+		});
 	});
 
 	this.on('error', function(err, file, variation) {
@@ -267,52 +291,75 @@ util.inherits(Queue, events.EventEmitter);
 Queue.prototype.add = function(file, variation, processor) {
 
 	var that = this;
-	var key = this.getQueryId(file, variation ? variation.name : null);
+	var key = this.getQueryId(file, variation);
 
 	// mark file as being processed
-	this.queuedFiles[key] = [];
-
-	// run pass 1 if available in processor
-	if (processor.pass1 && variation) {
-
-		// check for source file availability
-		if (!fs.existsSync(file.getPath())) {
-			logger.warn('[queue|pass1] Aborting before pass 1, %s is not on file system.', file.toString(variation));
-			return that.emit('error', 'File gone before pass 1 could start.', file, variation);
+	this.redis.semaphore.set(this.getRedisId(key), 0, function(err) {
+		/* istanbul ignore if */
+		if (err) {
+			logger.error('[queue] Error setting value "%s" from Redis: %s', that.getRedisId(key), err.message);
+			return;
 		}
+		that.queuedFiles[key] = [];
 
-		processor.pass1(file.getPath(), file.getPath(variation), file, variation, function(err, skipped) {
-			if (err) {
-				return that.emit('error', err, file, variation);
-			}
-			if (skipped) {
-				that.emit('finishedPass1', file, variation, processor, false);
-			} else {
-				that.emit('processed', file, variation, processor, 'finishedPass1');
-			}
-		});
+		// run pass 1 if available in processor
+		if (processor.pass1 && variation) {
 
-	} else {
-		that.emit('finishedPass1', file, variation, processor, false);
-	}
+			// check for source file availability
+			if (!fs.existsSync(file.getPath())) {
+				logger.warn('[queue|pass1] Aborting before pass 1, %s is not on file system.', file.toString(variation));
+				return that.emit('error', 'File gone before pass 1 could start.', file, variation);
+			}
+
+			processor.pass1(file.getPath(), file.getPath(variation), file, variation, function(err, skipped) {
+				if (err) {
+					return that.emit('error', err, file, variation);
+				}
+				if (skipped) {
+					that.emit('finishedPass1', file, variation, processor, false);
+				} else {
+					that.emit('processed', file, variation, processor, 'finishedPass1');
+				}
+			});
+
+		} else {
+			that.emit('finishedPass1', file, variation, processor, false);
+		}
+	});
 };
 
 Queue.prototype.isQueued = function(file, variationName, done) {
+	var that = this;
 	var key = this.getQueryId(file, variationName);
-	done(null, this.queuedFiles[key] ? true : false);
+	this.redis.semaphore.get(this.getRedisId(key), function(err, num) { // done(null, this.queuedFiles[key] ? true : false);
+		/* istanbul ignore if */
+		if (err) {
+			logger.error('[queue] Error getting value "%s" from Redis.', that.getRedisId(key));
+			return done();
+		}
+		done(null, num !== null);
+	});
 };
 
 Queue.prototype.addCallback = function(file, variationName, callback, done) {
+	var that = this;
 	var key = this.getQueryId(file, variationName);
-	this.queuedFiles[key].push(callback);
-	logger.info('[queue] Added new callback to %s.', key);
-	if (done) {
-		done();
-	}
+	this.redis.semaphore.incr(this.getRedisId(key), function() {
+		that.queuedFiles[key].push(callback);
+		logger.info('[queue] Added new callback to %s.', key);
+		if (done) {
+			done();
+		}
+	});
 };
 
-Queue.prototype.getQueryId = function(file, variationName) {
+Queue.prototype.getQueryId = function(file, variation) {
+	var variationName = _.isObject(variation) ? variation.name : variation;
 	return variationName ? file.id + ':' + variationName : file.id;
+};
+
+Queue.prototype.getRedisId = function(key) {
+	return 'queue:' + key;
 };
 
 Queue.prototype.empty = function() {

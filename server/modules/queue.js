@@ -46,7 +46,7 @@ var config = require('./settings').current;
  *
  * Lifecycle:
  *
- * 1. A new file was uploaded and Queue##add is called. this.queuedFiles is updated so we know it's being processed.
+ * 1. A new file was uploaded and Queue##add is called. Redis is updated so we know it's being processed.
  * 2. Pass 1 is instantly executed on the appropriate processor.
  * 3. When pass 1 is finished, the "processed" event is emitted.
  * 4. The storage module, which is subscribed to the "processed" event finishes pass 1 by
@@ -58,9 +58,9 @@ var config = require('./settings').current;
  *    - Run eventual callbacks at this.queuedFiles, since now we have a file to offer
  *    - Start pass 2, which adds a job to the Bull queue containing the file id, variation if set and the processor name.
  * 6. At some point, the processFile method below gets called. It:
- *    - Fetches the file object from the DB using the file id
- *    - Instantiates the processor using the name
- *    - Executes the processor with the file
+ *    - fetches the file object from the DB using the file id
+ *    - instantiates the processor using the name
+ *    - executes the processor with the file
  * 7. The processor does its thing and emits the "processed" event.
  * 8. Again, the storage module catches the event, retrieves metadata, updates the database, but this time emits the
  *    "finishedPass2" event.
@@ -72,6 +72,9 @@ var config = require('./settings').current;
  *    immediately.
  *  - If there is no pass2() in the processor, the flow finishes with step 5.
  *  - See comments of each processing module what is done in pass1 and pass2.
+ *  - The queuedFiles callbacks are triggered via Redis pub/sub pattern, since as soon as we have multiple Node
+ *    processes (in production), our "static" variable doesn't do the trick anymore since requests are very likely
+ *    handled by another processs than the queue process.
  *
  * @constructor
  */
@@ -342,7 +345,6 @@ Queue.prototype.add = function(file, variation, processor) {
 			logger.error('[queue] Error setting value "%s" from Redis: %s', that.getRedisId(key), err.message);
 			return;
 		}
-		that.queuedFiles[key] = [];
 
 		// run pass 1 if available in processor
 		if (processor.pass1 && variation) {
@@ -373,7 +375,7 @@ Queue.prototype.add = function(file, variation, processor) {
 Queue.prototype.isQueued = function(file, variationName, done) {
 	var that = this;
 	var key = this.getQueryId(file, variationName);
-	this.redis.status.get(this.getRedisId(key), function(err, num) { // done(null, this.queuedFiles[key] ? true : false);
+	this.redis.status.get(this.getRedisId(key), function(err, num) {
 		/* istanbul ignore if */
 		if (err) {
 			logger.error('[queue] Error getting value "%s" from Redis.', that.getRedisId(key));
@@ -387,6 +389,9 @@ Queue.prototype.addCallback = function(file, variationName, callback, done) {
 	var that = this;
 	var key = this.getQueryId(file, variationName);
 	this.redis.status.incr(this.getRedisId(key), function() {
+		if (!that.queuedFiles[key]) {
+			that.queuedFiles[key] = [];
+		}
 		that.queuedFiles[key].push(callback);
 		that.redis.subscriber.subscribe(key);
 		logger.info('[queue] Added new callback to %s.', key);

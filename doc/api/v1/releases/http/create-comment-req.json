@@ -1,10 +1,10 @@
-POST /api/v1/releases/m1Lr4L4zI/comments HTTP/1.1
+POST /api/v1/releases/X1cDRxSWzw/comments HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJtSkxTNEVMTno4IiwiaWF0IjoiMjAxNS0wMi0wMlQyMjo0NToxNC40MjFaIiwiZXhwIjoiMjAxNS0wMi0wMlQyMzo0NToxNC40MjFaIn0.F60a6JrmoWS05Q6URX2totNMJw57PBuf10okvRpgERM
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJRMUVOQWxIV0d2IiwiaWF0IjoiMjAxNS0wMi0xNFQyMjozMTozMi4xNzdaIiwiZXhwIjoiMjAxNS0wMi0xNFQyMzozMTozMi4xNzdaIn0.xOeR4GX1VKqIUa8PjqyBCX0UBGMK7_6XWaqvGp3FilQ
 Content-Type: application/json
-Content-Length: 39
+Content-Length: 58
 
 {
-  "message": "Sharable exuding forecast"
+  "message": "Enterprise-wide zero administration approach"
 }

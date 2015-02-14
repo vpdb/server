@@ -1,26 +1,30 @@
 200 OK
 Content-Type: application/json; charset=utf-8
-Content-Length: 906
+Content-Length: 956
 
 {
-  "location": "North Stephanburgh",
+  "location": "Feilshire",
   "plan": "free",
-  "name": "Herminio Berge",
-  "username": "Hollie.Marks87",
-  "email": "darren83@yahoo.com",
+  "name": "Aubree Bergstrom",
+  "username": "Fredy63",
+  "email": "shana80@gmail.com",
   "provider": "local",
-  "created_at": "2015-02-02T22:45:28.495Z",
+  "created_at": "2015-02-14T22:31:48.502Z",
   "is_active": true,
+  "counter": {
+    "downloads": 0,
+    "comments": 0
+  },
   "roles": [
     "member"
   ],
   "email_status": {
     "code": "pending_update",
-    "expires_at": "2015-02-03T22:45:28.766Z",
-    "value": "kim26@gmail.com"
+    "expires_at": "2015-02-15T22:31:48.789Z",
+    "value": "daren.vandervort36@yahoo.com"
   },
-  "id": "XJxpGBU4MI",
-  "gravatar_id": "80c8b90fdf1ba1cc3c8315dc90889e73",
+  "id": "XkxoAZBbMv",
+  "gravatar_id": "937053e30fbd427bae28d40eab9f3db0",
   "permissions": {
     "builds": [
       "add",

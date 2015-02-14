@@ -59,6 +59,10 @@ var fields = {
 		tablefile_name: { type: String },
 		flavor_tags:    { type: Schema.Types.Mixed }
 	},
+	counter: {
+		comments:     { type: Number, 'default': 0 },
+		downloads:    { type: Number, 'default': 0 }
+	},
 	created_at:       { type: Date, required: true },
 	is_active:        { type: Boolean, required: true, default: false },
 	validated_emails: { type: [ String ] }
@@ -88,7 +92,7 @@ UserSchema.plugin(toObj);
 //-----------------------------------------------------------------------------
 var apiFields = {
 	reduced: [ 'id', 'name', 'username', 'thumb', 'gravatar_id', 'location' ], // "member" search result
-	simple: [ 'email', 'is_active', 'provider', 'roles', 'plan', 'created_at', 'github', 'preferences' ]  // "admin" lists & profile
+	simple: [ 'email', 'is_active', 'provider', 'roles', 'plan', 'created_at', 'github', 'preferences', 'counter' ]  // "admin" lists & profile
 };
 
 

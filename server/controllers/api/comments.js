@@ -21,8 +21,10 @@
 
 var _ = require('lodash');
 var util = require('util');
+var async = require('async');
 var logger = require('winston');
 
+var Game = require('mongoose').model('Game');
 var Release = require('mongoose').model('Release');
 var Comment = require('mongoose').model('Comment');
 var api = require('./api');
@@ -52,11 +54,31 @@ exports.createForRelease = function(req, res) {
 			comment.save(assert(function(comment) {
 				logger.info('[api|comment:create] User <%s> commented on release "%s" (%s).', req.user.email, release.id, release.name);
 
-				// fetch with references
-				Comment.findById(comment._id).populate('_from').exec(assert(function(comment) {
-					return api.success(res, comment.toSimple(), 201);
+				// update counters
+				var updates = [];
+				updates.push(function(next) {
+					release.update({ $inc: { 'counter.comments': 1 }}, next);
+				});
+				updates.push(function(next) {
+					Game.update({ _id: release._game.toString() }, { $inc: { 'counter.comments': 1 }}, next);
+				});
+				updates.push(function(next) {
+					req.user.update({ $inc: { 'counter.comments': 1 }}, next);
+				});
+				async.series(updates, function(err) {
+					if (err) {
+						logger.error('[model|comment] Error updating counters: %s', err.message);
+					} else {
+						logger.info('[model|comment] %d counters successfully updated.', updates.length);
+					}
 
-				}, 'Error fetching created comment from <%s>.'));
+					// fetch with references
+					Comment.findById(comment._id).populate('_from').exec(assert(function(comment) {
+						return api.success(res, comment.toSimple(), 201);
+
+					}, 'Error fetching created comment from <%s>.'));
+				});
+
 			}, 'Error saving comment from <%s>.'));
 		});
 	}, 'Error finding release in order to create comment from <%s>.'));

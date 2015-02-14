@@ -48,6 +48,7 @@ var fields = {
 	version:      { type: String },
 	language:     { type: String },
 	notes:        { type: String },
+	counter:      { downloads: { type: Number, 'default': 0 }},
 	created_at:   { type: Date, required: true },
 	_created_by:  { type: Schema.ObjectId, ref: 'User', required: true }
 };
@@ -57,7 +58,7 @@ var RomSchema = new Schema(fields);
 // API FIELDS
 //-----------------------------------------------------------------------------
 var apiFields = {
-	simple: [ 'id', 'file', 'version', 'notes', 'language', 'rom_files', 'created_by' ]
+	simple: [ 'id', 'file', 'version', 'notes', 'language', 'rom_files', 'created_by', 'counter' ]
 };
 
 //-----------------------------------------------------------------------------

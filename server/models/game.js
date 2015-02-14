@@ -65,6 +65,11 @@ var fields = {
 		rating: Number,
 		mfg: Number
 	},
+	counter:       {
+		views:     { type: Number, 'default': 0 },
+		downloads: { type: Number, 'default': 0 },
+		comments:  { type: Number, 'default': 0 }
+	},
 	created_at:    { type: Date, required: true },
 	_created_by:   { type: Schema.ObjectId, required: true, ref: 'User' },
 	_media: {
@@ -88,7 +93,7 @@ GameSchema.plugin(toObj);
 // API FIELDS
 //-----------------------------------------------------------------------------
 var apiFields = {
-	simple: [ 'id', 'title', 'manufacturer', 'year', 'game_type', 'ipdb', 'media' ] // fields returned in lists
+	simple: [ 'id', 'title', 'manufacturer', 'year', 'game_type', 'ipdb', 'media', 'counter' ] // fields returned in lists
 };
 
 

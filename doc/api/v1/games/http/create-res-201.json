@@ -1,22 +1,35 @@
 201 Created
 Content-Type: application/json; charset=utf-8
-Content-Length: 839
+Content-Encoding: gzip
 
 {
-  "title": "Miss Nessie",
-  "manufacturer": "Sega",
-  "year": 1978,
-  "notes": "Release date is 3-1978.",
-  "id": "miss-nessie",
-  "game_type": "na",
-  "_created_by": "54cffdfcf5da2b883abe11f4",
-  "created_at": "2015-02-02T22:45:16.736Z",
-  "ipdb": {
-    "number": 3408,
-    "mfg": 279
+  "title": "Kismet",
+  "manufacturer": "Williams",
+  "model_number": "258",
+  "year": 1961,
+  "game_type": "em",
+  "produced_units": 700,
+  "features": "Flippers (2), Pop bumpers (3), Passive bumpers (4), Slingshots (2), Moving target (1). 3 or 5 ball play.Maximum displayed point score is 1,999 points per player.",
+  "notes": "'Kismet' was a 1953 Broadway musical followed by a 1955 Hollywood film. The setting was Baghdad, Iraq, in the times of The Arabian Nights.",
+  "id": "kismet",
+  "_created_by": "54dfccc69829f2883c7f1b28",
+  "created_at": "2015-02-14T22:31:34.713Z",
+  "counter": {
+    "comments": 0,
+    "downloads": 0,
+    "views": 0
   },
-  "artists": [],
-  "designers": [],
+  "ipdb": {
+    "number": 1385,
+    "mfg": 350,
+    "rating": 8
+  },
+  "artists": [
+    "George Molentin"
+  ],
+  "designers": [
+    "Steve Kordek"
+  ],
   "themes": [],
   "short": [],
   "media": {
@@ -24,22 +37,22 @@ Content-Length: 839
       "is_protected": false,
       "variations": {
         "small-2x": {
-          "url": "/storage/v1/files/X1pN8VUVG8/small-2x"
+          "url": "/storage/v1/files/7JoNl-HbGv/small-2x"
         },
         "small": {
-          "url": "/storage/v1/files/X1pN8VUVG8/small"
+          "url": "/storage/v1/files/7JoNl-HbGv/small"
         },
         "medium-2x": {
-          "url": "/storage/v1/files/X1pN8VUVG8/medium-2x"
+          "url": "/storage/v1/files/7JoNl-HbGv/medium-2x"
         },
         "medium": {
-          "url": "/storage/v1/files/X1pN8VUVG8/medium"
+          "url": "/storage/v1/files/7JoNl-HbGv/medium"
         }
       },
       "bytes": 135,
-      "url": "/storage/v1/files/X1pN8VUVG8",
-      "id": "X1pN8VUVG8"
+      "url": "/storage/v1/files/7JoNl-HbGv",
+      "id": "7JoNl-HbGv"
     }
   },
-  "url": "/game/miss-nessie"
+  "url": "/game/kismet"
 }

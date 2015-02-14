@@ -21,10 +21,13 @@
 
 var _ = require('lodash');
 var fs = require('fs');
+var async = require('async');
 var logger = require('winston');
 var archiver = require('archiver');
+var objectPath = require('object-path');
 
 var Release = require('mongoose').model('Release');
+var Game = require('mongoose').model('Game');
 var quota = require('../../modules/quota');
 
 /**
@@ -93,13 +96,21 @@ exports.download = function(req, res) {
 			var requestedFiles = [];
 			var requestedFileIds = body.files;
 			var media = body.media || {};
+			var counterUpdates = [];
+			var numTables = 0;
+			counterUpdates.push(function(next) {
+				release.update({ $inc: { 'counter.downloads': 1 }}, next);
+			});
+			counterUpdates.push(function(next) {
+				req.user.update({ $inc: { 'counter.downloads': 1 }}, next);
+			});
 			_.each(release.versions, function(version) {
 
 				// check if there are requested table files for that version
 				if (!_.intersection(_.pluck(_.pluck(version.files, '_file'), 'id'), requestedFileIds).length) {
 					return; // continue
 				}
-				_.each(version.files, function(versionFile) {
+				_.each(version.files, function(versionFile, pos) {
 					var file = versionFile._file;
 					file.release_version = version.obj();
 					file.release_file = versionFile.obj();
@@ -107,6 +118,12 @@ exports.download = function(req, res) {
 					if (file.getMimeCategory() === 'table') {
 						if (_.contains(requestedFileIds, file.id)) {
 							requestedFiles.push(file);
+							counterUpdates.push(function(next) {
+								var inc = { $inc: {} };
+								inc.$inc['versions.$.files.' + pos + '.counter.downloads'] = 1;
+								Release.update({ 'versions._id': version._id }, inc, next);
+							});
+							numTables++;
 
 							// add media if checked
 							_.each(versionFile._media, function(mediaFile, mediaName) {
@@ -121,6 +138,12 @@ exports.download = function(req, res) {
 						requestedFiles.push(file);
 					}
 				});
+				counterUpdates.push(function(next) {
+					Release.update({ 'versions._id': version._id }, { $inc: { 'versions.$.counter.downloads': 1 }}, next);
+				});
+			});
+			counterUpdates.push(function(next) {
+				release._game.update({ $inc: { 'counter.downloads': numTables }}, next);
 			});
 
 			// add game media?
@@ -148,6 +171,9 @@ exports.download = function(req, res) {
 				if (!granted) {
 					return res.status(403).json({ error: 'Not enough quota left.' }).end();
 				}
+
+				// update counters
+				async.series(counterUpdates);
 
 				// create zip stream
 				var archive = archiver('zip');
@@ -192,6 +218,7 @@ exports.download = function(req, res) {
 						name: name,
 						date: file.created_at
 					});
+					file.update({ $inc: { 'counter.downloads': 1 }}, function() {});
 				});
 				archive.append(release.description, { name: 'README.txt' });
 				archive.finalize();

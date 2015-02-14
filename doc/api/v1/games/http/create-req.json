@@ -1,22 +1,32 @@
 POST /api/v1/games HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJYeXVFVTRJNEc4IiwiaWF0IjoiMjAxNS0wMi0wMlQyMjo0NToxNi42MzZaIiwiZXhwIjoiMjAxNS0wMi0wMlQyMzo0NToxNi42MzZaIn0.VEX__xE58WbaRVgW1mfsKFnB5Y_myK6fWXRK8GmgknM
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJRSklOZ1dIWnpQIiwiaWF0IjoiMjAxNS0wMi0xNFQyMjozMTozNC40NzlaIiwiZXhwIjoiMjAxNS0wMi0xNFQyMzozMTozNC40NzlaIn0.lGeyIlVJZX17rRYsGN_u0zNefB2sURfHtCCmxev4pDY
 Content-Type: application/json
-Content-Length: 196
+Content-Length: 596
 
 {
   "ipdb": {
-    "number": 3408,
-    "mfg": 279
+    "number": 1385,
+    "mfg": 350,
+    "rating": "8.0"
   },
-  "title": "Miss Nessie",
-  "manufacturer": "Sega",
-  "year": 1978,
-  "notes": "Release date is 3-1978.",
-  "id": "miss-nessie",
-  "game_type": "na",
+  "title": "Kismet",
+  "manufacturer": "Williams",
+  "model_number": "258",
+  "year": 1961,
+  "game_type": "em",
+  "produced_units": 700,
+  "designers": [
+    "Steve Kordek"
+  ],
+  "artists": [
+    "George Molentin"
+  ],
+  "features": "Flippers (2), Pop bumpers (3), Passive bumpers (4), Slingshots (2), Moving target (1). 3 or 5 ball play.Maximum displayed point score is 1,999 points per player.",
+  "notes": "'Kismet' was a 1953 Broadway musical followed by a 1955 Hollywood film. The setting was Baghdad, Iraq, in the times of The Arabian Nights.",
+  "id": "kismet",
   "_media": {
-    "backglass": "X1pN8VUVG8"
+    "backglass": "7JoNl-HbGv"
   }
 }

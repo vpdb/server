@@ -20,6 +20,7 @@
 "use strict";
 
 var _ = require('lodash');
+var async = require('async');
 var logger = require('winston');
 var shortId = require('shortid');
 var mongoose = require('mongoose');
@@ -58,7 +59,7 @@ CommentSchema.plugin(toObj);
 // API FIELDS
 //-----------------------------------------------------------------------------
 var apiFields = {
-	simple: [ 'id', 'from', 'message', 'created_at' ], // fields returned in references
+	simple: [ 'id', 'from', 'message', 'created_at',  ], // fields returned in references
 	detailed: [ 'ip' ]
 };
 

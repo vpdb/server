@@ -1,16 +1,45 @@
 201 Created
 Content-Type: application/json; charset=utf-8
-Content-Length: 217
+Content-Length: 870
 
 {
-  "id": "west-wind_10",
+  "id": "the-french-connection_10",
   "file": {
     "is_protected": true,
-    "bytes": 900174,
-    "url": "/storage/v1/files/QyLlMS84fU",
-    "id": "QyLlMS84fU"
+    "bytes": 2096,
+    "url": "/storage/v1/files/mJgvabBbzw",
+    "id": "mJgvabBbzw"
   },
   "version": "1.0",
   "notes": "That is some ROM.",
-  "language": "en-US"
+  "language": "en-US",
+  "rom_files": [
+    {
+      "filename": "433.cpu",
+      "bytes": 1024,
+      "crc": 3227331410,
+      "modified_at": "1996-12-24T22:32:00.000Z",
+      "_id": "54dfccd39829f2883c7f1bf5",
+      "id": "54dfccd39829f2883c7f1bf5"
+    },
+    {
+      "filename": "433.snd",
+      "bytes": 1024,
+      "crc": 550313471,
+      "modified_at": "1996-12-24T22:32:00.000Z",
+      "_id": "54dfccd39829f2883c7f1bf6",
+      "id": "54dfccd39829f2883c7f1bf6"
+    },
+    {
+      "filename": "6530sys1.bin",
+      "bytes": 1024,
+      "crc": 3078820641,
+      "modified_at": "1996-12-24T22:32:00.000Z",
+      "_id": "54dfccd39829f2883c7f1bf7",
+      "id": "54dfccd39829f2883c7f1bf7"
+    }
+  ],
+  "counter": {
+    "downloads": 0
+  }
 }

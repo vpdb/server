@@ -1,21 +1,21 @@
 POST /api/v1/releases HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJtMXQyRUlWekwiLCJpYXQiOiIyMDE1LTAyLTAyVDIyOjQ1OjIyLjAyMVoiLCJleHAiOiIyMDE1LTAyLTAyVDIzOjQ1OjIyLjAyMVoifQ.MD6paOSS5hHgxdWrXlJvwcHo9IdvLL_2Nh04aY_QZGE
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJteUtVYlNiTUQiLCJpYXQiOiIyMDE1LTAyLTE0VDIyOjMxOjQwLjM4MVoiLCJleHAiOiIyMDE1LTAyLTE0VDIzOjMxOjQwLjM4MVoifQ.Aq-wcLKjR1Tzcu9JwYgDpQ1sBYiq1Ke2D3hopwID1Vk
 Content-Type: application/json
-Content-Length: 480
+Content-Length: 477
 
 {
   "name": "release",
-  "_game": "diamond-flipper",
+  "_game": "title-fight",
   "versions": [
     {
       "files": [
         {
-          "_file": "7yqea4LEzI",
+          "_file": "7JBQPbH-Gv",
           "_media": {
-            "playfield_image": "Qy0laE8VML",
-            "playfield_video": "QkxANUVGL"
+            "playfield_image": "7kTQwZBZfP",
+            "playfield_video": "myVl_ZBbMD"
           },
           "_compatibility": [
             "9.9.0"
@@ -26,9 +26,9 @@ Content-Length: 480
           }
         },
         {
-          "_file": "71ixpEIEML",
+          "_file": "Xy8XPbr-GP",
           "_media": {
-            "playfield_image": "QykZaEIVGI"
+            "playfield_image": "XJsXv-H-MD"
           },
           "_compatibility": [
             "9.9.0"
@@ -44,7 +44,7 @@ Content-Length: 480
   ],
   "authors": [
     {
-      "_user": "m1t2EIVzL",
+      "_user": "myKUbSbMD",
       "roles": [
         "Table Creator"
       ]

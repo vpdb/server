@@ -18,12 +18,31 @@ post:
         role/member:
           schema: release
           example: !include http/create-res-201.json
+get:
+  securedBy: [ ]
+  is: [ paginated: { defaultPerPage: 12, maxPerPage: 60 } ]
+  description: |
+    List all releases.
 
 /{release_id}:
   uriParameters:
     release_id:
       displayName: Release ID
       type: string
+
+  get:
+    securedBy: [ ]
+    description: |
+      List details of a give release.
+    body:
+        role/anon:
+          example: !include http/view-req.json
+    responses:
+      200:
+        body:
+          role/member:
+            example: !include http/view-res-200.json
+
   delete:
     is: [ protected ]
     securedBy: [ jwt: { scopes: [ CONTRIBUTOR ] } ]

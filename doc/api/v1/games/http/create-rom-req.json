@@ -1,14 +1,14 @@
-POST /api/v1/games/west-wind/roms HTTP/1.1
+POST /api/v1/games/the-french-connection/roms HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJYeThILUJVNEc4IiwiaWF0IjoiMjAxNS0wMi0wMlQyMjo0NToyNy41ODBaIiwiZXhwIjoiMjAxNS0wMi0wMlQyMzo0NToyNy41ODBaIn0.k65I2tpSky_Qg7Y-qCGnZQ2jEhsdNzxqy5NEX1mHP54
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI3eWhYNlpyLXpQIiwiaWF0IjoiMjAxNS0wMi0xNFQyMjozMTo0Ny4zMTNaIiwiZXhwIjoiMjAxNS0wMi0xNFQyMzozMTo0Ny4zMTNaIn0.qipCs9PZKhF_YxbJk-mY5MQnENjiDB8vIALI6sRQnyk
 Content-Type: application/json
-Content-Length: 105
+Content-Length: 117
 
 {
-  "id": "west-wind_10",
+  "id": "the-french-connection_10",
   "version": "1.0",
   "notes": "That is some ROM.",
   "language": "en-US",
-  "_file": "QyLlMS84fU"
+  "_file": "mJgvabBbzw"
 }

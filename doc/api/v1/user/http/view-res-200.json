@@ -1,21 +1,25 @@
 200 OK
 Content-Type: application/json; charset=utf-8
-Content-Length: 743
-Etag: W/"2e7-e6235e7b"
+Content-Length: 787
+Etag: W/"313-7ff84709"
 
 {
   "plan": "free",
-  "name": "Carolina71",
-  "username": "Carolina71",
-  "email": "abe_brekke91@yahoo.com",
+  "name": "Alvis14",
+  "username": "Alvis14",
+  "email": "walter35@hotmail.com",
   "provider": "local",
-  "created_at": "2015-02-02T22:45:13.120Z",
+  "created_at": "2015-02-14T22:31:30.973Z",
   "is_active": true,
+  "counter": {
+    "downloads": 0,
+    "comments": 0
+  },
   "roles": [
     "member"
   ],
-  "id": "XJmlXE8NM8",
-  "gravatar_id": "53cf9833c9a2e8cbb789b32cb54a2096",
+  "id": "XkmeTer-zP",
+  "gravatar_id": "66e85c71efd5b7a615795785652fe1f7",
   "permissions": {
     "builds": [
       "add",

@@ -22,10 +22,11 @@ describe('The VPDB `Comment` API', function() {
 		before(function(done) {
 			hlp.setupUsers(request, {
 				member: { roles: [ 'member' ] },
+				member2: { roles: [ 'member' ] },
 				contributor: { roles: [ 'contributor' ] }
 			}, function() {
-				hlp.release.createRelease('contributor', request, function(r) {
-					release = r;
+				hlp.release.createRelease('contributor', request, function(rls) {
+					release = rls;
 					done(null, release);
 				});
 			});
@@ -80,6 +81,46 @@ describe('The VPDB `Comment` API', function() {
 						expect(res.body[0].message).to.be(msg);
 						done();
 					});
+				});
+		});
+
+		it('should return the correct counters after creation', function(done) {
+			var msg = faker.company.catchPhrase();
+			request.post('/api/v1/releases/' + release.id + '/comments').as('member2').send({ message: msg })
+				.end(function(err, res) {
+					hlp.expectStatus(err, res, 201);
+
+					var tests = [];
+
+					// check release counter
+					tests.push(function(next) {
+						request.get('/api/v1/releases/' + release.id).end(function(err, res) {
+							hlp.expectStatus(err, res, 200);
+							expect(res.body).to.be.an('object');
+							expect(res.body.counter.comments).to.be.greaterThan(0);
+							next();
+						});
+					});
+
+					// check user counter
+					tests.push(function(next) {
+						request.get('/api/v1/user').as('member2').end(function(err, res) {
+							hlp.expectStatus(err, res, 200);
+							expect(res.body.counter.comments).to.be(1);
+							next();
+						});
+					});
+
+					// check game counter
+					tests.push(function(next) {
+						request.get('/api/v1/games/' + release.game.id).end(function(err, res) {
+							hlp.expectStatus(err, res, 200);
+							expect(res.body.counter.comments).to.be.greaterThan(0);
+							next();
+						});
+					});
+
+					async.series(tests, done);
 				});
 		});
 

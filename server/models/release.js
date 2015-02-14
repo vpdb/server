@@ -48,6 +48,9 @@ var fileFields = {
 	_media: {
 		playfield_image: { type: Schema.ObjectId, ref: 'File' },
 		playfield_video: { type: Schema.ObjectId, ref: 'File' }
+	},
+	counter: {
+		downloads: { type: Number, 'default': 0 }
 	}
 };
 var FileSchema = new Schema(fileFields);
@@ -56,7 +59,11 @@ var VersionSchema = new Schema({
 	version: { type: String, required: 'Version must be provided.' },
 	released_at: { type: Date, required: true },
 	changes: { type: String },
-	files: { validate: [ nonEmptyArray, 'You must provide at least one file.' ], type: [ FileSchema ] }
+	files: { validate: [ nonEmptyArray, 'You must provide at least one file.' ], type: [ FileSchema ] },
+	counter: {
+		downloads: { type: Number, 'default': 0 },
+		comments:   { type: Number, 'default': 0 }
+	}
 });
 var AuthorSchema = new Schema({
 	_user: { type: Schema.ObjectId, required: 'Reference to user must be provided.', ref: 'User' },
@@ -81,6 +88,10 @@ var releaseFields = {
 			name: { type: String },
 			url: { type: String }
 		}
+	},
+	counter:       {
+		downloads: { type: Number, 'default': 0 },
+		comments: { type: Number, 'default': 0 }
 	},
 	created_at:    { type: Date, required: true },
 	_created_by:   { type: Schema.ObjectId, required: true, ref: 'User' }
@@ -220,7 +231,7 @@ ReleaseSchema.methods.toSimple = function(opts) {
 	opts.thumb = opts.thumb || 'original';
 
 	var i, file, thumb;
-	var rls = _.pick(this.obj(), [ 'id', 'name', 'created_at', 'authors' ]);
+	var rls = _.pick(this.obj(), [ 'id', 'name', 'created_at', 'authors', 'counter' ]);
 
 	rls.game = _.pick(this._game, ['id', 'title']);
 

@@ -156,7 +156,7 @@ function Queue() {
 				storage.fstat(file, data.variation, function(err, fstat) {
 					/* instanbul ignore if */
 					if (err) {
-						logger.error('[queue|subscriber] Error fstating file %s: %s', file.toString(variation), err.message);
+						logger.error('[queue|subscriber] Error fstating file %s: %s', file.toString(data.variation), err.message);
 					}
 					callback(file, fstat);
 				});

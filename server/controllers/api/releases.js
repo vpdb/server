@@ -133,6 +133,30 @@ exports.list = function(req, res) {
 	}, { populate: [ '_game', 'versions.files._media.playfield_image', 'authors._user' ], sortBy: sortBy }); // '_game.title', '_game.id'
 };
 
+/**
+ * Lists a release of a given ID.
+ * @param {Request} req
+ * @param {Response} res
+ */
+exports.view = function(req, res) {
+
+	var query = Release.findOne({ id: req.params.id })
+		.populate({ path: '_tags' })
+		.populate({ path: 'authors._user' })
+		.populate({ path: 'versions.files._file' })
+		.populate({ path: 'versions.files._media.playfield_image' })
+		.populate({ path: 'versions.files._media.playfield_video' })
+		.populate({ path: 'versions.files._compatibility' });
+
+	query.exec(function (err, release) {
+		/* istanbul ignore if  */
+		if (err) {
+			return api.fail(res, error(err, 'Error finding release "%s"', req.params.id).log('view'), 500);
+		}
+		return api.success(res, release.toDetailed());
+	});
+};
+
 
 /**
  * Deletes a release.

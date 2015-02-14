@@ -1,14 +1,14 @@
 PATCH /api/v1/user HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJYSnhwR0JVNE1JIiwiaWF0IjoiMjAxNS0wMi0wMlQyMjo0NToyOC41MDBaIiwiZXhwIjoiMjAxNS0wMi0wMlQyMzo0NToyOC41MDBaIn0.3YMX180Yfe0DtsyAP0mde_2l3KVSH806kpF2BsvGrvA
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJYa3hvQVpCYk12IiwiaWF0IjoiMjAxNS0wMi0xNFQyMjozMTo0OC41MDlaIiwiZXhwIjoiMjAxNS0wMi0xNFQyMzozMTo0OC41MDlaIn0.y0pP45p7SWmJ5YSJhnz0m8hHp1y_65EGQwyeQJfJ7qw
 Content-Type: application/json
-Content-Length: 139
+Content-Length: 145
 
 {
-  "name": "Herminio Berge",
-  "location": "North Stephanburgh",
-  "email": "kim26@gmail.com",
-  "current_password": "nEeKM5sW1R",
-  "password": "7I093k4Py7"
+  "name": "Aubree Bergstrom",
+  "location": "Feilshire",
+  "email": "daren.vandervort36@yahoo.com",
+  "current_password": "g7n6hOei7G",
+  "password": "KSB43sWRmd"
 }

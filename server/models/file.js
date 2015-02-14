@@ -46,6 +46,7 @@ var fields = {
 	metadata:     { type: Schema.Types.Mixed },
 	variations:   { type: Schema.Types.Mixed },
 	is_active:    { type: Boolean, required: true, 'default': false },
+	counter:      { downloads: { type: Number, 'default': 0 }},
 	created_at:   { type: Date, required: true },
 	_created_by:  { type: Schema.ObjectId, required: true, ref: 'User' }
 };
@@ -63,7 +64,7 @@ FileSchema.plugin(toObj);
 //-----------------------------------------------------------------------------
 var apiFields = {
 	simple: [ 'id', 'url', 'bytes', 'variations', 'is_protected' ], // fields returned in references
-	detailed: [ 'name', 'created_at', 'mime_type', 'file_type', 'metadata' ]
+	detailed: [ 'name', 'created_at', 'mime_type', 'file_type', 'metadata', 'counter' ]
 };
 
 

@@ -272,6 +272,44 @@ describe('The VPDB `release` API', function() {
 
 	});
 
+	describe('when viewing a release', function() {
+
+		before(function(done) {
+			hlp.setupUsers(request, {
+				member: { roles: [ 'member' ] },
+				contributor: { roles: [ 'contributor' ] }
+			}, done);
+		});
+
+		after(function(done) {
+			hlp.cleanup(request, done);
+		});
+
+		it('should list all fields', function(done) {
+			hlp.release.createRelease('member', request, function(release) {
+				request
+					.get('/api/v1/releases/' + release.id)
+					.save({ path: 'releases/view'})
+					.end(function(err, res) {
+						hlp.expectStatus(err, res, 200);
+						release = res.body;
+						expect(res.body).to.be.an('object');
+						expect(release.id).to.be.ok();
+						expect(release.name).to.be.ok();
+						expect(release.created_at).to.be.ok();
+						expect(release.authors).to.be.an('array');
+						expect(release.authors[0]).to.be.an('object');
+						expect(release.authors[0].roles).to.be.an('array');
+						expect(release.authors[0].user).to.be.an('object');
+						expect(release.authors[0].user.id).to.be.ok();
+						expect(release.authors[0].user.name).to.be.ok();
+						expect(release.authors[0].user.username).to.be.ok();
+						done();
+					});
+			});
+		});
+	});
+
 	describe('when listing releases', function() {
 
 		var numReleases = 4;

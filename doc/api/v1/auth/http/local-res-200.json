@@ -3,21 +3,25 @@ Content-Type: application/json; charset=utf-8
 Content-Encoding: gzip
 
 {
-  "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJtSk1WTklOTTgiLCJpYXQiOiIyMDE1LTAyLTAyVDIyOjQ1OjEzLjg1OFoiLCJleHAiOiIyMDE1LTAyLTAyVDIzOjQ1OjEzLjg1OFoifQ.0ZEbijZSnL5ODL9Pei1LiFJIKcm05MkmZHUKnJc5s_s",
-  "expires": "2015-02-02T23:45:13.858Z",
+  "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJYSnJ0VHhTYmZ3IiwiaWF0IjoiMjAxNS0wMi0xNFQyMjozMTozMS43MzZaIiwiZXhwIjoiMjAxNS0wMi0xNFQyMzozMTozMS43MzZaIn0.xOWeGKYW-zfwtbmimTvVJf9zSUkL8SNm3mKO6_-rnJE",
+  "expires": "2015-02-14T23:31:31.736Z",
   "user": {
-    "id": "mJMVNINM8",
-    "name": "Emile68",
-    "username": "Emile68",
-    "gravatar_id": "e9fd7620e329b3d78c95b7bddea7d7ed",
-    "email": "rosamond.batz@hotmail.com",
+    "id": "XJrtTxSbfw",
+    "name": "Arvel.Stanton15",
+    "username": "Arvel.Stanton15",
+    "gravatar_id": "1f4b1f78489dd8463f169f5dac2ed33b",
+    "email": "skyla98@gmail.com",
     "is_active": true,
     "provider": "local",
     "roles": [
       "member"
     ],
     "plan": "free",
-    "created_at": "2015-02-02T22:45:13.797Z",
+    "created_at": "2015-02-14T22:31:31.674Z",
+    "counter": {
+      "downloads": 0,
+      "comments": 0
+    },
     "permissions": {
       "builds": [
         "add",

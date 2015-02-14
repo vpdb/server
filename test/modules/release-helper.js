@@ -32,7 +32,9 @@ exports.createRelease = function(user, request, done) {
 					})
 					.end(function (err, res) {
 						hlp.doomRelease(user, res.body.id);
-						done(res.body);
+						var release = res.body;
+						release.game = game;
+						done(release);
 					});
 			});
 		});

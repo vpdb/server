@@ -24,6 +24,7 @@ var settings = require('../../modules/settings');
 exports.register = function(app, api) {
 
 	app.get(settings.apiPath('/releases'),        api.anon(api.releases.list));
+	app.get(settings.apiPath('/releases/:id'),    api.anon(api.releases.view));
 	app.post(settings.apiPath('/releases'),       api.auth(api.releases.create, 'releases', 'add'));
 	app.delete(settings.apiPath('/releases/:id'), api.auth(api.releases.del, 'releases', 'delete'));
 

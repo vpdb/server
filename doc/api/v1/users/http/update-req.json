@@ -1,14 +1,14 @@
-PUT /api/v1/users/71V3fHUEfI HTTP/1.1
+PUT /api/v1/users/m1Ec0WHbGP HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJteXgyZkg4RU04IiwiaWF0IjoiMjAxNS0wMi0wMlQyMjo0NToyOC40NDJaIiwiZXhwIjoiMjAxNS0wMi0wMlQyMzo0NToyOC40NDJaIn0.2twwPKdryXxxo6OxbW6lUVPeYuMeUwlftJw1MUVry_4
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJta2c1MFpyV2ZQIiwiaWF0IjoiMjAxNS0wMi0xNFQyMjozMTo0OC40MTdaIiwiZXhwIjoiMjAxNS0wMi0xNFQyMzozMTo0OC40MTdaIn0.1b1mgITsMa1QMLSQKfkflx7tyXoQIVXr_ItECB0XCHI
 Content-Type: application/json
-Content-Length: 114
+Content-Length: 109
 
 {
-  "email": "donnie57@gmail.com",
-  "username": "Michel_Grady",
-  "name": "Michel_Grady",
+  "email": "ruthe90@hotmail.com",
+  "username": "Tressie32",
+  "name": "Tressie32",
   "is_active": true,
   "roles": [
     "member"

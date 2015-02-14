@@ -177,6 +177,11 @@ function serve(req, res, file, variationName, headOnly) {
 				res.end();
 			});
 
+			// count download
+			if (variationName) {
+
+			}
+
 			// only return the header if request was HEAD
 		} else {
 			res.writeHead(200, {
@@ -218,8 +223,6 @@ function serve(req, res, file, variationName, headOnly) {
 			 *
 			 * The client can also use the same mechanism if it just wants to wait and do something else by issueing a HEAD
 			 * request on the resource, so no data is transferred.
-			 *
-			 * TODO use redis for flagging, since this won't work on multi-process setups.
 			 */
 			logger.info('[ctrl|storage] Waiting for %s/%s to be processed...', file.id, variationName);
 			storage.whenProcessed(file, variationName, function(file, fstat) {

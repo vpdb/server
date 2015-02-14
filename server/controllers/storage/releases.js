@@ -98,12 +98,15 @@ exports.download = function(req, res) {
 			var media = body.media || {};
 			var counterUpdates = [];
 			var numTables = 0;
+
+			// count release and user download
 			counterUpdates.push(function(next) {
 				release.update({ $inc: { 'counter.downloads': 1 }}, next);
 			});
 			counterUpdates.push(function(next) {
 				req.user.update({ $inc: { 'counter.downloads': 1 }}, next);
 			});
+
 			_.each(release.versions, function(version) {
 
 				// check if there are requested table files for that version
@@ -118,6 +121,8 @@ exports.download = function(req, res) {
 					if (file.getMimeCategory() === 'table') {
 						if (_.contains(requestedFileIds, file.id)) {
 							requestedFiles.push(file);
+
+							// count downloaded flavor
 							counterUpdates.push(function(next) {
 								var inc = { $inc: {} };
 								inc.$inc['versions.$.files.' + pos + '.counter.downloads'] = 1;
@@ -137,11 +142,21 @@ exports.download = function(req, res) {
 					} else {
 						requestedFiles.push(file);
 					}
+
+					// count file download
+					counterUpdates.push(function(next) {
+						file.update({ $inc: { 'counter.downloads': 1 }}, next);
+					});
 				});
+
+				// count release download
 				counterUpdates.push(function(next) {
 					Release.update({ 'versions._id': version._id }, { $inc: { 'versions.$.counter.downloads': 1 }}, next);
 				});
+
 			});
+
+			// count game download
 			counterUpdates.push(function(next) {
 				release._game.update({ $inc: { 'counter.downloads': numTables }}, next);
 			});
@@ -159,7 +174,6 @@ exports.download = function(req, res) {
 			if (!requestedFiles.length) {
 				return res.status(422).json({ error: 'Requested file IDs did not match any release file.' }).end();
 			}
-
 
 			// check the quota
 			quota.isAllowed(req, res, requestedFiles, function(err, granted) {
@@ -218,15 +232,15 @@ exports.download = function(req, res) {
 						name: name,
 						date: file.created_at
 					});
-					file.update({ $inc: { 'counter.downloads': 1 }}, function() {});
-				});
-				archive.append(release.description, { name: 'README.txt' });
-				archive.finalize();
 
+				});
+				if (release.description) {
+					archive.append(release.description, { name: 'README.txt' });
+				}
+				archive.finalize();
 			});
 		});
 	});
-
 };
 
 /**

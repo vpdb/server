@@ -153,6 +153,9 @@ exports.view = function(req, res) {
 		if (err) {
 			return api.fail(res, error(err, 'Error finding release "%s"', req.params.id).log('view'), 500);
 		}
+		if (!release) {
+			return api.fail(res, error('No such release with ID "%s"', req.params.id), 404);
+		}
 		return api.success(res, release.toDetailed());
 	});
 };

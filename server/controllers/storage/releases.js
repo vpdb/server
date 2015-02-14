@@ -187,57 +187,61 @@ exports.download = function(req, res) {
 				}
 
 				// update counters
-				async.series(counterUpdates);
-
-				// create zip stream
-				var archive = archiver('zip');
-				var gameName = release._game.full_title;
-
-				res.status(200);
-				res.set({
-					'Content-Type': 'application/zip',
-					'Content-Disposition': 'attachment; filename="' + gameName + '.zip"'
-				});
-				archive.pipe(res);
-
-				// add tables to stream
-				var releaseFiles = [];
-				_.each(requestedFiles, function (file) {
-					var name = '';
-					switch (file.file_type) {
-						case 'logo':
-							name = 'PinballX/Media/Visual Pinball/Wheel Images/' + gameName + file.getExt();
-							break;
-						case 'backglass':
-							name = 'PinballX/Media/Visual Pinball/Backglass Images/' + gameName + file.getExt();
-							break;
-						case 'playfield-fs':
-						case 'playfield-ws':
-							if (file.getMimeCategory() === 'image') {
-								name = 'PinballX/Media/Visual Pinball/Table Images/' + gameName + file.getExt();
-							}
-							if (file.getMimeCategory() === 'video') {
-								name = 'PinballX/Media/Visual Pinball/Table Videos/' + gameName + file.getExt();
-							}
-							break;
-						case 'release':
-							var filename = getTableFilename(req.user, release, file, releaseFiles);
-							releaseFiles.push(filename);
-							name = 'Visual Pinball/Tables/' + filename;
-							break;
+				async.series(counterUpdates, function(err) {
+					if (err) {
+						logger.error('[storage|download] Error updating counters: %s', err.message);
 					}
-					// per default, put files into the root folder.
-					name = name || file.name;
-					archive.append(fs.createReadStream(file.getPath()), {
-						name: name,
-						date: file.created_at
-					});
 
+					// create zip stream
+					var archive = archiver('zip');
+					var gameName = release._game.full_title;
+
+					res.status(200);
+					res.set({
+						'Content-Type': 'application/zip',
+						'Content-Disposition': 'attachment; filename="' + gameName + '.zip"'
+					});
+					archive.pipe(res);
+
+					// add tables to stream
+					var releaseFiles = [];
+					_.each(requestedFiles, function (file) {
+						var name = '';
+						switch (file.file_type) {
+							case 'logo':
+								name = 'PinballX/Media/Visual Pinball/Wheel Images/' + gameName + file.getExt();
+								break;
+							case 'backglass':
+								name = 'PinballX/Media/Visual Pinball/Backglass Images/' + gameName + file.getExt();
+								break;
+							case 'playfield-fs':
+							case 'playfield-ws':
+								if (file.getMimeCategory() === 'image') {
+									name = 'PinballX/Media/Visual Pinball/Table Images/' + gameName + file.getExt();
+								}
+								if (file.getMimeCategory() === 'video') {
+									name = 'PinballX/Media/Visual Pinball/Table Videos/' + gameName + file.getExt();
+								}
+								break;
+							case 'release':
+								var filename = getTableFilename(req.user, release, file, releaseFiles);
+								releaseFiles.push(filename);
+								name = 'Visual Pinball/Tables/' + filename;
+								break;
+						}
+						// per default, put files into the root folder.
+						name = name || file.name;
+						archive.append(fs.createReadStream(file.getPath()), {
+							name: name,
+							date: file.created_at
+						});
+
+					});
+					if (release.description) {
+						archive.append(release.description, { name: 'README.txt' });
+					}
+					archive.finalize();
 				});
-				if (release.description) {
-					archive.append(release.description, { name: 'README.txt' });
-				}
-				archive.finalize();
 			});
 		});
 	});

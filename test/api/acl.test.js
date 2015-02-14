@@ -134,6 +134,10 @@ describe('The ACLs of the VPDB API', function() {
 			request.get('/api/v1/releases').end(hlp.status(200, done));
 		});
 
+		it('should allow access to release details', function(done) {
+			request.get('/api/v1/releases/123456').end(hlp.status(404, done));
+		});
+
 		it('should deny access to create releases', function(done) {
 			request.post('/api/v1/releases').send({}).end(hlp.status(401, done));
 		});

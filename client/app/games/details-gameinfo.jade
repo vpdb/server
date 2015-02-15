@@ -1,0 +1,39 @@
+include ../template/_mixins
+
+img.img--logo(ng-src="{{ game.media.logo.url }}")
+
+.ratingbox(rating-avg="$parent.game.rating", rating-votes="$parent.game.votes", ng-mouseenter="editing=true", ng-mouseleave="editing=false")
+	.ratingbox__left-col
+		.ratingbox__rating.rating-user(ng-show="editing") {{ hoverRating | rating }}
+		.ratingbox__rating(ng-class="{ 'rating-hide' : editing }") {{ $parent.game.rating | rating }}
+	.ratingbox__right-col
+		rating.rating-user(ng-show="editing", ng-model="ratingUser", max="10", rating-states="states", on-hover="hoverRating = value", on-leave="hoverRating = ratingUser")
+		rating.rating-avg(ng-hide="editing", ng-model="ratingAvg", max="10", rating-states="states", readonly="true")
+		span.votes {{ $parent.game.votes | number }} vote{{ $parent.game.votes == 1 ? '' : 's' }}
+hr
+
+label.label--block(ng-show="game.game_type") {{ game.game_type | gametype }}
+label(ng-show="game.produced_units") {{ game.produced_units | number }} units produced
+hr(ng-show="game.game_type || game.units")
+
+label.label-name.label--block(ng-show="game.designers") Game Design
+label.label-value(ng-show="game.designers") {{ game.designers.join(', ') }}
+hr(ng-show="game.designers")
+
+label.label-name.label--block(ng-show="game.artists") Art Design
+label.label-value(ng-show="game.artists")  {{ game.artists.join(', ') }}
+hr(ng-show="game.artists")
+
+label.label-name(ng-show="game.ipdb")
+	a.a--lighter(href="http://www.ipdb.org/machine.cgi?id={{ game.ipdb.number  }}", target="_blank")
+		span.space-right
+			strong IPDB
+		+icon('external-link').shift-up
+dl.dl--oneliner(ng-show="game.ipdb.rating")
+	dt Rating
+	dd(title="{{ game.ipdb.votes | number }} vote{{ game.ipdb.votes == 1 ? '' : 's' }}")
+		strong {{ game.ipdb.rating }}
+	dt(ng-show="game.ipdb.top300") Top 300
+	dd(ng-show="game.ipdb.top300") rank <strong>{{ game.ipdb.top300 }}</strong>
+
+hr(ng-show="game.ipdb")

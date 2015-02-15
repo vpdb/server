@@ -1,0 +1,113 @@
+// each release
+.panel(ng-repeat="release in game.releases", ng-controller="ReleaseController")
+	.col-sm-4.col-md-3
+		carousel(interval="60000")
+			slide(ng-repeat="slide in release.__portraitShots", active="slide.active")
+				img(ng-src="{{ slide.url }}")
+
+		button.btn.btn-primary.btn-block.padder-top-3x(ng-click="download(game, release)")
+			+icon('download').space-right
+			| Download
+
+	.col-sm-8.col-md-9
+		.inline-edit(ng-class='{ open: editing }')
+			+icon('pencil-circle').a.icon-opener(ng-click="editing = true")
+			+icon('check-circle').a.icon-editing(ng-click="editing = false")
+			+icon('times-circle').a.icon-editing(ng-click="editing = false")
+		h2.h--primary(ng-show="editing")
+			.form-group.form--inline
+				input.form-control.input-lg(type="text", value="{{ release.name }}")
+		h2.h--primary(ng-hide="editing") {{ release.name }} <small>{{ release.__latestVersion.version }}</small>
+		.badge.badge--tag.badge--small(ng-repeat="tag in release.tags", tooltip="{{tag.description}}") {{ tag.name }}
+
+		span.clearfix.padder-top(ng-show="release.tags && release.tags.length") &nbsp;
+		div.markdown(markdown="release.description", ng-show="release.description")
+		h3.h--smaller.h--primary Authors
+		.media(ng-repeat="author in release.authors")
+			.media-left.media-middle
+				img.img-avatar.img-avatar--sm(gravatar-src="author.user.gravatar_id", gravatar-default="404", fallback-icon="user")
+			.media-body
+				user {{ author.user.name }}
+				br
+				| {{ author.roles.join(', ') }}
+
+		h3.h--smaller.h--primary(ng-show="release.acknowledgements") Acknowledgements
+		div.markdown(markdown="release.acknowledgements", ng-show="release.acknowledgements")
+
+		h3.h--smaller.h--primary Version History
+		p(ng-repeat="version in release.versions") <strong>{{ version.version }}</strong>
+
+		h3.h--smaller.h--primary(ng-show="release.links && release.links.length") Links
+		a(ng-repeat="link in release.links", ng-href="link.url") {{ link.label }}
+
+	.col-sm-12
+
+		h1.h--small Available Flavors
+		hr
+		table.table.table-striped
+			thead
+				tr
+					th
+					th Orientation
+					th Lightning
+					th Compatibility
+					th Version
+					th Size
+			tbody
+				tr(ng-repeat="file in release.__latestVersion.files | filter:tableFile")
+					td.td--img
+						img.img--rounded(ng-src="{{ file.media.playfield_image.variations.square.url }}")
+					td
+						| {{ flavors.orientation.values[file.flavor.orientation].name }} <br>
+						i {{ flavors.orientation.values[file.flavor.orientation].other }}
+					td
+						| {{ flavors.lightning.values[file.flavor.lightning].name }} <br>
+						i {{ flavors.lightning.values[file.flavor.lightning].other }}
+					td
+						span(ng-repeat="compat in file.compatibility") {{ compat.label }}
+					td {{ release.__latestVersion.version }}
+					td {{ file.file.bytes | bytes }}
+
+
+
+		h1.h--small Comments
+		hr
+
+		label(ng-show="!release.comments || release.comments.length == 0") No comments yet.
+		.media.media--no-margin.collapse-in-animation(ng-repeat="comment in release.comments track by comment.id", ng-controller="CommentCtrl", ng-init="show=true")
+			.collapse-in-animation-inner
+				.media-left.avatar
+					img.img-avatar.pull-left(gravatar-src="comment.from.gravatar_id", gravatar-default="404", fallback-icon="user")
+				.media-body.media--full-width
+					.panel.panel--inner
+						.panel-triangle
+						.panel-heading
+							label
+							strong {{ comment.from.name }}
+							| &nbsp;commented&nbsp;
+							span(am-time-ago="comment.created_at")
+						.panel-body
+							div.markdown(markdown="comment.message")
+
+		h3.h--smaller.h--primary(ng-show="auth.isAuthenticated") Add a Comment:
+		.media(ng-show="auth.isAuthenticated")
+			.media-left.avatar
+				img.img-avatar.pull-left(gravatar-src="auth.user.gravatar_id", gravatar-default="404", fallback-icon="user")
+			.media-body.media--full-width
+				tabset
+					label.label--small.pull-right Comments are parsed with <a href="http://daringfireball.net/projects/markdown/syntax" target="_blank">Markdown</a>.
+					tab
+						tab-heading(title="Write")
+							+icon('edit')
+							.panel-triangle
+						textarea.textarea--full.animate(placeholder="Your comment", msd-elastic, ng-model="$parent.$parent.newComment")
+					tab
+						tab-heading(title="Preview"): +icon('eye')
+						div.markdown(markdown="$parent.$parent.newComment")
+						label.tab__label(ng-show="!$parent.$parent.newComment || $parent.$parent.newComment.length == 0") Nothing to preview.
+
+		button.btn.btn-default.padder-top.pull-right(ng-click="addComment(release.id)") Comment
+		.clearfix
+		p.padder-bottom
+	.clearfix
+	p.padder-bottom

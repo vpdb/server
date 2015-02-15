@@ -1,0 +1,78 @@
+h1 ROMs
+	button.btn.btn-primary.btn--round.pull-right(ng-click="romUploadCollapsed = !romUploadCollapsed")
+		+icon('plus')(ng-show="romUploadCollapsed")
+		+icon('angle-up').small(ng-show="!romUploadCollapsed")
+
+.full-width
+	div(collapse="romUploadCollapsed")
+		.well.well--full-width.well--dropzone(ng-file-drop="onRomUpload($files)", ng-multiple="true", drag-over-class="well--dragging")
+			ul.list--files
+				li.panel(ng-repeat="file in meta.romFiles")
+					.col--list-files-left
+						+icon('ext-rom').svg-4x
+					.col--list-files-right
+						.col-md-3(ng-show="!file.uploading")
+							.block.text--large: strong {{ file.name }}
+							.block.text--large {{ file.bytes | bytes }}
+						.col-md-9(ng-show="!file.uploading")
+							.row
+								.col-xs-2
+									label.control-label.small Version
+								.col-xs-3
+									label.control-label.small Language
+								.col-xs-6
+									label.control-label.small Notes
+							.row
+								.col-xs-2
+									input.form-control(type="text", ng-model="newRoms[file.id].version")
+								.col-xs-3
+									select.form-control.form-control--solid(ng-model="newRoms[file.id].language", ng-options="opt as opt.label for opt in romLanguages")
+								.col-xs-6
+									input.form-control(type="text", ng-model="newRoms[file.id].notes", placeholder="Home Version? Profanity?")
+
+						.col-md-12(ng-show="file.uploading")
+							.block.text--large: strong {{ file.name }}
+							progressbar.progress-striped.active(value="file.progress")
+					+icon('trash').a(ng-click="removeRom(file)", ng-show="!file.uploading")
+					.clearfix
+					.alert.alert-danger
+						+icon('warning').shift-up.space-right
+						| {{ file.error.message }}
+
+			.pull-right.padder-top(ng-show="meta.romFiles.length > 0")
+				button.btn.btn-default.space-right Clear
+				button.btn.btn-primary(ng-click="saveRoms()")
+					+icon('plus-circle').space-right
+					| Add
+			.clearfix(ng-show="meta.romFiles.length > 0")
+
+			label.center-block.text-center: small: i Drop ROM .zip files in here.
+
+label(ng-hide="roms.length > 0") No ROMs available.
+table.table.table-double-striped(ng-show="roms.length > 0")
+	thead
+		tr
+			th Name
+			th Version
+			th.hidden-xs Language
+			th.hidden-xs Notes
+			th DLs
+			th Size
+	tbody
+		tr.selectable(ng-repeat-start="rom in roms", ng-click="isCollapsed = !isCollapsed", ng-init="isCollapsed=true")
+			td: b {{ rom.id }}
+			td {{ rom.version }}
+			td.hidden-xs {{ rom.language }}
+			td.hidden-xs {{ rom.notes }}
+			td {{ rom.downloads | number }}
+			td {{ rom.file.bytes | bytes }}
+		tr(ng-repeat-end, ng-class="{ collapsed: isCollapsed }")
+			td(colspan="6")
+				div(collapse="isCollapsed")
+					table.table.space-left-2x
+						tbody
+							tr(ng-repeat="file in rom.rom_files")
+								td.code {{ file.filename }}
+								td.code {{ file.bytes | number }}
+								td.code {{ file.modified_at | date:'yyyy-MM-dd HH:mm' }}
+								td.code 0x{{ file.crc | hex }}

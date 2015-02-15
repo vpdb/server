@@ -4,6 +4,8 @@ h1 ROMs
 		+icon('angle-up').small(ng-show="!romUploadCollapsed")
 
 .full-width
+
+	//- upload drop panel
 	div(collapse="romUploadCollapsed")
 		.well.well--full-width.well--dropzone(ng-file-drop="onRomUpload($files)", ng-multiple="true", drag-over-class="well--dragging")
 			ul.list--files
@@ -35,12 +37,11 @@ h1 ROMs
 							progressbar.progress-striped.active(value="file.progress")
 					+icon('trash').a(ng-click="removeRom(file)", ng-show="!file.uploading")
 					.clearfix
-					.alert.alert-danger
+					.alert.alert-danger(ng-show="file.error")
 						+icon('warning').shift-up.space-right
-						| {{ file.error.message }}
+						| {{ file.error }}
 
 			.pull-right.padder-top(ng-show="meta.romFiles.length > 0")
-				button.btn.btn-default.space-right Clear
 				button.btn.btn-primary(ng-click="saveRoms()")
 					+icon('plus-circle').space-right
 					| Add
@@ -48,6 +49,7 @@ h1 ROMs
 
 			label.center-block.text-center: small: i Drop ROM .zip files in here.
 
+//- list
 label(ng-hide="roms.length > 0") No ROMs available.
 table.table.table-double-striped(ng-show="roms.length > 0")
 	thead
@@ -66,6 +68,8 @@ table.table.table-double-striped(ng-show="roms.length > 0")
 			td.hidden-xs {{ rom.notes }}
 			td {{ rom.downloads | number }}
 			td {{ rom.file.bytes | bytes }}
+
+		// - details
 		tr(ng-repeat-end, ng-class="{ collapsed: isCollapsed }")
 			td(colspan="6")
 				div(collapse="isCollapsed")

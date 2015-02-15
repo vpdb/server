@@ -191,7 +191,7 @@ angular.module('vpdb.games.details', [])
 				}, function(response) {
 					if (response.data.errors) {
 						_.each(response.data.errors, function(err) {
-							_.where(meta().romFiles, { romId: rom.id }).error = err;
+							_.where(meta().romFiles, { romId: rom.id })[0].error = err.message;
 						});
 					}
 				});

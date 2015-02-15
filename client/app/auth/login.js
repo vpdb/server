@@ -2,7 +2,7 @@
 
 angular.module('vpdb.login', [])
 
-	.controller('LoginCtrl', function($scope, $rootScope, $modalInstance,
+	.controller('LoginCtrl', function($scope, $rootScope, $modalInstance, $window,
 									  ApiHelper, AuthService, AuthResource, UserResource,
 									  opts) {
 
@@ -19,8 +19,18 @@ angular.module('vpdb.login', [])
 
 		delete $rootScope.loginParams.message;
 
+		$scope.oauth = function(url) {
+
+			AuthService.setPostLoginRedirect();
+			if (opts.postLogin) {
+				AuthService.addPostLoginAction(opts.postLogin.action, opts.postLogin.params);
+			}
+			$window.location.href = url;
+		};
+
 		$scope.login = function() {
 
+			AuthService.setPostLoginRedirect();
 			if (opts.postLogin) {
 				AuthService.addPostLoginAction(opts.postLogin.action, opts.postLogin.params);
 			}
@@ -39,6 +49,7 @@ angular.module('vpdb.login', [])
 
 		$scope.register = function() {
 
+			AuthService.setPostLoginRedirect();
 			if (opts.postLogin) {
 				AuthService.addPostLoginAction(opts.postLogin.action, opts.postLogin.params);
 			}
@@ -61,15 +72,11 @@ angular.module('vpdb.login', [])
 		};
 	})
 
-	.controller('AuthCallbackCtrl', function($stateParams, $location, $modal, AuthResource, AuthService, ModalService) {
+	.controller('AuthCallbackCtrl', function($stateParams, $modal, AuthResource, AuthService, ModalService) {
 		AuthResource.authenticateCallback($stateParams, function(result) {
 			AuthService.authenticated(result);
 			AuthService.runPostLoginActions();
-			$location.url('/');
-			$location.replace();
 		}, function(err) {
-			$location.url('/');
-			$location.replace();
 			ModalService.error({
 				subtitle: 'Could not login.',
 				message: err.data.error

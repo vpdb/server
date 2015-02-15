@@ -6,7 +6,8 @@ angular.module('vpdb.auth', [])
 		$httpProvider.interceptors.push('AuthInterceptor');
 	})
 
-	.factory('AuthService', function($window, $localStorage, $sessionStorage, $rootScope, $location, $http, Config, ConfigService, ProfileResource) {
+	.factory('AuthService', function($window, $localStorage, $sessionStorage, $rootScope, $location, $http, $state,
+									 Config, ConfigService, ProfileResource) {
 
 		return {
 
@@ -337,6 +338,7 @@ angular.module('vpdb.auth', [])
 					_.each($localStorage.postLoginActions, function(postLoginAction) {
 						switch (postLoginAction.action) {
 							case 'redirect':
+								$state.go(postLoginAction.params.stateName, postLoginAction.params.stateParams);
 								break;
 							case 'downloadFile':
 								$rootScope.$broadcast('downloadFile', postLoginAction.params);
@@ -359,6 +361,11 @@ angular.module('vpdb.auth', [])
 					$localStorage.postLoginActions = [];
 				}
 				$localStorage.postLoginActions.push({ action: action, params: params });
+			},
+
+			setPostLoginRedirect: function() {
+				console.log($state.current);
+				this.addPostLoginAction('redirect', { stateName: $state.current.name, stateParams: $state.params });
 			}
 
 		};

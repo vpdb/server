@@ -14,11 +14,11 @@ include ../template/_mixins
 			h3.h--shift-up Login with
 			.text-center
 				for ipb in authStrategies.ipboard
-					a.btn.btn--secondary.btn-lg(href=ipb.url, target="_self")
+					a.btn.btn--secondary.btn-lg(ng-click="oauth('#{ipb.url}')")
 						+icon(ipb.icon).space-right
 						| #{ipb.name}
 				if authStrategies.github
-					a.btn.btn--secondary.btn-lg(href="/auth/github", target="_self")
+					a.btn.btn--secondary.btn-lg(ng-click="oauth('/auth/github')")
 						+icon('github').space-right
 						| GitHub
 			hr.hr--light.padder-top-2x

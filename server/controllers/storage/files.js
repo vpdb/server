@@ -191,9 +191,12 @@ function serve(req, res, file, variationName, headOnly) {
 				counters.push(function(next) {
 					file.update({ $inc: { 'counter.downloads': 1 }}, next);
 				});
-				counters.push(function(next) {
-					req.user.update({ $inc: { 'counter.downloads': 1 }}, next);
-				});
+				if (!file.is_public) {
+					counters.push(function (next) {
+						req.user.update({$inc: {'counter.downloads': 1}}, next);
+
+					});
+				}
 				async.series(counters);
 			}
 

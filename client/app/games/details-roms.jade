@@ -1,5 +1,5 @@
 h1 ROMs
-	button.btn.btn-primary.btn--round.pull-right(ng-click="romUploadCollapsed = !romUploadCollapsed")
+	button.btn.btn-primary.btn--round.pull-right(ng-click="romUploadCollapsed = !romUploadCollapsed", ng-show="auth.isAuthenticated")
 		+icon('plus')(ng-show="romUploadCollapsed")
 		+icon('angle-up').small(ng-show="!romUploadCollapsed")
 

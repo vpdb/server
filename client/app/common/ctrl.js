@@ -107,11 +107,13 @@ common
 			});
 		};
 
-		$rootScope.login = function() {
+		$rootScope.login = function(opts) {
 			$modal.open({
 				templateUrl: '/auth/modal-login.html',
 				controller: 'LoginCtrl',
-				windowClass: 'theme-light'
+				windowClass: 'theme-light',
+				resolve: { opts: function() { return opts; } }
 			});
 		};
+
 	});

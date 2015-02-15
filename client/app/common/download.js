@@ -23,7 +23,7 @@ common.factory('DownloadService', function($rootScope, $timeout, AuthService, Co
 
 		return {
 			downloadFile: function(file, callback) {
-				var download = function() {
+				var submit = function() {
 					$timeout(function() {
 						angular.element('#downloadForm').submit();
 						if (callback) {
@@ -31,19 +31,26 @@ common.factory('DownloadService', function($rootScope, $timeout, AuthService, Co
 						}
 					}, 0);
 				};
+
 				if (file.is_protected) {
-					AuthService.fetchUrlTokens(file.url, function(err, tokens) {
-						// todo treat error
-						$rootScope.downloadLink = file.url;
-						$rootScope.downloadBody = '';
-						$rootScope.downloadToken = tokens[file.url];
-						download();
-					});
+					if (AuthService.isAuthenticated) {
+						AuthService.fetchUrlTokens(file.url, function(err, tokens) {
+							// todo treat error
+							$rootScope.downloadLink = file.url;
+							$rootScope.downloadBody = '';
+							$rootScope.downloadToken = tokens[file.url];
+							submit();
+						});
+
+					} else {
+						$rootScope.login({ headMessage: 'In order to download this file, you need to be logged. You can register for free just below.'});
+					}
+
 				} else {
 					$rootScope.downloadLink = file.url;
 					$rootScope.downloadBody = '';
 					$rootScope.downloadToken = '';
-					download();
+					submit();
 				}
 			},
 

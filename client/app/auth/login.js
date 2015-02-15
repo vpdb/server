@@ -2,15 +2,20 @@
 
 angular.module('vpdb.login', [])
 
-	.controller('LoginCtrl', function($scope, $rootScope, $modalInstance, ApiHelper, AuthService, AuthResource, UserResource) {
+	.controller('LoginCtrl', function($scope, $rootScope, $modalInstance,
+									  ApiHelper, AuthService, AuthResource, UserResource,
+									  opts) {
+
+		opts = opts || {};
 
 		$scope.registering = false;
 		$scope.loginUser = {};
 		$scope.registerUser = {};
-		$scope.message = null;
+		$scope.message = opts.message || null;
 		$scope.error = null;
 		$scope.errors = {};
-		$scope.topMessage = $rootScope.loginParams.message;
+		$scope.topMessage = opts.topMessage || $rootScope.loginParams.message;
+		$scope.headMessage = opts.headMessage;
 
 		delete $rootScope.loginParams.message;
 

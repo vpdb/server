@@ -6,6 +6,10 @@ include ../template/_mixins
 			+icon('lock').space-right
 			| &nbsp;Login
 	.modal-body
+		div.alert.padder-bottom(ng-show="headMessage")
+			+icon('info').space-right.shift-up
+			| {{ headMessage }}
+
 		.span(ng-hide="loginParams.localOnly")
 			h3.h--shift-up Login with
 			.text-center

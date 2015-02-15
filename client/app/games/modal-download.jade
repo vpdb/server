@@ -34,9 +34,6 @@ include ../template/_mixins
 			label(for="includePlayfieldVideo")
 			label(for="includePlayfieldVideo") Include playfield videos
 
-		form#downloadForm(method="GET", target="_self", action="{{ downloadLink }}")
-			input(type="hidden", name="body", value="{{ downloadBody }}")
-			input(type="hidden", name="token", value="{{ downloadToken }}")
 	.modal-footer
 		button.btn.btn-default(ng-click="$dismiss()") Cancel
 		button.btn.btn-primary(ng-click="download()") Download

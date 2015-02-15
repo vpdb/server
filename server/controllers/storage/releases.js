@@ -96,14 +96,14 @@ exports.download = function(req, res) {
 			var requestedFiles = [];
 			var requestedFileIds = body.files;
 			var media = body.media || {};
-			var counterUpdates = [];
+			var counters = [];
 			var numTables = 0;
 
 			// count release and user download
-			counterUpdates.push(function(next) {
+			counters.push(function(next) {
 				release.update({ $inc: { 'counter.downloads': 1 }}, next);
 			});
-			counterUpdates.push(function(next) {
+			counters.push(function(next) {
 				req.user.update({ $inc: { 'counter.downloads': 1 }}, next);
 			});
 
@@ -123,7 +123,7 @@ exports.download = function(req, res) {
 							requestedFiles.push(file);
 
 							// count downloaded flavor
-							counterUpdates.push(function(next) {
+							counters.push(function(next) {
 								var inc = { $inc: {} };
 								inc.$inc['versions.$.files.' + pos + '.counter.downloads'] = 1;
 								Release.update({ 'versions._id': version._id }, inc, next);
@@ -144,20 +144,20 @@ exports.download = function(req, res) {
 					}
 
 					// count file download
-					counterUpdates.push(function(next) {
+					counters.push(function(next) {
 						file.update({ $inc: { 'counter.downloads': 1 }}, next);
 					});
 				});
 
 				// count release download
-				counterUpdates.push(function(next) {
+				counters.push(function(next) {
 					Release.update({ 'versions._id': version._id }, { $inc: { 'versions.$.counter.downloads': 1 }}, next);
 				});
 
 			});
 
 			// count game download
-			counterUpdates.push(function(next) {
+			counters.push(function(next) {
 				release._game.update({ $inc: { 'counter.downloads': numTables }}, next);
 			});
 
@@ -187,7 +187,7 @@ exports.download = function(req, res) {
 				}
 
 				// update counters
-				async.series(counterUpdates, function(err) {
+				async.series(counters, function(err) {
 					if (err) {
 						logger.error('[storage|download] Error updating counters: %s', err.message);
 					}

@@ -20,6 +20,7 @@
 "use strict";
 
 var fs = require('fs');
+var async = require('async');
 var logger = require('winston');
 
 var File = require('mongoose').model('File');
@@ -166,20 +167,34 @@ function serve(req, res, file, variationName, headOnly) {
 				logger.error('[ctrl|storage] Error before streaming %s from storage: %s', file.toString(variationName), err);
 				res.end();
 			});
-			res.writeHead(200, {
+
+			var headers = {
 				'Content-Type': file.getMimeType(variationName),
 				'Content-Length': fstat.size,
 				'Cache-Control': 'max-age=315360000',
 				'Last-Modified': modified.toISOString().replace(/T/, ' ').replace(/\..+/, '')
-			});
+			};
+
+			if (req.query.save_as) {
+				headers['Content-Disposition'] = 'attachment; filename="' + file.name + '"';
+			}
+
+			res.writeHead(200, headers);
 			stream.pipe(res).on('error', function(err) {
 				logger.error('[ctrl|storage] Error while streaming %s from storage: %s', file.toString(variationName), err);
 				res.end();
 			});
 
 			// count download
-			if (variationName) {
-
+			if (!variationName) {
+				var counters = [];
+				counters.push(function(next) {
+					file.update({ $inc: { 'counter.downloads': 1 }}, next);
+				});
+				counters.push(function(next) {
+					req.user.update({ $inc: { 'counter.downloads': 1 }}, next);
+				});
+				async.series(counters);
 			}
 
 			// only return the header if request was HEAD

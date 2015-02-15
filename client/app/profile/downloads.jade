@@ -5,7 +5,7 @@ hr
 
 p.padder-bottom-2x
 	| Define here how you want your table files named when VPDB puts them into the zip
-	| archive. Below you can set how the different flavors appear, should you use
+	| archive. You can set how the different flavors appear, should you use
 	| the <tt>{release_flavor_orientation}</tt> or <tt>{release_flavor_lightning}</tt>
 	| placeholder.
 
@@ -73,7 +73,7 @@ p.padder-bottom-2x
 
 p.padder-top-2x
 .col-sm-offset-3.col-sm-7
-	button.btn.btn-default.pull-right(ng-click="updateUserPreferences()")
+	button.btn.btn-primary.pull-right(ng-click="updateUserPreferences()")
 		+icon('check-circle').space-right
 		| Save
 .clearfix

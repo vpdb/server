@@ -3,7 +3,7 @@
 angular.module('vpdb.games.details', [])
 
 	.controller('GameController', function($scope, $stateParams, $modal, $log, $upload, $localStorage,
-					ApiHelper, Flavors, ModalService, DisplayService, ConfigService,
+					ApiHelper, Flavors, ModalService, DisplayService, ConfigService, DownloadService,
 					GameResource, ReleaseCommentResource, FileResource, RomResource) {
 
 		$scope.theme('dark');
@@ -196,8 +196,13 @@ angular.module('vpdb.games.details', [])
 					}
 				});
 			});
-
  		};
+
+		$scope.downloadRom = function(rom) {
+			DownloadService.downloadFile(rom.file, function() {
+				rom.file.counter.downloads++;
+			});
+		};
 
 
 		/**
@@ -250,7 +255,7 @@ angular.module('vpdb.games.details', [])
 	})
 
 
-	.controller('DownloadGameCtrl', function($scope, $modalInstance, $timeout, Flavors, ConfigService, AuthService, params) {
+	.controller('DownloadGameCtrl', function($scope, $modalInstance, $timeout, Flavors, DownloadService, params) {
 
 		$scope.game = params.game;
 		$scope.release = params.release;
@@ -267,17 +272,8 @@ angular.module('vpdb.games.details', [])
 		};
 
 		$scope.download = function() {
-			var path = '/releases/' + $scope.release.id;
-			var url = ConfigService.storageUri(path);
-			AuthService.fetchUrlTokens(url, function(err, tokens) {
-				// todo treat error
-				$scope.downloadLink = ConfigService.storageUri(path, true);
-				$scope.downloadBody = JSON.stringify($scope.downloadRequest);
-				$scope.downloadToken = tokens[url];
-				$timeout(function() {
-					angular.element('#downloadForm').submit();
-					$modalInstance.close(true);
-				}, 0);
+			DownloadService.downloadRelease($scope.release.id, $scope.downloadRequest, function() {
+				$modalInstance.close(true);
 			});
 		};
 

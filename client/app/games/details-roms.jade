@@ -66,10 +66,10 @@ table.table.table-double-striped(ng-show="roms.length > 0")
 			td {{ rom.version }}
 			td.hidden-xs {{ rom.language }}
 			td.hidden-xs {{ rom.notes }}
-			td {{ rom.downloads | number }}
+			td {{ rom.file.counter.downloads | number }}
 			td {{ rom.file.bytes | bytes }}
 
-		// - details
+		//- details
 		tr(ng-repeat-end, ng-class="{ collapsed: isCollapsed }")
 			td(colspan="6")
 				div(collapse="isCollapsed")
@@ -80,3 +80,8 @@ table.table.table-double-striped(ng-show="roms.length > 0")
 								td.code {{ file.bytes | number }}
 								td.code {{ file.modified_at | date:'yyyy-MM-dd HH:mm' }}
 								td.code 0x{{ file.crc | hex }}
+
+					button.btn.btn-primary.pull-right.space-right.padder-bottom(ng-click="downloadRom(rom)")
+						+icon('download').space-right
+						| Download
+					.clearfix

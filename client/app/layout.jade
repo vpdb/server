@@ -39,4 +39,8 @@ html(ng-app=appname, ng-controller="AppCtrl", lang="en")
 			for js in jsFiles
 				script(type="text/javascript", src=js.web)
 
+		form#downloadForm(method="GET", target="_self", action="{{ downloadLink }}")
+			input(type="hidden", name="body", value="{{ downloadBody }}")
+			input(type="hidden", name="save_as", value="1")
+			input(type="hidden", name="token", value="{{ downloadToken }}")
 		include ../../gfx/svg-defs.svg

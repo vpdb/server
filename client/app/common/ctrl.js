@@ -2,7 +2,7 @@
 
 common
 	.controller('AppCtrl', function($scope, $rootScope, $state, $location, $modal, $localStorage,
-									AuthService, ProfileService, ModalService, ModalFlashService) {
+									AuthService, ProfileService, ModalService, ModalFlashService, DownloadService) {
 
 		$rootScope.themeName = 'theme-dark';
 
@@ -61,6 +61,10 @@ common
 
 		$scope.setLoading = function(loading) {
 			$scope.loading = loading;
+		};
+
+		$rootScope.downloadFile = function(file) {
+			DownloadService.downloadFile(file);
 		};
 
 		$scope.download = function(download, info) {

@@ -63,8 +63,8 @@ FileSchema.plugin(toObj);
 // API FIELDS
 //-----------------------------------------------------------------------------
 var apiFields = {
-	simple: [ 'id', 'url', 'bytes', 'variations', 'is_protected' ], // fields returned in references
-	detailed: [ 'name', 'created_at', 'mime_type', 'file_type', 'metadata', 'counter' ]
+	simple: [ 'id', 'url', 'bytes', 'variations', 'is_protected', 'counter' ], // fields returned in references
+	detailed: [ 'name', 'created_at', 'mime_type', 'file_type', 'metadata' ]
 };
 
 

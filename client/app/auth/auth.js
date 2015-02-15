@@ -327,7 +327,40 @@ angular.module('vpdb.auth', [])
 				} else {
 					return providers;
 				}
+			},
+
+			/**
+			 * Runs previously saved post login actions.
+			 */
+			runPostLoginActions: function() {
+				if ($localStorage.postLoginActions) {
+					_.each($localStorage.postLoginActions, function(postLoginAction) {
+						switch (postLoginAction.action) {
+							case 'redirect':
+								break;
+							case 'downloadFile':
+								$rootScope.$broadcast('downloadFile', postLoginAction.params);
+								break;
+							default:
+								return;
+						}
+					});
+					$localStorage.postLoginActions = [];
+				}
+			},
+
+			/**
+			 * Adds an action to be executed after successful login
+			 * @param action
+			 * @param params
+			 */
+			addPostLoginAction: function(action, params) {
+				if (!$localStorage.postLoginActions) {
+					$localStorage.postLoginActions = [];
+				}
+				$localStorage.postLoginActions.push({ action: action, params: params });
 			}
+
 		};
 	})
 

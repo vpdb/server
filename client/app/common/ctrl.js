@@ -66,6 +66,9 @@ common
 		$rootScope.downloadFile = function(file) {
 			DownloadService.downloadFile(file);
 		};
+		$rootScope.$on('downloadFile', function(event, file) {
+			DownloadService.downloadFile(file);
+		});
 
 		$scope.download = function(download, info) {
 			if ($scope.downloadsPinned) {

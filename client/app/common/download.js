@@ -43,7 +43,10 @@ common.factory('DownloadService', function($rootScope, $timeout, AuthService, Co
 						});
 
 					} else {
-						$rootScope.login({ headMessage: 'In order to download this file, you need to be logged. You can register for free just below.'});
+						$rootScope.login({
+							headMessage: 'In order to download this file, you need to be logged. You can register for free just below.',
+							postLogin: { action: 'downloadFile', params: file }
+						});
 					}
 
 				} else {

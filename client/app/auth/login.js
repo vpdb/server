@@ -21,12 +21,16 @@ angular.module('vpdb.login', [])
 
 		$scope.login = function() {
 
+			if (opts.postLogin) {
+				AuthService.addPostLoginAction(opts.postLogin.action, opts.postLogin.params);
+			}
 			AuthResource.authenticate($scope.loginUser, function(result) {
 				$scope.errors = {};
 				$scope.error = null;
 				$scope.message2 = null;
 				AuthService.authenticated(result);
 				$modalInstance.close();
+				AuthService.runPostLoginActions();
 
 			}, ApiHelper.handleErrors($scope, function() {
 				$scope.message2 = null;
@@ -35,6 +39,9 @@ angular.module('vpdb.login', [])
 
 		$scope.register = function() {
 
+			if (opts.postLogin) {
+				AuthService.addPostLoginAction(opts.postLogin.action, opts.postLogin.params);
+			}
 			UserResource.register($scope.registerUser, function() {
 				$scope.errors = {};
 				$scope.error = null;
@@ -57,6 +64,7 @@ angular.module('vpdb.login', [])
 	.controller('AuthCallbackCtrl', function($stateParams, $location, $modal, AuthResource, AuthService, ModalService) {
 		AuthResource.authenticateCallback($stateParams, function(result) {
 			AuthService.authenticated(result);
+			AuthService.runPostLoginActions();
 			$location.url('/');
 			$location.replace();
 		}, function(err) {

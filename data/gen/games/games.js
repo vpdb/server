@@ -193,8 +193,8 @@ exports.data = [
 	{ bg: 'Party Zone (Williams 1991).png', logo: 'Party Zone (Bally 1991).png', ipdb: 1764 },
 	{ bg: 'Red and Teds Road Show (Williams 1994).png', logo: 'Red and Teds Road Show (Williams 1994).png', ipdb: 1972 },
 	{ bg: 'Ripleys Believe It or Not (Stern 2004).png', logo: 'Ripleys Believe It or Not (Stern 2004).png', ipdb: 4917 },
-	{ bg: null, logo: 'Safe Cracker (Bally 1996).png', ipdb: 3782 },
-	{ bg: null, logo: 'Scared Stiff (Williams 1996).png', ipdb: 3915 },
+	{ bg: 'Safe Cracker (Bally 1996).png', logo: 'Safe Cracker (Bally 1996).png', ipdb: 3782 },
+	{ bg: 'Scared Stiff (Williams 1996).png', logo: 'Scared Stiff (Williams 1996).png', ipdb: 3915 },
 	{ bg: 'Spider-Man (Stern 2007).png', logo: 'Spider-Man (Stern 2007).png', ipdb: 5237 },
 	{ bg: 'Star Wars (Data East 1992).png', logo: 'Star Wars (Data East 1992).png', ipdb: 2358 },
 	{ bg: 'STTNG (Williams 1993).png', logo: 'STTNG (Williams 1993).png', ipdb: 2357 },
@@ -209,7 +209,7 @@ exports.data = [
 	{ bg: 'Twilight Zone (Bally 1993).png', logo: 'Twilight Zone (Bally 1993).png', ipdb: 2684 },
 	{ bg: 'Whirlwind (Williams 1990).png', logo: 'Whirlwind (Williams 1990).png', ipdb: 2765, id: 'whirlwind' },
 	{ bg: 'Whitewater (Williams 1993).png', logo: 'Whitewater (Williams 1993).png', ipdb: 2768, id: 'whitewater' },
-	{ bg: null, logo: 'Who Dunnit (Bally 1995).png', ipdb: 3685 },
+	{ bg: 'Who Dunnit (Bally 1995).png', logo: 'Who Dunnit (Bally 1995).png', ipdb: 3685 },
 	{ bg: 'World Cup Soccer (Midway 1994).png', logo: 'World Cup Soccer (Midway 1994).png', ipdb: 2811 },
 	{ bg: 'Xenon (Bally 1980).png', logo: 'Xenon (Bally 1980).png', ipdb: 2821 }
 

@@ -19,12 +19,13 @@
  */
 
 var games = require('../../data/gen/games/games');
+var roms = require('../../data/gen/roms/roms');
 
 var local = {
 	apiUri: 'http://localhost:3000/api/v1',
 	storageUri: 'http://localhost:3000/storage/v1',
 	authHeader: 'Authorization',
-	credentials: { username: 'test', password: 'xxxxxx' }
+	credentials: { username: 'test', password: 'testtest' }
 };
 var staging = {
 	apiUri: 'https://staging.vpdb.ch/api/v1',
@@ -39,5 +40,11 @@ var production = {
 	credentials: { username: 'uploader', password: 'xxxxxx' },
 	httpSimple: { username: 'vpdb', password: 'xxxxxx' }
 };
-games.upload(production);
+
+var config = local;
+
+config.romFolder = '/roms';
+
+//games.upload(config);
+roms.upload(config);
 

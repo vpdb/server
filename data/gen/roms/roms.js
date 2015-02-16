@@ -1,21 +1,122 @@
-/*
- * VPDB - Visual Pinball Database
- * Copyright (C) 2015 freezy <freezy@xbmc.org>
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
- */
+"use strict";
+
+var _ = require('lodash');
+var fs = require('fs');
+var path = require('path');
+var async = require('async');
+var request = require('superagent');
+
+exports.upload = function(config) {
+
+	config = config || {};
+	var apiUri = config.apiUri || 'http://localhost:3000/api/v1';
+	var storageUri = config.storageUri || 'http://localhost:3000/storage/v1';
+	var authHeader = config.authHeader || 'Authorization';
+	var credentials = config.credentials || {};
+	var romFolder = config.romFolder || 'roms';
+
+	if (config.httpSimple) {
+		var httpSimple = 'Basic ' + new Buffer(config.httpSimple.username + ':' + config.httpSimple.password).toString('base64');
+	}
+
+	var token;
+	var requests = [];
+
+	// authenticate
+	requests.push(function(next) {
+		var headers = {};
+		if (httpSimple) {
+			headers.Authorization = httpSimple;
+		}
+		request
+			.post(apiUri + '/authenticate')
+			.set(headers)
+			.send(credentials)
+			.end(function(err, res) {
+				if (err) {
+					console.error('Error obtaining token: %s', err);
+					return next(err);
+				}
+				if (res.status !== 200) {
+					console.error('Error obtaining token: %j', res.body);
+					return next(new Error(res.body));
+				}
+				console.log('Authentication successful.');
+				token = res.body.token;
+				next();
+			});
+	});
+
+	_.each(exports.data, function(roms, game) {
+		_.each(roms, function(rom, id) {
+			var filename = path.resolve(romFolder, id + '.zip');
+			if (fs.existsSync(filename)) {
+
+				requests.push(function(next) {
+
+					// post ROM
+					var romContent = fs.readFileSync(filename);
+					var headers = {
+						'Content-Disposition': 'attachment; filename="' +id + '.zip"',
+						'Content-Length': romContent.length
+					};
+					headers[authHeader] = 'Bearer ' + token;
+					if (httpSimple) {
+						headers.Authorization = httpSimple;
+					}
+					request
+						.post(storageUri + '/files')
+						.query({type: 'rom'})
+						.type('application/zip')
+						.set(headers)
+						.send(romContent)
+						.end(function(res) {
+
+							if (res.status !== 201) {
+								console.error(res.body);
+								return next();
+							}
+
+							var data = {
+								_file: res.body.id,
+								id:  id,
+								version: rom.version,
+								notes: rom.notes,
+								language: rom.language
+							};
+
+							var headers = {};
+							headers[authHeader] = 'Bearer ' + token;
+							if (httpSimple) {
+								headers.Authorization = httpSimple;
+							}
+
+							// post data
+							request
+								.post(apiUri + '/games/' + game + '/roms')
+								.type('application/json')
+								.set(headers)
+								.send(data)
+								.end(function(res) {
+									console.log(res.body);
+									next();
+								});
+
+						});
+				});
+
+			} else {
+				console.error('Cannot find ROM "%s".', filename);
+			}
+		});
+	});
+
+	async.series(requests, function(err) {
+		console.log('all done!');
+	});
+
+};
+
 
 exports.data = {
 	afm: {

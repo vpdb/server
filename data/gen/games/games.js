@@ -106,7 +106,9 @@ exports.upload = function(config) {
 							.end(function(res) {
 								var logoRef = res.body.id;
 
-								if (data.short) {
+								if (game.id) {
+									data.id = game.id;
+								} else if (data.short) {
 									data.id = data.short[0].replace(/[^a-z0-9\s\-]+/gi, '').replace(/\s+/g, '-').toLowerCase();
 								} else {
 									data.id = data.title.replace(/[^a-z0-9\s\-]+/gi, '').replace(/\s+/g, '-').toLowerCase();
@@ -149,13 +151,13 @@ exports.data = [
 	{ bg: 'Abra Ca Dabra (Gottlieb 1975).png', logo: 'Abra Ca Dabra (Gottlieb 1975).png', ipdb: 2 },
 	{ bg: 'Attack from Mars (Bally 1995).png', logo: 'Attack from Mars (Bally 1995).png', ipdb: 3781 },
 	{ bg: 'Back to the Future (Data East 1990).png', logo: 'Back to the Future (Data East 1990).png', ipdb: 126 },
-	{ bg: null, logo: 'Banzai Run (Williams 1988).png', ipdb: 175 },
+	{ bg: 'Banzai Run (Williams 1988).png', logo: 'Banzai Run (Williams 1988).png', ipdb: 175, id: 'banzai' },
 	{ bg: 'Big Bang Bar (Capcom 1996).png', logo: 'Big Bang Bar (Capcom 1996).png', ipdb: 4001 },
 	{ bg: 'Black Knight (Williams 1980).png', logo: null, ipdb: 310 },
 	{ bg: 'Black Knight 2000 (Williams 1989).png', logo: 'Black Knight 2000 (Williams 1989).png', ipdb: 311 },
 	{ bg: 'Black Rose (Bally 1992).png', logo: 'Black Rose (Bally 1992).png', ipdb: 313 },
-	{ bg: null, logo: 'Bone Busters (Gottlieb 1989).png', ipdb: 347 },
-	{ bg: 'Bram Stokers Dracula (Williams 1993).png', logo: 'Bram Stokers Dracula (Williams 1993).png', ipdb: 3072 },
+	{ bg: 'Bone Busters (Gottlieb 1989).png', logo: 'Bone Busters (Gottlieb 1989).png', ipdb: 347 },
+	{ bg: 'Bram Stokers Dracula (Williams 1993).png', logo: 'Bram Stokers Dracula (Williams 1993).png', ipdb: 3072, id: 'drac' },
 	{ bg: 'Bride Of Pinbot (Williams 1991).png', logo: 'Bride Of Pinbot (Williams 1991).png', ipdb: 1502 },
 	{ bg: 'Cactus Canyon (Midway 1998).png', logo: 'Cactus Canyon (Midway 1998).png', ipdb: 4445 },
 	{ bg: 'Centaur (Bally 1981).png', logo: 'Centaur (Bally 1981).png', ipdb: 476 },
@@ -175,22 +177,22 @@ exports.data = [
 	{ bg: 'Flintstones, The (Williams 1994).png', logo: 'Flintstones (Williams 1994).png', ipdb: 888 },
 	{ bg: 'Funhouse (Williams 1990).png', logo: 'Funhouse (Williams 1990).png', ipdb: 966 },
 	{ bg: 'Getaway - High Speed II (Williams 1992).png', logo: 'Getaway - High Speed II (Williams 1992).png', ipdb: 1000 },
-	{ bg: null, logo: 'Guns and Roses (Data East 1994).png', ipdb: 1100 },
-	{ bg: null, logo: 'Haunted House (Gottlieb 1982).png', ipdb: 1133 },
+	{ bg: 'Guns and Roses (Data East 1994).png', logo: 'Guns and Roses (Data East 1994).png', ipdb: 1100 },
+	{ bg: 'Haunted House (Gottlieb 1982).png', logo: 'Haunted House (Gottlieb 1982).png', ipdb: 1133 },
 	{ bg: 'Indiana Jones (Williams 1993).png', logo: 'Indiana Jones (Williams 1993).png', ipdb: 1267 },
 	{ bg: 'Indianapolis 500 (Midway 1995).png', logo: 'Indianapolis 500 (Midway 1995).png', ipdb: 2853 },
 	{ bg: 'Johnny Mnemonic (Williams 1995).png', logo: 'Johnny Mnemonic (Williams 1995).png', ipdb: 3683 },
 	{ bg: 'Judge Dredd (Midway 1993).png', logo: 'Judge Dredd (Midway 1993).png', ipdb: 1322 },
-	{ bg: null, logo: 'Junk Yard (Williams 1996) Wheel.png', ipdb: 4014 },
+	{ bg: 'Junk Yard (Williams 1996).png', logo: 'Junk Yard (Williams 1996) Wheel.png', ipdb: 4014 },
 	{ bg: 'Jurassic Park (Data East 1993).png', logo: 'Jurassic Park (Data East 1993).png', ipdb: 1343 },
 	{ bg: 'Lord Of The Rings (Stern 2003).png', logo: 'Lord Of The Rings (Stern 2003).png', ipdb: 4858 },
 	{ bg: 'Medieval Madness (Williams 1997).png', logo: 'Medieval Madness (Williams 1997).png', ipdb: 4032 },
 	{ bg: 'Monster Bash (Williams 1998).png', logo: 'Monster Bash (Williams 1998).png', ipdb: 4441 },
-	{ bg: null, logo: 'Mousin Around (Bally 1989).png', ipdb: 1635 },
-	{ bg: null, logo: 'No Good Gofers (Williams 1997).png', ipdb: 4338 },
-	{ bg: null, logo: 'Party Zone (Bally 1991).png', ipdb: 1764 },
+	{ bg: 'Mousin Around (Bally 1989).png', logo: 'Mousin Around (Bally 1989).png', ipdb: 1635 },
+	{ bg: 'No Good Gofers (Williams 1997).png', logo: 'No Good Gofers (Williams 1997).png', ipdb: 4338 },
+	{ bg: 'Party Zone (Williams 1991).png', logo: 'Party Zone (Bally 1991).png', ipdb: 1764 },
 	{ bg: 'Red and Teds Road Show (Williams 1994).png', logo: 'Red and Teds Road Show (Williams 1994).png', ipdb: 1972 },
-	{ bg: null, logo: 'Ripleys Believe It or Not (Stern 2004).png', ipdb: 4917 },
+	{ bg: 'Ripleys Believe It or Not (Stern 2004).png', logo: 'Ripleys Believe It or Not (Stern 2004).png', ipdb: 4917 },
 	{ bg: null, logo: 'Safe Cracker (Bally 1996).png', ipdb: 3782 },
 	{ bg: null, logo: 'Scared Stiff (Williams 1996).png', ipdb: 3915 },
 	{ bg: 'Spider-Man (Stern 2007).png', logo: 'Spider-Man (Stern 2007).png', ipdb: 5237 },
@@ -205,8 +207,8 @@ exports.data = [
 	{ bg: 'Tommy The Pinball Wizard (Data East 1994).png', logo: 'Theatre of Magic (Midway 1995).png', ipdb: 2845 },
 	{ bg: 'Tri Zone (Williams 1979).png', logo: 'Tri Zone (Williams 1979).png', ipdb: 2641 },
 	{ bg: 'Twilight Zone (Bally 1993).png', logo: 'Twilight Zone (Bally 1993).png', ipdb: 2684 },
-	{ bg: 'Whirlwind (Williams 1990).png', logo: 'Whirlwind (Williams 1990).png', ipdb: 2765 },
-	{ bg: 'Whirlwind (Williams 1990).png', logo: 'Whitewater (Williams 1993).png', ipdb: 2768 },
+	{ bg: 'Whirlwind (Williams 1990).png', logo: 'Whirlwind (Williams 1990).png', ipdb: 2765, id: 'whirlwind' },
+	{ bg: 'Whitewater (Williams 1993).png', logo: 'Whitewater (Williams 1993).png', ipdb: 2768, id: 'whitewater' },
 	{ bg: null, logo: 'Who Dunnit (Bally 1995).png', ipdb: 3685 },
 	{ bg: 'World Cup Soccer (Midway 1994).png', logo: 'World Cup Soccer (Midway 1994).png', ipdb: 2811 },
 	{ bg: 'Xenon (Bally 1980).png', logo: 'Xenon (Bally 1980).png', ipdb: 2821 }

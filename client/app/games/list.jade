@@ -37,6 +37,11 @@ include ../template/_mixins
 				+icon('search').smaller
 			input.form-control.input--search(ng-model="q", type="text", placeholder="Search")
 
+		input#includeEmptyGames.checkbox--toggle(type='checkbox')
+		label(for='includeEmptyGames')
+		label.padder-bottom(for='includeEmptyGames') Include empty games
+		.clearfix
+
 		accordion.panel-group--transparent(close-others="false")
 
 			// year filter

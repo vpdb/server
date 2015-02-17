@@ -119,7 +119,7 @@ exports.list = function(req, res) {
 			});
 			api.success(res, roms, 200, api.paginationOpts(pagination, count));
 
-		}, { populate: [ '_file', '_created_by' ], sortBy: { id: -1 } });
+		}, { populate: [ '_file', '_created_by' ], sortBy: { version: -1 } });
 
 	}, 'Error finding release in order to list comments.'));
 };

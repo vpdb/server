@@ -73,7 +73,9 @@ exports.upload = function(config) {
 						.end(function(res) {
 
 							if (res.status !== 201) {
+								console.error('-------------------------------------------------------------------------');
 								console.error(res.body);
+								console.error('-------------------------------------------------------------------------');
 								return next();
 							}
 
@@ -98,8 +100,16 @@ exports.upload = function(config) {
 								.set(headers)
 								.send(data)
 								.end(function(res) {
-									console.log(res.body);
-									next();
+									if (res.status !== 201) {
+										console.error('-------------------------------------------------------------------------');
+										console.error(res.body);
+										console.error('-------------------------------------------------------------------------');
+										request.del(apiUri + '/files/' + data._file).set(headers).end(function() {
+											next();
+										});
+									} else {
+										next();
+									}
 								});
 
 						});
@@ -160,7 +170,7 @@ exports.data = {
 		br_l4: {version: 'L-4'},
 		br_p17: {version: 'SP-1'}
 	},
-	bsd: {
+	drac: {
 		drac_l1: {version: 'L-1'},
 		drac_p11: {version: 'P-11'}
 	},

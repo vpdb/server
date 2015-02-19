@@ -21,9 +21,11 @@
 
 var _ = require('lodash');
 var util = require('util');
+var async = require('async');
 var logger = require('winston');
 
 var Release = require('mongoose').model('Release');
+var Game = require('mongoose').model('Game');
 var api = require('./api');
 
 var error = require('../../modules/error')('api', 'release');
@@ -65,7 +67,16 @@ exports.create = function(req, res) {
 				// set media to active
 				release.activateFiles(assertRb(function(release) {
 					logger.info('[api|release:create] All referenced files activated, returning object to client.');
-					return api.success(res, release.toDetailed(), 201);
+
+					// update counters
+					var counters = [];
+					counters.push(function(next) {
+						Game.update({ _id: release._game.toString() }, { $inc: { 'counter.releases': 1 }}, next);
+					});
+
+					async.series(counters, function() {
+						return api.success(res, release.toDetailed(), 201);
+					});
 
 				}, 'Error activating files for release "%s"'));
 			}, 'Error saving release with id "%s"'));

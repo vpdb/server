@@ -25,7 +25,7 @@ var local = {
 	apiUri: 'http://localhost:3000/api/v1',
 	storageUri: 'http://localhost:3000/storage/v1',
 	authHeader: 'Authorization',
-	credentials: { username: 'test', password: 'xxxxxx' }
+	credentials: { username: 'test', password: 'testtest' }
 };
 var staging = {
 	apiUri: 'https://staging.vpdb.ch/api/v1',
@@ -43,7 +43,7 @@ var production = {
 
 var config = local;
 
-config.romFolder = 'roms';
+config.romFolder = 'E:/Pinball/Visual Pinball-103/VPinMame/roms';
 
 //games.upload(config);
 roms.upload(config);

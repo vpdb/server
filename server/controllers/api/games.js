@@ -166,6 +166,10 @@ exports.list = function(req, res) {
 		}
 	}
 
+	if (parseInt(req.query.min_releases)) {
+		query.push({ 'counter.releases': { $gte: parseInt(req.query.min_releases) }});
+	}
+
 	var sortBy = api.sortParams(req);
 	var q = api.searchQuery(query);
 	logger.info('[api|game:list] query: %s, sort: %j', util.inspect(q), util.inspect(sortBy));

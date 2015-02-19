@@ -67,6 +67,11 @@ get:
       required: false
       type: string
       example: 1990,2010
+    min_releases:
+      description: Only list games with at least `n` releases.
+      required: false
+      type: integer
+      example: 1
   body:
     role/anon:
       example: !include http/list-req.json

@@ -25,7 +25,7 @@ var local = {
 	apiUri: 'http://localhost:3000/api/v1',
 	storageUri: 'http://localhost:3000/storage/v1',
 	authHeader: 'Authorization',
-	credentials: { username: 'test', password: 'testtest' }
+	credentials: { username: 'test', password: 'xxxxxx' }
 };
 var staging = {
 	apiUri: 'https://staging.vpdb.ch/api/v1',

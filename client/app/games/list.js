@@ -12,6 +12,7 @@ angular.module('vpdb.games.list', [])
 		$scope.filterDecades = [];
 		$scope.filterManufacturer = [];
 		$scope.sort = 'title';
+		$scope.firstQuery = true;
 
 		// stuff we need in the view
 		$scope.Math = window.Math;
@@ -36,13 +37,23 @@ angular.module('vpdb.games.list', [])
 			$scope.setViewTemplate();
 		};
 		$scope.setViewTemplate();
+		var urlQuery = $location.search();
 
 
 		// QUERY LOGIC
 		// --------------------------------------------------------------------
+		var refresh = function(queryOverride, firstRunCheck) {
 
-		var refresh = function(queryOverride) {
+			// ignore initial watches
+			if (queryOverride === firstRunCheck) {
+				return;
+			}
+
 			var query = { sort: $scope.sort };
+			if ($scope.firstQuery) {
+				query.page = urlQuery.page;
+				$scope.firstQuery = false;
+			}
 			queryOverride = queryOverride || {};
 
 			// search query
@@ -66,7 +77,14 @@ angular.module('vpdb.games.list', [])
 			} else {
 				delete query.mfg;
 			}
+
+			// filter empty games
+			if (!$scope.includeEmptyGames) {
+				query.min_releases = 1;
+			}
+
 			query = _.extend(query, queryOverride);
+			$location.search(queryToUrl(query));
 
 			// refresh if changes
 			if (!_.isEqual($scope.$query, query)) {
@@ -75,7 +93,50 @@ angular.module('vpdb.games.list', [])
 			}
 		};
 
+		var queryToUrl = function(query) {
+			var defaults = {
+				sort: 'title',
+				page: '1',
+				per_page: '12'
+			};
+			var q = _.omit(query, function(value, key) {
+				return defaults[key] === value;
+			});
+			if (query.min_releases) {
+				delete q.min_releases;
+			} else {
+				q.show_empty = 1;
+			}
+			return q;
+		};
+
+		// update scope with query variables TODO surely we can refactor this a bit?
+		if (urlQuery.q) {
+			$scope.q = urlQuery.q;
+		}
+		if (urlQuery.show_empty) {
+			$scope.includeEmptyGames = true;
+		}
+		if (urlQuery.page) {
+			$scope.page = urlQuery.page;
+		}
+		if (urlQuery.sort) {
+			$scope.sort = urlQuery.sort;
+		}
+		if (urlQuery.decade) {
+			$scope.filterYearOpen = true;
+			$scope.filterDecades = _.map(urlQuery.decade.split(','), function(y) {
+				return parseInt(y);
+			});
+		}
+		if (urlQuery.mfg) {
+			$scope.filterManufacturerOpen = true;
+			$scope.filterManufacturer = urlQuery.mfg.split(',');
+		}
+
+
 		$scope.$watch('q', refresh);
+		$scope.$watch('includeEmptyGames', refresh);
 
 		$scope.paginate = function(link) {
 			refresh(link.query);
@@ -83,7 +144,7 @@ angular.module('vpdb.games.list', [])
 
 		$scope.$on('dataChangeSort', function(event, field, direction) {
 			$scope.sort = (direction === 'desc' ? '-' : '') + field;
-			refresh();
+			refresh({});
 		});
 
 		$scope.$on('dataToggleDecade', function(event, decade) {
@@ -92,7 +153,7 @@ angular.module('vpdb.games.list', [])
 			} else {
 				$scope.filterDecades.push(decade);
 			}
-			refresh();
+			refresh({});
 		});
 
 		$scope.$on('dataToggleManufacturer', function(event, manufacturer) {
@@ -101,18 +162,11 @@ angular.module('vpdb.games.list', [])
 			} else {
 				$scope.filterManufacturer.push(manufacturer);
 			}
-			refresh();
+			refresh({});
 		});
 
-		// FIXME don't relead
-		//var lastRoute = $route.current;
-		//var lastPath = $location.path();
-		//$scope.$on('$locationChangeSuccess', function() {
-		//	// "undo" route change if path didn't change (only hashes or params)
-		//	if ($location.path() === lastPath) {
-		//		$route.current = lastRoute;
-		//	}
-		//});
+		// trigger first load
+		refresh({});
 	})
 
 	.filter('decade', function() {
@@ -137,6 +191,9 @@ angular.module('vpdb.games.list', [])
 		return {
 			restrict: 'A',
 			link: function(scope, element, attrs) {
+				if (_.contains(scope.filterDecades, parseInt(attrs.filterDecade))) {
+					element.addClass('active');
+				}
 				element.click(function() {
 					element.toggleClass('active');
 					scope.$emit('dataToggleDecade', parseInt(attrs.filterDecade), element.hasClass('active'));
@@ -149,6 +206,9 @@ angular.module('vpdb.games.list', [])
 		return {
 			restrict: 'A',
 			link: function(scope, element, attrs) {
+				if (_.contains(scope.filterManufacturer, attrs.filterManufacturer)) {
+					element.addClass('active');
+				}
 				element.click(function() {
 					element.toggleClass('active');
 					scope.$emit('dataToggleManufacturer', attrs.filterManufacturer, element.hasClass('active'));
@@ -161,6 +221,17 @@ angular.module('vpdb.games.list', [])
 		return {
 			restrict: 'A',
 			link: function(scope, element, attrs) {
+				var currentSort = scope.sort[0] === '-' ? scope.sort.substr(1) : scope.sort;
+				if (currentSort === attrs.sort) {
+					element.addClass('selected');
+				}
+				if (scope.sort[0] === '-') {
+					element.removeClass('asc');
+					element.addClass('desc');
+				} else {
+					element.addClass('asc');
+					element.removeClass('desc');
+				}
 				element.click(function() {
 					if (element.hasClass('selected')) {
 						element.toggleClass('asc');

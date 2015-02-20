@@ -37,7 +37,7 @@ include ../template/_mixins
 				+icon('search').smaller
 			input.form-control.input--search(ng-model="q", type="text", placeholder="Search")
 
-		input#includeEmptyGames.checkbox--toggle(type='checkbox')
+		input#includeEmptyGames.checkbox--toggle(type='checkbox', ng-model="includeEmptyGames")
 		label(for='includeEmptyGames')
 		label.a.a--light.padder-bottom(for='includeEmptyGames') Include empty games
 		.clearfix
@@ -69,7 +69,7 @@ include ../template/_mixins
 		h1 Sort
 		hr
 		ul.list--sort-options
-			li.a.selected.asc(sort="title", d="asc") Name
+			li.a.asc(sort="title", d="asc") Name
 			li.a(sort="created_at", d="desc") Date Added
 			li.a(sort="year", d="asc") Year
 

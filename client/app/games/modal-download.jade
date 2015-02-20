@@ -19,20 +19,29 @@ include ../template/_mixins
 						label.label--block
 							span(ng-repeat="compat in file.compatibility") {{ compat.label }}
 
-		p.padder-top-2x
-			input#includeGameMedia.checkbox--toggle(type="checkbox", ng-model="downloadRequest.game_media")
-			label(for="includeGameMedia")
-			label(for="includeGameMedia") Include game media
+		.row.padder-top-2x
+			.col-sm-6
+				p
+					input#includeGameMedia.checkbox--toggle(type="checkbox", ng-model="downloadRequest.game_media")
+					label(for="includeGameMedia")
+					label(for="includeGameMedia") Include game media
 
-		p
-			input#includePlayfieldImage.checkbox--toggle(type="checkbox", ng-model="downloadRequest.media.playfield_image")
-			label(for="includePlayfieldImage")
-			label(for="includePlayfieldImage") Include playfield shots
+				p
+					input#includeGameMedia.checkbox--toggle(type="checkbox", ng-model="downloadRequest.roms")
+					label(for="includeRoms")
+					label(for="includeRoms") Include ROMs
 
-		p
-			input#includePlayfieldVideo.checkbox--toggle(type="checkbox", ng-model="downloadRequest.media.playfield_video")
-			label(for="includePlayfieldVideo")
-			label(for="includePlayfieldVideo") Include playfield videos
+			.col-sm-6
+
+				p
+					input#includePlayfieldImage.checkbox--toggle(type="checkbox", ng-model="downloadRequest.media.playfield_image")
+					label(for="includePlayfieldImage")
+					label(for="includePlayfieldImage") Include playfield shots
+
+				p
+					input#includePlayfieldVideo.checkbox--toggle(type="checkbox", ng-model="downloadRequest.media.playfield_video")
+					label(for="includePlayfieldVideo")
+					label(for="includePlayfieldVideo") Include playfield videos
 
 	.modal-footer
 		button.btn.btn-default(ng-click="$dismiss()") Cancel

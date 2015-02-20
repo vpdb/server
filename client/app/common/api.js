@@ -91,9 +91,10 @@ common
 						var links = {};
 						_.map(headers('link').split(','), function(link) {
 							var m = link.match(/<([^>]+)>\s*;\s*rel="([^"]+)"/);
+							var url = m[1];
 							links[m[2]] = {
-								url: m[1],
-								query: parseUri(m[1]).queryKey
+								url: url.replace(/%2C/gi, ','),
+								query: parseUri(decodeURIComponent(url)).queryKey
 							};
 						});
 						scope.pagination.links = links;

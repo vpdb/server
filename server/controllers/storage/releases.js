@@ -28,6 +28,7 @@ var objectPath = require('object-path');
 
 var Release = require('mongoose').model('Release');
 var Game = require('mongoose').model('Game');
+var Rom = require('mongoose').model('Rom');
 var quota = require('../../modules/quota');
 
 /**
@@ -171,76 +172,101 @@ exports.download = function(req, res) {
 				}
 			}
 
-			if (!requestedFiles.length) {
-				return res.status(422).json({ error: 'Requested file IDs did not match any release file.' }).end();
-			}
-
-			// check the quota
-			quota.isAllowed(req, res, requestedFiles, function(err, granted) {
+			// fetch roms
+			Rom.find({ _game: release._game._id.toString() }).populate('_file').exec(function(err, roms) {
 				/* istanbul ignore if  */
 				if (err) {
-					logger.error('[storage|download] Error checking quota for <%s>: %s', req.user.email, err.message);
+					logger.error('[storage|download] Error fetching ROMs from DB: %s', err.message);
 					return res.status(500).end();
 				}
-				if (!granted) {
-					return res.status(403).json({ error: 'Not enough quota left.' }).end();
+
+				// add roms?
+				if (body.roms) {
+					// TODO only add roms referenced in game script
+					_.each(roms, function(rom) {
+						requestedFiles.push(rom._file);
+
+						// count file download
+						counters.push(function(next) {
+							rom._file.update({ $inc: { 'counter.downloads': 1 }}, next);
+						});
+					});
 				}
 
-				// update counters
-				async.series(counters, function(err) {
+				if (!requestedFiles.length) {
+					return res.status(422).json({ error: 'Requested file IDs did not match any release file.' }).end();
+				}
+
+				// check the quota
+				quota.isAllowed(req, res, requestedFiles, function(err, granted) {
+					/* istanbul ignore if  */
 					if (err) {
-						logger.error('[storage|download] Error updating counters: %s', err.message);
+						logger.error('[storage|download] Error checking quota for <%s>: %s', req.user.email, err.message);
+						return res.status(500).end();
+					}
+					if (!granted) {
+						return res.status(403).json({ error: 'Not enough quota left.' }).end();
 					}
 
-					// create zip stream
-					var archive = archiver('zip');
-					var gameName = release._game.full_title;
-
-					res.status(200);
-					res.set({
-						'Content-Type': 'application/zip',
-						'Content-Disposition': 'attachment; filename="' + gameName + '.zip"'
-					});
-					archive.pipe(res);
-
-					// add tables to stream
-					var releaseFiles = [];
-					_.each(requestedFiles, function (file) {
-						var name = '';
-						switch (file.file_type) {
-							case 'logo':
-								name = 'PinballX/Media/Visual Pinball/Wheel Images/' + gameName + file.getExt();
-								break;
-							case 'backglass':
-								name = 'PinballX/Media/Visual Pinball/Backglass Images/' + gameName + file.getExt();
-								break;
-							case 'playfield-fs':
-							case 'playfield-ws':
-								if (file.getMimeCategory() === 'image') {
-									name = 'PinballX/Media/Visual Pinball/Table Images/' + gameName + file.getExt();
-								}
-								if (file.getMimeCategory() === 'video') {
-									name = 'PinballX/Media/Visual Pinball/Table Videos/' + gameName + file.getExt();
-								}
-								break;
-							case 'release':
-								var filename = getTableFilename(req.user, release, file, releaseFiles);
-								releaseFiles.push(filename);
-								name = 'Visual Pinball/Tables/' + filename;
-								break;
+					// update counters and deliver content
+					async.series(counters, function(err) {
+						if (err) {
+							logger.error('[storage|download] Error updating counters: %s', err.message);
 						}
-						// per default, put files into the root folder.
-						name = name || file.name;
-						archive.append(fs.createReadStream(file.getPath()), {
-							name: name,
-							date: file.created_at
-						});
 
+						// create zip stream
+						var archive = archiver('zip');
+						var gameName = release._game.full_title;
+
+						res.status(200);
+						res.set({
+							'Content-Type': 'application/zip',
+							'Content-Disposition': 'attachment; filename="' + gameName + '.zip"'
+						});
+						archive.pipe(res);
+
+						// add tables to stream
+						var releaseFiles = [];
+						_.each(requestedFiles, function (file) {
+							var name = '';
+							switch (file.file_type) {
+								case 'logo':
+									name = 'PinballX/Media/Visual Pinball/Wheel Images/' + gameName + file.getExt();
+									break;
+								case 'backglass':
+									name = 'PinballX/Media/Visual Pinball/Backglass Images/' + gameName + file.getExt();
+									break;
+								case 'playfield-fs':
+								case 'playfield-ws':
+									if (file.getMimeCategory() === 'image') {
+										name = 'PinballX/Media/Visual Pinball/Table Images/' + gameName + file.getExt();
+									}
+									if (file.getMimeCategory() === 'video') {
+										name = 'PinballX/Media/Visual Pinball/Table Videos/' + gameName + file.getExt();
+									}
+									break;
+								case 'release':
+									var filename = getTableFilename(req.user, release, file, releaseFiles);
+									releaseFiles.push(filename);
+									name = 'Visual Pinball/Tables/' + filename;
+									break;
+								case 'rom':
+									name = 'Visual Pinball/VPinMame/roms/' + file.name;
+									break;
+							}
+							// per default, put files into the root folder.
+							name = name || file.name;
+							archive.append(fs.createReadStream(file.getPath()), {
+								name: name,
+								date: file.created_at
+							});
+
+						});
+						if (release.description) {
+							archive.append(release.description, { name: 'README.txt' });
+						}
+						archive.finalize();
 					});
-					if (release.description) {
-						archive.append(release.description, { name: 'README.txt' });
-					}
-					archive.finalize();
 				});
 			});
 		});

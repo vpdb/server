@@ -268,7 +268,8 @@ angular.module('vpdb.games.details', [])
 				playfield_image: true,
 				playfield_video: false
 			},
-			game_media: true
+			game_media: true,
+			roms: false
 		};
 
 		$scope.download = function() {

@@ -7,9 +7,6 @@ include ../template/_mixins
 
 		include details-gameinfo
 
-		button.btn.btn-default.btn-block.padder-bottom
-			+icon('star').space-right
-			| Follow
 		a.btn.btn-primary.btn-block.padder-bottom(ui-sref="addRelease({ id: game.id })", ng-show="auth.hasPermission('releases/add')")
 			+icon('plus-circle').space-right
 			| Add Release

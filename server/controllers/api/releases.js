@@ -68,10 +68,13 @@ exports.create = function(req, res) {
 				release.activateFiles(assertRb(function(release) {
 					logger.info('[api|release:create] All referenced files activated, returning object to client.');
 
-					// update counters
+					// update counters / date
 					var counters = [];
 					counters.push(function(next) {
 						Game.update({ _id: release._game.toString() }, { $inc: { 'counter.releases': 1 }}, next);
+					});
+					counters.push(function(next) {
+						Game.update({ _id: release._game.toString() }, { modified_at: new Date() }, next);
 					});
 
 					async.series(counters, function() {

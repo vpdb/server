@@ -71,6 +71,7 @@ var fields = {
 		downloads: { type: Number, 'default': 0 },
 		comments:  { type: Number, 'default': 0 }
 	},
+	modified_at:   { type: Date }, // only release add/update modifies this
 	created_at:    { type: Date, required: true },
 	_created_by:   { type: Schema.ObjectId, required: true, ref: 'User' },
 	_media: {

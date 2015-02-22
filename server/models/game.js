@@ -71,6 +71,10 @@ var fields = {
 		downloads: { type: Number, 'default': 0 },
 		comments:  { type: Number, 'default': 0 }
 	},
+	rating: {
+		average:   { type: Number, 'default': 0 },
+		votes:     { type: Number, 'default': 0 }
+	},
 	modified_at:   { type: Date }, // only release add/update modifies this
 	created_at:    { type: Date, required: true },
 	_created_by:   { type: Schema.ObjectId, required: true, ref: 'User' },
@@ -95,7 +99,7 @@ GameSchema.plugin(toObj);
 // API FIELDS
 //-----------------------------------------------------------------------------
 var apiFields = {
-	simple: [ 'id', 'title', 'manufacturer', 'year', 'game_type', 'ipdb', 'media', 'counter' ] // fields returned in lists
+	simple: [ 'id', 'title', 'manufacturer', 'year', 'game_type', 'ipdb', 'media', 'counter', 'rating' ] // fields returned in lists
 };
 
 
@@ -161,7 +165,7 @@ GameSchema.path('game_type').validate(function(gameType, callback) {
 
 GameSchema.path('_media.backglass').validate(function(backglass, callback) {
 	if (!backglass) {
-		return;
+		return callback(true);
 	}
 	mongoose.model('File').findOne({ _id: backglass }, function(err, backglass) {
 		/* istanbul ignore if  */
@@ -237,7 +241,16 @@ GameSchema.pre('remove', function(next) {
 			}
 		};
 	};
-	async.parallel([ removeFile(this._media.backglass), removeFile(this._media.logo) ], next);
+	var that = this;
+	var cleanup = [];
+	cleanup.push(removeFile(this._media.backglass));
+	cleanup.push(removeFile(this._media.logo));
+	cleanup.push(function(next) {
+		// remove linked comments
+		mongoose.model('Rating').remove({ '_ref.game': that._id}).exec(next);
+	});
+
+	async.parallel(cleanup, next);
 });
 
 

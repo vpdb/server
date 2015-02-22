@@ -98,6 +98,10 @@ describe('The ACLs of the VPDB API', function() {
 			request.get('/api/v1/games/mb/roms').end(hlp.status(404, done));
 		});
 
+		it('should deny access to game ratings', function(done) {
+			request.post('/api/v1/games/mb/ratings').send({ value: 1 }).end(hlp.status(401, done));
+		});
+
 		it('should deny access to rom deletion', function(done) {
 			request.del('/api/v1/roms/1234').end(hlp.status(401, done));
 		});
@@ -237,6 +241,10 @@ describe('The ACLs of the VPDB API', function() {
 
 		it('should allow access to rom listing', function(done) {
 			request.get('/api/v1/games/mb/roms').as('member').end(hlp.status(404, done));
+		});
+
+		it('should allow access to game ratings', function(done) {
+			request.post('/api/v1/games/mb/ratings').as('member').send({ value: 1 }).end(hlp.status(404, done));
 		});
 
 		it('should allow access to rom deletion', function(done) {

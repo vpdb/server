@@ -7,8 +7,15 @@
 * Added email confirmation when registering locally
 * Added release inline editing (WIP)
 * Added user stats to profile page
+* Added table name of zip file config to profile
 * New home page, featuring:
   * Game search
+  * Latest releases
+* Game list filters, sorting and paging is now persisted in URL
+* Download button when not logged are managed properly with resume after logging or registering
+* Added UI to ROM upload and listing
+* Added UI to release comments and listing
+
 
 *Server Changes*:
 
@@ -17,7 +24,11 @@
   * Public profile data (added location)
   * Password change
 * User updates result in a log entry (user log)
-
+* Added release comments
+* Added counters
+* Added ROMs support
+* Concurrency fixes when running on a cluster
+* Added game rating support
 
 ## v0.0.6
 

@@ -1,5 +1,5 @@
-GET /api/v1/games/hockey-girl/rating HTTP/1.1
+GET /api/v1/games/roll-over/rating HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI3a1Y1cU9EQVR2IiwiaWF0IjoiMjAxNS0wMi0yM1QyMTo0NDozMi42NjNaIiwiZXhwIjoiMjAxNS0wMi0yM1QyMjo0NDozMi42NjNaIn0.XaJkhqW6FJ7wRW5uYmoaUirwez1BOrStGJU6YVDpxfs
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI3eU51MUdiMVJEIiwiaWF0IjoiMjAxNS0wMi0yM1QyMjoyNToyNS40MjNaIiwiZXhwIjoiMjAxNS0wMi0yM1QyMzoyNToyNS40MjNaIn0.VwhthQhVL2u-whx1GA0f11V0U4UQUsitdy9Vw6HwLbw
 

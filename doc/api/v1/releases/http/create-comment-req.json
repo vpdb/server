@@ -1,10 +1,10 @@
-POST /api/v1/releases/713QdwATv/comments HTTP/1.1
+POST /api/v1/releases/7k1zdZ-yAP/comments HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJYa2FER09QMHB3IiwiaWF0IjoiMjAxNS0wMi0yM1QyMTo0NDoyNC40MzJaIiwiZXhwIjoiMjAxNS0wMi0yM1QyMjo0NDoyNC40MzJaIn0.ojSIlDvzP6U967Ho9-TFChF6O7YMZGOor_bdGORiSgk
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJteTlodmJXa1JEIiwiaWF0IjoiMjAxNS0wMi0yM1QyMjoyNToxNy43NjFaIiwiZXhwIjoiMjAxNS0wMi0yM1QyMzoyNToxNy43NjFaIn0.ATQZmlWAbQ8HlDLb4DkTlKRvXAgFNyH-q1lLFvzITL0
 Content-Type: application/json
-Content-Length: 40
+Content-Length: 41
 
 {
-  "message": "Versatile tangible archive"
+  "message": "Cloned zero defect extranet"
 }

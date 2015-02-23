@@ -102,6 +102,10 @@ describe('The ACLs of the VPDB API', function() {
 			request.post('/api/v1/games/mb/rating').send({ value: 1 }).end(hlp.status(401, done));
 		});
 
+		it('should deny access to game rating modification', function(done) {
+			request.put('/api/v1/games/mb/rating').send({ value: 1 }).end(hlp.status(401, done));
+		});
+
 		it('should deny access to game rating retrieval', function(done) {
 			request.get('/api/v1/games/mb/rating').end(hlp.status(401, done));
 		});
@@ -249,6 +253,10 @@ describe('The ACLs of the VPDB API', function() {
 
 		it('should allow access to game rating creation', function(done) {
 			request.post('/api/v1/games/mb/rating').as('member').send({ value: 1 }).end(hlp.status(404, done));
+		});
+
+		it('should allow access to game rating modification', function(done) {
+			request.put('/api/v1/games/mb/rating').as('member').send({ value: 1 }).end(hlp.status(404, done));
 		});
 
 		it('should allow access to game rating retrieval', function(done) {

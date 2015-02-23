@@ -1,21 +1,21 @@
 POST /api/v1/releases HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJtMUZib3VQUmFQIiwiaWF0IjoiMjAxNS0wMi0yM1QyMTo0NDozMi45ODFaIiwiZXhwIjoiMjAxNS0wMi0yM1QyMjo0NDozMi45ODFaIn0.K-7CIMb0JV_wdtCOiHkfeVMYe_adL7DI9lcts2qg1Oo
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJYeWZFZ0daa1J2IiwiaWF0IjoiMjAxNS0wMi0yM1QyMjoyNToyNi4xOTFaIiwiZXhwIjoiMjAxNS0wMi0yM1QyMzoyNToyNi4xOTFaIn0.1GU2TNbkeH7tJwhH5neGzZMYloi9LtfEn1Yfb2OUfDI
 Content-Type: application/json
-Content-Length: 478
+Content-Length: 474
 
 {
   "name": "release",
-  "_game": "ice-frolics",
+  "_game": "hi-lo-jr",
   "versions": [
     {
       "files": [
         {
-          "_file": "QyLx3dwCTv",
+          "_file": "QkZGbGWJCv",
           "_media": {
-            "playfield_image": "QyCl3_DR6D",
-            "playfield_video": "XyKzhdvCaP"
+            "playfield_image": "7JsfWGWk0P",
+            "playfield_video": "X1eMMbJAv"
           },
           "_compatibility": [
             "9.9.0"
@@ -26,9 +26,9 @@ Content-Length: 478
           }
         },
         {
-          "_file": "Q1Dx2dwAav",
+          "_file": "QyGfZGZyAD",
           "_media": {
-            "playfield_image": "m1yWh_DApD"
+            "playfield_image": "713z-zZyRP"
           },
           "_compatibility": [
             "9.9.0"
@@ -44,7 +44,7 @@ Content-Length: 478
   ],
   "authors": [
     {
-      "_user": "m1FbouPRaP",
+      "_user": "XyfEgGZkRv",
       "roles": [
         "Table Creator"
       ]

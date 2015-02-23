@@ -111,7 +111,10 @@ describe('The VPDB `Rating` API', function() {
 					.save({ path: 'games/create-rating'})
 					.end(function(err, res) {
 						hlp.expectStatus(err, res, 201);
+						hlp.dump(res);
 						expect(res.body.value).to.be(rating);
+						expect(res.body.created_at).to.be.ok();
+						expect(res.body.modified_at).to.not.be.ok();
 						expect(res.body.game.average).to.be(rating);
 						expect(res.body.game.votes).to.be(1);
 
@@ -185,5 +188,72 @@ describe('The VPDB `Rating` API', function() {
 			});
 		});
 	});
+
+	describe('when updating a game vote', function() {
+
+		before(function(done) {
+			hlp.setupUsers(request, {
+				member: { roles: [ 'member' ] },
+				contributor: { roles: [ 'contributor' ] }
+			}, done);
+		});
+
+		after(function(done) {
+			hlp.cleanup(request, done);
+		});
+
+		it('should fail when no previous vote has been cast', function(done) {
+			hlp.game.createGame('contributor', request, function(game) {
+				request.put('/api/v1/games/' + game.id + '/rating').send({ value: 5 }).as('member').end(hlp.status(404, done));
+			});
+		});
+
+		it('should fail when providing an invalid value', function(done) {
+			hlp.game.createGame('contributor', request, function(game) {
+				request.post('/api/v1/games/' + game.id + '/rating')
+					.send({ value: 9 })
+					.as('member')
+					.end(function(err, res) {
+						hlp.expectStatus(err, res, 201);
+						request.put('/api/v1/games/' + game.id + '/rating')
+							.send({ value: 15 })
+							.as('member')
+							.end(function(err, res) {
+								hlp.expectValidationError(err, res, 'value', 'must be between 1 and 10');
+								done();
+							});
+					});
+			});
+		});
+
+		it('should succeed when providing correct values', function(done) {
+			hlp.game.createGame('contributor', request, function(game) {
+				request.post('/api/v1/games/' + game.id + '/rating')
+					.send({ value: 9 })
+					.as('member')
+					.end(function(err, res) {
+						hlp.expectStatus(err, res, 201);
+						request.put('/api/v1/games/' + game.id + '/rating')
+							.send({ value: 8 })
+							.as('member')
+							.save({ path: 'games/update-rating'})
+							.end(function(err, res) {
+								hlp.expectStatus(err, res, 200);
+								expect(res.body.value).to.be(8);
+								expect(res.body.created_at).to.be.ok();
+								expect(res.body.modified_at).to.be.ok();
+
+								request.get('/api/v1/games/' + game.id).end(function(err, res) {
+									hlp.expectStatus(err, res, 200);
+									expect(res.body.rating.average).to.be(8);
+									expect(res.body.rating.votes).to.be(1);
+									done();
+								});
+							});
+					});
+			});
+		});
+	});
+
 
 });

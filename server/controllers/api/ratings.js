@@ -54,39 +54,52 @@ exports.createForGame = function(req, res) {
 
 			rating.save(assert(function(rating) {
 
-				Rating.find({ '_ref.game': game }, assert(function(ratings) {
+				gameRated(req, res, assert, game, rating, 201);
 
-					logger.info('[api|rating:create] User <%s> rated game "%s" %d.', req.user.email, game.id, rating.value);
-
-					// calculate average rating
-					var avg = _.reduce(_.pluck(ratings, 'value'), function (sum, value) {
-							return sum + value;
-						}, 0) / ratings.length;
-
-					var summary = { average: Math.round(avg * 1000) / 1000, votes: ratings.length };
-					game.update({ rating: summary }, assert(function () {
-
-						return api.success(res, { value: rating.value, game: summary }, 201);
-					}));
-
-				}, 'Error fetching existent ratings.'));
 			}, 'Error saving rating.'));
 		});
 	});
 };
 
 exports.getForGame = function(req, res) {
-	var assert = api.assert(error, 'get', req.user.email, res);
+	var assert = api.assert(error, 'view', req.user.email, res);
 	game(req, res, assert, function(game, rating) {
+
 		if (rating) {
-			api.success(res, _.pick(rating, ['value', 'created_at']));
+			api.success(res, _.pick(rating, ['value', 'created_at', 'modified_at' ]));
 		} else {
 			api.fail(res, error('No rating of <%s> for "%s" found.', req.user.email, game.title), 404);
 		}
 	});
 };
 
+exports.updateForGame = function(req, res) {
+	var assert = api.assert(error, 'update', req.user.email, res);
+	game(req, res, assert, function(game, rating) {
+
+		if (!rating) {
+			return api.fail(res, error('No rating of <%s> for "%s" found.', req.user.email, game.title), 404);
+		}
+
+		rating.value = req.body.value;
+		rating.modified_at = new Date();
+
+		rating.validate(function(err) {
+			if (err) {
+				return api.fail(res, error('Validations failed. See below for details.').errors(err.errors).warn('create'), 422);
+			}
+
+			rating.save(assert(function(rating) {
+
+				gameRated(req, res, assert, game, rating, 200);
+
+			}, 'Error saving rating.'));
+		});
+	});
+};
+
 function game(req, res, assert, callback) {
+
 	Game.findOne({ id: req.params.id }, assert(function(game) {
 		if (!game) {
 			return api.fail(res, error('No such game with ID "%s"', req.params.id), 404);
@@ -96,4 +109,28 @@ function game(req, res, assert, callback) {
 
 		}, 'Error searching for current rating.'));
 	}, 'Error finding game in order to get comment from <%s>.'));
+}
+
+function gameRated(req, res, assert, game, rating, status) {
+
+	Rating.find({ '_ref.game': game }, assert(function(ratings) {
+
+		logger.info('[api|rating] User <%s> rated game "%s" %d.', req.user.email, game.id, rating.value);
+
+		// calculate average rating
+		var avg = _.reduce(_.pluck(ratings, 'value'), function (sum, value) {
+				return sum + value;
+			}, 0) / ratings.length;
+
+		var summary = { average: Math.round(avg * 1000) / 1000, votes: ratings.length };
+		game.update({ rating: summary }, assert(function () {
+
+			var result = { value: rating.value, created_at: rating.created_at, game: summary };
+			if (status === 200) {
+				result.modified_at = rating.modified_at;
+			}
+			return api.success(res, result, status);
+		}));
+
+	}, 'Error fetching existent ratings.'));
 }

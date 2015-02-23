@@ -1,33 +1,21 @@
 POST /api/v1/games HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJtMXVORU9EMDZEIiwiaWF0IjoiMjAxNS0wMi0yM1QyMTo0NDoyNi42ODFaIiwiZXhwIjoiMjAxNS0wMi0yM1QyMjo0NDoyNi42ODFaIn0.lBGaIZ3jmSrhHcJU4YLFJVTjobi8Sqc31ZuB_eCRdtw
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJtSkZxLVpKUnYiLCJpYXQiOiIyMDE1LTAyLTIzVDIyOjI1OjE5LjkwNloiLCJleHAiOiIyMDE1LTAyLTIzVDIzOjI1OjE5LjkwNloifQ.JxQewQb63ttjlFfdHkM4OhT5nsfzOphhIeRZKBkhi0Q
 Content-Type: application/json
-Content-Length: 1355
+Content-Length: 158
 
 {
   "ipdb": {
-    "number": 5678,
-    "mfg": 93
+    "number": 2717,
+    "mfg": 117
   },
-  "title": "Hyde Park",
-  "manufacturer": "Gottlieb",
-  "model_number": "239",
-  "year": 1966,
+  "title": "Vanities",
+  "manufacturer": "Exhibit",
+  "year": 1947,
   "game_type": "em",
-  "themes": [
-    "World Places"
-  ],
-  "designers": [
-    "Ed Krynski"
-  ],
-  "artists": [
-    "Roy Parker"
-  ],
-  "features": "Flippers (2), Pop bumpers (3), Slingshots (2), Ball kickers (2), Dual bonus ladder. The \"swinging target\" is not in continuous motion but alternates between left and right only when hit by the ball, like a \"snap target\". Two \"auto-shooters\" located between the flippers propel the ball towards the \"swinging\" target.2-player add-a-ball with Continued Play. Continued Play is achieved with high scores and allows up to 5 extra balls per ball in play, tracked on the backglass by five illuminating colored circles located underneath the game name.Maximum displayed point score is 9,999 points per player.Sound: 3 bells.",
-  "notes": "This is the Italian export version of Gottlieb's 1966 'Hyde Park'. We do not know if the Production Run quantity of 951 units shown for that game includes this Italian version.The playfield has the serial number 239-IT on it, as does the Plexiglas backglass.The USA replay version is Gottlieb's 1966 'Mayfair'.This game and the two other games referenced here all have the same artwork. Together, they represent artist Roy Parker�s last games.",
-  "id": "hyde-park",
+  "id": "vanities",
   "_media": {
-    "backglass": "7Ja4NOvApv"
+    "backglass": "7yR9ZbJCD"
   }
 }

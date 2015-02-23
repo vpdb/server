@@ -67,7 +67,7 @@ var init = function(next) {
 				{ resources: 'tags', permissions: [ 'add', 'delete-own' ] },
 				{ resources: 'builds', permissions: [ 'add', 'delete-own' ] },
 				{ resources: 'comments', permissions: [ 'add' ] },
-				{ resources: 'ratings', permissions: [ 'add', 'view' ] },
+				{ resources: 'ratings', permissions: [ 'add', 'view', 'update' ] },
 				{ resources: 'roms', permissions: [ 'add', 'delete-own' ] }
 			]
 		}, {

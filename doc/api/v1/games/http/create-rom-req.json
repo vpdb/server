@@ -1,14 +1,14 @@
-POST /api/v1/games/club-house/roms HTTP/1.1
+POST /api/v1/games/thriller/roms HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJRSm56YkZQMHBQIiwiaWF0IjoiMjAxNS0wMi0yM1QyMTo0NDozOS4yNDVaIiwiZXhwIjoiMjAxNS0wMi0yM1QyMjo0NDozOS4yNDVaIn0.ieT6_qN-xWYL_4gRcGJikK6wvFnVkJaFCd2cHaMZ7cE
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI3SlJRVXpieUFQIiwiaWF0IjoiMjAxNS0wMi0yM1QyMjoyNTozMi40MDJaIiwiZXhwIjoiMjAxNS0wMi0yM1QyMzoyNTozMi40MDJaIn0.cJFNqd3bk4C2jpXGjGNuZL8uBHPp_Sln4Qzb918yjO0
 Content-Type: application/json
-Content-Length: 106
+Content-Length: 104
 
 {
-  "id": "club-house_10",
+  "id": "thriller_10",
   "version": "1.0",
   "notes": "That is some ROM.",
   "language": "en-US",
-  "_file": "XylUbFPA6w"
+  "_file": "7JmP8zWkCw"
 }

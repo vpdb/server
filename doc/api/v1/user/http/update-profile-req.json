@@ -1,14 +1,14 @@
 PATCH /api/v1/user HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI3a1VEZktEQzZ2IiwiaWF0IjoiMjAxNS0wMi0yM1QyMTo0NDo0MC4zNDRaIiwiZXhwIjoiMjAxNS0wMi0yM1QyMjo0NDo0MC4zNDRaIn0.qwi5GY2K8tgC-YwdiB9VbzkI5MIxyBfokzReIEsxj-Y
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJteUpjRGZiSkNQIiwiaWF0IjoiMjAxNS0wMi0yM1QyMjoyNTozMy41MTNaIiwiZXhwIjoiMjAxNS0wMi0yM1QyMzoyNTozMy41MTNaIn0.kzT5xvSim3tkDo7SMhganbubM-oY_w0RkHq2T25YIB0
 Content-Type: application/json
-Content-Length: 141
+Content-Length: 148
 
 {
-  "name": "Ollie Paucek",
-  "location": "New Elmira",
-  "email": "braeden.rolfson@hotmail.com",
-  "current_password": "R7P3OiXhZG",
-  "password": "XytnBV9W9J"
+  "name": "Taurean Zieme",
+  "location": "Port Brendonton",
+  "email": "jabari_schamberger@yahoo.com",
+  "current_password": "cNdTnpDHsY",
+  "password": "LU59uPuPnT"
 }

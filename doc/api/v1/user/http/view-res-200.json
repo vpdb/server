@@ -1,15 +1,15 @@
 200 OK
 Content-Type: application/json; charset=utf-8
-Content-Length: 733
-Etag: W/"2dd-da279b59"
+Content-Length: 742
+Etag: W/"2e6-f252be7"
 
 {
   "plan": "free",
-  "name": "Monica72",
-  "username": "Monica72",
-  "email": "cristal.harber@gmail.com",
+  "name": "Claire91",
+  "username": "Claire91",
+  "email": "tyrell73@hotmail.com",
   "provider": "local",
-  "created_at": "2015-02-23T21:44:23.225Z",
+  "created_at": "2015-02-23T22:25:16.502Z",
   "is_active": true,
   "counter": {
     "downloads": 0,
@@ -18,8 +18,8 @@ Etag: W/"2dd-da279b59"
   "roles": [
     "member"
   ],
-  "id": "7J7eb_DATP",
-  "gravatar_id": "cc3fa9ff1bbabe022c14d07d114934d1",
+  "id": "QkXlUZZJAP",
+  "gravatar_id": "739fc0e83dac9684b9af7ff68ce620b8",
   "permissions": {
     "users": [
       "search"
@@ -47,7 +47,8 @@ Etag: W/"2dd-da279b59"
     ],
     "ratings": [
       "add",
-      "view"
+      "view",
+      "update"
     ],
     "comments": [
       "add"

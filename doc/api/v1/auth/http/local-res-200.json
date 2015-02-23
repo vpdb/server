@@ -3,21 +3,21 @@ Content-Type: application/json; charset=utf-8
 Content-Encoding: gzip
 
 {
-  "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI3a1liZmR2QXB3IiwiaWF0IjoiMjAxNS0wMi0yM1QyMTo0NDoyNC4wMDZaIiwiZXhwIjoiMjAxNS0wMi0yM1QyMjo0NDoyNC4wMDZaIn0.BpO7xLtSyhzGQ_cvxErPzqTO83mamXlCGJY2VwxFJeY",
-  "expires": "2015-02-23T22:44:24.006Z",
+  "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJteTg4UFdiSkFQIiwiaWF0IjoiMjAxNS0wMi0yM1QyMjoyNToxNy4zMzVaIiwiZXhwIjoiMjAxNS0wMi0yM1QyMzoyNToxNy4zMzVaIn0.5XL29wl5zPcvYVza2yyp0KBPnGE_NqOZ0nN0aZbx2yM",
+  "expires": "2015-02-23T23:25:17.335Z",
   "user": {
-    "id": "7kYbfdvApw",
-    "name": "Jettie16",
-    "username": "Jettie16",
-    "gravatar_id": "600098a1c2f3ad0bc38bacbb55ca7eed",
-    "email": "penelope.sauer@gmail.com",
+    "id": "my88PWbJAP",
+    "name": "Whitney_Frami86",
+    "username": "Whitney_Frami86",
+    "gravatar_id": "674dbacd12aacef419fce9474cfe6f1b",
+    "email": "eulah_hansen18@yahoo.com",
     "is_active": true,
     "provider": "local",
     "roles": [
       "member"
     ],
     "plan": "free",
-    "created_at": "2015-02-23T21:44:23.948Z",
+    "created_at": "2015-02-23T22:25:17.276Z",
     "counter": {
       "downloads": 0,
       "comments": 0
@@ -49,7 +49,8 @@ Content-Encoding: gzip
       ],
       "ratings": [
         "add",
-        "view"
+        "view",
+        "update"
       ],
       "comments": [
         "add"

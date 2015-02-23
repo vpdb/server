@@ -1,14 +1,14 @@
 201 Created
 Content-Type: application/json; charset=utf-8
-Content-Length: 498
+Content-Length: 486
 
 {
   "plan": "free",
-  "name": "Dina_Mills81",
-  "username": "Dina_Mills81",
-  "email": "alexander_farrell67@gmail.com",
+  "name": "Larry.Schroeder",
+  "username": "Larry.Schroeder",
+  "email": "daisha83@hotmail.com",
   "provider": "local",
-  "created_at": "2015-02-23T21:44:40.578Z",
+  "created_at": "2015-02-23T22:25:33.722Z",
   "is_active": false,
   "counter": {
     "downloads": 0,
@@ -19,9 +19,9 @@ Content-Length: 498
   ],
   "email_status": {
     "code": "pending_registration",
-    "expires_at": "2015-02-24T21:44:40.579Z",
-    "value": "alexander_farrell67@gmail.com"
+    "expires_at": "2015-02-24T22:25:33.723Z",
+    "value": "daisha83@hotmail.com"
   },
-  "id": "myA5GYv0pv",
-  "gravatar_id": "524ca5bb617217b52b32e0458eb48784"
+  "id": "7JvaDG-1Rv",
+  "gravatar_id": "1134bfc4eeb37016ef07ca400c021cf8"
 }

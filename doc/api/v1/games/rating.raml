@@ -44,3 +44,16 @@ get:
       body:
         role/member:
           example: !include http/view-rating-res-404.json
+put:
+  securedBy: [ jwt: { scopes: [ MEMBER ] } ]
+  is: [ validated ]
+  description: |
+    Update a rating.
+  body:
+    role/member:
+      example: !include http/update-rating-req.json
+  responses:
+    200:
+      body:
+        role/member:
+          example: !include http/update-rating-res-200.json

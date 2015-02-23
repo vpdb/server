@@ -31,14 +31,15 @@ var Schema = mongoose.Schema;
 // SCHEMA
 //-----------------------------------------------------------------------------
 var fields = {
-	id:        { type: String, required: true, unique: true, 'default': shortId.generate },
-	_from:     { type: Schema.ObjectId, required: true, ref: 'User', index: true },
+	id:          { type: String, required: true, unique: true, 'default': shortId.generate },
+	_from:       { type: Schema.ObjectId, required: true, ref: 'User', index: true },
 	_ref: {
 		game:    { type: Schema.ObjectId, ref: 'Game', index: true, sparse: true },
 		release: { type: Schema.ObjectId, ref: 'Release', index: true, sparse: true }
 	},
-	value:     { type: Number, required: 'You must provide a value when rating.' },
-	created_at: { type: Date, required: true }
+	value:       { type: Number, required: 'You must provide a value when rating.' },
+	modified_at: { type: Date },
+	created_at:  { type: Date, required: true }
 };
 
 var RatingSchema = new Schema(fields);

@@ -3,16 +3,16 @@ Content-Type: application/json; charset=utf-8
 Content-Encoding: gzip
 
 {
-  "title": "Skipper",
-  "manufacturer": "Bally",
-  "model_number": "61",
-  "year": 1933,
-  "game_type": "pm",
-  "features": "1 cent or 5 cent play. 3 balls for 5 cents is one pricing example. Shoot three balls for a winning combination. Game advertised as 19 inches long, 11 1/2 inches wide, and 6 inches high. Cedar finish cabinet.",
-  "notes": "Sold new for $16.50 including tax.",
-  "id": "skipper",
-  "_created_by": "54eb97abc0a84a7c3ffac2ea",
-  "created_at": "2015-02-23T21:12:11.718Z",
+  "title": "Hyde Park",
+  "manufacturer": "Gottlieb",
+  "model_number": "239",
+  "year": 1966,
+  "game_type": "em",
+  "features": "Flippers (2), Pop bumpers (3), Slingshots (2), Ball kickers (2), Dual bonus ladder. The \"swinging target\" is not in continuous motion but alternates between left and right only when hit by the ball, like a \"snap target\". Two \"auto-shooters\" located between the flippers propel the ball towards the \"swinging\" target.2-player add-a-ball with Continued Play. Continued Play is achieved with high scores and allows up to 5 extra balls per ball in play, tracked on the backglass by five illuminating colored circles located underneath the game name.Maximum displayed point score is 9,999 points per player.Sound: 3 bells.",
+  "notes": "This is the Italian export version of Gottlieb's 1966 'Hyde Park'. We do not know if the Production Run quantity of 951 units shown for that game includes this Italian version.The playfield has the serial number 239-IT on it, as does the Plexiglas backglass.The USA replay version is Gottlieb's 1966 'Mayfair'.This game and the two other games referenced here all have the same artwork. Together, they represent artist Roy Parker�s last games.",
+  "id": "hyde-park",
+  "_created_by": "54eb9f3a7c0a00f849975c77",
+  "created_at": "2015-02-23T21:44:26.778Z",
   "rating": {
     "votes": 0,
     "average": 0
@@ -24,13 +24,17 @@ Content-Encoding: gzip
     "releases": 0
   },
   "ipdb": {
-    "number": 2187,
-    "mfg": 47
+    "number": 5678,
+    "mfg": 93
   },
-  "artists": [],
-  "designers": [],
+  "artists": [
+    "Roy Parker"
+  ],
+  "designers": [
+    "Ed Krynski"
+  ],
   "themes": [
-    "Gambling"
+    "World Places"
   ],
   "short": [],
   "media": {
@@ -41,22 +45,22 @@ Content-Encoding: gzip
       "is_protected": false,
       "variations": {
         "small-2x": {
-          "url": "/storage/v1/files/Xka4rkeCav/small-2x"
+          "url": "/storage/v1/files/7Ja4NOvApv/small-2x"
         },
         "small": {
-          "url": "/storage/v1/files/Xka4rkeCav/small"
+          "url": "/storage/v1/files/7Ja4NOvApv/small"
         },
         "medium-2x": {
-          "url": "/storage/v1/files/Xka4rkeCav/medium-2x"
+          "url": "/storage/v1/files/7Ja4NOvApv/medium-2x"
         },
         "medium": {
-          "url": "/storage/v1/files/Xka4rkeCav/medium"
+          "url": "/storage/v1/files/7Ja4NOvApv/medium"
         }
       },
       "bytes": 135,
-      "url": "/storage/v1/files/Xka4rkeCav",
-      "id": "Xka4rkeCav"
+      "url": "/storage/v1/files/7Ja4NOvApv",
+      "id": "7Ja4NOvApv"
     }
   },
-  "url": "/game/skipper"
+  "url": "/game/hyde-park"
 }

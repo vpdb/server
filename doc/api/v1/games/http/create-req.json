@@ -1,27 +1,33 @@
 POST /api/v1/games HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJtMXU0U2t4MFR2IiwiaWF0IjoiMjAxNS0wMi0yM1QyMToxMjoxMS42MThaIiwiZXhwIjoiMjAxNS0wMi0yM1QyMjoxMjoxMS42MThaIn0.J0UdUm_BE1mCw5e9y9PMJidU2yM_gO3-qvTbgduVdBw
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJtMXVORU9EMDZEIiwiaWF0IjoiMjAxNS0wMi0yM1QyMTo0NDoyNi42ODFaIiwiZXhwIjoiMjAxNS0wMi0yM1QyMjo0NDoyNi42ODFaIn0.lBGaIZ3jmSrhHcJU4YLFJVTjobi8Sqc31ZuB_eCRdtw
 Content-Type: application/json
-Content-Length: 462
+Content-Length: 1355
 
 {
   "ipdb": {
-    "number": 2187,
-    "mfg": 47
+    "number": 5678,
+    "mfg": 93
   },
-  "title": "Skipper",
-  "manufacturer": "Bally",
-  "model_number": "61",
-  "year": 1933,
-  "game_type": "pm",
+  "title": "Hyde Park",
+  "manufacturer": "Gottlieb",
+  "model_number": "239",
+  "year": 1966,
+  "game_type": "em",
   "themes": [
-    "Gambling"
+    "World Places"
   ],
-  "features": "1 cent or 5 cent play. 3 balls for 5 cents is one pricing example. Shoot three balls for a winning combination. Game advertised as 19 inches long, 11 1/2 inches wide, and 6 inches high. Cedar finish cabinet.",
-  "notes": "Sold new for $16.50 including tax.",
-  "id": "skipper",
+  "designers": [
+    "Ed Krynski"
+  ],
+  "artists": [
+    "Roy Parker"
+  ],
+  "features": "Flippers (2), Pop bumpers (3), Slingshots (2), Ball kickers (2), Dual bonus ladder. The \"swinging target\" is not in continuous motion but alternates between left and right only when hit by the ball, like a \"snap target\". Two \"auto-shooters\" located between the flippers propel the ball towards the \"swinging\" target.2-player add-a-ball with Continued Play. Continued Play is achieved with high scores and allows up to 5 extra balls per ball in play, tracked on the backglass by five illuminating colored circles located underneath the game name.Maximum displayed point score is 9,999 points per player.Sound: 3 bells.",
+  "notes": "This is the Italian export version of Gottlieb's 1966 'Hyde Park'. We do not know if the Production Run quantity of 951 units shown for that game includes this Italian version.The playfield has the serial number 239-IT on it, as does the Plexiglas backglass.The USA replay version is Gottlieb's 1966 'Mayfair'.This game and the two other games referenced here all have the same artwork. Together, they represent artist Roy Parker�s last games.",
+  "id": "hyde-park",
   "_media": {
-    "backglass": "Xka4rkeCav"
+    "backglass": "7Ja4NOvApv"
   }
 }

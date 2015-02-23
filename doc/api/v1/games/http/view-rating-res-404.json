@@ -1,0 +1,8 @@
+404 Not Found
+Content-Type: application/json; charset=utf-8
+Content-Length: 80
+Etag: W/"50-8d69b2ec"
+
+{
+  "error": "No rating of <cecelia.rowe@gmail.com> for \"Galaxy Play\" found."
+}

@@ -1,0 +1,46 @@
+post:
+  securedBy: [ jwt: { scopes: [ MEMBER ] } ]
+  is: [ validated ]
+  description: |
+    Rate a game.
+
+    Note that this can only be done once per game, for rating changes
+    use `PUT`.
+  body:
+    role/member:
+      example: !include http/create-rating-req.json
+  responses:
+    201:
+      body:
+        role/member:
+          example: !include http/create-rating-res-201.json
+    422:
+      description: Validation errors
+      body:
+        role/member:
+          example: !include http/create-rating-res-422.json
+    400:
+      description: Wrong HTTP verb
+      body:
+        role/member:
+          example: !include http/create-rating-res-400.json
+get:
+  securedBy: [ jwt: { scopes: [ MEMBER ] } ]
+  description: |
+    Retrieve own rating of a game.
+
+    Returns either the rating of the authenticated user of the given game, or
+    `404` if the user hasn't voted for that game yet.
+  body:
+    role/member:
+      example: !include http/view-rating-req.json
+  responses:
+    200:
+      body:
+        role/member:
+          example: !include http/view-rating-res-200.json
+    404:
+      description: No rating for given game
+      body:
+        role/member:
+          example: !include http/view-rating-res-404.json

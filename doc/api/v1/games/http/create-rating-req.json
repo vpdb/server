@@ -1,8 +1,8 @@
-POST /api/v1/games/majorettes/ratings HTTP/1.1
+POST /api/v1/games/sluggers/rating HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
 Content-Type: application/json
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJRMVlzSmxScHciLCJpYXQiOiIyMDE1LTAyLTIzVDIxOjEyOjE3LjEyNVoiLCJleHAiOiIyMDE1LTAyLTIzVDIyOjEyOjE3LjEyNVoifQ.itqlYZoJjZsl8wdJwQ7QIFPVq_ii0NXu4evTiMdu6YA
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJRa1k5dUQwYXYiLCJpYXQiOiIyMDE1LTAyLTIzVDIxOjQ0OjMxLjg3MFoiLCJleHAiOiIyMDE1LTAyLTIzVDIyOjQ0OjMxLjg3MFoifQ.xBUWddc_7dBZ6iSxjl-SlW8rKirw4XfayEoM4xZGREI
 Content-Length: 11
 
 {

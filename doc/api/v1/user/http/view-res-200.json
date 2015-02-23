@@ -1,15 +1,15 @@
 200 OK
 Content-Type: application/json; charset=utf-8
-Content-Length: 820
-Etag: W/"334-7f996eec"
+Content-Length: 733
+Etag: W/"2dd-da279b59"
 
 {
   "plan": "free",
-  "name": "Rebeka42",
-  "username": "Rebeka42",
-  "email": "waylon_stamm@yahoo.com",
+  "name": "Monica72",
+  "username": "Monica72",
+  "email": "cristal.harber@gmail.com",
   "provider": "local",
-  "created_at": "2015-02-23T21:12:08.366Z",
+  "created_at": "2015-02-23T21:44:23.225Z",
   "is_active": true,
   "counter": {
     "downloads": 0,
@@ -18,17 +18,13 @@ Etag: W/"334-7f996eec"
   "roles": [
     "member"
   ],
-  "id": "XyXefkg0pP",
-  "gravatar_id": "de018810a8983122fd50bc1f9c047898",
+  "id": "7J7eb_DATP",
+  "gravatar_id": "cc3fa9ff1bbabe022c14d07d114934d1",
   "permissions": {
-    "builds": [
-      "add",
-      "delete-own"
-    ],
     "users": [
       "search"
     ],
-    "vpbuilds": [
+    "builds": [
       "add",
       "delete-own"
     ],
@@ -50,11 +46,8 @@ Etag: W/"334-7f996eec"
       "delete-own"
     ],
     "ratings": [
-      "add"
-    ],
-    "platformbuilds": [
       "add",
-      "delete-own"
+      "view"
     ],
     "comments": [
       "add"

@@ -1,10 +1,10 @@
-POST /api/v1/releases/Xkdg41lCTv/comments HTTP/1.1
+POST /api/v1/releases/713QdwATv/comments HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI3MUFZN0psQzZ3IiwiaWF0IjoiMjAxNS0wMi0yM1QyMToxMjowOS41NjZaIiwiZXhwIjoiMjAxNS0wMi0yM1QyMjoxMjowOS41NjZaIn0.XW36fBPPZzbaX-LTFDKvF-nZpfpFNGIr3wSKhSB8uAs
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJYa2FER09QMHB3IiwiaWF0IjoiMjAxNS0wMi0yM1QyMTo0NDoyNC40MzJaIiwiZXhwIjoiMjAxNS0wMi0yM1QyMjo0NDoyNC40MzJaIn0.ojSIlDvzP6U967Ho9-TFChF6O7YMZGOor_bdGORiSgk
 Content-Type: application/json
-Content-Length: 38
+Content-Length: 40
 
 {
-  "message": "Managed optimal function"
+  "message": "Versatile tangible archive"
 }

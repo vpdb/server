@@ -1,14 +1,14 @@
-POST /api/v1/games/navy/roms HTTP/1.1
+POST /api/v1/games/club-house/roms HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJta1MtTWVnQ1R3IiwiaWF0IjoiMjAxNS0wMi0yM1QyMToxMjoyNC4wNDdaIiwiZXhwIjoiMjAxNS0wMi0yM1QyMjoxMjoyNC4wNDdaIn0.v49a_TE67UiQ4fyUhTqxZGP8zBkPZABf_l6D4RgYAKM
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJRSm56YkZQMHBQIiwiaWF0IjoiMjAxNS0wMi0yM1QyMTo0NDozOS4yNDVaIiwiZXhwIjoiMjAxNS0wMi0yM1QyMjo0NDozOS4yNDVaIn0.ieT6_qN-xWYL_4gRcGJikK6wvFnVkJaFCd2cHaMZ7cE
 Content-Type: application/json
-Content-Length: 100
+Content-Length: 106
 
 {
-  "id": "navy_10",
+  "id": "club-house_10",
   "version": "1.0",
   "notes": "That is some ROM.",
   "language": "en-US",
-  "_file": "Qkj4MegA6w"
+  "_file": "XylUbFPA6w"
 }

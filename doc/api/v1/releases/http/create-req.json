@@ -1,21 +1,21 @@
 POST /api/v1/releases HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJYeUJHM3llUlR3IiwiaWF0IjoiMjAxNS0wMi0yM1QyMToxMjoxNy45MDJaIiwiZXhwIjoiMjAxNS0wMi0yM1QyMjoxMjoxNy45MDJaIn0.aiEB-k8hdW9E3YXZg-lhU_Fi0E-Y8YJT4UrfOX4_BFM
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJtMUZib3VQUmFQIiwiaWF0IjoiMjAxNS0wMi0yM1QyMTo0NDozMi45ODFaIiwiZXhwIjoiMjAxNS0wMi0yM1QyMjo0NDozMi45ODFaIn0.K-7CIMb0JV_wdtCOiHkfeVMYe_adL7DI9lcts2qg1Oo
 Content-Type: application/json
-Content-Length: 477
+Content-Length: 478
 
 {
   "name": "release",
-  "_game": "happy-gang",
+  "_game": "ice-frolics",
   "versions": [
     {
       "files": [
         {
-          "_file": "Qky-pke06v",
+          "_file": "QyLx3dwCTv",
           "_media": {
-            "playfield_image": "XJVZpJxApD",
-            "playfield_video": "QJOG6keRpP"
+            "playfield_image": "QyCl3_DR6D",
+            "playfield_video": "XyKzhdvCaP"
           },
           "_compatibility": [
             "9.9.0"
@@ -26,9 +26,9 @@ Content-Length: 477
           }
         },
         {
-          "_file": "m1gbTJeRpP",
+          "_file": "Q1Dx2dwAav",
           "_media": {
-            "playfield_image": "mk8ZpJxRpD"
+            "playfield_image": "m1yWh_DApD"
           },
           "_compatibility": [
             "9.9.0"
@@ -44,7 +44,7 @@ Content-Length: 477
   ],
   "authors": [
     {
-      "_user": "XyBG3yeRTw",
+      "_user": "m1FbouPRaP",
       "roles": [
         "Table Creator"
       ]

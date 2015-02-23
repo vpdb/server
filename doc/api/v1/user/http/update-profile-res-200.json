@@ -1,15 +1,15 @@
 200 OK
 Content-Type: application/json; charset=utf-8
-Content-Length: 988
+Content-Length: 898
 
 {
-  "location": "Edwardoshire",
+  "location": "New Elmira",
   "plan": "free",
-  "name": "Reilly Feil",
-  "username": "Cara.Prohaska51",
-  "email": "noemie.mann70@hotmail.com",
+  "name": "Ollie Paucek",
+  "username": "Minerva79",
+  "email": "kaleigh74@hotmail.com",
   "provider": "local",
-  "created_at": "2015-02-23T21:12:25.045Z",
+  "created_at": "2015-02-23T21:44:40.338Z",
   "is_active": true,
   "counter": {
     "downloads": 0,
@@ -20,20 +20,16 @@ Content-Length: 988
   ],
   "email_status": {
     "code": "pending_update",
-    "expires_at": "2015-02-24T21:12:25.332Z",
-    "value": "skyla58@yahoo.com"
+    "expires_at": "2015-02-24T21:44:40.657Z",
+    "value": "braeden.rolfson@hotmail.com"
   },
-  "id": "m1azQglAaD",
-  "gravatar_id": "fd8305cc869ab502aa6111f0089eb52a",
+  "id": "7kUDfKDC6v",
+  "gravatar_id": "b52a08497db038221f9fab553d32cb28",
   "permissions": {
-    "builds": [
-      "add",
-      "delete-own"
-    ],
     "users": [
       "search"
     ],
-    "vpbuilds": [
+    "builds": [
       "add",
       "delete-own"
     ],
@@ -55,11 +51,8 @@ Content-Length: 988
       "delete-own"
     ],
     "ratings": [
-      "add"
-    ],
-    "platformbuilds": [
       "add",
-      "delete-own"
+      "view"
     ],
     "comments": [
       "add"

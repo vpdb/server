@@ -98,8 +98,12 @@ describe('The ACLs of the VPDB API', function() {
 			request.get('/api/v1/games/mb/roms').end(hlp.status(404, done));
 		});
 
-		it('should deny access to game ratings', function(done) {
-			request.post('/api/v1/games/mb/ratings').send({ value: 1 }).end(hlp.status(401, done));
+		it('should deny access to game rating creation', function(done) {
+			request.post('/api/v1/games/mb/rating').send({ value: 1 }).end(hlp.status(401, done));
+		});
+
+		it('should deny access to game rating retrieval', function(done) {
+			request.get('/api/v1/games/mb/rating').end(hlp.status(401, done));
 		});
 
 		it('should deny access to rom deletion', function(done) {
@@ -243,8 +247,12 @@ describe('The ACLs of the VPDB API', function() {
 			request.get('/api/v1/games/mb/roms').as('member').end(hlp.status(404, done));
 		});
 
-		it('should allow access to game ratings', function(done) {
-			request.post('/api/v1/games/mb/ratings').as('member').send({ value: 1 }).end(hlp.status(404, done));
+		it('should allow access to game rating creation', function(done) {
+			request.post('/api/v1/games/mb/rating').as('member').send({ value: 1 }).end(hlp.status(404, done));
+		});
+
+		it('should allow access to game rating retrieval', function(done) {
+			request.get('/api/v1/games/mb/rating').as('member').end(hlp.status(404, done));
 		});
 
 		it('should allow access to rom deletion', function(done) {

@@ -58,32 +58,32 @@ describe('The VPDB `Rating` API', function() {
 		});
 
 		it('should fail when providing the wrong game', function(done) {
-			request.post('/api/v1/games/non_existent/ratings').send({ value: 5 }).as('member').end(hlp.status(404, done));
+			request.post('/api/v1/games/non_existent/rating').send({ value: 5 }).as('member').end(hlp.status(404, done));
 		});
 
 		it('should fail when providing nothing', function(done) {
-			request.post('/api/v1/games/' + game.id + '/ratings').send({}).as('member').end(function(err, res) {
+			request.post('/api/v1/games/' + game.id + '/rating').send({}).as('member').end(function(err, res) {
 				hlp.expectValidationError(err, res, 'value', 'must provide a value');
 				done();
 			});
 		});
 
 		it('should fail when providing a string', function(done) {
-			request.post('/api/v1/games/' + game.id + '/ratings').send({ value: 'foo' }).as('member').end(function(err, res) {
+			request.post('/api/v1/games/' + game.id + '/rating').send({ value: 'foo' }).as('member').end(function(err, res) {
 				hlp.expectValidationError(err, res, 'value', 'cast to number failed');
 				done();
 			});
 		});
 
 		it('should fail when providing a float', function(done) {
-			request.post('/api/v1/games/' + game.id + '/ratings').send({ value: 4.5 }).as('member').end(function(err, res) {
+			request.post('/api/v1/games/' + game.id + '/rating').send({ value: 4.5 }).as('member').end(function(err, res) {
 				hlp.expectValidationError(err, res, 'value', 'must be an integer');
 				done();
 			});
 		});
 
 		it('should fail when providing a wrong integer', function(done) {
-			request.post('/api/v1/games/' + game.id + '/ratings').send({ value: 11 }).as('member').saveResponse({ path: 'games/create-rating'}).end(function(err, res) {
+			request.post('/api/v1/games/' + game.id + '/rating').send({ value: 11 }).as('member').saveResponse({ path: 'games/create-rating'}).end(function(err, res) {
 				hlp.expectValidationError(err, res, 'value', 'must be between 1 and 10');
 				done();
 			});
@@ -91,9 +91,9 @@ describe('The VPDB `Rating` API', function() {
 
 		it('should fail when trying to vote twice', function(done) {
 			hlp.game.createGame('contributor', request, function(game) {
-				request.post('/api/v1/games/' + game.id + '/ratings').send({ value: 1 }).as('member').end(function(err, res) {
+				request.post('/api/v1/games/' + game.id + '/rating').send({ value: 1 }).as('member').end(function(err, res) {
 					hlp.expectStatus(err, res, 201);
-					request.post('/api/v1/games/' + game.id + '/ratings')
+					request.post('/api/v1/games/' + game.id + '/rating')
 						.send({ value: 1 })
 						.as('member')
 						.saveResponse({ path: 'games/create-rating'})
@@ -105,7 +105,7 @@ describe('The VPDB `Rating` API', function() {
 		it('should succeed when providing a correct rating', function(done) {
 			hlp.game.createGame('contributor', request, function(game) {
 				var rating = 7;
-				request.post('/api/v1/games/' + game.id + '/ratings')
+				request.post('/api/v1/games/' + game.id + '/rating')
 					.send({ value: rating })
 					.as('member')
 					.save({ path: 'games/create-rating'})
@@ -130,7 +130,7 @@ describe('The VPDB `Rating` API', function() {
 				var ratings = [ 1, 3, 4, 10 ];
 				var avg = [ 1, 2, 2.667, 4.5 ];
 				async.timesSeries(ratings.length, function(i, next) {
-					request.post('/api/v1/games/' + game.id + '/ratings')
+					request.post('/api/v1/games/' + game.id + '/rating')
 						.send({ value: ratings[i] })
 						.as('member' + (i + 1))
 						.end(function(err, res) {
@@ -142,6 +142,48 @@ describe('The VPDB `Rating` API', function() {
 
 			});
 		});
-
 	});
+
+	describe('after rating a game', function() {
+
+		before(function(done) {
+			hlp.setupUsers(request, {
+				member: { roles: [ 'member' ] },
+				contributor: { roles: [ 'contributor' ] }
+			}, done);
+		});
+
+		after(function(done) {
+			hlp.cleanup(request, done);
+		});
+
+		it('should give an indication if no vote has been cast', function(done) {
+			hlp.game.createGame('contributor', request, function(game) {
+				request.get('/api/v1/games/' + game.id + '/rating').as('member').saveResponse({ path: 'games/view-rating'}).end(function(err, res) {
+					hlp.expectStatus(err, res, 404, 'rating of <' + hlp.getUser('member').email);
+					hlp.expectStatus(err, res, 404, 'for "' + game.title);
+					done();
+				});
+			});
+		});
+
+		it('should be able to retrieve the vote', function(done) {
+			hlp.game.createGame('contributor', request, function(game) {
+				var rating = 8;
+				request.post('/api/v1/games/' + game.id + '/rating')
+					.send({ value: rating })
+					.as('member')
+					.end(function(err, res) {
+						hlp.expectStatus(err, res, 201);
+						request.get('/api/v1/games/' + game.id + '/rating').save({ path: 'games/view-rating'}).as('member').end(function(err, res) {
+							hlp.expectStatus(err, res, 200);
+							expect(res.body.value).to.be(rating);
+							expect(res.body.created_at).to.be.ok();
+							done();
+						});
+					});
+			});
+		});
+	});
+
 });

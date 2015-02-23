@@ -1,14 +1,14 @@
 PATCH /api/v1/user HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJtMWF6UWdsQWFEIiwiaWF0IjoiMjAxNS0wMi0yM1QyMToxMjoyNS4wNTJaIiwiZXhwIjoiMjAxNS0wMi0yM1QyMjoxMjoyNS4wNTJaIn0.fRGtGB8Ui85gKA-XrpjAySHtSCvPHl0OV9vbYXByEPg
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI3a1VEZktEQzZ2IiwiaWF0IjoiMjAxNS0wMi0yM1QyMTo0NDo0MC4zNDRaIiwiZXhwIjoiMjAxNS0wMi0yM1QyMjo0NDo0MC4zNDRaIn0.qwi5GY2K8tgC-YwdiB9VbzkI5MIxyBfokzReIEsxj-Y
 Content-Type: application/json
-Content-Length: 132
+Content-Length: 141
 
 {
-  "name": "Reilly Feil",
-  "location": "Edwardoshire",
-  "email": "skyla58@yahoo.com",
-  "current_password": "3SmN6ipl6Z",
-  "password": "Mtcw9AQfGW"
+  "name": "Ollie Paucek",
+  "location": "New Elmira",
+  "email": "braeden.rolfson@hotmail.com",
+  "current_password": "R7P3OiXhZG",
+  "password": "XytnBV9W9J"
 }

@@ -24,10 +24,8 @@ var fs = require('fs');
 var async = require('async');
 var logger = require('winston');
 var archiver = require('archiver');
-var objectPath = require('object-path');
 
 var Release = require('mongoose').model('Release');
-var Game = require('mongoose').model('Game');
 var Rom = require('mongoose').model('Rom');
 var quota = require('../../modules/quota');
 

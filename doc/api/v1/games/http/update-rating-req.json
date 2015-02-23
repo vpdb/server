@@ -1,0 +1,10 @@
+PUT /api/v1/games/jacks-open/rating HTTP/1.1
+Host: vpdb.ch
+Accept-Encoding: gzip, deflate
+Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJRMXBvMWZaazBQIiwiaWF0IjoiMjAxNS0wMi0yM1QyMjoyNToyNS43MjZaIiwiZXhwIjoiMjAxNS0wMi0yM1QyMzoyNToyNS43MjZaIn0.XVp8Vd0naSiXDPtFX2rm-Y_xNYnSijw76lJGKv3RSAg
+Content-Length: 11
+
+{
+  "value": 8
+}

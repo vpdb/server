@@ -1,0 +1,11 @@
+201 Created
+Content-Type: application/json; charset=utf-8
+Content-Length: 59
+
+{
+  "value": 7,
+  "game": {
+    "average": 7,
+    "votes": 1
+  }
+}

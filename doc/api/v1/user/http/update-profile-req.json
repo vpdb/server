@@ -1,14 +1,14 @@
 PATCH /api/v1/user HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJYa3hvQVpCYk12IiwiaWF0IjoiMjAxNS0wMi0xNFQyMjozMTo0OC41MDlaIiwiZXhwIjoiMjAxNS0wMi0xNFQyMzozMTo0OC41MDlaIn0.y0pP45p7SWmJ5YSJhnz0m8hHp1y_65EGQwyeQJfJ7qw
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJtMWF6UWdsQWFEIiwiaWF0IjoiMjAxNS0wMi0yM1QyMToxMjoyNS4wNTJaIiwiZXhwIjoiMjAxNS0wMi0yM1QyMjoxMjoyNS4wNTJaIn0.fRGtGB8Ui85gKA-XrpjAySHtSCvPHl0OV9vbYXByEPg
 Content-Type: application/json
-Content-Length: 145
+Content-Length: 132
 
 {
-  "name": "Aubree Bergstrom",
-  "location": "Feilshire",
-  "email": "daren.vandervort36@yahoo.com",
-  "current_password": "g7n6hOei7G",
-  "password": "KSB43sWRmd"
+  "name": "Reilly Feil",
+  "location": "Edwardoshire",
+  "email": "skyla58@yahoo.com",
+  "current_password": "3SmN6ipl6Z",
+  "password": "Mtcw9AQfGW"
 }

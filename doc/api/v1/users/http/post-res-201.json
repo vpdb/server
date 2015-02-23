@@ -1,14 +1,14 @@
 201 Created
 Content-Type: application/json; charset=utf-8
-Content-Length: 484
+Content-Length: 488
 
 {
   "plan": "free",
-  "name": "Allene_Thompson",
-  "username": "Allene_Thompson",
-  "email": "chad.torp@yahoo.com",
+  "name": "Jayda.Anderson",
+  "username": "Jayda.Anderson",
+  "email": "verla_corwin@yahoo.com",
   "provider": "local",
-  "created_at": "2015-02-14T22:31:48.720Z",
+  "created_at": "2015-02-23T21:12:25.257Z",
   "is_active": false,
   "counter": {
     "downloads": 0,
@@ -19,9 +19,9 @@ Content-Length: 484
   ],
   "email_status": {
     "code": "pending_registration",
-    "expires_at": "2015-02-15T22:31:48.721Z",
-    "value": "chad.torp@yahoo.com"
+    "expires_at": "2015-02-24T21:12:25.257Z",
+    "value": "verla_corwin@yahoo.com"
   },
-  "id": "Q1_CAZB-Gw",
-  "gravatar_id": "9ba5d2255dea104445c99d99d89a87e6"
+  "id": "Q1SIXlxA6w",
+  "gravatar_id": "948f94e626065e8eb378ca8da00fed39"
 }

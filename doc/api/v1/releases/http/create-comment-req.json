@@ -1,10 +1,10 @@
-POST /api/v1/releases/X1cDRxSWzw/comments HTTP/1.1
+POST /api/v1/releases/Xkdg41lCTv/comments HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJRMUVOQWxIV0d2IiwiaWF0IjoiMjAxNS0wMi0xNFQyMjozMTozMi4xNzdaIiwiZXhwIjoiMjAxNS0wMi0xNFQyMzozMTozMi4xNzdaIn0.xOeR4GX1VKqIUa8PjqyBCX0UBGMK7_6XWaqvGp3FilQ
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI3MUFZN0psQzZ3IiwiaWF0IjoiMjAxNS0wMi0yM1QyMToxMjowOS41NjZaIiwiZXhwIjoiMjAxNS0wMi0yM1QyMjoxMjowOS41NjZaIn0.XW36fBPPZzbaX-LTFDKvF-nZpfpFNGIr3wSKhSB8uAs
 Content-Type: application/json
-Content-Length: 58
+Content-Length: 38
 
 {
-  "message": "Enterprise-wide zero administration approach"
+  "message": "Managed optimal function"
 }

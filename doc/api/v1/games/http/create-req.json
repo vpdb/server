@@ -1,32 +1,27 @@
 POST /api/v1/games HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJRSklOZ1dIWnpQIiwiaWF0IjoiMjAxNS0wMi0xNFQyMjozMTozNC40NzlaIiwiZXhwIjoiMjAxNS0wMi0xNFQyMzozMTozNC40NzlaIn0.lGeyIlVJZX17rRYsGN_u0zNefB2sURfHtCCmxev4pDY
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJtMXU0U2t4MFR2IiwiaWF0IjoiMjAxNS0wMi0yM1QyMToxMjoxMS42MThaIiwiZXhwIjoiMjAxNS0wMi0yM1QyMjoxMjoxMS42MThaIn0.J0UdUm_BE1mCw5e9y9PMJidU2yM_gO3-qvTbgduVdBw
 Content-Type: application/json
-Content-Length: 596
+Content-Length: 462
 
 {
   "ipdb": {
-    "number": 1385,
-    "mfg": 350,
-    "rating": "8.0"
+    "number": 2187,
+    "mfg": 47
   },
-  "title": "Kismet",
-  "manufacturer": "Williams",
-  "model_number": "258",
-  "year": 1961,
-  "game_type": "em",
-  "produced_units": 700,
-  "designers": [
-    "Steve Kordek"
+  "title": "Skipper",
+  "manufacturer": "Bally",
+  "model_number": "61",
+  "year": 1933,
+  "game_type": "pm",
+  "themes": [
+    "Gambling"
   ],
-  "artists": [
-    "George Molentin"
-  ],
-  "features": "Flippers (2), Pop bumpers (3), Passive bumpers (4), Slingshots (2), Moving target (1). 3 or 5 ball play.Maximum displayed point score is 1,999 points per player.",
-  "notes": "'Kismet' was a 1953 Broadway musical followed by a 1955 Hollywood film. The setting was Baghdad, Iraq, in the times of The Arabian Nights.",
-  "id": "kismet",
+  "features": "1 cent or 5 cent play. 3 balls for 5 cents is one pricing example. Shoot three balls for a winning combination. Game advertised as 19 inches long, 11 1/2 inches wide, and 6 inches high. Cedar finish cabinet.",
+  "notes": "Sold new for $16.50 including tax.",
+  "id": "skipper",
   "_media": {
-    "backglass": "7JoNl-HbGv"
+    "backglass": "Xka4rkeCav"
   }
 }

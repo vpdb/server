@@ -1,0 +1,10 @@
+POST /api/v1/games/majorettes/ratings HTTP/1.1
+Host: vpdb.ch
+Accept-Encoding: gzip, deflate
+Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJRMVlzSmxScHciLCJpYXQiOiIyMDE1LTAyLTIzVDIxOjEyOjE3LjEyNVoiLCJleHAiOiIyMDE1LTAyLTIzVDIyOjEyOjE3LjEyNVoifQ.itqlYZoJjZsl8wdJwQ7QIFPVq_ii0NXu4evTiMdu6YA
+Content-Length: 11
+
+{
+  "value": 7
+}

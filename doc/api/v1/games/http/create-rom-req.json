@@ -1,14 +1,14 @@
-POST /api/v1/games/the-french-connection/roms HTTP/1.1
+POST /api/v1/games/navy/roms HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI3eWhYNlpyLXpQIiwiaWF0IjoiMjAxNS0wMi0xNFQyMjozMTo0Ny4zMTNaIiwiZXhwIjoiMjAxNS0wMi0xNFQyMzozMTo0Ny4zMTNaIn0.qipCs9PZKhF_YxbJk-mY5MQnENjiDB8vIALI6sRQnyk
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJta1MtTWVnQ1R3IiwiaWF0IjoiMjAxNS0wMi0yM1QyMToxMjoyNC4wNDdaIiwiZXhwIjoiMjAxNS0wMi0yM1QyMjoxMjoyNC4wNDdaIn0.v49a_TE67UiQ4fyUhTqxZGP8zBkPZABf_l6D4RgYAKM
 Content-Type: application/json
-Content-Length: 117
+Content-Length: 100
 
 {
-  "id": "the-french-connection_10",
+  "id": "navy_10",
   "version": "1.0",
   "notes": "That is some ROM.",
   "language": "en-US",
-  "_file": "mJgvabBbzw"
+  "_file": "Qkj4MegA6w"
 }

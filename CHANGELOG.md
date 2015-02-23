@@ -9,6 +9,7 @@
 * Added user stats to profile page
 * Added table name of zip file config to profile
 * New home page, featuring:
+  * FAQ
   * Game search
   * Latest releases
 * Game list filters, sorting and paging is now persisted in URL

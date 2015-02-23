@@ -1,14 +1,17 @@
 201 Created
 Content-Type: application/json; charset=utf-8
-Content-Length: 870
+Content-Length: 856
 
 {
-  "id": "the-french-connection_10",
+  "id": "navy_10",
   "file": {
+    "counter": {
+      "downloads": 0
+    },
     "is_protected": true,
     "bytes": 2096,
-    "url": "/storage/v1/files/mJgvabBbzw",
-    "id": "mJgvabBbzw"
+    "url": "/storage/v1/files/Qkj4MegA6w",
+    "id": "Qkj4MegA6w"
   },
   "version": "1.0",
   "notes": "That is some ROM.",
@@ -19,27 +22,24 @@ Content-Length: 870
       "bytes": 1024,
       "crc": 3227331410,
       "modified_at": "1996-12-24T22:32:00.000Z",
-      "_id": "54dfccd39829f2883c7f1bf5",
-      "id": "54dfccd39829f2883c7f1bf5"
+      "_id": "54eb97b8c0a84a7c3ffac3e7",
+      "id": "54eb97b8c0a84a7c3ffac3e7"
     },
     {
       "filename": "433.snd",
       "bytes": 1024,
       "crc": 550313471,
       "modified_at": "1996-12-24T22:32:00.000Z",
-      "_id": "54dfccd39829f2883c7f1bf6",
-      "id": "54dfccd39829f2883c7f1bf6"
+      "_id": "54eb97b8c0a84a7c3ffac3e8",
+      "id": "54eb97b8c0a84a7c3ffac3e8"
     },
     {
       "filename": "6530sys1.bin",
       "bytes": 1024,
       "crc": 3078820641,
       "modified_at": "1996-12-24T22:32:00.000Z",
-      "_id": "54dfccd39829f2883c7f1bf7",
-      "id": "54dfccd39829f2883c7f1bf7"
+      "_id": "54eb97b8c0a84a7c3ffac3e9",
+      "id": "54eb97b8c0a84a7c3ffac3e9"
     }
-  ],
-  "counter": {
-    "downloads": 0
-  }
+  ]
 }

@@ -1,0 +1,13 @@
+422 Unprocessable Entity
+Content-Type: application/json; charset=utf-8
+Content-Length: 112
+
+{
+  "errors": [
+    {
+      "message": "Value must be between 1 and 10.",
+      "field": "value",
+      "value": 11
+    }
+  ]
+}

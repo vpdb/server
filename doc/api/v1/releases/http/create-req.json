@@ -1,21 +1,21 @@
 POST /api/v1/releases HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJteUtVYlNiTUQiLCJpYXQiOiIyMDE1LTAyLTE0VDIyOjMxOjQwLjM4MVoiLCJleHAiOiIyMDE1LTAyLTE0VDIzOjMxOjQwLjM4MVoifQ.Aq-wcLKjR1Tzcu9JwYgDpQ1sBYiq1Ke2D3hopwID1Vk
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJYeUJHM3llUlR3IiwiaWF0IjoiMjAxNS0wMi0yM1QyMToxMjoxNy45MDJaIiwiZXhwIjoiMjAxNS0wMi0yM1QyMjoxMjoxNy45MDJaIn0.aiEB-k8hdW9E3YXZg-lhU_Fi0E-Y8YJT4UrfOX4_BFM
 Content-Type: application/json
 Content-Length: 477
 
 {
   "name": "release",
-  "_game": "title-fight",
+  "_game": "happy-gang",
   "versions": [
     {
       "files": [
         {
-          "_file": "7JBQPbH-Gv",
+          "_file": "Qky-pke06v",
           "_media": {
-            "playfield_image": "7kTQwZBZfP",
-            "playfield_video": "myVl_ZBbMD"
+            "playfield_image": "XJVZpJxApD",
+            "playfield_video": "QJOG6keRpP"
           },
           "_compatibility": [
             "9.9.0"
@@ -26,9 +26,9 @@ Content-Length: 477
           }
         },
         {
-          "_file": "Xy8XPbr-GP",
+          "_file": "m1gbTJeRpP",
           "_media": {
-            "playfield_image": "XJsXv-H-MD"
+            "playfield_image": "mk8ZpJxRpD"
           },
           "_compatibility": [
             "9.9.0"
@@ -44,7 +44,7 @@ Content-Length: 477
   ],
   "authors": [
     {
-      "_user": "myKUbSbMD",
+      "_user": "XyBG3yeRTw",
       "roles": [
         "Table Creator"
       ]

@@ -2,13 +2,31 @@ include ../template/_mixins
 
 img.img--logo(ng-src="{{ game.media.logo.url }}")
 
-.ratingbox(rating-avg="$parent.game.rating", rating-votes="$parent.game.votes", ng-mouseenter="editing=true", ng-mouseleave="editing=false")
+.ratingbox(
+	rating-avg="$parent.game.rating.average",
+	rating-votes="$parent.game.rating.votes",
+	ng-mouseenter="editing=true",
+	ng-mouseleave="editing=false")
+
 	.ratingbox__left-col
 		.ratingbox__rating.rating-user(ng-show="editing") {{ hoverRating | rating }}
 		.ratingbox__rating(ng-class="{ 'rating-hide' : editing }") {{ $parent.game.rating | rating }}
 	.ratingbox__right-col
-		rating.rating-user(ng-show="editing", ng-model="ratingUser", max="10", rating-states="states", on-hover="hoverRating = value", on-leave="hoverRating = ratingUser")
-		rating.rating-avg(ng-hide="editing", ng-model="ratingAvg", max="10", rating-states="states", readonly="true")
+		rating.rating-user(
+			ng-show="editing",
+			ng-model="ratingUser",
+			max="10",
+			rating-states="states",
+			on-hover="hoverRating = value",
+			on-leave="hoverRating = ratingUser")
+
+		rating.rating-avg(
+			ng-hide="editing",
+			ng-model="ratingAvg",
+			max="10",
+			rating-states="states",
+			readonly="true")
+
 		span.votes {{ $parent.game.votes | number }} vote{{ $parent.game.votes == 1 ? '' : 's' }}
 hr
 

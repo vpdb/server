@@ -233,6 +233,7 @@ angular.module('vpdb.games.details', [])
 		$scope.rateGame = function(rating) {
 			var done = function(result) {
 				$scope.game.rating = result.game;
+				$scope.gameRating = result.game;
 			};
 			if ($scope.gameRating) {
 				GameRatingResource.update({ gameId: $scope.gameId }, { value: rating }, done);
@@ -243,6 +244,7 @@ angular.module('vpdb.games.details', [])
 				$rootScope.showNotification('Successfully rated game!');
 			}
 		};
+
 
 
 //		$scope.requestModPermission = function(release) {
@@ -264,7 +266,7 @@ angular.module('vpdb.games.details', [])
 		};
 	})
 
-	.controller('ReleaseController', function($scope, ApiHelper, ReleaseCommentResource) {
+	.controller('ReleaseController', function($scope, $rootScope, ApiHelper, ReleaseCommentResource, AuthService, ReleaseRatingResource) {
 
 		$scope.newComment = '';
 		$scope.addComment = function(releaseId) {
@@ -273,6 +275,29 @@ angular.module('vpdb.games.details', [])
 				$scope.newComment = '';
 			}, ApiHelper.handleErrors($scope));
 		};
+
+
+		// RATINGS
+		if (AuthService.isAuthenticated) {
+			ReleaseRatingResource.get({ releaseId: $scope.release.id }).$promise.then(function(rating) {
+				$scope.releaseRating = rating;
+			});
+		}
+		$scope.rateRelease = function(rating) {
+			var done = function(result) {
+				$scope.release.rating = result.release;
+				$scope.releaseRating = result.release;
+			};
+			if ($scope.releaseRating) {
+				ReleaseRatingResource.update({ releaseId: $scope.release.id }, { value: rating }, done);
+				$rootScope.showNotification('Successfully updated rating.');
+
+			} else {
+				ReleaseRatingResource.save({ releaseId: $scope.release.id }, { value: rating }, done);
+				$rootScope.showNotification('Successfully rated rdelease!');
+			}
+		};
+
 	})
 
 
@@ -336,7 +361,7 @@ angular.module('vpdb.games.details', [])
 			if (!rating) {
 				return ' — ';
 			}
-			if (Math.round(rating) === rating && rating < 10) {
+			if (rating % 1 === 0 && rating < 10) {
 				return rating + '.0';
 			} else {
 				return Math.round(rating * 10) / 10;

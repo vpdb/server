@@ -67,6 +67,12 @@ common
 		});
 	})
 
+	.factory('ReleaseRatingResource', function($resource, ConfigService) {
+		return $resource(ConfigService.apiUri('/releases/:releaseId/rating'), {}, {
+			'update': { method: 'PUT' }
+		});
+	})
+
 	.factory('TagResource', function($resource, ConfigService) {
 		return $resource(ConfigService.apiUri('/tags/:id'), {}, {
 		});

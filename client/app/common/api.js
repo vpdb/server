@@ -24,6 +24,12 @@ common
 		});
 	})
 
+	.factory('GameRatingResource', function($resource, ConfigService) {
+		return $resource(ConfigService.apiUri('/games/:gameId/rating'), {}, {
+			'update': { method: 'PUT' }
+		});
+	})
+
 	.factory('IpdbResource', function($resource, ConfigService) {
 		return $resource(ConfigService.apiUri('/ipdb/:id'), {}, {
 		});

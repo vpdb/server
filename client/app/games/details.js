@@ -2,9 +2,10 @@
 
 angular.module('vpdb.games.details', [])
 
-	.controller('GameController', function($scope, $stateParams, $modal, $log, $upload, $localStorage,
+	.controller('GameController', function($scope, $rootScope, $stateParams, $modal, $log, $upload, $localStorage,
 					ApiHelper, Flavors, ModalService, DisplayService, ConfigService, DownloadService,
-					GameResource, ReleaseCommentResource, FileResource, RomResource) {
+					AuthService,
+					GameResource, ReleaseCommentResource, FileResource, RomResource, GameRatingResource) {
 
 		$scope.theme('dark');
 		$scope.setMenu('games');
@@ -174,7 +175,6 @@ angular.module('vpdb.games.details', [])
 			});
 		};
 
-
 		/**
 		 * Posts all uploaded ROM files to the API
 		 */
@@ -221,6 +221,27 @@ angular.module('vpdb.games.details', [])
 					return true;
 				}
 			}));
+		};
+
+
+		// RATINGS
+		if (AuthService.isAuthenticated) {
+			GameRatingResource.get({ gameId: $scope.gameId }).$promise.then(function(rating) {
+				$scope.gameRating = rating;
+			});
+		}
+		$scope.rateGame = function(rating) {
+			var done = function(result) {
+				$scope.game.rating = result.game;
+			};
+			if ($scope.gameRating) {
+				GameRatingResource.update({ gameId: $scope.gameId }, { value: rating }, done);
+				$rootScope.showNotification('Successfully updated rating.');
+
+			} else {
+				GameRatingResource.save({ gameId: $scope.gameId }, { value: rating }, done);
+				$rootScope.showNotification('Successfully rated game!');
+			}
 		};
 
 

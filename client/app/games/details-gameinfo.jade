@@ -5,12 +5,13 @@ img.img--logo(ng-src="{{ game.media.logo.url }}")
 .ratingbox(
 	rating-avg="$parent.game.rating.average",
 	rating-votes="$parent.game.rating.votes",
+	rating-action="rateGame"
 	ng-mouseenter="editing=true",
 	ng-mouseleave="editing=false")
 
 	.ratingbox__left-col
-		.ratingbox__rating.rating-user(ng-show="editing") {{ hoverRating | rating }}
-		.ratingbox__rating(ng-class="{ 'rating-hide' : editing }") {{ $parent.game.rating | rating }}
+		.ratingbox__rating.rating-user.color-primary(ng-show="editing") {{ hoverRating | rating }}
+		.ratingbox__rating(ng-class="{ 'rating-hide' : editing }") {{ $parent.game.rating.average | rating }}
 	.ratingbox__right-col
 		rating.rating-user(
 			ng-show="editing",
@@ -27,7 +28,7 @@ img.img--logo(ng-src="{{ game.media.logo.url }}")
 			rating-states="states",
 			readonly="true")
 
-		span.votes {{ $parent.game.votes | number }} vote{{ $parent.game.votes == 1 ? '' : 's' }}
+		span.votes {{ $parent.game.rating.votes | number }} vote{{ $parent.game.rating.votes == 1 ? '' : 's' }}
 hr
 
 label.label--block(ng-show="game.game_type") {{ game.game_type | gametype }}

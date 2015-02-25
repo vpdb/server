@@ -14,6 +14,9 @@ common
 				if ($attrs.ratingVotes) {
 					var votes = $parse($attrs.ratingVotes);
 					$scope.$watch('ratingUser', function(newVal, oldVal) {
+						if ($attrs.ratingAction && newVal) {
+							$parse($attrs.ratingAction)($scope)(newVal);
+						}
 						if (!oldVal) {
 							votes.assign($scope, votes($scope) + 1);
 						}

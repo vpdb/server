@@ -3,21 +3,21 @@ Content-Type: application/json; charset=utf-8
 Content-Encoding: gzip
 
 {
-  "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJRSlBsY3duTHhPIiwiaWF0IjoiMjAxNS0wMi0yNVQxOTozNjoxNS45MTlaIiwiZXhwIjoiMjAxNS0wMi0yNVQyMDozNjoxNS45MTlaIn0.5DmEN2vDWumIULndFnTOt42KfumXKcRgCzpIKsCUZM8",
-  "expires": "2015-02-25T20:36:15.919Z",
+  "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI3MXMtaVJYdmVfIiwiaWF0IjoiMjAxNS0wMi0yNVQyMDowODowMS4wMTVaIiwiZXhwIjoiMjAxNS0wMi0yNVQyMTowODowMS4wMTVaIn0.shKf-XIB2tvHNcqG79V8aYHcqsJXL5YwsDmLE2S_fL8",
+  "expires": "2015-02-25T21:08:01.015Z",
   "user": {
-    "id": "QJPlcwnLxO",
-    "name": "Dayna_Greenholt",
-    "username": "Dayna_Greenholt",
-    "gravatar_id": "3eda2b43c99eaaf09c973693774e6519",
-    "email": "tina.hayes95@yahoo.com",
+    "id": "71s-iRXve_",
+    "name": "Raina.Schiller",
+    "username": "Raina.Schiller",
+    "gravatar_id": "5aa037213b990a00e20b91328ceb31fc",
+    "email": "adrain3@gmail.com",
     "is_active": true,
     "provider": "local",
     "roles": [
       "member"
     ],
     "plan": "free",
-    "created_at": "2015-02-25T19:36:15.871Z",
+    "created_at": "2015-02-25T20:08:00.968Z",
     "counter": {
       "downloads": 0,
       "comments": 0

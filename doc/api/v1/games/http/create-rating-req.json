@@ -1,8 +1,8 @@
-POST /api/v1/games/big-bertha-junior/rating HTTP/1.1
+POST /api/v1/games/phase-ii/rating HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
 Content-Type: application/json
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJYMVliZDJVZ2QiLCJpYXQiOiIyMDE1LTAyLTI1VDE5OjM2OjIzLjUzMloiLCJleHAiOiIyMDE1LTAyLTI1VDIwOjM2OjIzLjUzMloifQ.bLAJrINQxWV1qUYiNy9lBay4eVI1HDIfzrdrWEgVKiA
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJYMVlteUV3eHUiLCJpYXQiOiIyMDE1LTAyLTI1VDIwOjA4OjA4Ljk3MFoiLCJleHAiOiIyMDE1LTAyLTI1VDIxOjA4OjA4Ljk3MFoifQ.q2xnuiLdqXs_njEQ3hM7oamKJwtF08NOHLjKHOAK3uE
 Content-Length: 11
 
 {

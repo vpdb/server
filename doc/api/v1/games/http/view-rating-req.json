@@ -1,5 +1,5 @@
-GET /api/v1/games/major-league-baseball/rating HTTP/1.1
+GET /api/v1/games/broadcast/rating HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI3eWpVR08yVWdPIiwiaWF0IjoiMjAxNS0wMi0yNVQxOTozNjoyNC4zNjRaIiwiZXhwIjoiMjAxNS0wMi0yNVQyMDozNjoyNC4zNjRaIn0.z1eJ-fDwmETuBIpzOki2_lHC6BC1t3ZT9GTu9XpzER4
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJYSldsVnlOdmVPIiwiaWF0IjoiMjAxNS0wMi0yNVQyMDowODowOS44OTRaIiwiZXhwIjoiMjAxNS0wMi0yNVQyMTowODowOS44OTRaIn0.8ZcnKG-3dhD_5jqi1NF4k9bpsVQvqsq2dLPDxT_JJPE
 

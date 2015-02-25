@@ -1,42 +1,26 @@
 POST /api/v1/games HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI3MVVFblBuVWxkIiwiaWF0IjoiMjAxNS0wMi0yNVQxOTozNjoxOC40MzZaIiwiZXhwIjoiMjAxNS0wMi0yNVQyMDozNjoxOC40MzZaIn0.mdyohiBms2NS54iJqM5lePj1aIZoKIKVHy-4rnGxTjg
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJYSmQ0cFJtRGdPIiwiaWF0IjoiMjAxNS0wMi0yNVQyMDowODowMy42OTBaIiwiZXhwIjoiMjAxNS0wMi0yNVQyMTowODowMy42OTBaIn0.rJsRArLplFpMX1lZKDd9jhDBdBCIB5ie0QqauuEd6AA
 Content-Type: application/json
-Content-Length: 1024
+Content-Length: 281
 
 {
   "ipdb": {
-    "number": 1972,
-    "mfg": 349,
-    "rating": "8.0"
+    "number": 4604,
+    "mfg": 372
   },
-  "title": "Red  Ted's Road Show",
-  "manufacturer": "Williams",
-  "model_number": "50024",
-  "year": 1994,
-  "game_type": "ss",
-  "short": [
-    "RS"
-  ],
-  "produced_units": 6259,
+  "title": "Gran Casino",
+  "manufacturer": "F�brica de Aparatos Electro Mec�nicos Recreativos, S.L",
+  "game_type": "em",
   "themes": [
-    "Travel"
+    "Playing Cards",
+    "Gambling"
   ],
-  "designers": [
-    "Pat Lawlor",
-    "Dwight Sullivan",
-    "Ted Estes"
-  ],
-  "artists": [
-    "John Youssi"
-  ],
-  "features": "Flippers(4), Shaker motor, two manual plungers. Two talking heads can swallow the ball.",
-  "notes": "Features country singer Carlene Carter as the voice of \"Red\".  Carlene's song, \"Every Little Thing\", plays during the Multi-Ball and Jackpot modes, as well as the \"Super Payday\" wizard mode.This game was part of Williams/Midway's \"SuperPin\" line of widebody games.Another game with a talking head is Williams' 1990 'Funhouse'.",
-  "toys": "Two talking heads named \"Red\" and \"Ted\".",
-  "slogans": "\"Hit the road with RED AND TED'S ROADSHOW\"\n\"When it comes to wreckin' road, two heads are better than one.\"\n\"It's a big country... Someones got to tear it up!\"",
-  "id": "rs",
+  "features": "Flippers (2).",
+  "id": "gran-casino",
+  "year": 1900,
   "_media": {
-    "backglass": "QysVhP28e_"
+    "backglass": "XkaETCXvgu"
   }
 }

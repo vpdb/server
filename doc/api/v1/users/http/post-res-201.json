@@ -1,14 +1,14 @@
 201 Created
 Content-Type: application/json; charset=utf-8
-Content-Length: 478
+Content-Length: 498
 
 {
   "plan": "free",
-  "name": "Bertrand95",
-  "username": "Bertrand95",
-  "email": "dax_terry87@gmail.com",
+  "name": "Lauretta_Howell",
+  "username": "Lauretta_Howell",
+  "email": "devante_hudson@hotmail.com",
   "provider": "local",
-  "created_at": "2015-02-25T19:36:32.935Z",
+  "created_at": "2015-02-25T20:08:22.382Z",
   "is_active": false,
   "counter": {
     "downloads": 0,
@@ -19,9 +19,9 @@ Content-Length: 478
   ],
   "email_status": {
     "code": "pending_registration",
-    "expires_at": "2015-02-26T19:36:32.935Z",
-    "value": "dax_terry87@gmail.com"
+    "expires_at": "2015-02-26T20:08:22.382Z",
+    "value": "devante_hudson@hotmail.com"
   },
-  "id": "QyO-jO2LxO",
-  "gravatar_id": "90bca86bcc3b421c5ed0875478a95f15"
+  "id": "QJScge4wx_",
+  "gravatar_id": "b349669df8666bbf6a0e8feb629fcbe4"
 }

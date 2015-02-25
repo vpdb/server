@@ -1,8 +1,8 @@
-PUT /api/v1/games/4-belles/rating HTTP/1.1
+PUT /api/v1/games/arena/rating HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
 Content-Type: application/json
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJtSlZjel8zSWxPIiwiaWF0IjoiMjAxNS0wMi0yNVQxOTozNjoyNC42NzZaIiwiZXhwIjoiMjAxNS0wMi0yNVQyMDozNjoyNC42NzZaIn0.fCUbgyWwmaF3JzVtUE1yuCwR36YG2wkrVzlQgFhFd6o
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJteTI3TjFFd2VPIiwiaWF0IjoiMjAxNS0wMi0yNVQyMDowODoxMC4zNzlaIiwiZXhwIjoiMjAxNS0wMi0yNVQyMTowODoxMC4zNzlaIn0.GgeWn1VmDHEsOJQ7Xrlvj42H5ouwNpYLq6Cm_cIBHhs
 Content-Length: 11
 
 {

@@ -1,10 +1,10 @@
-POST /api/v1/releases/7kmjPhUxu/comments HTTP/1.1
+POST /api/v1/releases/m1L2AXvgu/comments HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI3MWlVNXZuTHhfIiwiaWF0IjoiMjAxNS0wMi0yNVQxOTozNjoxNi4zMzdaIiwiZXhwIjoiMjAxNS0wMi0yNVQyMDozNjoxNi4zMzdaIn0.C3zMDXlaKS7iJ9oJtPI94jSKWmaNDiRro9aYkf5cBvc
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJtMTFfalJRRGVPIiwiaWF0IjoiMjAxNS0wMi0yNVQyMDowODowMS40NTJaIiwiZXhwIjoiMjAxNS0wMi0yNVQyMTowODowMS40NTJaIn0.Jy6YjbZDdBycBOljZ9QJGqzHb15mfaK7lylq7IBr09M
 Content-Type: application/json
-Content-Length: 57
+Content-Length: 41
 
 {
-  "message": "Multi-lateral human-resource info-mediaries"
+  "message": "Cross-group hybrid analyzer"
 }

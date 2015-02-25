@@ -1,21 +1,21 @@
 POST /api/v1/releases HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJYa2VFbWRoOGx1IiwiaWF0IjoiMjAxNS0wMi0yNVQxOTozNjoyNS4xNThaIiwiZXhwIjoiMjAxNS0wMi0yNVQyMDozNjoyNS4xNThaIn0.-of07n33ykWmYv-9m64OO1E3SpB_RgT2GCuY3XVRKfk
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJRa2otUGtWd2dfIiwiaWF0IjoiMjAxNS0wMi0yNVQyMDowODoxMy4wNjFaIiwiZXhwIjoiMjAxNS0wMi0yNVQyMTowODoxMy4wNjFaIn0.ezVOrjLrQ9wFA2qvNDVA3m_Rg150TE4gGiaX3SGbTYQ
 Content-Type: application/json
-Content-Length: 476
+Content-Length: 475
 
 {
   "name": "release",
-  "_game": "speed-test",
+  "_game": "lady-luck",
   "versions": [
     {
       "files": [
         {
-          "_file": "myefE_n8ld",
+          "_file": "Qy_buJEweu",
           "_media": {
-            "playfield_image": "X1QMNOnUlu",
-            "playfield_video": "Qyxrd28eu"
+            "playfield_image": "my3-OJEvxd",
+            "playfield_video": "7ygKyVvgu"
           },
           "_compatibility": [
             "9.9.0"
@@ -26,9 +26,9 @@ Content-Length: 476
           }
         },
         {
-          "_file": "Qk1zNuh8g_",
+          "_file": "XktWuyNDx_",
           "_media": {
-            "playfield_image": "mkPMVdhUlu"
+            "playfield_image": "XypWOJEPgd"
           },
           "_compatibility": [
             "9.9.0"
@@ -44,7 +44,7 @@ Content-Length: 476
   ],
   "authors": [
     {
-      "_user": "XkeEmdh8lu",
+      "_user": "Qkj-PkVwg_",
       "roles": [
         "Table Creator"
       ]

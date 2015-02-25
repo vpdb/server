@@ -1,14 +1,14 @@
 PATCH /api/v1/user HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJtSmdUcWQyTGVkIiwiaWF0IjoiMjAxNS0wMi0yNVQxOTozNjozMi42ODNaIiwiZXhwIjoiMjAxNS0wMi0yNVQyMDozNjozMi42ODNaIn0.Dv9o4IYkZlCtnXwVYRyM4deqxd2iSLD-XuMgAv1px-g
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJteTY4bGdOd2VkIiwiaWF0IjoiMjAxNS0wMi0yNVQyMDowODoyMi4xOTVaIiwiZXhwIjoiMjAxNS0wMi0yNVQyMTowODoyMi4xOTVaIn0.eTXrcj5C0WRDdVKbGlYW6Hmzn0P2ZWz2MUQcQXcD9fY
 Content-Type: application/json
-Content-Length: 139
+Content-Length: 135
 
 {
-  "name": "Tierra Sipes",
-  "location": "Jamieville",
-  "email": "jacynthe.wolf57@yahoo.com",
-  "current_password": "AmUZezky3Y",
-  "password": "qU1yECizSG"
+  "name": "Kianna Zboncak",
+  "location": "Leannahaven",
+  "email": "alycia37@yahoo.com",
+  "current_password": "sypmDLikcr",
+  "password": "3kIH1086qd"
 }

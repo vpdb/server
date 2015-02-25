@@ -1,14 +1,14 @@
-POST /api/v1/games/elektra/roms HTTP/1.1
+POST /api/v1/games/jitters/roms HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJRMTNORl8zOGVPIiwiaWF0IjoiMjAxNS0wMi0yNVQxOTozNjozMS41MzhaIiwiZXhwIjoiMjAxNS0wMi0yNVQyMDozNjozMS41MzhaIn0.2Abrzgy1Y9ectGzZdlsI47xKD23Eui1iTacDdv5p0Fo
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJteXJta2VWUGVfIiwiaWF0IjoiMjAxNS0wMi0yNVQyMDowODoyMS4yNTVaIiwiZXhwIjoiMjAxNS0wMi0yNVQyMTowODoyMS4yNTVaIn0.IlFF-ESTHSCMoKvQ1oWH4-JbX_8904l8jEIBKAmAJME
 Content-Type: application/json
 Content-Length: 103
 
 {
-  "id": "elektra_10",
+  "id": "jitters_10",
   "version": "1.0",
   "notes": "That is some ROM.",
   "language": "en-US",
-  "_file": "Qypgq_3Ugu"
+  "_file": "XkSLJeEDld"
 }

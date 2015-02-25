@@ -1,21 +1,42 @@
 POST /api/v1/games HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJtSkZxLVpKUnYiLCJpYXQiOiIyMDE1LTAyLTIzVDIyOjI1OjE5LjkwNloiLCJleHAiOiIyMDE1LTAyLTIzVDIzOjI1OjE5LjkwNloifQ.JxQewQb63ttjlFfdHkM4OhT5nsfzOphhIeRZKBkhi0Q
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI3MVVFblBuVWxkIiwiaWF0IjoiMjAxNS0wMi0yNVQxOTozNjoxOC40MzZaIiwiZXhwIjoiMjAxNS0wMi0yNVQyMDozNjoxOC40MzZaIn0.mdyohiBms2NS54iJqM5lePj1aIZoKIKVHy-4rnGxTjg
 Content-Type: application/json
-Content-Length: 158
+Content-Length: 1024
 
 {
   "ipdb": {
-    "number": 2717,
-    "mfg": 117
+    "number": 1972,
+    "mfg": 349,
+    "rating": "8.0"
   },
-  "title": "Vanities",
-  "manufacturer": "Exhibit",
-  "year": 1947,
-  "game_type": "em",
-  "id": "vanities",
+  "title": "Red  Ted's Road Show",
+  "manufacturer": "Williams",
+  "model_number": "50024",
+  "year": 1994,
+  "game_type": "ss",
+  "short": [
+    "RS"
+  ],
+  "produced_units": 6259,
+  "themes": [
+    "Travel"
+  ],
+  "designers": [
+    "Pat Lawlor",
+    "Dwight Sullivan",
+    "Ted Estes"
+  ],
+  "artists": [
+    "John Youssi"
+  ],
+  "features": "Flippers(4), Shaker motor, two manual plungers. Two talking heads can swallow the ball.",
+  "notes": "Features country singer Carlene Carter as the voice of \"Red\".  Carlene's song, \"Every Little Thing\", plays during the Multi-Ball and Jackpot modes, as well as the \"Super Payday\" wizard mode.This game was part of Williams/Midway's \"SuperPin\" line of widebody games.Another game with a talking head is Williams' 1990 'Funhouse'.",
+  "toys": "Two talking heads named \"Red\" and \"Ted\".",
+  "slogans": "\"Hit the road with RED AND TED'S ROADSHOW\"\n\"When it comes to wreckin' road, two heads are better than one.\"\n\"It's a big country... Someones got to tear it up!\"",
+  "id": "rs",
   "_media": {
-    "backglass": "7yR9ZbJCD"
+    "backglass": "QysVhP28e_"
   }
 }

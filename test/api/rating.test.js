@@ -111,7 +111,6 @@ describe('The VPDB `Rating` API', function() {
 					.save({ path: 'games/create-rating'})
 					.end(function(err, res) {
 						hlp.expectStatus(err, res, 201);
-						hlp.dump(res);
 						expect(res.body.value).to.be(rating);
 						expect(res.body.created_at).to.be.ok();
 						expect(res.body.modified_at).to.not.be.ok();

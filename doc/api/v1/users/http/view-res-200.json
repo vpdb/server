@@ -1,15 +1,15 @@
 200 OK
 Content-Type: application/json; charset=utf-8
-Content-Length: 350
-Etag: W/"15e-561c19bc"
+Content-Length: 340
+Etag: W/"154-1d079b41"
 
 {
   "plan": "free",
-  "name": "Amanda.Bogan",
-  "username": "Amanda.Bogan",
-  "email": "alexie_johnson37@gmail.com",
+  "name": "Itzel92",
+  "username": "Itzel92",
+  "email": "anthony.littel63@yahoo.com",
   "provider": "local",
-  "created_at": "2015-02-23T22:25:33.433Z",
+  "created_at": "2015-02-25T19:36:32.617Z",
   "is_active": true,
   "counter": {
     "downloads": 0,
@@ -18,6 +18,6 @@ Etag: W/"15e-561c19bc"
   "roles": [
     "member"
   ],
-  "id": "QkQKDzZJRw",
-  "gravatar_id": "0ffe8eaaa58b2497ddb24e48873a9033"
+  "id": "7kVh5uhUxu",
+  "gravatar_id": "bd6528e940caf4ad7c0e128872db4c4a"
 }

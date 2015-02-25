@@ -1,8 +1,8 @@
-PUT /api/v1/games/jacks-open/rating HTTP/1.1
+PUT /api/v1/games/4-belles/rating HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
 Content-Type: application/json
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJRMXBvMWZaazBQIiwiaWF0IjoiMjAxNS0wMi0yM1QyMjoyNToyNS43MjZaIiwiZXhwIjoiMjAxNS0wMi0yM1QyMzoyNToyNS43MjZaIn0.XVp8Vd0naSiXDPtFX2rm-Y_xNYnSijw76lJGKv3RSAg
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJtSlZjel8zSWxPIiwiaWF0IjoiMjAxNS0wMi0yNVQxOTozNjoyNC42NzZaIiwiZXhwIjoiMjAxNS0wMi0yNVQyMDozNjoyNC42NzZaIn0.fCUbgyWwmaF3JzVtUE1yuCwR36YG2wkrVzlQgFhFd6o
 Content-Length: 11
 
 {

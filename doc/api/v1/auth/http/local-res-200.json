@@ -3,21 +3,21 @@ Content-Type: application/json; charset=utf-8
 Content-Encoding: gzip
 
 {
-  "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJteTg4UFdiSkFQIiwiaWF0IjoiMjAxNS0wMi0yM1QyMjoyNToxNy4zMzVaIiwiZXhwIjoiMjAxNS0wMi0yM1QyMzoyNToxNy4zMzVaIn0.5XL29wl5zPcvYVza2yyp0KBPnGE_NqOZ0nN0aZbx2yM",
-  "expires": "2015-02-23T23:25:17.335Z",
+  "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJRSlBsY3duTHhPIiwiaWF0IjoiMjAxNS0wMi0yNVQxOTozNjoxNS45MTlaIiwiZXhwIjoiMjAxNS0wMi0yNVQyMDozNjoxNS45MTlaIn0.5DmEN2vDWumIULndFnTOt42KfumXKcRgCzpIKsCUZM8",
+  "expires": "2015-02-25T20:36:15.919Z",
   "user": {
-    "id": "my88PWbJAP",
-    "name": "Whitney_Frami86",
-    "username": "Whitney_Frami86",
-    "gravatar_id": "674dbacd12aacef419fce9474cfe6f1b",
-    "email": "eulah_hansen18@yahoo.com",
+    "id": "QJPlcwnLxO",
+    "name": "Dayna_Greenholt",
+    "username": "Dayna_Greenholt",
+    "gravatar_id": "3eda2b43c99eaaf09c973693774e6519",
+    "email": "tina.hayes95@yahoo.com",
     "is_active": true,
     "provider": "local",
     "roles": [
       "member"
     ],
     "plan": "free",
-    "created_at": "2015-02-23T22:25:17.276Z",
+    "created_at": "2015-02-25T19:36:15.871Z",
     "counter": {
       "downloads": 0,
       "comments": 0

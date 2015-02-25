@@ -1,8 +1,8 @@
-POST /api/v1/games/derby-winner/rating HTTP/1.1
+POST /api/v1/games/big-bertha-junior/rating HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
 Content-Type: application/json
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJRa0ZDYldKQ0QiLCJpYXQiOiIyMDE1LTAyLTIzVDIyOjI1OjI0LjYzMVoiLCJleHAiOiIyMDE1LTAyLTIzVDIzOjI1OjI0LjYzMVoifQ.L8AY2lzFnIziNrN88bSyAgZujjlMKKFP2YWi_lJuN0s
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJYMVliZDJVZ2QiLCJpYXQiOiIyMDE1LTAyLTI1VDE5OjM2OjIzLjUzMloiLCJleHAiOiIyMDE1LTAyLTI1VDIwOjM2OjIzLjUzMloifQ.bLAJrINQxWV1qUYiNy9lBay4eVI1HDIfzrdrWEgVKiA
 Content-Length: 11
 
 {

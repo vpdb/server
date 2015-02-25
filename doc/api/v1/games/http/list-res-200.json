@@ -3,143 +3,19 @@ X-List-Page: 1
 X-List-Size: 12
 X-List-Count: 10
 Content-Type: application/json; charset=utf-8
-Etag: W/"d0zjMk0oOiN097WbLrBb/A=="
+Etag: W/"qr6qAhXXWLqrSJbGediV8A=="
 Content-Encoding: gzip
 
 [
   {
-    "id": "bagatello",
-    "title": "Bagatello",
-    "manufacturer": "Exhibit",
-    "year": 1936,
-    "game_type": "em",
-    "ipdb": {
-      "number": 4523,
-      "mfg": 117
-    },
-    "media": {
-      "backglass": {
-        "counter": {
-          "downloads": 0
-        },
-        "is_protected": false,
-        "variations": {
-          "medium-2x": {
-            "url": "/storage/v1/files/XyJrj-bJRw/medium-2x",
-            "mime_type": "image/jpeg",
-            "bytes": 2561,
-            "height": 582,
-            "width": 728
-          },
-          "small-2x": {
-            "url": "/storage/v1/files/XyJrj-bJRw/small-2x",
-            "mime_type": "image/jpeg",
-            "bytes": 1505,
-            "height": 404,
-            "width": 505
-          },
-          "medium": {
-            "url": "/storage/v1/files/XyJrj-bJRw/medium",
-            "mime_type": "image/jpeg",
-            "bytes": 965,
-            "height": 291,
-            "width": 364
-          },
-          "small": {
-            "url": "/storage/v1/files/XyJrj-bJRw/small",
-            "mime_type": "image/jpeg",
-            "bytes": 619,
-            "height": 202,
-            "width": 253
-          }
-        },
-        "bytes": 135,
-        "url": "/storage/v1/files/XyJrj-bJRw",
-        "id": "XyJrj-bJRw"
-      }
-    },
-    "counter": {
-      "comments": 0,
-      "downloads": 0,
-      "views": 0,
-      "releases": 0
-    },
-    "rating": {
-      "votes": 0,
-      "average": 0
-    }
-  },
-  {
-    "id": "batman-standard-model",
-    "title": "Batman (Standard Model)",
-    "manufacturer": "Stern",
-    "year": 2010,
-    "game_type": "ss",
-    "ipdb": {
-      "number": 5583,
-      "mfg": 303
-    },
-    "media": {
-      "backglass": {
-        "counter": {
-          "downloads": 0
-        },
-        "is_protected": false,
-        "variations": {
-          "medium-2x": {
-            "url": "/storage/v1/files/XkWYjW-J0D/medium-2x",
-            "mime_type": "image/jpeg",
-            "bytes": 2561,
-            "height": 582,
-            "width": 728
-          },
-          "small-2x": {
-            "url": "/storage/v1/files/XkWYjW-J0D/small-2x",
-            "mime_type": "image/jpeg",
-            "bytes": 1505,
-            "height": 404,
-            "width": 505
-          },
-          "medium": {
-            "url": "/storage/v1/files/XkWYjW-J0D/medium",
-            "mime_type": "image/jpeg",
-            "bytes": 965,
-            "height": 291,
-            "width": 364
-          },
-          "small": {
-            "url": "/storage/v1/files/XkWYjW-J0D/small",
-            "mime_type": "image/jpeg",
-            "bytes": 619,
-            "height": 202,
-            "width": 253
-          }
-        },
-        "bytes": 135,
-        "url": "/storage/v1/files/XkWYjW-J0D",
-        "id": "XkWYjW-J0D"
-      }
-    },
-    "counter": {
-      "comments": 0,
-      "downloads": 0,
-      "views": 0,
-      "releases": 0
-    },
-    "rating": {
-      "votes": 0,
-      "average": 0
-    }
-  },
-  {
-    "id": "doughboy-de-luxe-senior",
-    "title": "Doughboy De Luxe Senior",
-    "manufacturer": "American Engineering Co.",
-    "year": 1932,
+    "id": "american-keen-ball-game",
+    "title": "American Keen Ball Game",
+    "manufacturer": "The W. C. Peters Company",
+    "year": 1900,
     "game_type": "pm",
     "ipdb": {
-      "number": 6054,
-      "mfg": 648
+      "number": 4821,
+      "mfg": 514
     },
     "media": {
       "backglass": {
@@ -149,37 +25,37 @@ Content-Encoding: gzip
         "is_protected": false,
         "variations": {
           "medium-2x": {
-            "url": "/storage/v1/files/Qkzl3-b1RD/medium-2x",
+            "url": "/storage/v1/files/mJMxCv3Igd/medium-2x",
             "mime_type": "image/jpeg",
             "bytes": 2561,
             "height": 582,
             "width": 728
           },
           "small-2x": {
-            "url": "/storage/v1/files/Qkzl3-b1RD/small-2x",
+            "url": "/storage/v1/files/mJMxCv3Igd/small-2x",
             "mime_type": "image/jpeg",
             "bytes": 1505,
             "height": 404,
             "width": 505
           },
-          "medium": {
-            "url": "/storage/v1/files/Qkzl3-b1RD/medium",
-            "mime_type": "image/jpeg",
-            "bytes": 965,
-            "height": 291,
-            "width": 364
-          },
           "small": {
-            "url": "/storage/v1/files/Qkzl3-b1RD/small",
+            "url": "/storage/v1/files/mJMxCv3Igd/small",
             "mime_type": "image/jpeg",
             "bytes": 619,
             "height": 202,
             "width": 253
+          },
+          "medium": {
+            "url": "/storage/v1/files/mJMxCv3Igd/medium",
+            "mime_type": "image/jpeg",
+            "bytes": 965,
+            "height": 291,
+            "width": 364
           }
         },
         "bytes": 135,
-        "url": "/storage/v1/files/Qkzl3-b1RD",
-        "id": "Qkzl3-b1RD"
+        "url": "/storage/v1/files/mJMxCv3Igd",
+        "id": "mJMxCv3Igd"
       }
     },
     "counter": {
@@ -194,13 +70,196 @@ Content-Encoding: gzip
     }
   },
   {
-    "id": "magic",
-    "title": "Magic",
-    "manufacturer": "Playmatic",
-    "year": 1973,
+    "id": "bazaar",
+    "title": "Bazaar",
+    "manufacturer": "Bally",
+    "year": 1966,
     "game_type": "em",
     "ipdb": {
-      "number": 1510,
+      "number": 201,
+      "mfg": 47,
+      "rating": 7.6
+    },
+    "media": {
+      "backglass": {
+        "counter": {
+          "downloads": 0
+        },
+        "is_protected": false,
+        "variations": {
+          "medium-2x": {
+            "url": "/storage/v1/files/XkYvADhLlu/medium-2x"
+          },
+          "small-2x": {
+            "url": "/storage/v1/files/XkYvADhLlu/small-2x",
+            "mime_type": "image/jpeg",
+            "bytes": 1505,
+            "height": 404,
+            "width": 505
+          },
+          "medium": {
+            "url": "/storage/v1/files/XkYvADhLlu/medium",
+            "mime_type": "image/jpeg",
+            "bytes": 965,
+            "height": 291,
+            "width": 364
+          },
+          "small": {
+            "url": "/storage/v1/files/XkYvADhLlu/small",
+            "mime_type": "image/jpeg",
+            "bytes": 619,
+            "height": 202,
+            "width": 253
+          }
+        },
+        "bytes": 135,
+        "url": "/storage/v1/files/XkYvADhLlu",
+        "id": "XkYvADhLlu"
+      }
+    },
+    "counter": {
+      "comments": 0,
+      "downloads": 0,
+      "views": 0,
+      "releases": 0
+    },
+    "rating": {
+      "votes": 0,
+      "average": 0
+    }
+  },
+  {
+    "id": "big-brother",
+    "title": "Big Brother",
+    "manufacturer": "Daval Mfg Company Incorporated, G.B.",
+    "year": 1934,
+    "game_type": "em",
+    "ipdb": {
+      "number": 238,
+      "mfg": 99
+    },
+    "media": {
+      "backglass": {
+        "counter": {
+          "downloads": 0
+        },
+        "is_protected": false,
+        "variations": {
+          "medium-2x": {
+            "url": "/storage/v1/files/XkHW0w3Uxd/medium-2x",
+            "mime_type": "image/jpeg",
+            "bytes": 2561,
+            "height": 582,
+            "width": 728
+          },
+          "small-2x": {
+            "url": "/storage/v1/files/XkHW0w3Uxd/small-2x",
+            "mime_type": "image/jpeg",
+            "bytes": 1505,
+            "height": 404,
+            "width": 505
+          },
+          "small": {
+            "url": "/storage/v1/files/XkHW0w3Uxd/small",
+            "mime_type": "image/jpeg",
+            "bytes": 619,
+            "height": 202,
+            "width": 253
+          },
+          "medium": {
+            "url": "/storage/v1/files/XkHW0w3Uxd/medium",
+            "mime_type": "image/jpeg",
+            "bytes": 965,
+            "height": 291,
+            "width": 364
+          }
+        },
+        "bytes": 135,
+        "url": "/storage/v1/files/XkHW0w3Uxd",
+        "id": "XkHW0w3Uxd"
+      }
+    },
+    "counter": {
+      "comments": 0,
+      "downloads": 0,
+      "views": 0,
+      "releases": 0
+    },
+    "rating": {
+      "votes": 0,
+      "average": 0
+    }
+  },
+  {
+    "id": "hole-in-one",
+    "title": "Hole In One",
+    "manufacturer": "Bally",
+    "year": 1971,
+    "game_type": "em",
+    "ipdb": {
+      "number": 3634,
+      "mfg": 47
+    },
+    "media": {
+      "backglass": {
+        "counter": {
+          "downloads": 0
+        },
+        "is_protected": false,
+        "variations": {
+          "small-2x": {
+            "url": "/storage/v1/files/7kF80P38ed/small-2x",
+            "mime_type": "image/jpeg",
+            "bytes": 1503,
+            "height": 404,
+            "width": 505
+          },
+          "medium-2x": {
+            "url": "/storage/v1/files/7kF80P38ed/medium-2x",
+            "mime_type": "image/jpeg",
+            "bytes": 2560,
+            "height": 582,
+            "width": 728
+          },
+          "small": {
+            "url": "/storage/v1/files/7kF80P38ed/small",
+            "mime_type": "image/jpeg",
+            "bytes": 618,
+            "height": 202,
+            "width": 253
+          },
+          "medium": {
+            "url": "/storage/v1/files/7kF80P38ed/medium",
+            "mime_type": "image/jpeg",
+            "bytes": 964,
+            "height": 291,
+            "width": 364
+          }
+        },
+        "bytes": 135,
+        "url": "/storage/v1/files/7kF80P38ed",
+        "id": "7kF80P38ed"
+      }
+    },
+    "counter": {
+      "comments": 0,
+      "downloads": 0,
+      "views": 0,
+      "releases": 0
+    },
+    "rating": {
+      "votes": 0,
+      "average": 0
+    }
+  },
+  {
+    "id": "meg-aaton",
+    "title": "Meg Aaton",
+    "manufacturer": "Playmatic",
+    "year": 1984,
+    "game_type": "ss",
+    "ipdb": {
+      "number": 3370,
       "mfg": 255
     },
     "media": {
@@ -211,28 +270,90 @@ Content-Encoding: gzip
         "is_protected": false,
         "variations": {
           "medium-2x": {
-            "url": "/storage/v1/files/m17Ps-bJCw/medium-2x",
+            "url": "/storage/v1/files/X1lADhLe_/medium-2x",
             "mime_type": "image/jpeg",
             "bytes": 2561,
             "height": 582,
             "width": 728
           },
           "small-2x": {
-            "url": "/storage/v1/files/m17Ps-bJCw/small-2x",
+            "url": "/storage/v1/files/X1lADhLe_/small-2x",
+            "mime_type": "image/jpeg",
+            "bytes": 1505,
+            "height": 404,
+            "width": 505
+          },
+          "small": {
+            "url": "/storage/v1/files/X1lADhLe_/small",
+            "mime_type": "image/jpeg",
+            "bytes": 619,
+            "height": 202,
+            "width": 253
+          },
+          "medium": {
+            "url": "/storage/v1/files/X1lADhLe_/medium",
+            "mime_type": "image/jpeg",
+            "bytes": 965,
+            "height": 291,
+            "width": 364
+          }
+        },
+        "bytes": 135,
+        "url": "/storage/v1/files/X1lADhLe_",
+        "id": "X1lADhLe_"
+      }
+    },
+    "counter": {
+      "comments": 0,
+      "downloads": 0,
+      "views": 0,
+      "releases": 0
+    },
+    "rating": {
+      "votes": 0,
+      "average": 0
+    }
+  },
+  {
+    "id": "monaco",
+    "title": "Monaco",
+    "manufacturer": "United",
+    "year": 1956,
+    "game_type": "em",
+    "ipdb": {
+      "number": 1613,
+      "mfg": 323
+    },
+    "media": {
+      "backglass": {
+        "counter": {
+          "downloads": 0
+        },
+        "is_protected": false,
+        "variations": {
+          "medium-2x": {
+            "url": "/storage/v1/files/mkvMRv2Led/medium-2x",
+            "mime_type": "image/jpeg",
+            "bytes": 2561,
+            "height": 582,
+            "width": 728
+          },
+          "small-2x": {
+            "url": "/storage/v1/files/mkvMRv2Led/small-2x",
             "mime_type": "image/jpeg",
             "bytes": 1504,
             "height": 404,
             "width": 505
           },
           "medium": {
-            "url": "/storage/v1/files/m17Ps-bJCw/medium",
+            "url": "/storage/v1/files/mkvMRv2Led/medium",
             "mime_type": "image/jpeg",
             "bytes": 965,
             "height": 291,
             "width": 364
           },
           "small": {
-            "url": "/storage/v1/files/m17Ps-bJCw/small",
+            "url": "/storage/v1/files/mkvMRv2Led/small",
             "mime_type": "image/jpeg",
             "bytes": 618,
             "height": 202,
@@ -240,8 +361,8 @@ Content-Encoding: gzip
           }
         },
         "bytes": 135,
-        "url": "/storage/v1/files/m17Ps-bJCw",
-        "id": "m17Ps-bJCw"
+        "url": "/storage/v1/files/mkvMRv2Led",
+        "id": "mkvMRv2Led"
       }
     },
     "counter": {
@@ -256,14 +377,14 @@ Content-Encoding: gzip
     }
   },
   {
-    "id": "pokerino",
-    "title": "Pokerino",
-    "manufacturer": "Scientific Machine Corporation",
-    "year": 1947,
-    "game_type": "em",
+    "id": "one-ball-bonus-multiplier",
+    "title": "One Ball Bonus Multiplier",
+    "manufacturer": "SIRMO Games S.A.",
+    "year": 1900,
+    "game_type": "ss",
     "ipdb": {
-      "number": 5445,
-      "mfg": 277
+      "number": 6091,
+      "mfg": 275
     },
     "media": {
       "backglass": {
@@ -272,85 +393,38 @@ Content-Encoding: gzip
         },
         "is_protected": false,
         "variations": {
-          "medium-2x": {
-            "url": "/storage/v1/files/m1lnZ-JRP/medium-2x",
-            "mime_type": "image/jpeg",
-            "bytes": 2561,
-            "height": 582,
-            "width": 728
-          },
           "small-2x": {
-            "url": "/storage/v1/files/m1lnZ-JRP/small-2x",
+            "url": "/storage/v1/files/m1FXCw3UeO/small-2x",
             "mime_type": "image/jpeg",
             "bytes": 1505,
             "height": 404,
             "width": 505
           },
-          "small": {
-            "url": "/storage/v1/files/m1lnZ-JRP/small",
+          "medium-2x": {
+            "url": "/storage/v1/files/m1FXCw3UeO/medium-2x",
             "mime_type": "image/jpeg",
-            "bytes": 619,
-            "height": 202,
-            "width": 253
+            "bytes": 2561,
+            "height": 582,
+            "width": 728
           },
           "medium": {
-            "url": "/storage/v1/files/m1lnZ-JRP/medium",
+            "url": "/storage/v1/files/m1FXCw3UeO/medium",
             "mime_type": "image/jpeg",
             "bytes": 965,
             "height": 291,
             "width": 364
-          }
-        },
-        "bytes": 135,
-        "url": "/storage/v1/files/m1lnZ-JRP",
-        "id": "m1lnZ-JRP"
-      }
-    },
-    "counter": {
-      "comments": 0,
-      "downloads": 0,
-      "views": 0,
-      "releases": 0
-    },
-    "rating": {
-      "votes": 0,
-      "average": 0
-    }
-  },
-  {
-    "id": "red-baron",
-    "title": "Red Baron",
-    "manufacturer": "Chicago Coin",
-    "year": 1975,
-    "game_type": "em",
-    "ipdb": {
-      "number": 1933,
-      "mfg": 81,
-      "rating": 3.8
-    },
-    "media": {
-      "backglass": {
-        "counter": {
-          "downloads": 0
-        },
-        "is_protected": false,
-        "variations": {
-          "small-2x": {
-            "url": "/storage/v1/files/mywXhWZJRD/small-2x"
           },
           "small": {
-            "url": "/storage/v1/files/mywXhWZJRD/small"
-          },
-          "medium-2x": {
-            "url": "/storage/v1/files/mywXhWZJRD/medium-2x"
-          },
-          "medium": {
-            "url": "/storage/v1/files/mywXhWZJRD/medium"
+            "url": "/storage/v1/files/m1FXCw3UeO/small",
+            "mime_type": "image/jpeg",
+            "bytes": 619,
+            "height": 202,
+            "width": 253
           }
         },
         "bytes": 135,
-        "url": "/storage/v1/files/mywXhWZJRD",
-        "id": "mywXhWZJRD"
+        "url": "/storage/v1/files/m1FXCw3UeO",
+        "id": "m1FXCw3UeO"
       }
     },
     "counter": {
@@ -365,14 +439,14 @@ Content-Encoding: gzip
     }
   },
   {
-    "id": "scram",
-    "title": "Scram",
-    "manufacturer": "A.B.T.",
+    "id": "play-poker",
+    "title": "Play Poker",
+    "manufacturer": "Sterling Novelty Manufacturing Company",
     "year": 1932,
     "game_type": "pm",
     "ipdb": {
-      "number": 2069,
-      "mfg": 9
+      "number": 5412,
+      "mfg": 537
     },
     "media": {
       "backglass": {
@@ -382,28 +456,28 @@ Content-Encoding: gzip
         "is_protected": false,
         "variations": {
           "medium-2x": {
-            "url": "/storage/v1/files/XJkLiWWyAD/medium-2x",
+            "url": "/storage/v1/files/QJfDav3Leu/medium-2x",
             "mime_type": "image/jpeg",
             "bytes": 2561,
             "height": 582,
             "width": 728
           },
           "small-2x": {
-            "url": "/storage/v1/files/XJkLiWWyAD/small-2x",
+            "url": "/storage/v1/files/QJfDav3Leu/small-2x",
             "mime_type": "image/jpeg",
             "bytes": 1505,
             "height": 404,
             "width": 505
           },
           "medium": {
-            "url": "/storage/v1/files/XJkLiWWyAD/medium",
+            "url": "/storage/v1/files/QJfDav3Leu/medium",
             "mime_type": "image/jpeg",
             "bytes": 965,
             "height": 291,
             "width": 364
           },
           "small": {
-            "url": "/storage/v1/files/XJkLiWWyAD/small",
+            "url": "/storage/v1/files/QJfDav3Leu/small",
             "mime_type": "image/jpeg",
             "bytes": 619,
             "height": 202,
@@ -411,8 +485,8 @@ Content-Encoding: gzip
           }
         },
         "bytes": 135,
-        "url": "/storage/v1/files/XJkLiWWyAD",
-        "id": "XJkLiWWyAD"
+        "url": "/storage/v1/files/QJfDav3Leu",
+        "id": "QJfDav3Leu"
       }
     },
     "counter": {
@@ -427,14 +501,15 @@ Content-Encoding: gzip
     }
   },
   {
-    "id": "silver-streak",
-    "title": "Silver Streak",
-    "manufacturer": "Automat Games Company",
-    "year": 1935,
+    "id": "target-pool",
+    "title": "Target Pool",
+    "manufacturer": "Gottlieb",
+    "year": 1969,
     "game_type": "em",
     "ipdb": {
-      "number": 2154,
-      "mfg": 37
+      "number": 2502,
+      "mfg": 93,
+      "rating": 7.8
     },
     "media": {
       "backglass": {
@@ -444,37 +519,37 @@ Content-Encoding: gzip
         "is_protected": false,
         "variations": {
           "medium-2x": {
-            "url": "/storage/v1/files/Qk6QjWb1AP/medium-2x",
+            "url": "/storage/v1/files/Qk6NRwnLgu/medium-2x",
             "mime_type": "image/jpeg",
             "bytes": 2561,
             "height": 582,
             "width": 728
           },
           "small-2x": {
-            "url": "/storage/v1/files/Qk6QjWb1AP/small-2x",
+            "url": "/storage/v1/files/Qk6NRwnLgu/small-2x",
             "mime_type": "image/jpeg",
-            "bytes": 1505,
+            "bytes": 1504,
             "height": 404,
             "width": 505
           },
           "medium": {
-            "url": "/storage/v1/files/Qk6QjWb1AP/medium",
+            "url": "/storage/v1/files/Qk6NRwnLgu/medium",
             "mime_type": "image/jpeg",
             "bytes": 965,
             "height": 291,
             "width": 364
           },
           "small": {
-            "url": "/storage/v1/files/Qk6QjWb1AP/small",
+            "url": "/storage/v1/files/Qk6NRwnLgu/small",
             "mime_type": "image/jpeg",
-            "bytes": 619,
+            "bytes": 618,
             "height": 202,
             "width": 253
           }
         },
         "bytes": 135,
-        "url": "/storage/v1/files/Qk6QjWb1AP",
-        "id": "Qk6QjWb1AP"
+        "url": "/storage/v1/files/Qk6NRwnLgu",
+        "id": "Qk6NRwnLgu"
       }
     },
     "counter": {
@@ -489,14 +564,14 @@ Content-Encoding: gzip
     }
   },
   {
-    "id": "star-light",
-    "title": "Star Light",
-    "manufacturer": "Williams",
-    "year": 1984,
-    "game_type": "ss",
+    "id": "vis-a-bilt",
+    "title": "Vis-A-Bilt",
+    "manufacturer": "Pamco",
+    "year": 1934,
+    "game_type": "em",
     "ipdb": {
-      "number": 2362,
-      "mfg": 351
+      "number": 4204,
+      "mfg": 242
     },
     "media": {
       "backglass": {
@@ -505,100 +580,22 @@ Content-Encoding: gzip
         },
         "is_protected": false,
         "variations": {
-          "medium-2x": {
-            "url": "/storage/v1/files/71Qzh-W1Av/medium-2x",
-            "mime_type": "image/jpeg",
-            "bytes": 2561,
-            "height": 582,
-            "width": 728
-          },
           "small-2x": {
-            "url": "/storage/v1/files/71Qzh-W1Av/small-2x",
-            "mime_type": "image/jpeg",
-            "bytes": 1504,
-            "height": 404,
-            "width": 505
-          },
-          "medium": {
-            "url": "/storage/v1/files/71Qzh-W1Av/medium",
-            "mime_type": "image/jpeg",
-            "bytes": 965,
-            "height": 291,
-            "width": 364
+            "url": "/storage/v1/files/7JbeJd3Lxu/small-2x"
           },
           "small": {
-            "url": "/storage/v1/files/71Qzh-W1Av/small",
-            "mime_type": "image/jpeg",
-            "bytes": 618,
-            "height": 202,
-            "width": 253
+            "url": "/storage/v1/files/7JbeJd3Lxu/small"
+          },
+          "medium-2x": {
+            "url": "/storage/v1/files/7JbeJd3Lxu/medium-2x"
+          },
+          "medium": {
+            "url": "/storage/v1/files/7JbeJd3Lxu/medium"
           }
         },
         "bytes": 135,
-        "url": "/storage/v1/files/71Qzh-W1Av",
-        "id": "71Qzh-W1Av"
-      }
-    },
-    "counter": {
-      "comments": 0,
-      "downloads": 0,
-      "views": 0,
-      "releases": 0
-    },
-    "rating": {
-      "votes": 0,
-      "average": 0
-    }
-  },
-  {
-    "id": "wild-schtz",
-    "title": "Wild Schtz",
-    "manufacturer": "Geiger",
-    "year": 1980,
-    "game_type": "ss",
-    "ipdb": {
-      "number": 4017,
-      "mfg": 129
-    },
-    "media": {
-      "backglass": {
-        "counter": {
-          "downloads": 0
-        },
-        "is_protected": false,
-        "variations": {
-          "medium-2x": {
-            "url": "/storage/v1/files/XyzXiZbJ0v/medium-2x",
-            "mime_type": "image/jpeg",
-            "bytes": 2561,
-            "height": 582,
-            "width": 728
-          },
-          "small-2x": {
-            "url": "/storage/v1/files/XyzXiZbJ0v/small-2x",
-            "mime_type": "image/jpeg",
-            "bytes": 1504,
-            "height": 404,
-            "width": 505
-          },
-          "medium": {
-            "url": "/storage/v1/files/XyzXiZbJ0v/medium",
-            "mime_type": "image/jpeg",
-            "bytes": 965,
-            "height": 291,
-            "width": 364
-          },
-          "small": {
-            "url": "/storage/v1/files/XyzXiZbJ0v/small",
-            "mime_type": "image/jpeg",
-            "bytes": 618,
-            "height": 202,
-            "width": 253
-          }
-        },
-        "bytes": 135,
-        "url": "/storage/v1/files/XyzXiZbJ0v",
-        "id": "XyzXiZbJ0v"
+        "url": "/storage/v1/files/7JbeJd3Lxu",
+        "id": "7JbeJd3Lxu"
       }
     },
     "counter": {

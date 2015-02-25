@@ -1,10 +1,10 @@
-POST /api/v1/releases/7k1zdZ-yAP/comments HTTP/1.1
+POST /api/v1/releases/7kmjPhUxu/comments HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJteTlodmJXa1JEIiwiaWF0IjoiMjAxNS0wMi0yM1QyMjoyNToxNy43NjFaIiwiZXhwIjoiMjAxNS0wMi0yM1QyMzoyNToxNy43NjFaIn0.ATQZmlWAbQ8HlDLb4DkTlKRvXAgFNyH-q1lLFvzITL0
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI3MWlVNXZuTHhfIiwiaWF0IjoiMjAxNS0wMi0yNVQxOTozNjoxNi4zMzdaIiwiZXhwIjoiMjAxNS0wMi0yNVQyMDozNjoxNi4zMzdaIn0.C3zMDXlaKS7iJ9oJtPI94jSKWmaNDiRro9aYkf5cBvc
 Content-Type: application/json
-Content-Length: 41
+Content-Length: 57
 
 {
-  "message": "Cloned zero defect extranet"
+  "message": "Multi-lateral human-resource info-mediaries"
 }

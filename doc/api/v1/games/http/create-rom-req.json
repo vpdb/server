@@ -1,14 +1,14 @@
-POST /api/v1/games/thriller/roms HTTP/1.1
+POST /api/v1/games/elektra/roms HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI3SlJRVXpieUFQIiwiaWF0IjoiMjAxNS0wMi0yM1QyMjoyNTozMi40MDJaIiwiZXhwIjoiMjAxNS0wMi0yM1QyMzoyNTozMi40MDJaIn0.cJFNqd3bk4C2jpXGjGNuZL8uBHPp_Sln4Qzb918yjO0
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJRMTNORl8zOGVPIiwiaWF0IjoiMjAxNS0wMi0yNVQxOTozNjozMS41MzhaIiwiZXhwIjoiMjAxNS0wMi0yNVQyMDozNjozMS41MzhaIn0.2Abrzgy1Y9ectGzZdlsI47xKD23Eui1iTacDdv5p0Fo
 Content-Type: application/json
-Content-Length: 104
+Content-Length: 103
 
 {
-  "id": "thriller_10",
+  "id": "elektra_10",
   "version": "1.0",
   "notes": "That is some ROM.",
   "language": "en-US",
-  "_file": "7JmP8zWkCw"
+  "_file": "Qypgq_3Ugu"
 }

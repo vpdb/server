@@ -1,15 +1,21 @@
 201 Created
 Content-Type: application/json; charset=utf-8
-Content-Length: 960
+Content-Encoding: gzip
 
 {
-  "title": "Vanities",
-  "manufacturer": "Exhibit",
-  "year": 1947,
-  "game_type": "em",
-  "id": "vanities",
-  "_created_by": "54eba8cf5b7915b42f5b5063",
-  "created_at": "2015-02-23T22:25:20.005Z",
+  "title": "Red  Ted's Road Show",
+  "manufacturer": "Williams",
+  "model_number": "50024",
+  "year": 1994,
+  "game_type": "ss",
+  "produced_units": 6259,
+  "features": "Flippers(4), Shaker motor, two manual plungers. Two talking heads can swallow the ball.",
+  "notes": "Features country singer Carlene Carter as the voice of \"Red\".  Carlene's song, \"Every Little Thing\", plays during the Multi-Ball and Jackpot modes, as well as the \"Super Payday\" wizard mode.This game was part of Williams/Midway's \"SuperPin\" line of widebody games.Another game with a talking head is Williams' 1990 'Funhouse'.",
+  "toys": "Two talking heads named \"Red\" and \"Ted\".",
+  "slogans": "\"Hit the road with RED AND TED'S ROADSHOW\"\n\"When it comes to wreckin' road, two heads are better than one.\"\n\"It's a big country... Someones got to tear it up!\"",
+  "id": "rs",
+  "_created_by": "54ee24328fd143e05267e9d5",
+  "created_at": "2015-02-25T19:36:18.547Z",
   "rating": {
     "votes": 0,
     "average": 0
@@ -21,13 +27,24 @@ Content-Length: 960
     "releases": 0
   },
   "ipdb": {
-    "number": 2717,
-    "mfg": 117
+    "number": 1972,
+    "mfg": 349,
+    "rating": 8
   },
-  "artists": [],
-  "designers": [],
-  "themes": [],
-  "short": [],
+  "artists": [
+    "John Youssi"
+  ],
+  "designers": [
+    "Pat Lawlor",
+    "Dwight Sullivan",
+    "Ted Estes"
+  ],
+  "themes": [
+    "Travel"
+  ],
+  "short": [
+    "RS"
+  ],
   "media": {
     "backglass": {
       "counter": {
@@ -36,22 +53,22 @@ Content-Length: 960
       "is_protected": false,
       "variations": {
         "small-2x": {
-          "url": "/storage/v1/files/7yR9ZbJCD/small-2x"
+          "url": "/storage/v1/files/QysVhP28e_/small-2x"
         },
         "small": {
-          "url": "/storage/v1/files/7yR9ZbJCD/small"
+          "url": "/storage/v1/files/QysVhP28e_/small"
         },
         "medium-2x": {
-          "url": "/storage/v1/files/7yR9ZbJCD/medium-2x"
+          "url": "/storage/v1/files/QysVhP28e_/medium-2x"
         },
         "medium": {
-          "url": "/storage/v1/files/7yR9ZbJCD/medium"
+          "url": "/storage/v1/files/QysVhP28e_/medium"
         }
       },
       "bytes": 135,
-      "url": "/storage/v1/files/7yR9ZbJCD",
-      "id": "7yR9ZbJCD"
+      "url": "/storage/v1/files/QysVhP28e_",
+      "id": "QysVhP28e_"
     }
   },
-  "url": "/game/vanities"
+  "url": "/game/rs"
 }

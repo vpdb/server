@@ -16,6 +16,7 @@
 * Download button when not logged are managed properly with resume after logging or registering
 * Added UI to ROM upload and listing
 * Added UI to release comments and listing
+* Added game rating
 
 
 *Server Changes*:

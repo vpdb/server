@@ -1,21 +1,21 @@
 POST /api/v1/releases HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJYeWZFZ0daa1J2IiwiaWF0IjoiMjAxNS0wMi0yM1QyMjoyNToyNi4xOTFaIiwiZXhwIjoiMjAxNS0wMi0yM1QyMzoyNToyNi4xOTFaIn0.1GU2TNbkeH7tJwhH5neGzZMYloi9LtfEn1Yfb2OUfDI
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJYa2VFbWRoOGx1IiwiaWF0IjoiMjAxNS0wMi0yNVQxOTozNjoyNS4xNThaIiwiZXhwIjoiMjAxNS0wMi0yNVQyMDozNjoyNS4xNThaIn0.-of07n33ykWmYv-9m64OO1E3SpB_RgT2GCuY3XVRKfk
 Content-Type: application/json
-Content-Length: 474
+Content-Length: 476
 
 {
   "name": "release",
-  "_game": "hi-lo-jr",
+  "_game": "speed-test",
   "versions": [
     {
       "files": [
         {
-          "_file": "QkZGbGWJCv",
+          "_file": "myefE_n8ld",
           "_media": {
-            "playfield_image": "7JsfWGWk0P",
-            "playfield_video": "X1eMMbJAv"
+            "playfield_image": "X1QMNOnUlu",
+            "playfield_video": "Qyxrd28eu"
           },
           "_compatibility": [
             "9.9.0"
@@ -26,9 +26,9 @@ Content-Length: 474
           }
         },
         {
-          "_file": "QyGfZGZyAD",
+          "_file": "Qk1zNuh8g_",
           "_media": {
-            "playfield_image": "713z-zZyRP"
+            "playfield_image": "mkPMVdhUlu"
           },
           "_compatibility": [
             "9.9.0"
@@ -44,7 +44,7 @@ Content-Length: 474
   ],
   "authors": [
     {
-      "_user": "XyfEgGZkRv",
+      "_user": "XkeEmdh8lu",
       "roles": [
         "Table Creator"
       ]

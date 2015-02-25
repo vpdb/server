@@ -1,14 +1,14 @@
-PUT /api/v1/users/QkQKDzZJRw HTTP/1.1
+PUT /api/v1/users/7kVh5uhUxu HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJtMTF0dkdXMUFQIiwiaWF0IjoiMjAxNS0wMi0yM1QyMjoyNTozMy40MTlaIiwiZXhwIjoiMjAxNS0wMi0yM1QyMzoyNTozMy40MTlaIn0.vo5NgvcGiiokI92wArUUq4uymOxD8ohoUqr1BSk-07k
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI3eWdocV9uVWxPIiwiaWF0IjoiMjAxNS0wMi0yNVQxOTozNjozMi42MDNaIiwiZXhwIjoiMjAxNS0wMi0yNVQyMDozNjozMi42MDNaIn0.4FVbwHCoYsV30jkh18GjiuQR4tGx5cvfEE-GMv6N-58
 Content-Type: application/json
-Content-Length: 123
+Content-Length: 109
 
 {
-  "email": "kristoffer.kihn87@gmail.com",
-  "username": "Sheila.Batz4",
-  "name": "Sheila.Batz4",
+  "email": "general13@hotmail.com",
+  "username": "Karelle9",
+  "name": "Karelle9",
   "is_active": true,
   "roles": [
     "member"

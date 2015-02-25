@@ -1,5 +1,5 @@
-GET /api/v1/games/roll-over/rating HTTP/1.1
+GET /api/v1/games/major-league-baseball/rating HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI3eU51MUdiMVJEIiwiaWF0IjoiMjAxNS0wMi0yM1QyMjoyNToyNS40MjNaIiwiZXhwIjoiMjAxNS0wMi0yM1QyMzoyNToyNS40MjNaIn0.VwhthQhVL2u-whx1GA0f11V0U4UQUsitdy9Vw6HwLbw
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI3eWpVR08yVWdPIiwiaWF0IjoiMjAxNS0wMi0yNVQxOTozNjoyNC4zNjRaIiwiZXhwIjoiMjAxNS0wMi0yNVQyMDozNjoyNC4zNjRaIn0.z1eJ-fDwmETuBIpzOki2_lHC6BC1t3ZT9GTu9XpzER4
 

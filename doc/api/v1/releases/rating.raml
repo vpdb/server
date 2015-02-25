@@ -1,0 +1,44 @@
+post:
+  securedBy: [ jwt: { scopes: [ MEMBER ] } ]
+  is: [ validated ]
+  description: |
+    Rate a release.
+
+    Note that this can only be done once per release, for rating changes
+    use `PUT`.
+  body:
+    role/member:
+      example: !include http/create-rating-req.json
+  responses:
+    201:
+      body:
+        role/member:
+          example: !include http/create-rating-res-201.json
+get:
+  securedBy: [ jwt: { scopes: [ MEMBER ] } ]
+  description: |
+    Retrieve own rating of a release.
+
+    Returns either the rating of the authenticated user of the given release, or
+    `404` if the user hasn't voted for that release yet.
+  body:
+    role/member:
+      example: !include http/view-rating-req.json
+  responses:
+    200:
+      body:
+        role/member:
+          example: !include http/view-rating-res-200.json
+put:
+  securedBy: [ jwt: { scopes: [ MEMBER ] } ]
+  is: [ validated ]
+  description: |
+    Update a rating.
+  body:
+    role/member:
+      example: !include http/update-rating-req.json
+  responses:
+    200:
+      body:
+        role/member:
+          example: !include http/update-rating-res-200.json

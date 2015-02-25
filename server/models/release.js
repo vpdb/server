@@ -93,6 +93,10 @@ var releaseFields = {
 		downloads: { type: Number, 'default': 0 },
 		comments: { type: Number, 'default': 0 }
 	},
+	rating: {
+		average:   { type: Number, 'default': 0 },
+		votes:     { type: Number, 'default': 0 }
+	},
 	created_at:    { type: Date, required: true },
 	_created_by:   { type: Schema.ObjectId, required: true, ref: 'User' }
 };

@@ -31,4 +31,7 @@ exports.register = function(app, api) {
 	app.get(settings.apiPath('/releases/:id/comments'), api.anon(api.comments.listForRelease));
 	app.post(settings.apiPath('/releases/:id/comments'), api.auth(api.comments.createForRelease, 'comments', 'add'));
 
+	app.post(settings.apiPath('/releases/:id/rating'), api.auth(api.ratings.createForRelease, 'ratings', 'add'));
+	app.put(settings.apiPath('/releases/:id/rating'), api.auth(api.ratings.updateForRelease, 'ratings', 'update'));
+	app.get(settings.apiPath('/releases/:id/rating'), api.auth(api.ratings.getForRelease, 'ratings', 'view'));
 };

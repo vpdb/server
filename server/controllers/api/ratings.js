@@ -25,23 +25,44 @@ var async = require('async');
 var logger = require('winston');
 
 var Game = require('mongoose').model('Game');
+var Release = require('mongoose').model('Release');
 var Rating = require('mongoose').model('Rating');
 var api = require('./api');
 
 var error = require('../../modules/error')('api', 'rating');
 
 exports.createForGame = function(req, res) {
-	create(req, res, 'game', findGame);
+	create(req, res, 'game', find(Game, 'game'));
 };
 
 exports.getForGame = function(req, res) {
-	view(req, res, findGame, 'title');
+	view(req, res, find(Game, 'game'), 'title');
 };
 
 exports.updateForGame = function(req, res) {
-	update(req, res, 'game', findGame, 'title');
+	update(req, res, 'game', find(Game, 'game'), 'title');
 };
 
+exports.createForRelease = function(req, res) {
+	create(req, res, 'release', find(Release, 'release'));
+};
+
+exports.getForRelease = function(req, res) {
+	view(req, res, find(Release, 'release'), 'name');
+};
+
+exports.updateForRelease = function(req, res) {
+	update(req, res, 'release', find(Release, 'release'), 'name');
+};
+
+/**
+ * Generic function for viewing a rating.
+ *
+ * @param {Request} req
+ * @param {Response} res
+ * @param {function} find Function that returns entity and rating.
+ * @param {string} titleAttr Attribute of the entity that contains a title
+ */
 function view(req, res, find, titleAttr) {
 
 	var assert = api.assert(error, 'view', req.user.email, res);
@@ -55,6 +76,14 @@ function view(req, res, find, titleAttr) {
 	});
 }
 
+/**
+ * Generic function for creating a rating.
+ *
+ * @param {Request} req
+ * @param {Response} res
+ * @param {string} ref Reference name
+ * @param {function} find Function that returns entity and rating.
+ */
 function create(req, res, ref, find) {
 
 	var assert = api.assert(error, 'create', req.user.email, res);
@@ -83,6 +112,15 @@ function create(req, res, ref, find) {
 	});
 }
 
+/**
+ * Generic function for updating a rating.
+ *
+ * @param {Request} req
+ * @param {Response} res
+ * @param {string} ref Reference name
+ * @param {function} find Function that returns entity and rating.
+ * @param {string} titleAttr Attribute of the entity that contains a title
+ */
 function update(req, res, ref, find, titleAttr) {
 
 	var assert = api.assert(error, 'update', req.user.email, res);
@@ -107,7 +145,17 @@ function update(req, res, ref, find, titleAttr) {
 	});
 }
 
-
+/**
+ * Updates an entity with new rating data.
+ *
+ * @param {Request} req
+ * @param {Response} res
+ * @param {string} ref Reference name
+ * @param {function} assert Assert object
+ * @param {object} entity Found entity
+ * @param {object} rating New rating
+ * @param {int} status Success status, either 200 or 201.
+ */
 function updateRatedEntity(req, res, ref, assert, entity, rating, status) {
 
 	var q = {};
@@ -137,18 +185,26 @@ function updateRatedEntity(req, res, ref, assert, entity, rating, status) {
 	}, 'Error fetching existent ratings.'));
 }
 
-
-function findGame(req, res, assert, callback) {
-
-	Game.findOne({ id: req.params.id }, assert(function(game) {
-		if (!game) {
-			return api.fail(res, error('No such game with ID "%s"', req.params.id), 404);
-		}
-		Rating.findOne({ _from: req.user, '_ref.game': game }, assert(function(rating) {
-
-			callback(game, rating);
-
-		}, 'Error searching for current rating.'));
-	}, 'Error finding game in order to get comment from <%s>.'));
+/**
+ * Returns entity and rating for a given type.
+ *
+ * If entity is not found, a 404 is returned to the client and the callback isn't called.
+ *
+ * @param {Schema} Model model that can be rated
+ * @param {string} ref Reference name
+ * @returns {Function} function that takes req, res, assert and a callback which is launched with entity and rating as parameter
+ */
+function find(Model, ref) {
+	return function(req, res, assert, callback) {
+		Model.findOne({ id: req.params.id }, assert(function(entity) {
+			if (!entity) {
+				return api.fail(res, error('No such %s with ID "%s"', ref, req.params.id), 404);
+			}
+			var q = { _from: req.user };
+			q['_ref.' + ref] = entity;
+			Rating.findOne(q, assert(function (rating) {
+				callback(entity, rating);
+			}, 'Error searching for current rating.'));
+		}, 'Error finding ' + ref + ' in order to get rating from <%s>.'));
+	};
 }
-

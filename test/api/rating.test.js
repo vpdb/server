@@ -254,5 +254,118 @@ describe('The VPDB `Rating` API', function() {
 		});
 	});
 
+	describe('when rating a release', function() {
+
+		before(function(done) {
+			hlp.setupUsers(request, {
+				member: { roles: [ 'member' ] },
+				contributor: { roles: [ 'contributor' ] }
+			}, done);
+		});
+
+		after(function(done) {
+			hlp.cleanup(request, done);
+		});
+
+		it('should succeed when providing a correct rating', function(done) {
+
+			hlp.release.createRelease('contributor', request, function(release) {
+				var rating = 5;
+				request.post('/api/v1/releases/' + release.id + '/rating')
+					.send({ value: rating })
+					.as('member')
+					.save({ path: 'releases/create-rating'})
+					.end(function(err, res) {
+						hlp.expectStatus(err, res, 201);
+						expect(res.body.value).to.be(rating);
+						expect(res.body.created_at).to.be.ok();
+						expect(res.body.modified_at).to.not.be.ok();
+						expect(res.body.release.average).to.be(rating);
+						expect(res.body.release.votes).to.be(1);
+
+						request.get('/api/v1/releases/' + release.id).end(function(err, res) {
+							hlp.expectStatus(err, res, 200);
+							expect(res.body.rating.average).to.be(rating);
+							expect(res.body.rating.votes).to.be(1);
+							done();
+						});
+					});
+			});
+		});
+	});
+
+	describe('after rating a release', function() {
+
+		before(function(done) {
+			hlp.setupUsers(request, {
+				member: { roles: [ 'member' ] },
+				contributor: { roles: [ 'contributor' ] }
+			}, done);
+		});
+
+		after(function(done) {
+			hlp.cleanup(request, done);
+		});
+
+		it('should be able to retrieve the vote', function(done) {
+			hlp.release.createRelease('contributor', request, function(release) {
+				var rating = 2;
+				request.post('/api/v1/releases/' + release.id + '/rating')
+					.send({ value: rating })
+					.as('member')
+					.end(function(err, res) {
+						hlp.expectStatus(err, res, 201);
+						request.get('/api/v1/releases/' + release.id + '/rating').save({ path: 'releases/view-rating'}).as('member').end(function(err, res) {
+							hlp.expectStatus(err, res, 200);
+							expect(res.body.value).to.be(rating);
+							expect(res.body.created_at).to.be.ok();
+							done();
+						});
+					});
+			});
+		});
+	});
+
+	describe('when updating a release vote', function() {
+
+		before(function(done) {
+			hlp.setupUsers(request, {
+				member: { roles: [ 'member' ] },
+				contributor: { roles: [ 'contributor' ] }
+			}, done);
+		});
+
+		after(function(done) {
+			hlp.cleanup(request, done);
+		});
+
+		it('should succeed when providing correct values', function(done) {
+			hlp.release.createRelease('contributor', request, function(release) {
+				request.post('/api/v1/releases/' + release.id + '/rating')
+					.send({ value: 8 })
+					.as('member')
+					.end(function(err, res) {
+						hlp.expectStatus(err, res, 201);
+						request.put('/api/v1/releases/' + release.id + '/rating')
+							.send({ value: 1 })
+							.as('member')
+							.save({ path: 'releases/update-rating'})
+							.end(function(err, res) {
+								hlp.expectStatus(err, res, 200);
+								expect(res.body.value).to.be(1);
+								expect(res.body.created_at).to.be.ok();
+								expect(res.body.modified_at).to.be.ok();
+
+								request.get('/api/v1/releases/' + release.id).end(function(err, res) {
+									hlp.expectStatus(err, res, 200);
+									expect(res.body.rating.average).to.be(1);
+									expect(res.body.rating.votes).to.be(1);
+									done();
+								});
+							});
+					});
+			});
+		});
+	});
 
 });

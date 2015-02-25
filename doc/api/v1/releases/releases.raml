@@ -57,21 +57,5 @@ get:
           role/anon:
             example: !include http/del-res-401.json
 
-  /comments:
-    post:
-      is: [ validated ]
-      securedBy: [ jwt: { scopes: [ MEMBER ] } ]
-      description: |
-        Add a commentary to a release.
-      body:
-        role/member:
-          schema: comment
-          example: !include http/create-comment-req.json
-      responses:
-        201:
-          body:
-            role/member:
-              schema: comment
-              example: !include http/create-comment-res-201.json
-    get:
-      description: List all comments of a release.
+  /comments: !include comments.raml
+  /rating: !include rating.raml

@@ -9,7 +9,6 @@
 			+icon('download').space-right
 			| Download
 
-		hr.hr--no-margin
 		.ratingbox.padder-top(
 			rating-avg="release.rating.average",
 			rating-votes="release.rating.votes",
@@ -22,19 +21,19 @@
 				.ratingbox__rating(ng-class="{ 'rating-hide' : editing }") {{ release.rating.average | rating }}
 			.ratingbox__right-col
 				rating.rating-user(
-				ng-show="editing",
-				ng-model="ratingUser",
-				max="10",
-				rating-states="states",
-				on-hover="hoverRating = value",
-				on-leave="hoverRating = ratingUser")
+					ng-show="editing",
+					ng-model="ratingUser",
+					max="10",
+					rating-states="states",
+					on-hover="hoverRating = value",
+					on-leave="hoverRating = ratingUser")
 
 				rating.rating-avg(
-				ng-hide="editing",
-				ng-model="ratingAvg",
-				max="10",
-				rating-states="states",
-				readonly="true")
+					ng-hide="editing",
+					ng-model="ratingAvg",
+					max="10",
+					rating-states="states",
+					readonly="true")
 
 				span.votes {{ release.rating.votes | number }} vote{{ release.rating.votes == 1 ? '' : 's' }}
 

@@ -170,7 +170,10 @@ exports.list = function(req, res) {
 		query.push({ 'counter.releases': { $gte: parseInt(req.query.min_releases) }});
 	}
 
-	var sortBy = api.sortParams(req);
+	var sortBy = api.sortParams(req, { title: 1 }, {
+		popularity: 'counter.views'
+	});
+
 	var q = api.searchQuery(query);
 	logger.info('[api|game:list] query: %s, sort: %j', util.inspect(q), util.inspect(sortBy));
 	Game.paginate(q, pagination.page, pagination.perPage, function(err, pageCount, games, count) {

@@ -71,9 +71,13 @@ var fields = {
 		downloads: { type: Number, 'default': 0 },
 		comments:  { type: Number, 'default': 0 }
 	},
+	metrics: {
+		popularity: { type: Number, 'default': 0 } // time-decay based score like reddit, but based on views, downloads, comments, favs. see SO/11653545
+	},
 	rating: {
 		average:   { type: Number, 'default': 0 },
-		votes:     { type: Number, 'default': 0 }
+		votes:     { type: Number, 'default': 0 },
+		score:     { type: Number, 'default': 0 } // imdb-top-250-like score, a bayesian estimate.
 	},
 	modified_at:   { type: Date }, // only release add/update modifies this
 	created_at:    { type: Date, required: true },

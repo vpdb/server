@@ -91,7 +91,11 @@ var releaseFields = {
 	},
 	counter:       {
 		downloads: { type: Number, 'default': 0 },
-		comments: { type: Number, 'default': 0 }
+		comments: { type: Number, 'default': 0 },
+		score:     { type: Number, 'default': 0 } // imdb-top-250-like score, a bayesian estimate.
+	},
+	metrics: {
+		popularity: { type: Number, 'default': 0 } // time-decay based score like reddit, but based on views, downloads, comments, favs. see SO/11653545
 	},
 	rating: {
 		average:   { type: Number, 'default': 0 },

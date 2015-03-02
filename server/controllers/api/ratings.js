@@ -159,12 +159,16 @@ function update(req, res, ref, find, titleAttr) {
  */
 function updateRatedEntity(req, res, ref, assert, entity, rating, status) {
 
-	metrics.updateRatedEntity(ref, entity, rating, req.user, assert(function(result) {
+	metrics.onRatingUpdated(ref, entity, rating, assert(function(result) {
 
 		// if not 201, add modified date
 		if (status === 200) {
 			result.modified_at = rating.modified_at;
+			logger.log('[rating] User <%s> updated rating for %s %s to %s.', req.user, ref, entity.id, rating.value);
+		} else {
+			logger.log('[rating] User <%s> added new rating for %s %s with %s.', req.user, ref, entity.id, rating.value);
 		}
+
 		return api.success(res, result, status);
 
 	}, 'Error updating rated entity.'));

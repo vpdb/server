@@ -107,7 +107,6 @@ Metrics.prototype.updateRatedEntity = function(ref, entity, rating, user, callba
 	var m = minVotes;
 	var am, n, atm, q = {};
 	q['_ref.' + ref] = entity._id;
-	logger.error('Ratings query: %s', JSON.stringify(q));
 
 	async.series([
 
@@ -127,7 +126,6 @@ Metrics.prototype.updateRatedEntity = function(ref, entity, rating, user, callba
 					sum: { $sum: '$value' }
 				}
 			}, assert(next, function(result) {
-				logger.error('Aggregation result: %s', JSON.stringify(result));
 				am = result[0].sum / n;
 				next();
 			}, 'Error summing ratings for ' + JSON.stringify(q) + '.'));
@@ -138,6 +136,8 @@ Metrics.prototype.updateRatedEntity = function(ref, entity, rating, user, callba
 			that.redis.get(redisAtmKey, assert(next, function(_atm) {
 				if (_atm) {
 					atm = _atm;
+
+					// TODO: check if atm changed, and if so, re-calculate ratings.
 					return next();
 				}
 
@@ -156,6 +156,7 @@ Metrics.prototype.updateRatedEntity = function(ref, entity, rating, user, callba
 
 					//that.redis.set(redisAtmKey, atm, next);
 					next();
+
 				}, 'Error summing global ratings for ' + JSON.stringify(q) + '.'));
 			}, 'Error reading atm from Redis.'));
 		}
@@ -171,7 +172,12 @@ Metrics.prototype.updateRatedEntity = function(ref, entity, rating, user, callba
 		logger.info('  --- mean = %s', am);
 		logger.info('  --- global mean = %s', atm);
 
-		var summary = { average: Math.round(am * 1000) / 1000, votes: n };
+		var summary = {
+			average: Math.round(am * 1000) / 1000,
+			votes: n,
+			score: (n / (n + m)) * am + (m / (n + m)) * atm
+		};
+
 		entity.update({ rating: summary }, function(err) {
 
 			/* istanbul ignore if */
@@ -185,37 +191,6 @@ Metrics.prototype.updateRatedEntity = function(ref, entity, rating, user, callba
 			callback(null, result);
 		});
 	});
-
-
-
-//	Rating.find(q, function(err, ratings) {
-//
-//		/* istanbul ignore if */
-//		if (err) {
-//			return callback(err);
-//		}
-//
-//		logger.info('[api|rating] User <%s> rated %s "%s" %d.', user.email, ref, entity.id, rating.value);
-//
-//		// calculate average rating
-//		var avg = _.reduce(_.pluck(ratings, 'value'), function (sum, value) {
-//			return sum + value;
-//		}, 0) / ratings.length;
-//
-//		var summary = { average: Math.round(avg * 1000) / 1000, votes: ratings.length };
-//		entity.update({ rating: summary }, function(err) {
-//
-//			/* istanbul ignore if */
-//			if (err) {
-//				return callback(err);
-//			}
-//
-//			var result = { value: rating.value, created_at: rating.created_at };
-//			result[ref] = summary;
-//
-//			callback(null, result);
-//		});
-//	});
 
 };
 

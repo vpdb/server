@@ -20,9 +20,18 @@
 "use strict";
 
 var _ = require('lodash');
+var bull = require('bull');
+var redis = require('redis');
+var async = require('async');
 var logger = require('winston');
 
 var Rating = require('mongoose').model('Rating');
+
+var config = require('./settings').current;
+
+var redisAtmKey = 'metrics:atm';
+
+var minVotes = 10;
 
 function Metrics() {
 
@@ -31,6 +40,24 @@ function Metrics() {
 		release: require('mongoose').model('Release')
 	};
 
+	// init redis
+	this.redis = redis.createClient(config.vpdb.redis.port, config.vpdb.redis.host, { no_ready_check: true });
+	this.redis.select(config.vpdb.redis.db);
+	this.redis.on('error', function(err) {
+		logger.error('[metrics] Redis error: ' + err);
+		logger.error(err.stack);
+	});
+
+	// init bull
+	var redisOpts = {
+		redis: {
+			port: config.vpdb.redis.port,
+			host: config.vpdb.redis.host,
+			opts: {},
+			DB: config.vpdb.redis.db
+		}
+	};
+	this.queue = bull('metrics', redisOpts);
 }
 
 /**
@@ -47,34 +74,104 @@ function Metrics() {
  */
 Metrics.prototype.updateRatedEntity = function(ref, entity, rating, user, callback) {
 
-	var q = {};
-	q['_ref.' + ref] = entity;
-	Rating.find(q, function(err, ratings) {
+	var Model = this.entities[ref];
+	if (!Model) {
+		throw new Error('Model "' + ref + '" does not support ratings.');
+	}
 
-		/* istanbul ignore if */
+	var assert = function(next, callback, message) {
+		return function(err, result) {
+			/* istanbul ignore if */
+			if (err) {
+				if (message) {
+					logger.error('ERROR: ' + message);
+				}
+				return next(err);
+			}
+			callback(result);
+		};
+	};
+
+	/*
+	 * Bayesian estimate:
+	 * Score Ws = (N / (N + m)) × Am + (m / (N + m)) × ATm
+	 *
+	 * Where:
+	 *    Am = arithmetic mean for the item
+	 *    N = total number of votes
+	 *    m = minimum number of votes for the item to be taken into account
+	 *    ATm = arithmetic total mean when considering the collection of all the items
+	 */
+
+	var that = this;
+	var m = minVotes;
+	var am, n, atm, q = {};
+	q['_ref.' + ref] = entity._id;
+	logger.error('Ratings query: %s', JSON.stringify(q));
+
+	async.series([
+
+		// count
+		function(next) {
+			Rating.count(q, assert(next, function(count) {
+				n = count;
+				next();
+			}, 'Error counting ratings.'));
+		},
+
+		// get arithmetic mean
+		function(next) {
+			Rating.aggregate({ $match: q }, {
+				$group: {
+					_id : null,
+					sum: { $sum: '$value' }
+				}
+			}, assert(next, function(result) {
+				logger.error('Aggregation result: %s', JSON.stringify(result));
+				am = result[0].sum / n;
+				next();
+			}, 'Error summing ratings for ' + JSON.stringify(q) + '.'));
+		},
+
+		// arithmetic total mean
+		function(next) {
+			that.redis.get(redisAtmKey, assert(next, function(_atm) {
+				if (_atm) {
+					atm = _atm;
+					return next();
+				}
+
+				// unknown global mean, let's count then.
+				var q = {};
+				q['_ref.' + ref] = { '$ne': null };
+				Rating.aggregate({ $match: q }, {
+					$group: {
+						_id : null,
+						sum: { $sum: '$value' },
+						count: { $sum: 1 }
+					}
+				}, assert(next, function(result) {
+					result = result[0];
+					atm = result.sum / result.count;
+
+					//that.redis.set(redisAtmKey, atm, next);
+					next();
+				}, 'Error summing global ratings for ' + JSON.stringify(q) + '.'));
+			}, 'Error reading atm from Redis.'));
+		}
+
+	], function(err) {
 		if (err) {
+			logger.error('Error computing bayesian estimate: ' + err.message);
+			logger.error(err.stack);
 			return callback(err);
 		}
 
-		logger.info('[api|rating] User <%s> rated %s "%s" %d.', user.email, ref, entity.id, rating.value);
+		logger.info('  --- count = %d', n);
+		logger.info('  --- mean = %s', am);
+		logger.info('  --- global mean = %s', atm);
 
-		/*
-		 * Score Ws = (N / (N + m)) × Am + (m / (N + m)) × ATm
-		 *
-		 * Where:
-		 *    Am = arithmetic mean for the item
-		 *    N = total number of votes
-		 *    m = minimum number of votes for the item to be taken into account
-		 *    ATm = arithmetic total mean when considering the collection of all the items
-		 */
-		// TODO implement
-
-		// calculate average rating
-		var avg = _.reduce(_.pluck(ratings, 'value'), function (sum, value) {
-			return sum + value;
-		}, 0) / ratings.length;
-
-		var summary = { average: Math.round(avg * 1000) / 1000, votes: ratings.length };
+		var summary = { average: Math.round(am * 1000) / 1000, votes: n };
 		entity.update({ rating: summary }, function(err) {
 
 			/* istanbul ignore if */
@@ -88,7 +185,38 @@ Metrics.prototype.updateRatedEntity = function(ref, entity, rating, user, callba
 			callback(null, result);
 		});
 	});
-};
 
+
+
+//	Rating.find(q, function(err, ratings) {
+//
+//		/* istanbul ignore if */
+//		if (err) {
+//			return callback(err);
+//		}
+//
+//		logger.info('[api|rating] User <%s> rated %s "%s" %d.', user.email, ref, entity.id, rating.value);
+//
+//		// calculate average rating
+//		var avg = _.reduce(_.pluck(ratings, 'value'), function (sum, value) {
+//			return sum + value;
+//		}, 0) / ratings.length;
+//
+//		var summary = { average: Math.round(avg * 1000) / 1000, votes: ratings.length };
+//		entity.update({ rating: summary }, function(err) {
+//
+//			/* istanbul ignore if */
+//			if (err) {
+//				return callback(err);
+//			}
+//
+//			var result = { value: rating.value, created_at: rating.created_at };
+//			result[ref] = summary;
+//
+//			callback(null, result);
+//		});
+//	});
+
+};
 
 module.exports = new Metrics();

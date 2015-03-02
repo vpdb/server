@@ -93,7 +93,10 @@ Metrics.prototype.onRatingUpdated = function(ref, entity, rating, callback) {
 			var result = { value: rating.value, created_at: rating.created_at };
 			result[ref] = summary;
 
-			var done = function() {
+			var done = function(err) {
+				if (err) {
+					return callback(err);
+				}
 				callback(null, result);
 			};
 
@@ -108,6 +111,8 @@ Metrics.prototype.onRatingUpdated = function(ref, entity, rating, callback) {
 				if (Math.round(_atm * precision) !== Math.round(atm * precision)) {
 					logger.info('[metrics] Global mean of %ss changed from %s to %s, re-calculating bayesian estimages.', ref, Math.round(_atm * precision) / precision, Math.round(atm * precision) / precision);
 					that.updateAllEntities(ref, atm, done);
+				} else {
+					done();
 				}
 			}, 'Error reading atm from Redis.'));
 		});
@@ -120,7 +125,7 @@ Metrics.prototype.onRatingUpdated = function(ref, entity, rating, callback) {
  *
  * @param {string} ref Reference to model
  * @param {object} entity Object that received the vote
- * @param {double} atm Arithmetic total mean
+ * @param {number} atm Arithmetic total mean
  * @param {function} callback Callback function, executed with (err, metrics)
  */
 Metrics.prototype.updateEntityMetrics = function(ref, entity, atm, callback) {
@@ -174,11 +179,20 @@ Metrics.prototype.updateEntityMetrics = function(ref, entity, atm, callback) {
 };
 
 Metrics.prototype.updateGlobalMean = function(ref, atm, callback) {
-	callback();
+	this.redis.set(redisAtmKey, atm, function(err) {
+		if (err) {
+			return callback('Error updating global mean: ' + err.message);
+		}
+		callback();
+	});
 };
 
 Metrics.prototype.updateAllEntities = function(ref, atm, callback) {
-	callback();
+	this.updateGlobalMean(ref, atm, assert(callback, function() {
+
+		// do the thing
+		callback();
+	}));
 };
 
 

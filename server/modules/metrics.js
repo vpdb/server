@@ -33,7 +33,18 @@ function Metrics() {
 
 }
 
-
+/**
+ * Updates the rating with the average, count and score.
+ *
+ * If needed, runs through other ratings as well, if global arithmetic mean
+ * changed.
+ *
+ * @param {string} ref Reference to model
+ * @param {object} entity Object that received the vote
+ * @param {object} rating Rating object
+ * @param {object} user User who voted
+ * @param {function} callback Callback, run with (err, result), where result is returned from the API after voting
+ */
 Metrics.prototype.updateRatedEntity = function(ref, entity, rating, user, callback) {
 
 	var q = {};
@@ -46,6 +57,17 @@ Metrics.prototype.updateRatedEntity = function(ref, entity, rating, user, callba
 		}
 
 		logger.info('[api|rating] User <%s> rated %s "%s" %d.', user.email, ref, entity.id, rating.value);
+
+		/*
+		 * Score Ws = (N / (N + m)) × Am + (m / (N + m)) × ATm
+		 *
+		 * Where:
+		 *    Am = arithmetic mean for the item
+		 *    N = total number of votes
+		 *    m = minimum number of votes for the item to be taken into account
+		 *    ATm = arithmetic total mean when considering the collection of all the items
+		 */
+		// TODO implement
 
 		// calculate average rating
 		var avg = _.reduce(_.pluck(ratings, 'value'), function (sum, value) {

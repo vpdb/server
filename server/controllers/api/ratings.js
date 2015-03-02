@@ -28,6 +28,7 @@ var Game = require('mongoose').model('Game');
 var Release = require('mongoose').model('Release');
 var Rating = require('mongoose').model('Rating');
 var api = require('./api');
+var metrics = require('../../modules/metrics');
 
 var error = require('../../modules/error')('api', 'rating');
 
@@ -158,31 +159,15 @@ function update(req, res, ref, find, titleAttr) {
  */
 function updateRatedEntity(req, res, ref, assert, entity, rating, status) {
 
-	var q = {};
-	q['_ref.' + ref] = entity;
-	Rating.find(q, assert(function(ratings) {
+	metrics.updateRatedEntity(ref, entity, rating, req.user, assert(function(result) {
 
-		logger.info('[api|rating] User <%s> rated %s "%s" %d.', req.user.email, ref, entity.id, rating.value);
+		// if not 201, add modified date
+		if (status === 200) {
+			result.modified_at = rating.modified_at;
+		}
+		return api.success(res, result, status);
 
-		// calculate average rating
-		var avg = _.reduce(_.pluck(ratings, 'value'), function (sum, value) {
-				return sum + value;
-			}, 0) / ratings.length;
-
-		var summary = { average: Math.round(avg * 1000) / 1000, votes: ratings.length };
-		entity.update({ rating: summary }, assert(function () {
-
-			var result = { value: rating.value, created_at: rating.created_at };
-			result[ref] = summary;
-
-			// if not 201, add modified date
-			if (status === 200) {
-				result.modified_at = rating.modified_at;
-			}
-			return api.success(res, result, status);
-		}));
-
-	}, 'Error fetching existent ratings.'));
+	}, 'Error updating rated entity.'));
 }
 
 /**

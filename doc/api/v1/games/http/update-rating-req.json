@@ -1,8 +1,8 @@
-PUT /api/v1/games/arena/rating HTTP/1.1
+PUT /api/v1/games/sunset/rating HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
 Content-Type: application/json
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJteTI3TjFFd2VPIiwiaWF0IjoiMjAxNS0wMi0yNVQyMDowODoxMC4zNzlaIiwiZXhwIjoiMjAxNS0wMi0yNVQyMTowODoxMC4zNzlaIn0.GgeWn1VmDHEsOJQ7Xrlvj42H5ouwNpYLq6Cm_cIBHhs
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJYeTNXS2h6dElkIiwiaWF0IjoiMjAxNS0wMy0wMlQxMTozMzoxOS41ODJaIiwiZXhwIjoiMjAxNS0wMy0wMlQxMjozMzoxOS41ODJaIn0.we53K9qOjZbh6vDnAd-PQtnorDKSNvF8-ix62l3OuJs
 Content-Length: 11
 
 {

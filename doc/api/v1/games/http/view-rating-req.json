@@ -1,5 +1,5 @@
-GET /api/v1/games/broadcast/rating HTTP/1.1
+GET /api/v1/games/monte-carlo/rating HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJYSldsVnlOdmVPIiwiaWF0IjoiMjAxNS0wMi0yNVQyMDowODowOS44OTRaIiwiZXhwIjoiMjAxNS0wMi0yNVQyMTowODowOS44OTRaIn0.8ZcnKG-3dhD_5jqi1NF4k9bpsVQvqsq2dLPDxT_JJPE
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI3SklndTJmRjhkIiwiaWF0IjoiMjAxNS0wMy0wMlQxMTozMzoxOC4zODBaIiwiZXhwIjoiMjAxNS0wMy0wMlQxMjozMzoxOC4zODBaIn0.5Bi-umGi-x8AdJq2z8LyUBBW2BwIEJ7tUpXmGmu10ek
 

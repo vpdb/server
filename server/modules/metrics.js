@@ -105,33 +105,29 @@ Metrics.prototype.updateRatedEntity = function(ref, entity, rating, user, callba
 
 	var that = this;
 	var m = minVotes;
-	var am, n, atm, q = {};
-	q['_ref.' + ref] = entity._id;
+	var am, n, atm;
 
 	async.series([
 
-		// count
+		// get arithmetic local mean
 		function(next) {
-			Rating.count(q, assert(next, function(count) {
-				n = count;
-				next();
-			}, 'Error counting ratings.'));
-		},
-
-		// get arithmetic mean
-		function(next) {
+			var q = {};
+			q['_ref.' + ref] = entity._id;
 			Rating.aggregate({ $match: q }, {
 				$group: {
 					_id : null,
-					sum: { $sum: '$value' }
+					sum: { $sum: '$value' },
+					count: { $sum: 1 }
 				}
 			}, assert(next, function(result) {
-				am = result[0].sum / n;
+				result = result[0];
+				n = result.count;
+				am = result.sum / n;
 				next();
 			}, 'Error summing ratings for ' + JSON.stringify(q) + '.'));
 		},
 
-		// arithmetic total mean
+		// get arithmetic global mean
 		function(next) {
 			that.redis.get(redisAtmKey, assert(next, function(_atm) {
 				if (_atm) {

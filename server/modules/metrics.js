@@ -130,11 +130,6 @@ Metrics.prototype.onRatingUpdated = function(ref, entity, rating, callback) {
  */
 Metrics.prototype.updateEntityMetrics = function(ref, entity, atm, callback) {
 
-	var Model = this.entities[ref];
-	if (!Model) {
-		throw new Error('Model "' + ref + '" does not support ratings.');
-	}
-
 	/*
 	 * Bayesian estimate:
 	 * Score Ws = (N / (N + m)) × Am + (m / (N + m)) × ATm
@@ -188,10 +183,22 @@ Metrics.prototype.updateGlobalMean = function(ref, atm, callback) {
 };
 
 Metrics.prototype.updateAllEntities = function(ref, atm, callback) {
+
+	var that = this;
 	this.updateGlobalMean(ref, atm, assert(callback, function() {
 
-		// do the thing
-		callback();
+		var Model = that.entities[ref];
+		if (!Model) {
+			throw new Error('Model "' + ref + '" does not support ratings.');
+		}
+
+		// update all entities that have at least one rating
+		Model.find({ 'rating.votes': { '$gt': 0 } }, assert(callback, function(entities) {
+			logger.log('[metrics] Updating metrics for %d %ss...', entities.length, ref);
+			async.eachSeries(entities, function(entity, next) {
+				that.updateEntityMetrics(ref, entity, atm, next);
+			}, callback);
+		}));
 	}));
 };
 

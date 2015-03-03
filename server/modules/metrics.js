@@ -74,10 +74,10 @@ Metrics.prototype.onRatingUpdated = function(ref, entity, rating, callback) {
 	var that = this;
 
 	// compute global mean first
-	that.getGlobalMean(ref, assert(callback, function(atm) {
+	that.getGlobalMean(ref, assert(function(atm) {
 
 		// then updatse entity metrics
-		that.updateEntityMetrics(ref, entity, atm, assert(callback, function(summary) {
+		that.updateEntityMetrics(ref, entity, atm, assert(function(summary) {
 
 			var result = { value: rating.value, created_at: rating.created_at };
 			result[ref] = summary;
@@ -90,7 +90,7 @@ Metrics.prototype.onRatingUpdated = function(ref, entity, rating, callback) {
 			};
 
 			// check if we need to re-compute ratings
-			that.redis.get(redisAtmKey, assert(callback, function(_atm) {
+			that.redis.get(redisAtmKey, assert(function(_atm) {
 				if (!_atm) {
 					// nothing set, update and go on.
 					return that.updateGlobalMean(ref, atm, done);
@@ -103,9 +103,9 @@ Metrics.prototype.onRatingUpdated = function(ref, entity, rating, callback) {
 				} else {
 					done();
 				}
-			}, 'Error reading atm from Redis.'));
-		}, 'Error updating entity metrics.'));
-	}, 'Error getting global mean.'));
+			}, callback, 'Error reading atm from Redis.'));
+		}, callback, 'Error updating entity metrics.'));
+	}, callback, 'Error getting global mean.'));
 };
 
 
@@ -141,7 +141,7 @@ Metrics.prototype.updateEntityMetrics = function(ref, entity, atm, callback) {
 			sum: { $sum: '$value' },
 			count: { $sum: 1 }
 		}
-	}, assert(callback, function(result) {
+	}, assert(function(result) {
 		result = result[0];
 		n = result.count;
 		am = result.sum / n;
@@ -159,7 +159,7 @@ Metrics.prototype.updateEntityMetrics = function(ref, entity, atm, callback) {
 			}
 			callback(null, metrics);
 		});
-	}, 'Error aggregating ratings for ' + JSON.stringify(q) + '.'));
+	}, callback, 'Error aggregating ratings for ' + JSON.stringify(q) + '.'));
 };
 
 Metrics.prototype.getGlobalMean = function(ref, callback) {
@@ -177,10 +177,10 @@ Metrics.prototype.getGlobalMean = function(ref, callback) {
 			sum: { $sum: '$value' },
 			count: { $sum: 1 }
 		}
-	}, assert(callback, function(result) {
+	}, assert(function(result) {
 		result = result[0];
 		callback(null, result.sum / result.count);
-	}));
+	}, callback));
 };
 
 Metrics.prototype.updateGlobalMean = function(ref, atm, callback) {
@@ -195,7 +195,7 @@ Metrics.prototype.updateGlobalMean = function(ref, atm, callback) {
 Metrics.prototype.updateAllEntities = function(ref, atm, callback) {
 
 	var that = this;
-	this.updateGlobalMean(ref, atm, assert(callback, function() {
+	this.updateGlobalMean(ref, atm, assert(function() {
 
 		var Model = that.entities[ref];
 		if (!Model) {
@@ -203,17 +203,18 @@ Metrics.prototype.updateAllEntities = function(ref, atm, callback) {
 		}
 
 		// update all entities that have at least one rating
-		Model.find({ 'rating.votes': { '$gt': 0 } }, assert(callback, function(entities) {
+		Model.find({ 'rating.votes': { '$gt': 0 } }, assert(function(entities) {
 			logger.log('[metrics] Updating metrics for %d %ss...', entities.length, ref);
 			async.eachSeries(entities, function(entity, next) {
 				that.updateEntityMetrics(ref, entity, atm, next);
 			}, callback);
-		}));
-	}));
+
+		}, callback, 'Error finding rated ' + ref + 's.'));
+	}, callback, 'Error updating global mean.'));
 };
 
 
-function assert(failure, success, message) {
+function assert(success, failure, message) {
 	return function(err, result) {
 		/* istanbul ignore if */
 		if (err) {

@@ -171,7 +171,8 @@ exports.list = function(req, res) {
 	}
 
 	var sortBy = api.sortParams(req, { title: 1 }, {
-		popularity: 'counter.views'
+		popularity: 'counter.views',
+		rating: 'rating.score'
 	});
 
 	var q = api.searchQuery(query);

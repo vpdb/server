@@ -368,4 +368,87 @@ describe('The VPDB `Rating` API', function() {
 		});
 	});
 
+	describe('when several users vote for a game', function() {
+
+		before(function(done) {
+			hlp.setupUsers(request, {
+				member1: { roles: [ 'member' ] },
+				member2: { roles: [ 'member' ] },
+				member3: { roles: [ 'member' ] },
+				member4: { roles: [ 'member' ] },
+				member5: { roles: [ 'member' ] },
+				contributor: { roles: [ 'contributor' ] }
+			}, done);
+		});
+
+		after(function(done) {
+			hlp.cleanup(request, done);
+		});
+
+		it('should calculate the rating score correctly', function(done) {
+			var votes = [
+				{ 5: 1 },
+				{ 1: 1 },
+				{ 5: 5 },
+				{ 2: 2, 3: 1, 4: 2 },
+				{ 3: 1 }
+			];
+			var scores = [
+				4.076923077,
+				3.076923077,
+				4.538461538,
+				3.288461538,
+				3.576923077
+			];
+			hlp.game.createGames('contributor', request, 5, function(games) {
+
+				var addVote = function(gameId, rating, user) {
+					return function(next) {
+						request.post('/api/v1/games/' + gameId + '/rating')
+							.send({ value: rating })
+							.as(user)
+							.end(function(err, res) {
+								hlp.expectStatus(err, res, 201);
+								next();
+							});
+					};
+				};
+				var voteReq = [];
+
+				// create votes
+				_.each(votes, function(gameVotes, n) {
+					var game = games[n];
+					var member = 1;
+					_.each(gameVotes, function(numVotes, rating) {
+						for (var i = 0; i < numVotes; i++) {
+							voteReq.push(addVote(game.id, rating, 'member' + member));
+							member++;
+						}
+					});
+				});
+
+				var precision = 1000000000;
+				var testScore = function(gameId, score) {
+					return function(next) {
+						request.get('/api/v1/games/' + gameId)
+							.end(function(err, res) {
+								hlp.expectStatus(err, res, 200);
+								expect(Math.round(res.body.rating.score * precision)).to.be(Math.round(score * precision));
+								next();
+							});
+					};
+				};
+
+				// test scores
+				async.series(voteReq, function() {
+					var scoreTest = [];
+					_.each(games, function(game, n) {
+						scoreTest.push(testScore(game.id, scores[n]));
+					});
+					async.series(scoreTest, done);
+				});
+			});
+		});
+	});
+
 });

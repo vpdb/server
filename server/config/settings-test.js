@@ -37,7 +37,7 @@ module.exports = {
 				'video/x-flv': 1
 			}
 		},
-		metrics: { bayesianEstimate: { minVotes: 3, globalMean: 0 } },
+		metrics: { bayesianEstimate: { minVotes: 3, globalMean: null } },
 		tmp: '.',
 		authorizationHeader: 'Authorization',
 		passport: {

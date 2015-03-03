@@ -31,8 +31,6 @@ var config = require('./settings').current;
 
 var redisAtmKey = 'metrics:atm';
 
-var minVotes = 10;
-
 function Metrics() {
 
 	this.entities = {
@@ -76,19 +74,10 @@ Metrics.prototype.onRatingUpdated = function(ref, entity, rating, callback) {
 	var that = this;
 
 	// compute global mean first
-	var q = {};
-	q['_ref.' + ref] = { '$ne': null };
-	Rating.aggregate({ $match: q }, {
-		$group: {
-			_id : null,
-			sum: { $sum: '$value' },
-			count: { $sum: 1 }
-		}
-	}, assert(callback, function(result) {
-		result = result[0];
-		var atm = result.sum / result.count;
+	that.getGlobalMean(ref, assert(callback, function(atm) {
 
-		that.updateEntityMetrics(ref, entity, atm, function(err, summary) {
+		// then updatse entity metrics
+		that.updateEntityMetrics(ref, entity, atm, assert(callback, function(summary) {
 
 			var result = { value: rating.value, created_at: rating.created_at };
 			result[ref] = summary;
@@ -115,8 +104,8 @@ Metrics.prototype.onRatingUpdated = function(ref, entity, rating, callback) {
 					done();
 				}
 			}, 'Error reading atm from Redis.'));
-		});
-	}, 'Error summing global ratings for ' + JSON.stringify(q) + '.'));
+		}, 'Error updating entity metrics.'));
+	}, 'Error getting global mean.'));
 };
 
 
@@ -140,7 +129,7 @@ Metrics.prototype.updateEntityMetrics = function(ref, entity, atm, callback) {
 	 *    m = minimum number of votes for the item to be taken into account
 	 *    ATm = arithmetic total mean when considering the collection of all the items
 	 */
-	var m = minVotes;
+	var m = config.vpdb.metrics.bayesianEstimate.minVotes;
 	var am, n;
 
 	// get arithmetic local mean
@@ -173,6 +162,27 @@ Metrics.prototype.updateEntityMetrics = function(ref, entity, atm, callback) {
 	}, 'Error aggregating ratings for ' + JSON.stringify(q) + '.'));
 };
 
+Metrics.prototype.getGlobalMean = function(ref, callback) {
+
+	// don't calculate if we use a hard-coded mean anyway.
+	if (config.vpdb.metrics.bayesianEstimate.globalMean !== null) {
+		return callback(null, config.vpdb.metrics.bayesianEstimate.globalMean);
+	}
+
+	var q = {};
+	q['_ref.' + ref] = { '$ne': null };
+	Rating.aggregate({ $match: q }, {
+		$group: {
+			_id : null,
+			sum: { $sum: '$value' },
+			count: { $sum: 1 }
+		}
+	}, assert(callback, function(result) {
+		result = result[0];
+		callback(null, result.sum / result.count);
+	}));
+};
+
 Metrics.prototype.updateGlobalMean = function(ref, atm, callback) {
 	this.redis.set(redisAtmKey, atm, function(err) {
 		if (err) {
@@ -203,16 +213,16 @@ Metrics.prototype.updateAllEntities = function(ref, atm, callback) {
 };
 
 
-function assert(next, callback, message) {
+function assert(failure, success, message) {
 	return function(err, result) {
 		/* istanbul ignore if */
 		if (err) {
 			if (message) {
 				logger.error('ERROR: ' + message);
 			}
-			return next(err);
+			return failure(err);
 		}
-		callback(result);
+		success(result);
 	};
 }
 

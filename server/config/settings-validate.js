@@ -294,6 +294,23 @@ module.exports = {
 			}
 		},
 
+		metrics: {
+			bayesianEstimate: {
+				minVotes: function(votes) {
+					/* istanbul ignore if */
+					if (!_.isNumber(votes)) {
+						return 'Must be a number';
+					}
+				},
+				globalMean: function(mean) {
+					/* istanbul ignore if */
+					if (mean !== null && !_.isNumber(mean)) {
+						return 'Must be either null or a number';
+					}
+				}
+			}
+		},
+
 		/**
 		 * Configure login strategies here.
 		 */

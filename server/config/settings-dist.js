@@ -172,6 +172,38 @@ module.exports = {
 		},
 
 		/**
+		 * Parameters about the rating metrics.
+		 */
+		metrics: {
+
+			/**
+			 * The sort-by-rating algorithm uses a formula similar to IMDB's Top
+			 * Rated 250 Titles. It is basically a weighted arithmetic mean
+			 * which pulls the score closer towards a global average when the
+			 * number of votes is below a a given number.
+			 *
+			 * Generally speaking, games with very few ratings will have a score
+			 * weighted towards the average across all games, while games with
+			 * many ratings will have a score weighted towards its average
+			 * rating.
+			 */
+			bayesianEstimate: {
+
+				/**
+				 * Weight given to the prior estimate (estimate based on
+				 * distribution of average ratings across the pool of all games)
+				 */
+				minVotes: 30,
+
+				/**
+				 * Mean across the whole pool. If set to null, it is calculated
+				 * each time a rating is submitted (and scores will be re-computed).
+				 */
+				globalMean: null
+			}
+		},
+
+		/**
 		 * Configure login strategies here.
 		 */
 		passport: {

@@ -20,7 +20,6 @@
 "use strict";
 
 var _ = require('lodash');
-var bull = require('bull');
 var redis = require('redis');
 var async = require('async');
 var logger = require('winston');
@@ -45,17 +44,6 @@ function Metrics() {
 		logger.error('[metrics] Redis error: ' + err);
 		logger.error(err.stack);
 	});
-
-	// init bull
-	var redisOpts = {
-		redis: {
-			port: config.vpdb.redis.port,
-			host: config.vpdb.redis.host,
-			opts: {},
-			DB: config.vpdb.redis.db
-		}
-	};
-	this.queue = bull('metrics', redisOpts);
 }
 
 /**

@@ -28,9 +28,10 @@ var validator = require('validator');
 var paginate = require('mongoose-paginate');
 var uniqueValidator = require('mongoose-unique-validator');
 
-var prettyId = require('./plugins/pretty-id');
-var fileRef = require('./plugins/file-ref');
 var toObj = require('./plugins/to-object');
+var fileRef = require('./plugins/file-ref');
+var metrics = require('./plugins/metrics');
+var prettyId = require('./plugins/pretty-id');
 
 var Schema = mongoose.Schema;
 
@@ -98,6 +99,8 @@ GameSchema.plugin(prettyId, { model: 'Game', ignore: [ '_created_by' ] });
 GameSchema.plugin(fileRef, { model: 'Game' });
 GameSchema.plugin(paginate);
 GameSchema.plugin(toObj);
+GameSchema.plugin(metrics);
+
 
 //-----------------------------------------------------------------------------
 // API FIELDS

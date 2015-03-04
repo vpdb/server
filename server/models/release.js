@@ -28,9 +28,10 @@ var mongoose = require('mongoose');
 var uniqueValidator = require('mongoose-unique-validator');
 var paginate = require('mongoose-paginate');
 
-var prettyId = require('./plugins/pretty-id');
-var fileRef = require('./plugins/file-ref');
 var toObj = require('./plugins/to-object');
+var metrics = require('./plugins/metrics');
+var fileRef = require('./plugins/file-ref');
+var prettyId = require('./plugins/pretty-id');
 
 var Schema = mongoose.Schema;
 
@@ -115,6 +116,7 @@ ReleaseSchema.plugin(fileRef, { model: 'Release' });
 ReleaseSchema.plugin(prettyId, { model: 'Release', ignore: [ '_created_by' ] });
 ReleaseSchema.plugin(paginate);
 ReleaseSchema.plugin(toObj);
+ReleaseSchema.plugin(metrics);
 FileSchema.plugin(toObj);
 VersionSchema.plugin(toObj);
 AuthorSchema.plugin(toObj);

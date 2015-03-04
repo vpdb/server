@@ -27,6 +27,7 @@ var shortId = require('shortid');
 var settings = require('./../modules/settings');
 
 var toObj = require('./plugins/to-object');
+var metrics = require('./plugins/metrics');
 var storage = require('../modules/storage');
 var mimeTypes = require('../modules/mimetypes');
 
@@ -57,6 +58,7 @@ var FileSchema = new Schema(fields);
 // PLUGINS
 //-----------------------------------------------------------------------------
 FileSchema.plugin(toObj);
+FileSchema.plugin(metrics);
 
 
 //-----------------------------------------------------------------------------

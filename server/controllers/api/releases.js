@@ -71,7 +71,9 @@ exports.create = function(req, res) {
 					// update counters / date
 					var counters = [];
 					counters.push(function(next) {
-						Game.update({ _id: release._game.toString() }, { $inc: { 'counter.releases': 1 }}, next);
+						release.populate('_game', assert(function(release) {
+							release._game.incrementCounter('releases', next);
+						}));
 					});
 					counters.push(function(next) {
 						Game.update({ _id: release._game.toString() }, { modified_at: new Date() }, next);

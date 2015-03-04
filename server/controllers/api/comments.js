@@ -57,13 +57,16 @@ exports.createForRelease = function(req, res) {
 				// update counters
 				var updates = [];
 				updates.push(function(next) {
-					release.update({ $inc: { 'counter.comments': 1 }}, next);
+					release.incrementCounter('comments', next);
 				});
 				updates.push(function(next) {
-					Game.update({ _id: release._game.toString() }, { $inc: { 'counter.comments': 1 }}, next);
+					release.populate('_game', assert(function(release) {
+						release._game.incrementCounter('comments', next);
+						//Game.update({ _id: release._game.toString() }, { $inc: { 'counter.comments': 1 }}, next);
+					}));
 				});
 				updates.push(function(next) {
-					req.user.update({ $inc: { 'counter.comments': 1 }}, next);
+					req.user.incrementCounter('comments', next);
 				});
 				async.series(updates, function(err) {
 					if (err) {

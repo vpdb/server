@@ -28,6 +28,7 @@ var validator = require('validator');
 var randomstring = require('randomstring');
 var uniqueValidator = require('mongoose-unique-validator');
 var toObj = require('./plugins/to-object');
+var metrics = require('./plugins/metrics');
 
 var error = require('../modules/error')('model', 'user');
 var config = require('../modules/settings').current;
@@ -85,7 +86,7 @@ UserSchema.plugin(uniqueValidator, { message: 'The {PATH} "{VALUE}" is already t
 // PLUGINS
 //-----------------------------------------------------------------------------
 UserSchema.plugin(toObj);
-
+UserSchema.plugin(metrics);
 
 //-----------------------------------------------------------------------------
 // API FIELDS

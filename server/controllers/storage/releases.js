@@ -100,10 +100,10 @@ exports.download = function(req, res) {
 
 			// count release and user download
 			counters.push(function(next) {
-				release.update({ $inc: { 'counter.downloads': 1 }}, next);
+				release.incrementCounter('downloads', next);
 			});
 			counters.push(function(next) {
-				req.user.update({ $inc: { 'counter.downloads': 1 }}, next);
+				req.user.incrementCounter('downloads', next);
 			});
 
 			_.each(release.versions, function(version) {
@@ -144,7 +144,7 @@ exports.download = function(req, res) {
 
 					// count file download
 					counters.push(function(next) {
-						file.update({ $inc: { 'counter.downloads': 1 }}, next);
+						file.incrementCounter('downloads', next);
 					});
 				});
 
@@ -186,7 +186,7 @@ exports.download = function(req, res) {
 
 						// count file download
 						counters.push(function(next) {
-							rom._file.update({ $inc: { 'counter.downloads': 1 }}, next);
+							rom._file.incrementCounter('downloads', next);
 						});
 					});
 				}

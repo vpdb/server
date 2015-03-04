@@ -211,7 +211,7 @@ exports.view = function(req, res) {
 		if (!game) {
 			return api.fail(res, error('No such game with ID "%s"', req.params.id), 404);
 		}
-		game.update({ $inc: { 'counter.views': 1 }}, function() {});
+		game.incrementCounter('views');
 		game.toDetailed(function(err, game) {
 			/* istanbul ignore if  */
 			if (err) {

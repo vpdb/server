@@ -189,11 +189,11 @@ function serve(req, res, file, variationName, headOnly) {
 			if (!variationName) {
 				var counters = [];
 				counters.push(function(next) {
-					file.update({ $inc: { 'counter.downloads': 1 }}, next);
+					file.incrementCounter('downloads', next);
 				});
 				if (!file.is_public) {
 					counters.push(function (next) {
-						req.user.update({$inc: {'counter.downloads': 1}}, next);
+						req.user.incrementCounter('downloads', next);
 
 					});
 				}

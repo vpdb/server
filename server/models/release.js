@@ -116,7 +116,7 @@ ReleaseSchema.plugin(fileRef, { model: 'Release' });
 ReleaseSchema.plugin(prettyId, { model: 'Release', ignore: [ '_created_by' ] });
 ReleaseSchema.plugin(paginate);
 ReleaseSchema.plugin(toObj);
-ReleaseSchema.plugin(metrics);
+ReleaseSchema.plugin(metrics, { hotness: { popularity: { downloads: 10, comments: 20 }}});
 FileSchema.plugin(toObj);
 VersionSchema.plugin(toObj);
 AuthorSchema.plugin(toObj);

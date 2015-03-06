@@ -99,7 +99,7 @@ GameSchema.plugin(prettyId, { model: 'Game', ignore: [ '_created_by' ] });
 GameSchema.plugin(fileRef, { model: 'Game' });
 GameSchema.plugin(paginate);
 GameSchema.plugin(toObj);
-GameSchema.plugin(metrics);
+GameSchema.plugin(metrics, { hotness: { popularity: { views: 1, downloads: 10, comments: 20 }}});
 
 
 //-----------------------------------------------------------------------------

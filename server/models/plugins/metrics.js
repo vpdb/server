@@ -17,13 +17,30 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+"use strict";
+
+var _ = require('lodash');
+
 module.exports = function(schema, options) {
+
+	options = options || {};
 
 	schema.methods.incrementCounter = function(what, next) {
 		next = next || function() {};
+		var that = this;
 		var q = { $inc: { } };
 		q.$inc['counter.' + what] = 1;
+
+		if (options.hotness) {
+			q.metrics = q.metrics || {};
+			_.each(options.hotness, function(hotness, metric) {
+				var score = 0;
+				_.each(hotness, function(factor, variable) {
+					score += factor * that.counter[variable];
+				});
+				q.metrics[metric] = Math.log(Math.max(score, 1));
+			});
+		}
 		this.update(q, next);
 	};
-
 };

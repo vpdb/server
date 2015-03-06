@@ -36,6 +36,7 @@ postman*.json
 
 .restart
 .reload
+.idea/bashsupport_project.xml
 .idea/compiler.xml
 .idea/copyright/
 .idea/dictionaries/

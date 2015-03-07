@@ -21,7 +21,8 @@
 
 angular.module('vpdb.releases.list', [])
 
-	.controller('ReleaseListController', function($scope, $rootScope, $http, $localStorage, $templateCache, ApiHelper, ReleaseResource) {
+	.controller('ReleaseListController', function($scope, $rootScope, $http, $localStorage, $templateCache, $location,
+												  ApiHelper, ReleaseResource) {
 
 		// view type config
 		var viewTypes = [ 'extended', 'table' ];
@@ -69,16 +70,27 @@ angular.module('vpdb.releases.list', [])
 			$localStorage.releases.viewtype = view;
 			$scope.viewtype = view;
 			$scope.setViewTemplate(view);
-			refresh();
+			refresh({});
 		};
 		$scope.setViewTemplate($scope.viewtype);
+		var urlQuery = $location.search();
 
 
 		// QUERY LOGIC
 		// --------------------------------------------------------------------
+		var refresh = function(queryOverride, firstRunCheck) {
 
-		var refresh = function(queryOverride) {
+			// ignore initial watches
+			if (queryOverride === firstRunCheck) {
+				return;
+			}
+
 			var query = { sort: $scope.sort, thumb: thumbType };
+			console.log(query);
+			if ($scope.firstQuery) {
+				query.page = urlQuery.page;
+				$scope.firstQuery = false;
+			}
 			queryOverride = queryOverride || {};
 
 			// search query
@@ -102,7 +114,9 @@ angular.module('vpdb.releases.list', [])
 			} else {
 				delete query.mfg;
 			}
+
 			query = _.extend(query, queryOverride);
+			$location.search(queryToUrl(query));
 
 			// refresh if changes
 			if (!_.isEqual($scope.$query, query)) {
@@ -110,6 +124,41 @@ angular.module('vpdb.releases.list', [])
 				$scope.$query = query;
 			}
 		};
+
+		var queryToUrl = function(query) {
+			var defaults = {
+				sort: 'title',
+				page: '1',
+				per_page: '12'
+			};
+			var q = _.omit(query, function (value, key) {
+				return defaults[key] === value;
+			});
+			delete q.thumb;
+			return q;
+		};
+
+		// update scope with query variables TODO surely we can refactor this a bit?
+		if (urlQuery.q) {
+			$scope.q = urlQuery.q;
+		}
+		if (urlQuery.page) {
+			$scope.page = urlQuery.page;
+		}
+		if (urlQuery.sort) {
+			$scope.sort = urlQuery.sort;
+		}
+		if (urlQuery.decade) {
+			$scope.filterYearOpen = true;
+			$scope.filterDecades = _.map(urlQuery.decade.split(','), function(y) {
+				return parseInt(y);
+			});
+		}
+		if (urlQuery.mfg) {
+			$scope.filterManufacturerOpen = true;
+			$scope.filterManufacturer = urlQuery.mfg.split(',');
+		}
+
 
 		$scope.$watch('q', refresh);
 
@@ -119,7 +168,7 @@ angular.module('vpdb.releases.list', [])
 
 		$scope.$on('dataChangeSort', function(event, field, direction) {
 			$scope.sort = (direction === 'desc' ? '-' : '') + field;
-			refresh();
+			refresh({});
 		});
 
 		$scope.$on('dataToggleDecade', function(event, decade) {
@@ -128,7 +177,7 @@ angular.module('vpdb.releases.list', [])
 			} else {
 				$scope.filterDecades.push(decade);
 			}
-			refresh();
+			refresh({});
 		});
 
 		$scope.$on('dataToggleManufacturer', function(event, manufacturer) {
@@ -137,8 +186,10 @@ angular.module('vpdb.releases.list', [])
 			} else {
 				$scope.filterManufacturer.push(manufacturer);
 			}
-			refresh();
+			refresh({});
 		});
+
+		refresh({});
 	});
 
 

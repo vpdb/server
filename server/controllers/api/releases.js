@@ -132,6 +132,11 @@ exports.list = function(req, res) {
 		query.push({ $or: [ { name: titleRegex }, { 'game.title': titleRegex}, { id: idQuery } ] });
 	}
 
+	// filter by tag
+	if (req.query.tag) {
+		query.push({ _tags: { $in: req.query.tag.split(',') }});
+	}
+
 	var sortBy = api.sortParams(req);
 	var q = api.searchQuery(query);
 	logger.info('[api|release:list] query: %s, sort: %j', util.inspect(q), util.inspect(sortBy));

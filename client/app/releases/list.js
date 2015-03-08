@@ -22,7 +22,8 @@
 angular.module('vpdb.releases.list', [])
 
 	.controller('ReleaseListController', function($scope, $rootScope, $http, $localStorage, $templateCache, $location,
-												  ApiHelper, ReleaseResource) {
+												  ApiHelper,
+												  ReleaseResource, TagResource) {
 
 		// view type config
 		var viewTypes = [ 'extended', 'table' ];
@@ -38,12 +39,13 @@ angular.module('vpdb.releases.list', [])
 
 		// query defaults
 		$scope.$query = null;
-		$scope.filterDecades = [];
-		$scope.filterManufacturer = [];
+		$scope.filterTags = [];
 		$scope.sort = 'title';
 
 		// stuff we need in the view
 		$scope.Math = window.Math;
+
+		$scope.tags = TagResource.query();
 
 		// preload partials
 		_.each(['compact', 'extended' ], function(view) {
@@ -101,19 +103,13 @@ angular.module('vpdb.releases.list', [])
 				delete query.q;
 			}
 
-			// filter by decade
-			if ($scope.filterDecades.length) {
-				query.decade = $scope.filterDecades.join(',');
+			// filter by tags
+			if ($scope.filterTags.length) {
+				query.tag = $scope.filterTags.join(',');
 			} else {
-				delete query.decade;
+				delete query.tag;
 			}
 
-			// filter by manufacturer
-			if ($scope.filterManufacturer.length) {
-				query.mfg = $scope.filterManufacturer.join(',');
-			} else {
-				delete query.mfg;
-			}
 
 			query = _.extend(query, queryOverride);
 			$location.search(queryToUrl(query));
@@ -148,15 +144,9 @@ angular.module('vpdb.releases.list', [])
 		if (urlQuery.sort) {
 			$scope.sort = urlQuery.sort;
 		}
-		if (urlQuery.decade) {
-			$scope.filterYearOpen = true;
-			$scope.filterDecades = _.map(urlQuery.decade.split(','), function(y) {
-				return parseInt(y);
-			});
-		}
-		if (urlQuery.mfg) {
-			$scope.filterManufacturerOpen = true;
-			$scope.filterManufacturer = urlQuery.mfg.split(',');
+		if (urlQuery.tag) {
+			$scope.filterTagOpen = true;
+			$scope.filterTags = urlQuery.tag.split(',');
 		}
 
 
@@ -171,25 +161,32 @@ angular.module('vpdb.releases.list', [])
 			refresh({});
 		});
 
-		$scope.$on('dataToggleDecade', function(event, decade) {
-			if (_.contains($scope.filterDecades, decade)) {
-				$scope.filterDecades.splice($scope.filterDecades.indexOf(decade), 1);
+		$scope.$on('dataToggleTag', function(event, tag) {
+			if (_.contains($scope.filterTags, tag)) {
+				$scope.filterTags.splice($scope.filterTags.indexOf(tag), 1);
 			} else {
-				$scope.filterDecades.push(decade);
-			}
-			refresh({});
-		});
-
-		$scope.$on('dataToggleManufacturer', function(event, manufacturer) {
-			if (_.contains($scope.filterManufacturer, manufacturer)) {
-				$scope.filterManufacturer.splice($scope.filterManufacturer.indexOf(manufacturer), 1);
-			} else {
-				$scope.filterManufacturer.push(manufacturer);
+				$scope.filterTags.push(tag);
 			}
 			refresh({});
 		});
 
 		refresh({});
-	});
+	})
+
+
+	.directive('filterTag', function() {
+		return {
+			restrict: 'A',
+			link: function(scope, element, attrs) {
+				if (_.contains(scope.filterTags, attrs.filterTag)) {
+					element.addClass('active');
+				}
+				element.click(function() {
+					element.toggleClass('active');
+					scope.$emit('dataToggleTag', attrs.filterTag, element.hasClass('active'));
+				});
+			}
+		};
+	})
 
 

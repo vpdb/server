@@ -32,6 +32,7 @@ var toObj = require('./plugins/to-object');
 var metrics = require('./plugins/metrics');
 var fileRef = require('./plugins/file-ref');
 var prettyId = require('./plugins/pretty-id');
+var idValidator = require('./plugins/id-ref');
 
 var Schema = mongoose.Schema;
 
@@ -77,7 +78,7 @@ var releaseFields = {
 	description: { type: String },
 	versions:    { type: [ VersionSchema ], validate: [ nonEmptyArray, 'You must provide at least one version for the release.' ] },
 	authors:     { type: [ AuthorSchema ], validate: [ nonEmptyArray, 'You must provide at least one author.' ] },
-	_tags:     [ { type: Schema.ObjectId, ref: 'Tag' } ],
+	_tags:     [ { type: String, ref: 'Tag' } ],
 	links: [ {
 		label: { type: String },
 		url: { type: String }
@@ -113,7 +114,8 @@ var ReleaseSchema = new Schema(releaseFields);
 //-----------------------------------------------------------------------------
 ReleaseSchema.plugin(uniqueValidator, { message: 'The {PATH} "{VALUE}" is already taken.' });
 ReleaseSchema.plugin(fileRef, { model: 'Release' });
-ReleaseSchema.plugin(prettyId, { model: 'Release', ignore: [ '_created_by' ] });
+ReleaseSchema.plugin(prettyId, { model: 'Release', ignore: [ '_created_by', '_tags' ] });
+ReleaseSchema.plugin(idValidator, { fields: [ '_tags' ] });
 ReleaseSchema.plugin(paginate);
 ReleaseSchema.plugin(toObj);
 ReleaseSchema.plugin(metrics, { hotness: { popularity: { downloads: 10, comments: 20 }}});

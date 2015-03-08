@@ -50,14 +50,14 @@ exports.list = function(req, res) {
 	});
 };
 
-
 exports.create = function(req, res) {
 
-	var newTag = new Tag(req.body);
-	newTag.id = newTag.name ? newTag.name.replace(/(^[^a-z0-9]+)|([^a-z0-9]+$)/gi, '').replace(/[^a-z0-9]+/gi, '-').toLowerCase() : '-';
-	newTag.is_active = false;
-	newTag.created_at = new Date();
-	newTag._created_by = req.user._id;
+	var newTag = new Tag(_.extend(req.body, {
+		_id: req.body.name ? req.body.name.replace(/(^[^a-z0-9]+)|([^a-z0-9]+$)/gi, '').replace(/[^a-z0-9]+/gi, '-').toLowerCase() : '-',
+		is_active: false,
+		created_at: new Date(),
+		_created_by: req.user._id
+	}));
 
 	newTag.validate(function(err) {
 		if (err) {
@@ -85,7 +85,7 @@ exports.del = function(req, res) {
 
 	var assert = api.assert(error, 'delete', req.params.id, res);
 	acl.isAllowed(req.user.id, 'tags', 'delete', assert(function(canDelete) {
-		Tag.findOne({ id: req.params.id }, assert(function(tag) {
+		Tag.findById(req.params.id, assert(function(tag) {
 
 			if (!tag) {
 				return api.fail(res, error('No such tag with ID "%s".', req.params.id), 404);
@@ -102,9 +102,9 @@ exports.del = function(req, res) {
 			tag.remove(function(err) {
 				/* istanbul ignore if  */
 				if (err) {
-					return api.fail(res, error(err, 'Error deleting tag "%s" (%s)', tag.id, tag.name).log('delete'), 500);
+					return api.fail(res, error(err, 'Error deleting tag "%s" (%s)', tag._id, tag.name).log('delete'), 500);
 				}
-				logger.info('[api|tag:delete] Tag "%s" (%s) successfully deleted.', tag.name, tag.id);
+				logger.info('[api|tag:delete] Tag "%s" (%s) successfully deleted.', tag.name, tag._id);
 				api.success(res, null, 204);
 			});
 		}), 'Error getting tag "%s"');

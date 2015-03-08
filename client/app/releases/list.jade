@@ -39,16 +39,11 @@ include ../template/_mixins
 
 		accordion.panel-group--transparent(close-others="false")
 
-			// year filter
-			accordion-group.panel--inner(is-open="filterYearOpen")
-				accordion-heading by Year
+			// tag filter
+			accordion-group.panel--inner(is-open="filterTagOpen")
+				accordion-heading by Tag
 				.row
-					.col-xs-6.text-center.a(filter-decade="1960") 1960s
-					.col-xs-6.text-center.a(filter-decade="1970") 1970s
-					.col-xs-6.text-center.a(filter-decade="1980") 1980s
-					.col-xs-6.text-center.a(filter-decade="1990") 1990s
-					.col-xs-6.text-center.a(filter-decade="2000") 2000s
-					.col-xs-6.text-center.a(filter-decade="2010") 2010s
+					.col-xs-6.text-center.a(ng-repeat="tag in tags" filter-tag="{{ tag.id }}", title="{{ tag.description }}") {{ tag.name }}
 
 			// manufacturer filter
 			accordion-group.panel--inner(is-open="filterManufacturerOpen")

@@ -44,7 +44,7 @@ module.exports = function(schema, options) {
 	options.validations = options.validations || [];
 
 	var paths = _.omit(common.traversePaths(schema), function(schemaType, path) {
-		return _.contains(options.ignore, path);
+		return _.contains(options.ignore, path.replace(/\.0$/g, ''));
 	});
 
 	/**
@@ -93,7 +93,7 @@ module.exports = function(schema, options) {
 				}
 				if (!refObj) {
 					logger.warn('[model] %s ID "%s" not found in database for field %s.', refModelName, prettyId, objPath);
-					invalidations.push({ path: objPath, message: 'No such ' + refModelName.toLowerCase() + ' with ID "' + prettyId + '".', value: prettyId });
+					invalidations.push({ path: objPath, message: 'No such ' + refModelName.toLowerCase() + ' with id "' + prettyId + '".', value: prettyId });
 					objectPath.set(obj, objPath, '000000000000000000000000'); // to avoid class cast error to objectId
 				} else {
 					// validations

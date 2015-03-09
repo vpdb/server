@@ -452,7 +452,7 @@ describe('The VPDB `user` API', function() {
 			request
 				.patch('/api/v1/user')
 				.as('chprofile')
-				.send({ preferences: { flavor_tags: { orientation: { fs: '', ws: 'dt' }, lightning: { day : '', night: 'nm' } } } })
+				.send({ preferences: { flavor_tags: { orientation: { fs: '', ws: 'dt', any: '' }, lightning: { day : '', night: 'nm', any: '' } } } })
 				.end(function (err, res) {
 					hlp.expectStatus(err, res, 200);
 					expect(res.body.preferences.flavor_tags.orientation.fs).to.be('');
@@ -464,7 +464,7 @@ describe('The VPDB `user` API', function() {
 			request
 				.patch('/api/v1/user')
 				.as('chprofile')
-				.send({ preferences: { flavor_tags: { orientation: { fs: 'fs', ws: 'dt' }, lightning: { day : 'day', night: 'nm' } } } })
+				.send({ preferences: { flavor_tags: { orientation: { fs: 'fs', ws: 'dt', any: 'universal' }, lightning: { day : 'day', night: 'nm', any: 'universal' } } } })
 				.end(function (err, res) {
 					hlp.expectStatus(err, res, 200);
 					expect(res.body.preferences.flavor_tags.orientation.fs).to.be('fs');

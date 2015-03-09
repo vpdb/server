@@ -34,6 +34,11 @@ exports.values = {
 			hint: 'Landscape',
 			description: 'Typical landscape monitor orientation, also known as "DT" (desktop).',
 			filenameTag: 'DT'
+		},
+		any: {
+			name: 'Universal',
+			hint: 'Any orientation',
+			description: 'Tables built with VP10+ that are fully 3D and can be rendered at any orientation.'
 		}
 	},
 	lightning: {
@@ -48,6 +53,11 @@ exports.values = {
 			hint: 'Dark Playfield',
 			description: 'Ambient light is low, resulting in a high contrast between playfield and lamps.',
 			filenameTag: 'Nightmod'
+		},
+		any: {
+			name: 'Universal',
+			hint: 'Customizable',
+			description: 'Tables built with VP10+ where lightning can be adjusted with the slider.'
 		}
 	}
 };

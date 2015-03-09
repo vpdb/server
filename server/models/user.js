@@ -32,6 +32,7 @@ var metrics = require('./plugins/metrics');
 
 var error = require('../modules/error')('model', 'user');
 var config = require('../modules/settings').current;
+var flavor = require('../modules/flavor');
 var Schema = mongoose.Schema;
 
 
@@ -218,26 +219,18 @@ UserSchema.path('provider').validate(function(provider) {
 		}
 	}
 	if (this.preferences && this.preferences.flavor_tags) {
-		if (this.preferences.flavor_tags.orientation) {
-			if (_.isUndefined(this.preferences.flavor_tags.orientation.fs)) {
-				this.invalidate('preferences.flavor_tags.orientation.fs', 'Must be provided when providing preferences.flavor_tags.orientation.');
+		var that = this;
+		_.each(flavor.values, function(flavorType, flavorId) {  // flavorId: 'orientation', flavorType: { fs: { name: 'Portrait', .. }, ws: { ... } }
+			if (that.preferences.flavor_tags[flavorId]) {
+				_.each(flavorType, function(flavorAttrs, flavorValue) { // flavorValue: 'fs', flavorAttrs: { name: 'Portrait', .. }
+					if (_.isUndefined(that.preferences.flavor_tags[flavorId][flavorValue])) {
+						that.invalidate('preferences.flavor_tags.' + flavorId + '.' + flavorValue, 'Must be provided when providing preferences.flavor_tags.' + flavorId + '.');
+					}
+				});
+			} else {
+				that.invalidate('preferences.flavor_tags.' + flavorId, 'Must be provided when providing preferences.flavor_tags.');
 			}
-			if (_.isUndefined(this.preferences.flavor_tags.orientation.ws)) {
-				this.invalidate('preferences.flavor_tags.orientation.ws', 'Must be provided when providing preferences.flavor_tags.orientation.');
-			}
-		} else {
-			this.invalidate('preferences.flavor_tags.orientation', 'Must be provided when providing preferences.flavor_tags.');
-		}
-		if (this.preferences.flavor_tags.lightning) {
-			if (_.isUndefined(this.preferences.flavor_tags.lightning.night)) {
-				this.invalidate('preferences.flavor_tags.lightning.night', 'Must be provided when providing preferences.flavor_tags.lightning.');
-			}
-			if (_.isUndefined(this.preferences.flavor_tags.lightning.day)) {
-				this.invalidate('preferences.flavor_tags.lightning.day', 'Must be provided when providing preferences.flavor_tags.lightning.');
-			}
-		} else {
-			this.invalidate('preferences.flavor_tags.lightning', 'Must be provided when providing preferences.flavor_tags.');
-		}
+		});
 	}
 
 }, null);

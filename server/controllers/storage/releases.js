@@ -28,6 +28,7 @@ var archiver = require('archiver');
 var Release = require('mongoose').model('Release');
 var Rom = require('mongoose').model('Rom');
 var quota = require('../../modules/quota');
+var flavor = require('../../modules/flavor');
 
 /**
  * Downloads a release.
@@ -285,10 +286,7 @@ function getTableFilename(user, release, file, releaseFiles) {
 
 	var userPrefs = user.preferences || {};
 	var tableName = userPrefs.tablefile_name || '{game_title} ({game_manufacturer} {game_year})';
-	var flavorTags = userPrefs.flavor_tags || {
-			orientation: { fs: 'FS', ws: 'DT' },
-			lightning: { day: '', night: 'Nightmod' }
-		};
+	var flavorTags = userPrefs.flavor_tags || flavor.defaultFileTags();
 
 	var data = {
 		game_title: release._game.title,

@@ -34,6 +34,8 @@ var fileRef = require('./plugins/file-ref');
 var prettyId = require('./plugins/pretty-id');
 var idValidator = require('./plugins/id-ref');
 
+var flavor = require('../modules/flavor');
+
 var Schema = mongoose.Schema;
 
 //-----------------------------------------------------------------------------
@@ -43,8 +45,8 @@ var Schema = mongoose.Schema;
 var fileFields = {
 	_file:  { type: Schema.ObjectId, required: 'You must provide a file reference.', ref: 'File' },
 	flavor: {
-		orientation: { type: String, enum: { values: [ 'ws', 'fs' ], message: 'Invalid orientation. Valid orientation are: ["ws", "fs"].' }},
-		lightning:   { type: String, enum: { values: [ 'day', 'night' ], message: 'Invalid lightning. Valid options are: ["day", "night"].' }}
+		orientation: { type: String, enum: { values: flavor.keys('orientation'), message: 'Invalid orientation. Valid orientation are: ["' + flavor.keys('orientation').join('", "') + '"].' }},
+		lightning:   { type: String, enum: { values: flavor.keys('lightning'), message: 'Invalid lightning. Valid options are: ["' + flavor.keys('lightning').join('", "') + '"].' }}
 	},
 	_compatibility: [ { type: Schema.ObjectId, ref: 'Build' } ],
 	_media: {
@@ -237,9 +239,7 @@ ReleaseSchema.methods.toDetailed = function() {
 
 ReleaseSchema.methods.toSimple = function(opts) {
 	opts = opts || {};
-	opts.flavor = opts.flavor || {};
-	opts.flavor.lightning = opts.flavor.lightning || 'day';
-	opts.flavor.orientation = opts.flavor.orientation || 'fs';
+	opts.flavor = flavor.defaultThumb(opts.flavor);
 	opts.thumb = opts.thumb || 'original';
 
 	var i, file, thumb;

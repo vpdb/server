@@ -102,9 +102,10 @@ exports.list = function(req, res) {
 	var query = [];
 
 	// flavor, thumb selection
-	var transformOpts = { flavor: {} };
+	var transformOpts = {};
 	if (req.query.flavor) {
-		// /api/v1/releases?flavor=orientation:fs,lighting:day
+		// ex.: /api/v1/releases?flavor=orientation:fs,lighting:day
+		transformOpts.flavor = {};
 		var flavorParams = req.query.flavor.split(',');
 		_.each(flavorParams, function(param) {
 			var f = param.split(':');

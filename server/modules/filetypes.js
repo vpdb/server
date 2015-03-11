@@ -19,27 +19,41 @@
 
 "use strict";
 
+var _ = require('lodash');
+
 /**
  * This are the allowed file types.
  */
-module.exports = {
+exports.values = {
 
 	'backglass': {
-		mimetypes: [ 'image/jpeg', 'image/png' ]
+		mimeTypes: [ 'image/jpeg', 'image/png' ]
 	},
 	'logo': {
-		mimetypes: [ 'image/png' ]
+		mimeTypes: [ 'image/png' ]
 	},
 	'playfield-fs': {
-		mimetypes: [ 'image/jpeg', 'image/png', 'video/mp4', 'video/x-flv', 'video/avi' ]
+		mimeTypes: [ 'image/jpeg', 'image/png', 'video/mp4', 'video/x-flv', 'video/avi' ]
 	},
 	'playfield-ws': {
-		mimetypes: [ 'image/jpeg', 'image/png', 'video/mp4', 'video/x-flv', 'video/avi' ]
+		mimeTypes: [ 'image/jpeg', 'image/png', 'video/mp4', 'video/x-flv', 'video/avi' ]
 	},
 	'release': {
-		mimetypes: [ 'application/x-visual-pinball-table', 'application/x-visual-pinball-table-x', 'text/plain', 'application/vbscript', 'audio/mpeg', 'application/zip' ]
+		mimeTypes: [ 'application/x-visual-pinball-table', 'application/x-visual-pinball-table-x', 'text/plain', 'application/vbscript', 'audio/mpeg', 'application/zip' ]
 	},
 	'rom': {
-		mimetypes: [ 'application/zip' ]
+		mimeTypes: [ 'application/zip' ]
 	}
+};
+
+exports.keys = function() {
+	return _.keys(exports.values);
+};
+
+exports.mimeTypes = function(type) {
+	return exports.values[type].mimeTypes;
+};
+
+exports.exists = function(type) {
+	return exports.values[type] ? true : false;
 };

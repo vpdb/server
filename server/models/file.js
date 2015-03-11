@@ -44,7 +44,7 @@ var fields = {
 	name:         { type: String, required: 'Filename must be provided.' },
 	bytes:        { type: Number, required: true },
 	mime_type:    { type: String, required: true, 'enum': { values: _.keys(mimeTypes), message: 'Invalid MIME type. Valid MIME types are: ["' +  _.keys(mimeTypes).join('", "') + '"].' }},
-	file_type:    { type: String, required: true, 'enum': { values: _.keys(fileTypes), message: 'Invalid file type. Valid file types are: ["' +  _.keys(fileTypes).join('", "') + '"].' }},
+	file_type:    { type: String, required: true, 'enum': { values: fileTypes.keys(), message: 'Invalid file type. Valid file types are: ["' +  fileTypes.keys().join('", "') + '"].' }},
 	metadata:     { type: Schema.Types.Mixed },
 	variations:   { type: Schema.Types.Mixed },
 	is_active:    { type: Boolean, required: true, 'default': false },
@@ -113,11 +113,11 @@ FileSchema.virtual('is_public')
 //-----------------------------------------------------------------------------
 FileSchema.path('mime_type').validate(function(mimeType) {
 	// will be validated by enum
-	if (!this.file_type || !fileTypes[this.file_type]) {
+	if (!this.file_type || !fileTypes.exists(this.file_type)) {
 		return true;
 	}
-	if (!_.contains(fileTypes[this.file_type].mimetypes, mimeType)) {
-		this.invalidate('mime_type', 'Invalid MIME type for file type "' + this.file_type + '". Valid MIME types are: ["' + fileTypes[this.file_type].mimetypes.join('", "') + '"].');
+	if (!_.contains(fileTypes.mimeTypes(this.file_type), mimeType)) {
+		this.invalidate('mime_type', 'Invalid MIME type for file type "' + this.file_type + '". Valid MIME types are: ["' + fileTypes.mimeTypes(this.file_type).join('", "') + '"].');
 	}
 });
 

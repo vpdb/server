@@ -109,6 +109,20 @@ FileSchema.virtual('is_public')
 
 
 //-----------------------------------------------------------------------------
+// VALIDATIONS
+//-----------------------------------------------------------------------------
+FileSchema.path('mime_type').validate(function(mimeType) {
+	// will be validated by enum
+	if (!this.file_type || !fileTypes[this.file_type]) {
+		return true;
+	}
+	if (!_.contains(fileTypes[this.file_type].mimetypes, mimeType)) {
+		this.invalidate('mime_type', 'Invalid MIME type for file type "' + this.file_type + '". Valid MIME types are: ["' + fileTypes[this.file_type].mimetypes.join('", "') + '"].');
+	}
+});
+
+
+//-----------------------------------------------------------------------------
 // METHODS
 //-----------------------------------------------------------------------------
 

@@ -110,7 +110,7 @@ describe('The VPDB `ROM` API', function() {
 			var user = 'member';
 			request
 				.post('/storage/v1/files')
-				.query({ type: 'rom' })
+				.query({ type: 'release' })
 				.type('text/plain')
 				.set('Content-Disposition', 'attachment; filename="README.txt"')
 				.send('You are looking at a text file generated during a test.')

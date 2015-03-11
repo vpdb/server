@@ -46,7 +46,7 @@ exports.values = {
 			if (_.contains(['image/jpeg', 'image/png'], file.mime_type)) {
 				dim = file.metadata.size;
 			} else {
-				if (_.isArray(file.metadata.streams)) {
+				if (file.metadata && _.isArray(file.metadata.streams)) {
 					for (var i = 0; i < file.metadata.streams.length; i++) {
 						if (file.metadata.streams[i].width && file.metadata.streams[i].height) {
 							dim = { width: file.metadata.streams[i].width, height: file.metadata.streams[i].height };

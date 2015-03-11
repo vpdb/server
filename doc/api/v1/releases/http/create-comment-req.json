@@ -1,10 +1,10 @@
-POST /api/v1/releases/m1L2AXvgu/comments HTTP/1.1
+POST /api/v1/releases/Q1OzEHZeXY/comments HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJtMTFfalJRRGVPIiwiaWF0IjoiMjAxNS0wMi0yNVQyMDowODowMS40NTJaIiwiZXhwIjoiMjAxNS0wMi0yNVQyMTowODowMS40NTJaIn0.Jy6YjbZDdBycBOljZ9QJGqzHb15mfaK7lylq7IBr09M
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJtSnhnNFNXZVhZIiwiaWF0IjoiMjAxNS0wMy0xMVQyMTo1MjowOS44NDhaIiwiZXhwIjoiMjAxNS0wMy0xMVQyMjo1MjowOS44NDhaIn0.QUfA0vL-raKNq3QxfuKlyqYTT318oyDGCpAcBE5lCyc
 Content-Type: application/json
-Content-Length: 41
+Content-Length: 49
 
 {
-  "message": "Cross-group hybrid analyzer"
+  "message": "Centralized solution-oriented model"
 }

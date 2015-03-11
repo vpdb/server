@@ -1,8 +1,8 @@
-POST /api/v1/games/super-six-of-40/rating HTTP/1.1
+POST /api/v1/games/hot-tip/rating HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
 Content-Type: application/json
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI3MVh4Mkd0OHUiLCJpYXQiOiIyMDE1LTAzLTAyVDExOjMzOjEwLjU1NFoiLCJleHAiOiIyMDE1LTAzLTAyVDEyOjMzOjEwLjU1NFoifQ.H2D7l-qBPzGy1Aq6T4MJdf_OA1CCDZCK8NjgcCgh3Ds
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJYeTZCYmdRdCIsImlhdCI6IjIwMTUtMDMtMTFUMjE6NTI6MTguNzgxWiIsImV4cCI6IjIwMTUtMDMtMTFUMjI6NTI6MTguNzgxWiJ9.2PtXf4Bfq9IrqDFcaajkTjGtwsbPe-fK3d5-Y5kcgag
 Content-Length: 11
 
 {

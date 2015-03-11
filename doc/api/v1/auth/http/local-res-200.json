@@ -3,21 +3,21 @@ Content-Type: application/json; charset=utf-8
 Content-Encoding: gzip
 
 {
-  "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI3MXMtaVJYdmVfIiwiaWF0IjoiMjAxNS0wMi0yNVQyMDowODowMS4wMTVaIiwiZXhwIjoiMjAxNS0wMi0yNVQyMTowODowMS4wMTVaIn0.shKf-XIB2tvHNcqG79V8aYHcqsJXL5YwsDmLE2S_fL8",
-  "expires": "2015-02-25T21:08:01.015Z",
+  "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI3SnN2bVNXZVF0IiwiaWF0IjoiMjAxNS0wMy0xMVQyMTo1MjowOS4zOTZaIiwiZXhwIjoiMjAxNS0wMy0xMVQyMjo1MjowOS4zOTZaIn0.246OmJ7499oCAg5x1Sw1MoQP1ACF59o7LZwKvxkv3fg",
+  "expires": "2015-03-11T22:52:09.396Z",
   "user": {
-    "id": "71s-iRXve_",
-    "name": "Raina.Schiller",
-    "username": "Raina.Schiller",
-    "gravatar_id": "5aa037213b990a00e20b91328ceb31fc",
-    "email": "adrain3@gmail.com",
+    "id": "7JsvmSWeQt",
+    "name": "Margret_Senger72",
+    "username": "Margret_Senger72",
+    "gravatar_id": "c7018b39f1ca297eb39029a159a64003",
+    "email": "danny5@gmail.com",
     "is_active": true,
     "provider": "local",
     "roles": [
       "member"
     ],
     "plan": "free",
-    "created_at": "2015-02-25T20:08:00.968Z",
+    "created_at": "2015-03-11T21:52:09.341Z",
     "counter": {
       "downloads": 0,
       "comments": 0
@@ -26,11 +26,25 @@ Content-Encoding: gzip
       "users": [
         "search"
       ],
+      "user": [
+        "view",
+        "update"
+      ],
+      "ratings": [
+        "view",
+        "add",
+        "update"
+      ],
+      "files": [
+        "download",
+        "upload",
+        "delete"
+      ],
       "builds": [
         "add",
         "delete-own"
       ],
-      "roms": [
+      "tags": [
         "add",
         "delete-own"
       ],
@@ -38,26 +52,12 @@ Content-Encoding: gzip
         "delete",
         "add"
       ],
-      "files": [
-        "delete",
-        "download",
-        "upload"
-      ],
-      "tags": [
-        "add",
-        "delete-own"
-      ],
-      "ratings": [
-        "add",
-        "view",
-        "update"
-      ],
       "comments": [
         "add"
       ],
-      "user": [
-        "view",
-        "update"
+      "roms": [
+        "add",
+        "delete-own"
       ]
     }
   }

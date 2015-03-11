@@ -1,15 +1,15 @@
 200 OK
 Content-Type: application/json; charset=utf-8
-Content-Length: 360
-Etag: W/"168-28f4ff0d"
+Content-Length: 348
+Etag: W/"15c-4d0e2ac1"
 
 {
   "plan": "free",
-  "name": "Moriah_Hermiston",
-  "username": "Moriah_Hermiston",
-  "email": "eloise_vonrueden63@gmail.com",
+  "name": "Cristopher63",
+  "username": "Cristopher63",
+  "email": "zechariah_howe@gmail.com",
   "provider": "local",
-  "created_at": "2015-02-25T20:08:22.140Z",
+  "created_at": "2015-03-11T21:52:33.099Z",
   "is_active": true,
   "counter": {
     "downloads": 0,
@@ -18,6 +18,6 @@ Etag: W/"168-28f4ff0d"
   "roles": [
     "member"
   ],
-  "id": "myW8xeNvg_",
-  "gravatar_id": "a643623bc08dd6f43571a4b5cc45a4cd"
+  "id": "mylmjLZlQY",
+  "gravatar_id": "f09c0488c268005df4cbd26859ca252e"
 }

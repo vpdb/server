@@ -1,5 +1,5 @@
-GET /api/v1/games/monte-carlo/rating HTTP/1.1
+GET /api/v1/games/lucky-stars/rating HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI3SklndTJmRjhkIiwiaWF0IjoiMjAxNS0wMy0wMlQxMTozMzoxOC4zODBaIiwiZXhwIjoiMjAxNS0wMy0wMlQxMjozMzoxOC4zODBaIn0.5Bi-umGi-x8AdJq2z8LyUBBW2BwIEJ7tUpXmGmu10ek
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJRMWV0NkhXeFFGIiwiaWF0IjoiMjAxNS0wMy0xMVQyMTo1MjoxOS43NzFaIiwiZXhwIjoiMjAxNS0wMy0xMVQyMjo1MjoxOS43NzFaIn0.TQM1d-NRLoA5qJs3LY90thAcynH4MIdpTXXeSjAD5ZA
 

@@ -1,21 +1,21 @@
 POST /api/v1/releases HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJRa2otUGtWd2dfIiwiaWF0IjoiMjAxNS0wMi0yNVQyMDowODoxMy4wNjFaIiwiZXhwIjoiMjAxNS0wMi0yNVQyMTowODoxMy4wNjFaIn0.ezVOrjLrQ9wFA2qvNDVA3m_Rg150TE4gGiaX3SGbTYQ
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJRSkZfR0xiZzdGIiwiaWF0IjoiMjAxNS0wMy0xMVQyMTo1MjoyNC43MjdaIiwiZXhwIjoiMjAxNS0wMy0xMVQyMjo1MjoyNC43MjdaIn0.1DZZBMQufDsPm24f0x9LVNculCkMgQX4u-iajIpmCMw
 Content-Type: application/json
-Content-Length: 475
+Content-Length: 478
 
 {
   "name": "release",
-  "_game": "lady-luck",
+  "_game": "space-hawks",
   "versions": [
     {
       "files": [
         {
-          "_file": "Qy_buJEweu",
+          "_file": "mkDZ4IZxQt",
           "_media": {
-            "playfield_image": "my3-OJEvxd",
-            "playfield_video": "7ygKyVvgu"
+            "playfield_image": "XJC-4UWgmK",
+            "playfield_video": "m1IGELblQt"
           },
           "_compatibility": [
             "9.9.0"
@@ -26,9 +26,9 @@ Content-Length: 475
           }
         },
         {
-          "_file": "XktWuyNDx_",
+          "_file": "7yO-EL-g7F",
           "_media": {
-            "playfield_image": "XypWOJEPgd"
+            "playfield_image": "XyTWVI-lmK"
           },
           "_compatibility": [
             "9.9.0"
@@ -44,7 +44,7 @@ Content-Length: 475
   ],
   "authors": [
     {
-      "_user": "Qkj-PkVwg_",
+      "_user": "QJF_GLbg7F",
       "roles": [
         "Table Creator"
       ]

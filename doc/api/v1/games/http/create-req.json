@@ -1,26 +1,29 @@
 POST /api/v1/games HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJYSmQ0cFJtRGdPIiwiaWF0IjoiMjAxNS0wMi0yNVQyMDowODowMy42OTBaIiwiZXhwIjoiMjAxNS0wMi0yNVQyMTowODowMy42OTBaIn0.rJsRArLplFpMX1lZKDd9jhDBdBCIB5ie0QqauuEd6AA
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI3eWVTdkgtZ21ZIiwiaWF0IjoiMjAxNS0wMy0xMVQyMTo1MjoxMy41MTRaIiwiZXhwIjoiMjAxNS0wMy0xMVQyMjo1MjoxMy41MTRaIn0.RYPjovyvzwcLpaYBj7F7qzXldzUTlOS_UDOf2EO_Giw
 Content-Type: application/json
-Content-Length: 281
+Content-Length: 279
 
 {
   "ipdb": {
-    "number": 4604,
-    "mfg": 372
+    "number": 36,
+    "mfg": 130
   },
-  "title": "Gran Casino",
-  "manufacturer": "F�brica de Aparatos Electro Mec�nicos Recreativos, S.L",
+  "title": "Airport",
+  "manufacturer": "Genco",
+  "year": 1939,
   "game_type": "em",
   "themes": [
-    "Playing Cards",
-    "Gambling"
+    "Aircraft",
+    "Airplanes",
+    "Airports",
+    "Aviation",
+    "Flying"
   ],
-  "features": "Flippers (2).",
-  "id": "gran-casino",
-  "year": 1900,
+  "features": "Spring bumpers (16), Free ball gobble hole (1).",
+  "id": "airport",
   "_media": {
-    "backglass": "XkaETCXvgu"
+    "backglass": "QJrrvSbxXF"
   }
 }

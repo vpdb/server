@@ -1,15 +1,15 @@
 200 OK
 Content-Type: application/json; charset=utf-8
-Content-Length: 742
-Etag: W/"2e6-de069194"
+Content-Length: 754
+Etag: W/"2f2-696833e4"
 
 {
   "plan": "free",
-  "name": "Preston3",
-  "username": "Preston3",
-  "email": "ara.hansen@gmail.com",
+  "name": "Else_Schmitt30",
+  "username": "Else_Schmitt30",
+  "email": "gust_kuhic@yahoo.com",
   "provider": "local",
-  "created_at": "2015-02-25T20:08:00.204Z",
+  "created_at": "2015-03-11T21:52:08.575Z",
   "is_active": true,
   "counter": {
     "downloads": 0,
@@ -18,17 +18,31 @@ Etag: W/"2e6-de069194"
   "roles": [
     "member"
   ],
-  "id": "mJmx5Rmve_",
-  "gravatar_id": "253859258be129bf03686d8614297df2",
+  "id": "7k7xGSWeXt",
+  "gravatar_id": "203966492b7ebedd6e78029f66c18a0a",
   "permissions": {
     "users": [
       "search"
+    ],
+    "user": [
+      "view",
+      "update"
+    ],
+    "ratings": [
+      "view",
+      "add",
+      "update"
+    ],
+    "files": [
+      "download",
+      "upload",
+      "delete"
     ],
     "builds": [
       "add",
       "delete-own"
     ],
-    "roms": [
+    "tags": [
       "add",
       "delete-own"
     ],
@@ -36,26 +50,12 @@ Etag: W/"2e6-de069194"
       "delete",
       "add"
     ],
-    "files": [
-      "delete",
-      "download",
-      "upload"
-    ],
-    "tags": [
-      "add",
-      "delete-own"
-    ],
-    "ratings": [
-      "add",
-      "view",
-      "update"
-    ],
     "comments": [
       "add"
     ],
-    "user": [
-      "view",
-      "update"
+    "roms": [
+      "add",
+      "delete-own"
     ]
   }
 }

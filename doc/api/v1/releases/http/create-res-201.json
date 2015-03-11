@@ -4,12 +4,16 @@ Content-Encoding: gzip
 
 {
   "name": "release",
-  "created_at": "2015-02-25T20:08:15.576Z",
+  "created_at": "2015-03-11T21:52:26.857Z",
   "rating": {
     "votes": 0,
     "average": 0
   },
+  "metrics": {
+    "popularity": 0
+  },
   "counter": {
+    "score": 0,
     "comments": 0,
     "downloads": 0
   },
@@ -20,13 +24,13 @@ Content-Encoding: gzip
         "Table Creator"
       ],
       "user": {
-        "id": "Tî+­A¾Và\u0019¿M¼"
+        "id": "U\u0000¹\u0018`¶\u0010dFò·n"
       }
     }
   ],
   "versions": [
     {
-      "released_at": "2015-02-25T20:08:15.576Z",
+      "released_at": "2015-03-11T21:52:26.857Z",
       "version": "1.0.0",
       "counter": {
         "comments": 0,
@@ -45,7 +49,7 @@ Content-Encoding: gzip
             "playfield_image": {
               "name": "playfield-0.png",
               "bytes": 347,
-              "created_at": "2015-02-25T20:08:14.454Z",
+              "created_at": "2015-03-11T21:52:26.244Z",
               "mime_type": "image/png",
               "file_type": "playfield-fs",
               "metadata": {
@@ -56,47 +60,39 @@ Content-Encoding: gzip
                 },
                 "depth": 8
               },
-              "variations": {
-                "medium-landscape": {
-                  "width": 393,
-                  "height": 221,
-                  "bytes": 808,
-                  "mime_type": "image/jpeg",
-                  "url": "/storage/v1/files/my3-OJEvxd/medium-landscape"
-                },
-                "medium": {
-                  "width": 221,
-                  "height": 393,
-                  "bytes": 1122,
-                  "mime_type": "image/jpeg",
-                  "url": "/storage/v1/files/my3-OJEvxd/medium"
-                },
-                "medium-2x": {
-                  "url": "/storage/v1/files/my3-OJEvxd/medium-2x"
-                },
-                "medium-landscape-2x": {
-                  "url": "/storage/v1/files/my3-OJEvxd/medium-landscape-2x"
-                },
-                "square": {
-                  "url": "/storage/v1/files/my3-OJEvxd/square"
-                },
-                "square-2x": {
-                  "url": "/storage/v1/files/my3-OJEvxd/square-2x"
-                }
-              },
               "counter": {
                 "downloads": 0
               },
               "is_active": true,
-              "id": "my3-OJEvxd",
+              "id": "XJC-4UWgmK",
               "is_public": true,
               "is_protected": false,
-              "url": "/storage/v1/files/my3-OJEvxd"
+              "url": "/storage/v1/files/XJC-4UWgmK",
+              "variations": {
+                "medium": {
+                  "url": "/storage/v1/files/XJC-4UWgmK/medium"
+                },
+                "medium-2x": {
+                  "url": "/storage/v1/files/XJC-4UWgmK/medium-2x"
+                },
+                "medium-landscape": {
+                  "url": "/storage/v1/files/XJC-4UWgmK/medium-landscape"
+                },
+                "medium-landscape-2x": {
+                  "url": "/storage/v1/files/XJC-4UWgmK/medium-landscape-2x"
+                },
+                "square": {
+                  "url": "/storage/v1/files/XJC-4UWgmK/square"
+                },
+                "square-2x": {
+                  "url": "/storage/v1/files/XJC-4UWgmK/square-2x"
+                }
+              }
             },
             "playfield_video": {
               "name": "playfield.mp4",
               "bytes": 537368,
-              "created_at": "2015-02-25T20:08:15.122Z",
+              "created_at": "2015-03-11T21:52:26.515Z",
               "mime_type": "video/mp4",
               "file_type": "playfield-fs",
               "metadata": {
@@ -116,17 +112,17 @@ Content-Encoding: gzip
                 "downloads": 0
               },
               "is_active": true,
-              "id": "7ygKyVvgu",
+              "id": "m1IGELblQt",
               "is_public": false,
               "is_protected": true,
-              "url": "/storage/v1/files/7ygKyVvgu",
+              "url": "/storage/v1/files/m1IGELblQt",
               "variations": {
                 "still": {
-                  "url": "/storage/v1/files/7ygKyVvgu/still",
+                  "url": "/storage/v1/files/m1IGELblQt/still",
                   "is_protected": true
                 },
                 "small-rotated": {
-                  "url": "/storage/v1/files/7ygKyVvgu/small-rotated",
+                  "url": "/storage/v1/files/m1IGELblQt/small-rotated",
                   "is_protected": true
                 }
               }
@@ -134,17 +130,17 @@ Content-Encoding: gzip
           },
           "compatibility": [
             {
-              "id": "Tî+A¾Và\u0019¿Li"
+              "id": "U\u0000¹\u0007`¶\u0010dFòµõ"
             }
           ],
           "file": {
             "name": "test-table-0.vpt",
-            "created_at": "2015-02-25T20:08:14.398Z",
+            "created_at": "2015-03-11T21:52:26.195Z",
             "mime_type": "application/x-visual-pinball-table",
             "file_type": "release",
             "metadata": {},
-            "id": "Qy_buJEweu",
-            "url": "/storage/v1/files/Qy_buJEweu",
+            "id": "mkDZ4IZxQt",
+            "url": "/storage/v1/files/mkDZ4IZxQt",
             "bytes": 135168,
             "variations": {},
             "is_protected": true,
@@ -165,7 +161,7 @@ Content-Encoding: gzip
             "playfield_image": {
               "name": "playfield-1.png",
               "bytes": 347,
-              "created_at": "2015-02-25T20:08:14.456Z",
+              "created_at": "2015-03-11T21:52:26.243Z",
               "mime_type": "image/png",
               "file_type": "playfield-fs",
               "metadata": {
@@ -180,45 +176,45 @@ Content-Encoding: gzip
                 "downloads": 0
               },
               "is_active": true,
-              "id": "XypWOJEPgd",
+              "id": "XyTWVI-lmK",
               "is_public": true,
               "is_protected": false,
-              "url": "/storage/v1/files/XypWOJEPgd",
+              "url": "/storage/v1/files/XyTWVI-lmK",
               "variations": {
                 "medium": {
-                  "url": "/storage/v1/files/XypWOJEPgd/medium"
+                  "url": "/storage/v1/files/XyTWVI-lmK/medium"
                 },
                 "medium-2x": {
-                  "url": "/storage/v1/files/XypWOJEPgd/medium-2x"
+                  "url": "/storage/v1/files/XyTWVI-lmK/medium-2x"
                 },
                 "medium-landscape": {
-                  "url": "/storage/v1/files/XypWOJEPgd/medium-landscape"
+                  "url": "/storage/v1/files/XyTWVI-lmK/medium-landscape"
                 },
                 "medium-landscape-2x": {
-                  "url": "/storage/v1/files/XypWOJEPgd/medium-landscape-2x"
+                  "url": "/storage/v1/files/XyTWVI-lmK/medium-landscape-2x"
                 },
                 "square": {
-                  "url": "/storage/v1/files/XypWOJEPgd/square"
+                  "url": "/storage/v1/files/XyTWVI-lmK/square"
                 },
                 "square-2x": {
-                  "url": "/storage/v1/files/XypWOJEPgd/square-2x"
+                  "url": "/storage/v1/files/XyTWVI-lmK/square-2x"
                 }
               }
             }
           },
           "compatibility": [
             {
-              "id": "Tî+A¾Và\u0019¿Li"
+              "id": "U\u0000¹\u0007`¶\u0010dFòµõ"
             }
           ],
           "file": {
             "name": "test-table-1.vpt",
-            "created_at": "2015-02-25T20:08:14.398Z",
+            "created_at": "2015-03-11T21:52:26.195Z",
             "mime_type": "application/x-visual-pinball-table",
             "file_type": "release",
             "metadata": {},
-            "id": "XktWuyNDx_",
-            "url": "/storage/v1/files/XktWuyNDx_",
+            "id": "7yO-EL-g7F",
+            "url": "/storage/v1/files/7yO-EL-g7F",
             "bytes": 135168,
             "variations": {},
             "is_protected": true,
@@ -230,9 +226,9 @@ Content-Encoding: gzip
       ]
     }
   ],
-  "id": "m1aKJNPed",
+  "id": "X1vrLWgXF",
   "tags": [
-    "54ee2b9f41be56e019bf4c73",
-    "54ee2b9f41be56e019bf4c72"
+    "hd",
+    "dof"
   ]
 }

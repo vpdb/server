@@ -1,14 +1,14 @@
-PUT /api/v1/users/myW8xeNvg_ HTTP/1.1
+PUT /api/v1/users/mylmjLZlQY HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI3MTZCZ3hWd2VkIiwiaWF0IjoiMjAxNS0wMi0yNVQyMDowODoyMi4xMzBaIiwiZXhwIjoiMjAxNS0wMi0yNVQyMTowODoyMi4xMzBaIn0.QM9CVFGWWWNeIqXaJ7RNRUsJDvZT4ph1Mqe2kFbMbrA
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI3eTJNb0libDdZIiwiaWF0IjoiMjAxNS0wMy0xMVQyMTo1MjozMy4wODRaIiwiZXhwIjoiMjAxNS0wMy0xMVQyMjo1MjozMy4wODRaIn0.9VXYGTA7F-gAzKw8i-Q0wnwwUuVJ_2Uwmsx7-Z2PuXo
 Content-Type: application/json
-Content-Length: 117
+Content-Length: 124
 
 {
-  "email": "lucie22@gmail.com",
-  "username": "Darren.Gerlach",
-  "name": "Darren.Gerlach",
+  "email": "mariane.casper42@gmail.com",
+  "username": "Aubrey.Lang64",
+  "name": "Aubrey.Lang64",
   "is_active": true,
   "roles": [
     "member"

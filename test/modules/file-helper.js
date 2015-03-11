@@ -75,7 +75,7 @@ exports.createPlayfields = function(user, request, times, done) {
 };
 
 exports.createTextfile = function(user, request, done) {
-	var fileType = 'readme';
+	var fileType = 'release';
 	request
 		.post('/storage/v1/files')
 		.query({ type: fileType })
@@ -93,7 +93,7 @@ exports.createZip = function(user, request, done) {
 	var data = fs.readFileSync(zip);
 	request
 		.post('/storage/v1/files')
-		.query({ type: 'emptyzip' })
+		.query({ type: 'release' })
 		.type('application/zip')
 		.set('Content-Disposition', 'attachment; filename="empty.zip"')
 		.set('Content-Length', data.length)

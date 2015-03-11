@@ -78,7 +78,7 @@ describe('The storage engine of VPDB', function() {
 				var text = "should be able to retrieve the file";
 				request
 					.post('/storage/v1/files')
-					.query({ type: 'mooh' })
+					.query({ type: 'release' })
 					.as('member')
 					.type('text/plain')
 					.set('Content-Disposition', 'attachment; filename="text.txt"')
@@ -101,7 +101,7 @@ describe('The storage engine of VPDB', function() {
 			it('should fail with HTTP 403 when trying to retrieve the file as a different user', function(done) {
 				request
 					.post('/storage/v1/files')
-					.query({ type: 'mooh' })
+					.query({ type: 'release' })
 					.as('member')
 					.type('text/plain')
 					.set('Content-Disposition', 'attachment; filename="text.txt"')
@@ -117,7 +117,7 @@ describe('The storage engine of VPDB', function() {
 			it('should fail with HTTP 401 when trying to retrieve the file as a anonymous', function(done) {
 				request
 					.post('/storage/v1/files')
-					.query({ type: 'mooh' })
+					.query({ type: 'release' })
 					.as('member')
 					.type('text/plain')
 					.set('Content-Disposition', 'attachment; filename="text.txt"')

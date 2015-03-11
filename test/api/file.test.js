@@ -61,7 +61,7 @@ describe('The VPDB `file` API', function() {
 		it('should fail when providing wrong mime type in header', function(done) {
 			request
 				.post('/storage/v1/files')
-				.query({ type: 'foo' })
+				.query({ type: 'release' })
 				.as('member')
 				.set('Content-Disposition','attachment; filename="foo.bar"')
 				.send('xxx')
@@ -77,7 +77,7 @@ describe('The VPDB `file` API', function() {
 	describe('when uploading a text file', function() {
 
 		it('should return an object with the same parameters as provided in the headers', function(done) {
-			var fileType = 'mooh';
+			var fileType = 'release';
 			var mimeType = 'text/plain';
 			var name = "text.txt";
 			var text = "should return an object with the same parameters as provided in the headers";
@@ -176,7 +176,7 @@ describe('The VPDB `file` API', function() {
 	describe('after successfully uploading a file', function() {
 
 		it('should be able to retrieve the file details', function(done) {
-			var fileType = 'mooh';
+			var fileType = 'release';
 			var mimeType = 'text/plain';
 			var name = 'text.txt';
 			request
@@ -208,7 +208,7 @@ describe('The VPDB `file` API', function() {
 		it('should fail to retrieve the file details as anonymous', function(done) {
 			request
 				.post('/storage/v1/files')
-				.query({ type: 'mooh' })
+				.query({ type: 'release' })
 				.as('member')
 				.type('text/plain')
 				.set('Content-Disposition', 'attachment; filename="text.txt"')
@@ -224,7 +224,7 @@ describe('The VPDB `file` API', function() {
 		it('should fail to retrieve the file details as a different user', function(done) {
 			request
 				.post('/storage/v1/files')
-				.query({ type: 'mooh' })
+				.query({ type: 'release' })
 				.as('member')
 				.type('text/plain')
 				.set('Content-Disposition', 'attachment; filename="text.txt"')
@@ -240,7 +240,7 @@ describe('The VPDB `file` API', function() {
 		it('should fail when trying to retrieve the file as anonymous', function(done) {
 			request
 				.post('/storage/v1/files')
-				.query({ type: 'mooh' })
+				.query({ type: 'release' })
 				.as('member')
 				.type('text/plain')
 				.set('Content-Disposition', 'attachment; filename="text.txt"')
@@ -264,7 +264,7 @@ describe('The VPDB `file` API', function() {
 				function(next) {
 					request
 						.post('/storage/v1/files')
-						.query({ type: 'mooh' })
+						.query({ type: 'release' })
 						.as(user)
 						.type('text/plain')
 						.set('Content-Disposition', 'attachment; filename="text.txt"')
@@ -299,7 +299,7 @@ describe('The VPDB `file` API', function() {
 				function(next) {
 					request
 						.post('/storage/v1/files')
-						.query({ type: 'mooh' })
+						.query({ type: 'release' })
 						.as(user)
 						.type('text/plain')
 						.set('Content-Disposition', 'attachment; filename="text.txt"')

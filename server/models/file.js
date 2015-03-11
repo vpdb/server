@@ -30,6 +30,7 @@ var toObj = require('./plugins/to-object');
 var metrics = require('./plugins/metrics');
 var storage = require('../modules/storage');
 var mimeTypes = require('../modules/mimetypes');
+var fileTypes = require('../modules/filetypes');
 
 var Schema = mongoose.Schema;
 var config = settings.current;
@@ -43,7 +44,7 @@ var fields = {
 	name:         { type: String, required: 'Filename must be provided.' },
 	bytes:        { type: Number, required: true },
 	mime_type:    { type: String, required: true, 'enum': { values: _.keys(mimeTypes), message: 'Invalid MIME type. Valid MIME types are: ["' +  _.keys(mimeTypes).join('", "') + '"].' }},
-	file_type:    { type: String, required: true }, // TODO make enum
+	file_type:    { type: String, required: true, 'enum': { values: _.keys(fileTypes), message: 'Invalid file type. Valid file types are: ["' +  _.keys(fileTypes).join('", "') + '"].' }},
 	metadata:     { type: Schema.Types.Mixed },
 	variations:   { type: Schema.Types.Mixed },
 	is_active:    { type: Boolean, required: true, 'default': false },

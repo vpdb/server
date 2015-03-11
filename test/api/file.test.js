@@ -1,10 +1,12 @@
 "use strict"; /*global describe, before, after, it*/
 
 var fs = require('fs');
+var gm = require('gm');
 var path = require('path');
 var async = require('async');
 var request = require('superagent');
 var expect = require('expect.js');
+var pleasejs = require('pleasejs');
 
 var superagentTest = require('../modules/superagent-test');
 var hlp = require('../modules/helper');
@@ -157,6 +159,27 @@ describe('The VPDB `file` API', function() {
 				expect(playfield.variations.square).to.be.an('object');
 				expect(playfield.variations['square-2x']).to.be.an('object');
 				done();
+			});
+		});
+
+		it('should return the correct type for playfield-any', function(done) {
+			gm(1080, 1920, pleasejs.make_color()).toBuffer('PNG', function(err, data) {
+				if (err) {
+					throw err;
+				}
+				request
+					.post('/storage/v1/files')
+					.query({ type: 'playfield-any' })
+					.type('image/png')
+					.set('Content-Disposition', 'attachment; filename="random-shot.png"')
+					.set('Content-Length', data.length)
+					.send(data)
+					.as('member')
+					.end(function(res) {
+						expect(res.status).to.be(201);
+						expect(res.body.file_type).to.be('playfield-fs');
+						done();
+					});
 			});
 		});
 	});

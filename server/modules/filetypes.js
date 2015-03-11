@@ -20,6 +20,7 @@
 "use strict";
 
 var _ = require('lodash');
+var logger = require('winston');
 
 /**
  * This are the allowed file types.
@@ -37,6 +38,29 @@ exports.values = {
 	},
 	'playfield-ws': {
 		mimeTypes: [ 'image/jpeg', 'image/png', 'video/mp4', 'video/x-flv', 'video/avi' ]
+	},
+	'playfield-any': {
+		mimeTypes: [ 'image/jpeg', 'image/png', 'video/mp4', 'video/x-flv', 'video/avi' ],
+		transform: function(file) {
+			var dim;
+			if (_.contains(['image/jpeg', 'image/png'], file.mime_type)) {
+				dim = file.metadata.size;
+			} else {
+				if (_.isArray(file.metadata.streams)) {
+					for (var i = 0; i < file.metadata.streams.length; i++) {
+						if (file.metadata.streams[i].width && file.metadata.streams[i].height) {
+							dim = { width: file.metadata.streams[i].width, height: file.metadata.streams[i].height };
+							break;
+						}
+					}
+				} else {
+					logger.warn('Cannot retrieve dimensions from ' + file.metadata);
+					return file.file_type;
+				}
+
+			}
+			return 'playfield-' + (dim.width > dim.height ? 'ws' : 'fs');
+		}
 	},
 	'release': {
 		mimeTypes: [ 'application/x-visual-pinball-table', 'application/x-visual-pinball-table-x', 'text/plain', 'application/vbscript', 'audio/mpeg', 'application/zip' ]
@@ -56,4 +80,12 @@ exports.mimeTypes = function(type) {
 
 exports.exists = function(type) {
 	return exports.values[type] ? true : false;
+};
+
+exports.doesTransform = function(type) {
+	return exports.values[type] && exports.values[type].transform ? true : false;
+};
+
+exports.transform = function(type, file) {
+	return exports.values[type].transform(file);
 };

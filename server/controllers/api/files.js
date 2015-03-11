@@ -26,6 +26,7 @@ var api = require('./api');
 var File = require('mongoose').model('File');
 
 var storage = require('../../modules/storage');
+var fileTypes = require('../../modules/filetypes');
 var error = require('../../modules/error')('api', 'file');
 
 exports.upload = function(req, res) {
@@ -83,6 +84,12 @@ exports.upload = function(req, res) {
 
 					File.sanitizeObject(metadata);
 					file.metadata = metadata;
+
+					// transform file type if transformation set
+					if (fileTypes.doesTransform(file.file_type)) {
+						file.file_type = fileTypes.transform(file.file_type, file.metadata);
+					}
+
 					file.save(function(err, file) {
 						/* istanbul ignore if */
 						if (err) {

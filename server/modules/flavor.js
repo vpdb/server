@@ -38,7 +38,8 @@ exports.values = {
 		any: {
 			name: 'Universal',
 			hint: 'Any orientation',
-			description: 'Tables built with VP10+ that are fully 3D and can be rendered at any orientation.'
+			description: 'Tables built with VP10+ that are fully 3D and can be rendered at any orientation.',
+			filenameTag: ''
 		}
 	},
 	lightning: {
@@ -57,7 +58,8 @@ exports.values = {
 		any: {
 			name: 'Universal',
 			hint: 'Customizable',
-			description: 'Tables built with VP10+ where lightning can be adjusted with the slider.'
+			description: 'Tables built with VP10+ where lightning can be adjusted with the slider.',
+			filenameTag: ''
 		}
 	}
 };

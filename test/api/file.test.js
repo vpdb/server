@@ -161,27 +161,6 @@ describe('The VPDB `file` API', function() {
 				done();
 			});
 		});
-
-		it('should return the correct type for playfield-any', function(done) {
-			gm(1080, 1920, pleasejs.make_color()).toBuffer('PNG', function(err, data) {
-				if (err) {
-					throw err;
-				}
-				request
-					.post('/storage/v1/files')
-					.query({ type: 'playfield-any' })
-					.type('image/png')
-					.set('Content-Disposition', 'attachment; filename="random-shot.png"')
-					.set('Content-Length', data.length)
-					.send(data)
-					.as('member')
-					.end(function(res) {
-						expect(res.status).to.be(201);
-						expect(res.body.file_type).to.be('playfield-fs');
-						done();
-					});
-			});
-		});
 	});
 
 	describe('when uploading a video', function() {

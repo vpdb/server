@@ -85,11 +85,6 @@ exports.upload = function(req, res) {
 					File.sanitizeObject(metadata);
 					file.metadata = metadata;
 
-					// transform file type if transformation set
-					if (fileTypes.doesTransform(file.file_type)) {
-						file.file_type = fileTypes.transform(file.file_type, file.metadata);
-					}
-
 					file.save(function(err, file) {
 						/* istanbul ignore if */
 						if (err) {

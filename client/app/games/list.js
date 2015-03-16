@@ -169,24 +169,6 @@ angular.module('vpdb.games.list', [])
 		refresh({});
 	})
 
-	.filter('decade', function() {
-		return function(items, decades) {
-			if (!items || !decades || !decades.length) {
-				return items;
-			}
-			return _.filter(items, function(game) {
-				var decade;
-				for (var i = 0; i < decades.length; i++) {
-					decade = decades[i];
-					if (game.year >= decade && game.year < (decade + 10)) {
-						return true;
-					}
-				}
-				return false;
-			});
-		};
-	})
-
 	.directive('filterDecade', function() {
 		return {
 			restrict: 'A',

@@ -81,7 +81,7 @@ include ../template/_mixins
 						table.table--inner-border
 							tr(ng-repeat="flavor in flavors")
 								th.text--large {{ flavor.header }}
-								td(ng-repeat="flavorVal in flavor.values")
+								td(ng-repeat="flavorVal in flavor.values | allowedFlavors:file")
 									.radio--lg-twoliner.radio-inline
 										label(ng-click="flavorPreChange($event, flavor)")
 											input(type="radio", name="{{ file.name + flavor.header }}", value="{{ flavorVal.value }}", ng-model="file.flavor[flavor.name]")
@@ -182,9 +182,9 @@ include ../template/_mixins
 				//- SELECTED
 				h5.h--shift-up.hr--margin-small Selected Tags
 				.panel--dropzone-alt(ng-model="meta.tags",
-				  data-drop="true",
-				  data-jqyoui-options="{ accept: '.badge:not([ng-model=meta.tags])', activeClass: 'active', 'hoverClass': 'hover' }",
-				  jqyoui-droppable="{ multiple: true, onDrop: 'tagDropped' }")
+					data-drop="true",
+					data-jqyoui-options="{ accept: '.badge:not([ng-model=meta.tags])', activeClass: 'active', 'hoverClass': 'hover' }",
+					jqyoui-droppable="{ multiple: true, onDrop: 'tagDropped' }")
 					div.padder-top(ng-repeat="tag in meta.tags")
 						.badge.badge--tag(ng-model="meta.tags",
 							data-drag="true",
@@ -197,16 +197,16 @@ include ../template/_mixins
 			.col-sm-6
 				.rel-pos
 					.panel--dropzone-alt-2(ng-model="tags",
-					  data-drop="true",
-					  data-jqyoui-options="{ accept:':not([ng-model=tags])', activeClass: 'active', hoverClass: 'hover' }",
-					  jqyoui-droppable="{ multiple: true, onDrop: 'tagDropped' }")
+						data-drop="true",
+						data-jqyoui-options="{ accept:':not([ng-model=tags])', activeClass: 'active', hoverClass: 'hover' }",
+						jqyoui-droppable="{ multiple: true, onDrop: 'tagDropped' }")
 
 						//- EXISTING
 						h5.hr--margin-small.h--shift-up Existing Tags
 						.badge.badge--tag(ng-repeat="tag in tags", ng-model="tags",
-						  data-drag="true",
-						  data-jqyoui-options="{ revert: 'invalid' }",
-						  jqyoui-draggable='{ animate: true, index: {{$index}} }')
+							data-drag="true",
+							data-jqyoui-options="{ revert: 'invalid' }",
+							jqyoui-draggable='{ animate: true, index: {{$index}} }')
 							| {{ tag.name }}
 							+icon('question-circle').small.shift-up.space-left.a(
 								tooltip="{{tag.description}}",
@@ -376,7 +376,9 @@ include ../template/_mixins
 				| {{ file.name }}
 			hr.hr--light.hr--shifted-up
 			.row(ng-show="file.flavor.orientation")
-				.col-sm-6.playfield--rotate-on-upload(make-loaded="{ loaded: file.flavor.orientation === 'fs' }")
+
+				//-- screenshot
+				.col-sm-6.playfield--rotate-on-upload(make-loaded="{ loaded: file.flavor.orientation !== 'ws' }")
 					span.pre-h4 Playfield
 					h4.h--large Screenshot
 					.panel.panel--blank.playfield--image(ng-file-drop="onMediaUpload(file, 'playfield_image', $files)", drag-over-class="panel--dragging", ng-class="{ error: errors.versions[0].files[meta.files.indexOf(file)]._media.playfield_image }")
@@ -392,7 +394,8 @@ include ../template/_mixins
 										+icon('gear').svg-3x.svg-spin--slow
 										p Generating thumbnails...
 
-				.col-sm-6.playfield--rotate-on-upload(make-loaded="{ loaded: file.flavor.orientation === 'fs' }", make-loaded-event="video", make-loaded-post="loadingFinished")
+				//-- video
+				.col-sm-6.playfield--rotate-on-upload(make-loaded="{ loaded: file.flavor.orientation !== 'ws' }", make-loaded-event="video", make-loaded-post="loadingFinished")
 					span.pre-h4 Playfield
 					h4.h--large Video
 
@@ -417,6 +420,7 @@ include ../template/_mixins
 									span(ng-show="videoLoading").progress-note--with-background
 										+icon('gear').svg-3x.svg-spin--slow
 										p Generating video thumbnail...
+
 			.text-center(ng-hide="file.flavor.orientation")
 				+icon('warning').shift-up.space-right
 				i Pleased set the <b>orientation</b> of the file under 3. before uploading media.

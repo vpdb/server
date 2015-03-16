@@ -436,7 +436,7 @@ angular.module('vpdb.releases.add', [])
 				$upload.http({
 					url: ConfigService.storageUri('/files'),
 					method: 'POST',
-					params: { type: 'playfield-' + tableFile.flavor.orientation },
+					params: { type: 'playfield-' + (tableFile.flavor.orientation === 'ws' ? 'ws' : 'fs') }, // fullscreen per default
 					headers: {
 						'Content-Type': mimeType,
 						'Content-Disposition': 'attachment; filename="' + file.name + '"'
@@ -656,5 +656,17 @@ angular.module('vpdb.releases.add', [])
 				$modalInstance.close(build);
 
 			}, ApiHelper.handleErrors($scope));
+		};
+	})
+
+	.filter('allowedFlavors', function() {
+		return function(flavors, file) {
+			if (file) {
+				var ext = file.name.substr(file.name.lastIndexOf('.')).toLowerCase();
+				if (ext !== '.vpx') {
+					return _.omit(flavors, 'any');
+				}
+			}
+			return flavors;
 		};
 	});

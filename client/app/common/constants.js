@@ -8,7 +8,8 @@ common
 			name: 'orientation',
 			values: {
 				ws: { name: 'Desktop', other: 'Landscape', value: 'ws' },
-				fs: { name: 'Cabinet', other: 'Portrait', value: 'fs' }
+				fs: { name: 'Cabinet', other: 'Portrait', value: 'fs' },
+				any: { name: 'Universal', other: 'Any Orientation', value: 'any' }
 			}
 		},
 		lightning: {
@@ -16,7 +17,8 @@ common
 			name: 'lightning',
 			values: {
 				night: { name: 'Night', other: 'Dark Playfield', value: 'night' },
-				day: { name: 'Day', other: 'Illuminated Playfield', value: 'day' }
+				day: { name: 'Day', other: 'Illuminated Playfield', value: 'day' },
+				any: { name: 'Universal', other: 'Customizable', value: 'any' }
 			}
 		}
 	});

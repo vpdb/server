@@ -27,8 +27,8 @@ angular.module('vpdb.profile.downloads', [])
 			$scope.updatedPreferences = AuthService.getUser().preferences || {};
 			$scope.updatedPreferences.tablefile_name = $scope.updatedPreferences.tablefile_name || '{game_title} ({game_manufacturer} {game_year})';
 			$scope.updatedPreferences.flavor_tags = $scope.updatedPreferences.flavor_tags || {
-				orientation: { fs: 'FS', ws: 'DT' },
-				lightning: { day: '', night: 'Nightmod' }
+				orientation: { fs: 'FS', ws: 'DT', any: '' },
+				lightning: { day: '', night: 'Nightmod', any: '' }
 			};
 		};
 		init();

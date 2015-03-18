@@ -1,0 +1,19 @@
+include ../template/_mixins
+.theme-light
+	.modal-header
+		h1.h--no-margin.h--small
+			+icon('markdown').space-right
+			| Markdown
+	.modal-body
+		p An easy way to write formatted text. Fiddle below until you get the idea.
+
+		.row
+			.col-sm-6
+				h4 Markdown
+				textarea.form-control(ng-model="mdfiddle")
+					| # yey
+			.col-sm-6
+				h4 Rendered
+				div.markdown(markdown="mdfiddle")
+	.modal-footer
+		button.btn.btn-default(ng-click="$close()") Got it!

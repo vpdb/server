@@ -38,6 +38,13 @@ angular.module('vpdb.modal', [])
 				return this._modal(data, { icon: 'info', close: 'Close' }, flash);
 			},
 
+			markdown: function() {
+				return $modal.open({
+					templateUrl: '/modal/modal-markdown.html',
+					size: 'lg'
+				});
+			},
+
 
 			/**
 			 * Displays a question dialog.

@@ -102,6 +102,7 @@
 		h1.h--small Comments
 		hr
 
+		//- list comments
 		label(ng-show="!release.comments || release.comments.length == 0") No comments yet.
 		.media.media--no-margin.collapse-in-animation(ng-repeat="comment in release.comments track by comment.id", ng-controller="CommentCtrl", ng-init="show=true")
 			.collapse-in-animation-inner
@@ -118,13 +119,15 @@
 						.panel-body
 							div.markdown(markdown="comment.message")
 
+		//- add a comment
 		h3.h--smaller.h--primary(ng-show="auth.isAuthenticated") Add a Comment:
 		.media(ng-show="auth.isAuthenticated")
 			.media-left.avatar
 				img.img-avatar.pull-left(gravatar-src="auth.user.gravatar_id", gravatar-default="404", fallback-icon="user")
 			.media-body.media--full-width
 				tabset
-					label.label--small.pull-right Comments are parsed with <a href="http://daringfireball.net/projects/markdown/syntax" target="_blank">Markdown</a>.
+
+					label.label--small.pull-right(markdown-info="Comments are parsed with Markdown.")
 					tab
 						tab-heading(title="Write")
 							+icon('edit')

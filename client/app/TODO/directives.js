@@ -135,12 +135,15 @@ common
 	})
 
 
-	.directive('markdownInfo', function($parse) {
+	.directive('markdownInfo', function(ModalService) {
 		return {
 			restrict: 'A',
 			link: function(scope, element, attrs) {
 				var icon = '<i class="icon icon-markdown"></i>&nbsp;&nbsp;';
-				element.html(icon + attrs.markdownInfo.replace(/markdown/gi, '<a href="http://daringfireball.net/projects/markdown/syntax" target="_blank">Markdown</a>'));
+				element.html(icon + attrs.markdownInfo.replace(/markdown/gi, '<a href="#" ng-click="markdownInfo()">Markdown</a>'));
+				element.find('a').click(function() {
+					ModalService.markdown();
+				});
 			}
 		};
 	})

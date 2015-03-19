@@ -5,15 +5,19 @@ include ../template/_mixins
 			+icon('markdown').space-right
 			| Markdown
 	.modal-body
-		p An easy way to write formatted text. Fiddle below until you get the idea.
+		p
+			| Markdown is an easy way to write formatted text. Fiddle below until you get the idea.
+			| Check <a href="http://daringfireball.net/projects/markdown/syntax#img" target="_blank">this link</a>
+			| for all the features.
+
 
 		.row
 			.col-sm-6
 				h4 Markdown
 				textarea.form-control(ng-model="mdfiddle")
-					| # yey
 			.col-sm-6
 				h4 Rendered
 				div.markdown(markdown="mdfiddle")
 	.modal-footer
+		button.btn.btn-default.pull-left(ng-click="mdfiddle = mdfiddleText") Reset
 		button.btn.btn-default(ng-click="$close()") Got it!

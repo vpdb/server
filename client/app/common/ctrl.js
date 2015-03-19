@@ -119,4 +119,53 @@ common
 			});
 		};
 
+		$rootScope.mdfiddleText =
+			'# Heading 1\n' +
+			'## Heading 2\n' +
+			'### Heading 3\n' +
+			'\n' +
+			'A paragraph is just text and it can\n' +
+			'go over multiple lines, meaning if you\n' +
+			'add one line break, it will be ignored.\n' +
+			'\n' +
+			'Add two line breaks and you got a new paragraph! Write *italic* or **bold** like this.\n' +
+			'\n' +
+			'You can easily do lists:\n' +
+			'\n' +
+			'- Point one\n' +
+			'- Point two\n' +
+			'\n' +
+			'Asterisks work the same:\n' +
+			'\n' +
+			'* Hello\n' +
+			'* World!\n' +
+			'\n' +
+			'You can also do numbered lists:\n' +
+			'\n' +
+			'1. Number one\n' +
+			'2. Number two\n' +
+			'\n' +
+			'And quotes:\n' +
+			'\n' +
+			'> Weather forecast for tonight: dark.\n' +
+			'\n' +
+			'For the geeks, you can do easily code blocks by \n' +
+			'adding 4 spaces before every line:\n' +
+			'\n' +
+			'    Const DisableSlingShotFlashers = 1\n' +
+			'    Const DisableBumberFlashers = 0\n' +
+			'\n' +
+			'If you have `code` in a paragraph, add backticks.\n' +
+			'You can add links [like this](https://google.com/).\n' +
+			'\n' +
+			'If you want to link an image, just put an exclamation mark in front of it:\n' +
+			'![Random Image](http://lorempixel.com/400/200/)\n' +
+			'\n' +
+			'Want to put a horizonal line? You guessed it:\n' +
+			'\n' +
+			'-------------------------- \n' +
+			'Want to know more? Check out [the full syntax](http://daringfireball.net/projects/markdown/syntax)!'
+		;
+		$rootScope.mdfiddle = $rootScope.mdfiddleText;
+
 	});

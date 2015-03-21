@@ -14,7 +14,7 @@ include ../template/_mixins
 		.row
 			.col-sm-6
 				h4 Markdown
-				textarea.form-control(ng-model="mdfiddle")
+				textarea.form-control(ng-model="mdfiddle", msd-elastic)
 			.col-sm-6
 				h4 Rendered
 				div.markdown(markdown="mdfiddle")

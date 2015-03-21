@@ -41,6 +41,8 @@ angular.module('vpdb.modal', [])
 			markdown: function() {
 				return $modal.open({
 					templateUrl: '/modal/modal-markdown.html',
+					controller: 'ModalCtrl',
+					resolve: { data: function() { return null; } },
 					size: 'lg'
 				});
 			},
@@ -146,6 +148,10 @@ angular.module('vpdb.modal', [])
 		};
 	})
 
-	.controller('ModalCtrl', function($scope, data) {
+	.controller('ModalCtrl', function($scope, $timeout, data) {
 		$scope.data = data;
+
+		$timeout(function() {
+			$scope.$broadcast('elastic:adjust');
+		}, 0);
 	});

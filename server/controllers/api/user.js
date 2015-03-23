@@ -315,6 +315,10 @@ exports.confirm = function(req, res) {
 			api.success(res, { message: successMsg, previous_code: currentCode });
 			LogUser.success(req, user, logEvent, { email: user.email });
 
+			if (logEvent === 'registration_email_confirmed' && config.vpdb.email.confirmUserEmail) {
+				mailer.welcomeLocal(user);
+			}
+
 		}, 'Error saving user <%s>.'));
 	}, 'Error retrieving user with email token "%s".'));
 

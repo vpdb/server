@@ -34,19 +34,23 @@ var templatesDir = path.resolve(__dirname, '../email-templates');
 
 exports.registrationConfirmation = function(user, done) {
 
-	confirmation(user, 'registration-confirmation', user.email, done);
+	mail(user, 'registration-confirmation', user.email, 'Please confirm your email', done);
 };
 
 exports.emailUpdateConfirmation = function(user, done) {
 
-	confirmation(user, 'email-update-confirmation', user.email_status.value, done);
+	mail(user, 'email-update-confirmation', user.email_status.value, 'Please confirm your email', done);
 };
 
-function confirmation(user, template, recipient, done) {
+exports.welcomeLocal = function(user, done) {
+
+	mail(user, 'welcome-loca-', user.email, 'Welcome to the VPDB!', done);
+};
+
+function mail(user, template, recipient, subject, done) {
 
 	done = done || function() {};
 
-	var name = template.replace(/-/g, ' ');
 	var tpl = handlebars.compile(fs.readFileSync(path.resolve(templatesDir, template + '.handlebars')).toString());
 
 	// generate content
@@ -61,12 +65,12 @@ function confirmation(user, template, recipient, done) {
 	var email = {
 		from: { name: config.vpdb.email.sender.name, address: config.vpdb.email.sender.email },
 		to: { name: user.name, address: recipient },
-		subject: 'Please confirm your email',
+		subject: subject,
 		text: text
 	};
 
 	// send email
-	send(email, name, done);
+	send(email, template.replace(/-/g, ' '), done);
 }
 
 function send(email, what, done) {

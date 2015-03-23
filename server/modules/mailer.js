@@ -44,7 +44,7 @@ exports.emailUpdateConfirmation = function(user, done) {
 
 exports.welcomeLocal = function(user, done) {
 
-	mail(user, 'welcome-loca-', user.email, 'Welcome to the VPDB!', done);
+	mail(user, 'welcome-local', user.email, 'Welcome to the VPDB!', done);
 };
 
 function mail(user, template, recipient, subject, done) {

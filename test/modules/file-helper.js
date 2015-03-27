@@ -30,7 +30,8 @@ exports.createBackglass = function(user, request, done) {
 			.set('Content-Length', data.length)
 			.send(data)
 			.as(user)
-			.end(function(res) {
+			.end(function(err, res) {
+				expect(err).to.not.be.ok();
 				expect(res.status).to.be(201);
 				done(res.body);
 			});
@@ -63,7 +64,8 @@ exports.createPlayfields = function(user, request, times, done) {
 				.set('Content-Length', data.length)
 				.send(data)
 				.as(user)
-				.end(function(res) {
+				.end(function(err, res) {
+					expect(err).to.not.be.ok();
 					expect(res.status).to.be(201);
 					next(null, res.body);
 				});
@@ -83,7 +85,8 @@ exports.createTextfile = function(user, request, done) {
 		.set('Content-Disposition', 'attachment; filename="README.txt"')
 		.send('You are looking at a text file generated during a test.')
 		.as(user)
-		.end(function(res) {
+		.end(function(err, res) {
+			expect(err).to.not.be.ok();
 			expect(res.status).to.be(201);
 			done(res.body);
 		});
@@ -100,6 +103,7 @@ exports.createZip = function(user, request, done) {
 		.send(data)
 		.as(user)
 		.end(function(err, res) {
+			expect(err).to.not.be.ok();
 			expect(res.status).to.be(201);
 			done(res.body);
 		});
@@ -117,6 +121,7 @@ exports.createMp4 = function(user, request, done) {
 		.send(data)
 		.as(user)
 		.end(function(err, res) {
+			expect(err).to.not.be.ok();
 			expect(res.status).to.be(201);
 			done(res.body);
 		});
@@ -134,6 +139,7 @@ exports.createAvi = function(user, request, done) {
 		.send(data)
 		.as(user)
 		.end(function(err, res) {
+			expect(err).to.not.be.ok();
 			expect(res.status).to.be(201);
 			done(res.body);
 		});
@@ -152,6 +158,7 @@ exports.createRom = function(user, request, done) {
 		.send(data)
 		.as(user)
 		.end(function(err, res) {
+			expect(err).to.not.be.ok();
 			expect(res.status).to.be(201);
 			done(res.body);
 		});
@@ -176,6 +183,7 @@ exports.createVpts = function(user, request, times, done) {
 			.send(data)
 			.as(user)
 			.end(function(err, res) {
+				expect(err).to.not.be.ok();
 				expect(res.status).to.be(201);
 				next(null, res.body);
 			});

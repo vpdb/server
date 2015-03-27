@@ -53,9 +53,8 @@ describe('The VPDB `file` API', function() {
 				.set('Content-Disposition','attachment; filename="foo.bar"')
 				.send('xxx')
 				.end(function(err, res) {
-					expect(err).to.eql(null);
-					expect(res.status).to.be(422);
-					expect(res.body.error).to.contain('type');
+					hlp.expectStatus(err, res, 422);
+					expect(err.response.body.error).to.contain('type');
 					done();
 				});
 		});

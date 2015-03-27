@@ -499,43 +499,56 @@ exports.status = function(code, contains, next) {
 		contains = false;
 	}
 	return function(err, res) {
-		if (err) {
-			throw new Error('Error in request: ' + err.message);
+		var status, body;
+		if (code >= 200 && code < 300) {
+			status = res.status;
+			body = res.body;
+			if (err) {
+				throw new Error('Error in request: ' + err.message);
+			}
+		} else {
+			status = err.status;
+			body = err.response.body;
 		}
-		if (res.status !== code) {
-			console.warn(res.body);
+
+
+		if (status !== code) {
+			console.warn(body);
 		}
-		expect(res.status).to.be(code);
+		expect(status).to.be(code);
 		if (contains) {
-			var msg = res.body.error.message || res.body.error;
+			var msg = body.error.message || body.error;
 			expect(msg.toLowerCase()).to.contain(contains.toLowerCase());
 		}
-		next(null, res.body);
+		next(null, body);
 	};
 };
 
 exports.expectStatus = function(err, res, code, contains) {
-	if (res && res.status !== code) {
+	var status, body;
+	if (code >= 200 && code < 300) {
+		status = res.status;
+		body = res.body;
+		expect(err).to.not.be.ok();
+	} else {
+		status = err.status;
+		body = err.response.body;
+	}
+
+	if (status !== code) {
 		console.log(res.body);
 	}
-	if (err) {
-		console.log(err);
-	}
-	expect(err).to.not.be.ok();
-	expect(res.status).to.be(code);
+
+	expect(status).to.be(code);
 	if (contains) {
-		expect(res.body.error.toLowerCase()).to.contain(contains.toLowerCase());
+		expect(body.error.toLowerCase()).to.contain(contains.toLowerCase());
 	}
 };
 
 exports.expectValidationError = function(err, res, field, contains, code) {
-	if (err) {
-		console.log(err);
-	}
-	expect(err).to.not.be.ok();
-	expect(res.status).to.be(code || 422);
-	expect(res.body.errors).to.be.an('array');
-	var fieldErrors = _.filter(res.body.errors, { field: field });
+	expect(err.status).to.be(code || 422);
+	expect(err.response.body.errors).to.be.an('array');
+	var fieldErrors = _.filter(err.response.body.errors, { field: field });
 	if (!fieldErrors.length) {
 		throw new Error('Expected validation error on field "' + field + '" but got none.');
 	}
@@ -550,12 +563,8 @@ exports.expectValidationError = function(err, res, field, contains, code) {
 };
 
 exports.expectNoValidationError = function(err, res, field, contains) {
-	if (err) {
-		console.log(err);
-	}
-	expect(err).to.not.be.ok();
-	if (_.isArray(res.body.errors)) {
-		var fieldErrors = _.filter(res.body.errors, { field: field });
+	if (_.isArray(err.response.body.errors)) {
+		var fieldErrors = _.filter(err.response.body.errors, { field: field });
 		if (contains) {
 			var matchedErrors = _.filter(fieldErrors, function(val) {
 				return val.message.toLowerCase().indexOf(contains.toLowerCase()) > -1;

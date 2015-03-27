@@ -104,7 +104,7 @@
 		"request": "2.54.0",
 		"shortid": "2.2.1",
 		"stylus": "0.50.0",
-		"superagent": "0.21.0",
+		"superagent": "1.1.0",
 		"uglify-js": "2.4.19",
 		"validator": "3.37.0",
 		"verror": "1.6.0",

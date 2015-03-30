@@ -58,7 +58,7 @@ Set:
 
 ### Node.js
 
-	sudo curl https://raw.githubusercontent.com/creationix/nvm/v0.24.0/install.sh | bash
+	sudo curl https://raw.githubusercontent.com/creationix/nvm/v0.24.0/install.sh | NVM_DIR=/usr/local/nvm PROFILE=/etc/profile bash
 	sudo nvm install 0.12
 
 Upgrade ``npm`` to latest and prevent self-signed certificate error

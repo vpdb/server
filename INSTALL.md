@@ -58,8 +58,11 @@ Set:
 
 ### Node.js
 
-	sudo curl https://raw.githubusercontent.com/creationix/nvm/v0.24.0/install.sh | NVM_DIR=/usr/local/nvm PROFILE=/etc/profile bash
-	sudo nvm install 0.12
+	sudo su -
+	curl https://raw.githubusercontent.com/creationix/nvm/v0.24.0/install.sh | NVM_DIR=/usr/local/nvm PROFILE=/etc/profile bash
+	nvm install 0.12
+	nvm alias default stable
+	exit
 
 Upgrade ``npm`` to latest and prevent self-signed certificate error
 
@@ -85,7 +88,7 @@ FFmpeg was removed from Ubuntu and replaced by Libav. Duh.
 Install 2.6 from repo:
 
 	sudo apt-key adv --keyserver keyserver.ubuntu.com --recv 7F0CEB10
-	sudo /bin/bash
+	sudo su -
 	echo "deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen" >> /etc/apt/sources.list
 	exit
 	sudo apt-get -y update
@@ -93,7 +96,7 @@ Install 2.6 from repo:
 
 Configure correctly. Also open `/etc/mongod.conf` and check that ``bind_ip = 127.0.0.1`` is in there.
 
-	sudo /bin/bash
+	sudo su -
 	echo "smallfiles = true" >> /etc/mongod.conf
 
 Paste this at the end of `/etc/init/mongod.conf`:

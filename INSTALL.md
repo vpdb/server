@@ -59,7 +59,11 @@ Set:
 ### Node.js
 
 	sudo su -
-	curl https://raw.githubusercontent.com/creationix/nvm/v0.24.0/install.sh | NVM_DIR=/usr/local/nvm PROFILE=/etc/profile bash
+	curl https://raw.githubusercontent.com/creationix/nvm/v0.24.0/install.sh | NVM_DIR=/usr/local/nvm PROFILE=/etc/bash.bashrc bash
+	vi /etc/bash.bashrc
+	
+Move added lines to the top (before `[ -z "$PS1" ] && return`), then save and:
+
 	nvm install 0.12
 	nvm alias default stable
 	exit

@@ -34,8 +34,6 @@ module.exports = function(grunt) {
 			cssRoot: writeable.cssRoot,
 			jsRoot: writeable.jsRoot,
 			htmlRoot: writeable.htmlRoot,
-			cssGlobal: path.resolve(cssRoot, 'global_<%= gitinfo.local.branch.current.shortSHA %>.min.css'),
-			jsGlobal: path.resolve(jsRoot, 'global_<%= gitinfo.local.branch.current.shortSHA %>.min.js'),
 			jsGlobalAnnotated: path.resolve(jsRoot, 'global.annotated.js'),
 			coverageRoot: path.resolve(__dirname, 'coverage'),
 			tmpRoot: config.vpdb.tmp

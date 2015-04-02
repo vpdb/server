@@ -196,7 +196,10 @@ folder.
 	chmod 700 .ssh
 	vi .ssh/authorized_keys
 
-Paste your pub key in there.
+Paste your pub key in there. Then enable `nvm` for that user.
+
+	echo 'export NVM_DIR="/usr/local/nvm"' >> ~/.profile
+	echo '[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"' >> ~/.profile
 
 ### Setup bare Git repositories
 

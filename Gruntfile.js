@@ -198,7 +198,7 @@ module.exports = function(grunt) {
 		uglify: {
 			build: {
 				options: { mangle: true, compress: true, beautify: false, sourceMap: true, sourceMapIncludeSources: false },
-				files: [ { expand: false, cwd: '.', dest: '<%= config.jsGlobal %>', src: '<%= config.jsGlobalAnnotated %>' }]
+				files: [ { expand: false, cwd: '.', dest: jsGlobal, src: '<%= config.jsGlobalAnnotated %>' }]
 			}
 		},
 

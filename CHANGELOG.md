@@ -1,6 +1,6 @@
 # VPDB Changelog
 
-## v0.0.7 (unreleased)
+## v0.0.7
 
 *Client Changes*:
 

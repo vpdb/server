@@ -26,7 +26,6 @@ var logger = require('winston');
 var passport = require('passport');
 var express = require('express');
 var jadeStatic = require('connect-jade-static');
-var expressMorgan  = require('morgan');
 var expressWinston = require('express-winston');
 var expressBodyParser = require('body-parser');
 var expressCompression = require('compression');
@@ -40,6 +39,7 @@ var settings = require('./modules/settings');
 var writeable = require('./modules/writeable');
 var ctrl = require('./controllers/ctrl');
 var apiCtrl = require('./controllers/api/api');
+var logging = require('./logging');
 
 exports.configure = function(app) {
 
@@ -71,40 +71,8 @@ exports.configure = function(app) {
 		gracefulExit.gracefulExitHandler(app);
 	}));*/
 
-	/* istanbul ignore if  */
-	// log to file if env APP_ACCESS_LOG is set
-	if (process.env.APP_ACCESS_LOG) {
-		app.use(expressWinston.logger({
-			transports: [
-				new logger.transports.File({
-					level: 'info',                   // Level of messages that this transport should log.
-					silent: false,                   // Boolean flag indicating whether to suppress output.
-					colorize: false,                 // Boolean flag indicating if we should colorize output.
-					timestamp: true,                 // Boolean flag indicating if we should prepend output with timestamps (default true). If function is specified, its return value will be used instead of timestamps.
-					filename: process.env.APP_ACCESS_LOG,  // The filename of the logfile to write output to.
-					maxsize: 1000000,                // Max size in bytes of the logfile, if the size is exceeded then a new file is created.
-					maxFiles: 10,                    // Limit the number of files created when the size of the logfile is exceeded.
-					stream: null,                    // The WriteableStream to write output to.
-					json: false                      // If true, messages will be logged as JSON (default true).
-				})
-			],
-			meta: false, // optional: control whether you want to log the meta data about the request (default to true)
-			msg: '[http] {{req.ip}}: {{req.method}} {{req.url}} - {{res.statusCode}} {{res.responseTime}}ms' // optional: customize the default logging message. E.g. "{{res.statusCode}} {{req.method}} {{res.responseTime}}ms {{req.url}}"
-		}));
-		logger.info('[express] Access log will be written to %s.', process.env.APP_ACCESS_LOG);
-	} else {
-		expressMorgan.token('colorReq', function(req) {
-			var str = req.method + ' ' + (req.originalUrl || req.url);
-			switch (req.method) {
-				case 'GET':    return str.white.blueBG;
-				case 'POST':   return str.white.greenBG;
-				case 'PUT':    return str.white.yellowBG;
-				case 'DELETE': return str.white.redBG;
-				default:       return str.white.greyBG;
-			}
-		});
-		app.use(expressMorgan(':date[iso] :colorReq :status :response-time ms - :res[content-length]'));
-	}
+	// setup logging
+	logging.configure(app);
 
 	if (runningLocal) {
 		// in production the reverse proxy is taking care of this

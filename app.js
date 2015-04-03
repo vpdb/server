@@ -18,8 +18,8 @@ if (process.env.COVERAGE_ENABLED) {
 var settings = require('./server/modules/settings');
 var serverDomain = domain.create();
 
-// early init
-require('./server/boostrap')();
+// setup logger
+require('./server/logging').init();
 
 // validate settings before continueing
 if (!settings.validate()) {

@@ -54,6 +54,8 @@ exports.upload = function(config) {
 
 				requests.push(function(next) {
 
+					console.log("Uploading %s...", id);
+
 					// post ROM
 					var romContent = fs.readFileSync(filename);
 					var headers = {
@@ -70,7 +72,7 @@ exports.upload = function(config) {
 						.type('application/zip')
 						.set(headers)
 						.send(romContent)
-						.end(function(res) {
+						.end(function(err, res) {
 
 							if (res.status !== 201) {
 								console.error('-------------------------------------------------------------------------');
@@ -99,7 +101,7 @@ exports.upload = function(config) {
 								.type('application/json')
 								.set(headers)
 								.send(data)
-								.end(function(res) {
+								.end(function(err, res) {
 									if (res.status !== 201) {
 										console.error('-------------------------------------------------------------------------');
 										console.error(res.body);

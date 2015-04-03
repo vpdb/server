@@ -28,8 +28,10 @@ exports.upload = function(config) {
 			if (httpSimple) {
 				headers.Authorization = httpSimple;
 			}
+			var url = apiUri + '/authenticate';
+			console.log('Authenticating at %s...', url);
 			request
-				.post(apiUri + '/authenticate')
+				.post(url)
 				.set(headers)
 				.send(credentials)
 				.end(function(err, res) {
@@ -38,7 +40,7 @@ exports.upload = function(config) {
 						return callback(err);
 					}
 					if (res.status !== 200) {
-						console.error('Error obtaining token: %j', res.body);
+						console.error('Error obtaining token: %s', JSON.stringify(res.body));
 						return callback(new Error(res.body));
 					}
 					console.log('Authentication successful.');
@@ -84,7 +86,7 @@ exports.upload = function(config) {
 					.type('image/png')
 					.set(headers)
 					.send(bg)
-					.end(function(res) {
+					.end(function(err, res) {
 						var bgRef = res.body.id;
 						var logo = fs.readFileSync(path.resolve(logoPrefix, game.logo));
 
@@ -103,7 +105,7 @@ exports.upload = function(config) {
 							.type('image/png')
 							.set(headers)
 							.send(logo)
-							.end(function(res) {
+							.end(function(err, res) {
 								var logoRef = res.body.id;
 
 								if (game.id) {
@@ -129,7 +131,7 @@ exports.upload = function(config) {
 									.type('application/json')
 									.set(headers)
 									.send(data)
-									.end(function(res) {
+									.end(function(err, res) {
 										console.log(res.body);
 										next();
 									});

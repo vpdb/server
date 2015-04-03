@@ -72,7 +72,7 @@ exports.configure = function(app) {
 	}));*/
 
 	// setup logging
-	logging.configure(app);
+	logging.expressConfig(app);
 
 	if (runningLocal) {
 		// in production the reverse proxy is taking care of this

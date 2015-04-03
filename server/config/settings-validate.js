@@ -21,6 +21,7 @@
 
 var _ = require('lodash');
 var fs = require('fs');
+var path = require('path');
 var mimeTypes = require('../modules/mimetypes');
 var validator = require('validator');
 
@@ -148,6 +149,72 @@ module.exports = {
 			/* istanbul ignore if */
 			if (secret === 'alongsecret') {
 				return 'You\'re using the default secret. Please use a generator, e.g. http://strongpasswordgenerator.com/';
+			}
+		},
+
+		/**
+		 * Sets various logging options.
+		 */
+		logging: {
+			console: {
+				access: function(bool) {
+					/* istanbul ignore if */
+					if (!_.isBoolean(bool)) {
+						return 'Console access log must be either true or false';
+					}
+				},
+				app: function(bool) {
+					/* istanbul ignore if */
+					if (!_.isBoolean(bool)) {
+						return 'Console application log must be either true or false';
+					}
+				}
+			},
+			file: {
+				access: function(logPath) {
+					var logDir = path.dirname(logPath);
+
+					/* istanbul ignore if */
+					if (!fs.existsSync(logDir)) {
+						return 'Access log path does not exist.';
+					}
+					/* istanbul ignore if */
+					if (!fs.lstatSync(logDir).isDirectory()) {
+						return 'Access log path is not a folder.';
+					}
+				},
+				app: function(logPath) {
+					var logDir = path.dirname(logPath);
+
+					/* istanbul ignore if */
+					if (!fs.existsSync(logDir)) {
+						return 'App log path does not exist.';
+					}
+					/* istanbul ignore if */
+					if (!fs.lstatSync(logDir).isDirectory()) {
+						return 'App log path is not a folder.';
+					}
+				}
+			},
+			papertrail: {
+				access: function(bool) {
+					/* istanbul ignore if */
+					if (!_.isBoolean(bool)) {
+						return 'Papertrail access log must be either true or false';
+					}
+				},
+				app: function(bool) {
+					/* istanbul ignore if */
+					if (!_.isBoolean(bool)) {
+						return 'Papertrail application log must be either true or false';
+					}
+				},
+				options: function(bool) {
+					/* istanbul ignore if */
+					if (!_.isObject(bool)) {
+						return 'Papertrail config must be at least an object, even if it\'s empty.';
+					}
+				}
 			}
 		},
 

@@ -119,6 +119,69 @@ module.exports = {
 		storage: './data/storage',
 
 		/**
+		 * Sets various logging options.
+		 */
+		logging: {
+
+			/**
+			 * Prints log to the current console. Should not be used in production.
+			 */
+			console: {
+				/**
+				 * Whether to log HTTP file access
+				 */
+				access: true,
+				/**
+				 * Whether to log application data
+				 */
+				app: true
+			},
+
+			/**
+			 * Writes log to a file. Rotation etc should be done externally.
+			 */
+			file: {
+				/**
+				 * File location of the HTTP access log. Null or empty for no logging.
+				 */
+				access: '/var/www/staging/shared/logs/access.log',
+				/**
+				 * File location of the application log. Null or empty for no logging.
+				 */
+				app: '/var/www/staging/shared/logs/app.log'
+			},
+
+			/**
+			 * Sends logs to Papertrail.
+			 */
+			papertrail: {
+
+				/**
+				 * Whether to send HTTP access log to Papertrail
+				 */
+				access: false,
+
+				/**
+				 * Whether to send application log to Papertrail
+				 */
+				app: false,
+
+				/**
+				 * Papertrail configuration. Must be set if at least
+				 * one of the two above is set to true.
+				 *
+				 * @see https://github.com/kenperkins/winston-papertrail#usage
+				 */
+				options: {
+					host: '',
+					port: '',
+					program: 'vpdb-staging',
+					colorize: true
+				}
+			}
+		},
+
+		/**
 		 * Quota definitions for the site. Quotas can be used to limit the
 		 * number of items a user can download in a given time.
 		 */

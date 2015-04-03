@@ -17,6 +17,11 @@ module.exports = {
 			sender: { email: 'server@vpdb.local', name: 'VPDB Server' },
 			nodemailer: {}
 		},
+		logging: {
+			console: { access: true,  app: true },
+			file: { access: null, app: null },
+			papertrail: { access: false, app: false, options: { } }
+		},
 		storage: './data/storage-test',
 		skipImageOptimizations: true,
 		quota: {

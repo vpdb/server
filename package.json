@@ -110,6 +110,7 @@
 		"verror": "1.6.0",
 		"volos-quota-redis": "0.10.2",
 		"winston": "0.9.0",
+		"winston-papertrail": "1.0.1",
 		"wiredep": "2.2.2",
 		"yargs": "3.6.0"
 	},

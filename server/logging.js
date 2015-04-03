@@ -21,6 +21,7 @@
 
 var path = require('path');
 var logger = require('winston');
+var papertrail = require('winston-papertrail').Papertrail; // only needs to require, no usage.
 var expressMorgan  = require('morgan');
 var expressWinston = require('express-winston');
 
@@ -65,10 +66,18 @@ exports.init = function() {
 		logger.info('[logging] Application log is written to %s.', logPath);
 	}
 
+	// papertrail
+	if (config.vpdb.logging.papertrail.app) {
+		logger.add(logger.transports.Papertrail, config.vpdb.logging.papertrail.options);
+		logger.info('[logging] Papertrail application log enabled for %s:%d', config.vpdb.logging.papertrail.options.host, config.vpdb.logging.papertrail.options.port);
+	}
+
 };
 
 // access log
 exports.expressConfig = function(app) {
+
+	var transports = [];
 
 	// console
 	if (config.vpdb.logging.console.access) {
@@ -88,23 +97,31 @@ exports.expressConfig = function(app) {
 	// file
 	if (config.vpdb.logging.file.access) {
 		var logPath = path.resolve(config.vpdb.logging.file.access);
+		transports.push(new logger.transports.File({
+			level: 'info',                   // Level of messages that this transport should log.
+			silent: false,                   // Boolean flag indicating whether to suppress output.
+			colorize: false,                 // Boolean flag indicating if we should colorize output.
+			timestamp: true,                 // Boolean flag indicating if we should prepend output with timestamps (default true). If function is specified, its return value will be used instead of timestamps.
+			filename: logPath,               // The filename of the logfile to write output to.
+			maxsize: 1000000,                // Max size in bytes of the logfile, if the size is exceeded then a new file is created.
+			maxFiles: 10,                    // Limit the number of files created when the size of the logfile is exceeded.
+			stream: null,                    // The WriteableStream to write output to.
+			json: false                      // If true, messages will be logged as JSON (default true).
+		}));
+		logger.info('[logging] Access log will be written to %s.', logPath);
+	}
+
+	// papertrail
+	if (config.vpdb.logging.papertrail.access) {
+		transports.push(new logger.transports.Papertrail(config.vpdb.logging.papertrail.options));
+		logger.info('[logging] Papertrail access log enabled for %s:%d', config.vpdb.logging.papertrail.options.host, config.vpdb.logging.papertrail.options.port);
+	}
+
+	if (transports.length > 0) {
 		app.use(expressWinston.logger({
-			transports: [
-				new logger.transports.File({
-					level: 'info',                   // Level of messages that this transport should log.
-					silent: false,                   // Boolean flag indicating whether to suppress output.
-					colorize: false,                 // Boolean flag indicating if we should colorize output.
-					timestamp: true,                 // Boolean flag indicating if we should prepend output with timestamps (default true). If function is specified, its return value will be used instead of timestamps.
-					filename: logPath,               // The filename of the logfile to write output to.
-					maxsize: 1000000,                // Max size in bytes of the logfile, if the size is exceeded then a new file is created.
-					maxFiles: 10,                    // Limit the number of files created when the size of the logfile is exceeded.
-					stream: null,                    // The WriteableStream to write output to.
-					json: false                      // If true, messages will be logged as JSON (default true).
-				})
-			],
+			transports: transports,
 			meta: false, // optional: control whether you want to log the meta data about the request (default to true)
 			msg: '[http] {{req.ip}}: {{req.method}} {{req.url}} - {{res.statusCode}} {{res.responseTime}}ms' // optional: customize the default logging message. E.g. "{{res.statusCode}} {{req.method}} {{res.responseTime}}ms {{req.url}}"
 		}));
-		logger.info('[logging] Access log will be written to %s.', logPath);
 	}
 };

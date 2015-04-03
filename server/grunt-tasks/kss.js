@@ -49,19 +49,20 @@ module.exports = function(grunt) {
 //			grunt.log.writeln(styleguide.data.files.map(function(file) { return '  - ' + file }).join('\n'));
 
 			// accumulate all of the sections' first indexes in case they don't have a root element.
-			_.each(styleguide.section('*.'), function(rootSection) {
+			_.each(styleguide.section(), function(rootSection) {
 				var currentRoot = rootSection.reference().match(/[0-9]*\.?/)[0].replace('.', '');
-				if (!~rootRefs.indexOf(currentRoot)) {
+				if (currentRoot && !~rootRefs.indexOf(currentRoot)) {
 					rootRefs.push(currentRoot);
 				}
 			});
+			grunt.log.writeln('%s root references found.', rootRefs.length);
 			rootRefs.sort(function(a, b) {
 				return parseInt(a) - parseInt(b);
 			});
 			var sectionTemplate = jade.compile(fs.readFileSync('client/app/devsite/styleguide-section.jade'), { pretty: true });
 
 			var renderSection = function(rootSection, reference, sections, next) {
-//				grunt.log.writeln('Generating %s %s"', reference, rootSection ? rootSection.header() : 'Unnamed');
+				grunt.log.writeln('Generating %s %s"', reference, rootSection ? rootSection.header() : 'Unnamed');
 				serializeSections(sections, function(err, sections) {
 					if (err) {
 						grunt.log.error(err);
@@ -91,6 +92,7 @@ module.exports = function(grunt) {
 				if (err) {
 					return done(false);
 				}
+				grunt.log.writeln('Sections rendered.');
 
 				var data = _.extend({
 					sections: _.map(rootRefs, function(rootRef) {
@@ -106,7 +108,6 @@ module.exports = function(grunt) {
 				// render index
 				var indexHtml = jade.renderFile('client/app/devsite/index.jade', data);
 				var styleguideMain = jade.renderFile('client/app/devsite/styleguide-main.jade', data);
-
 
 				// render index (move that to grunt directly)
 				var filename = path.resolve(writeable.devsiteRoot, 'index.html');

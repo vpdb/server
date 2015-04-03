@@ -93,9 +93,9 @@ module.exports = function(grunt) {
 			minify: { expand: false, cwd: '.', dest: cssGlobal, ext: '.css', src: _.pluck(assets.getCss(), 'src') }
 		},
 
-		'devsite-serve': { options: { root: '<%= config.devsiteRoot %>', port: 4000, runInBackground: false, map: {
-			'/js': path.resolve(__dirname, 'client/app')
-		}}},
+		'devsite-serve': { options: { root: '<%= config.devsiteRoot %>', port: 4000, runInBackground: false,
+			map: { '/js': path.resolve(__dirname, 'client/app') }
+		}},
 
 		env: {
 			dev: env(grunt, config),

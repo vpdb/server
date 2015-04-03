@@ -51,6 +51,8 @@ module.exports = function(opts) {
 
 	return function(files, metalsmith, done) {
 
+		debug("Generating RAML doc...");
+
 		var filepath;
 		var srcFiles = {};
 
@@ -68,26 +70,29 @@ module.exports = function(opts) {
 			metadata.api = {};
 		}
 
-		// for each  api
+		// for each api
 		async.each(_.keys(srcFiles), function(file, next) {
 
 			var path = relative(process.cwd(), resolve(opts.src, file));
 
 			// process raml
 			debug('Processing RAML file at %s...', path);
-			raml2obj.parse(path, function(obj) {
+
+			raml2obj.parse(path).then(function(obj) {
+
 				try {
 					// render each resource
-					_.each(obj.resources, function (resource) {
-							var destFolder = srcFiles[file].dest.replace(/\\/g, '/');
-							var dest = destFolder + '/' + resource.uniqueId.substr(1) + '.html';
-							var html = jade.renderFile(opts.template, {
-								resource: resource,
-								hlp: helpers(_.extend(opts, { api: obj })),
-								print: print
-							});
+					_.each(obj.resources, function(resource) {
 
-							files[dest] = { contents: new Buffer(html) };
+						var destFolder = srcFiles[file].dest.replace(/\\/g, '/');
+						var dest = destFolder + '/' + resource.uniqueId.substr(1) + '.html';
+						var html = jade.renderFile(opts.template, {
+							resource: resource,
+							hlp: helpers(_.extend(opts, { api: obj })),
+							print: print
+						});
+
+						files[dest] = { contents: new Buffer(html) };
 					});
 					metadata.api[srcFiles[file].name] = obj;
 					postman(obj);
@@ -95,6 +100,7 @@ module.exports = function(opts) {
 					next();
 
 				} catch (e) {
+					console.error(e);
 					return next(e);
 				}
 			}, function(err) {

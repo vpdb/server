@@ -1,5 +1,9 @@
 "use strict";
 
+if (process.env.NEW_RELIC_ENABLED) {
+	require('newrelic');
+}
+
 var fs = require('fs');
 var path = require('path');
 var util = require('util');
@@ -28,6 +32,8 @@ if (!settings.validate()) {
 } else {
 	var config = settings.current;
 }
+
+
 
 serverDomain.run(function() {
 

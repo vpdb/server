@@ -27,6 +27,13 @@ var local = {
 	authHeader: 'Authorization',
 	credentials: { username: 'test', password: 'xxxxxx' }
 };
+var test = {
+	apiUri: 'https://test.vpdb.io/api/v1',
+	storageUri: 'https://test.vpdb.io/storage/v1',
+	authHeader: 'X-Authorization',
+	credentials: { username: 'uploader', password: 'xxxxxx' },
+	httpSimple: { username: 'vpdb', password: 'xxxxxx' }
+};
 var staging = {
 	apiUri: 'https://staging.vpdb.ch/api/v1',
 	storageUri: 'https://staging.vpdb.ch/storage/v1',
@@ -41,10 +48,10 @@ var production = {
 	httpSimple: { username: 'vpdb', password: 'xxxxxx' }
 };
 
-var config = local;
+var config = test;
 
 config.romFolder = 'E:/Pinball/Visual Pinball-103/VPinMame/roms';
 
 //games.upload(config);
-roms.upload(config);
+//roms.upload(config);
 

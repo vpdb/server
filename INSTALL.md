@@ -82,18 +82,19 @@ Upgrade ``npm`` to latest and prevent self-signed certificate error
 
 FFmpeg was removed from Ubuntu and replaced by Libav. Duh.
 
-	sudo apt-get purge -y libav ffmpeg
-	sudo apt-add-repository -y ppa:jon-severinsson/ffmpeg
-	sudo apt-get update
-	sudo apt-get install -y ffmpeg
+	cd /usr/local
+	sudo wget http://ffmpeg.gusari.org/static/64bit/ffmpeg.static.64bit.latest.tar.gz
+	tar xvfz ffmpeg.static.64bit.latest.tar.gz
+	mv ffmpeg /usr/local/bin
+	mv ffprobe /usr/local/bin
 
 ### MongoDB
 
-Install 2.6 from repo:
+Install 3.x from repo:
 
-	sudo apt-key adv --keyserver keyserver.ubuntu.com --recv 7F0CEB10
+	sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 7F0CEB10
 	sudo su -
-	echo "deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen" >> /etc/apt/sources.list
+	echo "deb http://repo.mongodb.org/apt/ubuntu "$(lsb_release -sc)"/mongodb-org/3.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.0.list
 	exit
 	sudo apt-get -y update
 	sudo apt-get install -y mongodb-org
@@ -276,9 +277,9 @@ build the key chain:
 
 Update configuration:
 
-	sudo vi /etc/nginx/sites-available/vpdb-production
-	sudo vi /etc/nginx/sites-available/vpdb-staging
-	sudo vi /etc/nginx/sites-available/vpdb-staging-devsite
+	sudo vi /etc/nginx/sites-available/vpdb-production.conf
+	sudo vi /etc/nginx/sites-available/vpdb-staging.conf
+	sudo vi /etc/nginx/sites-available/vpdb-staging-devsite.conf
 
 Make `deployer` able to reload Passenger:
 

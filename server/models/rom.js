@@ -68,7 +68,7 @@ RomSchema.plugin(prettyId, { model: 'Rom', ignore: [ '_created_by', '_game' ], v
 	{ path: '_file', mimeType: 'application/zip', message: 'Must be a ZIP archive.' },
 	{ path: '_file', fileType: 'rom', message: 'Must be a file of type "rom".' }
 ] });
-RomSchema.plugin(fileRef, { model: 'Rom' });
+RomSchema.plugin(fileRef);
 RomSchema.plugin(paginate);
 RomSchema.plugin(toObj);
 

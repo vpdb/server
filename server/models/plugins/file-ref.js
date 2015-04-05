@@ -31,10 +31,7 @@ var error = require('../../modules/error')('model', 'file-ref');
 //noinspection JSUnresolvedVariable
 module.exports = function(schema, options) {
 
-	/* istanbul ignore if */
-	if (!options || !options.model) {
-		throw new Error('Fileref plugin needs model. Please provide.');
-	}
+	options = options || {};
 
 	// filter ignored paths
 	var paths = _.pick(common.traversePaths(schema), function(schemaType) {

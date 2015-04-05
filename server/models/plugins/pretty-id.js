@@ -34,7 +34,7 @@ module.exports = function(schema, options) {
 
 	/* istanbul ignore if */
 	if (!options.model) {
-		throw new Error('Fileref plugin needs model. Please provide.');
+		throw new Error('Pretty-id plugin needs model. Please provide.');
 	}
 
 	options.ignore = options.ignore || [];
@@ -56,8 +56,8 @@ module.exports = function(schema, options) {
 	 */
 	schema.statics.getInstance = function(obj, callback) {
 
-		var Model = mongoose.model(options.model);
 		var models = {};
+		var Model = mongoose.model(options.model);
 		models[options.model] = Model;
 
 		var singleRefs = _.mapValues(_.pick(paths, function(schemaType) {
@@ -120,6 +120,7 @@ module.exports = function(schema, options) {
 			}
 
 			var model = new Model(obj);
+			//var model = this.model(this.constructor.modelName);
 
 			// for invalid IDs, invalidate instantly so we can provide which value is wrong.
 			_.each(invalidations, function(invalidation) {

@@ -115,7 +115,7 @@ var ReleaseSchema = new Schema(releaseFields);
 // PLUGINS
 //-----------------------------------------------------------------------------
 ReleaseSchema.plugin(uniqueValidator, { message: 'The {PATH} "{VALUE}" is already taken.' });
-ReleaseSchema.plugin(fileRef, { model: 'Release' });
+ReleaseSchema.plugin(fileRef);
 ReleaseSchema.plugin(prettyId, { model: 'Release', ignore: [ '_created_by', '_tags' ] });
 ReleaseSchema.plugin(idValidator, { fields: [ '_tags' ] });
 ReleaseSchema.plugin(paginate);
@@ -123,6 +123,7 @@ ReleaseSchema.plugin(toObj);
 ReleaseSchema.plugin(metrics, { hotness: { popularity: { downloads: 10, comments: 20 }}});
 FileSchema.plugin(toObj);
 VersionSchema.plugin(toObj);
+VersionSchema.plugin(fileRef);
 AuthorSchema.plugin(toObj);
 
 

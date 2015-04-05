@@ -45,8 +45,8 @@ var Schema = mongoose.Schema;
 var fileFields = {
 	_file:  { type: Schema.ObjectId, required: 'You must provide a file reference.', ref: 'File' },
 	flavor: {
-		orientation: { type: String, enum: { values: flavor.keys('orientation'), message: 'Invalid orientation. Valid orientation are: ["' + flavor.keys('orientation').join('", "') + '"].' }},
-		lightning:   { type: String, enum: { values: flavor.keys('lightning'), message: 'Invalid lightning. Valid options are: ["' + flavor.keys('lightning').join('", "') + '"].' }}
+		orientation: { type: String, 'enum': { values: flavor.keys('orientation'), message: 'Invalid orientation. Valid orientation are: ["' + flavor.keys('orientation').join('", "') + '"].' }},
+		lightning:   { type: String, 'enum': { values: flavor.keys('lightning'), message: 'Invalid lightning. Valid options are: ["' + flavor.keys('lightning').join('", "') + '"].' }}
 	},
 	_compatibility: [ { type: Schema.ObjectId, ref: 'Build' } ],
 	_media: {
@@ -122,8 +122,9 @@ ReleaseSchema.plugin(paginate);
 ReleaseSchema.plugin(toObj);
 ReleaseSchema.plugin(metrics, { hotness: { popularity: { downloads: 10, comments: 20 }}});
 FileSchema.plugin(toObj);
-VersionSchema.plugin(toObj);
 VersionSchema.plugin(fileRef);
+VersionSchema.plugin(prettyId, { model: 'ReleaseVersion' });
+VersionSchema.plugin(toObj);
 AuthorSchema.plugin(toObj);
 
 
@@ -354,4 +355,5 @@ AuthorSchema.options.toObject = {
 };
 
 mongoose.model('Release', ReleaseSchema);
+mongoose.model('ReleaseVersion', VersionSchema);
 logger.info('[model] Schema "Release" registered.');

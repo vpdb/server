@@ -28,6 +28,19 @@ var objectPath = require('object-path');
 var common = require('./common');
 var error = require('../../modules/error')('model', 'pretty-id');
 
+/**
+ * Plugin that converts pretty IDs to ObjectIds before passing it to mongoose.
+ *
+ * While the schema uses ObjectIds, the provided `getInstance()` method
+ * replaces pretty IDs coming from the API with object IDs. If invalid,
+ * validations will fail on the pretty ID.
+ *
+ * Any reference in the schema will be considered as pretty, unless provided in
+ * the `ignore` option.
+ *
+ * @param schema
+ * @param options
+ */
 module.exports = function(schema, options) {
 
 	options = options || {};
@@ -108,6 +121,7 @@ module.exports = function(schema, options) {
 						}
 					});
 
+					// convert pretty id to mongdb id
 					objectPath.set(obj, objPath, refObj._id);
 				}
 				next();

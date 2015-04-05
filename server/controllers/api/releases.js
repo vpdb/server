@@ -25,11 +25,11 @@ var async = require('async');
 var logger = require('winston');
 
 var Release = require('mongoose').model('Release');
+var Version = require('mongoose').model('ReleaseVersion');
 var Game = require('mongoose').model('Game');
 var api = require('./api');
 
 var error = require('../../modules/error')('api', 'release');
-
 
 /**
  * Creates a new release.
@@ -87,6 +87,48 @@ exports.create = function(req, res) {
 			}, 'Error saving release with id "%s"'));
 		});
 	});
+};
+
+/**
+ * Adds a new version to an existing release.
+ *
+ * @param {Request} req
+ * @param {Response} res
+ */
+exports.createVersion = function(req, res) {
+
+	var assert = api.assert(error, 'createVersion', req.params.id, res);
+	Release.findOne({ id: req.params.id }, assert(function(release) {
+		if (!release) {
+			return api.fail(res, error('No such release with ID "%s".', req.params.id), 404);
+		}
+
+		// TODO only allow authors to upload uversion updates
+
+
+		var versionObj = _.defaults(req.body, { released_at: new Date() });
+		logger.info('[api|release:createVersion] %s', util.inspect(versionObj, { depth: null }));
+		Version.getInstance(versionObj, assert(function(newVersion) {
+
+			logger.info('[api|release:createVersion] %s', util.inspect(versionObj, { depth: null }));
+			logger.info('[api|release:createVersion] %s', util.inspect(newVersion, { depth: null }));
+			newVersion.validate(function(err) {
+				if (err) {
+					return api.fail(res, error('Validations failed. See below for details.').errors(err.errors).warn('create'), 422);
+				}
+
+				logger.info('[api|release:createVersion] Validations passed, adding new version to release.');
+				release.versions.push(newVersion);
+				release.save(assert(function() {
+				//Release.update({ id: req.params.id }, { $push: { versions: newVersion }}, assert(function() {
+
+					// return detail view
+					exports.view(req, res);
+
+				}, 'Error adding new version to release "%s".'));
+			});
+		}, 'Error creating version instance for release "%s".'));
+	}, 'Error getting release "%s"'));
 };
 
 

@@ -277,12 +277,24 @@ describe('The VPDB `release` API', function() {
 		before(function(done) {
 			hlp.setupUsers(request, {
 				member: { roles: [ 'member' ] },
+				othermember: { roles: [ 'member' ] },
 				contributor: { roles: [ 'contributor' ] }
 			}, done);
 		});
 
 		after(function(done) {
 			hlp.cleanup(request, done);
+		});
+
+		it('should fail when logged as a different user', function(done) {
+			hlp.release.createRelease('member', request, function(release) {
+				hlp.doomRelease('member', release.id);
+				request.post('/api/v1/releases/' + release.id + '/versions')
+					.as('othermember')
+					.send({})
+					.saveResponse({ path: 'releases/create-version'})
+					.end(hlp.status(403, 'only authors of the release', done));
+			});
 		});
 
 		it('should fail validations when providing valid file reference with invalid meta data', function(done) {
@@ -398,7 +410,7 @@ describe('The VPDB `release` API', function() {
 				hlp.file.createVpt(user, request, function(vptfile) {
 					hlp.file.createPlayfield(user, request, function(playfield) {
 						request
-							.post('/api/v1/releases/' + release.id + '/versions/' + release.versions[0].version)
+							.post('/api/v1/releases/' + release.id + '/versions/' + release.versions[0].version + '/files')
 							.saveResponse({ path: 'releases/create-file'})
 							.as(user)
 							.send({
@@ -423,7 +435,7 @@ describe('The VPDB `release` API', function() {
 				hlp.file.createVpt(user, request, function(vptfile) {
 					hlp.file.createPlayfield(user, request, function(playfield) {
 						request
-							.post('/api/v1/releases/' + release.id + '/versions/' + release.versions[0].version)
+							.post('/api/v1/releases/' + release.id + '/versions/' + release.versions[0].version + '/files')
 							.save({ path: 'releases/create-file'})
 							.as(user)
 							.send({

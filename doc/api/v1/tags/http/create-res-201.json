@@ -1,6 +1,7 @@
 201 Created
 Content-Type: application/json; charset=utf-8
 Content-Length: 93
+Etag: W/"5d-7db6b1c7"
 
 {
   "id": "mytag",

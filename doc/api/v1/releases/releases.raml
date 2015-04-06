@@ -57,5 +57,27 @@ get:
           role/anon:
             example: !include http/del-res-401.json
 
+  /versions:
+    post:
+      is: [ validated ]
+      securedBy: [ jwt: { scopes: [ MEMBER ] } ]
+      description: |
+        Add a new version to an existing release.
+
+        Note that prior to that request, files and media need to be uploaded so it
+        can be referenced.
+      body:
+        role/member:
+          example: !include http/create-version-req.json
+      responses:
+        201:
+          body:
+            role/member:
+              example: !include http/create-version-res-201.json
+        422:
+          body:
+            role/member:
+              example: !include http/create-version-res-422.json
+
   /comments: !include comments.raml
   /rating: !include rating.raml

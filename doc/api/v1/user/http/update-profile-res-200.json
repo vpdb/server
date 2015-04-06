@@ -1,15 +1,16 @@
 200 OK
 Content-Type: application/json; charset=utf-8
-Content-Length: 902
+Content-Length: 932
+Etag: W/"3a4-ace7c24f"
 
 {
-  "location": "New Erich",
+  "location": "West Marc",
   "plan": "free",
-  "name": "Makayla Legros",
-  "username": "Camryn32",
-  "email": "jaida.dare1@gmail.com",
+  "name": "Darien Christiansen",
+  "username": "Phyllis_Ankunding85",
+  "email": "michele_windler@yahoo.com",
   "provider": "local",
-  "created_at": "2015-03-11T21:52:33.153Z",
+  "created_at": "2015-04-06T18:43:44.415Z",
   "is_active": true,
   "counter": {
     "downloads": 0,
@@ -20,47 +21,47 @@ Content-Length: 902
   ],
   "email_status": {
     "code": "pending_update",
-    "expires_at": "2015-03-12T21:52:33.471Z",
-    "value": "golden34@gmail.com"
+    "expires_at": "2015-04-07T18:43:44.696Z",
+    "value": "kiarra.dickinson@hotmail.com"
   },
-  "id": "7J2miL-g7F",
-  "gravatar_id": "7411b882c780e227495b302a5ceb459a",
+  "id": "EkjmbZ7ajx",
+  "gravatar_id": "f460e5becc73b94a33cf6237095a34fc",
   "permissions": {
-    "users": [
-      "search"
-    ],
-    "user": [
-      "view",
-      "update"
+    "comments": [
+      "add"
     ],
     "ratings": [
       "view",
       "add",
       "update"
     ],
-    "files": [
-      "download",
-      "upload",
-      "delete"
-    ],
-    "builds": [
-      "add",
-      "delete-own"
-    ],
     "tags": [
       "add",
       "delete-own"
+    ],
+    "users": [
+      "search"
+    ],
+    "files": [
+      "upload",
+      "delete",
+      "download"
     ],
     "releases": [
       "delete",
       "add"
     ],
-    "comments": [
-      "add"
-    ],
     "roms": [
       "add",
       "delete-own"
+    ],
+    "builds": [
+      "add",
+      "delete-own"
+    ],
+    "user": [
+      "view",
+      "update"
     ]
   }
 }

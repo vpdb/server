@@ -1,8 +1,8 @@
-POST /api/v1/games/hot-tip/rating HTTP/1.1
+POST /api/v1/games/bronco/rating HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
 Content-Type: application/json
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJYeTZCYmdRdCIsImlhdCI6IjIwMTUtMDMtMTFUMjE6NTI6MTguNzgxWiIsImV4cCI6IjIwMTUtMDMtMTFUMjI6NTI6MTguNzgxWiJ9.2PtXf4Bfq9IrqDFcaajkTjGtwsbPe-fK3d5-Y5kcgag
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI0a0ZNZVFhc2wiLCJpYXQiOiIyMDE1LTA0LTA2VDE4OjQzOjMwLjA0NFoiLCJleHAiOiIyMDE1LTA0LTA2VDE5OjQzOjMwLjA0NFoifQ.WW-tAqQ_cIvu9ggPMJa38JcYsjAv9-7Vorg9q6-v-Do
 Content-Length: 11
 
 {

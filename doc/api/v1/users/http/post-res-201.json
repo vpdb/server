@@ -1,14 +1,15 @@
 201 Created
 Content-Type: application/json; charset=utf-8
 Content-Length: 498
+Etag: W/"1f2-417d72b6"
 
 {
   "plan": "free",
-  "name": "Mustafa.Gerlach24",
-  "username": "Mustafa.Gerlach24",
-  "email": "anika.leuschke@yahoo.com",
+  "name": "Heaven.Brown12",
+  "username": "Heaven.Brown12",
+  "email": "sterling_fadel2@hotmail.com",
   "provider": "local",
-  "created_at": "2015-03-11T21:52:33.363Z",
+  "created_at": "2015-04-06T18:43:44.621Z",
   "is_active": false,
   "counter": {
     "downloads": 0,
@@ -19,9 +20,9 @@ Content-Length: 498
   ],
   "email_status": {
     "code": "pending_registration",
-    "expires_at": "2015-03-12T21:52:33.364Z",
-    "value": "anika.leuschke@yahoo.com"
+    "expires_at": "2015-04-07T18:43:44.621Z",
+    "value": "sterling_fadel2@hotmail.com"
   },
-  "id": "mJEPs8bgmY",
-  "gravatar_id": "5e2a96ac3f4eba8ad0bb7b8bf06513ee"
+  "id": "NJmPWbQ6oe",
+  "gravatar_id": "b634c4880d5ec6a3e0bc07d475ed8ebd"
 }

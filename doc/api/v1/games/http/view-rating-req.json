@@ -1,5 +1,5 @@
-GET /api/v1/games/lucky-stars/rating HTTP/1.1
+GET /api/v1/games/mad-cap/rating HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJRMWV0NkhXeFFGIiwiaWF0IjoiMjAxNS0wMy0xMVQyMTo1MjoxOS43NzFaIiwiZXhwIjoiMjAxNS0wMy0xMVQyMjo1MjoxOS43NzFaIn0.TQM1d-NRLoA5qJs3LY90thAcynH4MIdpTXXeSjAD5ZA
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJOeV9xN2xtYWpnIiwiaWF0IjoiMjAxNS0wNC0wNlQxODo0MzozMC44ODNaIiwiZXhwIjoiMjAxNS0wNC0wNlQxOTo0MzozMC44ODNaIn0.-7OnV7EkYoHM0jmsi1veHovGUjla67uvVCFQzY0sV18
 

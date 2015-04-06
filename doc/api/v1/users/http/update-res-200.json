@@ -1,21 +1,22 @@
 200 OK
 Content-Type: application/json; charset=utf-8
-Content-Length: 382
+Content-Length: 375
+Etag: W/"177-9b841b5"
 
 {
-  "id": "mylmjLZlQY",
-  "name": "Aubrey.Lang64",
-  "username": "Aubrey.Lang64",
-  "gravatar_id": "1eac7e9dbfb12505fb6acf9771a4d1fe",
-  "location": "North Hillary",
-  "email": "mariane.casper42@gmail.com",
+  "id": "EyJ7Zbmajx",
+  "name": "Haven.Farrell27",
+  "username": "Haven.Farrell27",
+  "gravatar_id": "46f40cb80d779f2a1c4afe1a69653449",
+  "location": "Spencerville",
+  "email": "jack63@yahoo.com",
   "is_active": true,
   "provider": "local",
   "roles": [
     "member"
   ],
   "plan": "free",
-  "created_at": "2015-03-11T21:52:33.099Z",
+  "created_at": "2015-04-06T18:43:44.360Z",
   "counter": {
     "downloads": 0,
     "comments": 0

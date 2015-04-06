@@ -1,0 +1,14 @@
+422 Unprocessable Entity
+Content-Type: application/json; charset=utf-8
+Content-Length: 209
+Etag: W/"d1-365f412f"
+
+{
+  "errors": [
+    {
+      "message": "Provided version already exists and you cannot add a version twice. Try updating the version instead of adding a new one.",
+      "field": "version",
+      "value": "1.0.0"
+    }
+  ]
+}

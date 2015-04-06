@@ -1,8 +1,8 @@
-PUT /api/v1/games/sea-shore/rating HTTP/1.1
+PUT /api/v1/games/doughboy-de-luxe-senior/rating HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
 Content-Type: application/json
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJtSlBNQUJXZW1GIiwiaWF0IjoiMjAxNS0wMy0xMVQyMTo1MjoyMC4xNzZaIiwiZXhwIjoiMjAxNS0wMy0xMVQyMjo1MjoyMC4xNzZaIn0.UtmQoEJLjmHlvCI3TWPa63Th-rUZZhkm96mgodqK9H4
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJWMV9iTmVRcGpsIiwiaWF0IjoiMjAxNS0wNC0wNlQxODo0MzozMS4yODZaIiwiZXhwIjoiMjAxNS0wNC0wNlQxOTo0MzozMS4yODZaIn0.HY-uFeuLCj_1t00B3gATmATSIu2sTOfVFd5o1U4o7OI
 Content-Length: 11
 
 {

@@ -1,10 +1,10 @@
-POST /api/v1/releases/Q1OzEHZeXY/comments HTTP/1.1
+POST /api/v1/releases/413e3kXpix/comments HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJtSnhnNFNXZVhZIiwiaWF0IjoiMjAxNS0wMy0xMVQyMTo1MjowOS44NDhaIiwiZXhwIjoiMjAxNS0wMy0xMVQyMjo1MjowOS44NDhaIn0.QUfA0vL-raKNq3QxfuKlyqYTT318oyDGCpAcBE5lCyc
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJOMWNZbzE3YW9sIiwiaWF0IjoiMjAxNS0wNC0wNlQxODo0MzoyMi45MzlaIiwiZXhwIjoiMjAxNS0wNC0wNlQxOTo0MzoyMi45MzlaIn0.DriIr28v8APu348c4Jd1Ehp_fAzyxAXjYtNHVnxV7Vk
 Content-Type: application/json
-Content-Length: 49
+Content-Length: 55
 
 {
-  "message": "Centralized solution-oriented model"
+  "message": "User-friendly zero administration success"
 }

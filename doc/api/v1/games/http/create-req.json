@@ -1,29 +1,23 @@
 POST /api/v1/games HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI3eWVTdkgtZ21ZIiwiaWF0IjoiMjAxNS0wMy0xMVQyMTo1MjoxMy41MTRaIiwiZXhwIjoiMjAxNS0wMy0xMVQyMjo1MjoxMy41MTRaIn0.RYPjovyvzwcLpaYBj7F7qzXldzUTlOS_UDOf2EO_Giw
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI0SjJCVGttcGlnIiwiaWF0IjoiMjAxNS0wNC0wNlQxODo0MzoyNS4wOTNaIiwiZXhwIjoiMjAxNS0wNC0wNlQxOTo0MzoyNS4wOTNaIn0.bvjJCULMWkNLNDuMUPpxiOcPqlZwQOQcLfuXer_jKF0
 Content-Type: application/json
-Content-Length: 279
+Content-Length: 879
 
 {
   "ipdb": {
-    "number": 36,
-    "mfg": 130
+    "number": 3268,
+    "mfg": 218
   },
-  "title": "Airport",
-  "manufacturer": "Genco",
-  "year": 1939,
+  "title": "Special",
+  "manufacturer": "Mills Novelty Company",
+  "year": 1936,
   "game_type": "em",
-  "themes": [
-    "Aircraft",
-    "Airplanes",
-    "Airports",
-    "Aviation",
-    "Flying"
-  ],
-  "features": "Spring bumpers (16), Free ball gobble hole (1).",
-  "id": "airport",
+  "features": "10 balls for 5 cents.",
+  "notes": "An engraved plaque on the playfield contains these patents:Patent 1,694,691 [GOLF GAME APPARATUS] filed November 28, 1927. Granted December 11, 1928 to Frank Rentz.Patent 1,730,523 [GAME] filed March 16, 1928. Granted October 8, 1929 to James S. Nicholas.Patent Reissue RE17,961 [GAME APPARATUS] original filed August 24, 1917. Granted February 10, 1931 to Frank H. Ellison.Patent 1,938,495 [GAME APPARATUS] filed January 19, 1932. Granted December 5, 1933 to Arthur L. Paulin and Earl W. Froom.These patents were acquired by Mills via license and/or litigation. For more information, read the chapter 'Patent Wars' in Bueschel's Encyclopedia of Pinball Volume 2.",
+  "id": "special",
   "_media": {
-    "backglass": "QJrrvSbxXF"
+    "backglass": "VkfA1Qaoe"
   }
 }

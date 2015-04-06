@@ -1,11 +1,12 @@
 422 Unprocessable Entity
 Content-Type: application/json; charset=utf-8
 Content-Length: 682
+Etag: W/"2aa-d536f22d"
 
 {
   "errors": [
     {
-      "message": "Cast to date failed for value \"no-date\" at path \"built_at\"",
+      "message": "Cast to Date failed for value \"no-date\" at path \"built_at\"",
       "field": "built_at",
       "value": "no-date"
     },

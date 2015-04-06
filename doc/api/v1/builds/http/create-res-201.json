@@ -1,6 +1,7 @@
 201 Created
 Content-Type: application/json; charset=utf-8
 Content-Length: 180
+Etag: W/"b4-942c05e7"
 
 {
   "id": "v1.0.1",

@@ -1,6 +1,7 @@
 422 Unprocessable Entity
 Content-Type: application/json; charset=utf-8
 Content-Length: 112
+Etag: W/"70-3f386526"
 
 {
   "errors": [

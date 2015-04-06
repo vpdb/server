@@ -1,6 +1,7 @@
 401 Unauthorized
 Content-Type: application/json; charset=utf-8
 Content-Length: 42
+Etag: W/"2a-9ecd8fce"
 
 {
   "error": "Wrong username or password"

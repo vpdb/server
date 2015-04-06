@@ -1,0 +1,96 @@
+201 Created
+Content-Type: application/json; charset=utf-8
+Etag: W/"W5nz1sZV3mMEbACpXwVMcg=="
+Content-Encoding: gzip
+
+{
+  "released_at": "2015-04-06T18:43:39.451Z",
+  "changes": "*Second release.*",
+  "version": "2.0.0",
+  "counter": {
+    "comments": 0,
+    "downloads": 0
+  },
+  "files": [
+    {
+      "counter": {
+        "downloads": 0
+      },
+      "flavor": {
+        "orientation": "fs",
+        "lightning": "night"
+      },
+      "media": {
+        "playfield_image": {
+          "name": "playfield-0.png",
+          "bytes": 347,
+          "created_at": "2015-04-06T18:43:39.175Z",
+          "mime_type": "image/png",
+          "file_type": "playfield-fs",
+          "metadata": {
+            "format": "PNG",
+            "size": {
+              "height": 1080,
+              "width": 1920
+            },
+            "depth": 8
+          },
+          "counter": {
+            "downloads": 0
+          },
+          "is_active": true,
+          "id": "VygnlQ6ie",
+          "is_public": true,
+          "is_protected": false,
+          "url": "/storage/v1/files/VygnlQ6ie",
+          "variations": {
+            "medium": {
+              "url": "/storage/v1/files/VygnlQ6ie/medium"
+            },
+            "medium-2x": {
+              "url": "/storage/v1/files/VygnlQ6ie/medium-2x"
+            },
+            "medium-landscape": {
+              "url": "/storage/v1/files/VygnlQ6ie/medium-landscape"
+            },
+            "medium-landscape-2x": {
+              "url": "/storage/v1/files/VygnlQ6ie/medium-landscape-2x"
+            },
+            "square": {
+              "url": "/storage/v1/files/VygnlQ6ie/square"
+            },
+            "square-2x": {
+              "url": "/storage/v1/files/VygnlQ6ie/square-2x"
+            }
+          }
+        }
+      },
+      "compatibility": [
+        {
+          "id": "9.9.0",
+          "label": "v9.9.0",
+          "platform": "vp",
+          "download_url": "http://www.vpforums.org/index.php?app=downloads&showfile=8793",
+          "built_at": "2014-04-29T00:00:00.000Z",
+          "type": "release",
+          "is_range": false
+        }
+      ],
+      "file": {
+        "name": "test-table-0.vpt",
+        "created_at": "2015-04-06T18:43:39.057Z",
+        "mime_type": "application/x-visual-pinball-table",
+        "file_type": "release",
+        "metadata": {},
+        "id": "N1JHsxQ6jx",
+        "url": "/storage/v1/files/N1JHsxQ6jx",
+        "bytes": 135168,
+        "variations": {},
+        "is_protected": true,
+        "counter": {
+          "downloads": 0
+        }
+      }
+    }
+  ]
+}

@@ -1,15 +1,15 @@
 200 OK
 Content-Type: application/json; charset=utf-8
-Content-Length: 754
-Etag: W/"2f2-696833e4"
+Content-Length: 749
+Etag: W/"2ed-a853eff8"
 
 {
   "plan": "free",
-  "name": "Else_Schmitt30",
-  "username": "Else_Schmitt30",
-  "email": "gust_kuhic@yahoo.com",
+  "name": "Orlando32",
+  "username": "Orlando32",
+  "email": "ibrahim.leffler@yahoo.com",
   "provider": "local",
-  "created_at": "2015-03-11T21:52:08.575Z",
+  "created_at": "2015-04-06T18:43:21.562Z",
   "is_active": true,
   "counter": {
     "downloads": 0,
@@ -18,44 +18,44 @@ Etag: W/"2f2-696833e4"
   "roles": [
     "member"
   ],
-  "id": "7k7xGSWeXt",
-  "gravatar_id": "203966492b7ebedd6e78029f66c18a0a",
+  "id": "4Jmg9J7pil",
+  "gravatar_id": "dcba722e8d5b4901d9ba8b33137797d7",
   "permissions": {
-    "users": [
-      "search"
-    ],
-    "user": [
-      "view",
-      "update"
+    "comments": [
+      "add"
     ],
     "ratings": [
       "view",
       "add",
       "update"
     ],
-    "files": [
-      "download",
-      "upload",
-      "delete"
-    ],
-    "builds": [
-      "add",
-      "delete-own"
-    ],
     "tags": [
       "add",
       "delete-own"
+    ],
+    "users": [
+      "search"
+    ],
+    "files": [
+      "upload",
+      "delete",
+      "download"
     ],
     "releases": [
       "delete",
       "add"
     ],
-    "comments": [
-      "add"
-    ],
     "roms": [
       "add",
       "delete-own"
+    ],
+    "builds": [
+      "add",
+      "delete-own"
+    ],
+    "user": [
+      "view",
+      "update"
     ]
   }
 }

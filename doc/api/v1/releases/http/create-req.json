@@ -1,21 +1,21 @@
 POST /api/v1/releases HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJRSkZfR0xiZzdGIiwiaWF0IjoiMjAxNS0wMy0xMVQyMTo1MjoyNC43MjdaIiwiZXhwIjoiMjAxNS0wMy0xMVQyMjo1MjoyNC43MjdaIn0.1DZZBMQufDsPm24f0x9LVNculCkMgQX4u-iajIpmCMw
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI0MTZzd2U3NnNlIiwiaWF0IjoiMjAxNS0wNC0wNlQxODo0MzozNC44ODFaIiwiZXhwIjoiMjAxNS0wNC0wNlQxOTo0MzozNC44ODFaIn0.UfiBOkwagnHSJkgEjFTTg1BCMPhVt7N0tK9KNE_4zNc
 Content-Type: application/json
-Content-Length: 478
+Content-Length: 476
 
 {
   "name": "release",
-  "_game": "space-hawks",
+  "_game": "pol-roger",
   "versions": [
     {
       "files": [
         {
-          "_file": "mkDZ4IZxQt",
+          "_file": "EkGrOxmTog",
           "_media": {
-            "playfield_image": "XJC-4UWgmK",
-            "playfield_video": "m1IGELblQt"
+            "playfield_image": "EJurdgQToe",
+            "playfield_video": "41uxKlQTsx"
           },
           "_compatibility": [
             "9.9.0"
@@ -26,9 +26,9 @@ Content-Length: 478
           }
         },
         {
-          "_file": "7yO-EL-g7F",
+          "_file": "N1EHdgQ6il",
           "_media": {
-            "playfield_image": "XyTWVI-lmK"
+            "playfield_image": "EyUH_gXpoe"
           },
           "_compatibility": [
             "9.9.0"
@@ -44,7 +44,7 @@ Content-Length: 478
   ],
   "authors": [
     {
-      "_user": "QJF_GLbg7F",
+      "_user": "416swe76se",
       "roles": [
         "Table Creator"
       ]

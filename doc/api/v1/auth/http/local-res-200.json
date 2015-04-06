@@ -1,63 +1,64 @@
 200 OK
 Content-Type: application/json; charset=utf-8
+Etag: W/"p2ZIwMM9VJbPMfdkOR1z+Q=="
 Content-Encoding: gzip
 
 {
-  "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI3SnN2bVNXZVF0IiwiaWF0IjoiMjAxNS0wMy0xMVQyMTo1MjowOS4zOTZaIiwiZXhwIjoiMjAxNS0wMy0xMVQyMjo1MjowOS4zOTZaIn0.246OmJ7499oCAg5x1Sw1MoQP1ACF59o7LZwKvxkv3fg",
-  "expires": "2015-03-11T22:52:09.396Z",
+  "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJOMUxYajFRcG94IiwiaWF0IjoiMjAxNS0wNC0wNlQxODo0MzoyMi40NTVaIiwiZXhwIjoiMjAxNS0wNC0wNlQxOTo0MzoyMi40NTVaIn0.br4w0ocXO6nGR2z2kojzVDgijPhXtmDmyIcnYcWL9ZM",
+  "expires": "2015-04-06T19:43:22.455Z",
   "user": {
-    "id": "7JsvmSWeQt",
-    "name": "Margret_Senger72",
-    "username": "Margret_Senger72",
-    "gravatar_id": "c7018b39f1ca297eb39029a159a64003",
-    "email": "danny5@gmail.com",
+    "id": "N1LXj1Qpox",
+    "name": "Eva_Howe51",
+    "username": "Eva_Howe51",
+    "gravatar_id": "b7e367649f5b3542f68a9a6a21049f4a",
+    "email": "karlee7@hotmail.com",
     "is_active": true,
     "provider": "local",
     "roles": [
       "member"
     ],
     "plan": "free",
-    "created_at": "2015-03-11T21:52:09.341Z",
+    "created_at": "2015-04-06T18:43:22.399Z",
     "counter": {
       "downloads": 0,
       "comments": 0
     },
     "permissions": {
-      "users": [
-        "search"
-      ],
-      "user": [
-        "view",
-        "update"
+      "comments": [
+        "add"
       ],
       "ratings": [
         "view",
         "add",
         "update"
       ],
-      "files": [
-        "download",
-        "upload",
-        "delete"
-      ],
-      "builds": [
-        "add",
-        "delete-own"
-      ],
       "tags": [
         "add",
         "delete-own"
+      ],
+      "users": [
+        "search"
+      ],
+      "files": [
+        "upload",
+        "delete",
+        "download"
       ],
       "releases": [
         "delete",
         "add"
       ],
-      "comments": [
-        "add"
-      ],
       "roms": [
         "add",
         "delete-own"
+      ],
+      "builds": [
+        "add",
+        "delete-own"
+      ],
+      "user": [
+        "view",
+        "update"
       ]
     }
   }

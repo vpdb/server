@@ -1,14 +1,14 @@
-POST /api/v1/games/runabout/roms HTTP/1.1
+POST /api/v1/games/amazon-hunt-iii/roms HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJYeXllOUlibFhLIiwiaWF0IjoiMjAxNS0wMy0xMVQyMTo1MjozMS44NTNaIiwiZXhwIjoiMjAxNS0wMy0xMVQyMjo1MjozMS44NTNaIn0.cEC8u_ZSvctiw15bLwSr4fRSr34OOWWFEkG9qqldZ1U
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI0a2oteC1tcGplIiwiaWF0IjoiMjAxNS0wNC0wNlQxODo0Mzo0My40MTZaIiwiZXhwIjoiMjAxNS0wNC0wNlQxOTo0Mzo0My40MTZaIn0.tvMbGuvAWssc2cEVqw33kSXd0yr1OR79iuT1AFmWnLU
 Content-Type: application/json
-Content-Length: 104
+Content-Length: 111
 
 {
-  "id": "runabout_10",
+  "id": "amazon-hunt-iii_10",
   "version": "1.0",
   "notes": "That is some ROM.",
   "language": "en-US",
-  "_file": "myGQ9I-eXY"
+  "_file": "E1tHgZmToe"
 }

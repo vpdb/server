@@ -285,6 +285,42 @@ describe('The VPDB `release` API', function() {
 			hlp.cleanup(request, done);
 		});
 
+		it('should fail validations when providing valid file reference with invalid meta data', function(done) {
+
+			var user = 'member';
+			hlp.release.createRelease(user, request, function(release) {
+				hlp.file.createVpt('member', request, function(vptfile) {
+					request
+						.post('/api/v1/releases/' + release.id + '/versions')
+						.as(user)
+						.send({
+							version: '2.0.0',
+							changes: '*Second release.*',
+							files: [
+								{ _file: vptfile.id },
+								{ _file: vptfile.id, flavor: {} },
+								{ _file: vptfile.id, flavor: { orientation: 'invalid' } },
+								{ _file: vptfile.id },
+								{ _file: vptfile.id, _compatibility: [ 'non-existent' ] }
+							]
+						}).end(function(err, res) {
+							hlp.doomRelease(user, release.id);
+							hlp.doomFile(user, vptfile.id);
+							hlp.expectValidationError(err, res, 'files.0.flavor.orientation', 'must be provided');
+							hlp.expectValidationError(err, res, 'files.0.flavor.lightning', 'must be provided');
+							hlp.expectValidationError(err, res, 'files.0._compatibility', 'must be provided');
+							hlp.expectValidationError(err, res, 'files.1.flavor.orientation', 'must be provided');
+							hlp.expectValidationError(err, res, 'files.1.flavor.lightning', 'must be provided');
+							hlp.expectValidationError(err, res, 'files.2.flavor.orientation', 'invalid orientation');
+							hlp.expectValidationError(err, res, 'files.3._compatibility', 'must be provided');
+							hlp.expectValidationError(err, res, 'files.4._compatibility.0', 'no such build');
+							hlp.expectValidationError(err, res, 'files.0._media.playfield_image', 'must be provided');
+							done();
+						});
+				});
+			});
+		});
+
 		it('should fail when adding an existing version', function(done) {
 			var user = 'member';
 			hlp.release.createRelease(user, request, function(release) {

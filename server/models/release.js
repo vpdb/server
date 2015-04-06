@@ -145,7 +145,7 @@ ReleaseSchema.path('versions').validate(function(file) {
 	return true;
 });
 
-ReleaseSchema.path('versions.0.files').validate(function(files, callback) {
+VersionSchema.path('files').validate(function(files, callback) {
 
 	var i = 0;
 	var that = this;

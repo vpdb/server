@@ -377,6 +377,46 @@ describe('The VPDB `release` API', function() {
 		});
 	});
 
+
+	describe('when adding a new file to an existing version of an existing release', function() {
+
+		before(function(done) {
+			hlp.setupUsers(request, {
+				member: { roles: [ 'member' ] },
+				contributor: { roles: [ 'contributor' ] }
+			}, done);
+		});
+
+		after(function(done) {
+			hlp.cleanup(request, done);
+		});
+
+		it('should succeed when providing valid data', function(done) {
+			var user = 'member';
+			hlp.release.createRelease(user, request, function(release) {
+				hlp.file.createVpt(user, request, function(vptfile) {
+					hlp.file.createPlayfield(user, request, function(playfield) {
+						request
+							.post('/api/v1/releases/' + release.id + '/versions/' + release.versions[0].version)
+							.save({ path: 'releases/create-file'})
+							.as(user)
+							.send({
+								_file: vptfile.id,
+								_media: { playfield_image: playfield.id },
+								_compatibility: [ '9.9.0' ],
+								flavor: { orientation: 'fs', lightning: 'night' }
+							}).end(function(err, res) {
+								hlp.dump(res);
+								hlp.expectStatus(err, res, 201);
+								hlp.doomRelease(user, release.id);
+								done();
+							});
+					});
+				});
+			});
+		});
+	});
+
 	describe('when viewing a release', function() {
 
 		before(function(done) {

@@ -121,6 +121,8 @@ ReleaseSchema.plugin(idValidator, { fields: [ '_tags' ] });
 ReleaseSchema.plugin(paginate);
 ReleaseSchema.plugin(toObj);
 ReleaseSchema.plugin(metrics, { hotness: { popularity: { downloads: 10, comments: 20 }}});
+FileSchema.plugin(fileRef);
+FileSchema.plugin(prettyId, { model: 'ReleaseVersionFile' });
 FileSchema.plugin(toObj);
 VersionSchema.plugin(fileRef);
 VersionSchema.plugin(prettyId, { model: 'ReleaseVersion' });
@@ -361,4 +363,5 @@ AuthorSchema.options.toObject = {
 
 mongoose.model('Release', ReleaseSchema);
 mongoose.model('ReleaseVersion', VersionSchema);
+mongoose.model('ReleaseVersionFile', FileSchema);
 logger.info('[model] Schema "Release" registered.');

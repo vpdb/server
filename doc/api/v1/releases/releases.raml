@@ -79,5 +79,27 @@ get:
             role/member:
               example: !include http/create-version-res-422.json
 
+    /{version}:
+      uriParameters:
+        version:
+          displayName: Version ID
+          type: string
+      post:
+        is: [ validated ]
+        securedBy: [ jwt: { scopes: [ MEMBER ] } ]
+        description: |
+          Add a new file to an existing version.
+
+          Note that prior to that request, files and media need to be uploaded so it
+          can be referenced.
+        body:
+          role/member:
+            example: !include http/create-file-req.json
+        responses:
+          201:
+            body:
+              role/member:
+                example: !include http/create-file-res-201.json
+
   /comments: !include comments.raml
   /rating: !include rating.raml

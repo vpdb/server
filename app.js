@@ -12,7 +12,7 @@ var domain = require('domain');
 var express = require('express');
 var mongoose = require('mongoose');
 
-if (false && process.env.COVERAGE_ENABLED) {
+if (process.env.COVERAGE_ENABLED) {
 	console.log('[app] Hook loader for coverage enabled.');
 	require('istanbul-middleware').hookLoader(__dirname);
 	// cover all files except under node_modules

@@ -26,6 +26,7 @@ var logger = require('winston');
 
 var Release = require('mongoose').model('Release');
 var Version = require('mongoose').model('ReleaseVersion');
+var VersionFile = require('mongoose').model('ReleaseVersionFile');
 var Game = require('mongoose').model('Game');
 var api = require('./api');
 
@@ -97,21 +98,21 @@ exports.create = function(req, res) {
  */
 exports.addVersion = function(req, res) {
 
-	var assert = api.assert(error, 'createVersion', req.params.id, res);
+	var assert = api.assert(error, 'addVersion', req.params.id, res);
 
 	Release.findOne({ id: req.params.id }, assert(function(release) {
 		if (!release) {
 			return api.fail(res, error('No such release with ID "%s".', req.params.id), 404);
 		}
 
-		// TODO only allow authors to upload uversion updates
+		// TODO only allow authors to upload version updates
 
 		var versionObj = _.defaults(req.body, { released_at: new Date() });
-		logger.info('[api|release:createVersion] %s', util.inspect(versionObj, { depth: null }));
+		logger.info('[api|release:addVersion] %s', util.inspect(versionObj, { depth: null }));
 		Version.getInstance(versionObj, assert(function(newVersion) {
 
-			logger.info('[api|release:createVersion] %s', util.inspect(versionObj, { depth: null }));
-			logger.info('[api|release:createVersion] %s', util.inspect(newVersion, { depth: null }));
+			logger.info('[api|release:addVersion] %s', util.inspect(versionObj, { depth: null }));
+			logger.info('[api|release:addVersion] %s', util.inspect(newVersion, { depth: null }));
 
 			newVersion.validate(function(err) {
 				// validate existing version here
@@ -123,7 +124,7 @@ exports.addVersion = function(req, res) {
 					return api.fail(res, error('Validations failed. See below for details.').errors(err.errors).warn('create'), 422);
 				}
 
-				logger.info('[api|release:createVersion] Validations passed, adding new version to release.');
+				logger.info('[api|release:addVersion] Validations passed, adding new version to release.');
 				release.versions.push(newVersion);
 				release.save(assert(function() {
 
@@ -136,7 +137,8 @@ exports.addVersion = function(req, res) {
 						// game modification date
 						Game.update({ _id: release._game.toString() }, { modified_at: new Date() }, assert(function() {
 
-							Release.findOne({ id: req.params.id }).populate({ path: 'versions.files._file' })
+							Release.findOne({ id: req.params.id })
+								.populate({ path: 'versions.files._file' })
 								.populate({ path: 'versions.files._media.playfield_image' })
 								.populate({ path: 'versions.files._media.playfield_video' })
 								.populate({ path: 'versions.files._compatibility' })
@@ -153,6 +155,77 @@ exports.addVersion = function(req, res) {
 	}, 'Error getting release "%s"'));
 };
 
+/**
+ * Adds a new file to an existing version.
+ *
+ * @param {Request} req
+ * @param {Response} res
+ */
+exports.addFile = function(req, res) {
+
+	var assert = api.assert(error, 'addFile', req.params.id, res);
+
+	Release.findOne({ id: req.params.id }, assert(function(release) {
+		if (!release) {
+			return api.fail(res, error('No such release with ID "%s".', req.params.id), 404);
+		}
+
+		// TODO only allow authors to upload version updates
+
+		var version = _.filter(release.versions, { version: req.params.version });
+		if (version.length === 0) {
+			return api.fail(res, error('No such version "%s" for release "%s".', req.params.version, req.params.id), 404);
+		}
+		version = version[0];
+
+		var fileObj = req.body;
+		var fileId = req.body._file;
+		logger.info('[api|release:addFile] %s', util.inspect(fileObj, { depth: null }));
+		VersionFile.getInstance(fileObj, assert(function(newVersionFile) {
+
+			console.log(newVersionFile);
+
+			newVersionFile.validate(function(err) {
+				// TODO validate existing compat/flavor combination here
+				if (err) {
+					return api.fail(res, error('Validations failed. See below for details.').errors(err.errors).warn('create'), 422);
+				}
+
+				logger.info('[api|release:addFile] Validations passed, adding new file to version.');
+				version.files.push(newVersionFile);
+				release.save(assert(function() {
+
+					logger.info('[api|release:create] Added new file to version "%s" to release "%s".', version.version, release.name);
+
+					// set media to active
+					newVersionFile.activateFiles(assert(function(versionFile) {
+						logger.info('[api|release:create] All referenced files activated, returning object to client.');
+
+						// game modification date
+						Game.update({ _id: release._game.toString() }, { modified_at: new Date() }, assert(function() {
+
+							Release.findOne({ id: req.params.id })
+								.populate({ path: 'versions.files._file' })
+								.populate({ path: 'versions.files._media.playfield_image' })
+								.populate({ path: 'versions.files._media.playfield_video' })
+								.populate({ path: 'versions.files._compatibility' })
+								.exec(assert(function(release) {
+
+									var version = _.filter(release.toDetailed().versions, { version: req.params.version })[0];
+									var file = _.filter(version.files, function(versionFile) {
+										return versionFile.file.id === fileId;
+									})[0];
+
+									return api.success(res, file, 201);
+
+								}, 'Error fetching updated release "%s".'));
+						}, 'Error updating game modification date'));
+					}, 'Error activating files for release "%s"'));
+				}, 'Error adding new version to release "%s".'));
+			});
+		}, 'Error creating version instance for release "%s".'));
+	}, 'Error getting release "%s"'));
+};
 
 /**
  * Lists all releases.

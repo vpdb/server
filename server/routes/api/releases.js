@@ -29,7 +29,7 @@ exports.register = function(app, api) {
 	app.delete(settings.apiPath('/releases/:id'), api.auth(api.releases.del, 'releases', 'delete'));
 
 	app.post(settings.apiPath('/releases/:id/versions'), api.auth(api.releases.addVersion, 'releases', 'add'));
-	//app.post(settings.apiPath('/releases/:id/versions/:version'), api.auth(api.releases.addFile, 'releases', 'add'));
+	app.post(settings.apiPath('/releases/:id/versions/:version'), api.auth(api.releases.addFile, 'releases', 'add'));
 
 	app.get(settings.apiPath('/releases/:id/comments'), api.anon(api.comments.listForRelease));
 	app.post(settings.apiPath('/releases/:id/comments'), api.auth(api.comments.createForRelease, 'comments', 'add'));

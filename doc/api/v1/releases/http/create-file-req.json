@@ -1,0 +1,20 @@
+POST /api/v1/releases/4JHZzgnaie/versions/1.0.0 HTTP/1.1
+Host: vpdb.ch
+Accept-Encoding: gzip, deflate
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJOa21aeDI2amUiLCJpYXQiOiIyMDE1LTA0LTA2VDE5OjIxOjUzLjAwN1oiLCJleHAiOiIyMDE1LTA0LTA2VDIwOjIxOjUzLjAwN1oifQ.DtymPyJCXEDC6lB4QNGcROJIVFiSghURMulTtHMipwE
+Content-Type: application/json
+Content-Length: 141
+
+{
+  "_file": "E1JMGgn6jl",
+  "_media": {
+    "playfield_image": "EJEzzl3pie"
+  },
+  "_compatibility": [
+    "9.9.0"
+  ],
+  "flavor": {
+    "orientation": "fs",
+    "lightning": "night"
+  }
+}

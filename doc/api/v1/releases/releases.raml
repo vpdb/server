@@ -84,7 +84,7 @@ get:
             role/member:
               example: !include http/create-version-res-403.json
 
-    /{version}:
+    /{version}/files:
       uriParameters:
         version:
           displayName: Version ID
@@ -109,6 +109,11 @@ get:
             body:
               role/member:
                 example: !include http/create-file-res-422.json
+          403:
+            description: A user who is not author of the release posted a new file
+            body:
+              role/member:
+                example: !include http/create-file-res-403.json
 
   /comments: !include comments.raml
   /rating: !include rating.raml

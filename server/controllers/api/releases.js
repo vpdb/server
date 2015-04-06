@@ -186,7 +186,10 @@ exports.addFile = function(req, res) {
 			return api.fail(res, error('No such release with ID "%s".', req.params.id), 404);
 		}
 
-		// TODO only allow authors to upload version updates
+		// only allow authors to upload version updates
+		if (!_.contains(_.map(_.pluck(release.authors, '_user'), function(id) { return id.toString(); }), req.user._id.toString())) {
+			return api.fail(res, error('Only authors of the release can add new files of a version.', req.params.id), 403);
+		}
 
 		var version = _.filter(release.versions, { version: req.params.version });
 		if (version.length === 0) {

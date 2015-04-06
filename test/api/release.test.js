@@ -395,12 +395,24 @@ describe('The VPDB `release` API', function() {
 		before(function(done) {
 			hlp.setupUsers(request, {
 				member: { roles: [ 'member' ] },
+				othermember: { roles: [ 'member' ] },
 				contributor: { roles: [ 'contributor' ] }
 			}, done);
 		});
 
 		after(function(done) {
 			hlp.cleanup(request, done);
+		});
+
+		it('should fail when logged as a different user', function(done) {
+			hlp.release.createRelease('member', request, function(release) {
+				hlp.doomRelease('member', release.id);
+				request.post('/api/v1/releases/' + release.id + '/versions/' + release.versions[0].version + '/files')
+					.as('othermember')
+					.send({})
+					.saveResponse({ path: 'releases/create-file'})
+					.end(hlp.status(403, 'only authors of the release', done));
+			});
 		});
 
 		it('should fail for duplicate compat/flavor', function(done) {

@@ -78,6 +78,11 @@ get:
           body:
             role/member:
               example: !include http/create-version-res-422.json
+        403:
+          description: A user who is not author of the release posted a new version
+          body:
+            role/member:
+              example: !include http/create-version-res-403.json
 
     /{version}:
       uriParameters:

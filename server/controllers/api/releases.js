@@ -31,6 +31,7 @@ var Game = require('mongoose').model('Game');
 var api = require('./api');
 
 var error = require('../../modules/error')('api', 'release');
+var flavor = require('../../modules/flavor');
 
 /**
  * Creates a new release.
@@ -177,7 +178,7 @@ exports.addFile = function(req, res) {
 
 	var assert = api.assert(error, 'addFile', req.params.id, res);
 
-	Release.findOne({ id: req.params.id }, assert(function(release) {
+	Release.findOne({ id: req.params.id }).populate('versions.files._compatibility').exec(assert(function(release) {
 		if (!release) {
 			return api.fail(res, error('No such release with ID "%s".', req.params.id), 404);
 		}
@@ -192,13 +193,28 @@ exports.addFile = function(req, res) {
 
 		var fileObj = req.body;
 		var fileId = req.body._file;
+		var fileCompat = _.clone(req.body._compatibility || {});
+		var fileFlavor = _.pick(req.body.flavor || {}, flavor.keys());
 		logger.info('[api|release:addFile] %s', util.inspect(fileObj, { depth: null }));
 		VersionFile.getInstance(fileObj, assert(function(newVersionFile) {
 
 			console.log(newVersionFile);
 
 			newVersionFile.validate(function(err) {
-				// TODO validate existing compat/flavor combination here
+
+				// validate existing compat/flavor combination
+				var dupeFiles = _.filter(version.files, function(existingFile) {
+					var existingFileFlavor = _.pick(existingFile.flavor, flavor.keys());
+					return _.isEqual(fileCompat.sort(), _.pluck(existingFile._compatibility, 'id').sort())
+						&& _.isEqual(fileFlavor, existingFileFlavor);
+				});
+				if (dupeFiles.length > 0) {
+					err = err || {};
+					err.errors = [
+						{ path: '_compatibility', message: 'A combination of compatibility and flavor already exists with the same values.', value: fileCompat },
+						{ path: 'flavor', message: 'A combination of compatibility and flavor already exists with the same values.', value: fileFlavor }
+					];
+				}
 				if (err) {
 					return api.fail(res, error('Validations failed. See below for details.').errors(err.errors).warn('create'), 422);
 				}
@@ -210,7 +226,7 @@ exports.addFile = function(req, res) {
 					logger.info('[api|release:create] Added new file to version "%s" to release "%s".', version.version, release.name);
 
 					// set media to active
-					newVersionFile.activateFiles(assert(function(versionFile) {
+					newVersionFile.activateFiles(assert(function() {
 						logger.info('[api|release:create] All referenced files activated, returning object to client.');
 
 						// game modification date

@@ -289,7 +289,9 @@ describe('The VPDB `release` API', function() {
 
 			var user = 'member';
 			hlp.release.createRelease(user, request, function(release) {
+				hlp.doomRelease(user, release.id);
 				hlp.file.createVpt('member', request, function(vptfile) {
+					hlp.doomFile(user, vptfile.id);
 					request
 						.post('/api/v1/releases/' + release.id + '/versions')
 						.as(user)
@@ -304,8 +306,6 @@ describe('The VPDB `release` API', function() {
 								{ _file: vptfile.id, _compatibility: [ 'non-existent' ] }
 							]
 						}).end(function(err, res) {
-							hlp.doomRelease(user, release.id);
-							hlp.doomFile(user, vptfile.id);
 							hlp.expectValidationError(err, res, 'files.0.flavor.orientation', 'must be provided');
 							hlp.expectValidationError(err, res, 'files.0.flavor.lightning', 'must be provided');
 							hlp.expectValidationError(err, res, 'files.0._compatibility', 'must be provided');
@@ -324,6 +324,7 @@ describe('The VPDB `release` API', function() {
 		it('should fail when adding an existing version', function(done) {
 			var user = 'member';
 			hlp.release.createRelease(user, request, function(release) {
+				hlp.doomRelease(user, release.id);
 				request
 					.post('/api/v1/releases/' + release.id + '/versions')
 					.as(user)
@@ -338,7 +339,6 @@ describe('The VPDB `release` API', function() {
 							flavor: { orientation: 'fs', lightning: 'night' }
 						} ]
 					}).end(function(err, res) {
-						hlp.doomRelease(user, release.id);
 						hlp.expectValidationError(err, res, 'version', 'version already exists');
 						done();
 					});
@@ -348,6 +348,7 @@ describe('The VPDB `release` API', function() {
 		it('should succeed when providing valid data', function(done) {
 			var user = 'member';
 			hlp.release.createRelease(user, request, function(release) {
+				hlp.doomRelease(user, release.id);
 				hlp.file.createVpt(user, request, function(vptfile) {
 					hlp.file.createPlayfield(user, request, function (playfield) {
 						request
@@ -365,7 +366,6 @@ describe('The VPDB `release` API', function() {
 								} ]
 							}).end(function(err, res) {
 								hlp.expectStatus(err, res, 201);
-								hlp.doomRelease(user, release.id);
 								var version = res.body;
 								expect(version).to.be.ok();
 								expect(version.changes).to.be('*Second release.*');
@@ -391,6 +391,32 @@ describe('The VPDB `release` API', function() {
 			hlp.cleanup(request, done);
 		});
 
+		it('should fail for duplicate compat/flavor', function(done) {
+			var user = 'member';
+			hlp.release.createRelease(user, request, function(release) {
+				var versionFile = release.versions[0].files[0];
+				hlp.file.createVpt(user, request, function(vptfile) {
+					hlp.file.createPlayfield(user, request, function(playfield) {
+						request
+							.post('/api/v1/releases/' + release.id + '/versions/' + release.versions[0].version)
+							.saveResponse({ path: 'releases/create-file'})
+							.as(user)
+							.send({
+								_file: vptfile.id,
+								_media: { playfield_image: playfield.id },
+								_compatibility: _.pluck(versionFile.compatibility, 'id'),
+								flavor: versionFile.flavor
+							}).end(function(err, res) {
+								hlp.doomRelease(user, release.id);
+								hlp.expectValidationError(err, res, '_compatibility', 'compatibility and flavor already exist');
+								hlp.expectValidationError(err, res, 'flavor', 'compatibility and flavor already exist');
+								done();
+							});
+					});
+				});
+			});
+		});
+
 		it('should succeed when providing valid data', function(done) {
 			var user = 'member';
 			hlp.release.createRelease(user, request, function(release) {
@@ -404,9 +430,8 @@ describe('The VPDB `release` API', function() {
 								_file: vptfile.id,
 								_media: { playfield_image: playfield.id },
 								_compatibility: [ '9.9.0' ],
-								flavor: { orientation: 'fs', lightning: 'night' }
+								flavor: { orientation: 'fs', lightning: 'day' }
 							}).end(function(err, res) {
-								hlp.dump(res);
 								hlp.expectStatus(err, res, 201);
 								hlp.doomRelease(user, release.id);
 								done();

@@ -100,6 +100,10 @@ get:
             body:
               role/member:
                 example: !include http/create-file-res-201.json
+          422:
+            body:
+              role/member:
+                example: !include http/create-file-res-422.json
 
   /comments: !include comments.raml
   /rating: !include rating.raml

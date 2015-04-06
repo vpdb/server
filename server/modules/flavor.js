@@ -65,7 +65,7 @@ exports.values = {
 };
 
 exports.keys = function(type) {
-	return _.keys(exports.values[type]);
+	return type ? _.keys(exports.values[type]) : _.keys(exports.values);
 };
 
 exports.defaultFileTags = function() {

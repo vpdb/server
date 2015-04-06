@@ -113,7 +113,13 @@ exports.createVersion = function(req, res) {
 
 			logger.info('[api|release:createVersion] %s', util.inspect(versionObj, { depth: null }));
 			logger.info('[api|release:createVersion] %s', util.inspect(newVersion, { depth: null }));
+
 			newVersion.validate(function(err) {
+				// validate existing version here
+				if (_.filter(release.versions, { version: versionObj.version }).length > 0) {
+					err = err || {};
+					err.errors = [{ path: 'version', message: 'Provided version already exists and you cannot add a version twice. Try updating the version instead of adding a new one.', value: versionObj.version }];
+				}
 				if (err) {
 					return api.fail(res, error('Validations failed. See below for details.').errors(err.errors).warn('create'), 422);
 				}

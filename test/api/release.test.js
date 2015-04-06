@@ -285,6 +285,29 @@ describe('The VPDB `release` API', function() {
 			hlp.cleanup(request, done);
 		});
 
+		it('should fail when adding an existing version', function(done) {
+			var user = 'member';
+			hlp.release.createRelease(user, request, function(release) {
+				request
+					.post('/api/v1/releases/' + release.id + '/versions')
+					.as(user)
+					.send({
+						version: '1.0.0',
+						changes: '*Second release.*',
+						files: [ {
+							_file: '12345',
+							_media: { playfield_image: '67890' },
+							_compatibility: [ '9.9.0' ],
+							flavor: { orientation: 'fs', lightning: 'night' }
+						} ]
+					}).end(function(err, res) {
+						hlp.doomRelease(user, release.id);
+						hlp.expectValidationError(err, res, 'version', 'version already exists');
+						done();
+					});
+			});
+		});
+
 		it('should succeed when providing valid data', function(done) {
 			var user = 'member';
 			hlp.release.createRelease(user, request, function(release) {

@@ -81,7 +81,19 @@ exports.create = function(req, res) {
 					});
 
 					async.series(counters, function() {
-						return api.success(res, release.toDetailed(), 201);
+
+						Release.findById(release._id)
+							.populate({ path: '_tags' })
+							.populate({ path: 'authors._user' })
+							.populate({ path: 'versions.files._file' })
+							.populate({ path: 'versions.files._media.playfield_image' })
+							.populate({ path: 'versions.files._media.playfield_video' })
+							.populate({ path: 'versions.files._compatibility' })
+							.exec(assert(function(release) {
+
+								return api.success(res, release.toDetailed(), 201);
+
+							}, 'Error fetching updated release "%s".'));
 					});
 
 				}, 'Error activating files for release "%s"'));

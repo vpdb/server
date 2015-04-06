@@ -277,7 +277,7 @@ describe('The VPDB `release` API', function() {
 		before(function(done) {
 			hlp.setupUsers(request, {
 				member: { roles: [ 'member' ] },
-				othermember: { roles: [ 'member' ] },
+				member2: { roles: [ 'member' ] },
 				contributor: { roles: [ 'contributor' ] }
 			}, done);
 		});
@@ -290,7 +290,7 @@ describe('The VPDB `release` API', function() {
 			hlp.release.createRelease('member', request, function(release) {
 				hlp.doomRelease('member', release.id);
 				request.post('/api/v1/releases/' + release.id + '/versions')
-					.as('othermember')
+					.as('member2')
 					.send({})
 					.saveResponse({ path: 'releases/create-version'})
 					.end(hlp.status(403, 'only authors of the release', done));
@@ -395,7 +395,7 @@ describe('The VPDB `release` API', function() {
 		before(function(done) {
 			hlp.setupUsers(request, {
 				member: { roles: [ 'member' ] },
-				othermember: { roles: [ 'member' ] },
+				member2: { roles: [ 'member' ] },
 				contributor: { roles: [ 'contributor' ] }
 			}, done);
 		});
@@ -408,7 +408,7 @@ describe('The VPDB `release` API', function() {
 			hlp.release.createRelease('member', request, function(release) {
 				hlp.doomRelease('member', release.id);
 				request.post('/api/v1/releases/' + release.id + '/versions/' + release.versions[0].version + '/files')
-					.as('othermember')
+					.as('member2')
 					.send({})
 					.saveResponse({ path: 'releases/create-file'})
 					.end(hlp.status(403, 'only authors of the release', done));

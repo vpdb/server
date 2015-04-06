@@ -1,23 +1,34 @@
 POST /api/v1/games HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI0SjJCVGttcGlnIiwiaWF0IjoiMjAxNS0wNC0wNlQxODo0MzoyNS4wOTNaIiwiZXhwIjoiMjAxNS0wNC0wNlQxOTo0MzoyNS4wOTNaIn0.bvjJCULMWkNLNDuMUPpxiOcPqlZwQOQcLfuXer_jKF0
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJOa1VadkZkZWhsIiwiaWF0IjoiMjAxNS0wNC0wNlQyMjozMjowNi4zMTFaIiwiZXhwIjoiMjAxNS0wNC0wNlQyMzozMjowNi4zMTFaIn0.eHVwh6GW7W0C92zw0E964DqbDF-o3V29dVcbNXW8Q2w
 Content-Type: application/json
-Content-Length: 879
+Content-Length: 418
 
 {
   "ipdb": {
-    "number": 3268,
-    "mfg": 218
+    "number": 3562,
+    "mfg": 93
   },
-  "title": "Special",
-  "manufacturer": "Mills Novelty Company",
-  "year": 1936,
+  "title": "Ricochet",
+  "manufacturer": "Gottlieb",
+  "model_number": "99",
+  "year": 1955,
   "game_type": "em",
-  "features": "10 balls for 5 cents.",
-  "notes": "An engraved plaque on the playfield contains these patents:Patent 1,694,691 [GOLF GAME APPARATUS] filed November 28, 1927. Granted December 11, 1928 to Frank Rentz.Patent 1,730,523 [GAME] filed March 16, 1928. Granted October 8, 1929 to James S. Nicholas.Patent Reissue RE17,961 [GAME APPARATUS] original filed August 24, 1917. Granted February 10, 1931 to Frank H. Ellison.Patent 1,938,495 [GAME APPARATUS] filed January 19, 1932. Granted December 5, 1933 to Arthur L. Paulin and Earl W. Froom.These patents were acquired by Mills via license and/or litigation. For more information, read the chapter 'Patent Wars' in Bueschel's Encyclopedia of Pinball Volume 2.",
-  "id": "special",
+  "themes": [
+    "Archery",
+    "Riflery",
+    "Target Practice"
+  ],
+  "designers": [
+    "Wayne Neyens"
+  ],
+  "artists": [
+    "Roy Parker"
+  ],
+  "notes": "'Ricochet' was also developed as a 2-player game (Model 101) but neither machine was produced.See Gottlieb's 1954 'Ricochet'.",
+  "id": "ricochet",
   "_media": {
-    "backglass": "VkfA1Qaoe"
+    "backglass": "NJsZwY_l2l"
   }
 }

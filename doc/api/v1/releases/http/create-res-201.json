@@ -1,11 +1,11 @@
 201 Created
 Content-Type: application/json; charset=utf-8
-Etag: W/"MsbdqUJA81B5Dh1EjA/zeg=="
+Etag: W/"NQj+nYfyXzmQmPLBV4YdwQ=="
 Content-Encoding: gzip
 
 {
   "name": "release",
-  "created_at": "2015-04-06T18:43:36.662Z",
+  "created_at": "2015-04-06T22:32:18.765Z",
   "rating": {
     "votes": 0,
     "average": 0
@@ -25,13 +25,16 @@ Content-Encoding: gzip
         "Table Creator"
       ],
       "user": {
-        "id": "U\"ÓÖ´p3-â"
+        "id": "NJX3Z5_e2e",
+        "name": "Timmothy29",
+        "username": "Timmothy29",
+        "gravatar_id": "52fc2e604a25d07f62d23046e290a10b"
       }
     }
   ],
   "versions": [
     {
-      "released_at": "2015-04-06T18:43:36.662Z",
+      "released_at": "2015-04-06T22:32:18.765Z",
       "version": "1.0.0",
       "counter": {
         "comments": 0,
@@ -50,7 +53,7 @@ Content-Encoding: gzip
             "playfield_image": {
               "name": "playfield-0.png",
               "bytes": 347,
-              "created_at": "2015-04-06T18:43:35.893Z",
+              "created_at": "2015-04-06T22:32:17.958Z",
               "mime_type": "image/png",
               "file_type": "playfield-fs",
               "metadata": {
@@ -65,35 +68,35 @@ Content-Encoding: gzip
                 "downloads": 0
               },
               "is_active": true,
-              "id": "EJurdgQToe",
+              "id": "41WIz5_gng",
               "is_public": true,
               "is_protected": false,
-              "url": "/storage/v1/files/EJurdgQToe",
+              "url": "/storage/v1/files/41WIz5_gng",
               "variations": {
                 "medium": {
-                  "url": "/storage/v1/files/EJurdgQToe/medium"
+                  "url": "/storage/v1/files/41WIz5_gng/medium"
                 },
                 "medium-2x": {
-                  "url": "/storage/v1/files/EJurdgQToe/medium-2x"
+                  "url": "/storage/v1/files/41WIz5_gng/medium-2x"
                 },
                 "medium-landscape": {
-                  "url": "/storage/v1/files/EJurdgQToe/medium-landscape"
+                  "url": "/storage/v1/files/41WIz5_gng/medium-landscape"
                 },
                 "medium-landscape-2x": {
-                  "url": "/storage/v1/files/EJurdgQToe/medium-landscape-2x"
+                  "url": "/storage/v1/files/41WIz5_gng/medium-landscape-2x"
                 },
                 "square": {
-                  "url": "/storage/v1/files/EJurdgQToe/square"
+                  "url": "/storage/v1/files/41WIz5_gng/square"
                 },
                 "square-2x": {
-                  "url": "/storage/v1/files/EJurdgQToe/square-2x"
+                  "url": "/storage/v1/files/41WIz5_gng/square-2x"
                 }
               }
             },
             "playfield_video": {
               "name": "playfield.mp4",
               "bytes": 537368,
-              "created_at": "2015-04-06T18:43:36.353Z",
+              "created_at": "2015-04-06T22:32:18.312Z",
               "mime_type": "video/mp4",
               "file_type": "playfield-fs",
               "metadata": {
@@ -113,33 +116,41 @@ Content-Encoding: gzip
                 "downloads": 0
               },
               "is_active": true,
-              "id": "41uxKlQTsx",
+              "id": "4JBxQ5uxhg",
               "is_public": false,
               "is_protected": true,
-              "url": "/storage/v1/files/41uxKlQTsx",
+              "url": "/storage/v1/files/4JBxQ5uxhg",
               "variations": {
                 "still": {
-                  "url": "/storage/v1/files/41uxKlQTsx/still",
+                  "url": "/storage/v1/files/4JBxQ5uxhg/still",
                   "is_protected": true
                 },
                 "small-rotated": {
-                  "url": "/storage/v1/files/41uxKlQTsx/small-rotated",
+                  "url": "/storage/v1/files/4JBxQ5uxhg/small-rotated",
                   "is_protected": true
                 }
               }
             }
           },
           "compatibility": [
-            {}
+            {
+              "id": "9.9.0",
+              "label": "v9.9.0",
+              "platform": "vp",
+              "download_url": "http://www.vpforums.org/index.php?app=downloads&showfile=8793",
+              "built_at": "2014-04-29T00:00:00.000Z",
+              "type": "release",
+              "is_range": false
+            }
           ],
           "file": {
             "name": "test-table-0.vpt",
-            "created_at": "2015-04-06T18:43:35.835Z",
+            "created_at": "2015-04-06T22:32:17.909Z",
             "mime_type": "application/x-visual-pinball-table",
             "file_type": "release",
             "metadata": {},
-            "id": "EkGrOxmTog",
-            "url": "/storage/v1/files/EkGrOxmTog",
+            "id": "EksHz9_e2e",
+            "url": "/storage/v1/files/EksHz9_e2e",
             "bytes": 135168,
             "variations": {},
             "is_protected": true,
@@ -160,7 +171,7 @@ Content-Encoding: gzip
             "playfield_image": {
               "name": "playfield-1.png",
               "bytes": 347,
-              "created_at": "2015-04-06T18:43:35.885Z",
+              "created_at": "2015-04-06T22:32:17.958Z",
               "mime_type": "image/png",
               "file_type": "playfield-fs",
               "metadata": {
@@ -175,43 +186,52 @@ Content-Encoding: gzip
                 "downloads": 0
               },
               "is_active": true,
-              "id": "EyUH_gXpoe",
+              "id": "EkGLGcOghg",
               "is_public": true,
               "is_protected": false,
-              "url": "/storage/v1/files/EyUH_gXpoe",
+              "url": "/storage/v1/files/EkGLGcOghg",
               "variations": {
                 "medium": {
-                  "url": "/storage/v1/files/EyUH_gXpoe/medium"
+                  "url": "/storage/v1/files/EkGLGcOghg/medium"
                 },
                 "medium-2x": {
-                  "url": "/storage/v1/files/EyUH_gXpoe/medium-2x"
+                  "url": "/storage/v1/files/EkGLGcOghg/medium-2x"
                 },
                 "medium-landscape": {
-                  "url": "/storage/v1/files/EyUH_gXpoe/medium-landscape"
+                  "url": "/storage/v1/files/EkGLGcOghg/medium-landscape"
                 },
                 "medium-landscape-2x": {
-                  "url": "/storage/v1/files/EyUH_gXpoe/medium-landscape-2x"
+                  "url": "/storage/v1/files/EkGLGcOghg/medium-landscape-2x"
                 },
                 "square": {
-                  "url": "/storage/v1/files/EyUH_gXpoe/square"
+                  "url": "/storage/v1/files/EkGLGcOghg/square"
                 },
                 "square-2x": {
-                  "url": "/storage/v1/files/EyUH_gXpoe/square-2x"
+                  "url": "/storage/v1/files/EkGLGcOghg/square-2x"
                 }
               }
-            }
+            },
+            "playfield_video": null
           },
           "compatibility": [
-            {}
+            {
+              "id": "9.9.0",
+              "label": "v9.9.0",
+              "platform": "vp",
+              "download_url": "http://www.vpforums.org/index.php?app=downloads&showfile=8793",
+              "built_at": "2014-04-29T00:00:00.000Z",
+              "type": "release",
+              "is_range": false
+            }
           ],
           "file": {
             "name": "test-table-1.vpt",
-            "created_at": "2015-04-06T18:43:35.855Z",
+            "created_at": "2015-04-06T22:32:17.909Z",
             "mime_type": "application/x-visual-pinball-table",
             "file_type": "release",
             "metadata": {},
-            "id": "N1EHdgQ6il",
-            "url": "/storage/v1/files/N1EHdgQ6il",
+            "id": "Nk9BMc_xhg",
+            "url": "/storage/v1/files/Nk9BMc_xhg",
             "bytes": 135168,
             "variations": {},
             "is_protected": true,
@@ -223,9 +243,17 @@ Content-Encoding: gzip
       ]
     }
   ],
-  "id": "4J--tlQaol",
+  "id": "Nkg-Q9Oxhl",
   "tags": [
-    "hd",
-    "dof"
+    {
+      "name": "HD",
+      "description": "All textures render crispy at Full HD resolution.",
+      "id": "hd"
+    },
+    {
+      "name": "DOF",
+      "description": "Support for Direct Output Framework.",
+      "id": "dof"
+    }
   ]
 }

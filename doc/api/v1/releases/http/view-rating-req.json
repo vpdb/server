@@ -1,5 +1,5 @@
-GET /api/v1/releases/NycNSl7aog/rating HTTP/1.1
+GET /api/v1/releases/EyJB1cue3l/rating HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJOeTVaU2dtYXNsIiwiaWF0IjoiMjAxNS0wNC0wNlQxODo0MzozMi40ODZaIiwiZXhwIjoiMjAxNS0wNC0wNlQxOTo0MzozMi40ODZaIn0.64ZwSevYCaoSKcdr7bzr0O0nyoguFRXEFkD7YN3xZhA
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJOeXl6Sjl1ZzNlIiwiaWF0IjoiMjAxNS0wNC0wNlQyMjozMjoxNC41MDhaIiwiZXhwIjoiMjAxNS0wNC0wNlQyMzozMjoxNC41MDhaIn0.d5w53S0bmdVeYD3ZJuGkhtCaMlhhKN9axP18wXHabm8
 

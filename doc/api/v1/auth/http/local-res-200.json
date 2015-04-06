@@ -1,24 +1,24 @@
 200 OK
 Content-Type: application/json; charset=utf-8
-Etag: W/"p2ZIwMM9VJbPMfdkOR1z+Q=="
+Etag: W/"w2K+7ErRmiETDDm3pHtKoQ=="
 Content-Encoding: gzip
 
 {
-  "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJOMUxYajFRcG94IiwiaWF0IjoiMjAxNS0wNC0wNlQxODo0MzoyMi40NTVaIiwiZXhwIjoiMjAxNS0wNC0wNlQxOTo0MzoyMi40NTVaIn0.br4w0ocXO6nGR2z2kojzVDgijPhXtmDmyIcnYcWL9ZM",
-  "expires": "2015-04-06T19:43:22.455Z",
+  "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI0a0RTTnRfZTJsIiwiaWF0IjoiMjAxNS0wNC0wNlQyMjozMjowMy42MTFaIiwiZXhwIjoiMjAxNS0wNC0wNlQyMzozMjowMy42MTFaIn0.NszDv0-xisUqirb3jkHpkOLIj9mPBv3rCSpyiUFsgZQ",
+  "expires": "2015-04-06T23:32:03.611Z",
   "user": {
-    "id": "N1LXj1Qpox",
-    "name": "Eva_Howe51",
-    "username": "Eva_Howe51",
-    "gravatar_id": "b7e367649f5b3542f68a9a6a21049f4a",
-    "email": "karlee7@hotmail.com",
+    "id": "4kDSNt_e2l",
+    "name": "Britney17",
+    "username": "Britney17",
+    "gravatar_id": "6f0e2faf8f7c7cf6f61ea56c4818a72c",
+    "email": "precious_johnson@gmail.com",
     "is_active": true,
     "provider": "local",
     "roles": [
       "member"
     ],
     "plan": "free",
-    "created_at": "2015-04-06T18:43:22.399Z",
+    "created_at": "2015-04-06T22:32:03.543Z",
     "counter": {
       "downloads": 0,
       "comments": 0

@@ -1,15 +1,15 @@
 201 Created
 Content-Type: application/json; charset=utf-8
-Content-Length: 498
-Etag: W/"1f2-417d72b6"
+Content-Length: 476
+Etag: W/"1dc-82273626"
 
 {
   "plan": "free",
-  "name": "Heaven.Brown12",
-  "username": "Heaven.Brown12",
-  "email": "sterling_fadel2@hotmail.com",
+  "name": "Yvonne67",
+  "username": "Yvonne67",
+  "email": "eldon.jacobs@gmail.com",
   "provider": "local",
-  "created_at": "2015-04-06T18:43:44.621Z",
+  "created_at": "2015-04-06T22:32:30.509Z",
   "is_active": false,
   "counter": {
     "downloads": 0,
@@ -20,9 +20,9 @@ Etag: W/"1f2-417d72b6"
   ],
   "email_status": {
     "code": "pending_registration",
-    "expires_at": "2015-04-07T18:43:44.621Z",
-    "value": "sterling_fadel2@hotmail.com"
+    "expires_at": "2015-04-07T22:32:30.510Z",
+    "value": "eldon.jacobs@gmail.com"
   },
-  "id": "NJmPWbQ6oe",
-  "gravatar_id": "b634c4880d5ec6a3e0bc07d475ed8ebd"
+  "id": "VyEH1idx3x",
+  "gravatar_id": "1fe22be9b315d16c8ee06896f3db31f7"
 }

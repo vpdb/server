@@ -1,10 +1,10 @@
-POST /api/v1/releases/413e3kXpix/comments HTTP/1.1
+POST /api/v1/releases/V10MBKug2x/comments HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJOMWNZbzE3YW9sIiwiaWF0IjoiMjAxNS0wNC0wNlQxODo0MzoyMi45MzlaIiwiZXhwIjoiMjAxNS0wNC0wNlQxOTo0MzoyMi45MzlaIn0.DriIr28v8APu348c4Jd1Ehp_fAzyxAXjYtNHVnxV7Vk
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJWMTVIRnVlMmwiLCJpYXQiOiIyMDE1LTA0LTA2VDIyOjMyOjA0LjE2NFoiLCJleHAiOiIyMDE1LTA0LTA2VDIzOjMyOjA0LjE2NFoifQ.oexbcm-xQGEb9x0oE5KLHkTh56tKvi4XPIAw492cYpw
 Content-Type: application/json
-Content-Length: 55
+Content-Length: 53
 
 {
-  "message": "User-friendly zero administration success"
+  "message": "Synergistic fresh-thinking service-desk"
 }

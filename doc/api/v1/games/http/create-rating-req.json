@@ -1,8 +1,8 @@
-POST /api/v1/games/bronco/rating HTTP/1.1
+POST /api/v1/games/beam-lite-of-37/rating HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
 Content-Type: application/json
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI0a0ZNZVFhc2wiLCJpYXQiOiIyMDE1LTA0LTA2VDE4OjQzOjMwLjA0NFoiLCJleHAiOiIyMDE1LTA0LTA2VDE5OjQzOjMwLjA0NFoifQ.WW-tAqQ_cIvu9ggPMJa38JcYsjAv9-7Vorg9q6-v-Do
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJFSnBLdWwzZyIsImlhdCI6IjIwMTUtMDQtMDZUMjI6MzI6MTIuMTA1WiIsImV4cCI6IjIwMTUtMDQtMDZUMjM6MzI6MTIuMTA1WiJ9.iejDLW91n96uIDeJhl08in9ZMT2wk7bg3OQQmDH-p7w
 Content-Length: 11
 
 {

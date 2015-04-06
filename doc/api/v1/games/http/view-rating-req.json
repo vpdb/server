@@ -1,5 +1,5 @@
-GET /api/v1/games/mad-cap/rating HTTP/1.1
+GET /api/v1/games/single-coin/rating HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJOeV9xN2xtYWpnIiwiaWF0IjoiMjAxNS0wNC0wNlQxODo0MzozMC44ODNaIiwiZXhwIjoiMjAxNS0wNC0wNlQxOTo0MzozMC44ODNaIn0.-7OnV7EkYoHM0jmsi1veHovGUjla67uvVCFQzY0sV18
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI0a0VzcEZkZW5sIiwiaWF0IjoiMjAxNS0wNC0wNlQyMjozMjoxMi45MTJaIiwiZXhwIjoiMjAxNS0wNC0wNlQyMzozMjoxMi45MTJaIn0.CeujFmRzR8vCDWkca_bwinIYHqoIvRIjLTXQqvVr5ag
 

@@ -1,14 +1,14 @@
 PATCH /api/v1/user HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJFa2ptYlo3YWp4IiwiaWF0IjoiMjAxNS0wNC0wNlQxODo0Mzo0NC40MjFaIiwiZXhwIjoiMjAxNS0wNC0wNlQxOTo0Mzo0NC40MjFaIn0.0NXmW-izc8B-yNx9OdJGvQmrVavtCpP1y7BRPNMBUUc
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJWSmhia2lkeG5nIiwiaWF0IjoiMjAxNS0wNC0wNlQyMjozMjozMC4zMDNaIiwiZXhwIjoiMjAxNS0wNC0wNlQyMzozMjozMC4zMDNaIn0.24na0TjM_41bBRIrkco3dF0vKvHytQHQr1WkNkPaO4w
 Content-Type: application/json
-Content-Length: 148
+Content-Length: 145
 
 {
-  "name": "Darien Christiansen",
-  "location": "West Marc",
-  "email": "kiarra.dickinson@hotmail.com",
-  "current_password": "P8PLiEMdh8",
-  "password": "ypwB3dbPqV"
+  "name": "Nathanial Hessel",
+  "location": "North Harveychester",
+  "email": "emma46@hotmail.com",
+  "current_password": "P6kQ4z9Fz0",
+  "password": "9FqJs0AlVR"
 }

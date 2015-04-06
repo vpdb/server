@@ -1,8 +1,8 @@
-PUT /api/v1/games/doughboy-de-luxe-senior/rating HTTP/1.1
+PUT /api/v1/games/dodge-city/rating HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
 Content-Type: application/json
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJWMV9iTmVRcGpsIiwiaWF0IjoiMjAxNS0wNC0wNlQxODo0MzozMS4yODZaIiwiZXhwIjoiMjAxNS0wNC0wNlQxOTo0MzozMS4yODZaIn0.HY-uFeuLCj_1t00B3gATmATSIu2sTOfVFd5o1U4o7OI
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJWeVZXQ0ZfbDNsIiwiaWF0IjoiMjAxNS0wNC0wNlQyMjozMjoxMy4yNjVaIiwiZXhwIjoiMjAxNS0wNC0wNlQyMzozMjoxMy4yNjVaIn0.d3g0jagG_YjhJYimaN9dMGVFl8R8R-mARl8Z1xOZQQw
 Content-Length: 11
 
 {

@@ -1,18 +1,18 @@
 201 Created
 Content-Type: application/json; charset=utf-8
-Etag: W/"7lpCZ+ISb8pQNVQJy3fuKA=="
+Etag: W/"K24sd2FEBa2fPa6e4wyOiA=="
 Content-Encoding: gzip
 
 {
-  "title": "Special",
-  "manufacturer": "Mills Novelty Company",
-  "year": 1936,
+  "title": "Ricochet",
+  "manufacturer": "Gottlieb",
+  "model_number": "99",
+  "year": 1955,
   "game_type": "em",
-  "features": "10 balls for 5 cents.",
-  "notes": "An engraved plaque on the playfield contains these patents:Patent 1,694,691 [GOLF GAME APPARATUS] filed November 28, 1927. Granted December 11, 1928 to Frank Rentz.Patent 1,730,523 [GAME] filed March 16, 1928. Granted October 8, 1929 to James S. Nicholas.Patent Reissue RE17,961 [GAME APPARATUS] original filed August 24, 1917. Granted February 10, 1931 to Frank H. Ellison.Patent 1,938,495 [GAME APPARATUS] filed January 19, 1932. Granted December 5, 1933 to Arthur L. Paulin and Earl W. Froom.These patents were acquired by Mills via license and/or litigation. For more information, read the chapter 'Patent Wars' in Bueschel's Encyclopedia of Pinball Volume 2.",
-  "id": "special",
-  "_created_by": "5522d3cd95b48170332d83fc",
-  "created_at": "2015-04-06T18:43:25.180Z",
+  "notes": "'Ricochet' was also developed as a 2-player game (Model 101) but neither machine was produced.See Gottlieb's 1954 'Ricochet'.",
+  "id": "ricochet",
+  "_created_by": "55230966677e787852a515a3",
+  "created_at": "2015-04-06T22:32:06.397Z",
   "rating": {
     "score": 0,
     "votes": 0,
@@ -28,12 +28,20 @@ Content-Encoding: gzip
     "releases": 0
   },
   "ipdb": {
-    "number": 3268,
-    "mfg": 218
+    "number": 3562,
+    "mfg": 93
   },
-  "artists": [],
-  "designers": [],
-  "themes": [],
+  "artists": [
+    "Roy Parker"
+  ],
+  "designers": [
+    "Wayne Neyens"
+  ],
+  "themes": [
+    "Archery",
+    "Riflery",
+    "Target Practice"
+  ],
   "short": [],
   "media": {
     "backglass": {
@@ -43,22 +51,22 @@ Content-Encoding: gzip
       "is_protected": false,
       "variations": {
         "small-2x": {
-          "url": "/storage/v1/files/VkfA1Qaoe/small-2x"
+          "url": "/storage/v1/files/NJsZwY_l2l/small-2x"
         },
         "small": {
-          "url": "/storage/v1/files/VkfA1Qaoe/small"
+          "url": "/storage/v1/files/NJsZwY_l2l/small"
         },
         "medium-2x": {
-          "url": "/storage/v1/files/VkfA1Qaoe/medium-2x"
+          "url": "/storage/v1/files/NJsZwY_l2l/medium-2x"
         },
         "medium": {
-          "url": "/storage/v1/files/VkfA1Qaoe/medium"
+          "url": "/storage/v1/files/NJsZwY_l2l/medium"
         }
       },
       "bytes": 135,
-      "url": "/storage/v1/files/VkfA1Qaoe",
-      "id": "VkfA1Qaoe"
+      "url": "/storage/v1/files/NJsZwY_l2l",
+      "id": "NJsZwY_l2l"
     }
   },
-  "url": "/game/special"
+  "url": "/game/ricochet"
 }

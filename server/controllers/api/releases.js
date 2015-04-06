@@ -95,7 +95,7 @@ exports.create = function(req, res) {
  * @param {Request} req
  * @param {Response} res
  */
-exports.createVersion = function(req, res) {
+exports.addVersion = function(req, res) {
 
 	var assert = api.assert(error, 'createVersion', req.params.id, res);
 
@@ -105,7 +105,6 @@ exports.createVersion = function(req, res) {
 		}
 
 		// TODO only allow authors to upload uversion updates
-
 
 		var versionObj = _.defaults(req.body, { released_at: new Date() });
 		logger.info('[api|release:createVersion] %s', util.inspect(versionObj, { depth: null }));
@@ -126,20 +125,26 @@ exports.createVersion = function(req, res) {
 
 				logger.info('[api|release:createVersion] Validations passed, adding new version to release.');
 				release.versions.push(newVersion);
-				release.save(assert(function () {
+				release.save(assert(function() {
 
 					logger.info('[api|release:create] Added version "%s" to release "%s".', newVersion.version, release.name);
 
 					// set media to active
-					release.activateFiles(assert(function (release) {
+					release.activateFiles(assert(function(release) {
 						logger.info('[api|release:create] All referenced files activated, returning object to client.');
 
 						// game modification date
 						Game.update({ _id: release._game.toString() }, { modified_at: new Date() }, assert(function() {
 
-							// return detail view
-							exports.view(req, res);
+							Release.findOne({ id: req.params.id }).populate({ path: 'versions.files._file' })
+								.populate({ path: 'versions.files._media.playfield_image' })
+								.populate({ path: 'versions.files._media.playfield_video' })
+								.populate({ path: 'versions.files._compatibility' })
+								.exec(assert(function(release) {
 
+									return api.success(res, _.filter(release.toDetailed().versions, { version: versionObj.version })[0], 201);
+
+							}, 'Error fetching updated release "%s".'));
 						}, 'Error updating game modification date'));
 					}, 'Error activating files for release "%s"'));
 				}, 'Error adding new version to release "%s".'));

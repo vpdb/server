@@ -327,6 +327,7 @@ describe('The VPDB `release` API', function() {
 				request
 					.post('/api/v1/releases/' + release.id + '/versions')
 					.as(user)
+					.saveResponse({ path: 'releases/create-version'})
 					.send({
 						version: '1.0.0',
 						changes: '*Second release.*',
@@ -351,6 +352,7 @@ describe('The VPDB `release` API', function() {
 					hlp.file.createPlayfield(user, request, function (playfield) {
 						request
 							.post('/api/v1/releases/' + release.id + '/versions')
+							.save({ path: 'releases/create-version'})
 							.as(user)
 							.send({
 								version: '2.0.0',
@@ -362,10 +364,9 @@ describe('The VPDB `release` API', function() {
 									flavor: { orientation: 'fs', lightning: 'night' }
 								} ]
 							}).end(function(err, res) {
-								hlp.expectStatus(err, res, 200);
-								hlp.doomRelease(user, res.body.id);
-								var release = res.body;
-								var version = _.filter(release.versions, { version: '2.0.0' })[0];
+								hlp.expectStatus(err, res, 201);
+								hlp.doomRelease(user, release.id);
+								var version = res.body;
 								expect(version).to.be.ok();
 								expect(version.changes).to.be('*Second release.*');
 								done();

@@ -329,12 +329,17 @@ VersionSchema.options.toObject = {
 FileSchema.options.toObject = {
 	virtuals: true,
 	transform: function(doc, file) {
-		file.media = file._media;
-		file.compatibility = [];
 		var Build = require('mongoose').model('Build');
 		var File = require('mongoose').model('File');
+
+		file.media = file._media;
+		file.compatibility = [];
 		_.each(file._compatibility, function(compat) {
-			file.compatibility.push(Build.toSimple(compat));
+			if (compat.label) {
+				file.compatibility.push(Build.toSimple(compat));
+			} else {
+				file.compatibility.push({ _id: compat._id });
+			}
 		});
 		file.file = File.toDetailed(file._file);
 		delete file.id;

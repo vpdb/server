@@ -98,6 +98,7 @@ exports.create = function(req, res) {
 exports.createVersion = function(req, res) {
 
 	var assert = api.assert(error, 'createVersion', req.params.id, res);
+
 	Release.findOne({ id: req.params.id }, assert(function(release) {
 		if (!release) {
 			return api.fail(res, error('No such release with ID "%s".', req.params.id), 404);
@@ -119,12 +120,22 @@ exports.createVersion = function(req, res) {
 
 				logger.info('[api|release:createVersion] Validations passed, adding new version to release.');
 				release.versions.push(newVersion);
-				release.save(assert(function() {
-				//Release.update({ id: req.params.id }, { $push: { versions: newVersion }}, assert(function() {
+				release.save(assert(function () {
 
-					// return detail view
-					exports.view(req, res);
+					logger.info('[api|release:create] Added version "%s" to release "%s".', newVersion.version, release.name);
 
+					// set media to active
+					release.activateFiles(assert(function (release) {
+						logger.info('[api|release:create] All referenced files activated, returning object to client.');
+
+						// game modification date
+						Game.update({ _id: release._game.toString() }, { modified_at: new Date() }, assert(function() {
+
+							// return detail view
+							exports.view(req, res);
+
+						}, 'Error updating game modification date'));
+					}, 'Error activating files for release "%s"'));
 				}, 'Error adding new version to release "%s".'));
 			});
 		}, 'Error creating version instance for release "%s".'));

@@ -272,6 +272,51 @@ describe('The VPDB `release` API', function() {
 
 	});
 
+	describe('when adding a new version to an existing release', function() {
+
+		before(function(done) {
+			hlp.setupUsers(request, {
+				member: { roles: [ 'member' ] },
+				contributor: { roles: [ 'contributor' ] }
+			}, done);
+		});
+
+		after(function(done) {
+			hlp.cleanup(request, done);
+		});
+
+		it('should succeed when providing valid data', function(done) {
+			var user = 'member';
+			hlp.release.createRelease(user, request, function(release) {
+				hlp.file.createVpt(user, request, function(vptfile) {
+					hlp.file.createPlayfield(user, request, function (playfield) {
+						request
+							.post('/api/v1/releases/' + release.id + '/versions')
+							.as(user)
+							.send({
+								version: '2.0.0',
+								changes: '*Second release.*',
+								files: [ {
+									_file: vptfile.id,
+									_media: { playfield_image: playfield.id },
+									_compatibility: [ '9.9.0' ],
+									flavor: { orientation: 'fs', lightning: 'night' }
+								} ]
+							}).end(function(err, res) {
+								hlp.expectStatus(err, res, 200);
+								hlp.doomRelease(user, res.body.id);
+								var release = res.body;
+								var version = _.filter(release.versions, { version: '2.0.0' })[0];
+								expect(version).to.be.ok();
+								expect(version.changes).to.be('*Second release.*');
+								done();
+							});
+					});
+				});
+			});
+		});
+	});
+
 	describe('when viewing a release', function() {
 
 		before(function(done) {

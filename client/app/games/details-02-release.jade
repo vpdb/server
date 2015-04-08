@@ -3,6 +3,10 @@ include ../template/_mixins
 // each release
 .panel(ng-repeat="release in game.releases", ng-controller="ReleaseController")
 	.col-sm-4.col-md-3
+
+		//-- PLAYFIELD TUMBS
+		//---------------------------------------------------------------------
+
 		carousel(interval="60000")
 			slide(ng-repeat="slide in release.__portraitShots", active="slide.active")
 				img(ng-src="{{ slide.url }}")
@@ -10,6 +14,9 @@ include ../template/_mixins
 		button.btn.btn-primary.btn-block.padder-top-3x(ng-click="download(game, release)")
 			+icon('download').space-right
 			| Download
+
+		//-- RELEASE RATING
+		//---------------------------------------------------------------------
 
 		.ratingbox.padder-top(
 			rating-avg="release.rating.average",
@@ -39,6 +46,32 @@ include ../template/_mixins
 
 				span.votes {{ release.rating.votes | number }} vote{{ release.rating.votes == 1 ? '' : 's' }}
 
+		//-- STATS
+		//---------------------------------------------------------------------
+
+		hr
+		p
+			+icon('download-circle').svg-2x.shift-up-2x.space-right
+			| {{ release.counter.downloads | number }} download{{ release.counter.downloads != 1 ? 's' : '' }}
+		p
+			+icon('star-circle').svg-2x.shift-up-2x.space-right
+			| 0 stars
+		p
+			+icon('comment-circle').svg-2x.shift-up-2x.space-right
+			| {{ release.counter.comments | number }} comment{{ release.counter.downloads != 1 ? 's' : '' }}
+
+
+		//-- OWNER SECTION
+		//---------------------------------------------------------------------
+
+		hr
+		p You are the owner.
+
+		a.btn.btn-primary.btn-block(ui-sref="addReleaseVersion({ id: game.id, releaseId: release.id })")
+			+icon('plus-circle').space-right
+			| UPLOAD FILE
+
+		p.padder-top
 
 	.col-sm-8.col-md-9
 		.inline-edit(ng-class='{ open: editing }')

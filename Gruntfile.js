@@ -121,7 +121,7 @@ module.exports = function(grunt) {
 		jade: {
 			site: {
 				options: { data: _.extend(viewParams, { environment: 'production', gitinfo: '<%= gitinfo %>' }) },
-				files: [ { expand: true, cwd: 'client/app', src: [ '**/*.jade', '!layout.jade', '!**/devsite/**', '!_*.jade' ], dest: '<%= config.htmlRoot %>', ext: '.html' } ]
+				files: [ { expand: true, cwd: 'client/app', src: [ '**/*.jade', '!layout.jade', '!**/devsite/**', '!_*.jade', '!**/*-[0-9]*-*.jade' ], dest: '<%= config.htmlRoot %>', ext: '.html' } ]
 			}
 		},
 

@@ -5,7 +5,7 @@ include ../template/_mixins
 	// right column
 	.col-sm-3.col-sm-push-9.col--menu.text-center
 
-		include details-gameinfo
+		include details-01-gameinfo
 
 		a.btn.btn-primary.btn-block.padder-bottom(ui-sref="addRelease({ id: game.id })", ng-show="auth.hasPermission('releases/add')")
 			+icon('plus-circle').space-right
@@ -19,9 +19,9 @@ include ../template/_mixins
 		h1 Releases
 		label(ng-hide="game.releases.length > 0") No releases for this game available.
 
-		include details-release
-		include details-roms
-		include details-todo
+		include details-02-release
+		include details-03-roms
+		include details-04-todo
 
 		p
 			br

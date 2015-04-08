@@ -56,6 +56,7 @@ angular.module('vpdb', deps.concat(appDeps))
 		$stateProvider.state('releases',         { url: '/releases',                     templateUrl: '/releases/list.html' });
 		$stateProvider.state('addGame',          { url: '/games/add',                    templateUrl: '/games/add.html' });
 		$stateProvider.state('addRelease',       { url: '/game/:id/add-release',         templateUrl: '/releases/add-release.html' });
+		$stateProvider.state('addReleaseVersion',{ url: '/game/:id/release/:releaseId/add', templateUrl: '/releases/add-version.html' });
 		$stateProvider.state('adminUsers',       { url: '/admin/users',                  templateUrl: '/users/list.html' });
 		$stateProvider.state('profile',          { url: '/profile',                      templateUrl: '/profile/profile.html' });
 		$stateProvider.state('profile.settings',         { url: '/settings',             templateUrl: '/profile/settings.html', controller: 'ProfileSettingsCtrl' });

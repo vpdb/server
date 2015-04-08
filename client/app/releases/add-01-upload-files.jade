@@ -1,5 +1,3 @@
-include ../template/_mixins
-
 p Drag and drop your files from the file explorer into the box below.
 .panel.panel--dropzone(ng-file-drop="onFilesUpload($files)", drag-over-class="panel--dragging", ng-class="{ error: angular.isString(errors.versions[0].files) }")
 

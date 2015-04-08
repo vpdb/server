@@ -1,0 +1,66 @@
+p These show off your work. You should provide both image and video at full HD resolution at <i>1920&times;1080</i>.
+	| For every table file you've provided in step 1, at least the screenshot is mandatory. If you provide a video,
+	| it should show the table in attract mode (no gameplay).
+
+span(ng-repeat="file in meta.files | fileext:['vpt','vpx']")
+	h2.h--smaller
+		+icon('{{ file.icon }}').svg-2x.shift-up.space-right-less
+		| {{ file.name }}
+	hr.hr--light.hr--shifted-up
+	.row(ng-show="file.flavor.orientation")
+
+		//-- screenshot
+		.col-sm-6.playfield--rotate-on-upload(make-loaded="{ loaded: file.flavor.orientation !== 'ws' }")
+			span.pre-h4 Playfield
+			h4.h--large Screenshot
+			.panel.panel--blank.playfield--image(ng-file-drop="onMediaUpload(file, 'playfield_image', $files)", drag-over-class="panel--dragging", ng-class="{ error: errors.versions[0].files[meta.files.indexOf(file)]._media.playfield_image }")
+				input#uploadBackglass.hide(type="file", ng-file-select="onMediaUpload(file, 'playfield_image', $files)")
+				.panel-body.a.a--darker(ng-click="openUploadDialog('playfield_image', '#uploadBackglass')")
+					.img.img--ar-ws.loaded(img-bg="meta.mediaLinks[file.storage.id].playfield_image")
+						.text-center.vertical-center--100
+							progressbar.progress--fixed-absolute.progress-striped.active(value="mediaFiles[file.storage.id].playfield_image.progress", ng-show="mediaFiles[file.storage.id].playfield_image.uploading")
+							.span(ng-show="!img.url")
+								+icon('photo').svg-4x(ng-class="{ transparent: mediaFiles[file.storage.id].playfield_image.uploading }")
+								p {{ mediaFiles[file.storage.id].playfield_image.status || 'Click or drag and drop here' }}
+							.span(ng-show="img.loading")
+								+icon('gear').svg-3x.svg-spin--slow
+								p Generating thumbnails...
+
+		//-- video
+		.col-sm-6.playfield--rotate-on-upload(make-loaded="{ loaded: file.flavor.orientation !== 'ws' }", make-loaded-event="video", make-loaded-post="loadingFinished")
+			span.pre-h4 Playfield
+			h4.h--large Video
+
+			.panel.panel--blank.playfield--video(ng-show="loadingFinished", ng-file-drop="onMediaUpload(file, 'playfield_video', $files)", drag-over-class="panel--dragging")
+				.panel-body.a.a--darker(ng-click="openUploadDialog('playfield_video', '#uploadBackglass')")
+					.img.img--ar-fs.loaded
+						.video-wrapper
+							video.video-js.vjs-sublime-skin(videojs, width="100%", height="100%", video-src="{{ meta.mediaFiles[file.storage.id].playfield_video.variations['small-rotated'] }}")
+
+			.panel.panel--blank.playfield--image(ng-hide="loadingFinished", ng-file-drop="onMediaUpload(file, 'playfield_video', $files)", drag-over-class="panel--dragging")
+				input#uploadBackglass.hide(type="file", ng-file-select="onMediaUpload(file, 'playfield_video', $files)")
+				.panel-body.a.a--darker(ng-click="openUploadDialog('playfield_video', '#uploadBackglass')")
+					.img.img--ar-ws.loaded(img-bg="meta.mediaLinks[file.storage.id].playfield_video")
+						.text-center.vertical-center--100
+							progressbar.progress--fixed-absolute.progress-striped.active(value="mediaFiles[file.storage.id].playfield_video.progress", ng-show="mediaFiles[file.storage.id].playfield_video.uploading")
+							span(ng-show="!img.url")
+								+icon('video-camera').svg-4x(ng-class="{ transparent: mediaFiles[file.storage.id].playfield_video.uploading }")
+								p {{ mediaFiles[file.storage.id].playfield_video.status || 'Click or drag and drop here' }}
+							span(ng-show="img.loading")
+								+icon('gear').svg-3x.svg-spin--slow
+								p Creating video screenshot...
+							span(ng-show="videoLoading").progress-note--with-background
+								+icon('gear').svg-3x.svg-spin--slow
+								p Generating video thumbnail...
+
+	.text-center(ng-hide="file.flavor.orientation")
+		+icon('warning').shift-up.space-right
+		i Pleased set the <b>orientation</b> of the file under 3. before uploading media.
+
+	.alert.alert-danger(ng-show="errors.versions[0].files[meta.files.indexOf(file)]._media.playfield_image")
+		+icon('warning').shift-up.space-right
+		| {{ errors.versions[0].files[meta.files.indexOf(file)]._media.playfield_image }}
+
+.text-center(ng-show="(meta.files | fileext:['vpt','vpx']).length == 0")
+	+icon('warning').shift-up.space-right
+	i Upload <code>.vpt</code>/<code>.vpx</code> files under 1.	 in order to upload media.

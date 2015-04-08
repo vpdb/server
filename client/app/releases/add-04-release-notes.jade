@@ -1,0 +1,22 @@
+.form-group(ng-class="{ error: errors.versions[0].version }")
+	label.control-label(for="version") Version
+	.row
+		.col-sm-2: input#version.form-control(type="text", ng-model="release.versions[0].version", placeholder="x.x.x")
+		.col.sm-10: i Using the semantic versioning syntax is recommended.
+	.alert.alert-danger(ng-show="errors.versions[0].version")
+		+icon('warning').shift-up.space-right
+		| {{ errors.versions[0].version }}
+.clearfix
+
+.form-group
+	label.control-label(for="version") Release Information
+	tabset.tabset--light
+		label.label--small.pull-right(markdown-info="Markdown enabled.")
+		tab
+			tab-heading(title="Write"): +icon('edit')
+			textarea.textarea--full.msd-elastic(placeholder="Release Information", ng-model="release.versions[0].changes")
+		tab
+			tab-heading(title="Preview"): +icon('eye')
+			div.markdown(markdown="release.versions[0].changes")
+			label.tab__label(ng-show="!release.versions[0].changes || release.versions[0].changes.length == 0") Nothing to preview.
+	i This will show up in the release's change log

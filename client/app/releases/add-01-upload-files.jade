@@ -1,0 +1,32 @@
+include ../template/_mixins
+
+p Drag and drop your files from the file explorer into the box below.
+.panel.panel--dropzone(ng-file-drop="onFilesUpload($files)", drag-over-class="panel--dragging", ng-class="{ error: angular.isString(errors.versions[0].files) }")
+
+	ul.list--files
+		li.panel(ng-repeat="file in meta.files")
+			.col--list-files-left
+				+icon('{{ file.icon }}').svg-4x
+			.col--list-files-right
+				.col-md-12
+					.block.text--large: strong {{ file.name }}
+					.block.text--large(ng-hide="file.uploading") {{ file.bytes | bytes }}
+					progressbar.progress-striped.active(value="file.progress", ng-show="file.uploading")
+			+icon('trash')(ng-click="removeFile(file)")
+
+	label.center-block.text-center: small: i Drop your files in here.
+.alert.alert-danger.padder-bottom(ng-show="angular.isString(errors.versions[0].files)")
+	+icon('warning').shift-up.space-right
+	| {{ errors.versions[0].files }}
+
+p Note that files of a release are structured, i.e. there are only certain file types allowed:
+ul
+	li <code>.vpt</code> or <code>.vpx</code> - The table file of the release. You can upload multiple of those
+		| if you have multiple flavors ready (see step 3 below)
+	li <code>.png</code>/<code>.jpg</code> files - Playfield screen shots
+	li <code>.mp4</code> files - Playfield videos
+
+p You can add text files as well. However, your release will be in any case packaged with a README file
+	| generated from the description you provide below. There will also be a file about authors and
+	| acknowledgements distributed with every download. Thus, it is recommended to use text files only for
+	| configuration or other technical usages when necessary.

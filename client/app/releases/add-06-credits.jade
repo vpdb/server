@@ -1,0 +1,49 @@
+//- MOD
+//---------------------------------------------------------------------
+h4
+	+icon('wrench').shift-up.space-right
+	| Mod
+hr.hr--light.hr--margin-small
+
+.row
+	.col-sm-8
+		p Is this a mod of another release?
+	.col-sm-4.text-right
+		.radio-inline.radio--lg
+			label
+				input.input-lg(type="radio", name="ismod", ng-value="true", ng-model="meta.isMod")
+				span Yes
+
+		.radio-inline.radio--lg
+			label
+				input(type="radio", name="ismod", ng-value="false", ng-model="meta.isMod")
+				span No
+
+button.btn.btn-default.pull-right(ng-show="meta.isMod")
+	+icon('search').space-right
+	| Find
+.clearfix
+
+
+//- ACKNOWLEDGEMENTS
+//---------------------------------------------------------------------
+h4
+	+icon('heart').shift-up.space-right
+	| Acknowledgements
+hr.hr--light.hr--margin-small
+
+p Show your love to those who helped you. In the field below, you can add your honorable mentions. It's
+	| recommended to write a <a href="http://daringfireball.net/projects/markdown/syntax#list" target="_blank">list</a>,
+	| but you're free to describe them however you want.
+
+.form-group
+	tabset.tabset--light
+		label.label--small.pull-right(markdown-info="Markdown enabled.")
+		tab
+			tab-heading(title="Write"): +icon('edit')
+			textarea.textarea--full.msd-elastic(placeholder="List of people to thank", ng-model="release.acknowledgements")
+		tab
+			tab-heading(title="Preview"): +icon('eye')
+			div.markdown(markdown="release.acknowledgements")
+			label.tab__label(ng-show="!release.acknowledgements || release.acknowledgements.length == 0") Nothing to preview.
+	i This will show up under your release's acknowledgements.

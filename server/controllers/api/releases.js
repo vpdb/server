@@ -209,8 +209,8 @@ exports.addFile = function(req, res) {
 				// validate existing compat/flavor combination
 				var dupeFiles = _.filter(version.files, function(existingFile) {
 					var existingFileFlavor = _.pick(existingFile.flavor, flavor.keys());
-					return _.isEqual(fileCompat.sort(), _.pluck(existingFile._compatibility, 'id').sort())
-						&& _.isEqual(fileFlavor, existingFileFlavor);
+					return _.isEqual(fileCompat.sort(), _.pluck(existingFile._compatibility, 'id').sort()) &&
+						   _.isEqual(fileFlavor, existingFileFlavor);
 				});
 				if (dupeFiles.length > 0) {
 					err = err || {};

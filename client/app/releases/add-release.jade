@@ -1,0 +1,113 @@
+include ../template/_mixins
+
+.row.row--fullheight(ng-controller="ReleaseAddCtrl")
+	.col-sm-9.col--main
+
+		h1.h--primary Add a new Release
+		hr.hr--primary
+
+		p Welcome to the release upload page. We've tried our best to make it as easy as possible for you to
+			| upload your release and add the necessary information so it can correctly be categorized, indexed and
+			| found by the community.
+
+		p Below are seven steps until you can hit the big button. If this is the first time you're uploading a release,
+			| read carefully through the instructions. Note that you can hit refresh or quit this page (even the browser)
+			| and what you've entered will be restored any time you come back. So let's get started!
+
+		//---------------------------------------------------------------------
+		h1 1. Upload Files
+		hr
+
+		include add-01-upload-files
+
+		//---------------------------------------------------------------------
+		h1 2. Name your Release
+		hr
+
+		include add-02-name
+
+		//---------------------------------------------------------------------
+		h1 3. Define your Flavors
+		hr
+
+		include add-03-flavors
+
+		//---------------------------------------------------------------------
+		h1 4. Describe your Release
+		hr
+		.form-group
+			tabset.tabset--light
+				label.label--small.pull-right(markdown-info="Markdown enabled.")
+				tab
+					tab-heading(title="Write"): +icon('edit')
+					textarea.textarea--full.msd-elastic(placeholder="Description of the release", ng-model="release.description")
+				tab
+					tab-heading(title="Preview"): +icon('eye')
+					div.markdown(markdown="release.description")
+					label.tab__label(ng-show="!release.description || release.description.length == 0") Nothing to preview.
+			i This will show up globally under your release.
+
+		include add-04-release-notes
+
+		//- AUTHORS
+		//---------------------------------------------------------------------
+		h4
+			+icon('user').shift-up.space-right
+			| Authors
+		hr.hr--light.hr--margin-small
+
+		include add-04-authors
+
+		//- TAGS
+		//---------------------------------------------------------------------
+		h4
+			+icon('tags').shift-up.space-right
+			| Tags
+		hr.hr--light.hr--margin-small
+
+		include add-04-tags
+
+		//- LINKS
+		//---------------------------------------------------------------------
+		h4
+			+icon('link').shift-up.space-right
+			| Links
+		hr.hr--light.hr--margin-small
+
+		include add-04-links
+
+		//---------------------------------------------------------------------
+		h1 5. Set Compatibility
+		hr
+
+		include add-05-compat
+
+		//---------------------------------------------------------------------
+		h1 6. Give Credits
+		hr
+
+		include add-06-credits
+
+		//---------------------------------------------------------------------
+		h1 7. Upload Media
+		hr
+
+		include add-07-upload-media
+
+		//------------------------- FINISH LINE -------------------------------
+		//---------------------------------------------------------------------
+		hr
+		.alert.alert-danger.alert--inverted.padder-bottom(ng-show="errors && errors.__count")
+			+icon('warning').shift-up.space-right
+			| There were errors while submitting your release. Please scroll up and fix the marked fields.
+		button.btn.btn-default.btn-lg(ng-click="reset()") Reset
+		button.btn.btn-primary.btn-lg.pull-right(ng-click="submit()") Add New Release
+		.clearfix
+
+		//- TODO fix
+		p &nbsp;
+
+	.col-sm-3.col--menu
+		img.img--logo(ng-show="game.media.logo.url", ng-src="{{ game.media.logo.url }}")
+		h3.h--multiline.text-center {{ game.title }}
+		.text-center {{ game.manufacturer }} · {{ game.year }}

@@ -331,6 +331,34 @@ exports.data = {
 		mb_106: {version: '1.06'},
 		mb_106b: {version: '1.06B'}
 	},
+	'playboy-stern': {
+		play203: {version: '2.03'},
+		play203f: {version: '2.03', language: 'fr'},
+		play203g: {version: '2.03', language: 'de'},
+		play203i: {version: '2.03', language: 'it'},
+		play203l: {version: '2.03', language: 'es'},
+		play300: {version: '3.00'},
+		play302: {version: '3.02'},
+		play302f: {version: '3.02', language: 'fr'},
+		play302g: {version: '3.02', language: 'de'},
+		play302i: {version: '3.02', language: 'it'},
+		play302l: {version: '3.02', language: 'es'},
+		play303: {version: '3.03'},
+		play303f: {version: '3.03', language: 'fr'},
+		play303g: {version: '3.03', language: 'de'},
+		play303i: {version: '3.03', language: 'it'},
+		play303l: {version: '3.03', language: 'es'},
+		play401: {version: '4.01'},
+		play401f: {version: '4.01', language: 'fr'},
+		play401g: {version: '4.01', language: 'de'},
+		play401i: {version: '4.01', language: 'it'},
+		play401l: {version: '4.01', language: 'es'},
+		playboys: {version: '5.00'},
+		playboyf: {version: '5.00', language: 'fr'},
+		playboyg: {version: '5.00', language: 'de'},
+		playboyi: {version: '5.00', language: 'it'},
+		playboyl: {version: '5.00', language: 'es'}
+	},
 	rs: {
 		rs_l6: {version: 'L-6'},
 		rs_la4: {version: 'L-4'},
@@ -343,6 +371,12 @@ exports.data = {
 	sm: {
 		sman_260: {version: '2.60'}
 	},
+	smb: {
+		smb: {},
+		smb1: {version: '0.1'},
+		smb2: {version: '0.2'},
+		smb3: {version: '0.3'}
+	},
 	ss: {
 		ss_03: {version: '0.3'},
 		ss_12: {version: '1.2'},
@@ -350,6 +384,11 @@ exports.data = {
 		ss_15: {version: '1.5'},
 		ss_01b: {version: 'D.01R', notes: 'Sound Revision 0.25, Coin Play'},
 		ss_01: {version: 'D.01R', notes: 'Sound Revision 0.25'}
+	},
+	sp: {
+		sprk_090: {version: '0.90'},
+		sprk_096: {version: '0.96'},
+		sprk_103: {version: '1.03'}
 	},
 	spp: {
 		simp204f: {version: '2.04', language: 'fr'},

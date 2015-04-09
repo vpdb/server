@@ -151,8 +151,10 @@ exports.upload = function(config) {
 
 exports.data = [
 	{ bg: 'Abra Ca Dabra (Gottlieb 1975).png', logo: 'Abra Ca Dabra (Gottlieb 1975).png', ipdb: 2 },
+	{ bg: 'Amazing Spiderman (Gottlieb 1980).png', logo: 'Amazing Spiderman (Gottlieb 1980).png', ipdb: 2285, id: 'amazing-spider-man' },
 	{ bg: 'Attack from Mars (Bally 1995).png', logo: 'Attack from Mars (Bally 1995).png', ipdb: 3781 },
 	{ bg: 'Back to the Future (Data East 1990).png', logo: 'Back to the Future (Data East 1990).png', ipdb: 126 },
+	{ bg: 'Bad Cats (Williams 1989).png', logo: 'Bad Cats (Williams 1989).png', ipdb: 127 },
 	{ bg: 'Banzai Run (Williams 1988).png', logo: 'Banzai Run (Williams 1988).png', ipdb: 175, id: 'banzai' },
 	{ bg: 'Big Bang Bar (Capcom 1996).png', logo: 'Big Bang Bar (Capcom 1996).png', ipdb: 4001 },
 	{ bg: 'Black Knight (Williams 1980).png', logo: null, ipdb: 310 },
@@ -174,6 +176,7 @@ exports.data = [
 	{ bg: 'Dr Dude (Midway 1990).png', logo: 'Dr Dude (Midway 1990).png', ipdb: 737 },
 	{ bg: 'Earthshaker (Williams 1989).png', logo: 'Earthshaker (Williams 1989).png', ipdb: 753 },
 	{ bg: 'Elvira and the Party Monsters (Bally 1995).png', logo: 'Elvira and the Party Monsters (Bally 1995).png', ipdb: 782 },
+	{ bg: 'Elvis (Stern 2004).png', logo: 'Elvis (Stern 2004).png', ipdb: 4983, id: 'elvis' },
 	{ bg: 'FirePower (Williams 1980).png', logo: 'FirePower (Williams 1980).png', ipdb: 856 },
 	{ bg: 'Fish Tales (Williams 1992).png', logo: 'Fish Tales (Williams 1992).png', ipdb: 861 },
 	{ bg: 'Flintstones, The (Williams 1994).png', logo: 'Flintstones (Williams 1994).png', ipdb: 888 },
@@ -193,6 +196,7 @@ exports.data = [
 	{ bg: 'Mousin Around (Bally 1989).png', logo: 'Mousin Around (Bally 1989).png', ipdb: 1635 },
 	{ bg: 'No Good Gofers (Williams 1997).png', logo: 'No Good Gofers (Williams 1997).png', ipdb: 4338 },
 	{ bg: 'Party Zone (Williams 1991).png', logo: 'Party Zone (Bally 1991).png', ipdb: 1764 },
+	{ bg: 'Playboy (Bally 1978).png', logo: 'Playboy (Bally 1978).png', ipdb: 1823, id: 'playboy-bally' },
 	{ bg: 'Playboy (Stern 2002).png', logo: 'Playboy (Stern 2002).png', ipdb: 4506, id: 'playboy-stern' },
 	{ bg: 'Red and Teds Road Show (Williams 1994).png', logo: 'Red and Teds Road Show (Williams 1994).png', ipdb: 1972 },
 	{ bg: 'Ripleys Believe It or Not (Stern 2004).png', logo: 'Ripleys Believe It or Not (Stern 2004).png', ipdb: 4917 },

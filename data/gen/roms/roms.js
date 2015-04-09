@@ -59,7 +59,7 @@ exports.upload = function(config) {
 					// post ROM
 					var romContent = fs.readFileSync(filename);
 					var headers = {
-						'Content-Disposition': 'attachment; filename="' +id + '.zip"',
+						'Content-Disposition': 'attachment; filename="' + id + '.zip"',
 						'Content-Length': romContent.length
 					};
 					headers[authHeader] = 'Bearer ' + token;
@@ -83,7 +83,7 @@ exports.upload = function(config) {
 
 							var data = {
 								_file: res.body.id,
-								id:  id,
+								id: id,
 								version: rom.version,
 								notes: rom.notes,
 								language: rom.language
@@ -150,6 +150,10 @@ exports.data = {
 	bbb: {
 		bbb108: {version: '1.08'},
 		bbb109: {version: '1.09'}
+	},
+	bc: {
+		bcats_l2: {version: 'L-2'},
+		bcats_l5: {version: 'L-5'}
 	},
 	banzai: {
 		bnzai_l1: {version: 'L-1'},
@@ -238,6 +242,28 @@ exports.data = {
 		dw_l1: {version: 'L-1'},
 		dw_l2: {version: 'L-2'},
 		dw_p5: {version: 'P-5'}
+	},
+	elvis: {
+		elv302: {version: '3.02'},
+		elv302f: {version: '3.02', language: 'fr'},
+		elv302g: {version: '3.02', language: 'de'},
+		elv302i: {version: '3.02', language: 'it'},
+		elv302l: {version: '3.02', language: 'es'},
+		elv303: {version: '3.03', language: 'fr'},
+		elv303f: {version: '3.03', language: 'fr'},
+		elv303g: {version: '3.03', language: 'de'},
+		elv303i: {version: '3.03', language: 'it'},
+		elv303l: {version: '3.03', language: 'es'},
+		elv400: {version: '4.00', language: 'fr'},
+		elv400f: {version: '4.00', language: 'fr'},
+		elv400g: {version: '4.00', language: 'de'},
+		elv400i: {version: '4.00', language: 'it'},
+		elv400l: {version: '4.00', language: 'es'},
+		elvis: {version: '5.00'},
+		elvisf: {version: '5.00', language: 'fr'},
+		elvisg: {version: '5.00', language: 'de'},
+		elvisi: {version: '5.00', language: 'it'},
+		elvisl: {version: '5.00', language: 'es'}
 	},
 	es: {
 		esha_la1: {version: 'L-1'},
@@ -330,6 +356,12 @@ exports.data = {
 		mb_10: {version: '1.0'},
 		mb_106: {version: '1.06'},
 		mb_106b: {version: '1.06B'}
+	},
+	'playboy-bally': {
+		playboy: {},
+		playboyb: {notes: '7-digit custom'},
+		playboyc: {version: '3', notes: '7-digit custom, free play'},
+		playboyd: {version: '3', notes: '7-digit custom, free play'}
 	},
 	'playboy-stern': {
 		play203: {version: '2.03'},

@@ -312,6 +312,9 @@ exports.data = {
 		fh_905h: {version: 'L-905H'},
 		fh_906h: {version: 'L-906H', notes: 'Coin Play'}
 	},
+	goldeneye: {
+		gldneye: {}
+	},
 	ij: {
 		ij_h1: {version: 'HK-1', notes: 'Family ROM'},
 		ij_l3: {version: 'L-3'},
@@ -326,6 +329,10 @@ exports.data = {
 		i500_10r: {version: '1.0'},
 		i500_11b: {version: '1.1'},
 		i500_11r: {version: '1.1', language: 'fr-BE'}
+	},
+	jb: {
+		jb_10b: {version: '1.0'},
+		jb_10r: {version: '1.0', language: 'fr-BE'}
 	},
 	jm: {
 		jm_05r: {version: '0.5'},

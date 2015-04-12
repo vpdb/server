@@ -1,6 +1,7 @@
-"use strict"; /* global common */
+"use strict"; /* global angular */
 
-common
+angular.module('vpdb', [])
+
 	.factory('DisplayService', function() {
 		return {
 			media: function(type) {

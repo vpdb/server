@@ -1,4 +1,4 @@
-"use strict"; /* global common, _ */
+"use strict"; /* global angular, _ */
 
 /**
  * Updates scope on child events.
@@ -16,7 +16,8 @@
  * The `imageUnloaded` event would then remove the class and set
  * `loadingFinished` to  `false`.
  */
-common
+angular.module('vpdb', [])
+
 	.directive('makeLoaded', function($timeout, $parse) {
 		return {
 			scope: true,

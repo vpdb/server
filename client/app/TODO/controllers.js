@@ -1,6 +1,6 @@
-"use strict"; /* global app, common, _ */
+"use strict"; /* global app, angular, _ */
 
-common
+angular.module('vpdb', [])
 
 	.controller('CollapseCtrl', function($scope) {
 		$scope.isCollapsed  = false;

@@ -1,6 +1,7 @@
-"use strict"; /* global common, _ */
+"use strict"; /* global angular, _ */
 
-common
+angular.module('vpdb', [])
+
 	.controller('AppCtrl', function($scope, $rootScope, $state, $location, $modal, $localStorage,
 									AuthService, ProfileService, ModalService, ModalFlashService, DownloadService) {
 

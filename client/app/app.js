@@ -1,4 +1,4 @@
-"use strict"; /* global ga, _ */
+"use strict"; /* global ga, _, angular */
 
 // TODO isolate namespace
 // common deps
@@ -25,7 +25,6 @@ var appDeps = [
 	'vpdb.auth',
 	'vpdb.login',
 	'vpdb.home',
-	'vpdb.commons',
 	'vpdb.animations',
 	'vpdb.modal',
 	'vpdb.games.list',
@@ -40,7 +39,38 @@ var appDeps = [
 	'vpdb.users.edit'
 ];
 
-var common = angular.module('vpdb.commons', []);
+/**
+ * Make angular.module return registered module instead of erasing, so we can
+ * have a module in multiple files
+ */
+(function(angular) {
+	var origMethod = angular.module;
+
+	var alreadyRegistered = {};
+
+	/**
+	 * Register/fetch a module.
+	 *
+	 * @param name {string} module name.
+	 * @param reqs {array} list of modules this module depends upon.
+	 * @param configFn {function} config function to run when module loads (only applied for the first call to create this module).
+	 * @returns {*} the created/existing module.
+	 */
+	angular.module = function(name, reqs, configFn) {
+		reqs = reqs || [];
+		var module = null;
+
+		if (alreadyRegistered[name]) {
+			module = origMethod(name);
+			module.requires.push.apply(module.requires, reqs);
+		} else {
+			module = origMethod(name, reqs, configFn);
+			alreadyRegistered[name] = module;
+		}
+
+		return module;
+	};
+})(angular);
 
 /**
  * The VPDB main application.
@@ -99,4 +129,5 @@ window.requestAnimFrame = (function() {
 			window.setTimeout(callback, 1000 / 60);
 		};
 })();
+
 

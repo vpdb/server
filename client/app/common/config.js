@@ -1,6 +1,6 @@
-"use strict"; /* global vpdbConfig, common, _ */
+"use strict"; /* global vpdbConfig, angular, _ */
 
-common
+angular.module('vpdb', [])
 
 	.constant('Config', vpdbConfig)
 

@@ -1,7 +1,8 @@
-"use strict"; /* global common, Showdown, _ */
+"use strict"; /* global angular, Showdown, _ */
 
 
-common
+angular.module('vpdb', [])
+
 	.directive('ratingbox', function($parse) {
 		return {
 			restrict: 'C',

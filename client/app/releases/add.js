@@ -140,7 +140,7 @@ angular.module('vpdb.releases.add', [])
 			// 1. validate file types
 			for (var i = 0; i < $files.length; i++) {
 				var file = $files[i];
-				var ext = file.name.substr(file.name.lastIndexOf('.') + 1, file.name.length);
+				var ext = file.name.substr(file.name.lastIndexOf('.') + 1, file.name.length).toLowerCase();
 
 				if (!_.contains(['image/jpeg', 'image/png'], file.type) && !_.contains(['vpt', 'vpx', 'vbs'], ext)) {
 					// TODO "more info to come"

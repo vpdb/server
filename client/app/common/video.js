@@ -1,6 +1,6 @@
-"use strict"; /* global common, videojs, _ */
+"use strict"; /* global angular, videojs, _ */
 
-common
+angular.module('vpdb', [])
 
 	.directive('videojs', function($parse, $http, $timeout, AuthService) {
 		return {

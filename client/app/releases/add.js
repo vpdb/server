@@ -249,54 +249,6 @@ angular.module('vpdb.releases.add', [])
 			});
 		};
 
-
-		/**
-		 * Confirms orientation change when media is already uploaded.
-		 *
-		 * @param {object} event Click event object
-		 * @param {object} flavor Which flavor is about to change
-		 */
-		$scope.flavorPreChange = function(event, flavor) {
-
-			// ignore everything non-orientation related
-			if (flavor.name !== 'orientation') {
-				return;
-			}
-
-			// only confirm if there's a media file uploaded
-			if ($scope.meta.mediaFiles[this.file.storage.id]) {
-				var scope = this;
-				event.preventDefault();
-
-				return ModalService.question({
-					title: 'Change Orientation',
-					message: 'You\'re about to change orientation for a file for which you already have uploaded media. Changing orientation will remove media of the file which you\'re about to change.',
-					question: 'Do you want to change the orientation?'
-
-				}).result.then(function() {
-
-					// update flavor
-					scope.file.flavor[flavor.name] = scope.flavorVal.value;
-
-					// remove media files from server
-					var tableFileId = scope.file.storage.id;
-					var mediaFileIds = _.pluck(_.values($scope.meta.mediaFiles[tableFileId]), 'id');
-					_.each(mediaFileIds, function(id) {
-						FileResource.delete({ id: id });
-					});
-
-					// clear local media
-					delete $scope.meta.mediaFiles[tableFileId];
-					if ($scope.mediaFiles) {
-						delete $scope.mediaFiles[tableFileId];
-					}
-
-					$scope.meta.mediaLinks[tableFileId] = { playfield_image: false, playfield_video: false };
-
-				});
-			}
-		};
-
 		/**
 		 * When an image or video is dropped in the media section
 		 *

@@ -31,7 +31,6 @@ angular.module('vpdb', [])
 					var url = _.isObject(value) ? value.url : value;
 					var isProtected = _.isObject(value) ? value.is_protected : false;
 
-					console.log('src changed to "%s", player = %s', url, player);
 					if (url) {
 
 						var timeout = $timeout(function() {

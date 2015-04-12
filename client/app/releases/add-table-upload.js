@@ -19,25 +19,37 @@
 
 "use strict"; /* global _ */
 
-angular.module('vpdb.releases.add', []).directive('tableUpload', function($upload, $parse, $compile) {
+/**
+ * Uploads files to the server and stores the result.
+ *
+ * Pass two parameters for result storage:
+ *
+ *   - `meta`: Data that is not sent to the server, but needed for displaying
+ *     the file, such as icon class, upload progress, flavors, etc.
+ *   - `result`: Data sent to the server as-is, i.e. server's release FileSchema.
+ *
+ * Both parameters must be already initialized arrays.
+ */
+angular.module('vpdb.releases.add', [])
+	.directive('tableUpload', function($upload, $parse, $compile, ApiHelper, ModalService, DisplayService, ConfigService) {
 
-	var params;
+	var allowedExtensions = ['vpt', 'vpx', 'vbs', 'txt', 'md'];
+
 	return {
 		restrict: 'A',
-		scope: false,
 		terminal: true,
 		priority: 1000,
 		link: function(scope, element, attrs) {
-			params = $parse(attrs.tableUpload)(scope);
+
+			// parse parameters
+			var params = $parse(attrs.tableUpload)(scope);
 
 			// add file drop directive
 			element.attr('ng-file-drop', 'onFilesUpload($files)');
 			element.removeAttr("table-upload"); // remove the attribute to avoid indefinite loop
 			$compile(element)(scope);
-		},
-		controller: function($scope, ApiHelper, ModalService, DisplayService, ConfigService) {
 
-			$scope.onFilesUpload = function($files) {
+			scope.onFilesUpload = function($files) {
 
 				var meta = params.meta;
 				var result = params.result;
@@ -47,7 +59,7 @@ angular.module('vpdb.releases.add', []).directive('tableUpload', function($uploa
 					var file = $files[i];
 					var ext = file.name.substr(file.name.lastIndexOf('.') + 1, file.name.length).toLowerCase();
 
-					if (!_.contains(['vpt', 'vpx', 'vbs', 'txt', 'md'], ext)) {
+					if (!_.contains(allowedExtensions, ext)) {
 						// TODO "more info to come"
 						return ModalService.info({
 							icon: 'upload-circle',
@@ -118,7 +130,7 @@ angular.module('vpdb.releases.add', []).directive('tableUpload', function($uploa
 								});
 							}
 
-						}, ApiHelper.handleErrorsInDialog($scope, 'Error uploading file.', function() {
+						}, ApiHelper.handleErrorsInDialog(scope, 'Error uploading file.', function() {
 							meta.splice(meta.indexOf(file), 1);
 						}), function (evt) {
 							file.progress = parseInt(100.0 * evt.loaded / evt.total);
@@ -126,7 +138,6 @@ angular.module('vpdb.releases.add', []).directive('tableUpload', function($uploa
 					};
 				});
 			};
-
 		}
 	};
 });

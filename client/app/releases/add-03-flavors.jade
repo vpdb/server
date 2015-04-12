@@ -14,7 +14,7 @@ ul.list--files
 						th.text--large {{ flavor.header }}
 						td(ng-repeat="flavorVal in flavor.values | allowedFlavors:file")
 							.radio--lg-twoliner.radio-inline
-								label(ng-click="flavorPreChange($event, flavor)")
+								label(orientation-check="{ flavor: flavor, file: file, files: mediaFiles, metaFiles: meta.mediaFiles, flavorVal: flavorVal, metaLinks: meta.mediaLinks }")
 									input(type="radio", name="{{ file.name + flavor.header }}", value="{{ flavorVal.value }}", ng-model="file.flavor[flavor.name]")
 									span {{ flavorVal.name }}
 									span: i {{ flavorVal.other }}

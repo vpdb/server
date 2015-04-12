@@ -17,6 +17,7 @@ p Drag and drop your files from the file explorer into the box below.
 			+icon('trash')(ng-click="removeFile(file)")
 
 	label.center-block.text-center: small: i Drop your files in here.
+
 .alert.alert-danger.padder-bottom(ng-show="angular.isString(errors.versions[0].files)")
 	+icon('warning').shift-up.space-right
 	| {{ errors.versions[0].files }}

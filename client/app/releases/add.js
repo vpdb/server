@@ -55,23 +55,6 @@ angular.module('vpdb.releases.add', [])
 			});
 		});
 
-
-		/**
-		 * Copies ids from media files into the release object
-		 * @param {array} mediaFiles
-		 * @param {object} release
-		 */
-		var updateReleaseMedia = function(mediaFiles, release) {
-			_.each(mediaFiles, function(mediaFile, fileId) {
-				var file = _.find(release.versions[0].files, { _file: fileId });
-				file._media = {};
-				_.each(mediaFile, function(f, type) {
-					file._media[type] = f.id;
-				});
-			});
-		};
-
-
 		/**
 		 * Resets all entered data
 		 */
@@ -85,9 +68,59 @@ angular.module('vpdb.releases.add', [])
 			 */
 			$scope.meta = $localStorage.release_meta = {
 				users: {},      // serves only for displaying purposes. key: id, value: full object
+
+				/*
+				 * Statuses of release files (those dropped under 1.)
+				 *
+				 * Example data:
+				 * [
+				 *   {
+				 *     "name":"test_cabinet.vpt",
+				 *     "bytes":606208,
+				 *     "mimeType":"application/x-visual-pinball-table",
+				 *     "icon":"ext-vpt",
+				 *     "uploaded":false,
+				 *     "uploading":false,
+				 *     "progress":100,
+				 *     "text":"Uploading file...",
+				 *     "storage":{
+				 *       "name":"Flippertest_cabinet.vpt",
+				 *       "created_at":"2015-04-12T22:11:36.918Z",
+				 *       "mime_type":"application/x-visual-pinball-table",
+				 *       "file_type":"release",
+				 *       "metadata":{ },
+				 *       "id":"V1lt33C7-",
+				 *       "url":"/storage/v1/files/V1lt33C7-",
+				 *       "bytes":606208,
+				 *       "variations":{ },
+				 *       "is_protected":true,
+				 *       "counter":{
+				 *         "downloads":0
+				 *       }
+				 *     }
+				 *   },
+				 *   { ... }
+				 * ]
+				 *
+				 * In order to get the actual release file, use {@link #getReleaseFile(file)}.
+				 */
 				files: [],      // that's the "driving" object, i.e. stuff gets pulled from this and also the view loops over it.
 				tags: [],       // also driving object. on drop and remove, ids get copied into release object from here.
 				mediaFiles: {}, // also driving object.
+
+				/*
+				 * Since we have different links for different file types (e.g. playfield image uses variation medium-landscape
+				 * while playfield video uses variation.still), we save them separately for easy access.
+				 *
+				 * Example data:
+				 *
+				 * {
+				 *   "playfield_image:4klWgD1E-":{
+				 *     "url":"/storage/v1/files/VkGFqv14Z/medium-landscape",
+				 *     "is_protected":true
+				 *   }
+				 * }
+				 */
 				mediaLinks: {}  // only for display purposes.
 			};
 			$scope.meta.users[currentUser.id] = currentUser;
@@ -250,6 +283,60 @@ angular.module('vpdb.releases.add', [])
 		};
 
 		/**
+		 * Callback when a file was successfully uploaded.
+		 * @param status
+		 */
+		$scope.onFileUpload = function(status) {
+			var tableFile;
+			if (/^application\/x-visual-pinball-table/i.test(status.mimeType)) {
+				tableFile = {
+					_file: status.storage.id,
+					flavor: {},
+					_compatibility: [],
+					_media: {
+						playfield_image: null,
+						playfield_video: null
+					}
+				};
+			} else {
+				tableFile = { _file: status.storage.id };
+			}
+			$scope.release.versions[0].files.push(tableFile);
+		};
+
+		$scope.onMediaUpload = function(status) {
+
+			// update links
+			if (/^image\//.test(status.mimeType)) {
+				$scope.meta.mediaLinks[status.key] = status.storage.variations['medium-landscape'];
+
+			} else if (/^video\//.test(status.mimeType)) {
+				$scope.meta.mediaLinks[status.key] = status.storage.variations.still;
+
+			} else {
+				$scope.meta.mediaLinks[status.key] = status.storage;
+			}
+			AuthService.collectUrlProps(status.storage, true);
+		};
+
+		$scope.onMediaClear = function(key) {
+			$scope.meta.mediaLinks[key] = false;
+		};
+
+		$scope.getReleaseFile = function(file) {
+			return _.find($scope.release.versions[0].files, { _file: file.storage.id });
+		};
+		$scope.getPlayfieldType = function(file) {
+			var releaseFile = $scope.getReleaseFile(file);
+			// fullscreen per default
+			return 'playfield-' + (releaseFile && releaseFile.flavor && releaseFile.flavor.orientation === 'ws' ? 'ws' : 'fs');
+		};
+		$scope.getMediaKey = function(file, type) {
+			return type + ':' + file.storage.id;
+		};
+
+
+		/**
 		 * When an image or video is dropped in the media section
 		 *
 		 * Statuses
@@ -263,7 +350,7 @@ angular.module('vpdb.releases.add', [])
 		 * @param {string} type Media type, e.g. "playfield_image" or "playfield_video"
 		 * @param {array} $files Uploaded file(s), assuming that one was chosen.
 		 */
-		$scope.onMediaUpload = function(tableFile, type, $files) {
+		$scope.___onMediaUpload = function(tableFile, type, $files) {
 
 			var tableFileId = tableFile.storage.id;
 
@@ -325,7 +412,7 @@ angular.module('vpdb.releases.add', [])
 					updateReleaseMedia($scope.meta.mediaFiles, $scope.release);
 
 				}, ApiHelper.handleErrorsInDialog($scope, 'Error uploading image.', function() {
-					$scope.mediaFiles[tableFileId][type] = {};
+
 
 				}), function (evt) {
 					$scope.mediaFiles[tableFileId][type].progress = parseInt(100.0 * evt.loaded / evt.total);
@@ -378,8 +465,7 @@ angular.module('vpdb.releases.add', [])
 			// update references
 			_.each($scope.release.versions[0].files, function(file) {
 				var metaFile = _.find($scope.meta.files, function(f) { return f.storage.id === file._file; });
-				file._compatibility = metaFile.builds;
-				file.flavor = metaFile.flavor;
+				//metaFile.tableFile = file;
 			});
 			AuthService.collectUrlProps($scope.meta, true);
 

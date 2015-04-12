@@ -43,13 +43,14 @@ angular.module('vpdb.releases.add', [])
 
 			// parse parameters
 			var params = $parse(attrs.tableUpload)(scope);
+			var fctName = 'onFilesUpload';
 
 			// add file drop directive
-			element.attr('ng-file-drop', 'onFilesUpload($files)');
+			element.attr('ng-file-drop', fctName + '($files)');
 			element.removeAttr("table-upload"); // remove the attribute to avoid indefinite loop
 			$compile(element)(scope);
 
-			scope.onFilesUpload = function($files) {
+			scope[fctName] = function($files) {
 
 				var meta = params.meta;
 				var result = params.result;
@@ -113,6 +114,7 @@ angular.module('vpdb.releases.add', [])
 								'Content-Disposition': 'attachment; filename="' + upload.name + '"'
 							},
 							data: event.target.result
+
 						}).then(function(response) {
 							file.uploading = false;
 							file.storage = response.data;

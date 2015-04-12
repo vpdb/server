@@ -37,9 +37,6 @@ angular.module('vpdb.releases.add', []).directive('orientationCheck', function($
 		link: function(scope, element, attrs) {
 			var params = $parse(attrs.orientationCheck)(scope);
 
-			console.log("flavor1 ", params.flavor);
-			console.log("flavor2 ", params.flavorVal);
-
 			/**
 			 * Confirms orientation change when media is already uploaded.
 			 *
@@ -50,7 +47,13 @@ angular.module('vpdb.releases.add', []).directive('orientationCheck', function($
 				// ignore everything non-orientation related
 				if (params.flavor.name !== 'orientation') {
 					return;
+				} else {
+					// todo fix when all uploads work.
+					return;
 				}
+
+				var checkbox = element.find('input');
+				var model = $parse(checkbox.attr('ng-model'))(scope);
 
 				// only confirm if there's a media file uploaded
 				if (params.metaFiles[params.file.storage.id]) {
@@ -64,6 +67,7 @@ angular.module('vpdb.releases.add', []).directive('orientationCheck', function($
 					}).result.then(function() {
 
 							// update flavor
+
 							params.file.flavor[params.flavor.name] = params.flavorVal.value;
 
 							// remove media files from server

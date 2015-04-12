@@ -7,16 +7,21 @@ span(ng-repeat="file in meta.files | fileext:['vpt','vpx']")
 		+icon('{{ file.icon }}').svg-2x.shift-up.space-right-less
 		| {{ file.name }}
 	hr.hr--light.hr--shifted-up
-	.row(ng-show="file.flavor.orientation")
+	.row(ng-show="getReleaseFile(file).flavor.orientation")
 
 		//-- screenshot
-		.col-sm-6.playfield--rotate-on-upload(make-loaded="{ loaded: file.flavor.orientation !== 'ws' }")
+		.col-sm-6.playfield--rotate-on-upload(make-loaded="{ loaded: getReleaseFile(file).flavor.orientation !== 'ws' }")
 			span.pre-h4 Playfield
 			h4.h--large Screenshot
-			.panel.panel--blank.playfield--image(ng-file-drop="onMediaUpload(file, 'playfield_image', $files)", drag-over-class="panel--dragging", ng-class="{ error: errors.versions[0].files[meta.files.indexOf(file)]._media.playfield_image }")
+			.panel.panel--blank.playfield--image(
+				file-upload="{ type: getPlayfieldType(file), key: getMediaKey(file, 'playfield_image'), status: meta.mediaFiles, onSuccess: onMediaUpload, onClear: onMediaClear, allowedExtensions: ['jpg', 'png'], allowMultipleFiles: false }"
+				drag-over-class="panel--dragging",
+				ng-class="{ error: errors.versions[0].files[meta.files.indexOf(file)]._media.playfield_image }"
+			)
+
 				input#uploadBackglass.hide(type="file", ng-file-select="onMediaUpload(file, 'playfield_image', $files)")
 				.panel-body.a.a--darker(ng-click="openUploadDialog('playfield_image', '#uploadBackglass')")
-					.img.img--ar-ws.loaded(img-bg="meta.mediaLinks[file.storage.id].playfield_image")
+					.img.img--ar-ws.loaded(img-bg="meta.mediaLinks[getMediaKey(file, 'playfield_image')]")
 						.text-center.vertical-center--100
 							progressbar.progress--fixed-absolute.progress-striped.active(value="mediaFiles[file.storage.id].playfield_image.progress", ng-show="mediaFiles[file.storage.id].playfield_image.uploading")
 							.span(ng-show="!img.url")
@@ -27,7 +32,7 @@ span(ng-repeat="file in meta.files | fileext:['vpt','vpx']")
 								p Generating thumbnails...
 
 		//-- video
-		.col-sm-6.playfield--rotate-on-upload(make-loaded="{ loaded: file.flavor.orientation !== 'ws' }", make-loaded-event="video", make-loaded-post="loadingFinished")
+		.col-sm-6.playfield--rotate-on-upload(make-loaded="{ loaded: getReleaseFile(file).flavor.orientation !== 'ws' }", make-loaded-event="video", make-loaded-post="loadingFinished")
 			span.pre-h4 Playfield
 			h4.h--large Video
 
@@ -53,7 +58,7 @@ span(ng-repeat="file in meta.files | fileext:['vpt','vpx']")
 								+icon('gear').svg-3x.svg-spin--slow
 								p Generating video thumbnail...
 
-	.text-center(ng-hide="file.flavor.orientation")
+	.text-center(ng-hide="getReleaseFile(file).flavor.orientation")
 		+icon('warning').shift-up.space-right
 		i Pleased set the <b>orientation</b> of the file under 3. before uploading media.
 

@@ -1,6 +1,6 @@
 p Drag and drop your files from the file explorer into the box below.
 .panel.panel--dropzone(
-	table-upload="{ meta: meta.files, result: release.versions[0].files }"
+	file-upload="{ type: 'release', status: meta.files, onSuccess: onFileUpload, allowedExtensions: ['vpt', 'vpx', 'vbs', 'txt', 'md'], allowMultipleFiles: true }"
 	drag-over-class="panel--dragging",
 	ng-class="{ error: angular.isString(errors.versions[0].files) }"
 )

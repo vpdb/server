@@ -2,16 +2,16 @@
 
 angular.module('vpdb.releases.add', [])
 
-
 	/**
 	 * Main controller containing the form for adding a new release.
 	 */
-	.controller('ReleaseAddCtrl', function($scope, $upload, $modal, $window, $localStorage, $stateParams,
-										   $location, $anchorScroll, $timeout,
-										   AuthService, ApiHelper, Flavors,
-										   ReleaseResource, FileResource, TagResource, BuildResource, GameResource,
-										   ConfigService, DisplayService, MimeTypeService, ModalService) {
+	.controller('ReleaseAddCtrl', function(
+		$scope, $upload, $modal, $window, $localStorage, $stateParams, $location, $anchorScroll, $timeout,
+		AuthService, ConfigService, DisplayService, MimeTypeService, ModalService, ApiHelper, Flavors, ReleaseMeta,
+		ReleaseResource, FileResource, TagResource, BuildResource, GameResource)
+	{
 
+		// init page
 		$scope.theme('light');
 		$scope.setMenu('admin');
 		$scope.setTitle('Add Release');
@@ -55,6 +55,22 @@ angular.module('vpdb.releases.add', [])
 			});
 		});
 
+		// init data: either copy from local storage or reset.
+		if ($localStorage.release) {
+			$scope.release = $localStorage.release;
+			$scope.meta = $localStorage.release_meta;
+
+			// update references
+			//_.each($scope.release.versions[0].files, function(file) {
+			//	var metaFile = _.find($scope.meta.files, function(f) { return f.storage.id === file._file; });
+			//	//metaFile.tableFile = file;
+			//});
+			AuthService.collectUrlProps($scope.meta, true);
+
+		} else {
+			$scope.reset();
+		}
+
 		/**
 		 * Resets all entered data
 		 */
@@ -64,70 +80,17 @@ angular.module('vpdb.releases.add', [])
 
 			/*
 			 * `meta` is all the data we need for displaying the page but that
-			 * is not part of the release object.
+			 * is not part of the release object posted to the API.
 			 */
-			$scope.meta = $localStorage.release_meta = {
-				users: {},      // serves only for displaying purposes. key: id, value: full object
-
-				/*
-				 * Statuses of release files (those dropped under 1.)
-				 *
-				 * Example data:
-				 * [
-				 *   {
-				 *     "name":"test_cabinet.vpt",
-				 *     "bytes":606208,
-				 *     "mimeType":"application/x-visual-pinball-table",
-				 *     "icon":"ext-vpt",
-				 *     "uploaded":false,
-				 *     "uploading":false,
-				 *     "progress":100,
-				 *     "text":"Uploading file...",
-				 *     "storage":{
-				 *       "name":"Flippertest_cabinet.vpt",
-				 *       "created_at":"2015-04-12T22:11:36.918Z",
-				 *       "mime_type":"application/x-visual-pinball-table",
-				 *       "file_type":"release",
-				 *       "metadata":{ },
-				 *       "id":"V1lt33C7-",
-				 *       "url":"/storage/v1/files/V1lt33C7-",
-				 *       "bytes":606208,
-				 *       "variations":{ },
-				 *       "is_protected":true,
-				 *       "counter":{
-				 *         "downloads":0
-				 *       }
-				 *     }
-				 *   },
-				 *   { ... }
-				 * ]
-				 *
-				 * In order to get the actual release file, use {@link #getReleaseFile(file)}.
-				 */
-				files: [],      // that's the "driving" object, i.e. stuff gets pulled from this and also the view loops over it.
-				tags: [],       // also driving object. on drop and remove, ids get copied into release object from here.
-				mediaFiles: {}, // also driving object.
-
-				/*
-				 * Since we have different links for different file types (e.g. playfield image uses variation medium-landscape
-				 * while playfield video uses variation.still), we save them separately for easy access.
-				 *
-				 * Example data:
-				 *
-				 * {
-				 *   "playfield_image:4klWgD1E-":{
-				 *     "url":"/storage/v1/files/VkGFqv14Z/medium-landscape",
-				 *     "is_protected":true
-				 *   }
-				 * }
-				 */
-				mediaLinks: {}  // only for display purposes.
-			};
+			$scope.meta = $localStorage.release_meta = _.cloneDeep(ReleaseMeta);
 			$scope.meta.users[currentUser.id] = currentUser;
 			$scope.newLink = {};
 
 			// TODO remove files via API
 
+			/*
+			 * `release` is the object posted to the API.
+			 */
 			$scope.release = $localStorage.release = {
 				_game: $scope.game.id,
 				name: '',
@@ -282,8 +245,9 @@ angular.module('vpdb.releases.add', [])
 			});
 		};
 
+
 		/**
-		 * Callback when a file was successfully uploaded.
+		 * Callback when a release file was successfully uploaded.
 		 * @param status
 		 */
 		$scope.onFileUpload = function(status) {
@@ -304,6 +268,11 @@ angular.module('vpdb.releases.add', [])
 			$scope.release.versions[0].files.push(tableFile);
 		};
 
+
+		/**
+		 * Callback when a media file was successfully uploaded.
+		 * @param status
+		 */
 		$scope.onMediaUpload = function(status) {
 
 			// update links
@@ -319,105 +288,49 @@ angular.module('vpdb.releases.add', [])
 			AuthService.collectUrlProps(status.storage, true);
 		};
 
+
+		/**
+		 * Callback when media gets deleted before it gets re-uploaded.
+		 * @param key
+		 */
 		$scope.onMediaClear = function(key) {
 			$scope.meta.mediaLinks[key] = false;
 		};
 
-		$scope.getReleaseFile = function(file) {
-			return _.find($scope.release.versions[0].files, { _file: file.storage.id });
-		};
-		$scope.getPlayfieldType = function(file) {
-			var releaseFile = $scope.getReleaseFile(file);
-			// fullscreen per default
-			return 'playfield-' + (releaseFile && releaseFile.flavor && releaseFile.flavor.orientation === 'ws' ? 'ws' : 'fs');
-		};
-		$scope.getMediaKey = function(file, type) {
-			return type + ':' + file.storage.id;
+
+		/**
+		 * Returns the file object of the release object that is sent to the
+		 * API for given meta file info stored at $scope.meta.files.
+		 *
+		 * @param metaReleaseFile
+		 * @returns {*}
+		 */
+		$scope.getReleaseFile = function(metaReleaseFile) {
+			return _.find($scope.release.versions[0].files, { _file: metaReleaseFile.storage.id });
 		};
 
 
 		/**
-		 * When an image or video is dropped in the media section
+		 * Returns the playfield type for a give meta file at $scope.meta.files.
 		 *
-		 * Statuses
-		 *
-		 * - uploading
-		 * - extracting still
-		 * - generating thumb
-		 * - finished
-		 *
-		 * @param {object} tableFile Table file uploaded above
-		 * @param {string} type Media type, e.g. "playfield_image" or "playfield_video"
-		 * @param {array} $files Uploaded file(s), assuming that one was chosen.
+		 * @param metaReleaseFile
+		 * @returns {string}
 		 */
-		$scope.___onMediaUpload = function(tableFile, type, $files) {
-
-			var tableFileId = tableFile.storage.id;
-
-			var file = $files[0];
-			var mimeType = MimeTypeService.fromFile(file);
-
-			// init
-			_.defaults($scope, { mediaFiles: {}});
-			$scope.mediaFiles[tableFileId] = $scope.mediaFiles[tableFileId] || {};
-			$scope.mediaFiles[tableFileId][type] = {};
-			$scope.meta.mediaFiles[tableFileId] = $scope.meta.mediaFiles[tableFileId] || {};
-			$scope.meta.mediaLinks[tableFileId] = $scope.meta.mediaLinks[tableFileId] || {};
-
-			if ($scope.meta.mediaFiles[tableFileId][type] && $scope.meta.mediaFiles[tableFileId][type].id) {
-				FileResource.delete({ id : $scope.meta.mediaFiles[tableFileId][type].id });
-				$scope.meta.mediaLinks[tableFileId][type] = false;
-				this.$emit('imageUnloaded');
-			}
-
-			// upload image
-			var fileReader = new FileReader();
-			fileReader.readAsArrayBuffer(file);
-			fileReader.onload = function(event) {
-
-				$scope.meta.mediaFiles[tableFileId][type] = {};
-				$scope.meta.mediaLinks[tableFileId][type] = false;
-				$scope.mediaFiles[tableFileId][type].uploaded = false;
-				$scope.mediaFiles[tableFileId][type].uploading = true;
-				$scope.mediaFiles[tableFileId][type].status = 'Uploading file...';
-				$upload.http({
-					url: ConfigService.storageUri('/files'),
-					method: 'POST',
-					params: { type: 'playfield-' + (tableFile.flavor.orientation === 'ws' ? 'ws' : 'fs') }, // fullscreen per default
-					headers: {
-						'Content-Type': mimeType,
-						'Content-Disposition': 'attachment; filename="' + file.name + '"'
-					},
-					data: event.target.result
-
-				}).then(function(response) {
-					$scope.mediaFiles[tableFileId][type].uploading = false;
-					$scope.mediaFiles[tableFileId][type].status = 'Uploaded';
-
-					var mediaResult = response.data;
-					$scope.meta.mediaFiles[tableFileId][type] = mediaResult;
-
-					switch (type) {
-						case 'playfield_image':
-							$scope.meta.mediaLinks[tableFileId][type] = mediaResult.variations['medium-landscape'];
-							break;
-						case 'playfield_video':
-							$scope.meta.mediaLinks[tableFileId][type] = mediaResult.variations.still;
-							break;
-						default:
-							$scope.meta.mediaLinks[tableFileId][type] = mediaResult;
-					}
-					AuthService.collectUrlProps(mediaResult, true);
-
-					updateReleaseMedia($scope.meta.mediaFiles, $scope.release);
-
-				}, ApiHelper.handleErrorsInDialog($scope, 'Error uploading image.', function() {
+		$scope.getPlayfieldType = function(metaReleaseFile) {
+			var releaseFile = $scope.getReleaseFile(metaReleaseFile);
+			// fullscreen per default
+			return 'playfield-' + (releaseFile && releaseFile.flavor && releaseFile.flavor.orientation === 'ws' ? 'ws' : 'fs');
+		};
 
 
-				}), function (evt) {
-					$scope.mediaFiles[tableFileId][type].progress = parseInt(100.0 * evt.loaded / evt.total);
-				});
-			};
+		/**
+		 * Returns the key for media files stored at $scope.meta.mediaFiles.
+		 * @param file File status as returned by the file-upload module
+		 * @param type media type
+		 * @returns {string}
+		 */
+		$scope.getMediaKey = function(file, type) {
+			return type + ':' + file.storage.id;
 		};
 
 
@@ -445,33 +358,8 @@ angular.module('vpdb.releases.add', [])
 				$location.hash('top');
 				$anchorScroll();
 
-			}, ApiHelper.handleErrors($scope, function() {
-
-				// scroll to bottom - timeout because at this point the dom isn't rendered with the new errors
-//				$timeout(function() {
-//					$location.hash('bottom');
-//					$anchorScroll();
-//				}, 500);
-
-			}));
+			}, ApiHelper.handleErrors($scope));
 		};
-
-
-		// either copy data from local storage or reset release data.
-		if ($localStorage.release) {
-			$scope.release = $localStorage.release;
-			$scope.meta = $localStorage.release_meta;
-
-			// update references
-			_.each($scope.release.versions[0].files, function(file) {
-				var metaFile = _.find($scope.meta.files, function(f) { return f.storage.id === file._file; });
-				//metaFile.tableFile = file;
-			});
-			AuthService.collectUrlProps($scope.meta, true);
-
-		} else {
-			$scope.reset();
-		}
 	})
 
 

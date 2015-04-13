@@ -65,6 +65,9 @@ angular.module('vpdb', []).directive('fileUpload', function($upload, $parse, $co
 
 			scope[fctName] = function($files) {
 
+				// parse again, in case refs have changed (like, someone pressed the reset button).
+				var params = $parse(attrs.fileUpload)(scope);
+
 				// check for multiple files
 				var allowMultipleFiles = params.allowMultipleFiles === true;
 				if (!allowMultipleFiles && $files.length > 1) {

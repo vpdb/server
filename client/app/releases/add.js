@@ -23,7 +23,7 @@
  * Main controller containing the form for adding a new release.
  */
 angular.module('vpdb.releases.add', []).controller('ReleaseAddCtrl', function(
-	$scope, $upload, $modal, $window, $localStorage, $stateParams, $location, $anchorScroll, $timeout,
+	$scope, $upload, $modal, $window, $localStorage, $state, $stateParams, $location, $anchorScroll, $timeout,
 	AuthService, ConfigService, DisplayService, MimeTypeService, ModalService, ApiHelper, Flavors, ReleaseMeta,
 	ReleaseResource, FileResource, TagResource, BuildResource, GameResource)
 {
@@ -52,6 +52,9 @@ angular.module('vpdb.releases.add', []).controller('ReleaseAddCtrl', function(
 			});
 		}
 	});
+
+	// cache those...
+	var releaseFileRefs = {};
 
 	// retrieve available vp builds
 	var builds = BuildResource.query(function() {
@@ -126,6 +129,7 @@ angular.module('vpdb.releases.add', []).controller('ReleaseAddCtrl', function(
 			original_version: null
 		};
 		$scope.errors = {};
+		releaseFileRefs = {};
 	};
 
 
@@ -234,15 +238,16 @@ angular.module('vpdb.releases.add', []).controller('ReleaseAddCtrl', function(
 
 	/**
 	 * Adds or removes a build to/from to a given file of the release
-	 * @param {object} file
+	 * @param {object} meta file
 	 * @param {object} build
 	 */
-	$scope.toggleBuild = function(file, build) {
-		var idx = file.builds.indexOf(build.id);
+	$scope.toggleBuild = function(metaFile, build) {
+		var releaseFile = $scope.getReleaseFile(metaFile);
+		var idx = releaseFile._compatibility.indexOf(build.id);
 		if (idx > -1) {
-			file.builds.splice(idx, 1);
+			releaseFile._compatibility.splice(idx, 1);
 		} else {
-			file.builds.push(build.id);
+			releaseFile._compatibility.push(build.id);
 		}
 	};
 
@@ -300,6 +305,14 @@ angular.module('vpdb.releases.add', []).controller('ReleaseAddCtrl', function(
 		} else {
 			$scope.meta.mediaLinks[status.key] = status.storage;
 		}
+
+		// add to release object
+		var releaseFile = $scope.getReleaseFileForMedia(status);
+		var mediaType = status.key.split(':')[0];
+		releaseFile._media[mediaType] = status.storage.id;
+
+		console.log($scope.release);
+
 		AuthService.collectUrlProps(status.storage, true);
 	};
 
@@ -321,7 +334,20 @@ angular.module('vpdb.releases.add', []).controller('ReleaseAddCtrl', function(
 	 * @returns {*}
 	 */
 	$scope.getReleaseFile = function(metaReleaseFile) {
-		return _.find($scope.release.versions[0].files, { _file: metaReleaseFile.storage.id });
+		if (!releaseFileRefs[metaReleaseFile.storage.id]) {
+			releaseFileRefs[metaReleaseFile.storage.id] = _.find($scope.release.versions[0].files, { _file: metaReleaseFile.storage.id });
+		}
+		return releaseFileRefs[metaReleaseFile.storage.id];
+	};
+
+	/**
+	 * Returns the file object of the release object that is sent to the
+	 * API for given meta file info stored at $scope.meta.mediaFiles.
+	 * @param metaMediaFile
+	 * @returns {*}
+	 */
+	$scope.getReleaseFileForMedia = function(metaMediaFile) {
+		return _.find($scope.release.versions[0].files, { _file: metaMediaFile.key.split(':')[1] });
 	};
 
 
@@ -369,9 +395,8 @@ angular.module('vpdb.releases.add', []).controller('ReleaseAddCtrl', function(
 				message: 'The release has been successfully created.'
 			});
 
-			// scroll to top
-			$location.hash('top');
-			$anchorScroll();
+			// go to game page
+			$state.go('gameDetails', { id: $stateParams.id });
 
 		}, ApiHelper.handleErrors($scope));
 	};

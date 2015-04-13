@@ -42,6 +42,7 @@ angular.module('vpdb', []).directive('fileUpload', function($upload, $parse, $co
 
 	return {
 		restrict: 'A',
+		scope: true,
 		terminal: true,
 		priority: 1000,
 		link: function(scope, element, attrs) {
@@ -97,7 +98,7 @@ angular.module('vpdb', []).directive('fileUpload', function($upload, $parse, $co
 				_.each($files, function(upload) {
 
 					// delete if exists
-					if (params.key && params.status[params.key] && params.status[params.key].storage.id) {
+					if (params.key && params.status[params.key] && params.status[params.key].storage && params.status[params.key].storage.id) {
 						FileResource.delete({ id : params.status[params.key].storage.id });
 						if (params.onClear) {
 							params.onClear(params.key);

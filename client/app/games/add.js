@@ -2,7 +2,7 @@
 
 angular.module('vpdb.games.add', [])
 
-	.controller('AdminGameAddCtrl', function($scope, $upload, $modal, $window, $localStorage, $location, $anchorScroll,
+	.controller('AdminGameAddCtrl', function($scope, $upload, $modal, $window, $localStorage, $location, $state,
 											 ApiHelper, AuthService, ConfigService, MimeTypeService, ModalService,
 											 IpdbResource, GameResource, FileResource) {
 
@@ -143,11 +143,12 @@ angular.module('vpdb.games.add', [])
 			var submit = function() {
 
 				$scope.game.game_type =
-						$scope.game.origin === 'originalGame' ? 'og' : (
-					$scope.game.game_type ? $scope.game.game_type.toLowerCase() : 'na'
+					$scope.game.origin === 'originalGame' ? 'og' : (
+						$scope.game.game_type ? $scope.game.game_type.toLowerCase() : 'na'
 					);
 
 				var game = GameResource.save(_.omit($scope.game, ['data', 'mediaFile']), function() {
+					var id = $scope.game.id;
 					$scope.game.submitted = true;
 					$scope.reset();
 					ModalService.info({
@@ -156,8 +157,9 @@ angular.module('vpdb.games.add', [])
 						subtitle: game.title,
 						message: 'The game has been successfully created.'
 					});
-					$location.hash('top');
-					$anchorScroll();
+
+					// go to game page
+					$state.go('gameDetails', { id: id });
 
 				}, ApiHelper.handleErrors($scope));
 			};
@@ -171,80 +173,13 @@ angular.module('vpdb.games.add', [])
 			}
 		};
 
-		$scope.onMediaUpload = function(id, type, restrictMime, $files, onSuccess) {
+		$scope.onBackglassUpload = function(status) {
 
-			var file = $files[0];
-			var mimeType = MimeTypeService.fromFile(file);
+			var bg = status.storage;
 
-			// check for mime type
-			var primaryMime = mimeType.split('/')[0];
-			if (primaryMime !== restrictMime) {
-				ModalService.info({
-					icon: 'ext-image',
-					title: 'Image Upload',
-					subtitle: 'Wrong file type!',
-					message: 'Please upload a JPEG or PNG image.'
-				});
-			}
-
-			// $scope.mediaFile is where the progress stuff is stored, while $scope.game.mediaFile contains the result
-			$scope.mediaFile[id] = {};
-
-			// reset status
-			if ($scope.game.mediaFile[id] && $scope.game.mediaFile[id].id) {
-				FileResource.delete({ id : $scope.game.mediaFile[id].id });
-				$scope.game.mediaFile[id] = {
-					url: false,
-					variations: {
-						'medium-2x': { url: false }
-					}
-				};
-				this.$emit('imageUnloaded');
-			}
-
-			// upload image
-			var fileReader = new FileReader();
-			fileReader.readAsArrayBuffer(file);
-			fileReader.onload = function(event) {
-
-				$scope.game.mediaFile[id] = { url: false };
-				$scope.mediaFile[id].uploaded = false;
-				$scope.mediaFile[id].uploading = true;
-				$scope.mediaFile[id].status = 'Uploading file...';
-				$upload.http({
-					url: ConfigService.storageUri('/files'),
-					method: 'POST',
-					params: { type: type },
-					headers: {
-						'Content-Type': mimeType,
-						'Content-Disposition': 'attachment; filename="' + file.name + '"'
-					},
-					data: event.target.result
-
-				}).then(function(response) {
-					$scope.mediaFile[id].uploading = false;
-					$scope.mediaFile[id].status = 'Uploaded';
-					$scope.game.mediaFile[id] = response.data;
-					AuthService.collectUrlProps(response.data, true);
-
-					// run callback
-					if (onSuccess) {
-						onSuccess(response);
-					}
-
-				}, ApiHelper.handleErrorsInDialog($scope, 'Error uploading image.', function() {
-					$scope.mediaFile[id] = {};
-
-				}), function (evt) {
-					$scope.mediaFile[id].progress = parseInt(100.0 * evt.loaded / evt.total);
-				});
-			};
-		};
-
-		$scope.onBackglassUpload = function(response) {
-
-			var bg = response.data;
+			AuthService.collectUrlProps(bg, true);
 			$scope.game._media.backglass = bg.id;
+			$scope.game.mediaFile.backglass = bg;
 
 			var ar = Math.round(bg.metadata.size.width / bg.metadata.size.height * 1000) / 1000;
 			var arDiff = Math.abs(ar / 1.25 - 1);
@@ -257,9 +192,27 @@ angular.module('vpdb.games.add', [])
 			};
 		};
 
-		$scope.onLogoUpload = function(response) {
-			var logo = response.data;
+		$scope.onLogoUpload = function(status) {
+			var logo = status.storage;
+
+			AuthService.collectUrlProps(logo, true);
 			$scope.game._media.logo = logo.id;
+			$scope.game.mediaFile.logo = logo;
+		};
+
+
+		/**
+		 * Callback when media gets deleted before it gets re-uploaded.
+		 * @param key
+		 */
+		$scope.onMediaClear = function(key) {
+			$scope.game.mediaFile[key] = {
+				url: false,
+				variations: {
+					'medium-2x': { url: false }
+				}
+			};
+			$scope.$emit('imageUnloaded');
 		};
 
 

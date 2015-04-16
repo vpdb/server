@@ -38,7 +38,7 @@ var File = require('mongoose').model('File');
  */
 exports.create = function(req, res) {
 
-	var assert = api.assert(error, 'update', req.params.id, res);
+	var assert = api.assert(error, 'create', req.params.id, res);
 
 	Game.findOne({ id: req.params.id }, assert(function(game) {
 		if (!game) {

@@ -14,8 +14,6 @@ angular.module('vpdb.games.details', [])
 		$scope.pageLoading = true;
 		$scope.flavors = Flavors;
 		$scope.newRoms = $localStorage.game_data && $localStorage.game_data[$scope.gameId] ? $localStorage.game_data[$scope.gameId].roms : [];
-		$scope.meta = $localStorage.game_meta && $localStorage.game_meta[$scope.gameId] ? $localStorage.game_meta[$scope.gameId] : {};
-		$scope.romUploadCollapsed = !$scope.meta || !$scope.meta.romFiles || $scope.meta.romFiles.length === 0;
 		$scope.roms = RomResource.query({ id : $scope.gameId });
 		$scope.romLanguages = [
 			{ value: 'en', label: 'English' },
@@ -25,22 +23,29 @@ angular.module('vpdb.games.details', [])
 			{ value: 'fr', label: 'French' }
 		];
 
-		/**
-		 * meta is data that is needed to render the view but not sent to the server
-		 * @returns {*}
-		 */
-		var meta = function() {
-			if (!$localStorage.game_meta) {
-				$localStorage.game_meta = {};
+		// clear empty meta data
+		var isEmpty = function(val) {
+			if (_.isObject(val) && _.isEmpty(val)) {
+				return false;
 			}
-			if (!$localStorage.game_meta[$scope.gameId]) {
-				$localStorage.game_meta[$scope.gameId] = {
-					romFiles: []
-				};
-			}
-			$scope.meta = $localStorage.game_meta[$scope.gameId];
-			return $localStorage.game_meta[$scope.gameId];
+			return !!val;
 		};
+		$localStorage.game_meta = _.pick(_.mapValues($localStorage.game_meta, function(obj) {
+			return _.pick(obj, isEmpty)
+		}), isEmpty);
+
+		// setup meta data
+		if (!$localStorage.game_meta) {
+			$localStorage.game_meta = {};
+		}
+		if (!$localStorage.game_meta[$scope.gameId]) {
+			$localStorage.game_meta[$scope.gameId] = {
+				romFiles: []
+			};
+		}
+		$scope.meta = $localStorage.game_meta[$scope.gameId];
+		$scope.romUploadCollapsed = !$scope.meta || !$scope.meta.romFiles || $scope.meta.romFiles.length === 0;
+
 
 		/**
 		 * data is sent to the server and serves as persistent storage in case of browser refresh
@@ -87,6 +92,12 @@ angular.module('vpdb.games.details', [])
 			$scope.setTitle($scope.game.title);
 		});
 
+		/**
+		 * Opens the game download dialog
+		 *
+		 * @param game Game
+		 * @param release Release to download
+		 */
 		$scope.download = function(game, release) {
 			$modal.open({
 				templateUrl: '/games/modal-download.html',
@@ -104,75 +115,21 @@ angular.module('vpdb.games.details', [])
 		};
 
 		/**
-		 * When file(s) are dropped to the ROM upload drop zone
-		 * @param {array} $files
+		 * Callback for ROM uploads
+		 * @param status
 		 */
-		$scope.onRomUpload = function($files) {
-
-			// 1. validate file types
-			for (var i = 0; i < $files.length; i++) {
-				var file = $files[i];
-				var ext = file.name.substr(file.name.lastIndexOf('.') + 1, file.name.length).toLowerCase();
-				if (!_.contains(['application/zip'], file.type) && !_.contains(['zip'], ext)) {
-					return ModalService.info({
-						icon: 'ext-rom',
-						title: 'ROM Upload',
-						subtitle: 'Wrong file type!',
-						message: 'Please upload a ZIP archive.'
-					});
-				}
-			}
-
-			// 2. upload files
-			_.each($files, function(upload) {
-				var fileReader = new FileReader();
-				fileReader.readAsArrayBuffer(upload);
-				fileReader.onload = function(event) {
-					var type = upload.type;
-					var file = {
-						name: upload.name,
-						bytes: upload.size,
-						icon: 'ext-rom',
-						uploaded: false,
-						uploading: true,
-						progress: 0
-					};
-					meta().romFiles.push(file);
-					$upload.http({
-						url: ConfigService.storageUri('/files'),
-						method: 'POST',
-						params: { type: 'rom' },
-						headers: {
-							'Content-Type': type || 'application/zip',
-							'Content-Disposition': 'attachment; filename="' + upload.name + '"'
-						},
-						data: event.target.result
-
-					}).then(function(response) {
-						file.uploading = false;
-						file.id = response.data.id;
-						file.romId = upload.name.substr(0, upload.name.lastIndexOf('.'));
-
-						var basename = upload.name.substr(0, upload.name.lastIndexOf('.'));
-						var m = basename.match(/(\d{2,}.?)$/);
-						var version = m ? m[1][0]  + '.' + m[1].substr(1) : '';
-						var fileData = {
-							_file: response.data.id,
-							id: file.romId,
-							version: version,
-							notes: '',
-							language: $scope.romLanguages[0]
-						};
-
-						data().roms[response.data.id] = fileData;
-
-					}, ApiHelper.handleErrorsInDialog($scope, 'Error uploading file.', function() {
-						meta().romFiles.splice(meta().romFiles.indexOf(file), 1);
-					}), function (evt) {
-						file.progress = parseInt(100.0 * evt.loaded / evt.total);
-					});
-				};
-			});
+		$scope.onRomUpload = function(status) {
+			status.romId = status.name.substr(0, status.name.lastIndexOf('.'));
+			var basename = status.romId;
+			var m = basename.match(/(\d{2,}.?)$/);
+			var version = m ? m[1][0]  + '.' + m[1].substr(1) : '';
+			data().roms[status.storage.id] = {
+				_file: status.storage.id,
+				id: status.romId,
+				version: version,
+				notes: '',
+				language: $scope.romLanguages[0]
+			};
 		};
 
 		/**
@@ -185,19 +142,23 @@ angular.module('vpdb.games.details', [])
 				}
 				RomResource.save({ id: $scope.gameId }, rom, function() {
 					$scope.roms = RomResource.query({ id : $scope.gameId });
-					meta().romFiles.splice(_.indexOf(meta().romFiles, _.findWhere(meta().romFiles, { id : rom._file })), 1);
+					$scope.meta.romFiles.splice(_.indexOf($scope.meta.romFiles, _.findWhere($scope.meta.romFiles, { id : rom._file })), 1);
 					delete data().roms[rom._file];
 
 				}, function(response) {
 					if (response.data.errors) {
 						_.each(response.data.errors, function(err) {
-							_.where(meta().romFiles, { romId: rom.id })[0].error = err.message;
+							_.where($scope.meta.romFiles, { romId: rom.id })[0].error = err.message;
 						});
 					}
 				});
 			});
  		};
 
+		/**
+		 * Downloads a single ROM
+		 * @param rom
+		 */
 		$scope.downloadRom = function(rom) {
 			DownloadService.downloadFile(rom.file, function() {
 				rom.file.counter.downloads++;
@@ -210,14 +171,14 @@ angular.module('vpdb.games.details', [])
 		 * @param {object} file
 		 */
 		$scope.removeRom = function(file) {
-			FileResource.delete({ id: file.id }, function() {
-				meta().romFiles.splice(meta().romFiles.indexOf(file), 1);
-				delete data().roms[file.id];
+			FileResource.delete({ id: file.storage.id }, function() {
+				$scope.meta.romFiles.splice($scope.meta.romFiles.indexOf(file), 1);
+				delete data().roms[file.storage.id];
 
 			}, ApiHelper.handleErrorsInDialog($scope, 'Error removing file.', function(response) {
 				if (response.status === 404) {
-					meta().romFiles.splice(meta().romFiles.indexOf(file), 1);
-					delete data().roms[file.id];
+					$scope.meta.romFiles.splice($scope.meta.romFiles.indexOf(file), 1);
+					delete data().roms[file.storage.id];
 					return true;
 				}
 			}));

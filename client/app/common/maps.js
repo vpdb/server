@@ -22,6 +22,7 @@ angular.module('vpdb', [])
 					case 'application/x-visual-pinball-table':   return 'ext-vpt';
 					case 'application/x-visual-pinball-table-x': return 'ext-vpx';
 					case 'application/vbscript':                 return 'ext-code';
+					case 'application/zip':                      return 'ext-rom';
 					case 'audio/mpeg':                           return 'ext-audio';
 					case 'image/jpeg':
 					case 'image/png':                            return 'ext-image';

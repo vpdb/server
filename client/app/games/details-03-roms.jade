@@ -9,7 +9,10 @@ h1 ROMs
 
 	//- upload drop panel
 	div(collapse="romUploadCollapsed")
-		.well.well--full-width.well--dropzone(ng-file-drop="onRomUpload($files)", ng-multiple="true", drag-over-class="well--dragging")
+		.well.well--full-width.well--dropzone(
+			file-upload="{ type: 'rom', status: meta.romFiles, onSuccess: onRomUpload, allowedExtensions: ['zip'], allowMultipleFiles: true }"
+			drag-over-class="well--dragging"
+		)
 			ul.list--files
 				li.panel(ng-repeat="file in meta.romFiles")
 					.col--list-files-left

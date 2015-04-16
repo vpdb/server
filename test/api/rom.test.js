@@ -235,6 +235,37 @@ describe('The VPDB `ROM` API', function() {
 			});
 		});
 
+		it('should fail if rom with same ID already exists', function(done) {
+			var user = 'member';
+			hlp.file.createRom(user, request, function(file) {
+				request
+					.post('/api/v1/games/' + game.id + '/roms')
+					.as('member')
+					.send({
+						id: 'hulk-dupe',
+						_file: file.id
+					})
+					.end(function(err, res) {
+						hlp.expectStatus(err, res, 201);
+						hlp.doomRom(user, res.body.id);
+
+						hlp.file.createRom(user, request, function(file) {
+							hlp.doomFile(user, file.id);
+							request
+								.post('/api/v1/games/' + game.id + '/roms')
+								.as('member')
+								.send({
+									id: 'hulk-dupe',
+									_file: file.id
+								})
+								.end(function(err, res) {
+									hlp.expectValidationError(err, res, 'id', '"hulk-dupe" is already taken');
+									done();
+								});
+						});
+					});
+			});
+		});
 	});
 
 	describe('when deleting a ROM', function() {

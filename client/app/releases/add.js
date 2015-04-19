@@ -30,7 +30,7 @@ angular.module('vpdb.releases.add', []).controller('ReleaseAddCtrl', function(
 
 	// init page
 	$scope.theme('light');
-	$scope.setMenu('admin');
+	$scope.setMenu('releases');
 	$scope.setTitle('Add Release');
 
 	// define flavors

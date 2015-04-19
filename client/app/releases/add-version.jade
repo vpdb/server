@@ -1,24 +1,23 @@
 include ../template/_mixins
-.row.row--fullheight(ng-controller="ReleaseAddCtrl")
+.row.row--fullheight(ng-controller="ReleaseFileAddCtrl")
 	.col-sm-9.col--main
-		h1.h--primary Add a new Version
+		h1.h--primary Upload new files
 		hr.hr--primary
 		p Here you can either upload additional flavors for an existing version or upload a new version of you release.
 
 		.row: .col-sm-10.col-sm-offset-1
 			select.form-control.pull-right(ng-disabled="mode == 'newVersion'")
-				option v1.0
-				option v2.0
+				option(ng-repeat="version in release.versions") {{ version.version }}
 			.radio--lg: label
-				input.input-lg(type="radio", name="mode", value="newFile", ng-model="mode")
+				input.input-lg(type="radio", name="mode", value="newFile", ng-model="meta.mode")
 				span.aligned Existing version
 
-			input.form-control.width-md.pull-right(type="text", ng-disabled="mode == 'newFile'", ng-model="version.version", placeholder="x.x.x")
+			input.form-control.width-md.pull-right(type="text", ng-disabled="meta.mode == 'newFile'", ng-model="version.version", placeholder="x.x.x")
 			.radio--lg: label
-				input(type="radio", name="mode", value="newVersion", ng-model="mode")
+				input(type="radio", name="mode", value="newVersion", ng-model="meta.mode")
 				span.aligned New version
 
-			.form-group(ng-show="mode == 'newVersion'")
+			.form-group(ng-show="meta.mode == 'newVersion'")
 				label.control-label(for="version") Release Information
 				tabset.tabset--light
 					label.label--small.pull-right(markdown-info="Markdown enabled.")
@@ -70,4 +69,4 @@ include ../template/_mixins
 	.col-sm-3.col--menu
 		img.img--logo(ng-show="game.media.logo.url", ng-src="{{ game.media.logo.url }}")
 		h3.h--multiline.text-center {{ game.title }}
-		.text-center {{ game.manufacturer }} · {{ game.year }}
+		.text-center {{ release.name }}

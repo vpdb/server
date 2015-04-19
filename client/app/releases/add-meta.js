@@ -158,5 +158,4 @@ angular.module('vpdb.releases.add', []).constant('ReleaseMeta', {
 
 	tags: []       // also driving object. on drop and remove, ids get copied into release object from here.
 
-
 });

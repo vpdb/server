@@ -95,16 +95,16 @@ module.exports = function(schema, options) {
 				ids.push(id);
 			}
 		});
-		File.find({ _id: { $in: ids }}, function(err, files) {
+		File.find({ _id: { $in: ids }, is_active: false }, function(err, files) {
 			/* istanbul ignore if */
 			if (err) {
 				return done(error(err, 'Error finding referenced files').log());
 			}
 
 			// update
-			async.each(files, function(file, next) {
+			async.eachSeries(files, function(file, next) {
 				// only update `is_active` (other data might has changed meanwhile)
-				File.update({ _id: file._id }, { 'is_active': true }, next);
+				File.update({ _id: file._id }, { is_active: true }, next);
 			}, function(err) {
 				/* istanbul ignore if */
 				if (err) {

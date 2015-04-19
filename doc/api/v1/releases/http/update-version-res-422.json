@@ -1,24 +1,17 @@
 422 Unprocessable Entity
 Content-Type: application/json; charset=utf-8
-Content-Length: 380
-Etag: W/"17c-3bc3cb16"
+Content-Length: 294
+Etag: W/"126-50f3d626"
 
 {
   "errors": [
     {
       "message": "A combination of compatibility and flavor already exists with the same values.",
-      "field": "_compatibility",
-      "value": [
-        "9.9.0"
-      ]
+      "field": "files.0._compatibility"
     },
     {
       "message": "A combination of compatibility and flavor already exists with the same values.",
-      "field": "flavor",
-      "value": {
-        "orientation": "fs",
-        "lightning": "night"
-      }
+      "field": "files.0.flavor"
     }
   ]
 }

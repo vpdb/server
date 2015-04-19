@@ -546,6 +546,9 @@ exports.expectStatus = function(err, res, code, contains) {
 };
 
 exports.expectValidationError = function(err, res, field, contains, code) {
+	if (!err) {
+		throw new Error('Expected validation error but got status ' + res.status + '.');
+	}
 	expect(err.status).to.be(code || 422);
 	expect(err.response.body.errors).to.be.an('array');
 	var fieldErrors = _.filter(err.response.body.errors, { field: field });
@@ -587,6 +590,6 @@ exports.getUser = function(name) {
 	return this.users[name];
 };
 
-exports.dump = function(res) {
-	console.log('         RESPONSE: %s', util.inspect(res.body ? res.body : res, null, 6, true));
+exports.dump = function(res, title) {
+	console.log('%s: %s', title || 'RESPONSE', util.inspect(res.body ? res.body : res, null, 6, true));
 };

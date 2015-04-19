@@ -119,7 +119,35 @@ Err.prototype.display = function() {
 
 Err.prototype.errors = function(errors) {
 	this.errs = errors;
+	this._stripFields();
 	return this;
+};
+
+Err.prototype.without = function(prefix) {
+	this.fieldPrefix = prefix;
+	this._stripFields();
+	return this;
+};
+
+Err.prototype._stripFields = function() {
+	if (!this.fieldPrefix) {
+		return;
+	}
+	var that = this;
+	if (_.isArray(this.errs)) {
+		_.each(this.errs, function(error) {
+			error.path = error.path.replace(that.fieldPrefix, '');
+		});
+	} else if (_.isObject(this.errs)) {
+		// todo use https://github.com/lodash/lodash/issues/169 when merged
+		_.each(this.errs, function(error, path) {
+			var newPath = path.replace(that.fieldPrefix, '');
+			if (newPath != path) {
+				that.errs[newPath] = error;
+				delete that.errs[path];
+			}
+		});
+	}
 };
 
 /**

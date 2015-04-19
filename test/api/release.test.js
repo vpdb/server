@@ -301,7 +301,6 @@ describe('The VPDB `release` API', function() {
 
 			var user = 'member';
 			hlp.release.createRelease(user, request, function(release) {
-				hlp.doomRelease(user, release.id);
 				hlp.file.createVpt('member', request, function(vptfile) {
 					hlp.doomFile(user, vptfile.id);
 					request
@@ -336,7 +335,6 @@ describe('The VPDB `release` API', function() {
 		it('should fail when adding an existing version', function(done) {
 			var user = 'member';
 			hlp.release.createRelease(user, request, function(release) {
-				hlp.doomRelease(user, release.id);
 				request
 					.post('/api/v1/releases/' + release.id + '/versions')
 					.as(user)
@@ -360,7 +358,6 @@ describe('The VPDB `release` API', function() {
 		it('should succeed when providing valid data', function(done) {
 			var user = 'member';
 			hlp.release.createRelease(user, request, function(release) {
-				hlp.doomRelease(user, release.id);
 				hlp.file.createVpt(user, request, function(vptfile) {
 					hlp.file.createPlayfield(user, request, function (playfield) {
 						request
@@ -389,8 +386,7 @@ describe('The VPDB `release` API', function() {
 		});
 	});
 
-
-	describe('when adding a new file to an existing version of an existing release', function() {
+	describe('when updating an existing version of a release', function() {
 
 		before(function(done) {
 			hlp.setupUsers(request, {
@@ -406,11 +402,10 @@ describe('The VPDB `release` API', function() {
 
 		it('should fail when logged as a different user', function(done) {
 			hlp.release.createRelease('member', request, function(release) {
-				hlp.doomRelease('member', release.id);
-				request.post('/api/v1/releases/' + release.id + '/versions/' + release.versions[0].version + '/files')
+				request.put('/api/v1/releases/' + release.id + '/versions/' + release.versions[0].version)
 					.as('member2')
 					.send({})
-					.saveResponse({ path: 'releases/create-file'})
+					.saveResponse({ path: 'releases/update-version'})
 					.end(hlp.status(403, 'only authors of the release', done));
 			});
 		});
@@ -421,19 +416,21 @@ describe('The VPDB `release` API', function() {
 				var versionFile = release.versions[0].files[0];
 				hlp.file.createVpt(user, request, function(vptfile) {
 					hlp.file.createPlayfield(user, request, function(playfield) {
-						request
-							.post('/api/v1/releases/' + release.id + '/versions/' + release.versions[0].version + '/files')
-							.saveResponse({ path: 'releases/create-file'})
-							.as(user)
-							.send({
+						var data = {
+							files: [{
 								_file: vptfile.id,
 								_media: { playfield_image: playfield.id },
 								_compatibility: _.pluck(versionFile.compatibility, 'id'),
 								flavor: versionFile.flavor
-							}).end(function(err, res) {
-								hlp.doomRelease(user, release.id);
-								hlp.expectValidationError(err, res, '_compatibility', 'compatibility and flavor already exist');
-								hlp.expectValidationError(err, res, 'flavor', 'compatibility and flavor already exist');
+							}]
+						};
+						request
+							.put('/api/v1/releases/' + release.id + '/versions/' + release.versions[0].version)
+							.saveResponse({ path: 'releases/update-version'})
+							.as(user)
+							.send(data).end(function(err, res) {
+								hlp.expectValidationError(err, res, 'files.0._compatibility', 'compatibility and flavor already exists');
+								hlp.expectValidationError(err, res, 'files.0.flavor', 'compatibility and flavor already exists');
 								done();
 							});
 					});
@@ -447,20 +444,43 @@ describe('The VPDB `release` API', function() {
 				hlp.file.createVpt(user, request, function(vptfile) {
 					hlp.file.createPlayfield(user, request, function(playfield) {
 						request
-							.post('/api/v1/releases/' + release.id + '/versions/' + release.versions[0].version + '/files')
-							.save({ path: 'releases/create-file'})
+							.put('/api/v1/releases/' + release.id + '/versions/' + release.versions[0].version)
+							.save({ path: 'releases/update-version'})
 							.as(user)
 							.send({
-								_file: vptfile.id,
-								_media: { playfield_image: playfield.id },
-								_compatibility: [ '9.9.0' ],
-								flavor: { orientation: 'fs', lightning: 'day' }
-							}).end(function(err, res) {
-								hlp.expectStatus(err, res, 201);
-								hlp.doomRelease(user, release.id);
-								done();
-							});
+								files: [{
+									_file: vptfile.id,
+									_media: { playfield_image: playfield.id },
+									_compatibility: ['9.9.0'],
+									flavor: { orientation: 'fs', lightning: 'day' }
+								}]
+							}).end(hlp.status(201, done));
 					});
+				});
+			});
+		});
+
+		it('should fail when data is missing', function(done) {
+			var user = 'member';
+			hlp.release.createRelease(user, request, function(release) {
+				hlp.file.createVpt(user, request, function(vptfile) {
+					request
+						.put('/api/v1/releases/' + release.id + '/versions/' + release.versions[0].version)
+						.as(user)
+						.send({
+							files: [{
+								_file: vptfile.id,
+								flavor: {},
+								_compatibility: [],
+								_media: { playfield_image: null, playfield_video: null }
+							}]
+						}).end(function(err, res) {
+							hlp.expectValidationError(err, res, 'files.0._compatibility', 'must be provided');
+							hlp.expectValidationError(err, res, 'files.0._media.playfield_image', 'must be provided');
+							hlp.expectValidationError(err, res, 'files.0.flavor.lightning', 'must be provided');
+							hlp.expectValidationError(err, res, 'files.0.flavor.orientation', 'must be provided');
+							done();
+						});
 				});
 			});
 		});

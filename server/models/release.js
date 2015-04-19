@@ -147,27 +147,35 @@ ReleaseSchema.path('versions').validate(function(file) {
 	return true;
 });
 
+/**
+ * Validates files.
+ *
+ * Note that individual files cannot be updated; they can only be added or
+ * removed. Thus, we base the file index (i) on new items only.
+ */
 VersionSchema.path('files').validate(function(files, callback) {
 
-	var i = 0;
+	var index = 0;
 	var that = this;
 	if (!_.isArray(files) || files.length === 0) {
 		return callback(true);
 	}
 	var hasTableFile = false;
+	var tableFiles = [];
 	async.eachSeries(files, function(f, next) {
+
 		if (f._file) {
 
 			mongoose.model('File').findById(f._file, function(err, file) {
 				/* istanbul ignore if */
 				if (err) {
 					logger.error('[model] Error fetching file "%s".', f._file);
-					i++;
+					f.isNew && index++;
 					return next();
 				}
 				if (!file) {
 					// this is already validated by the file reference
-					i++;
+					f.isNew && index++;
 					return next();
 				}
 
@@ -175,25 +183,26 @@ VersionSchema.path('files').validate(function(files, callback) {
 				if (file.getMimeCategory() === 'table') {
 
 					hasTableFile = true;
+					tableFiles.push({ file: f, index: index});
 
 					// flavor
-					f.flavor = f.flavor || {};
+					var fileFlavor = f.flavor || {};
 					_.each(fileFields.flavor, function(obj, flavor) {
-						if (!f.flavor[flavor]) {
-							that.invalidate('files.' + i + '.flavor.' + flavor, 'Flavor `' + flavor + '` must be provided.');
+						if (!fileFlavor[flavor]) {
+							that.invalidate('files.' + index + '.flavor.' + flavor, 'Flavor `' + flavor + '` must be provided.');
 						}
 					});
 
 					// compatibility (in here because it applies only to table files.)
 					if (!_.isArray(f._compatibility) || !f._compatibility.length) {
 						// TODO check if exists.
-						that.invalidate('files.' + i + '._compatibility', 'At least one build must be provided.');
+						that.invalidate('files.' + index + '._compatibility', 'At least one build must be provided.');
 					}
 
 					// media
 					if (!f._media || !f._media.playfield_image) {
-						that.invalidate('files.' + i + '._media.playfield_image', 'Playfield image must be provided.');
-						i++;
+						that.invalidate('files.' + index + '._media.playfield_image', 'Playfield image must be provided.');
+						f.isNew && index++;
 						return next();
 					}
 
@@ -202,33 +211,75 @@ VersionSchema.path('files').validate(function(files, callback) {
 						/* istanbul ignore if */
 						if (err) {
 							logger.error('[model] Error fetching file "%s".', f._media.playfield_image);
-							i++;
+							f.isNew && index++;
 							return next();
 						}
 						if (!playfieldImage) {
-							that.invalidate('files.' + i + '._media.playfield_image', 'Playfield "' + f._media.playfield_image + '" does not exist.');
-							i++;
+							that.invalidate('files.' + index + '._media.playfield_image', 'Playfield "' + f._media.playfield_image + '" does not exist.');
+							f.isNew && index++;
 							return next();
 						}
 						if (!_.contains(['playfield-fs', 'playfield-ws'], playfieldImage.file_type)) {
-							that.invalidate('files.' + i + '._media.playfield_image', 'Must reference a file with file_type "playfield-fs" or "playfield-ws".');
+							that.invalidate('files.' + index + '._media.playfield_image', 'Must reference a file with file_type "playfield-fs" or "playfield-ws".');
 						}
-						i++;
+						f.isNew && index++;
 						next();
 					});
 				} else {
-					i++;
+					f.isNew && index++;
 					next();
 				}
 			});
 		} else {
-			i++;
+			f.isNew && index++;
 			next();
 		}
 	}, function() {
+
 		if (!hasTableFile) {
 			that.invalidate('files', 'At least one table file must be provided.');
 		}
+		var mapCompat = function(file) {
+			// can be either exploded into object or just id.
+			return !file._id ? file.toString() : file._id.toString();
+		};
+
+//		console.log('Checking %d table files for compat/flavor dupes:', _.keys(tableFiles).length);
+
+		// validate existing compat/flavor combination
+		_.each(tableFiles, function(f) {
+			var file = f.file;
+
+			if (!file.flavor || !file._compatibility) {
+				return;
+			}
+
+			var fileFlavor = file.flavor.toObject();
+			var fileCompat = _.map(file._compatibility, mapCompat);
+			fileCompat.sort();
+
+			var dupeFiles = _.filter(_.pluck(tableFiles, 'file'), function(otherFile) {
+
+				if (file.id === otherFile.id) {
+					return false;
+				}
+				var compat = _.map(otherFile._compatibility, mapCompat);
+				compat.sort();
+
+//				console.log('  File %s <-> %s', file.id, otherFile.id);
+//				console.log('     compat %j <-> %j', fileCompat, compat);
+//				console.log('     flavor %j <-> %j', fileFlavor, otherFile.flavor.toObject());
+
+				return _.isEqual(fileCompat, compat) && _.isEqual(fileFlavor, otherFile.flavor.toObject());
+			});
+
+			if (file.isNew && dupeFiles.length > 0) {
+//				console.log('     === FAILED ===');
+				that.invalidate('files.' + f.index + '._compatibility', 'A combination of compatibility and flavor already exists with the same values.');
+				that.invalidate('files.' + f.index + '.flavor', 'A combination of compatibility and flavor already exists with the same values.');
+			}
+		});
+
 		callback(true);
 	});
 });

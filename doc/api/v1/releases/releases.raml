@@ -84,36 +84,39 @@ get:
             role/member:
               example: !include http/create-version-res-403.json
 
-    /{version}/files:
+    /{version}:
       uriParameters:
         version:
           displayName: Version ID
           type: string
-      post:
+      put:
         is: [ validated ]
         securedBy: [ jwt: { scopes: [ MEMBER ] } ]
         description: |
-          Add a new file to an existing version.
+          Updates an existing version.
+
+          Provided files wil be *added* to the version. It's not possible to
+          delete files. It's also the only field looked at at the moment.
 
           Note that prior to that request, files and media need to be uploaded so it
           can be referenced.
         body:
           role/member:
-            example: !include http/create-file-req.json
+            example: !include http/update-version-req.json
         responses:
           201:
             body:
               role/member:
-                example: !include http/create-file-res-201.json
+                example: !include http/update-version-res-201.json
           422:
             body:
               role/member:
-                example: !include http/create-file-res-422.json
+                example: !include http/update-version-res-422.json
           403:
             description: A user who is not author of the release posted a new file
             body:
               role/member:
-                example: !include http/create-file-res-403.json
+                example: !include http/update-version-res-403.json
 
   /comments: !include comments.raml
   /rating: !include rating.raml

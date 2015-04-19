@@ -179,7 +179,7 @@ describe('The ACLs of the VPDB API', function() {
 		});
 
 		it('should deny access to release file creation', function(done) {
-			request.post('/api/v1/releases/123/versions/1.2/files').send({}).end(hlp.status(401, done));
+			request.put('/api/v1/releases/123/versions/1.2').send({}).end(hlp.status(401, done));
 		});
 
 	});
@@ -348,7 +348,7 @@ describe('The ACLs of the VPDB API', function() {
 		});
 
 		it('should deny access to release file creation', function(done) {
-			request.post('/api/v1/releases/123/versions/1.0/files').as('member').send({}).end(hlp.status(404, done));
+			request.put('/api/v1/releases/123/versions/1.0').as('member').send({}).end(hlp.status(404, done));
 		});
 
 	});

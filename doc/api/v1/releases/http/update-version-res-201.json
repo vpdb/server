@@ -1,0 +1,199 @@
+201 Created
+Content-Type: application/json; charset=utf-8
+Etag: W/"r7BlnMsrWxevlkTJJyoQtg=="
+Content-Encoding: gzip
+
+{
+  "released_at": "2015-04-20T07:48:50.315Z",
+  "version": "1.0.0",
+  "counter": {
+    "comments": 0,
+    "downloads": 0
+  },
+  "files": [
+    {
+      "counter": {
+        "downloads": 0
+      },
+      "flavor": {
+        "orientation": "fs",
+        "lightning": "night"
+      },
+      "media": {
+        "playfield_image": {
+          "name": "playfield-0.png",
+          "bytes": 347,
+          "created_at": "2015-04-20T07:48:50.073Z",
+          "mime_type": "image/png",
+          "file_type": "playfield-fs",
+          "metadata": {
+            "format": "PNG",
+            "size": {
+              "height": 1080,
+              "width": 1920
+            },
+            "depth": 8
+          },
+          "variations": {
+            "medium": {
+              "mime_type": "image/jpeg",
+              "bytes": 1122,
+              "height": 393,
+              "width": 221,
+              "url": "/storage/v1/files/NyUMMKCcT-/medium"
+            },
+            "medium-landscape": {
+              "mime_type": "image/jpeg",
+              "bytes": 808,
+              "height": 221,
+              "width": 393,
+              "url": "/storage/v1/files/NyUMMKCcT-/medium-landscape"
+            },
+            "square-2x": {
+              "mime_type": "image/jpeg",
+              "bytes": 742,
+              "height": 240,
+              "width": 240,
+              "url": "/storage/v1/files/NyUMMKCcT-/square-2x"
+            },
+            "medium-2x": {
+              "mime_type": "image/jpeg",
+              "bytes": 2647,
+              "height": 786,
+              "width": 442,
+              "url": "/storage/v1/files/NyUMMKCcT-/medium-2x"
+            },
+            "medium-landscape-2x": {
+              "mime_type": "image/jpeg",
+              "bytes": 2026,
+              "height": 442,
+              "width": 786,
+              "url": "/storage/v1/files/NyUMMKCcT-/medium-landscape-2x"
+            },
+            "square": {
+              "mime_type": "image/jpeg",
+              "bytes": 367,
+              "height": 120,
+              "width": 120,
+              "url": "/storage/v1/files/NyUMMKCcT-/square"
+            }
+          },
+          "counter": {
+            "downloads": 0
+          },
+          "is_active": true,
+          "id": "NyUMMKCcT-",
+          "is_public": true,
+          "is_protected": false,
+          "url": "/storage/v1/files/NyUMMKCcT-"
+        }
+      },
+      "compatibility": [
+        {
+          "id": "9.9.0",
+          "label": "v9.9.0",
+          "platform": "vp",
+          "download_url": "http://www.vpforums.org/index.php?app=downloads&showfile=8793",
+          "built_at": "2014-04-29T00:00:00.000Z",
+          "type": "release",
+          "is_range": false
+        }
+      ],
+      "file": {
+        "name": "test-table-0.vpt",
+        "created_at": "2015-04-20T07:48:50.038Z",
+        "mime_type": "application/x-visual-pinball-table",
+        "file_type": "release",
+        "metadata": {},
+        "id": "EJxzzKRcTb",
+        "url": "/storage/v1/files/EJxzzKRcTb",
+        "bytes": 135168,
+        "variations": {},
+        "is_protected": true,
+        "counter": {
+          "downloads": 0
+        }
+      }
+    },
+    {
+      "counter": {
+        "downloads": 0
+      },
+      "flavor": {
+        "lightning": "day",
+        "orientation": "fs"
+      },
+      "media": {
+        "playfield_image": {
+          "name": "playfield-0.png",
+          "bytes": 347,
+          "created_at": "2015-04-20T07:48:50.411Z",
+          "mime_type": "image/png",
+          "file_type": "playfield-fs",
+          "metadata": {
+            "format": "PNG",
+            "size": {
+              "height": 1080,
+              "width": 1920
+            },
+            "depth": 8
+          },
+          "counter": {
+            "downloads": 0
+          },
+          "is_active": true,
+          "id": "VJFl7KR56b",
+          "is_public": true,
+          "is_protected": false,
+          "url": "/storage/v1/files/VJFl7KR56b",
+          "variations": {
+            "medium": {
+              "url": "/storage/v1/files/VJFl7KR56b/medium"
+            },
+            "medium-2x": {
+              "url": "/storage/v1/files/VJFl7KR56b/medium-2x"
+            },
+            "medium-landscape": {
+              "url": "/storage/v1/files/VJFl7KR56b/medium-landscape"
+            },
+            "medium-landscape-2x": {
+              "url": "/storage/v1/files/VJFl7KR56b/medium-landscape-2x"
+            },
+            "square": {
+              "url": "/storage/v1/files/VJFl7KR56b/square"
+            },
+            "square-2x": {
+              "url": "/storage/v1/files/VJFl7KR56b/square-2x"
+            }
+          }
+        }
+      },
+      "compatibility": [
+        {
+          "id": "9.9.0",
+          "label": "v9.9.0",
+          "platform": "vp",
+          "download_url": "http://www.vpforums.org/index.php?app=downloads&showfile=8793",
+          "built_at": "2014-04-29T00:00:00.000Z",
+          "type": "release",
+          "is_range": false
+        }
+      ],
+      "file": {
+        "name": "test-table-0.vpt",
+        "created_at": "2015-04-20T07:48:50.356Z",
+        "mime_type": "application/x-visual-pinball-table",
+        "file_type": "release",
+        "metadata": {},
+        "id": "N1PgXKRq6Z",
+        "url": "/storage/v1/files/N1PgXKRq6Z",
+        "bytes": 135168,
+        "variations": {},
+        "is_protected": true,
+        "counter": {
+          "downloads": 0
+        }
+      }
+    }
+  ]
+}

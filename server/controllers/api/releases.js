@@ -172,14 +172,16 @@ exports.addVersion = function(req, res) {
 };
 
 /**
- * Adds a new file to an existing version.
+ * Updates an existing version.
  *
  * @param {Request} req
  * @param {Response} res
  */
-exports.addFile = function(req, res) {
+exports.updateVersion = function(req, res) {
 
-	var assert = api.assert(error, 'addFile', req.params.id, res);
+	var updateableFields = [ 'version', 'changes' ];
+
+	var assert = api.assert(error, 'updateVersion', req.params.id, res);
 
 	Release.findOne({ id: req.params.id }).populate('versions.files._compatibility').exec(assert(function(release) {
 		if (!release) {
@@ -191,46 +193,60 @@ exports.addFile = function(req, res) {
 			return api.fail(res, error('Only authors of the release can add new files of a version.', req.params.id), 403);
 		}
 
-		var version = _.filter(release.versions, { version: req.params.version });
-		if (version.length === 0) {
+		var versions = _.filter(release.versions, { version: req.params.version });
+		if (versions.length === 0) {
 			return api.fail(res, error('No such version "%s" for release "%s".', req.params.version, req.params.id), 404);
 		}
-		version = version[0];
+		var version = versions[0];
+		var versionObj = req.body;
+		var newFiles = [];
+		logger.info('[api|release:updateVersion] %s', util.inspect(versionObj, { depth: null }));
 
-		var fileObj = req.body;
-		var fileId = req.body._file;
-		var fileCompat = _.clone(req.body._compatibility || {});
-		var fileFlavor = _.pick(req.body.flavor || {}, flavor.keys());
-		logger.info('[api|release:addFile] %s', util.inspect(fileObj, { depth: null }));
-		VersionFile.getInstance(fileObj, assert(function(newVersionFile) {
+		async.eachSeries(versionObj.files || [], function(fileObj, next) {
 
-			newVersionFile.validate(function(err) {
-
-				// validate existing compat/flavor combination
-				var dupeFiles = _.filter(version.files, function(existingFile) {
-					var existingFileFlavor = _.pick(existingFile.flavor, flavor.keys());
-					return _.isEqual(fileCompat.sort(), _.pluck(existingFile._compatibility, 'id').sort()) &&
-						   _.isEqual(fileFlavor, existingFileFlavor);
-				});
-				if (dupeFiles.length > 0) {
-					err = err || {};
-					err.errors = [
-						{ path: '_compatibility', message: 'A combination of compatibility and flavor already exists with the same values.', value: fileCompat },
-						{ path: 'flavor', message: 'A combination of compatibility and flavor already exists with the same values.', value: fileFlavor }
-					];
-				}
+			VersionFile.getInstance(fileObj, function(err, newVersionFile) {
 				if (err) {
-					return api.fail(res, error('Validations failed. See below for details.').errors(err.errors).warn('create'), 422);
+					api.fail(res, error('Error creating instance for posted version.'), 500);
+					return next(err);
+				}
+				version.files.push(newVersionFile);
+				newFiles.push(newVersionFile);
+				next();
+			});
+
+		}, function(err) {
+			if (err) {
+				return;
+			}
+			release.validate(function(err) {
+
+				if (err) {
+					/* for some reason, mongoose runs the validations twice, once in release context and once in
+					 * versions context, producing errors for files.0.* as well as versions.0.files.0.*, where
+					 * the first one should not be produced. however, since we strip (without(...)), that's not
+					 * a problem right now but might be in the future.
+					 */
+					return api.fail(res, error('Validations failed. See below for details.').errors(err.errors).without(/^versions\.\d+\./).warn('updateVersion'), 422);
 				}
 
-				logger.info('[api|release:addFile] Validations passed, adding new file to version.');
-				version.files.push(newVersionFile);
-				release.save(assert(function() {
+				logger.info('[api|release:updateVersion] Validations passed, updating version.');
+				release.save(function(err) {
+
+					if (err) {
+						return api.fail(res, error('Error saving release: %s', err.message).errors(err.errors).log('updateVersion'), 500);
+					}
 
 					logger.info('[api|release:create] Added new file to version "%s" to release "%s".', version.version, release.name);
 
 					// set media to active
-					newVersionFile.activateFiles(assert(function() {
+					async.eachSeries(newFiles, function(file, next) {
+						file.activateFiles(next);
+
+					}, function(err) {
+						if (err) {
+							return api.fail(res, error('Error activating files.').log('updateVersion'), 422);
+						}
+
 						logger.info('[api|release:create] All referenced files activated, returning object to client.');
 
 						// game modification date
@@ -242,20 +258,15 @@ exports.addFile = function(req, res) {
 								.populate({ path: 'versions.files._media.playfield_video' })
 								.populate({ path: 'versions.files._compatibility' })
 								.exec(assert(function(release) {
-
 									var version = _.filter(release.toDetailed().versions, { version: req.params.version })[0];
-									var file = _.filter(version.files, function(versionFile) {
-										return versionFile.file.id === fileId;
-									})[0];
-
-									return api.success(res, file, 201);
+									return api.success(res, version, 201);
 
 								}, 'Error fetching updated release "%s"'));
 						}, 'Error updating game modification date'));
-					}, 'Error activating files for release "%s"'));
-				}, 'Error adding new version to release "%s"'));
+					});
+				});
 			});
-		}, 'Error creating version instance for release "%s"'));
+		});
 	}, 'Error getting release "%s"'));
 };
 

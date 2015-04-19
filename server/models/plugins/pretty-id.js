@@ -122,6 +122,7 @@ module.exports = function(schema, options) {
 					});
 
 					// convert pretty id to mongdb id
+//					console.log('--- Overwriting pretty ID "%s" at %s with %s.', prettyId, objPath, refObj._id);
 					objectPath.set(obj, objPath, refObj._id);
 				}
 				next();

@@ -23,18 +23,22 @@
  * Main controller containing the form for adding a new release.
  */
 angular.module('vpdb.releases.add', []).controller('ReleaseFileAddCtrl', function(
-	$scope, $stateParams, $localStorage,
-	AuthService, ReleaseMeta,
-	Flavors, GameResource)
+	$scope, $controller, $stateParams, $localStorage,
+	ApiHelper, AuthService, ModalService, ReleaseMeta, Flavors,
+	GameResource, ReleaseResource)
 {
+
+	// use add-common.js
+	angular.extend(this, $controller('ReleaseAddBaseCtrl', { $scope: $scope }));
 
 	// init page
 	$scope.theme('light');
 	$scope.setMenu('releases');
 	$scope.setTitle('Upload Files');
 
-	// define flavors
+	// define flavors and builds
 	$scope.flavors = _.values(Flavors);
+	$scope.fetchBuilds();
 
 	// fetch game info
 	$scope.game = GameResource.get({ id: $stateParams.id }, function() {
@@ -53,6 +57,7 @@ angular.module('vpdb.releases.add', []).controller('ReleaseFileAddCtrl', functio
 		}
 	});
 
+
 	/** Resets all entered data */
 	$scope.reset = function() {
 
@@ -69,12 +74,34 @@ angular.module('vpdb.releases.add', []).controller('ReleaseFileAddCtrl', functio
 		}
 		$scope.releaseVersion = $localStorage.release_version[$scope.release.id] = {
 			version: '',
-			changes: '*New update!*\n\nChanges:\n- Added 3D objects\n-Table now talks.',
+			changes: '*New update!*\n\nChanges:\n\n- Added 3D objects\n-Table now talks.',
 			files: [ ]
 		};
 		$scope.errors = {};
+		$scope.releaseFileRefs = {};
 
 		// TODO remove files via API
+	};
+
+
+	/** Posts the release add form to the server. */
+	$scope.submit = function() {
+
+		ReleaseResource.save($scope.release, function() {
+			$scope.release.submitted = true;
+			$scope.reset();
+
+			ModalService.info({
+				icon: 'check-circle',
+				title: 'Release created!',
+				subtitle: $scope.game.title,
+				message: 'The release has been successfully created.'
+			});
+
+			// go to game page
+			$state.go('gameDetails', { id: $stateParams.id });
+
+		}, ApiHelper.handleErrors($scope));
 	};
 
 });

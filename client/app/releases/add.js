@@ -23,18 +23,21 @@
  * Main controller containing the form for adding a new release.
  */
 angular.module('vpdb.releases.add', []).controller('ReleaseAddCtrl', function(
-	$scope, $upload, $modal, $window, $localStorage, $state, $stateParams, $location, $anchorScroll, $timeout,
+	$scope, $upload, $modal, $window, $localStorage, $state, $stateParams, $location, $anchorScroll, $timeout, $controller,
 	AuthService, ConfigService, DisplayService, MimeTypeService, ModalService, ApiHelper, Flavors, ReleaseMeta,
 	ReleaseResource, FileResource, TagResource, BuildResource, GameResource)
 {
+	// use add-common.js
+	angular.extend(this, $controller('ReleaseAddBaseCtrl', { $scope: $scope }));
 
 	// init page
 	$scope.theme('light');
 	$scope.setMenu('releases');
 	$scope.setTitle('Add Release');
 
-	// define flavors
+	// define flavors and builds
 	$scope.flavors = _.values(Flavors);
+	$scope.fetchBuilds();
 
 	// fetch game info
 	$scope.game = GameResource.get({ id: $stateParams.id }, function() {
@@ -53,31 +56,10 @@ angular.module('vpdb.releases.add', []).controller('ReleaseAddCtrl', function(
 		}
 	});
 
-	// cache those...
-	var releaseFileRefs = {};
-
-	// retrieve available vp builds
-	var builds = BuildResource.query(function() {
-		$scope.builds = {};
-		var types = [];
-		_.each(builds, function(build) {
-			if (!$scope.builds[build.type]) {
-				$scope.builds[build.type] = [];
-				types.push(build.type);
-			}
-			build.built_at = new Date(build.built_at);
-			$scope.builds[build.type].push(build);
-		});
-		_.each(types, function(type) {
-			$scope.builds[type].sort(function(a, b) {
-				return a.built_at.getTime() === b.built_at.getTime() ? 0 : (a.built_at.getTime() > b.built_at.getTime() ? -1 : 1);
-			});
-		});
-	});
-
 	// init data: either copy from local storage or reset.
 	if ($localStorage.release) {
 		$scope.release = $localStorage.release;
+		$scope.releaseVersion = $scope.release.versions[0];
 		$scope.meta = $localStorage.release_meta;
 
 		// update references
@@ -128,21 +110,9 @@ angular.module('vpdb.releases.add', []).controller('ReleaseAddCtrl', function(
 			acknowledgements: '',
 			original_version: null
 		};
+		$scope.releaseVersion = $scope.release.versions[0];
 		$scope.errors = {};
-		releaseFileRefs = {};
-	};
-
-
-	/**
-	 * Deletes an uploaded file from the server and removes it from the list
-	 * @param {object} file
-	 */
-	$scope.removeFile = function(file) {
-		FileResource.delete({ id: file.storage.id }, function() {
-			$scope.meta.files.splice($scope.meta.files.indexOf(file), 1);
-			$scope.release.versions[0].files.splice(_.indexOf($scope.release.versions[0].files, _.findWhere($scope.release.versions[0].files, { id : file.storage.id })), 1);
-
-		}, ApiHelper.handleErrorsInDialog($scope, 'Error removing file.'));
+		$scope.releaseFileRefs = {};
 	};
 
 
@@ -233,145 +203,6 @@ angular.module('vpdb.releases.add', []).controller('ReleaseAddCtrl', function(
 	 */
 	$scope.removeLink = function(link) {
 		$scope.release.links.splice($scope.release.links.indexOf(link), 1);
-	};
-
-
-	/**
-	 * Adds or removes a build to/from to a given file of the release
-	 * @param {object} meta file
-	 * @param {object} build
-	 */
-	$scope.toggleBuild = function(metaFile, build) {
-		var releaseFile = $scope.getReleaseFile(metaFile);
-		var idx = releaseFile._compatibility.indexOf(build.id);
-		if (idx > -1) {
-			releaseFile._compatibility.splice(idx, 1);
-		} else {
-			releaseFile._compatibility.push(build.id);
-		}
-	};
-
-
-	/**
-	 * Opens the dialog for creating a new build.
-	 */
-	$scope.addBuild = function() {
-		$modal.open({
-			templateUrl: '/releases/modal-build-create.html',
-			controller: 'AddBuildCtrl',
-			size: 'lg'
-		}).result.then(function(newBuild) {
-			// todo
-		});
-	};
-
-
-	/**
-	 * Callback when a release file was successfully uploaded.
-	 * @param status
-	 */
-	$scope.onFileUpload = function(status) {
-		var tableFile;
-		if (/^application\/x-visual-pinball-table/i.test(status.mimeType)) {
-			tableFile = {
-				_file: status.storage.id,
-				flavor: {},
-				_compatibility: [],
-				_media: {
-					playfield_image: null,
-					playfield_video: null
-				}
-			};
-		} else {
-			tableFile = { _file: status.storage.id };
-		}
-		$scope.release.versions[0].files.push(tableFile);
-	};
-
-
-	/**
-	 * Callback when a media file was successfully uploaded.
-	 * @param status
-	 */
-	$scope.onMediaUpload = function(status) {
-
-		// update links
-		if (/^image\//.test(status.mimeType)) {
-			$scope.meta.mediaLinks[status.key] = status.storage.variations['medium-landscape'];
-
-		} else if (/^video\//.test(status.mimeType)) {
-			$scope.meta.mediaLinks[status.key] = status.storage.variations.still;
-
-		} else {
-			$scope.meta.mediaLinks[status.key] = status.storage;
-		}
-
-		// add to release object
-		var releaseFile = $scope.getReleaseFileForMedia(status);
-		var mediaType = status.key.split(':')[0];
-		releaseFile._media[mediaType] = status.storage.id;
-
-		console.log($scope.release);
-
-		AuthService.collectUrlProps(status.storage, true);
-	};
-
-
-	/**
-	 * Callback when media gets deleted before it gets re-uploaded.
-	 * @param key
-	 */
-	$scope.onMediaClear = function(key) {
-		$scope.meta.mediaLinks[key] = false;
-	};
-
-
-	/**
-	 * Returns the file object of the release object that is sent to the
-	 * API for given meta file info stored at $scope.meta.files.
-	 *
-	 * @param metaReleaseFile
-	 * @returns {*}
-	 */
-	$scope.getReleaseFile = function(metaReleaseFile) {
-		if (!releaseFileRefs[metaReleaseFile.storage.id]) {
-			releaseFileRefs[metaReleaseFile.storage.id] = _.find($scope.release.versions[0].files, { _file: metaReleaseFile.storage.id });
-		}
-		return releaseFileRefs[metaReleaseFile.storage.id];
-	};
-
-	/**
-	 * Returns the file object of the release object that is sent to the
-	 * API for given meta file info stored at $scope.meta.mediaFiles.
-	 * @param metaMediaFile
-	 * @returns {*}
-	 */
-	$scope.getReleaseFileForMedia = function(metaMediaFile) {
-		return _.find($scope.release.versions[0].files, { _file: metaMediaFile.key.split(':')[1] });
-	};
-
-
-	/**
-	 * Returns the playfield type for a give meta file at $scope.meta.files.
-	 *
-	 * @param metaReleaseFile
-	 * @returns {string}
-	 */
-	$scope.getPlayfieldType = function(metaReleaseFile) {
-		var releaseFile = $scope.getReleaseFile(metaReleaseFile);
-		// fullscreen per default
-		return 'playfield-' + (releaseFile && releaseFile.flavor && releaseFile.flavor.orientation === 'ws' ? 'ws' : 'fs');
-	};
-
-
-	/**
-	 * Returns the key for media files stored at $scope.meta.mediaFiles.
-	 * @param file File status as returned by the file-upload module
-	 * @param type media type
-	 * @returns {string}
-	 */
-	$scope.getMediaKey = function(file, type) {
-		return type + ':' + file.storage.id;
 	};
 
 

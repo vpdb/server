@@ -1,6 +1,6 @@
 "use strict"; /* global vpdbConfig, angular, angular, _ */
 
-angular.module('vpdb', [])
+angular.module('vpdb.common', [])
 
 	.factory('DownloadService', function($rootScope, $timeout, AuthService, ConfigService) {
 

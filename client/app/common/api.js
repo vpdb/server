@@ -1,6 +1,6 @@
 "use strict"; /* global angular, parseUri, objectPath, _ */
 
-angular.module('vpdb', [])
+angular.module('vpdb.common', [])
 
 	.factory('AuthResource', function($resource, ConfigService) {
 		return $resource(ConfigService.apiUri('/authenticate/:strategy'), {}, {

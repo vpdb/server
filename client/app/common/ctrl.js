@@ -1,6 +1,6 @@
 "use strict"; /* global angular, _ */
 
-angular.module('vpdb', [])
+angular.module('vpdb.common', [])
 
 	.controller('AppCtrl', function($scope, $rootScope, $state, $location, $modal, $localStorage,
 									AuthService, ProfileService, ModalService, ModalFlashService, DownloadService) {

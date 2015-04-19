@@ -1,6 +1,6 @@
 "use strict"; /* global angular, _ */
 
-angular.module('vpdb', [])
+angular.module('vpdb.common', [])
 
 	.constant('Flavors', {
 		orientation: {

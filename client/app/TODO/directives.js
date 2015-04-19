@@ -1,7 +1,7 @@
 "use strict"; /* global angular, Showdown, _ */
 
 
-angular.module('vpdb', [])
+angular.module('vpdb.common', [])
 
 	.directive('ratingbox', function($parse) {
 		return {

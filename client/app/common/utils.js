@@ -1,6 +1,6 @@
 "use strict"; /* global angular, _ */
 
-angular.module('vpdb', [])
+angular.module('vpdb.common', [])
 
 	/**
 	 * Converts byte size into something more readable.

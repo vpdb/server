@@ -1,6 +1,6 @@
 "use strict"; /* global angular */
 
-angular.module('vpdb', [])
+angular.module('vpdb.common', [])
 
 	.factory('DisplayService', function() {
 		return {

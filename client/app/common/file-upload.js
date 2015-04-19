@@ -38,7 +38,7 @@
  *
  * All parameters must be already initialized.
  */
-angular.module('vpdb', []).directive('fileUpload', function($upload, $parse, $compile, ApiHelper, AuthService, ModalService, DisplayService, ConfigService, FileResource) {
+angular.module('vpdb.common', []).directive('fileUpload', function($upload, $parse, $compile, ApiHelper, AuthService, ModalService, DisplayService, ConfigService, FileResource) {
 
 	return {
 		restrict: 'A',

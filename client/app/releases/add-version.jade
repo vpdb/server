@@ -5,6 +5,33 @@ include ../template/_mixins
 		hr.hr--primary
 		p Here you can either upload additional flavors for an existing version or upload a new version of you release.
 
+		.row: .col-sm-10.col-sm-offset-1
+			select.form-control.pull-right(ng-disabled="mode == 'newVersion'")
+				option v1.0
+				option v2.0
+			.radio--lg: label
+				input.input-lg(type="radio", name="mode", value="newFile", ng-model="mode")
+				span.aligned Existing version
+
+			input.form-control.width-md.pull-right(type="text", ng-disabled="mode == 'newFile'", ng-model="version.version", placeholder="x.x.x")
+			.radio--lg: label
+				input(type="radio", name="mode", value="newVersion", ng-model="mode")
+				span.aligned New version
+
+			.form-group(ng-show="mode == 'newVersion'")
+				label.control-label(for="version") Release Information
+				tabset.tabset--light
+					label.label--small.pull-right(markdown-info="Markdown enabled.")
+					tab
+						tab-heading(title="Write"): +icon('edit')
+						textarea.textarea--full.msd-elastic(placeholder="Release Information", ng-model="release.versions[0].changes")
+					tab
+						tab-heading(title="Preview"): +icon('eye')
+						div.markdown(markdown="release.versions[0].changes")
+						label.tab__label(ng-show="!release.versions[0].changes || release.versions[0].changes.length == 0") Nothing to preview.
+				i This will show up in the release's change log
+
+
 		//---------------------------------------------------------------------
 		h1 1. Upload Files
 		hr
@@ -18,19 +45,13 @@ include ../template/_mixins
 		include add-03-flavors
 
 		//---------------------------------------------------------------------
-		h1 3. Describe your Release
-		hr
-
-		include add-04-release-notes
-
-		//---------------------------------------------------------------------
-		h1 4. Set Compatibility
+		h1 3. Set Compatibility
 		hr
 
 		include add-05-compat
 
 		//---------------------------------------------------------------------
-		h1 5. Upload Media
+		h1 4. Upload Media
 		hr
 
 		include add-07-upload-media

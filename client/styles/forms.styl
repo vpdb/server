@@ -184,6 +184,11 @@ textarea
 				-moz-osx-font-smoothing grayscale
 				transition color $animation-short
 				content "\32" /* Radio Unchecked */
+
+			&.aligned
+				margin-left 0
+				&:before
+					margin-left -40px
 		&:checked + span
 			cursor default
 			&::before
@@ -368,3 +373,10 @@ input.checkbox--toggle
 
 	&.form--inline
 		margin-right 75px
+
+// don't make pull-right boxes 100%
+.form-control
+	&.pull-right
+		width initial
+	&.width-md
+		width 120px

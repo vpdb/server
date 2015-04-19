@@ -47,7 +47,7 @@
 		"fontawesome": "^4.2.0",
 		"bootstrap": "3.3.1",
 		"FileAPI": "^2.0.9",
-		"lodash": "^2.4.1",
+		"lodash": "3.7.0",
 		"traverse": "^0.6.7",
 		"videojs": "^4.11.1",
 		"videojs-sublime-skin": "^1.0.1",

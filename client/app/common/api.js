@@ -63,6 +63,16 @@ angular.module('vpdb.common', [])
 		});
 	})
 
+	.factory('ReleaseVersionResource', function($resource, ConfigService) {
+		return $resource(ConfigService.apiUri('/releases/:releaseId/versions'), {}, {
+		});
+	})
+
+	.factory('ReleaseFileResource', function($resource, ConfigService) {
+		return $resource(ConfigService.apiUri('/releases/:releaseId/versions/:version/files'), {}, {
+		});
+	})
+
 	.factory('ReleaseCommentResource', function($resource, ConfigService) {
 		return $resource(ConfigService.apiUri('/releases/:releaseId/comments'), {}, {
 		});

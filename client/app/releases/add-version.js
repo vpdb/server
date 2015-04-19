@@ -23,10 +23,10 @@
  * Main controller containing the form for adding a new release.
  */
 angular.module('vpdb.releases.add', []).controller('ReleaseFileAddCtrl', function(
-	$scope, $controller, $stateParams, $localStorage,
+	$scope, $controller, $state, $stateParams, $localStorage,
 	ApiHelper, AuthService, ModalService, ReleaseMeta, Flavors,
-	GameResource, ReleaseResource)
-{
+	GameResource, ReleaseVersionResource, ReleaseFileResource
+) {
 
 	// use add-common.js
 	angular.extend(this, $controller('ReleaseAddBaseCtrl', { $scope: $scope }));
@@ -45,6 +45,9 @@ angular.module('vpdb.releases.add', []).controller('ReleaseFileAddCtrl', functio
 		$scope.release = _.find($scope.game.releases, { id: $stateParams.releaseId });
 		if ($scope.release) {
 			$scope.setTitle('Upload Files - ' + $scope.game.title + ' (' + $scope.release.name + ')');
+
+			// populate versions
+			$scope.versions = _.pluck(_.sortByOrder($scope.release.versions, 'released_at', false), 'version');
 
 			// init data: either copy from local storage or reset.
 			if ($localStorage.release_version && $localStorage.release_version[$scope.release.id]) {
@@ -67,6 +70,7 @@ angular.module('vpdb.releases.add', []).controller('ReleaseFileAddCtrl', functio
 		}
 		$scope.meta = $localStorage.release_version_meta[$scope.release.id] = _.cloneDeep(ReleaseMeta);
 		$scope.meta.mode = 'newFile';
+		$scope.meta.version = $scope.versions[0];
 
 		// release
 		if (!$localStorage.release_version) {
@@ -87,21 +91,44 @@ angular.module('vpdb.releases.add', []).controller('ReleaseFileAddCtrl', functio
 	/** Posts the release add form to the server. */
 	$scope.submit = function() {
 
-		ReleaseResource.save($scope.release, function() {
-			$scope.release.submitted = true;
-			$scope.reset();
+		// only post files
+		if ($scope.meta.mode == 'newFile') {
 
-			ModalService.info({
-				icon: 'check-circle',
-				title: 'Release created!',
-				subtitle: $scope.game.title,
-				message: 'The release has been successfully created.'
+			_.each($scope.releaseVersion.files, function(file) {
+
+				ReleaseFileResource.save({ releaseId: $scope.release.id, version: $scope.meta.version }, file, function() {
+
+					ModalService.info({
+						icon: 'check-circle',
+						title: 'Success!',
+						subtitle: $scope.game.title + ' - ' + $scope.release.name,
+						message: 'Successfully uploaded new release version.'
+					});
+
+					// go to game page
+					$state.go('gameDetails', { id: $stateParams.id });
+
+				}, ApiHelper.handleErrors($scope));
 			});
 
-			// go to game page
-			$state.go('gameDetails', { id: $stateParams.id });
+		// post whole version
+		} else {
 
-		}, ApiHelper.handleErrors($scope));
+			ReleaseVersionResource.save({ releaseId: $scope.release.id }, $scope.releaseVersion, function() {
+				$scope.reset();
+				ModalService.info({
+					icon: 'check-circle',
+					title: 'Success!',
+					subtitle: $scope.game.title + ' - ' + $scope.release.name,
+					message: 'Successfully uploaded new release version.'
+				});
+
+				// go to game page
+				$state.go('gameDetails', { id: $stateParams.id });
+
+			}, ApiHelper.handleErrors($scope));
+		}
+
 	};
 
 });

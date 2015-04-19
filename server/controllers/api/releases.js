@@ -250,12 +250,12 @@ exports.addFile = function(req, res) {
 
 									return api.success(res, file, 201);
 
-								}, 'Error fetching updated release "%s".'));
+								}, 'Error fetching updated release "%s"'));
 						}, 'Error updating game modification date'));
 					}, 'Error activating files for release "%s"'));
-				}, 'Error adding new version to release "%s".'));
+				}, 'Error adding new version to release "%s"'));
 			});
-		}, 'Error creating version instance for release "%s".'));
+		}, 'Error creating version instance for release "%s"'));
 	}, 'Error getting release "%s"'));
 };
 

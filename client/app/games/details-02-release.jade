@@ -51,25 +51,26 @@ include ../template/_mixins
 
 		hr
 		p
-			+icon('download-circle').svg-2x.shift-up-2x.space-right
-			| {{ release.counter.downloads | number }} download{{ release.counter.downloads != 1 ? 's' : '' }}
-		p
 			+icon('star-circle').svg-2x.shift-up-2x.space-right
 			| 0 stars
 		p
 			+icon('comment-circle').svg-2x.shift-up-2x.space-right
 			| {{ release.counter.comments | number }} comment{{ release.counter.downloads != 1 ? 's' : '' }}
-
+		p
+			+icon('download-circle').svg-2x.shift-up-2x.space-right
+			| {{ release.counter.downloads | number }} download{{ release.counter.downloads != 1 ? 's' : '' }}
 
 		//-- OWNER SECTION
 		//---------------------------------------------------------------------
 
 		hr
-		p You are the owner.
+		p
+			+icon('gear').shift-up-2x.space-right
+			i Author Zone:
 
 		a.btn.btn-primary.btn-block(ui-sref="addReleaseVersion({ id: game.id, releaseId: release.id })")
 			+icon('plus-circle').space-right
-			| UPLOAD FILE
+			| Upload File
 
 		p.padder-top
 

@@ -25,7 +25,7 @@
 angular.module('vpdb.releases.add', []).controller('ReleaseFileAddCtrl', function(
 	$scope, $controller, $state, $stateParams, $localStorage,
 	ApiHelper, AuthService, ModalService, ReleaseMeta, Flavors,
-	GameResource, ReleaseVersionResource, ReleaseFileResource
+	GameResource, ReleaseVersionResource
 ) {
 
 	// use add-common.js
@@ -60,6 +60,13 @@ angular.module('vpdb.releases.add', []).controller('ReleaseFileAddCtrl', functio
 		}
 	});
 
+	// steps
+	$scope.step = {
+		files: 1,
+		flavors: 2,
+		compat: 3,
+		media: 4
+	};
 
 	/** Resets all entered data */
 	$scope.reset = function() {
@@ -94,22 +101,19 @@ angular.module('vpdb.releases.add', []).controller('ReleaseFileAddCtrl', functio
 		// only post files
 		if ($scope.meta.mode == 'newFile') {
 
-			_.each($scope.releaseVersion.files, function(file) {
+			ReleaseVersionResource.update({ releaseId: $scope.release.id, version: $scope.meta.version }, { files: $scope.releaseVersion.files }, function() {
+				$scope.reset();
+				ModalService.info({
+					icon: 'check-circle',
+					title: 'Success!',
+					subtitle: $scope.game.title + ' - ' + $scope.release.name,
+					message: 'Successfully uploaded new files to version ' + $scope.meta.version + '.'
+				});
 
-				ReleaseFileResource.save({ releaseId: $scope.release.id, version: $scope.meta.version }, file, function() {
+				// go to game page
+				$state.go('gameDetails', { id: $stateParams.id });
 
-					ModalService.info({
-						icon: 'check-circle',
-						title: 'Success!',
-						subtitle: $scope.game.title + ' - ' + $scope.release.name,
-						message: 'Successfully uploaded new release version.'
-					});
-
-					// go to game page
-					$state.go('gameDetails', { id: $stateParams.id });
-
-				}, ApiHelper.handleErrors($scope));
-			});
+			}, ApiHelper.handleErrors($scope, { fieldPrefix: 'versions.0.' }));
 
 		// post whole version
 		} else {
@@ -126,7 +130,7 @@ angular.module('vpdb.releases.add', []).controller('ReleaseFileAddCtrl', functio
 				// go to game page
 				$state.go('gameDetails', { id: $stateParams.id });
 
-			}, ApiHelper.handleErrors($scope));
+			}, ApiHelper.handleErrors($scope, { fieldPrefix: 'versions.0.' }));
 		}
 
 	};

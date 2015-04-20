@@ -1,5 +1,5 @@
 p These show off your work. You should provide both image and video at full HD resolution at <i>1920&times;1080</i>.
-	| For every table file you've provided in step 1, at least the screenshot is mandatory. If you provide a video,
+	| For every table file you've provided in step {{ step.flavors }}, at least the screenshot is mandatory. If you provide a video,
 	| it should show the table in attract mode (no gameplay).
 
 span(ng-repeat="file in meta.files | fileext:['vpt','vpx']")
@@ -68,4 +68,4 @@ span(ng-repeat="file in meta.files | fileext:['vpt','vpx']")
 
 .text-center(ng-show="(meta.files | fileext:['vpt','vpx']).length == 0")
 	+icon('warning').shift-up.space-right
-	i Upload <code>.vpt</code>/<code>.vpx</code> files under 1.	 in order to upload media.
+	i Upload <code>.vpt</code>/<code>.vpx</code> files under {{ step.flavors }}. in order to upload media.

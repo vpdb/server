@@ -15,7 +15,12 @@ include ../template/_mixins
 			.radio--lg: label
 				input(type="radio", name="mode", value="newVersion", ng-model="meta.mode")
 				span.aligned New version
+		.row.padder-bottom(ng-show="errors.versions[0].version"): .col-sm-12
+			.alert.alert-danger
+				+icon('warning').shift-up.space-right
+				| {{ errors.versions[0].version }}
 
+		.row: .col-sm-10.col-sm-offset-1
 			.form-group(ng-show="meta.mode == 'newVersion'")
 				label.control-label(for="version") Release Information
 				tabset.tabset--light

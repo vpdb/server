@@ -288,7 +288,6 @@ describe('The VPDB `release` API', function() {
 
 		it('should fail when logged as a different user', function(done) {
 			hlp.release.createRelease('member', request, function(release) {
-				hlp.doomRelease('member', release.id);
 				request.post('/api/v1/releases/' + release.id + '/versions')
 					.as('member2')
 					.send({})

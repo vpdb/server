@@ -64,12 +64,8 @@ angular.module('vpdb.common', [])
 	})
 
 	.factory('ReleaseVersionResource', function($resource, ConfigService) {
-		return $resource(ConfigService.apiUri('/releases/:releaseId/versions'), {}, {
-		});
-	})
-
-	.factory('ReleaseFileResource', function($resource, ConfigService) {
-		return $resource(ConfigService.apiUri('/releases/:releaseId/versions/:version/files'), {}, {
+		return $resource(ConfigService.apiUri('/releases/:releaseId/versions/:version'), {}, {
+			'update': { method: 'PUT' }
 		});
 	})
 
@@ -137,16 +133,22 @@ angular.module('vpdb.common', [])
 			 * variable is just set to the received error.
 			 *
 			 * @param {object} scope Scope where to create the error variables
+			 * @param {object} opt config options. Valid options: fieldPrefix
 			 * @param {function} [fct] Executed if provided with given scope as argument.
 			 */
-			handleErrors: function(scope, fct) {
+			handleErrors: function(scope, opt, fct) {
+				if (!fct && _.isFunction(opt)) {
+					fct = opt;
+				}
+				opt = _.isObject(opt) ? opt : {};
 				return function(response) {
 					scope.message = null;
 					scope.errors = { __count: 0 };
 					scope.error = null;
 					if (response.data.errors) {
 						_.each(response.data.errors, function(err) {
-							objectPath.set(scope.errors, err.field, err.message);
+							var path = (opt.fieldPrefix || '') + err.field;
+							objectPath.set(scope.errors, path, err.message);
 							scope.errors.__count++;
 						});
 					}

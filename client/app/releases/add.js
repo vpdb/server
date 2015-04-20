@@ -73,6 +73,13 @@ angular.module('vpdb.releases.add', []).controller('ReleaseAddCtrl', function(
 		$scope.reset();
 	}
 
+	$scope.step = {
+		files: 1,
+		flavors: 3,
+		compat: 5,
+		media: 7
+	};
+
 	/**
 	 * Resets all entered data
 	 */

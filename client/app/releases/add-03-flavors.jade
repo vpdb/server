@@ -1,6 +1,6 @@
 p A flavor defines attributes that are relevant to the table file, so users can find more easily what they're
 	| interested in. You can upload multiple flavors by adding several <code>.vpt</code> or
-	| <code>.vpx</code> files in step 1.
+	| <code>.vpx</code> files in step {{ step.files }}.
 ul.list--files
 	li.panel(ng-repeat="file in meta.files | fileext:['vpt','vpx']", ng-class="{ error: errors.versions[0].files[meta.files.indexOf(file)].flavor }")
 		.col--list-files-left
@@ -27,4 +27,4 @@ ul.list--files
 			| {{ errors.versions[0].files[meta.files.indexOf(file)].flavor.lightning }}
 .text-center(ng-show="(meta.files | fileext:['vpt','vpx']).length == 0")
 	+icon('warning').shift-up.space-right
-	i Upload <code>.vpt</code>/<code>.vpx</code> files under 1. before defining flavors.
+	i Upload <code>.vpt</code>/<code>.vpx</code> files under {{ step.files }}. before defining flavors.

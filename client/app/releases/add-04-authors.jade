@@ -16,5 +16,7 @@ button.btn.btn-default.padder-top.pull-right(ng-click="addAuthor()")
 .alert.alert-danger.padder-bottom(ng-show="errors.authors")
 	+icon('warning').shift-up.space-right
 	| {{ errors.authors }}
-p Note that you can add acknowledgements below for people who provided help or resources but are not considered
-	| as authors for that particular release.
+p Everybody you add here will have write permissions to the release you are about to create, i.e. they can edit
+	| the release and add new versions and flavors.
+p You can add acknowledgements below for people who provided help or resources but are not considered as authors
+	| for that particular release.

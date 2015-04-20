@@ -170,12 +170,12 @@ VersionSchema.path('files').validate(function(files, callback) {
 				/* istanbul ignore if */
 				if (err) {
 					logger.error('[model] Error fetching file "%s".', f._file);
-					f.isNew && index++;
+					if (f.isNew) index++;
 					return next();
 				}
 				if (!file) {
 					// this is already validated by the file reference
-					f.isNew && index++;
+					if (f.isNew) index++;
 					return next();
 				}
 
@@ -202,7 +202,7 @@ VersionSchema.path('files').validate(function(files, callback) {
 					// media
 					if (!f._media || !f._media.playfield_image) {
 						that.invalidate('files.' + index + '._media.playfield_image', 'Playfield image must be provided.');
-						f.isNew && index++;
+						if (f.isNew) index++;
 						return next();
 					}
 
@@ -211,27 +211,27 @@ VersionSchema.path('files').validate(function(files, callback) {
 						/* istanbul ignore if */
 						if (err) {
 							logger.error('[model] Error fetching file "%s".', f._media.playfield_image);
-							f.isNew && index++;
+							if (f.isNew) index++;
 							return next();
 						}
 						if (!playfieldImage) {
 							that.invalidate('files.' + index + '._media.playfield_image', 'Playfield "' + f._media.playfield_image + '" does not exist.');
-							f.isNew && index++;
+							if (f.isNew) index++;
 							return next();
 						}
 						if (!_.contains(['playfield-fs', 'playfield-ws'], playfieldImage.file_type)) {
 							that.invalidate('files.' + index + '._media.playfield_image', 'Must reference a file with file_type "playfield-fs" or "playfield-ws".');
 						}
-						f.isNew && index++;
+						if (f.isNew) index++;
 						next();
 					});
 				} else {
-					f.isNew && index++;
+					if (f.isNew) index++;
 					next();
 				}
 			});
 		} else {
-			f.isNew && index++;
+			if (f.isNew) index++;
 			next();
 		}
 	}, function() {

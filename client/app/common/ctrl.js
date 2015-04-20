@@ -40,8 +40,7 @@ angular.module('vpdb.common', [])
 		});
 
 		$scope.navGame = function(key) {
-			$location.hash('');
-			$location.path('/game/' + key);
+			$state.go('gameDetails', { id: key });
 		};
 
 		$scope.setTitle = function(title) {

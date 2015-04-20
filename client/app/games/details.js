@@ -227,41 +227,6 @@ angular.module('vpdb.games.details', [])
 		};
 	})
 
-	.controller('ReleaseController', function($scope, $rootScope, ApiHelper, ReleaseCommentResource, AuthService, ReleaseRatingResource) {
-
-		$scope.newComment = '';
-		$scope.addComment = function(releaseId) {
-			ReleaseCommentResource.save({ releaseId: releaseId }, { message: $scope.newComment }, function(comment) {
-				$scope.release.comments.unshift(comment);
-				$scope.newComment = '';
-			}, ApiHelper.handleErrors($scope));
-		};
-
-
-		// RATINGS
-		if (AuthService.isAuthenticated) {
-			ReleaseRatingResource.get({ releaseId: $scope.release.id }).$promise.then(function(rating) {
-				$scope.releaseRating = rating;
-			});
-		}
-		$scope.rateRelease = function(rating) {
-			var done = function(result) {
-				$scope.release.rating = result.release;
-				$scope.releaseRating = result.release;
-			};
-			if ($scope.releaseRating) {
-				ReleaseRatingResource.update({ releaseId: $scope.release.id }, { value: rating }, done);
-				$rootScope.showNotification('Successfully updated rating.');
-
-			} else {
-				ReleaseRatingResource.save({ releaseId: $scope.release.id }, { value: rating }, done);
-				$rootScope.showNotification('Successfully rated rdelease!');
-			}
-		};
-
-	})
-
-
 	.controller('DownloadGameCtrl', function($scope, $modalInstance, $timeout, Flavors, DownloadService, params) {
 
 		$scope.game = params.game;
@@ -309,69 +274,4 @@ angular.module('vpdb.games.details', [])
 		$scope.cancel = function () {
 			$modalInstance.dismiss(false);
 		};
-	})
-
-
-	/**
-	 * Formats a rating so it always displays one decimal.
-	 */
-	.filter('rating', function() {
-
-		return function(rating) {
-			rating = parseFloat(rating);
-			if (!rating) {
-				return ' — ';
-			}
-			if (rating % 1 === 0 && rating < 10) {
-				return rating + '.0';
-			} else {
-				return Math.round(rating * 10) / 10;
-			}
-		};
-	})
-
-	.filter('dlRelease', function() {
-		return function(data) {
-			var game = data[0];
-			var release = data[1];
-			return [ game.name, release.title ];
-		};
-	})
-
-	.filter('dlRom', function() {
-		return function(data) {
-			var game = data[0];
-			var rom = data[1];
-			return [ game.name, 'ROM <samp>' + rom.name + '</samp>' ];
-		};
-	})
-
-	.filter('dlBackglass', function() {
-		return function(data) {
-			var game = data[0];
-			var backglass = data[1];
-			return [ game.name, 'Backglass by <strong>' + backglass.author.user + '</strong>' ];
-		};
-	})
-
-	.filter('dlMedia', function(DisplayService) {
-		return function(data) {
-			var game = data[0];
-			var media = data[1];
-			return [
-				game.name,
-					DisplayService.media(media.type) + ' (' + media.format + ') by <strong>' + media.author.user + '</strong>'
-			];
-		};
-	})
-
-	.filter('dlPack', function() {
-		return function(pack) {
-			return [
-					pack.manufacturer + ' ' + pack.number,
-				pack.name
-			];
-		};
 	});
-
-

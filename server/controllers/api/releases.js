@@ -53,8 +53,17 @@ exports.create = function(req, res) {
 		var assertRb = api.assert(error, 'create', newRelease.name, res, function(done) {
 			newRelease.remove(done);
 		});
-		if (newRelease.versions[0]) {
-			newRelease.versions[0] = _.defaults(newRelease.versions[0], { released_at: now });
+
+		// defaults
+		if (newRelease.versions) {
+			_.each(newRelease.versions, function(version) {
+				_.defaults(version, { released_at: now });
+				if (version.files) {
+					_.each(version.files, function(file) {
+						_.defaults(file, { released_at: now });
+					});
+				}
+			});
 		}
 
 		logger.info('[api|release:create] %s', util.inspect(req.body));
@@ -111,6 +120,7 @@ exports.create = function(req, res) {
  */
 exports.addVersion = function(req, res) {
 
+	var now = new Date();
 	var assert = api.assert(error, 'addVersion', req.params.id, res);
 
 	Release.findOne({ id: req.params.id }, assert(function(release) {
@@ -123,7 +133,13 @@ exports.addVersion = function(req, res) {
 			return api.fail(res, error('Only authors of the release can add new versions.', req.params.id), 403);
 		}
 
-		var versionObj = _.defaults(req.body, { released_at: new Date() });
+		var versionObj = _.defaults(req.body, { released_at: now });
+		if (versionObj.files) {
+			_.each(versionObj.files, function(file) {
+				_.defaults(file, { released_at: now });
+			});
+		}
+
 		logger.info('[api|release:addVersion] %s', util.inspect(versionObj, { depth: null }));
 		Version.getInstance(versionObj, assert(function(newVersion) {
 
@@ -181,6 +197,7 @@ exports.updateVersion = function(req, res) {
 
 	var updateableFields = [ 'version', 'changes' ];
 
+	var now = new Date();
 	var assert = api.assert(error, 'updateVersion', req.params.id, res);
 
 	Release.findOne({ id: req.params.id }).populate('versions.files._compatibility').exec(assert(function(release) {
@@ -203,6 +220,9 @@ exports.updateVersion = function(req, res) {
 		logger.info('[api|release:updateVersion] %s', util.inspect(versionObj, { depth: null }));
 
 		async.eachSeries(versionObj.files || [], function(fileObj, next) {
+
+			// defaults
+			_.defaults(fileObj, { released_at: now });
 
 			VersionFile.getInstance(fileObj, function(err, newVersionFile) {
 				if (err) {

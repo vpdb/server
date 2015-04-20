@@ -53,6 +53,7 @@ var fileFields = {
 		playfield_image: { type: Schema.ObjectId, ref: 'File' },
 		playfield_video: { type: Schema.ObjectId, ref: 'File' }
 	},
+	released_at: { type: Date, required: true },
 	counter: {
 		downloads: { type: Number, 'default': 0 }
 	}

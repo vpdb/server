@@ -9,7 +9,7 @@ include ../template/_mixins
 		h3.hr--margin-smaller Choose your flavors:
 
 		.row
-			.col-sm-3(ng-repeat="file in release.__latestVersion.files | filter:tableFile")
+			.col-sm-3(ng-repeat="file in latestVersion.files | filter:tableFile")
 				.flavor-item(ng-class="{ active: downloadFiles[file.file.id] }", ng-click="toggleFile(file)")
 					img.img.img-responsive.img--rounded-more(img-src="{{ file.media.playfield_image.variations['square-2x'].url }}")
 					.text-center.padder-top

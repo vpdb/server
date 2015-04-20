@@ -8,7 +8,7 @@ include ../template/_mixins
 		//---------------------------------------------------------------------
 
 		carousel(interval="60000")
-			slide(ng-repeat="slide in release.__portraitShots", active="slide.active")
+			slide(ng-repeat="slide in portraitShots", active="slide.active")
 				img(ng-src="{{ slide.url }}")
 
 		button.btn.btn-primary.btn-block.padder-top-3x(ng-click="download(game, release)")
@@ -82,7 +82,7 @@ include ../template/_mixins
 		h2.h--primary(ng-show="editing")
 			.form-group.form--inline
 				input.form-control.input-lg(type="text", value="{{ release.name }}")
-		h2.h--primary(ng-hide="editing") {{ release.name }} <small>{{ release.__latestVersion.version }}</small>
+		h2.h--primary(ng-hide="editing") {{ release.name }} <small>{{ latestVersion.version }}</small>
 		.badge.badge--tag.badge--small(ng-repeat="tag in release.tags", tooltip="{{tag.description}}") {{ tag.name }}
 
 		span.clearfix.padder-top(ng-show="release.tags && release.tags.length") &nbsp;
@@ -100,7 +100,7 @@ include ../template/_mixins
 		div.markdown(markdown="release.acknowledgements", ng-show="release.acknowledgements")
 
 		h3.h--smaller.h--primary Version History
-		p(ng-repeat="version in release.versions") <strong>{{ version.version }}</strong>
+		p(ng-repeat="version in releaseVersions") <strong>{{ version.version }}</strong>
 
 		h3.h--smaller.h--primary(ng-show="release.links && release.links.length") Links
 		a(ng-repeat="link in release.links", ng-href="link.url") {{ link.label }}
@@ -119,7 +119,7 @@ include ../template/_mixins
 					th Version
 					th Size
 			tbody
-				tr(ng-repeat="file in release.__latestVersion.files | filter:tableFile")
+				tr(ng-repeat="file in flavorGrid")
 					td.td--img
 						img.img--rounded(ng-src="{{ file.media.playfield_image.variations.square.url }}")
 					td
@@ -130,17 +130,15 @@ include ../template/_mixins
 						i {{ flavors.lightning.values[file.flavor.lightning].other }}
 					td
 						span(ng-repeat="compat in file.compatibility") {{ compat.label }}
-					td {{ release.__latestVersion.version }}
+					td {{ getVersion(file).version }}
 					td {{ file.file.bytes | bytes }}
-
-
 
 		h1.h--small Comments
 		hr
 
 		//- list comments
-		label(ng-show="!release.comments || release.comments.length == 0") No comments yet.
-		.media.media--no-margin.collapse-in-animation(ng-repeat="comment in release.comments track by comment.id", ng-controller="CommentCtrl", ng-init="show=true")
+		label(ng-show="!comments || comments.length == 0") No comments yet.
+		.media.media--no-margin.collapse-in-animation(ng-repeat="comment in comments track by comment.id", ng-controller="CommentCtrl", ng-init="show=true")
 			.collapse-in-animation-inner
 				.media-left.avatar
 					img.img-avatar.pull-left(gravatar-src="comment.from.gravatar_id", gravatar-default="404", fallback-icon="user")

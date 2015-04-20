@@ -66,28 +66,6 @@ angular.module('vpdb.games.details', [])
 
 		$scope.game = GameResource.get({ id: $scope.gameId }, function() {
 
-			$scope.game.lastrelease = new Date($scope.game.lastrelease).getTime();
-
-			_.each($scope.game.releases, function(release) {
-
-				release.versions = _.sortBy(release.versions, 'version');
-				release.__latestVersion = release.versions[0];
-				release.__portraitShots = _.compact(_.map(release.__latestVersion.files, function(file) {
-					if (!file.media || !file.media.playfield_image || file.media.playfield_image.file_type !== 'playfield-fs') {
-						return null;
-					}
-					return { url: file.media.playfield_image.variations.medium.url };
-				}));
-				release.comments = ReleaseCommentResource.query({ releaseId: release.id });
-			});
-
-			setTimeout(function() {
-				$('.image-link').magnificPopup({
-					type: 'image',
-					removalDelay: 300,
-					mainClass: 'mfp-fade'
-				});
-			}, 0);
 			$scope.pageLoading = false;
 			$scope.setTitle($scope.game.title);
 		});

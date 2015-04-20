@@ -52,8 +52,8 @@ exports.upload = function(config) {
 			var bgPrefix = path.resolve(__dirname, 'backglass');
 			var logoPrefix = path.resolve(__dirname, 'logo');
 
-			console.log('Reading backglasses from %s.', bgPrefix);
-			console.log('Reading logos from %s.', logoPrefix);
+			//console.log('Reading backglasses from %s.', bgPrefix);
+			//console.log('Reading logos from %s.', logoPrefix);
 
 			async.eachSeries(exports.data, function(game, next) {
 				var data = _.find(ipdb, function(g) { return g.ipdb.number === game.ipdb; });
@@ -132,7 +132,7 @@ exports.upload = function(config) {
 									.set(headers)
 									.send(data)
 									.end(function(err, res) {
-										console.log(res.body);
+										//console.log(res.body);
 										next();
 									});
 							});
@@ -215,7 +215,7 @@ exports.data = [
 	{ bg: 'South Park (Sega 1999).png', logo: 'South Park (Sega 1999).png', ipdb: 4444 },
 	{ bg: 'Star Wars (Data East 1992).png', logo: 'Star Wars (Data East 1992).png', ipdb: 2358 },
 	{ bg: 'STTNG (Williams 1993).png', logo: 'STTNG (Williams 1993).png', ipdb: 2357 },
-	{ bg: 'Super Mario Bros (Premier 1992).png', logo: 'Super Mario Bros (Premier 1992)', ipdb: 2435, id: 'smb' },
+	{ bg: 'Super Mario Bros (Premier 1992).png', logo: 'Super Mario Bros (Premier 1992).png', ipdb: 2435, id: 'smb' },
 	{ bg: 'Tales from the Crypt (Data East 1993).png', logo: 'Tales from the Crypt (Data East 1993).png', ipdb: 2493 },
 	{ bg: 'Tales of the Arabian Nights (Williams 1996).png', logo: 'Tales of the Arabian Nights (Williams 1996).png', ipdb: 3824 },
 	{ bg: 'Terminator 2 - Judgment Day (Williams 1991).png', logo: 'Terminator 2 - Judgment Day (Williams 1991).png', ipdb: 2524 },

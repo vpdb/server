@@ -73,7 +73,7 @@ angular.module('vpdb.games.details', []).controller('ReleaseController', functio
 	$scope.newComment = '';
 	$scope.addComment = function(releaseId) {
 		ReleaseCommentResource.save({ releaseId: releaseId }, { message: $scope.newComment }, function(comment) {
-			$scope.release.comments.unshift(comment);
+			$scope.comments.unshift(comment);
 			$scope.newComment = '';
 		}, ApiHelper.handleErrors($scope));
 	};

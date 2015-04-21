@@ -74,6 +74,9 @@ include ../template/_mixins
 
 		p.padder-top
 
+
+	//-- MAIN BODY
+	//---------------------------------------------------------------------
 	.col-sm-8.col-md-9
 		.inline-edit(ng-class='{ open: editing }')
 			+icon('pencil-circle').a.icon-opener(ng-click="editing = true")
@@ -100,7 +103,14 @@ include ../template/_mixins
 		div.markdown(markdown="release.acknowledgements", ng-show="release.acknowledgements")
 
 		h3.h--smaller.h--primary Version History
-		p(ng-repeat="version in releaseVersions") <strong>{{ version.version }}</strong>
+		div(ng-repeat="version in releaseVersions")
+			strong v{{ version.version }}
+			|  (
+			span(am-time-ago="version.released_at")
+			| )
+			+icon('angle-down').smaller.pull-right
+			hr(ng-show="$first")
+			div.markdown(markdown="version.changes", ng-show="$first")
 
 		h3.h--smaller.h--primary(ng-show="release.links && release.links.length") Links
 		a(ng-repeat="link in release.links", ng-href="link.url") {{ link.label }}

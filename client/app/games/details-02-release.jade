@@ -103,14 +103,16 @@ include ../template/_mixins
 		div.markdown(markdown="release.acknowledgements", ng-show="release.acknowledgements")
 
 		h3.h--smaller.h--primary Version History
-		div(ng-repeat="version in releaseVersions")
-			strong v{{ version.version }}
-			|  (
-			span(am-time-ago="version.released_at")
-			| )
-			+icon('angle-down').smaller.pull-right
-			hr(ng-show="$first")
-			div.markdown(markdown="version.changes", ng-show="$first")
+		accordion.panel-group--transparent.subtle(close-others="false")
+			accordion-group(ng-repeat="version in releaseVersions", is-open="$first")
+				accordion-heading
+					strong v{{ version.version }}
+					|  (
+					span(am-time-ago="version.released_at")
+					| )
+					+icon('angle-down').smaller.shift-down.pull-right
+
+				div.markdown(markdown="version.changes")
 
 		h3.h--smaller.h--primary(ng-show="release.links && release.links.length") Links
 		a(ng-repeat="link in release.links", ng-href="link.url") {{ link.label }}

@@ -70,7 +70,8 @@ var fields = {
 		releases:  { type: Number, 'default': 0 },
 		views:     { type: Number, 'default': 0 },
 		downloads: { type: Number, 'default': 0 },
-		comments:  { type: Number, 'default': 0 }
+		comments:  { type: Number, 'default': 0 },
+		stars:     { type: Number, 'default': 0 }
 	},
 	metrics: {
 		popularity: { type: Number, 'default': 0 } // time-decay based score like reddit, but based on views, downloads, comments, favs. see SO/11653545

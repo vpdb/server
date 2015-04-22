@@ -31,6 +31,7 @@ exports.ratings = require('./ratings');
 exports.releases = require('./releases');
 exports.roles = require('./roles');
 exports.roms = require('./roms');
+exports.stars = require('./stars');
 exports.tags = require('./tags');
 exports.user = require('./user');
 exports.users = require('./users');

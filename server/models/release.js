@@ -55,7 +55,8 @@ var fileFields = {
 	},
 	released_at: { type: Date, required: true },
 	counter: {
-		downloads: { type: Number, 'default': 0 }
+		downloads: { type: Number, 'default': 0 },
+		stars:     { type: Number, 'default': 0 }
 	}
 };
 var FileSchema = new Schema(fileFields);
@@ -121,7 +122,7 @@ ReleaseSchema.plugin(prettyId, { model: 'Release', ignore: [ '_created_by', '_ta
 ReleaseSchema.plugin(idValidator, { fields: [ '_tags' ] });
 ReleaseSchema.plugin(paginate);
 ReleaseSchema.plugin(toObj);
-ReleaseSchema.plugin(metrics, { hotness: { popularity: { downloads: 10, comments: 20 }}});
+ReleaseSchema.plugin(metrics, { hotness: { popularity: { downloads: 10, comments: 20, stars: 30 }}});
 FileSchema.plugin(fileRef);
 FileSchema.plugin(prettyId, { model: 'ReleaseVersionFile' });
 FileSchema.plugin(toObj);

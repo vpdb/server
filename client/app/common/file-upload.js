@@ -88,7 +88,7 @@ angular.module('vpdb.common', []).directive('fileUpload', function($upload, $par
 						return ModalService.info({
 							icon: 'upload-circle',
 							title: 'File Upload',
-							subtitle: 'Wrong file type!',
+							subtitle: 'Wrong file type.',
 							message: 'Please upload a valid file type. Allowed file extensions: ' + params.allowedExtensions.join(', ')
 						});
 					}

@@ -1,6 +1,6 @@
 p Drag and drop your files from the file explorer into the box below.
 .panel.panel--dropzone(
-	file-upload="{ type: 'release', status: meta.files, onSuccess: onFileUpload, allowedExtensions: ['vpt', 'vpx', 'vbs', 'txt', 'md'], allowMultipleFiles: true }"
+	file-upload="{ type: 'release', status: meta.files, onSuccess: onFileUpload, allowedExtensions: ['vpt', 'vpx', 'mp3', 'vbs', 'txt', 'md'], allowMultipleFiles: true }"
 	drag-over-class="panel--dragging",
 	ng-class="{ error: errors.versions[0].files }"
 )

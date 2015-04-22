@@ -37,4 +37,9 @@ exports.register = function(app, api) {
 	app.post(settings.apiPath('/releases/:id/rating'), api.auth(api.ratings.createForRelease, 'ratings', 'add'));
 	app.put(settings.apiPath('/releases/:id/rating'), api.auth(api.ratings.updateForRelease, 'ratings', 'update'));
 	app.get(settings.apiPath('/releases/:id/rating'), api.auth(api.ratings.getForRelease, 'ratings', 'view'));
+
+	app.post(settings.apiPath('/releases/:id/star'), api.auth(api.stars.starRelease, 'star', 'star'));
+	app.delete(settings.apiPath('/releases/:id/star'), api.auth(api.stars.unstarRelease, 'star', 'star'));
+	app.get(settings.apiPath('/releases/:id/star'), api.auth(api.stars.getForRelease, 'star', 'star'));
+
 };

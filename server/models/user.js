@@ -63,7 +63,8 @@ var fields = {
 	},
 	counter: {
 		comments:     { type: Number, 'default': 0 },
-		downloads:    { type: Number, 'default': 0 }
+		downloads:    { type: Number, 'default': 0 },
+		stars:        { type: Number, 'default': 0 }
 	},
 	created_at:       { type: Date, required: true },
 	is_active:        { type: Boolean, required: true, default: false },

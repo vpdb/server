@@ -23,7 +23,6 @@ var _ = require('lodash');
 
 module.exports = function(schema, options) {
 
-	var that = this;
 	options = options || {};
 
 	schema.methods.incrementCounter = function(what, next, decrement) {
@@ -34,26 +33,17 @@ module.exports = function(schema, options) {
 		q.$inc['counter.' + what] = incr;
 
 		if (options.hotness) {
-			that.update(q, function(err) {
-				if (err) {
-					return next(err);
-				}
-				var q = {};
-				q.metrics = q.metrics || {};
-				_.each(options.hotness, function(hotness, metric) {
-					var score = 0;
-					_.each(hotness, function(factor, variable) {
-						if (that.counter[variable]) {
-							score += factor * (that.counter[variable] + (variable === what ? 1 : 0));
-						}
-					});
-					q.metrics[metric] = Math.log(Math.max(score, 1));
+			q.metrics = q.metrics || {};
+			_.each(options.hotness, function(hotness, metric) {
+				var score = 0;
+				_.each(hotness, function(factor, variable) {
+					if (that.counter[variable]) {
+						score += factor * (that.counter[variable] + (variable === what ? incr : 0));
+					}
 				});
-				that.update(q, next);
-
+				q.metrics[metric] = Math.log(Math.max(score, 1));
 			});
-		} else {
-			that.update(q, next);
 		}
+		that.update(q, next);
 	};
 };

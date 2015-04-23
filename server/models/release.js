@@ -55,8 +55,7 @@ var fileFields = {
 	},
 	released_at: { type: Date, required: true },
 	counter: {
-		downloads: { type: Number, 'default': 0 },
-		stars:     { type: Number, 'default': 0 }
+		downloads: { type: Number, 'default': 0 }
 	}
 };
 var FileSchema = new Schema(fileFields);
@@ -98,6 +97,7 @@ var releaseFields = {
 	counter:       {
 		downloads: { type: Number, 'default': 0 },
 		comments: { type: Number, 'default': 0 },
+		stars:     { type: Number, 'default': 0 },
 		score:     { type: Number, 'default': 0 } // imdb-top-250-like score, a bayesian estimate.
 	},
 	metrics: {

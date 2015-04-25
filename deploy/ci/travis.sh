@@ -9,6 +9,7 @@ sudo apt-get update
 sudo apt-get -y install graphicsmagick pngquant optipng
 sudo wget http://johnvansickle.com/ffmpeg/releases/ffmpeg-release-64bit-static.tar.xz
 sudo mkdir -p bin
+cd bin
 sudo tar xvf ../ffmpeg-release-64bit-static.tar.xz --strip 1 --no-anchored ffmpeg ffprobe
 cd ..
 export PATH=$(pwd)/bin:$PATH

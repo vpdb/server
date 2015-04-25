@@ -72,7 +72,7 @@
 		"jwt-simple": "0.2.0",
 		"kss": "2.0.2",
 		"load-grunt-tasks": "3.1.0",
-		"lodash": "3.6.0",
+		"lodash": "3.7.0",
 		"marked": "0.3.3",
 		"md5": "1.0.0",
 		"metalsmith": "1.5.0",

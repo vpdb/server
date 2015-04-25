@@ -1,16 +1,16 @@
-PUT /api/v1/releases/4JPM1wg_EM/versions/1.0.0 HTTP/1.1
+PUT /api/v1/releases/4kXebCbAVG/versions/1.0.0 HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJOeURsNlVnT0VNIiwiaWF0IjoiMjAxNS0wNC0yNVQxMTo1Nzo0OC4yNTFaIiwiZXhwIjoiMjAxNS0wNC0yNVQxMjo1Nzo0OC4yNTFaIn0.Fu8OLc-LVKcxHg7rpuqSlpWrbbYstqwY39UYelxoh8w
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJWazhFQVQtQVZ6IiwiaWF0IjoiMjAxNS0wNC0yNVQxODo1MzozMy43NDRaIiwiZXhwIjoiMjAxNS0wNC0yNVQxOTo1MzozMy43NDRaIn0.irJjavcRLLafQ2nZQbdL0Zs4WbYzhs41RpZQEJllOqk
 Content-Type: application/json
-Content-Length: 149
+Content-Length: 151
 
 {
   "files": [
     {
-      "_file": "Ek-lvg_VM",
+      "_file": "NJbZ-AWANf",
       "_media": {
-        "playfield_image": "Vk7eDeOVG"
+        "playfield_image": "EkmWb0WANM"
       },
       "_compatibility": [
         "9.9.0"

@@ -1,9 +1,9 @@
 201 Created
 Content-Type: application/json; charset=utf-8
 Content-Length: 64
-Etag: W/"40-3e4ab3e0"
+Etag: W/"40-cce46c00"
 
 {
-  "created_at": "2015-04-25T18:53:43.280Z",
+  "created_at": "2015-04-25T18:53:46.014Z",
   "total_stars": 1
 }

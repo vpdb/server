@@ -26,12 +26,14 @@ var logger = require('winston');
 
 var Game = require('mongoose').model('Game');
 var Release = require('mongoose').model('Release');
+var User = require('mongoose').model('User');
 var Star = require('mongoose').model('Star');
 var api = require('./api');
 var metrics = require('../../modules/metrics');
 
 var error = require('../../modules/error')('api', 'star');
 
+// releases
 exports.starRelease = function(req, res) {
 	star(req, res, 'release', find(Release, 'release'));
 };
@@ -40,6 +42,28 @@ exports.unstarRelease = function(req, res) {
 };
 exports.getForRelease = function(req, res) {
 	view(req, res, find(Release, 'release'), 'name');
+};
+
+// games
+exports.starGame = function(req, res) {
+	star(req, res, 'game', find(Game, 'game'));
+};
+exports.unstarGame = function(req, res) {
+	unstar(req, res, find(Game, 'game'));
+};
+exports.getForGame = function(req, res) {
+	view(req, res, find(Game, 'game'), 'title');
+};
+
+// users
+exports.starUser = function(req, res) {
+	star(req, res, 'user', find(User, 'user'));
+};
+exports.unstarUser = function(req, res) {
+	unstar(req, res, find(User, 'user'));
+};
+exports.getForUser = function(req, res) {
+	view(req, res, find(User, 'user'), 'email');
 };
 
 

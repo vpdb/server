@@ -223,8 +223,8 @@ describe('The ACLs of the VPDB API', function() {
 				});
 		});
 
-		it('should deny access to user details', function(done) {
-			request.get('/api/v1/users/' + hlp.getUser('member').id).saveResponse({ path: 'users/view' }).as('member').send({}).end(hlp.status(403, done));
+		it('should allow access to user details', function(done) {
+			request.get('/api/v1/users/' + hlp.getUser('member').id).as('member').send({}).end(hlp.status(200, done));
 		});
 
 		it('should deny access to user update', function(done) {
@@ -404,8 +404,8 @@ describe('The ACLs of the VPDB API', function() {
 				});
 		});
 
-		it('should deny access to user details', function(done) {
-			request.get('/api/v1/users/' + hlp.getUser('member').id).as('contributor').send({}).end(hlp.status(403, done));
+		it('should allow access to user details', function(done) {
+			request.get('/api/v1/users/' + hlp.getUser('member').id).as('contributor').end(hlp.status(200, done));
 		});
 
 		it('should deny access to user update', function(done) {

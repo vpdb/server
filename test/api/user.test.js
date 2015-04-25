@@ -89,13 +89,38 @@ describe('The VPDB `user` API', function() {
 	describe('when fetching a user', function() {
 
 		it('should return full details', function(done) {
+			var user = hlp.getUser('member');
 			request
-				.get('/api/v1/users/' + hlp.getUser('member').id)
+				.get('/api/v1/users/' + user.id)
 				.save({ path: 'users/view' })
 				.as('admin')
 				.end(function(err, res) {
 					hlp.expectStatus(err, res, 200);
 					expect(res.body).to.be.an('object');
+					expect(res.body.id).to.be(user.id);
+					expect(res.body.name).to.be(user.name);
+					expect(res.body.username).to.be(user.username);
+					expect(res.body.email).to.be(user.email);
+					expect(res.body.provider).to.be(user.provider);
+					expect(res.body.roles).to.be.ok();
+					done();
+				});
+		});
+
+		it('should return minimal details', function(done) {
+			var user = hlp.getUser('member');
+			request
+				.get('/api/v1/users/' + hlp.getUser('member').id)
+				.as('chprofile')
+				.end(function(err, res) {
+					hlp.expectStatus(err, res, 200);
+					expect(res.body).to.be.an('object');
+					expect(res.body.id).to.be(user.id);
+					expect(res.body.name).to.be(user.name);
+					expect(res.body.username).to.be(user.username);
+					expect(res.body.email).not.to.be.ok();
+					expect(res.body.provider).not.to.be.ok();
+					expect(res.body.roles).not.to.be.ok();
 					done();
 				});
 		});

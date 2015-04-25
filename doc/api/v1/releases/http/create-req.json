@@ -1,21 +1,21 @@
 POST /api/v1/releases HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJWMXJQSWdPRU0iLCJpYXQiOiIyMDE1LTA0LTI1VDExOjU3OjQyLjEyNloiLCJleHAiOiIyMDE1LTA0LTI1VDEyOjU3OjQyLjEyNloifQ.4PZHbfxYPXkrkB-U-mLWhM719jeO-fXyS5JkQ1YedIU
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI0eTByT1RXQVZmIiwiaWF0IjoiMjAxNS0wNC0yNVQxODo1MzoyNy42MTBaIiwiZXhwIjoiMjAxNS0wNC0yNVQxOTo1MzoyNy42MTBaIn0.Hg4pSrQjR3ld0p7AWgG7BFIzbE7zgBh-O1uNhh1fVBo
 Content-Type: application/json
-Content-Length: 474
+Content-Length: 475
 
 {
   "name": "release",
-  "_game": "marjorie",
+  "_game": "dual-pool",
   "versions": [
     {
       "files": [
         {
-          "_file": "EyPgOLluNG",
+          "_file": "EydXK6bCVf",
           "_media": {
-            "playfield_image": "NJhgO8luVf",
-            "playfield_video": "41KzuLgdNG"
+            "playfield_image": "E13XKpZCEG",
+            "playfield_video": "N1gcabAEz"
           },
           "_compatibility": [
             "9.9.0"
@@ -26,9 +26,9 @@ Content-Length: 474
           }
         },
         {
-          "_file": "EkLlO8xdNM",
+          "_file": "N1YQt6WC4f",
           "_media": {
-            "playfield_image": "EJTguUe_Nf"
+            "playfield_image": "NkTXK6WAEf"
           },
           "_compatibility": [
             "9.9.0"
@@ -44,7 +44,7 @@ Content-Length: 474
   ],
   "authors": [
     {
-      "_user": "V1rPIgOEM",
+      "_user": "4y0rOTWAVf",
       "roles": [
         "Table Creator"
       ]

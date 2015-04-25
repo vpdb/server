@@ -1,14 +1,14 @@
-POST /api/v1/games/rg/roms HTTP/1.1
+POST /api/v1/games/the-cedar-ball/roms HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJWMV9RckR4X1ZHIiwiaWF0IjoiMjAxNS0wNC0yNVQxMTo1Nzo1Ni43NDBaIiwiZXhwIjoiMjAxNS0wNC0yNVQxMjo1Nzo1Ni43NDBaIn0.ZMPusoYY1AefERgfQOOMwGPBcZu4RRzJJKL-v4kzsrI
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI0eWhOSUFXUjR6IiwiaWF0IjoiMjAxNS0wNC0yNVQxODo1Mzo0Mi4wOTFaIiwiZXhwIjoiMjAxNS0wNC0yNVQxOTo1Mzo0Mi4wOTFaIn0.yzj_vdl5yiEj3zjNl1B65WSpuEsBVhlpM7ouOyicRIc
 Content-Type: application/json
-Content-Length: 98
+Content-Length: 110
 
 {
-  "id": "rg_10",
+  "id": "the-cedar-ball_10",
   "version": "1.0",
   "notes": "That is some ROM.",
   "language": "en-US",
-  "_file": "VJsLBPguVG"
+  "_file": "VkC-vRbCEf"
 }

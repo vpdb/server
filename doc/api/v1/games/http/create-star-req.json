@@ -1,0 +1,8 @@
+POST /api/v1/games/batting-practice/star HTTP/1.1
+Host: vpdb.ch
+Accept-Encoding: gzip, deflate
+Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJOa0tWOUNiQVZNIiwiaWF0IjoiMjAxNS0wNC0yNVQxODo1Mzo0NS44MjdaIiwiZXhwIjoiMjAxNS0wNC0yNVQxOTo1Mzo0NS44MjdaIn0.kbv7yA5VzFvSZI4CuOb44U5Ss5GmRvCEWSDoQnoah7s
+Content-Length: 2
+
+{}

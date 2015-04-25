@@ -1,13 +1,17 @@
 200 OK
 Content-Type: application/json; charset=utf-8
-Content-Length: 127
-Etag: W/"7f-96907a08"
+Content-Length: 209
+Etag: W/"d1-69d6924f"
 
 [
   {
-    "id": "Ek7vYwg_EG",
-    "name": "Liza72",
-    "username": "Liza72",
-    "gravatar_id": "42e3293c3f5ecf4edc57ea6ed93790a5"
+    "id": "4JMKjCZR4f",
+    "name": "Jaunita_Christiansen3",
+    "username": "Jaunita_Christiansen3",
+    "gravatar_id": "2ac438245d922a338dcfb180a5bc2fba",
+    "counter": {
+      "comments": 0,
+      "stars": 0
+    }
   }
 ]

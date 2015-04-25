@@ -1,5 +1,5 @@
-DELETE /api/v1/releases/VkGYwlOEM/star HTTP/1.1
+DELETE /api/v1/releases/EJbgc0-RNf/star HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJFMWtVSXZlX0VHIiwiaWF0IjoiMjAxNS0wNC0yNVQxMTo1Nzo1Ny41MDhaIiwiZXhwIjoiMjAxNS0wNC0yNVQxMjo1Nzo1Ny41MDhaIn0.bDDAO0cVQscPrWX4NDx9SCgWVmEUfeagR7DcpDTDlnY
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI0a2tuRFJiQ0V6IiwiaWF0IjoiMjAxNS0wNC0yNVQxODo1Mzo0Mi44NTJaIiwiZXhwIjoiMjAxNS0wNC0yNVQxOTo1Mzo0Mi44NTJaIn0.C4zVCX060MwtfNqsuQRXdAtdEHsYSbvk8r2GCyGY9_M
 

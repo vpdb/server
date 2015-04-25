@@ -45,7 +45,7 @@ var init = function(next) {
 		{
 			roles: 'admin',
 			allows: [
-				{ resources: 'users', permissions: [ 'update', 'list', 'view' ]},
+				{ resources: 'users', permissions: [ 'update', 'list', 'full-details' ]},
 				{ resources: 'roles', permissions: 'list' }
 			]
 		}, {
@@ -60,8 +60,8 @@ var init = function(next) {
 		}, {
 			roles: 'member',
 			allows: [
-				{ resources: 'user', permissions: [ 'view', 'update' ]}, // profile
-				{ resources: 'users', permissions: [ 'search' ]},        // any other user
+				{ resources: 'user', permissions: [ 'view', 'update' ]},   // profile
+				{ resources: 'users', permissions: [ 'view', 'search' ]},  // any other user
 				{ resources: 'files', permissions: [ 'download', 'upload', 'delete' ]},  // delete: only own/inactive files
 				{ resources: 'releases', permissions: [ 'add', 'delete' ] }, // only own releases and only for a given period
 				{ resources: 'tags', permissions: [ 'add', 'delete-own' ] },

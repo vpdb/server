@@ -1,0 +1,5 @@
+GET /api/v1/games/the-midget/star HTTP/1.1
+Host: vpdb.ch
+Accept-Encoding: gzip, deflate
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJOa0tWOUNiQVZNIiwiaWF0IjoiMjAxNS0wNC0yNVQxODo1Mzo0NS44MjdaIiwiZXhwIjoiMjAxNS0wNC0yNVQxOTo1Mzo0NS44MjdaIn0.kbv7yA5VzFvSZI4CuOb44U5Ss5GmRvCEWSDoQnoah7s
+

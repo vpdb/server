@@ -29,4 +29,8 @@ exports.register = function(app, api) {
 	app.put(settings.apiPath('/users/:id'),       api.auth(api.users.update, 'users', 'update'));
 	app.delete(settings.apiPath('/users/:id'),    api.auth(api.users.del, 'users', 'delete'));
 
+	app.post(settings.apiPath('/users/:id/star'), api.auth(api.stars.starUser, 'star', 'star'));
+	app.delete(settings.apiPath('/users/:id/star'), api.auth(api.stars.unstarUser, 'star', 'star'));
+	app.get(settings.apiPath('/users/:id/star'), api.auth(api.stars.getForUser, 'star', 'star'));
+
 };

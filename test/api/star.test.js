@@ -131,4 +131,165 @@ describe('The VPDB `Star` API', function() {
 		});
 	});
 
+	describe('when starring a game', function() {
+
+		before(function(done) {
+			hlp.setupUsers(request, {
+				member: { roles: ['member'] },
+				contributor: { roles: ['contributor'] }
+			}, done);
+		});
+
+		after(function(done) {
+			hlp.cleanup(request, done);
+		});
+
+		it('should succeed when providing correct data', function(done) {
+			hlp.game.createGame('contributor', request, function(game) {
+				request.post('/api/v1/games/' + game.id + '/star')
+					.send({})
+					.as('member')
+					.save({ path: 'games/create-star'})
+					.end(function(err, res) {
+						hlp.expectStatus(err, res, 201);
+						expect(res.body.total_stars).to.be(1);
+						expect(res.body.created_at).to.be.ok();
+
+						request.get('/api/v1/games/' + game.id).end(function(err, res) {
+							hlp.expectStatus(err, res, 200);
+							expect(res.body.counter.stars).to.be(1);
+							done();
+						});
+					});
+			});
+		});
+
+		it('should be able to retrieve starred status', function(done) {
+			hlp.game.createGame('contributor', request, function(game) {
+				request.get('/api/v1/games/' + game.id + '/star')
+					.as('member')
+					.saveResponse({ path: 'games/view-star'})
+					.end(function(err, res) {
+						hlp.expectStatus(err, res, 404);
+						request.post('/api/v1/games/' + game.id + '/star').send({}).as('member').end(function(err, res) {
+							hlp.expectStatus(err, res, 201);
+							request.get('/api/v1/games/' + game.id + '/star')
+								.as('member')
+								.save({ path: 'games/view-star'})
+								.end(function(err, res) {
+									hlp.expectStatus(err, res, 200);
+									expect(res.body.created_at).to.be.ok();
+									done();
+								});
+						});
+					});
+			});
+		});
+
+		it('should be able to unstar a game', function(done) {
+			hlp.game.createGame('contributor', request, function(game) {
+				// star
+				request.post('/api/v1/games/' + game.id + '/star').send({}).as('member').end(function(err, res) {
+					hlp.expectStatus(err, res, 201);
+					// check
+					request.get('/api/v1/games/' + game.id + '/star')
+						.as('member')
+						.end(function(err, res) {
+							hlp.expectStatus(err, res, 200);
+							expect(res.body.created_at).to.be.ok();
+							// unstar
+							request.del('/api/v1/games/' + game.id + '/star')
+								.as('member')
+								.save({ path: 'games/delete-star'})
+								.end(function(err, res) {
+									hlp.expectStatus(err, res, 204);
+									// check
+									request.get('/api/v1/games/' + game.id + '/star').as('member').end(hlp.status(404, done));
+								});
+						});
+				});
+			});
+		});
+	});
+
+	describe('when starring a user', function() {
+
+		before(function(done) {
+			hlp.setupUsers(request, {
+				member: { roles: ['member'] },
+				ratedMember1: { roles: ['member'] },
+				ratedMember2: { roles: ['member'] },
+				ratedMember3: { roles: ['member'] },
+				contributor: { roles: ['contributor'] }
+			}, done);
+		});
+
+		after(function(done) {
+			hlp.cleanup(request, done);
+		});
+
+		it('should succeed when providing correct data', function(done) {
+			var user = hlp.getUser('ratedMember1');
+			request.post('/api/v1/users/' + user.id + '/star')
+				.send({})
+				.as('member')
+				.save({ path: 'users/create-star'})
+				.end(function(err, res) {
+					hlp.expectStatus(err, res, 201);
+					expect(res.body.total_stars).to.be(1);
+					expect(res.body.created_at).to.be.ok();
+
+					request.get('/api/v1/users/' + user.id).as('member').end(function(err, res) {
+						hlp.expectStatus(err, res, 200);
+						expect(res.body.counter.stars).to.be(1);
+						done();
+					});
+				});
+		});
+
+		it('should be able to retrieve starred status', function(done) {
+			var user = hlp.getUser('ratedMember2');
+			request.get('/api/v1/users/' + user.id + '/star')
+				.as('member')
+				.saveResponse({ path: 'users/view-star'})
+				.end(function(err, res) {
+					hlp.expectStatus(err, res, 404);
+					request.post('/api/v1/users/' + user.id + '/star').send({}).as('member').end(function(err, res) {
+						hlp.expectStatus(err, res, 201);
+						request.get('/api/v1/users/' + user.id + '/star')
+							.as('member')
+							.save({ path: 'users/view-star'})
+							.end(function(err, res) {
+								hlp.expectStatus(err, res, 200);
+								expect(res.body.created_at).to.be.ok();
+								done();
+							});
+					});
+				});
+		});
+
+		it('should be able to unstar a user', function(done) {
+			var user = hlp.getUser('ratedMember3');
+			// star
+			request.post('/api/v1/users/' + user.id + '/star').send({}).as('member').end(function(err, res) {
+				hlp.expectStatus(err, res, 201);
+				// check
+				request.get('/api/v1/users/' + user.id + '/star')
+					.as('member')
+					.end(function(err, res) {
+						hlp.expectStatus(err, res, 200);
+						expect(res.body.created_at).to.be.ok();
+						// unstar
+						request.del('/api/v1/users/' + user.id + '/star')
+							.as('member')
+							.save({ path: 'users/delete-star'})
+							.end(function(err, res) {
+								hlp.expectStatus(err, res, 204);
+								// check
+								request.get('/api/v1/users/' + user.id + '/star').as('member').end(hlp.status(404, done));
+							});
+					});
+			});
+		});
+	});
 });

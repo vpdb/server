@@ -1,0 +1,46 @@
+post:
+  securedBy: [ jwt: { scopes: [ MEMBER ] } ]
+  description: |
+    Star a user.
+
+    Note that this can only be done once per user. You can unstar a user
+    using `DELETE` on the same URL.
+  body:
+    role/member:
+      example: !include http/create-star-req.json
+  responses:
+    201:
+      body:
+        role/member:
+          example: !include http/create-star-res-201.json
+get:
+  securedBy: [ jwt: { scopes: [ MEMBER ] } ]
+  description: |
+    Retrieve own star status of a user.
+
+    Returns either the star date of the authenticated user of the given user, or
+    `404` if the user hasn't starred that user.
+  body:
+    role/member:
+      example: !include http/view-star-req.json
+  responses:
+    200:
+      body:
+        role/member:
+          example: !include http/view-star-res-200.json
+    404:
+      body:
+        role/member:
+          example: !include http/view-star-res-404.json
+delete:
+  securedBy: [ jwt: { scopes: [ MEMBER ] } ]
+  description: |
+    Unstar a user.
+  body:
+    role/member:
+      example: !include http/delete-star-req.json
+  responses:
+    204:
+      body:
+        role/member:
+          example: !include http/delete-star-res-204.json

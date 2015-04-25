@@ -93,7 +93,7 @@ exports.list = function(req, res) {
 
 	var assert = api.assert(error, 'list', null, res);
 	acl.isAllowed(req.user.id, 'users', 'list', assert(function(canList) {
-		acl.isAllowed(req.user.id, 'users', 'view', assert(function(fullDetails) {
+		acl.isAllowed(req.user.id, 'users', 'full-details', assert(function(fullDetails) {
 
 			// if no list privileges, user must provide at least a 3-char search query.
 			if (!canList && (!req.query.q || req.query.q.length < 3)) {
@@ -139,7 +139,7 @@ exports.list = function(req, res) {
 
 			}, 'Error listing users'));
 
-		}, 'Error checking for ACL "users/view"'));
+		}, 'Error checking for ACL "users/full-details"'));
 	}, 'Error checking for ACL "users/list".'));
 };
 
@@ -269,7 +269,12 @@ exports.view = function(req, res) {
 		if (!user) {
 			return api.fail(res, error('No such user'), 404);
 		}
-		return api.success(res, user.toDetailed());
+
+		acl.isAllowed(req.user.id, 'users', 'full-details', assert(function(fullDetails) {
+
+			return api.success(res, fullDetails ? user.toDetailed() : user.toReduced());
+
+		}, 'Error checking for ACL "users/full-details"'));
 
 	}, 'Error finding user "%s"'));
 };

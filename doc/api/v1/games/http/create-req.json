@@ -1,23 +1,26 @@
 POST /api/v1/games HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI0eXI2QmVkTk0iLCJpYXQiOiIyMDE1LTA0LTI1VDExOjU3OjMyLjE3NVoiLCJleHAiOiIyMDE1LTA0LTI1VDEyOjU3OjMyLjE3NVoifQ.rxcW_DuLIaHwyJT8uztYyVepzQH6w8klBfg8z8yfJC0
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI0SjgtcDNXMDRmIiwiaWF0IjoiMjAxNS0wNC0yNVQxODo1MzoxNi4zMjhaIiwiZXhwIjoiMjAxNS0wNC0yNVQxOTo1MzoxNi4zMjhaIn0.QcGMpAeYlUVB6ovAw1STtZ3g1KLKHDMgGBt-dMiDFxM
 Content-Type: application/json
-Content-Length: 474
+Content-Length: 262
 
 {
   "ipdb": {
-    "number": 2748,
-    "mfg": 70
+    "number": 3505,
+    "mfg": 47
   },
-  "title": "Wahoo",
-  "manufacturer": "C. F. Eckhart & Company",
-  "year": 1933,
-  "game_type": "pm",
-  "features": "1 cent or 5 cent play.",
-  "notes": "Available in Token Payout Model. Special Ball Gum or Mint Vendor on all models.According to Marketplace Pictorial History, this was the first game to look like a console.Compare the playfield layout to Universal Novelty Manufacturing Company's 1933 'Universe'.",
-  "id": "wahoo",
+  "title": "Ticker Tape",
+  "manufacturer": "Bally",
+  "model_number": "938",
+  "year": 1972,
+  "game_type": "em",
+  "designers": [
+    "Don Hooker"
+  ],
+  "features": "Six Cards, 6 Coin Maximum, Super lines",
+  "id": "ticker-tape",
   "_media": {
-    "backglass": "Nk96rlu4f"
+    "backglass": "41jZT2ZREf"
   }
 }

@@ -1,15 +1,15 @@
 200 OK
 Content-Type: application/json; charset=utf-8
-Content-Length: 778
-Etag: W/"30a-94bcecba"
+Content-Length: 804
+Etag: W/"324-583f2b38"
 
 {
   "plan": "free",
-  "name": "Elsie17",
-  "username": "Elsie17",
-  "email": "trace77@yahoo.com",
+  "name": "Hassan.Brekke3",
+  "username": "Hassan.Brekke3",
+  "email": "caitlyn7@yahoo.com",
   "provider": "local",
-  "created_at": "2015-04-25T11:57:28.032Z",
+  "created_at": "2015-04-25T18:53:12.550Z",
   "is_active": true,
   "counter": {
     "stars": 0,
@@ -19,8 +19,8 @@ Etag: W/"30a-94bcecba"
   "roles": [
     "member"
   ],
-  "id": "EkXl_HguEf",
-  "gravatar_id": "7fed48b2776608c146eb2937dfda5be8",
+  "id": "Ny7lYhWANG",
+  "gravatar_id": "634b8c9437c00d936a2a97e8c2be3b7f",
   "permissions": {
     "comments": [
       "add"
@@ -38,7 +38,8 @@ Etag: W/"30a-94bcecba"
       "star"
     ],
     "users": [
-      "search"
+      "search",
+      "view"
     ],
     "files": [
       "upload",

@@ -1,10 +1,10 @@
-POST /api/v1/releases/NkqL9re_EG/comments HTTP/1.1
+POST /api/v1/releases/Vy3WjhZRNf/comments HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJFSlJROVNsdUVHIiwiaWF0IjoiMjAxNS0wNC0yNVQxMTo1NzoyOS41NDdaIiwiZXhwIjoiMjAxNS0wNC0yNVQxMjo1NzoyOS41NDdaIn0.-woCqrRAmEih32zaJD_A8jdTS4oyKQipDsOrsg9dlvc
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJFMXo5NW5aMFZmIiwiaWF0IjoiMjAxNS0wNC0yNVQxODo1MzoxNC4wNjVaIiwiZXhwIjoiMjAxNS0wNC0yNVQxOTo1MzoxNC4wNjVaIn0.I-w-jCGry3VSPvlL8Uo24bxHEYb-QZ4nub3g5DilUhk
 Content-Type: application/json
-Content-Length: 41
+Content-Length: 44
 
 {
-  "message": "Organic holistic encryption"
+  "message": "Pre-emptive methodical product"
 }

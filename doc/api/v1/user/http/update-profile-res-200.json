@@ -1,18 +1,19 @@
 200 OK
 Content-Type: application/json; charset=utf-8
-Content-Length: 914
-Etag: W/"392-1a8adbae"
+Content-Length: 952
+Etag: W/"3b8-141c14fb"
 
 {
-  "location": "North Harveychester",
+  "location": "Lake Alexane",
   "plan": "free",
-  "name": "Nathanial Hessel",
-  "username": "Jerry.Toy",
-  "email": "darby.torp@yahoo.com",
+  "name": "Tristin Mills",
+  "username": "Madisyn.Gibson",
+  "email": "justyn11@yahoo.com",
   "provider": "local",
-  "created_at": "2015-04-06T22:32:30.297Z",
+  "created_at": "2015-04-25T11:58:01.103Z",
   "is_active": true,
   "counter": {
+    "stars": 0,
     "downloads": 0,
     "comments": 0
   },
@@ -21,11 +22,11 @@ Etag: W/"392-1a8adbae"
   ],
   "email_status": {
     "code": "pending_update",
-    "expires_at": "2015-04-07T22:32:30.607Z",
-    "value": "emma46@hotmail.com"
+    "expires_at": "2015-04-26T11:58:01.546Z",
+    "value": "myles_dickens@gmail.com"
   },
-  "id": "VJhbkidxng",
-  "gravatar_id": "b79bde1162cf8e504fd7defad2c576eb",
+  "id": "EkWqDeOEM",
+  "gravatar_id": "4ae69b7b3258ced33d03071077a3ecd9",
   "permissions": {
     "comments": [
       "add"
@@ -38,6 +39,9 @@ Etag: W/"392-1a8adbae"
     "tags": [
       "add",
       "delete-own"
+    ],
+    "star": [
+      "star"
     ],
     "users": [
       "search"

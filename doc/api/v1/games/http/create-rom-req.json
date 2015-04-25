@@ -1,14 +1,14 @@
-POST /api/v1/games/spinner/roms HTTP/1.1
+POST /api/v1/games/rg/roms HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI0eW44VHFfZ25sIiwiaWF0IjoiMjAxNS0wNC0wNlQyMjozMjoyOS4wNzRaIiwiZXhwIjoiMjAxNS0wNC0wNlQyMzozMjoyOS4wNzRaIn0.Z5ikuUX6J9e2nyqNUw7fPr6Kd322yQ8gCETs5fNBwr4
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJWMV9RckR4X1ZHIiwiaWF0IjoiMjAxNS0wNC0yNVQxMTo1Nzo1Ni43NDBaIiwiZXhwIjoiMjAxNS0wNC0yNVQxMjo1Nzo1Ni43NDBaIn0.ZMPusoYY1AefERgfQOOMwGPBcZu4RRzJJKL-v4kzsrI
 Content-Type: application/json
-Content-Length: 103
+Content-Length: 98
 
 {
-  "id": "spinner_10",
+  "id": "rg_10",
   "version": "1.0",
   "notes": "That is some ROM.",
   "language": "en-US",
-  "_file": "Ek_fA5Oxhe"
+  "_file": "VJsLBPguVG"
 }

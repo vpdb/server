@@ -1,18 +1,18 @@
 201 Created
 Content-Type: application/json; charset=utf-8
-Etag: W/"K24sd2FEBa2fPa6e4wyOiA=="
+Etag: W/"RPw8Nn7OCu9mWJ1N7MoRJA=="
 Content-Encoding: gzip
 
 {
-  "title": "Ricochet",
-  "manufacturer": "Gottlieb",
-  "model_number": "99",
-  "year": 1955,
-  "game_type": "em",
-  "notes": "'Ricochet' was also developed as a 2-player game (Model 101) but neither machine was produced.See Gottlieb's 1954 'Ricochet'.",
-  "id": "ricochet",
-  "_created_by": "55230966677e787852a515a3",
-  "created_at": "2015-04-06T22:32:06.397Z",
+  "title": "Wahoo",
+  "manufacturer": "C. F. Eckhart & Company",
+  "year": 1933,
+  "game_type": "pm",
+  "features": "1 cent or 5 cent play.",
+  "notes": "Available in Token Payout Model. Special Ball Gum or Mint Vendor on all models.According to Marketplace Pictorial History, this was the first game to look like a console.Compare the playfield layout to Universal Novelty Manufacturing Company's 1933 'Universe'.",
+  "id": "wahoo",
+  "_created_by": "553b812cd1504e0c880c9bbe",
+  "created_at": "2015-04-25T11:57:32.256Z",
   "rating": {
     "score": 0,
     "votes": 0,
@@ -22,26 +22,19 @@ Content-Encoding: gzip
     "popularity": 0
   },
   "counter": {
+    "stars": 0,
     "comments": 0,
     "downloads": 0,
     "views": 0,
     "releases": 0
   },
   "ipdb": {
-    "number": 3562,
-    "mfg": 93
+    "number": 2748,
+    "mfg": 70
   },
-  "artists": [
-    "Roy Parker"
-  ],
-  "designers": [
-    "Wayne Neyens"
-  ],
-  "themes": [
-    "Archery",
-    "Riflery",
-    "Target Practice"
-  ],
+  "artists": [],
+  "designers": [],
+  "themes": [],
   "short": [],
   "media": {
     "backglass": {
@@ -51,22 +44,22 @@ Content-Encoding: gzip
       "is_protected": false,
       "variations": {
         "small-2x": {
-          "url": "/storage/v1/files/NJsZwY_l2l/small-2x"
+          "url": "/storage/v1/files/Nk96rlu4f/small-2x"
         },
         "small": {
-          "url": "/storage/v1/files/NJsZwY_l2l/small"
+          "url": "/storage/v1/files/Nk96rlu4f/small"
         },
         "medium-2x": {
-          "url": "/storage/v1/files/NJsZwY_l2l/medium-2x"
+          "url": "/storage/v1/files/Nk96rlu4f/medium-2x"
         },
         "medium": {
-          "url": "/storage/v1/files/NJsZwY_l2l/medium"
+          "url": "/storage/v1/files/Nk96rlu4f/medium"
         }
       },
       "bytes": 135,
-      "url": "/storage/v1/files/NJsZwY_l2l",
-      "id": "NJsZwY_l2l"
+      "url": "/storage/v1/files/Nk96rlu4f",
+      "id": "Nk96rlu4f"
     }
   },
-  "url": "/game/ricochet"
+  "url": "/game/wahoo"
 }

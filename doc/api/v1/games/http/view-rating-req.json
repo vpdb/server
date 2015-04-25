@@ -1,5 +1,5 @@
-GET /api/v1/games/single-coin/rating HTTP/1.1
+GET /api/v1/games/anabel/rating HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI0a0VzcEZkZW5sIiwiaWF0IjoiMjAxNS0wNC0wNlQyMjozMjoxMi45MTJaIiwiZXhwIjoiMjAxNS0wNC0wNlQyMzozMjoxMi45MTJaIn0.CeujFmRzR8vCDWkca_bwinIYHqoIvRIjLTXQqvVr5ag
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI0eVVER0x4dTRNIiwiaWF0IjoiMjAxNS0wNC0yNVQxMTo1NzozNy43OThaIiwiZXhwIjoiMjAxNS0wNC0yNVQxMjo1NzozNy43OThaIn0.cSdz650iglyES5n7cciEZUQt2x4hiHgHh3bEgZShkN4
 

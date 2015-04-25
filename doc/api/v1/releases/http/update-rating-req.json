@@ -1,8 +1,8 @@
-PUT /api/v1/releases/EJFzec_ghx/rating HTTP/1.1
+PUT /api/v1/releases/Vkj-HUedVM/rating HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
 Content-Type: application/json
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJOa3RsY09sM2ciLCJpYXQiOiIyMDE1LTA0LTA2VDIyOjMyOjE1LjIyNloiLCJleHAiOiIyMDE1LTA0LTA2VDIzOjMyOjE1LjIyNloifQ.NjtOwyauPrVWfjRQH3u5SX33CWDOsKAkt7GvuR-yUNE
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJOSktyVWdPNE0iLCJpYXQiOiIyMDE1LTA0LTI1VDExOjU3OjQwLjI1NFoiLCJleHAiOiIyMDE1LTA0LTI1VDEyOjU3OjQwLjI1NFoifQ.Azf-cTALQj2s-QW8cQ7v3OHy0FBEYY0IQAKhWpo3Zuk
 Content-Length: 11
 
 {

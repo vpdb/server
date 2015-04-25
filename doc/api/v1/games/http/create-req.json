@@ -1,34 +1,23 @@
 POST /api/v1/games HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJOa1VadkZkZWhsIiwiaWF0IjoiMjAxNS0wNC0wNlQyMjozMjowNi4zMTFaIiwiZXhwIjoiMjAxNS0wNC0wNlQyMzozMjowNi4zMTFaIn0.eHVwh6GW7W0C92zw0E964DqbDF-o3V29dVcbNXW8Q2w
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI0eXI2QmVkTk0iLCJpYXQiOiIyMDE1LTA0LTI1VDExOjU3OjMyLjE3NVoiLCJleHAiOiIyMDE1LTA0LTI1VDEyOjU3OjMyLjE3NVoifQ.rxcW_DuLIaHwyJT8uztYyVepzQH6w8klBfg8z8yfJC0
 Content-Type: application/json
-Content-Length: 418
+Content-Length: 474
 
 {
   "ipdb": {
-    "number": 3562,
-    "mfg": 93
+    "number": 2748,
+    "mfg": 70
   },
-  "title": "Ricochet",
-  "manufacturer": "Gottlieb",
-  "model_number": "99",
-  "year": 1955,
-  "game_type": "em",
-  "themes": [
-    "Archery",
-    "Riflery",
-    "Target Practice"
-  ],
-  "designers": [
-    "Wayne Neyens"
-  ],
-  "artists": [
-    "Roy Parker"
-  ],
-  "notes": "'Ricochet' was also developed as a 2-player game (Model 101) but neither machine was produced.See Gottlieb's 1954 'Ricochet'.",
-  "id": "ricochet",
+  "title": "Wahoo",
+  "manufacturer": "C. F. Eckhart & Company",
+  "year": 1933,
+  "game_type": "pm",
+  "features": "1 cent or 5 cent play.",
+  "notes": "Available in Token Payout Model. Special Ball Gum or Mint Vendor on all models.According to Marketplace Pictorial History, this was the first game to look like a console.Compare the playfield layout to Universal Novelty Manufacturing Company's 1933 'Universe'.",
+  "id": "wahoo",
   "_media": {
-    "backglass": "NJsZwY_l2l"
+    "backglass": "Nk96rlu4f"
   }
 }

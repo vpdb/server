@@ -1,14 +1,14 @@
-PUT /api/v1/users/EJl-kouxnl HTTP/1.1
+PUT /api/v1/users/Ek7vYwg_EG HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJWSm5nSnNfZzN4IiwiaWF0IjoiMjAxNS0wNC0wNlQyMjozMjozMC4yMzJaIiwiZXhwIjoiMjAxNS0wNC0wNlQyMzozMjozMC4yMzJaIn0.vnSFQxVeImwXYGperIGt9JoG2xtj8VNJm82nDczyhNw
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJOSjF3WURnTzRNIiwiaWF0IjoiMjAxNS0wNC0yNVQxMTo1ODowMS4wMTRaIiwiZXhwIjoiMjAxNS0wNC0yNVQxMjo1ODowMS4wMTRaIn0.KxHfKJt_XcisZColUaWvoufb8AUL-2p-tQgcwWjnBCE
 Content-Type: application/json
-Content-Length: 123
+Content-Length: 104
 
 {
-  "email": "tyson.quitzon@gmail.com",
-  "username": "Flo.Lindgren39",
-  "name": "Flo.Lindgren39",
+  "email": "bethel57@hotmail.com",
+  "username": "Jayce2",
+  "name": "Jayce2",
   "is_active": true,
   "roles": [
     "member"

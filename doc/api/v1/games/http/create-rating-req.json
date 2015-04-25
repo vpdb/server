@@ -1,8 +1,8 @@
-POST /api/v1/games/beam-lite-of-37/rating HTTP/1.1
+POST /api/v1/games/leap-ball/rating HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
 Content-Type: application/json
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJFSnBLdWwzZyIsImlhdCI6IjIwMTUtMDQtMDZUMjI6MzI6MTIuMTA1WiIsImV4cCI6IjIwMTUtMDQtMDZUMjM6MzI6MTIuMTA1WiJ9.iejDLW91n96uIDeJhl08in9ZMT2wk7bg3OQQmDH-p7w
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJWMVliTGVkTkciLCJpYXQiOiIyMDE1LTA0LTI1VDExOjU3OjM2Ljk2MloiLCJleHAiOiIyMDE1LTA0LTI1VDEyOjU3OjM2Ljk2MloifQ.vpQAxhkfV9VV3_wytVs2Jx3Z3M1J59d-CT-9Sf7EC2c
 Content-Length: 11
 
 {

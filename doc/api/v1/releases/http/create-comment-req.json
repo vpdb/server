@@ -1,10 +1,10 @@
-POST /api/v1/releases/V10MBKug2x/comments HTTP/1.1
+POST /api/v1/releases/NkqL9re_EG/comments HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJWMTVIRnVlMmwiLCJpYXQiOiIyMDE1LTA0LTA2VDIyOjMyOjA0LjE2NFoiLCJleHAiOiIyMDE1LTA0LTA2VDIzOjMyOjA0LjE2NFoifQ.oexbcm-xQGEb9x0oE5KLHkTh56tKvi4XPIAw492cYpw
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJFSlJROVNsdUVHIiwiaWF0IjoiMjAxNS0wNC0yNVQxMTo1NzoyOS41NDdaIiwiZXhwIjoiMjAxNS0wNC0yNVQxMjo1NzoyOS41NDdaIn0.-woCqrRAmEih32zaJD_A8jdTS4oyKQipDsOrsg9dlvc
 Content-Type: application/json
-Content-Length: 53
+Content-Length: 41
 
 {
-  "message": "Synergistic fresh-thinking service-desk"
+  "message": "Organic holistic encryption"
 }

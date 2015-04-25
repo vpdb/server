@@ -1,8 +1,8 @@
-PUT /api/v1/games/dodge-city/rating HTTP/1.1
+PUT /api/v1/games/vikings/rating HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
 Content-Type: application/json
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJWeVZXQ0ZfbDNsIiwiaWF0IjoiMjAxNS0wNC0wNlQyMjozMjoxMy4yNjVaIiwiZXhwIjoiMjAxNS0wNC0wNlQyMzozMjoxMy4yNjVaIn0.d3g0jagG_YjhJYimaN9dMGVFl8R8R-mARl8Z1xOZQQw
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJOa2ptTGxPRXoiLCJpYXQiOiIyMDE1LTA0LTI1VDExOjU3OjM4LjE1NloiLCJleHAiOiIyMDE1LTA0LTI1VDEyOjU3OjM4LjE1NloifQ.PmYF4D8VlRdVQJ4rt8sC8fIyKs7XIPHhckQ0Gfja3bU
 Content-Length: 11
 
 {

@@ -1,21 +1,21 @@
 POST /api/v1/releases HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJOSlgzWjVfZTJlIiwiaWF0IjoiMjAxNS0wNC0wNlQyMjozMjoxNi45MThaIiwiZXhwIjoiMjAxNS0wNC0wNlQyMzozMjoxNi45MThaIn0.gy2z5YApNDSlBOIiC58GMcAptIbAX83V8rohLgHmIjQ
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJWMXJQSWdPRU0iLCJpYXQiOiIyMDE1LTA0LTI1VDExOjU3OjQyLjEyNloiLCJleHAiOiIyMDE1LTA0LTI1VDEyOjU3OjQyLjEyNloifQ.4PZHbfxYPXkrkB-U-mLWhM719jeO-fXyS5JkQ1YedIU
 Content-Type: application/json
-Content-Length: 480
+Content-Length: 474
 
 {
   "name": "release",
-  "_game": "treasure-ship",
+  "_game": "marjorie",
   "versions": [
     {
       "files": [
         {
-          "_file": "EksHz9_e2e",
+          "_file": "EyPgOLluNG",
           "_media": {
-            "playfield_image": "41WIz5_gng",
-            "playfield_video": "4JBxQ5uxhg"
+            "playfield_image": "NJhgO8luVf",
+            "playfield_video": "41KzuLgdNG"
           },
           "_compatibility": [
             "9.9.0"
@@ -26,9 +26,9 @@ Content-Length: 480
           }
         },
         {
-          "_file": "Nk9BMc_xhg",
+          "_file": "EkLlO8xdNM",
           "_media": {
-            "playfield_image": "EkGLGcOghg"
+            "playfield_image": "EJTguUe_Nf"
           },
           "_compatibility": [
             "9.9.0"
@@ -44,7 +44,7 @@ Content-Length: 480
   ],
   "authors": [
     {
-      "_user": "NJX3Z5_e2e",
+      "_user": "V1rPIgOEM",
       "roles": [
         "Table Creator"
       ]

@@ -6,10 +6,10 @@ nvm use 0.10.25
 npm install
 
 # deps
-wget http://ffmpeg.gusari.org/static/64bit/ffmpeg.static.64bit.latest.tar.gz
+wget http://johnvansickle.com/ffmpeg/releases/ffmpeg-release-64bit-static.tar.xz
 mkdir -p bin
 cd bin
-tar zxf ../ffmpeg.static.64bit.latest.tar.gz
+tar -xvf ../ffmpeg-release-64bit-static.tar.xz --strip 1 --no-anchored ffmpeg ffprobe
 cd ..
 export PATH=$(pwd)/bin:$PATH
 echo "node version: $(node --version)"

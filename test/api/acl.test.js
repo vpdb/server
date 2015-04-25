@@ -182,6 +182,18 @@ describe('The ACLs of the VPDB API', function() {
 			request.put('/api/v1/releases/123/versions/1.2').send({}).end(hlp.status(401, done));
 		});
 
+		it('should deny access to release starring', function(done) {
+			request.post('/api/v1/releases/123/star').send({ value: 1 }).end(hlp.status(401, done));
+		});
+
+		it('should deny access to release unstarring', function(done) {
+			request.del('/api/v1/releases/123/star').end(hlp.status(401, done));
+		});
+
+		it('should deny access to release star retrieval', function(done) {
+			request.get('/api/v1/releases/123/star').end(hlp.status(401, done));
+		});
+
 	});
 
 	describe('for logged clients (role member)', function() {
@@ -349,6 +361,18 @@ describe('The ACLs of the VPDB API', function() {
 
 		it('should deny access to release file creation', function(done) {
 			request.put('/api/v1/releases/123/versions/1.0').as('member').send({}).end(hlp.status(404, done));
+		});
+
+		it('should deny access to release starring', function(done) {
+			request.post('/api/v1/releases/123/star').as('member').send({ value: 1 }).end(hlp.status(404, done));
+		});
+
+		it('should deny access to release unstarring', function(done) {
+			request.del('/api/v1/releases/123/star').as('member').end(hlp.status(404, done));
+		});
+
+		it('should deny access to release star retrieval', function(done) {
+			request.get('/api/v1/releases/123/star').as('member').end(hlp.status(404, done));
 		});
 
 	});

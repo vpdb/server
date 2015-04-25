@@ -80,7 +80,7 @@ describe('The VPDB `ROM` API', function() {
 					_file: 'nonexistent'
 				})
 				.end(function(err, res) {
-					hlp.expectValidationError(err, res, 'id', 'at least 4 characters');
+					hlp.expectValidationError(err, res, 'id', 'at least 2 characters');
 					hlp.expectValidationError(err, res, '_file', 'No such file');
 					hlp.expectNoValidationError(err, res, '_game');
 					done();

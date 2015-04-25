@@ -1,0 +1,8 @@
+404 Not Found
+Content-Type: application/json; charset=utf-8
+Content-Length: 81
+Etag: W/"51-8bd051f9"
+
+{
+  "error": "No star for <zoey27@gmail.com> for \"Pre-emptive Edition\" found."
+}

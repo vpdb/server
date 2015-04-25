@@ -33,7 +33,7 @@ get:
   get:
     securedBy: [ ]
     description: |
-      List details of a give release.
+      List details of a given release.
     body:
         role/anon:
           example: !include http/view-req.json
@@ -120,3 +120,4 @@ get:
 
   /comments: !include comments.raml
   /rating: !include rating.raml
+  /star: !include star.raml

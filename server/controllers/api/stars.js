@@ -44,22 +44,22 @@ exports.getForRelease = function(req, res) {
 
 
 /**
- * Generic function for viewing a rating.
+ * Generic function for viewing a star.
  *
  * @param {Request} req
  * @param {Response} res
- * @param {function} find Function that returns entity and rating.
+ * @param {function} find Function that returns entity and star.
  * @param {string} titleAttr Attribute of the entity that contains a title
  */
 function view(req, res, find, titleAttr) {
 
 	var assert = api.assert(error, 'view', req.user.email, res);
-	find(req, res, assert, function(entity, rating) {
+	find(req, res, assert, function(entity, star) {
 
-		if (rating) {
-			api.success(res, _.pick(rating, ['created_at']));
+		if (star) {
+			api.success(res, _.pick(star, ['created_at']));
 		} else {
-			api.fail(res, error('No rating of <%s> for "%s" found.', req.user.email, entity[titleAttr]), 404);
+			api.fail(res, error('No star for <%s> for "%s" found.', req.user.email, entity[titleAttr]), 404);
 		}
 	});
 }
@@ -89,9 +89,9 @@ function star(req, res, ref, find) {
 
 		star.save(assert(function() {
 
-			entity.incrementCounter('stars', assert(function(result) {
+			entity.incrementCounter('stars', assert(function() {
 
-				api.success(res, { total_stars: entity.counter[ref] + 1 });
+				api.success(res, { created_at: obj.created_at, total_stars: entity.counter.stars + 1 }, 201);
 
 			}, 'Error incrementing counter.'));
 		}, 'Error starring release.'));
@@ -124,7 +124,7 @@ function unstar(req, res, find) {
 }
 
 /**
- * Returns entity and rating for a given type.
+ * Returns entity and star for a given type.
  *
  * If entity is not found, a 404 is returned to the client and the callback isn't called.
  *

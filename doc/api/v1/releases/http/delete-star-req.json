@@ -1,0 +1,5 @@
+DELETE /api/v1/releases/EJtkM1dVf/star HTTP/1.1
+Host: vpdb.ch
+Accept-Encoding: gzip, deflate
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI0eVEyWjFfVmYiLCJpYXQiOiIyMDE1LTA0LTI1VDExOjUyOjExLjQyOFoiLCJleHAiOiIyMDE1LTA0LTI1VDEyOjUyOjExLjQyOFoifQ.ytb2Bt3Vx95SFwBSufYq5TJDzzssNBlNlSfrFBddwlw
+

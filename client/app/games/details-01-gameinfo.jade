@@ -37,11 +37,12 @@ img.img--logo(ng-src="{{ game.media.logo.url }}")
 //-- STATS
 //---------------------------------------------------------------------
 hr
-.text-left
+.row: .col-sm-offset-1.col-sm-10.text-left
 	p
 		.a.pull-right(
 			tooltip="{{ gameStarred ? 'Unstar' : 'Star' }} this game",
 			tooltip-placement="bottom",
+			tooltip-append-to-body="true",
 			ng-show="auth.hasPermission('games/star')",
 			ng-class="{ 'a--primary': gameStarred }"
 			)
@@ -67,16 +68,17 @@ label.label-name.label--block(ng-show="game.artists") Art Design
 label.label-value(ng-show="game.artists")  {{ game.artists.join(', ') }}
 hr(ng-show="game.artists")
 
-label.label-name(ng-show="game.ipdb")
-	a.a--lighter(href="http://www.ipdb.org/machine.cgi?id={{ game.ipdb.number  }}", target="_blank")
-		span.space-right
-			strong IPDB
-		+icon('external-link').shift-up
-dl.dl--oneliner(ng-show="game.ipdb.rating")
-	dt Rating
-	dd(title="{{ game.ipdb.votes | number }} vote{{ game.ipdb.votes == 1 ? '' : 's' }}")
-		strong {{ game.ipdb.rating }}
-	dt(ng-show="game.ipdb.top300") Top 300
-	dd(ng-show="game.ipdb.top300") rank <strong>{{ game.ipdb.top300 }}</strong>
+.row: .col-sm-offset-1.col-sm-10
+	label.label-name(ng-show="game.ipdb")
+		a.a--lighter(href="http://www.ipdb.org/machine.cgi?id={{ game.ipdb.number  }}", target="_blank")
+			span.space-right
+				strong IPDB
+			+icon('external-link').shift-up
+	dl.dl--oneliner(ng-show="game.ipdb.rating")
+		dt Rating
+		dd(title="{{ game.ipdb.votes | number }} vote{{ game.ipdb.votes == 1 ? '' : 's' }}")
+			strong {{ game.ipdb.rating }}
+		dt(ng-show="game.ipdb.top300") Top 300
+		dd(ng-show="game.ipdb.top300") rank <strong>{{ game.ipdb.top300 }}</strong>
 
 hr(ng-show="game.ipdb")

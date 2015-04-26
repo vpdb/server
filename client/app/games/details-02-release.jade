@@ -54,6 +54,7 @@ include ../template/_mixins
 			.a.pull-right(
 				tooltip="{{ releaseStarred ? 'Unstar' : 'Star' }} this release",
 				tooltip-placement="right",
+				tooltip-append-to-body="true",
 				ng-show="auth.hasPermission('releases/star')",
 				ng-class="{ 'a--primary': releaseStarred }"
 			)

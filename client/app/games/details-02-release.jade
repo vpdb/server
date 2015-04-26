@@ -51,7 +51,12 @@ include ../template/_mixins
 
 		hr
 		p
-			.a.pull-right(tooltip="{{ releaseStarred ? 'Unstar' : 'Star' }} this release", ng-class="{ 'a--primary': releaseStarred }")
+			.a.pull-right(
+				tooltip="{{ releaseStarred ? 'Unstar' : 'Star' }} this release",
+				tooltip-placement="right",
+				ng-show="auth.hasPermission('releases/star')",
+				ng-class="{ 'a--primary': releaseStarred }"
+			)
 				+icon('star')(ng-click="toggleStar()").shift-up-2x
 			+icon('star-circle').svg-2x.shift-up-2x.space-right
 			| {{ release.counter.stars | number }} star{{ release.counter.stars != 1 ? 's' : '' }}

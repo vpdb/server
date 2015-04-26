@@ -215,12 +215,13 @@ angular.module('vpdb.games.details', [])
 			if ($scope.gameStarred) {
 				GameStarResource.delete({ gameId: $scope.gameId }, {}, function() {
 					$scope.gameStarred = false;
+					$scope.game.counter.stars--;
 				}, err);
 
 			} else {
 				GameStarResource.save({ gameId: $scope.gameId }, {}, function(result) {
 					$scope.gameStarred = true;
-					var totalStars = result.total_stars;
+					$scope.game.counter.stars = result.total_stars;
 				}, err);
 			}
 		};

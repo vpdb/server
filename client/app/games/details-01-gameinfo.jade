@@ -1,7 +1,11 @@
 include ../template/_mixins
 
+//-- LOGO
+//---------------------------------------------------------------------
 img.img--logo(ng-src="{{ game.media.logo.url }}")
 
+//-- RATING
+//---------------------------------------------------------------------
 .ratingbox(
 	rating-avg="$parent.game.rating.average",
 	rating-votes="$parent.game.rating.votes",
@@ -29,8 +33,28 @@ img.img--logo(ng-src="{{ game.media.logo.url }}")
 			readonly="true")
 
 		span.votes {{ $parent.game.rating.votes | number }} vote{{ $parent.game.rating.votes == 1 ? '' : 's' }}
+
+//-- STATS
+//---------------------------------------------------------------------
+hr
+.text-left
+	p
+		.a.pull-right(
+			tooltip="{{ gameStarred ? 'Unstar' : 'Star' }} this game",
+			tooltip-placement="bottom",
+			ng-show="auth.hasPermission('games/star')",
+			ng-class="{ 'a--primary': gameStarred }"
+			)
+			+icon('star')(ng-click="toggleStar()").shift-up-2x
+		+icon('star-circle').svg-2x.shift-up-2x.space-right
+		| {{ game.counter.stars | number }} star{{ game.counter.stars != 1 ? 's' : '' }}
+	p
+		+icon('eye-circle').svg-2x.shift-up-2x.space-right
+		| {{ game.counter.views | number }} view{{ game.counter.views != 1 ? 's' : '' }}
 hr
 
+//-- IPDB INFO
+//---------------------------------------------------------------------
 label.label--block(ng-show="game.game_type") {{ game.game_type | gametype }}
 label(ng-show="game.produced_units") {{ game.produced_units | number }} units produced
 hr(ng-show="game.game_type || game.units")

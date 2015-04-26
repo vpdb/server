@@ -7,10 +7,6 @@ include ../template/_mixins
 
 		include details-01-gameinfo
 
-		a.btn.btn-default.btn-block.padder-bottom(ng-click="toggleStar()", ng-show="auth.hasPermission('games/star')")
-			+icon("{{ gameStarred ? 'star-outline' : 'star' }}").space-right
-			| {{ gameStarred ? 'Unstar' : 'Star' }} Game
-
 		a.btn.btn-primary.btn-block.padder-bottom(ui-sref="addRelease({ id: game.id })", ng-show="auth.hasPermission('releases/add')")
 			+icon('plus-circle').space-right
 			| Upload Release

@@ -3,9 +3,8 @@
 angular.module('vpdb.games.details', [])
 
 	.controller('GameController', function($scope, $rootScope, $stateParams, $modal, $log, $upload, $localStorage,
-					ApiHelper, Flavors, ModalService, DisplayService, ConfigService, DownloadService,
-					AuthService,
-					GameResource, ReleaseCommentResource, FileResource, RomResource, GameRatingResource) {
+					ApiHelper, Flavors, ModalService, DisplayService, ConfigService, DownloadService, AuthService,
+					GameResource, ReleaseCommentResource, FileResource, RomResource, GameRatingResource, GameStarResource) {
 
 		$scope.theme('dark');
 		$scope.setMenu('games');
@@ -64,11 +63,28 @@ angular.module('vpdb.games.details', [])
 			return $localStorage.game_data[$scope.gameId];
 		};
 
+		// GAME
 		$scope.game = GameResource.get({ id: $scope.gameId }, function() {
 
 			$scope.pageLoading = false;
 			$scope.setTitle($scope.game.title);
 		});
+
+		// RATINGS
+		if (AuthService.hasPermission('games/rate')) {
+			GameRatingResource.get({gameId: $scope.gameId}).$promise.then(function(rating) {
+				$scope.gameRating = rating;
+			});
+		}
+
+		// STARS
+		if (AuthService.hasPermission('games/star')) {
+			GameStarResource.get({ gameId: $scope.gameId }).$promise.then(function() {
+				$scope.gameStarred = true;
+			}, function() {
+				$scope.gameStarred = false;
+			});
+		}
 
 		/**
 		 * Opens the game download dialog
@@ -163,12 +179,10 @@ angular.module('vpdb.games.details', [])
 		};
 
 
-		// RATINGS
-		if (AuthService.isAuthenticated) {
-			GameRatingResource.get({ gameId: $scope.gameId }).$promise.then(function(rating) {
-				$scope.gameRating = rating;
-			});
-		}
+		/**
+		 * Rates a game.
+		 * @param {int} rating Rating
+		 */
 		$scope.rateGame = function(rating) {
 			var done = function(result) {
 				$scope.game.rating = result.game;
@@ -184,7 +198,32 @@ angular.module('vpdb.games.details', [])
 			}
 		};
 
+		/**
+		 * Stars or unstars a game depending if game is already starred.
+		 */
+		$scope.toggleStar = function() {
+			var err = function(err) {
+				if (err.data && err.data.error) {
+					ModalService.error({
+						subtitle: 'Error starring game.',
+						message: err.data.error
+					});
+				} else {
+					console.error(err);
+				}
+			};
+			if ($scope.gameStarred) {
+				GameStarResource.delete({ gameId: $scope.gameId }, {}, function() {
+					$scope.gameStarred = false;
+				}, err);
 
+			} else {
+				GameStarResource.save({ gameId: $scope.gameId }, {}, function(result) {
+					$scope.gameStarred = true;
+					var totalStars = result.total_stars;
+				}, err);
+			}
+		};
 
 //		$scope.requestModPermission = function(release) {
 //			var modalInstance = $modal.open({

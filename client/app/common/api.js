@@ -31,6 +31,11 @@ angular.module('vpdb.common', [])
 		});
 	})
 
+	.factory('GameStarResource', function($resource, ConfigService) {
+		return $resource(ConfigService.apiUri('/games/:gameId/star'), {}, {
+		});
+	})
+
 	.factory('IpdbResource', function($resource, ConfigService) {
 		return $resource(ConfigService.apiUri('/ipdb/:id'), {}, {
 		});
@@ -77,6 +82,11 @@ angular.module('vpdb.common', [])
 	.factory('ReleaseRatingResource', function($resource, ConfigService) {
 		return $resource(ConfigService.apiUri('/releases/:releaseId/rating'), {}, {
 			'update': { method: 'PUT' }
+		});
+	})
+
+	.factory('ReleaseStarResource', function($resource, ConfigService) {
+		return $resource(ConfigService.apiUri('/releases/:releaseId/star'), {}, {
 		});
 	})
 

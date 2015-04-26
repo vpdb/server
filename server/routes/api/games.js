@@ -33,12 +33,12 @@ exports.register = function(app, api) {
 	app.post(settings.apiPath('/games/:id/roms'), api.auth(api.roms.create, 'roms', 'add'));
 	app.delete(settings.apiPath('/roms/:id'),  api.auth(api.roms.del, 'roms', 'delete-own'));
 
-	app.post(settings.apiPath('/games/:id/rating'), api.auth(api.ratings.createForGame, 'ratings', 'add'));
-	app.put(settings.apiPath('/games/:id/rating'), api.auth(api.ratings.updateForGame, 'ratings', 'update'));
-	app.get(settings.apiPath('/games/:id/rating'), api.auth(api.ratings.getForGame, 'ratings', 'view'));
+	app.post(settings.apiPath('/games/:id/rating'), api.auth(api.ratings.createForGame, 'games', 'rate'));
+	app.put(settings.apiPath('/games/:id/rating'), api.auth(api.ratings.updateForGame, 'games', 'rate'));
+	app.get(settings.apiPath('/games/:id/rating'), api.auth(api.ratings.getForGame, 'games', 'rate'));
 
-	app.post(settings.apiPath('/games/:id/star'), api.auth(api.stars.starGame, 'star', 'star'));
-	app.delete(settings.apiPath('/games/:id/star'), api.auth(api.stars.unstarGame, 'star', 'star'));
-	app.get(settings.apiPath('/games/:id/star'), api.auth(api.stars.getForGame, 'star', 'star'));
+	app.post(settings.apiPath('/games/:id/star'), api.auth(api.stars.starGame, 'games', 'star'));
+	app.delete(settings.apiPath('/games/:id/star'), api.auth(api.stars.unstarGame, 'games', 'star'));
+	app.get(settings.apiPath('/games/:id/star'), api.auth(api.stars.getForGame, 'games', 'star'));
 
 };

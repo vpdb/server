@@ -45,7 +45,7 @@ var fields = {
 	username:         { type: String, index: true, unique: true, sparse: true },
 	email:            { type: String, index: true, unique: true, lowercase: true, required: 'Email must be provided.' },
 	email_status: {
-		code:         { type: String, enum: [ 'confirmed', 'pending_registration', 'pending_update' ], required: true },
+		code:         { type: String, 'enum': [ 'confirmed', 'pending_registration', 'pending_update' ], required: true },
 		token:        { type: String },
 		expires_at:   { type: Date },
 		value:        { type: String }
@@ -67,7 +67,7 @@ var fields = {
 		stars:        { type: Number, 'default': 0 }
 	},
 	created_at:       { type: Date, required: true },
-	is_active:        { type: Boolean, required: true, default: false },
+	is_active:        { type: Boolean, required: true, 'default': false },
 	validated_emails: { type: [ String ] }
 };
 // provider data fields

@@ -60,16 +60,15 @@ var init = function(next) {
 		}, {
 			roles: 'member',
 			allows: [
-				{ resources: 'user', permissions: [ 'view', 'update' ]},   // profile
-				{ resources: 'users', permissions: [ 'view', 'search' ]},  // any other user
-				{ resources: 'files', permissions: [ 'download', 'upload', 'delete' ]},  // delete: only own/inactive files
-				{ resources: 'releases', permissions: [ 'add', 'delete' ] }, // only own releases and only for a given period
+				{ resources: 'user', permissions: [ 'view', 'update' ]},           // profile
+				{ resources: 'users', permissions: [ 'view', 'search', 'star' ]},  // any other user
+				{ resources: 'files', permissions: [ 'download', 'upload', 'delete' ]},      // delete: only own/inactive files
+				{ resources: 'releases', permissions: [ 'add', 'delete', 'rate', 'star' ] }, // delete: only own releases and only for a given period
+				{ resources: 'games', permissions: [ 'rate', 'star' ]},
 				{ resources: 'tags', permissions: [ 'add', 'delete-own' ] },
 				{ resources: 'builds', permissions: [ 'add', 'delete-own' ] },
 				{ resources: 'comments', permissions: [ 'add' ] },
-				{ resources: 'ratings', permissions: [ 'add', 'view', 'update' ] },
-				{ resources: 'roms', permissions: [ 'add', 'delete-own' ] },
-				{ resources: 'star', permissions: [ 'star' ] }
+				{ resources: 'roms', permissions: [ 'add', 'delete-own' ] }
 			]
 		}, {
 			roles: 'mocha',

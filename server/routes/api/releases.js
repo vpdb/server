@@ -34,12 +34,12 @@ exports.register = function(app, api) {
 	app.get(settings.apiPath('/releases/:id/comments'), api.anon(api.comments.listForRelease));
 	app.post(settings.apiPath('/releases/:id/comments'), api.auth(api.comments.createForRelease, 'comments', 'add'));
 
-	app.post(settings.apiPath('/releases/:id/rating'), api.auth(api.ratings.createForRelease, 'ratings', 'add'));
-	app.put(settings.apiPath('/releases/:id/rating'), api.auth(api.ratings.updateForRelease, 'ratings', 'update'));
-	app.get(settings.apiPath('/releases/:id/rating'), api.auth(api.ratings.getForRelease, 'ratings', 'view'));
+	app.post(settings.apiPath('/releases/:id/rating'), api.auth(api.ratings.createForRelease, 'releases', 'rate'));
+	app.put(settings.apiPath('/releases/:id/rating'), api.auth(api.ratings.updateForRelease, 'releases', 'rate'));
+	app.get(settings.apiPath('/releases/:id/rating'), api.auth(api.ratings.getForRelease, 'releases', 'rate'));
 
-	app.post(settings.apiPath('/releases/:id/star'), api.auth(api.stars.starRelease, 'star', 'star'));
-	app.delete(settings.apiPath('/releases/:id/star'), api.auth(api.stars.unstarRelease, 'star', 'star'));
-	app.get(settings.apiPath('/releases/:id/star'), api.auth(api.stars.getForRelease, 'star', 'star'));
+	app.post(settings.apiPath('/releases/:id/star'), api.auth(api.stars.starRelease, 'releases', 'star'));
+	app.delete(settings.apiPath('/releases/:id/star'), api.auth(api.stars.unstarRelease, 'releases', 'star'));
+	app.get(settings.apiPath('/releases/:id/star'), api.auth(api.stars.getForRelease, 'releases', 'star'));
 
 };

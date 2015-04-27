@@ -41,18 +41,22 @@
 // stars with the votes in the right column.
 .ratingbox
 
+	margin-left -3px
+
 	// Left column
 	.ratingbox__left-col
 		display inline
 		position relative
 		.ratingbox__rating
-			display inline
+			display inline-block
+			width 78px
 			font-size 50px
 			font-weight $font-weight-thin
+			text-align right
 			cursor default
-			&.rating-user
-				position absolute
-				right 0
+			&.rating-10
+				margin-right 10px
+				width 68px
 
 	// Right column
 	.ratingbox__right-col
@@ -71,10 +75,6 @@
 			white-space nowrap
 		.rating-user
 			cursor pointer
-
-	// When hovering over an editable rating, hide the average rating stars.
-	.rating-hide
-		color transparent
 
 	// Star styling
 	.star-left

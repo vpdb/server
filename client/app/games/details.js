@@ -64,16 +64,16 @@ angular.module('vpdb.games.details', [])
 		};
 
 		// GAME
-		$scope.game = GameResource.get({ id: $scope.gameId }, function() {
-
+		GameResource.get({ id: $scope.gameId }, function(result) {
+			$scope.game = result;
 			$scope.pageLoading = false;
 			$scope.setTitle($scope.game.title);
 		});
 
 		// RATINGS
 		if (AuthService.hasPermission('games/rate')) {
-			GameRatingResource.get({gameId: $scope.gameId}).$promise.then(function(rating) {
-				$scope.gameRating = rating;
+			GameRatingResource.get({gameId: $scope.gameId}).$promise.then(function(result) {
+				$scope.gameRating = result.value;
 			});
 		}
 
@@ -186,7 +186,7 @@ angular.module('vpdb.games.details', [])
 		$scope.rateGame = function(rating) {
 			var done = function(result) {
 				$scope.game.rating = result.game;
-				$scope.gameRating = result.game;
+				//$scope.gameRating = result.value;
 			};
 			if ($scope.gameRating) {
 				GameRatingResource.update({ gameId: $scope.gameId }, { value: rating }, done);

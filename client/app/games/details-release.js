@@ -26,8 +26,6 @@ angular.module('vpdb.games.details', []).controller('ReleaseController', functio
 	// setup releases
 	$scope.$watch('release', function(release) {
 
-		console.log(release);
-
 		// sort versions
 		$scope.releaseVersions = _.sortByOrder(release.versions, 'released_at', false);
 		$scope.latestVersion = $scope.releaseVersions[0];
@@ -81,7 +79,7 @@ angular.module('vpdb.games.details', []).controller('ReleaseController', functio
 	// ratings
 	if (AuthService.hasPermission('releases/rate')) {
 		ReleaseRatingResource.get({ releaseId: $scope.release.id }).$promise.then(function(rating) {
-			$scope.releaseRating = rating;
+			$scope.releaseRating = rating.value;
 		});
 	}
 
@@ -115,7 +113,6 @@ angular.module('vpdb.games.details', []).controller('ReleaseController', functio
 	$scope.rateRelease = function(rating) {
 		var done = function(result) {
 			$scope.release.rating = result.release;
-			$scope.releaseRating = result.release;
 		};
 		if ($scope.releaseRating) {
 			ReleaseRatingResource.update({ releaseId: $scope.release.id }, { value: rating }, done);

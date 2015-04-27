@@ -2,7 +2,7 @@
 
 angular.module('vpdb.common', [])
 
-	.controller('AppCtrl', function($scope, $rootScope, $state, $location, $modal, $localStorage,
+	.controller('AppCtrl', function($scope, $rootScope, $state, $location, $modal, $localStorage, $timeout,
 									AuthService, ProfileService, ModalService, ModalFlashService, DownloadService) {
 
 		$rootScope.themeName = 'theme-dark';
@@ -88,8 +88,12 @@ angular.module('vpdb.common', [])
 		};
 
 		$rootScope.showNotification = function(message, ttl) {
-			var i = _.max(_.map(_.keys($scope.notifications).concat(0), function(key) { return parseInt(key); })) + 1;
-			$scope.notifications[i] = { message: message, ttl: ttl || 3000 };
+			ttl = ttl || 3000;
+			var i = _.max(_.map(_.keys($scope.notifications).concat([0]), parseInt)) + 1;
+			$scope.notifications[i] = { message: message, ttl: ttl };
+			$timeout(function() {
+				delete $scope.notifications[i];
+			}, ttl);
 		};
 
 		$scope.unpinDownload = function(download) {

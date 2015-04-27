@@ -35,3 +35,28 @@ script(id="template/carousel/carousel.html", type="text/ng-template")
 			+icon('angle-left')
 		a.right.carousel-control(ng-click="next()", ng-show="slides.length > 1")
 			+icon('angle-right')
+
+
+script(id="template/rating.html", type="text/ng-template")
+	.ratingbox__left-col
+		.ratingbox__rating.rating-user.color-primary(ng-show="editing", ng-class="{ 'rating-10': ratingHover == 10 }") {{ ratingHover | rating }}
+		.ratingbox__rating(ng-hide="editing", ng-class="{ 'rating-10': ratingAvg == 10 }") {{ ratingAvg | rating }}
+	.ratingbox__right-col
+
+		rating.rating-user(
+			ng-show="editing",
+			ng-model="ratingUser",
+			max="10",
+			rating-states="states",
+			on-hover="ratingHover = value",
+			on-leave="ratingHover = ratingUser"
+			ng-click="rate()")
+
+		rating.rating-avg(
+			ng-hide="editing",
+			ng-model="ratingAvg",
+			max="10",
+			rating-states="states",
+			readonly="true")
+
+		span.votes {{ ratingVotes | number }} vote{{ ratingVotes == 1 ? '' : 's' }}

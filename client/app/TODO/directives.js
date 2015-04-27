@@ -3,23 +3,51 @@
 
 angular.module('vpdb.common', [])
 
+	/**
+	 * Use like this:
+	 *
+	 *  rating-avg="game.rating.average",
+	 *  rating-votes="game.rating.votes",
+	 *  rating-user="gameRating"
+	 *  rating-action="rateGame($rating)"
+	 */
 	.directive('ratingbox', function($parse) {
 		return {
 			restrict: 'C',
 			scope: true,
-			controller: function($scope, $element, $attrs) {
-
-				$scope.$watch($parse($attrs.ratingAvg), function(val) {
-					$scope.ratingAvg = Math.round(val);
+			templateUrl: 'template/rating.html',
+			link: function(scope, elem) {
+				elem.mouseenter(function() {
+					scope.editing = true;
+					scope.$apply();
 				});
-				if ($attrs.ratingVotes) {
-					$scope.$watch('ratingUser', function(newVal, oldVal) {
-						if ($attrs.ratingAction && newVal) {
-							$parse($attrs.ratingAction)($scope)(newVal);
-						}
-					});
-				}
-
+				elem.mouseleave(function() {
+					scope.editing = false;
+					scope.$apply();
+				});
+			},
+			controller: function($scope, $element, $attrs) {
+				$scope.$watch($parse($attrs.ratingAvg), function(ratingAvg) {
+					if (ratingAvg) {
+						$scope.ratingAvg = ratingAvg;
+					}
+				});
+				$scope.$watch($parse($attrs.ratingVotes), function(votes) {
+					if (votes) {
+						$scope.ratingVotes = votes;
+					}
+				});
+				$scope.$watch($parse($attrs.ratingUser), function(ratingUser) {
+					if (ratingUser) {
+						$scope.ratingUser = Math.round(ratingUser);
+						$scope.ratingHover = Math.round(ratingUser);
+					}
+				});
+				$scope.rate = function() {
+					console.log('rated %d', $scope.ratingUser);
+					$scope.$rating = $scope.ratingUser;
+					$parse($attrs.ratingAction)($scope)
+				};
 				$scope.states = [
 					{ stateOn: 'fa fa-star star-left star-on', stateOff: 'fa fa-star star-left star-off' },
 					{ stateOn: 'fa fa-star star-right star-on', stateOff: 'fa fa-star star-right star-off' },

@@ -7,32 +7,12 @@ img.img--logo(ng-src="{{ game.media.logo.url }}")
 //-- RATING
 //---------------------------------------------------------------------
 .ratingbox(
-	rating-avg="$parent.game.rating.average",
-	rating-votes="$parent.game.rating.votes",
-	rating-action="rateGame"
-	ng-mouseenter="editing=true",
-	ng-mouseleave="editing=false")
+	rating-avg="game.rating.average",
+	rating-votes="game.rating.votes",
+	rating-user="gameRating"
+	rating-action="rateGame($rating)")
 
-	.ratingbox__left-col
-		.ratingbox__rating.rating-user.color-primary(ng-show="editing") {{ hoverRating | rating }}
-		.ratingbox__rating(ng-class="{ 'rating-hide' : editing }") {{ $parent.game.rating.average | rating }}
-	.ratingbox__right-col
-		rating.rating-user(
-			ng-show="editing",
-			ng-model="ratingUser",
-			max="10",
-			rating-states="states",
-			on-hover="hoverRating = value",
-			on-leave="hoverRating = ratingUser")
 
-		rating.rating-avg(
-			ng-hide="editing",
-			ng-model="ratingAvg",
-			max="10",
-			rating-states="states",
-			readonly="true")
-
-		span.votes {{ $parent.game.rating.votes | number }} vote{{ $parent.game.rating.votes == 1 ? '' : 's' }}
 
 //-- STATS
 //---------------------------------------------------------------------
@@ -77,7 +57,7 @@ hr(ng-show="game.artists")
 	dl.dl--oneliner(ng-show="game.ipdb.rating")
 		dt Rating
 		dd(title="{{ game.ipdb.votes | number }} vote{{ game.ipdb.votes == 1 ? '' : 's' }}")
-			strong {{ game.ipdb.rating }}
+			strong {{ game.ipdb.rating | rating }}
 		dt(ng-show="game.ipdb.top300") Top 300
 		dd(ng-show="game.ipdb.top300") rank <strong>{{ game.ipdb.top300 }}</strong>
 

@@ -48,10 +48,10 @@ var production = {
 	httpSimple: { username: 'vpdb', password: 'xxxxxx' }
 };
 
-var config = test;
+var config = local;
 
 config.romFolder = 'E:/Pinball/Visual Pinball-103/VPinMame/roms';
 
 //games.upload(config);
-//roms.upload(config);
+roms.upload(config);
 

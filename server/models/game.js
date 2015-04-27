@@ -32,6 +32,7 @@ var toObj = require('./plugins/to-object');
 var fileRef = require('./plugins/file-ref');
 var metrics = require('./plugins/metrics');
 var prettyId = require('./plugins/pretty-id');
+var sortTitle = require('./plugins/sortable-title');
 
 var Schema = mongoose.Schema;
 
@@ -46,6 +47,7 @@ var maxAspectRatioDifference = 0.2;
 var fields = {
 	id:             { type: String, required: 'Game ID must be provided.', unique: true },
 	title:          { type: String, required: 'Title must be provided.', index: true },
+	title_sortable: { type: String, index: true },
 	year:           { type: Number, required: 'Year must be provided.', index: true },
 	manufacturer:   { type: String, required: 'Manufacturer must be provided.', index: true },
 	game_type:      { type: String, required: true, enum: { values: gameTypes, message: 'Invalid game type. Valid game types are: ["' +  gameTypes.join('", "') + '"].' }},
@@ -101,6 +103,7 @@ GameSchema.plugin(fileRef);
 GameSchema.plugin(paginate);
 GameSchema.plugin(toObj);
 GameSchema.plugin(metrics, { hotness: { popularity: { views: 1, downloads: 10, comments: 20 }}});
+GameSchema.plugin(sortTitle, { src: 'title', dest: 'title_sortable' });
 
 
 //-----------------------------------------------------------------------------

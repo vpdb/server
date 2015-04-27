@@ -139,7 +139,6 @@ function unstar(req, res, find) {
 		star.remove(assert(function() {
 			entity.incrementCounter('stars', assert(function(result) {
 
-				console.log(result);
 				api.success(res, null, 204);
 
 			}, 'Error incrementing counter.'), true);

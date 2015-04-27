@@ -33,6 +33,7 @@ var metrics = require('./plugins/metrics');
 var fileRef = require('./plugins/file-ref');
 var prettyId = require('./plugins/pretty-id');
 var idValidator = require('./plugins/id-ref');
+var sortableTitle = require('./plugins/sortable-title');
 
 var flavor = require('../modules/flavor');
 
@@ -75,13 +76,14 @@ var AuthorSchema = new Schema({
 	roles: [ String ]
 });
 var releaseFields = {
-	id:          { type: String, required: true, unique: true, 'default': shortId.generate },
-	_game:       { type: Schema.ObjectId, required: 'Reference to game must be provided.', ref: 'Game' },
-	name:        { type: String, required: 'Name must be provided.' },
-	description: { type: String },
-	versions:    { type: [ VersionSchema ], validate: [ nonEmptyArray, 'You must provide at least one version for the release.' ] },
-	authors:     { type: [ AuthorSchema ], validate: [ nonEmptyArray, 'You must provide at least one author.' ] },
-	_tags:     [ { type: String, ref: 'Tag' } ],
+	id:            { type: String, required: true, unique: true, 'default': shortId.generate },
+	_game:         { type: Schema.ObjectId, required: 'Reference to game must be provided.', ref: 'Game' },
+	name:          { type: String, required: 'Name must be provided.' },
+	name_sortable: { type: String, index: true },
+	description:   { type: String },
+	versions:      { type: [ VersionSchema ], validate: [ nonEmptyArray, 'You must provide at least one version for the release.' ] },
+	authors:       { type: [ AuthorSchema ], validate: [ nonEmptyArray, 'You must provide at least one author.' ] },
+	_tags:       [ { type: String, ref: 'Tag' } ],
 	links: [ {
 		label: { type: String },
 		url: { type: String }
@@ -123,6 +125,7 @@ ReleaseSchema.plugin(idValidator, { fields: [ '_tags' ] });
 ReleaseSchema.plugin(paginate);
 ReleaseSchema.plugin(toObj);
 ReleaseSchema.plugin(metrics, { hotness: { popularity: { downloads: 10, comments: 20, stars: 30 }}});
+ReleaseSchema.plugin(sortableTitle, { src: 'name', dest: 'name_sortable' });
 FileSchema.plugin(fileRef);
 FileSchema.plugin(prettyId, { model: 'ReleaseVersionFile' });
 FileSchema.plugin(toObj);

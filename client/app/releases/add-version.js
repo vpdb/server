@@ -94,7 +94,6 @@ angular.module('vpdb.releases.add', []).controller('ReleaseFileAddCtrl', functio
 		// TODO remove files via API
 	};
 
-
 	/** Posts the release add form to the server. */
 	$scope.submit = function() {
 
@@ -117,6 +116,14 @@ angular.module('vpdb.releases.add', []).controller('ReleaseFileAddCtrl', functio
 
 		// post whole version
 		} else {
+
+			// get release date
+			var releaseDate = $scope.getReleaseDate();
+			if (releaseDate) {
+				$scope.releaseVersion.released_at = releaseDate;
+			} else {
+				delete $scope.releaseVersion.released_at;
+			}
 
 			ReleaseVersionResource.save({ releaseId: $scope.release.id }, $scope.releaseVersion, function() {
 				$scope.reset();

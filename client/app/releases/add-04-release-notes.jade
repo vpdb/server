@@ -40,34 +40,3 @@ div.alert.alert-danger.padder-bottom(ng-show="errors.built_at")
 			div.markdown(markdown="releaseVersion.changes")
 			label.tab__label(ng-show="!releaseVersion.changes || releaseVersion.changes.length == 0") Nothing to preview.
 	i This will show up in the release's change log
-
-
-script(id="template/timepicker/timepicker.html", type="text/ng-template")
-	table(style="margin:-26px 0")
-		tbody
-			tr.text-center
-				td
-					a(ng-click="incrementHours()")
-						+icon('angle-up').small
-				td  
-				td
-					a(ng-click="incrementMinutes()")
-						+icon('angle-up').small
-				td(ng-show="showMeridian")
-			tr
-				td.form-group(style="width:50px;", ng-class="{'has-error': invalidHours}")
-					input.form-control.text-center(type="text", ng-model="hours", ng-change="updateHours()", ng-mousewheel="incrementHours()", ng-readonly="readonlyInput", maxlength="2")
-				td: b &nbsp;:&nbsp;
-				td.form-group(style="width:50px;", ng-class="{'has-error': invalidMinutes}")
-					input.form-control.text-center(type="text", ng-model="minutes", ng-change="updateMinutes()", ng-readonly="readonlyInput", maxlength="2")
-				td(ng-show="showMeridian")
-					button.btn.btn-default.text-center(type="button", ng-click="toggleMeridian()") {{meridian}}
-			tr.text-center
-				td
-					a(ng-click="decrementHours()")
-						+icon('angle-down').small
-				td  
-				td
-					a(ng-click="decrementMinutes()")
-						+icon('angle-down').small
-				td(ng-show="showMeridian")

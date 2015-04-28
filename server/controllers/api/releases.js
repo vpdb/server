@@ -55,6 +55,7 @@ exports.create = function(req, res) {
 		});
 
 		// defaults
+		// TODO if version date is set, push to files as well.
 		if (newRelease.versions) {
 			_.each(newRelease.versions, function(version) {
 				_.defaults(version, { released_at: now });

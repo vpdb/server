@@ -34,6 +34,23 @@ include ../template/_mixins
 						label.tab__label(ng-show="!releaseVersion.changes || releaseVersion.changes.length == 0") Nothing to preview.
 				i This will show up in the release's change log
 
+		.row: .col-sm-10.col-sm-offset-1
+			.form-group(ng-show="meta.mode == 'newVersion'")
+				label.control-label Release Date
+				.row
+					.col-sm-4: .input-group
+						input.form-control.datepicker(type='text', ng-model='meta.releaseDate', ng-required='true',
+						datepicker-popup="yyyy-MM-dd",
+						is-open="calendarOpened",
+						close-text="Close",
+						show-weeks="false",
+						starting-day="1")
+						span.input-group-addon: +icon('calendar').a(ng-click='openCalendar($event)')
+					.col-sm-3
+						timepicker(ng-model="meta.releaseTime", hour-step="1", minute-step="5", show-meridian="ismeridian")
+					.col-sm-5
+						i Leave empty for submission time.
+
 
 		//---------------------------------------------------------------------
 		h1 1. Upload Files

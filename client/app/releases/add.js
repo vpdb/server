@@ -25,7 +25,7 @@
 angular.module('vpdb.releases.add', []).controller('ReleaseAddCtrl', function(
 	$scope, $upload, $modal, $window, $localStorage, $state, $stateParams, $location, $anchorScroll, $timeout, $controller,
 	AuthService, ConfigService, DisplayService, MimeTypeService, ModalService, ApiHelper, Flavors, ReleaseMeta,
-	ReleaseResource, FileResource, TagResource, BuildResource, GameResource, BootstrapTemplate)
+	ReleaseResource, FileResource, TagResource, BuildResource, GameResource)
 {
 	// use add-common.js
 	angular.extend(this, $controller('ReleaseAddBaseCtrl', { $scope: $scope }));
@@ -80,7 +80,6 @@ angular.module('vpdb.releases.add', []).controller('ReleaseAddCtrl', function(
 		media: 7
 	};
 	$scope.newLink = {};
-	BootstrapTemplate.patchCalendar();
 
 	/**
 	 * Resets all entered data
@@ -124,12 +123,6 @@ angular.module('vpdb.releases.add', []).controller('ReleaseAddCtrl', function(
 		$scope.releaseFileRefs = {};
 	};
 
-	$scope.openCalendar = function($event) {
-		$event.preventDefault();
-		$event.stopPropagation();
-
-		$scope.calendarOpened = true;
-	};
 
 	/**
 	 * Adds OR edits an author.
@@ -228,16 +221,13 @@ angular.module('vpdb.releases.add', []).controller('ReleaseAddCtrl', function(
 	 */
 	$scope.submit = function() {
 
-		// construct release date
-		if ($scope.meta.releaseDate || $scope.meta.releaseTime) {
-			var date = $scope.meta.releaseDate ? new Date($scope.meta.releaseDate) : new Date();
-			var time = $scope.meta.releaseTime ? new Date($scope.meta.releaseTime) : new Date();
-			$scope.release.versions[0].released_at = new Date(date.getFullYear(), date.getMonth(), date.getDate(), time.getHours(), time.getMinutes());
+		// get release date
+		var releaseDate = $scope.getReleaseDate();
+		if (releaseDate) {
+			$scope.release.versions[0].released_at = releaseDate;
 		} else {
 			delete $scope.release.versions[0].released_at;
 		}
-		console.log($scope.release.versions[0].released_at);
-
 
 		// add link if user has started typing something.
 		if ($scope.newLink && ($scope.newLink.label || $scope.newLink.url)) {

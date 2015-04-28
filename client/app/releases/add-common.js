@@ -22,7 +22,34 @@
 /**
  * The base controller that parents ReleaseAddCtrl and ReleaseFileAddCtrl.
  */
-angular.module('vpdb.releases.add', []).controller('ReleaseAddBaseCtrl', function($scope, $modal, ApiHelper, AuthService, BuildResource, FileResource) {
+angular.module('vpdb.releases.add', []).controller('ReleaseAddBaseCtrl', function($scope, $modal, ApiHelper, AuthService, BuildResource, FileResource, BootstrapTemplate) {
+
+
+	BootstrapTemplate.patchCalendar();
+
+	/**
+	 * Opens the calendar drop-down.
+	 * @param $event
+	 */
+	$scope.openCalendar = function($event) {
+		$event.preventDefault();
+		$event.stopPropagation();
+
+		$scope.calendarOpened = true;
+	};
+
+	/**
+	 * Returns a date object from the date and time picker.
+	 * If empty, returns null.
+	 */
+	$scope.getReleaseDate = function() {
+		if ($scope.meta.releaseDate || $scope.meta.releaseTime) {
+			var date = $scope.meta.releaseDate ? new Date($scope.meta.releaseDate) : new Date();
+			var time = $scope.meta.releaseTime ? new Date($scope.meta.releaseTime) : new Date();
+			return new Date(date.getFullYear(), date.getMonth(), date.getDate(), time.getHours(), time.getMinutes());
+		}
+		return null;
+	};
 
 	/**
 	 * Splits builds into types (experimental, nightly and release)

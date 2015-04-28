@@ -3,13 +3,13 @@
 cd /usr/local/src
 
 # download source, plus naxsi, headers-more and pagespeed.
-wget http://nginx.org/download/nginx-1.7.9.tar.gz
+wget http://nginx.org/download/nginx-1.7.11.tar.gz
 wget https://github.com/nbs-system/naxsi/archive/master.tar.gz -O naxsi-master.tar.gz
 wget https://github.com/openresty/headers-more-nginx-module/archive/v0.25.tar.gz -O headers-more-0.25.tar.gz
 wget https://github.com/pagespeed/ngx_pagespeed/archive/v1.9.32.3-beta.tar.gz -O pagespeed-v1.9.32.3-beta.tar.gz
 wget https://github.com/FRiCKLE/ngx_cache_purge/archive/2.3.tar.gz -O cache_purge-2.3.tar.gz
 
-tar xvfz nginx-1.7.9.tar.gz
+tar xvfz nginx-1.7.11.tar.gz
 tar xvfz headers-more-0.25.tar.gz
 tar xvfz naxsi-master.tar.gz
 tar xvfz pagespeed-v1.9.32.3-beta.tar.gz
@@ -23,7 +23,7 @@ tar xvfz 1.9.32.3.tar.gz
 cd ..
 
 # configure
-cd nginx-1.7.9
+cd nginx-1.7.11
 ./configure \
 --add-module=../naxsi-master/naxsi_src \
 --prefix=/usr/local \
@@ -66,7 +66,7 @@ make
 
 # install
 checkinstall --install=no -y
-dpkg -i nginx_1.7.9-1_amd64.deb
+dpkg -i nginx_1.7.11-1_amd64.deb
 wget https://raw.githubusercontent.com/freezy/node-vpdb/master/deploy/init/nginx -O /etc/init.d/nginx
 chmod 755 /etc/init.d/nginx
 update-rc.d -f nginx defaults

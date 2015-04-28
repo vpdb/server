@@ -58,9 +58,8 @@ Set:
 
 ### Node.js
 
-	sudo add-apt-repository ppa:chris-lea/node.js
-	sudo apt-get -y update
-	sudo apt-get -y install nodejs
+	sudo curl https://raw.githubusercontent.com/creationix/nvm/v0.24.0/install.sh | bash
+	sudo nvm install 0.12
 
 Upgrade ``npm`` to latest and prevent self-signed certificate error
 
@@ -140,11 +139,12 @@ As soon as v5 goes final, it should be the one.
 Setup Phusion Passenger:
 
 	cd /usr/local/src
-	git clone https://github.com/phusion/passenger.git
+	wget https://github.com/phusion/passenger/archive/release-5.0.6.tar.gz
+	tar xvfz release-5.0.6.tar.gz
 
 Add `/opt/passenger/bin` to `PATH`:
 
-	ln -s /usr/local/src/passenger /opt/passenger
+	ln -s /usr/local/src/passenger-release-5.0.6 /opt/passenger
 	vi /etc/environment
 
 Download and compile Nginx. See [compile script](deploy/nginx/compile.sh) how to do that.
@@ -257,9 +257,9 @@ build the key chain:
 
 	sudo mkdir -p /etc/nginx/sites-available /etc/nginx/sites-enabled /etc/nginx/conf.d
 	sudo cp /repos/source/deploy/nginx/nginx.conf /etc/nginx
-	sudo cp /repos/source/deploy/nginx/sites/production /etc/nginx/sites-available/vpdb-production
-	sudo cp /repos/source/deploy/nginx/sites/staging /etc/nginx/sites-available/vpdb-staging
-	sudo cp /repos/source/deploy/nginx/sites/staging-devsite /etc/nginx/sites-available/vpdb-staging-devsite
+	sudo cp /repos/source/deploy/nginx/sites/production.conf /etc/nginx/sites-available/vpdb-production
+	sudo cp /repos/source/deploy/nginx/sites/staging.conf /etc/nginx/sites-available/vpdb-staging
+	sudo cp /repos/source/deploy/nginx/sites/staging-devsite.conf /etc/nginx/sites-available/vpdb-staging-devsite
 	sudo ln -s /etc/nginx/sites-available/vpdb-production /etc/nginx/sites-enabled/vpdb-production
 	sudo ln -s /etc/nginx/sites-available/vpdb-staging /etc/nginx/sites-enabled/vpdb-staging
 	sudo ln -s /etc/nginx/sites-available/vpdb-staging-devsite /etc/nginx/sites-enabled/vpdb-staging-devsite
@@ -311,7 +311,7 @@ Install Genghis:
 
 Setup nginx:
 
-	sudo cp /repos/source/deploy/nginx/sites/genghis /etc/nginx/sites-available/genghis
+	sudo cp /repos/source/deploy/nginx/sites/genghis.conf /etc/nginx/sites-available/genghis
 	sudo ln -s /etc/nginx/sites-available/genghis /etc/nginx/sites-enabled/genghis
 
 Secure access:
@@ -353,7 +353,7 @@ Secure access:
 
 Setup nginx:
 
-	sudo cp /repos/source/deploy/nginx/sites/admin /etc/nginx/sites-available/admin
+	sudo cp /repos/source/deploy/nginx/sites/admin.conf /etc/nginx/sites-available/admin
 	sudo ln -s /etc/nginx/sites-available/admin /etc/nginx/sites-enabled/admin
 	
 

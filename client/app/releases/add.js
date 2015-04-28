@@ -122,7 +122,13 @@ angular.module('vpdb.releases.add', []).controller('ReleaseAddCtrl', function(
 		$scope.releaseFileRefs = {};
 	};
 
+	$scope.openCalendar = function($event) {
+		$event.preventDefault();
+		$event.stopPropagation();
 
+		$scope.calendarOpened = true;
+	};
+	
 	/**
 	 * Adds OR edits an author.
 	 * @param {object} author If set, edit this author, otherwise add a new one.

@@ -1,12 +1,33 @@
 .form-group(ng-class="{ error: errors.versions[0].version }")
 	label.control-label(for="version") Version
 	.row
-		.col-sm-2: input#version.form-control(type="text", ng-model="releaseVersion.version", placeholder="x.x.x")
-		.col.sm-10: i Using the semantic versioning syntax is recommended.
+		.col-sm-2: input#version.form-control(type="text", ng-model="releaseVersion.version", placeholder="x.x")
+		.col.sm-10: i Don't prefix with <code>v</code>.
 	.alert.alert-danger(ng-show="errors.versions[0].version")
 		+icon('warning').shift-up.space-right
 		| {{ errors.versions[0].version }}
 .clearfix
+
+.form-group(ng-class="{ error: errors.versions[0].released_at }")
+	label.control-label Release Date
+	.row
+		.col-sm-3: .input-group
+			input.form-control.datepicker(type='text', ng-model='releaseVersion.released_at', ng-required='true',
+				datepicker-popup="shortDate",
+				is-open="calendarOpened",
+				close-text="Close",
+				show-weeks="false",
+				starting-day="1")
+			span.input-group-addon: +icon('calendar').a(ng-click='openCalendar($event)')
+		.col-sm-2
+			timepicker(ng-model="mytime", ng-change="changed()",
+				hour-step="1",
+				minute-step="5",
+				show-meridian="ismeridian")
+
+div.alert.alert-danger.padder-bottom(ng-show="errors.built_at")
+	+icon('warning').shift-up.space-right
+	| {{ errors.built_at }}
 
 .form-group
 	label.control-label(for="version") Release Information
@@ -20,3 +41,34 @@
 			div.markdown(markdown="releaseVersion.changes")
 			label.tab__label(ng-show="!releaseVersion.changes || releaseVersion.changes.length == 0") Nothing to preview.
 	i This will show up in the release's change log
+
+
+script(id="template/timepicker/timepicker.html", type="text/ng-template")
+	table(style="margin:-26px 0")
+		tbody
+			tr.text-center
+				td
+					a(ng-click="incrementHours()")
+						+icon('angle-up').small
+				td  
+				td
+					a(ng-click="incrementMinutes()")
+						+icon('angle-up').small
+				td(ng-show="showMeridian")
+			tr
+				td.form-group(style="width:50px;", ng-class="{'has-error': invalidHours}")
+					input.form-control.text-center(type="text", ng-model="hours", ng-change="updateHours()", ng-mousewheel="incrementHours()", ng-readonly="readonlyInput", maxlength="2")
+				td: b &nbsp;:&nbsp;
+				td.form-group(style="width:50px;", ng-class="{'has-error': invalidMinutes}")
+					input.form-control.text-center(type="text", ng-model="minutes", ng-change="updateMinutes()", ng-readonly="readonlyInput", maxlength="2")
+				td(ng-show="showMeridian")
+					button.btn.btn-default.text-center(type="button", ng-click="toggleMeridian()") {{meridian}}
+			tr.text-center
+				td
+					a(ng-click="decrementHours()")
+						+icon('angle-down').small
+				td  
+				td
+					a(ng-click="decrementMinutes()")
+						+icon('angle-down').small
+				td(ng-show="showMeridian")

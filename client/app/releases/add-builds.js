@@ -19,30 +19,11 @@
 
 "use strict"; /* global _, angular */
 
-angular.module('vpdb.releases.add', []).controller('AddBuildCtrl', function($scope, $modalInstance, $templateCache, ApiHelper, BuildResource) {
+angular.module('vpdb.releases.add', []).controller('AddBuildCtrl', function($scope, $modalInstance, BootstrapTemplate, ApiHelper, BuildResource) {
 
 	$scope.build = {};
 
-	// monkey patch template so it takes svgs instead of glyphicons.
-	var dayTpl = $templateCache.get('template/datepicker/day.html');
-	if (/<i class="glyphicon/.test(dayTpl)) {
-
-		var monthTpl = $templateCache.get('template/datepicker/month.html');
-		var yearTpl = $templateCache.get('template/datepicker/year.html');
-
-		dayTpl = dayTpl.replace(/<i class="glyphicon glyphicon-chevron-left">/, '<svg class="svg-icon"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#icon-arrow-left"></use></svg>');
-		dayTpl = dayTpl.replace(/<i class="glyphicon glyphicon-chevron-right">/, '<svg class="svg-icon"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#icon-arrow-right"></use></svg>');
-
-		monthTpl = monthTpl.replace(/<i class="glyphicon glyphicon-chevron-right">/, '<svg class="svg-icon"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#icon-arrow-right"></use></svg>');
-		monthTpl = monthTpl.replace(/<i class="glyphicon glyphicon-chevron-left">/, '<svg class="svg-icon"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#icon-arrow-left"></use></svg>');
-
-		yearTpl = yearTpl.replace(/<i class="glyphicon glyphicon-chevron-right">/, '<svg class="svg-icon"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#icon-arrow-right"></use></svg>');
-		yearTpl = yearTpl.replace(/<i class="glyphicon glyphicon-chevron-left">/, '<svg class="svg-icon"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#icon-arrow-left"></use></svg>');
-
-		$templateCache.put('template/datepicker/day.html', dayTpl);
-		$templateCache.put('template/datepicker/month.html', monthTpl);
-		$templateCache.put('template/datepicker/year.html', yearTpl);
-	}
+	BootstrapTemplate.patchCalendar();
 
 	$scope.openCalendar = function($event) {
 		$event.preventDefault();

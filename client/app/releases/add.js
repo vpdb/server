@@ -254,7 +254,12 @@ angular.module('vpdb.releases.add', []).controller('ReleaseAddCtrl', function(
 			// go to game page
 			$state.go('gameDetails', { id: $stateParams.id });
 
-		}, ApiHelper.handleErrors($scope));
+		}, ApiHelper.handleErrors($scope, function(scope) {
+			// if it's an array, those area displayed below
+			if (_.isArray(scope.errors.versions[0].files)) {
+				delete scope.errors.versions[0].files;
+			}
+		}));
 	};
 })
 

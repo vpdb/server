@@ -12,18 +12,17 @@
 	label.control-label Release Date
 	.row
 		.col-sm-3: .input-group
-			input.form-control.datepicker(type='text', ng-model='releaseVersion.released_at', ng-required='true',
-				datepicker-popup="shortDate",
+			input.form-control.datepicker(type='text', ng-model='meta.releaseDate', ng-required='true',
+				datepicker-popup="yyyy-MM-dd",
 				is-open="calendarOpened",
 				close-text="Close",
 				show-weeks="false",
 				starting-day="1")
 			span.input-group-addon: +icon('calendar').a(ng-click='openCalendar($event)')
 		.col-sm-2
-			timepicker(ng-model="mytime", ng-change="changed()",
-				hour-step="1",
-				minute-step="5",
-				show-meridian="ismeridian")
+			timepicker(ng-model="meta.releaseTime", hour-step="1", minute-step="5", show-meridian="ismeridian")
+		.col-sm-7
+			i Leave empty for submission time.
 
 div.alert.alert-danger.padder-bottom(ng-show="errors.built_at")
 	+icon('warning').shift-up.space-right

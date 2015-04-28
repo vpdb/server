@@ -225,6 +225,17 @@ angular.module('vpdb.releases.add', []).controller('ReleaseAddCtrl', function(
 	 */
 	$scope.submit = function() {
 
+		// construct release date
+		if ($scope.meta.releaseDate || $scope.meta.releaseTime) {
+			var date = $scope.meta.releaseDate ? new Date($scope.meta.releaseDate) : new Date();
+			var time = $scope.meta.releaseTime ? new Date($scope.meta.releaseTime) : new Date();
+			$scope.release.versions[0].released_at = new Date(date.getFullYear(), date.getMonth(), date.getDate(), time.getHours(), time.getMinutes());
+		} else {
+			delete $scope.release.versions[0].released_at;
+		}
+		console.log($scope.release.versions[0].released_at);
+
+
 		// add link if user has started typing something.
 		if ($scope.newLink && ($scope.newLink.label || $scope.newLink.url)) {
 			$scope.addLink($scope.newLink);

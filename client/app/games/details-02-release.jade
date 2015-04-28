@@ -101,7 +101,7 @@ include ../template/_mixins
 				div.markdown(markdown="version.changes")
 
 		h3.h--smaller.h--primary(ng-show="release.links && release.links.length") Links
-		a(ng-repeat="link in release.links", ng-href="link.url") {{ link.label }}
+		a(ng-repeat="link in release.links", ng-href="{{ link.url }}", target="_blank") {{ link.label }}
 
 	.col-sm-12
 

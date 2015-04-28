@@ -27,8 +27,8 @@ var uniqueValidator = require('mongoose-unique-validator');
 var toObj = require('./plugins/to-object');
 
 var Schema = mongoose.Schema;
-var platforms =  [ 'vp' ];
-var types =  [ 'release', 'nightly', 'experimental' ];
+var platforms = [ 'vp' ];
+var types = [ 'release', 'nightly', 'experimental' ];
 
 //-----------------------------------------------------------------------------
 // SCHEMA

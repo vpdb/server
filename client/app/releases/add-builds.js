@@ -21,9 +21,13 @@
 
 angular.module('vpdb.releases.add', []).controller('AddBuildCtrl', function($scope, $modalInstance, BootstrapTemplate, ApiHelper, BuildResource) {
 
-	$scope.build = {};
+	$scope.build = {
+		platform: 'vp'
+	};
 
 	BootstrapTemplate.patchCalendar();
+
+	$scope.types = [ 'release', 'nightly', 'experimental' ];
 
 	$scope.openCalendar = function($event) {
 		$event.preventDefault();

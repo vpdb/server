@@ -79,6 +79,7 @@ angular.module('vpdb.releases.add', []).controller('ReleaseAddCtrl', function(
 		compat: 5,
 		media: 7
 	};
+	$scope.newLink = {};
 	BootstrapTemplate.patchCalendar();
 
 	/**
@@ -207,7 +208,7 @@ angular.module('vpdb.releases.add', []).controller('ReleaseAddCtrl', function(
 	 */
 	$scope.addLink = function(link) {
 		$scope.release.links.push(link);
-		return {};
+		$scope.newLink = {}
 	};
 
 
@@ -216,7 +217,9 @@ angular.module('vpdb.releases.add', []).controller('ReleaseAddCtrl', function(
 	 * @param {object} link
 	 */
 	$scope.removeLink = function(link) {
-		$scope.release.links.splice($scope.release.links.indexOf(link), 1);
+		$scope.release.links = _.filter($scope.release.links, function(l) {
+			return l.label !== link.label || l.url !== link.url;
+		});
 	};
 
 

@@ -28,15 +28,15 @@ p Tags highlight special characteristics or features of your release. There are 
 				//- EXISTING
 				h5.hr--margin-small.h--shift-up Existing Tags
 				.badge.badge--tag(ng-repeat="tag in tags", ng-model="tags",
-				data-drag="true",
-				data-jqyoui-options="{ revert: 'invalid' }",
-				jqyoui-draggable='{ animate: true, index: {{$index}} }')
+					data-drag="true",
+					data-jqyoui-options="{ revert: 'invalid' }",
+					jqyoui-draggable='{ animate: true, index: {{$index}} }')
 					| {{ tag.name }}
 					+icon('question-circle').small.shift-up.space-left.a(
-					tooltip="{{tag.description}}",
-					tooltip-append-to-body="false",
-					tooltip-trigger="click",
-					tooltip-popup-delay="200")
+						tooltip="{{ tag.description }}",
+						tooltip-append-to-body="false",
+						tooltip-trigger="click",
+						tooltip-popup-delay="200")
 				i(ng-show="tags.length == 0") No more tags available.
 
 		button.btn.btn-default.padder-top.pull-right(ng-click="createTag()")

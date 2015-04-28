@@ -17,5 +17,5 @@ p You can add additional links to your release, such as to your WIP thread or ot
 		input.form-control(type="text", ng-model="newLink.label")
 	.form-group.col-sm-9
 		.input-group
-			input.form-control(type="text", ng-model="newLink.url", on-enter="newLink=addLink(newLink)")
-			span.input-group-addon: +icon('plus-circle').smaller.a(ng-click="newLink=addLink(newLink)")
+			input.form-control(type="text", ng-model="newLink.url", on-enter="addLink(newLink)")
+			span.input-group-addon: +icon('plus-circle').smaller.a(ng-click="addLink(newLink)")

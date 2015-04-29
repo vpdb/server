@@ -67,6 +67,12 @@ Move added lines to the top (before `[ -z "$PS1" ] && return`), then save and:
 	nvm install 0.12
 	nvm alias default stable
 	exit
+	
+If you want to temporarily switch to another node version:
+
+	nvm alias default 0.10
+	service nginx restart
+
 
 Upgrade ``npm`` to latest and prevent self-signed certificate error
 

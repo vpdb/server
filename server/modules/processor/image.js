@@ -122,6 +122,7 @@ ImageProcessor.prototype.pass1 = function(src, dest, file, variation, done) {
 	// do the processing
 	logger.info('[processor|image|pass1] Resizing %s "%s" (%s)...', file.file_type, file.id, variation.name);
 	var img = gm(src);
+	img.quality(80);
 
 	if (variation.width && variation.height) {
 		img.resize(variation.width, variation.height);
@@ -149,10 +150,6 @@ ImageProcessor.prototype.pass1 = function(src, dest, file, variation, done) {
 		if (variation.size) {
 			img.resize(variation.size, variation.size);
 		}
-	}
-
-	if (file.getMimeSubtype() === 'jpeg') {
-		img.quality(85);
 	}
 
 	if (variation.mimeType && mimeTypes[variation.mimeType]) {

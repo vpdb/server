@@ -102,7 +102,7 @@ BuildSchema.path('built_at').validate(function(dateString) {
 // PLUGINS
 //-----------------------------------------------------------------------------
 BuildSchema.plugin(uniqueValidator, { message: 'The {PATH} "{VALUE}" is already taken.' });
-BuildSchema.plugin(toObj, { message: 'The {PATH} "{VALUE}" is already taken.' });
+BuildSchema.plugin(toObj);
 
 
 //-----------------------------------------------------------------------------

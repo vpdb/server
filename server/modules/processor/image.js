@@ -28,6 +28,7 @@ var PngQuant = require('pngquant');
 var OptiPng = require('optipng');
 
 var error = require('../error')('processor', 'image');
+var mimeTypes = require('../mimetypes');
 
 /**
  * Image processor.
@@ -152,6 +153,10 @@ ImageProcessor.prototype.pass1 = function(src, dest, file, variation, done) {
 
 	if (file.getMimeSubtype() === 'jpeg') {
 		img.quality(85);
+	}
+
+	if (variation.mimeType && mimeTypes[variation.mimeType]) {
+		img.setFormat(mimeTypes[variation.mimeType].ext);
 	}
 
 	img

@@ -22,6 +22,7 @@
 var _ = require('lodash');
 var crypto = require('crypto');
 var logger = require('winston');
+var shortId = require('shortid');
 var mongoose = require('mongoose');
 var validator = require('validator');
 var uniqueValidator = require('mongoose-unique-validator');
@@ -33,7 +34,8 @@ var Schema = mongoose.Schema;
 // SCHEMA
 //-----------------------------------------------------------------------------
 var fields = {
-	id:           { type: String, required: true, unique: true, 'default': generate },
+	id:           { type: String, required: true, unique: true, 'default': shortId.generate },
+	token:        { type: String, required: true, unique: true, 'default': generate },
 	label:        { type: String, required: 'A label must be provided.' },
 	type:         { type: String,  'enum': [ 'access' ], 'default': 'access' },
 	is_active:    { type: Boolean, required: true, 'default': true },
@@ -59,7 +61,7 @@ var apiFields = {
 TokenSchema.methods.toSimple = function(showToken) {
 	var obj = TokenSchema.statics.toSimple(this);
 	if (showToken) {
-		obj.token = this.id;
+		obj.token = this.token;
 	}
 	return obj;
 };

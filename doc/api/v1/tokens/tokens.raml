@@ -47,3 +47,21 @@ get:
         role/member:
           example: !include http/list-res-200.json
 
+/{token_id}:
+  delete:
+      is: [ protected ]
+      securedBy: [ jwt: { scopes: [ MEMBER ] } ]
+      description: |
+        Delete an access token of a given ID.
+
+        As soon as the token is deleted, any third party applications that are
+        still configured with it, won't get authenticated anymore.
+
+      body:
+        role/member:
+          example: !include http/del-req.json
+      responses:
+        204:
+          body:
+            role/member:
+              example: !include http/del-res-204.json

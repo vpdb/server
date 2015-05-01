@@ -99,6 +99,7 @@ describe('The VPDB `Token` API', function() {
 				.send({ label: 'My Application', password: hlp.getUser('member').password })
 				.end(function(err, res) {
 					hlp.expectStatus(err, res, 201);
+					expect(res.body.id).to.be.ok();
 					expect(res.body.token).to.be.ok();
 					done();
 				});
@@ -109,7 +110,9 @@ describe('The VPDB `Token` API', function() {
 
 		before(function(done) {
 			hlp.setupUsers(request, {
-				member: { roles: ['member'] }
+				member1: { roles: ['member'] },
+				member2: { roles: ['member'] },
+				member3: { roles: ['member'] }
 			}, done);
 		});
 
@@ -121,14 +124,14 @@ describe('The VPDB `Token` API', function() {
 			var label = 'My Application';
 			request
 				.post('/api/v1/tokens')
-				.as('member')
-				.send({ label: label, password: hlp.getUser('member').password })
+				.as('member1')
+				.send({ label: label, password: hlp.getUser('member1').password })
 				.end(function(err, res) {
 					hlp.expectStatus(err, res, 201);
 					expect(res.body.token).to.be.ok();
 					request
 						.get('/api/v1/tokens')
-						.as('member')
+						.as('member1')
 						.save({ path: 'tokens/list'})
 						.end(function(err, res) {
 							hlp.expectStatus(err, res, 200);
@@ -142,5 +145,106 @@ describe('The VPDB `Token` API', function() {
 						});
 				});
 		});
+
+		it('should only return owned token', function(done) {
+			var label = 'My Application';
+			request
+				.post('/api/v1/tokens')
+				.as('member2')
+				.send({ label: 'Member 1', password: hlp.getUser('member2').password })
+				.end(function(err, res) {
+					hlp.expectStatus(err, res, 201);
+					request
+						.post('/api/v1/tokens')
+						.as('member3')
+						.send({ label: 'Member 2', password: hlp.getUser('member3').password })
+						.end(function(err, res) {
+							hlp.expectStatus(err, res, 201);
+							request
+								.get('/api/v1/tokens')
+								.as('member2')
+								.save({ path: 'tokens/list'})
+								.end(function(err, res) {
+									hlp.expectStatus(err, res, 200);
+									expect(res.body).to.be.an('array');
+									expect(res.body).to.have.length(1);
+									done();
+								});
+						});
+				});
+		});
 	});
+
+	describe('when deleting an auth token', function() {
+
+		before(function(done) {
+			hlp.setupUsers(request, {
+				member1: { roles: ['member'] },
+				member2: { roles: ['member'] },
+				member3: { roles: ['member'] }
+			}, done);
+		});
+
+		after(function(done) {
+			hlp.cleanup(request, done);
+		});
+
+		it('should fail for a not owned token', function(done) {
+			// create
+			request
+				.post('/api/v1/tokens')
+				.as('member1')
+				.send({ label: 'My Application', password: hlp.getUser('member1').password })
+				.end(function(err, res) {
+					hlp.expectStatus(err, res, 201);
+					expect(res.body.token).to.be.ok();
+					request
+						.del('/api/v1/tokens/' + res.body.id)
+						.as('member2')
+						.end(hlp.status(404, done));
+				});
+		});
+
+		it('should succeed for a valid id', function(done) {
+
+			// create
+			request
+				.post('/api/v1/tokens')
+				.as('member3')
+				.send({ label: 'My Application', password: hlp.getUser('member3').password })
+				.end(function(err, res) {
+					hlp.expectStatus(err, res, 201);
+					expect(res.body.token).to.be.ok();
+
+					// check
+					request
+						.get('/api/v1/tokens')
+						.as('member3')
+						.end(function(err, res) {
+							hlp.expectStatus(err, res, 200);
+
+							// delete
+							request
+								.del('/api/v1/tokens/' + res.body[0].id)
+								.as('member3')
+								.save({ path: 'tokens/del'})
+								.end(function(err, res) {
+									hlp.expectStatus(err, res, 204);
+
+									// check
+									request
+										.get('/api/v1/tokens')
+										.as('member3')
+										.save({ path: 'tokens/list'})
+										.end(function(err, res) {
+											hlp.expectStatus(err, res, 200);
+											expect(res.body).to.be.empty();
+											done();
+										});
+								});
+						});
+				});
+		});
+	});
+
 });

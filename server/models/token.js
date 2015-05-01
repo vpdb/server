@@ -51,7 +51,7 @@ var TokenSchema = new Schema(fields);
 // API FIELDS
 //-----------------------------------------------------------------------------
 var apiFields = {
-	simple: [ 'label', 'is_active', 'last_used_at', 'expires_at', 'created_at' ]
+	simple: [ 'id', 'label', 'is_active', 'last_used_at', 'expires_at', 'created_at' ]
 };
 
 

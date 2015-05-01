@@ -25,4 +25,6 @@ exports.register = function(app, api) {
 
 	app.post(settings.apiPath('/tokens'), api.auth(api.tokens.create, 'tokens', 'add'));
 	app.get(settings.apiPath('/tokens'), api.auth(api.tokens.list, 'tokens', 'list'));
+	app.delete(settings.apiPath('/tokens/:id'), api.auth(api.tokens.del, 'tokens', 'delete'));
+
 };

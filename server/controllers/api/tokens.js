@@ -73,3 +73,19 @@ exports.list = function(req, res) {
 		api.success(res, tokens);
 	});
 };
+
+exports.del = function(req, res) {
+
+	var assert = api.assert(error, 'delete', req.params.id, res);
+
+	Token.findOne({ id: req.params.id, _created_by: req.user._id }, assert(function(token) {
+		if (!token) {
+			return api.fail(res, error('No such token'), 404);
+		}
+		token.remove(assert(function() {
+			res.status(204).end();
+
+		}, 'Error deleting token "%s"'));
+
+	}, 'Error finding token "%s"'));
+};

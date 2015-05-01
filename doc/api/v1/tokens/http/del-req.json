@@ -1,0 +1,5 @@
+DELETE /api/v1/tokens/E1lxOvnC2G HTTP/1.1
+Host: vpdb.ch
+Accept-Encoding: gzip, deflate
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJOSm9kd25BaHoiLCJpYXQiOiIyMDE1LTA1LTAxVDIxOjE2OjU1LjU2N1oiLCJleHAiOiIyMDE1LTA1LTAxVDIyOjE2OjU1LjU2N1oifQ.RPatv0wBE9-NuTDIdwgnDWuyyryhpTYqtUdb_G7jKE8
+

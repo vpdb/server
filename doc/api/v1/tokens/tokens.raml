@@ -1,0 +1,31 @@
+displayName: Tokens
+description: |
+  Access Tokens function like ordinary JWT access tokens. They can be used
+  instead of a password for full API access. They are useful if you need
+  a third party application such as PinballX to authenticate without giving
+  it your password.
+
+post:
+  is: [ validated ]
+  securedBy: [ jwt: { scopes: [ MEMBER ] } ]
+  description: |
+    Create a new access token.
+
+    Due to the sensibility of this request, the user's password must be
+    provided.
+
+    Additionally, the response of this request is the only way to retrieve the
+    actual token, listing will only return the meta data.
+
+  body:
+    role/member:
+      example: !include http/create-req.json
+  responses:
+    201:
+      body:
+        role/member:
+          example: !include http/create-res-201.json
+    401:
+      body:
+        role/member:
+          example: !include http/create-res-401.json

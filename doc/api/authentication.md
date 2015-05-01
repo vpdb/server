@@ -40,9 +40,13 @@ See also [these][blog-ng-jwt] [Articles][blog-token-vs-cookies] for more
 information.
 
 In order to obtain a token, you can either *locally* authenticate, which
-basically checks a set of credentials against VPDB's local database, or you can
+checks a set of credentials against VPDB's local database, or you can
 authenticate with a third party provider via OAuth2 such as GitHub or IP.Board
 ([where supported][ipb-oauth2]).
+
+For third-party applications such as PinballX, you can create an [explicit
+access token][api-token] that is manually managed, i.e. it doesn't time out 
+until it's explicitly revoked.
 
 
 ## Local Authentication
@@ -117,6 +121,25 @@ Which returns the same response as `/api/authenticate` would have, including
 an access token.
 
 
+## Third Party Authentication
+
+JTWs are obtained using either a password or a web browser. For third-party
+applications such as PinballX, this isn't optimal, since users would need to
+give their password to the application which would store it somewhere in plain
+text.
+
+[Explicitly generated access tokens][api-token] go around this problem by 
+providing a randomly generated string that can be easily revoked if lost. Once
+created, such a token is valid for one year or until the user deletes it.
+
+They work like JTWs and are provided by the client through the `Authorization` 
+header:
+
+	Authorization: Token 2c4e34e2f0e522c3149fe2c332d85f16
+
+Note the usage of `Token` instead of `Bearer` in the header value. 
+
+
 ### Authorization
 
 Some resources are more heavily protected than others, meaning you need a 
@@ -150,4 +173,5 @@ storage API.
 [blog-token-vs-cookies]: https://auth0.com/blog/2014/01/27/ten-things-you-should-know-about-tokens-and-cookies/
 [api-auth]: api://core/post/authenticate
 [api-auth-oauth2]: api://core/post/authenticate/{provider_name}
+[api-token]: api://core/post/tokens
 [ipb-oauth2]: https://github.com/freezy/ipb-oauth2-server

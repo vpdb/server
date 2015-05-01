@@ -33,7 +33,7 @@ superagentTest(request);
 
 describe('The VPDB `Token` API', function() {
 
-	describe.only('when creating a new token', function() {
+	describe('when creating a new token', function() {
 
 		before(function(done) {
 			hlp.setupUsers(request, {
@@ -48,7 +48,7 @@ describe('The VPDB `Token` API', function() {
 		it('should fail if no password provided', function(done) {
 			request
 				.post('/api/v1/tokens')
-				//.saveResponse({ path: 'tokens/create'})
+				.saveResponse({ path: 'tokens/create'})
 				.as('member')
 				.send({ label: 'Test Application' })
 				.end(function(err, res) {
@@ -83,7 +83,6 @@ describe('The VPDB `Token` API', function() {
 		it('should fail validations for invalid data', function(done) {
 			request
 				.post('/api/v1/tokens')
-				//.saveResponse({ path: 'tokens/create'})
 				.as('member')
 				.send({ label: 'x', password: hlp.getUser('member').password })
 				.end(function(err, res) {
@@ -95,6 +94,7 @@ describe('The VPDB `Token` API', function() {
 		it('should succeed with valid data', function(done) {
 			request
 				.post('/api/v1/tokens')
+				.save({ path: 'tokens/create'})
 				.as('member')
 				.send({ label: 'My Application', password: hlp.getUser('member').password })
 				.end(function(err, res) {

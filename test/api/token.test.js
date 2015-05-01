@@ -33,7 +33,7 @@ superagentTest(request);
 
 describe('The VPDB `Token` API', function() {
 
-	describe('when creating a new token', function() {
+	describe.only('when creating a new token', function() {
 
 		before(function(done) {
 			hlp.setupUsers(request, {
@@ -45,11 +45,35 @@ describe('The VPDB `Token` API', function() {
 			hlp.cleanup(request, done);
 		});
 
-		it('should fail validations for empty data', function(done) {
+		it('should fail if no password provided', function(done) {
+			request
+				.post('/api/v1/tokens')
+				//.saveResponse({ path: 'tokens/create'})
+				.as('member')
+				.send({ label: 'Test Application' })
+				.end(function(err, res) {
+					hlp.expectStatus(err, res, 401, 'must supply a password');
+					done();
+				});
+		});
+
+		it('should fail if the wrong password provided', function(done) {
+			request
+				.post('/api/v1/tokens')
+				//.saveResponse({ path: 'tokens/create'})
+				.as('member')
+				.send({ label: 'Test Application', password: 'xxx' })
+				.end(function(err, res) {
+					hlp.expectStatus(err, res, 401, 'wrong password');
+					done();
+				});
+		});
+
+		it('should fail validations for empty label', function(done) {
 			request
 				.post('/api/v1/tokens')
 				.as('member')
-				.send({})
+				.send({ password: hlp.getUser('member').password })
 				.end(function(err, res) {
 					hlp.expectValidationError(err, res, 'label', 'must be provided');
 					done();
@@ -61,18 +85,18 @@ describe('The VPDB `Token` API', function() {
 				.post('/api/v1/tokens')
 				//.saveResponse({ path: 'tokens/create'})
 				.as('member')
-				.send({ label: 'x' })
+				.send({ label: 'x', password: hlp.getUser('member').password })
 				.end(function(err, res) {
 					hlp.expectValidationError(err, res, 'label', 'must contain at least');
 					done();
 				});
 		});
 
-		it.only('should succeed with valid data', function(done) {
+		it('should succeed with valid data', function(done) {
 			request
 				.post('/api/v1/tokens')
 				.as('member')
-				.send({ label: 'my token' })
+				.send({ label: 'My Application', password: hlp.getUser('member').password })
 				.end(function(err, res) {
 					hlp.expectStatus(err, res, 201);
 					expect(res.body.token).to.be.ok();

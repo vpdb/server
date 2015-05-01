@@ -29,6 +29,14 @@ var Token = require('mongoose').model('Token');
 
 exports.create = function(req, res) {
 
+	if (!req.body.password) {
+		return api.fail(res, error('You must supply a password when generating an auth token.').warn('create-token'), 401);
+	}
+
+	if (!req.user.authenticate(req.body.password)) {
+		return api.fail(res, error('Wrong password.').warn('create-token'), 401);
+	}
+
 	var newToken = new Token(_.extend(req.body, {
 		is_active: true,
 		created_at: new Date(),

@@ -30,7 +30,7 @@ var config = require('../../modules/settings').current;
 
 
 /**
- * Returns the current user's profile.
+ * Returns the current user's log.
  *
  * @param {Request} req
  * @param {Response} res

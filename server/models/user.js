@@ -394,9 +394,12 @@ UserSchema.statics.normalizeProviderData = function(provider, data) {
 // TRIGGERS
 //-----------------------------------------------------------------------------
 UserSchema.post('remove', function(obj, done) {
-	// also remove logs
+	// also remove logs and tokens
 	var LogUser = mongoose.model('LogUser');
-	LogUser.remove({ _user: obj._id }, done);
+	LogUser.remove({ _user: obj._id }, function() {
+		var Token = mongoose.model('Token');
+		Token.remove({ _created_by: obj._id }, done);
+	});
 });
 
 

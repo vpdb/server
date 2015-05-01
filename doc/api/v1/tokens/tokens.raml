@@ -29,3 +29,21 @@ post:
       body:
         role/member:
           example: !include http/create-res-401.json
+
+get:
+  securedBy: [ jwt: { scopes: [ MEMBER ] } ]
+  description: |
+    List all access tokens.
+
+    Note there is no actual token returned. If a token was not copied and saved
+    after creation, it can be deleted and must be re-created.
+
+  body:
+    role/member:
+      example: !include http/list-req.json
+  responses:
+    200:
+      body:
+        role/member:
+          example: !include http/list-res-200.json
+

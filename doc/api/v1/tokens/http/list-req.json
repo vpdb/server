@@ -1,0 +1,5 @@
+GET /api/v1/tokens HTTP/1.1
+Host: vpdb.ch
+Accept-Encoding: gzip, deflate
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI0eVE4SUhBM3oiLCJpYXQiOiIyMDE1LTA1LTAxVDIwOjQ2OjQ2LjA2NloiLCJleHAiOiIyMDE1LTA1LTAxVDIxOjQ2OjQ2LjA2NloifQ.yaW6bwTQkgWTdyAxIXtuPhN9mFD7s8Ay2M38MJdQxG8
+

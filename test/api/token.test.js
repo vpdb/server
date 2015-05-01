@@ -104,4 +104,43 @@ describe('The VPDB `Token` API', function() {
 				});
 		});
 	});
+
+	describe('when listing auth tokens', function() {
+
+		before(function(done) {
+			hlp.setupUsers(request, {
+				member: { roles: ['member'] }
+			}, done);
+		});
+
+		after(function(done) {
+			hlp.cleanup(request, done);
+		});
+
+		it('should return the created token', function(done) {
+			var label = 'My Application';
+			request
+				.post('/api/v1/tokens')
+				.as('member')
+				.send({ label: label, password: hlp.getUser('member').password })
+				.end(function(err, res) {
+					hlp.expectStatus(err, res, 201);
+					expect(res.body.token).to.be.ok();
+					request
+						.get('/api/v1/tokens')
+						.as('member')
+						.save({ path: 'tokens/list'})
+						.end(function(err, res) {
+							hlp.expectStatus(err, res, 200);
+							expect(res.body).to.be.an('array');
+							expect(res.body).to.have.length(1);
+							var token = res.body[0];
+							expect(token.token).to.not.be.ok();
+							expect(token.label).to.be(label);
+							expect(token.is_active).to.be(true);
+							done();
+						});
+				});
+		});
+	});
 });

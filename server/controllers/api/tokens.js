@@ -58,3 +58,18 @@ exports.create = function(req, res) {
 		});
 	});
 };
+
+exports.list = function(req, res) {
+	Token.find({ _created_by: req.user._id }, function(err, tokens) {
+		/* istanbul ignore if  */
+		if (err) {
+			return api.fail(res, error(err, 'Error listing tokens').log('list'), 500);
+		}
+
+		// reduce
+		tokens = _.map(tokens, function(token) {
+			return token.toSimple();
+		});
+		api.success(res, tokens);
+	});
+};

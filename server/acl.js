@@ -66,7 +66,7 @@ var init = function(next) {
 				{ resources: 'releases', permissions: [ 'add', 'delete', 'rate', 'star' ] }, // delete: only own releases and only for a given period
 				{ resources: 'games', permissions: [ 'rate', 'star' ]},
 				{ resources: 'tags', permissions: [ 'add', 'delete-own' ] },
-				{ resources: 'tokens', permissions: [ 'add' ] },
+				{ resources: 'tokens', permissions: [ 'add', 'list' ] },
 				{ resources: 'builds', permissions: [ 'add', 'delete-own' ] },
 				{ resources: 'comments', permissions: [ 'add' ] },
 				{ resources: 'roms', permissions: [ 'add', 'delete-own' ] }

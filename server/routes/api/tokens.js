@@ -24,4 +24,5 @@ var settings = require('../../modules/settings');
 exports.register = function(app, api) {
 
 	app.post(settings.apiPath('/tokens'), api.auth(api.tokens.create, 'tokens', 'add'));
+	app.get(settings.apiPath('/tokens'), api.auth(api.tokens.list, 'tokens', 'list'));
 };

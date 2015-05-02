@@ -22,7 +22,6 @@
 var _ = require('lodash');
 var util = require('util');
 var async = require('async');
-var logger = require('winston');
 
 var Game = require('mongoose').model('Game');
 var Release = require('mongoose').model('Release');

@@ -20,6 +20,7 @@
 "use strict";
 
 var jwt = require('jwt-simple');
+var async = require('async');
 var logger = require('winston');
 
 var acl = require('../acl');
@@ -29,6 +30,7 @@ var config = require('../modules/settings').current;
 var redis = require('redis').createClient(config.vpdb.redis.port, config.vpdb.redis.host, { no_ready_check: true });
     redis.select(config.vpdb.redis.db);
 var User = require('mongoose').model('User');
+var Token = require('mongoose').model('Token');
 
 /**
  * Returns a middleware function that protects a resource by verifying the JWT
@@ -83,88 +85,132 @@ exports.auth = function(resource, permission, done) {
 			return deny(error('Unauthorized. You need to provide credentials for this resource').status(401));
 		}
 
-		// validate token
-		var decoded;
-		try {
-			decoded = jwt.decode(token, config.vpdb.secret);
-		} catch (e) {
-			return deny(error(e, 'Bad JSON Web Token').status(401));
-		}
-
-		// check for expiration
 		var now = new Date();
-		var tokenExp = new Date(decoded.exp);
-		if (tokenExp.getTime() < now.getTime()) {
-			return deny(error('Token has expired').status(401));
-		}
+		async.waterfall([
 
-		if (fromUrl && !decoded.path) {
-			return deny(error('Tokens that are valid for any path cannot be provided as query parameter.').status(401));
-		}
+			function(next) {
 
-		// check for path && method
-		if (decoded.path && (decoded.path !== req.path || (req.method !== 'GET' && req.method !== 'HEAD'))) {
-			return deny(error('Token is only valid for "GET/HEAD %s" but got "%s %s".', decoded.path, req.method, req.path).status(401));
-		}
+				// access token (from database)?
+				if (/[0-9a-f]{32,}/i.test(token)) {
 
-		// here we're authenticated (token is valid and not expired). So update user and check ACL if necessary
-		User.findOne({ id: decoded.iss }, '-__v', function(err, user) {
-			/* istanbul ignore if  */
-			if (err) {
-				return deny(error(err, 'Error finding user "%s"', decoded.iss).status(500).log());
-			}
-			if (!user) {
-				return deny(error('No user with ID %s found.', decoded.iss).status(403).log());
-			}
+					Token.findOne({ token: token }).populate('_created_by').exec(function(err, t) {
+						/* istanbul ignore if  */
+						if (err) {
+							return next(error(err, 'Error retrieving access token from DB.').status(500).log());
+						}
+						logger.info('[auth] Retrieved access token from DB for user <%s>.', t._created_by.email);
 
-			// this will be useful for the rest of the stack
-			req.user = user;
+						if (t.expires_at.getTime() < now.getTime()) {
+							return next(error('Token has expired.').status(401));
+						}
 
-			// generate new token if it's a short term token.
-			var tokenIssued = new Date(decoded.iat);
-			if (tokenExp.getTime() - tokenIssued.getTime() === config.vpdb.apiTokenLifetime) {
-				res.setHeader('X-Token-Refresh', exports.generateApiToken(user, now));
-			}
+						if (!t.is_active) {
+							return next(error('Token is inactive.').status(401));
+						}
 
-			var checkACLs = function(err) {
-				/* istanbul ignore if  */
-				if (err) {
-					logger.warn('[ctrl|auth] Error deleting dirty key from redis: %s', err);
+						next(null, t._created_by);
+					});
+
+				// Otherwise, assume it's a JWT.
+				} else {
+
+					// validate token
+					var decoded;
+					try {
+						decoded = jwt.decode(token, config.vpdb.secret);
+					} catch (e) {
+						return next(error(e, 'Bad JSON Web Token').status(401));
+					}
+
+					// check for expiration
+					var tokenExp = new Date(decoded.exp);
+					if (tokenExp.getTime() < now.getTime()) {
+						return next(error('Token has expired').status(401));
+					}
+
+					if (fromUrl && !decoded.path) {
+						return next(error('Tokens that are valid for any path cannot be provided as query parameter.').status(401));
+					}
+
+					// check for path && method
+					if (decoded.path && (decoded.path !== req.path || (req.method !== 'GET' && req.method !== 'HEAD'))) {
+						return next(error('Token is only valid for "GET/HEAD %s" but got "%s %s".', decoded.path, req.method, req.path).status(401));
+					}
+
+					User.findOne({ id: decoded.iss }, function(err, user) {
+						/* istanbul ignore if  */
+						if (err) {
+							return next(error(err, 'Error finding user "%s"', decoded.iss).status(500).log());
+						}
+						if (!user) {
+							return next(error('No user with ID %s found.', decoded.iss).status(403).log());
+						}
+
+						// generate new token if it's a short term token.
+						var tokenIssued = new Date(decoded.iat);
+						if (tokenExp.getTime() - tokenIssued.getTime() === config.vpdb.apiTokenLifetime) {
+							res.setHeader('X-Token-Refresh', exports.generateApiToken(user, now));
+						}
+
+						next(null, user);
+					});
+
 				}
+
+			}, function(user, next) {
+
+				// here we're authenticated (token is valid and not expired). So update user and check ACL if necessary
+
+				// this will be useful for the rest of the stack
+				req.user = user;
+
+				// set dirty header if necessary
+				redis.get('dirty_user_' + user.id, function(err, result) {
+					/* istanbul ignore if  */
+					if (err) {
+						logger.warn('[ctrl|auth] Error checking if user <%s> is dirty: %s', user.email, err);
+						return;
+					}
+					if (result) {
+						logger.info('[ctrl|auth] User <%s> is dirty, telling him in header.', user.email);
+						res.setHeader('X-User-Dirty', result);
+						return redis.del('dirty_user_' + user.id, function(err) {
+							/* istanbul ignore if  */
+							if (err) {
+								logger.warn('[ctrl|auth] Error deleting dirty key from redis: %s', err);
+							}
+							next(null, user);
+						});
+					}
+					res.setHeader('X-User-Dirty', 0);
+					next(null, user);
+				});
+
+			}, function(user, next) {
 
 				// no ACLs set, grant.
 				if (!resource || !permission) {
-					return done(null, req, res);
+					return next();
 				}
 
 				acl.isAllowed(user.id, resource, permission, function(err, granted) {
 					/* istanbul ignore if  */
 					if (err) {
-						return deny(error(err, 'Error checking ACLs for user <%s>', user.email).status(500).log());
+						return next(error(err, 'Error checking ACLs for user <%s>', user.email).status(500).log());
 					}
 
 					if (!granted) {
-						return deny(error('User <%s> tried to access `%s` but was denied access due to missing permissions to %s/%s.', user.email, req.url, resource, permission).display('Access denied').status(403).log());
+						return next(error('User <%s> tried to access `%s` but was denied access due to missing permissions to %s/%s.', user.email, req.url, resource, permission).display('Access denied').status(403).log());
 					}
-					done(null, req, res);
+					next();
 				});
-			};
+			}
 
-			// set dirty header if necessary
-			redis.get('dirty_user_' + user.id, function(err, result) {
-				/* istanbul ignore if  */
-				if (err) {
-					logger.warn('[ctrl|auth] Error checking if user <%s> is dirty: %s', user.email, err);
-					return;
-				}
-				if (result) {
-					logger.info('[ctrl|auth] User <%s> is dirty, telling him in header.', user.email);
-					res.setHeader('X-User-Dirty', result);
-					return redis.del('dirty_user_' + user.id, checkACLs);
-				}
-				res.setHeader('X-User-Dirty', 0);
-				checkACLs();
-			});
+		], function(err) {
+			if (err) {
+				return done(err, req, res);
+			}
+			done(null, req, res);
 		});
 	};
 };

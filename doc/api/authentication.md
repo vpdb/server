@@ -135,9 +135,7 @@ created, such a token is valid for one year or until the user deletes it.
 They work like JTWs and are provided by the client through the `Authorization` 
 header:
 
-	Authorization: Token 2c4e34e2f0e522c3149fe2c332d85f16
-
-Note the usage of `Token` instead of `Bearer` in the header value. 
+	Authorization: Bearer 2c4e34e2f0e522c3149fe2c332d85f16
 
 
 ### Authorization

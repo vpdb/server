@@ -109,8 +109,6 @@ exports.auth = function(resource, permission, done) {
 							return next(error('Invalid access token.').status(401));
 						}
 
-						logger.info('[auth] Retrieved access token from DB for user <%s>.', t._created_by.email);
-
 						if (t.expires_at.getTime() < now.getTime()) {
 							return next(error('Token has expired.').status(401));
 						}
@@ -119,8 +117,7 @@ exports.auth = function(resource, permission, done) {
 							return next(error('Token is inactive.').status(401));
 						}
 
-						token.last_used_at = new Date();
-						token.save(function(err) {
+						Token.update({ _id: t._id }, { last_used_at: new Date() }, function(err) {
 							if (err) {
 								logger.warn('[ctrl|auth] Error saving last used time of token: %s', err.message);
 							}

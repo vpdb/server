@@ -174,7 +174,7 @@ describe('The VPDB `Token` API', function() {
 		});
 	});
 
-	describe.only('when updating an auth token', function() {
+	describe('when updating an auth token', function() {
 
 		before(function(done) {
 			hlp.setupUsers(request, {

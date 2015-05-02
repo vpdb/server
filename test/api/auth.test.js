@@ -100,6 +100,74 @@ describe('The authentication engine of the VPDB API', function() {
 		});
 	});
 
+	describe('when an access token is provided in the hedaer', function() {
+
+		it('should fail if the token is invalid', function(done) {
+			request
+				.get('/api/v1/user')
+				.set('Authorization', 'Bearer 688f4864ca7be0fe4bfe866acbf6b151')
+				.end(hlp.status(401, 'Invalid access token', done));
+		});
+
+		it('should fail if the token is inactive', function(done) {
+			request
+				.post('/api/v1/tokens')
+				.as('member')
+				.send({ label: 'Inactive token', password: hlp.getUser('member').password })
+				.end(function(err, res) {
+					hlp.expectStatus(err, res, 201);
+					var token = res.body.token;
+					request
+						.patch('/api/v1/tokens/' + res.body.id)
+						.as('member')
+						.send({ is_active: false })
+						.end(function(err, res) {
+							hlp.expectStatus(err, res, 200);
+							request
+								.get('/api/v1/user')
+								.set('Authorization', 'Bearer ' + token)
+								.end(hlp.status(401, 'is inactive', done));
+						});
+				});
+		});
+
+		it('should fail if the token is expired', function(done) {
+			request
+				.post('/api/v1/tokens')
+				.as('member')
+				.send({ label: 'Expired token', password: hlp.getUser('member').password })
+				.end(function(err, res) {
+					hlp.expectStatus(err, res, 201);
+					var token = res.body.token;
+					request
+						.patch('/api/v1/tokens/' + res.body.id)
+						.as('member')
+						.send({ expires_at: new Date(new Date().getTime() - 86400000)})
+						.end(function(err, res) {
+							hlp.expectStatus(err, res, 200);
+							request
+								.get('/api/v1/user')
+								.set('Authorization', 'Bearer ' + token)
+								.end(hlp.status(401, 'has expired', done));
+						});
+				});
+		});
+
+		it('should succeed if the token is valid', function(done) {
+			request
+				.post('/api/v1/tokens')
+				.as('member')
+				.send({ label: 'Expired token', password: hlp.getUser('member').password })
+				.end(function(err, res) {
+					hlp.expectStatus(err, res, 201);
+					request
+						.get('/api/v1/user')
+						.set('Authorization', 'Bearer ' + res.body.token)
+						.end(hlp.status(200, done));
+				});
+		});
+	});
+
 	describe('when authorization is provided in the URL', function() {
 
 		it('should able to get an access token if the auth token is valid', function(done) {

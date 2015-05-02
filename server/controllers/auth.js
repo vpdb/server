@@ -98,6 +98,11 @@ exports.auth = function(resource, permission, done) {
 						if (err) {
 							return next(error(err, 'Error retrieving access token from DB.').status(500).log());
 						}
+
+						if (!t) {
+							return next(error('Invalid access token.').status(401));
+						}
+
 						logger.info('[auth] Retrieved access token from DB for user <%s>.', t._created_by.email);
 
 						if (t.expires_at.getTime() < now.getTime()) {

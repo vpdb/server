@@ -34,7 +34,6 @@ if (!settings.validate()) {
 }
 
 
-
 serverDomain.run(function() {
 
 	logger.info('[app] Server location is at %s (CWD = %s)', path.resolve(__dirname), process.cwd());

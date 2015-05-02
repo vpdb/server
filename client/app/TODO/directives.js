@@ -44,7 +44,6 @@ angular.module('vpdb.common', [])
 					}
 				});
 				$scope.rate = function() {
-					console.log('rated %d', $scope.ratingUser);
 					$scope.$rating = $scope.ratingUser;
 					$parse($attrs.ratingAction)($scope)
 				};

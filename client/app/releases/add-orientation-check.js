@@ -66,25 +66,25 @@ angular.module('vpdb.releases.add', []).directive('orientationCheck', function($
 
 					}).result.then(function() {
 
-							// update flavor
+						// update flavor
 
-							params.file.flavor[params.flavor.name] = params.flavorVal.value;
+						params.file.flavor[params.flavor.name] = params.flavorVal.value;
 
-							// remove media files from server
-							var tableFileId = params.file.storage.id;
-							var mediaFileIds = _.pluck(_.values(params.metaFiles[tableFileId]), 'id');
-							_.each(mediaFileIds, function(id) {
-								FileResource.delete({ id: id });
-							});
-
-							// clear local media
-							delete params.metaFiles[tableFileId];
-							if (params.files) {
-								delete params.files[tableFileId];
-							}
-
-							params.metaLinks[tableFileId] = { playfield_image: false, playfield_video: false };
+						// remove media files from server
+						var tableFileId = params.file.storage.id;
+						var mediaFileIds = _.pluck(_.values(params.metaFiles[tableFileId]), 'id');
+						_.each(mediaFileIds, function(id) {
+							FileResource.delete({ id: id });
 						});
+
+						// clear local media
+						delete params.metaFiles[tableFileId];
+						if (params.files) {
+							delete params.files[tableFileId];
+						}
+
+						params.metaLinks[tableFileId] = { playfield_image: false, playfield_video: false };
+					});
 				}
 			});
 		}

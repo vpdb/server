@@ -38,7 +38,8 @@ var staging = {
 	apiUri: 'https://staging.vpdb.ch/api/v1',
 	storageUri: 'https://staging.vpdb.ch/storage/v1',
 	authHeader: 'X-Authorization',
-	credentials: { username: 'test', password: 'xxxxxx' }
+	credentials: { username: 'uploader', password: 'xxxxx' },
+	httpSimple: { username: 'vpdb', password: 'xxxxx' }
 };
 var production = {
 	apiUri: 'https://vpdb.ch/api/v1',
@@ -48,7 +49,7 @@ var production = {
 	httpSimple: { username: 'vpdb', password: 'xxxxxx' }
 };
 
-var config = local;
+var config = staging;
 
 config.romFolder = 'E:/Pinball/Visual Pinball-103/VPinMame/roms';
 

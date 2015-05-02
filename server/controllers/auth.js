@@ -119,7 +119,13 @@ exports.auth = function(resource, permission, done) {
 							return next(error('Token is inactive.').status(401));
 						}
 
-						next(null, t._created_by);
+						token.last_used_at = new Date();
+						token.save(function(err) {
+							if (err) {
+								logger.warn('[ctrl|auth] Error saving last used time of token: %s', err.message);
+							}
+							next(null, t._created_by);
+						});
 					});
 
 				// Otherwise, assume it's a JWT.

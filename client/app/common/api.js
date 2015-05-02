@@ -70,7 +70,7 @@ angular.module('vpdb.common', [])
 
 	.factory('ReleaseVersionResource', function($resource, ConfigService) {
 		return $resource(ConfigService.apiUri('/releases/:releaseId/versions/:version'), {}, {
-			'update': { method: 'PUT' }
+			update: { method: 'PUT' }
 		});
 	})
 
@@ -81,7 +81,7 @@ angular.module('vpdb.common', [])
 
 	.factory('ReleaseRatingResource', function($resource, ConfigService) {
 		return $resource(ConfigService.apiUri('/releases/:releaseId/rating'), {}, {
-			'update': { method: 'PUT' }
+			update: { method: 'PUT' }
 		});
 	})
 
@@ -92,6 +92,12 @@ angular.module('vpdb.common', [])
 
 	.factory('TagResource', function($resource, ConfigService) {
 		return $resource(ConfigService.apiUri('/tags/:id'), {}, {
+		});
+	})
+
+	.factory('TokenResource', function($resource, ConfigService) {
+		return $resource(ConfigService.apiUri('/tokens/:id'), { }, {
+			update: { method: 'PATCH' }
 		});
 	})
 
@@ -143,7 +149,7 @@ angular.module('vpdb.common', [])
 			 * variable is just set to the received error.
 			 *
 			 * @param {object} scope Scope where to create the error variables
-			 * @param {object} opt config options. Valid options: fieldPrefix
+			 * @param {object} [opt] config options. Valid options: fieldPrefix
 			 * @param {function} [fct] Executed if provided with given scope as argument.
 			 */
 			handleErrors: function(scope, opt, fct) {
@@ -166,7 +172,7 @@ angular.module('vpdb.common', [])
 						scope.error = response.data.error;
 					}
 					if (fct) {
-						fct(scope);
+						fct(scope, response);
 					}
 				};
 			},

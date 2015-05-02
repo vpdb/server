@@ -8,6 +8,7 @@ var deps = [
 	'ngResource',
 	'ngStorage',
 	'ngDragDrop',
+	'ngClipboard',
 	'angularFileUpload',
 	'angularMoment',
 	'ui.router',
@@ -106,6 +107,10 @@ angular.module('vpdb', deps.concat(appDeps))
 
 	.config(['msdElasticConfig', function(config) {
 		config.append = '\n\n';
+	}])
+
+	.config(['ngClipProvider', function(ngClipProvider) {
+		ngClipProvider.setPath("/public/ZeroClipboard.swf");
 	}]);
 
 /**

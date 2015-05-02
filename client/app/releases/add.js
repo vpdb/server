@@ -170,8 +170,8 @@ angular.module('vpdb.releases.add', []).controller('ReleaseAddCtrl', function(
 			templateUrl: '/releases/modal-tag-create.html',
 			controller: 'CreateTagCtrl'
 		}).result.then(function(newTag) {
-				$scope.tags.push(newTag);
-			});
+			$scope.tags.push(newTag);
+		});
 	};
 
 

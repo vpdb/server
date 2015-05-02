@@ -1,0 +1,26 @@
+include ../template/_mixins
+.theme-light
+	.modal-header
+		h1.h--no-margin.h--small
+			+icon('key').svg-3x.space-right
+			| &nbsp;New application access token
+	.modal-body
+		p Indicate the name of the application you want to give access to. Also provide your password so we're sure it's you!
+		form.form-horizontal(role="form")
+			.form-group(ng-class="{ error: errors.label }")
+				label.col-sm-3.control-label Label
+				.col-sm-7
+					input.form-control(ng-model="token.label", ng-required)
+			div.alert.alert-danger.padder-bottom(ng-show="errors.label")
+				+icon('warning').shift-up.space-right
+				| {{ errors.label }}
+			.form-group(ng-class="{ error: errors.password }")
+				label.col-sm-3.control-label Password
+				.col-sm-7
+					input.form-control(ng-model="token.password", type="password", ng-required)
+			div.alert.alert-danger.padder-bottom(ng-show="errors.password")
+				+icon('warning').shift-up.space-right
+				| {{ errors.password }}
+	.modal-footer
+		button.btn.btn-default(ng-click="$dismiss()") Cancel
+		button.btn.btn--secondary(ng-click="create()") Create

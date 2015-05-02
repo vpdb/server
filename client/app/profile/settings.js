@@ -2,11 +2,10 @@
 
 angular.module('vpdb.profile.settings', [])
 
-	.controller('ProfileSettingsCtrl', function($scope, $rootScope, AuthService, ApiHelper, ProfileResource, ModalService) {
+	.controller('ProfileSettingsCtrl', function($scope, $rootScope, $modal, AuthService, ApiHelper, ProfileResource, TokenResource, ModalService) {
 
 		$scope.theme('dark');
 		$scope.setTitle('Your Profile');
-		//$scope.setMenu('admin');
 
 		AuthService.refreshUser();
 
@@ -18,6 +17,9 @@ angular.module('vpdb.profile.settings', [])
 
 		$scope.providers = AuthService.getProviders($scope.auth.user);
 		var allProviders = AuthService.getProviders();
+
+		$scope.tokens = TokenResource.query();
+		$scope.showTokenAlert = false;
 
 		/**
 		 * First block: Update "public" user profile data
@@ -105,6 +107,38 @@ angular.module('vpdb.profile.settings', [])
 			});
 		};
 
+		$scope.createToken = function() {
+			$modal.open({
+				templateUrl: '/profile/modal-token-create.html',
+				controller: 'AddTokenCtrl'
+			}).result.then(function(token) {
+				$scope.tokens.unshift(token);
+				$scope.showTokenAlert = true;
+			});
+		};
+
+		$scope.toggleToken = function(token) {
+			TokenResource.update({ id: token.id }, { is_active: !token.is_active }, function() {
+				token.is_active = !token.is_active;
+			}, ApiHelper.handleErrorsInDialog($scope, 'Error toggling token.'));
+		};
+
+		$scope.deleteToken = function(token) {
+			return ModalService.question({
+				title: 'Delete application access token',
+				message: 'Any application or script using this token will no longer be able to access the VPDB API. You cannot undo this action.',
+				question: 'Are you sure you want to delete this token?'
+			}).result.then(function() {
+				TokenResource.delete({ id: token.id }, function() {
+					$scope.tokens.splice($scope.tokens.indexOf(token), 1);
+				}, ApiHelper.handleErrorsInDialog($scope, 'Error deleting token.'));
+			});
+		};
+
+		$scope.onTokenCopied = function() {
+			$rootScope.showNotification('Token copied to clipboard.');
+		};
+
 		// pre-fill (local) username from first provider we find.
 		var i, provider;
 		for (i = 0; i < allProviders.length; i++) {
@@ -139,4 +173,20 @@ angular.module('vpdb.profile.settings', [])
 			return true;
 		};
 
+	})
+
+	.controller('AddTokenCtrl', function($scope, $modal, $modalInstance, TokenResource, ApiHelper) {
+
+		$scope.token = {};
+		$scope.create = function() {
+			TokenResource.save($scope.token, function(token) {
+
+				$modalInstance.close(token);
+
+			}, ApiHelper.handleErrors($scope, function(scope, response) {
+				if (/password/i.test(response.data.error)) {
+					scope.errors.password = response.data.error;
+				}
+			}));
+		}
 	});

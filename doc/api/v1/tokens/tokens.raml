@@ -48,20 +48,41 @@ get:
           example: !include http/list-res-200.json
 
 /{token_id}:
+  patch:
+    is: [ protected ]
+    securedBy: [ jwt: { scopes: [ MEMBER ] } ]
+    description: |
+      Updates any number of fields of a token.
+
+      Allowed fields are `label`, `is_active` and `expires_at`.
+
+    body:
+      role/member:
+        example: !include http/patch-req.json
+    responses:
+      200:
+        body:
+          role/member:
+            example: !include http/patch-res-200.json
+      422:
+        body:
+          role/member:
+            example: !include http/patch-res-422.json
+
   delete:
-      is: [ protected ]
-      securedBy: [ jwt: { scopes: [ MEMBER ] } ]
-      description: |
-        Delete an access token of a given ID.
+    is: [ protected ]
+    securedBy: [ jwt: { scopes: [ MEMBER ] } ]
+    description: |
+      Delete an access token of a given ID.
 
-        As soon as the token is deleted, any third party applications that are
-        still configured with it, won't get authenticated anymore.
+      As soon as the token is deleted, any third party applications that are
+      still configured with it, won't get authenticated anymore.
 
-      body:
-        role/member:
-          example: !include http/del-req.json
-      responses:
-        204:
-          body:
-            role/member:
-              example: !include http/del-res-204.json
+    body:
+      role/member:
+        example: !include http/del-req.json
+    responses:
+      204:
+        body:
+          role/member:
+            example: !include http/del-res-204.json

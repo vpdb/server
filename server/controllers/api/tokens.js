@@ -74,6 +74,32 @@ exports.list = function(req, res) {
 	});
 };
 
+exports.update = function(req, res) {
+
+	var assert = api.assert(error, 'update', req.params.id, res);
+	var updateableFields = [ 'label', 'is_active', 'expires_at' ];
+
+	Token.findOne({ id: req.params.id, _created_by: req.user._id }, assert(function(token) {
+		if (!token) {
+			return api.fail(res, error('No such token'), 404);
+		}
+
+		_.extend(token, _.pick(req.body, updateableFields));
+
+		token.validate(function(err) {
+			if (err) {
+				return api.fail(res, error('Validations failed. See below for details.').errors(err.errors).warn('update'), 422);
+			}
+			token.save(assert(function() {
+
+				logger.info('[api|token:update] Token "%s" successfully updated.', token.label);
+				return api.success(res, token.toSimple(), 200);
+
+			}, 'Error updating token "%s"'));
+		});
+	}, 'Error finding token "%s"'));
+};
+
 exports.del = function(req, res) {
 
 	var assert = api.assert(error, 'delete', req.params.id, res);

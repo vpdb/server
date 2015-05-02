@@ -147,7 +147,6 @@ describe('The VPDB `Token` API', function() {
 		});
 
 		it('should only return owned token', function(done) {
-			var label = 'My Application';
 			request
 				.post('/api/v1/tokens')
 				.as('member2')
@@ -170,6 +169,66 @@ describe('The VPDB `Token` API', function() {
 									expect(res.body).to.have.length(1);
 									done();
 								});
+						});
+				});
+		});
+	});
+
+	describe.only('when updating an auth token', function() {
+
+		before(function(done) {
+			hlp.setupUsers(request, {
+				member: { roles: ['member'] }
+			}, done);
+		});
+
+		after(function(done) {
+			hlp.cleanup(request, done);
+		});
+
+		it('should fail for invalid data', function(done) {
+			// create
+			request
+				.post('/api/v1/tokens')
+				.as('member')
+				.send({ label: 'My Application', password: hlp.getUser('member').password })
+				.end(function(err, res) {
+					hlp.expectStatus(err, res, 201);
+
+					request
+						.patch('/api/v1/tokens/' + res.body.id)
+						.as('member')
+						.saveResponse({ path: 'tokens/patch'})
+						.send({ label: '1', expires_at: 'foo' })
+						.end(function(err, res) {
+							hlp.expectValidationError(err, res, 'label', 'must contain at least');
+							hlp.expectValidationError(err, res, 'expires_at', 'cast to date failed');
+							done();
+						});
+				});
+		});
+
+		it('should succeed for valid data', function(done) {
+			// create
+			request
+				.post('/api/v1/tokens')
+				.as('member')
+				.send({ label: 'My Application', password: hlp.getUser('member').password })
+				.end(function(err, res) {
+					hlp.expectStatus(err, res, 201);
+
+					var soon = new Date(new Date().getTime() + 1000);
+					request
+						.patch('/api/v1/tokens/' + res.body.id)
+						.as('member')
+						.save({ path: 'tokens/patch'})
+						.send({ label: 'My Renamed Application', expires_at: soon, is_active: false })
+						.end(function(err, res) {
+							hlp.expectStatus(err, res, 200);
+							expect(res.body.label).to.be('My Renamed Application');
+							expect(res.body.is_active).to.be(false);
+							expect(new Date(res.body.expires_at).getTime()).to.be(soon.getTime());
+							done();
 						});
 				});
 		});

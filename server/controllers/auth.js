@@ -90,8 +90,14 @@ exports.auth = function(resource, permission, done) {
 
 			function(next) {
 
-				// access token (from database)?
+				// application access token?
 				if (/[0-9a-f]{32,}/i.test(token)) {
+
+					// application access tokens aren't allowed in the url
+					if (fromUrl) {
+						return next(error('Application Access Tokens must be provided in the header.').status(401));
+					}
+
 
 					Token.findOne({ token: token }).populate('_created_by').exec(function(err, t) {
 						/* istanbul ignore if  */
@@ -164,7 +170,7 @@ exports.auth = function(resource, permission, done) {
 
 			}, function(user, next) {
 
-				// here we're authenticated (token is valid and not expired). So update user and check ACL if necessary
+				// *** here we're authenticated (token is valid and not expired). ***
 
 				// this will be useful for the rest of the stack
 				req.user = user;

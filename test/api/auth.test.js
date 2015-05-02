@@ -69,7 +69,7 @@ describe('The authentication engine of the VPDB API', function() {
 
 	});
 
-	describe('when authorization is provided in the header', function() {
+	describe('when a primary access token is provided in the header', function() {
 
 		it('should grant access to the user profile if the token is valid', function(done) {
 			request
@@ -100,7 +100,7 @@ describe('The authentication engine of the VPDB API', function() {
 		});
 	});
 
-	describe('when an access token is provided in the hedaer', function() {
+	describe('when an application access token is provided in the header', function() {
 
 		it('should fail if the token is invalid', function(done) {
 			request
@@ -220,6 +220,20 @@ describe('The authentication engine of the VPDB API', function() {
 				.get('/api/v1/user')
 				.query({ token: 'abcd.123.xyz' })
 				.end(hlp.status(401, 'Bad JSON Web Token', done));
+		});
+
+		it('should fail if the token is an application access token', function(done) {
+			request
+				.post('/api/v1/tokens')
+				.as('member')
+				.send({ label: 'App token', password: hlp.getUser('member').password })
+				.end(function(err, res) {
+					hlp.expectStatus(err, res, 201);
+					request
+						.get('/api/v1/user')
+						.query({ token: res.body.token })
+						.end(hlp.status(401, 'must be provided in the header', done));
+				});
 		});
 	});
 

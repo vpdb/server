@@ -1,15 +1,14 @@
 displayName: Tokens
 description: |
-  Access Tokens function like ordinary JWT access tokens. They can be used
-  instead of a password for full API access. They are useful if you need
-  a third party application such as PinballX to authenticate without giving
-  it your password.
+  Application access tokens function like ordinary JWT access tokens. They can
+  be used in the header for full API access. Their goal is to give third party
+  applications access to the API without having to hand them your password.
 
 post:
   is: [ validated ]
   securedBy: [ jwt: { scopes: [ MEMBER ] } ]
   description: |
-    Create a new access token.
+    Create a new application access token.
 
     Due to the sensibility of this request, the user's password must be
     provided.
@@ -33,7 +32,7 @@ post:
 get:
   securedBy: [ jwt: { scopes: [ MEMBER ] } ]
   description: |
-    List all access tokens.
+    List all application access tokens.
 
     Note there is no actual token returned. If a token was not copied and saved
     after creation, it can be deleted and must be re-created.
@@ -73,7 +72,7 @@ get:
     is: [ protected ]
     securedBy: [ jwt: { scopes: [ MEMBER ] } ]
     description: |
-      Delete an access token of a given ID.
+      Delete an application access token of a given ID.
 
       As soon as the token is deleted, any third party applications that are
       still configured with it, won't get authenticated anymore.

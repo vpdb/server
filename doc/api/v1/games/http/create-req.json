@@ -1,26 +1,36 @@
 POST /api/v1/games HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI0SjgtcDNXMDRmIiwiaWF0IjoiMjAxNS0wNC0yNVQxODo1MzoxNi4zMjhaIiwiZXhwIjoiMjAxNS0wNC0yNVQxOTo1MzoxNi4zMjhaIn0.QcGMpAeYlUVB6ovAw1STtZ3g1KLKHDMgGBt-dMiDFxM
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJWMVRWSWM4ekFmIiwiaWF0IjoiMjAxNS0wNS0wMlQxOTozNzoyNS44NjVaIiwiZXhwIjoiMjAxNS0wNS0wMlQyMDozNzoyNS44NjVaIn0.TvvbtkXFYkg_GNDObm_0hsC09t8yckBqDKjAbF08yto
 Content-Type: application/json
-Content-Length: 262
+Content-Length: 679
 
 {
   "ipdb": {
-    "number": 3505,
-    "mfg": 47
+    "number": 711,
+    "mfg": 93
   },
-  "title": "Ticker Tape",
-  "manufacturer": "Bally",
-  "model_number": "938",
-  "year": 1972,
+  "title": "Double-Feature",
+  "manufacturer": "Gottlieb",
+  "model_number": "45",
+  "year": 1950,
   "game_type": "em",
-  "designers": [
-    "Don Hooker"
+  "produced_units": 550,
+  "themes": [
+    "Pageantry",
+    "Show Business",
+    "Women"
   ],
-  "features": "Six Cards, 6 Coin Maximum, Super lines",
-  "id": "ticker-tape",
+  "designers": [
+    "Wayne Neyens"
+  ],
+  "artists": [
+    "Roy Parker"
+  ],
+  "features": "Flippers (2), Pop bumper (1), Passive bumpers (8), Slingshots (2), Kick-out holes (2). Slingshots are in upper playfield.",
+  "notes": "This game was Gottlieb's introduction of the \"kicking rubber\" feature.  When the ball hits the rubber, a paddle behind the rubber kicks the ball away. This feature appeared earlier on Chicago Coin's 1949 'Super Hockey'.",
+  "id": "double-feature",
   "_media": {
-    "backglass": "41jZT2ZREf"
+    "backglass": "N1GSIq8GCG"
   }
 }

@@ -1,5 +1,5 @@
-GET /api/v1/games/warlords/rating HTTP/1.1
+GET /api/v1/games/miss-bonus/rating HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI0MUdVUTYtQU5mIiwiaWF0IjoiMjAxNS0wNC0yNVQxODo1MzoyMi43MTdaIiwiZXhwIjoiMjAxNS0wNC0yNVQxOTo1MzoyMi43MTdaIn0.Z8edyMuGG-M_NIxZI9KNvF3TLSaNOzraV2QzouAV2WM
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJFSkhtNnE4ZkFmIiwiaWF0IjoiMjAxNS0wNS0wMlQxOTozNzozMi42NDNaIiwiZXhwIjoiMjAxNS0wNS0wMlQyMDozNzozMi42NDNaIn0.Y_Oe8sbSqS_S3NJE87IKYEJg2_hi4NtoYTkSnCGfOzc
 

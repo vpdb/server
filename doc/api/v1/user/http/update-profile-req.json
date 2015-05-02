@@ -1,14 +1,14 @@
 PATCH /api/v1/user HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI0a0FLb0NaMDRHIiwiaWF0IjoiMjAxNS0wNC0yNVQxODo1Mzo0Ni44NjBaIiwiZXhwIjoiMjAxNS0wNC0yNVQxOTo1Mzo0Ni44NjBaIn0.WiuFNKe8-08lwFa_2PtItu4WNrX8YaUHC9Wsn8EozwI
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI0MWxLVW5MZlJmIiwiaWF0IjoiMjAxNS0wNS0wMlQxOTozNzo1Ny43ODVaIiwiZXhwIjoiMjAxNS0wNS0wMlQyMDozNzo1Ny43ODVaIn0.zZeT0v8gCiVpc3SXNjrzD0Qp6i-UcIlr-tKprysvl1M
 Content-Type: application/json
-Content-Length: 144
+Content-Length: 135
 
 {
-  "name": "Santiago Williamson",
-  "location": "East Marina",
-  "email": "nora_schaden@yahoo.com",
-  "current_password": "IoBgceP0HP",
-  "password": "Beh7rUoutV"
+  "name": "Luna Towne",
+  "location": "Greenfeldermouth",
+  "email": "shana16@yahoo.com",
+  "current_password": "zQnEPzXaFR",
+  "password": "BCuS65gPe4"
 }

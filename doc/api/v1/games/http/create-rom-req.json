@@ -1,14 +1,14 @@
-POST /api/v1/games/the-cedar-ball/roms HTTP/1.1
+POST /api/v1/games/corral/roms HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI0eWhOSUFXUjR6IiwiaWF0IjoiMjAxNS0wNC0yNVQxODo1Mzo0Mi4wOTFaIiwiZXhwIjoiMjAxNS0wNC0yNVQxOTo1Mzo0Mi4wOTFaIn0.yzj_vdl5yiEj3zjNl1B65WSpuEsBVhlpM7ouOyicRIc
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJOSnQtMkxmMHoiLCJpYXQiOiIyMDE1LTA1LTAyVDE5OjM3OjUyLjI4MFoiLCJleHAiOiIyMDE1LTA1LTAyVDIwOjM3OjUyLjI4MFoifQ.qx-Ig91naxC5ZZ2x_52FvZJAniYyCFjeY1op7KV_QP4
 Content-Type: application/json
-Content-Length: 110
+Content-Length: 102
 
 {
-  "id": "the-cedar-ball_10",
+  "id": "corral_10",
   "version": "1.0",
   "notes": "That is some ROM.",
   "language": "en-US",
-  "_file": "VkC-vRbCEf"
+  "_file": "EJnf-3IGAM"
 }

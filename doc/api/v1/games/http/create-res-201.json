@@ -1,18 +1,21 @@
 201 Created
 Content-Type: application/json; charset=utf-8
-Etag: W/"wVPhks3h9WXgCUs3y37gZQ=="
+Etag: W/"gEqLjuZsjQ+C6JFzVvlFcw=="
 Content-Encoding: gzip
 
 {
-  "title": "Ticker Tape",
-  "manufacturer": "Bally",
-  "model_number": "938",
-  "year": 1972,
+  "title_sortable": "Double-Feature",
+  "title": "Double-Feature",
+  "manufacturer": "Gottlieb",
+  "model_number": "45",
+  "year": 1950,
   "game_type": "em",
-  "features": "Six Cards, 6 Coin Maximum, Super lines",
-  "id": "ticker-tape",
-  "_created_by": "553be29c22f062cc4d2cb807",
-  "created_at": "2015-04-25T18:53:16.438Z",
+  "produced_units": 550,
+  "features": "Flippers (2), Pop bumper (1), Passive bumpers (8), Slingshots (2), Kick-out holes (2). Slingshots are in upper playfield.",
+  "notes": "This game was Gottlieb's introduction of the \"kicking rubber\" feature.  When the ball hits the rubber, a paddle behind the rubber kicks the ball away. This feature appeared earlier on Chicago Coin's 1949 'Super Hockey'.",
+  "id": "double-feature",
+  "_created_by": "55452775a61d87f04d509063",
+  "created_at": "2015-05-02T19:37:25.940Z",
   "rating": {
     "score": 0,
     "votes": 0,
@@ -29,14 +32,20 @@ Content-Encoding: gzip
     "releases": 0
   },
   "ipdb": {
-    "number": 3505,
-    "mfg": 47
+    "number": 711,
+    "mfg": 93
   },
-  "artists": [],
-  "designers": [
-    "Don Hooker"
+  "artists": [
+    "Roy Parker"
   ],
-  "themes": [],
+  "designers": [
+    "Wayne Neyens"
+  ],
+  "themes": [
+    "Pageantry",
+    "Show Business",
+    "Women"
+  ],
   "short": [],
   "media": {
     "backglass": {
@@ -46,22 +55,22 @@ Content-Encoding: gzip
       "is_protected": false,
       "variations": {
         "small-2x": {
-          "url": "/storage/v1/files/41jZT2ZREf/small-2x"
+          "url": "/storage/v1/files/N1GSIq8GCG/small-2x"
         },
         "small": {
-          "url": "/storage/v1/files/41jZT2ZREf/small"
+          "url": "/storage/v1/files/N1GSIq8GCG/small"
         },
         "medium-2x": {
-          "url": "/storage/v1/files/41jZT2ZREf/medium-2x"
+          "url": "/storage/v1/files/N1GSIq8GCG/medium-2x"
         },
         "medium": {
-          "url": "/storage/v1/files/41jZT2ZREf/medium"
+          "url": "/storage/v1/files/N1GSIq8GCG/medium"
         }
       },
       "bytes": 135,
-      "url": "/storage/v1/files/41jZT2ZREf",
-      "id": "41jZT2ZREf"
+      "url": "/storage/v1/files/N1GSIq8GCG",
+      "id": "N1GSIq8GCG"
     }
   },
-  "url": "/game/ticker-tape"
+  "url": "/game/double-feature"
 }

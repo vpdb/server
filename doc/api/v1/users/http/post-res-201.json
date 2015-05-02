@@ -1,15 +1,15 @@
 201 Created
 Content-Type: application/json; charset=utf-8
-Content-Length: 510
-Etag: W/"1fe-75e5b8b"
+Content-Length: 492
+Etag: W/"1ec-cd401e8a"
 
 {
   "plan": "free",
-  "name": "Vivianne_Howe61",
-  "username": "Vivianne_Howe61",
-  "email": "greta.jerde55@hotmail.com",
+  "name": "Muriel14",
+  "username": "Muriel14",
+  "email": "elta_prosacco@gmail.com",
   "provider": "local",
-  "created_at": "2015-04-25T18:53:47.085Z",
+  "created_at": "2015-05-02T19:37:58.005Z",
   "is_active": false,
   "counter": {
     "stars": 0,
@@ -21,9 +21,9 @@ Etag: W/"1fe-75e5b8b"
   ],
   "email_status": {
     "code": "pending_registration",
-    "expires_at": "2015-04-26T18:53:47.086Z",
-    "value": "greta.jerde55@hotmail.com"
+    "expires_at": "2015-05-03T19:37:58.005Z",
+    "value": "elta_prosacco@gmail.com"
   },
-  "id": "V1d6j0WCNz",
-  "gravatar_id": "917de522d74d062f111dd6a34febe090"
+  "id": "Eksh8hIGCG",
+  "gravatar_id": "025168680663c83ae4da0f14bff384f3"
 }

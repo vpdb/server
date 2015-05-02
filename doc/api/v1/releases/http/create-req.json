@@ -1,21 +1,21 @@
 POST /api/v1/releases HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI0eTByT1RXQVZmIiwiaWF0IjoiMjAxNS0wNC0yNVQxODo1MzoyNy42MTBaIiwiZXhwIjoiMjAxNS0wNC0yNVQxOTo1MzoyNy42MTBaIn0.Hg4pSrQjR3ld0p7AWgG7BFIzbE7zgBh-O1uNhh1fVBo
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJOSlhmemo4ZlJHIiwiaWF0IjoiMjAxNS0wNS0wMlQxOTozNzozNy4zMDdaIiwiZXhwIjoiMjAxNS0wNS0wMlQyMDozNzozNy4zMDdaIn0.ZjPgZVteINkkviRDwDlKWvx_u6uhoEA8Tf9Op_KrWFk
 Content-Type: application/json
-Content-Length: 475
+Content-Length: 476
 
 {
   "name": "release",
-  "_game": "dual-pool",
+  "_game": "spellbound",
   "versions": [
     {
       "files": [
         {
-          "_file": "EydXK6bCVf",
+          "_file": "4yDzXiIzCM",
           "_media": {
-            "playfield_image": "E13XKpZCEG",
-            "playfield_video": "N1gcabAEz"
+            "playfield_image": "E1iGXjIGRG",
+            "playfield_video": "Nkl4jUz0G"
           },
           "_compatibility": [
             "9.9.0"
@@ -26,9 +26,9 @@ Content-Length: 475
           }
         },
         {
-          "_file": "N1YQt6WC4f",
+          "_file": "Ey_MmsLGCz",
           "_media": {
-            "playfield_image": "NkTXK6WAEf"
+            "playfield_image": "VynzXsIf0M"
           },
           "_compatibility": [
             "9.9.0"
@@ -44,7 +44,7 @@ Content-Length: 475
   ],
   "authors": [
     {
-      "_user": "4y0rOTWAVf",
+      "_user": "NJXfzj8fRG",
       "roles": [
         "Table Creator"
       ]

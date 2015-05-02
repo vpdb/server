@@ -1,15 +1,15 @@
 200 OK
 Content-Type: application/json; charset=utf-8
 Content-Length: 164
-Etag: W/"a4-f19139cf"
+Etag: W/"a4-c3e51731"
 
 {
   "value": 8,
-  "created_at": "2015-04-25T18:53:23.616Z",
+  "created_at": "2015-05-02T19:37:33.487Z",
   "game": {
     "average": 8,
     "votes": 1,
     "score": 8.375
   },
-  "modified_at": "2015-04-25T18:53:23.628Z"
+  "modified_at": "2015-05-02T19:37:33.504Z"
 }

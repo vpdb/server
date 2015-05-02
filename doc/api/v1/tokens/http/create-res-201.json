@@ -1,12 +1,13 @@
 201 Created
 Content-Type: application/json; charset=utf-8
-Content-Length: 182
-Etag: W/"b6-94a38116"
+Content-Length: 203
+Etag: W/"cb-9abbf460"
 
 {
+  "id": "V1s-8n8GRG",
   "label": "My Application",
   "is_active": true,
-  "expires_at": "2016-04-30T20:15:38.590Z",
-  "created_at": "2015-05-01T20:15:38.590Z",
-  "token": "bacca91bada6bb79e83ebc87684c18a1"
+  "expires_at": "2016-05-01T19:37:57.296Z",
+  "created_at": "2015-05-02T19:37:57.296Z",
+  "token": "c0b103eda3336f569e288ed903b60a36"
 }

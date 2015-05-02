@@ -1,15 +1,15 @@
 200 OK
 Content-Type: application/json; charset=utf-8
-Content-Length: 383
-Etag: W/"17f-497b2134"
+Content-Length: 371
+Etag: W/"173-ab2a54e9"
 
 {
   "plan": "free",
-  "name": "Jaunita_Christiansen3",
-  "username": "Jaunita_Christiansen3",
-  "email": "miracle_braun49@hotmail.com",
+  "name": "Robert_Eichmann49",
+  "username": "Robert_Eichmann49",
+  "email": "itzel_maggio8@gmail.com",
   "provider": "local",
-  "created_at": "2015-04-25T18:53:46.804Z",
+  "created_at": "2015-05-02T19:37:57.716Z",
   "is_active": true,
   "counter": {
     "stars": 0,
@@ -19,6 +19,6 @@ Etag: W/"17f-497b2134"
   "roles": [
     "member"
   ],
-  "id": "4JMKjCZR4f",
-  "gravatar_id": "2ac438245d922a338dcfb180a5bc2fba"
+  "id": "4JNuUhUGCM",
+  "gravatar_id": "d7c196ddd1f8e65473d67d9f5208a87c"
 }

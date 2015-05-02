@@ -1,5 +1,5 @@
-DELETE /api/v1/games/dancing-dolls/star HTTP/1.1
+DELETE /api/v1/games/carnival-target-gallery/star HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJOa0tWOUNiQVZNIiwiaWF0IjoiMjAxNS0wNC0yNVQxODo1Mzo0NS44MjdaIiwiZXhwIjoiMjAxNS0wNC0yNVQxOTo1Mzo0NS44MjdaIn0.kbv7yA5VzFvSZI4CuOb44U5Ss5GmRvCEWSDoQnoah7s
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJFa0pmQjNMZkN6IiwiaWF0IjoiMjAxNS0wNS0wMlQxOTozNzo1Ni4zMjFaIiwiZXhwIjoiMjAxNS0wNS0wMlQyMDozNzo1Ni4zMjFaIn0.wdM_t8bqD0VVCAgkxT-NHkavHvd8l429Zm9c_t91gIk
 

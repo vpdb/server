@@ -1,15 +1,15 @@
 200 OK
 Content-Type: application/json; charset=utf-8
-Content-Length: 804
-Etag: W/"324-583f2b38"
+Content-Length: 962
+Etag: W/"3c2-53835546"
 
 {
   "plan": "free",
-  "name": "Hassan.Brekke3",
-  "username": "Hassan.Brekke3",
-  "email": "caitlyn7@yahoo.com",
+  "name": "Rogelio.Johnson",
+  "username": "Rogelio.Johnson",
+  "email": "clifford.mohr91@gmail.com",
   "provider": "local",
-  "created_at": "2015-04-25T18:53:12.550Z",
+  "created_at": "2015-05-02T19:37:21.348Z",
   "is_active": true,
   "counter": {
     "stars": 0,
@@ -19,8 +19,8 @@ Etag: W/"324-583f2b38"
   "roles": [
     "member"
   ],
-  "id": "Ny7lYhWANG",
-  "gravatar_id": "634b8c9437c00d936a2a97e8c2be3b7f",
+  "id": "Ek7gMqIGAG",
+  "gravatar_id": "d7101c4e29353209fb3653a593f44184",
   "permissions": {
     "comments": [
       "add"
@@ -39,7 +39,8 @@ Etag: W/"324-583f2b38"
     ],
     "users": [
       "search",
-      "view"
+      "view",
+      "star"
     ],
     "files": [
       "upload",
@@ -47,8 +48,10 @@ Etag: W/"324-583f2b38"
       "download"
     ],
     "releases": [
+      "rate",
+      "add",
       "delete",
-      "add"
+      "star"
     ],
     "roms": [
       "add",
@@ -57,6 +60,17 @@ Etag: W/"324-583f2b38"
     "builds": [
       "add",
       "delete-own"
+    ],
+    "tokens": [
+      "patch",
+      "delete",
+      "add",
+      "update",
+      "list"
+    ],
+    "games": [
+      "rate",
+      "star"
     ],
     "user": [
       "view",

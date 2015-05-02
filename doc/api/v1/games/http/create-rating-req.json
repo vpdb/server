@@ -1,8 +1,8 @@
-POST /api/v1/games/hoosier-baseball/rating HTTP/1.1
+POST /api/v1/games/poker-alley/rating HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
 Content-Type: application/json
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJOSkZ6VFdSTk0iLCJpYXQiOiIyMDE1LTA0LTI1VDE4OjUzOjIxLjY1OVoiLCJleHAiOiIyMDE1LTA0LTI1VDE5OjUzOjIxLjY1OVoifQ.tk1Cf49s9TVO_ErkqpMNIX30Y_gyE7EF_6XDDarwqL8
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJOeVkzOVVNME0iLCJpYXQiOiIyMDE1LTA1LTAyVDE5OjM3OjMxLjM3MloiLCJleHAiOiIyMDE1LTA1LTAyVDIwOjM3OjMxLjM3MloifQ.ZciqXXcsOuwtuhgOl4H3upIujne2EWPQ2PxIen9mQeU
 Content-Length: 11
 
 {

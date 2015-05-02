@@ -1,8 +1,8 @@
-PUT /api/v1/games/4x4/rating HTTP/1.1
+PUT /api/v1/games/tropicana/rating HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
 Content-Type: application/json
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI0eWJsRXBaUkVmIiwiaWF0IjoiMjAxNS0wNC0yNVQxODo1MzoyMy4yMTFaIiwiZXhwIjoiMjAxNS0wNC0yNVQxOTo1MzoyMy4yMTFaIn0.yPer9iuijidSZ_UIYc79MpY8Fi9ePigKCfxjqYstirM
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJFeVFEcHFJTVJ6IiwiaWF0IjoiMjAxNS0wNS0wMlQxOTozNzozMy4wNTdaIiwiZXhwIjoiMjAxNS0wNS0wMlQyMDozNzozMy4wNTdaIn0.amQBaDrK9HM2Wfshu4-uaR84Zbz8cOhzbckuhuoYyk4
 Content-Length: 11
 
 {

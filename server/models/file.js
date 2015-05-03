@@ -144,15 +144,7 @@ FileSchema.methods.toDetailed = function() {
  * @api public
  */
 FileSchema.methods.getPath = function(variation, tmpSuffix) {
-
-	// variation name
-	var variationName = _.isObject(variation) ? variation.name : variation;
-
-	var suffix = tmpSuffix || '';
-	var ext = this.getExt(variation);
-	return variationName ?
-		path.resolve(config.vpdb.storage, variationName, this.id) + suffix + ext :
-		path.resolve(config.vpdb.storage, this.id) + suffix + ext;
+	return storage.path(this, variation, tmpSuffix);
 };
 
 /**
@@ -173,10 +165,7 @@ FileSchema.methods.getExt = function(variation) {
  * @api public
  */
 FileSchema.methods.getUrl = function(variation) {
-	var variationName = _.isObject(variation) ? variation.name : variation;
-	return variationName ?
-		settings.storagePath('/' + this.id + '/' + variationName) :
-		settings.storagePath('/' + this.id);
+	return storage.url(this, variation);
 };
 
 /**

@@ -322,7 +322,25 @@ Storage.prototype.onProcessed = function(file, variation, processor, nextEvent) 
  * @returns {string}
  */
 Storage.prototype.url = function(file, variation) {
-	return file ? settings.storagePath('/files/' + file.id + (variation ? '/' + variation : '')) : null;
+
+	if (!file) {
+		return null;
+	}
+
+	var variationName = _.isObject(variation) ? variation.name : variation;
+	return variationName ?
+		settings.storagePath('/files/' + file.id + '/' + variationName) :
+		settings.storagePath('/files/' + file.id);
+};
+
+Storage.prototype.path = function(file, variation, tmpSuffix) {
+
+	var variationName = _.isObject(variation) ? variation.name : variation;
+	var suffix = tmpSuffix || '';
+	var ext = file.getExt(variation);
+	return variationName ?
+		path.resolve(config.vpdb.storage, variationName, file.id) + suffix + ext :
+		path.resolve(config.vpdb.storage, file.id) + suffix + ext;
 };
 
 /**

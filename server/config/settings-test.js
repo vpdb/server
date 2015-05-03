@@ -34,12 +34,12 @@ module.exports = {
 			},
 			defaultPlan: 'free',
 			costs: {
-				'image/jpeg': 0,
-				'image/png': 0,
-				'application/zip': 1,
-				'application/x-visual-pinball-table': 1,
-				'video/mp4': 1,
-				'video/x-flv': 1
+				'backglass': { category: { video: 1, image: 0 }, variation: -1 },
+				'logo': { category: 0, variation: -1 },
+				'playfield-fs': { category: { video: 1, image: 0 }, variation: -1 },
+				'playfield-ws': { category: { video: 1, image: 0 }, variation: -1 },
+				'release': { category: { table: 1, '*': 0 } },
+				'rom': 0
 			}
 		},
 		metrics: { bayesianEstimate: { minVotes: 3, globalMean: null } },

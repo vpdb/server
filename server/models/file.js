@@ -29,6 +29,7 @@ var settings = require('./../modules/settings');
 var toObj = require('./plugins/to-object');
 var metrics = require('./plugins/metrics');
 var storage = require('../modules/storage');
+var quota = require('../modules/quota');
 var mimeTypes = require('../modules/mimetypes');
 var fileTypes = require('../modules/filetypes');
 
@@ -66,7 +67,7 @@ FileSchema.plugin(metrics);
 // API FIELDS
 //-----------------------------------------------------------------------------
 var apiFields = {
-	simple: [ 'id', 'url', 'bytes', 'variations', 'is_protected', 'counter' ], // fields returned in references
+	simple: [ 'id', 'url', 'bytes', 'variations', 'is_protected', 'counter', 'cost' ], // fields returned in references
 	detailed: [ 'name', 'created_at', 'mime_type', 'file_type', 'metadata' ]
 };
 
@@ -87,24 +88,23 @@ FileSchema.virtual('url')
 	});
 
 /**
+ * how much credit it costs to download this file.
+ *
+ * -1 = public file
+ *  0 = free file
+ * >0 = non-free file
+ */
+FileSchema.virtual('cost')
+	.get(function() {
+		return quota.getCost(this);
+	});
+
+/**
  * `protected` means that the file is served only to logged users
  */
 FileSchema.virtual('is_protected')
 	.get(function() {
-		return !this.is_active || !this.is_public;
-	});
-
-/**
- * `public` means that the file is also served to anonymous users
- *
- * Note that "is public" currently equals to "is free", meaning we can't have
- * files that don't hit the user's quota and are not served to anonymous.
- *
- * Also note that undefined MIME types are public by default.
- */
-FileSchema.virtual('is_public')
-	.get(function() {
-		return config.vpdb.quota.costs[this.mime_type] ? false : true;
+		return this.cost > -1;
 	});
 
 
@@ -166,6 +166,28 @@ FileSchema.methods.getExt = function(variation) {
  */
 FileSchema.methods.getUrl = function(variation) {
 	return storage.url(this, variation);
+};
+
+/**
+ * Returns true if the file is public (as in accessible without being authenticated), false otherwise.
+ *
+ * @param {Object|String} variation - Either variation name or object containing attribute "name"
+ * @returns {boolean}
+ * @api public
+ */
+FileSchema.methods.isPublic = function(variation) {
+	return quota.getCost(this, variation) === -1;
+};
+
+/**
+ * Returns true if the file is free (as in accessible only if logged, but doesn't cost any credit), false otherwise.
+ *
+ * @param {Object|String} variation - Either variation name or object containing attribute "name"
+ * @returns {boolean}
+ * @api public
+ */
+FileSchema.methods.isFree = function(variation) {
+	return quota.getCost(this, variation) === 0;
 };
 
 /**
@@ -280,6 +302,9 @@ FileSchema.options.toObject = {
 		delete file._created_by;
 		file.variations = storage.urls(doc);
 		file.metadata = storage.metadataShort(doc);
+		if (file.cost <= 0) {
+			delete file.cost;
+		}
 	}
 };
 

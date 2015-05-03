@@ -26,6 +26,7 @@ var async = require('async');
 var logger = require('winston');
 
 var queue = require('./queue');
+var quota = require('./quota');
 var error = require('./error')('storage');
 var settings = require('./settings');
 var config = settings.current;
@@ -363,8 +364,12 @@ Storage.prototype.urls = function(file) {
 				variations[variation.name] = {};
 			}
 			variations[variation.name].url = that.url(file, variation.name);
-			if (file.is_protected) {
+			var cost = quota.getCost(file, variation)
+			if (cost > -1) {
 				variations[variation.name].is_protected = true;
+			}
+			if (cost > 0) {
+				variations[variation.name].cost = cost;
 			}
 		});
 	}

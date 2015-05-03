@@ -72,14 +72,10 @@ Quota.prototype.isAllowed = function(req, res, files, callback) {
 	var file, plan, sum = 0;
 	for (var i = 0; i < files.length; i++) {
 		file = files[i];
-
-		// undefined mime types are free
-		if (!quotaConfig.costs[file.mime_type] && quotaConfig.costs[file.mime_type] !== 0) {
-			continue;
-		}
+		var cost = Quota.prototype.getCost(file);
 
 		// a free file
-		if (quotaConfig.costs[file.mime_type] === 0) {
+		if (cost === 0) {
 			continue;
 		}
 
@@ -99,7 +95,7 @@ Quota.prototype.isAllowed = function(req, res, files, callback) {
 			return callback(error('No quota defined for plan "%s"', plan));
 		}
 
-		sum += quotaConfig.costs[file.mime_type];
+		sum += cost;
 	}
 
 	if (sum === 0) {
@@ -127,6 +123,66 @@ Quota.prototype.isAllowed = function(req, res, files, callback) {
 			callback(null, result.isAllowed);
 		}
 	);
+};
+
+/**
+ * Returns the cost of a given file and variation.
+ *
+ * @param {File} file File
+ * @param {string|object} [variation] Optional variation
+ * @returns {*}
+ */
+Quota.prototype.getCost = function(file, variation) {
+
+	if (!file.file_type) {
+		logger.error(require('util').inspect(file));
+		throw new Error('File object must be populated when retrieving costs.');
+	}
+
+	var variationName = _.isObject(variation) ? variation.name : variation;
+	var cost = quotaConfig.costs[file.file_type];
+
+	// undefined file_types are free
+	if (_.isUndefined(cost)) {
+		logger.warn('[quota] Undefined cost for file_type "%s".', file.file_type);
+		return 0;
+	}
+
+	// if a variation is demanded and cost contains variation def, ignore the rest.
+	if (variationName && !_.isUndefined(cost.variation)) {
+		if (_.isObject(cost.variation)) {
+			if (_.isUndefined(cost.variation[variationName])) {
+				if (_.isUndefined(cost.variation['*'])) {
+					logger.warn('[quota] No cost defined for %s file of variation %s and no fallback given, returning 0.', file.file_type, variationName);
+					return 0;
+				}
+				cost = cost.variation['*'];
+			}
+			cost = cost.variation[variationName];
+		} else {
+			return cost.variation;
+		}
+	}
+
+	if (_.isObject(cost)) {
+		if (_.isUndefined(cost.category)) {
+			logger.warn('[quota] No cost defined for %s file (type is undefined).', file.file_type, file.getMimeCategory());
+			return 0;
+		}
+		if (_.isObject(cost.category)) {
+			var costMimetype = cost.category[file.getMimeCategory()];
+			if (_.isUndefined(costMimetype)) {
+				if (_.isUndefined(cost.category['*'])) {
+					logger.warn('[quota] No cost defined for %s file of type %s and no fallback given, returning 0.', file.file_type, file.getMimeCategory());
+					return 0;
+				}
+				return cost.category['*'];
+			}
+			return costMimetype;
+		}
+		return cost.category;
+	}
+	return cost;
 };
 
 module.exports = new Quota();

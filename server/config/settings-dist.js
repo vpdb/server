@@ -211,26 +211,32 @@ module.exports = {
 			defaultPlan: 'free',
 
 			/**
-			 * How many credits are debited per download. For now, you can
-			 * define different costs per MIME type of the file, other
-			 * attributes are imaginable in the future.
+			 * How many credits are debited per download. Give the file type as
+			 * key.
 			 *
-			 * Note that if a MIME type is not defined here (list can be
-			 * checked here[1]), no cost will be applied to it.
+			 * Values are either -1 (public, no access control), 0 (free but
+			 * user must be logged), and n (number credits).
 			 *
-			 * [1] https://github.com/freezy/node-vpdb/blob/master/server/models/file.js#L9
+			 * See [1] for a list of file types.
 			 *
-			 * Also note that packs value the sum of their content and even
-			 * though they are zipped, they won't count as zip files.
+			 * If you want to distinguish between the actual file and its
+			 * variations, add a "variation" sub-config with the variation
+			 * name as keys.
+			 *
+			 * IMPORTANT: Don't change -1 values after you have set them, or
+			 * files won't be accessible anymore. This is due to public files
+			 * being served from a different folder so we can make Nginx or even
+			 * a CDN host them.
+			 *
+			 * [1] https://github.com/freezy/node-vpdb/blob/master/server/modules/filetypes.js
 			 */
 			costs: {
-				'image/jpeg': 0,
-				'image/png': 0,
-				'text/plain': 0,
-				'application/zip': 1,
-				'application/x-visual-pinball-table': 1,
-				'video/mp4': 1,
-				'video/x-flv': 1
+				'backglass': { category: { video: 1, image: 0 }, variation: -1 },   // bg vids: 1 credit, bg imgs: free, any variation: public
+				'logo': { category: 0, variation: -1 },                             // original logo: free, any variation: public
+				'playfield-fs': { category: { video: 1, image: 0 }, variation: -1 },
+				'playfield-ws': { category: { video: 1, image: 0 }, variation: { medium: { type: { image: 1 }}, '*': -1 } },
+				'release': { category: { table: 1, '*': 0 } },                      // any type or variation: 1 credit
+				'rom': 0
 			}
 		},
 

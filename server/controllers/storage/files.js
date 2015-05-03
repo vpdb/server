@@ -37,9 +37,9 @@ var acl = require('../../acl');
  */
 exports.get = function(req, res, authErr) {
 
-	find(req, res, authErr, function(file, isPublic) {
+	find(req, res, authErr, function(file, isFree) {
 
-		if (isPublic) {
+		if (isFree) {
 			return serve(req, res, file, req.params.variation);
 		}
 
@@ -92,8 +92,8 @@ function find(req, res, authErr, callback) {
 		}
 
 		// file is not public - user must be logged in.
-		if (!file.is_public && !req.user) {
-			return res.status(401).json({ error: 'You must valid credentials for non-public files.', cause: authErr.message }).end();
+		if (!file.isPublic(req.params.variation) && !req.user) {
+			return res.status(401).json({ error: 'You must provide valid credentials for non-public files.', cause: authErr.message }).end();
 		}
 
 		// if inactive and user is not logged or not the owner, refuse.
@@ -106,12 +106,17 @@ function find(req, res, authErr, callback) {
 			}
 		}
 
-		// at this point, we can serve the file if it's public
-		if (file.is_public) {
+		// at this point, we can serve the file if it's free
+		if (file.isPublic(req.params.variation)) {
 			return callback(file, true);
 		}
 
-		// so here we determined the file isn't public, so we need to check ACLs.
+		// we also serve it if it's free and the user is logged
+		if (file.isFree(req.params.variation) && req.user) {
+			return callback(file, true);
+		}
+
+		// so here we determined the file isn't free, so we need to check ACLs.
 		acl.isAllowed(req.user.id, 'files', 'download', function(err, granted) {
 			/* istanbul ignore if  */
 			if (err) {
@@ -191,7 +196,7 @@ function serve(req, res, file, variationName, headOnly) {
 				counters.push(function(next) {
 					file.incrementCounter('downloads', next);
 				});
-				if (!file.is_public) {
+				if (!file.isFree(variationName)) {
 					counters.push(function (next) {
 						req.user.incrementCounter('downloads', next);
 

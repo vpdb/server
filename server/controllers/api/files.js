@@ -26,7 +26,6 @@ var api = require('./api');
 var File = require('mongoose').model('File');
 
 var storage = require('../../modules/storage');
-var fileTypes = require('../../modules/filetypes');
 var error = require('../../modules/error')('api', 'file');
 
 exports.upload = function(req, res) {
@@ -158,9 +157,11 @@ exports.view = function(req, res) {
 		if (!file.is_active && (!req.user || !isOwner)) {
 			return api.fail(res, error('File "%s" is inactive.', req.params.id), req.user ? 403 : 401);
 		}
-		if (!file.is_public && (!req.user || !isOwner)) {
-			return api.fail(res, error('File "%s" is not public.', req.params.id), req.user ? 403 : 401);
-		}
+
+		// TODO check why this check is done. we're still at api level (not storage), so we should be able to query meta data of any file.
+		//if (!file.is_public && (!req.user || !isOwner)) {
+		//	return api.fail(res, error('File "%s" is not public.', req.params.id), req.user ? 403 : 401);
+		//}
 
 		return api.success(res, file.toDetailed());
 	});

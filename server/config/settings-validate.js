@@ -23,6 +23,7 @@ var _ = require('lodash');
 var fs = require('fs');
 var path = require('path');
 var mimeTypes = require('../modules/mimetypes');
+var fileTypes = require('../modules/filetypes');
 var validator = require('validator');
 
 /**
@@ -333,22 +334,22 @@ module.exports = {
 
 			costs: function(costs) {
 				var cost, errors = [];
-				for (var mimeType in costs) {
-					if (costs.hasOwnProperty(mimeType)) {
-						cost = costs[mimeType];
+				for (var fileType in costs) {
+					if (costs.hasOwnProperty(fileType)) {
+						cost = costs[fileType];
 						/* istanbul ignore if */
-						if (!_.contains(_.keys(mimeTypes), mimeType)) {
+						if (!fileTypes.exists(fileType)) {
 							errors.push({
-								path: mimeType,
-								message: 'Invalid MIME type. Valid MIME types are: ["' + _.keys(mimeTypes).join('", "') + '"].',
-								setting: mimeType
+								path: fileType,
+								message: 'Invalid file type. Valid file types are: ["' + fileTypes.keys().join('", "') + '"].',
+								setting: fileType
 							});
 						}
 						/* istanbul ignore if */
-						if (!_.isNumber(parseInt(cost)) || parseInt(cost) < 0) {
+						if (!_.isNumber(parseInt(cost)) || !_.isObject(cost) < 0) {
 							errors.push({
-								path: mimeType,
-								message: 'Cost must be an integer equal or greater than 0.',
+								path: fileType,
+								message: 'Cost must be an integer or object.',
 								setting: cost
 							});
 						}

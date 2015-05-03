@@ -186,7 +186,7 @@ describe('The storage engine of VPDB', function() {
 			it('should grant access to anonymous users', function(done) {
 
 				hlp.game.createGame('contributor', request, function(game) {
-					request.get(game.media.backglass.url).end(function(err, res) {
+					request.get(game.media.backglass.variations.small.url).end(function(err, res) {
 						hlp.expectStatus(err, res, 200);
 						expect(res.headers['content-length']).to.be.greaterThan(0);
 						done();

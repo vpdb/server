@@ -1,5 +1,5 @@
-GET /api/v1/games/miss-bonus/rating HTTP/1.1
+GET /api/v1/games/bing-o-reno/rating HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJFSkhtNnE4ZkFmIiwiaWF0IjoiMjAxNS0wNS0wMlQxOTozNzozMi42NDNaIiwiZXhwIjoiMjAxNS0wNS0wMlQyMDozNzozMi42NDNaIn0.Y_Oe8sbSqS_S3NJE87IKYEJg2_hi4NtoYTkSnCGfOzc
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI0SnNTLVRHdGs3IiwiaWF0IjoiMjAxNS0wNS0wM1QyMTozMToxMi42MDJaIiwiZXhwIjoiMjAxNS0wNS0wM1QyMjozMToxMi42MDJaIn0.wBi4NNLYumMt1Yy212OiDJwwOyWCnKGLJahv1qJBdL0
 

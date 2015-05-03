@@ -1,36 +1,27 @@
 POST /api/v1/games HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJWMVRWSWM4ekFmIiwiaWF0IjoiMjAxNS0wNS0wMlQxOTozNzoyNS44NjVaIiwiZXhwIjoiMjAxNS0wNS0wMlQyMDozNzoyNS44NjVaIn0.TvvbtkXFYkg_GNDObm_0hsC09t8yckBqDKjAbF08yto
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJOeTFnaTN6S2s3IiwiaWF0IjoiMjAxNS0wNS0wM1QyMTozMTowNi4yNTBaIiwiZXhwIjoiMjAxNS0wNS0wM1QyMjozMTowNi4yNTBaIn0.xyE-xZR7B22MZG03P5Wu_sFBcK_5WKUN4gOLoLBUal4
 Content-Type: application/json
-Content-Length: 679
+Content-Length: 340
 
 {
   "ipdb": {
-    "number": 711,
-    "mfg": 93
+    "number": 3052,
+    "mfg": 352
   },
-  "title": "Double-Feature",
-  "manufacturer": "Gottlieb",
-  "model_number": "45",
-  "year": 1950,
+  "title": "Deluxe Short-Stop",
+  "manufacturer": "Williams",
+  "model_number": "205",
+  "year": 1958,
   "game_type": "em",
-  "produced_units": 550,
   "themes": [
-    "Pageantry",
-    "Show Business",
-    "Women"
+    "Sports",
+    "Baseball"
   ],
-  "designers": [
-    "Wayne Neyens"
-  ],
-  "artists": [
-    "Roy Parker"
-  ],
-  "features": "Flippers (2), Pop bumper (1), Passive bumpers (8), Slingshots (2), Kick-out holes (2). Slingshots are in upper playfield.",
-  "notes": "This game was Gottlieb's introduction of the \"kicking rubber\" feature.  When the ball hits the rubber, a paddle behind the rubber kicks the ball away. This feature appeared earlier on Chicago Coin's 1949 'Super Hockey'.",
-  "id": "double-feature",
+  "notes": "This is the replay version, with match feature. The novelty version is Williams' 1958 'Short-Stop'.",
+  "id": "deluxe-short-stop",
   "_media": {
-    "backglass": "N1GSIq8GCG"
+    "backglass": "41Nlj2Mt17"
   }
 }

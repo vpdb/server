@@ -1,12 +1,12 @@
 200 OK
 Content-Type: application/json; charset=utf-8
-Etag: W/"Mq0zGHHWwC1jFhsgkHSTeA=="
+Etag: W/"6/E1Q0eGDyw1tUYbV0A3oQ=="
 Content-Encoding: gzip
 
 {
-  "name_sortable": "Decentralized Edition",
-  "name": "Decentralized Edition",
-  "created_at": "2015-05-02T19:37:48.651Z",
+  "name_sortable": "Multi-channelled Edition",
+  "name": "Multi-channelled Edition",
+  "created_at": "2015-05-03T21:31:28.160Z",
   "rating": {
     "votes": 0,
     "average": 0
@@ -27,10 +27,10 @@ Content-Encoding: gzip
         "Table Creator"
       ],
       "user": {
-        "id": "Ekm6jIMRG",
-        "name": "Adolphus.Torp78",
-        "username": "Adolphus.Torp78",
-        "gravatar_id": "cff2afad9c79bebe5f5b493f5db7e9ec",
+        "id": "4yTExRfK1m",
+        "name": "Sam.Hayes",
+        "username": "Sam.Hayes",
+        "gravatar_id": "ecc87164fd2a098be183f5ba02e732ad",
         "counter": {
           "comments": 0,
           "stars": 0
@@ -40,7 +40,7 @@ Content-Encoding: gzip
   ],
   "versions": [
     {
-      "released_at": "2015-05-02T19:37:48.651Z",
+      "released_at": "2015-05-03T21:31:28.160Z",
       "version": "1.0.0",
       "counter": {
         "comments": 0,
@@ -48,7 +48,7 @@ Content-Encoding: gzip
       },
       "files": [
         {
-          "released_at": "2015-05-02T19:37:48.651Z",
+          "released_at": "2015-05-03T21:31:28.160Z",
           "counter": {
             "downloads": 0
           },
@@ -60,7 +60,7 @@ Content-Encoding: gzip
             "playfield_image": {
               "name": "playfield-0.png",
               "bytes": 347,
-              "created_at": "2015-05-02T19:37:48.440Z",
+              "created_at": "2015-05-03T21:31:27.960Z",
               "mime_type": "image/png",
               "file_type": "playfield-fs",
               "metadata": {
@@ -75,28 +75,27 @@ Content-Encoding: gzip
                 "downloads": 0
               },
               "is_active": true,
-              "id": "N1ug6j8f0G",
-              "is_public": true,
-              "is_protected": false,
-              "url": "/storage/v1/files/N1ug6j8f0G",
+              "id": "VyBUl0GYy7",
+              "is_protected": true,
+              "url": "/storage/v1/files/VyBUl0GYy7",
               "variations": {
                 "medium": {
-                  "url": "/storage/v1/files/N1ug6j8f0G/medium"
+                  "url": "/storage/v1/files/VyBUl0GYy7/medium"
                 },
                 "medium-2x": {
-                  "url": "/storage/v1/files/N1ug6j8f0G/medium-2x"
+                  "url": "/storage/v1/files/VyBUl0GYy7/medium-2x"
                 },
                 "medium-landscape": {
-                  "url": "/storage/v1/files/N1ug6j8f0G/medium-landscape"
+                  "url": "/storage/v1/files/VyBUl0GYy7/medium-landscape"
                 },
                 "medium-landscape-2x": {
-                  "url": "/storage/v1/files/N1ug6j8f0G/medium-landscape-2x"
+                  "url": "/storage/v1/files/VyBUl0GYy7/medium-landscape-2x"
                 },
                 "square": {
-                  "url": "/storage/v1/files/N1ug6j8f0G/square"
+                  "url": "/storage/v1/files/VyBUl0GYy7/square"
                 },
                 "square-2x": {
-                  "url": "/storage/v1/files/N1ug6j8f0G/square-2x"
+                  "url": "/storage/v1/files/VyBUl0GYy7/square-2x"
                 }
               }
             }
@@ -114,23 +113,24 @@ Content-Encoding: gzip
           ],
           "file": {
             "name": "test-table-0.vpt",
-            "created_at": "2015-05-02T19:37:48.402Z",
+            "created_at": "2015-05-03T21:31:27.926Z",
             "mime_type": "application/x-visual-pinball-table",
             "file_type": "release",
             "metadata": {},
-            "id": "4kUxasUfAz",
-            "url": "/storage/v1/files/4kUxasUfAz",
+            "id": "NyZLeAGt1m",
+            "url": "/storage/v1/files/NyZLeAGt1m",
             "bytes": 135168,
             "variations": {},
             "is_protected": true,
             "counter": {
               "downloads": 0
-            }
+            },
+            "cost": 1
           }
         }
       ]
     }
   ],
-  "id": "NJ8W6iUM0f",
+  "id": "V1mZCMK1m",
   "tags": []
 }

@@ -1,15 +1,15 @@
 201 Created
 Content-Type: application/json; charset=utf-8
-Content-Length: 492
-Etag: W/"1ec-cd401e8a"
+Content-Length: 486
+Etag: W/"1e6-9b0714fa"
 
 {
   "plan": "free",
-  "name": "Muriel14",
-  "username": "Muriel14",
-  "email": "elta_prosacco@gmail.com",
+  "name": "Ellis62",
+  "username": "Ellis62",
+  "email": "keshaun_toy@gmail.com",
   "provider": "local",
-  "created_at": "2015-05-02T19:37:58.005Z",
+  "created_at": "2015-05-03T21:31:38.025Z",
   "is_active": false,
   "counter": {
     "stars": 0,
@@ -21,9 +21,9 @@ Etag: W/"1ec-cd401e8a"
   ],
   "email_status": {
     "code": "pending_registration",
-    "expires_at": "2015-05-03T19:37:58.005Z",
-    "value": "elta_prosacco@gmail.com"
+    "expires_at": "2015-05-04T21:31:38.026Z",
+    "value": "keshaun_toy@gmail.com"
   },
-  "id": "Eksh8hIGCG",
-  "gravatar_id": "025168680663c83ae4da0f14bff384f3"
+  "id": "VyTF90GKkQ",
+  "gravatar_id": "6527c0ad588749b20dfa71fe8085e385"
 }

@@ -1,15 +1,15 @@
 200 OK
 Content-Type: application/json; charset=utf-8
-Content-Length: 962
-Etag: W/"3c2-53835546"
+Content-Length: 947
+Etag: W/"3b3-6bef17f6"
 
 {
   "plan": "free",
-  "name": "Rogelio.Johnson",
-  "username": "Rogelio.Johnson",
-  "email": "clifford.mohr91@gmail.com",
+  "name": "Asia_Kuhic79",
+  "username": "Asia_Kuhic79",
+  "email": "amber6@yahoo.com",
   "provider": "local",
-  "created_at": "2015-05-02T19:37:21.348Z",
+  "created_at": "2015-05-03T21:31:02.005Z",
   "is_active": true,
   "counter": {
     "stars": 0,
@@ -19,8 +19,8 @@ Etag: W/"3c2-53835546"
   "roles": [
     "member"
   ],
-  "id": "Ek7gMqIGAG",
-  "gravatar_id": "d7101c4e29353209fb3653a593f44184",
+  "id": "EJ7gLnfYJQ",
+  "gravatar_id": "4325e88d95c33642fb088164728e3954",
   "permissions": {
     "comments": [
       "add"

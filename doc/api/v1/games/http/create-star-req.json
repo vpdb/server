@@ -1,8 +1,8 @@
-POST /api/v1/games/slalom-code-03/star HTTP/1.1
+POST /api/v1/games/out-of-sight/star HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
 Content-Type: application/json
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJFa0pmQjNMZkN6IiwiaWF0IjoiMjAxNS0wNS0wMlQxOTozNzo1Ni4zMjFaIiwiZXhwIjoiMjAxNS0wNS0wMlQyMDozNzo1Ni4zMjFaIn0.wdM_t8bqD0VVCAgkxT-NHkavHvd8l429Zm9c_t91gIk
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJFa3lJT0N6S2tRIiwiaWF0IjoiMjAxNS0wNS0wM1QyMTozMTozNi4wMDJaIiwiZXhwIjoiMjAxNS0wNS0wM1QyMjozMTozNi4wMDJaIn0.7AcXT6s0QAJ2uf4zJK-uV-0B3m8bzYboad2gYbXdWMc
 Content-Length: 2
 
 {}

@@ -1,9 +1,9 @@
 200 OK
 Content-Type: application/json; charset=utf-8
 Content-Length: 58
-Etag: W/"3a-fce342d8"
+Etag: W/"3a-fcd5b432"
 
 {
   "value": 2,
-  "created_at": "2015-05-02T19:37:34.951Z"
+  "created_at": "2015-05-03T21:31:14.906Z"
 }

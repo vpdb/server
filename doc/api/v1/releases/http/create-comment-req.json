@@ -1,10 +1,10 @@
-POST /api/v1/releases/41fzE9UGAG/comments HTTP/1.1
+POST /api/v1/releases/4JQY2ftkX/comments HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJOSkdOcThmMEciLCJpYXQiOiIyMDE1LTA1LTAyVDE5OjM3OjIzLjEzMFoiLCJleHAiOiIyMDE1LTA1LTAyVDIwOjM3OjIzLjEzMFoifQ.D2APhbPScFUd7GCedug_ifo5iOv7NZtPj67xUBmiiG0
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI0eTdOX25mS3k3IiwiaWF0IjoiMjAxNS0wNS0wM1QyMTozMTowMy42MDJaIiwiZXhwIjoiMjAxNS0wNS0wM1QyMjozMTowMy42MDJaIn0.X-k54eK5bVwpOERFZ1CeuT7H2hyNBPFyLLQWE2kxZwg
 Content-Type: application/json
-Content-Length: 52
+Content-Length: 38
 
 {
-  "message": "Decentralized impactful implementation"
+  "message": "Robust optimal groupware"
 }

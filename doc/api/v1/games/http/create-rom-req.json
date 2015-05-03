@@ -1,14 +1,14 @@
-POST /api/v1/games/corral/roms HTTP/1.1
+POST /api/v1/games/st-moritz/roms HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJOSnQtMkxmMHoiLCJpYXQiOiIyMDE1LTA1LTAyVDE5OjM3OjUyLjI4MFoiLCJleHAiOiIyMDE1LTA1LTAyVDIwOjM3OjUyLjI4MFoifQ.qx-Ig91naxC5ZZ2x_52FvZJAniYyCFjeY1op7KV_QP4
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI0SmhWVjB6dHltIiwiaWF0IjoiMjAxNS0wNS0wM1QyMTozMTozMS45OTZaIiwiZXhwIjoiMjAxNS0wNS0wM1QyMjozMTozMS45OTZaIn0.5FfCDNgqw-7I0ziD2AouxvkIfokzgXZiZVoR79Lc4MY
 Content-Type: application/json
-Content-Length: 102
+Content-Length: 105
 
 {
-  "id": "corral_10",
+  "id": "st-moritz_10",
   "version": "1.0",
   "notes": "That is some ROM.",
   "language": "en-US",
-  "_file": "EJnf-3IGAM"
+  "_file": "NyrWB0ft17"
 }

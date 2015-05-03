@@ -1,8 +1,8 @@
-PUT /api/v1/games/tropicana/rating HTTP/1.1
+PUT /api/v1/games/tally-hoo/rating HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
 Content-Type: application/json
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJFeVFEcHFJTVJ6IiwiaWF0IjoiMjAxNS0wNS0wMlQxOTozNzozMy4wNTdaIiwiZXhwIjoiMjAxNS0wNS0wMlQyMDozNzozMy4wNTdaIn0.amQBaDrK9HM2Wfshu4-uaR84Zbz8cOhzbckuhuoYyk4
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJOMVNGVzZmWUptIiwiaWF0IjoiMjAxNS0wNS0wM1QyMTozMToxMi45OTlaIiwiZXhwIjoiMjAxNS0wNS0wM1QyMjozMToxMi45OTlaIn0.btBHNA97W1m74lbHXuR1e_6604-Py9wCwqH0d-csfiw
 Content-Length: 11
 
 {

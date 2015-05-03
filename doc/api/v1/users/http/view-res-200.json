@@ -1,15 +1,15 @@
 200 OK
 Content-Type: application/json; charset=utf-8
-Content-Length: 371
-Etag: W/"173-ab2a54e9"
+Content-Length: 375
+Etag: W/"177-a367300d"
 
 {
   "plan": "free",
-  "name": "Robert_Eichmann49",
-  "username": "Robert_Eichmann49",
-  "email": "itzel_maggio8@gmail.com",
+  "name": "Alysha.Jacobson73",
+  "username": "Alysha.Jacobson73",
+  "email": "santiago_schimmel@gmail.com",
   "provider": "local",
-  "created_at": "2015-05-02T19:37:57.716Z",
+  "created_at": "2015-05-03T21:31:37.727Z",
   "is_active": true,
   "counter": {
     "stars": 0,
@@ -19,6 +19,6 @@ Etag: W/"173-ab2a54e9"
   "roles": [
     "member"
   ],
-  "id": "4JNuUhUGCM",
-  "gravatar_id": "d7c196ddd1f8e65473d67d9f5208a87c"
+  "id": "VkDB5RzKym",
+  "gravatar_id": "60b2862a81c68e4c7aa6345d2ba293f8"
 }

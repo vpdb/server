@@ -95,10 +95,11 @@ function Queue() {
 		}
 	};
 
-	// have have two queues
+	// have have 3 queues
 	this.queues = {
 		image: queue('image', redisOpts),
-		video: queue('video', redisOpts)
+		video: queue('video', redisOpts),
+		table: queue('video', redisOpts)
 	};
 
 	// we also have 3 redis clients
@@ -173,6 +174,12 @@ function Queue() {
 	this.queues.video.on('failed', function(job, err) {
 		// TODO treat waiting requests
 		logger.error('[queue] From video queue: %s', err.message);
+		logger.error(err.stack);
+	});
+
+	this.queues.table.on('failed', function(job, err) {
+		// TODO treat waiting requests
+		logger.error('[queue] From table queue: %s', err.message);
 		logger.error(err.stack);
 	});
 
@@ -279,6 +286,7 @@ function Queue() {
 	// setup workers
 	this.queues.image.process(processFile);
 	this.queues.video.process(processFile);
+	this.queues.table.process(processFile);
 
 	this.on('started', function(file, variation, processorName) {
 		logger.info('[queue] Starting %s processing of %s', processorName, file.toString(variation));
@@ -421,7 +429,6 @@ Queue.prototype.empty = function() {
 			logger.info('[queue] Cleaning %d entries out of video queue.', count);
 			that.queues.video.empty();
 		}
-
 	});
 };
 

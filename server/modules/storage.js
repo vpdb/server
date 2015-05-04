@@ -215,21 +215,21 @@ Storage.prototype.metadataShort = function(file, metadata) {
  * @param {boolean} [onlyVariations] If set to `true`, only (re-)process variations.
  */
 Storage.prototype.postprocess = function(file, onlyVariations) {
-	var type = file.getMimeCategory();
-	if (!processors[type]) {
+	var mimeCategory = file.getMimeCategory();
+	if (!processors[mimeCategory]) {
 		return;
 	}
 
 	// add variations to queue
-	if (this.variations[type] && this.variations[type][file.file_type]) {
-		_.each(this.variations[type][file.file_type], function(variation) {
-			queue.add(file, variation, processors[type]);
+	if (this.variations[mimeCategory] && this.variations[mimeCategory][file.file_type]) {
+		_.each(this.variations[mimeCategory][file.file_type], function(variation) {
+			queue.add(file, variation, processors[mimeCategory]);
 		});
 	}
 
 	// add actual file to queue
 	if (!onlyVariations) {
-		queue.add(file, undefined, processors[type]);
+		queue.add(file, undefined, processors[mimeCategory]);
 	}
 };
 

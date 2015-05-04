@@ -33,8 +33,8 @@ var config = settings.current;
 
 var processors = {
 	image: require('./processor/image'),
-	video: require('./processor/video')
-//	table: require('./processor/table')
+	video: require('./processor/video'),
+	table: require('./processor/table')
 };
 
 function Storage() {
@@ -65,8 +65,8 @@ function Storage() {
 
 Storage.prototype.variations = {
 	image: processors.image.variations,
-	video: processors.video.variations
-//	table: processors.table.variations
+	video: processors.video.variations,
+	table: processors.table.variations
 };
 
 /**

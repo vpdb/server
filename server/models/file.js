@@ -180,14 +180,14 @@ FileSchema.methods.isPublic = function(variation) {
 };
 
 /**
- * Returns true if the file is free (as in accessible only if logged, but doesn't cost any credit), false otherwise.
+ * Returns true if the file is free (as in doesn't cost any credit), false otherwise. <p>
  *
  * @param {Object|String} variation - Either variation name or object containing attribute "name"
  * @returns {boolean}
  * @api public
  */
 FileSchema.methods.isFree = function(variation) {
-	return quota.getCost(this, variation) === 0;
+	return quota.getCost(this, variation) <= 0;
 };
 
 /**

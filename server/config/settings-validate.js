@@ -346,7 +346,7 @@ module.exports = {
 							});
 						}
 						/* istanbul ignore if */
-						if (!_.isNumber(parseInt(cost)) || !_.isObject(cost) < 0) {
+						if (!_.isNumber(cost) && !_.isObject(cost)) {
 							errors.push({
 								path: fileType,
 								message: 'Cost must be an integer or object.',

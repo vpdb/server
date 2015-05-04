@@ -274,6 +274,7 @@ GameSchema.options.toObject = {
 		delete game.__v;
 		delete game._id;
 		delete game._media;
+		delete game._created_by;
 		delete game.full_title;
 	}
 };

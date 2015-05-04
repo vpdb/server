@@ -90,9 +90,10 @@ function find(req, res, authErr, callback) {
 		if (!file) {
 			return res.status(404).end();
 		}
+		var isPublic = file.isPublic(req.params.variation);
 
 		// file is not public - user must be logged in.
-		if (!file.isPublic(req.params.variation) && !req.user) {
+		if (!isPublic && !req.user) {
 			return res.status(401).json({ error: 'You must provide valid credentials for non-public files.', cause: authErr.message }).end();
 		}
 
@@ -107,7 +108,7 @@ function find(req, res, authErr, callback) {
 		}
 
 		// at this point, we can serve the file if it's free
-		if (file.isPublic(req.params.variation)) {
+		if (isPublic) {
 			return callback(file, true);
 		}
 

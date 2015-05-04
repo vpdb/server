@@ -34,6 +34,7 @@ var config = settings.current;
 var processors = {
 	image: require('./processor/image'),
 	video: require('./processor/video')
+//	table: require('./processor/table')
 };
 
 function Storage() {
@@ -65,6 +66,7 @@ function Storage() {
 Storage.prototype.variations = {
 	image: processors.image.variations,
 	video: processors.video.variations
+//	table: processors.table.variations
 };
 
 /**
@@ -155,8 +157,8 @@ Storage.prototype.remove = function(file) {
 			}, 500);
 		}
 	}
-	if (this.variations[file.getMimeTypePrimary()] && this.variations[file.getMimeTypePrimary()][file.file_type]) {
-		_.each(this.variations[file.getMimeTypePrimary()][file.file_type], function(variation) {
+	if (this.variations[file.getMimeCategory()] && this.variations[file.getMimeCategory()][file.file_type]) {
+		_.each(this.variations[file.getMimeCategory()][file.file_type], function(variation) {
 			filePath = file.getPath(variation.name);
 			if (fs.existsSync(filePath)) {
 				logger.info('[storage] Removing file variation %s..', filePath);
@@ -177,7 +179,7 @@ Storage.prototype.remove = function(file) {
  * @param {function} done Callback
  */
 Storage.prototype.metadata = function(file, done) {
-	var type = file.getMimeTypePrimary();
+	var type = file.getMimeCategory();
 	if (!processors[type]) {
 		logger.warn('[storage] No metadata parser for mime type "%s".', file.mime_type);
 		return done();
@@ -195,11 +197,11 @@ Storage.prototype.metadata = function(file, done) {
  */
 Storage.prototype.metadataShort = function(file, metadata) {
 	var data = metadata ? metadata : file.metadata;
-	var type = file.getMimeTypePrimary();
+	var type = file.getMimeCategory();
 	if (!data) {
 		return {};
 	}
-	if (!processors[type]) {
+	if (!processors[type] || !processors[type].metadataShort) {
 		return data;
 	}
 	return processors[type].metadataShort(data);
@@ -213,7 +215,7 @@ Storage.prototype.metadataShort = function(file, metadata) {
  * @param {boolean} [onlyVariations] If set to `true`, only (re-)process variations.
  */
 Storage.prototype.postprocess = function(file, onlyVariations) {
-	var type = file.getMimeTypePrimary();
+	var type = file.getMimeCategory();
 	if (!processors[type]) {
 		return;
 	}
@@ -357,14 +359,14 @@ Storage.prototype.urls = function(file) {
 	}
 	var that = this;
 	var variations = file.variations || {};
-	var primaryMimeType = file.getMimeTypePrimary();
-	if (this.variations[primaryMimeType] && this.variations[primaryMimeType][file.file_type]) {
-		_.each(this.variations[primaryMimeType][file.file_type], function(variation) {
+	var mimeCategory = file.getMimeCategory();
+	if (this.variations[mimeCategory] && this.variations[mimeCategory][file.file_type]) {
+		_.each(this.variations[mimeCategory][file.file_type], function(variation) {
 			if (!variations[variation.name]) {
 				variations[variation.name] = {};
 			}
 			variations[variation.name].url = that.url(file, variation.name);
-			var cost = quota.getCost(file, variation)
+			var cost = quota.getCost(file, variation);
 			if (cost > -1) {
 				variations[variation.name].is_protected = true;
 			}

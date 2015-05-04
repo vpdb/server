@@ -54,10 +54,10 @@ var config = require('./settings').current;
  *    - updating the "variations" field of the file
  *    - saving the file to the DB
  *    - emitting the "finishedPass1" event
- * 5. The "finishedPass1" triggers does two things:
+ * 5. The "finishedPass1" triggers two things:
  *    - Run eventual callbacks at this.queuedFiles, since now we have a file to offer
  *    - Start pass 2, which adds a job to the Bull queue containing the file id, variation if set and the processor name.
- * 6. At some point, the processFile method below gets called. It:
+ * 6. At some point, the processFile method below gets called by Bull. It:
  *    - fetches the file object from the DB using the file id
  *    - instantiates the processor using the name
  *    - executes the processor with the file
@@ -68,7 +68,7 @@ var config = require('./settings').current;
  *
  * A few notes:
  *  - This flow is repeated for each variation plus the original file.
- *  - If the processor module does not defined a pass1() method, step 2.-4. are skipped and pass 2 is started
+ *  - If the processor module does not define a pass1() method, step 2.-4. are skipped and pass 2 is started
  *    immediately.
  *  - If there is no pass2() in the processor, the flow finishes with step 5.
  *  - See comments of each processing module what is done in pass1 and pass2.

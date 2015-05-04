@@ -103,8 +103,8 @@ module.exports = function(schema, options) {
 
 			// update
 			async.eachSeries(files, function(file, next) {
-				// only update `is_active` (other data might has changed meanwhile)
-				File.update({ _id: file._id }, { is_active: true }, next);
+				file.switchToActive(next);
+
 			}, function(err) {
 				/* istanbul ignore if */
 				if (err) {

@@ -33,8 +33,8 @@ var config = settings.current;
 
 var processors = {
 	image: require('./processor/image'),
-	video: require('./processor/video'),
-	table: require('./processor/table')
+	video: require('./processor/video')/*,
+	table: require('./processor/table')*/
 };
 
 function Storage() {
@@ -65,8 +65,8 @@ function Storage() {
 
 Storage.prototype.variations = {
 	image: processors.image.variations,
-	video: processors.video.variations,
-	table: processors.table.variations
+	video: processors.video.variations/*,
+	table: processors.table.variations*/
 };
 
 /**
@@ -321,7 +321,7 @@ Storage.prototype.onProcessed = function(file, variation, processor, nextEvent) 
 /**
  * Returns the absolute URL of a given file.
  * @param {File} file
- * @param {object} variation
+ * @param {object|string} variation or variation name
  * @returns {string}
  */
 Storage.prototype.url = function(file, variation) {
@@ -336,6 +336,14 @@ Storage.prototype.url = function(file, variation) {
 		settings.storagePath('/files/' + file.id);
 };
 
+/**
+ * Returns the absolute local file path of a given file.
+ *
+ * @param {File} file
+ * @param {object|string} variation or variation name
+ * @param {string} tmpSuffix a suffix that is added to the file name
+ * @returns {string} local path to file
+ */
 Storage.prototype.path = function(file, variation, tmpSuffix) {
 
 	var variationName = _.isObject(variation) ? variation.name : variation;
@@ -362,9 +370,7 @@ Storage.prototype.urls = function(file) {
 	var mimeCategory = file.getMimeCategory();
 	if (this.variations[mimeCategory] && this.variations[mimeCategory][file.file_type]) {
 		_.each(this.variations[mimeCategory][file.file_type], function(variation) {
-			if (!variations[variation.name]) {
-				variations[variation.name] = {};
-			}
+			variations[variation.name] = variations[variation.name] || {};
 			variations[variation.name].url = that.url(file, variation.name);
 			var cost = quota.getCost(file, variation);
 			if (cost > -1) {

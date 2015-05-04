@@ -243,6 +243,18 @@ FileSchema.methods.toString = function(variation) {
 	return this.file_type + ' "' + this.id + '"' + (v ? ' (' + v + ')' : '');
 };
 
+FileSchema.methods.switchToActive = function(done) {
+
+	mongoose.model('File').update({ _id: this._id }, { is_active: true }, function(err) {
+		/* istanbul ignore if */
+		if (err) {
+			return done('Error activating files.');
+		}
+		console.log('----------------------------------- witchToActive -----------------------------------');
+		done();
+	});
+};
+
 
 //-----------------------------------------------------------------------------
 // STATIC METHODS

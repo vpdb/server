@@ -21,6 +21,7 @@
 
 var _ = require('lodash');
 var fs = require('fs');
+var gm = require('gm');
 var path = require('path');
 var logger = require('winston');
 var request = require('request');
@@ -43,7 +44,7 @@ function TableProcessor() {
 
 	this.variations = {
 		release: [
-			{ name: 'screenshot' }
+			{ name: 'screenshot', mimeType: 'image/jpeg' }
 		]
 	};
 }
@@ -75,7 +76,7 @@ TableProcessor.prototype.variationData = function(metadata) {
  */
 TableProcessor.prototype.pass1 = function(src, dest, file, variation, done) {
 
-	logger.info('[processor|table|pass1] OK I am running.');
+	logger.info('[processor|table|pass1] Posting table to get screenshot...');
 
 	var formData = {
 		tablefile: {
@@ -89,10 +90,45 @@ TableProcessor.prototype.pass1 = function(src, dest, file, variation, done) {
 	request.post({ url:'http://vpdbproc.gameex.com/vppublish.aspx?type=upload&ver=9', formData: formData}, function(err, resp, body) {
 		if (err) {
 			logger.error('[processor|table|pass1]: %s', err);
+
 		} else {
-			logger.error('Body: %s', body);
+
+			var status = /<status>([^<]+)/.test(body) ? body.match(/<status>([^<]+)/i)[1] : null;
+			var ticket = /<ticket>([^<]+)/.test(body) ? body.match(/<ticket>([^<]+)/i)[1] : null;
+
+			if (status === 'done') {
+
+				// create destination stream
+				var writeStream = fs.createWriteStream(dest);
+				logger.info('[processor|table|pass1] Retrieving screenshot...');
+
+				// setup error handler
+				var handleErr = function(err) {
+					done(error(err, 'Error processing %s', file.toString(variation)).log('pass1'));
+				};
+
+				// setup success handler
+				writeStream.on('finish', function() {
+					logger.info('[processor|table|pass1] Saved image to "%s".', dest);
+					done();
+				});
+				writeStream.on('error', handleErr);
+
+
+				var img = gm(request('http://vpdbproc.gameex.com/vppublish.aspx?type=getimage&ticket=' + ticket));
+				img.quality(80);
+				img.rotate('black', 90);
+				img.setFormat('jpeg');
+
+				img
+					.stream().on('error', handleErr)
+					.pipe(writeStream).on('error', handleErr);
+
+			} else {
+				logger.warn('[processor|table|pass1] Failed generating screenshot: %s', body);
+				done();
+			}
 		}
-		done();
 	});
 };
 

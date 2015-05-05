@@ -230,7 +230,7 @@ FileSchema.methods.getMimeSubtype = function(variation) {
  * @returns {string}
  */
 FileSchema.methods.getMimeCategory = function(variation) {
-	return this.getMimeType(variation).category;
+	return mimeTypes[this.getMimeType(variation)].category;
 };
 
 /**
@@ -250,7 +250,6 @@ FileSchema.methods.switchToActive = function(done) {
 		if (err) {
 			return done('Error activating files.');
 		}
-		console.log('----------------------------------- witchToActive -----------------------------------');
 		done();
 	});
 };

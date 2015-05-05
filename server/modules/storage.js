@@ -181,7 +181,7 @@ Storage.prototype.remove = function(file) {
 Storage.prototype.metadata = function(file, done) {
 	var type = file.getMimeCategory();
 	if (!processors[type]) {
-		logger.warn('[storage] No metadata parser for mime type "%s".', file.mime_type);
+		logger.warn('[storage] No metadata parser for mime category "%s".', type);
 		return done();
 	}
 	processors[type].metadata(file, done);

@@ -104,7 +104,7 @@ FileSchema.virtual('cost')
  */
 FileSchema.virtual('is_protected')
 	.get(function() {
-		return this.cost > -1;
+		return !this.is_active || this.cost > -1;
 	});
 
 
@@ -229,8 +229,8 @@ FileSchema.methods.getMimeSubtype = function(variation) {
  * Returns the file category.
  * @returns {string}
  */
-FileSchema.methods.getMimeCategory = function() {
-	return mimeTypes[this.mime_type].category;
+FileSchema.methods.getMimeCategory = function(variation) {
+	return this.getMimeType(variation).category;
 };
 
 /**

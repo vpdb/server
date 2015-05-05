@@ -373,7 +373,7 @@ Storage.prototype.urls = function(file) {
 			variations[variation.name] = variations[variation.name] || {};
 			variations[variation.name].url = that.url(file, variation.name);
 			var cost = quota.getCost(file, variation);
-			if (cost > -1) {
+			if (!file.is_active || cost > -1) {
 				variations[variation.name].is_protected = true;
 			}
 			if (cost > 0) {

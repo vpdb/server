@@ -141,6 +141,7 @@ Quota.prototype.getCost = function(file, variation) {
 
 	var variationName = _.isObject(variation) ? variation.name : variation;
 	var cost = quotaConfig.costs[file.file_type];
+	console.log(cost);
 
 	// undefined file_types are free
 	if (_.isUndefined(cost)) {
@@ -163,22 +164,23 @@ Quota.prototype.getCost = function(file, variation) {
 			return cost.variation;
 		}
 	}
+	console.log('File category: ', file.getMimeCategory(variation));
 
 	if (_.isObject(cost)) {
 		if (_.isUndefined(cost.category)) {
-			logger.warn('[quota] No cost defined for %s file (type is undefined).', file.file_type, file.getMimeCategory());
+			logger.warn('[quota] No cost defined for %s file (type is undefined).', file.file_type, file.getMimeCategory(variation));
 			return 0;
 		}
 		if (_.isObject(cost.category)) {
-			var costMimetype = cost.category[file.getMimeCategory()];
-			if (_.isUndefined(costMimetype)) {
+			var costCategory = cost.category[file.getMimeCategory(variation)];
+			if (_.isUndefined(costCategory)) {
 				if (_.isUndefined(cost.category['*'])) {
-					logger.warn('[quota] No cost defined for %s file of type %s and no fallback given, returning 0.', file.file_type, file.getMimeCategory());
+					logger.warn('[quota] No cost defined for %s file of type %s and no fallback given, returning 0.', file.file_type, file.getMimeCategory(variation));
 					return 0;
 				}
 				return cost.category['*'];
 			}
-			return costMimetype;
+			return costCategory;
 		}
 		return cost.category;
 	}

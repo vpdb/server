@@ -99,7 +99,7 @@ function Queue() {
 	this.queues = {
 		image: queue('image', redisOpts),
 		video: queue('video', redisOpts),
-		table: queue('video', redisOpts)
+		table: queue('table', redisOpts)
 	};
 
 	// we also have 3 redis clients

@@ -87,6 +87,10 @@ TableProcessor.prototype.pass1 = function(src, dest, file, variation, done) {
 			}
 		}
 	};
+
+	// create 0 byte file so downloads get blocked
+	fs.closeSync(fs.openSync(dest, 'w'));
+
 	request.post({ url:'http://vpdbproc.gameex.com/vppublish.aspx?type=upload&ver=9', formData: formData}, function(err, resp, body) {
 		if (err) {
 			logger.error('[processor|table|pass1]: %s', err);
@@ -117,7 +121,7 @@ TableProcessor.prototype.pass1 = function(src, dest, file, variation, done) {
 
 				var img = gm(request('http://vpdbproc.gameex.com/vppublish.aspx?type=getimage&ticket=' + ticket));
 				img.quality(80);
-				img.rotate('black', 90);
+				img.rotate('black', 180);
 				img.setFormat('jpeg');
 
 				img
@@ -125,7 +129,9 @@ TableProcessor.prototype.pass1 = function(src, dest, file, variation, done) {
 					.pipe(writeStream).on('error', handleErr);
 
 			} else {
+
 				logger.warn('[processor|table|pass1] Failed generating screenshot: %s', body);
+				fs.unlinkSync(dest);
 				done();
 			}
 		}

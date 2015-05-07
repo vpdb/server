@@ -536,6 +536,17 @@ module.exports = {
 			if (header.length === 0) {
 				return 'Your authorization header must be longer than 0 characters';
 			}
+		},
+
+		/**
+		 * Uploads table file to Tom's service in order to obtain a screenshot.
+		 * Only enable in production.
+		 */
+		generateTableScreenshot: function(bool) {
+			/* istanbul ignore if */
+			if (!_.isBoolean(bool)) {
+				return 'Option "generateTableScreenshot" must be either true or false';
+			}
 		}
 	}
 };

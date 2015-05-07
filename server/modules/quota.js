@@ -141,7 +141,6 @@ Quota.prototype.getCost = function(file, variation) {
 
 	var variationName = _.isObject(variation) ? variation.name : variation;
 	var cost = quotaConfig.costs[file.file_type];
-	console.log(cost);
 
 	// undefined file_types are free
 	if (_.isUndefined(cost)) {
@@ -164,7 +163,6 @@ Quota.prototype.getCost = function(file, variation) {
 			return cost.variation;
 		}
 	}
-	console.log('File category: ', file.getMimeCategory(variation));
 
 	if (_.isObject(cost)) {
 		if (_.isUndefined(cost.category)) {

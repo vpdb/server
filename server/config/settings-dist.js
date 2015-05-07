@@ -71,6 +71,12 @@ module.exports = {
 		storageTokenLifetime: 60000,
 
 		/**
+		 * Where the files are stored.
+		 * @important
+		 */
+		storage: './data/storage',
+
+		/**
 		 * Secret for hashing and signing. Create something long here: http://strongpasswordgenerator.com/
 		 * @important
 		 */
@@ -111,12 +117,6 @@ module.exports = {
 				}
 			}
 		},
-
-		/**
-		 * Where the files are stored.
-		 * @important
-		 */
-		storage: './data/storage',
 
 		/**
 		 * Sets various logging options.
@@ -349,6 +349,12 @@ module.exports = {
 
 			}]
 		},
+
+		/**
+		 * Uploads table file to Tom's service in order to obtain a screenshot.
+		 * Only enable in production.
+		 */
+		generateTableScreenshot: false,
 
 		/**
 		 * A temp folder for extracting stuff. No trailing slash!

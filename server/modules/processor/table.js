@@ -27,6 +27,7 @@ var logger = require('winston');
 var request = require('request');
 
 var error = require('../error')('processor', 'table');
+var config = require('../settings').current;
 
 /**
  * Image processor.
@@ -42,11 +43,11 @@ var error = require('../error')('processor', 'table');
 function TableProcessor() {
 	this.name = 'table';
 
-	this.variations = {
-		release: [
-			{ name: 'screenshot', mimeType: 'image/jpeg' }
-		]
-	};
+	this.variations = { release: [] };
+
+	if (config.vpdb.generateTableScreenshot) {
+		this.variations.release.push({ name: 'screenshot', mimeType: 'image/jpeg' });
+	}
 }
 
 TableProcessor.prototype.metadata = function(file, variation, done) {
@@ -75,6 +76,10 @@ TableProcessor.prototype.variationData = function(metadata) {
  * @param {function} done Callback, ran with none or {Err} object as parameter.
  */
 TableProcessor.prototype.pass1 = function(src, dest, file, variation, done) {
+
+	if (!config.vpdb.generateTableScreenshot) {
+		return done();
+	}
 
 	logger.info('[processor|table|pass1] Posting table to get screenshot...');
 

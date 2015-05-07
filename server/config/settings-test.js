@@ -45,6 +45,7 @@ module.exports = {
 		metrics: { bayesianEstimate: { minVotes: 3, globalMean: null } },
 		tmp: '.',
 		authorizationHeader: 'Authorization',
+		generateTableScreenshot: false,
 		passport: {
 			github: { enabled: true, clientID: 'TEST_CLIENT_ID', clientSecret: 'TEST_CLIENT_SECRET' },
 			ipboard: [{ enabled: true, id: 'ipbtest', name: 'Test', icon: '', baseURL: 'https://vpdb.ch/forums/index.php', clientID: 'TEST_CLIENT_ID', clientSecret: 'TEST_CLIENT_SECRET' }]

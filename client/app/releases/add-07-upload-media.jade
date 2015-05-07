@@ -21,7 +21,8 @@ span(ng-repeat="file in meta.files | fileext:['vpt','vpx']")
 
 				input#uploadBackglass.hide(type="file", ng-file-select="onMediaUpload(file, 'playfield_image', $files)")
 				.panel-body.a.a--darker(ng-click="openUploadDialog('playfield_image', '#uploadBackglass')")
-					.img.img--ar-ws.loaded(img-bg="meta.mediaLinks[getMediaKey(file, 'playfield_image')]")
+					//.img.img--ar-ws.loaded(img-bg="meta.mediaLinks[getMediaKey(file, 'playfield_image')]")
+					.img.img--ar-ws.loaded(img-bg="meta.mediaLinks[getMediaKey(file, 'screenshot')]")
 						.text-center.vertical-center--100
 							progressbar.progress--fixed-absolute.progress-striped.active(value="mediaFiles[file.storage.id].playfield_image.progress", ng-show="mediaFiles[file.storage.id].playfield_image.uploading")
 							.span(ng-show="!img.url")

@@ -135,6 +135,12 @@ angular.module('vpdb.releases.add', []).controller('ReleaseAddBaseCtrl', functio
 					playfield_video: null
 				}
 			};
+
+			if (status.storage.variations && status.storage.variations.screenshot) {
+				$scope.meta.mediaLinks['screenshot:' + status.storage.id] = status.storage.variations.screenshot;
+				AuthService.collectUrlProps(status.storage, true);
+			}
+
 		} else {
 			tableFile = { _file: status.storage.id };
 		}
@@ -163,8 +169,6 @@ angular.module('vpdb.releases.add', []).controller('ReleaseAddBaseCtrl', functio
 		var releaseFile = $scope.getReleaseFileForMedia(status);
 		var mediaType = status.key.split(':')[0];
 		releaseFile._media[mediaType] = status.storage.id;
-
-		console.log($scope.release);
 
 		AuthService.collectUrlProps(status.storage, true);
 	};

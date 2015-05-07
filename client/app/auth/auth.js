@@ -283,7 +283,7 @@ angular.module('vpdb.auth', [])
 					return callback(url + (~url.indexOf('?') ? '&' : '?') + 'token=' + this.storageTokens[url]);
 				}
  				if (!_.contains(this.paths, url)) {
-					return console.error('Path "%s" neither in collected paths nor in received tokens. Might forgot to collect URL props on some object?');
+					return console.error('Path "%s" neither in collected paths nor in received tokens. Might forgot to collect URL props on some object?', url);
 				}
 				this.storageTokenCallbacks = this.storageTokenCallbacks || [];
 				this.storageTokenCallbacks[url] = function(token) {

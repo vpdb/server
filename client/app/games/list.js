@@ -83,7 +83,9 @@ angular.module('vpdb.games.list', [])
 				query.min_releases = 1;
 			}
 
-			query = _.extend(query, queryOverride);
+			if (_.isObject(queryOverride)) {
+				query = _.extend(query, queryOverride);
+			}
 			$location.search(queryToUrl(query));
 
 			// refresh if changes
@@ -99,6 +101,7 @@ angular.module('vpdb.games.list', [])
 				page: '1',
 				per_page: '12'
 			};
+			console.log(query);
 			var q = _.omit(query, function(value, key) {
 				return defaults[key] === value;
 			});
@@ -107,6 +110,7 @@ angular.module('vpdb.games.list', [])
 			} else {
 				q.show_empty = 1;
 			}
+
 			return q;
 		};
 

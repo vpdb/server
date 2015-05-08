@@ -84,7 +84,7 @@ function send(email, what, done) {
 	logger.info('[mailer] Sending %s email to <%s>...', what, email.to.address);
 	transport.sendMail(email, function(err, status) {
 		if (err) {
-			logger.error('[mailer] Error sending %s mail to <%s>:', what, email.to.address, status);
+			logger.error('[mailer] Error sending %s mail to <%s>:', what, email.to.address, err);
 			return done(err);
 		}
 		logger.info('[mailer] Successfully sent %s mail to <%s> with message ID "%s" (%s).', what, email.to.address, status.messageId, status.response);

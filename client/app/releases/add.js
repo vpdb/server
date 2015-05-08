@@ -56,23 +56,6 @@ angular.module('vpdb.releases.add', []).controller('ReleaseAddCtrl', function(
 		}
 	});
 
-	// init data: either copy from local storage or reset.
-	if ($localStorage.release) {
-		$scope.release = $localStorage.release;
-		$scope.releaseVersion = $scope.release.versions[0];
-		$scope.meta = $localStorage.release_meta;
-
-		// update references
-		//_.each($scope.release.versions[0].files, function(file) {
-		//	var metaFile = _.find($scope.meta.files, function(f) { return f.storage.id === file._file; });
-		//	//metaFile.tableFile = file;
-		//});
-		AuthService.collectUrlProps($scope.meta, true);
-
-	} else {
-		$scope.reset();
-	}
-
 	$scope.step = {
 		files: 1,
 		flavors: 3,
@@ -123,6 +106,22 @@ angular.module('vpdb.releases.add', []).controller('ReleaseAddCtrl', function(
 		$scope.releaseFileRefs = {};
 	};
 
+	// init data: either copy from local storage or reset.
+	if ($localStorage.release) {
+		$scope.release = $localStorage.release;
+		$scope.releaseVersion = $scope.release.versions[0];
+		$scope.meta = $localStorage.release_meta;
+
+		// update references
+		//_.each($scope.release.versions[0].files, function(file) {
+		//	var metaFile = _.find($scope.meta.files, function(f) { return f.storage.id === file._file; });
+		//	//metaFile.tableFile = file;
+		//});
+		AuthService.collectUrlProps($scope.meta, true);
+
+	} else {
+		$scope.reset();
+	}
 
 	/**
 	 * Adds OR edits an author.

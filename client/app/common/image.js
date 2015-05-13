@@ -93,16 +93,23 @@ angular.module('vpdb.common', [])
 				var setImgUrl = function(url) {
 					scope.img = { url: url, loading: true };
 					element.css('background-image', "url('" + url + "')");
-					element.waitForImages({
-						each: function() {
-							var that = $(this);
-							that.addClass('loaded');
-							scope.$emit('imageLoaded');
+					element.waitForImages(
+						function() {
+						},
+						function(loaded, count, success) {
 							scope.img.loading = false;
+							if (success) {
+								var that = $(this);
+								that.addClass('loaded');
+								scope.$emit('imageLoaded');
+							} else {
+								delete scope.img.url;
+								console.warn('Could not load image "%s".', url);
+							}
 							scope.$apply();
 						},
-						waitForAll: true
-					});
+						true
+					);
 				};
 
 				// check for constant

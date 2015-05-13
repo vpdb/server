@@ -233,4 +233,13 @@ angular.module('vpdb.releases.add', []).controller('ReleaseAddBaseCtrl', functio
 		return type + ':' + file.storage.id;
 	};
 
+	
+	/**
+	 * Removes the media link from meta data in case a file failed to load
+	 * @param file
+	 * @param type
+	 */
+	$scope.onBackglassImageError = function(file, type) {
+		delete $scope.meta.mediaLinks[type + ':' + file.storage.id];
+	}
 });

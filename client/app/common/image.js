@@ -94,8 +94,7 @@ angular.module('vpdb.common', [])
 					scope.img = { url: url, loading: true };
 					element.css('background-image', "url('" + url + "')");
 					element.waitForImages(
-						function() {
-						},
+						$.noop,
 						function(loaded, count, success) {
 							scope.img.loading = false;
 							if (success) {
@@ -105,6 +104,9 @@ angular.module('vpdb.common', [])
 							} else {
 								delete scope.img.url;
 								console.warn('Could not load image "%s".', url);
+								if (attrs.error) {
+									$parse(attrs.error)(scope);
+								}
 							}
 							scope.$apply();
 						},

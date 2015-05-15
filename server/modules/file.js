@@ -29,7 +29,7 @@ var storage = require('./storage');
  * @param {function} error Error logger
  * @param {function} callback Callback, error object takes error and code.
  */
-exports.create = function(fileData, readStream, user, error, callback) {
+exports.create = function(fileData, readStream, error, callback) {
 
 	var file = new File(fileData);
 
@@ -70,7 +70,7 @@ exports.create = function(fileData, readStream, user, error, callback) {
 							logger.error('[api|file:save] Error saving metadata: %s', err, {});
 							logger.error('[api|file:save] Metadata: %s', require('util').inspect(metadata));
 						}
-						logger.info('[api|file:save] File upload of %s by <%s> successfully completed.', file.toString(), user.email);
+						logger.info('[api|file:save] File upload of %s successfully completed.', file.toString());
 						callback(null, file, 201);
 
 						// do this in the background.

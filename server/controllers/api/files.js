@@ -52,7 +52,7 @@ exports.upload = function(req, res) {
 		_created_by: req.user._id
 	};
 
-	fileModule.create(fileData, req, req.user, error, function(err, f, code) {
+	fileModule.create(fileData, req, error, function(err, f, code) {
 		if (err) {
 			return api.fail(res, err.error, err.code);
 		}

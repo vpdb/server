@@ -20,6 +20,8 @@
 "use strict";
 
 var _ = require('lodash');
+var fs = require('fs');
+var path = require('path');
 var async = require('async');
 var logger = require('winston');
 var shortId = require('shortid');
@@ -35,6 +37,7 @@ var prettyId = require('./plugins/pretty-id');
 var idValidator = require('./plugins/id-ref');
 var sortableTitle = require('./plugins/sortable-title');
 
+var fileModule = require('../modules/file');
 var flavor = require('../modules/flavor');
 
 var Schema = mongoose.Schema;
@@ -204,40 +207,66 @@ VersionSchema.path('files').validate(function(files, callback) {
 						that.invalidate('files.' + index + '._compatibility', 'At least one build must be provided.');
 					}
 
+					// media
 					var hasPlayfieldImage = f._media && f._media.playfield_image;
 					var hasPlayfieldScreenshot = file.variations && file.variations.screenshot;
+					if (hasPlayfieldImage) {
 
-					// media
-					if (!hasPlayfieldImage && !hasPlayfieldScreenshot) {
+						// check if exists
+						mongoose.model('File').findById(f._media.playfield_image, function(err, playfieldImage) {
+							/* istanbul ignore if */
+							if (err) {
+								logger.error('[model] Error fetching file "%s".', f._media.playfield_image);
+								if (f.isNew) index++;
+								return next();
+							}
+							if (!playfieldImage) {
+								that.invalidate('files.' + index + '._media.playfield_image', 'Playfield "' + f._media.playfield_image + '" does not exist.');
+								if (f.isNew) index++;
+								return next();
+							}
+							if (!_.contains(['playfield-fs', 'playfield-ws'], playfieldImage.file_type)) {
+								that.invalidate('files.' + index + '._media.playfield_image', 'Must reference a file with file_type "playfield-fs" or "playfield-ws".');
+							}
+							if (f.isNew) index++;
+							next();
+						});
+					} else if (hasPlayfieldScreenshot) {
 
+						logger.info('[model|release] Creating new playfield image from table screenshot...');
+						var error = require('../modules/error')('model', 'file');
+						var screenshotPath = file.getPath('screenshot');
+						var fstat = fs.statSync(screenshotPath);
+						var readStream = fs.createReadStream(screenshotPath);
+
+						var fileData = {
+							name: path.basename(screenshotPath, path.extname(screenshotPath)) + '.png',
+							bytes: fstat.size,
+							variations: {},
+							created_at: new Date(),
+							mime_type: file.variations.screenshot.mime_type,
+							file_type: 'playfield-' + f.flavor.orientation,
+							_created_by: file._created_by
+						};
+
+						fileModule.create(fileData, readStream, error, function(err, playfieldImageFile) {
+							if (err) {
+								logger.error('[model|release] Error creating playfield image from table file: ' + err.message);
+								that.invalidate('files.' + index + '._media.playfield_image', 'Error processing screenshot: ' + err.message);
+							} else {
+								logger.error('[model|release] Playfield image successfully created.');
+								f._media.playfield_image = playfieldImageFile._id;
+							}
+							if (f.isNew) index++;
+							next();
+						});
+
+					} else {
 						that.invalidate('files.' + index + '._media.playfield_image', 'Playfield image must be provided.');
 						if (f.isNew) index++;
 						return next();
 					}
 
-					if (!hasPlayfieldImage && hasPlayfieldScreenshot) {
-
-					}
-
-					// check if exists
-					mongoose.model('File').findById(f._media.playfield_image, function(err, playfieldImage) {
-						/* istanbul ignore if */
-						if (err) {
-							logger.error('[model] Error fetching file "%s".', f._media.playfield_image);
-							if (f.isNew) index++;
-							return next();
-						}
-						if (!playfieldImage) {
-							that.invalidate('files.' + index + '._media.playfield_image', 'Playfield "' + f._media.playfield_image + '" does not exist.');
-							if (f.isNew) index++;
-							return next();
-						}
-						if (!_.contains(['playfield-fs', 'playfield-ws'], playfieldImage.file_type)) {
-							that.invalidate('files.' + index + '._media.playfield_image', 'Must reference a file with file_type "playfield-fs" or "playfield-ws".');
-						}
-						if (f.isNew) index++;
-						next();
-					});
 				} else {
 					if (f.isNew) index++;
 					next();

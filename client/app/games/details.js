@@ -87,28 +87,6 @@ angular.module('vpdb.games.details', [])
 		}
 
 		/**
-		 * Opens the game download dialog
-		 *
-		 * @param game Game
-		 * @param release Release to download
-		 */
-		$scope.download = function(game, release) {
-			$modal.open({
-				templateUrl: '/games/modal-download.html',
-				controller: 'DownloadGameCtrl',
-				size: 'lg',
-				resolve: {
-					params: function() {
-						return {
-							game: game,
-							release: release
-						};
-					}
-				}
-			});
-		};
-
-		/**
 		 * Callback for ROM uploads
 		 * @param status
 		 */
@@ -238,44 +216,6 @@ angular.module('vpdb.games.details', [])
 //				$log.info('Modal dismissed at: ' + new Date());
 //			});
 //		};
-
-		// todo refactor (make it more useful)
-		$scope.tableFile = function(file) {
-			return file.file.mime_type && /^application\/x-visual-pinball-table/i.test(file.file.mime_type);
-		};
-	})
-
-	.controller('DownloadGameCtrl', function($scope, $modalInstance, $timeout, Flavors, DownloadService, params) {
-
-		$scope.game = params.game;
-		$scope.release = params.release;
-		$scope.flavors = Flavors;
-
-		$scope.downloadFiles = {};
-		$scope.downloadRequest = {
-			files: [],
-			media: {
-				playfield_image: true,
-				playfield_video: false
-			},
-			game_media: true,
-			roms: false
-		};
-
-		$scope.download = function() {
-			DownloadService.downloadRelease($scope.release.id, $scope.downloadRequest, function() {
-				$modalInstance.close(true);
-			});
-		};
-
-		$scope.toggleFile = function(file) {
-			if ($scope.downloadFiles[file.file.id]) {
-				delete $scope.downloadFiles[file.file.id];
-			} else {
-				$scope.downloadFiles[file.file.id] = file;
-			}
-			$scope.downloadRequest.files = _.values(_.pluck(_.pluck($scope.downloadFiles, 'file'), 'id'));
-		};
 
 		// todo refactor (make it more useful)
 		$scope.tableFile = function(file) {

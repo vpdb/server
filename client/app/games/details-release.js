@@ -20,7 +20,7 @@
 "use strict"; /* global _, angular */
 
 angular.module('vpdb.games.details', []).controller('ReleaseController', function(
-	$scope, $rootScope, ApiHelper, ReleaseCommentResource, AuthService, ReleaseRatingResource, ReleaseStarResource, ModalService
+	$scope, $rootScope, $modal, ApiHelper, ReleaseCommentResource, AuthService, ReleaseRatingResource, ReleaseStarResource, ModalService
 ) {
 
 	// setup releases
@@ -93,6 +93,28 @@ angular.module('vpdb.games.details', []).controller('ReleaseController', functio
 	}
 
 	/**
+	 * Opens the game download dialog
+	 *
+	 * @param game Game
+	 */
+	$scope.download = function(game) {
+		$modal.open({
+			templateUrl: '/games/modal-download.html',
+			controller: 'DownloadGameCtrl',
+			size: 'lg',
+			resolve: {
+				params: function() {
+					return {
+						game: game,
+						release: $scope.release,
+						latestVersion: $scope.latestVersion
+					};
+				}
+			}
+		});
+	};
+
+	/**
 	 * Returns the version for a given file.
 	 * @param file
 	 * @returns {*}
@@ -151,4 +173,41 @@ angular.module('vpdb.games.details', []).controller('ReleaseController', functio
 		}
 	};
 
+}).controller('DownloadGameCtrl', function($scope, $modalInstance, $timeout, Flavors, DownloadService, params) {
+
+	$scope.game = params.game;
+	$scope.release = params.release;
+	$scope.latestVersion = params.latestVersion;
+	$scope.flavors = Flavors;
+
+	$scope.downloadFiles = {};
+	$scope.downloadRequest = {
+		files: [],
+		media: {
+			playfield_image: true,
+			playfield_video: false
+		},
+		game_media: true,
+		roms: false
+	};
+
+	$scope.download = function() {
+		DownloadService.downloadRelease($scope.release.id, $scope.downloadRequest, function() {
+			$modalInstance.close(true);
+		});
+	};
+
+	$scope.toggleFile = function(file) {
+		if ($scope.downloadFiles[file.file.id]) {
+			delete $scope.downloadFiles[file.file.id];
+		} else {
+			$scope.downloadFiles[file.file.id] = file;
+		}
+		$scope.downloadRequest.files = _.values(_.pluck(_.pluck($scope.downloadFiles, 'file'), 'id'));
+	};
+
+	// todo refactor (make it more useful)
+	$scope.tableFile = function(file) {
+		return file.file.mime_type && /^application\/x-visual-pinball-table/i.test(file.file.mime_type);
+	};
 });

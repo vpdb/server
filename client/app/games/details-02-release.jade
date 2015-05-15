@@ -11,7 +11,7 @@ include ../template/_mixins
 			slide(ng-repeat="slide in portraitShots", active="slide.active")
 				img(ng-src="{{ slide.url }}")
 
-		button.btn.btn-primary.btn-block.padder-top-3x(ng-click="download(game, release)")
+		button.btn.btn-primary.btn-block.padder-top-3x(ng-click="download(game)")
 			+icon('download').space-right
 			| Download
 

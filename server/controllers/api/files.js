@@ -19,13 +19,12 @@
 
 "use strict";
 
-var fs = require('fs');
 var logger = require('winston');
 
 var api = require('./api');
 var File = require('mongoose').model('File');
 
-var storage = require('../../modules/storage');
+var fileModule = require('../../modules/file');
 var error = require('../../modules/error')('api', 'file');
 
 exports.upload = function(req, res) {
@@ -43,7 +42,7 @@ exports.upload = function(req, res) {
 		return api.fail(res, error('Query parameter "type" must be provided.'), 422);
 	}
 
-	var file = new File({
+	var fileData = {
 		name: req.headers['content-disposition'].match(/filename=([^;]+)/i)[1].replace(/(^"|^'|"$|'$)/g, ''),
 		bytes: req.headers['content-length'],
 		variations: {},
@@ -51,59 +50,13 @@ exports.upload = function(req, res) {
 		mime_type: req.headers['content-type'],
 		file_type: req.query.type,
 		_created_by: req.user._id
-	});
+	};
 
-	file.validate(function(err) {
+	fileModule.create(fileData, req, req.user, error, function(err, f, code) {
 		if (err) {
-			return api.fail(res, error('Validations failed. See below for details.').errors(err.errors).warn('create'), 422);
+			return api.fail(res, err.error, err.code);
 		}
-
-		file.save(function(err, file) {
-			/* istanbul ignore if */
-			if (err) {
-				return api.fail(res, error(err, 'Unable to save file'), 500);
-			}
-
-			var writeStream = fs.createWriteStream(file.getPath());
-			writeStream.on('finish', function() {
-				storage.metadata(file, function(err, metadata) {
-					if (err) {
-						return file.remove(function(err) {
-							/* istanbul ignore if */
-							if (err) {
-								logger.error('[api|file:save] Removing file due to erroneous metadata: %s', err, {});
-							}
-							return api.fail(res, error('Metadata parsing for MIME type "%s" failed. Upload corrupted or weird format?', file.mime_type), 400);
-						});
-					}
-					if (!metadata) {
-						// no need to re-save
-						return api.success(res, file.toDetailed(), 201);
-					}
-
-					File.sanitizeObject(metadata);
-					file.metadata = metadata;
-
-					file.save(function(err, file) {
-						/* istanbul ignore if */
-						if (err) {
-							logger.error('[api|file:save] Error saving metadata: %s', err, {});
-							logger.error('[api|file:save] Metadata: %s', require('util').inspect(metadata));
-						}
-						logger.info('[api|file:save] File upload of %s by <%s> successfully completed.', file.toString(), req.user.email);
-						api.success(res, file.toDetailed(), 201);
-
-						// do this in the background.
-						storage.postprocess(file);
-					});
-				});
-			});
-			/* istanbul ignore next */
-			writeStream.on('error', function(err) {
-				return api.fail(res, error(err, 'Error saving data').log('save'), 500);
-			});
-			req.pipe(writeStream);
-		});
+		api.success(res, f.toDetailed(), code);
 	});
 };
 

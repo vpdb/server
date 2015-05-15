@@ -204,11 +204,19 @@ VersionSchema.path('files').validate(function(files, callback) {
 						that.invalidate('files.' + index + '._compatibility', 'At least one build must be provided.');
 					}
 
+					var hasPlayfieldImage = f._media && f._media.playfield_image;
+					var hasPlayfieldScreenshot = file.variations && file.variations.screenshot;
+
 					// media
-					if (!f._media || !f._media.playfield_image) {
+					if (!hasPlayfieldImage && !hasPlayfieldScreenshot) {
+
 						that.invalidate('files.' + index + '._media.playfield_image', 'Playfield image must be provided.');
 						if (f.isNew) index++;
 						return next();
+					}
+
+					if (!hasPlayfieldImage && hasPlayfieldScreenshot) {
+
 					}
 
 					// check if exists

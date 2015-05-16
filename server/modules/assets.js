@@ -84,7 +84,7 @@ function Assets() {
 					prefix = 'lib/';
 				} else if (ext === '.css') {
 					key = 'css';
-				} else if (_.contains(['.woff', '.ttf', '.svg', '.eot', '.otf'], ext)) {
+				} else if (_.contains(['.woff', '.woff2', '.ttf', '.svg', '.eot', '.otf'], ext)) {
 					key = 'fonts';
 				} else {
 					key = 'public';

@@ -322,6 +322,9 @@ Storage.prototype.onProcessed = function(file, variation, processor, nextEvent) 
 							if (err) {
 								return next(error(err, 'Error re-fetching file').warn());
 							}
+							if (!file) {
+								return next(error('File "%s" gone (2), has been removed from DB before processing finished.', fileId));
+							}
 							logger.info('[storage] Retrying reading metadata from %s...', file.toString(variation));
 							processor.metadata(file, variation, function(err, metadata) {
 								if (err) {

@@ -8,7 +8,6 @@ angular.module('vpdb.auth', [])
 
 	.factory('AuthService', function($window, $localStorage, $sessionStorage, $rootScope, $location, $http, $state,
 									 Config, ConfigService, ProfileResource) {
-
 		return {
 
 			user: null,
@@ -238,11 +237,15 @@ angular.module('vpdb.auth', [])
 			 * @return {AuthService}
 			 */
 			fetchUrlTokens: function(paths, callback) {
+				paths = paths || this.paths;
+				if (!_.isObject(paths) || _.keys(paths).length === 0) {
+					return this;
+				}
 				var that = this;
 				$http({
 					method: 'POST',
 					url: ConfigService.storageUri('/authenticate'),
-					data: { paths: paths || this.paths }
+					data: { paths: paths }
 				}).success(function(data) {
 					if (callback) {
 						return callback(null, data);

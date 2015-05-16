@@ -103,6 +103,7 @@ module.exports = function(schema, options) {
 
 			// update
 			async.eachSeries(files, function(file, next) {
+
 				file.switchToActive(next);
 
 			}, function(err) {

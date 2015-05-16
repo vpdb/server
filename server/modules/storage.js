@@ -331,11 +331,11 @@ Storage.prototype.url = function(file, variation) {
 	if (!file) {
 		return null;
 	}
-	var api = file.is_protected ? settings.storageProtectedPath : settings.storagePublicPath;
+	var storagePath = file.isPublic(variation) ? settings.storagePublicPath.bind(settings) : settings.storageProtectedPath.bind(settings);
 	var variationName = _.isObject(variation) ? variation.name : variation;
 	return variationName ?
-		api('/files/' + file.id + '/' + variationName) :
-		api('/files/' + file.id);
+		storagePath('/files/' + file.id + '/' + variationName) :
+		storagePath('/files/' + file.id);
 };
 
 /**
@@ -344,17 +344,53 @@ Storage.prototype.url = function(file, variation) {
  * @param {File} file
  * @param {object|string} variation or variation name
  * @param {string} tmpSuffix a suffix that is added to the file name
+ * @param {boolean} forceProtected If set, always return the protected storage location
  * @returns {string} local path to file
  */
-Storage.prototype.path = function(file, variation, tmpSuffix) {
+Storage.prototype.path = function(file, variation, tmpSuffix, forceProtected) {
 
-	var baseDir = file.is_protected ? config.vpdb.storage.protected.path : config.vpdb.storage.public.path;
+	var baseDir = file.isPublic(variation) && !forceProtected ? config.vpdb.storage.public.path : config.vpdb.storage.protected.path;
 	var variationName = _.isObject(variation) ? variation.name : variation;
 	var suffix = tmpSuffix || '';
 	var ext = file.getExt(variation);
 	return variationName ?
 		path.resolve(baseDir, variationName, file.id) + suffix + ext :
 		path.resolve(baseDir, file.id) + suffix + ext;
+};
+
+/**
+ * Moves the file or/and the variations to the public storage location.
+ *
+ * @param {File} file File object to move
+ */
+Storage.prototype.switchToPublic = function(file) {
+
+	var that = this;
+	var mimeCategory = file.getMimeCategory();
+
+	// file
+	var protectedPath = that.path(file, null, '', true);
+	var publicPath = that.path(file);
+	if (protectedPath !== publicPath) {
+		logger.info('[storage] Renaming "%s" to "%s"', protectedPath, publicPath);
+		fs.renameSync(protectedPath, publicPath);
+	} else {
+		logger.info('[storage] Skipping rename "%s" to "%s"', protectedPath, publicPath);
+	}
+
+	// variations
+	if (this.variations[mimeCategory] && this.variations[mimeCategory][file.file_type]) {
+		_.each(this.variations[mimeCategory][file.file_type], function(variation) {
+			var protectedPath = that.path(file, variation.name, '', true);
+			var publicPath = that.path(file, variation.name);
+			if (protectedPath !== publicPath) {
+				logger.info('[storage] Renaming "%s" to "%s"', protectedPath, publicPath);
+				fs.renameSync(protectedPath, publicPath);
+			} else {
+				logger.info('[storage] Skipping rename "%s" to "%s"', protectedPath, publicPath);
+			}
+		});
+	}
 };
 
 /**

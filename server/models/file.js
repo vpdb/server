@@ -176,7 +176,7 @@ FileSchema.methods.getUrl = function(variation) {
  * @api public
  */
 FileSchema.methods.isPublic = function(variation) {
-	return quota.getCost(this, variation) === -1;
+	return this.is_active && quota.getCost(this, variation) === -1;
 };
 
 /**
@@ -245,11 +245,14 @@ FileSchema.methods.toString = function(variation) {
 
 FileSchema.methods.switchToActive = function(done) {
 
+	var that = this;
 	mongoose.model('File').update({ _id: this._id }, { is_active: true }, function(err) {
 		/* istanbul ignore if */
 		if (err) {
 			return done('Error activating files.');
 		}
+		that.is_active = true;
+		storage.switchToPublic(that);
 		done();
 	});
 };

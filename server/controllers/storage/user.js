@@ -20,6 +20,7 @@
 "use strict";
 
 var _ = require('lodash');
+var logger = require('winston');
 
 var api = require('../api/api');
 var auth = require('../auth');
@@ -41,5 +42,6 @@ exports.authenticate = function(req, res) {
 	_.each(paths, function(path) {
 		tokens[path] = auth.generateStorageToken(req.user, now, path);
 	});
+	logger.info('[storage] Generated %d auth tokens for user <%s>.', _.keys(tokens).length, req.user.email);
 	api.success(res, tokens);
 };

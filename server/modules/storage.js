@@ -454,17 +454,19 @@ Storage.prototype.url = function(file, variation) {
  *
  * @param {File} file
  * @param {object|string} [variation] or variation name
- * @param {string} [tmpSuffix=''] a suffix that is added to the file name
- * @param {boolean} [forceProtected=false] If true, always return the protected storage location
- * @param {boolean} [lockFile=false] If true, return ".lock" as file extension.
+ * @param {object} [opts={}] Optional options.
+ *                              tmpSuffix: a suffix that is added to the file name
+ *                              forceProtected: If true, always return the protected storage location,
+ *                              lockFile: If true, return ".lock" as file extension.
  * @returns {string} local path to file
  */
-Storage.prototype.path = function(file, variation, tmpSuffix, forceProtected, lockFile) {
+Storage.prototype.path = function(file, variation, opts) {
 
-	var baseDir = file.isPublic(variation) && !forceProtected ? config.vpdb.storage.public.path : config.vpdb.storage.protected.path;
+	var opts = opts || {};
+	var baseDir = file.isPublic(variation) && !opts.forceProtected ? config.vpdb.storage.public.path : config.vpdb.storage.protected.path;
 	var variationName = _.isObject(variation) ? variation.name : variation;
-	var suffix = tmpSuffix || '';
-	var ext = lockFile ? '.lock' : file.getExt(variation);
+	var suffix = opts.tmpSuffix || '';
+	var ext = opts.lockFile ? '.lock' : file.getExt(variation);
 	return variationName ?
 		path.resolve(baseDir, variationName, file.id) + suffix + ext :
 		path.resolve(baseDir, file.id) + suffix + ext;
@@ -481,7 +483,7 @@ Storage.prototype.switchToPublic = function(file) {
 	var mimeCategory = file.getMimeCategory();
 
 	// file
-	var protectedPath = that.path(file, null, '', true);
+	var protectedPath = that.path(file, null, { forceProtected: true });
 	var publicPath = that.path(file);
 	if (protectedPath !== publicPath) {
 		logger.info('[storage] Renaming "%s" to "%s"', protectedPath, publicPath);
@@ -493,8 +495,8 @@ Storage.prototype.switchToPublic = function(file) {
 	// variations
 	if (this.variations[mimeCategory] && this.variations[mimeCategory][file.file_type]) {
 		_.each(this.variations[mimeCategory][file.file_type], function(variation) {
-			var lockPath = that.path(file, variation, '', true, true);
-			var protectedPath = that.path(file, variation, '', true);
+			var lockPath = that.path(file, variation, { forceProtected: true, lockFile: true });
+			var protectedPath = that.path(file, variation, { forceProtected: true });
 			var publicPath = that.path(file, variation);
 			if (protectedPath !== publicPath) {
 				if (fs.existsSync(protectedPath)) {

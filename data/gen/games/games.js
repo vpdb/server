@@ -115,7 +115,7 @@ exports.upload = function(config) {
 								} else {
 									data.id = data.title.replace(/[^a-z0-9\s\-]+/gi, '').replace(/\s+/g, '-').toLowerCase();
 								}
-								data.year = data.year || 1900;
+								data.year = data.year || game.year || 1900;
 								data.game_type = data.game_type || 'na';
 								data.manufacturer = data.manufacturer || 'unknown';
 								data._media = { backglass: bgRef, logo: logoRef };

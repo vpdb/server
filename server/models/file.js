@@ -144,7 +144,7 @@ FileSchema.methods.toDetailed = function() {
  * @api public
  */
 FileSchema.methods.getPath = function(variation, tmpSuffix) {
-	return storage.path(this, variation, tmpSuffix);
+	return storage.path(this, variation, { tmpSuffix: tmpSuffix });
 };
 
 /**
@@ -156,7 +156,7 @@ FileSchema.methods.getPath = function(variation, tmpSuffix) {
  * @returns {string}                  Lockfile
  */
 FileSchema.methods.getLockFile = function(variation) {
-	return storage.path(this, variation, '', false, true);
+	return storage.path(this, variation, { lockFile: true });
 };
 
 /**

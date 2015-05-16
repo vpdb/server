@@ -20,15 +20,12 @@
 "use strict";
 
 var _ = require('lodash');
-var util = require('util');
-var async = require('async');
 
 var Game = require('mongoose').model('Game');
 var Release = require('mongoose').model('Release');
 var User = require('mongoose').model('User');
 var Star = require('mongoose').model('Star');
 var api = require('./api');
-var metrics = require('../../modules/metrics');
 
 var error = require('../../modules/error')('api', 'star');
 
@@ -136,7 +133,7 @@ function unstar(req, res, find) {
 			return api.fail(res, error('Not starred. You need to star something before you can unstar it.').warn('create'), 400);
 		}
 		star.remove(assert(function() {
-			entity.incrementCounter('stars', assert(function(result) {
+			entity.incrementCounter('stars', assert(function() {
 
 				api.success(res, null, 204);
 

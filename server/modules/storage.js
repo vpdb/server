@@ -280,17 +280,6 @@ Storage.prototype.onProcessed = function(file, variation, processor, nextEvent) 
 					return next(error('File "%s" gone, has been removed from DB before processing finished.', fileId));
 				}
 
-				// check if file should have been renamed while processing
-				var dirtyPath = Storage.prototype.path(originalFile, variation);
-				var cleanPath = Storage.prototype.path(file, variation);
-				if (!fs.existsSync(cleanPath) && fs.existsSync(dirtyPath)) {
-					logger.info('[storage] Seems that "%s" was locked while attempting to move, renaming now to "%s".', dirtyPath, cleanPath);
-					try {
-						fs.renameSync(dirtyPath, cleanPath);
-					} catch (err) {
-						logger.error('[storage] Error renaming: %s', err.message);
-					}
-				}
 				next(null, file);
 			});
 		},
@@ -302,6 +291,18 @@ Storage.prototype.onProcessed = function(file, variation, processor, nextEvent) 
 		 * @param next Callback
 		 */
 		function(file, next) {
+
+			// check if file should have been renamed meanwhile
+			var dirtyPath = Storage.prototype.path(originalFile, variation);
+			var cleanPath = Storage.prototype.path(file, variation);
+			if (!fs.existsSync(cleanPath) && fs.existsSync(dirtyPath)) {
+				logger.info('[storage] Seems that "%s" was locked while attempting to move, renaming now to "%s".', dirtyPath, cleanPath);
+				try {
+					fs.renameSync(dirtyPath, cleanPath);
+				} catch (err) {
+					logger.error('[storage] Error renaming: %s', err.message);
+				}
+			}
 
 			// update database with new variation
 			logger.info('[storage] Locking file at "%s"', file.getLockFile(variation));

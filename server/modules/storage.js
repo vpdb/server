@@ -314,10 +314,26 @@ Storage.prototype.onProcessed = function(file, variation, processor, nextEvent) 
 				logger.info('[storage] Unlocking file at "%s"', file.getLockFile(variation));
 				fs.unlinkSync(file.getLockFile(variation));
 
-				// possible that files are renamed while getting metadata. check and retry.
+
 				if (err) {
-					logger.error('[storage] Error processing metadata of %s: %s', file.toString(variation), err.message);
-					return next(err);
+					// it's possible that files were renamed while getting metadata. check and retry.
+					if (/no such file/i.test(err.message)) {
+						File.findById(file._id, function(err, file) {
+							/* istanbul ignore if */
+							if (err) {
+								return next(error(err, 'Error re-fetching file').warn());
+							}
+							logger.info('[storage] Retrying reading metadata from %s...', file.toString(variation));
+							processor.metadata(file, variation, function(err, metadata) {
+								if (err) {
+									logger.error('[storage] Error processing metadata of %s: %s', file.toString(variation), err.message);
+									return next(err, file);
+								}
+								next(null, file, metadata);
+							});
+
+						});
+					}
 				}
 
 				next(null, file, metadata);

@@ -154,6 +154,7 @@ function Queue() {
 				if (!data.success || !success) {
 					return callback(file);
 				}
+				logger.info('[queue] Getting fstat from %s at "%s"', file.toString(data.variation), file.getPath(data.variation));
 				storage.fstat(file, data.variation, function(err, fstat) {
 					/* instanbul ignore if */
 					if (err) {

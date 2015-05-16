@@ -151,25 +151,94 @@ function find(req, res, authErr, callback) {
  */
 function serve(req, res, file, variationName, headOnly) {
 
-	var serveFile = function(file, fstat) {
+	async.waterfall([
 
-		// check if we should return 304 not modified
-		var modified = new Date(fstat.mtime);
-		var ifmodifiedsince = req.headers['if-modified-since'] ? new Date(req.headers['if-modified-since']) : false;
-		if (ifmodifiedsince && modified.getTime() >= ifmodifiedsince.getTime()) {
-			return res.status(304).end();
-		}
+		/**
+		 * Checks if file is ready to stream or subscribes to callback otherwise
+		 * @param next
+		 */
+		function(next) {
 
-		if (!headOnly) {
+			logger.info('[ctrl|storage] Getting fstat from %s at "%s"', file.toString(variationName), file.getPath(variationName));
+			storage.fstat(file, variationName, function(err, fstat) {
+				if (err) {
+					logger.error('[ctrl|storage] Error while fstating %s: %s', file.toString(variationName), err);
+					return next({ code: 500 });
+				}
+
+				if (fstat && fstat.size > 0) {
+					next(null, file, fstat);
+
+				} else {
+					/*
+					 * So the idea is the following:
+					 *
+					 * The user uploads let's say an image, a backglass at 1280x1024 that weights 2.5M. As uploading takes already
+					 * long enough, we don't want the user wait another minute until the post-processing stuff is done (i.e.
+					 * creating thumbs and running everything through pngquant and optipng).
+					 *
+					 * For this reason, when uploading, the API only reads image meta data and instantly returns the payload that
+					 * contains URLs for not-yet-generated thumbs. The post-processing is then launched in the background.
+					 *
+					 * Now, when the client accesses the not-yet-generated thumb, we end up here. By calling `whenProcessed()`, we
+					 * ask the `storage` module to let us know when processing for that file and variation has finished (if there
+					 * wasn't actually any processing going on, it will instantly return null).
+					 *
+					 * That means that the client's request for the image is delayed until the image is ready and then instantly
+					 * delivered.
+					 *
+					 * The client can also use the same mechanism if it just wants to wait and do something else by issueing a HEAD
+					 * request on the resource, so no data is transferred.
+					 */
+					logger.info('[ctrl|storage] Waiting for %s to be processed...', file.toString(variationName));
+					storage.whenProcessed(file, variationName, function(file, fstat) {
+						if (!fstat) {
+							logger.info('[ctrl|storage] No processing or error, returning 404.');
+							return next({ code: 404 });
+						}
+						next(null, file, fstat);
+					});
+				}
+			});
+		},
+
+		/**
+		 * Serves the file.
+		 *
+		 * @param file File model to serve
+		 * @param fstat retrieved fstat
+		 * @param next Callback
+		 */
+		function(file, fstat, next) {
+
+			// check if we should return 304 not modified
+			var modified = new Date(fstat.mtime);
+			var ifmodifiedsince = req.headers['if-modified-since'] ? new Date(req.headers['if-modified-since']) : false;
+			if (ifmodifiedsince && modified.getTime() >= ifmodifiedsince.getTime()) {
+				return next({ code: 304 });
+			}
+
+			// only return the header if request was HEAD
+			if (headOnly) {
+				res.writeHead(200, {
+					'Content-Type': file.getMimeType(variationName),
+					'Content-Length': 0,
+					'Cache-Control': 'max-age=315360000',
+					'Last-Modified': modified.toISOString().replace(/T/, ' ').replace(/\..+/, '')
+				});
+				res.end();
+				return next();
+			}
 
 			// set headers and stream the file
 			var filePath = file.getPath(variationName);
 
 			if (!fs.existsSync(filePath)) {
-				return res.json(500, { error: 'Error streaming ' + file.toString(variationName) + ' from storage. Please contact an admin.' });
+				logger.error('[ctrl|storage] Cannot find %s at "%s" in order to stream to client.', file.toString(variationName), filePath);
+				return next({ code: 500, message: 'Error streaming ' + file.toString(variationName) + ' from storage. Please contact an admin.' });
 			}
-			var stream = fs.createReadStream(filePath);
-			stream.on('error', function(err) {
+			var readStream = fs.createReadStream(filePath);
+			readStream.on('error', function(err) {
 				logger.error('[ctrl|storage] Error before streaming %s from storage: %s', file.toString(variationName), err);
 				res.end();
 			});
@@ -186,10 +255,12 @@ function serve(req, res, file, variationName, headOnly) {
 			}
 
 			res.writeHead(200, headers);
-			stream.pipe(res).on('error', function(err) {
-				logger.error('[ctrl|storage] Error while streaming %s from storage: %s', file.toString(variationName), err);
-				res.end();
-			});
+			readStream.pipe(res)
+				.on('error', function(err) {
+					logger.error('[ctrl|storage] Error while streaming %s from storage: %s', file.toString(variationName), err);
+					res.end();
+				})
+				.on('end', next);
 
 			// count download
 			if (!variationName) {
@@ -200,62 +271,24 @@ function serve(req, res, file, variationName, headOnly) {
 				if (!file.isFree(variationName)) {
 					counters.push(function (next) {
 						req.user.incrementCounter('downloads', next);
-
 					});
 				}
 				async.series(counters);
 			}
-
-			// only return the header if request was HEAD
-		} else {
-			res.writeHead(200, {
-				'Content-Type': file.getMimeType(variationName),
-				'Content-Length': 0,
-				'Cache-Control': 'max-age=315360000',
-				'Last-Modified': modified.toISOString().replace(/T/, ' ').replace(/\..+/, '')
-			});
-			return res.end();
 		}
-	};
 
-	storage.fstat(file, variationName, function(err, fstat) {
+	], function(err) {
 		if (err) {
-			logger.error('[ctrl|storage] Error while fstating %s: %s', file.toString(variationName), err);
-			return res.status(500).end();
-		}
-
-		if (fstat && fstat.size > 0) {
-			serveFile(file, fstat);
-
+			res.status(err.code);
+			if (err.message) {
+				res.json({ error: err.message });
+			} else {
+				res.end();
+			}
 		} else {
-			/*
-			 * So the idea is the following:
-			 *
-			 * The user uploads let's say an image, a backglass at 1280x1024 that weights 2.5M. As uploading takes already
-			 * long enough, we don't want the user wait another minute until the post-processing stuff is done (i.e.
-			 * creating thumbs and running everything through pngquant and optipng).
-			 *
-			 * For this reason, when uploading, the API only reads image meta data and instantly returns the payload that
-			 * contains URLs for not-yet-generated thumbs. The post-processing is then launched in the background.
-			 *
-			 * Now, when the client accesses the not-yet-generated thumb, we end up here. By calling `whenProcessed()`, we
-			 * ask the `storage` module to let us know when processing for that file and variation has finished (if there
-			 * wasn't actually any processing going on, it will instantly return null).
-			 *
-			 * That means that the client's request for the image is delayed until the image is ready and then instantly
-			 * delivered.
-			 *
-			 * The client can also use the same mechanism if it just wants to wait and do something else by issueing a HEAD
-			 * request on the resource, so no data is transferred.
-			 */
-			logger.info('[ctrl|storage] Waiting for %s/%s to be processed...', file.id, variationName);
-			storage.whenProcessed(file, variationName, function(file, fstat) {
-				if (!fstat) {
-					logger.info('[ctrl|storage] No processing or error, returning 404.');
-					return res.status(404).end();
-				}
-				serveFile(file, fstat);
-			});
+			// otherwise we're done here, file has been served above.
+			logger.info('[ctrl|storage] File %s successfully served to <%s>.', file.toString(variationName), req.user ? req.user.email : 'anonymous');
 		}
 	});
+
 }

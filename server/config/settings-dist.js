@@ -46,7 +46,7 @@ module.exports = {
 				path: './data/storage-public',
 
 				/** URI of the API. Used to construct URLs. */
-				api: { protocol: 'https', hostname: 'localhost', port: 3000, pathname: '/storage/public' }
+				api: { protocol: 'https', hostname: 'localhost', port: 3000, pathname: '/public' }
 			},
 
 			/**

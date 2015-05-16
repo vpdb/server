@@ -470,8 +470,8 @@ Storage.prototype.url = function(file, variation) {
 	var storagePath = file.isPublic(variation) ? settings.storagePublicPath.bind(settings) : settings.storageProtectedPath.bind(settings);
 	var variationName = _.isObject(variation) ? variation.name : variation;
 	return variationName ?
-		storagePath('/files/' + file.id + '/' + variationName) :
-		storagePath('/files/' + file.id);
+		storagePath('/files/' + variationName + '/' + file.id + file.getExt(variation)) :
+		storagePath('/files/' + file.id + file.getExt(variation));
 };
 
 /**
@@ -487,7 +487,7 @@ Storage.prototype.url = function(file, variation) {
  */
 Storage.prototype.path = function(file, variation, opts) {
 
-	var opts = opts || {};
+	opts = opts || {};
 	var baseDir = file.isPublic(variation) && !opts.forceProtected ? config.vpdb.storage.public.path : config.vpdb.storage.protected.path;
 	var variationName = _.isObject(variation) ? variation.name : variation;
 	var suffix = opts.tmpSuffix || '';

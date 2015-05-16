@@ -23,15 +23,15 @@ var settings = require('../../modules/settings');
 
 exports.register = function(app, api, storage) {
 
-	app.post(settings.storageProtectedPath('/files'),                api.auth(api.files.upload, 'files', 'upload'));
-	app.head(settings.storageProtectedPath('/files/:id'),            api.anon(storage.files.head));
-	app.head(settings.storageProtectedPath('/files/:id/:variation'), api.anon(storage.files.head));
-	app.get(settings.storageProtectedPath('/files/:id'),             api.anon(storage.files.get));  // permission/quota handling is inside.
-	app.get(settings.storageProtectedPath('/files/:id/:variation'),  api.anon(storage.files.get));
+	app.post(settings.storageProtectedPath('/files'),                      api.auth(api.files.upload, 'files', 'upload'));
+	app.head(settings.storageProtectedPath('/files/:id.[^/]+'),            api.anon(storage.files.head));
+	app.head(settings.storageProtectedPath('/files/:variation/:id.[^/]+'), api.anon(storage.files.head));
+	app.get(settings.storageProtectedPath('/files/:id.[^/]+'),             api.anon(storage.files.get));  // permission/quota handling is inside.
+	app.get(settings.storageProtectedPath('/files/:variation/:id.[^/]+'),  api.anon(storage.files.get));
 
 	// nginx is taking care of this in production
-	app.head(settings.storagePublicPath('/files/:id'),            api.anon(storage.files.head));
-	app.head(settings.storagePublicPath('/files/:id/:variation'), api.anon(storage.files.head));
-	app.get(settings.storagePublicPath('/files/:id'),             api.anon(storage.files.get));  // permission/quota handling is inside.
-	app.get(settings.storagePublicPath('/files/:id/:variation'),  api.anon(storage.files.get));
+	app.head(settings.storagePublicPath('/files/:id.[^/]+'),            api.anon(storage.files.head));
+	app.head(settings.storagePublicPath('/files/:variation/:id.[^/]+'), api.anon(storage.files.head));
+	app.get(settings.storagePublicPath('/files/:id.[^/]+'),             api.anon(storage.files.get));  // permission/quota handling is inside.
+	app.get(settings.storagePublicPath('/files/:variation/:id.[^/]+'),  api.anon(storage.files.get));
 };

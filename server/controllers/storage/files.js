@@ -159,7 +159,6 @@ function serve(req, res, file, variationName, headOnly) {
 		 */
 		function(next) {
 
-			logger.info('[ctrl|storage] Getting fstat from %s at "%s"', file.toString(variationName), file.getPath(variationName));
 			storage.fstat(file, variationName, function(err, fstat) {
 				if (err) {
 					logger.error('[ctrl|storage] Error while fstating %s: %s', file.toString(variationName), err);

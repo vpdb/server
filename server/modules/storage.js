@@ -331,14 +331,17 @@ Storage.prototype.onProcessed = function(file, variation, processor, nextEvent) 
 								logger.info('[storage] Okay, no error this time for %s, moving on (%s).', file.toString(variation), _.keys(metadata).join(', '));
 								next(null, file, metadata);
 							});
-
+							// flow through
 						});
 					} else {
 						return next(err, file);
 					}
+
+				} else {
+					next(null, file, metadata);
 				}
 
-				next(null, file, metadata);
+
 			});
 		},
 

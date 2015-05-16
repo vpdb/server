@@ -23,7 +23,7 @@ var settings = require('../../modules/settings');
 
 exports.register = function(app, api, storage) {
 
-	app.get(settings.storagePath('/releases/:release_id'), api.auth(storage.releases.download, 'files', 'download'));
-	app.post(settings.storagePath('/releases/:release_id'), api.auth(storage.releases.download, 'files', 'download'));
+	app.get(settings.storageProtectedPath('/releases/:release_id'), api.auth(storage.releases.download, 'files', 'download'));
+	app.post(settings.storageProtectedPath('/releases/:release_id'), api.auth(storage.releases.download, 'files', 'download'));
 
 };

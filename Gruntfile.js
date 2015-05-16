@@ -142,7 +142,7 @@ module.exports = function(grunt) {
 		mkdir: {
 			server:   { options: { mode: 504, create: [ '<%= config.cssRoot %>', '<%= config.jsRoot %>' ] } },
 			coverage: { options: { mode: 504, create: [ '<%= config.coverageRoot %>' ] } },
-			test:     { options: { mode: 504, create: [ config.vpdb.storage ] }},
+			test:     { options: { mode: 504, create: [ config.vpdb.storage.public.path, config.vpdb.storage.protected.path ] }},
 			devsite:  { options: { mode: 504, create: [ '<%= config.devsiteRoot %>/html/styleguide' ] } }
 		},
 

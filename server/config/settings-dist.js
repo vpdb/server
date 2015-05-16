@@ -27,14 +27,40 @@ module.exports = {
 		api: { protocol: 'https', hostname: 'localhost', port: 3000, pathname: '/api/v1' },
 
 		/**
-		 * Public URI of the Storage API.
+		 * Storage-related URLs and paths.
 		 *
-		 * This is used to construct URLs. The actual server always listens on
-		 * `localhost`.
+		 * We have two storage end-points: A public one that is served by the
+		 * reverse proxy directly for files that don't need authentication,
+		 * and a protected one for API commands and protected downloads.
 		 *
 		 * @important
 		 */
-		storageApi: { protocol: 'https', hostname: 'localhost', port: 3000, pathname: '/storage/v1' },
+		storage: {
+
+			/**
+			 * Public files (no authentication needed).
+ 			 */
+			'public': {
+
+				/** Path on the file system */
+				path: './data/storage-public',
+
+				/** URI of the API. Used to construct URLs. */
+				api: { protocol: 'https', hostname: 'localhost', port: 3000, pathname: '/storage/public' }
+			},
+
+			/**
+			 * Protected files (need authentication, even if download might be free).
+			 */
+			'protected': {
+
+				/** Path on the file system */
+				path: './data/storage-protected',
+
+				/** URI of the API. Used to construct URLs. */
+				api: { protocol: 'https', hostname: 'localhost', port: 3000, pathname: '/storage/v1' }
+			}
+		},
 
 		/**
 		 * Public URI of the web application.
@@ -45,6 +71,16 @@ module.exports = {
 		 * @important
 		 */
 		webapp: { protocol: 'https', hostname: 'localhost', port: 3000 },
+
+		/**
+		 * Lifetime of the API JWT in milliseconds.
+		 */
+		apiTokenLifetime: 3600000,
+
+		/**
+		 * Lifetime of the ticket token in the URL for images and videos, in milliseconds.
+		 */
+		storageTokenLifetime: 60000,
 
 		/**
 		 * Database configuration. Must point to a MongoDB schema.
@@ -59,22 +95,6 @@ module.exports = {
 			port: 6379,
 			db: 0
 		},
-
-		/**
-		 * Lifetime of the API JWT in milliseconds.
-		 */
-		apiTokenLifetime: 3600000,
-
-		/**
-		 * Lifetime of the ticket token in the URL for images and videos, in milliseconds.
-		 */
-		storageTokenLifetime: 60000,
-
-		/**
-		 * Where the files are stored.
-		 * @important
-		 */
-		storage: './data/storage',
 
 		/**
 		 * Secret for hashing and signing. Create something long here: http://strongpasswordgenerator.com/

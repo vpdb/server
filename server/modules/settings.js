@@ -340,8 +340,12 @@ Settings.prototype.apiPath = function(path) {
 	return this.current.vpdb.api.pathname + (path || '');
 };
 
-Settings.prototype.storagePath = function(path) {
-	return this.current.vpdb.storageApi.pathname + (path || '');
+Settings.prototype.storagePublicPath = function(path) {
+	return this.current.vpdb.storage.public.api.pathname + (path || '');
+};
+
+Settings.prototype.storageProtectedPath = function(path) {
+	return this.current.vpdb.storage.protected.api.pathname + (path || '');
 };
 
 Settings.prototype.webUri = function(path) {
@@ -355,7 +359,7 @@ Settings.prototype.clientConfig = function() {
 	return {
 		authHeader: this.current.vpdb.authorizationHeader,
 		apiUri: this.current.vpdb.api,
-		storageUri: this.current.vpdb.storageApi,
+		storageUri: this.current.vpdb.storage.protected.api,
 		webUri: this.current.vpdb.webapp,
 		authProviders: {
 			local: true,

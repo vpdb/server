@@ -46,15 +46,17 @@ function Storage() {
 	_.each(this.variations, function(items) {
 		_.each(items, function(variations) {
 			_.each(variations, function(variation) {
-				var variationPath = path.resolve(config.vpdb.storage, variation.name);
-				/* istanbul ignore if */
-				if (!fs.existsSync(variationPath)) {
-					logger.info('[storage] Creating non-existant path for variation "%s" at %s', variation.name, variationPath);
-					fs.mkdirSync(variationPath);
-				}
-				if (!_.contains(that.variationNames, variation.name)) {
-					that.variationNames.push(variation.name);
-				}
+				_.each(['public', 'protected'], function(access) {
+					var variationPath = path.resolve(config.vpdb.storage[access].path, variation.name);
+					/* istanbul ignore if */
+					if (!fs.existsSync(variationPath)) {
+						logger.info('[storage] Creating non-existant path for variation "%s" at %s', variation.name, variationPath);
+						fs.mkdirSync(variationPath);
+					}
+					if (!_.contains(that.variationNames, variation.name)) {
+						that.variationNames.push(variation.name);
+					}
+				});
 			});
 		});
 	});
@@ -329,11 +331,11 @@ Storage.prototype.url = function(file, variation) {
 	if (!file) {
 		return null;
 	}
-
+	var api = file.is_protected ? settings.storageProtectedPath : settings.storagePublicPath;
 	var variationName = _.isObject(variation) ? variation.name : variation;
 	return variationName ?
-		settings.storagePath('/files/' + file.id + '/' + variationName) :
-		settings.storagePath('/files/' + file.id);
+		api('/files/' + file.id + '/' + variationName) :
+		api('/files/' + file.id);
 };
 
 /**
@@ -346,12 +348,13 @@ Storage.prototype.url = function(file, variation) {
  */
 Storage.prototype.path = function(file, variation, tmpSuffix) {
 
+	var baseDir = file.is_protected ? config.vpdb.storage.protected.path : config.vpdb.storage.public.path;
 	var variationName = _.isObject(variation) ? variation.name : variation;
 	var suffix = tmpSuffix || '';
 	var ext = file.getExt(variation);
 	return variationName ?
-		path.resolve(config.vpdb.storage, variationName, file.id) + suffix + ext :
-		path.resolve(config.vpdb.storage, file.id) + suffix + ext;
+		path.resolve(baseDir, variationName, file.id) + suffix + ext :
+		path.resolve(baseDir, file.id) + suffix + ext;
 };
 
 /**

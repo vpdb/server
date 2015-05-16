@@ -254,7 +254,7 @@ VersionSchema.path('files').validate(function(files, callback) {
 								logger.error('[model|release] Error creating playfield image from table file: ' + err.message);
 								that.invalidate('files.' + index + '._media.playfield_image', 'Error processing screenshot: ' + err.message);
 							} else {
-								logger.error('[model|release] Playfield image successfully created.');
+								logger.info('[model|release] Playfield image successfully created.');
 								f._media.playfield_image = playfieldImageFile._id;
 							}
 							if (f.isNew) index++;

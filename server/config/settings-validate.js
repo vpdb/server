@@ -55,17 +55,24 @@ module.exports = {
 			hostname: checkHost, port: checkPort, protocol: checkProtocol, pathname: checkPath
 		},
 
-
 		/**
-		 * Public URI of the Storage API.
+		 * Storage-related URLs and paths.
 		 *
-		 * This is used to construct URLs. The actual server always listens on
-		 * `localhost`.
+		 * We have two storage end-points: A public one that is served by the
+		 * reverse proxy directly for files that don't need authentication,
+		 * and a protected one for API commands and protected downloads.
 		 *
 		 * @important
 		 */
-		storageApi: {
-			hostname: checkHost, port: checkPort, protocol: checkProtocol, pathname: checkPath
+		storage: {
+			'public': {
+				path: checkFolder,
+				api: { hostname: checkHost, port: checkPort, protocol: checkProtocol, pathname: checkPath }
+			},
+			'protected': {
+				path: checkFolder,
+				api: { hostname: checkHost, port: checkPort, protocol: checkProtocol, pathname: checkPath }
+			}
 		},
 
 		/**
@@ -265,21 +272,6 @@ module.exports = {
 				if (!_.isObject(obj)) {
 					return 'Nodemailer configuration must be an object.';
 				}
-			}
-		},
-
-		/**
-		 * Where the files are stored.
-		 * @important
-		 */
-		storage: function(path) {
-			/* istanbul ignore if */
-			if (!fs.existsSync(path)) {
-				return 'Storage path does not exist. Please point it to an existing folder or create the mentioned path';
-			}
-			/* istanbul ignore if */
-			if (!fs.lstatSync(path).isDirectory()) {
-				return 'Storage path is not a folder. Please make it point to a folder';
 			}
 		},
 
@@ -613,5 +605,16 @@ function checkProtocol(protocol) {
 function checkPath(path) {
 	if (!_.isString(path) || path[0] !== '/') {
 		return 'Path must start with "/".';
+	}
+}
+
+function checkFolder(path) {
+	/* istanbul ignore if */
+	if (!fs.existsSync(path)) {
+		return 'Storage path does not exist. Please point it to an existing folder or create the mentioned path';
+	}
+	/* istanbul ignore if */
+	if (!fs.lstatSync(path).isDirectory()) {
+		return 'Storage path is not a folder. Please make it point to a folder';
 	}
 }

@@ -5,7 +5,10 @@ module.exports = {
 
 	vpdb: {
 		api:        { protocol: 'http', hostname: 'localhost', port: 7357, pathname: '/api/v1' },
-		storageApi: { protocol: 'http', hostname: 'localhost', port: 7357, pathname: '/storage/v1' },
+		storage: {
+			'public': { path: './data/storage-test-public', api: { protocol: 'https', hostname: 'localhost', port: 7357, pathname: '/storage/public' } },
+			'protected': { path: './data/storage-test-protected', api: { protocol: 'https', hostname: 'localhost', port: 7357, pathname: '/storage/v1' } }
+		},
 		webapp:     { protocol: 'http', hostname: 'localhost', port: 7357 },
 		db: 'mongodb://localhost/vpdb-test',
 		redis: { host: '127.0.0.1', port: 6379, db: 7 },
@@ -22,7 +25,6 @@ module.exports = {
 			file: { access: null, app: null },
 			papertrail: { access: false, app: false, options: { } }
 		},
-		storage: './data/storage-test',
 		skipImageOptimizations: true,
 		quota: {
 			plans: {

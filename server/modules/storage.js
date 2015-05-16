@@ -314,7 +314,6 @@ Storage.prototype.onProcessed = function(file, variation, processor, nextEvent) 
 				logger.info('[storage] Unlocking file at "%s"', file.getLockFile(variation));
 				fs.unlinkSync(file.getLockFile(variation));
 
-
 				if (err) {
 					// it's possible that files were renamed while getting metadata. check and retry.
 					if (/no such file/i.test(err.message)) {
@@ -329,10 +328,13 @@ Storage.prototype.onProcessed = function(file, variation, processor, nextEvent) 
 									logger.error('[storage] Error processing metadata of %s: %s', file.toString(variation), err.message);
 									return next(err, file);
 								}
+								logger.info('[storage] Okay, no error this time for %s, moving on (%s).', file.toString(variation), _.keys(metadata).join(', '));
 								next(null, file, metadata);
 							});
 
 						});
+					} else {
+						return next(err, file);
 					}
 				}
 
@@ -383,7 +385,7 @@ Storage.prototype.onProcessed = function(file, variation, processor, nextEvent) 
 
 					// save only limited meta data for variations
 					var fieldPath = 'variations.' + variation.name;
-					data[fieldPath] = _.extend(processor.variationData(metadata), {bytes: fs.statSync(filepath).size});
+					data[fieldPath] = _.extend(processor.variationData(metadata), { bytes: fs.statSync(filepath).size });
 					if (variation.mimeType) {
 						data[fieldPath].mime_type = variation.mimeType;
 					}

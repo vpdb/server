@@ -284,7 +284,7 @@ Storage.prototype.onProcessed = function(file, variation, processor, nextEvent) 
 				var dirtyPath = Storage.prototype.path(originalFile, variation);
 				var cleanPath = Storage.prototype.path(file, variation);
 				if (!fs.existsSync(cleanPath) && fs.existsSync(dirtyPath)) {
-					logger.info('[storage] Seems that "%s" was locked while moving, renaming now to "%s".', dirtyPath, cleanPath);
+					logger.info('[storage] Seems that "%s" was locked while attempting to move, renaming now to "%s".', dirtyPath, cleanPath);
 					try {
 						fs.renameSync(dirtyPath, cleanPath);
 					} catch (err) {
@@ -304,20 +304,27 @@ Storage.prototype.onProcessed = function(file, variation, processor, nextEvent) 
 		function(file, next) {
 
 			// update database with new variation
+			logger.info('[storage] Locking file at "%s"', file.getLockFile(variation));
+			fs.closeSync(fs.openSync(file.getLockFile(variation), 'w'));
+
 			logger.info('[storage] Reading metadata from %s...', file.toString(variation));
 			processor.metadata(file, variation, function(err, metadata) {
+
+				logger.info('[storage] Unlocking file at "%s"', file.getLockFile(variation));
+				fs.unlinkSync(file.getLockFile(variation));
 
 				// possible that files are renamed while getting metadata. check and retry.
 				if (err) {
 					logger.error('[storage] Error processing metadata of %s: %s', file.toString(variation), err.message);
 					return next(err);
 				}
+
 				next(null, file, metadata);
 			});
 		},
 
 		/**
-		 * Re-fetch data so we have the freshedst varations and keep data loss at a minimum.
+		 * Re-fetch data so we have the freshest varations and keep data loss at a minimum.
 		 *
 		 * @param file Previously fetched file
 		 * @param metadata Previously fetched meta data
@@ -335,10 +342,23 @@ Storage.prototype.onProcessed = function(file, variation, processor, nextEvent) 
 				if (!file) {
 					return next(error('File "%s" gone, has been removed from DB before metadata finished.', fileId));
 				}
+
+				// check if file should have been renamed while reading meta data
+				var dirtyPath = Storage.prototype.path(originalFile, variation);
+				var cleanPath = Storage.prototype.path(file, variation);
+				if (!fs.existsSync(cleanPath) && fs.existsSync(dirtyPath)) {
+					logger.info('[storage] Seems that "%s" was locked while attempting to move, renaming now to "%s".', dirtyPath, cleanPath);
+					try {
+						fs.renameSync(dirtyPath, cleanPath);
+					} catch (err) {
+						logger.error('[storage] Error renaming: %s', err.message);
+					}
+				}
+
 				var filepath = file.getPath(variation);
 				if (!fs.existsSync(filepath)) {
 					// here we care: we came so far, so this was definitely deleted while we were away
-					return next(error('File "%s" gone, has been deleted before metadata finished.', filepath));
+					return next(error('File "%s" gone, has been deleted before metadata finished.', filepath), file);
 				}
 
 				var data = {};
@@ -398,7 +418,7 @@ Storage.prototype.onProcessed = function(file, variation, processor, nextEvent) 
 	], function(err, updatedFile) {
 
 		if (err === true) {
-			return logger.warn('[storage] Could not find %s in database after updating metadata, aborting.', file.toString(variation));
+			return logger.warn('[storage] Skipping %s.', file.toString(variation));
 		}
 
 		if (err) {
@@ -486,7 +506,7 @@ Storage.prototype.switchToPublic = function(file) {
 							logger.error('[storage] Error renaming: %s', err.message);
 						}
 					} else {
-						logger.warn('[storage] Skipping rename, "%s" is locked (still processing)', protectedPath);
+						logger.warn('[storage] Skipping rename, "%s" is locked (processing)', protectedPath);
 					}
 				} else {
 					fs.closeSync(fs.openSync(protectedPath, 'w'));
@@ -499,7 +519,6 @@ Storage.prototype.switchToPublic = function(file) {
 		});
 	}
 };
-
 
 
 /**

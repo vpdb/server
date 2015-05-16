@@ -148,6 +148,18 @@ FileSchema.methods.getPath = function(variation, tmpSuffix) {
 };
 
 /**
+ * Returns the path of the lock file.
+ *
+ * Lock files indicate that the file is being processed.
+ *
+ * @param {Object|String} [variation] Either variation name or object containing attribute "name".
+ * @returns {string}                  Lockfile
+ */
+FileSchema.methods.getLockFile = function(variation) {
+	return storage.path(this, variation, '', false, true);
+};
+
+/**
  * Returns the file extension, inclusively the dot.
  *
  * @param {Object|String} variation Either variation name or object containing attribute "name"

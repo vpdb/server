@@ -113,7 +113,12 @@ angular.module('vpdb.common', [])
 	.factory('ApiHelper', function($modal, $rootScope, $location, ModalService, ModalFlashService) {
 		return {
 
-			handlePagination: function(scope, callback) {
+			handlePagination: function(scope, opts, callback) {
+				if (_.isFunction(opts)) {
+					callback = opts;
+				} else {
+					opts = opts || {};
+				}
 				return function(items, headers) {
 					scope.pagination = {};
 					if (headers('x-list-count')) {
@@ -137,6 +142,10 @@ angular.module('vpdb.common', [])
 
 					if (callback) {
 						callback(items, headers);
+					}
+
+					if (opts.loader) {
+						scope.loading = false;
 					}
 				};
 			},

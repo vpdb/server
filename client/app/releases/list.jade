@@ -1,8 +1,12 @@
 include ../template/_mixins
 
 .row.row--fullheight(ng-controller="ReleaseListController")
+
+	//- main column
 	.col-sm-9.col--main
 		h1.h--primary Releases
+
+		//- view type toggles
 		ul.nav-icons
 			li.a(ng-class="{ active: viewtype == 'compact' }")
 				+icon('th-compact')(ng-click="switchview('compact')")
@@ -12,8 +16,11 @@ include ../template/_mixins
 				+icon('th-table')(ng-click="switchview('table')")
 		hr
 
+		//- number of games counter
 		.pull-left(ng-show="releases.length > 0")
-			span.small {{ pagination.count }} RELEASES
+			span.small {{ pagination.count }} RELEASE{{ pagination.count == 1 ? '' : 'S' }}
+
+		//- pagination
 		.pull-right(ng-show="releases.length > 0")
 
 			span(ng-show="pagination.links.first", ng-click="paginate(pagination.links.first)"): +icon('angle-left-skip').smaller.a.a--lighter
@@ -23,7 +30,14 @@ include ../template/_mixins
 			span.space-left(ng-show="pagination.links.last", ng-click="paginate(pagination.links.last)"): +icon('angle-right-skip').smaller.a.a--lighter
 
 		.clearfix.padder-bottom(ng-show="releases.length > 0")
-		p(ng-show="!releases.length") No releases found.
+
+		//- no releases
+		p(ng-show="!releases.length && !loading") No releases found.
+
+		//- loading
+		p(ng-show="loading") Loading...
+
+		//- content
 		.row.ng-cloak
 			.fade2-animation(ng-include="template")
 

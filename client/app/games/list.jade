@@ -1,8 +1,12 @@
 include ../template/_mixins
 
 .row.row--fullheight(ng-controller="GameListController")
+
+	//- main column
 	.col-sm-9.col--main
 		h1.h--primary Games
+
+		//- view type toggles
 		ul.nav-icons
 			li.a(ng-class="{ active: viewtype == 'compact' }")
 				+icon('th-compact')(ng-click="switchview('compact')")
@@ -12,8 +16,11 @@ include ../template/_mixins
 				+icon('th-table')(ng-click="switchview('table')")
 		hr
 
+		//- number of games counter
 		.pull-left(ng-show="games.length > 0")
-			span.small {{ pagination.count }} GAMES
+			span.small {{ pagination.count }} GAME{{ pagination.count == 1 ? '' : 'S' }}
+
+		//- pagination
 		.pull-right(ng-show="games.length > 0")
 
 			span(ng-show="pagination.links.first", ng-click="paginate(pagination.links.first)"): +icon('angle-left-skip').smaller.a.a--lighter
@@ -23,10 +30,18 @@ include ../template/_mixins
 			span.space-left(ng-show="pagination.links.last", ng-click="paginate(pagination.links.last)"): +icon('angle-right-skip').smaller.a.a--lighter
 
 		.clearfix.padder-bottom(ng-show="games.length > 0")
-		p(ng-show="!games.length") No games found.
+
+		//- no games
+		p(ng-show="!games.length && !loading") No games found.
+
+		//- loading
+		p(ng-show="loading") Loading...
+
+		//- content
 		.row.ng-cloak
 			.fade2-animation(ng-include="template")
 
+	//- left side menu
 	.col-sm-3.col--menu
 		h1 Filter
 		hr

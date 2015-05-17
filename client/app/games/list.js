@@ -8,6 +8,7 @@ angular.module('vpdb.games.list', [])
 		$scope.setTitle('Games');
 		$scope.setMenu('games');
 
+		$scope.loading = false;
 		$scope.$query = null;
 		$scope.filterDecades = [];
 		$scope.filterManufacturer = [];
@@ -90,7 +91,8 @@ angular.module('vpdb.games.list', [])
 
 			// refresh if changes
 			if (!_.isEqual($scope.$query, query)) {
-				$scope.games = GameResource.query(query, ApiHelper.handlePagination($scope));
+				$scope.loading = true;
+				$scope.games = GameResource.query(query, ApiHelper.handlePagination($scope, { loader: true }));
 				$scope.$query = query;
 			}
 		};

@@ -45,6 +45,10 @@ function ImageProcessor() {
 	this.name = 'image';
 
 	this.variations = {
+		logo: [
+			{ name: 'medium',    width: 300, height: 600, mimeType: 'image/png' },
+			{ name: 'medium-2x', width: 600, height: 1200, mimeType: 'image/png' }
+		],
 		backglass: [
 			{ name: 'medium',    width: 364, height: 291, mimeType: 'image/jpeg' },
 			{ name: 'medium-2x', width: 728, height: 582, mimeType: 'image/jpeg' },

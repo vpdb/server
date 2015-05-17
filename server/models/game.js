@@ -102,7 +102,7 @@ GameSchema.plugin(prettyId, { model: 'Game', ignore: [ '_created_by' ] });
 GameSchema.plugin(fileRef);
 GameSchema.plugin(paginate);
 GameSchema.plugin(toObj);
-GameSchema.plugin(metrics, { hotness: { popularity: { views: 1, downloads: 10, comments: 20 }}});
+GameSchema.plugin(metrics, { hotness: { popularity: { views: 1, downloads: 10, comments: 20, stars: 30 }}});
 GameSchema.plugin(sortTitle, { src: 'title', dest: 'title_sortable' });
 
 

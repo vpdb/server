@@ -159,7 +159,7 @@ exports.data = [
 	{ bg: 'Banzai Run (Williams 1988).png', logo: 'Banzai Run (Williams 1988).png', ipdb: 175, id: 'banzai' },
 	{ bg: 'Big Bang Bar (Capcom 1996).png', logo: 'Big Bang Bar (Capcom 1996).png', ipdb: 4001 },
 	{ bg: 'Big Brave (Maresa 1974).png', logo: 'Big Brave (Maresa 1974).png', ipdb: 4634, year: 1974 },
-	{ bg: 'Black Knight (Williams 1980).png', logo: null, ipdb: 310 },
+	{ bg: 'Black Knight (Williams 1980).png', logo: 'Black Knight (Williams 1980).png', ipdb: 310 },
 	{ bg: 'Black Knight 2000 (Williams 1989).png', logo: 'Black Knight 2000 (Williams 1989).png', ipdb: 311 },
 	{ bg: 'Black Rose (Bally 1992).png', logo: 'Black Rose (Bally 1992).png', ipdb: 313 },
 	{ bg: 'Bone Busters (Gottlieb 1989).png', logo: 'Bone Busters (Gottlieb 1989).png', ipdb: 347 },

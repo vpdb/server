@@ -1,6 +1,7 @@
 .col-md-4.col-sm-6.col-xs-12.fade-animation(ng-repeat="game in games", ng-click="navGame(game.id)")
 	.panel.panel--animated.ng-cloak
 		.img.img--ar-bg.img--rounded-top(img-bg="game.media.backglass.variations.small.url")
+		.img.img--ar-bg.img--rounded-top.img--placeholder.loaded
 		.text-center.padder-horizontal
 			h1.h--small {{ game.title }}
 			label.label--subtitle {{ game.manufacturer }} &middot; {{ game.year }}

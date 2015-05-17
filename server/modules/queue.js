@@ -222,7 +222,10 @@ function Queue() {
 				return done();
 			}
 
+			file.lock(variation);
 			processor.pass2(src, dest, file, variation, function(err) {
+				file.unlock(variation);
+
 				if (err) {
 					if (fs.existsSync(dest)) {
 						fs.unlinkSync(dest);
@@ -363,14 +366,10 @@ Queue.prototype.add = function(file, variation, processor) {
 				return that.emit('error', 'File gone before pass 1 could start.', file, variation);
 			}
 
-			// create lock file
-			logger.info('[queue] Locking file at "%s"', file.getLockFile(variation));
-			fs.closeSync(fs.openSync(file.getLockFile(variation), 'w'));
+			file.lock(variation);
 			processor.pass1(file.getPath(), file.getPath(variation), file, variation, function(err, skipped) {
+				file.unlock(variation);
 
-				// remove lock file
-				logger.info('[queue] Unlocking file at "%s"', file.getLockFile(variation));
-				fs.unlinkSync(file.getLockFile(variation));
 				if (err) {
 					return that.emit('error', err, file, variation);
 				}

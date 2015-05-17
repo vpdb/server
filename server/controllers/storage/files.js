@@ -20,7 +20,9 @@
 "use strict";
 
 var fs = require('fs');
+var util = require('util');
 var async = require('async');
+var stream = require('stream');
 var logger = require('winston');
 
 var File = require('mongoose').model('File');
@@ -229,19 +231,31 @@ function serve(req, res, file, variationName, headOnly) {
 				return next();
 			}
 
-			// set headers and stream the file
+			// check if file exists
 			var filePath = file.getPath(variationName);
-
 			if (!fs.existsSync(filePath)) {
 				logger.error('[ctrl|storage] Cannot find %s at "%s" in order to stream to client.', file.toString(variationName), filePath);
 				return next({ code: 500, message: 'Error streaming ' + file.toString(variationName) + ' from storage. Please contact an admin.' });
 			}
-			var readStream = fs.createReadStream(filePath);
+
+			// create read stream
+			var readStream;
+			if (file.isLocked()) {
+				logger.warn('[ctrl|storage] File is being processed, loading file into memory in order to free up file handle rapidly.');
+				readStream = new BufferStream(fs.readFileSync(filePath));
+			} else {
+				readStream = fs.createReadStream(filePath);
+			}
+
+			// configure stream
 			readStream.on('error', function(err) {
 				logger.error('[ctrl|storage] Error before streaming %s from storage: %s', file.toString(variationName), err);
 				res.end();
 			});
+			readStream.on('close', next);
 
+
+			// set headers
 			var headers = {
 				'Content-Type': file.getMimeType(variationName),
 				'Content-Length': fstat.size,
@@ -253,13 +267,13 @@ function serve(req, res, file, variationName, headOnly) {
 				headers['Content-Disposition'] = 'attachment; filename="' + file.name + '"';
 			}
 
+			// start streaming
 			res.writeHead(200, headers);
 			readStream.pipe(res)
 				.on('error', function(err) {
 					logger.error('[ctrl|storage] Error while streaming %s from storage: %s', file.toString(variationName), err);
 					res.end();
-				})
-				.on('end', next);
+				});
 
 			// count download
 			if (!variationName) {
@@ -291,3 +305,35 @@ function serve(req, res, file, variationName, headOnly) {
 	});
 
 }
+
+/**
+ * A streamable buffer
+ * @see http://www.bennadel.com/blog/2681-turning-buffers-into-readable-streams-in-node-js.htm
+ * @param source Buffer to stream from
+ * @constructor
+ */
+function BufferStream(source) {
+	if (!Buffer.isBuffer(source)) {
+		throw new Error("Source must be a buffer.");
+	}
+	stream.Readable.call(this);
+	this._source = source;
+	this._offset = 0;
+	this._length = source.length;
+	this.on("end", this._destroy);
+}
+util.inherits(BufferStream, stream.Readable);
+BufferStream.prototype._destroy = function() {
+	this._source = null;
+	this._offset = null;
+	this._length = null;
+};
+BufferStream.prototype._read = function(size) {
+	if (this._offset < this._length) {
+		this.push(this._source.slice(this._offset, ( this._offset + size )));
+		this._offset += size;
+	}
+	if (this._offset >= this._length) {
+		this.push(null);
+	}
+};

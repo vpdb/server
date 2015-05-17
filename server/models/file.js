@@ -20,6 +20,7 @@
 "use strict";
 
 var _ = require('lodash');
+var fs = require('fs');
 var path = require('path');
 var logger = require('winston');
 var mongoose = require('mongoose');
@@ -148,18 +149,6 @@ FileSchema.methods.getPath = function(variation, tmpSuffix) {
 };
 
 /**
- * Returns the path of the lock file.
- *
- * Lock files indicate that the file is being processed.
- *
- * @param {Object|String} [variation] Either variation name or object containing attribute "name".
- * @returns {string}                  Lockfile
- */
-FileSchema.methods.getLockFile = function(variation) {
-	return storage.path(this, variation, { lockFile: true });
-};
-
-/**
  * Returns the file extension, inclusively the dot.
  *
  * @param {Object|String} variation Either variation name or object containing attribute "name"
@@ -267,6 +256,58 @@ FileSchema.methods.switchToActive = function(done) {
 		storage.switchToPublic(that);
 		done();
 	});
+};
+
+/**
+ * Locks a file as being processed.
+ *
+ * @param {Object|String} [variation] Either variation name or object containing attribute "name".
+ */
+FileSchema.methods.lock = function(variation) {
+	var lockfile = this.getLockFile(variation);
+	logger.info('[file] Locking file at "%s"', lockfile);
+	try {
+		fs.closeSync(fs.openSync(lockfile, 'w'));
+	} catch (err) {
+		logger.error('[file] Error creating lock file at "%s": %s', lockfile, err.message);
+	}
+};
+
+/**
+ * Unlocks a file from being processed.
+ *
+ * @param {Object|String} [variation] Either variation name or object containing attribute "name".
+ */
+FileSchema.methods.unlock = function(variation) {
+	var lockfile = this.getLockFile(variation);
+	logger.info('[file] Unlocking file at "%s"', lockfile);
+	try {
+		fs.unlinkSync(lockfile);
+	} catch (err) {
+		logger.error('[file] Error deleting lock file at "%s": %s', lockfile, err.message);
+	}
+};
+
+/**
+ * Unlocks a file from being processed.
+ *
+ * @param {Object|String} [variation] Either variation name or object containing attribute "name".
+ */
+FileSchema.methods.isLocked = function(variation) {
+	var lockfile = this.getLockFile(variation);
+	return fs.existsSync(lockfile);
+};
+
+/**
+ * Returns the path of the lock file.
+ *
+ * Lock files indicate that the file is being processed.
+ *
+ * @param {Object|String} [variation] Either variation name or object containing attribute "name".
+ * @returns {string}                  Lockfile
+ */
+FileSchema.methods.getLockFile = function(variation) {
+	return storage.path(this, variation, { lockFile: true });
 };
 
 

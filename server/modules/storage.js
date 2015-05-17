@@ -304,15 +304,11 @@ Storage.prototype.onProcessed = function(file, variation, processor, nextEvent) 
 				}
 			}
 
-			// update database with new variation
-			logger.info('[storage] Locking file at "%s"', file.getLockFile(variation));
-			fs.closeSync(fs.openSync(file.getLockFile(variation), 'w'));
-
 			logger.info('[storage] Reading metadata from %s...', file.toString(variation));
-			processor.metadata(file, variation, function(err, metadata) {
 
-				logger.info('[storage] Unlocking file at "%s"', file.getLockFile(variation));
-				fs.unlinkSync(file.getLockFile(variation));
+			file.lock(variation);
+			processor.metadata(file, variation, function(err, metadata) {
+				file.unlock(variation);
 
 				if (err) {
 					// it's possible that files were renamed while getting metadata. check and retry.

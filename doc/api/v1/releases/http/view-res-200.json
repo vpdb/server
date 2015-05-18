@@ -1,12 +1,12 @@
 200 OK
 Content-Type: application/json; charset=utf-8
-Etag: W/"6/E1Q0eGDyw1tUYbV0A3oQ=="
+Etag: W/"uTPrWVUseVNb36St56BYmw=="
 Content-Encoding: gzip
 
 {
-  "name_sortable": "Multi-channelled Edition",
-  "name": "Multi-channelled Edition",
-  "created_at": "2015-05-03T21:31:28.160Z",
+  "name_sortable": "Persistent Edition",
+  "name": "Persistent Edition",
+  "created_at": "2015-05-18T21:56:07.829Z",
   "rating": {
     "votes": 0,
     "average": 0
@@ -27,10 +27,10 @@ Content-Encoding: gzip
         "Table Creator"
       ],
       "user": {
-        "id": "4yTExRfK1m",
-        "name": "Sam.Hayes",
-        "username": "Sam.Hayes",
-        "gravatar_id": "ecc87164fd2a098be183f5ba02e732ad",
+        "id": "Ny0Quz1UXN",
+        "name": "Sasha_Smith70",
+        "username": "Sasha_Smith70",
+        "gravatar_id": "471acb67c51502d91ef015ee6d0abd61",
         "counter": {
           "comments": 0,
           "stars": 0
@@ -40,7 +40,7 @@ Content-Encoding: gzip
   ],
   "versions": [
     {
-      "released_at": "2015-05-03T21:31:28.160Z",
+      "released_at": "2015-05-18T21:56:07.829Z",
       "version": "1.0.0",
       "counter": {
         "comments": 0,
@@ -48,7 +48,7 @@ Content-Encoding: gzip
       },
       "files": [
         {
-          "released_at": "2015-05-03T21:31:28.160Z",
+          "released_at": "2015-05-18T21:56:07.829Z",
           "counter": {
             "downloads": 0
           },
@@ -60,7 +60,7 @@ Content-Encoding: gzip
             "playfield_image": {
               "name": "playfield-0.png",
               "bytes": 347,
-              "created_at": "2015-05-03T21:31:27.960Z",
+              "created_at": "2015-05-18T21:56:07.621Z",
               "mime_type": "image/png",
               "file_type": "playfield-fs",
               "metadata": {
@@ -75,27 +75,27 @@ Content-Encoding: gzip
                 "downloads": 0
               },
               "is_active": true,
-              "id": "VyBUl0GYy7",
+              "id": "N1YBdG1IXE",
               "is_protected": true,
-              "url": "/storage/v1/files/VyBUl0GYy7",
+              "url": "/storage/v1/files/N1YBdG1IXE.png",
               "variations": {
                 "medium": {
-                  "url": "/storage/v1/files/VyBUl0GYy7/medium"
+                  "url": "/storage/public/files/medium/N1YBdG1IXE.png"
                 },
                 "medium-2x": {
-                  "url": "/storage/v1/files/VyBUl0GYy7/medium-2x"
+                  "url": "/storage/public/files/medium-2x/N1YBdG1IXE.png"
                 },
                 "medium-landscape": {
-                  "url": "/storage/v1/files/VyBUl0GYy7/medium-landscape"
+                  "url": "/storage/public/files/medium-landscape/N1YBdG1IXE.png"
                 },
                 "medium-landscape-2x": {
-                  "url": "/storage/v1/files/VyBUl0GYy7/medium-landscape-2x"
+                  "url": "/storage/public/files/medium-landscape-2x/N1YBdG1IXE.png"
                 },
                 "square": {
-                  "url": "/storage/v1/files/VyBUl0GYy7/square"
+                  "url": "/storage/public/files/square/N1YBdG1IXE.png"
                 },
                 "square-2x": {
-                  "url": "/storage/v1/files/VyBUl0GYy7/square-2x"
+                  "url": "/storage/public/files/square-2x/N1YBdG1IXE.png"
                 }
               }
             }
@@ -113,12 +113,12 @@ Content-Encoding: gzip
           ],
           "file": {
             "name": "test-table-0.vpt",
-            "created_at": "2015-05-03T21:31:27.926Z",
+            "created_at": "2015-05-18T21:56:07.573Z",
             "mime_type": "application/x-visual-pinball-table",
             "file_type": "release",
             "metadata": {},
-            "id": "NyZLeAGt1m",
-            "url": "/storage/v1/files/NyZLeAGt1m",
+            "id": "V1MH_zJLm4",
+            "url": "/storage/v1/files/V1MH_zJLm4.vpt",
             "bytes": 135168,
             "variations": {},
             "is_protected": true,
@@ -131,6 +131,6 @@ Content-Encoding: gzip
       ]
     }
   ],
-  "id": "V1mZCMK1m",
+  "id": "EkVIufJUQE",
   "tags": []
 }

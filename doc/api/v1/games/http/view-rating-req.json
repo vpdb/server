@@ -1,5 +1,5 @@
-GET /api/v1/games/bing-o-reno/rating HTTP/1.1
+GET /api/v1/games/future-world/rating HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI0SnNTLVRHdGs3IiwiaWF0IjoiMjAxNS0wNS0wM1QyMTozMToxMi42MDJaIiwiZXhwIjoiMjAxNS0wNS0wM1QyMjozMToxMi42MDJaIn0.wBi4NNLYumMt1Yy212OiDJwwOyWCnKGLJahv1qJBdL0
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJWa09QS2IxTFFWIiwiaWF0IjoiMjAxNS0wNS0xOFQyMTo1NTo1Mi44MDZaIiwiZXhwIjoiMjAxNS0wNS0xOFQyMjo1NTo1Mi44MDZaIn0.dlQ4kbdVV7Ow06EInQH8qc58dUlb058WSGNVc5HFrRY
 

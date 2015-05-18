@@ -1,8 +1,8 @@
-POST /api/v1/games/icarus/rating HTTP/1.1
+POST /api/v1/games/southside-johnny/rating HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
 Content-Type: application/json
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJWa1lsYU10MVgiLCJpYXQiOiIyMDE1LTA1LTAzVDIxOjMxOjExLjczNFoiLCJleHAiOiIyMDE1LTA1LTAzVDIyOjMxOjExLjczNFoifQ.7uWj2lcotrcnnOe0RNy0vzZXwPu1k5UoZlVgcNlC9Sw
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJOeXR1LUpJbVYiLCJpYXQiOiIyMDE1LTA1LTE4VDIxOjU1OjUxLjgzOVoiLCJleHAiOiIyMDE1LTA1LTE4VDIyOjU1OjUxLjgzOVoifQ.WiTKj1reHRYsLTx30VI37zQT1DoRDKxUYeONpS2fW3A
 Content-Length: 11
 
 {

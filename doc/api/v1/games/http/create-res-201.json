@@ -1,19 +1,18 @@
 201 Created
 Content-Type: application/json; charset=utf-8
-Etag: W/"UpqsjQ1AfFG/k5iSRPqUKA=="
+Etag: W/"kDhM3OD6K3c5y+rTKqRDEw=="
 Content-Encoding: gzip
 
 {
-  "title_sortable": "Deluxe Short-Stop",
-  "title": "Deluxe Short-Stop",
-  "manufacturer": "Williams",
-  "model_number": "205",
-  "year": 1958,
-  "game_type": "em",
-  "notes": "This is the replay version, with match feature. The novelty version is Williams' 1958 'Short-Stop'.",
-  "id": "deluxe-short-stop",
-  "_created_by": "5546939a4a2416b86172b189",
-  "created_at": "2015-05-03T21:31:06.342Z",
+  "title_sortable": "Super Flipp",
+  "title": "Super Flipp",
+  "manufacturer": "All American Amusements (1987-1988)",
+  "year": 1987,
+  "game_type": "pm",
+  "features": "Flippers (2).",
+  "notes": "Measures 55 cm long, 36 cm wide, and 50 cm high.Game has printing in English and French, with small type in Italian below left flipper indicating \"patented industrial model\".",
+  "id": "super-flipp",
+  "created_at": "2015-05-18T21:55:46.364Z",
   "rating": {
     "score": 0,
     "votes": 0,
@@ -30,15 +29,12 @@ Content-Encoding: gzip
     "releases": 0
   },
   "ipdb": {
-    "number": 3052,
-    "mfg": 352
+    "number": 3424,
+    "mfg": 15
   },
   "artists": [],
   "designers": [],
-  "themes": [
-    "Sports",
-    "Baseball"
-  ],
+  "themes": [],
   "short": [],
   "media": {
     "backglass": {
@@ -48,22 +44,22 @@ Content-Encoding: gzip
       "is_protected": true,
       "variations": {
         "small-2x": {
-          "url": "/storage/v1/files/41Nlj2Mt17/small-2x"
+          "url": "/storage/public/files/small-2x/VJpeX-yLXE.png"
         },
         "small": {
-          "url": "/storage/v1/files/41Nlj2Mt17/small"
+          "url": "/storage/public/files/small/VJpeX-yLXE.png"
         },
         "medium-2x": {
-          "url": "/storage/v1/files/41Nlj2Mt17/medium-2x"
+          "url": "/storage/public/files/medium-2x/VJpeX-yLXE.png"
         },
         "medium": {
-          "url": "/storage/v1/files/41Nlj2Mt17/medium"
+          "url": "/storage/public/files/medium/VJpeX-yLXE.png"
         }
       },
       "bytes": 135,
-      "url": "/storage/v1/files/41Nlj2Mt17",
-      "id": "41Nlj2Mt17"
+      "url": "/storage/v1/files/VJpeX-yLXE.png",
+      "id": "VJpeX-yLXE"
     }
   },
-  "url": "/game/deluxe-short-stop"
+  "url": "/game/super-flipp"
 }

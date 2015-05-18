@@ -1,8 +1,8 @@
-PUT /api/v1/games/tally-hoo/rating HTTP/1.1
+PUT /api/v1/games/black-gold/rating HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
 Content-Type: application/json
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJOMVNGVzZmWUptIiwiaWF0IjoiMjAxNS0wNS0wM1QyMTozMToxMi45OTlaIiwiZXhwIjoiMjAxNS0wNS0wM1QyMjozMToxMi45OTlaIn0.btBHNA97W1m74lbHXuR1e_6604-Py9wCwqH0d-csfiw
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI0a0s1YjFMWDQiLCJpYXQiOiIyMDE1LTA1LTE4VDIxOjU1OjUzLjE1MFoiLCJleHAiOiIyMDE1LTA1LTE4VDIyOjU1OjUzLjE1MFoifQ.dtOxUY97n5p54eFYKETznexuuwOHDQjdiXVLD0DTOe0
 Content-Length: 11
 
 {

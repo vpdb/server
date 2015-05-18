@@ -1,14 +1,14 @@
-POST /api/v1/games/st-moritz/roms HTTP/1.1
+POST /api/v1/games/airborne/roms HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI0SmhWVjB6dHltIiwiaWF0IjoiMjAxNS0wNS0wM1QyMTozMTozMS45OTZaIiwiZXhwIjoiMjAxNS0wNS0wM1QyMjozMTozMS45OTZaIn0.5FfCDNgqw-7I0ziD2AouxvkIfokzgXZiZVoR79Lc4MY
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJWSkdtbkdrOG1WIiwiaWF0IjoiMjAxNS0wNS0xOFQyMTo1NjoxMS42NDVaIiwiZXhwIjoiMjAxNS0wNS0xOFQyMjo1NjoxMS42NDVaIn0.hFqv17_7_DlRwdNfyzYP1IthYXQL6MzHhaJyhJz-lok
 Content-Type: application/json
-Content-Length: 105
+Content-Length: 104
 
 {
-  "id": "st-moritz_10",
+  "id": "airborne_10",
   "version": "1.0",
   "notes": "That is some ROM.",
   "language": "en-US",
-  "_file": "NyrWB0ft17"
+  "_file": "V1KUnM1LmN"
 }

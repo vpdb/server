@@ -1,83 +1,74 @@
 200 OK
 Content-Type: application/json; charset=utf-8
-Etag: W/"P9clEpH0QbQFm/BVRtoKPQ=="
+Etag: W/"r8G+4+WBkh74kPF/9xN/XA=="
 Content-Encoding: gzip
 
 {
-  "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJFMXBkdjJNSzFtIiwiaWF0IjoiMjAxNS0wNS0wM1QyMTozMTowMi45NTRaIiwiZXhwIjoiMjAxNS0wNS0wM1QyMjozMTowMi45NTRaIn0.OwjWYkqTgy8tP6sDBQt8BU1WxveP7IHzfiy9WHM5yiA",
-  "expires": "2015-05-03T22:31:02.954Z",
+  "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJWeVpteFdrOG1OIiwiaWF0IjoiMjAxNS0wNS0xOFQyMTo1NTo0My40MjVaIiwiZXhwIjoiMjAxNS0wNS0xOFQyMjo1NTo0My40MjVaIn0.LApamM8xhN0tJRE1gP2sWWkVt-bKFmsn9-W7QxPxxys",
+  "expires": "2015-05-18T22:55:43.425Z",
   "user": {
-    "id": "E1pdv2MK1m",
-    "name": "Cindy0",
-    "username": "Cindy0",
-    "gravatar_id": "cf2cf6e0f132997d09ca27e67a59b7bf",
-    "email": "frederique_sporer63@gmail.com",
+    "id": "VyZmxWk8mN",
+    "name": "Allene42",
+    "username": "Allene42",
+    "gravatar_id": "b05984c02a215d38169d0d3ddc7c653b",
+    "email": "johnny.douglas20@gmail.com",
     "is_active": true,
     "provider": "local",
     "roles": [
       "member"
     ],
     "plan": "free",
-    "created_at": "2015-05-03T21:31:02.886Z",
+    "created_at": "2015-05-18T21:55:43.368Z",
     "counter": {
       "stars": 0,
       "downloads": 0,
       "comments": 0
     },
     "permissions": {
-      "comments": [
+      "tags": [
+        "delete-own",
         "add"
       ],
-      "ratings": [
-        "view",
-        "add",
-        "update"
-      ],
-      "tags": [
-        "add",
-        "delete-own"
-      ],
-      "star": [
-        "star"
-      ],
-      "users": [
-        "search",
-        "view",
-        "star"
-      ],
-      "files": [
-        "upload",
+      "tokens": [
         "delete",
-        "download"
-      ],
-      "releases": [
-        "rate",
-        "add",
-        "delete",
-        "star"
+        "update",
+        "list",
+        "add"
       ],
       "roms": [
-        "add",
-        "delete-own"
+        "delete-own",
+        "add"
       ],
-      "builds": [
-        "add",
-        "delete-own"
-      ],
-      "tokens": [
-        "patch",
-        "delete",
-        "add",
+      "user": [
         "update",
-        "list"
+        "view"
+      ],
+      "releases": [
+        "delete",
+        "rate",
+        "star",
+        "add"
+      ],
+      "users": [
+        "star",
+        "search",
+        "view"
+      ],
+      "files": [
+        "delete",
+        "download",
+        "upload"
       ],
       "games": [
         "rate",
         "star"
       ],
-      "user": [
-        "view",
-        "update"
+      "builds": [
+        "delete-own",
+        "add"
+      ],
+      "comments": [
+        "add"
       ]
     }
   }

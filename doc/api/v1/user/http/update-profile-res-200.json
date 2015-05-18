@@ -1,16 +1,16 @@
 200 OK
 Content-Type: application/json; charset=utf-8
-Etag: W/"8adJSuMIpDhwDm/nTAE2Lg=="
+Etag: W/"xF8XK6CQ8KCBU8iXgTFtVw=="
 Content-Encoding: gzip
 
 {
-  "location": "Port Aprilstad",
+  "location": "Pollichmouth",
   "plan": "free",
-  "name": "Ciara Mante",
-  "username": "Emmet8",
-  "email": "maida24@gmail.com",
+  "name": "Mafalda Quigley",
+  "username": "Chris_Marquardt",
+  "email": "aurelia.schinner58@yahoo.com",
   "provider": "local",
-  "created_at": "2015-05-03T21:31:37.783Z",
+  "created_at": "2015-05-18T21:56:16.950Z",
   "is_active": true,
   "counter": {
     "stars": 0,
@@ -22,65 +22,56 @@ Content-Encoding: gzip
   ],
   "email_status": {
     "code": "pending_update",
-    "expires_at": "2015-05-04T21:31:38.117Z",
-    "value": "horacio28@hotmail.com"
+    "expires_at": "2015-05-19T21:56:17.229Z",
+    "value": "amie60@hotmail.com"
   },
-  "id": "NkXLc0MKy7",
-  "gravatar_id": "932f2abc1f177a8763d7a6df8d3dcf67",
+  "id": "V17TWmyI7V",
+  "gravatar_id": "749b9f6fa5ef8b7ef9bf78f68a7f444c",
   "permissions": {
-    "comments": [
+    "tags": [
+      "delete-own",
       "add"
     ],
-    "ratings": [
-      "view",
-      "add",
-      "update"
-    ],
-    "tags": [
-      "add",
-      "delete-own"
-    ],
-    "star": [
-      "star"
-    ],
-    "users": [
-      "search",
-      "view",
-      "star"
-    ],
-    "files": [
-      "upload",
+    "tokens": [
       "delete",
-      "download"
-    ],
-    "releases": [
-      "rate",
-      "add",
-      "delete",
-      "star"
+      "update",
+      "list",
+      "add"
     ],
     "roms": [
-      "add",
-      "delete-own"
+      "delete-own",
+      "add"
     ],
-    "builds": [
-      "add",
-      "delete-own"
-    ],
-    "tokens": [
-      "patch",
-      "delete",
-      "add",
+    "user": [
       "update",
-      "list"
+      "view"
+    ],
+    "releases": [
+      "delete",
+      "rate",
+      "star",
+      "add"
+    ],
+    "users": [
+      "star",
+      "search",
+      "view"
+    ],
+    "files": [
+      "delete",
+      "download",
+      "upload"
     ],
     "games": [
       "rate",
       "star"
     ],
-    "user": [
-      "view",
-      "update"
+    "builds": [
+      "delete-own",
+      "add"
+    ],
+    "comments": [
+      "add"
     ]
   }
 }

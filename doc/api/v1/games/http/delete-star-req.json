@@ -1,5 +1,5 @@
-DELETE /api/v1/games/top-hand/star HTTP/1.1
+DELETE /api/v1/games/slammer/star HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJFa3lJT0N6S2tRIiwiaWF0IjoiMjAxNS0wNS0wM1QyMTozMTozNi4wMDJaIiwiZXhwIjoiMjAxNS0wNS0wM1QyMjozMTozNi4wMDJaIn0.7AcXT6s0QAJ2uf4zJK-uV-0B3m8bzYboad2gYbXdWMc
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJOeTk0Z21KODc0IiwiaWF0IjoiMjAxNS0wNS0xOFQyMTo1NjoxNS41NjBaIiwiZXhwIjoiMjAxNS0wNS0xOFQyMjo1NjoxNS41NjBaIn0.RsXhAY9dZsiAV0rIVuuQC7xhj0TYQIXIhrRoD8S9YgM
 

@@ -1,21 +1,21 @@
 POST /api/v1/releases HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJOMUZHTDZHRkpRIiwiaWF0IjoiMjAxNS0wNS0wM1QyMTozMToxNy4zMzRaIiwiZXhwIjoiMjAxNS0wNS0wM1QyMjozMToxNy4zMzRaIn0.2TBzTIaXA6V1FljNRcg9BHr0s--R4yZIZZtIlKRj02I
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJFSnRNUi1rSTdOIiwiaWF0IjoiMjAxNS0wNS0xOFQyMTo1NTo1Ny4zMzhaIiwiZXhwIjoiMjAxNS0wNS0xOFQyMjo1NTo1Ny4zMzhaIn0.jIGZVKcqwPJcQamsyfOybktl7Teu_FbYtY7XdwAcMu4
 Content-Type: application/json
 Content-Length: 473
 
 {
   "name": "release",
-  "_game": "surfer",
+  "_game": "morocco",
   "versions": [
     {
       "files": [
         {
-          "_file": "41nzvTGKJm",
+          "_file": "E18WyfyL7E",
           "_media": {
-            "playfield_image": "NJrmvazKkQ",
-            "playfield_video": "4k5XDTMtym"
+            "playfield_image": "4yKbJMJIQE",
+            "playfield_video": "EJgefk8QE"
           },
           "_compatibility": [
             "9.9.0"
@@ -26,9 +26,9 @@ Content-Length: 473
           }
         },
         {
-          "_file": "N1sGDpftkQ",
+          "_file": "4kD-yzkIXE",
           "_media": {
-            "playfield_image": "VJImPpfFyQ"
+            "playfield_image": "E13ZJM1IXE"
           },
           "_compatibility": [
             "9.9.0"
@@ -44,7 +44,7 @@ Content-Length: 473
   ],
   "authors": [
     {
-      "_user": "N1FGL6GFJQ",
+      "_user": "EJtMR-kI7N",
       "roles": [
         "Table Creator"
       ]

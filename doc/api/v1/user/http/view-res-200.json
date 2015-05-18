@@ -1,15 +1,15 @@
 200 OK
 Content-Type: application/json; charset=utf-8
-Content-Length: 947
-Etag: W/"3b3-6bef17f6"
+Content-Length: 882
+Etag: W/"372-f5b9dd87"
 
 {
   "plan": "free",
-  "name": "Asia_Kuhic79",
-  "username": "Asia_Kuhic79",
-  "email": "amber6@yahoo.com",
+  "name": "Brionna.Mosciski81",
+  "username": "Brionna.Mosciski81",
+  "email": "arvilla_jaskolski54@hotmail.com",
   "provider": "local",
-  "created_at": "2015-05-03T21:31:02.005Z",
+  "created_at": "2015-05-18T21:55:42.530Z",
   "is_active": true,
   "counter": {
     "stars": 0,
@@ -19,62 +19,53 @@ Etag: W/"3b3-6bef17f6"
   "roles": [
     "member"
   ],
-  "id": "EJ7gLnfYJQ",
-  "gravatar_id": "4325e88d95c33642fb088164728e3954",
+  "id": "V1XxybJ87E",
+  "gravatar_id": "ba56bec3461fd38d6033b25726b63bdc",
   "permissions": {
-    "comments": [
+    "tags": [
+      "delete-own",
       "add"
     ],
-    "ratings": [
-      "view",
-      "add",
-      "update"
-    ],
-    "tags": [
-      "add",
-      "delete-own"
-    ],
-    "star": [
-      "star"
-    ],
-    "users": [
-      "search",
-      "view",
-      "star"
-    ],
-    "files": [
-      "upload",
+    "tokens": [
       "delete",
-      "download"
-    ],
-    "releases": [
-      "rate",
-      "add",
-      "delete",
-      "star"
+      "update",
+      "list",
+      "add"
     ],
     "roms": [
-      "add",
-      "delete-own"
+      "delete-own",
+      "add"
     ],
-    "builds": [
-      "add",
-      "delete-own"
-    ],
-    "tokens": [
-      "patch",
-      "delete",
-      "add",
+    "user": [
       "update",
-      "list"
+      "view"
+    ],
+    "releases": [
+      "delete",
+      "rate",
+      "star",
+      "add"
+    ],
+    "users": [
+      "star",
+      "search",
+      "view"
+    ],
+    "files": [
+      "delete",
+      "download",
+      "upload"
     ],
     "games": [
       "rate",
       "star"
     ],
-    "user": [
-      "view",
-      "update"
+    "builds": [
+      "delete-own",
+      "add"
+    ],
+    "comments": [
+      "add"
     ]
   }
 }

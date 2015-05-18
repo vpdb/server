@@ -1,27 +1,23 @@
 POST /api/v1/games HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJOeTFnaTN6S2s3IiwiaWF0IjoiMjAxNS0wNS0wM1QyMTozMTowNi4yNTBaIiwiZXhwIjoiMjAxNS0wNS0wM1QyMjozMTowNi4yNTBaIn0.xyE-xZR7B22MZG03P5Wu_sFBcK_5WKUN4gOLoLBUal4
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJWeV9sWGIxVW00IiwiaWF0IjoiMjAxNS0wNS0xOFQyMTo1NTo0Ni4yNDFaIiwiZXhwIjoiMjAxNS0wNS0xOFQyMjo1NTo0Ni4yNDFaIn0.4SxsbjXpptwn8Wz6MpXKJpPZs_0hELV0Ic6IeQZbftg
 Content-Type: application/json
-Content-Length: 340
+Content-Length: 406
 
 {
   "ipdb": {
-    "number": 3052,
-    "mfg": 352
+    "number": 3424,
+    "mfg": 15
   },
-  "title": "Deluxe Short-Stop",
-  "manufacturer": "Williams",
-  "model_number": "205",
-  "year": 1958,
-  "game_type": "em",
-  "themes": [
-    "Sports",
-    "Baseball"
-  ],
-  "notes": "This is the replay version, with match feature. The novelty version is Williams' 1958 'Short-Stop'.",
-  "id": "deluxe-short-stop",
+  "title": "Super Flipp",
+  "manufacturer": "All American Amusements (1987-1988)",
+  "year": 1987,
+  "game_type": "pm",
+  "features": "Flippers (2).",
+  "notes": "Measures 55 cm long, 36 cm wide, and 50 cm high.Game has printing in English and French, with small type in Italian below left flipper indicating \"patented industrial model\".",
+  "id": "super-flipp",
   "_media": {
-    "backglass": "41Nlj2Mt17"
+    "backglass": "VJpeX-yLXE"
   }
 }

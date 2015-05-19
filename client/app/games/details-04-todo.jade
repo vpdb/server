@@ -24,7 +24,7 @@ label(ng-hide="game.backglasses.length > 0") No backglasses available.
 					.third
 						span
 							i.fa.fa-star.space-right
-							| {{ backglass.rating | rating }}
+							| {{ backglass.rating | ratingFormat }}
 					.third
 						span {{ backglass.download.size | bytes }}
 
@@ -74,7 +74,7 @@ label(ng-hide="game.media.length > 0") No media available.
 					.third
 						span
 							i.fa.fa-star.space-right
-							| {{ item.rating | rating }}
+							| {{ item.rating | ratingFormat }}
 					.third
 						span {{ item.download.size | bytes }}
 

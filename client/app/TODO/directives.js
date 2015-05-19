@@ -3,66 +3,6 @@
 
 angular.module('vpdb.common', [])
 
-	/**
-	 * Use like this:
-	 *
-	 *  rating-avg="game.rating.average",
-	 *  rating-votes="game.rating.votes",
-	 *  rating-user="gameRating"
-	 *  rating-action="rateGame($rating)"
-	 */
-	.directive('ratingbox', function($parse) {
-		return {
-			restrict: 'C',
-			scope: true,
-			templateUrl: 'template/rating.html',
-			link: function(scope, elem) {
-				elem.mouseenter(function() {
-					scope.editing = true;
-					scope.$apply();
-				});
-				elem.mouseleave(function() {
-					scope.editing = false;
-					scope.$apply();
-				});
-			},
-			controller: function($scope, $element, $attrs) {
-				$scope.$watch($parse($attrs.ratingAvg), function(ratingAvg) {
-					if (ratingAvg) {
-						$scope.ratingAvg = ratingAvg;
-					}
-				});
-				$scope.$watch($parse($attrs.ratingVotes), function(votes) {
-					if (votes) {
-						$scope.ratingVotes = votes;
-					}
-				});
-				$scope.$watch($parse($attrs.ratingUser), function(ratingUser) {
-					if (ratingUser) {
-						$scope.ratingUser = Math.round(ratingUser);
-						$scope.ratingHover = Math.round(ratingUser);
-					}
-				});
-				$scope.rate = function() {
-					$scope.$rating = $scope.ratingUser;
-					$parse($attrs.ratingAction)($scope)
-				};
-				$scope.states = [
-					{ stateOn: 'fa fa-star star-left star-on', stateOff: 'fa fa-star star-left star-off' },
-					{ stateOn: 'fa fa-star star-right star-on', stateOff: 'fa fa-star star-right star-off' },
-					{ stateOn: 'fa fa-star star-left star-on', stateOff: 'fa fa-star star-left star-off' },
-					{ stateOn: 'fa fa-star star-right star-on', stateOff: 'fa fa-star star-right star-off' },
-					{ stateOn: 'fa fa-star star-left star-on', stateOff: 'fa fa-star star-left star-off' },
-					{ stateOn: 'fa fa-star star-right star-on', stateOff: 'fa fa-star star-right star-off' },
-					{ stateOn: 'fa fa-star star-left star-on', stateOff: 'fa fa-star star-left star-off' },
-					{ stateOn: 'fa fa-star star-right star-on', stateOff: 'fa fa-star star-right star-off' },
-					{ stateOn: 'fa fa-star star-left star-on', stateOff: 'fa fa-star star-left star-off' },
-					{ stateOn: 'fa fa-star star-right star-on', stateOff: 'fa fa-star star-right star-off' }
-				];
-			}
-		};
-	})
-
 	.directive('flipbox', function($timeout) {
 		return {
 			restrict: 'C',
@@ -89,33 +29,33 @@ angular.module('vpdb.common', [])
 		};
 	})
 
-	.directive('stars', function() {
-		return {
-			replace: true,
-			restrict: 'C',
-			scope: true,
-			link: {
-				post: function(scope, element, attrs) {
-					var star0 = '<i class="fa fa-star-o"></i>';
-					var star1 = '<i class="fa fa-star-half-o"></i>';
-					var star2 = '<i class="fa fa-star"></i>';
-					var stars = '';
-					var rating = attrs.value / 2;
-					for (var i = 0; i < 5; i++) {
-						if (rating < 0.25) {
-							stars += star0;
-						} else if (rating < 0.75) {
-							stars += star1;
-						} else {
-							stars += star2;
-						}
-						rating -= 1.0;
-					}
-					element.html(stars);
-				}
-			}
-		};
-	})
+	//.directive('stars', function() {
+	//	return {
+	//		replace: true,
+	//		restrict: 'C',
+	//		scope: true,
+	//		link: {
+	//			post: function(scope, element, attrs) {
+	//				var star0 = '<i class="fa fa-star-o"></i>';
+	//				var star1 = '<i class="fa fa-star-half-o"></i>';
+	//				var star2 = '<i class="fa fa-star"></i>';
+	//				var stars = '';
+	//				var rating = attrs.value / 2;
+	//				for (var i = 0; i < 5; i++) {
+	//					if (rating < 0.25) {
+	//						stars += star0;
+	//					} else if (rating < 0.75) {
+	//						stars += star1;
+	//					} else {
+	//						stars += star2;
+	//					}
+	//					rating -= 1.0;
+	//				}
+	//				element.html(stars);
+	//			}
+	//		}
+	//	};
+	//})
 
 	.directive('markdown', function($sanitize, $compile) {
 		var converter = new Showdown.converter();

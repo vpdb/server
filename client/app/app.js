@@ -29,6 +29,7 @@ var appDeps = [
 	'vpdb.home',
 	'vpdb.animations',
 	'vpdb.modal',
+	'vpdb.rating',
 	'vpdb.games.list',
 	'vpdb.games.details',
 	'vpdb.games.add',

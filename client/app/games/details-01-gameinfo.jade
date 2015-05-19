@@ -57,7 +57,7 @@ hr(ng-show="game.artists")
 	dl.dl--oneliner(ng-show="game.ipdb.rating")
 		dt Rating
 		dd(title="{{ game.ipdb.votes | number }} vote{{ game.ipdb.votes == 1 ? '' : 's' }}")
-			strong {{ game.ipdb.rating | rating }}
+			strong {{ game.ipdb.rating | ratingFormat }}
 		dt(ng-show="game.ipdb.top300") Top 300
 		dd(ng-show="game.ipdb.top300") rank <strong>{{ game.ipdb.top300 }}</strong>
 

@@ -41,15 +41,19 @@
 // stars with the votes in the right column.
 .ratingbox
 
-	margin-left -3px
+	position relative
+	width 200px
+	height 65px
 
 	// Left column
 	.ratingbox__left-col
-		display inline
-		position relative
+		position absolute
+		top 0
+		left 50px
 		.ratingbox__rating
-			display inline-block
-			width 78px
+			position absolute
+			left 0
+			top 0
 			font-size 50px
 			font-weight $font-weight-thin
 			text-align right
@@ -60,8 +64,9 @@
 
 	// Right column
 	.ratingbox__right-col
-		display inline
-		position relative
+		position absolute
+		top 30px
+		left 140px
 		.votes
 			width 80px
 			display inline-block
@@ -76,16 +81,22 @@
 		.rating-user
 			cursor pointer
 
+	.star
+		width 15px
+		margin 0 -5px
+		height 20px
+
+
 	// Star styling
-	.star-left
-		width 7.5px
-		overflow hidden
-	.star-right
-		overflow hidden
-		margin-right 3px
-		&:before
-			margin-left -7.5px
-			overflow hidden
+	//.star-left
+	//	width 7.5px
+	//	overflow hidden
+	//.star-right
+	//	overflow hidden
+	//	margin-right 3px
+	//	&:before
+	//		margin-left -7.5px
+	//		overflow hidden
 
 // Glues the rating bar to the top right corner (for extended game list view type).
 .ratingbox--sticky-top-right

@@ -24,7 +24,7 @@
 
 			.ratingbox.ratingbox--sticky-top-right.hidden-xs(rating-avg="game.rating")
 				.ratingbox__left-col
-					.ratingbox__rating {{ game.rating | rating }}
+					.ratingbox__rating {{ game.rating | ratingFormat }}
 				.ratingbox__right-col
 					rating.rating-avg(ng-model="ratingAvg", max="10", rating-states="states", readonly="true")
 					span.votes {{ game.votes | number }} vote{{ game.votes == 1 ? '' : 's' }}

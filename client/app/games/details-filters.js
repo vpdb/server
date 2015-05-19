@@ -24,7 +24,7 @@ angular.module('vpdb.games.details', [])
 /**
  * Formats a rating so it always displays one decimal.
  */
-.filter('rating', function() {
+.filter('ratingFormat', function() {
 
 	return function(rating) {
 		rating = parseFloat(rating);

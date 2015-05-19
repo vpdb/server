@@ -39,24 +39,26 @@ script(id="template/carousel/carousel.html", type="text/ng-template")
 
 script(id="template/rating.html", type="text/ng-template")
 	.ratingbox__left-col
-		.ratingbox__rating.rating-user.color-primary(ng-show="editing", ng-class="{ 'rating-10': ratingHover == 10 }") {{ ratingHover | rating }}
-		.ratingbox__rating(ng-hide="editing", ng-class="{ 'rating-10': ratingAvg == 10 }") {{ ratingAvg | rating }}
+		.ratingbox__rating.rating-user.color-primary(ng-class="{ 'rating-10': ratingHover == 10 }") {{ ratingHover | ratingFormat }}
+		//.ratingbox__rating(ng-hide="editing", ng-class="{ 'rating-10': ratingAvg == 10 }") {{ ratingAvg | ratingFormat }}
 	.ratingbox__right-col
 
-		rating.rating-user(
-			ng-show="editing",
+		rating2.rating-user(
 			ng-model="ratingUser",
-			max="10",
-			rating-states="states",
 			on-hover="ratingHover = value",
 			on-leave="ratingHover = ratingUser"
 			ng-click="rate()")
 
-		rating.rating-avg(
+		//rating.rating-avg(
 			ng-hide="editing",
 			ng-model="ratingAvg",
-			max="10",
-			rating-states="states",
 			readonly="true")
 
 		span.votes {{ ratingVotes | number }} vote{{ ratingVotes == 1 ? '' : 's' }}
+
+//-- override ui bootstrap tpl so we can use svg icons.
+script(id="template/rating/rating.html", type="text/ng-template")
+	span(ng-mouseleave="reset()", ng-keydown="onKeydown($event)", tabindex="0", role="slider", aria-valuemin="0", aria-valuemax="{{range.length}}", aria-valuenow="{{value}}")
+		each val in [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+			span(ng-mouseover="enter(#{val})", ng-click="rate(#{val})", ng-class="value >= #{val} && 'star-on' || 'star-off'")
+				+icon(val % 2 ? 'star-left' : 'star-right').star

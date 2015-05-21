@@ -66,11 +66,23 @@ angular.module('vpdb.rating', [])
 					$scope.$rating = $scope.ratingUser;
 					$parse($attrs.ratingAction)($scope)
 				};
+
+				$scope.enter = function(value) {
+					if (!$scope.readonly) {
+						$scope.value = value;
+					}
+					//$scope.onHover({value: value});
+				};
+
+				//$scope.reset = function() {
+				//	$scope.value = ngModelCtrl.$viewValue;
+				//	$scope.onLeave();
+				//};
 			}
 		};
 	})
 
-	.controller('RatingController2', function($scope, $attrs, ratingConfig) {
+	.controller('RatingController3', function($scope, $attrs, ratingConfig) {
 
 		var ngModelCtrl = {$setViewValue: angular.noop};
 
@@ -117,10 +129,10 @@ angular.module('vpdb.rating', [])
 		};
 	})
 
-	.directive('rating2', function() {
+	.directive('rating3', function() {
 		return {
 			restrict: 'EA',
-			require: ['rating2', 'ngModel'],
+			require: ['rating3', 'ngModel'],
 			scope: {
 				readonly: '=?',
 				onHover: '&',

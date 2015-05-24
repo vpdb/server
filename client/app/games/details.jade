@@ -39,30 +39,14 @@ script(id="template/carousel/carousel.html", type="text/ng-template")
 
 script(id="template/rating.html", type="text/ng-template")
 	.ratingbox__left-col
-		.ratingbox__rating.rating-user.color-primary(ng-class="{ 'rating-10': ratingHover == 10 }") {{ ratingHover | ratingFormat }}
-		//.ratingbox__rating(ng-hide="editing", ng-class="{ 'rating-10': ratingAvg == 10 }") {{ ratingAvg | ratingFormat }}
+		.ratingbox__rating.rating-user.color-primary(ng-class="{ 'rating-10': ratingHover == 10 }") {{ rating | ratingFormat }}
 	.ratingbox__right-col
-
-		rating2.rating-user(
-			ng-model="ratingUser",
-			on-hover="ratingHover = value",
-			on-leave="ratingHover = ratingUser"
-			ng-click="rate()")
-		span.rating-user(ng-mouseleave="reset()")
+		span.rating-user(ng-mouseleave="rateEnd()")
 			each val in [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-				span(ng-mouseover="enter(#{val})", ng-click="rate(#{val})", ng-class="value >= #{val} && 'star-on' || 'star-off'")
+				span(
+					ng-mouseover="rateStart(#{val})",
+					ng-click="rate(#{val})",
+					ng-class="{ 'star-on': value >= #{val}, 'star-off': value < #{val}, selecting: starHovering }"
+				)
 					+icon(val % 2 ? 'star-left' : 'star-right').star
-
-		//rating.rating-avg(
-			ng-hide="editing",
-			ng-model="ratingAvg",
-			readonly="true")
-
 		span.votes {{ ratingVotes | number }} vote{{ ratingVotes == 1 ? '' : 's' }}
-
-//-- override ui bootstrap tpl so we can use svg icons.
-script(id="template/rating/rating.html", type="text/ng-template")
-	span(ng-mouseleave="reset()")
-		each val in [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-			span(ng-mouseover="enter(#{val})", ng-click="rate(#{val})", ng-class="value >= #{val} && 'star-on' || 'star-off'")
-				+icon(val % 2 ? 'star-left' : 'star-right').star

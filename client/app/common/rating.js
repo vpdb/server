@@ -37,116 +37,90 @@ angular.module('vpdb.rating', [])
 			templateUrl: 'template/rating.html',
 			link: function(scope, elem) {
 				elem.mouseenter(function() {
-					scope.editing = true;
+					scope.editStart();
 					scope.$apply();
 				});
 				elem.mouseleave(function() {
-					scope.editing = false;
+					scope.editEnd();
 					scope.$apply();
 				});
 			},
 			controller: function($scope, $element, $attrs) {
-				$scope.$watch($parse($attrs.ratingAvg), function(ratingAvg) {
-					if (ratingAvg) {
-						$scope.ratingAvg = ratingAvg;
+				var ratingAvg = $parse($attrs.ratingAvg);
+				var ratingUser = $parse($attrs.ratingUser);
+
+				// init: read average rating
+				$scope.$watch(ratingAvg, function(rating) {
+					if (rating && !$scope.boxHovering) {
+						$scope.rating = rating;
+						$scope.value = rating;
 					}
 				});
+
+				// init: read number of votes
 				$scope.$watch($parse($attrs.ratingVotes), function(votes) {
 					if (votes) {
 						$scope.ratingVotes = votes;
 					}
 				});
-				$scope.$watch($parse($attrs.ratingUser), function(ratingUser) {
-					if (ratingUser) {
-						$scope.ratingUser = Math.round(ratingUser);
-						$scope.ratingHover = Math.round(ratingUser);
+
+
+				/**
+				 * Cursor enters rating box.
+				 *
+				 * => Display the user's rating
+				 */
+				$scope.editStart = function() {
+					var rating = ratingUser($scope);
+					$scope.boxHovering = true;
+					$scope.rating = rating;
+					$scope.value = rating;
+				};
+
+				/**
+				 * Cursor leaves rating box.
+				 *
+				 * => Display average rating
+				 */
+				$scope.editEnd = function() {
+					var rating = ratingAvg($scope);
+					$scope.boxHovering = false;
+					$scope.rating = rating;
+					$scope.value = rating;
+				};
+
+				/**
+				 * Cursor enters stars.
+				 *
+				 * => Display hovered rating.
+				 *
+				 * @param {int} value Star value (1-10)
+				 */
+				$scope.rateStart = function(value) {
+					if (!$scope.readonly) {
+						$scope.starHovering = true;
+						$scope.value = value;
+						$scope.rating = value;
 					}
-				});
+				};
+
+				/**
+				 * Cursor leaves stars
+				 *
+				 * => Display user rating
+				 */
+				$scope.rateEnd = function() {
+					var rating = ratingUser($scope);
+					$scope.starHovering = false;
+					$scope.rating = rating;
+					$scope.value = rating;
+				};
+
+				// a star has been clicked
 				$scope.rate = function() {
-					$scope.$rating = $scope.ratingUser;
+					$scope.$rating = $scope.value;
 					$parse($attrs.ratingAction)($scope)
 				};
-
-				$scope.enter = function(value) {
-					if (!$scope.readonly) {
-						$scope.value = value;
-					}
-					//$scope.onHover({value: value});
-				};
-
-				//$scope.reset = function() {
-				//	$scope.value = ngModelCtrl.$viewValue;
-				//	$scope.onLeave();
-				//};
-			}
-		};
-	})
-
-	.controller('RatingController3', function($scope, $attrs, ratingConfig) {
-
-		var ngModelCtrl = {$setViewValue: angular.noop};
-
-		this.init = function(ngModelCtrl_) {
-			ngModelCtrl = ngModelCtrl_;
-			ngModelCtrl.$render = this.render;
-
-			this.stateOn = angular.isDefined($attrs.stateOn) ? $scope.$parent.$eval($attrs.stateOn) : ratingConfig.stateOn;
-			this.stateOff = angular.isDefined($attrs.stateOff) ? $scope.$parent.$eval($attrs.stateOff) : ratingConfig.stateOff;
-
-			var ratingStates = angular.isDefined($attrs.ratingStates) ? $scope.$parent.$eval($attrs.ratingStates) :
-				new Array(angular.isDefined($attrs.max) ? $scope.$parent.$eval($attrs.max) : ratingConfig.max);
-			$scope.range = this.buildTemplateObjects(ratingStates);
-		};
-
-		this.buildTemplateObjects = function(states) {
-			for (var i = 0, n = states.length; i < n; i++) {
-				states[i] = angular.extend({index: i}, {stateOn: this.stateOn, stateOff: this.stateOff}, states[i]);
-			}
-			return states;
-		};
-
-		$scope.rate = function(value) {
-			if (!$scope.readonly && value >= 0 && value <= $scope.range.length) {
-				ngModelCtrl.$setViewValue(value);
-				ngModelCtrl.$render();
-			}
-		};
-
-		$scope.enter = function(value) {
-			if (!$scope.readonly) {
-				$scope.value = value;
-			}
-			$scope.onHover({value: value});
-		};
-
-		$scope.reset = function() {
-			$scope.value = ngModelCtrl.$viewValue;
-			$scope.onLeave();
-		};
-
-		this.render = function() {
-			$scope.value = ngModelCtrl.$viewValue;
-		};
-	})
-
-	.directive('rating3', function() {
-		return {
-			restrict: 'EA',
-			require: ['rating3', 'ngModel'],
-			scope: {
-				readonly: '=?',
-				onHover: '&',
-				onLeave: '&'
-			},
-			controller: 'RatingController2',
-			templateUrl: 'template/rating/rating.html',
-			replace: true,
-			link: function(scope, element, attrs, ctrls) {
-				var ratingCtrl = ctrls[0], ngModelCtrl = ctrls[1];
-
-				if (ngModelCtrl) {
-					ratingCtrl.init(ngModelCtrl);
-				}
 			}
 		};
 	});

@@ -30,7 +30,7 @@ angular.module('vpdb.rating', [])
 	 *  rating-user="gameRating"
 	 *  rating-action="rateGame($rating)"
 	 */
-	.directive('ratingbox', function($parse) {
+	.directive('ratingbox', function($parse, $animate) {
 		return {
 			restrict: 'C',
 			scope: true,
@@ -44,6 +44,7 @@ angular.module('vpdb.rating', [])
 					scope.editEnd();
 					scope.$apply();
 				});
+				$animate.enabled(false, elem);
 			},
 			controller: function($scope, $element, $attrs) {
 				var ratingAvg = $parse($attrs.ratingAvg);

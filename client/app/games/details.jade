@@ -23,8 +23,7 @@ include ../template/_mixins
 		include details-03-roms
 		include details-04-todo
 
-		p
-			br
+		p: br
 
 script(id="template/carousel/carousel.html", type="text/ng-template")
 	.carousel(ng-mouseenter="pause()", ng-mouseleave="play()", ng-swipe-right="prev()", ng-swipe-left="next()")
@@ -39,14 +38,14 @@ script(id="template/carousel/carousel.html", type="text/ng-template")
 
 script(id="template/rating.html", type="text/ng-template")
 	.ratingbox__left-col
-		.ratingbox__rating.rating-user.color-primary(ng-class="{ 'rating-10': ratingHover == 10 }") {{ rating | ratingFormat }}
+		.ratingbox__rating.rating-user(ng-class="{ 'rating-10': ratingHover == 10, 'color-primary': boxHovering }") {{ rating | ratingFormat }}
 	.ratingbox__right-col
-		span.rating-user(ng-mouseleave="rateEnd()")
+		span.rating-stars(ng-mouseleave="rateEnd()")
 			each val in [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 				span(
 					ng-mouseover="rateStart(#{val})",
 					ng-click="rate(#{val})",
-					ng-class="{ 'star-on': value >= #{val}, 'star-off': value < #{val}, selecting: starHovering }"
+					ng-class="{ 'star-on': value >= #{val}, 'star-off': value < #{val}, selecting: boxHovering }"
 				)
 					+icon(val % 2 ? 'star-left' : 'star-right').star
 		span.votes {{ ratingVotes | number }} vote{{ ratingVotes == 1 ? '' : 's' }}

@@ -42,10 +42,11 @@ script(id="template/rating.html", type="text/ng-template")
 	.ratingbox__right-col
 		span.rating-stars(ng-mouseleave="rateEnd()")
 			each val in [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-				span(
+				span.star-wrapper(
 					ng-mouseover="rateStart(#{val})",
 					ng-click="rate(#{val})",
 					ng-class="{ 'star-on': value >= #{val}, 'star-off': value < #{val}, selecting: boxHovering }"
 				)
+					//.star *
 					+icon(val % 2 ? 'star-left' : 'star-right').star
 		span.votes {{ ratingVotes | number }} vote{{ ratingVotes == 1 ? '' : 's' }}

@@ -238,7 +238,7 @@ angular.module('vpdb.auth', [])
 			 */
 			fetchUrlTokens: function(paths, callback) {
 				paths = paths || this.paths;
-				if (!_.isObject(paths) || _.keys(paths).length === 0) {
+				if (!_.isString(paths) && (!_.isObject(paths) || _.keys(paths).length === 0)) {
 					return this;
 				}
 				var that = this;

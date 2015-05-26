@@ -335,7 +335,7 @@ UserSchema.statics.createUser = function(userObj, confirmUserEmail, done) {
 			}
 
 			user.roles = count ? [ 'member' ] : [ 'root' ];
-			user.plan = count ? config.vpdb.quota.defaultPlan : 'unlimited';
+			user.plan = config.vpdb.quota.defaultPlan;
 
 			user.save(function(err) {
 				/* istanbul ignore if  */

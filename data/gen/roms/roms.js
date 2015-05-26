@@ -364,6 +364,15 @@ exports.data = {
 		mb_106: {version: '1.06'},
 		mb_106b: {version: '1.06B'}
 	},
+	nf: {
+		nf_10: {version: '1.0'},
+		nf_11x: {version: '1.1X'},
+		nf_20: {version: '2.0'},
+		nf_22: {version: '2.2'},
+		nf_23: {version: '2.3'},
+		nf_23f: {version: '2.3F'},
+		nf_23x: {version: '2.3X'}
+	},
 	'playboy-bally': {
 		playboy: {},
 		playboyb: {notes: '7-digit custom'},

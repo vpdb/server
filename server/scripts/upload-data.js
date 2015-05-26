@@ -25,21 +25,21 @@ var local = {
 	apiUri: 'http://localhost:3000/api/v1',
 	storageUri: 'http://localhost:3000/storage/v1',
 	authHeader: 'Authorization',
-	credentials: { username: 'test', password: 'testtest' }
+	credentials: { username: 'test', password: 'xxxxx' }
 };
 var test = {
 	apiUri: 'https://test.vpdb.io/api/v1',
 	storageUri: 'https://test.vpdb.io/storage/v1',
 	authHeader: 'X-Authorization',
-	credentials: { username: 'uploader', password: 'testtest' },
-	httpSimple: { username: 'vpdb', password: 'qH3SOFFJ1UFhrALCYkBe' }
+	credentials: { username: 'uploader', password: 'xxxxx' },
+	httpSimple: { username: 'vpdb', password: 'xxxxx' }
 };
 var staging = {
 	apiUri: 'https://staging.vpdb.io/api/v1',
 	storageUri: 'https://staging.vpdb.io/storage/v1',
 	authHeader: 'X-Authorization',
-	credentials: { username: 'uploader', password: 'testtest' },
-	httpSimple: { username: 'vpdb', password: 'qH3SOFFJ1UFhrALCYkBe' }
+	credentials: { username: 'uploader', password: 'xxxxx' },
+	httpSimple: { username: 'vpdb', password: 'xxxxx' }
 };
 var production = {
 	apiUri: 'https://vpdb.io/api/v1',

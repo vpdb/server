@@ -36,11 +36,13 @@ angular.module('vpdb.rating', [])
 			scope: true,
 			templateUrl: 'template/rating.html',
 			link: function(scope, elem) {
-				elem.mouseenter(function() {
+				elem.mouseenter(function(e) {
+					e.preventDefault();
 					scope.editStart();
 					scope.$apply();
 				});
-				elem.mouseleave(function() {
+				elem.mouseleave(function(e) {
+					e.preventDefault();
 					scope.editEnd();
 					scope.$apply();
 				});

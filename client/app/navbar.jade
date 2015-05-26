@@ -16,9 +16,9 @@ block body
 					| Menu
 				span.navbar-brand
 					a(href="/")
-						i.icon.icon-vpdb-logo-o
-						i.icon.icon-vp
-						i.icon.icon-db
+						+icon('vpdb-o').logo
+						+icon('logo-vp').logo-vp
+						+icon('logo-db').logo-db
 
 			.collapse.navbar-collapse(ng-class="{ 'in': !navCollapsed }", ng-click="navCollapsed = true")
 				block navbar

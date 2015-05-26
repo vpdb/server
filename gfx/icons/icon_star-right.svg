@@ -3,5 +3,5 @@
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
 <svg version="1.1" id="icons" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
 	 viewBox="0 0 40 90" enable-background="new 0 0 40 90" xml:space="preserve">
-<path d="M37.3,26.8l-26-2.2L1.3,0.8c0,0,0,0,0,0L1.2,0.7l0,0C0.9,0.3,0.5,0,0,0v55.1l23.5,14.2l-5.9-25.4L37.3,26.8z"/>
+<polygon points="36.2,26.1 10.3,23.9 0.1,0 0,0.3 0,55.2 0.1,55.1 22.4,68.6 16.5,43.2 "/>
 </svg>

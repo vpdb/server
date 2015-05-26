@@ -20,39 +20,40 @@
 
 var games = require('../../data/gen/games/games');
 var roms = require('../../data/gen/roms/roms');
+var credentials = require('./credentials');
 
 var local = {
 	apiUri: 'http://localhost:3000/api/v1',
 	storageUri: 'http://localhost:3000/storage/v1',
 	authHeader: 'Authorization',
-	credentials: { username: 'test', password: 'xxxxx' }
+	credentials: { username: 'test', password: credentials.user.password }
 };
 var test = {
 	apiUri: 'https://test.vpdb.io/api/v1',
 	storageUri: 'https://test.vpdb.io/storage/v1',
 	authHeader: 'X-Authorization',
-	credentials: { username: 'uploader', password: 'xxxxx' },
-	httpSimple: { username: 'vpdb', password: 'xxxxx' }
+	credentials: { username: 'uploader', password: credentials.user.password },
+	httpSimple: { username: credentials.httpSimple.username, password: credentials.httpSimple.password }
 };
 var staging = {
 	apiUri: 'https://staging.vpdb.io/api/v1',
 	storageUri: 'https://staging.vpdb.io/storage/v1',
 	authHeader: 'X-Authorization',
-	credentials: { username: 'uploader', password: 'xxxxx' },
-	httpSimple: { username: 'vpdb', password: 'xxxxx' }
+	credentials: { username: 'uploader', password: credentials.user.password },
+	httpSimple: { username: credentials.httpSimple.username, password: credentials.httpSimple.password }
 };
 var production = {
 	apiUri: 'https://vpdb.io/api/v1',
 	storageUri: 'https://vpdb.io/storage/v1',
 	authHeader: 'X-Authorization',
-	credentials: { username: 'uploader', password: 'xxxxxx' },
-	httpSimple: { username: 'vpdb', password: 'xxxxxx' }
+	credentials: { username: 'uploader', password: credentials.user.password },
+	httpSimple: { username: credentials.httpSimple.username, password: credentials.httpSimple.password }
 };
 
-var config = staging;
+var config = local;
 
 config.romFolder = 'E:/Pinball/Visual Pinball-103/VPinMame/roms';
 
-games.upload(config);
-//roms.upload(config);
+//games.upload(config);
+roms.upload(config);
 

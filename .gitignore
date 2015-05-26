@@ -24,6 +24,7 @@ logs
 
 results
 server/config/settings.js
+server/scripts/credentials.js
 test/coverage
 
 npm-debug.log

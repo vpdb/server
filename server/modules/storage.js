@@ -508,7 +508,16 @@ Storage.prototype.switchToPublic = function(file) {
 	var publicPath = that.path(file);
 	if (protectedPath !== publicPath) {
 		logger.info('[storage] Renaming "%s" to "%s"', protectedPath, publicPath);
-		fs.renameSync(protectedPath, publicPath);
+		try {
+			fs.renameSync(protectedPath, publicPath);
+		} catch (err) {
+			logger.warn('[storage] Error renaming, re-trying in a second (%s)', err.message);
+			setTimeout(function() {
+				logger.info('[storage] Renaming "%s" to "%s"', protectedPath, publicPath);
+				fs.renameSync(protectedPath, publicPath);
+			}, 5000);
+		}
+
 	} else {
 		logger.info('[storage] Skipping renaming of "%s" (no path change)', protectedPath);
 	}
@@ -522,11 +531,15 @@ Storage.prototype.switchToPublic = function(file) {
 			if (protectedPath !== publicPath) {
 				if (fs.existsSync(protectedPath)) {
 					if (!fs.existsSync(lockPath)) {
-						logger.info('[storage] Renaming "%s" to "%s"', protectedPath, publicPath);
 						try {
+							logger.info('[storage] Renaming "%s" to "%s"', protectedPath, publicPath);
 							fs.renameSync(protectedPath, publicPath);
 						} catch (err) {
-							logger.error('[storage] Error renaming: %s', err.message);
+							logger.warn('[storage] Error renaming, re-trying in a second (%s)', err.message);
+							setTimeout(function() {
+								logger.info('[storage] Renaming "%s" to "%s"', protectedPath, publicPath);
+								fs.renameSync(protectedPath, publicPath);
+							}, 5000);
 						}
 					} else {
 						logger.warn('[storage] Skipping rename, "%s" is locked (processing)', protectedPath);

@@ -41,32 +41,26 @@
 // stars with the votes in the right column.
 .ratingbox
 
-	position relative
-	width 200px
-	height 65px
-
 	// Left column
 	.ratingbox__left-col
-		position absolute
-		top 0
-		left 50px
+		position relative
+		text-align right
+		display inline-block
+		width 75px
 		.ratingbox__rating
-			position absolute
-			left 0
-			top 0
 			font-size 50px
 			font-weight $font-weight-thin
 			text-align right
 			cursor default
+			display inline
 			&.rating-10
 				margin-right 10px
 				width 68px
 
 	// Right column
 	.ratingbox__right-col
-		position absolute
-		top 30px
-		left 140px
+		position relative
+		display inline-block
 		.votes
 			width 80px
 			display inline-block

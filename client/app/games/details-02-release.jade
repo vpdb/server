@@ -12,17 +12,18 @@ include ../template/_mixins
 				img(ng-src="{{ slide.url }}")
 
 		button.btn.btn-primary.btn-block.padder-top-3x(ng-click="download(game)")
-			+icon('download').space-right
+			+icon('download').space-right.hidden-sm.hidden-md
 			| Download
 
 		//-- RELEASE RATING
 		//---------------------------------------------------------------------
 
-		.ratingbox.padder-top.hidden-sm.hidden-md(
-			rating-avg="release.rating.average",
-			rating-votes="release.rating.votes",
-			rating-user="releaseRating"
-			rating-action="rateRelease($rating)")
+		.text-center
+			.ratingbox.padder-top(
+				rating-avg="release.rating.average",
+				rating-votes="release.rating.votes",
+				rating-user="releaseRating"
+				rating-action="rateRelease($rating)")
 
 		//-- STATS
 		//---------------------------------------------------------------------
@@ -39,10 +40,10 @@ include ../template/_mixins
 				+icon('star')(ng-click="toggleStar()").shift-up-2x
 			+icon('star-circle').svg-2x.shift-up-2x.space-right
 			| {{ release.counter.stars | number }} star{{ release.counter.stars != 1 ? 's' : '' }}
-		p
+		p.oneliner
 			+icon('comment-circle').svg-2x.shift-up-2x.space-right
 			| {{ release.counter.comments | number }} comment{{ release.counter.downloads != 1 ? 's' : '' }}
-		p
+		p.oneliner
 			+icon('download-circle').svg-2x.shift-up-2x.space-right
 			| {{ release.counter.downloads | number }} download{{ release.counter.downloads != 1 ? 's' : '' }}
 
@@ -55,7 +56,7 @@ include ../template/_mixins
 			i Author Zone:
 
 		a.btn.btn-primary.btn-block(ui-sref="addReleaseVersion({ id: game.id, releaseId: release.id })")
-			+icon('plus-circle').space-right
+			+icon('plus-circle').space-right.hidden-sm.hidden-md
 			| Upload File
 
 		p.padder-top

@@ -71,9 +71,9 @@ only definitions in the HTML layout and then reference these definitions
 in the DOM using the `<use>` element. This method is also known as 
 [SVG Sprites][svgsprites].
 
-For this, we keep [one Illustrator file][ai-icons] and explode the artboards
+For this, we keep [one Illustrator file][ai-icons] and explode the art boards
 into [multiple `.svg` files][icon-folder]. During build, we run 
-[svgmin][svgmin] on them and [compile them][svgstore] into one defintion file
+[svgmin][svgmin] on them and [compile them][svgstore] into one definition file
 at `gfx/svg-defs.svg`. The content of this file is then rendered into the HTML 
 DOM. Whenever we use an icon in the DOM, we can render it by calling the 
 `icon(svg-name)` Jade mixin. Color can be set by defining the `fill` CSS 

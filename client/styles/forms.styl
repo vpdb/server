@@ -157,43 +157,85 @@ textarea
 // .radio--lg - Large buttons
 //
 // Styleguide 5.2.1
+//.radio--lg
+//	cursor default
+//	input[type=radio]
+//		display none
+//		cursor default
+//		+ span
+//			cursor pointer
+//			display block
+//			font-weight $font-weight-bold
+//			font-size $font-size-large
+//			text-transform uppercase
+//			margin-left 20px
+//			transition color $animation-short
+//			&:before
+//				cursor pointer
+//				position absolute
+//				margin-left -31px
+//				margin-top -2px
+//				font-size 36px // icon
+//				font-family icons
+//				font-style normal
+//				font-weight normal
+//				line-height 1
+//				-webkit-font-smoothing antialiased
+//				-moz-osx-font-smoothing grayscale
+//				transition color $animation-short
+//				content "\32" /* Radio Unchecked */
+//
+//			&.aligned
+//				margin-left 0
+//				&:before
+//					margin-left -40px
+//		&:checked + span
+//			cursor default
+//			&::before
+//				cursor default
+//				content "\33" /* Radio Checked */
 .radio--lg
 	cursor default
 	input[type=radio]
-		display none
+		opacity 0
+		position absolute
 		cursor default
-		+ span
+		+span
 			cursor pointer
 			display block
 			font-weight $font-weight-bold
 			font-size $font-size-large
 			text-transform uppercase
-			margin-left 20px
+			margin-left 35px
 			transition color $animation-short
+
 			&:before
-				cursor pointer
-				position absolute
-				margin-left -31px
-				margin-top -2px
-				font-size 36px // icon
-				font-family icons
-				font-style normal
-				font-weight normal
-				line-height 1
-				-webkit-font-smoothing antialiased
-				-moz-osx-font-smoothing grayscale
-				transition color $animation-short
-				content "\32" /* Radio Unchecked */
+				content ''
+				border-width 2px
+				border-style solid
+				display inline-block
+				vertical-align middle
+				width 20px
+				height 20px
+				padding 2px
+				margin-right 10px
+				margin-left -33px
+				margin-top -5px
+				text-align center
+				border-radius 50%
+				transition border-color $animation-short
 
 			&.aligned
 				margin-left 0
 				&:before
 					margin-left -40px
-		&:checked + span
-			cursor default
-			&::before
-				cursor default
-				content "\33" /* Radio Checked */
+
+	input[type=radio], +span
+		display inline-block
+		vertical-align middle
+		margin 5px
+		cursor pointer
+
 
 // Two-liners
 //
@@ -227,12 +269,12 @@ textarea
 			text-transform none
 			margin-bottom -5px
 			&:before
-				font-size 30px
-				margin-top 14px
+				position absolute
+				margin-top 18px
 		&:checked + span + span
 			cursor default
 	span
-		margin-left 20px
+		margin-left 35px
 		cursor pointer
 
 

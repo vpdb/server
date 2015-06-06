@@ -130,14 +130,24 @@ $input-background-light-focus = rgba(white, 0.75)
 		+ label
 			color $color-lighter-inv
 			&:before
-				color $color-lighter-inv
-		+ label:hover
-			color $color-lightest-inv
-			&:before
-				color $color-lightest-inv
+				border-color #777
 
-		&:checked + label:hover:before
-			color $color-lighter-inv
+			&:after
+				border-color #efefef
+
+			&:hover
+				color $color-lightest-inv
+				&:before
+					border-color #3b3b3b
+
+		&:checked + label
+			&:before
+				background-color #777
+				border-color #777
+			&:hover:before
+				background-color #3b3b3b
+				border-color #3b3b3b
+
 
 	input.checkbox--toggle
 		+ label

@@ -9,7 +9,7 @@ var deps = [
 	'ngStorage',
 	'ngDragDrop',
 	'ngClipboard',
-	'angularFileUpload',
+	'ngFileUpload',
 	'angularMoment',
 	'ui.router',
 	'ui.bootstrap',
@@ -99,7 +99,7 @@ angular.module('vpdb', deps.concat(appDeps))
 		$stateProvider.state('confirmToken',     { url: '/confirm/:token',               templateUrl: '/auth/confirm.html' });
 
 		//$stateProvider.state('notfound', { templateUrl: '/auth/confirm.html' });
-		//$urlRouterProvider.otherwise('/state1'); // $routeProvider.otherwise({ templateUrl: '/errors/404.html' });
+		$urlRouterProvider.otherwise('/state1'); // $routeProvider.otherwise({ templateUrl: '/errors/404.html' });
 		$locationProvider.html5Mode({
 			enabled: true,
 			requireBase: false

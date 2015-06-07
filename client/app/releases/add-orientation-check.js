@@ -30,7 +30,7 @@
  *   - `metaFiles`: Meta files, same reason as above
  *   - `metaLinks`: Meta link array
  */
-angular.module('vpdb.releases.add', []).directive('orientationCheck', function($upload, $parse, ApiHelper, ModalService, FileResource) {
+angular.module('vpdb.releases.add', []).directive('orientationCheck', function($parse, ApiHelper, ModalService, FileResource) {
 
 	return {
 		restrict: 'A',

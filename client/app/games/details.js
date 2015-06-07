@@ -2,7 +2,7 @@
 
 angular.module('vpdb.games.details', [])
 
-	.controller('GameController', function($scope, $rootScope, $stateParams, $modal, $log, $upload, $localStorage,
+	.controller('GameController', function($scope, $rootScope, $stateParams, $modal, $log, $localStorage,
 					ApiHelper, Flavors, ModalService, DisplayService, ConfigService, DownloadService, AuthService,
 					GameResource, ReleaseCommentResource, FileResource, RomResource, GameRatingResource, GameStarResource) {
 

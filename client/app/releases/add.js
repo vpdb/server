@@ -23,7 +23,7 @@
  * Main controller containing the form for adding a new release.
  */
 angular.module('vpdb.releases.add', []).controller('ReleaseAddCtrl', function(
-	$scope, $upload, $modal, $window, $localStorage, $state, $stateParams, $location, $anchorScroll, $timeout, $controller,
+	$scope, $modal, $window, $localStorage, $state, $stateParams, $location, $anchorScroll, $timeout, $controller,
 	AuthService, ConfigService, DisplayService, MimeTypeService, ModalService, ApiHelper, Flavors, ReleaseMeta,
 	ReleaseResource, FileResource, TagResource, BuildResource, GameResource)
 {

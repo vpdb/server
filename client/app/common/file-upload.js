@@ -38,7 +38,7 @@
  *
  * All parameters must be already initialized.
  */
-angular.module('vpdb.common', []).directive('fileUpload', function($upload, $parse, $compile, ApiHelper, AuthService, ModalService, DisplayService, ConfigService, FileResource) {
+angular.module('vpdb.common', []).directive('fileUpload', function(Upload, $parse, $compile, ApiHelper, AuthService, ModalService, DisplayService, ConfigService, FileResource) {
 
 	return {
 		restrict: 'A',
@@ -52,8 +52,8 @@ angular.module('vpdb.common', []).directive('fileUpload', function($upload, $par
 			var fctName = 'onFilesUpload';
 
 			// add file drop directive: https://github.com/danialfarid/ng-file-upload#file-drop
-			element.attr('ng-file-drop', fctName + '($files)');
-			element.attr('ng-multiple', params.allowMultipleFiles === true ? 'true' : 'false');
+			element.attr('ngf-drop', fctName + '($files)');
+			element.attr('ngf-multiple', params.allowMultipleFiles === true ? 'true' : 'false');
 
 			// remove the attribute to avoid indefinite loop
 			element.removeAttr("file-upload");
@@ -133,7 +133,7 @@ angular.module('vpdb.common', []).directive('fileUpload', function($upload, $par
 						}
 
 						// post data
-						$upload.http({
+						Upload.http({
 							url: ConfigService.storageUri('/files'),
 							method: 'POST',
 							params: { type: params.type },

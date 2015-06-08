@@ -27,13 +27,13 @@
 		"angular-route": "1.4.1",
 		"angular-sanitize": "1.4.1",
 		"angular-elastic": "^2.4.2",
-		"angular-bootstrap": "^0.12.0",
+		"angular-bootstrap": "0.13.0",
 		"angular-moment": "~0.8.3",
 		"angular-dragdrop": "^1.0.8",
 		"angular-scrollable": "^0.2.5",
 		"angular-scroll": "^0.6.2",
 		"angular-nanoscroller": "^0.2.1",
-		"angular-ui-router": "^0.2.13",
+		"angular-ui-router": "0.2.15",
 		"angulartics": "^0.17.1",
 		"angular-gravatar": "^0.2.3",
 		"angular-growl-notifications": "~2.1.2",
@@ -45,7 +45,7 @@
 		"waitForImages": "alexanderdickson/waitForImages#~1.4.2",
 		"jquery-throttle-debounce": "*",
 		"highlightjs": "^8.4.0",
-		"bootstrap": "3.3.1",
+		"bootstrap": "3.3.5",
 		"FileAPI": "^2.0.9",
 		"lodash": "3.7.0",
 		"traverse": "^0.6.7",
@@ -56,6 +56,11 @@
 		"zeroclipboard": "2.2.0"
 	},
 	"overrides": {
+		"bootstrap": {
+			"main": [
+				"dist/css/bootstrap.css"
+			]
+		},
 		"showdown": {
 			"main": [
 				"src/showdown.js",

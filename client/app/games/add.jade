@@ -248,7 +248,7 @@ include ../template/_mixins
 				.col-sm-6
 					.panel.panel--blank(
 						file-upload="{ type: 'backglass', key: 'backglass', status: game.mediaFile, onSuccess: onBackglassUpload, onClear: onMediaClear, allowedExtensions: ['jpg', 'png'], allowMultipleFiles: false }"
-						drag-over-class="panel--dragging"
+						ngf-drag-over-class="panel--dragging"
 					)
 						input#uploadBackglass.hide(type='file', ng-file-select="onMediaUpload('backglass', 'backglass', 'image', $files, onBackglassUpload)")
 						.panel-body.a.a--darker(ng-click="openUploadDialog('#uploadBackglass')")
@@ -290,7 +290,7 @@ include ../template/_mixins
 				.col-sm-6
 					.panel.panel--blank(
 						file-upload="{ type: 'logo', key: 'logo', status: game.mediaFile, onSuccess: onLogoUpload, onClear: onMediaClear, allowedExtensions: ['jpg', 'png'], allowMultipleFiles: false }"
-						drag-over-class="panel--dragging"
+						ngf-drag-over-class="panel--dragging"
 					)
 						input#uploadLogo.hide(type='file', ng-file-select="onMediaUpload('logo', 'logo', 'image', $files, onLogoUpload)")
 						.panel-body.a.a--darker(ng-click="openUploadDialog('#uploadLogo')")

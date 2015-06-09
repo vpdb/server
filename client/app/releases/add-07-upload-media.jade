@@ -15,7 +15,7 @@ span(ng-repeat="file in meta.files | fileext:['vpt','vpx']")
 			h4.h--large Screenshot
 			.panel.panel--blank.playfield--image(
 				file-upload="{ type: getPlayfieldType(file), key: getMediaKey(file, 'playfield_image'), status: meta.mediaFiles, onSuccess: onMediaUpload, onClear: onMediaClear, allowedExtensions: ['jpg', 'png'], allowMultipleFiles: false }"
-				drag-over-class="panel--dragging",
+				ngf-drag-over-class="panel--dragging",
 				ng-class="{ error: errors.versions[0].files[meta.files.indexOf(file)]._media.playfield_image }"
 			)
 
@@ -38,13 +38,13 @@ span(ng-repeat="file in meta.files | fileext:['vpt','vpx']")
 			span.pre-h4 Playfield
 			h4.h--large Video
 
-			.panel.panel--blank.playfield--video(ng-show="loadingFinished", ng-file-drop="onMediaUpload(file, 'playfield_video', $files)", drag-over-class="panel--dragging")
+			.panel.panel--blank.playfield--video(ng-show="loadingFinished", ngf-drop="true", ngf-change="onMediaUpload(file, 'playfield_video', $files)", ngf-drag-over-class="panel--dragging")
 				.panel-body.a.a--darker(ng-click="openUploadDialog('playfield_video', '#uploadBackglass')")
 					.img.img--ar-fs.loaded
 						.video-wrapper
 							video.video-js.vjs-sublime-skin(videojs, width="100%", height="100%", video-src="{{ meta.mediaFiles[file.storage.id].playfield_video.variations['small-rotated'] }}")
 
-			.panel.panel--blank.playfield--image(ng-hide="loadingFinished", ng-file-drop="onMediaUpload(file, 'playfield_video', $files)", drag-over-class="panel--dragging")
+			.panel.panel--blank.playfield--image(ng-hide="loadingFinished", ngf-drop="true", ngf-change="onMediaUpload(file, 'playfield_video', $files)", ngf-drag-over-class="panel--dragging")
 				input#uploadBackglass.hide(type="file", ng-file-select="onMediaUpload(file, 'playfield_video', $files)")
 				.panel-body.a.a--darker(ng-click="openUploadDialog('playfield_video', '#uploadBackglass')")
 					.img.img--ar-ws.loaded(img-bg="meta.mediaLinks[file.storage.id].playfield_video")

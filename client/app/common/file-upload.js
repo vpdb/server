@@ -52,7 +52,8 @@ angular.module('vpdb.common', []).directive('fileUpload', function(Upload, $pars
 			var fctName = 'onFilesUpload';
 
 			// add file drop directive: https://github.com/danialfarid/ng-file-upload#file-drop
-			element.attr('ngf-drop', fctName + '($files)');
+			element.attr('ngf-drop', 'true');
+			element.attr('ngf-change', fctName + '($files)');
 			element.attr('ngf-multiple', params.allowMultipleFiles === true ? 'true' : 'false');
 
 			// remove the attribute to avoid indefinite loop

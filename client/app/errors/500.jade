@@ -1,14 +1,12 @@
 include ../template/_mixins
-extends ../layout
-block body
-	.center-middle.center-middle-errorpage
-		i.icon.icon-vpdb-logo-o
-		h1 500
-		p You tried to access&nbsp;
-			code=url
-			| &nbsp;but there was an internal server error. If you see this, please contact an administrator.
-			| We're sorry about that.
-
-		a(href="/", target="_self")
-			+icon('arrow-circle-left').shift-up-2x.space-right
-			|GO HOME
+.center-middle.center-middle-errorpage
+	+icon('vpdb-o').svg-huge
+	h1 404
+	p You tried to access&nbsp;
+		code=url
+		| &nbsp;but there was an internal server error. If you see this, please contact an administrator.
+		| We're really sorry about that.
+	a(ui-sref="home")
+		+icon('arrow-left').shift-up-2x.space-right
+		| GO HOME
+	p.padder-bottom

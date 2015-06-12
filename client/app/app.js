@@ -54,9 +54,9 @@ var appDeps = [
 	/**
 	 * Register/fetch a module.
 	 *
-	 * @param name {string} module name.
-	 * @param reqs {array} list of modules this module depends upon.
-	 * @param configFn {function} config function to run when module loads (only applied for the first call to create this module).
+	 * @param {string} name module name.
+	 * @param {array} reqs list of modules this module depends upon.
+	 * @param {function} configFn config function to run when module loads (only applied for the first call to create this module).
 	 * @returns {*} the created/existing module.
 	 */
 	angular.module = function(name, reqs, configFn) {
@@ -97,12 +97,17 @@ angular.module('vpdb', deps.concat(appDeps))
 		$stateProvider.state('profile.stats',            { url: '/stats',                templateUrl: '/profile/stats.html', controller: 'ProfileStatsCtrl' });
 		$stateProvider.state('authCallback',     { url: '/auth/:strategy/callback?code', templateUrl: '/auth/authenticating.html' });
 		$stateProvider.state('confirmToken',     { url: '/confirm/:token',               templateUrl: '/auth/confirm.html' });
+		$stateProvider.state('404',              {                                       templateUrl: '/errors/404.html' });
 
-		//$stateProvider.state('notfound', { templateUrl: '/auth/confirm.html' });
-		$urlRouterProvider.otherwise('/state1'); // $routeProvider.otherwise({ templateUrl: '/errors/404.html' });
 		$locationProvider.html5Mode({
 			enabled: true,
 			requireBase: false
+		});
+
+		$urlRouterProvider.otherwise(function($injector, $location){
+			var state = $injector.get('$state');
+			state.go('404');
+			return $location.path();
 		});
 	})
 

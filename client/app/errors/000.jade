@@ -1,14 +1,12 @@
 include ../template/_mixins
-extends ../layout
-block body
-	.center-middle.center-middle-errorpage
-		i.icon.icon-vpdb-logo-o
-		h1=code
-		p You tried to access&nbsp;
-			code {{ currentUrl }}
-			| .&nbsp;
-			code {{ message }}
-
-		a(href="/", target="_self")
-			+icon('arrow-circle-left').shift-up-2x.space-right
-			|GO HOME
+.center-middle.center-middle-errorpage
+	+icon('vpdb-o').svg-huge
+	h1=code
+	p You tried to access&nbsp;
+		code {{ currentUrl }}
+		| .&nbsp;
+		code {{ message }}
+	a(ui-sref="home")
+		+icon('arrow-circle-left').shift-up-2x.space-right
+		| GO HOME
+	p.padder-bottom

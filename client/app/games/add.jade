@@ -126,9 +126,9 @@ include ../template/_mixins
 							dd(ng-show="game.artists") {{ game.artists.join(', ') }}
 				.panel.panel--fixed-height-300.panel--blank(ng-hide="game.data.fetched")
 					.panel-content
-						i.icon.icon-ipdb.icon-ipdb--huge.space-right
+						+icon('ipdb').icon-ipdb--huge.space-right
 						span INFO
-						p
+						p.padder-top
 							i Click "Fetch" to load data.
 
 

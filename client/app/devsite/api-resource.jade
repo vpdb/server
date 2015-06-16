@@ -1,4 +1,5 @@
 include api-schema.jade
+include ../template/_mixins
 
 mixin resource(resource)
 
@@ -195,7 +196,7 @@ mixin resource(resource)
 												tab
 													tab-heading
 														i.space-right(class=hlp.authscope(r.role).classes, title="#{hlp.authscope(r.role).title} results in...")
-														i.icon.icon-arrow-right.space-right
+														+icon('arrow-right').space-right.shift-up
 														span #{r.code}
 													pre!=hlp.highlight(r.response.example, true)
 

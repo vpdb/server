@@ -1,3 +1,5 @@
+include ../template/_mixins
+
 .row.row--fullheight
 
 	// right column
@@ -17,7 +19,7 @@
 				hr
 				.input-group.padder-top-2x
 					span.input-group-addon
-						i.icon.icon-key
+						+icon('key')
 					input.form-control(type="text", placeholder="API Token", ng-model="$storage.apiToken")
 					span.input-group-btn
 						button.btn.btn-default(type="button", ng-click="$storage.apiToken = ''") &times;

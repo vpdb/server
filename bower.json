@@ -53,7 +53,8 @@
 		"videojs-sublime-skin": "1.0.3",
 		"bower-parseuri": "*",
 		"object-path": "~0.8.1",
-		"zeroclipboard": "2.2.0"
+		"zeroclipboard": "2.2.0",
+		"ment.io": "0.9.23"
 	},
 	"overrides": {
 		"bootstrap": {

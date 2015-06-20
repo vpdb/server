@@ -4,7 +4,8 @@ angular.module('vpdb.games.details', [])
 
 	.controller('GameController', function($scope, $rootScope, $stateParams, $modal, $log, $localStorage,
 					ApiHelper, Flavors, ModalService, DisplayService, ConfigService, DownloadService, AuthService,
-					GameResource, ReleaseCommentResource, FileResource, RomResource, GameRatingResource, GameStarResource) {
+					GameResource, ReleaseCommentResource, FileResource, RomResource, GameRatingResource, GameStarResource,
+										   UserResource) {
 
 		$scope.theme('dark');
 		$scope.setMenu('games');
@@ -202,6 +203,17 @@ angular.module('vpdb.games.details', [])
 					$scope.game.counter.stars = result.total_stars;
 				}, err);
 			}
+		};
+
+		$scope.foundUsers = [];
+		$scope.findUser = function(query) {
+			UserResource.query({ q: query }, function(users) {
+				$scope.foundUsers = users;
+			});
+		};
+
+		$scope.getPeopleTextRaw = function(item) {
+			return "@" + item.name;
 		};
 
 //		$scope.requestModPermission = function(release) {

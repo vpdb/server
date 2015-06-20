@@ -17,6 +17,15 @@
 			color $color-lighter
 			background-color $color-darker-inv
 
+	.list-group.list-group--users > .list-group-item
+		border-color $color-dark
+		background $color-lighter-inv
+
+		&.active, &:hover, &:active:hover, &:active:focus
+			border-color $color-primary
+			color $color-primary
+			background $color-lightish-inv
+
 
 //
 // Light theme

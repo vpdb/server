@@ -165,7 +165,16 @@ include ../template/_mixins
 						tab-heading(title="Write")
 							+icon('edit')
 							.panel-triangle
-						textarea.textarea--full.animate(placeholder="Your comment", msd-elastic, ng-model="$parent.$parent.newComment")
+						textarea.textarea--full.animate(
+							placeholder="Your comment",
+							msd-elastic,
+							ng-model="$parent.$parent.newComment",
+							mentio,
+							mentio-items="foundUsers",
+							mentio-search="findUser(term)",
+							mentio-select="getPeopleTextRaw(item)",
+							mentio-template-url="user-item.html"
+						)
 					tab
 						tab-heading(title="Preview"): +icon('eye')
 						div.markdown(markdown="$parent.$parent.newComment")
@@ -176,3 +185,10 @@ include ../template/_mixins
 		p.padder-bottom
 	.clearfix
 	p.padder-bottom
+
+script(type='text/ng-template', id='user-item.html')
+	ul.list-group.list-group--users
+		li.list-group-item(mentio-menu-item="person", ng-repeat="person in items")
+			img.img-avatar.img-avatar--xsm.pull-left.space-right(gravatar-src="person.gravatar_id", gravatar-default="404", fallback-icon="user")
+			div.pull-left(ng-bind-html="person.name | mentioHighlight:typedTerm:'menu-highlighted' | unsafe")
+			.clearfix

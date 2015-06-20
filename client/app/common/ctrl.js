@@ -3,7 +3,7 @@
 angular.module('vpdb.common', [])
 
 	.controller('AppCtrl', function($scope, $rootScope, $state, $location, $modal, $localStorage, $timeout,
-									AuthService, ProfileService, ModalService, ModalFlashService, DownloadService) {
+									AuthService, ProfileService, ModalService, ModalFlashService, DownloadService, UserResource) {
 
 		$rootScope.themeName = 'theme-dark';
 

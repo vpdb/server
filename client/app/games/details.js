@@ -205,17 +205,6 @@ angular.module('vpdb.games.details', [])
 			}
 		};
 
-		$scope.foundUsers = [];
-		$scope.findUser = function(query) {
-			UserResource.query({ q: query }, function(users) {
-				$scope.foundUsers = users;
-			});
-		};
-
-		$scope.getPeopleTextRaw = function(item) {
-			return "@" + item.name;
-		};
-
 //		$scope.requestModPermission = function(release) {
 //			var modalInstance = $modal.open({
 //				templateUrl: '/partials/modals/requestModPermission.html',

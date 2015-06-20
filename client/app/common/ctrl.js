@@ -123,6 +123,18 @@ angular.module('vpdb.common', [])
 			});
 		};
 
+		$rootScope.foundUsers = [];
+		$rootScope.findUser = function(query) {
+			UserResource.query({ q: query }, function(users) {
+				$scope.foundUsers = users;
+			});
+		};
+
+		$rootScope.getUserMention = function(item) {
+			return "@" + item.name;
+		};
+
+
 		$rootScope.mdfiddleText =
 			'# Heading 1\n' +
 			'## Heading 2\n' +

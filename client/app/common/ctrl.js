@@ -125,9 +125,13 @@ angular.module('vpdb.common', [])
 
 		$rootScope.foundUsers = [];
 		$rootScope.findUser = function(query) {
-			UserResource.query({ q: query }, function(users) {
-				$scope.foundUsers = users;
-			});
+			if (query && query.trim().length >= 3) {
+				UserResource.query({ q: query }, function(users) {
+					$rootScope.foundUsers = users;
+				});
+			} else {
+				$rootScope.foundUsers = [ null ];
+			}
 		};
 
 		$rootScope.getUserMention = function(item) {

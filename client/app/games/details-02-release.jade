@@ -180,7 +180,7 @@ include ../template/_mixins
 						div.markdown(markdown="$parent.$parent.newComment")
 						label.tab__label(ng-show="!$parent.$parent.newComment || $parent.$parent.newComment.length == 0") Nothing to preview.
 
-		button.btn.btn-default.padder-top.pull-right(ng-click="addComment(release.id)") Comment
+		button.btn.btn-default.padder-top.pull-right(ng-show="auth.isAuthenticated", ng-click="addComment(release.id)") Comment
 		.clearfix
 		p.padder-bottom
 	.clearfix

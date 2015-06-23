@@ -73,7 +73,7 @@ include ../template/_mixins
 			.form-group.form--inline
 				input.form-control.input-lg(type="text", value="{{ release.name }}")
 		h2.h--primary(ng-hide="editing") {{ release.name }} <small>{{ latestVersion.version }}</small>
-		.badge.badge--tag.badge--small(ng-repeat="tag in release.tags", tooltip="{{tag.description}}") {{ tag.name }}
+		.badge.badge--tag.badge--small(ng-repeat="tag in release.tags", tooltip="{{tag.description}}", tooltip-append-to-body="true") {{ tag.name }}
 
 		span.clearfix.padder-top(ng-show="release.tags && release.tags.length") &nbsp;
 		div.markdown(markdown="release.description", ng-show="release.description")

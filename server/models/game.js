@@ -198,14 +198,14 @@ GameSchema.path('_media.backglass').validate(function(backglass, callback) {
 // METHODS
 //-----------------------------------------------------------------------------
 GameSchema.methods.toSimple = function() {
-	return _.pick(this.obj(), apiFields.simple);
+	return _.pick(this.toObj(), apiFields.simple);
 };
 
 GameSchema.methods.toDetailed = function(callback) {
 	if (!callback) {
-		return this.obj();
+		return this.toObj();
 	} else {
-		var game = this.obj();
+		var game = this.toObj();
 		var Release = require('mongoose').model('Release');
 
 		Release.find({ _game: this._id })

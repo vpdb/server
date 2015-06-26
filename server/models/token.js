@@ -70,7 +70,7 @@ TokenSchema.methods.toSimple = function(showToken) {
 // STATIC METHODS
 //-----------------------------------------------------------------------------
 TokenSchema.statics.toSimple = function(token) {
-	var obj = token.obj ? token.obj() : token;
+	var obj = token.toObj ? token.toObj() : token;
 	return _.pick(obj, apiFields.simple);
 };
 

@@ -331,7 +331,7 @@ VersionSchema.path('files').validate(function(files, callback) {
 // METHODS
 //-----------------------------------------------------------------------------
 ReleaseSchema.methods.toDetailed = function() {
-	return this.obj();
+	return this.toObj();
 };
 
 ReleaseSchema.methods.toSimple = function(opts) {
@@ -340,7 +340,7 @@ ReleaseSchema.methods.toSimple = function(opts) {
 	opts.thumb = opts.thumb || 'original';
 
 	var i, file, thumb;
-	var rls = _.pick(this.obj(), [ 'id', 'name', 'created_at', 'authors', 'counter' ]);
+	var rls = _.pick(this.toObj(), [ 'id', 'name', 'created_at', 'authors', 'counter' ]);
 
 	rls.game = _.pick(this._game, ['id', 'title']);
 
@@ -362,12 +362,12 @@ ReleaseSchema.methods.toSimple = function(opts) {
 		}
 		file = latestVersion.files[i];
 
-		if (_.isEqual(file.flavor.obj(), opts.flavor)) {
+		if (_.isEqual(file.flavor.toObj(), opts.flavor)) {
 			break;
 		}
 	}
 
-	var playfieldImage = file._media.playfield_image.obj();
+	var playfieldImage = file._media.playfield_image.toObj();
 	if (playfieldImage.variations[opts.thumb]) {
 		thumb = _.pick(playfieldImage.variations[opts.thumb], [ 'url', 'width', 'height' ]);
 	} else {

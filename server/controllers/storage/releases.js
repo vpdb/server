@@ -115,8 +115,8 @@ exports.download = function(req, res) {
 				}
 				_.each(version.files, function(versionFile, pos) {
 					var file = versionFile._file;
-					file.release_version = version.obj();
-					file.release_file = versionFile.obj();
+					file.release_version = version.toObj();
+					file.release_file = versionFile.toObj();
 
 					if (file.getMimeCategory() === 'table') {
 						if (_.contains(requestedFileIds, file.id)) {

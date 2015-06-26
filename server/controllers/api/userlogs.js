@@ -76,7 +76,7 @@ exports.list = function(req, res) {
 			if (providerInfo[log.data.provider]) {
 				log.data.providerInfo = providerInfo[log.data.provider];
 			}
-			return log.obj();
+			return log.toObj();
 		});
 		api.success(res, logs, 200, api.paginationOpts(pagination, count));
 

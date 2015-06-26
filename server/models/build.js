@@ -80,7 +80,7 @@ BuildSchema.methods.toSimple = function() {
 // STATIC METHODS
 //-----------------------------------------------------------------------------
 BuildSchema.statics.toSimple = function(build) {
-	var obj = build.obj ? build.obj() : build;
+	var obj = build.toObj ? build.toObj() : build;
 	return _.pick(obj, apiFields.simple);
 };
 

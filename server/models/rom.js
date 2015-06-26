@@ -93,7 +93,7 @@ RomSchema.virtual('file')
 // METHODS
 //-----------------------------------------------------------------------------
 RomSchema.methods.toSimple = function() {
-	return _.pick(this.obj(), apiFields.simple);
+	return _.pick(this.toObj(), apiFields.simple);
 };
 
 //-----------------------------------------------------------------------------

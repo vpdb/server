@@ -340,11 +340,11 @@ FileSchema.statics.sanitizeObject = function(object, replacement) {
 	}
 };
 FileSchema.statics.toSimple = function(file) {
-	var obj = file.obj ? file.obj() : file;
+	var obj = file.toObj ? file.toObj() : file;
 	return _.pick(obj, apiFields.simple);
 };
 FileSchema.statics.toDetailed = function(file) {
-	var obj = file.obj ? file.obj() : file;
+	var obj = file.toObj ? file.toObj() : file;
 	return _.pick(obj, apiFields.detailed.concat(apiFields.simple));
 };
 

@@ -355,12 +355,12 @@ UserSchema.statics.createUser = function(userObj, confirmUserEmail, done) {
 	});
 };
 UserSchema.statics.toReduced = function(user) {
-	var obj = user.obj ? user.obj() : user;
+	var obj = user.toObj ? user.toObj() : user;
 	return _.extend(_.pick(obj, apiFields.reduced), { counter: _.pick(obj.counter, ['comments', 'stars'] ) });
 };
 
 UserSchema.statics.toSimple = function(user) {
-	var obj = user.obj ? user.obj() : user;
+	var obj = user.toObj ? user.toObj() : user;
 	user = _.pick(obj, apiFields.reduced.concat(apiFields.simple));
 	if (!_.isEmpty(user.github)) {
 		user.github = UserSchema.statics.normalizeProviderData('github', user.github);
@@ -369,7 +369,7 @@ UserSchema.statics.toSimple = function(user) {
 };
 
 UserSchema.statics.toDetailed = function(user) {
-	user = user.obj ? user.obj() : user;
+	user = user.toObj ? user.toObj() : user;
 	if (!_.isEmpty(user.github)) {
 		user.github = UserSchema.statics.normalizeProviderData('github', user.github);
 	}

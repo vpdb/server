@@ -176,7 +176,7 @@ exports.update = function(req, res) {
 		var removedRoles = _.difference(currentUserRoles, updatedUserRoles);
 		var addedRoles = _.difference(updatedUserRoles, currentUserRoles);
 
-		var diff = LogUser.diff(_.pick(user.obj(), updateableFields), updatedUser);
+		var diff = LogUser.diff(_.pick(user.toObj(), updateableFields), updatedUser);
 
 		// if caller is not root..
 		if (!_.contains(callerRoles, 'root')) {
@@ -225,7 +225,7 @@ exports.update = function(req, res) {
 			// 5. save
 			user.save(assert(function() {
 
-				LogUser.successDiff(req, updatedUser, 'update', _.pick(user.obj(), updateableFields), updatedUser, req.user);
+				LogUser.successDiff(req, updatedUser, 'update', _.pick(user.toObj(), updateableFields), updatedUser, req.user);
 				logger.info('[api|user:update] Success!');
 
 				// 6. update ACLs if roles changed

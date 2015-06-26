@@ -99,11 +99,11 @@ CommentSchema.methods.toDetailed = function() {
 // STATIC METHODS
 //-----------------------------------------------------------------------------
 CommentSchema.statics.toSimple = function(comment) {
-	var obj = comment.obj ? comment.obj() : comment;
+	var obj = comment.toObj ? comment.toObj() : comment;
 	return _.pick(obj, apiFields.simple);
 };
 CommentSchema.statics.toDetailed = function(comment) {
-	var obj = comment.obj ? comment.obj() : comment;
+	var obj = comment.toObj ? comment.toObj() : comment;
 	return _.pick(obj, apiFields.detailed.concat(apiFields.simple));
 };
 

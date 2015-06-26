@@ -19,8 +19,8 @@
 
 "use strict";
 
-module.exports = function(schema, options) {
-	schema.methods.obj = function() {
+module.exports = exports = function(schema, options) {
+	schema.methods.toObj = function() {
 		return this.toObject({ virtuals: true });
 	};
 };

@@ -25,7 +25,6 @@ var kss = require('kss');
 var jade = require('jade');
 var path = require('path');
 var async = require('async');
-var marked = require('marked');
 var html2jade = require('html2jade');
 var highlight = require('highlight.js');
 

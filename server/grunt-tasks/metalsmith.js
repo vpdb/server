@@ -29,19 +29,18 @@ module.exports = function(grunt) {
 		var options = this.options({
 			clean: true,
 			src: './src',
-			dest: './build',
-			markdown: {}
+			dest: './build'
 		});
 
 		// require plugins
 		var collections = require('metalsmith-collections');
-		var markdown = require('metalsmith-markdown');
 		var sections = require('metalsmith-sections');
 		var templates = require('metalsmith-templates');
 		var raml = require('./metalsmith/raml');
 		var links = require('./metalsmith/links');
 		var menu = require('./metalsmith/menu');
 		var apilinks = require('./metalsmith/apilinks');
+		var markdown = require('./metalsmith/markdown');
 
 		// setup metalsmith
 		var metalsmith = new Metalsmith(process.cwd());
@@ -84,8 +83,7 @@ module.exports = function(grunt) {
 				api:     { src: 'api/v1/index.raml',     dest: 'api/v1' },
 				storage: { src: 'storage/v1/index.raml', dest: 'storage/v1' }
 			},
-			template: 'client/app/devsite/api-resource.jade',
-			markdown: options.markdown
+			template: 'client/app/devsite/api-resource.jade'
 		}));
 
 		/* loops through metalsmith.sections and renders a given template on it */
@@ -96,7 +94,7 @@ module.exports = function(grunt) {
 		}));
 
 		/* renders all .md files to html */
-		metalsmith.use(markdown(options.markdown));
+		metalsmith.use(markdown());
 
 		/* puts all .html files into a jade template. */
 		metalsmith.use(templates({ engine: 'jade', directory: 'client/app/devsite' }));

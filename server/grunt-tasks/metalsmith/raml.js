@@ -24,13 +24,14 @@ var url = require('url');
 var jade = require('jade');
 var async = require('async');
 var debug = require('debug')('metalsmith-raml');
-var marked = require('marked');
 var raml2obj = require('raml2obj');
 var relative = require('path').relative;
 var highlight = require('highlight.js');
 var resolve = require('path').resolve;
 var normalize = require('path').normalize;
 var uuid = require('node-uuid');
+
+var md = require('../../modules/md');
 
 module.exports = function(opts) {
 
@@ -44,10 +45,6 @@ module.exports = function(opts) {
 	_.each(opts.files || {}, function(value, key) {
 		configuredFiles[normalize(value.src)] = { dest: value.dest, name: key };
 	});
-
-	if (opts.markdown) {
-		marked.setOptions(opts.markdown);
-	}
 
 	return function(files, metalsmith, done) {
 
@@ -114,8 +111,8 @@ module.exports = function(opts) {
 
 function helpers(opts) {
 	return {
-		markdown: function(md) {
-			return md ? marked(md) : '';
+		markdown: function(str) {
+			return str ? md.render(str) : '';
 		},
 
 		highlight: function(code, isHttp) {
@@ -137,7 +134,7 @@ function helpers(opts) {
 			}
 			// create short description
 			var dot = text.indexOf('.');
-			return marked(text.substring(0, dot > 0 ? dot: text.length));
+			return md.renderInline(text.substring(0, dot > 0 ? dot: text.length));
 		},
 
 		toCurl: function(req) {
@@ -205,7 +202,7 @@ function helpers(opts) {
 					return {
 						classes: 'icon icon-user',
 						title: 'Registered User',
-						description: 'You must be a **registrated user** in order to access this resource.'
+						description: 'You must be a **registered user** in order to access this resource.'
 					};
 				default:
 					return {

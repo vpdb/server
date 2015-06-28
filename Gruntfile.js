@@ -10,7 +10,6 @@ module.exports = function(grunt) {
 	var config = require('./server/modules/settings').current;
 
 	var writeable = require('./server/modules/writeable');
-	var markdown = require('./server/config/marked');
 	var assets = require('./server/modules/assets');
 	var ctrl = require('./server/controllers/ctrl');
 
@@ -134,8 +133,7 @@ module.exports = function(grunt) {
 			options: {
 				clean: false,
 				dest: 'devsite/html',
-				src: 'doc',
-				markdown: markdown
+				src: 'doc'
 			}
 		},
 

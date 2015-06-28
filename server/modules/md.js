@@ -19,31 +19,11 @@
 
 "use strict";
 
-var marked = require('marked');
-var renderer = new marked.Renderer();
+//var renderer = new marked.Renderer();
 var highlight = require('highlight.js');
 var validator = require('validator');
 
-renderer.table = function(header, body) {
-	return '<table class="table table-striped">\n' +
-		'<thead>\n' +
-		header +
-		'</thead>\n' +
-		'<tbody>\n' +
-		body +
-		'</tbody>\n' +
-		'</table>\n';
-};
-
-renderer.list = function(body, ordered) {
-	var type = ordered ? 'ol' : 'ul';
-	var cssClass = ordered ? '' : ' class="list"';
-	return '<' + type + cssClass + '>\n' + body + '</' + type + '>\n';
-};
-
-module.exports = {
-	gfm: true,
-	smartypants: true,
+var md = require('markdown-it')('default', {
 	highlight: function(code, lang) {
 
 		// is it's a http dump with headers and body separated, render both separately.
@@ -67,10 +47,27 @@ module.exports = {
 			return '<b>' + code + '</b>';
 		}
 
+		// if highlight js language known, use it
+		if (lang && highlight.getLanguage(lang)) {
+			try {
+				return highlight.highlight(lang, code).value;
+			} catch (__) {}
+		}
+
 		// otherwise, auto-guess.
-		return code ? highlight.highlightAuto(code).value : '';
-	},
-	renderer: renderer
+		try {
+			return highlight.highlightAuto(code).value;
+		} catch (__) {}
+
+		return '';
+	}
+});
+
+md.renderer.rules.table_open = function () {
+	return '<table class="table table-striped">\n';
+};
+md.renderer.rules.bullet_list_open = function () {
+	return '<ul class="list">\n';
 };
 
 function splitReq(req) {
@@ -94,3 +91,6 @@ function isHttp(code, lang) {
 	}
 	return /^([1-5]\d{2}|[a-z]+)\s+.*\r?\n([^:]+:.*\r?\n)*\r?\n{/gi.test(code);
 }
+
+
+module.exports = md;

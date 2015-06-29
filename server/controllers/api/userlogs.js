@@ -55,7 +55,12 @@ exports.list = function(req, res) {
 	}
 
 	// query
-	LogUser.paginate(api.searchQuery(query), pagination.page, pagination.perPage, function(err, pageCount, logs, count) {
+	LogUser.paginate(api.searchQuery(query), {
+		page: pagination.page,
+		limit: pagination.perPage,
+		sortBy: { logged_at: -1 }
+
+	}, function(err, logs, pageCount, count) {
 
 		/* istanbul ignore if  */
 		if (err) {
@@ -79,7 +84,5 @@ exports.list = function(req, res) {
 			return log.toObj();
 		});
 		api.success(res, logs, 200, api.paginationOpts(pagination, count));
-
-	}, { sortBy: { logged_at: -1 } });
-
+	});
 };

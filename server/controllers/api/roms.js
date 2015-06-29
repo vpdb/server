@@ -109,7 +109,13 @@ exports.list = function(req, res) {
 		if (!game) {
 			return api.fail(res, error('No such game with ID "%s".', req.params.id), 404);
 		}
-		Rom.paginate({ '_game': game._id }, pagination.page, pagination.perPage, function(err, pageCount, roms, count) {
+		Rom.paginate({ '_game': game._id }, {
+			page: pagination.page,
+			limit: pagination.perPage,
+			populate: [ '_file', '_created_by' ],
+			sortBy: { version: -1 }
+
+		}, function(err, roms, pageCount, count) {
 			/* istanbul ignore if  */
 			if (err) {
 				return api.fail(res, error(err, 'Error listing roms').log('list'), 500);
@@ -119,7 +125,7 @@ exports.list = function(req, res) {
 			});
 			api.success(res, roms, 200, api.paginationOpts(pagination, count));
 
-		}, { populate: [ '_file', '_created_by' ], sortBy: { version: -1 } });
+		});
 
 	}, 'Error finding release in order to list comments.'));
 };

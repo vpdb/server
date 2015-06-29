@@ -401,7 +401,13 @@ exports.list = function(req, res) {
 			var sortBy = api.sortParams(req);
 			var q = api.searchQuery(query);
 			logger.info('[api|release:list] query: %s, sort: %j', util.inspect(q), util.inspect(sortBy));
-			Release.paginate(q, pagination.page, pagination.perPage, function(err, pageCount, releases, count) {
+			Release.paginate(q, {
+				page: pagination.page,
+				limit: pagination.perPage,
+				populate: [ '_game', 'versions.files._media.playfield_image', 'authors._user' ],
+				sortBy: sortBy  // '_game.title', '_game.id'
+
+			}, function(err, releases, pageCount, count) {
 
 				/* istanbul ignore if  */
 				if (err) {
@@ -412,7 +418,7 @@ exports.list = function(req, res) {
 				});
 				api.success(res, releases, 200, api.paginationOpts(pagination, count));
 
-			}, { populate: [ '_game', 'versions.files._media.playfield_image', 'authors._user' ], sortBy: sortBy }); // '_game.title', '_game.id'
+			});
 		}
 		// otherwise error has been treated.
 	});

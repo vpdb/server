@@ -178,7 +178,13 @@ exports.list = function(req, res) {
 
 	var q = api.searchQuery(query);
 	logger.info('[api|game:list] query: %s, sort: %j', util.inspect(q), util.inspect(sortBy));
-	Game.paginate(q, pagination.page, pagination.perPage, function(err, pageCount, games, count) {
+	Game.paginate(q, {
+		page: pagination.page,
+		limit: pagination.perPage,
+		populate: [ '_media.backglass', '_media.logo' ],
+		sortBy: sortBy
+
+	}, function(err, games, pageCount, count) {
 
 		/* istanbul ignore if  */
 		if (err) {
@@ -189,7 +195,7 @@ exports.list = function(req, res) {
 		});
 		api.success(res, games, 200, api.paginationOpts(pagination, count));
 
-	}, { populate: [ '_media.backglass', '_media.logo' ], sortBy: sortBy });
+	});
 };
 
 

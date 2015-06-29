@@ -97,7 +97,13 @@ exports.listForRelease = function(req, res) {
 			return api.fail(res, error('No such release with ID "%s"', req.params.id), 404);
 		}
 
-		Comment.paginate({ '_ref.release': release._id }, pagination.page, pagination.perPage, function(err, pageCount, comments, count) {
+		Comment.paginate({ '_ref.release': release._id }, {
+			page: pagination.page,
+			limit: pagination.perPage,
+			populate: [ '_from' ],
+			sortBy: { created_at: -1 }
+
+		}, function(err, comments, pageCount, count) {
 			/* istanbul ignore if  */
 			if (err) {
 				return api.fail(res, error(err, 'Error listing comments').log('list'), 500);
@@ -106,8 +112,7 @@ exports.listForRelease = function(req, res) {
 				return comment.toSimple();
 			});
 			api.success(res, comments, 200, api.paginationOpts(pagination, count));
-
-		}, { populate: [ '_from' ], sortBy: { created_at: -1 } });
+		});
 
 	}, 'Error finding release in order to list comments.'));
 };

@@ -24,6 +24,55 @@ get:
   description: |
     List all releases.
 
+    Releases can be filtered by different
+  queryParameters:
+    q:
+      description: |
+        Search query.
+
+        Searches in release name and game name.
+      required: false
+      type: string
+      example: addams
+    tag:
+      description: Filters result by tag.
+      required: false
+      type: string
+      example: hd
+    starred:
+      description: |
+        Only lists starred releases.
+
+        You can just provide `starred` without any value. However, if you provide
+        `false`, then only non-starred releases will be returned.
+
+        Also note that you need to be logged if you provide this parameter,
+        otherwise `401 Unauthorized` will be returned.
+      required: false
+      type: boolean
+      example: true
+    flavor:
+      description: |
+        Sets a preference which flavor of the thumbnail is returned with the
+        release.
+
+        Since a release can contain multiple flavors, usually only one shot is
+        displayed when listing releases. Flavors are separated with a comma and
+        values with a colon.
+      required: false
+      type: string
+      example: orientation:fs,lighting:day
+    thumb:
+      description: |
+        Sets a preference which format of the thumbnail is returned with the
+        release.
+
+        Possible values: `medium`, `medium-2x`, `medium-landscape`,
+        `medium-landscape-2x`, `square`, `square-2x`.
+      required: false
+      type: string
+      example: square
+
 /{release_id}:
   uriParameters:
     release_id:

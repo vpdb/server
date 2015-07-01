@@ -82,12 +82,14 @@ module.exports = function(opts) {
 					_.each(obj.resources, function(resource) {
 
 						var destFolder = srcFiles[file].dest.replace(/\\/g, '/');
-						var dest = destFolder + '/' + resource.uniqueId.substr(1) + '.html';
+						var dest = destFolder + '/' + resource.uniqueId + '.html';
 						var html = jade.renderFile(opts.template, {
 							resource: resource,
 							hlp: helpers(_.extend(opts, { api: obj })),
 							print: print
 						});
+
+						debug("Creating %s...", dest);
 
 						files[dest] = { contents: new Buffer(html) };
 					});

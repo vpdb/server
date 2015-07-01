@@ -28,6 +28,7 @@ var Release = require('mongoose').model('Release');
 var Version = require('mongoose').model('ReleaseVersion');
 var VersionFile = require('mongoose').model('ReleaseVersionFile');
 var Game = require('mongoose').model('Game');
+var Star = require('mongoose').model('Star');
 var api = require('./api');
 
 var error = require('../../modules/error')('api', 'release');
@@ -324,6 +325,7 @@ exports.list = function(req, res) {
 		query.push({ _tags: { $in: req.query.tag.split(',') }});
 	}
 
+	// now to the async stuff:
 	async.waterfall([
 
 		// text search
@@ -343,10 +345,42 @@ exports.list = function(req, res) {
 				Game.find({ 'counter.releases': { $gt: 0 }, $or: [ { title: titleRegex }, { id: idQuery } ] }, '_id', function(err, games) {
 					/* istanbul ignore if  */
 					if (err) {
-						return api.fail(res, error(err, 'Error searching games with query "%s"', idQuery).log('list'), 500);
+						api.fail(res, error(err, 'Error searching games with query "%s"', idQuery).log('list'), 500);
+						return next(true);
 					}
 					var gameIds = _.pluck(games, '_id');
 					query.push({ $or: [ { name: titleRegex }, { '_game': { $in: gameIds }} ] });
+					next(null, query);
+				});
+
+			} else {
+				next(null, query);
+			}
+		},
+
+		// starred
+		function(query, next) {
+
+			if (!_.isUndefined(req.query.starred)) {
+
+				if (!req.user) {
+					api.fail(res, error('Must be logged when listing starred releases.'), 401);
+					return next(true);
+				}
+
+				Star.find({ type: 'release', _from: req.user._id }, '_ref.release', function(err, stars) {
+					/* istanbul ignore if  */
+					if (err) {
+						api.fail(res, error(err, 'Error searching starred releases for user <%s>.', req.user.email).log('list'), 500);
+						return next(true);
+					}
+					var releaseIds = _.pluck(_.pluck(stars, '_ref'), 'release');
+					if (req.query.starred === "false") {
+						query.push({ _id: { $nin: releaseIds } });
+					} else {
+						query.push({ _id: { $in: releaseIds } });
+					}
+
 					next(null, query);
 				});
 
@@ -357,22 +391,24 @@ exports.list = function(req, res) {
 
 	], function(err, query) {
 
-		var sortBy = api.sortParams(req);
-		var q = api.searchQuery(query);
-		logger.info('[api|release:list] query: %s, sort: %j', util.inspect(q), util.inspect(sortBy));
-		Release.paginate(q, pagination.page, pagination.perPage, function(err, pageCount, releases, count) {
+		if (!err) {
+			var sortBy = api.sortParams(req);
+			var q = api.searchQuery(query);
+			logger.info('[api|release:list] query: %s, sort: %j', util.inspect(q), util.inspect(sortBy));
+			Release.paginate(q, pagination.page, pagination.perPage, function(err, pageCount, releases, count) {
 
-			/* istanbul ignore if  */
-			if (err) {
-				return api.fail(res, error(err, 'Error listing releases').log('list'), 500);
-			}
-			releases = _.map(releases, function(release) {
-				return release.toSimple(transformOpts);
-			});
-			api.success(res, releases, 200, api.paginationOpts(pagination, count));
+				/* istanbul ignore if  */
+				if (err) {
+					return api.fail(res, error(err, 'Error listing releases').log('list'), 500);
+				}
+				releases = _.map(releases, function(release) {
+					return release.toSimple(transformOpts);
+				});
+				api.success(res, releases, 200, api.paginationOpts(pagination, count));
 
-		}, { populate: [ '_game', 'versions.files._media.playfield_image', 'authors._user' ], sortBy: sortBy }); // '_game.title', '_game.id'
-
+			}, { populate: [ '_game', 'versions.files._media.playfield_image', 'authors._user' ], sortBy: sortBy }); // '_game.title', '_game.id'
+		}
+		// otherwise error has been treated.
 	});
 
 };

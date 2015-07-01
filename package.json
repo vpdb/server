@@ -46,7 +46,7 @@
 		"lodash": "3.9.3",
 		"md5": "1.0.0",
 		"mongoose": "4.0.1",
-		"mongoose-paginate": "3.1.6",
+		"mongoose-paginate": "4.0.0",
 		"mongoose-unique-validator": "0.4.1",
 		"morgan": "1.6.0",
 		"newrelic": "1.20.2",

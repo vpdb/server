@@ -328,24 +328,20 @@ VersionSchema.path('files').validate(function(files, callback) {
 
 
 //-----------------------------------------------------------------------------
-// METHODS
+// STATIC METHODS
 //-----------------------------------------------------------------------------
-ReleaseSchema.methods.toDetailed = function() {
-	return this.toObj();
-};
-
-ReleaseSchema.methods.toSimple = function(opts) {
+ReleaseSchema.statics.toSimple = function(release, opts) {
 	opts = opts || {};
 	opts.flavor = opts.flavor || {};
 	opts.thumb = opts.thumb || 'original';
 
 	var i, j, file, thumb;
-	var rls = _.pick(this.toObj(), [ 'id', 'name', 'created_at', 'authors', 'counter' ]);
+	var rls = _.pick(release.toObj ? release.toObj() : release, [ 'id', 'name', 'created_at', 'authors', 'counter' ]);
 
-	rls.game = _.pick(this._game, ['id', 'title']);
+	rls.game = _.pick(release._game, ['id', 'title']);
 
 	// sort versions by release date
-	var versions = this.versions.sort(function(a, b) {
+	var versions = release.versions.sort(function(a, b) {
 		var dateA = new Date(a.released_at).getTime();
 		var dateB = new Date(b.released_at).getTime();
 		if (dateA < dateB) { return 1; }
@@ -377,7 +373,7 @@ ReleaseSchema.methods.toSimple = function(opts) {
 			if (fileFlavor[flavorName] === flavorValue) {
 				weight += Math.pow(10, (flavorParams.length - j + 1) * 3);
 
-			// defaults match gets also weight, but less
+				// defaults match gets also weight, but less
 			} else if (defaults[flavorName] === flavorValue) {
 				weight += Math.pow(10, (flavorParams.length - j + 1));
 			}
@@ -422,6 +418,18 @@ ReleaseSchema.methods.toSimple = function(opts) {
 	};
 
 	return rls;
+};
+
+
+//-----------------------------------------------------------------------------
+// METHODS
+//-----------------------------------------------------------------------------
+ReleaseSchema.methods.toDetailed = function() {
+	return this.toObj();
+};
+
+ReleaseSchema.methods.toSimple = function(opts) {
+	return ReleaseSchema.statics.toSimple(this, opts);
 };
 
 

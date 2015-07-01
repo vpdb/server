@@ -319,41 +319,62 @@ exports.list = function(req, res) {
 		transformOpts.thumb = req.query.thumb;
 	}
 
-	// text search
-	if (req.query.q) {
-
-		if (req.query.q.trim().length < 2) {
-			return api.fail(res, error('Query must contain at least two characters.'), 400);
-		}
-
-		// sanitize and build regex
-		var titleQuery = req.query.q.trim().replace(/[^a-z0-9-]+/gi, '');
-		var titleRegex = new RegExp(titleQuery.split('').join('.*?'), 'i');
-		var idQuery = req.query.q.trim().replace(/[^a-z0-9-]+/gi, ''); // TODO tune
-
-		query.push({ $or: [ { name: titleRegex }, { 'game.title': titleRegex}, { id: idQuery } ] });
-	}
-
 	// filter by tag
 	if (req.query.tag) {
 		query.push({ _tags: { $in: req.query.tag.split(',') }});
 	}
 
-	var sortBy = api.sortParams(req);
-	var q = api.searchQuery(query);
-	logger.info('[api|release:list] query: %s, sort: %j', util.inspect(q), util.inspect(sortBy));
-	Release.paginate(q, pagination.page, pagination.perPage, function(err, pageCount, releases, count) {
+	async.waterfall([
 
-		/* istanbul ignore if  */
-		if (err) {
-			return api.fail(res, error(err, 'Error listing releases').log('list'), 500);
+		// text search
+		function(next) {
+
+			if (req.query.q) {
+
+				if (req.query.q.trim().length < 2) {
+					return api.fail(res, error('Query must contain at least two characters.'), 400);
+				}
+
+				// sanitize and build regex
+				var titleQuery = req.query.q.trim().replace(/[^a-z0-9-]+/gi, '');
+				var titleRegex = new RegExp(titleQuery.split('').join('.*?'), 'i');
+				var idQuery = req.query.q.trim().replace(/[^a-z0-9-]+/gi, ''); // TODO tune
+
+				Game.find({ 'counter.releases': { $gt: 0 }, $or: [ { title: titleRegex }, { id: idQuery } ] }, '_id', function(err, games) {
+					/* istanbul ignore if  */
+					if (err) {
+						return api.fail(res, error(err, 'Error searching games with query "%s"', idQuery).log('list'), 500);
+					}
+					var gameIds = _.pluck(games, '_id');
+					query.push({ $or: [ { name: titleRegex }, { '_game': { $in: gameIds }} ] });
+					next(null, query);
+				});
+
+			} else {
+				next(null, query);
+			}
 		}
-		releases = _.map(releases, function(release) {
-			return release.toSimple(transformOpts);
-		});
-		api.success(res, releases, 200, api.paginationOpts(pagination, count));
 
-	}, { populate: [ '_game', 'versions.files._media.playfield_image', 'authors._user' ], sortBy: sortBy }); // '_game.title', '_game.id'
+	], function(err, query) {
+
+		var sortBy = api.sortParams(req);
+		var q = api.searchQuery(query);
+		logger.info('[api|release:list] query: %s, sort: %j', util.inspect(q), util.inspect(sortBy));
+		Release.paginate(q, pagination.page, pagination.perPage, function(err, pageCount, releases, count) {
+
+			/* istanbul ignore if  */
+			if (err) {
+				return api.fail(res, error(err, 'Error listing releases').log('list'), 500);
+			}
+			releases = _.map(releases, function(release) {
+				return release.toSimple(transformOpts);
+			});
+			api.success(res, releases, 200, api.paginationOpts(pagination, count));
+
+		}, { populate: [ '_game', 'versions.files._media.playfield_image', 'authors._user' ], sortBy: sortBy }); // '_game.title', '_game.id'
+
+	});
+
 };
 
 /**

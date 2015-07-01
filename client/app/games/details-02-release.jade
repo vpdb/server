@@ -23,7 +23,8 @@ include ../template/_mixins
 				rating-avg="release.rating.average",
 				rating-votes="release.rating.votes",
 				rating-user="releaseRating"
-				rating-action="rateRelease($rating)")
+				rating-action="rateRelease($rating)",
+				rating-readonly="!auth.isAuthenticated")
 
 		//-- STATS
 		//---------------------------------------------------------------------

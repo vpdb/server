@@ -51,6 +51,11 @@ angular.module('vpdb.rating', [])
 			controller: function($scope, $element, $attrs) {
 				var ratingAvg = $parse($attrs.ratingAvg);
 				var ratingUser = $parse($attrs.ratingUser);
+				var readOnly = $parse($attrs.ratingReadonly)($scope);
+
+				if (readOnly) {
+					$element.addClass('readonly');
+				}
 
 				// init: read average rating
 				$scope.$watch(ratingAvg, function(rating) {
@@ -74,6 +79,9 @@ angular.module('vpdb.rating', [])
 				 * => Display the user's rating
 				 */
 				$scope.editStart = function() {
+					if (readOnly) {
+						return;
+					}
 					var rating = ratingUser($scope);
 					$scope.boxHovering = true;
 					$scope.rating = rating;
@@ -86,6 +94,9 @@ angular.module('vpdb.rating', [])
 				 * => Display average rating
 				 */
 				$scope.editEnd = function() {
+					if (readOnly) {
+						return;
+					}
 					var rating = ratingAvg($scope);
 					$scope.boxHovering = false;
 					$scope.rating = rating;
@@ -100,6 +111,9 @@ angular.module('vpdb.rating', [])
 				 * @param {int} value Star value (1-10)
 				 */
 				$scope.rateStart = function(value) {
+					if (readOnly) {
+						return;
+					}
 					if (!$scope.readonly) {
 						$scope.starHovering = true;
 						$scope.value = value;
@@ -113,6 +127,9 @@ angular.module('vpdb.rating', [])
 				 * => Display user rating
 				 */
 				$scope.rateEnd = function() {
+					if (readOnly) {
+						return;
+					}
 					var rating = ratingUser($scope);
 					$scope.starHovering = false;
 					$scope.rating = rating;
@@ -121,6 +138,9 @@ angular.module('vpdb.rating', [])
 
 				// a star has been clicked
 				$scope.rate = function() {
+					if (readOnly) {
+						return;
+					}
 					$scope.$rating = $scope.value;
 					$parse($attrs.ratingAction)($scope)
 				};

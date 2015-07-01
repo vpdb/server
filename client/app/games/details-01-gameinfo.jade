@@ -10,8 +10,8 @@ img.img--logo(ng-src="{{ game.media.logo.variations.medium.url }}")
 	rating-avg="game.rating.average",
 	rating-votes="game.rating.votes",
 	rating-user="gameRating"
-	rating-action="rateGame($rating)")
-
+	rating-action="rateGame($rating)"
+	rating-readonly="!auth.isAuthenticated")
 
 
 //-- STATS

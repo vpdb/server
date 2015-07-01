@@ -36,6 +36,7 @@ var fields = {
 		release: { type: Schema.ObjectId, ref: 'Release', index: true, sparse: true },
 		user:    { type: Schema.ObjectId, ref: 'User', index: true, sparse: true }
 	},
+	type:        { type: String, 'enum': [ 'game', 'release', 'user' ], required: true, index: true },
 	created_at:  { type: Date, required: true }
 };
 

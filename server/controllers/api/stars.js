@@ -89,10 +89,10 @@ function view(req, res, find, titleAttr) {
  *
  * @param {Request} req
  * @param {Response} res
- * @param {string} ref Reference name
+ * @param {string} type Reference name
  * @param {function} find Function that returns entity and star.
  */
-function star(req, res, ref, find) {
+function star(req, res, type, find) {
 
 	var assert = api.assert(error, 'create', req.user.email, res);
 	find(req, res, assert, function(entity, duplicateStar) {
@@ -102,9 +102,10 @@ function star(req, res, ref, find) {
 		var obj = {
 			_from: req.user,
 			_ref: {},
+			type: type,
 			created_at: new Date()
 		};
-		obj._ref[ref] = entity;
+		obj._ref[type] = entity;
 		var star = new Star(obj);
 
 		star.save(assert(function() {
@@ -148,20 +149,20 @@ function unstar(req, res, find) {
  * If entity is not found, a 404 is returned to the client and the callback isn't called.
  *
  * @param {Schema} Model model that can be starred
- * @param {string} ref Reference name
+ * @param {string} type Reference name
  * @returns {Function} function that takes req, res, assert and a callback which is launched with entity and star as parameter
  */
-function find(Model, ref) {
+function find(Model, type) {
 	return function(req, res, assert, callback) {
 		Model.findOne({ id: req.params.id }, assert(function(entity) {
 			if (!entity) {
-				return api.fail(res, error('No such %s with ID "%s"', ref, req.params.id), 404);
+				return api.fail(res, error('No such %s with ID "%s"', type, req.params.id), 404);
 			}
-			var q = { _from: req.user };
-			q['_ref.' + ref] = entity;
+			var q = { _from: req.user, type: type };
+			q['_ref.' + type] = entity;
 			Star.findOne(q, assert(function(star) {
 				callback(entity, star);
 			}, 'Error searching for current star.'));
-		}, 'Error finding ' + ref + ' in order to get star from <%s>.'));
+		}, 'Error finding ' + type + ' in order to get star from <%s>.'));
 	};
 }

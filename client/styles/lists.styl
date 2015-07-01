@@ -78,27 +78,30 @@ ul.list--noindent > li
 //
 // Styleguide 12.3
 .list--sort-options
-	padding-left 20px
+	padding-left 30px
 	> li
+		position relative
 		list-style-type none
-		transition all $animation-shorter
 		cursor pointer
 		&.selected
-			margin-left -20px
 			&:before
-				display inline-block
-				width 20px
-				font-family FontAwesome
-				font-size 20px // icon
-				font-style normal
-				font-weight normal
-				line-height 1
-				-webkit-font-smoothing antialiased
-				-moz-osx-font-smoothing grayscale
+				display block
+				position absolute
+				content ''
+				width 10px
+				height 10px
+				left -25px
+				border-style solid
+				border-width 2px
+				border-top none
+				border-right none
+				transition all $animation-short
 			&.desc:before
-				content "\f107" /* Caret up */
+				top 6px
+				transform rotate(-45deg)
 			&.asc:before
-				content "\f106" /* Caret down */
+				top 10px
+				transform rotate(135deg)
 
 
 // Checkbox List

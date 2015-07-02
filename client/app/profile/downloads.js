@@ -28,7 +28,7 @@ angular.module('vpdb.profile.downloads', [])
 			$scope.updatedPreferences.tablefile_name = $scope.updatedPreferences.tablefile_name || '{game_title} ({game_manufacturer} {game_year})';
 			$scope.updatedPreferences.flavor_tags = $scope.updatedPreferences.flavor_tags || {
 				orientation: { fs: 'FS', ws: 'DT', any: '' },
-				lightning: { day: '', night: 'Nightmod', any: '' }
+				lighting: { day: '', night: 'Nightmod', any: '' }
 			};
 		};
 		init();
@@ -48,12 +48,12 @@ angular.module('vpdb.profile.downloads', [])
 				return releaseData[m3] ? releaseData[m3] : m1;
 			}) + '.vpx';
 			$scope.exampleName = $scope.exampleName.replace('{release_flavor_orientation}', $scope.updatedPreferences.flavor_tags.orientation.fs);
-			$scope.exampleName = $scope.exampleName.replace('{release_flavor_lightning}', $scope.updatedPreferences.flavor_tags.lightning.day);
+			$scope.exampleName = $scope.exampleName.replace('{release_flavor_lighting}', $scope.updatedPreferences.flavor_tags.lighting.day);
 		};
 
 		$scope.$watch('updatedPreferences.tablefile_name', updateExample);
 		$scope.$watch('updatedPreferences.flavor_tags.orientation.fs', updateExample, true);
-		$scope.$watch('updatedPreferences.flavor_tags.lightning.day', updateExample, true);
+		$scope.$watch('updatedPreferences.flavor_tags.lighting.day', updateExample, true);
 
 		$scope.updateUserPreferences = function() {
 			ProfileResource.patch({ preferences: $scope.updatedPreferences }, function(user) {

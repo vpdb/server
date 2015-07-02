@@ -22,9 +22,9 @@ ul.list--files
 		.alert.alert-danger(ng-show="errors.versions[0].files[meta.files.indexOf(file)].flavor.orientation")
 			+icon('warning').shift-up.space-right
 			| {{ errors.versions[0].files[meta.files.indexOf(file)].flavor.orientation }}
-		.alert.alert-danger(ng-show="errors.versions[0].files[meta.files.indexOf(file)].flavor.lightning")
+		.alert.alert-danger(ng-show="errors.versions[0].files[meta.files.indexOf(file)].flavor.lighting")
 			+icon('warning').shift-up.space-right
-			| {{ errors.versions[0].files[meta.files.indexOf(file)].flavor.lightning }}
+			| {{ errors.versions[0].files[meta.files.indexOf(file)].flavor.lighting }}
 .text-center(ng-show="(meta.files | fileext:['vpt','vpx']).length == 0")
 	+icon('warning').shift-up.space-right
 	i Upload <code>.vpt</code>/<code>.vpx</code> files under {{ step.files }}. before defining flavors.

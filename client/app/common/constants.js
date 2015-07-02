@@ -12,9 +12,9 @@ angular.module('vpdb.common', [])
 				any: { name: 'Universal', other: 'Any Orientation', value: 'any' }
 			}
 		},
-		lightning: {
-			header: 'Lightning',
-			name: 'lightning',
+		lighting: {
+			header: 'Lighting',
+			name: 'lighting',
 			values: {
 				night: { name: 'Night', other: 'Dark Playfield', value: 'night' },
 				day: { name: 'Day', other: 'Illuminated Playfield', value: 'day' },

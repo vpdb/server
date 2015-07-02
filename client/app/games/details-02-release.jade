@@ -114,7 +114,7 @@ include ../template/_mixins
 				tr
 					th
 					th Orientation
-					th Lightning
+					th Lighting
 					th Compatibility
 					th Version
 					th Size
@@ -126,8 +126,8 @@ include ../template/_mixins
 						| {{ flavors.orientation.values[file.flavor.orientation].name }} <br>
 						i {{ flavors.orientation.values[file.flavor.orientation].other }}
 					td
-						| {{ flavors.lightning.values[file.flavor.lightning].name }} <br>
-						i {{ flavors.lightning.values[file.flavor.lightning].other }}
+						| {{ flavors.lighting.values[file.flavor.lighting].name }} <br>
+						i {{ flavors.lighting.values[file.flavor.lighting].other }}
 					td
 						span(ng-repeat="compat in file.compatibility") {{ compat.label }}
 					td {{ getVersion(file).version }}

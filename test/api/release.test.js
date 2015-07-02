@@ -61,7 +61,7 @@ describe('The VPDB `release` API', function() {
 				.end(function(err, res) {
 					hlp.expectValidationError(err, res, 'versions.0.files.0._file', 'must provide a file reference');
 					hlp.expectNoValidationError(err, res, 'versions.0.files.0.flavor.orientation');
-					hlp.expectNoValidationError(err, res, 'versions.0.files.0.flavor.lightning');
+					hlp.expectNoValidationError(err, res, 'versions.0.files.0.flavor.lighting');
 					hlp.expectNoValidationError(err, res, 'versions.0.files.0._media.playfield_image');
 					done();
 				});
@@ -85,10 +85,10 @@ describe('The VPDB `release` API', function() {
 						hlp.doomFile('member', vptfile.id);
 						hlp.expectValidationError(err, res, 'versions', 'reference a file multiple times');
 						hlp.expectValidationError(err, res, 'versions.0.files.0.flavor.orientation', 'must be provided');
-						hlp.expectValidationError(err, res, 'versions.0.files.0.flavor.lightning', 'must be provided');
+						hlp.expectValidationError(err, res, 'versions.0.files.0.flavor.lighting', 'must be provided');
 						hlp.expectValidationError(err, res, 'versions.0.files.0._compatibility', 'must be provided');
 						hlp.expectValidationError(err, res, 'versions.0.files.1.flavor.orientation', 'must be provided');
-						hlp.expectValidationError(err, res, 'versions.0.files.1.flavor.lightning', 'must be provided');
+						hlp.expectValidationError(err, res, 'versions.0.files.1.flavor.lighting', 'must be provided');
 						hlp.expectValidationError(err, res, 'versions.0.files.2.flavor.orientation', 'invalid orientation');
 						hlp.expectValidationError(err, res, 'versions.0.files.3._compatibility', 'must be provided');
 						hlp.expectValidationError(err, res, 'versions.0.files.4._compatibility.0', 'no such build');
@@ -144,7 +144,7 @@ describe('The VPDB `release` API', function() {
 								hlp.doomFile('member', vptfile.id);
 								hlp.expectValidationError(err, res, 'versions.1.files', 'at least one table file');
 								hlp.expectNoValidationError(err, res, 'versions.1.files.0.flavor.orientation', 'must be provided');
-								hlp.expectNoValidationError(err, res, 'versions.1.files.0.flavor.lightning', 'must be provided');
+								hlp.expectNoValidationError(err, res, 'versions.1.files.0.flavor.lighting', 'must be provided');
 								hlp.expectNoValidationError(err, res, 'versions.1.files.0._media.playfield_image', 'must be provided');
 								done();
 							});
@@ -198,7 +198,7 @@ describe('The VPDB `release` API', function() {
 											_file: vptfile.id,
 											_media: { playfield_image: playfield.id },
 											_compatibility: [ '9.9.0' ],
-											flavor: { orientation: 'fs', lightning: 'night' } }
+											flavor: { orientation: 'fs', lighting: 'night' } }
 										],
 										version: '1.0.0'
 									}
@@ -237,7 +237,7 @@ describe('The VPDB `release` API', function() {
 													playfield_video: playfieldVideo.id
 												},
 												_compatibility: [ '9.9.0' ],
-												flavor: { orientation: 'fs', lightning: 'night' }
+												flavor: { orientation: 'fs', lighting: 'night' }
 
 											}, {
 												_file: vptfiles[1].id,
@@ -245,7 +245,7 @@ describe('The VPDB `release` API', function() {
 													playfield_image: playfieldImages[1].id
 												},
 												_compatibility: [ '9.9.0' ],
-												flavor: { orientation: 'fs', lightning: 'day' }
+												flavor: { orientation: 'fs', lighting: 'day' }
 											} ],
 											version: '1.0.0'
 										}
@@ -317,10 +317,10 @@ describe('The VPDB `release` API', function() {
 							]
 						}).end(function(err, res) {
 							hlp.expectValidationError(err, res, 'files.0.flavor.orientation', 'must be provided');
-							hlp.expectValidationError(err, res, 'files.0.flavor.lightning', 'must be provided');
+							hlp.expectValidationError(err, res, 'files.0.flavor.lighting', 'must be provided');
 							hlp.expectValidationError(err, res, 'files.0._compatibility', 'must be provided');
 							hlp.expectValidationError(err, res, 'files.1.flavor.orientation', 'must be provided');
-							hlp.expectValidationError(err, res, 'files.1.flavor.lightning', 'must be provided');
+							hlp.expectValidationError(err, res, 'files.1.flavor.lighting', 'must be provided');
 							hlp.expectValidationError(err, res, 'files.2.flavor.orientation', 'invalid orientation');
 							hlp.expectValidationError(err, res, 'files.3._compatibility', 'must be provided');
 							hlp.expectValidationError(err, res, 'files.4._compatibility.0', 'no such build');
@@ -345,7 +345,7 @@ describe('The VPDB `release` API', function() {
 							_file: '12345',
 							_media: { playfield_image: '67890' },
 							_compatibility: [ '9.9.0' ],
-							flavor: { orientation: 'fs', lightning: 'night' }
+							flavor: { orientation: 'fs', lighting: 'night' }
 						} ]
 					}).end(function(err, res) {
 						hlp.expectValidationError(err, res, 'version', 'version already exists');
@@ -370,7 +370,7 @@ describe('The VPDB `release` API', function() {
 									_file: vptfile.id,
 									_media: { playfield_image: playfield.id },
 									_compatibility: [ '9.9.0' ],
-									flavor: { orientation: 'fs', lightning: 'night' }
+									flavor: { orientation: 'fs', lighting: 'night' }
 								} ]
 							}).end(function(err, res) {
 								hlp.expectStatus(err, res, 201);
@@ -451,7 +451,7 @@ describe('The VPDB `release` API', function() {
 									_file: vptfile.id,
 									_media: { playfield_image: playfield.id },
 									_compatibility: ['9.9.0'],
-									flavor: { orientation: 'fs', lightning: 'day' }
+									flavor: { orientation: 'fs', lighting: 'day' }
 								}]
 							}).end(hlp.status(201, done));
 					});
@@ -476,7 +476,7 @@ describe('The VPDB `release` API', function() {
 						}).end(function(err, res) {
 							hlp.expectValidationError(err, res, 'files.0._compatibility', 'must be provided');
 							hlp.expectValidationError(err, res, 'files.0._media.playfield_image', 'must be provided');
-							hlp.expectValidationError(err, res, 'files.0.flavor.lightning', 'must be provided');
+							hlp.expectValidationError(err, res, 'files.0.flavor.lighting', 'must be provided');
 							hlp.expectValidationError(err, res, 'files.0.flavor.orientation', 'must be provided');
 							done();
 						});
@@ -635,7 +635,7 @@ describe('The VPDB `release` API', function() {
 				});
 		});
 
-		it.only('should return the nearest thumb match of fullscreen/night', function(done) {
+		it('should return the nearest thumb match of fullscreen/night', function(done) {
 			request
 				.get('/api/v1/releases?thumb_full_data&thumb_flavor=orientation:ws')
 				.end(function(err, res) {

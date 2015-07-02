@@ -42,7 +42,7 @@ exports.values = {
 			filenameTag: ''
 		}
 	},
-	lightning: {
+	lighting: {
 		day: {
 			name: 'Day',
 			hint: 'Illuminated Playfield',
@@ -58,7 +58,7 @@ exports.values = {
 		any: {
 			name: 'Universal',
 			hint: 'Customizable',
-			description: 'Tables built with VP10+ where lightning can be adjusted with the slider.',
+			description: 'Tables built with VP10+ where lighting can be adjusted with the slider.',
 			filenameTag: ''
 		}
 	}
@@ -80,7 +80,7 @@ exports.defaultFileTags = function() {
 
 exports.defaultThumb = function(opts) {
 	var defaultThumb = {};
-	defaultThumb.lightning = opts.lightning || 'day';
+	defaultThumb.lighting = opts.lighting || 'day';
 	defaultThumb.orientation = opts.orientation || 'fs';
 	return defaultThumb;
 };

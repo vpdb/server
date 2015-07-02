@@ -23,7 +23,7 @@ exports.createRelease = function(user, request, done) {
 									_file: vptfile.id,
 									_media: { playfield_image: playfield.id },
 									_compatibility: [ '9.9.0' ],
-									flavor: { orientation: 'fs', lightning: 'night' } }
+									flavor: { orientation: 'fs', lighting: 'night' } }
 								],
 								version: '1.0.0'
 							}
@@ -60,13 +60,13 @@ exports.createRelease2 = function(user, request, done) {
 										_media: {playfield_image: playfieldFs.id},
 										_compatibility: ['9.9.0'],
 										_tags: ['wip', 'dof'],
-										flavor: {orientation: 'fs', lightning: 'night'}
+										flavor: {orientation: 'fs', lighting: 'night'}
 									}, {
 										_file: vptfiles[1].id,
 										_media: {playfield_image: playfieldWs.id},
 										_compatibility: ['9.9.0'],
 										_tags: ['dof'],
-										flavor: {orientation: 'ws', lightning: 'day'}
+										flavor: {orientation: 'ws', lighting: 'day'}
 									}],
 									version: '1.0'
 								}
@@ -102,17 +102,17 @@ exports.createRelease3 = function(user, request, done) {
 									_file: vptfiles[0].id,
 									_media: { playfield_image: playfields[0].id },
 									_compatibility: [ '10.x' ],
-									flavor: { orientation: 'fs', lightning: 'any' }
+									flavor: { orientation: 'fs', lighting: 'any' }
 								}, {
 									_file: vptfiles[1].id,
 									_media: { playfield_image: playfields[1].id },
 									_compatibility: [ '10.x' ],
-									flavor: { orientation: 'any', lightning: 'night' }
+									flavor: { orientation: 'any', lighting: 'night' }
 								}, {
 									_file: vptfiles[2].id,
 									_media: { playfield_image: playfields[2].id },
 									_compatibility: [ '10.x' ],
-									flavor: { orientation: 'any', lightning: 'any' }
+									flavor: { orientation: 'any', lighting: 'any' }
 								} ],
 								version: '2.0'
 							}

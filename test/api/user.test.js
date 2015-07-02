@@ -443,20 +443,20 @@ describe('The VPDB `user` API', function() {
 				.as('member')
 				.send({ preferences: { flavor_tags: {} } })
 				.end(function (err, res) {
-					hlp.expectValidationError(err, res, 'preferences.flavor_tags.lightning', 'must be provided');
+					hlp.expectValidationError(err, res, 'preferences.flavor_tags.lighting', 'must be provided');
 					hlp.expectValidationError(err, res, 'preferences.flavor_tags.orientation', 'must be provided');
 					done();
 				});
 		});
 
-		it('should fail when providing empty table file name lightning flavor tags', function (done) {
+		it('should fail when providing empty table file name lighting flavor tags', function (done) {
 			request
 				.patch('/api/v1/user')
 				.as('member')
-				.send({ preferences: { flavor_tags: { lightning: {} } } })
+				.send({ preferences: { flavor_tags: { lighting: {} } } })
 				.end(function (err, res) {
-					hlp.expectValidationError(err, res, 'preferences.flavor_tags.lightning.day', 'must be provided');
-					hlp.expectValidationError(err, res, 'preferences.flavor_tags.lightning.night', 'must be provided');
+					hlp.expectValidationError(err, res, 'preferences.flavor_tags.lighting.day', 'must be provided');
+					hlp.expectValidationError(err, res, 'preferences.flavor_tags.lighting.night', 'must be provided');
 					done();
 				});
 		});
@@ -477,7 +477,7 @@ describe('The VPDB `user` API', function() {
 			request
 				.patch('/api/v1/user')
 				.as('chprofile')
-				.send({ preferences: { flavor_tags: { orientation: { fs: '', ws: 'dt', any: '' }, lightning: { day : '', night: 'nm', any: '' } } } })
+				.send({ preferences: { flavor_tags: { orientation: { fs: '', ws: 'dt', any: '' }, lighting: { day : '', night: 'nm', any: '' } } } })
 				.end(function (err, res) {
 					hlp.expectStatus(err, res, 200);
 					expect(res.body.preferences.flavor_tags.orientation.fs).to.be('');
@@ -489,13 +489,13 @@ describe('The VPDB `user` API', function() {
 			request
 				.patch('/api/v1/user')
 				.as('chprofile')
-				.send({ preferences: { flavor_tags: { orientation: { fs: 'fs', ws: 'dt', any: 'universal' }, lightning: { day : 'day', night: 'nm', any: 'universal' } } } })
+				.send({ preferences: { flavor_tags: { orientation: { fs: 'fs', ws: 'dt', any: 'universal' }, lighting: { day : 'day', night: 'nm', any: 'universal' } } } })
 				.end(function (err, res) {
 					hlp.expectStatus(err, res, 200);
 					expect(res.body.preferences.flavor_tags.orientation.fs).to.be('fs');
 					expect(res.body.preferences.flavor_tags.orientation.ws).to.be('dt');
-					expect(res.body.preferences.flavor_tags.lightning.day).to.be('day');
-					expect(res.body.preferences.flavor_tags.lightning.night).to.be('nm');
+					expect(res.body.preferences.flavor_tags.lighting.day).to.be('day');
+					expect(res.body.preferences.flavor_tags.lighting.night).to.be('nm');
 					done();
 				});
 		});

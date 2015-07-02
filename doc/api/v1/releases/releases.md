@@ -34,7 +34,7 @@ are currently two flavor types:
 
   - *Orientation*: Defines the perspective in which the table is rendered. For
     now, possible values are landscape or portrait.
-  - *Lightning*: Defines whether the playfield is illuminated or dark
+  - *Lighting*: Defines whether the playfield is illuminated or dark
 
 Flavors play a significant role when browsing the site and downloading tables:
 A user can globally set its preference and will then get only the selected 

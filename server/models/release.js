@@ -50,7 +50,7 @@ var fileFields = {
 	_file:  { type: Schema.ObjectId, required: 'You must provide a file reference.', ref: 'File' },
 	flavor: {
 		orientation: { type: String, 'enum': { values: flavor.keys('orientation'), message: 'Invalid orientation. Valid orientation are: ["' + flavor.keys('orientation').join('", "') + '"].' }},
-		lightning:   { type: String, 'enum': { values: flavor.keys('lightning'), message: 'Invalid lightning. Valid options are: ["' + flavor.keys('lightning').join('", "') + '"].' }}
+		lighting:    { type: String, 'enum': { values: flavor.keys('lighting'), message: 'Invalid lighting. Valid options are: ["' + flavor.keys('lighting').join('", "') + '"].' }}
 	},
 	_compatibility: [ { type: Schema.ObjectId, ref: 'Build' } ],
 	_media: {

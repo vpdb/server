@@ -296,7 +296,7 @@ function getTableFilename(user, release, file, releaseFiles) {
 		release_version: file.release_version.version,
 		release_compatibility: _.pluck(file.release_file.compatibility, 'label').join(','),
 		release_flavor_orientation: flavorTags.orientation[file.release_file.flavor.orientation],
-		release_flavor_lightning: flavorTags.lightning[file.release_file.flavor.lightning],
+		release_flavor_lighting: flavorTags.lighting[file.release_file.flavor.lighting],
 		original_filename: file.name
 	};
 

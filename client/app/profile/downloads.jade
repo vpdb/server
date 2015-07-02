@@ -6,7 +6,7 @@ hr
 p.padder-bottom-2x
 	| Define here how you want your table files named when VPDB puts them into the zip
 	| archive. You can set how the different flavors appear, should you use
-	| the <tt>{release_flavor_orientation}</tt> or <tt>{release_flavor_lightning}</tt>
+	| the <tt>{release_flavor_orientation}</tt> or <tt>{release_flavor_lighting}</tt>
 	| placeholder.
 
 
@@ -40,7 +40,7 @@ p.padder-bottom-2x
 		| ,
 		tt(tooltip="Orientation tag defined below", tooltip-placement="right", tooltip-append-to-body="true") {release_flavor_orientation}
 		| ,
-		tt(tooltip="Lightning tag defined below", tooltip-placement="right", tooltip-append-to-body="true") {release_flavor_lightning}
+		tt(tooltip="Lighting tag defined below", tooltip-placement="right", tooltip-append-to-body="true") {release_flavor_lighting}
 		| ,
 		tt(tooltip="The uploader's filename", tooltip-placement="right", tooltip-append-to-body="true") {original_filename}
 	.clearfix
@@ -57,13 +57,13 @@ p.padder-bottom-2x
 	.clearfix
 	p.padder-top
 
-	.col-sm-2.control-label Lightning
+	.col-sm-2.control-label Lighting
 	.col-sm-2: .pull-right Day:
 	.col-sm-2
-		input.form-control(type="text", ng-model="updatedPreferences.flavor_tags.lightning.day")
+		input.form-control(type="text", ng-model="updatedPreferences.flavor_tags.lighting.day")
 	.col-sm-2: .pull-right Night:
 	.col-sm-2
-		input.form-control(type="text", ng-model="updatedPreferences.flavor_tags.lightning.night")
+		input.form-control(type="text", ng-model="updatedPreferences.flavor_tags.lighting.night")
 	.clearfix
 
 	div.alert.alert-danger(ng-show="errors.email")

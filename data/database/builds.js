@@ -182,5 +182,15 @@ This version also has the latest updates from VP 9.9.0.',
 		type: 'release',
 		is_range: true,
 		is_active: true
+	},
+	{
+		id: '10.x',
+		platform: 'vp',
+		label: 'VPX',
+		description: 'VPX, for testing purposes',
+		built_at: '2015-12-31T00:00:00.000Z',
+		type: 'release',
+		is_range: false,
+		is_active: true
 	}
 ];

@@ -336,7 +336,7 @@ ReleaseSchema.methods.toDetailed = function() {
 
 ReleaseSchema.methods.toSimple = function(opts) {
 	opts = opts || {};
-	opts.flavor = flavor.defaultThumb(opts.flavor);
+	opts.flavor = opts.flavor || {};
 	opts.thumb = opts.thumb || 'original';
 
 	var i, file, thumb;
@@ -355,34 +355,60 @@ ReleaseSchema.methods.toSimple = function(opts) {
 	var latestVersion = versions[0];
 
 	// get the file to pull media from
+	var match, fileFlavor, num = 0, n = 0;
 	for (i = 0; i < latestVersion.files.length; i++) {
 		if (!latestVersion.files[i].flavor) {
 			// skip non-table files
 			continue;
 		}
 		file = latestVersion.files[i];
-
-		if (_.isEqual(file.flavor.toObj(), opts.flavor)) {
+		fileFlavor = file.flavor.toObj();
+		if (_.isEqual(fileFlavor, flavor.defaultThumb(opts.flavor))) {
+			match = file;
+			console.log('%d ----------- match! %j <=> %j', i, fileFlavor, flavor.defaultThumb(opts.flavor));
 			break;
+		}
+		n = 0;
+		for (var prop in fileFlavor) {
+			console.log('---- hasOwnProperty = %s, fileFlavor[%s] == opts.flavor[%s], %s === %s', fileFlavor.hasOwnProperty(prop), prop, prop, fileFlavor[prop], opts.flavor[prop]);
+			if (fileFlavor.hasOwnProperty(prop) && fileFlavor[prop] == opts.flavor[prop]) {
+				n++;
+			}
+		}
+		console.log('%d ----------- n = %d, %j <=> %j', i, n, fileFlavor, opts.flavor);
+		if (n >= num) {
+			match = file;
+			num = n;
 		}
 	}
 
-	var playfieldImage = file._media.playfield_image.toObj();
+	var playfieldImage = match._media.playfield_image.toObj();
+	var thumbFields = [ 'url', 'width', 'height' ];
+	if (opts.fullThumbData) {
+		thumbFields = thumbFields.concat(['mime_type', 'bytes']);
+	}
 	if (playfieldImage.variations[opts.thumb]) {
-		thumb = _.pick(playfieldImage.variations[opts.thumb], [ 'url', 'width', 'height' ]);
+		thumb = _.pick(playfieldImage.variations[opts.thumb], thumbFields);
 	} else {
 		thumb = {
 			url: playfieldImage.url,
 			width: playfieldImage.metadata.size.width,
 			height: playfieldImage.metadata.size.height
 		};
+		if (opts.fullThumbData) {
+			thumb.mime_type = playfieldImage.mime_type;
+			thumb.bytes = playfieldImage.bytes;
+		}
+	}
+	if (opts.fullThumbData) {
+		thumb.file_type = playfieldImage.file_type;
 	}
 
 	rls.latest_version = {
 		version: latestVersion.version,
 		thumb: {
 			image: thumb,
-			flavor: file.flavor
+			flavor: match.flavor
 		}
 	};
 

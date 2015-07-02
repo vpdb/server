@@ -147,7 +147,7 @@ describe('The VPDB `file` API', function() {
 	describe('when uploading a playfield image', function() {
 
 		it('should return the correct variations', function(done) {
-			hlp.file.createPlayfield('member', request, function(playfield) {
+			hlp.file.createPlayfield('member', request, 'fs', function(playfield) {
 				hlp.doomFile('member', playfield.id);
 				expect(playfield.id).to.be.ok();
 				expect(playfield.variations).to.be.an('object');

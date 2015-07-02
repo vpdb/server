@@ -79,7 +79,8 @@ exports.defaultFileTags = function() {
 };
 
 exports.defaultThumb = function(opts) {
-	opts = opts || {};
-	opts.lightning = opts.lightning || 'day';
-	opts.orientation = opts.orientation || 'fs';
+	var defaultThumb = {};
+	defaultThumb.lightning = opts.lightning || 'day';
+	defaultThumb.orientation = opts.orientation || 'fs';
+	return defaultThumb;
 };

@@ -185,7 +185,7 @@ describe('The VPDB `release` API', function() {
 			var user = 'member';
 			hlp.game.createGame('contributor', request, function(game) {
 				hlp.file.createVpt(user, request, function(vptfile) {
-					hlp.file.createPlayfield(user, request, function(playfield) {
+					hlp.file.createPlayfield(user, request, 'fs', function(playfield) {
 						request
 							.post('/api/v1/releases')
 							.as(user)
@@ -219,7 +219,7 @@ describe('The VPDB `release` API', function() {
 			var user = 'member';
 			hlp.game.createGame('contributor', request, function(game) {
 				hlp.file.createVpts(user, request, 2, function(vptfiles) {
-					hlp.file.createPlayfields(user, request, 2, function(playfieldImages) {
+					hlp.file.createPlayfields(user, request, 'fs', 2, function(playfieldImages) {
 						hlp.file.createMp4(user, request, function(playfieldVideo) {
 							request
 								.post('/api/v1/releases')
@@ -358,7 +358,7 @@ describe('The VPDB `release` API', function() {
 			var user = 'member';
 			hlp.release.createRelease(user, request, function(release) {
 				hlp.file.createVpt(user, request, function(vptfile) {
-					hlp.file.createPlayfield(user, request, function (playfield) {
+					hlp.file.createPlayfield(user, request, 'fs', function (playfield) {
 						request
 							.post('/api/v1/releases/' + release.id + '/versions')
 							.save({ path: 'releases/create-version'})
@@ -414,7 +414,7 @@ describe('The VPDB `release` API', function() {
 			hlp.release.createRelease(user, request, function(release) {
 				var versionFile = release.versions[0].files[0];
 				hlp.file.createVpt(user, request, function(vptfile) {
-					hlp.file.createPlayfield(user, request, function(playfield) {
+					hlp.file.createPlayfield(user, request, 'fs', function(playfield) {
 						var data = {
 							files: [{
 								_file: vptfile.id,
@@ -441,7 +441,7 @@ describe('The VPDB `release` API', function() {
 			var user = 'member';
 			hlp.release.createRelease(user, request, function(release) {
 				hlp.file.createVpt(user, request, function(vptfile) {
-					hlp.file.createPlayfield(user, request, function(playfield) {
+					hlp.file.createPlayfield(user, request, 'fs', function(playfield) {
 						request
 							.put('/api/v1/releases/' + release.id + '/versions/' + release.versions[0].version)
 							.save({ path: 'releases/update-version'})
@@ -594,14 +594,16 @@ describe('The VPDB `release` API', function() {
 	describe('when listing releases', function() {
 
 		var numReleases = 3;
+		var releases;
 
 		before(function(done) {
 			hlp.setupUsers(request, {
 				member: { roles: [ 'member' ] },
 				contributor: { roles: [ 'contributor' ] }
 			}, function() {
-				hlp.release.createReleases('member', request, numReleases, function(releases) {
-					done(null, releases);
+				hlp.release.createReleases('member', request, numReleases, function(r) {
+					releases = r;
+					done(null, r);
 				});
 			});
 		});
@@ -629,6 +631,18 @@ describe('The VPDB `release` API', function() {
 						expect(release.authors[0].user.name).to.be.ok();
 						expect(release.authors[0].user.username).to.be.ok();
 					});
+					done();
+				});
+		});
+
+		it.only('should return the nearest thumb match of fullscreen/night', function(done) {
+			request
+				.get('/api/v1/releases?thumb_full_data&thumb_flavor=orientation:ws')
+				.end(function(err, res) {
+					hlp.dump(res);
+					hlp.expectStatus(err, res, 200);
+
+
 					done();
 				});
 		});

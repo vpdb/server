@@ -38,21 +38,23 @@ exports.createBackglass = function(user, request, done) {
 	});
 };
 
-exports.createPlayfield = function(user, request, done) {
-	exports.createPlayfields(user, request, 1, function(playfields) {
+exports.createPlayfield = function(user, request, orientation, done) {
+	exports.createPlayfields(user, request, orientation, 1, function(playfields) {
 		done(playfields[0]);
 	});
 };
 
-exports.createPlayfields = function(user, request, times, done) {
+exports.createPlayfields = function(user, request, orientation, times, done) {
 
-	var fileType = 'playfield-fs';
+	var fileType = 'playfield-' + orientation;
 	var mimeType = 'image/png';
+
+	var isFS = orientation == 'fs';
 
 	async.times(times, function(n, next) {
 		var name = 'playfield-' + n + '.png';
 
-		gm(1920, 1080, pleasejs.make_color()).toBuffer('PNG', function(err, data) {
+		gm(isFS ? 1920 : 1080, isFS ? 1080 : 1920, pleasejs.make_color()).toBuffer('PNG', function(err, data) {
 			if (err) {
 				throw err;
 			}

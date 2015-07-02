@@ -319,6 +319,9 @@ exports.list = function(req, res) {
 	if (req.query.thumb_format) {
 		transformOpts.thumb = req.query.thumb_format;
 	}
+	if (!_.isUndefined(req.query.thumb_full_data)) {
+		transformOpts.fullThumbData = true;
+	}
 
 	// filter by tag
 	if (req.query.tag) {
@@ -389,6 +392,7 @@ exports.list = function(req, res) {
 			}
 		}
 
+	// result
 	], function(err, query) {
 
 		if (!err) {

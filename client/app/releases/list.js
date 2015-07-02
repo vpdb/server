@@ -28,7 +28,7 @@ angular.module('vpdb.releases.list', [])
 		// view type config
 		var viewTypes = [ 'extended', 'table' ];
 		var defaultViewType = 'compact';
-		var thumbType;
+		var thumbFormat;
 
 		$localStorage.releases = $localStorage.releases || {};
 
@@ -58,10 +58,10 @@ angular.module('vpdb.releases.list', [])
 		$scope.setViewTemplate = function(view) {
 			switch (view) {
 				case 'compact':
-					thumbType = 'medium';
+					thumbFormat = 'medium';
 					break;
 				default:
-					thumbType = 'square';
+					thumbFormat = 'square';
 			}
 			$scope.template = '/releases/list-' + view + '.html';
 		};
@@ -87,7 +87,7 @@ angular.module('vpdb.releases.list', [])
 				return;
 			}
 
-			var query = { sort: $scope.sort, thumb: thumbType };
+			var query = { sort: $scope.sort, thumb_format: thumbFormat };
 			console.log(query);
 			if ($scope.firstQuery) {
 				query.page = urlQuery.page;

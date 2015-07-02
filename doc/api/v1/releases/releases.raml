@@ -24,7 +24,7 @@ get:
   description: |
     List all releases.
 
-    Releases can be filtered by different
+    Releases can be filtered by different attributes. See request parameters.
   queryParameters:
     q:
       description: |
@@ -51,24 +51,31 @@ get:
       required: false
       type: boolean
       example: true
-    flavor:
+    thumb_flavor:
       description: |
         Sets a preference which flavor of the thumbnail is returned with the
         release.
 
-        Since a release can contain multiple flavors, usually only one shot is
-        displayed when listing releases. Flavors are separated with a comma and
-        values with a colon.
+        This is due to media URLs taking up quite some space, while usually
+        only one URL is actually needed when fetching a list of releases.
+
+        The flavor is provided in key/value pairs, where pairs are comma
+        separated and key/value withe a colon. If the selected flavor doesn't
+        exist or is not provided, the default flavor (day / fullscreen) is
+        returned.
+
       required: false
       type: string
       example: orientation:fs,lighting:day
-    thumb:
+    thumb_format:
       description: |
         Sets a preference which format of the thumbnail is returned with the
         release.
 
         Possible values: `medium`, `medium-2x`, `medium-landscape`,
         `medium-landscape-2x`, `square`, `square-2x`.
+
+        If not provided or invalid, the URL of the original media is returned.
       required: false
       type: string
       example: square

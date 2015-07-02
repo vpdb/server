@@ -392,33 +392,68 @@ exports.list = function(req, res) {
 			} else {
 				next(null, query);
 			}
+		},
+
+		// inner queries
+		function(query, next) {
+
+			var filter = [];
+			if (!_.isUndefined(req.query.flavor)) {
+
+				_.each(req.query.flavor.split(','), function(f) {
+					var kv = f.split(':');
+					var k = kv[0].toLowerCase();
+					var v = kv[1].toLowerCase();
+					if (flavor.values[k]) {
+						var fltr = {};
+						fltr['versions.files.flavor.' + k] = v;
+						filter.push(fltr);
+					}
+				});
+			}
+
+			next(null, query, filter);
 		}
 
 	// result
-	], function(err, query) {
+	], function(err, query, filter) {
 
 		if (!err) {
-			var sortBy = api.sortParams(req);
-			var q = api.searchQuery(query);
-			logger.info('[api|release:list] query: %s, sort: %j', util.inspect(q), util.inspect(sortBy));
-			Release.paginate(q, {
-				page: pagination.page,
-				limit: pagination.perPage,
-				populate: [ '_game', 'versions.files._media.playfield_image', 'authors._user' ],
-				sortBy: sortBy  // '_game.title', '_game.id'
+			console.log(require('util').inspect(Release.getAggregationPipeline(query, filter), { depth: null, colors: true }));
 
-			}, function(err, releases, pageCount, count) {
+			if (filter.length > 0) {
 
-				/* istanbul ignore if  */
-				if (err) {
-					return api.fail(res, error(err, 'Error listing releases').log('list'), 500);
-				}
-				releases = _.map(releases, function(release) {
-					return release.toSimple(transformOpts);
+				Release.aggregate(Release.getAggregationPipeline(query, filter)).exec(function(err, result) {
+
+					/* istanbul ignore if  */
+					if (err) {
+						return api.fail(res, error(err, 'Error listing releases').log('list'), 500);
+					}
+					api.success(res, result, 200);
 				});
-				api.success(res, releases, 200, api.paginationOpts(pagination, count));
 
-			});
+			} else {
+				var sortBy = api.sortParams(req);
+				var q = api.searchQuery(query);
+				logger.info('[api|release:list] query: %s, sort: %j', util.inspect(q), util.inspect(sortBy));
+				Release.paginate(q, {
+					page: pagination.page,
+					limit: pagination.perPage,
+					populate: [ '_game', 'versions.files._media.playfield_image', 'authors._user' ],
+					sortBy: sortBy  // '_game.title', '_game.id'
+
+				}, function(err, releases, pageCount, count) {
+
+					/* istanbul ignore if  */
+					if (err) {
+						return api.fail(res, error(err, 'Error listing releases').log('list'), 500);
+					}
+					releases = _.map(releases, function(release) {
+						return release.toSimple(transformOpts);
+					});
+					api.success(res, releases, 200, api.paginationOpts(pagination, count));
+				});
+			}
 		}
 		// otherwise error has been treated.
 	});
@@ -494,3 +529,4 @@ exports.del = function(req, res) {
 		});
 	});
 };
+

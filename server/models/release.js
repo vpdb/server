@@ -420,6 +420,67 @@ ReleaseSchema.statics.toSimple = function(release, opts) {
 	return rls;
 };
 
+/**
+ * Returns an aggregation pipeline that filters releases by nested conditions.
+ *
+ * @param {array} query Original, non-nested query
+ * @param {array} filter Array of nested conditions, e.g. [ { "versions.files.flavor.lightning": "night" } ]
+ * @param {int} [page] Pagination: page number
+ * @param {int} [limit] Pagination: items per page
+ */
+ReleaseSchema.statics.getAggregationPipeline = function(query, filter, page, limit) {
+
+	var q = makeQuery(query.concat(filter));
+	var f = makeQuery(filter);
+
+	var pipe = [
+		{ $match: q },
+		{ $unwind: '$versions'},
+		{ $unwind: '$versions.files'},
+		{ $match: f },
+		{ $group: { _id: {
+				_id: '$_id',
+				name: '$name',
+				description: '$description',
+				versionId: '$versions._id'
+			},
+			files: { $push: '$versions.files' }
+		} },
+		{ $project: {
+			_id: '$_id._id',
+			name: '$_id.name',
+			versions: {
+				_id: '$_id.versionId',
+				files: '$files'
+			}
+		} },
+		{ $group: { _id: {
+				_id: '$_id',
+				name: '$name'
+			},
+			versions: { $push: '$versions' }
+		} },
+		{ $project: {
+			_id: '$_id._id',
+			name: '$_id.name',
+			versions: '$versions'
+		} }
+	];
+
+	return pipe;
+};
+
+function makeQuery(query) {
+	if (query.length === 0) {
+		return {};
+	} else if (query.length === 1) {
+		return query[0];
+	} else {
+		return { $and: query };
+	}
+}
+
+
 
 //-----------------------------------------------------------------------------
 // METHODS

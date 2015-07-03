@@ -433,38 +433,45 @@ ReleaseSchema.statics.getAggregationPipeline = function(query, filter, page, lim
 	var q = makeQuery(query.concat(filter));
 	var f = makeQuery(filter);
 
+	var group1 = {};
+	var group2 = {};
+	var project1 = {};
+	var project2 = {};
+
+	_.each(releaseFields, function(val, field) {
+		group1[field] = '$' + field;
+		group2[field] = '$' + field;
+		project1[field] = '$_id.' + field;
+		project2[field] = '$_id.' + field;
+	});
+
 	var pipe = [
 		{ $match: q },
 		{ $unwind: '$versions'},
 		{ $unwind: '$versions.files'},
 		{ $match: f },
-		{ $group: { _id: {
+		{ $group: { _id: _.extend(group1, {
 				_id: '$_id',
-				name: '$name',
-				description: '$description',
 				versionId: '$versions._id'
-			},
+			}),
 			files: { $push: '$versions.files' }
 		} },
-		{ $project: {
+		{ $project: _.extend(project1, {
 			_id: '$_id._id',
-			name: '$_id.name',
 			versions: {
 				_id: '$_id.versionId',
 				files: '$files'
 			}
-		} },
-		{ $group: { _id: {
-				_id: '$_id',
-				name: '$name'
-			},
+		}) },
+		{ $group: { _id: _.extend(group2, {
+				_id: '$_id'
+			}),
 			versions: { $push: '$versions' }
 		} },
-		{ $project: {
+		{ $project: _.extend(project2, {
 			_id: '$_id._id',
-			name: '$_id.name',
 			versions: '$versions'
-		} }
+		}) }
 	];
 
 	return pipe;

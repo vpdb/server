@@ -394,7 +394,7 @@ exports.list = function(req, res) {
 			}
 		},
 
-		// inner queries
+		// inner filters
 		function(query, next) {
 
 			var filter = [];
@@ -429,7 +429,22 @@ exports.list = function(req, res) {
 					if (err) {
 						return api.fail(res, error(err, 'Error listing releases').log('list'), 500);
 					}
+
 					api.success(res, result, 200);
+
+					//Release.populate(result, [ '_game', 'versions.files._media.playfield_image', 'authors._user' ], function(err, releases) {
+					//	/* istanbul ignore if  */
+					//	if (err) {
+					//		return api.fail(res, error(err, 'Error listing releases').log('list'), 500);
+					//	}
+					//	//
+					//	//releases = _.map(releases, function(release) {
+					//	//	return Release.toSimple(release, transformOpts);
+					//	//});
+					//
+					//
+					//});
+
 				});
 
 			} else {

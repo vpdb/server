@@ -306,15 +306,16 @@ exports.list = function(req, res) {
 	// flavor, thumb selection
 	var transformOpts = {};
 	if (req.query.thumb_flavor) {
+		transformOpts.thumbFlavor = req.query.thumb_flavor;
 		// ex.: /api/v1/releases?flavor=orientation:fs,lighting:day
-		transformOpts.flavor = {};
-		var flavorParams = req.query.thumb_flavor.split(',');
-		_.each(flavorParams, function(param) {
-			var f = param.split(':');
-			if (f[0] && f[1]) {
-				transformOpts.flavor[f[0]] = f[1];
-			}
-		});
+		//transformOpts.flavor = {};
+		//var flavorParams = req.query.thumb_flavor.split(',');
+		//_.each(flavorParams, function(param) {
+		//	var f = param.split(':');
+		//	if (f[0] && f[1]) {
+		//		transformOpts.flavor[f[0]] = f[1];
+		//	}
+		//});
 	}
 	if (req.query.thumb_format) {
 		transformOpts.thumb = req.query.thumb_format;

@@ -339,7 +339,7 @@ ReleaseSchema.methods.toSimple = function(opts) {
 	opts.flavor = opts.flavor || {};
 	opts.thumb = opts.thumb || 'original';
 
-	var i, file, thumb;
+	var i, j, file, thumb;
 	var rls = _.pick(this.toObj(), [ 'id', 'name', 'created_at', 'authors', 'counter' ]);
 
 	rls.game = _.pick(this._game, ['id', 'title']);
@@ -355,7 +355,10 @@ ReleaseSchema.methods.toSimple = function(opts) {
 	var latestVersion = versions[0];
 
 	// get the file to pull media from
-	var match, fileFlavor, num = 0, n = 0;
+	var match, f, fileFlavor, flavorName, flavorValue;
+	var weight = 0, bestWeight = 0;
+	var flavorParams = opts.thumbFlavor.split(',');
+	var defaults = flavor.defaultThumb();
 	for (i = 0; i < latestVersion.files.length; i++) {
 		if (!latestVersion.files[i].flavor) {
 			// skip non-table files
@@ -363,22 +366,26 @@ ReleaseSchema.methods.toSimple = function(opts) {
 		}
 		file = latestVersion.files[i];
 		fileFlavor = file.flavor.toObj();
-		if (_.isEqual(fileFlavor, flavor.defaultThumb(opts.flavor))) {
-			match = file;
-			console.log('%d ----------- match! %j <=> %j', i, fileFlavor, flavor.defaultThumb(opts.flavor));
-			break;
-		}
-		n = 0;
-		for (var prop in fileFlavor) {
-			console.log('---- hasOwnProperty = %s, fileFlavor[%s] == opts.flavor[%s], %s === %s', fileFlavor.hasOwnProperty(prop), prop, prop, fileFlavor[prop], opts.flavor[prop]);
-			if (fileFlavor.hasOwnProperty(prop) && fileFlavor[prop] == opts.flavor[prop]) {
-				n++;
+
+		for (j = 0; j < flavorParams.length; j++) {
+			f = flavorParams[j].split(':');
+			flavorName = f[0];
+			flavorValue = f[1];
+
+			// parameter match gets most weight.
+			if (fileFlavor[flavorName] === flavorValue) {
+				weight += Math.pow(10, (flavorParams.length - j + 1) * 3);
+
+			// defaults match gets also weight, but less
+			} else if (defaults[flavorName] === flavorValue) {
+				weight += Math.pow(10, (flavorParams.length - j + 1));
 			}
 		}
-		console.log('%d ----------- n = %d, %j <=> %j', i, n, fileFlavor, opts.flavor);
-		if (n >= num) {
+		console.log('%s / %j => %d', opts.thumbFlavor, fileFlavor, weight);
+
+		if (weight >= bestWeight) {
 			match = file;
-			num = n;
+			weight = bestWeight;
 		}
 	}
 

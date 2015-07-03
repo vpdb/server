@@ -635,9 +635,9 @@ describe('The VPDB `release` API', function() {
 				});
 		});
 
-		it('should return the nearest thumb match of fullscreen/night', function(done) {
+		it.only('should return the nearest thumb match of fullscreen/night', function(done) {
 			request
-				.get('/api/v1/releases?thumb_full_data&thumb_flavor=orientation:ws')
+				.get('/api/v1/releases?thumb_full_data&thumb_flavor=orientation:fs,lighting:night')
 				.end(function(err, res) {
 					hlp.dump(res);
 					hlp.expectStatus(err, res, 200);

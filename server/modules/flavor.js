@@ -80,6 +80,7 @@ exports.defaultFileTags = function() {
 
 exports.defaultThumb = function(opts) {
 	var defaultThumb = {};
+	opts = opts || {};
 	defaultThumb.lighting = opts.lighting || 'day';
 	defaultThumb.orientation = opts.orientation || 'fs';
 	return defaultThumb;

@@ -357,7 +357,7 @@ ReleaseSchema.methods.toSimple = function(opts) {
 	// get the file to pull media from
 	var match, f, fileFlavor, flavorName, flavorValue;
 	var weight = 0, bestWeight = 0;
-	var flavorParams = opts.thumbFlavor.split(',');
+	var flavorParams = opts.thumbFlavor ? opts.thumbFlavor.split(',') : [];
 	var defaults = flavor.defaultThumb();
 	for (i = 0; i < latestVersion.files.length; i++) {
 		if (!latestVersion.files[i].flavor) {
@@ -366,6 +366,7 @@ ReleaseSchema.methods.toSimple = function(opts) {
 		}
 		file = latestVersion.files[i];
 		fileFlavor = file.flavor.toObj();
+		weight = 0;
 
 		for (j = 0; j < flavorParams.length; j++) {
 			f = flavorParams[j].split(':');
@@ -381,13 +382,14 @@ ReleaseSchema.methods.toSimple = function(opts) {
 				weight += Math.pow(10, (flavorParams.length - j + 1));
 			}
 		}
-		console.log('%s / %j => %d', opts.thumbFlavor, fileFlavor, weight);
+//		console.log('%s / %j => %d', opts.thumbFlavor, fileFlavor, weight);
 
 		if (weight >= bestWeight) {
 			match = file;
-			weight = bestWeight;
+			bestWeight = weight;
 		}
 	}
+//	console.log('=====> %j', match.flavor.toObj());
 
 	var playfieldImage = match._media.playfield_image.toObj();
 	var thumbFields = [ 'url', 'width', 'height' ];

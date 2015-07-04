@@ -57,16 +57,16 @@ exports.createRelease2 = function(user, request, done) {
 								{
 									files: [{
 										_file: vptfiles[0].id,
-										_media: {playfield_image: playfieldFs.id},
+										_media: { playfield_image: playfieldFs.id },
 										_compatibility: ['9.9.0'],
 										_tags: ['wip', 'dof'],
-										flavor: {orientation: 'fs', lighting: 'night'}
+										flavor: { orientation: 'fs', lighting: 'night' }
 									}, {
 										_file: vptfiles[1].id,
-										_media: {playfield_image: playfieldWs.id},
+										_media: { playfield_image: playfieldWs.id },
 										_compatibility: ['9.9.0'],
 										_tags: ['dof'],
-										flavor: {orientation: 'ws', lighting: 'day'}
+										flavor: { orientation: 'ws', lighting: 'day' }
 									}],
 									version: '1.0'
 								}

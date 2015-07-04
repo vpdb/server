@@ -64,6 +64,11 @@ get:
         exist or is not provided, the default flavor (day / fullscreen) is
         returned.
 
+        Note that the order in which the flavors are provided is decisive in
+        stand-off situations where only one pair matches, e.g. fullscreen/night
+        would win against widescreen/day if `orientation:fs,lighting:day` is
+        provided.
+
       required: false
       type: string
       example: orientation:fs,lighting:day

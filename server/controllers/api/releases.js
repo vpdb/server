@@ -430,20 +430,19 @@ exports.list = function(req, res) {
 						return api.fail(res, error(err, 'Error listing releases').log('list'), 500);
 					}
 
-					api.success(res, result, 200);
+					Release.populate(result, [ '_game', 'versions.files._media.playfield_image', 'authors._user' ], function(err, releases) {
+						/* istanbul ignore if  */
+						if (err) {
+							return api.fail(res, error(err, 'Error listing releases').log('list'), 500);
+						}
 
-					//Release.populate(result, [ '_game', 'versions.files._media.playfield_image', 'authors._user' ], function(err, releases) {
-					//	/* istanbul ignore if  */
-					//	if (err) {
-					//		return api.fail(res, error(err, 'Error listing releases').log('list'), 500);
-					//	}
-					//	//
-					//	//releases = _.map(releases, function(release) {
-					//	//	return Release.toSimple(release, transformOpts);
-					//	//});
-					//
-					//
-					//});
+						//releases = _.map(releases, function(release) {
+						//	return Release.toSimple(release, transformOpts);
+						//});
+
+						api.success(res, releases, 200);
+
+					});
 
 				});
 

@@ -64,7 +64,7 @@ var fileFields = {
 };
 var FileSchema = new Schema(fileFields);
 
-var VersionSchema = new Schema({
+var versionFields = {
 	version: { type: String, required: 'Version must be provided.' },
 	released_at: { type: Date, required: true },
 	changes: { type: String },
@@ -73,7 +73,10 @@ var VersionSchema = new Schema({
 		downloads: { type: Number, 'default': 0 },
 		comments:   { type: Number, 'default': 0 }
 	}
-});
+};
+
+var VersionSchema = new Schema(versionFields);
+
 var AuthorSchema = new Schema({
 	_user: { type: Schema.ObjectId, required: 'Reference to user must be provided.', ref: 'User' },
 	roles: [ String ]
@@ -439,10 +442,21 @@ ReleaseSchema.statics.getAggregationPipeline = function(query, filter, page, lim
 	var project2 = {};
 
 	_.each(releaseFields, function(val, field) {
-		group1[field] = '$' + field;
-		group2[field] = '$' + field;
-		project1[field] = '$_id.' + field;
-		project2[field] = '$_id.' + field;
+		if (field != 'versions') {
+			group1[field] = '$' + field;
+			group2[field] = '$' + field;
+			project1[field] = '$_id.' + field;
+			project2[field] = '$_id.' + field;
+			console.log('Adding field "%s".', field);
+		}
+	});
+	project1.versions = { };
+
+	_.each(versionFields, function(val, field) {
+		if (field != 'files') {
+			group1['version_' + field] = '$versions.' + field;
+			project1.versions[field] = '$_id.version_' + field;
+		}
 	});
 
 	var pipe = [
@@ -458,10 +472,10 @@ ReleaseSchema.statics.getAggregationPipeline = function(query, filter, page, lim
 		} },
 		{ $project: _.extend(project1, {
 			_id: '$_id._id',
-			versions: {
+			versions: _.extend(project1.versions, {
 				_id: '$_id.versionId',
 				files: '$files'
-			}
+			})
 		}) },
 		{ $group: { _id: _.extend(group2, {
 				_id: '$_id'

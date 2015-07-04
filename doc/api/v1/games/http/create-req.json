@@ -1,23 +1,32 @@
 POST /api/v1/games HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJWeV9sWGIxVW00IiwiaWF0IjoiMjAxNS0wNS0xOFQyMTo1NTo0Ni4yNDFaIiwiZXhwIjoiMjAxNS0wNS0xOFQyMjo1NTo0Ni4yNDFaIn0.4SxsbjXpptwn8Wz6MpXKJpPZs_0hELV0Ic6IeQZbftg
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI0eXpIbW9uTlp1IiwiaWF0IjoiMjAxNS0wNy0wNFQyMToxNzo1NS4wOTZaIiwiZXhwIjoiMjAxNS0wNy0wNFQyMjoxNzo1NS4wOTZaIn0.VaRIYwnux-dv7Xol5OxhcHFAq1Cm-UC7uhaqwHyTZ3c
 Content-Type: application/json
-Content-Length: 406
+Content-Length: 408
 
 {
   "ipdb": {
-    "number": 3424,
-    "mfg": 15
+    "number": 463,
+    "mfg": 352
   },
-  "title": "Super Flipp",
-  "manufacturer": "All American Amusements (1987-1988)",
-  "year": 1987,
-  "game_type": "pm",
-  "features": "Flippers (2).",
-  "notes": "Measures 55 cm long, 36 cm wide, and 50 cm high.Game has printing in English and French, with small type in Italian below left flipper indicating \"patented industrial model\".",
-  "id": "super-flipp",
+  "title": "Casino",
+  "manufacturer": "Williams",
+  "model_number": "201",
+  "year": 1958,
+  "game_type": "em",
+  "themes": [
+    "Cards/Gambling"
+  ],
+  "designers": [
+    "Harry Williams"
+  ],
+  "artists": [
+    "George Molentin"
+  ],
+  "features": "Flippers (2), Pop bumpers (4), Kick-out holes (2), Gobble hole (1). Rollovers and kick-out holes light playing cards on backglass.",
+  "id": "casino",
   "_media": {
-    "backglass": "VJpeX-yLXE"
+    "backglass": "VkmNihNZO"
   }
 }

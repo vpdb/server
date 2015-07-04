@@ -1,25 +1,25 @@
-POST /api/v1/releases/Vyeemz1U7N/versions HTTP/1.1
+POST /api/v1/releases/NJfXLh3EbO/versions HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI0MXdWbHprTDc0IiwiaWF0IjoiMjAxNS0wNS0xOFQyMTo1NTo1OS43MzhaIiwiZXhwIjoiMjAxNS0wNS0xOFQyMjo1NTo1OS43MzhaIn0.XYHFeb8DeFiHDm8TgK538kvu6ncssAWhVkgjatyb5jc
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI0a1k0bTNoRWJPIiwiaWF0IjoiMjAxNS0wNy0wNFQyMToxODoxMC44ODVaIiwiZXhwIjoiMjAxNS0wNy0wNFQyMjoxODoxMC44ODVaIn0.H93otrJHaahZrldZtrLzNnyT2zLKnNwfMWPbdqAm0no
 Content-Type: application/json
-Content-Length: 201
+Content-Length: 198
 
 {
   "version": "2.0.0",
   "changes": "*Second release.*",
   "files": [
     {
-      "_file": "NJ0xQz18X4",
+      "_file": "NJxD23VZd",
       "_media": {
-        "playfield_image": "NkxZmGJL7N"
+        "playfield_image": "NyTw2n4Z_"
       },
       "_compatibility": [
         "9.9.0"
       ],
       "flavor": {
         "orientation": "fs",
-        "lightning": "night"
+        "lighting": "night"
       }
     }
   ]

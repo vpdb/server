@@ -1,7 +1,7 @@
 401 Unauthorized
 Content-Type: application/json; charset=utf-8
 Content-Length: 79
-Etag: W/"4f-80cf3c5e"
+Etag: W/"4f-QDndmuszS+gHLE2rEkINug"
 
 {
   "error": "Unauthorized. You need to provide credentials for this resource"

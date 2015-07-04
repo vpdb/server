@@ -1,7 +1,7 @@
 401 Unauthorized
 Content-Type: application/json; charset=utf-8
 Content-Length: 73
-Etag: W/"49-3614b69f"
+Etag: W/"49-Nsz7Awm/VT3qhKVaJrCCLA"
 
 {
   "error": "You must supply a password when generating an auth token."

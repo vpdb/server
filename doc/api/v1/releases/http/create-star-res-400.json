@@ -1,7 +1,7 @@
 400 Bad Request
 Content-Type: application/json; charset=utf-8
 Content-Length: 77
-Etag: W/"4d-45ffd42c"
+Etag: W/"4d-9ExBVDpJsUme5+CRz/kPcA"
 
 {
   "error": "Already starred. Cannot star twice, you need to unstar first."

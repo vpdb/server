@@ -1,16 +1,16 @@
 200 OK
 Content-Type: application/json; charset=utf-8
-Etag: W/"xF8XK6CQ8KCBU8iXgTFtVw=="
+Etag: W/"403-PwIsJrZGXb/7PnJPvvHtWw"
 Content-Encoding: gzip
 
 {
-  "location": "Pollichmouth",
+  "location": "Murrayland",
   "plan": "free",
-  "name": "Mafalda Quigley",
-  "username": "Chris_Marquardt",
-  "email": "aurelia.schinner58@yahoo.com",
+  "name": "Denis Morissette",
+  "username": "Yoshiko3",
+  "email": "lera_mclaughlin21@yahoo.com",
   "provider": "local",
-  "created_at": "2015-05-18T21:56:16.950Z",
+  "created_at": "2015-07-04T21:18:34.999Z",
   "is_active": true,
   "counter": {
     "stars": 0,
@@ -22,23 +22,28 @@ Content-Encoding: gzip
   ],
   "email_status": {
     "code": "pending_update",
-    "expires_at": "2015-05-19T21:56:17.229Z",
-    "value": "amie60@hotmail.com"
+    "expires_at": "2015-07-05T21:18:35.348Z",
+    "value": "dalton_blanda63@gmail.com"
   },
-  "id": "V17TWmyI7V",
-  "gravatar_id": "749b9f6fa5ef8b7ef9bf78f68a7f444c",
+  "id": "Ekmijan4b_",
+  "gravatar_id": "31c70461fb45fcfc27a61758e115a827",
   "permissions": {
-    "tags": [
+    "tokens": [
+      "update",
+      "delete",
+      "add",
+      "list"
+    ],
+    "builds": [
       "delete-own",
       "add"
     ],
-    "tokens": [
-      "delete",
-      "update",
-      "list",
-      "add"
+    "users": [
+      "star",
+      "view",
+      "search"
     ],
-    "roms": [
+    "tags": [
       "delete-own",
       "add"
     ],
@@ -46,28 +51,23 @@ Content-Encoding: gzip
       "update",
       "view"
     ],
-    "releases": [
-      "delete",
-      "rate",
-      "star",
+    "roms": [
+      "delete-own",
       "add"
-    ],
-    "users": [
-      "star",
-      "search",
-      "view"
-    ],
-    "files": [
-      "delete",
-      "download",
-      "upload"
     ],
     "games": [
       "rate",
       "star"
     ],
-    "builds": [
-      "delete-own",
+    "files": [
+      "upload",
+      "delete",
+      "download"
+    ],
+    "releases": [
+      "rate",
+      "star",
+      "delete",
       "add"
     ],
     "comments": [

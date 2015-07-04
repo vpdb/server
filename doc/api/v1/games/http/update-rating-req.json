@@ -1,8 +1,8 @@
-PUT /api/v1/games/black-gold/rating HTTP/1.1
+PUT /api/v1/games/baseball-pool/rating HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
 Content-Type: application/json
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI0a0s1YjFMWDQiLCJpYXQiOiIyMDE1LTA1LTE4VDIxOjU1OjUzLjE1MFoiLCJleHAiOiIyMDE1LTA1LTE4VDIyOjU1OjUzLjE1MFoifQ.dtOxUY97n5p54eFYKETznexuuwOHDQjdiXVLD0DTOe0
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJOMXZFb2luTldkIiwiaWF0IjoiMjAxNS0wNy0wNFQyMToxODowMi43MjVaIiwiZXhwIjoiMjAxNS0wNy0wNFQyMjoxODowMi43MjVaIn0.UXLmAnKT_Rbk7DEsYBIVQCy_Wd16lR3CMrpzzJwirpY
 Content-Length: 11
 
 {

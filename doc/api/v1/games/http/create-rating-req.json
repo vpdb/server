@@ -1,8 +1,8 @@
-POST /api/v1/games/southside-johnny/rating HTTP/1.1
+POST /api/v1/games/spring-time/rating HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
 Content-Type: application/json
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJOeXR1LUpJbVYiLCJpYXQiOiIyMDE1LTA1LTE4VDIxOjU1OjUxLjgzOVoiLCJleHAiOiIyMDE1LTA1LTE4VDIyOjU1OjUxLjgzOVoifQ.WiTKj1reHRYsLTx30VI37zQT1DoRDKxUYeONpS2fW3A
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJFSnRGc2hFV3UiLCJpYXQiOiIyMDE1LTA3LTA0VDIxOjE4OjAwLjk2NVoiLCJleHAiOiIyMDE1LTA3LTA0VDIyOjE4OjAwLjk2NVoifQ.kZ_VkQW0uiuH7gtYY1-rEarJoP2zTEIIpKnrhjjXjt4
 Content-Length: 11
 
 {

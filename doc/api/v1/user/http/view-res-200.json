@@ -1,15 +1,15 @@
 200 OK
 Content-Type: application/json; charset=utf-8
-Content-Length: 882
-Etag: W/"372-f5b9dd87"
+Content-Length: 862
+Etag: W/"35e-lSfzhLo7J4/CZQ31SD7Wbw"
 
 {
   "plan": "free",
-  "name": "Brionna.Mosciski81",
-  "username": "Brionna.Mosciski81",
-  "email": "arvilla_jaskolski54@hotmail.com",
+  "name": "Kay_Botsford",
+  "username": "Kay_Botsford",
+  "email": "otho.hegmann@hotmail.com",
   "provider": "local",
-  "created_at": "2015-05-18T21:55:42.530Z",
+  "created_at": "2015-07-04T21:17:51.185Z",
   "is_active": true,
   "counter": {
     "stars": 0,
@@ -19,20 +19,25 @@ Etag: W/"372-f5b9dd87"
   "roles": [
     "member"
   ],
-  "id": "V1XxybJ87E",
-  "gravatar_id": "ba56bec3461fd38d6033b25726b63bdc",
+  "id": "41jxinE-O",
+  "gravatar_id": "a7f47083a4981371088311dcab2e561e",
   "permissions": {
-    "tags": [
+    "tokens": [
+      "update",
+      "delete",
+      "add",
+      "list"
+    ],
+    "builds": [
       "delete-own",
       "add"
     ],
-    "tokens": [
-      "delete",
-      "update",
-      "list",
-      "add"
+    "users": [
+      "star",
+      "view",
+      "search"
     ],
-    "roms": [
+    "tags": [
       "delete-own",
       "add"
     ],
@@ -40,28 +45,23 @@ Etag: W/"372-f5b9dd87"
       "update",
       "view"
     ],
-    "releases": [
-      "delete",
-      "rate",
-      "star",
+    "roms": [
+      "delete-own",
       "add"
-    ],
-    "users": [
-      "star",
-      "search",
-      "view"
-    ],
-    "files": [
-      "delete",
-      "download",
-      "upload"
     ],
     "games": [
       "rate",
       "star"
     ],
-    "builds": [
-      "delete-own",
+    "files": [
+      "upload",
+      "delete",
+      "download"
+    ],
+    "releases": [
+      "rate",
+      "star",
+      "delete",
       "add"
     ],
     "comments": [

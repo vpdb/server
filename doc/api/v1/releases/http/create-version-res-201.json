@@ -1,10 +1,10 @@
 201 Created
 Content-Type: application/json; charset=utf-8
-Etag: W/"HzvNOZDnv/cjicEalQISqg=="
+Etag: W/"855-VlM8sofDFq0Q73ajsGX53w"
 Content-Encoding: gzip
 
 {
-  "released_at": "2015-05-18T21:56:02.824Z",
+  "released_at": "2015-07-04T21:18:15.028Z",
   "changes": "*Second release.*",
   "version": "2.0.0",
   "counter": {
@@ -13,19 +13,19 @@ Content-Encoding: gzip
   },
   "files": [
     {
-      "released_at": "2015-05-18T21:56:02.824Z",
+      "released_at": "2015-07-04T21:18:15.028Z",
       "counter": {
         "downloads": 0
       },
       "flavor": {
         "orientation": "fs",
-        "lightning": "night"
+        "lighting": "night"
       },
       "media": {
         "playfield_image": {
           "name": "playfield-0.png",
           "bytes": 347,
-          "created_at": "2015-05-18T21:56:02.431Z",
+          "created_at": "2015-07-04T21:18:14.225Z",
           "mime_type": "image/png",
           "file_type": "playfield-fs",
           "metadata": {
@@ -40,27 +40,27 @@ Content-Encoding: gzip
             "downloads": 0
           },
           "is_active": true,
-          "id": "NkxZmGJL7N",
+          "id": "NyTw2n4Z_",
           "is_protected": true,
-          "url": "/storage/v1/files/NkxZmGJL7N.png",
+          "url": "/storage/v1/files/NyTw2n4Z_.png",
           "variations": {
             "medium": {
-              "url": "/storage/public/files/medium/NkxZmGJL7N.png"
+              "url": "/storage/public/files/medium/NyTw2n4Z_.png"
             },
             "medium-2x": {
-              "url": "/storage/public/files/medium-2x/NkxZmGJL7N.png"
+              "url": "/storage/public/files/medium-2x/NyTw2n4Z_.png"
             },
             "medium-landscape": {
-              "url": "/storage/public/files/medium-landscape/NkxZmGJL7N.png"
+              "url": "/storage/public/files/medium-landscape/NyTw2n4Z_.png"
             },
             "medium-landscape-2x": {
-              "url": "/storage/public/files/medium-landscape-2x/NkxZmGJL7N.png"
+              "url": "/storage/public/files/medium-landscape-2x/NyTw2n4Z_.png"
             },
             "square": {
-              "url": "/storage/public/files/square/NkxZmGJL7N.png"
+              "url": "/storage/public/files/square/NyTw2n4Z_.png"
             },
             "square-2x": {
-              "url": "/storage/public/files/square-2x/NkxZmGJL7N.png"
+              "url": "/storage/public/files/square-2x/NyTw2n4Z_.png"
             }
           }
         }
@@ -78,12 +78,12 @@ Content-Encoding: gzip
       ],
       "file": {
         "name": "test-table-0.vpt",
-        "created_at": "2015-05-18T21:56:02.350Z",
+        "created_at": "2015-07-04T21:18:14.098Z",
         "mime_type": "application/x-visual-pinball-table",
         "file_type": "release",
         "metadata": {},
-        "id": "NJ0xQz18X4",
-        "url": "/storage/v1/files/NJ0xQz18X4.vpt",
+        "id": "NJxD23VZd",
+        "url": "/storage/v1/files/NJxD23VZd.vpt",
         "bytes": 135168,
         "variations": {},
         "is_protected": true,

@@ -1,8 +1,8 @@
 404 Not Found
 Content-Type: application/json; charset=utf-8
-Content-Length: 79
-Etag: W/"4f-841db71b"
+Content-Length: 92
+Etag: W/"5c-6ulVmdmldEQs8UH0qLsgxA"
 
 {
-  "error": "No rating of <anderson.metz@gmail.com> for \"Mythology\" found."
+  "error": "No rating of <mariano.walker42@gmail.com> for \"Wall Street Special\" found."
 }

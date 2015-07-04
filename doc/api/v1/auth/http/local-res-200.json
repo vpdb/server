@@ -1,41 +1,46 @@
 200 OK
 Content-Type: application/json; charset=utf-8
-Etag: W/"r8G+4+WBkh74kPF/9xN/XA=="
+Etag: W/"49c-M4hxFSonwDGpudFtfVk+rw"
 Content-Encoding: gzip
 
 {
-  "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJWeVpteFdrOG1OIiwiaWF0IjoiMjAxNS0wNS0xOFQyMTo1NTo0My40MjVaIiwiZXhwIjoiMjAxNS0wNS0xOFQyMjo1NTo0My40MjVaIn0.LApamM8xhN0tJRE1gP2sWWkVt-bKFmsn9-W7QxPxxys",
-  "expires": "2015-05-18T22:55:43.425Z",
+  "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJFeWFGZXMyRS1fIiwiaWF0IjoiMjAxNS0wNy0wNFQyMToxNzo1Mi4wNThaIiwiZXhwIjoiMjAxNS0wNy0wNFQyMjoxNzo1Mi4wNThaIn0.2pySOIkfBzru-eeJvcl0UBtAzwEIp-wSRe9swyjhvic",
+  "expires": "2015-07-04T22:17:52.058Z",
   "user": {
-    "id": "VyZmxWk8mN",
-    "name": "Allene42",
-    "username": "Allene42",
-    "gravatar_id": "b05984c02a215d38169d0d3ddc7c653b",
-    "email": "johnny.douglas20@gmail.com",
+    "id": "EyaFes2E-_",
+    "name": "Tatum79",
+    "username": "Tatum79",
+    "gravatar_id": "e573338db1b2f3f37ef35f62d484afd9",
+    "email": "adrain_batz@hotmail.com",
     "is_active": true,
     "provider": "local",
     "roles": [
       "member"
     ],
     "plan": "free",
-    "created_at": "2015-05-18T21:55:43.368Z",
+    "created_at": "2015-07-04T21:17:51.990Z",
     "counter": {
       "stars": 0,
       "downloads": 0,
       "comments": 0
     },
     "permissions": {
-      "tags": [
+      "tokens": [
+        "update",
+        "delete",
+        "add",
+        "list"
+      ],
+      "builds": [
         "delete-own",
         "add"
       ],
-      "tokens": [
-        "delete",
-        "update",
-        "list",
-        "add"
+      "users": [
+        "star",
+        "view",
+        "search"
       ],
-      "roms": [
+      "tags": [
         "delete-own",
         "add"
       ],
@@ -43,28 +48,23 @@ Content-Encoding: gzip
         "update",
         "view"
       ],
-      "releases": [
-        "delete",
-        "rate",
-        "star",
+      "roms": [
+        "delete-own",
         "add"
-      ],
-      "users": [
-        "star",
-        "search",
-        "view"
-      ],
-      "files": [
-        "delete",
-        "download",
-        "upload"
       ],
       "games": [
         "rate",
         "star"
       ],
-      "builds": [
-        "delete-own",
+      "files": [
+        "upload",
+        "delete",
+        "download"
+      ],
+      "releases": [
+        "rate",
+        "star",
+        "delete",
         "add"
       ],
       "comments": [

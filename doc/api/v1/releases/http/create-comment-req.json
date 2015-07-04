@@ -1,10 +1,10 @@
-POST /api/v1/releases/V1og--J87N/comments HTTP/1.1
+POST /api/v1/releases/EJLMi2VWO/comments HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJWSkRjZVcxTG00IiwiaWF0IjoiMjAxNS0wNS0xOFQyMTo1NTo0My45NDFaIiwiZXhwIjoiMjAxNS0wNS0xOFQyMjo1NTo0My45NDFaIn0.WBt7gGc-S6wzojFQVe4VO8fc2YUfWRp7hgTVGhA1imM
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJFMWRyYmoyVmJfIiwiaWF0IjoiMjAxNS0wNy0wNFQyMToxNzo1Mi42MzZaIiwiZXhwIjoiMjAxNS0wNy0wNFQyMjoxNzo1Mi42MzZaIn0.aII6wueqZioeWy0m6E44D98ruBiX05EzKPXj_GK32tk
 Content-Type: application/json
-Content-Length: 40
+Content-Length: 60
 
 {
-  "message": "Proactive logistical model"
+  "message": "Profit-focused contextually-based architecture"
 }

@@ -1,11 +1,11 @@
 POST /api/v1/tokens HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJWSm1CLTcxSW1OIiwiaWF0IjoiMjAxNS0wNS0xOFQyMTo1NjoxNi40ODZaIiwiZXhwIjoiMjAxNS0wNS0xOFQyMjo1NjoxNi40ODZaIn0.4joN3hyGRhDtv3FQVmntfNJC79zHwk_EG1OfH5IbPic
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJFeTdYbzZuVmJfIiwiaWF0IjoiMjAxNS0wNy0wNFQyMToxODozNC40MzZaIiwiZXhwIjoiMjAxNS0wNy0wNFQyMjoxODozNC40MzZaIn0.AbVyPNIxpU_xS98O-dsjQjZP39wyJBYYdznNhnF8nHY
 Content-Type: application/json
 Content-Length: 50
 
 {
   "label": "My Application",
-  "password": "FUb7debCWY"
+  "password": "8KYkjLMzhn"
 }

@@ -1,7 +1,7 @@
 403 Forbidden
 Content-Type: application/json; charset=utf-8
 Content-Length: 65
-Etag: W/"41-18fbaf3f"
+Etag: W/"41-P72ZMwhnq6j4Qc4MFexguw"
 
 {
   "error": "Only authors of the release can add new versions."

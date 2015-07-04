@@ -1,6 +1,6 @@
 200 OK
 Content-Type: application/json; charset=utf-8
-Etag: W/"0Fx6n3dqGUl1POWPrfwf+Q=="
+Etag: W/"829-cP/r7DpuPcoJsRyLFfBlJQ"
 Content-Encoding: gzip
 
 [
@@ -79,6 +79,14 @@ Content-Encoding: gzip
     "platform": "vp",
     "download_url": "http://www.vpforums.org/index.php?app=downloads&showfile=8793",
     "built_at": "2014-03-21T00:00:00.000Z",
+    "type": "release",
+    "is_range": false
+  },
+  {
+    "id": "10.x",
+    "label": "VPX",
+    "platform": "vp",
+    "built_at": "2015-12-31T00:00:00.000Z",
     "type": "release",
     "is_range": false
   }

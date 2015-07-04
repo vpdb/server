@@ -1,14 +1,14 @@
-PUT /api/v1/users/EywhZQ1Lm4 HTTP/1.1
+PUT /api/v1/users/VkPciphNZu HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI0SlhuLVF5TFFOIiwiaWF0IjoiMjAxNS0wNS0xOFQyMTo1NjoxNi44OTNaIiwiZXhwIjoiMjAxNS0wNS0xOFQyMjo1NjoxNi44OTNaIn0.eDT7VOgFFMcRl7K01Kjwd8SaQaAL3CWlAKtFl_nR_1k
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI0Sm1jczYyRWJkIiwiaWF0IjoiMjAxNS0wNy0wNFQyMToxODozNC45MjNaIiwiZXhwIjoiMjAxNS0wNy0wNFQyMjoxODozNC45MjNaIn0.fr_766a3df1OqtfOg62TdfFjURcXvvDqiXXbZGzuiiE
 Content-Type: application/json
-Content-Length: 109
+Content-Length: 122
 
 {
-  "email": "kayley_parker22@yahoo.com",
-  "username": "Ebba30",
-  "name": "Ebba30",
+  "email": "karianne73@yahoo.com",
+  "username": "Blake.Windler96",
+  "name": "Blake.Windler96",
   "is_active": true,
   "roles": [
     "member"

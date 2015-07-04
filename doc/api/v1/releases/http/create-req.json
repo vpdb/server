@@ -1,41 +1,41 @@
 POST /api/v1/releases HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJFSnRNUi1rSTdOIiwiaWF0IjoiMjAxNS0wNS0xOFQyMTo1NTo1Ny4zMzhaIiwiZXhwIjoiMjAxNS0wNS0xOFQyMjo1NTo1Ny4zMzhaIn0.jIGZVKcqwPJcQamsyfOybktl7Teu_FbYtY7XdwAcMu4
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJOa3BaaGhOWmQiLCJpYXQiOiIyMDE1LTA3LTA0VDIxOjE4OjA4LjE3MFoiLCJleHAiOiIyMDE1LTA3LTA0VDIyOjE4OjA4LjE3MFoifQ.3h1zRVlEoonkoJ9Q7206R10F464jHP6IdEIc7iAMcgY
 Content-Type: application/json
-Content-Length: 473
+Content-Length: 470
 
 {
   "name": "release",
-  "_game": "morocco",
+  "_game": "chubbie",
   "versions": [
     {
       "files": [
         {
-          "_file": "E18WyfyL7E",
+          "_file": "EJPWzn2Nbd",
           "_media": {
-            "playfield_image": "4yKbJMJIQE",
-            "playfield_video": "EJgefk8QE"
+            "playfield_image": "Vk6-zhhN-u",
+            "playfield_video": "EJxm22VWO"
           },
           "_compatibility": [
             "9.9.0"
           ],
           "flavor": {
             "orientation": "fs",
-            "lightning": "night"
+            "lighting": "night"
           }
         },
         {
-          "_file": "4kD-yzkIXE",
+          "_file": "NJu-GnnEbu",
           "_media": {
-            "playfield_image": "E13ZJM1IXE"
+            "playfield_image": "NJ2ZM23EbO"
           },
           "_compatibility": [
             "9.9.0"
           ],
           "flavor": {
             "orientation": "fs",
-            "lightning": "day"
+            "lighting": "day"
           }
         }
       ],
@@ -44,7 +44,7 @@ Content-Length: 473
   ],
   "authors": [
     {
-      "_user": "EJtMR-kI7N",
+      "_user": "NkpZhhNZd",
       "roles": [
         "Table Creator"
       ]

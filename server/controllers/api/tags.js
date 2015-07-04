@@ -36,17 +36,16 @@ exports.list = function(req, res) {
 	} else {
 		q = { is_active: true };
 	}
-	Tag.find(q, function(err, tags) {
-		/* istanbul ignore if  */
-		if (err) {
-			return api.fail(res, error(err, 'Error listing tags').log('list'), 500);
-		}
 
+	Tag.find(q).exec().then(function(tags) {
 		// reduce
 		tags = _.map(tags, function(tag) {
 			return tag.toSimple();
 		});
 		api.success(res, tags);
+
+	}).then(null, function(err) {
+		api.fail(res, error(err, 'Error listing tags').log('list'), 500);
 	});
 };
 
@@ -59,18 +58,19 @@ exports.create = function(req, res) {
 		_created_by: req.user._id
 	}));
 
-	newTag.validate(function(err) {
-		if (err) {
-			return api.fail(res, error('Validations failed. See below for details.').errors(err.errors).warn('create'), 422);
+	newTag.validate().then(function() {
+		return newTag.save();
+
+	}).then(function() {
+		logger.info('[api|tag:create] Tag "%s" successfully created.', newTag.name);
+		api.success(res, newTag.toSimple(), 201);
+
+	}).then(null, function(err) {
+		if (err.errors) {
+			api.fail(res, error('Validations failed. See below for details.').errors(err.errors).warn('create'), 422);
+		} else {
+			api.fail(res, error(err, 'Error saving tag "%s"', newTag.name).log('create'), 500);
 		}
-		newTag.save(function(err) {
-			/* istanbul ignore if  */
-			if (err) {
-				return api.fail(res, error(err, 'Error saving tag "%s"', newTag.name).log('create'), 500);
-			}
-			logger.info('[api|tag:create] Tag "%s" successfully created.', newTag.name);
-			return api.success(res, newTag.toSimple(), 201);
-		});
 	});
 };
 
@@ -83,30 +83,52 @@ exports.create = function(req, res) {
  */
 exports.del = function(req, res) {
 
-	var assert = api.assert(error, 'delete', req.params.id, res);
-	acl.isAllowed(req.user.id, 'tags', 'delete', assert(function(canDelete) {
-		Tag.findById(req.params.id, assert(function(tag) {
+	var tag, canGloballyDeleteTags;
+	acl.isAllowed(req.user.id, 'tags', 'delete').then(function(canDelete) {
 
-			if (!tag) {
-				return api.fail(res, error('No such tag with ID "%s".', req.params.id), 404);
-			}
+		canGloballyDeleteTags = canDelete;
+		if (!canDelete) {
+			return acl.isAllowed(req.user.id, 'tags', 'delete-own');
+		} else {
+			return true;
+		}
 
-			// only allow deleting own tags
-			if (!canDelete && !tag._created_by.equals(req.user._id)) {
-				return api.fail(res, error('Permission denied, must be owner.'), 403);
-			}
+	}).then(function(canDelete) {
 
-			// todo check if there are references
+		if (!canDelete) {
+			throw new api.AccessDeniedError('You cannot delete tags.');
+		}
+		return Tag.findById(req.params.id);
 
-			// remove from db
-			tag.remove(function(err) {
-				/* istanbul ignore if  */
-				if (err) {
-					return api.fail(res, error(err, 'Error deleting tag "%s" (%s)', tag._id, tag.name).log('delete'), 500);
-				}
-				logger.info('[api|tag:delete] Tag "%s" (%s) successfully deleted.', tag.name, tag._id);
-				api.success(res, null, 204);
-			});
-		}), 'Error getting tag "%s"');
-	}, 'Error checking for ACL "tags/delete".'));
+	}).then(function(t) {
+		tag  = t;
+
+		// tag must exist
+		if (!tag) {
+			throw new api.NotFoundError();
+		}
+
+		// only allow deleting own tags
+		if (!canGloballyDeleteTags && !tag._created_by.equals(req.user._id)) {
+			throw new api.AccessDeniedError('Permission denied, must be owner.');
+		}
+		// todo check if there are references
+		return tag.remove();
+
+	}).then(function() {
+
+		logger.info('[api|tag:delete] Tag "%s" (%s) successfully deleted.', tag.name, tag._id);
+		api.success(res, null, 204);
+
+	}).catch(api.AccessDeniedError, function(err) {
+		api.fail(res, error(err), 403);
+
+	}).catch(api.NotFoundError, function() {
+		api.fail(res, error('No such tag with ID "%s".', req.params.id), 404);
+
+	}).catch(function(err) {
+
+		//api.fail(res, error(err, 'Error deleting tag "%s" (%s)', tag._id, tag.name).log('delete'), 500);
+		api.fail(res, error(err, 'Error checking for ACL "tags/delete".').log('create'), 500);
+	});
 };

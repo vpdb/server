@@ -21,6 +21,7 @@
 
 var _ = require('lodash');
 var url = require('url');
+var util = require('util');
 var logger = require('winston');
 
 var settings = require('../../modules/settings');
@@ -319,3 +320,17 @@ exports.checkReadOnlyFields = function(newObj, oldObj, allowedFields) {
 exports.ping = function(req, res) {
 	exports.success(res, { result: 'pong' });
 };
+
+exports.AccessDeniedError = function(message) {
+	Error.captureStackTrace(this, this.constructor);
+	this.name = this.constructor.name;
+	this.message = message;
+};
+util.inherits(exports.AccessDeniedError, Error);
+
+exports.NotFoundError = function(message) {
+	Error.captureStackTrace(this, this.constructor);
+	this.name = this.constructor.name;
+	this.message = message;
+};
+util.inherits(exports.NotFoundError, Error);

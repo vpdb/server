@@ -317,6 +317,15 @@ exports.checkReadOnlyFields = function(newObj, oldObj, allowedFields) {
 	return errors.length ? errors : false;
 };
 
+
+exports.handleError = function(res, error, message) {
+	return function(err) {
+		logger.error(message);
+		logger.error(err.stack);
+		exports.fail(res, error(err, message).log('create'), 500);
+	};
+};
+
 exports.ping = function(req, res) {
 	exports.success(res, { result: 'pong' });
 };

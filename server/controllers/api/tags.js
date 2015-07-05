@@ -20,6 +20,7 @@
 "use strict";
 
 var _ = require('lodash');
+var Promise = require('bluebird');
 var logger = require('winston');
 
 var error = require('../../modules/error')('api', 'tag');
@@ -51,14 +52,18 @@ exports.list = function(req, res) {
 
 exports.create = function(req, res) {
 
-	var newTag = new Tag(_.extend(req.body, {
-		_id: req.body.name ? req.body.name.replace(/(^[^a-z0-9]+)|([^a-z0-9]+$)/gi, '').replace(/[^a-z0-9]+/gi, '-').toLowerCase() : '-',
-		is_active: false,
-		created_at: new Date(),
-		_created_by: req.user._id
-	}));
+	var newTag;
+	Promise.resolve().then(function() {
 
-	newTag.validate().then(function() {
+		newTag = new Tag(_.extend(req.body, {
+			_id: req.body.name ? req.body.name.replace(/(^[^a-z0-9]+)|([^a-z0-9]+$)/gi, '').replace(/[^a-z0-9]+/gi, '-').toLowerCase() : '-',
+			is_active: false,
+			created_at: new Date(),
+			_created_by: req.user._id
+		}));
+		return newTag.validate();
+
+	}).then(function() {
 		return newTag.save();
 
 	}).then(function() {
@@ -112,7 +117,7 @@ exports.del = function(req, res) {
 		if (!canGloballyDeleteTags && !tag._created_by.equals(req.user._id)) {
 			throw new api.AccessDeniedError('Permission denied, must be owner.');
 		}
-		// todo check if there are references
+		// todo check if the re are references
 		return tag.remove();
 
 	}).then(function() {
@@ -126,9 +131,5 @@ exports.del = function(req, res) {
 	}).catch(api.NotFoundError, function() {
 		api.fail(res, error('No such tag with ID "%s".', req.params.id), 404);
 
-	}).catch(function(err) {
-
-		//api.fail(res, error(err, 'Error deleting tag "%s" (%s)', tag._id, tag.name).log('delete'), 500);
-		api.fail(res, error(err, 'Error checking for ACL "tags/delete".').log('create'), 500);
-	});
+	}).catch(api.handleError(res, error, 'Error deleting tag.'));
 };

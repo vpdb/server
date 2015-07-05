@@ -41,8 +41,20 @@ serverDomain.run(function() {
 	var app = express();
 
 	// bootstrap db connection
-	mongoose.connect(config.vpdb.db, { server: { socketOptions: { keepAlive: 1 } } });
-	logger.info('[app] Database connected to %s.', config.vpdb.db);
+	var mongoOpts = { server: { socketOptions: { keepAlive: 1, connectTimeoutMS: 5000 } }, auto_reconnect: true };
+	mongoose.connection.on('open', function() {
+		logger.info('[app] Database connected to %s.', config.vpdb.db);
+	});
+	mongoose.connection.on('error', function (err) {
+		logger.error('[app] Database connection failed: %s.', err.message);
+	});
+	mongoose.connection.on('disconnected', function() {
+		logger.error('[app] Database disconnected, trying to reconnect...');
+		mongoose.connect(config.vpdb.db, mongoOpts);
+	});
+
+	mongoose.connect(config.vpdb.db, mongoOpts);
+
 
 	// bootstrap models
 	var modelsPath = path.resolve(__dirname, 'server/models');

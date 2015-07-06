@@ -20,7 +20,7 @@ The new version comes with a version number, a changelog and a set of files.
 # Files
 
 A version of a release can obviously contain more than just the table file.
-It can also contain additional scripts or even multiple table files (see 
+It can also contain additional scripts or even multiple table files (see
 *flavors* below).
 
 For every uploaded table file, additional metadata must be provided. Besides
@@ -37,15 +37,19 @@ are currently two flavor types:
   - *Lighting*: Defines whether the playfield is illuminated or dark
 
 Flavors play a significant role when browsing the site and downloading tables:
-A user can globally set its preference and will then get only the selected 
+A user can globally set its preference and will then get only the selected
 flavors.
+
+Since in Visual Pinball v10 both orientation and lighting can be provided
+through the same table file, `vpx` files have an additional *Universal* option
+in case a table file plays well with multiple flavors.
 
 Note that flavor types are hard-coded and cannot be changed with the API.
 
 
 ## Compatibility
 
-Every table file needs to be linked to at least one compatible 
+Every table file needs to be linked to at least one compatible
 [Visual Pinball build][build]. This allows authors to provide table files for
 multiple versions of Visual Pinball in one single release. It also avoids
 confusion about which release is supposed to work with which version of Visual
@@ -56,7 +60,7 @@ Pinball.
 
 Since a table is usually the effort of several people, multiple authors can be
 defined for a release. An author consists of a link to the user as well as a
-label describing the user's accomplishment ("3D Models", "Textures", etc).
+label describing the user's role during the build ("3D Models", "Textures", etc).
 
 Note that authors are specific to the release itself, meaning they apply to all
 versions of the release.
@@ -64,7 +68,7 @@ versions of the release.
 # Tags
 
 [Tags][tag] are markers of special features a table might integrate. A release
-can have none or multiple tags assigned. The goal of tags is to provide a 
+can have none or multiple tags assigned. The goal of tags is to provide a
 structured way of filtering releases, but also to advertise the features.
 
 A tag comes with a name and a description. Icons are conceivable in the future.

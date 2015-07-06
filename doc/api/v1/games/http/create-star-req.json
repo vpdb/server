@@ -1,8 +1,8 @@
-POST /api/v1/games/king-ball/star HTTP/1.1
+POST /api/v1/games/poker-ball-square/star HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
 Content-Type: application/json
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJWeUJlcTYyRS1kIiwiaWF0IjoiMjAxNS0wNy0wNFQyMToxODozMy4yMjhaIiwiZXhwIjoiMjAxNS0wNy0wNFQyMjoxODozMy4yMjhaIn0._Ld9uVbfS61ZELi3Z_8i3Bq4Sr-UW_lKZtpvKfZmH9s
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI0SnNOVkQ3QW1PIiwiaWF0IjoiMjAxNS0wNy0wNlQyMDoyNTo0MC4wODhaIiwiZXhwIjoiMjAxNS0wNy0wNlQyMToyNTo0MC4wODhaIn0.kB8tbSR3Pho6Rq8C1JVc2A-rqKFiSPNyWo5KlzWwjDU
 Content-Length: 2
 
 {}

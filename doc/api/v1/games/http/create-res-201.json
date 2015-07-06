@@ -1,18 +1,18 @@
 201 Created
 Content-Type: application/json; charset=utf-8
-Etag: W/"4f9-N9rjdDwJLrIgaNMr3XrqoQ"
+Etag: W/"487-SA4N8LKqU+8GXe3McerXrA"
 Content-Encoding: gzip
 
 {
-  "title_sortable": "Casino",
-  "title": "Casino",
-  "manufacturer": "Williams",
-  "model_number": "201",
-  "year": 1958,
+  "title_sortable": "3-4-5",
+  "title": "3-4-5",
+  "manufacturer": "United",
+  "year": 1951,
   "game_type": "em",
-  "features": "Flippers (2), Pop bumpers (4), Kick-out holes (2), Gobble hole (1). Rollovers and kick-out holes light playing cards on backglass.",
-  "id": "casino",
-  "created_at": "2015-07-04T21:17:55.209Z",
+  "features": "2 Cards",
+  "notes": "Floor Model Console Cabinet    First United Bingo game with conventional playfield",
+  "id": "3-4-5",
+  "created_at": "2015-07-06T20:25:03.557Z",
   "rating": {
     "score": 0,
     "votes": 0,
@@ -29,18 +29,12 @@ Content-Encoding: gzip
     "releases": 0
   },
   "ipdb": {
-    "number": 463,
-    "mfg": 352
+    "number": 2538,
+    "mfg": 323
   },
-  "artists": [
-    "George Molentin"
-  ],
-  "designers": [
-    "Harry Williams"
-  ],
-  "themes": [
-    "Cards/Gambling"
-  ],
+  "artists": [],
+  "designers": [],
+  "themes": [],
   "short": [],
   "media": {
     "backglass": {
@@ -50,22 +44,22 @@ Content-Encoding: gzip
       "is_protected": true,
       "variations": {
         "small-2x": {
-          "url": "/storage/public/files/small-2x/VkmNihNZO.png"
+          "url": "/storage/public/files/small-2x/N1ObgrX0mu.png"
         },
         "small": {
-          "url": "/storage/public/files/small/VkmNihNZO.png"
+          "url": "/storage/public/files/small/N1ObgrX0mu.png"
         },
         "medium-2x": {
-          "url": "/storage/public/files/medium-2x/VkmNihNZO.png"
+          "url": "/storage/public/files/medium-2x/N1ObgrX0mu.png"
         },
         "medium": {
-          "url": "/storage/public/files/medium/VkmNihNZO.png"
+          "url": "/storage/public/files/medium/N1ObgrX0mu.png"
         }
       },
       "bytes": 135,
-      "url": "/storage/v1/files/VkmNihNZO.png",
-      "id": "VkmNihNZO"
+      "url": "/storage/v1/files/N1ObgrX0mu.png",
+      "id": "N1ObgrX0mu"
     }
   },
-  "url": "/game/casino"
+  "url": "/game/3-4-5"
 }

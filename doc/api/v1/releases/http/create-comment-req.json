@@ -1,10 +1,10 @@
-POST /api/v1/releases/EJLMi2VWO/comments HTTP/1.1
+POST /api/v1/releases/VJfMTNmR7_/comments HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJFMWRyYmoyVmJfIiwiaWF0IjoiMjAxNS0wNy0wNFQyMToxNzo1Mi42MzZaIiwiZXhwIjoiMjAxNS0wNy0wNFQyMjoxNzo1Mi42MzZaIn0.aII6wueqZioeWy0m6E44D98ruBiX05EzKPXj_GK32tk
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJFeXppMzRtQ21kIiwiaWF0IjoiMjAxNS0wNy0wNlQyMDoyNTowMC4wNzZaIiwiZXhwIjoiMjAxNS0wNy0wNlQyMToyNTowMC4wNzZaIn0.sD9s2Pu7akWiBm4Hb1iSQb45b8McedJQEWrRCdAzDa8
 Content-Type: application/json
-Content-Length: 60
+Content-Length: 48
 
 {
-  "message": "Profit-focused contextually-based architecture"
+  "message": "Horizontal transitional capability"
 }

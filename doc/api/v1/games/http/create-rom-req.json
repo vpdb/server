@@ -1,14 +1,14 @@
-POST /api/v1/games/bmx/roms HTTP/1.1
+POST /api/v1/games/wonder-wizard-demolition-derby/roms HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJOeXJWVG5FLV8iLCJpYXQiOiIyMDE1LTA3LTA0VDIxOjE4OjI3LjE3MFoiLCJleHAiOiIyMDE1LTA3LTA0VDIyOjE4OjI3LjE3MFoifQ.Q8jk1T2NIqXp7HqRhddN2K1Y6ZTorH2Svcj3i5qWD_U
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJWeXFqa3Y3Q21PIiwiaWF0IjoiMjAxNS0wNy0wNlQyMDoyNTozNC45NjlaIiwiZXhwIjoiMjAxNS0wNy0wNlQyMToyNTozNC45NjlaIn0.CFhUfJV4x7F-nDEvQ1g7fV1gVk2ZcK-Cgm2d8Ro13rA
 Content-Type: application/json
-Content-Length: 99
+Content-Length: 126
 
 {
-  "id": "bmx_10",
+  "id": "wonder-wizard-demolition-derby_10",
   "version": "1.0",
   "notes": "That is some ROM.",
   "language": "en-US",
-  "_file": "E1EzVT34-_"
+  "_file": "EJObewX07O"
 }

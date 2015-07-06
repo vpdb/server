@@ -1,32 +1,23 @@
 POST /api/v1/games HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI0eXpIbW9uTlp1IiwiaWF0IjoiMjAxNS0wNy0wNFQyMToxNzo1NS4wOTZaIiwiZXhwIjoiMjAxNS0wNy0wNFQyMjoxNzo1NS4wOTZaIn0.VaRIYwnux-dv7Xol5OxhcHFAq1Cm-UC7uhaqwHyTZ3c
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJOeVFiZ1NRMG1kIiwiaWF0IjoiMjAxNS0wNy0wNlQyMDoyNTowMy40NjBaIiwiZXhwIjoiMjAxNS0wNy0wNlQyMToyNTowMy40NjBaIn0.msQ5iNf9afBevrySK1Oh2lfHF2X1Ri-ZNelpENFYwWo
 Content-Type: application/json
-Content-Length: 408
+Content-Length: 266
 
 {
   "ipdb": {
-    "number": 463,
-    "mfg": 352
+    "number": 2538,
+    "mfg": 323
   },
-  "title": "Casino",
-  "manufacturer": "Williams",
-  "model_number": "201",
-  "year": 1958,
+  "title": "3-4-5",
+  "manufacturer": "United",
+  "year": 1951,
   "game_type": "em",
-  "themes": [
-    "Cards/Gambling"
-  ],
-  "designers": [
-    "Harry Williams"
-  ],
-  "artists": [
-    "George Molentin"
-  ],
-  "features": "Flippers (2), Pop bumpers (4), Kick-out holes (2), Gobble hole (1). Rollovers and kick-out holes light playing cards on backglass.",
-  "id": "casino",
+  "features": "2 Cards",
+  "notes": "Floor Model Console Cabinet    First United Bingo game with conventional playfield",
+  "id": "3-4-5",
   "_media": {
-    "backglass": "VkmNihNZO"
+    "backglass": "N1ObgrX0mu"
   }
 }

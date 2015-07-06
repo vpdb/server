@@ -1,21 +1,21 @@
 POST /api/v1/releases HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJOa3BaaGhOWmQiLCJpYXQiOiIyMDE1LTA3LTA0VDIxOjE4OjA4LjE3MFoiLCJleHAiOiIyMDE1LTA3LTA0VDIyOjE4OjA4LjE3MFoifQ.3h1zRVlEoonkoJ9Q7206R10F464jHP6IdEIc7iAMcgY
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI0eUJHNlNRQVhPIiwiaWF0IjoiMjAxNS0wNy0wNlQyMDoyNToxNi4zNDdaIiwiZXhwIjoiMjAxNS0wNy0wNlQyMToyNToxNi4zNDdaIn0.Lt3XLJJIz5xcE_bvxg9CnwS97TWHQkIs44yIrzqL5uo
 Content-Type: application/json
-Content-Length: 470
+Content-Length: 467
 
 {
   "name": "release",
-  "_game": "chubbie",
+  "_game": "rio",
   "versions": [
     {
       "files": [
         {
-          "_file": "EJPWzn2Nbd",
+          "_file": "EkIzCrX07_",
           "_media": {
-            "playfield_image": "Vk6-zhhN-u",
-            "playfield_video": "EJxm22VWO"
+            "playfield_image": "NyeXRBX0XO",
+            "playfield_video": "4yly8QRQ_"
           },
           "_compatibility": [
             "9.9.0"
@@ -26,9 +26,9 @@ Content-Length: 470
           }
         },
         {
-          "_file": "NJu-GnnEbu",
+          "_file": "VybG0rm07u",
           "_media": {
-            "playfield_image": "NJ2ZM23EbO"
+            "playfield_image": "N1Z7RB7AXO"
           },
           "_compatibility": [
             "9.9.0"
@@ -44,7 +44,7 @@ Content-Length: 470
   ],
   "authors": [
     {
-      "_user": "NkpZhhNZd",
+      "_user": "4yBG6SQAXO",
       "roles": [
         "Table Creator"
       ]

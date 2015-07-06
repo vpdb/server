@@ -1,74 +1,74 @@
 200 OK
 Content-Type: application/json; charset=utf-8
-Etag: W/"49c-M4hxFSonwDGpudFtfVk+rw"
+Etag: W/"49d-BWqsu2pfs8hHAbhQEijw6w"
 Content-Encoding: gzip
 
 {
-  "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJFeWFGZXMyRS1fIiwiaWF0IjoiMjAxNS0wNy0wNFQyMToxNzo1Mi4wNThaIiwiZXhwIjoiMjAxNS0wNy0wNFQyMjoxNzo1Mi4wNThaIn0.2pySOIkfBzru-eeJvcl0UBtAzwEIp-wSRe9swyjhvic",
-  "expires": "2015-07-04T22:17:52.058Z",
+  "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJOSm5Rbk43Q1hfIiwiaWF0IjoiMjAxNS0wNy0wNlQyMDoyNDo1OS40NzFaIiwiZXhwIjoiMjAxNS0wNy0wNlQyMToyNDo1OS40NzFaIn0.kPiVH61kLgZ08l6SoeBWhoP9bhhZe3BLqw7tHh0EBK0",
+  "expires": "2015-07-06T21:24:59.471Z",
   "user": {
-    "id": "EyaFes2E-_",
-    "name": "Tatum79",
-    "username": "Tatum79",
-    "gravatar_id": "e573338db1b2f3f37ef35f62d484afd9",
-    "email": "adrain_batz@hotmail.com",
+    "id": "NJnQnN7CX_",
+    "name": "Brain51",
+    "username": "Brain51",
+    "gravatar_id": "920d329c7ca8470de2a333a4a5d57115",
+    "email": "ervin_cassin11@gmail.com",
     "is_active": true,
     "provider": "local",
     "roles": [
       "member"
     ],
     "plan": "free",
-    "created_at": "2015-07-04T21:17:51.990Z",
+    "created_at": "2015-07-06T20:24:59.405Z",
     "counter": {
       "stars": 0,
       "downloads": 0,
       "comments": 0
     },
     "permissions": {
-      "tokens": [
-        "update",
-        "delete",
-        "add",
-        "list"
-      ],
-      "builds": [
-        "delete-own",
+      "comments": [
         "add"
       ],
       "users": [
-        "star",
         "view",
+        "star",
         "search"
       ],
       "tags": [
         "delete-own",
         "add"
       ],
-      "user": [
-        "update",
-        "view"
-      ],
-      "roms": [
-        "delete-own",
-        "add"
-      ],
-      "games": [
-        "rate",
-        "star"
-      ],
       "files": [
         "upload",
         "delete",
         "download"
       ],
-      "releases": [
-        "rate",
-        "star",
-        "delete",
+      "roms": [
+        "delete-own",
         "add"
       ],
-      "comments": [
+      "builds": [
+        "delete-own",
         "add"
+      ],
+      "tokens": [
+        "list",
+        "add",
+        "delete",
+        "update"
+      ],
+      "releases": [
+        "add",
+        "delete",
+        "star",
+        "rate"
+      ],
+      "user": [
+        "view",
+        "update"
+      ],
+      "games": [
+        "rate",
+        "star"
       ]
     }
   }

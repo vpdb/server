@@ -1,9 +1,9 @@
 200 OK
 Content-Type: application/json; charset=utf-8
 Content-Length: 58
-Etag: W/"3a-WzUjWXnOKmprMUAaXj5yAA"
+Etag: W/"3a-xHmnq9YshRvpvB1BN7qDfQ"
 
 {
   "value": 8,
-  "created_at": "2015-07-04T21:18:02.603Z"
+  "created_at": "2015-07-06T20:25:10.867Z"
 }

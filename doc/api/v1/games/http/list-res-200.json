@@ -3,18 +3,274 @@ X-List-Page: 1
 X-List-Size: 12
 X-List-Count: 10
 Content-Type: application/json; charset=utf-8
-Etag: W/"2fe3-nlIXVSedHNZOkIn6CnePtA"
+Etag: W/"3118-pGWiO2GETDgVXfIVU0hXZQ"
 Content-Encoding: gzip
 
 [
   {
-    "id": "cloverleaf",
-    "title": "Cloverleaf",
-    "manufacturer": "Gottlieb",
-    "year": 1932,
-    "game_type": "pm",
+    "id": "coney-island",
+    "title": "Coney Island",
+    "manufacturer": "SIRMO Games S.A.",
+    "year": 1900,
+    "game_type": "ss",
     "ipdb": {
-      "number": 537,
+      "number": 6087,
+      "mfg": 275
+    },
+    "media": {
+      "backglass": {
+        "counter": {
+          "downloads": 0
+        },
+        "is_protected": true,
+        "variations": {
+          "medium-2x": {
+            "url": "/storage/public/files/medium-2x/4J6bQSm07_.jpg",
+            "width": 728,
+            "height": 582,
+            "bytes": 2840,
+            "mime_type": "image/jpeg"
+          },
+          "small": {
+            "url": "/storage/public/files/small/4J6bQSm07_.jpg",
+            "width": 253,
+            "height": 202,
+            "bytes": 599,
+            "mime_type": "image/jpeg"
+          },
+          "medium": {
+            "url": "/storage/public/files/medium/4J6bQSm07_.jpg",
+            "width": 364,
+            "height": 291,
+            "bytes": 942,
+            "mime_type": "image/jpeg"
+          },
+          "small-2x": {
+            "url": "/storage/public/files/small-2x/4J6bQSm07_.jpg",
+            "width": 505,
+            "height": 404,
+            "bytes": 1535,
+            "mime_type": "image/jpeg"
+          }
+        },
+        "bytes": 135,
+        "url": "/storage/v1/files/4J6bQSm07_.png",
+        "id": "4J6bQSm07_"
+      }
+    },
+    "counter": {
+      "stars": 0,
+      "comments": 0,
+      "downloads": 0,
+      "views": 0,
+      "releases": 0
+    },
+    "rating": {
+      "score": 0,
+      "votes": 0,
+      "average": 0
+    }
+  },
+  {
+    "id": "daffy-derby",
+    "title": "Daffy Derby",
+    "manufacturer": "Williams",
+    "year": 1954,
+    "game_type": "em",
+    "ipdb": {
+      "number": 625,
+      "mfg": 352
+    },
+    "media": {
+      "backglass": {
+        "counter": {
+          "downloads": 0
+        },
+        "is_protected": true,
+        "variations": {
+          "medium-2x": {
+            "url": "/storage/public/files/medium-2x/Ey4HWrmR7_.jpg",
+            "width": 728,
+            "height": 582,
+            "bytes": 2840,
+            "mime_type": "image/jpeg"
+          },
+          "small": {
+            "url": "/storage/public/files/small/Ey4HWrmR7_.jpg",
+            "width": 253,
+            "height": 202,
+            "bytes": 599,
+            "mime_type": "image/jpeg"
+          },
+          "small-2x": {
+            "url": "/storage/public/files/small-2x/Ey4HWrmR7_.jpg",
+            "width": 505,
+            "height": 404,
+            "bytes": 1535,
+            "mime_type": "image/jpeg"
+          },
+          "medium": {
+            "url": "/storage/public/files/medium/Ey4HWrmR7_.jpg",
+            "width": 364,
+            "height": 291,
+            "bytes": 943,
+            "mime_type": "image/jpeg"
+          }
+        },
+        "bytes": 135,
+        "url": "/storage/v1/files/Ey4HWrmR7_.png",
+        "id": "Ey4HWrmR7_"
+      }
+    },
+    "counter": {
+      "stars": 0,
+      "comments": 0,
+      "downloads": 0,
+      "views": 0,
+      "releases": 0
+    },
+    "rating": {
+      "score": 0,
+      "votes": 0,
+      "average": 0
+    }
+  },
+  {
+    "id": "derby-winner",
+    "title": "Derby Winner",
+    "manufacturer": "Western Products, Incorporated (1938-1941)",
+    "year": 1941,
+    "game_type": "em",
+    "ipdb": {
+      "number": 670,
+      "mfg": 344
+    },
+    "media": {
+      "backglass": {
+        "counter": {
+          "downloads": 0
+        },
+        "is_protected": true,
+        "variations": {
+          "medium-2x": {
+            "url": "/storage/public/files/medium-2x/NJsSGSXAXd.jpg",
+            "width": 728,
+            "height": 582,
+            "bytes": 2840,
+            "mime_type": "image/jpeg"
+          },
+          "small-2x": {
+            "url": "/storage/public/files/small-2x/NJsSGSXAXd.jpg",
+            "width": 505,
+            "height": 404,
+            "bytes": 1535,
+            "mime_type": "image/jpeg"
+          },
+          "medium": {
+            "url": "/storage/public/files/medium/NJsSGSXAXd.jpg",
+            "width": 364,
+            "height": 291,
+            "bytes": 942,
+            "mime_type": "image/jpeg"
+          },
+          "small": {
+            "url": "/storage/public/files/small/NJsSGSXAXd.jpg",
+            "width": 253,
+            "height": 202,
+            "bytes": 599,
+            "mime_type": "image/jpeg"
+          }
+        },
+        "bytes": 135,
+        "url": "/storage/v1/files/NJsSGSXAXd.png",
+        "id": "NJsSGSXAXd"
+      }
+    },
+    "counter": {
+      "stars": 0,
+      "comments": 0,
+      "downloads": 0,
+      "views": 0,
+      "releases": 0
+    },
+    "rating": {
+      "score": 0,
+      "votes": 0,
+      "average": 0
+    }
+  },
+  {
+    "id": "dude-ranch",
+    "title": "Dude Ranch",
+    "manufacturer": "Genco",
+    "year": 1940,
+    "game_type": "em",
+    "ipdb": {
+      "number": 740,
+      "mfg": 130
+    },
+    "media": {
+      "backglass": {
+        "counter": {
+          "downloads": 0
+        },
+        "is_protected": true,
+        "variations": {
+          "medium-2x": {
+            "url": "/storage/public/files/medium-2x/E1G8bSQRXu.jpg",
+            "width": 728,
+            "height": 582,
+            "bytes": 2840,
+            "mime_type": "image/jpeg"
+          },
+          "small-2x": {
+            "url": "/storage/public/files/small-2x/E1G8bSQRXu.jpg",
+            "width": 505,
+            "height": 404,
+            "bytes": 1535,
+            "mime_type": "image/jpeg"
+          },
+          "medium": {
+            "url": "/storage/public/files/medium/E1G8bSQRXu.jpg",
+            "width": 364,
+            "height": 291,
+            "bytes": 942,
+            "mime_type": "image/jpeg"
+          },
+          "small": {
+            "url": "/storage/public/files/small/E1G8bSQRXu.jpg",
+            "width": 253,
+            "height": 202,
+            "bytes": 599,
+            "mime_type": "image/jpeg"
+          }
+        },
+        "bytes": 135,
+        "url": "/storage/v1/files/E1G8bSQRXu.png",
+        "id": "E1G8bSQRXu"
+      }
+    },
+    "counter": {
+      "stars": 0,
+      "comments": 0,
+      "downloads": 0,
+      "views": 0,
+      "releases": 0
+    },
+    "rating": {
+      "score": 0,
+      "votes": 0,
+      "average": 0
+    }
+  },
+  {
+    "id": "miss-america",
+    "title": "Miss America",
+    "manufacturer": "Gottlieb",
+    "year": 1937,
+    "game_type": "em",
+    "ipdb": {
+      "number": 1608,
       "mfg": 93
     },
     "media": {
@@ -24,38 +280,38 @@ Content-Encoding: gzip
         },
         "is_protected": true,
         "variations": {
-          "medium-2x": {
-            "url": "/storage/public/files/medium-2x/4y5N8s3NW_.jpg",
-            "width": 728,
-            "height": 582,
-            "bytes": 2840,
-            "mime_type": "image/jpeg"
-          },
           "small-2x": {
-            "url": "/storage/public/files/small-2x/4y5N8s3NW_.jpg",
+            "url": "/storage/public/files/small-2x/4JYbzrQAX_.jpg",
             "width": 505,
             "height": 404,
             "bytes": 1535,
             "mime_type": "image/jpeg"
           },
+          "medium": {
+            "url": "/storage/public/files/medium/4JYbzrQAX_.jpg",
+            "width": 364,
+            "height": 291,
+            "bytes": 942,
+            "mime_type": "image/jpeg"
+          },
+          "medium-2x": {
+            "url": "/storage/public/files/medium-2x/4JYbzrQAX_.jpg",
+            "width": 728,
+            "height": 582,
+            "bytes": 2840,
+            "mime_type": "image/jpeg"
+          },
           "small": {
-            "url": "/storage/public/files/small/4y5N8s3NW_.jpg",
+            "url": "/storage/public/files/small/4JYbzrQAX_.jpg",
             "width": 253,
             "height": 202,
             "bytes": 599,
             "mime_type": "image/jpeg"
-          },
-          "medium": {
-            "url": "/storage/public/files/medium/4y5N8s3NW_.jpg",
-            "width": 364,
-            "height": 291,
-            "bytes": 943,
-            "mime_type": "image/jpeg"
           }
         },
         "bytes": 135,
-        "url": "/storage/v1/files/4y5N8s3NW_.png",
-        "id": "4y5N8s3NW_"
+        "url": "/storage/v1/files/4JYbzrQAX_.png",
+        "id": "4JYbzrQAX_"
       }
     },
     "counter": {
@@ -72,126 +328,125 @@ Content-Encoding: gzip
     }
   },
   {
-    "id": "dealers-choice",
-    "title": "Dealer's Choice",
+    "id": "pennant-fever",
+    "title": "Pennant Fever",
     "manufacturer": "Williams",
+    "year": 1984,
+    "game_type": "ss",
+    "ipdb": {
+      "number": 3335,
+      "mfg": 351
+    },
+    "media": {
+      "backglass": {
+        "counter": {
+          "downloads": 0
+        },
+        "is_protected": true,
+        "variations": {
+          "medium-2x": {
+            "url": "/storage/public/files/medium-2x/VyuPbSmAQd.jpg",
+            "width": 728,
+            "height": 582,
+            "bytes": 2840,
+            "mime_type": "image/jpeg"
+          },
+          "small-2x": {
+            "url": "/storage/public/files/small-2x/VyuPbSmAQd.jpg",
+            "width": 505,
+            "height": 404,
+            "bytes": 1535,
+            "mime_type": "image/jpeg"
+          },
+          "medium": {
+            "url": "/storage/public/files/medium/VyuPbSmAQd.jpg",
+            "width": 364,
+            "height": 291,
+            "bytes": 943,
+            "mime_type": "image/jpeg"
+          },
+          "small": {
+            "url": "/storage/public/files/small/VyuPbSmAQd.jpg",
+            "width": 253,
+            "height": 202,
+            "bytes": 599,
+            "mime_type": "image/jpeg"
+          }
+        },
+        "bytes": 135,
+        "url": "/storage/v1/files/VyuPbSmAQd.png",
+        "id": "VyuPbSmAQd"
+      }
+    },
+    "counter": {
+      "stars": 0,
+      "comments": 0,
+      "downloads": 0,
+      "views": 0,
+      "releases": 0
+    },
+    "rating": {
+      "score": 0,
+      "votes": 0,
+      "average": 0
+    }
+  },
+  {
+    "id": "pickwick-improved",
+    "title": "Pickwick (Improved)",
+    "manufacturer": "Pessers, Moody, Wraith, & Gurr",
+    "year": 1914,
+    "game_type": "pm",
+    "ipdb": {
+      "number": 5432,
+      "mfg": 543
+    },
+    "media": {
+      "backglass": {
+        "counter": {
+          "downloads": 0
+        },
+        "is_protected": true,
+        "variations": {
+          "small-2x": {
+            "url": "/storage/public/files/small-2x/Vyg4XHmRXd.png"
+          },
+          "small": {
+            "url": "/storage/public/files/small/Vyg4XHmRXd.png"
+          },
+          "medium-2x": {
+            "url": "/storage/public/files/medium-2x/Vyg4XHmRXd.png"
+          },
+          "medium": {
+            "url": "/storage/public/files/medium/Vyg4XHmRXd.png"
+          }
+        },
+        "bytes": 135,
+        "url": "/storage/v1/files/Vyg4XHmRXd.png",
+        "id": "Vyg4XHmRXd"
+      }
+    },
+    "counter": {
+      "stars": 0,
+      "comments": 0,
+      "downloads": 0,
+      "views": 0,
+      "releases": 0
+    },
+    "rating": {
+      "score": 0,
+      "votes": 0,
+      "average": 0
+    }
+  },
+  {
+    "id": "relay",
+    "title": "Relay",
+    "manufacturer": "Bally",
     "year": 1974,
     "game_type": "em",
     "ipdb": {
-      "number": 649,
-      "mfg": 351,
-      "rating": 7.6
-    },
-    "media": {
-      "backglass": {
-        "counter": {
-          "downloads": 0
-        },
-        "is_protected": true,
-        "variations": {
-          "medium-2x": {
-            "url": "/storage/public/files/medium-2x/N1_Pri3NbO.jpg",
-            "width": 728,
-            "height": 582,
-            "bytes": 2840,
-            "mime_type": "image/jpeg"
-          },
-          "small-2x": {
-            "url": "/storage/public/files/small-2x/N1_Pri3NbO.jpg",
-            "width": 505,
-            "height": 404,
-            "bytes": 1535,
-            "mime_type": "image/jpeg"
-          },
-          "medium": {
-            "url": "/storage/public/files/medium/N1_Pri3NbO.jpg",
-            "width": 364,
-            "height": 291,
-            "bytes": 943,
-            "mime_type": "image/jpeg"
-          },
-          "small": {
-            "url": "/storage/public/files/small/N1_Pri3NbO.jpg",
-            "width": 253,
-            "height": 202,
-            "bytes": 599,
-            "mime_type": "image/jpeg"
-          }
-        },
-        "bytes": 135,
-        "url": "/storage/v1/files/N1_Pri3NbO.png",
-        "id": "N1_Pri3NbO"
-      }
-    },
-    "counter": {
-      "stars": 0,
-      "comments": 0,
-      "downloads": 0,
-      "views": 0,
-      "releases": 0
-    },
-    "rating": {
-      "score": 0,
-      "votes": 0,
-      "average": 0
-    }
-  },
-  {
-    "id": "double-up",
-    "title": "Double Up",
-    "manufacturer": "Stoner Manufacturing Company",
-    "year": 1936,
-    "game_type": "em",
-    "ipdb": {
-      "number": 725,
-      "mfg": 304
-    },
-    "media": {
-      "backglass": {
-        "counter": {
-          "downloads": 0
-        },
-        "is_protected": true,
-        "variations": {
-          "small-2x": {
-            "url": "/storage/public/files/small-2x/Vy-gvshNZ_.png"
-          },
-          "small": {
-            "url": "/storage/public/files/small/Vy-gvshNZ_.png"
-          },
-          "medium-2x": {
-            "url": "/storage/public/files/medium-2x/Vy-gvshNZ_.png"
-          },
-          "medium": {
-            "url": "/storage/public/files/medium/Vy-gvshNZ_.png"
-          }
-        },
-        "bytes": 135,
-        "url": "/storage/v1/files/Vy-gvshNZ_.png",
-        "id": "Vy-gvshNZ_"
-      }
-    },
-    "counter": {
-      "stars": 0,
-      "comments": 0,
-      "downloads": 0,
-      "views": 0,
-      "releases": 0
-    },
-    "rating": {
-      "score": 0,
-      "votes": 0,
-      "average": 0
-    }
-  },
-  {
-    "id": "hunch",
-    "title": "Hunch",
-    "manufacturer": "Bally",
-    "year": 1935,
-    "game_type": "em",
-    "ipdb": {
-      "number": 4157,
+      "number": 3572,
       "mfg": 47
     },
     "media": {
@@ -201,209 +456,29 @@ Content-Encoding: gzip
         },
         "is_protected": true,
         "variations": {
-          "medium": {
-            "url": "/storage/public/files/medium/E10M8i2NWO.jpg",
-            "width": 364,
-            "height": 291,
-            "bytes": 943,
-            "mime_type": "image/jpeg"
-          },
           "medium-2x": {
-            "url": "/storage/public/files/medium-2x/E10M8i2NWO.jpg",
+            "url": "/storage/public/files/medium-2x/4kSgGBQCm_.jpg",
             "width": 728,
             "height": 582,
             "bytes": 2840,
             "mime_type": "image/jpeg"
           },
-          "small-2x": {
-            "url": "/storage/public/files/small-2x/E10M8i2NWO.jpg",
-            "width": 505,
-            "height": 404,
-            "bytes": 1535,
-            "mime_type": "image/jpeg"
-          },
-          "small": {
-            "url": "/storage/public/files/small/E10M8i2NWO.jpg",
-            "width": 253,
-            "height": 202,
-            "bytes": 599,
-            "mime_type": "image/jpeg"
-          }
-        },
-        "bytes": 135,
-        "url": "/storage/v1/files/E10M8i2NWO.png",
-        "id": "E10M8i2NWO"
-      }
-    },
-    "counter": {
-      "stars": 0,
-      "comments": 0,
-      "downloads": 0,
-      "views": 0,
-      "releases": 0
-    },
-    "rating": {
-      "score": 0,
-      "votes": 0,
-      "average": 0
-    }
-  },
-  {
-    "id": "lucky-twins",
-    "title": "Lucky Twins",
-    "manufacturer": "DeLuxe Amusement Company",
-    "year": 1933,
-    "game_type": "pm",
-    "ipdb": {
-      "number": 4010,
-      "mfg": 100
-    },
-    "media": {
-      "backglass": {
-        "counter": {
-          "downloads": 0
-        },
-        "is_protected": true,
-        "variations": {
-          "medium-2x": {
-            "url": "/storage/public/files/medium-2x/NJTQBo3NZd.jpg",
-            "width": 728,
-            "height": 582,
-            "bytes": 2840,
-            "mime_type": "image/jpeg"
-          },
-          "small-2x": {
-            "url": "/storage/public/files/small-2x/NJTQBo3NZd.jpg",
-            "width": 505,
-            "height": 404,
-            "bytes": 1535,
-            "mime_type": "image/jpeg"
-          },
-          "small": {
-            "url": "/storage/public/files/small/NJTQBo3NZd.jpg",
-            "width": 253,
-            "height": 202,
-            "bytes": 599,
-            "mime_type": "image/jpeg"
-          },
           "medium": {
-            "url": "/storage/public/files/medium/NJTQBo3NZd.jpg",
-            "width": 364,
-            "height": 291,
-            "bytes": 942,
-            "mime_type": "image/jpeg"
-          }
-        },
-        "bytes": 135,
-        "url": "/storage/v1/files/NJTQBo3NZd.png",
-        "id": "NJTQBo3NZd"
-      }
-    },
-    "counter": {
-      "stars": 0,
-      "comments": 0,
-      "downloads": 0,
-      "views": 0,
-      "releases": 0
-    },
-    "rating": {
-      "score": 0,
-      "votes": 0,
-      "average": 0
-    }
-  },
-  {
-    "id": "rawhide",
-    "title": "Rawhide",
-    "manufacturer": "Stern",
-    "year": 1977,
-    "game_type": "em",
-    "ipdb": {
-      "number": 3545,
-      "mfg": 302
-    },
-    "media": {
-      "backglass": {
-        "counter": {
-          "downloads": 0
-        },
-        "is_protected": true,
-        "variations": {
-          "small-2x": {
-            "url": "/storage/public/files/small-2x/Vy2v8ohVWd.png"
-          },
-          "medium-2x": {
-            "url": "/storage/public/files/medium-2x/Vy2v8ohVWd.png"
-          },
-          "medium": {
-            "url": "/storage/public/files/medium/Vy2v8ohVWd.png"
-          },
-          "small": {
-            "url": "/storage/public/files/small/Vy2v8ohVWd.jpg",
-            "width": 253,
-            "height": 202,
-            "bytes": 599,
-            "mime_type": "image/jpeg"
-          }
-        },
-        "bytes": 135,
-        "url": "/storage/v1/files/Vy2v8ohVWd.png",
-        "id": "Vy2v8ohVWd"
-      }
-    },
-    "counter": {
-      "stars": 0,
-      "comments": 0,
-      "downloads": 0,
-      "views": 0,
-      "releases": 0
-    },
-    "rating": {
-      "score": 0,
-      "votes": 0,
-      "average": 0
-    }
-  },
-  {
-    "id": "reno",
-    "title": "Reno",
-    "manufacturer": "Fred W. Kramer Amusement Company",
-    "year": 1932,
-    "game_type": "pm",
-    "ipdb": {
-      "number": 1945,
-      "mfg": 124
-    },
-    "media": {
-      "backglass": {
-        "counter": {
-          "downloads": 0
-        },
-        "is_protected": true,
-        "variations": {
-          "medium-2x": {
-            "url": "/storage/public/files/medium-2x/4k24ri2Ebu.jpg",
-            "width": 728,
-            "height": 582,
-            "bytes": 2840,
-            "mime_type": "image/jpeg"
-          },
-          "small-2x": {
-            "url": "/storage/public/files/small-2x/4k24ri2Ebu.jpg",
-            "width": 505,
-            "height": 404,
-            "bytes": 1535,
-            "mime_type": "image/jpeg"
-          },
-          "medium": {
-            "url": "/storage/public/files/medium/4k24ri2Ebu.jpg",
+            "url": "/storage/public/files/medium/4kSgGBQCm_.jpg",
             "width": 364,
             "height": 291,
             "bytes": 942,
             "mime_type": "image/jpeg"
           },
+          "small-2x": {
+            "url": "/storage/public/files/small-2x/4kSgGBQCm_.jpg",
+            "width": 505,
+            "height": 404,
+            "bytes": 1535,
+            "mime_type": "image/jpeg"
+          },
           "small": {
-            "url": "/storage/public/files/small/4k24ri2Ebu.jpg",
+            "url": "/storage/public/files/small/4kSgGBQCm_.jpg",
             "width": 253,
             "height": 202,
             "bytes": 599,
@@ -411,8 +486,8 @@ Content-Encoding: gzip
           }
         },
         "bytes": 135,
-        "url": "/storage/v1/files/4k24ri2Ebu.png",
-        "id": "4k24ri2Ebu"
+        "url": "/storage/v1/files/4kSgGBQCm_.png",
+        "id": "4kSgGBQCm_"
       }
     },
     "counter": {
@@ -431,12 +506,12 @@ Content-Encoding: gzip
   {
     "id": "sho-me",
     "title": "Sho Me",
-    "manufacturer": "V. P. Distributing Company",
-    "year": 1944,
+    "manufacturer": "Unknown",
+    "year": 1947,
     "game_type": "em",
     "ipdb": {
-      "number": 5073,
-      "mfg": 472
+      "number": 3877,
+      "mfg": 328
     },
     "media": {
       "backglass": {
@@ -446,37 +521,37 @@ Content-Encoding: gzip
         "is_protected": true,
         "variations": {
           "medium-2x": {
-            "url": "/storage/public/files/medium-2x/V1-IBo2EZO.jpg",
+            "url": "/storage/public/files/medium-2x/Nkj7GHXAXO.jpg",
             "width": 728,
             "height": 582,
             "bytes": 2840,
             "mime_type": "image/jpeg"
           },
           "small-2x": {
-            "url": "/storage/public/files/small-2x/V1-IBo2EZO.jpg",
+            "url": "/storage/public/files/small-2x/Nkj7GHXAXO.jpg",
             "width": 505,
             "height": 404,
             "bytes": 1535,
             "mime_type": "image/jpeg"
           },
-          "medium": {
-            "url": "/storage/public/files/medium/V1-IBo2EZO.jpg",
-            "width": 364,
-            "height": 291,
-            "bytes": 942,
-            "mime_type": "image/jpeg"
-          },
           "small": {
-            "url": "/storage/public/files/small/V1-IBo2EZO.jpg",
+            "url": "/storage/public/files/small/Nkj7GHXAXO.jpg",
             "width": 253,
             "height": 202,
             "bytes": 599,
             "mime_type": "image/jpeg"
+          },
+          "medium": {
+            "url": "/storage/public/files/medium/Nkj7GHXAXO.jpg",
+            "width": 364,
+            "height": 291,
+            "bytes": 942,
+            "mime_type": "image/jpeg"
           }
         },
         "bytes": 135,
-        "url": "/storage/v1/files/V1-IBo2EZO.png",
-        "id": "V1-IBo2EZO"
+        "url": "/storage/v1/files/Nkj7GHXAXO.png",
+        "id": "Nkj7GHXAXO"
       }
     },
     "counter": {
@@ -493,14 +568,14 @@ Content-Encoding: gzip
     }
   },
   {
-    "id": "torpedo-patrol",
-    "title": "Torpedo Patrol",
-    "manufacturer": "P & S",
+    "id": "war-admiral",
+    "title": "War Admiral",
+    "manufacturer": "Bell Products Company",
     "year": 1943,
     "game_type": "em",
     "ipdb": {
-      "number": 3838,
-      "mfg": 239
+      "number": 3851,
+      "mfg": 46
     },
     "media": {
       "backglass": {
@@ -510,101 +585,37 @@ Content-Encoding: gzip
         "is_protected": true,
         "variations": {
           "medium-2x": {
-            "url": "/storage/public/files/medium-2x/N1ClLonEWd.jpg",
+            "url": "/storage/public/files/medium-2x/Ekdl7S70XO.jpg",
             "width": 728,
             "height": 582,
             "bytes": 2840,
             "mime_type": "image/jpeg"
           },
           "small-2x": {
-            "url": "/storage/public/files/small-2x/N1ClLonEWd.jpg",
+            "url": "/storage/public/files/small-2x/Ekdl7S70XO.jpg",
             "width": 505,
             "height": 404,
             "bytes": 1535,
             "mime_type": "image/jpeg"
           },
+          "medium": {
+            "url": "/storage/public/files/medium/Ekdl7S70XO.jpg",
+            "width": 364,
+            "height": 291,
+            "bytes": 943,
+            "mime_type": "image/jpeg"
+          },
           "small": {
-            "url": "/storage/public/files/small/N1ClLonEWd.jpg",
+            "url": "/storage/public/files/small/Ekdl7S70XO.jpg",
             "width": 253,
             "height": 202,
             "bytes": 599,
             "mime_type": "image/jpeg"
-          },
-          "medium": {
-            "url": "/storage/public/files/medium/N1ClLonEWd.jpg",
-            "width": 364,
-            "height": 291,
-            "bytes": 942,
-            "mime_type": "image/jpeg"
           }
         },
         "bytes": 135,
-        "url": "/storage/v1/files/N1ClLonEWd.png",
-        "id": "N1ClLonEWd"
-      }
-    },
-    "counter": {
-      "stars": 0,
-      "comments": 0,
-      "downloads": 0,
-      "views": 0,
-      "releases": 0
-    },
-    "rating": {
-      "score": 0,
-      "votes": 0,
-      "average": 0
-    }
-  },
-  {
-    "id": "universe",
-    "title": "Universe",
-    "manufacturer": "Zaccaria",
-    "year": 1977,
-    "game_type": "em",
-    "ipdb": {
-      "number": 2706,
-      "mfg": 356
-    },
-    "media": {
-      "backglass": {
-        "counter": {
-          "downloads": 0
-        },
-        "is_protected": true,
-        "variations": {
-          "medium-2x": {
-            "url": "/storage/public/files/medium-2x/E19I8s2EWd.jpg",
-            "width": 728,
-            "height": 582,
-            "bytes": 2839,
-            "mime_type": "image/jpeg"
-          },
-          "small-2x": {
-            "url": "/storage/public/files/small-2x/E19I8s2EWd.jpg",
-            "width": 505,
-            "height": 404,
-            "bytes": 1534,
-            "mime_type": "image/jpeg"
-          },
-          "small": {
-            "url": "/storage/public/files/small/E19I8s2EWd.jpg",
-            "width": 253,
-            "height": 202,
-            "bytes": 598,
-            "mime_type": "image/jpeg"
-          },
-          "medium": {
-            "url": "/storage/public/files/medium/E19I8s2EWd.jpg",
-            "width": 364,
-            "height": 291,
-            "bytes": 941,
-            "mime_type": "image/jpeg"
-          }
-        },
-        "bytes": 135,
-        "url": "/storage/v1/files/E19I8s2EWd.png",
-        "id": "E19I8s2EWd"
+        "url": "/storage/v1/files/Ekdl7S70XO.png",
+        "id": "Ekdl7S70XO"
       }
     },
     "counter": {

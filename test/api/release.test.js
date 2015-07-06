@@ -602,7 +602,6 @@ describe('The VPDB `release` API', function() {
 				contributor: { roles: [ 'contributor' ] }
 			}, function() {
 				hlp.release.createReleases('member', request, numReleases, function(r) {
-					hlp.dump(r);
 					releases = r;
 					done(null, r);
 				});

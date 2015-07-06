@@ -1,15 +1,15 @@
 200 OK
 Content-Type: application/json; charset=utf-8
-Content-Length: 862
-Etag: W/"35e-lSfzhLo7J4/CZQ31SD7Wbw"
+Content-Length: 867
+Etag: W/"363-KXiklqKYcATN7+3C8KIyQQ"
 
 {
   "plan": "free",
-  "name": "Kay_Botsford",
-  "username": "Kay_Botsford",
-  "email": "otho.hegmann@hotmail.com",
+  "name": "Johnpaul.Wisoky25",
+  "username": "Johnpaul.Wisoky25",
+  "email": "amos59@hotmail.com",
   "provider": "local",
-  "created_at": "2015-07-04T21:17:51.185Z",
+  "created_at": "2015-07-06T20:24:58.547Z",
   "is_active": true,
   "counter": {
     "stars": 0,
@@ -19,53 +19,53 @@ Etag: W/"35e-lSfzhLo7J4/CZQ31SD7Wbw"
   "roles": [
     "member"
   ],
-  "id": "41jxinE-O",
-  "gravatar_id": "a7f47083a4981371088311dcab2e561e",
+  "id": "N1mxoE70m_",
+  "gravatar_id": "c23b2bcceefa75e408f50171442ceeae",
   "permissions": {
-    "tokens": [
-      "update",
-      "delete",
-      "add",
-      "list"
-    ],
-    "builds": [
-      "delete-own",
+    "comments": [
       "add"
     ],
     "users": [
-      "star",
       "view",
+      "star",
       "search"
     ],
     "tags": [
       "delete-own",
       "add"
     ],
-    "user": [
-      "update",
-      "view"
-    ],
-    "roms": [
-      "delete-own",
-      "add"
-    ],
-    "games": [
-      "rate",
-      "star"
-    ],
     "files": [
       "upload",
       "delete",
       "download"
     ],
-    "releases": [
-      "rate",
-      "star",
-      "delete",
+    "roms": [
+      "delete-own",
       "add"
     ],
-    "comments": [
+    "builds": [
+      "delete-own",
       "add"
+    ],
+    "tokens": [
+      "list",
+      "add",
+      "delete",
+      "update"
+    ],
+    "releases": [
+      "add",
+      "delete",
+      "star",
+      "rate"
+    ],
+    "user": [
+      "view",
+      "update"
+    ],
+    "games": [
+      "rate",
+      "star"
     ]
   }
 }

@@ -1,8 +1,8 @@
-PUT /api/v1/games/baseball-pool/rating HTTP/1.1
+PUT /api/v1/games/natural/rating HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
 Content-Type: application/json
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJOMXZFb2luTldkIiwiaWF0IjoiMjAxNS0wNy0wNFQyMToxODowMi43MjVaIiwiZXhwIjoiMjAxNS0wNy0wNFQyMjoxODowMi43MjVaIn0.UXLmAnKT_Rbk7DEsYBIVQCy_Wd16lR3CMrpzzJwirpY
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJWMS1Ed0JRUlh1IiwiaWF0IjoiMjAxNS0wNy0wNlQyMDoyNToxMS4wMDBaIiwiZXhwIjoiMjAxNS0wNy0wNlQyMToyNToxMS4wMDBaIn0.Oa8Cm-1NIm8ZAkXY_bn0wbtrSPrnx8bqEG5kSlftyDg
 Content-Length: 11
 
 {

@@ -1,16 +1,16 @@
 200 OK
 Content-Type: application/json; charset=utf-8
-Etag: W/"403-PwIsJrZGXb/7PnJPvvHtWw"
+Etag: W/"406-4S9aT2Twzg9L+T7mkYjDOw"
 Content-Encoding: gzip
 
 {
-  "location": "Murrayland",
+  "location": "Port Erick",
   "plan": "free",
-  "name": "Denis Morissette",
-  "username": "Yoshiko3",
-  "email": "lera_mclaughlin21@yahoo.com",
+  "name": "Adrianna Kihn",
+  "username": "Berta_Cronin",
+  "email": "rory_mccullough33@hotmail.com",
   "provider": "local",
-  "created_at": "2015-07-04T21:18:34.999Z",
+  "created_at": "2015-07-06T20:25:42.328Z",
   "is_active": true,
   "counter": {
     "stars": 0,
@@ -22,56 +22,56 @@ Content-Encoding: gzip
   ],
   "email_status": {
     "code": "pending_update",
-    "expires_at": "2015-07-05T21:18:35.348Z",
-    "value": "dalton_blanda63@gmail.com"
+    "expires_at": "2015-07-07T20:25:42.680Z",
+    "value": "michael.hermann@yahoo.com"
   },
-  "id": "Ekmijan4b_",
-  "gravatar_id": "31c70461fb45fcfc27a61758e115a827",
+  "id": "4kw-wPQC7_",
+  "gravatar_id": "6840f1a9159ae4ce620ca9ec36a60735",
   "permissions": {
-    "tokens": [
-      "update",
-      "delete",
-      "add",
-      "list"
-    ],
-    "builds": [
-      "delete-own",
+    "comments": [
       "add"
     ],
     "users": [
-      "star",
       "view",
+      "star",
       "search"
     ],
     "tags": [
       "delete-own",
       "add"
     ],
-    "user": [
-      "update",
-      "view"
-    ],
-    "roms": [
-      "delete-own",
-      "add"
-    ],
-    "games": [
-      "rate",
-      "star"
-    ],
     "files": [
       "upload",
       "delete",
       "download"
     ],
-    "releases": [
-      "rate",
-      "star",
-      "delete",
+    "roms": [
+      "delete-own",
       "add"
     ],
-    "comments": [
+    "builds": [
+      "delete-own",
       "add"
+    ],
+    "tokens": [
+      "list",
+      "add",
+      "delete",
+      "update"
+    ],
+    "releases": [
+      "add",
+      "delete",
+      "star",
+      "rate"
+    ],
+    "user": [
+      "view",
+      "update"
+    ],
+    "games": [
+      "rate",
+      "star"
     ]
   }
 }

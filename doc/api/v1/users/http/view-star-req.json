@@ -1,5 +1,5 @@
-GET /api/v1/users/Eyewcp3VZ_/star HTTP/1.1
+GET /api/v1/users/4JmLvQAXO/star HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJWSl9JcWEzNC1kIiwiaWF0IjoiMjAxNS0wNy0wNFQyMToxODozMy45NDNaIiwiZXhwIjoiMjAxNS0wNy0wNFQyMjoxODozMy45NDNaIn0.RPDGTzbg0duxk0qJTy_RsKtJauvL1ag2r3S__eVOYHc
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJFeWlOcnc3UlFkIiwiaWF0IjoiMjAxNS0wNy0wNlQyMDoyNTo0MS4wNzJaIiwiZXhwIjoiMjAxNS0wNy0wNlQyMToyNTo0MS4wNzJaIn0.14eoR8mp5D46wd7MLXkCwpdupI3qKIGlH8FF-4ArObU
 

@@ -1,14 +1,14 @@
 PATCH /api/v1/user HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJFa21pamFuNGJfIiwiaWF0IjoiMjAxNS0wNy0wNFQyMToxODozNS4wMDZaIiwiZXhwIjoiMjAxNS0wNy0wNFQyMjoxODozNS4wMDZaIn0.up14MnVAQWXXIdLqHXNSzyAKhpn3YiddGDHOK20d8-g
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI0a3ctd1BRQzdfIiwiaWF0IjoiMjAxNS0wNy0wNlQyMDoyNTo0Mi4zMzhaIiwiZXhwIjoiMjAxNS0wNy0wNlQyMToyNTo0Mi4zMzhaIn0.x7poTVyNSux16z-Nl40BsYdYzXqnRv8NbT0OYOQ_DLw
 Content-Type: application/json
-Content-Length: 143
+Content-Length: 140
 
 {
-  "name": "Denis Morissette",
-  "location": "Murrayland",
-  "email": "dalton_blanda63@gmail.com",
-  "current_password": "Pj8AoKKvge",
-  "password": "xJ4reqLVBw"
+  "name": "Adrianna Kihn",
+  "location": "Port Erick",
+  "email": "michael.hermann@yahoo.com",
+  "current_password": "AIKLE77hpP",
+  "password": "bCg6Bkxcke"
 }

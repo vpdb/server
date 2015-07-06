@@ -364,7 +364,7 @@ ReleaseSchema.statics.toSimple = function(release, opts) {
 			continue;
 		}
 		file = latestVersion.files[i];
-		fileFlavor = file.flavor.toObj();
+		fileFlavor = file.flavor.toObj ? file.flavor.toObj() : file.flavor;
 		weight = 0;
 
 		for (j = 0; j < flavorParams.length; j++) {
@@ -390,7 +390,7 @@ ReleaseSchema.statics.toSimple = function(release, opts) {
 	}
 //	console.log('=====> %j', match.flavor.toObj());
 
-	var playfieldImage = match._media.playfield_image.toObj();
+	var playfieldImage = match._media.playfield_image.toObj ? match._media.playfield_image.toObj() : match._media.playfield_image;
 	var thumbFields = [ 'url', 'width', 'height' ];
 	if (opts.fullThumbData) {
 		thumbFields = thumbFields.concat(['mime_type', 'bytes']);

@@ -436,9 +436,9 @@ exports.list = function(req, res) {
 							return api.fail(res, error(err, 'Error listing releases').log('list'), 500);
 						}
 
-						//releases = _.map(releases, function(release) {
-						//	return Release.toSimple(release, transformOpts);
-						//});
+						releases = _.map(releases, function(release) {
+							return Release.toSimple(release, transformOpts);
+						});
 
 						api.success(res, releases, 200);
 

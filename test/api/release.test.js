@@ -602,6 +602,7 @@ describe('The VPDB `release` API', function() {
 				contributor: { roles: [ 'contributor' ] }
 			}, function() {
 				hlp.release.createReleases('member', request, numReleases, function(r) {
+					hlp.dump(r);
 					releases = r;
 					done(null, r);
 				});
@@ -654,7 +655,6 @@ describe('The VPDB `release` API', function() {
 				});
 		});
 
-
 		it('should return the nearest thumb match of night/widescreen', function(done) {
 			request
 				.get('/api/v1/releases?thumb_full_data&thumb_flavor=lighting:night,orientation:ws')
@@ -672,6 +672,116 @@ describe('The VPDB `release` API', function() {
 
 					done();
 				});
+		});
+
+		it('should return square thumb format', function(done) {
+			request
+				.get('/api/v1/releases?thumb_format=square')
+				.save({ path: 'releases/list'})
+				.end(function(err, res) {
+
+					hlp.expectStatus(err, res, 200);
+
+					for (var i = 0; i < numReleases; i++) {
+						expect(res.body[i].latest_version.thumb.image.url).to.contain('/square/');
+					}
+					done();
+				});
+		});
+
+		it('should deny access to starred releases when not logged', function(done) {
+			request.get('/api/v1/releases?starred').saveResponse({ path: 'releases/list'}).end(hlp.status(401, done));
+		});
+
+		it('should list only starred releases', function(done) {
+
+			request.get('/api/v1/releases?starred').as('member').end(function(err, res) {
+				hlp.expectStatus(err, res, 200);
+				expect(res.body).to.be.empty();
+
+				request.post('/api/v1/releases/' + releases[0].id + '/star').send({}).as('member').end(function(err, res) {
+					hlp.expectStatus(err, res, 201);
+
+					request.get('/api/v1/releases?starred').as('member').end(function(err, res) {
+						hlp.expectStatus(err, res, 200);
+						expect(res.body).to.have.length(1);
+						expect(res.body[0].id).to.be(releases[0].id);
+
+						request.get('/api/v1/releases?starred=false').as('member').end(function(err, res) {
+							hlp.expectStatus(err, res, 200);
+							expect(res.body).to.have.length(numReleases - 1);
+							expect(res.body[0].id).not.to.be(releases[0].id);
+							expect(res.body[1].id).not.to.be(releases[0].id);
+							done();
+						});
+					});
+				});
+			});
+		});
+
+		it('should list only tagged releases', function(done) {
+
+			var tags = [ 'dof' ];
+
+			request.get('/api/v1/releases?tags=' + tags.join(',')).end(function(err, res) {
+				hlp.expectStatus(err, res, 200);
+
+				var tagFilter = tags.map(function(tag) { return { id: tag }; });
+				var taggedReleases = _.filter(releases, { tags: tagFilter });
+				expect(res.body).to.have.length(taggedReleases.length);
+				for (var i = 0; i < taggedReleases.length; i++) {
+					expect(_.findWhere(res.body, { id: taggedReleases[i].id })).to.be.ok();
+				}
+				done();
+			});
+		});
+
+		it('should list only tagged releases for multiple tags', function(done) {
+
+			var tags = [ 'dof', 'wip' ];
+
+			request.get('/api/v1/releases?tags=' + tags.join(',')).end(function(err, res) {
+				hlp.expectStatus(err, res, 200);
+
+				var tagFilter = tags.map(function(tag) { return { id: tag }; });
+				var taggedReleases = _.filter(releases, { tags: tagFilter });
+				expect(res.body).to.have.length(taggedReleases.length);
+				for (var i = 0; i < taggedReleases.length; i++) {
+					expect(_.findWhere(res.body, { id: taggedReleases[i].id })).to.be.ok();
+				}
+				done();
+			});
+		});
+
+		it('should list only releases whose name matches a query', function(done) {
+
+			request.get('/api/v1/releases?q=' + releases[1].name).end(function(err, res) {
+				hlp.expectStatus(err, res, 200);
+				expect(_.findWhere(res.body, { id: releases[1].id })).to.be.ok();
+				done();
+			});
+		});
+
+		it('should list only releases whose game title matches a query', function(done) {
+
+			request.get('/api/v1/releases?q=' + releases[1].game.title).end(function(err, res) {
+				hlp.expectStatus(err, res, 200);
+				expect(_.findWhere(res.body, { id: releases[1].id })).to.be.ok();
+				done();
+			});
+		});
+
+		it('should fail for queries less than 3 characters', function(done) {
+			request.get('/api/v1/releases?q=12').end(hlp.status(400, done));
+		});
+
+		it('should success for queries more than 2 character', function(done) {
+
+			request.get('/api/v1/releases?q=' + releases[1].name.substr(0, 3)).end(function(err, res) {
+				hlp.expectStatus(err, res, 200);
+				expect(_.findWhere(res.body, { id: releases[1].id })).to.be.ok();
+				done();
+			});
 		});
 
 	});

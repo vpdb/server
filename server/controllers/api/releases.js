@@ -29,6 +29,7 @@ var Version = require('mongoose').model('ReleaseVersion');
 var VersionFile = require('mongoose').model('ReleaseVersionFile');
 var Game = require('mongoose').model('Game');
 var Star = require('mongoose').model('Star');
+var Tag = require('mongoose').model('Tag');
 var api = require('./api');
 
 var error = require('../../modules/error')('api', 'release');
@@ -308,14 +309,6 @@ exports.list = function(req, res) {
 	if (req.query.thumb_flavor) {
 		transformOpts.thumbFlavor = req.query.thumb_flavor;
 		// ex.: /api/v1/releases?flavor=orientation:fs,lighting:day
-		//transformOpts.flavor = {};
-		//var flavorParams = req.query.thumb_flavor.split(',');
-		//_.each(flavorParams, function(param) {
-		//	var f = param.split(':');
-		//	if (f[0] && f[1]) {
-		//		transformOpts.flavor[f[0]] = f[1];
-		//	}
-		//});
 	}
 	if (req.query.thumb_format) {
 		transformOpts.thumb = req.query.thumb_format;
@@ -325,8 +318,11 @@ exports.list = function(req, res) {
 	}
 
 	// filter by tag
-	if (req.query.tag) {
-		query.push({ _tags: { $in: req.query.tag.split(',') }});
+	if (req.query.tags) {
+		var t = req.query.tags.split(',');
+		for (var i = 0; i < t.length; i++) {
+			query.push({ _tags: { $in: [ t[i] ] }});
+		}
 	}
 
 	// now to the async stuff:
@@ -337,7 +333,7 @@ exports.list = function(req, res) {
 
 			if (req.query.q) {
 
-				if (req.query.q.trim().length < 2) {
+				if (req.query.q.trim().length < 3) {
 					return api.fail(res, error('Query must contain at least two characters.'), 400);
 				}
 
@@ -353,7 +349,12 @@ exports.list = function(req, res) {
 						return next(true);
 					}
 					var gameIds = _.pluck(games, '_id');
-					query.push({ $or: [ { name: titleRegex }, { '_game': { $in: gameIds }} ] });
+					if (gameIds.length > 0) {
+						query.push({ $or: [ { name: titleRegex }, { '_game': { $in: gameIds }} ] });
+					} else {
+						query.push({ name: titleRegex });
+					}
+
 					next(null, query);
 				});
 

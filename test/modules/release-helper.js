@@ -59,18 +59,17 @@ exports.createRelease2 = function(user, request, done) {
 										_file: vptfiles[0].id,
 										_media: { playfield_image: playfieldFs.id },
 										_compatibility: ['9.9.0'],
-										_tags: ['wip', 'dof'],
 										flavor: { orientation: 'fs', lighting: 'night' }
 									}, {
 										_file: vptfiles[1].id,
 										_media: { playfield_image: playfieldWs.id },
 										_compatibility: ['9.9.0'],
-										_tags: ['dof'],
 										flavor: { orientation: 'ws', lighting: 'day' }
 									}],
 									version: '1.0'
 								}
 							],
+							_tags: ['dof'],
 							authors: [{_user: hlp.getUser(user).id, roles: ['Table Creator']}]
 						})
 						.end(function(err, res) {
@@ -117,6 +116,7 @@ exports.createRelease3 = function(user, request, done) {
 								version: '2.0'
 							}
 						],
+						_tags: ['wip', 'dof'],
 						authors: [ { _user: hlp.getUser(user).id, roles: [ 'Table Creator' ] } ]
 					})
 					.end(function (err, res) {

@@ -511,7 +511,6 @@ exports.status = function(code, contains, next) {
 			body = err.response.body;
 		}
 
-
 		if (status !== code) {
 			console.warn(body);
 		}

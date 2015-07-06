@@ -34,11 +34,15 @@ get:
       required: false
       type: string
       example: addams
-    tag:
-      description: Filters result by tag.
+    tags:
+      description: |
+        Filters result by tag ID.
+
+        You can provide multiple tags separated by comma. In that case, only
+        release that match all tags will be returned.
       required: false
       type: string
-      example: hd
+      example: hd,wip
     starred:
       description: |
         Only lists starred releases.
@@ -53,8 +57,7 @@ get:
       example: true
     thumb_flavor:
       description: |
-        Sets a preference which flavor of the thumbnail is returned with the
-        release.
+        Sets a preference which flavor of the thumbnail is returned.
 
         This is due to media URLs taking up quite some space, while usually
         only one URL is actually needed when fetching a list of releases.
@@ -91,6 +94,21 @@ get:
       required: false
       type: boolean
       example: true
+  body:
+    role/anon:
+      example: !include http/list-req.json
+  responses:
+    200:
+      body:
+        role/member:
+          example: !include http/list-res-200.json
+    401:
+      description: |
+        When retrieving starred releases, the user must be logged, otherwise
+        `401 Unauthorized` is returned.
+      body:
+        role/member:
+          example: !include http/list-res-401.json
 
 /{release_id}:
   uriParameters:

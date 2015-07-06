@@ -1,0 +1,146 @@
+200 OK
+X-List-Page: 1
+X-List-Size: 12
+X-List-Count: 3
+Content-Type: application/json; charset=utf-8
+Etag: W/"94a-AM4LlacwHPb5yfioZEhDsA"
+Content-Encoding: gzip
+
+[
+  {
+    "id": "NkKzE2ZCQO",
+    "name": "Face to face Edition",
+    "created_at": "2015-07-06T20:18:27.705Z",
+    "authors": [
+      {
+        "roles": [
+          "Table Creator"
+        ],
+        "user": {
+          "id": "NJ7e43-RQO",
+          "name": "Webster18",
+          "username": "Webster18",
+          "gravatar_id": "0bf79e3fc3f7ac1867c87efe6c4c9f08",
+          "counter": {
+            "comments": 0,
+            "stars": 0
+          }
+        }
+      }
+    ],
+    "counter": {
+      "score": 0,
+      "stars": 0,
+      "comments": 0,
+      "downloads": 0
+    },
+    "game": {
+      "id": "red-n-go",
+      "title": "Red 'N' Go"
+    },
+    "latest_version": {
+      "version": "1.0.0",
+      "thumb": {
+        "image": {
+          "url": "/storage/public/files/square/V1AWE2ZAmO.jpg",
+          "width": 120,
+          "height": 120
+        },
+        "flavor": {
+          "lighting": "night",
+          "orientation": "fs"
+        }
+      }
+    }
+  },
+  {
+    "id": "NkKxL2WAQu",
+    "name": "Synchronised Edition",
+    "created_at": "2015-07-06T20:18:29.208Z",
+    "authors": [
+      {
+        "roles": [
+          "Table Creator"
+        ],
+        "user": {
+          "id": "NJ7e43-RQO",
+          "name": "Webster18",
+          "username": "Webster18",
+          "gravatar_id": "0bf79e3fc3f7ac1867c87efe6c4c9f08",
+          "counter": {
+            "comments": 0,
+            "stars": 0
+          }
+        }
+      }
+    ],
+    "counter": {
+      "score": 0,
+      "stars": 0,
+      "comments": 0,
+      "downloads": 0
+    },
+    "game": {
+      "id": "rocky",
+      "title": "Rocky"
+    },
+    "latest_version": {
+      "version": "1.0",
+      "thumb": {
+        "image": {
+          "url": "/storage/public/files/square/NkSlS2-Cmd.jpg",
+          "width": 120,
+          "height": 120
+        },
+        "flavor": {
+          "lighting": "day",
+          "orientation": "ws"
+        }
+      }
+    }
+  },
+  {
+    "id": "4kJlvh-CX_",
+    "name": "Proactive Edition",
+    "created_at": "2015-07-06T20:18:30.657Z",
+    "authors": [
+      {
+        "roles": [
+          "Table Creator"
+        ],
+        "user": {
+          "id": "NJ7e43-RQO",
+          "name": "Webster18",
+          "username": "Webster18",
+          "gravatar_id": "0bf79e3fc3f7ac1867c87efe6c4c9f08",
+          "counter": {
+            "comments": 0,
+            "stars": 0
+          }
+        }
+      }
+    ],
+    "counter": {
+      "score": 0,
+      "stars": 0,
+      "comments": 0,
+      "downloads": 0
+    },
+    "game": {
+      "id": "pirates-gold",
+      "title": "Pirates Gold"
+    },
+    "latest_version": {
+      "version": "2.0",
+      "thumb": {
+        "image": {
+          "url": "/storage/public/files/square/N1hHL2-RXO.png"
+        },
+        "flavor": {
+          "lighting": "any",
+          "orientation": "any"
+        }
+      }
+    }
+  }
+]

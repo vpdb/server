@@ -343,6 +343,13 @@ ReleaseSchema.statics.toSimple = function(release, opts) {
 
 	rls.game = _.pick(release._game, ['id', 'title']);
 
+	// if results comes from an aggregation, we don't have a model and need to call toObj manually...
+	if (!release.toObj) {
+		_.each(rls.authors, function(author) {
+			AuthorSchema.options.toObject.transform(null, author);
+		});
+	}
+
 	// sort versions by release date
 	var versions = release.versions.sort(function(a, b) {
 		var dateA = new Date(a.released_at).getTime();

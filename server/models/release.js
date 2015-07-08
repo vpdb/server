@@ -466,7 +466,7 @@ ReleaseSchema.statics.getAggregationPipeline = function(query, filter, page, lim
 		}
 	});
 
-	var pipe = [
+	return [
 		{ $match: q },
 		{ $unwind: '$versions'},
 		{ $unwind: '$versions.files'},
@@ -494,8 +494,6 @@ ReleaseSchema.statics.getAggregationPipeline = function(query, filter, page, lim
 			versions: '$versions'
 		}) }
 	];
-
-	return pipe;
 };
 
 function makeQuery(query) {

@@ -43,12 +43,28 @@ get:
       required: false
       type: string
       example: hd,wip
+    flavor:
+      description: |
+        Filters releases by flavor.
+
+        The flavor is provided in key/value pairs, where pairs are comma
+        separated and key/value with a colon.
+
+        In order to be returned, a release must have a least one version with
+        at least one file with the given flavor. The `latest_version` of the
+        result is the latest version with the given flavor.
+
+        Note that if provided, this filter will not only filter the releases but
+        also files of all returned versions to match the provided flavor.
+      required: false
+      type: string
+      example: orientation:fs,lighting:day
     starred:
       description: |
         Only lists starred releases.
 
-        You can just provide `starred` without any value. However, if you provide
-        `false`, then only non-starred releases will be returned.
+        You can just provide `starred` without any value. However, if you
+        provide `false`, then only non-starred releases will be returned.
 
         Also note that you need to be logged if you provide this parameter,
         otherwise `401 Unauthorized` will be returned.
@@ -63,7 +79,7 @@ get:
         only one URL is actually needed when fetching a list of releases.
 
         The flavor is provided in key/value pairs, where pairs are comma
-        separated and key/value withe a colon. If the selected flavor doesn't
+        separated and key/value with a colon. If the selected flavor doesn't
         exist or is not provided, the default flavor (day / fullscreen) is
         returned.
 
@@ -150,8 +166,8 @@ get:
       description: |
         Add a new version to an existing release.
 
-        Note that prior to that request, files and media need to be uploaded so it
-        can be referenced.
+        Note that prior to that request, files and media need to be uploaded so
+        it can be referenced.
       body:
         role/member:
           example: !include http/create-version-req.json
@@ -184,8 +200,8 @@ get:
           Provided files wil be *added* to the version. It's not possible to
           delete files. It's also the only field looked at at the moment.
 
-          Note that prior to that request, files and media need to be uploaded so it
-          can be referenced.
+          Note that prior to that request, files and media need to be uploaded
+          so it can be referenced.
         body:
           role/member:
             example: !include http/update-version-req.json

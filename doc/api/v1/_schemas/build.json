@@ -24,6 +24,15 @@
 			"description": "A description of the build. Contains changelog for official releases. Is Markdown formatted.",
 			"type": "string"
 		},
+		"platform": {
+			"description": "Platform of the build. Only Visual Pinball supported so far.",
+			"type": "string",
+			"enum": ["vp"]
+		},
+		"major_version": {
+			"description": "The major version branch of the version for the given platform. For VP9, that would be `9`.",
+			"type": "string"
+		},
 		"built_at": {
 			"description": "Date when the build was, well, built.",
 			"type": "date"

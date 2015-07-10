@@ -28,6 +28,10 @@ angular.module('vpdb.releases.add', []).controller('AddBuildCtrl', function($sco
 	BootstrapTemplate.patchCalendar();
 
 	$scope.types = [ 'release', 'nightly', 'experimental' ];
+	$scope.majorVersions = [
+		{ label: 'v8.x.x', value: '8' },
+		{ label: 'v9.x.x', value: '9' },
+		{ label: 'v10.x.x', value: '10' } ];
 
 	$scope.openCalendar = function($event) {
 		$event.preventDefault();

@@ -34,18 +34,19 @@ var types = [ 'release', 'nightly', 'experimental' ];
 // SCHEMA
 //-----------------------------------------------------------------------------
 var fields = {
-	id:           { type: String, required: true, unique: true },
-	platform:     { type: String, required: 'The platform must be provided.', 'enum': { values: platforms, message: 'Invalid platform. Valid platforms are: [ "' + platforms.join('", "') + '" ].' } },
-	label:        { type: String, required: 'A label must be provided.', unique: true },
-	download_url: { type: String },
-	support_url:  { type: String },
-	description:  { type: String },
-	built_at:     { type: Date },
-	type:         { type: String, required: 'The type of the build must be provided.', 'enum': { values: types, message: 'Invalid type. Valid types are: [ "' + types.join('", "') + '" ].' } },
-	is_range:     { type: Boolean, required: 'You need to provide if the build is a range of versions or one specific version.', default: false },
-	is_active:    { type: Boolean, required: true, default: false },
-	created_at:   { type: Date, required: true },
-	_created_by:  { type: Schema.ObjectId, ref: 'User', required: true }
+	id:            { type: String, required: true, unique: true },
+	platform:      { type: String, required: 'The platform must be provided.', 'enum': { values: platforms, message: 'Invalid platform. Valid platforms are: [ "' + platforms.join('", "') + '" ].' } },
+	label:         { type: String, required: 'A label must be provided.', unique: true },
+	major_version: { type: String, required: 'Major version must be provided.' },
+	download_url:  { type: String },
+	support_url:   { type: String },
+	description:   { type: String },
+	built_at:      { type: Date },
+	type:          { type: String, required: 'The type of the build must be provided.', 'enum': { values: types, message: 'Invalid type. Valid types are: [ "' + types.join('", "') + '" ].' } },
+	is_range:      { type: Boolean, required: 'You need to provide if the build is a range of versions or one specific version.', default: false },
+	is_active:     { type: Boolean, required: true, default: false },
+	created_at:    { type: Date, required: true },
+	_created_by:   { type: Schema.ObjectId, ref: 'User', required: true }
 };
 var BuildSchema = new Schema(fields);
 
@@ -54,7 +55,7 @@ var BuildSchema = new Schema(fields);
 // API FIELDS
 //-----------------------------------------------------------------------------
 var apiFields = {
-	simple: [ 'id', 'label', 'platform', 'download_url', 'built_at', 'type', 'is_range' ]
+	simple: [ 'id', 'label', 'platform', 'major_version', 'download_url', 'built_at', 'type', 'is_range' ]
 };
 
 

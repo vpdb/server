@@ -64,9 +64,20 @@ include ../template/_mixins
 				label.col-sm-3.control-label Type
 				.col-sm-7
 					select.form-control(ng-options="type for type in types", ng-model="build.type")
-			div.alert.alert-danger.padder-bottom(ng-show="errors.download_url")
+			div.alert.alert-danger.padder-bottom(ng-show="errors.type")
 				+icon('warning').shift-up.space-right
 				| {{ errors.download_url }}
+
+
+			//- MAJOR VERSION
+			//-----------------------------------------------------------------
+			.form-group(ng-class="{ error: errors.major_version }")
+				label.col-sm-3.control-label Major Version
+				.col-sm-7
+					select.form-control(ng-options="version.value as version.label for version in majorVersions", ng-model="build.major_version")
+			div.alert.alert-danger.padder-bottom(ng-show="errors.major_version")
+				+icon('warning').shift-up.space-right
+				| {{ errors.major_version }}
 
 
 			//- DOWNLOAD URL

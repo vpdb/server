@@ -36,6 +36,7 @@ describe('The VPDB `Build` API', function() {
 					hlp.expectValidationError(err, res, 'platform', 'must be provided');
 					hlp.expectValidationError(err, res, 'label', 'must be provided');
 					hlp.expectValidationError(err, res, 'type', 'must be provided');
+					hlp.expectValidationError(err, res, 'major_version', 'must be provided');
 					done();
 				});
 		});
@@ -59,14 +60,14 @@ describe('The VPDB `Build` API', function() {
 			request
 				.post('/api/v1/builds')
 				.as('member')
-				.send({ label: 'v1.0.0-dupetest', type: 'release', platform: 'vp' })
+				.send({ label: 'v1.0.0-dupetest', type: 'release', platform: 'vp', major_version: '1' })
 				.end(function(err, res) {
 					hlp.expectStatus(err, res, 201);
 					hlp.doomBuild('member', res.body.id);
 					request
 						.post('/api/v1/builds')
 						.as('member')
-						.send({ label: 'v1.0.0-dupetest', type: 'release' })
+						.send({ label: 'v1.0.0-dupetest', type: 'release', major_version: '1' })
 						.end(function(err, res) {
 							hlp.expectValidationError(err, res, 'label', 'is already taken');
 							done();
@@ -78,7 +79,7 @@ describe('The VPDB `Build` API', function() {
 			request
 				.post('/api/v1/builds')
 				.as('member')
-				.send({ label: 'v1.0.0', type: 'release', platform: 'vp' })
+				.send({ label: 'v1.0.0', type: 'release', platform: 'vp', major_version: '1' })
 				.end(function(err, res) {
 					hlp.expectStatus(err, res, 201);
 					hlp.doomBuild('member', res.body.id);
@@ -94,6 +95,7 @@ describe('The VPDB `Build` API', function() {
 				.send({
 					label: 'v1.0.1',
 					platform: 'vp',
+					major_version: '1',
 					type: 'release',
 					description: 'The very first release.',
 					download_url: 'http://download_url/',
@@ -141,7 +143,7 @@ describe('The VPDB `Build` API', function() {
 			request
 				.post('/api/v1/builds')
 				.as('member')
-				.send({ label: 'delete-test-1', type: 'release', platform: 'vp' })
+				.send({ label: 'delete-test-1', type: 'release', platform: 'vp', major_version: '1' })
 				.end(function(err, res) {
 					hlp.expectStatus(err, res, 201);
 					request
@@ -158,7 +160,7 @@ describe('The VPDB `Build` API', function() {
 			request
 				.post('/api/v1/builds')
 				.as('contributor')
-				.send({ label: 'delete-test-2', type: 'release', platform: 'vp' })
+				.send({ label: 'delete-test-2', type: 'release', platform: 'vp', major_version: '1' })
 				.end(function(err, res) {
 					hlp.expectStatus(err, res, 201);
 					hlp.doomBuild('contributor', res.body.id);
@@ -177,7 +179,7 @@ describe('The VPDB `Build` API', function() {
 			request
 				.post('/api/v1/builds')
 				.as('member')
-				.send({ label: 'delete-test-3', type: 'release', platform: 'vp' })
+				.send({ label: 'delete-test-3', type: 'release', platform: 'vp', major_version: '1' })
 				.end(function(err, res) {
 					hlp.expectStatus(err, res, 201);
 					request

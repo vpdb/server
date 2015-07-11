@@ -406,7 +406,7 @@ exports.list = function(req, res) {
 					var v = kv[1].toLowerCase();
 					if (flavor.values[k]) {
 						var fltr = {};
-						fltr['versions.files.flavor.' + k] = v;
+						fltr['versions.files.flavor.' + k] = { $in: [ 'any', v ]};
 						filter.push(fltr);
 					}
 				});

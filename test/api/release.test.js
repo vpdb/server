@@ -630,6 +630,7 @@ describe('The VPDB `release` API', function() {
 						expect(release.authors[0].user.id).to.be.ok();
 						expect(release.authors[0].user.name).to.be.ok();
 						expect(release.authors[0].user.username).to.be.ok();
+						expect(release.authors[0]._user).to.not.be.ok();
 					});
 					done();
 				});
@@ -774,11 +775,22 @@ describe('The VPDB `release` API', function() {
 			request.get('/api/v1/releases?q=12').end(hlp.status(400, done));
 		});
 
-		it('should success for queries more than 2 character', function(done) {
+		it('should succeed for queries more than 2 character', function(done) {
 
 			request.get('/api/v1/releases?q=' + releases[1].name.substr(0, 3)).end(function(err, res) {
 				hlp.expectStatus(err, res, 200);
 				expect(_.findWhere(res.body, { id: releases[1].id })).to.be.ok();
+				done();
+			});
+		});
+
+		it('should list only a given flavor', function(done) {
+
+			request.get('/api/v1/releases?flavor=orientation:ws').end(function(err, res) {
+				hlp.expectStatus(err, res, 200);
+				expect(_.findWhere(res.body, { id: releases[0].id })).to.not.be.ok();
+				expect(_.findWhere(res.body, { id: releases[1].id })).to.be.ok();
+				expect(_.findWhere(res.body, { id: releases[2].id })).to.be.ok();
 				done();
 			});
 		});

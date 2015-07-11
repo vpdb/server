@@ -25,6 +25,7 @@ post:
         role/member:
           example: !include http/create-res-201.json
     401:
+      description: Password not provided.
       body:
         role/member:
           example: !include http/create-res-401.json

@@ -383,7 +383,7 @@ ReleaseSchema.statics.toSimple = function(release, opts) {
 			if (fileFlavor[flavorName] === flavorValue) {
 				weight += Math.pow(10, (flavorParams.length - j + 1) * 3);
 
-				// defaults match gets also weight, but less
+			// defaults match gets also weight, but less
 			} else if (defaults[flavorName] === flavorValue) {
 				weight += Math.pow(10, (flavorParams.length - j + 1));
 			}
@@ -424,8 +424,19 @@ ReleaseSchema.statics.toSimple = function(release, opts) {
 		thumb: {
 			image: thumb,
 			flavor: match.flavor
-		}
+		},
+		files: []
 	};
+
+	_.each(latestVersion.files, function(file) {
+		//rls.latest_version.files.push(file);
+		rls.latest_version.files.push({
+			released_at: file.released_at,
+			flavor: file.flavor,
+			compatibility: _.pluck(file._compatibility, 'id'),
+			file: _.pick(file._file, ['id', 'name', 'bytes', 'mime_type'])
+		});
+	});
 
 	return rls;
 };

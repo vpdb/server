@@ -418,6 +418,7 @@ exports.list = function(req, res) {
 	// result
 	], function(err, query, filter) {
 
+		var populatedFields = [ '_game', 'versions.files._file', 'versions.files._media.playfield_image', 'versions.files._compatibility', 'authors._user' ];
 		if (!err) {
 			console.log(require('util').inspect(Release.getAggregationPipeline(query, filter), { depth: null, colors: true }));
 
@@ -430,7 +431,7 @@ exports.list = function(req, res) {
 						return api.fail(res, error(err, 'Error listing releases').log('list'), 500);
 					}
 
-					Release.populate(result, [ '_game', 'versions.files._media.playfield_image', 'authors._user' ], function(err, releases) {
+					Release.populate(result, populatedFields, function(err, releases) {
 						/* istanbul ignore if  */
 						if (err) {
 							return api.fail(res, error(err, 'Error listing releases').log('list'), 500);
@@ -453,7 +454,7 @@ exports.list = function(req, res) {
 				Release.paginate(q, {
 					page: pagination.page,
 					limit: pagination.perPage,
-					populate: [ '_game', 'versions.files._media.playfield_image', 'authors._user' ],
+					populate: populatedFields,
 					sortBy: sortBy  // '_game.title', '_game.id'
 
 				}, function(err, releases, pageCount, count) {

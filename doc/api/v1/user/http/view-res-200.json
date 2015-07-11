@@ -1,15 +1,15 @@
 200 OK
 Content-Type: application/json; charset=utf-8
-Content-Length: 867
-Etag: W/"363-KXiklqKYcATN7+3C8KIyQQ"
+Content-Length: 868
+Etag: W/"364-5rHVgkKBRSSKwfDDLdFpKA"
 
 {
   "plan": "free",
-  "name": "Johnpaul.Wisoky25",
-  "username": "Johnpaul.Wisoky25",
-  "email": "amos59@hotmail.com",
+  "name": "Garret.Hayes84",
+  "username": "Garret.Hayes84",
+  "email": "kraig.bradtke@hotmail.com",
   "provider": "local",
-  "created_at": "2015-07-06T20:24:58.547Z",
+  "created_at": "2015-07-18T21:28:26.376Z",
   "is_active": true,
   "counter": {
     "stars": 0,
@@ -19,49 +19,49 @@ Etag: W/"363-KXiklqKYcATN7+3C8KIyQQ"
   "roles": [
     "member"
   ],
-  "id": "N1mxoE70m_",
-  "gravatar_id": "c23b2bcceefa75e408f50171442ceeae",
+  "id": "VkmxoG427K",
+  "gravatar_id": "9e865ecb68d270349b3be8a7707016f4",
   "permissions": {
+    "user": [
+      "update",
+      "view"
+    ],
+    "tokens": [
+      "update",
+      "list",
+      "add",
+      "delete"
+    ],
     "comments": [
       "add"
     ],
-    "users": [
-      "view",
-      "star",
-      "search"
-    ],
-    "tags": [
-      "delete-own",
-      "add"
+    "roms": [
+      "add",
+      "delete-own"
     ],
     "files": [
-      "upload",
+      "download",
       "delete",
-      "download"
-    ],
-    "roms": [
-      "delete-own",
-      "add"
-    ],
-    "builds": [
-      "delete-own",
-      "add"
-    ],
-    "tokens": [
-      "list",
-      "add",
-      "delete",
-      "update"
+      "upload"
     ],
     "releases": [
       "add",
       "delete",
-      "star",
-      "rate"
+      "rate",
+      "star"
     ],
-    "user": [
+    "builds": [
+      "add",
+      "delete-own"
+    ],
+    "tags": [
+      "add",
+      "delete-own"
+    ],
+    "users": [
       "view",
-      "update"
+      "search",
+      "star"
     ],
     "games": [
       "rate",

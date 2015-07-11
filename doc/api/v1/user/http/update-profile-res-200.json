@@ -1,16 +1,16 @@
 200 OK
 Content-Type: application/json; charset=utf-8
-Etag: W/"406-4S9aT2Twzg9L+T7mkYjDOw"
+Etag: W/"40b-69yFAA4ssSW4i7x7kyK99Q"
 Content-Encoding: gzip
 
 {
-  "location": "Port Erick",
+  "location": "Rueckermouth",
   "plan": "free",
-  "name": "Adrianna Kihn",
-  "username": "Berta_Cronin",
-  "email": "rory_mccullough33@hotmail.com",
+  "name": "Justice Hilpert",
+  "username": "Catharine.Wiegand73",
+  "email": "ludwig_bernier@gmail.com",
   "provider": "local",
-  "created_at": "2015-07-06T20:25:42.328Z",
+  "created_at": "2015-07-18T21:29:09.191Z",
   "is_active": true,
   "counter": {
     "stars": 0,
@@ -22,52 +22,52 @@ Content-Encoding: gzip
   ],
   "email_status": {
     "code": "pending_update",
-    "expires_at": "2015-07-07T20:25:42.680Z",
-    "value": "michael.hermann@yahoo.com"
+    "expires_at": "2015-07-19T21:29:09.507Z",
+    "value": "christop.davis@yahoo.com"
   },
-  "id": "4kw-wPQC7_",
-  "gravatar_id": "6840f1a9159ae4ce620ca9ec36a60735",
+  "id": "EySgUrE37K",
+  "gravatar_id": "9fba9423a3034e253d1f013a5f92bfa8",
   "permissions": {
+    "user": [
+      "update",
+      "view"
+    ],
+    "tokens": [
+      "update",
+      "list",
+      "add",
+      "delete"
+    ],
     "comments": [
       "add"
     ],
-    "users": [
-      "view",
-      "star",
-      "search"
-    ],
-    "tags": [
-      "delete-own",
-      "add"
+    "roms": [
+      "add",
+      "delete-own"
     ],
     "files": [
-      "upload",
+      "download",
       "delete",
-      "download"
-    ],
-    "roms": [
-      "delete-own",
-      "add"
-    ],
-    "builds": [
-      "delete-own",
-      "add"
-    ],
-    "tokens": [
-      "list",
-      "add",
-      "delete",
-      "update"
+      "upload"
     ],
     "releases": [
       "add",
       "delete",
-      "star",
-      "rate"
+      "rate",
+      "star"
     ],
-    "user": [
+    "builds": [
+      "add",
+      "delete-own"
+    ],
+    "tags": [
+      "add",
+      "delete-own"
+    ],
+    "users": [
       "view",
-      "update"
+      "search",
+      "star"
     ],
     "games": [
       "rate",

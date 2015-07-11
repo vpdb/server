@@ -1,70 +1,70 @@
 200 OK
 Content-Type: application/json; charset=utf-8
-Etag: W/"49d-BWqsu2pfs8hHAbhQEijw6w"
+Etag: W/"4b3-JJYf7ARX76blof+p5bA/jA"
 Content-Encoding: gzip
 
 {
-  "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJOSm5Rbk43Q1hfIiwiaWF0IjoiMjAxNS0wNy0wNlQyMDoyNDo1OS40NzFaIiwiZXhwIjoiMjAxNS0wNy0wNlQyMToyNDo1OS40NzFaIn0.kPiVH61kLgZ08l6SoeBWhoP9bhhZe3BLqw7tHh0EBK0",
-  "expires": "2015-07-06T21:24:59.471Z",
+  "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI0SldYMkc0MlFGIiwiaWF0IjoiMjAxNS0wNy0xOFQyMToyODoyNy40OTZaIiwiZXhwIjoiMjAxNS0wNy0xOFQyMjoyODoyNy40OTZaIn0.WtqYXp4ZxKDysYInw-jReWpNIuM6n6qNdWeF4ylKWoM",
+  "expires": "2015-07-18T22:28:27.496Z",
   "user": {
-    "id": "NJnQnN7CX_",
-    "name": "Brain51",
-    "username": "Brain51",
-    "gravatar_id": "920d329c7ca8470de2a333a4a5d57115",
-    "email": "ervin_cassin11@gmail.com",
+    "id": "4JWX2G42QF",
+    "name": "Rosina_Kertzmann",
+    "username": "Rosina_Kertzmann",
+    "gravatar_id": "d6642bd8033a07a9be142b944bbd6d25",
+    "email": "dahlia.goldner68@hotmail.com",
     "is_active": true,
     "provider": "local",
     "roles": [
       "member"
     ],
     "plan": "free",
-    "created_at": "2015-07-06T20:24:59.405Z",
+    "created_at": "2015-07-18T21:28:27.420Z",
     "counter": {
       "stars": 0,
       "downloads": 0,
       "comments": 0
     },
     "permissions": {
+      "user": [
+        "update",
+        "view"
+      ],
+      "tokens": [
+        "update",
+        "list",
+        "add",
+        "delete"
+      ],
       "comments": [
         "add"
       ],
-      "users": [
-        "view",
-        "star",
-        "search"
-      ],
-      "tags": [
-        "delete-own",
-        "add"
+      "roms": [
+        "add",
+        "delete-own"
       ],
       "files": [
-        "upload",
+        "download",
         "delete",
-        "download"
-      ],
-      "roms": [
-        "delete-own",
-        "add"
-      ],
-      "builds": [
-        "delete-own",
-        "add"
-      ],
-      "tokens": [
-        "list",
-        "add",
-        "delete",
-        "update"
+        "upload"
       ],
       "releases": [
         "add",
         "delete",
-        "star",
-        "rate"
+        "rate",
+        "star"
       ],
-      "user": [
+      "builds": [
+        "add",
+        "delete-own"
+      ],
+      "tags": [
+        "add",
+        "delete-own"
+      ],
+      "users": [
         "view",
-        "update"
+        "search",
+        "star"
       ],
       "games": [
         "rate",

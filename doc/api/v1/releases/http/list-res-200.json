@@ -3,24 +3,24 @@ X-List-Page: 1
 X-List-Size: 12
 X-List-Count: 3
 Content-Type: application/json; charset=utf-8
-Etag: W/"96f-NLk5SDhoQHUhJz+R3YjmaA"
+Etag: W/"951-HY+BkSW7VkfYhUTe43gf0g"
 Content-Encoding: gzip
 
 [
   {
-    "id": "E1rViUQCX_",
-    "name": "Horizontal Edition",
-    "created_at": "2015-07-06T20:25:30.797Z",
+    "id": "VkaghV42XY",
+    "name": "Implemented Edition",
+    "created_at": "2015-07-18T21:28:59.391Z",
     "authors": [
       {
         "roles": [
           "Table Creator"
         ],
         "user": {
-          "id": "NJQljIXR7u",
-          "name": "Judah.Connelly",
-          "username": "Judah.Connelly",
-          "gravatar_id": "103047fd275ea8f5f3b4c8dfce739a4c",
+          "id": "V1gNiVE37Y",
+          "name": "Gwendolyn63",
+          "username": "Gwendolyn63",
+          "gravatar_id": "5ac67d5ed0c8a9b538007b9a1d7789e7",
           "counter": {
             "comments": 0,
             "stars": 0
@@ -35,14 +35,14 @@ Content-Encoding: gzip
       "downloads": 0
     },
     "game": {
-      "id": "tom-tom",
-      "title": "Tom Tom"
+      "id": "fbc",
+      "title": "Fireball Classic"
     },
     "latest_version": {
       "version": "1.0.0",
       "thumb": {
         "image": {
-          "url": "/storage/public/files/square/VJGGj8XR7_.jpg",
+          "url": "/storage/public/files/square/VyKHiEV3QF.jpg",
           "width": 120,
           "height": 120
         },
@@ -54,19 +54,19 @@ Content-Encoding: gzip
     }
   },
   {
-    "id": "4ymgTLmC7O",
-    "name": "Down-sized Edition",
-    "created_at": "2015-07-06T20:25:32.342Z",
+    "id": "4J6-T4N27F",
+    "name": "Devolved Edition",
+    "created_at": "2015-07-18T21:29:00.904Z",
     "authors": [
       {
         "roles": [
           "Table Creator"
         ],
         "user": {
-          "id": "NJQljIXR7u",
-          "name": "Judah.Connelly",
-          "username": "Judah.Connelly",
-          "gravatar_id": "103047fd275ea8f5f3b4c8dfce739a4c",
+          "id": "V1gNiVE37Y",
+          "name": "Gwendolyn63",
+          "username": "Gwendolyn63",
+          "gravatar_id": "5ac67d5ed0c8a9b538007b9a1d7789e7",
           "counter": {
             "comments": 0,
             "stars": 0
@@ -81,14 +81,14 @@ Content-Encoding: gzip
       "downloads": 0
     },
     "game": {
-      "id": "dancing-dolls",
-      "title": "Dancing Dolls"
+      "id": "three-aces",
+      "title": "Three Aces"
     },
     "latest_version": {
       "version": "1.0",
       "thumb": {
         "image": {
-          "url": "/storage/public/files/square/4JMMnLmA7d.jpg",
+          "url": "/storage/public/files/square/Vk4epENnmt.jpg",
           "width": 120,
           "height": 120
         },
@@ -100,19 +100,19 @@ Content-Encoding: gzip
     }
   },
   {
-    "id": "VJq1wQR7O",
-    "name": "Progressive Edition",
-    "created_at": "2015-07-06T20:25:34.041Z",
+    "id": "EkzfCEN2QF",
+    "name": "Balanced Edition",
+    "created_at": "2015-07-18T21:29:01.818Z",
     "authors": [
       {
         "roles": [
           "Table Creator"
         ],
         "user": {
-          "id": "NJQljIXR7u",
-          "name": "Judah.Connelly",
-          "username": "Judah.Connelly",
-          "gravatar_id": "103047fd275ea8f5f3b4c8dfce739a4c",
+          "id": "V1gNiVE37Y",
+          "name": "Gwendolyn63",
+          "username": "Gwendolyn63",
+          "gravatar_id": "5ac67d5ed0c8a9b538007b9a1d7789e7",
           "counter": {
             "comments": 0,
             "stars": 0
@@ -127,14 +127,14 @@ Content-Encoding: gzip
       "downloads": 0
     },
     "game": {
-      "id": "old-chicago",
-      "title": "Old Chicago"
+      "id": "sapporo",
+      "title": "Sapporo"
     },
     "latest_version": {
       "version": "2.0",
       "thumb": {
         "image": {
-          "url": "/storage/public/files/square/Vy7QTLQ07O.png"
+          "url": "/storage/public/files/square/Eygb0VEnmF.png"
         },
         "flavor": {
           "lighting": "any",

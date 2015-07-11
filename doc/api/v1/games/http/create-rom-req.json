@@ -1,14 +1,14 @@
-POST /api/v1/games/wonder-wizard-demolition-derby/roms HTTP/1.1
+POST /api/v1/games/party-animal/roms HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJWeXFqa3Y3Q21PIiwiaWF0IjoiMjAxNS0wNy0wNlQyMDoyNTozNC45NjlaIiwiZXhwIjoiMjAxNS0wNy0wNlQyMToyNTozNC45NjlaIn0.CFhUfJV4x7F-nDEvQ1g7fV1gVk2ZcK-Cgm2d8Ro13rA
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJFa054Z1NFMlhZIiwiaWF0IjoiMjAxNS0wNy0xOFQyMToyOTowMy4xOTVaIiwiZXhwIjoiMjAxNS0wNy0xOFQyMjoyOTowMy4xOTVaIn0.cixtVSJsTzdx1CnFSo0mZQIS2jq-2nX5ua0J1Htvlh0
 Content-Type: application/json
-Content-Length: 126
+Content-Length: 108
 
 {
-  "id": "wonder-wizard-demolition-derby_10",
+  "id": "party-animal_10",
   "version": "1.0",
   "notes": "That is some ROM.",
   "language": "en-US",
-  "_file": "EJObewX07O"
+  "_file": "Ey37gSV3Xt"
 }

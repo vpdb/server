@@ -1,14 +1,14 @@
-PUT /api/v1/users/4ksgDDm0XO HTTP/1.1
+PUT /api/v1/users/EkKIB4hQt HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJOa3dnd1BYMDdkIiwiaWF0IjoiMjAxNS0wNy0wNlQyMDoyNTo0Mi4yMzRaIiwiZXhwIjoiMjAxNS0wNy0wNlQyMToyNTo0Mi4yMzRaIn0.C7xYoKdG6ow3hn4-taSJLGPaXqtP2RazbQmxgdkj9gc
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJOa3I4SE4zbVkiLCJpYXQiOiIyMDE1LTA3LTE4VDIxOjI5OjA5LjEyNFoiLCJleHAiOiIyMDE1LTA3LTE4VDIyOjI5OjA5LjEyNFoifQ.8qNQrjzHzzlRD4YeSdrzm3M5lOaSstvI5SgSWJPdSYs
 Content-Type: application/json
-Content-Length: 116
+Content-Length: 124
 
 {
-  "email": "jerel.torphy@yahoo.com",
-  "username": "Christian60",
-  "name": "Christian60",
+  "email": "ladarius_corkery74@hotmail.com",
+  "username": "Ova.Upton77",
+  "name": "Ova.Upton77",
   "is_active": true,
   "roles": [
     "member"

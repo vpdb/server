@@ -1,21 +1,21 @@
 POST /api/v1/releases HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI0eUJHNlNRQVhPIiwiaWF0IjoiMjAxNS0wNy0wNlQyMDoyNToxNi4zNDdaIiwiZXhwIjoiMjAxNS0wNy0wNlQyMToyNToxNi4zNDdaIn0.Lt3XLJJIz5xcE_bvxg9CnwS97TWHQkIs44yIrzqL5uo
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJFeUh0MFhOMjdGIiwiaWF0IjoiMjAxNS0wNy0xOFQyMToyODo0NS45NzdaIiwiZXhwIjoiMjAxNS0wNy0xOFQyMjoyODo0NS45NzdaIn0.G7xR7WXpMDUxRrT-uakSxD_uCSCROHE5YUUfLfb-Hz4
 Content-Type: application/json
-Content-Length: 467
+Content-Length: 487
 
 {
   "name": "release",
-  "_game": "rio",
+  "_game": "continental-magic-game",
   "versions": [
     {
       "files": [
         {
-          "_file": "EkIzCrX07_",
+          "_file": "VkHWeNE2XK",
           "_media": {
-            "playfield_image": "NyeXRBX0XO",
-            "playfield_video": "4yly8QRQ_"
+            "playfield_image": "VyMGlN43mK",
+            "playfield_video": "Ek6Gg44h7K"
           },
           "_compatibility": [
             "9.9.0"
@@ -26,9 +26,9 @@ Content-Length: 467
           }
         },
         {
-          "_file": "VybG0rm07u",
+          "_file": "EyD-l4Vhmt",
           "_media": {
-            "playfield_image": "N1Z7RB7AXO"
+            "playfield_image": "EJyMlV437Y"
           },
           "_compatibility": [
             "9.9.0"
@@ -44,7 +44,7 @@ Content-Length: 467
   ],
   "authors": [
     {
-      "_user": "4yBG6SQAXO",
+      "_user": "EyHt0XN27F",
       "roles": [
         "Table Creator"
       ]

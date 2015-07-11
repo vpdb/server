@@ -1,10 +1,10 @@
-POST /api/v1/releases/VJfMTNmR7_/comments HTTP/1.1
+POST /api/v1/releases/NJNEpfVhXY/comments HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJFeXppMzRtQ21kIiwiaWF0IjoiMjAxNS0wNy0wNlQyMDoyNTowMC4wNzZaIiwiZXhwIjoiMjAxNS0wNy0wNlQyMToyNTowMC4wNzZaIn0.sD9s2Pu7akWiBm4Hb1iSQb45b8McedJQEWrRCdAzDa8
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJOa1BnYUdFM1F0IiwiaWF0IjoiMjAxNS0wNy0xOFQyMToyODoyOC4yMzdaIiwiZXhwIjoiMjAxNS0wNy0xOFQyMjoyODoyOC4yMzdaIn0.BygZVIuvQKzxYSvSl6u-5cngIMG4t-zHbK08xJo7BPc
 Content-Type: application/json
-Content-Length: 48
+Content-Length: 45
 
 {
-  "message": "Horizontal transitional capability"
+  "message": "Devolved impactful installation"
 }

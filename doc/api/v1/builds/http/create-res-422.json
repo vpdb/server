@@ -1,7 +1,7 @@
 422 Unprocessable Entity
 Content-Type: application/json; charset=utf-8
-Content-Length: 682
-Etag: W/"2aa-6BqIGoJjqL4D3mnZHkVdKw"
+Content-Length: 768
+Etag: W/"300-L2/XVpPWf3jhGlVB8WFeKw"
 
 {
   "errors": [
@@ -19,6 +19,10 @@ Etag: W/"2aa-6BqIGoJjqL4D3mnZHkVdKw"
       "message": "Label must contain at least three characters.",
       "field": "label",
       "value": "1"
+    },
+    {
+      "message": "Major version must be provided.",
+      "field": "major_version"
     },
     {
       "message": "Invalid platform. Valid platforms are: [ \"vp\" ].",

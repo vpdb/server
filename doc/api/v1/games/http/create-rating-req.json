@@ -1,8 +1,8 @@
-POST /api/v1/games/u-boat-65/rating HTTP/1.1
+POST /api/v1/games/charlies-angels/rating HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
 Content-Type: application/json
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJFSkZVclhSUV8iLCJpYXQiOiIyMDE1LTA3LTA2VDIwOjI1OjA5LjI5OFoiLCJleHAiOiIyMDE1LTA3LTA2VDIxOjI1OjA5LjI5OFoifQ.lagtocR-4drgKTfcbZqCNE_k-N_PxMa58Hqo7mZcyrE
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJOeUZkbVYzWFkiLCJpYXQiOiIyMDE1LTA3LTE4VDIxOjI4OjM5LjcwM1oiLCJleHAiOiIyMDE1LTA3LTE4VDIyOjI4OjM5LjcwM1oifQ.PCU-r5cCzMk_T_e2GYpyNsYFMc4kDympdBhxBpdIY_A
 Content-Length: 11
 
 {

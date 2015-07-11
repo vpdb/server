@@ -1,5 +1,5 @@
-DELETE /api/v1/games/macao/star HTTP/1.1
+DELETE /api/v1/games/lite-a-line/star HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI0SnNOVkQ3QW1PIiwiaWF0IjoiMjAxNS0wNy0wNlQyMDoyNTo0MC4wODhaIiwiZXhwIjoiMjAxNS0wNy0wNlQyMToyNTo0MC4wODhaIn0.kB8tbSR3Pho6Rq8C1JVc2A-rqKFiSPNyWo5KlzWwjDU
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJFeWI3NEJOMzdGIiwiaWF0IjoiMjAxNS0wNy0xOFQyMToyOTowNy42MTVaIiwiZXhwIjoiMjAxNS0wNy0xOFQyMjoyOTowNy42MTVaIn0.V_pNmwzEpP4HZ39WWq2VviJnNzWpqqKfsYz3eILaai8
 

@@ -1,5 +1,5 @@
-GET /api/v1/games/giunone/rating HTTP/1.1
+GET /api/v1/games/equity/rating HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJFeWtYUHJYQ1hkIiwiaWF0IjoiMjAxNS0wNy0wNlQyMDoyNToxMC41NDRaIiwiZXhwIjoiMjAxNS0wNy0wNlQyMToyNToxMC41NDRaIn0.ycNSKmQskCnWp08c08asXA5lAvkAwUP9TMesslAq7UI
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJWSjhESzdOM1hLIiwiaWF0IjoiMjAxNS0wNy0xOFQyMToyODo0MC45MTdaIiwiZXhwIjoiMjAxNS0wNy0xOFQyMjoyODo0MC45MTdaIn0.GLyCTztDZrCPisI5MVMQO3QvJYVEIq1vxjnVl_aqyy0
 

@@ -1,23 +1,26 @@
 POST /api/v1/games HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJOeVFiZ1NRMG1kIiwiaWF0IjoiMjAxNS0wNy0wNlQyMDoyNTowMy40NjBaIiwiZXhwIjoiMjAxNS0wNy0wNlQyMToyNTowMy40NjBaIn0.msQ5iNf9afBevrySK1Oh2lfHF2X1Ri-ZNelpENFYwWo
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJOMWhWeW00Mm1ZIiwiaWF0IjoiMjAxNS0wNy0xOFQyMToyODozMC44OTRaIiwiZXhwIjoiMjAxNS0wNy0xOFQyMjoyODozMC44OTRaIn0.jY_8r6oHp7OUhnya46fTOj1uzFyD1vuN9Hmb0M6E5nQ
 Content-Type: application/json
-Content-Length: 266
+Content-Length: 1132
 
 {
   "ipdb": {
-    "number": 2538,
-    "mfg": 323
+    "number": 2531,
+    "mfg": 81
   },
-  "title": "3-4-5",
-  "manufacturer": "United",
+  "title": "Thing",
+  "manufacturer": "Chicago Coin",
   "year": 1951,
   "game_type": "em",
-  "features": "2 Cards",
-  "notes": "Floor Model Console Cabinet    First United Bingo game with conventional playfield",
-  "id": "3-4-5",
+  "artists": [
+    "Roy Parker"
+  ],
+  "features": "Flippers (2), Pop bumpers (2), Passive bumpers (5), Kick-out holes (3). Mystery Score area on playfield.  Ball saver gate between flippers has a large playfield insert \"Keep Out Of Here\" that lights to warn the player when the gate is open and the flipper gap is present. No slingshots. The two pop bumpers are the \"T\" and \"G\" bumpers.",
+  "notes": "Phil Harris released a song called \"The Thing\" in October 1950 which became a novelty hit for many weeks. It's the story of someone who finds a box on the beach and is vehemently shunned by anyone to which he tries to show its contents. The actual contents of the box were never identified, as far as we know, but NBC-TV had a Christmas 1950 promotion to give it a different meaning, suggesting it represented the seasonal desire to help the needy. Harris was slated to appear on numerous TV shows during the month prior to Christmas Eve, to provide a clue as to the song's meaning.",
+  "id": "thing",
   "_media": {
-    "backglass": "N1ObgrX0mu"
+    "backglass": "EyWH17N2mY"
   }
 }

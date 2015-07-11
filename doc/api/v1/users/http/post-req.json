@@ -2,10 +2,10 @@ POST /api/v1/users HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
 Content-Type: application/json
-Content-Length: 93
+Content-Length: 83
 
 {
-  "username": "Theresa_Cremin85",
-  "password": "Q24X7Ix4Jo",
-  "email": "celine_kuphal67@hotmail.com"
+  "username": "Ethan92",
+  "password": "Sc6gcr4el2",
+  "email": "ramiro_hegmann70@yahoo.com"
 }

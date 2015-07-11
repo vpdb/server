@@ -1,6 +1,6 @@
 200 OK
 Content-Type: application/json; charset=utf-8
-Etag: W/"829-cP/r7DpuPcoJsRyLFfBlJQ"
+Etag: W/"91a-AXphYGbdCWHxuVOR0rmDJA"
 Content-Encoding: gzip
 
 [
@@ -8,6 +8,7 @@ Content-Encoding: gzip
     "id": "9.9.0",
     "label": "v9.9.0",
     "platform": "vp",
+    "major_version": "9",
     "download_url": "http://www.vpforums.org/index.php?app=downloads&showfile=8793",
     "built_at": "2014-04-29T00:00:00.000Z",
     "type": "release",
@@ -17,6 +18,7 @@ Content-Encoding: gzip
     "id": "physmod2",
     "label": "physmod2",
     "platform": "vp",
+    "major_version": "9",
     "download_url": "http://www.vpforums.org/index.php?showtopic=27416&p=261813",
     "built_at": "2014-04-13T21:36:00.000Z",
     "type": "experimental",
@@ -26,6 +28,7 @@ Content-Encoding: gzip
     "id": "physmod5",
     "label": "physmod5",
     "platform": "vp",
+    "major_version": "9",
     "download_url": "http://www.vpforums.org/index.php?showtopic=27416&page=32#entry266075",
     "built_at": "2014-05-18T01:24:00.000Z",
     "type": "experimental",
@@ -35,6 +38,7 @@ Content-Encoding: gzip
     "id": "rubberdemo4",
     "label": "rubberdemo4",
     "platform": "vp",
+    "major_version": "9",
     "download_url": "http://www.vpforums.org/index.php?showtopic=27604&p=273142",
     "built_at": "2014-07-21T20:51:00.000Z",
     "type": "experimental",
@@ -44,6 +48,7 @@ Content-Encoding: gzip
     "id": "9.2.1-r932",
     "label": "v9.2.1 rev 932",
     "platform": "vp",
+    "major_version": "9",
     "download_url": "https://www.dropbox.com/sh/qx1yng3nm8cv8lr/AACbxkyAHpY1T5xjuum03dbZa/Daily%20VPinball%20Builds/VPinball%209.2.1%20rev932.exe",
     "built_at": "2014-03-04T00:00:00.000Z",
     "type": "nightly",
@@ -53,6 +58,7 @@ Content-Encoding: gzip
     "id": "-9.2.1",
     "label": "< v9.2.1",
     "platform": "vp",
+    "major_version": "9",
     "built_at": "2014-03-21T00:00:00.000Z",
     "type": "release",
     "is_range": true
@@ -61,6 +67,7 @@ Content-Encoding: gzip
     "id": "-9.9.0",
     "label": "< v9.9.0",
     "platform": "vp",
+    "major_version": "9",
     "built_at": "2014-04-29T00:00:00.000Z",
     "type": "release",
     "is_range": true
@@ -69,6 +76,7 @@ Content-Encoding: gzip
     "id": "8.x",
     "label": "v8.x",
     "platform": "vp",
+    "major_version": "8",
     "built_at": "2009-02-07T15:23:00.000Z",
     "type": "release",
     "is_range": true
@@ -77,6 +85,7 @@ Content-Encoding: gzip
     "id": "9.2.1",
     "label": "v9.2.1",
     "platform": "vp",
+    "major_version": "9",
     "download_url": "http://www.vpforums.org/index.php?app=downloads&showfile=8793",
     "built_at": "2014-03-21T00:00:00.000Z",
     "type": "release",
@@ -86,6 +95,7 @@ Content-Encoding: gzip
     "id": "10.x",
     "label": "VPX",
     "platform": "vp",
+    "major_version": "10",
     "built_at": "2015-12-31T00:00:00.000Z",
     "type": "release",
     "is_range": false

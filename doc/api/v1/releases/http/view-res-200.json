@@ -1,12 +1,12 @@
 200 OK
 Content-Type: application/json; charset=utf-8
-Etag: W/"b66-YEVacjY7Inml1tDSdYLrkw"
+Etag: W/"b8a-yDAmH/U+RxrdytBCKkD6IQ"
 Content-Encoding: gzip
 
 {
-  "name_sortable": "Fundamental Edition",
-  "name": "Fundamental Edition",
-  "created_at": "2015-07-06T20:25:28.862Z",
+  "name_sortable": "Sharable Edition",
+  "name": "Sharable Edition",
+  "created_at": "2015-07-18T21:28:57.657Z",
   "rating": {
     "votes": 0,
     "average": 0
@@ -27,10 +27,10 @@ Content-Encoding: gzip
         "Table Creator"
       ],
       "user": {
-        "id": "VJsztU7RXd",
-        "name": "Eldridge95",
-        "username": "Eldridge95",
-        "gravatar_id": "ffbfff28b7ea43c4e6aff985fa5b8c0a",
+        "id": "VJHc4EhmF",
+        "name": "Laverna.Osinski26",
+        "username": "Laverna.Osinski26",
+        "gravatar_id": "ca1f1f3c4f300a550a4ff53bd0902f55",
         "counter": {
           "comments": 0,
           "stars": 0
@@ -40,7 +40,7 @@ Content-Encoding: gzip
   ],
   "versions": [
     {
-      "released_at": "2015-07-06T20:25:28.862Z",
+      "released_at": "2015-07-18T21:28:57.657Z",
       "version": "1.0.0",
       "counter": {
         "comments": 0,
@@ -48,7 +48,7 @@ Content-Encoding: gzip
       },
       "files": [
         {
-          "released_at": "2015-07-06T20:25:28.862Z",
+          "released_at": "2015-07-18T21:28:57.657Z",
           "counter": {
             "downloads": 0
           },
@@ -60,7 +60,7 @@ Content-Encoding: gzip
             "playfield_image": {
               "name": "playfield-0.png",
               "bytes": 347,
-              "created_at": "2015-07-06T20:25:28.620Z",
+              "created_at": "2015-07-18T21:28:57.356Z",
               "mime_type": "image/png",
               "file_type": "playfield-fs",
               "metadata": {
@@ -75,27 +75,27 @@ Content-Encoding: gzip
                 "downloads": 0
               },
               "is_active": true,
-              "id": "EJHEYLmAQO",
+              "id": "N1CgqVEn7F",
               "is_protected": true,
-              "url": "/storage/v1/files/EJHEYLmAQO.png",
+              "url": "/storage/v1/files/N1CgqVEn7F.png",
               "variations": {
                 "medium": {
-                  "url": "/storage/public/files/medium/EJHEYLmAQO.png"
+                  "url": "/storage/public/files/medium/N1CgqVEn7F.png"
                 },
                 "medium-2x": {
-                  "url": "/storage/public/files/medium-2x/EJHEYLmAQO.png"
+                  "url": "/storage/public/files/medium-2x/N1CgqVEn7F.png"
                 },
                 "medium-landscape": {
-                  "url": "/storage/public/files/medium-landscape/EJHEYLmAQO.png"
+                  "url": "/storage/public/files/medium-landscape/N1CgqVEn7F.png"
                 },
                 "medium-landscape-2x": {
-                  "url": "/storage/public/files/medium-landscape-2x/EJHEYLmAQO.png"
+                  "url": "/storage/public/files/medium-landscape-2x/N1CgqVEn7F.png"
                 },
                 "square": {
-                  "url": "/storage/public/files/square/EJHEYLmAQO.png"
+                  "url": "/storage/public/files/square/N1CgqVEn7F.png"
                 },
                 "square-2x": {
-                  "url": "/storage/public/files/square-2x/EJHEYLmAQO.png"
+                  "url": "/storage/public/files/square-2x/N1CgqVEn7F.png"
                 }
               }
             }
@@ -105,6 +105,7 @@ Content-Encoding: gzip
               "id": "9.9.0",
               "label": "v9.9.0",
               "platform": "vp",
+              "major_version": "9",
               "download_url": "http://www.vpforums.org/index.php?app=downloads&showfile=8793",
               "built_at": "2014-04-29T00:00:00.000Z",
               "type": "release",
@@ -113,12 +114,12 @@ Content-Encoding: gzip
           ],
           "file": {
             "name": "test-table-0.vpt",
-            "created_at": "2015-07-06T20:25:28.562Z",
+            "created_at": "2015-07-18T21:28:57.309Z",
             "mime_type": "application/x-visual-pinball-table",
             "file_type": "release",
             "metadata": {},
-            "id": "NkyEFU707d",
-            "url": "/storage/v1/files/NkyEFU707d.vpt",
+            "id": "NJueq4N3Xt",
+            "url": "/storage/v1/files/NJueq4N3Xt.vpt",
             "bytes": 135168,
             "variations": {},
             "is_protected": true,
@@ -131,6 +132,6 @@ Content-Encoding: gzip
       ]
     }
   ],
-  "id": "V1fHYUQ0QO",
+  "id": "Ekn-cEE27Y",
   "tags": []
 }

@@ -1,12 +1,13 @@
 201 Created
 Content-Type: application/json; charset=utf-8
-Content-Length: 180
-Etag: W/"b4-SJk8GKNDxaKXSZvcKU9mZg"
+Content-Length: 203
+Etag: W/"cb-2lqiI8+b1xirgqeDn0j4ow"
 
 {
   "id": "v1.0.1",
   "label": "v1.0.1",
   "platform": "vp",
+  "major_version": "1",
   "download_url": "http://download_url/",
   "built_at": "2000-01-01T11:21:00.000Z",
   "type": "release",

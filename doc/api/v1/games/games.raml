@@ -33,12 +33,26 @@ post:
           example: !include http/create-res-201.json
 get:
   securedBy: [ ]
-  is: [ paginated: { defaultPerPage: 12, maxPerPage: 60 } ]
+  is: [ paginated: { defaultPerPage: 12, maxPerPage: 60 }, sorted ]
   description: |
     List all games.
 
+    ### Filtering
+
     Using query parameters described in the *Request* tab, this resource also
     allows searching for games.
+
+    ### Sorting
+
+    The result can be sorted by the following fields:
+
+    * `title` *default* - Title of the game
+    * `year` - Release year of the game
+    * `popularity` - A score depending on views, comments and downloads of its
+      releases
+    * `rating` - The [Bayesian estimate](https://en.wikipedia.org/wiki/Bayes_estimator)
+      of the games' ratings
+
   queryParameters:
     q:
       description: |

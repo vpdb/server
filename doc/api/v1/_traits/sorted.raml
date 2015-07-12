@@ -1,0 +1,13 @@
+queryParameters:
+  sort:
+    description: |
+      Field name to sort the result after.
+
+      Default sort order depends on the field, for string fields it's usually
+      ascending, while for date fields it's descending. In order to reverse the
+      search order, suffix the field with a minus (`-`).
+
+      Check the resource overview for a list of sortable fields.
+    required: false
+    type: string
+    example: -year

@@ -105,16 +105,17 @@ var releaseFields = {
 	counter:       {
 		downloads: { type: Number, 'default': 0 },
 		comments: { type: Number, 'default': 0 },
-		stars:     { type: Number, 'default': 0 },
-		score:     { type: Number, 'default': 0 } // imdb-top-250-like score, a bayesian estimate.
+		stars:     { type: Number, 'default': 0 }
 	},
 	metrics: {
 		popularity: { type: Number, 'default': 0 } // time-decay based score like reddit, but based on views, downloads, comments, favs. see SO/11653545
 	},
 	rating: {
 		average:   { type: Number, 'default': 0 },
-		votes:     { type: Number, 'default': 0 }
+		votes:     { type: Number, 'default': 0 },
+		score:     { type: Number, 'default': 0 } // imdb-top-250-like score, a bayesian estimate.
 	},
+	modified_at:   { type: Date, required: true },
 	created_at:    { type: Date, required: true },
 	_created_by:   { type: Schema.ObjectId, required: true, ref: 'User' }
 };
@@ -429,7 +430,6 @@ ReleaseSchema.statics.toSimple = function(release, opts) {
 	};
 
 	_.each(latestVersion.files, function(file) {
-		//rls.latest_version.files.push(file);
 		rls.latest_version.files.push({
 			released_at: file.released_at,
 			flavor: file.flavor,
@@ -446,10 +446,11 @@ ReleaseSchema.statics.toSimple = function(release, opts) {
  *
  * @param {array} query Original, non-nested query
  * @param {array} filter Array of nested conditions, e.g. [ { "versions.files.flavor.lightning": "night" } ]
+ * @param {int} [sortBy] Object defining the sort order
  * @param {int} [page] Pagination: page number
  * @param {int} [limit] Pagination: items per page
  */
-ReleaseSchema.statics.getAggregationPipeline = function(query, filter, page, limit) {
+ReleaseSchema.statics.getAggregationPipeline = function(query, filter, sortBy, page, limit) {
 
 	var q = makeQuery(query.concat(filter));
 	var f = makeQuery(filter);
@@ -477,7 +478,7 @@ ReleaseSchema.statics.getAggregationPipeline = function(query, filter, page, lim
 		}
 	});
 
-	return [
+	var pipe = [
 		{ $match: q },
 		{ $unwind: '$versions'},
 		{ $unwind: '$versions.files'},
@@ -505,6 +506,12 @@ ReleaseSchema.statics.getAggregationPipeline = function(query, filter, page, lim
 			versions: '$versions'
 		}) }
 	];
+
+	if (sortBy) {
+		pipe.push({ $sort: sortBy });
+	}
+
+	return pipe;
 };
 
 function makeQuery(query) {

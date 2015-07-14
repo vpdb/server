@@ -46,6 +46,7 @@ exports.create = function(req, res) {
 	var now = new Date();
 	Release.getInstance(_.extend(req.body, {
 		_created_by: req.user._id,
+		modified_at: now,
 		created_at: now
 	}), function(err, newRelease) {
 		if (err) {
@@ -161,6 +162,8 @@ exports.addVersion = function(req, res) {
 
 				logger.info('[api|release:addVersion] Validations passed, adding new version to release.');
 				release.versions.push(newVersion);
+				release.modified_at = new Date();
+
 				release.save(assert(function() {
 
 					logger.info('[api|release:create] Added version "%s" to release "%s".', newVersion.version, release.name);
@@ -253,6 +256,7 @@ exports.updateVersion = function(req, res) {
 				}
 
 				logger.info('[api|release:updateVersion] Validations passed, updating version.');
+				release.modified_at = new Date();
 				release.save(function(err) {
 
 					if (err) {
@@ -418,59 +422,67 @@ exports.list = function(req, res) {
 	// result
 	], function(err, query, filter) {
 
-		var populatedFields = [ '_game', 'versions.files._file', 'versions.files._media.playfield_image', 'versions.files._compatibility', 'authors._user' ];
-		if (!err) {
-			console.log(require('util').inspect(Release.getAggregationPipeline(query, filter), { depth: null, colors: true }));
-
-			if (filter.length > 0) {
-
-				Release.aggregate(Release.getAggregationPipeline(query, filter)).exec(function(err, result) {
-
-					/* istanbul ignore if  */
-					if (err) {
-						return api.fail(res, error(err, 'Error listing releases').log('list'), 500);
-					}
-
-					Release.populate(result, populatedFields, function(err, releases) {
-						/* istanbul ignore if  */
-						if (err) {
-							return api.fail(res, error(err, 'Error listing releases').log('list'), 500);
-						}
-
-						releases = _.map(releases, function(release) {
-							return Release.toSimple(release, transformOpts);
-						});
-
-						api.success(res, releases, 200);
-
-					});
-
-				});
-
-			} else {
-				var sortBy = api.sortParams(req);
-				var q = api.searchQuery(query);
-				logger.info('[api|release:list] query: %s, sort: %j', util.inspect(q), util.inspect(sortBy));
-				Release.paginate(q, {
-					page: pagination.page,
-					limit: pagination.perPage,
-					populate: populatedFields,
-					sortBy: sortBy  // '_game.title', '_game.id'
-
-				}, function(err, releases, pageCount, count) {
-
-					/* istanbul ignore if  */
-					if (err) {
-						return api.fail(res, error(err, 'Error listing releases').log('list'), 500);
-					}
-					releases = _.map(releases, function(release) {
-						return release.toSimple(transformOpts);
-					});
-					api.success(res, releases, 200, api.paginationOpts(pagination, count));
-				});
-			}
+		if (err) {
+			// error has been treated.
+			return;
 		}
-		// otherwise error has been treated.
+
+		console.log(util.inspect(Release.getAggregationPipeline(query, filter), { depth: null, colors: true }));
+
+		var sortBy = api.sortParams(req, { title: 1 }, {
+			popularity: 'metrics.popularity',
+			rating: 'rating.score',
+			name: 'name_sortable'
+		});
+		var populatedFields = [ '_game', 'versions.files._file', 'versions.files._media.playfield_image', 'versions.files._compatibility', 'authors._user' ];
+
+		if (filter.length > 0) {
+
+			Release.aggregate(Release.getAggregationPipeline(query, filter)).exec(function(err, result) {
+
+				/* istanbul ignore if  */
+				if (err) {
+					return api.fail(res, error(err, 'Error listing releases').log('list'), 500);
+				}
+
+				Release.populate(result, populatedFields, function(err, releases) {
+					/* istanbul ignore if  */
+					if (err) {
+						return api.fail(res, error(err, 'Error listing releases').log('list'), 500);
+					}
+
+					releases = _.map(releases, function(release) {
+						return Release.toSimple(release, transformOpts);
+					});
+
+					api.success(res, releases, 200);
+
+				});
+
+			});
+
+		} else {
+
+			var q = api.searchQuery(query);
+			logger.info('[api|release:list] query: %s, sort: %j', util.inspect(q), util.inspect(sortBy));
+			Release.paginate(q, {
+				page: pagination.page,
+				limit: pagination.perPage,
+				populate: populatedFields,
+				sortBy: sortBy  // '_game.title', '_game.id'
+
+			}, function(err, releases, pageCount, count) {
+
+				/* istanbul ignore if  */
+				if (err) {
+					return api.fail(res, error(err, 'Error listing releases').log('list'), 500);
+				}
+				releases = _.map(releases, function(release) {
+					return release.toSimple(transformOpts);
+				});
+				api.success(res, releases, 200, api.paginationOpts(pagination, count));
+			});
+		}
 	});
 
 };

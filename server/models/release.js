@@ -102,9 +102,9 @@ var releaseFields = {
 			url: { type: String }
 		}
 	},
-	counter:       {
+	counter: {
 		downloads: { type: Number, 'default': 0 },
-		comments: { type: Number, 'default': 0 },
+		comments:  { type: Number, 'default': 0 },
 		stars:     { type: Number, 'default': 0 }
 	},
 	metrics: {

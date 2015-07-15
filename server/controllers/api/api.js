@@ -268,14 +268,22 @@ exports.searchQuery = function(query) {
 };
 
 exports.sortParams = function(req, defaultSort, map) {
-	var key, sortBy = {};
+	var key, order, mapOrder, sortBy = {};
 	defaultSort = defaultSort || { title: 1 };
 	map = map || {};
 	if (req.query.sort) {
 		var s = req.query.sort.match(/^(-?)([a-z0-9_-]+)+$/);
 		if (s) {
-			key = map[s[2]] ? map[s[2]] : s[2];
-			sortBy[key] = s[1] ? -1 : 1;
+			order = s[1] ? -1 : 1;
+			key = s[2];
+			if (map[key]) {
+				s = map[key].match(/^(-?)([a-z0-9_.]+)+$/);
+				key = s[2];
+				mapOrder = s[1] ? -1 : 1;
+			} else {
+				mapOrder = 1;
+			}
+			sortBy[key] = mapOrder * order;
 		} else {
 			return defaultSort;
 		}

@@ -427,18 +427,22 @@ exports.list = function(req, res) {
 			return;
 		}
 
-		console.log(util.inspect(Release.getAggregationPipeline(query, filter), { depth: null, colors: true }));
-
-		var sortBy = api.sortParams(req, { title: 1 }, {
-			popularity: 'metrics.popularity',
-			rating: 'rating.score',
-			name: 'name_sortable'
+		var sortBy = api.sortParams(req, { modified_at: 1 }, {
+			modified_at: '-modified_at',
+			popularity: '-metrics.popularity',
+			rating: '-rating.score',
+			name: 'name_sortable',
+			num_downloads: '-counter.downloads',
+			num_comments: '-counter.comments',
+			num_stars: '-counter.stars'
 		});
+
 		var populatedFields = [ '_game', 'versions.files._file', 'versions.files._media.playfield_image', 'versions.files._compatibility', 'authors._user' ];
 
 		if (filter.length > 0) {
 
-			Release.aggregate(Release.getAggregationPipeline(query, filter)).exec(function(err, result) {
+			console.log(util.inspect(Release.getAggregationPipeline(query, filter, sortBy), { depth: null, colors: true }));
+			Release.aggregate(Release.getAggregationPipeline(query, filter, sortBy)).exec(function(err, result) {
 
 				/* istanbul ignore if  */
 				if (err) {

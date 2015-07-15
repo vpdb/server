@@ -171,8 +171,8 @@ exports.list = function(req, res) {
 	}
 
 	var sortBy = api.sortParams(req, { title: 1 }, {
-		popularity: 'metrics.popularity',
-		rating: 'rating.score',
+		popularity: '-metrics.popularity',
+		rating: '-rating.score',
 		title: 'title_sortable'
 	});
 

@@ -447,10 +447,9 @@ ReleaseSchema.statics.toSimple = function(release, opts) {
  * @param {array} query Original, non-nested query
  * @param {array} filter Array of nested conditions, e.g. [ { "versions.files.flavor.lightning": "night" } ]
  * @param {int} [sortBy] Object defining the sort order
- * @param {int} [page] Pagination: page number
- * @param {int} [limit] Pagination: items per page
+ * @param {int} [pagination] Pagination object
  */
-ReleaseSchema.statics.getAggregationPipeline = function(query, filter, sortBy, page, limit) {
+ReleaseSchema.statics.getAggregationPipeline = function(query, filter, sortBy, pagination) {
 
 	var q = makeQuery(query.concat(filter));
 	var f = makeQuery(filter);
@@ -478,8 +477,18 @@ ReleaseSchema.statics.getAggregationPipeline = function(query, filter, sortBy, p
 		}
 	});
 
-	var pipe = [
-		{ $match: q },
+	var pipe = [ { $match: q } ];
+	if (sortBy) {
+		pipe.push({ $sort: sortBy });
+	}
+
+	if (pagination) {
+		pipe.push({ $skip: (pagination.page * pagination.perPage) - pagination.perPage });
+		pipe.push({ $limit: pagination.perPage });
+	}
+
+	pipe = pipe.concat([
+
 		{ $unwind: '$versions'},
 		{ $unwind: '$versions.files'},
 		{ $match: f },
@@ -505,12 +514,7 @@ ReleaseSchema.statics.getAggregationPipeline = function(query, filter, sortBy, p
 			_id: '$_id._id',
 			versions: '$versions'
 		}) }
-	];
-
-	if (sortBy) {
-		pipe.push({ $sort: sortBy });
-	}
-
+	]);
 	return pipe;
 };
 

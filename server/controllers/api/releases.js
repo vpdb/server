@@ -441,8 +441,8 @@ exports.list = function(req, res) {
 
 		if (filter.length > 0) {
 
-			console.log(util.inspect(Release.getAggregationPipeline(query, filter, sortBy), { depth: null, colors: true }));
-			Release.aggregate(Release.getAggregationPipeline(query, filter, sortBy)).exec(function(err, result) {
+			console.log(util.inspect(Release.getAggregationPipeline(query, filter, sortBy, pagination), { depth: null, colors: true }));
+			Release.aggregate(Release.getAggregationPipeline(query, filter, sortBy, pagination)).exec(function(err, result) {
 
 				/* istanbul ignore if  */
 				if (err) {
@@ -462,7 +462,6 @@ exports.list = function(req, res) {
 					api.success(res, releases, 200);
 
 				});
-
 			});
 
 		} else {

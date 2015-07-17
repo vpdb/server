@@ -465,7 +465,6 @@ ReleaseSchema.statics.getAggregationPipeline = function(query, filter, sortBy, p
 			group2[field] = '$' + field;
 			project1[field] = '$_id.' + field;
 			project2[field] = '$_id.' + field;
-			console.log('Adding field "%s".', field);
 		}
 	});
 	project1.versions = { };

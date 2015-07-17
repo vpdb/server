@@ -449,6 +449,7 @@ exports.list = function(req, res) {
 					return api.fail(res, error(err, 'Error listing releases').log('list'), 500);
 				}
 
+				// populate
 				Release.populate(result, populatedFields, function(err, releases) {
 					/* istanbul ignore if  */
 					if (err) {
@@ -459,8 +460,14 @@ exports.list = function(req, res) {
 						return Release.toSimple(release, transformOpts);
 					});
 
-					api.success(res, releases, 200);
-
+					// count
+					Release.count(query, function(err, count) {
+						/* istanbul ignore if  */
+						if (err) {
+							return api.fail(res, error(err, 'Error counting releases').log('list'), 500);
+						}
+						api.success(res, releases, 200, api.paginationOpts(pagination, count));
+					});
 				});
 			});
 

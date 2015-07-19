@@ -275,7 +275,7 @@ describe('The storage engine of VPDB', function() {
 					var fileUrl = release.versions[0].files[0].file.url;
 					request
 						.post('/storage/v1/authenticate')
-						.as('member')
+						.as('contributor')
 						.save({ path: 'auth/storage' })
 						.send({ paths: fileUrl })
 						.end(function(err, res) {

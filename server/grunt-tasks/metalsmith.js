@@ -100,7 +100,7 @@ module.exports = function(grunt) {
 		metalsmith.use(templates({ engine: 'jade', directory: 'client/app/devsite' }));
 
 		/* replaces api://.. links with real references */
-		metalsmith.use(apilinks({ core: { path: '/api/v1'} }));
+		metalsmith.use(apilinks({ core: { path: '/api/v1'}, storage: { path: '/storage/v1' }}));
 
 		// build
 		metalsmith.build(done);

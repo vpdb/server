@@ -83,4 +83,4 @@ that this is the only case so far that could be easily done with a unit test.
 [ipdbtest]: https://github.com/freezy/node-vpdb/blob/master/test/api/ipdb.test.js#L26
 [usersjs]: https://github.com/freezy/node-vpdb/blob/master/server/controllers/api/users.js
 [userjs]: https://github.com/freezy/node-vpdb/blob/master/server/controllers/api/user.js
-[apiusers]: api://core/users/{user_id}/put
+[apiusers]: api://core/put/users/{user_id}

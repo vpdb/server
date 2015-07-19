@@ -13,3 +13,11 @@ post:
   securedBy: [ jwt: { scopes: [ MEMBER ] } ]
   description: |
     Generate one or more storage tokens.
+  body:
+    role/member:
+      example: !include ../../../api/v1/auth/http/storage-req.json
+  responses:
+    201:
+      body:
+        role/member:
+          example: !include ../../../api/v1/auth/http/storage-res-200.json

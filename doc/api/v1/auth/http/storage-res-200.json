@@ -1,0 +1,8 @@
+200 OK
+Content-Type: application/json; charset=utf-8
+Content-Length: 294
+Etag: W/"126-piMotjOupW1C6seU0LHIyw"
+
+{
+  "/storage/v1/files/EJ6eemf54Y.vpt": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJFeVhlUXo5NEYiLCJpYXQiOiIyMDE1LTA3LTE5VDEzOjE1OjQzLjcyOVoiLCJleHAiOiIyMDE1LTA3LTE5VDEzOjE2OjQzLjcyOVoiLCJwYXRoIjoiL3N0b3JhZ2UvdjEvZmlsZXMvRUo2ZWVtZjU0WS52cHQifQ.xFBtcmP2dlMz1rc6yeQZmA_Y4MxDidu_rwaRXDmZWsU"
+}

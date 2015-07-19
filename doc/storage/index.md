@@ -17,5 +17,10 @@ necessary without having to change the API.
 
 There are protected and unprotected storage items. Unprotected (or *free*)
 items don't need authentication and can be downloaded anonymously. Such items
-are typically images and text files and aren't part of the rate limiting 
-either.
+are thumbnails and text files and aren't part of the rate limiting either.
+
+Then there are items that need authentication but don't count in the rate limit,
+such as owned uploads or full-res images.
+
+Finally, there are files which are protected and additionally restricted by the
+rate limit, such as table downloads or any other larger files.

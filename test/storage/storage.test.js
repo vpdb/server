@@ -256,8 +256,36 @@ describe('The storage engine of VPDB', function() {
 
 		describe('when the file is active', function() {
 
-			it('should deny access to anonymous users');
+			it('should deny access to anonymous users', function(done) {
+				hlp.release.createRelease('member', request, function(release) {
+					var fileUrl = release.versions[0].files[0].file.url;
+					request.get(fileUrl).end(hlp.status(401, done, 'valid credentials'));
+				});
+			});
 
+			it('should grant access to an authenticated user', function(done) {
+				hlp.release.createRelease('member', request, function(release) {
+					var fileUrl = release.versions[0].files[0].file.url;
+					request.get(fileUrl).as('contributor').end(hlp.status(200, done));
+				});
+			});
+
+			it('should grant access using a storage token', function(done) {
+				hlp.release.createRelease('member', request, function(release) {
+					var fileUrl = release.versions[0].files[0].file.url;
+					request
+						.post('/storage/v1/authenticate')
+						.as('member')
+						.save({ path: 'auth/storage' })
+						.send({ paths: fileUrl })
+						.end(function(err, res) {
+							hlp.expectStatus(err, res, 200);
+							expect(res.body).to.be.an('object');
+							expect(res.body).to.have.key(fileUrl);
+							request.get(fileUrl).query({ token: res.body[fileUrl] }).end(hlp.status(200, done));
+						});
+				});
+			});
 		});
 
 		describe('when the file has a quota applied', function() {

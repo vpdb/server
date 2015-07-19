@@ -33,7 +33,7 @@ get:
     The result can be sorted by the following fields:
 
     * `modified_at` *default* - Last date the release was modified. Comments,
-      ratings and stars don't cout as modifications.
+      ratings and stars don't count as modifications.
     * `name` - Name of the release
     * `popularity` - A score depending on downloads, comments and stars.
     * `rating` - The [Bayesian estimate](https://en.wikipedia.org/wiki/Bayes_estimator)
@@ -67,12 +67,12 @@ get:
         The flavor is provided in key/value pairs, where pairs are comma
         separated and key/value with a colon.
 
-        In order to be returned, a release must have a least one version with
+        In order to be matched, a release must have a least one version with
         at least one file with the given flavor. The `latest_version` of the
         result is the latest version with the given flavor.
 
         Note that if provided, this filter will not only filter the releases but
-        also files of all returned versions to match the provided flavor.
+        also files to match the provided flavor.
       required: false
       type: string
       example: orientation:fs,lighting:day

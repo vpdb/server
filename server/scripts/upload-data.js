@@ -20,6 +20,7 @@
 
 var games = require('../../data/gen/games/games');
 var roms = require('../../data/gen/roms/roms');
+var releases = require('../../data/gen/releases/releases');
 var credentials = require('./credentials');
 
 var local = {
@@ -55,5 +56,6 @@ var config = local;
 config.romFolder = 'E:/Pinball/Visual Pinball-103/VPinMame/roms';
 
 //games.upload(config);
-roms.upload(config);
+//roms.upload(config);
+releases.upload(config);
 

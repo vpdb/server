@@ -15,7 +15,7 @@ necessary without having to change the API.
 
 # Downloading from Storage
 
-In order to download a file, use the [storage API][download]. All you need is
+In order to download a file, use the [storage resource][download]. All you need is
 the storage ID of the item to download. However, for accessing non-public files,
 authentication is needed as described below.
 

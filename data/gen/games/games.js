@@ -157,6 +157,7 @@ exports.data = [
 	{ bg: 'Back to the Future (Data East 1990).png', logo: 'Back to the Future (Data East 1990).png', ipdb: 126 },
 	{ bg: 'Bad Cats (Williams 1989).png', logo: 'Bad Cats (Williams 1989).png', ipdb: 127 },
 	{ bg: 'Banzai Run (Williams 1988).png', logo: 'Banzai Run (Williams 1988).png', ipdb: 175, id: 'banzai' },
+	{ bg: 'Baywatch (Sega 1995)', logo: 'Baywatch (Sega 1995).png', ipdb: 2848 },
 	{ bg: 'Big Bang Bar (Capcom 1996).png', logo: 'Big Bang Bar (Capcom 1996).png', ipdb: 4001 },
 	{ bg: 'Big Brave (Maresa 1974).png', logo: 'Big Brave (Maresa 1974).png', ipdb: 4634, year: 1974 },
 	{ bg: 'Black Knight (Williams 1980).png', logo: 'Black Knight (Williams 1980).png', ipdb: 310 },

@@ -46,6 +46,7 @@ var Schema = mongoose.Schema;
 // SCHEMA
 //-----------------------------------------------------------------------------
 
+// FILES
 var fileFields = {
 	_file:  { type: Schema.ObjectId, required: 'You must provide a file reference.', ref: 'File' },
 	flavor: {
@@ -63,7 +64,11 @@ var fileFields = {
 	}
 };
 var FileSchema = new Schema(fileFields);
+FileSchema.plugin(fileRef);
+FileSchema.plugin(prettyId, { model: 'ReleaseVersionFile' });
+FileSchema.plugin(toObj);
 
+// VERSIONS
 var versionFields = {
 	version: { type: String, required: 'Version must be provided.' },
 	released_at: { type: Date, required: true },
@@ -74,13 +79,19 @@ var versionFields = {
 		comments:   { type: Number, 'default': 0 }
 	}
 };
-
 var VersionSchema = new Schema(versionFields);
+VersionSchema.plugin(fileRef);
+VersionSchema.plugin(prettyId, { model: 'ReleaseVersion' });
+VersionSchema.plugin(toObj);
 
+// AUTHOR
 var AuthorSchema = new Schema({
 	_user: { type: Schema.ObjectId, required: 'Reference to user must be provided.', ref: 'User' },
 	roles: [ String ]
 });
+AuthorSchema.plugin(toObj);
+
+// RELEASE
 var releaseFields = {
 	id:            { type: String, required: true, unique: true, 'default': shortId.generate },
 	_game:         { type: Schema.ObjectId, required: 'Reference to game must be provided.', ref: 'Game' },
@@ -133,14 +144,6 @@ ReleaseSchema.plugin(paginate);
 ReleaseSchema.plugin(toObj);
 ReleaseSchema.plugin(metrics, { hotness: { popularity: { downloads: 10, comments: 20, stars: 30 }}});
 ReleaseSchema.plugin(sortableTitle, { src: 'name', dest: 'name_sortable' });
-FileSchema.plugin(fileRef);
-FileSchema.plugin(prettyId, { model: 'ReleaseVersionFile' });
-FileSchema.plugin(toObj);
-VersionSchema.plugin(fileRef);
-VersionSchema.plugin(prettyId, { model: 'ReleaseVersion' });
-VersionSchema.plugin(toObj);
-AuthorSchema.plugin(toObj);
-
 
 //-----------------------------------------------------------------------------
 // VALIDATIONS

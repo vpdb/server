@@ -118,7 +118,7 @@ FileSchema.path('mime_type').validate(function(mimeType) {
 		return true;
 	}
 	if (!_.contains(fileTypes.mimeTypes(this.file_type), mimeType)) {
-		this.invalidate('mime_type', 'Invalid MIME type for file type "' + this.file_type + '". Valid MIME types are: ["' + fileTypes.mimeTypes(this.file_type).join('", "') + '"].');
+		this.invalidate('mime_type', 'Invalid MIME type "' + mimeType + '" for file type "' + this.file_type + '". Valid MIME types are: ["' + fileTypes.mimeTypes(this.file_type).join('", "') + '"].');
 	}
 });
 

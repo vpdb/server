@@ -221,6 +221,7 @@ exports.data = [
 	{ bg: 'Star Wars (Data East 1992).png', logo: 'Star Wars (Data East 1992).png', ipdb: 2358 },
 	{ bg: 'STTNG (Williams 1993).png', logo: 'STTNG (Williams 1993).png', ipdb: 2357 },
 	{ bg: 'Super Mario Bros (Premier 1992).png', logo: 'Super Mario Bros (Premier 1992).png', ipdb: 2435, id: 'smb' },
+	{ bg: 'Superman (Atari 1979).png', logo: 'Superman (Atari 1979).png', ipdb: 2454 },
 	{ bg: 'Tales from the Crypt (Data East 1993).png', logo: 'Tales from the Crypt (Data East 1993).png', ipdb: 2493 },
 	{ bg: 'Tales of the Arabian Nights (Williams 1996).png', logo: 'Tales of the Arabian Nights (Williams 1996).png', ipdb: 3824 },
 	{ bg: 'Terminator 2 - Judgment Day (Williams 1991).png', logo: 'Terminator 2 - Judgment Day (Williams 1991).png', ipdb: 2524 },

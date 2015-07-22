@@ -27,6 +27,8 @@ var request = require('superagent');
 
 var mimetypes = require('../../../server/modules/mimetypes');
 
+var uploadOnly = '';
+
 exports.upload = function(config) {
 
 	config = config || {};
@@ -65,6 +67,10 @@ exports.upload = function(config) {
 		async.eachSeries(fs.readdirSync(path.resolve(root)), function(gameId, nextGame) {
 			var gamePath = path.resolve(root, gameId);
 			if (!fs.lstatSync(gamePath).isDirectory()) {
+				return nextGame();
+			}
+			if (uploadOnly && gameId !== uploadOnly) {
+				console.log("Skipping game %s..", gameId);
 				return nextGame();
 			}
 

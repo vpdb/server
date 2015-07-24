@@ -287,12 +287,6 @@ describe('The storage engine of VPDB', function() {
 				});
 			});
 
-			it('should grant access without providing the file extension', function(done) {
-				hlp.release.createRelease('member', request, function(release) {
-					var fileUrl = '/storage/v1/files/' + release.versions[0].files[0].file.id;
-					request.get(fileUrl).as('contributor').end(hlp.status(200, done));
-				});
-			});
 		});
 
 		describe('when the file has a quota applied', function() {

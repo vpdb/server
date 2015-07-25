@@ -40,6 +40,7 @@ angular.module('vpdb.releases.list', [])
 		// query defaults
 		$scope.$query = null;
 		$scope.filterTags = [];
+		$scope.filterOrientationOpen = true;
 		$scope.sort = 'title';
 
 		// stuff we need in the view

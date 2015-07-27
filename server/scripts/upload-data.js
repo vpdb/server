@@ -24,8 +24,8 @@ var releases = require('../../data/gen/releases/releases');
 var credentials = require('./credentials');
 
 var local = {
-	apiUri: 'http://localhost:3000/api/v1',
-	storageUri: 'http://localhost:3000/storage/v1',
+	apiUri: 'http://127.0.0.1:3000/api/v1',
+	storageUri: 'http://127.0.0.1:3000/storage/v1',
 	authHeader: 'Authorization',
 	credentials: { username: 'test', password: credentials.user.password }
 };
@@ -53,9 +53,10 @@ var production = {
 
 var config = local;
 
-config.romFolder = 'E:/Pinball/Visual Pinball-103/VPinMame/roms';
+config.folder = process.env.VPDB_DATA_FOLDER;
+config.romFolder = process.env.VPDB_ROM_FOLDER || process.env.VPDB_DATA_FOLDER || 'E:/Pinball/Visual Pinball-103/VPinMame/roms';
 
-//games.upload(config);
+games.upload(config);
 //roms.upload(config);
-releases.upload(config);
+//releases.upload(config);
 

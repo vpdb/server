@@ -13,6 +13,7 @@ exports.upload = function(config) {
 	var storageUri = config.storageUri || 'http://localhost:3000/storage/v1';
 	var authHeader = config.authHeader || 'Authorization';
 	var credentials = config.credentials || {};
+	var folder = config.folder || path.resolve(__dirname);
 
 	if (config.httpSimple) {
 		var httpSimple = 'Basic ' + new Buffer(config.httpSimple.username + ':' + config.httpSimple.password).toString('base64');
@@ -49,8 +50,8 @@ exports.upload = function(config) {
 				});
 		},
 		function(callback) {
-			var bgPrefix = path.resolve(__dirname, 'backglass');
-			var logoPrefix = path.resolve(__dirname, 'logo');
+			var bgPrefix = path.resolve(folder, 'games', 'backglass');
+			var logoPrefix = path.resolve(folder, 'games', 'logo');
 
 			//console.log('Reading backglasses from %s.', bgPrefix);
 			//console.log('Reading logos from %s.', logoPrefix);
@@ -157,7 +158,7 @@ exports.data = [
 	{ bg: 'Back to the Future (Data East 1990).png', logo: 'Back to the Future (Data East 1990).png', ipdb: 126 },
 	{ bg: 'Bad Cats (Williams 1989).png', logo: 'Bad Cats (Williams 1989).png', ipdb: 127 },
 	{ bg: 'Banzai Run (Williams 1988).png', logo: 'Banzai Run (Williams 1988).png', ipdb: 175, id: 'banzai' },
-	{ bg: 'Baywatch (Sega 1995)', logo: 'Baywatch (Sega 1995).png', ipdb: 2848 },
+	{ bg: 'Baywatch (Sega 1995).png', logo: 'Baywatch (Sega 1995).png', ipdb: 2848 },
 	{ bg: 'Big Bang Bar (Capcom 1996).png', logo: 'Big Bang Bar (Capcom 1996).png', ipdb: 4001 },
 	{ bg: 'Big Brave (Maresa 1974).png', logo: 'Big Brave (Maresa 1974).png', ipdb: 4634, year: 1974 },
 	{ bg: 'Black Knight (Williams 1980).png', logo: 'Black Knight (Williams 1980).png', ipdb: 310 },

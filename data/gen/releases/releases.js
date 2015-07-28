@@ -36,6 +36,7 @@ exports.upload = function(config) {
 	var storageUri = config.storageUri || 'http://localhost:3000/storage/v1';
 	var authHeader = config.authHeader || 'Authorization';
 	var credentials = config.credentials || {};
+	var folder = config.folder || path.resolve(__dirname);
 
 	if (config.httpSimple) {
 		var httpSimple = 'Basic ' + new Buffer(config.httpSimple.username + ':' + config.httpSimple.password).toString('base64');
@@ -63,7 +64,7 @@ exports.upload = function(config) {
 		};
 		var userId = res.body.user.id;
 
-		var root = path.normalize(__dirname);
+		var root = path.resolve(folder, 'releases');
 		async.eachSeries(fs.readdirSync(path.resolve(root)), function(gameId, nextGame) {
 			var gamePath = path.resolve(root, gameId);
 			if (!fs.lstatSync(gamePath).isDirectory()) {

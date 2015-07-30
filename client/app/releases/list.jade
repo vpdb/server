@@ -58,19 +58,19 @@ include ../template/_mixins
 				accordion-heading by Orientation
 				ul.list--checkboxes
 					li
-						input#fs.checkbox--check(type="checkbox")
+						input#fs.checkbox--check(type="checkbox", ng-change="onOrientationChange()", ng-model="filterOrientation.fs")
 						label(for="fs")
 							h4.h--no-margin.h--lighter Fullscreen
 							div Portrait
 						.clearfix
 					li
-						input#ws.checkbox--check(type="checkbox")
+						input#ws.checkbox--check(type="checkbox", ng-change="onOrientationChange()", ng-model="filterOrientation.ws")
 						label(for="ws")
 							h4.h--no-margin.h--lighter Desktop
 							div Landscape
 						.clearfix
 					li
-						input#any.checkbox--check(type="checkbox")
+						input#any.checkbox--check(type="checkbox", ng-change="onOrientationChange()", ng-model="filterOrientation.any")
 						label(for="any")
 							h4.h--no-margin.h--lighter Hybrid
 							div Any orientation

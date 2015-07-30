@@ -39,6 +39,7 @@ angular.module('vpdb.releases.list', [])
 
 		// query defaults
 		$scope.$query = null;
+		$scope.filterOrientation = [];
 		$scope.filterTags = [];
 		$scope.filterOrientationOpen = true;
 		$scope.sort = 'title';
@@ -111,6 +112,14 @@ angular.module('vpdb.releases.list', [])
 				delete query.tag;
 			}
 
+			// filter by orientation
+			if ($scope.filterOrientation.fs) {
+				query.flavor = 'orientation:fs'
+			}
+			if ($scope.filterOrientation.ws) {
+				query.flavor = 'orientation:ws'
+			}
+
 
 			query = _.extend(query, queryOverride);
 			$location.search(queryToUrl(query));
@@ -171,6 +180,10 @@ angular.module('vpdb.releases.list', [])
 			}
 			refresh({});
 		});
+
+		$scope.onOrientationChange = function() {
+			refresh({});
+		};
 
 		refresh({});
 	})

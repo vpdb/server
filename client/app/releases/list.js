@@ -22,7 +22,7 @@
 angular.module('vpdb.releases.list', [])
 
 	.controller('ReleaseListController', function($scope, $rootScope, $http, $localStorage, $templateCache, $location,
-												  ApiHelper,
+												  ApiHelper, Flavors,
 												  ReleaseResource, TagResource) {
 
 		// view type config
@@ -39,13 +39,14 @@ angular.module('vpdb.releases.list', [])
 
 		// query defaults
 		$scope.$query = null;
-		$scope.filterOrientation = [];
+		$scope.flavorFilter = {};
 		$scope.filterTags = [];
 		$scope.filterOrientationOpen = true;
 		$scope.sort = 'title';
 
 		// stuff we need in the view
 		$scope.Math = window.Math;
+		$scope.flavors = _.values(Flavors);
 
 		$scope.tags = TagResource.query();
 
@@ -113,13 +114,9 @@ angular.module('vpdb.releases.list', [])
 			}
 
 			// filter by orientation
-			if ($scope.filterOrientation.fs) {
-				query.flavor = 'orientation:fs'
+			if ($scope.flavorFilter.orientation) {
+				query.flavor = 'orientation:' + $scope.flavorFilter.orientation;
 			}
-			if ($scope.filterOrientation.ws) {
-				query.flavor = 'orientation:ws'
-			}
-
 
 			query = _.extend(query, queryOverride);
 			$location.search(queryToUrl(query));
@@ -181,7 +178,8 @@ angular.module('vpdb.releases.list', [])
 			refresh({});
 		});
 
-		$scope.onOrientationChange = function() {
+		$scope.onFlavorChange = function() {
+			console.log($scope.flavorFilter);
 			refresh({});
 		};
 
@@ -202,6 +200,6 @@ angular.module('vpdb.releases.list', [])
 				});
 			}
 		};
-	})
+	});
 
 

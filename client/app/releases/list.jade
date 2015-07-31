@@ -54,27 +54,22 @@ include ../template/_mixins
 		accordion.panel-group--transparent(close-others="false")
 
 			// orientation filter
-			accordion-group.panel--inner(is-open="filterOrientationOpen")
-				accordion-heading by Orientation
+			accordion-group.panel--inner(ng-repeat="flavor in flavors")
+				accordion-heading by {{ flavor.header }}
 				ul.list--checkboxes
 					li
-						input#fs.checkbox--check(type="checkbox", ng-change="onOrientationChange()", ng-model="filterOrientation.fs")
-						label(for="fs")
-							h4.h--no-margin.h--lighter Fullscreen
-							div Portrait
-						.clearfix
-					li
-						input#ws.checkbox--check(type="checkbox", ng-change="onOrientationChange()", ng-model="filterOrientation.ws")
-						label(for="ws")
-							h4.h--no-margin.h--lighter Desktop
-							div Landscape
-						.clearfix
-					li
-						input#any.checkbox--check(type="checkbox", ng-change="onOrientationChange()", ng-model="filterOrientation.any")
-						label(for="any")
-							h4.h--no-margin.h--lighter Hybrid
-							div Any orientation
-						.clearfix
+						.radio--lg-twoliner.radio-inline
+							label
+								input(type="radio", name="orientation", value="", ng-model="flavorFilter[flavor.name]", ng-change="onFlavorChange()")
+								span No Filter
+								span: i Nope, none.
+
+					li(ng-repeat="flavorVal in flavor.values")
+						.radio--lg-twoliner.radio-inline
+							label
+								input(type="radio", name="{{ flavor.name }}", value="{{ flavorVal.value }}", ng-model="flavorFilter[flavor.name]", ng-change="onFlavorChange()")
+								span {{ flavorVal.name }}
+								span: i {{ flavorVal.other }}
 
 			// tag filter
 			accordion-group.panel--inner(is-open="filterTagOpen")

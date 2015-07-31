@@ -160,7 +160,7 @@ angular.module('vpdb.releases.list', [])
 			var f, queryFlavors = urlQuery.flavor.split(',');
 			for (var i = 0; i < queryFlavors.length; i++) {
 				f = queryFlavors[i].split(':');
-				$scope.filterFlavorOpen[queryFlavors[i].name] = true;
+				$scope.filterFlavorOpen[f[0]] = true;
 				$scope.flavorFilter[f[0]] = f[1]
 			}
 		}

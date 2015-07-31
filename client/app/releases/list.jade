@@ -53,14 +53,14 @@ include ../template/_mixins
 
 		accordion.panel-group--transparent(close-others="false")
 
-			// orientation filter
+			// flavor filters
 			accordion-group.panel--inner(ng-repeat="flavor in flavors", is-open="filterFlavorOpen[flavor.name]")
 				accordion-heading by {{ flavor.header }}
 				ul.list--checkboxes
 					li
 						.radio--lg-twoliner.radio-inline
 							label
-								input(type="radio", name="orientation", value="", ng-model="flavorFilter[flavor.name]", ng-change="onFlavorChange()")
+								input(type="radio", name="{{ flavor.name }}", value="", ng-model="flavorFilter[flavor.name]", ng-change="onFlavorChange()")
 								span No Filter
 								span: i Nope, none.
 

@@ -39,9 +39,9 @@ angular.module('vpdb.releases.list', [])
 
 		// query defaults
 		$scope.$query = null;
-		$scope.flavorFilter = {};
+		$scope.flavorFilter = { orientation: '', lighting: '' };
 		$scope.filterTags = [];
-		$scope.filterFlavorOpen = {};
+		$scope.filterFlavorOpen = { };
 		$scope.sort = 'title';
 
 		// stuff we need in the view
@@ -114,8 +114,14 @@ angular.module('vpdb.releases.list', [])
 			}
 
 			// filter by orientation
-			if ($scope.flavorFilter.orientation) {
-				query.flavor = 'orientation:' + $scope.flavorFilter.orientation;
+			var queryFlavors = [];
+			for (f in $scope.flavorFilter) {
+				if ($scope.flavorFilter.hasOwnProperty(f) && $scope.flavorFilter[f]) {
+					queryFlavors.push(f + ':' + $scope.flavorFilter[f]);
+				}
+			}
+			if (queryFlavors.length > 0) {
+				query.flavor = queryFlavors.join(',');
 			}
 
 			query = _.extend(query, queryOverride);
@@ -164,8 +170,6 @@ angular.module('vpdb.releases.list', [])
 				$scope.flavorFilter[f[0]] = f[1]
 			}
 		}
-
-
 
 		$scope.$watch('q', refresh);
 

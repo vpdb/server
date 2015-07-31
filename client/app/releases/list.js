@@ -113,7 +113,7 @@ angular.module('vpdb.releases.list', [])
 				delete query.tag;
 			}
 
-			// filter by orientation
+			// filter by flavor
 			var queryFlavors = [];
 			for (f in $scope.flavorFilter) {
 				if ($scope.flavorFilter.hasOwnProperty(f) && $scope.flavorFilter[f]) {
@@ -122,6 +122,8 @@ angular.module('vpdb.releases.list', [])
 			}
 			if (queryFlavors.length > 0) {
 				query.flavor = queryFlavors.join(',');
+			} else {
+				delete query.flavor;
 			}
 
 			query = _.extend(query, queryOverride);
@@ -192,7 +194,6 @@ angular.module('vpdb.releases.list', [])
 		});
 
 		$scope.onFlavorChange = function() {
-			console.log($scope.flavorFilter);
 			refresh({});
 		};
 

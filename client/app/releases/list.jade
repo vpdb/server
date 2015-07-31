@@ -54,7 +54,7 @@ include ../template/_mixins
 		accordion.panel-group--transparent(close-others="false")
 
 			// orientation filter
-			accordion-group.panel--inner(ng-repeat="flavor in flavors")
+			accordion-group.panel--inner(ng-repeat="flavor in flavors", is-open="filterFlavorOpen[flavor.name]")
 				accordion-heading by {{ flavor.header }}
 				ul.list--checkboxes
 					li

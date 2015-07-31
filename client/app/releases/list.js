@@ -41,7 +41,7 @@ angular.module('vpdb.releases.list', [])
 		$scope.$query = null;
 		$scope.flavorFilter = {};
 		$scope.filterTags = [];
-		$scope.filterOrientationOpen = true;
+		$scope.filterFlavorOpen = {};
 		$scope.sort = 'title';
 
 		// stuff we need in the view
@@ -156,6 +156,15 @@ angular.module('vpdb.releases.list', [])
 			$scope.filterTagOpen = true;
 			$scope.filterTags = urlQuery.tag.split(',');
 		}
+		if (urlQuery.flavor) {
+			var f, queryFlavors = urlQuery.flavor.split(',');
+			for (var i = 0; i < queryFlavors.length; i++) {
+				f = queryFlavors[i].split(':');
+				$scope.filterFlavorOpen[queryFlavors[i].name] = true;
+				$scope.flavorFilter[f[0]] = f[1]
+			}
+		}
+
 
 
 		$scope.$watch('q', refresh);

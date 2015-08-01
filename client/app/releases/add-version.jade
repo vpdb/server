@@ -87,6 +87,6 @@ include ../template/_mixins
 		.clearfix
 		p &nbsp;
 	.col-sm-3.col--menu
-		img.img--logo(ng-show="game.media.logo.url", ng-src="{{ game.media.logo.url }}")
+		img.img--logo(ng-show="game.media.logo.url", ng-src="{{ game.media.logo.variations.medium.url }}")
 		h3.h--multiline.text-center {{ game.title }}
 		.text-center {{ release.name }}

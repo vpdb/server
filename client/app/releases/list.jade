@@ -77,17 +77,6 @@ include ../template/_mixins
 				.row
 					.col-xs-6.text-center.a(ng-repeat="tag in tags" filter-tag="{{ tag.id }}", title="{{ tag.description }}") {{ tag.name }}
 
-			// manufacturer filter
-			accordion-group.panel--inner(is-open="filterManufacturerOpen")
-				accordion-heading by Manufacturer
-				.row
-					.col-xs-6.text-center.a(filter-manufacturer="Bally") Bally
-					.col-xs-6.text-center.a(filter-manufacturer="Capcom") Capcom
-					.col-xs-6.text-center.a(filter-manufacturer="Stern") Stern
-					.col-xs-6.text-center.a(filter-manufacturer="Williams") Williams
-					.col-xs-6.text-center.a(filter-manufacturer="Gottlieb") Gottlieb
-					.col-xs-6.text-center.a(filter-manufacturer="Data East") Data East
-
 		h1 Sort
 		hr
 		ul.list--sort-options

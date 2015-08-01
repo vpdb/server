@@ -108,9 +108,9 @@ angular.module('vpdb.releases.list', [])
 
 			// filter by tags
 			if ($scope.filterTags.length) {
-				query.tag = $scope.filterTags.join(',');
+				query.tags = $scope.filterTags.join(',');
 			} else {
-				delete query.tag;
+				delete query.tags;
 			}
 
 			// filter by flavor
@@ -160,9 +160,9 @@ angular.module('vpdb.releases.list', [])
 		if (urlQuery.sort) {
 			$scope.sort = urlQuery.sort;
 		}
-		if (urlQuery.tag) {
+		if (urlQuery.tags) {
 			$scope.filterTagOpen = true;
-			$scope.filterTags = urlQuery.tag.split(',');
+			$scope.filterTags = urlQuery.tags.split(',');
 		}
 		if (urlQuery.flavor) {
 			var f, queryFlavors = urlQuery.flavor.split(',');

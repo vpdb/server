@@ -365,10 +365,10 @@ ReleaseSchema.statics.toSimple = function(release, opts) {
 	var latestVersion = versions[0];
 
 	// get the file to pull media from
-	var match, f, fileFlavor, flavorName, flavorValue;
-	var weight = 0, bestWeight = 0;
+	var f, fileFlavor, flavorName, flavorValue, playfieldImage;
 	var flavorParams = opts.thumbFlavor ? opts.thumbFlavor.split(',') : [];
 	var defaults = flavor.defaultThumb();
+	var weight, match, matches = [];
 	for (i = 0; i < latestVersion.files.length; i++) {
 		if (!latestVersion.files[i].flavor) {
 			// skip non-table files
@@ -394,21 +394,32 @@ ReleaseSchema.statics.toSimple = function(release, opts) {
 		}
 //		console.log('%s / %j => %d', opts.thumbFlavor, fileFlavor, weight);
 
-		if (weight >= bestWeight) {
-			match = file;
-			bestWeight = weight;
-		}
+		matches.push({
+			file: file,
+			weight: weight
+		});
 	}
-//	console.log('=====> %j', match.flavor.toObj());
+	matches = matches.sort(function(a, b) {
+		if (a.weight < b.weight) { return 1; }
+		if (a.weight > b.weight) { return -1; }
+		return 0;
+	});
 
-	var playfieldImage = match._media.playfield_image.toObj ? match._media.playfield_image.toObj() : match._media.playfield_image;
 	var thumbFields = [ 'url', 'width', 'height' ];
 	if (opts.fullThumbData) {
 		thumbFields = thumbFields.concat(['mime_type', 'bytes']);
 	}
-	if (playfieldImage.variations[opts.thumb]) {
-		thumb = _.pick(playfieldImage.variations[opts.thumb], thumbFields);
-	} else {
+	for (i = 0; i < matches.length; i++) {
+		match = matches[i].file;
+//		console.log('=====> %j', match.flavor.toObj());
+		playfieldImage = match._media.playfield_image.toObj ? match._media.playfield_image.toObj() : match._media.playfield_image;
+		if (playfieldImage.variations[opts.thumb]) {
+			thumb = _.pick(playfieldImage.variations[opts.thumb], thumbFields);
+			break;
+		}
+	}
+
+	if (!thumb) {
 		thumb = {
 			url: playfieldImage.url,
 			width: playfieldImage.metadata.size.width,
@@ -419,6 +430,7 @@ ReleaseSchema.statics.toSimple = function(release, opts) {
 			thumb.bytes = playfieldImage.bytes;
 		}
 	}
+
 	if (opts.fullThumbData) {
 		thumb.file_type = playfieldImage.file_type;
 	}
@@ -529,7 +541,6 @@ function makeQuery(query) {
 		return { $and: query };
 	}
 }
-
 
 
 //-----------------------------------------------------------------------------

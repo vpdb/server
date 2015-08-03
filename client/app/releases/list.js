@@ -61,10 +61,10 @@ angular.module('vpdb.releases.list', [])
 		$scope.setViewTemplate = function(view) {
 			switch (view) {
 				case 'compact':
-					thumbFormat = 'medium';
+					thumbFormat = 'medium' + $rootScope.pixelDensitySuffix;
 					break;
 				default:
-					thumbFormat = 'square';
+					thumbFormat = 'square' + $rootScope.pixelDensitySuffix;
 			}
 			$scope.template = '/releases/list-' + view + '.html';
 		};

@@ -2,7 +2,7 @@ include ../template/_mixins
 
 //-- LOGO
 //---------------------------------------------------------------------
-img.img--logo(ng-src="{{ game.media.logo.variations.medium.url }}")
+img.img--logo(ng-src="{{ game.media.logo.variations['medium' + pixelDensitySuffix].url }}")
 
 //-- RATING
 //---------------------------------------------------------------------

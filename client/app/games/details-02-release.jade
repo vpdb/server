@@ -135,7 +135,7 @@ include ../template/_mixins
 			tbody
 				tr(ng-repeat="file in flavorGrid")
 					td.td--img
-						img.img--rounded(ng-src="{{ file.media.playfield_image.variations.square.url }}")
+						img.img--rounded(ng-src="{{ file.media.playfield_image.variations['square' + pixelDensitySuffix].url }}")
 					td
 						| {{ flavors.orientation.values[file.flavor.orientation].name }} <br>
 						i {{ flavors.orientation.values[file.flavor.orientation].other }}

@@ -35,7 +35,7 @@ angular.module('vpdb.games.details', []).controller('ReleaseController', functio
 			if (!file.media || !file.media.playfield_image || file.media.playfield_image.file_type !== 'playfield-fs') {
 				return null;
 			}
-			return { url: file.media.playfield_image.variations.medium.url };
+			return { url: file.media.playfield_image.variations['medium' + $rootScope.pixelDensitySuffix].url };
 		}));
 
 		// fetch comments

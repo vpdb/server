@@ -79,7 +79,7 @@ angular.module('vpdb.home', [])
 		$scope.$watch('q', refresh);
 
 		// fetch latest games
-		$scope.releases = ReleaseResource.query({ thumb_format: 'square', per_page: 8 });
+		$scope.releases = ReleaseResource.query({ thumb_format: 'square' + $rootScope.pixelDensitySuffix, per_page: 8 });
 
 		//$http({
 		//	method: 'GET',

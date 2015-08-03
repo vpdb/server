@@ -18,6 +18,7 @@ angular.module('vpdb.common', [])
 		$rootScope.icon = function(icon) {
 			return '#icon-' + icon;
 		};
+		$rootScope.pixelDensitySuffix = window.devicePixelRatio > 1 ? '-2x' : '';
 
 		$scope.menu = 'home';
 		$scope.downloadsPinned = false;

@@ -64,6 +64,9 @@ function ImageProcessor() {
 			{ name: 'square-2x', portraitToSquare: true, size: 240, mimeType: 'image/jpeg' }
 		],
 		'playfield-ws': [
+			// todo: rename medium to medium-portrait and perspective-distort it to portrait-ish
+			{ name: 'medium',    width: 393, height: 393, mimeType: 'image/jpeg' },
+			{ name: 'medium-2x', width: 786, height: 786, mimeType: 'image/jpeg' },
 			{ name: 'medium-landscape',    width: 393, height: 233, mimeType: 'image/jpeg' },
 			{ name: 'medium-landscape-2x', width: 786, height: 466, mimeType: 'image/jpeg' },
 			{ name: 'square',    wideToSquare: true, size: 120, mimeType: 'image/jpeg' },

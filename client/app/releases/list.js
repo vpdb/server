@@ -106,6 +106,11 @@ angular.module('vpdb.releases.list', [])
 				delete query.q;
 			}
 
+			// filter by starred
+			if ($scope.starredOnly) {
+				query.starred = 1;
+			}
+
 			// filter by tags
 			if ($scope.filterTags.length) {
 				query.tags = $scope.filterTags.join(',');
@@ -154,6 +159,9 @@ angular.module('vpdb.releases.list', [])
 		if (urlQuery.q) {
 			$scope.q = urlQuery.q;
 		}
+		if (urlQuery.starred) {
+			$scope.starredOnly = true;
+		}
 		if (urlQuery.page) {
 			$scope.page = urlQuery.page;
 		}
@@ -174,6 +182,7 @@ angular.module('vpdb.releases.list', [])
 		}
 
 		$scope.$watch('q', refresh);
+		$scope.$watch('starredOnly', refresh);
 
 		$scope.paginate = function(link) {
 			refresh(link.query);

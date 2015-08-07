@@ -34,7 +34,7 @@ angular.module('vpdb.rating', [])
 		return {
 			restrict: 'C',
 			scope: true,
-			templateUrl: 'template/rating.html',
+			templateUrl: '/common/rating.html',
 			link: function(scope, elem) {
 				elem.mouseenter(function(e) {
 					e.preventDefault();
@@ -46,7 +46,7 @@ angular.module('vpdb.rating', [])
 					scope.editEnd();
 					scope.$apply();
 				});
-				$animate.enabled(false, elem);
+				$animate.enabled(elem, false);
 			},
 			controller: function($scope, $element, $attrs) {
 				var ratingAvg = $parse($attrs.ratingAvg);

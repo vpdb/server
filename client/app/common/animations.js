@@ -1,7 +1,6 @@
 "use strict"; /* global _*/
 
 angular.module('vpdb.animations', [])
-
 	.animation('.height-animation', function($timeout) {
 		return {
 			enter: function(element, done) {

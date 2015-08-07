@@ -98,6 +98,10 @@ include ../template/_mixins
 		h3.h--smaller.h--primary(ng-show="release.acknowledgements") Acknowledgements
 		div.markdown(markdown="release.acknowledgements", ng-show="release.acknowledgements")
 
+
+		//-- VERSION HISTORY
+		//---------------------------------------------------------------------
+
 		h3.h--smaller.h--primary Version History
 		accordion.panel-group--transparent.subtle(close-others="false")
 			accordion-group(ng-repeat="version in releaseVersions", is-open="$first")

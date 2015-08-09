@@ -392,7 +392,7 @@ ReleaseSchema.statics.toSimple = function(release, opts) {
 				weight += Math.pow(10, (flavorParams.length - j + 1));
 			}
 		}
-//		console.log('%s / %j => %d', opts.thumbFlavor, fileFlavor, weight);
+//		console.log('[%s] %s / %j => %d', release.id, opts.thumbFlavor, fileFlavor, weight);
 
 		matches.push({
 			file: file,
@@ -405,17 +405,28 @@ ReleaseSchema.statics.toSimple = function(release, opts) {
 		return 0;
 	});
 
-	var thumbFields = [ 'url', 'width', 'height' ];
+	var thumbFields = [ 'url', 'width', 'height', 'is_protected' ];
 	if (opts.fullThumbData) {
 		thumbFields = thumbFields.concat(['mime_type', 'bytes']);
 	}
 	for (i = 0; i < matches.length; i++) {
 		match = matches[i].file;
-//		console.log('=====> %j', match.flavor.toObj());
+//		console.log('[%s] =====> %j', release.id, match.flavor.toObj());
 		playfieldImage = match._media.playfield_image.toObj ? match._media.playfield_image.toObj() : match._media.playfield_image;
-		if (playfieldImage.variations[opts.thumb]) {
+		if (opts.thumb === 'original') {
+			thumb = _.extend(_.pick(playfieldImage, thumbFields), {
+				width: playfieldImage.metadata.size.width,
+				height: playfieldImage.metadata.size.height
+			});
+			break;
+
+		} else if (playfieldImage.variations[opts.thumb]) {
 			thumb = _.pick(playfieldImage.variations[opts.thumb], thumbFields);
 			break;
+
+		} else {
+//			console.log(playfieldImage);
+//			console.log('[%s] no %s variation for playfield image, trying next best match.', release.id, opts.thumb);
 		}
 	}
 

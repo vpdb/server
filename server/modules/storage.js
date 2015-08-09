@@ -574,7 +574,7 @@ Storage.prototype.urls = function(file) {
 	if (this.variations[mimeCategory] && this.variations[mimeCategory][file.file_type]) {
 		_.each(this.variations[mimeCategory][file.file_type], function(variation) {
 			variations[variation.name] = variations[variation.name] || {};
-			variations[variation.name].url = that.url(file, variation.name);
+			variations[variation.name].url = that.url(file, variation);
 			var cost = quota.getCost(file, variation);
 			if (!file.is_active || cost > -1) {
 				variations[variation.name].is_protected = true;

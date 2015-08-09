@@ -655,6 +655,25 @@ describe('The VPDB `release` API', function() {
 				});
 		});
 
+		it('should return the nearest thumb match of widescreen/night in the correct format', function(done) {
+			request
+				.get('/api/v1/releases?thumb_full_data&thumb_flavor=orientation:ws,lighting:night&thumb_format=medium')
+				.end(function(err, res) {
+
+					hlp.expectStatus(err, res, 200);
+
+					var rls1 = _.findWhere(res.body, { id: releases[0].id });
+					var rls2 = _.findWhere(res.body, { id: releases[1].id });
+					var rls3 = _.findWhere(res.body, { id: releases[2].id });
+
+					expect(rls1.latest_version.thumb.image.url).to.be(releases[0].versions[0].files[0].media.playfield_image.variations.medium.url);
+					expect(rls2.latest_version.thumb.image.url).to.be(releases[1].versions[0].files[1].media.playfield_image.variations.medium.url);
+					expect(rls3.latest_version.thumb.image.url).to.be(releases[2].versions[0].files[1].media.playfield_image.variations.medium.url);
+
+					done();
+				});
+		});
+
 		it('should return the nearest thumb match of night/widescreen', function(done) {
 			request
 				.get('/api/v1/releases?thumb_full_data&thumb_flavor=lighting:night,orientation:ws')

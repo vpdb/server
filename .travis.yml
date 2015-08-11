@@ -1,9 +1,20 @@
 language: node_js
+sudo: false
 node_js:
-- '0.10'
+- 0.12
 services:
 - mongodb
 - redis-server
+addons:
+  apt:
+    packages:
+    - graphicsmagick
+    - pngquant
+    - optipng
+before_script:
+  - wget http://johnvansickle.com/ffmpeg/releases/ffmpeg-release-64bit-static.tar.xz -O /tmp/ffmpeg.tar.gz
+  - tar -xvf /tmp/ffmpeg.tar.gz --strip 1 --no-anchored ffmpeg ffprobe
+  - export PATH=$(pwd)/bin:$PATH
 script:
 - deploy/ci/travis.sh
 env:

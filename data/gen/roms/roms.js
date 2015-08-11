@@ -232,7 +232,7 @@ exports.data = {
 		diner_l3: {version: 'L-3'},
 		diner_l4: {version: 'L-4'}
 	},
-	dd: {
+	'dr-dude': {
 		dd_l2: {version: 'L-2'},
 		dd_p06: {version: 'PA-6', notes: 'WPC'},
 		dd_p6: {version: 'P-6'},

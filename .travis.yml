@@ -9,12 +9,8 @@ addons:
   apt:
     packages:
     - graphicsmagick
-    - pngquant
+    - ffmpeg
     - optipng
-before_script:
-  - wget http://johnvansickle.com/ffmpeg/releases/ffmpeg-release-64bit-static.tar.xz -O /tmp/ffmpeg.tar.gz
-  - tar -xvf /tmp/ffmpeg.tar.gz --strip 1 --no-anchored ffmpeg ffprobe
-  - export PATH=$(pwd)/bin:$PATH
 script:
 - deploy/ci/travis.sh
 env:

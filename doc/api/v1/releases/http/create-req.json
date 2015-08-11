@@ -1,21 +1,21 @@
 POST /api/v1/releases HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJFeUh0MFhOMjdGIiwiaWF0IjoiMjAxNS0wNy0xOFQyMToyODo0NS45NzdaIiwiZXhwIjoiMjAxNS0wNy0xOFQyMjoyODo0NS45NzdaIn0.G7xR7WXpMDUxRrT-uakSxD_uCSCROHE5YUUfLfb-Hz4
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJWSnFRbDJoTFFzIiwiaWF0IjoiMjAxNS0wOC0xMVQyMTo0Nzo1OS41NzdaIiwiZXhwIjoiMjAxNS0wOC0xMVQyMjo0Nzo1OS41NzdaIn0.MO3kJ_bvlKC8c2sF35ANuB1Ab1XyQB5B3q7BpyGKGpc
 Content-Type: application/json
-Content-Length: 487
+Content-Length: 472
 
 {
   "name": "release",
-  "_game": "continental-magic-game",
+  "_game": "star-fire",
   "versions": [
     {
       "files": [
         {
-          "_file": "VkHWeNE2XK",
+          "_file": "EkINbhhIXs",
           "_media": {
-            "playfield_image": "VyMGlN43mK",
-            "playfield_video": "Ek6Gg44h7K"
+            "playfield_image": "4kVMh2Ims",
+            "playfield_video": "NJDbf3hLms"
           },
           "_compatibility": [
             "9.9.0"
@@ -26,9 +26,9 @@ Content-Length: 487
           }
         },
         {
-          "_file": "EyD-l4Vhmt",
+          "_file": "EyP4b238mj",
           "_media": {
-            "playfield_image": "EJyMlV437Y"
+            "playfield_image": "EkMzhhLQs"
           },
           "_compatibility": [
             "9.9.0"
@@ -44,7 +44,7 @@ Content-Length: 487
   ],
   "authors": [
     {
-      "_user": "EyHt0XN27F",
+      "_user": "VJqQl2hLQs",
       "roles": [
         "Table Creator"
       ]

@@ -1,7 +1,7 @@
 POST /api/v1/builds HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI0SnRQbk1FM1FGIiwiaWF0IjoiMjAxNS0wNy0xOFQyMToyODoyNy45NjRaIiwiZXhwIjoiMjAxNS0wNy0xOFQyMjoyODoyNy45NjRaIn0.xh33SYut_yB4ndpXYUfYy0OaXg6wF0-R-JucaC6EN6Y
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI0eWxJSmpuSW1pIiwiaWF0IjoiMjAxNS0wOC0xMVQyMTo0Nzo0Mi43MjNaIiwiZXhwIjoiMjAxNS0wOC0xMVQyMjo0Nzo0Mi43MjNaIn0.mjmQdaG3TTXoH59duy5JTvcIAA2n50_yUqfmfTRiF0o
 Content-Type: application/json
 Content-Length: 232
 

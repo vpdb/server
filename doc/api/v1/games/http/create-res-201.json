@@ -1,18 +1,18 @@
 201 Created
 Content-Type: application/json; charset=utf-8
-Etag: W/"7e1-KecBZdUJewSTLleawzuScA"
+Etag: W/"4a6-soEYyiTJjDMOu74uGj9K2w"
 Content-Encoding: gzip
 
 {
-  "title_sortable": "Thing",
-  "title": "Thing",
+  "title_sortable": "Automatic Pool",
+  "title": "Automatic Pool",
   "manufacturer": "Chicago Coin",
-  "year": 1951,
   "game_type": "em",
-  "features": "Flippers (2), Pop bumpers (2), Passive bumpers (5), Kick-out holes (3). Mystery Score area on playfield.  Ball saver gate between flippers has a large playfield insert \"Keep Out Of Here\" that lights to warn the player when the gate is open and the flipper gap is present. No slingshots. The two pop bumpers are the \"T\" and \"G\" bumpers.",
-  "notes": "Phil Harris released a song called \"The Thing\" in October 1950 which became a novelty hit for many weeks. It's the story of someone who finds a box on the beach and is vehemently shunned by anyone to which he tries to show its contents. The actual contents of the box were never identified, as far as we know, but NBC-TV had a Christmas 1950 promotion to give it a different meaning, suggesting it represented the seasonal desire to help the needy. Harris was slated to appear on numerous TV shows during the month prior to Christmas Eve, to provide a clue as to the song's meaning.",
-  "id": "thing",
-  "created_at": "2015-07-18T21:28:31.004Z",
+  "features": "Coin chute located on front coin door.",
+  "notes": "Manufacture date unknown.",
+  "id": "automatic-pool",
+  "year": 1900,
+  "created_at": "2015-08-11T21:47:45.772Z",
   "rating": {
     "score": 0,
     "votes": 0,
@@ -29,14 +29,14 @@ Content-Encoding: gzip
     "releases": 0
   },
   "ipdb": {
-    "number": 2531,
+    "number": 5082,
     "mfg": 81
   },
-  "artists": [
-    "Roy Parker"
-  ],
+  "artists": [],
   "designers": [],
-  "themes": [],
+  "themes": [
+    "Billiards"
+  ],
   "short": [],
   "media": {
     "backglass": {
@@ -46,22 +46,22 @@ Content-Encoding: gzip
       "is_protected": true,
       "variations": {
         "small-2x": {
-          "url": "/storage/public/files/small-2x/EyWH17N2mY.png"
+          "url": "/storage/public/files/small-2x/VJPNMo2IQj.jpg"
         },
         "small": {
-          "url": "/storage/public/files/small/EyWH17N2mY.png"
+          "url": "/storage/public/files/small/VJPNMo2IQj.jpg"
         },
         "medium-2x": {
-          "url": "/storage/public/files/medium-2x/EyWH17N2mY.png"
+          "url": "/storage/public/files/medium-2x/VJPNMo2IQj.jpg"
         },
         "medium": {
-          "url": "/storage/public/files/medium/EyWH17N2mY.png"
+          "url": "/storage/public/files/medium/VJPNMo2IQj.jpg"
         }
       },
       "bytes": 135,
-      "url": "/storage/v1/files/EyWH17N2mY.png",
-      "id": "EyWH17N2mY"
+      "url": "/storage/v1/files/VJPNMo2IQj.png",
+      "id": "VJPNMo2IQj"
     }
   },
-  "url": "/game/thing"
+  "url": "/game/automatic-pool"
 }

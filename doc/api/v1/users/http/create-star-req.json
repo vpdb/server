@@ -1,8 +1,8 @@
-POST /api/v1/users/VJilHrEh7F/star HTTP/1.1
+POST /api/v1/users/Eyj7uahLQj/star HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
 Content-Type: application/json
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJOSkRncnJOM1F0IiwiaWF0IjoiMjAxNS0wNy0xOFQyMToyOTowOC4yMDZaIiwiZXhwIjoiMjAxNS0wNy0xOFQyMjoyOTowOC4yMDZaIn0.ZVsF9GWIcAVk9rb6ZFAJ0WQYZBupkqALnqfUqXzlNwM
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJFSndYX3BoSW1vIiwiaWF0IjoiMjAxNS0wOC0xMVQyMTo0ODoyMy42MjdaIiwiZXhwIjoiMjAxNS0wOC0xMVQyMjo0ODoyMy42MjdaIn0.JfzTC5KYxaaFFOYTqGujJS8iL9FR15AQtYuUCR40QAc
 Content-Length: 2
 
 {}

@@ -3,24 +3,24 @@ X-List-Page: 1
 X-List-Size: 12
 X-List-Count: 3
 Content-Type: application/json; charset=utf-8
-Etag: W/"951-HY+BkSW7VkfYhUTe43gf0g"
+Etag: W/"116d-Aki+cEg2ODIiYlgrKdyt+w"
 Content-Encoding: gzip
 
 [
   {
-    "id": "VkaghV42XY",
-    "name": "Implemented Edition",
-    "created_at": "2015-07-18T21:28:59.391Z",
+    "id": "E1JG0nn8Xo",
+    "name": "Open-source Edition",
+    "created_at": "2015-08-11T21:48:13.572Z",
     "authors": [
       {
         "roles": [
           "Table Creator"
         ],
         "user": {
-          "id": "V1gNiVE37Y",
-          "name": "Gwendolyn63",
-          "username": "Gwendolyn63",
-          "gravatar_id": "5ac67d5ed0c8a9b538007b9a1d7789e7",
+          "id": "Vk8AnnIXi",
+          "name": "Cody.Yundt",
+          "username": "Cody.Yundt",
+          "gravatar_id": "fd1e06b92fe5bca425f236f6cd0fad23",
           "counter": {
             "comments": 0,
             "stars": 0
@@ -29,20 +29,19 @@ Content-Encoding: gzip
       }
     ],
     "counter": {
-      "score": 0,
       "stars": 0,
       "comments": 0,
       "downloads": 0
     },
     "game": {
-      "id": "fbc",
-      "title": "Fireball Classic"
+      "id": "flash-gordon",
+      "title": "Flash Gordon"
     },
     "latest_version": {
       "version": "1.0.0",
       "thumb": {
         "image": {
-          "url": "/storage/public/files/square/VyKHiEV3QF.jpg",
+          "url": "/storage/public/files/square/417ZC22UXj.jpg",
           "width": 120,
           "height": 120
         },
@@ -50,23 +49,41 @@ Content-Encoding: gzip
           "lighting": "night",
           "orientation": "fs"
         }
-      }
+      },
+      "files": [
+        {
+          "released_at": "2015-08-11T21:48:13.572Z",
+          "flavor": {
+            "lighting": "night",
+            "orientation": "fs"
+          },
+          "compatibility": [
+            "9.9.0"
+          ],
+          "file": {
+            "id": "Ny2x0hh8mj",
+            "name": "test-table-0.vpt",
+            "bytes": 135168,
+            "mime_type": "application/x-visual-pinball-table"
+          }
+        }
+      ]
     }
   },
   {
-    "id": "4J6-T4N27F",
-    "name": "Devolved Edition",
-    "created_at": "2015-07-18T21:29:00.904Z",
+    "id": "VJXlg6h87i",
+    "name": "Assimilated Edition",
+    "created_at": "2015-08-11T21:48:15.323Z",
     "authors": [
       {
         "roles": [
           "Table Creator"
         ],
         "user": {
-          "id": "V1gNiVE37Y",
-          "name": "Gwendolyn63",
-          "username": "Gwendolyn63",
-          "gravatar_id": "5ac67d5ed0c8a9b538007b9a1d7789e7",
+          "id": "Vk8AnnIXi",
+          "name": "Cody.Yundt",
+          "username": "Cody.Yundt",
+          "gravatar_id": "fd1e06b92fe5bca425f236f6cd0fad23",
           "counter": {
             "comments": 0,
             "stars": 0
@@ -75,44 +92,77 @@ Content-Encoding: gzip
       }
     ],
     "counter": {
-      "score": 0,
       "stars": 0,
       "comments": 0,
       "downloads": 0
     },
     "game": {
-      "id": "three-aces",
-      "title": "Three Aces"
+      "id": "sailing",
+      "title": "Sailing"
     },
     "latest_version": {
       "version": "1.0",
       "thumb": {
         "image": {
-          "url": "/storage/public/files/square/Vk4epENnmt.jpg",
+          "url": "/storage/public/files/square/VJQGya2IXj.jpg",
           "width": 120,
           "height": 120
         },
         "flavor": {
-          "lighting": "day",
-          "orientation": "ws"
+          "lighting": "night",
+          "orientation": "fs"
         }
-      }
+      },
+      "files": [
+        {
+          "released_at": "2015-08-11T21:48:15.323Z",
+          "flavor": {
+            "lighting": "night",
+            "orientation": "fs"
+          },
+          "compatibility": [
+            "9.9.0"
+          ],
+          "file": {
+            "id": "Ek8bkT3U7i",
+            "name": "test-table-0.vpt",
+            "bytes": 135168,
+            "mime_type": "application/x-visual-pinball-table"
+          }
+        },
+        {
+          "released_at": "2015-08-11T21:48:15.323Z",
+          "flavor": {
+            "lighting": "day",
+            "orientation": "ws"
+          },
+          "compatibility": [
+            "9.9.0"
+          ],
+          "file": {
+            "id": "E1wWJ6h8Xj",
+            "name": "test-table-1.vpt",
+            "bytes": 135168,
+            "mime_type": "application/x-visual-pinball-table"
+          }
+        }
+      ]
     }
   },
   {
-    "id": "EkzfCEN2QF",
-    "name": "Balanced Edition",
-    "created_at": "2015-07-18T21:29:01.818Z",
+    "id": "V1Pfa3IXi",
+    "name": "Persistent Edition",
+    "created_at": "2015-08-11T21:48:17.151Z",
     "authors": [
       {
         "roles": [
           "Table Creator"
         ],
         "user": {
-          "id": "V1gNiVE37Y",
-          "name": "Gwendolyn63",
-          "username": "Gwendolyn63",
-          "gravatar_id": "5ac67d5ed0c8a9b538007b9a1d7789e7",
+          "id": "Vk8AnnIXi",
+          "name": "Cody.Yundt",
+          "username": "Cody.Yundt",
+          "gravatar_id": "fd1e06b92fe5bca425f236f6cd0fad23",
           "counter": {
             "comments": 0,
             "stars": 0
@@ -121,26 +171,75 @@ Content-Encoding: gzip
       }
     ],
     "counter": {
-      "score": 0,
       "stars": 0,
       "comments": 0,
       "downloads": 0
     },
     "game": {
-      "id": "sapporo",
-      "title": "Sapporo"
+      "id": "skyhawk",
+      "title": "Skyhawk"
     },
     "latest_version": {
       "version": "2.0",
       "thumb": {
         "image": {
-          "url": "/storage/public/files/square/Eygb0VEnmF.png"
+          "url": "/storage/public/files/square/EJSmxThL7i.jpg"
         },
         "flavor": {
           "lighting": "any",
-          "orientation": "any"
+          "orientation": "fs"
         }
-      }
+      },
+      "files": [
+        {
+          "released_at": "2015-08-11T21:48:17.151Z",
+          "flavor": {
+            "lighting": "any",
+            "orientation": "fs"
+          },
+          "compatibility": [
+            "10.x"
+          ],
+          "file": {
+            "id": "4ykme63U7i",
+            "name": "test-table-0.vpt",
+            "bytes": 135168,
+            "mime_type": "application/x-visual-pinball-table"
+          }
+        },
+        {
+          "released_at": "2015-08-11T21:48:17.151Z",
+          "flavor": {
+            "lighting": "night",
+            "orientation": "any"
+          },
+          "compatibility": [
+            "10.x"
+          ],
+          "file": {
+            "id": "EygQxphImj",
+            "name": "test-table-1.vpt",
+            "bytes": 135168,
+            "mime_type": "application/x-visual-pinball-table"
+          }
+        },
+        {
+          "released_at": "2015-08-11T21:48:17.151Z",
+          "flavor": {
+            "lighting": "any",
+            "orientation": "any"
+          },
+          "compatibility": [
+            "10.x"
+          ],
+          "file": {
+            "id": "N1W7eThLmo",
+            "name": "test-table-2.vpt",
+            "bytes": 135168,
+            "mime_type": "application/x-visual-pinball-table"
+          }
+        }
+      ]
     }
   }
 ]

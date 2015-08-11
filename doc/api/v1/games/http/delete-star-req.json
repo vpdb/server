@@ -1,5 +1,5 @@
-DELETE /api/v1/games/lite-a-line/star HTTP/1.1
+DELETE /api/v1/games/liga/star HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJFeWI3NEJOMzdGIiwiaWF0IjoiMjAxNS0wNy0xOFQyMToyOTowNy42MTVaIiwiZXhwIjoiMjAxNS0wNy0xOFQyMjoyOTowNy42MTVaIn0.V_pNmwzEpP4HZ39WWq2VviJnNzWpqqKfsYz3eILaai8
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJOMUFWRHBuVVhqIiwiaWF0IjoiMjAxNS0wOC0xMVQyMTo0ODoyMi45NjdaIiwiZXhwIjoiMjAxNS0wOC0xMVQyMjo0ODoyMi45NjdaIn0.QbZJlPN0Vqtx8ZRwJgallEjEougW8voUh_CgdWn1CAk
 

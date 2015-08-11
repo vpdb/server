@@ -1,10 +1,10 @@
-POST /api/v1/releases/NJNEpfVhXY/comments HTTP/1.1
+POST /api/v1/releases/E1lWesnIXj/comments HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJOa1BnYUdFM1F0IiwiaWF0IjoiMjAxNS0wNy0xOFQyMToyODoyOC4yMzdaIiwiZXhwIjoiMjAxNS0wNy0xOFQyMjoyODoyOC4yMzdaIn0.BygZVIuvQKzxYSvSl6u-5cngIMG4t-zHbK08xJo7BPc
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI0SjBkMWpoTFhpIiwiaWF0IjoiMjAxNS0wOC0xMVQyMTo0Nzo0Mi45ODhaIiwiZXhwIjoiMjAxNS0wOC0xMVQyMjo0Nzo0Mi45ODhaIn0.02pkHS2-SDyo0HlUeMuMGX21euAMGHRDj94DyPTZ7Io
 Content-Type: application/json
-Content-Length: 45
+Content-Length: 40
 
 {
-  "message": "Devolved impactful installation"
+  "message": "Versatile cohesive synergy"
 }

@@ -1,65 +1,65 @@
 200 OK
 Content-Type: application/json; charset=utf-8
-Etag: W/"4b3-JJYf7ARX76blof+p5bA/jA"
+Etag: W/"49f-OoMwDuQyvRK5jlhKMKzwXw"
 Content-Encoding: gzip
 
 {
-  "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI0SldYMkc0MlFGIiwiaWF0IjoiMjAxNS0wNy0xOFQyMToyODoyNy40OTZaIiwiZXhwIjoiMjAxNS0wNy0xOFQyMjoyODoyNy40OTZaIn0.WtqYXp4ZxKDysYInw-jReWpNIuM6n6qNdWeF4ylKWoM",
-  "expires": "2015-07-18T22:28:27.496Z",
+  "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJWa2RXa3MzSTdqIiwiaWF0IjoiMjAxNS0wOC0xMVQyMTo0Nzo0Mi4zNDhaIiwiZXhwIjoiMjAxNS0wOC0xMVQyMjo0Nzo0Mi4zNDhaIn0.azoqi1yv24smOx4UeRCAPNGU93RI7dxJAdUyd40QT7s",
+  "expires": "2015-08-11T22:47:42.348Z",
   "user": {
-    "id": "4JWX2G42QF",
-    "name": "Rosina_Kertzmann",
-    "username": "Rosina_Kertzmann",
-    "gravatar_id": "d6642bd8033a07a9be142b944bbd6d25",
-    "email": "dahlia.goldner68@hotmail.com",
+    "id": "VkdWks3I7j",
+    "name": "Saul33",
+    "username": "Saul33",
+    "gravatar_id": "65ca9ab32be28d113bf8a635e1272e21",
+    "email": "esmeralda_mayert@hotmail.com",
     "is_active": true,
     "provider": "local",
     "roles": [
       "member"
     ],
     "plan": "free",
-    "created_at": "2015-07-18T21:28:27.420Z",
+    "created_at": "2015-08-11T21:47:42.285Z",
     "counter": {
       "stars": 0,
       "downloads": 0,
       "comments": 0
     },
     "permissions": {
-      "user": [
-        "update",
-        "view"
+      "tags": [
+        "delete-own",
+        "add"
       ],
-      "tokens": [
-        "update",
-        "list",
-        "add",
-        "delete"
+      "roms": [
+        "delete-own",
+        "add"
       ],
       "comments": [
         "add"
       ],
-      "roms": [
+      "releases": [
+        "star",
         "add",
-        "delete-own"
+        "rate",
+        "delete"
+      ],
+      "builds": [
+        "delete-own",
+        "add"
       ],
       "files": [
         "download",
-        "delete",
-        "upload"
+        "upload",
+        "delete"
       ],
-      "releases": [
+      "tokens": [
+        "list",
+        "update",
         "add",
-        "delete",
-        "rate",
-        "star"
+        "delete"
       ],
-      "builds": [
-        "add",
-        "delete-own"
-      ],
-      "tags": [
-        "add",
-        "delete-own"
+      "user": [
+        "update",
+        "view"
       ],
       "users": [
         "view",
@@ -67,8 +67,8 @@ Content-Encoding: gzip
         "star"
       ],
       "games": [
-        "rate",
-        "star"
+        "star",
+        "rate"
       ]
     }
   }

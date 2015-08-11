@@ -1,8 +1,8 @@
-PUT /api/v1/releases/417Tm4n7Y/rating HTTP/1.1
+PUT /api/v1/releases/EJjxAjhU7i/rating HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
 Content-Type: application/json
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI0SkVYM1g0aFFLIiwiaWF0IjoiMjAxNS0wNy0xOFQyMToyODo0My43OTZaIiwiZXhwIjoiMjAxNS0wNy0xOFQyMjoyODo0My43OTZaIn0.ud00EWj-HJtRUCpzIANSXkTxfeVTJ015FjNZioRN5Kg
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJFeXc3cHMyTG1qIiwiaWF0IjoiMjAxNS0wOC0xMVQyMTo0Nzo1Ny4wMDNaIiwiZXhwIjoiMjAxNS0wOC0xMVQyMjo0Nzo1Ny4wMDNaIn0.GddaZRrE4pbnE7L-RUnwAAZg2rt8fWV-3oSXN7DXq9s
 Content-Length: 11
 
 {

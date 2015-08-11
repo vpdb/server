@@ -1,14 +1,14 @@
 PATCH /api/v1/user HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJFeVNnVXJFMzdLIiwiaWF0IjoiMjAxNS0wNy0xOFQyMToyOTowOS4xOTdaIiwiZXhwIjoiMjAxNS0wNy0xOFQyMjoyOTowOS4xOTdaIn0.t8l94Dx78mWDXOUjfLKBqgfpP31tgAFI_1Ljo22X2wc
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJOMWNVSzYyVTdvIiwiaWF0IjoiMjAxNS0wOC0xMVQyMTo0ODoyNC42MzJaIiwiZXhwIjoiMjAxNS0wOC0xMVQyMjo0ODoyNC42MzJaIn0.7MjkmXTr23NJ5KXLprPskY7jxRS1U63ywDaZYTxRDfI
 Content-Type: application/json
-Content-Length: 143
+Content-Length: 134
 
 {
-  "name": "Justice Hilpert",
-  "location": "Rueckermouth",
-  "email": "christop.davis@yahoo.com",
-  "current_password": "hTAUh5JoMk",
-  "password": "AqLcsSKj5A"
+  "name": "Alden Hamill",
+  "location": "South Amaya",
+  "email": "vanessa25@yahoo.com",
+  "current_password": "jaG7CI7Pa5",
+  "password": "D8ixJDMRQa"
 }

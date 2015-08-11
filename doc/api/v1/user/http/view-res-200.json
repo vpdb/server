@@ -1,15 +1,15 @@
 200 OK
 Content-Type: application/json; charset=utf-8
-Content-Length: 868
-Etag: W/"364-5rHVgkKBRSSKwfDDLdFpKA"
+Content-Length: 873
+Etag: W/"369-bLVMulnXVPU6r1gPzGj5Bw"
 
 {
   "plan": "free",
-  "name": "Garret.Hayes84",
-  "username": "Garret.Hayes84",
-  "email": "kraig.bradtke@hotmail.com",
+  "name": "Andres.Gleichner",
+  "username": "Andres.Gleichner",
+  "email": "lola.considine35@gmail.com",
   "provider": "local",
-  "created_at": "2015-07-18T21:28:26.376Z",
+  "created_at": "2015-08-11T21:47:41.256Z",
   "is_active": true,
   "counter": {
     "stars": 0,
@@ -19,44 +19,44 @@ Etag: W/"364-5rHVgkKBRSSKwfDDLdFpKA"
   "roles": [
     "member"
   ],
-  "id": "VkmxoG427K",
-  "gravatar_id": "9e865ecb68d270349b3be8a7707016f4",
+  "id": "Vk-l09nIQs",
+  "gravatar_id": "f4d1ef49f50d017e04ee575a28079385",
   "permissions": {
-    "user": [
-      "update",
-      "view"
+    "tags": [
+      "delete-own",
+      "add"
     ],
-    "tokens": [
-      "update",
-      "list",
-      "add",
-      "delete"
+    "roms": [
+      "delete-own",
+      "add"
     ],
     "comments": [
       "add"
     ],
-    "roms": [
+    "releases": [
+      "star",
       "add",
-      "delete-own"
+      "rate",
+      "delete"
+    ],
+    "builds": [
+      "delete-own",
+      "add"
     ],
     "files": [
       "download",
-      "delete",
-      "upload"
+      "upload",
+      "delete"
     ],
-    "releases": [
+    "tokens": [
+      "list",
+      "update",
       "add",
-      "delete",
-      "rate",
-      "star"
+      "delete"
     ],
-    "builds": [
-      "add",
-      "delete-own"
-    ],
-    "tags": [
-      "add",
-      "delete-own"
+    "user": [
+      "update",
+      "view"
     ],
     "users": [
       "view",
@@ -64,8 +64,8 @@ Etag: W/"364-5rHVgkKBRSSKwfDDLdFpKA"
       "star"
     ],
     "games": [
-      "rate",
-      "star"
+      "star",
+      "rate"
     ]
   }
 }

@@ -1,14 +1,14 @@
-POST /api/v1/games/party-animal/roms HTTP/1.1
+POST /api/v1/games/rocket-ship/roms HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJFa054Z1NFMlhZIiwiaWF0IjoiMjAxNS0wNy0xOFQyMToyOTowMy4xOTVaIiwiZXhwIjoiMjAxNS0wNy0xOFQyMjoyOTowMy4xOTVaIn0.cixtVSJsTzdx1CnFSo0mZQIS2jq-2nX5ua0J1Htvlh0
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI0MVJXN3AySW1vIiwiaWF0IjoiMjAxNS0wOC0xMVQyMTo0ODoxOC4yNzdaIiwiZXhwIjoiMjAxNS0wOC0xMVQyMjo0ODoxOC4yNzdaIn0.IhwBB3Y8AZckhY-CJrwdecxW6a9AHKQh1qiOn7aLqdY
 Content-Type: application/json
-Content-Length: 108
+Content-Length: 107
 
 {
-  "id": "party-animal_10",
+  "id": "rocket-ship_10",
   "version": "1.0",
   "notes": "That is some ROM.",
   "language": "en-US",
-  "_file": "Ey37gSV3Xt"
+  "_file": "EkBrQTnI7j"
 }

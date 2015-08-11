@@ -1,5 +1,5 @@
-GET /api/v1/games/equity/rating HTTP/1.1
+GET /api/v1/games/bmx/rating HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJWSjhESzdOM1hLIiwiaWF0IjoiMjAxNS0wNy0xOFQyMToyODo0MC45MTdaIiwiZXhwIjoiMjAxNS0wNy0xOFQyMjoyODo0MC45MTdaIn0.GLyCTztDZrCPisI5MVMQO3QvJYVEIq1vxjnVl_aqyy0
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI0azNJNWozTFFqIiwiaWF0IjoiMjAxNS0wOC0xMVQyMTo0Nzo1My45MzlaIiwiZXhwIjoiMjAxNS0wOC0xMVQyMjo0Nzo1My45MzlaIn0.ae2R-VFmA0_xZ9nkZnAOmVQVAHmeIdehRvYT5Hg_GHQ
 

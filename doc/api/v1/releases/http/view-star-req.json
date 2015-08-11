@@ -1,5 +1,5 @@
-GET /api/v1/releases/N17QrN2QY/star HTTP/1.1
+GET /api/v1/releases/4kk-8phUmj/star HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJOSk5BeEhWaG1ZIiwiaWF0IjoiMjAxNS0wNy0xOFQyMToyOTowNC4wNjVaIiwiZXhwIjoiMjAxNS0wNy0xOFQyMjoyOTowNC4wNjVaIn0.cI85F5f8zlebvIghYWa41LdsOHCeazrLgLbGS56kt5E
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI0eTJHTjZuSW1pIiwiaWF0IjoiMjAxNS0wOC0xMVQyMTo0ODoxOS4zMzNaIiwiZXhwIjoiMjAxNS0wOC0xMVQyMjo0ODoxOS4zMzNaIn0.rpBmia1yDe_EXAxt0Vze5pOHI75MRC1-IafdftY9D4s
 

@@ -1,16 +1,16 @@
 200 OK
 Content-Type: application/json; charset=utf-8
-Etag: W/"40b-69yFAA4ssSW4i7x7kyK99Q"
-Content-Encoding: gzip
+Content-Length: 1013
+Etag: W/"3f5-+IeV2UspFvc4PjPhgx6aog"
 
 {
-  "location": "Rueckermouth",
+  "location": "South Amaya",
   "plan": "free",
-  "name": "Justice Hilpert",
-  "username": "Catharine.Wiegand73",
-  "email": "ludwig_bernier@gmail.com",
+  "name": "Alden Hamill",
+  "username": "Elisa79",
+  "email": "bryce.pfeffer@yahoo.com",
   "provider": "local",
-  "created_at": "2015-07-18T21:29:09.191Z",
+  "created_at": "2015-08-11T21:48:24.626Z",
   "is_active": true,
   "counter": {
     "stars": 0,
@@ -22,47 +22,47 @@ Content-Encoding: gzip
   ],
   "email_status": {
     "code": "pending_update",
-    "expires_at": "2015-07-19T21:29:09.507Z",
-    "value": "christop.davis@yahoo.com"
+    "expires_at": "2015-08-12T21:48:24.972Z",
+    "value": "vanessa25@yahoo.com"
   },
-  "id": "EySgUrE37K",
-  "gravatar_id": "9fba9423a3034e253d1f013a5f92bfa8",
+  "id": "N1cUK62U7o",
+  "gravatar_id": "9321fc9eb42a71e03baa9c027e2b9894",
   "permissions": {
-    "user": [
-      "update",
-      "view"
+    "tags": [
+      "delete-own",
+      "add"
     ],
-    "tokens": [
-      "update",
-      "list",
-      "add",
-      "delete"
+    "roms": [
+      "delete-own",
+      "add"
     ],
     "comments": [
       "add"
     ],
-    "roms": [
+    "releases": [
+      "star",
       "add",
-      "delete-own"
+      "rate",
+      "delete"
+    ],
+    "builds": [
+      "delete-own",
+      "add"
     ],
     "files": [
       "download",
-      "delete",
-      "upload"
+      "upload",
+      "delete"
     ],
-    "releases": [
+    "tokens": [
+      "list",
+      "update",
       "add",
-      "delete",
-      "rate",
-      "star"
+      "delete"
     ],
-    "builds": [
-      "add",
-      "delete-own"
-    ],
-    "tags": [
-      "add",
-      "delete-own"
+    "user": [
+      "update",
+      "view"
     ],
     "users": [
       "view",
@@ -70,8 +70,8 @@ Content-Encoding: gzip
       "star"
     ],
     "games": [
-      "rate",
-      "star"
+      "star",
+      "rate"
     ]
   }
 }

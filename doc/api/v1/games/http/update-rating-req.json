@@ -1,8 +1,8 @@
-PUT /api/v1/games/whizz-bang-model-a/rating HTTP/1.1
+PUT /api/v1/games/harvey/rating HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
 Content-Type: application/json
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI0SlktOVhObm10IiwiaWF0IjoiMjAxNS0wNy0xOFQyMToyODo0MS4zNDlaIiwiZXhwIjoiMjAxNS0wNy0xOFQyMjoyODo0MS4zNDlaIn0.QTVL9WkJWemlvgClbe8zEXy6dFwu4F6qgOSG9X1o9vI
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJWSjgtb3NoOFhzIiwiaWF0IjoiMjAxNS0wOC0xMVQyMTo0Nzo1NC4zMzFaIiwiZXhwIjoiMjAxNS0wOC0xMVQyMjo0Nzo1NC4zMzFaIn0.kZGQMvs-vaPPjcKaYveATmIcB6zQ3Ls9imFhvmSXBA8
 Content-Length: 11
 
 {

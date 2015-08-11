@@ -1,8 +1,8 @@
 404 Not Found
 Content-Type: application/json; charset=utf-8
-Content-Length: 79
-Etag: W/"4f-IQoZOBKqEf0wOmbo9wgn/w"
+Content-Length: 81
+Etag: W/"51-YxOXTU7Zd7GbHsNYq1Lpog"
 
 {
-  "error": "No rating of <micaela_mitchell@gmail.com> for \"Bronco\" found."
+  "error": "No rating of <braden.mraz@gmail.com> for \"Kentucky Star\" found."
 }

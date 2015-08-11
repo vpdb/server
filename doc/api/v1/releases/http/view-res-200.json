@@ -1,13 +1,15 @@
 200 OK
 Content-Type: application/json; charset=utf-8
-Etag: W/"b8a-yDAmH/U+RxrdytBCKkD6IQ"
+Etag: W/"bb1-eehDwHtvtdahO6DvHIpQ5Q"
 Content-Encoding: gzip
 
 {
-  "name_sortable": "Sharable Edition",
-  "name": "Sharable Edition",
-  "created_at": "2015-07-18T21:28:57.657Z",
+  "name_sortable": "Synchronised Edition",
+  "name": "Synchronised Edition",
+  "modified_at": "2015-08-11T21:48:11.942Z",
+  "created_at": "2015-08-11T21:48:11.942Z",
   "rating": {
+    "score": 0,
     "votes": 0,
     "average": 0
   },
@@ -15,7 +17,6 @@ Content-Encoding: gzip
     "popularity": 0
   },
   "counter": {
-    "score": 0,
     "stars": 0,
     "comments": 0,
     "downloads": 0
@@ -27,10 +28,10 @@ Content-Encoding: gzip
         "Table Creator"
       ],
       "user": {
-        "id": "VJHc4EhmF",
-        "name": "Laverna.Osinski26",
-        "username": "Laverna.Osinski26",
-        "gravatar_id": "ca1f1f3c4f300a550a4ff53bd0902f55",
+        "id": "NypQnhnLXj",
+        "name": "Precious79",
+        "username": "Precious79",
+        "gravatar_id": "033e052033da43f33e5bce2d760396f1",
         "counter": {
           "comments": 0,
           "stars": 0
@@ -40,7 +41,7 @@ Content-Encoding: gzip
   ],
   "versions": [
     {
-      "released_at": "2015-07-18T21:28:57.657Z",
+      "released_at": "2015-08-11T21:48:11.942Z",
       "version": "1.0.0",
       "counter": {
         "comments": 0,
@@ -48,7 +49,7 @@ Content-Encoding: gzip
       },
       "files": [
         {
-          "released_at": "2015-07-18T21:28:57.657Z",
+          "released_at": "2015-08-11T21:48:11.942Z",
           "counter": {
             "downloads": 0
           },
@@ -60,7 +61,7 @@ Content-Encoding: gzip
             "playfield_image": {
               "name": "playfield-0.png",
               "bytes": 347,
-              "created_at": "2015-07-18T21:28:57.356Z",
+              "created_at": "2015-08-11T21:48:11.694Z",
               "mime_type": "image/png",
               "file_type": "playfield-fs",
               "metadata": {
@@ -75,27 +76,27 @@ Content-Encoding: gzip
                 "downloads": 0
               },
               "is_active": true,
-              "id": "N1CgqVEn7F",
+              "id": "EkUr22n8Xo",
               "is_protected": true,
-              "url": "/storage/v1/files/N1CgqVEn7F.png",
+              "url": "/storage/v1/files/EkUr22n8Xo.png",
               "variations": {
                 "medium": {
-                  "url": "/storage/public/files/medium/N1CgqVEn7F.png"
+                  "url": "/storage/public/files/medium/EkUr22n8Xo.jpg"
                 },
                 "medium-2x": {
-                  "url": "/storage/public/files/medium-2x/N1CgqVEn7F.png"
+                  "url": "/storage/public/files/medium-2x/EkUr22n8Xo.jpg"
                 },
                 "medium-landscape": {
-                  "url": "/storage/public/files/medium-landscape/N1CgqVEn7F.png"
+                  "url": "/storage/public/files/medium-landscape/EkUr22n8Xo.jpg"
                 },
                 "medium-landscape-2x": {
-                  "url": "/storage/public/files/medium-landscape-2x/N1CgqVEn7F.png"
+                  "url": "/storage/public/files/medium-landscape-2x/EkUr22n8Xo.jpg"
                 },
                 "square": {
-                  "url": "/storage/public/files/square/N1CgqVEn7F.png"
+                  "url": "/storage/public/files/square/EkUr22n8Xo.jpg"
                 },
                 "square-2x": {
-                  "url": "/storage/public/files/square-2x/N1CgqVEn7F.png"
+                  "url": "/storage/public/files/square-2x/EkUr22n8Xo.jpg"
                 }
               }
             }
@@ -114,12 +115,12 @@ Content-Encoding: gzip
           ],
           "file": {
             "name": "test-table-0.vpt",
-            "created_at": "2015-07-18T21:28:57.309Z",
+            "created_at": "2015-08-11T21:48:11.648Z",
             "mime_type": "application/x-visual-pinball-table",
             "file_type": "release",
             "metadata": {},
-            "id": "NJueq4N3Xt",
-            "url": "/storage/v1/files/NJueq4N3Xt.vpt",
+            "id": "VyeB22hIQo",
+            "url": "/storage/v1/files/VyeB22hIQo.vpt",
             "bytes": 135168,
             "variations": {},
             "is_protected": true,
@@ -132,6 +133,6 @@ Content-Encoding: gzip
       ]
     }
   ],
-  "id": "Ekn-cEE27Y",
+  "id": "4JEL2h3Lmo",
   "tags": []
 }

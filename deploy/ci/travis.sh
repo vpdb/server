@@ -3,18 +3,19 @@
 # Stop on error
 set -e
 
-# Print versions
-echo travis_fold:start:Versions
-echo "node version: $(node --version)"
-echo "npm version: $(npm --version)"
-echo "ffmpeg version: $(ffmpeg -version)"
-echo travis_fold:end:Versions
-
 # Install dependencies
 echo travis_fold:start:npm-install
 npm install -g grunt-cli pngquant-bin
 npm install
 echo travis_fold:end:npm-install
+
+# Print versions
+echo travis_fold:start:Versions
+echo "node version: $(node --version)"
+echo "npm version: $(npm --version)"
+echo "ffmpeg version: $(ffmpeg -version)"
+echo "pngquant version: $(pngquant --version)"
+echo travis_fold:end:Versions
 
 # Build application
 echo travis_fold:start:grunt-build

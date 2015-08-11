@@ -15,6 +15,7 @@ before_script:
   - mkdir bin
   - cd bin
   - tar -xvf /tmp/ffmpeg.tar.gz --strip 1 --no-anchored ffmpeg ffprobe
+  - cd ..
   - export PATH=$(pwd)/bin:$PATH
 script:
 - deploy/ci/travis.sh

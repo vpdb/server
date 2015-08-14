@@ -120,6 +120,7 @@ angular.module('vpdb.common', [])
 					opts = opts || {};
 				}
 				return function(items, headers) {
+
 					scope.pagination = {};
 					if (headers('x-list-count')) {
 						scope.pagination.count = parseInt(headers('x-list-count'));
@@ -147,6 +148,7 @@ angular.module('vpdb.common', [])
 					if (opts.loader) {
 						scope.loading = false;
 					}
+					delete scope.error;
 				};
 			},
 

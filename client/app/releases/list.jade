@@ -35,7 +35,10 @@ include ../template/_mixins
 		p(ng-show="!releases.length && !loading") No releases found.
 
 		//- loading
-		p(ng-show="loading") Loading...
+		p(ng-show="loading && !error") Loading...
+
+		//- error
+		p(ng-show="error") Error: {{ error }}
 
 		//- content
 		.row.ng-cloak

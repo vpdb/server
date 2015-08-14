@@ -137,7 +137,7 @@ angular.module('vpdb.releases.list', [])
 			// refresh if changes
 			if (!_.isEqual($scope.$query, query)) {
 				$scope.loading = true;
-				$scope.releases = ReleaseResource.query(query, ApiHelper.handlePagination($scope, { loader: true }));
+				$scope.releases = ReleaseResource.query(query, ApiHelper.handlePagination($scope, { loader: true }), ApiHelper.handleErrors($scope));
 				$scope.$query = query;
 			}
 		};

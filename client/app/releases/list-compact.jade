@@ -1,6 +1,6 @@
 .col-md-4.col-sm-6.col-xs-12.fade-animation(ng-repeat="release in releases", ng-click="navGame(release.game.id)")
 	.panel.panel--animated.ng-cloak
-		.img.img--ar-fs.img--rounded-top(img-bg="release.latest_version.thumb.image.url")
+		.img.img--rounded-top(img-bg="release.latest_version.thumb.image.url", ng-class="flavorFilter && flavorFilter.orientation === 'ws' ? 'img--ar-ws' : 'img--ar-fs'")
 		.text-center.padder-horizontal
 			h1.h--small {{ release.game.title }}
 			label.label--subtitle {{ release.name }}

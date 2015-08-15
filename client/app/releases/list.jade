@@ -54,10 +54,12 @@ include ../template/_mixins
 				+icon('search').smaller
 			input.form-control.input--search(ng-model="q", type="text", placeholder="Search")
 
-		input#starredOnly.checkbox--toggle(type='checkbox', ng-model="starredOnly")
-		label(for='starredOnly')
-		label.a.a--light.padder-bottom(for='starredOnly') Starred releases only
-		.clearfix
+		// starred only
+		span(ng-show="auth.isAuthenticated")
+			input#starredOnly.checkbox--toggle(type='checkbox', ng-model="starredOnly")
+			label(for='starredOnly')
+			label.a.a--light.padder-bottom(for='starredOnly') Starred releases only
+			.clearfix
 
 		// filters
 		accordion.panel-group--transparent(close-others="false")

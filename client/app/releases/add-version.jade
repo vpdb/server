@@ -10,12 +10,12 @@ include ../template/_mixins
 			select.form-control.pull-right(ng-disabled="meta.mode == 'newVersion'", ng-options="version for version in versions", ng-model="meta.version")
 			.radio--lg: label
 				input.input-lg(type="radio", name="mode", value="newFile", ng-model="meta.mode")
-				span.aligned Existing version
+				span.aligned: h1 Existing version
 
 			input.form-control.width-md.pull-right(type="text", ng-disabled="meta.mode == 'newFile'", ng-model="releaseVersion.version", placeholder="x.x.x")
 			.radio--lg: label
 				input(type="radio", name="mode", value="newVersion", ng-model="meta.mode")
-				span.aligned New version
+				span.aligned: h1 New version
 		.row.padder-bottom(ng-show="errors.versions[0].version"): .col-sm-12
 			.alert.alert-danger
 				+icon('warning').shift-up.space-right

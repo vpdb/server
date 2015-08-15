@@ -95,6 +95,14 @@ $input-background-light-focus = rgba(white, 0.75)
 			&:checked + span:before
 				border-color #555
 
+	.radio--lg
+		&:hover > label > input[type=radio]
+			+ span, + span + span
+				color $color-lightest
+			&:checked
+				+ span, + span + span
+					color $color-lighter
+
 
 //
 // Light theme

@@ -157,6 +157,7 @@ textarea
 // .radio--lg - Large buttons
 //
 // Styleguide 5.2.1
+$radio--lg-spacing = 40px
 .radio--lg
 	cursor default
 	input[type=radio]
@@ -166,13 +167,21 @@ textarea
 		+span
 			cursor pointer
 			display block
-			font-weight $font-weight-bold
-			font-size $font-size-large
-			text-transform uppercase
-			margin-left 35px
+			margin-left $radio--lg-spacing
 			transition color $animation-short
 
+			font-size $font-size-large
+			font-weight normal
+			text-transform none
+
+			b
+				font-family $font-content
+				font-weight $font-weight-bold
+				font-size $font-size-large
+				text-transform uppercase
+
 			&:before
+				position absolute
 				content ''
 				border-width 2px
 				border-style solid
@@ -182,8 +191,8 @@ textarea
 				height 20px
 				padding 2px
 				margin-right 10px
-				margin-left -33px
-				margin-top -7px
+				margin-left - $radio--lg-spacing
+				margin-top 7px
 				text-align center
 				border-radius 50%
 				transition border-color $animation-short
@@ -226,23 +235,17 @@ textarea
 //
 // Styleguide 5.2.2
 .radio--lg-twoliner
-	@extend .radio--lg
 	input[type=radio]
 		+ span
-			font-size $font-size-large
-			font-weight normal
-			text-transform none
 			margin-bottom -5px
 			&:before
-				position absolute
 				margin-top 18px
 			+ span
 				transition color $animation-short
+				margin-left $radio--lg-spacing
+				cursor pointer
 		&:checked + span + span
 			cursor default
-	span
-		margin-left 35px
-		cursor pointer
 
 
 

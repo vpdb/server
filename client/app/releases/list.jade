@@ -67,16 +67,15 @@ include ../template/_mixins
 			// flavor filters
 			accordion-group.panel--inner(ng-repeat="flavor in flavors", is-open="filterFlavorOpen[flavor.name]")
 				accordion-heading by {{ flavor.header }}
-				ul.list--checkboxes
+				ul.list--checkboxes.list--condensed
 					li
-						.radio--lg-twoliner.radio-inline
+						.radio--lg
 							label
 								input(type="radio", name="{{ flavor.name }}", value="", ng-model="flavorFilter[flavor.name]", ng-change="onFlavorChange()")
 								span No Filter
-								span: i Nope, none.
 
 					li(ng-repeat="flavorVal in flavor.values")
-						.radio--lg-twoliner.radio-inline
+						.radio--lg.radio--lg-twoliner
 							label
 								input(type="radio", name="{{ flavor.name }}", value="{{ flavorVal.value }}", ng-model="flavorFilter[flavor.name]", ng-change="onFlavorChange()")
 								span {{ flavorVal.name }}

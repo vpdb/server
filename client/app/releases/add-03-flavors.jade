@@ -13,7 +13,7 @@ ul.list--files
 					tr(ng-repeat="flavor in flavors")
 						th.text--large {{ flavor.header }}
 						td(ng-repeat="flavorVal in flavor.values | allowedFlavors:file")
-							.radio--lg-twoliner.radio-inline
+							.radio--lg.radio--lg-twoliner.radio-inline
 								label(orientation-check="{ flavor: flavor, file: file, files: mediaFiles, metaFiles: meta.mediaFiles, flavorVal: flavorVal, metaLinks: meta.mediaLinks }")
 									input(type="radio", name="{{ file.name + flavor.header }}", value="{{ flavorVal.value }}", ng-model="getReleaseFile(file).flavor[flavor.name]")
 									span {{ flavorVal.name }}

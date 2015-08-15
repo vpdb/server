@@ -12,12 +12,12 @@ hr.hr--light.hr--margin-small
 		.radio-inline.radio--lg
 			label
 				input.input-lg(type="radio", name="ismod", ng-value="true", ng-model="meta.isMod")
-				span Yes
+				span: b Yes
 
 		.radio-inline.radio--lg
 			label
 				input(type="radio", name="ismod", ng-value="false", ng-model="meta.isMod")
-				span No
+				span: b No
 
 button.btn.btn-default.pull-right(ng-show="meta.isMod")
 	+icon('search').space-right

@@ -153,12 +153,12 @@ As soon as v5 goes final, it should be the one.
 Setup Phusion Passenger:
 
 	cd /usr/local/src
-	wget https://github.com/phusion/passenger/archive/release-5.0.6.tar.gz
-	tar xvfz release-5.0.6.tar.gz
+	wget https://github.com/phusion/passenger/archive/release-5.0.15.tar.gz
+	tar xvfz release-5.0.15.tar.gz
 
 Add `/opt/passenger/bin` to `PATH`:
 
-	ln -s /usr/local/src/passenger-release-5.0.6 /opt/passenger
+	ln -s /usr/local/src/passenger-release-5.0.15 /opt/passenger
 	vi /etc/environment
 
 Download and compile Nginx. See [compile script](deploy/nginx/compile.sh) how to do that.

@@ -147,7 +147,7 @@ describe('The VPDB `user` API', function() {
 				expect(res.body).to.be.an('array');
 				expect(res.body[0]).to.be.an('object');
 				expect(res.body[0].event).to.be.ok();
-				expect(res.body[0].data).to.be.an('object');
+				expect(res.body[0].payload).to.be.an('object');
 				expect(res.body[0].ip).to.be.ok();
 				expect(res.body[0].result).to.be.ok();
 				expect(res.body[0].logged_at).to.be.ok();

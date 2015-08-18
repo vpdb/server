@@ -12,9 +12,9 @@ table.table.table-striped(ng-show="logins.length")
 	tbody
 		tr(ng-repeat="log in logins", ng-class="{ error: log.result === 'failure' }")
 			td.td--big-icon
-				+icon('{{ log.data.providerInfo.icon }}')
+				+icon('{{ log.payload.providerInfo.icon }}')
 			td
-				b {{ log.data.providerInfo.name }}
+				b {{ log.payload.providerInfo.name }}
 				span(ng-show="log.result === 'failure'")
 					br
 					+icon('warning').shift-up.space-right

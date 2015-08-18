@@ -78,8 +78,8 @@ exports.list = function(req, res) {
 		// process results
 		logs = _.map(logs, function(log) {
 
-			if (providerInfo[log.data.provider]) {
-				log.data.providerInfo = providerInfo[log.data.provider];
+			if (providerInfo[log.payload.provider]) {
+				log.payload.providerInfo = providerInfo[log.payload.provider];
 			}
 			return log.toObj();
 		});

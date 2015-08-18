@@ -34,8 +34,8 @@ var fields = {
 	_user:     { type: Schema.ObjectId, required: true, ref: 'User', index: true },
 	_actor:    { type: Schema.ObjectId, required: true, ref: 'User', index: true },
 	event:     { type: String, index: true },
-	data:      { },
-	result:    { type: String, enum: [ 'success', 'failure' ], required: true },
+	payload:   { },
+	result:    { type: String, 'enum': [ 'success', 'failure' ], required: true },
 	message:   { type: String },
 	ip:        { type: String, required: true },
 	logged_at: { type: Date, required: true }
@@ -74,22 +74,22 @@ LogUserSchema.virtual('actor')
 // STATIC METHODS
 //-----------------------------------------------------------------------------
 
-LogUserSchema.statics.success = function(req, user, event, data, actor, done) {
-	LogUserSchema.statics.log(req, user, 'success', event, data, actor, undefined, done);
+LogUserSchema.statics.success = function(req, user, event, payload, actor, done) {
+	LogUserSchema.statics.log(req, user, 'success', event, payload, actor, undefined, done);
 };
 
-LogUserSchema.statics.failure = function(req, user, event, data, actor, message, done) {
-	LogUserSchema.statics.log(req, user, 'failure', event, data, actor, message, done);
+LogUserSchema.statics.failure = function(req, user, event, payload, actor, message, done) {
+	LogUserSchema.statics.log(req, user, 'failure', event, payload, actor, message, done);
 };
 
-LogUserSchema.statics.log = function(req, user, result, event, data, actor, message, done) {
+LogUserSchema.statics.log = function(req, user, result, event, payload, actor, message, done) {
 	var LogUser = mongoose.model('LogUser');
 	actor = actor || user;
 	var log = new LogUser({
 		_user: user,
 		_actor: actor,
 		event: event,
-		data: data,
+		payload: payload,
 		ip: req.ip || req.headers['x-forwarded-for'] || req.connection.remoteAddress || '0.0.0.0',
 		result: result,
 		message: message,

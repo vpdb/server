@@ -6,7 +6,7 @@
 * [Node.js](http://nodejs.org/) for dynamic page serving
 * [Nginx](http://nginx.org/) for static page serving and reverse proxy
 * [Git](http://git-scm.com/) for push deployments on client side
-* [Phusion Passenger](https://www.phusionpassenger.com/) for Node process management within Nginx
+* [Phusion Passenger](https://www.phusionpassenger.com/) for Node process management within Nginx ([Plan B](https://www.digitalocean.com/community/tutorials/how-to-set-up-a-node-js-application-for-production-on-ubuntu-14-04))
 * [MongoDB](https://www.mongodb.org/) for data storage
 * [Redis](http://redis.io/) for message queue, quota and ACLs 
 

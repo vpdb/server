@@ -31,14 +31,14 @@ var Schema = mongoose.Schema;
 // SCHEMA
 //-----------------------------------------------------------------------------
 var fields = {
-	_user:       { type: Schema.ObjectId, required: true, ref: 'User', index: true },
+	_actor:       { type: Schema.ObjectId, required: true, ref: 'User', index: true },
 	_ref: {
 		game:    { type: Schema.ObjectId, ref: 'Game', index: true, sparse: true },
 		release: { type: Schema.ObjectId, ref: 'Release', index: true, sparse: true },
 		user:    { type: Schema.ObjectId, ref: 'User', index: true, sparse: true }
 	},
 	type:        { type: String, 'enum': [ 'game', 'release', 'user' ], required: true, index: true },
-	data:        { },
+	payload:     { },
 	logged_at:   { type: Date, required: true }
 };
 var LogEventSchema = new Schema(fields);

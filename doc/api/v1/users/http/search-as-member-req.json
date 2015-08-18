@@ -1,5 +1,5 @@
-GET /api/v1/users?q=Kee HTTP/1.1
+GET /api/v1/users?q=Kat HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI0azBCWWFoVW1zIiwiaWF0IjoiMjAxNS0wOC0xMVQyMTo0ODoyNC41NzhaIiwiZXhwIjoiMjAxNS0wOC0xMVQyMjo0ODoyNC41NzhaIn0.-Xh9BoSzRiC-DsLHoohPcb-LIAHRUMT7S8brv1qilOw
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJWeVNic21DWWhqIiwiaWF0IjoiMjAxNS0wOC0xOFQyMTowOTozMC4yNjZaIiwiZXhwIjoiMjAxNS0wOC0xOFQyMjowOTozMC4yNjZaIn0.GGXZ7be59PAQX3uYFZ5mmv7CTvvKARTSSLTqGPJL1Nc
 

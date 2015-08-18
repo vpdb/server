@@ -1,5 +1,5 @@
-GET /api/v1/games/victorious-1945/star HTTP/1.1
+GET /api/v1/games/skil-luck/star HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJOMUFWRHBuVVhqIiwiaWF0IjoiMjAxNS0wOC0xMVQyMTo0ODoyMi45NjdaIiwiZXhwIjoiMjAxNS0wOC0xMVQyMjo0ODoyMi45NjdaIn0.QbZJlPN0Vqtx8ZRwJgallEjEougW8voUh_CgdWn1CAk
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJOSlBFRm1BdGhqIiwiaWF0IjoiMjAxNS0wOC0xOFQyMTowOToyOC42NTNaIiwiZXhwIjoiMjAxNS0wOC0xOFQyMjowOToyOC42NTNaIn0.CeT2U-baTGQx08H5MYmx-j9O63ExmNCC_wvjmN70sIg
 

@@ -1,16 +1,16 @@
 200 OK
 Content-Type: application/json; charset=utf-8
-Content-Length: 1013
-Etag: W/"3f5-+IeV2UspFvc4PjPhgx6aog"
+Etag: W/"402-wbyyHc1/DXAR/3zfFolLxw"
+Content-Encoding: gzip
 
 {
-  "location": "South Amaya",
+  "location": "New Shawna",
   "plan": "free",
-  "name": "Alden Hamill",
-  "username": "Elisa79",
-  "email": "bryce.pfeffer@yahoo.com",
+  "name": "Daphney Mosciski",
+  "username": "Ethel_Pacocha66",
+  "email": "jess55@gmail.com",
   "provider": "local",
-  "created_at": "2015-08-11T21:48:24.626Z",
+  "created_at": "2015-08-18T21:09:30.316Z",
   "is_active": true,
   "counter": {
     "stars": 0,
@@ -22,56 +22,56 @@ Etag: W/"3f5-+IeV2UspFvc4PjPhgx6aog"
   ],
   "email_status": {
     "code": "pending_update",
-    "expires_at": "2015-08-12T21:48:24.972Z",
-    "value": "vanessa25@yahoo.com"
+    "expires_at": "2015-08-19T21:09:30.662Z",
+    "value": "joelle.gulgowski21@yahoo.com"
   },
-  "id": "N1cUK62U7o",
-  "gravatar_id": "9321fc9eb42a71e03baa9c027e2b9894",
+  "id": "NJWzjQAY3s",
+  "gravatar_id": "b50cf94c04e226a7de0eae9b69f7cd5e",
   "permissions": {
-    "tags": [
-      "delete-own",
-      "add"
-    ],
-    "roms": [
-      "delete-own",
-      "add"
-    ],
-    "comments": [
-      "add"
-    ],
-    "releases": [
-      "star",
-      "add",
-      "rate",
-      "delete"
-    ],
-    "builds": [
-      "delete-own",
-      "add"
-    ],
-    "files": [
-      "download",
-      "upload",
-      "delete"
-    ],
-    "tokens": [
-      "list",
-      "update",
-      "add",
-      "delete"
-    ],
-    "user": [
-      "update",
-      "view"
-    ],
-    "users": [
-      "view",
-      "search",
-      "star"
-    ],
     "games": [
       "star",
       "rate"
+    ],
+    "releases": [
+      "rate",
+      "star",
+      "add",
+      "delete"
+    ],
+    "files": [
+      "upload",
+      "delete",
+      "download"
+    ],
+    "tags": [
+      "add",
+      "delete-own"
+    ],
+    "users": [
+      "star",
+      "search",
+      "view"
+    ],
+    "user": [
+      "view",
+      "update"
+    ],
+    "builds": [
+      "add",
+      "delete-own"
+    ],
+    "roms": [
+      "add",
+      "delete-own"
+    ],
+    "tokens": [
+      "add",
+      "delete",
+      "list",
+      "update"
+    ],
+    "comments": [
+      "add"
     ]
   }
 }

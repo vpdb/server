@@ -1,15 +1,15 @@
 200 OK
 Content-Type: application/json; charset=utf-8
-Content-Length: 873
-Etag: W/"369-bLVMulnXVPU6r1gPzGj5Bw"
+Content-Length: 856
+Etag: W/"358-Mg9t3r9fAVB3JSmSPB3vWA"
 
 {
   "plan": "free",
-  "name": "Andres.Gleichner",
-  "username": "Andres.Gleichner",
-  "email": "lola.considine35@gmail.com",
+  "name": "Taya_OHara",
+  "username": "Taya_OHara",
+  "email": "amina.hills@gmail.com",
   "provider": "local",
-  "created_at": "2015-08-11T21:47:41.256Z",
+  "created_at": "2015-08-18T21:08:45.465Z",
   "is_active": true,
   "counter": {
     "stars": 0,
@@ -19,53 +19,53 @@ Etag: W/"369-bLVMulnXVPU6r1gPzGj5Bw"
   "roles": [
     "member"
   ],
-  "id": "Vk-l09nIQs",
-  "gravatar_id": "f4d1ef49f50d017e04ee575a28079385",
+  "id": "N1XxRgCK3i",
+  "gravatar_id": "242e1a358586787320aca3710b2f845e",
   "permissions": {
-    "tags": [
-      "delete-own",
-      "add"
-    ],
-    "roms": [
-      "delete-own",
-      "add"
-    ],
-    "comments": [
-      "add"
-    ],
-    "releases": [
-      "star",
-      "add",
-      "rate",
-      "delete"
-    ],
-    "builds": [
-      "delete-own",
-      "add"
-    ],
-    "files": [
-      "download",
-      "upload",
-      "delete"
-    ],
-    "tokens": [
-      "list",
-      "update",
-      "add",
-      "delete"
-    ],
-    "user": [
-      "update",
-      "view"
-    ],
-    "users": [
-      "view",
-      "search",
-      "star"
-    ],
     "games": [
       "star",
       "rate"
+    ],
+    "releases": [
+      "rate",
+      "star",
+      "add",
+      "delete"
+    ],
+    "files": [
+      "upload",
+      "delete",
+      "download"
+    ],
+    "tags": [
+      "add",
+      "delete-own"
+    ],
+    "users": [
+      "star",
+      "search",
+      "view"
+    ],
+    "user": [
+      "view",
+      "update"
+    ],
+    "builds": [
+      "add",
+      "delete-own"
+    ],
+    "roms": [
+      "add",
+      "delete-own"
+    ],
+    "tokens": [
+      "add",
+      "delete",
+      "list",
+      "update"
+    ],
+    "comments": [
+      "add"
     ]
   }
 }

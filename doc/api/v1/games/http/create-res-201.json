@@ -1,18 +1,20 @@
 201 Created
 Content-Type: application/json; charset=utf-8
-Etag: W/"4a6-soEYyiTJjDMOu74uGj9K2w"
+Etag: W/"694-vNUI+PN5KHr+eIMQbIzsUA"
 Content-Encoding: gzip
 
 {
-  "title_sortable": "Automatic Pool",
-  "title": "Automatic Pool",
-  "manufacturer": "Chicago Coin",
-  "game_type": "em",
-  "features": "Coin chute located on front coin door.",
-  "notes": "Manufacture date unknown.",
-  "id": "automatic-pool",
-  "year": 1900,
-  "created_at": "2015-08-11T21:47:45.772Z",
+  "title_sortable": "Spring Break",
+  "title": "Spring Break",
+  "manufacturer": "Premier",
+  "model_number": "706",
+  "year": 1987,
+  "game_type": "ss",
+  "produced_units": 3550,
+  "features": "Flippers (4), Pop bumpers (3), 3-bank drop targets (3), Rollunders (4). No manual ball shooter assembly. Ball is launched into play by pressing right flipper button and starts an instant multiball mode. Photographic translite.",
+  "notes": "John Trudeau told us that the man in the flyer is Jeff Walker from the Marketing Department at Bally.Larry Day told us he did the art for the playfield and cabinet, and Don Marshall did the photographic translite.",
+  "id": "spring-break",
+  "created_at": "2015-08-18T21:08:50.238Z",
   "rating": {
     "score": 0,
     "votes": 0,
@@ -29,13 +31,20 @@ Content-Encoding: gzip
     "releases": 0
   },
   "ipdb": {
-    "number": 5082,
-    "mfg": 81
+    "number": 2324,
+    "mfg": 257,
+    "rating": 6.4
   },
-  "artists": [],
-  "designers": [],
+  "artists": [
+    "Don Marshall",
+    "Larry Day"
+  ],
+  "designers": [
+    "John Trudeau"
+  ],
   "themes": [
-    "Billiards"
+    "Aquatic Fun",
+    "Happiness"
   ],
   "short": [],
   "media": {
@@ -46,22 +55,22 @@ Content-Encoding: gzip
       "is_protected": true,
       "variations": {
         "small-2x": {
-          "url": "/storage/public/files/small-2x/VJPNMo2IQj.jpg"
+          "url": "/storage/public/files/small-2x/E147ZRF2j.jpg"
         },
         "small": {
-          "url": "/storage/public/files/small/VJPNMo2IQj.jpg"
+          "url": "/storage/public/files/small/E147ZRF2j.jpg"
         },
         "medium-2x": {
-          "url": "/storage/public/files/medium-2x/VJPNMo2IQj.jpg"
+          "url": "/storage/public/files/medium-2x/E147ZRF2j.jpg"
         },
         "medium": {
-          "url": "/storage/public/files/medium/VJPNMo2IQj.jpg"
+          "url": "/storage/public/files/medium/E147ZRF2j.jpg"
         }
       },
       "bytes": 135,
-      "url": "/storage/v1/files/VJPNMo2IQj.png",
-      "id": "VJPNMo2IQj"
+      "url": "/storage/v1/files/E147ZRF2j.png",
+      "id": "E147ZRF2j"
     }
   },
-  "url": "/game/automatic-pool"
+  "url": "/game/spring-break"
 }

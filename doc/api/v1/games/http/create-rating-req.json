@@ -1,8 +1,8 @@
-POST /api/v1/games/top-notcher/rating HTTP/1.1
+POST /api/v1/games/safari/rating HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
 Content-Type: application/json
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJOeVlZajNJbWkiLCJpYXQiOiIyMDE1LTA4LTExVDIxOjQ3OjUyLjUyMloiLCJleHAiOiIyMDE1LTA4LTExVDIyOjQ3OjUyLjUyMloifQ.NgQazalwY_rlQDoYsJqrgJTylGMHRpxb3D3xVCKdDV8
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJWa05xLVJGbnMiLCJpYXQiOiIyMDE1LTA4LTE4VDIxOjA4OjU3LjEzOVoiLCJleHAiOiIyMDE1LTA4LTE4VDIyOjA4OjU3LjEzOVoifQ.ydX0oSoDoe8S8h4yb3Zgav_fcqsAC_49P7JQqYtUt4o
 Content-Length: 11
 
 {

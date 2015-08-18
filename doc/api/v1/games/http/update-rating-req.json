@@ -1,8 +1,8 @@
-PUT /api/v1/games/harvey/rating HTTP/1.1
+PUT /api/v1/games/new-wave/rating HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
 Content-Type: application/json
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJWSjgtb3NoOFhzIiwiaWF0IjoiMjAxNS0wOC0xMVQyMTo0Nzo1NC4zMzFaIiwiZXhwIjoiMjAxNS0wOC0xMVQyMjo0Nzo1NC4zMzFaIn0.kZGQMvs-vaPPjcKaYveATmIcB6zQ3Ls9imFhvmSXBA8
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJOeVBQc2JBWWhzIiwiaWF0IjoiMjAxNS0wOC0xOFQyMTowODo1OS4wNzRaIiwiZXhwIjoiMjAxNS0wOC0xOFQyMjowODo1OS4wNzRaIn0.LQjr867gJgSNk5y476m3pOZ7ZoGyI7lOVZgSIyJHChY
 Content-Length: 11
 
 {

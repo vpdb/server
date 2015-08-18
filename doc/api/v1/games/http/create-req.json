@@ -1,26 +1,37 @@
 POST /api/v1/games HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJWa3pFZmozTG1pIiwiaWF0IjoiMjAxNS0wOC0xMVQyMTo0Nzo0NS42NTZaIiwiZXhwIjoiMjAxNS0wOC0xMVQyMjo0Nzo0NS42NTZaIn0.sHkTB0if2HkrLZAHORzXWkl4PT3fzEP8Z-8fKFSbDLU
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJFa1FXQUYybyIsImlhdCI6IjIwMTUtMDgtMThUMjE6MDg6NTAuMTEyWiIsImV4cCI6IjIwMTUtMDgtMThUMjI6MDg6NTAuMTEyWiJ9.-5y5-3zlVNjUMj46ZTP_AOoWrNfPo-lJ63n-Iw-V7HQ
 Content-Type: application/json
-Content-Length: 286
+Content-Length: 793
 
 {
   "ipdb": {
-    "number": 5082,
-    "mfg": 81
+    "number": 2324,
+    "mfg": 257,
+    "rating": "6.4"
   },
-  "title": "Automatic Pool",
-  "manufacturer": "Chicago Coin",
-  "game_type": "em",
+  "title": "Spring Break",
+  "manufacturer": "Premier",
+  "model_number": "706",
+  "year": 1987,
+  "game_type": "ss",
+  "produced_units": 3550,
   "themes": [
-    "Billiards"
+    "Aquatic Fun",
+    "Happiness"
   ],
-  "features": "Coin chute located on front coin door.",
-  "notes": "Manufacture date unknown.",
-  "id": "automatic-pool",
-  "year": 1900,
+  "designers": [
+    "John Trudeau"
+  ],
+  "artists": [
+    "Don Marshall",
+    "Larry Day"
+  ],
+  "features": "Flippers (4), Pop bumpers (3), 3-bank drop targets (3), Rollunders (4). No manual ball shooter assembly. Ball is launched into play by pressing right flipper button and starts an instant multiball mode. Photographic translite.",
+  "notes": "John Trudeau told us that the man in the flyer is Jeff Walker from the Marketing Department at Bally.Larry Day told us he did the art for the playfield and cabinet, and Don Marshall did the photographic translite.",
+  "id": "spring-break",
   "_media": {
-    "backglass": "VJPNMo2IQj"
+    "backglass": "E147ZRF2j"
   }
 }

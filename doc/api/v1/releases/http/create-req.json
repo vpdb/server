@@ -1,21 +1,21 @@
 POST /api/v1/releases HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJWSnFRbDJoTFFzIiwiaWF0IjoiMjAxNS0wOC0xMVQyMTo0Nzo1OS41NzdaIiwiZXhwIjoiMjAxNS0wOC0xMVQyMjo0Nzo1OS41NzdaIn0.MO3kJ_bvlKC8c2sF35ANuB1Ab1XyQB5B3q7BpyGKGpc
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJFSlliR1JGM28iLCJpYXQiOiIyMDE1LTA4LTE4VDIxOjA5OjA0LjE0NVoiLCJleHAiOiIyMDE1LTA4LTE4VDIyOjA5OjA0LjE0NVoifQ.5hpiLLqBzZSksbv6KO_bbNwpqPDWW_HFy4Eq_GIloas
 Content-Type: application/json
-Content-Length: 472
+Content-Length: 471
 
 {
   "name": "release",
-  "_game": "star-fire",
+  "_game": "regatta",
   "versions": [
     {
       "files": [
         {
-          "_file": "EkINbhhIXs",
+          "_file": "4yN7zzCYni",
           "_media": {
-            "playfield_image": "4kVMh2Ims",
-            "playfield_video": "NJDbf3hLms"
+            "playfield_image": "VknQGfRKho",
+            "playfield_video": "4y4NGfCYho"
           },
           "_compatibility": [
             "9.9.0"
@@ -26,9 +26,9 @@ Content-Length: 472
           }
         },
         {
-          "_file": "EyP4b238mj",
+          "_file": "417mMGCtno",
           "_media": {
-            "playfield_image": "EkMzhhLQs"
+            "playfield_image": "EJ07zzAt3j"
           },
           "_compatibility": [
             "9.9.0"
@@ -44,7 +44,7 @@ Content-Length: 472
   ],
   "authors": [
     {
-      "_user": "VJqQl2hLQs",
+      "_user": "EJYbGRF3o",
       "roles": [
         "Table Creator"
       ]

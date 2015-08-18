@@ -1,5 +1,5 @@
-GET /api/v1/games/bmx/rating HTTP/1.1
+GET /api/v1/games/gigi/rating HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI0azNJNWozTFFqIiwiaWF0IjoiMjAxNS0wOC0xMVQyMTo0Nzo1My45MzlaIiwiZXhwIjoiMjAxNS0wOC0xMVQyMjo0Nzo1My45MzlaIn0.ae2R-VFmA0_xZ9nkZnAOmVQVAHmeIdehRvYT5Hg_GHQ
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJFSndtaVpDSzJzIiwiaWF0IjoiMjAxNS0wOC0xOFQyMTowODo1OC40NTZaIiwiZXhwIjoiMjAxNS0wOC0xOFQyMjowODo1OC40NTZaIn0.Mwj4Q1enZ7XbqUBNfh1GzPBwj95L2TZI1CwGvj6dK6A
 

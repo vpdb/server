@@ -1,74 +1,74 @@
 200 OK
 Content-Type: application/json; charset=utf-8
-Etag: W/"49f-OoMwDuQyvRK5jlhKMKzwXw"
+Etag: W/"4ac-t6SWcVFYDCaTADd+rrMSzg"
 Content-Encoding: gzip
 
 {
-  "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJWa2RXa3MzSTdqIiwiaWF0IjoiMjAxNS0wOC0xMVQyMTo0Nzo0Mi4zNDhaIiwiZXhwIjoiMjAxNS0wOC0xMVQyMjo0Nzo0Mi4zNDhaIn0.azoqi1yv24smOx4UeRCAPNGU93RI7dxJAdUyd40QT7s",
-  "expires": "2015-08-11T22:47:42.348Z",
+  "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI0SlI3a1dSRmhzIiwiaWF0IjoiMjAxNS0wOC0xOFQyMTowODo0Ni41MTVaIiwiZXhwIjoiMjAxNS0wOC0xOFQyMjowODo0Ni41MTVaIn0.aDljbGD-HczKmNYftdtoXuh6QCL2hhsciOiD24iwT5s",
+  "expires": "2015-08-18T22:08:46.515Z",
   "user": {
-    "id": "VkdWks3I7j",
-    "name": "Saul33",
-    "username": "Saul33",
-    "gravatar_id": "65ca9ab32be28d113bf8a635e1272e21",
-    "email": "esmeralda_mayert@hotmail.com",
+    "id": "4JR7kWRFhs",
+    "name": "Donavon_Lubowitz11",
+    "username": "Donavon_Lubowitz11",
+    "gravatar_id": "a05167721b763a180cd7356c5cc8bfff",
+    "email": "jay28@hotmail.com",
     "is_active": true,
     "provider": "local",
     "roles": [
       "member"
     ],
     "plan": "free",
-    "created_at": "2015-08-11T21:47:42.285Z",
+    "created_at": "2015-08-18T21:08:46.448Z",
     "counter": {
       "stars": 0,
       "downloads": 0,
       "comments": 0
     },
     "permissions": {
-      "tags": [
-        "delete-own",
-        "add"
-      ],
-      "roms": [
-        "delete-own",
-        "add"
-      ],
-      "comments": [
-        "add"
-      ],
-      "releases": [
-        "star",
-        "add",
-        "rate",
-        "delete"
-      ],
-      "builds": [
-        "delete-own",
-        "add"
-      ],
-      "files": [
-        "download",
-        "upload",
-        "delete"
-      ],
-      "tokens": [
-        "list",
-        "update",
-        "add",
-        "delete"
-      ],
-      "user": [
-        "update",
-        "view"
-      ],
-      "users": [
-        "view",
-        "search",
-        "star"
-      ],
       "games": [
         "star",
         "rate"
+      ],
+      "releases": [
+        "rate",
+        "star",
+        "add",
+        "delete"
+      ],
+      "files": [
+        "upload",
+        "delete",
+        "download"
+      ],
+      "tags": [
+        "add",
+        "delete-own"
+      ],
+      "users": [
+        "star",
+        "search",
+        "view"
+      ],
+      "user": [
+        "view",
+        "update"
+      ],
+      "builds": [
+        "add",
+        "delete-own"
+      ],
+      "roms": [
+        "add",
+        "delete-own"
+      ],
+      "tokens": [
+        "add",
+        "delete",
+        "list",
+        "update"
+      ],
+      "comments": [
+        "add"
       ]
     }
   }

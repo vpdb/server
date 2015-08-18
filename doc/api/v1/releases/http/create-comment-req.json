@@ -1,10 +1,10 @@
-POST /api/v1/releases/E1lWesnIXj/comments HTTP/1.1
+POST /api/v1/releases/NJhXgWCths/comments HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI0SjBkMWpoTFhpIiwiaWF0IjoiMjAxNS0wOC0xMVQyMTo0Nzo0Mi45ODhaIiwiZXhwIjoiMjAxNS0wOC0xMVQyMjo0Nzo0Mi45ODhaIn0.02pkHS2-SDyo0HlUeMuMGX21euAMGHRDj94DyPTZ7Io
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI0eV9nZVdSdDNzIiwiaWF0IjoiMjAxNS0wOC0xOFQyMTowODo0Ny4yMzBaIiwiZXhwIjoiMjAxNS0wOC0xOFQyMjowODo0Ny4yMzBaIn0.hhE2bWZYwt_m7HqwD5dVA85G3jnyNkPn0a4LfyfT80k
 Content-Type: application/json
-Content-Length: 40
+Content-Length: 48
 
 {
-  "message": "Versatile cohesive synergy"
+  "message": "Reactive intermediate architecture"
 }

@@ -70,7 +70,10 @@ exports.createForRelease = function(req, res) {
 					req.user.incrementCounter('comments', next);
 				});
 				updates.push(function(next) {
-					LogEvent.log(req, 'create_comment', true, comment.toSimple(), next);
+					LogEvent.log(req, 'create_comment', true, { comment: comment.toSimple() }, {
+						game: release._game._id,
+						release: release._id
+					}, next);
 				});
 				async.series(updates, function(err) {
 					if (err) {

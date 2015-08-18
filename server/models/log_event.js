@@ -34,6 +34,11 @@ var events = [ 'create_comment' ];
 //-----------------------------------------------------------------------------
 var fields = {
 	_actor:      { type: Schema.ObjectId, required: true, ref: 'User', index: true },
+	_ref: {
+		game:    { type: Schema.ObjectId, ref: 'Game', index: true, sparse: true },
+		release: { type: Schema.ObjectId, ref: 'Release', index: true, sparse: true },
+		user:    { type: Schema.ObjectId, ref: 'User', index: true, sparse: true }
+	},
 	event:       { type: String, 'enum': events, required: true, index: true },
 	payload:     { },
 	is_public:   { type: Boolean, required: true, 'default': false },
@@ -66,11 +71,12 @@ LogEventSchema.virtual('actor')
 // STATIC METHODS
 //-----------------------------------------------------------------------------
 
-LogEventSchema.statics.log = function(req, event, isPublic, payload, done) {
+LogEventSchema.statics.log = function(req, event, isPublic, payload, ref, done) {
 	var LogEvent = mongoose.model('LogEvent');
 	var actor = req.user ? req.user._id : null;
 	var log = new LogEvent({
 		_actor: actor,
+		_ref: ref,
 		event: event,
 		payload: payload,
 		is_public: isPublic,

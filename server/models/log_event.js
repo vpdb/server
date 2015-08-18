@@ -27,18 +27,17 @@ var toObj = require('./plugins/to-object');
 
 var Schema = mongoose.Schema;
 
+var events = [ 'create_comment' ];
+
 //-----------------------------------------------------------------------------
 // SCHEMA
 //-----------------------------------------------------------------------------
 var fields = {
-	_actor:       { type: Schema.ObjectId, required: true, ref: 'User', index: true },
-	_ref: {
-		game:    { type: Schema.ObjectId, ref: 'Game', index: true, sparse: true },
-		release: { type: Schema.ObjectId, ref: 'Release', index: true, sparse: true },
-		user:    { type: Schema.ObjectId, ref: 'User', index: true, sparse: true }
-	},
-	type:        { type: String, 'enum': [ 'game', 'release', 'user' ], required: true, index: true },
+	_actor:      { type: Schema.ObjectId, required: true, ref: 'User', index: true },
+	event:       { type: String, 'enum': events, required: true, index: true },
 	payload:     { },
+	is_public:   { type: Boolean, required: true, 'default': false },
+	ip:          { type: String, required: true },
 	logged_at:   { type: Date, required: true }
 };
 var LogEventSchema = new Schema(fields);
@@ -54,10 +53,10 @@ LogEventSchema.plugin(toObj);
 //-----------------------------------------------------------------------------
 // VIRTUALS
 //-----------------------------------------------------------------------------
-LogEventSchema.virtual('user')
+LogEventSchema.virtual('actor')
 	.get(function() {
-		if (this.populated('_user') && this._user) {
-			return this._user.toReduced();
+		if (this.populated('_actor') && this._actor) {
+			return this._actor.toReduced();
 		}
 		return undefined;
 	});
@@ -67,6 +66,26 @@ LogEventSchema.virtual('user')
 // STATIC METHODS
 //-----------------------------------------------------------------------------
 
+LogEventSchema.statics.log = function(req, event, isPublic, payload, done) {
+	var LogEvent = mongoose.model('LogEvent');
+	var actor = req.user ? req.user._id : null;
+	var log = new LogEvent({
+		_actor: actor,
+		event: event,
+		payload: payload,
+		is_public: isPublic,
+		ip: req.ip || req.headers['x-forwarded-for'] || req.connection.remoteAddress || '0.0.0.0',
+		logged_at: new Date()
+	});
+	log.save(function(err) {
+		if (err) {
+			logger.error('[model|logevent] Error saving log for "%s": %s', event, err.message, err);
+		}
+		if (done) {
+			done(err);
+		}
+	});
+};
 
 //-----------------------------------------------------------------------------
 // OPTIONS
@@ -83,5 +102,5 @@ LogEventSchema.options.toObject = {
 };
 
 
-mongoose.model('LogEventSchema', LogEventSchema);
-logger.info('[model] Schema "LogEventSchema" registered.');
+mongoose.model('LogEvent', LogEventSchema);
+logger.info('[model] Schema "LogEvent" registered.');

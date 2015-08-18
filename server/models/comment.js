@@ -59,7 +59,7 @@ CommentSchema.plugin(toObj);
 // API FIELDS
 //-----------------------------------------------------------------------------
 var apiFields = {
-	simple: [ 'id', 'from', 'message', 'created_at',  ], // fields returned in references
+	simple: [ 'id', 'from', 'message', 'release', 'created_at' ], // fields returned in references
 	detailed: [ 'ip' ]
 };
 
@@ -79,6 +79,14 @@ CommentSchema.virtual('from')
 	.get(function() {
 		if (this.populated('_from') && this._from) {
 			return this._from.toReduced();
+		}
+		return undefined;
+	});
+
+CommentSchema.virtual('release')
+	.get(function() {
+		if (this.populated('_ref.release') && this._ref.release) {
+			return this._ref.release.toReduced();
 		}
 		return undefined;
 	});

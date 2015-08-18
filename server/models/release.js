@@ -565,6 +565,14 @@ ReleaseSchema.methods.toSimple = function(opts) {
 	return ReleaseSchema.statics.toSimple(this, opts);
 };
 
+ReleaseSchema.methods.toReduced = function() {
+	var release = _.pick(this.toObj(), [ 'id', 'name', 'created_at' ]);
+	if (this._game) {
+		release.game = this._game.toReduced();
+	}
+	return release;
+};
+
 
 //-----------------------------------------------------------------------------
 // TRIGGERS

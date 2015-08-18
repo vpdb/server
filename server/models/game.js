@@ -110,7 +110,8 @@ GameSchema.plugin(sortTitle, { src: 'title', dest: 'title_sortable' });
 // API FIELDS
 //-----------------------------------------------------------------------------
 var apiFields = {
-	simple: [ 'id', 'title', 'manufacturer', 'year', 'game_type', 'ipdb', 'media', 'counter', 'rating' ] // fields returned in lists
+	reduced: [ 'id', 'title', 'manufacturer', 'year', 'ipdb' ], // fields returned in release data
+	simple:  [ 'game_type', 'media', 'counter', 'rating' ]      // fields returned in lists
 };
 
 
@@ -197,8 +198,12 @@ GameSchema.path('_media.backglass').validate(function(backglass, callback) {
 //-----------------------------------------------------------------------------
 // METHODS
 //-----------------------------------------------------------------------------
+GameSchema.methods.toReduced = function() {
+	return _.pick(this.toObj(), apiFields.reduced);
+};
+
 GameSchema.methods.toSimple = function() {
-	return _.pick(this.toObj(), apiFields.simple);
+	return _.pick(this.toObj(), apiFields.reduced.concat(apiFields.simple));
 };
 
 GameSchema.methods.toDetailed = function(callback) {

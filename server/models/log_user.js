@@ -36,7 +36,7 @@ var fields = {
 	event:     { type: String, index: true },
 	payload:   { },
 	result:    { type: String, 'enum': [ 'success', 'failure' ], required: true },
-	message:   { type: String },
+	message:   { type: String }, // in case of failure, this is the error message.
 	ip:        { type: String, required: true },
 	logged_at: { type: Date, required: true }
 };

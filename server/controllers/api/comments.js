@@ -27,6 +27,7 @@ var logger = require('winston');
 var Game = require('mongoose').model('Game');
 var Release = require('mongoose').model('Release');
 var Comment = require('mongoose').model('Comment');
+var LogEvent = require('mongoose').model('LogEvent');
 var api = require('./api');
 
 var error = require('../../modules/error')('api', 'comment');
@@ -34,7 +35,7 @@ var error = require('../../modules/error')('api', 'comment');
 exports.createForRelease = function(req, res) {
 
 	var assert = api.assert(error, 'create', req.user.email, res);
-	Release.findOne({ id: req.params.id }, assert(function(release) {
+	Release.findOne({ id: req.params.id }).populate('_game').exec(assert(function(release) {
 
 		if (!release) {
 			return api.fail(res, error('No such release with ID "%s"', req.params.id), 404);
@@ -67,6 +68,9 @@ exports.createForRelease = function(req, res) {
 				});
 				updates.push(function(next) {
 					req.user.incrementCounter('comments', next);
+				});
+				updates.push(function(next) {
+					LogEvent.log(req, 'create_comment', true, comment.toSimple(), next);
 				});
 				async.series(updates, function(err) {
 					if (err) {

@@ -27,7 +27,11 @@ var toObj = require('./plugins/to-object');
 
 var Schema = mongoose.Schema;
 
-var events = [ 'create_comment' ];
+var events = [
+	'create_comment',
+	'star_game', 'star_release', 'star_user',
+	'unstar_game', 'unstar_release', 'unstar_user'
+];
 
 //-----------------------------------------------------------------------------
 // SCHEMA
@@ -86,6 +90,7 @@ LogEventSchema.statics.log = function(req, event, isPublic, payload, ref, done) 
 	log.save(function(err) {
 		if (err) {
 			logger.error('[model|logevent] Error saving log for "%s": %s', event, err.message, err);
+			logger.error(err);
 		}
 		if (done) {
 			done(err);

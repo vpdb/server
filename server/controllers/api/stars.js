@@ -25,16 +25,17 @@ var Game = require('mongoose').model('Game');
 var Release = require('mongoose').model('Release');
 var User = require('mongoose').model('User');
 var Star = require('mongoose').model('Star');
+var LogEvent = require('mongoose').model('LogEvent');
 var api = require('./api');
 
 var error = require('../../modules/error')('api', 'star');
 
 // releases
 exports.starRelease = function(req, res) {
-	star(req, res, 'release', find(Release, 'release'));
+	star(req, res, 'release', find(Release, 'release', '_game'));
 };
 exports.unstarRelease = function(req, res) {
-	unstar(req, res, find(Release, 'release'));
+	unstar(req, res, 'release', find(Release, 'release'));
 };
 exports.getForRelease = function(req, res) {
 	view(req, res, find(Release, 'release'), 'name');
@@ -45,7 +46,7 @@ exports.starGame = function(req, res) {
 	star(req, res, 'game', find(Game, 'game'));
 };
 exports.unstarGame = function(req, res) {
-	unstar(req, res, find(Game, 'game'));
+	unstar(req, res, 'game', find(Game, 'game'));
 };
 exports.getForGame = function(req, res) {
 	view(req, res, find(Game, 'game'), 'title');
@@ -56,7 +57,7 @@ exports.starUser = function(req, res) {
 	star(req, res, 'user', find(User, 'user'));
 };
 exports.unstarUser = function(req, res) {
-	unstar(req, res, find(User, 'user'));
+	unstar(req, res, 'user', find(User, 'user'));
 };
 exports.getForUser = function(req, res) {
 	view(req, res, find(User, 'user'), 'email');
@@ -113,6 +114,7 @@ function star(req, res, type, find) {
 			entity.incrementCounter('stars', assert(function() {
 
 				api.success(res, { created_at: obj.created_at, total_stars: entity.counter.stars + 1 }, 201);
+				LogEvent.log(req, 'star_' + type, true, logPayload(star, entity, type), logRefs(star, entity, type, req));
 
 			}, 'Error incrementing counter.'));
 		}, 'Error starring release.'));
@@ -124,9 +126,10 @@ function star(req, res, type, find) {
  *
  * @param {Request} req
  * @param {Response} res
+ * @param {string} type Reference name
  * @param {function} find Function that returns entity and star.
  */
-function unstar(req, res, find) {
+function unstar(req, res, type, find) {
 
 	var assert = api.assert(error, 'create', req.user.email, res);
 	find(req, res, assert, function(entity, star) {
@@ -137,6 +140,7 @@ function unstar(req, res, find) {
 			entity.incrementCounter('stars', assert(function() {
 
 				api.success(res, null, 204);
+				LogEvent.log(req, 'unstar_' + type, true, logPayload(star, entity, type), logRefs(star, entity, type, req));
 
 			}, 'Error incrementing counter.'), true);
 		}, 'Error unstarring.'));
@@ -150,11 +154,16 @@ function unstar(req, res, find) {
  *
  * @param {Schema} Model model that can be starred
  * @param {string} type Reference name
+ * @param {string} [populate] If set, populates additional fields.
  * @returns {Function} function that takes req, res, assert and a callback which is launched with entity and star as parameter
  */
-function find(Model, type) {
+function find(Model, type, populate) {
 	return function(req, res, assert, callback) {
-		Model.findOne({ id: req.params.id }, assert(function(entity) {
+		var query = Model.findOne({ id: req.params.id });
+		if (populate) {
+			query.populate(populate);
+		}
+		query.exec(assert(function(entity) {
 			if (!entity) {
 				return api.fail(res, error('No such %s with ID "%s"', type, req.params.id), 404);
 			}
@@ -165,4 +174,18 @@ function find(Model, type) {
 			}, 'Error searching for current star.'));
 		}, 'Error finding ' + type + ' in order to get star from <%s>.'));
 	};
+}
+
+function logPayload(star, entity, type) {
+	var payload =  { star: _.pick(star.toObject(), [ 'created_at' ]) };
+	payload[type] = entity.toReduced();
+	return payload;
+}
+
+function logRefs(star, entity, type, req) {
+	var refs = star._ref;
+	if (type === 'release') {
+		refs.game = entity._game._id;
+	}
+	return refs;
 }

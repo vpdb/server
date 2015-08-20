@@ -114,7 +114,7 @@ function star(req, res, type, find) {
 			entity.incrementCounter('stars', assert(function() {
 
 				api.success(res, { created_at: obj.created_at, total_stars: entity.counter.stars + 1 }, 201);
-				LogEvent.log(req, 'star_' + type, true, logPayload(star, entity, type), logRefs(star, entity, type, req));
+				LogEvent.log(req, 'star_' + type, true, logPayload(entity, type), logRefs(star, entity, type));
 
 			}, 'Error incrementing counter.'));
 		}, 'Error starring release.'));
@@ -140,7 +140,7 @@ function unstar(req, res, type, find) {
 			entity.incrementCounter('stars', assert(function() {
 
 				api.success(res, null, 204);
-				LogEvent.log(req, 'unstar_' + type, true, logPayload(star, entity, type), logRefs(star, entity, type, req));
+				LogEvent.log(req, 'unstar_' + type, true, logPayload(entity, type), logRefs(star, entity, type));
 
 			}, 'Error incrementing counter.'), true);
 		}, 'Error unstarring.'));
@@ -176,13 +176,13 @@ function find(Model, type, populate) {
 	};
 }
 
-function logPayload(star, entity, type) {
-	var payload =  { star: _.pick(star.toObject(), [ 'created_at' ]) };
+function logPayload(entity, type) {
+	var payload = { };
 	payload[type] = entity.toReduced();
 	return payload;
 }
 
-function logRefs(star, entity, type, req) {
+function logRefs(star, entity, type) {
 	var refs = star._ref;
 	if (type === 'release') {
 		refs.game = entity._game._id;

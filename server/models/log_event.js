@@ -30,7 +30,8 @@ var Schema = mongoose.Schema;
 var events = [
 	'create_comment',
 	'star_game', 'star_release', 'star_user',
-	'unstar_game', 'unstar_release', 'unstar_user'
+	'unstar_game', 'unstar_release', 'unstar_user',
+	'rate_game', 'rate_release', 'rate_user'
 ];
 
 //-----------------------------------------------------------------------------

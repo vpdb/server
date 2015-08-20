@@ -25,6 +25,7 @@ var logger = require('winston');
 var Game = require('mongoose').model('Game');
 var Release = require('mongoose').model('Release');
 var Rating = require('mongoose').model('Rating');
+var LogEvent = require('mongoose').model('LogEvent');
 var api = require('./api');
 var metrics = require('../../modules/metrics');
 
@@ -43,7 +44,7 @@ exports.updateForGame = function(req, res) {
 };
 
 exports.createForRelease = function(req, res) {
-	create(req, res, 'release', find(Release, 'release'));
+	create(req, res, 'release', find(Release, 'release', '_game'));
 };
 
 exports.getForRelease = function(req, res) {
@@ -51,7 +52,7 @@ exports.getForRelease = function(req, res) {
 };
 
 exports.updateForRelease = function(req, res) {
-	update(req, res, 'release', find(Release, 'release'), 'name');
+	update(req, res, 'release', find(Release, 'release', '_game'), 'name');
 };
 
 /**
@@ -167,7 +168,9 @@ function updateRatedEntity(req, res, ref, assert, entity, rating, status) {
 			logger.log('[rating] User <%s> added new rating for %s %s with %s.', req.user, ref, entity.id, rating.value);
 		}
 
-		return api.success(res, result, status);
+		LogEvent.log(req, 'rate_' + ref, true, logPayload(rating, entity, ref, status == 200), logRefs(rating, entity, ref), function() {
+			return api.success(res, result, status);
+		});
 
 	}, 'Error updating rated entity.'));
 }
@@ -179,11 +182,17 @@ function updateRatedEntity(req, res, ref, assert, entity, rating, status) {
  *
  * @param {Schema} Model model that can be rated
  * @param {string} ref Reference name
+ * @param {string} [populate] If set, populates additional fields.
  * @returns {Function} function that takes req, res, assert and a callback which is launched with entity and rating as parameter
  */
-function find(Model, ref) {
+function find(Model, ref, populate) {
 	return function(req, res, assert, callback) {
-		Model.findOne({ id: req.params.id }, assert(function(entity) {
+
+		var query = Model.findOne({ id: req.params.id });
+		if (populate) {
+			query.populate(populate);
+		}
+		query.exec(assert(function(entity) {
 			if (!entity) {
 				return api.fail(res, error('No such %s with ID "%s"', ref, req.params.id), 404);
 			}
@@ -194,4 +203,18 @@ function find(Model, ref) {
 			}, 'Error searching for current rating.'));
 		}, 'Error finding ' + ref + ' in order to get rating from <%s>.'));
 	};
+}
+
+function logPayload(rating, entity, type, updateOnly) {
+	var payload =  { rating: _.pick(rating.toObject(), [ 'id', 'value' ]), updated: updateOnly };
+	payload[type] = entity.toReduced();
+	return payload;
+}
+
+function logRefs(star, entity, type) {
+	var refs = star._ref;
+	if (type === 'release') {
+		refs.game = entity._game._id;
+	}
+	return refs;
 }

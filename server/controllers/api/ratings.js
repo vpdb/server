@@ -212,9 +212,10 @@ function logPayload(rating, entity, type, updateOnly) {
 }
 
 function logRefs(star, entity, type) {
-	var refs = star._ref;
+	var ref = {};
+	ref[type] = star._ref[type]._id || star._ref[type];
 	if (type === 'release') {
-		refs.game = entity._game._id;
+		ref.game = entity._game._id;
 	}
-	return refs;
+	return ref;
 }

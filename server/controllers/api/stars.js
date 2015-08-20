@@ -35,7 +35,7 @@ exports.starRelease = function(req, res) {
 	star(req, res, 'release', find(Release, 'release', '_game'));
 };
 exports.unstarRelease = function(req, res) {
-	unstar(req, res, 'release', find(Release, 'release'));
+	unstar(req, res, 'release', find(Release, 'release', '_game'));
 };
 exports.getForRelease = function(req, res) {
 	view(req, res, find(Release, 'release'), 'name');

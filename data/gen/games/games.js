@@ -197,6 +197,7 @@ exports.data = [
 	{ bg: 'Goldeneye (Sega 1996).png', logo: 'Goldeneye (Sega 1996).png', ipdb: 3792 },
 	{ bg: 'Guns and Roses (Data East 1994).png', logo: 'Guns and Roses (Data East 1994).png', ipdb: 1100 },
 	{ bg: 'Haunted House (Gottlieb 1982).png', logo: 'Haunted House (Gottlieb 1982).png', ipdb: 1133 },
+	{ bg: 'Heavy Metal Meltdown (Bally 1987).png', logo: 'Heavy Metal Meltdown (Bally 1987).png', ipdb: 1150 },
 	{ bg: 'Indiana Jones (Williams 1993).png', logo: 'Indiana Jones (Williams 1993).png', ipdb: 1267 },
 	{ bg: 'Indianapolis 500 (Midway 1995).png', logo: 'Indianapolis 500 (Midway 1995).png', ipdb: 2853, id: 'i500' },
 	{ bg: 'Jack-Bot (Williams 1995).png', logo: 'Jack-Bot (Williams 1995).png', ipdb: 3619 },

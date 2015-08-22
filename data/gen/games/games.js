@@ -152,6 +152,7 @@ exports.upload = function(config) {
 
 exports.data = [
 	{ bg: 'Abra Ca Dabra (Gottlieb 1975).png', logo: 'Abra Ca Dabra (Gottlieb 1975).png', ipdb: 2 },
+	{ bg: 'Aladdin\'s Castle (Bally 1976).png', logo: 'Aladdin\'s Castle (Bally 1976).png', ipdb: 40 },
 	{ bg: 'Alien Star (Gottlieb 1984).png', logo: 'Alien Star (Gottlieb 1984).png', ipdb: 49 },
 	{ bg: 'Amazing Spiderman (Gottlieb 1980).png', logo: 'Amazing Spiderman (Gottlieb 1980).png', ipdb: 2285, id: 'amazing-spider-man' },
 	{ bg: 'Attack from Mars (Bally 1995).png', logo: 'Attack from Mars (Bally 1995).png', ipdb: 3781 },
@@ -236,7 +237,9 @@ exports.data = [
 	{ bg: 'The Incredible Hulk (Gottlieb 1979).png', logo: 'The Incredible Hulk (Gottlieb 1979).png', ipdb: 1266 },
 	{ bg: 'The Shadow (Bally 1994).png', logo: 'The Shadow (Bally 1994).png', ipdb: 2528 },
 	{ bg: 'The Simpsons Pinball Party (Stern 2003).png', logo: 'The Simpsons Pinball Party (Stern 2003).png', ipdb: 4674 },
-	{ bg: 'Tommy The Pinball Wizard (Data East 1994).png', logo: 'Theatre of Magic (Midway 1995).png', ipdb: 2845 },
+	{ bg: 'Theatre of Magic (Midway 1995).png', logo: 'Theatre of Magic (Midway 1995).png', ipdb: 2845 },
+	{ bg: 'Tommy The Pinball Wizard (Data East 1994).png', logo: 'Tommy The Pinball Wizard (Data East 1994).png', ipdb: 2579 },
+	{ bg: 'Torpedo Alley (Data East 1988).png', logo: 'Torpedo Alley (Data East 1988).png', ipdb: 2603 },
 	{ bg: 'Tri Zone (Williams 1979).png', logo: 'Tri Zone (Williams 1979).png', ipdb: 2641 },
 	{ bg: 'Twilight Zone (Bally 1993).png', logo: 'Twilight Zone (Bally 1993).png', ipdb: 2684 },
 	{ bg: 'Twister (Sega 1996).png', logo: 'Twister (Sega 1996).png', ipdb: 3976 },

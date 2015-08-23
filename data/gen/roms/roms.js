@@ -141,6 +141,9 @@ exports.data = {
 		afm_f20: {version: '0.20', notes: 'FreeWPC'},
 		afm_f32: {version: '0.32', notes: 'FreeWPC'}
 	},
+	'alien-star': {
+		alienstr: {version: '1.0'}
+	},
 	bttf: {
 		bttf_a20: {version: '2.0'},
 		bttf_a21: {version: '2.1'},

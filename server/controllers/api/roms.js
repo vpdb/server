@@ -29,6 +29,7 @@ var api = require('./api');
 var Rom = require('mongoose').model('Rom');
 var Game = require('mongoose').model('Game');
 var File = require('mongoose').model('File');
+var LogEvent = require('mongoose').model('LogEvent');
 
 /**
  * Creates a new ROM.
@@ -82,6 +83,9 @@ exports.create = function(req, res) {
 
 						rom.activateFiles(assert(function(rom) {
 							logger.info('[api|rom:create] Referenced file activated, returning object to client.');
+
+							LogEvent.log(req, 'upload_rom', true, { rom: rom.toSimple() }, { game: game._id });
+
 							return api.success(res, rom.toSimple(), 201);
 
 						}, 'Error activating file for game "%s"'));

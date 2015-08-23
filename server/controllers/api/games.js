@@ -24,6 +24,8 @@ var util = require('util');
 var logger = require('winston');
 
 var Game = require('mongoose').model('Game');
+var LogEvent = require('mongoose').model('LogEvent');
+
 var api = require('./api');
 
 var error = require('../../modules/error')('api', 'game');
@@ -77,6 +79,9 @@ exports.create = function(req, res) {
 				// set media to active
 				game.activateFiles(assertRb(function(game) {
 					logger.info('[api|game:create] All referenced files activated, returning object to client.');
+
+					LogEvent.log(req, 'create_game', true, { game: _.omit(game.toSimple(), [ 'rating', 'counter' ]) }, { game: game._id });
+
 					return api.success(res, game.toDetailed(), 201);
 
 				}, 'Error activating files for game "%s"'));

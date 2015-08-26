@@ -78,43 +78,16 @@ angular.module('vpdb.home', [])
 		};
 		$scope.$watch('q', refresh);
 
-		// fetch latest games
-		$scope.releases = ReleaseResource.query({ thumb_format: 'square' + $rootScope.pixelDensitySuffix, per_page: 8 });
+		// fetch latest releases
+		$scope.releases = ReleaseResource.query({
+			thumb_format: 'square' + $rootScope.pixelDensitySuffix,
+			per_page: 12,
+			sort: 'modified_at' });
 
-		//$http({
-		//	method: 'GET',
-		//	url: '/api-mock/packs'
-		//}).success(function(data, status, headers, config) {
-		//	$scope.packs = data.result;
-		//});
-		//
-		//$http({
-		//	method: 'GET',
-		//	url: '/api-mock/releases?show=new'
-		//}).success(function(data, status, headers, config) {
-		//	$scope.newReleases = data.result;
-		//});
-		//
-		//$http({
-		//	method: 'GET',
-		//	url: '/api-mock/releases?show=updated'
-		//}).success(function(data, status, headers, config) {
-		//	$scope.updatedReleases = data.result;
-		//});
-		//
-		//$http({
-		//	method: 'GET',
-		//	url: '/api-mock/feed'
-		//}).success(function(data, status, headers, config) {
-		//	$scope.feed = data.result;
-		//});
-		//
-		//$http({
-		//	method: 'GET',
-		//	url: '/api-mock/users'
-		//}).success(function(data, status, headers, config) {
-		//	$scope.users = data.result;
-		//});
+		// fetch latest releases
+		$scope.games = GameResource.query({
+			per_page: 12,
+			sort: 'popularity' });
 
 	})
 

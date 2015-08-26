@@ -98,7 +98,14 @@ include ../template/_mixins
 	.col-sm-12
 		h1.h--primary Popular Games
 		hr
-		p There will be something here at some point.
+
+		.row.fade2-animation(ng-show="games.length > 0")
+			.col-md-3.col-sm-4.col-xs-6(ng-repeat="game in games", ng-click="navGame(game.id)")
+				.panel.panel--animated.ng-cloak
+					.img.img--ar-bg.img--rounded-top(img-bg="game.media.backglass.variations.small.url")
+					.text-center.padder-horizontal
+						h1.h--small {{ game.title }}
+						label.label--subtitle {{ game.manufacturer }} &middot; {{ game.year }}
 
 
 

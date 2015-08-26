@@ -27,6 +27,7 @@ var logger = require('winston');
 var Release = require('mongoose').model('Release');
 var Version = require('mongoose').model('ReleaseVersion');
 var VersionFile = require('mongoose').model('ReleaseVersionFile');
+var LogEvent = require('mongoose').model('LogEvent');
 var Game = require('mongoose').model('Game');
 var Star = require('mongoose').model('Star');
 var Tag = require('mongoose').model('Tag');
@@ -97,6 +98,7 @@ exports.create = function(req, res) {
 					async.series(counters, function() {
 
 						Release.findById(release._id)
+							.populate({ path: '_game' })
 							.populate({ path: '_tags' })
 							.populate({ path: 'authors._user' })
 							.populate({ path: 'versions.files._file' })
@@ -104,6 +106,14 @@ exports.create = function(req, res) {
 							.populate({ path: 'versions.files._media.playfield_video' })
 							.populate({ path: 'versions.files._compatibility' })
 							.exec(assert(function(release) {
+
+								LogEvent.log(req, 'create_release', true, {
+									release: _.pick(release.toSimple(), [ 'id', 'name', 'authors', 'latest_version' ]),
+									game: _.pick(release._game.toSimple(), [ 'id', 'title', 'manufacturer', 'year', 'ipdb', 'game_type' ])
+								}, {
+									release: release._id,
+									game: release._game._id
+								});
 
 								return api.success(res, release.toDetailed(), 201);
 
@@ -176,11 +186,21 @@ exports.addVersion = function(req, res) {
 						Game.update({ _id: release._game.toString() }, { modified_at: new Date() }, assert(function() {
 
 							Release.findOne({ id: req.params.id })
+								.populate({ path: '_game' })
 								.populate({ path: 'versions.files._file' })
+								.populate({ path: 'authors._user' })
 								.populate({ path: 'versions.files._media.playfield_image' })
 								.populate({ path: 'versions.files._media.playfield_video' })
 								.populate({ path: 'versions.files._compatibility' })
 								.exec(assert(function(release) {
+
+									LogEvent.log(req, 'create_release_version', true, {
+										release: _.pick(release.toSimple(), [ 'id', 'name', 'authors', 'latest_version' ]),
+										game: _.pick(release._game.toSimple(), [ 'id', 'title', 'manufacturer', 'year', 'ipdb', 'game_type' ])
+									}, {
+										release: release._id,
+										game: release._game._id
+									});
 
 									return api.success(res, _.filter(release.toDetailed().versions, { version: versionObj.version })[0], 201);
 

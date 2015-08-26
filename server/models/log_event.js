@@ -33,7 +33,8 @@ var events = [
 	'unstar_game', 'unstar_release', 'unstar_user',
 	'rate_game', 'rate_release', 'rate_user',
 	'upload_rom',
-	'create_game'
+	'create_game',
+	'create_release', 'create_release_version'
 ];
 
 //-----------------------------------------------------------------------------

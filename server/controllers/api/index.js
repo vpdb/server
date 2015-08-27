@@ -24,6 +24,7 @@ exports.auth = api.auth;
 exports.builds = require('./builds');
 exports.comments = require('./comments');
 exports.ping = api.ping;
+exports.events = require('./events');
 exports.files = require('./files');
 exports.games = require('./games');
 exports.ipdb = require('./ipdb');

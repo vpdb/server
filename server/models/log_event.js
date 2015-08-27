@@ -110,7 +110,7 @@ LogEventSchema.options.toObject = {
 	transform: function(doc, log) {
 		delete log.__v;
 		delete log._id;
-		delete log._user;
+		delete log._actor;
 		delete log._ref;
 		delete log.id;
 	}

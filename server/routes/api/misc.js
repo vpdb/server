@@ -29,6 +29,9 @@ exports.register = function(app, api) {
 	// roles
 	app.get(settings.apiPath('/roles'),           api.auth(api.roles.list, 'roles', 'list'));
 
+	// events
+	app.get(settings.apiPath('/events'),          api.anon(api.events.list));
+
 	// ping
 	app.get(settings.apiPath('/ping'), api.anon(api.ping));
 };

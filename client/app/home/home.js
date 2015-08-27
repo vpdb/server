@@ -81,12 +81,12 @@ angular.module('vpdb.home', [])
 		// fetch latest releases
 		$scope.releases = ReleaseResource.query({
 			thumb_format: 'square' + $rootScope.pixelDensitySuffix,
-			per_page: 12,
+			per_page: 6,
 			sort: 'modified_at' });
 
 		// fetch latest releases
-		$scope.games = GameResource.query({
-			per_page: 12,
+		$scope.popularGames = GameResource.query({
+			per_page: 8,
 			sort: 'popularity' });
 
 	})

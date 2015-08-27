@@ -1,0 +1,14 @@
+displayName: Events
+description: |
+  Events are read-only entries describing what's going on on the site. They are
+  a good way to keep users updated about their favorite games or releases or
+  just to give an overall impression of the site's activity.
+
+  Every event is linked to the person who triggered it (the `actor`). The
+  structure of the `payload`, i.e. the actual event data, depends on the event
+  type (`event`).
+
+get:
+  securedBy: [ ]
+  description: |
+    List all events.

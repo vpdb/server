@@ -68,6 +68,11 @@ patch:
       body:
         role/anon:
           example: !include http/view-res-401.json
+/events:
+  get:
+    is: [ paginated: { defaultPerPage: 10, maxPerPage: 50 }, protected, eventlog ]
+    securedBy: [ jwt: { scopes: [ MEMBER ] } ]
+    description: Retrieves all actions by the user.
 
 /logs:
   get:

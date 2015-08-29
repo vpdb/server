@@ -33,124 +33,139 @@ var error = require('../../modules/error')('api', 'eventlogs');
 var config = require('../../modules/settings').current;
 
 
-/**
- * Returns the current event stream.
- *
- * @param {Request} req
- * @param {Response} res
- */
-exports.list = function(req, res) {
+exports.list = function(opts) {
 
-	var assert = api.assert(error, 'list', null, res);
-	var query = [ { is_public: true }];
+	/**
+	 * Returns the current event stream.
+	 *
+	 * @param {Request} req
+	 * @param {Response} res
+	 */
+	return function(req, res) {
 
-	async.waterfall([
+		opts = opts || {};
+		var assert = api.assert(error, 'list', null, res);
+		var query = [ { is_public: true }];
 
-		/**
-		 * Sync filters
-		 * @param next
-		 */
-		function(next) {
+		async.waterfall([
 
-			// filter event
-			if (req.query.events) {
-				var events = req.query.events.split(',');
-				var eventsIn = [];
-				var eventsNin = [];
-				_.each(events, function(event) {
-					if (event[0] === '!') {
-						eventsNin.push(event.substr(1));
-					} else {
-						eventsIn.push(event);
+			/**
+			 * Sync filters
+			 * @param next
+			 */
+			function(next) {
+
+				// filter event
+				if (req.query.events) {
+					var events = req.query.events.split(',');
+					var eventsIn = [];
+					var eventsNin = [];
+					_.each(events, function(event) {
+						if (event[0] === '!') {
+							eventsNin.push(event.substr(1));
+						} else {
+							eventsIn.push(event);
+						}
+					});
+					if (eventsIn.length > 0) {
+						query.push({ event: { $in: eventsIn }});
 					}
-				});
-				if (eventsIn.length > 0) {
-					query.push({ event: { $in: eventsNin }});
-				}
-				if (eventsNin.length > 0) {
-					query.push({ event: { $nin: eventsNin }});
-				}
-			}
-
-			next(null, query);
-		},
-
-		function(query, next) {
-
-			if (!_.isUndefined(req.query.starred)) {
-				if (!req.user) {
-					api.fail(res, error('Must be logged when listing starred events.'), 401);
-					return next(true);
+					if (eventsNin.length > 0) {
+						query.push({ event: { $nin: eventsNin }});
+					}
 				}
 
-				Star.find({ _from: req.user._id }, function(err, stars) {
-					/* istanbul ignore if  */
-					if (err) {
-						api.fail(res, error(err, 'Error searching stars for user <%s>.', req.user.email).log('list'), 500);
+				// user
+				if (opts.loggedUser) {
+					query.push({ _actor: req.user._id });
+				}
+
+				next(null, query);
+			},
+
+			function(query, next) {
+
+				if (!_.isUndefined(req.query.starred)) {
+					if (!req.user) {
+						api.fail(res, error('Must be logged when listing starred events.'), 401);
 						return next(true);
 					}
-					var releaseIds = _.compact(_.pluck(_.pluck(stars, '_ref'), 'release'));
-					var gameIds = _.compact(_.pluck(_.pluck(stars, '_ref'), 'game'));
 
-					query.push({ $or: [
-						{ '_ref.release': { $in: releaseIds } },
-						{ '_ref.game': { $in: gameIds } }
-					] });
+					Star.find({ _from: req.user._id }, function(err, stars) {
+						/* istanbul ignore if  */
+						if (err) {
+							api.fail(res, error(err, 'Error searching stars for user <%s>.', req.user.email).log('list'), 500);
+							return next(true);
+						}
+						var releaseIds = _.compact(_.pluck(_.pluck(stars, '_ref'), 'release'));
+						var gameIds = _.compact(_.pluck(_.pluck(stars, '_ref'), 'game'));
 
-					return next(null, query);
-				});
-			} else {
-				next(null, query);
+						var or = [];
+						if (releaseIds.length > 0) {
+							or.push({ '_ref.release': { $in: releaseIds } });
+						}
+						if (gameIds.length > 0) {
+							or.push({ '_ref.game': { $in: gameIds } });
+						}
+						if (or.length > 0) {
+							query.push({ $or: or });
+						}
+
+						return next(null, query);
+					});
+				} else {
+					next(null, query);
+				}
+			},
+
+			/**
+			 * Check for full details permission
+			 * @param query
+			 * @param next
+			 */
+			function(query, next) {
+
+				if (req.user) {
+					acl.isAllowed(req.user.id, 'users', 'full-details', assert(function(fullDetails) {
+						next(null, query, fullDetails);
+
+					}, 'Error checking for ACL "users/full-details"'));
+				} else {
+					next(null, query, false);
+				}
 			}
-		},
 
-		/**
-		 * Check for full details permission
-		 * @param query
-		 * @param next
-		 */
-		function(query, next) {
+		], function(err, query, fullDetails) {
 
-			if (req.user) {
-				acl.isAllowed(req.user.id, 'users', 'full-details', assert(function(fullDetails) {
-					next(null, query, fullDetails);
-
-				}, 'Error checking for ACL "users/full-details"'));
-			} else {
-				next(null, query, false);
-			}
-		}
-
-	], function(err, query, fullDetails) {
-
-		if (err) {
-			// has already been treated.
-			return;
-		}
-
-		logger.info('Events query: %s', util.inspect(query, { depth: null }));
-
-		// query
-		var pagination = api.pagination(req, 10, 50);
-		LogEvent.paginate(api.searchQuery(query), {
-			page: pagination.page,
-			limit: pagination.perPage,
-			sortBy: { logged_at: -1 },
-			populate: [ '_actor' ]
-
-		}, function(err, logs, pageCount, count) {
-
-			/* istanbul ignore if  */
 			if (err) {
-				return api.fail(res, error(err, 'Error retrieving logs').log('list'), 500);
+				// has already been treated.
+				return;
 			}
 
-			// process results
-			logs = _.map(logs, function(log) {
-				return fullDetails ? log.toObj() : _.omit(log.toObj(), [ 'ip' ]);
-			});
-			api.success(res, logs, 200, api.paginationOpts(pagination, count));
-		});
-	});
+			logger.info('Events query: %s', util.inspect(query, { depth: null }));
 
+			// query
+			var pagination = api.pagination(req, 10, 50);
+			LogEvent.paginate(api.searchQuery(query), {
+				page: pagination.page,
+				limit: pagination.perPage,
+				sortBy: { logged_at: -1 },
+				populate: [ '_actor' ]
+
+			}, function(err, logs, pageCount, count) {
+
+				/* istanbul ignore if  */
+				if (err) {
+					return api.fail(res, error(err, 'Error retrieving logs').log('list'), 500);
+				}
+
+				// process results
+				logs = _.map(logs, function(log) {
+					return fullDetails ? log.toObj() : _.omit(log.toObj(), [ 'ip' ]);
+				});
+				api.success(res, logs, 200, api.paginationOpts(pagination, count));
+			});
+		});
+
+	};
 };

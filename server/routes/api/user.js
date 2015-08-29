@@ -26,6 +26,7 @@ exports.register = function(app, api) {
 	app.get(settings.apiPath('/user'),              api.auth(api.user.view, 'user', 'view'));
 	app.patch(settings.apiPath('/user'),            api.auth(api.user.update, 'user', 'update'));
 	app.get(settings.apiPath('/user/logs'),         api.auth(api.userlogs.list, 'user', 'view'));
+	app.get(settings.apiPath('/user/events'),       api.auth(api.events.list({ loggedUser: true }), 'user', 'view'));
 	app.get(settings.apiPath('/user/confirm/:tkn'), api.anon(api.user.confirm));
 
 };

@@ -130,7 +130,7 @@ function number(str) {
 }
 
 function trim(str) {
-	return str.replace(/[^-\w\d\s\.,:_'"()]/ig, '');
+	return str.replace(/[^-\w\d\s\.,:_'"()&]/ig, '');
 }
 
 function striptags(str) {

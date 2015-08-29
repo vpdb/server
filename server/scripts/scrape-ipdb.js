@@ -24,9 +24,9 @@ var async = require('async');
 
 var ipdb = require('../modules/ipdb');
 
-var stopAfter = 5000;
+var stopAfter = 7000;
 var wait = 1200;
-var dataFile = '../../data/ipdb.json';
+var dataFile = './data/ipdb-new.json';
 var data = fs.existsSync(dataFile) ? require(dataFile) : [];
 
 var n = 0;

@@ -12,3 +12,30 @@ get:
   securedBy: [ ]
   description: |
     List all events.
+  queryParameters:
+    events:
+      description: |
+        Only list events of a given type.
+
+        Multiple values are separated by comma. If you prefix an event with `!`,
+        all events **not** of that type are returned.
+
+        Valid types: `create_comment`, `star_game`, `star_release`, `star_user`,
+        `unstar_game`, `unstar_release`, `unstar_user`, `rate_game`,
+        `rate_release`, `rate_user`, `upload_rom`, `create_game`,
+        `create_release`, `create_release_version`.
+
+      required: false
+      type: array
+      example: create_game,create_release
+
+    starred:
+      description:
+        If set, only events related to the user's starred releases and games
+        are returned.
+
+        Note that you need to be logged if you provide this parameter,
+        otherwise `401 Unauthorized` is returned.
+      required: false
+      type: boolean
+      example: true

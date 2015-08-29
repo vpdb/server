@@ -20,9 +20,11 @@
 "use strict";
 
 var _ = require('lodash');
+var util = require('util');
 var async = require('async');
 var logger = require('winston');
 
+var Star = require('mongoose').model('Star');
 var LogEvent = require('mongoose').model('LogEvent');
 
 var acl = require('../../acl');
@@ -51,10 +53,55 @@ exports.list = function(req, res) {
 		function(next) {
 
 			// filter event
-			if (req.query.event) {
-				query.push({ event: { $in: req.query.event.split(',') }});
+			if (req.query.events) {
+				var events = req.query.events.split(',');
+				var eventsIn = [];
+				var eventsNin = [];
+				_.each(events, function(event) {
+					if (event[0] === '!') {
+						eventsNin.push(event.substr(1));
+					} else {
+						eventsIn.push(event);
+					}
+				});
+				if (eventsIn.length > 0) {
+					query.push({ event: { $in: eventsNin }});
+				}
+				if (eventsNin.length > 0) {
+					query.push({ event: { $nin: eventsNin }});
+				}
 			}
+
 			next(null, query);
+		},
+
+		function(query, next) {
+
+			if (!_.isUndefined(req.query.starred)) {
+				if (!req.user) {
+					api.fail(res, error('Must be logged when listing starred events.'), 401);
+					return next(true);
+				}
+
+				Star.find({ _from: req.user._id }, function(err, stars) {
+					/* istanbul ignore if  */
+					if (err) {
+						api.fail(res, error(err, 'Error searching stars for user <%s>.', req.user.email).log('list'), 500);
+						return next(true);
+					}
+					var releaseIds = _.compact(_.pluck(_.pluck(stars, '_ref'), 'release'));
+					var gameIds = _.compact(_.pluck(_.pluck(stars, '_ref'), 'game'));
+
+					query.push({ $or: [
+						{ '_ref.release': { $in: releaseIds } },
+						{ '_ref.game': { $in: gameIds } }
+					] });
+
+					return next(null, query);
+				});
+			} else {
+				next(null, query);
+			}
 		},
 
 		/**
@@ -75,6 +122,13 @@ exports.list = function(req, res) {
 		}
 
 	], function(err, query, fullDetails) {
+
+		if (err) {
+			// has already been treated.
+			return;
+		}
+
+		logger.info('Events query: %s', util.inspect(query, { depth: null }));
 
 		// query
 		var pagination = api.pagination(req, 10, 50);

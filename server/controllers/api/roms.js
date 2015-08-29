@@ -84,7 +84,7 @@ exports.create = function(req, res) {
 						rom.activateFiles(assert(function(rom) {
 							logger.info('[api|rom:create] Referenced file activated, returning object to client.');
 
-							LogEvent.log(req, 'upload_rom', true, { rom: rom.toSimple() }, { game: game._id });
+							LogEvent.log(req, 'upload_rom', true, { rom: rom.toSimple(), game: game.toReduced() }, { game: game._id });
 
 							return api.success(res, rom.toSimple(), 201);
 

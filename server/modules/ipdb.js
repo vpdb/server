@@ -51,6 +51,18 @@ Ipdb.prototype.details = function(ipdbNo, done) {
 	});
 };
 
+Ipdb.prototype.findDead = function(data) {
+	var id, ids = [];
+	for (var i = 0; i < data.length; i++) {
+		id = i + 1 + ids.length;
+		if (data[i].ipdb.number !== id) {
+			ids.push(id);
+			i--;
+		}
+	}
+	return ids;
+};
+
 function parseDetails(body, done) {
 
 	var tidyText = function(m) {

@@ -264,12 +264,12 @@ configure Nginx. For future deployements, refer to the [deployment guide](DEPLOY
 	mkdir /etc/nginx/ssl
 	cd /etc/nginx/ssl
 	openssl dhparam -out dhparam.pem 2048
-	openssl req -new -days 365 -nodes -keyout xxx.vpdb.ch.key -out xxx.vpdb.ch.csr
+	openssl req -new -days 365 -nodes -keyout xxx.vpdb.io.key -out xxx.vpdb.io.csr
 
-Submit `xxx.vpdb.ch.csr` to signing authority, then paste received certificate into `xxx.vpdb.ch.crt`. Then
+Submit `xxx.vpdb.ch.csr` to signing authority, then paste received certificate into `xxx.vpdb.io.crt`. Then
 build the key chain:
 
-	cat xxx.vpdb.ch.crt startssl-sub.class1.server.sha2.ca.pem startssl-ca-sha2.pem > xxx.vpdb.ch-keychain.crt
+	cat xxx.vpdb.io.crt startssl-sub.class1.server.sha2.ca.pem startssl-ca-sha2.pem > xxx.vpdb.io-keychain.crt
 	
 Relevant StartSSL certificates can be found [here](https://www.startssl.com/certs/ca-sha2.pem) and [here](https://www.startssl.com/certs/class1/sha2/pem/sub.class1.server.sha2.ca.pem). 	
 

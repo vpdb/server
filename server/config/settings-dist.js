@@ -298,6 +298,30 @@ module.exports = {
 		passport: {
 
 			/**
+			 * Google. You'll need to create a project here:
+			 *    https://console.developers.google.com/
+			 */
+			google: {
+
+				/**
+				 * Set false to disable.
+				 */
+				enabled: true,
+
+				/**
+				 * The client ID of the generated application.
+				 * @important
+				 */
+				clientID: 'CLIENT_ID',
+
+				/**
+				 * The client secret of the generated application.
+				 * @important
+				 */
+				clientSecret: 'CLIENT_SECRET'
+			},
+
+			/**
 			 * GitHub. You'll need to create an application here:
 			 *    https://github.com/settings/applications/
 			 */

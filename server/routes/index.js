@@ -69,6 +69,9 @@ module.exports = function(app) {
 	if (config.vpdb.passport.github.enabled) {
 		app.get('/auth/github', passport.authenticate('github', { session: false }));
 	}
+	if (config.vpdb.passport.google.enabled) {
+		app.get('/auth/google', passport.authenticate('google', { session: false, scope: 'email' }));
+	}
 	_.each(config.vpdb.passport.ipboard, function(ipbConfig) {
 		if (ipbConfig.enabled) {
 			app.get('/auth/' + ipbConfig.id, passport.authenticate(ipbConfig.id, { session: false }));

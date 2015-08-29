@@ -376,6 +376,55 @@ module.exports = {
 		 */
 		passport: {
 
+			google: {
+
+				/**
+				 * Set false to disable.
+				 */
+				enabled: function(isEnabled) {
+					/* istanbul ignore if */
+					if (!_.isBoolean(isEnabled)) {
+						return 'Enabled flag must be either true or false';
+					}
+				},
+
+				/**
+				 * The client ID of the generated application.
+				 */
+				clientID: function(id, settings) {
+					/* istanbul ignore if */
+					if (!settings.vpdb.passport.google.enabled) {
+						return;
+					}
+					/* istanbul ignore if */
+					if (id.length === 0) {
+						return 'Your client ID must be longer than 0 characters.';
+					}
+					/* istanbul ignore if */
+					if (id === 'CLIENT_ID') {
+						return 'You\'re using the default client ID.';
+					}
+				},
+
+				/**
+				 * The client secret of the generated application.
+				 */
+				clientSecret: function(secret, settings) {
+					/* istanbul ignore if */
+					if (!settings.vpdb.passport.google.enabled) {
+						return;
+					}
+					/* istanbul ignore if */
+					if (secret.length === 0) {
+						return 'Your client secret must be longer than 0 characters.';
+					}
+					/* istanbul ignore if */
+					if (secret === 'CLIENT_SECRET') {
+						return 'You\'re using the default client secret.';
+					}
+				}
+			},
+
 			/**
 			 * GitHub. You'll need to create an application here:
 			 *    https://github.com/settings/applications/
@@ -397,7 +446,7 @@ module.exports = {
 				 */
 				clientID: function(id, settings) {
 					/* istanbul ignore if */
-					if (!settings.vpdb.passport.enabled) {
+					if (!settings.vpdb.passport.github.enabled) {
 						return;
 					}
 					/* istanbul ignore if */
@@ -415,7 +464,7 @@ module.exports = {
 				 */
 				clientSecret: function(secret, settings) {
 					/* istanbul ignore if */
-					if (!settings.vpdb.passport.enabled) {
+					if (!settings.vpdb.passport.github.enabled) {
 						return;
 					}
 					/* istanbul ignore if */

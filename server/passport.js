@@ -24,6 +24,7 @@ var logger = require('winston');
 var mongoose = require('mongoose');
 var passport = require('passport');
 var GitHubStrategy = require('passport-github').Strategy;
+var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 var IPBoardStrategy = require('./modules/passport-ipboard').Strategy;
 
 var error = require('./modules/error')('passport');
@@ -36,6 +37,17 @@ var LogUser = mongoose.model('LogUser');
  * Defines the authentication strategies and user serialization.
  */
 exports.configure = function() {
+
+	// use google strategy
+	if (config.vpdb.passport.google.enabled) {
+		logger.info('[passport] Enabling Google authentication strategy.');
+		passport.use(new GoogleStrategy({
+				clientID: config.vpdb.passport.google.clientID,
+				clientSecret: config.vpdb.passport.google.clientSecret,
+				callbackURL: settings.webUri() + '/auth/google/callback'
+			}, exports.verifyCallbackOAuth('google')
+		));
+	}
 
 	// use github strategy
 	if (config.vpdb.passport.github.enabled) {

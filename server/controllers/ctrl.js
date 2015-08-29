@@ -39,6 +39,7 @@ exports.viewParams = function(gitInfoFromGrunt) {
 		authStrategies: {
 			local: true,
 			github: config.vpdb ? config.vpdb.passport.github.enabled : false,
+			google: config.vpdb ? config.vpdb.passport.google.enabled : false,
 			ipboard: _.map(_.filter(config.vpdb ? config.vpdb.passport.ipboard : [], function(ipbConfig) { return ipbConfig.enabled; }), function(ipbConfig) {
 				return {
 					name: ipbConfig.name,

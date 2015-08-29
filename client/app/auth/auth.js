@@ -312,6 +312,14 @@ angular.module('vpdb.auth', [])
 			getProviders: function(user) {
 				var providers = [];
 
+				if (Config.authProviders.google) {
+					providers.push({
+						id: 'google',
+						icon: 'google-g',
+						name: 'Google',
+						url: '/auth/google'
+					});
+				}
 				if (Config.authProviders.github) {
 					providers.push({
 						id: 'github',

@@ -68,6 +68,7 @@ exports.list = function(req, res) {
 		}
 
 		var providerInfo = {
+			google: { name: 'Google', icon: 'google-g' },
 			github: { name: 'GitHub', icon: 'github' },
 			local: { name: 'Local Account', icon: 'vpdb' }
 		};

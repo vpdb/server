@@ -363,6 +363,7 @@ Settings.prototype.clientConfig = function() {
 		webUri: this.current.vpdb.webapp,
 		authProviders: {
 			local: true,
+			google: this.current.vpdb ? this.current.vpdb.passport.google.enabled : false,
 			github: this.current.vpdb ? this.current.vpdb.passport.github.enabled : false,
 			ipboard: _.map(_.filter(this.current.vpdb ? this.current.vpdb.passport.ipboard : [], function(ipbConfig) { return ipbConfig.enabled; }), function(ipbConfig) {
 				return {

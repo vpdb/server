@@ -74,6 +74,9 @@ var fields = {
 if (config.vpdb.passport.github.enabled) {
 	fields.github = {};
 }
+if (config.vpdb.passport.google.enabled) {
+	fields.google = {};
+}
 _.each(config.vpdb.passport.ipboard, function(ipbConfig) {
 	if (ipbConfig.enabled) {
 		fields[ipbConfig.id] = {};
@@ -95,7 +98,7 @@ UserSchema.plugin(metrics);
 //-----------------------------------------------------------------------------
 var apiFields = {
 	reduced: [ 'id', 'name', 'username', 'thumb', 'gravatar_id', 'location' ], // "member" search result
-	simple: [ 'email', 'is_active', 'provider', 'roles', 'plan', 'created_at', 'github', 'preferences', 'counter' ]  // "admin" lists & profile
+	simple: [ 'email', 'is_active', 'provider', 'roles', 'plan', 'created_at', 'google', 'github', 'preferences', 'counter' ]  // "admin" lists & profile
 };
 
 
@@ -129,6 +132,9 @@ UserSchema.pre('validate', function(next) {
 		}
 		if (!_.isEmpty(user.github)) {
 			this.name = user.github.name ? user.github.name : user.github.login;
+		}
+		if (!_.isEmpty(user.google)) {
+			this.name = user.google.name ? user.google.name : user.google.login;
 		}
 		_.each(config.vpdb.passport.ipboard, function(ipbConfig) {
 			if (!_.isEmpty(user[ipbConfig.id])) {
@@ -365,6 +371,9 @@ UserSchema.statics.toSimple = function(user) {
 	if (!_.isEmpty(user.github)) {
 		user.github = UserSchema.statics.normalizeProviderData('github', user.github);
 	}
+	if (!_.isEmpty(user.google)) {
+		user.google = UserSchema.statics.normalizeProviderData('google', user.google);
+	}
 	return user;
 };
 
@@ -373,12 +382,23 @@ UserSchema.statics.toDetailed = function(user) {
 	if (!_.isEmpty(user.github)) {
 		user.github = UserSchema.statics.normalizeProviderData('github', user.github);
 	}
+	if (!_.isEmpty(user.google)) {
+		user.google = UserSchema.statics.normalizeProviderData('google', user.google);
+	}
 	return user;
 };
 
 UserSchema.statics.normalizeProviderData = function(provider, data) {
 	switch (provider) {
 		case 'github':
+			return {
+				id: data.id,
+				username: data.login,
+				email: data.email,
+				avatar_url: data.avatar_url,
+				html_url: data.html_url
+			};
+		case 'google':
 			return {
 				id: data.id,
 				username: data.login,

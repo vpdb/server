@@ -90,7 +90,7 @@ LogUserSchema.statics.log = function(req, user, result, event, payload, actor, m
 		_actor: actor,
 		event: event,
 		payload: payload,
-		ip: req.ip || req.headers['x-forwarded-for'] || req.connection.remoteAddress || '0.0.0.0',
+		ip: req.ip || (req.headers ? req.headers['x-forwarded-for'] : null) || (req.connection ? req.connection.remoteAddress : null) || '0.0.0.0',
 		result: result,
 		message: message,
 		logged_at: new Date()

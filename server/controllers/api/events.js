@@ -25,6 +25,7 @@ var async = require('async');
 var logger = require('winston');
 
 var Star = require('mongoose').model('Star');
+var Game = require('mongoose').model('Game');
 var LogEvent = require('mongoose').model('LogEvent');
 
 var acl = require('../../acl');
@@ -81,6 +82,23 @@ exports.list = function(opts) {
 				}
 
 				next(null, query);
+			},
+
+			/**
+			 * By game
+			 * @param query
+			 * @param next
+			 */
+			function(query, next) {
+				if (opts.byGame && req.params.id) {
+					Game.findOne({ id: req.params.id }, assert(function(game) {
+						query.push({ '_ref.game': game._id });
+						next(null, query);
+
+					}, 'Error finding game.'));
+				} else {
+					next(null, query);
+				}
 			},
 
 			function(query, next) {

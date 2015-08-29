@@ -41,4 +41,6 @@ exports.register = function(app, api) {
 	app.delete(settings.apiPath('/games/:id/star'), api.auth(api.stars.unstarGame, 'games', 'star'));
 	app.get(settings.apiPath('/games/:id/star'), api.auth(api.stars.getForGame, 'games', 'star'));
 
+	app.get(settings.apiPath('/games/:id/events'), api.anon(api.events.list({ byGame: true })));
+
 };

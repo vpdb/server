@@ -1,0 +1,4 @@
+GET /api/v1/releases/41XzQ8Uyn2/events HTTP/1.1
+Host: vpdb.ch
+Accept-Encoding: gzip, deflate
+

@@ -1,0 +1,4 @@
+GET /api/v1/games/rekord-golf/events HTTP/1.1
+Host: vpdb.ch
+Accept-Encoding: gzip, deflate
+

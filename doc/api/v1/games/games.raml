@@ -111,5 +111,16 @@ get:
   /events:
     get:
       is: [ paginated: { defaultPerPage: 10, maxPerPage: 50 }, eventlog ]
-      description: Retrieves all events related to the game.
+      description: |
+        Retrieves all events related to the game.
+
+        Note that all of the game's release events are included as well.
+      body:
+        role/anon:
+          example: !include ../events/http/list-game-req.json
+      responses:
+        200:
+          body:
+            role/anon:
+              example: !include ../events/http/list-game-res-200.json
 

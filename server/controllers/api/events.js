@@ -49,6 +49,7 @@ exports.list = function(opts) {
 		opts = opts || {};
 		var assert = api.assert(error, 'list', null, res);
 		var query = [ { is_public: true }];
+		var pagination = api.pagination(req, 10, 50);
 
 		async.waterfall([
 
@@ -161,6 +162,11 @@ exports.list = function(opts) {
 						}
 						if (or.length > 0) {
 							query.push({ $or: or });
+
+						} else {
+							// return empty result (nothing starred)
+							api.success(res, [], 200, api.paginationOpts(pagination, 0));
+							return next(true);
 						}
 
 						return next(null, query);
@@ -226,7 +232,6 @@ exports.list = function(opts) {
 			logger.info('Events query: %s', util.inspect(query, { depth: null }));
 
 			// query
-			var pagination = api.pagination(req, 10, 50);
 			LogEvent.paginate(api.searchQuery(query), {
 				page: pagination.page,
 				limit: pagination.perPage,

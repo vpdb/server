@@ -244,3 +244,11 @@ get:
       get:
         is: [ paginated: { defaultPerPage: 10, maxPerPage: 50 }, eventlog ]
         description: Retrieves all events related to the release.
+        body:
+          role/anon:
+            example: !include ../events/http/list-release-req.json
+        responses:
+          200:
+            body:
+              role/anon:
+                example: !include ../events/http/list-release-res-200.json

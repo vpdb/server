@@ -31,7 +31,7 @@ var events = [
 	'create_comment',
 	'star_game', 'star_release', 'star_user',
 	'unstar_game', 'unstar_release', 'unstar_user',
-	'rate_game', 'rate_release', 'rate_user',
+	'rate_game', 'rate_release',
 	'upload_rom',
 	'create_game',
 	'create_release', 'create_release_version'

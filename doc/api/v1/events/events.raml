@@ -19,3 +19,11 @@ get:
   is: [ paginated: { defaultPerPage: 10, maxPerPage: 50 }, eventlog ]
   description: |
     List all events.
+  body:
+    role/anon:
+      example: !include http/list-req.json
+  responses:
+    200:
+      body:
+        role/anon:
+          example: !include http/list-res-200.json

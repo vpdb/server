@@ -26,6 +26,8 @@ var logger = require('winston');
 
 var Star = require('mongoose').model('Star');
 var Game = require('mongoose').model('Game');
+var Release = require('mongoose').model('Release');
+var User = require('mongoose').model('User');
 var LogEvent = require('mongoose').model('LogEvent');
 
 var acl = require('../../acl');
@@ -92,6 +94,10 @@ exports.list = function(opts) {
 			function(query, next) {
 				if (opts.byGame && req.params.id) {
 					Game.findOne({ id: req.params.id }, assert(function(game) {
+						if (!game) {
+							api.fail(res, error('No such game with id %s.', req.params.id), 404);
+							return next(true);
+						}
 						query.push({ '_ref.game': game._id });
 						next(null, query);
 
@@ -101,6 +107,55 @@ exports.list = function(opts) {
 				}
 			},
 
+			/**
+			 * By release
+			 * @param query
+			 * @param next
+			 */
+			function(query, next) {
+				if (opts.byRelease && req.params.id) {
+					Release.findOne({ id: req.params.id }, assert(function(release) {
+						if (!release) {
+							api.fail(res, error('No such release with id %s.', req.params.id), 404);
+							return next(true);
+						}
+						query.push({ '_ref.release': release._id });
+						next(null, query);
+
+					}, 'Error finding release.'));
+				} else {
+					next(null, query);
+				}
+			},
+
+			/**
+			 * By actor
+			 * @param query
+			 * @param next
+			 */
+			function(query, next) {
+				if (opts.byActor && req.params.id) {
+					User.findOne({ id: req.params.id }, assert(function(user) {
+						if (!user) {
+							api.fail(res, error('No such user with id %s.', req.params.id), 404);
+							return next(true);
+						}
+						query.push({ '_actor': user._id });
+						next(null, query);
+
+					}, 'Error finding user.'));
+				} else {
+					next(null, query);
+				}
+			},
+
+			/**
+			 * Starred events
+			 *
+			 * @param query
+			 * @param next
+			 * @returns {*}
+			 */
 			function(query, next) {
 
 				if (!_.isUndefined(req.query.starred)) {

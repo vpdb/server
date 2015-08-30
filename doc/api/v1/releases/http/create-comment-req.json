@@ -1,10 +1,10 @@
-POST /api/v1/releases/NJhXgWCths/comments HTTP/1.1
+POST /api/v1/releases/41Lbx1Oy22/comments HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI0eV9nZVdSdDNzIiwiaWF0IjoiMjAxNS0wOC0xOFQyMTowODo0Ny4yMzBaIiwiZXhwIjoiMjAxNS0wOC0xOFQyMjowODo0Ny4yMzBaIn0.hhE2bWZYwt_m7HqwD5dVA85G3jnyNkPn0a4LfyfT80k
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJFSm9GSmtfSjMyIiwiaWF0IjoiMjAxNS0wOC0zMFQxMjozNjoxNC45NzZaIiwiZXhwIjoiMjAxNS0wOC0zMFQxMzozNjoxNC45NzZaIn0.h9pi6jbDZRKA9Bh1hJamncqMXR1YraoRAztzsXjmqS8
 Content-Type: application/json
-Content-Length: 48
+Content-Length: 60
 
 {
-  "message": "Reactive intermediate architecture"
+  "message": "Programmable client-driven process improvement"
 }

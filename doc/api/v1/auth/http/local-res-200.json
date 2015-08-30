@@ -1,74 +1,74 @@
 200 OK
 Content-Type: application/json; charset=utf-8
-Etag: W/"4ac-t6SWcVFYDCaTADd+rrMSzg"
+Etag: W/"4aa-USOxKcNVVOz7EpRoMqR9Mg"
 Content-Encoding: gzip
 
 {
-  "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI0SlI3a1dSRmhzIiwiaWF0IjoiMjAxNS0wOC0xOFQyMTowODo0Ni41MTVaIiwiZXhwIjoiMjAxNS0wOC0xOFQyMjowODo0Ni41MTVaIn0.aDljbGD-HczKmNYftdtoXuh6QCL2hhsciOiD24iwT5s",
-  "expires": "2015-08-18T22:08:46.515Z",
+  "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJFSlNmazFkMW5uIiwiaWF0IjoiMjAxNS0wOC0zMFQxMjozNjoxNC4zNzJaIiwiZXhwIjoiMjAxNS0wOC0zMFQxMzozNjoxNC4zNzJaIn0.EN7pHvq7Mymxz1wdT1Y1X4QS_tiRfDw-cAyoWkru1DQ",
+  "expires": "2015-08-30T13:36:14.372Z",
   "user": {
-    "id": "4JR7kWRFhs",
-    "name": "Donavon_Lubowitz11",
-    "username": "Donavon_Lubowitz11",
-    "gravatar_id": "a05167721b763a180cd7356c5cc8bfff",
-    "email": "jay28@hotmail.com",
+    "id": "EJSfk1d1nn",
+    "name": "Phoebe_Hahn",
+    "username": "Phoebe_Hahn",
+    "gravatar_id": "557722c48ec11f05c6090159caed477e",
+    "email": "griffin_stoltenberg@gmail.com",
     "is_active": true,
     "provider": "local",
     "roles": [
       "member"
     ],
     "plan": "free",
-    "created_at": "2015-08-18T21:08:46.448Z",
+    "created_at": "2015-08-30T12:36:14.305Z",
     "counter": {
       "stars": 0,
       "downloads": 0,
       "comments": 0
     },
     "permissions": {
-      "games": [
-        "star",
-        "rate"
-      ],
-      "releases": [
-        "rate",
-        "star",
-        "add",
-        "delete"
-      ],
-      "files": [
-        "upload",
-        "delete",
-        "download"
-      ],
-      "tags": [
+      "builds": [
         "add",
         "delete-own"
       ],
       "users": [
         "star",
-        "search",
-        "view"
-      ],
-      "user": [
         "view",
-        "update"
+        "search"
       ],
-      "builds": [
+      "tags": [
         "add",
         "delete-own"
+      ],
+      "games": [
+        "star",
+        "rate"
       ],
       "roms": [
         "add",
         "delete-own"
       ],
-      "tokens": [
-        "add",
+      "files": [
         "delete",
-        "list",
-        "update"
+        "upload",
+        "download"
+      ],
+      "releases": [
+        "star",
+        "delete",
+        "add",
+        "rate"
       ],
       "comments": [
         "add"
+      ],
+      "tokens": [
+        "delete",
+        "list",
+        "update",
+        "add"
+      ],
+      "user": [
+        "update",
+        "view"
       ]
     }
   }

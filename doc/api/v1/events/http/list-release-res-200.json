@@ -3,7 +3,7 @@ X-List-Page: 1
 X-List-Size: 10
 X-List-Count: 1
 Content-Type: application/json; charset=utf-8
-Etag: W/"697-ORnrxzw803kTe+R0HW0SUw"
+Etag: W/"661-dOESFoPth55jtTG2WXK4gw"
 Content-Encoding: gzip
 
 [
@@ -11,18 +11,18 @@ Content-Encoding: gzip
     "event": "create_release",
     "payload": {
       "release": {
-        "id": "41XzQ8Uyn2",
-        "name": "Enterprise-wide Edition",
+        "id": "VJ2Eb1uk3n",
+        "name": "Fully-configurable Edition",
         "authors": [
           {
             "roles": [
               "Table Creator"
             ],
             "user": {
-              "id": "VypQU8J23",
-              "name": "Newell_Mitchell81",
-              "username": "Newell_Mitchell81",
-              "gravatar_id": "7d58836cff95d1e65f276ee5df83c622",
+              "id": "41UMZJukhh",
+              "name": "Blaise66",
+              "username": "Blaise66",
+              "gravatar_id": "3d49de2d8517922e4438f07b56574b36",
               "counter": {
                 "comments": 0,
                 "stars": 0
@@ -34,7 +34,7 @@ Content-Encoding: gzip
           "version": "1.0.0",
           "thumb": {
             "image": {
-              "url": "/storage/v1/files/EkLZXU81n2.png",
+              "url": "/storage/v1/files/EkzNbyd1hh.png",
               "is_protected": true,
               "width": 1920,
               "height": 1080
@@ -46,7 +46,7 @@ Content-Encoding: gzip
           },
           "files": [
             {
-              "released_at": "2015-08-30T12:29:38.576Z",
+              "released_at": "2015-08-30T12:36:16.781Z",
               "flavor": {
                 "orientation": "fs",
                 "lighting": "night"
@@ -55,7 +55,7 @@ Content-Encoding: gzip
                 "9.9.0"
               ],
               "file": {
-                "id": "N1e-mI8y2n",
+                "id": "NJnQWkOJhh",
                 "name": "test-table-0.vpt",
                 "bytes": 135168,
                 "mime_type": "application/x-visual-pinball-table"
@@ -65,28 +65,28 @@ Content-Encoding: gzip
         }
       },
       "game": {
-        "id": "rekord-golf",
-        "title": "Rekord-Golf",
-        "manufacturer": "Max Jentzsch & Meerz",
-        "year": 1935,
+        "id": "kz-26",
+        "title": "KZ-26",
+        "manufacturer": "Playmatic",
+        "year": 1984,
         "ipdb": {
-          "number": 4717,
-          "mfg": 381
+          "number": 3202,
+          "mfg": 255
         },
-        "game_type": "pm"
+        "game_type": "ss"
       }
     },
-    "logged_at": "2015-08-30T12:29:38.622Z",
+    "logged_at": "2015-08-30T12:36:16.837Z",
     "is_public": true,
     "actor": {
       "counter": {
         "stars": 0,
         "comments": 0
       },
-      "gravatar_id": "7d58836cff95d1e65f276ee5df83c622",
-      "username": "Newell_Mitchell81",
-      "name": "Newell_Mitchell81",
-      "id": "VypQU8J23"
+      "gravatar_id": "3d49de2d8517922e4438f07b56574b36",
+      "username": "Blaise66",
+      "name": "Blaise66",
+      "id": "41UMZJukhh"
     }
   }
 ]

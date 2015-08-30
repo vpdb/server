@@ -1,14 +1,14 @@
-POST /api/v1/games/merry-go-round/roms HTTP/1.1
+POST /api/v1/games/alaska/roms HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJFSlE4TlhDWTJpIiwiaWF0IjoiMjAxNS0wOC0xOFQyMTowOToyMy41NzZaIiwiZXhwIjoiMjAxNS0wOC0xOFQyMjowOToyMy41NzZaIn0.Xyp6gW8GK3bciPLU4aOAJiMJ2CERg8OCv1LwEMvaeM4
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJOeXFzVy1feWhoIiwiaWF0IjoiMjAxNS0wOC0zMFQxMjozNjo0OS4wODJaIiwiZXhwIjoiMjAxNS0wOC0zMFQxMzozNjo0OS4wODJaIn0.neH1Qr8U-KuafbtJ-9qKn1Acji1rPbfulc7vndLdhwM
 Content-Type: application/json
-Content-Length: 110
+Content-Length: 102
 
 {
-  "id": "merry-go-round_10",
+  "id": "alaska_10",
   "version": "1.0",
   "notes": "That is some ROM.",
   "language": "en-US",
-  "_file": "4ksYE7RYhj"
+  "_file": "VJxfGZuk32"
 }

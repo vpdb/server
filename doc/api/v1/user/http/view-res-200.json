@@ -1,15 +1,15 @@
 200 OK
 Content-Type: application/json; charset=utf-8
-Content-Length: 856
-Etag: W/"358-Mg9t3r9fAVB3JSmSPB3vWA"
+Content-Length: 854
+Etag: W/"356-hUNPSYuxFLWB+0dOy4H+MA"
 
 {
   "plan": "free",
-  "name": "Taya_OHara",
-  "username": "Taya_OHara",
-  "email": "amina.hills@gmail.com",
+  "name": "Bethany95",
+  "username": "Bethany95",
+  "email": "crystal42@hotmail.com",
   "provider": "local",
-  "created_at": "2015-08-18T21:08:45.465Z",
+  "created_at": "2015-08-30T12:36:13.249Z",
   "is_active": true,
   "counter": {
     "stars": 0,
@@ -19,53 +19,53 @@ Etag: W/"358-Mg9t3r9fAVB3JSmSPB3vWA"
   "roles": [
     "member"
   ],
-  "id": "N1XxRgCK3i",
-  "gravatar_id": "242e1a358586787320aca3710b2f845e",
+  "id": "EkZxR0DJ2n",
+  "gravatar_id": "0a0024ec15f2b9c173093bcc2aab638d",
   "permissions": {
-    "games": [
-      "star",
-      "rate"
-    ],
-    "releases": [
-      "rate",
-      "star",
-      "add",
-      "delete"
-    ],
-    "files": [
-      "upload",
-      "delete",
-      "download"
-    ],
-    "tags": [
+    "builds": [
       "add",
       "delete-own"
     ],
     "users": [
       "star",
-      "search",
-      "view"
-    ],
-    "user": [
       "view",
-      "update"
+      "search"
     ],
-    "builds": [
+    "tags": [
       "add",
       "delete-own"
+    ],
+    "games": [
+      "star",
+      "rate"
     ],
     "roms": [
       "add",
       "delete-own"
     ],
-    "tokens": [
-      "add",
+    "files": [
       "delete",
-      "list",
-      "update"
+      "upload",
+      "download"
+    ],
+    "releases": [
+      "star",
+      "delete",
+      "add",
+      "rate"
     ],
     "comments": [
       "add"
+    ],
+    "tokens": [
+      "delete",
+      "list",
+      "update",
+      "add"
+    ],
+    "user": [
+      "update",
+      "view"
     ]
   }
 }

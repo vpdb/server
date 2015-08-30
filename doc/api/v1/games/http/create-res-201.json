@@ -1,20 +1,17 @@
 201 Created
 Content-Type: application/json; charset=utf-8
-Etag: W/"694-vNUI+PN5KHr+eIMQbIzsUA"
+Etag: W/"4c7-+qLCmNPzC+Fd8F7Z6hQWqg"
 Content-Encoding: gzip
 
 {
-  "title_sortable": "Spring Break",
-  "title": "Spring Break",
-  "manufacturer": "Premier",
-  "model_number": "706",
-  "year": 1987,
-  "game_type": "ss",
-  "produced_units": 3550,
-  "features": "Flippers (4), Pop bumpers (3), 3-bank drop targets (3), Rollunders (4). No manual ball shooter assembly. Ball is launched into play by pressing right flipper button and starts an instant multiball mode. Photographic translite.",
-  "notes": "John Trudeau told us that the man in the flyer is Jeff Walker from the Marketing Department at Bally.Larry Day told us he did the art for the playfield and cabinet, and Don Marshall did the photographic translite.",
-  "id": "spring-break",
-  "created_at": "2015-08-18T21:08:50.238Z",
+  "title_sortable": "Baby Doll",
+  "title": "Baby Doll",
+  "manufacturer": "Williams",
+  "year": 1975,
+  "game_type": "em",
+  "features": "Flippers (4), Pop bumpers (2). 6-digit reel scoring. 3 or 5 balls. This is a licensed version of Williams' 1975 'Satin Doll'.",
+  "id": "baby-doll",
+  "created_at": "2015-08-30T12:36:19.009Z",
   "rating": {
     "score": 0,
     "votes": 0,
@@ -31,20 +28,14 @@ Content-Encoding: gzip
     "releases": 0
   },
   "ipdb": {
-    "number": 2324,
-    "mfg": 257,
-    "rating": 6.4
+    "number": 121,
+    "mfg": 281
   },
-  "artists": [
-    "Don Marshall",
-    "Larry Day"
-  ],
-  "designers": [
-    "John Trudeau"
-  ],
+  "artists": [],
+  "designers": [],
   "themes": [
-    "Aquatic Fun",
-    "Happiness"
+    "Music",
+    "Singing"
   ],
   "short": [],
   "media": {
@@ -55,22 +46,22 @@ Content-Encoding: gzip
       "is_protected": true,
       "variations": {
         "small-2x": {
-          "url": "/storage/public/files/small-2x/E147ZRF2j.jpg"
+          "url": "/storage/public/files/small-2x/V1jH7kdk23.jpg"
         },
         "small": {
-          "url": "/storage/public/files/small/E147ZRF2j.jpg"
+          "url": "/storage/public/files/small/V1jH7kdk23.jpg"
         },
         "medium-2x": {
-          "url": "/storage/public/files/medium-2x/E147ZRF2j.jpg"
+          "url": "/storage/public/files/medium-2x/V1jH7kdk23.jpg"
         },
         "medium": {
-          "url": "/storage/public/files/medium/E147ZRF2j.jpg"
+          "url": "/storage/public/files/medium/V1jH7kdk23.jpg"
         }
       },
       "bytes": 135,
-      "url": "/storage/v1/files/E147ZRF2j.png",
-      "id": "E147ZRF2j"
+      "url": "/storage/v1/files/V1jH7kdk23.png",
+      "id": "V1jH7kdk23"
     }
   },
-  "url": "/game/spring-break"
+  "url": "/game/baby-doll"
 }

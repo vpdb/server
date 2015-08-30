@@ -1,4 +1,4 @@
-GET /api/v1/releases/NJ6-0zAK3j HTTP/1.1
+GET /api/v1/releases/4173e_1n3 HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
 

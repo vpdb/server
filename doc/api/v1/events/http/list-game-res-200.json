@@ -3,7 +3,7 @@ X-List-Page: 1
 X-List-Size: 10
 X-List-Count: 2
 Content-Type: application/json; charset=utf-8
-Etag: W/"b19-Yw+EZkpUoDQuMhQ2OewWzA"
+Etag: W/"ace-E2+bEzdQyg/nTS5Yf15+eg"
 Content-Encoding: gzip
 
 [
@@ -11,18 +11,18 @@ Content-Encoding: gzip
     "event": "create_release",
     "payload": {
       "release": {
-        "id": "41XzQ8Uyn2",
-        "name": "Enterprise-wide Edition",
+        "id": "VJ2Eb1uk3n",
+        "name": "Fully-configurable Edition",
         "authors": [
           {
             "roles": [
               "Table Creator"
             ],
             "user": {
-              "id": "VypQU8J23",
-              "name": "Newell_Mitchell81",
-              "username": "Newell_Mitchell81",
-              "gravatar_id": "7d58836cff95d1e65f276ee5df83c622",
+              "id": "41UMZJukhh",
+              "name": "Blaise66",
+              "username": "Blaise66",
+              "gravatar_id": "3d49de2d8517922e4438f07b56574b36",
               "counter": {
                 "comments": 0,
                 "stars": 0
@@ -34,7 +34,7 @@ Content-Encoding: gzip
           "version": "1.0.0",
           "thumb": {
             "image": {
-              "url": "/storage/v1/files/EkLZXU81n2.png",
+              "url": "/storage/v1/files/EkzNbyd1hh.png",
               "is_protected": true,
               "width": 1920,
               "height": 1080
@@ -46,7 +46,7 @@ Content-Encoding: gzip
           },
           "files": [
             {
-              "released_at": "2015-08-30T12:29:38.576Z",
+              "released_at": "2015-08-30T12:36:16.781Z",
               "flavor": {
                 "orientation": "fs",
                 "lighting": "night"
@@ -55,7 +55,7 @@ Content-Encoding: gzip
                 "9.9.0"
               ],
               "file": {
-                "id": "N1e-mI8y2n",
+                "id": "NJnQWkOJhh",
                 "name": "test-table-0.vpt",
                 "bytes": 135168,
                 "mime_type": "application/x-visual-pinball-table"
@@ -65,43 +65,43 @@ Content-Encoding: gzip
         }
       },
       "game": {
-        "id": "rekord-golf",
-        "title": "Rekord-Golf",
-        "manufacturer": "Max Jentzsch & Meerz",
-        "year": 1935,
+        "id": "kz-26",
+        "title": "KZ-26",
+        "manufacturer": "Playmatic",
+        "year": 1984,
         "ipdb": {
-          "number": 4717,
-          "mfg": 381
+          "number": 3202,
+          "mfg": 255
         },
-        "game_type": "pm"
+        "game_type": "ss"
       }
     },
-    "logged_at": "2015-08-30T12:29:38.622Z",
+    "logged_at": "2015-08-30T12:36:16.837Z",
     "is_public": true,
     "actor": {
       "counter": {
         "stars": 0,
         "comments": 0
       },
-      "gravatar_id": "7d58836cff95d1e65f276ee5df83c622",
-      "username": "Newell_Mitchell81",
-      "name": "Newell_Mitchell81",
-      "id": "VypQU8J23"
+      "gravatar_id": "3d49de2d8517922e4438f07b56574b36",
+      "username": "Blaise66",
+      "name": "Blaise66",
+      "id": "41UMZJukhh"
     }
   },
   {
     "event": "create_game",
     "payload": {
       "game": {
-        "id": "rekord-golf",
-        "title": "Rekord-Golf",
-        "manufacturer": "Max Jentzsch & Meerz",
-        "year": 1935,
+        "id": "kz-26",
+        "title": "KZ-26",
+        "manufacturer": "Playmatic",
+        "year": 1984,
         "ipdb": {
-          "number": 4717,
-          "mfg": 381
+          "number": 3202,
+          "mfg": 255
         },
-        "game_type": "pm",
+        "game_type": "ss",
         "media": {
           "backglass": {
             "counter": {
@@ -110,36 +110,36 @@ Content-Encoding: gzip
             "is_protected": true,
             "variations": {
               "small-2x": {
-                "url": "/storage/public/files/small-2x/41IemIUJn3.jpg"
+                "url": "/storage/public/files/small-2x/4yk7-kuyn2.jpg"
               },
               "small": {
-                "url": "/storage/public/files/small/41IemIUJn3.jpg"
+                "url": "/storage/public/files/small/4yk7-kuyn2.jpg"
               },
               "medium-2x": {
-                "url": "/storage/public/files/medium-2x/41IemIUJn3.jpg"
+                "url": "/storage/public/files/medium-2x/4yk7-kuyn2.jpg"
               },
               "medium": {
-                "url": "/storage/public/files/medium/41IemIUJn3.jpg"
+                "url": "/storage/public/files/medium/4yk7-kuyn2.jpg"
               }
             },
             "bytes": 135,
-            "url": "/storage/v1/files/41IemIUJn3.png",
-            "id": "41IemIUJn3"
+            "url": "/storage/v1/files/4yk7-kuyn2.png",
+            "id": "4yk7-kuyn2"
           }
         }
       }
     },
-    "logged_at": "2015-08-30T12:29:38.294Z",
+    "logged_at": "2015-08-30T12:36:16.492Z",
     "is_public": true,
     "actor": {
       "counter": {
         "stars": 0,
         "comments": 0
       },
-      "gravatar_id": "8908a09339b744ab847fa74bd268d523",
-      "username": "Wiley.Nader",
-      "name": "Wiley.Nader",
-      "id": "Ny-xQUUknh"
+      "gravatar_id": "520bca26339ed961550e472e2e418f10",
+      "username": "Jordi_Beer95",
+      "name": "Jordi_Beer95",
+      "id": "41qfZJ_k32"
     }
   }
 ]

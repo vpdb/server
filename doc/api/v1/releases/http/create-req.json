@@ -1,21 +1,21 @@
 POST /api/v1/releases HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJFSlliR1JGM28iLCJpYXQiOiIyMDE1LTA4LTE4VDIxOjA5OjA0LjE0NVoiLCJleHAiOiIyMDE1LTA4LTE4VDIyOjA5OjA0LjE0NVoifQ.5hpiLLqBzZSksbv6KO_bbNwpqPDWW_HFy4Eq_GIloas
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJOa3ZHeGdkazMzIiwiaWF0IjoiMjAxNS0wOC0zMFQxMjozNjozMS4zODFaIiwiZXhwIjoiMjAxNS0wOC0zMFQxMzozNjozMS4zODFaIn0.forQWYDRSf34hhxGWEEcdbDdFh7hCxAmqaRsG0QuCzU
 Content-Type: application/json
-Content-Length: 471
+Content-Length: 469
 
 {
   "name": "release",
-  "_game": "regatta",
+  "_game": "tiger",
   "versions": [
     {
       "files": [
         {
-          "_file": "4yN7zzCYni",
+          "_file": "4kkfZg_yn3",
           "_media": {
-            "playfield_image": "VknQGfRKho",
-            "playfield_video": "4y4NGfCYho"
+            "playfield_image": "4JNXWldkhh",
+            "playfield_video": "VJxfl_Jn3"
           },
           "_compatibility": [
             "9.9.0"
@@ -26,9 +26,9 @@ Content-Length: 471
           }
         },
         {
-          "_file": "417mMGCtno",
+          "_file": "Ey7Mbg_1nh",
           "_media": {
-            "playfield_image": "EJ07zzAt3j"
+            "playfield_image": "41SmWxdynn"
           },
           "_compatibility": [
             "9.9.0"
@@ -44,7 +44,7 @@ Content-Length: 471
   ],
   "authors": [
     {
-      "_user": "EJYbGRF3o",
+      "_user": "NkvGxgdk33",
       "roles": [
         "Table Creator"
       ]

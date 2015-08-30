@@ -1,5 +1,5 @@
-GET /api/v1/games/gigi/rating HTTP/1.1
+GET /api/v1/games/advance-roll/rating HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJFSndtaVpDSzJzIiwiaWF0IjoiMjAxNS0wOC0xOFQyMTowODo1OC40NTZaIiwiZXhwIjoiMjAxNS0wOC0xOFQyMjowODo1OC40NTZaIn0.Mwj4Q1enZ7XbqUBNfh1GzPBwj95L2TZI1CwGvj6dK6A
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI0SlU4OTFfSmgzIiwiaWF0IjoiMjAxNS0wOC0zMFQxMjozNjoyNS43OTFaIiwiZXhwIjoiMjAxNS0wOC0zMFQxMzozNjoyNS43OTFaIn0.EdQ-WO2G2ZcfQLxAoXj2qf5d4THLFiOIdeB9qtZ6Kfc
 

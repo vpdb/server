@@ -1,5 +1,5 @@
-GET /api/v1/games/skil-luck/star HTTP/1.1
+GET /api/v1/games/snow-derby/star HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJOSlBFRm1BdGhqIiwiaWF0IjoiMjAxNS0wOC0xOFQyMTowOToyOC42NTNaIiwiZXhwIjoiMjAxNS0wOC0xOFQyMjowOToyOC42NTNaIn0.CeT2U-baTGQx08H5MYmx-j9O63ExmNCC_wvjmN70sIg
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI0MW5XVWJPazIyIiwiaWF0IjoiMjAxNS0wOC0zMFQxMjozNjo1My4zNzlaIiwiZXhwIjoiMjAxNS0wOC0zMFQxMzozNjo1My4zNzlaIn0.SGCBnqVDqN5G3YHXTTWEBlIPdHSa41LQSMpgM8_GHK0
 

@@ -1,14 +1,14 @@
 PATCH /api/v1/user HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJOSld6alFBWTNzIiwiaWF0IjoiMjAxNS0wOC0xOFQyMTowOTozMC4zMjNaIiwiZXhwIjoiMjAxNS0wOC0xOFQyMjowOTozMC4zMjNaIn0.TrYEaD2kxJlp5cdmSg4qKKCfbC0I9U1fUtFMHK_NcoM
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJFa0d4T1p1eWgzIiwiaWF0IjoiMjAxNS0wOC0zMFQxMjozNjo1NS4xOTJaIiwiZXhwIjoiMjAxNS0wOC0zMFQxMzozNjo1NS4xOTJaIn0.yDcguCRiTDi52VA9W9DGgGnuopFQBSJC01Z-KrA_81M
 Content-Type: application/json
-Content-Length: 146
+Content-Length: 139
 
 {
-  "name": "Daphney Mosciski",
-  "location": "New Shawna",
-  "email": "joelle.gulgowski21@yahoo.com",
-  "current_password": "0v2GOheDIU",
-  "password": "WoMyr78mRm"
+  "name": "Marlee Abshire",
+  "location": "Kochburgh",
+  "email": "aracely.deckow@gmail.com",
+  "current_password": "vYXnqBjCxh",
+  "password": "WAu8ElMnVz"
 }

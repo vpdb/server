@@ -1,8 +1,8 @@
-PUT /api/v1/releases/Ny-VA-RFns/rating HTTP/1.1
+PUT /api/v1/releases/V1lV61_122/rating HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
 Content-Type: application/json
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJWa2piUlpSRjJzIiwiaWF0IjoiMjAxNS0wOC0xOFQyMTowOTowMS41MjZaIiwiZXhwIjoiMjAxNS0wOC0xOFQyMjowOTowMS41MjZaIn0.yw93VW5s9829sq6_c9c8Ztd8jmxCbr9kLmZkywoSTCA
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJWSjliNkp1a24zIiwiaWF0IjoiMjAxNS0wOC0zMFQxMjozNjoyOC41NjFaIiwiZXhwIjoiMjAxNS0wOC0zMFQxMzozNjoyOC41NjFaIn0.3jK6s-izTvT3Mmao1m_5yHSjju77Ecv_n-BvfSFOLRY
 Content-Length: 11
 
 {

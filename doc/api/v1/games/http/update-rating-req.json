@@ -1,8 +1,8 @@
-PUT /api/v1/games/new-wave/rating HTTP/1.1
+PUT /api/v1/games/the-flipper-game/rating HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
 Content-Type: application/json
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJOeVBQc2JBWWhzIiwiaWF0IjoiMjAxNS0wOC0xOFQyMTowODo1OS4wNzRaIiwiZXhwIjoiMjAxNS0wOC0xOFQyMjowODo1OS4wNzRaIn0.LQjr867gJgSNk5y476m3pOZ7ZoGyI7lOVZgSIyJHChY
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJWa2lnaXlka24yIiwiaWF0IjoiMjAxNS0wOC0zMFQxMjozNjoyNi4yMzlaIiwiZXhwIjoiMjAxNS0wOC0zMFQxMzozNjoyNi4yMzlaIn0.plk8Vnhy_EzCEJ8JXxKteMa8LewncLZd-kZR1S1QpZc
 Content-Length: 11
 
 {

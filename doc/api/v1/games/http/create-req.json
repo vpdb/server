@@ -1,37 +1,26 @@
 POST /api/v1/games HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJFa1FXQUYybyIsImlhdCI6IjIwMTUtMDgtMThUMjE6MDg6NTAuMTEyWiIsImV4cCI6IjIwMTUtMDgtMThUMjI6MDg6NTAuMTEyWiJ9.-5y5-3zlVNjUMj46ZTP_AOoWrNfPo-lJ63n-Iw-V7HQ
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJWeUlIWHlka2huIiwiaWF0IjoiMjAxNS0wOC0zMFQxMjozNjoxOC45MDBaIiwiZXhwIjoiMjAxNS0wOC0zMFQxMzozNjoxOC45MDBaIn0.veA6_euadOevnGtiG58DzZJ1vfdtbJAHOfznVdowxNU
 Content-Type: application/json
-Content-Length: 793
+Content-Length: 329
 
 {
   "ipdb": {
-    "number": 2324,
-    "mfg": 257,
-    "rating": "6.4"
+    "number": 121,
+    "mfg": 281
   },
-  "title": "Spring Break",
-  "manufacturer": "Premier",
-  "model_number": "706",
-  "year": 1987,
-  "game_type": "ss",
-  "produced_units": 3550,
+  "title": "Baby Doll",
+  "manufacturer": "Williams",
+  "year": 1975,
+  "game_type": "em",
   "themes": [
-    "Aquatic Fun",
-    "Happiness"
+    "Music",
+    "Singing"
   ],
-  "designers": [
-    "John Trudeau"
-  ],
-  "artists": [
-    "Don Marshall",
-    "Larry Day"
-  ],
-  "features": "Flippers (4), Pop bumpers (3), 3-bank drop targets (3), Rollunders (4). No manual ball shooter assembly. Ball is launched into play by pressing right flipper button and starts an instant multiball mode. Photographic translite.",
-  "notes": "John Trudeau told us that the man in the flyer is Jeff Walker from the Marketing Department at Bally.Larry Day told us he did the art for the playfield and cabinet, and Don Marshall did the photographic translite.",
-  "id": "spring-break",
+  "features": "Flippers (4), Pop bumpers (2). 6-digit reel scoring. 3 or 5 balls. This is a licensed version of Williams' 1975 'Satin Doll'.",
+  "id": "baby-doll",
   "_media": {
-    "backglass": "E147ZRF2j"
+    "backglass": "V1jH7kdk23"
   }
 }

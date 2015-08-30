@@ -33,4 +33,6 @@ exports.register = function(app, api) {
 	app.delete(settings.apiPath('/users/:id/star'), api.auth(api.stars.unstarUser, 'users', 'star'));
 	app.get(settings.apiPath('/users/:id/star'), api.auth(api.stars.getForUser, 'users', 'star'));
 
+	app.get(settings.apiPath('/users/:id/events'), api.anon(api.events.list({ byActor: true })));
+
 };

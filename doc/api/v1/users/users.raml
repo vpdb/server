@@ -143,3 +143,8 @@ get:
             example: !include http/del-res-403.json
 
   /star: !include star.raml
+  /events:
+        get:
+          is: [ protected, paginated: { defaultPerPage: 10, maxPerPage: 50 }, eventlog ]
+          securedBy: [ jwt: { scopes: [ ADMIN ] } ]
+          description: Retrieves all events related to the user.

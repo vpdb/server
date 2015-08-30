@@ -42,4 +42,6 @@ exports.register = function(app, api) {
 	app.delete(settings.apiPath('/releases/:id/star'), api.auth(api.stars.unstarRelease, 'releases', 'star'));
 	app.get(settings.apiPath('/releases/:id/star'), api.auth(api.stars.getForRelease, 'releases', 'star'));
 
+	app.get(settings.apiPath('/releases/:id/events'), api.anon(api.events.list({ byRelease: true })));
+
 };

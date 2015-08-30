@@ -240,3 +240,7 @@ get:
   /comments: !include comments.raml
   /rating: !include rating.raml
   /star: !include star.raml
+  /events:
+      get:
+        is: [ paginated: { defaultPerPage: 10, maxPerPage: 50 }, eventlog ]
+        description: Retrieves all events related to the release.

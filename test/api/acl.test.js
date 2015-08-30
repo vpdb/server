@@ -206,6 +206,30 @@ describe('The ACLs of the VPDB API', function() {
 			request.get('/api/v1/users/123/star').end(hlp.status(401, done));
 		});
 
+		it('should allow to list events', function(done) {
+			request.get('/api/v1/events').end(hlp.status(200, done));
+		});
+
+		it('should deny to list starred events', function(done) {
+			request.get('/api/v1/events?starred').end(hlp.status(401, done));
+		});
+
+		it('should allow to list per game', function(done) {
+			request.get('/api/v1/games/1234/events').end(hlp.status(404, done));
+		});
+
+		it('should allow to list per release', function(done) {
+			request.get('/api/v1/releases/1234/events').end(hlp.status(404, done));
+		});
+
+		it('should deny access to events by user', function(done) {
+			request.get('/api/v1/users/1234/events').end(hlp.status(401, done));
+		});
+
+		it('should deny access to events by current user', function(done) {
+			request.get('/api/v1/user/events').end(hlp.status(401, done));
+		});
+
 	});
 
 	describe('for logged clients (role member)', function() {
@@ -399,6 +423,18 @@ describe('The ACLs of the VPDB API', function() {
 			request.get('/api/v1/users/123/star').as('member').end(hlp.status(404, done));
 		});
 
+		it('should allow to list starred events', function(done) {
+			request.get('/api/v1/events?starred').as('member').end(hlp.status(200, done));
+		});
+
+		it('should deny access to events by user', function(done) {
+			request.get('/api/v1/users/1234/events').as('member').end(hlp.status(401, done));
+		});
+
+		it('should allow access to events by current user', function(done) {
+			request.get('/api/v1/user/events').as('member').end(hlp.status(200, done));
+		});
+
 	});
 
 	describe('for members with the `contributor` role', function() {
@@ -494,6 +530,18 @@ describe('The ACLs of the VPDB API', function() {
 
 		it('should allow to delete releases', function(done) {
 			request.del('/api/v1/releases/123456').as('contributor').end(hlp.status(404, done));
+		});
+
+		it('should allow to list starred events', function(done) {
+			request.get('/api/v1/events?starred').as('contributor').end(hlp.status(200, done));
+		});
+
+		it('should deny access to events by user', function(done) {
+			request.get('/api/v1/users/1234/events').as('contributor').end(hlp.status(401, done));
+		});
+
+		it('should allow access to events by current user', function(done) {
+			request.get('/api/v1/user/events').as('contributor').end(hlp.status(200, done));
 		});
 
 	});
@@ -601,6 +649,18 @@ describe('The ACLs of the VPDB API', function() {
 			request.del('/api/v1/releases/123456').as('admin').end(hlp.status(404, done));
 		});
 
+		it('should allow to list starred events', function(done) {
+			request.get('/api/v1/events?starred').as('admin').end(hlp.status(200, done));
+		});
+
+		it('should allow access to events by user', function(done) {
+			request.get('/api/v1/users/1234/events').as('admin').end(hlp.status(404, done));
+		});
+
+		it('should allow access to events by current user', function(done) {
+			request.get('/api/v1/user/events').as('admin').end(hlp.status(200, done));
+		});
+
 	});
 
 	describe('for the root user', function() {
@@ -701,6 +761,18 @@ describe('The ACLs of the VPDB API', function() {
 
 		it('should allow to delete releases', function(done) {
 			request.del('/api/v1/releases/123456').as('root').end(hlp.status(404, done));
+		});
+
+		it('should allow to list starred events', function(done) {
+			request.get('/api/v1/events?starred').as('root').end(hlp.status(200, done));
+		});
+
+		it('should allow access to events by user', function(done) {
+			request.get('/api/v1/users/1234/events').as('root').end(hlp.status(404, done));
+		});
+
+		it('should allow access to events by current user', function(done) {
+			request.get('/api/v1/user/events').as('root').end(hlp.status(200, done));
 		});
 
 	});

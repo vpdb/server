@@ -129,27 +129,6 @@ exports.list = function(opts) {
 			},
 
 			/**
-			 * By actor
-			 * @param query
-			 * @param next
-			 */
-			function(query, next) {
-				if (opts.byActor && req.params.id) {
-					User.findOne({ id: req.params.id }, assert(function(user) {
-						if (!user) {
-							api.fail(res, error('No such user with id %s.', req.params.id), 404);
-							return next(true);
-						}
-						query.push({ '_actor': user._id });
-						next(null, query);
-
-					}, 'Error finding user.'));
-				} else {
-					next(null, query);
-				}
-			},
-
-			/**
 			 * Starred events
 			 *
 			 * @param query
@@ -205,6 +184,35 @@ exports.list = function(opts) {
 					}, 'Error checking for ACL "users/full-details"'));
 				} else {
 					next(null, query, false);
+				}
+			},
+
+			/**
+			 * By actor
+			 *
+			 * @param query
+			 * @param fullDetails
+			 * @param next
+			 */
+			function(query, fullDetails, next) {
+				if (opts.byActor && req.params.id) {
+
+					// check access
+					if (!fullDetails) {
+						api.fail(res, error('Access denied.'), 401);
+						return next(true);
+					}
+					User.findOne({ id: req.params.id }, assert(function(user) {
+						if (!user) {
+							api.fail(res, error('No such user with id %s.', req.params.id), 404);
+							return next(true);
+						}
+						query.push({ '_actor': user._id });
+						next(null, query);
+
+					}, 'Error finding user.'));
+				} else {
+					next(null, query);
 				}
 			}
 

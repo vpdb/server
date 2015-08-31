@@ -28,6 +28,7 @@ var Release = require('mongoose').model('Release');
 var Version = require('mongoose').model('ReleaseVersion');
 var VersionFile = require('mongoose').model('ReleaseVersionFile');
 var LogEvent = require('mongoose').model('LogEvent');
+var Build = require('mongoose').model('Build');
 var Game = require('mongoose').model('Game');
 var Star = require('mongoose').model('Star');
 var Tag = require('mongoose').model('Tag');
@@ -344,6 +345,7 @@ exports.list = function(req, res) {
 	// filter by tag
 	if (req.query.tags) {
 		var t = req.query.tags.split(',');
+		// all tags must be matched
 		for (var i = 0; i < t.length; i++) {
 			query.push({ _tags: { $in: [ t[i] ] }});
 		}
@@ -410,6 +412,27 @@ exports.list = function(req, res) {
 						query.push({ _id: { $in: releaseIds } });
 					}
 
+					next(null, query);
+				});
+
+			} else {
+				next(null, query);
+			}
+		},
+
+		// compat filter
+		function(query, next) {
+
+			if (!_.isUndefined(req.query.builds)) {
+
+				var buildIds = req.query.builds.split(',');
+				Build.find({ id: { $in: buildIds }}, function(err, builds) {
+					/* istanbul ignore if  */
+					if (err) {
+						api.fail(res, error(err, 'Error searching builds for user <%s>.', req.user.email).log('list'), 500);
+						return next(true);
+					}
+					query.push({ 'versions.files._compatibility': { $in: _.pluck(builds, '_id') }});
 					next(null, query);
 				});
 

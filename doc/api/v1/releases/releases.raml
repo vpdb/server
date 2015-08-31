@@ -56,10 +56,19 @@ get:
         Filters result by tag ID.
 
         You can provide multiple tags separated by comma. In that case, only
-        release that match all tags will be returned.
+        releases that match all tags are returned.
       required: false
       type: string
       example: hd,wip
+    builds:
+      description: |
+        Filters result by compatible VP builds.
+
+        You can provide multiple builds separated by comma. In that case,
+        releases that match at least one build are returned.
+      required: false
+      type: string
+      example: 9.9.0,physmod5
     flavor:
       description: |
         Filters releases by flavor.

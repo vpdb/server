@@ -814,5 +814,41 @@ describe('The VPDB `release` API', function() {
 			});
 		});
 
+		it('should list only releases for a given build', function(done) {
+
+			var builds = [ '10.x' ];
+			request.get('/api/v1/releases?builds=' + builds.join(',')).end(function(err, res) {
+				hlp.expectStatus(err, res, 200);
+
+				var filteredReleases = [];
+				_.each(builds, function(build) {
+					filteredReleases = filteredReleases.concat(_.filter(releases, { versions: [{ files: [{ compatibility: [{ id: build }] }]}]}));
+				});
+				expect(res.body).to.have.length(filteredReleases.length);
+				for (var i = 0; i < filteredReleases.length; i++) {
+					expect(_.findWhere(res.body, { id: filteredReleases[i].id })).to.be.ok();
+				}
+				done();
+			});
+		});
+
+		it('should list only releases for multiple builds', function(done) {
+
+			var builds = [ '10.x', 'physmod5' ];
+			request.get('/api/v1/releases?builds=' + builds.join(',')).end(function(err, res) {
+				hlp.expectStatus(err, res, 200);
+
+				var filteredReleases = [];
+				_.each(builds, function(build) {
+					filteredReleases = filteredReleases.concat(_.filter(releases, { versions: [{ files: [{ compatibility: [{ id: build }] }]}]}));
+				});
+				expect(res.body).to.have.length(filteredReleases.length);
+				for (var i = 0; i < filteredReleases.length; i++) {
+					expect(_.findWhere(res.body, { id: filteredReleases[i].id })).to.be.ok();
+				}
+				done();
+			});
+		});
+
 	});
 });

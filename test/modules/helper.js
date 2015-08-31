@@ -590,5 +590,5 @@ exports.getUser = function(name) {
 };
 
 exports.dump = function(res, title) {
-	console.log('%s: %s', title || 'RESPONSE', util.inspect(res.body ? res.body : res, null, 6, true));
+	console.log('%s: %s', title || 'RESPONSE', util.inspect(res.body ? res.body : res, null, null, true));
 };

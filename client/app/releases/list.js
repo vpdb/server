@@ -23,7 +23,7 @@ angular.module('vpdb.releases.list', [])
 
 	.controller('ReleaseListController', function($scope, $rootScope, $http, $localStorage, $templateCache, $location,
 												  ApiHelper, Flavors,
-												  ReleaseResource, TagResource) {
+												  ReleaseResource, TagResource, BuildResource) {
 
 		// view type config
 		var viewTypes = [ 'extended', 'table' ];
@@ -41,6 +41,7 @@ angular.module('vpdb.releases.list', [])
 		$scope.$query = null;
 		$scope.flavorFilter = { orientation: '', lighting: '' };
 		$scope.filterTags = [];
+		$scope.filterBuilds = [];
 		$scope.filterFlavorOpen = { };
 		$scope.sort = 'title';
 
@@ -49,6 +50,7 @@ angular.module('vpdb.releases.list', [])
 		$scope.flavors = _.values(Flavors);
 
 		$scope.tags = TagResource.query();
+		$scope.builds = BuildResource.query();
 
 		// preload partials
 		_.each(['compact', 'extended' ], function(view) {
@@ -118,6 +120,13 @@ angular.module('vpdb.releases.list', [])
 				delete query.tags;
 			}
 
+			// filter by builds
+			if ($scope.filterBuilds.length) {
+				query.builds = $scope.filterBuilds.join(',');
+			} else {
+				delete query.builds;
+			}
+
 			// filter by flavor
 			var queryFlavors = [];
 			for (f in $scope.flavorFilter) {
@@ -172,6 +181,10 @@ angular.module('vpdb.releases.list', [])
 			$scope.filterTagOpen = true;
 			$scope.filterTags = urlQuery.tags.split(',');
 		}
+		if (urlQuery.builds) {
+			$scope.filterBuildOpen = true;
+			$scope.filterBuilds = urlQuery.builds.split(',');
+		}
 		if (urlQuery.flavor) {
 			var f, queryFlavors = urlQuery.flavor.split(',');
 			for (var i = 0; i < queryFlavors.length; i++) {
@@ -202,6 +215,15 @@ angular.module('vpdb.releases.list', [])
 			refresh({});
 		});
 
+		$scope.$on('dataToggleBuild', function(event, build) {
+			if (_.contains($scope.filterBuilds, build)) {
+				$scope.filterBuilds.splice($scope.filterBuilds.indexOf(build), 1);
+			} else {
+				$scope.filterBuilds.push(build);
+			}
+			refresh({});
+		});
+
 		$scope.onFlavorChange = function() {
 			refresh({});
 		};
@@ -220,6 +242,21 @@ angular.module('vpdb.releases.list', [])
 				element.click(function() {
 					element.toggleClass('active');
 					scope.$emit('dataToggleTag', attrs.filterTag, element.hasClass('active'));
+				});
+			}
+		};
+	})
+
+	.directive('filterBuild', function() {
+		return {
+			restrict: 'A',
+			link: function(scope, element, attrs) {
+				if (_.contains(scope.filterBuilds, attrs.filterBuild)) {
+					element.addClass('active');
+				}
+				element.click(function() {
+					element.toggleClass('active');
+					scope.$emit('dataToggleBuild', attrs.filterBuild, element.hasClass('active'));
 				});
 			}
 		};

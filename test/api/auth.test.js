@@ -409,18 +409,6 @@ describe('The authentication engine of the VPDB API', function() {
 				}).end(hlp.status(500, 'does not contain user id', done));
 		});
 
-		it('should deny access if received profile data does contain neither display name nor username', function(done) {
-			request
-				.post('/api/v1/authenticate/mock')
-				.send({
-					provider: 'ipboard',
-					providerName: 'ipbtest',
-					profile: { provider: 'ipbtest', id: '123', profileUrl: 'http://localhost:8088/index.php?showuser=2',
-						emails: [ { value: 'valid.email@vpdb.ch' } ]
-					}
-				}).end(hlp.status(500, 'does contain neither display name nor username', done));
-		});
-
 	});
 
 });

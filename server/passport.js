@@ -104,6 +104,7 @@ exports.verifyCallbackOAuth = function(strategy, providerName) {
 
 	return function(req, accessToken, refreshToken, profile, callback) { // accessToken and refreshToken are ignored
 
+
 		if (!profile) {
 			logger.warn('[passport|%s] No profile data received.', logtag);
 			return callback(null, false, { message: 'No profile received from ' + logtag + '.'});
@@ -116,9 +117,12 @@ exports.verifyCallbackOAuth = function(strategy, providerName) {
 			logger.warn('[passport|%s] Profile data does not contain any user ID: %s', logtag, JSON.stringify(profile));
 			return callback(null, false, { message: 'Received profile from ' + logtag + ' does not contain user id.' });
 		}
+		var name;
 		if (!profile.displayName && !profile.username) {
 			logger.warn('[passport|%s] Profile data does contain neither display name nor username: %s', logtag, JSON.stringify(profile));
-			return callback(null, false, { message: 'Received profile from ' + logtag + ' does contain neither display name nor username.' });
+			name = profile.emails[0].value.substr(0, profile.emails[0].value.indexOf("@"));
+		} else {
+			name = profile.displayName || profile.username;
 		}
 
 		// create query condition
@@ -161,7 +165,7 @@ exports.verifyCallbackOAuth = function(strategy, providerName) {
 			if (!user) {
 				var newUser = {
 					provider: provider,
-					name: profile.displayName || profile.username,
+					name: name,
 					email: profile.emails[0].value
 				};
 				// optional data

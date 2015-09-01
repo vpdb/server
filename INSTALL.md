@@ -6,7 +6,7 @@
 * [Node.js](http://nodejs.org/) for dynamic page serving
 * [Nginx](http://nginx.org/) for static page serving and reverse proxy
 * [Git](http://git-scm.com/) for push deployments on client side
-* [Phusion Passenger](https://www.phusionpassenger.com/) for Node process management within Nginx ([Plan B](https://www.digitalocean.com/community/tutorials/how-to-set-up-a-node-js-application-for-production-on-ubuntu-14-04))
+* [PM2](https://github.com/Unitech/pm2), a production process manager for Node.js 
 * [MongoDB](https://www.mongodb.org/) for data storage
 * [Redis](http://redis.io/) for message queue, quota and ACLs 
 
@@ -142,24 +142,9 @@ Since Nginx doesn't support external modules (by design), you'll need need to co
 External modules:
 
  * [Naxsi](https://github.com/nbs-system/naxsi) - Anti XSS & SQL Injection
- * [Phusion Passenger](https://github.com/phusion/passenger) - A fast and robust web server and application server for Ruby, Python and Node.js (see below)
  * [ngx_headers_more](https://github.com/openresty/headers-more-nginx-module) - Set, add, and clear arbitrary output headers
- * [ngx_pagespeed](https://github.com/pagespeed/ngx_pagespeed) - Automatic PageSpeed optimization
+ * [ngx_pagespeed](https://github.com/pagespeed/ngx_pagespeed) - Automatic PageSpeed optimization (disabled for now)
  * [ngx_cache_purge](https://github.com/FRiCKLE/ngx_cache_purge) - Purge content from FastCGI, proxy, SCGI and uWSGI caches.
-
-Note we use Passenger's master, since beta2 at time of writing didn't compile.
-As soon as v5 goes final, it should be the one.
-
-Setup Phusion Passenger:
-
-	cd /usr/local/src
-	wget https://github.com/phusion/passenger/archive/release-5.0.15.tar.gz
-	tar xvfz release-5.0.15.tar.gz
-
-Add `/opt/passenger/bin` to `PATH`:
-
-	ln -s /usr/local/src/passenger-release-5.0.15 /opt/passenger
-	vi /etc/environment
 
 Download and compile Nginx. See [compile script](deploy/nginx/compile.sh) how to do that.
 
@@ -259,6 +244,30 @@ configure Nginx. For future deployements, refer to the [deployment guide](DEPLOY
 
 ## Setup Reverse Proxy
 
+
+### Setup PM2
+
+	sudo npm install -g pm2
+	sudo cp /repos/source/deploy/pm2 /etc -r
+	
+	su - deployer
+	pm2 start /etc/pm2/staging.json
+	pm2 startup ubuntu
+
+Run the displayed command as indicated
+	
+	pm2 save
+	exit
+
+Make PM2 start *after* Redis & co:
+
+	sudo update-rc.d -f pm2-init.sh remove
+	sudo vi /etc/init.d/pm2-init.sh
+
+Change `PM2_HOME` to `/repos/.pm2`
+
+	sudo update-rc.d pm2-init.sh defaults 99
+
 ### SSL Config
 
 	mkdir /etc/nginx/ssl
@@ -289,12 +298,6 @@ Update configuration:
 	sudo vi /etc/nginx/sites-available/vpdb-production.conf
 	sudo vi /etc/nginx/sites-available/vpdb-staging.conf
 	sudo vi /etc/nginx/sites-available/vpdb-staging-devsite.conf
-
-Make `deployer` able to reload Passenger:
-
-	sudo chmod 640 /etc/sudoers
-	echo "deployer ALL=(ALL) NOPASSWD: /opt/passenger/bin/passenger-config" >> /etc/sudoers
-	sudo chmod 440 /etc/sudoers
 
 Then start nginx:
 

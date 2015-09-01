@@ -58,8 +58,7 @@ cd nginx-1.9.4
 --with-ld-opt='-Wl,-z,relro -Wl,--as-needed' \
 --add-module=../headers-more-nginx-module-0.261 \
 --add-module=../ngx_pagespeed-1.9.32.6-beta \
---add-module=../ngx_cache_purge-2.3 \
---add-module=/opt/passenger/ext/nginx
+--add-module=../ngx_cache_purge-2.3
 
 # compile
 make

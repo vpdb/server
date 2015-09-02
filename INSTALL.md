@@ -249,12 +249,14 @@ configure Nginx. For future deployements, refer to the [deployment guide](DEPLOY
 
 	sudo npm install -g pm2
 	sudo cp /repos/source/deploy/pm2 /etc -r
-	
+	chown deployer:www-data /etc/pm2 -R
+	vi /etc/pm2/staging.json
+	vi /etc/pm2/production.json
 	su - deployer
 	pm2 start /etc/pm2/staging.json
 	pm2 startup ubuntu
 
-Run the displayed command as indicated
+Run the displayed command as root
 	
 	pm2 save
 	exit

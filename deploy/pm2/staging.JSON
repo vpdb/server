@@ -5,11 +5,11 @@
     "watch": false,
     "merge_logs": true,
     "cwd": "/var/www/staging/current",
-    "exec_mode": "cluster",
-    "instances": "0"
+    "exec_mode": "fork",
+    "instances": "1",
     "env": {
       "NODE_ENV": "production",
-      "PORT": "3000",
+      "PORT": "3003",
       "APP_NAME": "staging",
       "APP_SETTINGS": "/var/www/staging/settings.js",
       "NEW_RELIC_ENABLED": 0,

@@ -13,7 +13,7 @@
       "APP_NAME": "production",
       "APP_SETTINGS": "/var/www/production/settings.js",
       "NEW_RELIC_ENABLED": 0,
-      "NEW_RELIC_APP_NAME": "xxx.vpdb.io",
+      "NEW_RELIC_APP_NAME": "vpdb.io",
       "NEW_RELIC_LICENSE_KEY": "xxx",
       "NEW_RELIC_LOG_LEVEL": "info"
     }

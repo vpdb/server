@@ -1,21 +1,24 @@
 {
-  "apps": [{
-    "name": "production",
-    "script": "app.js",
-    "watch": false,
-    "merge_logs": true,
-    "cwd": "/var/www/production/current",
-    "exec_mode": "cluster",
-    "instances": "0",
-    "env": {
-      "NODE_ENV": "production",
-      "PORT": "4004",
-      "APP_NAME": "production",
-      "APP_SETTINGS": "/var/www/production/settings.js",
-      "NEW_RELIC_ENABLED": 0,
-      "NEW_RELIC_APP_NAME": "vpdb.io",
-      "NEW_RELIC_LICENSE_KEY": "xxx",
-      "NEW_RELIC_LOG_LEVEL": "info"
-    }
-  }]
+	"apps": [
+		{
+			"name": "production",
+			"script": "app.js",
+			"watch": false,
+			"merge_logs": true,
+			"cwd": "/var/www/production/current",
+			"exec_mode": "cluster",
+			"instances": "0",
+			"env": {
+				"NODE_ENV": "production",
+				"PORT": "4004",
+				"APP_NAME": "production",
+				"APP_SETTINGS": "/var/www/production/settings.js",
+				"PMX_ENABLED": 0,
+				"NEW_RELIC_ENABLED": 0,
+				"NEW_RELIC_APP_NAME": "vpdb.io",
+				"NEW_RELIC_LICENSE_KEY": "xxx",
+				"NEW_RELIC_LOG_LEVEL": "info"
+			}
+		}
+	]
 }

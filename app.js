@@ -1,5 +1,11 @@
 "use strict";
 
+// keymetrics.io http analysis
+if (process.env.PMX_ENABLED) {
+	require('pmx').init();
+}
+
+// new relic profiling
 if (process.env.NEW_RELIC_ENABLED) {
 	require('newrelic');
 }

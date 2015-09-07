@@ -234,7 +234,7 @@ exports.data = [
 	{ bg: 'No Good Gofers (Williams 1997).png', logo: 'No Good Gofers (Williams 1997).png', ipdb: 4338 },
 	{ bg: 'Party Zone (Williams 1991).png', logo: 'Party Zone (Bally 1991).png', ipdb: 1764 },
 	{ bg: 'Pinball Champ (Zaccaria 1982).png', logo: 'Pinball Champ (Zaccaria 1982).png', ipdb: 1793 },
-	{ bg: 'Pinball Magic (Capcom 1995).png', logo: 'Pinball Magic (Capcom 1995).png', ipdb: 3596 },
+	{ bg: 'Pinball Magic (Capcom 1995).png', logo: '', ipdb: 3596 },
 	{ bg: 'PinBot (Williams 1986).png', logo: 'PinBot (Williams 1986).png', ipdb: 1796 },
 	{ bg: 'Playboy (Bally 1978).png', logo: 'Playboy (Bally 1978).png', ipdb: 1823, id: 'playboy-bally' },
 	{ bg: 'Playboy (Stern 2002).png', logo: 'Playboy (Stern 2002).png', ipdb: 4506, id: 'playboy-stern' },

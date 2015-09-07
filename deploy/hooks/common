@@ -151,5 +151,5 @@ repo_last_tag() {
 node_cluster_reload() {
 	echo Deploying new code...
 	pm2 reload ${DEPLOY_ENV}
-	test $? -eq 0 || abort "Failed to trigger Passenger reload."
+	test $? -eq 0 || abort "Failed to trigger PM2 reload."
 }

@@ -23,7 +23,7 @@ var _ = require('lodash');
 var THREE = require('three');
 
 /**
- * Returns the four intersection points between the canvas and the 2D projection
+ * Returns the four intersection points between a canvas and the 2D projection
  * of the 3D table.
  *
  * @param {{ width: number,
@@ -38,29 +38,31 @@ var THREE = require('three');
  *           yOffset: number,
  *           zOffset: number }} table Table data read from the .vpt file.
  * @param {{ width: number,
- *           height: number}}   imageDimensions Canvas size, containing width and height in pixels
+ *           height: number}}   picDimensions Canvas size
  * @returns {THREE.Geometry} Projected geometry
  */
-exports.calculateProjection = function(table, imageDimensions) {
+exports.calculateProjection = function(table, picDimensions) {
 
 	// setup camera
-	var camera = new THREE.PerspectiveCamera(table.fov, imageDimensions.width / imageDimensions.height , 0.1, 10000000);
+	var camera = new THREE.PerspectiveCamera(table.fov, picDimensions.width / picDimensions.height , 0.1, 10000000);
 
 	// setup rectangle
 	var vptRect = createRect(table.width, table.height, 0);
 	vptRect.applyMatrix(new THREE.Matrix4().makeRotationX(THREE.Math.degToRad(-table.inclination)));
 
 	// project to camera
-	setFov(table.fov, imageDimensions.height, vptRect, camera);
-	var picRect = projectGeometry(vptRect, camera, imageDimensions);
+	setFov(table.fov, picDimensions.height, vptRect, camera);
+	var picRect = projectGeometry(vptRect, camera, picDimensions);
 	console.log('Projection: %j', picRect.vertices);
 
 	// scaling to fill screen...
-	var postScale = imageDimensions.height / (_.max(_.pluck(picRect.vertices, 'y')) - _.min(_.pluck(picRect.vertices, 'y')));
+	var postScale = picDimensions.height / (_.max(_.pluck(picRect.vertices, 'y')) - _.min(_.pluck(picRect.vertices, 'y')));
 	picRect.applyMatrix(new THREE.Matrix4().makeScale(postScale, postScale, postScale));
+	picRect.applyMatrix(new THREE.Matrix4().makeScale(1.02, 1, 1));
+
 
 	// moving to center
-	var mX = (imageDimensions.width - _.max(_.pluck(picRect.vertices, 'x')) - _.min(_.pluck(picRect.vertices, 'x'))) / 2;
+	var mX = (picDimensions.width - _.max(_.pluck(picRect.vertices, 'x')) - _.min(_.pluck(picRect.vertices, 'x'))) / 2;
 	var mY = -picRect.vertices[1].y;
 	picRect.applyMatrix(new THREE.Matrix4().makeTranslation(mX, mY, 0));
 	console.log('Projection (centered): %j', picRect.vertices);
@@ -72,8 +74,8 @@ exports.calculateProjection = function(table, imageDimensions) {
 /**
  * Sets the field of vision.
  *
- * Note that in order to keep the size of the projection the same, the distance
- * of the table rectangle is updated.
+ * In order to keep the size of the projection the same, the distance
+ * of the table rectangle is updated (otherwise only size changes).
  *
  * @param {number} fov FOV read from .vpt file
  * @param {number} height Height of the table to display
@@ -81,6 +83,8 @@ exports.calculateProjection = function(table, imageDimensions) {
  * @param {THREE.PerspectiveCamera} camera Projection camera
  */
 function setFov(fov, height, rect, camera) {
+
+	fov *= 0.85;
 	var dist = height / (2 * Math.tan(THREE.Math.degToRad(fov / 2)));
 	var distD = dist - rect.vertices[0].z;
 	rect.applyMatrix(new THREE.Matrix4().makeTranslation(0, 0, distD));

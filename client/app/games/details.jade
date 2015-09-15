@@ -13,8 +13,9 @@ include ../template/_mixins
 
 	// left column (main content)
 	.col-sm-9.col-sm-pull-3.col--main
-		h1.h--primary {{ game.title }}
-		h1.h--small.pull-right {{ game.manufacturer }} &middot; {{ game.year }}
+		.title
+			h1.title-main.h--primary {{ game.title }}
+			h1.title-sub.h--small {{ game.manufacturer }} &middot; {{ game.year }}
 		hr
 		h1 Releases
 		label(ng-hide="game.releases.length > 0") No releases for this game available.

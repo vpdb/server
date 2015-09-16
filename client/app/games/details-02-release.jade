@@ -11,8 +11,8 @@ include ../template/_mixins
 			slide(ng-repeat="slide in portraitShots", active="slide.active")
 				img(ng-src="{{ slide.url }}")
 
-		button.btn.btn-primary.btn-block.padder-top-3x(ng-click="download(game)")
-			+icon('download').space-right.hidden-sm.hidden-md
+		button.btn.btn-primary.padder-top-3x.text-center(ng-click="download(game)")
+			+icon('download-circle').space-right.hidden-sm.hidden-md
 			| Download
 
 		//-- RELEASE RATING
@@ -56,7 +56,7 @@ include ../template/_mixins
 			+icon('gear').shift-up-2x.space-right
 			i Author Zone:
 
-		a.btn.btn-primary.btn-block(ui-sref="addReleaseVersion({ id: game.id, releaseId: release.id })")
+		a.btn.btn-primary.text-center(ui-sref="addReleaseVersion({ id: game.id, releaseId: release.id })")
 			+icon('plus-circle').space-right.hidden-sm.hidden-md
 			| Upload File
 

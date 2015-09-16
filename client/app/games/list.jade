@@ -5,15 +5,6 @@ include ../template/_mixins
 	//- main column
 	.col-sm-9.col--main
 		h1.h--primary Games
-
-		//- view type toggles
-		ul.nav-icons
-			li.a(ng-class="{ active: viewtype == 'compact' }")
-				+icon('th-compact')(ng-click="switchview('compact')")
-			li.a(ng-class="{ active: viewtype == 'extended' }")
-				+icon('th-extended')(ng-click="switchview('extended')")
-			li.a(ng-class="{ active: viewtype == 'table' }")
-				+icon('th-table')(ng-click="switchview('table')")
 		hr
 
 		//- number of games counter

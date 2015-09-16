@@ -12,8 +12,6 @@ include ../template/_mixins
 				+icon('th-compact')(ng-click="switchview('compact')")
 			li.a(ng-class="{ active: viewtype == 'extended' }")
 				+icon('th-extended')(ng-click="switchview('extended')")
-			li.a(ng-class="{ active: viewtype == 'table' }")
-				+icon('th-table')(ng-click="switchview('table')")
 		hr
 
 		//- number of games counter

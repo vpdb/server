@@ -107,7 +107,7 @@ angular.module('vpdb.common', [])
 		return {
 			restrict: 'A',
 			link: function(scope, element, attrs) {
-				var icon = '<i class="icon icon-markdown"></i>&nbsp;&nbsp;';
+				var icon = '<svg class="svg-icon space-right shift-up"><use xlink:href="#icon-markdown"></use></svg>';
 				element.html(icon + attrs.markdownInfo.replace(/markdown/gi, '<a href="#" ng-click="markdownInfo()">Markdown</a>'));
 				element.find('a').click(function() {
 					ModalService.markdown();

@@ -32,6 +32,7 @@ var Build = require('mongoose').model('Build');
 var Game = require('mongoose').model('Game');
 var Star = require('mongoose').model('Star');
 var Tag = require('mongoose').model('Tag');
+var File = require('mongoose').model('File');
 var api = require('./api');
 
 var error = require('../../modules/error')('api', 'release');
@@ -433,6 +434,39 @@ exports.list = function(req, res) {
 						return next(true);
 					}
 					query.push({ 'versions.files._compatibility': { $in: _.pluck(builds, '_id') }});
+					next(null, query);
+				});
+
+			} else {
+				next(null, query);
+			}
+		},
+
+		// file size filter
+		function(query, next) {
+
+			var filesize = parseInt(req.query.filesize);
+			if (filesize) {
+				var threshold = parseInt(req.query.threshold);
+				var q = { file_type: 'release' };
+				if (threshold) {
+					q.bytes = { $gt: filesize - threshold, $lt: filesize + threshold };
+				} else {
+					q.bytes = filesize;
+				}
+				console.log(q);
+				File.find(q, function(err, files) {
+					/* istanbul ignore if  */
+					if (err) {
+						api.fail(res, error(err, 'Error searching files with size %s.', filesize).log('list'), 500);
+						return next(true);
+					}
+					if (files && files.length > 0) {
+						query.push({ 'versions.files._file': { $in: _.pluck(files, '_id') }});
+					} else {
+						query.push({ _id: null }); // no result
+					}
+
 					next(null, query);
 				});
 

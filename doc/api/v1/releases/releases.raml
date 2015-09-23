@@ -97,6 +97,25 @@ get:
       required: false
       type: boolean
       example: true
+    filesize:
+      description: |
+        Only lists releases which contain a file with given size in bytes.
+
+        This is useful for matching local table files with releases at VPDB.
+        See also `threshold`.
+      required: false
+      type: number
+      example: 68820992
+    threshold:
+      description: |
+        Sets a threshold when using `filesize`.
+
+        When set to `X`, files with size between `X` - `filesize` and `X` +
+        `filesize` are returned.
+      required: false
+      type: number
+      example: 100
+
     thumb_flavor:
       description: |
         Sets a preference which flavor of the thumbnail is returned.

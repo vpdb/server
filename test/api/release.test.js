@@ -850,5 +850,8 @@ describe('The VPDB `release` API', function() {
 			});
 		});
 
+		it('should only list releases with table files of a given size');
+		it('should only list releases with table files of a given size and threshold');
+
 	});
 });

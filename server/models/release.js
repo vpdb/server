@@ -345,7 +345,7 @@ ReleaseSchema.statics.toSimple = function(release, opts) {
 	var i, j, file, thumb;
 	var rls = _.pick(release.toObj ? release.toObj() : release, [ 'id', 'name', 'created_at', 'authors', 'counter' ]);
 
-	rls.game = _.pick(release._game, ['id', 'title']);
+	rls.game = _.pick(release._game, ['id', 'title', 'manufacturer', 'year']);
 
 	// if results comes from an aggregation, we don't have a model and need to call toObj manually...
 	if (!release.toObj) {

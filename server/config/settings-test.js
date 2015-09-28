@@ -48,6 +48,7 @@ module.exports = {
 		tmp: '.',
 		authorizationHeader: 'Authorization',
 		generateTableScreenshot: false,
+		pusher: { enabled: false, options: { } },
 		passport: {
 			google: { enabled: false, clientID: 'TEST_CLIENT_ID', clientSecret: 'TEST_CLIENT_SECRET' },
 			github: { enabled: true, clientID: 'TEST_CLIENT_ID', clientSecret: 'TEST_CLIENT_SECRET' },

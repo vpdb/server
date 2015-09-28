@@ -372,6 +372,29 @@ module.exports = {
 		},
 
 		/**
+		 * Pusher settings
+		 */
+		pusher: {
+
+			enabled: function(isEnabled) {
+				/* istanbul ignore if */
+				if (!_.isBoolean(isEnabled)) {
+					return 'Enabled flag must be either true or false';
+				}
+			},
+			options: function(opt, settings) {
+				/* istanbul ignore if */
+				if (!settings.vpdb.pusher || !settings.vpdb.pusher.enabled) {
+					return;
+				}
+				/* istanbul ignore if */
+				if (!_.isObject(opt)) {
+					return 'Pusher options must be an object.';
+				}
+			}
+		},
+
+		/**
 		 * Configure login strategies here.
 		 */
 		passport: {

@@ -293,6 +293,28 @@ module.exports = {
 		},
 
 		/**
+		 * Pusher settings
+		 * See https://pusher.com
+		 */
+		pusher: {
+
+			/**
+			 * Set true for realtime support.
+			 */
+			enabled: false,
+
+			/**
+			 * Options passed to the library
+			 */
+			options: {
+				appId: '',
+				key: '',
+				secret: '',
+				encrypted: true
+			}
+		},
+
+		/**
 		 * Configure login strategies here.
 		 */
 		passport: {

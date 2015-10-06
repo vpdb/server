@@ -70,7 +70,8 @@ var init = function(next) {
 				{ resources: 'tokens', permissions: [ 'add', 'list', 'delete', 'update' ] },
 				{ resources: 'builds', permissions: [ 'add', 'delete-own' ] },
 				{ resources: 'comments', permissions: [ 'add' ] },
-				{ resources: 'roms', permissions: [ 'add', 'delete-own' ] }
+				{ resources: 'roms', permissions: [ 'add', 'delete-own' ] },
+				{ resources: 'messages', permissions: [ 'receive' ]}
 			]
 		}, {
 			roles: 'mocha',

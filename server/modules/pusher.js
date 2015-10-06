@@ -17,25 +17,13 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-var api = require('./api');
+"use strict";
 
-exports.anon = api.anon;
-exports.auth = api.auth;
-exports.builds = require('./builds');
-exports.comments = require('./comments');
-exports.ping = api.ping;
-exports.events = require('./events');
-exports.files = require('./files');
-exports.games = require('./games');
-exports.ipdb = require('./ipdb');
-exports.messages = require('./messages');
-exports.ratings = require('./ratings');
-exports.releases = require('./releases');
-exports.roles = require('./roles');
-exports.roms = require('./roms');
-exports.stars = require('./stars');
-exports.tags = require('./tags');
-exports.tokens = require('./tokens');
-exports.user = require('./user');
-exports.users = require('./users');
-exports.userlogs = require('./userlogs');
+var Pusher = require('pusher');
+var config = require('./settings').current;
+
+exports.isEnabled = config.vpdb.pusher.enabled;
+
+if (exports.isEnabled) {
+	exports.api = new Pusher(config.vpdb.pusher.options);
+}

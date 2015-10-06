@@ -63,6 +63,7 @@
 		"pkginfo": "0.3.0",
 		"pmx": "0.4.6",
 		"pngquant": "0.5.0",
+		"pusher": "1.0.6",
 		"randomstring": "1.0.7",
 		"redis": "0.12.1",
 		"request": "2.61.0",

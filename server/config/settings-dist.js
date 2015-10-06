@@ -294,7 +294,7 @@ module.exports = {
 
 		/**
 		 * Pusher settings
-		 * See https://pusher.com
+		 * See https://github.com/pusher/pusher-http-node
 		 */
 		pusher: {
 

@@ -20,6 +20,7 @@
 "use strict";
 
 var settings = require('../../modules/settings');
+var pusher = require('../../modules/pusher');
 
 exports.register = function(app, api) {
 
@@ -27,10 +28,13 @@ exports.register = function(app, api) {
 	app.get(settings.apiPath('/ipdb/:id'), api.auth(api.ipdb.view, 'ipdb', 'view'));
 
 	// roles
-	app.get(settings.apiPath('/roles'),           api.auth(api.roles.list, 'roles', 'list'));
+	app.get(settings.apiPath('/roles'), api.auth(api.roles.list, 'roles', 'list'));
 
 	// events
-	app.get(settings.apiPath('/events'),          api.anon(api.events.list()));
+	app.get(settings.apiPath('/events'), api.anon(api.events.list()));
+
+	// pusher
+	app.post(settings.apiPath('/messages/authenticate'), api.auth(api.messages.authenticate, 'messages', 'receive'));
 
 	// ping
 	app.get(settings.apiPath('/ping'), api.anon(api.ping));

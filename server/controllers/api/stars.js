@@ -29,6 +29,7 @@ var LogEvent = require('mongoose').model('LogEvent');
 var api = require('./api');
 
 var error = require('../../modules/error')('api', 'star');
+var pusher = require('../../modules/pusher');
 
 // releases
 exports.starRelease = function(req, res) {
@@ -115,6 +116,7 @@ function star(req, res, type, find) {
 
 				api.success(res, { created_at: obj.created_at, total_stars: entity.counter.stars + 1 }, 201);
 				LogEvent.log(req, 'star_' + type, true, logPayload(entity, type), logRefs(star, entity, type));
+				pusher.star(type, entity, req.user);
 
 			}, 'Error incrementing counter.'));
 		}, 'Error starring release.'));
@@ -141,6 +143,7 @@ function unstar(req, res, type, find) {
 
 				api.success(res, null, 204);
 				LogEvent.log(req, 'unstar_' + type, true, logPayload(entity, type), logRefs(star, entity, type));
+				pusher.unstar(type, entity, req.user);
 
 			}, 'Error incrementing counter.'), true);
 		}, 'Error unstarring.'));

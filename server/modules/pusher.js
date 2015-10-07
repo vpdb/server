@@ -27,3 +27,15 @@ exports.isEnabled = config.vpdb.pusher.enabled;
 if (exports.isEnabled) {
 	exports.api = new Pusher(config.vpdb.pusher.options);
 }
+
+exports.star = function(type, entity, user) {
+	if (exports.isEnabled) {
+		exports.api.trigger('private-user-' + user.id, 'star', { id: entity.id, type: type });
+	}
+};
+
+exports.unstar = function(type, entity, user) {
+	if (exports.isEnabled) {
+		exports.api.trigger('private-user-' + user.id, 'unstar', { id: entity.id, type: type });
+	}
+};

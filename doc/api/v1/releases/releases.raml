@@ -51,6 +51,17 @@ get:
       required: false
       type: string
       example: addams
+    ids:
+      description: |
+        Only display releases with given IDs.
+
+        This is useful if you have an existing list of releases for which you
+        want to retrieve updated data.
+
+        IDs are separated by comma.
+      required: false
+      type: string
+      example: V1mNPyWjh,EJef4v1Wi3
     tags:
       description: |
         Filters result by tag ID.

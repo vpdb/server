@@ -738,6 +738,17 @@ describe('The VPDB `release` API', function() {
 			});
 		});
 
+		it('should list only releases for given IDs', function(done) {
+			var ids = [ releases[0].id, releases[1].id ];
+			request.get('/api/v1/releases?ids=' + ids.join(',')).end(function(err, res) {
+				hlp.expectStatus(err, res, 200);
+				expect(res.body).to.have.length(ids.length);
+				expect(_.findWhere(res.body, { id: releases[0].id })).to.be.ok();
+				expect(_.findWhere(res.body, { id: releases[1].id })).to.be.ok();
+				done();
+			});
+		});
+
 		it('should list only tagged releases', function(done) {
 
 			var tags = [ 'dof' ];

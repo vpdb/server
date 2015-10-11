@@ -352,6 +352,12 @@ exports.list = function(req, res) {
 		}
 	}
 
+	// filter by release id
+	if (req.query.ids) {
+		var ids = req.query.ids.split(',');
+		query.push({ id: { $in: ids }});
+	}
+
 	// now to the async stuff:
 	async.waterfall([
 
@@ -516,7 +522,6 @@ exports.list = function(req, res) {
 				starMap[id] = true;
 			});
 		}
-		console.log(starMap);
 
 		var sortBy = api.sortParams(req, { modified_at: 1 }, {
 			modified_at: '-modified_at',

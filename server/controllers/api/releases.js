@@ -390,8 +390,27 @@ exports.list = function(req, res) {
 			}
 		},
 
-		// starred
+		// stars
 		function(query, next) {
+
+			// only if logged
+			if (!req.user) {
+				return next(null, query, null);
+			}
+
+			Star.find({ type: 'release', _from: req.user._id }, '_ref.release', function(err, stars) {
+				/* istanbul ignore if  */
+				if (err) {
+					api.fail(res, error(err, 'Error searching starred releases for user <%s>.', req.user.email).log('list'), 500);
+					return next(true);
+				}
+				var releaseIds = _.pluck(_.pluck(stars, '_ref'), 'release');
+				next(null, query, releaseIds);
+			});
+		},
+
+		// starred
+		function(query, stars, next) {
 
 			if (!_.isUndefined(req.query.starred)) {
 
@@ -399,30 +418,17 @@ exports.list = function(req, res) {
 					api.fail(res, error('Must be logged when listing starred releases.'), 401);
 					return next(true);
 				}
-
-				Star.find({ type: 'release', _from: req.user._id }, '_ref.release', function(err, stars) {
-					/* istanbul ignore if  */
-					if (err) {
-						api.fail(res, error(err, 'Error searching starred releases for user <%s>.', req.user.email).log('list'), 500);
-						return next(true);
-					}
-					var releaseIds = _.pluck(_.pluck(stars, '_ref'), 'release');
-					if (req.query.starred === "false") {
-						query.push({ _id: { $nin: releaseIds } });
-					} else {
-						query.push({ _id: { $in: releaseIds } });
-					}
-
-					next(null, query);
-				});
-
-			} else {
-				next(null, query);
+				if (req.query.starred === "false") {
+					query.push({ _id: { $nin: stars } });
+				} else {
+					query.push({ _id: { $in: stars } });
+				}
 			}
+			next(null, query, stars);
 		},
 
 		// compat filter
-		function(query, next) {
+		function(query, stars, next) {
 
 			if (!_.isUndefined(req.query.builds)) {
 
@@ -434,16 +440,16 @@ exports.list = function(req, res) {
 						return next(true);
 					}
 					query.push({ 'versions.files._compatibility': { $in: _.pluck(builds, '_id') }});
-					next(null, query);
+					next(null, query, stars);
 				});
 
 			} else {
-				next(null, query);
+				next(null, query, stars);
 			}
 		},
 
 		// file size filter
-		function(query, next) {
+		function(query, stars, next) {
 
 			var filesize = parseInt(req.query.filesize);
 			if (filesize) {
@@ -467,16 +473,16 @@ exports.list = function(req, res) {
 						query.push({ _id: null }); // no result
 					}
 
-					next(null, query);
+					next(null, query, stars);
 				});
 
 			} else {
-				next(null, query);
+				next(null, query, stars);
 			}
 		},
 
 		// inner filters
-		function(query, next) {
+		function(query, stars, next) {
 
 			var filter = [];
 			if (!_.isUndefined(req.query.flavor)) {
@@ -493,16 +499,24 @@ exports.list = function(req, res) {
 				});
 			}
 
-			next(null, query, filter);
+			next(null, query, stars, filter);
 		}
 
 	// result
-	], function(err, query, filter) {
+	], function(err, query, stars, filter) {
 
 		if (err) {
 			// error has been treated.
 			return;
 		}
+
+		var starMap = {};
+		if (stars) {
+			_.map(stars, function(id) {
+				starMap[id] = true;
+			});
+		}
+		console.log(starMap);
 
 		var sortBy = api.sortParams(req, { modified_at: 1 }, {
 			modified_at: '-modified_at',
@@ -534,6 +548,9 @@ exports.list = function(req, res) {
 					}
 
 					releases = _.map(releases, function(release) {
+						if (stars) {
+							transformOpts.starred = starMap[release._id] ? true : false;
+						}
 						return Release.toSimple(release, transformOpts);
 					});
 
@@ -565,6 +582,9 @@ exports.list = function(req, res) {
 					return api.fail(res, error(err, 'Error listing releases').log('list'), 500);
 				}
 				releases = _.map(releases, function(release) {
+					if (stars) {
+						transformOpts.starred = starMap[release._id] ? true : false;
+					}
 					return release.toSimple(transformOpts);
 				});
 				api.success(res, releases, 200, api.paginationOpts(pagination, count));

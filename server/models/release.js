@@ -455,6 +455,10 @@ ReleaseSchema.statics.toSimple = function(release, opts) {
 		files: []
 	};
 
+	if (!_.isUndefined(opts.starred)) {
+		rls.starred = opts.starred;
+	}
+
 	_.each(latestVersion.files, function(file) {
 		rls.latest_version.files.push({
 			released_at: file.released_at,

@@ -600,6 +600,12 @@ ReleaseSchema.options.toObject = {
 		delete release._created_by;
 		delete release._tags;
 		delete release._game;
+		if (_.isArray(release.links)) {
+			_.each(release.links, function(link) {
+				delete link._id;
+				delete link.id;
+			});
+		}
 	}
 };
 VersionSchema.options.toObject = {

@@ -466,7 +466,6 @@ exports.list = function(req, res) {
 				} else {
 					q.bytes = filesize;
 				}
-				console.log(q);
 				File.find(q, function(err, files) {
 					/* istanbul ignore if  */
 					if (err) {

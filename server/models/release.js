@@ -463,7 +463,7 @@ ReleaseSchema.statics.toSimple = function(release, opts) {
 		rls.latest_version.files.push({
 			released_at: file.released_at,
 			flavor: file.flavor,
-			compatibility: _.pluck(file._compatibility, 'id'),
+			compatibility: _.map(file._compatibility, function(c) { return _.pick(c, 'id'); }),
 			file: _.pick(file._file, ['id', 'name', 'bytes', 'mime_type'])
 		});
 	});

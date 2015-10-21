@@ -436,4 +436,7 @@ module.exports = {
 		authorizationHeader: 'Authorization'
 	}
 
+	// this is optional:
+	//, ffmpeg: { path: '/opt/bin/ffmpeg' }
+
 };

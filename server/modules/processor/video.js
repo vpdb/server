@@ -23,6 +23,7 @@ var _ = require('lodash');
 var logger = require('winston');
 var ffmpeg = require('fluent-ffmpeg');
 
+var config = require('../settings').current;
 var error = require('../error')('processor', 'video');
 
 /**
@@ -37,6 +38,12 @@ var error = require('../error')('processor', 'video');
  * @constructor
  */
 function VideoProcessor() {
+
+	// force ffmpeg path if set
+	if (config.ffmpeg && config.ffmpeg.path) {
+		ffmpeg.setFfmpegPath(config.ffmpeg.path);
+	}
+
 	this.name = 'video';
 
 	this.variations = {

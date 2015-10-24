@@ -606,6 +606,7 @@ exports.list = function(req, res) {
 exports.view = function(req, res) {
 
 	var query = Release.findOne({ id: req.params.id })
+		.populate({ path: '_game' })
 		.populate({ path: '_tags' })
 		.populate({ path: 'authors._user' })
 		.populate({ path: 'versions.files._file' })

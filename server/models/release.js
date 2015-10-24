@@ -595,6 +595,7 @@ ReleaseSchema.options.toObject = {
 	virtuals: true,
 	transform: function(doc, release) {
 		release.tags = release._tags;
+		release.game = _.pick(release._game, ['id', 'title', 'manufacturer', 'year']);
 		delete release.__v;
 		delete release._id;
 		delete release._created_by;

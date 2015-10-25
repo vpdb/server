@@ -36,6 +36,11 @@ angular.module('vpdb.common', [])
 		});
 	})
 
+	.factory('PlanResource', function($resource, ConfigService) {
+		return $resource(ConfigService.apiUri('/plans'), {}, {
+		});
+	})
+
 	.factory('IpdbResource', function($resource, ConfigService) {
 		return $resource(ConfigService.apiUri('/ipdb/:id'), {}, {
 		});

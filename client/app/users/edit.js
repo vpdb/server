@@ -2,12 +2,15 @@
 
 angular.module('vpdb.users.edit', [])
 
-	.controller('AdminUserEditCtrl', function($scope, $rootScope, $modalInstance, ApiHelper, UserResource, user, roles) {
+	.controller('AdminUserEditCtrl', function($scope, $rootScope, $modalInstance, ApiHelper,
+						  UserResource, PlanResource, user, roles) {
 
 		$scope.user = {};
 		$scope.roles = roles;
 		$scope.originalName = user.name;
 		angular.copy(user, $scope.user);
+
+		$scope.plans = PlanResource.query();
 
 		$scope.toggleSelection = function toggleSelection(roleName) {
 			var idx = $scope.user.roles.indexOf(roleName);

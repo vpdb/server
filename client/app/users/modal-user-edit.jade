@@ -39,9 +39,19 @@ include ../template/_mixins
 								h4.h--no-margin.h--lighter {{ role.name }}
 								div {{ role.description }}
 
-			div.alert.alert-danger(ng-show="errors.name")
-				+icon('warning').shift-up.space-right
-				| {{ errors.name }}
+
+			.form-group
+				label.col-sm-3.control-label Plan
+				.col-sm-7
+					ul.list--checkboxes.list--condensed
+						li(ng-repeat="plan in plans")
+							.radio--lg.radio--lg-twoliner
+								label
+									input(type="radio", name="plans", value="{{ plan.name }}", ng-model="user.plan")
+									span {{ plan.name }}
+									span
+										i(ng-hide="plan.unlimited") {{ plan.credits }} credits per {{ plan.per }}
+										i(ng-show="plan.unlimited") Unlimited credits
 
 			div.alert.alert-danger(ng-show="errors.username")
 				+icon('warning').shift-up.space-right

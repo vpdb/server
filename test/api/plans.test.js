@@ -17,26 +17,30 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-var api = require('./api');
+"use strict"; /* global describe, before, after, it */
 
-exports.anon = api.anon;
-exports.auth = api.auth;
-exports.builds = require('./builds');
-exports.comments = require('./comments');
-exports.ping = api.ping;
-exports.events = require('./events');
-exports.files = require('./files');
-exports.games = require('./games');
-exports.ipdb = require('./ipdb');
-exports.messages = require('./messages');
-exports.plans = require('./plans');
-exports.ratings = require('./ratings');
-exports.releases = require('./releases');
-exports.roles = require('./roles');
-exports.roms = require('./roms');
-exports.stars = require('./stars');
-exports.tags = require('./tags');
-exports.tokens = require('./tokens');
-exports.user = require('./user');
-exports.users = require('./users');
-exports.userlogs = require('./userlogs');
+var _ = require('lodash');
+var fs = require('fs');
+var path = require('path');
+var async = require('async');
+var request = require('superagent');
+var expect = require('expect.js');
+
+var superagentTest = require('../modules/superagent-test');
+var hlp = require('../modules/helper');
+
+superagentTest(request);
+
+describe('The VPDB `plan` API', function() {
+
+	it('should list all plans', function(done) {
+		request
+			.get('/api/v1/plans')
+			.save({ path: 'plans/list'})
+			.end(function(err, res) {
+				hlp.expectStatus(err, res, 200);
+				expect(res.body).to.be.an('array');
+				done();
+			});
+	});
+});

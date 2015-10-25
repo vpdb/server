@@ -38,4 +38,7 @@ exports.register = function(app, api) {
 
 	// ping
 	app.get(settings.apiPath('/ping'), api.anon(api.ping));
+
+	// plans
+	app.get(settings.apiPath('/plans'), api.anon(api.plans.list));
 };

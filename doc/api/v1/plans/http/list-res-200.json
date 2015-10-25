@@ -1,0 +1,36 @@
+200 OK
+Content-Type: application/json; charset=utf-8
+Content-Length: 400
+Etag: W/"190-iBNyGlfcohK5ENxH8XLtMg"
+
+[
+  {
+    "credits": 3,
+    "per": "day",
+    "name": "free",
+    "is_default": true
+  },
+  {
+    "credits": 50,
+    "per": "day",
+    "name": "bronze",
+    "is_default": false
+  },
+  {
+    "credits": 200,
+    "per": "day",
+    "name": "silver",
+    "is_default": false
+  },
+  {
+    "credits": 5000,
+    "per": "day",
+    "name": "gold",
+    "is_default": false
+  },
+  {
+    "unlimited": true,
+    "name": "unlimited",
+    "is_default": false
+  }
+]

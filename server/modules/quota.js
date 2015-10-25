@@ -79,7 +79,7 @@ Quota.prototype.getCurrent = function(user, callback) {
 			weight: -2,
 			allow: quotaConfig.plans[plan].credits
 		},
-		function(err, result) {
+		function (err) {
 			if (err) {
 				logger.error('[quota] Error retrieving quota for <%s>: %s', user.email, err, {});
 				return callback(err);
@@ -91,7 +91,7 @@ Quota.prototype.getCurrent = function(user, callback) {
 					weight: 2,
 					allow: quotaConfig.plans[plan].credits
 				},
-				function(err, result) {
+				function (err, result) {
 					if (err) {
 						logger.error('[quota] Error retrieving quota for <%s>: %s', user.email, err, {});
 						return callback(err);

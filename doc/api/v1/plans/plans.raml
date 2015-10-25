@@ -1,0 +1,16 @@
+displayName: Plans
+description: |
+  Plans define user quotas and potential premium features.
+
+get:
+  securedBy: [ ]
+  description: |
+    List all available plans.
+  body:
+    role/anon:
+      example: !include http/list-req.json
+  responses:
+    200:
+      body:
+        role/anon:
+          example: !include http/list-res-200.json

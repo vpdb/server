@@ -189,6 +189,20 @@ $input-background-light-focus = rgba(white, 0.75)
 			&:checked + span:before
 				border-color #aaa
 
+	.radio--lg.radio--lg-lighter, .radio--lg-twoliner.radio--lg-lighter
+		input[type=radio]
+			+ span:before
+				background #e2e2e2
+				border-color #777777
+			&:checked + span:before
+				background #777777
+				box-shadow inset 0 0 0 4px #e2e2e2
+		&:hover > label > input[type=radio]
+			+ span:before
+				border-color #3b3b3b
+			&:checked + span:before
+				border-color #777777
+
 	.radio--lg
 		input[type=radio] + span
 				color $color-light-inv
@@ -207,4 +221,15 @@ $input-background-light-focus = rgba(white, 0.75)
 			&:checked
 				+ span, + span + span
 					color $color-lightish-inv
+
+	.radio--lg-twoliner.radio--lg-lighter
+		input[type=radio] + span
+			color $color-lighter-inv
+		&:hover > label > input[type=radio]
+			+ span, + span + span
+				color $color-lightest-inv
+			&:checked
+				+ span, + span + span
+					color $color-lighter-inv
+
 

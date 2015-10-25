@@ -45,13 +45,13 @@ include ../template/_mixins
 				.col-sm-7
 					ul.list--checkboxes.list--condensed
 						li(ng-repeat="plan in plans")
-							.radio--lg.radio--lg-twoliner
+							.radio--lg.radio--lg-twoliner.radio--lg-lighter
 								label
 									input(type="radio", name="plans", value="{{ plan.name }}", ng-model="user.plan")
-									span {{ plan.name }}
+									span: h4.h--no-margin.h--lighter {{ plan.name }}
 									span
-										i(ng-hide="plan.unlimited") {{ plan.credits }} credits per {{ plan.per }}
-										i(ng-show="plan.unlimited") Unlimited credits
+										span(ng-hide="plan.unlimited") {{ plan.credits }} credits per {{ plan.per }}
+										span(ng-show="plan.unlimited") Unlimited credits
 
 			div.alert.alert-danger(ng-show="errors.username")
 				+icon('warning').shift-up.space-right

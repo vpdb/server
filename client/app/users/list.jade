@@ -27,4 +27,5 @@ include ../template/_mixins
 				td {{ user.name }}
 				td {{ user.email }}
 				td {{ user.roles.join(' ') }}
+				td {{ user.plan }}
 		span(ng-hide="users.length > 0") No users found.

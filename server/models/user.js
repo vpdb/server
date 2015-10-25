@@ -61,6 +61,7 @@ var fields = {
 		tablefile_name: { type: String },
 		flavor_tags:    { type: Schema.Types.Mixed }
 	},
+	credits: { type: Schema.Types.Number },
 	counter: {
 		comments:     { type: Number, 'default': 0 },
 		downloads:    { type: Number, 'default': 0 },

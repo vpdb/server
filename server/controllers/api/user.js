@@ -26,9 +26,12 @@ var randomstring = require('randomstring');
 
 var User = require('mongoose').model('User');
 var LogUser = require('mongoose').model('LogUser');
+
 var acl = require('../../acl');
 var api = require('./api');
 var auth = require('../auth');
+
+var quota = require('../../modules/quota');
 var mailer = require('../../modules/mailer');
 var error = require('../../modules/error')('api', 'user');
 var config = require('../../modules/settings').current;
@@ -47,7 +50,16 @@ exports.view = function(req, res) {
 			// TODO check if it's clever to reveal anything here
 			return api.fail(res, err, 500);
 		}
-		api.success(res, _.extend(req.user.toDetailed(), acls), 200);
+
+		quota.getCurrent(req.user, function(err, quota) {
+
+			if (err) {
+				// TODO check if it's clever to reveal anything here
+				return api.fail(res, err, 500);
+			}
+
+			api.success(res, _.extend(req.user.toDetailed(), acls, { quota: quota }), 200);
+		});
 	});
 };
 

@@ -53,6 +53,62 @@ function Quota() {
 }
 
 /**
+ * Returns the current rate limits for the given user.
+ * @param user
+ * @param callback
+ */
+Quota.prototype.getCurrent = function(user, callback) {
+
+	var plan = user.plan || quotaConfig.defaultPlan;
+
+	// undefined? plans might have changed and migration failed or whatever: fall back to default plan
+	if (!_.isObject(quotaConfig.plans[plan])) {
+		plan = quotaConfig.defaultPlan;
+	}
+
+	// unlimited?
+	if (quotaConfig.plans[plan].unlimited === true) {
+		return callback(null, { unlimtied: true });
+	}
+
+	var that = this;
+
+	// retrieve
+	that.quota[quotaConfig.plans[plan].per].apply({
+			identifier: user.id,
+			weight: -2,
+			allow: quotaConfig.plans[plan].credits
+		},
+		function(err, result) {
+			if (err) {
+				logger.error('[quota] Error retrieving quota for <%s>: %s', user.email, err, {});
+				return callback(err);
+			}
+
+			// TODO fix when fixed: https://github.com/apigee-127/volos/issues/33
+			that.quota[quotaConfig.plans[plan].per].apply({
+					identifier: user.id,
+					weight: 2,
+					allow: quotaConfig.plans[plan].credits
+				},
+				function(err, result) {
+					if (err) {
+						logger.error('[quota] Error retrieving quota for <%s>: %s', user.email, err, {});
+						return callback(err);
+					}
+
+					callback(null, {
+						limit: result.allowed,
+						remaining: result.allowed - result.used,
+						reset: result.expiryTime
+					});
+
+				});
+		}
+	);
+};
+
+/**
  * Checks if there is enough quota for the given file and consumes a credit.
  *
  * It also adds the rate limit headers to the request.
@@ -69,7 +125,8 @@ Quota.prototype.isAllowed = function(req, res, files, callback) {
 		files = [ files ];
 	}
 
-	var file, plan, sum = 0;
+	var plan = req.user.plan || quotaConfig.defaultPlan;
+	var file, sum = 0;
 	for (var i = 0; i < files.length; i++) {
 		file = files[i];
 		var cost = Quota.prototype.getCost(file);
@@ -83,8 +140,6 @@ Quota.prototype.isAllowed = function(req, res, files, callback) {
 		if (!req.user) {
 			return callback(null, false);
 		}
-
-		plan = req.user.plan || quotaConfig.defaultPlan;
 
 		// allow unlimited plans
 		if (quotaConfig.plans[plan].unlimited === true) {

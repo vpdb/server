@@ -5,10 +5,13 @@ angular.module('vpdb.users.edit', [])
 	.controller('AdminUserEditCtrl', function($scope, $rootScope, $modalInstance, ApiHelper,
 						  UserResource, PlanResource, user, roles) {
 
+		var fields = [ 'id', 'name', 'email', 'username', 'is_active', 'roles', 'plan' ];
+
 		$scope.user = {};
 		$scope.roles = roles;
 		$scope.originalName = user.name;
-		angular.copy(user, $scope.user);
+
+		$scope.user = _.pick(user, fields);
 
 		$scope.plans = PlanResource.query();
 
@@ -35,7 +38,7 @@ angular.module('vpdb.users.edit', [])
 		};
 
 		$scope.reset = function() {
-			angular.copy(user, $scope.user);
+			$scope.user = _.pick(user, fields);
 		};
 
 	});

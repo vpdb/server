@@ -342,10 +342,20 @@ ReleaseSchema.statics.toSimple = function(release, opts) {
 	opts.flavor = opts.flavor || {};
 	opts.thumb = opts.thumb || 'original';
 
-	var i, j, file, thumb;
-	var rls = _.pick(release.toObj ? release.toObj() : release, [ 'id', 'name', 'created_at', 'authors', 'counter' ]);
+	// field visibility
+	var gameFields = ['id', 'title', 'manufacturer', 'year'];
+	var releaseFields = [ 'id', 'name', 'created_at', 'authors', 'counter', 'versions' ];
+	var versionFields = [ 'version', 'files' ];
+	var fileRefFields = [ 'released_at', 'flavor', 'compatibility', 'file' ];
+	var fileFields = ['id', 'name', 'bytes', 'mime_type'];
+	var thumbFields = [ 'url', 'width', 'height', 'is_protected' ];
+	var compatFields = [ 'id' ];
 
-	rls.game = _.pick(release._game, ['id', 'title', 'manufacturer', 'year']);
+	var i, j, file, thumb;
+
+	var rls = _.pick(release.toObj ? release.toObj() : release, releaseFields);
+
+	rls.game = _.pick(release._game, gameFields);
 
 	// if results comes from an aggregation, we don't have a model and need to call toObj manually...
 	if (!release.toObj) {
@@ -355,26 +365,28 @@ ReleaseSchema.statics.toSimple = function(release, opts) {
 	}
 
 	// sort versions by release date
-	var versions = release.versions.sort(function(a, b) {
+	var sortedVersions = rls.versions.sort(function(a, b) {
 		var dateA = new Date(a.released_at).getTime();
 		var dateB = new Date(b.released_at).getTime();
 		if (dateA < dateB) { return 1; }
 		if (dateA > dateB) { return -1; }
 		return 0;
 	});
-	var latestVersion = versions[0];
+
+	var versions = ReleaseSchema.statics.stripOldFlavors(sortedVersions);
 
 	// get the file to pull media from
-	var f, fileFlavor, flavorName, flavorValue, playfieldImage;
+	var f, fileFlavor, flavorName, flavorValue, playfieldImage, media;
 	var flavorParams = opts.thumbFlavor ? opts.thumbFlavor.split(',') : [];
 	var defaults = flavor.defaultThumb();
 	var weight, match, matches = [];
-	for (i = 0; i < latestVersion.files.length; i++) {
-		if (!latestVersion.files[i].flavor) {
+	var strippedFiles = _.flatten(_.pluck(versions, 'files'));
+	for (i = 0; i < strippedFiles.length; i++) {
+		if (!strippedFiles[i].flavor) {
 			// skip non-table files
 			continue;
 		}
-		file = latestVersion.files[i];
+		file = strippedFiles[i];
 		fileFlavor = file.flavor.toObj ? file.flavor.toObj() : file.flavor;
 		weight = 0;
 
@@ -405,14 +417,14 @@ ReleaseSchema.statics.toSimple = function(release, opts) {
 		return 0;
 	});
 
-	var thumbFields = [ 'url', 'width', 'height', 'is_protected' ];
 	if (opts.fullThumbData) {
 		thumbFields = thumbFields.concat(['mime_type', 'bytes']);
 	}
 	for (i = 0; i < matches.length; i++) {
 		match = matches[i].file;
-//		console.log('[%s] =====> %j', release.id, match.flavor.toObj());
-		playfieldImage = match._media.playfield_image.toObj ? match._media.playfield_image.toObj() : match._media.playfield_image;
+//		console.log('[%s] =====> %j', rls.id, match.flavor);
+		media = match.media || match._media;
+		playfieldImage = media.playfield_image.toObj ? media.playfield_image.toObj() : media.playfield_image;
 		if (opts.thumb === 'original') {
 			thumb = _.extend(_.pick(playfieldImage, thumbFields), {
 				width: playfieldImage.metadata.size.width,
@@ -424,10 +436,10 @@ ReleaseSchema.statics.toSimple = function(release, opts) {
 			thumb = _.pick(playfieldImage.variations[opts.thumb], thumbFields);
 			break;
 
-		} else {
-//			console.log(playfieldImage);
-//			console.log('[%s] no %s variation for playfield image, trying next best match.', release.id, opts.thumb);
-		}
+		} /*else {
+			console.log(playfieldImage);
+			console.log('[%s] no %s variation for playfield image, trying next best match.', release.id, opts.thumb);
+		}*/
 	}
 
 	if (!thumb) {
@@ -442,33 +454,75 @@ ReleaseSchema.statics.toSimple = function(release, opts) {
 		}
 	}
 
+	// set thumb
 	if (opts.fullThumbData) {
 		thumb.file_type = playfieldImage.file_type;
 	}
-
-	rls.latest_version = {
-		version: latestVersion.version,
-		thumb: {
-			image: thumb,
-			flavor: match.flavor
-		},
-		files: []
+	rls.thumb = {
+		image: thumb,
+		flavor: match.flavor
 	};
 
+	// set star
 	if (!_.isUndefined(opts.starred)) {
 		rls.starred = opts.starred;
 	}
 
-	_.each(latestVersion.files, function(file) {
-		rls.latest_version.files.push({
-			released_at: file.released_at,
-			flavor: file.flavor,
-			compatibility: _.map(file._compatibility, function(c) { return _.pick(c, 'id'); }),
-			file: _.pick(file._file, ['id', 'name', 'bytes', 'mime_type'])
+	// reduce data
+	rls.versions = _.map(versions, function(version) {
+		version = _.pick(version, versionFields);
+		version.files = _.map(version.files, function(file) {
+			file = _.pick(file, fileRefFields.concat([ '_file', '_compatibility' ]));
+			file.compatibility = _.map(file.compatibility || file._compatibility, function(c) {
+				return _.pick(c, compatFields);
+			});
+			file.file = _.pick(file.file || file._file, fileFields);
+			delete file._file;
+			delete file._compatibility;
+			return file;
 		});
+		return version;
 	});
 
 	return rls;
+};
+
+/**
+ * Takes a sorted list of versions and removes files that have a newer
+ * flavor. Also removes empty versions.
+ * @param versions
+ */
+ReleaseSchema.statics.stripOldFlavors = function(versions) {
+	var i, j;
+	var flavorName, flavorValues, flavorKey, flavorKeys = {};
+
+	for (i = 0; i < versions.length; i++) {
+		for (j = 0; j < versions[i].files.length; j++) {
+
+			flavorValues = [];
+			for (var key in flavor.values) {
+				if (flavor.values.hasOwnProperty(key)) {
+					flavorName = flavor.values[key];
+					flavorValues.push(versions[i].files[j].flavor[flavorName]);
+				}
+			}
+			flavorKey = flavorValues.join(':');
+
+			// strip if already available
+			if (flavorKeys[flavorKey]) {
+				versions[i].files[j] = null;
+			}
+			flavorKeys[flavorKey] = true;
+		}
+
+		versions[i].files = _.compact(versions[i].files);
+
+		// remove version if no more files
+		if (versions[i].files.length === 0) {
+			versions[i] = null;
+		}
+	}
+	return _.compact(versions);
 };
 
 /**

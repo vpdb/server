@@ -647,9 +647,9 @@ describe('The VPDB `release` API', function() {
 					var rls2 = _.findWhere(res.body, { id: releases[1].id });
 					var rls3 = _.findWhere(res.body, { id: releases[2].id });
 
-					expect(rls1.latest_version.thumb.image.url).to.be(releases[0].versions[0].files[0].media.playfield_image.url);
-					expect(rls2.latest_version.thumb.image.url).to.be(releases[1].versions[0].files[1].media.playfield_image.url);
-					expect(rls3.latest_version.thumb.image.url).to.be(releases[2].versions[0].files[1].media.playfield_image.url);
+					expect(rls1.thumb.image.url).to.be(releases[0].versions[0].files[0].media.playfield_image.url);
+					expect(rls2.thumb.image.url).to.be(releases[1].versions[0].files[1].media.playfield_image.url);
+					expect(rls3.thumb.image.url).to.be(releases[2].versions[0].files[1].media.playfield_image.url);
 
 					done();
 				});
@@ -666,9 +666,9 @@ describe('The VPDB `release` API', function() {
 					var rls2 = _.findWhere(res.body, { id: releases[1].id });
 					var rls3 = _.findWhere(res.body, { id: releases[2].id });
 
-					expect(rls1.latest_version.thumb.image.url).to.be(releases[0].versions[0].files[0].media.playfield_image.variations.medium.url);
-					expect(rls2.latest_version.thumb.image.url).to.be(releases[1].versions[0].files[1].media.playfield_image.variations.medium.url);
-					expect(rls3.latest_version.thumb.image.url).to.be(releases[2].versions[0].files[1].media.playfield_image.variations.medium.url);
+					expect(rls1.thumb.image.url).to.be(releases[0].versions[0].files[0].media.playfield_image.variations.medium.url);
+					expect(rls2.thumb.image.url).to.be(releases[1].versions[0].files[1].media.playfield_image.variations.medium.url);
+					expect(rls3.thumb.image.url).to.be(releases[2].versions[0].files[1].media.playfield_image.variations.medium.url);
 
 					done();
 				});
@@ -685,9 +685,9 @@ describe('The VPDB `release` API', function() {
 					var rls2 = _.findWhere(res.body, { id: releases[1].id });
 					var rls3 = _.findWhere(res.body, { id: releases[2].id });
 
-					expect(rls1.latest_version.thumb.image.url).to.be(releases[0].versions[0].files[0].media.playfield_image.url);
-					expect(rls2.latest_version.thumb.image.url).to.be(releases[1].versions[0].files[0].media.playfield_image.url);
-					expect(rls3.latest_version.thumb.image.url).to.be(releases[2].versions[0].files[1].media.playfield_image.url);
+					expect(rls1.thumb.image.url).to.be(releases[0].versions[0].files[0].media.playfield_image.url);
+					expect(rls2.thumb.image.url).to.be(releases[1].versions[0].files[0].media.playfield_image.url);
+					expect(rls3.thumb.image.url).to.be(releases[2].versions[0].files[1].media.playfield_image.url);
 
 					done();
 				});
@@ -702,7 +702,7 @@ describe('The VPDB `release` API', function() {
 					hlp.expectStatus(err, res, 200);
 
 					for (var i = 0; i < numReleases; i++) {
-						expect(res.body[i].latest_version.thumb.image.url).to.contain('/square/');
+						expect(res.body[i].thumb.image.url).to.contain('/square/');
 					}
 					done();
 				});

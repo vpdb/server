@@ -110,7 +110,7 @@ exports.create = function(req, res) {
 							.exec(assert(function(release) {
 
 								LogEvent.log(req, 'create_release', true, {
-									release: _.pick(release.toSimple(), [ 'id', 'name', 'authors', 'latest_version' ]),
+									release: _.pick(release.toSimple(), [ 'id', 'name', 'authors', 'versions' ]),
 									game: _.pick(release._game.toSimple(), [ 'id', 'title', 'manufacturer', 'year', 'ipdb', 'game_type' ])
 								}, {
 									release: release._id,
@@ -197,7 +197,7 @@ exports.addVersion = function(req, res) {
 								.exec(assert(function(release) {
 
 									LogEvent.log(req, 'create_release_version', true, {
-										release: _.pick(release.toSimple(), [ 'id', 'name', 'authors', 'latest_version' ]),
+										release: _.pick(release.toSimple(), [ 'id', 'name', 'authors', 'versions' ]),
 										game: _.pick(release._game.toSimple(), [ 'id', 'title', 'manufacturer', 'year', 'ipdb', 'game_type' ])
 									}, {
 										release: release._id,
@@ -457,6 +457,7 @@ exports.list = function(req, res) {
 		// file size filter
 		function(query, stars, next) {
 
+			var fileIds = null;
 			var filesize = parseInt(req.query.filesize);
 			if (filesize) {
 				var threshold = parseInt(req.query.threshold);
@@ -473,21 +474,22 @@ exports.list = function(req, res) {
 						return next(true);
 					}
 					if (files && files.length > 0) {
+						fileIds = _.pluck(files, '_id');
 						query.push({ 'versions.files._file': { $in: _.pluck(files, '_id') }});
 					} else {
 						query.push({ _id: null }); // no result
 					}
 
-					next(null, query, stars);
+					next(null, query, stars, fileIds);
 				});
 
 			} else {
-				next(null, query, stars);
+				next(null, query, stars, fileIds);
 			}
 		},
 
 		// inner filters
-		function(query, stars, next) {
+		function(query, stars, fileIds, next) {
 
 			var filter = [];
 			if (!_.isUndefined(req.query.flavor)) {
@@ -504,11 +506,11 @@ exports.list = function(req, res) {
 				});
 			}
 
-			next(null, query, stars, filter);
+			next(null, query, stars, fileIds, filter);
 		}
 
 	// result
-	], function(err, query, stars, filter) {
+	], function(err, query, stars, fileIds, filter) {
 
 		if (err) {
 			// error has been treated.
@@ -555,6 +557,7 @@ exports.list = function(req, res) {
 						if (stars) {
 							transformOpts.starred = starMap[release._id] ? true : false;
 						}
+						transformOpts.fileIds = fileIds;
 						return Release.toSimple(release, transformOpts);
 					});
 

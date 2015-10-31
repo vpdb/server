@@ -625,7 +625,17 @@ exports.view = function(req, res) {
 		if (!release) {
 			return api.fail(res, error('No such release with ID "%s"', req.params.id), 404);
 		}
-		return api.success(res, release.toDetailed());
+
+		var transformOpts = {};
+		if (req.query.thumb_flavor) {
+			transformOpts.thumbFlavor = req.query.thumb_flavor;
+			// ex.: /api/v1/releases?flavor=orientation:fs,lighting:day
+		}
+		if (req.query.thumb_format) {
+			transformOpts.thumbFormat = req.query.thumb_format;
+		}
+
+		return api.success(res, release.toDetailed(transformOpts));
 	});
 };
 

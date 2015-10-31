@@ -198,6 +198,37 @@ get:
     securedBy: [ ]
     description: |
       List details of a given release.
+    queryParameters:
+      thumb_flavor:
+        description: |
+          Adds an additional `thumb` property to the root of the release object
+          containing the given flavor if available.
+
+          The flavor is provided in key/value pairs, where pairs are comma
+          separated and key/value with a colon. If the selected flavor doesn't
+          exist or is not provided, the default flavor (day / fullscreen) is
+          returned.
+
+          Note that the order in which the flavors are provided is decisive in
+          stand-off situations where only one pair matches, e.g. fullscreen/night
+          would win against widescreen/day if `orientation:fs,lighting:day` is
+          provided.
+
+        required: false
+        type: string
+        example: orientation:fs,lighting:day
+      thumb_format:
+        description: |
+          Adds an additional `thumb` property to the root of the release object
+          containing the given flavor if available.
+
+          Possible values: `medium`, `medium-2x`, `medium-landscape`,
+          `medium-landscape-2x`, `square`, `square-2x`.
+
+          If not provided or invalid, the URL of the original media is returned.
+        required: false
+        type: string
+        example: square
     body:
         role/anon:
           example: !include http/view-req.json

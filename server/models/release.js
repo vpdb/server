@@ -369,10 +369,10 @@ ReleaseSchema.statics.toSimple = function(release, opts) {
 		return 0;
 	});
 
-	var versions = ReleaseSchema.statics.stripOldFlavors(sortedVersions);
+	var versions = stripOldFlavors(sortedVersions);
 
 	// set thumb
-	rls.thumb = ReleaseSchema.statics.getThumb(versions, opts);
+	rls.thumb = getThumb(versions, opts);
 
 	// set star
 	if (!_.isUndefined(opts.starred)) {
@@ -400,6 +400,197 @@ ReleaseSchema.statics.toSimple = function(release, opts) {
 
 
 /**
+ * Returns an aggregation pipeline that filters releases by nested conditions.
+ *
+ * @param {array} query Original, non-nested query
+ * @param {array} filter Array of nested conditions, e.g. [ { "versions.files.flavor.lightning": "night" } ]
+ * @param {int} [sortBy] Object defining the sort order
+ * @param {int} [pagination] Pagination object
+ */
+ReleaseSchema.statics.getAggregationPipeline = function(query, filter, sortBy, pagination) {
+
+	var q = makeQuery(query.concat(filter));
+	var f = makeQuery(filter);
+
+	var group1 = {};
+	var group2 = {};
+	var project1 = {};
+	var project2 = {};
+
+	_.each(releaseFields, function(val, field) {
+		if (field != 'versions') {
+			group1[field] = '$' + field;
+			group2[field] = '$' + field;
+			project1[field] = '$_id.' + field;
+			project2[field] = '$_id.' + field;
+		}
+	});
+	project1.versions = { };
+
+	_.each(versionFields, function(val, field) {
+		if (field != 'files') {
+			group1['version_' + field] = '$versions.' + field;
+			project1.versions[field] = '$_id.version_' + field;
+		}
+	});
+
+	var pipe = [ { $match: q } ];
+	if (sortBy) {
+		pipe.push({ $sort: sortBy });
+	}
+
+	if (pagination) {
+		pipe.push({ $skip: (pagination.page * pagination.perPage) - pagination.perPage });
+		pipe.push({ $limit: pagination.perPage });
+	}
+
+	pipe = pipe.concat([
+
+		{ $unwind: '$versions'},
+		{ $unwind: '$versions.files'},
+		{ $match: f },
+		{ $group: { _id: _.extend(group1, {
+				_id: '$_id',
+				versionId: '$versions._id'
+			}),
+			files: { $push: '$versions.files' }
+		} },
+		{ $project: _.extend(project1, {
+			_id: '$_id._id',
+			versions: _.extend(project1.versions, {
+				_id: '$_id.versionId',
+				files: '$files'
+			})
+		}) },
+		{ $group: { _id: _.extend(group2, {
+				_id: '$_id'
+			}),
+			versions: { $push: '$versions' }
+		} },
+		{ $project: _.extend(project2, {
+			_id: '$_id._id',
+			versions: '$versions'
+		}) }
+	]);
+	return pipe;
+};
+
+function makeQuery(query) {
+	if (query.length === 0) {
+		return {};
+	} else if (query.length === 1) {
+		return query[0];
+	} else {
+		return { $and: query };
+	}
+}
+
+
+//-----------------------------------------------------------------------------
+// METHODS
+//-----------------------------------------------------------------------------
+ReleaseSchema.methods.toDetailed = function(opts) {
+	var rls = this.toObj();
+
+	opts = opts || {};
+	if (opts.thumbFlavor || opts.thumbFormat) {
+		rls.thumb = getThumb(rls.versions, opts);
+	}
+
+	return rls;
+};
+
+ReleaseSchema.methods.toSimple = function(opts) {
+	return ReleaseSchema.statics.toSimple(this, opts);
+};
+
+ReleaseSchema.methods.toReduced = function() {
+	var release = _.pick(this.toObj(), [ 'id', 'name', 'created_at' ]);
+	if (this._game) {
+		release.game = this._game.toReduced();
+	}
+	return release;
+};
+
+
+//-----------------------------------------------------------------------------
+// TRIGGERS
+//-----------------------------------------------------------------------------
+ReleaseSchema.pre('remove', function(next) {
+
+	// remove linked comments
+	mongoose.model('Comment').remove({ '_ref.release': this._id}).exec(next);
+});
+
+
+//-----------------------------------------------------------------------------
+// OPTIONS
+//-----------------------------------------------------------------------------
+ReleaseSchema.options.toObject = {
+	virtuals: true,
+	transform: function(doc, release) {
+		release.tags = release._tags;
+		release.game = _.pick(release._game, ['id', 'title', 'manufacturer', 'year']);
+		delete release.__v;
+		delete release._id;
+		delete release._created_by;
+		delete release._tags;
+		delete release._game;
+		if (_.isArray(release.links)) {
+			_.each(release.links, function(link) {
+				delete link._id;
+				delete link.id;
+			});
+		}
+	}
+};
+VersionSchema.options.toObject = {
+	virtuals: true,
+	transform: function(doc, version) {
+		delete version.id;
+		delete version._id;
+	}
+};
+FileSchema.options.toObject = {
+	virtuals: true,
+	transform: function(doc, file) {
+		var Build = require('mongoose').model('Build');
+		var File = require('mongoose').model('File');
+
+		file.media = file._media;
+		file.compatibility = [];
+		_.each(file._compatibility, function(compat) {
+			if (compat.label) {
+				file.compatibility.push(Build.toSimple(compat));
+			} else {
+				file.compatibility.push({ _id: compat._id });
+			}
+		});
+		file.file = File.toDetailed(file._file);
+		delete file.id;
+		delete file._id;
+		delete file._file;
+		delete file._media;
+		delete file._compatibility;
+	}
+};
+AuthorSchema.options.toObject = {
+	virtuals: true,
+	transform: function(doc, author) {
+		author.user = require('mongoose').model('User').toReduced(author._user);
+		delete author.id;
+		delete author._id;
+		delete author._user;
+	}
+};
+
+mongoose.model('Release', ReleaseSchema);
+mongoose.model('ReleaseVersion', VersionSchema);
+mongoose.model('ReleaseVersionFile', FileSchema);
+logger.info('[model] Schema "Release" registered.');
+
+
+/**
  * Returns the thumb object for the given options provided by the user.
  *
  * Basically it looks at thumbFlavor and thumbFormat and tries to return
@@ -408,7 +599,7 @@ ReleaseSchema.statics.toSimple = function(release, opts) {
  * @param opts
  * @returns {{image: *, flavor: *}}
  */
-ReleaseSchema.statics.getThumb = function(versions, opts) {
+function getThumb(versions, opts) {
 
 	opts.thumbFormat = opts.thumbFormat || 'original';
 
@@ -503,16 +694,16 @@ ReleaseSchema.statics.getThumb = function(versions, opts) {
 		image: thumb,
 		flavor: match.flavor
 	};
-};
+}
 
 /**
  * Takes a sorted list of versions and removes files that have a newer
  * flavor. Also removes empty versions.
  * @param versions
  */
-ReleaseSchema.statics.stripOldFlavors = function(versions) {
+function stripOldFlavors(versions) {
 	var i, j;
-	var flavorName, flavorValues, flavorKey, flavorKeys = {};
+	var flavorValues, flavorKey, flavorKeys = {};
 
 	for (i = 0; i < versions.length; i++) {
 		for (j = 0; j < versions[i].files.length; j++) {
@@ -526,7 +717,6 @@ ReleaseSchema.statics.stripOldFlavors = function(versions) {
 
 			// strip if already available
 			if (flavorKeys[flavorKey]) {
-				console.log("=== stripping %s", flavorKey);
 				versions[i].files[j] = null;
 			}
 			flavorKeys[flavorKey] = true;
@@ -540,187 +730,4 @@ ReleaseSchema.statics.stripOldFlavors = function(versions) {
 		}
 	}
 	return _.compact(versions);
-};
-
-/**
- * Returns an aggregation pipeline that filters releases by nested conditions.
- *
- * @param {array} query Original, non-nested query
- * @param {array} filter Array of nested conditions, e.g. [ { "versions.files.flavor.lightning": "night" } ]
- * @param {int} [sortBy] Object defining the sort order
- * @param {int} [pagination] Pagination object
- */
-ReleaseSchema.statics.getAggregationPipeline = function(query, filter, sortBy, pagination) {
-
-	var q = makeQuery(query.concat(filter));
-	var f = makeQuery(filter);
-
-	var group1 = {};
-	var group2 = {};
-	var project1 = {};
-	var project2 = {};
-
-	_.each(releaseFields, function(val, field) {
-		if (field != 'versions') {
-			group1[field] = '$' + field;
-			group2[field] = '$' + field;
-			project1[field] = '$_id.' + field;
-			project2[field] = '$_id.' + field;
-		}
-	});
-	project1.versions = { };
-
-	_.each(versionFields, function(val, field) {
-		if (field != 'files') {
-			group1['version_' + field] = '$versions.' + field;
-			project1.versions[field] = '$_id.version_' + field;
-		}
-	});
-
-	var pipe = [ { $match: q } ];
-	if (sortBy) {
-		pipe.push({ $sort: sortBy });
-	}
-
-	if (pagination) {
-		pipe.push({ $skip: (pagination.page * pagination.perPage) - pagination.perPage });
-		pipe.push({ $limit: pagination.perPage });
-	}
-
-	pipe = pipe.concat([
-
-		{ $unwind: '$versions'},
-		{ $unwind: '$versions.files'},
-		{ $match: f },
-		{ $group: { _id: _.extend(group1, {
-				_id: '$_id',
-				versionId: '$versions._id'
-			}),
-			files: { $push: '$versions.files' }
-		} },
-		{ $project: _.extend(project1, {
-			_id: '$_id._id',
-			versions: _.extend(project1.versions, {
-				_id: '$_id.versionId',
-				files: '$files'
-			})
-		}) },
-		{ $group: { _id: _.extend(group2, {
-				_id: '$_id'
-			}),
-			versions: { $push: '$versions' }
-		} },
-		{ $project: _.extend(project2, {
-			_id: '$_id._id',
-			versions: '$versions'
-		}) }
-	]);
-	return pipe;
-};
-
-function makeQuery(query) {
-	if (query.length === 0) {
-		return {};
-	} else if (query.length === 1) {
-		return query[0];
-	} else {
-		return { $and: query };
-	}
 }
-
-
-//-----------------------------------------------------------------------------
-// METHODS
-//-----------------------------------------------------------------------------
-ReleaseSchema.methods.toDetailed = function() {
-	return this.toObj();
-};
-
-ReleaseSchema.methods.toSimple = function(opts) {
-	return ReleaseSchema.statics.toSimple(this, opts);
-};
-
-ReleaseSchema.methods.toReduced = function() {
-	var release = _.pick(this.toObj(), [ 'id', 'name', 'created_at' ]);
-	if (this._game) {
-		release.game = this._game.toReduced();
-	}
-	return release;
-};
-
-
-//-----------------------------------------------------------------------------
-// TRIGGERS
-//-----------------------------------------------------------------------------
-ReleaseSchema.pre('remove', function(next) {
-
-	// remove linked comments
-	mongoose.model('Comment').remove({ '_ref.release': this._id}).exec(next);
-});
-
-
-//-----------------------------------------------------------------------------
-// OPTIONS
-//-----------------------------------------------------------------------------
-ReleaseSchema.options.toObject = {
-	virtuals: true,
-	transform: function(doc, release) {
-		release.tags = release._tags;
-		release.game = _.pick(release._game, ['id', 'title', 'manufacturer', 'year']);
-		delete release.__v;
-		delete release._id;
-		delete release._created_by;
-		delete release._tags;
-		delete release._game;
-		if (_.isArray(release.links)) {
-			_.each(release.links, function(link) {
-				delete link._id;
-				delete link.id;
-			});
-		}
-	}
-};
-VersionSchema.options.toObject = {
-	virtuals: true,
-	transform: function(doc, version) {
-		delete version.id;
-		delete version._id;
-	}
-};
-FileSchema.options.toObject = {
-	virtuals: true,
-	transform: function(doc, file) {
-		var Build = require('mongoose').model('Build');
-		var File = require('mongoose').model('File');
-
-		file.media = file._media;
-		file.compatibility = [];
-		_.each(file._compatibility, function(compat) {
-			if (compat.label) {
-				file.compatibility.push(Build.toSimple(compat));
-			} else {
-				file.compatibility.push({ _id: compat._id });
-			}
-		});
-		file.file = File.toDetailed(file._file);
-		delete file.id;
-		delete file._id;
-		delete file._file;
-		delete file._media;
-		delete file._compatibility;
-	}
-};
-AuthorSchema.options.toObject = {
-	virtuals: true,
-	transform: function(doc, author) {
-		author.user = require('mongoose').model('User').toReduced(author._user);
-		delete author.id;
-		delete author._id;
-		delete author._user;
-	}
-};
-
-mongoose.model('Release', ReleaseSchema);
-mongoose.model('ReleaseVersion', VersionSchema);
-mongoose.model('ReleaseVersionFile', FileSchema);
-logger.info('[model] Schema "Release" registered.');

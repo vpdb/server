@@ -502,7 +502,6 @@ describe('The VPDB `release` API', function() {
 			hlp.release.createRelease('member', request, function(release) {
 				request
 					.get('/api/v1/releases/' + release.id)
-					.save({ path: 'releases/view'})
 					.end(function(err, res) {
 						hlp.expectStatus(err, res, 200);
 						release = res.body;
@@ -517,6 +516,47 @@ describe('The VPDB `release` API', function() {
 						expect(release.authors[0].user.id).to.be.ok();
 						expect(release.authors[0].user.name).to.be.ok();
 						expect(release.authors[0].user.username).to.be.ok();
+						expect(release.thumb).to.not.be.ok();
+						done();
+					});
+			});
+		});
+
+		it('should include thumb if format is given', function(done) {
+			hlp.release.createRelease('member', request, function(release) {
+				request
+					.get('/api/v1/releases/' + release.id + '?thumb_format=square')
+					.save({ path: 'releases/view'})
+					.end(function(err, res) {
+						hlp.expectStatus(err, res, 200);
+						release = res.body;
+						expect(res.body).to.be.an('object');
+						expect(release.id).to.be.ok();
+						expect(release.name).to.be.ok();
+						expect(release.thumb).to.be.an('object');
+						expect(release.thumb.image).to.be.an('object');
+						expect(release.thumb.image.url).to.contain('/square/');
+						done();
+					});
+			});
+		});
+
+		it('should include thumb if flavor is given', function(done) {
+			hlp.release.createRelease('member', request, function(release) {
+				request
+					.get('/api/v1/releases/' + release.id + '?thumb_flavor=orientation:fs')
+					.save({ path: 'releases/view'})
+					.end(function(err, res) {
+
+						hlp.dump(res);
+						hlp.expectStatus(err, res, 200);
+						release = res.body;
+						expect(res.body).to.be.an('object');
+						expect(release.id).to.be.ok();
+						expect(release.name).to.be.ok();
+						expect(release.thumb).to.be.an('object');
+						expect(release.thumb.flavor).to.be.an('object');
+						expect(release.thumb.flavor.orientation).to.be('fs');
 						done();
 					});
 			});

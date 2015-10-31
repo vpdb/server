@@ -340,7 +340,6 @@ VersionSchema.path('files').validate(function(files, callback) {
 ReleaseSchema.statics.toSimple = function(release, opts) {
 	opts = opts || {};
 	opts.flavor = opts.flavor || {};
-	opts.thumb = opts.thumb || 'original';
 
 	// field visibility
 	var gameFields = ['id', 'title', 'manufacturer', 'year'];
@@ -348,10 +347,7 @@ ReleaseSchema.statics.toSimple = function(release, opts) {
 	var versionFields = [ 'version', 'files' ];
 	var fileRefFields = [ 'released_at', 'flavor', 'compatibility', 'file' ];
 	var fileFields = ['id', 'name', 'bytes', 'mime_type'];
-	var thumbFields = [ 'url', 'width', 'height', 'is_protected' ];
 	var compatFields = [ 'id' ];
-
-	var i, j, file, thumb;
 
 	var rls = _.pick(release.toObj ? release.toObj() : release, releaseFields);
 
@@ -374,6 +370,50 @@ ReleaseSchema.statics.toSimple = function(release, opts) {
 	});
 
 	var versions = ReleaseSchema.statics.stripOldFlavors(sortedVersions);
+
+	// set thumb
+	rls.thumb = ReleaseSchema.statics.getThumb(versions, opts);
+
+	// set star
+	if (!_.isUndefined(opts.starred)) {
+		rls.starred = opts.starred;
+	}
+
+	// reduce data
+	rls.versions = _.map(versions, function(version) {
+		version = _.pick(version, versionFields);
+		version.files = _.map(version.files, function(file) {
+			file = _.pick(file, fileRefFields.concat([ '_file', '_compatibility' ]));
+			file.compatibility = _.map(file.compatibility || file._compatibility, function(c) {
+				return _.pick(c, compatFields);
+			});
+			file.file = _.pick(file.file || file._file, fileFields);
+			delete file._file;
+			delete file._compatibility;
+			return file;
+		});
+		return version;
+	});
+
+	return rls;
+};
+
+
+/**
+ * Returns the thumb object for the given options provided by the user.
+ *
+ * Basically it looks at thumbFlavor and thumbFormat and tries to return
+ * the best match.
+ * @param versions
+ * @param opts
+ * @returns {{image: *, flavor: *}}
+ */
+ReleaseSchema.statics.getThumb = function(versions, opts) {
+
+	opts.thumbFormat = opts.thumbFormat || 'original';
+
+	var thumbFields = [ 'url', 'width', 'height', 'is_protected' ];
+	var i, j, file, thumb;
 
 	// get the file to pull media from
 	var f, fileFlavor, flavorName, flavorValue, playfieldImage, media;
@@ -399,7 +439,7 @@ ReleaseSchema.statics.toSimple = function(release, opts) {
 			if (fileFlavor[flavorName] === flavorValue) {
 				weight += Math.pow(10, (flavorParams.length - j + 1) * 3);
 
-			// defaults match gets also weight, but less
+				// defaults match gets also weight, but less
 			} else if (defaults[flavorName] === flavorValue) {
 				weight += Math.pow(10, (flavorParams.length - j + 1));
 			}
@@ -425,21 +465,21 @@ ReleaseSchema.statics.toSimple = function(release, opts) {
 //		console.log('[%s] =====> %j', rls.id, match.flavor);
 		media = match.media || match._media;
 		playfieldImage = media.playfield_image.toObj ? media.playfield_image.toObj() : media.playfield_image;
-		if (opts.thumb === 'original') {
+		if (opts.thumbFormat === 'original') {
 			thumb = _.extend(_.pick(playfieldImage, thumbFields), {
 				width: playfieldImage.metadata.size.width,
 				height: playfieldImage.metadata.size.height
 			});
 			break;
 
-		} else if (playfieldImage.variations[opts.thumb]) {
-			thumb = _.pick(playfieldImage.variations[opts.thumb], thumbFields);
+		} else if (playfieldImage.variations[opts.thumbFormat]) {
+			thumb = _.pick(playfieldImage.variations[opts.thumbFormat], thumbFields);
 			break;
 
 		} /*else {
-			console.log(playfieldImage);
-			console.log('[%s] no %s variation for playfield image, trying next best match.', release.id, opts.thumb);
-		}*/
+		 console.log(playfieldImage);
+		 console.log('[%s] no %s variation for playfield image, trying next best match.', release.id, opts.thumbFormat);
+		 }*/
 	}
 
 	if (!thumb) {
@@ -458,33 +498,11 @@ ReleaseSchema.statics.toSimple = function(release, opts) {
 	if (opts.fullThumbData) {
 		thumb.file_type = playfieldImage.file_type;
 	}
-	rls.thumb = {
+
+	return {
 		image: thumb,
 		flavor: match.flavor
 	};
-
-	// set star
-	if (!_.isUndefined(opts.starred)) {
-		rls.starred = opts.starred;
-	}
-
-	// reduce data
-	rls.versions = _.map(versions, function(version) {
-		version = _.pick(version, versionFields);
-		version.files = _.map(version.files, function(file) {
-			file = _.pick(file, fileRefFields.concat([ '_file', '_compatibility' ]));
-			file.compatibility = _.map(file.compatibility || file._compatibility, function(c) {
-				return _.pick(c, compatFields);
-			});
-			file.file = _.pick(file.file || file._file, fileFields);
-			delete file._file;
-			delete file._compatibility;
-			return file;
-		});
-		return version;
-	});
-
-	return rls;
 };
 
 /**

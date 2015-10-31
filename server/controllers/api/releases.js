@@ -337,7 +337,7 @@ exports.list = function(req, res) {
 		// ex.: /api/v1/releases?flavor=orientation:fs,lighting:day
 	}
 	if (req.query.thumb_format) {
-		transformOpts.thumb = req.query.thumb_format;
+		transformOpts.thumbFormat = req.query.thumb_format;
 	}
 	if (!_.isUndefined(req.query.thumb_full_data)) {
 		transformOpts.fullThumbData = true;

@@ -501,15 +501,14 @@ ReleaseSchema.statics.stripOldFlavors = function(versions) {
 
 			flavorValues = [];
 			for (var key in flavor.values) {
-				if (flavor.values.hasOwnProperty(key)) {
-					flavorName = flavor.values[key];
-					flavorValues.push(versions[i].files[j].flavor[flavorName]);
-				}
+				//noinspection JSUnfilteredForInLoop
+				flavorValues.push(versions[i].files[j].flavor[key]);
 			}
 			flavorKey = flavorValues.join(':');
 
 			// strip if already available
 			if (flavorKeys[flavorKey]) {
+				console.log("=== stripping %s", flavorKey);
 				versions[i].files[j] = null;
 			}
 			flavorKeys[flavorKey] = true;

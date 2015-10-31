@@ -24,6 +24,13 @@ get:
   description: |
     List all releases.
 
+    When listing, only latest version of the release is returned. However,
+    we also want all flavor combinations, so if a flavor that is not available
+    in the latest version, it will be nevertheless returned.
+
+    In short, `versions` is an array where files with updated flavors are
+    omitted.
+
     ### Filtering
 
     Releases can be filtered by different attributes. See request parameters.

@@ -593,7 +593,7 @@ describe('The VPDB `release` API', function() {
 
 	describe('when listing releases', function() {
 
-		var numReleases = 3;
+		var numReleases = 4;
 		var releases;
 
 		before(function(done) {
@@ -688,6 +688,20 @@ describe('The VPDB `release` API', function() {
 					expect(rls1.thumb.image.url).to.be(releases[0].versions[0].files[0].media.playfield_image.url);
 					expect(rls2.thumb.image.url).to.be(releases[1].versions[0].files[0].media.playfield_image.url);
 					expect(rls3.thumb.image.url).to.be(releases[2].versions[0].files[1].media.playfield_image.url);
+
+					done();
+				});
+		});
+
+		it('should return the a thumb of an older version if the newer version has no such thumb', function(done) {
+			request
+				.get('/api/v1/releases?thumb_full_data&thumb_flavor=lighting:night,orientation:ws')
+				.end(function(err, res) {
+
+					hlp.expectStatus(err, res, 200);
+
+					var rls4 = _.findWhere(res.body, { id: releases[3].id });
+					expect(rls4.thumb.image.url).to.be(releases[3].versions[1].files[0].media.playfield_image.url);
 
 					done();
 				});

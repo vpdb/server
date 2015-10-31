@@ -1,10 +1,10 @@
-POST /api/v1/releases/41Lbx1Oy22/comments HTTP/1.1
+POST /api/v1/releases/EJbgHFCopbx/comments HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJFSm9GSmtfSjMyIiwiaWF0IjoiMjAxNS0wOC0zMFQxMjozNjoxNC45NzZaIiwiZXhwIjoiMjAxNS0wOC0zMFQxMzozNjoxNC45NzZaIn0.h9pi6jbDZRKA9Bh1hJamncqMXR1YraoRAztzsXjmqS8
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJOMTd2TnRBalRXZSIsImlhdCI6IjIwMTUtMTAtMzFUMTM6MTc6MjMuODMyWiIsImV4cCI6IjIwMTUtMTAtMzFUMTQ6MTc6MjMuODMyWiJ9.kCq4shKMxjLry05FUJ4Lv0_UVohVc38dv1h0RxL9cDI
 Content-Type: application/json
-Content-Length: 60
+Content-Length: 64
 
 {
-  "message": "Programmable client-driven process improvement"
+  "message": "Automated upward-trending Graphical User Interface"
 }

@@ -1,26 +1,26 @@
 POST /api/v1/games HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJWeUlIWHlka2huIiwiaWF0IjoiMjAxNS0wOC0zMFQxMjozNjoxOC45MDBaIiwiZXhwIjoiMjAxNS0wOC0zMFQxMzozNjoxOC45MDBaIn0.veA6_euadOevnGtiG58DzZJ1vfdtbJAHOfznVdowxNU
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJFMWpaT3RDb3AtbCIsImlhdCI6IjIwMTUtMTAtMzFUMTM6MTc6MjcuMzU0WiIsImV4cCI6IjIwMTUtMTAtMzFUMTQ6MTc6MjcuMzU0WiJ9.ZAkEy8GRHAR8iwlAL3tevsMH0B-A1Cg353aBGBBKyXM
 Content-Type: application/json
-Content-Length: 329
+Content-Length: 865
 
 {
   "ipdb": {
-    "number": 121,
-    "mfg": 281
+    "number": 5570,
+    "mfg": 47
   },
-  "title": "Baby Doll",
-  "manufacturer": "Williams",
-  "year": 1975,
+  "title": "Special Entry 1948",
+  "manufacturer": "Bally",
+  "year": 1948,
   "game_type": "em",
   "themes": [
-    "Music",
-    "Singing"
+    "Sports",
+    "Horse Racing"
   ],
-  "features": "Flippers (4), Pop bumpers (2). 6-digit reel scoring. 3 or 5 balls. This is a licensed version of Williams' 1975 'Satin Doll'.",
-  "id": "baby-doll",
+  "notes": "No information is available on this game except the two backglass pictures shown here. It is not the same glass as Bally's 1946 'Special Entry'. This glass actually carries a 1948 date silkscreened on it but the possibility always exists that the game started manufacture in 1947. However, because it so closely resembles the glasses from Bally's 1947 'Jockey Club' or Bally's 1947 'Jockey Special', we suspect this glass followed those games and may even be a modification of either of those glasses. Thus, we date this glass as 1948. We do not know if 'Special Entry 1948' was a complete game or only a modified glass for those other games.",
+  "id": "special-entry-1948",
   "_media": {
-    "backglass": "V1jH7kdk23"
+    "backglass": "E1xGOFRjabl"
   }
 }

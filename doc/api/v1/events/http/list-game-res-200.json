@@ -3,7 +3,7 @@ X-List-Page: 1
 X-List-Size: 10
 X-List-Count: 2
 Content-Type: application/json; charset=utf-8
-Etag: W/"ace-E2+bEzdQyg/nTS5Yf15+eg"
+Etag: W/"a0f-Sa9avxHaqy67a9nZWYENeQ"
 Content-Encoding: gzip
 
 [
@@ -11,18 +11,18 @@ Content-Encoding: gzip
     "event": "create_release",
     "payload": {
       "release": {
-        "id": "VJ2Eb1uk3n",
-        "name": "Fully-configurable Edition",
+        "id": "NyxxLKAo6-e",
+        "name": "Automated Edition",
         "authors": [
           {
             "roles": [
               "Table Creator"
             ],
             "user": {
-              "id": "41UMZJukhh",
-              "name": "Blaise66",
-              "username": "Blaise66",
-              "gravatar_id": "3d49de2d8517922e4438f07b56574b36",
+              "id": "VJkUBYAspbe",
+              "name": "Esteban47",
+              "username": "Esteban47",
+              "gravatar_id": "95edbd3ce06190970aff6d902c2e93cf",
               "counter": {
                 "comments": 0,
                 "stars": 0
@@ -30,78 +30,70 @@ Content-Encoding: gzip
             }
           }
         ],
-        "latest_version": {
-          "version": "1.0.0",
-          "thumb": {
-            "image": {
-              "url": "/storage/v1/files/EkzNbyd1hh.png",
-              "is_protected": true,
-              "width": 1920,
-              "height": 1080
-            },
-            "flavor": {
-              "orientation": "fs",
-              "lighting": "night"
-            }
-          },
-          "files": [
-            {
-              "released_at": "2015-08-30T12:36:16.781Z",
-              "flavor": {
-                "orientation": "fs",
-                "lighting": "night"
-              },
-              "compatibility": [
-                "9.9.0"
-              ],
-              "file": {
-                "id": "NJnQWkOJhh",
-                "name": "test-table-0.vpt",
-                "bytes": 135168,
-                "mime_type": "application/x-visual-pinball-table"
+        "versions": [
+          {
+            "version": "1.0.0",
+            "files": [
+              {
+                "released_at": "2015-10-31T13:17:25.361Z",
+                "flavor": {
+                  "orientation": "fs",
+                  "lighting": "night"
+                },
+                "compatibility": [
+                  {
+                    "id": "9.9.0"
+                  }
+                ],
+                "file": {
+                  "id": "4y-UKAo6bl",
+                  "name": "test-table-0.vpt",
+                  "bytes": 135168,
+                  "mime_type": "application/x-visual-pinball-table"
+                }
               }
-            }
-          ]
-        }
+            ]
+          }
+        ]
       },
       "game": {
-        "id": "kz-26",
-        "title": "KZ-26",
-        "manufacturer": "Playmatic",
-        "year": 1984,
+        "id": "attention",
+        "title": "Attention",
+        "manufacturer": "Exhibit",
+        "year": 1940,
         "ipdb": {
-          "number": 3202,
-          "mfg": 255
+          "number": 108,
+          "mfg": 117
         },
-        "game_type": "ss"
+        "game_type": "em"
       }
     },
-    "logged_at": "2015-08-30T12:36:16.837Z",
+    "logged_at": "2015-10-31T13:17:25.418Z",
     "is_public": true,
     "actor": {
       "counter": {
         "stars": 0,
         "comments": 0
       },
-      "gravatar_id": "3d49de2d8517922e4438f07b56574b36",
-      "username": "Blaise66",
-      "name": "Blaise66",
-      "id": "41UMZJukhh"
+      "gravatar_id": "95edbd3ce06190970aff6d902c2e93cf",
+      "username": "Esteban47",
+      "name": "Esteban47",
+      "id": "VJkUBYAspbe"
     }
   },
   {
     "event": "create_game",
     "payload": {
       "game": {
-        "id": "kz-26",
-        "title": "KZ-26",
-        "manufacturer": "Playmatic",
-        "year": 1984,
+        "id": "attention",
+        "title": "Attention",
+        "manufacturer": "Exhibit",
+        "year": 1940,
         "ipdb": {
-          "number": 3202,
-          "mfg": 255
+          "number": 108,
+          "mfg": 117
         },
-        "game_type": "ss",
+        "game_type": "em",
         "media": {
           "backglass": {
             "counter": {
@@ -110,36 +102,36 @@ Content-Encoding: gzip
             "is_protected": true,
             "variations": {
               "small-2x": {
-                "url": "/storage/public/files/small-2x/4yk7-kuyn2.jpg"
+                "url": "/storage/public/files/small-2x/VyuUStAj6be.jpg"
               },
               "small": {
-                "url": "/storage/public/files/small/4yk7-kuyn2.jpg"
+                "url": "/storage/public/files/small/VyuUStAj6be.jpg"
               },
               "medium-2x": {
-                "url": "/storage/public/files/medium-2x/4yk7-kuyn2.jpg"
+                "url": "/storage/public/files/medium-2x/VyuUStAj6be.jpg"
               },
               "medium": {
-                "url": "/storage/public/files/medium/4yk7-kuyn2.jpg"
+                "url": "/storage/public/files/medium/VyuUStAj6be.jpg"
               }
             },
             "bytes": 135,
-            "url": "/storage/v1/files/4yk7-kuyn2.png",
-            "id": "4yk7-kuyn2"
+            "url": "/storage/v1/files/VyuUStAj6be.png",
+            "id": "VyuUStAj6be"
           }
         }
       }
     },
-    "logged_at": "2015-08-30T12:36:16.492Z",
+    "logged_at": "2015-10-31T13:17:25.093Z",
     "is_public": true,
     "actor": {
       "counter": {
         "stars": 0,
         "comments": 0
       },
-      "gravatar_id": "520bca26339ed961550e472e2e418f10",
-      "username": "Jordi_Beer95",
-      "name": "Jordi_Beer95",
-      "id": "41qfZJ_k32"
+      "gravatar_id": "73b1d6f75119cbacbde411b7449c56ff",
+      "username": "Elijah13",
+      "name": "Elijah13",
+      "id": "NJmUHtCjabe"
     }
   }
 ]

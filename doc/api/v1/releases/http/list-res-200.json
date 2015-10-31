@@ -3,24 +3,24 @@ X-List-Page: 1
 X-List-Size: 12
 X-List-Count: 3
 Content-Type: application/json; charset=utf-8
-Etag: W/"119b-CMOtjJpL4zRQafanrwVdWg"
+Etag: W/"1367-zXS83yUpu4uN/x0PBcuagg"
 Content-Encoding: gzip
 
 [
   {
-    "id": "VkfXpg_122",
-    "name": "Re-engineered Edition",
-    "created_at": "2015-08-30T12:36:44.719Z",
+    "id": "4kOQgoAjaWg",
+    "name": "Exclusive Edition",
+    "created_at": "2015-10-31T13:17:51.733Z",
     "authors": [
       {
         "roles": [
           "Table Creator"
         ],
         "user": {
-          "id": "Nk8laed122",
-          "name": "Lois.Hayes71",
-          "username": "Lois.Hayes71",
-          "gravatar_id": "64d47cbe9b88498f59d8279ed0f900ad",
+          "id": "VkZ-ei0s6Ze",
+          "name": "Berneice.Lowe",
+          "username": "Berneice.Lowe",
+          "gravatar_id": "ec7909c8f1c4ef554af57621ee3ed77a",
           "counter": {
             "comments": 0,
             "stars": 0
@@ -33,57 +33,63 @@ Content-Encoding: gzip
       "comments": 0,
       "downloads": 0
     },
-    "game": {
-      "id": "volcano",
-      "title": "Volcano"
-    },
-    "latest_version": {
-      "version": "1.0.0",
-      "thumb": {
-        "image": {
-          "url": "/storage/public/files/square/EJsZTxuy2h.jpg",
-          "width": 120,
-          "height": 120
-        },
-        "flavor": {
-          "lighting": "night",
-          "orientation": "fs"
-        }
-      },
-      "files": [
-        {
-          "released_at": "2015-08-30T12:36:44.719Z",
-          "flavor": {
-            "lighting": "night",
-            "orientation": "fs"
-          },
-          "compatibility": [
-            "9.9.0"
-          ],
-          "file": {
-            "id": "4yFbpl_J32",
-            "name": "test-table-0.vpt",
-            "bytes": 135168,
-            "mime_type": "application/x-visual-pinball-table"
+    "versions": [
+      {
+        "version": "1.0.0",
+        "files": [
+          {
+            "released_at": "2015-10-31T13:17:51.733Z",
+            "flavor": {
+              "orientation": "fs",
+              "lighting": "night"
+            },
+            "compatibility": [
+              {
+                "id": "9.9.0"
+              }
+            ],
+            "file": {
+              "id": "Nkvzes0j6We",
+              "name": "test-table-0.vpt",
+              "bytes": 135168,
+              "mime_type": "application/x-visual-pinball-table"
+            }
           }
-        }
-      ]
+        ]
+      }
+    ],
+    "game": {
+      "id": "baby-grand-pin-game",
+      "title": "Baby Grand Pin Game",
+      "manufacturer": "A. M. Walzer Company",
+      "year": 1932
+    },
+    "thumb": {
+      "image": {
+        "url": "/storage/public/files/square/Ny1XgjCsaZe.jpg",
+        "width": 120,
+        "height": 120
+      },
+      "flavor": {
+        "orientation": "fs",
+        "lighting": "night"
+      }
     }
   },
   {
-    "id": "4Jwe1ZOJhh",
-    "name": "Future-proofed Edition",
-    "created_at": "2015-08-30T12:36:46.643Z",
+    "id": "VkuzZsCia-l",
+    "name": "Grass-roots Edition",
+    "created_at": "2015-10-31T13:17:53.012Z",
     "authors": [
       {
         "roles": [
           "Table Creator"
         ],
         "user": {
-          "id": "Nk8laed122",
-          "name": "Lois.Hayes71",
-          "username": "Lois.Hayes71",
-          "gravatar_id": "64d47cbe9b88498f59d8279ed0f900ad",
+          "id": "VkZ-ei0s6Ze",
+          "name": "Berneice.Lowe",
+          "username": "Berneice.Lowe",
+          "gravatar_id": "ec7909c8f1c4ef554af57621ee3ed77a",
           "counter": {
             "comments": 0,
             "stars": 0
@@ -96,73 +102,81 @@ Content-Encoding: gzip
       "comments": 0,
       "downloads": 0
     },
+    "versions": [
+      {
+        "version": "1.0",
+        "files": [
+          {
+            "released_at": "2015-10-31T13:17:53.012Z",
+            "flavor": {
+              "orientation": "fs",
+              "lighting": "night"
+            },
+            "compatibility": [
+              {
+                "id": "9.9.0"
+              }
+            ],
+            "file": {
+              "id": "N1sWo0j6Wx",
+              "name": "test-table-0.vpt",
+              "bytes": 135168,
+              "mime_type": "application/x-visual-pinball-table"
+            }
+          },
+          {
+            "released_at": "2015-10-31T13:17:53.012Z",
+            "flavor": {
+              "orientation": "ws",
+              "lighting": "day"
+            },
+            "compatibility": [
+              {
+                "id": "9.9.0"
+              }
+            ],
+            "file": {
+              "id": "VkAWiRsTWe",
+              "name": "test-table-1.vpt",
+              "bytes": 135168,
+              "mime_type": "application/x-visual-pinball-table"
+            }
+          }
+        ]
+      }
+    ],
     "game": {
-      "id": "fire-champagne-edition",
-      "title": "Fire Champagne Edition"
+      "id": "contact",
+      "title": "Contact",
+      "manufacturer": "Stoner Manufacturing Company",
+      "year": 1934
     },
-    "latest_version": {
-      "version": "1.0",
-      "thumb": {
-        "image": {
-          "url": "/storage/public/files/square/NyLf0ldknn.jpg",
-          "width": 120,
-          "height": 120
-        },
-        "flavor": {
-          "lighting": "night",
-          "orientation": "fs"
-        }
+    "thumb": {
+      "image": {
+        "url": "/storage/public/files/square/4yXx-oAspZx.jpg",
+        "width": 120,
+        "height": 120
       },
-      "files": [
-        {
-          "released_at": "2015-08-30T12:36:46.643Z",
-          "flavor": {
-            "lighting": "night",
-            "orientation": "fs"
-          },
-          "compatibility": [
-            "9.9.0"
-          ],
-          "file": {
-            "id": "4krWAg_Jnh",
-            "name": "test-table-0.vpt",
-            "bytes": 135168,
-            "mime_type": "application/x-visual-pinball-table"
-          }
-        },
-        {
-          "released_at": "2015-08-30T12:36:46.643Z",
-          "flavor": {
-            "lighting": "day",
-            "orientation": "ws"
-          },
-          "compatibility": [
-            "9.9.0"
-          ],
-          "file": {
-            "id": "EJ8ZCeu1h2",
-            "name": "test-table-1.vpt",
-            "bytes": 135168,
-            "mime_type": "application/x-visual-pinball-table"
-          }
-        }
-      ]
+      "flavor": {
+        "orientation": "fs",
+        "lighting": "night"
+      }
     }
   },
   {
-    "id": "V1o-lbd132",
-    "name": "Focused Edition",
-    "created_at": "2015-08-30T12:36:47.575Z",
+    "id": "V1kl7sAipWx",
+    "name": "Integrated Edition",
+    "created_at": "2015-10-31T13:17:54.857Z",
     "authors": [
       {
         "roles": [
           "Table Creator"
         ],
         "user": {
-          "id": "Nk8laed122",
-          "name": "Lois.Hayes71",
-          "username": "Lois.Hayes71",
-          "gravatar_id": "64d47cbe9b88498f59d8279ed0f900ad",
+          "id": "VkZ-ei0s6Ze",
+          "name": "Berneice.Lowe",
+          "username": "Berneice.Lowe",
+          "gravatar_id": "ec7909c8f1c4ef554af57621ee3ed77a",
           "counter": {
             "comments": 0,
             "stars": 0
@@ -175,71 +189,83 @@ Content-Encoding: gzip
       "comments": 0,
       "downloads": 0
     },
+    "versions": [
+      {
+        "version": "2.0",
+        "files": [
+          {
+            "released_at": "2015-10-31T13:17:54.857Z",
+            "flavor": {
+              "orientation": "fs",
+              "lighting": "any"
+            },
+            "compatibility": [
+              {
+                "id": "10.x"
+              }
+            ],
+            "file": {
+              "id": "V1-EGjCo6-g",
+              "name": "test-table-0.vpt",
+              "bytes": 135168,
+              "mime_type": "application/x-visual-pinball-table"
+            }
+          },
+          {
+            "released_at": "2015-10-31T13:17:54.857Z",
+            "flavor": {
+              "orientation": "any",
+              "lighting": "night"
+            },
+            "compatibility": [
+              {
+                "id": "10.x"
+              }
+            ],
+            "file": {
+              "id": "E1G4GoAsTbl",
+              "name": "test-table-1.vpt",
+              "bytes": 135168,
+              "mime_type": "application/x-visual-pinball-table"
+            }
+          },
+          {
+            "released_at": "2015-10-31T13:17:54.857Z",
+            "flavor": {
+              "orientation": "any",
+              "lighting": "any"
+            },
+            "compatibility": [
+              {
+                "id": "10.x"
+              }
+            ],
+            "file": {
+              "id": "NJ7NGiAipZx",
+              "name": "test-table-2.vpt",
+              "bytes": 135168,
+              "mime_type": "application/x-visual-pinball-table"
+            }
+          }
+        ]
+      }
+    ],
     "game": {
-      "id": "space-shuttle",
-      "title": "Space Shuttle"
+      "id": "golden-turf",
+      "title": "Golden Turf",
+      "manufacturer": "Show Games",
+      "year": 1900
     },
-    "latest_version": {
-      "version": "2.0",
-      "thumb": {
-        "image": {
-          "url": "/storage/public/files/square/EkClZOkn3.jpg"
-        },
-        "flavor": {
-          "lighting": "any",
-          "orientation": "fs"
-        }
+    "thumb": {
+      "image": {
+        "url": "/storage/public/files/square/EkYVMiRoa-x.jpg",
+        "width": 120,
+        "height": 120
       },
-      "files": [
-        {
-          "released_at": "2015-08-30T12:36:47.575Z",
-          "flavor": {
-            "lighting": "any",
-            "orientation": "fs"
-          },
-          "compatibility": [
-            "10.x"
-          ],
-          "file": {
-            "id": "4yNgWuJ32",
-            "name": "test-table-0.vpt",
-            "bytes": 135168,
-            "mime_type": "application/x-visual-pinball-table"
-          }
-        },
-        {
-          "released_at": "2015-08-30T12:36:47.575Z",
-          "flavor": {
-            "lighting": "night",
-            "orientation": "any"
-          },
-          "compatibility": [
-            "10.x"
-          ],
-          "file": {
-            "id": "EkLxbd1nn",
-            "name": "test-table-1.vpt",
-            "bytes": 135168,
-            "mime_type": "application/x-visual-pinball-table"
-          }
-        },
-        {
-          "released_at": "2015-08-30T12:36:47.575Z",
-          "flavor": {
-            "lighting": "any",
-            "orientation": "any"
-          },
-          "compatibility": [
-            "10.x"
-          ],
-          "file": {
-            "id": "VkPebu12n",
-            "name": "test-table-2.vpt",
-            "bytes": 135168,
-            "mime_type": "application/x-visual-pinball-table"
-          }
-        }
-      ]
+      "flavor": {
+        "orientation": "fs",
+        "lighting": "any"
+      }
     }
   }
 ]

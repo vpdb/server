@@ -1,5 +1,5 @@
-GET /api/v1/games/advance-roll/rating HTTP/1.1
+GET /api/v1/games/atlantic-city/rating HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI0SlU4OTFfSmgzIiwiaWF0IjoiMjAxNS0wOC0zMFQxMjozNjoyNS43OTFaIiwiZXhwIjoiMjAxNS0wOC0zMFQxMzozNjoyNS43OTFaIn0.EdQ-WO2G2ZcfQLxAoXj2qf5d4THLFiOIdeB9qtZ6Kfc
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJOMWdZMHRBaVQteCIsImlhdCI6IjIwMTUtMTAtMzFUMTM6MTc6MzMuOTkzWiIsImV4cCI6IjIwMTUtMTAtMzFUMTQ6MTc6MzMuOTkzWiJ9.BZKwWDX8NFhPQswKuoWuvtAiPiS4YneBjekf58msCAE
 

@@ -1,4 +1,4 @@
-GET /api/v1/games/kz-26/events HTTP/1.1
+GET /api/v1/games/attention/events HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
 

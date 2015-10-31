@@ -1,14 +1,14 @@
-POST /api/v1/games/alaska/roms HTTP/1.1
+POST /api/v1/games/big-inning/roms HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJOeXFzVy1feWhoIiwiaWF0IjoiMjAxNS0wOC0zMFQxMjozNjo0OS4wODJaIiwiZXhwIjoiMjAxNS0wOC0zMFQxMzozNjo0OS4wODJaIn0.neH1Qr8U-KuafbtJ-9qKn1Acji1rPbfulc7vndLdhwM
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI0MWVsbFZpQWpwV2ciLCJpYXQiOiIyMDE1LTEwLTMxVDEzOjE3OjU1Ljk0MVoiLCJleHAiOiIyMDE1LTEwLTMxVDE0OjE3OjU1Ljk0MVoifQ.5EEMcFUKlpN-14_hz1RsuVqJG0TDUdk3LIM2DA5q3N0
 Content-Type: application/json
-Content-Length: 102
+Content-Length: 107
 
 {
-  "id": "alaska_10",
+  "id": "big-inning_10",
   "version": "1.0",
   "notes": "That is some ROM.",
   "language": "en-US",
-  "_file": "VJxfGZuk32"
+  "_file": "V1pxrjAi6bg"
 }

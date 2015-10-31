@@ -1,21 +1,21 @@
 POST /api/v1/releases HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJOa3ZHeGdkazMzIiwiaWF0IjoiMjAxNS0wOC0zMFQxMjozNjozMS4zODFaIiwiZXhwIjoiMjAxNS0wOC0zMFQxMzozNjozMS4zODFaIn0.forQWYDRSf34hhxGWEEcdbDdFh7hCxAmqaRsG0QuCzU
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJFazQ4bWNSaWFiZSIsImlhdCI6IjIwMTUtMTAtMzFUMTM6MTc6MzguNjc3WiIsImV4cCI6IjIwMTUtMTAtMzFUMTQ6MTc6MzguNjc3WiJ9.Jk8Z1yMYBYWZfL6o963VBAO54DdTG_lQYObAtmv6m8o
 Content-Type: application/json
-Content-Length: 469
+Content-Length: 481
 
 {
   "name": "release",
-  "_game": "tiger",
+  "_game": "solar-fire",
   "versions": [
     {
       "files": [
         {
-          "_file": "4kkfZg_yn3",
+          "_file": "V1ueHcRia-x",
           "_media": {
-            "playfield_image": "4JNXWldkhh",
-            "playfield_video": "VJxfl_Jn3"
+            "playfield_image": "Ey0eH9AjT-l",
+            "playfield_video": "VkIMrcRopWe"
           },
           "_compatibility": [
             "9.9.0"
@@ -26,9 +26,9 @@ Content-Length: 469
           }
         },
         {
-          "_file": "Ey7Mbg_1nh",
+          "_file": "V1KlBcCopWl",
           "_media": {
-            "playfield_image": "41SmWxdynn"
+            "playfield_image": "E1gbH5AjTbl"
           },
           "_compatibility": [
             "9.9.0"
@@ -44,7 +44,7 @@ Content-Length: 469
   ],
   "authors": [
     {
-      "_user": "NkvGxgdk33",
+      "_user": "Ek48mcRiabe",
       "roles": [
         "Table Creator"
       ]

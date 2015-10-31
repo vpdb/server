@@ -3,7 +3,7 @@ X-List-Page: 1
 X-List-Size: 10
 X-List-Count: 7
 Content-Type: application/json; charset=utf-8
-Etag: W/"1d7a-MsAqWplS3qV8QQLW+y0wVw"
+Etag: W/"1c71-QlzNBkxJnaHKXGTvBA77Dg"
 Content-Encoding: gzip
 
 [
@@ -11,18 +11,18 @@ Content-Encoding: gzip
     "event": "create_release",
     "payload": {
       "release": {
-        "id": "VJ2Eb1uk3n",
-        "name": "Fully-configurable Edition",
+        "id": "NyxxLKAo6-e",
+        "name": "Automated Edition",
         "authors": [
           {
             "roles": [
               "Table Creator"
             ],
             "user": {
-              "id": "41UMZJukhh",
-              "name": "Blaise66",
-              "username": "Blaise66",
-              "gravatar_id": "3d49de2d8517922e4438f07b56574b36",
+              "id": "VJkUBYAspbe",
+              "name": "Esteban47",
+              "username": "Esteban47",
+              "gravatar_id": "95edbd3ce06190970aff6d902c2e93cf",
               "counter": {
                 "comments": 0,
                 "stars": 0
@@ -30,312 +30,68 @@ Content-Encoding: gzip
             }
           }
         ],
-        "latest_version": {
-          "version": "1.0.0",
-          "thumb": {
-            "image": {
-              "url": "/storage/v1/files/EkzNbyd1hh.png",
-              "is_protected": true,
-              "width": 1920,
-              "height": 1080
-            },
-            "flavor": {
-              "orientation": "fs",
-              "lighting": "night"
-            }
-          },
-          "files": [
-            {
-              "released_at": "2015-08-30T12:36:16.781Z",
-              "flavor": {
-                "orientation": "fs",
-                "lighting": "night"
-              },
-              "compatibility": [
-                "9.9.0"
-              ],
-              "file": {
-                "id": "NJnQWkOJhh",
-                "name": "test-table-0.vpt",
-                "bytes": 135168,
-                "mime_type": "application/x-visual-pinball-table"
-              }
-            }
-          ]
-        }
-      },
-      "game": {
-        "id": "kz-26",
-        "title": "KZ-26",
-        "manufacturer": "Playmatic",
-        "year": 1984,
-        "ipdb": {
-          "number": 3202,
-          "mfg": 255
-        },
-        "game_type": "ss"
-      }
-    },
-    "logged_at": "2015-08-30T12:36:16.837Z",
-    "is_public": true,
-    "actor": {
-      "counter": {
-        "stars": 0,
-        "comments": 0
-      },
-      "gravatar_id": "3d49de2d8517922e4438f07b56574b36",
-      "username": "Blaise66",
-      "name": "Blaise66",
-      "id": "41UMZJukhh"
-    }
-  },
-  {
-    "event": "create_game",
-    "payload": {
-      "game": {
-        "id": "kz-26",
-        "title": "KZ-26",
-        "manufacturer": "Playmatic",
-        "year": 1984,
-        "ipdb": {
-          "number": 3202,
-          "mfg": 255
-        },
-        "game_type": "ss",
-        "media": {
-          "backglass": {
-            "counter": {
-              "downloads": 0
-            },
-            "is_protected": true,
-            "variations": {
-              "small-2x": {
-                "url": "/storage/public/files/small-2x/4yk7-kuyn2.jpg"
-              },
-              "small": {
-                "url": "/storage/public/files/small/4yk7-kuyn2.jpg"
-              },
-              "medium-2x": {
-                "url": "/storage/public/files/medium-2x/4yk7-kuyn2.jpg"
-              },
-              "medium": {
-                "url": "/storage/public/files/medium/4yk7-kuyn2.jpg"
-              }
-            },
-            "bytes": 135,
-            "url": "/storage/v1/files/4yk7-kuyn2.png",
-            "id": "4yk7-kuyn2"
-          }
-        }
-      }
-    },
-    "logged_at": "2015-08-30T12:36:16.492Z",
-    "is_public": true,
-    "actor": {
-      "counter": {
-        "stars": 0,
-        "comments": 0
-      },
-      "gravatar_id": "520bca26339ed961550e472e2e418f10",
-      "username": "Jordi_Beer95",
-      "name": "Jordi_Beer95",
-      "id": "41qfZJ_k32"
-    }
-  },
-  {
-    "event": "create_comment",
-    "payload": {
-      "comment": {
-        "id": "NkbbyuJ3n",
-        "from": {
-          "counter": {
-            "stars": 0,
-            "comments": 0
-          },
-          "gravatar_id": "a2de4b40c5e9d33a173e9721f4b8d2a6",
-          "username": "Jaycee_Larson",
-          "name": "Jaycee_Larson",
-          "id": "VyJ9kk_133"
-        },
-        "message": "Advanced optimal strategy",
-        "release": {
-          "game": {
-            "ipdb": {
-              "mfg": 328,
-              "number": 3843
-            },
-            "year": 1943,
-            "manufacturer": "Unknown",
-            "title": "Jeep",
-            "id": "jeep"
-          },
-          "created_at": "2015-08-30T12:36:15.629Z",
-          "name": "Stand-alone Edition",
-          "id": "41Lbx1Oy22"
-        },
-        "created_at": "2015-08-30T12:36:16.126Z"
-      }
-    },
-    "logged_at": "2015-08-30T12:36:16.148Z",
-    "is_public": true
-  },
-  {
-    "event": "create_comment",
-    "payload": {
-      "comment": {
-        "id": "N1gXx1OJh2",
-        "from": {
-          "counter": {
-            "stars": 0,
-            "comments": 1
-          },
-          "gravatar_id": "92c971519c6513207489b4c25d6ac76b",
-          "username": "Alessia_Kerluke",
-          "name": "Alessia_Kerluke",
-          "id": "EJoFJk_J32"
-        },
-        "message": "Phased discrete initiative",
-        "release": {
-          "game": {
-            "ipdb": {
-              "mfg": 328,
-              "number": 3843
-            },
-            "year": 1943,
-            "manufacturer": "Unknown",
-            "title": "Jeep",
-            "id": "jeep"
-          },
-          "created_at": "2015-08-30T12:36:15.629Z",
-          "name": "Stand-alone Edition",
-          "id": "41Lbx1Oy22"
-        },
-        "created_at": "2015-08-30T12:36:15.961Z"
-      }
-    },
-    "logged_at": "2015-08-30T12:36:15.969Z",
-    "is_public": true
-  },
-  {
-    "event": "create_comment",
-    "payload": {
-      "comment": {
-        "id": "4kcMxy_y22",
-        "from": {
-          "counter": {
-            "stars": 0,
-            "comments": 0
-          },
-          "gravatar_id": "92c971519c6513207489b4c25d6ac76b",
-          "username": "Alessia_Kerluke",
-          "name": "Alessia_Kerluke",
-          "id": "EJoFJk_J32"
-        },
-        "message": "Programmable client-driven process improvement",
-        "release": {
-          "game": {
-            "ipdb": {
-              "mfg": 328,
-              "number": 3843
-            },
-            "year": 1943,
-            "manufacturer": "Unknown",
-            "title": "Jeep",
-            "id": "jeep"
-          },
-          "created_at": "2015-08-30T12:36:15.629Z",
-          "name": "Stand-alone Edition",
-          "id": "41Lbx1Oy22"
-        },
-        "created_at": "2015-08-30T12:36:15.902Z"
-      }
-    },
-    "logged_at": "2015-08-30T12:36:15.927Z",
-    "is_public": true
-  },
-  {
-    "event": "create_release",
-    "payload": {
-      "release": {
-        "id": "41Lbx1Oy22",
-        "name": "Stand-alone Edition",
-        "authors": [
+        "versions": [
           {
-            "roles": [
-              "Table Creator"
-            ],
-            "user": {
-              "id": "NyXqyk_J33",
-              "name": "Merritt_Connelly25",
-              "username": "Merritt_Connelly25",
-              "gravatar_id": "bff0849f856f0f5b00715a5e0644b550",
-              "counter": {
-                "comments": 0,
-                "stars": 0
+            "version": "1.0.0",
+            "files": [
+              {
+                "released_at": "2015-10-31T13:17:25.361Z",
+                "flavor": {
+                  "orientation": "fs",
+                  "lighting": "night"
+                },
+                "compatibility": [
+                  {
+                    "id": "9.9.0"
+                  }
+                ],
+                "file": {
+                  "id": "4y-UKAo6bl",
+                  "name": "test-table-0.vpt",
+                  "bytes": 135168,
+                  "mime_type": "application/x-visual-pinball-table"
+                }
               }
-            }
+            ]
           }
-        ],
-        "latest_version": {
-          "version": "1.0.0",
-          "thumb": {
-            "image": {
-              "url": "/storage/v1/files/NJJxlyuJh3.png",
-              "is_protected": true,
-              "width": 1920,
-              "height": 1080
-            },
-            "flavor": {
-              "orientation": "fs",
-              "lighting": "night"
-            }
-          },
-          "files": [
-            {
-              "released_at": "2015-08-30T12:36:15.629Z",
-              "flavor": {
-                "orientation": "fs",
-                "lighting": "night"
-              },
-              "compatibility": [
-                "9.9.0"
-              ],
-              "file": {
-                "id": "4kYxydJ3h",
-                "name": "test-table-0.vpt",
-                "bytes": 135168,
-                "mime_type": "application/x-visual-pinball-table"
-              }
-            }
-          ]
-        }
+        ]
       },
       "game": {
-        "id": "jeep",
-        "title": "Jeep",
-        "manufacturer": "Unknown",
-        "year": 1943,
+        "id": "attention",
+        "title": "Attention",
+        "manufacturer": "Exhibit",
+        "year": 1940,
         "ipdb": {
-          "number": 3843,
-          "mfg": 328
+          "number": 108,
+          "mfg": 117
         },
         "game_type": "em"
       }
     },
-    "logged_at": "2015-08-30T12:36:15.791Z",
-    "is_public": true
+    "logged_at": "2015-10-31T13:17:25.418Z",
+    "is_public": true,
+    "actor": {
+      "counter": {
+        "stars": 0,
+        "comments": 0
+      },
+      "gravatar_id": "95edbd3ce06190970aff6d902c2e93cf",
+      "username": "Esteban47",
+      "name": "Esteban47",
+      "id": "VJkUBYAspbe"
+    }
   },
   {
     "event": "create_game",
     "payload": {
       "game": {
-        "id": "jeep",
-        "title": "Jeep",
-        "manufacturer": "Unknown",
-        "year": 1943,
+        "id": "attention",
+        "title": "Attention",
+        "manufacturer": "Exhibit",
+        "year": 1940,
         "ipdb": {
-          "number": 3843,
-          "mfg": 328
+          "number": 108,
+          "mfg": 117
         },
         "game_type": "em",
         "media": {
@@ -346,26 +102,254 @@ Content-Encoding: gzip
             "is_protected": true,
             "variations": {
               "small-2x": {
-                "url": "/storage/public/files/small-2x/Nkdqy1uJn3.jpg"
+                "url": "/storage/public/files/small-2x/VyuUStAj6be.jpg"
               },
               "small": {
-                "url": "/storage/public/files/small/Nkdqy1uJn3.jpg"
+                "url": "/storage/public/files/small/VyuUStAj6be.jpg"
               },
               "medium-2x": {
-                "url": "/storage/public/files/medium-2x/Nkdqy1uJn3.jpg"
+                "url": "/storage/public/files/medium-2x/VyuUStAj6be.jpg"
               },
               "medium": {
-                "url": "/storage/public/files/medium/Nkdqy1uJn3.jpg"
+                "url": "/storage/public/files/medium/VyuUStAj6be.jpg"
               }
             },
             "bytes": 135,
-            "url": "/storage/v1/files/Nkdqy1uJn3.png",
-            "id": "Nkdqy1uJn3"
+            "url": "/storage/v1/files/VyuUStAj6be.png",
+            "id": "VyuUStAj6be"
           }
         }
       }
     },
-    "logged_at": "2015-08-30T12:36:15.143Z",
+    "logged_at": "2015-10-31T13:17:25.093Z",
+    "is_public": true,
+    "actor": {
+      "counter": {
+        "stars": 0,
+        "comments": 0
+      },
+      "gravatar_id": "73b1d6f75119cbacbde411b7449c56ff",
+      "username": "Elijah13",
+      "name": "Elijah13",
+      "id": "NJmUHtCjabe"
+    }
+  },
+  {
+    "event": "create_comment",
+    "payload": {
+      "comment": {
+        "id": "E1nzrtAs6be",
+        "from": {
+          "counter": {
+            "stars": 0,
+            "comments": 0
+          },
+          "gravatar_id": "c7266e9d390bae9e92388c9bf6824079",
+          "username": "Neil_Ankunding27",
+          "name": "Neil_Ankunding27",
+          "id": "VJwDVY0j6Wg"
+        },
+        "message": "Customer-focused contextually-based hierarchy",
+        "release": {
+          "game": {
+            "ipdb": {
+              "mfg": 175,
+              "number": 4191
+            },
+            "year": 1932,
+            "manufacturer": "Keeney and Sons",
+            "title": "Deluxe",
+            "id": "deluxe"
+          },
+          "created_at": "2015-10-31T13:17:24.361Z",
+          "name": "Assimilated Edition",
+          "id": "EJbgHFCopbx"
+        },
+        "created_at": "2015-10-31T13:17:24.743Z"
+      }
+    },
+    "logged_at": "2015-10-31T13:17:24.753Z",
+    "is_public": true
+  },
+  {
+    "event": "create_comment",
+    "payload": {
+      "comment": {
+        "id": "41yzrtRjpWe",
+        "from": {
+          "counter": {
+            "stars": 0,
+            "comments": 1
+          },
+          "gravatar_id": "32f77b064bec2b219a0403c1fa018a60",
+          "username": "Leonard_Jakubowski92",
+          "name": "Leonard_Jakubowski92",
+          "id": "N17vNtAjTWe"
+        },
+        "message": "De-engineered local definition",
+        "release": {
+          "game": {
+            "ipdb": {
+              "mfg": 175,
+              "number": 4191
+            },
+            "year": 1932,
+            "manufacturer": "Keeney and Sons",
+            "title": "Deluxe",
+            "id": "deluxe"
+          },
+          "created_at": "2015-10-31T13:17:24.361Z",
+          "name": "Assimilated Edition",
+          "id": "EJbgHFCopbx"
+        },
+        "created_at": "2015-10-31T13:17:24.687Z"
+      }
+    },
+    "logged_at": "2015-10-31T13:17:24.700Z",
+    "is_public": true
+  },
+  {
+    "event": "create_comment",
+    "payload": {
+      "comment": {
+        "id": "EycZHtAjTWg",
+        "from": {
+          "counter": {
+            "stars": 0,
+            "comments": 0
+          },
+          "gravatar_id": "32f77b064bec2b219a0403c1fa018a60",
+          "username": "Leonard_Jakubowski92",
+          "name": "Leonard_Jakubowski92",
+          "id": "N17vNtAjTWe"
+        },
+        "message": "Automated upward-trending Graphical User Interface",
+        "release": {
+          "game": {
+            "ipdb": {
+              "mfg": 175,
+              "number": 4191
+            },
+            "year": 1932,
+            "manufacturer": "Keeney and Sons",
+            "title": "Deluxe",
+            "id": "deluxe"
+          },
+          "created_at": "2015-10-31T13:17:24.361Z",
+          "name": "Assimilated Edition",
+          "id": "EJbgHFCopbx"
+        },
+        "created_at": "2015-10-31T13:17:24.661Z"
+      }
+    },
+    "logged_at": "2015-10-31T13:17:24.669Z",
+    "is_public": true
+  },
+  {
+    "event": "create_release",
+    "payload": {
+      "release": {
+        "id": "EJbgHFCopbx",
+        "name": "Assimilated Edition",
+        "authors": [
+          {
+            "roles": [
+              "Table Creator"
+            ],
+            "user": {
+              "id": "VyjvNF0oTWl",
+              "name": "Jonas_Langosh",
+              "username": "Jonas_Langosh",
+              "gravatar_id": "aeb9910b2d6ee4ce5efc5c5b8bba6577",
+              "counter": {
+                "comments": 0,
+                "stars": 0
+              }
+            }
+          }
+        ],
+        "versions": [
+          {
+            "version": "1.0.0",
+            "files": [
+              {
+                "released_at": "2015-10-31T13:17:24.361Z",
+                "flavor": {
+                  "orientation": "fs",
+                  "lighting": "night"
+                },
+                "compatibility": [
+                  {
+                    "id": "9.9.0"
+                  }
+                ],
+                "file": {
+                  "id": "4kpdVF0sTbl",
+                  "name": "test-table-0.vpt",
+                  "bytes": 135168,
+                  "mime_type": "application/x-visual-pinball-table"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "game": {
+        "id": "deluxe",
+        "title": "Deluxe",
+        "manufacturer": "Keeney and Sons",
+        "year": 1932,
+        "ipdb": {
+          "number": 4191,
+          "mfg": 175
+        },
+        "game_type": "pm"
+      }
+    },
+    "logged_at": "2015-10-31T13:17:24.436Z",
+    "is_public": true
+  },
+  {
+    "event": "create_game",
+    "payload": {
+      "game": {
+        "id": "deluxe",
+        "title": "Deluxe",
+        "manufacturer": "Keeney and Sons",
+        "year": 1932,
+        "ipdb": {
+          "number": 4191,
+          "mfg": 175
+        },
+        "game_type": "pm",
+        "media": {
+          "backglass": {
+            "counter": {
+              "downloads": 0
+            },
+            "is_protected": true,
+            "variations": {
+              "small-2x": {
+                "url": "/storage/public/files/small-2x/4klu4KRj6Wx.jpg"
+              },
+              "small": {
+                "url": "/storage/public/files/small/4klu4KRj6Wx.jpg"
+              },
+              "medium-2x": {
+                "url": "/storage/public/files/medium-2x/4klu4KRj6Wx.jpg"
+              },
+              "medium": {
+                "url": "/storage/public/files/medium/4klu4KRj6Wx.jpg"
+              }
+            },
+            "bytes": 135,
+            "url": "/storage/v1/files/4klu4KRj6Wx.png",
+            "id": "4klu4KRj6Wx"
+          }
+        }
+      }
+    },
+    "logged_at": "2015-10-31T13:17:23.981Z",
     "is_public": true
   }
 ]

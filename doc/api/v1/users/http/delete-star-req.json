@@ -1,5 +1,5 @@
-DELETE /api/v1/users/NyebvW_12n/star HTTP/1.1
+DELETE /api/v1/users/4yk8KjRs6Wg/star HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJFeUVsUGJ1MW5uIiwiaWF0IjoiMjAxNS0wOC0zMFQxMjozNjo1NC4yMDBaIiwiZXhwIjoiMjAxNS0wOC0zMFQxMzozNjo1NC4yMDBaIn0.uDnMTqb0whlG4HcM6j3RvFmZ_HO_Tp8SBHFwuSX-MLI
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJFSlhyS3NBc1RXZSIsImlhdCI6IjIwMTUtMTAtMzFUMTM6MTg6MDAuNzAyWiIsImV4cCI6IjIwMTUtMTAtMzFUMTQ6MTg6MDAuNzAyWiJ9.5bPrQo_WNHhdRM1NNY4-vM-XkO5ZFnG2r0fd_vuJex4
 

@@ -1,22 +1,21 @@
 200 OK
 Content-Type: application/json; charset=utf-8
-Content-Length: 389
-Etag: W/"185-haj88lC2P7n4gJ39W7AToQ"
+Content-Length: 370
+Etag: W/"172-7dqnCe+gkz9lt4ukjwUUmA"
 
 {
-  "id": "VyIOZOyhn",
-  "name": "Monserrate.Lesch",
-  "username": "Monserrate.Lesch",
-  "gravatar_id": "73524b2a341e5816684a41d9678e5eb8",
-  "location": "Collinsberg",
-  "email": "aron11@yahoo.com",
+  "id": "41kw9jRj6-e",
+  "name": "Juvenal86",
+  "username": "Juvenal86",
+  "gravatar_id": "d9bdc9cd526de437cb9132a446967fc6",
+  "location": "Kaylinmouth",
+  "email": "alyce_gulgowski7@gmail.com",
   "is_active": true,
   "provider": "local",
   "roles": [
     "member"
   ],
-  "plan": "free",
-  "created_at": "2015-08-30T12:36:55.136Z",
+  "created_at": "2015-10-31T13:18:01.635Z",
   "counter": {
     "stars": 0,
     "downloads": 0,

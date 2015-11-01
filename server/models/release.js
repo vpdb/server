@@ -344,7 +344,7 @@ ReleaseSchema.statics.toSimple = function(release, opts) {
 	// field visibility
 	var gameFields = ['id', 'title', 'manufacturer', 'year'];
 	var releaseFields = [ 'id', 'name', 'created_at', 'authors', 'counter', 'versions' ];
-	var versionFields = [ 'version', 'files' ];
+	var versionFields = [ 'version', 'released_at', 'files' ];
 	var fileRefFields = [ 'released_at', 'flavor', 'compatibility', 'file' ];
 	var fileFields = ['id', 'name', 'bytes', 'mime_type'];
 	var compatFields = [ 'id' ];

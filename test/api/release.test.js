@@ -14,7 +14,7 @@ superagentTest(request);
 
 describe('The VPDB `release` API', function() {
 
-	describe('when posting a new release', function() {
+	describe('when creating a new release', function() {
 
 		before(function(done) {
 			hlp.setupUsers(request, {
@@ -247,7 +247,8 @@ describe('The VPDB `release` API', function() {
 												_compatibility: [ '9.9.0' ],
 												flavor: { orientation: 'fs', lighting: 'day' }
 											} ],
-											version: '1.0.0'
+											version: '1.0.0',
+											released_at: '2015-08-01T00:00:00.000Z'
 										}
 									],
 									authors: [ { _user: hlp.getUser(user).id, roles: [ 'Table Creator' ] } ],
@@ -263,6 +264,61 @@ describe('The VPDB `release` API', function() {
 									done();
 								});
 						});
+					});
+				});
+			});
+		});
+
+		it('should correctly inherit release date if set', function(done) {
+			var user = 'member';
+			var date1 = '2015-01-01T00:00:00.000Z';
+			var date2 = '2015-08-01T00:00:00.000Z';
+
+			hlp.game.createGame('contributor', request, function(game) {
+				hlp.file.createVpts(user, request, 2, function(vptfiles) {
+					hlp.file.createPlayfields(user, request, 'fs', 2, function(playfieldImages) {
+						request
+							.post('/api/v1/releases')
+							.save({ path: 'releases/create'})
+							.as(user)
+							.send({
+								name: 'release',
+								_game: game.id,
+								versions: [
+									{
+										files: [ {
+											released_at: date1,
+											_file: vptfiles[0].id,
+											_media: {
+												playfield_image: playfieldImages[0].id,
+											},
+											_compatibility: [ '9.9.0' ],
+											flavor: { orientation: 'fs', lighting: 'night' }
+
+										}, {
+											_file: vptfiles[1].id,
+											_media: {
+												playfield_image: playfieldImages[1].id
+											},
+											_compatibility: [ '9.9.0' ],
+											flavor: { orientation: 'fs', lighting: 'day' }
+										} ],
+										version: '1.0.0',
+										released_at: date2
+									}
+								],
+								authors: [ { _user: hlp.getUser(user).id, roles: [ 'Table Creator' ] } ],
+								_tags: [ 'hd', 'dof' ]
+							})
+							.end(function (err, res) {
+								hlp.expectStatus(err, res, 201);
+								hlp.doomRelease(user, res.body.id);
+
+								expect(res.body.versions[0].released_at).to.be(date2);
+								expect(res.body.versions[0].files[0].released_at).to.be(date1);
+								expect(res.body.versions[0].files[1].released_at).to.be(date2);
+								done();
+							});
 					});
 				});
 			});
@@ -548,7 +604,6 @@ describe('The VPDB `release` API', function() {
 					.save({ path: 'releases/view'})
 					.end(function(err, res) {
 
-						hlp.dump(res);
 						hlp.expectStatus(err, res, 200);
 						release = res.body;
 						expect(res.body).to.be.an('object');

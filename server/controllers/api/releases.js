@@ -47,6 +47,20 @@ var flavor = require('../../modules/flavor');
 exports.create = function(req, res) {
 
 	var now = new Date();
+
+	// defaults
+	if (req.body.versions) {
+		_.each(req.body.versions, function(version) {
+			version.released_at = version.released_at || now.toISOString();
+			if (version.files) {
+				var releasedAt = version.released_at || now.toISOString();
+				_.each(version.files, function(file) {
+					file.released_at = file.released_at || releasedAt;
+				});
+			}
+		});
+	}
+
 	Release.getInstance(_.extend(req.body, {
 		_created_by: req.user._id,
 		modified_at: now,
@@ -59,19 +73,6 @@ exports.create = function(req, res) {
 		var assertRb = api.assert(error, 'create', newRelease.name, res, function(done) {
 			newRelease.remove(done);
 		});
-
-		// defaults
-		// TODO if version date is set, push to files as well.
-		if (newRelease.versions) {
-			_.each(newRelease.versions, function(version) {
-				_.defaults(version, { released_at: now });
-				if (version.files) {
-					_.each(version.files, function(file) {
-						_.defaults(file, { released_at: now });
-					});
-				}
-			});
-		}
 
 		logger.info('[api|release:create] %s', util.inspect(req.body));
 		newRelease.validate(function(err) {

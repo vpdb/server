@@ -483,7 +483,7 @@ exports.list = function(req, res) {
 						return next(true);
 					}
 					if (files && files.length > 0) {
-						fileIds = _.pluck(files, '_id');
+						fileIds = _.pluck(files, 'id');
 						query.push({ 'versions.files._file': { $in: _.pluck(files, '_id') }});
 					} else {
 						query.push({ _id: null }); // no result
@@ -601,6 +601,7 @@ exports.list = function(req, res) {
 					if (stars) {
 						transformOpts.starred = starMap[release._id] ? true : false;
 					}
+					transformOpts.fileIds = fileIds;
 					return release.toSimple(transformOpts);
 				});
 				api.success(res, releases, 200, api.paginationOpts(pagination, count));

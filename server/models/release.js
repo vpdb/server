@@ -369,7 +369,7 @@ ReleaseSchema.statics.toSimple = function(release, opts) {
 		return 0;
 	});
 
-	var versions = stripOldFlavors(sortedVersions);
+	var versions = stripFiles(sortedVersions, opts);
 
 	// set thumb
 	rls.thumb = getReleaseThumb(versions, opts);
@@ -723,26 +723,37 @@ function getPlayfieldImage(file) {
  * Takes a sorted list of versions and removes files that have a newer
  * flavor. Also removes empty versions.
  * @param versions
+ * @param opts
  */
-function stripOldFlavors(versions) {
+function stripFiles(versions, opts) {
 	var i, j;
 	var flavorValues, flavorKey, flavorKeys = {};
 
 	for (i = 0; i < versions.length; i++) {
 		for (j = 0; j < versions[i].files.length; j++) {
 
-			flavorValues = [];
-			for (var key in flavor.values) {
-				//noinspection JSUnfilteredForInLoop
-				flavorValues.push(versions[i].files[j].flavor[key]);
-			}
-			flavorKey = flavorValues.join(':');
+			// if file ids given, ignore flavor logic
+			if (_.isArray(opts.fileIds)) {
+				console.log('checking %j against %j', opts.fileIds, versions[i].files[j ].file.id);
+				if (!_.includes(opts.fileIds, versions[i].files[j].file.id)) {
+					versions[i].files[j] = null;
+				}
 
-			// strip if already available
-			if (flavorKeys[flavorKey]) {
-				versions[i].files[j] = null;
+			// otherwise, make sure we include only the latest flavor combination.
+			} else {
+				flavorValues = [];
+				for (var key in flavor.values) {
+					//noinspection JSUnfilteredForInLoop
+					flavorValues.push(versions[i].files[j].flavor[key]);
+				}
+				flavorKey = flavorValues.join(':');
+
+				// strip if already available
+				if (flavorKeys[flavorKey]) {
+					versions[i].files[j] = null;
+				}
+				flavorKeys[flavorKey] = true;
 			}
-			flavorKeys[flavorKey] = true;
 		}
 
 		versions[i].files = _.compact(versions[i].files);

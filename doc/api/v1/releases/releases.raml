@@ -119,7 +119,8 @@ get:
         Only lists releases which contain a file with given size in bytes.
 
         This is useful for matching local table files with releases at VPDB.
-        See also `threshold`.
+        See also `threshold`. Note that `versions` only contains matched files,
+        even if newer files are available.
       required: false
       type: number
       example: 68820992

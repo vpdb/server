@@ -340,8 +340,16 @@ exports.list = function(req, res) {
 	if (req.query.thumb_format) {
 		transformOpts.thumbFormat = req.query.thumb_format;
 	}
-	if (!_.isUndefined(req.query.thumb_full_data)) {
+	if (!_.isUndefined(req.query.thumb_full_data) && req.query.thumb_full_data.toLowerCase() !== 'false') {
 		transformOpts.fullThumbData = true;
+	}
+	if (!_.isUndefined(req.query.thumb_per_file) && req.query.thumb_per_file.toLowerCase() !== 'false') {
+		transformOpts.thumbPerFile = true;
+	}
+
+	// check
+	if (transformOpts.thumbPerFile && !transformOpts.thumbFormat) {
+		return api.fail(res, error('You must specify "thumb_format" when requesting thumbs per file.'), 400);
 	}
 
 	// filter by tag

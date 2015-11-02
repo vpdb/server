@@ -372,7 +372,7 @@ ReleaseSchema.statics.toSimple = function(release, opts) {
 	var versions = stripOldFlavors(sortedVersions);
 
 	// set thumb
-	rls.thumb = getThumb(versions, opts);
+	rls.thumb = getReleaseThumb(versions, opts);
 
 	// set star
 	if (!_.isUndefined(opts.starred)) {
@@ -494,7 +494,7 @@ ReleaseSchema.methods.toDetailed = function(opts) {
 
 	opts = opts || {};
 	if (opts.thumbFlavor || opts.thumbFormat) {
-		rls.thumb = getThumb(rls.versions, opts);
+		rls.thumb = getReleaseThumb(rls.versions, opts);
 	}
 
 	return rls;
@@ -599,25 +599,27 @@ logger.info('[model] Schema "Release" registered.');
  * @param opts
  * @returns {{image: *, flavor: *}}
  */
-function getThumb(versions, opts) {
+function getReleaseThumb(versions, opts) {
 
 	opts.thumbFormat = opts.thumbFormat || 'original';
 
-	var thumbFields = [ 'url', 'width', 'height', 'is_protected' ];
 	var i, j, file, thumb;
 
-	// get the file to pull media from
-	var f, fileFlavor, flavorName, flavorValue, playfieldImage, media;
+	var f, fileFlavor, flavorName, flavorValue;
 	var flavorParams = opts.thumbFlavor ? opts.thumbFlavor.split(',') : [];
 	var defaults = flavor.defaultThumb();
-	var weight, match, matches = [];
-	var strippedFiles = _.flatten(_.pluck(versions, 'files'));
-	for (i = 0; i < strippedFiles.length; i++) {
-		if (!strippedFiles[i].flavor) {
+	var weight, match, filesByWeight = [];
+
+	// get all files
+	var files = _.flatten(_.pluck(versions, 'files'));
+
+	// find best matching flavor
+	for (i = 0; i < files.length; i++) {
+		if (!files[i].flavor) {
 			// skip non-table files
 			continue;
 		}
-		file = strippedFiles[i];
+		file = files[i];
 		fileFlavor = file.flavor.toObj ? file.flavor.toObj() : file.flavor;
 		weight = 0;
 
@@ -636,64 +638,80 @@ function getThumb(versions, opts) {
 			}
 		}
 //		console.log('[%s] %s / %j => %d', release.id, opts.thumbFlavor, fileFlavor, weight);
-
-		matches.push({
+		filesByWeight.push({
 			file: file,
 			weight: weight
 		});
 	}
-	matches = matches.sort(function(a, b) {
+	filesByWeight = filesByWeight.sort(function(a, b) {
 		if (a.weight < b.weight) { return 1; }
 		if (a.weight > b.weight) { return -1; }
 		return 0;
 	});
 
-	if (opts.fullThumbData) {
-		thumbFields = thumbFields.concat(['mime_type', 'bytes']);
-	}
-	for (i = 0; i < matches.length; i++) {
-		match = matches[i].file;
-//		console.log('[%s] =====> %j', rls.id, match.flavor);
-		media = match.media || match._media;
-		playfieldImage = media.playfield_image.toObj ? media.playfield_image.toObj() : media.playfield_image;
-		if (opts.thumbFormat === 'original') {
-			thumb = _.extend(_.pick(playfieldImage, thumbFields), {
-				width: playfieldImage.metadata.size.width,
-				height: playfieldImage.metadata.size.height
-			});
+	var selectedFlavor;
+	for (i = 0; i < filesByWeight.length; i++) {
+		thumb = getFileThumb(filesByWeight[i].file, opts);
+		selectedFlavor = filesByWeight[i].file.flavor;
+		if (thumb !== null) {
 			break;
-
-		} else if (playfieldImage.variations[opts.thumbFormat]) {
-			thumb = _.pick(playfieldImage.variations[opts.thumbFormat], thumbFields);
-			break;
-
-		} /*else {
-		 console.log(playfieldImage);
-		 console.log('[%s] no %s variation for playfield image, trying next best match.', release.id, opts.thumbFormat);
-		 }*/
-	}
-
-	if (!thumb) {
-		thumb = {
-			url: playfieldImage.url,
-			width: playfieldImage.metadata.size.width,
-			height: playfieldImage.metadata.size.height
-		};
-		if (opts.fullThumbData) {
-			thumb.mime_type = playfieldImage.mime_type;
-			thumb.bytes = playfieldImage.bytes;
 		}
 	}
 
-	// set thumb
-	if (opts.fullThumbData) {
-		thumb.file_type = playfieldImage.file_type;
+	if (!thumb) {
+		thumb = getDefaultThumb(filesByWeight[0], opts);
+		selectedFlavor = filesByWeight[0].file.flavor;
 	}
 
 	return {
 		image: thumb,
-		flavor: match.flavor
+		flavor: selectedFlavor
 	};
+}
+
+function getFileThumb(file, opts) {
+
+	var thumbFields = [ 'url', 'width', 'height', 'is_protected' ];
+	if (opts.fullThumbData) {
+		thumbFields = thumbFields.concat(['mime_type', 'bytes', 'file_type']);
+	}
+
+	var playfieldImage = getPlayfieldImage(file);
+
+	if (opts.thumbFormat === 'original') {
+		return _.extend(_.pick(playfieldImage, thumbFields), {
+			width: playfieldImage.metadata.size.width,
+			height: playfieldImage.metadata.size.height
+		});
+
+	} else if (playfieldImage.variations[opts.thumbFormat]) {
+		return _.pick(playfieldImage.variations[opts.thumbFormat], thumbFields);
+	}/*else {
+	 console.log(playfieldImage);
+	 console.log('[%s] no %s variation for playfield image, trying next best match.', release.id, opts.thumbFormat);
+	 }*/
+	return null;
+}
+
+function getDefaultThumb(file, opts) {
+
+	var playfieldImage = getPlayfieldImage(file);
+	var thumb = {
+		url: playfieldImage.url,
+		width: playfieldImage.metadata.size.width,
+		height: playfieldImage.metadata.size.height
+	};
+	if (opts.fullThumbData) {
+		thumb.mime_type = playfieldImage.mime_type;
+		thumb.bytes = playfieldImage.bytes;
+		thumb.file_type = playfieldImage.file_type;
+	}
+	return thumb;
+}
+
+function getPlayfieldImage(file) {
+	var media = file.media || file._media;
+	return media.playfield_image.toObj ? media.playfield_image.toObj() : media.playfield_image;
 }
 
 /**

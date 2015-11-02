@@ -970,6 +970,21 @@ describe('The VPDB `release` API', function() {
 			});
 		});
 
+		it('should contain a thumb field per file if requested', function(done) {
+			request.get('/api/v1/releases?thumb_format=square&thumb_per_file=true').end(function(err, res) {
+				hlp.expectStatus(err, res, 200);
+				for (var i = 0; i < res.body.length; i++) {
+					expect(res.body[i].versions[0].files[0].thumb).to.be.an('object');
+					expect(res.body[i].versions[0].files[0].thumb.url).to.contain('/square/');
+				}
+				done();
+			});
+		});
+
+		it('should refues thumb field per file if no format is given', function(done) {
+			request.get('/api/v1/releases?thumb_per_file=true').end(hlp.status(400, 'must specify "thumb_format"', done));
+		});
+
 		it('should only list releases with table files of a given size');
 		it('should only list releases with table files of a given size and threshold');
 

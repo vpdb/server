@@ -165,6 +165,14 @@ get:
       required: false
       type: string
       example: square
+    thumb_per_file:
+      description: |
+        If provided, adds a `thumb` object for each file. Only valid together
+        with `thumb_format` because only one format can be returned.
+
+      required: false
+      type: boolean
+      example: true
     thumb_full_data:
       description: |
         If provided, additionally returns `mime_type`, `bytes` and

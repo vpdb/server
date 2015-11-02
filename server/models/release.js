@@ -379,11 +379,16 @@ ReleaseSchema.statics.toSimple = function(release, opts) {
 		rls.starred = opts.starred;
 	}
 
-	// reduce data
+	// reduce/enhance data
 	rls.versions = _.map(versions, function(version) {
 		version = _.pick(version, versionFields);
 		version.files = _.map(version.files, function(file) {
-			file = _.pick(file, fileRefFields.concat([ '_file', '_compatibility' ]));
+			var fields = [ '_file', '_compatibility' ];
+			if (opts.thumbPerFile && opts.thumbFormat) {
+				file.thumb = getFileThumb(file, opts);
+				fields.push('thumb');
+			}
+			file = _.pick(file, fileRefFields.concat(fields));
 			file.compatibility = _.map(file.compatibility || file._compatibility, function(c) {
 				return _.pick(c, compatFields);
 			});

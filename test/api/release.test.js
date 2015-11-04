@@ -981,7 +981,7 @@ describe('The VPDB `release` API', function() {
 			});
 		});
 
-		it('should refues thumb field per file if no format is given', function(done) {
+		it('should refuse thumb field per file if no format is given', function(done) {
 			request.get('/api/v1/releases?thumb_per_file=true').end(hlp.status(400, 'must specify "thumb_format"', done));
 		});
 

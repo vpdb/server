@@ -644,6 +644,9 @@ exports.view = function(req, res) {
 		if (req.query.thumb_format) {
 			transformOpts.thumbFormat = req.query.thumb_format;
 		}
+		if (!_.isUndefined(req.query.thumb_per_file) && req.query.thumb_per_file.toLowerCase() !== 'false') {
+			transformOpts.thumbPerFile = true;
+		}
 
 		return api.success(res, release.toDetailed(transformOpts));
 	});

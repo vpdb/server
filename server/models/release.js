@@ -502,6 +502,18 @@ ReleaseSchema.methods.toDetailed = function(opts) {
 		rls.thumb = getReleaseThumb(rls.versions, opts);
 	}
 
+	// reduce/enhance data
+	rls.versions = _.map(rls.versions, function(version) {
+		version.files = _.map(version.files, function(file) {
+			if (opts.thumbPerFile && opts.thumbFormat) {
+				file.thumb = getFileThumb(file, opts);
+				delete file.media;
+			}
+			return file;
+		});
+		return version;
+	});
+
 	return rls;
 };
 

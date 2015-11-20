@@ -507,7 +507,9 @@ ReleaseSchema.methods.toDetailed = function(opts) {
 		version.files = _.map(version.files, function(file) {
 			if (opts.thumbPerFile && opts.thumbFormat) {
 				file.thumb = getFileThumb(file, opts);
-				delete file.media;
+				if (!opts.full) {
+					delete file.media;
+				}
 			}
 			return file;
 		});

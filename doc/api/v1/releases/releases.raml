@@ -181,6 +181,13 @@ get:
       required: false
       type: boolean
       example: true
+    full:
+      description: |
+        If provided, `media` isn't stripped when `thumb_per_file` option is
+        provided.
+      required: false
+      type: boolean
+      example: true
   body:
     role/anon:
       example: !include http/list-req.json

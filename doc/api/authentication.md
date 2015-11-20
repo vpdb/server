@@ -53,7 +53,7 @@ There are three different types of access tokens:
  3. **Application Tokens** are issued by the [`/tokens`][api-token] resource.
     They are long lived (usually a year) and must be manually maintained. The
     goal of application tokens is permanent access to third party applications
-    such as PinballX, without the need to hand over the user's password. 
+    such as VPDB Agent, without the need to hand over the user's password. 
     Contrarily to primary tokens and storage tokens, application tokens are no
     JWTs but only random strings.
 

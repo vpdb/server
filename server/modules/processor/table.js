@@ -26,6 +26,7 @@ var path = require('path');
 var logger = require('winston');
 var request = require('request');
 
+var vp = require('../visualpinball');
 var error = require('../error')('processor', 'table');
 var config = require('../settings').current;
 
@@ -55,15 +56,25 @@ TableProcessor.prototype.metadata = function(file, variation, done) {
 		done = variation;
 		variation = undefined;
 	}
-	done(null, {});
+	if (!variation) {
+		vp.readScriptFromTable(file.getPath(), function(err, script) {
+			if (err) {
+				return done(error(err, 'Error reading metadata from image').warn());
+			}
+			vp.getTableInfo(file.getPath(), function(err, props) {
+				var metadata = _.extend(props, { Script: script.code });
+				done(null, metadata);
+			});
+		});
+	}
 };
 
 TableProcessor.prototype.metadataShort = function(metadata) {
-	return {};
+	return metadata;
 };
 
 TableProcessor.prototype.variationData = function(metadata) {
-	return {};
+	return _.omit(metadata, 'Script');
 };
 
 /**

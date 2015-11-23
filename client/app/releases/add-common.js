@@ -141,6 +141,16 @@ angular.module('vpdb.releases.add', []).controller('ReleaseAddBaseCtrl', functio
 				AuthService.collectUrlProps(status.storage, true);
 			}
 
+			// copy version from table file to form if available
+			if (status.storage.metadata && status.storage.metadata.TableVersion) {
+				$scope.releaseVersion.version = status.storage.metadata.TableVersion;
+			}
+
+			// add author's url as well
+			if ($scope.addLink && _.isArray($scope.release.links) && $scope.release.links.length === 0 && status.storage.metadata && status.storage.metadata.AuthorWebSite) {
+				$scope.addLink({ label: 'Author\'s website', url: status.storage.metadata.AuthorWebSite });
+			}
+
 		} else {
 			tableFile = { _file: status.storage.id };
 		}

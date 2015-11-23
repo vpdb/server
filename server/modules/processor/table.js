@@ -62,7 +62,7 @@ TableProcessor.prototype.metadata = function(file, variation, done) {
 				return done(error(err, 'Error reading metadata from image').warn());
 			}
 			vp.getTableInfo(file.getPath(), function(err, props) {
-				var metadata = _.extend(props, { Script: script.code });
+				var metadata = _.extend(props, { table_script: script.code });
 				done(null, metadata);
 			});
 		});
@@ -74,7 +74,7 @@ TableProcessor.prototype.metadataShort = function(metadata) {
 };
 
 TableProcessor.prototype.variationData = function(metadata) {
-	return _.omit(metadata, 'Script');
+	return _.omit(metadata, 'table_script');
 };
 
 /**

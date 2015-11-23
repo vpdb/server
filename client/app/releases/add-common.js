@@ -142,13 +142,13 @@ angular.module('vpdb.releases.add', []).controller('ReleaseAddBaseCtrl', functio
 			}
 
 			// copy version from table file to form if available
-			if (status.storage.metadata && status.storage.metadata.TableVersion) {
-				$scope.releaseVersion.version = status.storage.metadata.TableVersion;
+			if (status.storage.metadata && status.storage.metadata.table_version) {
+				$scope.releaseVersion.version = status.storage.metadata.table_version;
 			}
 
 			// add author's url as well
-			if ($scope.addLink && _.isArray($scope.release.links) && $scope.release.links.length === 0 && status.storage.metadata && status.storage.metadata.AuthorWebSite) {
-				$scope.addLink({ label: 'Author\'s website', url: status.storage.metadata.AuthorWebSite });
+			if ($scope.addLink && _.isArray($scope.release.links) && $scope.release.links.length === 0 && status.storage.metadata && status.storage.metadata.author_website) {
+				$scope.addLink({ label: 'Author\'s website', url: status.storage.metadata.author_website });
 			}
 
 		} else {

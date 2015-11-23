@@ -94,9 +94,19 @@ exports.getTableInfo = function(tablePath, callback) {
 	doc.on('ready', function() {
 		var storage = doc.storage('TableInfo');
 		if (storage) {
-			var streams = [ 'TableName', 'AuthorName', 'TableBlurp', 'TableRules', 'AuthorEmail', 'ReleaseDate', 'TableVersion', 'AuthorWebSite', 'TableDescription' ];
+			var streams = {
+				TableName: 'table_name',
+				AuthorName: 'author_name',
+				TableBlurp: 'table_blurp',
+				TableRules: 'table_rules',
+				AuthorEmail: 'author_email',
+				ReleaseDate: 'release_date',
+				TableVersion: 'table_version',
+				AuthorWebSite: 'author_website',
+				TableDescription: 'table_description'
+			};
 			var props = {};
-			async.eachSeries(streams, function(stream, next) {
+			async.eachSeries(_.keys(streams), function(stream, next) {
 				try {
 					var strm = storage.stream(stream);
 					var bufs = [];
@@ -105,7 +115,7 @@ exports.getTableInfo = function(tablePath, callback) {
 					});
 					strm.on('end', function() {
 						var buf = Buffer.concat(bufs);
-						props[stream] = buf.toString().replace(/\0/g, '');
+						props[streams[stream]] = buf.toString().replace(/\0/g, '');
 						next();
 					});
 					strm.on('err', function(err) {

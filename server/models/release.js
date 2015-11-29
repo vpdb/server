@@ -748,7 +748,6 @@ function stripFiles(versions, opts) {
 
 			// if file ids given, ignore flavor logic
 			if (_.isArray(opts.fileIds)) {
-				console.log('checking %j against %j', opts.fileIds, versions[i].files[j ].file.id);
 				if (!_.includes(opts.fileIds, versions[i].files[j].file.id)) {
 					versions[i].files[j] = null;
 				}

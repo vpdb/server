@@ -28,11 +28,10 @@ module.exports = {
 		skipImageOptimizations: true,
 		quota: {
 			plans: {
-				free:   { credits: 3, per: 'day' },
-				bronze: { credits: 50, per: 'day' },
-				silver: { credits: 200, per: 'day' },
-				gold:   { credits: 5000, per: 'day' },
-				unlimited: { unlimited: true }
+				free:   { credits: 3, per: 'day', enableAppTokens: false, enableRealtime: false },
+				subscribed: { credits: 50, per: 'day', enableAppTokens: true, enableRealtime: false },
+				vip: { credits: 200, per: 'day', enableAppTokens: true, enableRealtime: true },
+				unlimited: { unlimited: true, enableAppTokens: true, enableRealtime: true }
 			},
 			defaultPlan: 'free',
 			costs: {
@@ -55,5 +54,5 @@ module.exports = {
 			ipboard: [{ enabled: true, id: 'ipbtest', name: 'Test', icon: '', baseURL: 'https://vpdb.io/forums/index.php', clientID: 'TEST_CLIENT_ID', clientSecret: 'TEST_CLIENT_SECRET' }]
 		}
 	}
-	//, ffmpeg: { path: 'C:\\Development\\ffmpeg\\bin\\ffmpeg.exe' }
+	, ffmpeg: { path: 'C:\\Development\\ffmpeg\\bin\\ffmpeg.exe' }
 };

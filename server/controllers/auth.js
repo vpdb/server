@@ -31,7 +31,6 @@ var redis = require('redis').createClient(config.vpdb.redis.port, config.vpdb.re
     redis.select(config.vpdb.redis.db);
 	redis.on('error', console.error.bind(console));
 var User = require('mongoose').model('User');
-var Token = require('mongoose').model('Token');
 
 /**
  * Returns a middleware function that protects a resource by verifying the JWT
@@ -43,10 +42,11 @@ var Token = require('mongoose').model('Token');
  *
  * @param resource ACL resource
  * @param permission ACL permission
+ * @param plan key/value pairs of plan options that must match
  * @param done Callback. First argument is error containing `code` and `message`, followed by req and res.
  * @returns {Function} Middleware function
  */
-exports.auth = function(resource, permission, done) {
+exports.auth = function(resource, permission, plan, done) {
 
 	return function(req, res) {
 		var token;
@@ -108,6 +108,11 @@ exports.auth = function(resource, permission, done) {
 
 						if (!t) {
 							return next(error('Invalid access token.').status(401));
+						}
+
+						// check if plan allows app tokens
+						if (!config.vpdb.quota.plans[t._created_by.plan].enableAppTokens) {
+							return next(error('Your current plan "%s" does not allow the use of application access tokens. Upgrade or contact an admin.', t._created_by.plan).status(401));
 						}
 
 						if (t.expires_at.getTime() < now.getTime()) {
@@ -229,6 +234,8 @@ exports.auth = function(resource, permission, done) {
 		});
 	};
 };
+
+var Token = require('mongoose').model('Token');
 
 /**
  * Creates a JSON Web Token for a given user and time.

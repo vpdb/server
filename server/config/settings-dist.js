@@ -218,11 +218,11 @@ module.exports = {
 			 *  user control panel), but at least one default plan must exist.
 			 */
 			plans: {
-				free: { credits: 5, per: 'day' },
-				bronze: { credits: 50, per: 'day' },
-				silver: { credits: 200, per: 'day' },
-				gold: { credits: 5000, per: 'day' },
-				unlimited: { unlimited: true }
+				free: { credits: 5, per: 'day', enableAppTokens: true, enableRealtime: false },
+				bronze: { credits: 50, per: 'day', enableAppTokens: true, enableRealtime: false },
+				silver: { credits: 200, per: 'day', enableAppTokens: true, enableRealtime: false },
+				gold: { credits: 5000, per: 'day', enableAppTokens: true, enableRealtime: false },
+				unlimited: { unlimited: true, enableAppTokens: true, enableRealtime: false }
 			},
 
 			/**

@@ -34,10 +34,11 @@ var auth = require('../auth');
  * @param done Callback, called with (`req`, `res`). This is your API logic
  * @param resource ACL for resource
  * @param permission ACL for permission
+ * @param plan key/value pairs of plan options that must match
  * @returns {Function} Middleware function
  */
-exports.auth = function(done, resource, permission) {
-	return auth.auth(resource, permission, function(err, req, res) {
+exports.auth = function(done, resource, permission, plan) {
+	return auth.auth(resource, permission, plan, function(err, req, res) {
 		if (err) {
 			return exports.fail(res, err, err.code);
 		}
@@ -55,7 +56,7 @@ exports.auth = function(done, resource, permission) {
  */
 exports.anon = function(done) {
 	// auth is only called in order to populate the req.user object, if credentials are provided.
-	return auth.auth(null, null, function(authErr, req, res) {
+	return auth.auth(null, null, null, function(authErr, req, res) {
 		// authErr is ignored since we're in anon.
 		done(req, res, authErr);
 	});

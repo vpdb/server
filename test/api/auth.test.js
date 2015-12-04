@@ -1,5 +1,6 @@
 "use strict"; /*global describe, before, after, beforeEach, afterEach, it*/
 
+var _ = require('lodash');
 var request = require('superagent');
 var expect = require('expect.js');
 
@@ -13,7 +14,9 @@ describe('The authentication engine of the VPDB API', function() {
 	before(function(done) {
 		hlp.setupUsers(request, {
 			member: { roles: [ 'member' ] },
-			disabled: { roles: [ 'member' ], is_active: false }
+			disabled: { roles: [ 'member' ], is_active: false },
+			subscribed: { roles: [ 'member' ], plan: 'subscribed' },
+			subscribed1: { roles: [ 'member' ], plan: 'subscribed' }
 		}, done);
 	});
 
@@ -109,17 +112,47 @@ describe('The authentication engine of the VPDB API', function() {
 				.end(hlp.status(401, 'Invalid access token', done));
 		});
 
+		it('should fail if the user has the wrong plan', function(done) {
+
+			// 1. create token for subscribed user
+			request
+				.post('/api/v1/tokens')
+				.as('subscribed1')
+				.send({ label: 'After plan downgrade token', password: hlp.getUser('subscribed1').password })
+				.end(function(err, res) {
+					hlp.expectStatus(err, res, 201);
+
+					// 2. downgrade user to free
+					var token = res.body.token;
+					var user = hlp.getUser('subscribed1');
+					user.plan = 'free';
+					request
+						.put('/api/v1/users/' + user.id)
+						.as('__superuser')
+						.send(_.pick(user, [ 'name', 'email', 'username', 'is_active', 'roles', 'plan' ]))
+						.end(function(err, res) {
+
+							// 3. fail with app token
+							hlp.expectStatus(err, res, 200);
+							request
+								.get('/api/v1/user')
+								.set('Authorization', 'Bearer ' + token)
+								.end(hlp.status(401, 'does not allow the use of application access tokens', done));
+						});
+				});
+		});
+
 		it('should fail if the token is inactive', function(done) {
 			request
 				.post('/api/v1/tokens')
-				.as('member')
-				.send({ label: 'Inactive token', password: hlp.getUser('member').password })
+				.as('subscribed')
+				.send({ label: 'Inactive token', password: hlp.getUser('subscribed').password })
 				.end(function(err, res) {
 					hlp.expectStatus(err, res, 201);
 					var token = res.body.token;
 					request
 						.patch('/api/v1/tokens/' + res.body.id)
-						.as('member')
+						.as('subscribed')
 						.send({ is_active: false })
 						.end(function(err, res) {
 							hlp.expectStatus(err, res, 200);
@@ -134,14 +167,14 @@ describe('The authentication engine of the VPDB API', function() {
 		it('should fail if the token is expired', function(done) {
 			request
 				.post('/api/v1/tokens')
-				.as('member')
-				.send({ label: 'Expired token', password: hlp.getUser('member').password })
+				.as('subscribed')
+				.send({ label: 'Expired token', password: hlp.getUser('subscribed').password })
 				.end(function(err, res) {
 					hlp.expectStatus(err, res, 201);
 					var token = res.body.token;
 					request
 						.patch('/api/v1/tokens/' + res.body.id)
-						.as('member')
+						.as('subscribed')
 						.send({ expires_at: new Date(new Date().getTime() - 86400000)})
 						.end(function(err, res) {
 							hlp.expectStatus(err, res, 200);
@@ -156,8 +189,8 @@ describe('The authentication engine of the VPDB API', function() {
 		it('should succeed if the token is valid', function(done) {
 			request
 				.post('/api/v1/tokens')
-				.as('member')
-				.send({ label: 'Expired token', password: hlp.getUser('member').password })
+				.as('subscribed')
+				.send({ label: 'Valid token', password: hlp.getUser('subscribed').password })
 				.end(function(err, res) {
 					hlp.expectStatus(err, res, 201);
 					request
@@ -225,8 +258,8 @@ describe('The authentication engine of the VPDB API', function() {
 		it('should fail if the token is an application access token', function(done) {
 			request
 				.post('/api/v1/tokens')
-				.as('member')
-				.send({ label: 'App token', password: hlp.getUser('member').password })
+				.as('subscribed')
+				.send({ label: 'App token', password: hlp.getUser('subscribed').password })
 				.end(function(err, res) {
 					hlp.expectStatus(err, res, 201);
 					request

@@ -308,6 +308,15 @@ module.exports = {
 									setting: plan.credits
 								});
 							}
+
+							/* istanbul ignore if */
+							if (!_.isBoolean(plan.enableAppTokens)) {
+								return 'Plan must define whether app tokens are allowed or not.';
+							}
+							/* istanbul ignore if */
+							if (!_.isBoolean(plan.enableRealtime)) {
+								return 'Plan must define whether real time is enabled or not.';
+							}
 						}
 					}
 				}

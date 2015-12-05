@@ -50,7 +50,7 @@ exports.setupUsers = function(request, config, done) {
 					}
 
 					user = _.extend(user, res.body);
-					that.users[name] = user;
+					that.users[name] = _.extend(user, { _plan: user.plan.id });
 
 					// 2. retrieve root user token
 					debug('%s <%s>: Authenticating user...', name, user.email);
@@ -528,6 +528,9 @@ exports.expectStatus = function(err, res, code, contains) {
 	if (code >= 200 && code < 300) {
 		status = res.status;
 		body = res.body;
+		if (err) {
+			exports.dump(err.response.body);
+		}
 		expect(err).to.not.be.ok();
 	} else {
 		status = err.status;

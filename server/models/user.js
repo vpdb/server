@@ -51,7 +51,7 @@ var fields = {
 		value:        { type: String }
 	},
 	roles:            { type: [ String ], required: true },
-	_plan:            { type: String, required: false },
+	_plan:            { type: String, required: true },
 	provider:         { type: String, required: true },
 	password_hash:    { type: String },
 	password_salt:    { type: String },
@@ -99,7 +99,7 @@ UserSchema.plugin(metrics);
 //-----------------------------------------------------------------------------
 var apiFields = {
 	reduced: [ 'id', 'name', 'username', 'thumb', 'gravatar_id', 'location' ], // "member" search result
-	simple: [ 'email', 'is_active', 'provider', 'roles', '_plan', 'created_at', 'google', 'github', 'preferences', 'counter' ]  // "admin" lists & profile
+	simple: [ 'email', 'is_active', 'provider', 'roles', 'plan', 'created_at', 'google', 'github', 'preferences', 'counter' ]  // "admin" lists & profile
 };
 
 
@@ -119,6 +119,21 @@ UserSchema.virtual('password')
 UserSchema.virtual('gravatar_id')
 	.get(function() {
 		return this.email ? crypto.createHash('md5').update(this.email.toLowerCase()).digest('hex') : null;
+	});
+
+UserSchema.virtual('plan')
+	.get(function() {
+		if (this._plan) {
+			var plan = config.vpdb.quota.plans[this._plan];
+			return {
+				id: this._plan,
+				recurring_credits: plan.credits,
+				recurring_period: plan.per,
+				app_tokens_enabled: plan.enableAppTokens,
+				push_notifications_enabled: plan.enableRealtime
+			};
+		}
+		return null;
 	});
 
 
@@ -251,6 +266,10 @@ UserSchema.path('password_hash').validate(function() {
 	}
 }, null);
 
+UserSchema.path('_plan').validate(function(plan) {
+	return _.contains(_.keys(config.vpdb.quota.plans), plan);
+}, 'Plan must be one of: [' + _.keys(config.vpdb.quota.plans).join(',') + ']');
+
 
 //-----------------------------------------------------------------------------
 // METHODS
@@ -315,7 +334,8 @@ UserSchema.statics.createUser = function(userObj, confirmUserEmail, done) {
 
 	var user = new User(_.extend(userObj, {
 		created_at: new Date(),
-		roles: [ 'member' ]
+		roles: [ 'member' ],
+		_plan: config.vpdb.quota.defaultPlan
 	}));
 
 	if (confirmUserEmail) {
@@ -342,7 +362,6 @@ UserSchema.statics.createUser = function(userObj, confirmUserEmail, done) {
 			}
 
 			user.roles = count ? [ 'member' ] : [ 'root' ];
-			user._plan = config.vpdb.quota.defaultPlan;
 
 			user.save(function(err) {
 				/* istanbul ignore if  */
@@ -354,7 +373,7 @@ UserSchema.statics.createUser = function(userObj, confirmUserEmail, done) {
 					if (err) {
 						return done(error(err, 'Error updating ACLs for <%s>', user.email).log());
 					}
-					logger.info('[model|user] %s <%s> successfully created with ID "%s".', count ? 'User' : 'Root user', user.email, user.id);
+					logger.info('[model|user] %s <%s> successfully created with ID "%s" and plan "%s".', count ? 'User' : 'Root user', user.email, user.id, user._plan);
 					done(null, user);
 				});
 			});
@@ -432,6 +451,7 @@ UserSchema.options.toObject = {
 	transform: function(doc, user) {
 		delete user._id;
 		delete user.__v;
+		delete user._plan;
 		delete user.password_hash;
 		delete user.password_salt;
 		delete user.password;

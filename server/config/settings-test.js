@@ -54,5 +54,5 @@ module.exports = {
 			ipboard: [{ enabled: true, id: 'ipbtest', name: 'Test', icon: '', baseURL: 'https://vpdb.io/forums/index.php', clientID: 'TEST_CLIENT_ID', clientSecret: 'TEST_CLIENT_SECRET' }]
 		}
 	}
-	, ffmpeg: { path: 'C:\\Development\\ffmpeg\\bin\\ffmpeg.exe' }
+	//, ffmpeg: { path: 'C:\\Development\\ffmpeg\\bin\\ffmpeg.exe' }
 };

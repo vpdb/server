@@ -938,7 +938,8 @@ describe('The VPDB `user` API', function() {
 					username: changedUser.username,
 					name: changedUser.username,
 					is_active: true,
-					roles: [ 'member' ]
+					roles: [ 'member' ],
+					_plan: hlp.getUser('member').plan.id
 				})
 				.end(function(err, res) {
 					hlp.expectStatus(err, res, 200);
@@ -964,7 +965,8 @@ describe('The VPDB `user` API', function() {
 					hlp.expectValidationError(err, res, 'name', 'must be provided');
 					hlp.expectValidationError(err, res, 'roles', 'is required');
 					hlp.expectValidationError(err, res, 'username', 'must be between');
-					expect(res.body.errors).to.have.length(5);
+					hlp.expectValidationError(err, res, '_plan', 'is required');
+					expect(res.body.errors).to.have.length(6);
 					done();
 				});
 		});

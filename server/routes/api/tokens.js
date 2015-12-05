@@ -23,9 +23,9 @@ var settings = require('../../modules/settings');
 
 exports.register = function(app, api) {
 
-	app.post(settings.apiPath('/tokens'), api.auth(api.tokens.create, 'tokens', 'add'));
-	app.get(settings.apiPath('/tokens'), api.auth(api.tokens.list, 'tokens', 'list'));
-	app.delete(settings.apiPath('/tokens/:id'), api.auth(api.tokens.del, 'tokens', 'delete'));
-	app.patch(settings.apiPath('/tokens/:id'), api.auth(api.tokens.update, 'tokens', 'update'));
+	app.post(settings.apiPath('/tokens'), api.auth(api.tokens.create, 'tokens', 'add', { enableAppTokens: true }));
+	app.get(settings.apiPath('/tokens'), api.auth(api.tokens.list, 'tokens', 'list', { enableAppTokens: true }));
+	app.delete(settings.apiPath('/tokens/:id'), api.auth(api.tokens.del, 'tokens', 'delete', { enableAppTokens: true }));
+	app.patch(settings.apiPath('/tokens/:id'), api.auth(api.tokens.update, 'tokens', 'update', { enableAppTokens: true }));
 
 };

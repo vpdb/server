@@ -19,6 +19,7 @@
 
 "use strict";
 
+var _ = require('lodash');
 var jwt = require('jwt-simple');
 var async = require('async');
 var logger = require('winston');
@@ -89,6 +90,9 @@ exports.auth = function(resource, permission, plan, done) {
 		var now = new Date();
 		async.waterfall([
 
+			/**
+			 * Validates the token and provides the user
+			 */
 			function(next) {
 
 				// application access token?
@@ -98,7 +102,6 @@ exports.auth = function(resource, permission, plan, done) {
 					if (fromUrl) {
 						return next(error('Application Access Tokens must be provided in the header.').status(401));
 					}
-
 
 					Token.findOne({ token: token }).populate('_created_by').exec(function(err, t) {
 						/* istanbul ignore if  */
@@ -177,9 +180,30 @@ exports.auth = function(resource, permission, plan, done) {
 
 				}
 
+			/**
+			 * Checks plan config if provided
+			 */
 			}, function(user, next) {
 
-				// *** here we're authenticated (token is valid and not expired). ***
+				if (_.isObject(plan)) {
+					for (var key in plan) {
+						if (plan.hasOwnProperty(key)) {
+							var val = plan[key];
+							if (config.vpdb.quota.plans[user.plan][key] !== val) {
+								return next(error('User <%s> with plan "%s" tried to access `%s` but was denied access due to missing plan configuration (%s is %s instead of %s).',
+										user.email, user.plan, req.url, key, val, config.vpdb.quota.plans[user.plan][key]).display('Access denied').status(403).log());
+							}
+						}
+					}
+				}
+				return next(null, user);
+
+			/**
+			 * Sets dirty header
+			 */
+			}, function(user, next) {
+
+				// *** here we're still authenticated (token is valid and not expired). ***
 
 				// this will be useful for the rest of the stack
 				req.user = user;
@@ -206,6 +230,9 @@ exports.auth = function(resource, permission, plan, done) {
 					next(null, user);
 				});
 
+			/**
+			 * Checks ACLs
+			 */
 			}, function(user, next) {
 
 				// no ACLs set, grant.

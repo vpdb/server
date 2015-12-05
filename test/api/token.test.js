@@ -37,7 +37,8 @@ describe('The VPDB `Token` API', function() {
 
 		before(function(done) {
 			hlp.setupUsers(request, {
-				member: { roles: [ 'member' ] }
+				member: { roles: [ 'member' ] },
+				subscribed: { roles: [ 'member' ], plan: 'subscribed' }
 			}, done);
 		});
 
@@ -49,7 +50,7 @@ describe('The VPDB `Token` API', function() {
 			request
 				.post('/api/v1/tokens')
 				.saveResponse({ path: 'tokens/create'})
-				.as('member')
+				.as('subscribed')
 				.send({ label: 'Test Application' })
 				.end(function(err, res) {
 					hlp.expectStatus(err, res, 401, 'must supply a password');
@@ -61,7 +62,7 @@ describe('The VPDB `Token` API', function() {
 			request
 				.post('/api/v1/tokens')
 				//.saveResponse({ path: 'tokens/create'})
-				.as('member')
+				.as('subscribed')
 				.send({ label: 'Test Application', password: 'xxx' })
 				.end(function(err, res) {
 					hlp.expectStatus(err, res, 401, 'wrong password');
@@ -72,8 +73,8 @@ describe('The VPDB `Token` API', function() {
 		it('should fail validations for empty label', function(done) {
 			request
 				.post('/api/v1/tokens')
-				.as('member')
-				.send({ password: hlp.getUser('member').password })
+				.as('subscribed')
+				.send({ password: hlp.getUser('subscribed').password })
 				.end(function(err, res) {
 					hlp.expectValidationError(err, res, 'label', 'must be provided');
 					done();
@@ -83,8 +84,8 @@ describe('The VPDB `Token` API', function() {
 		it('should fail validations for invalid data', function(done) {
 			request
 				.post('/api/v1/tokens')
-				.as('member')
-				.send({ label: 'x', password: hlp.getUser('member').password })
+				.as('subscribed')
+				.send({ label: 'x', password: hlp.getUser('subscribed').password })
 				.end(function(err, res) {
 					hlp.expectValidationError(err, res, 'label', 'must contain at least');
 					done();
@@ -95,8 +96,8 @@ describe('The VPDB `Token` API', function() {
 			request
 				.post('/api/v1/tokens')
 				.save({ path: 'tokens/create'})
-				.as('member')
-				.send({ label: 'My Application', password: hlp.getUser('member').password })
+				.as('subscribed')
+				.send({ label: 'My Application', password: hlp.getUser('subscribed').password })
 				.end(function(err, res) {
 					hlp.expectStatus(err, res, 201);
 					expect(res.body.id).to.be.ok();
@@ -104,15 +105,21 @@ describe('The VPDB `Token` API', function() {
 					done();
 				});
 		});
+
+		it('should deny access if plan configuration forbids it', function(done) {
+			request.post('/api/v1/tokens').as('member').send({}).end(hlp.status(403, done));
+		});
+
 	});
 
 	describe('when listing auth tokens', function() {
 
 		before(function(done) {
 			hlp.setupUsers(request, {
-				member1: { roles: ['member'] },
-				member2: { roles: ['member'] },
-				member3: { roles: ['member'] }
+				member: { roles: ['member'] },
+				member1: { roles: ['member'], plan: 'subscribed' },
+				member2: { roles: ['member'], plan: 'subscribed' },
+				member3: { roles: ['member'], plan: 'subscribed' }
 			}, done);
 		});
 
@@ -172,13 +179,18 @@ describe('The VPDB `Token` API', function() {
 						});
 				});
 		});
+
+		it('should deny access if plan configuration forbids it', function(done) {
+			request.get('/api/v1/tokens').as('member').end(hlp.status(403, done));
+		});
 	});
 
 	describe('when updating an auth token', function() {
 
 		before(function(done) {
 			hlp.setupUsers(request, {
-				member: { roles: ['member'] }
+				member: { roles: ['member'] },
+				subscribed: { roles: [ 'member' ], plan: 'subscribed' }
 			}, done);
 		});
 
@@ -190,14 +202,14 @@ describe('The VPDB `Token` API', function() {
 			// create
 			request
 				.post('/api/v1/tokens')
-				.as('member')
-				.send({ label: 'My Application', password: hlp.getUser('member').password })
+				.as('subscribed')
+				.send({ label: 'My Application', password: hlp.getUser('subscribed').password })
 				.end(function(err, res) {
 					hlp.expectStatus(err, res, 201);
 
 					request
 						.patch('/api/v1/tokens/' + res.body.id)
-						.as('member')
+						.as('subscribed')
 						.saveResponse({ path: 'tokens/patch'})
 						.send({ label: '1', expires_at: 'foo' })
 						.end(function(err, res) {
@@ -212,15 +224,15 @@ describe('The VPDB `Token` API', function() {
 			// create
 			request
 				.post('/api/v1/tokens')
-				.as('member')
-				.send({ label: 'My Application', password: hlp.getUser('member').password })
+				.as('subscribed')
+				.send({ label: 'My Application', password: hlp.getUser('subscribed').password })
 				.end(function(err, res) {
 					hlp.expectStatus(err, res, 201);
 
 					var soon = new Date(new Date().getTime() + 1000);
 					request
 						.patch('/api/v1/tokens/' + res.body.id)
-						.as('member')
+						.as('subscribed')
 						.save({ path: 'tokens/patch'})
 						.send({ label: 'My Renamed Application', expires_at: soon, is_active: false })
 						.end(function(err, res) {
@@ -232,15 +244,21 @@ describe('The VPDB `Token` API', function() {
 						});
 				});
 		});
+
+		it('should deny access if plan configuration forbids it', function(done) {
+			request.patch('/api/v1/tokens/123456').send({}).as('member').end(hlp.status(403, done));
+		});
+
 	});
 
 	describe('when deleting an auth token', function() {
 
 		before(function(done) {
 			hlp.setupUsers(request, {
-				member1: { roles: ['member'] },
-				member2: { roles: ['member'] },
-				member3: { roles: ['member'] }
+				member: { roles: ['member'] },
+				member1: { roles: ['member'], plan: 'subscribed' },
+				member2: { roles: ['member'], plan: 'subscribed' },
+				member3: { roles: ['member'], plan: 'subscribed' }
 			}, done);
 		});
 
@@ -304,6 +322,11 @@ describe('The VPDB `Token` API', function() {
 						});
 				});
 		});
+
+		it('should deny access if plan configuration forbids it', function(done) {
+			request.del('/api/v1/tokens/123456').as('member').end(hlp.status(403, done));
+		});
+
 	});
 
 });

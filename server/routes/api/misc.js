@@ -20,7 +20,6 @@
 "use strict";
 
 var settings = require('../../modules/settings');
-var pusher = require('../../modules/pusher');
 
 exports.register = function(app, api) {
 
@@ -34,7 +33,7 @@ exports.register = function(app, api) {
 	app.get(settings.apiPath('/events'), api.anon(api.events.list()));
 
 	// pusher
-	app.post(settings.apiPath('/messages/authenticate'), api.auth(api.messages.authenticate, 'messages', 'receive'));
+	app.post(settings.apiPath('/messages/authenticate'), api.auth(api.messages.authenticate, 'messages', 'receive', { enableRealtime: true }));
 
 	// ping
 	app.get(settings.apiPath('/ping'), api.anon(api.ping));

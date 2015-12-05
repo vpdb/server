@@ -73,7 +73,7 @@ exports.setupUsers = function(request, config, done) {
 							request
 								.put('/api/v1/users/' + user.id)
 								.as(superuser)
-								.send(_.pick(user, [ 'name', 'email', 'username', 'is_active', 'roles', 'plan' ]))
+								.send(_.pick(user, [ 'name', 'email', 'username', 'is_active', 'roles', '_plan' ]))
 								.end(function(err, res) {
 									if (err) {
 										return next(err.body.error);

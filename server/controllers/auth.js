@@ -114,8 +114,8 @@ exports.auth = function(resource, permission, plan, done) {
 						}
 
 						// check if plan allows app tokens
-						if (!config.vpdb.quota.plans[t._created_by.plan].enableAppTokens) {
-							return next(error('Your current plan "%s" does not allow the use of application access tokens. Upgrade or contact an admin.', t._created_by.plan).status(401));
+						if (!config.vpdb.quota.plans[t._created_by._plan].enableAppTokens) {
+							return next(error('Your current plan "%s" does not allow the use of application access tokens. Upgrade or contact an admin.', t._created_by._plan).status(401));
 						}
 
 						if (t.expires_at.getTime() < now.getTime()) {
@@ -189,9 +189,9 @@ exports.auth = function(resource, permission, plan, done) {
 					for (var key in plan) {
 						if (plan.hasOwnProperty(key)) {
 							var val = plan[key];
-							if (config.vpdb.quota.plans[user.plan][key] !== val) {
+							if (config.vpdb.quota.plans[user._plan][key] !== val) {
 								return next(error('User <%s> with plan "%s" tried to access `%s` but was denied access due to missing plan configuration (%s is %s instead of %s).',
-										user.email, user.plan, req.url, key, val, config.vpdb.quota.plans[user.plan][key]).display('Access denied').status(403).log());
+										user.email, user._plan, req.url, key, val, config.vpdb.quota.plans[user._plan][key]).display('Access denied').status(403).log());
 							}
 						}
 					}

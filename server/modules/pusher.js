@@ -46,5 +46,5 @@ exports.unstar = function(type, entity, user) {
  * @returns {boolean} True if a message can be sent, false otherwise.
  */
 function isEnabled(user) {
-	return exports.isEnabled && config.vpdb.quota.plans[user.plan].enableRealtime;
+	return exports.isEnabled && config.vpdb.quota.plans[user._plan].enableRealtime;
 }

@@ -16,7 +16,7 @@ describe('The ACLs of the VPDB API', function() {
 			admin: { roles: [ 'admin' ]},
 			admin2: { roles: [ 'admin' ]},
 			contributor: { roles: [ 'contributor' ]},
-			member: { roles: [ 'member' ], plan: 'subscribed'}
+			member: { roles: [ 'member' ], _plan: 'subscribed'}
 		}, done);
 	});
 

@@ -59,7 +59,7 @@ function Quota() {
  */
 Quota.prototype.getCurrent = function(user, callback) {
 
-	var plan = user.plan || quotaConfig.defaultPlan;
+	var plan = user._plan || quotaConfig.defaultPlan;
 
 	// undefined? plans might have changed and migration failed or whatever: fall back to default plan
 	if (!_.isObject(quotaConfig.plans[plan])) {
@@ -125,7 +125,7 @@ Quota.prototype.isAllowed = function(req, res, files, callback) {
 		files = [ files ];
 	}
 
-	var plan = req.user.plan || quotaConfig.defaultPlan;
+	var plan = req.user._plan || quotaConfig.defaultPlan;
 	var file, sum = 0;
 	for (var i = 0; i < files.length; i++) {
 		file = files[i];

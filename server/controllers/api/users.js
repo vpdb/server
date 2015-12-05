@@ -154,7 +154,7 @@ exports.list = function(req, res) {
 exports.update = function(req, res) {
 
 	// TODO move into model
-	var updateableFields = [ 'name', 'email', 'username', 'is_active', 'roles', 'plan' ];
+	var updateableFields = [ 'name', 'email', 'username', 'is_active', 'roles', '_plan' ];
 	var assert = api.assert(error, 'update', req.params.id, res);
 
 	User.findOne({ id: req.params.id }, assert(function(user) {

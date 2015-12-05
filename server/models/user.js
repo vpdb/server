@@ -51,7 +51,7 @@ var fields = {
 		value:        { type: String }
 	},
 	roles:            { type: [ String ], required: true },
-	plan:             { type: String, required: false },
+	_plan:            { type: String, required: false },
 	provider:         { type: String, required: true },
 	password_hash:    { type: String },
 	password_salt:    { type: String },
@@ -99,7 +99,7 @@ UserSchema.plugin(metrics);
 //-----------------------------------------------------------------------------
 var apiFields = {
 	reduced: [ 'id', 'name', 'username', 'thumb', 'gravatar_id', 'location' ], // "member" search result
-	simple: [ 'email', 'is_active', 'provider', 'roles', 'plan', 'created_at', 'google', 'github', 'preferences', 'counter' ]  // "admin" lists & profile
+	simple: [ 'email', 'is_active', 'provider', 'roles', '_plan', 'created_at', 'google', 'github', 'preferences', 'counter' ]  // "admin" lists & profile
 };
 
 
@@ -342,7 +342,7 @@ UserSchema.statics.createUser = function(userObj, confirmUserEmail, done) {
 			}
 
 			user.roles = count ? [ 'member' ] : [ 'root' ];
-			user.plan = config.vpdb.quota.defaultPlan;
+			user._plan = config.vpdb.quota.defaultPlan;
 
 			user.save(function(err) {
 				/* istanbul ignore if  */

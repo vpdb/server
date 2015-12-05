@@ -36,8 +36,8 @@ describe('The VPDB `Messages` API', function() {
 	before(function(done) {
 		hlp.setupUsers(request, {
 			member: { roles: [ 'member' ] },
-			subscribed: { roles: [ 'member' ], plan: 'subscribed' },
-			vip: { roles: [ 'member' ], plan: 'vip' }
+			subscribed: { roles: [ 'member' ], _plan: 'subscribed' },
+			vip: { roles: [ 'member' ], _plan: 'vip' }
 		}, done);
 	});
 

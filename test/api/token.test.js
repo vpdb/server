@@ -38,7 +38,7 @@ describe('The VPDB `Token` API', function() {
 		before(function(done) {
 			hlp.setupUsers(request, {
 				member: { roles: [ 'member' ] },
-				subscribed: { roles: [ 'member' ], plan: 'subscribed' }
+				subscribed: { roles: [ 'member' ], _plan: 'subscribed' }
 			}, done);
 		});
 
@@ -117,9 +117,9 @@ describe('The VPDB `Token` API', function() {
 		before(function(done) {
 			hlp.setupUsers(request, {
 				member: { roles: ['member'] },
-				member1: { roles: ['member'], plan: 'subscribed' },
-				member2: { roles: ['member'], plan: 'subscribed' },
-				member3: { roles: ['member'], plan: 'subscribed' }
+				member1: { roles: ['member'], _plan: 'subscribed' },
+				member2: { roles: ['member'], _plan: 'subscribed' },
+				member3: { roles: ['member'], _plan: 'subscribed' }
 			}, done);
 		});
 
@@ -190,7 +190,7 @@ describe('The VPDB `Token` API', function() {
 		before(function(done) {
 			hlp.setupUsers(request, {
 				member: { roles: ['member'] },
-				subscribed: { roles: [ 'member' ], plan: 'subscribed' }
+				subscribed: { roles: [ 'member' ], _plan: 'subscribed' }
 			}, done);
 		});
 
@@ -256,9 +256,9 @@ describe('The VPDB `Token` API', function() {
 		before(function(done) {
 			hlp.setupUsers(request, {
 				member: { roles: ['member'] },
-				member1: { roles: ['member'], plan: 'subscribed' },
-				member2: { roles: ['member'], plan: 'subscribed' },
-				member3: { roles: ['member'], plan: 'subscribed' }
+				member1: { roles: ['member'], _plan: 'subscribed' },
+				member2: { roles: ['member'], _plan: 'subscribed' },
+				member3: { roles: ['member'], _plan: 'subscribed' }
 			}, done);
 		});
 

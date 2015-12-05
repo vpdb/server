@@ -5,7 +5,7 @@ angular.module('vpdb.users.edit', [])
 	.controller('AdminUserEditCtrl', function($scope, $rootScope, $modalInstance, ApiHelper,
 						  UserResource, PlanResource, user, roles) {
 
-		var fields = [ 'id', 'name', 'email', 'username', 'is_active', 'roles', 'plan' ];
+		var fields = [ 'id', 'name', 'email', 'username', 'is_active', 'roles', '_plan' ];
 
 		$scope.user = {};
 		$scope.roles = roles;

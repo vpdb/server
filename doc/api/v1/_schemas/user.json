@@ -68,7 +68,7 @@
 			"description": "Whether the user is able to login. Set to `false` to ban a user.",
 			"type": "boolean"
 		},
-		"plan": {
+		"_plan": {
 			"description": "The user's current subscription plan.",
 			"type": "string"
 		},

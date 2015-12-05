@@ -15,8 +15,8 @@ describe('The authentication engine of the VPDB API', function() {
 		hlp.setupUsers(request, {
 			member: { roles: [ 'member' ] },
 			disabled: { roles: [ 'member' ], is_active: false },
-			subscribed: { roles: [ 'member' ], plan: 'subscribed' },
-			subscribed1: { roles: [ 'member' ], plan: 'subscribed' }
+			subscribed: { roles: [ 'member' ], _plan: 'subscribed' },
+			subscribed1: { roles: [ 'member' ], _plan: 'subscribed' }
 		}, done);
 	});
 
@@ -125,11 +125,11 @@ describe('The authentication engine of the VPDB API', function() {
 					// 2. downgrade user to free
 					var token = res.body.token;
 					var user = hlp.getUser('subscribed1');
-					user.plan = 'free';
+					user._plan = 'free';
 					request
 						.put('/api/v1/users/' + user.id)
 						.as('__superuser')
-						.send(_.pick(user, [ 'name', 'email', 'username', 'is_active', 'roles', 'plan' ]))
+						.send(_.pick(user, [ 'name', 'email', 'username', 'is_active', 'roles', '_plan' ]))
 						.end(function(err, res) {
 
 							// 3. fail with app token

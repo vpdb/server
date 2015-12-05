@@ -1,15 +1,15 @@
 200 OK
 Content-Type: application/json; charset=utf-8
-Etag: W/"40d-n4Sxscj33XvjQk3yZjubSA"
+Etag: W/"4a9-oOrI4sPMTyFopMlkuGr8Tg"
 Content-Encoding: gzip
 
 {
-  "location": "East Connor",
-  "name": "Retha Kozey",
-  "username": "Tevin_Kuhn20",
-  "email": "lance70@hotmail.com",
+  "location": "Ceasarhaven",
+  "name": "Efren Stokes",
+  "username": "Margarette.Douglas6",
+  "email": "raul61@gmail.com",
   "provider": "local",
-  "created_at": "2015-10-31T13:18:01.685Z",
+  "created_at": "2015-12-05T23:51:19.772Z",
   "is_active": true,
   "counter": {
     "stars": 0,
@@ -21,59 +21,66 @@ Content-Encoding: gzip
   ],
   "email_status": {
     "code": "pending_update",
-    "expires_at": "2015-11-01T13:18:02.043Z",
-    "value": "devonte_sauer79@gmail.com"
+    "expires_at": "2015-12-06T23:51:20.137Z",
+    "value": "henri.klein@yahoo.com"
   },
-  "id": "4JiP9oCjaWe",
-  "gravatar_id": "8c49fccbc008e262ba8eb7e8fa15508e",
+  "id": "EJjd_qwwnEl",
+  "plan": {
+    "push_notifications_enabled": false,
+    "app_tokens_enabled": false,
+    "recurring_period": "day",
+    "recurring_credits": 3,
+    "id": "free"
+  },
+  "gravatar_id": "36e942704507a14310dc339a64e74e49",
   "permissions": {
-    "files": [
-      "upload",
+    "builds": [
+      "add",
+      "delete-own"
+    ],
+    "user": [
+      "update",
+      "view"
+    ],
+    "tokens": [
       "delete",
-      "download"
+      "list",
+      "update",
+      "add"
+    ],
+    "roms": [
+      "add",
+      "delete-own"
     ],
     "tags": [
       "add",
       "delete-own"
     ],
-    "builds": [
-      "add",
-      "delete-own"
-    ],
-    "comments": [
-      "add"
-    ],
-    "tokens": [
-      "add",
-      "list",
+    "files": [
+      "download",
       "delete",
-      "update"
+      "upload"
+    ],
+    "messages": [
+      "receive"
+    ],
+    "games": [
+      "star",
+      "rate"
+    ],
+    "releases": [
+      "delete",
+      "star",
+      "add",
+      "rate"
     ],
     "users": [
       "star",
       "search",
       "view"
     ],
-    "games": [
-      "rate",
-      "star"
-    ],
-    "messages": [
-      "receive"
-    ],
-    "roms": [
-      "add",
-      "delete-own"
-    ],
-    "user": [
-      "view",
-      "update"
-    ],
-    "releases": [
-      "rate",
-      "add",
-      "star",
-      "delete"
+    "comments": [
+      "add"
     ]
   }
 }

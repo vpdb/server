@@ -1,8 +1,8 @@
-PUT /api/v1/releases/VkVN-qRsa-e/rating HTTP/1.1
+PUT /api/v1/releases/Ekg7qdDw3Vx/rating HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
 Content-Type: application/json
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJFa0FaVzVDaVQteCIsImlhdCI6IjIwMTUtMTAtMzFUMTM6MTc6MzYuNjI2WiIsImV4cCI6IjIwMTUtMTAtMzFUMTQ6MTc6MzYuNjI2WiJ9.2LZ3VRxugtwpzf9ftKTdd8qjDFhCsgT8JfhPeQjpoCg
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJWa3F4OU92dm5FbCIsImlhdCI6IjIwMTUtMTItMDVUMjM6NTA6NDkuMzk4WiIsImV4cCI6IjIwMTUtMTItMDZUMDA6NTA6NDkuMzk4WiJ9.48ghtH6sZQDiW1Tgw0wt0WsMav71cNZBxnbOKhah6bU
 Content-Length: 11
 
 {

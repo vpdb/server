@@ -3,7 +3,7 @@ X-List-Page: 1
 X-List-Size: 10
 X-List-Count: 7
 Content-Type: application/json; charset=utf-8
-Etag: W/"1c71-QlzNBkxJnaHKXGTvBA77Dg"
+Etag: W/"1c64-B8hXpghnhJ1kY8fS2xMIDA"
 Content-Encoding: gzip
 
 [
@@ -11,18 +11,18 @@ Content-Encoding: gzip
     "event": "create_release",
     "payload": {
       "release": {
-        "id": "NyxxLKAo6-e",
-        "name": "Automated Edition",
+        "id": "E1sx0PwPh4x",
+        "name": "Exclusive Edition",
         "authors": [
           {
             "roles": [
               "Table Creator"
             ],
             "user": {
-              "id": "VJkUBYAspbe",
-              "name": "Esteban47",
-              "username": "Esteban47",
-              "gravatar_id": "95edbd3ce06190970aff6d902c2e93cf",
+              "id": "N1-QawvDnNe",
+              "name": "Coby_Ortiz",
+              "username": "Coby_Ortiz",
+              "gravatar_id": "2e0846742e7573447cc04834930d8667",
               "counter": {
                 "comments": 0,
                 "stars": 0
@@ -33,9 +33,10 @@ Content-Encoding: gzip
         "versions": [
           {
             "version": "1.0.0",
+            "released_at": "2015-12-05T23:50:37.411Z",
             "files": [
               {
-                "released_at": "2015-10-31T13:17:25.361Z",
+                "released_at": "2015-12-05T23:50:37.411Z",
                 "flavor": {
                   "orientation": "fs",
                   "lighting": "night"
@@ -46,7 +47,7 @@ Content-Encoding: gzip
                   }
                 ],
                 "file": {
-                  "id": "4y-UKAo6bl",
+                  "id": "4J_ADwPnVx",
                   "name": "test-table-0.vpt",
                   "bytes": 135168,
                   "mime_type": "application/x-visual-pinball-table"
@@ -57,41 +58,270 @@ Content-Encoding: gzip
         ]
       },
       "game": {
-        "id": "attention",
-        "title": "Attention",
-        "manufacturer": "Exhibit",
-        "year": 1940,
+        "id": "rat-race-ii",
+        "title": "Rat Race II",
+        "manufacturer": "Williams",
+        "year": 1985,
         "ipdb": {
-          "number": 108,
-          "mfg": 117
+          "number": 3719,
+          "mfg": 351
         },
-        "game_type": "em"
+        "game_type": "ss"
       }
     },
-    "logged_at": "2015-10-31T13:17:25.418Z",
+    "logged_at": "2015-12-05T23:50:37.457Z",
     "is_public": true,
     "actor": {
       "counter": {
         "stars": 0,
         "comments": 0
       },
-      "gravatar_id": "95edbd3ce06190970aff6d902c2e93cf",
-      "username": "Esteban47",
-      "name": "Esteban47",
-      "id": "VJkUBYAspbe"
+      "gravatar_id": "2e0846742e7573447cc04834930d8667",
+      "username": "Coby_Ortiz",
+      "name": "Coby_Ortiz",
+      "id": "N1-QawvDnNe"
     }
   },
   {
     "event": "create_game",
     "payload": {
       "game": {
-        "id": "attention",
-        "title": "Attention",
-        "manufacturer": "Exhibit",
-        "year": 1940,
+        "id": "rat-race-ii",
+        "title": "Rat Race II",
+        "manufacturer": "Williams",
+        "year": 1985,
         "ipdb": {
-          "number": 108,
-          "mfg": 117
+          "number": 3719,
+          "mfg": 351
+        },
+        "game_type": "ss",
+        "media": {
+          "backglass": {
+            "counter": {
+              "downloads": 0
+            },
+            "is_protected": true,
+            "variations": {
+              "small-2x": {
+                "url": "/storage/public/files/small-2x/Vk9mpvwPnNx.jpg"
+              },
+              "small": {
+                "url": "/storage/public/files/small/Vk9mpvwPnNx.jpg"
+              },
+              "medium-2x": {
+                "url": "/storage/public/files/medium-2x/Vk9mpvwPnNx.jpg"
+              },
+              "medium": {
+                "url": "/storage/public/files/medium/Vk9mpvwPnNx.jpg"
+              }
+            },
+            "bytes": 135,
+            "url": "/storage/v1/files/Vk9mpvwPnNx.png",
+            "id": "Vk9mpvwPnNx"
+          }
+        }
+      }
+    },
+    "logged_at": "2015-12-05T23:50:37.114Z",
+    "is_public": true,
+    "actor": {
+      "counter": {
+        "stars": 0,
+        "comments": 0
+      },
+      "gravatar_id": "73e8b0a2f9d9689defa37710c3a3872e",
+      "username": "Edwina57",
+      "name": "Edwina57",
+      "id": "E1rmTwvwnEe"
+    }
+  },
+  {
+    "event": "create_comment",
+    "payload": {
+      "comment": {
+        "id": "VklbpwPP34x",
+        "from": {
+          "counter": {
+            "stars": 0,
+            "comments": 0
+          },
+          "gravatar_id": "d628106aa0d4af3eabb66ff13d6188cb",
+          "username": "Toy47",
+          "name": "Toy47",
+          "id": "4JxE2DPv3Ex"
+        },
+        "message": "Compatible full-range success",
+        "release": {
+          "game": {
+            "ipdb": {
+              "mfg": 262,
+              "number": 919
+            },
+            "year": 1976,
+            "manufacturer": "Petaco",
+            "title": "Fortune",
+            "id": "fortune"
+          },
+          "created_at": "2015-12-05T23:50:36.085Z",
+          "name": "Triple-buffered Edition",
+          "id": "4J6wPv2Ee"
+        },
+        "created_at": "2015-12-05T23:50:36.403Z"
+      }
+    },
+    "logged_at": "2015-12-05T23:50:36.504Z",
+    "is_public": true
+  },
+  {
+    "event": "create_comment",
+    "payload": {
+      "comment": {
+        "id": "NkPe6DDD3Vg",
+        "from": {
+          "counter": {
+            "stars": 0,
+            "comments": 1
+          },
+          "gravatar_id": "93ae2f40e372ddff4f5f0c6106e991b5",
+          "username": "Estella20",
+          "name": "Estella20",
+          "id": "4khmnwvPnVg"
+        },
+        "message": "Seamless fresh-thinking throughput",
+        "release": {
+          "game": {
+            "ipdb": {
+              "mfg": 262,
+              "number": 919
+            },
+            "year": 1976,
+            "manufacturer": "Petaco",
+            "title": "Fortune",
+            "id": "fortune"
+          },
+          "created_at": "2015-12-05T23:50:36.085Z",
+          "name": "Triple-buffered Edition",
+          "id": "4J6wPv2Ee"
+        },
+        "created_at": "2015-12-05T23:50:36.269Z"
+      }
+    },
+    "logged_at": "2015-12-05T23:50:36.299Z",
+    "is_public": true
+  },
+  {
+    "event": "create_comment",
+    "payload": {
+      "comment": {
+        "id": "41MxpDDw2Ne",
+        "from": {
+          "counter": {
+            "stars": 0,
+            "comments": 0
+          },
+          "gravatar_id": "93ae2f40e372ddff4f5f0c6106e991b5",
+          "username": "Estella20",
+          "name": "Estella20",
+          "id": "4khmnwvPnVg"
+        },
+        "message": "Organized solution-oriented array",
+        "release": {
+          "game": {
+            "ipdb": {
+              "mfg": 262,
+              "number": 919
+            },
+            "year": 1976,
+            "manufacturer": "Petaco",
+            "title": "Fortune",
+            "id": "fortune"
+          },
+          "created_at": "2015-12-05T23:50:36.085Z",
+          "name": "Triple-buffered Edition",
+          "id": "4J6wPv2Ee"
+        },
+        "created_at": "2015-12-05T23:50:36.246Z"
+      }
+    },
+    "logged_at": "2015-12-05T23:50:36.253Z",
+    "is_public": true
+  },
+  {
+    "event": "create_release",
+    "payload": {
+      "release": {
+        "id": "4J6wPv2Ee",
+        "name": "Triple-buffered Edition",
+        "authors": [
+          {
+            "roles": [
+              "Table Creator"
+            ],
+            "user": {
+              "id": "N1N4nPPwhNx",
+              "name": "Elian.Watsica",
+              "username": "Elian.Watsica",
+              "gravatar_id": "6b7f67fb883fd24f62798405023f2f12",
+              "counter": {
+                "comments": 0,
+                "stars": 0
+              }
+            }
+          }
+        ],
+        "versions": [
+          {
+            "version": "1.0.0",
+            "released_at": "2015-12-05T23:50:36.085Z",
+            "files": [
+              {
+                "released_at": "2015-12-05T23:50:36.085Z",
+                "flavor": {
+                  "orientation": "fs",
+                  "lighting": "night"
+                },
+                "compatibility": [
+                  {
+                    "id": "9.9.0"
+                  }
+                ],
+                "file": {
+                  "id": "Ey8S2PPDh4g",
+                  "name": "test-table-0.vpt",
+                  "bytes": 135168,
+                  "mime_type": "application/x-visual-pinball-table"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "game": {
+        "id": "fortune",
+        "title": "Fortune",
+        "manufacturer": "Petaco",
+        "year": 1976,
+        "ipdb": {
+          "number": 919,
+          "mfg": 262
+        },
+        "game_type": "em"
+      }
+    },
+    "logged_at": "2015-12-05T23:50:36.144Z",
+    "is_public": true
+  },
+  {
+    "event": "create_game",
+    "payload": {
+      "game": {
+        "id": "fortune",
+        "title": "Fortune",
+        "manufacturer": "Petaco",
+        "year": 1976,
+        "ipdb": {
+          "number": 919,
+          "mfg": 262
         },
         "game_type": "em",
         "media": {
@@ -102,254 +332,26 @@ Content-Encoding: gzip
             "is_protected": true,
             "variations": {
               "small-2x": {
-                "url": "/storage/public/files/small-2x/VyuUStAj6be.jpg"
+                "url": "/storage/public/files/small-2x/VyKE2wDDhEg.jpg"
               },
               "small": {
-                "url": "/storage/public/files/small/VyuUStAj6be.jpg"
+                "url": "/storage/public/files/small/VyKE2wDDhEg.jpg"
               },
               "medium-2x": {
-                "url": "/storage/public/files/medium-2x/VyuUStAj6be.jpg"
+                "url": "/storage/public/files/medium-2x/VyKE2wDDhEg.jpg"
               },
               "medium": {
-                "url": "/storage/public/files/medium/VyuUStAj6be.jpg"
+                "url": "/storage/public/files/medium/VyKE2wDDhEg.jpg"
               }
             },
             "bytes": 135,
-            "url": "/storage/v1/files/VyuUStAj6be.png",
-            "id": "VyuUStAj6be"
+            "url": "/storage/v1/files/VyKE2wDDhEg.png",
+            "id": "VyKE2wDDhEg"
           }
         }
       }
     },
-    "logged_at": "2015-10-31T13:17:25.093Z",
-    "is_public": true,
-    "actor": {
-      "counter": {
-        "stars": 0,
-        "comments": 0
-      },
-      "gravatar_id": "73b1d6f75119cbacbde411b7449c56ff",
-      "username": "Elijah13",
-      "name": "Elijah13",
-      "id": "NJmUHtCjabe"
-    }
-  },
-  {
-    "event": "create_comment",
-    "payload": {
-      "comment": {
-        "id": "E1nzrtAs6be",
-        "from": {
-          "counter": {
-            "stars": 0,
-            "comments": 0
-          },
-          "gravatar_id": "c7266e9d390bae9e92388c9bf6824079",
-          "username": "Neil_Ankunding27",
-          "name": "Neil_Ankunding27",
-          "id": "VJwDVY0j6Wg"
-        },
-        "message": "Customer-focused contextually-based hierarchy",
-        "release": {
-          "game": {
-            "ipdb": {
-              "mfg": 175,
-              "number": 4191
-            },
-            "year": 1932,
-            "manufacturer": "Keeney and Sons",
-            "title": "Deluxe",
-            "id": "deluxe"
-          },
-          "created_at": "2015-10-31T13:17:24.361Z",
-          "name": "Assimilated Edition",
-          "id": "EJbgHFCopbx"
-        },
-        "created_at": "2015-10-31T13:17:24.743Z"
-      }
-    },
-    "logged_at": "2015-10-31T13:17:24.753Z",
-    "is_public": true
-  },
-  {
-    "event": "create_comment",
-    "payload": {
-      "comment": {
-        "id": "41yzrtRjpWe",
-        "from": {
-          "counter": {
-            "stars": 0,
-            "comments": 1
-          },
-          "gravatar_id": "32f77b064bec2b219a0403c1fa018a60",
-          "username": "Leonard_Jakubowski92",
-          "name": "Leonard_Jakubowski92",
-          "id": "N17vNtAjTWe"
-        },
-        "message": "De-engineered local definition",
-        "release": {
-          "game": {
-            "ipdb": {
-              "mfg": 175,
-              "number": 4191
-            },
-            "year": 1932,
-            "manufacturer": "Keeney and Sons",
-            "title": "Deluxe",
-            "id": "deluxe"
-          },
-          "created_at": "2015-10-31T13:17:24.361Z",
-          "name": "Assimilated Edition",
-          "id": "EJbgHFCopbx"
-        },
-        "created_at": "2015-10-31T13:17:24.687Z"
-      }
-    },
-    "logged_at": "2015-10-31T13:17:24.700Z",
-    "is_public": true
-  },
-  {
-    "event": "create_comment",
-    "payload": {
-      "comment": {
-        "id": "EycZHtAjTWg",
-        "from": {
-          "counter": {
-            "stars": 0,
-            "comments": 0
-          },
-          "gravatar_id": "32f77b064bec2b219a0403c1fa018a60",
-          "username": "Leonard_Jakubowski92",
-          "name": "Leonard_Jakubowski92",
-          "id": "N17vNtAjTWe"
-        },
-        "message": "Automated upward-trending Graphical User Interface",
-        "release": {
-          "game": {
-            "ipdb": {
-              "mfg": 175,
-              "number": 4191
-            },
-            "year": 1932,
-            "manufacturer": "Keeney and Sons",
-            "title": "Deluxe",
-            "id": "deluxe"
-          },
-          "created_at": "2015-10-31T13:17:24.361Z",
-          "name": "Assimilated Edition",
-          "id": "EJbgHFCopbx"
-        },
-        "created_at": "2015-10-31T13:17:24.661Z"
-      }
-    },
-    "logged_at": "2015-10-31T13:17:24.669Z",
-    "is_public": true
-  },
-  {
-    "event": "create_release",
-    "payload": {
-      "release": {
-        "id": "EJbgHFCopbx",
-        "name": "Assimilated Edition",
-        "authors": [
-          {
-            "roles": [
-              "Table Creator"
-            ],
-            "user": {
-              "id": "VyjvNF0oTWl",
-              "name": "Jonas_Langosh",
-              "username": "Jonas_Langosh",
-              "gravatar_id": "aeb9910b2d6ee4ce5efc5c5b8bba6577",
-              "counter": {
-                "comments": 0,
-                "stars": 0
-              }
-            }
-          }
-        ],
-        "versions": [
-          {
-            "version": "1.0.0",
-            "files": [
-              {
-                "released_at": "2015-10-31T13:17:24.361Z",
-                "flavor": {
-                  "orientation": "fs",
-                  "lighting": "night"
-                },
-                "compatibility": [
-                  {
-                    "id": "9.9.0"
-                  }
-                ],
-                "file": {
-                  "id": "4kpdVF0sTbl",
-                  "name": "test-table-0.vpt",
-                  "bytes": 135168,
-                  "mime_type": "application/x-visual-pinball-table"
-                }
-              }
-            ]
-          }
-        ]
-      },
-      "game": {
-        "id": "deluxe",
-        "title": "Deluxe",
-        "manufacturer": "Keeney and Sons",
-        "year": 1932,
-        "ipdb": {
-          "number": 4191,
-          "mfg": 175
-        },
-        "game_type": "pm"
-      }
-    },
-    "logged_at": "2015-10-31T13:17:24.436Z",
-    "is_public": true
-  },
-  {
-    "event": "create_game",
-    "payload": {
-      "game": {
-        "id": "deluxe",
-        "title": "Deluxe",
-        "manufacturer": "Keeney and Sons",
-        "year": 1932,
-        "ipdb": {
-          "number": 4191,
-          "mfg": 175
-        },
-        "game_type": "pm",
-        "media": {
-          "backglass": {
-            "counter": {
-              "downloads": 0
-            },
-            "is_protected": true,
-            "variations": {
-              "small-2x": {
-                "url": "/storage/public/files/small-2x/4klu4KRj6Wx.jpg"
-              },
-              "small": {
-                "url": "/storage/public/files/small/4klu4KRj6Wx.jpg"
-              },
-              "medium-2x": {
-                "url": "/storage/public/files/medium-2x/4klu4KRj6Wx.jpg"
-              },
-              "medium": {
-                "url": "/storage/public/files/medium/4klu4KRj6Wx.jpg"
-              }
-            },
-            "bytes": 135,
-            "url": "/storage/v1/files/4klu4KRj6Wx.png",
-            "id": "4klu4KRj6Wx"
-          }
-        }
-      }
-    },
-    "logged_at": "2015-10-31T13:17:23.981Z",
+    "logged_at": "2015-12-05T23:50:35.697Z",
     "is_public": true
   }
 ]

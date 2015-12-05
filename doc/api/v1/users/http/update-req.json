@@ -1,16 +1,17 @@
-PUT /api/v1/users/41kw9jRj6-e HTTP/1.1
+PUT /api/v1/users/EkJ_ucDvhNe HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJOSmk4cW9Sb3BiZSIsImlhdCI6IjIwMTUtMTAtMzFUMTM6MTg6MDEuNjI1WiIsImV4cCI6IjIwMTUtMTAtMzFUMTQ6MTg6MDEuNjI1WiJ9.A404978BpVvhqcXRLIz33xfpO1RMd3iBwIid6BTxsDM
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJFMWlQTzl2dzJFbCIsImlhdCI6IjIwMTUtMTItMDVUMjM6NTE6MTkuNzA3WiIsImV4cCI6IjIwMTUtMTItMDZUMDA6NTE6MTkuNzA3WiJ9.2b_Au3RaQ7rMNF-mjUdAtX10TmbT_UjOHGFV-pgS1Nk
 Content-Type: application/json
-Content-Length: 116
+Content-Length: 132
 
 {
-  "email": "alyce_gulgowski7@gmail.com",
-  "username": "Juvenal86",
-  "name": "Juvenal86",
+  "email": "luz35@hotmail.com",
+  "username": "Ayden.Baumbach",
+  "name": "Ayden.Baumbach",
   "is_active": true,
   "roles": [
     "member"
-  ]
+  ],
+  "_plan": "free"
 }

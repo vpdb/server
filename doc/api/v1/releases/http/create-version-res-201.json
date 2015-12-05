@@ -1,10 +1,10 @@
 201 Created
 Content-Type: application/json; charset=utf-8
-Etag: W/"884-BiUFDzOe6avMGHU1OaELNg"
+Etag: W/"ef9-yVNIPnDISnkFceNd1EM6dA"
 Content-Encoding: gzip
 
 {
-  "released_at": "2015-10-31T13:17:45.266Z",
+  "released_at": "2015-12-05T23:50:59.646Z",
   "changes": "*Second release.*",
   "version": "2.0.0",
   "counter": {
@@ -13,7 +13,7 @@ Content-Encoding: gzip
   },
   "files": [
     {
-      "released_at": "2015-10-31T13:17:45.266Z",
+      "released_at": "2015-12-05T23:50:59.646Z",
       "counter": {
         "downloads": 0
       },
@@ -25,7 +25,7 @@ Content-Encoding: gzip
         "playfield_image": {
           "name": "playfield-0.png",
           "bytes": 347,
-          "created_at": "2015-10-31T13:17:44.829Z",
+          "created_at": "2015-12-05T23:50:59.255Z",
           "mime_type": "image/png",
           "file_type": "playfield-fs",
           "metadata": {
@@ -40,27 +40,27 @@ Content-Encoding: gzip
             "downloads": 0
           },
           "is_active": true,
-          "id": "N1MVK9CjpWx",
+          "id": "4kWeVYwPhNe",
           "is_protected": true,
-          "url": "/storage/v1/files/N1MVK9CjpWx.png",
+          "url": "/storage/v1/files/4kWeVYwPhNe.png",
           "variations": {
             "medium": {
-              "url": "/storage/public/files/medium/N1MVK9CjpWx.jpg"
+              "url": "/storage/public/files/medium/4kWeVYwPhNe.jpg"
             },
             "medium-2x": {
-              "url": "/storage/public/files/medium-2x/N1MVK9CjpWx.jpg"
+              "url": "/storage/public/files/medium-2x/4kWeVYwPhNe.jpg"
             },
             "medium-landscape": {
-              "url": "/storage/public/files/medium-landscape/N1MVK9CjpWx.jpg"
+              "url": "/storage/public/files/medium-landscape/4kWeVYwPhNe.jpg"
             },
             "medium-landscape-2x": {
-              "url": "/storage/public/files/medium-landscape-2x/N1MVK9CjpWx.jpg"
+              "url": "/storage/public/files/medium-landscape-2x/4kWeVYwPhNe.jpg"
             },
             "square": {
-              "url": "/storage/public/files/square/N1MVK9CjpWx.jpg"
+              "url": "/storage/public/files/square/4kWeVYwPhNe.jpg"
             },
             "square-2x": {
-              "url": "/storage/public/files/square-2x/N1MVK9CjpWx.jpg"
+              "url": "/storage/public/files/square-2x/4kWeVYwPhNe.jpg"
             }
           }
         }
@@ -79,12 +79,22 @@ Content-Encoding: gzip
       ],
       "file": {
         "name": "test-table-0.vpt",
-        "created_at": "2015-10-31T13:17:44.593Z",
+        "created_at": "2015-12-05T23:50:59.043Z",
         "mime_type": "application/x-visual-pinball-table",
         "file_type": "release",
-        "metadata": {},
-        "id": "NygmFq0opWx",
-        "url": "/storage/v1/files/NygmFq0opWx.vpt",
+        "metadata": {
+          "table_script": "Sub Table1_KeyDown(ByVal keycode)\r\r\tIf keycode = PlungerKey Then\r\t\tPlunger.PullBack\r\tEnd If\r\r\tIf keycode = LeftFlipperKey Then\r\t\tLeftFlipper.RotateToEnd\r\t\tPlaySound \"FlipperUp\",0,1,-0.1,0.25\r\tEnd If\r    \r\tIf keycode = RightFlipperKey Then\r\t\tRightFlipper.RotateToEnd\r\r\t\tPlaySound \"FlipperUp\",0,1,0.1,0.25\r\tEnd If\r    \r\tIf keycode = LeftTiltKey Then\r\t\tNudge 90, 2\r\tEnd If\r    \r\tIf keycode = RightTiltKey Then\r\t\tNudge 270, 2\r\tEnd If\r    \r\tIf keycode = CenterTiltKey Then\r\t\tNudge 0, 2\r\tEnd If\r    \rEnd Sub\r\rSub Table1_KeyUp(ByVal keycode)\r\r\tIf keycode = PlungerKey Then\r\t\tPlunger.Fire\r\tEnd If\r    \r\tIf keycode = LeftFlipperKey Then\r\t\tLeftFlipper.RotateToStart\r\t\tPlaySound \"FlipperDown\",0,1,-0.1,0.25\r\tEnd If\r    \r\tIf keycode = RightFlipperKey Then\r\t\tRightFlipper.RotateToStart\r        \r\t\tPlaySound \"FlipperDown\",0,1,0.1,0.25\r\tEnd If\r\rEnd Sub\r\rSub Drain_Hit()\r\tDrain.DestroyBall\r\tPlunger.CreateBall\r\tPlaySound \"Plunger\",0,1,0,0.25\rEnd Sub\r\rSub LeftSlingshot_Slingshot()\r\tPlaySound \"Bumper\",0,1,-0.15,0.25\rEnd Sub\r\rSub RightSlingshot_Slingshot()\r\tPlaySound \"Bumper\",0,1,0.15,0.25\rEnd Sub\r\rSub Plunger_Init()\r\tPlaySound \"Plunger\",0,0.5,0.5,0.25\r\tPlunger.CreateBall\rEnd Sub",
+          "table_description": "_table_description_",
+          "author_website": "_table_website_",
+          "table_version": "_table_version_",
+          "release_date": "_table_release_date_",
+          "author_email": "_table_email_",
+          "table_rules": "_table_rules_",
+          "author_name": "_table_author_",
+          "table_name": "_table_name_"
+        },
+        "id": "N1gBQKwwhNg",
+        "url": "/storage/v1/files/N1gBQKwwhNg.vpt",
         "bytes": 135168,
         "variations": {},
         "is_protected": true,

@@ -3,7 +3,7 @@ X-List-Page: 1
 X-List-Size: 10
 X-List-Count: 2
 Content-Type: application/json; charset=utf-8
-Etag: W/"a0f-Sa9avxHaqy67a9nZWYENeQ"
+Etag: W/"a50-d5kGI1ANOn8GSQ3an2desQ"
 Content-Encoding: gzip
 
 [
@@ -11,18 +11,18 @@ Content-Encoding: gzip
     "event": "create_release",
     "payload": {
       "release": {
-        "id": "NyxxLKAo6-e",
-        "name": "Automated Edition",
+        "id": "E1sx0PwPh4x",
+        "name": "Exclusive Edition",
         "authors": [
           {
             "roles": [
               "Table Creator"
             ],
             "user": {
-              "id": "VJkUBYAspbe",
-              "name": "Esteban47",
-              "username": "Esteban47",
-              "gravatar_id": "95edbd3ce06190970aff6d902c2e93cf",
+              "id": "N1-QawvDnNe",
+              "name": "Coby_Ortiz",
+              "username": "Coby_Ortiz",
+              "gravatar_id": "2e0846742e7573447cc04834930d8667",
               "counter": {
                 "comments": 0,
                 "stars": 0
@@ -33,9 +33,10 @@ Content-Encoding: gzip
         "versions": [
           {
             "version": "1.0.0",
+            "released_at": "2015-12-05T23:50:37.411Z",
             "files": [
               {
-                "released_at": "2015-10-31T13:17:25.361Z",
+                "released_at": "2015-12-05T23:50:37.411Z",
                 "flavor": {
                   "orientation": "fs",
                   "lighting": "night"
@@ -46,7 +47,7 @@ Content-Encoding: gzip
                   }
                 ],
                 "file": {
-                  "id": "4y-UKAo6bl",
+                  "id": "4J_ADwPnVx",
                   "name": "test-table-0.vpt",
                   "bytes": 135168,
                   "mime_type": "application/x-visual-pinball-table"
@@ -57,43 +58,43 @@ Content-Encoding: gzip
         ]
       },
       "game": {
-        "id": "attention",
-        "title": "Attention",
-        "manufacturer": "Exhibit",
-        "year": 1940,
+        "id": "rat-race-ii",
+        "title": "Rat Race II",
+        "manufacturer": "Williams",
+        "year": 1985,
         "ipdb": {
-          "number": 108,
-          "mfg": 117
+          "number": 3719,
+          "mfg": 351
         },
-        "game_type": "em"
+        "game_type": "ss"
       }
     },
-    "logged_at": "2015-10-31T13:17:25.418Z",
+    "logged_at": "2015-12-05T23:50:37.457Z",
     "is_public": true,
     "actor": {
       "counter": {
         "stars": 0,
         "comments": 0
       },
-      "gravatar_id": "95edbd3ce06190970aff6d902c2e93cf",
-      "username": "Esteban47",
-      "name": "Esteban47",
-      "id": "VJkUBYAspbe"
+      "gravatar_id": "2e0846742e7573447cc04834930d8667",
+      "username": "Coby_Ortiz",
+      "name": "Coby_Ortiz",
+      "id": "N1-QawvDnNe"
     }
   },
   {
     "event": "create_game",
     "payload": {
       "game": {
-        "id": "attention",
-        "title": "Attention",
-        "manufacturer": "Exhibit",
-        "year": 1940,
+        "id": "rat-race-ii",
+        "title": "Rat Race II",
+        "manufacturer": "Williams",
+        "year": 1985,
         "ipdb": {
-          "number": 108,
-          "mfg": 117
+          "number": 3719,
+          "mfg": 351
         },
-        "game_type": "em",
+        "game_type": "ss",
         "media": {
           "backglass": {
             "counter": {
@@ -102,36 +103,36 @@ Content-Encoding: gzip
             "is_protected": true,
             "variations": {
               "small-2x": {
-                "url": "/storage/public/files/small-2x/VyuUStAj6be.jpg"
+                "url": "/storage/public/files/small-2x/Vk9mpvwPnNx.jpg"
               },
               "small": {
-                "url": "/storage/public/files/small/VyuUStAj6be.jpg"
+                "url": "/storage/public/files/small/Vk9mpvwPnNx.jpg"
               },
               "medium-2x": {
-                "url": "/storage/public/files/medium-2x/VyuUStAj6be.jpg"
+                "url": "/storage/public/files/medium-2x/Vk9mpvwPnNx.jpg"
               },
               "medium": {
-                "url": "/storage/public/files/medium/VyuUStAj6be.jpg"
+                "url": "/storage/public/files/medium/Vk9mpvwPnNx.jpg"
               }
             },
             "bytes": 135,
-            "url": "/storage/v1/files/VyuUStAj6be.png",
-            "id": "VyuUStAj6be"
+            "url": "/storage/v1/files/Vk9mpvwPnNx.png",
+            "id": "Vk9mpvwPnNx"
           }
         }
       }
     },
-    "logged_at": "2015-10-31T13:17:25.093Z",
+    "logged_at": "2015-12-05T23:50:37.114Z",
     "is_public": true,
     "actor": {
       "counter": {
         "stars": 0,
         "comments": 0
       },
-      "gravatar_id": "73b1d6f75119cbacbde411b7449c56ff",
-      "username": "Elijah13",
-      "name": "Elijah13",
-      "id": "NJmUHtCjabe"
+      "gravatar_id": "73e8b0a2f9d9689defa37710c3a3872e",
+      "username": "Edwina57",
+      "name": "Edwina57",
+      "id": "E1rmTwvwnEe"
     }
   }
 ]

@@ -1,5 +1,5 @@
-GET /api/v1/games/atlantic-city/rating HTTP/1.1
+GET /api/v1/games/sky-jump/rating HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJOMWdZMHRBaVQteCIsImlhdCI6IjIwMTUtMTAtMzFUMTM6MTc6MzMuOTkzWiIsImV4cCI6IjIwMTUtMTAtMzFUMTQ6MTc6MzMuOTkzWiJ9.BZKwWDX8NFhPQswKuoWuvtAiPiS4YneBjekf58msCAE
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJOMUt6UHV2RG5OeCIsImlhdCI6IjIwMTUtMTItMDVUMjM6NTA6NDYuMzcyWiIsImV4cCI6IjIwMTUtMTItMDZUMDA6NTA6NDYuMzcyWiJ9.4rrAuNrDaoGyF_ixgQ3F96UsD2cJ7Gyk0jgF10r1S1I
 

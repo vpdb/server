@@ -1,4 +1,4 @@
-GET /api/v1/releases/V1RzzQ326Zl?thumb_flavor=orientation%3Afs HTTP/1.1
+GET /api/v1/releases/4kVfsFPwhVe?thumb_flavor=orientation%3Afs HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
 

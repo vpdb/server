@@ -1,76 +1,83 @@
 200 OK
 Content-Type: application/json; charset=utf-8
-Etag: W/"4c0-4Knah70uV5SitVatYjQ4Gg"
+Etag: W/"560-TClfkDOTblJvDXKWGwHFnA"
 Content-Encoding: gzip
 
 {
-  "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI0eVRORkFqYS14IiwiaWF0IjoiMjAxNS0xMC0zMVQxMzoxNzoyMy4yMTlaIiwiZXhwIjoiMjAxNS0xMC0zMVQxNDoxNzoyMy4yMTlaIn0.LOYraEqupbqhM68Bup9H3b1qV_tmTEVAxD7jK7Fn320",
-  "expires": "2015-10-31T14:17:23.219Z",
+  "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJFMWxJb0RQRGhObCIsImlhdCI6IjIwMTUtMTItMDVUMjM6NTA6MzQuODM1WiIsImV4cCI6IjIwMTUtMTItMDZUMDA6NTA6MzQuODM1WiJ9.WdqKkAn0kfhNRVywthi6Xu9DMJpkOyYztbr3E1ztsw0",
+  "expires": "2015-12-06T00:50:34.835Z",
   "user": {
-    "id": "4yTNFAja-x",
-    "name": "Major_Schoen14",
-    "username": "Major_Schoen14",
-    "gravatar_id": "fe4e8055afd6baf41885377855e67d7b",
-    "email": "madilyn.schulist@yahoo.com",
+    "id": "E1lIoDPDhNl",
+    "name": "Mozelle_McGlynn91",
+    "username": "Mozelle_McGlynn91",
+    "gravatar_id": "df381b21fed9e1a883447f8c3d87a891",
+    "email": "zoey20@yahoo.com",
     "is_active": true,
     "provider": "local",
     "roles": [
       "member"
     ],
-    "created_at": "2015-10-31T13:17:23.157Z",
+    "plan": {
+      "push_notifications_enabled": false,
+      "app_tokens_enabled": false,
+      "recurring_period": "day",
+      "recurring_credits": 3,
+      "id": "free"
+    },
+    "created_at": "2015-12-05T23:50:34.724Z",
     "counter": {
       "stars": 0,
       "downloads": 0,
       "comments": 0
     },
     "permissions": {
-      "files": [
-        "upload",
+      "builds": [
+        "add",
+        "delete-own"
+      ],
+      "user": [
+        "update",
+        "view"
+      ],
+      "tokens": [
         "delete",
-        "download"
+        "list",
+        "update",
+        "add"
+      ],
+      "roms": [
+        "add",
+        "delete-own"
       ],
       "tags": [
         "add",
         "delete-own"
       ],
-      "builds": [
-        "add",
-        "delete-own"
-      ],
-      "comments": [
-        "add"
-      ],
-      "tokens": [
-        "add",
-        "list",
+      "files": [
+        "download",
         "delete",
-        "update"
+        "upload"
+      ],
+      "messages": [
+        "receive"
+      ],
+      "games": [
+        "star",
+        "rate"
+      ],
+      "releases": [
+        "delete",
+        "star",
+        "add",
+        "rate"
       ],
       "users": [
         "star",
         "search",
         "view"
       ],
-      "games": [
-        "rate",
-        "star"
-      ],
-      "messages": [
-        "receive"
-      ],
-      "roms": [
-        "add",
-        "delete-own"
-      ],
-      "user": [
-        "view",
-        "update"
-      ],
-      "releases": [
-        "rate",
-        "add",
-        "star",
-        "delete"
+      "comments": [
+        "add"
       ]
     }
   }

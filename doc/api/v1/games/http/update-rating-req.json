@@ -1,8 +1,8 @@
-PUT /api/v1/games/trsle/rating HTTP/1.1
+PUT /api/v1/games/operators-life-saver/rating HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
 Content-Type: application/json
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJFSnZHMTVBbzYtZyIsImlhdCI6IjIwMTUtMTAtMzFUMTM6MTc6MzQuMzc4WiIsImV4cCI6IjIwMTUtMTAtMzFUMTQ6MTc6MzQuMzc4WiJ9.7DLvhzMlOHAwSzoByfXuidpa_BVHDbSr7cGS88kR8To
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI0a1RJdk9EdmhWeCIsImlhdCI6IjIwMTUtMTItMDVUMjM6NTA6NDYuODE3WiIsImV4cCI6IjIwMTUtMTItMDZUMDA6NTA6NDYuODE3WiJ9.8RbdcRVMZ84zeNt2F93Viw7x0KcXcLumM4sQIclOKOY
 Content-Length: 11
 
 {

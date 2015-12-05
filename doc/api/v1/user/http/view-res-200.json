@@ -1,14 +1,14 @@
 200 OK
 Content-Type: application/json; charset=utf-8
-Content-Length: 938
-Etag: W/"3aa-8xdxQorBpluroTWO5mll7g"
+Etag: W/"45c-5r3x3rQ5dBl4QxtkU1pq9w"
+Content-Encoding: gzip
 
 {
-  "name": "Emilia99",
-  "username": "Emilia99",
-  "email": "francesca96@yahoo.com",
+  "name": "Sierra.Rempel10",
+  "username": "Sierra.Rempel10",
+  "email": "murray_braun@yahoo.com",
   "provider": "local",
-  "created_at": "2015-10-31T13:17:22.091Z",
+  "created_at": "2015-12-05T23:50:33.440Z",
   "is_active": true,
   "counter": {
     "stars": 0,
@@ -18,61 +18,68 @@ Etag: W/"3aa-8xdxQorBpluroTWO5mll7g"
   "roles": [
     "member"
   ],
-  "id": "V17lzY0i6Wx",
-  "gravatar_id": "b350f5cf365a318cdcb543af9fbeb4a7",
+  "id": "Vkmecwvv3Nl",
+  "plan": {
+    "push_notifications_enabled": false,
+    "app_tokens_enabled": true,
+    "recurring_period": "day",
+    "recurring_credits": 50,
+    "id": "subscribed"
+  },
+  "gravatar_id": "25ceb8c8041043e2b7715ca768d0c07a",
   "permissions": {
-    "files": [
-      "upload",
+    "builds": [
+      "add",
+      "delete-own"
+    ],
+    "user": [
+      "update",
+      "view"
+    ],
+    "tokens": [
       "delete",
-      "download"
+      "list",
+      "update",
+      "add"
+    ],
+    "roms": [
+      "add",
+      "delete-own"
     ],
     "tags": [
       "add",
       "delete-own"
     ],
-    "builds": [
-      "add",
-      "delete-own"
-    ],
-    "comments": [
-      "add"
-    ],
-    "tokens": [
-      "add",
-      "list",
+    "files": [
+      "download",
       "delete",
-      "update"
+      "upload"
+    ],
+    "messages": [
+      "receive"
+    ],
+    "games": [
+      "star",
+      "rate"
+    ],
+    "releases": [
+      "delete",
+      "star",
+      "add",
+      "rate"
     ],
     "users": [
       "star",
       "search",
       "view"
     ],
-    "games": [
-      "rate",
-      "star"
-    ],
-    "messages": [
-      "receive"
-    ],
-    "roms": [
-      "add",
-      "delete-own"
-    ],
-    "user": [
-      "view",
-      "update"
-    ],
-    "releases": [
-      "rate",
-      "add",
-      "star",
-      "delete"
+    "comments": [
+      "add"
     ]
   },
   "quota": {
-    "limit": 3,
-    "remaining": 3,
+    "limit": 50,
+    "remaining": 50,
     "reset": 86400000
   }
 }

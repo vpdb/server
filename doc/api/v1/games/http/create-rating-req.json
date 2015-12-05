@@ -1,8 +1,8 @@
-POST /api/v1/games/electro-ball/rating HTTP/1.1
+POST /api/v1/games/match-a-ball/rating HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
 Content-Type: application/json
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI0MXRhdFJpYWJsIiwiaWF0IjoiMjAxNS0xMC0zMVQxMzoxNzozMi44ODFaIiwiZXhwIjoiMjAxNS0xMC0zMVQxNDoxNzozMi44ODFaIn0.rSWS7HNyGJK2gI02L24P-B1iPDAV9UN_m1DZbo53xHk
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJWMW1iSWRERGg0ZyIsImlhdCI6IjIwMTUtMTItMDVUMjM6NTA6NDUuMzM5WiIsImV4cCI6IjIwMTUtMTItMDZUMDA6NTA6NDUuMzM5WiJ9.xBpW-ZAxW5FZyYo_D4ihZ7GZnwiNddNmCJNHDXbGG3c
 Content-Length: 11
 
 {

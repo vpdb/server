@@ -1,26 +1,34 @@
 POST /api/v1/games HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJFMWpaT3RDb3AtbCIsImlhdCI6IjIwMTUtMTAtMzFUMTM6MTc6MjcuMzU0WiIsImV4cCI6IjIwMTUtMTAtMzFUMTQ6MTc6MjcuMzU0WiJ9.ZAkEy8GRHAR8iwlAL3tevsMH0B-A1Cg353aBGBBKyXM
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJFeXpTbE92RDJWbCIsImlhdCI6IjIwMTUtMTItMDVUMjM6NTA6NDAuMDQ5WiIsImV4cCI6IjIwMTUtMTItMDZUMDA6NTA6NDAuMDQ5WiJ9.15p7pympps1odgD5t_VB4A5aZf1Ve02TQ1hTGhU-j-s
 Content-Type: application/json
-Content-Length: 865
+Content-Length: 368
 
 {
   "ipdb": {
-    "number": 5570,
-    "mfg": 47
+    "number": 1104,
+    "mfg": 93,
+    "rating": "7.0"
   },
-  "title": "Special Entry 1948",
-  "manufacturer": "Bally",
-  "year": 1948,
+  "title": "Gypsy Queen",
+  "manufacturer": "Gottlieb",
+  "model_number": "100",
+  "year": 1955,
   "game_type": "em",
+  "produced_units": 1400,
   "themes": [
-    "Sports",
-    "Horse Racing"
+    "Cards/Gambling"
   ],
-  "notes": "No information is available on this game except the two backglass pictures shown here. It is not the same glass as Bally's 1946 'Special Entry'. This glass actually carries a 1948 date silkscreened on it but the possibility always exists that the game started manufacture in 1947. However, because it so closely resembles the glasses from Bally's 1947 'Jockey Club' or Bally's 1947 'Jockey Special', we suspect this glass followed those games and may even be a modification of either of those glasses. Thus, we date this glass as 1948. We do not know if 'Special Entry 1948' was a complete game or only a modified glass for those other games.",
-  "id": "special-entry-1948",
+  "designers": [
+    "Wayne Neyens"
+  ],
+  "artists": [
+    "Roy Parker"
+  ],
+  "features": "Flippers (2), Pop bumpers (3), Gobble holes (2).",
+  "id": "gypsy-queen",
   "_media": {
-    "backglass": "E1xGOFRjabl"
+    "backglass": "EyDBg_DvnVl"
   }
 }

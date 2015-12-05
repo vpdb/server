@@ -1,17 +1,19 @@
 201 Created
 Content-Type: application/json; charset=utf-8
-Etag: W/"6f6-7RiSEhD/1s5HbCpizXHmhw"
+Etag: W/"4e8-3B2DJbew/n7ZeMj+R9+nJA"
 Content-Encoding: gzip
 
 {
-  "title_sortable": "Special Entry 1948",
-  "title": "Special Entry 1948",
-  "manufacturer": "Bally",
-  "year": 1948,
+  "title_sortable": "Gypsy Queen",
+  "title": "Gypsy Queen",
+  "manufacturer": "Gottlieb",
+  "model_number": "100",
+  "year": 1955,
   "game_type": "em",
-  "notes": "No information is available on this game except the two backglass pictures shown here. It is not the same glass as Bally's 1946 'Special Entry'. This glass actually carries a 1948 date silkscreened on it but the possibility always exists that the game started manufacture in 1947. However, because it so closely resembles the glasses from Bally's 1947 'Jockey Club' or Bally's 1947 'Jockey Special', we suspect this glass followed those games and may even be a modification of either of those glasses. Thus, we date this glass as 1948. We do not know if 'Special Entry 1948' was a complete game or only a modified glass for those other games.",
-  "id": "special-entry-1948",
-  "created_at": "2015-10-31T13:17:27.435Z",
+  "produced_units": 1400,
+  "features": "Flippers (2), Pop bumpers (3), Gobble holes (2).",
+  "id": "gypsy-queen",
+  "created_at": "2015-12-05T23:50:40.131Z",
   "rating": {
     "score": 0,
     "votes": 0,
@@ -28,14 +30,18 @@ Content-Encoding: gzip
     "releases": 0
   },
   "ipdb": {
-    "number": 5570,
-    "mfg": 47
+    "number": 1104,
+    "mfg": 93,
+    "rating": 7
   },
-  "artists": [],
-  "designers": [],
+  "artists": [
+    "Roy Parker"
+  ],
+  "designers": [
+    "Wayne Neyens"
+  ],
   "themes": [
-    "Sports",
-    "Horse Racing"
+    "Cards/Gambling"
   ],
   "short": [],
   "media": {
@@ -46,22 +52,22 @@ Content-Encoding: gzip
       "is_protected": true,
       "variations": {
         "small-2x": {
-          "url": "/storage/public/files/small-2x/E1xGOFRjabl.jpg"
+          "url": "/storage/public/files/small-2x/EyDBg_DvnVl.jpg"
         },
         "small": {
-          "url": "/storage/public/files/small/E1xGOFRjabl.jpg"
+          "url": "/storage/public/files/small/EyDBg_DvnVl.jpg"
         },
         "medium-2x": {
-          "url": "/storage/public/files/medium-2x/E1xGOFRjabl.jpg"
+          "url": "/storage/public/files/medium-2x/EyDBg_DvnVl.jpg"
         },
         "medium": {
-          "url": "/storage/public/files/medium/E1xGOFRjabl.jpg"
+          "url": "/storage/public/files/medium/EyDBg_DvnVl.jpg"
         }
       },
       "bytes": 135,
-      "url": "/storage/v1/files/E1xGOFRjabl.png",
-      "id": "E1xGOFRjabl"
+      "url": "/storage/v1/files/EyDBg_DvnVl.png",
+      "id": "EyDBg_DvnVl"
     }
   },
-  "url": "/game/special-entry-1948"
+  "url": "/game/gypsy-queen"
 }

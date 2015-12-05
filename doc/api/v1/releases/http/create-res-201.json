@@ -1,13 +1,13 @@
 201 Created
 Content-Type: application/json; charset=utf-8
-Etag: W/"1965-Cd+hOSj77CCuAMlkQCG8mw"
+Etag: W/"2289-E+jeamfKqXL7tJLaPEa1fg"
 Content-Encoding: gzip
 
 {
   "name_sortable": "release",
   "name": "release",
-  "modified_at": "2015-10-31T13:17:41.266Z",
-  "created_at": "2015-10-31T13:17:41.266Z",
+  "modified_at": "2015-12-05T23:50:55.077Z",
+  "created_at": "2015-12-05T23:50:55.077Z",
   "rating": {
     "score": 0,
     "votes": 0,
@@ -28,10 +28,10 @@ Content-Encoding: gzip
         "Table Creator"
       ],
       "user": {
-        "id": "Ek48mcRiabe",
-        "name": "Art79",
-        "username": "Art79",
-        "gravatar_id": "0d5316a0328e8daa01eaa4d9c176cff2",
+        "id": "EkTE3dDPhEl",
+        "name": "Alfreda.Jenkins",
+        "username": "Alfreda.Jenkins",
+        "gravatar_id": "d35ec78c9d8c42f0a6b1395bb34a59f9",
         "counter": {
           "comments": 0,
           "stars": 0
@@ -41,15 +41,15 @@ Content-Encoding: gzip
   ],
   "versions": [
     {
-      "released_at": "2015-10-31T13:17:41.266Z",
       "version": "1.0.0",
+      "released_at": "2015-08-01T00:00:00.000Z",
       "counter": {
         "comments": 0,
         "downloads": 0
       },
       "files": [
         {
-          "released_at": "2015-10-31T13:17:41.266Z",
+          "released_at": "2015-01-01T00:00:00.000Z",
           "counter": {
             "downloads": 0
           },
@@ -61,7 +61,7 @@ Content-Encoding: gzip
             "playfield_image": {
               "name": "playfield-0.png",
               "bytes": 347,
-              "created_at": "2015-10-31T13:17:40.298Z",
+              "created_at": "2015-12-05T23:50:54.464Z",
               "mime_type": "image/png",
               "file_type": "playfield-fs",
               "metadata": {
@@ -76,63 +76,27 @@ Content-Encoding: gzip
                 "downloads": 0
               },
               "is_active": true,
-              "id": "Ey0eH9AjT-l",
+              "id": "V1h-1Ywv3Vg",
               "is_protected": true,
-              "url": "/storage/v1/files/Ey0eH9AjT-l.png",
+              "url": "/storage/v1/files/V1h-1Ywv3Vg.png",
               "variations": {
                 "medium": {
-                  "url": "/storage/public/files/medium/Ey0eH9AjT-l.jpg"
+                  "url": "/storage/public/files/medium/V1h-1Ywv3Vg.jpg"
                 },
                 "medium-2x": {
-                  "url": "/storage/public/files/medium-2x/Ey0eH9AjT-l.jpg"
+                  "url": "/storage/public/files/medium-2x/V1h-1Ywv3Vg.jpg"
                 },
                 "medium-landscape": {
-                  "url": "/storage/public/files/medium-landscape/Ey0eH9AjT-l.jpg"
+                  "url": "/storage/public/files/medium-landscape/V1h-1Ywv3Vg.jpg"
                 },
                 "medium-landscape-2x": {
-                  "url": "/storage/public/files/medium-landscape-2x/Ey0eH9AjT-l.jpg"
+                  "url": "/storage/public/files/medium-landscape-2x/V1h-1Ywv3Vg.jpg"
                 },
                 "square": {
-                  "url": "/storage/public/files/square/Ey0eH9AjT-l.jpg"
+                  "url": "/storage/public/files/square/V1h-1Ywv3Vg.jpg"
                 },
                 "square-2x": {
-                  "url": "/storage/public/files/square-2x/Ey0eH9AjT-l.jpg"
-                }
-              }
-            },
-            "playfield_video": {
-              "name": "playfield.mp4",
-              "bytes": 537368,
-              "created_at": "2015-10-31T13:17:40.861Z",
-              "mime_type": "video/mp4",
-              "file_type": "playfield-fs",
-              "metadata": {
-                "format_name": "mov,mp4,m4a,3gp,3g2,mj2",
-                "format_long_name": "QuickTime / MOV",
-                "duration": 1.001,
-                "bit_rate": 4294649,
-                "video": {
-                  "codec_name": "h264",
-                  "width": 1920,
-                  "height": 1080,
-                  "display_aspect_ratio": "0:1",
-                  "bit_rate": 4285050
-                }
-              },
-              "counter": {
-                "downloads": 0
-              },
-              "is_active": true,
-              "id": "VkIMrcRopWe",
-              "is_protected": true,
-              "cost": 1,
-              "url": "/storage/v1/files/VkIMrcRopWe.mp4",
-              "variations": {
-                "still": {
-                  "url": "/storage/public/files/still/VkIMrcRopWe.png"
-                },
-                "small-rotated": {
-                  "url": "/storage/public/files/small-rotated/VkIMrcRopWe.mp4"
+                  "url": "/storage/public/files/square-2x/V1h-1Ywv3Vg.jpg"
                 }
               }
             }
@@ -151,12 +115,22 @@ Content-Encoding: gzip
           ],
           "file": {
             "name": "test-table-0.vpt",
-            "created_at": "2015-10-31T13:17:40.258Z",
+            "created_at": "2015-12-05T23:50:54.379Z",
             "mime_type": "application/x-visual-pinball-table",
             "file_type": "release",
-            "metadata": {},
-            "id": "V1ueHcRia-x",
-            "url": "/storage/v1/files/V1ueHcRia-x.vpt",
+            "metadata": {
+              "table_script": "Sub Table1_KeyDown(ByVal keycode)\r\r\tIf keycode = PlungerKey Then\r\t\tPlunger.PullBack\r\tEnd If\r\r\tIf keycode = LeftFlipperKey Then\r\t\tLeftFlipper.RotateToEnd\r\t\tPlaySound \"FlipperUp\",0,1,-0.1,0.25\r\tEnd If\r    \r\tIf keycode = RightFlipperKey Then\r\t\tRightFlipper.RotateToEnd\r\r\t\tPlaySound \"FlipperUp\",0,1,0.1,0.25\r\tEnd If\r    \r\tIf keycode = LeftTiltKey Then\r\t\tNudge 90, 2\r\tEnd If\r    \r\tIf keycode = RightTiltKey Then\r\t\tNudge 270, 2\r\tEnd If\r    \r\tIf keycode = CenterTiltKey Then\r\t\tNudge 0, 2\r\tEnd If\r    \rEnd Sub\r\rSub Table1_KeyUp(ByVal keycode)\r\r\tIf keycode = PlungerKey Then\r\t\tPlunger.Fire\r\tEnd If\r    \r\tIf keycode = LeftFlipperKey Then\r\t\tLeftFlipper.RotateToStart\r\t\tPlaySound \"FlipperDown\",0,1,-0.1,0.25\r\tEnd If\r    \r\tIf keycode = RightFlipperKey Then\r\t\tRightFlipper.RotateToStart\r        \r\t\tPlaySound \"FlipperDown\",0,1,0.1,0.25\r\tEnd If\r\rEnd Sub\r\rSub Drain_Hit()\r\tDrain.DestroyBall\r\tPlunger.CreateBall\r\tPlaySound \"Plunger\",0,1,0,0.25\rEnd Sub\r\rSub LeftSlingshot_Slingshot()\r\tPlaySound \"Bumper\",0,1,-0.15,0.25\rEnd Sub\r\rSub RightSlingshot_Slingshot()\r\tPlaySound \"Bumper\",0,1,0.15,0.25\rEnd Sub\r\rSub Plunger_Init()\r\tPlaySound \"Plunger\",0,0.5,0.5,0.25\r\tPlunger.CreateBall\rEnd Sub",
+              "table_description": "_table_description_",
+              "author_website": "_table_website_",
+              "table_version": "_table_version_",
+              "release_date": "_table_release_date_",
+              "author_email": "_table_email_",
+              "table_rules": "_table_rules_",
+              "author_name": "_table_author_",
+              "table_name": "_table_name_"
+            },
+            "id": "Nkr-JFwPnVx",
+            "url": "/storage/v1/files/Nkr-JFwPnVx.vpt",
             "bytes": 135168,
             "variations": {},
             "is_protected": true,
@@ -167,7 +141,7 @@ Content-Encoding: gzip
           }
         },
         {
-          "released_at": "2015-10-31T13:17:41.266Z",
+          "released_at": "2015-08-01T00:00:00.000Z",
           "counter": {
             "downloads": 0
           },
@@ -179,7 +153,7 @@ Content-Encoding: gzip
             "playfield_image": {
               "name": "playfield-1.png",
               "bytes": 347,
-              "created_at": "2015-10-31T13:17:40.302Z",
+              "created_at": "2015-12-05T23:50:54.464Z",
               "mime_type": "image/png",
               "file_type": "playfield-fs",
               "metadata": {
@@ -194,31 +168,30 @@ Content-Encoding: gzip
                 "downloads": 0
               },
               "is_active": true,
-              "id": "E1gbH5AjTbl",
+              "id": "Nko-JFPDhEg",
               "is_protected": true,
-              "url": "/storage/v1/files/E1gbH5AjTbl.png",
+              "url": "/storage/v1/files/Nko-JFPDhEg.png",
               "variations": {
                 "medium": {
-                  "url": "/storage/public/files/medium/E1gbH5AjTbl.jpg"
+                  "url": "/storage/public/files/medium/Nko-JFPDhEg.jpg"
                 },
                 "medium-2x": {
-                  "url": "/storage/public/files/medium-2x/E1gbH5AjTbl.jpg"
+                  "url": "/storage/public/files/medium-2x/Nko-JFPDhEg.jpg"
                 },
                 "medium-landscape": {
-                  "url": "/storage/public/files/medium-landscape/E1gbH5AjTbl.jpg"
+                  "url": "/storage/public/files/medium-landscape/Nko-JFPDhEg.jpg"
                 },
                 "medium-landscape-2x": {
-                  "url": "/storage/public/files/medium-landscape-2x/E1gbH5AjTbl.jpg"
+                  "url": "/storage/public/files/medium-landscape-2x/Nko-JFPDhEg.jpg"
                 },
                 "square": {
-                  "url": "/storage/public/files/square/E1gbH5AjTbl.jpg"
+                  "url": "/storage/public/files/square/Nko-JFPDhEg.jpg"
                 },
                 "square-2x": {
-                  "url": "/storage/public/files/square-2x/E1gbH5AjTbl.jpg"
+                  "url": "/storage/public/files/square-2x/Nko-JFPDhEg.jpg"
                 }
               }
-            },
-            "playfield_video": null
+            }
           },
           "compatibility": [
             {
@@ -234,12 +207,22 @@ Content-Encoding: gzip
           ],
           "file": {
             "name": "test-table-1.vpt",
-            "created_at": "2015-10-31T13:17:40.258Z",
+            "created_at": "2015-12-05T23:50:54.380Z",
             "mime_type": "application/x-visual-pinball-table",
             "file_type": "release",
-            "metadata": {},
-            "id": "V1KlBcCopWl",
-            "url": "/storage/v1/files/V1KlBcCopWl.vpt",
+            "metadata": {
+              "table_script": "Sub Table1_KeyDown(ByVal keycode)\r\r\tIf keycode = PlungerKey Then\r\t\tPlunger.PullBack\r\tEnd If\r\r\tIf keycode = LeftFlipperKey Then\r\t\tLeftFlipper.RotateToEnd\r\t\tPlaySound \"FlipperUp\",0,1,-0.1,0.25\r\tEnd If\r    \r\tIf keycode = RightFlipperKey Then\r\t\tRightFlipper.RotateToEnd\r\r\t\tPlaySound \"FlipperUp\",0,1,0.1,0.25\r\tEnd If\r    \r\tIf keycode = LeftTiltKey Then\r\t\tNudge 90, 2\r\tEnd If\r    \r\tIf keycode = RightTiltKey Then\r\t\tNudge 270, 2\r\tEnd If\r    \r\tIf keycode = CenterTiltKey Then\r\t\tNudge 0, 2\r\tEnd If\r    \rEnd Sub\r\rSub Table1_KeyUp(ByVal keycode)\r\r\tIf keycode = PlungerKey Then\r\t\tPlunger.Fire\r\tEnd If\r    \r\tIf keycode = LeftFlipperKey Then\r\t\tLeftFlipper.RotateToStart\r\t\tPlaySound \"FlipperDown\",0,1,-0.1,0.25\r\tEnd If\r    \r\tIf keycode = RightFlipperKey Then\r\t\tRightFlipper.RotateToStart\r        \r\t\tPlaySound \"FlipperDown\",0,1,0.1,0.25\r\tEnd If\r\rEnd Sub\r\rSub Drain_Hit()\r\tDrain.DestroyBall\r\tPlunger.CreateBall\r\tPlaySound \"Plunger\",0,1,0,0.25\rEnd Sub\r\rSub LeftSlingshot_Slingshot()\r\tPlaySound \"Bumper\",0,1,-0.15,0.25\rEnd Sub\r\rSub RightSlingshot_Slingshot()\r\tPlaySound \"Bumper\",0,1,0.15,0.25\rEnd Sub\r\rSub Plunger_Init()\r\tPlaySound \"Plunger\",0,0.5,0.5,0.25\r\tPlunger.CreateBall\rEnd Sub",
+              "table_description": "_table_description_",
+              "author_website": "_table_website_",
+              "table_version": "_table_version_",
+              "release_date": "_table_release_date_",
+              "author_email": "_table_email_",
+              "table_rules": "_table_rules_",
+              "author_name": "_table_author_",
+              "table_name": "_table_name_"
+            },
+            "id": "NkU-kKPDhEe",
+            "url": "/storage/v1/files/NkU-kKPDhEe.vpt",
             "bytes": 135168,
             "variations": {},
             "is_protected": true,
@@ -252,7 +235,7 @@ Content-Encoding: gzip
       ]
     }
   ],
-  "id": "EJcL9Cja-e",
+  "id": "4kVmkYDvnNl",
   "tags": [
     {
       "name": "HD",
@@ -266,9 +249,9 @@ Content-Encoding: gzip
     }
   ],
   "game": {
-    "id": "solar-fire",
-    "title": "Solar Fire",
+    "id": "willy-at-the-bat",
+    "title": "Willy At The Bat",
     "manufacturer": "Williams",
-    "year": 1981
+    "year": 1985
   }
 }

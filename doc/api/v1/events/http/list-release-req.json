@@ -1,4 +1,4 @@
-GET /api/v1/releases/NyxxLKAo6-e/events HTTP/1.1
+GET /api/v1/releases/E1sx0PwPh4x/events HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
 

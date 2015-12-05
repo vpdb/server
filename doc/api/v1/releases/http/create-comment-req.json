@@ -1,10 +1,10 @@
-POST /api/v1/releases/EJbgHFCopbx/comments HTTP/1.1
+POST /api/v1/releases/4J6wPv2Ee/comments HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJOMTd2TnRBalRXZSIsImlhdCI6IjIwMTUtMTAtMzFUMTM6MTc6MjMuODMyWiIsImV4cCI6IjIwMTUtMTAtMzFUMTQ6MTc6MjMuODMyWiJ9.kCq4shKMxjLry05FUJ4Lv0_UVohVc38dv1h0RxL9cDI
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI0a2htbnd2UG5WZyIsImlhdCI6IjIwMTUtMTItMDVUMjM6NTA6MzUuNTMyWiIsImV4cCI6IjIwMTUtMTItMDZUMDA6NTA6MzUuNTMyWiJ9.5MrnhgOE6vB89ANUWOCZBr0GTKU6uLSe1pmQ8pwZKFM
 Content-Type: application/json
-Content-Length: 64
+Content-Length: 47
 
 {
-  "message": "Automated upward-trending Graphical User Interface"
+  "message": "Organized solution-oriented array"
 }

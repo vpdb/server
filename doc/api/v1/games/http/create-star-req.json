@@ -1,8 +1,8 @@
-POST /api/v1/games/bingo-bombo/star HTTP/1.1
+POST /api/v1/games/scuba/star HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
 Content-Type: application/json
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJWa05LakNzcC14IiwiaWF0IjoiMjAxNS0xMC0zMVQxMzoxODowMC4xNDZaIiwiZXhwIjoiMjAxNS0xMC0zMVQxNDoxODowMC4xNDZaIn0.6BnyYHV0hMvRwJrazJBX-ZEv0F9DvLB7DHk1LIPCCRM
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJFMVVJSWN2d2hWbCIsImlhdCI6IjIwMTUtMTItMDVUMjM6NTE6MTguMDMyWiIsImV4cCI6IjIwMTUtMTItMDZUMDA6NTE6MTguMDMyWiJ9.4HCSTo1qyA2rdvwDgq4wd1IwOy5KXcAPybzdF_Vy0Go
 Content-Length: 2
 
 {}

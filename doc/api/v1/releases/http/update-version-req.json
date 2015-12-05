@@ -1,16 +1,16 @@
-PUT /api/v1/releases/Nka725Cip-e/versions/1.0.0 HTTP/1.1
+PUT /api/v1/releases/NkyMwtPv2Vg/versions/1.0.0 HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJFMVBWcXFDaWFXZyIsImlhdCI6IjIwMTUtMTAtMzFUMTM6MTc6NDUuNjM2WiIsImV4cCI6IjIwMTUtMTAtMzFUMTQ6MTc6NDUuNjM2WiJ9.HMkPQFyoQVS5H7P4uDnL5mvOSpFEOlKmOgK6S38-YsA
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJOeS1yS0R2M0V4IiwiaWF0IjoiMjAxNS0xMi0wNVQyMzo1MTowMC4xMTJaIiwiZXhwIjoiMjAxNS0xMi0wNlQwMDo1MTowMC4xMTJaIn0.q8HH-CiVlc39Hy3wenzjUEFKDWCyHQjCeQHzHbRljzw
 Content-Type: application/json
-Content-Length: 150
+Content-Length: 152
 
 {
   "files": [
     {
-      "_file": "VJ-T5Rja-g",
+      "_file": "NJ6GvtPPnNg",
       "_media": {
-        "playfield_image": "EymT5CoTWl"
+        "playfield_image": "4kl7vKPwhEe"
       },
       "_compatibility": [
         "9.9.0"

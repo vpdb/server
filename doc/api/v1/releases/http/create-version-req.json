@@ -1,7 +1,7 @@
-POST /api/v1/releases/VkeMK9Cs6Zl/versions HTTP/1.1
+POST /api/v1/releases/NJGEQtPPhEg/versions HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJOSk5WVTVSaTZXeCIsImlhdCI6IjIwMTUtMTAtMzFUMTM6MTc6NDEuNjEwWiIsImV4cCI6IjIwMTUtMTAtMzFUMTQ6MTc6NDEuNjEwWiJ9.FTVZaqyKUPvnq4U10SG51CTrgju0Y45zC-bufrn5hb4
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI0eXFtbFlQdm5WbCIsImlhdCI6IjIwMTUtMTItMDVUMjM6NTA6NTUuNjAxWiIsImV4cCI6IjIwMTUtMTItMDZUMDA6NTA6NTUuNjAxWiJ9.PXkHNtt8ps3ZHsdoGtBJpYmkkWfc5wFYByj1wXhaSxg
 Content-Type: application/json
 Content-Length: 202
 
@@ -10,9 +10,9 @@ Content-Length: 202
   "changes": "*Second release.*",
   "files": [
     {
-      "_file": "NygmFq0opWx",
+      "_file": "N1gBQKwwhNg",
       "_media": {
-        "playfield_image": "N1MVK9CjpWx"
+        "playfield_image": "4kWeVYwPhNe"
       },
       "_compatibility": [
         "9.9.0"

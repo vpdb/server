@@ -1,12 +1,12 @@
-PATCH /api/v1/tokens/V15m5j0j6-g HTTP/1.1
+PATCH /api/v1/tokens/VklN_qDD24g HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJFSldYNWpDamFiZyIsImlhdCI6IjIwMTUtMTAtMzFUMTM6MTg6MDEuMzkyWiIsImV4cCI6IjIwMTUtMTAtMzFUMTQ6MTg6MDEuMzkyWiJ9.i6U3F4ekwD1bV09v-S-Pd-0d8H_a7I5imfV8oqSw47Y
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJFSkRYTzl3dmhOeCIsImlhdCI6IjIwMTUtMTItMDVUMjM6NTE6MTkuNDE0WiIsImV4cCI6IjIwMTUtMTItMDZUMDA6NTE6MTkuNDE0WiJ9.1xtHKSdMx3CI3mihyxltUrhK2BFdRtgw_-gRQ9FCvjw
 Content-Type: application/json
 Content-Length: 92
 
 {
   "label": "My Renamed Application",
-  "expires_at": "2015-10-31T13:18:02.425Z",
+  "expires_at": "2015-12-05T23:51:20.454Z",
   "is_active": false
 }

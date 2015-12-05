@@ -1,10 +1,10 @@
 POST /storage/v1/authenticate HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI0a3FaVG9BaVRXeCIsImlhdCI6IjIwMTUtMTAtMzFUMTM6MTg6MDQuNDM1WiIsImV4cCI6IjIwMTUtMTAtMzFUMTQ6MTg6MDQuNDM1WiJ9.L8gVXZShb5JmgFvTpEw9xrPQuULWpHOLJsWyEjlj4wI
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI0MWtWajV3UDNWbCIsImlhdCI6IjIwMTUtMTItMDVUMjM6NTE6MjMuMDQwWiIsImV4cCI6IjIwMTUtMTItMDZUMDA6NTE6MjMuMDQwWiJ9.hSJZakAxLyLxBGPEyeGvoUrS2mDEpEwDSwQP0V1HspU
 Content-Type: application/json
 Content-Length: 45
 
 {
-  "paths": "/storage/v1/files/4kqgQnAiTbl.vpt"
+  "paths": "/storage/v1/files/E1tgfoPvnEx.vpt"
 }

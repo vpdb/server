@@ -1,21 +1,28 @@
 200 OK
 Content-Type: application/json; charset=utf-8
-Content-Length: 377
-Etag: W/"179-EzBO5FqJBx182FSfNFwekg"
+Content-Length: 532
+Etag: W/"214-H4NpuVhQ5O16rpBWbeWyMg"
 
 [
   {
-    "id": "41kw9jRj6-e",
-    "name": "Adalberto.Keeling29",
-    "username": "Adalberto.Keeling29",
-    "gravatar_id": "35d3ab958fc8cced972a6019a8f63a6f",
-    "email": "westley84@yahoo.com",
+    "id": "EkJ_ucDvhNe",
+    "name": "Adolfo_Krajcik44",
+    "username": "Adolfo_Krajcik44",
+    "gravatar_id": "9b29f04b993033f0dd3324fc54a7e83e",
+    "email": "lester42@yahoo.com",
     "is_active": true,
     "provider": "local",
     "roles": [
       "member"
     ],
-    "created_at": "2015-10-31T13:18:01.635Z",
+    "plan": {
+      "push_notifications_enabled": false,
+      "app_tokens_enabled": false,
+      "recurring_period": "day",
+      "recurring_credits": 3,
+      "id": "free"
+    },
+    "created_at": "2015-12-05T23:51:19.720Z",
     "counter": {
       "stars": 0,
       "downloads": 0,

@@ -1,15 +1,14 @@
 201 Created
 Content-Type: application/json; charset=utf-8
-Content-Length: 501
-Etag: W/"1f5-3pvpvXCn487o0bdweJmfFw"
+Content-Length: 651
+Etag: W/"28b-A9USn/Y2oeGGEipGiyLatA"
 
 {
-  "plan": "free",
-  "name": "Caitlyn_Quitzon",
-  "username": "Caitlyn_Quitzon",
-  "email": "jeanne40@hotmail.com",
+  "name": "Claudie.Schamberger0",
+  "username": "Claudie.Schamberger0",
+  "email": "rashawn94@hotmail.com",
   "provider": "local",
-  "created_at": "2015-10-31T13:18:01.946Z",
+  "created_at": "2015-12-05T23:51:20.037Z",
   "is_active": false,
   "counter": {
     "stars": 0,
@@ -21,9 +20,16 @@ Etag: W/"1f5-3pvpvXCn487o0bdweJmfFw"
   ],
   "email_status": {
     "code": "pending_registration",
-    "expires_at": "2015-11-01T13:18:01.946Z",
-    "value": "jeanne40@hotmail.com"
+    "expires_at": "2015-12-06T23:51:20.037Z",
+    "value": "rashawn94@hotmail.com"
   },
-  "id": "VJBsci0iaWx",
-  "gravatar_id": "01019ca67041fd3ddc322caa3781225b"
+  "id": "4JB3dcwv2El",
+  "plan": {
+    "push_notifications_enabled": false,
+    "app_tokens_enabled": false,
+    "recurring_period": "day",
+    "recurring_credits": 3,
+    "id": "free"
+  },
+  "gravatar_id": "edbe8c786c93a2a2555c73b322f344db"
 }

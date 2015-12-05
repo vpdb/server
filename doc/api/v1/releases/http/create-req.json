@@ -1,21 +1,21 @@
 POST /api/v1/releases HTTP/1.1
 Host: vpdb.ch
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJFazQ4bWNSaWFiZSIsImlhdCI6IjIwMTUtMTAtMzFUMTM6MTc6MzguNjc3WiIsImV4cCI6IjIwMTUtMTAtMzFUMTQ6MTc6MzguNjc3WiJ9.Jk8Z1yMYBYWZfL6o963VBAO54DdTG_lQYObAtmv6m8o
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJFa1RFM2REUGhFbCIsImlhdCI6IjIwMTUtMTItMDVUMjM6NTA6NTEuNzA3WiIsImV4cCI6IjIwMTUtMTItMDZUMDA6NTA6NTEuNzA3WiJ9.-53HiAG32DQ0bPjcbolaEBQXUl1xpjDIq0kN9Kf8Tjs
 Content-Type: application/json
-Content-Length: 481
+Content-Length: 537
 
 {
   "name": "release",
-  "_game": "solar-fire",
+  "_game": "willy-at-the-bat",
   "versions": [
     {
       "files": [
         {
-          "_file": "V1ueHcRia-x",
+          "released_at": "2015-01-01T00:00:00.000Z",
+          "_file": "Nkr-JFwPnVx",
           "_media": {
-            "playfield_image": "Ey0eH9AjT-l",
-            "playfield_video": "VkIMrcRopWe"
+            "playfield_image": "V1h-1Ywv3Vg"
           },
           "_compatibility": [
             "9.9.0"
@@ -26,9 +26,9 @@ Content-Length: 481
           }
         },
         {
-          "_file": "V1KlBcCopWl",
+          "_file": "NkU-kKPDhEe",
           "_media": {
-            "playfield_image": "E1gbH5AjTbl"
+            "playfield_image": "Nko-JFPDhEg"
           },
           "_compatibility": [
             "9.9.0"
@@ -39,12 +39,13 @@ Content-Length: 481
           }
         }
       ],
-      "version": "1.0.0"
+      "version": "1.0.0",
+      "released_at": "2015-08-01T00:00:00.000Z"
     }
   ],
   "authors": [
     {
-      "_user": "Ek48mcRiabe",
+      "_user": "EkTE3dDPhEl",
       "roles": [
         "Table Creator"
       ]

@@ -65,7 +65,7 @@ exports.view = function(req, res) {
 
 
 /**
- * Updates the current user's profile. For now it suports only password change, which might change in the future.
+ * Updates the current user's profile.
  *
  * @param {Request} req
  * @param {Response} res

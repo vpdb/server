@@ -33,6 +33,7 @@ var metrics = require('./plugins/metrics');
 var error = require('../modules/error')('model', 'user');
 var config = require('../modules/settings').current;
 var flavor = require('../modules/flavor');
+var pusher = require('../modules/pusher');
 var Schema = mongoose.Schema;
 
 
@@ -72,7 +73,7 @@ var fields = {
 	validated_emails: { type: [ String ] },
 	channel_config:   {
 		subscribe_to_starred: { type: Boolean, 'default': false },
-		subscribed_releases: { type: [ String ] }
+		subscribed_releases: { type: [ String ], index: true }
 	}
 };
 
@@ -452,6 +453,12 @@ UserSchema.post('remove', function(obj, done) {
 UserSchema.options.toObject = {
 	virtuals: true,
 	transform: function(doc, user) {
+
+		if (pusher.isEnabled(user)) {
+			user.channel_config.api_key = config.vpdb.pusher.options.key;
+		} else {
+			delete user.channel_config;
+		}
 		delete user._id;
 		delete user.__v;
 		delete user._plan;

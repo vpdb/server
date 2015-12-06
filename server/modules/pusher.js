@@ -29,13 +29,13 @@ if (exports.isEnabled) {
 }
 
 exports.star = function(type, entity, user) {
-	if (isEnabled(user)) {
+	if (exports.isEnabled(user)) {
 		exports.api.trigger('private-user-' + user.id, 'star', { id: entity.id, type: type });
 	}
 };
 
 exports.unstar = function(type, entity, user) {
-	if (isEnabled(user)) {
+	if (exports.isEnabled(user)) {
 		exports.api.trigger('private-user-' + user.id, 'unstar', { id: entity.id, type: type });
 	}
 };
@@ -45,6 +45,6 @@ exports.unstar = function(type, entity, user) {
  * @param user User to check
  * @returns {boolean} True if a message can be sent, false otherwise.
  */
-function isEnabled(user) {
+exports.isEnabled = function(user) {
 	return exports.isEnabled && config.vpdb.quota.plans[user._plan].enableRealtime;
-}
+};

@@ -235,7 +235,7 @@ function parseJson(data, pwd, config, done) {
 			'Content-Disposition': 'attachment; filename="' + file.filename + '"',
 			'Content-Length': fileContents.length
 		});
-		//console.log('Posting %s (%s)...', file.filename, getMimeType(file.filename));
+		console.log('Posting %s (%s)...', file.filename, getMimeType(file.filename));
 		request.post(config.storageUri + '/files').query({ type: file.filetype }).set(headers).type(getMimeType(file.filename)).send(fileContents).end(function(err, res) {
 
 			if (err) {

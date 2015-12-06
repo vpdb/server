@@ -47,7 +47,7 @@ include ../template/_mixins
 						li(ng-repeat="plan in plans")
 							.radio--lg.radio--lg-twoliner.radio--lg-lighter
 								label
-									input(type="radio", name="plans", value="{{ plan.name }}", ng-model="user.plan")
+									input(type="radio", name="plans", value="{{ plan.name }}", ng-model="user._plan")
 									span: h4.h--no-margin.h--lighter {{ plan.name }}
 									span
 										span(ng-hide="plan.unlimited") {{ plan.credits }} credits per {{ plan.per }}

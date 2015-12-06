@@ -12,6 +12,7 @@ angular.module('vpdb.users.edit', [])
 		$scope.originalName = user.name;
 
 		$scope.user = _.pick(user, fields);
+		$scope.user._plan = user.plan.id;
 
 		$scope.plans = PlanResource.query();
 
@@ -28,10 +29,10 @@ angular.module('vpdb.users.edit', [])
 		};
 
 		$scope.save = function() {
-			UserResource.update({ userid: $scope.user.id }, $scope.user, function() {
-				angular.copy($scope.user, user);
+			var updatedUser = UserResource.update({ userid: $scope.user.id }, $scope.user, function() {
+				angular.copy(updatedUser, user);
 				if ($rootScope.auth.user.id === $scope.user.id) {
-					$rootScope.auth.user = $scope.user;
+					$rootScope.auth.user = updatedUser;
 				}
 				$modalInstance.close();
 			}, ApiHelper.handleErrors($scope));

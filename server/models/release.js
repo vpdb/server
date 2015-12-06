@@ -24,7 +24,7 @@ var fs = require('fs');
 var path = require('path');
 var async = require('async');
 var logger = require('winston');
-var shortId = require('shortid');
+var shortId = require('shortid32');
 var mongoose = require('mongoose');
 
 var uniqueValidator = require('mongoose-unique-validator');

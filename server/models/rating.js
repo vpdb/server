@@ -21,7 +21,7 @@
 
 var _ = require('lodash');
 var logger = require('winston');
-var shortId = require('shortid');
+var shortId = require('shortid32');
 var mongoose = require('mongoose');
 
 var Schema = mongoose.Schema;

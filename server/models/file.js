@@ -24,7 +24,7 @@ var fs = require('fs');
 var path = require('path');
 var logger = require('winston');
 var mongoose = require('mongoose');
-var shortId = require('shortid');
+var shortId = require('shortid32');
 var settings = require('./../modules/settings');
 
 var toObj = require('./plugins/to-object');

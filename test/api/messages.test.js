@@ -47,18 +47,18 @@ describe('The VPDB `Messages` API', function() {
 
 	it('should deny access where plan is unsupported', function(done) {
 		request
-				.post('/api/v1/messages/authenticate')
-				.as('member')
-				.send({ socket_id: '123', channel_name: 'abcd' })
-				.end(hlp.status(403, 'access denied', done));
+			.post('/api/v1/messages/authenticate')
+			.as('member')
+			.send({ socket_id: '123', channel_name: 'abcd' })
+			.end(hlp.status(403, 'access denied', done));
 	});
 
 	it('should grant access where plan is supported', function(done) {
 		request
-				.post('/api/v1/messages/authenticate')
-				.as('vip')
-				.send({ socket_id: '123', channel_name: 'abcd' })
-				.end(hlp.status(404, 'api not enabled', done));
+			.post('/api/v1/messages/authenticate')
+			.as('vip')
+			.send({ socket_id: '123', channel_name: 'abcd' })
+			.end(hlp.status(404, 'api not enabled', done));
 	});
 
 });

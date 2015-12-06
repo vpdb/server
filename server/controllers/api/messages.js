@@ -33,7 +33,6 @@ exports.authenticate = function(req, res) {
 	}
 
 	if (!req.body.socket_id) {
-		console.log(req.body);
 		return api.fail(res, error('Socket ID must be provided as "socket_id".'), 422);
 	}
 	if (!req.body.channel_name) {

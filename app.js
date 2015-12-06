@@ -17,7 +17,7 @@ var logger = require('winston');
 var domain = require('domain');
 var express = require('express');
 var mongoose = require('mongoose');
-require('shortid32').characters('123456789abcdefghkmnopqrstuvwxyz')
+require('shortid32').characters('123456789abcdefghkmnopqrstuvwxyz');
 
 if (process.env.COVERAGE_ENABLED) {
 	console.log('[app] Hook loader for coverage enabled.');

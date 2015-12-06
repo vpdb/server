@@ -28,23 +28,23 @@ if (exports.isEnabled) {
 	exports.api = new Pusher(config.vpdb.pusher.options);
 }
 
-exports.star = function(type, entity, user) {
-	if (exports.isEnabled(user)) {
-		exports.api.trigger('private-user-' + user.id, 'star', { id: entity.id, type: type });
-	}
-};
-
-exports.unstar = function(type, entity, user) {
-	if (exports.isEnabled(user)) {
-		exports.api.trigger('private-user-' + user.id, 'unstar', { id: entity.id, type: type });
-	}
-};
-
 /**
  * Returns true if the Pusher API is enabled and the user's plan supports it.
  * @param user User to check
  * @returns {boolean} True if a message can be sent, false otherwise.
  */
-exports.isEnabled = function(user) {
+exports.isUserEnabled = function(user) {
 	return exports.isEnabled && config.vpdb.quota.plans[user._plan].enableRealtime;
+};
+
+exports.star = function(type, entity, user) {
+	if (exports.isUserEnabled(user)) {
+		exports.api.trigger('private-user-' + user.id, 'star', { id: entity.id, type: type });
+	}
+};
+
+exports.unstar = function(type, entity, user) {
+	if (exports.isUserEnabled(user)) {
+		exports.api.trigger('private-user-' + user.id, 'unstar', { id: entity.id, type: type });
+	}
 };

@@ -20,6 +20,7 @@
 "use strict";
 
 var _ = require('lodash');
+var async = require('async');
 var crypto = require('crypto');
 var logger = require('winston');
 var shortId = require('shortid32');
@@ -194,7 +195,7 @@ UserSchema.path('email').validate(function(email, callback) {
 	mongoose.model('User').findOne({ 'email_status.value': email }, function(err, u) {
 		/* istanbul ignore if  */
 		if (err) {
-			logger.error('[model|user] Error fetching game %s.');
+			logger.error('[model|user] Error fetching user %s.', email);
 			return callback(false);
 		}
 		callback(!u || u.id === that.id);
@@ -205,7 +206,8 @@ UserSchema.path('location').validate(function(location) {
 	return validator.isLength(location, 0, 100);
 }, 'Location must not be longer than 100 characters.');
 
-UserSchema.path('provider').validate(function(provider) {
+UserSchema.path('provider').validate(function(provider, callback) {
+	var that = this;
 
 	// validate presence of password. can't do that in the password validator
 	// below because it's not run when there's no value (and it can be null,
@@ -246,7 +248,6 @@ UserSchema.path('provider').validate(function(provider) {
 		}
 	}
 	if (this.preferences && this.preferences.flavor_tags) {
-		var that = this;
 		_.each(flavor.values, function(flavorType, flavorId) {  // flavorId: 'orientation', flavorType: { fs: { name: 'Portrait', .. }, ws: { ... } }
 			if (that.preferences.flavor_tags[flavorId]) {
 				_.each(flavorType, function(flavorAttrs, flavorValue) { // flavorValue: 'fs', flavorAttrs: { name: 'Portrait', .. }
@@ -259,6 +260,39 @@ UserSchema.path('provider').validate(function(provider) {
 			}
 		});
 	}
+
+	async.waterfall([
+		function(next) {
+
+			// TODO put this into separate validation when this is fixed: https://github.com/LearnBoost/mongoose/issues/1919
+			if (that.channel_config && that.channel_config.subscribed_releases) {
+				if (!_.isArray(that.channel_config.subscribed_releases)) {
+					that.invalidate('channel_config.subscribed_releases', 'Must be an array of release IDs.');
+					return next();
+				}
+				var i = 0;
+				var Release = mongoose.model('Release');
+				async.each(that.channel_config.subscribed_releases, function(releaseId, next) {
+					Release.findOne({ id: releaseId }, function(err, rls) {
+						/* istanbul ignore if  */
+						if (err) {
+							logger.error('[model|user] Error fetching release %s.', releaseId);
+						} else if (!rls) {
+							that.invalidate('channel_config.subscribed_releases.' + i, 'Release with ID "' + releaseId + '" does not exist.');
+						}
+						i++;
+						next();
+					});
+
+				}, next);
+
+			} else {
+				next();
+			}
+		}
+	], function() {
+		callback(true);
+	});
 
 }, null);
 
@@ -454,7 +488,7 @@ UserSchema.options.toObject = {
 	virtuals: true,
 	transform: function(doc, user) {
 
-		if (pusher.isEnabled(user)) {
+		if (pusher.isUserEnabled(user)) {
 			user.channel_config.api_key = config.vpdb.pusher.options.key;
 		} else {
 			delete user.channel_config;

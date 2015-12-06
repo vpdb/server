@@ -4,12 +4,14 @@ var _ = require('lodash');
 var request = require('superagent');
 var expect = require('expect.js');
 
+var shortid = require('shortid32');
 var faker = require('faker');
 var randomstring = require('randomstring');
 
 var superagentTest = require('../modules/superagent-test');
 var hlp = require('../modules/helper');
 
+shortid.characters('123456789abcdefghkmnopqrstuvwxyz');
 superagentTest(request);
 
 describe('The VPDB `user` API', function() {
@@ -18,6 +20,7 @@ describe('The VPDB `user` API', function() {
 		hlp.setupUsers(request, {
 			root: { roles: [ 'root' ]},
 			admin: { roles: [ 'admin' ]},
+			contributor: { roles: [ 'contributor' ]},
 			member: { roles: [ 'member' ]},
 			chpass1: { roles: [ 'member' ]},
 			chpass2: { roles: [ 'member' ]},
@@ -28,7 +31,9 @@ describe('The VPDB `user` API', function() {
 			chmail4: { roles: [ 'member' ]},
 			chmail5: { roles: [ 'member' ]},
 			chmail6: { roles: [ 'member' ]},
-			chprofile: { roles: [ 'member' ]}
+			chprofile: { roles: [ 'member' ]},
+			vip: { roles: [ 'member' ], _plan: 'vip' },
+			vip1: { roles: [ 'member' ], _plan: 'vip' }
 		}, done);
 	});
 
@@ -499,6 +504,55 @@ describe('The VPDB `user` API', function() {
 					done();
 				});
 		});
+
+	});
+
+	describe('when a user updates the channel config', function() {
+
+		it('should fail for users with realtime features disabled', function(done) {
+			request
+				.patch('/api/v1/user')
+				.as('member')
+				.send({ channel_config: {} })
+				.end(function(err, res) {
+					hlp.expectValidationError(err, res, 'channel_config', 'features are not enabled');
+					done();
+				});
+		});
+
+		it('should fail when for non-existent releases', function(done) {
+			request
+				.patch('/api/v1/user')
+				.as('vip')
+				.send({ channel_config: { subscribed_releases: [ shortid(), '-invalid-' ] } })
+				.end(function(err, res) {
+					hlp.expectValidationError(err, res, 'channel_config.subscribed_releases.0', 'does not exist');
+					hlp.expectValidationError(err, res, 'channel_config.subscribed_releases.1', 'does not exist');
+					done();
+				});
+		});
+
+		/*
+		// testing success not possible because realtime api is disabled in test.
+		it.only('should succeed for valid data', function(done) {
+			hlp.release.createRelease('contributor', request, function(release) {
+				request
+					.patch('/api/v1/user')
+					.as('vip1')
+					.send({ channel_config: {
+						subscribed_releases: [ release.id ],
+						subscribe_to_starred: true
+					}})
+					.end(hlp.status(200, function(err, user) {
+
+						expect(user.channel_config.subscribed_releases).to.be.an('array');
+						expect(user.channel_config.subscribed_releases).to.have.length(1);
+						expect(user.channel_config.subscribed_releases[0]).to.be(release.id);
+						expect(user.channel_config.subscribe_to_starred).to.be(true);
+						done();
+					}));
+			});
+		});*/
 
 	});
 

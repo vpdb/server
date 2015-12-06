@@ -32,6 +32,7 @@ var api = require('./api');
 var auth = require('../auth');
 
 var quota = require('../../modules/quota');
+var pusher = require('../../modules/pusher');
 var mailer = require('../../modules/mailer');
 var error = require('../../modules/error')('api', 'user');
 var config = require('../../modules/settings').current;
@@ -76,7 +77,7 @@ exports.update = function(req, res) {
 	var testMode = process.env.NODE_ENV === 'test';
 
 	var currentUser = req.user;
-	var updateableFields = [ 'name', 'location', 'email', 'preferences' ];
+	var updateableFields = [ 'name', 'location', 'email', 'preferences', 'channel_config' ];
 	var assert = api.assert(error, 'update', currentUser.email, res);
 
 	User.findById(currentUser._id, assert(function(updatedUser) {
@@ -119,6 +120,11 @@ exports.update = function(req, res) {
 				updatedUser.provider = 'local';
 				LogUser.success(req, updatedUser, 'create_local_account', { username: req.body.username });
 			}
+		}
+
+		// CHANNEL CONFIG
+		if (req.body.channel_config && !pusher.isUserEnabled(updatedUser)) {
+			errors.channel_config = { message: 'Realtime features are not enabled for this account.', path: 'channel_config' };
 		}
 
 		updatedUser.validate(function(validationErr) {

@@ -68,7 +68,7 @@ Quota.prototype.getCurrent = function(user, callback) {
 
 	// unlimited?
 	if (quotaConfig.plans[plan].unlimited === true) {
-		return callback(null, { unlimtied: true });
+		return callback(null, { unlimited: true, limit: 0, period: 'never', remaining: 0, reset: 0 });
 	}
 
 	var that = this;
@@ -98,6 +98,8 @@ Quota.prototype.getCurrent = function(user, callback) {
 					}
 
 					callback(null, {
+						unlimited: false,
+						period: quotaConfig.plans[plan].per,
 						limit: result.allowed,
 						remaining: result.allowed - result.used,
 						reset: result.expiryTime

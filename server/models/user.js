@@ -69,8 +69,13 @@ var fields = {
 	},
 	created_at:       { type: Date, required: true },
 	is_active:        { type: Boolean, required: true, 'default': false },
-	validated_emails: { type: [ String ] }
+	validated_emails: { type: [ String ] },
+	channel_config:   {
+		subscribe_to_starred: { type: Boolean, 'default': false },
+		subscribed_releases: { type: [ String ] }
+	}
 };
+
 // provider data fields
 if (config.vpdb.passport.github.enabled) {
 	fields.github = {};
@@ -127,8 +132,6 @@ UserSchema.virtual('plan')
 			var plan = config.vpdb.quota.plans[this._plan];
 			return {
 				id: this._plan,
-				recurring_credits: plan.credits,
-				recurring_period: plan.per,
 				app_tokens_enabled: plan.enableAppTokens,
 				push_notifications_enabled: plan.enableRealtime
 			};

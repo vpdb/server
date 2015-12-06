@@ -44,6 +44,9 @@ exports.upload = function(config) {
 						console.error('Error obtaining token: %s', JSON.stringify(res.body));
 						return callback(new Error(res.body));
 					}
+					if (!_.includes(res.body.user.roles, 'contributor')) {
+						return callback(new Error("Must be contributor in order to add games!"));
+					}
 					console.log('Authentication successful.');
 					token = res.body.token;
 					callback();
@@ -144,7 +147,7 @@ exports.upload = function(config) {
 	],
 	function(err, results) {
 		if (err) {
-			return console.log('failed.');
+			return console.log('Failed: %s', err.message);
 		}
 		console.log('done!');
 	});

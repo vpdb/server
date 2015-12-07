@@ -37,6 +37,7 @@ var api = require('./api');
 
 var error = require('../../modules/error')('api', 'release');
 var flavor = require('../../modules/flavor');
+var pusher = require('../../modules/pusher');
 
 /**
  * Creates a new release.
@@ -204,6 +205,7 @@ exports.addVersion = function(req, res) {
 										release: release._id,
 										game: release._game._id
 									});
+									pusher.addVersion(release._game, release, newVersion);
 
 									return api.success(res, _.filter(release.toDetailed().versions, { version: versionObj.version })[0], 201);
 

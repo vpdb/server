@@ -19,8 +19,13 @@
 
 "use strict";
 
+var _ = require('lodash');
+var async = require('async');
 var Pusher = require('pusher');
 var config = require('./settings').current;
+
+var User = require('mongoose').model('User');
+var Star = require('mongoose').model('Star');
 
 exports.isEnabled = config.vpdb.pusher.enabled;
 
@@ -28,13 +33,10 @@ if (exports.isEnabled) {
 	exports.api = new Pusher(config.vpdb.pusher.options);
 }
 
-/**
- * Returns true if the Pusher API is enabled and the user's plan supports it.
- * @param user User to check
- * @returns {boolean} True if a message can be sent, false otherwise.
- */
-exports.isUserEnabled = function(user) {
-	return exports.isEnabled && config.vpdb.quota.plans[user._plan].enableRealtime;
+exports.addVersion = function(game, release, version) {
+	// find stars of pusher-enabled users
+	
+	// find explicitly subscribed releases
 };
 
 exports.star = function(type, entity, user) {
@@ -47,4 +49,13 @@ exports.unstar = function(type, entity, user) {
 	if (exports.isUserEnabled(user)) {
 		exports.api.trigger('private-user-' + user.id, 'unstar', { id: entity.id, type: type });
 	}
+};
+
+/**
+ * Returns true if the Pusher API is enabled and the user's plan supports it.
+ * @param user User to check
+ * @returns {boolean} True if a message can be sent, false otherwise.
+ */
+exports.isUserEnabled = function(user) {
+	return exports.isEnabled && config.vpdb.quota.plans[user._plan].enableRealtime;
 };

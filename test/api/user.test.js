@@ -945,7 +945,7 @@ describe('The VPDB `user` API', function() {
 			});
 		});
 
-		it('should fail the second time providing a username', function(done) {
+		it('should fail the second time providing a different username', function(done) {
 
 			// 1. create github user
 			var gen = hlp.genGithubUser();
@@ -968,12 +968,41 @@ describe('The VPDB `user` API', function() {
 						request
 							.patch('/api/v1/user')
 							.with(token)
-							.send({ username: gen.profile.username, password: pass })
+							.send({ username: "changedusername", password: pass })
 							.end(function (err, res) {
 								hlp.expectValidationError(err, res, 'username', 'cannot change username');
 								done();
 							});
 					}));
+			});
+		});
+
+		it('should succeed the second time providing the same username', function(done) {
+
+			// 1. create github user
+			var gen = hlp.genGithubUser();
+			request.post('/api/v1/authenticate/mock').send(gen).end(function(err, res) {
+
+				hlp.expectStatus(err, res, 200);
+				var user = res.body.user;
+				var pass = randomstring.generate(10);
+				var token = res.body.token;
+				hlp.doomUser(user.id);
+
+				// 2. add local credentials
+				request
+						.patch('/api/v1/user')
+						.with(token)
+						.send({ username: gen.profile.username, password: pass })
+						.end(hlp.status(200, function() {
+
+							// 3. add (again) local credentials
+							request
+									.patch('/api/v1/user')
+									.with(token)
+									.send({ username: gen.profile.username, password: pass })
+									.end(hlp.status(200, done));
+						}));
 			});
 		});
 

@@ -106,12 +106,9 @@ exports.update = function(req, res) {
 		}
 
 		// CREATE LOCAL ACCOUNT
-		if (req.body.username) {
+		if (req.body.username && currentUser.provider !== 'local') {
 
-			if (currentUser.provider === 'local') {
-				errors.username = { message: 'Cannot change username for already local account.', path: 'username' };
-
-			} else if (!req.body.password) {
+			if (!req.body.password) {
 				errors.password = { message: 'You must provide your new password.', path: 'password' };
 
 			} else {
@@ -120,6 +117,9 @@ exports.update = function(req, res) {
 				updatedUser.provider = 'local';
 				LogUser.success(req, updatedUser, 'create_local_account', { username: req.body.username });
 			}
+		}
+		if (req.body.username && currentUser.provider === 'local' && req.body.username !== updatedUser.username) {
+			errors.username = { message: 'Cannot change username for already local account.', path: 'username' };
 		}
 
 		// CHANNEL CONFIG

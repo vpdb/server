@@ -73,8 +73,8 @@ var fields = {
 	is_active:        { type: Boolean, required: true, 'default': false },
 	validated_emails: { type: [ String ] },
 	channel_config:   {
-		subscribe_to_starred: { type: Boolean, 'default': false },
-		subscribed_releases: { type: [ String ], index: true }
+		subscribe_to_starred: { type: Boolean, 'default': false }, // "nice to know", useless
+		subscribed_releases: { type: [ String ], index: true }     // linked releases on client side, so we can announce properly in realtime
 	}
 };
 

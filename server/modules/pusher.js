@@ -35,58 +35,26 @@ exports.addVersion = function(game, release, version) {
 
 	// don't even bother quering..
 	if (!exports.isEnabled) {
-		return;
+		return logger.info("[pusher] [addVersion] Disabled, skipping announce.");
 	}
 
 	var User = require('mongoose').model('User');
 	var Star = require('mongoose').model('Star');
-	
-	async.waterfall([
 
-		/**
-		 * Find stars of pusher-enabled users
-		 * @param next Callback
-		 */
-		function(next) {
-			Star.find({ type: 'release', '_ref.release': release._id }, '_from', function(err, stars) {
-				/* istanbul ignore if  */
-				if (err) {
-					logger.error('[pusher] [addVersion] Error retrieving stars for release %s: %s', release.id, err.message);
-					return next();
-				}
-				var users = _.map(_.filter(stars, function(star) {
-					return exports.isUserEnabled(star._from) && star._from.channel_config.subscribe_to_starred;
-				}), function(star) {
-					return star._from;
-				});
-
-				next(null, users);
-			});
-		},
-
-		/**
-		 * Find explicitly subscribed releases
- 		 * @param users Previously found user
-		 * @param next Callback
-		 */
-		function(users, next) {
-			User.find({ 'channel_config.subscribed_releases': release.id }, function(err, subscribedUsers) {
-				/* istanbul ignore if  */
-				if (err) {
-					logger.error('[pusher] [addVersion] Error retrieving subscribed users for release %s: %s', release.id, err.message);
-					return next(null, users);
-				}
-				var enabledUsers = _.filter(subscribedUsers, function(user) {
-					return exports.isUserEnabled(user);
-				});
-				next(null, users.concat(enabledUsers));
-			});
+	User.find({ 'channel_config.subscribed_releases': release.id }, function(err, subscribedUsers) {
+		/* istanbul ignore if  */
+		if (err) {
+			return logger.error('[pusher] [addVersion] Error retrieving subscribed users for release %s: %s', release.id, err.message);
 		}
+		var users = _.filter(subscribedUsers, function(user) {
+			return exports.isUserEnabled(user);
+		});
+		logger.info("Found %d authorized user(s) subscribed to release %s.", users.length, release.id);
 
-	], function(err, users) {
-		var userChannels = _.uniq(_.map(users, function(user) { return getChannel(user.id); }));
+		var userChannels = _.uniq(_.map(users, function(user) { return getChannel(user); }));
 		_.each(userChannels, function(chan) {
-			exports.api.trigger(chan, 'new_release_version', { game_id: game.id, release_id: release.id, version: version.name });
+			logger.info("Announcing update to channel %s", chan);
+			exports.api.trigger(chan, 'new_release_version', { game_id: game.id, release_id: release.id, version: version.version });
 		});
 	});
 };

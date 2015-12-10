@@ -221,6 +221,7 @@ exports.assert = function(error, prefix, ref, res, rollback) {
 					} else {
 						exports.fail(res, err);
 					}
+					console.log(err);
 					logger.error('[api|%s] Stack: %s', prefix, new Error().stack);
 				}
 			} else {

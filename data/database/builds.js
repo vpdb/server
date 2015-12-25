@@ -1,6 +1,19 @@
 exports.model = 'Build';
 exports.rows = [
 	{
+		id: '10.0.0',
+		platform: 'vp',
+		major_version: '10',
+		label: 'v10.0.0',
+		download_url: 'http://www.vpforums.org/index.php?app=downloads&showfile=11572',
+		support_url: '',
+		built_at: '2015-12-24T08:46:00.000Z',
+		description: '*The next major release of Visual Pinball, featuring DirectX 9 and new physics.*\n',
+		type: 'release',
+		is_range: false,
+		is_active: true
+	},
+	{
 		id: '9.9.0',
 		platform: 'vp',
 		major_version: '9',

@@ -67,11 +67,11 @@ include ../template/_mixins
 	//-- MAIN BODY
 	//---------------------------------------------------------------------
 	.col-sm-8.col-md-9
-		.inline-edit(ng-class='{ open: editing }')
+		//-.inline-edit(ng-class='{ open: editing }')
 			+icon('pencil-circle').a.icon-opener(ng-click="editing = true")
 			+icon('check-circle').a.icon-editing(ng-click="editing = false")
 			+icon('times-circle').a.icon-editing(ng-click="editing = false")
-		h2.h--primary(ng-show="editing")
+		//-h2.h--primary(ng-show="editing")
 			.form-group.form--inline
 				input.form-control.input-lg(type="text", value="{{ release.name }}")
 		h2.h--primary(ng-hide="editing") {{ release.name }} <small>{{ latestVersion.version }}</small>

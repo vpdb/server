@@ -51,16 +51,17 @@ include ../template/_mixins
 
 		//-- OWNER SECTION
 		//---------------------------------------------------------------------
-		hr
-		p
-			+icon('gear').shift-up-2x.space-right
-			i Author Zone:
+		span(ng-show="auth.isAuthor(release)")
+			hr
+			p
+				+icon('gear').shift-up-2x.space-right
+				i Author Zone:
 
-		a.btn.btn-primary.text-center(ui-sref="addReleaseVersion({ id: game.id, releaseId: release.id })")
-			+icon('plus-circle').space-right.hidden-sm.hidden-md
-			| Upload File
+			a.btn.btn-primary.text-center(ui-sref="addReleaseVersion({ id: game.id, releaseId: release.id })")
+				+icon('plus-circle').space-right.hidden-sm.hidden-md
+				| Upload File
 
-		p.padder-top
+			p.padder-top
 
 
 	//-- MAIN BODY

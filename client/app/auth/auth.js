@@ -108,6 +108,10 @@ angular.module('vpdb.auth', [])
 				}
 			},
 
+			isAuthor: function(release) {
+				return this.isAuthenticated && _.contains(_.pluck(release.authors, 'user.id'), this.user.id);
+			},
+
 			/**
 			 * Returns the user from browser storage.
 			 * @returns {Object}

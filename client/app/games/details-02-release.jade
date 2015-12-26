@@ -6,18 +6,20 @@ include ../template/_mixins
 
 		//-- PLAYFIELD TUMBS
 		//---------------------------------------------------------------------
-
 		carousel(interval="60000")
 			slide(ng-repeat="slide in portraitShots", active="slide.active")
 				img(ng-src="{{ slide.url }}")
 
+
+		//-- DOWNLOAD BUTTON
+		//---------------------------------------------------------------------
 		button.btn.btn-primary.padder-top-3x.text-center(ng-click="download(game)")
 			+icon('download-circle').space-right.hidden-sm.hidden-md
 			| Download
 
+
 		//-- RELEASE RATING
 		//---------------------------------------------------------------------
-
 		.text-center
 			.ratingbox.padder-top(
 				rating-avg="release.rating.average",
@@ -28,7 +30,6 @@ include ../template/_mixins
 
 		//-- STATS
 		//---------------------------------------------------------------------
-
 		hr
 		p
 			.a.pull-right(
@@ -50,7 +51,6 @@ include ../template/_mixins
 
 		//-- OWNER SECTION
 		//---------------------------------------------------------------------
-
 		hr
 		p
 			+icon('gear').shift-up-2x.space-right
@@ -81,7 +81,6 @@ include ../template/_mixins
 
 		//-- AUTHORS
 		//---------------------------------------------------------------------
-
 		h3.h--smaller.h--primary Authors
 		.media(ng-repeat="author in release.authors")
 			.media-left.media-middle
@@ -94,14 +93,12 @@ include ../template/_mixins
 
 		//-- ACKNOWLEDGEMENTS
 		//---------------------------------------------------------------------
-
 		h3.h--smaller.h--primary(ng-show="release.acknowledgements") Acknowledgements
 		div.markdown(markdown="release.acknowledgements", ng-show="release.acknowledgements")
 
 
 		//-- VERSION HISTORY
 		//---------------------------------------------------------------------
-
 		h3.h--smaller.h--primary Version History
 		accordion.panel-group--transparent.subtle(close-others="false")
 			accordion-group(ng-repeat="version in releaseVersions", is-open="$first")
@@ -116,7 +113,6 @@ include ../template/_mixins
 
 		//-- LINKS
 		//---------------------------------------------------------------------
-
 		h3.h--smaller.h--primary(ng-show="release.links && release.links.length") Links
 		a(ng-repeat="link in release.links", ng-href="{{ link.url }}", target="_blank") {{ link.label }} <br>
 
@@ -124,7 +120,6 @@ include ../template/_mixins
 
 		//-- FLAVORS
 		//---------------------------------------------------------------------
-
 		h1.h--small Available Flavors
 		hr
 		table.table.table-striped
@@ -156,7 +151,6 @@ include ../template/_mixins
 
 		//-- EXISTING COMMENTS
 		//---------------------------------------------------------------------
-
 		label(ng-show="!comments || comments.length == 0") No comments yet.
 		.media.media--no-margin.collapse-in-animation(ng-repeat="comment in comments track by comment.id", ng-controller="CommentCtrl", ng-init="show=true")
 			.collapse-in-animation-inner
@@ -175,7 +169,6 @@ include ../template/_mixins
 
 		//-- NEW COMMENT
 		//---------------------------------------------------------------------
-
 		h3.h--smaller.h--primary(ng-show="auth.isAuthenticated") Add a Comment:
 		.media(ng-show="auth.isAuthenticated")
 			.media-left.avatar

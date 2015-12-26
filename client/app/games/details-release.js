@@ -98,20 +98,28 @@ angular.module('vpdb.games.details', []).controller('ReleaseController', functio
 	 * @param game Game
 	 */
 	$scope.download = function(game) {
-		$modal.open({
-			templateUrl: '/games/modal-download.html',
-			controller: 'DownloadGameCtrl',
-			size: 'lg',
-			resolve: {
-				params: function() {
-					return {
-						game: game,
-						release: $scope.release,
-						latestVersion: $scope.latestVersion
-					};
+
+		if (AuthService.isAuthenticated) {
+			$modal.open({
+				templateUrl: '/games/modal-download.html',
+				controller: 'DownloadGameCtrl',
+				size: 'lg',
+				resolve: {
+					params: function() {
+						return {
+							game: game,
+							release: $scope.release,
+							latestVersion: $scope.latestVersion
+						};
+					}
 				}
-			}
-		});
+			});
+
+		} else {
+			$rootScope.login({
+				headMessage: 'In order to download this release, you need to be logged. You can register for free just below.'
+			});
+		}
 	};
 
 	/**

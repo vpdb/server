@@ -179,10 +179,11 @@ function getMimeType(file) {
 		case 'jpg': return 'image/jpeg';
 		case 'png': return 'image/png';
 		case 'zip': return 'application/zip';
+		case 'rar': return 'application/rar';
 		case 'vpt': return 'application/x-visual-pinball-table';
 		case 'vpx': return 'application/x-visual-pinball-table-x';
 		case 'vbs': return 'application/vbscript';
-		case 'mp3': return 'audio/mpeg';
+		case 'mp3': return 'audio/mp3';
 		case 'avi': return 'video/avi';
 		case 'mp4': return 'video/mp4';
 		case 'flv': return 'video/x-flv';

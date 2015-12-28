@@ -38,6 +38,16 @@ module.exports = {
 		ext: 'zip',
 		category: 'archive'
 	},
+	'application/rar': {
+		name: 'RAR-compressed file',
+		ext: 'rar',
+		category: 'archive'
+	},
+	'application/x-rar-compressed': {
+		name: 'RAR-compressed file',
+		ext: 'rar',
+		category: 'archive'
+	},
 	'application/x-visual-pinball-table': {
 		name: 'Visual Pinball Table v9.x',
 		ext: 'vpt',
@@ -54,6 +64,11 @@ module.exports = {
 		category: 'script'
 	},
 	'audio/mpeg': {
+		name: 'MP3',
+		ext: 'mp3',
+		category: 'audio'
+	},
+	'audio/mp3': {
 		name: 'MP3',
 		ext: 'mp3',
 		category: 'audio'

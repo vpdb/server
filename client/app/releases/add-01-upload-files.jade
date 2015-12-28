@@ -1,6 +1,6 @@
 p Drag and drop your files from the file explorer into the box below.
 .panel.panel--dropzone(
-	file-upload="{ type: 'release', status: meta.files, onSuccess: onFileUpload, allowedExtensions: ['vpt', 'vpx', 'mp3', 'vbs', 'txt', 'md'], allowMultipleFiles: true }"
+	file-upload="{ type: 'release', status: meta.files, onSuccess: onFileUpload, allowedExtensions: ['vpt', 'vpx', 'mp3', 'vbs', 'txt', 'md', 'rar', 'zip'], allowMultipleFiles: true }"
 	ngf-drag-over-class="panel--dragging",
 	ng-class="{ error: errors.versions[0].files }"
 )
@@ -24,15 +24,18 @@ p Drag and drop your files from the file explorer into the box below.
 
 p Note that files of a release are structured, i.e. there are only certain file types allowed:
 ul
-	li <code>.vpt</code> or <code>.vpx</code> - The table file of the release. You can upload multiple of those
+	li <code>.vpt</code> / <code>.vpx</code> - The table file of the release. You can upload multiple of those
 		| if you have multiple flavors ready to release (see step {{ step.flavors }} below)
-	li <code>.vbs</code> files - Table scripts
-	li <code>.mp3</code> files - External game music
-
-p You can add text files as well. However, your release will be in any case packaged with a README file
-	| generated from the description you provide below. There will also be a file about authors and
-	| acknowledgements distributed with every download. Thus, it is recommended to use text files only for
-	| configuration or other technical usages when necessary.
+	li <code>.vbs</code> - Table scripts, located in the <i>Scripts</i> folder
+	li <code>.mp3</code> - External game music, located in the <i>Music</i> folder
+	li <code>.zip</code> / <code>.rar</code> - When downloading the release as an archive, these will be
+		| extracted into the <i>Tables</i> folder before adding them to the archive. However, if files
+		| in your .zip or .rar file are located at the root of the archive, they will be extracted into
+		| a folder named after the your .zip or .rar file.
+	li <code>.txt</code> / <code>.md</code> - Note that your release will be in any case packaged with a
+		| README file generated from the description you provide below. There will also be a file about
+		| authors and acknowledgements distributed with every download. Thus, it is recommended to use text
+		| files only for configuration or other technical usages when necessary.
 
 script(id="template/timepicker/timepicker.html", type="text/ng-template")
 	table(style="margin:-28px 0")

@@ -17,13 +17,16 @@ angular.module('vpdb.common', [])
 				}
 			},
 
-			fileIcon: function(mimeType) {
+			fileIcon: function(mimeType, isRom) {
 				switch (mimeType) {
 					case 'application/x-visual-pinball-table':   return 'ext-vpt';
 					case 'application/x-visual-pinball-table-x': return 'ext-vpx';
 					case 'application/vbscript':                 return 'ext-code';
-					case 'application/zip':                      return 'ext-rom';
+					case 'application/zip':                      return isRom ? 'ext-rom' : 'ext-zip';
+					case 'application/rar':                      return 'ext-zip';
+					case 'application/x-rar-compressed':         return 'ext-zip';
 					case 'audio/mpeg':                           return 'ext-audio';
+					case 'audio/mp3':                            return 'ext-audio';
 					case 'image/jpeg':
 					case 'image/png':                            return 'ext-image';
 					case 'text/plain':                           return 'ext-txt';

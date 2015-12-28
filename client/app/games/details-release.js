@@ -41,10 +41,9 @@ angular.module('vpdb.games.details', []).controller('ReleaseController', functio
 		// fetch comments
 		$scope.comments = ReleaseCommentResource.query({ releaseId: release.id });
 
-		// make flavor grid
 		var flavors = _.sortByOrder(_.flatten(_.pluck(release.versions, 'files')), 'released_at', true);
 		var flavorGrid = {};
-		_.each(flavors, function(file) {
+		_.each(_.filter(flavors, function(file) { return file.flavor ? true : false }), function(file) {
 			var compat = _.pluck(file.compatibility, 'id');
 			compat.sort();
 			var flavor = '';
@@ -219,3 +218,46 @@ angular.module('vpdb.games.details', []).controller('ReleaseController', functio
 		return file.file.mime_type && /^application\/x-visual-pinball-table/i.test(file.file.mime_type);
 	};
 });
+
+
+/**
+ * Takes a sorted list of versions and removes files that have a newer
+ * flavor. Also removes empty versions.
+ * @param versions
+ * @param opts
+ */
+function stripFiles(versions) {
+	var i, j;
+	var flavorValues, flavorKey, flavorKeys = {};
+
+	for (i = 0; i < versions.length; i++) {
+		for (j = 0; j < versions[i].files.length; j++) {
+
+			// if non-table file, skip
+			if (!versions[i].files[j].flavor) {
+				continue;
+			}
+
+			flavorValues = [];
+			for (var key in flavor.values) {
+				//noinspection JSUnfilteredForInLoop
+				flavorValues.push(versions[i].files[j].flavor[key]);
+			}
+			flavorKey = flavorValues.join(':');
+
+			// strip if already available
+			if (flavorKeys[flavorKey]) {
+				versions[i].files[j] = null;
+			}
+			flavorKeys[flavorKey] = true;
+		}
+
+		versions[i].files = _.compact(versions[i].files);
+
+		// remove version if no more files
+		if (versions[i].files.length === 0) {
+			versions[i] = null;
+		}
+	}
+	return _.compact(versions);
+}

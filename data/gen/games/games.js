@@ -158,6 +158,7 @@ exports.data = [
 	{ bg: 'Aladdin\'s Castle (Bally 1976).png', logo: 'Aladdin\'s Castle (Bally 1976).png', ipdb: 40 },
 	{ bg: 'Alien Star (Gottlieb 1984).png', logo: 'Alien Star (Gottlieb 1984).png', ipdb: 49 },
 	{ bg: 'Amazing Spiderman (Gottlieb 1980).png', logo: 'Amazing Spiderman (Gottlieb 1980).png', ipdb: 2285, id: 'amazing-spider-man' },
+	{ bg: 'America\'s Most Haunted (Spooky 2014).png', logo: 'amh-wheel.png', ipdb: 6161 },
 	{ bg: 'Apollo 13 (Sega 1995).png', logo: 'Apollo 13 (Sega 1995).png', ipdb: 3592 },
 	{ bg: 'Attack from Mars (Bally 1995).png', logo: 'Attack from Mars (Bally 1995).png', ipdb: 3781 },
 	{ bg: 'Austin Powers (Stern 2001).png', logo: 'Austin Powers (Stern 2001).png', ipdb: 4504 },

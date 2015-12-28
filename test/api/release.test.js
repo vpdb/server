@@ -221,48 +221,52 @@ describe('The VPDB `release` API', function() {
 				hlp.file.createVpts(user, request, 2, function(vptfiles) {
 					hlp.file.createPlayfields(user, request, 'fs', 2, function(playfieldImages) {
 						hlp.file.createMp4(user, request, function(playfieldVideo) {
-							request
-								.post('/api/v1/releases')
-								.save({ path: 'releases/create'})
-								.as(user)
-								.send({
-									name: 'release',
-									_game: game.id,
-									versions: [
-										{
-											files: [ {
-												_file: vptfiles[0].id,
-												_media: {
-													playfield_image: playfieldImages[0].id,
-													playfield_video: playfieldVideo.id
-												},
-												_compatibility: [ '9.9.0' ],
-												flavor: { orientation: 'fs', lighting: 'night' }
+							hlp.file.createMp3(user, request, function(mp3) {
+								request
+									.post('/api/v1/releases')
+									.save({ path: 'releases/create' })
+									.as(user)
+									.send({
+										name: 'release',
+										_game: game.id,
+										versions: [
+											{
+												files: [ {
+													_file: vptfiles[0].id,
+													_media: {
+														playfield_image: playfieldImages[0].id,
+														playfield_video: playfieldVideo.id
+													},
+													_compatibility: [ '9.9.0' ],
+													flavor: { orientation: 'fs', lighting: 'night' }
 
-											}, {
-												_file: vptfiles[1].id,
-												_media: {
-													playfield_image: playfieldImages[1].id
-												},
-												_compatibility: [ '9.9.0' ],
-												flavor: { orientation: 'fs', lighting: 'day' }
-											} ],
-											version: '1.0.0',
-											released_at: '2015-08-01T00:00:00.000Z'
-										}
-									],
-									authors: [ { _user: hlp.getUser(user).id, roles: [ 'Table Creator' ] } ],
-									_tags: [ 'hd', 'dof' ]
-								})
-								.end(function (err, res) {
-									hlp.expectStatus(err, res, 201);
-									hlp.doomRelease(user, res.body.id);
+												}, {
+													_file: vptfiles[1].id,
+													_media: {
+														playfield_image: playfieldImages[1].id
+													},
+													_compatibility: [ '9.9.0' ],
+													flavor: { orientation: 'fs', lighting: 'day' }
+												}, {
+													_file: mp3.id
+												} ],
+												version: '1.0.0',
+												released_at: '2015-08-01T00:00:00.000Z'
+											}
+										],
+										authors: [ { _user: hlp.getUser(user).id, roles: [ 'Table Creator' ] } ],
+										_tags: [ 'hd', 'dof' ]
+									})
+									.end(function(err, res) {
+										hlp.expectStatus(err, res, 201);
+										hlp.doomRelease(user, res.body.id);
 
-									expect(res.body.versions[0].files[0].media.playfield_image.is_active).to.be(true);
-									expect(res.body.versions[0].files[0].media.playfield_video.is_active).to.be(true);
-									expect(res.body.versions[0].files[1].media.playfield_image.is_active).to.be(true);
-									done();
-								});
+										expect(res.body.versions[ 0 ].files[ 0 ].media.playfield_image.is_active).to.be(true);
+										expect(res.body.versions[ 0 ].files[ 0 ].media.playfield_video.is_active).to.be(true);
+										expect(res.body.versions[ 0 ].files[ 1 ].media.playfield_image.is_active).to.be(true);
+										done();
+									});
+							});
 						});
 					});
 				});

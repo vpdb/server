@@ -111,6 +111,24 @@ exports.createZip = function(user, request, done) {
 		});
 };
 
+exports.createMp3 = function(user, request, done) {
+
+	var data ='{binary music data}';
+	request
+		.post('/storage/v1/files')
+		.query({ type: 'release' })
+		.type('audio/mp3')
+		.set('Content-Disposition', 'attachment; filename="test.mp3"')
+		.set('Content-Length', data.length)
+		.send(data)
+		.as(user)
+		.end(function(err, res) {
+			expect(err).to.not.be.ok();
+			expect(res.status).to.be(201);
+			done(res.body);
+		});
+};
+
 exports.createMp4 = function(user, request, done) {
 
 	var data = fs.readFileSync(mp4);

@@ -754,6 +754,12 @@ function stripFiles(versions, opts) {
 
 			// otherwise, make sure we include only the latest flavor combination.
 			} else {
+
+				// if non-table file, skip
+				if (!versions[i].files[j].flavor) {
+					continue;
+				}
+
 				flavorValues = [];
 				for (var key in flavor.values) {
 					//noinspection JSUnfilteredForInLoop

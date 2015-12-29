@@ -245,9 +245,25 @@ exports.download = function(req, res) {
 									}
 									break;
 								case 'release':
-									var filename = getTableFilename(req.user, release, file, releaseFiles);
-									releaseFiles.push(filename);
-									name = 'Visual Pinball/Tables/' + filename;
+									switch (file.getMimeCategory()) {
+										case 'table':
+											var filename = getTableFilename(req.user, release, file, releaseFiles);
+											releaseFiles.push(filename);
+											name = 'Visual Pinball/Tables/' + filename;
+											break;
+
+										case 'audio':
+											name = 'Visual Pinball/Music/' + file.name;
+											break;
+
+										case 'script':
+											name = 'Visual Pinball/Scripts/' + file.name;
+											break;
+
+										default:
+											name = 'Visual Pinball/Tables/' + file.name;
+									}
+
 									break;
 								case 'rom':
 									name = 'Visual Pinball/VPinMame/roms/' + file.name;

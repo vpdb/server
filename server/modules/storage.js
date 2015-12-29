@@ -34,7 +34,8 @@ var config = settings.current;
 var processors = {
 	image: require('./processor/image'),
 	video: require('./processor/video'),
-	table: require('./processor/table')
+	table: require('./processor/table'),
+	archive: require('./processor/archive')
 };
 
 function Storage() {

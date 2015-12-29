@@ -53,7 +53,7 @@ Set:
 
 ### General Stuff
 
-	sudo apt-get -y install rcconf git-core python-software-properties vim
+	sudo apt-get -y install rcconf git-core python-software-properties vim unrar
 	sudo apt-get -y install build-essential checkinstall rake zlib1g-dev libpcre3 libpcre3-dev libbz2-dev libssl-dev tar libcurl4-openssl-dev ruby-dev
 
 ### Node.js

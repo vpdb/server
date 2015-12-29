@@ -11,7 +11,8 @@ var mp4 = path.resolve(__dirname, '../../data/test/files/afm.f4v');
 var avi = path.resolve(__dirname, '../../data/test/files/afm.avi');
 var vpt = path.resolve(__dirname, '../../data/test/files/empty.vpt');
 var rom = path.resolve(__dirname, '../../data/test/files/hulk.zip');
-var zip = path.resolve(__dirname, '../../data/test/files/empty.zip');
+var zip = path.resolve(__dirname, '../../data/test/files/dmd.zip');
+var rar = path.resolve(__dirname, '../../data/test/files/dmd.rar');
 
 exports.createBackglass = function(user, request, done) {
 
@@ -100,7 +101,24 @@ exports.createZip = function(user, request, done) {
 		.post('/storage/v1/files')
 		.query({ type: 'release' })
 		.type('application/zip')
-		.set('Content-Disposition', 'attachment; filename="empty.zip"')
+		.set('Content-Disposition', 'attachment; filename="dmd.zip"')
+		.set('Content-Length', data.length)
+		.send(data)
+		.as(user)
+		.end(function(err, res) {
+			expect(err).to.not.be.ok();
+			expect(res.status).to.be(201);
+			done(res.body);
+		});
+};
+
+exports.createRar = function(user, request, done) {
+	var data = fs.readFileSync(rar);
+	request
+		.post('/storage/v1/files')
+		.query({ type: 'release' })
+		.type('application/rar')
+		.set('Content-Disposition', 'attachment; filename="dmd.rar"')
 		.set('Content-Length', data.length)
 		.send(data)
 		.as(user)

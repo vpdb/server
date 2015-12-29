@@ -10,6 +10,7 @@ addons:
     packages:
     - graphicsmagick
     - optipng
+    - unrar
 before_script:
   - wget http://johnvansickle.com/ffmpeg/releases/ffmpeg-release-64bit-static.tar.xz -O /tmp/ffmpeg.tar.gz
   - mkdir bin

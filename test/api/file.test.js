@@ -174,6 +174,70 @@ describe('The VPDB `file` API', function() {
 		});
 	});
 
+	describe('when uploading a rar file', function() {
+
+		it('should return the file listing of the archive', function(done) {
+			hlp.file.createRar('contributor', request, function(rar) {
+				hlp.doomFile('contributor', rar.id);
+
+				expect(rar.metadata).to.be.an('object');
+				expect(rar.metadata.entries).to.be.an('array');
+				expect(rar.metadata.entries).to.have.length(3);
+				expect(rar.metadata.entries[0].bytes).to.be.a('number');
+				expect(rar.metadata.entries[0].bytes_compressed).to.be.a('number');
+				expect(rar.metadata.entries[0].crc).to.be.a('number');
+				expect(rar.metadata.entries[0].filename).to.be.a('string');
+				expect(rar.metadata.entries[0].modified_at).to.be.a('string');
+				done();
+			});
+		});
+
+		it('should fail if the rar file is corrupted', function(done) {
+			var data = '<corrupted rar data>';
+			request
+					.post('/storage/v1/files')
+					.query({ type: 'release' })
+					.type('application/rar')
+					.set('Content-Disposition', 'attachment; filename="dmd.rar"')
+					.set('Content-Length', data.length)
+					.send(data)
+					.as('member').end(hlp.status(400, 'corrupted', done));
+		});
+
+	});
+
+	describe('when uploading a zip file', function() {
+
+		it('should return the file listing of the archive', function(done) {
+			hlp.file.createZip('contributor', request, function(rar) {
+				hlp.doomFile('contributor', rar.id);
+
+				expect(rar.metadata).to.be.an('object');
+				expect(rar.metadata.entries).to.be.an('array');
+				expect(rar.metadata.entries).to.have.length(3);
+				expect(rar.metadata.entries[0].bytes).to.be.a('number');
+				expect(rar.metadata.entries[0].bytes_compressed).to.be.a('number');
+				expect(rar.metadata.entries[0].crc).to.be.a('number');
+				expect(rar.metadata.entries[0].filename).to.be.a('string');
+				expect(rar.metadata.entries[0].modified_at).to.be.a('string');
+				done();
+			});
+		});
+
+		it('should fail if the zip file is corrupted', function(done) {
+			var data = '<corrupted zip data>';
+			request
+				.post('/storage/v1/files')
+				.query({ type: 'release' })
+				.type('application/zip')
+				.set('Content-Disposition', 'attachment; filename="dmd.zip"')
+				.set('Content-Length', data.length)
+				.send(data)
+				.as('member').end(hlp.status(400, 'corrupted', done));
+		});
+
+	});
+
 	describe('after successfully uploading a file', function() {
 
 		it('should be able to retrieve the file details', function(done) {

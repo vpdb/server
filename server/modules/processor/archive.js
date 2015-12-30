@@ -69,7 +69,7 @@ ArchiveProcessor.prototype.metadata = function(file, variation, done) {
 					// map data to something useful
 					entries = _.map(entries, function(entry) {
 						return {
-							filename: entry.name.replace(/\\/g, '/'),
+							filename: entry.name,
 							bytes: parseInt(entry.size),
 							bytes_compressed: parseInt(entry.packedSize),
 							crc: parseInt(entry.crc32, 16),

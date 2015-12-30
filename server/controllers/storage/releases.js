@@ -24,6 +24,7 @@ var fs = require('fs');
 var async = require('async');
 var logger = require('winston');
 var archiver = require('archiver');
+var Unrar = require('unrar');
 
 var Release = require('mongoose').model('Release');
 var Rom = require('mongoose').model('Rom');
@@ -336,6 +337,30 @@ exports.download = function(req, res) {
 
 							case 'script':
 								name = 'Visual Pinball/Scripts/' + file.name;
+								break;
+
+							case 'archive':
+								if (file.metadata.entries && _.isArray(file.metadata.entries)) {
+									if (/rar/i.test(file.getMimeSubtype())) {
+										var rarfile = new Unrar(file.getPath());
+										_.each(file.metadata.entries, function(entry) {
+											var stream = rarfile.stream(entry.filename);
+											archive.append(stream, {
+												name: 'Visual Pinball/Tables/' + entry.filename.replace(/\\/g, '/'),
+												date: entry.modified_at
+											});
+											stream.on('error', function(err) {
+												logger.info('Error extracting file %s from rar: %s', entry.filename, err);
+											});
+										});
+										return nextFile();
+									}
+
+								}
+
+
+								// otherwise, add as normal file
+								name = 'Visual Pinball/Tables/' + file.name;
 								break;
 
 							default:

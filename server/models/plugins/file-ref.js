@@ -23,7 +23,6 @@ var _ = require('lodash');
 var async = require('async');
 var logger = require('winston');
 var mongoose = require('mongoose');
-var objectPath = require('object-path');
 
 var common = require('./common');
 var error = require('../../modules/error')('model', 'file-ref');
@@ -90,7 +89,7 @@ module.exports = function(schema, options) {
 
 		var objPaths = _.keys(common.explodePaths(obj, fileRefs));
 		_.each(objPaths, function(path) {
-			var id = objectPath.get(obj, path);
+			var id = _.get(obj, path);
 			if (id) {
 				ids.push(id);
 			}
@@ -123,11 +122,10 @@ module.exports = function(schema, options) {
 	schema.post('remove', function(obj, done) {
 
 		var File = mongoose.model('File');
-
 		var objPaths = _.keys(common.explodePaths(obj, fileRefs));
 		var ids = [];
 		_.each(objPaths, function(path) {
-			var id = objectPath.get(obj, path);
+			var id = _.get(obj, path + '._id');
 			if (id) {
 				ids.push(id);
 			}

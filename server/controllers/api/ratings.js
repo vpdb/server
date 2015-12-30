@@ -92,12 +92,12 @@ function create(req, res, ref, find) {
 			return api.fail(res, error('Cannot vote twice. Use PUT in order to update a vote.').warn('create'), 400);
 		}
 		var obj = {
-			_from: req.user,
+			_from: req.user._id,
 			_ref: {},
 			value: req.body.value,
 			created_at: new Date()
 		};
-		obj._ref[ref] = entity;
+		obj._ref[ref] = entity._id;
 		var rating = new Rating(obj);
 
 		rating.validate(function(err) {
@@ -196,8 +196,8 @@ function find(Model, ref, populate) {
 			if (!entity) {
 				return api.fail(res, error('No such %s with ID "%s"', ref, req.params.id), 404);
 			}
-			var q = { _from: req.user };
-			q['_ref.' + ref] = entity;
+			var q = { _from: req.user._id };
+			q['_ref.' + ref] = entity._id;
 			Rating.findOne(q, assert(function (rating) {
 				callback(entity, rating);
 			}, 'Error searching for current rating.'));

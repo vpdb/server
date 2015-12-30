@@ -23,7 +23,6 @@ var _ = require('lodash');
 var async = require('async');
 var logger = require('winston');
 var mongoose = require('mongoose');
-var objectPath = require('object-path');
 
 var common = require('./common');
 var error = require('../../modules/error')('model', 'pretty-id');
@@ -93,7 +92,7 @@ module.exports = function(schema, options) {
 			var RefModel = models[refModelName] || mongoose.model(refModelName);
 			models[refModelName] = RefModel;
 
-			var prettyId = objectPath.get(obj, objPath);
+			var prettyId = _.get(obj, objPath);
 
 			if (!prettyId) {
 				return next();
@@ -107,7 +106,7 @@ module.exports = function(schema, options) {
 				if (!refObj) {
 					logger.warn('[model] %s ID "%s" not found in database for field %s.', refModelName, prettyId, objPath);
 					invalidations.push({ path: objPath, message: 'No such ' + refModelName.toLowerCase() + ' with id "' + prettyId + '".', value: prettyId });
-					objectPath.set(obj, objPath, '000000000000000000000000'); // to avoid class cast error to objectId
+					_.set(obj, objPath, '000000000000000000000000'); // to avoid class cast error to objectId
 				} else {
 					// validations
 					_.each(options.validations, function(validation) {
@@ -123,7 +122,7 @@ module.exports = function(schema, options) {
 
 					// convert pretty id to mongdb id
 //					console.log('--- Overwriting pretty ID "%s" at %s with %s.', prettyId, objPath, refObj._id);
-					objectPath.set(obj, objPath, refObj._id);
+					_.set(obj, objPath, refObj._id);
 				}
 				next();
 			});

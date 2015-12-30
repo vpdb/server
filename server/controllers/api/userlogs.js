@@ -38,7 +38,7 @@ var config = require('../../modules/settings').current;
 exports.list = function(req, res) {
 
 	var pagination = api.pagination(req, 30, 100);
-	var query = [{ _user: req.user, _actor: req.user }];
+	var query = [{ _user: req.user._id, _actor: req.user._id }];
 
 	// filter event
 	if (req.query.event) {

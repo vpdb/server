@@ -20,8 +20,6 @@
 "use strict";
 
 var _ = require('lodash');
-var objectPath = require('object-path');
-
 
 /**
  * Returns all paths of a given schema.
@@ -98,7 +96,7 @@ exports.explodePaths = function(obj, singleRefs, arrayRefs) {
 		if (!parts[level + 1]) {
 			paths[path] = refModelName;
 		}
-		var subObj = objectPath.get(obj, objPath);
+		var subObj = _.get(obj, objPath);
 		if (subObj) {
 			for (var i = 0; i < subObj.length; i++) {
 				paths = _.extend(paths, appendNext(subObj[i], parts, refModelName, level + 1, path + '.' + i));
@@ -117,7 +115,7 @@ exports.explodePaths = function(obj, singleRefs, arrayRefs) {
 		arrayPaths = _.extend(arrayPaths, appendNext(obj, path.split(/\.\d+\.?/), refModelName));
 	});
 	_.each(arrayPaths, function(refModelName, path) {
-		var subObj = objectPath.get(obj, path);
+		var subObj = _.get(obj, path);
 		if (_.isArray(subObj) && subObj.length > 0) {
 			for (var i = 0; i < subObj.length; i++) {
 				arrayPathsExploded[path + '.' + i] = refModelName;

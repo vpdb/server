@@ -41,7 +41,7 @@ exports.createForRelease = function(req, res) {
 			return api.fail(res, error('No such release with ID "%s"', req.params.id), 404);
 		}
 		var comment = new Comment({
-			_from: req.user,
+			_from: req.user._id,
 			_ref: { release: release },
 			message: req.body.message,
 			ip: req.ip || req.headers['x-forwarded-for'] || req.connection.remoteAddress || '0.0.0.0',

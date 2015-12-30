@@ -102,12 +102,12 @@ function star(req, res, type, find) {
 			return api.fail(res, error('Already starred. Cannot star twice, you need to unstar first.').warn('create'), 400);
 		}
 		var obj = {
-			_from: req.user,
+			_from: req.user._id,
 			_ref: {},
 			type: type,
 			created_at: new Date()
 		};
-		obj._ref[type] = entity;
+		obj._ref[type] = entity._id;
 		var star = new Star(obj);
 
 		star.save(assert(function() {
@@ -170,11 +170,11 @@ function find(Model, type, populate) {
 			if (!entity) {
 				return api.fail(res, error('No such %s with ID "%s"', type, req.params.id), 404);
 			}
-			var q = { _from: req.user, type: type };
-			q['_ref.' + type] = entity;
+			var q = { _from: req.user._id, type: type };
+			q['_ref.' + type] = entity._id;
 			Star.findOne(q, assert(function(star) {
 				callback(entity, star);
-			}, 'Error searching for current star.'));
+			}, 'Error searching for current star'));
 		}, 'Error finding ' + type + ' in order to get star from <%s>.'));
 	};
 }

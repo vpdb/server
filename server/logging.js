@@ -21,6 +21,7 @@
 
 var path = require('path');
 var logger = require('winston');
+var colors = require('colors');
 var papertrail = require('winston-papertrail').Papertrail; // only needs to require, no usage.
 var expressMorgan  = require('morgan');
 var expressWinston = require('express-winston');

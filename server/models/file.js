@@ -151,7 +151,7 @@ FileSchema.methods.getPath = function(variation, tmpSuffix) {
 /**
  * Returns the file extension, inclusively the dot.
  *
- * @param {Object|String} variation Either variation name or object containing attribute "name"
+ * @param {Object|String} [variation] Either variation name or object containing attribute "name"
  * @returns {string} File extension
  */
 FileSchema.methods.getExt = function(variation) {
@@ -194,7 +194,7 @@ FileSchema.methods.isFree = function(variation) {
 /**
  * Returns the MIME type for a given variation (or for the main file if not specified).
  *
- * @param {Object|String} variation Either variation name or object containing attribute "name"
+ * @param {Object|String} [variation] Either variation name or object containing attribute "name"
  * @returns {string}
  */
 FileSchema.methods.getMimeType = function(variation) {

@@ -23,7 +23,7 @@ var _ = require('lodash');
 var fs = require('fs');
 var logger = require('winston');
 var Unrar = require('unrar');
-var Zip = require('adm-zip');
+var Zip = require('adm-zip'); // todo migrate to unzip
 
 var error = require('../error')('processor', 'archive');
 

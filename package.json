@@ -73,6 +73,7 @@
 		"three": "0.71.1",
 		"uglify-js": "2.4.24",
 		"unrar": "freezy/node-unrar",
+		"unzip": "0.1.11",
 		"validator": "4.0.5",
 		"verror": "1.6.0",
 		"volos-quota-redis": "0.11.0",

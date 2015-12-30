@@ -21,7 +21,7 @@
 
 var _ = require('lodash');
 var logger = require('winston');
-var Zip = require('adm-zip');
+var Zip = require('adm-zip'); // todo migrate to unzip
 
 var error = require('../../modules/error')('api', 'rom');
 var acl = require('../../acl');

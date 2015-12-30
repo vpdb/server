@@ -22,7 +22,7 @@
 var fs = require('fs');
 var request = require('request');
 var path = require('path');
-var Zip = require('adm-zip');
+var Zip = require('adm-zip'); // todo migrate to unzip
 
 module.exports = function(grunt) {
 

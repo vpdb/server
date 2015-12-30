@@ -219,7 +219,7 @@ FileSchema.methods.getMimeTypePrimary = function(variation) {
 
 /**
  * Returns the sub type (the part after the `/`) of the mime type.
- * @param {Object|String} variation Either variation name or object containing attribute "name"
+ * @param {Object|String} [variation] Either variation name or object containing attribute "name"
  * @returns {string}
  */
 FileSchema.methods.getMimeSubtype = function(variation) {

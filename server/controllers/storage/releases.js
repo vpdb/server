@@ -21,10 +21,12 @@
 
 var _ = require('lodash');
 var fs = require('fs');
+var path = require('path');
 var async = require('async');
 var logger = require('winston');
 var archiver = require('archiver');
 var Unrar = require('unrar');
+var unzip = require('unzip'); // adm-zip doesn't have a streaming api.
 
 var Release = require('mongoose').model('Release');
 var Rom = require('mongoose').model('Rom');
@@ -341,12 +343,13 @@ exports.download = function(req, res) {
 
 							case 'archive':
 								if (file.metadata.entries && _.isArray(file.metadata.entries)) {
+
 									if (/rar/i.test(file.getMimeSubtype())) {
 										var rarfile = new Unrar(file.getPath());
 										_.each(file.metadata.entries, function(entry) {
 											var stream = rarfile.stream(entry.filename);
 											archive.append(stream, {
-												name: 'Visual Pinball/Tables/' + entry.filename.replace(/\\/g, '/'),
+												name: getArchivedFilename(entry.filename, file.name),
 												date: entry.modified_at
 											});
 											stream.on('error', function(err) {
@@ -356,8 +359,27 @@ exports.download = function(req, res) {
 										return nextFile();
 									}
 
+									if (/zip/i.test(file.getMimeSubtype())) {
+										fs.createReadStream(file.getPath())
+											.pipe(unzip.Parse())
+											.on('entry', function (entry) {
+												if (entry.type === 'File') {
+													archive.append(entry, {
+														name: getArchivedFilename(entry.path, file.name)
+													});
+												} else {
+													entry.autodrain();
+												}
+											})
+											.on('error', function(err) {
+												logger.info('Error extracting from zip: %s', err.message);
+											})
+											.on('close', function() {
+												nextFile();
+											});
+										return;
+									}
 								}
-
 
 								// otherwise, add as normal file
 								name = 'Visual Pinball/Tables/' + file.name;
@@ -438,4 +460,13 @@ function getTableFilename(user, release, file, releaseFiles) {
 	} else {
 		return filebase + file.getExt();
 	}
+}
+
+function getArchivedFilename(entryPath, archiveName) {
+	entryPath = entryPath.replace(/\\/g, '/');
+	entryPath = entryPath.replace(/^\//, '');
+	if (path.basename(entryPath) === entryPath) {
+		entryPath = archiveName.substr(0, archiveName.length - path.extname(archiveName).length) + '/' + entryPath;
+	}
+	return 'Visual Pinball/Tables/' + entryPath;
 }

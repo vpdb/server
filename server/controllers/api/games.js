@@ -175,30 +175,30 @@ exports.list = function(req, res) {
 		query.push({ 'counter.releases': { $gte: parseInt(req.query.min_releases) }});
 	}
 
-	var sortBy = api.sortParams(req, { title: 1 }, {
+	var sort = api.sortParams(req, { title: 1 }, {
 		popularity: '-metrics.popularity',
 		rating: '-rating.score',
 		title: 'title_sortable'
 	});
 
 	var q = api.searchQuery(query);
-	logger.info('[api|game:list] query: %s, sort: %j', util.inspect(q), util.inspect(sortBy));
+	logger.info('[api|game:list] query: %s, sort: %j', util.inspect(q), util.inspect(sort));
 	Game.paginate(q, {
 		page: pagination.page,
 		limit: pagination.perPage,
 		populate: [ '_media.backglass', '_media.logo' ],
-		sortBy: sortBy
+		sort: sort
 
-	}, function(err, games, pageCount, count) {
+	}, function(err, result) {
 
 		/* istanbul ignore if  */
 		if (err) {
 			return api.fail(res, error(err, 'Error listing games').log('list'), 500);
 		}
-		games = _.map(games, function(game) {
+		var games = _.map(result.docs, function(game) {
 			return game.toSimple();
 		});
-		api.success(res, games, 200, api.paginationOpts(pagination, count));
+		api.success(res, games, 200, api.paginationOpts(pagination, result.total));
 
 	});
 };

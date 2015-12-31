@@ -58,9 +58,9 @@ exports.list = function(req, res) {
 	LogUser.paginate(api.searchQuery(query), {
 		page: pagination.page,
 		limit: pagination.perPage,
-		sortBy: { logged_at: -1 }
+		sort: { logged_at: -1 }
 
-	}, function(err, logs, pageCount, count) {
+	}, function(err, result) {
 
 		/* istanbul ignore if  */
 		if (err) {
@@ -77,13 +77,13 @@ exports.list = function(req, res) {
 		});
 
 		// process results
-		logs = _.map(logs, function(log) {
+		var logs = _.map(result.docs, function(log) {
 
 			if (providerInfo[log.payload.provider]) {
 				log.payload.providerInfo = providerInfo[log.payload.provider];
 			}
 			return log.toObj();
 		});
-		api.success(res, logs, 200, api.paginationOpts(pagination, count));
+		api.success(res, logs, 200, api.paginationOpts(pagination, result.total));
 	});
 };

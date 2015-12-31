@@ -108,17 +108,17 @@ exports.listForRelease = function(req, res) {
 			page: pagination.page,
 			limit: pagination.perPage,
 			populate: [ '_from' ],
-			sortBy: { created_at: -1 }
+			sort: { created_at: -1 }
 
-		}, function(err, comments, pageCount, count) {
+		}, function(err, result) {
 			/* istanbul ignore if  */
 			if (err) {
 				return api.fail(res, error(err, 'Error listing comments').log('list'), 500);
 			}
-			 comments = _.map(comments, function(comment) {
+			var comments = _.map(result.docs, function(comment) {
 				return comment.toSimple();
 			});
-			api.success(res, comments, 200, api.paginationOpts(pagination, count));
+			api.success(res, comments, 200, api.paginationOpts(pagination, result.total));
 		});
 
 	}, 'Error finding release in order to list comments.'));

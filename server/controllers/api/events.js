@@ -235,10 +235,10 @@ exports.list = function(opts) {
 			LogEvent.paginate(api.searchQuery(query), {
 				page: pagination.page,
 				limit: pagination.perPage,
-				sortBy: { logged_at: -1 },
+				sort: { logged_at: -1 },
 				populate: [ '_actor' ]
 
-			}, function(err, logs, pageCount, count) {
+			}, function(err, result) {
 
 				/* istanbul ignore if  */
 				if (err) {
@@ -246,10 +246,10 @@ exports.list = function(opts) {
 				}
 
 				// process results
-				logs = _.map(logs, function(log) {
+				var logs = _.map(result.docs, function(log) {
 					return fullDetails ? log.toObj() : _.omit(log.toObj(), [ 'ip' ]);
 				});
-				api.success(res, logs, 200, api.paginationOpts(pagination, count));
+				api.success(res, logs, 200, api.paginationOpts(pagination, result.total));
 			});
 		});
 

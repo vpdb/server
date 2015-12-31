@@ -117,17 +117,17 @@ exports.list = function(req, res) {
 			page: pagination.page,
 			limit: pagination.perPage,
 			populate: [ '_file', '_created_by' ],
-			sortBy: { version: -1 }
+			sort: { version: -1 }
 
-		}, function(err, roms, pageCount, count) {
+		}, function(err, result) {
 			/* istanbul ignore if  */
 			if (err) {
 				return api.fail(res, error(err, 'Error listing roms').log('list'), 500);
 			}
-			roms = _.map(roms, function(rom) {
+			var roms = _.map(result.docs, function(rom) {
 				return rom.toSimple();
 			});
-			api.success(res, roms, 200, api.paginationOpts(pagination, count));
+			api.success(res, roms, 200, api.paginationOpts(pagination, result.total));
 
 		});
 

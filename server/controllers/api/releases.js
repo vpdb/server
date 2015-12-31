@@ -535,7 +535,7 @@ exports.list = function(req, res) {
 			});
 		}
 
-		var sortBy = api.sortParams(req, { modified_at: 1 }, {
+		var sort = api.sortParams(req, { modified_at: 1 }, {
 			modified_at: '-modified_at',
 			popularity: '-metrics.popularity',
 			rating: '-rating.score',
@@ -549,8 +549,8 @@ exports.list = function(req, res) {
 
 		if (filter.length > 0) {
 
-			console.log(util.inspect(Release.getAggregationPipeline(query, filter, sortBy, pagination), { depth: null, colors: true }));
-			Release.aggregate(Release.getAggregationPipeline(query, filter, sortBy, pagination)).exec(function(err, result) {
+			console.log(util.inspect(Release.getAggregationPipeline(query, filter, sort, pagination), { depth: null, colors: true }));
+			Release.aggregate(Release.getAggregationPipeline(query, filter, sort, pagination)).exec(function(err, result) {
 
 				/* istanbul ignore if  */
 				if (err) {
@@ -586,27 +586,27 @@ exports.list = function(req, res) {
 		} else {
 
 			var q = api.searchQuery(query);
-			logger.info('[api|release:list] query: %s, sort: %j', util.inspect(q), util.inspect(sortBy));
+			logger.info('[api|release:list] query: %s, sort: %j', util.inspect(q), util.inspect(sort));
 			Release.paginate(q, {
 				page: pagination.page,
 				limit: pagination.perPage,
 				populate: populatedFields,
-				sortBy: sortBy  // '_game.title', '_game.id'
+				sort: sort  // '_game.title', '_game.id'
 
-			}, function(err, releases, pageCount, count) {
+			}, function(err, result) {
 
 				/* istanbul ignore if  */
 				if (err) {
 					return api.fail(res, error(err, 'Error listing releases').log('list'), 500);
 				}
-				releases = _.map(releases, function(release) {
+				var releases = _.map(result.docs, function(release) {
 					if (stars) {
 						transformOpts.starred = starMap[release._id] ? true : false;
 					}
 					transformOpts.fileIds = fileIds;
 					return release.toSimple(transformOpts);
 				});
-				api.success(res, releases, 200, api.paginationOpts(pagination, count));
+				api.success(res, releases, 200, api.paginationOpts(pagination, result.total));
 			});
 		}
 	});

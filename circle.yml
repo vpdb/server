@@ -19,9 +19,6 @@ dependencies:
     - tar -xvf /tmp/rar.tar.gz --strip 1
     - cd ..
     - export PATH=$(pwd)/bin:$PATH
-    - echo "node version: $(node --version)"
-    - echo "npm version: $(npm --version)"
-    - echo "ffmpeg version: $(ffmpeg -version)"
 
   override:
     - npm install -g grunt-cli

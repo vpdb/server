@@ -1,0 +1,33 @@
+machine:
+
+  timezone:
+    Europe/Zurich
+
+  # Version of ruby to use
+  node:
+    version: 5.3.0
+
+## Customize dependencies
+dependencies:
+  pre:
+    - sudo apt-get -y install graphicsmagick pngquant optipng
+    - wget http://johnvansickle.com/ffmpeg/releases/ffmpeg-release-64bit-static.tar.xz -O /tmp/ffmpeg.tar.gz
+    - wget http://www.rarlab.com/rar/rarlinux-x64-5.3.0.tar.gz -O /tmp/rar.tar.gz
+    - mkdir -p bin
+    - cd bin
+    - tar -xvf /tmp/ffmpeg.tar.gz --strip 1 --no-anchored ffmpeg ffprobe
+    - tar -xvf /tmp/rar.tar.gz --strip 1
+    - cd ..
+    - export PATH=$(pwd)/bin:$PATH
+    - echo "node version: $(node --version)"
+    - echo "npm version: $(npm --version)"
+    - echo "ffmpeg version: $(ffmpeg -version)"
+
+  override:
+    - npm install -g grunt-cli
+    - npm install
+    - grunt git
+
+test:
+  override:
+    - grunt ci

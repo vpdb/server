@@ -155,7 +155,7 @@ There's also continuous integration running on three services:
 |-----------|----------------------------------------------------------|
 | Travis CI | [![Build Status Travis CI][travis-image]][travis-url]    |
 | Codeship  | [![Build Status Codeship][codeship-image]][codeship-url] |
-| drone.io  | [![Build Status drone.io][droneio-image]][droneio-url]   |
+| CircleCI  | [![Build Status CirlceCI][circleci-image]][circleci-url]   |
 
 After every test run, code coverage stats are sent to [Coveralls.io](https://coveralls.io/r/freezy/node-vpdb). Note that 
 both CI and code coverage only concern server-side code.
@@ -184,8 +184,8 @@ GPLv2, see [LICENSE](LICENSE).
 [dependencies-url]: https://david-dm.org/freezy/node-vpdb
 [codeship-image]: http://img.shields.io/codeship/e5a24c40-fe39-0131-f546-4ebc8a94177b.svg?style=flat-square
 [codeship-url]: https://www.codeship.io/projects/29544
-[droneio-image]: https://drone.io/github.com/freezy/node-vpdb/status.png
-[droneio-url]: https://drone.io/github.com/freezy/node-vpdb/latest
+[circleci-image]: https://img.shields.io/circleci/project/freezy/node-vpdb.svg?style=flat-square
+[circleci-url]: https://circleci.com/gh/freezy/node-vpdb
 [codeclimate-image]: http://img.shields.io/codeclimate/github/freezy/node-vpdb.svg?style=flat-square
 [codeclimate-url]: https://codeclimate.com/github/freezy/node-vpdb
 [idea-image]: https://www.jetbrains.com/idea/opensource/img/all/banners/idea120x30_white.gif

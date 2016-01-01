@@ -2,7 +2,7 @@ p Drag and drop your files from the file explorer into the box below.
 .panel.panel--dropzone(
 	file-upload="{ type: 'release', status: meta.files, onSuccess: onFileUpload, allowedExtensions: ['vpt', 'vpx', 'mp3', 'vbs', 'txt', 'md', 'rar', 'zip'], allowMultipleFiles: true }"
 	ngf-drag-over-class="panel--dragging",
-	ng-class="{ error: errors.versions[0].files }"
+	ng-class="{ error: filesError }"
 )
 
 	ul.list--files
@@ -18,9 +18,9 @@ p Drag and drop your files from the file explorer into the box below.
 
 	label.center-block.text-center: small: i Drop your files in here.
 
-.alert.alert-danger.padder-bottom(ng-show="errors.versions[0].files")
+.alert.alert-danger.padder-bottom(ng-show="filesError")
 	+icon('warning').shift-up.space-right
-	| {{ errors.versions[0].files }}
+	| {{ filesError }}
 
 p Note that files of a release are structured, i.e. there are only certain file types allowed:
 ul

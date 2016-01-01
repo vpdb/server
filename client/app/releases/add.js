@@ -103,6 +103,7 @@ angular.module('vpdb.releases.add', []).controller('ReleaseAddCtrl', function(
 		};
 		$scope.releaseVersion = $scope.release.versions[0];
 		$scope.errors = {};
+		$scope.filesError = null;
 		$scope.releaseFileRefs = {};
 	};
 
@@ -248,8 +249,8 @@ angular.module('vpdb.releases.add', []).controller('ReleaseAddCtrl', function(
 
 		}, ApiHelper.handleErrors($scope, function(scope) {
 			// if it's an array, those area displayed below
-			if (_.isArray(scope.errors.versions[0].files)) {
-				delete scope.errors.versions[0].files;
+			if (!_.isArray(scope.errors.versions[0].files)) {
+				scope.filesError = scope.errors.versions[0].files;
 			}
 		}));
 	};

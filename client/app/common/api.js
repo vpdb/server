@@ -1,4 +1,4 @@
-"use strict"; /* global angular, parseUri, objectPath, _ */
+"use strict"; /* global angular, parseUri, _ */
 
 angular.module('vpdb.common', [])
 
@@ -180,7 +180,7 @@ angular.module('vpdb.common', [])
 					if (response.data.errors) {
 						_.each(response.data.errors, function(err) {
 							var path = (opt.fieldPrefix || '') + err.field;
-							objectPath.set(scope.errors, path, err.message);
+							_.set(scope.errors, path, err.message);
 							scope.errors.__count++;
 						});
 					}
@@ -236,11 +236,11 @@ angular.module('vpdb.common', [])
 			 * Manually sets an error to be displayed
 			 * @param {object} scope Scope where to create the error variables
 			 * @param {string} field Name of the field
-			 * @param {message} Error message
+			 * @param {message} message Error message
 			 */
 			setError: function(scope, field, message) {
 				scope.errors = scope.errors || { __count: 0 };
-				objectPath.set(scope.errors, field, message);
+				_.set(scope.errors, field, message);
 			},
 
 			/**

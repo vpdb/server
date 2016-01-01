@@ -89,6 +89,7 @@ angular.module('vpdb.releases.add', []).controller('ReleaseFileAddCtrl', functio
 			files: [ ]
 		};
 		$scope.errors = {};
+		$scope.filesError = null;
 		$scope.releaseFileRefs = {};
 
 		// TODO remove files via API
@@ -99,6 +100,11 @@ angular.module('vpdb.releases.add', []).controller('ReleaseFileAddCtrl', functio
 
 		// only post files
 		if ($scope.meta.mode == 'newFile') {
+
+			if (_.isEmpty($scope.releaseVersion.files)) {
+				$scope.filesError = 'You should probably try adding at least one file...';
+				return;
+			}
 
 			ReleaseVersionResource.update({ releaseId: $scope.release.id, version: $scope.meta.version }, { files: $scope.releaseVersion.files }, function() {
 				$scope.reset();
@@ -112,7 +118,14 @@ angular.module('vpdb.releases.add', []).controller('ReleaseFileAddCtrl', functio
 				// go to game page
 				$state.go('gameDetails', { id: $stateParams.id });
 
-			}, ApiHelper.handleErrors($scope, { fieldPrefix: 'versions.0.' }));
+			}, ApiHelper.handleErrors($scope, { fieldPrefix: 'versions.0.' }, function(scope) {
+				// if it's an array, those area displayed below
+				if (!_.isArray(scope.errors.versions[0].files)) {
+					scope.filesError = scope.errors.versions[0].files;
+				} else {
+					scope.filesError = null;
+				}
+			}));
 
 		// post whole version
 		} else {
@@ -137,7 +150,14 @@ angular.module('vpdb.releases.add', []).controller('ReleaseFileAddCtrl', functio
 				// go to game page
 				$state.go('gameDetails', { id: $stateParams.id });
 
-			}, ApiHelper.handleErrors($scope, { fieldPrefix: 'versions.0.' }));
+			}, ApiHelper.handleErrors($scope, { fieldPrefix: 'versions.0.' }, function(scope) {
+				// if it's an array, those area displayed below
+				if (!_.isArray(scope.errors.versions[0].files)) {
+					scope.filesError = scope.errors.versions[0].files;
+				} else {
+					scope.filesError = null;
+				}
+			}));
 		}
 
 	};

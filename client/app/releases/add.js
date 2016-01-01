@@ -251,6 +251,8 @@ angular.module('vpdb.releases.add', []).controller('ReleaseAddCtrl', function(
 			// if it's an array, those area displayed below
 			if (!_.isArray(scope.errors.versions[0].files)) {
 				scope.filesError = scope.errors.versions[0].files;
+			} else {
+				scope.filesError = null;
 			}
 		}));
 	};

@@ -59,18 +59,18 @@ Set:
 ### Node.js
 
 	sudo su -
-	curl https://raw.githubusercontent.com/creationix/nvm/v0.24.0/install.sh | NVM_DIR=/usr/local/nvm PROFILE=/etc/bash.bashrc bash
+	curl https://raw.githubusercontent.com/creationix/nvm/v0.30.1/install.sh | NVM_DIR=/usr/local/nvm PROFILE=/etc/bash.bashrc bash
 	vi /etc/bash.bashrc
 	
 Move added lines to the top (before `[ -z "$PS1" ] && return`), then save and:
 
-	nvm install 0.12
+	nvm install 5
 	nvm alias default stable
 	exit
 	
 If you want to temporarily switch to another node version:
 
-	nvm alias default 0.10
+	nvm alias default 4
 	service nginx restart
 
 

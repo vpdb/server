@@ -243,7 +243,8 @@ var manufacturerNames = {
 	530: 'Advertising Poster Company',
 	532: 'United',
 	549: 'Professional Pinball of Toronto',
-	555: 'Fipermatic'
+	555: 'Fipermatic',
+	671: 'Spooky'
 };
 
 var manufacturerGroups = {

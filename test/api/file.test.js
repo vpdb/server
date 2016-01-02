@@ -183,7 +183,7 @@ describe('The VPDB `file` API', function() {
 						done();
 					});
 			});
-		})
+		});
 	});
 
 	describe('when uploading a video', function() {

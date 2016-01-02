@@ -99,6 +99,27 @@ ImageProcessor.prototype.variationData = function(metadata) {
 	};
 };
 
+ImageProcessor.prototype.preprocess = function(file, done) {
+
+	// rotate if necessary
+	if (file.file_type === 'playfield-fs') {
+		gm(file.getPath()).identify(function(err, metadata) {
+			if (err) {
+				// just return, this is handled by metadata
+				return done();
+			}
+			if (_.isObject(metadata.size) && metadata.size.height > metadata.size.width) {
+				logger.info('[processor|image|pre] Rotating FS playfield image.');
+				gm(file.getPath()).rotate('black', 90).write(file.getPath(), done);
+			} else {
+				done();
+			}
+		});
+	} else {
+		done();
+	}
+};
+
 /**
  * Resizes the image.
  *

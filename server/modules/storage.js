@@ -211,6 +211,14 @@ Storage.prototype.metadataShort = function(file, metadata) {
 	return processors[type].metadataShort(data);
 };
 
+Storage.prototype.preprocess = function(file, done) {
+	var type = file.getMimeCategory();
+	if (!processors[type] || !processors[type].preprocess) {
+		return done(null, file);
+	}
+	processors[type].preprocess(file, done);
+};
+
 /**
  * Starts post-processing an uploaded file. See the `queue` module for a
  * complete description of the flow.

@@ -160,6 +160,30 @@ describe('The VPDB `file` API', function() {
 				done();
 			});
 		});
+
+		it('should rotate the image when uploading an already rotated FS', function(done) {
+			var width = 1080;
+			var height = 1920;
+			gm(width, height, pleasejs.make_color()).toBuffer('PNG', function(err, data) {
+				if (err) {
+					throw err;
+				}
+				request
+					.post('/storage/v1/files')
+					.query({ type: 'playfield-fs' })
+					.type('image/png')
+					.set('Content-Disposition', 'attachment; filename="portrait-fs-shot.png"')
+					.set('Content-Length', data.length)
+					.send(data)
+					.as('member')
+					.end(function(err, res) {
+						hlp.expectStatus(err, res, 201);
+						expect(res.body.metadata.size.width).to.be(height);
+						expect(res.body.metadata.size.height).to.be(width);
+						done();
+					});
+			});
+		})
 	});
 
 	describe('when uploading a video', function() {

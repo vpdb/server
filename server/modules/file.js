@@ -46,35 +46,42 @@ exports.create = function(fileData, readStream, error, callback) {
 
 			var writeStream = fs.createWriteStream(file.getPath());
 			writeStream.on('finish', function() {
-				storage.metadata(file, function(err, metadata) {
+
+				storage.preprocess(file, function(err) {
 					if (err) {
-						return file.remove(function(err) {
+						logger.error('[api|file:save] Error preprocessing file: %s', err.message);
+					}
+
+					storage.metadata(file, function(err, metadata) {
+						if (err) {
+							return file.remove(function(err) {
+								/* istanbul ignore if */
+								if (err) {
+									logger.error('[api|file:save] Removing file due to erroneous metadata: %s', err, {});
+								}
+								return callback({ error: error('Metadata parsing for MIME type "%s" failed. Upload corrupted or weird format?', file.mime_type), code: 400 });
+							});
+						}
+						if (!metadata) {
+							// no need to re-save
+							return callback(null, file, 201);
+						}
+
+						File.sanitizeObject(metadata);
+						file.metadata = metadata;
+
+						file.save(function(err, file) {
 							/* istanbul ignore if */
 							if (err) {
-								logger.error('[api|file:save] Removing file due to erroneous metadata: %s', err, {});
+								logger.error('[api|file:save] Error saving metadata: %s', err, {});
+								logger.error('[api|file:save] Metadata: %s', require('util').inspect(metadata));
 							}
-							return callback({ error: error('Metadata parsing for MIME type "%s" failed. Upload corrupted or weird format?', file.mime_type), code: 400 });
+							logger.info('[api|file:save] File upload of %s successfully completed.', file.toString());
+							callback(null, file, 201);
+
+							// do this in the background.
+							storage.postprocess(file);
 						});
-					}
-					if (!metadata) {
-						// no need to re-save
-						return callback(null, file, 201);
-					}
-
-					File.sanitizeObject(metadata);
-					file.metadata = metadata;
-
-					file.save(function(err, file) {
-						/* istanbul ignore if */
-						if (err) {
-							logger.error('[api|file:save] Error saving metadata: %s', err, {});
-							logger.error('[api|file:save] Metadata: %s', require('util').inspect(metadata));
-						}
-						logger.info('[api|file:save] File upload of %s successfully completed.', file.toString());
-						callback(null, file, 201);
-
-						// do this in the background.
-						storage.postprocess(file);
 					});
 				});
 			});

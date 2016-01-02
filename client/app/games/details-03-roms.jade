@@ -8,7 +8,7 @@ h1 ROMs
 .full-width
 
 	//- upload drop panel
-	div(collapse="romUploadCollapsed")
+	div(uib-collapse="romUploadCollapsed")
 		.well.well--full-width.well--dropzone(
 			file-upload="{ type: 'rom', status: meta.romFiles, onSuccess: onRomUpload, allowedExtensions: ['zip'], allowMultipleFiles: true }"
 			ngf-drag-over-class="well--dragging"
@@ -39,7 +39,7 @@ h1 ROMs
 
 						.col-md-12(ng-show="file.uploading")
 							.block.text--large: strong {{ file.name }}
-							progressbar.progress-striped.active(value="file.progress")
+							uib-progressbar.progress-striped.active(value="file.progress")
 					+icon('trash').a(ng-click="removeRom(file)", ng-show="!file.uploading")
 					.clearfix
 					.alert.alert-danger(ng-show="file.error")
@@ -77,7 +77,7 @@ table.table.table-double-striped(ng-show="roms.length > 0")
 		//- details
 		tr(ng-repeat-end, ng-class="{ collapsed: isCollapsed }")
 			td(colspan="6")
-				div(collapse="isCollapsed")
+				div(uib-collapse="isCollapsed")
 					table.table.space-left-2x
 						tbody
 							tr(ng-repeat="file in rom.rom_files")

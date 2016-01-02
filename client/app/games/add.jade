@@ -182,26 +182,26 @@ include ../template/_mixins
 				.form-group
 					label.col-sm-3.control-label Description
 					.col-sm-9
-						tabset.tabset--light
+						uib-tabset.tabset--light
 							label.label--small.pull-right(markdown-info="Markdown enabled.")
-							tab
-								tab-heading(title="Write"): +icon('edit')
+							uib-tab
+								uib-tab-heading(title="Write"): +icon('edit')
 								textarea.textarea--full.msd-elastic(placeholder="Description of the original table", ng-model="game.description")
-							tab
-								tab-heading(title="Preview"): +icon('eye')
+							uib-tab
+								uib-tab-heading(title="Preview"): +icon('eye')
 								div.markdown(markdown="game.description")
 								label.tab__label(ng-show="!game.description || game.description.length == 0") Nothing to preview.
 
 				.form-group
 					label.col-sm-3.control-label Instructions
 					.col-sm-9
-						tabset.tabset--light
+						uib-tabset.tabset--light
 							label.label--small.pull-right(markdown-info="Markdown enabled.")
-							tab
-								tab-heading(title="Write"): +icon('edit')
+							uib-tab
+								uib-tab-heading(title="Write"): +icon('edit')
 								textarea.textarea--full.msd-elastic(placeholder="Put game instructions here", ng-model="game.instructions")
-							tab
-								tab-heading(title="Preview"): +icon('eye')
+							uib-tab
+								uib-tab-heading(title="Preview"): +icon('eye')
 								div.markdown(markdown="game.instructions")
 								label.tab__label(ng-show="!game.instructions || game.instructions.length == 0") Nothing to preview.
 
@@ -253,7 +253,7 @@ include ../template/_mixins
 						.panel-body.a.a--darker
 							.img.img--ar-bg.loaded(img-bg="game.mediaFile.backglass.variations['medium-2x']")
 								.text-center.vertical-center--100
-									progressbar.progress--fixed-absolute.progress-striped.active(value="mediaFile.backglass.progress", ng-show="mediaFile.backglass.uploading")
+									uib-progressbar.progress--fixed-absolute.progress-striped.active(value="mediaFile.backglass.progress", ng-show="mediaFile.backglass.uploading")
 									.span(ng-show="!img.url")
 										+icon('photo').svg-4x(ng-class="{ transparent: mediaFile.backglass.uploading }")
 										p {{ mediaFile.backglass.uploadText }}
@@ -294,7 +294,7 @@ include ../template/_mixins
 						.panel-body.a.a--darker
 							.img.img--ar-logo.loaded(img-bg="game.mediaFile.logo")
 								.text-center.vertical-center--100
-									progressbar.progress--fixed-absolute.progress-striped.active(value="mediaFile.logo.progress", ng-show="mediaFile.logo.uploading")
+									uib-progressbar.progress--fixed-absolute.progress-striped.active(value="mediaFile.logo.progress", ng-show="mediaFile.logo.uploading")
 									.span(ng-show="!img.url")
 										+icon('photo').svg-4x(ng-class="{ transparent: mediaFile.logo.uploading }")
 										p {{ mediaFile.logo.uploadText }}

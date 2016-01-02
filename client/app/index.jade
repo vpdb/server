@@ -9,11 +9,11 @@ block navbar
 			a(ui-sref="games") Games
 		li(ng-class="{ active: menu == 'releases' }")
 			a(ui-sref="releases") Releases
-		li.dropdown(ng-class="{ active: menu == 'admin' }", ng-show="auth.hasRole(['root', 'admin'])", on-toggle="toggled(open)", dropdown)
-			a.space-right.dropdown-toggle(dropdown-toggle)
+		li.uib-dropdown(ng-class="{ active: menu == 'admin' }", ng-show="auth.hasRole(['root', 'admin'])", on-toggle="toggled(open)", uib-dropdown)
+			a.space-right.uib-dropdown-toggle(uib-dropdown-toggle)
 				span.space-right-2x Admin
 				+icon('angle-down').smaller.shift-up
-			ul.dropdown-menu(role="menu")
+			ul.uib-dropdown-menu(role="menu")
 				li
 					a(ui-sref="adminUsers")
 						+icon('users').space-right.shift-up
@@ -24,11 +24,11 @@ block navbar
 			a(ng-click="login()")
 				+icon('lock').small.space-right.shift-up
 				span.space-right Login
-		li.dropdown(ng-show="auth.isAuthenticated", on-toggle="toggled(open)", dropdown)
-			a.space-right.dropdown-toggle(dropdown-toggle)
+		li.uib-dropdown(ng-show="auth.isAuthenticated", on-toggle="toggled(open)", uib-dropdown)
+			a.space-right.uib-dropdown-toggle(uib-dropdown-toggle)
 				span.space-right-2x {{ auth.user.name }}
 				+icon('angle-down').smaller.shift-up
-			ul.dropdown-menu
+			ul.uib-dropdown-menu
 				li
 					a(ui-sref="profile.settings")
 						+icon('user').space-right.shift-up
@@ -45,10 +45,10 @@ block navbar
 					i.icon.space-right(class="{{ downloadsPinned ? 'icon-pin-on' : 'icon-pin-off' }}")
 					| Pin Downloads
 					span.badge(ng-show="downloadsPinned || pinnedDownloadCount") {{ pinnedDownloadCount }}
-				button.btn.dropdown-toggle(type="button", class="{{ downloadsPinned ? 'btn-primary' : 'btn-default' }}", data-toggle="dropdown")
+				button.btn.uib-dropdown-toggle(type="button", class="{{ downloadsPinned ? 'btn-primary' : 'btn-default' }}", data-toggle="dropdown")
 					+icon('angle-down').smaller.shift-up
 					span.sr-only Toggle Dropdown
-				ul.dropdown-menu(role="menu")
+				ul.uib-dropdown-menu(role="menu")
 					li
 						table
 							tbody

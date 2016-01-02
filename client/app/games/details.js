@@ -2,7 +2,7 @@
 
 angular.module('vpdb.games.details', [])
 
-	.controller('GameController', function($scope, $rootScope, $stateParams, $modal, $log, $localStorage,
+	.controller('GameController', function($scope, $rootScope, $stateParams, $uibModal, $log, $localStorage,
 					ApiHelper, Flavors, ModalService, DisplayService, ConfigService, DownloadService, AuthService,
 					GameResource, ReleaseCommentResource, FileResource, RomResource, GameRatingResource, GameStarResource,
 										   UserResource) {
@@ -206,7 +206,7 @@ angular.module('vpdb.games.details', [])
 		};
 
 //		$scope.requestModPermission = function(release) {
-//			var modalInstance = $modal.open({
+//			var modalInstance = $uibModal.open({
 //				templateUrl: '/partials/modals/requestModPermission.html',
 //				controller: 'RequestModPermissionModalCtrl'
 //			});

@@ -6,8 +6,8 @@ include ../template/_mixins
 
 		//-- PLAYFIELD TUMBS
 		//---------------------------------------------------------------------
-		carousel(interval="60000")
-			slide(ng-repeat="slide in portraitShots", active="slide.active")
+		uib-carousel(interval="60000")
+			uib-slide(ng-repeat="slide in portraitShots", active="slide.active")
 				img(ng-src="{{ slide.url }}")
 
 
@@ -33,7 +33,7 @@ include ../template/_mixins
 		hr
 		p
 			.a.pull-right(
-				tooltip="{{ releaseStarred ? 'Unstar' : 'Star' }} this release",
+				uib-tooltip="{{ releaseStarred ? 'Unstar' : 'Star' }} this release",
 				tooltip-placement="right",
 				tooltip-append-to-body="true",
 				ng-show="auth.hasPermission('releases/star')",
@@ -75,7 +75,7 @@ include ../template/_mixins
 			.form-group.form--inline
 				input.form-control.input-lg(type="text", value="{{ release.name }}")
 		h2.h--primary(ng-hide="editing") {{ release.name }} <small>{{ latestVersion.version }}</small>
-		.badge.badge--tag.badge--small(ng-repeat="tag in release.tags", tooltip="{{tag.description}}", tooltip-append-to-body="true") {{ tag.name }}
+		.badge.badge--tag.badge--small(ng-repeat="tag in release.tags", uib-tooltip="{{tag.description}}", tooltip-append-to-body="true") {{ tag.name }}
 
 		span.clearfix.padder-top(ng-show="release.tags && release.tags.length") &nbsp;
 		div.markdown(markdown="release.description", ng-show="release.description")
@@ -101,9 +101,9 @@ include ../template/_mixins
 		//-- VERSION HISTORY
 		//---------------------------------------------------------------------
 		h3.h--smaller.h--primary Version History
-		accordion.panel-group--transparent.subtle(close-others="false")
-			accordion-group(ng-repeat="version in releaseVersions", is-open="$first")
-				accordion-heading
+		uib-accordion.panel-group--transparent.subtle(close-others="false")
+			uib-accordion-group(ng-repeat="version in releaseVersions", is-open="$first")
+				uib-accordion-heading
 					strong v{{ version.version }}
 					|  (
 					span(am-time-ago="version.released_at")
@@ -175,11 +175,11 @@ include ../template/_mixins
 			.media-left.avatar
 				img.img-avatar.pull-left(gravatar-src="auth.user.gravatar_id", gravatar-default="404", fallback-icon="user")
 			.media-body.media--full-width
-				tabset
+				uib-tabset
 
 					label.label--small.pull-right(markdown-info="Comments are parsed with Markdown.")
-					tab
-						tab-heading(title="Write")
+					uib-tab
+						uib-tab-heading(title="Write")
 							+icon('edit')
 							.panel-triangle
 						textarea.textarea--full.animate(
@@ -192,8 +192,8 @@ include ../template/_mixins
 							mentio-select="getUserMention(item)",
 							mentio-template-url="user-item.html"
 						)
-					tab
-						tab-heading(title="Preview"): +icon('eye')
+					uib-tab
+						uib-tab-heading(title="Preview"): +icon('eye')
 						div.markdown(markdown="$parent.$parent.newComment")
 						label.tab__label(ng-show="!$parent.$parent.newComment || $parent.$parent.newComment.length == 0") Nothing to preview.
 

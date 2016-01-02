@@ -7,9 +7,9 @@ include ../template/_mixins
 
 		ul.nav.subnav
 			li: a(href="/styleguide", ng-class="{ 'color-primary': subsection == 'index' }") Overview
-		accordion.panel-group--transparent(close-others="true")
+		uib-accordion.panel-group--transparent(close-others="true")
 			for section, i in sections
-				accordion-group(heading=section.title, is-open="sgIsOpen#{i}", ng-init="sgIsOpen#{i}=#{section.id}==subsection.substr(0, subsection.indexOf('.'))")
+				uib-accordion-group(heading=section.title, is-open="sgIsOpen#{i}", ng-init="sgIsOpen#{i}=#{section.id}==subsection.substr(0, subsection.indexOf('.'))")
 					ul.list-group.list-group--simple
 						if section.childSections
 							for subsection in section.childSections

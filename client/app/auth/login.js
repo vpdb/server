@@ -72,7 +72,7 @@ angular.module('vpdb.login', [])
 		};
 	})
 
-	.controller('AuthCallbackCtrl', function($stateParams, $modal, AuthResource, AuthService, ModalService) {
+	.controller('AuthCallbackCtrl', function($stateParams, $uibModal, AuthResource, AuthService, ModalService) {
 		AuthResource.authenticateCallback($stateParams, function(result) {
 			AuthService.authenticated(result);
 			AuthService.runPostLoginActions();

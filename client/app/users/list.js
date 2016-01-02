@@ -2,7 +2,7 @@
 
 angular.module('vpdb.users.list', [])
 
-	.controller('AdminUserCtrl', function($scope, $modal, UserResource, RolesResource) {
+	.controller('AdminUserCtrl', function($scope, $uibModal, UserResource, RolesResource) {
 
 		$scope.theme('light');
 		$scope.setTitle('Users');
@@ -15,7 +15,7 @@ angular.module('vpdb.users.list', [])
 		var firstLoad = true;
 
 		$scope.edit = function(user) {
-			$modal.open({
+			$uibModal.open({
 				templateUrl: '/users/modal-user-edit.html',
 				controller: 'AdminUserEditCtrl',
 				size: 'lg',

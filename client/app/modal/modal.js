@@ -5,7 +5,7 @@
  */
 angular.module('vpdb.modal', [])
 
-	.factory('ModalService', function($modal) {
+	.factory('ModalService', function($uibModal) {
 
 		return {
 
@@ -39,7 +39,7 @@ angular.module('vpdb.modal', [])
 			},
 
 			markdown: function() {
-				return $modal.open({
+				return $uibModal.open({
 					templateUrl: '/modal/modal-markdown.html',
 					controller: 'ModalCtrl',
 					resolve: { data: function() { return null; } },
@@ -65,7 +65,7 @@ angular.module('vpdb.modal', [])
 					no: 'No'
 				};
 				data = _.defaults(data, defaults);
-				return $modal.open({
+				return $uibModal.open({
 					templateUrl: '/modal/modal-question.html',
 					controller: 'ModalCtrl',
 					resolve: { data: function() { return data; } }
@@ -88,7 +88,7 @@ angular.module('vpdb.modal', [])
 				if (flash) {
 					this._flashMessage = data;
 				} else {
-					return $modal.open({
+					return $uibModal.open({
 						templateUrl: '/modal/modal-error-info.html',
 						controller: 'ModalCtrl',
 						resolve: { data: function() { return data; } }
@@ -100,7 +100,7 @@ angular.module('vpdb.modal', [])
 		};
 	})
 
-	.factory('ModalFlashService', function($modal, ModalService) {
+	.factory('ModalFlashService', function($uibModal, ModalService) {
 
 		return {
 
@@ -138,7 +138,7 @@ angular.module('vpdb.modal', [])
 				if (ModalService._flashMessage) {
 					var data = _.clone(ModalService._flashMessage);
 					ModalService._flashMessage = null;
-					$modal.open({
+					$uibModal.open({
 						templateUrl: '/modal/modal-error-info.html',
 						controller: 'ModalCtrl',
 						resolve: { data: function() { return data; } }

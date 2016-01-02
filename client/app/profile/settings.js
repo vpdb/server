@@ -2,7 +2,7 @@
 
 angular.module('vpdb.profile.settings', [])
 
-	.controller('ProfileSettingsCtrl', function($scope, $rootScope, $modal, AuthService, ApiHelper, ProfileResource, TokenResource, ModalService) {
+	.controller('ProfileSettingsCtrl', function($scope, $rootScope, $uibModal, AuthService, ApiHelper, ProfileResource, TokenResource, ModalService) {
 
 		$scope.theme('dark');
 		$scope.setTitle('Your Profile');
@@ -108,7 +108,7 @@ angular.module('vpdb.profile.settings', [])
 		};
 
 		$scope.createToken = function() {
-			$modal.open({
+			$uibModal.open({
 				templateUrl: '/profile/modal-token-create.html',
 				controller: 'AddTokenCtrl'
 			}).result.then(function(token) {
@@ -175,7 +175,7 @@ angular.module('vpdb.profile.settings', [])
 
 	})
 
-	.controller('AddTokenCtrl', function($scope, $modal, $modalInstance, TokenResource, ApiHelper) {
+	.controller('AddTokenCtrl', function($scope, $modalInstance, TokenResource, ApiHelper) {
 
 		$scope.token = {};
 		$scope.create = function() {

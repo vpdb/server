@@ -20,7 +20,8 @@
 "use strict"; /* global _, angular */
 
 angular.module('vpdb.games.details', []).controller('ReleaseController', function(
-	$scope, $rootScope, $modal, ApiHelper, ReleaseCommentResource, AuthService, ReleaseRatingResource, ReleaseStarResource, ModalService
+	$scope, $rootScope, $uibModal, ApiHelper, ReleaseCommentResource, AuthService,
+	ReleaseRatingResource, ReleaseStarResource, ModalService
 ) {
 
 	// setup releases
@@ -99,7 +100,7 @@ angular.module('vpdb.games.details', []).controller('ReleaseController', functio
 	$scope.download = function(game) {
 
 		if (AuthService.isAuthenticated) {
-			$modal.open({
+			$uibModal.open({
 				templateUrl: '/games/modal-download.html',
 				controller: 'DownloadGameCtrl',
 				size: 'lg',

@@ -60,11 +60,11 @@ include ../template/_mixins
 			.clearfix
 
 		// filters
-		accordion.panel-group--transparent(close-others="false")
+		uib-accordion.panel-group--transparent(close-others="false")
 
 			// flavor filters
-			accordion-group.panel--inner(ng-repeat="flavor in flavors", is-open="filterFlavorOpen[flavor.name]")
-				accordion-heading by {{ flavor.header }}
+			uib-accordion-group.panel--inner(ng-repeat="flavor in flavors", is-open="filterFlavorOpen[flavor.name]")
+				uib-accordion-heading by {{ flavor.header }}
 				ul.list--checkboxes.list--condensed
 					li
 						.radio--lg
@@ -80,14 +80,14 @@ include ../template/_mixins
 								span: i {{ flavorVal.other }}
 
 			// tag filter
-			accordion-group.panel--inner(is-open="filterTagOpen")
-				accordion-heading by Tag
+			uib-accordion-group.panel--inner(is-open="filterTagOpen")
+				uib-accordion-heading by Tag
 				.row
 					.col-xs-6.text-center.a(ng-repeat="tag in tags" filter-tag="{{ tag.id }}", title="{{ tag.description }}") {{ tag.name }}
 
 			// tag filter
-			accordion-group.panel--inner(is-open="filterBuildOpen")
-				accordion-heading by Compatibility
+			uib-accordion-group.panel--inner(is-open="filterBuildOpen")
+				uib-accordion-heading by Compatibility
 				.row
 					p.space-left-2x Official:
 					.col-xs-6.text-center.a(ng-repeat="build in builds | filter:{is_range:false,type:'release'}" filter-build="{{ build.id }}") {{ build.label }}

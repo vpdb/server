@@ -115,7 +115,7 @@ angular.module('vpdb.common', [])
 		});
 	})
 
-	.factory('ApiHelper', function($modal, $rootScope, $location, ModalService, ModalFlashService) {
+	.factory('ApiHelper', function($uibModal, $rootScope, $location, ModalService, ModalFlashService) {
 		return {
 
 			handlePagination: function(scope, opts, callback) {

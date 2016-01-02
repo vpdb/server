@@ -20,7 +20,7 @@ hr
 .row: .col-sm-offset-1.col-sm-10.text-left
 	p
 		.a.pull-right(
-			tooltip="{{ gameStarred ? 'Unstar' : 'Star' }} this game",
+			uib-tooltip="{{ gameStarred ? 'Unstar' : 'Star' }} this game",
 			tooltip-placement="bottom",
 			tooltip-append-to-body="true",
 			ng-show="auth.hasPermission('games/star')",

@@ -22,7 +22,7 @@
 /**
  * The base controller that parents ReleaseAddCtrl and ReleaseFileAddCtrl.
  */
-angular.module('vpdb.releases.add', []).controller('ReleaseAddBaseCtrl', function($scope, $modal, ApiHelper, AuthService, BuildResource, FileResource, BootstrapTemplate) {
+angular.module('vpdb.releases.add', []).controller('ReleaseAddBaseCtrl', function($scope, $uibModal, ApiHelper, AuthService, BuildResource, FileResource, BootstrapTemplate) {
 
 
 	BootstrapTemplate.patchCalendar();
@@ -96,7 +96,7 @@ angular.module('vpdb.releases.add', []).controller('ReleaseAddBaseCtrl', functio
 	 * Opens the dialog for creating a new build.
 	 */
 	$scope.addBuild = function() {
-		$modal.open({
+		$uibModal.open({
 			templateUrl: '/releases/modal-build-create.html',
 			controller: 'AddBuildCtrl',
 			size: 'lg'

@@ -37,12 +37,12 @@ p Show your love to those who helped you. In the field below, you can add your h
 	| but you're free to describe them however you want.
 
 .form-group
-	tabset.tabset--light
+	uib-tabset.tabset--light
 		label.label--small.pull-right(markdown-info="Markdown enabled.")
-		tab
+		uib-tab
 			tab-heading(title="Write"): +icon('edit')
 			textarea.textarea--full.msd-elastic(placeholder="List of people to thank", ng-model="release.acknowledgements")
-		tab
+		uib-tab
 			tab-heading(title="Preview"): +icon('eye')
 			div.markdown(markdown="release.acknowledgements")
 			label.tab__label(ng-show="!release.acknowledgements || release.acknowledgements.length == 0") Nothing to preview.

@@ -2,7 +2,7 @@
 
 angular.module('vpdb.games.add', [])
 
-	.controller('AdminGameAddCtrl', function($scope, $modal, $window, $localStorage, $location, $state,
+	.controller('AdminGameAddCtrl', function($scope, $uibModal, $window, $localStorage, $location, $state,
 											 ApiHelper, AuthService, ConfigService, MimeTypeService, ModalService,
 											 IpdbResource, GameResource, FileResource) {
 

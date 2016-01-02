@@ -8,9 +8,9 @@ include ../template/_mixins
 	//-------------------------------------------------------------------------
 	.collapse--search
 
-		div(collapse="searchResult")
+		div(uib-collapse="searchResult")
 			.spacer &nbsp;
-		.panel(collapse="!searchResult")
+		.panel(uib-collapse="!searchResult")
 			.container
 				.row.fade2-animation(ng-show="games.length > 0")
 					.clear
@@ -40,9 +40,9 @@ include ../template/_mixins
 	//- INFO
 	//-------------------------------------------------------------------------
 	.collapse--info
-		div(collapse="whatsThis")
+		div(uib-collapse="whatsThis")
 			.spacer &nbsp;
-		.panel(collapse="!whatsThis")
+		.panel(uib-collapse="!whatsThis")
 
 			.clear
 				+icon('times')(ng-click="whatsThis = false").a

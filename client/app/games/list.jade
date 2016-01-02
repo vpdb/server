@@ -48,11 +48,11 @@ include ../template/_mixins
 		label.a.a--light.padder-bottom(for='includeEmptyGames') Include empty games
 		.clearfix
 
-		accordion.panel-group--transparent(close-others="false")
+		uib-accordion.panel-group--transparent(close-others="false")
 
 			// year filter
-			accordion-group.panel--inner(is-open="filterYearOpen")
-				accordion-heading by Year
+			uib-accordion-group.panel--inner(is-open="filterYearOpen")
+				uib-accordion-heading by Year
 				.row
 					.col-xs-6.text-center.a(filter-decade="1960") 1960s
 					.col-xs-6.text-center.a(filter-decade="1970") 1970s
@@ -62,8 +62,8 @@ include ../template/_mixins
 					.col-xs-6.text-center.a(filter-decade="2010") 2010s
 
 			// manufacturer filter
-			accordion-group.panel--inner(is-open="filterManufacturerOpen")
-				accordion-heading by Manufacturer
+			uib-accordion-group.panel--inner(is-open="filterManufacturerOpen")
+				uib-accordion-heading by Manufacturer
 				.row
 					.col-xs-6.text-center.a(filter-manufacturer="Bally") Bally
 					.col-xs-6.text-center.a(filter-manufacturer="Capcom") Capcom

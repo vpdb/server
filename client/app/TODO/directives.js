@@ -83,12 +83,12 @@ angular.module('vpdb.common', [])
 		};
 	})
 
-	.directive('user', function($compile, $modal) {
+	.directive('user', function($compile, $uibModal) {
 		return {
 			restrict: 'E',
 			link: function(scope, element) {
 				element.click(function() {
-					$modal.open({
+					$uibModal.open({
 						templateUrl: '/users/modal-user-info.html',
 						controller: 'UserDetailCtrl',
 						resolve: {

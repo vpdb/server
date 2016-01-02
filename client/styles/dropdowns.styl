@@ -12,7 +12,7 @@
 //   <div class="container">
 //       <ul class="nav navbar-nav">
 //         <li class="dropdown" on-toggle="toggled(open)">
-//           <a class="dropdown-toggle">Menu <i class="fa fa-angle-down space-left"></i></a>
+//           <a class="uib-dropdown-toggle">Menu <i class="fa fa-angle-down space-left"></i></a>
 //           <ul class="{$modifiers}">
 //             <li>
 //               <a ng-click="alert('clicked!')">Item</a>
@@ -23,10 +23,10 @@
 //   </div>
 // </nav>
 //
-// .dropdown-menu          - Dropdown menu
+// .uib-dropdown-menu          - Dropdown menu
 //
 // Styleguide 8.1
-.navbar-nav > li .dropdown-menu
+.navbar-nav > li .uib-dropdown-menu
 	padding 5px
 	margin-top 1px
 	border-left solid 1px
@@ -36,7 +36,7 @@
 		padding-left 10px
 
 // semi-transparent layer for dropdown
-.dropdown-menu
+.uib-dropdown-menu
 	border-radius $border-radius-small
 	width 100%
 	&:after
@@ -55,13 +55,13 @@
 		margin-top -1px
 
 // Typography
-.dropdown-menu
+.uib-dropdown-menu
 	font-size $font-size-small
 	> li > a
 		font-weight $font-weight-normal
 
 // Media inside dropdown
-.dropdown-menu
+.uib-dropdown-menu
 	.media
 		margin-left 10px
 		margin-right 10px
@@ -72,7 +72,7 @@
 		border-bottom none
 
 .theme-light
-	.datepicker + .dropdown-menu
+	.datepicker + .uib-dropdown-menu
 		*
 			outline none
 
@@ -99,7 +99,7 @@
 
 
 
-.datepicker + .dropdown-menu
+.datepicker + .uib-dropdown-menu
 
 	padding-top 0
 	margin-top 0

@@ -2,7 +2,7 @@
 
 angular.module('vpdb.common', [])
 
-	.controller('AppCtrl', function($scope, $rootScope, $state, $location, $modal, $localStorage, $timeout,
+	.controller('AppCtrl', function($scope, $rootScope, $state, $location, $uibModal, $localStorage, $timeout,
 									AuthService, ProfileService, ModalService, ModalFlashService, DownloadService, UserResource) {
 
 		$rootScope.themeName = 'theme-dark';
@@ -110,13 +110,13 @@ angular.module('vpdb.common', [])
 		};
 
 		$scope.helpPinnedDownloads = function() {
-			$modal.open({
+			$uibModal.open({
 				templateUrl: '/partials/modals/helpPinnedDownloads.html'
 			});
 		};
 
 		$rootScope.login = function(opts) {
-			$modal.open({
+			$uibModal.open({
 				templateUrl: '/auth/modal-login.html',
 				controller: 'LoginCtrl',
 				windowClass: 'theme-light',

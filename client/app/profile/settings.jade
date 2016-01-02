@@ -7,7 +7,7 @@ include ../template/_mixins
 	.col-sm-7
 		.input-group
 			input.form-control(type="text", ng-model="updatedUser.name")
-			span.input-group-addon(tooltip="Name is publicly visible.", tooltip-placement="right", tooltip-append-to-body="true")
+			span.input-group-addon(uib-tooltip="Name is publicly visible.", tooltip-placement="right", tooltip-append-to-body="true")
 				+icon('public').small
 
 	.clearfix
@@ -20,7 +20,7 @@ include ../template/_mixins
 	.col-sm-7
 		.input-group
 			input.form-control(type="text", ng-model="updatedUser.location")
-			span.input-group-addon(tooltip="Location is publicly visible.", tooltip-placement="right", tooltip-append-to-body="true")
+			span.input-group-addon(uib-tooltip="Location is publicly visible.", tooltip-placement="right", tooltip-append-to-body="true")
 				+icon('public').small
 	.clearfix
 	div.alert.alert-danger(ng-show="errors.location")
@@ -166,7 +166,7 @@ include ../template/_mixins
 			tr(ng-repeat="token in tokens")
 				td(ng-show="token.token", colspan="2")
 					tt {{ token.token }}
-					span(tooltip="Copy to clipboard", tooltip-placement="right", clip-copy="token.token", clip-click="onTokenCopied()"): +icon('clipboard').a.a--lighter.shift-up.space-left
+					span(uib-tooltip="Copy to clipboard", tooltip-placement="right", clip-copy="token.token", clip-click="onTokenCopied()"): +icon('clipboard').a.a--lighter.shift-up.space-left
 				td(ng-hide="token.token"): b.space-left {{ token.label }}
 				td(ng-hide="token.token")
 					+icon("{{ token.is_active ? 'check' : 'times' }}")

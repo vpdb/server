@@ -10,11 +10,11 @@ include ../template/_mixins
 				+icon('search').smaller
 			input.form-control.input--search(ng-model="query", type="text", placeholder="Search")
 
-		accordion.panel-group--transparent(close-others="false")
+		uib-accordion.panel-group--transparent(close-others="false")
 
 			// role filter
-			accordion-group(is-open="filterYearOpen")
-				accordion-heading by Role
+			uib-accordion-group(is-open="filterYearOpen")
+				uib-accordion-heading by Role
 				ul.list-group.list-group--simple
 					li.a.a--lighter.list-group-item(ng-repeat="role in roles", filter-role="{{ role.name }}") {{ role.name }}
 

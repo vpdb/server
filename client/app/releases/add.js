@@ -23,7 +23,7 @@
  * Main controller containing the form for adding a new release.
  */
 angular.module('vpdb.releases.add', []).controller('ReleaseAddCtrl', function(
-	$scope, $modal, $window, $localStorage, $state, $stateParams, $location, $anchorScroll, $timeout, $controller,
+	$scope, $uibModal, $window, $localStorage, $state, $stateParams, $location, $anchorScroll, $timeout, $controller,
 	AuthService, ConfigService, DisplayService, MimeTypeService, ModalService, ApiHelper, Flavors, ReleaseMeta,
 	ReleaseResource, FileResource, TagResource, BuildResource, GameResource)
 {
@@ -129,7 +129,7 @@ angular.module('vpdb.releases.add', []).controller('ReleaseAddCtrl', function(
 	 * @param {object} author If set, edit this author, otherwise add a new one.
 	 */
 	$scope.addAuthor = function(author) {
-		$modal.open({
+		$uibModal.open({
 			templateUrl: '/releases/modal-author-add.html',
 			controller: 'ChooseAuthorCtrl',
 			resolve: {
@@ -166,7 +166,7 @@ angular.module('vpdb.releases.add', []).controller('ReleaseAddCtrl', function(
 	 * Opens the create tag dialog
 	 */
 	$scope.createTag = function() {
-		$modal.open({
+		$uibModal.open({
 			templateUrl: '/releases/modal-tag-create.html',
 			controller: 'CreateTagCtrl'
 		}).result.then(function(newTag) {

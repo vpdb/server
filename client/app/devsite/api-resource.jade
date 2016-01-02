@@ -23,14 +23,14 @@ mixin resource(resource)
 						each scope in hlp.authscopes(method.securedBy)
 							i.space-left(class=hlp.authscope(scope).classes, title=hlp.authscope(scope).title)
 				.clearfix
-				div(collapse="isCollapsed")
+				div(uib-collapse="isCollapsed")
 					.well.well--full-width
-						tabset.tabset--transparent
+						uib-tabset.tabset--transparent
 
 							//------------------------------------------
 							//- OVERVIEW
 							//------------------------------------------
-							tab(heading="Overview")
+							uib-tab(heading="Overview")
 								.markdown!=hlp.markdown(method.description)
 
 								p: u Authorization:
@@ -42,7 +42,7 @@ mixin resource(resource)
 							//------------------------------------------
 							//- REQUEST
 							//------------------------------------------
-							tab(heading="Request")
+							uib-tab(heading="Request")
 
 								//------------------------------------------
 								//- uri parameters
@@ -124,28 +124,28 @@ mixin resource(resource)
 									each b, key in method.body
 										if b.schema
 											p: u #{hlp.splitType(key, 'Fields').name}:
-											tabset.padder-bottom-2x
-												tab(heading="Schema")
+											uib-tabset.padder-bottom-2x
+												uib-tab(heading="Schema")
 													+jsonSchema(hlp.schema(b.schema, { method: method.method, type: 'request', path: resource.parentUrl + resource.relativeUri, filter: { readOnly: false }}))
-												tab(heading="Raw")
+												uib-tab(heading="Raw")
 													pre!=hlp.highlight(b.schema)
 
 									- var n = 0;
 									each r, name in hlp.requestByType(method.body)
 										p(class=n ? 'padder-top' : ''): u= name === 'default' ? 'Example Request:' : name + ':'
 										- n++;
-										tabset
+										uib-tabset
 											i.pull-right(class=hlp.authscope(r.role).classes, title="With #{hlp.authscope(r.role).title}")
-											tab(heading="HTTP")
+											uib-tab(heading="HTTP")
 												pre!=hlp.highlight(r.request.example, true)
-											tab(heading="Curl")
+											uib-tab(heading="Curl")
 												pre!=hlp.toCurl(r.request.example)
 
 							//------------------------------------------
 							//- RESPONSE
 							//------------------------------------------
 							if method.responses
-								tab(heading="Response")
+								uib-tab(heading="Response")
 
 									each response, statusCode in method.responses
 
@@ -169,10 +169,10 @@ mixin resource(resource)
 											each rb, contentType in response.body
 												if rb && rb.schema
 													p: u #{hlp.splitType(contentType, 'Fields').name}:
-													tabset.padder-bottom-2x
-														tab(heading="Schema")
+													uib-tabset.padder-bottom-2x
+														uib-tab(heading="Schema")
 															+jsonSchema(hlp.schema(rb.schema, { method: method.method, type: 'response', path: resource.parentUrl + resource.relativeUri }))
-														tab(heading="Raw")
+														uib-tab(heading="Raw")
 															pre!=hlp.highlight(rb.schema)
 
 									p: u Error Codes:
@@ -191,10 +191,10 @@ mixin resource(resource)
 									each responses, name in hlp.responseByType(method.responses)
 										p(class=n ? 'padder-top' : ''): u= name === 'default' ? 'Example Response:' : name + ':'
 										- n++;
-										tabset
+										uib-tabset
 											each r in responses
-												tab
-													tab-heading
+												uib-tab
+													uib-tab-heading
 														i.space-right(class=hlp.authscope(r.role).classes, title="#{hlp.authscope(r.role).title} results in...")
 														+icon('arrow-right').space-right.shift-up
 														span #{r.code}

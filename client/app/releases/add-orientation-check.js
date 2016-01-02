@@ -47,44 +47,50 @@ angular.module('vpdb.releases.add', []).directive('orientationCheck', function($
 				// ignore everything non-orientation related
 				if (params.flavor.name !== 'orientation') {
 					return;
-				} else {
-					// todo fix when all uploads work.
-					return;
 				}
 
 				var checkbox = element.find('input');
 				var model = $parse(checkbox.attr('ng-model'))(scope);
 
 				// only confirm if there's a media file uploaded
-				if (params.metaFiles[params.file.storage.id]) {
-					event.preventDefault();
+				for (var i = 0; i < params.types.length; i++) {
 
-					return ModalService.question({
-						title: 'Change Orientation',
-						message: 'You\'re about to change orientation for a file for which you already have uploaded media. Changing orientation will remove media of the file which you\'re about to change.',
-						question: 'Do you want to change the orientation?'
+					var type = params.types[i];
+					var metaFileId = type + ':' + params.file.storage.id;
+					if (params.metaFiles[metaFileId]) {
 
-					}).result.then(function() {
+						event.preventDefault();
 
-						// update flavor
+						return ModalService.question({
+							title: 'Change Orientation',
+							message: 'You\'re about to change orientation for a file for which you already have uploaded media. Changing orientation will remove media of the file which you\'re about to change.',
+							question: 'Do you want to change the orientation?'
 
-						params.file.flavor[params.flavor.name] = params.flavorVal.value;
+						}).result.then(function() {
 
-						// remove media files from server
-						var tableFileId = params.file.storage.id;
-						var mediaFileIds = _.pluck(_.values(params.metaFiles[tableFileId]), 'id');
-						_.each(mediaFileIds, function(id) {
-							FileResource.delete({ id: id });
+							// update flavor
+							params.releaseFile.flavor[params.flavor.name] = params.flavorVal.value;
+
+							// remove media files from server
+							for (var j = 0; j < params.types.length; j++) {
+								var type = params.types[j];
+								var metaFileId = type + ':' + params.file.storage.id;
+
+								if (params.metaFiles[metaFileId]) {
+									FileResource.delete({ id: params.metaFiles[metaFileId].storage.id });
+
+									// clear local media
+									delete params.metaFiles[metaFileId];
+									if (params.files) {
+										delete params.files[metaFileId];
+									}
+
+									// ugly hack so bg-img knows it needs to reset. (null false are received as undefined for some reason)
+									params.metaLinks[metaFileId] = '__null';
+								}
+							}
 						});
-
-						// clear local media
-						delete params.metaFiles[tableFileId];
-						if (params.files) {
-							delete params.files[tableFileId];
-						}
-
-						params.metaLinks[tableFileId] = { playfield_image: false, playfield_video: false };
-					});
+					}
 				}
 			});
 		}

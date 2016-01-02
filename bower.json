@@ -37,7 +37,7 @@
 		"angulartics": "0.18.0",
 		"angular-gravatar": "0.3.2",
 		"angular-growl-notifications": "~2.1.2",
-		"ng-file-upload": "5.0.7",
+		"ng-file-upload": "11.0.0",
 		"ng-clip": "0.2.6",
 		"ngstorage": "0.3.7",
 		"showdown": "^0.3.1",

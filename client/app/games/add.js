@@ -16,10 +16,6 @@ angular.module('vpdb.games.add', [])
 		$scope.setTitle('Add Game');
 		$scope.setMenu('admin');
 
-		$scope.openUploadDialog = function(selector) {
-			angular.element(selector).trigger('click');
-		};
-
 		$scope.reset = function() {
 			$scope.resetGame();
 			$scope.resetMedia();

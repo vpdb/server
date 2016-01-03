@@ -33,10 +33,10 @@ angular.module('vpdb.common', [])
 
 					if (url) {
 
+						// only display progess if we have nothing after 1s
 						var timeout = $timeout(function() {
 							scope.videoLoading = true;
 						}, 1000);
-
 
 						var waitAndSetUrl = function(url) {
 							element.attr('source', url);

@@ -55,7 +55,9 @@ angular.module('vpdb.common', []).directive('fileUpload', function(Upload, $pars
 			// add file drop directive: https://github.com/danialfarid/ng-file-upload#file-drop
 			element.attr('ngf-drop', 'true');
 			element.attr('ngf-change', fctName + '($files)');
-			element.attr('ngf-select', fctName + '($files)');
+			if (!params.disableSelect) {
+				element.attr('ngf-select', fctName + '($files)');
+			}
 			element.attr('ngf-multiple', params.allowMultipleFiles === true ? 'true' : 'false');
 
 			// remove the attribute to avoid indefinite loop
@@ -193,6 +195,7 @@ function getMimeType(file) {
 		case 'avi': return 'video/avi';
 		case 'mp4': return 'video/mp4';
 		case 'flv': return 'video/x-flv';
+		case 'f4v': return 'video/x-f4v';
 		case 'txt': return 'text/plain';
 	}
 }

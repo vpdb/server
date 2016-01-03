@@ -49,7 +49,7 @@
 		"FileAPI": "2.0.17",
 		"lodash": "3.10.1",
 		"traverse": "0.6.7",
-		"videojs": "5.4.6",
+		"videojs": "4.12.15",
 		"videojs-sublime-skin": "1.0.3",
 		"bower-parseuri": "*",
 		"zeroclipboard": "2.2.0",

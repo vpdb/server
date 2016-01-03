@@ -88,6 +88,11 @@ module.exports = {
 		ext: 'flv',
 		category: 'video'
 	},
+	'video/x-f4v': {
+		name: 'Flash video as MP4',
+		ext: 'f4v',
+		category: 'video'
+	},
 	'text/plain': {
 		name: 'Plain text',
 		ext: 'txt',

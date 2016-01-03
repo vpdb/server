@@ -41,7 +41,7 @@ var ctrl = require('./controllers/ctrl');
 var apiCtrl = require('./controllers/api/api');
 var logging = require('./logging');
 
-exports.configure = function(app) {
+exports.configure = function(app, raygunClient) {
 
 	var runningLocal = !process.env.APP_NAME || (process.env.APP_NAME !== 'production' && process.env.APP_NAME !== 'staging');
 	var runningDev = process.env.NODE_ENV !== 'production';
@@ -118,6 +118,10 @@ exports.configure = function(app) {
 
 	// api errors
 	app.use(apiCtrl.handleParseError);
+
+	if (raygunClient) {
+		app.use(raygunClient.expressHandler);
+	}
 
 	// error logger comes at the very last
 	app.use(expressWinston.errorLogger({

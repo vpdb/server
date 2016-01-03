@@ -32,6 +32,19 @@ var serverDomain = domain.create();
 // setup logger
 require('./server/logging').init();
 
+// setup raygun error handling
+if (process.env.RAYGUN_API_KEY) {
+	var raygun = require('raygun');
+	var raygunClient = new raygun.Client().init({ apiKey: process.env.RAYGUN_API_KEY });
+	logger.info('[logging] Raygun crash logging enabled with API key %s', process.env.RAYGUN_API_KEY);
+	serverDomain.on('error', function(err){
+		logger.info('[logging] Sending error to Raygun...');
+		raygunClient.send(err, {}, function() {
+			process.exit();
+		});
+	});
+}
+
 // validate settings before continueing
 if (!settings.validate()) {
 	logger.error('[app] Settings validation failed, aborting.');
@@ -39,7 +52,6 @@ if (!settings.validate()) {
 } else {
 	var config = settings.current;
 }
-
 
 serverDomain.run(function() {
 
@@ -84,7 +96,7 @@ serverDomain.run(function() {
 			require('./server/passport').configure();
 
 			// express settings
-			require('./server/express').configure(app);
+			require('./server/express').configure(app, raygunClient);
 
 		} catch (e) {
 			logger.error('[app] ERROR: %s', e.message);

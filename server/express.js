@@ -125,7 +125,7 @@ exports.configure = function(app, raygunClient) {
 			if (req.user) {
 				return req.user.email;
 			}
-		}
+		};
 	}
 
 	// error logger comes at the very last

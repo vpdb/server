@@ -251,6 +251,7 @@ exports.data = [
 	{ bg: 'Scared Stiff (Williams 1996).png', logo: 'Scared Stiff (Williams 1996).png', ipdb: 3915 },
 	{ bg: 'South Park (Sega 1999).png', logo: 'South Park (Sega 1999).png', ipdb: 4444 },
 	{ bg: 'Spider-Man (Stern 2007).png', logo: 'Spider-Man (Stern 2007).png', ipdb: 5237 },
+	{ bg: 'Starship Troopers (Sega 1997).png', logo: 'Starship Troopers (Sega 1997).png', ipdb: 4341 },
 	{ bg: 'Star Wars (Data East 1992).png', logo: 'Star Wars (Data East 1992).png', ipdb: 2358 },
 	{ bg: 'STTNG (Williams 1993).png', logo: 'STTNG (Williams 1993).png', ipdb: 2357 },
 	{ bg: 'Super Mario Bros (Premier 1992).png', logo: 'Super Mario Bros (Premier 1992).png', ipdb: 2435, id: 'smb' },

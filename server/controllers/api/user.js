@@ -20,11 +20,13 @@
 "use strict";
 
 var _ = require('lodash');
+var async = require('async');
 var logger = require('winston');
 var passport = require('passport');
 var randomstring = require('randomstring');
 
 var User = require('mongoose').model('User');
+var Token = require('mongoose').model('Token');
 var LogUser = require('mongoose').model('LogUser');
 
 var acl = require('../../acl');
@@ -47,16 +49,21 @@ var config = require('../../modules/settings').current;
 exports.view = function(req, res) {
 
 	getACLs(req.user, function(err, acls) {
+
+		/* istanbul ignore next  */
 		if (err) {
-			// TODO check if it's clever to reveal anything here
-			return api.fail(res, err, 500);
+			return api.fail(res, error(err, 'Error while retrieving ACLs for user "%s"', req.user.email)
+				.display('Internal server error')
+				.log('view'));
 		}
 
 		quota.getCurrent(req.user, function(err, quota) {
 
+			/* istanbul ignore next  */
 			if (err) {
-				// TODO check if it's clever to reveal anything here
-				return api.fail(res, err, 500);
+				return api.fail(res, error(err, 'Error while retrieving quota for user "%s"', req.user.email)
+					.display('Internal server error')
+					.log('view'));
 			}
 
 			api.success(res, _.extend(req.user.toDetailed(), acls, { quota: quota }), 200);
@@ -222,58 +229,172 @@ exports.update = function(req, res) {
  */
 exports.authenticate = function(req, res) {
 
-	if (!req.body.username || !req.body.password) {
-		return api.fail(res, error('Ignored incomplete authentication request')
-				.display('You must supply a username and password')
-				.warn('authenticate'),
-			400);
-	}
-	var assert = api.assert(error, 'authenticate', req.body.username, res);
-	User.findOne({ username: req.body.username }, assert(function(user) {
+	async.waterfall([
 
-		if (!user || !user.authenticate(req.body.password)) {
+		/**
+		 * Try to authenticate with user/pass
+		 *
+		 * Skips if no username or password are provided and fails if provided but don't check out
+		 * @param next
+		 * @returns {*}
+		 */
+		function(next) {
+
+			if (!req.body.username || !req.body.password) {
+				return next(null, null);
+			}
+
+			User.findOne({ username: req.body.username }, function(err, user) {
+
+				/* istanbul ignore next  */
+				if (err) {
+					return next(error(err, 'Error while searching for user "%s"', req.body.username)
+							.display('Internal server error')
+							.log('authenticate'));
+				}
+
+				if (!user || !user.authenticate(req.body.password)) {
+
+					if (user) {
+						LogUser.failure(req, user, 'authenticate', { provider: 'local' }, null, 'Invalid password.');
+					}
+
+					return next(error('Authentication denied for user "%s" (%s)', req.body.username, user ? 'password' : 'username')
+							.display('Wrong username or password')
+							.warn('authenticate')
+							.status(401));
+				}
+				next(null, user);
+			});
+		},
+
+		/**
+		 * Try to authenticate with login token
+		 * @param user User if authenticated with login/pass (if not null, skip)
+		 * @param next
+		 * @returns {*}
+		 */
+		function(user, next) {
+
+			// check if already authenticated by user/pass
 			if (user) {
-				LogUser.failure(req, user, 'authenticate', { provider: 'local' }, null, 'Invalid password.');
+				return next(null, user, 'password');
 			}
 
-			return api.fail(res, error('Authentication denied for user "%s" (%s)', req.body.username, user ? 'password' : 'username')
-					.display('Wrong username or password')
-					.warn('authenticate'),
-				401);
-		}
-		if (!user.is_active) {
-			if (user.email_status && user.email_status.code === 'pending_registration') {
-				LogUser.failure(req, user, 'authenticate', { provider: 'local' }, null, 'Inactive account due to pending email confirmation.');
-				return api.fail(res, error('User <%s> tried to login with unconfirmed email address.', user.email)
-						.display('Your account is inactive until you confirm your email address <%s>. If you did not get an email from <%s>, please contact an administrator.', user.email, config.vpdb.email.sender.email)
-						.warn('authenticate'),
-					401);
-
-			} else {
-				LogUser.failure(req, user, 'authenticate', { provider: 'local' }, null, 'Inactive account.');
-				return api.fail(res, error('User <%s> is disabled, refusing access', user.email)
-						.display('Inactive account. Please contact an administrator')
-						.warn('authenticate'),
-					401);
+			if (!req.body.token) {
+				return next(null, null, null);
 			}
+
+			// fail if token has incorrect syntax
+			if (!/[0-9a-f]{32,}/i.test(req.body.token)) {
+				return next(error('Ignoring auth with invalid token %s', req.body.token)
+						.display('Incorrect login token.')
+						.warn('authenticate')
+						.status(400));
+			}
+
+			Token.findOne({ token: req.body.token }).populate('_created_by').exec(function(err, token) {
+
+				/* istanbul ignore next  */
+				if (err) {
+					return next(error(err, 'Error while searching for token "%s"', req.body.token)
+							.display('Internal server error')
+							.log('authenticate'));
+				}
+
+				// fail if not found
+				if (!token) {
+					return next(error('Invalid token.').status(401));
+				}
+
+				// fail if not access token
+				if (token.type !== 'login') {
+					return next(error('Token must be a login token.').status(401));
+				}
+
+				// fail if token expired
+				if (token.expires_at.getTime() < new Date().getTime()) {
+					return next(error('Token has expired.').status(401));
+				}
+
+				// fail if token inactive
+				if (!token.is_active) {
+					return next(error('Token is inactive.').status(401));
+				}
+
+				next(null, token._created_by, 'token');
+
+			});
+		},
+
+		/**
+		 * Validate user. If user is set, either user/pass were correct or a
+		 * valid token was used.
+		 *
+		 * @param {User} user Authenticated user
+		 * @param {string} how How the user was authenticated, "password" or "token"
+		 * @param next
+		 */
+		function(user, how, next) {
+
+			if (!user) {
+				return next(error('Ignored incomplete authentication request')
+					.display('You must supply a username and password or a login token')
+					.warn('authenticate')
+					.status(400));
+			}
+
+			// fail if user inactive
+			if (!user.is_active) {
+				if (user.email_status && user.email_status.code === 'pending_registration') {
+					LogUser.failure(req, user, 'authenticate', { provider: 'local' }, null, 'Inactive account due to pending email confirmation.');
+					return next(error('User <%s> tried to login with unconfirmed email address.', user.email)
+							.display('Your account is inactive until you confirm your email address <%s>. If you did not get an email from <%s>, please contact an administrator.', user.email, config.vpdb.email.sender.email)
+							.warn('authenticate')
+							.status(403));
+
+				} else {
+					LogUser.failure(req, user, 'authenticate', { provider: 'local' }, null, 'Inactive account.');
+					return next(error('User <%s> is disabled, refusing access', user.email)
+							.display('Inactive account. Please contact an administrator')
+							.warn('authenticate')
+							.status(403));
+				}
+			}
+
+			// all is good, generate token and return!
+			var now = new Date();
+			var expires = new Date(now.getTime() + config.vpdb.apiTokenLifetime);
+			var token = auth.generateApiToken(user, now);
+
+			LogUser.success(req, user, 'authenticate', { provider: 'local', how: how });
+			logger.info('[api|user:authenticate] User <%s> successfully authenticated using %s.', user.email, how);
+			getACLs(user, function(err, acls) {
+
+				/* istanbul ignore next  */
+				if (err) {
+					return next(error(err, 'Error retrieving ACLs for user <%s>', user.email)
+							.display('Internal server error')
+							.log('authenticate'));
+				}
+
+				// all good!
+				next(null, {
+					token: token,
+					expires: expires,
+					user: _.extend(user.toSimple(), acls)
+				});
+			});
 		}
 
-		var now = new Date();
-		var expires = new Date(now.getTime() + config.vpdb.apiTokenLifetime);
-		var token = auth.generateApiToken(user, now);
+	], function(err, result) {
 
-		LogUser.success(req, user, 'authenticate', { provider: 'local' });
-		logger.info('[api|user:authenticate] User <%s> successfully authenticated.', user.email);
-		getACLs(user, assert(function(acls) {
-			// all good!
-			api.success(res, {
-				token: token,
-				expires: expires,
-				user: _.extend(user.toSimple(), acls)
-			}, 200);
-		}, 'Error retrieving ACLs for user "%s"'));
+		if (err) {
+			return api.fail(res, err, err.code);
+		}
+		api.success(res, result, 200);
+	});
 
-	}, 'Error while searching for "%s"'));// TODO check error message. We might not want to reveal too much here.
 };
 
 

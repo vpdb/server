@@ -38,6 +38,7 @@ exports.create = function(req, res) {
 	}
 
 	var newToken = new Token(_.extend(req.body, {
+		label: req.body.label || req.headers['user-agent'],
 		is_active: true,
 		created_at: new Date(),
 		expires_at: new Date(new Date().getTime() + 31536000000),

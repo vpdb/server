@@ -30,7 +30,7 @@ describe('The authentication engine of the VPDB API', function() {
 			.end(hlp.status(401, done));
 	});
 
-	describe('when sending an authentication request', function() {
+	describe('when sending an authentication request using user/password', function() {
 
 		it('should fail if no credentials are posted', function(done) {
 			request
@@ -59,7 +59,7 @@ describe('The authentication engine of the VPDB API', function() {
 			request
 				.post('/api/v1/authenticate')
 				.send({ username: hlp.getUser('disabled').name, password: hlp.getUser('disabled').password })
-				.end(hlp.status(401, 'Inactive account', done));
+				.end(hlp.status(403, 'Inactive account', done));
 		});
 
 		it('should succeed if credentials are correct', function(done) {
@@ -70,6 +70,114 @@ describe('The authentication engine of the VPDB API', function() {
 				.end(hlp.status(200, done));
 		});
 
+	});
+
+	describe('when sending an authentication request using a login token', function() {
+
+		it('should fail if the token is incorrect', function(done) {
+			request
+				.post('/api/v1/authenticate')
+				.send({ token: 'lol-i-am-an-incorrect-token!' })
+				.end(hlp.status(400, 'incorrect login token', done));
+		});
+
+		it('should fail if the token does not exist', function(done) {
+			request
+				.post('/api/v1/authenticate')
+				.send({ token: 'aaaabbbbccccddddeeeeffff00001111' })
+				.end(hlp.status(401, 'invalid token', done));
+		});
+
+		it('should fail if the token is not a login token', function(done) {
+
+			request
+				.post('/api/v1/tokens')
+				.as('member')
+				.send({ label: 'Access token', password: hlp.getUser('member').password })
+				.end(function(err, res) {
+
+					hlp.doomToken('member', res.body.id);
+					hlp.expectStatus(err, res, 201);
+
+					request
+						.post('/api/v1/authenticate')
+						.send({ token: res.body.token })
+						.end(hlp.status(401, 'must be a login token', done));
+				});
+		});
+
+		it('should fail if the token is expired', function(done) {
+
+			request
+				.post('/api/v1/tokens')
+				.as('member')
+				.send({ password: hlp.getUser('member').password, type: 'login' })
+				.end(function(err, res) {
+
+					hlp.doomToken('member', res.body.id);
+					hlp.expectStatus(err, res, 201);
+
+					var token = res.body.token;
+					request
+						.patch('/api/v1/tokens/' + res.body.id)
+						.as('member')
+						.send({ expires_at: new Date(new Date().getTime() - 86400000)})
+						.end(function(err, res) {
+							hlp.expectStatus(err, res, 200);
+
+							request
+								.post('/api/v1/authenticate')
+								.send({ token: token })
+								.end(hlp.status(401, 'token has expired', done));
+						});
+				});
+		});
+
+		it('should fail if the token is inactive', function(done) {
+
+			request
+				.post('/api/v1/tokens')
+				.as('member')
+				.send({ password: hlp.getUser('member').password, type: 'login' })
+				.end(function(err, res) {
+
+					hlp.doomToken('member', res.body.id);
+					hlp.expectStatus(err, res, 201);
+
+					var token = res.body.token;
+					request
+						.patch('/api/v1/tokens/' + res.body.id)
+						.as('member')
+						.send({ is_active: false })
+						.end(function(err, res) {
+							hlp.expectStatus(err, res, 200);
+
+							request
+								.post('/api/v1/authenticate')
+								.send({ token: token })
+								.end(hlp.status(401, 'token is inactive', done));
+						});
+				});
+		});
+
+		it('should succeed if the token is valid', function(done) {
+
+			request
+				.post('/api/v1/tokens')
+				.as('member')
+				.set('User-Agent', 'Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.8.1) Gecko/20061024 Firefox/2.0 (Swiftfox)')
+				.send({ password: hlp.getUser('member').password, type: 'login' })
+				.end(function(err, res) {
+
+					hlp.doomToken('member', res.body.id);
+					hlp.expectStatus(err, res, 201);
+
+					request
+						.post('/api/v1/authenticate')
+						.send({ token: res.body.token })
+						.end(hlp.status(200, done));
+				});
+		});
 	});
 
 	describe('when a primary access token is provided in the header', function() {

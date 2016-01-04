@@ -74,8 +74,10 @@ describe('The VPDB `Token` API', function() {
 			request
 				.post('/api/v1/tokens')
 				.as('subscribed')
+				.set('User-Agent', '')
 				.send({ password: hlp.getUser('subscribed').password })
 				.end(function(err, res) {
+					hlp.dump(res);
 					hlp.expectValidationError(err, res, 'label', 'must be provided');
 					done();
 				});
@@ -104,10 +106,6 @@ describe('The VPDB `Token` API', function() {
 					expect(res.body.token).to.be.ok();
 					done();
 				});
-		});
-
-		it('should deny access if plan configuration forbids it', function(done) {
-			request.post('/api/v1/tokens').as('member').send({}).end(hlp.status(403, done));
 		});
 
 	});
@@ -245,10 +243,6 @@ describe('The VPDB `Token` API', function() {
 				});
 		});
 
-		it('should deny access if plan configuration forbids it', function(done) {
-			request.patch('/api/v1/tokens/123456').send({}).as('member').end(hlp.status(403, done));
-		});
-
 	});
 
 	describe('when deleting an auth token', function() {
@@ -323,9 +317,6 @@ describe('The VPDB `Token` API', function() {
 				});
 		});
 
-		it('should deny access if plan configuration forbids it', function(done) {
-			request.del('/api/v1/tokens/123456').as('member').end(hlp.status(403, done));
-		});
 
 	});
 

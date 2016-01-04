@@ -456,7 +456,7 @@ describe('The ACLs of the VPDB API', function() {
 		});
 
 		it('should allow access to creating tokens', function(done) {
-			request.post('/api/v1/tokens').as('member').send({ password: hlp.getUser('member').password }).end(hlp.status(422, done));
+			request.post('/api/v1/tokens').as('member').send({ password: hlp.getUser('member').password }).end(hlp.status(201, done));
 		});
 
 		it('should allow access to updating tokens', function(done) {

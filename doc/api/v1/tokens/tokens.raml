@@ -1,8 +1,25 @@
 displayName: Tokens
 description: |
-  Application access tokens function like ordinary JWT access tokens. They can
-  be used in the header for full API access. Their goal is to give third party
-  applications access to the API without having to hand them your password.
+  Tokens are an alternative way apart from JWT access tokens to authenticate.
+  The main difference is that they are stored on server side and can be revoked
+  any time. Therefore, they are long-lived and useful in scenarios where the
+  user decides to "store" the credentials without the need of saving the
+  password.
+
+  There are two type of tokens:
+
+  1. Application **access tokens** function like ordinary JWT access tokens.
+     They can be used in the header for full API access. Their goal is to
+     give third party applications access to the API without having to hand
+     them your password.
+  2. **Login tokens** are restricted to the [authenticate resource][authenticate]
+     and are a way of letting the browser "remember" your credentials.
+
+  Both type of tokens are currently valid for one year and can be revoked any
+  time. For login tokens, the browser would typically delete its login token as
+  soon as the user logs out.
+
+  [authenticate]: api://core/authenticate
 
 post:
   is: [ validated ]

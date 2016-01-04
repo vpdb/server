@@ -277,6 +277,17 @@ exports.doomRom = function(user, romId) {
 };
 
 /**
+ * Marks a ROM to be cleaned up in teardown.
+ * @param {string} user User with which the file was created
+ * @param {string} tokenId ID of the ROM
+ */
+exports.doomToken = function(user, tokenId) {
+	objectPath.ensureExists(this, "doomedTokens." + user, []);
+	this.doomedTokens[user].unshift(tokenId);
+};
+
+
+/**
  * Marks a user to be cleaned up in teardown. Note that this is only for users
  * created in tests, the users in the before() method are cleaned automatically.
  * @param {string} userId ID of the user
@@ -306,6 +317,7 @@ exports.cleanup = function(request, done) {
 	var doomedTags = this.doomedTags;
 	var doomedBuilds = this.doomedBuilds;
 	var doomedRoms = this.doomedRoms;
+	var doomedTokens = this.doomedTokens;
 
 	async.series([
 
@@ -474,6 +486,34 @@ exports.cleanup = function(request, done) {
 
 			}, function(err) {
 				that.doomedRoms = {};
+				next(err);
+			});
+		},
+
+		// 7. cleanup tokens
+		function(next) {
+			if (!doomedTokens) {
+				return next();
+			}
+			async.eachSeries(_.keys(doomedTokens), function(user, nextToken) {
+				async.each(nextToken[user], function(tokenId, next) {
+					request
+						.del('/api/v1/tokens/' + tokenId)
+						.as(user)
+						.end(function(err, res) {
+							if (err) {
+								return next(err);
+							}
+							if (res.status !== 204) {
+								console.log(res.body);
+							}
+							expect(res.status).to.eql(204);
+							next();
+						});
+				}, nextToken);
+
+			}, function(err) {
+				that.doomedTokens = {};
 				next(err);
 			});
 		},

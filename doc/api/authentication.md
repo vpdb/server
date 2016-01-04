@@ -17,7 +17,7 @@ and partly restricted to users with a certain role.
 Public resources don't need any further authentication, you can access them 
 directly:
 
-	curl https://vpdb.ch/api/v1/ping
+	curl https://vpdb.io/api/v1/ping
 
 
 # Access Tokens
@@ -55,7 +55,9 @@ There are three different types of access tokens:
     goal of application tokens is permanent access to third party applications
     such as VPDB Agent, without the need to hand over the user's password. 
     Contrarily to primary tokens and storage tokens, application tokens are no
-    JWTs but only random strings.
+    JWTs but only random strings. Application tokens can also be used for the 
+    browser to "remember" the user's credentials without needing to store the
+    password.
 
 
 ## Local Authentication
@@ -64,7 +66,7 @@ When you register at VPDB, a local username and password is created. You can
 obtain a token by posting these credentials to the [`/authenticate`][api-auth]
 resource:
 
-	POST https://vpdb.ch/api/v1/authenticate
+	POST https://vpdb.io/api/v1/authenticate
 	
 	{
 	  "username": "<username>",
@@ -111,7 +113,7 @@ header. For example, when retrieving the user profile, the client would send:
 	Accept-Encoding: gzip, deflate
 	Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI1M2MyNTJkMThiNDcyMjdjMjZjZmUxYjgiLCJpYXQiOiIyMDE0LTA3LTEzVDA5OjM1OjE2LjQ0NloiLCJleHAiOiIyMDE0LTA3LTEzVDEwOjM1OjE2LjQ0NloifQ.8RyvT14Ga2gpfmiyVbx45RcqbFHxSgWjgC-4OaLh9Vc
 	Connection: keep-alive
-	Host: vpdb.ch
+	Host: vpdb.io
 
 A new token is valid for 15 minutes. After that, a new token must be generated.
 However, a user might want to stay authenticated while browsing the site and 

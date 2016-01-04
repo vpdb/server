@@ -192,7 +192,7 @@ describe('The VPDB `user` API', function() {
 					hlp.doomUser(res.body.id);
 
 					// try to obtain auth token
-					request.post('/api/v1/authenticate').send(_.pick(user, 'username', 'password')).end(hlp.status(401, 'account is inactive', done));
+					request.post('/api/v1/authenticate').send(_.pick(user, 'username', 'password')).end(hlp.status(403, 'account is inactive', done));
 				});
 		});
 

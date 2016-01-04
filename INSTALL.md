@@ -277,7 +277,7 @@ Change `PM2_HOME` to `/repos/.pm2`
 	openssl dhparam -out dhparam.pem 2048
 	openssl req -new -days 365 -nodes -keyout xxx.vpdb.io.key -out xxx.vpdb.io.csr
 
-Submit `xxx.vpdb.ch.csr` to signing authority, then paste received certificate into `xxx.vpdb.io.crt`. Then
+Submit `xxx.vpdb.io.csr` to signing authority, then paste received certificate into `xxx.vpdb.io.crt`. Then
 build the key chain:
 
 	cat xxx.vpdb.io.crt startssl-sub.class1.server.sha2.ca.pem startssl-ca-sha2.pem > xxx.vpdb.io-keychain.crt

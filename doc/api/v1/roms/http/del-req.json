@@ -1,5 +1,5 @@
 DELETE /api/v1/roms/hulk HTTP/1.1
-Host: vpdb.ch
+Host: vpdb.io
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJFa1lHN3FEdm5OZyIsImlhdCI6IjIwMTUtMTItMDVUMjM6NTE6MTQuMjU2WiIsImV4cCI6IjIwMTUtMTItMDZUMDA6NTE6MTQuMjU2WiJ9.Tu325YCZ7-FkqRQ2W2GwXSF8q7V-49gdEXNoUmH5wYA
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJ3MnFjOHpkNHViIiwiaWF0IjoiMjAxNi0wMS0wNFQyMDoxNDoxOC4xNDNaIiwiZXhwIjoiMjAxNi0wMS0wNFQyMToxNDoxOC4xNDNaIn0._yU8AuyYnqYoyI8Ldqvlwy-nNnv1eJZKXOFBUoLydQw
 

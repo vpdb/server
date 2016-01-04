@@ -1,15 +1,15 @@
 200 OK
 Content-Type: application/json; charset=utf-8
-Etag: W/"4a9-oOrI4sPMTyFopMlkuGr8Tg"
+Etag: W/"472-I99CntIq88GrsLF6cLag7w"
 Content-Encoding: gzip
 
 {
-  "location": "Ceasarhaven",
-  "name": "Efren Stokes",
-  "username": "Margarette.Douglas6",
-  "email": "raul61@gmail.com",
+  "location": "Ramirotown",
+  "name": "Godfrey Turcotte",
+  "username": "Korey28",
+  "email": "dawson45@hotmail.com",
   "provider": "local",
-  "created_at": "2015-12-05T23:51:19.772Z",
+  "created_at": "2016-01-04T20:14:26.647Z",
   "is_active": true,
   "counter": {
     "stars": 0,
@@ -21,65 +21,63 @@ Content-Encoding: gzip
   ],
   "email_status": {
     "code": "pending_update",
-    "expires_at": "2015-12-06T23:51:20.137Z",
-    "value": "henri.klein@yahoo.com"
+    "expires_at": "2016-01-05T20:14:27.085Z",
+    "value": "keon.zboncak63@hotmail.com"
   },
-  "id": "EJjd_qwwnEl",
+  "id": "wkxe43zdxuh",
   "plan": {
     "push_notifications_enabled": false,
     "app_tokens_enabled": false,
-    "recurring_period": "day",
-    "recurring_credits": 3,
     "id": "free"
   },
-  "gravatar_id": "36e942704507a14310dc339a64e74e49",
+  "gravatar_id": "719756a99f48be82e34ba736deb8fa15",
   "permissions": {
     "builds": [
-      "add",
-      "delete-own"
+      "delete-own",
+      "add"
+    ],
+    "tokens": [
+      "update",
+      "delete",
+      "list",
+      "add"
+    ],
+    "comments": [
+      "add"
+    ],
+    "games": [
+      "rate",
+      "star"
+    ],
+    "users": [
+      "star",
+      "view",
+      "search"
+    ],
+    "roms": [
+      "delete-own",
+      "add"
+    ],
+    "releases": [
+      "star",
+      "rate",
+      "delete",
+      "add"
     ],
     "user": [
       "update",
       "view"
     ],
-    "tokens": [
-      "delete",
-      "list",
-      "update",
-      "add"
-    ],
-    "roms": [
-      "add",
-      "delete-own"
-    ],
-    "tags": [
-      "add",
-      "delete-own"
-    ],
-    "files": [
-      "download",
-      "delete",
-      "upload"
-    ],
     "messages": [
       "receive"
     ],
-    "games": [
-      "star",
-      "rate"
-    ],
-    "releases": [
+    "files": [
       "delete",
-      "star",
-      "add",
-      "rate"
+      "download",
+      "upload"
     ],
-    "users": [
-      "star",
-      "search",
-      "view"
-    ],
-    "comments": [
+    "tags": [
+      "delete-own",
       "add"
     ]
   }

@@ -1,8 +1,8 @@
-POST /api/v1/games/match-a-ball/rating HTTP/1.1
-Host: vpdb.ch
+POST /api/v1/games/wild-wild-west/rating HTTP/1.1
+Host: vpdb.io
 Accept-Encoding: gzip, deflate
 Content-Type: application/json
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJWMW1iSWRERGg0ZyIsImlhdCI6IjIwMTUtMTItMDVUMjM6NTA6NDUuMzM5WiIsImV4cCI6IjIwMTUtMTItMDZUMDA6NTA6NDUuMzM5WiJ9.xBpW-ZAxW5FZyYo_D4ihZ7GZnwiNddNmCJNHDXbGG3c
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJ3MjR5NGd5ZHhmYiIsImlhdCI6IjIwMTYtMDEtMDRUMjA6MTM6MzguOTE1WiIsImV4cCI6IjIwMTYtMDEtMDRUMjE6MTM6MzguOTE1WiJ9.3tlkl-_fCXiZb9VsFp93lHkO5b95Lfj0IEEvipB8cY8
 Content-Length: 11
 
 {

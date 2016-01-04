@@ -1,14 +1,14 @@
 200 OK
 Content-Type: application/json; charset=utf-8
-Etag: W/"45c-5r3x3rQ5dBl4QxtkU1pq9w"
+Etag: W/"442-ADEmvTQtycnvhUT2pwLffQ"
 Content-Encoding: gzip
 
 {
-  "name": "Sierra.Rempel10",
-  "username": "Sierra.Rempel10",
-  "email": "murray_braun@yahoo.com",
+  "name": "Candido3",
+  "username": "Candido3",
+  "email": "emanuel.lubowitz@yahoo.com",
   "provider": "local",
-  "created_at": "2015-12-05T23:50:33.440Z",
+  "created_at": "2016-01-04T20:13:25.194Z",
   "is_active": true,
   "counter": {
     "stars": 0,
@@ -18,66 +18,66 @@ Content-Encoding: gzip
   "roles": [
     "member"
   ],
-  "id": "Vkmecwvv3Nl",
+  "id": "q265azd4ub",
   "plan": {
     "push_notifications_enabled": false,
     "app_tokens_enabled": true,
-    "recurring_period": "day",
-    "recurring_credits": 50,
     "id": "subscribed"
   },
-  "gravatar_id": "25ceb8c8041043e2b7715ca768d0c07a",
+  "gravatar_id": "7019fa31fe26a91cffb99ebdbc83eb1a",
   "permissions": {
     "builds": [
-      "add",
-      "delete-own"
+      "delete-own",
+      "add"
+    ],
+    "tokens": [
+      "update",
+      "delete",
+      "list",
+      "add"
+    ],
+    "comments": [
+      "add"
+    ],
+    "games": [
+      "rate",
+      "star"
+    ],
+    "users": [
+      "star",
+      "view",
+      "search"
+    ],
+    "roms": [
+      "delete-own",
+      "add"
+    ],
+    "releases": [
+      "star",
+      "rate",
+      "delete",
+      "add"
     ],
     "user": [
       "update",
       "view"
     ],
-    "tokens": [
-      "delete",
-      "list",
-      "update",
-      "add"
-    ],
-    "roms": [
-      "add",
-      "delete-own"
-    ],
-    "tags": [
-      "add",
-      "delete-own"
-    ],
-    "files": [
-      "download",
-      "delete",
-      "upload"
-    ],
     "messages": [
       "receive"
     ],
-    "games": [
-      "star",
-      "rate"
-    ],
-    "releases": [
+    "files": [
       "delete",
-      "star",
-      "add",
-      "rate"
+      "download",
+      "upload"
     ],
-    "users": [
-      "star",
-      "search",
-      "view"
-    ],
-    "comments": [
+    "tags": [
+      "delete-own",
       "add"
     ]
   },
   "quota": {
+    "unlimited": false,
+    "period": "day",
     "limit": 50,
     "remaining": 50,
     "reset": 86400000

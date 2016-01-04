@@ -1,11 +1,11 @@
 201 Created
 Content-Type: application/json; charset=utf-8
 Content-Length: 119
-Etag: W/"77-veWqEe8tqDC1k0lpA+on6A"
+Etag: W/"77-x0zMcMZbMalwBYYu88ae5A"
 
 {
   "value": 7,
-  "created_at": "2015-12-05T23:50:45.949Z",
+  "created_at": "2016-01-04T20:13:39.731Z",
   "game": {
     "average": 7,
     "votes": 1,

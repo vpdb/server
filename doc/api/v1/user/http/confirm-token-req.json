@@ -1,4 +1,4 @@
-GET /api/v1/user/confirm/KU4qGxI84y8NdNT3 HTTP/1.1
-Host: vpdb.ch
+GET /api/v1/user/confirm/sBmzm5lbUXN2cBsk HTTP/1.1
+Host: vpdb.io
 Accept-Encoding: gzip, deflate
 

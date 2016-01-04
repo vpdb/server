@@ -1,16 +1,16 @@
-PUT /api/v1/releases/NkyMwtPv2Vg/versions/1.0.0 HTTP/1.1
-Host: vpdb.ch
+PUT /api/v1/releases/qkxccyd4uh/versions/1.0.0 HTTP/1.1
+Host: vpdb.io
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJOeS1yS0R2M0V4IiwiaWF0IjoiMjAxNS0xMi0wNVQyMzo1MTowMC4xMTJaIiwiZXhwIjoiMjAxNS0xMi0wNlQwMDo1MTowMC4xMTJaIn0.q8HH-CiVlc39Hy3wenzjUEFKDWCyHQjCeQHzHbRljzw
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJxMm95Zjd6M3h1aCIsImlhdCI6IjIwMTYtMDEtMDRUMjA6MTM6NTguMzk2WiIsImV4cCI6IjIwMTYtMDEtMDRUMjE6MTM6NTguMzk2WiJ9.yHGWDLmfZYuUE6Otbtnfb9sENMbmRv0klA_Oxh4MunE
 Content-Type: application/json
 Content-Length: 152
 
 {
   "files": [
     {
-      "_file": "NJ6GvtPPnNg",
+      "_file": "wkyb77zdxub",
       "_media": {
-        "playfield_image": "4kl7vKPwhEe"
+        "playfield_image": "wkfhcczdxfb"
       },
       "_compatibility": [
         "9.9.0"

@@ -1,14 +1,14 @@
 201 Created
 Content-Type: application/json; charset=utf-8
-Content-Length: 651
-Etag: W/"28b-A9USn/Y2oeGGEipGiyLatA"
+Content-Length: 578
+Etag: W/"242-f5gLEzdJScMQldUez44rJw"
 
 {
-  "name": "Claudie.Schamberger0",
-  "username": "Claudie.Schamberger0",
-  "email": "rashawn94@hotmail.com",
+  "name": "Desiree39",
+  "username": "Desiree39",
+  "email": "hobart.turner@gmail.com",
   "provider": "local",
-  "created_at": "2015-12-05T23:51:20.037Z",
+  "created_at": "2016-01-04T20:14:26.971Z",
   "is_active": false,
   "counter": {
     "stars": 0,
@@ -20,16 +20,14 @@ Etag: W/"28b-A9USn/Y2oeGGEipGiyLatA"
   ],
   "email_status": {
     "code": "pending_registration",
-    "expires_at": "2015-12-06T23:51:20.037Z",
-    "value": "rashawn94@hotmail.com"
+    "expires_at": "2016-01-05T20:14:26.971Z",
+    "value": "hobart.turner@gmail.com"
   },
-  "id": "4JB3dcwv2El",
+  "id": "w2va43y3xuh",
   "plan": {
     "push_notifications_enabled": false,
     "app_tokens_enabled": false,
-    "recurring_period": "day",
-    "recurring_credits": 3,
     "id": "free"
   },
-  "gravatar_id": "edbe8c786c93a2a2555c73b322f344db"
+  "gravatar_id": "bb05f56cc0633590e78f2175edf5e6e3"
 }

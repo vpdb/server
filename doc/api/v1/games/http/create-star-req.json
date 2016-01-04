@@ -1,8 +1,8 @@
-POST /api/v1/games/scuba/star HTTP/1.1
-Host: vpdb.ch
+POST /api/v1/games/sok-m-in/star HTTP/1.1
+Host: vpdb.io
 Accept-Encoding: gzip, deflate
 Content-Type: application/json
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJFMVVJSWN2d2hWbCIsImlhdCI6IjIwMTUtMTItMDVUMjM6NTE6MTguMDMyWiIsImV4cCI6IjIwMTUtMTItMDZUMDA6NTE6MTguMDMyWiJ9.4HCSTo1qyA2rdvwDgq4wd1IwOy5KXcAPybzdF_Vy0Go
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJ3MjV4aDN5ZHhmYiIsImlhdCI6IjIwMTYtMDEtMDRUMjA6MTQ6MjMuNzc0WiIsImV4cCI6IjIwMTYtMDEtMDRUMjE6MTQ6MjMuNzc0WiJ9.NV-kQTAxfpTHz1ns1yNSC5qZORZMzXfzI1cajFLRSDQ
 Content-Length: 2
 
 {}

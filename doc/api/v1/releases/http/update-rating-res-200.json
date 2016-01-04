@@ -1,15 +1,15 @@
 200 OK
 Content-Type: application/json; charset=utf-8
 Content-Length: 166
-Etag: W/"a6-booawA7ACleWEi6eMpPw1w"
+Etag: W/"a6-WC5b2OFR2gHa/teqKiVz/A"
 
 {
   "value": 1,
-  "created_at": "2015-12-05T23:50:49.911Z",
+  "created_at": "2016-01-04T20:13:45.292Z",
   "release": {
     "average": 1,
     "votes": 1,
     "score": 2.25
   },
-  "modified_at": "2015-12-05T23:50:49.972Z"
+  "modified_at": "2016-01-04T20:13:45.370Z"
 }

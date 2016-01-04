@@ -1,34 +1,26 @@
 POST /api/v1/games HTTP/1.1
-Host: vpdb.ch
+Host: vpdb.io
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJFeXpTbE92RDJWbCIsImlhdCI6IjIwMTUtMTItMDVUMjM6NTA6NDAuMDQ5WiIsImV4cCI6IjIwMTUtMTItMDZUMDA6NTA6NDAuMDQ5WiJ9.15p7pympps1odgD5t_VB4A5aZf1Ve02TQ1hTGhU-j-s
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJxa3BzM2F5M3h1YiIsImlhdCI6IjIwMTYtMDEtMDRUMjA6MTM6MzIuNTUzWiIsImV4cCI6IjIwMTYtMDEtMDRUMjE6MTM6MzIuNTUzWiJ9.7YN2zcgByQwYCUf4KqhVQQS178ATa7Ot-S7njHtYZGU
 Content-Type: application/json
-Content-Length: 368
+Content-Length: 481
 
 {
   "ipdb": {
-    "number": 1104,
-    "mfg": 93,
-    "rating": "7.0"
+    "number": 1373,
+    "mfg": 81
   },
-  "title": "Gypsy Queen",
-  "manufacturer": "Gottlieb",
-  "model_number": "100",
-  "year": 1955,
+  "title": "King Pin",
+  "manufacturer": "Chicago Coin",
+  "year": 1951,
   "game_type": "em",
-  "produced_units": 1400,
   "themes": [
-    "Cards/Gambling"
+    "Sports",
+    "Bowling"
   ],
-  "designers": [
-    "Wayne Neyens"
-  ],
-  "artists": [
-    "Roy Parker"
-  ],
-  "features": "Flippers (2), Pop bumpers (3), Gobble holes (2).",
-  "id": "gypsy-queen",
+  "features": "Reverse flippers (2), Pop bumpers (9), Kick-out holes (3). Backbox animation: four-inch numbered pins are suspended above the playfield and raise up when the corresponding pop bumper or rollover is hit. Pressing either flipper button activates both flippers simultaneously.",
+  "id": "king-pin",
   "_media": {
-    "backglass": "EyDBg_DvnVl"
+    "backglass": "qkg93azd4ub"
   }
 }

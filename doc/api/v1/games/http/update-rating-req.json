@@ -1,8 +1,8 @@
-PUT /api/v1/games/operators-life-saver/rating HTTP/1.1
-Host: vpdb.ch
+PUT /api/v1/games/rodello/rating HTTP/1.1
+Host: vpdb.io
 Accept-Encoding: gzip, deflate
 Content-Type: application/json
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI0a1RJdk9EdmhWeCIsImlhdCI6IjIwMTUtMTItMDVUMjM6NTA6NDYuODE3WiIsImV4cCI6IjIwMTUtMTItMDZUMDA6NTA6NDYuODE3WiJ9.8RbdcRVMZ84zeNt2F93Viw7x0KcXcLumM4sQIclOKOY
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJ3a3hlcGd6MzRmYiIsImlhdCI6IjIwMTYtMDEtMDRUMjA6MTM6NDAuNzI1WiIsImV4cCI6IjIwMTYtMDEtMDRUMjE6MTM6NDAuNzI1WiJ9.9gyRHDu-s-FLYM09ch6M-4SJjexIc4elvdcFJFDPfFY
 Content-Length: 11
 
 {

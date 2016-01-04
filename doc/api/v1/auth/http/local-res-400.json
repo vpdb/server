@@ -1,8 +1,8 @@
 400 Bad Request
 Content-Type: application/json; charset=utf-8
-Content-Length: 55
-Etag: W/"37-hfnHMmqRj+m63SH4IzypFg"
+Content-Length: 72
+Etag: W/"48-XwoQOkxVYuy0htYwPRVqcg"
 
 {
-  "error": "You must supply a username and password"
+  "error": "You must supply a username and password or a login token"
 }

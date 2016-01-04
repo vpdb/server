@@ -1,15 +1,15 @@
 200 OK
 Content-Type: application/json; charset=utf-8
-Content-Length: 532
-Etag: W/"214-H4NpuVhQ5O16rpBWbeWyMg"
+Content-Length: 475
+Etag: W/"1db-bdWOx3sOelwyks0GEhdvgQ"
 
 [
   {
-    "id": "EkJ_ucDvhNe",
-    "name": "Adolfo_Krajcik44",
-    "username": "Adolfo_Krajcik44",
-    "gravatar_id": "9b29f04b993033f0dd3324fc54a7e83e",
-    "email": "lester42@yahoo.com",
+    "id": "wkuw43z3xuh",
+    "name": "Emmet_Smitham43",
+    "username": "Emmet_Smitham43",
+    "gravatar_id": "5e5f26c692916e139e826d0921df5bb2",
+    "email": "bonnie10@hotmail.com",
     "is_active": true,
     "provider": "local",
     "roles": [
@@ -18,11 +18,9 @@ Etag: W/"214-H4NpuVhQ5O16rpBWbeWyMg"
     "plan": {
       "push_notifications_enabled": false,
       "app_tokens_enabled": false,
-      "recurring_period": "day",
-      "recurring_credits": 3,
       "id": "free"
     },
-    "created_at": "2015-12-05T23:51:19.720Z",
+    "created_at": "2016-01-04T20:14:26.575Z",
     "counter": {
       "stars": 0,
       "downloads": 0,

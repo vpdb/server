@@ -1,5 +1,5 @@
-DELETE /api/v1/releases/EyPWU5PPnVe/star HTTP/1.1
-Host: vpdb.ch
+DELETE /api/v1/releases/q24bdzd4uh/star HTTP/1.1
+Host: vpdb.io
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJWMWlQbXF2djI0ZSIsImlhdCI6IjIwMTUtMTItMDVUMjM6NTE6MTQuNTk1WiIsImV4cCI6IjIwMTUtMTItMDZUMDA6NTE6MTQuNTk1WiJ9.zhz00LDv7S4IbhxxPVyb3YTDYsKBrDHsS_JBuL97oKE
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJxa3R3Y216M3h1aCIsImlhdCI6IjIwMTYtMDEtMDRUMjA6MTQ6MTguNTc2WiIsImV4cCI6IjIwMTYtMDEtMDRUMjE6MTQ6MTguNTc2WiJ9.Wz04oLrcyresxlFLz3fKTcYlZTiFpXhhornNIpBBnRo
 

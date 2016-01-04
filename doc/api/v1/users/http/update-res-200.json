@@ -1,15 +1,15 @@
 200 OK
 Content-Type: application/json; charset=utf-8
-Content-Length: 530
-Etag: W/"212-wI/twQT9EMCNFIdkSx5upQ"
+Content-Length: 478
+Etag: W/"1de-RrJnDoB4mz/uk8kjCVclsw"
 
 {
-  "id": "EkJ_ucDvhNe",
-  "name": "Ayden.Baumbach",
-  "username": "Ayden.Baumbach",
-  "gravatar_id": "970ffa883b732e20832803dff005def6",
-  "location": "South Lorenfurt",
-  "email": "luz35@hotmail.com",
+  "id": "wkuw43z3xuh",
+  "name": "Lorenzo.Champlin",
+  "username": "Lorenzo.Champlin",
+  "gravatar_id": "732d210b04ee6955d6f7a51e43bed8a4",
+  "location": "Rowechester",
+  "email": "floy_doyle@gmail.com",
   "is_active": true,
   "provider": "local",
   "roles": [
@@ -18,11 +18,9 @@ Etag: W/"212-wI/twQT9EMCNFIdkSx5upQ"
   "plan": {
     "push_notifications_enabled": false,
     "app_tokens_enabled": false,
-    "recurring_period": "day",
-    "recurring_credits": 3,
     "id": "free"
   },
-  "created_at": "2015-12-05T23:51:19.720Z",
+  "created_at": "2016-01-04T20:14:26.575Z",
   "counter": {
     "stars": 0,
     "downloads": 0,

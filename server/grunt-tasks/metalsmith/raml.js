@@ -381,7 +381,7 @@ function postman(obj) {
 				id: "5c14b55c-5588-5319-8352-973d5dba43a5",
 				name: "Staging",
 				values: [
-					{ key: "baseUri", value: "https://staging.vpdb.ch/api/v1", type: "text" },
+					{ key: "baseUri", value: "https://staging.vpdb.io/api/v1", type: "text" },
 					{ key: "authHeader", value: "X-Authorization", type: "text" }],
 				timestamp: 1415744614897
 			}

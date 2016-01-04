@@ -406,7 +406,7 @@ describe('The authentication engine of the VPDB API', function() {
 						username: 'mockuser',
 						profileUrl: 'https://github.com/mockuser',
 						emails: [
-							{ value: 'mockuser@vpdb.ch' }
+							{ value: 'mockuser@vpdb.io' }
 						],
 						_raw: '(not mocked)', _json: { not: 'mocked '}
 					}
@@ -420,7 +420,7 @@ describe('The authentication engine of the VPDB API', function() {
 				.send({
 					provider: 'github',
 					profile: { provider: 'github', id: githubId, displayName: null, username: 'mockuser', profileUrl: 'https://github.com/mockuser',
-						emails: [ { value: 'mockuser@vpdb.ch' } ]
+						emails: [ { value: 'mockuser@vpdb.io' } ]
 					}
 				}).end(hlp.auth.assertToken(request, function(err, profile1) {
 
@@ -429,7 +429,7 @@ describe('The authentication engine of the VPDB API', function() {
 						.send({
 							provider: 'github',
 							profile: { provider: 'github', id: githubId, displayName: 'bleh', username: 'foo',
-								emails: [ { value: 'other.email@vpdb.ch' } ]
+								emails: [ { value: 'other.email@vpdb.io' } ]
 							}
 						}).end(hlp.auth.assertToken(request, function(err, profile2) {
 							expect(profile1.id).to.be(profile2.id);
@@ -469,7 +469,7 @@ describe('The authentication engine of the VPDB API', function() {
 						username: 'test',
 						displayName: 'test i am',
 						profileUrl: 'http://localhost:8088/index.php?showuser=2',
-						emails: [ { value: 'test@vpdb.ch' } ],
+						emails: [ { value: 'test@vpdb.io' } ],
 						photos: [ { value: 'http://localhost:8088/uploads/' } ]
 					}
 				})
@@ -477,7 +477,7 @@ describe('The authentication engine of the VPDB API', function() {
 		});
 
 		it('should match an already registered GitHub user with the same email address', function(done) {
-			var email = 'imthesame@vpdb.ch';
+			var email = 'imthesame@vpdb.io';
 			request
 				.post('/api/v1/authenticate/mock')
 				.send({
@@ -512,7 +512,7 @@ describe('The authentication engine of the VPDB API', function() {
 					provider: 'ipboard',
 					providerName: 'ipbtest',
 					profile: { provider: 'ipbtest', id: id, username: username, displayName: displayname, profileUrl: 'http://localhost:8088/index.php?showuser=2',
-						emails: [ { value: 'email1@vpdb.ch' } ]
+						emails: [ { value: 'email1@vpdb.io' } ]
 					}
 				}).end(hlp.auth.assertToken(request, function(err, profile) {
 					var userId = profile.id;
@@ -521,7 +521,7 @@ describe('The authentication engine of the VPDB API', function() {
 						.send({
 							provider: 'github',
 							profile: { provider: 'github', id: id, username: username, displayName: displayname, profileUrl: 'https://github.com/mockuser',
-								emails: [ { value: 'email2@vpdb.ch' } ]
+								emails: [ { value: 'email2@vpdb.io' } ]
 							}
 						}).end(hlp.auth.assertToken(request, function(err, profile) {
 							expect(profile.id).not.to.be(userId);
@@ -559,7 +559,7 @@ describe('The authentication engine of the VPDB API', function() {
 					provider: 'ipboard',
 					providerName: 'ipbtest',
 					profile: { provider: 'ipbtest', username: 'test', displayName: 'test i am', profileUrl: 'http://localhost:8088/index.php?showuser=2',
-						emails: [ { value: 'valid.email@vpdb.ch' } ]
+						emails: [ { value: 'valid.email@vpdb.io' } ]
 					}
 				}).end(hlp.status(500, 'does not contain user id', done));
 		});

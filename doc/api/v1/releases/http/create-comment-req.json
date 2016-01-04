@@ -1,10 +1,10 @@
-POST /api/v1/releases/4J6wPv2Ee/comments HTTP/1.1
-Host: vpdb.ch
+POST /api/v1/releases/q2tqtnz34ub/comments HTTP/1.1
+Host: vpdb.io
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI0a2htbnd2UG5WZyIsImlhdCI6IjIwMTUtMTItMDVUMjM6NTA6MzUuNTMyWiIsImV4cCI6IjIwMTUtMTItMDZUMDA6NTA6MzUuNTMyWiJ9.5MrnhgOE6vB89ANUWOCZBr0GTKU6uLSe1pmQ8pwZKFM
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJ3a3Vodm55ZHhmaCIsImlhdCI6IjIwMTYtMDEtMDRUMjA6MTM6MjcuMjI4WiIsImV4cCI6IjIwMTYtMDEtMDRUMjE6MTM6MjcuMjI4WiJ9.8C59mfUYR1YGcL5mLdt6xs_MNC4fv4rf-UBMO0adEEQ
 Content-Type: application/json
-Content-Length: 47
+Content-Length: 44
 
 {
-  "message": "Organized solution-oriented array"
+  "message": "Upgradable intangible leverage"
 }

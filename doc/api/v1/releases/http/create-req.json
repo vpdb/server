@@ -1,21 +1,21 @@
 POST /api/v1/releases HTTP/1.1
-Host: vpdb.ch
+Host: vpdb.io
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJFa1RFM2REUGhFbCIsImlhdCI6IjIwMTUtMTItMDVUMjM6NTA6NTEuNzA3WiIsImV4cCI6IjIwMTUtMTItMDZUMDA6NTA6NTEuNzA3WiJ9.-53HiAG32DQ0bPjcbolaEBQXUl1xpjDIq0kN9Kf8Tjs
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJxMnlmYzZ6M3h1YiIsImlhdCI6IjIwMTYtMDEtMDRUMjA6MTM6NDYuOTc5WiIsImV4cCI6IjIwMTYtMDEtMDRUMjE6MTM6NDYuOTc5WiJ9.kiC_zr5rjBg-qq_CPHz4iavwIa78AiJ_RmSK572dWQc
 Content-Type: application/json
 Content-Length: 537
 
 {
   "name": "release",
-  "_game": "willy-at-the-bat",
+  "_game": "alabama-crimson-tide",
   "versions": [
     {
       "files": [
         {
           "released_at": "2015-01-01T00:00:00.000Z",
-          "_file": "Nkr-JFwPnVx",
+          "_file": "qk627zd4ub",
           "_media": {
-            "playfield_image": "V1h-1Ywv3Vg"
+            "playfield_image": "w212czdxuh"
           },
           "_compatibility": [
             "9.9.0"
@@ -26,9 +26,9 @@ Content-Length: 537
           }
         },
         {
-          "_file": "NkU-kKPDhEe",
+          "_file": "wknkczdxfh",
           "_media": {
-            "playfield_image": "Nko-JFPDhEg"
+            "playfield_image": "wkdk7z3xuh"
           },
           "_compatibility": [
             "9.9.0"
@@ -45,7 +45,7 @@ Content-Length: 537
   ],
   "authors": [
     {
-      "_user": "EkTE3dDPhEl",
+      "_user": "q2yfc6z3xub",
       "roles": [
         "Table Creator"
       ]

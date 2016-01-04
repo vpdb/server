@@ -15,7 +15,7 @@ like rendered in the DOM or Javascript.
 
 The root of the API is the following:
 
-	https://vpdb.ch/api/v1
+	https://vpdb.io/api/v1
 
 Only HTTPS is allowed. Data is sent and received in JSON, so unless specified
 otherwise, requests and responses should contain the

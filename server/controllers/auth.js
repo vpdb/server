@@ -109,23 +109,32 @@ exports.auth = function(resource, permission, plan, done) {
 							return next(error(err, 'Error retrieving access token from DB.').status(500).log());
 						}
 
+						// fail if not found
 						if (!t) {
 							return next(error('Invalid access token.').status(401));
 						}
 
-						// check if plan allows app tokens
+						// fail if not access token
+						if (t.type !== 'access') {
+							return next(error('Token must be an access token.').status(401));
+						}
+
+						// fail if incorrect plan
 						if (!config.vpdb.quota.plans[t._created_by._plan].enableAppTokens) {
 							return next(error('Your current plan "%s" does not allow the use of application access tokens. Upgrade or contact an admin.', t._created_by._plan).status(401));
 						}
 
+						// fail if expired
 						if (t.expires_at.getTime() < now.getTime()) {
 							return next(error('Token has expired.').status(401));
 						}
 
+						// fail if inactive
 						if (!t.is_active) {
 							return next(error('Token is inactive.').status(401));
 						}
 
+						// so we're good here!
 						Token.update({ _id: t._id }, { last_used_at: new Date() }, function(err) {
 							if (err) {
 								logger.warn('[ctrl|auth] Error saving last used time of token: %s', err.message);

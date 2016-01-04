@@ -186,6 +186,20 @@ describe('The authentication engine of the VPDB API', function() {
 				});
 		});
 
+		it('should fail if the token is a login token', function(done) {
+			request
+				.post('/api/v1/tokens')
+				.as('subscribed')
+				.send({ label: 'Valid token', password: hlp.getUser('subscribed').password, type: 'login' })
+				.end(function(err, res) {
+					hlp.expectStatus(err, res, 201);
+					request
+						.get('/api/v1/user')
+						.set('Authorization', 'Bearer ' + res.body.token)
+						.end(hlp.status(401, 'must be an access token', done));
+				});
+		});
+
 		it('should succeed if the token is valid', function(done) {
 			request
 				.post('/api/v1/tokens')

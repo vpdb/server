@@ -37,7 +37,7 @@ var fields = {
 	id:           { type: String, required: true, unique: true, 'default': shortId.generate },
 	token:        { type: String, required: true, unique: true, 'default': generate },
 	label:        { type: String, required: 'A label must be provided.' },
-	type:         { type: String,  'enum': [ 'access' ], 'default': 'access' },
+	type:         { type: String,  'enum': [ 'access', 'login' ], 'default': 'access' },
 	is_active:    { type: Boolean, required: true, 'default': true },
 	last_used_at: { type: Date },
 	expires_at:   { type: Date, required: true },

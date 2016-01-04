@@ -121,6 +121,11 @@ exports.configure = function(app, raygunClient) {
 
 	if (raygunClient) {
 		app.use(raygunClient.expressHandler);
+		raygunClient.user = function(req) {
+			if (req.user) {
+				return req.user.email;
+			}
+		}
 	}
 
 	// error logger comes at the very last

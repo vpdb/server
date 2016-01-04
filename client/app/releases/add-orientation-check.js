@@ -85,8 +85,8 @@ angular.module('vpdb.releases.add', []).directive('orientationCheck', function($
 										delete params.files[metaFileId];
 									}
 
-									// ugly hack so bg-img knows it needs to reset. (null false are received as undefined for some reason)
-									params.metaLinks[metaFileId] = '__null';
+									// ugly hack so bg-img knows it needs to reset.
+									params.metaLinks[metaFileId] = false;
 								}
 							}
 						});

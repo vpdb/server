@@ -11,7 +11,7 @@ h1 ROMs
 	div(uib-collapse="romUploadCollapsed")
 		.well.well--full-width.well--dropzone(
 			file-upload="{ type: 'rom', status: meta.romFiles, onSuccess: onRomUpload, allowedExtensions: ['zip'], allowMultipleFiles: true }"
-			ngf-drag-over-class="well--dragging"
+			ngf-drag-over-class="'well--dragging'"
 		)
 			ul.list--files
 				li.panel(ng-repeat="file in meta.romFiles")

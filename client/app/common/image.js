@@ -75,7 +75,7 @@ angular.module('vpdb.common', [])
 					var isProtected = _.isObject(value) ? value.is_protected : false;
 
 					// check for empty
-					if (url === '__null') {
+					if (url === false) {
 						scope.img = { url: false, loading: false };
 						element.css('background-image', 'none');
 						//element.removeClass('loaded');

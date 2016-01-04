@@ -244,11 +244,12 @@ include ../template/_mixins
 				| are only used on the site to enhance the user experience. Media users download in media packs or
 				| individually can be added in later step.
 
+			//- backglass
 			.row.padder-top
 				.col-sm-6
 					.panel.panel--blank(
 						file-upload="{ type: 'backglass', key: 'backglass', status: game.mediaFile, onSuccess: onBackglassUpload, onClear: onMediaClear, allowedExtensions: ['jpg', 'png'], allowMultipleFiles: false }"
-						ngf-drag-over-class="panel--dragging"
+						ngf-drag-over-class="'panel--dragging'"
 					)
 						.panel-body.a.a--darker
 							.img.img--ar-bg.loaded(img-bg="game.mediaFile.backglass.variations['medium-2x']")
@@ -285,11 +286,12 @@ include ../template/_mixins
 				+icon('warning').shift-up.space-right
 				| {{ errors['_media.backglass'] }}
 
+			//- logo
 			.row.padder-top
 				.col-sm-6
 					.panel.panel--blank(
 						file-upload="{ type: 'logo', key: 'logo', status: game.mediaFile, onSuccess: onLogoUpload, onClear: onMediaClear, allowedExtensions: ['jpg', 'png'], allowMultipleFiles: false }"
-						ngf-drag-over-class="panel--dragging"
+						ngf-drag-over-class="'panel--dragging'"
 					)
 						.panel-body.a.a--darker
 							.img.img--ar-logo.loaded(img-bg="game.mediaFile.logo")

@@ -6,7 +6,7 @@ angular.module('vpdb.auth', [])
 		$httpProvider.interceptors.push('AuthInterceptor');
 	})
 
-	.factory('AuthService', function($window, $localStorage, $sessionStorage, $rootScope, $location, $http, $state,
+	.factory('AuthService', function($window, $localStorage, $sessionStorage, $rootScope, $location, $http, $state, $timeout,
 									 Config, ApiHelper, ConfigService, AuthResource, TokenResource, ProfileResource) {
 		return {
 
@@ -249,12 +249,26 @@ angular.module('vpdb.auth', [])
 			 * @returns {String} User ID stored in the token (Issuer Claim)
 			 */
 			saveToken: function(token) {
+
+				var that = this;
 				var claims = angular.fromJson($window.atob(token.split('.')[1]));
 
 				$localStorage.jwt = token;
 				$localStorage.tokenExpires = new Date(claims.exp).getTime();
 				$localStorage.tokenCreatedLocal = new Date().getTime();
 				$localStorage.tokenCreatedServer = new Date(claims.iat).getTime();
+
+				// enable timeout notification
+				if (this.timeout) {
+					$timeout.cancel(this.timeout);
+				}
+				if (!$localStorage.rememberMe) {
+					this.timeout = $timeout(function() {
+						that.deleteToken();
+						$rootScope.timeoutNoticeCollapsed = false;
+					}, $localStorage.tokenExpires - $localStorage.tokenCreatedServer);
+				}
+
 				return claims.iss;
 			},
 

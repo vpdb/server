@@ -76,11 +76,21 @@ block navbar
 									td {{ pinnedDownloadSize | bytes }}
 
 block content
+
 	div(ng-repeat="(id, notification) in notifications track by id")
 		growl-notification(ttl="notification.ttl").ns-effect-slide.ns-type-notice
 			+icon('times').a.ns-close(ng-click="$growlNotification.remove()")
 			span(ng-bind-html="notification.message")
 	.container.container--topmost(ng-cloak)
+
+		section#timeoutNotice.uib-collapse(uib-collapse="timeoutNoticeCollapsed")
+			label
+				+icon('info').small.shift-up.space-right
+				| You have been inactive for too long and need to login again.
+			.pull-right
+				a(ng-click="timeoutNoticeCollapsed = true")
+					+icon('times').small.shift-up.space-right
+
 		| <div ui-view></div>
 
 	.spinner-overlay.fade-animation(ng-show="loading", ng-cloak)

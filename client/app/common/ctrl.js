@@ -20,6 +20,7 @@ angular.module('vpdb.common', [])
 		};
 		$rootScope.pixelDensitySuffix = window.devicePixelRatio > 1 ? '-2x' : '';
 		$rootScope.loading = false;
+		$rootScope.timeoutNoticeCollapsed = true;
 
 		$scope.menu = 'home';
 		$scope.downloadsPinned = false;
@@ -35,6 +36,7 @@ angular.module('vpdb.common', [])
 		// on every page
 		$rootScope.$on('$stateChangeStart', function(event, toState) {
 			$rootScope.state = toState;
+			$rootScope.timeoutNoticeCollapsed = true;
 		});
 		$rootScope.$on('$stateChangeSuccess', function() {
 			ModalFlashService.process();

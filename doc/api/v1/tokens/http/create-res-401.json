@@ -1,8 +1,8 @@
 401 Unauthorized
 Content-Type: application/json; charset=utf-8
-Content-Length: 73
-Etag: W/"49-Nsz7Awm/VT3qhKVaJrCCLA"
+Content-Length: 139
+Etag: W/"8b-hoe2yL2NxOuPzbMm50C0lA"
 
 {
-  "error": "You must supply a password when generating an auth token."
+  "error": "You cannot create other tokens but login tokens without supplying a password, even when logged with a \"short term\" token."
 }

@@ -19,7 +19,20 @@ description: |
   time. For login tokens, the browser would typically delete its login token as
   soon as the user logs out.
 
+  Since creating these "long term" tokens come with a certain security risk (a
+  person obtaining one has basically unlimited access to the API in the name of
+  the token's owner), the user's password must be provided in order to create
+  a token. However, since users can also login through third party services
+  like Google or GitHub, we cannot always check the password.
+
+  That's the reason why when creating a token **without a password**, you will
+  will need to authenticate with a JWT that comes **directly from an
+  authentication request** either through [user/pass][authenticate] or OAuth2
+  and not with a token from the `X-Token-Refresh` header or an application
+  access token.
+
   [authenticate]: api://core/authenticate
+  [oauth]: api://core/authenticate
 
 post:
   is: [ validated ]
@@ -45,7 +58,7 @@ post:
       description: Password not provided.
       body:
         role/member:
-          example: !include http/create-res-401.json
+          example: !include http/create-res-403.json
 
 get:
   securedBy: [ jwt: { scopes: [ MEMBER ] } ]

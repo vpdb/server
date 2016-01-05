@@ -1,0 +1,8 @@
+403 Forbidden
+Content-Type: application/json; charset=utf-8
+Content-Length: 93
+Etag: W/"5d-YgQFOHZaV0tHWqjZJWsCwA"
+
+{
+  "error": "You cannot create other tokens but login tokens without supplying a password."
+}

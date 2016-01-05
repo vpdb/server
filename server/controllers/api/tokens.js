@@ -29,11 +29,29 @@ var Token = require('mongoose').model('Token');
 
 exports.create = function(req, res) {
 
-	if (!req.body.password) {
-		return api.fail(res, error('You must supply a password when generating an auth token.').warn('create-token'), 401);
+	// tokenType == "jwt" means the token comes from a "fresh" login (not a
+	// refresh token) from either user/password or oauth2.
+	if (req.tokenType === 'jwt') {
+
+		// in this case, the user is allowed to create login tokens without
+		// additionally supplying the password.
+		if (req.body.type !== 'login' && !req.body.password) {
+			return api.fail(res, error('You cannot create other tokens but login tokens without supplying a password, ' +
+				'even when logged with a "short term" token.').warn('create-token'), 401);
+		}
+
+	} else {
+
+		// if the token type is not "jwt" (but "jwt-refreshed" or "access-token"),
+		// the user must provide a password.
+		if (!req.body.password) {
+			return api.fail(res, error('When logged with a "long term" token (either from a X-Token-Refresh header or ' +
+				'from an access token), you must provide your password.').warn('create-token'), 401);
+		}
 	}
 
-	if (!req.user.authenticate(req.body.password)) {
+	// in any case, if a password is supplied, check it.
+	if (req.body.password && !req.user.authenticate(req.body.password)) {
 		return api.fail(res, error('Wrong password.').warn('create-token'), 401);
 	}
 

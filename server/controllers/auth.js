@@ -139,7 +139,7 @@ exports.auth = function(resource, permission, plan, done) {
 							if (err) {
 								logger.warn('[ctrl|auth] Error saving last used time of token: %s', err.message);
 							}
-							next(null, t._created_by);
+							next(null, t._created_by, 'access-token');
 						});
 					});
 
@@ -181,18 +181,17 @@ exports.auth = function(resource, permission, plan, done) {
 						// generate new token if it's a short term token.
 						var tokenIssued = new Date(decoded.iat);
 						if (tokenExp.getTime() - tokenIssued.getTime() === config.vpdb.apiTokenLifetime) {
-							res.setHeader('X-Token-Refresh', exports.generateApiToken(user, now));
+							res.setHeader('X-Token-Refresh', exports.generateApiToken(user, now, true));
 						}
 
-						next(null, user);
+						next(null, user, decoded.irt ? 'jwt-refreshed' : 'jwt');
 					});
-
 				}
 
 			/**
 			 * Checks plan config if provided
 			 */
-			}, function(user, next) {
+			}, function(user, tokenType, next) {
 
 				if (_.isObject(plan)) {
 					for (var key in plan) {
@@ -205,17 +204,18 @@ exports.auth = function(resource, permission, plan, done) {
 						}
 					}
 				}
-				return next(null, user);
+				return next(null, user, tokenType);
 
 			/**
 			 * Sets dirty header
 			 */
-			}, function(user, next) {
+			}, function(user, tokenType, next) {
 
 				// *** here we're still authenticated (token is valid and not expired). ***
 
 				// this will be useful for the rest of the stack
 				req.user = user;
+				req.tokenType = tokenType; // one of: [ 'jwt', 'jwt-refreshed', 'access-token' ]
 
 				// set dirty header if necessary
 				redis.get('dirty_user_' + user.id, function(err, result) {
@@ -277,13 +277,15 @@ var Token = require('mongoose').model('Token');
  * Creates a JSON Web Token for a given user and time.
  * @param {object} user
  * @param {Date} now
+ * @param {boolean} isRefreshToken If set, mark the token as refresh token (can't be used for creating login tokens)
  * @returns {string}
  */
-exports.generateApiToken = function(user, now) {
+exports.generateApiToken = function(user, now, isRefreshToken) {
 	return jwt.encode({
 		iss: user.id,
 		iat: now,
-		exp: new Date(now.getTime() + config.vpdb.apiTokenLifetime)
+		exp: new Date(now.getTime() + config.vpdb.apiTokenLifetime),
+		irt: isRefreshToken
 	}, config.vpdb.secret);
 };
 

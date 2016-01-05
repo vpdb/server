@@ -365,7 +365,7 @@ exports.authenticate = function(req, res) {
 			// all is good, generate token and return!
 			var now = new Date();
 			var expires = new Date(now.getTime() + config.vpdb.apiTokenLifetime);
-			var token = auth.generateApiToken(user, now);
+			var token = auth.generateApiToken(user, now, how !== 'password');
 
 			LogUser.success(req, user, 'authenticate', { provider: 'local', how: how });
 			logger.info('[api|user:authenticate] User <%s> successfully authenticated using %s.', user.email, how);
@@ -522,7 +522,7 @@ function passportCallback(req, res) {
 
 		var now = new Date();
 		var expires = new Date(now.getTime() + config.vpdb.apiTokenLifetime);
-		var token = auth.generateApiToken(user, now);
+		var token = auth.generateApiToken(user, now, false);
 
 		logger.info('[api|%s:authenticate] User <%s> successfully authenticated.', req.params.strategy, user.email);
 		getACLs(user, function(err, acls) {

@@ -31,9 +31,9 @@ var hlp = require('../modules/helper');
 
 superagentTest(request);
 
-describe('The VPDB `Token` API', function() {
+describe.only('The VPDB `Token` API', function() {
 
-	describe('when creating a new token', function() {
+	describe('when creating a new access token', function() {
 
 		before(function(done) {
 			hlp.setupUsers(request, {
@@ -51,23 +51,16 @@ describe('The VPDB `Token` API', function() {
 				.post('/api/v1/tokens')
 				.saveResponse({ path: 'tokens/create'})
 				.as('subscribed')
-				.send({ label: 'Test Application' })
-				.end(function(err, res) {
-					hlp.expectStatus(err, res, 401, 'must supply a password');
-					done();
-				});
+				.send({ label: 'Test Application', type: 'access' })
+				.end(hlp.status(401, 'without supplying a password', done));
 		});
 
-		it('should fail if the wrong password provided', function(done) {
+		it('should fail if an invalid password is provided', function(done) {
 			request
 				.post('/api/v1/tokens')
-				//.saveResponse({ path: 'tokens/create'})
 				.as('subscribed')
-				.send({ label: 'Test Application', password: 'xxx' })
-				.end(function(err, res) {
-					hlp.expectStatus(err, res, 401, 'wrong password');
-					done();
-				});
+				.send({ label: 'Test Application', password: 'xxx', type: 'access' })
+				.end(hlp.status(401, 'wrong password', done));
 		});
 
 		it('should fail validations for empty label', function(done) {
@@ -75,9 +68,8 @@ describe('The VPDB `Token` API', function() {
 				.post('/api/v1/tokens')
 				.as('subscribed')
 				.set('User-Agent', '')
-				.send({ password: hlp.getUser('subscribed').password })
+				.send({ password: hlp.getUser('subscribed').password, type: 'access' })
 				.end(function(err, res) {
-					hlp.dump(res);
 					hlp.expectValidationError(err, res, 'label', 'must be provided');
 					done();
 				});
@@ -87,7 +79,7 @@ describe('The VPDB `Token` API', function() {
 			request
 				.post('/api/v1/tokens')
 				.as('subscribed')
-				.send({ label: 'x', password: hlp.getUser('subscribed').password })
+				.send({ label: 'x', password: hlp.getUser('subscribed').password, type: 'access' })
 				.end(function(err, res) {
 					hlp.expectValidationError(err, res, 'label', 'must contain at least');
 					done();
@@ -99,7 +91,7 @@ describe('The VPDB `Token` API', function() {
 				.post('/api/v1/tokens')
 				.save({ path: 'tokens/create'})
 				.as('subscribed')
-				.send({ label: 'My Application', password: hlp.getUser('subscribed').password })
+				.send({ label: 'My Application', password: hlp.getUser('subscribed').password, type: 'access' })
 				.end(function(err, res) {
 					hlp.expectStatus(err, res, 201);
 					expect(res.body.id).to.be.ok();
@@ -108,6 +100,179 @@ describe('The VPDB `Token` API', function() {
 				});
 		});
 
+	});
+
+	describe('when creating a new login token', function() {
+
+		before(function(done) {
+			hlp.setupUsers(request, {
+				member: { roles: [ 'member' ] },
+				subscribed: { roles: [ 'member' ], _plan: 'subscribed' }
+			}, done);
+		});
+
+		after(function(done) {
+			hlp.cleanup(request, done);
+		});
+
+		it('should fail if no password provided while using a refresh token', function(done) {
+			request.get('/api/v1/ping').as('member').end(function(err, res) {
+				hlp.expectStatus(err, res, 200);
+				var token = res.headers['x-token-refresh'];
+				request
+					.post('/api/v1/tokens')
+					.set('Authorization', 'Bearer ' + token)
+					.send({ type: 'login' })
+					.end(hlp.status(401, 'must provide your password', done));
+			});
+		});
+
+		it('should fail if no password provided while using an access token', function(done) {
+
+			// create access token
+			request
+				.post('/api/v1/tokens')
+				.as('subscribed')
+				.send({ password: hlp.getUser('subscribed').password })
+				.end(function(err, res) {
+					hlp.doomToken('subscribed', res.body.id);
+					hlp.expectStatus(err, res, 201);
+					var token = res.body.token;
+
+					// use access token for login token
+					request
+						.post('/api/v1/tokens')
+						.set('Authorization', 'Bearer ' + token)
+						.send({ type: 'login' })
+						.end(hlp.status(401, 'must provide your password', done));
+				});
+		});
+
+		it('should fail if an invalid password is provided even when using a non-refreshed token', function(done) {
+
+			request
+				.post('/api/v1/authenticate')
+				.save({ path: 'auth/local' })
+				.send({ username: hlp.getUser('member').name, password: hlp.getUser('member').password })
+				.end(function(err, res) {
+					hlp.expectStatus(err, res, 200);
+					var token = res.body.token;
+					request
+						.post('/api/v1/tokens')
+						.set('Authorization', 'Bearer ' + token)
+						.send({ password: 'i-am-wrong', type: 'login' })
+						.end(hlp.status(401, done));
+				});
+		});
+
+		it('should fail without password while using a JWT obtained through another login token', function(done) {
+
+			// create first login token
+			request
+				.post('/api/v1/tokens')
+				.as('member')
+				.send({ type: 'login' })
+				.end(function(err, res) {
+
+					hlp.expectStatus(err, res, 201);
+					hlp.doomToken(res.body.id);
+					var loginToken = res.body.token;
+
+					// create jwt with login token
+					request
+						.post('/api/v1/authenticate')
+						.send({ token: loginToken })
+						.end(function(err, res) {
+
+							hlp.expectStatus(err, res, 200);
+							var jwt = res.body.token;
+
+							// try to create another login token
+							request
+								.post('/api/v1/tokens')
+								.set('Authorization', 'Bearer ' + jwt)
+								.send({ type: 'login' })
+								.end(hlp.status(401, 'must provide your password', done));
+						});
+				});
+		});
+
+		it('should succeed when providing a password while using a refresh token', function(done) {
+			request.get('/api/v1/ping').as('member').end(function(err, res) {
+				hlp.expectStatus(err, res, 200);
+				var token = res.headers['x-token-refresh'];
+				request
+					.post('/api/v1/tokens')
+					.set('Authorization', 'Bearer ' + token)
+					.send({ password: hlp.getUser('member').password, type: 'login' })
+					.end(hlp.status(201, done));
+			});
+		});
+
+		it('should succeed when providing a password while using an access token', function(done) {
+
+			// create access token
+			request
+				.post('/api/v1/tokens')
+				.as('subscribed')
+				.send({ password: hlp.getUser('subscribed').password })
+				.end(function(err, res) {
+					hlp.doomToken('subscribed', res.body.id);
+					hlp.expectStatus(err, res, 201);
+					var token = res.body.token;
+
+					// use access token for login token
+					request
+						.post('/api/v1/tokens')
+						.set('Authorization', 'Bearer ' + token)
+						.send({ password: hlp.getUser('subscribed').password, type: 'login' })
+						.end(hlp.status(201, done));
+				});
+		});
+
+		it('should succeed without password while using a non-refreshed JWT from user/pass', function(done) {
+
+			request
+				.post('/api/v1/authenticate')
+				.save({ path: 'auth/local' })
+				.send({ username: hlp.getUser('member').name, password: hlp.getUser('member').password })
+				.end(function(err, res) {
+					hlp.expectStatus(err, res, 200);
+					var token = res.body.token;
+					request
+						.post('/api/v1/tokens')
+						.set('Authorization', 'Bearer ' + token)
+						.send({ type: 'login' })
+						.end(hlp.status(201, done));
+				});
+		});
+
+		it('should succeed without password while using a non-refreshed JWT from OAuth', function(done) {
+
+			request
+				.post('/api/v1/authenticate/mock')
+				.send({
+					provider: 'github',
+					profile: {
+						provider: 'github',
+						id: '11234',
+						displayName: null,
+						username: 'mockuser',
+						profileUrl: 'https://github.com/mockuser',
+						emails: [ { value: 'mockuser@vpdb.io' } ],
+						_raw: '(not mocked)', _json: { not: 'mocked '}
+					}
+				}).end(function(err, res) {
+					hlp.expectStatus(err, res, 200);
+					hlp.doomUser(res.body.user.id);
+					var token = res.body.token;
+					request
+						.post('/api/v1/tokens')
+						.set('Authorization', 'Bearer ' + token)
+						.send({ type: 'login' })
+						.end(hlp.status(201, done));
+				});
+		});
 	});
 
 	describe('when listing auth tokens', function() {

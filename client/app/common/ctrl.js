@@ -19,13 +19,13 @@ angular.module('vpdb.common', [])
 			return '#icon-' + icon;
 		};
 		$rootScope.pixelDensitySuffix = window.devicePixelRatio > 1 ? '-2x' : '';
+		$rootScope.loading = false;
 
 		$scope.menu = 'home';
 		$scope.downloadsPinned = false;
 		$scope.pinnedDownloads = {};
 		$scope.pinnedDownloadCount = 0;
 		$scope.pinnedDownloadSize = 0;
-		$scope.loading = false;
 		$scope.notifications = {};
 
 		AuthService.init();
@@ -60,8 +60,8 @@ angular.module('vpdb.common', [])
 			$rootScope.themeName = $rootScope.themeName === 'theme-dark' ? 'theme-light' : 'theme-dark';
 		};
 
-		$scope.setLoading = function(loading) {
-			$scope.loading = loading;
+		$rootScope.setLoading = function(loading) {
+			$rootScope.loading = loading;
 		};
 
 		$rootScope.downloadFile = function(file) {

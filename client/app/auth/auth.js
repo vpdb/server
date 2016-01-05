@@ -7,7 +7,7 @@ angular.module('vpdb.auth', [])
 	})
 
 	.factory('AuthService', function($window, $localStorage, $sessionStorage, $rootScope, $location, $http, $state,
-									 Config, ConfigService, ProfileResource) {
+									 Config, ApiHelper, ConfigService, AuthResource, TokenResource, ProfileResource) {
 		return {
 
 			user: null,
@@ -35,6 +35,15 @@ angular.module('vpdb.auth', [])
 			 * @param result Object with keys `token`, `expires` and `user`.
 			 */
 			authenticated: function(result) {
+
+				var claims = angular.fromJson($window.atob(result.token.split('.')[1]));
+
+				if (claims.irt === false) {
+					$localStorage.initialJwt = result.token;
+					$localStorage.initialTokenExpires = new Date(claims.exp).getTime();
+					$localStorage.initialTokenCreatedLocal = new Date().getTime();
+					$localStorage.initialTokenCreatedServer = new Date(claims.iat).getTime();
+				}
 				this.saveToken(result.token);
 				this.saveUser(result.user);
 			},
@@ -67,11 +76,35 @@ angular.module('vpdb.auth', [])
 			},
 
 			/**
+			 * Retrieves a login token for future auto-login.
+			 */
+			rememberMe: function() {
+				TokenResource.save({ type: 'login' }, function(token) {
+					$localStorage.loginToken = token;
+				}, ApiHelper.handleErrorsInDialog($rootScope, 'Error creating login token.'));
+			},
+
+			/**
 			 * Clears token, resulting in not being authenticated anymore.
 			 */
 			logout: function() {
-				this.deleteToken();
-				$location.url('/');
+
+				var that = this;
+				var done = function() {
+					that.deleteToken();
+					$location.url('/');
+				};
+
+				if ($localStorage.loginToken) {
+					TokenResource.delete({ id: $localStorage.loginToken.id }, function() {
+						delete $localStorage.loginToken;
+						done();
+
+					}, ApiHelper.handleErrorsInDialog($rootScope, 'Error deleting login token.', done));
+
+				} else {
+					done();
+				}
 			},
 
 			/**
@@ -124,11 +157,17 @@ angular.module('vpdb.auth', [])
 			 * Reloads the user profile data from the server
 			 * @returns {promise}
 			 */
-			refreshUser: function() {
+			refreshUser: function(callback) {
 				var that = this;
 				return ProfileResource.get(function(user) {
 					that.saveUser(user);
+					if (callback) {
+						callback(null, user);
+					}
 				}, function(err) {
+					if (callback) {
+						callback(err);
+					}
 					console.log('Error retrieving user profile: %s', err);
 				});
 			},
@@ -153,11 +192,11 @@ angular.module('vpdb.auth', [])
 			 * @returns {boolean}
 			 */
 			isTokenExpired: function() {
-				var exp = $localStorage.tokenExpires;
-				if (!exp) {
+				if (!$localStorage.tokenExpires) {
 					return true;
 				}
-				return new Date(exp).getTime() < new Date().getTime();
+				var timeDiff = $localStorage.tokenCreatedLocal - $localStorage.tokenCreatedServer;
+				return $localStorage.tokenExpires + timeDiff < new Date().getTime();
 			},
 
 			/**
@@ -175,11 +214,33 @@ angular.module('vpdb.auth', [])
 			},
 
 			/**
+			 * Checks if there is a valid login token.
+			 * @returns {boolean}
+			 */
+			hasLoginToken: function() {
+				if (!$localStorage.loginToken || !$localStorage.rememberMe) {
+					return false;
+				}
+				if (!$localStorage.loginToken.is_active) {
+					return false;
+				}
+				return new Date($localStorage.loginToken.expires_at).getTime() > new Date().getTime();
+			},
+
+			/**
 			 * Returns the token from browser storage.
 			 * @returns {*}
 			 */
 			getToken: function() {
 				return $localStorage.jwt;
+			},
+
+			/**
+			 * Returns the login token from browser storage.
+			 * @returns {*}
+			 */
+			getLoginToken: function() {
+				return $localStorage.loginToken.token;
 			},
 
 			/**
@@ -191,8 +252,9 @@ angular.module('vpdb.auth', [])
 				var claims = angular.fromJson($window.atob(token.split('.')[1]));
 
 				$localStorage.jwt = token;
-				$localStorage.tokenExpires = claims.exp;
-				$localStorage.tokenCreated = claims.iat;
+				$localStorage.tokenExpires = new Date(claims.exp).getTime();
+				$localStorage.tokenCreatedLocal = new Date().getTime();
+				$localStorage.tokenCreatedServer = new Date(claims.iat).getTime();
 				return claims.iss;
 			},
 
@@ -208,7 +270,13 @@ angular.module('vpdb.auth', [])
 				delete $localStorage.jwt;
 				delete $localStorage.user;
 				delete $localStorage.tokenExpires;
-				delete $localStorage.tokenCreated;
+				delete $localStorage.tokenCreatedLocal;
+				delete $localStorage.tokenCreatedServer;
+
+				delete $localStorage.initialJwt;
+				delete $localStorage.initialTokenExpires;
+				delete $localStorage.initialTokenCreatedLocal;
+				delete $localStorage.initialTokenCreatedServer;
 			},
 
 			/**
@@ -387,24 +455,46 @@ angular.module('vpdb.auth', [])
 	})
 
 
-	.factory('AuthInterceptor', function($injector) {
+	.factory('AuthInterceptor', function($injector, $q) {
 		return {
 			request: function(config) {
-				config.headers = config.headers || {};
 
-				if (config.url.substr(0, 5) === '/api/') {
-					// dont "internally cache" (as in: don't make the request at all) anything from the api.
-					config.cache = false;
-				}
-				var AuthService = $injector.get('AuthService');
-				if (AuthService.hasToken()) {
-					config.headers[AuthService.getAuthHeader()] = 'Bearer ' + AuthService.getToken();
-				}
-				return config;
+				return $q(function(resolve, reject) {
+
+					config.headers = config.headers || {};
+
+					if (config.url.substr(0, 5) === '/api/') {
+						// dont "internally cache" (as in: don't make the request at all) anything from the api.
+						config.cache = false;
+
+						var AuthService = $injector.get('AuthService');
+						// check for valid token
+						if (AuthService.hasToken()) {
+							config.headers[AuthService.getAuthHeader()] = 'Bearer ' + AuthService.getToken();
+							resolve(config);
+
+							// check for autologin token
+						} else if (config.url !== '/api/v1/authenticate' && AuthService.hasLoginToken()) {
+
+							var AuthResource = $injector.get('AuthResource');
+							AuthResource.authenticate({ token: AuthService.getLoginToken() }, function(result) {
+								config.headers[AuthService.getAuthHeader()] = 'Bearer ' + result.token;
+								AuthService.authenticated(result);
+								resolve(config);
+
+							}, reject);
+
+						} else {
+							resolve(config);
+						}
+					} else {
+						resolve(config);
+					}
+
+				});
 			},
 			response: function(response) {
-				if (response.status === 401) {
-					console.log('oops, 401.');
+				if (response.status === 401 || response.status === 403) {
 					return response;
 				}
 				var token = response.headers('x-token-refresh');

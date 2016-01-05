@@ -31,6 +31,8 @@ include ../template/_mixins
 		div.alert.alert-success.padder-bottom(ng-show="topMessage")
 			+icon('info').space-right.shift-up
 			| {{ topMessage }}
+
+		//- LOGIN
 		div(ng-hide="registering")
 			h3.h--shift-up(ng-hide="loginParams.localOnly") Or, with your account:
 			h3.h--shift-up(ng-show="loginParams.localOnly") Login with your account:
@@ -43,6 +45,8 @@ include ../template/_mixins
 					label.col-sm-4.control-label Password
 					.col-sm-6
 						input.form-control(ng-model="loginUser.password", type="password")
+
+		//- REGISTER
 		div(ng-show="registering && !loginParams.localOnly")
 			h3.h--shift-up Or, register with your Email:
 			form.form-horizontal(role="form")
@@ -58,6 +62,8 @@ include ../template/_mixins
 					label.col-sm-4.control-label Password
 					.col-sm-6
 						input.form-control(ng-model="registerUser.password", type="password")
+
+		//- ERRORS
 		div.alert.alert-danger(ng-show="errors.email")
 			+icon('warning').space-right.shift-up
 			| {{ errors.email }}
@@ -77,6 +83,17 @@ include ../template/_mixins
 		.text-center.padder-top.i(ng-show="message2", ng-bind-html="message2")
 
 	.modal-footer
+
+		.form-group(ng-hide="registering")
+			.col-sm-4
+				input#rememberMe.checkbox--check(ng-model="$storage.rememberMe", type="checkbox")
+				label.nested(for="rememberMe")
+			label.col-sm-8.control-value(for="rememberMe") Remember Me
+
+			.clearfix
+		hr.hr--light.padder-top-4x(ng-hide="registering")
+		.clearfix(ng-hide="registering")
+
 		button.btn.btn-default.pull-left(ng-click="swap()", ng-hide="loginParams.localOnly") {{ registering ? "Login" : "Register" }}
 		button.btn.btn-default(ng-click="$close()") Cancel
 		button.btn.btn--secondary(ng-hide="registering", ng-click="login()") Login

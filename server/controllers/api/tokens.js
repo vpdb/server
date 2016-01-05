@@ -79,7 +79,16 @@ exports.create = function(req, res) {
 };
 
 exports.list = function(req, res) {
-	Token.find({ _created_by: req.user._id }, function(err, tokens) {
+
+	var query = { _created_by: req.user._id };
+	var allowedTypes = [ 'access', 'login'];
+
+	// filter by type?
+	if (req.query.type && _.contains(allowedTypes, req.query.type)) {
+		query.type = req.query.type;
+	}
+
+	Token.find(query, function(err, tokens) {
 		/* istanbul ignore if  */
 		if (err) {
 			return api.fail(res, error(err, 'Error listing tokens').log('list'), 500);

@@ -2,11 +2,13 @@
 
 angular.module('vpdb.login', [])
 
-	.controller('LoginCtrl', function($scope, $rootScope, $modalInstance, $window,
+	.controller('LoginCtrl', function($scope, $rootScope, $modalInstance, $window, $localStorage,
 									  ApiHelper, AuthService, AuthResource, UserResource,
 									  opts) {
 
 		opts = opts || {};
+
+		$localStorage.rememberMe = _.isUndefined($localStorage.rememberMe) ? true : $localStorage.rememberMe;
 
 		$scope.registering = false;
 		$scope.loginUser = {};
@@ -42,6 +44,10 @@ angular.module('vpdb.login', [])
 				$modalInstance.close();
 				AuthService.runPostLoginActions();
 
+				if ($localStorage.rememberMe) {
+					AuthService.rememberMe();
+				}
+
 			}, ApiHelper.handleErrors($scope, function() {
 				$scope.message2 = null;
 			}));
@@ -72,10 +78,15 @@ angular.module('vpdb.login', [])
 		};
 	})
 
-	.controller('AuthCallbackCtrl', function($stateParams, $uibModal, AuthResource, AuthService, ModalService) {
+	.controller('AuthCallbackCtrl', function($stateParams, $localStorage, AuthResource, AuthService, ModalService) {
 		AuthResource.authenticateCallback($stateParams, function(result) {
 			AuthService.authenticated(result);
 			AuthService.runPostLoginActions();
+
+			if ($localStorage.rememberMe) {
+				AuthService.rememberMe();
+			}
+
 		}, function(err) {
 			ModalService.error({
 				subtitle: 'Could not login.',

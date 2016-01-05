@@ -7,19 +7,35 @@ angular.module('vpdb.profile.settings', [])
 		$scope.theme('dark');
 		$scope.setTitle('Your Profile');
 
-		AuthService.refreshUser();
-
 		$scope.localUser = {};                                          // local user for changing password
 		$scope.localCredentials = {};                                   // local credentials object
+
+		AuthService.refreshUser(function(err) {
+
+			if (err) {
+				return console.error(err);
+			}
+
+			$scope.providers = AuthService.getProviders($scope.auth.user);
+			var allProviders = AuthService.getProviders();
+
+			$scope.tokens = TokenResource.query({ type: 'access' });
+			$scope.showTokenAlert = false;
+
+			// pre-fill (local) username from first provider we find.
+			var i, provider;
+			for (i = 0; i < allProviders.length; i++) {
+				provider = allProviders[i];
+				if ($scope.auth.user[provider.id] && $scope.auth.user[provider.id].username) {
+					$scope.localCredentials.username = $scope.auth.user[provider.id].username;
+					break;
+				}
+			}
+		});
+
 		$rootScope.$watch('auth.user', function(value) {
 			$scope.updatedUser = _.pick(value, 'name', 'location', 'email');
 		});
-
-		$scope.providers = AuthService.getProviders($scope.auth.user);
-		var allProviders = AuthService.getProviders();
-
-		$scope.tokens = TokenResource.query();
-		$scope.showTokenAlert = false;
 
 		/**
 		 * First block: Update "public" user profile data
@@ -139,17 +155,6 @@ angular.module('vpdb.profile.settings', [])
 			$rootScope.showNotification('Token copied to clipboard.');
 		};
 
-		// pre-fill (local) username from first provider we find.
-		var i, provider;
-		for (i = 0; i < allProviders.length; i++) {
-			provider = allProviders[i];
-			if ($scope.auth.user[provider.id] && $scope.auth.user[provider.id].username) {
-				$scope.localCredentials.username = $scope.auth.user[provider.id].username;
-				break;
-			}
-		}
-
-
 		/**
 		 * Checks that two passwords field are filled and equal and applies
 		 * errors to scope.
@@ -172,12 +177,11 @@ angular.module('vpdb.profile.settings', [])
 			}
 			return true;
 		};
-
 	})
 
 	.controller('AddTokenCtrl', function($scope, $modalInstance, TokenResource, ApiHelper) {
 
-		$scope.token = {};
+		$scope.token = { type: 'access' };
 		$scope.create = function() {
 			TokenResource.save($scope.token, function(token) {
 

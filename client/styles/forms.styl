@@ -275,6 +275,8 @@ input.checkbox--check
 		margin-left 6px
 		cursor pointer
 		transition color $animation-short
+		height 22px
+		width 16px
 
 		&:before
 			content ''
@@ -303,6 +305,10 @@ input.checkbox--check
 			border-right none
 			transform rotate(-45deg)
 			transition opacity $animation-short
+
+		&.nested
+			position absolute
+			right 0
 
 	&:checked + label:after
 		opacity 1

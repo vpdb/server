@@ -253,6 +253,7 @@ exports.data = [
 	{ bg: 'Spider-Man (Stern 2007).png', logo: 'Spider-Man (Stern 2007).png', ipdb: 5237 },
 	{ bg: 'Starship Troopers (Sega 1997).png', logo: 'Starship Troopers (Sega 1997).png', ipdb: 4341 },
 	{ bg: 'Star Wars (Data East 1992).png', logo: 'Star Wars (Data East 1992).png', ipdb: 2358 },
+	{ bg: 'Star Trek (Bally 1979).png', logo: 'Star Trek (Bally 1978).png', ipdb: 2355 },
 	{ bg: 'STTNG (Williams 1993).png', logo: 'STTNG (Williams 1993).png', ipdb: 2357 },
 	{ bg: 'Super Mario Bros (Premier 1992).png', logo: 'Super Mario Bros (Premier 1992).png', ipdb: 2435, id: 'smb' },
 	{ bg: 'Superman (Atari 1979).png', logo: 'Superman (Atari 1979).png', ipdb: 2454 },

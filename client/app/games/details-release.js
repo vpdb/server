@@ -32,15 +32,16 @@ angular.module('vpdb.games.details', []).controller('ReleaseController', functio
 		$scope.latestVersion = $scope.releaseVersions[0];
 
 		// get latest shots
-		$scope.portraitShots = _.compact(_.map($scope.latestVersion.files, function(file) {
-			if (!file.media || !file.media.playfield_image || file.media.playfield_image.file_type !== 'playfield-fs') {
+		$scope.shots = _.sortByOrder(_.compact(_.map($scope.latestVersion.files, function(file) {
+			if (!file.media || !file.media.playfield_image) {
 				return null;
 			}
 			return {
+				type: file.media.playfield_image.file_type,
 				url: file.media.playfield_image.variations['medium' + $rootScope.pixelDensitySuffix].url,
 				full: file.media.playfield_image.variations.full.url
 			};
-		}));
+		})), 'type', true);
 
 		// fetch comments
 		$scope.comments = ReleaseCommentResource.query({ releaseId: release.id });
@@ -66,7 +67,16 @@ angular.module('vpdb.games.details', []).controller('ReleaseController', functio
 					delegate: '.image',
 					type: 'image',
 					removalDelay: 300,
-					mainClass: 'mfp-fade'
+					mainClass: 'mfp-fade',
+					gallery: {
+						enabled: true,
+						preload: [0,2],
+						navigateByImgClick: true,
+						arrowMarkup: '',
+						tPrev: '',
+						tNext: '',
+						tCounter: ''
+					}
 				});
 			});
 		});

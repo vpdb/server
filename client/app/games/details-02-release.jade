@@ -7,7 +7,7 @@ include ../template/_mixins
 		//-- PLAYFIELD TUMBS
 		//---------------------------------------------------------------------
 		uib-carousel(interval="60000")
-			uib-slide(ng-repeat="slide in portraitShots", active="slide.active")
+			uib-slide(ng-repeat="slide in shots", active="slide.active")
 				a.image(href="{{ slide.full }}")
 					img(src="{{ slide.url }}")
 

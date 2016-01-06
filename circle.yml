@@ -11,6 +11,7 @@ machine:
 dependencies:
   pre:
     - sudo apt-get -y install graphicsmagick pngquant optipng
+    - sudo apt-get -y purge ffmpeg unrar
     - wget http://johnvansickle.com/ffmpeg/releases/ffmpeg-release-64bit-static.tar.xz -O /tmp/ffmpeg.tar.gz
     - wget http://www.rarlab.com/rar/rarlinux-x64-5.3.0.tar.gz -O /tmp/rar.tar.gz
     - mkdir -p bin

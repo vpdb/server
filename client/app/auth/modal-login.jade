@@ -40,11 +40,11 @@ include ../template/_mixins
 				.form-group
 					label.col-sm-4.control-label Username
 					.col-sm-6
-						input.form-control(ng-model="loginUser.username", ng-required)
+						input.form-control(ng-model="userPass.username", ng-required)
 				.form-group
 					label.col-sm-4.control-label Password
 					.col-sm-6
-						input.form-control(ng-model="loginUser.password", type="password")
+						input.form-control(ng-model="userPass.password", type="password")
 
 		//- REGISTER
 		div(ng-show="registering && !loginParams.localOnly")
@@ -53,15 +53,15 @@ include ../template/_mixins
 				.form-group(ng-class="{ error: errors.email }")
 					label.col-sm-4.control-label Email
 					.col-sm-6
-						input.form-control(ng-model="registerUser.email", ng-required)
+						input.form-control(ng-model="email", ng-required)
 				.form-group(ng-class="{ error: errors.username }")
 					label.col-sm-4.control-label Username
 					.col-sm-6
-						input.form-control(ng-model="registerUser.username", ng-required)
+						input.form-control(ng-model="userPass.username", ng-required)
 				.form-group(ng-class="{ error: errors.password }")
 					label.col-sm-4.control-label Password
 					.col-sm-6
-						input.form-control(ng-model="registerUser.password", type="password")
+						input.form-control(ng-model="userPass.password", type="password")
 
 		//- ERRORS
 		div.alert.alert-danger(ng-show="errors.email")
@@ -92,9 +92,9 @@ include ../template/_mixins
 
 			.clearfix
 		hr.hr--light.padder-top-4x(ng-hide="registering")
-		.clearfix(ng-hide="registering")
+		.clearfix
 
-		button.btn.btn-default.pull-left(ng-click="swap()", ng-hide="loginParams.localOnly") {{ registering ? "Login" : "Register" }}
+		h3.h--smaller.h--no-margin.a.a--lighter.pull-left(ng-click="swap()", ng-hide="loginParams.localOnly") {{ registering ? "Login" : "Register" }}
 		button.btn.btn-default(ng-click="$close()") Cancel
 		button.btn.btn--secondary(ng-hide="registering", ng-click="login()") Login
 		button.btn.btn--secondary(ng-show="registering", ng-click="register()") Register

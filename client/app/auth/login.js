@@ -11,7 +11,8 @@ angular.module('vpdb.login', [])
 		$localStorage.rememberMe = _.isUndefined($localStorage.rememberMe) ? true : $localStorage.rememberMe;
 
 		$scope.registering = false;
-		$scope.loginUser = {};
+		$scope.userPass = {};
+		$scope.email = "";
 		$scope.registerUser = {};
 		$scope.message = opts.message || null;
 		$scope.error = null;
@@ -36,7 +37,7 @@ angular.module('vpdb.login', [])
 			if (opts.postLogin) {
 				AuthService.addPostLoginAction(opts.postLogin.action, opts.postLogin.params);
 			}
-			AuthResource.authenticate($scope.loginUser, function(result) {
+			AuthResource.authenticate($scope.userPass, function(result) {
 				$scope.errors = {};
 				$scope.error = null;
 				$scope.message2 = null;
@@ -59,10 +60,11 @@ angular.module('vpdb.login', [])
 			if (opts.postLogin) {
 				AuthService.addPostLoginAction(opts.postLogin.action, opts.postLogin.params);
 			}
-			UserResource.register($scope.registerUser, function() {
+			UserResource.register(_.extend($scope.userPass, { email: $scope.email }), function() {
 				$scope.errors = {};
 				$scope.error = null;
-				$scope.registerUser = {};
+				$scope.userPass = {};
+				$scope.email = "";
 				$scope.message = 'Registration successful.';
 				$scope.message2 = 'You will get an email shortly.<br>Once you have confirmed it, you\'re good to go!';
 				$scope.registering = !$scope.registering;

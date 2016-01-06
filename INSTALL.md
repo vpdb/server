@@ -46,8 +46,11 @@ Update to your taste (unblock port 80, 443, 8088, 8089), then create symlinks an
 
 Set:
 
+	Protocol 2
+	PasswordAuthentication no
+	PubkeyAuthentication yes
 	PermitRootLogin no
-
+	LogLevel VERBOSE
 
 ## Install Deps
 

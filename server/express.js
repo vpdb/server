@@ -122,7 +122,7 @@ exports.configure = function(app, raygunClient) {
 	if (raygunClient) {
 		app.use(raygunClient.expressHandler);
 		raygunClient.user = function(req) {
-			if (req.user) {
+			if (req && req.user) {
 				return req.user.email;
 			}
 		};

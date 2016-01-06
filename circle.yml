@@ -19,6 +19,7 @@ dependencies:
     - tar -xvf /tmp/rar.tar.gz --strip 1
     - cd ..
     - export PATH=$(pwd)/bin:$PATH
+    - deploy/ci/circle.sh
 
   override:
     - npm install -g grunt-cli

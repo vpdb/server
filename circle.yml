@@ -14,12 +14,10 @@ dependencies:
     - sudo apt-get -y install graphicsmagick pngquant optipng
     - wget http://johnvansickle.com/ffmpeg/releases/ffmpeg-release-64bit-static.tar.xz -O /tmp/ffmpeg.tar.gz
     - wget http://www.rarlab.com/rar/rarlinux-x64-5.3.0.tar.gz -O /tmp/rar.tar.gz
-    - mkdir -p /tmp/bin
-    - cd /tmp/bin
-    - tar -xvf /tmp/ffmpeg.tar.gz --strip 1 --no-anchored ffmpeg ffprobe
-    - tar -xvf /tmp/rar.tar.gz --strip 1
+    - cd /usr/bin
+    - sudo tar -xvf /tmp/ffmpeg.tar.gz --strip 1 --no-anchored ffmpeg ffprobe
+    - sudo tar -xvf /tmp/rar.tar.gz --strip 1
     - cd ..
-    - export PATH=/tmp/bin:$PATH
     - deploy/ci/circle.sh
 
   override:

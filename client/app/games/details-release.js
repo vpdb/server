@@ -38,7 +38,7 @@ angular.module('vpdb.games.details', []).controller('ReleaseController', functio
 			}
 			return {
 				url: file.media.playfield_image.variations['medium' + $rootScope.pixelDensitySuffix].url,
-				full: file.media.playfield_image.variations['medium-2x'].url
+				full: file.media.playfield_image.variations.full.url
 			};
 		}));
 
@@ -59,7 +59,7 @@ angular.module('vpdb.games.details', []).controller('ReleaseController', functio
 		});
 		$scope.flavorGrid = _.sortByOrder(_.values(flavorGrid), 'released_at', false);
 
-		// setup pop
+		// setup lightbox
 		$timeout(function() {
 			$('.carousel-inner').each(function() {
 				$(this).magnificPopup({

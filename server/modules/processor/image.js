@@ -56,6 +56,7 @@ function ImageProcessor() {
 			{ name: 'small-2x',  width: 506, height: 404, mimeType: 'image/jpeg' }
 		],
 		'playfield-fs': [
+			{ name: 'full',                                         rotate: -90, mimeType: 'image/jpeg', qual: 60 },
 			{ name: 'medium',              width: 393, height: 233, rotate: -90, mimeType: 'image/jpeg' },
 			{ name: 'medium-2x',           width: 786, height: 466, rotate: -90, mimeType: 'image/jpeg' },
 			{ name: 'medium-landscape',    width: 393, height: 233, mimeType: 'image/jpeg' },
@@ -65,6 +66,7 @@ function ImageProcessor() {
 		],
 		'playfield-ws': [
 			// todo: rename medium to medium-portrait and perspective-distort it to portrait-ish
+			{ name: 'full',                               mimeType: 'image/jpeg', qual: 60 },
 			{ name: 'medium',    width: 393, height: 393, mimeType: 'image/jpeg' },
 			{ name: 'medium-2x', width: 786, height: 786, mimeType: 'image/jpeg' },
 			{ name: 'medium-landscape',    width: 393, height: 233, mimeType: 'image/jpeg' },
@@ -150,7 +152,7 @@ ImageProcessor.prototype.pass1 = function(src, dest, file, variation, done) {
 	// do the processing
 	logger.info('[processor|image|pass1] Resizing %s "%s" (%s)...', file.file_type, file.id, variation.name);
 	var img = gm(src);
-	img.quality(80);
+	img.quality(variation.qual || 80);
 
 	if (variation.width && variation.height) {
 		img.resize(variation.width, variation.height);

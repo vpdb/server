@@ -8,7 +8,8 @@ include ../template/_mixins
 		//---------------------------------------------------------------------
 		uib-carousel(interval="60000")
 			uib-slide(ng-repeat="slide in portraitShots", active="slide.active")
-				img(ng-src="{{ slide.url }}")
+				a.image(href="{{ slide.full }}")
+					img(src="{{ slide.url }}")
 
 
 		//-- DOWNLOAD BUTTON

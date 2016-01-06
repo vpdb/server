@@ -20,7 +20,7 @@
 "use strict"; /* global _, angular */
 
 angular.module('vpdb.games.details', []).controller('ReleaseController', function(
-	$scope, $rootScope, $uibModal, ApiHelper, ReleaseCommentResource, AuthService,
+	$scope, $rootScope, $uibModal,  $timeout, ApiHelper, ReleaseCommentResource, AuthService,
 	ReleaseRatingResource, ReleaseStarResource, ModalService
 ) {
 
@@ -36,7 +36,10 @@ angular.module('vpdb.games.details', []).controller('ReleaseController', functio
 			if (!file.media || !file.media.playfield_image || file.media.playfield_image.file_type !== 'playfield-fs') {
 				return null;
 			}
-			return { url: file.media.playfield_image.variations['medium' + $rootScope.pixelDensitySuffix].url };
+			return {
+				url: file.media.playfield_image.variations['medium' + $rootScope.pixelDensitySuffix].url,
+				full: file.media.playfield_image.variations['medium-2x'].url
+			};
 		}));
 
 		// fetch comments
@@ -56,14 +59,17 @@ angular.module('vpdb.games.details', []).controller('ReleaseController', functio
 		});
 		$scope.flavorGrid = _.sortByOrder(_.values(flavorGrid), 'released_at', false);
 
-		// setup pop (TODO, not working)
-		setTimeout(function() {
-			$('.image-link').magnificPopup({
-				type: 'image',
-				removalDelay: 300,
-				mainClass: 'mfp-fade'
+		// setup pop
+		$timeout(function() {
+			$('.carousel-inner').each(function() {
+				$(this).magnificPopup({
+					delegate: '.image',
+					type: 'image',
+					removalDelay: 300,
+					mainClass: 'mfp-fade'
+				});
 			});
-		}, 0);
+		});
 	});
 
 

@@ -108,7 +108,7 @@ angular.module('vpdb.releases.add', []).controller('ReleaseAddCtrl', function(
 	};
 
 	// init data: either copy from local storage or reset.
-	if ($localStorage.release) {
+	if ($localStorage.release && $localStorage.release.versions) {
 		$scope.release = $localStorage.release;
 		$scope.releaseVersion = $scope.release.versions[0];
 		$scope.meta = $localStorage.release_meta;

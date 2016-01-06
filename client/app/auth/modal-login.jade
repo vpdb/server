@@ -87,7 +87,7 @@ include ../template/_mixins
 		.form-group(ng-hide="registering")
 			.col-sm-4
 				input#rememberMe.checkbox--check(ng-model="$storage.rememberMe", type="checkbox")
-				label.nested(for="rememberMe")
+				label.checkbox--standalone.nested(for="rememberMe")
 			label.col-sm-8.control-value(for="rememberMe") Remember Me
 
 			.clearfix

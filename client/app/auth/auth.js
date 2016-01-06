@@ -477,7 +477,7 @@ angular.module('vpdb.auth', [])
 
 					config.headers = config.headers || {};
 
-					if (config.url.substr(0, 5) === '/api/') {
+					if (config.url.substr(0, 5) === '/api/' || config.url.substr(0, 9) === '/storage/') {
 						// dont "internally cache" (as in: don't make the request at all) anything from the api.
 						config.cache = false;
 

@@ -9,21 +9,8 @@ machine:
 
 ## Customize dependencies
 dependencies:
-  pre:
-    - sudo apt-get -y purge ffmpeg unrar
-    - sudo apt-get -y install graphicsmagick pngquant optipng
-    - wget http://johnvansickle.com/ffmpeg/releases/ffmpeg-release-64bit-static.tar.xz -O /tmp/ffmpeg.tar.gz
-    - wget http://www.rarlab.com/rar/rarlinux-x64-5.3.0.tar.gz -O /tmp/rar.tar.gz
-    - cd /usr/bin
-    - sudo tar -xvf /tmp/ffmpeg.tar.gz --strip 1 --no-anchored ffmpeg ffprobe
-    - sudo tar -xvf /tmp/rar.tar.gz --strip 1
-    - cd ..
-    - deploy/ci/circle.sh
-
   override:
-    - npm install -g grunt-cli
-    - npm install
-    - grunt git
+    - deploy/ci/circle.sh
 
 test:
   override:

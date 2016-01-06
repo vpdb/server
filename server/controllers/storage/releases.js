@@ -405,6 +405,9 @@ exports.download = function(req, res) {
 				if (release.description) {
 					archive.append(release.description, { name: 'README.txt' });
 				}
+				if (release.acknowledgements) {
+					archive.append(release.acknowledgements, { name: 'CREDITS.txt' });
+				}
 				archive.finalize();
 				next();
 			});

@@ -17,8 +17,6 @@ echo "which ffmpeg: $(which ffmpeg)"
 echo "ffmpeg version: $(ffmpeg -version)"
 echo "pngquant version: $(pngquant --version)"
 
-sudo npm install -g grunt-cli
+npm install -g grunt-cli
 npm install
 grunt git
-
-grunt ci

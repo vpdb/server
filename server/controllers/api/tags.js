@@ -20,7 +20,6 @@
 "use strict";
 
 var _ = require('lodash');
-var Promise = require('bluebird');
 var logger = require('winston');
 
 var error = require('../../modules/error')('api', 'tag');
@@ -38,14 +37,12 @@ exports.list = function(req, res) {
 		q = { is_active: true };
 	}
 
-	Tag.find(q).exec().then(function(tags) {
+	Tag.find(q).exec().then(tags => {
 		// reduce
-		tags = _.map(tags, function(tag) {
-			return tag.toSimple();
-		});
+		tags = _.map(tags, tag => tag.toSimple());
 		api.success(res, tags);
 
-	}).then(null, function(err) {
+	}).then(null, err => {
 		api.fail(res, error(err, 'Error listing tags').log('list'), 500);
 	});
 };
@@ -106,7 +103,7 @@ exports.del = function(req, res) {
 		return Tag.findById(req.params.id);
 
 	}).then(function(t) {
-		tag  = t;
+		tag = t;
 
 		// tag must exist
 		if (!tag) {

@@ -20,10 +20,12 @@
 "use strict";
 
 var _ = require('lodash');
+var async = require('async');
 var util = require('util');
 var logger = require('winston');
 
 var Game = require('mongoose').model('Game');
+var Star = require('mongoose').model('Star');
 var LogEvent = require('mongoose').model('LogEvent');
 
 var api = require('./api');
@@ -211,25 +213,82 @@ exports.list = function(req, res) {
  */
 exports.view = function(req, res) {
 
-	var query = Game.findOne({ id: req.params.id })
-		.populate({ path: '_media.backglass' })
-		.populate({ path: '_media.logo' });
+	async.waterfall([
 
-	query.exec(function(err, game) {
-		/* istanbul ignore if  */
-		if (err) {
-			return api.fail(res, error(err, 'Error finding game "%s"', req.params.id).log('view'), 500);
-		}
-		if (!game) {
-			return api.fail(res, error('No such game with ID "%s"', req.params.id), 404);
-		}
-		game.incrementCounter('views');
-		game.toDetailed(function(err, game) {
-			/* istanbul ignore if  */
-			if (err) {
-				return api.fail(res, error(err, 'Error populating game "%s"', req.params.id).log('view'), 500);
+		/**
+		 * Retrieve game
+		 * @param next
+		 */
+		function(next) {
+
+			var query = Game.findOne({ id: req.params.id })
+				.populate({ path: '_media.backglass' })
+				.populate({ path: '_media.logo' });
+
+			query.exec(function(err, game) {
+				/* istanbul ignore if  */
+				if (err) {
+					return next(error(err, 'Error finding game "%s"', req.params.id).log('view'));
+				}
+				if (!game) {
+					return next(error('No such game with ID "%s"', req.params.id).status(404));
+				}
+				game.incrementCounter('views');
+				next(null, game);
+			});
+		},
+
+		/**
+		 * Retrieve stars if logged
+		 * @param game
+		 * @param next
+		 * @returns {*}
+		 */
+		function(game, next) {
+
+			// only if logged
+			if (!req.user) {
+				return next(null, game, null);
 			}
-			return api.success(res, game);
-		});
+
+			Star.find({ type: 'release', _from: req.user._id }, '_ref.release', function(err, stars) {
+				/* istanbul ignore if  */
+				if (err) {
+					return next(error(err, 'Error searching starred releases for user <%s>.', req.user.email).log('list'));
+				}
+				console.log('stars: %j', stars);
+				var starredReleaseIds = _.map(_.pluck(_.pluck(stars, '_ref'), 'release'), id => id.toString());
+
+				next(null, game, starredReleaseIds);
+			});
+		},
+
+		/**
+		 * Retrieve release details
+		 * @param game
+		 * @param starredReleaseIds Array of release _id strings
+		 * @param next
+		 */
+		function(game, starredReleaseIds, next) {
+
+			var opts = {};
+			opts.starredReleaseIds = starredReleaseIds;
+			game.toDetailed(opts, function(err, game) {
+				/* istanbul ignore if  */
+				if (err) {
+					return next(error(err, 'Error populating game "%s"', req.params.id).log('view'));
+				}
+				next(null, game);
+			});
+		}
+
+	], function(err, game) {
+
+		if (err) {
+			return api.fail(res, err, err.code);
+		}
+		api.success(res, game);
 	});
+
+
 };

@@ -516,6 +516,10 @@ ReleaseSchema.methods.toDetailed = function(opts) {
 		return version;
 	});
 
+	if (opts.starredReleaseIds) {
+		rls.starred = _.contains(opts.starredReleaseIds, this._id.toString());
+	}
+
 	return rls;
 };
 

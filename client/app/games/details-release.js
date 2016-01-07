@@ -21,7 +21,7 @@
 
 angular.module('vpdb.games.details', []).controller('ReleaseController', function(
 	$scope, $rootScope, $uibModal,  $timeout, ApiHelper, ReleaseCommentResource, AuthService,
-	ReleaseRatingResource, ReleaseStarResource, ModalService
+	ReleaseRatingResource
 ) {
 
 	// setup releases
@@ -99,15 +99,6 @@ angular.module('vpdb.games.details', []).controller('ReleaseController', functio
 		});
 	}
 
-	// stars
-	if (AuthService.hasPermission('releases/star')) {
-		ReleaseStarResource.get({ releaseId: $scope.release.id }).$promise.then(function() {
-			$scope.releaseStarred = true;
-		}, function() {
-			$scope.releaseStarred = false;
-		});
-	}
-
 	/**
 	 * Opens the game download dialog
 	 *
@@ -167,33 +158,6 @@ angular.module('vpdb.games.details', []).controller('ReleaseController', functio
 		} else {
 			ReleaseRatingResource.save({ releaseId: $scope.release.id }, { value: rating }, done);
 			$rootScope.showNotification('Successfully rated release!');
-		}
-	};
-
-	/**
-	 * Stars or unstars a game depending if game is already starred.
-	 */
-	$scope.toggleStar = function() {
-		var err = function(err) {
-			if (err.data && err.data.error) {
-				ModalService.error({
-					subtitle: 'Error starring release.',
-					message: err.data.error
-				});
-			} else {
-				console.error(err);
-			}
-		};
-		if ($scope.releaseStarred) {
-			ReleaseStarResource.delete({ releaseId: $scope.release.id }, {}, function() {
-				$scope.releaseStarred = false;
-				$scope.release.counter.stars--;
-			}, err);
-		} else {
-			ReleaseStarResource.save({ releaseId: $scope.release.id }, {}, function(result) {
-				$scope.releaseStarred = true;
-				$scope.release.counter.stars = result.total_stars;
-			}, err);
 		}
 	};
 

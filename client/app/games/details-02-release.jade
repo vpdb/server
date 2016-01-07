@@ -34,13 +34,13 @@ include ../template/_mixins
 		hr
 		p
 			.a.pull-right(
-				uib-tooltip="{{ releaseStarred ? 'Unstar' : 'Star' }} this release",
+				uib-tooltip="{{ release.starred ? 'Unstar' : 'Star' }} this release",
 				tooltip-placement="right",
 				tooltip-append-to-body="true",
 				ng-show="auth.hasPermission('releases/star')",
-				ng-class="{ 'a--primary': releaseStarred }"
+				ng-class="{ 'a--primary': release.starred }"
 			)
-				+icon('star')(ng-click="toggleStar()").shift-up-2x
+				+icon('star')(ng-click="toggleReleaseStar(release)").shift-up-2x
 			+icon('star-circle').svg-2x.shift-up-2x.space-right
 			| {{ release.counter.stars | number }} star{{ release.counter.stars != 1 ? 's' : '' }}
 		p.oneliner

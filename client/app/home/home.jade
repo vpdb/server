@@ -85,6 +85,14 @@ include ../template/_mixins
 					.col--list-mini-left
 						.img.img--ar-square.img--rounded-left(img-bg="release.thumb.image.url")
 					.col--list-mini-right
+						.a.pull-right.space-right(
+							uib-tooltip="{{ release.starred ? 'Unstar' : 'Star' }} this release",
+							tooltip-placement="right",
+							tooltip-append-to-body="true",
+							ng-show="auth.hasPermission('releases/star')",
+							ng-class="{ 'a--primary': release.starred }"
+						)
+							+icon('star')(ng-click="toggleReleaseStar(release, $event)").shift-up-2x
 						h1.h--small.h--no-margin {{ release.game.title }}
 						label.label--block  {{ release.name }}
 						span.small.pull-left by {{ release.authors[0].user.name }}

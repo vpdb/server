@@ -407,7 +407,7 @@ exports.list = function(req, res) {
 			}
 		},
 
-		// stars
+		// user starred status
 		function(query, next) {
 
 			// only if logged
@@ -426,7 +426,7 @@ exports.list = function(req, res) {
 			});
 		},
 
-		// starred
+		// starred filter
 		function(query, stars, next) {
 
 			if (!_.isUndefined(req.query.starred)) {

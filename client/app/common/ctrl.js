@@ -3,7 +3,8 @@
 angular.module('vpdb.common', [])
 
 	.controller('AppCtrl', function($scope, $rootScope, $state, $location, $uibModal, $localStorage, $timeout,
-									AuthService, ProfileService, ModalService, ModalFlashService, DownloadService, UserResource) {
+									AuthService, ProfileService, ModalService, ModalFlashService, DownloadService,
+									UserResource, ReleaseStarResource) {
 
 		$rootScope.themeName = 'theme-dark';
 
@@ -141,6 +142,37 @@ angular.module('vpdb.common', [])
 			return "@" + item.name;
 		};
 
+		/**
+		 * Stars or unstars a release depending if game is already starred.
+		 */
+		$scope.toggleReleaseStar = function(release, $event) {
+			var err = function(err) {
+				if (err.data && err.data.error) {
+					ModalService.error({
+						subtitle: 'Error starring release.',
+						message: err.data.error
+					});
+				} else {
+					console.error(err);
+				}
+			};
+			if (AuthService.isAuthenticated) {
+				if ($event) {
+					$event.stopPropagation();
+				}
+				if (release.starred) {
+					ReleaseStarResource.delete({ releaseId: release.id }, {}, function() {
+						release.starred = false;
+						release.counter.stars--;
+					}, err);
+				} else {
+					ReleaseStarResource.save({ releaseId: release.id }, {}, function(result) {
+						release.starred = true;
+						release.counter.stars = result.total_stars;
+					}, err);
+				}
+			}
+		};
 
 		$rootScope.mdfiddleText =
 			'# Heading 1\n' +

@@ -206,7 +206,17 @@ GameSchema.methods.toSimple = function() {
 	return _.pick(this.toObj(), apiFields.reduced.concat(apiFields.simple));
 };
 
-GameSchema.methods.toDetailed = function(callback) {
+/**
+ * Returns the API object for a detailed games
+ * @param releaseOpts Options passed to the release
+ * @param callback If given, releases are also fetched detailed and attached to the game
+ * @returns {*}
+ */
+GameSchema.methods.toDetailed = function(releaseOpts, callback) {
+	if (_.isFunction(releaseOpts)) {
+		callback = releaseOpts;
+		releaseOpts = {};
+	}
 	if (!callback) {
 		return this.toObj();
 	} else {
@@ -220,12 +230,12 @@ GameSchema.methods.toDetailed = function(callback) {
 			.populate({ path: 'versions.files._media.playfield_image' })
 			.populate({ path: 'versions.files._media.playfield_video' })
 			.populate({ path: 'versions.files._compatibility' })
-			.exec(function (err, releases) {
+			.exec(function(err, releases) {
 				if (err) {
 					return callback(err);
 				}
 				game.releases = _.map(releases, function(release) {
-					return release.toDetailed();
+					return release.toDetailed(releaseOpts);
 				});
 				callback(null, game);
 			});

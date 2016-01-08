@@ -64,7 +64,7 @@ var init = function(next) {
 				{ resources: 'user', permissions: [ 'view', 'update' ]},           // profile
 				{ resources: 'users', permissions: [ 'view', 'search', 'star' ]},  // any other user
 				{ resources: 'files', permissions: [ 'download', 'upload', 'delete' ]},      // delete: only own/inactive files
-				{ resources: 'releases', permissions: [ 'add', 'delete', 'rate', 'star' ] }, // delete: only own releases and only for a given period
+				{ resources: 'releases', permissions: [ 'add', 'delete', 'update', 'rate', 'star' ] }, // delete: only own releases and only for a given period
 				{ resources: 'games', permissions: [ 'rate', 'star' ]},
 				{ resources: 'tags', permissions: [ 'add', 'delete-own' ] },
 				{ resources: 'tokens', permissions: [ 'add', 'list', 'delete', 'update' ] },

@@ -332,6 +332,151 @@ describe('The VPDB `release` API', function() {
 
 	});
 
+	describe('when updating an existing release', function() {
+
+		before(function(done) {
+			hlp.setupUsers(request, {
+				member: { roles: [ 'member' ] },
+				othermember: { roles: [ 'member' ] },
+				contributor: { roles: [ 'contributor' ] }
+			}, done);
+		});
+
+		after(function(done) {
+			hlp.cleanup(request, done);
+		});
+
+		it('should fail if not author or creator', function(done) {
+			hlp.release.createRelease('member', request, function(release) {
+				request
+					.put('/api/v1/releases/' + release.id)
+					.as('othermember')
+					.send({ name: 'New name' })
+					.end(hlp.status(403, 'only authors of the release can update it', done));
+			});
+		});
+
+		it('should fail if an invalid release ID is provided', function(done) {
+			request
+				.put('/api/v1/releases/non-existent')
+				.as('member')
+				.send({})
+				.end(hlp.status(404, 'no such release', done));
+		});
+
+		it('should fail if an illegal attribute is provided', function(done) {
+			hlp.release.createRelease('member', request, function(release) {
+				request
+					.put('/api/v1/releases/' + release.id)
+					.as('member')
+					.send({ id: '1234', name: 'New name', versions: [] })
+					.end(hlp.status(400, 'invalid field', done));
+			});
+		});
+
+		it('should fail validations for illegal data', function(done) {
+			hlp.release.createRelease('member', request, function(release) {
+				request
+					.put('/api/v1/releases/' + release.id)
+					.as('member')
+					.send({ name: '', authors: 'i am a string but i should not!', links: 'i am also string!' })
+					.end(function(err, res) {
+						hlp.expectValidationError(err, res, 'name', 'must be provided');
+						hlp.expectValidationError(err, res, 'authors', 'cast to array failed');
+						hlp.expectValidationError(err, res, 'links', 'cast to array failed');
+						done();
+					});
+			});
+		});
+
+		it('should succeed when updating text fields', function(done) {
+			var newName = 'My edited name';
+			var newDescription = 'My edited description';
+			var newAcknowledgements = 'My edited acknowledgements';
+			hlp.release.createRelease('member', request, function(release) {
+				request
+					.put('/api/v1/releases/' + release.id)
+					.as('member')
+					.send({ name: newName, description: newDescription, acknowledgements: newAcknowledgements })
+					.end(function(err, res) {
+						hlp.expectStatus(err, res, 200);
+						expect(res.body.name).to.be(newName);
+						expect(res.body.description).to.be(newDescription);
+						expect(res.body.acknowledgements).to.be(newAcknowledgements);
+						done();
+					});
+			});
+		});
+
+		it('should fail for a non-existing tag', function(done) {
+			var newTags = [ 'hd', 'i-dont-exist' ];
+			hlp.release.createRelease('member', request, function(release) {
+				request
+					.put('/api/v1/releases/' + release.id)
+					.as('member')
+					.send({ _tags: newTags })
+					.end(function(err, res) {
+						hlp.expectValidationError(err, res, '_tags.1', 'no such tag');
+						done();
+					});
+			});
+		});
+
+		it('should succeed when updating tags', function(done) {
+			var newTags = [ 'hd', 'dof' ];
+			hlp.release.createRelease('member', request, function(release) {
+				request
+					.put('/api/v1/releases/' + release.id)
+					.as('member')
+					.send({ _tags: newTags })
+					.end(function(err, res) {
+						hlp.expectStatus(err, res, 200);
+						expect(res.body.tags).to.be.an('array');
+						expect(res.body.tags).to.have.length(newTags.length);
+						newTags.forEach(tag => expect(_.find(res.body.tags, t => t.id === tag)).to.be.an('object'));
+						done();
+					});
+			});
+		});
+
+		it('should succeed when updating links', function(done) {
+			var links = [
+				{ label: 'first link', url: 'https://vpdb.io/somelink' },
+				{ label: 'second link', url: 'https://vpdb.io/someotherlink' }
+			];
+			hlp.release.createRelease('member', request, function(release) {
+				request
+					.put('/api/v1/releases/' + release.id)
+					.as('member')
+					.send({ links: links })
+					.end(function(err, res) {
+						hlp.expectStatus(err, res, 200);
+						expect(res.body.links).to.eql(links);
+						done();
+					});
+			});
+		});
+
+		it.skip('should fail when updating author as non-creator but other author', function(done) {
+			hlp.release.createRelease('member', request, function(release) {
+				request
+					.put('/api/v1/releases/' + release.id)
+					.as('member')
+					.send({ authors: { _user: hlp.getUser('othermember').id, roles: [ 'Some other job' ] } })
+					.end(function(err, res) {
+						hlp.expectStatus(err, res, 200);
+						request
+							.put('/api/v1/releases/' + release.id)
+							.as('othermember')
+							.send({ authors: authors })
+							.end(hlp.status(403, 'asdf', done));
+					});
+			});
+		});
+
+
+	});
+
 	describe('when adding a new version to an existing release', function() {
 
 		before(function(done) {

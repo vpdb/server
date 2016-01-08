@@ -23,6 +23,7 @@ var _ = require('lodash');
 var util = require('util');
 var async = require('async');
 var logger = require('winston');
+var Bluebird = require('bluebird');
 
 var Release = require('mongoose').model('Release');
 var Version = require('mongoose').model('ReleaseVersion');
@@ -129,6 +130,78 @@ exports.create = function(req, res) {
 		});
 	});
 };
+
+
+/**
+ * Updates the release data (only basic data, no versions or files).
+ *
+ * @param {Request} req
+ * @param {Response} res
+ */
+exports.update = function(req, res) {
+
+	var updateableFields = [ 'name', 'description', '_tags', 'links', 'acknowledgements', 'authors' ];
+
+	Bluebird.resolve().then(function() {
+
+		return Release.findOne({ id: req.params.id });
+
+	}).then(function(release) {
+
+		// fail if invalid id
+		if (!release) {
+			throw error('No such release with ID "%s".', req.params.id).status(404).log('update');
+		}
+
+		// fail if wrong user
+		var authorIds = _.map(_.pluck(release.authors, '_user'), id => id.toString());
+		if (!_.contains(authorIds.concat(release._created_by.toString()), req.user._id.toString())) {
+			throw error('Only authors of the release can update it.').status(403).log('update');
+		}
+		if (!_.isUndefined(req.body.authors) && release._created_by.toString() !== req.user._id.toString()) {
+			throw error('Only the original uploader can edit authors.').status(403).log('update');
+		}
+
+		// fail if invalid fields provided
+		var submittedFields = _.keys(req.body);
+		if (_.intersection(updateableFields, submittedFields).length != submittedFields.length) {
+			var invalidFields = _.difference(submittedFields, updateableFields);
+			throw error('Invalid field%s: ["%s"]. Allowed fields: ["%s"]', invalidFields.length == 1 ? '' : 's', invalidFields.join('", "'), updateableFields.join('", "')).status(400).log('update');
+		}
+
+		// apply changes and validate
+		_.assign(release, req.body);
+		return release.validate().then(x => release.save());
+
+	}).then(function(release) {
+
+		// log event
+		return LogEvent.log(req, 'update_release', false,
+			{ release: req.body },
+			{ release: release._id, game: release._game }
+		);
+
+	}).then(function() {
+
+		// re-fetch release object tree
+		return Release.findOne({ id: req.params.id })
+			.populate({ path: '_game' })
+			.populate({ path: 'versions.files._file' })
+			.populate({ path: 'authors._user' })
+			.populate({ path: 'versions.files._media.playfield_image' })
+			.populate({ path: 'versions.files._media.playfield_video' })
+			.populate({ path: 'versions.files._compatibility' })
+			.populate({ path: '_tags' })
+			.exec();
+
+	}).then(function(release) {
+
+		api.success(res, release.toDetailed(), 200);
+
+	}).catch(api.handleError(res, error, 'Error updating release'));
+};
+
+
 
 /**
  * Adds a new version to an existing release.
@@ -237,7 +310,7 @@ exports.updateVersion = function(req, res) {
 		}
 
 		// only allow authors to upload version updates
-		if (!_.contains(_.map(_.pluck(release.authors, '_user'), function(id) { return id.toString(); }), req.user._id.toString())) {
+		if (!_.contains(_.map(_.pluck(release.authors, '_user'), id => id.toString()), req.user._id.toString())) {
 			return api.fail(res, error('Only authors of the release can add new files of a version.', req.params.id), 403);
 		}
 

@@ -419,6 +419,9 @@ UserSchema.statics.createUser = function(userObj, confirmUserEmail, done) {
 	});
 };
 UserSchema.statics.toReduced = function(user) {
+	if (!user) {
+		return user;
+	}
 	var obj = user.toObj ? user.toObj() : user;
 	return _.extend(_.pick(obj, apiFields.reduced), { counter: _.pick(obj.counter, ['comments', 'stars'] ) });
 };

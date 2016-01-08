@@ -22,6 +22,7 @@
 		"acl": "0.4.9",
 		"archiver": "0.21.0",
 		"async": "1.5.0",
+		"bluebird": "3.1.1",
 		"body-parser": "1.14.2",
 		"buffer-indexof": "1.0.0",
 		"bull": "0.7.0",

@@ -34,7 +34,7 @@ var events = [
 	'rate_game', 'rate_release',
 	'upload_rom',
 	'create_game',
-	'create_release', 'create_release_version'
+	'create_release', 'update_release', 'create_release_version'
 ];
 
 //-----------------------------------------------------------------------------
@@ -91,7 +91,7 @@ LogEventSchema.statics.log = function(req, event, isPublic, payload, ref, done) 
 		ip: req.ip || req.headers['x-forwarded-for'] || req.connection.remoteAddress || '0.0.0.0',
 		logged_at: new Date()
 	});
-	log.save(function(err) {
+	return log.save(function(err) {
 		if (err) {
 			logger.error('[model|logevent] Error saving log for "%s": %s', event, err.message, err);
 			logger.error(err);

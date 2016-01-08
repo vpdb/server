@@ -21,6 +21,7 @@
 
 var _ = require('lodash');
 var logger = require('winston');
+var Bluebird = require('bluebird');
 
 var error = require('../../modules/error')('api', 'tag');
 var acl = require('../../acl');
@@ -37,20 +38,22 @@ exports.list = function(req, res) {
 		q = { is_active: true };
 	}
 
-	Tag.find(q).exec().then(tags => {
+	Bluebird.resolve().then(function() {
+		return Tag.find(q).exec();
+
+	}).then(tags => {
+
 		// reduce
 		tags = _.map(tags, tag => tag.toSimple());
 		api.success(res, tags);
 
-	}).then(null, err => {
-		api.fail(res, error(err, 'Error listing tags').log('list'), 500);
-	});
+	}).catch(api.handleError(res, error, 'Error listing tags'));
 };
 
 exports.create = function(req, res) {
 
 	var newTag;
-	Promise.resolve().then(function() {
+	Bluebird.resolve().then(function() {
 
 		newTag = new Tag(_.extend(req.body, {
 			_id: req.body.name ? req.body.name.replace(/(^[^a-z0-9]+)|([^a-z0-9]+$)/gi, '').replace(/[^a-z0-9]+/gi, '-').toLowerCase() : '-',
@@ -67,13 +70,7 @@ exports.create = function(req, res) {
 		logger.info('[api|tag:create] Tag "%s" successfully created.', newTag.name);
 		api.success(res, newTag.toSimple(), 201);
 
-	}).then(null, function(err) {
-		if (err.errors) {
-			api.fail(res, error('Validations failed. See below for details.').errors(err.errors).warn('create'), 422);
-		} else {
-			api.fail(res, error(err, 'Error saving tag "%s"', newTag.name).log('create'), 500);
-		}
-	});
+	}).catch(api.handleError(res, error, 'Error creating tag'));
 };
 
 
@@ -86,7 +83,12 @@ exports.create = function(req, res) {
 exports.del = function(req, res) {
 
 	var tag, canGloballyDeleteTags;
-	acl.isAllowed(req.user.id, 'tags', 'delete').then(function(canDelete) {
+
+	Bluebird.resolve().then(function() {
+
+		return acl.isAllowed(req.user.id, 'tags', 'delete');
+
+	}).then(canDelete => {
 
 		canGloballyDeleteTags = canDelete;
 		if (!canDelete) {
@@ -95,26 +97,26 @@ exports.del = function(req, res) {
 			return true;
 		}
 
-	}).then(function(canDelete) {
+	}).then(canDelete => {
 
 		if (!canDelete) {
-			throw new api.AccessDeniedError('You cannot delete tags.');
+			throw error('You cannot delete tags.').status(401).log();
 		}
 		return Tag.findById(req.params.id);
 
-	}).then(function(t) {
+	}).then(t => {
 		tag = t;
 
 		// tag must exist
 		if (!tag) {
-			throw new api.NotFoundError();
+			throw error('No such tag with ID "%s".', req.params.id).status(404);
 		}
 
 		// only allow deleting own tags
 		if (!canGloballyDeleteTags && !tag._created_by.equals(req.user._id)) {
-			throw new api.AccessDeniedError('Permission denied, must be owner.');
+			throw error('Permission denied, must be owner.').status(403).log();
 		}
-		// todo check if the re are references
+		// todo check if there are references
 		return tag.remove();
 
 	}).then(function() {
@@ -122,11 +124,5 @@ exports.del = function(req, res) {
 		logger.info('[api|tag:delete] Tag "%s" (%s) successfully deleted.', tag.name, tag._id);
 		api.success(res, null, 204);
 
-	}).catch(api.AccessDeniedError, function(err) {
-		api.fail(res, error(err), 403);
-
-	}).catch(api.NotFoundError, function() {
-		api.fail(res, error('No such tag with ID "%s".', req.params.id), 404);
-
-	}).catch(api.handleError(res, error, 'Error deleting tag.'));
+	}).catch(api.handleError(res, error, 'Error deleting tag'));
 };

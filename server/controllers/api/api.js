@@ -327,29 +327,39 @@ exports.checkReadOnlyFields = function(newObj, oldObj, allowedFields) {
 	return errors.length ? errors : false;
 };
 
-
+/**
+ * Handles errors returned from promises.
+ *
+ * Only logs when receiving a standard Error object, otherwise it assumes
+ * the error has been logged if log-worthy.
+ *
+ * Can handle both custom and standard errors, so in a promise, you might do:
+ *
+ *    throw error(err, 'Error doing foo').log('foo');                           // results in a 500 with message "Error doing foo"
+ *    throw error('Release with ID %s not found.', req.params.id).status(404);  // results in a 404 with message "Release with ..."
+ *    throw error('Wrong password').display('Access denied').status(401);       // results in a 401 with message "Access denied" but logs "Wrong password" to the console.
+ *    throw new Error('Internal server error.');                                // results in a 500 with message "Internal server error."
+ *
+ * @param {Response} res Response object
+ * @param {Function} error Current error function
+ * @param {string} message Error message if exception is generic
+ * @returns {Function} Function called by the promise with error object
+ */
 exports.handleError = function(res, error, message) {
 	return function(err) {
-		logger.error(message);
-		logger.error(err.stack);
-		exports.fail(res, error(err, message).log('create'), 500);
+		if (err.constructor && err.constructor.name === 'Err') {
+			exports.fail(res, err);
+
+		} else if (err.errors && err.constructor && err.constructor.name === 'MongooseError') {
+			exports.fail(res, error('Validations failed. See below for details.').errors(err.errors).warn('create'), 422);
+
+		} else {
+			exports.fail(res, error(err, message).log());
+			logger.error(err.stack);
+		}
 	};
 };
 
 exports.ping = function(req, res) {
 	exports.success(res, { result: 'pong' });
 };
-
-exports.AccessDeniedError = function(message) {
-	Error.captureStackTrace(this, this.constructor);
-	this.name = this.constructor.name;
-	this.message = message;
-};
-util.inherits(exports.AccessDeniedError, Error);
-
-exports.NotFoundError = function(message) {
-	Error.captureStackTrace(this, this.constructor);
-	this.name = this.constructor.name;
-	this.message = message;
-};
-util.inherits(exports.NotFoundError, Error);

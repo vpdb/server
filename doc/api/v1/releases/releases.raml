@@ -204,30 +204,6 @@ get:
         role/member:
           example: !include http/list-res-401.json
 
-put:
-  is: [ validated ]
-  securedBy: [ jwt: { scopes: [ MEMBER ] } ]
-  description: |
-    Updates release data.
-
-    This only updates the base data of the release. For updating attached
-    versions, see `PUT /api/v1/releases/{release_id}/versions/{version}`.
-    Supported fields are: `name`, `description`, `_tags`, `links`,
-    `acknowledgements` and `authors`.
-
-    Permission is granted to all authors, not only the original uploader.
-    However, only the original uploader may change the authors.
-
-  body:
-    role/member:
-      example: !include http/update-req.json
-  responses:
-    200:
-      body:
-        role/member:
-          schema: release
-          example: !include http/update-res-200.json
-
 /{release_id}:
   uriParameters:
     release_id:
@@ -277,6 +253,30 @@ put:
         body:
           role/member:
             example: !include http/view-res-200.json
+
+  patch:
+    is: [ validated ]
+    securedBy: [ jwt: { scopes: [ MEMBER ] } ]
+    description: |
+      Updates release data.
+
+      This only updates the base data of the release. For updating attached
+      versions, see `PUT /api/v1/releases/{release_id}/versions/{version}`.
+      Supported fields are: `name`, `description`, `_tags`, `links`,
+      `acknowledgements` and `authors`.
+
+      Permission to update is granted to all authors, not only the original
+      uploader. However, only the original uploader may change the authors.
+
+    body:
+      role/member:
+        example: !include http/update-req.json
+    responses:
+      200:
+        body:
+          role/member:
+            schema: release
+            example: !include http/update-res-200.json
 
   delete:
     is: [ protected ]

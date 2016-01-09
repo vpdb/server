@@ -349,7 +349,7 @@ describe('The VPDB `release` API', function() {
 		it('should fail if not author or creator', function(done) {
 			hlp.release.createRelease('member', request, function(release) {
 				request
-					.put('/api/v1/releases/' + release.id)
+					.patch('/api/v1/releases/' + release.id)
 					.as('othermember')
 					.send({ name: 'New name' })
 					.end(hlp.status(403, 'only authors of the release can update it', done));
@@ -358,7 +358,7 @@ describe('The VPDB `release` API', function() {
 
 		it('should fail if an invalid release ID is provided', function(done) {
 			request
-				.put('/api/v1/releases/non-existent')
+				.patch('/api/v1/releases/non-existent')
 				.as('member')
 				.send({})
 				.end(hlp.status(404, 'no such release', done));
@@ -367,7 +367,7 @@ describe('The VPDB `release` API', function() {
 		it('should fail if an illegal attribute is provided', function(done) {
 			hlp.release.createRelease('member', request, function(release) {
 				request
-					.put('/api/v1/releases/' + release.id)
+					.patch('/api/v1/releases/' + release.id)
 					.as('member')
 					.send({ id: '1234', name: 'New name', versions: [] })
 					.end(hlp.status(400, 'invalid field', done));
@@ -377,7 +377,7 @@ describe('The VPDB `release` API', function() {
 		it('should fail validations for illegal data', function(done) {
 			hlp.release.createRelease('member', request, function(release) {
 				request
-					.put('/api/v1/releases/' + release.id)
+					.patch('/api/v1/releases/' + release.id)
 					.as('member')
 					.send({ name: '', authors: 'i am a string but i should not!', links: 'i am also string!' })
 					.end(function(err, res) {
@@ -395,7 +395,7 @@ describe('The VPDB `release` API', function() {
 			var newAcknowledgements = 'My edited acknowledgements';
 			hlp.release.createRelease('member', request, function(release) {
 				request
-					.put('/api/v1/releases/' + release.id)
+					.patch('/api/v1/releases/' + release.id)
 					.as('member')
 					.send({ name: newName, description: newDescription, acknowledgements: newAcknowledgements })
 					.end(function(err, res) {
@@ -419,7 +419,7 @@ describe('The VPDB `release` API', function() {
 			var newTags = [ 'hd', 'dof' ];
 			hlp.release.createRelease('member', request, function(release) {
 				request
-					.put('/api/v1/releases/' + release.id)
+					.patch('/api/v1/releases/' + release.id)
 					.as('member')
 					.save({ path: 'releases/update'})
 					.send({
@@ -451,13 +451,13 @@ describe('The VPDB `release` API', function() {
 			var newAcknowledgements = 'My edited acknowledgements';
 			hlp.release.createRelease('member', request, function(release) {
 				request
-					.put('/api/v1/releases/' + release.id)
+					.patch('/api/v1/releases/' + release.id)
 					.as('member')
 					.send({ authors: [ { _user: hlp.getUser('othermember').id, roles: [ 'Some other job' ] } ] })
 					.end(function(err, res) {
 						hlp.expectStatus(err, res, 200);
 						request
-							.put('/api/v1/releases/' + release.id)
+							.patch('/api/v1/releases/' + release.id)
 							.as('othermember')
 							.send({ name: newName, description: newDescription, acknowledgements: newAcknowledgements })
 							.end(function(err, res) {
@@ -475,7 +475,7 @@ describe('The VPDB `release` API', function() {
 			var newTags = [ 'hd', 'i-dont-exist' ];
 			hlp.release.createRelease('member', request, function(release) {
 				request
-					.put('/api/v1/releases/' + release.id)
+					.patch('/api/v1/releases/' + release.id)
 					.as('member')
 					.send({ _tags: newTags })
 					.end(function(err, res) {
@@ -489,7 +489,7 @@ describe('The VPDB `release` API', function() {
 			var newTags = [ 'hd', 'dof' ];
 			hlp.release.createRelease('member', request, function(release) {
 				request
-					.put('/api/v1/releases/' + release.id)
+					.patch('/api/v1/releases/' + release.id)
 					.as('member')
 					.send({ _tags: newTags })
 					.end(function(err, res) {
@@ -509,7 +509,7 @@ describe('The VPDB `release` API', function() {
 			];
 			hlp.release.createRelease('member', request, function(release) {
 				request
-					.put('/api/v1/releases/' + release.id)
+					.patch('/api/v1/releases/' + release.id)
 					.as('member')
 					.send({ links: links })
 					.end(function(err, res) {
@@ -523,13 +523,13 @@ describe('The VPDB `release` API', function() {
 		it('should fail when updating author as non-creator but other author', function(done) {
 			hlp.release.createRelease('member', request, function(release) {
 				request
-					.put('/api/v1/releases/' + release.id)
+					.patch('/api/v1/releases/' + release.id)
 					.as('member')
 					.send({ authors: [ { _user: hlp.getUser('othermember').id, roles: [ 'Some other job' ] } ] })
 					.end(function(err, res) {
 						hlp.expectStatus(err, res, 200);
 						request
-							.put('/api/v1/releases/' + release.id)
+							.patch('/api/v1/releases/' + release.id)
 							.as('othermember')
 							.send({ authors: [] })
 							.end(hlp.status(403, 'only the original uploader', done));
@@ -540,7 +540,7 @@ describe('The VPDB `release` API', function() {
 		it('should succeed when updating authors', function(done) {
 			hlp.release.createRelease('member', request, function(release) {
 				request
-					.put('/api/v1/releases/' + release.id)
+					.patch('/api/v1/releases/' + release.id)
 					.as('member')
 					.send({ authors: [ { _user: hlp.getUser('othermember').id, roles: [ 'Some other job' ] } ] })
 					.end(function(err, res) {

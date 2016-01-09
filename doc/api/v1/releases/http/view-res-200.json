@@ -1,13 +1,13 @@
 200 OK
 Content-Type: application/json; charset=utf-8
-Etag: W/"139f-sGSKuxec410vm6GBPmwLqw"
+Etag: W/"13d8-sbewIvSsS8gGwnew9rFmpw"
 Content-Encoding: gzip
 
 {
-  "name_sortable": "Persevering Edition",
-  "name": "Persevering Edition",
-  "modified_at": "2016-01-04T20:14:07.816Z",
-  "created_at": "2016-01-04T20:14:07.816Z",
+  "name_sortable": "Compatible Edition",
+  "name": "Compatible Edition",
+  "modified_at": "2016-01-09T12:56:27.761Z",
+  "created_at": "2016-01-09T12:56:27.761Z",
   "rating": {
     "score": 0,
     "votes": 0,
@@ -28,10 +28,10 @@ Content-Encoding: gzip
         "Table Creator"
       ],
       "user": {
-        "id": "w2ewd7zd4fh",
-        "name": "Nasir_Reilly18",
-        "username": "Nasir_Reilly18",
-        "gravatar_id": "d9752516f4284acec0ce2449128f3cca",
+        "id": "w2a6sh6fb",
+        "name": "Evie.Moore84",
+        "username": "Evie.Moore84",
+        "gravatar_id": "7c6440b1b6d68c34cf92a10e250d5479",
         "counter": {
           "comments": 0,
           "stars": 0
@@ -42,14 +42,14 @@ Content-Encoding: gzip
   "versions": [
     {
       "version": "1.0.0",
-      "released_at": "2016-01-04T20:14:07.816Z",
+      "released_at": "2016-01-09T12:56:27.761Z",
       "counter": {
         "comments": 0,
         "downloads": 0
       },
       "files": [
         {
-          "released_at": "2016-01-04T20:14:07.816Z",
+          "released_at": "2016-01-09T12:56:27.761Z",
           "counter": {
             "downloads": 0
           },
@@ -61,7 +61,7 @@ Content-Encoding: gzip
             "playfield_image": {
               "name": "playfield-0.png",
               "bytes": 347,
-              "created_at": "2016-01-04T20:14:06.989Z",
+              "created_at": "2016-01-09T12:56:26.986Z",
               "mime_type": "image/png",
               "file_type": "playfield-fs",
               "metadata": {
@@ -76,27 +76,30 @@ Content-Encoding: gzip
                 "downloads": 0
               },
               "is_active": true,
-              "id": "qkz9kmz34fh",
+              "id": "wkhx76sh6fb",
               "is_protected": true,
-              "url": "/storage/v1/files/qkz9kmz34fh.png",
+              "url": "/storage/v1/files/wkhx76sh6fb.png",
               "variations": {
+                "full": {
+                  "url": "/storage/public/files/full/wkhx76sh6fb.jpg"
+                },
                 "medium": {
-                  "url": "/storage/public/files/medium/qkz9kmz34fh.jpg"
+                  "url": "/storage/public/files/medium/wkhx76sh6fb.jpg"
                 },
                 "medium-2x": {
-                  "url": "/storage/public/files/medium-2x/qkz9kmz34fh.jpg"
+                  "url": "/storage/public/files/medium-2x/wkhx76sh6fb.jpg"
                 },
                 "medium-landscape": {
-                  "url": "/storage/public/files/medium-landscape/qkz9kmz34fh.jpg"
+                  "url": "/storage/public/files/medium-landscape/wkhx76sh6fb.jpg"
                 },
                 "medium-landscape-2x": {
-                  "url": "/storage/public/files/medium-landscape-2x/qkz9kmz34fh.jpg"
+                  "url": "/storage/public/files/medium-landscape-2x/wkhx76sh6fb.jpg"
                 },
                 "square": {
-                  "url": "/storage/public/files/square/qkz9kmz34fh.jpg"
+                  "url": "/storage/public/files/square/wkhx76sh6fb.jpg"
                 },
                 "square-2x": {
-                  "url": "/storage/public/files/square-2x/qkz9kmz34fh.jpg"
+                  "url": "/storage/public/files/square-2x/wkhx76sh6fb.jpg"
                 }
               }
             }
@@ -115,7 +118,7 @@ Content-Encoding: gzip
           ],
           "file": {
             "name": "test-table-0.vpt",
-            "created_at": "2016-01-04T20:14:06.918Z",
+            "created_at": "2016-01-09T12:56:26.904Z",
             "mime_type": "application/x-visual-pinball-table",
             "file_type": "release",
             "metadata": {
@@ -129,8 +132,8 @@ Content-Encoding: gzip
               "author_name": "_table_author_",
               "table_name": "_table_name_"
             },
-            "id": "w2nzkmzdxuh",
-            "url": "/storage/v1/files/w2nzkmzdxuh.vpt",
+            "id": "w2q9c6sbgfb",
+            "url": "/storage/v1/files/w2q9c6sbgfb.vpt",
             "bytes": 135168,
             "variations": {},
             "is_protected": true,
@@ -143,17 +146,17 @@ Content-Encoding: gzip
       ]
     }
   ],
-  "id": "w27yb8z3xfb",
+  "id": "q2yymg9hgfh",
   "tags": [],
   "game": {
-    "id": "lightning-44-new-style",
-    "title": "Lightning 44 (New Style)",
-    "manufacturer": "Exhibit",
+    "id": "les-flches",
+    "title": "Les Flches",
+    "manufacturer": "Magister",
     "year": 1934
   },
   "thumb": {
     "image": {
-      "url": "/storage/v1/files/qkz9kmz34fh.png",
+      "url": "/storage/v1/files/wkhx76sh6fb.png",
       "is_protected": true,
       "width": 1920,
       "height": 1080

@@ -1,5 +1,5 @@
-GET /api/v1/releases/q2vytgyd4ub/rating HTTP/1.1
+GET /api/v1/releases/qkxxvsbguh/rating HTTP/1.1
 Host: vpdb.io
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJ3azl0NnlkNGZiIiwiaWF0IjoiMjAxNi0wMS0wNFQyMDoxMzo0My4xNzRaIiwiZXhwIjoiMjAxNi0wMS0wNFQyMToxMzo0My4xNzRaIn0.4Ue7-6OqY14xyhFwOuRunzC3CHz-zEr7hRMHaXP5rv0
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJxMmN6OXRzYjZmaCIsImlhdCI6IjIwMTYtMDEtMDlUMTI6NTU6NDUuNzA1WiIsImV4cCI6IjIwMTYtMDEtMDlUMTM6NTU6NDUuNzA1WiIsImlydCI6ZmFsc2V9.2Qpe5Uv8sfbgm5GUNL1xoLUwF_S30FwzfTkXfUBCk3M
 

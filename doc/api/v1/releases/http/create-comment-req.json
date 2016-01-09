@@ -1,10 +1,10 @@
-POST /api/v1/releases/q2tqtnz34ub/comments HTTP/1.1
+POST /api/v1/releases/wkfbsfsbguh/comments HTTP/1.1
 Host: vpdb.io
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJ3a3Vodm55ZHhmaCIsImlhdCI6IjIwMTYtMDEtMDRUMjA6MTM6MjcuMjI4WiIsImV4cCI6IjIwMTYtMDEtMDRUMjE6MTM6MjcuMjI4WiJ9.8C59mfUYR1YGcL5mLdt6xs_MNC4fv4rf-UBMO0adEEQ
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJxMnVyeWZzYjZ1aCIsImlhdCI6IjIwMTYtMDEtMDlUMTI6NTU6MjguNzY4WiIsImV4cCI6IjIwMTYtMDEtMDlUMTM6NTU6MjguNzY4WiIsImlydCI6ZmFsc2V9.ftsh3hcVsRjdsoCd2JhoDLqZseglfanq0kAK2pImPB4
 Content-Type: application/json
-Content-Length: 44
+Content-Length: 46
 
 {
-  "message": "Upgradable intangible leverage"
+  "message": "Profit-focused optimal workforce"
 }

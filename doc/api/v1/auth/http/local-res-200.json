@@ -1,17 +1,17 @@
 200 OK
 Content-Type: application/json; charset=utf-8
-Etag: W/"520-sZmTpea0ao+fNKmi5DrhMA"
+Etag: W/"53a-Vi/CED3p5adx6veuKn4QeA"
 Content-Encoding: gzip
 
 {
-  "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJxMjh6dWF5ZHh1aCIsImlhdCI6IjIwMTYtMDEtMDRUMjA6MTM6MjYuNDUyWiIsImV4cCI6IjIwMTYtMDEtMDRUMjE6MTM6MjYuNDUyWiJ9.nv4xC6QYYa5Mht4D3atxC_jlgLeK18-SBJboTuAWR7c",
-  "expires": "2016-01-04T21:13:26.452Z",
+  "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJ3MmhmMm1zYjZmYiIsImlhdCI6IjIwMTYtMDEtMDlUMTI6NTY6NDcuMDM4WiIsImV4cCI6IjIwMTYtMDEtMDlUMTM6NTY6NDcuMDM4WiIsImlydCI6ZmFsc2V9.6vMQuFhv-tNo8bo37NkXzH0S_5lOpfrb0Aba723DPEI",
+  "expires": "2016-01-09T13:56:47.038Z",
   "user": {
-    "id": "q28zuaydxuh",
-    "name": "Felicita_Koss",
-    "username": "Felicita_Koss",
-    "gravatar_id": "0bd62fcd79e03dc01898f94fb1395911",
-    "email": "elsa0@hotmail.com",
+    "id": "w2hf2msb6fb",
+    "name": "Wilma83",
+    "username": "Wilma83",
+    "gravatar_id": "d80cc361f73f81d1689b49b99ad9bf87",
+    "email": "lafayette_feest@yahoo.com",
     "is_active": true,
     "provider": "local",
     "roles": [
@@ -22,7 +22,7 @@ Content-Encoding: gzip
       "app_tokens_enabled": false,
       "id": "free"
     },
-    "created_at": "2016-01-04T20:13:26.315Z",
+    "created_at": "2016-01-09T12:56:46.915Z",
     "counter": {
       "stars": 0,
       "downloads": 0,
@@ -56,10 +56,11 @@ Content-Encoding: gzip
         "add"
       ],
       "releases": [
-        "star",
+        "update",
         "rate",
         "delete",
-        "add"
+        "add",
+        "star"
       ],
       "user": [
         "update",

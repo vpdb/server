@@ -1,12 +1,12 @@
 200 OK
 Content-Type: application/json; charset=utf-8
 Content-Length: 167
-Etag: W/"a7-uWUPfZ14TfHU1r1w0UY70g"
+Etag: W/"a7-ND2XwsdD/sYzMJOfWBwHAA"
 
 {
-  "id": "w2rh43zdxub",
+  "id": "w2ash89h6fb",
   "label": "My Renamed Application",
   "is_active": false,
-  "expires_at": "2016-01-04T20:14:27.187Z",
-  "created_at": "2016-01-04T20:14:26.183Z"
+  "expires_at": "2016-01-09T12:56:48.402Z",
+  "created_at": "2016-01-09T12:56:47.398Z"
 }

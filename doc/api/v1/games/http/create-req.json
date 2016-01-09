@@ -1,26 +1,28 @@
 POST /api/v1/games HTTP/1.1
 Host: vpdb.io
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJxa3BzM2F5M3h1YiIsImlhdCI6IjIwMTYtMDEtMDRUMjA6MTM6MzIuNTUzWiIsImV4cCI6IjIwMTYtMDEtMDRUMjE6MTM6MzIuNTUzWiJ9.7YN2zcgByQwYCUf4KqhVQQS178ATa7Ot-S7njHtYZGU
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJ3MmN2ZnNiZ3ViIiwiaWF0IjoiMjAxNi0wMS0wOVQxMjo1NTozNS42NDdaIiwiZXhwIjoiMjAxNi0wMS0wOVQxMzo1NTozNS42NDdaIiwiaXJ0IjpmYWxzZX0.P1p9Y5970yHG18Yc32sqkptBruRl6AM-YuklvQlU3QQ
 Content-Type: application/json
-Content-Length: 481
+Content-Length: 245
 
 {
   "ipdb": {
-    "number": 1373,
-    "mfg": 81
+    "number": 1409,
+    "mfg": 117
   },
-  "title": "King Pin",
-  "manufacturer": "Chicago Coin",
-  "year": 1951,
+  "title": "Lancer",
+  "manufacturer": "Exhibit",
+  "year": 1940,
   "game_type": "em",
   "themes": [
-    "Sports",
-    "Bowling"
+    "Adventure",
+    "History",
+    "Jousting",
+    "Medieval"
   ],
-  "features": "Reverse flippers (2), Pop bumpers (9), Kick-out holes (3). Backbox animation: four-inch numbered pins are suspended above the playfield and raise up when the corresponding pop bumper or rollover is hit. Pressing either flipper button activates both flippers simultaneously.",
-  "id": "king-pin",
+  "features": "Spring bumpers (18).",
+  "id": "lancer",
   "_media": {
-    "backglass": "qkg93azd4ub"
+    "backglass": "q2hhvusbgub"
   }
 }

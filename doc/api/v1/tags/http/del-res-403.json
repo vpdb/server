@@ -1,8 +1,8 @@
 403 Forbidden
 Content-Type: application/json; charset=utf-8
-Content-Length: 51
-Etag: W/"33-ViJRi4C3d7yfRqypHEpyKA"
+Content-Length: 49
+Etag: W/"31-rHBFR9LLjHSuddtkfc59tw"
 
 {
-  "error": ": Permission denied, must be owner."
+  "error": "Permission denied, must be owner."
 }

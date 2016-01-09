@@ -1,5 +1,5 @@
-GET /api/v1/games/golden-gate/rating HTTP/1.1
+GET /api/v1/games/lariat/rating HTTP/1.1
 Host: vpdb.io
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJ3Mmt6ZWd6ZHhmaCIsImlhdCI6IjIwMTYtMDEtMDRUMjA6MTM6NDAuMjQ0WiIsImV4cCI6IjIwMTYtMDEtMDRUMjE6MTM6NDAuMjQ0WiJ9.DmBMAlfAKy54sMQXPp8Wxv4Mb_nQIzFE8OI8W6zesfQ
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJxMnh5YnZzYmd1aCIsImlhdCI6IjIwMTYtMDEtMDlUMTI6NTU6NDMuMjYxWiIsImV4cCI6IjIwMTYtMDEtMDlUMTM6NTU6NDMuMjYxWiIsImlydCI6ZmFsc2V9.GyIZ5zzJrA0QTdQuhAlQeVaqBRufAg-HqE_Ya9mf3LY
 

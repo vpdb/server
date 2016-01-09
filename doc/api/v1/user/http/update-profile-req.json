@@ -1,14 +1,14 @@
 PATCH /api/v1/user HTTP/1.1
 Host: vpdb.io
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJ3a3hlNDN6ZHh1aCIsImlhdCI6IjIwMTYtMDEtMDRUMjA6MTQ6MjYuNjU2WiIsImV4cCI6IjIwMTYtMDEtMDRUMjE6MTQ6MjYuNjU2WiJ9.heE8p3Z4_hCNbY2znxr6TVEzJ_qcsd002cv_T9fdtNc
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJxazV1Yjg5aDZ1YiIsImlhdCI6IjIwMTYtMDEtMDlUMTI6NTY6NDcuODM0WiIsImV4cCI6IjIwMTYtMDEtMDlUMTM6NTY6NDcuODM0WiIsImlydCI6ZmFsc2V9.6UCRRmqDdkBAeUxCpgeARIC7l7QkeyjZYB-IK3eZcIc
 Content-Type: application/json
-Content-Length: 144
+Content-Length: 151
 
 {
-  "name": "Godfrey Turcotte",
-  "location": "Ramirotown",
-  "email": "keon.zboncak63@hotmail.com",
-  "current_password": "KhjGVat83H",
-  "password": "7spzfpcWm7"
+  "name": "Connie Parker",
+  "location": "South Majorville",
+  "email": "myrtis_hettinger75@hotmail.com",
+  "current_password": "d1akpLQWkZ",
+  "password": "ShNoChrqiw"
 }

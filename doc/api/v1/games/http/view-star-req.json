@@ -1,5 +1,5 @@
-GET /api/v1/games/slap-stick/star HTTP/1.1
+GET /api/v1/games/casino-royal/star HTTP/1.1
 Host: vpdb.io
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJ3MjV4aDN5ZHhmYiIsImlhdCI6IjIwMTYtMDEtMDRUMjA6MTQ6MjMuNzc0WiIsImV4cCI6IjIwMTYtMDEtMDRUMjE6MTQ6MjMuNzc0WiJ9.NV-kQTAxfpTHz1ns1yNSC5qZORZMzXfzI1cajFLRSDQ
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJxa3poMTdzYjZmYiIsImlhdCI6IjIwMTYtMDEtMDlUMTI6NTY6NDUuMTk3WiIsImV4cCI6IjIwMTYtMDEtMDlUMTM6NTY6NDUuMTk3WiIsImlydCI6ZmFsc2V9.ymM5zO3n8x-jZYR0SFnaHc-74TOzsqXbvcsHEFBJPbI
 

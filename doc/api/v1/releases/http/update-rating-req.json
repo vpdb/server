@@ -1,8 +1,8 @@
-PUT /api/v1/releases/wkq66ydxub/rating HTTP/1.1
+PUT /api/v1/releases/qkfyqvsb6fb/rating HTTP/1.1
 Host: vpdb.io
 Accept-Encoding: gzip, deflate
 Content-Type: application/json
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJxMmZibjZ6ZDRmaCIsImlhdCI6IjIwMTYtMDEtMDRUMjA6MTM6NDQuMzk3WiIsImV4cCI6IjIwMTYtMDEtMDRUMjE6MTM6NDQuMzk3WiJ9.g8tdFuHSryvQ7HHVLSHXgd8qBLjuMh_mJVY1yXpiAM4
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJ3MmJzeHZzaGd1YiIsImlhdCI6IjIwMTYtMDEtMDlUMTI6NTU6NDYuOTI3WiIsImV4cCI6IjIwMTYtMDEtMDlUMTM6NTU6NDYuOTI3WiIsImlydCI6ZmFsc2V9.rF8NUthjXP6vnbX_AyOtzB-ZJU1jVEVLkto-whKrxxc
 Content-Length: 11
 
 {

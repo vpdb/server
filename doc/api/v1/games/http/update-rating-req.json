@@ -1,8 +1,8 @@
-PUT /api/v1/games/rodello/rating HTTP/1.1
+PUT /api/v1/games/oh-boy/rating HTTP/1.1
 Host: vpdb.io
 Accept-Encoding: gzip, deflate
 Content-Type: application/json
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJ3a3hlcGd6MzRmYiIsImlhdCI6IjIwMTYtMDEtMDRUMjA6MTM6NDAuNzI1WiIsImV4cCI6IjIwMTYtMDEtMDRUMjE6MTM6NDAuNzI1WiJ9.9gyRHDu-s-FLYM09ch6M-4SJjexIc4elvdcFJFDPfFY
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJxa2ZwaHZzaDZmaCIsImlhdCI6IjIwMTYtMDEtMDlUMTI6NTU6NDMuNzM4WiIsImV4cCI6IjIwMTYtMDEtMDlUMTM6NTU6NDMuNzM4WiIsImlydCI6ZmFsc2V9.rs8vp0EdxndNM3h2pA-wq9Sn4ZEr21xXKCg-FP8m9EM
 Content-Length: 11
 
 {

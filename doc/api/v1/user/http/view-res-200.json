@@ -1,14 +1,14 @@
 200 OK
 Content-Type: application/json; charset=utf-8
-Etag: W/"442-ADEmvTQtycnvhUT2pwLffQ"
+Etag: W/"447-9OYu22hoDSCetCt6l9aTZQ"
 Content-Encoding: gzip
 
 {
-  "name": "Candido3",
-  "username": "Candido3",
-  "email": "emanuel.lubowitz@yahoo.com",
+  "name": "Sam55",
+  "username": "Sam55",
+  "email": "kiana_spencer@yahoo.com",
   "provider": "local",
-  "created_at": "2016-01-04T20:13:25.194Z",
+  "created_at": "2016-01-09T12:55:26.732Z",
   "is_active": true,
   "counter": {
     "stars": 0,
@@ -18,13 +18,13 @@ Content-Encoding: gzip
   "roles": [
     "member"
   ],
-  "id": "q265azd4ub",
+  "id": "qk4h2f9bguh",
   "plan": {
     "push_notifications_enabled": false,
     "app_tokens_enabled": true,
     "id": "subscribed"
   },
-  "gravatar_id": "7019fa31fe26a91cffb99ebdbc83eb1a",
+  "gravatar_id": "acafdaefc10c6d9d93d9db5526e54556",
   "permissions": {
     "builds": [
       "delete-own",
@@ -53,10 +53,11 @@ Content-Encoding: gzip
       "add"
     ],
     "releases": [
-      "star",
+      "update",
       "rate",
       "delete",
-      "add"
+      "add",
+      "star"
     ],
     "user": [
       "update",

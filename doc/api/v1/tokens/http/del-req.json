@@ -1,5 +1,5 @@
-DELETE /api/v1/tokens/wkf94dydxfh HTTP/1.1
+DELETE /api/v1/tokens/wkgqh89bgub HTTP/1.1
 Host: vpdb.io
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJ3a2tzeGR5ZDRmYiIsImlhdCI6IjIwMTYtMDEtMDRUMjA6MTQ6MjYuMzc3WiIsImV4cCI6IjIwMTYtMDEtMDRUMjE6MTQ6MjYuMzc3WiJ9.b-c9KwpAodFo9iZGL5ZcmNlHlYy2RAAsDiQAQvzBuYM
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJ3azl3aG1zaGdmYiIsImlhdCI6IjIwMTYtMDEtMDlUMTI6NTY6NDcuNTQ5WiIsImV4cCI6IjIwMTYtMDEtMDlUMTM6NTY6NDcuNTQ5WiIsImlydCI6ZmFsc2V9.HL4eMK9NzDWtkwltWpXy-VgG6M-BDUhFfcS_AIVHeKg
 

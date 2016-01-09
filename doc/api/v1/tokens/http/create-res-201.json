@@ -1,13 +1,13 @@
 201 Created
 Content-Type: application/json; charset=utf-8
 Content-Length: 204
-Etag: W/"cc-0O6KnxVBC5vOsZphcNgWAg"
+Etag: W/"cc-MobjJ+FNE1lra8PSZzkTNQ"
 
 {
-  "id": "wk2993y34fh",
+  "id": "wkp5kmsh6ub",
   "label": "My Application",
   "is_active": true,
-  "expires_at": "2017-01-03T20:14:25.422Z",
-  "created_at": "2016-01-04T20:14:25.422Z",
-  "token": "04d027182d785fc106dea7022f47fc4b"
+  "expires_at": "2017-01-08T12:56:46.866Z",
+  "created_at": "2016-01-09T12:56:46.866Z",
+  "token": "d7d6dd371cb706c49cae1cfa0c9baf80"
 }

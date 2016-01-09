@@ -1,21 +1,21 @@
 POST /api/v1/releases HTTP/1.1
 Host: vpdb.io
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJxMnlmYzZ6M3h1YiIsImlhdCI6IjIwMTYtMDEtMDRUMjA6MTM6NDYuOTc5WiIsImV4cCI6IjIwMTYtMDEtMDRUMjE6MTM6NDYuOTc5WiJ9.kiC_zr5rjBg-qq_CPHz4iavwIa78AiJ_RmSK572dWQc
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJ3MjU0NXRzYjZmYiIsImlhdCI6IjIwMTYtMDEtMDlUMTI6NTU6NDkuNTY3WiIsImV4cCI6IjIwMTYtMDEtMDlUMTM6NTU6NDkuNTY3WiIsImlydCI6ZmFsc2V9.1UpXvsIE1LvRVX9BCn05E2jds8rH5Qz7RrreHtakOiI
 Content-Type: application/json
-Content-Length: 537
+Content-Length: 532
 
 {
   "name": "release",
-  "_game": "alabama-crimson-tide",
+  "_game": "iron-maiden",
   "versions": [
     {
       "files": [
         {
           "released_at": "2015-01-01T00:00:00.000Z",
-          "_file": "qk627zd4ub",
+          "_file": "w2pygvsbgub",
           "_media": {
-            "playfield_image": "w212czdxuh"
+            "playfield_image": "w2ss6tshgfb"
           },
           "_compatibility": [
             "9.9.0"
@@ -26,9 +26,9 @@ Content-Length: 537
           }
         },
         {
-          "_file": "wknkczdxfh",
+          "_file": "qkwy6v9b6ub",
           "_media": {
-            "playfield_image": "wkdk7z3xuh"
+            "playfield_image": "w2h9gvsb6fb"
           },
           "_compatibility": [
             "9.9.0"
@@ -45,7 +45,7 @@ Content-Length: 537
   ],
   "authors": [
     {
-      "_user": "q2yfc6z3xub",
+      "_user": "w2545tsb6fb",
       "roles": [
         "Table Creator"
       ]

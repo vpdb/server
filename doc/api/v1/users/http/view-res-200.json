@@ -1,14 +1,14 @@
 200 OK
 Content-Type: application/json; charset=utf-8
-Content-Length: 448
-Etag: W/"1c0-pL4cPdZPmUgVvhhZ/h+EPw"
+Content-Length: 440
+Etag: W/"1b8-MiC7rGWycrNEWKC3HZy6dg"
 
 {
-  "name": "Emmet_Smitham43",
-  "username": "Emmet_Smitham43",
-  "email": "bonnie10@hotmail.com",
+  "name": "Keyshawn74",
+  "username": "Keyshawn74",
+  "email": "jamie.batz53@gmail.com",
   "provider": "local",
-  "created_at": "2016-01-04T20:14:26.575Z",
+  "created_at": "2016-01-09T12:56:47.750Z",
   "is_active": true,
   "counter": {
     "stars": 0,
@@ -18,11 +18,11 @@ Etag: W/"1c0-pL4cPdZPmUgVvhhZ/h+EPw"
   "roles": [
     "member"
   ],
-  "id": "wkuw43z3xuh",
+  "id": "w2g5b8sbgub",
   "plan": {
     "push_notifications_enabled": false,
     "app_tokens_enabled": false,
     "id": "free"
   },
-  "gravatar_id": "5e5f26c692916e139e826d0921df5bb2"
+  "gravatar_id": "374e62a5a40fb4460890e7d6b71c7d23"
 }

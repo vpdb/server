@@ -1,4 +1,4 @@
-GET /api/v1/games/speakeasy-4/events HTTP/1.1
+GET /api/v1/games/smdm/events HTTP/1.1
 Host: vpdb.io
 Accept-Encoding: gzip, deflate
 

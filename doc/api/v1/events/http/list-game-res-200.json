@@ -3,7 +3,7 @@ X-List-Page: 1
 X-List-Size: 10
 X-List-Count: 2
 Content-Type: application/json; charset=utf-8
-Etag: W/"a59-fTg3WqqWmPm0AUCPW5tI1A"
+Etag: W/"a85-eKOAepXIbqHXEh9SDyvV7w"
 Content-Encoding: gzip
 
 [
@@ -11,18 +11,18 @@ Content-Encoding: gzip
     "event": "create_release",
     "payload": {
       "release": {
-        "id": "w246nz3xuh",
-        "name": "Reactive Edition",
+        "id": "q2n94ush6ub",
+        "name": "Reduced Edition",
         "authors": [
           {
             "roles": [
               "Table Creator"
             ],
             "user": {
-              "id": "w2bqnnyd4fh",
-              "name": "Olen.Klein88",
-              "username": "Olen.Klein88",
-              "gravatar_id": "1eedcb0d75fb1f4769580229e8a06bb4",
+              "id": "q2xbxu9h6fh",
+              "name": "Roselyn25",
+              "username": "Roselyn25",
+              "gravatar_id": "09fa93ade467bc4ab9f73c5c5986cb43",
               "counter": {
                 "comments": 0,
                 "stars": 0
@@ -33,10 +33,10 @@ Content-Encoding: gzip
         "versions": [
           {
             "version": "1.0.0",
-            "released_at": "2016-01-04T20:13:29.200Z",
+            "released_at": "2016-01-09T12:55:30.846Z",
             "files": [
               {
-                "released_at": "2016-01-04T20:13:29.200Z",
+                "released_at": "2016-01-09T12:55:30.846Z",
                 "flavor": {
                   "orientation": "fs",
                   "lighting": "night"
@@ -47,7 +47,7 @@ Content-Encoding: gzip
                   }
                 ],
                 "file": {
-                  "id": "wkfpanzdxub",
+                  "id": "qkvz4f9b6ub",
                   "name": "test-table-0.vpt",
                   "bytes": 135168,
                   "mime_type": "application/x-visual-pinball-table"
@@ -58,41 +58,43 @@ Content-Encoding: gzip
         ]
       },
       "game": {
-        "id": "speakeasy-4",
-        "title": "Speakeasy 4",
+        "id": "smdm",
+        "title": "The Six Million Dollar Man",
         "manufacturer": "Bally",
-        "year": 1982,
+        "year": 1978,
         "ipdb": {
-          "number": 4342,
-          "mfg": 47
+          "number": 2165,
+          "mfg": 47,
+          "rating": 7.3
         },
         "game_type": "ss"
       }
     },
-    "logged_at": "2016-01-04T20:13:29.237Z",
+    "logged_at": "2016-01-09T12:55:30.882Z",
     "is_public": true,
     "actor": {
       "counter": {
         "stars": 0,
         "comments": 0
       },
-      "gravatar_id": "1eedcb0d75fb1f4769580229e8a06bb4",
-      "username": "Olen.Klein88",
-      "name": "Olen.Klein88",
-      "id": "w2bqnnyd4fh"
+      "gravatar_id": "09fa93ade467bc4ab9f73c5c5986cb43",
+      "username": "Roselyn25",
+      "name": "Roselyn25",
+      "id": "q2xbxu9h6fh"
     }
   },
   {
     "event": "create_game",
     "payload": {
       "game": {
-        "id": "speakeasy-4",
-        "title": "Speakeasy 4",
+        "id": "smdm",
+        "title": "The Six Million Dollar Man",
         "manufacturer": "Bally",
-        "year": 1982,
+        "year": 1978,
         "ipdb": {
-          "number": 4342,
-          "mfg": 47
+          "number": 2165,
+          "mfg": 47,
+          "rating": 7.3
         },
         "game_type": "ss",
         "media": {
@@ -103,36 +105,36 @@ Content-Encoding: gzip
             "is_protected": true,
             "variations": {
               "small-2x": {
-                "url": "/storage/public/files/small-2x/qkawaazdxub.jpg"
+                "url": "/storage/public/files/small-2x/w28hxf9hgub.jpg"
               },
               "small": {
-                "url": "/storage/public/files/small/qkawaazdxub.jpg"
+                "url": "/storage/public/files/small/w28hxf9hgub.jpg"
               },
               "medium-2x": {
-                "url": "/storage/public/files/medium-2x/qkawaazdxub.jpg"
+                "url": "/storage/public/files/medium-2x/w28hxf9hgub.jpg"
               },
               "medium": {
-                "url": "/storage/public/files/medium/qkawaazdxub.jpg"
+                "url": "/storage/public/files/medium/w28hxf9hgub.jpg"
               }
             },
             "bytes": 135,
-            "url": "/storage/v1/files/qkawaazdxub.png",
-            "id": "qkawaazdxub"
+            "url": "/storage/v1/files/w28hxf9hgub.png",
+            "id": "w28hxf9hgub"
           }
         }
       }
     },
-    "logged_at": "2016-01-04T20:13:28.713Z",
+    "logged_at": "2016-01-09T12:55:30.321Z",
     "is_public": true,
     "actor": {
       "counter": {
         "stars": 0,
         "comments": 0
       },
-      "gravatar_id": "9701c5f31c7ffa86cd7662479cc5724e",
-      "username": "Amari_Okuneva",
-      "name": "Amari_Okuneva",
-      "id": "wkqwanzd4uh"
+      "gravatar_id": "edb000cb2857fbef1fa78456cf7bee51",
+      "username": "Laverne_Bruen",
+      "name": "Laverne_Bruen",
+      "id": "w2uhxf9bgfh"
     }
   }
 ]

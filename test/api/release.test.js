@@ -408,6 +408,69 @@ describe('The VPDB `release` API', function() {
 			});
 		});
 
+		it('should succeed when updating all fields', function(done) {
+			var newName = 'Updated name';
+			var newDescription = 'Updated description';
+			var newAcknowledgements = 'Updated acknowledgements';
+			var links = [
+				{ label: 'first link', url: 'https://vpdb.io/somelink' },
+				{ label: 'second link', url: 'https://vpdb.io/someotherlink' }
+			];
+			var newTags = [ 'hd', 'dof' ];
+			hlp.release.createRelease('member', request, function(release) {
+				request
+					.put('/api/v1/releases/' + release.id)
+					.as('member')
+					.save({ path: 'releases/update'})
+					.send({
+						name: newName,
+						description: newDescription,
+						acknowledgements: newAcknowledgements,
+						authors: [ { _user: hlp.getUser('othermember').id, roles: [ 'Some other job' ] } ],
+						links: links,
+						_tags: newTags
+					}).end(function(err, res) {
+						hlp.expectStatus(err, res, 200);
+						expect(res.body.name).to.be(newName);
+						expect(res.body.description).to.be(newDescription);
+						expect(res.body.acknowledgements).to.be(newAcknowledgements);
+						expect(res.body.links).to.eql(links);
+						expect(res.body.tags).to.be.an('array');
+						expect(res.body.tags).to.have.length(newTags.length);
+						newTags.forEach(tag => expect(_.find(res.body.tags, t => t.id === tag)).to.be.an('object'));
+						expect(res.body.authors).to.have.length(1);
+						expect(res.body.authors[0].user.id).to.be(hlp.getUser('othermember').id);
+						done();
+					});
+			});
+		});
+
+		it('should succeed updating as non-creator but other author', function(done) {
+			var newName = 'My edited name';
+			var newDescription = 'My edited description';
+			var newAcknowledgements = 'My edited acknowledgements';
+			hlp.release.createRelease('member', request, function(release) {
+				request
+					.put('/api/v1/releases/' + release.id)
+					.as('member')
+					.send({ authors: [ { _user: hlp.getUser('othermember').id, roles: [ 'Some other job' ] } ] })
+					.end(function(err, res) {
+						hlp.expectStatus(err, res, 200);
+						request
+							.put('/api/v1/releases/' + release.id)
+							.as('othermember')
+							.send({ name: newName, description: newDescription, acknowledgements: newAcknowledgements })
+							.end(function(err, res) {
+								hlp.expectStatus(err, res, 200);
+								expect(res.body.name).to.be(newName);
+								expect(res.body.description).to.be(newDescription);
+								expect(res.body.acknowledgements).to.be(newAcknowledgements);
+								done();
+							});
+					});
+			});
+		});
+
 		it('should fail for a non-existing tag', function(done) {
 			var newTags = [ 'hd', 'i-dont-exist' ];
 			hlp.release.createRelease('member', request, function(release) {
@@ -457,23 +520,37 @@ describe('The VPDB `release` API', function() {
 			});
 		});
 
-		it.skip('should fail when updating author as non-creator but other author', function(done) {
+		it('should fail when updating author as non-creator but other author', function(done) {
 			hlp.release.createRelease('member', request, function(release) {
 				request
 					.put('/api/v1/releases/' + release.id)
 					.as('member')
-					.send({ authors: { _user: hlp.getUser('othermember').id, roles: [ 'Some other job' ] } })
+					.send({ authors: [ { _user: hlp.getUser('othermember').id, roles: [ 'Some other job' ] } ] })
 					.end(function(err, res) {
 						hlp.expectStatus(err, res, 200);
 						request
 							.put('/api/v1/releases/' + release.id)
 							.as('othermember')
-							.send({ authors: authors })
-							.end(hlp.status(403, 'asdf', done));
+							.send({ authors: [] })
+							.end(hlp.status(403, 'only the original uploader', done));
 					});
 			});
 		});
 
+		it('should succeed when updating authors', function(done) {
+			hlp.release.createRelease('member', request, function(release) {
+				request
+					.put('/api/v1/releases/' + release.id)
+					.as('member')
+					.send({ authors: [ { _user: hlp.getUser('othermember').id, roles: [ 'Some other job' ] } ] })
+					.end(function(err, res) {
+						hlp.expectStatus(err, res, 200);
+						expect(res.body.authors).to.have.length(1);
+						expect(res.body.authors[0].user.id).to.be(hlp.getUser('othermember').id);
+						done();
+					});
+			});
+		});
 
 	});
 

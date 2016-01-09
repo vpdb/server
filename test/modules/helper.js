@@ -633,5 +633,9 @@ exports.getUser = function(name) {
 };
 
 exports.dump = function(res, title) {
-	console.log('%s: %s', title || 'RESPONSE', util.inspect(res.body ? res.body : res, null, null, true));
+	if (res.body) {
+		console.log('%s (%d): %s', title || 'RESPONSE', res.status, util.inspect(res.body, null, null, true));
+	} else {
+		console.log('%s: %s', title || 'RESPONSE', util.inspect(res, null, null, true));
+	}
 };

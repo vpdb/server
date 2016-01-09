@@ -169,8 +169,12 @@ exports.update = function(req, res) {
 			throw error('Invalid field%s: ["%s"]. Allowed fields: ["%s"]', invalidFields.length == 1 ? '' : 's', invalidFields.join('", "'), updateableFields.join('", "')).status(400).log('update');
 		}
 
-		// apply changes and validate
-		_.assign(release, req.body);
+		// apply changes
+		return release.updateInstance(req.body);
+
+	}).then(function(release) {
+
+		// validate and save
 		return release.validate().then(x => release.save());
 
 	}).then(function(release) {

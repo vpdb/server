@@ -1,0 +1,34 @@
+PUT /api/v1/releases/q2xyze326uh HTTP/1.1
+Host: vpdb.io
+Accept-Encoding: gzip, deflate
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJ3MnhoZTMyZ2ZiIiwiaWF0IjoiMjAxNi0wMS0wOVQxMjozMzozNS44MzVaIiwiZXhwIjoiMjAxNi0wMS0wOVQxMzozMzozNS44MzVaIiwiaXJ0IjpmYWxzZX0.nq8qwAlP0P8c4gpsPKm4Q7_bzHR0972Sc0a8SMI4xTU
+Content-Type: application/json
+Content-Length: 316
+
+{
+  "name": "Updated name",
+  "description": "Updated description",
+  "acknowledgements": "Updated acknowledgements",
+  "authors": [
+    {
+      "_user": "wkfhe3kgfh",
+      "roles": [
+        "Some other job"
+      ]
+    }
+  ],
+  "links": [
+    {
+      "label": "first link",
+      "url": "https://vpdb.io/somelink"
+    },
+    {
+      "label": "second link",
+      "url": "https://vpdb.io/someotherlink"
+    }
+  ],
+  "_tags": [
+    "hd",
+    "dof"
+  ]
+}

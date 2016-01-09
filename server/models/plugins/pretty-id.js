@@ -70,10 +70,9 @@ module.exports = function(schema, options) {
 	 */
 	schema.statics.getInstance = function(obj, callback) {
 
-		var Model = mongoose.model(options.model);
+		return replaceIds(obj, paths, options).then(invalidations => {
 
-		return replaceIds(obj, paths, Model, options).then(invalidations => {
-
+			var Model = mongoose.model(options.model);
 			var model = new Model(obj);
 			//var model = this.model(this.constructor.modelName);
 
@@ -83,21 +82,38 @@ module.exports = function(schema, options) {
 			});
 			return model;
 
-		}).nodeify(callback);
+		}).nodeify(callback); // for our "legacy" code
+	};
+
+	schema.methods.updateInstance = function(obj) {
+
+		return replaceIds(obj, paths, options).then(invalidations => {
+
+			var that = this;
+			_.assign(this, obj);
+
+			// for invalid IDs, invalidate instantly so we can provide which value is wrong.
+			_.each(invalidations, function(invalidation) {
+				that.invalidate(invalidation.path, invalidation.message, invalidation.value);
+			});
+
+			return that;
+		});
 	};
 };
 
-function replaceIds(obj, paths, Model, options) {
+function replaceIds(obj, paths, options) {
 
+	var Model = mongoose.model(options.model);
 	return Bluebird.resolve().then(function() {
 		var invalidations = [];
 		var models = {};
 		models[options.model] = Model;
-		var objPaths = getObjectPaths(obj, paths);
+		var refPaths = getRefPaths(obj, paths);
 
-		return Bluebird.each(_.keys(objPaths), objPath => {
+		return Bluebird.each(_.keys(refPaths), objPath => {
 
-			var refModelName = objPaths[objPath];
+			var refModelName = refPaths[objPath];
 			var RefModel = models[refModelName] || mongoose.model(refModelName);
 			models[refModelName] = RefModel;
 
@@ -127,11 +143,10 @@ function replaceIds(obj, paths, Model, options) {
 					});
 
 					// convert pretty id to mongdb id
-//						console.log('--- Overwriting pretty ID "%s" at %s with %s.', prettyId, objPath, refObj._id);
+//					console.log('--- Overwriting pretty ID "%s" at %s with %s.', prettyId, objPath, refObj._id);
 					_.set(obj, objPath, refObj._id);
 				}
 				return Bluebird.resolve();
-
 			});
 		}).then(function() {
 			return invalidations;
@@ -139,18 +154,14 @@ function replaceIds(obj, paths, Model, options) {
 	});
 }
 
-function getObjectPaths(obj, paths) {
+function getRefPaths(obj, paths) {
 
-	var singleRefs = _.mapValues(_.pick(paths, function(schemaType) {
-		return schemaType.options && schemaType.options.ref;
-	}), function(schemaType) {
-		return schemaType.options.ref;
-	});
-	var arrayRefs = _.mapValues(_.pick(paths, function(schemaType) {
-		return schemaType.caster && schemaType.caster.instance && schemaType.caster.options && schemaType.caster.options.ref;
-	}), function(schemaType) {
-		return schemaType.caster.options.ref;
-	});
+	// pick because it's an object (map)
+	var singleRefsFiltered = _.pick(paths, schemaType => schemaType.options && schemaType.options.ref);
+	var singleRefs = _.mapValues(singleRefsFiltered, schemaType => schemaType.options.ref);
+
+	var arrayRefsFiltered = _.pick(paths, schemaType => schemaType.caster && schemaType.caster.instance && schemaType.caster.options && schemaType.caster.options.ref);
+	var arrayRefs = _.mapValues(arrayRefsFiltered, schemaType => schemaType.caster.options.ref);
 
 	return common.explodePaths(obj, singleRefs, arrayRefs);
 }

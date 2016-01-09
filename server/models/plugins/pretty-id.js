@@ -23,6 +23,7 @@ var _ = require('lodash');
 var async = require('async');
 var logger = require('winston');
 var mongoose = require('mongoose');
+var Bluebird = require('bluebird');
 
 var common = require('./common');
 var error = require('../../modules/error')('model', 'pretty-id');
@@ -65,73 +66,61 @@ module.exports = function(schema, options) {
 	 *
 	 * @param obj Object, directly from API client
 	 * @param callback Called with (`err`, `ModelInstance`)
+	 * @return {Promise}
 	 */
 	schema.statics.getInstance = function(obj, callback) {
 
-		var models = {};
 		var Model = mongoose.model(options.model);
-		models[options.model] = Model;
-
-		var singleRefs = _.mapValues(_.pick(paths, function(schemaType) {
-			return schemaType.options && schemaType.options.ref;
-		}), function(schemaType) {
-			return schemaType.options.ref;
-		});
-		var arrayRefs = _.mapValues(_.pick(paths, function(schemaType) {
-			return schemaType.caster && schemaType.caster.instance && schemaType.caster.options && schemaType.caster.options.ref;
-		}), function(schemaType) {
-			return schemaType.caster.options.ref;
-		});
-
-		var objPaths = common.explodePaths(obj, singleRefs, arrayRefs);
-
 		var invalidations = [];
-		async.eachSeries(_.keys(objPaths), function(objPath, next) {
 
-			var refModelName = objPaths[objPath];
-			var RefModel = models[refModelName] || mongoose.model(refModelName);
-			models[refModelName] = RefModel;
+		return Bluebird.resolve().then(function() {
 
-			var prettyId = _.get(obj, objPath);
+			var models = {};
 
-			if (!prettyId) {
-				return next();
-			}
-			RefModel.findOne({ id: prettyId }, function(err, refObj) {
-				/* istanbul ignore if  */
-				if (err) {
-					logger.error('[model] Error finding referenced %s: %s', refModelName.toLowerCase(), err.message);
-					return next(err);
+			models[options.model] = Model;
+
+			var objPaths = getObjectPaths(obj, paths);
+
+			return Bluebird.each(_.keys(objPaths), objPath => {
+
+				var refModelName = objPaths[objPath];
+				var RefModel = models[refModelName] || mongoose.model(refModelName);
+				models[refModelName] = RefModel;
+
+				var prettyId = _.get(obj, objPath);
+
+				if (!prettyId) {
+					return Bluebird.resolve();
 				}
-				if (!refObj) {
-					logger.warn('[model] %s ID "%s" not found in database for field %s.', refModelName, prettyId, objPath);
-					invalidations.push({ path: objPath, message: 'No such ' + refModelName.toLowerCase() + ' with id "' + prettyId + '".', value: prettyId });
-					_.set(obj, objPath, '000000000000000000000000'); // to avoid class cast error to objectId
-				} else {
-					// validations
-					_.each(options.validations, function(validation) {
-						if (validation.path === objPath) {
-							if (validation.mimeType && refObj.mime_type !== validation.mimeType) {
-								invalidations.push({ path: objPath, message: validation.message, value: prettyId });
-							}
-							if (validation.fileType && refObj.file_type !== validation.fileType) {
-								invalidations.push({ path: objPath, message: validation.message, value: prettyId });
-							}
-						}
-					});
+				return RefModel.findOne({ id: prettyId }).then(refObj => {
 
-					// convert pretty id to mongdb id
-//					console.log('--- Overwriting pretty ID "%s" at %s with %s.', prettyId, objPath, refObj._id);
-					_.set(obj, objPath, refObj._id);
-				}
-				next();
+					if (!refObj) {
+						logger.warn('[model] %s ID "%s" not found in database for field %s.', refModelName, prettyId, objPath);
+						invalidations.push({ path: objPath, message: 'No such ' + refModelName.toLowerCase() + ' with id "' + prettyId + '".', value: prettyId });
+						_.set(obj, objPath, '000000000000000000000000'); // to avoid class cast error to objectId
+
+					} else {
+						// validations
+						_.each(options.validations, function(validation) {
+							if (validation.path === objPath) {
+								if (validation.mimeType && refObj.mime_type !== validation.mimeType) {
+									invalidations.push({ path: objPath, message: validation.message, value: prettyId });
+								}
+								if (validation.fileType && refObj.file_type !== validation.fileType) {
+									invalidations.push({ path: objPath, message: validation.message, value: prettyId });
+								}
+							}
+						});
+
+						// convert pretty id to mongdb id
+//						console.log('--- Overwriting pretty ID "%s" at %s with %s.', prettyId, objPath, refObj._id);
+						_.set(obj, objPath, refObj._id);
+					}
+					return Bluebird.resolve();
+				});
 			});
 
-		}, function(err) {
-			/* istanbul ignore if  */
-			if (err) {
-				return callback(err);
-			}
+		}).then(function() {
 
 			var model = new Model(obj);
 			//var model = this.model(this.constructor.modelName);
@@ -140,8 +129,24 @@ module.exports = function(schema, options) {
 			_.each(invalidations, function(invalidation) {
 				model.invalidate(invalidation.path, invalidation.message, invalidation.value);
 			});
+			return model;
 
-			callback(null, model);
-		});
+		}).nodeify(callback);
 	};
 };
+
+function getObjectPaths(obj, paths) {
+
+	var singleRefs = _.mapValues(_.pick(paths, function(schemaType) {
+		return schemaType.options && schemaType.options.ref;
+	}), function(schemaType) {
+		return schemaType.options.ref;
+	});
+	var arrayRefs = _.mapValues(_.pick(paths, function(schemaType) {
+		return schemaType.caster && schemaType.caster.instance && schemaType.caster.options && schemaType.caster.options.ref;
+	}), function(schemaType) {
+		return schemaType.caster.options.ref;
+	});
+
+	return common.explodePaths(obj, singleRefs, arrayRefs);
+}

@@ -40,9 +40,6 @@ exports.create = function(fileData, readStream, error, callback) {
 		file = new File(fileData);
 		return file.validate();
 
-	}).catch(err => {
-		return error('Validations failed. See below for details.').errors(err.errors).warn('create').status(422);
-
 	}).then(function() {
 		return file.save();
 
@@ -56,45 +53,33 @@ exports.create = function(fileData, readStream, error, callback) {
 		});
 
 	}).then(function() {
-		var stats = fs.statSync(file.getPath());
-		var fileSizeInBytes = stats["size"];
 		return storage.preprocess(file);
 
 	}).then(function() {
+		return storage.metadata(file).catch(err => {
 
-		return new Bluebird(function(resolve, reject) {
-			storage.metadata(file, function(err, metadata) {
-				if (err) {
-					return file.remove(function(err) {
-						/* istanbul ignore if */
-						if (err) {
-							logger.error('[api|file:save] Removing file due to erroneous metadata: %s', err, {});
-						}
-						return reject(error('Metadata parsing for MIME type "%s" failed. Upload corrupted or weird format?', file.mime_type).warn().status(400));
-					});
-				}
-				if (!metadata) {
-					// no need to re-save
-					return resolve(file);
-				}
+			// fail and remove file if metadata failed
+			return file.remove().catch(err => {
+				logger.error('[api|file:save] Error removing file: %s', err.message);
 
-				File.sanitizeObject(metadata);
-				file.metadata = metadata;
-
-				file.save(function(err, file) {
-					/* istanbul ignore if */
-					if (err) {
-						logger.error('[api|file:save] Error saving metadata: %s', err, {});
-						logger.error('[api|file:save] Metadata: %s', require('util').inspect(metadata));
-					}
-					logger.info('[api|file:save] File upload of %s successfully completed.', file.toString());
-					resolve(file);
-
-					// do this in the background.
-					storage.postprocess(file);
-				});
+			}).then(function() {
+				throw error(err, 'Metadata parsing failed for type "%s"', file.mime_type).short().warn().status(400);
 			});
 		});
+
+	}).then(function(metadata) {
+
+		File.sanitizeObject(metadata);
+		file.metadata = metadata;
+		return file.save();
+
+	}).then(function(file) {
+
+		logger.info('[api|file:save] File upload of %s successfully completed.', file.toString());
+
+		// do this in the background.
+		storage.postprocess(file);
+		return file;
 
 	}).nodeify(callback);
 };

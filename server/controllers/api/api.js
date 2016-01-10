@@ -351,7 +351,7 @@ exports.handleError = function(res, error, message) {
 			exports.fail(res, err);
 
 		} else if (err.errors && err.constructor && err.constructor.name === 'MongooseError') {
-			exports.fail(res, error('Validations failed. See below for details.').errors(err.errors).warn('create'), 422);
+			exports.fail(res, error('Validations failed. See below for details.').errors(err.errors).warn(), 422);
 
 		} else {
 			exports.fail(res, error(err, message).log());

@@ -152,5 +152,6 @@ function getZipMetadata(file) {
 			};
 		});
 		return Bluebird.resolve({ entries: entries });
-	});
+
+	}).catch(err => { throw new Error(err); }); // lib throws strings, not Errors..
 }

@@ -125,7 +125,7 @@ describe('The VPDB `file` API', function() {
 				.set('Content-Disposition', 'attachment; filename="backglass.png"')
 				.send('not an image!')
 				.as('member')
-				.end(hlp.status(400, 'corrupted', done));
+				.end(hlp.status(400, 'metadata parsing failed', done));
 
 		});
 
@@ -137,7 +137,7 @@ describe('The VPDB `file` API', function() {
 				.set('Content-Disposition', 'attachment; filename="backglass.jpg"')
 				.send('not an image!')
 				.as('member')
-				.end(hlp.status(400, 'corrupted', done));
+				.end(hlp.status(400, 'metadata parsing failed', done));
 		});
 
 		it('should fail if the aspect ratio too much off');
@@ -225,7 +225,7 @@ describe('The VPDB `file` API', function() {
 					.set('Content-Disposition', 'attachment; filename="dmd.rar"')
 					.set('Content-Length', data.length)
 					.send(data)
-					.as('member').end(hlp.status(400, 'corrupted', done));
+					.as('member').end(hlp.status(400, 'metadata parsing failed', done));
 		});
 
 	});
@@ -257,7 +257,7 @@ describe('The VPDB `file` API', function() {
 				.set('Content-Disposition', 'attachment; filename="dmd.zip"')
 				.set('Content-Length', data.length)
 				.send(data)
-				.as('member').end(hlp.status(400, 'corrupted', done));
+				.as('member').end(hlp.status(400, 'metadata parsing failed', done));
 		});
 
 	});

@@ -117,6 +117,15 @@ Err.prototype.display = function() {
 	return this;
 };
 
+/**
+ * Doesn't display the cause, only logs it
+ * @returns {Err}
+ */
+Err.prototype.short = function() {
+	this.message = this.jse_shortmsg;
+	return this;
+};
+
 Err.prototype.errors = function(errors) {
 	this.errs = errors;
 	this._stripFields();

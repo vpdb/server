@@ -17,6 +17,8 @@ var logger = require('winston');
 var domain = require('domain');
 var express = require('express');
 var mongoose = require('mongoose');
+mongoose.Promise = require('bluebird');
+
 require('shortid32').characters('123456789abcdefghkmnopqrstuvwxyz');
 
 if (process.env.COVERAGE_ENABLED) {

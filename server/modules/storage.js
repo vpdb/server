@@ -181,7 +181,7 @@ Storage.prototype.remove = function(file) {
 /**
  * Retrieves metadata for a given file using the processor of the file type.
  * @param {File} file
- * @param {function} done Callback
+ * @param {function} [done] Callback
  * @return {Promise}
  */
 Storage.prototype.metadata = function(file, done) {

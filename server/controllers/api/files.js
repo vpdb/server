@@ -108,9 +108,7 @@ exports.upload = function(req, res) {
 			_created_by: req.user._id
 		};
 
-		console.log('Creating file from stream...');
 		fileModule.create(fileData, req, error).then(f => {
-			console.log('Got file: %j', f);
 			api.success(res, f.toDetailed(), 201);
 
 		}).catch(api.handleError(res, error, 'Error uploading file'));

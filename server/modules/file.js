@@ -37,20 +37,16 @@ exports.create = function(fileData, readStream, error, callback) {
 
 	var file;
 	return Bluebird.resolve().then(function() {
-		console.log('Validating...');
 		file = new File(fileData);
 		return file.validate();
 
 	}).catch(err => {
-		console.log('FAILED');
 		return error('Validations failed. See below for details.').errors(err.errors).warn('create').status(422);
 
 	}).then(function() {
-		console.log('Saving...');
 		return file.save();
 
 	}).then(function(f) {
-		console.log('Streaming...');
 		file = f;
 		return new Bluebird(function(resolve, reject) {
 			var writeStream = fs.createWriteStream(file.getPath());
@@ -62,17 +58,13 @@ exports.create = function(fileData, readStream, error, callback) {
 	}).then(function() {
 		var stats = fs.statSync(file.getPath());
 		var fileSizeInBytes = stats["size"];
-		console.log('Saved %d bytes.', fileSizeInBytes);
-		console.log('Preprocessing...');
 		return storage.preprocess(file);
 
 	}).then(function() {
 
-		console.log('Reading metadata & rest...');
 		return new Bluebird(function(resolve, reject) {
 			storage.metadata(file, function(err, metadata) {
 				if (err) {
-					console.log(err);
 					return file.remove(function(err) {
 						/* istanbul ignore if */
 						if (err) {
@@ -82,7 +74,6 @@ exports.create = function(fileData, readStream, error, callback) {
 					});
 				}
 				if (!metadata) {
-					console.log('No metadata received, returning.');
 					// no need to re-save
 					return resolve(file);
 				}

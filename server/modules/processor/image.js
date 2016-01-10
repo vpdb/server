@@ -21,14 +21,17 @@
 
 var _ = require('lodash');
 var fs = require('fs');
-var gm = require('gm');
 var logger = require('winston');
+var Bluebird = require('bluebird');
+var gm = require('gm');
 
 var PngQuant = require('pngquant');
 var OptiPng = require('optipng');
 
 var error = require('../error')('processor', 'image');
 var mimeTypes = require('../mimetypes');
+
+Bluebird.promisifyAll(gm.prototype);
 
 /**
  * Image processor.
@@ -78,16 +81,19 @@ function ImageProcessor() {
 }
 
 ImageProcessor.prototype.metadata = function(file, variation, done) {
+
 	if (_.isFunction(variation)) {
 		done = variation;
 		variation = undefined;
 	}
-	gm(file.getPath(variation)).identify(function(err, metadata) {
-		if (err) {
-			return done(error(err, 'Error reading metadata from image').warn());
-		}
-		done(null, metadata);
-	});
+	return Bluebird.resolve().then(function() {
+		return gm(file.getPath(variation)).identifyAsync();
+
+	}).catch(err => {
+		// log this
+		throw error(err, 'Error reading metadata from image').warn();
+
+	}).nodeify(done);
 };
 
 ImageProcessor.prototype.metadataShort = function(metadata) {
@@ -101,25 +107,25 @@ ImageProcessor.prototype.variationData = function(metadata) {
 	};
 };
 
-ImageProcessor.prototype.preprocess = function(file, done) {
+ImageProcessor.prototype.preprocess = function(file) {
 
-	// rotate if necessary
-	if (file.file_type === 'playfield-fs') {
-		gm(file.getPath()).identify(function(err, metadata) {
-			if (err) {
-				// just return, this is handled by metadata
-				return done();
-			}
+	return Bluebird.resolve().then(function() {
+
+		if (file.file_type !== 'playfield-fs') {
+			return Bluebird.resolve();
+		}
+
+		// rotate
+		return gm(file.getPath()).identifyAsync().then(function(metadata) {
+
 			if (_.isObject(metadata.size) && metadata.size.height > metadata.size.width) {
 				logger.info('[processor|image|pre] Rotating FS playfield image.');
-				gm(file.getPath()).rotate('black', 90).write(file.getPath(), done);
+				return gm(file.getPath()).rotate('black', 90).writeAsync(file.getPath());
 			} else {
-				done();
+				return Bluebird.resolve();
 			}
 		});
-	} else {
-		done();
-	}
+	});
 };
 
 /**

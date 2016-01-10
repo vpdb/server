@@ -17,8 +17,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+'use strict';
+
 var fs = require('fs');
 var logger = require('winston');
+var Bluebird = require('bluebird');
 var File = require('mongoose').model('File');
 var storage = require('./storage');
 
@@ -27,70 +30,80 @@ var storage = require('./storage');
  * @param {object} fileData Model data
  * @param {stream} readStream Binary stream of file content
  * @param {function} error Error logger
- * @param {function} callback Callback, executed with err and file.
+ * @param {function} [callback] Callback, executed with err and file.
+ * @return {Promise}
  */
 exports.create = function(fileData, readStream, error, callback) {
 
-	var file = new File(fileData);
+	var file;
+	return Bluebird.resolve().then(function() {
+		console.log('Validating...');
+		file = new File(fileData);
+		return file.validate();
 
-	file.validate(function(err) {
-		if (err) {
-			return callback(error('Validations failed. See below for details.').errors(err.errors).warn('create').status(422));
-		}
+	}).catch(err => {
+		console.log('FAILED');
+		return error('Validations failed. See below for details.').errors(err.errors).warn('create').status(422);
 
-		file.save(function(err, file) {
-			/* istanbul ignore if */
-			if (err) {
-				return callback(error(err, 'Unable to save file').code(500));
-			}
+	}).then(function() {
+		console.log('Saving...');
+		return file.save();
 
+	}).then(function(f) {
+		console.log('Streaming...');
+		file = f;
+		return new Bluebird(function(resolve, reject) {
 			var writeStream = fs.createWriteStream(file.getPath());
-			writeStream.on('finish', function() {
-
-				storage.preprocess(file, function(err) {
-					if (err) {
-						logger.error('[api|file:save] Error preprocessing file: %s', err.message);
-					}
-
-					storage.metadata(file, function(err, metadata) {
-						if (err) {
-							return file.remove(function(err) {
-								/* istanbul ignore if */
-								if (err) {
-									logger.error('[api|file:save] Removing file due to erroneous metadata: %s', err, {});
-								}
-								return callback(error('Metadata parsing for MIME type "%s" failed. Upload corrupted or weird format?', file.mime_type).status(400));
-							});
-						}
-						if (!metadata) {
-							// no need to re-save
-							return callback(null, file);
-						}
-
-						File.sanitizeObject(metadata);
-						file.metadata = metadata;
-
-						file.save(function(err, file) {
-							/* istanbul ignore if */
-							if (err) {
-								logger.error('[api|file:save] Error saving metadata: %s', err, {});
-								logger.error('[api|file:save] Metadata: %s', require('util').inspect(metadata));
-							}
-							logger.info('[api|file:save] File upload of %s successfully completed.', file.toString());
-							callback(null, file);
-
-							// do this in the background.
-							storage.postprocess(file);
-						});
-					});
-				});
-			});
-			/* istanbul ignore next */
-			writeStream.on('error', function(err) {
-				return callback(error(err, 'Error saving data').log('save').status(500));
-			});
-
+			writeStream.on("finish", resolve);
+			writeStream.on("error", reject);
 			readStream.pipe(writeStream);
 		});
-	});
+
+	}).then(function() {
+		var stats = fs.statSync(file.getPath());
+		var fileSizeInBytes = stats["size"];
+		console.log('Saved %d bytes.', fileSizeInBytes);
+		console.log('Preprocessing...');
+		return storage.preprocess(file);
+
+	}).then(function() {
+
+		console.log('Reading metadata & rest...');
+		return new Bluebird(function(resolve, reject) {
+			storage.metadata(file, function(err, metadata) {
+				if (err) {
+					console.log(err);
+					return file.remove(function(err) {
+						/* istanbul ignore if */
+						if (err) {
+							logger.error('[api|file:save] Removing file due to erroneous metadata: %s', err, {});
+						}
+						return reject(error('Metadata parsing for MIME type "%s" failed. Upload corrupted or weird format?', file.mime_type).warn().status(400));
+					});
+				}
+				if (!metadata) {
+					console.log('No metadata received, returning.');
+					// no need to re-save
+					return resolve(file);
+				}
+
+				File.sanitizeObject(metadata);
+				file.metadata = metadata;
+
+				file.save(function(err, file) {
+					/* istanbul ignore if */
+					if (err) {
+						logger.error('[api|file:save] Error saving metadata: %s', err, {});
+						logger.error('[api|file:save] Metadata: %s', require('util').inspect(metadata));
+					}
+					logger.info('[api|file:save] File upload of %s successfully completed.', file.toString());
+					resolve(file);
+
+					// do this in the background.
+					storage.postprocess(file);
+				});
+			});
+		});
+
+	}).nodeify(callback);
 };

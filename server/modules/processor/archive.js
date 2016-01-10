@@ -21,11 +21,13 @@
 
 var _ = require('lodash');
 var fs = require('fs');
-var logger = require('winston');
 var Unrar = require('unrar');
-var Zip = require('adm-zip'); // todo migrate to unzip
+var Zip = require('adm-zip');
+var Bluebird = require('bluebird');
 
 var error = require('../error')('processor', 'archive');
+
+Bluebird.promisifyAll(Unrar.prototype);
 
 /**
  * Archive (Rar/Zip) processor.
@@ -49,70 +51,26 @@ ArchiveProcessor.prototype.metadata = function(file, variation, done) {
 		done = variation;
 		variation = undefined;
 	}
-	if (!variation) {
 
-		switch (file.getMimeSubtype()) {
-			case 'x-rar-compressed':
-			case 'rar':
-				var archive = new Unrar(file.getPath());
-				archive.list(function(err, entries) {
-					if (err) {
-						logger.info("Error reading archive at %s: %s", file.getPath(), err.message);
-						return done(err);
-					}
+	return Bluebird.resolve().then(function() {
 
-					// filter directories
-					entries = _.filter(entries, function(entry) {
-						return entry.type == 'File';
-					});
+		if (!variation) {
+			switch (file.getMimeSubtype()) {
+				case 'x-rar-compressed':
+				case 'rar':
+					return getRarMetadata(file);
 
-					// map data to something useful
-					entries = _.map(entries, function(entry) {
-						return {
-							filename: entry.name,
-							bytes: parseInt(entry.size),
-							bytes_compressed: parseInt(entry.packedSize),
-							crc: parseInt(entry.crc32, 16),
-							modified_at: new Date(entry.mtime.replace(/,\d+$/, ''))
-						};
-					});
+				case 'zip':
+					return getZipMetadata(file);
 
-					done(null, { entries: entries });
-				});
-				return;
-
-			case 'zip':
-				try {
-
-					var entries = new Zip(file.getPath()).getEntries();
-
-					// filter directories
-					entries = _.filter(entries, function(entry) {
-						return !entry.isDirectory;
-					});
-
-					// map data to something useful
-					entries = _.map(entries, function(entry) {
-						return {
-							filename: entry.entryName,
-							bytes: entry.header.size,
-							bytes_compressed: entry.header.compressedSize,
-							crc: entry.header.crc,
-							modified_at: new Date(entry.header.time)
-						};
-					});
-
-					done(null, { entries: entries });
-
-				} catch (err) {
-					done(err);
-				}
-				return;
-
-			default:
-				return done(null, {});
+				default:
+					return Bluebird.resolve({});
+			}
+		} else {
+			return Bluebird.resolve();
 		}
-	}
+
+	}).nodeify(done);
 };
 
 ArchiveProcessor.prototype.metadataShort = function(metadata) {
@@ -137,3 +95,62 @@ ArchiveProcessor.prototype.pass1 = function(src, dest, file, variation, done) {
 };
 
 module.exports = new ArchiveProcessor();
+
+/**
+ * Reads metadata from rar file
+ * @param {FileSchema} file
+ * @return {Promise}
+ */
+function getRarMetadata(file) {
+
+	return Bluebird.resolve().then(function() {
+		var archive = new Unrar(file.getPath());
+		return archive.listAsync();
+
+	}).then(entries => {
+
+		// filter directories
+		entries = _.filter(entries, entry => entry.type == 'File');
+
+		// map data to something useful
+		entries = _.map(entries, entry => {
+			return {
+				filename: entry.name,
+				bytes: parseInt(entry.size),
+				bytes_compressed: parseInt(entry.packedSize),
+				crc: parseInt(entry.crc32, 16),
+				modified_at: new Date(entry.mtime.replace(/,\d+$/, ''))
+			};
+		});
+
+		return Bluebird.resolve({ entries: entries });
+	});
+}
+
+/**
+ * Reads metadata from zip file.
+ * @param {FileSchema} file
+ * @return {Promise}
+ */
+function getZipMetadata(file) {
+
+	return Bluebird.resolve().then(function() {
+
+		var entries = new Zip(file.getPath()).getEntries();
+
+		// filter directories
+		entries = _.filter(entries, entry => !entry.isDirectory);
+
+		// map data to something useful
+		entries = _.map(entries, entry => {
+			return {
+				filename: entry.entryName,
+				bytes: entry.header.size,
+				bytes_compressed: entry.header.compressedSize,
+				crc: entry.header.crc,
+				modified_at: new Date(entry.header.time)
+			};
+		});
+		return Bluebird.resolve({ entries: entries });
+	});
+}

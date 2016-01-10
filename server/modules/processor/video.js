@@ -21,7 +21,8 @@
 
 var _ = require('lodash');
 var logger = require('winston');
-var ffmpeg = require('fluent-ffmpeg');
+var Bluebird = require('bluebird');
+var ffmpeg = Bluebird.promisifyAll(require('fluent-ffmpeg'));
 
 var config = require('../settings').current;
 var error = require('../error')('processor', 'video');
@@ -59,17 +60,20 @@ function VideoProcessor() {
 }
 
 VideoProcessor.prototype.metadata = function(file, variation, done) {
+
 	if (_.isFunction(variation)) {
 		done = variation;
 		variation = undefined;
 	}
 
-	ffmpeg.ffprobe(file.getPath(variation), function(err, metadata) {
-		if (err) {
-			return done(error(err, 'Error reading metadata from video `%s`', file.getPath(variation)).warn());
-		}
-		done(null, metadata);
-	});
+	return Bluebird.resolve().then(function() {
+		return ffmpeg.ffprobeAsync(file.getPath(variation));
+
+	}).catch(err => {
+		// log this
+		throw error(err, 'Error reading metadata from video `%s`', file.getPath(variation)).warn()
+
+	}).nodeify(done);
 };
 
 VideoProcessor.prototype.metadataShort = function(metadata) {

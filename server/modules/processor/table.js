@@ -25,8 +25,9 @@ var gm = require('gm');
 var path = require('path');
 var logger = require('winston');
 var request = require('request');
+var Bluebird = require('bluebird');
 
-var vp = require('../visualpinball');
+var vp = Bluebird.promisifyAll(require('../visualpinball'));
 var error = require('../error')('processor', 'table');
 var config = require('../settings').current;
 
@@ -52,21 +53,23 @@ function TableProcessor() {
 }
 
 TableProcessor.prototype.metadata = function(file, variation, done) {
+
 	if (_.isFunction(variation)) {
 		done = variation;
-		variation = undefined;
 	}
-	if (!variation) {
-		vp.readScriptFromTable(file.getPath(), function(err, script) {
-			if (err) {
-				return done(error(err, 'Error reading metadata from image').warn());
-			}
-			vp.getTableInfo(file.getPath(), function(err, props) {
-				var metadata = _.extend(props, { table_script: script.code });
-				done(null, metadata);
-			});
+	return Bluebird.resolve().then(function() {
+		return vp.readScriptFromTableAsync(file.getPath());
+
+	}).then(script => {
+		return vp.getTableInfoAsync(file.getPath()).then(props => {
+			return _.extend(props, { table_script: script.code });
 		});
-	}
+
+	}).catch(err => {
+		// log this
+		throw error(err, 'Error reading metadata from table').warn();
+
+	}).nodeify(done);
 };
 
 TableProcessor.prototype.metadataShort = function(metadata) {

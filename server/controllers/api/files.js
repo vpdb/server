@@ -22,6 +22,7 @@
 var _ = require('lodash');
 var logger = require('winston');
 var Busboy = require('busboy');
+var Bluebird = require('bluebird');
 
 var api = require('./api');
 var File = require('mongoose').model('File');
@@ -44,7 +45,7 @@ exports.upload = function(req, res) {
 		var busboy = new Busboy({ headers: req.headers });
 		var files = [];
 		var errors = [];
-		var finished = false;
+		var result = Bluebird.resolve();
 
 		busboy.on('file', function(fieldname, file, filename) {
 
@@ -58,24 +59,12 @@ exports.upload = function(req, res) {
 				_created_by: req.user._id
 			};
 
-			fileModule.create(fileData, file, error, function(err, f) {
+			result = result.then(fileModule.create(fileData, file, error, function(err, f) {
 				if (err) {
 					return errors.push(err);
 				}
 				files.push(f);
-
-				if (finished) {
-					if (!_.isEmpty(errors)) {
-						// return only first error
-						return api.fail(res, errors[0], errors[0].code);
-					}
-					if (files.length > 1) {
-						api.success(res, { files: _.map(files, f => f.toDetailed()) }, 201);
-					} else {
-						api.success(res, files[0].toDetailed(), 201);
-					}
-				}
-			});
+			}));
 		});
 
 		busboy.on('field', function(fieldname, val) {
@@ -83,7 +72,17 @@ exports.upload = function(req, res) {
 		});
 
 		busboy.on('finish', function() {
-			finished = true;
+			result.then(function() {
+				if (!_.isEmpty(errors)) {
+					// return only first error
+					return api.fail(res, errors[0], errors[0].code);
+				}
+				if (files.length > 1) {
+					api.success(res, { files: _.map(files, f => f.toDetailed()) }, 201);
+				} else {
+					api.success(res, files[0].toDetailed(), 201);
+				}
+			});
 		});
 		req.pipe(busboy);
 
@@ -109,12 +108,12 @@ exports.upload = function(req, res) {
 			_created_by: req.user._id
 		};
 
-		fileModule.create(fileData, req, error, function(err, f) {
-			if (err) {
-				return api.fail(res, err, err.code);
-			}
+		console.log('Creating file from stream...');
+		fileModule.create(fileData, req, error).then(f => {
+			console.log('Got file: %j', f);
 			api.success(res, f.toDetailed(), 201);
-		});
+
+		}).catch(api.handleError(res, error, 'Error uploading file'));
 	}
 };
 

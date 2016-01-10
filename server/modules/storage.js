@@ -24,6 +24,7 @@ var fs = require('fs');
 var path = require('path');
 var async = require('async');
 var logger = require('winston');
+var Bluebird = require('bluebird');
 
 var queue = require('./queue');
 var quota = require('./quota');
@@ -181,14 +182,17 @@ Storage.prototype.remove = function(file) {
  * Retrieves metadata for a given file using the processor of the file type.
  * @param {File} file
  * @param {function} done Callback
+ * @return {Promise}
  */
 Storage.prototype.metadata = function(file, done) {
-	var type = file.getMimeCategory();
-	if (!processors[type]) {
-		logger.warn('[storage] No metadata parser for mime category "%s".', type);
-		return done();
-	}
-	processors[type].metadata(file, done);
+	return Bluebird.resolve().then(function() {
+		var type = file.getMimeCategory();
+		if (!processors[type]) {
+			logger.warn('[storage] No metadata parser for mime category "%s".', type);
+			return Bluebird.resolve();
+		}
+		return processors[type].metadata(file, done);
+	}).nodeify(done);
 };
 
 /**
@@ -212,11 +216,14 @@ Storage.prototype.metadataShort = function(file, metadata) {
 };
 
 Storage.prototype.preprocess = function(file, done) {
-	var type = file.getMimeCategory();
-	if (!processors[type] || !processors[type].preprocess) {
-		return done(null, file);
-	}
-	processors[type].preprocess(file, done);
+	return Bluebird.resolve().then(function() {
+		var type = file.getMimeCategory();
+		if (!processors[type] || !processors[type].preprocess) {
+			return Bluebird.resolve(file);
+		}
+		return processors[type].preprocess(file);
+
+	}).nodeify(done);
 };
 
 /**

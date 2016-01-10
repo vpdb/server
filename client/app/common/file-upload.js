@@ -38,7 +38,7 @@
  *
  * All parameters must be already initialized.
  */
-angular.module('vpdb.common', []).directive('fileUpload', function(Upload, $parse, $compile, ApiHelper,
+angular.module('vpdb.common', []).directive('fileUpload', function($parse, $compile, Upload, ApiHelper,
 																   AuthService, ModalService, DisplayService,
 																   ConfigService, FileResource) {
 	return {
@@ -104,7 +104,7 @@ angular.module('vpdb.common', []).directive('fileUpload', function(Upload, $pars
 				}
 
 				// upload files
-				_.each($files, function(upload) {
+				_.each($files, function(file) {
 
 					// delete if exists
 					if (params.key && params.status[params.key] && params.status[params.key].storage && params.status[params.key].storage.id) {
@@ -115,63 +115,53 @@ angular.module('vpdb.common', []).directive('fileUpload', function(Upload, $pars
 						scope.$emit('imageUnloaded');
 					}
 
-					// read file
-					var fileReader = new FileReader();
-					fileReader.readAsArrayBuffer(upload);
-					fileReader.onload = function(event) {
-
-						// setup result variables
-						var mimeType = getMimeType(upload);
-						var status = {
-							name: upload.name,
-							bytes: upload.size,
-							mimeType: mimeType,
-							icon: DisplayService.fileIcon(mimeType),
-							uploaded: false,
-							uploading: true,
-							progress: 0,
-							text: 'Uploading file...',
-							storage: {},
-							key: params.key
-						};
-
-						if (params.key) {
-							params.status[params.key] = status;
-						} else {
-							params.status.push(status);
-						}
-
-						// post data
-						Upload.http({
-							url: ConfigService.storageUri('/files'),
-							method: 'POST',
-							params: { type: params.type },
-							headers: {
-								'Content-Type': mimeType,
-								'Content-Disposition': 'attachment; filename="' + upload.name + '"'
-							},
-							data: event.target.result
-
-						}).then(function(response) {
-
-							status.uploading = false;
-							status.storage = response.data;
-
-							params.onSuccess(status);
-
-						}, ApiHelper.handleErrorsInDialog(scope, 'Error uploading file.', function() {
-							if (params.key) {
-								delete params.status[params.key];
-							} else {
-								params.status.splice(params.status.indexOf(status), 1);
-							}
-							if (params.onError) {
-								params.onError(params.key);
-							}
-						}), function (evt) {
-							status.progress = parseInt(100.0 * evt.loaded / evt.total);
-						});
+					// setup result variables
+					var mimeType = getMimeType(file);
+					var status = {
+						name: file.name,
+						bytes: file.size,
+						mimeType: mimeType,
+						icon: DisplayService.fileIcon(mimeType),
+						uploaded: false,
+						uploading: true,
+						progress: 0,
+						text: 'Uploading file...',
+						storage: {},
+						key: params.key
 					};
+
+					if (params.key) {
+						params.status[params.key] = status;
+					} else {
+						params.status.push(status);
+					}
+
+					// post data
+					Upload.upload({
+						url: ConfigService.storageUri('/files'),
+						method: 'POST',
+						params: { type: params.type, content_type: mimeType },
+						data: { file: file }
+
+					}).then(function(response) {
+
+						status.uploading = false;
+						status.storage = response.data;
+
+						params.onSuccess(status);
+
+					}, ApiHelper.handleErrorsInDialog(scope, 'Error uploading file.', function() {
+						if (params.key) {
+							delete params.status[params.key];
+						} else {
+							params.status.splice(params.status.indexOf(status), 1);
+						}
+						if (params.onError) {
+							params.onError(params.key);
+						}
+					}), function (evt) {
+						status.progress = parseInt(100.0 * evt.loaded / evt.total);
+					});
 				});
 			}
 		}

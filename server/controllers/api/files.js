@@ -19,7 +19,9 @@
 
 "use strict";
 
+var _ = require('lodash');
 var logger = require('winston');
+var Busboy = require('busboy');
 
 var api = require('./api');
 var File = require('mongoose').model('File');
@@ -32,32 +34,88 @@ exports.upload = function(req, res) {
 	if (!req.headers['content-type']) {
 		return api.fail(res, error('Header "Content-Type" must be provided.'), 422);
 	}
-	if (!req.headers['content-disposition']) {
-		return api.fail(res, error('Header "Content-Disposition" must be provided.'), 422);
-	}
-	if (!/filename=([^;]+)/i.test(req.headers['content-disposition'])) {
-		return api.fail(res, error('Header "Content-Disposition" must contain file name.'), 422);
-	}
-	if (!req.query.type) {
-		return api.fail(res, error('Query parameter "type" must be provided.'), 422);
-	}
 
-	var fileData = {
-		name: req.headers['content-disposition'].match(/filename=([^;]+)/i)[1].replace(/(^"|^'|"$|'$)/g, ''),
-		bytes: req.headers['content-length'],
-		variations: {},
-		created_at: new Date(),
-		mime_type: req.headers['content-type'],
-		file_type: req.query.type,
-		_created_by: req.user._id
-	};
+	if (/multipart\/form-data/i.test(req.headers['content-type'])) {
 
-	fileModule.create(fileData, req, error, function(err, f, code) {
-		if (err) {
-			return api.fail(res, err.error, err.code);
+		if (!req.query.content_type) {
+			return api.fail(res, error('Mime type must be provided as query parameter "content_type" when using multipart.'), 422);
 		}
-		api.success(res, f.toDetailed(), code);
-	});
+
+		var busboy = new Busboy({ headers: req.headers });
+		var files = [];
+		var errors = [];
+		var finished = false;
+
+		busboy.on('file', function(fieldname, file, filename) {
+
+			var fileData = {
+				name: filename,
+				bytes: 0,
+				variations: {},
+				created_at: new Date(),
+				mime_type: req.query.content_type,
+				file_type: req.query.type,
+				_created_by: req.user._id
+			};
+
+			fileModule.create(fileData, file, error, function(err, f) {
+				if (err) {
+					return errors.push(err);
+				}
+				files.push(f);
+
+				if (finished) {
+					if (!_.isEmpty(errors)) {
+						// return only first error
+						return api.fail(res, errors[0], errors[0].code);
+					}
+					if (files.length > 1) {
+						api.success(res, { files: _.map(files, f => f.toDetailed()) }, 201);
+					} else {
+						api.success(res, files[0].toDetailed(), 201);
+					}
+				}
+			});
+		});
+
+		busboy.on('field', function(fieldname, val) {
+			logger.info('[api|file:upload] Ignoring multiplart field %s: %j', fieldname, val);
+		});
+
+		busboy.on('finish', function() {
+			finished = true;
+		});
+		req.pipe(busboy);
+
+	} else {
+
+		if (!req.headers['content-disposition']) {
+			return api.fail(res, error('Header "Content-Disposition" must be provided.'), 422);
+		}
+		if (!/filename=([^;]+)/i.test(req.headers['content-disposition'])) {
+			return api.fail(res, error('Header "Content-Disposition" must contain file name.'), 422);
+		}
+		if (!req.query.type) {
+			return api.fail(res, error('Query parameter "type" must be provided.'), 422);
+		}
+
+		var fileData = {
+			name: req.headers['content-disposition'].match(/filename=([^;]+)/i)[1].replace(/(^"|^'|"$|'$)/g, ''),
+			bytes: req.headers['content-length'],
+			variations: {},
+			created_at: new Date(),
+			mime_type: req.headers['content-type'],
+			file_type: req.query.type,
+			_created_by: req.user._id
+		};
+
+		fileModule.create(fileData, req, error, function(err, f) {
+			if (err) {
+				return api.fail(res, err, err.code);
+			}
+			api.success(res, f.toDetailed(), 201);
+		});
+	}
 };
 
 

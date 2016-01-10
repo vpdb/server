@@ -27,7 +27,7 @@ var storage = require('./storage');
  * @param {object} fileData Model data
  * @param {stream} readStream Binary stream of file content
  * @param {function} error Error logger
- * @param {function} callback Callback, error object takes error and code.
+ * @param {function} callback Callback, executed with err and file.
  */
 exports.create = function(fileData, readStream, error, callback) {
 
@@ -35,13 +35,13 @@ exports.create = function(fileData, readStream, error, callback) {
 
 	file.validate(function(err) {
 		if (err) {
-			return callback({ error: error('Validations failed. See below for details.').errors(err.errors).warn('create'), code: 422 });
+			return callback(error('Validations failed. See below for details.').errors(err.errors).warn('create').status(422));
 		}
 
 		file.save(function(err, file) {
 			/* istanbul ignore if */
 			if (err) {
-				return callback({ error: error(err, 'Unable to save file'), code: 500 });
+				return callback(error(err, 'Unable to save file').code(500));
 			}
 
 			var writeStream = fs.createWriteStream(file.getPath());
@@ -59,12 +59,12 @@ exports.create = function(fileData, readStream, error, callback) {
 								if (err) {
 									logger.error('[api|file:save] Removing file due to erroneous metadata: %s', err, {});
 								}
-								return callback({ error: error('Metadata parsing for MIME type "%s" failed. Upload corrupted or weird format?', file.mime_type), code: 400 });
+								return callback(error('Metadata parsing for MIME type "%s" failed. Upload corrupted or weird format?', file.mime_type).status(400));
 							});
 						}
 						if (!metadata) {
 							// no need to re-save
-							return callback(null, file, 201);
+							return callback(null, file);
 						}
 
 						File.sanitizeObject(metadata);
@@ -77,7 +77,7 @@ exports.create = function(fileData, readStream, error, callback) {
 								logger.error('[api|file:save] Metadata: %s', require('util').inspect(metadata));
 							}
 							logger.info('[api|file:save] File upload of %s successfully completed.', file.toString());
-							callback(null, file, 201);
+							callback(null, file);
 
 							// do this in the background.
 							storage.postprocess(file);
@@ -87,7 +87,7 @@ exports.create = function(fileData, readStream, error, callback) {
 			});
 			/* istanbul ignore next */
 			writeStream.on('error', function(err) {
-				return callback({ error: error(err, 'Error saving data').log('save'), code: 500 });
+				return callback(error(err, 'Error saving data').log('save').status(500));
 			});
 
 			readStream.pipe(writeStream);

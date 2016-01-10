@@ -26,6 +26,7 @@
 		"body-parser": "1.14.2",
 		"buffer-indexof": "1.0.0",
 		"bull": "0.7.0",
+		"busboy": "0.2.12",
 		"colors": "1.1.2",
 		"compression": "1.6.0",
 		"connect-jade-static": "0.2.2",

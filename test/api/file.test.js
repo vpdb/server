@@ -11,6 +11,8 @@ var pleasejs = require('pleasejs');
 var superagentTest = require('../modules/superagent-test');
 var hlp = require('../modules/helper');
 
+var pngPath = path.resolve(__dirname, '../../data/test/files/backglass.png');
+
 superagentTest(request);
 
 describe('The VPDB `file` API', function() {
@@ -32,6 +34,7 @@ describe('The VPDB `file` API', function() {
 		it('should fail when no "Content-Disposition" header is provided', function(done) {
 			request
 				.post('/storage/v1/files')
+				.query({ type: 'backglass' })
 				.as('member')
 				.send('xxx')
 				.end(hlp.status(422, 'Content-Disposition', done));
@@ -40,6 +43,7 @@ describe('The VPDB `file` API', function() {
 		it('should fail when a bogus "Content-Disposition" header is provided', function(done) {
 			request
 				.post('/storage/v1/files')
+				.query({ type: 'backglass' })
 				.as('member')
 				.set('Content-Disposition', 'zurg!!')
 				.send('xxx')
@@ -73,6 +77,46 @@ describe('The VPDB `file` API', function() {
 					done();
 				});
 		});
+	});
+
+	describe('when uploading a file using a multipart request', function() {
+
+		it('should fail when no content type is provided in the query', function(done) {
+			request
+				.post('/storage/v1/files')
+				.query({ type: 'release' })
+				.as('member')
+				.attach('image', pngPath)
+				.end(hlp.status(422, 'mime type must be provided as query parameter', done));
+		});
+
+		it('should fail when posting more than one file', function(done) {
+			request
+				.post('/storage/v1/files')
+				.query({ type: 'backglass', content_type: 'image/png' })
+				.as('member')
+				.attach('image1', pngPath)
+				.attach('image2', pngPath)
+				.end(hlp.status(422, 'must only contain one file', done));
+		});
+
+		it('should succeed when uploading a backglass image', function(done) {
+			request
+				.post('/storage/v1/files')
+				.query({ type: 'backglass', content_type: 'image/png' })
+				.as('member')
+				.attach('image', pngPath)
+				.end(function(err, res) {
+					hlp.expectStatus(err, res, 201);
+					hlp.doomFile('member', res.body.id);
+					expect(res.body.id).to.be.ok();
+					expect(res.body.metadata).to.be.an('object');
+					expect(res.body.metadata.size).to.be.an('object');
+					expect(res.body.metadata.size.width).to.equal(1280);
+					done();
+				});
+		});
+
 	});
 
 	describe('when uploading a text file', function() {

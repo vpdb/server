@@ -11,6 +11,15 @@ post:
   description: |
     Upload a new file.
 
+    Data can be either sent as the entire body or as multipart request. In
+    either case, `Content-Type` must be set.
+
+    However, due to a `XMLHttpRequest` limitation, content types of individual
+    parts cannot be set through a browser, so when posting multipart data, the
+    content type must be provided through a `content_type` query parameter.
+
+    Only one file is allowed per multipart request. Fields are ignored.
+
 /{storage_id}:
   get:
     is: [ rateLimited ]

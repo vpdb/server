@@ -19,7 +19,6 @@
 
 "use strict";
 
-var _ = require('lodash');
 var logger = require('winston');
 var Busboy = require('busboy');
 var Bluebird = require('bluebird');
@@ -30,92 +29,44 @@ var File = require('mongoose').model('File');
 var fileModule = require('../../modules/file');
 var error = require('../../modules/error')('api', 'file');
 
+/**
+ * End-point for uploading files. Data can be sent either as entire body or
+ * as multipart, although only one file is allowed in a multipart body.
+ *
+ * @param {Request} req
+ * @param {Response} res
+ */
 exports.upload = function(req, res) {
 
-	if (!req.headers['content-type']) {
-		return api.fail(res, error('Header "Content-Type" must be provided.'), 422);
-	}
+	return Bluebird.resolve().then(function() {
 
-	if (/multipart\/form-data/i.test(req.headers['content-type'])) {
-
-		if (!req.query.content_type) {
-			return api.fail(res, error('Mime type must be provided as query parameter "content_type" when using multipart.'), 422);
+		// generic validations
+		if (!req.headers['content-type']) {
+			throw error('Header "Content-Type" must be provided.').status(422);
 		}
 
-		var busboy = new Busboy({ headers: req.headers });
-		var files = [];
-		var errors = [];
-		var result = Bluebird.resolve();
-
-		busboy.on('file', function(fieldname, file, filename) {
-
-			var fileData = {
-				name: filename,
-				bytes: 0,
-				variations: {},
-				created_at: new Date(),
-				mime_type: req.query.content_type,
-				file_type: req.query.type,
-				_created_by: req.user._id
-			};
-
-			result = result.then(fileModule.create(fileData, file, error, function(err, f) {
-				if (err) {
-					return errors.push(err);
-				}
-				files.push(f);
-			}));
-		});
-
-		busboy.on('field', function(fieldname, val) {
-			logger.info('[api|file:upload] Ignoring multiplart field %s: %j', fieldname, val);
-		});
-
-		busboy.on('finish', function() {
-			result.then(function() {
-				if (!_.isEmpty(errors)) {
-					// return only first error
-					return api.fail(res, errors[0], errors[0].code);
-				}
-				if (files.length > 1) {
-					api.success(res, { files: _.map(files, f => f.toDetailed()) }, 201);
-				} else {
-					api.success(res, files[0].toDetailed(), 201);
-				}
-			});
-		});
-		req.pipe(busboy);
-
-	} else {
-
-		if (!req.headers['content-disposition']) {
-			return api.fail(res, error('Header "Content-Disposition" must be provided.'), 422);
-		}
-		if (!/filename=([^;]+)/i.test(req.headers['content-disposition'])) {
-			return api.fail(res, error('Header "Content-Disposition" must contain file name.'), 422);
-		}
 		if (!req.query.type) {
-			return api.fail(res, error('Query parameter "type" must be provided.'), 422);
+			throw error('Query parameter "type" must be provided.').status(422);
 		}
 
-		var fileData = {
-			name: req.headers['content-disposition'].match(/filename=([^;]+)/i)[1].replace(/(^"|^'|"$|'$)/g, ''),
-			bytes: req.headers['content-length'],
-			variations: {},
-			created_at: new Date(),
-			mime_type: req.headers['content-type'],
-			file_type: req.query.type,
-			_created_by: req.user._id
-		};
+		if (/multipart\/form-data/i.test(req.headers['content-type'])) {
+			return handleMultipartUpload(req, error);
+		} else {
+			return handleUpload(req, error);
+		}
 
-		fileModule.create(fileData, req, error).then(f => {
-			api.success(res, f.toDetailed(), 201);
+	}).then(file => {
 
-		}).catch(api.handleError(res, error, 'Error uploading file'));
-	}
+		api.success(res, file.toDetailed(), 201);
+
+	}).catch(api.handleError(res, error, 'Error uploading file'));
 };
 
-
+/**
+ * Deletes a file.
+ * @param {Request} req
+ * @param {Response} res
+ */
 exports.del = function(req, res) {
 
 	File.findOne({ id: req.params.id }, function(err, file) {
@@ -149,6 +100,11 @@ exports.del = function(req, res) {
 	});
 };
 
+/**
+ * Returns details of a given file.
+ * @param {Request} req
+ * @param {Response} res
+ */
 exports.view = function(req, res) {
 
 	File.findOne({ id: req.params.id }, function(err, file) {
@@ -174,3 +130,79 @@ exports.view = function(req, res) {
 		return api.success(res, file.toDetailed());
 	});
 };
+
+/**
+ * Handles uploaded data posted as-is with a content type
+ * @param {Request} req
+ * @param {function} error Current error function
+ * @returns {Promise.<FileSchema>}
+ */
+function handleUpload(req, error) {
+
+	return Bluebird.resolve().then(function() {
+
+		if (!req.headers['content-disposition']) {
+			throw error('Header "Content-Disposition" must be provided.').status(422);
+		}
+		if (!/filename=([^;]+)/i.test(req.headers['content-disposition'])) {
+			throw error('Header "Content-Disposition" must contain file name.').status(422);
+		}
+		var fileData = {
+			name: req.headers['content-disposition'].match(/filename=([^;]+)/i)[1].replace(/(^"|^'|"$|'$)/g, ''),
+			bytes: req.headers['content-length'],
+			variations: {},
+			created_at: new Date(),
+			mime_type: req.headers['content-type'],
+			file_type: req.query.type,
+			_created_by: req.user._id
+		};
+
+		return fileModule.create(fileData, req, error);
+	});
+}
+
+/**
+ * Handles uploaded data posted as multipart.
+ * @param {Request} req
+ * @param {function} error Current error function
+ * @returns {Promise.<FileSchema>}
+ */
+function handleMultipartUpload(req, error) {
+
+	return Bluebird.resolve().then(function() {
+
+		if (!req.query.content_type) {
+			throw error('Mime type must be provided as query parameter "content_type" when using multipart.').status(422);
+		}
+
+		var busboy = new Busboy({ headers: req.headers });
+		var parseResult = new Bluebird(function(resolve, reject) {
+
+			var numFiles = 0;
+			busboy.on('file', function(fieldname, stream, filename) {
+				numFiles++;
+				if (numFiles > 1) {
+					return reject(error('Multipart requests must only contain one file.').status(422));
+				}
+				var fileData = {
+					name: filename,
+					bytes: 0,
+					variations: {},
+					created_at: new Date(),
+					mime_type: req.query.content_type,
+					file_type: req.query.type,
+					_created_by: req.user._id
+				};
+				fileModule.create(fileData, stream, error).then(file => resolve(file));
+			});
+		});
+
+		var parseMultipart = new Bluebird(function(resolve, reject) {
+			busboy.on("finish", resolve);
+			busboy.on("error", reject);
+			req.pipe(busboy);
+		});
+
+		return Bluebird.all([parseResult, parseMultipart]).then(results => results[0]);
+	});
+}

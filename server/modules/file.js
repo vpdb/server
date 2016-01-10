@@ -31,7 +31,7 @@ var storage = require('./storage');
  * @param {stream} readStream Binary stream of file content
  * @param {function} error Error logger
  * @param {function} [callback] Callback, executed with err and file.
- * @return {Promise}
+ * @return {Promise.<FileSchema>}
  */
 exports.create = function(fileData, readStream, error, callback) {
 

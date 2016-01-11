@@ -17,9 +17,12 @@ var logger = require('winston');
 var domain = require('domain');
 var express = require('express');
 var mongoose = require('mongoose');
-mongoose.Promise = require('bluebird');
 
 require('shortid32').characters('123456789abcdefghkmnopqrstuvwxyz');
+
+// override standard promises
+Promise = require('bluebird');
+mongoose.Promise = Promise;
 
 if (process.env.COVERAGE_ENABLED) {
 	console.log('[app] Hook loader for coverage enabled.');
@@ -128,10 +131,4 @@ serverDomain.run(function() {
 			});
 		});
 	});
-});
-
-process.on('message', function(message) {
-	if (message === 'shutdown') {
-		process.exit(0);
-	}
 });

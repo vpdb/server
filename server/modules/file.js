@@ -17,18 +17,18 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-'use strict';
+"use strict";
 
 var fs = require('fs');
 var logger = require('winston');
-var Bluebird = require('bluebird');
 var File = require('mongoose').model('File');
 var storage = require('./storage');
 
 /**
- * Creates a new file
+ * Creates a new file from a HTTP request stream.
+ *
  * @param {object} fileData Model data
- * @param {stream} readStream Binary stream of file content
+ * @param {Stream} readStream Binary stream of file content
  * @param {function} error Error logger
  * @param {function} [callback] Callback, executed with err and file.
  * @return {Promise.<FileSchema>}
@@ -36,21 +36,29 @@ var storage = require('./storage');
 exports.create = function(fileData, readStream, error, callback) {
 
 	var file;
-	return Bluebird.resolve().then(function() {
+	return Promise.resolve().then(function() {
 		file = new File(fileData);
 		return file.validate();
 
 	}).then(function() {
 		return file.save();
 
-	}).then(function(f) {
+	}).then(f => {
 		file = f;
-		return new Bluebird(function(resolve, reject) {
+		return new Promise(function(resolve, reject) {
 			var writeStream = fs.createWriteStream(file.getPath());
 			writeStream.on("finish", resolve);
 			writeStream.on("error", reject);
 			readStream.pipe(writeStream);
 		});
+
+	}).then(function() {
+		// we don't have the file size for multipart uploads before-hand, so get it now
+		if (!file.bytes) {
+			var stats = fs.statSync(file.getPath());
+			file.bytes = stats.size;
+			return file.save();
+		}
 
 	}).then(function() {
 		return storage.preprocess(file);
@@ -67,13 +75,13 @@ exports.create = function(fileData, readStream, error, callback) {
 			});
 		});
 
-	}).then(function(metadata) {
+	}).then(metadata => {
 
 		File.sanitizeObject(metadata);
 		file.metadata = metadata;
 		return file.save();
 
-	}).then(function(file) {
+	}).then(file => {
 
 		logger.info('[api|file:save] File upload of %s successfully completed.', file.toString());
 

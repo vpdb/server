@@ -122,7 +122,7 @@ Err.prototype.display = function() {
  * @returns {Err}
  */
 Err.prototype.short = function() {
-	this.message = this.jse_shortmsg;
+	this.message = this.jse_shortmsg + '.';
 	return this;
 };
 

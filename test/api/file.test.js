@@ -100,7 +100,17 @@ describe('The VPDB `file` API', function() {
 				.end(hlp.status(422, 'must only contain one file', done));
 		});
 
+		it('should fail when posting a corrupted file', function(done) {
+			request
+				.post('/storage/v1/files')
+				.query({ type: 'rom', content_type: 'application/zip' })
+				.as('member')
+				.attach('zip', pngPath)
+				.end(hlp.status(400, 'metadata parsing failed', done));
+		});
+
 		it('should succeed when uploading a backglass image', function(done) {
+			var stats = fs.statSync(pngPath);
 			request
 				.post('/storage/v1/files')
 				.query({ type: 'backglass', content_type: 'image/png' })
@@ -110,6 +120,7 @@ describe('The VPDB `file` API', function() {
 					hlp.expectStatus(err, res, 201);
 					hlp.doomFile('member', res.body.id);
 					expect(res.body.id).to.be.ok();
+					expect(res.body.bytes).to.equal(stats.size);
 					expect(res.body.metadata).to.be.an('object');
 					expect(res.body.metadata.size).to.be.an('object');
 					expect(res.body.metadata.size.width).to.equal(1280);

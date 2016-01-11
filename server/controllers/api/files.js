@@ -21,7 +21,6 @@
 
 var logger = require('winston');
 var Busboy = require('busboy');
-var Bluebird = require('bluebird');
 
 var api = require('./api');
 var File = require('mongoose').model('File');
@@ -38,17 +37,19 @@ var error = require('../../modules/error')('api', 'file');
  */
 exports.upload = function(req, res) {
 
-	return Bluebird.resolve().then(function() {
+	return Promise.resolve().then(function() {
 
-		// generic validations
+		// fail if no content type
 		if (!req.headers['content-type']) {
 			throw error('Header "Content-Type" must be provided.').status(422);
 		}
 
+		// fail if no file type
 		if (!req.query.type) {
 			throw error('Query parameter "type" must be provided.').status(422);
 		}
 
+		// stream either directly from req or user a multipart parser
 		if (/multipart\/form-data/i.test(req.headers['content-type'])) {
 			return handleMultipartUpload(req, error);
 		} else {
@@ -69,35 +70,37 @@ exports.upload = function(req, res) {
  */
 exports.del = function(req, res) {
 
-	File.findOne({ id: req.params.id }, function(err, file) {
-		/* istanbul ignore if */
-		if (err) {
-			return api.fail(res, error(err, 'Error getting file "%s"', req.params.id).log(), 500);
-		}
+	var file;
+	return Promise.resolve().then(function() {
+		return File.findOne({ id: req.params.id });
+
+	}).then(f => {
+		file = f;
+
+		// fail if not found
 		if (!file) {
-			return api.fail(res, error('No such file.'), 404);
+			throw error('No such file with ID "%s".', req.params.id).status(404);
 		}
 
-		// only allow deleting own files (for now)
+		// fail if not owner
 		if (!file._created_by.equals(req.user._id)) {
-			return api.fail(res, error('Permission denied, must be owner.'), 403);
+			throw error('Permission denied, must be owner.').status(403);
 		}
 
 		// only allow inactive files (for now)
 		if (file.is_active !== false) {
-			return api.fail(res, error('Cannot remove active file.'), 400);
+			throw error('Cannot remove active file.').status(400);
 		}
 
-		// note: physical rm on disk is triggered by mongoose.
-		file.remove(function(err) {
-			/* istanbul ignore if */
-			if (err) {
-				return api.fail(res, error(err, 'Error deleting file "%s" at `%s`)', file.name, file.id).log('delete'), 500);
-			}
-			logger.info('[api|file:delete] File "%s" (%s) successfully removed.', file.name, file.id);
-			api.success(res, null, 204);
-		});
-	});
+		return file.remove();
+
+	}).then(function() {
+
+		logger.info('[api|file:delete] File "%s" (%s) successfully removed.', file.name, file.id);
+		api.success(res, null, 204);
+
+	}).catch(api.handleError(res, error, 'Error deleting file'));
+
 };
 
 /**
@@ -107,28 +110,30 @@ exports.del = function(req, res) {
  */
 exports.view = function(req, res) {
 
-	File.findOne({ id: req.params.id }, function(err, file) {
-		/* istanbul ignore if */
-		if (err) {
-			return api.fail(res, error(err, 'Error finding file "%s"', req.params.id).log('view'), 500);
-		}
+	return Promise.resolve().then(function() {
+		return File.findOne({ id: req.params.id });
+
+	}).then(file => {
+
+		// fail if not found
 		if (!file) {
-			return api.fail(res, error('No such file with ID "%s".', req.params.id), 404);
+			throw error('No such file with ID "%s".', req.params.id).status(404);
 		}
 
+		// fail if not found
+		if (!file) {
+			throw error('No such file.').status(404);
+		}
+
+		// fail if inactive and not owner
 		var isOwner = req.user && file._created_by.equals(req.user._id);
-
 		if (!file.is_active && (!req.user || !isOwner)) {
-			return api.fail(res, error('File "%s" is inactive.', req.params.id), req.user ? 403 : 401);
+			throw error('File "%s" is inactive.', req.params.id).status(req.user ? 403 : 401);
 		}
 
-		// TODO check why this check is done. we're still at api level (not storage), so we should be able to query meta data of any file.
-		//if (!file.is_public && (!req.user || !isOwner)) {
-		//	return api.fail(res, error('File "%s" is not public.', req.params.id), req.user ? 403 : 401);
-		//}
+		api.success(res, file.toDetailed());
 
-		return api.success(res, file.toDetailed());
-	});
+	}).catch(api.handleError(res, error, 'Error viewing file'));
 };
 
 /**
@@ -139,7 +144,7 @@ exports.view = function(req, res) {
  */
 function handleUpload(req, error) {
 
-	return Bluebird.resolve().then(function() {
+	return Promise.resolve().then(function() {
 
 		if (!req.headers['content-disposition']) {
 			throw error('Header "Content-Disposition" must be provided.').status(422);
@@ -169,14 +174,14 @@ function handleUpload(req, error) {
  */
 function handleMultipartUpload(req, error) {
 
-	return Bluebird.resolve().then(function() {
+	return Promise.resolve().then(function() {
 
 		if (!req.query.content_type) {
 			throw error('Mime type must be provided as query parameter "content_type" when using multipart.').status(422);
 		}
 
 		var busboy = new Busboy({ headers: req.headers });
-		var parseResult = new Bluebird(function(resolve, reject) {
+		var parseResult = new Promise(function(resolve, reject) {
 
 			var numFiles = 0;
 			busboy.on('file', function(fieldname, stream, filename) {
@@ -193,16 +198,16 @@ function handleMultipartUpload(req, error) {
 					file_type: req.query.type,
 					_created_by: req.user._id
 				};
-				fileModule.create(fileData, stream, error).then(file => resolve(file));
+				fileModule.create(fileData, stream, error).then(file => resolve(file)).catch(reject);
 			});
 		});
 
-		var parseMultipart = new Bluebird(function(resolve, reject) {
+		var parseMultipart = new Promise(function(resolve, reject) {
 			busboy.on("finish", resolve);
 			busboy.on("error", reject);
 			req.pipe(busboy);
 		});
 
-		return Bluebird.all([parseResult, parseMultipart]).then(results => results[0]);
+		return Promise.all([parseResult, parseMultipart]).then(results => results[0]);
 	});
 }

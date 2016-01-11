@@ -10,7 +10,7 @@ h1 ROMs
 	//- upload drop panel
 	div(uib-collapse="romUploadCollapsed")
 		.well.well--full-width.well--dropzone(
-			file-upload="{ type: 'rom', status: meta.romFiles, onSuccess: onRomUpload, allowedExtensions: ['zip'], allowMultipleFiles: true }"
+			file-upload="{ type: 'rom', status: meta.romFiles, onSuccess: onRomUpload, allowedExtensions: ['zip'], allowMultipleFiles: true, disableSelect: true }"
 			ngf-drag-over-class="'well--dragging'"
 		)
 			ul.list--files
@@ -31,11 +31,11 @@ h1 ROMs
 									label.control-label.small Notes
 							.row
 								.col-xs-2
-									input.form-control(type="text", ng-model="newRoms[file.id].version")
+									input.form-control(type="text", ng-model="newRoms[file.storage.id].version")
 								.col-xs-3
-									select.form-control.form-control--solid(ng-model="newRoms[file.id].language", ng-options="opt as opt.label for opt in romLanguages")
+									select.form-control.form-control--solid(ng-model="newRoms[file.storage.id].language", ng-options="opt as opt.label for opt in romLanguages")
 								.col-xs-6
-									input.form-control(type="text", ng-model="newRoms[file.id].notes", placeholder="Home Version? Profanity?")
+									input.form-control(type="text", ng-model="newRoms[file.storage.id].notes", placeholder="Home Version? Profanity?")
 
 						.col-md-12(ng-show="file.uploading")
 							.block.text--large: strong {{ file.name }}

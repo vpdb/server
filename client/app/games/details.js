@@ -4,8 +4,7 @@ angular.module('vpdb.games.details', [])
 
 	.controller('GameController', function($scope, $rootScope, $stateParams, $uibModal, $log, $localStorage,
 					ApiHelper, Flavors, ModalService, DisplayService, ConfigService, DownloadService, AuthService,
-					GameResource, ReleaseCommentResource, FileResource, RomResource, GameRatingResource, GameStarResource,
-										   UserResource) {
+					GameResource, ReleaseCommentResource, FileResource, RomResource, GameRatingResource, GameStarResource) {
 
 		$scope.theme('dark');
 		$scope.setMenu('games');

@@ -111,7 +111,7 @@
 		"grunt-wait-server": "0.1.2",
 		"highlight.js": "8.6.0",
 		"html2jade": "0.8.4",
-		"istanbul-middleware": "0.2.0",
+		"istanbul-middleware": "0.2.2",
 		"kss": "2.1.0",
 		"load-grunt-tasks": "3.2.0",
 		"markdown-it": "4.2.2",

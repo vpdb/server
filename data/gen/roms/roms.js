@@ -436,6 +436,13 @@ exports.data = {
 		ss_01b: {version: 'D.01R', notes: 'Sound Revision 0.25, Coin Play'},
 		ss_01: {version: 'D.01R', notes: 'Sound Revision 0.25'}
 	},
+	sopranos: {
+		sopranof: {version: '5.00', language: 'fr'},
+		sopranog: {version: '5.00', language: 'de'},
+		sopranoi: {version: '5.00', language: 'it'},
+		sopranol: {version: '5.00', language: 'es'},
+		sopranos: {version: '5.00'}
+	},
 	sp: {
 		sprk_090: {version: '0.90'},
 		sprk_096: {version: '0.96'},

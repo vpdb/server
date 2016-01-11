@@ -265,6 +265,7 @@ exports.data = [
 	{ bg: 'The Incredible Hulk (Gottlieb 1979).png', logo: 'The Incredible Hulk (Gottlieb 1979).png', ipdb: 1266 },
 	{ bg: 'The Shadow (Bally 1994).png', logo: 'The Shadow (Bally 1994).png', ipdb: 2528 },
 	{ bg: 'The Simpsons Pinball Party (Stern 2003).png', logo: 'The Simpsons Pinball Party (Stern 2003).png', ipdb: 4674 },
+	{ bg: 'The Sopranos (Stern 2005).png', logo: 'The Sopranos(Stern 2005).png', ipdb: 5053, id: 'sopranos' },
 	{ bg: 'Theatre of Magic (Midway 1995).png', logo: 'Theatre of Magic (Midway 1995).png', ipdb: 2845 },
 	{ bg: 'Tommy The Pinball Wizard (Data East 1994).png', logo: 'Tommy The Pinball Wizard (Data East 1994).png', ipdb: 2579 },
 	{ bg: 'Torpedo Alley (Data East 1988).png', logo: 'Torpedo Alley (Data East 1988).png', ipdb: 2603 },

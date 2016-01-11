@@ -71,7 +71,7 @@ VideoProcessor.prototype.metadata = function(file, variation, done) {
 
 	}).catch(err => {
 		// log this
-		throw error(err, 'Error reading metadata from video `%s`', file.getPath(variation)).warn()
+		throw error(err, 'Error reading metadata from video `%s`', file.getPath(variation)).warn();
 
 	}).nodeify(done);
 };

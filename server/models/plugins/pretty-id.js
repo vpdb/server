@@ -23,7 +23,6 @@ var _ = require('lodash');
 var async = require('async');
 var logger = require('winston');
 var mongoose = require('mongoose');
-var Bluebird = require('bluebird');
 
 var common = require('./common');
 var error = require('../../modules/error')('model', 'pretty-id');
@@ -105,13 +104,13 @@ module.exports = function(schema, options) {
 function replaceIds(obj, paths, options) {
 
 	var Model = mongoose.model(options.model);
-	return Bluebird.resolve().then(function() {
+	return Promise.resolve().then(function() {
 		var invalidations = [];
 		var models = {};
 		models[options.model] = Model;
 		var refPaths = getRefPaths(obj, paths);
 
-		return Bluebird.each(_.keys(refPaths), objPath => {
+		return Promise.each(_.keys(refPaths), objPath => {
 
 			var refModelName = refPaths[objPath];
 			var RefModel = models[refModelName] || mongoose.model(refModelName);
@@ -120,7 +119,7 @@ function replaceIds(obj, paths, options) {
 			var prettyId = _.get(obj, objPath);
 
 			if (!prettyId) {
-				return Bluebird.resolve();
+				return Promise.resolve();
 			}
 			return RefModel.findOne({ id: prettyId }).then(refObj => {
 
@@ -146,7 +145,7 @@ function replaceIds(obj, paths, options) {
 //					console.log('--- Overwriting pretty ID "%s" at %s with %s.', prettyId, objPath, refObj._id);
 					_.set(obj, objPath, refObj._id);
 				}
-				return Bluebird.resolve();
+				return Promise.resolve();
 			});
 		}).then(function() {
 			return invalidations;

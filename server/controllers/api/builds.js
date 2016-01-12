@@ -28,6 +28,12 @@ var Build = require('mongoose').model('Build');
 
 var error = require('../../modules/error')('api', 'tag');
 
+/**
+ * Lists all current builds.
+ *
+ * @param {Request} req
+ * @param {Response} res
+ */
 exports.list = function(req, res) {
 
 	var q;
@@ -37,43 +43,46 @@ exports.list = function(req, res) {
 	} else {
 		q = { is_active: true };
 	}
-	Build.find(q, function(err, builds) {
-		/* istanbul ignore if  */
-		if (err) {
-			return api.fail(res, error(err, 'Error finding builds').log('list'), 500);
-		}
+
+	Promise.resolve().then(function() {
+		return Build.find(q).exec();
+
+	}).then(builds => {
 
 		// reduce
-		builds = _.map(builds, function(build) {
-			return build.toSimple();
-		});
+		builds = _.map(builds, build => build.toSimple());
 		api.success(res, builds);
-	});
+
+	}).catch(api.handleError(res, error, 'Error listing builds'));
 };
 
-
+/**
+ * Creates a new build.
+ *
+ * @param {Request} req
+ * @param {Response} res
+ */
 exports.create = function(req, res) {
 
-	var newBuild = new Build(req.body);
+	var newBuild;
+	Promise.resolve().then(function() {
+		newBuild = new Build(req.body);
 
-	newBuild.id = newBuild.label ? newBuild.label.replace(/(^[^a-z0-9\._-]+)|([^a-z0-9\._-]+$)/gi, '').replace(/[^a-z0-9\._-]+/gi, '-').toLowerCase() : '-';
-	newBuild.is_active = false;
-	newBuild.created_at = new Date();
-	newBuild._created_by = req.user._id;
+		newBuild.id = newBuild.label ? newBuild.label.replace(/(^[^a-z0-9\._-]+)|([^a-z0-9\._-]+$)/gi, '').replace(/[^a-z0-9\._-]+/gi, '-').toLowerCase() : '-';
+		newBuild.is_active = false;
+		newBuild.created_at = new Date();
+		newBuild._created_by = req.user._id;
 
-	newBuild.validate(function(err) {
-		if (err) {
-			return api.fail(res, error('Validations failed. See below for details.').errors(err.errors).warn('create'), 422);
-		}
-		newBuild.save(function(err) {
-			/* istanbul ignore if  */
-			if (err) {
-				return api.fail(res, error(err, 'Error saving build "%s"', newBuild.label).log('create'), 500);
-			}
-			logger.info('[api|build:create] Build "%s" successfully created.', newBuild.label);
-			return api.success(res, newBuild.toSimple(), 201);
-		});
-	});
+		return newBuild.validate();
+
+	}).then(function() {
+		return newBuild.save();
+
+	}).then(function() {
+		logger.info('[api|build:create] Build "%s" successfully created.', newBuild.label);
+		api.success(res, newBuild.toSimple(), 201);
+
+	}).catch(api.handleError(res, error, 'Error creating build'));
 };
 
 
@@ -85,30 +94,33 @@ exports.create = function(req, res) {
  */
 exports.del = function(req, res) {
 
-	var assert = api.assert(error, 'delete', req.params.id, res);
-	acl.isAllowed(req.user.id, 'builds', 'delete', assert(function(canDelete) {
-		Build.findOne({ id: req.params.id }, assert(function(build) {
+	var canDelete, build;
+	Promise.resolve().then(function() {
+		return acl.isAllowed(req.user.id, 'builds', 'delete');
 
-			if (!build) {
-				return api.fail(res, error('No such builds with ID "%s".', req.params.id), 404);
-			}
+	}).then(isAllowed => {
+		canDelete = isAllowed;
+		return Build.findOne({ id: req.params.id });
 
-			// only allow deleting own builds
-			if (!canDelete && !build._created_by.equals(req.user._id)) {
-				return api.fail(res, error('Permission denied, must be owner.'), 403);
-			}
+	}).then(b => {
+		build = b;
 
-			// todo check if there are references
+		// fail on 404
+		if (!build) {
+			throw error('No such builds with ID "%s".', req.params.id).status(404);
+		}
 
-			// remove from db
-			build.remove(function(err) {
-				/* istanbul ignore if  */
-				if (err) {
-					return api.fail(res, error(err, 'Error deleting build "%s" (%s)', build.id, build.label).log('delete'), 500);
-				}
-				logger.info('[api|build:delete] Build "%s" (%s) successfully deleted.', build.label, build.id);
-				api.success(res, null, 204);
-			});
-		}), 'Error getting Build "%s"');
-	}, 'Error checking for ACL "builds/delete".'));
+		// fail when not owner
+		if (!canDelete && !build._created_by.equals(req.user._id)) {
+			throw error('Permission denied, must be owner.').status(403);
+		}
+
+		// all ok, delete
+		return build.remove();
+
+	}).then(function() {
+		logger.info('[api|build:delete] Build "%s" (%s) successfully deleted.', build.label, build.id);
+		api.success(res, null, 204);
+
+	}).catch(api.handleError(res, error, 'Error deleting build'));
 };

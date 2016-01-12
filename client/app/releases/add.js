@@ -76,6 +76,7 @@ angular.module('vpdb.releases.add', []).controller('ReleaseAddCtrl', function(
 		 */
 		$scope.meta = $localStorage.release_meta = _.cloneDeep(ReleaseMeta);
 		$scope.meta.users[currentUser.id] = currentUser;
+		$scope.meta.releaseDate = new Date();
 		$scope.newLink = {};
 
 		// TODO remove files via API

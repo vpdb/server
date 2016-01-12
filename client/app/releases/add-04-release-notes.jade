@@ -14,6 +14,7 @@
 		.col-sm-3: .input-group
 			input.form-control.datepicker(type='text', ng-model='meta.releaseDate', ng-required='true',
 				uib-datepicker-popup="yyyy-MM-dd",
+				format-day-header="EE"
 				is-open="calendarOpened",
 				close-text="Close",
 				show-weeks="false",

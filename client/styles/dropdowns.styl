@@ -99,14 +99,20 @@
 
 
 
-.datepicker + .uib-dropdown-menu
+.datepicker + .dropdown-menu
 
-	padding-top 0
+	padding 10px
 	margin-top 0
 	width inherit
 	min-width -moz-max-content // ff hack
+	table
+		outline none
+
+	.btn.btn-default .svg-icon
+		fill $color-lightish-inv
 
 	[datepicker]
+
 
 		button.btn.btn-default
 			.text-info
@@ -132,11 +138,26 @@
 
 	table tr
 		button.btn.btn-default
+			color $color-lightest-inv
 			font-family $font-content
 			font-size $font-size-small
-			background-color $color-darkest-inv
+			background-color transparent
 			border-radius 0
 			padding 3px 10px
+			&:active
+				box-shadow none
+				background-color $color-darkest-inv
+			&.active
+				color $color-lightest
+				background-color $color-primary-black
+				font-weight $font-weight-bold
+				box-shadow none
+				.text-info
+					color $color-lightest
+			.text-info
+				font-weight $font-weight-bold
+			.text-muted
+				color $color-light-inv
 		th > small
 			text-transform uppercase
 			font-size $font-size-smaller
@@ -147,3 +168,13 @@
 				font-size $font-size-small
 				font-weight $font-weight-normal
 				color $color-dark-inv
+
+	button.btn
+		&.btn-info, &.btn-danger, &.btn-success
+			color $color-lighter-inv
+			background transparent
+
+			&:active
+				color $color-lightest-inv
+				box-shadow none
+

@@ -13,6 +13,8 @@ span(ng-repeat="file in meta.files | fileext:['vpt','vpx']")
 		.col-sm-6.playfield--rotate-on-upload(make-loaded="{ loaded: getReleaseFile(file).flavor.orientation !== 'ws' }")
 			span.pre-h4 Playfield
 			h4.h--large Screenshot
+
+			//- drop zone
 			.panel.panel--blank.playfield--image(
 				file-upload="{ type: getPlayfieldType(file), key: getMediaKey(file, 'playfield_image'), status: meta.mediaFiles, onSuccess: onMediaUpload, onClear: onMediaClear, allowedExtensions: ['jpg', 'png'], allowMultipleFiles: false }",
 				ngf-drag-over-class="'panel--dragging'",
@@ -20,15 +22,21 @@ span(ng-repeat="file in meta.files | fileext:['vpt','vpx']")
 			)
 				.panel-body.a.a--darker
 					.img.img--ar-ws.loaded(
-						img-bg="meta.mediaLinks[getMediaKey(file, 'playfield_image')] || meta.mediaLinks[getMediaKey(file, 'screenshot')]",
+						img-bg="meta.mediaLinks[getMediaKey(file, 'playfield_image')]",
 						error="onBackglassImageError(file, meta.mediaLinks[getMediaKey(file, 'playfield_image')] ? 'playfield_image' : 'screenshot')"
 					)
+						//- content panel
 						.text-center.vertical-center--100
-							uib-progressbar.progress--fixed-absolute.progress-striped.active(value="mediaFiles[getMediaKey(file, 'playfield_image')].progress", ng-show="mediaFiles[getMediaKey(file, 'playfield_image')].uploading")
+							//- progress bar
+							uib-progressbar.progress--fixed-absolute.progress-striped.active(
+								value="meta.mediaFiles[getMediaKey(file, 'playfield_image')].progress",
+								ng-show="meta.mediaFiles[getMediaKey(file, 'playfield_image')].uploading"
+							)
+							//- thumb
 							.span(ng-show="!img.url")
-								+icon('photo').svg-4x(ng-class="{ transparent: mediaFiles[getMediaKey(file, 'playfield_image')].uploading }")
-								p {{ mediaFiles[getMediaKey(file, 'playfield_image')].status || 'Click or drag and drop here' }}
-							.span(ng-show="img.loading")
+								+icon('photo').svg-4x(ng-class="{ transparent: meta.mediaFiles[getMediaKey(file, 'playfield_image')].uploading }")
+								p {{ meta.mediaFiles[getMediaKey(file, 'playfield_image')].status || 'Click or drag and drop here' }}
+							.span(ng-show="img.loading && !meta.mediaFiles[getMediaKey(file, 'playfield_image')].uploading")
 								+icon('gear').svg-3x.svg-spin--slow
 								p Generating {{ meta.mediaLinks[getMediaKey(file, 'screenshot')] ? 'screenshot' : 'thumbnails' }}...
 
@@ -48,6 +56,7 @@ span(ng-repeat="file in meta.files | fileext:['vpt','vpx']")
 						.video-wrapper
 							video.video-js.vjs-sublime-skin(videojs, width="100%", height="100%", video-src="{{ meta.mediaFiles[getMediaKey(file, 'playfield_video')].storage.variations['small-rotated'] }}")
 
+			//- drop zone
 			.panel.panel--blank.playfield--image(
 				file-upload="{ type: getPlayfieldType(file), key: getMediaKey(file, 'playfield_video'), status: meta.mediaFiles, onSuccess: onMediaUpload, onClear: onMediaClear, allowedExtensions: ['flv', 'f4v', 'mp4', 'avi'], allowMultipleFiles: false }",
 				ngf-drag-over-class="'panel--dragging'",
@@ -59,11 +68,17 @@ span(ng-repeat="file in meta.files | fileext:['vpt','vpx']")
 						img-bg="meta.mediaLinks[getMediaKey(file, 'playfield_video')]",
 						error="onBackglassImageError(file, 'playfield_video')"
 					)
+						//- content panel
 						.text-center.vertical-center--100
-							uib-progressbar.progress--fixed-absolute.progress-striped.active(value="mediaFiles[getMediaKey(file, 'playfield_video')].progress", ng-show="mediaFiles[getMediaKey(file, 'playfield_video')].uploading")
+							//- progress bar
+							uib-progressbar.progress--fixed-absolute.progress-striped.active(
+								value="meta.mediaFiles[getMediaKey(file, 'playfield_video')].progress",
+								ng-show="meta.mediaFiles[getMediaKey(file, 'playfield_video')].uploading"
+							)
+							//-
 							span(ng-show="!img.url")
-								+icon('video-camera').svg-4x(ng-class="{ transparent: mediaFiles[getMediaKey(file, 'playfield_video')].uploading }")
-								p {{ mediaFiles[getMediaKey(file, 'playfield_video')].status || 'Click or drag and drop here' }}
+								+icon('video-camera').svg-4x(ng-class="{ transparent: meta.mediaFiles[getMediaKey(file, 'playfield_video')].uploading }")
+								p {{ meta.mediaFiles[getMediaKey(file, 'playfield_video')].status || 'Click or drag and drop here' }}
 							span(ng-show="img.loading")
 								+icon('gear').svg-3x.svg-spin--slow
 								p Creating video screenshot...

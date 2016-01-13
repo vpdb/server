@@ -1,4 +1,5 @@
-"use strict"; /* global angular, _ */
+"use strict";
+/* global angular _ */
 
 /**
  * Updates scope on child events.
@@ -6,9 +7,9 @@
  * The goal of this directive is to add/remove a class and set/unset a scope
  * variable depending on a child's emitted events. Concretely, we have:
  *
- * 	- `make-loaded`: The class that is added removed to the DOM
- * 	- `make-loaded-post`: The scope variable that is set to true or false
- * 	- `make-loaded-event`: The event prefix that enables/disables the class and variable.
+ *    - `make-loaded`: The class that is added removed to the DOM
+ *    - `make-loaded-post`: The scope variable that is set to true or false
+ *    - `make-loaded-event`: The event prefix that enables/disables the class and variable.
  *
  * For example, if we have `<div make-loaded="loaded" make-loaded-event="image" make-loaded-post="loadingFinished"/>`,
  * that means if a `imageLoaded` event is received, the `<div>` gets the
@@ -22,7 +23,7 @@ angular.module('vpdb.common', [])
 		return {
 			scope: true,
 			restrict: 'A',
-			link: function (scope, element, attrs) {
+			link: function(scope, element, attrs) {
 				var postVar;
 				var filter = {};
 				scope.$watch(attrs.makeLoaded, function() {
@@ -118,7 +119,7 @@ angular.module('vpdb.common', [])
 				if (attrs.imgBg[0] === '/') {
 					setImg(attrs.imgBg);
 
-				// otherwise, watch scope for expression.
+					// otherwise, watch scope for expression.
 				} else {
 					var value = $parse(attrs.imgBg);
 					scope.$watch(value, function() {

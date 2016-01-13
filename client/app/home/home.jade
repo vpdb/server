@@ -95,8 +95,8 @@ include ../template/_mixins
 							+icon('star')(ng-click="toggleReleaseStar(release, $event)").shift-up-2x
 						h1.h--small.h--no-margin {{ release.game.title }}
 						label.label--block  {{ release.name }}
-						span.small.pull-left by {{ release.authors[0].user.name }}
 						span.small.pull-right.space-right(am-time-ago="release.created_at")
+						div.small.oneliner by {{ release.authors[0].user.name }}
 					.clearfix
 		.clearfix
 		p(ng-show="releases.length === 0") No releases in database yet.

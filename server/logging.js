@@ -82,7 +82,7 @@ exports.expressConfig = function(app) {
 
 	// console
 	if (config.vpdb.logging.console.access) {
-		expressMorgan.token('colorReq', function(req) {
+		expressMorgan.token('color-req', req => {
 			var str = req.method + ' ' + (req.originalUrl || req.url);
 			switch (req.method) {
 				case 'GET':    return str.white.blueBG;
@@ -92,7 +92,12 @@ exports.expressConfig = function(app) {
 				default:       return str.white.greyBG;
 			}
 		});
-		app.use(expressMorgan(':date[iso] :colorReq :status :response-time ms - :res[content-length]'));
+		expressMorgan.token('user', req => {
+			var ip = req.ip || req.headers['x-forwarded-for'] || req.connection.remoteAddress || '0.0.0.0';
+			return req.user ? req.user.name + ':' + ip : ip;
+		});
+		
+		app.use(expressMorgan(':date[iso] |:user| :color-req :status :response-time ms - :res[content-length]'));
 	}
 
 	// file

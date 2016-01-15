@@ -71,9 +71,6 @@ exports.configure = function(app, raygunClient) {
 		gracefulExit.gracefulExitHandler(app);
 	}));*/
 
-	// setup logging
-	logging.expressConfig(app);
-
 	if (runningLocal) {
 		// in production the reverse proxy is taking care of this
 		app.use(expressCompression({ filter: function(req, res) { return /json|text|javascript|css/.test(res.getHeader('Content-Type')); }, level: 9 }));
@@ -107,6 +104,9 @@ exports.configure = function(app, raygunClient) {
 
 	// initialize passport
 	app.use(passport.initialize());
+
+	// setup logging
+	logging.expressConfig(app);
 
 	// api pre-checks
 	app.use(apiCtrl.checkApiContentType);

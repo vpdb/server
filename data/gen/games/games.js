@@ -243,6 +243,7 @@ exports.data = [
 	{ bg: 'PinBot (Williams 1986).png', logo: 'PinBot (Williams 1986).png', ipdb: 1796 },
 	{ bg: 'Playboy (Bally 1978).png', logo: 'Playboy (Bally 1978).png', ipdb: 1823, id: 'playboy-bally' },
 	{ bg: 'Playboy (Stern 2002).png', logo: 'Playboy (Stern 2002).png', ipdb: 4506, id: 'playboy-stern' },
+	{ bg: 'Panthera (Bally 1980).png', logo: 'Panthera (Gottlieb 1980).png', ipdb: 1745 },
 	{ bg: 'Popeye Saves the Earth (Williams 1994).png', logo: 'Popeye Saves the Earth (Williams 1994).png', ipdb: 1851, id: 'popeye' },
 	{ bg: 'Red and Teds Road Show (Williams 1994).png', logo: 'Red and Teds Road Show (Williams 1994).png', ipdb: 1972 },
 	{ bg: 'Ripleys Believe It or Not (Stern 2004).png', logo: 'Ripleys Believe It or Not (Stern 2004).png', ipdb: 4917 },

@@ -198,6 +198,12 @@ angular.module('vpdb.games.details', []).controller('ReleaseController', functio
 	$scope.tableFile = function(file) {
 		return file.file.mime_type && /^application\/x-visual-pinball-table/i.test(file.file.mime_type);
 	};
+
+	var tableFiles = _.filter($scope.latestVersion.files, $scope.tableFile);
+	if (tableFiles.length == 1) {
+		$scope.toggleFile(tableFiles[0]);
+	}
+	
 });
 
 

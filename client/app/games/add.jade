@@ -50,7 +50,7 @@ include ../template/_mixins
 					label.col-sm-3.control-label(for="ipdbUrl") IPDB
 					.col-sm-6
 						input#ipdbUrl.form-control(type="text", ng-model="game.ipdbUrl", placeholder="URL or Number", on-enter="refresh()")
-						a#ipdbLink(href="http://www.ipdb.org/search.pl?any={{ game.title | escape }}&search=Search+Database&searchtype=quick", target="_blank")
+						a.a--lighter#ipdbLink(href="http://www.ipdb.org/search.pl?any={{ game.title | escape }}&search=Search+Database&searchtype=quick", target="_blank")
 							+icon('external-link').small.shift-up.space-right
 							| Search title on IPDB.org
 					.col-sm-3

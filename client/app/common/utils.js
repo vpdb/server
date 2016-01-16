@@ -19,7 +19,6 @@ angular.module('vpdb.common', [])
 		};
 	})
 
-
 	.filter('escape', function() {
 		return window.escape;
 	})

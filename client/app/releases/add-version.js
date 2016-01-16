@@ -78,6 +78,7 @@ angular.module('vpdb.releases.add', []).controller('ReleaseFileAddCtrl', functio
 		$scope.meta = $localStorage.release_version_meta[$scope.release.id] = _.cloneDeep(ReleaseMeta);
 		$scope.meta.mode = 'newFile';
 		$scope.meta.version = $scope.versions[0];
+		$scope.meta.idMap = {};
 
 		// release
 		if (!$localStorage.release_version) {

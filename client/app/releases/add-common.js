@@ -118,6 +118,24 @@ angular.module('vpdb.releases.add', []).controller('ReleaseAddBaseCtrl', functio
 		}, ApiHelper.handleErrorsInDialog($scope, 'Error removing file.'));
 	};
 
+	/**
+	 * Executed just before uploading of a file starts
+	 * @param status
+	 */
+	$scope.beforeFileUpload = function(status) {
+
+		if (/^application\/x-visual-pinball-table/i.test(status.mimeType)) {
+			$scope.releaseVersion.files.push({
+				_randomId: status.randomId,
+				flavor: {},
+				_compatibility: [],
+				_media: {
+					playfield_image: null,
+					playfield_video: null
+				}
+			});
+		}
+	};
 
 	/**
 	 * Callback when a release file was successfully uploaded.
@@ -125,19 +143,15 @@ angular.module('vpdb.releases.add', []).controller('ReleaseAddBaseCtrl', functio
 	 */
 	$scope.onFileUpload = function(status) {
 		var tableFile;
-		if (/^application\/x-visual-pinball-table/i.test(status.mimeType)) {
-			tableFile = {
-				_file: status.storage.id,
-				flavor: {},
-				_compatibility: [],
-				_media: {
-					playfield_image: null,
-					playfield_video: null
-				}
-			};
 
+		// table files are already there from #beforeFileUpload(), so just find the right one and update
+		if (/^application\/x-visual-pinball-table/i.test(status.mimeType)) {
+			tableFile = _.findWhere($scope.releaseVersion.files, { _randomId: status.randomId });
+			tableFile._file = status.storage.id;
+
+			// get auth tokens for generated screenshot
 			if (status.storage.variations && status.storage.variations.screenshot) {
-				$scope.meta.mediaLinks['screenshot:' + status.storage.id] = status.storage.variations.screenshot;
+				$scope.meta.mediaLinks['screenshot:' + status._randomId] = status.storage.variations.screenshot;
 				AuthService.collectUrlProps(status.storage, true);
 			}
 
@@ -152,9 +166,13 @@ angular.module('vpdb.releases.add', []).controller('ReleaseAddBaseCtrl', functio
 			}
 
 		} else {
-			tableFile = { _file: status.storage.id };
+			// other files need to be added
+			$scope.releaseVersion.files.push({ _file: status.storage.id });
 		}
-		$scope.releaseVersion.files.push(tableFile);
+
+		// link randomId to storage id
+		$scope.meta.idMap = $scope.randomIdMap || {};
+		$scope.meta.idMap[status.randomId] = status.storage.id;
 	};
 
 
@@ -202,21 +220,21 @@ angular.module('vpdb.releases.add', []).controller('ReleaseAddBaseCtrl', functio
 	 */
 	$scope.getReleaseFile = function(metaReleaseFile) {
 		$scope.releaseFileRefs = $scope.releaseFileRefs || {};
-		if (!$scope.releaseFileRefs[metaReleaseFile.storage.id]) {
-			$scope.releaseFileRefs[metaReleaseFile.storage.id] = _.find($scope.releaseVersion.files, { _file: metaReleaseFile.storage.id });
+		if (!$scope.releaseFileRefs[metaReleaseFile.randomId]) {
+			$scope.releaseFileRefs[metaReleaseFile.randomId] = _.find($scope.releaseVersion.files, { _randomId: metaReleaseFile.randomId });
 		}
-		return $scope.releaseFileRefs[metaReleaseFile.storage.id];
+		return $scope.releaseFileRefs[metaReleaseFile.randomId];
 	};
 
 
 	/**
 	 * Returns the file object of the release object that is sent to the
 	 * API for given meta file info stored at $scope.meta.mediaFiles.
-	 * @param metaMediaFile
+	 * @param status Media file
 	 * @returns {*}
 	 */
-	$scope.getReleaseFileForMedia = function(metaMediaFile) {
-		return _.find($scope.releaseVersion.files, { _file: metaMediaFile.key.split(':')[1] });
+	$scope.getReleaseFileForMedia = function(status) {
+		return _.find($scope.releaseVersion.files, { _randomId: status.key.split(':')[1] });
 	};
 
 
@@ -240,7 +258,7 @@ angular.module('vpdb.releases.add', []).controller('ReleaseAddBaseCtrl', functio
 	 * @returns {string}
 	 */
 	$scope.getMediaKey = function(file, type) {
-		return type + ':' + file.storage.id;
+		return type + ':' + file.randomId;
 	};
 
 
@@ -250,7 +268,7 @@ angular.module('vpdb.releases.add', []).controller('ReleaseAddBaseCtrl', functio
 	 * @param type
 	 */
 	$scope.onBackglassImageError = function(file, type) {
-		delete $scope.meta.mediaLinks[type + ':' + file.storage.id];
+		delete $scope.meta.mediaLinks[$scope.getMediaKey(file, type)];
 	};
 
 });

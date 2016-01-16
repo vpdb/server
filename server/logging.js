@@ -96,7 +96,7 @@ exports.expressConfig = function(app) {
 			var ip = req.ip || req.headers['x-forwarded-for'] || req.connection.remoteAddress || '0.0.0.0';
 			return req.user ? req.user.name + ':' + ip : ip;
 		});
-		
+
 		app.use(expressMorgan(':date[iso] |:user| :color-req :status :response-time ms - :res[content-length]'));
 	}
 

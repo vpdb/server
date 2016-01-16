@@ -74,17 +74,24 @@ angular.module('vpdb.releases.add', []).controller('ReleaseAddCtrl', function(
 		 * `meta` is all the data we need for displaying the page but that
 		 * is not part of the release object posted to the API.
 		 */
-		$scope.meta = $localStorage.release_meta = _.cloneDeep(ReleaseMeta);
+		if (!$localStorage.release_meta || $localStorage.release_meta.releaseDate) {
+			$localStorage.release_meta = {};
+		}
+		$scope.meta = $localStorage.release_meta[$stateParams.id] = _.cloneDeep(ReleaseMeta);
 		$scope.meta.users[currentUser.id] = currentUser;
 		$scope.meta.releaseDate = new Date();
 		$scope.newLink = {};
+		$scope.meta.idMap = {};
 
 		// TODO remove files via API
 
 		/*
 		 * `release` is the object posted to the API.
 		 */
-		$scope.release = $localStorage.release = {
+		if (!$localStorage.release || $localStorage.release._game) {
+			$localStorage.release = {};
+		}
+		$scope.release = $localStorage.release[$stateParams.id] = {
 			_game: $scope.game.id,
 			name: '',
 			description: '',
@@ -109,10 +116,10 @@ angular.module('vpdb.releases.add', []).controller('ReleaseAddCtrl', function(
 	};
 
 	// init data: either copy from local storage or reset.
-	if ($localStorage.release && $localStorage.release.versions) {
-		$scope.release = $localStorage.release;
+	if ($localStorage.release && $localStorage.release[$stateParams.id] && $localStorage.release[$stateParams.id].versions) {
+		$scope.release = $localStorage.release[$stateParams.id];
 		$scope.releaseVersion = $scope.release.versions[0];
-		$scope.meta = $localStorage.release_meta;
+		$scope.meta = $localStorage.release_meta[$stateParams.id];
 
 		// update references
 		//_.each($scope.release.versions[0].files, function(file) {

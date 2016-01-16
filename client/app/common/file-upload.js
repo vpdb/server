@@ -127,13 +127,19 @@ angular.module('vpdb.common', []).directive('fileUpload', function($parse, $comp
 						progress: 0,
 						text: 'Uploading file...',
 						storage: {},
-						key: params.key
+						key: params.key,
+						randomId: makeid(32)
 					};
 
 					if (params.key) {
 						params.status[params.key] = status;
 					} else {
 						params.status.push(status);
+					}
+
+					// run pre-function if defined
+					if (params.beforeUpload) {
+						params.beforeUpload(status);
 					}
 
 					// post data
@@ -188,4 +194,15 @@ function getMimeType(file) {
 		case 'f4v': return 'video/x-f4v';
 		case 'txt': return 'text/plain';
 	}
+}
+
+function makeid(len) {
+
+	var text = "";
+	var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+	for (var i = 0; i < len; i++) {
+		text += possible.charAt(Math.floor(Math.random() * possible.length));
+	}
+	return text;
 }

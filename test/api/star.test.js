@@ -292,4 +292,44 @@ describe('The VPDB `Star` API', function() {
 			});
 		});
 	});
+
+	describe('when unstarring a game', function() {
+
+		before(function(done) {
+			hlp.setupUsers(request, {
+				member: { roles: ['member'] },
+				contributor: { roles: ['contributor'] }
+			}, done);
+		});
+
+		after(function(done) {
+			hlp.cleanup(request, done);
+		});
+
+		it('should succeed and updated counter accordingly', function(done) {
+			hlp.game.createGame('contributor', request, function(game) {
+
+				// star
+				request.post('/api/v1/games/' + game.id + '/star')
+					.send({})
+					.as('member')
+					.end(function(err, res) {
+						hlp.expectStatus(err, res, 201);
+
+						// unstar
+						request.del('/api/v1/games/' + game.id + '/star')
+							.send({})
+							.as('member')
+							.end(function(err, res) {
+								hlp.expectStatus(err, res, 204);
+								request.get('/api/v1/games/' + game.id).end(function(err, res) {
+									hlp.expectStatus(err, res, 200);
+									expect(res.body.counter.stars).to.be(0);
+									done();
+								});
+							});
+					});
+			});
+		});
+	});
 });

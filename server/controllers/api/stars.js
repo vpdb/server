@@ -139,13 +139,13 @@ function unstar(req, res, type, find) {
 			return api.fail(res, error('Not starred. You need to star something before you can unstar it.').warn('create'), 400);
 		}
 		star.remove(assert(function() {
-			entity.incrementCounter('stars', assert(function() {
+			entity.incrementCounter('stars', true, assert(function() {
 
 				api.success(res, null, 204);
 				LogEvent.log(req, 'unstar_' + type, true, logPayload(entity, type), logRefs(star, entity, type));
 				pusher.unstar(type, entity, req.user);
 
-			}, 'Error incrementing counter.'), true);
+			}, 'Error incrementing counter.'));
 		}, 'Error unstarring.'));
 	});
 }

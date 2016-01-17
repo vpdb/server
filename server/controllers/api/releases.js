@@ -128,11 +128,11 @@ exports.update = function(req, res) {
 
 	var updateableFields = [ 'name', 'description', '_tags', 'links', 'acknowledgements', 'authors' ];
 
-	Promise.resolve().then(function() {
+	Promise.resolve().then(() => {
 
 		return Release.findOne({ id: req.params.id });
 
-	}).then(function(release) {
+	}).then(release => {
 
 		// fail if invalid id
 		if (!release) {
@@ -158,12 +158,12 @@ exports.update = function(req, res) {
 		// apply changes
 		return release.updateInstance(req.body);
 
-	}).then(function(release) {
+	}).then(release => {
 
 		// validate and save
 		return release.validate().then(x => release.save());
 
-	}).then(function(release) {
+	}).then(release => {
 
 		// log event
 		return LogEvent.log(req, 'update_release', false,
@@ -171,7 +171,7 @@ exports.update = function(req, res) {
 			{ release: release._id, game: release._game }
 		);
 
-	}).then(function() {
+	}).then(() => {
 
 		// re-fetch release object tree
 		return Release.findOne({ id: req.params.id })
@@ -184,13 +184,12 @@ exports.update = function(req, res) {
 			.populate({ path: '_tags' })
 			.exec();
 
-	}).then(function(release) {
+	}).then(release => {
 
 		api.success(res, release.toDetailed(), 200);
 
 	}).catch(api.handleError(res, error, 'Error updating release'));
 };
-
 
 
 /**
@@ -202,18 +201,25 @@ exports.update = function(req, res) {
 exports.addVersion = function(req, res) {
 
 	var now = new Date();
-	var assert = api.assert(error, 'addVersion', req.params.id, res);
+	var release, newVersion;
+	Promise.resolve().then(() => {
+		return Release.findOne({ id: req.params.id }).exec();
 
-	Release.findOne({ id: req.params.id }, assert(function(release) {
+	}).then(r => {
+		release = r;
+
+		// fail if release doesn't exist
 		if (!release) {
-			return api.fail(res, error('No such release with ID "%s".', req.params.id), 404);
+			throw error('No such release with ID "%s".', req.params.id).status(404);
 		}
 
-		// only allow authors to upload version updates
-		if (!_.contains(_.map(_.pluck(release.authors, '_user'), function(id) { return id.toString(); }), req.user._id.toString())) {
-			return api.fail(res, error('Only authors of the release can add new versions.', req.params.id), 403);
+		// fail if wrong user
+		var authorIds = _.map(_.pluck(release.authors, '_user'), id => id.toString());
+		if (!_.contains(authorIds.concat(release._created_by.toString()), req.user._id.toString())) {
+			throw error('Only authors of the release can update add new versions.').status(403).log('addVersion');
 		}
 
+		// set defaults
 		var versionObj = _.defaults(req.body, { released_at: now });
 		if (versionObj.files) {
 			_.each(versionObj.files, function(file) {
@@ -221,64 +227,69 @@ exports.addVersion = function(req, res) {
 			});
 		}
 
-		logger.info('[api|release:addVersion] %s', util.inspect(versionObj, { depth: null }));
-		Version.getInstance(versionObj, assert(function(newVersion) {
+		// create instance
+		logger.info('[api|release:addVersion] body: %s', util.inspect(versionObj, { depth: null }));
+		return Version.getInstance(versionObj);
 
-			logger.info('[api|release:addVersion] %s', util.inspect(versionObj, { depth: null }));
-			logger.info('[api|release:addVersion] %s', util.inspect(newVersion, { depth: null }));
+	}).then(v => {
+		newVersion = v;
 
-			newVersion.validate(function(err) {
-				// validate existing version here
-				if (_.filter(release.versions, { version: versionObj.version }).length > 0) {
-					err = err || {};
-					err.errors = [{ path: 'version', message: 'Provided version already exists and you cannot add a version twice. Try updating the version instead of adding a new one.', value: versionObj.version }];
-				}
-				if (err) {
-					return api.fail(res, error('Validations failed. See below for details.').errors(err.errors).warn('create'), 422);
-				}
+		logger.info('[api|release:addVersion] model: %s', util.inspect(newVersion, { depth: null }));
+		var validationErr;
+		return newVersion.validate().catch(err => validationErr = err).finally(() => {
+			// validate existing version here
+			if (_.filter(release.versions, { version: newVersion.version }).length > 0) {
+				validationErr = validationErr || {};
+				validationErr.errors = [{ path: 'version', message: 'Provided version already exists and you cannot add a version twice. Try updating the version instead of adding a new one.', value: newVersion.version }];
+			}
+			if (validationErr) {
+				throw error('Validations failed. See below for details.').errors(validationErr.errors).warn('create').status(422);
+			}
+		});
 
-				logger.info('[api|release:addVersion] Validations passed, adding new version to release.');
-				release.versions.push(newVersion);
-				release.modified_at = new Date();
+	}).then(() => {
+		release.versions.push(newVersion);
+		release.modified_at = now;
 
-				release.save(assert(function() {
+		logger.info('[api|release:addVersion] Validations passed, adding new version to release.');
+		return release.save();
 
-					logger.info('[api|release:create] Added version "%s" to release "%s".', newVersion.version, release.name);
+	}).then(() => {
+		logger.info('[api|release:create] Added version "%s" to release "%s".', newVersion.version, release.name);
+		// set media to active
+		return release.activateFiles();
 
-					// set media to active
-					release.activateFiles(assert(function(release) {
-						logger.info('[api|release:create] All referenced files activated, returning object to client.');
+	}).then(() => {
 
-						// game modification date
-						Game.update({ _id: release._game.toString() }, { modified_at: new Date() }, assert(function() {
+		// game modification date
+		return Game.update({ _id: release._game.toString() }, { modified_at: now });
 
-							Release.findOne({ id: req.params.id })
-								.populate({ path: '_game' })
-								.populate({ path: 'versions.files._file' })
-								.populate({ path: 'authors._user' })
-								.populate({ path: 'versions.files._media.playfield_image' })
-								.populate({ path: 'versions.files._media.playfield_video' })
-								.populate({ path: 'versions.files._compatibility' })
-								.exec(assert(function(release) {
+	}).then(() => {
+		logger.info('[api|release:create] All referenced files activated, returning object to client.');
+		return Release.findOne({ id: req.params.id })
+			.populate({ path: '_game' })
+			.populate({ path: 'versions.files._file' })
+			.populate({ path: 'authors._user' })
+			.populate({ path: 'versions.files._media.playfield_image' })
+			.populate({ path: 'versions.files._media.playfield_video' })
+			.populate({ path: 'versions.files._compatibility' })
+			.exec();
 
-									LogEvent.log(req, 'create_release_version', true, {
-										release: _.pick(release.toSimple(), [ 'id', 'name', 'authors', 'versions' ]),
-										game: _.pick(release._game.toSimple(), [ 'id', 'title', 'manufacturer', 'year', 'ipdb', 'game_type' ])
-									}, {
-										release: release._id,
-										game: release._game._id
-									});
-									pusher.addVersion(release._game, release, newVersion);
+	}).then(release => {
 
-									return api.success(res, _.filter(release.toDetailed().versions, { version: versionObj.version })[0], 201);
+		api.success(res, _.filter(release.toDetailed().versions, { version: newVersion.version })[0], 201);
 
-							}, 'Error fetching updated release "%s".'));
-						}, 'Error updating game modification date'));
-					}, 'Error activating files for release "%s"'));
-				}, 'Error adding new version to release "%s".'));
-			});
-		}, 'Error creating version instance for release "%s".'));
-	}, 'Error getting release "%s"'));
+		// do the rest async
+		LogEvent.log(req, 'create_release_version', true, {
+			release: _.pick(release.toSimple(), [ 'id', 'name', 'authors', 'versions' ]),
+			game: _.pick(release._game.toSimple(), [ 'id', 'title', 'manufacturer', 'year', 'ipdb', 'game_type' ])
+		}, {
+			release: release._id,
+			game: release._game._id
+		});
+		pusher.addVersion(release._game, release, newVersion);
+
+	}).catch(api.handleError(res, error, 'Error updating release'));
 };
 
 /**

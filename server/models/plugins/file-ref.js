@@ -72,48 +72,40 @@ module.exports = function(schema, options) {
 		});
 	});
 
-
 	/**
 	 * Sets the referenced files to active. Call this after creating a new
 	 * instance.
 	 *
-	 * @param done (`err`)
-	 * @returns {*}
+	 * @param {function} [done] Callback
+	 * @returns {Promise}
 	 */
 	schema.methods.activateFiles = function(done) {
 
 		var File = mongoose.model('File');
-
 		var ids = [];
-		var obj = this;
+		var that = this;
 
-		var objPaths = _.keys(common.explodePaths(obj, fileRefs));
-		_.each(objPaths, function(path) {
-			var id = _.get(obj, path);
+		var objPaths = _.keys(common.explodePaths(this, fileRefs));
+		_.each(objPaths, path => {
+			var id = _.get(that, path);
 			if (id) {
 				ids.push(id);
 			}
 		});
-		File.find({ _id: { $in: ids }, is_active: false }, function(err, files) {
-			/* istanbul ignore if */
-			if (err) {
-				return done(error(err, 'Error finding referenced files').log());
-			}
 
-			// update
-			async.eachSeries(files, function(file, next) {
+		return Promise.resolve().then(() => {
+			return File.find({ _id: { $in: ids }, is_active: false });
 
-				file.switchToActive(next);
+		}).then(files => {
+			return Promise.each(files, file => file.switchToActive());
 
-			}, function(err) {
-				/* istanbul ignore if */
-				if (err) {
-					return done(error(err, 'Error updating attribute `is_active`'));
-				}
-				obj.populate(objPaths.join(' '), done);
-			});
-		});
-		return this;
+		}).then(() => {
+			return this.populate(objPaths.join(' ')).execPopulate();
+
+		}).then(() => {
+			return this;
+
+		}).nodeify(done);
 	};
 
 	/**

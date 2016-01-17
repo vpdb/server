@@ -23,7 +23,6 @@ var _ = require('lodash');
 var util = require('util');
 var async = require('async');
 var logger = require('winston');
-var Bluebird = require('bluebird');
 
 var Release = require('mongoose').model('Release');
 var Version = require('mongoose').model('ReleaseVersion');
@@ -63,72 +62,59 @@ exports.create = function(req, res) {
 		});
 	}
 
-	Release.getInstance(_.extend(req.body, {
-		_created_by: req.user._id,
-		modified_at: now,
-		created_at: now
-	}), function(err, newRelease) {
-		if (err) {
-			return api.fail(res, error(err, 'Error creating release instance').log('create'), 500);
-		}
-		var assert = api.assert(error, 'create', newRelease.name, res);
-		var assertRb = api.assert(error, 'create', newRelease.name, res, function(done) {
-			newRelease.remove(done);
-		});
+	var release;
+	Promise.resolve().then(() => {
+		return Release.getInstance(_.extend(req.body, {
+			_created_by: req.user._id,
+			modified_at: now,
+			created_at: now
+		}));
 
+	}).then(newRelease => {
+		release = newRelease;
 		logger.info('[api|release:create] %s', util.inspect(req.body));
-		newRelease.validate(function(err) {
-			if (err) {
-				return api.fail(res, error('Validations failed. See below for details.').errors(err.errors).warn('create'), 422);
-			}
-			logger.info('[api|release:create] Validations passed.');
-			newRelease.save(assert(function(release) {
-				logger.info('[api|release:create] Release "%s" created.', release.name);
+		return newRelease.validate();
 
-				// set media to active
-				release.activateFiles(assertRb(function(release) {
-					logger.info('[api|release:create] All referenced files activated, returning object to client.');
+	}).then(() => {
+		logger.info('[api|release:create] Validations passed.');
+		return release.save();
 
-					// update counters / date
-					var counters = [];
-					counters.push(function(next) {
-						release.populate('_game', assert(function(release) {
-							release._game.incrementCounter('releases', next);
-						}));
-					});
-					counters.push(function(next) {
-						Game.update({ _id: release._game.toString() }, { modified_at: new Date() }, next);
-					});
+	}).then(() => {
+		logger.info('[api|release:create] Release "%s" created.', release.name);
+		return release.activateFiles();
 
-					async.series(counters, function() {
+	}).then(() => {
+		logger.info('[api|release:create] All referenced files activated, returning object to client.');
 
-						Release.findById(release._id)
-							.populate({ path: '_game' })
-							.populate({ path: '_tags' })
-							.populate({ path: 'authors._user' })
-							.populate({ path: 'versions.files._file' })
-							.populate({ path: 'versions.files._media.playfield_image' })
-							.populate({ path: 'versions.files._media.playfield_video' })
-							.populate({ path: 'versions.files._compatibility' })
-							.exec(assert(function(release) {
+		// update counters and date
+		return release.populate('_game').execPopulate()
+			.then(release => release._game.incrementCounter('releases'))
+			.then(() => release._game.update({ modified_at: new Date() }));
 
-								LogEvent.log(req, 'create_release', true, {
-									release: _.pick(release.toSimple(), [ 'id', 'name', 'authors', 'versions' ]),
-									game: _.pick(release._game.toSimple(), [ 'id', 'title', 'manufacturer', 'year', 'ipdb', 'game_type' ])
-								}, {
-									release: release._id,
-									game: release._game._id
-								});
+	}).then(() => {
+		return Release.findById(release._id)
+			.populate({ path: '_game' })
+			.populate({ path: '_tags' })
+			.populate({ path: 'authors._user' })
+			.populate({ path: 'versions.files._file' })
+			.populate({ path: 'versions.files._media.playfield_image' })
+			.populate({ path: 'versions.files._media.playfield_video' })
+			.populate({ path: 'versions.files._compatibility' })
+			.exec();
 
-								return api.success(res, release.toDetailed(), 201);
+	}).then(release => {
 
-							}, 'Error fetching updated release "%s".'));
-					});
-
-				}, 'Error activating files for release "%s"'));
-			}, 'Error saving release with id "%s"'));
+		LogEvent.log(req, 'create_release', true, {
+			release: _.pick(release.toSimple(), [ 'id', 'name', 'authors', 'versions' ]),
+			game: _.pick(release._game.toSimple(), [ 'id', 'title', 'manufacturer', 'year', 'ipdb', 'game_type' ])
+		}, {
+			release: release._id,
+			game: release._game._id
 		});
-	});
+
+		api.success(res, release.toDetailed(), 201);
+
+	}).catch(api.handleError(res, error, 'Error creating release'));
 };
 
 
@@ -142,7 +128,7 @@ exports.update = function(req, res) {
 
 	var updateableFields = [ 'name', 'description', '_tags', 'links', 'acknowledgements', 'authors' ];
 
-	Bluebird.resolve().then(function() {
+	Promise.resolve().then(function() {
 
 		return Release.findOne({ id: req.params.id });
 

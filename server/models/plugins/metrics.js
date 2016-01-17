@@ -25,7 +25,19 @@ module.exports = function(schema, options) {
 
 	options = options || {};
 
-	schema.methods.incrementCounter = function(what, next, decrement) {
+	/**
+	 * Increments a counter.
+	 *
+	 * @param {string} what Property to increment
+	 * @param {boolean} [decrement] If set to true, decrement instead counter instead of increment.
+	 * @param {function} [next]
+	 * @returns {Promise}
+	 */
+	schema.methods.incrementCounter = function(what, decrement, next) {
+		if (_.isFunction(decrement)) {
+			next = decrement;
+			decrement = false;
+		}
 		next = next || function() {};
 		var incr = decrement ? -1 : 1;
 		var that = this;
@@ -44,6 +56,6 @@ module.exports = function(schema, options) {
 				q.metrics[metric] = Math.log(Math.max(score, 1));
 			});
 		}
-		that.update(q, next);
+		return this.update(q).exec().nodeify(next);
 	};
 };

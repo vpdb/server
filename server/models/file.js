@@ -244,18 +244,21 @@ FileSchema.methods.toString = function(variation) {
 	return this.file_type + ' "' + this.id + '"' + (v ? ' (' + v + ')' : '');
 };
 
+/**
+ * Switches a files from inactive to active and moves it to the public folder if necessary.
+ * @param {function} [done] Callback
+ * @returns {Promise.<File>}
+ */
 FileSchema.methods.switchToActive = function(done) {
 
-	var that = this;
-	mongoose.model('File').update({ _id: this._id }, { is_active: true }, function(err) {
-		/* istanbul ignore if */
-		if (err) {
-			return done('Error activating files.');
-		}
-		that.is_active = true;
-		storage.switchToPublic(that);
-		done();
-	});
+	return Promise.resolve().then(() => {
+		return mongoose.model('File').update({ _id: this._id }, { is_active: true });
+
+	}).then(() => {
+		this.is_active = true;
+		return storage.switchToPublic(this);
+
+	}).nodeify(done);
 };
 
 /**

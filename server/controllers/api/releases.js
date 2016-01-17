@@ -92,15 +92,7 @@ exports.create = function(req, res) {
 			.then(() => release._game.update({ modified_at: new Date() }));
 
 	}).then(() => {
-		return Release.findById(release._id)
-			.populate({ path: '_game' })
-			.populate({ path: '_tags' })
-			.populate({ path: 'authors._user' })
-			.populate({ path: 'versions.files._file' })
-			.populate({ path: 'versions.files._media.playfield_image' })
-			.populate({ path: 'versions.files._media.playfield_video' })
-			.populate({ path: 'versions.files._compatibility' })
-			.exec();
+		return getDetails(release._id);
 
 	}).then(release => {
 
@@ -161,32 +153,22 @@ exports.update = function(req, res) {
 	}).then(release => {
 
 		// validate and save
-		return release.validate().then(x => release.save());
+		return release.validate().then(() => release.save());
 
 	}).then(release => {
 
-		// log event
-		return LogEvent.log(req, 'update_release', false,
-			{ release: req.body },
-			{ release: release._id, game: release._game }
-		);
-
-	}).then(() => {
-
 		// re-fetch release object tree
-		return Release.findOne({ id: req.params.id })
-			.populate({ path: '_game' })
-			.populate({ path: 'versions.files._file' })
-			.populate({ path: 'authors._user' })
-			.populate({ path: 'versions.files._media.playfield_image' })
-			.populate({ path: 'versions.files._media.playfield_video' })
-			.populate({ path: 'versions.files._compatibility' })
-			.populate({ path: '_tags' })
-			.exec();
+		return getDetails(release._id)
 
 	}).then(release => {
 
 		api.success(res, release.toDetailed(), 200);
+
+		// log event
+		LogEvent.log(req, 'update_release', false,
+			{ release: req.body },
+			{ release: release._id, game: release._game }
+		);
 
 	}).catch(api.handleError(res, error, 'Error updating release'));
 };
@@ -266,14 +248,7 @@ exports.addVersion = function(req, res) {
 
 	}).then(() => {
 		logger.info('[api|release:create] All referenced files activated, returning object to client.');
-		return Release.findOne({ id: req.params.id })
-			.populate({ path: '_game' })
-			.populate({ path: 'versions.files._file' })
-			.populate({ path: 'authors._user' })
-			.populate({ path: 'versions.files._media.playfield_image' })
-			.populate({ path: 'versions.files._media.playfield_video' })
-			.populate({ path: 'versions.files._compatibility' })
-			.exec();
+		return getDetails(release._id);
 
 	}).then(release => {
 
@@ -774,3 +749,19 @@ exports.del = function(req, res) {
 	});
 };
 
+/**
+ * Retrieves release details.
+ * @param id
+ * @returns {Promise}
+ */
+function getDetails(id) {
+	return Release.findById(id)
+		.populate({ path: '_game' })
+		.populate({ path: '_tags' })
+		.populate({ path: 'authors._user' })
+		.populate({ path: 'versions.files._file' })
+		.populate({ path: 'versions.files._media.playfield_image' })
+		.populate({ path: 'versions.files._media.playfield_video' })
+		.populate({ path: 'versions.files._compatibility' })
+		.exec();
+}

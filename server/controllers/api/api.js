@@ -123,21 +123,23 @@ exports.success = function(res, result, code, opts) {
  */
 exports.fail = function(res, err, code) {
 
-	code = code || err.code || 500;
-	res.setHeader('Content-Type', 'application/json');
-	if (err.errs) {
-		var arr = [];
-		_.each(err.errs, function(error, path) {
-			arr.push({
-				message: error.message,
-				field: _.isArray(err.errs) ? error.path : path,
-				value: error.value
+	Promise.resolve().then(() => {
+		code = code || err.code || 500;
+		res.setHeader('Content-Type', 'application/json');
+		if (err.errs) {
+			var arr = [];
+			_.each(err.errs, function(error, path) {
+				arr.push({
+					message: error.message,
+					field: _.isArray(err.errs) ? error.path : path,
+					value: error.value
+				});
 			});
-		});
-		res.status(code).json({ errors: _.sortBy(arr, 'field') });
-	} else {
-		res.status(code).json({ error: err.msg() });
-	}
+			res.status(code).json({ errors: _.sortBy(arr, 'field') });
+		} else {
+			res.status(code).json({ error: err.msg() });
+		}
+	}).catch(err => logger.error(err.stack));
 };
 
 exports.checkApiContentType = function(req, res, next) {

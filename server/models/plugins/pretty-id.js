@@ -88,15 +88,14 @@ module.exports = function(schema, options) {
 
 		return replaceIds(obj, paths, options).then(invalidations => {
 
-			var that = this;
 			_.assign(this, obj);
 
 			// for invalid IDs, invalidate instantly so we can provide which value is wrong.
-			_.each(invalidations, function(invalidation) {
-				that.invalidate(invalidation.path, invalidation.message, invalidation.value);
+			_.each(invalidations, invalidation => {
+				this.invalidate(invalidation.path, invalidation.message, invalidation.value);
 			});
 
-			return that;
+			return this;
 		});
 	};
 };

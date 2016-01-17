@@ -49,6 +49,14 @@ angular.module('vpdb.releases.add', []).directive('orientationCheck', function($
 					return;
 				}
 
+				var releaseFile = scope.getReleaseFile(params.file);
+				var orientationFrom = releaseFile && releaseFile.flavor ? releaseFile.flavor[params.flavor.name] : null;
+				var orientationTo = params.flavorVal.value;
+
+				if (orientationFrom === orientationTo) {
+					return;
+				}
+
 				var checkbox = element.find('input');
 				var model = $parse(checkbox.attr('ng-model'))(scope);
 
@@ -57,7 +65,7 @@ angular.module('vpdb.releases.add', []).directive('orientationCheck', function($
 
 					var type = params.types[i];
 					var metaFileId = type + ':' + params.file.randomId;
-					if (params.metaFiles[metaFileId]) {
+					if (params.metaFiles[metaFileId] && orientationFrom !== 'any' && orientationTo !== 'any') {
 
 						event.preventDefault();
 

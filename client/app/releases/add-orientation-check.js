@@ -56,7 +56,7 @@ angular.module('vpdb.releases.add', []).directive('orientationCheck', function($
 				for (var i = 0; i < params.types.length; i++) {
 
 					var type = params.types[i];
-					var metaFileId = type + ':' + params.file.storage.id;
+					var metaFileId = type + ':' + params.file.randomId;
 					if (params.metaFiles[metaFileId]) {
 
 						event.preventDefault();
@@ -74,7 +74,7 @@ angular.module('vpdb.releases.add', []).directive('orientationCheck', function($
 							// remove media files from server
 							for (var j = 0; j < params.types.length; j++) {
 								var type = params.types[j];
-								var metaFileId = type + ':' + params.file.storage.id;
+								var metaFileId = type + ':' + params.file.randomId;
 
 								if (params.metaFiles[metaFileId]) {
 									FileResource.delete({ id: params.metaFiles[metaFileId].storage.id });

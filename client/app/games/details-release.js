@@ -203,7 +203,7 @@ angular.module('vpdb.games.details', []).controller('ReleaseController', functio
 	if (tableFiles.length == 1) {
 		$scope.toggleFile(tableFiles[0]);
 	}
-	
+
 });
 
 

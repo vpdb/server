@@ -37,7 +37,6 @@ var prettyId = require('./plugins/pretty-id');
 var idValidator = require('./plugins/id-ref');
 var sortableTitle = require('./plugins/sortable-title');
 
-var fileModule = require('../modules/file');
 var flavor = require('../modules/flavor');
 
 var Schema = mongoose.Schema;
@@ -172,7 +171,7 @@ VersionSchema.path('files').validate(function(files, callback) {
 
 	// ignore if no files set
 	if (!_.isArray(files) || files.length === 0) {
-		return callback(true);
+		return Promise.resolve(true);
 	}
 
 	var hasTableFile = false;
@@ -244,7 +243,7 @@ VersionSchema.path('files').validate(function(files, callback) {
 					}
 
 					return Promise.all(mediaValidations);
-				})
+				});
 
 			}).then(() => {
 				if (f.isNew) {
@@ -258,10 +257,9 @@ VersionSchema.path('files').validate(function(files, callback) {
 		if (!hasTableFile) {
 			this.invalidate('files', 'At least one table file must be provided.');
 		}
-		var mapCompat = function(file) {
-			// can be either exploded into object or just id.
-			return !file._id ? file.toString() : file._id.toString();
-		};
+
+		// can be either exploded into object or id only.
+		var getIdFromFile = file => file._id ? file._id.toString() : file.toString();
 
 //		console.log('Checking %d table files for compat/flavor dupes:', _.keys(tableFiles).length);
 
@@ -274,15 +272,15 @@ VersionSchema.path('files').validate(function(files, callback) {
 			}
 
 			var fileFlavor = file.flavor.toObject();
-			var fileCompat = _.map(file._compatibility, mapCompat);
+			var fileCompat = _.map(file._compatibility, getIdFromFile);
 			fileCompat.sort();
 
-			var dupeFiles = _.filter(_.pluck(tableFiles, 'file'), function(otherFile) {
+			var dupeFiles = _.filter(_.pluck(tableFiles, 'file'), otherFile => {
 
 				if (file.id === otherFile.id) {
 					return false;
 				}
-				var compat = _.map(otherFile._compatibility, mapCompat);
+				var compat = _.map(otherFile._compatibility, getIdFromFile);
 				compat.sort();
 
 //				console.log('  File %s <-> %s', file.id, otherFile.id);
@@ -308,8 +306,37 @@ VersionSchema.path('files').validate(function(files, callback) {
 		callback(false);
 
 	});
+
 });
 
+// playfield-from-server creation code (move to controller when tom's service is back up)
+//logger.info('[model|release] Creating new playfield image from table screenshot...');
+//var error = require('../modules/error')('model', 'file');
+//var screenshotPath = file.getPath('screenshot');
+//var fstat = fs.statSync(screenshotPath);
+//var readStream = fs.createReadStream(screenshotPath);
+//
+//var fileData = {
+//	name: path.basename(screenshotPath, path.extname(screenshotPath)) + '.png',
+//	bytes: fstat.size,
+//	variations: {},
+//	created_at: new Date(),
+//	mime_type: file.variations.screenshot.mime_type,
+//	file_type: 'playfield-' + f.flavor.orientation,
+//	_created_by: file._created_by
+//};
+//
+//fileModule.create(fileData, readStream, error, function(err, playfieldImageFile) {
+//	if (err) {
+//		logger.error('[model|release] Error creating playfield image from table file: ' + err.message);
+//		that.invalidate('files.' + index + '._media.playfield_image', 'Error processing screenshot: ' + err.message);
+//	} else {
+//		logger.info('[model|release] Playfield image successfully created.');
+//		f._media.playfield_image = playfieldImageFile._id;
+//	}
+//	if (f.isNew) index++;
+//	next();
+//});
 
 //-----------------------------------------------------------------------------
 // STATIC METHODS
@@ -733,7 +760,7 @@ function stripFiles(versions, opts) {
 					versions[i].files[j] = null;
 				}
 
-			// otherwise, make sure we include only the latest flavor combination.
+				// otherwise, make sure we include only the latest flavor combination.
 			} else {
 
 				// if non-table file, skip

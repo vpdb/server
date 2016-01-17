@@ -64,6 +64,7 @@ exports.create = function(req, res) {
 
 	var release;
 	Promise.resolve().then(() => {
+		logger.info('[api|release:create] Body: %s', util.inspect(req.body, { depth: null }));
 		return Release.getInstance(_.extend(req.body, {
 			_created_by: req.user._id,
 			modified_at: now,
@@ -72,7 +73,6 @@ exports.create = function(req, res) {
 
 	}).then(newRelease => {
 		release = newRelease;
-		logger.info('[api|release:create] %s', util.inspect(req.body));
 		return newRelease.validate();
 
 	}).then(() => {

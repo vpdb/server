@@ -22,7 +22,6 @@
 var _ = require('lodash');
 var fs = require('fs');
 var logger = require('winston');
-var Bluebird = require('bluebird');
 var gm = require('gm');
 
 var PngQuant = require('pngquant');
@@ -31,7 +30,7 @@ var OptiPng = require('optipng');
 var error = require('../error')('processor', 'image');
 var mimeTypes = require('../mimetypes');
 
-Bluebird.promisifyAll(gm.prototype);
+Promise.promisifyAll(gm.prototype);
 
 /**
  * Image processor.
@@ -86,7 +85,7 @@ ImageProcessor.prototype.metadata = function(file, variation, done) {
 		done = variation;
 		variation = undefined;
 	}
-	return Bluebird.resolve().then(function() {
+	return Promise.try(function() {
 		return gm(file.getPath(variation)).identifyAsync();
 
 	}).catch(err => {
@@ -109,10 +108,10 @@ ImageProcessor.prototype.variationData = function(metadata) {
 
 ImageProcessor.prototype.preprocess = function(file) {
 
-	return Bluebird.resolve().then(function() {
+	return Promise.try(function() {
 
 		if (file.file_type !== 'playfield-fs') {
-			return Bluebird.resolve();
+			return Promise.resolve();
 		}
 
 		// rotate
@@ -122,7 +121,7 @@ ImageProcessor.prototype.preprocess = function(file) {
 				logger.info('[processor|image|pre] Rotating FS playfield image.');
 				return gm(file.getPath()).rotate('black', 90).writeAsync(file.getPath());
 			} else {
-				return Bluebird.resolve();
+				return Promise.resolve();
 			}
 		});
 	});

@@ -63,7 +63,7 @@ exports.create = function(req, res) {
 	}
 
 	var release;
-	Promise.resolve().then(() => {
+	Promise.try(() => {
 		logger.info('[api|release:create] Body: %s', util.inspect(req.body, { depth: null }));
 		return Release.getInstance(_.extend(req.body, {
 			_created_by: req.user._id,
@@ -120,7 +120,7 @@ exports.update = function(req, res) {
 
 	var updateableFields = [ 'name', 'description', '_tags', 'links', 'acknowledgements', 'authors' ];
 
-	Promise.resolve().then(() => {
+	Promise.try(() => {
 
 		return Release.findOne({ id: req.params.id });
 
@@ -184,7 +184,7 @@ exports.addVersion = function(req, res) {
 
 	var now = new Date();
 	var release, newVersion;
-	Promise.resolve().then(() => {
+	Promise.try(() => {
 		return Release.findOne({ id: req.params.id }).exec();
 
 	}).then(r => {

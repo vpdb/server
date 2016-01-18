@@ -25,9 +25,8 @@ var gm = require('gm');
 var path = require('path');
 var logger = require('winston');
 var request = require('request');
-var Bluebird = require('bluebird');
 
-var vp = Bluebird.promisifyAll(require('../visualpinball'));
+var vp = Promise.promisifyAll(require('../visualpinball'));
 var error = require('../error')('processor', 'table');
 var config = require('../settings').current;
 
@@ -57,7 +56,7 @@ TableProcessor.prototype.metadata = function(file, variation, done) {
 	if (_.isFunction(variation)) {
 		done = variation;
 	}
-	return Bluebird.resolve().then(function() {
+	return Promise.try(function() {
 		return vp.readScriptFromTableAsync(file.getPath());
 
 	}).then(script => {

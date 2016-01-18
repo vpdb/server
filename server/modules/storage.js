@@ -24,7 +24,6 @@ var fs = require('fs');
 var path = require('path');
 var async = require('async');
 var logger = require('winston');
-var Bluebird = require('bluebird');
 
 var queue = require('./queue');
 var quota = require('./quota');
@@ -185,11 +184,11 @@ Storage.prototype.remove = function(file) {
  * @return {Promise}
  */
 Storage.prototype.metadata = function(file, done) {
-	return Bluebird.resolve().then(function() {
+	return Promise.try(function() {
 		var type = file.getMimeCategory();
 		if (!processors[type]) {
 			logger.warn('[storage] No metadata parser for mime category "%s".', type);
-			return Bluebird.resolve();
+			return Promise.resolve();
 		}
 		return processors[type].metadata(file, done);
 	}).nodeify(done);
@@ -216,10 +215,10 @@ Storage.prototype.metadataShort = function(file, metadata) {
 };
 
 Storage.prototype.preprocess = function(file, done) {
-	return Bluebird.resolve().then(function() {
+	return Promise.try(function() {
 		var type = file.getMimeCategory();
 		if (!processors[type] || !processors[type].preprocess) {
-			return Bluebird.resolve(file);
+			return Promise.resolve(file);
 		}
 		return processors[type].preprocess(file);
 

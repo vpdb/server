@@ -251,7 +251,7 @@ FileSchema.methods.toString = function(variation) {
  */
 FileSchema.methods.switchToActive = function(done) {
 
-	return Promise.resolve().then(() => {
+	return Promise.try(() => {
 		return mongoose.model('File').update({ _id: this._id }, { is_active: true });
 
 	}).then(() => {

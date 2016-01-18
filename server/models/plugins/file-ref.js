@@ -93,7 +93,7 @@ module.exports = function(schema, options) {
 			}
 		});
 
-		return Promise.resolve().then(() => {
+		return Promise.try(() => {
 			return File.find({ _id: { $in: ids }, is_active: false });
 
 		}).then(files => {

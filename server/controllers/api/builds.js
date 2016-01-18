@@ -65,7 +65,7 @@ exports.list = function(req, res) {
 exports.create = function(req, res) {
 
 	var newBuild;
-	Promise.resolve().then(function() {
+	Promise.try(function() {
 		newBuild = new Build(req.body);
 
 		newBuild.id = newBuild.label ? newBuild.label.replace(/(^[^a-z0-9\._-]+)|([^a-z0-9\._-]+$)/gi, '').replace(/[^a-z0-9\._-]+/gi, '-').toLowerCase() : '-';
@@ -95,7 +95,7 @@ exports.create = function(req, res) {
 exports.del = function(req, res) {
 
 	var canDelete, build;
-	Promise.resolve().then(function() {
+	Promise.try(function() {
 		return acl.isAllowed(req.user.id, 'builds', 'delete');
 
 	}).then(isAllowed => {

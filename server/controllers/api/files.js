@@ -71,7 +71,7 @@ exports.upload = function(req, res) {
 exports.del = function(req, res) {
 
 	var file;
-	return Promise.resolve().then(function() {
+	return Promise.try(function() {
 		return File.findOne({ id: req.params.id });
 
 	}).then(f => {
@@ -110,7 +110,7 @@ exports.del = function(req, res) {
  */
 exports.view = function(req, res) {
 
-	return Promise.resolve().then(function() {
+	return Promise.try(function() {
 		return File.findOne({ id: req.params.id });
 
 	}).then(file => {
@@ -144,7 +144,7 @@ exports.view = function(req, res) {
  */
 function handleUpload(req, error) {
 
-	return Promise.resolve().then(function() {
+	return Promise.try(function() {
 
 		if (!req.headers['content-disposition']) {
 			throw error('Header "Content-Disposition" must be provided.').status(422);
@@ -174,7 +174,7 @@ function handleUpload(req, error) {
  */
 function handleMultipartUpload(req, error) {
 
-	return Promise.resolve().then(function() {
+	return Promise.try(function() {
 
 		if (!req.query.content_type) {
 			throw error('Mime type must be provided as query parameter "content_type" when using multipart.').status(422);

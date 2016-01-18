@@ -21,8 +21,7 @@
 
 var _ = require('lodash');
 var logger = require('winston');
-var Bluebird = require('bluebird');
-var ffmpeg = Bluebird.promisifyAll(require('fluent-ffmpeg'));
+var ffmpeg = Promise.promisifyAll(require('fluent-ffmpeg'));
 
 var config = require('../settings').current;
 var error = require('../error')('processor', 'video');
@@ -66,7 +65,7 @@ VideoProcessor.prototype.metadata = function(file, variation, done) {
 		variation = undefined;
 	}
 
-	return Bluebird.resolve().then(function() {
+	return Promise.try(function() {
 		return ffmpeg.ffprobeAsync(file.getPath(variation));
 
 	}).catch(err => {

@@ -21,7 +21,6 @@
 
 var _ = require('lodash');
 var logger = require('winston');
-var Bluebird = require('bluebird');
 
 var error = require('../../modules/error')('api', 'tag');
 var acl = require('../../acl');
@@ -38,7 +37,7 @@ exports.list = function(req, res) {
 		q = { is_active: true };
 	}
 
-	Bluebird.resolve().then(function() {
+	Promise.try(function() {
 		return Tag.find(q).exec();
 
 	}).then(tags => {
@@ -53,7 +52,7 @@ exports.list = function(req, res) {
 exports.create = function(req, res) {
 
 	var newTag;
-	Bluebird.resolve().then(function() {
+	Promise.try(function() {
 
 		newTag = new Tag(_.extend(req.body, {
 			_id: req.body.name ? req.body.name.replace(/(^[^a-z0-9]+)|([^a-z0-9]+$)/gi, '').replace(/[^a-z0-9]+/gi, '-').toLowerCase() : '-',
@@ -84,7 +83,7 @@ exports.del = function(req, res) {
 
 	var tag, canGloballyDeleteTags;
 
-	Bluebird.resolve().then(function() {
+	Promise.try(function() {
 
 		return acl.isAllowed(req.user.id, 'tags', 'delete');
 

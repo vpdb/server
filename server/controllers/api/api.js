@@ -123,7 +123,7 @@ exports.success = function(res, result, code, opts) {
  */
 exports.fail = function(res, err, code) {
 
-	Promise.resolve().then(() => {
+	Promise.try(() => {
 		code = code || err.code || 500;
 		res.setHeader('Content-Type', 'application/json');
 		if (err.errs) {

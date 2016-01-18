@@ -103,7 +103,7 @@ module.exports = function(schema, options) {
 function replaceIds(obj, paths, options) {
 
 	var Model = mongoose.model(options.model);
-	return Promise.resolve().then(function() {
+	return Promise.try(function() {
 		var invalidations = [];
 		var models = {};
 		models[options.model] = Model;

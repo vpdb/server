@@ -36,7 +36,7 @@ var storage = require('./storage');
 exports.create = function(fileData, readStream, error, callback) {
 
 	var file;
-	return Promise.resolve().then(function() {
+	return Promise.try(function() {
 		file = new File(fileData);
 		return file.validate();
 

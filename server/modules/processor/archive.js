@@ -23,11 +23,10 @@ var _ = require('lodash');
 var fs = require('fs');
 var Unrar = require('unrar');
 var Zip = require('adm-zip');
-var Bluebird = require('bluebird');
 
 var error = require('../error')('processor', 'archive');
 
-Bluebird.promisifyAll(Unrar.prototype);
+Promise.promisifyAll(Unrar.prototype);
 
 /**
  * Archive (Rar/Zip) processor.
@@ -52,7 +51,7 @@ ArchiveProcessor.prototype.metadata = function(file, variation, done) {
 		variation = undefined;
 	}
 
-	return Bluebird.resolve().then(function() {
+	return Promise.try(function() {
 
 		if (!variation) {
 			switch (file.getMimeSubtype()) {
@@ -64,10 +63,10 @@ ArchiveProcessor.prototype.metadata = function(file, variation, done) {
 					return getZipMetadata(file);
 
 				default:
-					return Bluebird.resolve({});
+					return Promise.resolve({});
 			}
 		} else {
-			return Bluebird.resolve();
+			return Promise.resolve();
 		}
 
 	}).nodeify(done);
@@ -103,7 +102,7 @@ module.exports = new ArchiveProcessor();
  */
 function getRarMetadata(file) {
 
-	return Bluebird.resolve().then(function() {
+	return Promise.try(function() {
 		var archive = new Unrar(file.getPath());
 		return archive.listAsync();
 
@@ -123,7 +122,7 @@ function getRarMetadata(file) {
 			};
 		});
 
-		return Bluebird.resolve({ entries: entries });
+		return Promise.resolve({ entries: entries });
 	});
 }
 
@@ -134,7 +133,7 @@ function getRarMetadata(file) {
  */
 function getZipMetadata(file) {
 
-	return Bluebird.resolve().then(function() {
+	return Promise.try(function() {
 
 		var entries = new Zip(file.getPath()).getEntries();
 
@@ -151,7 +150,7 @@ function getZipMetadata(file) {
 				modified_at: new Date(entry.header.time)
 			};
 		});
-		return Bluebird.resolve({ entries: entries });
+		return Promise.resolve({ entries: entries });
 
 	}).catch(err => { throw new Error(err); }); // lib throws strings, not Errors..
 }

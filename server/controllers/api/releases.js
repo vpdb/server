@@ -42,8 +42,8 @@ var pusher = require('../../modules/pusher');
 /**
  * Creates a new release.
  *
- * @param {Request} req
- * @param {Response} res
+ * @param {"express".e.Request} req
+ * @param {"express".e.Response} res
  */
 exports.create = function(req, res) {
 
@@ -113,8 +113,8 @@ exports.create = function(req, res) {
 /**
  * Updates the release data (only basic data, no versions or files).
  *
- * @param {Request} req
- * @param {Response} res
+ * @param {"express".e.Request} req
+ * @param {"express".e.Response} res
  */
 exports.update = function(req, res) {
 
@@ -177,8 +177,8 @@ exports.update = function(req, res) {
 /**
  * Adds a new version to an existing release.
  *
- * @param {Request} req
- * @param {Response} res
+ * @param {"express".e.Request} req
+ * @param {"express".e.Response} res
  */
 exports.addVersion = function(req, res) {
 
@@ -270,112 +270,92 @@ exports.addVersion = function(req, res) {
 /**
  * Updates an existing version.
  *
- * @param {Request} req
- * @param {Response} res
+ * @param {"express".e.Request} req
+ * @param {"express".e.Response} res
  */
 exports.updateVersion = function(req, res) {
 
 	var updateableFields = [ 'version', 'changes' ];
 
 	var now = new Date();
-	var assert = api.assert(error, 'updateVersion', req.params.id, res);
+	var release, version, newFiles;
+	Promise.try(() => {
+		// retrieve release
+		return Release.findOne({id: req.params.id}).populate('versions.files._compatibility').exec();
 
-	Release.findOne({ id: req.params.id }).populate('versions.files._compatibility').exec(assert(function(release) {
+	}).then(r => {
+		release = r;
+
+		// fail if no release
 		if (!release) {
-			return api.fail(res, error('No such release with ID "%s".', req.params.id), 404);
+			throw error('No such release with ID "%s".', req.params.id).status(404);
 		}
 
-		// only allow authors to upload version updates
-		if (!_.contains(_.map(_.pluck(release.authors, '_user'), id => id.toString()), req.user._id.toString())) {
-			return api.fail(res, error('Only authors of the release can add new files of a version.', req.params.id), 403);
+		// fail if wrong user
+		var authorIds = _.map(_.pluck(release.authors, '_user'), id => id.toString());
+		if (!_.contains([release._created_by.toString(), ...authorIds], req.user._id.toString())) {
+			throw error('Only authors of the release can update add new versions.').status(403).log('addVersion');
 		}
 
 		var versions = _.filter(release.versions, { version: req.params.version });
 		if (versions.length === 0) {
-			return api.fail(res, error('No such version "%s" for release "%s".', req.params.version, req.params.id), 404);
+			throw error('No such version "%s" for release "%s".', req.params.version, req.params.id).status(404);
 		}
-		var version = versions[0];
+		version = versions[0];
 		var versionObj = req.body;
-		var newFiles = [];
+		newFiles = [];
 		logger.info('[api|release:updateVersion] %s', util.inspect(versionObj, { depth: null }));
 
-		async.eachSeries(versionObj.files || [], function(fileObj, next) {
+		return Promise.each(versionObj.files || [], fileObj => {
 
 			// defaults
 			_.defaults(fileObj, { released_at: now });
 
-			VersionFile.getInstance(fileObj, function(err, newVersionFile) {
-				if (err) {
-					api.fail(res, error('Error creating instance for posted version.'), 500);
-					return next(err);
-				}
+			return VersionFile.getInstance(fileObj).then(newVersionFile => {
 				version.files.push(newVersionFile);
 				newFiles.push(newVersionFile);
-				next();
-			});
-
-		}, function(err) {
-			if (err) {
-				return;
-			}
-			release.validate(function(err) {
-
-				if (err) {
-					/* for some reason, mongoose runs the validations twice, once in release context and once in
-					 * versions context, producing errors for files.0.* as well as versions.0.files.0.*, where
-					 * the first one should not be produced. however, since we strip (without(...)), that's not
-					 * a problem right now but might be in the future.
-					 */
-					return api.fail(res, error('Validations failed. See below for details.').errors(err.errors).without(/^versions\.\d+\./).warn('updateVersion'), 422);
-				}
-
-				logger.info('[api|release:updateVersion] Validations passed, updating version.');
-				release.modified_at = new Date();
-				release.save(function(err) {
-
-					if (err) {
-						return api.fail(res, error('Error saving release: %s', err.message).errors(err.errors).log('updateVersion'), 500);
-					}
-
-					logger.info('[api|release:create] Added new file to version "%s" to release "%s".', version.version, release.name);
-
-					// set media to active
-					async.eachSeries(newFiles, function(file, next) {
-						file.activateFiles(next);
-
-					}, function(err) {
-						if (err) {
-							return api.fail(res, error('Error activating files.').log('updateVersion'), 422);
-						}
-
-						logger.info('[api|release:create] All referenced files activated, returning object to client.');
-
-						// game modification date
-						Game.update({ _id: release._game.toString() }, { modified_at: new Date() }, assert(function() {
-
-							Release.findOne({ id: req.params.id })
-								.populate({ path: 'versions.files._file' })
-								.populate({ path: 'versions.files._media.playfield_image' })
-								.populate({ path: 'versions.files._media.playfield_video' })
-								.populate({ path: 'versions.files._compatibility' })
-								.exec(assert(function(release) {
-									var version = _.filter(release.toDetailed().versions, { version: req.params.version })[0];
-									return api.success(res, version, 201);
-
-								}, 'Error fetching updated release "%s"'));
-						}, 'Error updating game modification date'));
-					});
-				});
 			});
 		});
-	}, 'Error getting release "%s"'));
+
+	}).then(() => {
+		return release.validate();
+
+	}).then(() => {
+
+		logger.info('[api|release:updateVersion] Validations passed, updating version.');
+		release.modified_at = now;
+		return release.save();
+
+	}).then(r => {
+		release = r;
+		logger.info('[api|release:create] Added new file to version "%s" to release "%s".', version.version, release.name);
+		return Promise.all(newFiles, file => file.activateFiles());
+
+	}).then(() => {
+		logger.info('[api|release:create] All referenced files activated, returning object to client.');
+		return Game.update({ _id: release._game.toString() }, { modified_at: new Date() });
+
+	}).then(() => {
+
+		return Release.findOne({ id: req.params.id })
+			.populate({ path: 'versions.files._file' })
+			.populate({ path: 'versions.files._media.playfield_image' })
+			.populate({ path: 'versions.files._media.playfield_video' })
+			.populate({ path: 'versions.files._compatibility' })
+			.exec();
+
+	}).then(release => {
+		var version = _.filter(release.toDetailed().versions, { version: req.params.version })[0];
+		api.success(res, version, 201);
+
+	}).catch(api.handleError(res, error, 'Error updating version'));
 };
 
 /**
  * Lists all releases.
  *
- * @param {Request} req
- * @param {Response} res
+ * @param {"express".e.Request} req
+ * @param {"express".e.Response} res
  */
 exports.list = function(req, res) {
 
@@ -664,8 +644,9 @@ exports.list = function(req, res) {
 
 /**
  * Lists a release of a given ID.
- * @param {Request} req
- * @param {Response} res
+ *
+ * @param {"express".e.Request} req
+ * @param {"express".e.Response} res
  */
 exports.view = function(req, res) {
 
@@ -710,8 +691,8 @@ exports.view = function(req, res) {
 /**
  * Deletes a release.
  *
- * @param {Request} req
- * @param {Response} res
+ * @param {"express".e.Request} req
+ * @param {"express".e.Response} res
  */
 exports.del = function(req, res) {
 
@@ -752,7 +733,7 @@ exports.del = function(req, res) {
 /**
  * Retrieves release details.
  * @param id Database ID of the release to fetch
- * @returns {Promise}
+ * @returns {Promise.<Release>}
  */
 function getDetails(id) {
 	return Release.findById(id)

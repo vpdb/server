@@ -95,7 +95,7 @@ Err.prototype._log = function(fct, args) {
 
 /**
  * Adds a status code to the error
- * @param {number} code Status code
+ * @param {number} code HTTP status code
  * @returns {Err}
  */
 Err.prototype.status = function(code) {

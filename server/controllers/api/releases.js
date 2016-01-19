@@ -158,7 +158,7 @@ exports.update = function(req, res) {
 	}).then(release => {
 
 		// re-fetch release object tree
-		return getDetails(release._id)
+		return getDetails(release._id);
 
 	}).then(release => {
 
@@ -751,7 +751,7 @@ exports.del = function(req, res) {
 
 /**
  * Retrieves release details.
- * @param id
+ * @param id Database ID of the release to fetch
  * @returns {Promise}
  */
 function getDetails(id) {

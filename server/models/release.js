@@ -170,123 +170,93 @@ ReleaseSchema.path('versions').validate(function(file) {
  */
 VersionSchema.path('files').validate(function(files, callback) {
 
-	var index = 0;
-	var that = this;
+	// ignore if no files set
 	if (!_.isArray(files) || files.length === 0) {
 		return callback(true);
 	}
+
 	var hasTableFile = false;
 	var tableFiles = [];
-	async.eachSeries(files, function(f, next) {
+	return Promise.try(() => {
 
-		if (f._file) {
+		var index = 0; // when updating a version, ignore existing files, so increment only if new
+		return Promise.each(files, f => {
 
-			mongoose.model('File').findById(f._file, function(err, file) {
-				/* istanbul ignore if */
-				if (err) {
-					logger.error('[model] Error fetching file "%s".', f._file);
-					if (f.isNew) index++;
-					return next();
+			return Promise.try(() => {
+
+				// will fail by schema validation rule
+				if (!f._file) {
+					return;
 				}
-				if (!file) {
-					// this is already validated by the file reference
-					if (f.isNew) index++;
-					return next();
-				}
+				return mongoose.model('File').findById(f._file).then(file => {
 
-				// table checks
-				if (file.getMimeCategory() === 'table') {
+					// will fail by reference plugin
+					if (!file) {
+						return;
+					}
+
+					// don't care about anything else but table files
+					if (file.getMimeCategory() !== 'table') {
+						return;
+					}
 
 					hasTableFile = true;
 					tableFiles.push({ file: f, index: index});
 
 					// flavor
 					var fileFlavor = f.flavor || {};
-					_.each(fileFields.flavor, function(obj, flavor) {
+					_.each(fileFields.flavor, (obj, flavor) => {
 						if (!fileFlavor[flavor]) {
-							that.invalidate('files.' + index + '.flavor.' + flavor, 'Flavor `' + flavor + '` must be provided.');
+							this.invalidate('files.' + index + '.flavor.' + flavor, 'Flavor `' + flavor + '` must be provided.');
 						}
 					});
 
-					// compatibility (in here because it applies only to table files.)
+					// validate compatibility (in here because it applies only to table files.)
 					if (!_.isArray(f._compatibility) || !f._compatibility.length) {
 						// TODO check if exists.
-						that.invalidate('files.' + index + '._compatibility', 'At least one build must be provided.');
+						this.invalidate('files.' + index + '._compatibility', 'At least one build must be provided.');
 					}
 
-					// media
-					var hasPlayfieldImage = f._media && f._media.playfield_image;
-					var hasPlayfieldScreenshot = file.variations && file.variations.screenshot;
-					if (hasPlayfieldImage) {
+					// check if playfield image exists
+					if (!f._media.playfield_image) {
+						this.invalidate('files.' + index + '._media.playfield_image', 'Playfield image must be provided.');
+					}
 
-						// check if exists
-						mongoose.model('File').findById(f._media.playfield_image, function(err, playfieldImage) {
-							/* istanbul ignore if */
-							if (err) {
-								logger.error('[model] Error fetching file "%s".', f._media.playfield_image);
-								if (f.isNew) index++;
-								return next();
-							}
+					var mediaValidations = [];
+
+					// validate playfield image
+					if (f._media.playfield_image) {
+						mediaValidations.push(mongoose.model('File').findById(f._media.playfield_image).then(playfieldImage => {
 							if (!playfieldImage) {
-								that.invalidate('files.' + index + '._media.playfield_image', 'Playfield "' + f._media.playfield_image + '" does not exist.');
-								if (f.isNew) index++;
-								return next();
+								this.invalidate('files.' + index + '._media.playfield_image', 'Playfield "' + f._media.playfield_image + '" does not exist.');
+								return;
 							}
 							if (!_.contains(['playfield-fs', 'playfield-ws'], playfieldImage.file_type)) {
-								that.invalidate('files.' + index + '._media.playfield_image', 'Must reference a file with file_type "playfield-fs" or "playfield-ws".');
+								this.invalidate('files.' + index + '._media.playfield_image', 'Must reference a file with file_type "playfield-fs" or "playfield-ws".');
 							}
-							if (f.isNew) index++;
-							next();
-						});
-					} else if (hasPlayfieldScreenshot) {
-
-						logger.info('[model|release] Creating new playfield image from table screenshot...');
-						var error = require('../modules/error')('model', 'file');
-						var screenshotPath = file.getPath('screenshot');
-						var fstat = fs.statSync(screenshotPath);
-						var readStream = fs.createReadStream(screenshotPath);
-
-						var fileData = {
-							name: path.basename(screenshotPath, path.extname(screenshotPath)) + '.png',
-							bytes: fstat.size,
-							variations: {},
-							created_at: new Date(),
-							mime_type: file.variations.screenshot.mime_type,
-							file_type: 'playfield-' + f.flavor.orientation,
-							_created_by: file._created_by
-						};
-
-						fileModule.create(fileData, readStream, error, function(err, playfieldImageFile) {
-							if (err) {
-								logger.error('[model|release] Error creating playfield image from table file: ' + err.message);
-								that.invalidate('files.' + index + '._media.playfield_image', 'Error processing screenshot: ' + err.message);
-							} else {
-								logger.info('[model|release] Playfield image successfully created.');
-								f._media.playfield_image = playfieldImageFile._id;
-							}
-							if (f.isNew) index++;
-							next();
-						});
-
-					} else {
-						that.invalidate('files.' + index + '._media.playfield_image', 'Playfield image must be provided.');
-						if (f.isNew) index++;
-						return next();
+						}));
 					}
 
-				} else {
-					if (f.isNew) index++;
-					next();
+					// TODO validate playfield video
+					if (f._media.playfield_video) {
+
+						mediaValidations.push(Promise.resolve(() => console.log("TODO: Validate playfield video")));
+					}
+
+					return Promise.all(mediaValidations);
+				})
+
+			}).then(() => {
+				if (f.isNew) {
+					index++;
 				}
 			});
-		} else {
-			if (f.isNew) index++;
-			next();
-		}
-	}, function() {
+		});
+
+	}).then(() => {
 
 		if (!hasTableFile) {
-			that.invalidate('files', 'At least one table file must be provided.');
+			this.invalidate('files', 'At least one table file must be provided.');
 		}
 		var mapCompat = function(file) {
 			// can be either exploded into object or just id.
@@ -296,7 +266,7 @@ VersionSchema.path('files').validate(function(files, callback) {
 //		console.log('Checking %d table files for compat/flavor dupes:', _.keys(tableFiles).length);
 
 		// validate existing compat/flavor combination
-		_.each(tableFiles, function(f) {
+		_.each(tableFiles, f => {
 			var file = f.file;
 
 			if (!file.flavor || !file._compatibility) {
@@ -324,12 +294,19 @@ VersionSchema.path('files').validate(function(files, callback) {
 
 			if (file.isNew && dupeFiles.length > 0) {
 //				console.log('     === FAILED ===');
-				that.invalidate('files.' + f.index + '._compatibility', 'A combination of compatibility and flavor already exists with the same values.');
-				that.invalidate('files.' + f.index + '.flavor', 'A combination of compatibility and flavor already exists with the same values.');
+				this.invalidate('files.' + f.index + '._compatibility', 'A combination of compatibility and flavor already exists with the same values.');
+				this.invalidate('files.' + f.index + '.flavor', 'A combination of compatibility and flavor already exists with the same values.');
 			}
 		});
 
+	}).then(() => {
 		callback(true);
+
+	}).catch(err => {
+		logger.error('[model|release] Error validating files! %s', err.message);
+		logger.error(err.stack);
+		callback(false);
+
 	});
 });
 

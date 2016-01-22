@@ -268,14 +268,14 @@ function Params(name) {
 	var params = this.params = [];
 
 	this.add = function() {
-		_.each(arguments, function(arg) {
+		arguments.forEach(function(arg) {
 			params.push(arg);
 		});
 	};
 
 	this.addBefore = function() {
 		var args = _.values(arguments).reverse();
-		_.each(args, function(arg) {
+		args.forEach(function(arg) {
 			params.unshift(arg);
 		});
 	};

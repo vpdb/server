@@ -48,22 +48,22 @@ var pusher = require('../../modules/pusher');
 exports.create = function(req, res) {
 
 	var now = new Date();
-
-	// defaults
-	if (req.body.versions) {
-		_.each(req.body.versions, function(version) {
-			version.released_at = version.released_at || now.toISOString();
-			if (version.files) {
-				var releasedAt = version.released_at || now.toISOString();
-				_.each(version.files, function(file) {
-					file.released_at = file.released_at || releasedAt;
-				});
-			}
-		});
-	}
-
 	var release;
 	Promise.try(() => {
+
+		// defaults
+		if (req.body.versions) {
+			req.body.versions.forEach(function(version) {
+				version.released_at = version.released_at || now.toISOString();
+				if (version.files) {
+					var releasedAt = version.released_at || now.toISOString();
+					version.files.forEach(function(file) {
+						file.released_at = file.released_at || releasedAt;
+					});
+				}
+			});
+		}
+
 		logger.info('[api|release:create] Body: %s', util.inspect(req.body, { depth: null }));
 		return Release.getInstance(_.extend(req.body, {
 			_created_by: req.user._id,
@@ -132,8 +132,8 @@ exports.update = function(req, res) {
 		}
 
 		// fail if wrong user
-		var authorIds = _.map(_.pluck(release.authors, '_user'), id => id.toString());
-		if (!_.contains(authorIds.concat(release._created_by.toString()), req.user._id.toString())) {
+		var authorIds = _.map(_.map(release.authors, '_user'), id => id.toString());
+		if (!_.includes(authorIds.concat(release._created_by.toString()), req.user._id.toString())) {
 			throw error('Only authors of the release can update it.').status(403).log('update');
 		}
 		if (!_.isUndefined(req.body.authors) && release._created_by.toString() !== req.user._id.toString()) {
@@ -196,15 +196,15 @@ exports.addVersion = function(req, res) {
 		}
 
 		// fail if wrong user
-		var authorIds = _.map(_.pluck(release.authors, '_user'), id => id.toString());
-		if (!_.contains(authorIds.concat(release._created_by.toString()), req.user._id.toString())) {
+		var authorIds = _.map(_.map(release.authors, '_user'), id => id.toString());
+		if (!_.includes([release._created_by.toString(), ...authorIds], req.user._id.toString())) {
 			throw error('Only authors of the release can update add new versions.').status(403).log('addVersion');
 		}
 
 		// set defaults
 		var versionObj = _.defaults(req.body, { released_at: now });
 		if (versionObj.files) {
-			_.each(versionObj.files, function(file) {
+			versionObj.files.forEach(function(file) {
 				_.defaults(file, { released_at: now });
 			});
 		}
@@ -292,8 +292,8 @@ exports.updateVersion = function(req, res) {
 		}
 
 		// fail if wrong user
-		var authorIds = _.map(_.pluck(release.authors, '_user'), id => id.toString());
-		if (!_.contains([release._created_by.toString(), ...authorIds], req.user._id.toString())) {
+		var authorIds = _.map(_.map(release.authors, '_user'), id => id.toString());
+		if (!_.includes([release._created_by.toString(), ...authorIds], req.user._id.toString())) {
 			throw error('Only authors of the release can update add new versions.').status(403).log('addVersion');
 		}
 
@@ -421,7 +421,7 @@ exports.list = function(req, res) {
 						api.fail(res, error(err, 'Error searching games with query "%s"', idQuery).log('list'), 500);
 						return next(true);
 					}
-					var gameIds = _.pluck(games, '_id');
+					var gameIds = _.map(games, '_id');
 					if (gameIds.length > 0) {
 						query.push({ $or: [ { name: titleRegex }, { '_game': { $in: gameIds }} ] });
 					} else {
@@ -450,7 +450,7 @@ exports.list = function(req, res) {
 					api.fail(res, error(err, 'Error searching starred releases for user <%s>.', req.user.email).log('list'), 500);
 					return next(true);
 				}
-				var releaseIds = _.pluck(_.pluck(stars, '_ref'), 'release');
+				var releaseIds = _.map(_.map(stars, '_ref'), 'release');
 				next(null, query, releaseIds);
 			});
 		},
@@ -485,7 +485,7 @@ exports.list = function(req, res) {
 						api.fail(res, error(err, 'Error searching builds for user <%s>.', req.user.email).log('list'), 500);
 						return next(true);
 					}
-					query.push({ 'versions.files._compatibility': { $in: _.pluck(builds, '_id') }});
+					query.push({ 'versions.files._compatibility': { $in: _.map(builds, '_id') }});
 					next(null, query, stars);
 				});
 
@@ -514,8 +514,8 @@ exports.list = function(req, res) {
 						return next(true);
 					}
 					if (files && files.length > 0) {
-						fileIds = _.pluck(files, 'id');
-						query.push({ 'versions.files._file': { $in: _.pluck(files, '_id') }});
+						fileIds = _.map(files, 'id');
+						query.push({ 'versions.files._file': { $in: _.map(files, '_id') }});
 					} else {
 						query.push({ _id: null }); // no result
 					}
@@ -534,7 +534,7 @@ exports.list = function(req, res) {
 			var filter = [];
 			if (!_.isUndefined(req.query.flavor)) {
 
-				_.each(req.query.flavor.split(','), function(f) {
+				req.query.flavor.split(',').forEach(function(f) {
 					var kv = f.split(':');
 					var k = kv[0].toLowerCase();
 					var v = kv[1].toLowerCase();

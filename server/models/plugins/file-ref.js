@@ -33,17 +33,17 @@ module.exports = function(schema, options) {
 	options = options || {};
 
 	// filter ignored paths
-	var paths = _.pick(common.traversePaths(schema), function(schemaType) {
+	var paths = _.pickBy(common.traversePaths(schema), function(schemaType) {
 		return schemaType.options && schemaType.options.ref && schemaType.options.ref === 'File';
 	});
-	var fileRefs = _.omit(paths, function(schemaType, path) {
-		return _.contains(options.ignore, path);
+	var fileRefs = _.omitBy(paths, function(schemaType, path) {
+		return _.includes(options.ignore, path);
 	});
 
 	//-----------------------------------------------------------------------------
 	// VALIDATIONS
 	//-----------------------------------------------------------------------------
-	_.each(_.keys(fileRefs), function(path) {
+	_.keys(fileRefs).forEach(function(path) {
 
 		schema.path(path).validate(function(fileId, callback) {
 			var that = this;
@@ -86,7 +86,7 @@ module.exports = function(schema, options) {
 		var that = this;
 
 		var objPaths = _.keys(common.explodePaths(this, fileRefs));
-		_.each(objPaths, path => {
+		objPaths.forEach(path => {
 			var id = _.get(that, path);
 			if (id) {
 				ids.push(id);
@@ -116,7 +116,7 @@ module.exports = function(schema, options) {
 		var File = mongoose.model('File');
 		var objPaths = _.keys(common.explodePaths(obj, fileRefs));
 		var ids = [];
-		_.each(objPaths, function(path) {
+		objPaths.forEach(function(path) {
 			var id = _.get(obj, path + '._id');
 			if (id) {
 				ids.push(id);

@@ -58,38 +58,32 @@ exports.head = function(req, res) {
  */
 exports.create = function(req, res) {
 
-	Game.getInstance(_.extend(req.body, {
-		_created_by: req.user._id,
-		created_at: new Date()
-	}), function(err, newGame) {
-		if (err) {
-			return api.fail(res, error(err, 'Error creating game instance').log('create'), 500);
-		}
-		var assert = api.assert(error, 'create', newGame.id, res);
-		var assertRb = api.assert(error, 'create', newGame.id, res, function(done) {
-			newGame.remove(done);
-		});
+	var game;
+	Promise.try(() => {
+		return Game.getInstance(_.assign(req.body, {
+			_created_by: req.user._id,
+			created_at: new Date()
+		}));
+
+	}).then(newGame => {
+		game = newGame;
 		logger.info('[api|game:create] %s', util.inspect(req.body));
-		newGame.validate(function(err) {
-			if (err) {
-				return api.fail(res, error('Validations failed. See below for details.').errors(err.errors).warn('create'), 422);
-			}
-			logger.info('[api|game:create] Validations passed.');
-			newGame.save(assert(function(game) {
-				logger.info('[api|game:create] Game "%s" created.', game.title);
+		return newGame.validate();
 
-				// set media to active
-				game.activateFiles(assertRb(function(game) {
-					logger.info('[api|game:create] All referenced files activated, returning object to client.');
+	}).then(() => {
+		logger.info('[api|game:create] Validations passed.');
+		return game.save();
 
-					LogEvent.log(req, 'create_game', true, { game: _.omit(game.toSimple(), [ 'rating', 'counter' ]) }, { game: game._id });
+	}).then(() => {
+		logger.info('[api|game:create] Game "%s" created.', game.title);
+		return game.activateFiles();
 
-					return api.success(res, game.toDetailed(), 201);
+	}).then(() => {
+		LogEvent.log(req, 'create_game', true, { game: _.omit(game.toSimple(), [ 'rating', 'counter' ]) }, { game: game._id });
+		api.success(res, game.toDetailed(), 201);
 
-				}, 'Error activating files for game "%s"'));
-			}, 'Error saving game with id "%s"'));
-		});
-	});
+	}).catch(api.handleError(res, error, 'Error creating game'));
+
 };
 
 
@@ -163,7 +157,7 @@ exports.list = function(req, res) {
 	if (req.query.decade) {
 		var decades = req.query.decade.split(',');
 		var d = [];
-		_.each(decades, function(decade) {
+		decades.forEach(function(decade) {
 			d.push({ year: { $gte: parseInt(decade, 10), $lt: parseInt(decade, 10) + 10 }});
 		});
 		if (d.length === 1) {
@@ -257,7 +251,7 @@ exports.view = function(req, res) {
 					return next(error(err, 'Error searching starred releases for user <%s>.', req.user.email).log('list'));
 				}
 				console.log('stars: %j', stars);
-				var starredReleaseIds = _.map(_.pluck(_.pluck(stars, '_ref'), 'release'), id => id.toString());
+				var starredReleaseIds = _.map(_.map(_.map(stars, '_ref'), 'release'), id => id.toString());
 
 				next(null, game, starredReleaseIds);
 			});

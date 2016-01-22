@@ -52,7 +52,7 @@ exports.addVersion = function(game, release, version) {
 		logger.info("Found %d authorized user(s) subscribed to release %s.", users.length, release.id);
 
 		var userChannels = _.uniq(_.map(users, function(user) { return getChannel(user); }));
-		_.each(userChannels, function(chan) {
+		userChannels.forEach(function(chan) {
 			logger.info("Announcing update to channel %s", chan);
 			exports.api.trigger(chan, 'new_release_version', { game_id: game.id, release_id: release.id, version: version.version });
 		});

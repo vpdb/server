@@ -34,7 +34,7 @@ module.exports = function(schema, options) {
 		var refModelName = null;
 		var conditions = {};
 
-		if (fields.length > 0 && !_.contains(fields, path)) {
+		if (fields.length > 0 && !_.includes(fields, path)) {
 			return;
 		}
 

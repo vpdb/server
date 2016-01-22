@@ -152,7 +152,7 @@ function nonEmptyArray(value) {
 }
 
 ReleaseSchema.path('versions').validate(function(file) {
-	var ids = _.map(_.compact(_.pluck(_.flatten(_.pluck(this.versions, 'files')), '_file')), function(id) {
+	var ids = _.map(_.compact(_.map(_.flatten(_.map(this.versions, 'files')), '_file')), function(id) {
 		return id.toString();
 	});
 	if (_.uniq(ids).length !== ids.length) {
@@ -216,6 +216,10 @@ VersionSchema.path('files').validate(function(files, callback) {
 						this.invalidate('files.' + index + '._compatibility', 'At least one build must be provided.');
 					}
 
+					if (f._compatibility.length !== _.uniq(f._compatibility.map(c => c.toString())).length) {
+						this.invalidate('files.' + index + '._compatibility', 'Cannot link a build multiple times.');
+					}
+
 					// check if playfield image exists
 					if (!f._media.playfield_image) {
 						this.invalidate('files.' + index + '._media.playfield_image', 'Playfield image must be provided.');
@@ -230,7 +234,7 @@ VersionSchema.path('files').validate(function(files, callback) {
 								this.invalidate('files.' + index + '._media.playfield_image', 'Playfield "' + f._media.playfield_image + '" does not exist.');
 								return;
 							}
-							if (!_.contains(['playfield-fs', 'playfield-ws'], playfieldImage.file_type)) {
+							if (!_.includes(['playfield-fs', 'playfield-ws'], playfieldImage.file_type)) {
 								this.invalidate('files.' + index + '._media.playfield_image', 'Must reference a file with file_type "playfield-fs" or "playfield-ws".');
 							}
 						}));
@@ -264,8 +268,8 @@ VersionSchema.path('files').validate(function(files, callback) {
 //		console.log('Checking %d table files for compat/flavor dupes:', _.keys(tableFiles).length);
 
 		// validate existing compat/flavor combination
-		_.each(tableFiles, f => {
-			var file = f.file;
+		tableFiles.forEach(f => {
+			let file = f.file;
 
 			if (!file.flavor || !file._compatibility) {
 				return;
@@ -275,7 +279,7 @@ VersionSchema.path('files').validate(function(files, callback) {
 			var fileCompat = _.map(file._compatibility, getIdFromFile);
 			fileCompat.sort();
 
-			var dupeFiles = _.filter(_.pluck(tableFiles, 'file'), otherFile => {
+			var dupeFiles = _.filter(_.map(tableFiles, 'file'), otherFile => {
 
 				if (file.id === otherFile.id) {
 					return false;
@@ -359,7 +363,7 @@ ReleaseSchema.statics.toSimple = function(release, opts) {
 
 	// if results comes from an aggregation, we don't have a model and need to call toObj manually...
 	if (!release.toObj) {
-		_.each(rls.authors, function(author) {
+		rls.authors.forEach(function(author) {
 			AuthorSchema.options.toObject.transform(null, author);
 		});
 	}
@@ -387,13 +391,14 @@ ReleaseSchema.statics.toSimple = function(release, opts) {
 	rls.versions = _.map(versions, function(version) {
 		version = _.pick(version, versionFields);
 		version.files = _.map(version.files, function(file) {
-			var fields = [ '_file', '_compatibility' ];
+			let fields = [ '_file', '_compatibility' ];
+			let compatibility = file.compatibility || file._compatibility;
 			if (opts.thumbPerFile && opts.thumbFormat) {
 				file.thumb = getFileThumb(file, opts);
 				fields.push('thumb');
 			}
-			file = _.pick(file, fileRefFields.concat(fields));
-			file.compatibility = _.map(file.compatibility || file._compatibility, function(c) {
+			file = _.pick(file, [...fileRefFields, ...fields]);
+			file.compatibility = _.map(compatibility, function(c) {
 				return _.pick(c, compatFields);
 			});
 			file.file = _.pick(file.file || file._file, fileFields);
@@ -521,7 +526,7 @@ ReleaseSchema.methods.toDetailed = function(opts) {
 	});
 
 	if (opts.starredReleaseIds) {
-		rls.starred = _.contains(opts.starredReleaseIds, this._id.toString());
+		rls.starred = _.includes(opts.starredReleaseIds, this._id.toString());
 	}
 
 	return rls;
@@ -564,7 +569,7 @@ ReleaseSchema.options.toObject = {
 		delete release._tags;
 		delete release._game;
 		if (_.isArray(release.links)) {
-			_.each(release.links, function(link) {
+			release.links.forEach(function(link) {
 				delete link._id;
 				delete link.id;
 			});
@@ -583,16 +588,10 @@ FileSchema.options.toObject = {
 	transform: function(doc, file) {
 		var Build = require('mongoose').model('Build');
 		var File = require('mongoose').model('File');
-
 		file.media = file._media;
-		file.compatibility = [];
-		_.each(file._compatibility, function(compat) {
-			if (compat.label) {
-				file.compatibility.push(Build.toSimple(compat));
-			} else {
-				file.compatibility.push({ _id: compat._id });
-			}
-		});
+		file.compatibility = _.map(file._compatibility, compat =>
+			compat.label ? Build.toSimple(compat) : { _id: compat._id }
+		);
 		file.file = File.toDetailed(file._file);
 		delete file.id;
 		delete file._id;
@@ -638,7 +637,7 @@ function getReleaseThumb(versions, opts) {
 	var weight, match, filesByWeight = [];
 
 	// get all files
-	var files = _.flatten(_.pluck(versions, 'files'));
+	var files = _.flatten(_.map(versions, 'files'));
 
 	// find best matching flavor
 	for (i = 0; i < files.length; i++) {

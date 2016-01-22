@@ -62,7 +62,7 @@ exports.configure = function() {
 	}
 
 	// ipboard strategies
-	_.each(config.vpdb.passport.ipboard, function(ipbConfig) {
+	config.vpdb.passport.ipboard.forEach(ipbConfig => {
 		if (ipbConfig.enabled) {
 
 			var callbackUrl = settings.webUri() + '/auth/' +  ipbConfig.id + '/callback';

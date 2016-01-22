@@ -127,14 +127,13 @@ exports.fail = function(res, err, code) {
 		code = code || err.code || 500;
 		res.setHeader('Content-Type', 'application/json');
 		if (err.errs) {
-			var arr = [];
-			_.each(err.errs, function(error, path) {
-				arr.push({
+			var arr = _.uniqWith(_.map(err.errs, (error, path) => {
+				return {
 					message: error.message,
 					field: _.isArray(err.errs) ? error.path : path,
 					value: error.value
-				});
-			});
+				};
+			}), _.isEqual);
 			res.status(code).json({ errors: _.sortBy(arr, 'field') });
 		} else {
 			res.status(code).json({ error: err.msg() });
@@ -299,7 +298,7 @@ exports.sortParams = function(req, defaultSort, map) {
 
 exports.checkReadOnlyFields = function(newObj, oldObj, allowedFields) {
 	var errors = [];
-	_.each(_.difference(_.keys(newObj), allowedFields), function(field) {
+	_.difference(_.keys(newObj), allowedFields).forEach(function(field) {
 		var newVal, oldVal;
 
 		// for dates we want to compare the time stamp

@@ -180,12 +180,12 @@ exports.update = function(req, res) {
 		var diff = LogUser.diff(_.pick(user.toObj(), updateableFields), updatedUser);
 
 		// if caller is not root..
-		if (!_.contains(callerRoles, 'root')) {
+		if (!_.includes(callerRoles, 'root')) {
 
 			logger.info('[api|user:update] Checking for privilege escalation. Added roles: [%s], Removed roles: [%s].', addedRoles.join(' '), removedRoles.join(' '));
 
 			// if user to be updated is already root or admin, deny (unless it's the same user).
-			if (!user._id.equals(req.user._id) && (_.contains(currentUserRoles, 'root') || _.contains(currentUserRoles, 'admin'))) {
+			if (!user._id.equals(req.user._id) && (_.includes(currentUserRoles, 'root') || _.includes(currentUserRoles, 'admin'))) {
 
 				// log
 				LogUser.failure(req, user, 'update_user', diff, req.user, 'User is not allowed to update administrators or root users.');
@@ -198,7 +198,7 @@ exports.update = function(req, res) {
 			}
 
 			// if new roles contain root or admin, deny (even when removing)
-			if (_.contains(addedRoles, 'root') || _.contains(addedRoles, 'admin') || _.contains(removedRoles, 'root') || _.contains(removedRoles, 'admin')) {
+			if (_.includes(addedRoles, 'root') || _.includes(addedRoles, 'admin') || _.includes(removedRoles, 'root') || _.includes(removedRoles, 'admin')) {
 
 				// log
 				LogUser.failure(req, user, 'update_user', diff, req.user, 'User is not allowed change the admin or root role for anyone.');
@@ -212,7 +212,7 @@ exports.update = function(req, res) {
 		}
 
 		// 3. copy over new values
-		_.each(updateableFields, function(field) {
+		updateableFields.forEach(function(field) {
 			user[field] = updatedUser[field];
 		});
 

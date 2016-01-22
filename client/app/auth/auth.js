@@ -308,7 +308,7 @@ angular.module('vpdb.auth', [])
 						paths.push(value);
 					}
 				});
-				this.paths = _.unique(paths.concat(this.paths));
+				this.paths = _.uniq(paths.concat(this.paths));
 				if (fetch) {
 					this.fetchUrlTokens();
 				}

@@ -56,13 +56,13 @@ exports.calculateProjection = function(table, picDimensions) {
 	console.log('Projection: %j', picRect.vertices);
 
 	// scaling to fill screen...
-	var postScale = picDimensions.height / (_.max(_.pluck(picRect.vertices, 'y')) - _.min(_.pluck(picRect.vertices, 'y')));
+	var postScale = picDimensions.height / (_.max(_.map(picRect.vertices, 'y')) - _.min(_.map(picRect.vertices, 'y')));
 	picRect.applyMatrix(new THREE.Matrix4().makeScale(postScale, postScale, postScale));
 	picRect.applyMatrix(new THREE.Matrix4().makeScale(1.02, 1, 1));
 
 
 	// moving to center
-	var mX = (picDimensions.width - _.max(_.pluck(picRect.vertices, 'x')) - _.min(_.pluck(picRect.vertices, 'x'))) / 2;
+	var mX = (picDimensions.width - _.max(_.map(picRect.vertices, 'x')) - _.min(_.map(picRect.vertices, 'x'))) / 2;
 	var mY = -picRect.vertices[1].y;
 	picRect.applyMatrix(new THREE.Matrix4().makeTranslation(mX, mY, 0));
 	console.log('Projection (centered): %j', picRect.vertices);

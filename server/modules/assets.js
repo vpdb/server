@@ -45,7 +45,7 @@ function Assets() {
 	});
 
 	// application javascripts
-	_.each([ 'app.js', '/*/**.js' ], function(ptrn) {
+	[ 'app.js', '/*/**.js' ].forEach(function(ptrn) {
 		_.each(glob.sync(jsRoot + '/' + ptrn), function(file) {
 			that.app.js.push({
 				src: path.resolve(file),
@@ -84,7 +84,7 @@ function Assets() {
 					prefix = 'lib/';
 				} else if (ext === '.css') {
 					key = 'css';
-				} else if (_.contains(['.woff', '.woff2', '.ttf', '.svg', '.eot', '.otf'], ext)) {
+				} else if (_.includes(['.woff', '.woff2', '.ttf', '.svg', '.eot', '.otf'], ext)) {
 					key = 'fonts';
 				} else {
 					key = 'public';

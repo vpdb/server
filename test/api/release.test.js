@@ -177,6 +177,39 @@ describe('The VPDB `release` API', function() {
 			});
 		});
 
+		it('should fail when providing the same build twice', function(done) {
+			var user = 'member';
+			hlp.game.createGame('contributor', request, function(game) {
+				hlp.file.createVpt(user, request, function(vptfile) {
+					hlp.file.createPlayfield(user, request, 'fs', function(playfield) {
+						request
+							.post('/api/v1/releases')
+							.as(user)
+							.send({
+								name: 'release',
+								_game: game.id,
+								versions: [
+									{
+										files: [ {
+											_file: vptfile.id,
+											_media: { playfield_image: playfield.id },
+											_compatibility: [ '9.9.0', '9.9.0' ],
+											flavor: { orientation: 'fs', lighting: 'night' } }
+										],
+										version: '1.0.0'
+									}
+								],
+								authors: [ { _user: hlp.getUser(user).id, roles: [ 'Table Creator' ] } ]
+							})
+							.end(function (err, res) {
+								hlp.expectValidationError(err, res, 'versions.0.files.0._compatibility', 'multiple times');
+								done();
+							});
+					});
+				});
+			});
+		});
+
 		it('should fail validations when providing a different file type as playfield video');
 		it('should fail validations when providing a non-existent build');
 		it('should fail validations when providing a non-existent playfield video');
@@ -701,7 +734,7 @@ describe('The VPDB `release` API', function() {
 							files: [{
 								_file: vptfile.id,
 								_media: { playfield_image: playfield.id },
-								_compatibility: _.pluck(versionFile.compatibility, 'id'),
+								_compatibility: _.map(versionFile.compatibility, 'id'),
 								flavor: versionFile.flavor
 							}]
 						};
@@ -964,9 +997,9 @@ describe('The VPDB `release` API', function() {
 
 					hlp.expectStatus(err, res, 200);
 
-					var rls1 = _.findWhere(res.body, { id: releases[0].id });
-					var rls2 = _.findWhere(res.body, { id: releases[1].id });
-					var rls3 = _.findWhere(res.body, { id: releases[2].id });
+					var rls1 = _.find(res.body, { id: releases[0].id });
+					var rls2 = _.find(res.body, { id: releases[1].id });
+					var rls3 = _.find(res.body, { id: releases[2].id });
 
 					expect(rls1.thumb.image.url).to.be(releases[0].versions[0].files[0].media.playfield_image.url);
 					expect(rls2.thumb.image.url).to.be(releases[1].versions[0].files[1].media.playfield_image.url);
@@ -983,9 +1016,9 @@ describe('The VPDB `release` API', function() {
 
 					hlp.expectStatus(err, res, 200);
 
-					var rls1 = _.findWhere(res.body, { id: releases[0].id });
-					var rls2 = _.findWhere(res.body, { id: releases[1].id });
-					var rls3 = _.findWhere(res.body, { id: releases[2].id });
+					var rls1 = _.find(res.body, { id: releases[0].id });
+					var rls2 = _.find(res.body, { id: releases[1].id });
+					var rls3 = _.find(res.body, { id: releases[2].id });
 
 					expect(rls1.thumb.image.url).to.be(releases[0].versions[0].files[0].media.playfield_image.variations.medium.url);
 					expect(rls2.thumb.image.url).to.be(releases[1].versions[0].files[1].media.playfield_image.variations.medium.url);
@@ -1002,9 +1035,9 @@ describe('The VPDB `release` API', function() {
 
 					hlp.expectStatus(err, res, 200);
 
-					var rls1 = _.findWhere(res.body, { id: releases[0].id });
-					var rls2 = _.findWhere(res.body, { id: releases[1].id });
-					var rls3 = _.findWhere(res.body, { id: releases[2].id });
+					var rls1 = _.find(res.body, { id: releases[0].id });
+					var rls2 = _.find(res.body, { id: releases[1].id });
+					var rls3 = _.find(res.body, { id: releases[2].id });
 
 					expect(rls1.thumb.image.url).to.be(releases[0].versions[0].files[0].media.playfield_image.url);
 					expect(rls2.thumb.image.url).to.be(releases[1].versions[0].files[0].media.playfield_image.url);
@@ -1021,7 +1054,7 @@ describe('The VPDB `release` API', function() {
 
 					hlp.expectStatus(err, res, 200);
 
-					var rls4 = _.findWhere(res.body, { id: releases[3].id });
+					var rls4 = _.find(res.body, { id: releases[3].id });
 					expect(rls4.thumb.image.url).to.be(releases[3].versions[1].files[0].media.playfield_image.url);
 
 					done();
@@ -1078,8 +1111,8 @@ describe('The VPDB `release` API', function() {
 			request.get('/api/v1/releases?ids=' + ids.join(',')).end(function(err, res) {
 				hlp.expectStatus(err, res, 200);
 				expect(res.body).to.have.length(ids.length);
-				expect(_.findWhere(res.body, { id: releases[0].id })).to.be.ok();
-				expect(_.findWhere(res.body, { id: releases[1].id })).to.be.ok();
+				expect(_.find(res.body, { id: releases[0].id })).to.be.ok();
+				expect(_.find(res.body, { id: releases[1].id })).to.be.ok();
 				done();
 			});
 		});
@@ -1095,7 +1128,7 @@ describe('The VPDB `release` API', function() {
 				var taggedReleases = _.filter(releases, { tags: tagFilter });
 				expect(res.body).to.have.length(taggedReleases.length);
 				for (var i = 0; i < taggedReleases.length; i++) {
-					expect(_.findWhere(res.body, { id: taggedReleases[i].id })).to.be.ok();
+					expect(_.find(res.body, { id: taggedReleases[i].id })).to.be.ok();
 				}
 				done();
 			});
@@ -1112,7 +1145,7 @@ describe('The VPDB `release` API', function() {
 				var taggedReleases = _.filter(releases, { tags: tagFilter });
 				expect(res.body).to.have.length(taggedReleases.length);
 				for (var i = 0; i < taggedReleases.length; i++) {
-					expect(_.findWhere(res.body, { id: taggedReleases[i].id })).to.be.ok();
+					expect(_.find(res.body, { id: taggedReleases[i].id })).to.be.ok();
 				}
 				done();
 			});
@@ -1122,7 +1155,7 @@ describe('The VPDB `release` API', function() {
 
 			request.get('/api/v1/releases?q=' + releases[1].name).end(function(err, res) {
 				hlp.expectStatus(err, res, 200);
-				expect(_.findWhere(res.body, { id: releases[1].id })).to.be.ok();
+				expect(_.find(res.body, { id: releases[1].id })).to.be.ok();
 				done();
 			});
 		});
@@ -1131,7 +1164,7 @@ describe('The VPDB `release` API', function() {
 
 			request.get('/api/v1/releases?q=' + releases[1].game.title).end(function(err, res) {
 				hlp.expectStatus(err, res, 200);
-				expect(_.findWhere(res.body, { id: releases[1].id })).to.be.ok();
+				expect(_.find(res.body, { id: releases[1].id })).to.be.ok();
 				done();
 			});
 		});
@@ -1144,7 +1177,7 @@ describe('The VPDB `release` API', function() {
 
 			request.get('/api/v1/releases?q=' + releases[1].name.substr(0, 3)).end(function(err, res) {
 				hlp.expectStatus(err, res, 200);
-				expect(_.findWhere(res.body, { id: releases[1].id })).to.be.ok();
+				expect(_.find(res.body, { id: releases[1].id })).to.be.ok();
 				done();
 			});
 		});
@@ -1153,9 +1186,9 @@ describe('The VPDB `release` API', function() {
 
 			request.get('/api/v1/releases?flavor=orientation:ws').end(function(err, res) {
 				hlp.expectStatus(err, res, 200);
-				expect(_.findWhere(res.body, { id: releases[0].id })).to.not.be.ok();
-				expect(_.findWhere(res.body, { id: releases[1].id })).to.be.ok();
-				expect(_.findWhere(res.body, { id: releases[2].id })).to.be.ok();
+				expect(_.find(res.body, { id: releases[0].id })).to.not.be.ok();
+				expect(_.find(res.body, { id: releases[1].id })).to.be.ok();
+				expect(_.find(res.body, { id: releases[2].id })).to.be.ok();
 				done();
 			});
 		});
@@ -1172,7 +1205,7 @@ describe('The VPDB `release` API', function() {
 				});
 				expect(res.body).to.have.length(filteredReleases.length);
 				for (var i = 0; i < filteredReleases.length; i++) {
-					expect(_.findWhere(res.body, { id: filteredReleases[i].id })).to.be.ok();
+					expect(_.find(res.body, { id: filteredReleases[i].id })).to.be.ok();
 				}
 				done();
 			});
@@ -1190,7 +1223,7 @@ describe('The VPDB `release` API', function() {
 				});
 				expect(res.body).to.have.length(filteredReleases.length);
 				for (var i = 0; i < filteredReleases.length; i++) {
-					expect(_.findWhere(res.body, { id: filteredReleases[i].id })).to.be.ok();
+					expect(_.find(res.body, { id: filteredReleases[i].id })).to.be.ok();
 				}
 				done();
 			});

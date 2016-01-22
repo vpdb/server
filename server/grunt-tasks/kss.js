@@ -48,7 +48,7 @@ module.exports = function(grunt) {
 //			grunt.log.writeln(styleguide.data.files.map(function(file) { return '  - ' + file }).join('\n'));
 
 			// accumulate all of the sections' first indexes in case they don't have a root element.
-			_.each(styleguide.section(), function(rootSection) {
+			styleguide.section().forEach(function(rootSection) {
 				var currentRoot = rootSection.reference().match(/[0-9]*\.?/)[0].replace('.', '');
 				if (currentRoot && !~rootRefs.indexOf(currentRoot)) {
 					rootRefs.push(currentRoot);

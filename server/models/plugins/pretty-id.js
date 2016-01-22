@@ -55,8 +55,8 @@ module.exports = function(schema, options) {
 	}
 	options.validations = options.validations || [];
 
-	var paths = _.omit(common.traversePaths(schema), function(schemaType, path) {
-		return _.contains(options.ignore, path.replace(/\.0$/g, ''));
+	var paths = _.omitBy(common.traversePaths(schema), (schemaType, path) => {
+		return _.includes(options.ignore, path.replace(/\.0$/g, ''));
 	});
 
 	/**
@@ -76,7 +76,7 @@ module.exports = function(schema, options) {
 			//var model = this.model(this.constructor.modelName);
 
 			// for invalid IDs, invalidate instantly so we can provide which value is wrong.
-			_.each(invalidations, function(invalidation) {
+			invalidations.forEach(function(invalidation) {
 				model.invalidate(invalidation.path, invalidation.message, invalidation.value);
 			});
 			return model;
@@ -91,7 +91,7 @@ module.exports = function(schema, options) {
 			_.assign(this, obj);
 
 			// for invalid IDs, invalidate instantly so we can provide which value is wrong.
-			_.each(invalidations, invalidation => {
+			invalidations.forEach(invalidation => {
 				this.invalidate(invalidation.path, invalidation.message, invalidation.value);
 			});
 
@@ -100,6 +100,13 @@ module.exports = function(schema, options) {
 	};
 };
 
+/**
+ * Replaceds pretty IDs with MongoDB IDs.
+ * @param obj
+ * @param paths
+ * @param options
+ * @returns {Promise.<Array>} Promise returning an array of invalidations.
+ */
 function replaceIds(obj, paths, options) {
 
 	var Model = mongoose.model(options.model);
@@ -129,7 +136,7 @@ function replaceIds(obj, paths, options) {
 
 				} else {
 					// validations
-					_.each(options.validations, function(validation) {
+					options.validations.forEach(function(validation) {
 						if (validation.path === objPath) {
 							if (validation.mimeType && refObj.mime_type !== validation.mimeType) {
 								invalidations.push({ path: objPath, message: validation.message, value: prettyId });
@@ -155,10 +162,10 @@ function replaceIds(obj, paths, options) {
 function getRefPaths(obj, paths) {
 
 	// pick because it's an object (map)
-	var singleRefsFiltered = _.pick(paths, schemaType => schemaType.options && schemaType.options.ref);
+	var singleRefsFiltered = _.pickBy(paths, schemaType => schemaType.options && schemaType.options.ref);
 	var singleRefs = _.mapValues(singleRefsFiltered, schemaType => schemaType.options.ref);
 
-	var arrayRefsFiltered = _.pick(paths, schemaType => schemaType.caster && schemaType.caster.instance && schemaType.caster.options && schemaType.caster.options.ref);
+	var arrayRefsFiltered = _.pickBy(paths, schemaType => schemaType.caster && schemaType.caster.instance && schemaType.caster.options && schemaType.caster.options.ref);
 	var arrayRefs = _.mapValues(arrayRefsFiltered, schemaType => schemaType.caster.options.ref);
 
 	return common.explodePaths(obj, singleRefs, arrayRefs);

@@ -158,7 +158,7 @@ exports.update = function(req, res) {
 
 				} else {
 					// check if we've already validated this address
-					if (_.contains(currentUser.validated_emails, updatedUser.email)) {
+					if (_.includes(currentUser.validated_emails, updatedUser.email)) {
 						updatedUser.email_status = { code: 'confirmed' };
 
 					} else {

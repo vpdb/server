@@ -64,7 +64,7 @@ exports.list = function(opts) {
 					var events = req.query.events.split(',');
 					var eventsIn = [];
 					var eventsNin = [];
-					_.each(events, function(event) {
+					events.forEach(function(event) {
 						if (event[0] === '!') {
 							eventsNin.push(event.substr(1));
 						} else {
@@ -150,8 +150,8 @@ exports.list = function(opts) {
 							api.fail(res, error(err, 'Error searching stars for user <%s>.', req.user.email).log('list'), 500);
 							return next(true);
 						}
-						var releaseIds = _.compact(_.pluck(_.pluck(stars, '_ref'), 'release'));
-						var gameIds = _.compact(_.pluck(_.pluck(stars, '_ref'), 'game'));
+						var releaseIds = _.compact(_.map(_.map(stars, '_ref'), 'release'));
+						var gameIds = _.compact(_.map(_.map(stars, '_ref'), 'game'));
 
 						var or = [];
 						if (releaseIds.length > 0) {

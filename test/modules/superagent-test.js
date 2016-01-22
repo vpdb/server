@@ -58,7 +58,7 @@ module.exports = function(superagent, options) {
 			forceHeaders = this._saveReq.headers || [];
 			dump += 'Host: ' + options.saveHost + '\r\n';
 			_.each(this.req._headers, function(headerVal, header) {
-				if (_.contains(forceHeaders, header) || !_.contains(options.ignoreReqHeaders, header)) {
+				if (_.includes(forceHeaders, header) || !_.includes(options.ignoreReqHeaders, header)) {
 					dump += that.req._headerNames[header] + ': ' + headerVal + '\r\n';
 				}
 			});
@@ -74,7 +74,7 @@ module.exports = function(superagent, options) {
 			dump = this.res.statusCode + ' ' + statusMessage[this.res.statusCode] + '\r\n';
 			forceHeaders = this._saveRes.headers || [];
 			_.each(this.res.headers, function(headerVal, header) {
-				if (_.contains(forceHeaders, header) || !_.contains(options.ignoreResHeaders, header)) {
+				if (_.includes(forceHeaders, header) || !_.includes(options.ignoreResHeaders, header)) {
 					dump += header.replace(/-(.)|^(.)/g, uppercase) + ': ' + headerVal + '\r\n';
 				}
 			});

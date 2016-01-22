@@ -142,19 +142,19 @@ exports.download = function(req, res) {
 		 */
 		function(release, next) {
 
-			_.each(release.versions, function(version) {
+			release.versions.forEach(function(version) {
 
 				// check if there are requested table files for that version
-				if (!_.intersection(_.pluck(_.pluck(version.files, '_file'), 'id'), requestedFileIds).length) {
+				if (!_.intersection(_.map(_.map(version.files, '_file'), 'id'), requestedFileIds).length) {
 					return; // continue
 				}
-				_.each(version.files, function(versionFile, pos) {
+				version.files.forEach(function(versionFile, pos) {
 					var file = versionFile._file;
 					file.release_version = version.toObj();
 					file.release_file = versionFile.toObj();
 
 					if (file.getMimeCategory() === 'table') {
-						if (_.contains(requestedFileIds, file.id)) {
+						if (_.includes(requestedFileIds, file.id)) {
 							requestedFiles.push(file);
 
 							// count downloaded flavor
@@ -173,7 +173,7 @@ exports.download = function(req, res) {
 							});
 						}
 
-						// always add any non-table files
+					// always add any non-table files
 					} else {
 						requestedFiles.push(file);
 					}
@@ -229,7 +229,7 @@ exports.download = function(req, res) {
 				}
 
 				// TODO only add roms referenced in game script
-				_.each(roms, function(rom) {
+				roms.forEach(function(rom) {
 					requestedFiles.push(rom._file);
 
 					// count file download
@@ -442,7 +442,7 @@ function getTableFilename(user, release, file, releaseFiles) {
 		game_year: release._game.year,
 		release_name: release.name,
 		release_version: file.release_version.version,
-		release_compatibility: _.pluck(file.release_file.compatibility, 'label').join(','),
+		release_compatibility: _.map(file.release_file.compatibility, 'label').join(','),
 		release_flavor_orientation: flavorTags.orientation[file.release_file.flavor.orientation],
 		release_flavor_lighting: flavorTags.lighting[file.release_file.flavor.lighting],
 		original_filename: path.basename(file.name)
@@ -454,11 +454,11 @@ function getTableFilename(user, release, file, releaseFiles) {
 
 	// check for already used names and suffix with (n)
 	var newFilename, n = 0;
-	if (_.contains(releaseFiles, filebase + file.getExt())) {
+	if (_.includes(releaseFiles, filebase + file.getExt())) {
 		do {
 			n++;
 			newFilename = filebase + ' (' + n + ')' + file.getExt();
-		} while (_.contains(releaseFiles, newFilename));
+		} while (_.includes(releaseFiles, newFilename));
 		return newFilename;
 	} else {
 		return filebase + file.getExt();

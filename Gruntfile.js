@@ -89,7 +89,7 @@ module.exports = function(grunt) {
 		},
 
 		cssmin: {
-			minify: { expand: false, cwd: '.', dest: cssGlobal, ext: '.css', src: _.pluck(assets.getCss(), 'src') }
+			minify: { expand: false, cwd: '.', dest: cssGlobal, ext: '.css', src: _.map(assets.getCss(), 'src') }
 		},
 
 		'devsite-serve': { options: { root: '<%= config.devsiteRoot %>', port: 4000, runInBackground: false,
@@ -154,7 +154,7 @@ module.exports = function(grunt) {
 
 		ngAnnotate: {
 			options: { singleQuotes: true },
-			app: { files: [ { src: [ _.pluck(assets.getJs(), 'src') ], dest: '<%= config.jsGlobalAnnotated %>' } ] }
+			app: { files: [ { src: [ _.map(assets.getJs(), 'src') ], dest: '<%= config.jsGlobalAnnotated %>' } ] }
 		},
 
 		protractor: {
@@ -288,7 +288,7 @@ function setEnv(grunt) {
 	var cmdLineTask = process.argv[2];
 
 	// check for tasks that need test environment
-	if (_.contains([ 'serve-test', 'srv-tst', 'test', 'ci', 'ci-server', 'ci-client' ], cmdLineTask)) {
+	if (_.includes([ 'serve-test', 'srv-tst', 'test', 'ci', 'ci-server', 'ci-client' ], cmdLineTask)) {
 		settingsPath = path.resolve(__dirname, 'server/config/settings-test.js');
 		process.env.APP_TESTING = true;
 		grunt.log.writeln('Test environment enabled.');

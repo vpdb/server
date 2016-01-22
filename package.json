@@ -46,7 +46,7 @@
 		"imagemagick": "0.1.3",
 		"jade": "1.11.0",
 		"jwt-simple": "0.4.0",
-		"lodash": "3.10.1",
+		"lodash": "4.1.0",
 		"md5": "2.0.0",
 		"mongoose": "4.3.6",
 		"mongoose-paginate": "5.0.0",

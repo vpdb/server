@@ -118,7 +118,7 @@ ImageProcessor.prototype.preprocess = function(file) {
 		return gm(file.getPath()).identifyAsync().then(function(metadata) {
 
 			if (_.isObject(metadata.size) && metadata.size.height > metadata.size.width) {
-				logger.info('[processor|image|pre] Rotating FS playfield image.');
+				logger.debug('[processor|image|pre] Rotating FS playfield image.');
 				return gm(file.getPath()).rotate('black', 90).writeAsync(file.getPath());
 			} else {
 				return Promise.resolve();
@@ -140,7 +140,7 @@ ImageProcessor.prototype.pass1 = function(src, dest, file, variation, done) {
 
 	// create destination stream
 	var writeStream = fs.createWriteStream(dest);
-	logger.info('[processor|image|pass1] Starting processing %s at %s.', file.toString(variation), dest);
+	logger.debug('[processor|image|pass1] Starting processing %s at %s.', file.toString(variation), dest);
 
 	// setup error handler
 	var handleErr = function(err) {
@@ -149,13 +149,13 @@ ImageProcessor.prototype.pass1 = function(src, dest, file, variation, done) {
 
 	// setup success handler
 	writeStream.on('finish', function() {
-		logger.info('[processor|image|pass1] Saved resized image to "%s".', dest);
+		logger.debug('[processor|image|pass1] Saved resized image to "%s".', dest);
 		done();
 	});
 	writeStream.on('error', handleErr);
 
 	// do the processing
-	logger.info('[processor|image|pass1] Resizing %s "%s" (%s)...', file.file_type, file.id, variation.name);
+	logger.debug('[processor|image|pass1] Resizing %s "%s" (%s)...', file.file_type, file.id, variation.name);
 	var img = gm(src);
 	img.quality(variation.qual || 80);
 
@@ -208,7 +208,7 @@ ImageProcessor.prototype.pass1 = function(src, dest, file, variation, done) {
 ImageProcessor.prototype.pass2 = function(src, dest, file, variation, done) {
 
 	if (file.getMimeSubtype(variation) !== 'png') {
-		logger.info('[processor|image|pass2] Skipping pass 2 for %s (image type %s)', file.toString(variation), file.getMimeSubtype());
+		logger.debug('[processor|image|pass2] Skipping pass 2 for %s (image type %s)', file.toString(variation), file.getMimeSubtype());
 		return done();
 	}
 
@@ -217,7 +217,7 @@ ImageProcessor.prototype.pass2 = function(src, dest, file, variation, done) {
 
 	// setup success handler
 	writeStream.on('finish', function() {
-		logger.info('[processor|image|pass2] Finished pass 2 for %s', file.toString(variation));
+		logger.debug('[processor|image|pass2] Finished pass 2 for %s', file.toString(variation));
 		done();
 	});
 
@@ -233,7 +233,7 @@ ImageProcessor.prototype.pass2 = function(src, dest, file, variation, done) {
 	var quanter = new PngQuant([128]);
 	var optimizer = new OptiPng(['-o7']);
 
-	logger.info('[processor|image|pass2] Optimizing %s %s', file.getMimeSubtype(variation), file.toString(variation));
+	logger.debug('[processor|image|pass2] Optimizing %s %s', file.getMimeSubtype(variation), file.toString(variation));
 	fs.createReadStream(src).on('error', handleErr('reading'))
 		.pipe(quanter).on('error', handleErr('quanter'))
 		.pipe(optimizer).on('error', handleErr('optimizer'))

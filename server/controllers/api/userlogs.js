@@ -44,7 +44,7 @@ exports.list = function(req, res) {
 	if (req.query.event) {
 		var events = req.query.event.split(',');
 		var d = [];
-		_.each(events, function(event) {
+		events.forEach(function(event) {
 			d.push({ event: event });
 		});
 		if (d.length === 1) {
@@ -72,7 +72,7 @@ exports.list = function(req, res) {
 			github: { name: 'GitHub', icon: 'github' },
 			local: { name: 'Local Account', icon: 'vpdb' }
 		};
-		_.each(config.vpdb.passport.ipboard, function(ipb) {
+		config.vpdb.passport.ipboard.forEach(function(ipb) {
 			providerInfo[ipb.id] = _.pick(ipb, ['name', 'icon']);
 		});
 

@@ -293,7 +293,7 @@ module.exports = {
 						plan = plans[key];
 						if (plan.unlimited !== true) {
 							/* istanbul ignore if */
-							if (!_.contains(durations, plan.per)) {
+							if (!_.includes(durations, plan.per)) {
 								errors.push({
 									path: key + '.per',
 									message: 'Invalid duration. Valid durations are: ["' + durations.join('", "') + '"].',

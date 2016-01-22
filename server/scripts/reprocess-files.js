@@ -59,7 +59,7 @@ File.find(query, function(err, files) {
 	if (err) {
 		return display(err, files);
 	}
-	_.each(files, function(file) {
+	files.forEach(function(file) {
 		storage.postprocess(file, true);
 	});
 });

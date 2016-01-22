@@ -156,7 +156,7 @@ function helpers(opts) {
 					cmd += ' ' + url.resolve(opts.api.baseUri, words[1]);
 				} else {
 					words = line.split(/:/);
-					if (_.contains(validHeaders, words[0].toLowerCase())) {
+					if (_.includes(validHeaders, words[0].toLowerCase())) {
 						cmd += ' \\\n   -H "' + line.replace(/"/g, '\\"') + '"';
 					}
 				}
@@ -293,7 +293,7 @@ function helpers(opts) {
 			var props = schema.properties;
 
 			// "onlyIn" filtering
-			props = _.pick(props, function(prop, name) {
+			props = _.pickBy(props, function(prop, name) {
 				if (!_.isArray(prop.onlyIn)) {
 					return true;
 				}
@@ -316,7 +316,7 @@ function helpers(opts) {
 			// custom filtering
 			if (opts.filter) {
 				_.each(opts.filter, function(filterVal, filterKey) {
-					props = _.pick(props, function(prop) {
+					props = _.pickBy(props, function(prop) {
 						return _.isUndefined(prop[filterKey]) || prop[filterKey] === filterVal;
 					});
 				});
@@ -409,7 +409,7 @@ function postman(obj) {
 			if (method.securedBy && _.compact(method.securedBy).length) {
 				request.headers += '{{authHeader}}: Bearer {{jwt}}\n';
 			}
-			if (_.contains(['put', 'post'], method.method) && _.keys(method.body).length && method.body[_.keys(method.body)[0]].example) {
+			if (_.includes(['put', 'post'], method.method) && _.keys(method.body).length && method.body[_.keys(method.body)[0]].example) {
 				var example = splitReq(method.body[_.keys(method.body)[0]].example);
 				request.data = example.body;
 			}

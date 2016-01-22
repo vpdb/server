@@ -46,15 +46,15 @@ function Storage() {
 	// create necessary paths..
 	_.each(this.variations, function(items) {
 		_.each(items, function(variations) {
-			_.each(variations, function(variation) {
-				_.each(['public', 'protected'], function(access) {
+			variations.forEach(function(variation) {
+				['public', 'protected'].forEach(function(access) {
 					var variationPath = path.resolve(config.vpdb.storage[access].path, variation.name);
 					/* istanbul ignore if */
 					if (!fs.existsSync(variationPath)) {
 						logger.info('[storage] Creating non-existant path for variation "%s" at %s', variation.name, variationPath);
 						fs.mkdirSync(variationPath);
 					}
-					if (!_.contains(that.variationNames, variation.name)) {
+					if (!_.includes(that.variationNames, variation.name)) {
 						that.variationNames.push(variation.name);
 					}
 				});
@@ -135,7 +135,7 @@ Storage.prototype.cleanup = function(graceperiod, done) {
 Storage.prototype.remove = function(file) {
 	var filePath = file.getPath();
 	if (fs.existsSync(filePath)) {
-		logger.info('[storage] Removing file %s..', filePath);
+		logger.verbose('[storage] Removing file %s..', filePath);
 		try {
 			fs.unlinkSync(filePath);
 		} catch (err) {
@@ -162,10 +162,10 @@ Storage.prototype.remove = function(file) {
 		}
 	}
 	if (this.variations[file.getMimeCategory()] && this.variations[file.getMimeCategory()][file.file_type]) {
-		_.each(this.variations[file.getMimeCategory()][file.file_type], function(variation) {
+		this.variations[file.getMimeCategory()][file.file_type].forEach(function(variation) {
 			filePath = file.getPath(variation.name);
 			if (fs.existsSync(filePath)) {
-				logger.info('[storage] Removing file variation %s..', filePath);
+				logger.verbose('[storage] Removing file variation %s..', filePath);
 				try {
 					fs.unlinkSync(filePath);
 				} catch (err) {
@@ -240,7 +240,7 @@ Storage.prototype.postprocess = function(file, onlyVariations) {
 
 	// add variations to queue
 	if (this.variations[mimeCategory] && this.variations[mimeCategory][file.file_type]) {
-		_.each(this.variations[mimeCategory][file.file_type], function(variation) {
+		this.variations[mimeCategory][file.file_type].forEach(function(variation) {
 			queue.add(file, variation, processors[mimeCategory]);
 		});
 	}
@@ -319,7 +319,7 @@ Storage.prototype.onProcessed = function(file, variation, processor, nextEvent) 
 				}
 			}
 
-			logger.info('[storage] Reading metadata from %s...', file.toString(variation));
+			logger.verbose('[storage] Reading metadata from %s...', file.toString(variation));
 
 			file.lock(variation);
 			processor.metadata(file, variation, function(err, metadata) {
@@ -336,7 +336,7 @@ Storage.prototype.onProcessed = function(file, variation, processor, nextEvent) 
 							if (!file) {
 								return next(error('File "%s" gone (2), has been removed from DB before processing finished.', fileId));
 							}
-							logger.info('[storage] Retrying reading metadata from %s...', file.toString(variation));
+							logger.verbose('[storage] Retrying reading metadata from %s...', file.toString(variation));
 							processor.metadata(file, variation, function(err, metadata) {
 								if (err) {
 									logger.error('[storage] Error processing metadata of %s: %s', file.toString(variation), err.message);
@@ -427,7 +427,7 @@ Storage.prototype.onProcessed = function(file, variation, processor, nextEvent) 
 		 */
 		function(file, data, next) {
 
-			logger.info('[storage] Patching new metadata of %s', file.toString(variation));
+			logger.verbose('[storage] Patching new metadata of %s', file.toString(variation));
 
 			// only update `metadata` (other data might has changed meanwhile)
 			File.findByIdAndUpdate(file._id, { $set: data }, { 'new': true }, function(err, cleanFile) {
@@ -522,24 +522,24 @@ Storage.prototype.switchToPublic = function(file) {
 	var protectedPath = that.path(file, null, { forceProtected: true });
 	var publicPath = that.path(file);
 	if (protectedPath !== publicPath) {
-		logger.info('[storage] Renaming "%s" to "%s"', protectedPath, publicPath);
+		logger.verbose('[storage] Renaming "%s" to "%s"', protectedPath, publicPath);
 		try {
 			fs.renameSync(protectedPath, publicPath);
 		} catch (err) {
 			logger.warn('[storage] Error renaming, re-trying in a second (%s)', err.message);
 			setTimeout(function() {
-				logger.info('[storage] Renaming "%s" to "%s"', protectedPath, publicPath);
+				logger.verbose('[storage] Renaming "%s" to "%s"', protectedPath, publicPath);
 				fs.renameSync(protectedPath, publicPath);
 			}, 5000);
 		}
 
 	} else {
-		logger.info('[storage] Skipping renaming of "%s" (no path change)', protectedPath);
+		logger.verbose('[storage] Skipping renaming of "%s" (no path change)', protectedPath);
 	}
 
 	// variations
 	if (this.variations[mimeCategory] && this.variations[mimeCategory][file.file_type]) {
-		_.each(this.variations[mimeCategory][file.file_type], function(variation) {
+		this.variations[mimeCategory][file.file_type].forEach(function(variation) {
 			var lockPath = that.path(file, variation, { forceProtected: true, lockFile: true });
 			var protectedPath = that.path(file, variation, { forceProtected: true });
 			var publicPath = that.path(file, variation);
@@ -547,13 +547,17 @@ Storage.prototype.switchToPublic = function(file) {
 				if (fs.existsSync(protectedPath)) {
 					if (!fs.existsSync(lockPath)) {
 						try {
-							logger.info('[storage] Renaming "%s" to "%s"', protectedPath, publicPath);
+							logger.verbose('[storage] Renaming "%s" to "%s"', protectedPath, publicPath);
 							fs.renameSync(protectedPath, publicPath);
 						} catch (err) {
 							logger.warn('[storage] Error renaming, re-trying in a second (%s)', err.message);
 							setTimeout(function() {
-								logger.info('[storage] Renaming "%s" to "%s"', protectedPath, publicPath);
-								fs.renameSync(protectedPath, publicPath);
+								try {
+									logger.verbose('[storage] Renaming "%s" to "%s"', protectedPath, publicPath);
+									fs.renameSync(protectedPath, publicPath);
+								} catch (err) {
+									logger.warn('[storage] Second time failed too.', err.message);
+								}
 							}, 5000);
 						}
 					} else {
@@ -563,9 +567,8 @@ Storage.prototype.switchToPublic = function(file) {
 					fs.closeSync(fs.openSync(protectedPath, 'w'));
 					logger.warn('[storage] Skipping rename, "%s" does not exist (yet).', protectedPath);
 				}
-
 			} else {
-				logger.info('[storage] Skipping renaming of "%s" (no path change).', protectedPath);
+				logger.verbose('[storage] Skipping renaming of "%s" (no path change).', protectedPath);
 			}
 		});
 	}
@@ -587,7 +590,7 @@ Storage.prototype.urls = function(file) {
 	var variations = file.variations || {};
 	var mimeCategory = file.getMimeCategory();
 	if (this.variations[mimeCategory] && this.variations[mimeCategory][file.file_type]) {
-		_.each(this.variations[mimeCategory][file.file_type], function(variation) {
+		this.variations[mimeCategory][file.file_type].forEach(function(variation) {
 			variations[variation.name] = variations[variation.name] || {};
 			variations[variation.name].url = that.url(file, variation);
 			var cost = quota.getCost(file, variation);
@@ -611,7 +614,7 @@ Storage.prototype.fstat = function(file, variation, callback) {
 	}
 
 	// check for valid variation name
-	if (variationName && !_.contains(this.variationNames, variationName)) {
+	if (variationName && !_.includes(this.variationNames, variationName)) {
 		logger.warn('[storage] Unknown variation "%s".', variationName);
 		return callback();
 	}

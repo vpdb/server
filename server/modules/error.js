@@ -144,12 +144,12 @@ Err.prototype._stripFields = function() {
 	}
 	var that = this;
 	if (_.isArray(this.errs)) {
-		_.each(this.errs, function(error) {
+		this.errs.forEach(function(error) {
 			error.path = error.path.replace(that.fieldPrefix, '');
 		});
 	} else if (_.isObject(this.errs)) {
 		// todo use https://github.com/lodash/lodash/issues/169 when merged
-		_.each(this.errs, function(error, path) {
+		this.errs.forEach(function(error, path) {
 			var newPath = path.replace(that.fieldPrefix, '');
 			if (newPath != path) {
 				that.errs[newPath] = error;

@@ -117,7 +117,7 @@ FileSchema.path('mime_type').validate(function(mimeType) {
 	if (!this.file_type || !fileTypes.exists(this.file_type)) {
 		return true;
 	}
-	if (!_.contains(fileTypes.mimeTypes(this.file_type), mimeType)) {
+	if (!_.includes(fileTypes.mimeTypes(this.file_type), mimeType)) {
 		this.invalidate('mime_type', 'Invalid MIME type "' + mimeType + '" for file type "' + this.file_type + '". Valid MIME types are: ["' + fileTypes.mimeTypes(this.file_type).join('", "') + '"].');
 	}
 });
@@ -268,7 +268,7 @@ FileSchema.methods.switchToActive = function(done) {
  */
 FileSchema.methods.lock = function(variation) {
 	var lockfile = this.getLockFile(variation);
-	logger.info('[file] Locking file at "%s"', lockfile);
+	logger.debug('[file] Locking file at "%s"', lockfile);
 	try {
 		fs.closeSync(fs.openSync(lockfile, 'w'));
 	} catch (err) {
@@ -283,7 +283,7 @@ FileSchema.methods.lock = function(variation) {
  */
 FileSchema.methods.unlock = function(variation) {
 	var lockfile = this.getLockFile(variation);
-	logger.info('[file] Unlocking file at "%s"', lockfile);
+	logger.debug('[file] Unlocking file at "%s"', lockfile);
 	try {
 		fs.unlinkSync(lockfile);
 	} catch (err) {

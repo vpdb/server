@@ -34,12 +34,13 @@ function Quota() {
 	// we create a quota module for each duration
 	for (var plan in quotaConfig.plans) {
 		if (quotaConfig.plans.hasOwnProperty(plan)) {
-			if (quotaConfig.plans[plan].unlimited) {
+			if (quotaConfig.plans[plan].unlimited === true) {
+				logger.info('[quota] Skipping unlimited plan "%s".', plan);
 				continue;
 			}
 			duration = quotaConfig.plans[plan].per;
 			if (!this.quota[duration]) {
-				logger.info('[quota] Creating quota for credits per %s...', duration);
+				logger.info('[quota] Setting up quota per %s for plan %s...', duration, plan);
 				this.quota[duration] = quotaModule.create({
 					timeUnit: duration,
 					interval: 1,
@@ -47,6 +48,8 @@ function Quota() {
 					port: config.vpdb.redis.port,
 					db: config.vpdb.redis.db
 				});
+			} else {
+				logger.info('[quota] Not setting up plan %s because volos needs setups per duration and we already set up per %s.', plan, duration);
 			}
 		}
 	}
@@ -117,7 +120,7 @@ Quota.prototype.getCurrent = function(user, callback) {
  *
  * @param {object} req Request
  * @param {object} res Response
- * @param {File|File[]} file File(s) to check for
+ * @param {File|File[]} files File(s) to check for
  * @param {function} callback Callback with `err` and `isAllowed`
  * @returns {*}
  */
@@ -128,6 +131,12 @@ Quota.prototype.isAllowed = function(req, res, files, callback) {
 	}
 
 	var plan = req.user._plan || quotaConfig.defaultPlan;
+
+	// allow unlimited plans
+	if (quotaConfig.plans[plan].unlimited === true) {
+		return callback(null, true);
+	}
+
 	var file, sum = 0;
 	for (var i = 0; i < files.length; i++) {
 		file = files[i];
@@ -143,11 +152,6 @@ Quota.prototype.isAllowed = function(req, res, files, callback) {
 			return callback(null, false);
 		}
 
-		// allow unlimited plans
-		if (quotaConfig.plans[plan].unlimited === true) {
-			return callback(null, true);
-		}
-
 		if (!quotaConfig.plans[plan] && quotaConfig.plans[plan] !== 0) {
 			return callback(error('No quota defined for plan "%s"', plan));
 		}
@@ -155,10 +159,10 @@ Quota.prototype.isAllowed = function(req, res, files, callback) {
 		sum += cost;
 	}
 
+	// don't even check quota if weight is 0
 	if (sum === 0) {
 		return callback(null, true);
 	}
-
 
 	// https://github.com/apigee-127/volos/tree/master/quota/common#quotaapplyoptions-callback
 	this.quota[quotaConfig.plans[plan].per].apply({
@@ -171,7 +175,7 @@ Quota.prototype.isAllowed = function(req, res, files, callback) {
 				logger.error('[quota] Error checking quota for <%s>: %s', req.user.email, err, {});
 				return res.status(500).end();
 			}
-			logger.info('[quota] Quota check for %s credit(s) %s on <%s> for %d file(s) with %d quota left for another %d seconds.', sum, result.isAllowed ? 'passed' : 'FAILED', req.user.email, files.length, result.allowed - result.used, Math.round(result.expiryTime / 1000));
+			logger.info('[quota] Quota check for %s credit(s) %s on <%s> for %d file(s) with %d quota left for another %d seconds (plan allows %s per %s).', sum, result.isAllowed ? 'passed' : 'FAILED', req.user.email, files.length, result.allowed - result.used, Math.round(result.expiryTime / 1000), quotaConfig.plans[plan].credits, quotaConfig.plans[plan].per);
 			res.set({
 				'X-RateLimit-Limit': result.allowed,
 				'X-RateLimit-Remaining': result.allowed - result.used,

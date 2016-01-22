@@ -39,7 +39,7 @@ exports.authenticate = function(req, res) {
 	var paths = !_.isArray(req.body.paths) ? [ req.body.paths ] : req.body.paths;
 	var tokens = {};
 	var now = new Date();
-	_.each(paths, function(path) {
+	paths.forEach(function(path) {
 		tokens[path] = auth.generateStorageToken(req.user, now, path);
 	});
 	logger.info('[storage] Generated %d auth tokens for user <%s>.', _.keys(tokens).length, req.user.email);

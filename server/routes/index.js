@@ -72,7 +72,7 @@ module.exports = function(app) {
 	if (config.vpdb.passport.google.enabled) {
 		app.get('/auth/google', passport.authenticate('google', { session: false, scope: 'email' }));
 	}
-	_.each(config.vpdb.passport.ipboard, function(ipbConfig) {
+	config.vpdb.passport.ipboard.forEach(function(ipbConfig) {
 		if (ipbConfig.enabled) {
 			app.get('/auth/' + ipbConfig.id, passport.authenticate(ipbConfig.id, { session: false }));
 		}

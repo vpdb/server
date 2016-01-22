@@ -84,7 +84,7 @@ exports.list = function(req, res) {
 	var allowedTypes = [ 'access', 'login'];
 
 	// filter by type?
-	if (req.query.type && _.contains(allowedTypes, req.query.type)) {
+	if (req.query.type && _.includes(allowedTypes, req.query.type)) {
 		query.type = req.query.type;
 	}
 

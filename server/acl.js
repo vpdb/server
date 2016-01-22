@@ -95,7 +95,7 @@ var init = function(next) {
 			}
 
 			logger.info('[acl] Applying ACLs to %d users...', users.length);
-			_.each(users, function(user) {
+			users.forEach(user => {
 				acl.addUserRoles(user.id, user.roles);
 			});
 			logger.info('[acl] ACLs applied.');

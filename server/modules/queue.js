@@ -118,10 +118,10 @@ function Queue() {
 
 	// setup pub/sub
 	this.redis.subscriber.on('subscribe', function(channel, count) {
-		logger.info('[queue] Subscribed to channel "%s" (%d).', channel, count);
+		logger.verbose('[queue] Subscribed to channel "%s" (%d).', channel, count);
 	});
 	this.redis.subscriber.on('unsubscribe', function(channel, count) {
-		logger.info('[queue] Unsubscribed from channel "%s" (%d).', channel, count);
+		logger.verbose('[queue] Unsubscribed from channel "%s" (%d).', channel, count);
 	});
 	this.redis.subscriber.on('message', function(key, data) {
 
@@ -150,7 +150,7 @@ function Queue() {
 
 			var callbacks = that.queuedFiles[key];
 			delete that.queuedFiles[key];
-			_.each(callbacks, function(callback) {
+			callbacks.forEach(function(callback) {
 				if (!data.success || !success) {
 					return callback(file);
 				}
@@ -239,18 +239,18 @@ function Queue() {
 					var mvDest = src;
 					try {
 						if (finalDest === false) {
-							logger.info('[queue] Removing "%s".', mvDest);
+							logger.verbose('[queue] Removing "%s".', mvDest);
 							fs.unlinkSync(mvDest);
 						} else {
 							mvDest = finalDest;
 						}
 						fs.renameSync(mvSrc, mvDest);
-						logger.info('[queue] Renamed "%s" to "%s".', mvSrc, mvDest);
+						logger.verbose('[queue] Renamed "%s" to "%s".', mvSrc, mvDest);
 					} catch (err) {
 						logger.error('[queue] Error switching %s to %s: ', mvSrc, mvDest, err);
 					}
 				}
-				logger.info('[queue|pass2] Pass 2 done for %s', file.toString(variation));
+				logger.verbose('[queue|pass2] Pass 2 done for %s', file.toString(variation));
 				that.emit('processed', file, variation, processor, 'finishedPass2');
 				done();
 			});
@@ -292,7 +292,7 @@ function Queue() {
 	this.queues.table.process(processFile);
 
 	this.on('started', function(file, variation, processorName) {
-		logger.info('[queue] Starting %s processing of %s', processorName, file.toString(variation));
+		logger.verbose('[queue] Starting %s processing of %s', processorName, file.toString(variation));
 	});
 
 	this.on('finishedPass1', function(file, variation, processor, processed) {
@@ -308,9 +308,9 @@ function Queue() {
 			if (processor.pass2) {
 				that.queues[processor.name].add({ fileId: file._id, variation: variation }, { processor: processor.name });
 				if (processed) {
-					logger.info('[queue] Pass 1 finished, adding %s to queue (%d callbacks).', file.toString(variation), num || 0);
+					logger.verbose('[queue] Pass 1 finished, adding %s to queue (%d callbacks).', file.toString(variation), num || 0);
 				} else {
-					logger.info('[queue] Pass 1 skipped, continuing %s with pass 2.', file.toString(variation));
+					logger.verbose('[queue] Pass 1 skipped, continuing %s with pass 2.', file.toString(variation));
 				}
 			}
 
@@ -329,7 +329,7 @@ function Queue() {
 				logger.error('[queue] Error getting value "%s" from Redis: %s', that.getRedisId(key), err.message);
 				return;
 			}
-			logger.info('[queue] Finished processing of %s, running %d callback(s).', file.toString(variation), num || 0);
+			logger.verbose('[queue] Finished processing of %s, running %d callback(s).', file.toString(variation), num || 0);
 
 			processQueue(null, file, variation);
 		});
@@ -408,7 +408,7 @@ Queue.prototype.addCallback = function(file, variationName, callback, done) {
 		}
 		that.queuedFiles[key].push(callback);
 		that.redis.subscriber.subscribe(key);
-		logger.info('[queue] Added new callback to %s.', key);
+		logger.verbose('[queue] Added new callback to %s.', key);
 		if (done) {
 			done();
 		}
@@ -427,12 +427,12 @@ Queue.prototype.getRedisId = function(key) {
 Queue.prototype.empty = function() {
 	var that = this;
 	this.queues.image.count().then(function(count) {
-		logger.info('[queue] Cleaning %d entries out of image queue.', count);
+		logger.verbose('[queue] Cleaning %d entries out of image queue.', count);
 		that.queues.image.empty();
 	});
 	this.queues.video.count().then(function(count) {
 		if (that.video) {
-			logger.info('[queue] Cleaning %d entries out of video queue.', count);
+			logger.verbose('[queue] Cleaning %d entries out of video queue.', count);
 			that.queues.video.empty();
 		}
 	});

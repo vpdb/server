@@ -170,7 +170,7 @@ GameSchema.path('game_type').validate(function(gameType, callback) {
 			if (g) {
 				that.invalidate('ipdb.number', 'The game "' + g.title + '" is already in the database and cannot be added twice.');
 			}
-			callback();
+			callback(true);
 		});
 	}
 });

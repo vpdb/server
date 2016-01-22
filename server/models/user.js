@@ -85,7 +85,7 @@ if (config.vpdb.passport.github.enabled) {
 if (config.vpdb.passport.google.enabled) {
 	fields.google = {};
 }
-_.each(config.vpdb.passport.ipboard, function(ipbConfig) {
+config.vpdb.passport.ipboard.forEach(function(ipbConfig) {
 	if (ipbConfig.enabled) {
 		fields[ipbConfig.id] = {};
 	}
@@ -157,7 +157,7 @@ UserSchema.pre('validate', function(next) {
 		if (!_.isEmpty(user.google)) {
 			this.name = user.google.name ? user.google.name : user.google.login;
 		}
-		_.each(config.vpdb.passport.ipboard, function(ipbConfig) {
+		config.vpdb.passport.ipboard.forEach(function(ipbConfig) {
 			if (!_.isEmpty(user[ipbConfig.id])) {
 				this.name = user[ipbConfig.id].displayName ? user[ipbConfig.id].displayName : user[ipbConfig.id].username;
 			}
@@ -305,7 +305,7 @@ UserSchema.path('password_hash').validate(function() {
 }, null);
 
 UserSchema.path('_plan').validate(function(plan) {
-	return _.contains(_.keys(config.vpdb.quota.plans), plan);
+	return _.includes(_.keys(config.vpdb.quota.plans), plan);
 }, 'Plan must be one of: [' + _.keys(config.vpdb.quota.plans).join(',') + ']');
 
 

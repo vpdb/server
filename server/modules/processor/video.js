@@ -115,14 +115,14 @@ VideoProcessor.prototype.pass1 = function(src, dest, file, variation, done) {
 		return done(null, true);
 	}
 
-	logger.info('[video|pass1] Starting processing %s at %s.', file.toString(variation), dest);
+	logger.debug('[video|pass1] Starting processing %s at %s.', file.toString(variation), dest);
 	var started = new Date().getTime();
 	ffmpeg(src)
 		.noAudio()
 		.frames(1)
 		.seek(variation.position || '0:01')
 		.on('start', function(commandLine) {
-			logger.info('[video|ffmpeg] %s', commandLine);
+			logger.debug('[video|ffmpeg] %s', commandLine);
 		})
 		.on('error', function(err, stdout, stderr) {
 			logger.error('[video|pass1] ' + err);
@@ -131,10 +131,10 @@ VideoProcessor.prototype.pass1 = function(src, dest, file, variation, done) {
 			done(error(err, 'Error processing video'));
 		})
 		.on('progress', function(progress) {
-			logger.info('[video|pass1] Processing: %s% at %skbps', progress.percent, progress.currentKbps);
+			logger.debug('[video|pass1] Processing: %s% at %skbps', progress.percent, progress.currentKbps);
 		})
 		.on('end', function() {
-			logger.info('[video|pass1] Transcoding succeeded after %dms, written to %s', new Date().getTime() - started, dest);
+			logger.debug('[video|pass1] Transcoding succeeded after %dms, written to %s', new Date().getTime() - started, dest);
 			done();
 		})
 		.save(dest);

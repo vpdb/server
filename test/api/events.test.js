@@ -60,8 +60,8 @@ describe('The VPDB `event` API', function() {
 				.end(function(err, res) {
 					hlp.expectStatus(err, res, 200);
 					expect(res.body).to.be.an('array');
-					expect(_.findWhere(res.body, { event: 'create_release', payload: { release: { id: release.id } } })).to.be.ok();
-					expect(_.findWhere(res.body, { event: 'create_game', payload: { game: { id: release.game.id } } })).to.be.ok();
+					expect(_.find(res.body, { event: 'create_release', payload: { release: { id: release.id } } })).to.be.ok();
+					expect(_.find(res.body, { event: 'create_game', payload: { game: { id: release.game.id } } })).to.be.ok();
 					done();
 				});
 		});
@@ -73,8 +73,8 @@ describe('The VPDB `event` API', function() {
 				.end(function(err, res) {
 					hlp.expectStatus(err, res, 200);
 					expect(res.body).to.be.an('array');
-					expect(_.findWhere(res.body, { event: 'create_release' })).to.be.ok();
-					expect(_.findWhere(res.body, { event: 'create_game' })).to.not.be.ok();
+					expect(_.find(res.body, { event: 'create_release' })).to.be.ok();
+					expect(_.find(res.body, { event: 'create_game' })).to.not.be.ok();
 					done();
 				});
 		});
@@ -86,8 +86,8 @@ describe('The VPDB `event` API', function() {
 				.end(function(err, res) {
 					hlp.expectStatus(err, res, 200);
 					expect(res.body).to.be.an('array');
-					expect(_.findWhere(res.body, { event: 'create_game' })).to.be.ok();
-					expect(_.findWhere(res.body, { event: 'create_release' })).to.be.ok();
+					expect(_.find(res.body, { event: 'create_game' })).to.be.ok();
+					expect(_.find(res.body, { event: 'create_release' })).to.be.ok();
 					done();
 				});
 		});
@@ -98,8 +98,8 @@ describe('The VPDB `event` API', function() {
 				.end(function(err, res) {
 					hlp.expectStatus(err, res, 200);
 					expect(res.body).to.be.an('array');
-					expect(_.findWhere(res.body, { event: 'create_game' })).to.be.ok();
-					expect(_.findWhere(res.body, { event: 'create_release' })).to.not.be.ok();
+					expect(_.find(res.body, { event: 'create_game' })).to.be.ok();
+					expect(_.find(res.body, { event: 'create_release' })).to.not.be.ok();
 					done();
 				});
 		});
@@ -110,8 +110,8 @@ describe('The VPDB `event` API', function() {
 				.end(function(err, res) {
 					hlp.expectStatus(err, res, 200);
 					expect(res.body).to.be.an('array');
-					expect(_.findWhere(res.body, { event: 'create_game' })).to.not.be.ok();
-					expect(_.findWhere(res.body, { event: 'create_release' })).to.be.ok();
+					expect(_.find(res.body, { event: 'create_game' })).to.not.be.ok();
+					expect(_.find(res.body, { event: 'create_release' })).to.be.ok();
 					done();
 				});
 		});
@@ -142,7 +142,7 @@ describe('The VPDB `event` API', function() {
 								.end(function(err, res) {
 									hlp.expectStatus(err, res, 200);
 									expect(res.body).to.be.an('array');
-									expect(_.findWhere(res.body, { event: 'create_release' })).to.be.ok();
+									expect(_.find(res.body, { event: 'create_release' })).to.be.ok();
 									done();
 								});
 						});

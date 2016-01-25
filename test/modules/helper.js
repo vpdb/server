@@ -1,5 +1,7 @@
 "use strict";
 
+const Promise = require('bluebird');
+
 var _ = require('lodash');
 var util = require('util');
 var async = require('async');
@@ -29,72 +31,13 @@ exports.setupUsers = function(request, config, done) {
 	this.users = {};
 	request.tokens = {};
 
-	var that = this;
-
-	var createUser = function(name, config) {
-		return function(next) {
-			var user = exports.genUser();
-			user.skipEmailConfirmation = true;
-
-			// 1. create user
-			debug('%s <%s>: Creating user...', name, user.email);
-			request
-				.post('/api/v1/users')
-				.send(user)
-				.end(function(err, res) {
-					if (err) {
-						return next(res && res.body ? res.body.error : err);
-					}
-					if (res.status !== 201) {
-						return next(res.body ? res.body.error : res.body);
-					}
-
-					user = _.extend(user, res.body);
-					that.users[name] = _.extend(user, { _plan: user.plan.id });
-
-					// 2. retrieve root user token
-					debug('%s <%s>: Authenticating user...', name, user.email);
-					request
-						.post('/api/v1/authenticate')
-						.send(_.pick(user, 'username', 'password'))
-						.end(function(err, res) {
-							if (err) {
-								return next(err.body.error);
-							}
-							if (res.status !== 200) {
-								debug('%s <%s>: ERROR: %s', name, user.email, res.body.error);
-								return next(res.body.error);
-							}
-							request.tokens[name] = res.body.token;
-
-							// 3. update user
-							debug('%s <%s>: Updating user...', name, user.email);
-							user = _.extend(user, config);
-							request
-								.put('/api/v1/users/' + user.id)
-								.as(superuser)
-								.send(_.pick(user, [ 'name', 'email', 'username', 'is_active', 'roles', '_plan' ]))
-								.end(function(err, res) {
-									if (err) {
-										return next(err.body.error);
-									}
-									if (res.status !== 200) {
-										return next(res.body.error);
-									}
-									debug('%s <%s>: All good, next!', name, user.email);
-									next();
-								});
-						});
-				});
-		};
-	};
 
 	var users = _.map(config, function(config, name) {
-		return createUser(name, config);
+		return exports._createUser(request, name, config);
 	});
 
 	// create super user first and then the rest
-	createUser(superuser, { roles: ['root', 'mocha' ] })(function(err) {
+	exports._createUser(request, superuser, { roles: ['root', 'mocha' ] })(function(err) {
 		if (err) {
 			throw new Error(err);
 		}
@@ -539,6 +482,12 @@ exports.status = function(code, contains, next) {
 		contains = false;
 	}
 	return function(err, res) {
+		// if used as result of a promise, next is empty and err is not treated here.
+		if (_.isUndefined(next)) {
+			res = err.response;
+			err = { status: res.status, response: res };
+		}
+
 		var status, body;
 		if (code >= 200 && code < 300) {
 			status = res.status;
@@ -559,12 +508,23 @@ exports.status = function(code, contains, next) {
 			var msg = body.error.message || body.error;
 			expect(msg.toLowerCase()).to.contain(contains.toLowerCase());
 		}
-		next(null, body);
+		if (next) {
+			return next(null, body);
+		}
+		return Promise.resolve();
 	};
 };
 
 exports.expectStatus = function(err, res, code, contains) {
 	var status, body;
+
+	// shift args if no error provided
+	if (_.isNumber(res)) {
+		contains = code;
+		code = res;
+		res = err;
+		err = undefined;
+	}
 	if (code >= 200 && code < 300) {
 		status = res.status;
 		body = res.body;
@@ -638,4 +598,65 @@ exports.dump = function(res, title) {
 	} else {
 		console.log('%s: %s', title || 'RESPONSE', util.inspect(res, null, null, true));
 	}
+};
+
+
+exports._createUser = function(request, name, config) {
+	var that = this;
+
+	return function(next) {
+		var user = exports.genUser();
+		user.skipEmailConfirmation = true;
+
+		// 1. create user
+		debug('%s <%s>: Creating user...', name, user.email);
+		request
+			.post('/api/v1/users')
+			.send(user)
+			.end(function(err, res) {
+				if (err) {
+					return next(res && res.body ? res.body.error : err);
+				}
+				if (res.status !== 201) {
+					return next(res.body ? res.body.error : res.body);
+				}
+
+				user = _.extend(user, res.body);
+				that.users[name] = _.extend(user, { _plan: user.plan.id });
+
+				// 2. retrieve root user token
+				debug('%s <%s>: Authenticating user...', name, user.email);
+				request
+					.post('/api/v1/authenticate')
+					.send(_.pick(user, 'username', 'password'))
+					.end(function(err, res) {
+						if (err) {
+							return next(err);
+						}
+						if (res.status !== 200) {
+							debug('%s <%s>: ERROR: %s', name, user.email, res.body.error);
+							return next(res.body.error);
+						}
+						request.tokens[name] = res.body.token;
+
+						// 3. update user
+						debug('%s <%s>: Updating user...', name, user.email);
+						user = _.extend(user, config);
+						request
+							.put('/api/v1/users/' + user.id)
+							.as(superuser)
+							.send(_.pick(user, [ 'name', 'email', 'username', 'is_active', 'roles', '_plan' ]))
+							.end(function(err, res) {
+								if (err) {
+									return next(err.body.error);
+								}
+								if (res.status !== 200) {
+									return next(res.body.error);
+								}
+								debug('%s <%s>: All good, next!', name, user.email);
+								next();
+							});
+					});
+			});
+	};
 };

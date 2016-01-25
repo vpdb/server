@@ -126,7 +126,7 @@
 		"pleasejs": "git://github.com/Fooidge/PleaseJS#06e677f2d5210512eba87de73d0efd7a5ad210a7",
 		"raml2obj": "2.1.0",
 		"stylus": "0.51.1",
-		"superagent": "1.2.0",
+		"superagent": "1.7.2",
 		"yargs": "3.13.0"
 	},
 	"engines": {

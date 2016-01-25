@@ -1,5 +1,6 @@
 "use strict";
 
+const Promise = require('bluebird');
 var _ = require('lodash');
 var fs = require('fs');
 var argv = require('yargs').argv;
@@ -17,6 +18,11 @@ var statusMessage = {
 	500: 'Internal Server Error'
 };
 
+Promise.config({
+	// Enable cancellation.
+	cancellation: true
+});
+
 module.exports = function(superagent, options) {
 
 	process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0;
@@ -28,8 +34,8 @@ module.exports = function(superagent, options) {
 	options.authHeader = options.authHeader || process.env.AUTH_HEADER || 'Authorization';
 	options.saveHost = options.saveHost || 'vpdb.io';
 	options.saveRoot = options.saveRoot || 'doc/api/v1';
-	options.ignoreReqHeaders = options.ignoreReqHeaders || [ 'cookie', 'host', 'user-agent' ];
-	options.ignoreResHeaders = options.ignoreResHeaders || [ 'x-token-refresh', 'x-user-dirty', 'vary', 'connection', 'transfer-encoding', 'date' ];
+	options.ignoreReqHeaders = options.ignoreReqHeaders || ['cookie', 'host', 'user-agent'];
+	options.ignoreResHeaders = options.ignoreResHeaders || ['x-token-refresh', 'x-user-dirty', 'vary', 'connection', 'transfer-encoding', 'date'];
 
 	var Request = superagent.Request;
 
@@ -37,7 +43,7 @@ module.exports = function(superagent, options) {
 
 	var oldRequest = Request.prototype.request;
 
-	Request.prototype.request = function () {
+	Request.prototype.request = function() {
 		this.request = oldRequest;
 		if (this.url[0] === '/') {
 			this.url = options.scheme + '://' + options.host + ':' + options.port + this.url;
@@ -126,6 +132,47 @@ module.exports = function(superagent, options) {
 		}
 		this._saveRes = opts;
 		return this;
+	};
+
+	/**
+	 * Adds promise support for superagent/supertest
+	 *
+	 * Call .promise() to return promise for the request
+	 *
+	 * @method then
+	 * @return {Promise}
+	 */
+	Request.prototype.promise = function() {
+		var req = this;
+		return new Promise((resolve, reject, onCancel) => {
+			req.end(function(err, res) {
+				if (err && err.status) {
+					resolve(err);
+				} else if (res) {
+					resolve(res);
+				} else {
+					reject(new Error('Error in request: ' + err.message, err));
+				}
+			});
+			onCancel(function() {
+				req.abort();
+			});
+		});
+	};
+
+	/**
+	 * Make superagent requests Promises/A+ conformant
+	 *
+	 * Call .then([onFulfilled], [onRejected]) to register callbacks
+	 *
+	 * @method then
+	 * @param {function} [onFulfilled]
+	 * @param {function} [onRejected]
+	 * @return {Promise}
+	 */
+	Request.prototype.then = function() {
+		var promise = this.promise();
+		return promise.then.apply(promise, arguments);
 	};
 };
 

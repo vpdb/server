@@ -106,58 +106,62 @@ describe('The authentication engine of the VPDB API', function() {
 				});
 		});
 
-		it('should fail if the token is expired', function(done) {
+		it('should fail if the token is expired', function() {
 
-			request
+			var token;
+			return request
 				.post('/api/v1/tokens')
 				.as('member')
 				.send({ password: hlp.getUser('member').password, type: 'login' })
-				.end(function(err, res) {
+				.then(res => {
 
 					hlp.doomToken('member', res.body.id);
-					hlp.expectStatus(err, res, 201);
+					hlp.expectStatus(res, 201);
 
-					var token = res.body.token;
-					request
+					token = res.body.token;
+					return request
 						.patch('/api/v1/tokens/' + res.body.id)
 						.as('member')
 						.send({ expires_at: new Date(new Date().getTime() - 86400000)})
-						.end(function(err, res) {
-							hlp.expectStatus(err, res, 200);
+						.promise();
 
-							request
-								.post('/api/v1/authenticate')
-								.send({ token: token })
-								.end(hlp.status(401, 'token has expired', done));
-						});
-				});
+				}).then(res => {
+					hlp.expectStatus(res, 200);
+					return request
+						.post('/api/v1/authenticate')
+						.send({ token: token })
+						.promise();
+
+				}).then(hlp.status(401, 'token has expired'));
 		});
 
-		it('should fail if the token is inactive', function(done) {
+		it('should fail if the token is inactive', function() {
 
-			request
+			var token;
+			return request
 				.post('/api/v1/tokens')
 				.as('member')
 				.send({ password: hlp.getUser('member').password, type: 'login' })
-				.end(function(err, res) {
+				.then(res => {
 
 					hlp.doomToken('member', res.body.id);
-					hlp.expectStatus(err, res, 201);
+					hlp.expectStatus(res, 201);
 
-					var token = res.body.token;
-					request
+					token = res.body.token;
+					return request
 						.patch('/api/v1/tokens/' + res.body.id)
 						.as('member')
 						.send({ is_active: false })
-						.end(function(err, res) {
-							hlp.expectStatus(err, res, 200);
+						.promise();
 
-							request
-								.post('/api/v1/authenticate')
-								.send({ token: token })
-								.end(hlp.status(401, 'token is inactive', done));
-						});
-				});
+				}).then(res => {
+					hlp.expectStatus(res, 200);
+					return request
+						.post('/api/v1/authenticate')
+						.send({ token: token })
+						.promise();
+
+				}).then(hlp.status(401, 'token is inactive'));
 		});
 
 		it('should succeed if the token is valid', function(done) {

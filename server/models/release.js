@@ -179,78 +179,14 @@ VersionSchema.path('files').validate(function(files, callback) {
 	return Promise.try(() => {
 
 		var index = 0; // when updating a version, ignore existing files, so increment only if new
-		return Promise.each(files, f => {
-
-			return Promise.try(() => {
-
-				// will fail by schema validation rule
-				if (!f._file) {
-					return;
-				}
-				return mongoose.model('File').findById(f._file).then(file => {
-
-					// will fail by reference plugin
-					if (!file) {
-						return;
-					}
-
-					// don't care about anything else but table files
-					if (file.getMimeCategory() !== 'table') {
-						return;
-					}
-
+		return Promise.each(files, file => {
+			return validateFile(this, file, index).then(isTableFile => {
+				console.log('----- RETURN FROM validateFile(): %s', isTableFile);
+				if (isTableFile) {
 					hasTableFile = true;
-					tableFiles.push({ file: f, index: index});
-
-					// flavor
-					var fileFlavor = f.flavor || {};
-					_.each(fileFields.flavor, (obj, flavor) => {
-						if (!fileFlavor[flavor]) {
-							this.invalidate('files.' + index + '.flavor.' + flavor, 'Flavor `' + flavor + '` must be provided.');
-						}
-					});
-
-					// validate compatibility (in here because it applies only to table files.)
-					if (!_.isArray(f._compatibility) || !f._compatibility.length) {
-						// TODO check if exists.
-						this.invalidate('files.' + index + '._compatibility', 'At least one build must be provided.');
-					}
-
-					if (f._compatibility.length !== _.uniq(f._compatibility.map(c => c.toString())).length) {
-						this.invalidate('files.' + index + '._compatibility', 'Cannot link a build multiple times.');
-					}
-
-					// check if playfield image exists
-					if (!f._media.playfield_image) {
-						this.invalidate('files.' + index + '._media.playfield_image', 'Playfield image must be provided.');
-					}
-
-					var mediaValidations = [];
-
-					// validate playfield image
-					if (f._media.playfield_image) {
-						mediaValidations.push(mongoose.model('File').findById(f._media.playfield_image).then(playfieldImage => {
-							if (!playfieldImage) {
-								this.invalidate('files.' + index + '._media.playfield_image', 'Playfield "' + f._media.playfield_image + '" does not exist.');
-								return;
-							}
-							if (!_.includes(['playfield-fs', 'playfield-ws'], playfieldImage.file_type)) {
-								this.invalidate('files.' + index + '._media.playfield_image', 'Must reference a file with file_type "playfield-fs" or "playfield-ws".');
-							}
-						}));
-					}
-
-					// TODO validate playfield video
-					if (f._media.playfield_video) {
-
-						mediaValidations.push(Promise.resolve(() => console.log("TODO: Validate playfield video")));
-					}
-
-					return Promise.all(mediaValidations);
-				});
-
-			}).then(() => {
-				if (f.isNew) {
+					tableFiles.push({ file: file, index: index});
+				}
+				if (file.isNew) {
 					index++;
 				}
 			});
@@ -310,8 +246,80 @@ VersionSchema.path('files').validate(function(files, callback) {
 		callback(false);
 
 	});
-
 });
+
+/**
+ * Validates the given
+ * @param release Where to apply the invalidations to
+ * @param tableFile File to validate
+ * @param {int} index Index of the file in the request body
+ * @returns {Promise.<boolean>} Promise resolving in true if the file was a table file or false otherwise
+ */
+function validateFile(release, tableFile, index) {
+
+	if (!tableFile._file) {
+		return Promise.resolve(false);
+	}
+
+	return mongoose.model('File').findById(tableFile._file).then(file => {
+
+		// will fail by reference plugin
+		if (!file) {
+			return false;
+		}
+
+		// don't care about anything else but table files
+		if (file.getMimeCategory() !== 'table') {
+			return false;
+		}
+
+		console.log(file);
+
+		// flavor
+		var fileFlavor = tableFile.flavor || {};
+		_.each(fileFields.flavor, (obj, flavor) => {
+			if (!fileFlavor[flavor]) {
+				release.invalidate('files.' + index + '.flavor.' + flavor, 'Flavor `' + flavor + '` must be provided.');
+			}
+		});
+
+		// validate compatibility (in here because it applies only to table files.)
+		if (!_.isArray(tableFile._compatibility) || !tableFile._compatibility.length) {
+			// TODO check if exists.
+			release.invalidate('files.' + index + '._compatibility', 'At least one build must be provided.');
+		} else if (tableFile._compatibility.length !== _.uniq(tableFile._compatibility.map(c => c.toString())).length) {
+			release.invalidate('files.' + index + '._compatibility', 'Cannot link a build multiple times.');
+		}
+
+		// check if playfield image exists
+		if (!tableFile._media || !tableFile._media.playfield_image) {
+			release.invalidate('files.' + index + '._media.playfield_image', 'Playfield image must be provided.');
+		}
+
+		var mediaValidations = [];
+
+		// validate playfield image
+		if (tableFile._media && tableFile._media.playfield_image) {
+			mediaValidations.push(mongoose.model('File').findById(tableFile._media.playfield_image).then(playfieldImage => {
+				if (!playfieldImage) {
+					release.invalidate('files.' + index + '._media.playfield_image', 'Playfield "' + tableFile._media.playfield_image + '" does not exist.');
+					return;
+				}
+				if (!_.includes(['playfield-fs', 'playfield-ws'], playfieldImage.file_type)) {
+					release.invalidate('files.' + index + '._media.playfield_image', 'Must reference a file with file_type "playfield-fs" or "playfield-ws".');
+				}
+			}));
+		}
+
+		// TODO validate playfield video
+		if (tableFile._media && tableFile._media.playfield_video) {
+
+			mediaValidations.push(Promise.resolve(() => console.log("TODO: Validate playfield video")));
+		}
+
+		return Promise.all(mediaValidations).then(() => true);
+	});
+}
 
 // playfield-from-server creation code (move to controller when tom's service is back up)
 //logger.info('[model|release] Creating new playfield image from table screenshot...');

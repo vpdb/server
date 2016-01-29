@@ -79,7 +79,7 @@ Settings.prototype.validate = function() {
 						logger.error('[settings] %s [KO]: Setting is missing.', p);
 						success = false;
 					} else {
-						validationError = validation[s](setting[s], settings);
+						validationError = validation[s](setting[s], setting, settings);
 						if (!validationError) {
 							logger.info('[settings] %s [OK]', p);
 						} else {

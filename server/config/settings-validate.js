@@ -326,7 +326,7 @@ module.exports = {
 				}
 			},
 
-			defaultPlan: function(defaultPlan, settings) {
+			defaultPlan: function(defaultPlan, setting, settings) {
 				/* istanbul ignore if */
 				if (!settings.vpdb.quota.plans[defaultPlan]) {
 					return 'Default plan must exist in the "vpdb.quota.plans" setting.';
@@ -391,9 +391,9 @@ module.exports = {
 					return 'Enabled flag must be either true or false';
 				}
 			},
-			options: function(opt, settings) {
+			options: function(opt, setting) {
 				/* istanbul ignore if */
-				if (!settings.vpdb.pusher || !settings.vpdb.pusher.enabled) {
+				if (!setting.enabled) {
 					return;
 				}
 				/* istanbul ignore if */
@@ -423,9 +423,9 @@ module.exports = {
 				/**
 				 * The client ID of the generated application.
 				 */
-				clientID: function(id, settings) {
+				clientID: function(id, setting) {
 					/* istanbul ignore if */
-					if (!settings.vpdb.passport.google.enabled) {
+					if (!setting.enabled) {
 						return;
 					}
 					/* istanbul ignore if */
@@ -441,9 +441,9 @@ module.exports = {
 				/**
 				 * The client secret of the generated application.
 				 */
-				clientSecret: function(secret, settings) {
+				clientSecret: function(secret, setting) {
 					/* istanbul ignore if */
-					if (!settings.vpdb.passport.google.enabled) {
+					if (!setting.enabled) {
 						return;
 					}
 					/* istanbul ignore if */
@@ -476,9 +476,9 @@ module.exports = {
 				/**
 				 * The client ID of the generated application.
 				 */
-				clientID: function(id, settings) {
+				clientID: function(id, setting) {
 					/* istanbul ignore if */
-					if (!settings.vpdb.passport.github.enabled) {
+					if (!setting.enabled) {
 						return;
 					}
 					/* istanbul ignore if */
@@ -494,9 +494,9 @@ module.exports = {
 				/**
 				 * The client secret of the generated application.
 				 */
-				clientSecret: function(secret, settings) {
+				clientSecret: function(secret, setting) {
 					/* istanbul ignore if */
-					if (!settings.vpdb.passport.github.enabled) {
+					if (!setting.enabled) {
 						return;
 					}
 					/* istanbul ignore if */
@@ -529,7 +529,11 @@ module.exports = {
 				/**
 				 * Must contain only letters from a-z (no spaces or special chars).
 				 */
-				id: function(id) {
+				id: function(id, setting) {
+					/* istanbul ignore if */
+					if (!setting.enabled) {
+						return;
+					}
 					/* istanbul ignore if */
 					if (!/^[a-z0-9]+$/.test(id)) {
 						return 'ID must be alphanumeric';
@@ -539,7 +543,11 @@ module.exports = {
 				/**
 				 * Index file of the forum.
 				 */
-				baseURL: function(url) {
+				baseURL: function(url, setting) {
+					/* istanbul ignore if */
+					if (!setting.enabled) {
+						return;
+					}
 					var urlErr = checkUrl(url);
 					/* istanbul ignore if */
 					if (urlErr) {
@@ -554,7 +562,11 @@ module.exports = {
 				/**
 				 * The client ID of the generated application.
 				 */
-				clientID: function(id) {
+				clientID: function(id, setting) {
+					/* istanbul ignore if */
+					if (!setting.enabled) {
+						return;
+					}
 					/* istanbul ignore if */
 					if (id.length === 0) {
 						return 'Your client ID must be longer than 0 characters';
@@ -568,7 +580,11 @@ module.exports = {
 				/**
 				 * The client secret of the generated application.
 				 */
-				clientSecret: function(secret) {
+				clientSecret: function(secret, setting) {
+					/* istanbul ignore if */
+					if (!setting.enabled) {
+						return;
+					}
 					/* istanbul ignore if */
 					if (secret.length === 0) {
 						return 'Your client secret must be longer than 0 characters';

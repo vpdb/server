@@ -49,12 +49,17 @@ exports.configure = function(app, raygunClient) {
 	logger.info('[express] Setting up Express for running %s in %s mode.', runningLocal ? 'locally' : 'remotely', runningDev ? 'development' : 'production');
 
 	/* istanbul ignore if  */
+	if (!process.env.IPADDRESS) {
+		throw new Error('Environment variable `IPADDRESS` not found, server cannot start on unknown ip address.');
+	}
+	
+	/* istanbul ignore if  */
 	if (!process.env.PORT) {
 		throw new Error('Environment variable `PORT` not found, server cannot start on unknown port.');
 	}
 
+	app.set('ipaddress', process.env.IPADDRESS);
 	app.set('port', process.env.PORT);
-	app.set('ipaddress', process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1');
 	app.set('views', path.resolve(__dirname, '../client/app'));
 	app.set('view engine', 'jade');
 	app.set('json spaces', "\t");

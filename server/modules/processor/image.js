@@ -105,7 +105,7 @@ ImageProcessor.prototype.variationData = function(metadata) {
 		height: metadata.size.height
 	};
 };
-
+/*
 ImageProcessor.prototype.preprocess = function(file) {
 
 	return Promise.try(function() {
@@ -126,7 +126,7 @@ ImageProcessor.prototype.preprocess = function(file) {
 		});
 	});
 };
-
+*/
 /**
  * Resizes the image.
  *

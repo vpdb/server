@@ -134,49 +134,51 @@ exports.createRelease4 = function(user, request, done) {
 	var hlp = require('./helper');
 	hlp.game.createGame('contributor', request, function(game) {
 		hlp.file.createVpts(user, request, 3, function(vptfiles) {
-			hlp.file.createPlayfields(user, request, 'fs', 3, function(playfields) {
-				request
-					.post('/api/v1/releases')
-					.as(user)
-					.send({
-						name: faker.company.catchPhraseAdjective() + ' Edition',
-						_game: game.id,
-						versions: [
-							{
-								files: [ {
-									_file: vptfiles[0].id,
-									_media: { playfield_image: playfields[0].id },
-									_compatibility: [ '10.x' ],
-									flavor: { orientation: 'fs', lighting: 'night' }
+			hlp.file.createPlayfields(user, request, 'fs', 2, function(playfields) {
+				hlp.file.createPlayfield(user, request, 'ws', function(playfieldWs) {
+					request
+						.post('/api/v1/releases')
+						.as(user)
+						.send({
+							name: faker.company.catchPhraseAdjective() + ' Edition',
+							_game: game.id,
+							versions: [
+								{
+									files: [ {
+										_file: vptfiles[0].id,
+										_media: { playfield_image: playfields[0].id },
+										_compatibility: [ '10.x' ],
+										flavor: { orientation: 'fs', lighting: 'night' }
+									}, {
+										_file: vptfiles[1].id,
+										_media: { playfield_image: playfields[1].id },
+										_compatibility: [ '10.x' ],
+										flavor: { orientation: 'fs', lighting: 'day' }
+									} ],
+									version: '2.0',
+									"released_at": "2015-08-30T12:00:00.000Z"
 								}, {
-									_file: vptfiles[1].id,
-									_media: { playfield_image: playfields[1].id },
-									_compatibility: [ '10.x' ],
-									flavor: { orientation: 'fs', lighting: 'day' }
-								} ],
-								version: '2.0',
-								"released_at": "2015-08-30T12:00:00.000Z"
-							}, {
 
-								files: [ {
-									_file: vptfiles[2].id,
-									_media: { playfield_image: playfields[2].id },
-									_compatibility: [ '10.x' ],
-									flavor: { orientation: 'ws', lighting: 'night' }
-								} ],
-								version: '1.0',
-								"released_at": "2015-07-01T12:00:00.000Z"
-							}
-						],
-						_tags: ['wip', 'dof'],
-						authors: [ { _user: hlp.getUser(user).id, roles: [ 'Table Creator' ] } ]
-					})
-					.end(function (err, res) {
-						hlp.doomRelease(user, res.body.id);
-						var release = res.body;
-						release.game = game;
-						done(release);
-					});
+									files: [ {
+										_file: vptfiles[2].id,
+										_media: { playfield_image: playfieldWs.id },
+										_compatibility: [ '10.x' ],
+										flavor: { orientation: 'ws', lighting: 'night' }
+									} ],
+									version: '1.0',
+									"released_at": "2015-07-01T12:00:00.000Z"
+								}
+							],
+							_tags: ['wip', 'dof'],
+							authors: [ { _user: hlp.getUser(user).id, roles: [ 'Table Creator' ] } ]
+						})
+						.end(function (err, res) {
+							hlp.doomRelease(user, res.body.id);
+							var release = res.body;
+							release.game = game;
+							done(release);
+						});
+				});
 			});
 		});
 	});

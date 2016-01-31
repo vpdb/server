@@ -216,7 +216,7 @@ describe('The VPDB `file` API', function() {
 			});
 		});
 
-		it('should rotate the image when uploading an already rotated FS', function(done) {
+		it.skip('should rotate the image when uploading an already rotated FS', function(done) {
 			var width = 1080;
 			var height = 1920;
 			gm(width, height, pleasejs.make_color()).toBuffer('PNG', function(err, data) {

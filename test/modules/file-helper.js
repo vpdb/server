@@ -1,5 +1,6 @@
 "use strict";
 
+var _ = require('lodash');
 var fs = require('fs');
 var gm = require('gm');
 var path = require('path');
@@ -39,15 +40,23 @@ exports.createBackglass = function(user, request, done) {
 	});
 };
 
-exports.createPlayfield = function(user, request, orientation, done) {
-	exports.createPlayfields(user, request, orientation, 1, function(playfields) {
+exports.createPlayfield = function(user, request, orientation, type, done) {
+	if (_.isFunction(type)) {
+		done = type;
+		type = null;
+	};
+	exports.createPlayfields(user, request, orientation, 1, type, function(playfields) {
 		done(playfields[0]);
 	});
 };
 
-exports.createPlayfields = function(user, request, orientation, times, done) {
+exports.createPlayfields = function(user, request, orientation, times, type, done) {
 
-	var fileType = 'playfield-' + orientation;
+	if (_.isFunction(type)) {
+		done = type;
+		type = null;
+	}
+	var fileType = type || 'playfield-' + orientation;
 	var mimeType = 'image/png';
 
 	var isFS = orientation == 'fs';
@@ -55,7 +64,7 @@ exports.createPlayfields = function(user, request, orientation, times, done) {
 	async.times(times, function(n, next) {
 		var name = 'playfield-' + n + '.png';
 
-		gm(isFS ? 1920 : 1080, isFS ? 1080 : 1920, pleasejs.make_color()).toBuffer('PNG', function(err, data) {
+		gm(isFS ? 1080 : 1920, isFS ? 1920 : 1080, pleasejs.make_color()).toBuffer('PNG', function(err, data) {
 			if (err) {
 				throw err;
 			}

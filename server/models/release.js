@@ -181,7 +181,6 @@ VersionSchema.path('files').validate(function(files, callback) {
 		var index = 0; // when updating a version, ignore existing files, so increment only if new
 		return Promise.each(files, file => {
 			return validateFile(this, file, index).then(isTableFile => {
-				console.log('----- RETURN FROM validateFile(): %s', isTableFile);
 				if (isTableFile) {
 					hasTableFile = true;
 					tableFiles.push({ file: file, index: index});
@@ -302,11 +301,44 @@ function validateFile(release, tableFile, index) {
 		if (tableFile._media && tableFile._media.playfield_image) {
 			mediaValidations.push(mongoose.model('File').findById(tableFile._media.playfield_image).then(playfieldImage => {
 				if (!playfieldImage) {
-					release.invalidate('files.' + index + '._media.playfield_image', 'Playfield "' + tableFile._media.playfield_image + '" does not exist.');
+					release.invalidate('files.' + index + '._media.playfield_image',
+						'Playfield "' + tableFile._media.playfield_image + '" does not exist.');
 					return;
 				}
 				if (!_.includes(['playfield-fs', 'playfield-ws'], playfieldImage.file_type)) {
-					release.invalidate('files.' + index + '._media.playfield_image', 'Must reference a file with file_type "playfield-fs" or "playfield-ws".');
+					release.invalidate('files.' + index + '._media.playfield_image',
+						'Must reference a file with file_type "playfield-fs" or "playfield-ws".');
+
+				} else {
+
+					// fail if table file is set to FS but provided playfield is not
+					if (fileFlavor.orientation && fileFlavor.orientation === 'fs' && playfieldImage.file_type !== 'playfield-fs') {
+						release.invalidate('files.' + index + '._media.playfield_image', 'Table file orientation is set ' +
+							'to FS but playfield image is "' + playfieldImage.file_type + '".');
+					}
+
+					// fail if table file is set to WS but provided playfield is not
+					if (fileFlavor.orientation && fileFlavor.orientation === 'ws' && playfieldImage.file_type !== 'playfield-ws') {
+						release.invalidate('files.' + index + '._media.playfield_image', 'Table file orientation is set ' +
+							'to WS but playfield image is "' + playfieldImage.file_type + '".');
+					}
+
+					// fail if playfield is set to FS but file's metadata say otherwise
+					if (playfieldImage.file_type === 'playfield-fs' && playfieldImage.metadata.size.width > playfieldImage.metadata.size.height) {
+						release.invalidate('files.' + index + '._media.playfield_image', 'Provided playfield is ' +
+							playfieldImage.metadata.size.width + 'x' + playfieldImage.metadata.size.height +
+							' (portrait) when it really should be landscape.');
+					}
+
+					console.log('--------------------- file type = %s', playfieldImage.file_type);
+					console.log('--------------------- size = %sx%s', playfieldImage.metadata.size.width, playfieldImage.metadata.size.height);
+
+					// fail if playfield is set to WS but file's metadata say otherwise
+					if (playfieldImage.file_type === 'playfield-ws' && playfieldImage.metadata.size.width < playfieldImage.metadata.size.height) {
+						release.invalidate('files.' + index + '._media.playfield_image', 'Provided playfield is ' +
+							playfieldImage.metadata.size.width + 'x' + playfieldImage.metadata.size.height +
+							' (landscape) when it really should be portrait.');
+					}
 				}
 			}));
 		}

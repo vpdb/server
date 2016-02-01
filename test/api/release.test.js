@@ -493,6 +493,42 @@ describe('The VPDB `release` API', function() {
 			});
 		});
 
+		it('should succeed when rotating a ws playfield to a fs file', function(done) {
+			var user = 'member';
+			hlp.game.createGame('contributor', request, function(game) {
+				hlp.file.createVpt(user, request, function(vptfile) {
+					hlp.file.createPlayfield(user, request, 'fs', 'playfield', function(playfield) {
+						request
+							.post('/api/v1/releases?rotate=' + playfield.id + ':90')
+							.as(user)
+							.send({
+								name: 'release',
+								_game: game.id,
+								versions: [
+									{
+										files: [ {
+											_file: vptfile.id,
+											_media: { playfield_image: playfield.id },
+											_compatibility: [ '9.9.0' ],
+											flavor: { orientation: 'ws', lighting: 'night' } }
+										],
+										version: '1.0.0'
+									}
+								],
+								authors: [ { _user: hlp.getUser(user).id, roles: [ 'Table Creator' ] } ]
+							})
+							.end(function (err, res) {
+								hlp.expectStatus(err, res, 201);
+								hlp.doomRelease(user, res.body.id);
+								done();
+							});
+					});
+				});
+			});
+		});
+
+		it('should fail when providing a non-rotated and unspecified playfield image');
+
 		it('should activate tags and builds if created');
 
 	});

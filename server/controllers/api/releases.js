@@ -20,6 +20,8 @@
 "use strict";
 
 var _ = require('lodash');
+var fs = require('fs');
+var gm = require('gm');
 var util = require('util');
 var async = require('async');
 var logger = require('winston');
@@ -38,6 +40,9 @@ var api = require('./api');
 var error = require('../../modules/error')('api', 'release');
 var flavor = require('../../modules/flavor');
 var pusher = require('../../modules/pusher');
+var storage = require('../../modules/storage');
+
+Promise.promisifyAll(gm.prototype);
 
 /**
  * Creates a new release.
@@ -63,6 +68,9 @@ exports.create = function(req, res) {
 				}
 			});
 		}
+		return preProcess(req);
+
+	}).then(() => {
 
 		logger.info('[api|release:create] Body: %s', util.inspect(req.body, { depth: null }));
 		return Release.getInstance(_.extend(req.body, {
@@ -745,4 +753,84 @@ function getDetails(id) {
 		.populate({ path: 'versions.files._media.playfield_video' })
 		.populate({ path: 'versions.files._compatibility' })
 		.exec();
+}
+
+function preProcess(req) {
+
+	if (req.query.rotate) {
+		let rotations = req.query.rotate.split(',').map(r => {
+			if (!r.includes(':')) {
+				throw error('When providing the "rotation" query, pairs must be separated by ":".', req.params.id).status(400);
+			}
+			let rot = r.split(':');
+
+			if (!_.includes(['0', '90', '180', '270'], rot[1])) {
+				throw error('Wrong angle "%s", must be one of: [0, 90, 180, 270].', rot[1]).status(400);
+			}
+
+			return { file: rot[0], angle: parseInt(rot[1]) };
+		});
+		return Promise.each(rotations, rotation => {
+			if (rotation.angle === 0) {
+				return;
+			}
+			let file;
+			return File.findOne({ id: rotation.file }).then(f => {
+				file = f;
+				if (!file) {
+					throw error('Cannot rotate non-existing file "%s".', rotation.file).status(404);
+				}
+				if (file.getMimeCategory() !== 'image') {
+					throw error('Cannot only rotate images, this this a "%s".', file.getMimeCategory()).status(400);
+				}
+				if (file.file_type !== 'playfield') {
+					throw error('Cannot only rotate images of type "playfield", got "%s".', file.file_type).status(400);
+				}
+				return backupFile(file);
+
+			}).then(src => {
+
+				logger.info('[api|release] Rotating file "%s" %s°.', file.id, rotation.angle);
+				return gm(src).rotate('black', rotation.angle).writeAsync(file.getPath());
+
+			}).then(() => {
+				return storage.metadata(file);
+
+			}).then(metadata => {
+
+				// now patch new metadata and also file_type.
+				File.sanitizeObject(metadata);
+				file.metadata = metadata;
+				file.file_type = 'playfield-' + (metadata.size.width > metadata.size.height ? 'ws' : 'fs');
+				return file.save();
+			});
+		});
+	}
+}
+
+function backupFile(file) {
+	let backup = file.getPath(null, '_original');
+	if (!fs.existsSync(backup)) {
+		logger.info('[api|release] Copying "%s" to "%s".', file.getPath(), backup);
+		return copyFile(file.getPath(), backup);
+	}
+	return backup;
+}
+
+function copyFile(source, target) {
+
+	return new Promise((resolve, reject) => {
+		let rd = fs.createReadStream(source);
+		rd.on("error", err => {
+			reject(err);
+		});
+		let wr = fs.createWriteStream(target);
+		wr.on("error", err => {
+			reject(err);
+		});
+		wr.on("close", () => {
+			resolve(target);
+		});
+		rd.pipe(wr);
+	});
 }

@@ -204,7 +204,7 @@ function Queue() {
 			}
 			var variation = job.data.variation;
 			if (!file) {
-				logger.warn('[queue|pass2] Aborting before pass 2, file "%s" is not in database.', job.data.fileId);
+				logger.verbose('[queue|pass2] Aborting before pass 2, file "%s" is not in database.', job.data.fileId);
 				return done();
 			}
 			// define paths
@@ -218,7 +218,7 @@ function Queue() {
 			}
 
 			if (!fs.existsSync(src)) {
-				logger.warn('[queue|pass2] Aborting before pass 2, %s is not on file system.', file.toString(variation));
+				logger.verbose('[queue|pass2] Aborting before pass 2, %s is not on file system.', file.toString(variation));
 				return done();
 			}
 

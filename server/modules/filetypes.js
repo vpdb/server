@@ -32,6 +32,9 @@ exports.values = {
 	'logo': {
 		mimeTypes: [ 'image/png' ]
 	},
+	'playfield': {
+		mimeTypes: [ 'image/jpeg', 'image/png' ]
+	},
 	'playfield-fs': {
 		mimeTypes: [ 'image/jpeg', 'image/png', 'video/mp4', 'video/x-flv', 'video/avi', 'video/x-f4v' ]
 	},

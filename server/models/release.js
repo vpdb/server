@@ -305,7 +305,11 @@ function validateFile(release, tableFile, index) {
 						'Playfield "' + tableFile._media.playfield_image + '" does not exist.');
 					return;
 				}
-				if (!_.includes(['playfield-fs', 'playfield-ws'], playfieldImage.file_type)) {
+				if (playfieldImage.file_type === 'playfield') {
+					release.invalidate('files.' + index + '._media.playfield_image',
+						'Either provide rotation parameters in query or use "playfield-fs" or "playfield-ws" in file_type.');
+
+				} else if (!_.includes(['playfield-fs', 'playfield-ws'], playfieldImage.file_type)) {
 					release.invalidate('files.' + index + '._media.playfield_image',
 						'Must reference a file with file_type "playfield-fs" or "playfield-ws".');
 
@@ -329,9 +333,6 @@ function validateFile(release, tableFile, index) {
 							playfieldImage.metadata.size.width + 'x' + playfieldImage.metadata.size.height +
 							' (portrait) when it really should be landscape.');
 					}
-
-					console.log('--------------------- file type = %s', playfieldImage.file_type);
-					console.log('--------------------- size = %sx%s', playfieldImage.metadata.size.width, playfieldImage.metadata.size.height);
 
 					// fail if playfield is set to WS but file's metadata say otherwise
 					if (playfieldImage.file_type === 'playfield-ws' && playfieldImage.metadata.size.width < playfieldImage.metadata.size.height) {

@@ -780,6 +780,9 @@ function preProcess(req) {
 				if (!file) {
 					throw error('Cannot rotate non-existing file "%s".', rotation.file).status(404);
 				}
+				if (file.is_active) {
+					throw error('Pre-processing can only be applied to inactive files.').status(400);
+				}
 				if (file.getMimeCategory() !== 'image') {
 					throw error('Cannot only rotate images, this this a "%s".', file.getMimeCategory()).status(400);
 				}

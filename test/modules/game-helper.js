@@ -30,7 +30,7 @@ exports.getGame = function(attrs) {
  * @param {function} done Callback
  */
 exports.createGame = function(user, request, done) {
-	var hlp = require('./helper');
+ 	var hlp = require('./helper');
 	hlp.file.createBackglass(user, request, function(backglass) {
 		// backglass doomed by game
 		request

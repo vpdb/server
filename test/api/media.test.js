@@ -31,9 +31,9 @@ var hlp = require('../modules/helper');
 
 superagentTest(request);
 
-describe('When dealing with media', function() {
+describe('When dealing with pre-processing media', function() {
 
-	describe.only('of a release', function() {
+	describe('of a release', function() {
 
 		var game, vptfile;
 
@@ -173,6 +173,31 @@ describe('When dealing with media', function() {
 			});
 		});
 
+		it('should fail when trying to rotate an active file', function(done) {
+			var user = 'member';
+			hlp.file.createPlayfield(user, request, 'fs', 'playfield-ws', function(playfield) {
+				request
+					.post('/api/v1/releases?rotate=' + game.media.backglass.id + ':90')
+					.as(user)
+					.send({
+						name: 'release',
+						_game: game.id,
+						versions: [
+							{
+								files: [ {
+									_file: vptfile.id,
+									_media: { playfield_image: playfield.id },
+									_compatibility: [ '9.9.0' ],
+									flavor: { orientation: 'ws', lighting: 'night' } }
+								],
+								version: '1.0.0'
+							}
+						],
+						authors: [ { _user: hlp.getUser(user).id, roles: [ 'Table Creator' ] } ]
+
+					}).end(hlp.status(400, 'can only be applied to inactive files', done));
+			});
+		});
 
 	});
 });

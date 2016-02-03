@@ -395,7 +395,7 @@ describe('The VPDB `release` API', function() {
 			});
 		});
 
-		it('should fail when providing a non-rotated and unspecified playfield image');
+		it('should fail when providing a non-rotated and unspecified playfield image ("playfield" file_type)');
 
 		it('should activate tags and builds if created');
 

@@ -215,7 +215,7 @@ Storage.prototype.metadataShort = function(file, metadata) {
 };
 
 Storage.prototype.preprocess = function(file, done) {
-	return Promise.try(function() {
+	return Promise.try(() => {
 		var type = file.getMimeCategory();
 		if (!processors[type] || !processors[type].preprocess) {
 			return Promise.resolve(file);

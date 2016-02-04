@@ -68,7 +68,7 @@ exports.create = function(req, res) {
 				}
 			});
 		}
-		return preProcess(req);
+		return preprocess(req);
 
 	}).then(() => {
 
@@ -87,7 +87,9 @@ exports.create = function(req, res) {
 		logger.info('[api|release:create] Validations passed.');
 		return release.save();
 
-	// todo postProcess() which rotates file variations as well
+	}).then(() => {
+		return postprocess(req);
+
 	}).then(() => {
 		logger.info('[api|release:create] Release "%s" created.', release.name);
 		return release.activateFiles();
@@ -117,7 +119,6 @@ exports.create = function(req, res) {
 
 	}).catch(api.handleError(res, error, 'Error creating release'));
 };
-
 
 /**
  * Updates the release data (only basic data, no versions or files).
@@ -151,7 +152,7 @@ exports.update = function(req, res) {
 
 		// fail if invalid fields provided
 		var submittedFields = _.keys(req.body);
-		if (_.intersection(updateableFields, submittedFields).length != submittedFields.length) {
+		if (_.intersection(updateableFields, submittedFields).length !== submittedFields.length) {
 			var invalidFields = _.difference(submittedFields, updateableFields);
 			throw error('Invalid field%s: ["%s"]. Allowed fields: ["%s"]', invalidFields.length === 1 ? '' : 's', invalidFields.join('", "'), updateableFields.join('", "')).status(400).log('update');
 		}
@@ -181,7 +182,6 @@ exports.update = function(req, res) {
 
 	}).catch(api.handleError(res, error, 'Error updating release'));
 };
-
 
 /**
  * Adds a new version to an existing release.
@@ -387,12 +387,8 @@ exports.list = function(req, res) {
 		if (req.query.thumb_format) {
 			transformOpts.thumbFormat = req.query.thumb_format;
 		}
-		if (!_.isUndefined(req.query.thumb_full_data) && req.query.thumb_full_data.toLowerCase() !== 'false') {
-			transformOpts.fullThumbData = true;
-		}
-		if (!_.isUndefined(req.query.thumb_per_file) && req.query.thumb_per_file.toLowerCase() !== 'false') {
-			transformOpts.thumbPerFile = true;
-		}
+		transformOpts.fullThumbData = parseBoolean(req.query.thumb_full_data);
+		transformOpts.thumbPerFile = parseBoolean(req.query.thumb_per_file);
 
 		// check
 		if (transformOpts.thumbPerFile && !transformOpts.thumbFormat) {
@@ -474,9 +470,9 @@ exports.list = function(req, res) {
 	}).then(() => {
 
 		// file size filter
-		let filesize = parseInt(req.query.filesize);
+		let filesize = parseInt(req.query.filesize, 10);
 		if (filesize) {
-			let threshold = parseInt(req.query.threshold);
+			let threshold = parseInt(req.query.threshold, 10);
 			let q = { file_type: 'release' };
 			if (threshold) {
 				q.bytes = { $gt: filesize - threshold, $lt: filesize + threshold };
@@ -572,22 +568,20 @@ exports.list = function(req, res) {
  */
 exports.view = function(req, res) {
 
-	var query = Release.findOne({ id: req.params.id })
-		.populate({ path: '_game' })
-		.populate({ path: '_tags' })
-		.populate({ path: 'authors._user' })
-		.populate({ path: 'versions.files._file' })
-		.populate({ path: 'versions.files._media.playfield_image' })
-		.populate({ path: 'versions.files._media.playfield_video' })
-		.populate({ path: 'versions.files._compatibility' });
+	Promise.try(() => {
+		return Release.findOne({ id: req.params.id })
+			.populate({ path: '_game' })
+			.populate({ path: '_tags' })
+			.populate({ path: 'authors._user' })
+			.populate({ path: 'versions.files._file' })
+			.populate({ path: 'versions.files._media.playfield_image' })
+			.populate({ path: 'versions.files._media.playfield_video' })
+			.populate({ path: 'versions.files._compatibility' })
+			.exec();
 
-	query.exec(function (err, release) {
-		/* istanbul ignore if  */
-		if (err) {
-			return api.fail(res, error(err, 'Error finding release "%s"', req.params.id).log('view'), 500);
-		}
+	}).then(release => {
 		if (!release) {
-			return api.fail(res, error('No such release with ID "%s"', req.params.id), 404);
+			throw error('No such release with ID "%s"', req.params.id).status(404);
 		}
 
 		var transformOpts = {};
@@ -598,17 +592,14 @@ exports.view = function(req, res) {
 		if (req.query.thumb_format) {
 			transformOpts.thumbFormat = req.query.thumb_format;
 		}
-		if (!_.isUndefined(req.query.thumb_per_file) && req.query.thumb_per_file.toLowerCase() !== 'false') {
-			transformOpts.thumbPerFile = true;
-		}
-		if (!_.isUndefined(req.query.full) && req.query.full.toLowerCase() !== 'false') {
-			transformOpts.full = true;
-		}
+
+		transformOpts.thumbPerFile = parseBoolean(req.query.thumb_per_file);
+		transformOpts.full = parseBoolean(req.query.full);
 
 		return api.success(res, release.toDetailed(transformOpts));
-	});
-};
 
+	}).catch(api.handleError(res, error, 'Error retrieving release details'));
+};
 
 /**
  * Deletes a release.
@@ -618,40 +609,34 @@ exports.view = function(req, res) {
  */
 exports.del = function(req, res) {
 
-	var query = Release.findOne({ id: req.params.id })
-		.populate({ path: 'versions.0.files.0._file' })
-		.populate({ path: 'versions.0.files.0._media.playfield_image' })
-		.populate({ path: 'versions.0.files.0._media.playfield_video' });
+	let release;
+	Promise.try(() => {
+		return Release.findOne({ id: req.params.id })
+			.populate({ path: 'versions.0.files.0._file' })
+			.populate({ path: 'versions.0.files.0._media.playfield_image' })
+			.populate({ path: 'versions.0.files.0._media.playfield_video' })
+			.exec();
 
-	query.exec(function(err, release) {
-		/* istanbul ignore if  */
-		if (err) {
-			return api.fail(res, error(err, 'Error getting release "%s"', req.params.id).log('delete'), 500);
-		}
+	}).then(r => {
+		release = r;
 		if (!release) {
-			return api.fail(res, error('No such release with ID "%s".', req.params.id), 404);
+			throw error('No such release with ID "%s".', req.params.id).status(404);
 		}
 
 		// only allow deleting own files (for now)
 		if (!release._created_by.equals(req.user._id)) {
-			return api.fail(res, error('Permission denied, must be owner.'), 403);
+			throw error('Permission denied, must be owner.').status(403);
 		}
 
-		// todo check if there are references (comments, etc)
-
-
 		// remove from db
-		release.remove(function(err) {
-			/* istanbul ignore if  */
-			if (err) {
-				return api.fail(res, error(err, 'Error deleting release "%s" (%s)', release.id, release.name).log('delete'), 500);
-			}
-			logger.info('[api|release:delete] Release "%s" (%s) successfully deleted.', release.name, release.id);
-			api.success(res, null, 204);
-		});
-	});
-};
+		return release.remove();
 
+	}).then(() => {
+		logger.info('[api|release:delete] Release "%s" (%s) successfully deleted.', release.name, release.id);
+		api.success(res, null, 204);
+
+	}).catch(api.handleError(res, error, 'Error deleting release'));
+};
 
 /**
  * Retrieves release details.
@@ -670,7 +655,6 @@ function getDetails(id) {
 		.exec();
 }
 
-
 /**
  * Pre-processes stuff before running validations.
  *
@@ -678,7 +662,7 @@ function getDetails(id) {
  * @param {"express".e.Request} req
  * @returns {Promise}
  */
-function preProcess(req) {
+function preprocess(req) {
 
 	if (req.query.rotate) {
 		let rotations = req.query.rotate.split(',').map(r => {
@@ -691,7 +675,7 @@ function preProcess(req) {
 				throw error('Wrong angle "%s", must be one of: [0, 90, 180, 270].', rot[1]).status(400);
 			}
 
-			return { file: rot[0], angle: parseInt(rot[1]) };
+			return { file: rot[0], angle: parseInt(rot[1], 10) };
 		});
 		return Promise.each(rotations, rotation => {
 			let file;
@@ -731,6 +715,25 @@ function preProcess(req) {
 				file.file_type = 'playfield-' + (metadata.size.width > metadata.size.height ? 'ws' : 'fs');
 				return file.save();
 			});
+		});
+	}
+}
+
+/**
+ * Runs post-processing on stuff that was pre-processed earlier (and probably
+ * needs to be post-processed again).
+ *
+ * @param {"express".e.Request} req
+ * @returns {Promise}
+ */
+function postprocess(req) {
+	if (req.query.rotate) {
+		let rotations = req.query.rotate.split(',').map(r => {
+			let rot = r.split(':');
+			return { file: rot[0], angle: parseInt(rot[1], 10) };
+		});
+		return Promise.all(rotations, rotation => {
+			return File.findOne({ id: rotation.file }).then(file => storage.postprocess(file));
 		});
 	}
 }
@@ -777,4 +780,13 @@ function copyFile(source, target) {
 		});
 		rd.pipe(wr);
 	});
+}
+
+/**
+ * Parses a boolean value provided by the request
+ * @param {string} value Value to parse
+ * @returns {boolean}
+ */
+function parseBoolean(value) {
+	return !_.isUndefined(value) && value.toLowerCase() !== 'false';
 }

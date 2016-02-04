@@ -153,7 +153,7 @@ exports.update = function(req, res) {
 		var submittedFields = _.keys(req.body);
 		if (_.intersection(updateableFields, submittedFields).length != submittedFields.length) {
 			var invalidFields = _.difference(submittedFields, updateableFields);
-			throw error('Invalid field%s: ["%s"]. Allowed fields: ["%s"]', invalidFields.length == 1 ? '' : 's', invalidFields.join('", "'), updateableFields.join('", "')).status(400).log('update');
+			throw error('Invalid field%s: ["%s"]. Allowed fields: ["%s"]', invalidFields.length === 1 ? '' : 's', invalidFields.join('", "'), updateableFields.join('", "')).status(400).log('update');
 		}
 
 		// apply changes
@@ -827,7 +827,7 @@ function preProcess(req) {
  * the file name of the location.
  *
  * @param file File
- * @returns {string} New location
+ * @returns {Promise.<string>} New location
  */
 function backupFile(file) {
 	let backup = file.getPath(null, '_original');
@@ -835,7 +835,7 @@ function backupFile(file) {
 		logger.info('[api|release] Copying "%s" to "%s".', file.getPath(), backup);
 		return copyFile(file.getPath(), backup);
 	}
-	return backup;
+	return Promise.resolve(backup);
 }
 
 /**
@@ -844,7 +844,7 @@ function backupFile(file) {
  *
  * @param source Path to source file
  * @param target Path to target file
- * @returns {Promise}
+ * @returns {Promise.<string>} Path to target file
  */
 function copyFile(source, target) {
 

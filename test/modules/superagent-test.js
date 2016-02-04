@@ -1,6 +1,6 @@
 "use strict";
 
-const Promise = require('bluebird');
+Promise = require('bluebird'); // jshint ignore:line
 var _ = require('lodash');
 var fs = require('fs');
 var argv = require('yargs').argv;

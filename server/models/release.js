@@ -457,10 +457,10 @@ ReleaseSchema.statics.toSimple = function(release, opts) {
 /**
  * Returns an aggregation pipeline that filters releases by nested conditions.
  *
- * @param {array} query Original, non-nested query
- * @param {array} filter Array of nested conditions, e.g. [ { "versions.files.flavor.lightning": "night" } ]
- * @param {int} [sortBy] Object defining the sort order
- * @param {int} [pagination] Pagination object
+ * @param {Array} query Original, non-nested query
+ * @param {Array} filter Array of nested conditions, e.g. [ { "versions.files.flavor.lightning": "night" } ]
+ * @param {number} [sortBy] Object defining the sort order
+ * @param {{defaultPerPage: Number, maxPerPage: Number, page: Number, perPage: Number}} [pagination] Pagination object
  */
 ReleaseSchema.statics.getAggregationPipeline = function(query, filter, sortBy, pagination) {
 

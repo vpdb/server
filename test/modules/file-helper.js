@@ -44,7 +44,7 @@ exports.createPlayfield = function(user, request, orientation, type, done) {
 	if (_.isFunction(type)) {
 		done = type;
 		type = null;
-	};
+	}
 	exports.createPlayfields(user, request, orientation, 1, type, function(playfields) {
 		done(playfields[0]);
 	});

@@ -239,7 +239,7 @@ exports.assert = function(error, prefix, ref, res, rollback) {
  * @param {Request} req
  * @param {int} [defaultPerPage=10] Default number of items returned if not indicated - default 10.
  * @param {int} [maxPerPage=50] Maximal number of items returned if not indicated - default 50.
- * @return {object}
+ * @return {{defaultPerPage: Number, maxPerPage: Number, page: Number, perPage: Number}}
  */
 exports.pagination = function(req, defaultPerPage, maxPerPage) {
 	return {

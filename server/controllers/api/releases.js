@@ -87,6 +87,7 @@ exports.create = function(req, res) {
 		logger.info('[api|release:create] Validations passed.');
 		return release.save();
 
+	// todo postProcess() which rotates file variations as well
 	}).then(() => {
 		logger.info('[api|release:create] Release "%s" created.', release.name);
 		return release.activateFiles();
@@ -738,6 +739,7 @@ exports.del = function(req, res) {
 	});
 };
 
+
 /**
  * Retrieves release details.
  * @param id Database ID of the release to fetch
@@ -755,6 +757,14 @@ function getDetails(id) {
 		.exec();
 }
 
+
+/**
+ * Pre-processes stuff before running validations.
+ *
+ * Currently, the only "stuff" is rotation of referenced media.
+ * @param {"express".e.Request} req
+ * @returns {Promise}
+ */
 function preProcess(req) {
 
 	if (req.query.rotate) {
@@ -771,9 +781,6 @@ function preProcess(req) {
 			return { file: rot[0], angle: parseInt(rot[1]) };
 		});
 		return Promise.each(rotations, rotation => {
-			if (rotation.angle === 0) {
-				return;
-			}
 			let file;
 			return File.findOne({ id: rotation.file }).then(f => {
 				file = f;
@@ -786,13 +793,17 @@ function preProcess(req) {
 				if (file.getMimeCategory() !== 'image') {
 					throw error('Can only rotate images, this this a "%s".', file.getMimeCategory()).status(400);
 				}
-				if (file.file_type !== 'playfield') {
-					throw error('Can only rotate images of type "playfield", got "%s".', file.file_type).status(400);
+				if (!_.includes(['playfield', 'playfield-fs', 'playfield-ws'], file.file_type)) {
+					throw error('Can only rotate playfield images, got "%s".', file.file_type).status(400);
 				}
+				// todo check if the file is part of the actual release
 				return backupFile(file);
 
 			}).then(src => {
 
+				if (rotation.angle === 0) {
+					return;
+				}
 				logger.info('[api|release] Rotating file "%s" %s°.', file.id, rotation.angle);
 				return gm(src).rotate('black', rotation.angle).writeAsync(file.getPath());
 
@@ -811,6 +822,13 @@ function preProcess(req) {
 	}
 }
 
+/**
+ * Copies a file to a backup location (if not already done) and returns
+ * the file name of the location.
+ *
+ * @param file File
+ * @returns {string} New location
+ */
 function backupFile(file) {
 	let backup = file.getPath(null, '_original');
 	if (!fs.existsSync(backup)) {
@@ -820,6 +838,14 @@ function backupFile(file) {
 	return backup;
 }
 
+/**
+ * Copies a file on the file system. (Yes, NodeJS doesn't provide this out
+ * of the box.)
+ *
+ * @param source Path to source file
+ * @param target Path to target file
+ * @returns {Promise}
+ */
 function copyFile(source, target) {
 
 	return new Promise((resolve, reject) => {

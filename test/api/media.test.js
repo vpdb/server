@@ -229,7 +229,7 @@ describe('When dealing with pre-processing media', function() {
 				request
 					.post('/api/v1/releases?rotate=' + backglass.id + ':90')
 					.as(user)
-					.send({}).end(hlp.status(400, "only rotate images of type \"playfield\"", done));
+					.send({}).end(hlp.status(400, "only rotate playfield images", done));
 			});
 
 		});

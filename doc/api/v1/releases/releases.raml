@@ -8,6 +8,28 @@ post:
 
     Note that prior to that request, files and media need to be uploaded so it
     can be referenced.
+  queryParameters:
+    rotate:
+      description: |
+        Applies rotation on media before running validations on it.
+
+        Since a client might not always know which orientation of a playfield
+        shot it's dealing with at the time of upload, rotation can be adjusted
+        when creating the release.
+
+        Note that you can use `playfield` as `file_type` when uploading an image
+        with unknown orientation. However, this will fail if you don't provide
+        correct rotation parameters (`playfield-fs` or `playfield-ws` expected).
+
+        Also note that variations are only rotated once release validations
+        passed and the release is created.
+
+        Rotation adjustments are provided by comma-separated `id:angle` pairs.
+        Only the angles `0`, `90`, `180` and `270` are supported.
+
+      required: false
+      type: string
+      example: q2x8q27mab:90,w24x3w2cmab:180
   body:
     role/member:
       schema: release
@@ -301,6 +323,28 @@ get:
 
         Note that prior to that request, files and media need to be uploaded so
         it can be referenced.
+      queryParameters:
+        rotate:
+          description: |
+            Applies rotation on media before running validations on it.
+
+            Since a client might not always know which orientation of a playfield
+            shot it's dealing with at the time of upload, rotation can be adjusted
+            when creating the release.
+
+            Note that you can use `playfield` as `file_type` when uploading an image
+            with unknown orientation. However, this will fail if you don't provide
+            correct rotation parameters (`playfield-fs` or `playfield-ws` expected).
+
+            Also note that variations are only rotated once release validations
+            passed and the release is created.
+
+            Rotation adjustments are provided by comma-separated `id:angle` pairs.
+            Only the angles `0`, `90`, `180` and `270` are supported.
+
+          required: false
+          type: string
+          example: q2x8q27mab:90,w24x3w2cmab:180
       body:
         role/member:
           example: !include http/create-version-req.json

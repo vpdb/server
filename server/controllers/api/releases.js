@@ -784,10 +784,10 @@ function preProcess(req) {
 					throw error('Pre-processing can only be applied to inactive files.').status(400);
 				}
 				if (file.getMimeCategory() !== 'image') {
-					throw error('Cannot only rotate images, this this a "%s".', file.getMimeCategory()).status(400);
+					throw error('Can only rotate images, this this a "%s".', file.getMimeCategory()).status(400);
 				}
 				if (file.file_type !== 'playfield') {
-					throw error('Cannot only rotate images of type "playfield", got "%s".', file.file_type).status(400);
+					throw error('Can only rotate images of type "playfield", got "%s".', file.file_type).status(400);
 				}
 				return backupFile(file);
 
@@ -825,10 +825,12 @@ function copyFile(source, target) {
 	return new Promise((resolve, reject) => {
 		let rd = fs.createReadStream(source);
 		rd.on("error", err => {
+			/* istanbul ignore next */
 			reject(err);
 		});
 		let wr = fs.createWriteStream(target);
 		wr.on("error", err => {
+			/* istanbul ignore next */
 			reject(err);
 		});
 		wr.on("close", () => {

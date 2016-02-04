@@ -199,5 +199,48 @@ describe('When dealing with pre-processing media', function() {
 			});
 		});
 
+		it('should fail when providing incorrect rotation parameters', function(done) {
+			var user = 'member';
+			request
+				.post('/api/v1/releases?rotate=foobar!')
+				.as(user)
+				.send({}).end(hlp.status(400, "must be separated by", done));
+		});
+
+		it('should fail when providing incorrect rotation angle', function(done) {
+			var user = 'member';
+			request
+				.post('/api/v1/releases?rotate=foobar:45')
+				.as(user)
+				.send({}).end(hlp.status(400, "wrong angle", done));
+		});
+
+		it('should fail when providing not an image file', function(done) {
+			var user = 'member';
+			request
+				.post('/api/v1/releases?rotate=' + vptfile.id + ':90')
+				.as(user)
+				.send({}).end(hlp.status(400, "only rotate image", done));
+		});
+
+		it('should fail when providing not an image file', function(done) {
+			var user = 'member';
+			hlp.file.createBackglass(user, request, function(backglass) {
+				request
+					.post('/api/v1/releases?rotate=' + backglass.id + ':90')
+					.as(user)
+					.send({}).end(hlp.status(400, "only rotate images of type \"playfield\"", done));
+			});
+
+		});
+
+		it('should fail when trying to rotate a non-existing image', function(done) {
+			var user = 'member';
+			request
+				.post('/api/v1/releases?rotate=non-existent:90')
+				.as(user)
+				.send({}).end(hlp.status(404, "non-existing file", done));
+		});
+
 	});
 });

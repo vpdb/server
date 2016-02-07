@@ -68,6 +68,7 @@ exports.create = function(fileData, readStream, error, callback) {
 
 			// fail and remove file if metadata failed
 			return file.remove().catch(err => {
+				/* istanbul ignore next */
 				logger.error('[api|file:save] Error removing file: %s', err.message);
 
 			}).then(function() {

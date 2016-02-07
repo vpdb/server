@@ -36,7 +36,7 @@ var acl = new ACL(new ACL.redisBackend(redis, 'acl'));
 var init = function(next) {
 
 	// do at least one error check on redis
-	redis.on('error', function(err) {
+	redis.on('error', /* istanbul ignore next */ function(err) {
 		logger.error('[app] Error connecting to Redis: ' + err);
 		process.exit(1);
 	});
@@ -96,6 +96,7 @@ var init = function(next) {
 
 			logger.info('[acl] Applying ACLs to %d users...', users.length);
 			users.forEach(user => {
+				/* istanbul ignore next: No initial users in test suite */
 				acl.addUserRoles(user.id, user.roles);
 			});
 			logger.info('[acl] ACLs applied.');

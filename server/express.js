@@ -119,6 +119,7 @@ exports.configure = function(app, raygunClient) {
 	// api errors
 	app.use(apiCtrl.handleParseError);
 
+	/* istanbul ignore if: Raygun not running during tests */
 	if (raygunClient) {
 		app.use(raygunClient.expressHandler);
 		raygunClient.user = function(req) {
@@ -166,6 +167,7 @@ exports.configure = function(app, raygunClient) {
 
 	// per default, serve index and let Angular.JS figure out if it's a valid route (nginx does this in production).
 	app.use(function(req, res) {
+		/* istanbul ignore else: Managed by Nginx in production. */
 		if (!/\.html$/.test(req.path)) {
 			res.status(200).render('index',  _.extend(ctrl.viewParams(), {
 				pretty: true

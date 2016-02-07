@@ -56,6 +56,7 @@ exports.init = function(done) {
 					if (err) {
 						return next(error(err, 'Error counting rows in collection "%s".', data.model));
 					}
+					/* istanbul ignore if: Database is always empty before running tests. */
 					if (num) {
 						logger.info('[startup] Skipping data population for model "%s", table is not empty.', data.model);
 						return next();

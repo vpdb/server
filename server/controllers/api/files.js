@@ -120,11 +120,6 @@ exports.view = function(req, res) {
 			throw error('No such file with ID "%s".', req.params.id).status(404);
 		}
 
-		// fail if not found
-		if (!file) {
-			throw error('No such file.').status(404);
-		}
-
 		// fail if inactive and not owner
 		var isOwner = req.user && file._created_by.equals(req.user._id);
 		if (!file.is_active && (!req.user || !isOwner)) {

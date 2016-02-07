@@ -96,9 +96,11 @@ LogUserSchema.statics.log = function(req, user, result, event, payload, actor, m
 		logged_at: new Date()
 	});
 	log.save(function(err) {
+		/* istanbul ignore if  */
 		if (err) {
 			logger.error('[model|loguser] Error saving log for "%s": %s', event, err.message, err);
 		}
+		/* istanbul ignore if: we usually don't care about the result when logging  */
 		if (done) {
 			done(err);
 		}

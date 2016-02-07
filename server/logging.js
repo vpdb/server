@@ -29,6 +29,7 @@ var expressWinston = require('express-winston');
 var config = require('./modules/settings').current;
 
 // application log
+/* istanbul ignore next: It's config and most of it not used during tests. */
 exports.init = function() {
 
 	// we're here before settings validation, so lazy-validate first.
@@ -76,6 +77,7 @@ exports.init = function() {
 };
 
 // access log
+/* istanbul ignore next: It's config and most of it not used during tests. */
 exports.expressConfig = function(app) {
 
 	var transports = [];

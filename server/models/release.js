@@ -239,11 +239,10 @@ VersionSchema.path('files').validate(function(files, callback) {
 	}).then(() => {
 		callback(true);
 
-	}).catch(err => {
+	}).catch(/* istanbul ignore next */ err => {
 		logger.error('[model|release] Error validating files! %s', err.message);
 		logger.error(err.stack);
 		callback(false);
-
 	});
 });
 

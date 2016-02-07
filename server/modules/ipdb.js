@@ -34,14 +34,17 @@ Ipdb.prototype.details = function(ipdbNo, done) {
 	logger.info('[ipdb] Fetching %s', url);
 	request({ url: url, timeout: 30000 }, function(err, response, body) {
 
+		/* istanbul ignore if */
 		if (!response) {
 			return done(error('Timeout while trying to reach IPDB.org. Please try again later.').log());
 		}
 
+		/* istanbul ignore if */
 		if (err) {
 			return done(error(err, 'Error fetching %s', url).log());
 		}
 
+		/* istanbul ignore if */
 		if (response.statusCode !== 200) {
 			logger.error('[ipdb] Wrong response code, got %s instead of 200. Body: %s', response.statusCode, body);
 			return done(error('Wrong response data from IPDB.'));
@@ -51,6 +54,7 @@ Ipdb.prototype.details = function(ipdbNo, done) {
 	});
 };
 
+/* istanbul ignore next */
 Ipdb.prototype.findDead = function(data) {
 	var id, ids = [];
 	for (var i = 0; i < data.length; i++) {
@@ -72,6 +76,8 @@ function parseDetails(body, done) {
 
 	var m = body.match(/<a name="(\d+)">([^<]+)/i);
 	var game = { ipdb: {}};
+
+	/* istanbul ignore else */
 	if (m) {
 		game.title = trim(m[2]);
 		game.ipdb.number = number(m[1]);

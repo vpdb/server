@@ -27,10 +27,12 @@ var config = require('./settings').current;
 
 exports.isEnabled = config.vpdb.pusher.enabled;
 
+/* istanbul ignore next: Pusher not enabled in tests */
 if (exports.isEnabled) {
 	exports.api = new Pusher(config.vpdb.pusher.options);
 }
 
+/* istanbul ignore next: Pusher not enabled in tests */
 exports.addVersion = function(game, release, version) {
 
 	// don't even bother quering..
@@ -60,12 +62,14 @@ exports.addVersion = function(game, release, version) {
 };
 
 exports.star = function(type, entity, user) {
+	/* istanbul ignore if: Pusher not enabled in tests */
 	if (exports.isUserEnabled(user)) {
 		exports.api.trigger(getChannel(user), 'star', { id: entity.id, type: type });
 	}
 };
 
 exports.unstar = function(type, entity, user) {
+	/* istanbul ignore if: Pusher not enabled in tests */
 	if (exports.isUserEnabled(user)) {
 		exports.api.trigger(getChannel(user), 'unstar', { id: entity.id, type: type });
 	}
@@ -80,6 +84,7 @@ exports.isUserEnabled = function(user) {
 	return exports.isEnabled && config.vpdb.quota.plans[user._plan].enableRealtime;
 };
 
+/* istanbul ignore next: Pusher not enabled in tests */
 function getChannel(user) {
 	return 'private-user-' + user.id;
 }

@@ -76,6 +76,7 @@ exports.createForRelease = function(req, res) {
 					}, next);
 				});
 				async.series(updates, function(err) {
+					/* istanbul ignore if  */
 					if (err) {
 						logger.error('[model|comment] Error updating counters: %s', err.message);
 					} else {

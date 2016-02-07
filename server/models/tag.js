@@ -88,6 +88,7 @@ TagSchema.path('name').validate(function(name) {
 
 TagSchema.path('name').validate(function(name, done) {
 	mongoose.model('Tag').findOne({ name: name }, function(err, tag) {
+		/* istanbul ignore if */
 		if (err) {
 			logger.error('Error checking for unique tag name: %s', err.message);
 		}

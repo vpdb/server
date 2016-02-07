@@ -25,6 +25,8 @@ var logger = require('winston');
 
 function Gitinfo() {
 	var filepath = path.resolve(__dirname, '../../gitinfo.json');
+
+	/* istanbul ignore next */
 	if (!fs.existsSync(filepath)) {
 		return logger.warn('Cannot read gitinfo.json at from "%s", returning empty gitinfo.', filepath);
 	}

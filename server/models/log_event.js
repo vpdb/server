@@ -92,6 +92,7 @@ LogEventSchema.statics.log = function(req, event, isPublic, payload, ref, done) 
 		logged_at: new Date()
 	});
 	return log.save(function(err) {
+		/* istanbul ignore if  */
 		if (err) {
 			logger.error('[model|logevent] Error saving log for "%s": %s', event, err.message, err);
 			logger.error(err);

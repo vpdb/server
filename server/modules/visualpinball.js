@@ -44,11 +44,12 @@ exports.readScriptFromTable = function(tablePath, callback) {
 	}
 	var now = new Date().getTime();
 	var doc = new ocd(tablePath);
-	doc.on('err', function(err) {
+	doc.on('err', /* istanbul ignore next */ function(err) {
 		callback(err);
 	});
 	doc.on('ready', function() {
 		var storage = doc.storage('GameStg');
+		/* istanbul ignore else */
 		if (storage) {
 			try {
 				var strm = storage.stream('GameData');
@@ -62,6 +63,7 @@ exports.readScriptFromTable = function(tablePath, callback) {
 					var codeStart = bindexOf(buf, new Buffer('04000000434F4445', 'hex')); // 0x04000000 "CODE"
 					var codeEnd = bindexOf(buf, new Buffer('04000000454E4442', 'hex'));   // 0x04000000 "ENDB"
 					logger.info('[vp] [script] Found GameData for "%s" in %d ms.', tablePath, new Date().getTime() - now);
+					/* istanbul ignore if */
 					if (codeStart < 0 || codeEnd < 0) {
 						return callback(new Error('Cannot find CODE part in BIFF structure.'));
 					}
@@ -72,6 +74,7 @@ exports.readScriptFromTable = function(tablePath, callback) {
 					});
 				});
 			} catch(err) {
+				/* istanbul ignore next */
 				callback(new Error('Cannot find stream "GameData" in storage "GameStg".'));
 			}
 		} else {
@@ -83,16 +86,20 @@ exports.readScriptFromTable = function(tablePath, callback) {
 
 
 exports.getTableInfo = function(tablePath, callback) {
+
+	/* istanbul ignore if */
 	if (!fs.existsSync(tablePath)) {
 		return callback(new Error('File "' + tablePath + '" does not exist.'));
 	}
 	var doc = new ocd(tablePath);
-	doc.on('err', function(err) {
+	doc.on('err', /* istanbul ignore next */ function(err) {
 		logger.warn('[vp] [table info] Error reading file "%s": %s', tablePath, err.message);
 		callback(null, {});
 	});
 	doc.on('ready', function() {
 		var storage = doc.storage('TableInfo');
+
+		/* istanbul ignore else */
 		if (storage) {
 			var streams = {
 				TableName: 'table_name',
@@ -118,7 +125,7 @@ exports.getTableInfo = function(tablePath, callback) {
 						props[streams[stream]] = buf.toString().replace(/\0/g, '');
 						next();
 					});
-					strm.on('err', function(err) {
+					strm.on('err', /* istanbul ignore next */ function(err) {
 						logger.warn('[vp] [table info] Error reading stream "%s": %s', stream, err.message);
 						next();
 					});

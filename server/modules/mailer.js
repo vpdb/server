@@ -73,6 +73,7 @@ function mail(user, template, recipient, subject, done) {
 	send(email, template.replace(/-/g, ' '), done);
 }
 
+/* istanbul ignore next: not testing real mail in tests */
 function send(email, what, done) {
 
 	if (_.isEmpty(config.vpdb.email.nodemailer)) {

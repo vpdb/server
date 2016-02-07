@@ -110,7 +110,7 @@ function Queue() {
 	};
 	_.each(this.redis, function(client) {
 		client.select(config.vpdb.redis.db);
-		client.on('error', function(err) {
+		client.on('error', /* istanbul ignore next */ function(err) {
 			logger.error('[queue] Redis error: ' + err);
 			logger.error(err.stack);
 		});
@@ -155,7 +155,7 @@ function Queue() {
 					return callback(file);
 				}
 				storage.fstat(file, data.variation, function(err, fstat) {
-					/* instanbul ignore if */
+					/* istanbul ignore if */
 					if (err) {
 						logger.error('[queue|subscriber] Error fstating file %s: %s', file.toString(data.variation), err.message);
 					}
@@ -165,19 +165,19 @@ function Queue() {
 		});
 	});
 
-	this.queues.image.on('failed', function(job, err) {
+	this.queues.image.on('failed', /* istanbul ignore next */ function(job, err) {
 		// TODO treat waiting requests (to test: make pngquant fail, i.e. add pngquant's pngquant-bin dep).
 		logger.error('[queue] From image queue: %s', err.message);
 		logger.error(err.stack);
 	});
 
-	this.queues.video.on('failed', function(job, err) {
+	this.queues.video.on('failed', /* istanbul ignore next */ function(job, err) {
 		// TODO treat waiting requests
 		logger.error('[queue] From video queue: %s', err.message);
 		logger.error(err.stack);
 	});
 
-	this.queues.table.on('failed', function(job, err) {
+	this.queues.table.on('failed', /* istanbul ignore next */ function(job, err) {
 		// TODO treat waiting requests
 		logger.error('[queue] From table queue: %s', err.message);
 		logger.error(err.stack);
@@ -217,6 +217,7 @@ function Queue() {
 				finalDest = file.getPath(variation);
 			}
 
+			/* istanbul ignore if */
 			if (!fs.existsSync(src)) {
 				logger.verbose('[queue|pass2] Aborting before pass 2, %s is not on file system.', file.toString(variation));
 				return done();
@@ -226,6 +227,7 @@ function Queue() {
 			processor.pass2(src, dest, file, variation, function(err) {
 				file.unlock(variation);
 
+				/* istanbul ignore if */
 				if (err) {
 					if (fs.existsSync(dest)) {
 						fs.unlinkSync(dest);
@@ -370,6 +372,7 @@ Queue.prototype.add = function(file, variation, processor) {
 			processor.pass1(file.getPath(), file.getPath(variation), file, variation, function(err, skipped) {
 				file.unlock(variation);
 
+				/* istanbul ignore if */
 				if (err) {
 					return that.emit('error', err, file, variation);
 				}

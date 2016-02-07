@@ -40,7 +40,7 @@ function Metrics() {
 	// init redis
 	this.redis = redis.createClient(config.vpdb.redis.port, config.vpdb.redis.host, { no_ready_check: true });
 	this.redis.select(config.vpdb.redis.db);
-	this.redis.on('error', function(err) {
+	this.redis.on('error', /* istanbul ignore next */ function(err) {
 		logger.error('[metrics] Redis error: ' + err);
 		logger.error(err.stack);
 	});
@@ -71,6 +71,7 @@ Metrics.prototype.onRatingUpdated = function(ref, entity, rating, callback) {
 			result[ref] = summary;
 
 			var done = function(err) {
+				/* istanbul ignore if */
 				if (err) {
 					return callback(err);
 				}
@@ -152,7 +153,7 @@ Metrics.prototype.updateEntityMetrics = function(ref, entity, atm, callback) {
 
 Metrics.prototype.getGlobalMean = function(ref, callback) {
 
-	// don't calculate if we use a hard-coded mean anyway.
+	/* istanbul ignore if: don't calculate if we use a hard-coded mean anyway. */
 	if (config.vpdb.metrics.bayesianEstimate.globalMean !== null) {
 		return callback(null, config.vpdb.metrics.bayesianEstimate.globalMean);
 	}
@@ -173,6 +174,7 @@ Metrics.prototype.getGlobalMean = function(ref, callback) {
 
 Metrics.prototype.updateGlobalMean = function(ref, atm, callback) {
 	this.redis.set(redisAtmKey, atm, function(err) {
+		/* istanbul ignore if */
 		if (err) {
 			return callback('Error updating global mean: ' + err.message);
 		}
@@ -186,6 +188,7 @@ Metrics.prototype.updateAllEntities = function(ref, atm, callback) {
 	this.updateGlobalMean(ref, atm, assert(function() {
 
 		var Model = that.entities[ref];
+		/* istanbul ignore if */
 		if (!Model) {
 			throw new Error('Model "' + ref + '" does not support ratings.');
 		}

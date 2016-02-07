@@ -161,12 +161,14 @@ exports.checkApiContentType = function(req, res, next) {
 };
 
 exports.handleParseError = function(err, req, res, next) {
+	/* istanbul ignore else */
 	if (err instanceof SyntaxError && req.get('content-type') === 'application/json' && req.path.substr(0, 5) === '/api/') {
 		res.setHeader('Content-Type', 'application/json');
 		res.status(400).json({ error: 'Parsing error: ' + err.message });
 	} else {
+		res.setHeader('Content-Type', 'application/json');
+		res.status(500).json({ error: err.message });
 		logger.error(err.stack);
-		next();
 	}
 };
 
@@ -354,6 +356,7 @@ exports.handleError = function(res, error, message) {
 		} else if (err.errors && err.constructor && err.constructor.name === 'MongooseError') {
 			exports.fail(res, error('Validations failed. See below for details.').errors(err.errors).warn(), 422);
 
+		/* istanbul ignore next: we always wrapp errors in Err. */
 		} else {
 			exports.fail(res, error(err, message).log());
 			logger.error(err.stack);

@@ -179,6 +179,7 @@ exports.verifyCallbackOAuth = function(strategy, providerName) {
 					if (err) {
 						return callback(error(err, 'Error creating new user'));
 					}
+					/* istanbul ignore if */
 					if (validationErr) {
 						return callback(error('Validation error').errors(validationErr.errors).log(logtag));
 					}

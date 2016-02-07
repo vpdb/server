@@ -199,11 +199,7 @@ angular.module('vpdb.releases.add', []).controller('ReleaseAddBaseCtrl', functio
 		releaseFile._media[mediaType] = status.storage.id;
 
 		// figure out rotation
-		var rotation = 0;
-		if (status.storage.metadata.size.width > status.storage.metadata.size.height) {
-			rotation = 90;
-		}
-		$scope.meta.mediaLinks[status.key].rotation = rotation;
+		$scope.updateRotation(releaseFile, status);
 
 		AuthService.collectUrlProps(status.storage, true);
 	};
@@ -215,6 +211,17 @@ angular.module('vpdb.releases.add', []).controller('ReleaseAddBaseCtrl', functio
 	 */
 	$scope.onMediaClear = function(key) {
 		$scope.meta.mediaLinks[key] = false;
+	};
+
+
+	/**
+	 * Resets orientation settings.
+	 * @param file Release file meta data
+	 */
+	$scope.onOrientationChanged = function(file) {
+		var releaseFile = $scope.getReleaseFile(file);
+		var mediaFile = $scope.meta.mediaFiles[$scope.getMediaKey(releaseFile, 'playfield_image')];
+		$scope.updateRotation(releaseFile, mediaFile);
 	};
 
 
@@ -294,6 +301,29 @@ angular.module('vpdb.releases.add', []).controller('ReleaseAddBaseCtrl', functio
 	$scope.rotate = function(file, type, angle) {
 		var rotation = $scope.meta.mediaLinks[$scope.getMediaKey(file, type)].rotation;
 		$scope.meta.mediaLinks[$scope.getMediaKey(file, type)].rotation = (rotation + angle + 360) % 360;
-	}
+	};
+
+
+	/**
+	 * Best-guesses the rotation of an uploaded playfield.
+	 * Run this after media upload or orientation change.
+	 *
+	 * @param releaseFile File object posted to the API
+	 * @param mediaFile Media meta data ("status")
+	 */
+	$scope.updateRotation = function(releaseFile, mediaFile) {
+
+		// if orientation of the release file is known to be desktop, don't do anything.
+		if (releaseFile.flavor && releaseFile.flavor.orientation === 'ws') {
+			return $scope.meta.mediaLinks[mediaFile.key].rotation = 0;
+		}
+
+		// otherwise, assume it's a fullscreen release and rotate accordingly.
+		var rotation = 0;
+		if (mediaFile.storage.metadata.size.width > mediaFile.storage.metadata.size.height) {
+			rotation = 90;
+		}
+		$scope.meta.mediaLinks[mediaFile.key].rotation = rotation;
+	};
 
 });

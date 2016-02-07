@@ -2,6 +2,22 @@
   <profile version="1.0">
     <option name="myName" value="Project Default" />
     <option name="myLocal" value="true" />
+    <inspection_tool class="HtmlUnknownAttribute" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="myValues">
+        <value>
+          <list size="7">
+            <item index="0" class="java.lang.String" itemvalue="ngf-drag-over-class" />
+            <item index="1" class="java.lang.String" itemvalue="ng-class" />
+            <item index="2" class="java.lang.String" itemvalue="error" />
+            <item index="3" class="java.lang.String" itemvalue="ng-show" />
+            <item index="4" class="java.lang.String" itemvalue="ng-repeat" />
+            <item index="5" class="java.lang.String" itemvalue="ng-click" />
+            <item index="6" class="java.lang.String" itemvalue="tooltip" />
+          </list>
+        </value>
+      </option>
+      <option name="myCustomValuesEnabled" value="true" />
+    </inspection_tool>
     <inspection_tool class="JSClosureCompilerSyntax" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="LoggerInitializedWithForeignClass" enabled="false" level="WARNING" enabled_by_default="false">
       <option name="loggerClassName" value="org.apache.log4j.Logger,org.slf4j.LoggerFactory,org.apache.commons.logging.LogFactory,java.util.logging.Logger" />

@@ -184,7 +184,7 @@ angular.module('vpdb.releases.add', []).controller('ReleaseAddBaseCtrl', functio
 
 		// update links
 		if (/^image\//.test(status.mimeType)) {
-			$scope.meta.mediaLinks[status.key] = status.storage.variations['medium-landscape'];
+			$scope.meta.mediaLinks[status.key] = status.storage.variations['medium'];
 
 		} else if (/^video\//.test(status.mimeType)) {
 			$scope.meta.mediaLinks[status.key] = status.storage.variations.still;
@@ -197,6 +197,13 @@ angular.module('vpdb.releases.add', []).controller('ReleaseAddBaseCtrl', functio
 		var releaseFile = $scope.getReleaseFileForMedia(status);
 		var mediaType = status.key.split(':')[0];
 		releaseFile._media[mediaType] = status.storage.id;
+
+		// figure out rotation
+		var rotation = 0;
+		if (status.storage.metadata.size.width > status.storage.metadata.size.height) {
+			rotation = 90;
+		}
+		$scope.meta.mediaLinks[status.key].rotation = rotation;
 
 		AuthService.collectUrlProps(status.storage, true);
 	};
@@ -258,7 +265,7 @@ angular.module('vpdb.releases.add', []).controller('ReleaseAddBaseCtrl', functio
 	 * @returns {string}
 	 */
 	$scope.getMediaKey = function(file, type) {
-		return type + ':' + file.randomId;
+		return type + ':' + (file.randomId || file._randomId);
 	};
 
 
@@ -270,5 +277,23 @@ angular.module('vpdb.releases.add', []).controller('ReleaseAddBaseCtrl', functio
 	$scope.onBackglassImageError = function(file, type) {
 		delete $scope.meta.mediaLinks[$scope.getMediaKey(file, type)];
 	};
+
+
+	/**
+	 * Updates the rotation offset of an image.
+	 *
+	 * Updates the `rotation` parameter of the media link, which is used to
+	 *
+	 *   1. Apply the CSS class for the given rotation to the image's parent
+	 *   2. Retrieve pre-processing rotation when posting the release
+	 *
+	 * @param file Release file
+	 * @param type Media type (only "playfield_image" supported for far)
+	 * @param angle Angle - either 90 or -90
+	 */
+	$scope.rotate = function(file, type, angle) {
+		var rotation = $scope.meta.mediaLinks[$scope.getMediaKey(file, type)].rotation;
+		$scope.meta.mediaLinks[$scope.getMediaKey(file, type)].rotation = (rotation + angle + 360) % 360;
+	}
 
 });

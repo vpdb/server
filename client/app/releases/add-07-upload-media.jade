@@ -10,9 +10,18 @@ span(ng-repeat="file in meta.files | fileext:['vpt','vpx']")
 	.row(ng-show="getReleaseFile(file).flavor.orientation")
 
 		//-- playfield image
-		.col-sm-6.playfield--rotate-on-upload(make-loaded="{ loaded: getReleaseFile(file).flavor.orientation !== 'ws' }")
+		.col-sm-6.playfield--rotate-on-upload(
+			make-loaded="{ loaded: getReleaseFile(file).flavor.orientation !== 'ws' }",
+			class="angle--{{ meta.mediaLinks[getMediaKey(file, 'playfield_image')].rotation }}"
+		)
 			span.pre-h4 Playfield
-			h4.h--large Screenshot
+			h4.h--large
+				| Screenshot
+
+				//- rotate icons
+				.pull-right
+					a(ng-click="rotate(file, 'playfield_image', 90)", title="Rotate left"): +icon('rotate-left')
+					a(ng-click="rotate(file, 'playfield_image', -90)", title="Rotate right"): +icon('rotate-right')
 
 			//- drop zone
 			.panel.panel--blank.playfield--image(

@@ -141,15 +141,16 @@ angular.module('vpdb.releases.add', []).constant('ReleaseMeta', {
 	mediaFiles: {},
 
 	/**
-	 * Since we have different links for different file types (e.g. playfield image uses variation medium-landscape
+	 * Since we have different links for different file types (e.g. playfield image uses variation medium
 	 * while playfield video uses variation.still), we save them separately for easy access.
 	 *
 	 * Example data:
 	 *
 	 * {
 	 *   "playfield_image:4klWgD1E-":{
-	 *     "url":"/storage/v1/files/VkGFqv14Z/medium-landscape",
-	 *     "is_protected":true
+	 *     "url":"/storage/v1/files/VkGFqv14Z/medium",
+	 *     "is_protected":true,
+	 *     "rotation":90
 	 *   }
 	 * }
 	 */

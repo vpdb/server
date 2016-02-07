@@ -241,7 +241,20 @@ angular.module('vpdb.releases.add', []).controller('ReleaseAddCtrl', function(
 		if ($scope.newLink && ($scope.newLink.label || $scope.newLink.url)) {
 			$scope.addLink($scope.newLink);
 		}
-		ReleaseResource.save($scope.release, function() {
+
+		// retrieve rotation parameters
+		var rotationParams = [];
+		_.forEach(_.flatten(_.pluck($scope.release.versions, 'files')), function(file) {
+			if (!file._media || !file._media.playfield_image) {
+				return;
+			}
+			var rotation = $scope.meta.mediaLinks[$scope.getMediaKey(file, 'playfield_image')].rotation;
+			if (rotation) {
+				rotationParams.push(file._media.playfield_image + ':' + rotation);
+			}
+		});
+
+		ReleaseResource.save({ rotate: rotationParams.join(',') }, $scope.release, function() {
 			$scope.release.submitted = true;
 			$scope.reset();
 
@@ -257,7 +270,7 @@ angular.module('vpdb.releases.add', []).controller('ReleaseAddCtrl', function(
 
 		}, ApiHelper.handleErrors($scope, function(scope) {
 			// if it's an array, those area displayed below
-			if (!_.isArray(scope.errors.versions[0].files)) {
+			if (scope.errors && scope.errors.versions && !_.isArray(scope.errors.versions[0].files)) {
 				scope.filesError = scope.errors.versions[0].files;
 			} else {
 				scope.filesError = null;

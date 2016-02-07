@@ -688,7 +688,7 @@ function preprocess(req) {
 					throw error('Pre-processing can only be applied to inactive files.').status(400);
 				}
 				if (file.getMimeCategory() !== 'image') {
-					throw error('Can only rotate images, this this a "%s".', file.getMimeCategory()).status(400);
+					throw error('Can only rotate images, this is a "%s".', file.getMimeCategory()).status(400);
 				}
 				if (!_.includes(['playfield', 'playfield-fs', 'playfield-ws'], file.file_type)) {
 					throw error('Can only rotate playfield images, got "%s".', file.file_type).status(400);

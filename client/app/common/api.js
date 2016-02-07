@@ -166,11 +166,13 @@ angular.module('vpdb.common', [])
 			 *
 			 * @param {object} scope Scope where to create the error variables
 			 * @param {object} [opt] config options. Valid options: fieldPrefix
-			 * @param {function} [fct] Executed if provided with given scope as argument.
+			 * @param {function} [postFct] Executed if provided with given scope as argument, after the errors object has been set
+			 * @param {function} [preFct] Executed if provided with given scope as argument, before the errors object has been set.
 			 */
-			handleErrors: function(scope, opt, fct) {
-				if (!fct && _.isFunction(opt)) {
-					fct = opt;
+			handleErrors: function(scope, opt, postFct, preFct) {
+				if (!preFct && _.isFunction(opt)) {
+					preFct = postFct;
+					postFct = opt;
 				}
 				opt = _.isObject(opt) ? opt : {};
 				return function(response) {
@@ -178,6 +180,9 @@ angular.module('vpdb.common', [])
 					scope.errors = { __count: 0 };
 					scope.error = null;
 					if (response.data.errors) {
+						if (preFct) {
+							preFct(scope, response);
+						}
 						_.each(response.data.errors, function(err) {
 							var path = (opt.fieldPrefix || '') + err.field;
 							_.set(scope.errors, path, err.message);
@@ -187,8 +192,8 @@ angular.module('vpdb.common', [])
 					if (response.data.error) {
 						scope.error = response.data.error;
 					}
-					if (fct) {
-						fct(scope, response);
+					if (postFct) {
+						postFct(scope, response);
 					}
 				};
 			},

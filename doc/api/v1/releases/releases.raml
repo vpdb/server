@@ -20,6 +20,9 @@ post:
         Note that you can use `playfield` as `file_type` when uploading an image
         with unknown orientation. However, this will fail if you don't provide
         correct rotation parameters (`playfield-fs` or `playfield-ws` expected).
+        That means if you uploaded a `playfield` type and you don't need to
+        rotate, provide the rotation parameter with angle `0` and the type will
+        be patched according to the provided dimensions.
 
         Also note that variations are only rotated once release validations
         passed and the release is created.
@@ -335,6 +338,9 @@ get:
             Note that you can use `playfield` as `file_type` when uploading an image
             with unknown orientation. However, this will fail if you don't provide
             correct rotation parameters (`playfield-fs` or `playfield-ws` expected).
+            That means if you uploaded a `playfield` type and you don't need to
+            rotate, provide the rotation parameter with angle `0` and the type will
+            be patched according to the provided dimensions.
 
             Also note that variations are only rotated once release validations
             passed and the release is created.

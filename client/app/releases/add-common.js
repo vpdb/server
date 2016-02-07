@@ -313,19 +313,23 @@ angular.module('vpdb.releases.add', []).controller('ReleaseAddBaseCtrl', functio
 	 */
 	$scope.updateRotation = function(releaseFile, mediaFile) {
 
-		// if orientation of the release file is known to be desktop, don't do anything.
-		if (releaseFile.flavor && releaseFile.flavor.orientation === 'ws') {
-			return $scope.meta.mediaLinks[mediaFile.key].rotation = 0;
-		}
-
-		// otherwise, assume it's a fullscreen release and rotate accordingly.
 		var rotation = 0;
 		var offset = 0;
-		if (mediaFile.storage.metadata.size.width > mediaFile.storage.metadata.size.height) {
-			rotation = 90;
-		} else {
+
+		// we use the landscape image from the backend, so if it's a portrait, set offset
+		if (mediaFile.storage.metadata.size.width < mediaFile.storage.metadata.size.height) {
 			offset = -90;
 		}
+
+		// if orientation of the release file is known to be desktop, don't rotate.
+		if (releaseFile.flavor && releaseFile.flavor.orientation === 'ws') {
+			rotation = 0;
+
+		// otherwise, assume it's a fullscreen release and rotate accordingly.
+		} else if (mediaFile.storage.metadata.size.width > mediaFile.storage.metadata.size.height) {
+			rotation = 90;
+		}
+
 		$scope.meta.mediaLinks[mediaFile.key].rotation = rotation - offset;
 		$scope.meta.mediaLinks[mediaFile.key].offset = offset;
 	};

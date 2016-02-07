@@ -251,9 +251,7 @@ angular.module('vpdb.releases.add', []).controller('ReleaseAddCtrl', function(
 			var rotation = $scope.meta.mediaLinks[$scope.getMediaKey(file, 'playfield_image')].rotation;
 			var offset = $scope.meta.mediaLinks[$scope.getMediaKey(file, 'playfield_image')].offset;
 			var relativeRotation = rotation + offset;
-			if (relativeRotation) {
-				rotationParams.push(file._media.playfield_image + ':' + relativeRotation);
-			}
+			rotationParams.push(file._media.playfield_image + ':' + relativeRotation);
 		});
 
 		ReleaseResource.save({ rotate: rotationParams.join(',') }, $scope.release, function() {
@@ -277,6 +275,22 @@ angular.module('vpdb.releases.add', []).controller('ReleaseAddCtrl', function(
 			} else {
 				scope.filesError = null;
 			}
+		}, function(scope, response) {
+
+			if (!response.data.errors) {
+				return;
+			}
+
+			// rephrase some of the messages from backend
+			_.each(response.data.errors, function(error) {
+
+				if (/orientation is set to FS but playfield image is .playfield-ws./i.test(error.message)) {
+					error.message = 'Wrong orientation. Use the rotation button above to rotate the playfield so it\'s oriented as if you would play it. If that\'s the case, then you\'ve uploaded a widescreen (desktop) shot for a file marked as portrait (fullscreen).';
+				}
+				if (/orientation is set to WS but playfield image is .playfield-fs./i.test(error.message)) {
+					error.message = 'Wrong orientation. Use the rotation button above to rotate the playfield so it\'s oriented as if you would play it. If that\'s the case, then you\'ve uploaded a portrait (fullscreen) shot for a file marked as widescreen (desktop).';
+				}
+			});
 		}));
 	};
 })

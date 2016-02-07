@@ -249,8 +249,10 @@ angular.module('vpdb.releases.add', []).controller('ReleaseAddCtrl', function(
 				return;
 			}
 			var rotation = $scope.meta.mediaLinks[$scope.getMediaKey(file, 'playfield_image')].rotation;
-			if (rotation) {
-				rotationParams.push(file._media.playfield_image + ':' + rotation);
+			var offset = $scope.meta.mediaLinks[$scope.getMediaKey(file, 'playfield_image')].offset;
+			var relativeRotation = rotation + offset;
+			if (relativeRotation) {
+				rotationParams.push(file._media.playfield_image + ':' + relativeRotation);
 			}
 		});
 

@@ -57,6 +57,10 @@ function ImageProcessor() {
 			{ name: 'small',     width: 253, height: 202, mimeType: 'image/jpeg' },
 			{ name: 'small-2x',  width: 506, height: 404, mimeType: 'image/jpeg' }
 		],
+		'playfield': [
+			{ name: 'landscape',    landscape: true,  width: 393, height: 393, mimeType: 'image/jpeg' },
+			{ name: 'landscape-2x', landscape: true,  width: 786, height: 786, mimeType: 'image/jpeg' }
+		],
 		'playfield-fs': [
 			{ name: 'full',                                         mimeType: 'image/jpeg', qual: 60 },
 			{ name: 'medium',              width: 393, height: 233, mimeType: 'image/jpeg' },
@@ -66,7 +70,6 @@ function ImageProcessor() {
 			{ name: 'hyperpin', rotate: 90,                         mimeType: 'image/png' }
 		],
 		'playfield-ws': [
-			// todo: rename medium to medium-portrait and perspective-distort it to portrait-ish
 			{ name: 'full',                               mimeType: 'image/jpeg', qual: 60 },
 			{ name: 'medium',    width: 393, height: 393, mimeType: 'image/jpeg' },
 			{ name: 'medium-2x', width: 786, height: 786, mimeType: 'image/jpeg' },
@@ -183,6 +186,10 @@ ImageProcessor.prototype.pass1 = function(src, dest, file, variation, done) {
 		if (variation.size) {
 			img.resize(variation.size, variation.size);
 		}
+	}
+
+	if (variation.landscape && file.metadata.size.width < file.metadata.size.height) {
+		img.rotate('black', 90);
 	}
 
 	if (variation.mimeType && mimeTypes[variation.mimeType]) {

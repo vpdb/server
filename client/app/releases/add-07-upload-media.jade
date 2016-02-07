@@ -25,7 +25,7 @@ span(ng-repeat="file in meta.files | fileext:['vpt','vpx']")
 
 			//- drop zone
 			.panel.panel--blank.playfield--image(
-				file-upload="{ type: getPlayfieldType(file), key: getMediaKey(file, 'playfield_image'), status: meta.mediaFiles, onSuccess: onMediaUpload, onClear: onMediaClear, allowedExtensions: ['jpg', 'png'], allowMultipleFiles: false }",
+				file-upload="{ type: 'playfield', key: getMediaKey(file, 'playfield_image'), status: meta.mediaFiles, onSuccess: onMediaUpload, onClear: onMediaClear, allowedExtensions: ['jpg', 'png'], allowMultipleFiles: false }",
 				ngf-drag-over-class="'panel--dragging'",
 				ng-class="{ error: errors.versions[0].files[meta.files.indexOf(file)]._media.playfield_image }"
 			)

@@ -184,7 +184,7 @@ angular.module('vpdb.releases.add', []).controller('ReleaseAddBaseCtrl', functio
 
 		// update links
 		if (/^image\//.test(status.mimeType)) {
-			$scope.meta.mediaLinks[status.key] = status.storage.variations['medium'];
+			$scope.meta.mediaLinks[status.key] = status.storage.variations['landscape'];
 
 		} else if (/^video\//.test(status.mimeType)) {
 			$scope.meta.mediaLinks[status.key] = status.storage.variations.still;
@@ -320,10 +320,14 @@ angular.module('vpdb.releases.add', []).controller('ReleaseAddBaseCtrl', functio
 
 		// otherwise, assume it's a fullscreen release and rotate accordingly.
 		var rotation = 0;
+		var offset = 0;
 		if (mediaFile.storage.metadata.size.width > mediaFile.storage.metadata.size.height) {
 			rotation = 90;
+		} else {
+			offset = -90;
 		}
-		$scope.meta.mediaLinks[mediaFile.key].rotation = rotation;
+		$scope.meta.mediaLinks[mediaFile.key].rotation = rotation - offset;
+		$scope.meta.mediaLinks[mediaFile.key].offset = offset;
 	};
 
 });

@@ -20,6 +20,11 @@
 "use strict"; /* global angular, _ */
 
 /**
+ * !!! DEPRECATED !!!
+ *
+ * Delete this at some point, orientation validations are now done
+ * on server side.
+ *
  * Confirms orientation change when media is already uploaded.
  *
  * Parameters:
@@ -29,6 +34,7 @@
  *   - `files`: All files, so we can remove it if orientation change successful
  *   - `metaFiles`: Meta files, same reason as above
  *   - `metaLinks`: Meta link array
+ * @deprecated
  */
 angular.module('vpdb.releases.add', []).directive('orientationCheck', function($parse, ApiHelper, ModalService, FileResource) {
 

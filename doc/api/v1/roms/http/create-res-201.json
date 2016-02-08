@@ -1,0 +1,43 @@
+201 Created
+Content-Type: application/json; charset=utf-8
+Content-Length: 789
+Etag: W/"315-4mA0uy+b58UjvtnVE6hilg"
+
+{
+  "id": "tz_pa1",
+  "file": {
+    "counter": {
+      "downloads": 0
+    },
+    "is_protected": true,
+    "bytes": 2096,
+    "url": "/storage/v1/files/w2pzvo51zgb.zip",
+    "id": "w2pzvo51zgb"
+  },
+  "rom_files": [
+    {
+      "filename": "433.cpu",
+      "bytes": 1024,
+      "crc": 3227331410,
+      "modified_at": "1996-12-24T22:32:00.000Z",
+      "_id": "56b8e7b7fce846883d1508a9",
+      "id": "56b8e7b7fce846883d1508a9"
+    },
+    {
+      "filename": "433.snd",
+      "bytes": 1024,
+      "crc": 550313471,
+      "modified_at": "1996-12-24T22:32:00.000Z",
+      "_id": "56b8e7b7fce846883d1508aa",
+      "id": "56b8e7b7fce846883d1508aa"
+    },
+    {
+      "filename": "6530sys1.bin",
+      "bytes": 1024,
+      "crc": 3078820641,
+      "modified_at": "1996-12-24T22:32:00.000Z",
+      "_id": "56b8e7b7fce846883d1508ab",
+      "id": "56b8e7b7fce846883d1508ab"
+    }
+  ]
+}

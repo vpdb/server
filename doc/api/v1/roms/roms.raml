@@ -1,17 +1,36 @@
 displayName: ROMs
 description: |
   ROMs are the game code of modern pinball machines. It's the program that
-  runs while playing the table. ROMs are needed for recreations of solid state
+  runs while playing the table. They are needed for recreations of solid state
   games.
 
   There are usually different versions and languages available. Every game can
   have one or multiple game ROMs.
 
-  Note that the root resource refers to ROMs that are already uploaded. For
-  creating and listing ROMs, see the [game resource][games].
+  Note that for listing and creating ROMs, there are also end-points available
+  under the [game resource][games].
 
   [games]: api://core/games
 
+post:
+  is: [ protected ]
+  securedBy: [ jwt: { scopes: [ MEMBER, CONTRIB ] } ]
+  description: |
+    Create a ROM file.
+
+    Contrarily to [`/games/{game_id}/roms`](api://core/post/games/{game_id}/roms),
+    this allows posting ROMs for games that aren't in the database yet. Then
+    once the game is created, the uploaded ROMs will be linked and visible.
+    If the game already exists, the ROM is immediately linked as if you had
+    posted to the other endpoint.
+  body:
+    role/member:
+      example: !include http/create-req.json
+  responses:
+    200:
+      body:
+        role/member:
+          example: !include http/create-res-201.json
 /{rom_id}:
   delete:
     is: [ protected ]

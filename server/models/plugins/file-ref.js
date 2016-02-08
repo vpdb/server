@@ -50,7 +50,8 @@ module.exports = function(schema, options) {
 			if (!fileId || !that._created_by) {
 				return callback(true);
 			}
-			mongoose.model('File').findOne({ _id: fileId }, function(err, file) {
+
+			mongoose.model('File').findOne({ _id: fileId._id || fileId.toString() }, function(err, file) {
 				/* istanbul ignore if */
 				if (err) {
 					logger.error('[model] Error fetching file "%s".', fileId);

@@ -39,62 +39,90 @@ var LogEvent = require('mongoose').model('LogEvent');
  */
 exports.create = function(req, res) {
 
-	var assert = api.assert(error, 'create', req.params.id, res);
+	var newRom, game;
+	Promise.try(() => {
 
-	Game.findOne({ id: req.params.id }, assert(function(game) {
-		if (!game) {
-			return api.fail(res, error('No such game with ID "%s".', req.params.id), 404);
+		if (!req.params.id && !req.body._ipdb_number) {
+			throw error('You must provide an IPDB number when not posting to a game resource.', req.params.id).status(400);
 		}
 
 		var validFields = [ 'id', 'version', 'notes', 'language', '_file' ];
-
-		Rom.getInstance(_.extend(_.pick(req.body, validFields), {
-			_game: game._id,
+		if (req.params.id) {
+			return Game.findOne({ id: req.params.id }).exec().then(g => {
+				game = g;
+				if (!game) {
+					throw error('No such game with ID "%s".', req.params.id).status(404);
+				}
+				return Rom.getInstance(_.extend(_.pick(req.body, validFields), {
+					_game: game._id,
+					_created_by: req.user._id,
+					created_at: new Date()
+				}));
+			});
+		}
+		game = { ipdb: { number: req.body._ipdb_number }};
+		return Rom.getInstance(_.extend(_.pick(req.body, validFields), {
+			_ipdb_number: req.body._ipdb_number,
 			_created_by: req.user._id,
 			created_at: new Date()
-		}), assert(function(newRom) {
+		}));
 
-			newRom.validate(function(err) {
-				if (err) {
-					return api.fail(res, error('Validations failed. See below for details.').errors(err.errors).warn('create'), 422);
+	}).then(rom => {
+		newRom = rom;
+		return newRom.validate();
+
+	}).then(() => {
+		return File.findById(newRom._file).exec();
+
+	}).then(file => {
+		try {
+			newRom.rom_files = [];
+			new Zip(file.getPath()).getEntries().forEach(zipEntry => {
+				if (zipEntry.isDirectory) {
+					return;
 				}
-
-				File.findById(newRom._file, assert(function(file) {
-
-					// read zip file (also validates it's a zip)
-					try {
-						newRom.rom_files = [];
-						new Zip(file.getPath()).getEntries().forEach(function(zipEntry) {
-							if (!zipEntry.isDirectory) {
-								newRom.rom_files.push({
-									filename: zipEntry.name,
-									bytes: zipEntry.header.size,
-									crc: zipEntry.header.crc,
-									modified_at: new Date(zipEntry.header.time)
-								});
-							}
-						});
-					} catch (err) {
-						return api.fail(res, error('You referenced an invalid zip archive: %s', err.message).warn('create'), 422);
-					}
-
-					newRom.save(assert(function(rom) {
-						logger.info('[api|rom:create] Rom "%s" successfully added.', newRom.id);
-
-						rom.activateFiles(assert(function(rom) {
-							logger.info('[api|rom:create] Referenced file activated, returning object to client.');
-
-							LogEvent.log(req, 'upload_rom', true, { rom: rom.toSimple(), game: game.toReduced() }, { game: game._id });
-
-							return api.success(res, rom.toSimple(), 201);
-
-						}, 'Error activating file for game "%s"'));
-					}, 'Error saving rom for game "%s" (' + newRom.id + ')'));
-
-				}, 'Error finding file for ROM (%s).'));
+				newRom.rom_files.push({
+					filename: zipEntry.name,
+					bytes: zipEntry.header.size,
+					crc: zipEntry.header.crc,
+					modified_at: new Date(zipEntry.header.time)
+				});
 			});
-		}, 'Error creating rom instance for game "%s"'));
-	}, 'Error retrieving game "%s"'));
+		} catch (err) {
+			throw error('You referenced an invalid zip archive: %s', err.message).warn('create').status(422);
+		}
+		return newRom.save();
+
+	}).then(rom => {
+
+		newRom = rom;
+		logger.info('[api|rom:create] Rom "%s" successfully added.', newRom.id);
+		return rom.activateFiles();
+
+	}).then(() => {
+
+		// check if there's a game to link
+		if (newRom._ipdb_number) {
+			return Game.findOne({ 'ipdb.number': newRom._ipdb_number }).exec().then(game => {
+				if (game) {
+					logger.info('[api|rom:create] Found existing game "%s" for IPDB number %s, linking.', game.id, newRom._ipdb_number);
+					newRom._game = game._id.toString();
+					return newRom.save();
+				}
+			});
+		}
+
+	}).then(() => {
+
+		if (game.toReduced) {
+			LogEvent.log(req, 'upload_rom', true, { rom: newRom.toSimple(), game: game.toReduced() }, { game: game._id });
+		} else {
+			LogEvent.log(req, 'upload_rom', true, { rom: newRom.toSimple(), game: game }, { });
+		}
+
+		api.success(res, newRom.toSimple(), 201);
+
+	}).catch(api.handleError(res, error, 'Error creating ROM'));
 };
 
 

@@ -33,7 +33,7 @@ superagentTest(request);
 
 describe('The VPDB `ROM` API', function() {
 
-	describe('when posting a new ROM', function() {
+	describe('when posting a new ROM for a given game', function() {
 
 		var game;
 
@@ -132,8 +132,6 @@ describe('The VPDB `ROM` API', function() {
 						});
 				});
 		});
-
-		it('should fail validations for referenced zip-files that are not zip files');
 
 		it('should succeed with minimal data', function(done) {
 			var user = 'member';
@@ -266,6 +264,163 @@ describe('The VPDB `ROM` API', function() {
 					});
 			});
 		});
+	});
+
+	describe('when posting a new ROM for a given IPDB number', function() {
+
+		var game;
+
+		before(function(done) {
+			hlp.setupUsers(request, {
+				member: { roles: [ 'member' ] },
+				member2: { roles: [ 'member' ] },
+				contributor: { roles: [ 'contributor' ] }
+			}, function() {
+				hlp.game.createGame('contributor', request, function(g) {
+					game = g;
+					done(null, g);
+				});
+			});
+		});
+
+		after(function(done) {
+			hlp.cleanup(request, done);
+		});
+
+		it('should fail when posting without IPDB number', function(done) {
+			var user = 'member';
+			hlp.file.createRom(user, request, function(file) {
+				hlp.doomFile(user, file.id);
+				request
+					.post('/api/v1/roms')
+					.as(user)
+					.send({
+						id: 'tz_pa1',
+						_file: file.id
+					})
+					.end(hlp.status(400, 'must provide an ipdb number', done));
+			});
+		});
+
+		it('should fail when posting with IPDB number that is not a number', function(done) {
+			var user = 'member';
+			hlp.file.createRom(user, request, function(file) {
+				hlp.doomFile(user, file.id);
+				request
+					.post('/api/v1/roms')
+					.as(user)
+					.send({
+						id: 'tz_pa1',
+						_file: file.id,
+						_ipdb_number: 'foobar'
+					})
+					.end(function(err, res) {
+						hlp.expectValidationError(err, res, '_ipdb_number', 'cast to number failed');
+						done();
+					});
+			});
+		});
+
+		it('should succeed when providing minimal data', function(done) {
+			var user = 'member';
+			hlp.file.createRom(user, request, function(file) {
+				request
+					.post('/api/v1/roms')
+					.as(user)
+					.save('roms/create')
+					.send({
+						id: 'tz_pa1',
+						_file: file.id,
+						_ipdb_number: 2684
+					})
+					.end(function(err, res) {
+						hlp.expectStatus(err, res, 201);
+						hlp.doomRom(user, res.body.id);
+						expect(res.body.id).to.be('tz_pa1');
+						expect(res.body.file).to.be.an('object');
+						expect(res.body.file.url).to.be.ok();
+						done();
+					});
+			});
+		});
+
+		it('should link the game to the ROM when creating game after ROM', function(done) {
+			var user = 'contributor';
+			var ipdbNumber = 99991;
+			// create rom file
+			hlp.file.createRom(user, request, function(file) {
+
+				// link to ipdb number
+				request
+					.post('/api/v1/roms')
+					.as(user)
+					.send({
+						id: 'tz_pa2',
+						_file: file.id,
+						_ipdb_number: ipdbNumber
+					})
+					.end(function(err, res) {
+						hlp.expectStatus(err, res, 201);
+						hlp.doomRom(user, res.body.id);
+
+						// create game
+						hlp.file.createBackglass(user, request, function(backglass) {
+							request
+								.post('/api/v1/games')
+								.as(user)
+								.send(hlp.game.getGame({ _media: { backglass: backglass.id }, ipdb: { number: ipdbNumber }}))
+								.end(function(err, res) {
+									hlp.expectStatus(err, res, 201);
+									hlp.doomGame(user, res.body.id);
+
+									// list roms
+									request
+										.get('/api/v1/games/' + res.body.id + '/roms')
+										.end(function(err, res) {
+											hlp.expectStatus(err, res, 200);
+
+											expect(res.body).to.be.an('array');
+											expect(res.body).to.have.length(1);
+											done();
+										});
+								});
+						});
+					});
+			});
+		});
+
+		it('should link the ROM to the game when creating ROM with IPDB number for existing game', function(done) {
+			var user = 'contributor';
+			// create rom file
+			hlp.file.createRom(user, request, function(file) {
+
+				// link to ipdb number of existing game
+				request
+					.post('/api/v1/roms')
+					.as(user)
+					.send({
+						id: 'tz_pa3',
+						_file: file.id,
+						_ipdb_number: game.ipdb.number
+					})
+					.end(function(err, res) {
+						hlp.expectStatus(err, res, 201);
+						hlp.doomRom(user, res.body.id);
+
+						// list roms
+						request
+							.get('/api/v1/games/' + game.id + '/roms')
+							.end(function(err, res) {
+								hlp.expectStatus(err, res, 200);
+
+								expect(res.body).to.be.an('array');
+								expect(res.body).to.have.length(1);
+								done();
+							});
+					});
+			});
+		});
+
 	});
 
 	describe('when deleting a ROM', function() {

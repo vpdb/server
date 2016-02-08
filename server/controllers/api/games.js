@@ -26,6 +26,7 @@ var logger = require('winston');
 
 var Game = require('mongoose').model('Game');
 var Star = require('mongoose').model('Star');
+var Rom = require('mongoose').model('Rom');
 var LogEvent = require('mongoose').model('LogEvent');
 
 var api = require('./api');
@@ -77,6 +78,18 @@ exports.create = function(req, res) {
 	}).then(() => {
 		logger.info('[api|game:create] Game "%s" created.', game.title);
 		return game.activateFiles();
+
+	}).then(() => {
+		// link roms if available
+		if (game.ipdb && game.ipdb.number) {
+			return Rom.find({ _ipdb_number: game.ipdb.number }).exec().then(roms => {
+				logger.info('[api|game:create] Linking %d ROMs to created game %s.', roms.length, game._id);
+				return Promise.each(roms, rom => {
+					rom._game = game._id.toString();
+					return rom.save();
+				});
+			});
+		}
 
 	}).then(() => {
 		LogEvent.log(req, 'create_game', true, { game: _.omit(game.toSimple(), [ 'rating', 'counter' ]) }, { game: game._id });

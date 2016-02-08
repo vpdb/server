@@ -32,6 +32,7 @@ exports.register = function(app, api) {
 	app.get(settings.apiPath('/games/:id/roms'), api.anon(api.roms.list));
 	app.post(settings.apiPath('/games/:id/roms'), api.auth(api.roms.create, 'roms', 'add'));
 	app.delete(settings.apiPath('/roms/:id'),  api.auth(api.roms.del, 'roms', 'delete-own'));
+	app.post(settings.apiPath('/roms'), api.auth(api.roms.create, 'roms', 'add'));
 
 	app.post(settings.apiPath('/games/:id/rating'), api.auth(api.ratings.createForGame, 'games', 'rate'));
 	app.put(settings.apiPath('/games/:id/rating'), api.auth(api.ratings.updateForGame, 'games', 'rate'));

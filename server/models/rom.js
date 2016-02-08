@@ -38,7 +38,8 @@ var Schema = mongoose.Schema;
 var fields = {
 	id:           { type: String, required: 'ID must be provided. Use the name of the ROM file without file extension.', unique: true },
 	_file:        { type: Schema.ObjectId, ref: 'File', required: 'File reference must be provided.' },
-	_game:        { type: Schema.ObjectId, ref: 'Game', required: 'Game reference must be provided.' },
+	_game:        { type: Schema.ObjectId },
+	_ipdb_number: { type: Number },
 	rom_files: [ {
 		filename:     { type: String },
 		bytes:        { type: Number },

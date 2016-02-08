@@ -86,68 +86,72 @@ TableProcessor.prototype.variationData = function(metadata) {
  * @param {string} dest Path to destination
  * @param {File} file File to process
  * @param {object} variation Variation of the file to process
- * @param {function} done Callback, ran with none or {Err} object as parameter.
+ * @returns {Promise}
  */
-TableProcessor.prototype.pass1 = function(src, dest, file, variation, done) {
+TableProcessor.prototype.pass1 = function(src, dest, file, variation) {
 
-	if (!config.vpdb.generateTableScreenshot) {
-		return done();
-	}
+	return Promise.try(() => {
 
-	logger.info('[processor|table|pass1] Posting table to get screenshot...');
+		if (!config.vpdb.generateTableScreenshot) {
+			return Promise.resolve();
+		}
 
-	var formData = {
-		tablefile: {
-			value:  fs.createReadStream(src),
-			options: {
-				filename: path.basename(src),
-				contentType: 'application/octet-stream'
+		logger.info('[processor|table|pass1] Posting table to get screenshot...');
+
+		var formData = {
+			tablefile: {
+				value:  fs.createReadStream(src),
+				options: {
+					filename: path.basename(src),
+					contentType: 'application/octet-stream'
+				}
 			}
-		}
-	};
-
-	// create 0 byte file so downloads get blocked
-	fs.closeSync(fs.openSync(dest, 'w'));
-
-	request.post({ url:'http://vpdbproc.gameex.com/vppublish.aspx?type=upload&ver=9', formData: formData }, function(err, resp, body) {
-
-		if (err) {
-			fs.unlinkSync(dest);
-			return done(error(err, 'Error uploading to screenshot service.').log('pass1'));
-		}
-
-		var status = /<status>([^<]+)/.test(body) ? body.match(/<status>([^<]+)/i)[1] : null;
-		var ticket = /<ticket>([^<]+)/.test(body) ? body.match(/<ticket>([^<]+)/i)[1] : null;
-
-		if (status !== 'done') {
-			logger.warn('[processor|table|pass1] Failed generating screenshot: %s', body);
-			fs.unlinkSync(dest);
-			return done(new Error('Screenshot service returned "' + status + '".'));
-		}
-
-		// create destination stream
-		var writeStream = fs.createWriteStream(dest);
-		logger.info('[processor|table|pass1] Retrieving screenshot...');
-
-		// setup error handler
-		var handleErr = function(err) {
-			done(error(err, 'Error processing %s', file.toString(variation)).log('pass1'));
 		};
 
-		// setup success handler
-		writeStream.on('finish', function() {
-			logger.info('[processor|table|pass1] Saved image to "%s".', dest);
-			done();
+		// create 0 byte file so downloads get blocked
+		fs.closeSync(fs.openSync(dest, 'w'));
+
+		return new Promise((resolve, reject) => {
+			request.post({ url:'http://vpdbproc.gameex.com/vppublish.aspx?type=upload&ver=9', formData: formData }, function(err, resp, body) {
+
+				if (err) {
+					fs.unlinkSync(dest);
+					return reject(error(err, 'Error uploading to screenshot service.').log('pass1'));
+				}
+
+				var status = /<status>([^<]+)/.test(body) ? body.match(/<status>([^<]+)/i)[1] : null;
+				var ticket = /<ticket>([^<]+)/.test(body) ? body.match(/<ticket>([^<]+)/i)[1] : null;
+
+				if (status !== 'done') {
+					logger.warn('[processor|table|pass1] Failed generating screenshot: %s', body);
+					fs.unlinkSync(dest);
+					return reject(new Error('Screenshot service returned "' + status + '".'));
+				}
+
+				// create destination stream
+				var writeStream = fs.createWriteStream(dest);
+				logger.info('[processor|table|pass1] Retrieving screenshot...');
+
+				// setup error handler
+				var handleErr = function(err) {
+					reject(error(err, 'Error processing %s', file.toString(variation)).log('pass1'));
+				};
+
+				// setup success handler
+				writeStream.on('finish', function() {
+					logger.info('[processor|table|pass1] Saved image to "%s".', dest);
+					resolve();
+				});
+				writeStream.on('error', handleErr);
+
+				var img = gm(request('http://vpdbproc.gameex.com/vppublish.aspx?type=getimage&ticket=' + ticket));
+				img.quality(80);
+				img.rotate('black', 180);
+				img.setFormat('jpeg');
+
+				img.stream().on('error', handleErr).pipe(writeStream).on('error', handleErr);
+			});
 		});
-		writeStream.on('error', handleErr);
-
-		var img = gm(request('http://vpdbproc.gameex.com/vppublish.aspx?type=getimage&ticket=' + ticket));
-		img.quality(80);
-		img.rotate('black', 180);
-		img.setFormat('jpeg');
-
-		img.stream().on('error', handleErr).pipe(writeStream).on('error', handleErr);
-
 	});
 };
 

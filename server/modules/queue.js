@@ -117,26 +117,26 @@ function Queue() {
 	});
 
 	// setup pub/sub
-	this.redis.subscriber.on('subscribe', function(channel, count) {
+	this.redis.subscriber.on('subscribe', (channel, count) => {
 		logger.verbose('[queue] Subscribed to channel "%s" (%d).', channel, count);
 	});
-	this.redis.subscriber.on('unsubscribe', function(channel, count) {
+	this.redis.subscriber.on('unsubscribe', (channel, count) => {
 		logger.verbose('[queue] Unsubscribed from channel "%s" (%d).', channel, count);
 	});
-	this.redis.subscriber.on('message', function(key, data) {
+	this.redis.subscriber.on('message', (key, data) => {
 
 		data = JSON.parse(data);
 
 		// check if we have callbacks for that channel
-		if (!that.queuedFiles[key]) {
+		if (!this.queuedFiles[key]) {
 			return;
 		}
 		// unsubscribe from channel
-		that.redis.subscriber.unsubscribe(key);
+		this.redis.subscriber.unsubscribe(key);
 
 		var storage = require('./storage');
 		var File = require('mongoose').model('File');
-		File.findById(data.fileId, function(err, file) {
+		File.findById(data.fileId, (err, file) => {
 			var success = true;
 			/* istanbul ignore if */
 			if (err) {
@@ -148,13 +148,13 @@ function Queue() {
 				success = false;
 			}
 
-			var callbacks = that.queuedFiles[key];
-			delete that.queuedFiles[key];
-			callbacks.forEach(function(callback) {
+			var callbacks = this.queuedFiles[key];
+			delete this.queuedFiles[key];
+			callbacks.forEach(callback => {
 				if (!data.success || !success) {
 					return callback(file);
 				}
-				storage.fstat(file, data.variation, function(err, fstat) {
+				storage.fstat(file, data.variation, (err, fstat) => {
 					/* istanbul ignore if */
 					if (err) {
 						logger.error('[queue|subscriber] Error fstating file %s: %s', file.toString(data.variation), err.message);
@@ -182,83 +182,6 @@ function Queue() {
 		logger.error('[queue] From table queue: %s', err.message);
 		logger.error(err.stack);
 	});
-
-	/**
-	 * Unserializes file ID into file and processor name into processor
-	 * instance and starts processing.
-	 *
-	 * @param job
-	 * @param done
-	 */
-	var processFile = function(job, done) {
-
-		//console.log('OPTS = %s, %s', require('util').inspect(job.opts), _.isObject(job.opts));
-		var opts = job.opts;
-		var processor = require('./processor/' + opts.processor);
-		var File = require('mongoose').model('File');
-		File.findById(job.data.fileId, function(err, file) {
-			/* istanbul ignore if */
-			if (err) {
-				logger.error('[queue|pass2] Error getting file with ID "%s".', job.data.fileId);
-				return done();
-			}
-			var variation = job.data.variation;
-			if (!file) {
-				logger.verbose('[queue|pass2] Aborting before pass 2, file "%s" is not in database.', job.data.fileId);
-				return done();
-			}
-			// define paths
-			var src = file.getPath(variation);
-			var dest = file.getPath(variation, '_processing');
-			var finalDest = false;
-
-			if (!fs.existsSync(src)) { // no processed file could also mean first pass skipped, so try with original -> variation
-				src = file.getPath();
-				finalDest = file.getPath(variation);
-			}
-
-			/* istanbul ignore if */
-			if (!fs.existsSync(src)) {
-				logger.verbose('[queue|pass2] Aborting before pass 2, %s is not on file system.', file.toString(variation));
-				return done();
-			}
-
-			file.lock(variation);
-			processor.pass2(src, dest, file, variation, function(err) {
-				file.unlock(variation);
-
-				/* istanbul ignore if */
-				if (err) {
-					if (fs.existsSync(dest)) {
-						fs.unlinkSync(dest);
-					}
-					that.emit('error', err, file, variation);
-					return done(err);
-				}
-				// switch images
-				if (fs.existsSync(src) && fs.existsSync(dest)) {
-					var mvSrc = dest;
-					var mvDest = src;
-					try {
-						if (finalDest === false) {
-							logger.verbose('[queue] Removing "%s".', mvDest);
-							fs.unlinkSync(mvDest);
-						} else {
-							mvDest = finalDest;
-						}
-						fs.renameSync(mvSrc, mvDest);
-						logger.verbose('[queue] Renamed "%s" to "%s".', mvSrc, mvDest);
-					} catch (err) {
-						logger.error('[queue] Error switching %s to %s: ', mvSrc, mvDest, err);
-					}
-				}
-				logger.verbose('[queue|pass2] Pass 2 done for %s', file.toString(variation));
-				that.emit('processed', file, variation, processor, 'finishedPass2');
-				done();
-			});
-
-		});
-	};
 
 	/**
 	 * Processes callback queue (waiting requests)
@@ -289,9 +212,9 @@ function Queue() {
 	};
 
 	// setup workers
-	this.queues.image.process(processFile);
-	this.queues.video.process(processFile);
-	this.queues.table.process(processFile);
+	this.queues.image.process(job => processFile(job, this));
+	this.queues.video.process(job => processFile(job, this));
+	this.queues.table.process(job => processFile(job, this));
 
 	this.on('started', function(file, variation, processorName) {
 		logger.verbose('[queue] Starting %s processing of %s', processorName, file.toString(variation));
@@ -348,14 +271,13 @@ util.inherits(Queue, events.EventEmitter);
 
 Queue.prototype.add = function(file, variation, processor) {
 
-	var that = this;
 	var key = this.getQueryId(file, variation);
 
 	// mark file as being processed
-	this.redis.status.set(this.getRedisId(key), 0, function(err) {
+	this.redis.status.set(this.getRedisId(key), 0, err => {
 		/* istanbul ignore if */
 		if (err) {
-			logger.error('[queue] Error setting value "%s" from Redis: %s', that.getRedisId(key), err.message);
+			logger.error('[queue] Error setting value "%s" from Redis: %s', this.getRedisId(key), err.message);
 			return;
 		}
 
@@ -365,26 +287,23 @@ Queue.prototype.add = function(file, variation, processor) {
 			// check for source file availability
 			if (!fs.existsSync(file.getPath())) {
 				logger.warn('[queue|pass1] Aborting before pass 1, %s is not on file system.', file.toString(variation));
-				return that.emit('error', 'File gone before pass 1 could start.', file, variation);
+				return this.emit('error', 'File gone before pass 1 could start.', file, variation);
 			}
 
 			file.lock(variation);
-			processor.pass1(file.getPath(), file.getPath(variation), file, variation, function(err, skipped) {
+			processor.pass1(file.getPath(), file.getPath(variation), file, variation).then(skipped => {
 				file.unlock(variation);
-
-				/* istanbul ignore if */
-				if (err) {
-					return that.emit('error', err, file, variation);
-				}
 				if (skipped) {
-					that.emit('finishedPass1', file, variation, processor, false);
+					this.emit('finishedPass1', file, variation, processor, false);
 				} else {
-					that.emit('processed', file, variation, processor, 'finishedPass1');
+					this.emit('processed', file, variation, processor, 'finishedPass1');
 				}
+			}).catch(err => {
+				this.emit('error', err, file, variation);
 			});
 
 		} else {
-			that.emit('finishedPass1', file, variation, processor, false);
+			this.emit('finishedPass1', file, variation, processor, false);
 		}
 	});
 };
@@ -442,3 +361,88 @@ Queue.prototype.empty = function() {
 };
 
 module.exports = new Queue();
+
+/**
+ * Unserializes file ID into file and processor name into processor
+ * instance and starts processing.
+ *
+ * @param job
+ * @param emitter
+ * @returns {Promise}
+ */
+function processFile(job, emitter) {
+
+	//console.log('OPTS = %s, %s', require('util').inspect(job.opts), _.isObject(job.opts));
+	let opts = job.opts;
+	let processor = require('./processor/' + opts.processor);
+	let File = require('mongoose').model('File');
+
+	let finalDest = false;
+	let file, src, dest;
+	let variation = job.data.variation;
+
+	return Promise.try(() => {
+		return File.findById(job.data.fileId);
+
+	}).then(f => {
+
+		file = f;
+		if (!file) {
+			throw new Error('[queue|pass2] Aborting before pass 2, file "' + job.data.fileId + '" is not in database.');
+		}
+
+		// define paths
+		src = file.getPath(variation);
+		dest = file.getPath(variation, '_processing');
+
+		if (!fs.existsSync(src)) { // no processed file could also mean first pass skipped, so try with original -> variation
+			src = file.getPath();
+			finalDest = file.getPath(variation);
+		}
+
+		/* istanbul ignore if */
+		if (!fs.existsSync(src)) {
+			throw new Error('[queue|pass2] Aborting before pass 2, ' + file.toString(variation) + ' is not on file system.');
+		}
+
+		file.lock(variation);
+		return processor.pass2(src, dest, file, variation).catch(err => {
+			if (fs.existsSync(dest)) {
+				fs.unlinkSync(dest);
+			}
+			emitter.emit('error', err, file, variation);
+			throw err;
+
+		}).finally(() => file.unlock(variation));
+
+	}).then(() => {
+
+		// switch images
+		if (fs.existsSync(src) && fs.existsSync(dest)) {
+			var mvSrc = dest;
+			var mvDest = src;
+			try {
+				if (finalDest === false) {
+					logger.verbose('[queue] Removing "%s".', mvDest);
+					fs.unlinkSync(mvDest);
+				} else {
+					mvDest = finalDest;
+				}
+				fs.renameSync(mvSrc, mvDest);
+				logger.verbose('[queue] Renamed "%s" to "%s".', mvSrc, mvDest);
+			} catch (err) {
+				logger.error('[queue] Error switching %s to %s: ', mvSrc, mvDest, err);
+			}
+		}
+		logger.verbose('[queue|pass2] Pass 2 done for %s', file.toString(variation));
+		emitter.emit('processed', file, variation, processor, 'finishedPass2');
+
+	}).catch(err => {
+		// silently log if thrown explicitly
+		if (err.message[0] === '[') {
+			logger.error(err.message);
+		} else {
+			throw err;
+		}
+	});
+}

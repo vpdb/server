@@ -106,38 +106,42 @@ VideoProcessor.prototype.variationData = function(metadata) {
  *
  * @param {File} file
  * @param {object} variation
- * @param done Callback
+ * @returns {Promise}
  */
-VideoProcessor.prototype.pass1 = function(src, dest, file, variation, done) {
+VideoProcessor.prototype.pass1 = function(src, dest, file, variation) {
 
-	// only do screenshots in first pass.
-	if (!variation.screenshot) {
-		return done(null, true);
-	}
+	return new Promise((resolve, reject) => {
 
-	logger.debug('[video|pass1] Starting processing %s at %s.', file.toString(variation), dest);
-	var started = new Date().getTime();
-	ffmpeg(src)
-		.noAudio()
-		.frames(1)
-		.seek(variation.position || '0:01')
-		.on('start', function(commandLine) {
-			logger.debug('[video|ffmpeg] %s', commandLine);
-		})
-		.on('error', function(err, stdout, stderr) {
-			logger.error('[video|pass1] ' + err);
-			logger.error('[ffmpeg|stdout] ' + stdout);
-			logger.error('[ffmpeg|stderr] ' + stderr);
-			done(error(err, 'Error processing video'));
-		})
-		.on('progress', function(progress) {
-			logger.debug('[video|pass1] Processing: %s% at %skbps', progress.percent, progress.currentKbps);
-		})
-		.on('end', function() {
-			logger.debug('[video|pass1] Transcoding succeeded after %dms, written to %s', new Date().getTime() - started, dest);
-			done();
-		})
-		.save(dest);
+		// only do screenshots in first pass.
+		if (!variation.screenshot) {
+			return resolve(true);
+		}
+
+		logger.debug('[video|pass1] Starting processing %s at %s.', file.toString(variation), dest);
+		var started = new Date().getTime();
+		ffmpeg(src)
+			.noAudio()
+			.frames(1)
+			.seek(variation.position || '0:01')
+			.on('start', function(commandLine) {
+				logger.debug('[video|ffmpeg] %s', commandLine);
+			})
+			.on('error', function(err, stdout, stderr) {
+				logger.error('[video|pass1] ' + err);
+				logger.error('[ffmpeg|stdout] ' + stdout);
+				logger.error('[ffmpeg|stderr] ' + stderr);
+				reject(error(err, 'Error processing video'));
+			})
+			.on('progress', function(progress) {
+				logger.debug('[video|pass1] Processing: %s% at %skbps', progress.percent, progress.currentKbps);
+			})
+			.on('end', function() {
+				logger.debug('[video|pass1] Transcoding succeeded after %dms, written to %s', new Date().getTime() - started, dest);
+				resolve();
+			})
+			.save(dest);
+
+	});
 };
 
 /**
@@ -146,53 +150,56 @@ VideoProcessor.prototype.pass1 = function(src, dest, file, variation, done) {
  * @param {File} file
  * @param {object} variation
  * @param {string} dest Where the file should be written to
- * @param done Callback
+ * @returns {Promise}
  */
-VideoProcessor.prototype.pass2 = function(src, dest, file, variation, done) {
+VideoProcessor.prototype.pass2 = function(src, dest, file, variation) {
 
-	// only do videos in second pass.
-	if (variation && variation.screenshot) {
-		return done();
-	}
+	return new Promise((resolve, reject) => {
 
-	logger.info('[video|pass2] Starting video processing of %s', file.toString(variation));
-	if (!variation) {
-		var md = this.metadataShort(file.metadata);
-		if (md.video.bit_rate < 4000000 && /^[hx]264$/.test(md.video.codec_name)) {
-			logger.info('[video|pass2] Original video seems okay (%s mpbs, %s), skipping re-processing.', Math.round(md.video.bit_rate / 1000) / 1000, md.video.codec_name);
-			return done();
-		} else {
-			logger.info('[video|pass2] Re-processing original video (%s mpbs, %s)', Math.round(md.video.bit_rate / 1000) / 1000, md.video.codec_name);
+		// only do videos in second pass.
+		if (variation && variation.screenshot) {
+			return resolve();
 		}
-	}
 
-	var started = new Date().getTime();
-	var proc = ffmpeg(src)
-		.noAudio()
-		.videoCodec('libx264')
-		.on('start', function(commandLine) {
-			logger.info('[video|ffmpeg] %s', commandLine);
-		})
-		.on('error', function(err, stdout, stderr) {
-			logger.error('[video|pass2] ' + err);
-			logger.error('[ffmpeg|stdout] ' + stdout);
-			logger.error('[ffmpeg|stderr] ' + stderr);
-			done(error(err, 'Error processing video'));
-		})
-		.on('progress', function(progress) {
-			logger.info('[video|pass2] Processing %s: %s%', file.toString(variation), Math.round(progress.percent * 100) / 100);
-		})
-		.on('end', function() {
-			logger.info('[video|pass2] Transcoding succeeded after %dms, written to %s', new Date().getTime() - started, dest);
-			done();
-		});
-	if (variation && variation.height && variation.width) {
-		proc.size(variation.height + 'x' + variation.width);
-	}
-	if (variation && variation.rotate) {
-		proc.videoFilters('transpose=2');
-	}
-	proc.save(dest);
+		logger.info('[video|pass2] Starting video processing of %s', file.toString(variation));
+		if (!variation) {
+			var md = this.metadataShort(file.metadata);
+			if (md.video.bit_rate < 4000000 && /^[hx]264$/.test(md.video.codec_name)) {
+				logger.info('[video|pass2] Original video seems okay (%s mpbs, %s), skipping re-processing.', Math.round(md.video.bit_rate / 1000) / 1000, md.video.codec_name);
+				return resolve();
+			} else {
+				logger.info('[video|pass2] Re-processing original video (%s mpbs, %s)', Math.round(md.video.bit_rate / 1000) / 1000, md.video.codec_name);
+			}
+		}
+		var started = new Date().getTime();
+		var proc = ffmpeg(src)
+			.noAudio()
+			.videoCodec('libx264')
+			.on('start', function(commandLine) {
+				logger.info('[video|ffmpeg] %s', commandLine);
+			})
+			.on('error', function(err, stdout, stderr) {
+				logger.error('[video|pass2] ' + err);
+				logger.error('[ffmpeg|stdout] ' + stdout);
+				logger.error('[ffmpeg|stderr] ' + stderr);
+				reject(error(err, 'Error processing video'));
+			})
+			.on('progress', function(progress) {
+				logger.info('[video|pass2] Processing %s: %s%', file.toString(variation), Math.round(progress.percent * 100) / 100);
+			})
+			.on('end', function() {
+				logger.info('[video|pass2] Transcoding succeeded after %dms, written to %s', new Date().getTime() - started, dest);
+				resolve();
+			});
+		if (variation && variation.height && variation.width) {
+			proc.size(variation.height + 'x' + variation.width);
+		}
+		if (variation && variation.rotate) {
+			proc.videoFilters('transpose=2');
+		}
+		proc.save(dest);
+
+	});
 };
 
 module.exports = new VideoProcessor();

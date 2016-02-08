@@ -135,70 +135,69 @@ ImageProcessor.prototype.preprocess = function(file) {
  * @param {string} dest Path to destination
  * @param {File} file File to process
  * @param {object} variation Variation of the file to process
- * @param {function} done Callback, ran with none or {Err} object as parameter.
+ * @returns {Promise}
  */
-ImageProcessor.prototype.pass1 = function(src, dest, file, variation, done) {
+ImageProcessor.prototype.pass1 = function(src, dest, file, variation) {
 
-	// create destination stream
-	var writeStream = fs.createWriteStream(dest);
-	logger.debug('[processor|image|pass1] Starting processing %s at %s.', file.toString(variation), dest);
+	return Promise.try(() => {
 
-	// setup error handler
-	var handleErr = function(err) {
-		done(error(err, 'Error processing %s', file.toString(variation)).log('pass1'));
-	};
+		logger.debug('[processor|image|pass1] Starting processing %s at %s.', file.toString(variation), dest);
 
-	// setup success handler
-	writeStream.on('finish', function() {
-		logger.debug('[processor|image|pass1] Saved resized image to "%s".', dest);
-		done();
+		// do the processing
+		logger.debug('[processor|image|pass1] Resizing %s "%s" (%s)...', file.file_type, file.id, variation.name);
+		var img = gm(src);
+		img.quality(variation.qual || 80);
+
+		if (variation.width && variation.height) {
+			img.resize(variation.width, variation.height);
+		}
+
+		if (variation.rotate) {
+			img.rotate('black', variation.rotate);
+		}
+
+		var srcSize, scale;
+		if (variation.portraitToSquare) {
+			srcSize = file.metadata.size;
+			scale = srcSize.width / 1920;
+			img.rotate('black', -120);
+			img.crop(300 * scale, 300 * scale, 950 * scale, 1300 * scale);
+			if (variation.size) {
+				img.resize(variation.size, variation.size);
+			}
+		}
+		if (variation.wideToSquare) {
+			srcSize = file.metadata.size;
+			scale = srcSize.width / 1920;
+			img.rotate('black', -30);
+			img.crop(220 * scale, 220 * scale, 1020 * scale, 970 * scale);
+			if (variation.size) {
+				img.resize(variation.size, variation.size);
+			}
+		}
+
+		if (variation.landscape && file.metadata.size.width < file.metadata.size.height) {
+			img.rotate('black', 90);
+		}
+
+		if (variation.mimeType && mimeTypes[variation.mimeType]) {
+			img.setFormat(mimeTypes[variation.mimeType].ext);
+		}
+
+		return new Promise((resolve, reject) => {
+			let writeStream = fs.createWriteStream(dest);
+
+			// setup success handler
+			writeStream.on('finish', function() {
+				logger.debug('[processor|image|pass1] Saved resized image to "%s".', dest);
+				resolve();
+			});
+			writeStream.on('error', reject);
+
+			img.stream().on('error', reject).pipe(writeStream).on('error', reject);
+		});
+
 	});
-	writeStream.on('error', handleErr);
-
-	// do the processing
-	logger.debug('[processor|image|pass1] Resizing %s "%s" (%s)...', file.file_type, file.id, variation.name);
-	var img = gm(src);
-	img.quality(variation.qual || 80);
-
-	if (variation.width && variation.height) {
-		img.resize(variation.width, variation.height);
-	}
-
-	if (variation.rotate) {
-		img.rotate('black', variation.rotate);
-	}
-
-	var srcSize, scale;
-	if (variation.portraitToSquare) {
-		srcSize = file.metadata.size;
-		scale = srcSize.width / 1920;
-		img.rotate('black', -120);
-		img.crop(300 * scale, 300 * scale, 950 * scale, 1300 * scale);
-		if (variation.size) {
-			img.resize(variation.size, variation.size);
-		}
-	}
-	if (variation.wideToSquare) {
-		srcSize = file.metadata.size;
-		scale = srcSize.width / 1920;
-		img.rotate('black', -30);
-		img.crop(220 * scale, 220 * scale, 1020 * scale, 970 * scale);
-		if (variation.size) {
-			img.resize(variation.size, variation.size);
-		}
-	}
-
-	if (variation.landscape && file.metadata.size.width < file.metadata.size.height) {
-		img.rotate('black', 90);
-	}
-
-	if (variation.mimeType && mimeTypes[variation.mimeType]) {
-		img.setFormat(mimeTypes[variation.mimeType].ext);
-	}
-
-	img
-		.stream().on('error', handleErr)
-		.pipe(writeStream).on('error', handleErr);
 };
 
 /**
@@ -208,41 +207,47 @@ ImageProcessor.prototype.pass1 = function(src, dest, file, variation, done) {
  * @param {string} dest Path to destination
  * @param {File} file File to process
  * @param {object} variation Variation of the file to process
- * @param {function} done Callback, ran with none or {Err} object as parameter.
+ * @returns {Promise}
  */
-ImageProcessor.prototype.pass2 = function(src, dest, file, variation, done) {
+ImageProcessor.prototype.pass2 = function(src, dest, file, variation) {
 
-	if (file.getMimeSubtype(variation) !== 'png') {
-		logger.debug('[processor|image|pass2] Skipping pass 2 for %s (image type %s)', file.toString(variation), file.getMimeSubtype());
-		return done();
-	}
+	return Promise.try(() => {
 
-	// create destination stream
-	var writeStream = fs.createWriteStream(dest);
+		if (file.getMimeSubtype(variation) !== 'png') {
+			logger.debug('[processor|image|pass2] Skipping pass 2 for %s (image type %s)', file.toString(variation), file.getMimeSubtype());
+			return Promise.resolve();
+		}
 
-	// setup success handler
-	writeStream.on('finish', function() {
-		logger.debug('[processor|image|pass2] Finished pass 2 for %s', file.toString(variation));
-		done();
+		var quanter = new PngQuant([128]);
+		var optimizer = new OptiPng(['-o7']);
+
+		return new Promise((resolve, reject) => {
+
+			// create destination stream
+			let writeStream = fs.createWriteStream(dest);
+
+			// setup success handler
+			writeStream.on('finish', function() {
+				logger.debug('[processor|image|pass2] Finished pass 2 for %s', file.toString(variation));
+				resolve();
+			});
+			writeStream.on('error', reject);
+
+			// setup error handler
+			var handleErr = function(what) {
+				return function(err) {
+					reject(error(err, 'Error at %s while processing %s', what, file.toString(variation)).log('pass2'));
+				};
+			};
+
+			// do the processing
+			logger.debug('[processor|image|pass2] Optimizing %s %s', file.getMimeSubtype(variation), file.toString(variation));
+			fs.createReadStream(src).on('error', handleErr('reading'))
+				.pipe(quanter).on('error', handleErr('quanter'))
+				.pipe(optimizer).on('error', handleErr('optimizer'))
+				.pipe(writeStream).on('error', handleErr('writing'));
+		});
 	});
-
-	// setup error handler
-	var handleErr = function(what) {
-		return function(err) {
-			done(error(err, 'Error at %s while processing %s', what, file.toString(variation)).log('pass2'));
-		};
-	};
-	writeStream.on('error', handleErr);
-
-	// do the processing
-	var quanter = new PngQuant([128]);
-	var optimizer = new OptiPng(['-o7']);
-
-	logger.debug('[processor|image|pass2] Optimizing %s %s', file.getMimeSubtype(variation), file.toString(variation));
-	fs.createReadStream(src).on('error', handleErr('reading'))
-		.pipe(quanter).on('error', handleErr('quanter'))
-		.pipe(optimizer).on('error', handleErr('optimizer'))
-		.pipe(writeStream).on('error', handleErr('writing'));
 };
 
 module.exports = new ImageProcessor();

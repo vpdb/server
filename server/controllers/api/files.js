@@ -197,9 +197,9 @@ function handleMultipartUpload(req, error) {
 			});
 		});
 
-		var parseMultipart = new Promise(function(resolve, reject) {
-			busboy.on("finish", resolve);
-			busboy.on("error", reject);
+		var parseMultipart = new Promise((resolve, reject) => {
+			busboy.on('finish', resolve);
+			busboy.on('error', reject);
 			req.pipe(busboy);
 		});
 

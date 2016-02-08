@@ -218,8 +218,9 @@ Quota.prototype.getCost = function(file, variation) {
 					return 0;
 				}
 				cost = cost.variation['*'];
+			} else {
+				cost = cost.variation[variationName];
 			}
-			cost = cost.variation[variationName];
 		} else {
 			return cost.variation;
 		}

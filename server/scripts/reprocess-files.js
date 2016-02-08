@@ -19,47 +19,81 @@
 
 "use strict";
 
-var _ = require('lodash');
-var fs = require('fs');
-var http = require('http');
-var path = require('path');
-var util = require('util');
-var mongoose = require('mongoose');
 
-var settings = require('../modules/settings');
-var config = settings.current;
+const _ = require('lodash');
+const fs = require('fs');
+const http = require('http');
+const path = require('path');
+const util = require('util');
+const mongoose = require('mongoose');
 
-var storage = require('../modules/storage');
+const settings = require('../modules/settings');
+const config = settings.current;
+
+Promise = require('bluebird'); // jshint ignore:line
+mongoose.Promise = Promise;
 
 // bootstrap db connection
 mongoose.connect(config.vpdb.db, { server: { socketOptions: { keepAlive: 1 } } });
 
 // bootstrap models
-var modelsPath = path.resolve(__dirname, '../models');
+const modelsPath = path.resolve(__dirname, '../models');
 fs.readdirSync(modelsPath).forEach(function(file) {
 	if (!fs.lstatSync(modelsPath + '/' + file).isDirectory()) {
 		require(modelsPath + '/' + file);
 	}
 });
 
-var User = mongoose.model('User');
-var File = mongoose.model('File');
-
-var display = function(err, res) {
-	if (err) {
-		return console.error('ERROR: %s', err);
-	}
-	console.log(util.inspect(res, false, 4, true));
+// bootstrap processors
+const processors = {
+	image: require('../modules/processor/image'),
+	video: require('../modules/processor/video'),
+	table: require('../modules/processor/table'),
+	archive: require('../modules/processor/archive')
+};
+const variations = {
+	image: processors.image.variations,
+	video: processors.video.variations,
+	table: processors.table.variations
 };
 
-var args = process.argv.slice(2);
-var query = _.isArray(args) && args.length ? { id: { $in: args } } : { variations: { $exists : true, $ne : null }};
+const User = mongoose.model('User');
+const File = mongoose.model('File');
+
+const args = process.argv.slice(2);
+const query = _.isArray(args) && args.length ? { id: { $in: args } } : { variations: { $exists : true, $ne : null }};
 console.log(query);
-File.find(query, function(err, files) {
-	if (err) {
-		return display(err, files);
+
+File.find(query).exec().then(files => Promise.each(files, file => {
+
+	const mimeCategory = file.getMimeCategory();
+	const processor = processors[mimeCategory];
+
+	if (!processor) {
+		return;
 	}
-	files.forEach(function(file) {
-		storage.postprocess(file, true);
-	});
+
+	// process pass 1
+	if (variations[mimeCategory] && variations[mimeCategory][file.file_type]) {
+		console.log('Processing %s %s %s - %s...', file.file_type, processor.name, file.id, file.name);
+		return Promise.each(variations[mimeCategory][file.file_type], variation => {
+			let original = file.getPath(variation);
+			let dest = file.getPath(variation, '_reprocessing');
+			console.log('   -> %s: %s', variation.name, dest);
+			return processor.pass1(file.getPath(), dest, file, variation).then(() => {
+				if (fs.existsSync(original)) {
+					fs.unlinkSync(original);
+				}
+				fs.renameSync(dest, original);
+			});
+		});
+	}
+
+})).then(() => {
+	console.log('DONE!');
+
+}).catch(err => {
+	console.error('ERROR: %s', err);
+	console.error(err.stack);
+
 });

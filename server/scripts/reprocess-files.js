@@ -19,6 +19,7 @@
 
 "use strict";
 
+Promise = require('bluebird'); // jshint ignore:line
 
 const _ = require('lodash');
 const fs = require('fs');
@@ -28,9 +29,9 @@ const util = require('util');
 const mongoose = require('mongoose');
 
 const settings = require('../modules/settings');
+const storage = require('../modules/storage');
 const config = settings.current;
 
-Promise = require('bluebird'); // jshint ignore:line
 mongoose.Promise = Promise;
 
 // bootstrap db connection
@@ -73,21 +74,34 @@ File.find(query).exec().then(files => Promise.each(files, file => {
 		return;
 	}
 
-	// process pass 1
-	if (variations[mimeCategory] && variations[mimeCategory][file.file_type]) {
-		console.log('Processing %s %s %s - %s...', file.file_type, processor.name, file.id, file.name);
-		return Promise.each(variations[mimeCategory][file.file_type], variation => {
-			let original = file.getPath(variation);
-			let dest = file.getPath(variation, '_reprocessing');
-			console.log('   -> %s: %s', variation.name, dest);
-			return processor.pass1(file.getPath(), dest, file, variation).then(() => {
-				if (fs.existsSync(original)) {
-					fs.unlinkSync(original);
-				}
-				fs.renameSync(dest, original);
+	console.log('Processing %s %s %s - %s...', file.file_type, processor.name, file.id, file.name);
+
+	// update metadata
+	return processor.metadata(file).then(metadata => {
+		File.sanitizeObject(metadata);
+		file.metadata = metadata;
+		file.variations = {};
+		return file.save();
+
+	}).then(() => {
+
+		// process pass 1
+		if (variations[mimeCategory] && variations[mimeCategory][file.file_type]) {
+
+			return Promise.each(variations[mimeCategory][file.file_type], variation => {
+				let original = file.getPath(variation);
+				let dest = file.getPath(variation, '_reprocessing');
+				console.log('   -> %s: %s', variation.name, dest);
+				return processor.pass1(file.getPath(), dest, file, variation).then(() => {
+					if (fs.existsSync(original)) {
+						fs.unlinkSync(original);
+					}
+					fs.renameSync(dest, original);
+
+				}).then(() => storage.onProcessed(file, variation, processor));
 			});
-		});
-	}
+		}
+	});
 
 })).then(() => {
 	console.log('DONE!');

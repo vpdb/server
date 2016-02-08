@@ -63,7 +63,15 @@ function Storage() {
 	});
 
 	// setup callback for treatment after post-processing
-	queue.on('processed', this.onProcessed);
+	queue.on('processed', (file, variation, processor, nextEvent) => {
+		return this.onProcessed(file, variation, processor).then(updatedFile => {
+			queue.emit(nextEvent, updatedFile, variation, processor, true);
+
+		}).catch(err => {
+			logger.warn('[storage] Error when writing back metadata to database, aborting post-processing for %s: %s', file ? file.toString(variation) : '[null]', err.message);
+			queue.emit('error', err, null, variation);
+		});
+	});
 }
 
 Storage.prototype.variations = {
@@ -190,7 +198,7 @@ Storage.prototype.metadata = function(file, done) {
 			logger.warn('[storage] No metadata parser for mime category "%s".', type);
 			return Promise.resolve();
 		}
-		return processors[type].metadata(file, done);
+		return processors[type].metadata(file);
 	}).nodeify(done);
 };
 
@@ -262,208 +270,106 @@ Storage.prototype.postprocess = function(file, onlyVariations) {
  * @param {File} file File that finished processing
  * @param {object} variation Variation of the file, null if original file
  * @param {object} processor Processor instance
- * @param {string} nextEvent Which event to call on the queue in order to continue the flow
+ * @returns {Promise.<File>} Promise with updated file
  */
-Storage.prototype.onProcessed = function(file, variation, processor, nextEvent) {
+Storage.prototype.onProcessed = function(file, variation, processor) {
 
-	var originalFile = file;
-	var fileId = file.id;
-	var File = require('mongoose').model('File');
+	let originalFile = file;
+	let fileId = file.id;
+	let File = require('mongoose').model('File');
+	let metadata;
 
-	async.waterfall([
+	if (!fs.existsSync(file.getPath(variation))) {
+		// we don't care here, it's possible that a pass was simply skipped.
+		logger.warn('[storage] Skipping %s.', file.toString(variation));
+		return Promise.resolve();
+	}
 
-		/**
-		 * Find file, make sure it's still there and move to public storage if necessary.
-		 *
-		 * @param next Callback
-		 */
-		function(next) {
+	return Promise.try(() => {
 
-			if (!fs.existsSync(file.getPath(variation))) {
-				// we don't care here, it's possible that a pass was simply skipped.
-				return next(true);
+		// refresh from database
+		return File.findById(file._id).exec();
+
+	}).then(file => {
+
+		// check that file hasn't been erased meanwhile (hello, tests!)
+		if (!file) {
+			throw error('File "%s" gone, has been removed from DB before processing finished.', fileId);
+		}
+
+		// check if file should have been moved to public storage meanwhile
+		checkIfMoved(file, originalFile, variation);
+
+		// read metadata from processed file
+		logger.verbose('[storage] Reading metadata from %s...', file.toString(variation));
+
+		file.lock(variation);
+		return processor.metadata(file, variation).catch(err => {
+			// it's possible that files were renamed while getting metadata. check and retry.
+			if (/no such file/i.test(err.message)) {
+				return File.findById(file._id).exec().then(file => {
+					if (!file) {
+						throw error('File "%s" gone (2), has been removed from DB before processing finished.', fileId);
+					}
+					logger.verbose('[storage] Retrying reading metadata from %s...', file.toString(variation));
+					return processor.metadata(file, variation);
+				});
+			} else {
+				throw err;
+			}
+		}).finally(() => file.unlock(variation));
+
+	}).then(m => {
+		metadata = m;
+
+		// re-fetch data so we have the freshest varations and keep data loss at a minimum.
+		return File.findById(file._id).exec();
+
+	}).then(file => {
+
+		if (!file) {
+			throw error('File "%s" gone, has been removed from DB before metadata finished.', fileId);
+		}
+
+		// check if file should have been moved to public storage meanwhile
+		checkIfMoved(file, originalFile, variation);
+
+		var filepath = file.getPath(variation);
+		if (!fs.existsSync(filepath)) {
+			// here we care: we came so far, so this was definitely deleted while we were away
+			throw error('File "%s" gone, has been deleted before metadata finished.', filepath);
+		}
+
+		var data = {};
+		if (variation) {
+			// save only limited meta data for variations
+			var fieldPath = 'variations.' + variation.name;
+			data[fieldPath] = _.extend(processor.variationData(metadata), { bytes: fs.statSync(filepath).size });
+			if (variation.mimeType) {
+				data[fieldPath].mime_type = variation.mimeType;
 			}
 
-			File.findById(file._id, function(err, file) {
-				/* istanbul ignore if */
-				if (err) {
-					return next(error(err, 'Error fetching file').warn());
-				}
-
-				// check that file hasn't been erased meanwhile (hello, tests!)
-				if (!file) {
-					return next(error('File "%s" gone, has been removed from DB before processing finished.', fileId));
-				}
-
-				next(null, file);
-			});
-		},
-
-		/**
-		 * Read metadata from processed file.
-		 *
-		 * @param file Previously fetched file
-		 * @param next Callback
-		 */
-		function(file, next) {
-
-			// check if file should have been renamed meanwhile
-			var dirtyPath = Storage.prototype.path(originalFile, variation);
-			var cleanPath = Storage.prototype.path(file, variation);
-			if (!fs.existsSync(cleanPath) && fs.existsSync(dirtyPath)) {
-				logger.info('[storage] Seems that "%s" was locked while attempting to move, renaming now to "%s".', dirtyPath, cleanPath);
-				try {
-					fs.renameSync(dirtyPath, cleanPath);
-				} catch (err) {
-					logger.error('[storage] Error renaming: %s', err.message);
-				}
-			}
-
-			logger.verbose('[storage] Reading metadata from %s...', file.toString(variation));
-
-			file.lock(variation);
-			processor.metadata(file, variation, function(err, metadata) {
-				file.unlock(variation);
-
-				if (err) {
-					// it's possible that files were renamed while getting metadata. check and retry.
-					if (/no such file/i.test(err.message)) {
-						File.findById(file._id, function(err, file) {
-							/* istanbul ignore if */
-							if (err) {
-								return next(error(err, 'Error re-fetching file').warn());
-							}
-							if (!file) {
-								return next(error('File "%s" gone (2), has been removed from DB before processing finished.', fileId));
-							}
-							logger.verbose('[storage] Retrying reading metadata from %s...', file.toString(variation));
-							processor.metadata(file, variation, function(err, metadata) {
-								if (err) {
-									logger.error('[storage] Error processing metadata of %s: %s', file.toString(variation), err.message);
-									return next(err, file);
-								}
-								logger.info('[storage] Okay, no error this time for %s, moving on (%s).', file.toString(variation), _.keys(metadata).join(', '));
-								next(null, file, metadata);
-							});
-							// flow through
-						});
-					} else {
-						return next(err, file);
-					}
-
-				} else {
-					next(null, file, metadata);
-				}
-
-
-			});
-		},
-
-		/**
-		 * Re-fetch data so we have the freshest varations and keep data loss at a minimum.
-		 *
-		 * @param file Previously fetched file
-		 * @param metadata Previously fetched meta data
-		 * @param next Callback
-		 */
-		function(file, metadata, next) {
-
-			File.findById(file._id, function(err, file) {
-				/* istanbul ignore if */
-				if (err) {
-					return next(error(err, 'Error re-fetching file').warn());
-				}
-
-				// check that file hasn't been erased meanwhile (like, in tests..)
-				if (!file) {
-					return next(error('File "%s" gone, has been removed from DB before metadata finished.', fileId));
-				}
-
-				// check if file should have been renamed while reading meta data
-				var dirtyPath = Storage.prototype.path(originalFile, variation);
-				var cleanPath = Storage.prototype.path(file, variation);
-				if (!fs.existsSync(cleanPath) && fs.existsSync(dirtyPath)) {
-					logger.info('[storage] Seems that "%s" was locked while attempting to move, renaming now to "%s".', dirtyPath, cleanPath);
-					try {
-						fs.renameSync(dirtyPath, cleanPath);
-					} catch (err) {
-						logger.error('[storage] Error renaming: %s', err.message);
-					}
-				}
-
-				var filepath = file.getPath(variation);
-				if (!fs.existsSync(filepath)) {
-					// here we care: we came so far, so this was definitely deleted while we were away
-					return next(error('File "%s" gone, has been deleted before metadata finished.', filepath), file);
-				}
-
-				var data = {};
-				if (variation) {
-
-					// save only limited meta data for variations
-					var fieldPath = 'variations.' + variation.name;
-					data[fieldPath] = _.extend(processor.variationData(metadata), { bytes: fs.statSync(filepath).size });
-					if (variation.mimeType) {
-						data[fieldPath].mime_type = variation.mimeType;
-					}
-
-				} else {
-
-					// save everything, but sanitize first.
-					File.sanitizeObject(metadata);
-					data.metadata = metadata;
-				}
-
-				next(null, file, data);
-			});
-		},
-
-		/**
-		 * Update the database with tidied metadata and moves file to public storage if necessary.
-		 *
-		 * @param file Previously fetched file
-		 * @param data Data to be updated on the file
-		 * @param next Callback
-		 */
-		function(file, data, next) {
-
-			logger.verbose('[storage] Patching new metadata of %s', file.toString(variation));
-
-			// only update `metadata` (other data might has changed meanwhile)
-			File.findByIdAndUpdate(file._id, { $set: data }, { 'new': true }, function(err, cleanFile) {
-
-				if (err || !cleanFile) {
-					return next(err, cleanFile);
-				}
-
-				// check if file has moved to public storage meanwhile
-				var dirtyPath = Storage.prototype.path(originalFile, variation);
-				var cleanPath = Storage.prototype.path(cleanFile, variation);
-				if (dirtyPath !== cleanPath && fs.existsSync(dirtyPath)) {
-					logger.info('[storage] File has moved meanwhile, renaming %s to %s...', dirtyPath, cleanPath);
-					try {
-						fs.renameSync(dirtyPath, cleanPath);
-					} catch (err) {
-						logger.error('[storage] Error renaming: %s', err.message);
-					}
-				}
-				next(err, cleanFile);
-			});
+		} else {
+			// save everything, but sanitize first.
+			File.sanitizeObject(metadata);
+			data.metadata = metadata;
 		}
 
-	], function(err, updatedFile) {
+		logger.verbose('[storage] Patching new metadata of %s', file.toString(variation));
 
-		if (err === true) {
-			return logger.warn('[storage] Skipping %s.', file.toString(variation));
+		// only update `metadata` (other data might has changed meanwhile)
+		return File.findByIdAndUpdate(file._id, { $set: data }, { 'new': true }).exec();
+
+	}).then(updatedFile => {
+
+		if (!updatedFile) {
+			throw error('File "%s" gone, has been removed from DB before metadata finished.', fileId);
 		}
 
-		if (err) {
-			logger.warn('[storage] Error when writing back metadata to database, aborting post-processing for %s: %s', updatedFile ? updatedFile.toString(variation) : '[null]', err.message);
-			return queue.emit('error', err, updatedFile, variation);
-		}
-		if (updatedFile) {
-			queue.emit(nextEvent, updatedFile, variation, processor, true);
-		}
+		// check if file should have been moved to public storage meanwhile
+		checkIfMoved(file, originalFile, variation);
+
+		return updatedFile;
 	});
 };
 
@@ -640,5 +546,20 @@ Storage.prototype.fstat = function(file, variation, callback) {
 		callback();
 	});
 };
+
+function checkIfMoved(file, originalFile, variation) {
+
+	// check if file should have been renamed while reading meta data
+	var dirtyPath = Storage.prototype.path(originalFile, variation);
+	var cleanPath = Storage.prototype.path(file, variation);
+	if (!fs.existsSync(cleanPath) && fs.existsSync(dirtyPath)) {
+		logger.info('[storage] Seems that "%s" was locked while attempting to move, renaming now to "%s".', dirtyPath, cleanPath);
+		//try {
+			fs.renameSync(dirtyPath, cleanPath);
+		//} catch (err) {
+		//	logger.error('[storage] Error renaming: %s', err.message);
+		//}
+	}
+}
 
 module.exports = new Storage();

@@ -305,6 +305,7 @@ function setEnv(grunt) {
 
 function env(grunt, config, more) {
 	return _.extend({
+		IPADDRESS: grunt.option('ipaddress') || process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1',
 		PORT: grunt.option('port') || process.env.PORT || config.vpdb.webapp.port || 3000,
 		HTTP_SCHEME: config.vpdb.webapp.protocol,
 		AUTH_HEADER: config.vpdb.authorizationHeader

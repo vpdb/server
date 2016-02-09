@@ -218,3 +218,13 @@ script(id="template/carousel/carousel.html", type="text/ng-template")
 			+icon('angle-left')
 		a.right.carousel-control(ng-click="next()", ng-show="slides.length > 1")
 			+icon('angle-right')
+
+script(type="text/ng-template", id="user-item.html")
+	small.user-mention-info(ng-show="typedTerm.length < 3")
+		+icon('info').shift-up.space-right-less
+		| Type 3 characters in order to search for a user
+	ul.list-group.list-group--users
+		li.list-group-item(mentio-menu-item="person", ng-repeat="person in items | filter: '!!'")
+			img.img-avatar.img-avatar--xsm.pull-left.space-right(gravatar-src="person.gravatar_id", gravatar-default="404", fallback-icon="user")
+			div.pull-left(ng-bind-html="person.name | mentioHighlight:typedTerm:'menu-highlighted' | unsafe")
+			.clearfix

@@ -1,85 +1,33 @@
 include ../template/_mixins
 
 // each release
-.panel(ng-repeat="release in game.releases", ng-controller="ReleaseController")
-	.col-sm-4.col-md-3
+.panel.panel--animated.panel--animated--less(ng-repeat="release in game.releases", ng-controller="ReleaseController", ng-click="navRelease(game.id, release.id)")
+	.clearfix
+	.col-sm-4.col-md-3.row--fullwidth
 
 		//-- PLAYFIELD TUMBS
 		//---------------------------------------------------------------------
-		uib-carousel(interval="60000")
-			uib-slide(ng-repeat="slide in shots", active="slide.active")
-				a.image(href="{{ slide.full }}")
-					img(src="{{ slide.url }}")
-
-
-		//-- DOWNLOAD BUTTON
-		//---------------------------------------------------------------------
-		button.btn.btn-primary.padder-top-3x.text-center(ng-click="download(game)")
-			+icon('download-circle').space-right.hidden-sm.hidden-md
-			| Download
-
-
-		//-- RELEASE RATING
-		//---------------------------------------------------------------------
-		.text-center
-			.ratingbox.padder-top(
-				rating-avg="release.rating.average",
-				rating-votes="release.rating.votes",
-				rating-user="releaseRating"
-				rating-action="rateRelease($rating)",
-				rating-readonly="!auth.isAuthenticated")
-
-		//-- STATS
-		//---------------------------------------------------------------------
-		hr
-		p
-			.a.pull-right(
-				uib-tooltip="{{ release.starred ? 'Unstar' : 'Star' }} this release",
-				tooltip-placement="right",
-				tooltip-append-to-body="true",
-				ng-show="auth.hasPermission('releases/star')",
-				ng-class="{ 'a--primary': release.starred }"
-			)
-				+icon('star')(ng-click="toggleReleaseStar(release)").shift-up-2x
-			+icon('star-circle').svg-2x.shift-up-2x.space-right
-			| {{ release.counter.stars | number }} star{{ release.counter.stars != 1 ? 's' : '' }}
-		p.oneliner
-			+icon('comment-circle').svg-2x.shift-up-2x.space-right
-			| {{ release.counter.comments | number }} comment{{ release.counter.downloads != 1 ? 's' : '' }}
-		p.oneliner
-			+icon('download-circle').svg-2x.shift-up-2x.space-right
-			| {{ release.counter.downloads | number }} download{{ release.counter.downloads != 1 ? 's' : '' }}
-
-		//-- OWNER SECTION
-		//---------------------------------------------------------------------
-		span(ng-show="auth.isAuthor(release)")
-			hr
-			p
-				+icon('gear').shift-up-2x.space-right
-				i Author Zone:
-
-			a.btn.btn-primary.text-center(ui-sref="addReleaseVersion({ id: game.id, releaseId: release.id })")
-				+icon('plus-circle').space-right.hidden-sm.hidden-md
-				| Upload File
-
-			p.padder-top
+		.img.img--ar-fs.img--rounded-left(img-bg="shot.url")
 
 
 	//-- MAIN BODY
 	//---------------------------------------------------------------------
 	.col-sm-8.col-md-9
-		//-.inline-edit(ng-class='{ open: editing }')
-			+icon('pencil-circle').a.icon-opener(ng-click="editing = true")
-			+icon('check-circle').a.icon-editing(ng-click="editing = false")
-			+icon('times-circle').a.icon-editing(ng-click="editing = false")
-		//-h2.h--primary(ng-show="editing")
-			.form-group.form--inline
-				input.form-control.input-lg(type="text", value="{{ release.name }}")
-		h2.h--primary(ng-hide="editing") {{ release.name }} <small>{{ latestVersion.version }}</small>
-		.badge.badge--tag.badge--small(ng-repeat="tag in release.tags", uib-tooltip="{{tag.description}}", tooltip-append-to-body="true") {{ tag.name }}
+		h2.h--primary {{ release.name }} <small>{{ latestVersion.version }}</small>
 
-		span.clearfix.padder-top(ng-show="release.tags && release.tags.length") &nbsp;
-		div.markdown(markdown="release.description", ng-show="release.description")
+		//-- STATS
+		//---------------------------------------------------------------------
+		.pull-left
+			+icon('star-circle').svg-2x.shift-up-2x.space-right
+			| {{ release.counter.stars | number }} star{{ release.counter.stars != 1 ? 's' : '' }}
+		.pull-left.space-left-2x
+			+icon('comment-circle').svg-2x.shift-up-2x.space-right
+			| {{ release.counter.comments | number }} comment{{ release.counter.downloads != 1 ? 's' : '' }}
+		.pull-left.space-left-2x
+			+icon('download-circle').svg-2x.shift-up-2x.space-right
+			| {{ release.counter.downloads | number }} download{{ release.counter.downloads != 1 ? 's' : '' }}
+
+		.clearfix
 
 		//-- AUTHORS
 		//---------------------------------------------------------------------
@@ -93,123 +41,5 @@ include ../template/_mixins
 				| {{ author.roles.join(', ') }}
 
 
-		//-- ACKNOWLEDGEMENTS
-		//---------------------------------------------------------------------
-		h3.h--smaller.h--primary(ng-show="release.acknowledgements") Acknowledgements
-		div.markdown(markdown="release.acknowledgements", ng-show="release.acknowledgements")
-
-
-		//-- VERSION HISTORY
-		//---------------------------------------------------------------------
-		h3.h--smaller.h--primary Version History
-		uib-accordion.panel-group--transparent.subtle(close-others="false")
-			uib-accordion-group(ng-repeat="version in releaseVersions", is-open="$first")
-				uib-accordion-heading
-					strong v{{ version.version }}
-					|  (
-					span(am-time-ago="version.released_at")
-					| )
-					+icon('angle-down').smaller.shift-down.pull-right
-
-				div.markdown(markdown="version.changes")
-
-		//-- LINKS
-		//---------------------------------------------------------------------
-		h3.h--smaller.h--primary(ng-show="release.links && release.links.length") Links
-		a(ng-repeat="link in release.links", ng-href="{{ link.url }}", target="_blank") {{ link.label }} <br>
-
-	.col-sm-12
-
-		//-- FLAVORS
-		//---------------------------------------------------------------------
-		h1.h--small Available Flavors
-		hr
-		table.table.table-striped
-			thead
-				tr
-					th
-					th Orientation
-					th Lighting
-					th Compatibility
-					th Version
-					th Size
-			tbody
-				tr(ng-repeat="file in flavorGrid")
-					td.td--img
-						img.img--rounded(ng-src="{{ file.media.playfield_image.variations['square' + pixelDensitySuffix].url }}")
-					td
-						| {{ flavors.orientation.values[file.flavor.orientation].name }} <br>
-						i {{ flavors.orientation.values[file.flavor.orientation].other }}
-					td
-						| {{ flavors.lighting.values[file.flavor.lighting].name }} <br>
-						i {{ flavors.lighting.values[file.flavor.lighting].other }}
-					td
-						span(ng-repeat="compat in file.compatibility") {{ compat.label }}
-					td {{ getVersion(file).version }}
-					td {{ file.file.bytes | bytes }}
-
-		h1.h--small Comments
-		hr
-
-		//-- EXISTING COMMENTS
-		//---------------------------------------------------------------------
-		label(ng-show="!comments || comments.length == 0") No comments yet.
-		.media.media--no-margin.collapse-in-animation(ng-repeat="comment in comments track by comment.id", ng-controller="CommentCtrl", ng-init="show=true")
-			.collapse-in-animation-inner
-				.media-left.avatar
-					img.img-avatar.pull-left(gravatar-src="comment.from.gravatar_id", gravatar-default="404", fallback-icon="user")
-				.media-body.media--full-width
-					.panel.panel--inner
-						.panel-triangle
-						.panel-heading
-							label
-							strong {{ comment.from.name }}
-							| &nbsp;commented&nbsp;
-							span(am-time-ago="comment.created_at")
-						.panel-body
-							div.markdown(markdown="comment.message")
-
-		//-- NEW COMMENT
-		//---------------------------------------------------------------------
-		h3.h--smaller.h--primary(ng-show="auth.isAuthenticated") Add a Comment:
-		.media(ng-show="auth.isAuthenticated")
-			.media-left.avatar
-				img.img-avatar.pull-left(gravatar-src="auth.user.gravatar_id", gravatar-default="404", fallback-icon="user")
-			.media-body.media--full-width
-				uib-tabset
-
-					label.label--small.pull-right(markdown-info="Comments are parsed with Markdown.")
-					uib-tab
-						uib-tab-heading(title="Write")
-							+icon('edit')
-							.panel-triangle
-						textarea.textarea--full.animate(
-							placeholder="Your comment",
-							msd-elastic,
-							ng-model="$parent.$parent.newComment",
-							mentio,
-							mentio-items="foundUsers",
-							mentio-search="findUser(term)",
-							mentio-select="getUserMention(item)",
-							mentio-template-url="user-item.html"
-						)
-					uib-tab
-						uib-tab-heading(title="Preview"): +icon('eye')
-						div.markdown(markdown="$parent.$parent.newComment")
-						label.tab__label(ng-show="!$parent.$parent.newComment || $parent.$parent.newComment.length == 0") Nothing to preview.
-
-		button.btn.btn-default.padder-top.pull-right(ng-show="auth.isAuthenticated", ng-click="addComment(release.id)") Comment
-		.clearfix
-		p.padder-bottom
 	.clearfix
 	p.padder-bottom
-
-script(type="text/ng-template", id="user-item.html")
-	small.user-mention-info(ng-show="typedTerm.length < 3")
-		+icon('info').shift-up.space-right-less
-		| Type 3 characters in order to search for a user
-	ul.list-group.list-group--users
-		li.list-group-item(mentio-menu-item="person", ng-repeat="person in items | filter: '!!'")
-			img.img-avatar.img-avatar--xsm.pull-left.space-right(gravatar-src="person.gravatar_id", gravatar-default="404", fallback-icon="user")
-			div.pull-left(ng-bind-html="person.name | mentioHighlight:typedTerm:'menu-highlighted' | unsafe")
-			.clearfix

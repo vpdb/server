@@ -142,7 +142,7 @@ angular.module('vpdb.auth', [])
 			},
 
 			isAuthor: function(release) {
-				return this.isAuthenticated && _.contains(_.pluck(release.authors, 'user.id'), this.user.id);
+				return release && this.isAuthenticated && _.contains(_.pluck(release.authors, 'user.id'), this.user.id);
 			},
 
 			/**

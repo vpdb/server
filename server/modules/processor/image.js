@@ -63,16 +63,16 @@ function ImageProcessor() {
 		],
 		'playfield-fs': [
 			{ name: 'full',                                         mimeType: 'image/jpeg', qual: 60 },
-			{ name: 'medium',              width: 393, height: 233, mimeType: 'image/jpeg' },
-			{ name: 'medium-2x',           width: 786, height: 466, mimeType: 'image/jpeg' },
+			{ name: 'medium',              width: 280, height: 498, mimeType: 'image/jpeg' },
+			{ name: 'medium-2x',           width: 560, height: 996, mimeType: 'image/jpeg' },
 			{ name: 'square',    portraitToSquare: true, size: 120, mimeType: 'image/jpeg' },
 			{ name: 'square-2x', portraitToSquare: true, size: 240, mimeType: 'image/jpeg' },
 			{ name: 'hyperpin', rotate: 90,                         mimeType: 'image/png' }
 		],
 		'playfield-ws': [
 			{ name: 'full',                               mimeType: 'image/jpeg', qual: 60 },
-			{ name: 'medium',    width: 393, height: 393, mimeType: 'image/jpeg' },
-			{ name: 'medium-2x', width: 786, height: 786, mimeType: 'image/jpeg' },
+			{ name: 'medium',    width: 280, height: 158, mimeType: 'image/jpeg' },
+			{ name: 'medium-2x', width: 560, height: 315, mimeType: 'image/jpeg' },
 			{ name: 'square',    wideToSquare: true, size: 120, mimeType: 'image/jpeg' },
 			{ name: 'square-2x', wideToSquare: true, size: 240, mimeType: 'image/jpeg' },
 			{ name: 'hyperpin',                                 mimeType: 'image/png' }
@@ -159,9 +159,9 @@ ImageProcessor.prototype.pass1 = function(src, dest, file, variation) {
 		var srcSize, scale;
 		if (variation.portraitToSquare) {
 			srcSize = file.metadata.size;
-			scale = srcSize.width / 1920;
-			img.rotate('black', -120);
-			img.crop(300 * scale, 300 * scale, 950 * scale, 1300 * scale);
+			scale = srcSize.height / 1920;
+			img.rotate('black', -35);
+			img.crop(300 * scale, 300 * scale, 1000 * scale, 1300 * scale);
 			if (variation.size) {
 				img.resize(variation.size, variation.size);
 			}

@@ -15,16 +15,9 @@ include ../template/_mixins
 				a.image(href="{{ slide.full }}")
 					img(src="{{ slide.url }}")
 
-
-		//-- DOWNLOAD BUTTON
-		//---------------------------------------------------------------------
-		.text-center: button.btn.btn-primary.padder-top-3x.text-center(ng-click="download(game)")
-			+icon('download-circle').space-right.hidden-sm.hidden-md
-			| Download
-
-
 		//-- RELEASE RATING
 		//---------------------------------------------------------------------
+		p.padder-bottom(ng-show="shots.length > 1") &nbsp;
 		.text-center
 			.ratingbox.padder-top(
 				rating-avg="release.rating.average",
@@ -32,6 +25,13 @@ include ../template/_mixins
 				rating-user="releaseRating"
 				rating-action="rateRelease($rating)",
 				rating-readonly="!auth.isAuthenticated")
+
+		//-- DOWNLOAD BUTTON
+		//---------------------------------------------------------------------
+		.text-center: button.btn.btn-primary.padder-top.padder-bottom.text-center(ng-click="download(game)")
+			+icon('download-circle').space-right.hidden-sm.hidden-md
+			| Download
+
 
 		//-- STATS
 		//---------------------------------------------------------------------

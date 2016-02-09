@@ -26,13 +26,4 @@ include ../template/_mixins
 
 		p: br
 
-script(id="template/carousel/carousel.html", type="text/ng-template")
-	.carousel(ng-mouseenter="pause()", ng-mouseleave="play()", ng-swipe-right="prev()", ng-swipe-left="next()")
-		ol.carousel-indicators(ng-show="slides.length > 1")
-			li(ng-repeat="slide in slides track by $index", ng-class="{active: isActive(slide)}", ng-click="select(slide)")
-		.carousel-inner(ng-transclude="")
-		a.left.carousel-control(ng-click="prev()", ng-show="slides.length > 1")
-			+icon('angle-left')
-		a.right.carousel-control(ng-click="next()", ng-show="slides.length > 1")
-			+icon('angle-right')
 

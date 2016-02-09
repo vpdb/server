@@ -47,6 +47,10 @@ angular.module('vpdb.common', [])
 			$state.go('gameDetails', { id: key });
 		};
 
+		$scope.navRelease = function(gameId, releaseId) {
+			$state.go('releaseDetails', { id: gameId, releaseId: releaseId });
+		};
+
 		$scope.setTitle = function(title) {
 			$scope.pageTitle = title;
 		};

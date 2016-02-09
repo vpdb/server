@@ -1,6 +1,6 @@
 include ../template/_mixins
 
-.col-lg-6.col-md-12(ng-repeat="release in releases", ng-click="navGame(release.game.id)")
+.col-lg-6.col-md-12(ng-repeat="release in releases", ng-click="navRelease(release.game.id, release.id)")
 	.panel.panel--animated.panel--animated--less.ng-cloak
 		.clearfix
 		.col--list-mini-left

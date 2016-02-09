@@ -22,6 +22,7 @@
 Promise = require('bluebird'); // jshint ignore:line
 
 const _ = require('lodash');
+const gm = require('gm');
 const fs = require('fs');
 const http = require('http');
 const path = require('path');
@@ -45,66 +46,52 @@ fs.readdirSync(modelsPath).forEach(function(file) {
 	}
 });
 
-// bootstrap processors
-const processors = {
-	image: require('../modules/processor/image'),
-	video: require('../modules/processor/video'),
-	table: require('../modules/processor/table'),
-	archive: require('../modules/processor/archive')
-};
-const variations = {
-	image: processors.image.variations,
-	video: processors.video.variations,
-	table: processors.table.variations
-};
-
 const User = mongoose.model('User');
 const File = mongoose.model('File');
+const processor = require('../modules/processor/image');
 
-const args = process.argv.slice(2);
-const query = _.isArray(args) && args.length ? { id: { $in: args } } : { variations: { $exists : true, $ne : null }};
-console.log(query);
+Promise.each(File.find({ file_type: 'playfield-fs' }).exec(), file => {
 
-File.find(query).exec().then(files => Promise.each(files, file => {
-
-	const mimeCategory = file.getMimeCategory();
-	const processor = processors[mimeCategory];
-
-	if (!processor) {
+	if (!/^image\//i.test(file.mime_type)) {
 		return;
 	}
 
-	console.log('Processing %s %s %s - %s...', file.file_type, processor.name, file.id, file.name);
+	if (file.metadata.size.width > file.metadata.size.height) {
 
-	// update metadata
-	return processor.metadata(file).then(metadata => {
-		File.sanitizeObject(metadata);
-		file.metadata = metadata;
-		file.variations = {};
-		return file.save();
+		let original = file.getPath();
+		let dest = file.getPath(null, '_reprocessing');
 
-	}).then(() => {
+		let img = gm(original);
+		img.rotate('black', -90);
 
-		// process pass 1
-		if (variations[mimeCategory] && variations[mimeCategory][file.file_type]) {
+		return new Promise((resolve, reject) => {
+			let writeStream = fs.createWriteStream(dest);
 
-			return Promise.each(variations[mimeCategory][file.file_type], variation => {
-				let original = file.getPath(variation);
-				let dest = file.getPath(variation, '_reprocessing');
-				console.log('   -> %s: %s', variation.name, dest);
-				return processor.pass1(file.getPath(), dest, file, variation).then(() => {
-					if (fs.existsSync(original)) {
-						fs.unlinkSync(original);
-					}
-					fs.renameSync(dest, original);
-				})
-				.then(() => storage.onProcessed(file, variation, processor))
-				.catch(err => console.error("ERROR: %s", err.message));
+			// setup success handler
+			writeStream.on('finish', function() {
+				console.log(file.name);
+				resolve();
 			});
-		}
-	});
+			writeStream.on('error', reject);
+			img.stream().on('error', reject).pipe(writeStream).on('error', reject);
 
-})).then(() => {
+		}).then(() => {
+			if (fs.existsSync(original)) {
+				fs.unlinkSync(original);
+			}
+			fs.renameSync(dest, original);
+
+			return processor.metadata(file);
+
+		}).then(metadata => {
+			File.sanitizeObject(metadata);
+			file.metadata = metadata;
+			return file.save();
+
+		}).catch(console.error);
+	}
+
+}).then(() => {
 	console.log('DONE!');
 
 }).catch(err => {

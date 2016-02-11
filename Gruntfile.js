@@ -1,5 +1,7 @@
 "use strict";
 
+Promise = require('bluebird'); // jshint: ignore
+
 var _ = require('lodash');
 var fs = require('fs');
 var path = require('path');

@@ -114,7 +114,7 @@ module.exports = function(grunt) {
 				}
 				grunt.log.writeln('Executing migrating script %s for commit %s...', script, commit.sha());
 				let migrate = require(path.resolve(scriptFolder, script));
-				return migrate.up();
+				return migrate.up(grunt);
 			});
 
 		}).nodeify(done);

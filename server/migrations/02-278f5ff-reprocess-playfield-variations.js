@@ -24,7 +24,7 @@ const variations = {
 	table: processors.table.variations
 };
 
-module.exports.up = function() {
+module.exports.up = function(grunt) {
 
 	let query = { $or: [
 		{ file_type: 'playfield-fs' },
@@ -39,7 +39,7 @@ module.exports.up = function() {
 			return;
 		}
 
-		console.log('Processing %s %s %s - %s...', file.file_type, processor.name, file.id, file.name);
+		grunt.log.writeln('Processing %s %s %s - %s...', file.file_type, processor.name, file.id, file.name);
 
 		// update metadata
 		return processor.metadata(file).then(metadata => {
@@ -56,7 +56,7 @@ module.exports.up = function() {
 				return Promise.each(variations[mimeCategory][file.file_type], variation => {
 					let original = file.getPath(variation);
 					let dest = file.getPath(variation, '_reprocessing');
-					console.log('   -> %s: %s', variation.name, dest);
+					grunt.log.writeln('   -> %s: %s', variation.name, dest);
 					return processor.pass1(file.getPath(), dest, file, variation).then(() => {
 							if (fs.existsSync(original)) {
 								fs.unlinkSync(original);
@@ -78,11 +78,11 @@ module.exports.up = function() {
 			config.vpdb.storage.protected.path + '/medium-landscape-2x'
 		], folder => {
 			if (fs.existsSync(folder)) {
-				console.log('Deleting folder "%s"...', folder);
+				grunt.log.writeln('Deleting folder "%s"...', folder);
 				return rimraf(folder);
 			} else {
-				console.log('Skipping folder "%s"...', folder);
+				grunt.log.writeln('Skipping folder "%s"...', folder);
 			}
-		})
+		});
 	});
 };

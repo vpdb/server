@@ -129,9 +129,14 @@ repo_link() {
 	test $? -eq 0 || rollback_abort $1 "Error linking new settings. Please fix and manually finish deployment."
 	rm ${patchedSettings}
 
+	echo Running migration scripts...
+	cd ${dest}
+	APP_SETTINGS=${currentSettings} APP_NAME=${DEPLOY_ENV} NODE_ENV=production grunt migrate --from=${DEPLOY_ROOT}/${DEPLOY_ENV}/current
+    test $? -eq 0 || abort $1 "Migration failed. Fix and redeploy."
+
 	echo Swapping code...
 	ln -sfn ${dest} ${DEPLOY_ROOT}/${DEPLOY_ENV}/current
-	test $? -eq 0 || rollback_abort $1 "Failed to symlink current repo."
+	test $? -eq 0 || abort $1 "Failed to symlink current repo."
 }
 
 repo_cleanup() {

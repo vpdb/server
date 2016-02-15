@@ -20,8 +20,7 @@
 "use strict"; /* global _, angular */
 
 angular.module('vpdb.games.details', []).controller('ReleaseController', function(
-	$scope, $rootScope, $uibModal,  $timeout, ApiHelper, ReleaseCommentResource, AuthService,
-	ReleaseRatingResource
+	$scope, $rootScope, ReleaseService
 ) {
 
 	// setup releases
@@ -30,6 +29,7 @@ angular.module('vpdb.games.details', []).controller('ReleaseController', functio
 		// sort versions
 		$scope.releaseVersions = _.sortByOrder(release.versions, 'released_at', false);
 		$scope.latestVersion = $scope.releaseVersions[0];
+		$scope.flavorGrid = ReleaseService.flavorGrid(release);
 
 		// get latest shots
 		$scope.shot = _.sortByOrder(_.compact(_.map($scope.latestVersion.files, function(file) {
@@ -45,18 +45,5 @@ angular.module('vpdb.games.details', []).controller('ReleaseController', functio
 
 
 	});
-
-	/**
-	 * Returns the version for a given file.
-	 * @param file
-	 * @returns {*}
-	 */
-	$scope.getVersion = function(file) {
-		return _.filter($scope.release.versions, function(version) {
-			return _.filter(version.files, function(f) {
-					return file.file.id === f.file.id;
-			}).length > 0;
-		})[0];
-	};
 
 });

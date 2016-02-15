@@ -7,9 +7,9 @@ angular.module('vpdb.common', [])
 			header: 'Orientation',
 			name: 'orientation',
 			values: {
-				ws: { name: 'Desktop', other: 'Landscape', value: 'ws' },
-				fs: { name: 'Cabinet', other: 'Portrait', value: 'fs' },
-				any: { name: 'Universal', other: 'Any Orientation', value: 'any' }
+				ws: { name: 'Desktop', other: 'Landscape', value: 'ws', short: 'DT' },
+				fs: { name: 'Cabinet', other: 'Portrait', value: 'fs', short: 'FS' },
+				any: { name: 'Universal', other: 'Any Orientation', value: 'any', short: 'Universal' }
 			}
 		},
 		lighting: {

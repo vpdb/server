@@ -1,6 +1,6 @@
 "use strict";
 
-Promise = require('bluebird'); // jshint: ignore
+Promise = require('bluebird'); // jshint ignore:line
 
 var _ = require('lodash');
 var fs = require('fs');

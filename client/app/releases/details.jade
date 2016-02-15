@@ -141,19 +141,19 @@ include ../template/_mixins
 					th Version
 					th Size
 			tbody
-				tr(ng-repeat="file in flavorGrid")
+				tr(ng-repeat="flavor in flavorGrid")
 					td.td--img
-						img.img--rounded(ng-src="{{ file.media.playfield_image.variations['square' + pixelDensitySuffix].url }}")
+						img.img--rounded(ng-src="{{ flavor.file.media.playfield_image.variations['square' + pixelDensitySuffix].url }}")
 					td
-						| {{ flavors.orientation.values[file.flavor.orientation].name }} <br>
-						i {{ flavors.orientation.values[file.flavor.orientation].other }}
+						| {{ flavor.orientation.name }} <br>
+						i {{ flavor.orientation.other }}
 					td
-						| {{ flavors.lighting.values[file.flavor.lighting].name }} <br>
-						i {{ flavors.lighting.values[file.flavor.lighting].other }}
+						| {{ flavor.lighting.name }} <br>
+						i {{ flavor.lighting.other }}
 					td
-						span(ng-repeat="compat in file.compatibility") {{ compat.label }}
-					td {{ getVersion(file).version }}
-					td {{ file.file.bytes | bytes }}
+						span(ng-repeat="compat in flavor.file.compatibility") {{ compat.label }}
+					td {{ flavor.version.version }}
+					td {{ flavor.file.file.bytes | bytes }}
 
 		h1.h--small Comments
 		hr

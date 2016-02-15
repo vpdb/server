@@ -21,7 +21,7 @@
 
 angular.module('vpdb.releases.details', []).controller('ReleaseDetailsController', function(
 	$scope, $rootScope, $uibModal, $timeout, $stateParams,
-	ApiHelper, ReleaseCommentResource, AuthService, Flavors,
+	ApiHelper, ReleaseCommentResource, AuthService, ReleaseService, Flavors,
 	ReleaseRatingResource, ReleaseResource, GameResource)
 {
 
@@ -61,19 +61,7 @@ angular.module('vpdb.releases.details', []).controller('ReleaseDetailsController
 		// fetch comments
 		$scope.comments = ReleaseCommentResource.query({ releaseId: release.id });
 
-		var flavors = _.sortByOrder(_.flatten(_.pluck(release.versions, 'files')), 'released_at', true);
-		var flavorGrid = {};
-		_.each(_.filter(flavors, function(file) { return file.flavor ? true : false }), function(file) {
-			var compat = _.pluck(file.compatibility, 'id');
-			compat.sort();
-			var flavor = '';
-			_.each(_.keys(file.flavor).sort(), function(key) {
-				flavor += key + ':' + file.flavor[key] + ',';
-			});
-			var key = compat.join('/') + '-' + flavor;
-			flavorGrid[key] = file;
-		});
-		$scope.flavorGrid = _.sortByOrder(_.values(flavorGrid), 'released_at', false);
+		$scope.flavorGrid = ReleaseService.flavorGrid(release);
 
 		// setup lightbox
 		$timeout(function() {
@@ -142,20 +130,6 @@ angular.module('vpdb.releases.details', []).controller('ReleaseDetailsController
 			});
 		}
 	};
-
-	/**
-	 * Returns the version for a given file.
-	 * @param file
-	 * @returns {*}
-	 */
-	$scope.getVersion = function(file) {
-		return _.filter($scope.release.versions, function(version) {
-			return _.filter(version.files, function(f) {
-					return file.file.id === f.file.id;
-				}).length > 0;
-		})[0];
-	};
-
 
 	/**
 	 * Rates a release

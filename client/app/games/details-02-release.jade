@@ -3,11 +3,11 @@ include ../template/_mixins
 // each release
 .panel.panel--animated.panel--animated--less(ng-repeat="release in game.releases", ng-controller="ReleaseController", ng-click="navRelease(game.id, release.id)")
 	.clearfix
-	.col-sm-4.col-md-3.row--fullwidth
+	.col-sm-4.col-md-3
 
 		//-- PLAYFIELD TUMBS
 		//---------------------------------------------------------------------
-		.img.img--ar-fs.img--rounded-left(img-bg="shot.url")
+		.img.img--ar-fs.img--rounded-left.padder-top.padder-bottom(img-bg="shot.url")
 
 
 	//-- MAIN BODY
@@ -40,6 +40,17 @@ include ../template/_mixins
 				br
 				| {{ author.roles.join(', ') }}
 
+		//-- FLAVORS
+		//---------------------------------------------------------------------
+		h3.h--smaller.h--primary Flavors
+		.row
+			.media.col-sm-6(ng-repeat="flavor in flavorGrid")
+				.media-left.media-middle
+					img.img-avatar--sm(ng-src="{{ flavor.file.media.playfield_image.variations['square' + pixelDensitySuffix].url }}")
+				.media-body
+					span {{ flavor.short }}
+					br
+					span(ng-repeat="compat in flavor.file.compatibility") {{ compat.label }}
 
 	.clearfix
 	p.padder-bottom

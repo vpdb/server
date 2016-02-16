@@ -61,17 +61,17 @@ var init = function(next) {
 		}, {
 			roles: 'member',
 			allows: [
-				{ resources: 'user', permissions: [ 'view', 'update' ]},           // profile
-				{ resources: 'users', permissions: [ 'view', 'search', 'star' ]},  // any other user
-				{ resources: 'files', permissions: [ 'download', 'upload', 'delete' ]},      // delete: only own/inactive files
+				{ resources: 'user', permissions: [ 'view', 'update' ] },                              // profile
+				{ resources: 'users', permissions: [ 'view', 'search', 'star' ] },                     // any other user
+				{ resources: 'files', permissions: [ 'download', 'upload', 'delete' ] },               // delete: only own/inactive files
 				{ resources: 'releases', permissions: [ 'add', 'delete', 'update', 'rate', 'star' ] }, // delete: only own releases and only for a given period
-				{ resources: 'games', permissions: [ 'rate', 'star' ]},
+				{ resources: 'games', permissions: [ 'rate', 'star' ] },
 				{ resources: 'tags', permissions: [ 'add', 'delete-own' ] },
 				{ resources: 'tokens', permissions: [ 'add', 'list', 'delete', 'update' ] },
 				{ resources: 'builds', permissions: [ 'add', 'delete-own' ] },
 				{ resources: 'comments', permissions: [ 'add' ] },
 				{ resources: 'roms', permissions: [ 'add', 'delete-own' ] },
-				{ resources: 'messages', permissions: [ 'receive' ]}
+				{ resources: 'messages', permissions: [ 'receive' ] }
 			]
 		}, {
 			roles: 'mocha',
@@ -82,12 +82,12 @@ var init = function(next) {
 	])
 
 	// hierarchy
-	.then(function() { return acl.addRoleParents('root', [ 'admin', 'contributor' ]); })
-	.then(function() { return acl.addRoleParents('admin', [ 'member' ]); })
-	.then(function() { return acl.addRoleParents('contributor', [ 'member' ]); })
+	.then(() => acl.addRoleParents('root', [ 'admin', 'contributor' ]))
+	.then(() => acl.addRoleParents('admin', [ 'member' ]))
+	.then(() => acl.addRoleParents('contributor', [ 'member' ]))
 
 	// apply to all users
-	.then(function() {
+	.then(() => {
 		User.find({}, function(err, users) {
 			/* istanbul ignore if  */
 			if (err) {

@@ -79,7 +79,7 @@ include ../template/_mixins
 		h1.h--primary Latest Releases
 		hr
 		.row.fade2-animation
-			.col-lg-4.col-md-6(ng-repeat="release in releases", ng-click="navGame(release.game.id)")
+			.col-lg-4.col-md-6(ng-repeat="release in releases", ng-click="navRelease(release.game.id, release.id)")
 				.panel.panel--animated.ng-cloak
 					.clearfix
 					.col--list-mini-left

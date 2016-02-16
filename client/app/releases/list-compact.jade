@@ -1,4 +1,4 @@
-.col-md-4.col-sm-6.col-xs-12.fade-animation(ng-repeat="release in releases", ng-click="navGame(release.game.id)")
+.col-md-4.col-sm-6.col-xs-12.fade-animation(ng-repeat="release in releases", ng-click="navRelease(release.game.id, release.id)")
 	.panel.panel--animated.ng-cloak
 		.img.img--rounded-top(img-bg="release.thumb.image.url", ng-class="flavorFilter && flavorFilter.orientation === 'ws' ? 'img--ar-ws' : 'img--ar-fs'")
 		.text-center.padder-horizontal

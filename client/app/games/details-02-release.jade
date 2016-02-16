@@ -46,7 +46,7 @@ include ../template/_mixins
 		.row
 			.col-xs-6.col-sm-12.col-md-6.col-lg-4(ng-repeat="flavor in flavorGrid")
 				.media
-					.media-left.media-middle
+					.media-left.media-top
 						img.img-avatar--sm(ng-src="{{ flavor.file.media.playfield_image.variations['square' + pixelDensitySuffix].url }}")
 					.media-body
 						span {{ flavor.short }}

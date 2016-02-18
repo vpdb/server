@@ -45,6 +45,7 @@ exports.configure = function(app, raygunClient) {
 
 	var runningLocal = !process.env.APP_NAME || (process.env.APP_NAME !== 'production' && process.env.APP_NAME !== 'staging');
 	var runningDev = process.env.NODE_ENV !== 'production';
+	var ipAddress = process.env.IPADDRESS || '127.0.0.1';
 
 	logger.info('[express] Setting up Express for running %s in %s mode.', runningLocal ? 'locally' : 'remotely', runningDev ? 'development' : 'production');
 
@@ -58,7 +59,7 @@ exports.configure = function(app, raygunClient) {
 		throw new Error('Environment variable `PORT` not found, server cannot start on unknown port.');
 	}
 
-	app.set('ipaddress', process.env.IPADDRESS);
+	app.set('ipaddress', ipAddress);
 	app.set('port', process.env.PORT);
 	app.set('views', path.resolve(__dirname, '../client/app'));
 	app.set('view engine', 'jade');

@@ -790,3 +790,32 @@ function copyFile(source, target) {
 function parseBoolean(value) {
 	return !_.isUndefined(value) && value.toLowerCase() !== 'false';
 }
+
+// playfield-from-server creation code (move to controller when tom's service is back up)
+//logger.info('[model|release] Creating new playfield image from table screenshot...');
+//var error = require('../modules/error')('model', 'file');
+//var screenshotPath = file.getPath('screenshot');
+//var fstat = fs.statSync(screenshotPath);
+//var readStream = fs.createReadStream(screenshotPath);
+//
+//var fileData = {
+//	name: path.basename(screenshotPath, path.extname(screenshotPath)) + '.png',
+//	bytes: fstat.size,
+//	variations: {},
+//	created_at: new Date(),
+//	mime_type: file.variations.screenshot.mime_type,
+//	file_type: 'playfield-' + f.flavor.orientation,
+//	_created_by: file._created_by
+//};
+//
+//fileModule.create(fileData, readStream, error, function(err, playfieldImageFile) {
+//	if (err) {
+//		logger.error('[model|release] Error creating playfield image from table file: ' + err.message);
+//		that.invalidate('files.' + index + '._media.playfield_image', 'Error processing screenshot: ' + err.message);
+//	} else {
+//		logger.info('[model|release] Playfield image successfully created.');
+//		f._media.playfield_image = playfieldImageFile._id;
+//	}
+//	if (f.isNew) index++;
+//	next();
+//});

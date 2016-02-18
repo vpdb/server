@@ -36,6 +36,7 @@ const fileRef = require('./plugins/file-ref');
 const prettyId = require('./plugins/pretty-id');
 const idValidator = require('./plugins/id-ref');
 const sortableTitle = require('./plugins/sortable-title');
+const releaseAggregation = require('./plugins/release-aggregation');
 
 const flavor = require('../modules/flavor');
 
@@ -102,6 +103,7 @@ ReleaseSchema.plugin(paginate);
 ReleaseSchema.plugin(toObj);
 ReleaseSchema.plugin(metrics, { hotness: { popularity: { downloads: 10, comments: 20, stars: 30 }}});
 ReleaseSchema.plugin(sortableTitle, { src: 'name', dest: 'name_sortable' });
+ReleaseSchema.plugin(releaseAggregation, { releaseFields: releaseFields, versionFields: version.fields });
 
 //-----------------------------------------------------------------------------
 // VALIDATIONS
@@ -117,35 +119,6 @@ ReleaseSchema.path('versions').validate(function() {
 	}
 	return true;
 });
-
-// playfield-from-server creation code (move to controller when tom's service is back up)
-//logger.info('[model|release] Creating new playfield image from table screenshot...');
-//var error = require('../modules/error')('model', 'file');
-//var screenshotPath = file.getPath('screenshot');
-//var fstat = fs.statSync(screenshotPath);
-//var readStream = fs.createReadStream(screenshotPath);
-//
-//var fileData = {
-//	name: path.basename(screenshotPath, path.extname(screenshotPath)) + '.png',
-//	bytes: fstat.size,
-//	variations: {},
-//	created_at: new Date(),
-//	mime_type: file.variations.screenshot.mime_type,
-//	file_type: 'playfield-' + f.flavor.orientation,
-//	_created_by: file._created_by
-//};
-//
-//fileModule.create(fileData, readStream, error, function(err, playfieldImageFile) {
-//	if (err) {
-//		logger.error('[model|release] Error creating playfield image from table file: ' + err.message);
-//		that.invalidate('files.' + index + '._media.playfield_image', 'Error processing screenshot: ' + err.message);
-//	} else {
-//		logger.info('[model|release] Playfield image successfully created.');
-//		f._media.playfield_image = playfieldImageFile._id;
-//	}
-//	if (f.isNew) index++;
-//	next();
-//});
 
 //-----------------------------------------------------------------------------
 // STATIC METHODS
@@ -216,94 +189,6 @@ ReleaseSchema.statics.toSimple = function(release, opts) {
 
 	return rls;
 };
-
-
-/**
- * Returns an aggregation pipeline that filters releases by nested conditions.
- *
- * @param {Array} query Original, non-nested query
- * @param {Array} filter Array of nested conditions, e.g. [ { "versions.files.flavor.lightning": "night" } ]
- * @param {number} [sortBy] Object defining the sort order
- * @param {{defaultPerPage: Number, maxPerPage: Number, page: Number, perPage: Number}} [pagination] Pagination object
- */
-ReleaseSchema.statics.getAggregationPipeline = function(query, filter, sortBy, pagination) {
-
-	var q = makeQuery(query.concat(filter));
-	var f = makeQuery(filter);
-
-	var group1 = {};
-	var group2 = {};
-	var project1 = {};
-	var project2 = {};
-
-	_.each(releaseFields, function(val, field) {
-		if (field != 'versions') {
-			group1[field] = '$' + field;
-			group2[field] = '$' + field;
-			project1[field] = '$_id.' + field;
-			project2[field] = '$_id.' + field;
-		}
-	});
-	project1.versions = { };
-
-	_.each(version.fields, function(val, field) {
-		if (field != 'files') {
-			group1['version_' + field] = '$versions.' + field;
-			project1.versions[field] = '$_id.version_' + field;
-		}
-	});
-
-	var pipe = [ { $match: q } ];
-	if (sortBy) {
-		pipe.push({ $sort: sortBy });
-	}
-
-	if (pagination) {
-		pipe.push({ $skip: (pagination.page * pagination.perPage) - pagination.perPage });
-		pipe.push({ $limit: pagination.perPage });
-	}
-
-	pipe = pipe.concat([
-
-		{ $unwind: '$versions'},
-		{ $unwind: '$versions.files'},
-		{ $match: f },
-		{ $group: { _id: _.extend(group1, {
-				_id: '$_id',
-				versionId: '$versions._id'
-			}),
-			files: { $push: '$versions.files' }
-		} },
-		{ $project: _.extend(project1, {
-			_id: '$_id._id',
-			versions: _.extend(project1.versions, {
-				_id: '$_id.versionId',
-				files: '$files'
-			})
-		}) },
-		{ $group: { _id: _.extend(group2, {
-				_id: '$_id'
-			}),
-			versions: { $push: '$versions' }
-		} },
-		{ $project: _.extend(project2, {
-			_id: '$_id._id',
-			versions: '$versions'
-		}) }
-	]);
-	return pipe;
-};
-
-function makeQuery(query) {
-	if (query.length === 0) {
-		return {};
-	} else if (query.length === 1) {
-		return query[0];
-	} else {
-		return { $and: query };
-	}
-}
-
 
 //-----------------------------------------------------------------------------
 // METHODS
@@ -430,7 +315,7 @@ function getReleaseThumb(versions, opts) {
 			if (fileFlavor[flavorName] === flavorValue) {
 				weight += Math.pow(10, (flavorParams.length - j + 1) * 3);
 
-				// defaults match gets also weight, but less
+			// defaults match gets also weight, but less
 			} else if (defaults[flavorName] === flavorValue) {
 				weight += Math.pow(10, (flavorParams.length - j + 1));
 			}
@@ -441,11 +326,7 @@ function getReleaseThumb(versions, opts) {
 			weight: weight
 		});
 	}
-	filesByWeight = filesByWeight.sort(function(a, b) {
-		if (a.weight < b.weight) { return 1; }
-		if (a.weight > b.weight) { return -1; }
-		return 0;
-	});
+	filesByWeight = filesByWeight.sort(byWeight);
 
 	var selectedFlavor;
 	for (i = 0; i < filesByWeight.length; i++) {
@@ -510,6 +391,16 @@ function getDefaultThumb(file, opts) {
 function getPlayfieldImage(file) {
 	var media = file.media || file._media;
 	return media.playfield_image.toObj ? media.playfield_image.toObj() : media.playfield_image;
+}
+
+function byWeight(a, b) {
+	if (a.weight < b.weight) {
+		return 1;
+	}
+	if (a.weight > b.weight) {
+		return -1;
+	}
+	return 0;
 }
 
 /**

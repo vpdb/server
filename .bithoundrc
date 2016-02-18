@@ -53,6 +53,7 @@
     "doc/**",
     "gfx/**",
     "server/grunt-tasks/**",
+    "server/modules/settings.js",
     "test/**"
   ],
   "test": [

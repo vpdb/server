@@ -149,14 +149,13 @@ See [tests](TESTS.md). Spoiler: There are automated API tests as well as end-to-
 When running the server in development or test mode, the code is linted using [JSHint](http://www.jshint.com/about/). If
 the code doesn't pass, tests fail. You can run the linting manually with the `jshint` task.
 
-There's also continuous integration running on four services:
+There's also continuous integration running on three services:
 
 |           | Status                                                   |
 |-----------|----------------------------------------------------------|
 | Travis CI | [![Build Status Travis CI][travis-image]][travis-url]    |
 | Codeship  | [![Build Status Codeship][codeship-image]][codeship-url] |
 | Snap      | [![Build Status Snap][snapci-image]][snapci-url]         |
-| CircleCI  | [![Build Status CirlceCI][circleci-image]][circleci-url] |
 
 After every test run, code coverage stats are sent to [Coveralls.io](https://coveralls.io/r/freezy/node-vpdb). Note that 
 both CI and code coverage only concern server-side code.
@@ -185,8 +184,6 @@ GPLv2, see [LICENSE](LICENSE).
 [dependencies-url]: https://david-dm.org/freezy/node-vpdb
 [codeship-image]: http://img.shields.io/codeship/e5a24c40-fe39-0131-f546-4ebc8a94177b.svg?style=flat-square
 [codeship-url]: https://www.codeship.io/projects/29544
-[circleci-image]: https://img.shields.io/circleci/project/freezy/node-vpdb.svg?style=flat-square
-[circleci-url]: https://circleci.com/gh/freezy/node-vpdb
 [snapci-image]: https://img.shields.io/snap-ci/freezy/node-vpdb/master.svg?style=flat-square
 [snapci-url]: https://snap-ci.com/freezy/node-vpdb/branch/master
 [codeclimate-image]: http://img.shields.io/codeclimate/github/freezy/node-vpdb.svg?style=flat-square

@@ -50,11 +50,6 @@ exports.configure = function(app, raygunClient) {
 	logger.info('[express] Setting up Express for running %s in %s mode.', runningLocal ? 'locally' : 'remotely', runningDev ? 'development' : 'production');
 
 	/* istanbul ignore if  */
-	if (!process.env.IPADDRESS) {
-		throw new Error('Environment variable `IPADDRESS` not found, server cannot start on unknown ip address.');
-	}
-	
-	/* istanbul ignore if  */
 	if (!process.env.PORT) {
 		throw new Error('Environment variable `PORT` not found, server cannot start on unknown port.');
 	}

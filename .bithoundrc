@@ -52,8 +52,8 @@
     "devsite/**",
     "doc/**",
     "gfx/**",
-    "server/grunt-tasks/**"
-    "test/**",
+    "server/grunt-tasks/**",
+    "test/**"
   ],
   "test": [
     "**/test/**",

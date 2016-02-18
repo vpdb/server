@@ -43,8 +43,17 @@
     "**/extjs/welcome/**",
     "bower_components/**",
 
+    "cache/**",
+    "build/**",
+    "client/**",
+    "coverage/**",
+    "data/**",
+    "deploy/**",
+    "devsite/**",
+    "doc/**",
+    "gfx/**",
+    "server/grunt-tasks/**"
     "test/**",
-    "server/grunt-tasks/**",
   ],
   "test": [
     "**/test/**",

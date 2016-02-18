@@ -44,7 +44,7 @@
 		"md5": "2.0.0",
 		"mongoose": "4.3.7",
 		"mongoose-paginate": "5.0.0",
-		"mongoose-unique-validator": "0.4.1",
+		"mongoose-unique-validator": "1.0.0",
 		"morgan": "1.6.1",
 		"newrelic": "1.25.1",
 		"nodemailer": "1.11.0",

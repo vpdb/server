@@ -19,6 +19,7 @@
 
 "use strict";
 
+var _ = require('lodash');
 var fs = require('fs');
 var path = require('path');
 var async = require('async');
@@ -28,45 +29,43 @@ var storage = require('./modules/storage');
 var queue = require('./modules/queue');
 var error = require('./modules/error')('startup');
 
-exports.init = function(done) {
+exports.init = function() {
 
-	var asyncStartup = [];
-	logger.info('[startup] Executing startup scripts...');
+	return Promise.try(() => {
+		logger.info('[startup] Executing startup scripts...');
 
-	// clear queues
-	queue.empty();
+		// clear queues
+		queue.empty();
 
-	// cleanup inactive storage
-	asyncStartup.push(function(next) {
+		// cleanup inactive storage
 		logger.info('[startup] Cleaning up inactive storage files older than one week.');
-		storage.cleanup(3600000 * 24 * 7, next);
-	});
+		return storage.cleanup(3600000 * 24 * 7);
 
-	// populate database
-	var modelsPath = path.resolve(__dirname, '../data/database');
-	fs.readdirSync(modelsPath).forEach(function(file) {
-		if (!fs.lstatSync(modelsPath + '/' + file).isDirectory()) {
-			var data = require(modelsPath + '/' + file);
-			asyncStartup.push(function(next) {
-				var Model = require('mongoose').model(data.model);
+	}).then(() => {
 
-				// check if empty
-				Model.count({}, function(err, num) {
-					/* istanbul ignore if  */
-					if (err) {
-						return next(error(err, 'Error counting rows in collection "%s".', data.model));
-					}
-					/* istanbul ignore if: Database is always empty before running tests. */
-					if (num) {
-						logger.info('[startup] Skipping data population for model "%s", table is not empty.', data.model);
-						return next();
-					}
-					logger.info('[startup] Inserting %d rows into table "%s"..', data.rows.length, data.model);
-					Model.collection.insert(data.rows, next);
-				});
+		// populate database
+		let modelsPath = path.resolve(__dirname, '../data/database');
+		let datas = _.compact(fs.readdirSync(modelsPath).map(file => {
+			if (fs.lstatSync(modelsPath + '/' + file).isDirectory()) {
+				return null;
+			}
+			return require(modelsPath + '/' + file);
+		}));
+
+		return Promise.each(datas, data => {
+			var Model = require('mongoose').model(data.model);
+
+			// check if empty
+			return Model.count({}).then(num => {
+
+				/* istanbul ignore if: Database is always empty before running tests. */
+				if (num) {
+					logger.info('[startup] Skipping data population for model "%s", table is not empty.', data.model);
+					return;
+				}
+				logger.info('[startup] Inserting %d rows into table "%s"..', data.rows.length, data.model);
+				return Model.collection.insert(data.rows);
 			});
-		}
+		});
 	});
-
-	async.series(asyncStartup, done);
 };

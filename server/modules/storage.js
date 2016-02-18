@@ -111,25 +111,25 @@ Storage.prototype.whenProcessed = function(file, variationName, callback) {
  * Removes inactive files that have passed the grace period
  *
  * @param {int} graceperiod Grace period in milliseconds
- * @param {function} done Callback
+ * @returns {Promise}
  */
-Storage.prototype.cleanup = function(graceperiod, done) {
-	graceperiod = graceperiod ? graceperiod : 0;
+Storage.prototype.cleanup = function(graceperiod) {
 
-	var File = require('mongoose').model('File');
-	var condition = { is_active: false, created_at: { $lt: new Date(new Date().getTime() - graceperiod)} };
-	File.find(condition).populate('_created_by').exec(function(err, files) {
-		/* istanbul ignore if */
-		if (err) {
-			return done(error(err, 'Error getting files for cleanup').log());
-		}
+	return Promise.try(() => {
 
-		/* istanbul ignore next */
-		async.eachSeries(files, function(file, next) {
+		graceperiod = graceperiod ? graceperiod : 0;
+
+		const File = require('mongoose').model('File');
+		const condition = { is_active: false, created_at: { $lt: new Date(new Date().getTime() - graceperiod) } };
+
+		return File.find(condition).populate('_created_by').exec();
+
+	}).then(files => {
+		return Promise.each(files, file => {
 			logger.info('[storage] Cleanup: Removing inactive file "%s" by <%s> (%s).', file.name, file._created_by ? file._created_by.email : 'unknown', file.id);
 			Storage.prototype.remove(file);
-			file.remove(next);
-		}, done);
+			return file.remove().exec();
+		});
 	});
 };
 

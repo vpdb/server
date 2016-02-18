@@ -52,6 +52,7 @@ if (process.env.COVERAGE_ENABLED) {
 
 const settings = require('./server/modules/settings');
 const serverDomain = domain.create();
+let raygunClient = null;
 
 // setup logger
 require('./server/logging').init();
@@ -59,7 +60,7 @@ require('./server/logging').init();
 // setup raygun error handling
 if (process.env.RAYGUN_API_KEY) {
 	let raygun = require('raygun');
-	let raygunClient = new raygun.Client().init({ apiKey: process.env.RAYGUN_API_KEY });
+	raygunClient = new raygun.Client().init({ apiKey: process.env.RAYGUN_API_KEY });
 	logger.info('[logging] Raygun crash logging enabled with API key %s', process.env.RAYGUN_API_KEY);
 	serverDomain.on('error', function(err){
 		logger.info('[logging] Sending error to Raygun...');

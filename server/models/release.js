@@ -75,7 +75,8 @@ const releaseFields = {
 	counter: {
 		downloads: { type: Number, 'default': 0 },
 		comments:  { type: Number, 'default': 0 },
-		stars:     { type: Number, 'default': 0 }
+		stars:     { type: Number, 'default': 0 },
+		views:     { type: Number, 'default': 0 }
 	},
 	metrics: {
 		popularity: { type: Number, 'default': 0 } // time-decay based score like reddit, but based on views, downloads, comments, favs. see SO/11653545
@@ -101,7 +102,7 @@ ReleaseSchema.plugin(prettyId, { model: 'Release', ignore: [ '_created_by', '_ta
 ReleaseSchema.plugin(idValidator, { fields: [ '_tags' ] });
 ReleaseSchema.plugin(paginate);
 ReleaseSchema.plugin(toObj);
-ReleaseSchema.plugin(metrics, { hotness: { popularity: { downloads: 10, comments: 20, stars: 30 }}});
+ReleaseSchema.plugin(metrics, { hotness: { popularity: { views: 1, downloads: 10, comments: 20, stars: 30 }}});
 ReleaseSchema.plugin(sortableTitle, { src: 'name', dest: 'name_sortable' });
 ReleaseSchema.plugin(releaseAggregation, { releaseFields: releaseFields, versionFields: version.fields });
 

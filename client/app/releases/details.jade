@@ -54,6 +54,9 @@ include ../template/_mixins
 			p.oneliner
 				+icon('download-circle').svg-2x.shift-up-2x.space-right
 				| {{ release.counter.downloads | number }} download{{ release.counter.downloads != 1 ? 's' : '' }}
+			p.oneliner
+				+icon('eye-circle').svg-2x.shift-up-2x.space-right
+				| {{ release.counter.views | number }} view{{ release.counter.views != 1 ? 's' : '' }}
 
 		//-- OWNER SECTION
 		//---------------------------------------------------------------------

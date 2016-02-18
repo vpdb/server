@@ -584,6 +584,8 @@ exports.view = function(req, res) {
 			throw error('No such release with ID "%s"', req.params.id).status(404);
 		}
 
+		release.incrementCounter('views');
+
 		var transformOpts = {};
 		if (req.query.thumb_flavor) {
 			transformOpts.thumbFlavor = req.query.thumb_flavor;

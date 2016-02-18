@@ -19,21 +19,28 @@
 
 "use strict";
 
-var _ = require('lodash');
-var ACL = require('acl');
-var logger = require('winston');
-var mongoose = require('mongoose');
+const _ = require('lodash');
+const ACL = require('acl');
+const logger = require('winston');
+const mongoose = require('mongoose');
 
-var User = mongoose.model('User');
-var error = require('./modules/error')('acl');
-var config = require('./modules/settings').current;
+const User = mongoose.model('User');
+const error = require('./modules/error')('acl');
+const config = require('./modules/settings').current;
 
-var redis = require('redis').createClient(config.vpdb.redis.port, config.vpdb.redis.host, { no_ready_check: true });
-    redis.select(config.vpdb.redis.db);
-	redis.on('error', console.error.bind(console));
-var acl = new ACL(new ACL.redisBackend(redis, 'acl'));
+const redis = require('redis').createClient(config.vpdb.redis.port, config.vpdb.redis.host, { no_ready_check: true });
 
-var init = function(next) {
+redis.select(config.vpdb.redis.db);
+redis.on('error', console.error.bind(console));
+
+const acl = new ACL(new ACL.redisBackend(redis, 'acl'));
+
+/**
+ * Initializes the ACLs.
+ *
+ * @return {Promise.<ACL>}
+ */
+acl.init = function() {
 
 	// do at least one error check on redis
 	redis.on('error', /* istanbul ignore next */ function(err) {
@@ -42,17 +49,17 @@ var init = function(next) {
 	});
 
 	// permissions
-	acl.allow([
+	return acl.allow([
 		{
 			roles: 'admin',
 			allows: [
-				{ resources: 'users', permissions: [ 'update', 'list', 'full-details' ]},
+				{ resources: 'users', permissions: ['update', 'list', 'full-details'] },
 				{ resources: 'roles', permissions: 'list' }
 			]
 		}, {
 			roles: 'contributor',
 			allows: [
-				{ resources: 'games', permissions: [ 'update', 'add', 'delete' ]},
+				{ resources: 'games', permissions: ['update', 'add', 'delete'] },
 				{ resources: 'ipdb', permissions: 'view' },
 				{ resources: 'tags', permissions: 'delete' },
 				{ resources: 'builds', permissions: 'delete' },
@@ -61,17 +68,17 @@ var init = function(next) {
 		}, {
 			roles: 'member',
 			allows: [
-				{ resources: 'user', permissions: [ 'view', 'update' ] },                              // profile
-				{ resources: 'users', permissions: [ 'view', 'search', 'star' ] },                     // any other user
-				{ resources: 'files', permissions: [ 'download', 'upload', 'delete' ] },               // delete: only own/inactive files
-				{ resources: 'releases', permissions: [ 'add', 'delete', 'update', 'rate', 'star' ] }, // delete: only own releases and only for a given period
-				{ resources: 'games', permissions: [ 'rate', 'star' ] },
-				{ resources: 'tags', permissions: [ 'add', 'delete-own' ] },
-				{ resources: 'tokens', permissions: [ 'add', 'list', 'delete', 'update' ] },
-				{ resources: 'builds', permissions: [ 'add', 'delete-own' ] },
-				{ resources: 'comments', permissions: [ 'add' ] },
-				{ resources: 'roms', permissions: [ 'add', 'delete-own' ] },
-				{ resources: 'messages', permissions: [ 'receive' ] }
+				{ resources: 'user', permissions: ['view', 'update'] },                              // profile
+				{ resources: 'users', permissions: ['view', 'search', 'star'] },                     // any other user
+				{ resources: 'files', permissions: ['download', 'upload', 'delete'] },               // delete: only own/inactive files
+				{ resources: 'releases', permissions: ['add', 'delete', 'update', 'rate', 'star'] }, // delete: only own releases and only for a given period
+				{ resources: 'games', permissions: ['rate', 'star'] },
+				{ resources: 'tags', permissions: ['add', 'delete-own'] },
+				{ resources: 'tokens', permissions: ['add', 'list', 'delete', 'update'] },
+				{ resources: 'builds', permissions: ['add', 'delete-own'] },
+				{ resources: 'comments', permissions: ['add'] },
+				{ resources: 'roms', permissions: ['add', 'delete-own'] },
+				{ resources: 'messages', permissions: ['receive'] }
 			]
 		}, {
 			roles: 'mocha',
@@ -80,30 +87,22 @@ var init = function(next) {
 			]
 		}
 	])
-
-	// hierarchy
 	.then(() => acl.addRoleParents('root', [ 'admin', 'contributor' ]))
 	.then(() => acl.addRoleParents('admin', [ 'member' ]))
 	.then(() => acl.addRoleParents('contributor', [ 'member' ]))
-
-	// apply to all users
-	.then(() => {
-		User.find({}, function(err, users) {
-			/* istanbul ignore if  */
-			if (err) {
-				return next(error(err, 'Error finding users for ACLs').log());
-			}
-
-			logger.info('[acl] Applying ACLs to %d users...', users.length);
-			users.forEach(user => {
-				/* istanbul ignore next: No initial users in test suite */
-				acl.addUserRoles(user.id, user.roles);
-			});
-			logger.info('[acl] ACLs applied.');
-			next(null, acl);
+	.then(() => User.find({}))
+	.then(users => {
+		logger.info('[acl] Applying ACLs to %d users...', users.length);
+		return Promise.each(users, user => {
+			/* istanbul ignore next: No initial users in test suite */
+			return acl.addUserRoles(user.id, user.roles);
 		});
+
+	}).then(() => {
+		logger.info('[acl] ACLs applied.');
+		return acl;
+
 	});
 };
 
-acl.init = init;
 module.exports = acl;

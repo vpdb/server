@@ -3,29 +3,29 @@ include ../template/_mixins
 // each release
 .panel.panel--animated.panel--animated--less(ng-repeat="release in game.releases", ng-controller="ReleaseController", ng-click="navRelease(game.id, release.id)")
 	.clearfix
-	.col-sm-4.col-md-3
+	.col-sm-4
 
 		//-- PLAYFIELD TUMBS
 		//---------------------------------------------------------------------
-		.img.img--ar-fs.img--rounded-left.padder-top.padder-bottom(img-bg="shot.url")
+		.img.img--rounded-left.padder-top.padder-bottom(img-bg="shot.url", ng-class="{ 'img--ar-fs': shot.type === 'playfield-fs', 'img--ar-ws': shot.type === 'playfield-ws' }")
 
 
 	//-- MAIN BODY
 	//---------------------------------------------------------------------
-	.col-sm-8.col-md-9
+	.col-sm-8
 		h2.h--primary {{ release.name }} <small>{{ latestVersion.version }}</small>
 
 		//-- STATS
 		//---------------------------------------------------------------------
 		.pull-left
 			+icon('star-circle').svg-2x.shift-up-2x.space-right
-			| {{ release.counter.stars | number }} star{{ release.counter.stars != 1 ? 's' : '' }}
-		.pull-left.space-left-2x
+			span.space-right {{ release.counter.stars | number }} star{{ release.counter.stars != 1 ? 's' : '' }}
+		.pull-left
 			+icon('comment-circle').svg-2x.shift-up-2x.space-right
-			| {{ release.counter.comments | number }} comment{{ release.counter.downloads != 1 ? 's' : '' }}
-		.pull-left.space-left-2x
+			span.space-right {{ release.counter.comments | number }} comment{{ release.counter.comments != 1 ? 's' : '' }}
+		.pull-left
 			+icon('download-circle').svg-2x.shift-up-2x.space-right
-			| {{ release.counter.downloads | number }} download{{ release.counter.downloads != 1 ? 's' : '' }}
+			span.space-right {{ release.counter.downloads | number }} download{{ release.counter.downloads != 1 ? 's' : '' }}
 
 		.clearfix
 
@@ -44,7 +44,7 @@ include ../template/_mixins
 		//---------------------------------------------------------------------
 		h3.h--smaller.h--primary Flavors
 		.row
-			.col-xs-6.col-sm-12.col-md-6.col-lg-4(ng-repeat="flavor in flavorGrid")
+			.col-xs-6.col-sm-12.col-md-6(ng-repeat="flavor in flavorGrid")
 				.media
 					.media-left.media-top
 						img.img-avatar--sm(ng-src="{{ flavor.file.media.playfield_image.variations['square' + pixelDensitySuffix].url }}")

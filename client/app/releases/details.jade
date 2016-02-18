@@ -58,7 +58,7 @@ include ../template/_mixins
 				+icon('eye-circle').svg-2x.shift-up-2x.space-right
 				| {{ release.counter.views | number }} view{{ release.counter.views != 1 ? 's' : '' }}
 
-		//-- OWNER SECTION
+		//-- AUTHOR ZONE
 		//---------------------------------------------------------------------
 		.panel--rect-block.padder-top(ng-show="auth.isAuthor(release)")
 			h1.text-center.shift-up
@@ -70,7 +70,7 @@ include ../template/_mixins
 					li: a.text-center(ui-sref="addReleaseVersion({ id: game.id, releaseId: release.id })")
 						+icon('plus-circle').space-right.shift-up.hidden-md
 						| Upload File
-					li: a.text-center(ui-sref="addReleaseVersion({ id: game.id, releaseId: release.id })")
+					li: a.text-center
 						+icon('pencil-circle').space-right.shift-up.hidden-md
 						| Edit Release
 

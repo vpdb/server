@@ -31,10 +31,6 @@ var expressBodyParser = require('body-parser');
 var expressCompression = require('compression');
 var expressErrorhandler = require('errorhandler');
 
-// TODO re-enable
-//var domainError = require('express-domain-errors');
-//var gracefulExit = require('express-graceful-exit');
-
 var settings = require('./modules/settings');
 var writeable = require('./modules/writeable');
 var ctrl = require('./controllers/ctrl');

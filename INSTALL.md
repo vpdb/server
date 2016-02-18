@@ -18,8 +18,11 @@ medium.
 
 Make sure you enable OpenSSH. Once done, login and update the system:
 
+	sudo add-apt-repository ppa:ubuntu-toolchain-r/test
 	sudo apt-get update
+    sudo apt-get -y install gcc-4.9
 	sudo apt-get -y upgrade
+    sudo apt-get -y upgrade libstdc++6
 
 ### Setup Firewall
 

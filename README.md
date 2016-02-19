@@ -1,89 +1,68 @@
-# vpdb
-*A database for Visual Pinball tables.*
+![vpdb][text-logo]
+
+*A database for Virtual Pinball tables.*
 
 [![Build Status][travis-image]][travis-url]
 [![Test Coverage][coveralls-image]][coveralls-url]
 [![Dependencies][dependencies-image]][dependencies-url]
 
 ## What is it?
-A free and open source web application that makes downloading Visual Pinball tables as effective and pleasant as 
-possible. In a nutshell, it is:
 
-* Well-structured
-* Fast
-* Easy on the eye
-* Accessible via an API
+VPDB is a platform where people can share their digital recreations of virtual pinball tables. It's meant to be easy to
+use, beautiful to look at and fast to browse. But most importantly, it will save you a lot of time when setting up 
+and maintaining your virtual cabinet.
+
+## How does it work?
+
+VPDB has three tiers:
+
+1. The backend server, [powered by a nice API](https://developer.vpdb.io/api)
+2. The web application
+3. [A desktop application](https://github.com/freezy/vpdb-agent) for your cabinet
+
+The backend server contains all the data and makes it accessible through the API. The web application shows off the data
+and lets the user browse, comment, download and rate. The desktop application can subscribe to the content and update 
+automatically, knowing the file structure of your cabinet.
 
 ## Why is it better than what we have?
 
-Contrarily to VPF and VPU that use a bulletin board solution with a downloads module, this was designed from scratch
-specifically for its purpose. That allows us to properly structure the data, make use of clever search algorithms
-and pull interesting stats out of user interactions. Also we enjoy complete freedom over the UI, allowing us to 
+Contrarily to VPF and VPU that use a bulletin board solution with a downloads module, this was designed and built 
+entirely from scratch for its purpose. Data is [structured as it should be](https://developer.vpdb.io/api/v1/releases)
+and we can do stuff a generic download solution just can't. Also we enjoy complete freedom over the UI, allowing to 
 streamline the user experience to the max.
 
-### Data Structure
+## Features
 
-* We structure data by pinball game. That means that every VPT release or any other download must be linked to a game,
-even original table releases. Thus, when we display details of a pinball game, we can list all releases for that game
-along with any other download linked to it.
-It also means that once you've found the game you were looking for, you will only see downloads related to that table
-and no other hits polluting your search results.
+* Fast [fuzzy search](http://en.wikipedia.org/wiki/Approximate_string_matching)
+* Distinction between fullscreen / desktop / universal (VPX) orientation is fully integrated
+* Multiple releases per game
+* Multiple versions per release, incl changelog
+* Multiple files per version - a version could cover both FS and DT - or VP9 and VPX - or any combination
+* Link compatible VP versions to a `.vpt` file
+* Set orientation of a `.vpt` file
+* Set lighting (day, night, linear) of a `.vpt` file
+* Multiple authors per release
+* All authors are owners of the release and can edit / update
+* Acknowledgement field where other contributors can be cross-linked
+* Many media types per file and game
+* Multiple views when listing releases
+* Fancy release upload form to make an author's life as easy as possible
 
-* Data like authors, acknowledgements, changelogs and mods are structured. That means that stats can pulled from those,
-like most active releases, most acknowledged people, most modded tables or whatever else you could think of.
-
-* Media is divided into two types: Release-specific media (basically everything playfield related) and game-specific
-media (backglasses, flyers, instruction cards etc). Release-specific media is obviously linked to the corresponding
-release so you don't need to figure out which playfield videos go with which release.
-
-### Browsing Experience
-
-Browsing should be as effective as possible. For example, when typing a search query, results are filtered in real-time
-and a [fuzzy search](http://en.wikipedia.org/wiki/Approximate_string_matching) algorithm is used so you'll find
-*The Addams Family* even when typing *Adams Family*.
-
-To make it even faster, network traffic is kept to a minimum. HTML templates are only loaded once and data is 
-transferred separately and asynchronously. Of course everything is minified and compressed for minimal transfer size.
-
-### User Interface
-
-The low-contrast dark color scheme is easy on the reader's eye and makes it comfortable to read. When browsing tables, 
-we make prominent use of the available media, while giving the user the possibility to switch to less media-oriented 
-views as well.
-
-The interface is simple, clean and to the point. Downloads start with one click. There are subtle animations for most
-actions or view transitions. Browsing should be a smooth and pleasing experience.
-
-### API
-
-The REST API provides all the necessary data for the browser. Additionally, this API could be used by other clients. For
-example it's imaginable that Hyperpin (or more likely the excellent [PinballX](http://www.pinballx.net/)) would pull
-table updates and media directly from the API in an automated way.
-
-## Technology Stack
+## Tech Stack
 
 Server runs on [Node.js](http://nodejs.org/) with [Express](http://expressjs.com/), [Stylus](http://learnboost.github.io/stylus/)
-and [Jade](http://jade-lang.com/). Client uses [AngularJS](https://angularjs.org/) with CSS based on 
-[Twitter Bootstrap](http://getbootstrap.com/).
+and [Jade](http://jade-lang.com/). MongoDB and Redis for data storage. Client uses [AngularJS](https://angularjs.org/) 
+with CSS based on [Twitter Bootstrap](http://getbootstrap.com/).
 
-## Status
+## Quick Install
 
-See [changelog](CHANGELOG.md).
-
-## Installation
-
-Prerequisites:
-
-* Download and install [GraphicsMagick](http://www.graphicsmagick.org/) and make sure that the binary is in your `PATH`.
-* Download and install [pngquant](http://pngquant.org/) and make sure that the binary is in your `PATH`.
-* Download and install [OptiPNG](http://optipng.sourceforge.net/) and make sure that the binary is in your `PATH`.
-* Download and extract [FFmpeg](https://www.ffmpeg.org/) and make sure that the binaries are in your `PATH`.
-* Download and install [Unrar](http://rarsoft.com/) and make sure that the binaries are in your `PATH`.
-* Install the Grunt command line tool: `npm install -g grunt-cli`
-* Download and install [MongoDB](http://www.mongodb.org/downloads).
-* Download and install [Redis](http://redis.io/). *Windows*: Get binary [here](https://github.com/MSOpenTech/redis/tree/2.8/bin/release),
-  extract it to somewhere, open an admin shell and run `redis-server --service-install redis.windows.conf --loglevel verbose --maxheap 500m`
-  for a local dev setup.
+* Download and install [GraphicsMagick](http://www.graphicsmagick.org/), [pngquant](http://pngquant.org/),
+  [OptiPNG](http://optipng.sourceforge.net/), [FFmpeg](https://www.ffmpeg.org/) and [Unrar](http://rarsoft.com/) and 
+  make sure that the binaries are in your `PATH`.
+* Install [MongoDB](http://www.mongodb.org/downloads) and [Redis](http://redis.io/). *Windows*: Get binary 
+  [here](https://github.com/MSOpenTech/redis/tree/2.8/bin/release), extract it to somewhere, open an admin shell and 
+  run `redis-server --service-install redis.windows.conf --loglevel verbose --maxheap 500m` for a local dev setup.
+* Install Grunt: `npm install -g grunt-cli`
 
 Install Node.js and Git, then open a command line and type:
 
@@ -94,7 +73,8 @@ Install Node.js and Git, then open a command line and type:
 	grunt build
 	grunt serve
 
-Open your browser and connect to `http://localhost:3000/`. There are some command line arguments you can supply:
+Open your browser and connect to [http://localhost:3000/](http://localhost:3000/). There are some command line arguments
+you can supply:
 
  * `--port=<port>` - Makes the app listen on a given port. Default: `3000`.
  * `--config=<path>` - Uses a different settings file. Note that the settings location has different defaults depending 
@@ -103,10 +83,10 @@ Open your browser and connect to `http://localhost:3000/`. There are some comman
    * When launched as `test` or `serve-test`, the default is `server/config/settings-test.js`. See *Tests* under 
      *Development* below for additional parameters.
 
-Note that both settings may also be provided by setting the `PORT` and `APP_SETTINGS` environment variable (providing
-it via command line arguments will override the though).
+Both settings may also be provided by setting the `PORT` and `APP_SETTINGS` environment variable (providing it via 
+command line arguments will override).
 
-If you plan to setup a production environment from scratch, see the [Installation Guide](INSTALL.md).
+For more detailed instructions, check out the [Installation Guide](INSTALL.md).
 
 ## Development
 
@@ -141,7 +121,7 @@ For the server tasks, we have:
 
 ### Tests
 
-See [tests](TESTS.md). Spoiler: There are automated API tests as well as end-to-end Selenium tests.
+See [tests](TESTS.md).
 
 
 ### Code Quality
@@ -165,7 +145,7 @@ Code is also run through Code Climate, with the following result: [![Code Climat
 ## Credits
 
 * To Mukuste. He gave the community such a nice momentum and I thought I could add a little bit to it.
-* To Tom for his support of this project and a certainly awesome PinballX integration!
+* To Tom for his support of this project.
 
 [![IntelliJ IDEA][idea-image]][idea-url]
 
@@ -176,6 +156,7 @@ Thanks also to JetBrains for their awesome IDE and support of the Open Source Co
 
 GPLv2, see [LICENSE](LICENSE).
 
+[text-logo]: https://github.com/freezy/node-vpdb/raw/master/gfx/text-logo.png
 [travis-image]: https://img.shields.io/travis/freezy/node-vpdb.svg?style=flat-square
 [travis-url]: https://travis-ci.org/freezy/node-vpdb
 [coveralls-image]: https://img.shields.io/coveralls/freezy/node-vpdb.svg?style=flat-square

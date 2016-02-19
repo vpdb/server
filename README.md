@@ -9,8 +9,8 @@
 ## What is it?
 
 VPDB is a platform where people can share their digital recreations of virtual pinball tables. It's meant to be easy to
-use, beautiful to look at and fast to browse. But most importantly, it will save you a lot of time when setting up 
-and maintaining your virtual cabinet.
+use, beautiful to look at and fast to browse. But most importantly, it will save you a huge amount of time when setting
+up and maintaining your virtual cabinet (you'll actually get to play again).
 
 ## How does it work?
 
@@ -21,7 +21,7 @@ VPDB has three tiers:
 3. [A desktop application](https://github.com/freezy/vpdb-agent) for your cabinet
 
 The backend server contains all the data and makes it accessible through the API. The web application shows off the data
-and lets the user browse, comment, download and rate. The desktop application can subscribe to the content and update 
+and lets the user browse, comment, download and rate. The desktop application can subscribe to the content and update it
 automatically, knowing the file structure of your cabinet.
 
 ## Why is it better than what we have?
@@ -36,14 +36,14 @@ streamline the user experience to the max.
 * Fast [fuzzy search](http://en.wikipedia.org/wiki/Approximate_string_matching)
 * Distinction between fullscreen / desktop / universal (VPX) orientation is fully integrated
 * Multiple releases per game
-* Multiple versions per release, incl changelog
-* Multiple files per version - a version could cover both FS and DT - or VP9 and VPX - or any combination
+* Multiple versions per release, incl. changelog
+* Multiple files per version - a version could cover both FS and DT - or VP9 and VPX - or any other combination
 * Link compatible VP versions to a `.vpt` file
 * Set orientation of a `.vpt` file
 * Set lighting (day, night, linear) of a `.vpt` file
 * Multiple authors per release
 * All authors are owners of the release and can edit / update
-* Acknowledgement field where other contributors can be cross-linked
+* Acknowledgement field where other table contributors can be cross-linked
 * Many media types per file and game
 * Multiple views when listing releases
 * Fancy release upload form to make an author's life as easy as possible
@@ -51,8 +51,8 @@ streamline the user experience to the max.
 ## Tech Stack
 
 Server runs on [Node.js](http://nodejs.org/) with [Express](http://expressjs.com/), [Stylus](http://learnboost.github.io/stylus/)
-and [Jade](http://jade-lang.com/). MongoDB and Redis for data storage. Client uses [AngularJS](https://angularjs.org/) 
-with CSS based on [Twitter Bootstrap](http://getbootstrap.com/).
+and [Jade](http://jade-lang.com/). [MongoDB](https://www.mongodb.org/) and [Redis](http://redis.io/) for data storage. 
+Client uses [AngularJS](https://angularjs.org/) with CSS based on [Twitter Bootstrap](http://getbootstrap.com/).
 
 ## Quick Install
 

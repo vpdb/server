@@ -264,13 +264,15 @@ angular.module('vpdb.common', [])
 		$httpProvider.interceptors.push('UpdateInterceptor');
 	})
 
-	.factory('UpdateInterceptor', function($rootScope, $localStorage) {
+	.factory('UpdateInterceptor', function($rootScope, $localStorage, $timeout) {
 		return {
 			response: function(response) {
 				var sha = response.headers('x-app-sha');
 				if (sha && $localStorage.appSha !== sha) {
-					$rootScope.$emit('appUpdated');
 					$localStorage.appSha = sha;
+					$timeout(function() {
+						$rootScope.$emit('appUpdated');
+					}, 300);
 				}
 				return response;
 			}

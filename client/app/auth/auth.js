@@ -1,4 +1,4 @@
-"use strict"; /* global traverse, _ */
+"use strict"; /* global angular, traverse, _ */
 
 angular.module('vpdb.auth', [])
 

@@ -33,6 +33,7 @@ var expressErrorhandler = require('errorhandler');
 
 var settings = require('./modules/settings');
 var writeable = require('./modules/writeable');
+var gitinfo = require('./modules/gitinfo');
 var ctrl = require('./controllers/ctrl');
 var apiCtrl = require('./controllers/api/api');
 var logging = require('./logging');
@@ -109,6 +110,12 @@ exports.configure = function(app, raygunClient) {
 	app.use(apiCtrl.checkApiContentType);
 
 	app.use('/styleguide', express.static(path.resolve(__dirname, '../styleguide')));
+
+	// git sha header
+	app.use(function(req, res, next) {
+		res.set({ 'X-App-Sha': gitinfo.info.local.branch.current.shortSHA });
+		next();
+	});
 
 	// dynamic routes
 	require('./routes')(app);

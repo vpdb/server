@@ -258,4 +258,21 @@ angular.module('vpdb.common', [])
 				scope.error = null;
 			}
 		};
+	})
+
+	.config(function($httpProvider) {
+		$httpProvider.interceptors.push('UpdateInterceptor');
+	})
+
+	.factory('UpdateInterceptor', function($rootScope, $localStorage) {
+		return {
+			response: function(response) {
+				var sha = response.headers('x-app-sha');
+				if (sha && $localStorage.appSha !== sha) {
+					$rootScope.$emit('appUpdated');
+					$localStorage.appSha = sha;
+				}
+				return response;
+			}
+		};
 	});

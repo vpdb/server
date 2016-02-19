@@ -78,6 +78,11 @@ angular.module('vpdb.common', [])
 			DownloadService.downloadFile(file);
 		});
 
+		$rootScope.$on('appUpdated', function() {
+			console.log('Application updated, reloading.');
+			window.location.reload(true);
+		});
+
 		$scope.download = function(download, info) {
 			if ($scope.downloadsPinned) {
 				download.info = info;

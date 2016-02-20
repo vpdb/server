@@ -23,7 +23,7 @@
  * Main controller containing the form for editing a release.
  */
 angular.module('vpdb.releases.edit', [])
-	.controller('ReleaseFileEditCtrl', function($scope, $stateParams, $uibModal,
+	.controller('ReleaseFileEditCtrl', function($scope, $state, $stateParams, $uibModal, ApiHelper,
 												GameResource, ReleaseResource, TagResource) {
 
 		// init page
@@ -37,7 +37,7 @@ angular.module('vpdb.releases.edit', [])
 		$scope.game = GameResource.get({ id: $stateParams.id });
 		$scope.release = ReleaseResource.get({ release: $stateParams.releaseId }, function(release) {
 
-			$scope.updatedRelease = angular.copy(release);
+			$scope.reset();
 			$scope.tags = TagResource.query(function() {
 				if (release && release.tags.length > 0) {
 					// only push tags that aren't assigned yet.
@@ -47,6 +47,14 @@ angular.module('vpdb.releases.edit', [])
 				}
 			});
 		});
+
+		/**
+		 * Resets the data to current release.
+		 */
+		$scope.reset = function() {
+			$scope.updatedRelease = _.pick(angular.copy($scope.release), [ 'name', 'description', 'tags', 'links', 'acknowledgements', 'authors' ]);
+			$scope.errors = {};
+		};
 
 		/**
 		 * Adds OR edits an author.
@@ -105,14 +113,6 @@ angular.module('vpdb.releases.edit', [])
 			$scope.tags.push(tag);
 		};
 
-
-		/**
-		 * Resets the data to current release.
-		 */
-		$scope.reset = function() {
-			$scope.updatedRelease = angular.copy($scope.release);
-		};
-
 		/**
 		 * Adds a link to the release
 		 * @param {object} link
@@ -133,4 +133,30 @@ angular.module('vpdb.releases.edit', [])
 			});
 		};
 
-});
+		/**
+		 * Posts the release add form to the server.
+		 */
+		$scope.submit = function() {
+
+			var release = angular.copy($scope.updatedRelease);
+
+			// map tags
+			release._tags = _.map(release.tags, 'id');
+			delete release.tags;
+
+			// map author users
+			release.authors = _.map(release.authors, function(author) {
+				author._user = author.user.id;
+				delete author.user;
+				return author;
+			});
+
+			ReleaseResource.update({ release: $scope.release.id }, release, function() {
+				$state.go('releaseDetails', $stateParams);
+
+			}, ApiHelper.handleErrors($scope));
+
+			console.log(release);
+		};
+	}
+);

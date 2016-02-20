@@ -88,12 +88,12 @@ angular.module('vpdb', deps.concat(appDeps))
 		// routes
 		$stateProvider.state('home',             { url: '/',                             templateUrl: '/home/home.html', controller: 'HomeController' });
 		$stateProvider.state('games',            { url: '/games',                        templateUrl: '/games/list.html' });
-		$stateProvider.state('gameDetails',      { url: '/game/:id',                     templateUrl: '/games/details.html' });
+		$stateProvider.state('gameDetails',      { url: '/games/:id',                    templateUrl: '/games/details.html' });
 		$stateProvider.state('releases',         { url: '/releases',                     templateUrl: '/releases/list.html' });
-		$stateProvider.state('addGame',          { url: '/games/add',                    templateUrl: '/games/add.html' });
-		$stateProvider.state('addRelease',       { url: '/game/:id/add-release',         templateUrl: '/releases/add-release.html' });
-		$stateProvider.state('addReleaseVersion',{ url: '/game/:id/release/:releaseId/add', templateUrl: '/releases/add-version.html' });
-		$stateProvider.state('releaseDetails',   { url: '/game/:id/release/:releaseId',  templateUrl: '/releases/details.html' });
+		$stateProvider.state('addGame',          { url: '/add-game',                     templateUrl: '/games/add.html' });
+		$stateProvider.state('addRelease',       { url: '/games/:id/add-release',         templateUrl: '/releases/add-release.html' });
+		$stateProvider.state('addReleaseVersion',{ url: '/games/:id/releases/:releaseId/add', templateUrl: '/releases/add-version.html' });
+		$stateProvider.state('releaseDetails',   { url: '/games/:id/releases/:releaseId',  templateUrl: '/releases/details.html' });
 		$stateProvider.state('adminUsers',       { url: '/admin/users',                  templateUrl: '/users/list.html' });
 		$stateProvider.state('profile',          { url: '/profile',                      templateUrl: '/profile/profile.html' });
 		$stateProvider.state('profile.settings',         { url: '/settings',             templateUrl: '/profile/settings.html', controller: 'ProfileSettingsCtrl' });

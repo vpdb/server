@@ -15,7 +15,7 @@ include ../template/_mixins
 		//-----------------------------------------
 		h4.h--primary.padder-top-2x Release Name
 		.form-group(ng-class="{ error: errors.name }")
-			input.form-control.input-lg(type="text", placeholder="Title", ng-model="release.name")
+			input.form-control.input-lg(type="text", placeholder="Title", ng-model="updatedRelease.name")
 			.alert.alert-danger(ng-show="errors.name")
 				+icon('warning').shift-up.space-right
 				| {{ errors.name }}
@@ -28,20 +28,20 @@ include ../template/_mixins
 				label.label--small.pull-right(markdown-info="Markdown enabled.")
 				uib-tab
 					uib-tab-heading(title="Write"): +icon('edit')
-					textarea.textarea--full.msd-elastic(placeholder="Description of the release", ng-model="release.description")
+					textarea.textarea--full.msd-elastic(placeholder="Description of the release", ng-model="updatedRelease.description")
 				uib-tab
 					uib-tab-heading(title="Preview"): +icon('eye')
-					div.markdown(markdown="release.description")
-					label.tab__label(ng-show="!release.description || release.description.length == 0") Nothing to preview.
+					div.markdown(markdown="updatedRelease.description")
+					label.tab__label(ng-show="!updatedRelease.description || updatedRelease.description.length == 0") Nothing to preview.
 			i This will show up globally under your release.
 
 
 		//- AUTHORS
 		//-----------------------------------------
 		h4.h--primary.padder-top-2x Authors
-		i.pull-left(ng-show="release.authors.length == 0") No authors added.
+		i.pull-left(ng-show="updatedRelease.authors.length == 0") No authors added.
 		.row--fullwidth
-			.media.media--mini.media--mini-noborders.col-sm-4(ng-repeat="author in release.authors", ng-mouseenter="hovering=true", ng-mouseleave="hovering=false")
+			.media.media--mini.media--mini-noborders.col-sm-4(ng-repeat="author in updatedRelease.authors", ng-mouseenter="hovering=true", ng-mouseleave="hovering=false")
 				.media-left.media-middle
 					img.img-avatar.img-avatar--sm(gravatar-src="author.user.gravatar_id", gravatar-default="404", fallback-icon="user")
 				.media-body
@@ -67,41 +67,46 @@ include ../template/_mixins
 
 				//- SELECTED
 				h5.h--shift-up.hr--margin-small Selected Tags
-				.panel--dropzone-alt(ng-model="meta.tags",
-				data-drop="true",
-				data-jqyoui-options="{ accept: '.badge:not([ng-model=meta.tags])', activeClass: 'active', 'hoverClass': 'hover' }",
-				jqyoui-droppable="{ multiple: true, onDrop: 'tagDropped' }")
-					div.padder-top(ng-repeat="tag in release.tags")
+				.panel--dropzone-alt(
+					ng-model="updatedRelease.tags",
+					data-drop="true",
+					data-jqyoui-options="{ accept: '.badge:not([ng-model=updatedRelease.tags])', activeClass: 'active', 'hoverClass': 'hover' }",
+					jqyoui-droppable="{ multiple: true }"
+				)
+					div.padder-top(ng-repeat="tag in updatedRelease.tags")
 						.badge.badge--tag(
-							ng-model="meta.tags",
+							ng-model="updatedRelease.tags",
 							data-drag="true",
 							data-jqyoui-options="{ revert: 'invalid' }",
 							jqyoui-draggable="{ animate: true, index: {{$index}} }"
 						) {{ tag.name }}
 							+icon('times-circle').small.shift-up.space-left.a(ng-click="removeTag(tag)")
 						i.space-left {{ tag.description }}
-					i(ng-show="meta.tags.length == 0") No tags selected. Drag and drop them from the right hand pane in here.
+					i(ng-show="updatedRelease.tags.length == 0") No tags selected. Drag and drop them from the right hand pane in here.
 			.col-sm-6
 				.rel-pos
 					.panel--dropzone-alt-2(
 						ng-model="tags",
 						data-drop="true",
 						data-jqyoui-options="{ accept:':not([ng-model=tags])', activeClass: 'active', hoverClass: 'hover' }",
-						jqyoui-droppable="{ multiple: true, onDrop: 'tagDropped' }"
+						jqyoui-droppable="{ multiple: true }"
 					)
 
 						//- EXISTING
 						h5.hr--margin-small.h--shift-up Existing Tags
-						.badge.badge--tag(ng-repeat="tag in tags", ng-model="tags",
-						data-drag="true",
-						data-jqyoui-options="{ revert: 'invalid' }",
-						jqyoui-draggable='{ animate: true, index: {{$index}} }')
+						.badge.badge--tag(
+							ng-repeat="tag in tags", ng-model="tags",
+							data-drag="true",
+							data-jqyoui-options="{ revert: 'invalid' }",
+							jqyoui-draggable='{ animate: true, index: {{$index}} }'
+						)
 							| {{ tag.name }}
 							+icon('question-circle').small.shift-up.space-left.a(
-							uib-tooltip="{{ tag.description }}",
-							tooltip-append-to-body="false",
-							tooltip-trigger="click",
-							tooltip-popup-delay="200")
+								uib-tooltip="{{ tag.description }}",
+								tooltip-append-to-body="true",
+								tooltip-trigger="click",
+								tooltip-popup-delay="200"
+							)
 						i(ng-show="tags.length == 0") No more tags available.
 
 				button.btn.btn-default.padder-top.pull-right(ng-click="createTag()")
@@ -119,7 +124,7 @@ include ../template/_mixins
 				label Label
 			.form-group.col-sm-9
 				label URL
-		.row.row--fullwidth(ng-repeat="link in release.links")
+		.row.row--fullwidth(ng-repeat="link in updatedRelease.links")
 			.form-group.col-sm-3
 				input.form-control(type="text", ng-model="link.label")
 			.form-group.col-sm-9
@@ -143,11 +148,11 @@ include ../template/_mixins
 				label.label--small.pull-right(markdown-info="Markdown enabled.")
 				uib-tab
 					tab-heading(title="Write"): +icon('edit')
-					textarea.textarea--full.msd-elastic(placeholder="List of people to thank", ng-model="release.acknowledgements")
+					textarea.textarea--full.msd-elastic(placeholder="List of people to thank", ng-model="updatedRelease.acknowledgements")
 				uib-tab
 					tab-heading(title="Preview"): +icon('eye')
-					div.markdown(markdown="release.acknowledgements")
-					label.tab__label(ng-show="!release.acknowledgements || release.acknowledgements.length == 0") Nothing to preview.
+					div.markdown(markdown="updatedRelease.acknowledgements")
+					label.tab__label(ng-show="!updatedRelease.acknowledgements || updatedRelease.acknowledgements.length == 0") Nothing to preview.
 
 
 		//- FOOTER BUTTONS
@@ -171,6 +176,7 @@ include ../template/_mixins
 		h3.h--multiline {{ game.title }}
 		| {{ release.name }}
 
+		.clearfix
 		a.btn.padder-top-2x(ui-sref="addReleaseVersion({ id: game.id, releaseId: release.id })")
 			+icon('plus-circle').space-right.hidden-md
 			| Upload File

@@ -19,13 +19,14 @@
 
 "use strict"; /* global _, angular */
 
-angular.module('vpdb.releases.add', []).controller('ChooseAuthorCtrl', function($scope, $modalInstance, UserResource, release, meta, author) {
+angular.module('vpdb.releases.add', []).controller('ChooseAuthorCtrl', function($scope, $uibModalInstance, UserResource, release, meta, author) {
 
 	if (author) {
+		var userId = author._user || author.user.id;
 		$scope.author = author;
-		$scope.user = meta.users[author._user];
+		$scope.user = meta.users[userId];
 		$scope.roles = author.roles.slice();
-		$scope.query = meta.users[author._user].name;
+		$scope.query = meta.users[userId].name;
 		$scope.isValidUser = true;
 	} else {
 		$scope.user = null;
@@ -90,7 +91,7 @@ angular.module('vpdb.releases.add', []).controller('ChooseAuthorCtrl', function(
 		}
 
 		if (valid) {
-			$modalInstance.close({ user: $scope.user, roles: $scope.roles });
+			$uibModalInstance.close({ user: $scope.user, roles: $scope.roles });
 		}
 	};
 });

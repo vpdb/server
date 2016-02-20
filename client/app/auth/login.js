@@ -2,7 +2,7 @@
 
 angular.module('vpdb.login', [])
 
-	.controller('LoginCtrl', function($scope, $rootScope, $modalInstance, $window, $localStorage,
+	.controller('LoginCtrl', function($scope, $rootScope, $uibModalInstance, $window, $localStorage,
 									  ApiHelper, AuthService, AuthResource, UserResource,
 									  opts) {
 
@@ -42,7 +42,7 @@ angular.module('vpdb.login', [])
 				$scope.error = null;
 				$scope.message2 = null;
 				AuthService.authenticated(result);
-				$modalInstance.close();
+				$uibModalInstance.close();
 				AuthService.runPostLoginActions();
 
 				if ($localStorage.rememberMe) {

@@ -223,13 +223,13 @@ angular.module('vpdb.games.details', [])
 		};
 	})
 
-	.controller('RequestModPermissionModalCtrl', function($scope, $modalInstance) {
+	.controller('RequestModPermissionModalCtrl', function($scope, $uibModalInstance) {
 
 		$scope.ok = function () {
-			$modalInstance.close(true);
+			$uibModalInstance.close(true);
 		};
 
 		$scope.cancel = function () {
-			$modalInstance.dismiss(false);
+			$uibModalInstance.dismiss(false);
 		};
 	});

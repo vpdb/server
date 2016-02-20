@@ -15,7 +15,7 @@ include ../template/_mixins
 				input.form-control(type="text", placeholder="Start typing...",
 					ng-model="query",
 					ng-change="queryChange()",
-					typeahead="user as user.name for user in findUser($viewValue)",
+					uib-typeahead="user as user.name for user in findUser($viewValue)",
 					typeahead-on-select="userSelected($item, $model, $label)",
 					typeahead-loading="searching",
 					typeahead-template-url="userListItem",

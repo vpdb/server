@@ -149,7 +149,7 @@ angular.module('vpdb.releases.details', []).controller('ReleaseDetailsController
 		}
 	};
 
-}).controller('DownloadGameCtrl', function($scope, $modalInstance, $timeout, Flavors, DownloadService, params) {
+}).controller('DownloadGameCtrl', function($scope, $uibModalInstance, $timeout, Flavors, DownloadService, params) {
 
 	$scope.game = params.game;
 	$scope.release = params.release;
@@ -169,7 +169,7 @@ angular.module('vpdb.releases.details', []).controller('ReleaseDetailsController
 
 	$scope.download = function() {
 		DownloadService.downloadRelease($scope.release.id, $scope.downloadRequest, function() {
-			$modalInstance.close(true);
+			$uibModalInstance.close(true);
 		});
 	};
 

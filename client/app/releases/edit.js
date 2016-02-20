@@ -22,17 +22,115 @@
 /**
  * Main controller containing the form for editing a release.
  */
-angular.module('vpdb.releases.edit', []).controller('ReleaseFileEditCtrl', function($scope, $stateParams, GameResource,
-																					ReleaseResource, TagResource) {
+angular.module('vpdb.releases.edit', [])
+	.controller('ReleaseFileEditCtrl', function($scope, $stateParams, $uibModal,
+												GameResource, ReleaseResource, TagResource) {
 
-	// init page
-	$scope.theme('light');
-	$scope.setMenu('releases');
-	$scope.setTitle('Edit Release');
+		// init page
+		$scope.theme('light');
+		$scope.setMenu('releases');
+		$scope.setTitle('Edit Release');
 
-	// fetch objects
-	$scope.game = GameResource.get({ id: $stateParams.id });
-	$scope.release = ReleaseResource.get({ release: $stateParams.releaseId });
-	$scope.tags = TagResource.query();
+		$scope.newLink = {};
+
+		// fetch objects
+		$scope.game = GameResource.get({ id: $stateParams.id });
+		$scope.release = ReleaseResource.get({ release: $stateParams.releaseId }, function(release) {
+
+			$scope.updatedRelease = angular.copy(release);
+			$scope.tags = TagResource.query(function() {
+				if (release && release.tags.length > 0) {
+					// only push tags that aren't assigned yet.
+					$scope.tags = _.filter($scope.tags, function(tag) {
+						return !_.contains(_.map(release.tags, 'id'), tag.id);
+					});
+				}
+			});
+		});
+
+		/**
+		 * Adds OR edits an author.
+		 * @param {object} author If set, edit this author, otherwise add a new one.
+		 */
+		$scope.addAuthor = function(author) {
+			var meta = { users: {} };
+			if (author) {
+				meta.users[author.user.id] = author.user;
+			}
+			$uibModal.open({
+				templateUrl: '/releases/modal-author-add.html',
+				controller: 'ChooseAuthorCtrl',
+				resolve: {
+					release: function() { return $scope.updatedRelease; },
+					meta: function() { return meta; },
+					author: function() { return author; }
+				}
+			}).result.then(function(newAuthor) {
+
+				// add or edit?
+				if (author) {
+					$scope.updatedRelease.authors[$scope.updatedRelease.authors.indexOf(author)] = newAuthor;
+				} else {
+					$scope.updatedRelease.authors.push(newAuthor);
+				}
+			});
+		};
+
+		/**
+		 * Removes an author
+		 * @param {object} author
+		 */
+		$scope.removeAuthor = function(author) {
+			$scope.updatedRelease.authors.splice($scope.updatedRelease.authors.indexOf(author), 1);
+		};
+
+		/**
+		 * Opens the create tag dialog
+		 */
+		$scope.createTag = function() {
+			$uibModal.open({
+				templateUrl: '/releases/modal-tag-create.html',
+				controller: 'CreateTagCtrl'
+			}).result.then(function(newTag) {
+				$scope.tags.push(newTag);
+			});
+		};
+
+		/**
+		 * Removes a tag from the release
+		 * @param {object} tag
+		 */
+		$scope.removeTag = function(tag) {
+			$scope.updatedRelease.tags.splice($scope.updatedRelease.tags.indexOf(tag), 1);
+			$scope.tags.push(tag);
+		};
+
+
+		/**
+		 * Resets the data to current release.
+		 */
+		$scope.reset = function() {
+			$scope.updatedRelease = angular.copy($scope.release);
+		};
+
+		/**
+		 * Adds a link to the release
+		 * @param {object} link
+		 * @returns {{}}
+		 */
+		$scope.addLink = function(link) {
+			$scope.updatedRelease.links.push(link);
+			$scope.newLink = {}
+		};
+
+		/**
+		 * Removes a link from the release
+		 * @param {object} link
+		 */
+		$scope.removeLink = function(link) {
+			$scope.updatedRelease.links = _.filter($scope.updatedRelease.links, function(l) {
+				return l.label !== link.label || l.url !== link.url;
+			});
+		};
 
 });

@@ -2,7 +2,7 @@
 
 angular.module('vpdb.users.edit', [])
 
-	.controller('AdminUserEditCtrl', function($scope, $rootScope, $modalInstance, ApiHelper,
+	.controller('AdminUserEditCtrl', function($scope, $rootScope, $uibModalInstance, ApiHelper,
 						  UserResource, PlanResource, user, roles) {
 
 		var fields = [ 'id', 'name', 'email', 'username', 'is_active', 'roles', '_plan' ];
@@ -34,7 +34,7 @@ angular.module('vpdb.users.edit', [])
 				if ($rootScope.auth.user.id === $scope.user.id) {
 					$rootScope.auth.user = updatedUser;
 				}
-				$modalInstance.close();
+				$uibModalInstance.close();
 			}, ApiHelper.handleErrors($scope));
 		};
 

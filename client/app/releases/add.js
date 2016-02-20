@@ -132,6 +132,7 @@ angular.module('vpdb.releases.add', []).controller('ReleaseAddCtrl', function(
 		$scope.reset();
 	}
 
+
 	/**
 	 * Adds OR edits an author.
 	 * @param {object} author If set, edit this author, otherwise add a new one.
@@ -295,12 +296,12 @@ angular.module('vpdb.releases.add', []).controller('ReleaseAddCtrl', function(
 	};
 })
 
-.controller('CreateTagCtrl', function($scope, $modalInstance, ApiHelper, TagResource) {
+.controller('CreateTagCtrl', function($scope, $uibModalInstance, ApiHelper, TagResource) {
 
 	$scope.tag = {};
 	$scope.create = function() {
 		TagResource.save($scope.tag, function(tag) {
-			$modalInstance.close(tag);
+			$uibModalInstance.close(tag);
 
 		}, ApiHelper.handleErrors($scope));
 	};

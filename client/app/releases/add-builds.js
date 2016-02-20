@@ -19,7 +19,7 @@
 
 "use strict"; /* global _, angular */
 
-angular.module('vpdb.releases.add', []).controller('AddBuildCtrl', function($scope, $modalInstance, BootstrapTemplate, ApiHelper, BuildResource) {
+angular.module('vpdb.releases.add', []).controller('AddBuildCtrl', function($scope, $uibModalInstance, BootstrapTemplate, ApiHelper, BuildResource) {
 
 	$scope.build = {
 		platform: 'vp'
@@ -42,7 +42,7 @@ angular.module('vpdb.releases.add', []).controller('AddBuildCtrl', function($sco
 
 	$scope.add = function() {
 		BuildResource.save($scope.build, function(build) {
-			$modalInstance.close(build);
+			$uibModalInstance.close(build);
 
 		}, ApiHelper.handleErrors($scope));
 	};

@@ -179,13 +179,13 @@ angular.module('vpdb.profile.settings', [])
 		};
 	})
 
-	.controller('AddTokenCtrl', function($scope, $modalInstance, TokenResource, ApiHelper) {
+	.controller('AddTokenCtrl', function($scope, $uibModalInstance, TokenResource, ApiHelper) {
 
 		$scope.token = { type: 'access' };
 		$scope.create = function() {
 			TokenResource.save($scope.token, function(token) {
 
-				$modalInstance.close(token);
+				$uibModalInstance.close(token);
 
 			}, ApiHelper.handleErrors($scope, function(scope, response) {
 				if (/password/i.test(response.data.error)) {

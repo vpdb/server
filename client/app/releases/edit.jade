@@ -158,19 +158,20 @@ include ../template/_mixins
 
 		//- FOOTER BUTTONS
 		//-----------------------------------------
-		hr
+		hr.padder-top-2x
 		.alert.alert-danger.alert--inverted.padder-bottom(ng-show="errors && errors.__count")
 			+icon('warning').shift-up.space-right
 			| There were errors while submitting your release. Please scroll up and fix the marked fields.
 		.alert.alert-danger.alert--inverted.padder-bottom(ng-show="error")
 			+icon('warning').shift-up.space-right
 			| {{ error }}
+		a.btn.btn-hollow.btn-lg.space-right(ui-sref="releaseDetails({ id: game.id, releaseId: release.id })") Cancel
 		button.btn.btn-default.btn-lg(ng-click="reset()") Reset
 		button.btn.btn-primary.btn-lg.pull-right(ng-click="submit()") Update
 		.clearfix
 
 		//- TODO fix
-		p.padder-bottom
+		p.padder-top-2x
 
 	//-----------------------------------------
 	// MENU BAR (right)

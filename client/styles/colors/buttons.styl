@@ -91,3 +91,18 @@
 
 			&:active
 				background-color rgba(black, 0.3)
+
+		// hollow button
+		&.btn-hollow
+			border-width 2px
+			border-color $color-dark-inv
+			background-color transparent
+			color $color-light-inv
+
+			&:hover
+				border-color $color-primary-black
+				color $color-primary-black
+			&:active
+				box-shadow none
+				border-color $color-dark-inv
+				color $color-light-inv

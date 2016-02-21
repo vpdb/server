@@ -23,7 +23,8 @@
  * Main controller containing the form for editing a release.
  */
 angular.module('vpdb.releases.edit', [])
-	.controller('ReleaseFileEditCtrl', function($scope, $state, $stateParams, $uibModal, ApiHelper, AuthService,
+	.controller('ReleaseFileEditCtrl', function($scope, $state, $stateParams, $uibModal, $rootScope,
+												ApiHelper, AuthService,
 												GameResource, ReleaseResource, TagResource) {
 
 		// init page
@@ -159,10 +160,9 @@ angular.module('vpdb.releases.edit', [])
 
 			ReleaseResource.update({ release: $scope.release.id }, release, function() {
 				$state.go('releaseDetails', $stateParams);
+				$rootScope.showNotification('Successfully updated release.');
 
 			}, ApiHelper.handleErrors($scope));
-
-			console.log(release);
 		};
 	}
 );

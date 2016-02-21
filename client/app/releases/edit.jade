@@ -38,25 +38,26 @@ include ../template/_mixins
 
 		//- AUTHORS
 		//-----------------------------------------
-		h4.h--primary.padder-top-2x Authors
-		i.pull-left(ng-show="updatedRelease.authors.length == 0") No authors added.
-		.row--fullwidth
-			.media.media--mini.media--mini-noborders.col-sm-4(ng-repeat="author in updatedRelease.authors", ng-mouseenter="hovering=true", ng-mouseleave="hovering=false")
-				.media-left.media-middle
-					img.img-avatar.img-avatar--sm(gravatar-src="author.user.gravatar_id", gravatar-default="404", fallback-icon="user")
-				.media-body
-					h6.h--no-margin.h--lighter.media-heading {{ author.user.name }}
-					span {{ author.roles.join(', ') }}
-				.media--edit-panel.fade-animation(ng-show="hovering")
-					+icon('pencil').pos-pencil.a.smaller(ng-click="addAuthor(author)")
-					+icon('trash').pos-trash.a.smaller(ng-click="removeAuthor(author)")
-		button.btn.btn-default.padder-top.pull-right(ng-click="addAuthor()")
-			+icon('plus-circle').space-right
-			| Add Author
-		.clearfix.padder-bottom
-		.alert.alert-danger.padder-bottom(ng-show="errors.authors")
-			+icon('warning').shift-up.space-right
-			| {{ errors.authors }}
+		.span(ng-show="editAuthors")
+			h4.h--primary.padder-top-2x Authors
+			i.pull-left(ng-show="updatedRelease.authors.length == 0") No authors added.
+			.row--fullwidth
+				.media.media--mini.media--mini-noborders.col-sm-4(ng-repeat="author in updatedRelease.authors", ng-mouseenter="hovering=true", ng-mouseleave="hovering=false")
+					.media-left.media-middle
+						img.img-avatar.img-avatar--sm(gravatar-src="author.user.gravatar_id", gravatar-default="404", fallback-icon="user")
+					.media-body
+						h6.h--no-margin.h--lighter.media-heading {{ author.user.name }}
+						span {{ author.roles.join(', ') }}
+					.media--edit-panel.fade-animation(ng-show="hovering")
+						+icon('pencil').pos-pencil.a.smaller(ng-click="addAuthor(author)")
+						+icon('trash').pos-trash.a.smaller(ng-click="removeAuthor(author)")
+			button.btn.btn-default.padder-top.pull-right(ng-click="addAuthor()")
+				+icon('plus-circle').space-right
+				| Add Author
+			.clearfix.padder-bottom
+			.alert.alert-danger.padder-bottom(ng-show="errors.authors")
+				+icon('warning').shift-up.space-right
+				| {{ errors.authors }}
 
 
 		//- TAGS
@@ -161,6 +162,9 @@ include ../template/_mixins
 		.alert.alert-danger.alert--inverted.padder-bottom(ng-show="errors && errors.__count")
 			+icon('warning').shift-up.space-right
 			| There were errors while submitting your release. Please scroll up and fix the marked fields.
+		.alert.alert-danger.alert--inverted.padder-bottom(ng-show="error")
+			+icon('warning').shift-up.space-right
+			| {{ error }}
 		button.btn.btn-default.btn-lg(ng-click="reset()") Reset
 		button.btn.btn-primary.btn-lg.pull-right(ng-click="submit()") Update
 		.clearfix

@@ -23,7 +23,7 @@
  * Main controller containing the form for editing a release.
  */
 angular.module('vpdb.releases.edit', [])
-	.controller('ReleaseFileEditCtrl', function($scope, $state, $stateParams, $uibModal, ApiHelper,
+	.controller('ReleaseFileEditCtrl', function($scope, $state, $stateParams, $uibModal, ApiHelper, AuthService,
 												GameResource, ReleaseResource, TagResource) {
 
 		// init page
@@ -32,6 +32,7 @@ angular.module('vpdb.releases.edit', [])
 		$scope.setTitle('Edit Release');
 
 		$scope.newLink = {};
+		$scope.editAuthors = false;
 
 		// fetch objects
 		$scope.game = GameResource.get({ id: $stateParams.id });
@@ -46,6 +47,7 @@ angular.module('vpdb.releases.edit', [])
 					});
 				}
 			});
+			$scope.editAuthors = AuthService.getUser().id === release.created_by.id;
 		});
 
 		/**
@@ -144,12 +146,16 @@ angular.module('vpdb.releases.edit', [])
 			release._tags = _.map(release.tags, 'id');
 			delete release.tags;
 
-			// map author users
-			release.authors = _.map(release.authors, function(author) {
-				author._user = author.user.id;
-				delete author.user;
-				return author;
-			});
+			// map authors
+			if ($scope.editAuthors) {
+				release.authors = _.map(release.authors, function(author) {
+					author._user = author.user.id;
+					delete author.user;
+					return author;
+				});
+			} else {
+				delete release.authors;
+			}
 
 			ReleaseResource.update({ release: $scope.release.id }, release, function() {
 				$state.go('releaseDetails', $stateParams);

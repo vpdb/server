@@ -220,6 +220,11 @@ ReleaseSchema.methods.toDetailed = function(opts) {
 		rls.starred = _.includes(opts.starredReleaseIds, this._id.toString());
 	}
 
+	if (this._created_by.toReduced) {
+		rls.created_by = this._created_by.toReduced();
+	}
+	delete rls._created_by;
+
 	return rls;
 };
 
@@ -256,7 +261,6 @@ ReleaseSchema.options.toObject = {
 		release.game = _.pick(release._game, ['id', 'title', 'manufacturer', 'year']);
 		delete release.__v;
 		delete release._id;
-		delete release._created_by;
 		delete release._tags;
 		delete release._game;
 		if (_.isArray(release.links)) {

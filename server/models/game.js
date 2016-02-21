@@ -225,6 +225,7 @@ GameSchema.methods.toDetailed = function(releaseOpts, callback) {
 
 		Release.find({ _game: this._id })
 			.populate({ path: '_tags' })
+			.populate({ path: '_created_by' })
 			.populate({ path: 'authors._user' })
 			.populate({ path: 'versions.files._file' })
 			.populate({ path: 'versions.files._media.playfield_image' })
@@ -235,7 +236,7 @@ GameSchema.methods.toDetailed = function(releaseOpts, callback) {
 					return callback(err);
 				}
 				game.releases = _.map(releases, function(release) {
-					return release.toDetailed(releaseOpts);
+					return _.omit(release.toDetailed(releaseOpts), 'game');
 				});
 				callback(null, game);
 			});

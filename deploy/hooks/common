@@ -79,7 +79,7 @@ repo_checkout_branch() {
 npm_install() {
 	echo "Installing Node.js dependencies..."
 	cd ${DEPLOY_ROOT}/${DEPLOY_ENV}/$1
-	npm install
+	npm install --no-optional
 	test $? -eq 0 || rollback_abort $1 "Failed to run npm install. Manually fix and relaunch deployment.".
 	echo "Installing Bower dependencies..."
 	bower install --force-latest

@@ -24,9 +24,8 @@
  */
 angular.module('vpdb.releases.edit', [])
 	.controller('ReleaseFileEditCtrl', function($scope, $state, $stateParams, $uibModal, $rootScope,
-												ApiHelper, AuthService,
+												ApiHelper, AuthService, Flavors,
 												GameResource, ReleaseResource, TagResource) {
-
 		// init page
 		$scope.theme('light');
 		$scope.setMenu('releases');
@@ -34,6 +33,7 @@ angular.module('vpdb.releases.edit', [])
 
 		$scope.newLink = {};
 		$scope.editAuthors = false;
+		$scope.flavors = Flavors;
 
 		// fetch objects
 		$scope.game = GameResource.get({ id: $stateParams.id });
@@ -163,6 +163,12 @@ angular.module('vpdb.releases.edit', [])
 				$rootScope.showNotification('Successfully updated release.');
 
 			}, ApiHelper.handleErrors($scope));
+		};
+
+		$scope.flattenBuilds = function(builds) {
+			return _.map(builds, function(build) {
+				return build.label;
+			}).join(', ');
 		};
 	}
 );

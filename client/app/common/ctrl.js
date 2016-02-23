@@ -127,6 +127,10 @@ angular.module('vpdb.common', [])
 			});
 		};
 
+		$rootScope.tableFile = function(file) {
+			return file.file.mime_type && /^application\/x-visual-pinball-table/i.test(file.file.mime_type);
+		};
+
 		$rootScope.login = function(opts) {
 			$uibModal.open({
 				templateUrl: '/auth/modal-login.html',

@@ -216,11 +216,6 @@ angular.module('vpdb.games.details', [])
 //				$log.info('Modal dismissed at: ' + new Date());
 //			});
 //		};
-
-		// todo refactor (make it more useful)
-		$scope.tableFile = function(file) {
-			return file.file.mime_type && /^application\/x-visual-pinball-table/i.test(file.file.mime_type);
-		};
 	})
 
 	.controller('RequestModPermissionModalCtrl', function($scope, $uibModalInstance) {

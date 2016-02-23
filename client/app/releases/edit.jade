@@ -176,14 +176,30 @@ include ../template/_mixins
 	//-----------------------------------------
 	// MENU BAR (right)
 	//-----------------------------------------
-	.col-sm-3.col--menu.text-center
-		img.img--logo(ng-show="game.media.logo.url", ng-src="{{ game.media.logo.variations['medium' + pixelDensitySuffix].url }}")
-		h3.h--multiline {{ game.title }}
-		| {{ release.name }}
+	.col-sm-3.col--menu
+		.text-center
+			img.img--logo(ng-show="game.media.logo.url", ng-src="{{ game.media.logo.variations['medium' + pixelDensitySuffix].url }}")
+			h3.h--multiline {{ game.title }}
+			| {{ release.name }}
 
-		.clearfix
-		a.btn.padder-top-2x(ui-sref="addReleaseVersion({ id: game.id, releaseId: release.id })")
-			+icon('plus-circle').space-right.hidden-md
-			| Upload File
+			.clearfix
+			a.btn.padder-top-2x(ui-sref="addReleaseVersion({ id: game.id, releaseId: release.id })")
+				+icon('plus-circle').space-right.hidden-md
+				| Upload File
 
 		p.clearfix.padder-bottom-2x
+
+
+		//- VERSIONS
+		//-----------------------------------------
+		h4.h--primary Edit Version
+		table.table.table-striped.table--selectable
+			tbody
+				tr.center-vertically(ng-repeat="version in release.versions")
+					td {{ version.version }}
+					td: .multiline-wrapper: img.img--rounded.img--ar-square.img--xs.pull-right.space-left(
+						ng-repeat="file in version.files | filter:tableFile",
+						ng-src="{{ file.media.playfield_image.variations['square'].url }}"
+						uib-tooltip="{{ flavors.orientation.values[file.flavor.orientation].other }} / {{ flavors.lighting.values[file.flavor.lighting].name }} / {{ flattenBuilds(file.compatibility) }}"
+						tooltip-append-to-body="true")
+

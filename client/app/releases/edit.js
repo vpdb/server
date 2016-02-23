@@ -136,6 +136,20 @@ angular.module('vpdb.releases.edit', [])
 			});
 		};
 
+		$scope.editVersion = function(version) {
+			$uibModal.open({
+				templateUrl: '/releases/modal-version-edit.html',
+				controller: 'VersionEditCtrl',
+				size: 'lg',
+				resolve: {
+					release: function() { return $scope.release; },
+					version: function() { return version; }
+				}
+			}).result.then(function(newAuthor) {
+
+			});
+		};
+
 		/**
 		 * Posts the release add form to the server.
 		 */
@@ -171,4 +185,11 @@ angular.module('vpdb.releases.edit', [])
 			}).join(', ');
 		};
 	}
-);
+).controller('VersionEditCtrl', function($scope, $uibModalInstance, release, version, BootstrapTemplate) {
+
+	BootstrapTemplate.patchCalendar();
+
+	$scope.version = version;
+	$scope.version = version;
+
+});

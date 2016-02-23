@@ -1,0 +1,50 @@
+include ../template/_mixins
+
+.theme-light
+	.modal-header
+		h1.h--no-margin.h--small
+			+icon('ext').space-right
+			| &nbsp;Edit Version <strong>{{ version.version }}</strong>
+	.modal-body
+
+		//- CHANGELOG
+		//-----------------------------------------
+		h4.h--primary Changelog
+		.form-group
+			uib-tabset.tabset--light
+				label.label--small.pull-right(markdown-info="Markdown enabled.")
+				uib-tab
+					uib-tab-heading(title="Write"): +icon('edit')
+					textarea.textarea--full.msd-elastic(placeholder="Release Information", ng-model="version.changes")
+				uib-tab
+					uib-tab-heading(title="Preview"): +icon('eye')
+					div.markdown(markdown="version.changes")
+					label.tab__label(ng-show="!version.changes || version.changes.length == 0") Nothing to preview.
+
+		//- CHANGELOG
+		//-----------------------------------------
+		h4.h--primary.padder-top-2x Release Date
+		.form-group(ng-class="{ error: errors.versions[0].released_at }")
+			.row
+				.col-sm-3: .input-group
+					input.form-control.datepicker(type='text', ng-model='version.released_at', ng-required='true',
+						uib-datepicker-popup="yyyy-MM-dd",
+						format-day-header="EE"
+						is-open="calendarOpened",
+						close-text="Close",
+						show-weeks="false",
+						starting-day="1"
+					)
+					span.input-group-addon: +icon('calendar').a(ng-click='openCalendar($event)')
+				.col-sm-2
+					uib-timepicker(ng-model="meta.releaseTime", hour-step="1", minute-step="5", show-meridian="ismeridian")
+				.col-sm-7
+					i Leave empty for submission time.
+
+	.modal-footer
+		button.btn.btn-hollow.pull-left(ng-click="$dismiss()") Cancel
+		button.btn.btn--secondary(ng-click="add()")
+			+icon('check-circle').space-right
+			| Save Changes
+
+include ../template/timepicker

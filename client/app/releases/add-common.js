@@ -24,7 +24,6 @@
  */
 angular.module('vpdb.releases.add', []).controller('ReleaseAddBaseCtrl', function($scope, $uibModal, ApiHelper, AuthService, BuildResource, FileResource, BootstrapTemplate) {
 
-
 	BootstrapTemplate.patchCalendar();
 
 	/**

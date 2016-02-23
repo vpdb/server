@@ -195,7 +195,7 @@ include ../template/_mixins
 		h4.h--primary Edit Version
 		table.table.table-striped.table--selectable
 			tbody
-				tr.center-vertically(ng-repeat="version in release.versions")
+				tr.center-vertically(ng-repeat="version in release.versions", ng-click="editVersion(version)")
 					td {{ version.version }}
 					td: .multiline-wrapper: img.img--rounded.img--ar-square.img--xs.pull-right.space-left(
 						ng-repeat="file in version.files | filter:tableFile",

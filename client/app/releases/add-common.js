@@ -281,7 +281,7 @@ angular.module('vpdb.releases.add', []).controller('ReleaseAddBaseCtrl', functio
 	 * @param type
 	 */
 	$scope.onBackglassImageError = function(file, type) {
-		delete $scope.meta.mediaLinks[$scope.getMediaKey(file, type)];
+		//delete $scope.meta.mediaLinks[$scope.getMediaKey(file, type)];
 	};
 
 

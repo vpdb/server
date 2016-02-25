@@ -185,11 +185,46 @@ angular.module('vpdb.releases.edit', [])
 			}).join(', ');
 		};
 	}
-).controller('VersionEditCtrl', function($scope, $uibModalInstance, release, version, BootstrapTemplate) {
+).controller('VersionEditCtrl', function($scope, $controller, $uibModalInstance, release, version, BootstrapTemplate, ReleaseMeta) {
 
 	BootstrapTemplate.patchCalendar();
 
-	$scope.version = version;
-	$scope.version = version;
+	angular.extend(this, $controller('ReleaseAddBaseCtrl', { $scope: $scope }));
+
+	$scope.meta = _.cloneDeep(ReleaseMeta);
+
+	$scope.meta.files = _.map(version.files, function(file) {
+		file.file._randomId = file.file.id;
+		$scope.meta.mediaFiles[$scope.getMediaKey(file.file, 'playfield_image')] = createMeta(file.media.playfield_image);
+		$scope.meta.mediaLinks[$scope.getMediaKey(file.file, 'playfield_image')] = createLink(file.media.playfield_image, 'medium');
+		if (file.media.playfield_video) {
+			$scope.meta.mediaFiles[$scope.getMediaKey(file.file, 'playfield_video')] = createMeta(file.media.playfield_video);
+			$scope.meta.mediaLinks[$scope.getMediaKey(file.file, 'playfield_video')] = createLink(file.media.playfield_video, 'small-rotated');
+		}
+		return createMeta(file.file);
+	});
+
+	console.log($scope.meta);
+	$scope.release = release;
+	$scope.releaseVersion = version;
 
 });
+
+function createMeta(file) {
+	return {
+		name: file.name,
+		bytes: file.bytes,
+		mimeType: file.mime_type,
+		icon: 'ext-vp' + (/table-x$/i.test(file.mime_type) ? 'x' : 't'),
+		randomId: file._randomId,
+		storage: file
+	};
+}
+
+function createLink(file, variation) {
+	return {
+		url: file.variations[variation].url,
+		is_protected: file.variations[variation].is_protected,
+		rotation: 0
+	};
+}

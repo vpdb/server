@@ -41,6 +41,7 @@ module.exports = function(grunt) {
 		},
 
 		clean: {
+			options:    { force: true },
 			build:      { src: [ '<%= config.buildRoot %>/*', "!.gitignore", "!img" ] },
 			coverage:   { src: [ '<%= config.coverageRoot %>/**'] },
 			devsite:    { src: [ '<%= config.devsiteRoot %>' ] },

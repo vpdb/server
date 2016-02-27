@@ -3,6 +3,12 @@
 DEPLOY_ENV='staging'
 ROLLBACK=1
 
+# Re-launch as deployer if root
+if [ "$(id -u)" == "0" ]; then
+	sudo -i -H  -u deployer SPWD="$PWD" SCRIPT="$0" BRANCH="$1" COMMIT="$2" bash -c 'cd $SPWD; "$SCRIPT" $BRANCH $COMMIT'
+	exit $?
+fi
+
 . ./hooks/common
 
 BRANCH=`repo_get_branch $1`

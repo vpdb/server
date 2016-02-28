@@ -3,27 +3,16 @@
 cd /usr/local/src
 
 # download source, plus naxsi, headers-more and pagespeed.
-wget http://nginx.org/download/nginx-1.9.4.tar.gz
+wget http://nginx.org/download/nginx-1.9.12.tar.gz
 wget https://github.com/nbs-system/naxsi/archive/master.tar.gz -O naxsi-master.tar.gz
-wget https://github.com/openresty/headers-more-nginx-module/archive/v0.261.tar.gz -O headers-more-0.261.tar.gz
-wget https://github.com/pagespeed/ngx_pagespeed/archive/v1.9.32.6-beta.tar.gz -O pagespeed-v1.9.32.6-beta.tar.gz
-wget https://github.com/FRiCKLE/ngx_cache_purge/archive/2.3.tar.gz -O cache_purge-2.3.tar.gz
+wget https://github.com/openresty/headers-more-nginx-module/archive/v0.29rc1.tar.gz -O headers-more-0.29rc1.tar.gz
 
-tar xvfz nginx-1.9.4.tar.gz
-tar xvfz headers-more-0.261.tar.gz
+tar xvfz nginx-1.9.12.tar.gz
+tar xvfz headers-more-0.29rc1.tar.gz
 tar xvfz naxsi-master.tar.gz
-tar xvfz pagespeed-v1.9.32.6-beta.tar.gz
-tar xvfz cache_purge-2.3.tar.gz
-
-# download pagespeed dep
-cd ngx_pagespeed-1.9.32.6-beta
-grep psol README.md
-wget https://dl.google.com/dl/page-speed/psol/1.9.32.6.tar.gz
-tar -xzvf 1.9.32.6.tar.gz
-cd ..
 
 # configure
-cd nginx-1.9.4
+cd nginx-1.9.12
 ./configure \
 --add-module=../naxsi-master/naxsi_src \
 --prefix=/usr/local \
@@ -42,7 +31,7 @@ cd nginx-1.9.4
 --with-http_ssl_module \
 --with-http_realip_module \
 --with-http_sub_module \
---with-http_spdy_module \
+--with-http_v2_module \
 --with-http_flv_module \
 --with-http_mp4_module \
 --with-http_gunzip_module \
@@ -56,16 +45,14 @@ cd nginx-1.9.4
 --with-ipv6 \
 --with-cc-opt='-g -O2 -fstack-protector --param=ssp-buffer-size=4 -Wformat -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2' \
 --with-ld-opt='-Wl,-z,relro -Wl,--as-needed' \
---add-module=../headers-more-nginx-module-0.261 \
---add-module=../ngx_pagespeed-1.9.32.6-beta \
---add-module=../ngx_cache_purge-2.3
+--add-module=../headers-more-nginx-module-0.29rc1
 
 # compile
 make
 
 # install
 checkinstall --install=no -y
-dpkg -i nginx_1.9.4-1_amd64.deb
+dpkg -i nginx_1.9.12-1_amd64.deb
 wget https://raw.githubusercontent.com/freezy/node-vpdb/master/deploy/init/nginx -O /etc/init.d/nginx
 chmod 755 /etc/init.d/nginx
 update-rc.d -f nginx defaults

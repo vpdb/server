@@ -301,6 +301,9 @@ exports.generateApiToken = function(user, now, isRefreshToken) {
  * @returns {string}
  */
 exports.generateStorageToken = function(user, now, path) {
+	if (!path.startsWith('/')) {
+		path = urlPath(path);
+	}
 	return jwt.encode({
 		iss: user.id,
 		iat: now,
@@ -308,3 +311,11 @@ exports.generateStorageToken = function(user, now, path) {
 		path: path
 	}, config.vpdb.secret);
 };
+
+
+function urlPath(url) {
+	let u = require('url').parse(url);
+	let q = u.search || '';
+	let h = u.hash || '';
+	return u.pathname + q + h;
+}

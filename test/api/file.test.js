@@ -367,7 +367,7 @@ describe('The VPDB `file` API', function() {
 					hlp.expectStatus(err, res, 201);
 					hlp.doomFile('member', res.body.id);
 					expect(res.body.url).to.be.ok();
-					request.get(res.body.url).end(hlp.status(401, done));
+					request.get(hlp.urlPath(res.body.url)).end(hlp.status(401, done));
 				});
 		});
 
@@ -397,7 +397,7 @@ describe('The VPDB `file` API', function() {
 				},
 				// 2. check it's there
 				function(next) {
-					request.get(url).as(user).end(hlp.status(200, next));
+					request.get(hlp.urlPath(url)).as(user).end(hlp.status(200, next));
 				},
 				// 3. delete
 				function(next) {
@@ -405,7 +405,7 @@ describe('The VPDB `file` API', function() {
 				},
 				// 4. check it's not there
 				function(next) {
-					request.get(url).as(user).end(hlp.status(404, next));
+					request.get(hlp.urlPath(url)).as(user).end(hlp.status(404, next));
 				}
 			], done);
 		});

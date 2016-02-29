@@ -32,10 +32,15 @@ module.exports = function(superagent, options) {
 	options.host = argv.host || options.host || process.env.HOST || 'localhost';
 	options.port = argv.port || options.port || process.env.PORT || 7357;
 	options.authHeader = options.authHeader || process.env.AUTH_HEADER || 'Authorization';
-	options.saveHost = options.saveHost || 'vpdb.io';
+	options.saveHost = options.saveHost || 'api.vpdb.io';
 	options.saveRoot = options.saveRoot || 'doc/api/v1';
 	options.ignoreReqHeaders = options.ignoreReqHeaders || ['cookie', 'host', 'user-agent'];
 	options.ignoreResHeaders = options.ignoreResHeaders || ['x-token-refresh', 'x-user-dirty', 'vary', 'connection', 'transfer-encoding', 'date'];
+	options.pathTrim = options.pathTrim || function(path) {
+		let p = path.split('/');
+		p.splice(0, 2);
+		return '/' + p.join('/');
+	};
 
 	var Request = superagent.Request;
 
@@ -60,7 +65,7 @@ module.exports = function(superagent, options) {
 		var that = this;
 		if (this._saveReq) {
 			dest = saveRoot(options.saveRoot, this._saveReq.path, '-req.json');
-			dump = this.req.method + ' ' + this.req.path + ' HTTP/1.1\r\n';
+			dump = this.req.method + ' ' + options.pathTrim(this.req.path) + ' HTTP/1.1\r\n';
 			forceHeaders = this._saveReq.headers || [];
 			dump += 'Host: ' + options.saveHost + '\r\n';
 			_.each(this.req._headers, function(headerVal, header) {

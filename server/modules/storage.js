@@ -387,8 +387,8 @@ Storage.prototype.url = function(file, variation) {
 	var storagePath = file.isPublic(variation) ? settings.storagePublicPath.bind(settings) : settings.storageProtectedPath.bind(settings);
 	var variationName = _.isObject(variation) ? variation.name : variation;
 	return variationName ?
-		storagePath('/files/' + variationName + '/' + file.id + file.getExt(variation)) :
-		storagePath('/files/' + file.id + file.getExt(variation));
+		storagePath('/files/' + variationName + '/' + file.id + file.getExt(variation), true) :
+		storagePath('/files/' + file.id + file.getExt(variation), true);
 };
 
 /**

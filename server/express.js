@@ -42,6 +42,7 @@ exports.configure = function(app, raygunClient) {
 
 	var runningLocal = !process.env.APP_NAME || (process.env.APP_NAME !== 'production' && process.env.APP_NAME !== 'staging');
 	var runningDev = process.env.NODE_ENV !== 'production';
+	var runningTest = process.env.NODE_ENV === 'test';
 	var ipAddress = process.env.IPADDRESS || '127.0.0.1';
 
 	logger.info('[express] Setting up Express for running %s in %s mode.', runningLocal ? 'locally' : 'remotely', runningDev ? 'development' : 'production');
@@ -65,10 +66,6 @@ exports.configure = function(app, raygunClient) {
 		app.enable('trust proxy');
 	}
 
-/*	app.use(domainError(sendOfflineMsg, function (err) {
-		gracefulExit.gracefulExitHandler(app);
-	}));*/
-
 	if (runningLocal) {
 		// in production the reverse proxy is taking care of this
 		app.use(expressCompression({ filter: function(req, res) { return /json|text|javascript|css/.test(res.getHeader('Content-Type')); }, level: 9 }));
@@ -77,25 +74,26 @@ exports.configure = function(app, raygunClient) {
 	// general stuff
 	app.use(expressBodyParser.json());
 
-	// static file serving
-	// markup (which is pre-compiled in production)
-	app.use(/.*\.html$/i, jadeStatic({
-		baseDir: path.resolve(__dirname, '../client/app'),
-		baseUrl: '/',
-		jade: _.extend(ctrl.viewParams(), {
-			pretty: true
-		})
-	}));
+	if (runningLocal && !runningTest) {
 
-	// other static files
-	app.use(express.static(writeable.buildRoot, { maxAge: 3600*24*30*1000 }));
-	app.use(express.static(path.resolve(__dirname, '../client/static'), { maxAge: 3600*24*30*1000 }));
-	app.use(express.static(path.resolve(__dirname, '../client/static/images/favicon'), { maxAge: 3600*24*30*1000 }));
-	app.use('/js', express.static(path.resolve(__dirname, '../client/app'), { maxAge: 3600*24*30*1000 }));
-	app.use('/js/config.js', express.static(path.resolve(writeable.jsRoot, settings.clientConfigName()), { maxAge: 3600 * 24 * 30 * 1000 }));
+		// static file serving
+		// markup (which is pre-compiled in production)
+		app.use(/.*\.html$/i, jadeStatic({
+			baseDir: path.resolve(__dirname, '../client/app'),
+			baseUrl: '/',
+			jade: _.extend(ctrl.viewParams(), {
+				pretty: true
+			})
+		}));
 
-	// only for the source map, see https://github.com/gruntjs/grunt-contrib-stylus/pull/117
-	if (runningLocal) {
+		// other static files
+		app.use(express.static(writeable.buildRoot, { maxAge: 3600*24*30*1000 }));
+		app.use(express.static(path.resolve(__dirname, '../client/static'), { maxAge: 3600*24*30*1000 }));
+		app.use(express.static(path.resolve(__dirname, '../client/static/images/favicon'), { maxAge: 3600*24*30*1000 }));
+		app.use('/js', express.static(path.resolve(__dirname, '../client/app'), { maxAge: 3600*24*30*1000 }));
+		app.use('/js/config.js', express.static(path.resolve(writeable.jsRoot, settings.clientConfigName()), { maxAge: 3600 * 24 * 30 * 1000 }));
+
+		// only for the source map, see https://github.com/gruntjs/grunt-contrib-stylus/pull/117
 		app.use('/css/client/styles/vpdb.css.map', express.static(path.resolve(writeable.buildRoot, 'css/vpdb.css.map'), { maxAge: 3600 * 24 * 30 * 1000 }));
 		app.use('/css/client/styles', express.static(path.resolve(__dirname, '../client/styles'), { maxAge: 3600 * 24 * 30 * 1000 }));
 	}
@@ -170,16 +168,18 @@ exports.configure = function(app, raygunClient) {
 	}
 
 	// per default, serve index and let Angular.JS figure out if it's a valid route (nginx does this in production).
-	app.use(function(req, res) {
-		/* istanbul ignore else: Managed by Nginx in production. */
-		if (!/\.html$/.test(req.path)) {
-			res.status(200).render('index',  _.extend(ctrl.viewParams(), {
-				pretty: true
-			}));
-		} else {
-			res.status(404).end();
-		}
-	});
+	if (runningLocal && !runningTest) {
+		app.use(function(req, res) {
+			/* istanbul ignore else: Managed by Nginx in production. */
+			if (!/\.html$/.test(req.path)) {
+				res.status(200).render('index', _.extend(ctrl.viewParams(), {
+					pretty: true
+				}));
+			} else {
+				res.status(404).end();
+			}
+		});
+	}
 };
 
 //function sendOfflineMsg() {

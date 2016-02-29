@@ -31,7 +31,7 @@ describe('The quota engine of VPDB', function() {
 			hlp.release.createRelease('contributor', request, function(release) {
 				hlp.storageToken(request, 'ratetest1', release.versions[0].files[0].file.url, function(token) {
 					request
-						.get(release.versions[0].files[0].file.url)
+						.get(hlp.urlPath(release.versions[0].files[0].file.url))
 						.query({ token: token })
 						.end(function(err, res) {
 							hlp.expectStatus(err, res, 200);
@@ -54,7 +54,7 @@ describe('The quota engine of VPDB', function() {
 			hlp.release.createRelease('contributor', request, function(release) {
 				async.timesSeries(4, function(n, next) {
 					request
-						.get(release.versions[0].files[0].file.url)
+						.get(hlp.urlPath(release.versions[0].files[0].file.url))
 						.as('ratetest2')
 						.end(function(err, res) {
 							if (n < 3) {

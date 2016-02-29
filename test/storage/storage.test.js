@@ -31,7 +31,7 @@ describe('The storage engine of VPDB', function() {
 				hlp.doomFile('member', backglass.id);
 				hlp.storageToken(request, 'member', backglass.url, function(token) {
 					request
-						.get(backglass.url)
+						.get(hlp.urlPath(backglass.url))
 						.query({ token: token })
 						.end(function(err, res) {
 							hlp.expectStatus(err, res, 200);
@@ -48,14 +48,14 @@ describe('The storage engine of VPDB', function() {
 				hlp.doomFile('member', backglass.id);
 				hlp.storageToken(request, 'member', backglass.url, function(token) {
 					request
-						.get(backglass.url)
+						.get(hlp.urlPath(backglass.url))
 						.query({ token: token })
 						.end(function(err, res) {
 							hlp.expectStatus(err, res, 200);
 
 							var lastModified = res.headers['last-modified'];
 							request
-								.get(backglass.url)
+								.get(hlp.urlPath(backglass.url))
 								.query({ token: token })
 								.set('If-Modified-Since', lastModified)
 								.end(function(err, res) {
@@ -88,7 +88,7 @@ describe('The storage engine of VPDB', function() {
 						hlp.doomFile('member', res.body.id);
 						expect(res.body.url).to.be.ok();
 						request
-							.get(res.body.url)
+							.get(hlp.urlPath(res.body.url))
 							.as('member')
 							.end(function(err, res) {
 								hlp.expectStatus(err, res, 200);
@@ -110,7 +110,7 @@ describe('The storage engine of VPDB', function() {
 						hlp.expectStatus(err, res, 201);
 						hlp.doomFile('member', res.body.id);
 						expect(res.body.url).to.be.ok();
-						request.get(res.body.url).as('anothermember').end(hlp.status(403, done));
+						request.get(hlp.urlPath(res.body.url)).as('anothermember').end(hlp.status(403, done));
 					});
 			});
 
@@ -126,7 +126,7 @@ describe('The storage engine of VPDB', function() {
 						hlp.expectStatus(err, res, 201);
 						hlp.doomFile('member', res.body.id);
 						expect(res.body.url).to.be.ok();
-						request.get(res.body.url).end(hlp.status(401, done));
+						request.get(hlp.urlPath(res.body.url)).end(hlp.status(401, done));
 					});
 			});
 
@@ -134,7 +134,7 @@ describe('The storage engine of VPDB', function() {
 
 				hlp.file.createBackglass('member', request, function(backglass) {
 					hlp.doomFile('member', backglass.id);
-					request.get(backglass.variations['small-2x'].url).as('member').end(function(err, res) {
+					request.get(hlp.urlPath(backglass.variations['small-2x'].url)).as('member').end(function(err, res) {
 						hlp.expectStatus(err, res, 200);
 						expect(res.headers['content-length']).to.be.greaterThan(0);
 						done();
@@ -145,7 +145,7 @@ describe('The storage engine of VPDB', function() {
 			it('should only return the header when requesting a HEAD on the storage URL', function(done) {
 
 				hlp.file.createTextfile('member', request, function(textfile) {
-					request.head(textfile.url).as('member').end(function(err, res) {
+					request.head(hlp.urlPath(textfile.url)).as('member').end(function(err, res) {
 						hlp.expectStatus(err, res, 200);
 						hlp.doomFile('member', textfile.id);
 						expect(res.headers['content-length']).to.be('0');
@@ -159,7 +159,7 @@ describe('The storage engine of VPDB', function() {
 
 				hlp.file.createBackglass('member', request, function(backglass) {
 					hlp.doomFile('member', backglass.id);
-					request.head(backglass.variations['small-2x'].url).as('member').end(function(err, res) {
+					request.head(hlp.urlPath(backglass.variations['small-2x'].url)).as('member').end(function(err, res) {
 						hlp.expectStatus(err, res, 200);
 						expect(res.headers['content-length']).to.be('0');
 						expect(res.text).to.not.be.ok();
@@ -175,7 +175,7 @@ describe('The storage engine of VPDB', function() {
 			it('should block until the file is finished processing when requesting the variation', function(done) {
 
 				hlp.game.createGame('contributor', request, function(game) {
-					request.get(game.media.backglass.variations['small-2x'].url).end(function(err, res) {
+					request.get(hlp.urlPath(game.media.backglass.variations['small-2x'].url)).end(function(err, res) {
 						hlp.expectStatus(err, res, 200);
 						expect(res.headers['content-length']).to.be.greaterThan(0);
 						done();
@@ -186,7 +186,7 @@ describe('The storage engine of VPDB', function() {
 			it('should grant access to anonymous users', function(done) {
 
 				hlp.game.createGame('contributor', request, function(game) {
-					request.get(game.media.backglass.variations.small.url).end(function(err, res) {
+					request.get(hlp.urlPath(game.media.backglass.variations.small.url)).end(function(err, res) {
 						hlp.expectStatus(err, res, 200);
 						expect(res.headers['content-length']).to.be.greaterThan(0);
 						done();
@@ -197,7 +197,7 @@ describe('The storage engine of VPDB', function() {
 			it('should grant access to logged users', function(done) {
 
 				hlp.game.createGame('contributor', request, function(game) {
-					request.get(game.media.backglass.url).as('member').end(function(err, res) {
+					request.get(hlp.urlPath(game.media.backglass.url)).as('member').end(function(err, res) {
 						hlp.expectStatus(err, res, 200);
 						expect(res.headers['content-length']).to.be.greaterThan(0);
 						done();
@@ -217,7 +217,7 @@ describe('The storage engine of VPDB', function() {
 
 					// now spawn 5 clients that try to retrieve this simultaneously
 					async.times(5, function(n, next){
-						request.get(video.variations['small-rotated'].url).as('contributor').end(function(err, res) {
+						request.get(hlp.urlPath(video.variations['small-rotated'].url)).as('contributor').end(function(err, res) {
 							hlp.expectStatus(err, res, 200);
 							expect(res.headers['content-length']).to.be.greaterThan(0);
 							next();
@@ -231,7 +231,7 @@ describe('The storage engine of VPDB', function() {
 
 			it('should block a video variation with a different MIME type until processing is finished', function(done) {
 				hlp.file.createAvi('contributor', request, function(video) {
-					request.get(video.variations['small-rotated'].url).as('contributor').end(function(err, res) {
+					request.get(hlp.urlPath(video.variations['small-rotated'].url)).as('contributor').end(function(err, res) {
 						hlp.expectStatus(err, res, 200);
 						hlp.doomFile('contributor', video.id);
 						expect(res.headers['content-length']).to.be.greaterThan(0);
@@ -242,7 +242,7 @@ describe('The storage engine of VPDB', function() {
 
 			it('should block HEAD of a video variation with a different MIME type until processing is finished', function(done) {
 				hlp.file.createAvi('contributor', request, function(video) {
-					request.head(video.variations['small-rotated'].url).as('contributor').end(function(err, res) {
+					request.head(hlp.urlPath(video.variations['small-rotated'].url)).as('contributor').end(function(err, res) {
 						hlp.expectStatus(err, res, 200);
 						hlp.doomFile('contributor', video.id);
 						expect(res.headers['content-length']).to.be('0');
@@ -259,14 +259,14 @@ describe('The storage engine of VPDB', function() {
 			it('should deny access to anonymous users', function(done) {
 				hlp.release.createRelease('member', request, function(release) {
 					var fileUrl = release.versions[0].files[0].file.url;
-					request.get(fileUrl).end(hlp.status(401, done, 'valid credentials'));
+					request.get(hlp.urlPath(fileUrl)).end(hlp.status(401, done, 'valid credentials'));
 				});
 			});
 
 			it('should grant access to an authenticated user', function(done) {
 				hlp.release.createRelease('member', request, function(release) {
 					var fileUrl = release.versions[0].files[0].file.url;
-					request.get(fileUrl).as('contributor').end(hlp.status(200, done));
+					request.get(hlp.urlPath(fileUrl)).as('contributor').end(hlp.status(200, done));
 				});
 			});
 
@@ -282,7 +282,7 @@ describe('The storage engine of VPDB', function() {
 							hlp.expectStatus(err, res, 200);
 							expect(res.body).to.be.an('object');
 							expect(res.body).to.have.key(fileUrl);
-							request.get(fileUrl).query({ token: res.body[fileUrl] }).end(hlp.status(200, done));
+							request.get(hlp.urlPath(fileUrl)).query({ token: res.body[fileUrl] }).end(hlp.status(200, done));
 						});
 				});
 			});

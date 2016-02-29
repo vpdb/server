@@ -202,7 +202,7 @@ describe('The VPDB `ROM` API', function() {
 						hlp.doomRom(user, res.body.id);
 						var rom = res.body;
 						hlp.storageToken(request, 'member2', rom.file.url, function(token) {
-							request.get(rom.file.url).query({ token: token }).as('member2').end(hlp.status(200, done));
+							request.get(hlp.urlPath(rom.file.url)).query({ token: token }).as('member2').end(hlp.status(200, done));
 						});
 					});
 			});

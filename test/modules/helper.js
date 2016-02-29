@@ -10,6 +10,7 @@ var faker = require('faker');
 var objectPath = require("object-path");
 var randomstring = require('randomstring');
 var expect = require('expect.js');
+var parseUrl = require('url').parse;
 
 var superuser = '__superuser';
 
@@ -488,20 +489,11 @@ exports.status = function(code, contains, next) {
 			err = { status: res.status, response: res };
 		}
 
-		var status, body;
-		if (code >= 200 && code < 300) {
-			status = res.status;
-			body = res.body;
-			if (err) {
-				throw new Error('Error in request: ' + err.message);
-			}
-		} else {
-			status = err.status;
-			body = err.response.body;
-		}
+		var status = err ? err.status : res.status;
+		var body = err ? err.response.body : res.body;
 
 		if (status !== code) {
-			console.warn(body);
+			console.warn("RESPONSE BODY = %j", body);
 		}
 		expect(status).to.be(code);
 		if (contains) {
@@ -516,7 +508,6 @@ exports.status = function(code, contains, next) {
 };
 
 exports.expectStatus = function(err, res, code, contains) {
-	var status, body;
 
 	// shift args if no error provided
 	if (_.isNumber(res)) {
@@ -525,17 +516,9 @@ exports.expectStatus = function(err, res, code, contains) {
 		res = err;
 		err = undefined;
 	}
-	if (code >= 200 && code < 300) {
-		status = res.status;
-		body = res.body;
-		if (err) {
-			exports.dump(err.response.body);
-		}
-		expect(err).to.not.be.ok();
-	} else {
-		status = err.status;
-		body = err.response.body;
-	}
+
+	var status = err ? err.status : res.status;
+	var body = err ? err.response.body : res.body;
 
 	if (status !== code) {
 		console.log(res.body);
@@ -545,6 +528,16 @@ exports.expectStatus = function(err, res, code, contains) {
 	if (contains) {
 		expect(body.error.toLowerCase()).to.contain(contains.toLowerCase());
 	}
+};
+
+exports.urlPath = function(url) {
+	if (url[0] === '/') {
+		return url;
+	}
+	let u = parseUrl(url);
+	let q = u.search || '';
+	let h = u.hash || '';
+	return u.pathname + q + h;
 };
 
 exports.expectValidationError = function(err, res, field, contains, code) {

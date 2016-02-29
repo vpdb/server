@@ -939,7 +939,7 @@ describe('The VPDB `release` API', function() {
 					game_media: false
 				};
 				hlp.storageToken(request, 'countertest', url, function(token) {
-					request.get(url).query({ token: token, body: JSON.stringify(body) }).end(function(err, res) {
+					request.get(hlp.urlPath(url)).query({ token: token, body: JSON.stringify(body) }).end(function(err, res) {
 						hlp.expectStatus(err, res, 200);
 
 						var tests = [];

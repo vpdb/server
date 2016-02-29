@@ -340,12 +340,22 @@ Settings.prototype.apiPath = function(path) {
 	return this.current.vpdb.api.pathname + (path || '');
 };
 
-Settings.prototype.storagePublicPath = function(path) {
-	return this.storageUri(this.current.vpdb.storage.public.api.pathname + (path || ''), 'public');
+Settings.prototype.storagePublicPath = function(path, absolutePath) {
+	if (absolutePath) {
+		return this.storageUri(this.current.vpdb.storage.public.api.pathname + (path || ''), 'public');
+	} else {
+		return this.current.vpdb.storage.public.api.pathname + (path || '');
+	}
+
 };
 
-Settings.prototype.storageProtectedPath = function(path) {
-	return this.storageUri(this.current.vpdb.storage.protected.api.pathname + (path || ''), 'protected');
+Settings.prototype.storageProtectedPath = function(path, absolutePath) {
+	if (absolutePath) {
+		return this.storageUri(this.current.vpdb.storage.protected.api.pathname + (path || ''), 'protected');
+	} else {
+		return this.current.vpdb.storage.protected.api.pathname + (path || '');
+	}
+
 };
 
 Settings.prototype.webUri = function(path) {

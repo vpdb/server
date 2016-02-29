@@ -341,11 +341,11 @@ Settings.prototype.apiPath = function(path) {
 };
 
 Settings.prototype.storagePublicPath = function(path) {
-	return this.current.vpdb.storage.public.api.pathname + (path || '');
+	return this.storageUri(this.current.vpdb.storage.public.api.pathname + (path || ''), 'public');
 };
 
 Settings.prototype.storageProtectedPath = function(path) {
-	return this.current.vpdb.storage.protected.api.pathname + (path || '');
+	return this.storageUri(this.current.vpdb.storage.protected.api.pathname + (path || ''), 'protected');
 };
 
 Settings.prototype.webUri = function(path) {
@@ -353,6 +353,11 @@ Settings.prototype.webUri = function(path) {
 	       this.current.vpdb.webapp.hostname +
 	      (this.current.vpdb.webapp.port === 80 || this.current.vpdb.webapp.port === 443 ? '' : ':' + this.current.vpdb.webapp.port) +
 	      (path || '');
+};
+
+Settings.prototype.storageUri = function(path, visibility) {
+	let api = this.current.vpdb.storage[visibility].api;
+	return api.protocol + '://' + api.hostname + (api.port === 80 || api.port === 443 ? '' : ':' + api.port) + (path || '');
 };
 
 Settings.prototype.clientConfig = function() {

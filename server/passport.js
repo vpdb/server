@@ -40,23 +40,23 @@ exports.configure = function() {
 
 	// use google strategy
 	if (config.vpdb.passport.google.enabled) {
-		logger.info('[passport] Enabling Google authentication strategy.');
+		logger.info('[passport] Enabling Google authentication strategy with callback at %s', settings.webUri('/auth/google/callback'));
 		passport.use(new GoogleStrategy({
 				clientID: config.vpdb.passport.google.clientID,
 				clientSecret: config.vpdb.passport.google.clientSecret,
-				callbackURL: settings.webUri() + '/auth/google/callback'
+				callbackURL: settings.webUri('/auth/google/callback')
 			}, exports.verifyCallbackOAuth('google')
 		));
 	}
 
 	// use github strategy
 	if (config.vpdb.passport.github.enabled) {
-		logger.info('[passport] Enabling GitHub authentication strategy.');
+		logger.info('[passport] Enabling GitHub authentication strategy with callback at %s', settings.webUri('/auth/github/callback'));
 		passport.use(new GitHubStrategy({
 				passReqToCallback: true,
 				clientID: config.vpdb.passport.github.clientID,
 				clientSecret: config.vpdb.passport.github.clientSecret,
-				callbackURL: settings.webUri() + '/auth/github/callback'
+				callbackURL: settings.webUri('/auth/github/callback')
 			}, exports.verifyCallbackOAuth('github')
 		));
 	}
@@ -65,7 +65,7 @@ exports.configure = function() {
 	config.vpdb.passport.ipboard.forEach(ipbConfig => {
 		if (ipbConfig.enabled) {
 
-			var callbackUrl = settings.webUri() + '/auth/' +  ipbConfig.id + '/callback';
+			var callbackUrl = settings.webUri('/auth/' +  ipbConfig.id + '/callback');
 			logger.info('[passport|ipboard:' + ipbConfig.id + '] Enabling IP.Board authentication strategy for "%s" at %s.', ipbConfig.name, ipbConfig.baseURL);
 			passport.use(new IPBoardStrategy({
 					passReqToCallback: true,

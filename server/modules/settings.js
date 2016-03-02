@@ -346,7 +346,6 @@ Settings.prototype.storagePublicPath = function(path, absolutePath) {
 	} else {
 		return this.current.vpdb.storage.public.api.pathname + (path || '');
 	}
-
 };
 
 Settings.prototype.storageProtectedPath = function(path, absolutePath) {
@@ -355,7 +354,6 @@ Settings.prototype.storageProtectedPath = function(path, absolutePath) {
 	} else {
 		return this.current.vpdb.storage.protected.api.pathname + (path || '');
 	}
-
 };
 
 Settings.prototype.webUri = function(path) {

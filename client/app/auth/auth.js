@@ -469,7 +469,7 @@ angular.module('vpdb.auth', [])
 	})
 
 
-	.factory('AuthInterceptor', function($injector, $q) {
+	.factory('AuthInterceptor', function($injector, $q, ConfigService) {
 		return {
 			request: function(config) {
 
@@ -477,7 +477,7 @@ angular.module('vpdb.auth', [])
 
 					config.headers = config.headers || {};
 
-					if (config.url.substr(0, 5) === '/api/' || config.url.substr(0, 9) === '/storage/') {
+					if (ConfigService.isAnyApiUrl(config.url)) {
 						// dont "internally cache" (as in: don't make the request at all) anything from the api.
 						config.cache = false;
 

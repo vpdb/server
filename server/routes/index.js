@@ -19,7 +19,6 @@
 
 "use strict";
 
-var _ = require('lodash');
 var passport = require('passport');
 
 var settings = require('../modules/settings');
@@ -72,7 +71,7 @@ module.exports = function(app) {
 	if (config.vpdb.passport.google.enabled) {
 		app.get('/auth/google', passport.authenticate('google', { session: false, scope: 'email' }));
 	}
-	config.vpdb.passport.ipboard.forEach(function(ipbConfig) {
+	config.vpdb.passport.ipboard.forEach(ipbConfig => {
 		if (ipbConfig.enabled) {
 			app.get('/auth/' + ipbConfig.id, passport.authenticate(ipbConfig.id, { session: false }));
 		}

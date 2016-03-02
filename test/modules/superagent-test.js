@@ -65,7 +65,7 @@ module.exports = function(superagent, options) {
 		var that = this;
 		if (this._saveReq) {
 			dest = saveRoot(options.saveRoot, this._saveReq.path, '-req.json');
-			dump = this.req.method + ' ' + options.pathTrim(this.req.path) + ' HTTP/1.1\r\n';
+			dump = this.req.method + ' ' + options.pathTrim(this.req.path) + ' HTTP/2.0\r\n';
 			forceHeaders = this._saveReq.headers || [];
 			dump += 'Host: ' + options.saveHost + '\r\n';
 			_.each(this.req._headers, function(headerVal, header) {

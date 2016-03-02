@@ -44,7 +44,7 @@ angular.module('vpdb.common', [])
 			 */
 			isAnyApiUrl: function(urlOrPath) {
 
-				let uri;
+				var uri;
 
 				// same host
 				if (urlOrPath[0] === '/') {

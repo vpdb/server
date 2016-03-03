@@ -487,8 +487,8 @@ angular.module('vpdb.auth', [])
 							config.headers[AuthService.getAuthHeader()] = 'Bearer ' + AuthService.getToken();
 							resolve(config);
 
-							// check for autologin token
-						} else if (config.url !== '/api/v1/authenticate' && AuthService.hasLoginToken()) {
+						// check for autologin token
+						} else if (!ConfigService.isAuthUrl(config.url) && AuthService.hasLoginToken()) {
 
 							var AuthResource = $injector.get('AuthResource');
 							AuthResource.authenticate({ token: AuthService.getLoginToken() }, function(result) {
@@ -514,7 +514,7 @@ angular.module('vpdb.auth', [])
 				var token = response.headers('x-token-refresh');
 
 				// only for api calls we can be sure that the token is not cached and therefore correct.
-				if (token && response.config.url.substr(0, 5) === '/api/') {
+				if (token && ConfigService.isApiUrl(response.config.url)) {
 					var dirty = parseInt(response.headers('x-user-dirty'));
 					var AuthService = $injector.get('AuthService');
 					if (dirty > 0) {

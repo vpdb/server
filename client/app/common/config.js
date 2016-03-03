@@ -38,45 +38,54 @@ angular.module('vpdb.common', [])
 				return uri.protocol + '://' + uri.hostname + (port ? ':' + port : '') + uri.pathname;
 			},
 
-			/**
-			 * Checks if the URL is either from the API or the storage API
-			 * @param {string} urlOrPath URL or path to check
-			 */
-			isAnyApiUrl: function(urlOrPath) {
-
+			isApiUrl: function(urlOrPath) {
 				var uri;
-
-				// same host
 				if (urlOrPath[0] === '/') {
-
-					// api
 					uri = Config.apiUri.pathname;
 					if (urlOrPath.substr(0, uri.length) === uri) {
 						return true;
 					}
+				} else {
+					uri = this.uri(Config.apiUri);
+					if (urlOrPath.substr(0, uri.length) === uri) {
+						return true;
+					}
+				}
+				return false;
+			},
 
-					// storage
+			isStorageUrl: function(urlOrPath) {
+				var uri;
+				if (urlOrPath[0] === '/') {
 					uri = Config.storageUri.pathname;
 					if (urlOrPath.substr(0, uri.length) === uri) {
 						return true;
 					}
 
 				} else {
-
-					// api
-					uri = this.uri(Config.apiUri);
-					if (urlOrPath.substr(0, uri.length) === uri) {
-						return true;
-					}
-
-					// storage
 					uri = this.uri(Config.storageUri);
 					if (urlOrPath.substr(0, uri.length) === uri) {
 						return true;
 					}
 				}
-
 				return false;
+			},
+
+			/**
+			 * Checks if the URL is either from the API or the storage API
+			 * @param {string} urlOrPath URL or path to check
+			 */
+			isAnyApiUrl: function(urlOrPath) {
+
+				return this.isApiUrl(urlOrPath) || this.isStorageUrl(urlOrPath);
+			},
+
+			isAuthUrl: function(urlOrPath) {
+				if (urlOrPath[0] === '/') {
+					return urlOrPath === Config.apiUri.pathname + '/authenticate';
+				} else {
+					return urlOrPath === this.uri(Config.apiUri) + '/authenticate';
+				}
 			}
 		};
 	});

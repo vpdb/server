@@ -326,36 +326,74 @@ function patch(settingsPatched, codeBlock, pos, parentPath) {
 	return before.trim() + ',\n\n\t' + indent + codeBlock.trim().replace(/,$/, '') + '\n' + indent + after.trim();
 }
 
+/**
+ * Returns the API URL containing the host only.
+ * @returns {string} API URL
+ */
 Settings.prototype.apiHost = function() {
 	return this.current.vpdb.api.protocol + '://' +
 	       this.current.vpdb.api.hostname +
 	      (this.current.vpdb.api.port === 80 || this.current.vpdb.api.port === 443 ? '' : ':' + this.current.vpdb.api.port);
 };
 
-Settings.prototype.apiUri = function(path) {
-	return this.apiHost() + this.current.vpdb.api.pathname + (path || '');
-};
-
+/**
+ * Returns the internal path of an API resource
+ * @param {string} path Path of the resource
+ * @returns {string} Internal path
+ */
 Settings.prototype.apiPath = function(path) {
-	return this.current.vpdb.api.pathname + (path || '');
+	return (this.current.vpdb.api.prefix || '') + this.current.vpdb.api.pathname + (path || '');
 };
 
-Settings.prototype.storagePublicPath = function(path, absolutePath) {
-	if (absolutePath) {
-		return this.storageUri(this.current.vpdb.storage.public.api.pathname + (path || ''), 'public');
-	} else {
-		return this.current.vpdb.storage.public.api.pathname + (path || '');
-	}
+/**
+ * Returns the external URL of the API
+ * @returns {string} External URL
+ */
+Settings.prototype.apiUri = function() {
+	return this.apiHost() + this.current.vpdb.api.pathname;
 };
 
-Settings.prototype.storageProtectedPath = function(path, absolutePath) {
-	if (absolutePath) {
-		return this.storageUri(this.current.vpdb.storage.protected.api.pathname + (path || ''), 'protected');
-	} else {
-		return this.current.vpdb.storage.protected.api.pathname + (path || '');
-	}
+/**
+ * Returns the external URL of a public storage resource
+ * @param {string} path Path of the resource
+ * @returns {string} External URL
+ */
+Settings.prototype.storagePublicUri = function(path) {
+	return this.storageUri(this.current.vpdb.storage.public.api.pathname + (path || ''), 'public');
 };
 
+/**
+ * Returns the internal path of a public storage resource
+ * @param {string} path Path of the resource
+ * @returns {string} Internal path
+ */
+Settings.prototype.storagePublicPath = function(path) {
+	return (this.current.vpdb.storage.public.api.prefix || '') + this.current.vpdb.storage.public.api.pathname + (path || '');
+};
+
+/**
+ * Returns the external URL of a protected storage resource
+ * @param {string} path Path of the resource
+ * @returns {string} External URL
+ */
+Settings.prototype.storageProtectedUri = function(path) {
+	return this.storageUri(this.current.vpdb.storage.protected.api.pathname + (path || ''), 'protected');
+};
+
+/**
+ * Returns the internal path of a protected storage resource
+ * @param {string} path Path of the resource
+ * @returns {string} Internal path
+ */
+Settings.prototype.storageProtectedPath = function(path) {
+	return (this.current.vpdb.storage.protected.api.prefix || '') + this.current.vpdb.storage.protected.api.pathname + (path || '');
+};
+
+/**
+ * Returns the web URL for a given path
+ * @param {string} path Path of the URL
+ * @returns {string}
+ */
 Settings.prototype.webUri = function(path) {
 	return this.current.vpdb.webapp.protocol + '://' +
 	       this.current.vpdb.webapp.hostname +
@@ -363,6 +401,12 @@ Settings.prototype.webUri = function(path) {
 	      (path || '');
 };
 
+/**
+ * Returns the external URL of a storage resource
+ * @param {string} path Path of the resource
+ * @param {string} visibility Either "public" or "protected", depending which API is demanded
+ * @returns {string} Full URL
+ */
 Settings.prototype.storageUri = function(path, visibility) {
 	let api = this.current.vpdb.storage[visibility].api;
 	return api.protocol + '://' + api.hostname + (api.port === 80 || api.port === 443 ? '' : ':' + api.port) + (path || '');

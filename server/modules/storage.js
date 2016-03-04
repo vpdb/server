@@ -377,18 +377,18 @@ Storage.prototype.onProcessed = function(file, variation, processor) {
  * Returns the absolute URL of a given file.
  * @param {File} file
  * @param {object|string} variation or variation name
- * @returns {string}
+ * @returns {string|null} URL or null if file is falsy.
  */
 Storage.prototype.url = function(file, variation) {
 
 	if (!file) {
 		return null;
 	}
-	var storagePath = file.isPublic(variation) ? settings.storagePublicPath.bind(settings) : settings.storageProtectedPath.bind(settings);
-	var variationName = _.isObject(variation) ? variation.name : variation;
+	let storageUri = file.isPublic(variation) ? settings.storagePublicUri.bind(settings) : settings.storageProtectedUri.bind(settings);
+	let variationName = _.isObject(variation) ? variation.name : variation;
 	return variationName ?
-		storagePath('/files/' + variationName + '/' + file.id + file.getExt(variation), true) :
-		storagePath('/files/' + file.id + file.getExt(variation), true);
+		storageUri('/files/' + variationName + '/' + file.id + file.getExt(variation)) :
+		storageUri('/files/' + file.id + file.getExt(variation));
 };
 
 /**

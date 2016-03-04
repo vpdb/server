@@ -355,7 +355,7 @@ Settings.prototype.apiUri = function() {
 
 /**
  * Returns the external URL of a public storage resource
- * @param {string} path Path of the resource
+ * @param {string} [path] Path of the resource
  * @returns {string} External URL
  */
 Settings.prototype.storagePublicUri = function(path) {
@@ -373,7 +373,7 @@ Settings.prototype.storagePublicPath = function(path) {
 
 /**
  * Returns the external URL of a protected storage resource
- * @param {string} path Path of the resource
+ * @param {string} [path] Path of the resource
  * @returns {string} External URL
  */
 Settings.prototype.storageProtectedUri = function(path) {
@@ -391,7 +391,7 @@ Settings.prototype.storageProtectedPath = function(path) {
 
 /**
  * Returns the web URL for a given path
- * @param {string} path Path of the URL
+ * @param {string} [path] Path of the URL
  * @returns {string}
  */
 Settings.prototype.webUri = function(path) {

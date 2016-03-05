@@ -412,6 +412,36 @@ Settings.prototype.storageUri = function(path, visibility) {
 	return api.protocol + '://' + api.hostname + (api.port === 80 || api.port === 443 ? '' : ':' + api.port) + (path || '');
 };
 
+/**
+ * Determines the API based of the internal path.
+ * @param internalPath
+ * @returns {{protocol: string, hostname: string, port: number, pathname: string, prefix: string }|null} API or null if no match.
+ */
+Settings.prototype.getApi = function(internalPath) {
+	let apis = [ this.current.vpdb.storage.protected, this.current.vpdb.storage.public, this.current.vpdb.api];
+	for (let i = 0; i < apis.length; i++) {
+		let api = apis[i];
+		let pathPrefix = (api.prefix || '') + api.pathname;
+		if (pathPrefix === internalPath.substr(0, pathPrefix.length)) {
+			return api;
+		}
+	}
+	return null;
+};
+
+/**
+ * Converts an internal URL to an external URL
+ * @param internalPath
+ * @returns {string} External URL if an API could be matched, otherwise same string as given.
+ */
+Settings.prototype.intToExt = function(internalPath) {
+	let api = this.getApi(internalPath);
+	if (!api) {
+		return internalPath;
+	}
+	return internalPath.substr(api.prefix.length);
+};
+
 Settings.prototype.clientConfig = function() {
 	return {
 		authHeader: this.current.vpdb.authorizationHeader,

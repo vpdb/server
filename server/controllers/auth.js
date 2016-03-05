@@ -26,7 +26,8 @@ var logger = require('winston');
 
 var acl = require('../acl');
 var error = require('../modules/error')('ctrl', 'auth');
-var config = require('../modules/settings').current;
+var settings = require('../modules/settings');
+var config = config.current;
 
 var redis = require('redis').createClient(config.vpdb.redis.port, config.vpdb.redis.host, { no_ready_check: true });
     redis.select(config.vpdb.redis.db);
@@ -165,8 +166,9 @@ exports.auth = function(resource, permission, plan, done) {
 					}
 
 					// check for path && method
-					if (decoded.path && (decoded.path !== req.path || (req.method !== 'GET' && req.method !== 'HEAD'))) {
-						return next(error('Token is only valid for "GET/HEAD %s" but got "%s %s".', decoded.path, req.method, req.path).status(401));
+					let extPath = settings.intToExt(req.path);
+					if (decoded.path && (decoded.path !== extPath || (req.method !== 'GET' && req.method !== 'HEAD'))) {
+						return next(error('Token is only valid for "GET/HEAD %s" but got "%s %s".', decoded.path, req.method, extPath).status(401));
 					}
 
 					User.findOne({ id: decoded.iss }, function(err, user) {

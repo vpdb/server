@@ -418,7 +418,7 @@ Settings.prototype.storageUri = function(path, visibility) {
  * @returns {{protocol: string, hostname: string, port: number, pathname: string, prefix: string }|null} API or null if no match.
  */
 Settings.prototype.getApi = function(internalPath) {
-	let apis = [ this.current.vpdb.storage.protected, this.current.vpdb.storage.public, this.current.vpdb.api];
+	let apis = [ this.current.vpdb.storage.protected.api, this.current.vpdb.storage.public.api, this.current.vpdb.api];
 	for (let i = 0; i < apis.length; i++) {
 		let api = apis[i];
 		let pathPrefix = (api.prefix || '') + api.pathname;

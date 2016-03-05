@@ -27,7 +27,7 @@ var logger = require('winston');
 var acl = require('../acl');
 var error = require('../modules/error')('ctrl', 'auth');
 var settings = require('../modules/settings');
-var config = config.current;
+var config = settings.current;
 
 var redis = require('redis').createClient(config.vpdb.redis.port, config.vpdb.redis.host, { no_ready_check: true });
     redis.select(config.vpdb.redis.db);

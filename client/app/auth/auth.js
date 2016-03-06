@@ -469,7 +469,7 @@ angular.module('vpdb.auth', [])
 	})
 
 
-	.factory('AuthInterceptor', function($injector, $q, ConfigService) {
+	.factory('AuthInterceptor', function($injector, $q, $localStorage, ConfigService) {
 		return {
 			request: function(config) {
 
@@ -496,7 +496,10 @@ angular.module('vpdb.auth', [])
 								AuthService.authenticated(result);
 								resolve(config);
 
-							}, reject);
+							}, function(err) {
+								delete $localStorage.loginToken;
+								reject(err);
+							});
 
 						} else {
 							resolve(config);

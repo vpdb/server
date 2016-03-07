@@ -244,6 +244,13 @@ angular.module('vpdb.auth', [])
 			},
 
 			/**
+			 * Clears the login token.
+			 */
+			clearLoginToken: function() {
+				delete $localStorage.loginToken;
+			},
+
+			/**
 			 * Saves the token to browser storage.
 			 * @param {String} token JWT
 			 * @returns {String} User ID stored in the token (Issuer Claim)
@@ -469,7 +476,7 @@ angular.module('vpdb.auth', [])
 	})
 
 
-	.factory('AuthInterceptor', function($injector, $q, $localStorage, ConfigService) {
+	.factory('AuthInterceptor', function($injector, $q, ConfigService) {
 		return {
 			request: function(config) {
 
@@ -497,7 +504,7 @@ angular.module('vpdb.auth', [])
 								resolve(config);
 
 							}, function(err) {
-								delete $localStorage.loginToken;
+								AuthService.clearLoginToken(); // it failed, so no need to keep it around further.
 								reject(err);
 							});
 

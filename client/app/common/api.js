@@ -269,11 +269,13 @@ angular.module('vpdb.common', [])
 		return {
 			response: function(response) {
 				var sha = response.headers('x-app-sha');
-				if (sha && $localStorage.appSha !== sha) {
-					$localStorage.appSha = sha;
+				if (sha && $localStorage.appSha && $localStorage.appSha !== sha) {
 					$timeout(function() {
 						$rootScope.$emit('appUpdated');
 					}, 300);
+				}
+				if (sha) {
+					$localStorage.appSha = sha;
 				}
 				return response;
 			}

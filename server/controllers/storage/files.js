@@ -224,7 +224,6 @@ function serve(req, res, file, variationName, headOnly) {
 				res.writeHead(200, {
 					'Content-Type': file.getMimeType(variationName),
 					'Content-Length': 0,
-					'Cache-Control': 'max-age=315360000',
 					'Last-Modified': modified.toISOString().replace(/T/, ' ').replace(/\..+/, '')
 				});
 				res.end();
@@ -259,7 +258,6 @@ function serve(req, res, file, variationName, headOnly) {
 			var headers = {
 				'Content-Type': file.getMimeType(variationName),
 				'Content-Length': fstat.size,
-				'Cache-Control': 'max-age=315360000',
 				'Last-Modified': modified.toISOString().replace(/T/, ' ').replace(/\..+/, '')
 			};
 

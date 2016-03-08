@@ -146,7 +146,8 @@ ImageProcessor.prototype.pass1 = function(src, dest, file, variation) {
 		// do the processing
 		logger.debug('[processor|image|pass1] Resizing %s "%s" (%s)...', file.file_type, file.id, variation.name);
 		var img = gm(src);
-		img.quality(variation.qual || 80);
+		img.quality(variation.qual || 70);
+		img.interlace('Line');
 
 		if (variation.width && variation.height) {
 			img.resize(variation.width, variation.height);

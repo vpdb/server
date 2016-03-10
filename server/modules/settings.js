@@ -418,6 +418,9 @@ Settings.prototype.storageUri = function(path, visibility) {
  * @returns {{protocol: string, hostname: string, port: number, pathname: string, prefix: string }|null} API or null if no match.
  */
 Settings.prototype.getApi = function(internalPath) {
+	if (!internalPath) {
+		return null;
+	}
 	let apis = [ this.current.vpdb.storage.protected.api, this.current.vpdb.storage.public.api, this.current.vpdb.api];
 	for (let i = 0; i < apis.length; i++) {
 		let api = apis[i];
@@ -436,7 +439,7 @@ Settings.prototype.getApi = function(internalPath) {
  */
 Settings.prototype.intToExt = function(internalPath) {
 	let api = this.getApi(internalPath);
-	if (!api) {
+	if (!api || !api.prefix) {
 		return internalPath;
 	}
 	return internalPath.substr(api.prefix.length);

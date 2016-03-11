@@ -208,39 +208,10 @@ GameSchema.methods.toSimple = function() {
 
 /**
  * Returns the API object for a detailed games
- * @param releaseOpts Options passed to the release
- * @param callback If given, releases are also fetched detailed and attached to the game
  * @returns {*}
  */
-GameSchema.methods.toDetailed = function(releaseOpts, callback) {
-	if (_.isFunction(releaseOpts)) {
-		callback = releaseOpts;
-		releaseOpts = {};
-	}
-	if (!callback) {
-		return this.toObj();
-	} else {
-		var game = this.toObj();
-		var Release = require('mongoose').model('Release');
-
-		Release.find({ _game: this._id })
-			.populate({ path: '_tags' })
-			.populate({ path: '_created_by' })
-			.populate({ path: 'authors._user' })
-			.populate({ path: 'versions.files._file' })
-			.populate({ path: 'versions.files._media.playfield_image' })
-			.populate({ path: 'versions.files._media.playfield_video' })
-			.populate({ path: 'versions.files._compatibility' })
-			.exec(function(err, releases) {
-				if (err) {
-					return callback(err);
-				}
-				game.releases = _.map(releases, function(release) {
-					return _.omit(release.toDetailed(releaseOpts), 'game');
-				});
-				callback(null, game);
-			});
-	}
+GameSchema.methods.toDetailed = function() {
+	return this.toObj();
 };
 
 

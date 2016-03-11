@@ -25,6 +25,7 @@ var util = require('util');
 var logger = require('winston');
 
 var Game = require('mongoose').model('Game');
+var Release = require('mongoose').model('Release');
 var Star = require('mongoose').model('Star');
 var Rom = require('mongoose').model('Rom');
 var LogEvent = require('mongoose').model('LogEvent');
@@ -41,14 +42,16 @@ var error = require('../../modules/error')('api', 'game');
  */
 exports.head = function(req, res) {
 
-	Game.findOne({ id: req.params.id }, function(err, game) {
-		/* istanbul ignore if  */
-		if (err) {
-			return api.fail(res, error(err, 'Error finding game "%s"', req.params.id).log('head'), 500);
-		}
+	Promise.try(() => {
+		// retrieve game
+		let q = findQuery(req);
+		return Game.findOne(q).exec();
+
+	}).then(game => {
 		res.set('Content-Length', 0);
 		return res.status(game ? 200 : 404).end();
-	});
+
+	}).catch(api.handleError(res, error, 'Error retrieving game'));
 };
 
 
@@ -96,7 +99,6 @@ exports.create = function(req, res) {
 		api.success(res, game.toDetailed(), 201);
 
 	}).catch(api.handleError(res, error, 'Error creating game'));
-
 };
 
 
@@ -107,31 +109,26 @@ exports.create = function(req, res) {
  */
 exports.del = function(req, res) {
 
-	var query = Game.findOne({ id: req.params.id })
-		.populate({ path: '_media.backglass' })
-		.populate({ path: '_media.logo' });
+	let game;
+	Promise.try(() => {
+		return Game.findOne({ id: req.params.id })
+			.populate({ path: '_media.backglass' })
+			.populate({ path: '_media.logo' })
+			.exec();
+	}).then(g => {
+		game = g;
 
-	query.exec(function(err, game) {
-		/* istanbul ignore if  */
-		if (err) {
-			return api.fail(res, error(err, 'Error getting game "%s"', req.params.id).log('delete'), 500);
-		}
 		if (!game) {
-			return api.fail(res, error('No such game with ID "%s".', req.params.id), 404);
+			throw error('No such game with ID "%s".', req.params.id).status(404);
 		}
-
 		// TODO check for linked releases (& ROMs, etc) and refuse if referenced
+		return game.remove();
 
-		// remove from db
-		game.remove(function(err) {
-			/* istanbul ignore if  */
-			if (err) {
-				return api.fail(res, error(err, 'Error deleting game "%s" (%s)', game.id, game.title).log('delete'), 500);
-			}
-			logger.info('[api|game:delete] Game "%s" (%s) successfully deleted.', game.title, game.id);
-			api.success(res, null, 204);
-		});
-	});
+	}).then(() => {
+		logger.info('[api|game:delete] Game "%s" (%s) successfully deleted.', game.title, game.id);
+		api.success(res, null, 204);
+
+	}).catch(api.handleError(res, error, 'Error deleting game'));
 };
 
 
@@ -142,74 +139,69 @@ exports.del = function(req, res) {
  */
 exports.list = function(req, res) {
 
-	var pagination = api.pagination(req, 12, 60);
-	var query = [];
+	let pagination = api.pagination(req, 12, 60);
+	let query = [];
 
-	// text search
-	if (req.query.q) {
+	Promise.try(() => {
 
-		if (req.query.q.trim().length < 2) {
-			return api.fail(res, error('Query must contain at least two characters.'), 400);
+		// text search
+		if (req.query.q) {
+			if (req.query.q.trim().length < 2) {
+				throw error('Query must contain at least two characters.').status(400);
+			}
+			// sanitize and build regex
+			let titleQuery = req.query.q.trim().replace(/[^a-z0-9-]+/gi, '');
+			let titleRegex = new RegExp(titleQuery.split('').join('.*?'), 'i');
+			let idQuery = req.query.q.trim().replace(/[^a-z0-9-]+/gi, ''); // TODO tune
+			query.push({ $or: [{ title: titleRegex }, { id: idQuery }] });
 		}
 
-		// sanitize and build regex
-		var titleQuery = req.query.q.trim().replace(/[^a-z0-9-]+/gi, '');
-		var titleRegex = new RegExp(titleQuery.split('').join('.*?'), 'i');
-		var idQuery = req.query.q.trim().replace(/[^a-z0-9-]+/gi, ''); // TODO tune
+		// filter by manufacturer
+		if (req.query.mfg) {
+			let mfgs = req.query.mfg.split(',');
+			query.push({ manufacturer: mfgs.length === 1 ? mfgs[0] : { $in: mfgs } });
+		}
 
-		query.push({ $or: [ { title: titleRegex }, { id: idQuery } ] });
-	}
+		// filter by decade
+		if (req.query.decade) {
+			let decades = req.query.decade.split(',');
+			let d = [];
+			decades.forEach(function(decade) {
+				d.push({ year: { $gte: parseInt(decade, 10), $lt: parseInt(decade, 10) + 10 } });
+			});
+			if (d.length === 1) {
+				query.push(d[0]);
+			} else {
+				query.push({ $or: d });
+			}
+		}
 
-	// filter by manufacturer
-	if (req.query.mfg) {
-		var mfgs = req.query.mfg.split(',');
-		query.push({ manufacturer: mfgs.length === 1 ? mfgs[0] : { $in: mfgs } });
-	}
+		if (parseInt(req.query.min_releases)) {
+			query.push({ 'counter.releases': { $gte: parseInt(req.query.min_releases) } });
+		}
 
-	// filter by decade
-	if (req.query.decade) {
-		var decades = req.query.decade.split(',');
-		var d = [];
-		decades.forEach(function(decade) {
-			d.push({ year: { $gte: parseInt(decade, 10), $lt: parseInt(decade, 10) + 10 }});
+		let sort = api.sortParams(req, { title: 1 }, {
+			popularity: '-metrics.popularity',
+			rating: '-rating.score',
+			title: 'title_sortable'
 		});
-		if (d.length === 1) {
-			query.push(d[0]);
-		} else {
-			query.push({ $or: d });
-		}
-	}
 
-	if (parseInt(req.query.min_releases)) {
-		query.push({ 'counter.releases': { $gte: parseInt(req.query.min_releases) }});
-	}
+		let q = api.searchQuery(query);
+		logger.info('[api|game:list] query: %s, sort: %j', util.inspect(q), util.inspect(sort));
 
-	var sort = api.sortParams(req, { title: 1 }, {
-		popularity: '-metrics.popularity',
-		rating: '-rating.score',
-		title: 'title_sortable'
-	});
+		return Game.paginate(q, {
+			page: pagination.page,
+			limit: pagination.perPage,
+			populate: ['_media.backglass', '_media.logo'],
+			sort: sort
+		}).then(result => [result.docs, result.total]);
 
-	var q = api.searchQuery(query);
-	logger.info('[api|game:list] query: %s, sort: %j', util.inspect(q), util.inspect(sort));
-	Game.paginate(q, {
-		page: pagination.page,
-		limit: pagination.perPage,
-		populate: [ '_media.backglass', '_media.logo' ],
-		sort: sort
+	}).spread((results, count) => {
 
-	}, function(err, result) {
+		let games = results.map(game => game.toSimple());
+		api.success(res, games, 200, api.paginationOpts(pagination, count));
 
-		/* istanbul ignore if  */
-		if (err) {
-			return api.fail(res, error(err, 'Error listing games').log('list'), 500);
-		}
-		var games = _.map(result.docs, function(game) {
-			return game.toSimple();
-		});
-		api.success(res, games, 200, api.paginationOpts(pagination, result.total));
-
-	});
+	}).catch(api.handleError(res, error, 'Error listing games'));
 };
 
 
@@ -220,82 +212,56 @@ exports.list = function(req, res) {
  */
 exports.view = function(req, res) {
 
-	async.waterfall([
+	let game, opts;
+	Promise.try(() => {
+		// retrieve game
+		return Game.findOne({ id: req.params.id })
+			.populate({ path: '_media.backglass' })
+			.populate({ path: '_media.logo' })
+			.exec();
 
-		/**
-		 * Retrieve game
-		 * @param next
-		 */
-		function(next) {
-
-			var query = Game.findOne({ id: req.params.id })
-				.populate({ path: '_media.backglass' })
-				.populate({ path: '_media.logo' });
-
-			query.exec(function(err, game) {
-				/* istanbul ignore if  */
-				if (err) {
-					return next(error(err, 'Error finding game "%s"', req.params.id).log('view'));
-				}
-				if (!game) {
-					return next(error('No such game with ID "%s"', req.params.id).status(404));
-				}
-				game.incrementCounter('views');
-				next(null, game);
-			});
-		},
-
-		/**
-		 * Retrieve stars if logged
-		 * @param game
-		 * @param next
-		 * @returns {*}
-		 */
-		function(game, next) {
-
-			// only if logged
-			if (!req.user) {
-				return next(null, game, null);
-			}
-
-			Star.find({ type: 'release', _from: req.user._id }, '_ref.release', function(err, stars) {
-				/* istanbul ignore if  */
-				if (err) {
-					return next(error(err, 'Error searching starred releases for user <%s>.', req.user.email).log('list'));
-				}
-				console.log('stars: %j', stars);
-				var starredReleaseIds = _.map(_.map(_.map(stars, '_ref'), 'release'), id => id.toString());
-
-				next(null, game, starredReleaseIds);
-			});
-		},
-
-		/**
-		 * Retrieve release details
-		 * @param game
-		 * @param starredReleaseIds Array of release _id strings
-		 * @param next
-		 */
-		function(game, starredReleaseIds, next) {
-
-			var opts = {};
-			opts.starredReleaseIds = starredReleaseIds;
-			game.toDetailed(opts, function(err, game) {
-				/* istanbul ignore if  */
-				if (err) {
-					return next(error(err, 'Error populating game "%s"', req.params.id).log('view'));
-				}
-				next(null, game);
-			});
+	}).then(g => {
+		game = g;
+		if (!game) {
+			throw error('No such game with ID "%s"', req.params.id).status(404);
 		}
+		return game.incrementCounter('views');
 
-	], function(err, game) {
+	}).then(() => {
 
-		if (err) {
-			return api.fail(res, err, err.code);
+		// retrieve stars if logged
+		if (!req.user) {
+			return null;
 		}
-		api.success(res, game);
-	});
+		return Star.find({ type: 'release', _from: req.user._id }, '_ref.release').exec().then(stars => {
+			return _.map(_.map(_.map(stars, '_ref'), 'release'), id => id.toString());
+		});
 
+	}).then(starredReleaseIds => {
 
+		opts = { starredReleaseIds: starredReleaseIds };
+		return Release.find({ _game: game._id })
+			.populate({ path: '_tags' })
+			.populate({ path: '_created_by' })
+			.populate({ path: 'authors._user' })
+			.populate({ path: 'versions.files._file' })
+			.populate({ path: 'versions.files._media.playfield_image' })
+			.populate({ path: 'versions.files._media.playfield_video' })
+			.populate({ path: 'versions.files._compatibility' })
+			.exec();
+
+	}).then(releases => {
+		let result = game.toDetailed();
+		result.releases = _.map(releases, release => _.omit(release.toDetailed(opts), 'game'));
+		api.success(res, result, 200);
+
+	}).catch(api.handleError(res, error, 'Error viewing game'));
 };
+
+function findQuery(req) {
+
+	if (/ipdb-\d+/.test(req.params.id)) {
+		return { 'ipdb.number': parseInt(req.params.id.match(/ipdb-(\d+)/)[1]) };
+	}
+	return { id: req.params.id };
+}

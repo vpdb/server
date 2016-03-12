@@ -128,6 +128,15 @@ Err.prototype.short = function() {
 
 Err.prototype.errors = function(errors) {
 	this.errs = errors;
+	this.code = 422;
+	this._stripFields();
+	return this;
+};
+
+Err.prototype.validationError = function(path, message, value) {
+	this.errs = this.errs || [];
+	this.errs.push({ path: path, message: message, value: value });
+	this.code = 422;
 	this._stripFields();
 	return this;
 };
@@ -203,7 +212,7 @@ ErrWrapper.prototype.error = function() {
  * Returns an error factory able to easily instantiate errors.
  *
  * @param {*} [arguments] Zero or more prefixes that will show up in the error log.
- * @returns {ErrWrapper.error}
+ * @returns {Err}
  */
 module.exports = function() {
 	var wrapper = new ErrWrapper(_.values(arguments));

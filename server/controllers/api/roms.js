@@ -39,33 +39,45 @@ var LogEvent = require('mongoose').model('LogEvent');
  */
 exports.create = function(req, res) {
 
-	var newRom, game;
+	let validFields = ['id', 'version', 'notes', 'language', '_file'];
+	let newRom, game;
 	Promise.try(() => {
 
-		if (!req.params.id && !req.body._ipdb_number) {
-			throw error('You must provide an IPDB number when not posting to a game resource.', req.params.id).status(400);
+		if (!req.params.gameId && !req.body._ipdb_number) {
+			throw error('You must provide an IPDB number when not posting to a game resource.').status(400);
 		}
 
-		var validFields = [ 'id', 'version', 'notes', 'language', '_file' ];
-		if (req.params.id) {
-			return Game.findOne({ id: req.params.id }).exec().then(g => {
-				game = g;
-				if (!game) {
-					throw error('No such game with ID "%s".', req.params.id).status(404);
-				}
-				return Rom.getInstance(_.extend(_.pick(req.body, validFields), {
-					_game: game._id,
-					_created_by: req.user._id,
-					created_at: new Date()
-				}));
-			});
+		// validate here because we use it in the query before running rom validations
+		if (req.body._ipdb_number) {
+			if (req.params.gameId) {
+				throw error('Validation error').validationError('_ipdb_number', 'You must not provide an IPDB number when posting to a game resource', req.body._ipdb_number);
+			}
+			if (!Number.isInteger(req.body._ipdb_number) || req.body._ipdb_number < 0) {
+				throw error('Validation error').validationError('_ipdb_number', 'Must be a positive integer', req.body._ipdb_number);
+			}
 		}
-		game = { ipdb: { number: req.body._ipdb_number }};
-		return Rom.getInstance(_.extend(_.pick(req.body, validFields), {
-			_ipdb_number: req.body._ipdb_number,
+
+		let q = req.params.gameId ? { id: req.params.gameId } : { 'ipdb.number': req.body._ipdb_number };
+		return Game.findOne(q).exec();
+
+	}).then(g => {
+		game = g;
+
+		let rom = _.extend(_.pick(req.body, validFields), {
 			_created_by: req.user._id,
 			created_at: new Date()
-		}));
+		});
+
+		if (game) {
+			rom._game = game._id;
+		} else {
+			if (req.params.gameId) {
+				throw error('No such game with ID "%s"', req.params.gameId).status(404);
+			}
+			game = { ipdb: { number: req.body._ipdb_number }};
+			rom._ipdb_number = req.body._ipdb_number;
+		}
+		return Rom.getInstance(rom);
 
 	}).then(rom => {
 		newRom = rom;
@@ -77,7 +89,8 @@ exports.create = function(req, res) {
 	}).then(file => {
 		try {
 			newRom.rom_files = [];
-			new Zip(file.getPath()).getEntries().forEach(zipEntry => {
+			let zip = Zip(file.getPath());
+			zip.getEntries().forEach(zipEntry => {
 				if (zipEntry.isDirectory) {
 					return;
 				}
@@ -88,6 +101,7 @@ exports.create = function(req, res) {
 					modified_at: new Date(zipEntry.header.time)
 				});
 			});
+
 		} catch (err) {
 			throw error('You referenced an invalid zip archive: %s', err.message).warn('create').status(422);
 		}
@@ -98,19 +112,6 @@ exports.create = function(req, res) {
 		newRom = rom;
 		logger.info('[api|rom:create] Rom "%s" successfully added.', newRom.id);
 		return rom.activateFiles();
-
-	}).then(() => {
-
-		// check if there's a game to link
-		if (newRom._ipdb_number) {
-			return Game.findOne({ 'ipdb.number': newRom._ipdb_number }).exec().then(game => {
-				if (game) {
-					logger.info('[api|rom:create] Found existing game "%s" for IPDB number %s, linking.', game.id, newRom._ipdb_number);
-					newRom._game = game._id.toString();
-					return newRom.save();
-				}
-			});
-		}
 
 	}).then(() => {
 
@@ -137,9 +138,9 @@ exports.list = function(req, res) {
 	var assert = api.assert(error, 'list', '', res);
 	var pagination = api.pagination(req, 10, 50);
 
-	Game.findOne({ id: req.params.id }, assert(function(game) {
+	Game.findOne({ id: req.params.gameId }, assert(function(game) {
 		if (!game) {
-			return api.fail(res, error('No such game with ID "%s".', req.params.id), 404);
+			return api.fail(res, error('No such game with ID "%s".', req.params.gameId), 404);
 		}
 		Rom.paginate({ '_game': game._id }, {
 			page: pagination.page,
@@ -196,5 +197,3 @@ exports.del = function(req, res) {
 		}), 'Error getting ROM "%s"');
 	}, 'Error checking for ACL "roms/delete".'));
 };
-
-

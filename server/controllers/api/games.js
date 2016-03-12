@@ -44,8 +44,7 @@ exports.head = function(req, res) {
 
 	Promise.try(() => {
 		// retrieve game
-		let q = findQuery(req);
-		return Game.findOne(q).exec();
+		return Game.findOne({ id: req.params.id }).exec();
 
 	}).then(game => {
 		res.set('Content-Length', 0);
@@ -257,11 +256,3 @@ exports.view = function(req, res) {
 
 	}).catch(api.handleError(res, error, 'Error viewing game'));
 };
-
-function findQuery(req) {
-
-	if (/ipdb-\d+/.test(req.params.id)) {
-		return { 'ipdb.number': parseInt(req.params.id.match(/ipdb-(\d+)/)[1]) };
-	}
-	return { id: req.params.id };
-}

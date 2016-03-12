@@ -58,6 +58,17 @@ describe('The VPDB `ROM` API', function() {
 			request.post('/api/v1/games/nonexistent/roms').as('member').send({}).end(hlp.status(404, done));
 		});
 
+		it('should fail when posting with an IPDB number', function(done) {
+			request
+				.post('/api/v1/games/' + game.id + '/roms')
+				.as('member')
+				.send({ _ipdb_number: 1234 })
+				.end(function(err, res) {
+					hlp.expectValidationError(err, res, '_ipdb_number', 'You must not provide an IPDB number');
+					done();
+				});
+		});
+
 		it('should fail validations for empty data', function(done) {
 			request
 				.post('/api/v1/games/' + game.id + '/roms')
@@ -315,7 +326,7 @@ describe('The VPDB `ROM` API', function() {
 						_ipdb_number: 'foobar'
 					})
 					.end(function(err, res) {
-						hlp.expectValidationError(err, res, '_ipdb_number', 'cast to number failed');
+						hlp.expectValidationError(err, res, '_ipdb_number', 'must be a positive integer');
 						done();
 					});
 			});

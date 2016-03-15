@@ -114,6 +114,10 @@ describe('The ACLs of the VPDB API', function() {
 			request.del('/api/v1/roms/1234').end(hlp.status(401, done));
 		});
 
+		it('should allow access to rom listing', function(done) {
+			request.get('/api/v1/roms').end(hlp.status(200, done));
+		});
+
 		it('should allow access to ping', function(done) {
 			request.get('/api/v1/ping').end(hlp.status(200, done));
 		});
@@ -349,6 +353,10 @@ describe('The ACLs of the VPDB API', function() {
 
 		it('should allow access to rom deletion', function(done) {
 			request.del('/api/v1/roms/1234').as('member').end(hlp.status(404, done));
+		});
+
+		it('should allow access to rom listing', function(done) {
+			request.get('/api/v1/roms').as('member').end(hlp.status(200, done));
 		});
 
 		it('should allow access to ping', function(done) {

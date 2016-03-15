@@ -12,6 +12,38 @@ description: |
 
   [games]: api://core/games
 
+get:
+  securedBy: [ ]
+  is: [ paginated: { defaultPerPage: 10, maxPerPage: 50 } ]
+  description: |
+    List all ROMs.
+
+    ROMs can be filtered by game ID like [under games][games-roms] but also by
+    IPDB number, which is useful for checking if a ROM for a non-existing game
+    already exists.
+
+    [games-roms]: api://core/get/games/{game_id}/roms
+
+  queryParameters:
+    game_id:
+      description: Only list ROMs for given game.
+      required: false
+      type: string
+      example: tom
+    ipdb_number:
+      description: Only list ROMs for given IPDB number.
+      required: false
+      type: integer
+      example: 2845
+  body:
+      role/member:
+        example: !include http/list-req.json
+  responses:
+    200:
+      body:
+        role/member:
+          example: !include http/list-res-200.json
+
 post:
   is: [ protected ]
   securedBy: [ jwt: { scopes: [ MEMBER, CONTRIB ] } ]

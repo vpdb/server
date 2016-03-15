@@ -491,4 +491,113 @@ describe('The VPDB `ROM` API', function() {
 
 	});
 
+	describe('when listing ROMs', function() {
+
+		var game;
+		var ipdbNumber = 888;
+		var romId1 = 'hulk';
+		var romId2 = 'tz_pa1';
+
+		before(function(done) {
+			var user = 'member';
+			hlp.setupUsers(request, {
+				member: { roles: ['member'] },
+				contributor: { roles: ['contributor'] }
+			}, function() {
+				hlp.game.createGame('contributor', request, function(g) {
+					game = g;
+					hlp.file.createRom(user, request, function(file) {
+						request
+							.post('/api/v1/games/' + game.id + '/roms')
+							.as(user)
+							.send({ id: romId1, _file: file.id })
+							.end(function(err, res) {
+								hlp.expectStatus(err, res, 201);
+								hlp.doomRom(user, romId1);
+								hlp.file.createRom(user, request, function(file) {
+									request
+										.post('/api/v1/roms')
+										.as(user)
+										.send({
+											id: romId2,
+											_file: file.id,
+											_ipdb_number: ipdbNumber
+										})
+										.end(function(err, res) {
+											hlp.expectStatus(err, res, 201);
+											hlp.doomRom(user, romId2);
+											done();
+										});
+								});
+							});
+					});
+				});
+			});
+		});
+
+		after(function(done) {
+			hlp.cleanup(request, done);
+		});
+
+		it('should list all ROMs', function(done) {
+			request
+				.get('/api/v1/roms')
+				.save({ path: 'roms/list' })
+				.end(function(err, res) {
+					hlp.expectStatus(err, res, 200);
+					expect(res.body).to.be.an('array');
+					expect(res.body).to.have.length(2);
+					done();
+				});
+		});
+
+		it('should list ROMs under the game resource', function(done) {
+			request
+				.get('/api/v1/games/' + game.id + '/roms')
+				.end(function(err, res) {
+					hlp.expectStatus(err, res, 200);
+					expect(res.body).to.be.an('array');
+					expect(res.body).to.have.length(1);
+					expect(res.body[0].id).to.be(romId1);
+					done();
+				});
+		});
+
+		it('should list ROMs when searching by game ID', function(done) {
+			request
+				.get('/api/v1/roms?game_id=' + game.id)
+				.end(function(err, res) {
+					hlp.expectStatus(err, res, 200);
+					expect(res.body).to.be.an('array');
+					expect(res.body).to.have.length(1);
+					expect(res.body[0].id).to.be(romId1);
+					done();
+				});
+		});
+
+		it('should list ROMs when searching by IPDB number', function(done) {
+			request
+				.get('/api/v1/roms?ipdb_number=' + game.ipdb.number)
+				.end(function(err, res) {
+					hlp.expectStatus(err, res, 200);
+					expect(res.body).to.be.an('array');
+					expect(res.body).to.have.length(1);
+					expect(res.body[0].id).to.be(romId1);
+					done();
+				});
+		});
+
+		it('should list ROMs when searching by IPDB number for games without reference', function(done) {
+			request
+				.get('/api/v1/roms?ipdb_number=' + ipdbNumber)
+				.end(function(err, res) {
+					hlp.expectStatus(err, res, 200);
+					expect(res.body).to.be.an('array');
+					expect(res.body).to.have.length(1);
+					expect(res.body[0].id).to.be(romId2);
+					done();
+				});
+		});
+	});
+
 });

@@ -1,0 +1,95 @@
+200 OK
+X-App-Sha: 661eabd
+X-List-Page: 1
+X-List-Size: 10
+X-List-Count: 2
+Content-Type: application/json; charset=utf-8
+Etag: W/"6a2-08AmqB6J5Gj7TMd4PtR+vw"
+Content-Encoding: gzip
+
+[
+  {
+    "id": "hulk",
+    "file": {
+      "counter": {
+        "downloads": 0
+      },
+      "is_protected": true,
+      "bytes": 2096,
+      "url": "https://localhost:7357/storage/v1/files/wkabpa7n9oh.zip",
+      "id": "wkabpa7n9oh"
+    },
+    "rom_files": [
+      {
+        "filename": "433.cpu",
+        "bytes": 1024,
+        "crc": 3227331410,
+        "modified_at": "1996-12-24T22:32:00.000Z"
+      },
+      {
+        "filename": "433.snd",
+        "bytes": 1024,
+        "crc": 550313471,
+        "modified_at": "1996-12-24T22:32:00.000Z"
+      },
+      {
+        "filename": "6530sys1.bin",
+        "bytes": 1024,
+        "crc": 3078820641,
+        "modified_at": "1996-12-24T22:32:00.000Z"
+      }
+    ],
+    "created_by": {
+      "counter": {
+        "stars": 0,
+        "comments": 0
+      },
+      "gravatar_id": "e91b80bc66214b5cf960a8ad2420f5fc",
+      "username": "Mariah.Breitenberg78",
+      "name": "Mariah.Breitenberg78",
+      "id": "qkxea7ns1h"
+    }
+  },
+  {
+    "id": "tz_pa1",
+    "file": {
+      "counter": {
+        "downloads": 0
+      },
+      "is_protected": true,
+      "bytes": 2096,
+      "url": "https://localhost:7357/storage/v1/files/wknyea7a91h.zip",
+      "id": "wknyea7a91h"
+    },
+    "rom_files": [
+      {
+        "filename": "433.cpu",
+        "bytes": 1024,
+        "crc": 3227331410,
+        "modified_at": "1996-12-24T22:32:00.000Z"
+      },
+      {
+        "filename": "433.snd",
+        "bytes": 1024,
+        "crc": 550313471,
+        "modified_at": "1996-12-24T22:32:00.000Z"
+      },
+      {
+        "filename": "6530sys1.bin",
+        "bytes": 1024,
+        "crc": 3078820641,
+        "modified_at": "1996-12-24T22:32:00.000Z"
+      }
+    ],
+    "created_by": {
+      "counter": {
+        "stars": 0,
+        "comments": 0
+      },
+      "gravatar_id": "e91b80bc66214b5cf960a8ad2420f5fc",
+      "username": "Mariah.Breitenberg78",
+      "name": "Mariah.Breitenberg78",
+      "id": "qkxea7ns1h"
+    }
+  }
+]

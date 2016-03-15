@@ -53,6 +53,7 @@ module.exports = function(app) {
 	require('./api/files').register(app, api);
 	require('./api/misc').register(app, api);
 	require('./api/releases').register(app, api);
+	require('./api/roms').register(app, api);
 	require('./api/tags').register(app, api);
 	require('./api/tokens').register(app, api);
 	require('./api/user').register(app, api);

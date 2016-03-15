@@ -135,32 +135,62 @@ exports.create = function(req, res) {
  */
 exports.list = function(req, res) {
 
-	var assert = api.assert(error, 'list', '', res);
-	var pagination = api.pagination(req, 10, 50);
+	let pagination = api.pagination(req, 10, 50);
+	let ipdbNumber;
 
-	Game.findOne({ id: req.params.gameId }, assert(function(game) {
-		if (!game) {
-			return api.fail(res, error('No such game with ID "%s".', req.params.gameId), 404);
+	Promise.try(() => {
+
+		// list roms of a game below /api/v1/games/{gameId}
+		if (req.params.gameId) {
+			return Game.findOne({ id: req.params.gameId });
 		}
-		Rom.paginate({ '_game': game._id }, {
+
+		if (req.query.game_id) {
+			return Game.findOne({ id: req.query.game_id });
+		}
+
+		if (req.query.ipdb_number) {
+			ipdbNumber = parseInt(req.query.ipdb_number, 10);
+			if (!ipdbNumber) {
+				throw error('Validation error').validationError('ipdb_number', 'Must be a whole number', req.query.ipdb_number);
+			}
+			return Game.findOne({ 'ipdb.number': ipdbNumber });
+		}
+
+	}).then(game => {
+
+		let q;
+		if (!game) {
+			if (req.params.gameId) {
+				throw error('No such game with ID "%s".', req.params.gameId).status(404);
+			}
+			if (req.query.game_id) {
+				return [ [], 0];
+			}
+			if (ipdbNumber) {
+				q = { _ipdb_number: ipdbNumber };
+			} else {
+				q = {};
+			}
+
+		} else {
+			q = { _game: game._id };
+		}
+		let sort = game ? { version: -1 } : { '_file.name': 1 };
+
+		return Rom.paginate(q, {
 			page: pagination.page,
 			limit: pagination.perPage,
 			populate: [ '_file', '_created_by' ],
-			sort: { version: -1 }
+			sort: sort
+		}).then(result => [ result.docs, result.total ]);
 
-		}, function(err, result) {
-			/* istanbul ignore if  */
-			if (err) {
-				return api.fail(res, error(err, 'Error listing roms').log('list'), 500);
-			}
-			var roms = _.map(result.docs, function(rom) {
-				return rom.toSimple();
-			});
-			api.success(res, roms, 200, api.paginationOpts(pagination, result.total));
+	}).spread((results, count) => {
 
-		});
+		let roms = results.map(rom => rom.toSimple());
+		api.success(res, roms, 200, api.paginationOpts(pagination, count));
 
-	}, 'Error finding release in order to list comments.'));
+	}).catch(api.handleError(res, error, 'Error listing ROMs'));
 };
 
 

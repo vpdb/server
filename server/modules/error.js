@@ -212,7 +212,7 @@ ErrWrapper.prototype.error = function() {
  * Returns an error factory able to easily instantiate errors.
  *
  * @param {*} [arguments] Zero or more prefixes that will show up in the error log.
- * @returns {Err}
+ * @returns {ErrWrapper.error}
  */
 module.exports = function() {
 	var wrapper = new ErrWrapper(_.values(arguments));

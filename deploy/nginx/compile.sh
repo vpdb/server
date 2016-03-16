@@ -3,13 +3,23 @@
 cd /usr/local/src
 
 # download source, plus naxsi, headers-more and pagespeed.
+wget https://www.openssl.org/source/openssl-1.0.2g.tar.gz
 wget http://nginx.org/download/nginx-1.9.12.tar.gz
 wget https://github.com/nbs-system/naxsi/archive/master.tar.gz -O naxsi-master.tar.gz
 wget https://github.com/openresty/headers-more-nginx-module/archive/v0.29rc1.tar.gz -O headers-more-0.29rc1.tar.gz
 
+tar xvfz openssl-1.0.2g.tar.gz
 tar xvfz nginx-1.9.12.tar.gz
 tar xvfz headers-more-0.29rc1.tar.gz
 tar xvfz naxsi-master.tar.gz
+
+cd openssl-1.0.2g
+./config --prefix=/usr --openssldir=/usr && make
+checkinstall --install=no -y
+apt-get purge -y openssl libssl-dev
+dpkg -i openssl_1.0.2g-1_amd64.deb
+## might need to reboot!
+cd ..
 
 # configure
 cd nginx-1.9.12
@@ -23,6 +33,7 @@ cd nginx-1.9.12
 --http-log-path=/var/log/nginx/access.log \
 --user=www-data \
 --group=www-data \
+--with-openssl=../openssl-1.0.2g \
 --without-mail_pop3_module \
 --without-mail_imap_module \
 --without-mail_smtp_module \

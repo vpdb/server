@@ -33,13 +33,32 @@ mongoose.Promise = Promise;
 
 module.exports = function(grunt) {
 
+	let scriptFolder = path.resolve(__dirname, '../migrations');
+
 	grunt.registerTask('migrate', function() {
 
 		let done = this.async();
+		let runNumber = grunt.option('run-number');
 		let fromFolder = grunt.option('from');
 		let toFolder = grunt.option('to') || '.';
 		let fromBranch = grunt.option('from-branch') || 'master';
 		let toBranch = grunt.option('to-branch') || 'master';
+
+		// only run one script?
+		if (runNumber) {
+			let scripts = fs.readdirSync(scriptFolder);
+			let prefix = _.padStart(runNumber, 2, '0') + '-';
+			let script = _.find(scripts, filename => filename.startsWith(prefix));
+			if (!script) {
+				throw new Error('No script found starting with ' + prefix);
+			}
+			return Promise.try(bootstrapDatabase).then(() => {
+				grunt.log.writeln('Executing migrating script %s...', script);
+				let migrate = require(path.resolve(scriptFolder, script));
+				return migrate.up(grunt);
+
+			}).nodeify(done);
+		}
 
 		if (!fromFolder) {
 			throw new Error('Must specify --from option when migrating.');
@@ -54,18 +73,9 @@ module.exports = function(grunt) {
 
 		let fromRepo, toRepo, fromCommit;
 		return Promise.try(() => {
-			// bootstrap db connection
-			return mongoose.connect(config.vpdb.db, { server: { socketOptions: { keepAlive: 1 } } });
+			return bootstrapDatabase();
 
 		}).then(() => {
-			// bootstrap models
-			const modelsPath = path.resolve(__dirname, '../models');
-			fs.readdirSync(modelsPath).forEach(function(file) {
-				if (!fs.lstatSync(modelsPath + '/' + file).isDirectory()) {
-					require(modelsPath + '/' + file);
-				}
-			});
-
 			return Git.Repository.open(fromFolder);
 
 		}).then(repo => {
@@ -103,7 +113,7 @@ module.exports = function(grunt) {
 			});
 
 		}).then(commits => {
-			let scriptFolder = path.resolve(__dirname, '../migrations');
+
 			let scripts = fs.readdirSync(scriptFolder);
 
 			grunt.log.writeln('Found %s commits between folders.', commits.length);
@@ -121,3 +131,23 @@ module.exports = function(grunt) {
 	});
 
 };
+
+/**
+ * Connectes to MongoDB and boostraps all models.
+ * @returns {Promise}
+ */
+function bootstrapDatabase() {
+	return Promise.try(() => {
+		// bootstrap db connection
+		return mongoose.connect(config.vpdb.db, { server: { socketOptions: { keepAlive: 1 } }, promiseLibrary: require('bluebird') });
+
+	}).then(() => {
+		// bootstrap models
+		const modelsPath = path.resolve(__dirname, '../models');
+		fs.readdirSync(modelsPath).forEach(function(file) {
+			if (!fs.lstatSync(modelsPath + '/' + file).isDirectory()) {
+				require(modelsPath + '/' + file);
+			}
+		});
+	});
+}

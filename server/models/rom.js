@@ -47,7 +47,7 @@ var fields = {
 		modified_at:  { type: Date }
 	} ],
 	version:      { type: String },
-	language:     { type: String },
+	languages:     { type: [ String ] },
 	notes:        { type: String },
 	created_at:   { type: Date, required: true },
 	_created_by:  { type: Schema.ObjectId, ref: 'User', required: true }

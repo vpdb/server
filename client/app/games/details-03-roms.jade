@@ -69,7 +69,7 @@ table.table.table-double-striped(ng-show="roms.length > 0")
 		tr.selectable(ng-repeat-start="rom in roms", ng-click="isCollapsed = !isCollapsed", ng-init="isCollapsed=true")
 			td: b {{ rom.id }}
 			td {{ rom.version }}
-			td.hidden-xs {{ rom.language }}
+			td.hidden-xs {{ rom.languages.join(', ') }}
 			td.hidden-xs {{ rom.notes }}
 			td {{ rom.file.counter.downloads | number }}
 			td {{ rom.file.bytes | bytes }}

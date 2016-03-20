@@ -112,6 +112,12 @@ angular.module('vpdb.games.details', [])
 				if (_.isObject(rom.language)) {
 					rom.language = rom.language.value;
 				}
+
+				// we only allow one language through the UI, the API does multiple however.
+				rom.languages = [ rom.language ];
+				delete rom.language;
+
+				// post to api
 				RomResource.save({ id: $scope.gameId }, rom, function() {
 					$scope.roms = RomResource.query({ id : $scope.gameId });
 					$scope.meta.romFiles.splice(_.indexOf($scope.meta.romFiles, _.findWhere($scope.meta.romFiles, { id : rom._file })), 1);

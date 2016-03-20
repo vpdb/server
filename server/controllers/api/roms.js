@@ -39,7 +39,7 @@ var LogEvent = require('mongoose').model('LogEvent');
  */
 exports.create = function(req, res) {
 
-	let validFields = ['id', 'version', 'notes', 'language', '_file'];
+	let validFields = ['id', 'version', 'notes', 'languages', '_file'];
 	let newRom, game;
 	Promise.try(() => {
 

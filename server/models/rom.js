@@ -47,7 +47,7 @@ var fields = {
 		modified_at:  { type: Date }
 	} ],
 	version:      { type: String },
-	languages:     { type: [ String ] },
+	languages:    { type: [ String ] },
 	notes:        { type: String },
 	created_at:   { type: Date, required: true },
 	_created_by:  { type: Schema.ObjectId, ref: 'User', required: true }
@@ -58,7 +58,7 @@ var RomSchema = new Schema(fields);
 // API FIELDS
 //-----------------------------------------------------------------------------
 var apiFields = {
-	simple: [ 'id', 'file', 'version', 'notes', 'language', 'rom_files', 'created_by' ]
+	simple: [ 'id', 'file', 'version', 'notes', 'languages', 'rom_files', 'created_by' ]
 };
 
 //-----------------------------------------------------------------------------

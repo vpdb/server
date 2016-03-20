@@ -181,7 +181,7 @@ describe('The VPDB `ROM` API', function() {
 						id: id,
 						version: version,
 						notes: notes,
-						language: language,
+						languages: [ language ],
 						_file: file.id
 					})
 					.end(function(err, res) {
@@ -192,7 +192,8 @@ describe('The VPDB `ROM` API', function() {
 						expect(res.body.file.url).to.be.ok();
 						expect(res.body.version).to.be(version);
 						expect(res.body.notes).to.be(notes);
-						expect(res.body.language).to.be(language);
+						expect(res.body.languages).to.be.an('array');
+						expect(res.body.languages[0]).to.be(language);
 						done();
 					});
 			});

@@ -19,7 +19,7 @@
  */
 
 // override standard promises
-Promise = require('bluebird');
+Promise = require('bluebird'); // jshint ignore:line
 var games = require('../../data/gen/games/games');
 var roms = require('../../data/gen/roms/roms');
 var releases = require('../../data/gen/releases/releases');

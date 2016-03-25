@@ -40,7 +40,7 @@ exports.create = function(fileData, readStream, error, callback) {
 		file = new File(fileData);
 		return file.validate();
 
-	}).then(function() {
+	}).then(() => {
 		return file.save();
 
 	}).then(f => {
@@ -52,7 +52,7 @@ exports.create = function(fileData, readStream, error, callback) {
 			readStream.pipe(writeStream);
 		});
 
-	}).then(function() {
+	}).then(() => {
 		// we don't have the file size for multipart uploads before-hand, so get it now
 		if (!file.bytes) {
 			var stats = fs.statSync(file.getPath());
@@ -60,10 +60,10 @@ exports.create = function(fileData, readStream, error, callback) {
 			return file.save();
 		}
 
-	}).then(function() {
+	}).then(() => {
 		return storage.preprocess(file);
 
-	}).then(function() {
+	}).then(() => {
 		return storage.metadata(file).catch(err => {
 
 			// fail and remove file if metadata failed
@@ -72,7 +72,7 @@ exports.create = function(fileData, readStream, error, callback) {
 				logger.error('[api|file:save] Error removing file: %s', err.message);
 
 			}).then(function() {
-				throw error(err, 'Metadata parsing failed for type "%s"', file.mime_type).short().warn().status(400);
+				throw error(err, 'Metadata parsing failed for type "%s": %s', file.mime_type, err.message).short().warn().status(400);
 			});
 		});
 

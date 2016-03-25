@@ -44,6 +44,7 @@ function ArchiveProcessor() {
  * @param file Archive file
  * @param variation variation (null, no variations here)
  * @param done Callback
+ * @return {Promise.<{ entries: { filename: string, bytes: number, bytes_compressed: number, crc: string, modified_at: Date }[]}>}
  */
 ArchiveProcessor.prototype.metadata = function(file, variation, done) {
 	if (_.isFunction(variation)) {
@@ -51,8 +52,7 @@ ArchiveProcessor.prototype.metadata = function(file, variation, done) {
 		variation = undefined;
 	}
 
-	return Promise.try(function() {
-
+	return Promise.try(() => {
 		if (!variation) {
 			switch (file.getMimeSubtype()) {
 				case 'x-rar-compressed':
@@ -61,14 +61,8 @@ ArchiveProcessor.prototype.metadata = function(file, variation, done) {
 
 				case 'zip':
 					return getZipMetadata(file);
-
-				default:
-					return Promise.resolve({});
 			}
-		} else {
-			return Promise.resolve();
 		}
-
 	}).nodeify(done);
 };
 
@@ -98,7 +92,7 @@ module.exports = new ArchiveProcessor();
 /**
  * Reads metadata from rar file
  * @param {FileSchema} file
- * @return {Promise}
+ * @return {Promise.<{ entries: { filename: string, bytes: number, bytes_compressed: number, crc: string, modified_at: Date }[]}>}
  */
 function getRarMetadata(file) {
 
@@ -122,14 +116,14 @@ function getRarMetadata(file) {
 			};
 		});
 
-		return Promise.resolve({ entries: entries });
+		return { entries: entries };
 	});
 }
 
 /**
- * Reads metadata from zip file.
+ * Reads metadata from zip file
  * @param {FileSchema} file
- * @return {Promise}
+ * @return {Promise.<{ entries: { filename: string, bytes: number, bytes_compressed: number, crc: string, modified_at: Date }[]}>}
  */
 function getZipMetadata(file) {
 
@@ -150,7 +144,7 @@ function getZipMetadata(file) {
 				modified_at: new Date(entry.header.time)
 			};
 		});
-		return Promise.resolve({ entries: entries });
+		return { entries: entries };
 
 	}).catch(err => { throw new Error(err); }); // lib throws strings, not Errors..
 }

@@ -1,4 +1,4 @@
-
+"use strict";
 /*
  * VPDB - Visual Pinball Database
  * Copyright (C) 2016 freezy <freezy@xbmc.org>
@@ -18,6 +18,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+// override standard promises
+Promise = require('bluebird');
 var games = require('../../data/gen/games/games');
 var roms = require('../../data/gen/roms/roms');
 var releases = require('../../data/gen/releases/releases');
@@ -56,7 +58,16 @@ var config = local;
 config.folder = process.env.VPDB_DATA_FOLDER;
 config.romFolder = process.env.VPDB_ROM_FOLDER || process.env.VPDB_DATA_FOLDER || 'E:/Pinball/Visual Pinball-103/VPinMame/roms';
 
-//games.upload(config);
-//roms.upload(config);
-releases.upload(config);
+Promise.try(() => {
+
+//	games.upload(config);
+	return roms.upload(config);
+//	releases.upload(config);
+
+}).then(() => {
+	console.log('All done!');
+
+}).catch(err => {
+	console.error('ERROR: %s', err.message);
+});
 

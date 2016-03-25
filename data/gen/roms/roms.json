@@ -130,19 +130,23 @@
       "roms": [
          {
             "filename": "tafg_h3.zip",
-            "version": "H-3"
+            "version": "H-3",
+            "notes": "Gold Edition"
          },
          {
             "filename": "tafg_lx3.zip",
-            "version": "L-3X"
+            "version": "L-3X",
+            "notes": "Gold Edition"
          },
          {
             "filename": "tafg_la2.zip",
-            "version": "L-2"
+            "version": "L-2",
+            "notes": "Gold Edition"
          },
          {
             "filename": "tafg_la3.zip",
-            "version": "L-3"
+            "version": "L-3",
+            "notes": "Gold Edition"
          }
       ]
    },
@@ -6987,7 +6991,8 @@
          },
          {
             "filename": "mm_109c.zip",
-            "version": "1.09C"
+            "version": "1.09C",
+            "notes": "Profanity ROM"
          },
          {
             "filename": "mm_10u.zip",
@@ -8494,7 +8499,7 @@
             "version": "L-3"
          },
          {
-            "filename": "pb_lh5.zip",
+            "filename": "pb_l5h.zip",
             "version": "L-5",
             "notes": "Freeplay / Solar Value Mod"
          },
@@ -12354,7 +12359,8 @@
          },
          {
             "filename": "t2_p2f.zip",
-            "version": "P-2F"
+            "version": "P-2F",
+            "notes": "Profanity ROM"
          },
          {
             "filename": "t2_l4.zip",

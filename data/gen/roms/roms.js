@@ -67,15 +67,17 @@ exports.upload = function(config) {
 						return missingRoms.push(rom.filename);
 					}
 
-					// upload file
-					console.log('   --- Uploading %s...', localPath);
 					let romContent = fs.readFileSync(localPath);
-					return storageClient.post('/files?type=rom', romContent, {
+					console.log('   --- Uploading %s... (%d bytes)', localPath, romContent.length);
+
+					// upload file
+					return storageClient.post('/files?type=rom', toArrayBuffer(romContent), {
 						headers: {
 							'Content-Type': 'application/zip',
 							'Content-Disposition': 'attachment; filename="' + rom.filename + '"',
 							'Content-Length': romContent.length
 						}
+
 					}).then(response => {
 
 						// post rom data
@@ -119,3 +121,13 @@ exports.upload = function(config) {
 		}
 	});
 };
+
+
+function toArrayBuffer(buffer) {
+	var ab = new ArrayBuffer(buffer.length);
+	var view = new Uint8Array(ab);
+	for (var i = 0; i < buffer.length; ++i) {
+		view[i] = buffer[i];
+	}
+	return view;
+}

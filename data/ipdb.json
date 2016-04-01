@@ -94914,5 +94914,1575 @@
 		"features": "Flippers (5), Pop bumpers (4), Slingshots (3), Magnets (5), VUKs (2), Drop target (1), Scoops (2), Ball locks (2), Spinning target (1), Rollovers (7), Shaker motor, Multiball. Winged Monkey moves along diagonal track on playfield back wall to deliver the ball to upper left mini-playfield. OLED crystal ball displays any of thirty or more \"videos\" not necessarily in concert with game play. Backbox has a 26-inch High Definition LCD display, a mirrored backglass, and a lighted topper. Clear coated playfield. The playfield illumination is provided by RGB-LEDs. Seven speaker 2.1 digital audio system. Cabinet advertised as 55 1/2 inches long, 28 3/4 inches wide, and 74 1/2 inches high. Legs, lockdown bar, and side rails are red in color. The Witch's Castle (upper left mini-playfield) has molded castle walls and three motorized doors. The first is the Winged Monkey ball lock which holds a ball until the game wants to release it. The other two are the \"castle gates\" which open inward to reveal a scoop after repeated bashings from the ball in play. The six Rainbow standup targets have swirled 'lollipop' colors.Front of game audio connection jack for headphone/ear bud. Component audio connection jack at rear of game.",
 		"notes": "This model is advertised as having a limited production run of 1500 units. Each game will have a numbered plaque affixed to the game apron to be seen under the playfield glass. The manufacturer confirmed shipping began August 2014.Price when new: $9,000.00. An optional 'Invisiglass' playfield glass available for $250.00 extra.",
 		"toys": "Melting wicked witch in plastic tube moves up and down. Dorothy's house spins. Sculpted Twister. Toto-in-a-basket."
+	},
+	{
+		"ipdb": {
+			"number": 6225,
+			"mfg": 248
+		},
+		"title": "New City",
+		"manufacturer": "Petaco",
+		"year": 1966,
+		"game_type": "em",
+		"themes": [
+			"Cards/Gambling"
+		],
+		"features": "Flippers (2), Pop bumpers (3), Passive bumpers (2), Slingshots (2), Kick-out holes (4). Wedge head backbox.Maximum displayed point score is 1,999 points.",
+		"notes": "A copy of Gottlieb's 1965 'Kings & Queens'.Manufacturer price when new: 43,300 pesetas"
+	},
+	{
+		"ipdb": {
+			"number": 6226,
+			"mfg": 248
+		},
+		"title": "Mr. Doom",
+		"manufacturer": "Petaco",
+		"model_number": "1060",
+		"game_type": "ss",
+		"notes": "Petaco is the name used for domestic games. The same company made an export version as Recel's 1979 'Mr. Doom'."
+	},
+	{
+		"ipdb": {
+			"number": 6227,
+			"mfg": 248
+		},
+		"title": "Mini Cycle",
+		"manufacturer": "Petaco",
+		"game_type": "em",
+		"themes": [
+			"Motorcycles"
+		],
+		"features": "Flippers (2), Pop bumpers (3), Slingshots (2), Standup targets (7), Vari-target (1), Kick-out hole (1), Free ball return lane. Wedge head backbox.",
+		"notes": "This is a 1-player copy of the 2-player Gottlieb's 1970 'Mini Cycle' but also has outlane Specials. In the game pictures we saw (not shown here), the upper playfield and the card holder have the Petaco logo."
+	},
+	{
+		"ipdb": {
+			"number": 6228,
+			"mfg": 248
+		},
+		"title": "Orbit",
+		"manufacturer": "Petaco",
+		"game_type": "em",
+		"themes": [
+			"Outer Space"
+		],
+		"features": "Flippers (2), Pop bumpers (3), Slingshot (1), Standup targets (3), Vari-target (1), Spinning target (1), Upper right ball return rollunder, Right outlane ball return gate.",
+		"notes": "This 2-player game is a copy of the 2-player Gottlieb's 1972 'Outer Space' but has the same name as the 4-player version Gottlieb's 1971 'Orbit'."
+	},
+	{
+		"ipdb": {
+			"number": 6229,
+			"mfg": 204
+		},
+		"title": "Nairobi",
+		"manufacturer": "Maresa",
+		"year": 1966,
+		"game_type": "em",
+		"themes": [
+			"Hunting",
+			"Safari",
+			"World Places"
+		],
+		"features": "Flippers (2), Pop bumpers (5), Passive bumpers (2), Slingshots (2), Kick-out holes (2). Backglass light illumination (African wildlife light up). Wedge head backbox.Maximum displayed point score is 1,999 points.",
+		"notes": "Same playfield design as Gottlieb's 1964 'North Star'."
+	},
+	{
+		"ipdb": {
+			"number": 6230,
+			"mfg": 328
+		},
+		"title": "L'Etoile",
+		"manufacturer": "Unknown",
+		"game_type": "pm",
+		"features": "Trap holes (12). \"Figure 8\" playfield layout. The name od this game appears as orange cursive writing in the center playfield, The playfield background color is white. The topmost and bottommost trap hole each has a yellow sun painted around it abut only the top sun has yellow rays. The other trap holes have either a 5-point or a 6-point star painted around each, in either orange, green, blue, or gold. The gold stars have a \"comet trail\". The coin slot is on the far left end of the cabinet front. A small and rectangular metal plate appears nailed to the right side of the lower apron but we could not read the writing on it in the pictured that we saw. The left side of the apron had a partially peeled adhesive sticker, probably the instructions.",
+		"notes": "L'Etoile is French for \"The Star\". This game is a pin table and was located in France.Circa early 1930's.This game is not to be confused with Lenoble's 1934 'L'Etoile' or Unknown Manufacturer's 'Les �toiles'."
+	},
+	{
+		"ipdb": {
+			"number": 6231,
+			"mfg": 372
+		},
+		"title": "Bowling",
+		"manufacturer": "F�brica de Aparatos Electro Mec�nicos Recreativos, S.L",
+		"themes": [
+			"Sports",
+			"Bowling"
+		]
+	},
+	{
+		"ipdb": {
+			"number": 6232,
+			"mfg": 372
+		},
+		"title": "Sideral",
+		"manufacturer": "F�brica de Aparatos Electro Mec�nicos Recreativos, S.L",
+		"game_type": "em",
+		"themes": [
+			"Boating",
+			"Swimming",
+			"Space Travel"
+		],
+		"notes": "All we have seen of this game are two backglasses, both are bulb-scoring, each showing the game name and the manufacturer but having different themes:One glass depicts a huge below-ground swimming pool across the street from a row of buildings. The pool is large enough to show motorboat racing as well as two high-heeled women on a high-dive platform. The other glass shows a spacecraft on a beach in a desolate landscape except for a large body of water, and a fully-suited spaceman is walking towards two women who are relaxing while wearing sleeveless space suits. One woman has her helmet removed.The two different art themes and light bulb layouts indicate separate production runs. Until we have more information, we show this single listing for both versions."
+	},
+	{
+		"ipdb": {
+			"number": 6233,
+			"mfg": 47
+		},
+		"title": "Crystal",
+		"manufacturer": "Bally",
+		"game_type": "em",
+		"notes": "Scarce information has been found for this game and we have seen no pictures of it. Billboard resale ads from 1941 have been found that mention this game and, later, Coin Machine Journal ads from Williams indicated this game is one of the source games for their wartime conversions Williams' 1945 'Flat-Top' and Williams' 1945 'Laura'. On the strength of those Williams ads, we classify 'Crystal' as a 1-player game.We infer that 'Crystal' was made in 1940-1941. Thus far, only one ad has been found (shown here) that indicated Bally was the manufacturer.If anyone finds an example of this game or other information about it, please contact us."
+	},
+	{
+		"ipdb": {
+			"number": 6234,
+			"mfg": 450
+		},
+		"title": "Carreras de Automoviles",
+		"manufacturer": "Billares Quevedo",
+		"game_type": "em",
+		"themes": [
+			"Sports",
+			"Auto Racing"
+		],
+		"features": "Scoring bumpers (6). Two playfields, one for the red car, one for the blue car. Mechanical cars are advanced around circular track. Laps are counted on the backglass to determine the winner [Spanish: ganador]",
+		"notes": "Circa 1966. Manufacture price when new was 38,000 pesetas.We do not know if the scoring bumpers are active or are passive.This game was listed in the October 1966 issue of Automatico Espa�ol as 'CARRERAS DE NOCHES SUPERSON' and that name likely was taken from the text of a manufacturer's ad from that same issue (shown here). We list this game by the actual name shown on the backglass. We do not yet know the meaning of the capitalized name 'Superson' on the backglass below the game name."
+	},
+	{
+		"ipdb": {
+			"number": 6235,
+			"mfg": 405
+		},
+		"title": "Golden Game",
+		"manufacturer": "Splin S.A.",
+		"game_type": "ss",
+		"features": "Trap holes (25). Six cards.",
+		"notes": "We don't know what year this game was produced but circuit boards for the numeric displays show printed dates of 30/10/90 (October 30, 1990) and ??/12/90 (December ??, 1990).The game shown in this listing has a gray box attached to the upper right side of the backbox. The location uses this box to display the daily amount of money that the machine has received. We don't know if this box was provided by the manufacturer or was an after-factory addition."
+	},
+	{
+		"ipdb": {
+			"number": 6236,
+			"mfg": 275
+		},
+		"title": "Playtime",
+		"manufacturer": "SIRMO Games S.A.",
+		"game_type": "ss",
+		"notes": "The front cover of the Manual Technique showed a date of 'Janvier 1990'."
+	},
+	{
+		"ipdb": {
+			"number": 6237,
+			"mfg": 689
+		},
+		"title": "Amuzu",
+		"manufacturer": "Caldwell Novelty Co.",
+		"year": 1932,
+		"game_type": "pm",
+		"features": "7 balls for 1 cent. Trap holes (10). Cabinet measures 31 1/4 inches long, 17 inches wide, and 9 1/2 inches high.",
+		"notes": "An online search of this North Carolina manufacturer did not produce any results but we did find one reference to an Amuzu Novelty Company of Spartanburg, South Carolina in the Jun-22-1937 issue of The Gaffney Ledger of Gaffney, South Carolina."
+	},
+	{
+		"ipdb": {
+			"number": 6238,
+			"mfg": 328
+		},
+		"title": "Handicap",
+		"manufacturer": "Unknown",
+		"game_type": "em",
+		"themes": [
+			"Sports",
+			"Horse Racing"
+		],
+		"features": "Mechanical backbox animation (horses race).",
+		"notes": "This is a conversion of an unknown game.We saw only one small black-and-white picture of this game in Jean-Pierre Cuvier's book Pinballs le temps des flippers. If we correctly understand the French text, this game was distributed in the mid-1950s by Bussoz, a distributor, and that it was the reuse of a Williams machine which is not specified. Of the several choices of 1950s Williams horserace games that were made in this style, such as Williams' 1951 'Hayburners', none of them have a playfield anything like this one. The upper playfield has a round numbered disc similar to Gottlieb's 1964 'World Fair' except enclosed in a ring of rubbers instead of a ring of pop bumpers. Its lower playfield is a circle of 6 pop bumpers. We cannot discern if there are flippers. It has room on the backglass for bulb scoring only, no score reels. The cabinet has four wooden legs."
+	},
+	{
+		"ipdb": {
+			"number": 6239,
+			"mfg": 130
+		},
+		"title": "Baby",
+		"manufacturer": "Genco",
+		"game_type": "em",
+		"features": "Spring bumpers (7). Short backbox. Cabinet is shorter in length than other games of this period.",
+		"notes": "Same playfield layout as Genco's 1937 'Junior' but with different artwork. The name 'Baby' appears at the top of the playfield.Date estimated 1938."
+	},
+	{
+		"ipdb": {
+			"number": 6240,
+			"mfg": 690
+		},
+		"title": "Bera-Ball",
+		"manufacturer": "Bera Automatenfabrik",
+		"year": 1933,
+		"game_type": "pm",
+		"features": "Trap holes (10), Free Play holes (4). Two outhole troughs.",
+		"notes": "A copy of Tura Automatenfabrik Gmbh's 1933 'Tura-Ball'. A flyer (not shown here) indicates playfields are replaceable."
+	},
+	{
+		"ipdb": {
+			"number": 6241,
+			"mfg": 691
+		},
+		"title": "Sport-Ball-Automat",
+		"manufacturer": "West & Rosenkranz",
+		"year": 1933,
+		"game_type": "pm",
+		"notes": "According to the Encyclopedia of Pinball Vol 2 page 107, this game is a copy of Tura Automatenfabrik Gmbh's 1933 'Tura-Ball'."
+	},
+	{
+		"ipdb": {
+			"number": 6242,
+			"mfg": 117
+		},
+		"title": "Luna Park",
+		"manufacturer": "Exhibit",
+		"year": 1938,
+		"game_type": "em",
+		"themes": [
+			"Amusement Park",
+			"Carnival"
+		],
+		"features": "Spring bumpers (14), Captive ball (1), Kicker (1). Metal playfield. Curved wireform \"looping the loop\" contains captive ball."
+	},
+	{
+		"ipdb": {
+			"number": 6243,
+			"mfg": 156
+		},
+		"title": "Miss Universo (5 Ladies)",
+		"manufacturer": "Inder",
+		"game_type": "em",
+		"themes": [
+			"Beauty Pageant � Pageantry",
+			"Women"
+		],
+		"features": "Flippers (2), Pop bumpers (2), Slingshots (2), Standup targets (3), Horseshoe lane (1). Scoring numbered targets and rollovers on playfield lights up corresponding numbers on backglass. Plastic playfield surface. Wedge head backbox.Maximum displayed point score is 9,999 points.",
+		"notes": "This version shows five beauty contestants on the backglass. The playfield data for this listing is based on the sole playfield image shown here. This playfield shows two women, one sitting down, and two men. It was found without an associated backbox. This lower playfield art is different from the other two versions of this game so we believe it must belong in this listing.See also:INDER's 'Miss Universo (3 Ladies)'INDER's 'Miss Universo (10 Ladies)'We have been told two manufacturer dates of 1970 and 1972 for 'Miss Universo' but we cannot confirm which of the three versions should carry either of those dates. More information is needed to know in what sequence the three versions were manufactured."
+	},
+	{
+		"ipdb": {
+			"number": 6244,
+			"mfg": 156
+		},
+		"title": "Miss Universo (10 Ladies)",
+		"manufacturer": "Inder",
+		"game_type": "em",
+		"themes": [
+			"Beauty Pageant � Pageantry",
+			"Women"
+		],
+		"features": "Flippers (2), Pop bumpers (2), Slingshots (2), Standup targets (3), Horseshoe lane (1). Scoring numbered targets and rollovers on playfield lights up corresponding numbers on backglass. Backglass has a 'Last Ball in Play' light (Ultima Bola). Plastic playfield surface. Wedge head backbox.Maximum displayed point score is 9,999 points.Replay wheel maximum: 15Sound: 1 bell, knocker",
+		"notes": "This version shows ten beauty contestants on the backglass. The lower playfield shows one lady on a pageant runway with photographers.See also:INDER's 'Miss Universo (3 Ladies)'INDER's 'Miss Universo (5 Ladies)'We have been told two manufacturer dates of 1970 and 1972 for 'Miss Universo' but we cannot confirm which of the three versions should carry either of those dates. More information is needed to know in what sequence the three versions were manufactured."
+	},
+	{
+		"ipdb": {
+			"number": 6245,
+			"mfg": 526
+		},
+		"title": "El Valiente",
+		"manufacturer": "Salor, S.A",
+		"year": 1961,
+		"game_type": "em",
+		"themes": [
+			"Adventure"
+		],
+		"features": "Flippers (2), Pop bumpers (4). Beveled wedge head backbox. Bulb scoring.",
+		"notes": "The manufacturer plate is located under the lower playfield apron."
+	},
+	{
+		"ipdb": {
+			"number": 6246,
+			"mfg": 526
+		},
+		"title": "Feria",
+		"manufacturer": "Salor, S.A",
+		"year": 1964,
+		"game_type": "em",
+		"themes": [
+			"Circus/Carnival",
+			"Fair",
+			"Women"
+		],
+		"features": "Flippers (2), Pop bumpers (2). Bulb scoring. Formica cabinet and rails. Metal cigarette holder on each side rail. Wedge head backbox with beveled top.",
+		"notes": "The manufacturer plate is stamped 1964.This game has the backglass scores silkscreened in a red color. Compare to Automaticos' 'Feria' which has the same backglass and playfield, and a different cabinet, but its backglass scores are silkscreened in black."
+	},
+	{
+		"ipdb": {
+			"number": 6247,
+			"mfg": 93
+		},
+		"title": "World Champ (Prototype)",
+		"manufacturer": "Gottlieb",
+		"model_number": "131",
+		"year": 1957,
+		"game_type": "em",
+		"themes": [
+			"Sports",
+			"Boxing"
+		],
+		"designers": [
+			"Wayne Neyens"
+		],
+		"artists": [
+			"Roy Parker"
+		],
+		"features": "Flippers (2), Pop bumpers (4), Slingshots (2), Standup targets (4), Gobble hole (1). No outlanes.Maximum displayed point score is 6,990,000 points.Sound: 2 bells, knocker",
+		"notes": "This game was an experimental or test game, modified by Gottlieb. It was tagged with the same Model Number as the regular World Champ production run, although there was no special schematic found with the game that might have indicated a special model number. Its cabinet serial number of A55266WC falls within the numerical range of that run. The coin door is not equipped with coin mechanisms and has no hole drilled for the usual large start button. The hole normally meant for the coin return button is used to mount a smaller start button. The replay wheel in the backbox is numbered in units of five, and the backglass window that shows this number to the player is labeled as \"Balls\". To award extended play, the replay unit steps one step per award threshold achieved, each step adding 5 balls to the total ball count, the apparent equivalent of a replay. In fact, the replay wheel is labeled up to 130 and when mathematically divided by 5 (balls per game) yields a quotient of 26, the typical maximum number for replay games of this time period. Resting loosely inside the cabinet front is a button which increments the replay wheel one step for each button press, the equivalent of coining a game. Pressing the small button on the coin door starts the play, decrements the replay wheel one step, and delivers five steel balls to the player. After the fifth ball is played, the ball trough rollover switches for balls 4 and 5 are then both closed and, if the ball count on the replay wheel is not showing zero, the game shuts off for approximately five seconds then automatically resets, starting a new five ball game and the replay wheel decrements. Only when the replay wheel is at zero does this process end and the words Game Over light up on the backglass. This Extended Play process is managed by a Delay Unit in the lower cabinet which is equipped with both step-up and reset coils. There is also an extra relay that is labeled \"V\" and is mounted next to the regular \"V\" relay. The motor board is wider than on production games to accommodate these extra components and connectors. Wiring that is specific to this prototype model is colored red and extends from the coin door start switch and the credit switch, through the cabinet to the transformer, the Delay Unit and the extra \"V\" relay, and to the credit unit in the backbox. The owner stated that one spring connector on the \"Round Unit\" was bent back which disabled the awarding of any Specials for the gobble hole.The backbox insert was wired from the factory to illuminate the words \"Game Over\" on the backglass whereas on production games the factory did not install a lamp socket or wiring for those words, leaving only the hole in the insert. The production backglass used on this game indicates a possible 7 million point score. However, just as in the production games, Gottlieb did not wire a lamp socket to light the '7' and no 7-million relay was installed, so the maximum score possible is 6,990,000 points.Unlike the Gottlieb's 1960 'Dancing Dolls (Prototype)', the motor does not run continually whenever the Balls window shows any units of 5 (as it does on that game until the button on the coin door is pressed to start a new game).The prototype pictured here is discussed in the 1997 GameRoom Magazine article referenced in this listing. In this article, the authors hypothesized that a second number handwritten on the cabinet bottom, VT SPEC 55266, indicated this game was part of a special run intended for the state of Vermont. No subsequent information supporting this theory has been received and we do not know if Vermont in the 1950s was a state that did not allow replays. Vermont did use the abbreviation 'Vt.' even before the U.S. Postal Service's implementation of standard state abbreviations in 1963. We note that the cabling in the backbox and the lower cabinet each carried a white tag marked #131 SPECIAL.We have found another article in GameRoom Magazine that identifies one earlier game that also had this \"Extended Play\" design. See Gottlieb's 1956 'Classy Bowler' for the specific magazine issue."
+	},
+	{
+		"ipdb": {
+			"number": 6248,
+			"mfg": 352
+		},
+		"title": "Safari De Luxe",
+		"manufacturer": "Williams",
+		"model_number": "121",
+		"year": 1954,
+		"game_type": "em",
+		"themes": [
+			"Sports",
+			"Hunting",
+			"Safari"
+		],
+		"notes": "This game is not a pinball game. It is really a Gun Game. This Model 121 is the same as Model 122 Williams' 1954 'Safari' except it also has Triple Match and Replay features. Both models shipped to distributors the first week of January 1955 and may mistakenly appear on some lists as a pin game. This listing remains here for clarification purposes."
+	},
+	{
+		"ipdb": {
+			"number": 6249,
+			"mfg": 344
+		},
+		"title": "High Fliers",
+		"manufacturer": "Western Products, Incorporated (1938-1941)",
+		"game_type": "em",
+		"themes": [
+			"Aircraft",
+			"Airplanes",
+			"Airports",
+			"Aviation",
+			"Flying",
+			"Warfare"
+		],
+		"features": "5 balls for 5 cents. Spring bumpers (9), Kickers (3). Mechanical backbox animation (three spinning reels show bell fruit or war symbols). Polished metal playfield.",
+		"notes": "Available with a 4-coin multiple chute at slight extra cost.This is a non-payout pin game having four legs and is circa 1940.Same playfield as Western Products' 'Trio'."
+	},
+	{
+		"ipdb": {
+			"number": 6250,
+			"mfg": 344
+		},
+		"title": "Trio",
+		"manufacturer": "Western Products, Incorporated (1938-1941)",
+		"game_type": "em",
+		"themes": [
+			"Aircraft",
+			"Airplanes",
+			"Airports",
+			"Aviation",
+			"Flying",
+			"Warfare"
+		],
+		"features": "5 balls for 5 cents. Spring bumpers (9), Kickers (3). Polished metal playfield.",
+		"notes": "Available with a 4-coin multiple chute at slight extra cost.This is a non-payout pin game having four legs and is circa 1940.Same playfield as Western Products' 'High Fliers'."
+	},
+	{
+		"ipdb": {
+			"number": 6251,
+			"mfg": 47
+		},
+		"title": "Triumph (Model 2)",
+		"manufacturer": "Bally",
+		"model_number": "353",
+		"year": 1940,
+		"game_type": "em",
+		"features": "5 balls for 5 cents. Spring bumpers (15). Buy-backs at 5 cents each. Hitting each of fifteen numbered playfield bumpers lighted the corresponding number on the backglass, with a random bumper scoring a replay when hit. Lighting all numbers caused every bumper to score a replay when hit. Bumpers 6 and 7 are tied together (score either one and both are scored).",
+		"notes": "Triumph Model 2 (production Model Number 353) allows up to 2 buy-backs.Bally president Ray Moloney announced this game in a Billboard article dated Apr-20-1940, page 78, and again in the May 1940 Automatic Age, page 24, as \"Model 2\" intended for \"second string locations\" where Triumph (Model 1) would not otherwise be operated. Moloney also referred to it as the 'Dime-Limit' Triumph, referring to its limit of 2 buy-backs.We notice that the Promotional Photo and February 1940 Billboard ad shown in the Model 1 listing each show the game with a knob positioned to the left of the ball lift and shooter knobs. However, this \"third knob\" is not seen on any of the actual photographs of this game that we have encountered. It�s possible that the knob was drawn by an artist and did not find its way to production. If it was exclusive to Model 1, then all photographs would have to be of Model 2 unless the knob was removed sometime during production of Model 1. We invite additional information from owners of Triumph and whether your game is limited to two buy-backs or has all five. From this beginning, we may discover how to identify a given picture as Model 1 or Model 2.See also Bally's 1940 'Triumph (Model 1)'."
+	},
+	{
+		"ipdb": {
+			"number": 6252,
+			"mfg": 303
+		},
+		"title": "Whoa Nellie Big Juicy Melons",
+		"manufacturer": "Stern",
+		"year": 2015,
+		"game_type": "ss",
+		"short": [
+			"WNBJM"
+		],
+		"themes": [
+			"Agriculture",
+			"Fantasy",
+			"Farming",
+			"Women"
+		],
+		"designers": [
+			"Dennis Nordman"
+		],
+		"artists": [
+			"Greg Freres"
+		],
+		"features": "Flippers (2), Pop bumpers (4), Passive bumper (1), Slingshots (2), Star rollovers (8), Bullseye targets (2), Kick-out hole (1), Free ball return lane. Plunger skill shot. Has speech. Each of the four players uses the same four electro-mechanical score reels. Each of the top four lanes lights a pop bumper. The apron has a small LCD used in attract mode to display the replay value to beat and also used during operator maintenance to view settings adjustments and other diagnostics.Maximum displayed point score is 9,999 points.Sound: Electronic, and mechanical knockerThe backglass is an actual glass and not a translite. The cabinet is a weathered fruit crate design. Instead of standard pinball legs, the game rests on a \"fruit crate\" base. To finely adjust the playfield angle, crushed beer cans branded Whoa Nellie! are included with the game to place between the cabinet and the crate, or owners can use their own beer cans. Included with each game is a standard set of powder-coated metal legs.",
+		"notes": "Manufactured under license from Whizbang Pinball LLC. This game uses licensed music.MSRP when new: $6,499.00Factory accessories for optional purchase (see Files section):SP13 Whoa Nellie Watermelon Shooter KnobA previous specialty production run was Whizbang Pinball's 2011 'Whoa Nellie! Big Juicy Melons�'."
+	},
+	{
+		"ipdb": {
+			"number": 6253,
+			"mfg": 692
+		},
+		"title": "Vee-A-Lite",
+		"manufacturer": "Frees Bros.",
+		"game_type": "em",
+		"features": "Trap holes (21).The Instruction Card shows this:FOLLOW THESE SECTIONAL NUMBERS FOR ILLUMINATING LITES1 and 3 - 2 and 4 - 5 and 6FOLLOW THESE SINGLE NUMBERS IN ROTATION FOR LITES7-8-9-10     REMEMBER 2 and 4 MUST BE MADE BEFORE8- 9- OR 10 WILL LIGHT",
+		"notes": "The Instruction and Score Card indicates, \"INSERT Manufactured by FREES BROS.\" We know other manufacturers of this period use the term \"insert\" to mean a replaceable playfield and it is likely this playfield is replaceable at least to the extent that it appears not nailed to the cabinet and could be removed. We have no information if a separate company made the cabinet.Circa early 1930s."
+	},
+	{
+		"ipdb": {
+			"number": 6254,
+			"mfg": 328
+		},
+		"title": "Super Golf Azur 3000",
+		"manufacturer": "Unknown",
+		"game_type": "ss",
+		"features": "Flippers (2), Trap holes (25). Six cards."
+	},
+	{
+		"ipdb": {
+			"number": 6255,
+			"mfg": 350
+		},
+		"title": "Mini Golf (New York Model)",
+		"manufacturer": "Williams",
+		"model_number": "309",
+		"year": 1964,
+		"game_type": "em",
+		"themes": [
+			"Sports",
+			"Golfing"
+		],
+		"features": "9 holes.",
+		"notes": "This Model 309 was for New York only and did not award replays. The replay Model 301 for territories outside of New York is Williams' 1964 'Mini Golf'."
+	},
+	{
+		"ipdb": {
+			"number": 6256,
+			"mfg": 693
+		},
+		"title": "Profit Sharer",
+		"manufacturer": "Electra Mfg. Co.",
+		"year": 1932,
+		"game_type": "pm",
+		"notes": "The \"Profit Sharer\" is Not A Pinball but is a \"Jack Pot Attachment\" for the front of the pinball cabinet to convert non-payout pinball machines to payout.The Billboard ad shown here advertises the device to operators and jobbers for use on old pin games. If it was also sold to manufacturers for new games, we might expect this device to appear in those manufacturer's advertisements.See also Field Manufacturing Corporation's 1932 'Profit Sharer'."
+	},
+	{
+		"ipdb": {
+			"number": 6257,
+			"mfg": 315
+		},
+		"title": "Profit Sharer",
+		"manufacturer": "Field Manufacturing Corporation",
+		"year": 1932,
+		"game_type": "pm",
+		"notes": "The \"Profit Sharer\" is Not A Pinball but is a \"Jack Pot Attachment\" for the front of the pinball cabinet allowing operators and jobbers to convert their non-payout pinball machines to payout.This device was also advertised to principal manufacturers for installation on new games.See also Electra Mfg. Co.'s 1932 'Profit Sharer'."
+	},
+	{
+		"ipdb": {
+			"number": 6258,
+			"mfg": 328
+		},
+		"title": "Mexican Golf",
+		"manufacturer": "Unknown",
+		"game_type": "pm",
+		"themes": [
+			"Sports",
+			"Golfing"
+		],
+		"features": "7 balls for 1 cent. Cabinet measured 24 inches long, 16 inches wide, and 9 inches high.",
+		"notes": "Similar to Gottlieb's 1931 'Baffle Ball' except it has no row of pockets along the bottom of the playfield. Instead, it has a curved lower ball arch. Instead of an outhole trough at the bottom, three scoring trap holes are present."
+	},
+	{
+		"ipdb": {
+			"number": 6259,
+			"mfg": 694
+		},
+		"title": "ScoreGasm Master",
+		"manufacturer": "Day One Pinball Manufacturing, Incorporated",
+		"model_number": "2014001",
+		"year": 2015,
+		"game_type": "ss",
+		"short": [
+			"SGM"
+		],
+		"designers": [
+			"Andrew Barney",
+			"Terry Dezwarte"
+		],
+		"artists": [
+			"John Youssi"
+		],
+		"features": "Kick-out holes (2). The tilt cup comes with a choice of two metal balls as a method of sensitivity adjustment. The backbox contains an LED light strip, two speakers, a small sound board that is processor driven, and a driver board that runs the solenoids. Any of 45 sound effects are played when a progressive scoring hole is made. The backbox does not display the score. The final score is added up by the player at the end of the game by looking at the values assigned to each playfield pocket where balls have landed. A knob on the left side of cabinet front starts a new game by clearing the playfield of trapped balls and returning them to the ball lift mechanism. This mechanism is weighted with an actual U.S. \"buffalo nickel\" five-cent coin. Access to the cabinet and playfield glass removal are from the back. Operates at either 110/120v 60Hz or 220/240v 50Hz (switch-selectable).",
+		"notes": "This game is based on PAMCO's 1934 'Contact (Master)'. Its playfield layout was adjusted for symmetry and a few more pins were added but the score values for each pocket remained the same. A short backbox was added to include light and sound (sound can be turned off, if desired). This is a coinless machine and the buffalo nickel on the ball lift mechanism was included as an homage to the original price per play of the 1934 game. Ten engineering samples were made before production began with serial numbers ranging from X000001 to X000010 and each also has the buffalo nickel. There is no visible external difference between the sample games and the production games. Internally, there is only a difference in the driver board and support wiring. The engineering samples have an opto isolated relay driver board and the production games have a transistor-based driver board with less complex wiring (fewer solder points). Production games have a serial number starting with 000001 that is found in several places: below the back door, inside the door on the right, and in a smaller size on the playfield and elsewhere.This game was introduced at a show on April 11, 2015. A limited production run of 20 units was forecasted but may be increased. Production is in progress as of April 2015.Manufacturer's price when new: $1995.00"
+	},
+	{
+		"ipdb": {
+			"number": 6260,
+			"mfg": 47
+		},
+		"title": "Thorobred",
+		"manufacturer": "Bally",
+		"model_number": "455",
+		"year": 1942,
+		"game_type": "em",
+		"themes": [
+			"Sports",
+			"Horse Racing"
+		],
+		"features": "This is a Free Play console machine.",
+		"notes": "'Thorobred' was Bally's last pre-war machine.More than one Bally document spells the name of this game as 'Thorobred' while the distributor ad shown here spells it as 'Thoroughbred\". We have no actual pictures of this game to see how it was spelled on the game itself. The ad indicates this machine was not payout but awarded Free Plays.Bally documentation shows their last pre-war Model Number was 455 and was assigned to \"Sun Ray Mint Vendor - Thorobred\". We know Model 454 is their 'Sun Ray' console slot machine. The distributor ad confirms that Thorobred is not a mint vendor. It appears a mint vendor was made for the slot machine. We can only speculate that the war effort may have compressed procedures to have caused the model number 455 to be assigned to two different products."
+	},
+	{
+		"ipdb": {
+			"number": 6261,
+			"mfg": 275
+		},
+		"title": "Golden Gate (3-game)",
+		"manufacturer": "SIRMO Games S.A.",
+		"game_type": "ss",
+		"features": "Six cards.",
+		"notes": "Three types of games:� 3 numbers game� One Ball game� Bonus gameThe backglass looks almost identical to that of SIRMO's 'Golden Gate (4-game)' except between the 1st and 4th bingo cards there is no large window marked as \"General Display\"."
+	},
+	{
+		"ipdb": {
+			"number": 6262,
+			"mfg": 328
+		},
+		"title": "President One Ball",
+		"manufacturer": "Unknown",
+		"game_type": "ss",
+		"features": "Six cards.",
+		"notes": "Our flyer image is out-of-focus and we cannot see if any manufacturer name appears on it. The flyer shows the manufacturer GAA who was also know to be a distributor of games made by other companies."
+	},
+	{
+		"ipdb": {
+			"number": 6264,
+			"mfg": 695
+		},
+		"title": "Medieval Madness (Limited Edition)",
+		"manufacturer": "Planetary Pinball Supply, Inc.",
+		"year": 2015,
+		"game_type": "ss",
+		"short": [
+			"MMRLE"
+		],
+		"themes": [
+			"Fantasy",
+			"Medieval",
+			"Wizards/Magic"
+		],
+		"designers": [
+			"Brian Eddy"
+		],
+		"artists": [
+			"John Youssi",
+			"Greg Freres"
+		],
+		"features": "Flippers (2), Pop bumpers (3), Ramps (2), Autoplunger. A left-side catapult propels ball airborne into a habitrail. Two pop-up trolls in playfield become active during \"Trolls!\" mode. Shaker motor activated during castle explosions, catapult firing, and the appearance of trolls. Intensity of shaker motor is operator-adjustable.DMD has fully-adjustable color. Double hardcoat on playfield. All lamps are LED from factory.Cabinet bottom is plywood not MDF. Fully finished cabinet interior. Finished backbox edges. Cabinet art are factory decals. Three trim options: stainless trim with industrial chrome legs, gold-colored powder coat trim and legs, black semi-gloss powder coat trim and legs. A serialized plaque is affixed to the cardholder.",
+		"notes": "A limited production run of 1000 was forecasted. As of May 2015, we do not know if production has completed.The translite shows the game name as \"Medieval Madness\" while the sides of the cabinet show \"Ye Olde Medieval Madness\".This game is a remake of Williams' 1997 'Medieval Madness' but carries no Williams logos or branding. The translite has additional copyright wording. The manufacturer stated the playfield itself is the same playfield with the exception that there may be some different holes for mounting the electronics boards under the playfield, LEDs, etc.Chicago Gaming Company made this game for Planetary Pinball Supply, Inc. using the Stern Pinball, Inc. factory to assemble the playfield and cabinet assemblies using both original specification WEG (Williams Electronic Games, Inc.) Medieval Madness parts and newly-designed CGC parts (electronics and lighting systems).Manufacturer price when new: $7995.00While this Limited Edition game has appeared at pinball shows as early as March 2014, those games likely were prototypes. The earliest date we have found for this game being shipped to buyers is March 2015. If anyone has an earlier shipping date, please contact us.",
+		"toys": "Exploding castle."
+	},
+	{
+		"ipdb": {
+			"number": 6265,
+			"mfg": 303
+		},
+		"title": "KISS (Pro)",
+		"manufacturer": "Stern",
+		"year": 2015,
+		"game_type": "ss",
+		"themes": [
+			"Celebrities � Licensed",
+			"Music"
+		],
+		"designers": [
+			"John Borg"
+		],
+		"artists": [
+			"Kevin O'Connor"
+		],
+		"features": "Flippers (2), Pop bumpers (4), Slingshots (4), Standup targets (14), Spinning target (1), Spinning disc (1), Scoop (1), Custom speech from Gene Simmons and Paul Stanley. Stereo and Hi-Fidelity sound.Factory illumination:LED general illumination (white).Newly designed RGB LED in pop bumpers (4).Full spectrum smooth RGB LED playfield arrow inserts (6).The side rails, lockdown bar, backbox hinge, and legs on this version are all powder coated black. A translite is used instead of a backglass and shows the name 'KISS' with yellow borders. Decal cabinet artwork.",
+		"notes": "The pop bumper caps are the same style and art design as the ones used on Bally's 1979 'Kiss'. Both of these games have a 'Colossal Bonus' bonus multiplier.The first games were shipped from Stern in May 2015.MSRP when new: $5,995.00The four inserts above the flippers on the production playfields are labeled 'The Starchild', 'The Spaceman', 'The Demon', and 'The Catman'. However, the ones shown in the manufacturer's flyer do not include the word 'The'.",
+		"toys": "Paul Stanley guitar-playing figurine (non-animated), Molded Gene Simmons head (stationary, does not pivot)."
+	},
+	{
+		"ipdb": {
+			"number": 6266,
+			"mfg": 303
+		},
+		"title": "KISS (Premium)",
+		"manufacturer": "Stern",
+		"year": 2015,
+		"game_type": "ss",
+		"themes": [
+			"Celebrities � Licensed",
+			"Music"
+		],
+		"designers": [
+			"John Borg"
+		],
+		"artists": [
+			"Kevin O'Connor"
+		],
+		"features": "Flippers (2), Pop bumpers (4), Slingshots (4), Standup targets (10), 4-bank drop targets (1), Single drop target (1), Spinning target (1), Spinning disc (1), Scoop (1). A magnet moving behind the playfield�s back panel slowly transports a captured ball above the playfield from the right-side ramp to the left-side elevated stage. Custom speech from Gene Simmons and Paul Stanley. Stereo and Hi-Fidelity sound.Factory illumination:LED general illumination (red, white, purple).Newly designed RGB LED in pop bumpers (4).Full spectrum smooth RGB LED playfield arrow inserts (6).Full spectrum smooth RGB LED playfield insert grid (16).The side rails, lockdown bar, backbox hinge, and legs on this version are all powder coated black. A translite is used instead of a backglass and shows the name 'KISS' with red borders. Decal cabinet artwork.",
+		"notes": "The pop bumper caps are the same style and art design as the ones used on Bally's 1979 'Kiss'. Both of these games have a 'Colossal Bonus' bonus multiplier.The first games were shipped from Stern in July 2015.MSRP when new: $7,595.00",
+		"toys": "Animated Paul Stanley guitar-playing figurine, Molded Amplifier, Molded pivoting Gene Simmons head."
+	},
+	{
+		"ipdb": {
+			"number": 6267,
+			"mfg": 303
+		},
+		"title": "KISS (Limited Edition)",
+		"manufacturer": "Stern",
+		"year": 2015,
+		"game_type": "ss",
+		"themes": [
+			"Celebrities � Licensed",
+			"Music"
+		],
+		"designers": [
+			"John Borg"
+		],
+		"artists": [
+			"Kevin O'Connor"
+		],
+		"features": "Flippers (2), Pop bumpers (4), Slingshots (4), Standup targets (10), 4-bank drop targets (1), Single drop target (1), Spinning target (1), Spinning disc (1), Scoop (1). A magnet moving behind the playfield�s back panel slowly transports a captured ball above the playfield from the right-side ramp to the left-side elevated stage. Custom speech from Gene Simmons and Paul Stanley. Stereo and Hi-Fidelity sound.Factory illumination:LED general illumination (red, white, purple).Newly designed RGB LED in pop bumpers (4).Full spectrum smooth RGB LED playfield arrow inserts (6).Full spectrum smooth RGB LED playfield insert grid (16).The side rails, lockdown bar, backbox hinge, and legs on this version are all powder coated red. A mirrored backglass is used instead of a translite. Decal cabinet artwork.This Limited Edition version came with a serialized number plate, the playfield signed by the designer, and a Certificate of Authenticity signed by Gary Stern.",
+		"notes": "The pop bumper caps are the same style and art design as the ones used on Bally's 1979 'Kiss'. Both of these games have a 'Colossal Bonus' bonus multiplier.The first games were shipped from Stern in July 2015.MSRP when new: $8,795.00",
+		"toys": "Animated Paul Stanley guitar-playing figurine, Molded Amplifier, Molded pivoting Gene Simmons head."
+	},
+	{
+		"ipdb": {
+			"number": 6268,
+			"mfg": 328
+		},
+		"title": "Bill's Belott's",
+		"manufacturer": "Unknown",
+		"game_type": "pm",
+		"themes": [
+			"Playing Cards"
+		],
+		"features": "25 centimes per play. Trap holes (17). Pins and pockets playfield with images of playing cards below each trap hole. Thirteen trap holes are elongated, four are round. An additional hole is marked A REJOUER. A triangular apron has the Instruction/Score card covering its entire surface. All numbers and text are a 'stencil' style of font. Playfield background color is off-white or cream. Large red and black circle and hexagons are painted around the trap holes. The single coin slot is on the wood lockdown bar. A knob on the front center of the cabinet drops balls at start of game. The unpainted cabinet measured 94 cm long, 46 cm wide, and 25 cm high.",
+		"notes": "Circa 1930's.Belote is a popular card game in France."
+	},
+	{
+		"ipdb": {
+			"number": 6269,
+			"mfg": 328
+		},
+		"title": "Le Cameleon",
+		"manufacturer": "Unknown",
+		"game_type": "pm",
+		"features": "20 centimes per play. Trap holes (18). A pins and pockets playfield. Eleven trap holes are elongated, seven are round. Two additional holes are each marked A REJOUER. The playfield has a blue-green background and several images of chameleons are painted. The unpainted wood cabinet has a single coin slot on the left side of the wood lockdown bar. The cabinet front has the ball shooter know on the right, what likely is a ball lift pivoting handle in the center, and what is likely a ball reset knob on the left.",
+		"notes": "The pictures we saw suggested this game was large enough to be a pin table and not a counter game but we saw no bolt holes on the cabinet corners where legs would attach.Circa 1930s."
+	},
+	{
+		"ipdb": {
+			"number": 6270,
+			"mfg": 328
+		},
+		"title": "2005 World Car Racing Pinball",
+		"manufacturer": "Unknown",
+		"game_type": "ss",
+		"themes": [
+			"Sports",
+			"Auto Racing"
+		],
+		"features": "Flipper (1). Vertical cabinet measured 71 1/2 inches high, 22 inches wide, and 26 inches deep. The playfield has a square-shaped \"wheel\" of illuminating lights to display different types of race cars. Player deposits coins to get credits then selects a car from the choices before shooting the ball into play. If the ball lands on a lit slot at the bottom, credits are awarded and the \"wheel\" spins. If it lands on the selected car, the player \"wins\". Credits are cashed-in by hitting a reset button on the top of the cabinet.",
+		"notes": "The game has a \"smart\" coin mech to accept more than one denomination of coin."
+	},
+	{
+		"ipdb": {
+			"number": 6271,
+			"mfg": 328
+		},
+		"title": "L'Apero",
+		"manufacturer": "Unknown",
+		"game_type": "pm",
+		"features": "Trap Holes (10), Free play hole (1). \"Figure 8\" playfield layout. The free play hole is marked \"A REJOUER\". The playfield background color is gray. The top and bottom trap hole each have a yellow sun painted around them. All other trap holes have a star around them painted either green, blue, red, or white. The star around the free play hole is painted pale gold. The upper and lower aprons are unpainted wood. The name of the game is painted in the center of the \"8\"."
+	},
+	{
+		"ipdb": {
+			"number": 6272,
+			"mfg": 328
+		},
+		"title": "PROFI Match",
+		"manufacturer": "Unknown",
+		"game_type": "em",
+		"themes": [
+			"Sports",
+			"Futbol",
+			"Soccer"
+		],
+		"features": "Flippers (12). Each player has four flippers buttons, two on each side of cabinet. Cabinet measures 128 cm long, 61 cm wide, and 94 cm high with legs.This is a head-to-head game where two players at opposite ends of the playfield compete in simultaneous play. Each player has flipper buttons which control only those flippers facing the opponent.",
+		"toys": "This game is a German copy of Bally's 1967 'Boot-A-Ball'.\"Profi\" is German for \"Professional\"."
+	},
+	{
+		"ipdb": {
+			"number": 6273,
+			"mfg": 328
+		},
+		"title": "The Furious Jazz",
+		"manufacturer": "Unknown",
+		"game_type": "pm",
+		"themes": [
+			"Music"
+		],
+		"features": "Snap traps (10). This game has a shooter lane to allow the ball to loop 360 degrees around the playfield before entering into play. The outhole trough is very long and curved. Above it are the words 'FAUSSE NOTE' [French: false note]. Two metal rails form a vertical lane in the upper playfield with its upper opening at the top of the playfield as a skill shot. This lane delivers the ball directly to a trap hole in the center playfield.  This center trap hole is inside a U-shaped rail forming a cup such that once the trap is shut, future balls would land in this cup. In the pictures we saw of this game, we cannot see how these trapped balls would release to the player at start of game unless the U-shaped rail itself pivots up to release them. The playfield has a gold-colored background. The center trap hole has painted around it a jazz musician in black tuxedo. A musician in red tuxedo is painted around each of the other holes and at the opening of the vertical lane. In the poor-quality images we saw, the musicians either were wearing black-face or were painted with uncomplimentary racial caricatures. The upper and lower aprons are unpainted wood. The lower apron has a large round gold label on each side with text. The name of the game is displayed in the middle area of the playfield in green stenciled lettering.",
+		"notes": "Circa 1930s."
+	},
+	{
+		"ipdb": {
+			"number": 6274,
+			"mfg": 351
+		},
+		"title": "Argosy",
+		"manufacturer": "Williams",
+		"game_type": "ss",
+		"themes": [
+			"Boats",
+			"Nautical",
+			"Ships",
+			"Water"
+		],
+		"designers": [
+			"Chris Otis"
+		],
+		"features": "Flippers (2), Pop bumpers (2), Slingshots (3), 4-bank drop targets (1), Kick-out hole (1), Spinning target (1), Left outlane detour gate.",
+		"notes": "This is an electronic prototype of the EM game of the same name. The sole example we have seen of this game had cabinet art from Williams' 1976 'Aztec' and likely was a cabinet taken from that production run. Circa 1977.The MPU used in this game is sometimes referred to as \"System 2\". It was only used in this game and the prototype solid state Aztec. What is sometimes called \"System 1\" is only used in Williams' 1977 'Grand Prix'.\"System 3\" was the first system used for regular production."
+	},
+	{
+		"ipdb": {
+			"number": 6275,
+			"mfg": 47
+		},
+		"title": "Mississippi Showboat",
+		"manufacturer": "Bally",
+		"model_number": "1258",
+		"year": 1981,
+		"game_type": "em",
+		"themes": [
+			"American History",
+			"Boats"
+		],
+		"features": "Trap holes (25). Six cards. Plastic playfield.",
+		"notes": "'Mississippi Showboat' appears to be the last bingo game from this manufacturer. The example pictured here is the only one we have seen. The right side of the backbox has a stamped serial number EX3 with a date 10-1-1981. The game was discovered at a distributor in Charleston, South Carolina in 2014. A long-time employee who was there since the 1970s explained that they received the game from Bally to test it out. When Bally decided to not take it into production, they told the distributor to just keep it. The game was then just set aside, unused. The owner of the distributorship passed away in 2013 and the game was found and rescued only days before it was about to be dismantled for scrap. As of 2015 this game resides in a museum in Holland.We don't know how many of these test games were made. The cabinet serial number EX3 suggests that this was a third one. The letters EX may stand for 'Experimental' or possibly 'Export' as by this time Bally was exporting their bingo production."
+	},
+	{
+		"ipdb": {
+			"number": 6276,
+			"mfg": 482
+		},
+		"title": "Buccaneer",
+		"manufacturer": "Esteban",
+		"game_type": "em",
+		"themes": [
+			"Adventure",
+			"Pirates"
+		],
+		"features": "Flippers (4), Pop bumpers (3), 5-bank drop targets (2), Kick-out holes (2). No slingshots.",
+		"notes": "The playfield layout copies Gottlieb's 1977 'Jungle Queen'. The backglass and playfield copy the artwork from Gottlieb's 1976 'Buccaneer'."
+	},
+	{
+		"ipdb": {
+			"number": 6277,
+			"mfg": 696
+		},
+		"title": "Wanghe",
+		"manufacturer": "Wanghe Mfg. Co.",
+		"game_type": "pm",
+		"features": "The Instruction Card states: The plunger which propels the balls is the key to this game of skill.The force with which it is released governs their speed and actions.DIRECTIONSInsert nickel in coin slot. Push coin slot completely in. This lowers playing surface. Wait until all the balls have cleared and then pull coin lever back into place, which automatically returns the playing surface.You are now ready to begin. Each release of the plunger puts a ball in play. When all the balls have been played, total your score, the odd colored ball counting double.PATENT APPLIED FOR",
+		"toys": "Circa 1930's.",
+		"slogans": "\"The Game That Fascinates\""
+	},
+	{
+		"ipdb": {
+			"number": 6278,
+			"mfg": 47
+		},
+		"title": "All The Way",
+		"manufacturer": "Bally",
+		"model_number": "748",
+		"year": 1964,
+		"game_type": "em",
+		"themes": [
+			"Circus/Carnival"
+		],
+		"notes": "This is not a pinball. It is a shuffleboard with a backbox at one end having score reels for two players and three mechanical backbox animations."
+	},
+	{
+		"ipdb": {
+			"number": 6279,
+			"mfg": 328
+		},
+		"title": "Bing Bang Game",
+		"manufacturer": "Unknown",
+		"game_type": "pm",
+		"features": "5 balls for 1 cent. Colored ball counts double. Cabinet measures 18 inches long, 11 inches wide, 6 inches high in the front, and 7 inches high in the back."
+	},
+	{
+		"ipdb": {
+			"number": 6280,
+			"mfg": 261
+		},
+		"title": "Psyche Delic",
+		"manufacturer": "Rally a.k.a. Rally Play Company",
+		"game_type": "em",
+		"themes": [
+			"Happiness",
+			"Psychedelic",
+			"Women"
+		],
+		"features": "Flippers (4), Pop bumpers (3), Slingshots (2), Star rollovers (20), Standup targets (5), Thrust magnets (4), Horseshoe lanes (2). The long right-side lane has four thrust magnets, each propelling the ball to the magnet above it, to return the ball to the top of the playfield. Nixie tube electronic scoring. Electronic sounds. Relays all on circuit boards. Microswitches. No electronic logic in game features. EM score motor. Festoon lamp illumination in backbox.",
+		"notes": "We have no manufacturer's date for this game and have seen only the one example pictured here. The owner of the game pictured here told us that it was located at the SAFARE company location in Nice, France when he started working there in 1983 and it was there until he took ownership of it. He states it was not purchased by SAFARE and describes it as 'like new' having only been played by SAFARE employees. He believes it to be the last of Rally's production of pinball machines. It has the same cabinet art as Rally's 1969 'Flower's Child' which is the game we currently list as Rally's last pinball. He found no serial numbers or references to Rally anywhere on the game (although we do not know how atypical that might be). There was no manual or schematic in the game. The coin door accepts 50 and 100 Lire and he points out that Nice, the home of Rally, is only 25 kilometers from the Italian border. The backbox shows three festoon lamps to illuminate the backglass. We have not seen festoon lamps on other Rally games.SAFARE (Soci�t� Anonyme de Fabrication d'Appareils Radio Electrique) is a long-time manufacturer of transformers and made them for this and other Rally games. We also see their name on the backbox circuit board for this game. We don't know what years they did this for Rally or if they made components for other pinball manufacturers."
+	},
+	{
+		"ipdb": {
+			"number": 6281,
+			"mfg": 697
+		},
+		"title": "Euro Star",
+		"manufacturer": "Collins Entertainment, Inc.",
+		"game_type": "ss",
+		"features": "5 balls per play. Flipper (1). Trap holes (25).",
+		"notes": "'Euro Star' is a conversion of an unknown bingo machine made by WIMI whose logo can be seen on the coin door. The new game name is not shown on the backglass but appears on the coin box lid, admittedly a portable component that could be moved from game to game.Collins Entertainment, Inc. imported bingo games and added a flipper to the playfield to classify the game for a much reduced licensing fee than it would have as a flipperless game. They also added a printer to print tickets showing credits won, to be redeemable for merchandise. To ensure the flipper was noticed, the conversion games done by this company can be expected to have a large white sticker at the top front of the backbox having the words 'SKILL FLIPPER' on it.Circa 1990's.The name 'Skillpins' appears on this game as one word and also as two words. More information about Collins Skillpins can be seen here."
+	},
+	{
+		"ipdb": {
+			"number": 6282,
+			"mfg": 352
+		},
+		"title": "Daffy Derby",
+		"manufacturer": "Williams",
+		"model_number": "62",
+		"year": 1951,
+		"game_type": "em",
+		"themes": [
+			"Sports",
+			"Horse Racing"
+		],
+		"designers": [
+			"Harry Williams"
+		],
+		"features": "Pop bumpers (8).",
+		"notes": "The manufacturer�s original playfield drawing (not shown here) is dated 10/23/51 and has the signed initials HEW. This Model 62 was never made. It shows a long outhole trough to hold the five balls, typical of a 1-player game.Duncan Brown described what he saw on the drawing:This Model 62 is remarkably similar to Model 61 'Hoss-Feathers' - horse racing, eight pop bumpers, numbered 1 through 8, presumably they advanced the equivalent horses in a horse unit in the backbox?  The biggest difference is� no flippers!  The ball just caroms around advancing horses until it gets to the bottom and can bounce up off some rubbers against the apron, or goes out one of three lanes (which oddly, aren�t labeled, but I�m going to guess one each of \"odd\", \"even\", and \"all\" was the intent). Rebound switches for advancing 1-6 (but not 7 or 8!) and \"advance odd hosses\" and \"advance even hosses\" and two centered adjacent lanes up top that do even and odd \"advance hosses\". Erasures show that the designer moved those eight pop bumpers all over the place during the development of the game, but I do not see any erased flippers anywhere.See also Model 110, Williams' 1954 'Daffy Derby'."
+	},
+	{
+		"ipdb": {
+			"number": 6283,
+			"mfg": 352
+		},
+		"title": "Sea Wolf",
+		"manufacturer": "Williams",
+		"model_number": "194",
+		"year": 1957,
+		"game_type": "em",
+		"designers": [
+			"Harry Williams"
+		],
+		"features": "Flippers (2), Disappearing bumper (1), Gobble holes (2), Kicker (1).Maximum displayed point score: 1,999 points per player.",
+		"notes": "The manufacturer�s original playfield drawing (not shown here) is dated 8/1/57, revised 9/5/57, and has the signed initials HEW. Harry Williams' handwriting identified this Model 194 as 2-player. It was never produced.Duncan Brown has seen the playfield drawing and told us that the design was nothing like Model 209, Williams' 1959 'Sea Wolf', even though both models had a disappearing bumper. Duncan states the 'insert drawings' point to two sets of three score reels, each set with a painted '1' to the left for the thousands digit and a light to the left of that, likely for the Player Up lamp as there are no such lamps above the score reels."
+	},
+	{
+		"ipdb": {
+			"number": 6284,
+			"mfg": 352
+		},
+		"title": "Majorettes (No. 2)",
+		"manufacturer": "Williams",
+		"model_number": "69",
+		"year": 1952,
+		"game_type": "em",
+		"themes": [
+			"Majorettes",
+			"Parades"
+		],
+		"designers": [
+			"Harry Mabs"
+		],
+		"features": "Flippers (2), Pop bumpers (5), Kick-out holes (5). Tilt penalty is ball in play, tilt is reset by ball passing through rollunder wire at bottom of playfield below flippers.",
+		"notes": "The manufacturer�s original playfield drawing (not shown here) is marked as model 69 with the name 'Majorettes'. It is dated 2/11/52 and signed by (Harry) Mabs. Later, Steve Kordek marked this drawing as 'Majorettes #2'.See also Williams' 1952 'Majorettes (No. 1)'. If anyone has access to this game or its schematic and can find on them any evidence of a model number, please contact us."
+	},
+	{
+		"ipdb": {
+			"number": 6285,
+			"mfg": 352
+		},
+		"title": "SSE",
+		"manufacturer": "Williams",
+		"model_number": "54",
+		"year": 1951,
+		"game_type": "em",
+		"themes": [
+			"Sports",
+			"Baseball"
+		],
+		"features": "Reversed flippers (2), Pop bumper (1), Passive bumpers (4), Slingshots (2). Possible gobble hole between the flippers.",
+		"notes": "The manufacturer�s original playfield drawing (not shown here) is undated and unsigned and looked unfinished with lots of erasures (of passive bumpers, for instance). This game was never produced."
+	},
+	{
+		"ipdb": {
+			"number": 6286,
+			"mfg": 352
+		},
+		"title": "Hoss-Feathers",
+		"manufacturer": "Williams",
+		"model_number": "61",
+		"year": 1951,
+		"game_type": "em",
+		"themes": [
+			"Sports",
+			"Horse Racing"
+		],
+		"designers": [
+			"Gordon Horlick"
+		],
+		"features": "Reversed flippers (2), Pop bumpers (8).",
+		"notes": "The manufacturer's documentation repeatedly refers to this game using a hyphen, as 'Hoss-Feathers'.Two manufacturer�s original playfield drawings exist for this 1-player game (not shown here). One drawing, identified as 'Hoss Feathers' is marked 61-1 and is dated 10/8/51 and has the signed initials GTH. The other drawing, identified as 'Horsefeathers' is marked 61-2, has no date, and has the signed initials HEW.Duncan Brown has seen both drawings and provided us the following information:Both versions of model #61 are full-fledged, full-sized single-player pinball playfields from that era, with a ball shooter lane and an outhole trough and everything.Harry�s drawing is complete, while Gordon�s looks unfinished - things are rearranged a bit but nothing is labeled.  Maybe because they abandoned the project? The two drawings are similar, but different. Given all we know about how Harry Williams was sending in playfields [to Chicago, from elsewhere in the USA where he was living] and Gordon Horlick was turning them into games, and given a design note where Harry instructs Sam Stern and Gordon what changes they might want to make once actually building and playing the game, I am assuming Harry�s drawing came first and Gordon�s came second and the game never got made. It would have been an expensive game! The game had 8 jet bumpers (!) in addition to the standard-ish two backwards flippers with a lane between them at the bottom. Gordon�s version rearranged the bumpers a bit and had two lanes at the center top instead of Harry�s one lane there, but was otherwise largely identical. Note that Harry called it \"Horsefeathers\" while Gordon called it \"Hoss Feathers\" but it�s definitely the same game.We know from the above description that this Model 61, while never produced, did not become Model 65 'Horsefeathers' or 'Sweepstakes', no model number, each a 2-player game from 1952 with a console cabinet and dual playfields."
+	},
+	{
+		"ipdb": {
+			"number": 6287,
+			"mfg": 352
+		},
+		"title": "Commodore",
+		"manufacturer": "Williams",
+		"model_number": "171",
+		"year": 1956,
+		"game_type": "em",
+		"designers": [
+			"Harry Williams"
+		],
+		"features": "Trap holes (25). Passive bumpers (4). Two bumpers are on each side of the playfield. All four are marked \"Advance Bonus Score When Lit\".",
+		"notes": "The manufacturer�s original playfield drawing (not shown here) is dated 5/24/56 and has the signed initials HEW. The drawing shows a playfield with the same general trap hole layout as Williams' 1957 'Yukon' but the playing card assignment is different. This game was never produced."
+	},
+	{
+		"ipdb": {
+			"number": 6288,
+			"mfg": 248
+		},
+		"title": "Twin-Gain",
+		"manufacturer": "Petaco",
+		"model_number": "1050",
+		"year": 1977,
+		"game_type": "em",
+		"themes": [
+			"Gambling",
+			"Slot Machines"
+		],
+		"features": "Flippers (2), Pop bumpers (2), Slingshots (2), Vari-targets (2), Standup target (1).",
+		"notes": "The Service Manual carries a date of June 1977.Petaco is the name used for domestic games. The same company made an export version as Recel's 1977 'Twin-Gain'."
+	},
+	{
+		"ipdb": {
+			"number": 6289,
+			"mfg": 698
+		},
+		"title": "Buccaneer",
+		"manufacturer": "Abbott Specialties Corp.",
+		"year": 1947,
+		"game_type": "em",
+		"features": "7 balls per game."
+	},
+	{
+		"ipdb": {
+			"number": 6290,
+			"mfg": 331
+		},
+		"title": "Miss America '45",
+		"manufacturer": "Victory Games (1942-1947)",
+		"game_type": "em",
+		"themes": [
+			"Pageantry",
+			"Women"
+		],
+		"notes": "\"Miss America '45\" is a conversion of Chicago Coin's 1940 'All American'.See also Victory Games' 1943 'Miss America '44'.The 'Miss America' conversion kits from Victory were offered for sale from 1943 to 1946. In the picture we have seen of a backglass for the 1945 model (not shown here), it shows the year '45 after the name. We have no manufacturer date for this 1945 model because we have not found any old advertisements that identify this conversion kit specifically with the year '45 to know when it was first offered for sale. The last mention we have found for \"Miss America '44\" is in Victory Game's ad in Billboard 01/08/1944 p76. After that, the kit was advertised only as 'Miss America' in all of the Billboard issues that we could find, up through their last Billboard ad for this kit dated 10/05/1946 p123, when prices were raised for all of their kits from $9.50 each to $12.50 each. We don't know if this 1945 version was first produced in late 1944 or in early 1945. We assume for 1946 that the date on the backglass was updated again but we have not seen a backglass showing '46."
+	},
+	{
+		"ipdb": {
+			"number": 6291,
+			"mfg": 328
+		},
+		"title": "Racing",
+		"manufacturer": "Unknown",
+		"game_type": "em",
+		"themes": [
+			"Sports",
+			"Football",
+			"Futbol",
+			"Soccer"
+		],
+		"features": "Kickers (10). Mannikins kick ball with their legs. The object is to propel the balls to land in the \"Upper Goal\". The underside of the playfield shows two large coils that appear to control movement of the goalie.",
+		"notes": "This is a flipperless pin table. It appears to be a copy or a conversion of G. M. Laboratories' 1936 'Soccer'.The pictures shown here were sent to us in May 2015 from someone in France. We assume the game was found in France but we have no way to contact the photographer to confirm details."
+	},
+	{
+		"ipdb": {
+			"number": 6292,
+			"mfg": 33
+		},
+		"title": "Video Pinball",
+		"manufacturer": "Atari",
+		"year": 1978,
+		"game_type": "ss",
+		"notes": "This is Not A Pinball. It is a video game of a pinball playfield with pinball rules and scoring. The upright cabinet has flipper buttons and a ball shooter on its control panel. This control panel, where the player holds onto the game, is designed to be slightly movable by the player to simulate gunching. 3 or 5 ball play.This game is not to be confused with Atari's 1978 'Atari Pinball'."
+	},
+	{
+		"ipdb": {
+			"number": 6293,
+			"mfg": 689
+		},
+		"title": "Skill Score",
+		"manufacturer": "Caldwell Novelty Co.",
+		"game_type": "pm",
+		"features": "5 cents per play. Trap holes (14), Free play holes (2).Balls are dispensed to tray on front of game. Player must manually insert ball into top hole to ball shooter lane. Spring-loaded shooter."
+	},
+	{
+		"ipdb": {
+			"number": 6294,
+			"mfg": 328
+		},
+		"title": "Prima",
+		"manufacturer": "Unknown",
+		"game_type": "pm",
+		"themes": [
+			"World Places",
+			"Landmarks"
+		],
+		"features": "25 centimes per play. Trap holes (15). In the pictures we saw (not shown here), the Eiffel Tower is depicted in white paint for the full length of the dark blue playfield. Each trap hole has painted around it a circle of red, green, blue, or white color. Unlike the trap holes, a hole at the very top of the playfield (at the top of the Tower) is painted with a radiating star design and is not enclosed with pins. It may be a Free Play hole.  The name 'PRIMA' appears above that hole along the top playfield arch in an unpainted area.  The white instruction card is written in French. The ball shooter escutcheon is a long cone approximately 2-3 inches long. A coin slide is in the center front of the cabinet. The cabinet and wood trim is medium-dark unpainted wood.",
+		"notes": "This counter game is not to be confused with the pin table Unknown Manufacturer's 'Le Prima'."
+	},
+	{
+		"ipdb": {
+			"number": 6295,
+			"mfg": 237
+		},
+		"title": "Football (Improved)",
+		"manufacturer": "O. D. Jennings and Company",
+		"year": 1935,
+		"game_type": "em",
+		"themes": [
+			"Sports",
+			"Football"
+		],
+		"features": "5 cent play.",
+		"notes": "The original version O. D. Jennings' 1934 'Football' had problems that resulted in this improved version. The image shown here is from the Jennings in-house publication Tips and Topics and indicates the game had been \"improved 100%\"."
+	},
+	{
+		"ipdb": {
+			"number": 6296,
+			"mfg": 81
+		},
+		"title": "Kicker (Italy)",
+		"manufacturer": "Chicago Coin",
+		"game_type": "em",
+		"themes": [
+			"Sports",
+			"Soccer",
+			"Futbol"
+		],
+		"features": "Flippers (2), Pop bumpers (3), Slingshots (2), Kick-out holes (2), Messenger balls (3), Standup targets (3). Backglass light animation (players kicks ball). Wedge head backbox.",
+		"notes": "This is the add-a-ball version of Chicago Coin's 1966 'Kicker' made for export to Italy. It has no replay window.The Italian-language flyer for this game found in Pinball Machines for Italy - Senza Ripetizione Della Partita pictures the USA version because its playfield has the Extra Ball When Lit insert between the flippers and the backglass does not have the expected words Bigliardino Elettrico Senza Ripetizione Partita. This glass also does not show a replay window but it's possible the picture was altered to remove it.'Kicker' may be the only 1-player game from Chicago Coin that has a wedge head backbox, although we do not have pictures for all of their 1-player pin games."
+	},
+	{
+		"ipdb": {
+			"number": 6297,
+			"mfg": 328
+		},
+		"title": "Casino Golf",
+		"manufacturer": "Unknown",
+		"game_type": "em",
+		"themes": [
+			"Sports",
+			"Golf"
+		],
+		"features": "Cabinet measures 57 inches long, 24 1/2 inches wide, and 37 inches high."
+	},
+	{
+		"ipdb": {
+			"number": 6298,
+			"mfg": 115
+		},
+		"title": "Dragon",
+		"manufacturer": "Europlay",
+		"year": 1979,
+		"game_type": "em",
+		"themes": [
+			"Fantasy"
+		],
+		"artists": [
+			"Michele \"Mike\" Martinelli"
+		],
+		"features": "Flippers (3), Pop bumpers (2) Slingshot (1), Standup targets (2), 5-bank drop targets (1), 3-bank drop targets (1), 2-bank drop targets (1), Spinning target (1). 7-digit scoring with three dummy zeroes. Has biri-biri. Wedge head backbox.",
+		"notes": "Uses the backglass and playfield art from Gottlieb's 1978 'Dragon'. The backglass does not show the manufacturer's name but the upper playfield and the cardholder each indicate \"New Europlay\". The playfield shows the artist's signature of \"Mike 79\"."
+	},
+	{
+		"ipdb": {
+			"number": 6299,
+			"mfg": 350
+		},
+		"title": "Spelling Bee",
+		"manufacturer": "Williams",
+		"model_number": "227",
+		"year": 1959,
+		"game_type": "em",
+		"designers": [
+			"Harry Williams"
+		],
+		"features": "Flippers (2), Pop bumpers (3), Passive bumpers (4), Kick-out holes (9).",
+		"notes": "The manufacturer's original playfield drawing (not shown here) is stamped ORIGINAL, drawn on 3/17/59 by Harry Mabs and approved 3/18/59 by HEW. This means Mabs was the draftsman and Williams was the designer.Duncan Brown provided the following information based on that drawing:It�s a pinball with 2 flippers, 4 dead bumpers, 3 Jet bumpers, and 2-above-3-above-4 pyramid of kick-out holes (like an inverted bolwing pin setup without the head pin). I have to believe that was a kicker assembly where they all acted together from one solenoid, or maybe 3 rows with 3 solenoids, so every kicker in a row acted together, but then the ball might land in the next row down.  No kicker angles are shown, the holes are simply described as \"Dished 1-3/16 holes.\" In pondering whether any of the \"Mabs\" playfields were really someone else�s and just signed off on by Mabs as Engineering Manager, I decided no because no other known names were ever on them. He was clearly approving clean drawings of his own ideas. But here is the one and only time his name appears with another known designer, and this time it�s as the draftsman, something he didn't often do even on his own games! I'm sure there�s a story there (that we�ll never know�)There is an insert drawing for this!  Lit scoring, 1 player, dated 6-24-59.  At some later time, in what looks like Kordek's handwriting, it is noted as \"Cancelled.  Never Made\"."
+	},
+	{
+		"ipdb": {
+			"number": 6300,
+			"mfg": 47
+		},
+		"title": "Trophy",
+		"manufacturer": "Bally",
+		"model_number": "426",
+		"year": 1941,
+		"game_type": "em",
+		"notes": "Handwritten transcriptions made in the early 1990's of official Bally documents, then in the possession of Mead Publishing, show a date of 2-28-41 for this game. More than one Bally document identifies this Model 426 as 'Trophy' although there is reason to suspect the actual name may have been 'Club Trophy'.See Bally's 1941 'Club Trophy' for more information.The Mead documents also identify a Model 377 'Trophy' but shows no date or other information for it except to refer to this Model 426. Model 377 might not have been produced. If anyone has documentation (manuals, schematics) for Bally's 'Trophy' or 'Club Trophy' to help us confirm/improve our dates for these games, or finds old advertisements or photographs that might help us identify if more than one version of either game was actually produced, please contact us."
+	},
+	{
+		"ipdb": {
+			"number": 6301,
+			"mfg": 685
+		},
+		"title": "Full Throttle (Standard Edition)",
+		"manufacturer": "Heighway Pinball, Ltd.",
+		"year": 2015,
+		"game_type": "ss",
+		"themes": [
+			"Sports",
+			"Motorcycle Racing"
+		]
+	},
+	{
+		"ipdb": {
+			"number": 6302,
+			"mfg": 117
+		},
+		"title": "Gateway",
+		"manufacturer": "Exhibit",
+		"year": 1935,
+		"game_type": "em",
+		"features": "Trap holes (20), Kicker (1). The metal cover over the kicker at the bottom of the playfield shows the name of the game with the manufacturer name below it.",
+		"notes": "The Encyclopedia of Pinball Vol 2 lists Gateway as a converted game but the source game is not identified.A seller of reconditioned games advertised Gateway in the Coin Machine Journal January 1936 page 198 as a ticket game. We have seen only one instance of a playfield for this game and it had a handwritten notice advising players what to do if the game failed to issue a ticket."
+	},
+	{
+		"ipdb": {
+			"number": 6303,
+			"mfg": 255
+		},
+		"title": "Flipper Pin",
+		"manufacturer": "Playmatic",
+		"game_type": "em",
+		"themes": [
+			"Sports",
+			"Bowling"
+		],
+		"features": "Flippers (2), Pop bumpers (4), Passive bumper (1), Kickers (2). Ten rollover buttons are arranged like a set-up of bowling pins. Ten bowling pins light up on backglass. Wedge head backbox.Maximum displayed point score is 1,999 points.",
+		"notes": "This is a replay game with short flippers, metal legs, and a manual ball lift. The balls played are viewed through a long window in the cardholder. A reported manufacture date of 1968 has not been not confirmed by us.The playfield layout resembles that of Williams' 1963 'Skill Pool' but has outlanes instead of gobble holes.The manufacturer flyer spells the name with a hyphen as 'Flipper-Pin' but the backglass does not."
+	},
+	{
+		"ipdb": {
+			"number": 6304
+		},
+		"title": "Sunset Riders",
+		"year": 2015,
+		"game_type": "em",
+		"themes": [
+			"Sports",
+			"Surfing",
+			"Water"
+		],
+		"notes": "This is a re-themed game. It used to be Bally's 1977 'Eight Ball'. The game may be seen in any of five cabinet colors (orange, yellow, green, blue, and silver) and three different backglasses."
+	},
+	{
+		"ipdb": {
+			"number": 6305,
+			"mfg": 473
+		},
+		"title": "Copacabana Beach",
+		"manufacturer": "John Gille Company",
+		"game_type": "ss",
+		"themes": [
+			"World Places"
+		],
+		"features": "Trap holes (25). Two cards."
+	},
+	{
+		"ipdb": {
+			"number": 6306,
+			"mfg": 328
+		},
+		"title": "Capitol",
+		"manufacturer": "Unknown",
+		"year": 1932,
+		"game_type": "pm",
+		"themes": [
+			"Government"
+		],
+		"features": "7 balls for 1 cent. Pins on playfield are capped in colors of red, white, and blue.",
+		"notes": "The photographer saw this game at the 2015 Chicagoland show. He went back to take more pictures but it was gone. He remembers seeing a ball lift mechanism, presumably on the right side of the cabinet."
+	},
+	{
+		"ipdb": {
+			"number": 6307,
+			"mfg": 303
+		},
+		"title": "Game of Thrones (Pro)",
+		"manufacturer": "Stern",
+		"year": 2015,
+		"game_type": "ss",
+		"short": [
+			"GOT",
+			"GOTPro"
+		],
+		"themes": [
+			"Medieval"
+		],
+		"designers": [
+			"Steve Ritchie"
+		],
+		"artists": [
+			"Greg Freres",
+			"Steven Martin"
+		],
+		"features": "Flippers (2), Pop bumpers (3), Slingshots (2), Standup targets (8), Electric gates, (2), 3-bank drop targets (1), Kickback (1), Spinning target (1), Sliding Bash Target, Sword-shaped ball multiball release, Up-post. Player control button on lockdown bar. 3-channel Bass + Stereo Hi-Fi sound system. Speech.Black wrinkle powder-coated legs, armor, hinges, front molding. Backbox has powder-coated steel. A translite is used instead of a backglass. Decal cabinet artwork. Traditional playfield rod supports.Factory-installed illumination:Pop bumpers have LED lighting. 7 full spectrum color-changing RGB LED�s under playfield shield inserts. All LED general illumination",
+		"notes": "Artists Greg Freres and Steven Martin did the backglass art. We don't yet know who did the cabinet art.MSRP when new: $5,995.00",
+		"toys": "Animated interactive dragon (non-motorized)."
+	},
+	{
+		"ipdb": {
+			"number": 6309,
+			"mfg": 303
+		},
+		"title": "Game of Thrones (Limited Edition)",
+		"manufacturer": "Stern",
+		"year": 2015,
+		"game_type": "ss",
+		"short": [
+			"GOTLE"
+		],
+		"themes": [
+			"Medieval"
+		],
+		"designers": [
+			"Steve Ritchie"
+		],
+		"artists": [
+			"Bob Stevlic"
+		],
+		"features": "Flippers (4), Pop bumpers (3), Slingshots (2), Standup targets (11), Electric gates, (2), 3-bank drop targets (1), Solitary drop target (1), Kickback (1), Spinning target (1), Diverter (1), Sliding bash target, Sword-shaped ball multiball release, Ball elevator. Elevated playfield. Player control button on lockdown bar. 3-channel Bass + Stereo Hi-Fi sound system. Speech.Gloss black powder-coated legs, armor with flipper button protector, hinges, front molding. Backbox has powder-coated steel. A mirrored backglass is used instead of a translite. Silkscreened cabinet artwork, not decals. Playfield slide support and brackets.This Limited Edition version came with a serialized number plate, the playfield signed by the designer, and a Certificate of Authenticity signed by Gary Stern.Factory-installed illumination:Pop bumpers have full spectrum color-changing RGB LED lighting. 63 full spectrum color-changing RGB LED�s under all playfield inserts. All LED general illumination. Full spectrum color-changing RGB LED floodlights on upper playfield.",
+		"notes": "Artist Bob Stevlic did both the backglass and cabinet. We do not know if he also did the playfield art.MSRP when new: $8,795.00",
+		"toys": "Motorized animated interactive dragon.Iron Throne Toy holds and ejects balls."
+	},
+	{
+		"ipdb": {
+			"number": 6310,
+			"mfg": 255
+		},
+		"title": "North Pole",
+		"manufacturer": "Playmatic",
+		"game_type": "em",
+		"themes": [
+			"World Places"
+		],
+		"features": "Flippers (2), Pop bumpers (3), Slingshots (2), Kick-out holes (2), Gobble hole (1), Mini-post screw between flippers. Wedge head backbox.Maximum displayed point score is 1,999 points.",
+		"notes": "The playfield resembles the one for Gottlieb's 1961 'Aloha'."
+	},
+	{
+		"ipdb": {
+			"number": 6311,
+			"mfg": 255
+		},
+		"title": "Rose Winds",
+		"manufacturer": "Playmatic",
+		"game_type": "em",
+		"themes": [
+			"Boats",
+			"Mermaids",
+			"Water"
+		],
+		"features": "Flippers (2), Pop bumpers (5), Passive bumpers (5), Kick-out hole (1). Wedge head backbox.Maximum displayed point score is 1,999 points."
+	},
+	{
+		"ipdb": {
+			"number": 6312,
+			"mfg": 255
+		},
+		"title": "Slalom",
+		"manufacturer": "Playmatic",
+		"game_type": "em",
+		"themes": [
+			"Sports",
+			"Slalom",
+			"Snow"
+		],
+		"features": "Flippers (2), Pop bumpers (4), Slingshots (2), Standup targets (6). Wedge head backbox.Maximum displayed point score is 1,999 points."
+	},
+	{
+		"ipdb": {
+			"number": 6313,
+			"mfg": 255
+		},
+		"title": "Striker",
+		"manufacturer": "Playmatic",
+		"game_type": "em",
+		"themes": [
+			"Sports",
+			"Futbol",
+			"Soccer"
+		],
+		"features": "Flippers (2), Pop bumpers (4), Passive bumper (1), Slingshots (2), Standup targets (5), Kick-out holes (2). Wedge head backbox. Formica cabinet. The playfield has the words 'Advance When Lit' circling each pop bumper.Maximum displayed point score is 1,999 points. This score is presented in European style with a period as a delimiter instead of a comma.",
+		"notes": "We can't discern from the flyer if the center playfield feature is two kick-out holes or if the lower hole is a gobble hole."
+	},
+	{
+		"ipdb": {
+			"number": 6314
+		},
+		"title": "Aloha",
+		"year": 2015,
+		"game_type": "em",
+		"themes": [
+			"American Places",
+			"Hawaii"
+		],
+		"features": "Reversed impulse flippers (2), Passive bumper (1), Kick-out holes (2). Pressing either flipper button pulses both flippers simultaneously.",
+		"notes": "This is a re-themed game. It used to be Williams' 1948 'Rainbow'. The backglass is an imagined color version of the pencil artwork for a Williams game that was never produced."
+	},
+	{
+		"ipdb": {
+			"number": 6315,
+			"mfg": 18
+		},
+		"title": "Roy Clark Super Picker",
+		"manufacturer": "Allied Leisure",
+		"game_type": "ss",
+		"themes": [
+			"Celebrities",
+			"Music",
+			"Singing",
+			"Dancing"
+		],
+		"designers": [
+			"Bob Betor"
+		],
+		"features": "Flippers (2), Pop bumpers (3), Slingshots (2), Standup targets (3).",
+		"notes": "Also made as a 2-player Allied Leisure's 1977 'Roy Clark Super Picker'."
+	},
+	{
+		"ipdb": {
+			"number": 6316,
+			"mfg": 364
+		},
+		"title": "Nuclear",
+		"manufacturer": "Renov' Automatic - Jolux",
+		"game_type": "em",
+		"themes": [
+			"Military",
+			"Warfare"
+		],
+		"notes": "This is a conversion of Gottlieb's 1962 'Liberty Belle'.The manufacturer's advertisement shown here states \"R�fection totale tr�s rapide plateaux d'origine et peinture caisses\" which translates to \"Very fast integral refurbishment of original playfields and cabinet artworks\"."
+	},
+	{
+		"ipdb": {
+			"number": 6317,
+			"mfg": 364
+		},
+		"title": "Tropical",
+		"manufacturer": "Renov' Automatic - Jolux",
+		"game_type": "em",
+		"themes": [
+			"Beach",
+			"Happiness",
+			"Recreation",
+			"Swimming"
+		],
+		"notes": "This is a conversion of Gottlieb's 1961 'Oklahoma'.The manufacturer's advertisement shown here states \"R�fection totale tr�s rapide plateaux d'origine et peinture caisses\" which translates to \"Very fast integral refurbishment of original playfields and cabinet artworks\"."
+	},
+	{
+		"ipdb": {
+			"number": 6318,
+			"mfg": 681
+		},
+		"title": "Galaxy",
+		"manufacturer": "Leisure & Allied Industries",
+		"model_number": "114",
+		"year": 1980,
+		"game_type": "ss",
+		"produced_units": 183,
+		"themes": [
+			"Outer Space"
+		],
+		"designers": [
+			"Harry Williams"
+		],
+		"artists": [
+			"Bob Timm"
+		],
+		"features": "Flippers (2), Pop bumpers (3), Slingshots (2), Star rollovers (4), Standup targets (3), 4-bank drop targets (1), Spinning target (1), Kick-out saucer (1), Kickback lane, Left and right dual inlanes.",
+		"notes": "This is the same game as Stern's 1980 'Galaxy' but manufactured in Australia under license. The backglass shown here does not carry licensing information as does other games from Leisure & Allied Industries. The cabinet and backbox are not stamped with a serial number as found on the Stern version. Instead, the back of the cabinet has a manufacturer plate from LAI with serial number. The model number 114 is found in the part numbers of the backglass and the playfield (under the apron). An inspection tag under the playfield is dated 3/10/80.If anyone locates a Galaxy machine with licensing information on the backglass, please contact us with your photographs. Stern's manufacturer data for Galaxy:Production Start Date: 1/16/80Production End Date: 3/19/80Quantity produced - full games: 4947 (see Stern's 1980 'Galaxy')Quantity produced - knock-down games: 183Total Quantity Produced: 5130"
+	},
+	{
+		"ipdb": {
+			"number": 6319,
+			"mfg": 687
+		},
+		"title": "The Machine: Bride of Pinbot 2.0",
+		"manufacturer": "Dutch Pinball",
+		"year": 2014,
+		"game_type": "ss",
+		"short": [
+			"BOP2.0"
+		],
+		"themes": [
+			"Fantasy",
+			"Outer Space"
+		],
+		"notes": "This kit is a licensed product to \"upgrade\" the score display and speakers for Williams' 1991 'The Machine: Bride of Pin�bot'. Once installed, the only visible difference when looking at the game when not turned on is the Dutch Pinball logo on the speaker grills. When the game is turned on, the display between the speakers will be DMD instead of alphanumeric displays.This kit as sold has undergone various improvements such as a change from a monochrome DMD to a color DMD and the addition of a speaker improvement which was subsequently not put into production. We have contacted the manufacturer asking for a chronology of the different combinations that were sold and that might be seen on any games."
+	},
+	{
+		"ipdb": {
+			"number": 6321,
+			"mfg": 364
+		},
+		"title": "Star",
+		"manufacturer": "Renov' Automatic - Jolux",
+		"game_type": "em",
+		"themes": [
+			"Music",
+			"Singing",
+			"Girls",
+			"Women"
+		],
+		"features": "Flippers (2), Pop bumpers (3), Slingshots (2).Maximum displayed point score is 1,999 points per player.",
+		"notes": "'Star' is a conversion of an unidentified 4-player replay game. The playfield picture we saw was very small but suggested the source game was Gottlieb's 1964 'Ship-Mates'. The placement of the backbox replay window supports this.Reportedly, this game has a few features expected of J. Martina games:1) The backglass is a piece of paper sandwiched between two clear sheets of glass, each 2mm thick.2) The underside of the playfield has been painted similar to the one for J. Martina's 1968 'Viking'.3) The area underneath the playfield apron was modified for automatic ball serve, similar to the one on J. Martina's 'The Jungle'.Collector Max Lucas in France spoke to artist Jean Amiot, who did a lot of art for J. Martina. Amiot stated he did not do the backglass art for Star."
+	},
+	{
+		"ipdb": {
+			"number": 6322,
+			"mfg": 328
+		},
+		"title": "Le Prima",
+		"manufacturer": "Unknown",
+		"game_type": "pm",
+		"features": "Trap holes (14), Free play hole (1). This game has a shooter lane to allow the ball to loop 360 degrees around the playfield before entering into play. In the pictures we saw (not shown here), the playfield and cabinet are unpainted. The name 'Le Prima' appears in the lower playfield but is spelled in capitalized letters except the \"i\" is lower case and the 'A' is represented by a triangle (the Greek letter Delta). The front of the cabinet has a ball lift knob and shooter knob on the right, and on the left are what look like a long coin slide and a small knob of unknown purpose.",
+		"notes": "This is a pin table not to be confused with the counter game Unknown Manufacturer's 'Prima'.Circa early 1930s."
+	},
+	{
+		"ipdb": {
+			"number": 6323,
+			"mfg": 572
+		},
+		"title": "Unknown",
+		"manufacturer": "Superior Amusement Company",
+		"game_type": "pm",
+		"features": "10 steel balls for 5 cents. Trap holes (21), Free Play hole (1). This game has a shooter lane to allow the ball to loop 360 degrees around the playfield before entering into play. The topmost trap hole is labeled 'DODO'.",
+		"notes": "The game pictured here has had its entire front cabinet panel replaced. The coin door and its lock are not there but the ball lift and shooter knobs have been retained. A metal rod has replaced the coin slide. The owner reports that the original cabinet front looked like the one for PAMCO's 1933 'Contact (Senior)'.According to an article in Billboard (Aug-21-1954, pages 78 and 83), Lou Dunis founded Superior Amusement Company \"in the early 1930's as an operating company and, under the spur of the depression, soon went into the [pinball machine] manufacturing business. Three furniture plants were put to work turning out games.\" By the time of this 1954 article, the name of the company was Dunis Distributing Company with headquarters at 1003 S.W. Front Avenue, Portland, Oregon."
+	},
+	{
+		"ipdb": {
+			"number": 6324,
+			"mfg": 81
+		},
+		"title": "Hula-Hula",
+		"manufacturer": "Chicago Coin",
+		"year": 1965,
+		"game_type": "em",
+		"themes": [
+			"Recreation",
+			"Swimming",
+			"Singing",
+			"Dancing"
+		],
+		"designers": [
+			"Al Schlappa",
+			"Jerry Koci",
+			"John Gore"
+		],
+		"artists": [
+			"Roy Parker"
+		],
+		"features": "Flippers (2), Pop bumpers (5), Slingshots (2), Standup targets (5), Kick-out hole (1). Mechanical backbox animation (hula dancer). 3 or 5 ball play.Sounds: 2 bells, knocker.Tilt penalty: ball in play or game over (operator option).",
+		"notes": "The replay version of this game is Chicago Coin's 1965 'Hula-Hula'.Included in this listing is an image of a portion of a schematic for a \"Kick-Up\" version of this game. In this version, for export to Italy, a dual-kick-out hole was placed below the flippers and above the outhole. Balls would drain to this hole and either be kicked downward to the actual outhole or be kicked-upward back into play through the flipper gap. Kick-up balls were the Add-a-ball method for Italy. Images of this feature can be seen in the listing for Chicago Coin's 1968 'Gun Smoke'. We seek more pictures of this exported version."
+	},
+	{
+		"ipdb": {
+			"number": 6325,
+			"mfg": 681
+		},
+		"title": "Dracula",
+		"manufacturer": "Leisure & Allied Industries",
+		"model_number": "109",
+		"year": 1979,
+		"game_type": "ss",
+		"produced_units": 262,
+		"themes": [
+			"Fictional",
+			"Supernatural"
+		],
+		"designers": [
+			"Harry Williams"
+		],
+		"features": "Flippers (3), Pop bumpers (3), Passive bumper (1), Slingshots (2), Standup targets (5), Star rollovers (5), 4-bank drop targets (1), 3-bank drop targets (1), Kick-out hole (1), Spinning target (1), Horseshoe lane (1).",
+		"notes": "This is the same game as Stern's 1979 'Dracula' but manufactured in Australia under license, using knock-down games shipped from Stern. The backglass shown here does not carry licensing information as does other games from Leisure & Allied Industries. Perhaps other backglasses for this game do carry the licensing info. The cabinet and backbox are not stamped with a serial number as found on the Stern version. Instead, the back of the cabinet has a manufacturer plate from LAI with serial number. Unlike the USA version, the inside of the cabinet is fully painted as is the cabinet outside bottom. If anyone locates an original Dracula backglass with licensing information on it, please contact us with your pictures.Stern's manufacturer data for Dracula:Production Start Date: 1/11/79Production End Date: 4/6/79Quantity produced - full games: 3350 (see Stern's 1979 'Dracula')Quantity produced - knock-down games: 262Total Quantity Produced: 3612"
+	},
+	{
+		"ipdb": {
+			"number": 6326,
+			"mfg": 415
+		},
+		"title": "Sky Ride",
+		"manufacturer": "Joseph Schneider Incorporated",
+		"game_type": "pm",
+		"themes": [
+			"Aircraft",
+			"Airplanes",
+			"Aviation",
+			"Flying",
+			"Parachuting"
+		],
+		"features": "7 marbles per play.",
+		"notes": "Not the same bagatelle as Unknown Manufacturer's 'Sky Ride'."
+	},
+	{
+		"ipdb": {
+			"number": 6327,
+			"mfg": 328
+		},
+		"title": "Riviera Golf",
+		"manufacturer": "Unknown",
+		"game_type": "pm",
+		"themes": [
+			"Sports",
+			"Golfing"
+		],
+		"features": "10 balls for 5�. A \"good score\" pays out a dime. Felt-covered playfield. This pintable measures 35 inches long, 17 inches wide, and 43 inches high on its legs.",
+		"notes": "The words \"Take your best swing at Riviera Golf,\" appear on the backboard marquee where it also says \"10 balls for 5�\" and \"Good score pays out a Dime!\" The name \"Riviera Golf\" appears on the lower playfield where, below it, is the French notice \"Brevet� SGDG\" which means it has been patented. The acronym SGDG stands for \"Sans Garantie Du Governement\" (\"Without any guarantee from the Government\")."
+	},
+	{
+		"ipdb": {
+			"number": 6329,
+			"mfg": 700
+		},
+		"title": "Having Fun",
+		"manufacturer": "Coin Device Mfg. Co. Inc.",
+		"game_type": "em",
+		"themes": [
+			"Carnival"
+		],
+		"features": "Trap holes (25). 1 card.",
+		"notes": "Conversion of an unknown Bally bingo game. The upper backglass has the same artwork as these 6-card games, but uses different colors:Bally's 1959 'Fun Way'Bally's 1959 'Lotta-Fun'Bally's 1960 'Spot-Em'"
 	}
 ]

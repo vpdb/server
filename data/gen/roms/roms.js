@@ -15,7 +15,13 @@ exports.upload = function(config) {
 	const credentials = config.credentials || {};
 	const romFolder = config.romFolder || 'roms';
 
-	const roms = require('./roms.json');
+	let games = new Map();
+	require('./roms.json').forEach(rom => {
+		if (!games.has(rom.ipdb)) {
+			games.set(rom.ipdb, { ipdb: rom.ipdb, roms: [] });
+		}
+		games.get(rom.ipdb).roms.push(rom);
+	});
 
 	let apiConfig = { baseURL: apiUri, timeout: 1000, headers: {}};
 	let storageConfig = { baseURL: storageUri, timeout: 1000, headers: {}};
@@ -42,12 +48,12 @@ exports.upload = function(config) {
 		storageClient = axios.create(storageConfig);
 
 		// for each game...
-		return Promise.each(roms, game => {
+		return Promise.each(games.values(), game => {
 
 			// retrieve existing ROMs for game
-			console.log('Retrieving ROMs for "%s (%s %s)"', game.title, game.manufacturer, game.year);
+			console.log('Retrieving ROMs for IPDB number "%d"', game.ipdb);
 			let skippedRoms, uploadedRoms, missingRoms;
-			return apiClient.get('/roms?per_page=100&ipdb_number=' + game.ipdb.number).then(response => {
+			return apiClient.get('/roms?per_page=100&ipdb_number=' + game.ipdb).then(response => {
 				let existingRoms = [];
 				if (!_.isEmpty(response.data)) {
 					existingRoms = response.data.map(r => r.id + '.zip');
@@ -59,12 +65,13 @@ exports.upload = function(config) {
 
 				// for each rom
 				return Promise.each(game.roms, rom => {
-					if (_.includes(existingRoms, rom.filename)) {
-						return skippedRoms.push(rom.filename);
+					let filename = rom.id + '.zip';
+					if (_.includes(existingRoms, filename)) {
+						return skippedRoms.push(filename);
 					}
-					let localPath = path.resolve(romFolder, rom.filename);
+					let localPath = path.resolve(romFolder, filename);
 					if (!fs.existsSync(localPath)) {
-						return missingRoms.push(rom.filename);
+						return missingRoms.push(filename);
 					}
 
 					let romContent = fs.readFileSync(localPath);
@@ -74,7 +81,7 @@ exports.upload = function(config) {
 					return storageClient.post('/files?type=rom', toArrayBuffer(romContent), {
 						headers: {
 							'Content-Type': 'application/zip',
-							'Content-Disposition': 'attachment; filename="' + rom.filename + '"',
+							'Content-Disposition': 'attachment; filename="' + filename + '"',
 							'Content-Length': romContent.length
 						}
 
@@ -84,8 +91,8 @@ exports.upload = function(config) {
 						let uploadedFile = response.data;
 						return apiClient.post('/roms', {
 							_file: uploadedFile.id,
-							_ipdb_number: game.ipdb.number,
-							id: basename(rom.filename.toLowerCase(), '.zip'),
+							_ipdb_number: game.ipdb,
+							id: rom.id,
 							version: rom.version,
 							notes: rom.notes,
 							languages: rom.languages
@@ -94,7 +101,7 @@ exports.upload = function(config) {
 					}).then(response => {
 						let uploadedRom = response.data;
 						console.log('   --- Uploaded ROM with ID "%s" created!', uploadedRom.id);
-						uploadedRoms.push(rom.filename);
+						uploadedRoms.push(filename);
 					});
 
 				}).then(() => {

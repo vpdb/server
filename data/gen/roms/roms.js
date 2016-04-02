@@ -15,7 +15,7 @@ exports.upload = function(config) {
 	const credentials = config.credentials || {};
 	const romFolder = config.romFolder || 'roms';
 
-	const games = require('./roms.json');
+	const roms = require('./roms.json');
 
 	let apiConfig = { baseURL: apiUri, timeout: 1000, headers: {}};
 	let storageConfig = { baseURL: storageUri, timeout: 1000, headers: {}};
@@ -42,7 +42,7 @@ exports.upload = function(config) {
 		storageClient = axios.create(storageConfig);
 
 		// for each game...
-		return Promise.each(games, game => {
+		return Promise.each(roms, game => {
 
 			// retrieve existing ROMs for game
 			console.log('Retrieving ROMs for "%s (%s %s)"', game.title, game.manufacturer, game.year);

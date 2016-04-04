@@ -128,7 +128,7 @@ Storage.prototype.cleanup = function(graceperiod) {
 		return Promise.each(files, file => {
 			logger.info('[storage] Cleanup: Removing inactive file "%s" by <%s> (%s).', file.name, file._created_by ? file._created_by.email : 'unknown', file.id);
 			Storage.prototype.remove(file);
-			return file.remove().exec();
+			return file.remove();
 		});
 	});
 };

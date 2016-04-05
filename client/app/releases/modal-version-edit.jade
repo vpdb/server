@@ -15,19 +15,19 @@ include ../template/_mixins
 				label.label--small.pull-right(markdown-info="Markdown enabled.")
 				uib-tab
 					uib-tab-heading(title="Write"): +icon('edit')
-					textarea.textarea--full.msd-elastic(placeholder="Release Information", ng-model="releaseVersion.changes")
+					textarea.textarea--full.msd-elastic(placeholder="Release Information", ng-model="version.changes")
 				uib-tab
 					uib-tab-heading(title="Preview"): +icon('eye')
-					div.markdown(markdown="releaseVersion.changes")
-					label.tab__label(ng-show="!releaseVersion.changes || releaseVersion.changes.length == 0") Nothing to preview.
+					div.markdown(markdown="version.changes")
+					label.tab__label(ng-show="!version.changes || version.changes.length == 0") Nothing to preview.
 
 		//- RELEASE DATE
 		//-----------------------------------------
 		h4.h--primary.padder-top-2x Release Date
-		.form-group(ng-class="{ error: errors.versions[0].released_at }")
+		.form-group(ng-class="{ error: errors.released_at }")
 			.row
 				.col-sm-3: .input-group
-					input.form-control.datepicker(type='text', ng-model='releaseVersion.released_at', ng-required='true',
+					input.form-control.datepicker(type='text', ng-model='version.released_at', ng-required='true',
 						uib-datepicker-popup="yyyy-MM-dd",
 						format-day-header="EE"
 						is-open="calendarOpened",
@@ -64,7 +64,7 @@ include ../template/_mixins
 					.panel.panel--blank.playfield--image(
 						file-upload="{ type: 'playfield', key: getMediaKey(file, 'playfield_image'), status: meta.mediaFiles, onSuccess: onMediaUpload, onClear: onMediaClear, allowedExtensions: ['jpg', 'png'], allowMultipleFiles: false }",
 						ngf-drag-over-class="'panel--dragging'",
-						ng-class="{ error: errors.versions[0].files[meta.files.indexOf(file)]._media.playfield_image }"
+						ng-class="{ error: errors.files[meta.files.indexOf(file)]._media.playfield_image }"
 					)
 						.panel-body.a.a--darker
 							.img.img--ar-ws.loaded(
@@ -94,7 +94,7 @@ include ../template/_mixins
 					.panel.panel--blank.playfield--video(
 					file-upload="{ type: getPlayfieldType(file), key: getMediaKey(file, 'playfield_video'), status: meta.mediaFiles, onSuccess: onMediaUpload, onClear: onMediaClear, allowedExtensions: ['flv', 'f4v', 'mp4', 'avi'], allowMultipleFiles: false, disableSelect: true }",
 						ngf-drag-over-class="'panel--dragging'",
-						ng-class="{ error: errors.versions[0].files[meta.files.indexOf(file)]._media.playfield_video }",
+						ng-class="{ error: errors.files[meta.files.indexOf(file)]._media.playfield_video }",
 						ng-show="loadingFinished",
 					)
 						.panel-body.a.a--darker
@@ -106,7 +106,7 @@ include ../template/_mixins
 					.panel.panel--blank.playfield--image(
 					file-upload="{ type: getPlayfieldType(file), key: getMediaKey(file, 'playfield_video'), status: meta.mediaFiles, onSuccess: onMediaUpload, onClear: onMediaClear, allowedExtensions: ['flv', 'f4v', 'mp4', 'avi'], allowMultipleFiles: false }",
 						ngf-drag-over-class="'panel--dragging'",
-						ng-class="{ error: errors.versions[0].files[meta.files.indexOf(file)]._media.playfield_video }",
+						ng-class="{ error: errors.files[meta.files.indexOf(file)]._media.playfield_video }",
 						ng-hide="loadingFinished"
 					)
 						.panel-body.a.a--darker
@@ -132,14 +132,14 @@ include ../template/_mixins
 										+icon('gear').svg-3x.svg-spin--slow
 										p Generating video thumbnail...
 
-			.alert.alert-danger(ng-show="errors.versions[0].files[meta.files.indexOf(file)]._media.playfield_image")
+			.alert.alert-danger(ng-show="errors.files[meta.files.indexOf(file)]._media.playfield_image")
 				+icon('warning').shift-up.space-right
-				| {{ errors.versions[0].files[meta.files.indexOf(file)]._media.playfield_image }}
+				| {{ errors.files[meta.files.indexOf(file)]._media.playfield_image }}
 
 
 	.modal-footer
 		button.btn.btn-hollow.pull-left(ng-click="$dismiss()") Cancel
-		button.btn.btn--secondary(ng-click="add()")
+		button.btn.btn--secondary(ng-click="save()")
 			+icon('check-circle').space-right
 			| Save Changes
 

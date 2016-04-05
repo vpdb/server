@@ -185,12 +185,16 @@ angular.module('vpdb.releases.edit', [])
 			}).join(', ');
 		};
 	}
-).controller('VersionEditCtrl', function($scope, $controller, $uibModalInstance, release, version, BootstrapTemplate, ReleaseMeta) {
+).controller('VersionEditCtrl', function($scope, $controller, $uibModalInstance, release, version, BootstrapTemplate,
+										 ApiHelper, ReleaseMeta, ReleaseVersionResource) {
 
 	BootstrapTemplate.patchCalendar();
 
 	angular.extend(this, $controller('ReleaseAddBaseCtrl', { $scope: $scope }));
 
+	$scope.release = release;
+	$scope.releaseVersion = version;
+	$scope.version = _.pick(version, 'released_at', 'changes');
 	$scope.meta = _.cloneDeep(ReleaseMeta);
 
 	$scope.meta.files = _.map(version.files, function(file) {
@@ -207,9 +211,45 @@ angular.module('vpdb.releases.edit', [])
 		return createMeta(file.file);
 	});
 
-	console.log($scope.meta);
-	$scope.release = release;
-	$scope.releaseVersion = version;
+	$scope.save = function() {
+
+		// get release date
+		var releaseDate = $scope.getReleaseDate();
+		if (releaseDate) {
+			$scope.releaseVersion.released_at = releaseDate;
+		} else {
+			delete $scope.releaseVersion.released_at;
+		}
+
+		ReleaseVersionResource.update({ releaseId: release.id, version: version.version }, $scope.version, function() {
+
+			$uibModalInstance.close();
+			ModalService.info({
+				icon: 'check-circle',
+				title: 'Version updated',
+				subtitle: $scope.game.title,
+				message: 'You have succesfully updated version ' + version.version + ' of release "' + release.name + '".'
+			});
+
+		}, ApiHelper.handleErrors($scope, null, function(scope, response) {
+
+			if (!response.data.errors) {
+				return;
+			}
+
+			// rephrase some of the messages from backend
+			_.each(response.data.errors, function(error) {
+
+				if (/orientation is set to FS but playfield image is .playfield-ws./i.test(error.message)) {
+					error.message = 'Wrong orientation. Use the rotation button above to rotate the playfield so it\'s oriented as if you would play it. If that\'s the case, then you\'ve uploaded a widescreen (desktop) shot for a file marked as portrait (fullscreen).';
+				}
+				if (/orientation is set to WS but playfield image is .playfield-fs./i.test(error.message)) {
+					error.message = 'Wrong orientation. Use the rotation button above to rotate the playfield so it\'s oriented as if you would play it. If that\'s the case, then you\'ve uploaded a portrait (fullscreen) shot for a file marked as widescreen (desktop).';
+				}
+			});
+		}));
+
+	};
 
 });
 

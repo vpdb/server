@@ -1,6 +1,6 @@
 include ../template/_mixins
 
-.theme-light
+.theme-light()
 	.modal-header
 		h1.h--no-margin.h--small
 			+icon('ext').space-right
@@ -15,13 +15,13 @@ include ../template/_mixins
 				label.label--small.pull-right(markdown-info="Markdown enabled.")
 				uib-tab
 					uib-tab-heading(title="Write"): +icon('edit')
-					textarea.textarea--full.msd-elastic(placeholder="Release Information", ng-model="version.changes")
+					textarea.textarea--full.msd-elastic(placeholder="Release Information", ng-model="releaseVersion.changes")
 				uib-tab
 					uib-tab-heading(title="Preview"): +icon('eye')
 					div.markdown(markdown="releaseVersion.changes")
 					label.tab__label(ng-show="!releaseVersion.changes || releaseVersion.changes.length == 0") Nothing to preview.
 
-		//- CHANGELOG
+		//- RELEASE DATE
 		//-----------------------------------------
 		h4.h--primary.padder-top-2x Release Date
 		.form-group(ng-class="{ error: errors.versions[0].released_at }")
@@ -38,8 +38,6 @@ include ../template/_mixins
 					span.input-group-addon: +icon('calendar').a(ng-click='openCalendar($event)')
 				.col-sm-2
 					uib-timepicker(ng-model="meta.releaseTime", hour-step="1", minute-step="5", show-meridian="ismeridian")
-				.col-sm-7
-					i Leave empty for submission time.
 
 		//- PLAYFIELD SHOTS
 		//-----------------------------------------
@@ -77,8 +75,8 @@ include ../template/_mixins
 								.text-center.vertical-center--100
 									//- progress bar
 									uib-progressbar.progress--fixed-absolute.progress-striped.active(
-									value="meta.mediaFiles[getMediaKey(file, 'playfield_image')].progress",
-									ng-show="meta.mediaFiles[getMediaKey(file, 'playfield_image')].uploading"
+										value="meta.mediaFiles[getMediaKey(file, 'playfield_image')].progress",
+										ng-show="meta.mediaFiles[getMediaKey(file, 'playfield_image')].uploading"
 									)
 									//- thumb
 									.span(ng-show="!img.url")
@@ -95,9 +93,9 @@ include ../template/_mixins
 
 					.panel.panel--blank.playfield--video(
 					file-upload="{ type: getPlayfieldType(file), key: getMediaKey(file, 'playfield_video'), status: meta.mediaFiles, onSuccess: onMediaUpload, onClear: onMediaClear, allowedExtensions: ['flv', 'f4v', 'mp4', 'avi'], allowMultipleFiles: false, disableSelect: true }",
-					ngf-drag-over-class="'panel--dragging'",
-					ng-class="{ error: errors.versions[0].files[meta.files.indexOf(file)]._media.playfield_video }",
-					ng-show="loadingFinished",
+						ngf-drag-over-class="'panel--dragging'",
+						ng-class="{ error: errors.versions[0].files[meta.files.indexOf(file)]._media.playfield_video }",
+						ng-show="loadingFinished",
 					)
 						.panel-body.a.a--darker
 							.img.img--ar-fs.loaded
@@ -107,21 +105,21 @@ include ../template/_mixins
 					//- drop zone
 					.panel.panel--blank.playfield--image(
 					file-upload="{ type: getPlayfieldType(file), key: getMediaKey(file, 'playfield_video'), status: meta.mediaFiles, onSuccess: onMediaUpload, onClear: onMediaClear, allowedExtensions: ['flv', 'f4v', 'mp4', 'avi'], allowMultipleFiles: false }",
-					ngf-drag-over-class="'panel--dragging'",
-					ng-class="{ error: errors.versions[0].files[meta.files.indexOf(file)]._media.playfield_video }",
-					ng-hide="loadingFinished"
+						ngf-drag-over-class="'panel--dragging'",
+						ng-class="{ error: errors.versions[0].files[meta.files.indexOf(file)]._media.playfield_video }",
+						ng-hide="loadingFinished"
 					)
 						.panel-body.a.a--darker
 							.img.img--ar-ws.loaded(
-							img-bg="meta.mediaLinks[getMediaKey(file, 'playfield_video')]",
-							error="onBackglassImageError(file, 'playfield_video')"
+								img-bg="meta.mediaLinks[getMediaKey(file, 'playfield_video')]",
+								error="onBackglassImageError(file, 'playfield_video')"
 							)
 								//- content panel
 								.text-center.vertical-center--100
 									//- progress bar
 									uib-progressbar.progress--fixed-absolute.progress-striped.active(
-									value="meta.mediaFiles[getMediaKey(file, 'playfield_video')].progress",
-									ng-show="meta.mediaFiles[getMediaKey(file, 'playfield_video')].uploading"
+										value="meta.mediaFiles[getMediaKey(file, 'playfield_video')].progress",
+										ng-show="meta.mediaFiles[getMediaKey(file, 'playfield_video')].uploading"
 									)
 									//-
 									span(ng-show="!img.url")

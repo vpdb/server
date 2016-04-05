@@ -196,10 +196,13 @@ angular.module('vpdb.releases.edit', [])
 	$scope.meta.files = _.map(version.files, function(file) {
 		file.file._randomId = file.file.id;
 		$scope.meta.mediaFiles[$scope.getMediaKey(file.file, 'playfield_image')] = createMeta(file.media.playfield_image);
-		$scope.meta.mediaLinks[$scope.getMediaKey(file.file, 'playfield_image')] = createLink(file.media.playfield_image, 'medium');
+		$scope.meta.mediaLinks[$scope.getMediaKey(file.file, 'playfield_image')] = createLink(file.media.playfield_image, 'landscape');
 		if (file.media.playfield_video) {
 			$scope.meta.mediaFiles[$scope.getMediaKey(file.file, 'playfield_video')] = createMeta(file.media.playfield_video);
 			$scope.meta.mediaLinks[$scope.getMediaKey(file.file, 'playfield_video')] = createLink(file.media.playfield_video, 'small-rotated');
+		}
+		if (file.media.playfield_image.file_type === 'playfield-fs') {
+			$scope.meta.mediaLinks[$scope.getMediaKey(file.file, 'playfield_image')].rotation = 90;
 		}
 		return createMeta(file.file);
 	});

@@ -284,13 +284,13 @@ exports.addVersion = function(req, res) {
  */
 exports.updateVersion = function(req, res) {
 
-	var updateableFields = [ 'version', 'changes' ];
+	const updateableFields = [ 'released_at', 'changes' ];
+	const now = new Date();
 
-	var now = new Date();
 	var release, version, newFiles;
 	Promise.try(() => {
 		// retrieve release
-		return Release.findOne({id: req.params.id}).populate('versions.files._compatibility').exec();
+		return Release.findOne({ id: req.params.id }).populate('versions.files._compatibility').exec();
 
 	}).then(r => {
 		release = r;
@@ -301,21 +301,20 @@ exports.updateVersion = function(req, res) {
 		}
 
 		// fail if wrong user
-		var authorIds = _.map(_.map(release.authors, '_user'), id => id.toString());
+		let authorIds = _.map(_.map(release.authors, '_user'), id => id.toString());
 		if (!_.includes([release._created_by.toString(), ...authorIds], req.user._id.toString())) {
-			throw error('Only authors of the release can update add new versions.').status(403).log('addVersion');
+			throw error('Only authors of the release can update or add new versions.').status(403).log('addVersion');
 		}
 
-		var versions = _.filter(release.versions, { version: req.params.version });
-		if (versions.length === 0) {
+		version = _.find(release.versions, { version: req.params.version });
+		if (!version) {
 			throw error('No such version "%s" for release "%s".', req.params.version, req.params.id).status(404);
 		}
-		version = versions[0];
-		var versionObj = req.body;
-		newFiles = [];
-		logger.info('[api|release:updateVersion] %s', util.inspect(versionObj, { depth: null }));
 
-		return Promise.each(versionObj.files || [], fileObj => {
+		newFiles = [];
+		logger.info('[api|release:updateVersion] %s', util.inspect(req.body, { depth: null }));
+
+		return Promise.each(req.body.files || [], fileObj => {
 
 			// defaults
 			_.defaults(fileObj, { released_at: now });
@@ -327,6 +326,9 @@ exports.updateVersion = function(req, res) {
 		});
 
 	}).then(() => {
+
+		// assign fields and validate
+		Object.assign(version, _.pick(req.body, updateableFields));
 		return release.validate();
 
 	}).then(() => {
@@ -336,8 +338,11 @@ exports.updateVersion = function(req, res) {
 		return release.save();
 
 	}).then(r => {
+
 		release = r;
-		logger.info('[api|release:create] Added new file to version "%s" to release "%s".', version.version, release.name);
+		if (newFiles.length > 0) {
+			logger.info('[api|release:updateVersion] Added new file to version "%s" to release "%s".', version.version, release.name);
+		}
 		return Promise.all(newFiles, file => file.activateFiles());
 
 	}).then(() => {
@@ -354,8 +359,8 @@ exports.updateVersion = function(req, res) {
 			.exec();
 
 	}).then(release => {
-		var version = _.filter(release.toDetailed().versions, { version: req.params.version })[0];
-		api.success(res, version, 201);
+		let version = _.find(release.toDetailed().versions, { version: req.params.version });
+		api.success(res, version, 200);
 
 	}).catch(api.handleError(res, error, 'Error updating version'));
 };

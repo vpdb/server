@@ -790,6 +790,7 @@ describe('The VPDB `release` API', function() {
 
 		it('should succeed when providing valid data', function(done) {
 			var user = 'member';
+			var newChanges = 'New changes.';
 			hlp.release.createRelease(user, request, function(release) {
 				hlp.file.createVpt(user, request, function(vptfile) {
 					hlp.file.createPlayfield(user, request, 'fs', function(playfield) {
@@ -798,13 +799,18 @@ describe('The VPDB `release` API', function() {
 							.save({ path: 'releases/update-version'})
 							.as(user)
 							.send({
+								changes: newChanges,
 								files: [{
 									_file: vptfile.id,
 									_media: { playfield_image: playfield.id },
 									_compatibility: ['9.9.0'],
 									flavor: { orientation: 'fs', lighting: 'day' }
 								}]
-							}).end(hlp.status(201, done));
+							}).end(function(err, res) {
+								hlp.expectStatus(err, res, 200);
+								expect(res.body.changes).to.be(newChanges);
+								done();
+							});
 					});
 				});
 			});

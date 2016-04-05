@@ -237,7 +237,6 @@ UserSchema.path('provider').validate(function(provider, callback) {
 	// TODO put this into separate validation when this is fixed: https://github.com/LearnBoost/mongoose/issues/1919
 	if (this.preferences && this.preferences.tablefile_name) {
 		if (!this.preferences.tablefile_name.trim()) {
-			console.log('validation for name failed.');
 			this.invalidate('preferences.tablefile_name', 'Must not be empty if set.');
 		}
 		var rg1 = /^[^\\/:\*\?"<>\|]+$/;                     // forbidden characters \ / : * ? " < > |

@@ -285,12 +285,17 @@ exports.addVersion = function(req, res) {
 exports.updateVersion = function(req, res) {
 
 	const updateableFields = [ 'released_at', 'changes' ];
+	const updateableFileFields = [ 'flavor', '_compatibility', '_media' ];
 	const now = new Date();
 
-	var release, version, newFiles;
+	let release, version, newFiles;
+	let releaseToUpdate, versionToUpdate;
 	Promise.try(() => {
 		// retrieve release
-		return Release.findOne({ id: req.params.id }).populate('versions.files._compatibility').exec();
+		return Release.findOne({ id: req.params.id })
+			.populate('versions.files._compatibility')
+			.populate('versions.files._file')
+			.exec();
 
 	}).then(r => {
 		release = r;
@@ -311,31 +316,44 @@ exports.updateVersion = function(req, res) {
 			throw error('No such version "%s" for release "%s".', req.params.version, req.params.id).status(404);
 		}
 
+		// retrieve release with no references that we can update
+		return Release.findOne({ id: req.params.id }).exec();
+
+	}).then(r => {
+		releaseToUpdate = r;
+		versionToUpdate = _.find(releaseToUpdate.versions, { version: req.params.version });
+
 		newFiles = [];
 		logger.info('[api|release:updateVersion] %s', util.inspect(req.body, { depth: null }));
 
 		return Promise.each(req.body.files || [], fileObj => {
 
-			// defaults
-			_.defaults(fileObj, { released_at: now });
+			// check if file reference is already part of this version
+			let existingVersionFile = _.find(version.files, f => f._file.id === fileObj._file);
+			if (existingVersionFile) {
+				let versionFileToUpdate = _.find(versionToUpdate.files, f => f._id.equals(existingVersionFile._id));
+				return versionFileToUpdate.updateInstance(_.pick(fileObj, updateableFileFields));
 
-			return VersionFile.getInstance(fileObj).then(newVersionFile => {
-				version.files.push(newVersionFile);
-				newFiles.push(newVersionFile);
-			});
+			} else {
+				_.defaults(fileObj, { released_at: now });
+				return VersionFile.getInstance(fileObj).then(newVersionFile => {
+					version.files.push(newVersionFile);
+					newFiles.push(newVersionFile);
+				});
+			}
 		});
 
 	}).then(() => {
 
 		// assign fields and validate
-		Object.assign(version, _.pick(req.body, updateableFields));
-		return release.validate();
+		Object.assign(versionToUpdate, _.pick(req.body, updateableFields));
+		return versionToUpdate.validate();
 
 	}).then(() => {
 
 		logger.info('[api|release:updateVersion] Validations passed, updating version.');
-		release.modified_at = now;
-		return release.save();
+		releaseToUpdate.modified_at = now;
+		return releaseToUpdate.save();
 
 	}).then(r => {
 

@@ -380,11 +380,18 @@ get:
         description: |
           Update an existing version of a release.
 
-          Provided files wil be *added* to the version. It's not possible to
-          delete files. It's also the only field looked at at the moment.
+          Provided files are matched by file reference ID. That means if one of
+          the files points to a file reference that is already in that version,
+          the file is *updated*. Otherwise, the file is *added*. It's not
+          possible to delete files.
 
-          Note that prior to that request, files and media need to be uploaded
-          so it can be referenced.
+          - Valid version fields to update are: `released_at` and `changes`, the
+            `version` fields serves as ID and is read-only.
+          - Valid file fields to update are: `flavor`, `_compatibility` and
+            `_media`.
+
+          Note that prior to that request, new files and media need to be
+          uploaded so they can be referenced.
         body:
           role/member:
             example: !include http/update-version-req.json

@@ -157,8 +157,6 @@ function validateFile(release, tableFile, index) {
 			return false;
 		}
 
-		console.log(f);
-
 		// flavor
 		var fileFlavor = tableFile.flavor || {};
 		_.each(file.fields.flavor, (obj, flavor) => {

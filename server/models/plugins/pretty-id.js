@@ -131,7 +131,7 @@ function replaceIds(obj, paths, options) {
 
 				if (!refObj) {
 					logger.warn('[model] %s ID "%s" not found in database for field %s.', refModelName, prettyId, objPath);
-					invalidations.push({ path: objPath, message: 'No such ' + refModelName.toLowerCase() + ' with id "' + prettyId + '".', value: prettyId });
+					invalidations.push({ path: objPath, message: 'No such ' + refModelName.toLowerCase() + ' with ID "' + prettyId + '".', value: prettyId });
 					_.set(obj, objPath, '000000000000000000000000'); // to avoid class cast error to objectId
 
 				} else {

@@ -380,7 +380,7 @@ exports.updateVersion = function(req, res) {
 		let version = _.find(release.toDetailed().versions, { version: req.params.version });
 		api.success(res, version, 200);
 
-	}).catch(api.handleError(res, error, 'Error updating version'));
+	}).catch(api.handleError(res, error, 'Error updating version', /^versions\.\d+\./));
 };
 
 /**

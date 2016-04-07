@@ -346,15 +346,16 @@ exports.checkReadOnlyFields = function(newObj, oldObj, allowedFields) {
  * @param {Response} res Response object
  * @param {Function} error Current error function
  * @param {string} message Error message if exception is generic
+ * @param {RegExp|string} fieldPrefix In case of validation errors, strip this expression from the field name
  * @returns {Function} Function called by the promise with error object
  */
-exports.handleError = function(res, error, message) {
+exports.handleError = function(res, error, message, fieldPrefix) {
 	return function(err) {
 		if (err.constructor && err.constructor.name === 'Err') {
 			exports.fail(res, err);
 
 		} else if (err.errors && err.constructor && err.constructor.name === 'MongooseError') {
-			exports.fail(res, error('Validations failed. See below for details.').errors(err.errors).warn(), 422);
+			exports.fail(res, error('Validations failed. See below for details.').without(fieldPrefix).errors(err.errors).warn(), 422);
 
 		/* istanbul ignore next: we always wrapp errors in Err. */
 		} else {

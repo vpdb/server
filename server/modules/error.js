@@ -151,18 +151,26 @@ Err.prototype._stripFields = function() {
 	if (!this.fieldPrefix) {
 		return;
 	}
-	var that = this;
 	if (_.isArray(this.errs)) {
-		this.errs.forEach(function(error) {
-			error.path = error.path.replace(that.fieldPrefix, '');
-		});
+		let map = new Map();
+		this.errs = _.compact(this.errs.map(error => {
+			error.path = error.path.replace(this.fieldPrefix, '');
+			let key = error.path + '|' + error.message + '|' + error.value;
+			// eliminate dupes
+			if (map.has(key)) {
+				return null;
+			}
+			map.set(key, true);
+			return error;
+		}));
+
 	} else if (_.isObject(this.errs)) {
 		// todo use https://github.com/lodash/lodash/issues/169 when merged
-		this.errs.forEach(function(error, path) {
-			var newPath = path.replace(that.fieldPrefix, '');
+		_.forEach(this.errs, (error, path) => {
+			var newPath = path.replace(this.fieldPrefix, '');
 			if (newPath != path) {
-				that.errs[newPath] = error;
-				delete that.errs[path];
+				this.errs[newPath] = error;
+				delete this.errs[path];
 			}
 		});
 	}

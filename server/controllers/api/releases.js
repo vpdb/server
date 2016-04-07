@@ -337,7 +337,7 @@ exports.updateVersion = function(req, res) {
 			} else {
 				_.defaults(fileObj, { released_at: now });
 				return VersionFile.getInstance(fileObj).then(newVersionFile => {
-					version.files.push(newVersionFile);
+					versionToUpdate.files.push(newVersionFile);
 					newFiles.push(newVersionFile);
 				});
 			}
@@ -347,7 +347,7 @@ exports.updateVersion = function(req, res) {
 
 		// assign fields and validate
 		Object.assign(versionToUpdate, _.pick(req.body, updateableFields));
-		return versionToUpdate.validate();
+		return releaseToUpdate.validate();
 
 	}).then(() => {
 

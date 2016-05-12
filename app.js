@@ -43,7 +43,7 @@ require('shortid32').characters('123456789abcdefghkmnopqrstuvwxyz');
 Promise = require('bluebird');
 mongoose.Promise = Promise;
 
-if (false && process.env.COVERAGE_ENABLED) {
+if (process.env.COVERAGE_ENABLED) {
 	console.log('[app] Hook loader for coverage enabled.');
 	require('istanbul-middleware').hookLoader(__dirname);
 	// cover all files except under node_modules

@@ -20,7 +20,7 @@
 "use strict";
 
 var _ = require('lodash');
-var jade = require('jade');
+var jade = require('pug');
 
 module.exports = function(opts) {
 

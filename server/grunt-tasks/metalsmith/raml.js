@@ -21,7 +21,7 @@
 
 var _ = require('lodash');
 var url = require('url');
-var jade = require('jade');
+var jade = require('pug');
 var async = require('async');
 var debug = require('debug')('metalsmith-raml');
 var raml2obj = require('raml2obj');

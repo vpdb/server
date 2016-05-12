@@ -68,7 +68,7 @@ var apiFields = {
 // VALIDATIONS
 //-----------------------------------------------------------------------------
 CommentSchema.path('message').validate(function(msg) {
-	return validator.isLength(msg, 3, 5000);
+	return _.isString(msg) && validator.isLength(msg, 3, 5000);
 }, 'Message must be at least 3 chars and no longer than 5k characters.');
 
 

@@ -154,7 +154,7 @@ GameSchema.path('game_type').validate(function(gameType, callback) {
 	var ipdb = this.ipdb ? this.ipdb.number : null;
 
 	// only check if not an original game.
-	if (this.game_type !== 'og' && (!ipdb || !validator.isInt(ipdb))) {
+	if (this.game_type !== 'og' && (!ipdb || (!_.isInteger(ipdb) && !(_.isString(ipdb) && validator.isInt(ipdb))))) {
 		this.invalidate('ipdb.number', 'IPDB Number is mandatory for recreations and must be a postive integer.');
 		return callback(true);
 	}

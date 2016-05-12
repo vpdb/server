@@ -175,7 +175,7 @@ UserSchema.path('name').validate(function(name) {
 	if (this.isNew) {
 		return true;
 	}
-	return validator.isLength(name, 3, 30);
+	return _.isString(name) && validator.isLength(name, 3, 30);
 }, 'Name must be between 3 and 30 characters.');
 
 UserSchema.path('email').validate(function(email) {
@@ -183,7 +183,7 @@ UserSchema.path('email').validate(function(email) {
 	if (this.isNew && this.provider !== 'local') {
 		return true;
 	}
-	return validator.isEmail(email);
+	return _.isString(email) && validator.isEmail(email);
 }, 'Email must be in the correct format.');
 
 UserSchema.path('email').validate(function(email, callback) {
@@ -203,7 +203,7 @@ UserSchema.path('email').validate(function(email, callback) {
 }, 'The {PATH} "{VALUE}" is already taken.');
 
 UserSchema.path('location').validate(function(location) {
-	return validator.isLength(location, 0, 100);
+	return _.isString(location) && validator.isLength(location, 0, 100);
 }, 'Location must not be longer than 100 characters.');
 
 UserSchema.path('provider').validate(function(provider, callback) {
@@ -226,11 +226,15 @@ UserSchema.path('provider').validate(function(provider, callback) {
 		}
 	}
 	if (provider === 'local') {
-		if (!validator.isLength(this.username, 3, 30)) {
-			this.invalidate('username', 'Length of username must be between 3 and 30 characters.');
-		}
-		if (!validator.matches(this.username, /^[a-z0-9\._]+$/i)) {
-			this.invalidate('username', 'Username must only contain alpha-numeric characters including dot and underscore.');
+		if (!_.isString(this.username)) {
+			this.invalidate('username', 'Username must be a string between 3 and 30 characters.');
+		} else {
+			if (!validator.isLength(this.username, 3, 30)) {
+				this.invalidate('username', 'Length of username must be between 3 and 30 characters.');
+			}
+			if (!validator.matches(this.username, /^[a-z0-9\._]+$/i)) {
+				this.invalidate('username', 'Username must only contain alpha-numeric characters including dot and underscore.');
+			}
 		}
 	}
 
@@ -298,7 +302,7 @@ UserSchema.path('provider').validate(function(provider, callback) {
 UserSchema.path('password_hash').validate(function() {
 	// here we check the length. remember that the virtual _password field is
 	// the one that triggers the hashing.
-	if (this._password && !validator.isLength(this._password, 6)) {
+	if (this._password && _.isString(this._password) && !validator.isLength(this._password, 6)) {
 		this.invalidate('password', 'Password must be at least 6 characters.');
 	}
 }, null);

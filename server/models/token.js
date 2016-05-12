@@ -78,7 +78,7 @@ TokenSchema.statics.toSimple = function(token) {
 // VALIDATIONS
 //-----------------------------------------------------------------------------
 TokenSchema.path('label').validate(function(label) {
-	return validator.isLength(label ? label.trim() : '', 3);
+	return _.isString(label) && validator.isLength(label ? label.trim() : '', 3);
 }, 'Label must contain at least three characters.');
 
 

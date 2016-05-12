@@ -1047,7 +1047,7 @@ describe('The VPDB `user` API', function() {
 					hlp.expectValidationError(err, res, 'is_active', 'is required');
 					hlp.expectValidationError(err, res, 'name', 'must be provided');
 					hlp.expectValidationError(err, res, 'roles', 'is required');
-					hlp.expectValidationError(err, res, 'username', 'must be between');
+					hlp.expectValidationError(err, res, 'username', 'must be a string between');
 					hlp.expectValidationError(err, res, '_plan', 'is required');
 					expect(res.body.errors).to.have.length(6);
 					done();

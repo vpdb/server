@@ -89,13 +89,11 @@ BuildSchema.statics.toSimple = function(build) {
 // VALIDATIONS
 //-----------------------------------------------------------------------------
 BuildSchema.path('label').validate(function(label) {
-	return validator.isLength(label ? label.trim() : '', 3);
+	return validator.isLength(_.isString(label) ? label.trim() : '', 3);
 }, 'Label must contain at least three characters.');
 
 BuildSchema.path('built_at').validate(function(dateString) {
-	// TODO fix, doesn't seem to work.
-	//console.log('--------------- Checking date "%s": %s', dateString, validator.isDate(dateString));
-	return validator.isDate(dateString);
+	return _.isDate(dateString) || (_.isString(dateString) && validator.isDate(dateString));
 }, 'Date must be a string parseable by Javascript.');
 
 

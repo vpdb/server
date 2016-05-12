@@ -101,7 +101,7 @@ RomSchema.methods.toSimple = function() {
 // VALIDATIONS
 //-----------------------------------------------------------------------------
 RomSchema.path('id').validate(function(id) {
-	return validator.isLength(id ? id.trim() : '', 2);
+	return _.isString(id) && validator.isLength(id ? id.trim() : '', 2);
 }, 'ID must contain at least 2 characters.');
 
 //-----------------------------------------------------------------------------

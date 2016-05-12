@@ -20,6 +20,7 @@
 "use strict";
 
 //var renderer = new marked.Renderer();
+var _ = require('lodash');
 var highlight = require('highlight.js');
 var validator = require('validator');
 
@@ -43,7 +44,7 @@ var md = require('markdown-it')('default', {
 		}
 
 		// also don't highlight urls.
-		if (validator.isURL(code, { require_protocol: true })) {
+		if (_.isString(code) && validator.isURL(code, { require_protocol: true })) {
 			return '<b>' + code + '</b>';
 		}
 

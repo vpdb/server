@@ -83,7 +83,7 @@ TagSchema.methods.toSimple = function() {
 // VALIDATIONS
 //-----------------------------------------------------------------------------
 TagSchema.path('name').validate(function(name) {
-	return validator.isLength(name ? name.trim() : '', 2);
+	return _.isString(name) && validator.isLength(name ? name.trim() : '', 2);
 }, 'Name must contain at least two characters.');
 
 TagSchema.path('name').validate(function(name, done) {
@@ -97,7 +97,7 @@ TagSchema.path('name').validate(function(name, done) {
 }, 'The {PATH} "{VALUE}" is already taken.');
 
 TagSchema.path('description').validate(function(description) {
-	return validator.isLength(description ? description.trim() : description, 5);
+	return _.isString(description) && validator.isLength(description ? description.trim() : description, 5);
 }, 'Name must contain at least 5 characters.');
 
 

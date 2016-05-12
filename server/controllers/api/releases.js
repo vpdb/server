@@ -315,7 +315,9 @@ exports.updateVersion = function(req, res) {
 		if (!version) {
 			throw error('No such version "%s" for release "%s".', req.params.version, req.params.id).status(404);
 		}
+		return preprocess(req);
 
+	}).then(() => {
 		// retrieve release with no references that we can update
 		return Release.findOne({ id: req.params.id }).exec();
 
@@ -692,6 +694,8 @@ function getDetails(id) {
 function preprocess(req) {
 
 	if (req.query.rotate) {
+
+		// validate input format
 		let rotations = req.query.rotate.split(',').map(r => {
 			if (!r.includes(':')) {
 				throw error('When providing the "rotation" query, pairs must be separated by ":".', req.params.id).status(400);
@@ -701,9 +705,13 @@ function preprocess(req) {
 			if (!_.includes(['0', '90', '180', '270'], rot[1])) {
 				throw error('Wrong angle "%s", must be one of: [0, 90, 180, 270].', rot[1]).status(400);
 			}
-
 			return { file: rot[0], angle: parseInt(rot[1], 10) };
 		});
+
+		//let releaseMediaFileIds = [];
+		//req.body.file
+
+		// validate input data
 		return Promise.each(rotations, rotation => {
 			let file;
 			return File.findOne({ id: rotation.file }).then(f => {
@@ -723,6 +731,7 @@ function preprocess(req) {
 				// todo check if the file is part of the actual release
 				return backupFile(file);
 
+			// do the actual rotation
 			}).then(src => {
 
 				if (rotation.angle === 0) {
@@ -731,6 +740,7 @@ function preprocess(req) {
 				logger.info('[api|release] Rotating file "%s" %s°.', file.id, rotation.angle);
 				return gm(src).rotate('black', rotation.angle).writeAsync(file.getPath());
 
+			// update metadata
 			}).then(() => {
 				return storage.metadata(file);
 

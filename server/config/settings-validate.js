@@ -180,6 +180,9 @@ module.exports = {
 			},
 			file: {
 				access: function(logPath) {
+					if (!logPath) {
+						return null;
+					}
 					var logDir = path.dirname(logPath);
 
 					/* istanbul ignore if */
@@ -192,6 +195,9 @@ module.exports = {
 					}
 				},
 				app: function(logPath) {
+					if (!logPath) {
+						return null;
+					}
 					var logDir = path.dirname(logPath);
 
 					/* istanbul ignore if */

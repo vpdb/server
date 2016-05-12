@@ -840,6 +840,25 @@ describe('The VPDB `release` API', function() {
 				});
 			});
 		});
+
+		it('should succeed when rotating an existing playfield image', function(done) {
+			var user = 'member';
+			hlp.release.createRelease(user, request, function(release) {
+				request
+					.put('/api/v1/releases/' + release.id + '/versions/' + release.versions[0].version)
+					.query({ rotate: release.versions[0].files[0].file.id + ':90' })
+					.as(user)
+					.send({
+						files: [{
+							_file: release.versions[0].files[0].file.id,
+							flavor: { orientation: 'ws' }
+						}]
+					}).end(function(err, res) {
+						// TODO finish this
+						done();
+				});
+			});
+		});
 	});
 
 	describe('when viewing a release', function() {

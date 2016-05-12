@@ -35,7 +35,7 @@ module.exports = function(grunt) {
 		// require plugins
 		var collections = require('metalsmith-collections');
 		var sections = require('metalsmith-sections');
-		var templates = require('metalsmith-templates');
+		var layouts = require('metalsmith-layouts');
 		var raml = require('./metalsmith/raml');
 		var links = require('./metalsmith/links');
 		var menu = require('./metalsmith/menu');
@@ -83,21 +83,21 @@ module.exports = function(grunt) {
 				api:     { src: 'api/v1/index.raml',     dest: 'api/v1' },
 				storage: { src: 'storage/v1/index.raml', dest: 'storage/v1' }
 			},
-			template: 'client/app/devsite/api-resource.jade'
+			template: 'client/app/devsite/api-resource.pug'
 		}));
 
 		/* loops through metalsmith.sections and renders a given template on it */
 		metalsmith.use(menu({
 			name: 'sections',
-			src: 'client/app/devsite/menu.jade',
+			src: 'client/app/devsite/menu.pug',
 			dest: 'menu.html'
 		}));
 
 		/* renders all .md files to html */
 		metalsmith.use(markdown());
 
-		/* puts all .html files into a jade template. */
-		metalsmith.use(templates({ engine: 'jade', directory: 'client/app/devsite' }));
+		/* puts all .html files into a pug template. */
+		metalsmith.use(layouts({ engine: 'pug', directory: 'client/app/devsite' }));
 
 		/* replaces api://.. links with real references */
 		metalsmith.use(apilinks({ core: { path: '/api/v1'}, storage: { path: '/storage/v1' }}));

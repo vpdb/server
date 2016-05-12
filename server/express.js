@@ -25,7 +25,7 @@ var http = require('http');
 var logger = require('winston');
 var passport = require('passport');
 var express = require('express');
-var jadeStatic = require('connect-jade-static');
+var pugStatic = require('./modules/connect-pug-static');
 var expressWinston = require('express-winston');
 var expressBodyParser = require('body-parser');
 var expressCompression = require('compression');
@@ -55,7 +55,7 @@ exports.configure = function(app, raygunClient) {
 	app.set('ipaddress', ipAddress);
 	app.set('port', process.env.PORT);
 	app.set('views', path.resolve(__dirname, '../client/app'));
-	app.set('view engine', 'jade');
+	app.set('view engine', 'pug');
 	app.set('json spaces', "\t");
 	app.set('showStackError', runningDev);
 	app.disable('x-powered-by');
@@ -78,7 +78,7 @@ exports.configure = function(app, raygunClient) {
 
 		// static file serving
 		// markup (which is pre-compiled in production)
-		app.use(/.*\.html$/i, jadeStatic({
+		app.use(/.*\.html$/i, pugStatic({
 			baseDir: path.resolve(__dirname, '../client/app'),
 			baseUrl: '/',
 			jade: _.extend(ctrl.viewParams(), {

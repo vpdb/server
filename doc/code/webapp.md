@@ -1,6 +1,6 @@
 ---
 title: Web Application
-template: page.jade
+layout: page.pug
 menuIndex: 1
 subsectionIndex: 3
 ---
@@ -28,7 +28,7 @@ module folder as well.
 ## Templating
 
 There is only one HTML file that isn't loaded dynamically, `index.html`. It
-gets rendered through [`client/app/index.jade`][index.jade] and is returned by
+gets rendered through [`client/app/index.pug`][index.pug] and is returned by
 the web server for any folder requests, i.e. requests that point to a
 directory rather than a file name.
 
@@ -105,4 +105,4 @@ running with `grunt dev`.
 [bower]: http://bower.io/
 [bower.json]: https://github.com/freezy/node-vpdb/blob/master/bower.json
 [ngModule]: https://docs.angularjs.org/guide/module
-[index.jade]: https://github.com/freezy/node-vpdb/blob/master/client/app/index.jade
+[index.pug]: https://github.com/freezy/node-vpdb/blob/master/client/app/index.pug

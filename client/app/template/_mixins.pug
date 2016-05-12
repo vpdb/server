@@ -5,6 +5,6 @@ mixin icon(ref)
 			tooltip-trigger!=attributes['tooltip-trigger'], tooltip-popup-delay!=attributes['tooltip-popup-delay']
 	)
 		if ref[0] === "{"
-			use(xlink:href="{{ icon(#{ref.match(/^\{\{\s*(.*?)\s*\}\}$/)[1]}) }}")
+			use(xlink:href=`{{ icon(${ref.match(/^\{\{\s*(.*?)\s*\}\}$/)[1]}) }}`)
 		else
-			use(xlink:href="#icon-#{ref}")
+			use(xlink:href=`#icon-${ref}`)

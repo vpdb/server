@@ -1,7 +1,7 @@
 ---
 title: Developer
 header: VPDB Developer
-template: home.jade
+layout: home.pug
 menuIndex: 1
 ---
 

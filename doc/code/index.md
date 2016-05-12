@@ -1,6 +1,6 @@
 ---
 title: Code
-template: page.jade
+layout: page.pug
 menuIndex: 1
 subsectionIndex: 1
 ---
@@ -60,7 +60,7 @@ as follows:
 
  - Application logic can be found in the `app` folder. The application code is
    separated *by feature* and you'll find
-   Javascript code as well as the [Jade][jade] templates.
+   Javascript code as well as the [Pug][pug] templates.
  - Everything in `static` gets just copied over to the site root directory.
  - The `styles` folder contains the [Stylus][stylus] files. It gets also
    minified in production, along with the styles from the vendor libraries.
@@ -92,7 +92,7 @@ There are also a few generated folders:
 [bootstrap]: http://getbootstrap.com/
 [mongoose]: http://mongoosejs.com/
 [stylus]: http://learnboost.github.io/stylus/
-[jade]: http://jade-lang.com/
+[pug]: https://github.com/pugjs
 [bower]: http://bower.io/
 [npm]: https://www.npmjs.org/
 [INSTALL]: https://github.com/freezy/node-vpdb/blob/master/INSTALL.md

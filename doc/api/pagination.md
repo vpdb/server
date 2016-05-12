@@ -1,7 +1,7 @@
 ---
 title: API Pagination
 header: Pagination
-template: page.jade
+layout: page.pug
 menuIndex: 1
 subsectionIndex: 3
 ---

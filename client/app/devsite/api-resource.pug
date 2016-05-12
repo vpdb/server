@@ -1,4 +1,4 @@
-include api-schema.jade
+include api-schema
 include ../template/_mixins
 
 mixin resource(resource)
@@ -16,8 +16,8 @@ mixin resource(resource)
 		each method in resource.methods
 			.clearfix
 			.apidoc-method-wrapper(ng-controller="MethodCollapseCtrl")
-				.apidoc-method(ng-click="isCollapsed = !isCollapsed", ng-init="resource= { method: '#{method.method}', parentUrl: '#{resource.parentUrl}' }")
-					.badge.badge--verb(class="badge--verb--#{method.method}")=method.method
+				.apidoc-method(ng-click="isCollapsed = !isCollapsed", ng-init=`resource= { method: '${method.method}', parentUrl: '${resource.parentUrl}' }`)
+					.badge.badge--verb(class=`badge--verb--${method.method}`)=method.method
 					| !{hlp.short(method.description)}
 					.pull-right
 						each scope in hlp.authscopes(method.securedBy)
@@ -54,7 +54,7 @@ mixin resource(resource)
 											li
 												strong=param.displayName
 												| &nbsp;
-												em (#{param.type})
+												em(#{param.type})
 												if param.pattern
 													code #{param.pattern}
 
@@ -135,7 +135,7 @@ mixin resource(resource)
 										p(class=n ? 'padder-top' : ''): u= name === 'default' ? 'Example Request:' : name + ':'
 										- n++;
 										uib-tabset
-											i.pull-right(class=hlp.authscope(r.role).classes, title="With #{hlp.authscope(r.role).title}")
+											i.pull-right(class=hlp.authscope(r.role).classes, title=`With ${hlp.authscope(r.role).title}`)
 											uib-tab(heading="HTTP")
 												pre!=hlp.highlight(r.request.example, true)
 											uib-tab(heading="Curl")
@@ -180,7 +180,7 @@ mixin resource(resource)
 										each response, statusCode in method.responses
 											if statusCode > 299
 												li
-													a.a--lighter(href='http://httpstatus.es/#{statusCode}', target='_blank'): strong=statusCode
+													a.a--lighter(href=`http://httpstatus.es/${statusCode}`, target='_blank'): strong=statusCode
 													if (response.description)
 														.nobreak &nbsp;&mdash; !{hlp.markdown(response.description)}
 
@@ -195,7 +195,7 @@ mixin resource(resource)
 											each r in responses
 												uib-tab
 													uib-tab-heading
-														i.space-right(class=hlp.authscope(r.role).classes, title="#{hlp.authscope(r.role).title} results in...")
+														i.space-right(class=hlp.authscope(r.role).classes, title=`${hlp.authscope(r.role).title} results in...`)
 														+icon('arrow-right').space-right.shift-up
 														span #{r.code}
 													pre!=hlp.highlight(r.response.example, true)

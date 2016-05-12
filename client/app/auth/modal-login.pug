@@ -14,7 +14,7 @@ include ../template/_mixins
 			h3.h--shift-up Login with
 			.text-center
 				for ipb in authStrategies.ipboard
-					a.btn.btn--secondary.btn-lg(ng-click="oauth('#{ipb.url}')")
+					a.btn.btn--secondary.btn-lg(ng-click=`oauth('${ipb.url}')`)
 						+icon(ipb.icon).space-right
 						| #{ipb.name}
 				if authStrategies.google

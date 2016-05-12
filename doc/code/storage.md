@@ -1,6 +1,6 @@
 ---
 title: Storage
-template: page.jade
+layout: page.pug
 menuIndex: 2
 subsectionIndex: 2
 ---

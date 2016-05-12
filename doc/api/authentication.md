@@ -1,7 +1,7 @@
 ---
 title: API Authentication
 header: Authentication
-template: page.jade
+layout: page.pug
 menuIndex: 1
 subsectionIndex: 2
 ---

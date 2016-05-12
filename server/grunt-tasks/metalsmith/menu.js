@@ -20,7 +20,7 @@
 "use strict";
 
 var _ = require('lodash');
-var jade = require('pug');
+var pug = require('pug');
 
 module.exports = function(opts) {
 
@@ -58,7 +58,7 @@ module.exports = function(opts) {
 					data.api = metadata.api[sectionIndex.section];
 
 				}
-				var html = jade.renderFile(opts.src, data);
+				var html = pug.renderFile(opts.src, data);
 				files[sectionIndex.section + '/' + opts.dest] = { contents: new Buffer(html) };
 			}
 			done();

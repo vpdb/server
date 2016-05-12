@@ -21,7 +21,7 @@
 
 var _ = require('lodash');
 var url = require('url');
-var jade = require('pug');
+var pug = require('pug');
 var async = require('async');
 var debug = require('debug')('metalsmith-raml');
 var raml2obj = require('raml2obj');
@@ -36,7 +36,7 @@ module.exports = function(opts) {
 	opts = opts || {};
 	opts.src = opts.src || 'src';
 	opts.files = opts.files || {};
-	opts.template = opts.template || 'template.jade';
+	opts.template = opts.template || 'template.pug';
 
 	// we need a file-based dictionary, so convert the name-based one.
 	var configuredFiles = {};
@@ -81,7 +81,7 @@ module.exports = function(opts) {
 
 						var destFolder = srcFiles[file].dest.replace(/\\/g, '/');
 						var dest = destFolder + '/' + resource.uniqueId + '.html';
-						var html = jade.renderFile(opts.template, {
+						var html = pug.renderFile(opts.template, {
 							resource: resource,
 							hlp: helpers(_.extend(opts, { api: obj })),
 							print: print

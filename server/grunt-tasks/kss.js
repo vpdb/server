@@ -22,7 +22,7 @@
 var _ = require('lodash');
 var fs = require('fs');
 var kss = require('kss');
-var jade = require('pug');
+var pug = require('pug');
 var path = require('path');
 var async = require('async');
 var html2jade = require('html2jade');
@@ -58,7 +58,7 @@ module.exports = function(grunt) {
 			rootRefs.sort(function(a, b) {
 				return parseInt(a) - parseInt(b);
 			});
-			var sectionTemplate = jade.compile(fs.readFileSync('client/app/devsite/styleguide-section.jade'), { pretty: true });
+			var sectionTemplate = pug.compile(fs.readFileSync('client/app/devsite/styleguide-section.pug'), { pretty: true });
 
 			var renderSection = function(rootSection, reference, sections, next) {
 				grunt.log.writeln('Generating %s %s"', reference, rootSection ? rootSection.header() : 'Unnamed');
@@ -105,8 +105,8 @@ module.exports = function(grunt) {
 				}, ctrl.viewParams());
 
 				// render index
-				var indexHtml = jade.renderFile('client/app/devsite/index.jade', data);
-				var styleguideMain = jade.renderFile('client/app/devsite/styleguide-main.jade', data);
+				var indexHtml = pug.renderFile('client/app/devsite/index.pug', data);
+				var styleguideMain = pug.renderFile('client/app/devsite/styleguide-main.pug', data);
 
 				// render index (move that to grunt directly)
 				var filename = path.resolve(writeable.devsiteRoot, 'index.html');
@@ -140,12 +140,12 @@ function serializeSections(sections, done) {
 				console.error(err);
 				return next(err);
 			}
-			toJade(section.markup(), function(err, jade) {
+			toPug(section.markup(), function(err, pug) {
 				if (err) {
 					console.error(err);
 					return next(err);
 				}
-				debug('converted to jade (%d bytes), returning.', jade.length);
+				debug('converted to pug (%d bytes), returning.', pug.length);
 				next(null, {
 					header: section.header(),
 					description: section.description(),
@@ -155,7 +155,7 @@ function serializeSections(sections, done) {
 					experimental: section.experimental(),
 					modifiers: modifiers,
 					markup: section.markup(),
-					jade: jade
+					pug: pug
 				});
 			});
 		});
@@ -174,13 +174,13 @@ function serializeSections(sections, done) {
 function serializeModifiers(modifiers, done) {
 	debug('serializing %d modifiers..', modifiers.length);
 	async.mapSeries(modifiers, function(modifier, next) {
-		toJade(modifier.markup(), function(err, jade) {
+		toPug(modifier.markup(), function(err, pug) {
 			if (err) {
 				console.error(err);
 				return next(err);
 			}
-			jade = jade.replace(/html[\s\S]+body[\n\r]+/gi, '');
-			jade = ("\n" + jade).replace(/[\n\r]\s{4}/g, '\n');
+			pug = pug.replace(/html[\s\S]+body[\n\r]+/gi, '');
+			pug = ("\n" + pug).replace(/[\n\r]\s{4}/g, '\n');
 
 			var html = modifier.markup();
 			next(null, {
@@ -189,7 +189,7 @@ function serializeModifiers(modifiers, done) {
 				className: modifier.className(),
 				markup: html,
 				markupHighlighted: highlight.highlight('html', html).value,
-				jade: jade
+				pug: pug
 			});
 		});
 	}, function(err, result) {
@@ -198,7 +198,7 @@ function serializeModifiers(modifiers, done) {
 	});
 }
 
-function toJade(html, done) {
+function toPug(html, done) {
 	if (!html) {
 		return done(null, html);
 	}

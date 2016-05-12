@@ -1,7 +1,7 @@
 ---
 title: API
 header: Overview
-template: page.jade
+layout: page.pug
 menuIndex: 1
 subsectionIndex: 1
 ---
@@ -32,12 +32,12 @@ Generally, when requesting an individual resource, a *detailed representation*
 is returned. For example, when [requesting your own user profile][api-profile],
 you'll receive all available fields including your permissions:
 
-	GET /api/v1/user HTTP/1.1
+	GET /api/v1/user HTTP/2.0
 
 However, when [retrieving a list of users][api-users], only a subset of fields
 are returned:
 
-	GET /api/v1/users HTTP/1.1
+	GET /api/v1/users HTTP/2.0
 
 This *summary representation* is due to a few reasons. First of all, the
 physical payload for some resources would grow immensely if details were
@@ -140,7 +140,7 @@ full object.
 For instance, when creating a new game, the client uses `_media` to link the 
 game to previously submitted media:
 
-    POST /api/v1/games HTTP/1.1
+    POST /api/v1/games HTTP/2.0
 
     {
       "id": "sinbad",

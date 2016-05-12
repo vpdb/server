@@ -12,7 +12,7 @@ include ../template/_mixins
 				ul.nav.subnav
 					for subsection in subsections[section]
 						li
-							a(href=subsection.link, ng-class="{ active: '#{subsection.link}' === path }" )
+							a(href=subsection.link, ng-class="{ active: subsection.link === path }" )
 								| #{subsection.header || subsection.title}
 
 			if api && api.resources
@@ -30,7 +30,7 @@ include ../template/_mixins
 				ul.nav.subnav
 					each resource in api.resources
 						li
-							a(href='/#{section}/v1/#{resource.uniqueId}', ng-class="{ active: 'ref/#{resource.uniqueId}' === subsection }")= resource.displayName || resource.relativeUri
+							a(href=`/${section}/v1/${resource.uniqueId}`, ng-class=`{ active: 'ref/${resource.uniqueId}' === subsection }`)= resource.displayName || resource.relativeUri
 
 		p.padder-top-2x
 

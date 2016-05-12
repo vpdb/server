@@ -1,6 +1,6 @@
 article#kss-content
 	for section in sections
-		section(id="#{section.reference}")
+		section(id=section.reference)
 			h1 #{section.header}
 			hr
 		div!=section.description
@@ -15,5 +15,5 @@ article#kss-content
 						uib-tab-heading HTML
 						pre!=modifier.markupHighlighted
 					uib-tab
-						uib-tab-heading Jade
-						pre!=modifier.jade
+						uib-tab-heading Pug
+						pre!=modifier.pug

@@ -120,10 +120,10 @@ module.exports = function(grunt) {
 			download: { dest: '<%= config.coverageRoot %>' }
 		},
 
-		jade: {
+		pug: {
 			site: {
 				options: { data: _.extend(viewParams, { environment: 'production', gitinfo: '<%= gitinfo %>' }) },
-				files: [ { expand: true, cwd: 'client/app', src: [ '**/*.jade', '!layout.jade', '!**/devsite/**', '!_*.jade', '!**/*-[0-9]*-*.jade' ], dest: '<%= config.htmlRoot %>', ext: '.html' } ]
+				files: [ { expand: true, cwd: 'client/app', src: [ '**/*.pug', '!layout.pug', '!**/devsite/**', '!_*.pug', '!**/*-[0-9]*-*.pug' ], dest: '<%= config.htmlRoot %>', ext: '.html' } ]
 			}
 		},
 
@@ -212,7 +212,7 @@ module.exports = function(grunt) {
 			// restart/reload watches
 			'express-dev':     { files: '.restart', options: { spawn: false, debounceDelay: 100 }, tasks: [ 'express:dev' ] },
 			'express-test':    { files: '.restart', options: { spawn: false, debounceDelay: 100 }, tasks: [ 'express:test' ] },
-			livereload:        { files: [ '.reload', 'client/app/**/*.js', 'client/app/**/*.jade' ],
+			livereload:        { files: [ '.reload', 'client/app/**/*.js', 'client/app/**/*.pug' ],
 			          options: { spawn: false, debounceDelay: 100, livereload: grunt.option('no-reload') ? false : true }
 			},
 
@@ -247,7 +247,7 @@ module.exports = function(grunt) {
 			'copy:assets', 'copy:static',                         // copy static stuff
 			'stylus', 'cssmin',                                   // render & minify css
 			'client-config', 'ngAnnotate', 'uglify',              // treat javascripts
-			'svg', 'jade',                                        // icons and html
+			'svg', 'pug',                                         // icons and html
 			'copy:devsite', 'mkdir:devsite', 'kss', 'metalsmith'  // create devsite
 		]
 	);

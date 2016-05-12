@@ -23,7 +23,7 @@ html(ng-app=appname, ng-controller="AppCtrl", lang="en")
 		meta(name="msapplication-TileImage", content="/mstile-144x144.png")
 		meta(http-equiv="X-UA-Compatible", content="IE=Edge")
 		if environment == 'production'
-			link(rel="stylesheet", href="/css/global_#{gitinfo.local.branch.current.shortSHA}.min.css")
+			link(rel="stylesheet", href=`/css/global_${gitinfo.local.branch.current.shortSHA}.min.css`)
 		else
 			for css in cssFiles
 				link(rel="stylesheet", href=css.web)
@@ -36,7 +36,7 @@ html(ng-app=appname, ng-controller="AppCtrl", lang="en")
 		block body
 		growl-notifications
 		if environment == 'production'
-			script(type="text/javascript", src="/js/global_#{gitinfo.local.branch.current.shortSHA}.min.js")
+			script(type="text/javascript", src=`/js/global_${gitinfo.local.branch.current.shortSHA}.min.js`)
 		else
 			for js in jsFiles
 				script(type="text/javascript", src=js.web)

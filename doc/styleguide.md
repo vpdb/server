@@ -1,6 +1,6 @@
 ---
 title: Style Guide
-template: styleguide.jade
+layout: styleguide.pug
 menuIndex: 1
 ---
 
@@ -19,7 +19,7 @@ are usually in the same file.
 ## Class Naming
 
 Apart from Twitter Bootstrap specific classes, we use a modified version of 
-[BEM naming][bem]- read all about it [here][bem-article].
+[BEM naming][bem] - read all about it [here][bem-article].
 
 In our case, one of the many benefits of this method is that it's usually 
 easy to determine if a CSS class is a custom VPDB-specific class or a 
@@ -76,7 +76,7 @@ into [multiple `.svg` files][icon-folder]. During build, we run
 [svgmin][svgmin] on them and [compile them][svgstore] into one definition file
 at `gfx/svg-defs.svg`. The content of this file is then rendered into the HTML 
 DOM. Whenever we use an icon in the DOM, we can render it by calling the 
-`icon(svg-name)` Jade mixin. Color can be set by defining the `fill` CSS 
+`icon(svg-name)` Pug mixin. Color can be set by defining the `fill` CSS 
 property.
 
 However, since the SVG is in the DOM, we can't use it purely in a CSS class. 

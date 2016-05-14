@@ -142,8 +142,9 @@ angular.module('vpdb.releases.edit', [])
 				controller: 'VersionEditCtrl',
 				size: 'lg',
 				resolve: {
+					game: function() { return $scope.game; },
 					release: function() { return $scope.release; },
-					version: function() { return version; }
+					version: function() { return version; },
 				}
 			}).result.then(function(newAuthor) {
 
@@ -185,8 +186,8 @@ angular.module('vpdb.releases.edit', [])
 			}).join(', ');
 		};
 	}
-).controller('VersionEditCtrl', function($scope, $controller, $uibModalInstance, release, version, BootstrapTemplate,
-										 ApiHelper, ReleaseMeta, ReleaseVersionResource) {
+).controller('VersionEditCtrl', function($scope, $controller, $uibModalInstance, game, release, version, BootstrapTemplate,
+										 ApiHelper, ReleaseMeta, ReleaseVersionResource, ModalService) {
 
 	BootstrapTemplate.patchCalendar();
 
@@ -227,7 +228,7 @@ angular.module('vpdb.releases.edit', [])
 			ModalService.info({
 				icon: 'check-circle',
 				title: 'Version updated',
-				subtitle: $scope.game.title,
+				subtitle: game.title,
 				message: 'You have succesfully updated version ' + version.version + ' of release "' + release.name + '".'
 			});
 

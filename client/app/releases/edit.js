@@ -144,10 +144,12 @@ angular.module('vpdb.releases.edit', [])
 				resolve: {
 					game: function() { return $scope.game; },
 					release: function() { return $scope.release; },
-					version: function() { return version; },
+					version: function() { return version; }
 				}
-			}).result.then(function(newAuthor) {
-
+			}).result.then(function(updatedVersion) {
+				_.assign(_.find($scope.release.versions, function(version) {
+					return version.version == updatedVersion.version;
+				}), updatedVersion);
 			});
 		};
 
@@ -222,9 +224,9 @@ angular.module('vpdb.releases.edit', [])
 			delete $scope.releaseVersion.released_at;
 		}
 
-		ReleaseVersionResource.update({ releaseId: release.id, version: version.version }, $scope.version, function() {
+		ReleaseVersionResource.update({ releaseId: release.id, version: version.version }, $scope.version, function(updatedVersion) {
 
-			$uibModalInstance.close();
+			$uibModalInstance.close(updatedVersion);
 			ModalService.info({
 				icon: 'check-circle',
 				title: 'Version updated',
@@ -249,7 +251,6 @@ angular.module('vpdb.releases.edit', [])
 				}
 			});
 		}));
-
 	};
 
 });

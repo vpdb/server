@@ -177,6 +177,13 @@ angular.module('vpdb.common', [])
 				}
 				opt = _.isObject(opt) ? opt : {};
 				return function(response) {
+					if (response.status === 401 && response.data.error === "Token has expired") {
+						ModalService.error({
+							subtitle: "Session timed out",
+							message: "Looks like your session has expired. Try logging in again."
+						});
+						return;
+					}
 					scope.message = null;
 					scope.errors = { __count: 0 };
 					scope.error = null;

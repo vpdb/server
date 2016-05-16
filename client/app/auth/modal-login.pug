@@ -13,7 +13,7 @@ include ../template/_mixins
 		.span(ng-hide="loginParams.localOnly")
 			h3.h--shift-up Login with
 			.text-center
-				for ipb in authStrategies.ipboard
+				each ipb in authStrategies.ipboard
 					a.btn.btn--secondary.btn-lg(ng-click=`oauth('${ipb.url}')`)
 						+icon(ipb.icon).space-right
 						| #{ipb.name}

@@ -81,7 +81,7 @@ exports.configure = function(app, raygunClient) {
 		app.use(/.*\.html$/i, pugStatic({
 			baseDir: path.resolve(__dirname, '../client/app'),
 			baseUrl: '/',
-			jade: _.extend(ctrl.viewParams(), {
+			pug: _.extend(ctrl.viewParams(), {
 				pretty: true
 			})
 		}));

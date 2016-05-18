@@ -139,7 +139,7 @@ include ../template/_mixins
 
 	.modal-footer
 		button.btn.btn-hollow.pull-left(ng-click="$dismiss()") Cancel
-		button.btn.btn--secondary(ng-click="save()")
+		button.btn.btn--secondary(ng-click="save()", ng-disabled="!auth.isAuthenticated")
 			+icon('check-circle').space-right
 			| Save Changes
 

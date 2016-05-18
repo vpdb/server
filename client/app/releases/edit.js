@@ -48,7 +48,9 @@ angular.module('vpdb.releases.edit', [])
 					});
 				}
 			});
-			$scope.editAuthors = AuthService.getUser().id === release.created_by.id;
+			if (AuthService.isAuthenticated) {
+				$scope.editAuthors = AuthService.getUser().id === release.created_by.id;
+			}
 		});
 
 		/**

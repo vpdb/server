@@ -204,16 +204,23 @@ angular.module('vpdb.releases.edit', [])
 
 	$scope.meta.files = _.map(version.files, function(file) {
 		file.file._randomId = file.file.id;
-		$scope.meta.mediaFiles[$scope.getMediaKey(file.file, 'playfield_image')] = createMeta(file.media.playfield_image);
-		$scope.meta.mediaLinks[$scope.getMediaKey(file.file, 'playfield_image')] = createLink(file.media.playfield_image, 'landscape');
+		var playfieldImageKey = $scope.getMediaKey(file.file, 'playfield_image');
+		$scope.meta.mediaFiles[playfieldImageKey] = createMeta(file.media.playfield_image, playfieldImageKey);
+		$scope.meta.mediaLinks[playfieldImageKey] = createLink(file.media.playfield_image, 'landscape');
 		if (file.media.playfield_video) {
-			$scope.meta.mediaFiles[$scope.getMediaKey(file.file, 'playfield_video')] = createMeta(file.media.playfield_video);
-			$scope.meta.mediaLinks[$scope.getMediaKey(file.file, 'playfield_video')] = createLink(file.media.playfield_video, 'small-rotated');
+			var playfieldVideoKey = $scope.getMediaKey(file.file, 'playfield_video');
+			$scope.meta.mediaFiles[playfieldVideoKey] = createMeta(file.media.playfield_video);
+			$scope.meta.mediaLinks[playfieldVideoKey] = createLink(file.media.playfield_video, 'small-rotated');
 		}
 		if (file.media.playfield_image.file_type === 'playfield-fs') {
-			$scope.meta.mediaLinks[$scope.getMediaKey(file.file, 'playfield_image')].rotation = 90;
+			$scope.meta.mediaLinks[playfieldImageKey].rotation = 90;
 		}
 		return createMeta(file.file);
+	});
+
+	_.each(version.files, function(releaseFile) {
+		var mediaFile = $scope.meta.mediaFiles[$scope.getMediaKey(releaseFile.file, 'playfield_image')];
+		$scope.updateRotation(releaseFile, mediaFile);
 	});
 
 	$scope.save = function() {
@@ -226,7 +233,19 @@ angular.module('vpdb.releases.edit', [])
 			delete $scope.releaseVersion.released_at;
 		}
 
-		ReleaseVersionResource.update({ releaseId: release.id, version: version.version }, $scope.version, function(updatedVersion) {
+		// retrieve rotation parameters
+		var rotationParams = [];
+		_.forEach(version.files, function(file) {
+			if (!file.media || !file.media.playfield_image) {
+				return;
+			}
+			var rotation = $scope.meta.mediaLinks[$scope.getMediaKey(file.file, 'playfield_image')].rotation;
+			var offset = $scope.meta.mediaLinks[$scope.getMediaKey(file.file, 'playfield_image')].offset;
+			var relativeRotation = rotation + offset;
+			rotationParams.push(file.media.playfield_image.id + ':' + relativeRotation);
+		});
+
+		ReleaseVersionResource.update({ releaseId: release.id, version: version.version, rotate: rotationParams.join(',') }, $scope.version, function(updatedVersion) {
 
 			$uibModalInstance.close(updatedVersion);
 			ModalService.info({
@@ -257,14 +276,15 @@ angular.module('vpdb.releases.edit', [])
 
 });
 
-function createMeta(file) {
+function createMeta(file, key) {
 	return {
 		name: file.name,
 		bytes: file.bytes,
 		mimeType: file.mime_type,
 		icon: 'ext-vp' + (/table-x$/i.test(file.mime_type) ? 'x' : 't'),
 		randomId: file._randomId,
-		storage: file
+		storage: file,
+		key: key
 	};
 }
 

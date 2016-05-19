@@ -724,9 +724,6 @@ function preprocess(req, allowedFileIds) {
 				if (!_.includes(allowedFileIds, file._id.toString())) {
 					throw error('Cannot rotate file %s because it is not part of the release.', file.id).status(400);
 				}
-				if (file.is_active) {
-					throw error('Pre-processing can only be applied to inactive files.').status(400);
-				}
 				if (file.getMimeCategory() !== 'image') {
 					throw error('Can only rotate images, this is a "%s".', file.getMimeCategory()).status(400);
 				}

@@ -367,7 +367,8 @@ describe('The VPDB `release` API', function() {
 				hlp.file.createVpt(user, request, function(vptfile) {
 					hlp.file.createPlayfield(user, request, 'fs', 'playfield', function(playfield) {
 						request
-							.post('/api/v1/releases?rotate=' + playfield.id + ':90')
+							.post('/api/v1/releases')
+							.query({ rotate: playfield.id + ':90' })
 							.as(user)
 							.send({
 								name: 'release',
@@ -388,8 +389,44 @@ describe('The VPDB `release` API', function() {
 							.end(function (err, res) {
 								hlp.expectStatus(err, res, 201);
 								hlp.doomRelease(user, res.body.id);
+								let playfieldRotated = res.body.versions[0].files[0].media.playfield_image;
+								expect(playfield.metadata.size.width).to.be(playfieldRotated.metadata.size.height);
+								expect(playfield.metadata.size.height).to.be(playfieldRotated.metadata.size.width);
 								done();
 							});
+					});
+				});
+			});
+		});
+
+		it('should fail when rotating playfield not belonging to the release', function(done) {
+			var user = 'member';
+			hlp.game.createGame('contributor', request, function(game) {
+				hlp.file.createVpt(user, request, function(vptfile) {
+					hlp.file.createPlayfield(user, request, 'fs', 'playfield', function(playfield) {
+						hlp.file.createPlayfield(user, request, 'fs', 'playfield', function(playfieldOther) {
+							request
+								.post('/api/v1/releases')
+								.query({ rotate: playfieldOther.id + ':90' })
+								.as(user)
+								.send({
+									name: 'release',
+									_game: game.id,
+									versions: [
+										{
+											files: [ {
+												_file: vptfile.id,
+												_media: { playfield_image: playfield.id },
+												_compatibility: [ '9.9.0' ],
+												flavor: { orientation: 'ws', lighting: 'night' } }
+											],
+											version: '1.0.0'
+										}
+									],
+									authors: [ { _user: hlp.getUser(user).id, roles: [ 'Table Creator' ] } ]
+								})
+								.end(hlp.status(400, 'it is not part of the release', done));
+						});
 					});
 				});
 			});
@@ -844,6 +881,29 @@ describe('The VPDB `release` API', function() {
 		it('should succeed when rotating an existing playfield image', function(done) {
 			var user = 'member';
 			hlp.release.createRelease(user, request, function(release) {
+				let playfieldImage = release.versions[0].files[0].media.playfield_image;
+				request
+					.put('/api/v1/releases/' + release.id + '/versions/' + release.versions[0].version)
+					.query({ rotate: release.versions[0].files[0].media.playfield_image.id + ':90' })
+					.as(user)
+					.send({
+						files: [{
+							_file: release.versions[0].files[0].file.id,
+							flavor: { orientation: 'any', lighting: 'day' }
+						}]
+					}).end(function(err, res) {
+						hlp.expectStatus(err, res, 200);
+						let rotatedPlayfieldImage = res.body.files[0].media.playfield_image;
+						expect(playfieldImage.metadata.size.height).to.be(rotatedPlayfieldImage.metadata.size.width);
+						expect(playfieldImage.metadata.size.width).to.be(rotatedPlayfieldImage.metadata.size.height);
+						done();
+				});
+			});
+		});
+
+		it('should fail when rotating not a playfield image', function(done) {
+			var user = 'member';
+			hlp.release.createRelease(user, request, function(release) {
 				request
 					.put('/api/v1/releases/' + release.id + '/versions/' + release.versions[0].version)
 					.query({ rotate: release.versions[0].files[0].file.id + ':90' })
@@ -853,9 +913,20 @@ describe('The VPDB `release` API', function() {
 							_file: release.versions[0].files[0].file.id,
 							flavor: { orientation: 'ws' }
 						}]
-					}).end(function(err, res) {
-						// TODO finish this
-						done();
+					}).end(hlp.status(400, 'can only rotate images', done));
+			});
+		});
+
+		it('should fail when rotating playfield that does not belong to the version', function(done) {
+			let user = 'member';
+			hlp.file.createPlayfield(user, request, 'fs', 'playfield', function(playfield) {
+				hlp.release.createRelease(user, request, function(release) {
+					request
+						.put('/api/v1/releases/' + release.id  + '/versions/' + release.versions[0].version)
+						.query({ rotate: playfield.id + ':90' })
+						.as('member')
+						.send({ })
+						.end(hlp.status(400, 'it is not part of the release', done));
 				});
 			});
 		});

@@ -173,32 +173,6 @@ describe('When dealing with pre-processing media', function() {
 			});
 		});
 
-		it('should fail when trying to rotate an active file', function(done) {
-			var user = 'member';
-			hlp.file.createPlayfield(user, request, 'fs', 'playfield-ws', function(playfield) {
-				request
-					.post('/api/v1/releases?rotate=' + game.media.backglass.id + ':90')
-					.as(user)
-					.send({
-						name: 'release',
-						_game: game.id,
-						versions: [
-							{
-								files: [ {
-									_file: vptfile.id,
-									_media: { playfield_image: playfield.id },
-									_compatibility: [ '9.9.0' ],
-									flavor: { orientation: 'ws', lighting: 'night' } }
-								],
-								version: '1.0.0'
-							}
-						],
-						authors: [ { _user: hlp.getUser(user).id, roles: [ 'Table Creator' ] } ]
-
-					}).end(hlp.status(400, 'can only be applied to inactive files', done));
-			});
-		});
-
 		it('should fail when providing incorrect rotation parameters', function(done) {
 			var user = 'member';
 			request
@@ -213,25 +187,6 @@ describe('When dealing with pre-processing media', function() {
 				.post('/api/v1/releases?rotate=foobar:45')
 				.as(user)
 				.send({}).end(hlp.status(400, "wrong angle", done));
-		});
-
-		it('should fail when providing not an image file', function(done) {
-			var user = 'member';
-			request
-				.post('/api/v1/releases?rotate=' + vptfile.id + ':90')
-				.as(user)
-				.send({}).end(hlp.status(400, "only rotate image", done));
-		});
-
-		it('should fail when providing not an image file', function(done) {
-			var user = 'member';
-			hlp.file.createBackglass(user, request, function(backglass) {
-				request
-					.post('/api/v1/releases?rotate=' + backglass.id + ':90')
-					.as(user)
-					.send({}).end(hlp.status(400, "only rotate playfield images", done));
-			});
-
 		});
 
 		it('should fail when trying to rotate a non-existing image', function(done) {

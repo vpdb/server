@@ -1,14 +1,15 @@
 200 OK
+X-App-Sha: 4400951
 Content-Type: application/json; charset=utf-8
-Content-Length: 440
-Etag: W/"1b8-MiC7rGWycrNEWKC3HZy6dg"
+Content-Length: 447
+Etag: W/"1bf-c52vpggcIQUsa/pSanG06w"
 
 {
-  "name": "Keyshawn74",
-  "username": "Keyshawn74",
-  "email": "jamie.batz53@gmail.com",
+  "name": "Colt_Muller",
+  "username": "Colt_Muller",
+  "email": "virginia.weimann@hotmail.com",
   "provider": "local",
-  "created_at": "2016-01-09T12:56:47.750Z",
+  "created_at": "2016-05-19T22:56:46.368Z",
   "is_active": true,
   "counter": {
     "stars": 0,
@@ -18,11 +19,11 @@ Etag: W/"1b8-MiC7rGWycrNEWKC3HZy6dg"
   "roles": [
     "member"
   ],
-  "id": "w2g5b8sbgub",
+  "id": "eksrg946os",
   "plan": {
     "push_notifications_enabled": false,
     "app_tokens_enabled": false,
     "id": "free"
   },
-  "gravatar_id": "374e62a5a40fb4460890e7d6b71c7d23"
+  "gravatar_id": "710205aece08b95b1270c2329e16a145"
 }

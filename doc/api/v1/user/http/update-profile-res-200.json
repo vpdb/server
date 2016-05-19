@@ -1,15 +1,16 @@
 200 OK
+X-App-Sha: 4400951
 Content-Type: application/json; charset=utf-8
-Etag: W/"484-phmGbESwdEwfXVDICO8HlQ"
+Etag: W/"489-vXh6nI/+PuK9TGzctym+9Q"
 Content-Encoding: gzip
 
 {
-  "location": "South Majorville",
-  "name": "Connie Parker",
-  "username": "Fred_Feil",
-  "email": "dina89@gmail.com",
+  "location": "Daugherty stad",
+  "name": "Madisyn Emard",
+  "username": "Delbert_Rowe46",
+  "email": "summer.glover@yahoo.com",
   "provider": "local",
-  "created_at": "2016-01-09T12:56:47.825Z",
+  "created_at": "2016-05-19T22:56:46.431Z",
   "is_active": true,
   "counter": {
     "stars": 0,
@@ -21,65 +22,65 @@ Content-Encoding: gzip
   ],
   "email_status": {
     "code": "pending_update",
-    "expires_at": "2016-01-10T12:56:48.289Z",
-    "value": "myrtis_hettinger75@hotmail.com"
+    "expires_at": "2016-05-20T22:56:46.884Z",
+    "value": "gail.ullrich21@hotmail.com"
   },
-  "id": "qk5ub89h6ub",
+  "id": "pko5gsx619",
   "plan": {
     "push_notifications_enabled": false,
     "app_tokens_enabled": false,
     "id": "free"
   },
-  "gravatar_id": "9cf2295f4c699e3535bea6fd66ec7552",
+  "gravatar_id": "d3f6d26d340945ee9a701f181001f51b",
   "permissions": {
-    "builds": [
-      "delete-own",
-      "add"
-    ],
-    "tokens": [
-      "update",
-      "delete",
-      "list",
-      "add"
+    "games": [
+      "star",
+      "rate"
     ],
     "comments": [
       "add"
     ],
-    "games": [
-      "rate",
-      "star"
+    "roms": [
+      "delete-own",
+      "add"
     ],
     "users": [
       "star",
       "view",
       "search"
     ],
-    "roms": [
-      "delete-own",
-      "add"
-    ],
     "releases": [
+      "star",
       "update",
       "rate",
+      "add",
+      "delete"
+    ],
+    "tokens": [
+      "update",
       "delete",
       "add",
-      "star"
+      "list"
+    ],
+    "messages": [
+      "receive"
+    ],
+    "tags": [
+      "delete-own",
+      "add"
     ],
     "user": [
       "update",
       "view"
     ],
-    "messages": [
-      "receive"
-    ],
-    "files": [
-      "delete",
-      "download",
-      "upload"
-    ],
-    "tags": [
+    "builds": [
       "delete-own",
       "add"
+    ],
+    "files": [
+      "download",
+      "delete",
+      "upload"
     ]
   }
 }

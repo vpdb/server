@@ -1,21 +1,21 @@
-POST /api/v1/releases HTTP/1.1
-Host: vpdb.io
+POST /v1/releases HTTP/2.0
+Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJ3MjU0NXRzYjZmYiIsImlhdCI6IjIwMTYtMDEtMDlUMTI6NTU6NDkuNTY3WiIsImV4cCI6IjIwMTYtMDEtMDlUMTM6NTU6NDkuNTY3WiIsImlydCI6ZmFsc2V9.1UpXvsIE1LvRVX9BCn05E2jds8rH5Qz7RrreHtakOiI
-Content-Type: application/json
+authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJla3o0dm85NjE5IiwiaWF0IjoiMjAxNi0wNS0xOVQyMjo1NTo0MC4xMzFaIiwiZXhwIjoiMjAxNi0wNS0xOVQyMzo1NTo0MC4xMzFaIiwiaXJ0IjpmYWxzZX0.LLKwSYCVhZjj2uKVWcNwO5d6k82lDaHmk9lmfE2_Zoc
+content-type: application/json
 Content-Length: 532
 
 {
   "name": "release",
-  "_game": "iron-maiden",
+  "_game": "rey-de-diamantes",
   "versions": [
     {
       "files": [
         {
           "released_at": "2015-01-01T00:00:00.000Z",
-          "_file": "w2pygvsbgub",
+          "_file": "pksyd19gos",
           "_media": {
-            "playfield_image": "w2ss6tshgfb"
+            "playfield_image": "pkuyd19g1s"
           },
           "_compatibility": [
             "9.9.0"
@@ -26,9 +26,9 @@ Content-Length: 532
           }
         },
         {
-          "_file": "qkwy6v9b6ub",
+          "_file": "p2xydo9619",
           "_media": {
-            "playfield_image": "w2h9gvsb6fb"
+            "playfield_image": "ekeydos619"
           },
           "_compatibility": [
             "9.9.0"
@@ -45,7 +45,7 @@ Content-Length: 532
   ],
   "authors": [
     {
-      "_user": "w2545tsb6fb",
+      "_user": "ekz4vo9619",
       "roles": [
         "Table Creator"
       ]

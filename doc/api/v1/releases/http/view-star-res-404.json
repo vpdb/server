@@ -1,8 +1,9 @@
 404 Not Found
+X-App-Sha: 4400951
 Content-Type: application/json; charset=utf-8
-Content-Length: 80
-Etag: W/"50-q7FXhqWdifxlPflloSNlrg"
+Content-Length: 89
+Etag: W/"59-J5X5cloWpvXNxubgavuBIQ"
 
 {
-  "error": "No star for <gregg64@gmail.com> for \"Polarised Edition\" found."
+  "error": "No star for <brandy9@hotmail.com> for \"Open-architected Edition\" found."
 }

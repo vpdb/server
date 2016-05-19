@@ -1,5 +1,5 @@
-GET /api/v1/games/lariat/rating HTTP/1.1
-Host: vpdb.io
+GET /v1/games/barrage/rating HTTP/2.0
+Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJxMnh5YnZzYmd1aCIsImlhdCI6IjIwMTYtMDEtMDlUMTI6NTU6NDMuMjYxWiIsImV4cCI6IjIwMTYtMDEtMDlUMTM6NTU6NDMuMjYxWiIsImlydCI6ZmFsc2V9.GyIZ5zzJrA0QTdQuhAlQeVaqBRufAg-HqE_Ya9mf3LY
+authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwa292OW9zZzE5IiwiaWF0IjoiMjAxNi0wNS0xOVQyMjo1NTozNC43NDlaIiwiZXhwIjoiMjAxNi0wNS0xOVQyMzo1NTozNC43NDlaIiwiaXJ0IjpmYWxzZX0.T1RKsc0rbC1u2oAA_GjDA-ui8fKJP9yrxSgv6V1uog4
 

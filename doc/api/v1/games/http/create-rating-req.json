@@ -1,8 +1,8 @@
-POST /api/v1/games/jolly-roger/rating HTTP/1.1
-Host: vpdb.io
+POST /v1/games/royal-flush-deluxe/rating HTTP/2.0
+Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
-Content-Type: application/json
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJxazR5b2Y5Ymd1YiIsImlhdCI6IjIwMTYtMDEtMDlUMTI6NTU6NDIuMDQ5WiIsImV4cCI6IjIwMTYtMDEtMDlUMTM6NTU6NDIuMDQ5WiIsImlydCI6ZmFsc2V9.CDP5DY0e3UdxcJ_d-jvoQWjVR5O-SJE-2V0xCpjJOSY
+content-type: application/json
+authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJla3NvOTYxcyIsImlhdCI6IjIwMTYtMDUtMTlUMjI6NTU6MzMuNzk1WiIsImV4cCI6IjIwMTYtMDUtMTlUMjM6NTU6MzMuNzk1WiIsImlydCI6ZmFsc2V9.3xQDxOrWu8jIDoSUbC59fmDdLmil_F5I2AA41JPd0nk
 Content-Length: 11
 
 {

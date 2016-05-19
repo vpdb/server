@@ -1,7 +1,8 @@
 422 Unprocessable Entity
+X-App-Sha: 4400951
 Content-Type: application/json; charset=utf-8
-Content-Length: 485
-Etag: W/"1e5-pt6hOgEkdEjVTlcw/o2xeQ"
+Content-Length: 484
+Etag: W/"1e4-cmfcRfMB5KbbDQWcd1zqBw"
 
 {
   "errors": [
@@ -26,7 +27,7 @@ Etag: W/"1e5-pt6hOgEkdEjVTlcw/o2xeQ"
       "field": "roles"
     },
     {
-      "message": "Length of username must be between 3 and 30 characters.",
+      "message": "Username must be a string between 3 and 30 characters.",
       "field": "username"
     }
   ]

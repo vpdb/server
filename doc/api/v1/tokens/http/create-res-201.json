@@ -1,13 +1,14 @@
 201 Created
+X-App-Sha: 4400951
 Content-Type: application/json; charset=utf-8
-Content-Length: 204
-Etag: W/"cc-MobjJ+FNE1lra8PSZzkTNQ"
+Content-Length: 203
+Etag: W/"cb-0ooRZljMMNdalgQM3F/U0w"
 
 {
-  "id": "wkp5kmsh6ub",
+  "id": "pkffas461s",
   "label": "My Application",
   "is_active": true,
-  "expires_at": "2017-01-08T12:56:46.866Z",
-  "created_at": "2016-01-09T12:56:46.866Z",
-  "token": "d7d6dd371cb706c49cae1cfa0c9baf80"
+  "expires_at": "2017-05-19T22:56:45.489Z",
+  "created_at": "2016-05-19T22:56:45.489Z",
+  "token": "3f0db52c4dc84e6a869a12b71ca7a04f"
 }

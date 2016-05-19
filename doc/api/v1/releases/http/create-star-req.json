@@ -1,8 +1,8 @@
-POST /api/v1/releases/q2encsbgfb/star HTTP/1.1
-Host: vpdb.io
+POST /v1/releases/e2ap49xg19/star HTTP/2.0
+Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
-Content-Type: application/json
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJxMjRmdGNzaGd1aCIsImlhdCI6IjIwMTYtMDEtMDlUMTI6NTY6MzkuNzU1WiIsImV4cCI6IjIwMTYtMDEtMDlUMTM6NTY6MzkuNzU1WiIsImlydCI6ZmFsc2V9.Bkwb7JkXD4ZfTSjoY075h41DmNvBTMSs__EFzcDMGuw
+content-type: application/json
+authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJla2I0NDl4Nm9zIiwiaWF0IjoiMjAxNi0wNS0xOVQyMjo1NjozOS4wOTVaIiwiZXhwIjoiMjAxNi0wNS0xOVQyMzo1NjozOS4wOTVaIiwiaXJ0IjpmYWxzZX0.Eu6vDjFgwyRFO5HN0HuKhrEupVR3gsDmvwY54rlrBZo
 Content-Length: 2
 
 {}

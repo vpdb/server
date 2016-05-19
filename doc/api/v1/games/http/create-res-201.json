@@ -1,17 +1,20 @@
 201 Created
+X-App-Sha: 4400951
 Content-Type: application/json; charset=utf-8
-Etag: W/"478-rnopuzy9sNX4CAvdARWTJA"
+Etag: W/"55f-PNHxh2dzmx7+fFoIghc+YA"
 Content-Encoding: gzip
 
 {
-  "title_sortable": "Lancer",
-  "title": "Lancer",
-  "manufacturer": "Exhibit",
-  "year": 1940,
+  "title_sortable": "Beauty Contest",
+  "title": "Beauty Contest",
+  "manufacturer": "Bally",
+  "model_number": "641",
+  "year": 1960,
   "game_type": "em",
-  "features": "Spring bumpers (18).",
-  "id": "lancer",
-  "created_at": "2016-01-09T12:55:35.795Z",
+  "produced_units": 1750,
+  "notes": "One ball play on a 5 ball style playfield.  This game also had re-screened backglasses produced, one of which was called Fun Spot.",
+  "id": "beauty-contest",
+  "created_at": "2016-05-19T22:55:24.425Z",
   "rating": {
     "score": 0,
     "votes": 0,
@@ -28,17 +31,12 @@ Content-Encoding: gzip
     "releases": 0
   },
   "ipdb": {
-    "number": 1409,
-    "mfg": 117
+    "number": 217,
+    "mfg": 47
   },
   "artists": [],
   "designers": [],
-  "themes": [
-    "Adventure",
-    "History",
-    "Jousting",
-    "Medieval"
-  ],
+  "themes": [],
   "short": [],
   "media": {
     "backglass": {
@@ -48,22 +46,22 @@ Content-Encoding: gzip
       "is_protected": true,
       "variations": {
         "small-2x": {
-          "url": "/storage/public/files/small-2x/q2hhvusbgub.jpg"
+          "url": "https://localhost:7357/storage/public/files/small-2x/pkbqtds61s.jpg"
         },
         "small": {
-          "url": "/storage/public/files/small/q2hhvusbgub.jpg"
+          "url": "https://localhost:7357/storage/public/files/small/pkbqtds61s.jpg"
         },
         "medium-2x": {
-          "url": "/storage/public/files/medium-2x/q2hhvusbgub.jpg"
+          "url": "https://localhost:7357/storage/public/files/medium-2x/pkbqtds61s.jpg"
         },
         "medium": {
-          "url": "/storage/public/files/medium/q2hhvusbgub.jpg"
+          "url": "https://localhost:7357/storage/public/files/medium/pkbqtds61s.jpg"
         }
       },
       "bytes": 135,
-      "url": "/storage/v1/files/q2hhvusbgub.png",
-      "id": "q2hhvusbgub"
+      "url": "https://localhost:7357/storage/v1/files/pkbqtds61s.png",
+      "id": "pkbqtds61s"
     }
   },
-  "url": "/game/lancer"
+  "url": "/game/beauty-contest"
 }

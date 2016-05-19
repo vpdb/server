@@ -1,9 +1,9 @@
-PATCH /api/v1/releases/qk4xn9hgfh HTTP/1.1
-Host: vpdb.io
+PATCH /v1/releases/ek75kxg19 HTTP/2.0
+Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJ3azdxbXRzYmd1aCIsImlhdCI6IjIwMTYtMDEtMDlUMTI6NTU6NTUuODI1WiIsImV4cCI6IjIwMTYtMDEtMDlUMTM6NTU6NTUuODI1WiIsImlydCI6ZmFsc2V9.ZQUTW-QnP6_sQVXRXPGccy5kIhQmoyvoMCkqEFXFj5s
-Content-Type: application/json
-Content-Length: 317
+authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJlMnVlaGt4NjE5IiwiaWF0IjoiMjAxNi0wNS0xOVQyMjo1NTo0OC43MjNaIiwiZXhwIjoiMjAxNi0wNS0xOVQyMzo1NTo0OC43MjNaIiwiaXJ0IjpmYWxzZX0.z7HXYUIKmSozJc5imW5lC36hToSyyN9Cy_ZQz71CUQA
+content-type: application/json
+Content-Length: 316
 
 {
   "name": "Updated name",
@@ -11,7 +11,7 @@ Content-Length: 317
   "acknowledgements": "Updated acknowledgements",
   "authors": [
     {
-      "_user": "wkpemt9hgub",
+      "_user": "p27ehkxgo9",
       "roles": [
         "Some other job"
       ]

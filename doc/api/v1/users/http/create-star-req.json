@@ -1,8 +1,8 @@
-POST /api/v1/users/q2ku179bgfh/star HTTP/1.1
-Host: vpdb.io
+POST /v1/users/p26rv9xgo9/star HTTP/2.0
+Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
-Content-Type: application/json
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJxMnByb2M5YjZ1YiIsImlhdCI6IjIwMTYtMDEtMDlUMTI6NTY6NDUuODgxWiIsImV4cCI6IjIwMTYtMDEtMDlUMTM6NTY6NDUuODgxWiIsImlydCI6ZmFsc2V9.q4a1hkkqDKVKOpIRnFO1VuDZBnxJR1alJbZFpE5eKzM
+content-type: application/json
+authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwMnI1djk0Z285IiwiaWF0IjoiMjAxNi0wNS0xOVQyMjo1Njo0NC43MThaIiwiZXhwIjoiMjAxNi0wNS0xOVQyMzo1Njo0NC43MThaIiwiaXJ0IjpmYWxzZX0.61Y7OicpneMRDETGbC_tsLc5RXxY69EkvZpKMBjaWbI
 Content-Length: 2
 
 {}

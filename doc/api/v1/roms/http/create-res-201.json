@@ -1,7 +1,8 @@
 201 Created
+X-App-Sha: 4400951
 Content-Type: application/json; charset=utf-8
-Content-Length: 789
-Etag: W/"315-4mA0uy+b58UjvtnVE6hilg"
+Content-Length: 602
+Etag: W/"25a-q2MsH7lrwshRJym78bQNyg"
 
 {
   "id": "tz_pa1",
@@ -11,33 +12,28 @@ Etag: W/"315-4mA0uy+b58UjvtnVE6hilg"
     },
     "is_protected": true,
     "bytes": 2096,
-    "url": "/storage/v1/files/w2pzvo51zgb.zip",
-    "id": "w2pzvo51zgb"
+    "url": "https://localhost:7357/storage/v1/files/e2phss4619.zip",
+    "id": "e2phss4619"
   },
+  "languages": [],
   "rom_files": [
     {
       "filename": "433.cpu",
       "bytes": 1024,
       "crc": 3227331410,
-      "modified_at": "1996-12-24T22:32:00.000Z",
-      "_id": "56b8e7b7fce846883d1508a9",
-      "id": "56b8e7b7fce846883d1508a9"
+      "modified_at": "1996-12-24T22:32:00.000Z"
     },
     {
       "filename": "433.snd",
       "bytes": 1024,
       "crc": 550313471,
-      "modified_at": "1996-12-24T22:32:00.000Z",
-      "_id": "56b8e7b7fce846883d1508aa",
-      "id": "56b8e7b7fce846883d1508aa"
+      "modified_at": "1996-12-24T22:32:00.000Z"
     },
     {
       "filename": "6530sys1.bin",
       "bytes": 1024,
       "crc": 3078820641,
-      "modified_at": "1996-12-24T22:32:00.000Z",
-      "_id": "56b8e7b7fce846883d1508ab",
-      "id": "56b8e7b7fce846883d1508ab"
+      "modified_at": "1996-12-24T22:32:00.000Z"
     }
   ]
 }

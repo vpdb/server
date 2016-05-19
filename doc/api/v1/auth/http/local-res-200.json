@@ -1,17 +1,18 @@
 200 OK
+X-App-Sha: 4400951
 Content-Type: application/json; charset=utf-8
-Etag: W/"53a-Vi/CED3p5adx6veuKn4QeA"
+Etag: W/"54a-hNdV04iY6scAwqojf5ufJw"
 Content-Encoding: gzip
 
 {
-  "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJ3MmhmMm1zYjZmYiIsImlhdCI6IjIwMTYtMDEtMDlUMTI6NTY6NDcuMDM4WiIsImV4cCI6IjIwMTYtMDEtMDlUMTM6NTY6NDcuMDM4WiIsImlydCI6ZmFsc2V9.6vMQuFhv-tNo8bo37NkXzH0S_5lOpfrb0Aba723DPEI",
-  "expires": "2016-01-09T13:56:47.038Z",
+  "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJlMjl2bjl4Z29zIiwiaWF0IjoiMjAxNi0wNS0xOVQyMjo1Njo0NS42NjlaIiwiZXhwIjoiMjAxNi0wNS0xOVQyMzo1Njo0NS42NjlaIiwiaXJ0IjpmYWxzZX0.ym6S3iS9gq5XCHQzIlPqRQ5m5qJGOOSpuXRrtdWZQqw",
+  "expires": "2016-05-19T23:56:45.669Z",
   "user": {
-    "id": "w2hf2msb6fb",
-    "name": "Wilma83",
-    "username": "Wilma83",
-    "gravatar_id": "d80cc361f73f81d1689b49b99ad9bf87",
-    "email": "lafayette_feest@yahoo.com",
+    "id": "e29vn9xgos",
+    "name": "Juliana_Hermiston56",
+    "username": "Juliana_Hermiston56",
+    "gravatar_id": "f3ae81dd8801572c08202ca8fd34c6c5",
+    "email": "don_lesch@yahoo.com",
     "is_active": true,
     "provider": "local",
     "roles": [
@@ -22,61 +23,61 @@ Content-Encoding: gzip
       "app_tokens_enabled": false,
       "id": "free"
     },
-    "created_at": "2016-01-09T12:56:46.915Z",
+    "created_at": "2016-05-19T22:56:45.538Z",
     "counter": {
       "stars": 0,
       "downloads": 0,
       "comments": 0
     },
     "permissions": {
-      "builds": [
-        "delete-own",
-        "add"
-      ],
-      "tokens": [
-        "update",
-        "delete",
-        "list",
-        "add"
+      "games": [
+        "star",
+        "rate"
       ],
       "comments": [
         "add"
       ],
-      "games": [
-        "rate",
-        "star"
+      "roms": [
+        "delete-own",
+        "add"
       ],
       "users": [
         "star",
         "view",
         "search"
       ],
-      "roms": [
-        "delete-own",
-        "add"
-      ],
       "releases": [
+        "star",
         "update",
         "rate",
+        "add",
+        "delete"
+      ],
+      "tokens": [
+        "update",
         "delete",
         "add",
-        "star"
+        "list"
+      ],
+      "messages": [
+        "receive"
+      ],
+      "tags": [
+        "delete-own",
+        "add"
       ],
       "user": [
         "update",
         "view"
       ],
-      "messages": [
-        "receive"
-      ],
-      "files": [
-        "delete",
-        "download",
-        "upload"
-      ],
-      "tags": [
+      "builds": [
         "delete-own",
         "add"
+      ],
+      "files": [
+        "download",
+        "delete",
+        "upload"
       ]
     }
   }

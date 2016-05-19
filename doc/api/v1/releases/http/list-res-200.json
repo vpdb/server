@@ -1,26 +1,27 @@
 200 OK
+X-App-Sha: 4400951
 X-List-Page: 1
 X-List-Size: 12
 X-List-Count: 4
 Content-Type: application/json; charset=utf-8
-Etag: W/"1c37-kEMlt94x89ScWCRxQOjapQ"
+Etag: W/"1cd7-eMZl3GOxczyH5pXphF5j7Q"
 Content-Encoding: gzip
 
 [
   {
-    "id": "w2gb2csbgfb",
-    "name": "Distributed Edition",
-    "created_at": "2016-01-09T12:56:30.527Z",
+    "id": "pke4fy46o9",
+    "name": "Reactive Edition",
+    "created_at": "2016-05-19T22:56:27.629Z",
     "authors": [
       {
         "roles": [
           "Table Creator"
         ],
         "user": {
-          "id": "w2vso6sh6fb",
-          "name": "Joel.Ondricka",
-          "username": "Joel.Ondricka",
-          "gravatar_id": "a959ad5ba16feaf2eb81f2533791cfc6",
+          "id": "e2kzfyx6o9",
+          "name": "Yasmine_Hirthe",
+          "username": "Yasmine_Hirthe",
+          "gravatar_id": "fd25efe9d73562f2e88e5ddd900a1cc1",
           "counter": {
             "comments": 0,
             "stars": 0
@@ -29,6 +30,7 @@ Content-Encoding: gzip
       }
     ],
     "counter": {
+      "views": 0,
       "stars": 0,
       "comments": 0,
       "downloads": 0
@@ -36,10 +38,10 @@ Content-Encoding: gzip
     "versions": [
       {
         "version": "1.0.0",
-        "released_at": "2016-01-09T12:56:30.527Z",
+        "released_at": "2016-05-19T22:56:27.629Z",
         "files": [
           {
-            "released_at": "2016-01-09T12:56:30.527Z",
+            "released_at": "2016-05-19T22:56:27.629Z",
             "flavor": {
               "orientation": "fs",
               "lighting": "night"
@@ -50,7 +52,7 @@ Content-Encoding: gzip
               }
             ],
             "file": {
-              "id": "q2bq1g9bgub",
+              "id": "pk4suyx6o9",
               "name": "test-table-0.vpt",
               "bytes": 135168,
               "mime_type": "application/x-visual-pinball-table"
@@ -60,14 +62,14 @@ Content-Encoding: gzip
       }
     ],
     "game": {
-      "id": "billiards",
-      "title": "Billiards",
-      "manufacturer": "Gerber & Glass Distributing Company",
-      "year": 1932
+      "id": "fairmont",
+      "title": "Fairmont",
+      "manufacturer": "Bally",
+      "year": 1941
     },
     "thumb": {
       "image": {
-        "url": "/storage/public/files/square/wkkcsb6ub.jpg",
+        "url": "https://localhost:7357/storage/public/files/square/e289fz46os.jpg",
         "width": 120,
         "height": 120
       },
@@ -78,19 +80,19 @@ Content-Encoding: gzip
     }
   },
   {
-    "id": "w2qhzcshgfb",
-    "name": "Innovative Edition",
-    "created_at": "2016-01-09T12:56:32.517Z",
+    "id": "p2xbgy46os",
+    "name": "Synergized Edition",
+    "created_at": "2016-05-19T22:56:30.057Z",
     "authors": [
       {
         "roles": [
           "Table Creator"
         ],
         "user": {
-          "id": "w2vso6sh6fb",
-          "name": "Joel.Ondricka",
-          "username": "Joel.Ondricka",
-          "gravatar_id": "a959ad5ba16feaf2eb81f2533791cfc6",
+          "id": "e2kzfyx6o9",
+          "name": "Yasmine_Hirthe",
+          "username": "Yasmine_Hirthe",
+          "gravatar_id": "fd25efe9d73562f2e88e5ddd900a1cc1",
           "counter": {
             "comments": 0,
             "stars": 0
@@ -99,6 +101,7 @@ Content-Encoding: gzip
       }
     ],
     "counter": {
+      "views": 0,
       "stars": 0,
       "comments": 0,
       "downloads": 0
@@ -106,10 +109,10 @@ Content-Encoding: gzip
     "versions": [
       {
         "version": "1.0",
-        "released_at": "2016-01-09T12:56:32.517Z",
+        "released_at": "2016-05-19T22:56:30.057Z",
         "files": [
           {
-            "released_at": "2016-01-09T12:56:32.517Z",
+            "released_at": "2016-05-19T22:56:30.057Z",
             "flavor": {
               "orientation": "fs",
               "lighting": "night"
@@ -120,14 +123,14 @@ Content-Encoding: gzip
               }
             ],
             "file": {
-              "id": "wkshcsh6uh",
+              "id": "e2hbvzx6o9",
               "name": "test-table-0.vpt",
               "bytes": 135168,
               "mime_type": "application/x-visual-pinball-table"
             }
           },
           {
-            "released_at": "2016-01-09T12:56:32.517Z",
+            "released_at": "2016-05-19T22:56:30.057Z",
             "flavor": {
               "orientation": "ws",
               "lighting": "day"
@@ -138,7 +141,7 @@ Content-Encoding: gzip
               }
             ],
             "file": {
-              "id": "q2xb7sb6fh",
+              "id": "ekybvyxg19",
               "name": "test-table-1.vpt",
               "bytes": 135168,
               "mime_type": "application/x-visual-pinball-table"
@@ -148,14 +151,14 @@ Content-Encoding: gzip
       }
     ],
     "game": {
-      "id": "green-pastures",
-      "title": "Green Pastures",
-      "manufacturer": "Gottlieb",
-      "year": 1954
+      "id": "extra-six-cards",
+      "title": "Extra Six Cards",
+      "manufacturer": "Willy Michiels",
+      "year": 1900
     },
     "thumb": {
       "image": {
-        "url": "/storage/public/files/square/wkubc9hgfh.jpg",
+        "url": "https://localhost:7357/storage/public/files/square/e2pbtzx61s.jpg",
         "width": 120,
         "height": 120
       },
@@ -166,19 +169,19 @@ Content-Encoding: gzip
     }
   },
   {
-    "id": "w2yb4c9hgfh",
-    "name": "Multi-channelled Edition",
-    "created_at": "2016-01-09T12:56:34.923Z",
+    "id": "e2dmyxg1s",
+    "name": "Cloned Edition",
+    "created_at": "2016-05-19T22:56:32.254Z",
     "authors": [
       {
         "roles": [
           "Table Creator"
         ],
         "user": {
-          "id": "w2vso6sh6fb",
-          "name": "Joel.Ondricka",
-          "username": "Joel.Ondricka",
-          "gravatar_id": "a959ad5ba16feaf2eb81f2533791cfc6",
+          "id": "e2kzfyx6o9",
+          "name": "Yasmine_Hirthe",
+          "username": "Yasmine_Hirthe",
+          "gravatar_id": "fd25efe9d73562f2e88e5ddd900a1cc1",
           "counter": {
             "comments": 0,
             "stars": 0
@@ -187,6 +190,7 @@ Content-Encoding: gzip
       }
     ],
     "counter": {
+      "views": 0,
       "stars": 0,
       "comments": 0,
       "downloads": 0
@@ -194,10 +198,10 @@ Content-Encoding: gzip
     "versions": [
       {
         "version": "2.0",
-        "released_at": "2016-01-09T12:56:34.923Z",
+        "released_at": "2016-05-19T22:56:32.254Z",
         "files": [
           {
-            "released_at": "2016-01-09T12:56:34.923Z",
+            "released_at": "2016-05-19T22:56:32.254Z",
             "flavor": {
               "orientation": "fs",
               "lighting": "any"
@@ -208,14 +212,14 @@ Content-Encoding: gzip
               }
             ],
             "file": {
-              "id": "q2ahs79hgfb",
+              "id": "p2bx6z4g1s",
               "name": "test-table-0.vpt",
               "bytes": 135168,
               "mime_type": "application/x-visual-pinball-table"
             }
           },
           {
-            "released_at": "2016-01-09T12:56:34.923Z",
+            "released_at": "2016-05-19T22:56:32.254Z",
             "flavor": {
               "orientation": "any",
               "lighting": "night"
@@ -226,14 +230,14 @@ Content-Encoding: gzip
               }
             ],
             "file": {
-              "id": "wkghsc9h6uh",
+              "id": "ek97yxgo9",
               "name": "test-table-1.vpt",
               "bytes": 135168,
               "mime_type": "application/x-visual-pinball-table"
             }
           },
           {
-            "released_at": "2016-01-09T12:56:34.923Z",
+            "released_at": "2016-05-19T22:56:32.254Z",
             "flavor": {
               "orientation": "any",
               "lighting": "any"
@@ -244,7 +248,7 @@ Content-Encoding: gzip
               }
             ],
             "file": {
-              "id": "qk7b97sh6uh",
+              "id": "e29xgz4go9",
               "name": "test-table-2.vpt",
               "bytes": 135168,
               "mime_type": "application/x-visual-pinball-table"
@@ -254,14 +258,14 @@ Content-Encoding: gzip
       }
     ],
     "game": {
-      "id": "ginger",
-      "title": "Ginger",
-      "manufacturer": "Chicago Coin",
-      "year": 1936
+      "id": "skippy",
+      "title": "Skippy",
+      "manufacturer": "Northwest Coin Machine Company",
+      "year": 1932
     },
     "thumb": {
       "image": {
-        "url": "/storage/public/files/square/w2ns979bgub.jpg",
+        "url": "https://localhost:7357/storage/public/files/square/e2bh7yx6os.jpg",
         "width": 120,
         "height": 120
       },
@@ -272,19 +276,19 @@ Content-Encoding: gzip
     }
   },
   {
-    "id": "wk4zpc9bguh",
-    "name": "Automated Edition",
-    "created_at": "2016-01-09T12:56:36.646Z",
+    "id": "pkaz294gos",
+    "name": "Exclusive Edition",
+    "created_at": "2016-05-19T22:56:35.754Z",
     "authors": [
       {
         "roles": [
           "Table Creator"
         ],
         "user": {
-          "id": "w2vso6sh6fb",
-          "name": "Joel.Ondricka",
-          "username": "Joel.Ondricka",
-          "gravatar_id": "a959ad5ba16feaf2eb81f2533791cfc6",
+          "id": "e2kzfyx6o9",
+          "name": "Yasmine_Hirthe",
+          "username": "Yasmine_Hirthe",
+          "gravatar_id": "fd25efe9d73562f2e88e5ddd900a1cc1",
           "counter": {
             "comments": 0,
             "stars": 0
@@ -293,6 +297,7 @@ Content-Encoding: gzip
       }
     ],
     "counter": {
+      "views": 0,
       "stars": 0,
       "comments": 0,
       "downloads": 0
@@ -314,7 +319,7 @@ Content-Encoding: gzip
               }
             ],
             "file": {
-              "id": "wkmzw79b6fh",
+              "id": "p27b3zxg19",
               "name": "test-table-0.vpt",
               "bytes": 135168,
               "mime_type": "application/x-visual-pinball-table"
@@ -332,7 +337,7 @@ Content-Encoding: gzip
               }
             ],
             "file": {
-              "id": "qk3zq7sb6fh",
+              "id": "e26hdzxg1s",
               "name": "test-table-1.vpt",
               "bytes": 135168,
               "mime_type": "application/x-visual-pinball-table"
@@ -356,7 +361,7 @@ Content-Encoding: gzip
               }
             ],
             "file": {
-              "id": "qkoyq79hgfb",
+              "id": "p2mh3yxgos",
               "name": "test-table-2.vpt",
               "bytes": 135168,
               "mime_type": "application/x-visual-pinball-table"
@@ -366,14 +371,16 @@ Content-Encoding: gzip
       }
     ],
     "game": {
-      "id": "jai-alai",
-      "title": "Jai Alai",
-      "manufacturer": "Williams",
-      "year": 1978
+      "id": "guys-dolls",
+      "title": "Guys Dolls",
+      "manufacturer": "Gottlieb",
+      "year": 1953
     },
     "thumb": {
       "image": {
-        "url": "/storage/public/files/square/w2s4q7sb6ub.jpg"
+        "url": "https://localhost:7357/storage/public/files/square/pkfzdy4g1s.jpg",
+        "width": 120,
+        "height": 120
       },
       "flavor": {
         "orientation": "fs",

@@ -1,4 +1,4 @@
-GET /api/v1/releases/q2n94ush6ub/events HTTP/1.1
-Host: vpdb.io
+GET /v1/releases/ekdbwdsg1s/events HTTP/2.0
+Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
 

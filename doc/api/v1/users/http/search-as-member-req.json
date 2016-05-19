@@ -1,5 +1,5 @@
-GET /api/v1/users?q=Key HTTP/1.1
-Host: vpdb.io
+GET /v1/users?q=Col HTTP/2.0
+Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJ3Mmc1YjhzYmd1YiIsImlhdCI6IjIwMTYtMDEtMDlUMTI6NTY6NDcuNzU5WiIsImV4cCI6IjIwMTYtMDEtMDlUMTM6NTY6NDcuNzU5WiIsImlydCI6ZmFsc2V9.M9HguuYl_6d_GeoaVp6-PdJaKwFFIwjvXtlcvXABk_0
+authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJla3NyZzk0Nm9zIiwiaWF0IjoiMjAxNi0wNS0xOVQyMjo1Njo0Ni4zNzhaIiwiZXhwIjoiMjAxNi0wNS0xOVQyMzo1Njo0Ni4zNzhaIiwiaXJ0IjpmYWxzZX0.ChTjGRY5xpL97_DuiAW8eTKp_9BJFalta2bptL3J2Bw
 

@@ -1,46 +1,43 @@
 201 Created
+X-App-Sha: 4400951
 Content-Type: application/json; charset=utf-8
-Content-Length: 866
-Etag: W/"362-gxSY809/EBzzCh3ouDgqwg"
+Content-Length: 678
+Etag: W/"2a6-I8vTYTsBAj+jXAHRoWgdlg"
 
 {
-  "id": "majors_10",
+  "id": "all-star-baseball_10",
   "file": {
     "counter": {
       "downloads": 0
     },
     "is_protected": true,
     "bytes": 2096,
-    "url": "/storage/v1/files/q2vbbfcshgub.zip",
-    "id": "q2vbbfcshgub"
+    "url": "https://localhost:7357/storage/v1/files/e2t5zs4g1s.zip",
+    "id": "e2t5zs4g1s"
   },
   "version": "1.0",
   "notes": "That is some ROM.",
-  "language": "en-US",
+  "languages": [
+    "en-US"
+  ],
   "rom_files": [
     {
       "filename": "433.cpu",
       "bytes": 1024,
       "crc": 3227331410,
-      "modified_at": "1996-12-24T22:32:00.000Z",
-      "_id": "5691038777e6a1e04c812013",
-      "id": "5691038777e6a1e04c812013"
+      "modified_at": "1996-12-24T22:32:00.000Z"
     },
     {
       "filename": "433.snd",
       "bytes": 1024,
       "crc": 550313471,
-      "modified_at": "1996-12-24T22:32:00.000Z",
-      "_id": "5691038777e6a1e04c812014",
-      "id": "5691038777e6a1e04c812014"
+      "modified_at": "1996-12-24T22:32:00.000Z"
     },
     {
       "filename": "6530sys1.bin",
       "bytes": 1024,
       "crc": 3078820641,
-      "modified_at": "1996-12-24T22:32:00.000Z",
-      "_id": "5691038777e6a1e04c812015",
-      "id": "5691038777e6a1e04c812015"
+      "modified_at": "1996-12-24T22:32:00.000Z"
     }
   ]
 }

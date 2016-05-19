@@ -1,4 +1,4 @@
-GET /api/v1/releases?thumb_format=square HTTP/1.1
-Host: vpdb.io
+GET /v1/releases?thumb_format=square HTTP/2.0
+Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
 

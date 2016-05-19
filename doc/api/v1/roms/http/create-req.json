@@ -1,12 +1,12 @@
-POST /api/v1/roms HTTP/1.1
-Host: vpdb.io
+POST /v1/roms HTTP/2.0
+Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
-authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJ3azR2MTUxejZoIiwiaWF0IjoiMjAxNi0wMi0wOFQxOTowODozOS4yNzVaIiwiZXhwIjoiMjAxNi0wMi0wOFQyMDowODozOS4yNzVaIiwiaXJ0IjpmYWxzZX0.JpG-gHLqnTsYMcGUDUY_0wHbk1JRQBMdEq_QxU3tuj0
+authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJlMnk3eXM0ZzFzIiwiaWF0IjoiMjAxNi0wNS0xOVQyMjo1NjozNy42MzNaIiwiZXhwIjoiMjAxNi0wNS0xOVQyMzo1NjozNy42MzNaIiwiaXJ0IjpmYWxzZX0.mjssYNwnf1Ga4x9PyP9Dr1SzA_2--hPEd_EBIdIp5Js
 content-type: application/json
-Content-Length: 57
+Content-Length: 56
 
 {
   "id": "tz_pa1",
-  "_file": "w2pzvo51zgb",
+  "_file": "e2phss4619",
   "_ipdb_number": 2684
 }

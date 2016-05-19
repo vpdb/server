@@ -1,10 +1,10 @@
-POST /storage/v1/authenticate HTTP/1.1
-Host: vpdb.io
+POST /v1/authenticate HTTP/2.0
+Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJxa2s0d21zYmdmYiIsImlhdCI6IjIwMTYtMDEtMDlUMTI6NTY6NTEuNzg1WiIsImV4cCI6IjIwMTYtMDEtMDlUMTM6NTY6NTEuNzg1WiIsImlydCI6ZmFsc2V9.x4qhQBSsvX6cNcQEpsYtnl4G0EhFJchr4Y0C6i8Fc7Q
-Content-Type: application/json
-Content-Length: 45
+authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwazZ5MXN4Nm85IiwiaWF0IjoiMjAxNi0wNS0xOVQyMjo1Njo1MC40MzJaIiwiZXhwIjoiMjAxNi0wNS0xOVQyMzo1Njo1MC40MzJaIiwiaXJ0IjpmYWxzZX0.ECwOvZpXC19ThZGXTK3cdGEZwKzg3in60f-rvSnLmWs
+content-type: application/json
+Content-Length: 66
 
 {
-  "paths": "/storage/v1/files/qkxs789hgfh.vpt"
+  "paths": "https://localhost:7357/storage/v1/files/ek9br44gos.vpt"
 }

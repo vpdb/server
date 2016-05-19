@@ -1,28 +1,24 @@
-POST /api/v1/games HTTP/1.1
-Host: vpdb.io
+POST /v1/games HTTP/2.0
+Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJ3MmN2ZnNiZ3ViIiwiaWF0IjoiMjAxNi0wMS0wOVQxMjo1NTozNS42NDdaIiwiZXhwIjoiMjAxNi0wMS0wOVQxMzo1NTozNS42NDdaIiwiaXJ0IjpmYWxzZX0.P1p9Y5970yHG18Yc32sqkptBruRl6AM-YuklvQlU3QQ
-Content-Type: application/json
-Content-Length: 245
+authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJlMmM0dmRzZ285IiwiaWF0IjoiMjAxNi0wNS0xOVQyMjo1NToyNC4zMjZaIiwiZXhwIjoiMjAxNi0wNS0xOVQyMzo1NToyNC4zMjZaIiwiaXJ0IjpmYWxzZX0.KMmD02gkpbenbQAjdcrH8x2BJB75rBUQ0jWaSCmjOsw
+content-type: application/json
+Content-Length: 351
 
 {
   "ipdb": {
-    "number": 1409,
-    "mfg": 117
+    "number": 217,
+    "mfg": 47
   },
-  "title": "Lancer",
-  "manufacturer": "Exhibit",
-  "year": 1940,
+  "title": "Beauty Contest",
+  "manufacturer": "Bally",
+  "model_number": "641",
+  "year": 1960,
   "game_type": "em",
-  "themes": [
-    "Adventure",
-    "History",
-    "Jousting",
-    "Medieval"
-  ],
-  "features": "Spring bumpers (18).",
-  "id": "lancer",
+  "produced_units": 1750,
+  "notes": "One ball play on a 5 ball style playfield.  This game also had re-screened backglasses produced, one of which was called Fun Spot.",
+  "id": "beauty-contest",
   "_media": {
-    "backglass": "q2hhvusbgub"
+    "backglass": "pkbqtds61s"
   }
 }

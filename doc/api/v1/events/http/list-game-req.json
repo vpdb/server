@@ -1,4 +1,4 @@
-GET /api/v1/games/smdm/events HTTP/1.1
-Host: vpdb.io
+GET /v1/games/roller-catch/events HTTP/2.0
+Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
 

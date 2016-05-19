@@ -1,5 +1,5 @@
-DELETE /api/v1/games/5050/star HTTP/1.1
-Host: vpdb.io
+DELETE /v1/games/hawthorne/star HTTP/2.0
+Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJxa3poMTdzYjZmYiIsImlhdCI6IjIwMTYtMDEtMDlUMTI6NTY6NDUuMTk3WiIsImV4cCI6IjIwMTYtMDEtMDlUMTM6NTY6NDUuMTk3WiIsImlydCI6ZmFsc2V9.ymM5zO3n8x-jZYR0SFnaHc-74TOzsqXbvcsHEFBJPbI
+authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJla3VidHN4NjFzIiwiaWF0IjoiMjAxNi0wNS0xOVQyMjo1Njo0NC4wMDJaIiwiZXhwIjoiMjAxNi0wNS0xOVQyMzo1Njo0NC4wMDJaIiwiaXJ0IjpmYWxzZX0.xNIYsweWpCElKf8GfFdNad2U_-kU8hvBras5sYaHKIA
 

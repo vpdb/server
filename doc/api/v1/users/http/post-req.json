@@ -1,11 +1,11 @@
-POST /api/v1/users HTTP/1.1
-Host: vpdb.io
+POST /v1/users HTTP/2.0
+Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
-Content-Type: application/json
-Content-Length: 82
+content-type: application/json
+Content-Length: 89
 
 {
-  "username": "Whitney81",
-  "password": "QvJCwmGVkO",
-  "email": "domenic_dicki@yahoo.com"
+  "username": "Herminio_Langosh",
+  "password": "LvH4iDWQIG",
+  "email": "zoey.schumm33@gmail.com"
 }

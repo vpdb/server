@@ -1,14 +1,15 @@
 200 OK
+X-App-Sha: 4400951
 Content-Type: application/json; charset=utf-8
-Etag: W/"447-9OYu22hoDSCetCt6l9aTZQ"
+Etag: W/"454-jzE4a8MxdarrRCOotyU0Gw"
 Content-Encoding: gzip
 
 {
-  "name": "Sam55",
-  "username": "Sam55",
-  "email": "kiana_spencer@yahoo.com",
+  "name": "Sam_Cassin",
+  "username": "Sam_Cassin",
+  "email": "randall_waelchi32@yahoo.com",
   "provider": "local",
-  "created_at": "2016-01-09T12:55:26.732Z",
+  "created_at": "2016-05-19T22:55:16.337Z",
   "is_active": true,
   "counter": {
     "stars": 0,
@@ -18,62 +19,62 @@ Content-Encoding: gzip
   "roles": [
     "member"
   ],
-  "id": "qk4h2f9bguh",
+  "id": "e2xhbdsg19",
   "plan": {
     "push_notifications_enabled": false,
     "app_tokens_enabled": true,
     "id": "subscribed"
   },
-  "gravatar_id": "acafdaefc10c6d9d93d9db5526e54556",
+  "gravatar_id": "10b29d4e103a93320388fa0cb49a3993",
   "permissions": {
-    "builds": [
-      "delete-own",
-      "add"
-    ],
-    "tokens": [
-      "update",
-      "delete",
-      "list",
-      "add"
+    "games": [
+      "star",
+      "rate"
     ],
     "comments": [
       "add"
     ],
-    "games": [
-      "rate",
-      "star"
+    "roms": [
+      "delete-own",
+      "add"
     ],
     "users": [
       "star",
       "view",
       "search"
     ],
-    "roms": [
-      "delete-own",
-      "add"
-    ],
     "releases": [
+      "star",
       "update",
       "rate",
+      "add",
+      "delete"
+    ],
+    "tokens": [
+      "update",
       "delete",
       "add",
-      "star"
+      "list"
+    ],
+    "messages": [
+      "receive"
+    ],
+    "tags": [
+      "delete-own",
+      "add"
     ],
     "user": [
       "update",
       "view"
     ],
-    "messages": [
-      "receive"
-    ],
-    "files": [
-      "delete",
-      "download",
-      "upload"
-    ],
-    "tags": [
+    "builds": [
       "delete-own",
       "add"
+    ],
+    "files": [
+      "download",
+      "delete",
+      "upload"
     ]
   },
   "quota": {

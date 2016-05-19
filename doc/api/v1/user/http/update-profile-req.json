@@ -1,14 +1,14 @@
-PATCH /api/v1/user HTTP/1.1
-Host: vpdb.io
+PATCH /v1/user HTTP/2.0
+Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJxazV1Yjg5aDZ1YiIsImlhdCI6IjIwMTYtMDEtMDlUMTI6NTY6NDcuODM0WiIsImV4cCI6IjIwMTYtMDEtMDlUMTM6NTY6NDcuODM0WiIsImlydCI6ZmFsc2V9.6UCRRmqDdkBAeUxCpgeARIC7l7QkeyjZYB-IK3eZcIc
-Content-Type: application/json
-Content-Length: 151
+authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwa281Z3N4NjE5IiwiaWF0IjoiMjAxNi0wNS0xOVQyMjo1Njo0Ni40NDRaIiwiZXhwIjoiMjAxNi0wNS0xOVQyMzo1Njo0Ni40NDRaIiwiaXJ0IjpmYWxzZX0.uiRhSIBh1kEs7KbdszOsO0xXfkeWYBzrsI6uHTea6OU
+content-type: application/json
+Content-Length: 145
 
 {
-  "name": "Connie Parker",
-  "location": "South Majorville",
-  "email": "myrtis_hettinger75@hotmail.com",
-  "current_password": "d1akpLQWkZ",
-  "password": "ShNoChrqiw"
+  "name": "Madisyn Emard",
+  "location": "Daugherty stad",
+  "email": "gail.ullrich21@hotmail.com",
+  "current_password": "DWE48Tt0aN",
+  "password": "1tSyLTcIJY"
 }

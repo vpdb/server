@@ -1,5 +1,5 @@
-GET /api/v1/users HTTP/1.1
-Host: vpdb.io
+GET /v1/users HTTP/2.0
+Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJxa3NyYjhzaDZmaCIsImlhdCI6IjIwMTYtMDEtMDlUMTI6NTY6NDcuNzEyWiIsImV4cCI6IjIwMTYtMDEtMDlUMTM6NTY6NDcuNzEyWiIsImlydCI6ZmFsc2V9.U6iB3hOf2C_rExJE6Ee2F2U9LSD6_y2FOSDt3AxamhU
+authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwMmdlNjk0ZzE5IiwiaWF0IjoiMjAxNi0wNS0xOVQyMjo1Njo0Ni4zMzJaIiwiZXhwIjoiMjAxNi0wNS0xOVQyMzo1Njo0Ni4zMzJaIiwiaXJ0IjpmYWxzZX0.UoPDWpIZoj0IPkbvXzTIR_iK8l2tbzEsKhdRdQ1oQk4
 

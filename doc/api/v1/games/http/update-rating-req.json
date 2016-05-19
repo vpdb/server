@@ -1,8 +1,8 @@
-PUT /api/v1/games/oh-boy/rating HTTP/1.1
-Host: vpdb.io
+PUT /v1/games/spot-em/rating HTTP/2.0
+Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
-Content-Type: application/json
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJxa2ZwaHZzaDZmaCIsImlhdCI6IjIwMTYtMDEtMDlUMTI6NTU6NDMuNzM4WiIsImV4cCI6IjIwMTYtMDEtMDlUMTM6NTU6NDMuNzM4WiIsImlydCI6ZmFsc2V9.rs8vp0EdxndNM3h2pA-wq9Sn4ZEr21xXKCg-FP8m9EM
+content-type: application/json
+authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwMmZzeG9zNm9zIiwiaWF0IjoiMjAxNi0wNS0xOVQyMjo1NTozNS4xNjRaIiwiZXhwIjoiMjAxNi0wNS0xOVQyMzo1NTozNS4xNjRaIiwiaXJ0IjpmYWxzZX0.Q2eBW-yUPS08CBKe-zJm9dD5OM_OGBqZ20tuqp-ZwPk
 Content-Length: 11
 
 {

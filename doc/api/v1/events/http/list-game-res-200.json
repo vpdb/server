@@ -1,9 +1,10 @@
 200 OK
+X-App-Sha: 4400951
 X-List-Page: 1
 X-List-Size: 10
 X-List-Count: 2
 Content-Type: application/json; charset=utf-8
-Etag: W/"a85-eKOAepXIbqHXEh9SDyvV7w"
+Etag: W/"ad3-9RAQGE96S4szWd2yMbhW6w"
 Content-Encoding: gzip
 
 [
@@ -11,18 +12,18 @@ Content-Encoding: gzip
     "event": "create_release",
     "payload": {
       "release": {
-        "id": "q2n94ush6ub",
-        "name": "Reduced Edition",
+        "id": "ekdbwdsg1s",
+        "name": "Progressive Edition",
         "authors": [
           {
             "roles": [
               "Table Creator"
             ],
             "user": {
-              "id": "q2xbxu9h6fh",
-              "name": "Roselyn25",
-              "username": "Roselyn25",
-              "gravatar_id": "09fa93ade467bc4ab9f73c5c5986cb43",
+              "id": "p2gqxd96o9",
+              "name": "Ardith.Hermiston88",
+              "username": "Ardith.Hermiston88",
+              "gravatar_id": "92982810b1a6dc96d26feb094fb25d78",
               "counter": {
                 "comments": 0,
                 "stars": 0
@@ -33,10 +34,10 @@ Content-Encoding: gzip
         "versions": [
           {
             "version": "1.0.0",
-            "released_at": "2016-01-09T12:55:30.846Z",
+            "released_at": "2016-05-19T22:55:20.490Z",
             "files": [
               {
-                "released_at": "2016-01-09T12:55:30.846Z",
+                "released_at": "2016-05-19T22:55:20.490Z",
                 "flavor": {
                   "orientation": "fs",
                   "lighting": "night"
@@ -47,7 +48,7 @@ Content-Encoding: gzip
                   }
                 ],
                 "file": {
-                  "id": "qkvz4f9b6ub",
+                  "id": "p2gwds6os",
                   "name": "test-table-0.vpt",
                   "bytes": 135168,
                   "mime_type": "application/x-visual-pinball-table"
@@ -58,45 +59,43 @@ Content-Encoding: gzip
         ]
       },
       "game": {
-        "id": "smdm",
-        "title": "The Six Million Dollar Man",
-        "manufacturer": "Bally",
-        "year": 1978,
+        "id": "roller-catch",
+        "title": "Roller Catch",
+        "manufacturer": "Unknown",
+        "year": 1900,
         "ipdb": {
-          "number": 2165,
-          "mfg": 47,
-          "rating": 7.3
+          "number": 6035,
+          "mfg": 328
         },
-        "game_type": "ss"
+        "game_type": "em"
       }
     },
-    "logged_at": "2016-01-09T12:55:30.882Z",
+    "logged_at": "2016-05-19T22:55:20.530Z",
     "is_public": true,
     "actor": {
       "counter": {
         "stars": 0,
         "comments": 0
       },
-      "gravatar_id": "09fa93ade467bc4ab9f73c5c5986cb43",
-      "username": "Roselyn25",
-      "name": "Roselyn25",
-      "id": "q2xbxu9h6fh"
+      "gravatar_id": "92982810b1a6dc96d26feb094fb25d78",
+      "username": "Ardith.Hermiston88",
+      "name": "Ardith.Hermiston88",
+      "id": "p2gqxd96o9"
     }
   },
   {
     "event": "create_game",
     "payload": {
       "game": {
-        "id": "smdm",
-        "title": "The Six Million Dollar Man",
-        "manufacturer": "Bally",
-        "year": 1978,
+        "id": "roller-catch",
+        "title": "Roller Catch",
+        "manufacturer": "Unknown",
+        "year": 1900,
         "ipdb": {
-          "number": 2165,
-          "mfg": 47,
-          "rating": 7.3
+          "number": 6035,
+          "mfg": 328
         },
-        "game_type": "ss",
+        "game_type": "em",
         "media": {
           "backglass": {
             "counter": {
@@ -105,36 +104,36 @@ Content-Encoding: gzip
             "is_protected": true,
             "variations": {
               "small-2x": {
-                "url": "/storage/public/files/small-2x/w28hxf9hgub.jpg"
+                "url": "https://localhost:7357/storage/public/files/small-2x/ekbwds6o9.jpg"
               },
               "small": {
-                "url": "/storage/public/files/small/w28hxf9hgub.jpg"
+                "url": "https://localhost:7357/storage/public/files/small/ekbwds6o9.jpg"
               },
               "medium-2x": {
-                "url": "/storage/public/files/medium-2x/w28hxf9hgub.jpg"
+                "url": "https://localhost:7357/storage/public/files/medium-2x/ekbwds6o9.jpg"
               },
               "medium": {
-                "url": "/storage/public/files/medium/w28hxf9hgub.jpg"
+                "url": "https://localhost:7357/storage/public/files/medium/ekbwds6o9.jpg"
               }
             },
             "bytes": 135,
-            "url": "/storage/v1/files/w28hxf9hgub.png",
-            "id": "w28hxf9hgub"
+            "url": "https://localhost:7357/storage/v1/files/ekbwds6o9.png",
+            "id": "ekbwds6o9"
           }
         }
       }
     },
-    "logged_at": "2016-01-09T12:55:30.321Z",
+    "logged_at": "2016-05-19T22:55:20.007Z",
     "is_public": true,
     "actor": {
       "counter": {
         "stars": 0,
         "comments": 0
       },
-      "gravatar_id": "edb000cb2857fbef1fa78456cf7bee51",
-      "username": "Laverne_Bruen",
-      "name": "Laverne_Bruen",
-      "id": "w2uhxf9bgfh"
+      "gravatar_id": "f21d0bc1479e76a062e80bba761491bc",
+      "username": "Ottilie60",
+      "name": "Ottilie60",
+      "id": "ek1wx39g1s"
     }
   }
 ]

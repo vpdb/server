@@ -1,14 +1,14 @@
-PUT /api/v1/users/w2g5b8sbgub HTTP/1.1
-Host: vpdb.io
+PUT /v1/users/eksrg946os HTTP/2.0
+Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJxa3NyYjhzaDZmaCIsImlhdCI6IjIwMTYtMDEtMDlUMTI6NTY6NDcuNzEyWiIsImV4cCI6IjIwMTYtMDEtMDlUMTM6NTY6NDcuNzEyWiIsImlydCI6ZmFsc2V9.U6iB3hOf2C_rExJE6Ee2F2U9LSD6_y2FOSDt3AxamhU
-Content-Type: application/json
-Content-Length: 130
+authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwMmdlNjk0ZzE5IiwiaWF0IjoiMjAxNi0wNS0xOVQyMjo1Njo0Ni4zMzJaIiwiZXhwIjoiMjAxNi0wNS0xOVQyMzo1Njo0Ni4zMzJaIiwiaXJ0IjpmYWxzZX0.UoPDWpIZoj0IPkbvXzTIR_iK8l2tbzEsKhdRdQ1oQk4
+content-type: application/json
+Content-Length: 129
 
 {
-  "email": "cristopher_gottlieb@hotmail.com",
-  "username": "Elza73",
-  "name": "Elza73",
+  "email": "cydney.wuckert38@yahoo.com",
+  "username": "Dorian21",
+  "name": "Dorian21",
   "is_active": true,
   "roles": [
     "member"

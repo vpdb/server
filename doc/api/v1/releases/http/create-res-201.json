@@ -1,13 +1,14 @@
 201 Created
+X-App-Sha: 4400951
 Content-Type: application/json; charset=utf-8
-Etag: W/"232b-T289y/AATxr7DsKgzUXRtg"
+Etag: W/"2643-IVVDi0lQLZvGUFwJ2vlVIA"
 Content-Encoding: gzip
 
 {
   "name_sortable": "release",
   "name": "release",
-  "modified_at": "2016-01-09T12:55:55.111Z",
-  "created_at": "2016-01-09T12:55:55.111Z",
+  "modified_at": "2016-05-19T22:55:45.784Z",
+  "created_at": "2016-05-19T22:55:45.784Z",
   "rating": {
     "score": 0,
     "votes": 0,
@@ -17,6 +18,7 @@ Content-Encoding: gzip
     "popularity": 0
   },
   "counter": {
+    "views": 0,
     "stars": 0,
     "comments": 0,
     "downloads": 0
@@ -28,10 +30,10 @@ Content-Encoding: gzip
         "Table Creator"
       ],
       "user": {
-        "id": "w2545tsb6fb",
-        "name": "Dianna_Block",
-        "username": "Dianna_Block",
-        "gravatar_id": "c01a9b04bbad66180bd1fcb6da70fa92",
+        "id": "ekz4vo9619",
+        "name": "Mathilde.Parker",
+        "username": "Mathilde.Parker",
+        "gravatar_id": "e41215cc35d1631bbd7e5aaecb8b7b4b",
         "counter": {
           "comments": 0,
           "stars": 0
@@ -60,15 +62,15 @@ Content-Encoding: gzip
           "media": {
             "playfield_image": {
               "name": "playfield-0.png",
-              "bytes": 347,
-              "created_at": "2016-01-09T12:55:53.805Z",
+              "bytes": 348,
+              "created_at": "2016-05-19T22:55:45.046Z",
               "mime_type": "image/png",
               "file_type": "playfield-fs",
               "metadata": {
                 "format": "PNG",
                 "size": {
-                  "height": 1080,
-                  "width": 1920
+                  "height": 1920,
+                  "width": 1080
                 },
                 "depth": 8
               },
@@ -76,30 +78,33 @@ Content-Encoding: gzip
                 "downloads": 0
               },
               "is_active": true,
-              "id": "w2ss6tshgfb",
+              "id": "pkuyd19g1s",
               "is_protected": true,
-              "url": "/storage/v1/files/w2ss6tshgfb.png",
+              "url": "https://localhost:7357/storage/v1/files/pkuyd19g1s.png",
               "variations": {
                 "full": {
-                  "url": "/storage/public/files/full/w2ss6tshgfb.jpg"
+                  "url": "https://localhost:7357/storage/public/files/full/pkuyd19g1s.jpg"
                 },
                 "medium": {
-                  "url": "/storage/public/files/medium/w2ss6tshgfb.jpg"
+                  "url": "https://localhost:7357/storage/public/files/medium/pkuyd19g1s.jpg"
                 },
                 "medium-2x": {
-                  "url": "/storage/public/files/medium-2x/w2ss6tshgfb.jpg"
-                },
-                "medium-landscape": {
-                  "url": "/storage/public/files/medium-landscape/w2ss6tshgfb.jpg"
-                },
-                "medium-landscape-2x": {
-                  "url": "/storage/public/files/medium-landscape-2x/w2ss6tshgfb.jpg"
+                  "url": "https://localhost:7357/storage/public/files/medium-2x/pkuyd19g1s.jpg"
                 },
                 "square": {
-                  "url": "/storage/public/files/square/w2ss6tshgfb.jpg"
+                  "url": "https://localhost:7357/storage/public/files/square/pkuyd19g1s.jpg"
                 },
                 "square-2x": {
-                  "url": "/storage/public/files/square-2x/w2ss6tshgfb.jpg"
+                  "url": "https://localhost:7357/storage/public/files/square-2x/pkuyd19g1s.jpg"
+                },
+                "landscape": {
+                  "url": "https://localhost:7357/storage/public/files/landscape/pkuyd19g1s.jpg"
+                },
+                "landscape-2x": {
+                  "url": "https://localhost:7357/storage/public/files/landscape-2x/pkuyd19g1s.jpg"
+                },
+                "hyperpin": {
+                  "url": "https://localhost:7357/storage/public/files/hyperpin/pkuyd19g1s.png"
                 }
               }
             }
@@ -118,7 +123,7 @@ Content-Encoding: gzip
           ],
           "file": {
             "name": "test-table-0.vpt",
-            "created_at": "2016-01-09T12:55:53.546Z",
+            "created_at": "2016-05-19T22:55:44.991Z",
             "mime_type": "application/x-visual-pinball-table",
             "file_type": "release",
             "metadata": {
@@ -132,8 +137,8 @@ Content-Encoding: gzip
               "author_name": "_table_author_",
               "table_name": "_table_name_"
             },
-            "id": "w2pygvsbgub",
-            "url": "/storage/v1/files/w2pygvsbgub.vpt",
+            "id": "pksyd19gos",
+            "url": "https://localhost:7357/storage/v1/files/pksyd19gos.vpt",
             "bytes": 135168,
             "variations": {},
             "is_protected": true,
@@ -155,15 +160,15 @@ Content-Encoding: gzip
           "media": {
             "playfield_image": {
               "name": "playfield-1.png",
-              "bytes": 347,
-              "created_at": "2016-01-09T12:55:53.750Z",
+              "bytes": 348,
+              "created_at": "2016-05-19T22:55:45.034Z",
               "mime_type": "image/png",
               "file_type": "playfield-fs",
               "metadata": {
                 "format": "PNG",
                 "size": {
-                  "height": 1080,
-                  "width": 1920
+                  "height": 1920,
+                  "width": 1080
                 },
                 "depth": 8
               },
@@ -171,30 +176,33 @@ Content-Encoding: gzip
                 "downloads": 0
               },
               "is_active": true,
-              "id": "w2h9gvsb6fb",
+              "id": "ekeydos619",
               "is_protected": true,
-              "url": "/storage/v1/files/w2h9gvsb6fb.png",
+              "url": "https://localhost:7357/storage/v1/files/ekeydos619.png",
               "variations": {
                 "full": {
-                  "url": "/storage/public/files/full/w2h9gvsb6fb.jpg"
+                  "url": "https://localhost:7357/storage/public/files/full/ekeydos619.jpg"
                 },
                 "medium": {
-                  "url": "/storage/public/files/medium/w2h9gvsb6fb.jpg"
+                  "url": "https://localhost:7357/storage/public/files/medium/ekeydos619.jpg"
                 },
                 "medium-2x": {
-                  "url": "/storage/public/files/medium-2x/w2h9gvsb6fb.jpg"
-                },
-                "medium-landscape": {
-                  "url": "/storage/public/files/medium-landscape/w2h9gvsb6fb.jpg"
-                },
-                "medium-landscape-2x": {
-                  "url": "/storage/public/files/medium-landscape-2x/w2h9gvsb6fb.jpg"
+                  "url": "https://localhost:7357/storage/public/files/medium-2x/ekeydos619.jpg"
                 },
                 "square": {
-                  "url": "/storage/public/files/square/w2h9gvsb6fb.jpg"
+                  "url": "https://localhost:7357/storage/public/files/square/ekeydos619.jpg"
                 },
                 "square-2x": {
-                  "url": "/storage/public/files/square-2x/w2h9gvsb6fb.jpg"
+                  "url": "https://localhost:7357/storage/public/files/square-2x/ekeydos619.jpg"
+                },
+                "landscape": {
+                  "url": "https://localhost:7357/storage/public/files/landscape/ekeydos619.jpg"
+                },
+                "landscape-2x": {
+                  "url": "https://localhost:7357/storage/public/files/landscape-2x/ekeydos619.jpg"
+                },
+                "hyperpin": {
+                  "url": "https://localhost:7357/storage/public/files/hyperpin/ekeydos619.png"
                 }
               }
             }
@@ -213,7 +221,7 @@ Content-Encoding: gzip
           ],
           "file": {
             "name": "test-table-1.vpt",
-            "created_at": "2016-01-09T12:55:53.546Z",
+            "created_at": "2016-05-19T22:55:44.992Z",
             "mime_type": "application/x-visual-pinball-table",
             "file_type": "release",
             "metadata": {
@@ -227,8 +235,8 @@ Content-Encoding: gzip
               "author_name": "_table_author_",
               "table_name": "_table_name_"
             },
-            "id": "qkwy6v9b6ub",
-            "url": "/storage/v1/files/qkwy6v9b6ub.vpt",
+            "id": "p2xydo9619",
+            "url": "https://localhost:7357/storage/v1/files/p2xydo9619.vpt",
             "bytes": 135168,
             "variations": {},
             "is_protected": true,
@@ -241,7 +249,7 @@ Content-Encoding: gzip
       ]
     }
   ],
-  "id": "q2r8v9b6ub",
+  "id": "ekeo1sg1s",
   "tags": [
     {
       "name": "HD",
@@ -255,9 +263,19 @@ Content-Encoding: gzip
     }
   ],
   "game": {
-    "id": "iron-maiden",
-    "title": "Iron Maiden",
-    "manufacturer": "unknown",
-    "year": 2005
+    "id": "rey-de-diamantes",
+    "title": "Rey de Diamantes",
+    "manufacturer": "Petaco",
+    "year": 1967
+  },
+  "created_by": {
+    "id": "ekz4vo9619",
+    "name": "Mathilde.Parker",
+    "username": "Mathilde.Parker",
+    "gravatar_id": "e41215cc35d1631bbd7e5aaecb8b7b4b",
+    "counter": {
+      "comments": 0,
+      "stars": 0
+    }
   }
 }

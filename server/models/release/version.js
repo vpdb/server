@@ -241,6 +241,13 @@ function nonEmptyArray(value) {
 	return _.isArray(value) && value.length > 0;
 }
 
+schema.methods.getFileIds = function() {
+	let tableFileIds = _.map(this.files, '_file').map(file => file ? (file._id ? file._id.toString() : file.toString()) : null);
+	let playfieldImageId = _.compact(_.map(_.map(this.files, '_media'), 'playfield_image')).map(file => file._id ? file._id.toString() : file.toString());
+	let playfieldVideoId = _.compact(_.map(_.map(this.files, '_media'), 'playfield_video')).map(file => file._id ? file._id.toString() : file.toString());
+	return _.compact(_.flatten([...tableFileIds, playfieldImageId, playfieldVideoId]));
+};
+
 schema.options.toObject = {
 	virtuals: true,
 	transform: function(doc, version) {

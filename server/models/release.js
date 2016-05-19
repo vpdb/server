@@ -240,6 +240,18 @@ ReleaseSchema.methods.toReduced = function() {
 	return release;
 };
 
+/**
+ * Returns all database IDs of all linked files as strings.
+ * @returns {string[]}
+ */
+ReleaseSchema.methods.getFileIds = function() {
+	let files = _.flatten(_.map(this.versions, 'files'));
+	let tableFileIds = _.map(files, '_file').map(file => file ? (file._id ? file._id.toString() : file.toString()) : null);
+	let playfieldImageId = _.compact(_.map(_.map(files, '_media'), 'playfield_image')).map(file => file._id ? file._id.toString() : file.toString());
+	let playfieldVideoId = _.compact(_.map(_.map(files, '_media'), 'playfield_video')).map(file => file._id ? file._id.toString() : file.toString());
+	return _.compact(_.flatten([...tableFileIds, playfieldImageId, playfieldVideoId]));
+};
+
 
 //-----------------------------------------------------------------------------
 // TRIGGERS

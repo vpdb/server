@@ -68,9 +68,6 @@ exports.create = function(req, res) {
 				}
 			});
 		}
-		return preprocess(req);
-
-	}).then(() => {
 
 		logger.info('[api|release:create] Body: %s', util.inspect(req.body, { depth: null }));
 		return Release.getInstance(_.extend(req.body, {
@@ -81,7 +78,10 @@ exports.create = function(req, res) {
 
 	}).then(newRelease => {
 		release = newRelease;
-		return newRelease.validate();
+		return preprocess(req, newRelease.getFileIds());
+
+	}).then(() => {
+		return release.validate();
 
 	}).then(() => {
 		logger.info('[api|release:create] Validations passed.');
@@ -315,7 +315,7 @@ exports.updateVersion = function(req, res) {
 		if (!version) {
 			throw error('No such version "%s" for release "%s".', req.params.version, req.params.id).status(404);
 		}
-		return preprocess(req);
+		return preprocess(req, version.getFileIds());
 
 	}).then(() => {
 		// retrieve release with no references that we can update
@@ -689,9 +689,10 @@ function getDetails(id) {
  *
  * Currently, the only "stuff" is rotation of referenced media.
  * @param {"express".e.Request} req
+ * @param {string[]} allowedFileIds Database IDs of file IDs of the current release that are allowed to be preprocessed.
  * @returns {Promise}
  */
-function preprocess(req) {
+function preprocess(req, allowedFileIds) {
 
 	if (req.query.rotate) {
 
@@ -718,6 +719,10 @@ function preprocess(req) {
 				file = f;
 				if (!file) {
 					throw error('Cannot rotate non-existing file "%s".', rotation.file).status(404);
+				}
+
+				if (!_.includes(allowedFileIds, file._id.toString())) {
+					throw error('Cannot rotate file %s because it is not part of the release.', file.id).status(400);
 				}
 				if (file.is_active) {
 					throw error('Pre-processing can only be applied to inactive files.').status(400);

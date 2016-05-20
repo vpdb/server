@@ -99,6 +99,18 @@ angular.module('vpdb.releases.add', []).controller('ReleaseFileAddCtrl', functio
 	/** Posts the release add form to the server. */
 	$scope.submit = function() {
 
+		// retrieve rotation parameters
+		var rotationParams = [];
+		_.forEach($scope.releaseVersion.files, function(file) {
+			if (!file._media || !file._media.playfield_image) {
+				return;
+			}
+			var rotation = $scope.meta.mediaLinks[$scope.getMediaKey(file, 'playfield_image')].rotation;
+			var offset = $scope.meta.mediaLinks[$scope.getMediaKey(file, 'playfield_image')].offset;
+			var relativeRotation = rotation + offset;
+			rotationParams.push(file._media.playfield_image + ':' + relativeRotation);
+		});
+
 		// only post files
 		if ($scope.meta.mode == 'newFile') {
 
@@ -107,7 +119,7 @@ angular.module('vpdb.releases.add', []).controller('ReleaseFileAddCtrl', functio
 				return;
 			}
 
-			ReleaseVersionResource.update({ releaseId: $scope.release.id, version: $scope.meta.version }, { files: $scope.releaseVersion.files }, function() {
+			ReleaseVersionResource.update({ releaseId: $scope.release.id, version: $scope.meta.version, rotate: rotationParams.join(',') }, { files: $scope.releaseVersion.files }, function() {
 				$scope.reset();
 				ModalService.info({
 					icon: 'check-circle',
@@ -139,7 +151,7 @@ angular.module('vpdb.releases.add', []).controller('ReleaseFileAddCtrl', functio
 				delete $scope.releaseVersion.released_at;
 			}
 
-			ReleaseVersionResource.save({ releaseId: $scope.release.id }, $scope.releaseVersion, function() {
+			ReleaseVersionResource.save({ releaseId: $scope.release.id, rotate: rotationParams.join(',') }, $scope.releaseVersion, function() {
 				$scope.reset();
 				ModalService.info({
 					icon: 'check-circle',

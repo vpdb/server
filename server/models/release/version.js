@@ -212,14 +212,14 @@ function validateFile(release, tableFile, index) {
 
 					// fail if playfield is set to FS but file's metadata say otherwise
 					if (playfieldImage.file_type === 'playfield-fs' && playfieldImage.metadata.size.width > playfieldImage.metadata.size.height) {
-						release.invalidate('files.' + index + '._media.playfield_image', 'Provided playfield is ' +
+						release.invalidate('files.' + index + '._media.playfield_image', 'Provided playfield "' + playfieldImage.id + '" is ' +
 							playfieldImage.metadata.size.width + 'x' + playfieldImage.metadata.size.height +
 							' (portrait) when it really should be landscape.');
 					}
 
 					// fail if playfield is set to WS but file's metadata say otherwise
 					if (playfieldImage.file_type === 'playfield-ws' && playfieldImage.metadata.size.width < playfieldImage.metadata.size.height) {
-						release.invalidate('files.' + index + '._media.playfield_image', 'Provided playfield is ' +
+						release.invalidate('files.' + index + '._media.playfield_image', 'Provided playfield "' + playfieldImage.id + '" is ' +
 							playfieldImage.metadata.size.width + 'x' + playfieldImage.metadata.size.height +
 							' (landscape) when it really should be portrait.');
 					}
@@ -241,11 +241,16 @@ function nonEmptyArray(value) {
 	return _.isArray(value) && value.length > 0;
 }
 
-schema.methods.getFileIds = function() {
-	let tableFileIds = _.map(this.files, '_file').map(file => file ? (file._id ? file._id.toString() : file.toString()) : null);
-	let playfieldImageId = _.compact(_.map(_.map(this.files, '_media'), 'playfield_image')).map(file => file._id ? file._id.toString() : file.toString());
-	let playfieldVideoId = _.compact(_.map(_.map(this.files, '_media'), 'playfield_video')).map(file => file._id ? file._id.toString() : file.toString());
+schema.methods.getFileIds = function(files) {
+	files = files || this.files;
+	let tableFileIds = _.map(files, '_file').map(file => file ? (file._id ? file._id.toString() : file.toString()) : null);
+	let playfieldImageId = _.compact(_.map(_.map(files, '_media'), 'playfield_image')).map(file => file._id ? file._id.toString() : file.toString());
+	let playfieldVideoId = _.compact(_.map(_.map(files, '_media'), 'playfield_video')).map(file => file._id ? file._id.toString() : file.toString());
 	return _.compact(_.flatten([...tableFileIds, playfieldImageId, playfieldVideoId]));
+};
+
+schema.methods.getPlayfieldImageIds = function() {
+	return _.compact(_.map(_.map(this.files, '_media'), 'playfield_image')).map(file => file._id ? file._id.toString() : file.toString());
 };
 
 schema.options.toObject = {

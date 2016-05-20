@@ -160,8 +160,8 @@ angular.module('vpdb.releases.add', []).controller('ReleaseAddBaseCtrl', functio
 			}
 
 			// add author's url as well
-			if ($scope.addLink && _.isArray($scope.release.links) && $scope.release.links.length === 0 && status.storage.metadata && status.storage.metadata.author_website) {
-				$scope.addLink({ label: 'Author\'s website', url: status.storage.metadata.author_website });
+			if ($scope.addLink && _.isArray($scope.release.links) && $scope.release.links.length === 0 && status.storage.metadata && status.storage.metadata['author_website']) {
+				$scope.addLink({ label: 'Author\'s website', url: status.storage.metadata['author_website'] });
 			}
 
 		} else {
@@ -186,7 +186,7 @@ angular.module('vpdb.releases.add', []).controller('ReleaseAddBaseCtrl', functio
 			$scope.meta.mediaLinks[status.key] = status.storage.variations['landscape'];
 
 		} else if (/^video\//.test(status.mimeType)) {
-			$scope.meta.mediaLinks[status.key] = status.storage.variations.still;
+			$scope.meta.mediaLinks[status.key] = status.storage.variations['still'];
 
 		} else {
 			$scope.meta.mediaLinks[status.key] = status.storage;
@@ -220,7 +220,9 @@ angular.module('vpdb.releases.add', []).controller('ReleaseAddBaseCtrl', functio
 	$scope.onOrientationChanged = function(file) {
 		var releaseFile = $scope.getReleaseFile(file);
 		var mediaFile = $scope.meta.mediaFiles[$scope.getMediaKey(releaseFile, 'playfield_image')];
-		$scope.updateRotation(releaseFile, mediaFile);
+		if (mediaFile) {
+			$scope.updateRotation(releaseFile, mediaFile);
+		}
 	};
 
 

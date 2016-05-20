@@ -88,7 +88,7 @@ exports.create = function(req, res) {
 		return release.save();
 
 	}).then(() => {
-		return postprocess(req);
+		return postprocess(release.getPlayfieldImageIds());
 
 	}).then(() => {
 		logger.info('[api|release:create] Release "%s" created.', release.name);
@@ -224,6 +224,9 @@ exports.addVersion = function(req, res) {
 
 	}).then(v => {
 		newVersion = v;
+		return preprocess(req, newVersion.getFileIds());
+
+	}).then(() => {
 
 		logger.info('[api|release:addVersion] model: %s', util.inspect(newVersion, { depth: null }));
 		var validationErr;
@@ -244,6 +247,10 @@ exports.addVersion = function(req, res) {
 
 		logger.info('[api|release:addVersion] Validations passed, adding new version to release.');
 		return release.save();
+
+	}).then(r => {
+		release = r;
+		return postprocess(newVersion.getPlayfieldImageIds());
 
 	}).then(() => {
 		logger.info('[api|release:create] Added version "%s" to release "%s".', newVersion.version, release.name);
@@ -315,9 +322,7 @@ exports.updateVersion = function(req, res) {
 		if (!version) {
 			throw error('No such version "%s" for release "%s".', req.params.version, req.params.id).status(404);
 		}
-		return preprocess(req, version.getFileIds());
 
-	}).then(() => {
 		// retrieve release with no references that we can update
 		return Release.findOne({ id: req.params.id }).exec();
 
@@ -346,6 +351,9 @@ exports.updateVersion = function(req, res) {
 		});
 
 	}).then(() => {
+		return preprocess(req, version.getFileIds().concat(version.getFileIds(newFiles)));
+
+	}).then(() => {
 
 		// assign fields and validate
 		Object.assign(versionToUpdate, _.pick(req.body, updateableFields));
@@ -358,8 +366,11 @@ exports.updateVersion = function(req, res) {
 		return releaseToUpdate.save();
 
 	}).then(r => {
-
 		release = r;
+		return postprocess(version.getPlayfieldImageIds());
+
+	}).then(() => {
+
 		if (newFiles.length > 0) {
 			logger.info('[api|release:updateVersion] Added new file to version "%s" to release "%s".', version.version, release.name);
 		}
@@ -722,7 +733,7 @@ function preprocess(req, allowedFileIds) {
 				}
 
 				if (!_.includes(allowedFileIds, file._id.toString())) {
-					throw error('Cannot rotate file %s because it is not part of the release.', file.id).status(400);
+					throw error('Cannot rotate file %s because it is not part of the release (%s).', file.id, file._id).status(400);
 				}
 				if (file.getMimeCategory() !== 'image') {
 					throw error('Can only rotate images, this is a "%s".', file.getMimeCategory()).status(400);
@@ -730,7 +741,6 @@ function preprocess(req, allowedFileIds) {
 				if (!_.includes(['playfield', 'playfield-fs', 'playfield-ws'], file.file_type)) {
 					throw error('Can only rotate playfield images, got "%s".', file.file_type).status(400);
 				}
-				// todo check if the file is part of the actual release
 				return backupFile(file);
 
 			// do the actual rotation
@@ -739,16 +749,19 @@ function preprocess(req, allowedFileIds) {
 				if (rotation.angle === 0) {
 					return;
 				}
-				logger.info('[api|release] Rotating file "%s" %s°.', file.id, rotation.angle);
-				return gm(src).rotate('black', rotation.angle).writeAsync(file.getPath());
+				file.preprocessed = file.preprocessed || {};
+				file.preprocessed.rotation = file.preprocessed.rotation || 0;
+				file.preprocessed.unvalidatedRotation = (file.preprocessed.rotation + rotation.angle + 360) % 360;
+
+				logger.info('[api|release] Rotating file "%s" %s° (was already %s° before, plus %s°).', file.id, file.preprocessed.unvalidatedRotation, file.preprocessed.rotation, rotation.angle);
+				return gm(src).rotate('black', file.preprocessed.unvalidatedRotation).writeAsync(file.getPath());
 
 			// update metadata
 			}).then(() => {
 				return storage.metadata(file);
 
+			// now patch new metadata and also file_type.
 			}).then(metadata => {
-
-				// now patch new metadata and also file_type.
 				File.sanitizeObject(metadata);
 				file.metadata = metadata;
 				file.file_type = 'playfield-' + (metadata.size.width > metadata.size.height ? 'ws' : 'fs');
@@ -762,19 +775,27 @@ function preprocess(req, allowedFileIds) {
  * Runs post-processing on stuff that was pre-processed earlier (and probably
  * needs to be post-processed again).
  *
- * @param {"express".e.Request} req
+ * @param {string[]} fileIds Database IDs of the files to re-process.
  * @returns {Promise}
  */
-function postprocess(req) {
-	if (req.query.rotate) {
-		let rotations = req.query.rotate.split(',').map(r => {
-			let rot = r.split(':');
-			return { file: rot[0], angle: parseInt(rot[1], 10) };
+function postprocess(fileIds) {
+	logger.info('[api|release] Post-processing files [ %s ]', fileIds.join(', '));
+	logger.info(fileIds);
+	return Promise.each(fileIds, id => {
+		return Promise.try(() => {
+			return File.findById(id).exec();
+		}).then(file => {
+			// so now we're here and unvalidatedRotation is now validated.
+			if (file.preprocessed && file.preprocessed.unvalidatedRotation) {
+				file.preprocessed.rotation = file.preprocessed.unvalidatedRotation;
+				delete file.preprocessed.unvalidatedRotation;
+				return file.save();
+			}
+			return file;
+		}).then(file => {
+			return storage.postprocess(file);
 		});
-		return Promise.all(rotations, rotation => {
-			return File.findOne({ id: rotation.file }).then(file => storage.postprocess(file));
-		});
-	}
+	});
 }
 
 /**

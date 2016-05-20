@@ -252,6 +252,10 @@ ReleaseSchema.methods.getFileIds = function() {
 	return _.compact(_.flatten([...tableFileIds, playfieldImageId, playfieldVideoId]));
 };
 
+ReleaseSchema.methods.getPlayfieldImageIds = function() {
+	let files = _.flatten(_.map(this.versions, 'files'));
+	return _.compact(_.map(_.map(files, '_media'), 'playfield_image')).map(file => file._id ? file._id.toString() : file.toString());
+};
 
 //-----------------------------------------------------------------------------
 // TRIGGERS

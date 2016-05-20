@@ -49,6 +49,7 @@ var fields = {
 	file_type:    { type: String, required: true, 'enum': { values: fileTypes.keys(), message: 'Invalid file type. Valid file types are: ["' +  fileTypes.keys().join('", "') + '"].' }},
 	metadata:     { type: Schema.Types.Mixed },
 	variations:   { type: Schema.Types.Mixed },
+	preprocessed: { type: Schema.Types.Mixed },
 	is_active:    { type: Boolean, required: true, 'default': false },
 	counter:      { downloads: { type: Number, 'default': 0 }},
 	created_at:   { type: Date, required: true },

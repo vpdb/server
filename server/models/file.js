@@ -288,7 +288,7 @@ FileSchema.methods.unlock = function(variation) {
 	try {
 		fs.unlinkSync(lockfile);
 	} catch (err) {
-		logger.error('[file] Error deleting lock file at "%s": %s', lockfile, err.message);
+		logger.error('[file] Error deleting lock file: %s', err.message);
 	}
 };
 

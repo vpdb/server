@@ -255,7 +255,7 @@ angular.module('vpdb.releases.add', []).controller('ReleaseAddCtrl', function(
 			rotationParams.push(file._media.playfield_image + ':' + relativeRotation);
 		});
 
-		ReleaseResource.save({ rotate: rotationParams.join(',') }, $scope.release, function() {
+		ReleaseResource.save({ rotate: rotationParams.join(',') }, $scope.release, function(release) {
 			$scope.release.submitted = true;
 			$scope.reset();
 
@@ -267,7 +267,7 @@ angular.module('vpdb.releases.add', []).controller('ReleaseAddCtrl', function(
 			});
 
 			// go to game page
-			$state.go('gameDetails', { id: $stateParams.id });
+			$state.go('releaseDetails', { id: $stateParams.id, releaseId: release.id });
 
 		}, ApiHelper.handleErrors($scope, function(scope) {
 			// if it's an array, those area displayed below

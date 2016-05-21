@@ -239,8 +239,9 @@ Storage.prototype.preprocess = function(file, done) {
  *
  * @param {File} file
  * @param {boolean} [onlyVariations] If set to `true`, only (re-)process variations.
+ * @param {boolean} [forcePass2] If set to `true`, force-apply pass2
  */
-Storage.prototype.postprocess = function(file, onlyVariations) {
+Storage.prototype.postprocess = function(file, onlyVariations, forcePass2) {
 	var mimeCategory = file.getMimeCategory();
 	if (!processors[mimeCategory]) {
 		return;
@@ -249,13 +250,13 @@ Storage.prototype.postprocess = function(file, onlyVariations) {
 	// add variations to queue
 	if (this.variations[mimeCategory] && this.variations[mimeCategory][file.file_type]) {
 		this.variations[mimeCategory][file.file_type].forEach(function(variation) {
-			queue.add(file, variation, processors[mimeCategory]);
+			queue.add(file, variation, processors[mimeCategory], forcePass2);
 		});
 	}
 
 	// add actual file to queue
 	if (!onlyVariations) {
-		queue.add(file, undefined, processors[mimeCategory]);
+		queue.add(file, undefined, processors[mimeCategory], forcePass2);
 	}
 };
 

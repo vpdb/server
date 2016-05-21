@@ -240,7 +240,7 @@ function serve(req, res, file, variationName, headOnly) {
 			// create read stream
 			var readStream;
 			if (file.isLocked()) {
-				logger.warn('[ctrl|storage] File is being processed, loading file into memory in order to free up file handle rapidly.');
+				logger.warn('[ctrl|storage] File is being processed, loading file into memory in order to free up file handle rapidly (%s).', file.getPath());
 				readStream = new BufferStream(fs.readFileSync(filePath));
 			} else {
 				readStream = fs.createReadStream(filePath);
@@ -298,7 +298,7 @@ function serve(req, res, file, variationName, headOnly) {
 			}
 		} else {
 			// otherwise we're done here, file has been served above.
-			logger.info('[ctrl|storage] File %s successfully served to <%s>.', file.toString(variationName), req.user ? req.user.email : 'anonymous');
+			logger.verbose('[ctrl|storage] File %s successfully served to <%s>.', file.toString(variationName), req.user ? req.user.email : 'anonymous');
 		}
 	});
 

@@ -110,28 +110,7 @@ ImageProcessor.prototype.variationData = function(metadata) {
 		height: metadata.size.height
 	};
 };
-/*
-ImageProcessor.prototype.preprocess = function(file) {
 
-	return Promise.try(function() {
-
-		if (file.file_type !== 'playfield-fs') {
-			return Promise.resolve();
-		}
-
-		// rotate
-		return gm(file.getPath()).identifyAsync().then(function(metadata) {
-
-			if (_.isObject(metadata.size) && metadata.size.height > metadata.size.width) {
-				logger.debug('[processor|image|pre] Rotating FS playfield image.');
-				return gm(file.getPath()).rotate('black', 90).writeAsync(file.getPath());
-			} else {
-				return Promise.resolve();
-			}
-		});
-	});
-};
-*/
 /**
  * Resizes the image.
  *

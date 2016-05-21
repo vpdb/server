@@ -220,7 +220,7 @@ function Queue() {
 		logger.verbose('[queue] Starting %s processing of %s', processorName, file.toString(variation));
 	});
 
-	this.on('finishedPass1', function(file, variation, processor, processed) {
+	this.on('finishedPass1', function(file, variation, processor, processed, forcePass2) {
 
 		var key = this.getQueryId(file, variation);
 		this.redis.status.get(this.getRedisId(key), function(err, num) {
@@ -231,7 +231,7 @@ function Queue() {
 			}
 			// run pass 2
 			if (processor.pass2) {
-				that.queues[processor.name].add({ fileId: file._id, variation: variation }, { processor: processor.name });
+				that.queues[processor.name].add({ fileId: file._id, variation: variation }, { processor: processor.name, force: forcePass2 });
 				if (processed) {
 					logger.verbose('[queue] Pass 1 finished, adding %s to queue (%d callbacks).', file.toString(variation), num || 0);
 				} else {
@@ -269,7 +269,7 @@ function Queue() {
 util.inherits(Queue, events.EventEmitter);
 
 
-Queue.prototype.add = function(file, variation, processor) {
+Queue.prototype.add = function(file, variation, processor, forcePass2) {
 
 	var key = this.getQueryId(file, variation);
 
@@ -294,7 +294,7 @@ Queue.prototype.add = function(file, variation, processor) {
 			processor.pass1(file.getPath(), file.getPath(variation), file, variation).then(skipped => {
 				file.unlock(variation);
 				if (skipped) {
-					this.emit('finishedPass1', file, variation, processor, false);
+					this.emit('finishedPass1', file, variation, processor, false, forcePass2);
 				} else {
 					this.emit('processed', file, variation, processor, 'finishedPass1');
 				}
@@ -303,7 +303,7 @@ Queue.prototype.add = function(file, variation, processor) {
 			});
 
 		} else {
-			this.emit('finishedPass1', file, variation, processor, false);
+			this.emit('finishedPass1', file, variation, processor, false, forcePass2);
 		}
 	});
 };
@@ -379,6 +379,7 @@ function processFile(job, emitter) {
 
 	let finalDest = false;
 	let file, src, dest;
+	let srcModificationTime;
 	let variation = job.data.variation;
 
 	return Promise.try(() => {
@@ -405,9 +406,11 @@ function processFile(job, emitter) {
 			throw new Error('[queue|pass2] Aborting before pass 2, ' + file.toString(variation) + ' is not on file system.');
 		}
 
+		srcModificationTime = fs.statSync(src).mtime;
 		file.lock(variation);
 		return processor.pass2(src, dest, file, variation).catch(err => {
 			if (fs.existsSync(dest)) {
+				logger.info('[queue] Pass2 destination "%s" exists, removing.', dest);
 				fs.unlinkSync(dest);
 			}
 			emitter.emit('error', err, file, variation);
@@ -419,22 +422,28 @@ function processFile(job, emitter) {
 
 		// switch images
 		if (fs.existsSync(src) && fs.existsSync(dest)) {
-			var mvSrc = dest;
-			var mvDest = src;
-			try {
-				if (finalDest === false) {
-					logger.verbose('[queue] Removing "%s".', mvDest);
-					fs.unlinkSync(mvDest);
-				} else {
-					mvDest = finalDest;
+			let mvSrc = dest;
+			let mvDest = src;
+
+			// but only if modification time hasn't changed (i.e. the src wasn't preprocessed in the mean time)
+			if (opts.force || fs.statSync(src).mtime === srcModificationTime) {
+				try {
+					if (finalDest === false) {
+						logger.info('[queue] Removing "%s".', mvDest);
+						fs.unlinkSync(mvDest);
+					} else {
+						mvDest = finalDest;
+					}
+					fs.renameSync(mvSrc, mvDest);
+					logger.info('[queue] Renamed "%s" to "%s".', mvSrc, mvDest);
+				} catch (err) {
+					logger.error('[queue] Error switching %s to %s: %s', mvSrc, mvDest, err.message);
 				}
-				fs.renameSync(mvSrc, mvDest);
-				logger.verbose('[queue] Renamed "%s" to "%s".', mvSrc, mvDest);
-			} catch (err) {
-				logger.error('[queue] Error switching %s to %s: ', mvSrc, mvDest, err);
+			} else {
+				logger.info('[queue] Not switching processed images because source has been changed in the meantime.', mvSrc);
 			}
 		}
-		logger.verbose('[queue|pass2] Pass 2 done for %s', file.toString(variation));
+		logger.info('[queue|pass2] Pass 2 done for %s', file.toString(variation));
 		emitter.emit('processed', file, variation, processor, 'finishedPass2');
 
 	}).catch(err => {

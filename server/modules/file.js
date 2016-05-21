@@ -56,8 +56,7 @@ exports.create = function(fileData, readStream, error, callback) {
 		// we don't have the file size for multipart uploads before-hand, so get it now
 		if (!file.bytes) {
 			var stats = fs.statSync(file.getPath());
-			file.bytes = stats.size;
-			return file.save();
+			return File.update({ _id: file._id }, { bytes: stats.size });
 		}
 
 	}).then(() => {
@@ -80,9 +79,9 @@ exports.create = function(fileData, readStream, error, callback) {
 
 		File.sanitizeObject(metadata);
 		file.metadata = metadata;
-		return file.save();
+		return File.update({ _id: file._id }, { metadata: metadata });
 
-	}).then(file => {
+	}).then(() => {
 
 		logger.info('[api|file:save] File upload of %s successfully completed.', file.toString());
 

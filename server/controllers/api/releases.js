@@ -754,7 +754,7 @@ function preprocess(req, allowedFileIds) {
 				file.preprocessed.unvalidatedRotation = (file.preprocessed.rotation + rotation.angle + 360) % 360;
 
 				logger.info('[api|release] Rotating file "%s" %s° (was %s° before, plus %s°).', file.id, file.preprocessed.unvalidatedRotation, file.preprocessed.rotation, rotation.angle);
-				return gm(src).rotate('black', file.preprocessed.unvalidatedRotation).writeAsync(file.getPath());
+				return gm(src).rotate('black', -file.preprocessed.unvalidatedRotation).writeAsync(file.getPath());
 
 			// update metadata
 			}).then(() => {
@@ -765,7 +765,11 @@ function preprocess(req, allowedFileIds) {
 				File.sanitizeObject(metadata);
 				file.metadata = metadata;
 				file.file_type = 'playfield-' + (metadata.size.width > metadata.size.height ? 'ws' : 'fs');
-				return file.save();
+				return File.update({ _id: file._id }, {
+					metadata: file.metadata,
+					file_type: file.file_type,
+					preprocessed: file.preprocessed
+				});
 			});
 		});
 	}
@@ -781,18 +785,21 @@ function preprocess(req, allowedFileIds) {
 function postprocess(fileIds) {
 	logger.info('[api|release] Post-processing files [ %s ]', fileIds.join(', '));
 	return Promise.each(fileIds, id => {
+
+		let file;
 		return Promise.try(() => {
 			return File.findById(id).exec();
-		}).then(file => {
+		}).then(f => {
+			file = f;
 			// so now we're here and unvalidatedRotation is now validated.
 			if (file.preprocessed && file.preprocessed.unvalidatedRotation) {
 				logger.info('[api|release] Validation passed, setting rotation to %s°', file.preprocessed.unvalidatedRotation);
-				file.preprocessed.rotation = file.preprocessed.unvalidatedRotation;
-				delete file.preprocessed.unvalidatedRotation;
-				return file.save();
+				return File.update({ _id: file._id }, {
+					preprocessed: { rotation: file.preprocessed.unvalidatedRotation }
+				});
 			}
 			return file;
-		}).then(file => {
+		}).then(() => {
 			return storage.postprocess(file, false, true);
 		});
 	});

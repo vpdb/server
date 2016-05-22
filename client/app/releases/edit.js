@@ -203,7 +203,9 @@ angular.module('vpdb.releases.edit', [])
 	$scope.meta = _.cloneDeep(ReleaseMeta);
 
 	$scope.meta.files = _.map(version.files, function(file) {
+		file._randomId = file.file.id;
 		file.file._randomId = file.file.id;
+		file._media = {};
 		var playfieldImageKey = $scope.getMediaKey(file.file, 'playfield_image');
 		$scope.meta.mediaFiles[playfieldImageKey] = createMeta(file.media.playfield_image, playfieldImageKey);
 		$scope.meta.mediaLinks[playfieldImageKey] = createLink(file.media.playfield_image, 'landscape');
@@ -236,13 +238,25 @@ angular.module('vpdb.releases.edit', [])
 		// retrieve rotation parameters
 		var rotationParams = [];
 		_.forEach(version.files, function(file) {
-			if (!file.media || !file.media.playfield_image) {
+			var media = file._media || file.media;
+			if (!media || !media.playfield_image) {
 				return;
 			}
 			var rotation = $scope.meta.mediaLinks[$scope.getMediaKey(file.file, 'playfield_image')].rotation;
 			var offset = $scope.meta.mediaLinks[$scope.getMediaKey(file.file, 'playfield_image')].offset;
 			var relativeRotation = rotation + offset;
-			rotationParams.push(file.media.playfield_image.id + ':' + relativeRotation);
+			rotationParams.push((media.playfield_image.id || media.playfield_image) + ':' + relativeRotation);
+		});
+
+		// check if media needs to be replaced
+		_.each(version.files, function(file) {
+			if (!_.isEmpty(file._media)) {
+				$scope.version.files = $scope.version.files || [];
+				$scope.version.files.push({
+					_file: file.file.id,
+					_media: file._media
+				});
+			}
 		});
 
 		ReleaseVersionResource.update({ releaseId: release.id, version: version.version, rotate: rotationParams.join(',') }, $scope.version, function(updatedVersion) {
@@ -255,7 +269,7 @@ angular.module('vpdb.releases.edit', [])
 				message: 'You have succesfully updated version ' + version.version + ' of release "' + release.name + '".'
 			});
 
-		}, ApiHelper.handleErrors($scope, null, function(scope, response) {
+		}, ApiHelper.handleErrors($scope, null, null, function(scope, response) {
 
 			if (!response.data.errors) {
 				return;
@@ -265,10 +279,10 @@ angular.module('vpdb.releases.edit', [])
 			_.each(response.data.errors, function(error) {
 
 				if (/orientation is set to FS but playfield image is .playfield-ws./i.test(error.message)) {
-					error.message = 'Wrong orientation. Use the rotation button above to rotate the playfield so it\'s oriented as if you would play it. If that\'s the case, then you\'ve uploaded a widescreen (desktop) shot for a file marked as portrait (fullscreen).';
+					error.message = 'Wrong orientation. Use the rotation button above to rotate the playfield so it\'s oriented as if you would play it. If that\'s the case, then you\'ve uploaded a widescreen (DT) shot for a file marked as portrait (FS).';
 				}
 				if (/orientation is set to WS but playfield image is .playfield-fs./i.test(error.message)) {
-					error.message = 'Wrong orientation. Use the rotation button above to rotate the playfield so it\'s oriented as if you would play it. If that\'s the case, then you\'ve uploaded a portrait (fullscreen) shot for a file marked as widescreen (desktop).';
+					error.message = 'Wrong orientation. Use the rotation button above to rotate the playfield so it\'s oriented as if you would play it. If that\'s the case, then you\'ve uploaded a portrait (FS) shot for a file marked as widescreen (DT).';
 				}
 			});
 		}));

@@ -351,7 +351,7 @@ exports.updateVersion = function(req, res) {
 		});
 
 	}).then(() => {
-		return preprocess(req, version.getFileIds().concat(version.getFileIds(newFiles)));
+		return updatePreprocessingResult(req, versionToUpdate);
 
 	}).then(() => {
 
@@ -360,7 +360,9 @@ exports.updateVersion = function(req, res) {
 		return releaseToUpdate.validate();
 
 	}).then(() => {
+		return preprocess(req, version.getFileIds().concat(version.getFileIds(newFiles)));
 
+	}).then(() => {
 		logger.info('[api|release:updateVersion] Validations passed, updating version.');
 		releaseToUpdate.modified_at = now;
 		return releaseToUpdate.save();
@@ -696,6 +698,47 @@ function getDetails(id) {
 }
 
 /**
+ * Since we don't actually want to *apply* preprocessing changes before
+ * validating, this just updates the entity *as if* preprocessing changes
+ * were applied. If validation fails, non harm done, if it succeeds,
+ * {@link #preprocess()} will be called between validation and save() and
+ * persist the changes.
+ *
+ * @param req
+ * @param version
+ */
+function rollbackPreprocess(req, version) {
+
+	if (req.query.rotate) {
+
+		// validate input format
+		let rotations = parseRotationParams(req.query.rotate);
+
+		// validate input data
+		return Promise.each(rotations, rotation => {
+			return File.findOne({ id: rotation.file }).then(file => {
+				if (!file) {
+					return;
+				}
+				let versionFile = _.find(version.files, f => f._media.playfield_image.equals(file._id));
+				if (!versionFile) {
+					return;
+				}
+
+				// update metadata and file_type based on rotation
+				if (rotation.angle === 90 || rotation.angle === 270) {
+					let width = versionFile.metadata.size.width;
+					// simulate dimension change
+					versionFile.metadata.size.width = versionFile.metadata.size.height;
+					versionFile.metadata.size.height = width;
+					versionFile.file_type = 'playfield-' + (versionFile.metadata.size.width > versionFile.metadata.size.height ? 'ws' : 'fs');
+				}
+			});
+		});
+	}
+}
+
+/**
  * Pre-processes stuff before running validations.
  *
  * Currently, the only "stuff" is rotation of referenced media.
@@ -708,20 +751,7 @@ function preprocess(req, allowedFileIds) {
 	if (req.query.rotate) {
 
 		// validate input format
-		let rotations = req.query.rotate.split(',').map(r => {
-			if (!r.includes(':')) {
-				throw error('When providing the "rotation" query, pairs must be separated by ":".', req.params.id).status(400);
-			}
-			let rot = r.split(':');
-
-			if (!_.includes(['0', '90', '180', '270'], rot[1])) {
-				throw error('Wrong angle "%s", must be one of: [0, 90, 180, 270].', rot[1]).status(400);
-			}
-			return { file: rot[0], angle: parseInt(rot[1], 10) };
-		});
-
-		//let releaseMediaFileIds = [];
-		//req.body.file
+		let rotations = parseRotationParams(req.query.rotate);
 
 		// validate input data
 		return Promise.each(rotations, rotation => {
@@ -753,7 +783,7 @@ function preprocess(req, allowedFileIds) {
 				file.preprocessed.rotation = file.preprocessed.rotation || 0;
 				file.preprocessed.unvalidatedRotation = (file.preprocessed.rotation + rotation.angle + 360) % 360;
 
-				logger.info('[api|release] Rotating file "%s" %s° (was %s° before, plus %s°).', file.id, file.preprocessed.unvalidatedRotation, file.preprocessed.rotation, rotation.angle);
+				logger.info('[api|release] Rotating file "%s" %s° (was %s° before, plus %s°).', file.getPath(), file.preprocessed.unvalidatedRotation, file.preprocessed.rotation, rotation.angle);
 				return gm(src).rotate('black', -file.preprocessed.unvalidatedRotation).writeAsync(file.getPath());
 
 			// update metadata
@@ -774,6 +804,8 @@ function preprocess(req, allowedFileIds) {
 		});
 	}
 }
+
+
 
 /**
  * Runs post-processing on stuff that was pre-processed earlier (and probably
@@ -802,6 +834,26 @@ function postprocess(fileIds) {
 		}).then(() => {
 			return storage.postprocess(file, false, true);
 		});
+	});
+}
+
+/**
+ * Parses the rotation query and throws an exception on incorrect format.
+ *
+ * @param {string} rotate Rotation query from URL
+ * @returns {{ file: string, angle: number }[]} Parsed rotation parameters
+ */
+function parseRotationParams(rotate) {
+	return rotate.split(',').map(r => {
+		if (!r.includes(':')) {
+			throw error('When providing the "rotation" query, pairs must be separated by ":".').status(400);
+		}
+		let rot = r.split(':');
+
+		if (!_.includes(['0', '90', '180', '270'], rot[1])) {
+			throw error('Wrong angle "%s", must be one of: [0, 90, 180, 270].', rot[1]).status(400);
+		}
+		return { file: rot[0], angle: parseInt(rot[1], 10) };
 	});
 }
 
@@ -858,7 +910,7 @@ function parseBoolean(value) {
 	return !_.isUndefined(value) && value.toLowerCase() !== 'false';
 }
 
-// playfield-from-server creation code (move to controller when tom's service is back up)
+// playfield-from-server creation code
 //logger.info('[model|release] Creating new playfield image from table screenshot...');
 //var error = require('../modules/error')('model', 'file');
 //var screenshotPath = file.getPath('screenshot');

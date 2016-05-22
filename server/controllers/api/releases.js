@@ -760,7 +760,7 @@ function preprocess(req, allowedFileIds) {
 					preprocessed: file.preprocessed
 				}).then(() => {
 					return file;
-				})
+				});
 			});
 		});
 	}

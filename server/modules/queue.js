@@ -262,7 +262,6 @@ function Queue() {
 
 	this.on('error', function(err, file, variation) {
 		logger.warn('[queue] Error processing %s: %s', file ? file.toString(variation) : '[null]', err.message || err);
-		console.log(err.stack);
 		processQueue(err, file, variation);
 	});
 
@@ -427,7 +426,7 @@ function processFile(job, emitter) {
 			let mvDest = src;
 
 			// but only if modification time hasn't changed (i.e. the src wasn't preprocessed in the mean time)
-			if (opts.force || fs.statSync(src).mtime === srcModificationTime) {
+			//if (opts.force || fs.statSync(src).mtime === srcModificationTime) {
 				try {
 					if (finalDest === false) {
 						logger.info('[queue] Removing "%s".', mvDest);
@@ -440,9 +439,9 @@ function processFile(job, emitter) {
 				} catch (err) {
 					logger.error('[queue] Error switching %s to %s: %s', mvSrc, mvDest, err.message);
 				}
-			} else {
-				logger.info('[queue] Not switching processed images because source has been changed in the meantime.', mvSrc);
-			}
+			//} else {
+			//	logger.info('[queue] Not switching processed images because source has been changed in the meantime.', mvSrc);
+			//}
 		}
 		logger.info('[queue|pass2] Pass 2 done for %s', file.toString(variation));
 		emitter.emit('processed', file, variation, processor, 'finishedPass2');

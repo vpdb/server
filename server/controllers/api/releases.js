@@ -351,16 +351,16 @@ exports.updateVersion = function(req, res) {
 		});
 
 	}).then(() => {
-		return updatePreprocessingResult(req, versionToUpdate);
+		return preprocess(req, version.getFileIds().concat(version.getFileIds(newFiles)));
 
 	}).then(() => {
 
 		// assign fields and validate
 		Object.assign(versionToUpdate, _.pick(req.body, updateableFields));
-		return releaseToUpdate.validate();
-
-	}).then(() => {
-		return preprocess(req, version.getFileIds().concat(version.getFileIds(newFiles)));
+		return releaseToUpdate.validate().catch(err => {
+			rollbackPreprocess(req);
+			throw err;
+		});
 
 	}).then(() => {
 		logger.info('[api|release:updateVersion] Validations passed, updating version.');
@@ -698,47 +698,6 @@ function getDetails(id) {
 }
 
 /**
- * Since we don't actually want to *apply* preprocessing changes before
- * validating, this just updates the entity *as if* preprocessing changes
- * were applied. If validation fails, non harm done, if it succeeds,
- * {@link #preprocess()} will be called between validation and save() and
- * persist the changes.
- *
- * @param req
- * @param version
- */
-function rollbackPreprocess(req, version) {
-
-	if (req.query.rotate) {
-
-		// validate input format
-		let rotations = parseRotationParams(req.query.rotate);
-
-		// validate input data
-		return Promise.each(rotations, rotation => {
-			return File.findOne({ id: rotation.file }).then(file => {
-				if (!file) {
-					return;
-				}
-				let versionFile = _.find(version.files, f => f._media.playfield_image.equals(file._id));
-				if (!versionFile) {
-					return;
-				}
-
-				// update metadata and file_type based on rotation
-				if (rotation.angle === 90 || rotation.angle === 270) {
-					let width = versionFile.metadata.size.width;
-					// simulate dimension change
-					versionFile.metadata.size.width = versionFile.metadata.size.height;
-					versionFile.metadata.size.height = width;
-					versionFile.file_type = 'playfield-' + (versionFile.metadata.size.width > versionFile.metadata.size.height ? 'ws' : 'fs');
-				}
-			});
-		});
-	}
-}
-
-/**
  * Pre-processes stuff before running validations.
  *
  * Currently, the only "stuff" is rotation of referenced media.
@@ -799,13 +758,65 @@ function preprocess(req, allowedFileIds) {
 					metadata: file.metadata,
 					file_type: file.file_type,
 					preprocessed: file.preprocessed
-				});
+				}).then(() => {
+					return file;
+				})
 			});
 		});
 	}
 }
 
+/**
+ * Since we need to persist preprocessing changes before validating, we also need a way to
+ * roll them back when validations fail.
+ *
+ * @param req
+ */
+function rollbackPreprocess(req) {
 
+	if (req.query.rotate) {
+
+		// validate input format
+		let rotations = parseRotationParams(req.query.rotate);
+
+		// validate input data
+		return Promise.each(rotations, rotation => {
+			let file;
+			return File.findOne({ id: rotation.file }).then(f => {
+				file = f;
+				if (!file) {
+					throw error('Cannot rollback non-existing file "%s".', rotation.file).status(404);
+				}
+				return backupFile(file);
+
+			// do the actual rotation
+			}).then(src => {
+
+				if (rotation.angle === 0) {
+					return;
+				}
+				delete file.preprocessed.unvalidatedRotation;
+				logger.info('[api|release] Rolling back rotated file \"%s\" to %s°.', file.getPath(), file.preprocessed.rotation);
+				return gm(src).rotate('black', file.preprocessed.rotation).writeAsync(file.getPath());
+
+			// update metadata
+			}).then(() => {
+				return storage.metadata(file);
+
+			// now patch new metadata and also file_type.
+			}).then(metadata => {
+				File.sanitizeObject(metadata);
+				file.metadata = metadata;
+				file.file_type = 'playfield-' + (metadata.size.width > metadata.size.height ? 'ws' : 'fs');
+				return File.update({ _id: file._id }, {
+					metadata: file.metadata,
+					file_type: file.file_type,
+					preprocessed: file.preprocessed
+				});
+			});
+		});
+	}
+}
 
 /**
  * Runs post-processing on stuff that was pre-processed earlier (and probably

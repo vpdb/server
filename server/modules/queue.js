@@ -262,6 +262,7 @@ function Queue() {
 
 	this.on('error', function(err, file, variation) {
 		logger.warn('[queue] Error processing %s: %s', file ? file.toString(variation) : '[null]', err.message || err);
+		console.log(err.stack);
 		processQueue(err, file, variation);
 	});
 
@@ -296,7 +297,7 @@ Queue.prototype.add = function(file, variation, processor, forcePass2) {
 				if (skipped) {
 					this.emit('finishedPass1', file, variation, processor, false, forcePass2);
 				} else {
-					this.emit('processed', file, variation, processor, 'finishedPass1');
+					this.emit('processed', file, variation, processor, 'finishedPass1', forcePass2);
 				}
 			}).catch(err => {
 				this.emit('error', err, file, variation);

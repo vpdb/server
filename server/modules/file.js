@@ -56,6 +56,7 @@ exports.create = function(fileData, readStream, error, callback) {
 		// we don't have the file size for multipart uploads before-hand, so get it now
 		if (!file.bytes) {
 			var stats = fs.statSync(file.getPath());
+			file.bytes = stats.size;
 			return File.update({ _id: file._id }, { bytes: stats.size });
 		}
 
@@ -77,9 +78,11 @@ exports.create = function(fileData, readStream, error, callback) {
 
 	}).then(metadata => {
 
+		var stats = fs.statSync(file.getPath());
 		File.sanitizeObject(metadata);
 		file.metadata = metadata;
-		return File.update({ _id: file._id }, { metadata: metadata });
+		file.bytes = stats.size;
+		return File.update({ _id: file._id }, { metadata: metadata, bytes: stats.size });
 
 	}).then(() => {
 

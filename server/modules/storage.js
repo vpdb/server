@@ -63,9 +63,9 @@ function Storage() {
 	});
 
 	// setup callback for treatment after post-processing
-	queue.on('processed', (file, variation, processor, nextEvent) => {
+	queue.on('processed', (file, variation, processor, nextEvent, forcePass2) => {
 		return this.onProcessed(file, variation, processor).then(updatedFile => {
-			queue.emit(nextEvent, updatedFile, variation, processor, true);
+			queue.emit(nextEvent, updatedFile, variation, processor, true, forcePass2);
 
 		}).catch(err => {
 			logger.warn('[storage] Error when writing back metadata to database, aborting post-processing for %s: %s', file ? file.toString(variation) : '[null]', err.message);

@@ -126,6 +126,10 @@ serverDomain.run(function() {
 
 	}).then(() => {
 
+		// set log level
+		logger.info('[app] Setting log level to "%s".', config.vpdb.logging.level);
+		logger.level = config.vpdb.logging.level;
+
 		// now we start the server.
 		logger.info('[app] Starting Express server at %s:%d', app.get('ipaddress'), app.get('port'));
 		app.listen(app.get('port'), app.get('ipaddress'), function() {

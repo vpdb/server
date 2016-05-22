@@ -164,6 +164,11 @@ module.exports = {
 		 * Sets various logging options.
 		 */
 		logging: {
+			level: function(level) {
+				if (!_.includes([ 'silly', 'debug', 'verbose', 'info', 'warn', 'error' ], level)) {
+					return 'Log level must be one of: [ silly, debug, verbose, info, warn, error ].';
+				}
+			},
 			console: {
 				access: function(bool) {
 					/* istanbul ignore if */

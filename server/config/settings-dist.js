@@ -144,6 +144,11 @@ module.exports = {
 		logging: {
 
 			/**
+			 * Log level. Allowed values: [ 'silly', 'debug', 'verbose', 'info', 'warn', 'error' ]
+			 */
+			level: 'info',
+
+			/**
 			 * Prints log to the current console. Should not be used in production.
 			 */
 			console: {

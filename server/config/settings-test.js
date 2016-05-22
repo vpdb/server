@@ -21,6 +21,7 @@ module.exports = {
 			nodemailer: {}
 		},
 		logging: {
+			level: 'verbose',
 			console: { access: true,  app: true },
 			file: { access: null, app: null },
 			papertrail: { access: false, app: false, options: { } }

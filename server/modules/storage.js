@@ -63,9 +63,9 @@ function Storage() {
 	});
 
 	// setup callback for treatment after post-processing
-	queue.on('processed', (file, variation, processor, nextEvent, forcePass2) => {
+	queue.on('processed', (file, variation, processor, nextEvent) => {
 		return this.onProcessed(file, variation, processor).then(updatedFile => {
-			queue.emit(nextEvent, updatedFile, variation, processor, true, forcePass2);
+			queue.emit(nextEvent, updatedFile, variation, processor, true);
 
 		}).catch(err => {
 			logger.warn('[storage] Error when writing back metadata to database, aborting post-processing for %s: %s', file ? file.toString(variation) : '[null]', err.message);
@@ -239,9 +239,8 @@ Storage.prototype.preprocess = function(file, done) {
  *
  * @param {File} file
  * @param {boolean} [onlyVariations] If set to `true`, only (re-)process variations.
- * @param {boolean} [forcePass2] If set to `true`, force-apply pass2
  */
-Storage.prototype.postprocess = function(file, onlyVariations, forcePass2) {
+Storage.prototype.postprocess = function(file, onlyVariations) {
 	var mimeCategory = file.getMimeCategory();
 	if (!processors[mimeCategory]) {
 		return;
@@ -250,13 +249,13 @@ Storage.prototype.postprocess = function(file, onlyVariations, forcePass2) {
 	// add variations to queue
 	if (this.variations[mimeCategory] && this.variations[mimeCategory][file.file_type]) {
 		this.variations[mimeCategory][file.file_type].forEach(function(variation) {
-			queue.add(file, variation, processors[mimeCategory], forcePass2);
+			queue.add(file, variation, processors[mimeCategory]);
 		});
 	}
 
 	// add actual file to queue
 	if (!onlyVariations) {
-		queue.add(file, undefined, processors[mimeCategory], forcePass2);
+		queue.add(file, undefined, processors[mimeCategory]);
 	}
 };
 

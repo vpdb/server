@@ -202,6 +202,12 @@ ImageProcessor.prototype.pass2 = function(src, dest, file, variation) {
 			return Promise.resolve();
 		}
 
+		if (file.file_type === 'playfield') {
+			logger.info('[processor|image|pass2] Skipping pass 2 for %s (will process when orientation is set)', file.toString(variation));
+			return Promise.resolve();
+		}
+
+
 		var quanter = new PngQuant([128]);
 		var optimizer = new OptiPng(['-o7']);
 

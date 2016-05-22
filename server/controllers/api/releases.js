@@ -843,7 +843,7 @@ function postprocess(fileIds) {
 			}
 			return file;
 		}).then(() => {
-			return storage.postprocess(file, false, true);
+			return storage.postprocess(file);
 		});
 	});
 }

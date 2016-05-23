@@ -43,15 +43,9 @@ function ArchiveProcessor() {
  * Retrieves file listing from archive.
  * @param file Archive file
  * @param variation variation (null, no variations here)
- * @param done Callback
  * @return {Promise.<{ entries: { filename: string, bytes: number, bytes_compressed: number, crc: string, modified_at: Date }[]}>}
  */
-ArchiveProcessor.prototype.metadata = function(file, variation, done) {
-	if (_.isFunction(variation)) {
-		done = variation;
-		variation = undefined;
-	}
-
+ArchiveProcessor.prototype.metadata = function(file, variation) {
 	return Promise.try(() => {
 		if (!variation) {
 			switch (file.getMimeSubtype()) {
@@ -63,7 +57,7 @@ ArchiveProcessor.prototype.metadata = function(file, variation, done) {
 					return getZipMetadata(file);
 			}
 		}
-	}).nodeify(done);
+	});
 };
 
 ArchiveProcessor.prototype.metadataShort = function(metadata) {

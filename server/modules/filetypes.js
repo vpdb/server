@@ -27,7 +27,7 @@ var logger = require('winston');
 exports.values = {
 
 	'backglass': {
-		mimeTypes: [ 'image/jpeg', 'image/png' ]
+		mimeTypes: [ 'image/jpeg', 'image/png', 'application/x-directb2s' ]
 	},
 	'logo': {
 		mimeTypes: [ 'image/png' ]

@@ -1,156 +1,337 @@
+/*
+ * VPDB - Visual Pinball Database
+ * Copyright (C) 2016 freezy <freezy@xbmc.org>
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ */
+
 "use strict";
 
+const _ = require('lodash');
 const fs = require('fs');
-const expat = require('node-expat');
-const parser = new expat.Parser('UTF-8');
+const gm = require('gm');
+const sax = require('sax');
+const logger = require('winston');
 const base64 = require('base64-stream');
-const Readable = require('stream').Readable
-
-
 const PngQuant = require('pngquant');
+const Readable = require('stream').Readable;
 
-const quanter = new PngQuant([192, '--ordered']);
-//const xmlPath = 'test.xml';
-//const xmlPath = 'C:/Games/Visual Pinball/Tables/Attack from Mars (Bally 1995)-simplified.directb2s';
-const xmlPath = 'C:/Games/Visual Pinball/Tables/Attack from Mars (Bally 1995).directb2s';
+const Parser = require('../sax-async');
+const error = require('../error')('processor', 'directb2s');
+const mimeTypes = require('../mimetypes');
 
-let db2s = fs.createReadStream(xmlPath);
-let out = fs.createWriteStream('updated.xml');
-let closePrevious = '';
-let emptyElement;
-let level = 0;
-let isStopped = false; // https://github.com/astro/node-expat/issues/148
+Promise.promisifyAll(gm.prototype);
 
-var write = function(text) {
-	out.write(text);
-	//process.stdout.write(text);
+/**
+ * Direct B2S Backglass processor
+ *
+ * Pass 1
+ * Extract thumbnails
+ *
+ * Pass 2
+ * Crunch PNG resources with pngquand
+ * No optipng for performance reasons, 700% more processing time for 2% less space
+ *
+ * @constructor
+ */
+function Directb2sProcessor() {
+	this.name = 'directb2s';
+	this.variations = {
+		backglass: [
+			{ name: 'medium',    width: 364, height: 291, mimeType: 'image/jpeg' },
+			{ name: 'medium-2x', width: 728, height: 582, mimeType: 'image/jpeg' },
+			{ name: 'small',     width: 253, height: 202, mimeType: 'image/jpeg' },
+			{ name: 'small-2x',  width: 506, height: 404, mimeType: 'image/jpeg' }
+		]
+	};
+}
+
+Directb2sProcessor.prototype.metadata = function(file, variation) {
+
+	return Promise.try(() => {
+		if (!variation) {
+			return new Promise((resolve, reject) => {
+				let metadata = {};
+				let saxStream = sax.createStream(true);
+				saxStream.on("error", reject);
+				saxStream.on("opentag", node => {
+					switch (node.name) {
+						case 'DirectB2SData': metadata.version = node.attributes.Version; break;
+						case 'Name': metadata.name = node.attributes.Value; break;
+						case 'TableType': metadata.table_type = node.attributes.Value; break;
+						case 'DMDType': metadata.dmd_type = node.attributes.Value; break;
+						case 'GrillHeight': metadata.grill_height = node.attributes.Value; break;
+						case 'DualBackglass': metadata.dual_backglass = node.attributes.Value; break;
+						case 'Author': metadata.author = node.attributes.Value; break;
+						case 'Artwork': metadata.artwork = node.attributes.Value; break;
+						case 'GameName': metadata.gamename = node.attributes.Value; break;
+					}
+				});
+				saxStream.on("end", () => {
+					resolve(metadata);
+				});
+				fs.createReadStream(file.getPath()).on('error', reject)
+					.pipe(saxStream).on('error', reject);
+			});
+
+		} else {
+			return gm(file.getPath(variation)).identifyAsync();
+		}
+
+	}).catch(err => {
+		// log this
+		throw error(err, 'Error reading metadata from DirectB2S Backglass').warn();
+	});
 };
 
-parser.on('xmlDecl', (version, encoding, standalone) => {
-	write('<?xml');
-	if (version) {
-		write(' version="' + version + '"');
+Directb2sProcessor.prototype.metadataShort = function(metadata) {
+	if (metadata.gamename) {
+		return _.pick(metadata, 'name', 'version', 'author', 'gamename');
 	}
-	write(' standalone="' + (standalone ? 'yes' : 'no') + '"');
-	if (encoding) {
-		write(' encoding="' + encoding + '"');
-	}
-	write(' ?>\n');
-});
+	return _.pick(metadata, 'format', 'size', 'depth', 'JPEG-Quality');
+};
 
-parser.on('startElement', function(name, attrs) {
-	level++;
-	emptyElement = true;
-	write(closePrevious);
-	write('<' + name);
-	closePrevious = '>';
-	for (var key in attrs) {
-		if (attrs.hasOwnProperty(key)) {
-			let value = attrs[key];
-			if (name === 'Bulb' && key === 'Image') {
-				parser.stop();
-				isStopped = true;
-				let started = false;
-				let attrName = key;
-				let source = new Readable;
-				let startedAt = new Date().getTime();
-				source.pipe(base64.decode())
-					.pipe(quanter)
-					.pipe(base64.encode())
-					.on('data', data => {
-						if (!started) {
-							write(' ' + attrName + '="');
-						}
-						write(data);
-						started =true;
-					})
-					.on('end', () => {
-						console.log('Crushed in %sms.', (new Date().getTime() - startedAt));
+Directb2sProcessor.prototype.variationData = function(metadata) {
+	return metadata;
+};
 
-						write('"');
-						isStopped = false;
-						parser.emit('endElement');
+/**
+ * Extracts the backglass image from the directb2s file.
+ *
+ * @param {string} src Path to source file
+ * @param {string} dest Path to destination
+ * @param {File} file File to process
+ * @param {object} variation Variation of the file to process
+ * @returns {Promise}
+ */
+Directb2sProcessor.prototype.pass1 = function(src, dest, file, variation) {
+
+	return Promise.try(() => {
+
+		logger.debug('[processor|directb2s|pass1] Starting processing %s at %s.', file.toString(variation), dest);
+		return new Promise((resolve, reject) => {
+
+			logger.debug('[processor|directb2s|pass1] Reading DirectB2S Backglass %s...', src);
+			let parser = new Parser(src);
+			let currentTag;
+			parser.on('opentagstart', tag => {
+				currentTag = tag.name;
+			});
+			parser.on('attribute', attr => {
+				if (currentTag === 'BackglassImage' && attr.name === 'Value') {
+
+					logger.debug('[processor|directb2s|pass1] Found backglass image, pausing XML parser...');
+					parser.pause();
+					let source = new Readable();
+					let imgStream = source.on('error', reject).pipe(base64.decode()).on('error', reject);
+
+					// setup gm
+					let img = gm(imgStream);
+					img.quality(variation.qual || 70);
+					img.interlace('Line');
+
+					if (variation.width && variation.height) {
+						img.resize(variation.width, variation.height);
+					}
+
+					if (variation.mimeType && mimeTypes[variation.mimeType]) {
+						img.setFormat(mimeTypes[variation.mimeType].ext);
+					}
+
+					let writeStream = fs.createWriteStream(dest);
+
+					// setup success handler
+					writeStream.on('finish', function() {
+						logger.debug('[processor|image|pass1] Saved resized image to "%s".', dest);
 						parser.resume();
+
 					});
-				source.push(value);
-				source.push(null);
+					writeStream.on('error', reject);
 
-			} else {
-				write(' ' + key + '="');
-				write(escape(value));
-				write('"');
-			}
+					img.stream().on('error', reject).pipe(writeStream).on('error', reject);
+
+					source.push(attr.value);
+					source.push(null);
+				}
+			});
+			parser.on('error', err => {
+				reject(error(err, 'Error parsing direct2b file at %s', file.toString(variation)).log('pass1'));
+			});
+
+			parser.on('end', resolve);
+			parser.stream(true);
+		});
+	});
+};
+
+/**
+ * Crunches all images of the directb2s file
+ *
+ * @param {string} src Path to source file
+ * @param {string} dest Path to destination
+ * @param {File} file File to process
+ * @param {object} variation Variation of the file to process
+ * @returns {Promise}
+ */
+Directb2sProcessor.prototype.pass2 = function(src, dest, file, variation) {
+
+	return Promise.try(() => {
+
+		if (file.getMimeSubtype(variation) !== 'x-directb2s') {
+			logger.debug('[processor|directb2s|pass2] Skipping pass 2 for %s (type %s)', file.toString(variation), file.getMimeSubtype());
+			return Promise.resolve();
 		}
-	}
-});
 
-parser.on('text', function(text) {
-	if (text) {
-		emptyElement = false;
-		write(closePrevious);
-		write(text);
-		closePrevious = '';
-	} else {
-		emptyElement = true;
-	}
-});
+		logger.debug('[processor|directb2s|pass2] Starting processing %s at %s.', file.toString(variation), dest);
+		return new Promise((resolve, reject) => {
 
-parser.on('endElement', function(name) {
-	if (isStopped) {
-		return;
-	}
-	level--;
-	if (emptyElement) {
-		write('/>');
-	} else {
-		write('</' + name + '>');
-	}
-	closePrevious = '';
+			logger.debug('[processor|directb2s|pass1] Parsing Direct B2S Backglass at %s...', src);
+			let out = fs.createWriteStream(dest);
+			let parser = new Parser(src);
+			let closePrevious = '';
+			let emptyElement;
+			let level = 0;
+			let currentTag;
 
-	if (level === 0) {
+			let write = function(text) {
+				out.write(text);
+				//process.stdout.write(text);
+			};
 
-		console.log('\n----------');
-		console.log('Done.');
-		out.end();
-	}
-});
+			parser.on('opentagstart', tag => {
+				let name = tag.name;
+				level++;
+				emptyElement = true;
+				write(closePrevious);
+				write('<' + name);
+				closePrevious = '>';
+				currentTag = name;
+			});
 
-parser.on('startCdata', function() {
-	emptyElement = false;
-	write(closePrevious);
-	write('<![CDATA[');
-	closePrevious = '';
-});
+			parser.on('attribute', attr => {
+				if ((currentTag === 'Bulb' && attr.name === 'Image') ||
+					(currentTag === 'BackglassImage' && attr.name === 'Value') ||
+					(currentTag === 'ThumbnailImage' && attr.name === 'Value')) {
 
-parser.on('endCdata', function() {
-	write(']]>');
-	emptyElement = false;
-});
+					parser.pause();
+					let source = new Readable();
+					let started = false;
+					let quanter = new PngQuant([192, '--ordered']);
+					let handleError = function(err) {
+						console.error('ERROR: %s', err.message);
+						if (!started) {
+							write(' ' + attr.name + '="');
+							write(escape(attr.value));
+						}
+						write('"');
+						parser.resume();
+					};
+					source.on('error', handleError)
+						.pipe(base64.decode()).on('error', handleError)
+						.pipe(quanter).on('error', handleError)
+						.pipe(base64.encode()).on('error', handleError)
+						.on('data', data => {
+							if (!started) {
+								write(' ' + attr.name + '="');
+							}
+							write(data);
+							started = true;
+						})
+						.on('end', () => {
+							write('"');
+							parser.resume();
+						});
 
-parser.on('comment', function(comment) {
-	emptyElement = false;
-	write(closePrevious);
-	write('<!--' + comment + '-->');
-	closePrevious = '';
-});
+					source.push(attr.value);
+					source.push(null);
+				} else {
+					write(' ' + attr.name + '="');
+					write(escape(attr.value));
+					write('"');
+				}
+			});
 
-parser.on('processingInstruction', function(target, data) {
-	emptyElement = false;
-	write(closePrevious);
-	write('<?' + target + ' ' + data + '?>');
-	closePrevious = '';
-});
+			parser.on('text', text => {
+				if (text) {
+					emptyElement = false;
+					write(closePrevious);
+					write(text);
+					closePrevious = '';
+				} else {
+					emptyElement = true;
+				}
+			});
 
-parser.on('error', function(error) {
-	console.error('ERROR: %s', error);
-});
+			parser.on('closetag', name => {
+				level--;
+				if (emptyElement) {
+					write('/>');
+				} else {
+					write('</' + name + '>');
+				}
+				closePrevious = '';
 
-db2s.pipe(parser);
+				if (level === 0) {
+					out.end();
+					resolve();
+				}
+			});
 
+			parser.on('opencdata', () => {
+				emptyElement = false;
+				write(closePrevious);
+				write('<![CDATA[');
+				closePrevious = '';
+			});
+
+			parser.on('cdata', text => {
+				write(text);
+			});
+
+			parser.on('closecdata', () => {
+				write(']]>');
+				emptyElement = false;
+			});
+
+			parser.on('comment', comment => {
+				emptyElement = false;
+				write(closePrevious);
+				write('<!--' + comment + '-->');
+				closePrevious = '';
+			});
+
+			parser.on('processinginstruction', instr => {
+				emptyElement = false;
+				write(closePrevious);
+				write('<?' + instr.name + ' ' + instr.body + '?>');
+				closePrevious = '';
+			});
+
+			parser.on('error', err => {
+				reject(error(err, 'Error parsing direct2b file at %s', file.toString(variation)).log('pass2'));
+			});
+
+			parser.stream(true);
+		});
+	});
+};
+
+module.exports = new Directb2sProcessor();
 
 function escape(string) {
 	let pattern;
-
 	if (string === null || string === undefined) return;
 	const map = {
 		'>': '&gt;',

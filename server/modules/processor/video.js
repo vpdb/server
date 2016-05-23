@@ -58,12 +58,7 @@ function VideoProcessor() {
 	};
 }
 
-VideoProcessor.prototype.metadata = function(file, variation, done) {
-
-	if (_.isFunction(variation)) {
-		done = variation;
-		variation = undefined;
-	}
+VideoProcessor.prototype.metadata = function(file, variation) {
 
 	return Promise.try(function() {
 		return ffmpeg.ffprobeAsync(file.getPath(variation));
@@ -71,8 +66,7 @@ VideoProcessor.prototype.metadata = function(file, variation, done) {
 	}).catch(err => {
 		// log this
 		throw error(err, 'Error reading metadata from video `%s`', file.getPath(variation)).warn();
-
-	}).nodeify(done);
+	});
 };
 
 VideoProcessor.prototype.metadataShort = function(metadata) {

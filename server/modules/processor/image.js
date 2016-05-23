@@ -84,12 +84,8 @@ function ImageProcessor() {
 	};
 }
 
-ImageProcessor.prototype.metadata = function(file, variation, done) {
+ImageProcessor.prototype.metadata = function(file, variation) {
 
-	if (_.isFunction(variation)) {
-		done = variation;
-		variation = undefined;
-	}
 	return Promise.try(function() {
 		return gm(file.getPath(variation)).identifyAsync();
 
@@ -97,7 +93,7 @@ ImageProcessor.prototype.metadata = function(file, variation, done) {
 		// log this
 		throw error(err, 'Error reading metadata from image').warn();
 
-	}).nodeify(done);
+	});
 };
 
 ImageProcessor.prototype.metadataShort = function(metadata) {

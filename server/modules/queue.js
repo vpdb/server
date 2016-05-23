@@ -95,14 +95,15 @@ function Queue() {
 		}
 	};
 
-	// have have 3 queues
+	// we have 4 queues
 	this.queues = {
 		image: queue('image', redisOpts),
 		video: queue('video', redisOpts),
-		table: queue('table', redisOpts)
+		table: queue('table', redisOpts),
+		directb2s: queue('directb2s', redisOpts)
 	};
 
-	// we also have 3 redis clients
+	// we have 3 redis clients
 	this.redis = {
 		subscriber: redis.createClient(config.vpdb.redis.port, config.vpdb.redis.host, { no_ready_check: true }),
 		publisher: redis.createClient(config.vpdb.redis.port, config.vpdb.redis.host, { no_ready_check: true }),
@@ -183,6 +184,12 @@ function Queue() {
 		logger.error(err.stack);
 	});
 
+	this.queues.directb2s.on('failed', /* istanbul ignore next */ function(job, err) {
+		// TODO treat waiting requests
+		logger.error('[queue] From directb2s queue: %s', err.message);
+		logger.error(err.stack);
+	});
+
 	/**
 	 * Processes callback queue (waiting requests)
 	 */
@@ -215,6 +222,7 @@ function Queue() {
 	this.queues.image.process(job => processFile(job, this));
 	this.queues.video.process(job => processFile(job, this));
 	this.queues.table.process(job => processFile(job, this));
+	this.queues.directb2s.process(job => processFile(job, this));
 
 	this.on('started', function(file, variation, processorName) {
 		logger.verbose('[queue] Starting %s processing of %s', processorName, file.toString(variation));
@@ -231,12 +239,12 @@ function Queue() {
 			}
 			// run pass 2
 			if (processor.pass2) {
-				that.queues[processor.name].add({ fileId: file._id, variation: variation }, { processor: processor.name });
 				if (processed) {
 					logger.verbose('[queue] Pass 1 finished, adding %s to queue (%d callbacks).', file.toString(variation), num || 0);
 				} else {
 					logger.verbose('[queue] Pass 1 skipped, continuing %s with pass 2.', file.toString(variation));
 				}
+				that.queues[processor.name].add({ fileId: file._id, variation: variation }, { processor: processor.name });
 			}
 
 			// only process callback queue if there actually was some result in pass 1
@@ -262,6 +270,7 @@ function Queue() {
 
 	this.on('error', function(err, file, variation) {
 		logger.warn('[queue] Error processing %s: %s', file ? file.toString(variation) : '[null]', err.message || err);
+		console.log(err.trace);
 		processQueue(err, file, variation);
 	});
 

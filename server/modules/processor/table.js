@@ -43,7 +43,6 @@ var config = require('../settings').current;
  */
 function TableProcessor() {
 	this.name = 'table';
-
 	this.variations = { release: [] };
 
 	if (config.vpdb.generateTableScreenshot) {
@@ -51,11 +50,8 @@ function TableProcessor() {
 	}
 }
 
-TableProcessor.prototype.metadata = function(file, variation, done) {
+TableProcessor.prototype.metadata = function(file, variation) {
 
-	if (_.isFunction(variation)) {
-		done = variation;
-	}
 	return Promise.try(function() {
 		return vp.readScriptFromTableAsync(file.getPath());
 
@@ -68,7 +64,7 @@ TableProcessor.prototype.metadata = function(file, variation, done) {
 		// log this
 		throw error(err, 'Error reading metadata from table').warn();
 
-	}).nodeify(done);
+	});
 };
 
 TableProcessor.prototype.metadataShort = function(metadata) {

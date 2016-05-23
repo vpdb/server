@@ -35,7 +35,8 @@ var processors = {
 	image: require('./processor/image'),
 	video: require('./processor/video'),
 	table: require('./processor/table'),
-	archive: require('./processor/archive')
+	archive: require('./processor/archive'),
+	directb2s: require('./processor/directb2s')
 };
 
 function Storage() {
@@ -77,7 +78,8 @@ function Storage() {
 Storage.prototype.variations = {
 	image: processors.image.variations,
 	video: processors.video.variations,
-	table: processors.table.variations
+	table: processors.table.variations,
+	directb2s: processors.directb2s.variations
 };
 
 /**

@@ -43,6 +43,11 @@ module.exports = {
 		ext: 'rar',
 		category: 'archive'
 	},
+	'application/x-directb2s': {
+		name: 'Direct B2S Backglass',
+		ext: 'directb2s',
+		category: 'directb2s'
+	},
 	'application/x-rar-compressed': {
 		name: 'RAR-compressed file',
 		ext: 'rar',

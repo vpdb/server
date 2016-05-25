@@ -20,6 +20,7 @@
 "use strict";
 
 const fs = require('fs');
+const gm = require('gm');
 const PNG = require('pngjs').PNG;
 const ffmpeg = require('fluent-ffmpeg');
 const PassThrough = require('stream').PassThrough;
@@ -34,21 +35,24 @@ let frames = dump.split('\r\n\r\n');
 console.log('Read %s frames.', frames.length);
 let hsl = rgbToHsl(0xff, 0x6a, 0x00);
 let n = 0;
-let pngStream = new PassThrough();
+let jpgStream = new PassThrough();
 ffmpeg()
-	.input(pngStream)
+	.input(jpgStream)
 	.inputFormat('image2pipe')
-	.inputOptions('-vcodec png')
+	.inputOptions('-vcodec mjpeg')
 	.fps(30)
-	.output('frames.mp4')
+	.format('mp4')
+	.outputOptions('-movflags frag_keyframe+empty_moov')
 	.videoCodec('libx264')
+	//	.videoBitrate(1000, true)
+	.output(fs.createWriteStream('frames.mp4'), { end: false })
 	.on('start', function(commandLine) {
 		console.log('Spawned Ffmpeg with command: ' + commandLine);
 		Promise.each(frames, frameData => {
 			return new Promise((resolve, reject) => {
 				let lines = frameData.split('\r\n');
 				let frame = new PNG({ width: width, height: height, bgColor: { red: 0, green: 0, blue: 0 } });
-				//console.log('%s %s', n, lines[0]);
+				console.log('%s %s', n, lines[0]);
 				if (!frameData) {
 					return resolve();
 				}
@@ -59,44 +63,51 @@ ffmpeg()
 							let idx = (width * y + x) << 2;
 							let rgb = hslToRgb(hsl[0], hsl[1], opacity * hsl[2]);
 							frame.data[idx] = rgb[0];
-							frame.data[idx+1] = rgb[1];
-							frame.data[idx+2] = rgb[2];
-							frame.data[idx+3] = 255;
+							frame.data[idx + 1] = rgb[1];
+							frame.data[idx + 2] = rgb[2];
+							frame.data[idx + 3] = 255;
 
 						} catch (err) {
-							console.log(frameData);
 							console.error('Error parsing DMD data: %s', err.message);
+							console.log(frameData);
+							return resolve();
 						}
 					}
 				}
 				frame.on('error', reject);
 				frame.on('end', resolve);
-				//frame.pack().pipe(fs.createWriteStream('frame_' + n++ + '.png'));
-				frame.pack().on('data', data => {
-					pngStream.push(data);
+				//frame.pack().pipe(fs.createWriteStream('frame_' + n + '.png'));
+				//gm(frame.pack()).setFormat('jpg').quality(100).stream().pipe(fs.createWriteStream('frame_' + n + '.jpg'));
+				gm(frame.pack()).setFormat('jpg').quality(100).stream().on('data', data => {
+					jpgStream.push(data);
 				});
+				//frame.pack().on('data', data => { pngStream.push(data); });
 				n++;
 			});
 		}).then(() => {
-			pngStream.push(null);
-			pngStream.emit('end');
+			//pngStream.push(null);
+			jpgStream.emit('end');
 			console.log('%s Frames sent to ffmpeg.', n);
 		});
 	})
-	.on('end', () => {
-		console.log('Video saved!');
+	.on('codecData', data => {
+		console.log('CODEC DATA:');
+		console.log(data);
+	})
+	.on('progress', progress => {
+		console.log('PROGRESS:');
+		console.log(progress);
 	})
 	.on('stderr', stderr => {
 		console.log(stderr);
 	})
-	.on('progress', p => {
-		console.log('Progress:');
-		console.log(p);
-	})
 	.on('error', err => {
 		console.log('Error rendering: %s', err.message);
-	}).run();
-
+	})
+	.on('end', () => {
+		console.log('Video saved!');
+	})
+	.run();
 
 
 /**
@@ -110,26 +121,26 @@ ffmpeg()
  * @param   {number}  l       The lightness
  * @return  {Array}           The RGB representation
  */
-function hslToRgb(h, s, l){
+function hslToRgb(h, s, l) {
 	var r, g, b;
 
-	if(s == 0){
+	if (s == 0) {
 		r = g = b = l; // achromatic
-	}else{
-		var hue2rgb = function hue2rgb(p, q, t){
-			if(t < 0) t += 1;
-			if(t > 1) t -= 1;
-			if(t < 1/6) return p + (q - p) * 6 * t;
-			if(t < 1/2) return q;
-			if(t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+	} else {
+		var hue2rgb = function hue2rgb(p, q, t) {
+			if (t < 0) t += 1;
+			if (t > 1) t -= 1;
+			if (t < 1 / 6) return p + (q - p) * 6 * t;
+			if (t < 1 / 2) return q;
+			if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
 			return p;
-		}
+		};
 
 		var q = l < 0.5 ? l * (1 + s) : l + s - l * s;
 		var p = 2 * l - q;
-		r = hue2rgb(p, q, h + 1/3);
+		r = hue2rgb(p, q, h + 1 / 3);
 		g = hue2rgb(p, q, h);
-		b = hue2rgb(p, q, h - 1/3);
+		b = hue2rgb(p, q, h - 1 / 3);
 	}
 
 	return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
@@ -146,20 +157,26 @@ function hslToRgb(h, s, l){
  * @param   {number}  b       The blue color value
  * @return  {Array}           The HSL representation
  */
-function rgbToHsl(r, g, b){
+function rgbToHsl(r, g, b) {
 	r /= 255, g /= 255, b /= 255;
 	var max = Math.max(r, g, b), min = Math.min(r, g, b);
 	var h, s, l = (max + min) / 2;
 
-	if(max == min){
+	if (max == min) {
 		h = s = 0; // achromatic
-	}else{
+	} else {
 		var d = max - min;
 		s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-		switch(max){
-			case r: h = (g - b) / d + (g < b ? 6 : 0); break;
-			case g: h = (b - r) / d + 2; break;
-			case b: h = (r - g) / d + 4; break;
+		switch (max) {
+			case r:
+				h = (g - b) / d + (g < b ? 6 : 0);
+				break;
+			case g:
+				h = (b - r) / d + 2;
+				break;
+			case b:
+				h = (r - g) / d + 4;
+				break;
 		}
 		h /= 6;
 	}

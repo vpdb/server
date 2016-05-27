@@ -44,10 +44,11 @@ ffmpeg()
 	.format('mp4')
 	.outputOptions('-movflags frag_keyframe+empty_moov')
 	.videoCodec('libx264')
-	//	.videoBitrate(1000, true)
+//	.videoBitrate(1000, true)
 	.output(fs.createWriteStream('frames.mp4'), { end: false })
 	.on('start', function(commandLine) {
 		console.log('Spawned Ffmpeg with command: ' + commandLine);
+
 		Promise.each(frames, frameData => {
 			return new Promise((resolve, reject) => {
 				let lines = frameData.split('\r\n');
@@ -76,17 +77,18 @@ ffmpeg()
 				}
 				frame.on('error', reject);
 				frame.on('end', resolve);
+				//frame.on('end', () => { setTimeout(resolve, 20); });
 				//frame.pack().pipe(fs.createWriteStream('frame_' + n + '.png'));
 				//gm(frame.pack()).setFormat('jpg').quality(100).stream().pipe(fs.createWriteStream('frame_' + n + '.jpg'));
-				gm(frame.pack()).setFormat('jpg').quality(100).stream().on('data', data => {
-					jpgStream.push(data);
-				});
+				gm(frame.pack()).setFormat('jpg').quality(100).stream().pipe(jpgStream, { end: false });
+				//gm(frame.pack()).setFormat('jpg').quality(100).stream().on('data', data => { jpgStream.push(data); });
 				//frame.pack().on('data', data => { pngStream.push(data); });
 				n++;
 			});
 		}).then(() => {
-			//pngStream.push(null);
+			//jpgStream.push(null);
 			jpgStream.emit('end');
+			jpgStream.emit('finish');
 			console.log('%s Frames sent to ffmpeg.', n);
 		});
 	})
@@ -108,7 +110,6 @@ ffmpeg()
 		console.log('Video saved!');
 	})
 	.run();
-
 
 /**
  * Converts an HSL color value to RGB. Conversion formula

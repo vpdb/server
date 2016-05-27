@@ -270,7 +270,7 @@ function Queue() {
 
 	this.on('error', function(err, file, variation) {
 		logger.warn('[queue] Error processing %s: %s', file ? file.toString(variation) : '[null]', err.message || err);
-		console.log(err.trace);
+		console.log(err.stack);
 		processQueue(err, file, variation);
 	});
 

@@ -351,7 +351,7 @@ exports.updateVersion = function(req, res) {
 		});
 
 	}).then(() => {
-		return preprocess(req, version.getFileIds().concat(version.getFileIds(newFiles)));
+		return preprocess(req, versionToUpdate.getFileIds().concat(version.getFileIds(newFiles)));
 
 	}).then(() => {
 
@@ -369,17 +369,17 @@ exports.updateVersion = function(req, res) {
 
 	}).then(r => {
 		release = r;
-		return postprocess(version.getPlayfieldImageIds());
+		return postprocess(versionToUpdate.getPlayfieldImageIds());
 
 	}).then(() => {
 
 		if (newFiles.length > 0) {
-			logger.info('[api|release:updateVersion] Added new file to version "%s" to release "%s".', version.version, release.name);
+			logger.info('[api|release:updateVersion] Added new file(s) to version "%s" of release "%s".', version.version, release.name);
 		}
-		return Promise.all(newFiles, file => file.activateFiles());
+		return release.activateFiles();
 
-	}).then(() => {
-		logger.info('[api|release:create] All referenced files activated, returning object to client.');
+	}).then(activatedFiles => {
+		logger.info('[api|release:updateVersion] Activated files [ %s ], returning object to client.', activatedFiles.join(', '));
 		return Game.update({ _id: release._game.toString() }, { modified_at: new Date() });
 
 	}).then(() => {
@@ -830,9 +830,7 @@ function postprocess(fileIds) {
 	return Promise.each(fileIds, id => {
 
 		let file;
-		return Promise.try(() => {
-			return File.findById(id).exec();
-		}).then(f => {
+		return Promise.try(() => File.findById(id).exec()).then(f => {
 			file = f;
 			// so now we're here and unvalidatedRotation is now validated.
 			if (file.preprocessed && file.preprocessed.unvalidatedRotation) {

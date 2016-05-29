@@ -77,18 +77,20 @@ module.exports = function(schema, options) {
 	 * Sets the referenced files to active. Call this after creating a new
 	 * instance.
 	 *
-	 * @param {function} [done] Callback
-	 * @returns {Promise}
+	 * Note that only inactive files are activated, already activated files
+	 * are ignored.
+	 *
+	 * @returns {Promise.<String[]>} File IDs that have been activated.
 	 */
-	schema.methods.activateFiles = function(done) {
+	schema.methods.activateFiles = function() {
 
-		var File = mongoose.model('File');
-		var ids = [];
-		var that = this;
+		const File = mongoose.model('File');
+		let ids = [];
+		let activatedIds = [];
 
-		var objPaths = _.keys(common.explodePaths(this, fileRefs));
+		let objPaths = _.keys(common.explodePaths(this, fileRefs));
 		objPaths.forEach(path => {
-			var id = _.get(that, path);
+			let id = _.get(this, path);
 			if (id) {
 				ids.push(id);
 			}
@@ -98,15 +100,15 @@ module.exports = function(schema, options) {
 			return File.find({ _id: { $in: ids }, is_active: false });
 
 		}).then(files => {
+			activatedIds = _.map(files, 'id');
 			return Promise.each(files, file => file.switchToActive());
 
 		}).then(() => {
 			return this.populate(objPaths.join(' ')).execPopulate();
 
 		}).then(() => {
-			return this;
-
-		}).nodeify(done);
+			return activatedIds;
+		});
 	};
 
 	/**

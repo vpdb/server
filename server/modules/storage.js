@@ -284,7 +284,7 @@ Storage.prototype.onProcessed = function(file, variation, processor) {
 	if (!fs.existsSync(file.getPath(variation))) {
 		// we don't care here, it's possible that a pass was simply skipped.
 		logger.warn('[storage] Skipping %s.', file.toString(variation));
-		return Promise.resolve();
+		return Promise.resolve(file);
 	}
 
 	return Promise.try(() => {

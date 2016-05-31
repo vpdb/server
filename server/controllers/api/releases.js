@@ -840,6 +840,7 @@ function postprocess(fileIds) {
 				});
 			}
 			return file;
+
 		}).then(() => {
 			return storage.postprocess(file);
 		});

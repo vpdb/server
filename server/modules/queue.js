@@ -278,17 +278,18 @@ function Queue() {
 util.inherits(Queue, events.EventEmitter);
 
 
-Queue.prototype.add = function(file, variation, processor) {
 
-	var key = this.getQueryId(file, variation);
+/**
+ * Runs pass 1 (if available) and adds it to the queue of pass 2.
+ *
+ * @param {File} file File to process
+ * @param {Object} processor Processor
+ * @param {Object|String} [variation] Variation to process
+ * @return {Promise} Resolved when pass 1 is done and file is added to the queue for pass 2
+ */
+Queue.prototype.add = function(processor, file, variation) {
 
-	// mark file as being processed
-	this.redis.status.set(this.getRedisId(key), 0, err => {
-		/* istanbul ignore if */
-		if (err) {
-			logger.error('[queue] Error setting value "%s" from Redis: %s', this.getRedisId(key), err.message);
-			return;
-		}
+	Promise.try(() => {
 
 		// run pass 1 if available in processor
 		if (processor.pass1 && variation) {
@@ -300,7 +301,7 @@ Queue.prototype.add = function(file, variation, processor) {
 			}
 
 			file.lock(variation);
-			processor.pass1(file.getPath(), file.getPath(variation), file, variation).then(skipped => {
+			return processor.pass1(file.getPath(), file.getPath(variation), file, variation).then(skipped => {
 				file.unlock(variation);
 				if (skipped) {
 					this.emit('finishedPass1', file, variation, processor, false);
@@ -329,6 +330,25 @@ Queue.prototype.isQueued = function(file, variationName, done) {
 		done(null, num !== null);
 	});
 };
+
+/**
+ * Initializes the callback counter to 0.
+ * @param {File} file
+ * @param {Object|String} [variation]
+ * @returns {Promise}
+ */
+Queue.prototype.initCallback = function(file, variation) {
+	let key = this.getQueryId(file, variation);
+	return new Promise((resolve, reject) => {
+		this.redis.status.set(this.getRedisId(key), 0, err => {
+			if (err) {
+				return reject(err);
+			}
+			resolve();
+		});
+	})
+};
+
 
 Queue.prototype.addCallback = function(file, variationName, callback, done) {
 	var that = this;

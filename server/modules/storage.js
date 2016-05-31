@@ -239,26 +239,45 @@ Storage.prototype.preprocess = function(file, done) {
  * Starts post-processing an uploaded file. See the `queue` module for a
  * complete description of the flow.
  *
+ * The logic below is a 2-stop process: First, we mark the file and its
+ * variations as being processed using Queue#initCallback() and resolve
+ * the Promise instantly. Only then the file and variations are added to
+ * the queue.
+ *
  * @param {File} file
  * @param {boolean} [onlyVariations] If set to `true`, only (re-)process variations.
+ * @returns {Promise} When post process callbacks are initialized.
  */
 Storage.prototype.postprocess = function(file, onlyVariations) {
-	var mimeCategory = file.getMimeCategory();
-	if (!processors[mimeCategory]) {
-		return;
-	}
+	const mimeCategory = file.getMimeCategory();
+	const processor = processors[mimeCategory];
+	const variations = this.variations[mimeCategory] && this.variations[mimeCategory][file.file_type]
+		? this.variations[mimeCategory][file.file_type]
+		: null;
 
-	// add variations to queue
-	if (this.variations[mimeCategory] && this.variations[mimeCategory][file.file_type]) {
-		this.variations[mimeCategory][file.file_type].forEach(function(variation) {
-			queue.add(file, variation, processors[mimeCategory]);
-		});
+	if (!processor) {
+		return Promise.resolve();
 	}
+	return Promise.try(() => {
+		// first, init callbacks
+		if (!onlyVariations) {
+			return queue.initCallback(file);
+		}
 
-	// add actual file to queue
-	if (!onlyVariations) {
-		queue.add(file, undefined, processors[mimeCategory]);
-	}
+	}).then(() => {
+		if (variations) {
+			return Promise.all(variations.map(v => queue.initCallback(file, v)));
+		}
+
+	}).then(() => {
+
+		// then, add to queue.
+		// fall-through is deliberate because this is done in background.
+		Promise.each(variations, v => queue.add(processor, file, v));
+		if (!onlyVariations) {
+			queue.add(processor, file);
+		}
+	});
 };
 
 

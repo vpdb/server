@@ -87,10 +87,7 @@ exports.create = function(fileData, readStream, error, callback) {
 	}).then(() => {
 
 		logger.info('[api|file:save] File upload of %s successfully completed.', file.toString());
-
-		// do this in the background.
-		storage.postprocess(file);
-		return file;
+		return storage.postprocess(file).then(() => file);
 
 	}).nodeify(callback);
 };

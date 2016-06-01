@@ -50,6 +50,7 @@ function Directb2sProcessor() {
 	this.name = 'directb2s';
 	this.variations = {
 		backglass: [
+			{ name: 'full',                               mimeType: 'image/jpeg' },
 			{ name: 'medium',    width: 364, height: 291, mimeType: 'image/jpeg' },
 			{ name: 'medium-2x', width: 728, height: 582, mimeType: 'image/jpeg' },
 			{ name: 'small',     width: 253, height: 202, mimeType: 'image/jpeg' },
@@ -63,6 +64,7 @@ Directb2sProcessor.prototype.metadata = function(file, variation) {
 	return Promise.try(() => {
 		if (!variation) {
 			return new Promise((resolve, reject) => {
+				let now = new Date().getTime();
 				let metadata = {};
 				let saxStream = sax.createStream(true);
 				saxStream.on("error", reject);
@@ -80,6 +82,7 @@ Directb2sProcessor.prototype.metadata = function(file, variation) {
 					}
 				});
 				saxStream.on("end", () => {
+					logger.info('[processor|directb2s|metadata] Retrieved metadata in %sms.', new Date().getTime() - now);
 					resolve(metadata);
 				});
 				fs.createReadStream(file.getPath()).on('error', reject)
@@ -120,6 +123,7 @@ Directb2sProcessor.prototype.pass1 = function(src, dest, file, variation) {
 
 	return Promise.try(() => {
 
+		const now = new Date().getTime();
 		logger.debug('[processor|directb2s|pass1] Starting processing %s at %s.', file.toString(variation), dest);
 		return new Promise((resolve, reject) => {
 
@@ -154,7 +158,7 @@ Directb2sProcessor.prototype.pass1 = function(src, dest, file, variation) {
 
 					// setup success handler
 					writeStream.on('finish', function() {
-						logger.debug('[processor|image|pass1] Saved resized image to "%s".', dest);
+						logger.info('[processor|directb2s|pass1] Saved resized image to "%s" (%sms).', dest, new Date().getTime() - now);
 						parser.resume();
 
 					});
@@ -197,7 +201,8 @@ Directb2sProcessor.prototype.pass2 = function(src, dest, file, variation) {
 		logger.debug('[processor|directb2s|pass2] Starting processing %s at %s.', file.toString(variation), dest);
 		return new Promise((resolve, reject) => {
 
-			logger.debug('[processor|directb2s|pass1] Parsing Direct B2S Backglass at %s...', src);
+			const now = new Date().getTime();
+			let originalSize = fs.statSync(src).size;
 			let out = fs.createWriteStream(dest);
 			let parser = new Parser(src);
 			let closePrevious = '';
@@ -285,6 +290,8 @@ Directb2sProcessor.prototype.pass2 = function(src, dest, file, variation) {
 
 				if (level === 0) {
 					out.end();
+					let crushedSize = fs.statSync(dest).size;
+					logger.debug('[processor|directb2s|pass2] Optimized "%s" in %sms (crushed down to %s%%).', dest, new Date().getTime() - now, Math.round(crushedSize / originalSize * 100));
 					resolve();
 				}
 			});

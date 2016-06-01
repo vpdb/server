@@ -273,10 +273,11 @@ Storage.prototype.postprocess = function(file, onlyVariations) {
 
 		// then, add to queue.
 		// fall-through is deliberate because this is done in background.
-		Promise.each(variations, v => queue.add(processor, file, v));
-		if (!onlyVariations) {
-			queue.add(processor, file);
-		}
+		Promise.each(variations, v => queue.add(processor, file, v)).then(() => {
+			if (!onlyVariations) {
+				queue.add(processor, file);
+			}
+		});
 	});
 };
 

@@ -289,7 +289,7 @@ util.inherits(Queue, events.EventEmitter);
  */
 Queue.prototype.add = function(processor, file, variation) {
 
-	Promise.try(() => {
+	return Promise.try(() => {
 
 		// run pass 1 if available in processor
 		if (processor.pass1 && variation) {

@@ -346,7 +346,7 @@ Queue.prototype.initCallback = function(file, variation) {
 			}
 			resolve();
 		});
-	})
+	});
 };
 
 

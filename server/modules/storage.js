@@ -251,9 +251,9 @@ Storage.prototype.preprocess = function(file, done) {
 Storage.prototype.postprocess = function(file, onlyVariations) {
 	const mimeCategory = file.getMimeCategory();
 	const processor = processors[mimeCategory];
-	const variations = this.variations[mimeCategory] && this.variations[mimeCategory][file.file_type]
-		? this.variations[mimeCategory][file.file_type]
-		: null;
+	const variations = this.variations[mimeCategory] && this.variations[mimeCategory][file.file_type] ?
+		this.variations[mimeCategory][file.file_type] :
+		null;
 
 	if (!processor) {
 		return Promise.resolve();

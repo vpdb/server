@@ -53,12 +53,14 @@ module.exports = function(app) {
 	require('./api/files').register(app, api);
 	require('./api/misc').register(app, api);
 	require('./api/releases').register(app, api);
+
 	require('./api/roms').register(app, api);
 	require('./api/tags').register(app, api);
 	require('./api/tokens').register(app, api);
 	require('./api/user').register(app, api);
 	require('./api/users').register(app, api);
 	require('./api/builds').register(app, api);
+	require('./api/backglasses').register(app, api);
 
 	// storage
 	require('./storage/auth').register(app, api, storage);

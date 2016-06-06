@@ -21,6 +21,7 @@ var api = require('./api');
 
 exports.anon = api.anon;
 exports.auth = api.auth;
+exports.backglasses = require('./backglasses');
 exports.builds = require('./builds');
 exports.comments = require('./comments');
 exports.ping = api.ping;

@@ -51,6 +51,7 @@ const VersionSchema = new Schema(versionFields);
 
 const backglassFields = {
 	id:            { type: String, required: true, unique: true, 'default': shortId.generate },
+	_game:         { type: Schema.ObjectId, ref: 'Game', required: true },
 	versions:      { type: [ VersionSchema ], validate: [ nonEmptyArray, 'You must provide at least one version for the backglass.' ] },
 	description:   { type: String },
 	authors:       { type: [ author.schema ], validate: [ nonEmptyArray, 'You must provide at least one author.' ] },

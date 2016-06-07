@@ -14,6 +14,7 @@ var vpt = path.resolve(__dirname, '../../data/test/files/empty.vpt');
 var rom = path.resolve(__dirname, '../../data/test/files/hulk.zip');
 var zip = path.resolve(__dirname, '../../data/test/files/dmd.zip');
 var rar = path.resolve(__dirname, '../../data/test/files/dmd.rar');
+var b2s = path.resolve(__dirname, '../../data/test/files/test.directb2s');
 
 exports.createBackglass = function(user, request, done) {
 
@@ -39,6 +40,25 @@ exports.createBackglass = function(user, request, done) {
 			});
 	});
 };
+
+exports.createDirectB2S = function(user, request, done) {
+
+	var data = fs.readFileSync(b2s);
+	request
+		.post('/storage/v1/files')
+		.query({ type: 'backglass' })
+		.type('application/x-directb2s')
+		.set('Content-Disposition', 'attachment; filename="test.directb2s"')
+		.set('Content-Length', data.length)
+		.send(data)
+		.as(user)
+		.end(function(err, res) {
+			expect(err).to.not.be.ok();
+			expect(res.status).to.be(201);
+			done(res.body);
+		});
+};
+
 
 exports.createPlayfield = function(user, request, orientation, type, done) {
 	if (_.isFunction(type)) {

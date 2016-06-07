@@ -125,14 +125,19 @@ function replaceIds(obj, paths, options) {
 			var prettyId = _.get(obj, objPath);
 
 			if (!prettyId) {
-				return Promise.resolve();
+				return;
+			}
+			if (!_.isString(prettyId)) {
+				invalidations.push({ path: objPath, message: "ID must be a string.", value: prettyId });
+				_.set(obj, objPath, '000000000000000000000000'); // to avoid class cast error to objectId message
+				return;
 			}
 			return RefModel.findOne({ id: prettyId }).then(refObj => {
 
 				if (!refObj) {
 					logger.warn('[model] %s ID "%s" not found in database for field %s.', refModelName, prettyId, objPath);
 					invalidations.push({ path: objPath, message: 'No such ' + refModelName.toLowerCase() + ' with ID "' + prettyId + '".', value: prettyId });
-					_.set(obj, objPath, '000000000000000000000000'); // to avoid class cast error to objectId
+					_.set(obj, objPath, '000000000000000000000000'); // to avoid class cast error to objectId message
 
 				} else {
 					// validations
@@ -151,9 +156,8 @@ function replaceIds(obj, paths, options) {
 //					console.log('--- Overwriting pretty ID "%s" at %s with %s.', prettyId, objPath, refObj._id);
 					_.set(obj, objPath, refObj._id);
 				}
-				return Promise.resolve();
 			});
-		}).then(function() {
+		}).then(() => {
 			return invalidations;
 		});
 	});

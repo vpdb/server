@@ -80,6 +80,9 @@ BackglassSchema.plugin(fileRef);
 BackglassSchema.plugin(paginate);
 BackglassSchema.plugin(toObj);
 
+VersionSchema.plugin(fileRef);
+VersionSchema.plugin(toObj);
+
 //-----------------------------------------------------------------------------
 // VIRTUALS
 //-----------------------------------------------------------------------------

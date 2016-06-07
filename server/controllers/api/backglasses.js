@@ -36,12 +36,25 @@ const error = require('../../modules/error')('api', 'backglass');
  */
 exports.create = function(req, res) {
 
+	const now = new Date();
 	let newBackglass;
 	Promise.try(function() {
-		newBackglass = new Backglass(req.body);
 
-		newBackglass.created_at = new Date();
-		newBackglass._created_by = req.user._id;
+		return Backglass.getInstance(_.extend(req.body, {
+			_created_by: req.user._id,
+			created_at: now
+		}));
+
+	}).then(bg => {
+
+		newBackglass = bg;
+		if (newBackglass.versions) {
+			newBackglass.versions.forEach(version => {
+				if (!version.released_at) {
+					version.released_at = now;
+				}
+			});
+		}
 
 		return newBackglass.validate();
 

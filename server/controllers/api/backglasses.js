@@ -37,7 +37,7 @@ const error = require('../../modules/error')('api', 'backglass');
 exports.create = function(req, res) {
 
 	const now = new Date();
-	let newBackglass;
+	let backglass;
 	Promise.try(function() {
 
 		return Backglass.getInstance(_.extend(req.body, {
@@ -45,25 +45,36 @@ exports.create = function(req, res) {
 			created_at: now
 		}));
 
-	}).then(bg => {
+	}).then(newBackglass => {
 
-		newBackglass = bg;
-		if (newBackglass.versions) {
-			newBackglass.versions.forEach(version => {
+		backglass = newBackglass;
+		if (backglass.versions) {
+			backglass.versions.forEach(version => {
 				if (!version.released_at) {
 					version.released_at = now;
 				}
 			});
 		}
 
-		return newBackglass.validate();
+		// TODO check for rom name in .directb2s if _game is not set.
 
-	}).then(function() {
-		return newBackglass.save();
+		return backglass.validate();
 
-	}).then(function() {
-		logger.info('[api|build:create] Backglass "%s" successfully created.', newBackglass.label);
-		api.success(res, newBackglass.toSimple(), 201);
+	}).then(() => {
+		return backglass.save();
+
+	}).then(() => {
+
+		return Backglass.findById(backglass._id)
+			.populate({ path: '_game' })
+			.populate({ path: 'versions.authors._user' })
+			.populate({ path: 'versions._file' })
+			.exec();
+
+	}).then(populatedBackglass => {
+
+		logger.info('[api|build:create] Backglass "%s" successfully created.', backglass.label);
+		api.success(res, populatedBackglass.toSimple(), 201);
 
 	}).catch(api.handleError(res, error, 'Error creating backglass'));
 };

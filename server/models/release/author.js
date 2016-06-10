@@ -28,10 +28,13 @@ const schema = new Schema({
 	roles: [ String ]
 });
 schema.plugin(toObj);
+schema.virtual('user')
+	.get(function() {
+		return require('mongoose').model('User').toReduced(this._user);
+	});
 schema.options.toObject = {
 	virtuals: true,
 	transform: function(doc, author) {
-		author.user = require('mongoose').model('User').toReduced(author._user);
 		delete author.id;
 		delete author._id;
 		delete author._user;

@@ -1,21 +1,59 @@
 201 Created
 X-App-Sha: 5eece90
 Content-Type: application/json; charset=utf-8
-Content-Length: 449
-Etag: W/"1c1-VfnusHKAx9J7ldqpUxxTKg"
+Etag: W/"54e-RsV1raP6RANqWSJlvsFwBA"
+Content-Encoding: gzip
 
 {
-  "id": "e2czek4a7w",
+  "id": "pkfyv3mn7q",
+  "game": {
+    "ipdb": {
+      "mfg": 47,
+      "number": 3681
+    },
+    "year": 1965,
+    "manufacturer": "Bally",
+    "title": "Beauty Beach",
+    "id": "beauty-beach"
+  },
   "versions": [
     {
-      "released_at": "2016-06-10T21:43:21.687Z",
+      "released_at": "2016-06-10T22:25:32.111Z",
       "version": "1.0",
-      "_file": "575b34799d6eed143d0b7729",
-      "_id": "575b34799d6eed143d0b772b",
       "counter": {
         "downloads": 0
       },
-      "id": "575b34799d6eed143d0b772b"
+      "file": {
+        "counter": {
+          "downloads": 0
+        },
+        "is_protected": true,
+        "variations": {
+          "small-2x": {
+            "is_protected": true,
+            "url": "https://localhost:7357/storage/v1/files/small-2x/ekpbv38a7q.jpg"
+          },
+          "small": {
+            "is_protected": true,
+            "url": "https://localhost:7357/storage/v1/files/small/ekpbv38a7q.jpg"
+          },
+          "medium-2x": {
+            "is_protected": true,
+            "url": "https://localhost:7357/storage/v1/files/medium-2x/ekpbv38a7q.jpg"
+          },
+          "medium": {
+            "is_protected": true,
+            "url": "https://localhost:7357/storage/v1/files/medium/ekpbv38a7q.jpg"
+          },
+          "full": {
+            "is_protected": true,
+            "url": "https://localhost:7357/storage/v1/files/full/ekpbv38a7q.jpg"
+          }
+        },
+        "bytes": 12813,
+        "url": "https://localhost:7357/storage/v1/files/ekpbv38a7q.directb2s",
+        "id": "ekpbv38a7q"
+      }
     }
   ],
   "authors": [
@@ -24,10 +62,9 @@ Etag: W/"1c1-VfnusHKAx9J7ldqpUxxTKg"
         "creator"
       ],
       "user": {
-        "id": "W[4yní\u0014=\u000bw ",
-        "counter": {}
+        "id": "W[>[(\b\u001dÂá"
       }
     }
   ],
-  "created_at": "2016-06-10T21:43:21.687Z"
+  "created_at": "2016-06-10T22:25:32.111Z"
 }

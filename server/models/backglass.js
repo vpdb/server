@@ -48,6 +48,14 @@ const versionFields = {
 	}
 };
 const VersionSchema = new Schema(versionFields);
+VersionSchema.plugin(fileRef);
+VersionSchema.plugin(toObj);
+VersionSchema.virtual('file')
+	.get(function() {
+		if (this._file && this._file.toSimple) {
+			return this._file.toSimple();
+		}
+	});
 
 const backglassFields = {
 	id:            { type: String, required: true, unique: true, 'default': shortId.generate },
@@ -65,7 +73,7 @@ const BackglassSchema = new Schema(backglassFields);
 // API FIELDS
 //-----------------------------------------------------------------------------
 const apiFields = {
-	simple: [ 'id', 'versions', 'description', 'authors', 'acknowledgements', 'created_at' ]
+	simple: [ 'id', 'game', 'versions', 'description', 'authors', 'acknowledgements', 'created_at' ]
 };
 
 //-----------------------------------------------------------------------------
@@ -80,22 +88,14 @@ BackglassSchema.plugin(fileRef);
 BackglassSchema.plugin(paginate);
 BackglassSchema.plugin(toObj);
 
-VersionSchema.plugin(fileRef);
-VersionSchema.plugin(toObj);
 
 //-----------------------------------------------------------------------------
 // VIRTUALS
 //-----------------------------------------------------------------------------
-BackglassSchema.virtual('created_by')
+BackglassSchema.virtual('game')
 	.get(function() {
-		if (this._created_by && this.populated('_created_by')) {
-			return this._created_by.toReduced();
-		}
-	});
-VersionSchema.virtual('file')
-	.get(function() {
-		if (this._file && this.populated('_file')) {
-			return this._file.toSimple();
+		if (this._game && this.populated('_game')) {
+			return this._game.toReduced();
 		}
 	});
 
@@ -120,10 +120,19 @@ function nonEmptyArray(value) {
 //-----------------------------------------------------------------------------
 BackglassSchema.options.toObject = {
 	virtuals: true,
-	transform: function(doc, rom) {
-		delete rom.__v;
-		delete rom._id;
-		delete rom._created_by;
+	transform: function(doc, backglass) {
+		delete backglass.__v;
+		delete backglass._id;
+		delete backglass._created_by;
+	}
+};
+VersionSchema.options.toObject = {
+	virtuals: true,
+	transform: function(doc, version) {
+		delete version.__v;
+		delete version._id;
+		delete version.id;
+		delete version._file;
 	}
 };
 

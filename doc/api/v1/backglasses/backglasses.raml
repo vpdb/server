@@ -6,6 +6,9 @@ description: |
   Currently the only supported format is DirectB2S. Every backglass is linked
   to the game by having the same file name as the table file.
 
+  Note that the `_game` attribute is optional, but only if the linked file
+  contains a reference to a ROM and that ROM already exists in the database.
+
 post:
   is: [ validated ]
   securedBy: [ jwt: { scopes: [ MEMBER ] } ]

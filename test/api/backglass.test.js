@@ -71,7 +71,6 @@ describe('The VPDB `Backglass` API', function() {
 		it('should fail validations for invalid data', function(done) {
 			request
 				.post('/api/v1/backglasses')
-				.saveResponse({ path: 'backglasses/create'})
 				.as('member')
 				.send({ _game: 'non existant', authors: [{ _user: 'grützl', roles: [] }], versions: [] })
 				.end(function(err, res) {
@@ -86,11 +85,9 @@ describe('The VPDB `Backglass` API', function() {
 		it('should fail validations for empty version data', function(done) {
 			request
 				.post('/api/v1/backglasses')
-				.saveResponse({ path: 'backglasses/create'})
 				.as('member')
 				.send({ _game: game.id, authors: [ { _user: hlp.users['member'].id, roles: [ 'creator' ]}], versions: [ {} ] })
 				.end(function(err, res) {
-					hlp.dump(res);
 					hlp.expectValidationError(err, res, 'versions.0._file', 'must provide a file reference');
 					hlp.expectValidationError(err, res, 'versions.0.version', 'must be provided');
 					expect(res.body.errors.length).to.be(2);
@@ -98,33 +95,30 @@ describe('The VPDB `Backglass` API', function() {
 				});
 		});
 
-		it.skip('should fail validations for invalid version data', function(done) {
+		it('should fail validations for invalid version data', function(done) {
 			request
 				.post('/api/v1/backglasses')
-				.saveResponse({ path: 'backglasses/create'})
 				.as('member')
-				.send({ _game: game.id, authors: [ { _user: hlp.users['member'].id, roles: [ 'creator' ]}], versions: [ {
-					version: 1,
-					changes: 2,
-					_file: 'do-not-exist',
-					released_at: 'lol-no-date!'
-				} ] })
+				.send({
+					_game: game.id,
+					authors: [ { _user: hlp.users['member'].id, roles: [ 'creator' ]}],
+					versions: [ {
+						version: '',
+						_file: 'do-not-exist'
+					} ]
+				})
 				.end(function(err, res) {
-					hlp.dump(res);
-					hlp.expectValidationError(err, res, 'versions.0.version', 'no such file');
-					hlp.expectValidationError(err, res, 'versions.0.changes', 'no such file');
+					hlp.expectValidationError(err, res, 'versions.0.version', 'must be provided');
 					hlp.expectValidationError(err, res, 'versions.0._file', 'no such file');
-					hlp.expectValidationError(err, res, 'versions.0.released_at', 'no such file');
-					expect(res.body.errors.length).to.be(4);
+					expect(res.body.errors.length).to.be(2);
 					done();
 				});
 		});
 
-		it.only('should should succeed with minimal data', function(done) {
+		it('should should succeed with minimal data', function(done) {
 			hlp.file.createDirectB2S('member', request, function(b2s) {
 				request
 					.post('/api/v1/backglasses')
-					.saveResponse({ path: 'backglasses/create'})
 					.as('member')
 					.send({
 						_game: game.id,
@@ -137,12 +131,53 @@ describe('The VPDB `Backglass` API', function() {
 							_file: b2s.id
 						} ]
 					})
-					.end(function(err, res) {
+					.end(hlp.status(201, done));
+			});
+		});
 
-						hlp.dump(res);
-						hlp.expectStatus(err, res, 201);
-						done();
-					});
+		it('should should succeed with full data', function(done) {
+			hlp.file.createDirectB2S('member', request, function(b2s1) {
+				hlp.file.createDirectB2S('member', request, function(b2s2) {
+					const description = 'Photoshopped the super hires backglass together from four different sources!';
+					const acknowledgements = '- Thanks @mom for supporting my late hours\n- Thanks @dad for supporting @mom!';
+					const changes1 = 'Initial release';
+					const changes2 = '- Backglass is now even more high res!\n- It blinks more.';
+					request
+						.post('/api/v1/backglasses')
+						.save({ path: 'backglasses/create' })
+						.as('member')
+						.send({
+							_game: game.id,
+							description: description,
+							acknowledgements: acknowledgements,
+							authors: [{
+								_user: hlp.users['member'].id,
+								roles: ['creator']
+							}],
+							versions: [{
+								version: '1.0',
+								changes: changes1,
+								_file: b2s1.id
+							}, {
+								version: '1.1',
+								changes: changes2,
+								_file: b2s2.id
+							}]
+						})
+						.end(function(err, res) {
+
+							hlp.expectStatus(err, res, 201);
+							expect(res.body.game).to.be.an('object');
+							expect(res.body.description).to.be(description);
+							expect(res.body.acknowledgements).to.be(acknowledgements);
+							expect(res.body.authors[0].user).to.be.an('object');
+							expect(res.body.versions[0].version).to.be('1.0');
+							expect(res.body.versions[0].changes).to.be(changes1);
+							expect(res.body.versions[0].file.variations).to.be.an('object');
+							expect(res.body.versions[1].changes).to.be(changes2);
+							done();
+						});
+				});
 			});
 		});
 	});

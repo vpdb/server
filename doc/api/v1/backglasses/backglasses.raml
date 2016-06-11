@@ -17,13 +17,11 @@ post:
 
   body:
     role/member:
-      schema: build
       example: !include http/create-req.json
   responses:
     201:
       body:
         role/member:
-          schema: build
           example: !include http/create-res-201.json
     422:
       body:

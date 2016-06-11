@@ -1,0 +1,32 @@
+POST /v1/backglasses HTTP/2.0
+Host: api.vpdb.io
+Accept-Encoding: gzip, deflate
+authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJlMjRxYmhyOHEiLCJpYXQiOiIyMDE2LTA2LTExVDEyOjE4OjE2LjI5M1oiLCJleHAiOiIyMDE2LTA2LTExVDEzOjE4OjE2LjI5M1oiLCJpcnQiOmZhbHNlfQ.V9IuK5nUNzUmQg_QYmwsTgywnw_Y6yAoCZEs7j8vWtE
+content-type: application/json
+Content-Length: 458
+
+{
+  "_game": "viking-king",
+  "description": "Photoshopped the super hires backglass together from four different sources!",
+  "acknowledgements": "- Thanks @mom for supporting my late hours\n- Thanks @dad for supporting @mom!",
+  "authors": [
+    {
+      "_user": "e24qbhr8q",
+      "roles": [
+        "creator"
+      ]
+    }
+  ],
+  "versions": [
+    {
+      "version": "1.0",
+      "changes": "Initial release",
+      "_file": "p224wbbr8w"
+    },
+    {
+      "version": "1.1",
+      "changes": "- Backglass is now even more high res!\n- It blinks more.",
+      "_file": "pksebhrmw"
+    }
+  ]
+}

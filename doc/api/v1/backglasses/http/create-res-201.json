@@ -1,25 +1,26 @@
 201 Created
 X-App-Sha: 5eece90
 Content-Type: application/json; charset=utf-8
-Etag: W/"54e-RsV1raP6RANqWSJlvsFwBA"
+Etag: W/"afa-fkLdp0xWwLtkTe2VdNZuKQ"
 Content-Encoding: gzip
 
 {
-  "id": "pkfyv3mn7q",
+  "id": "p27ebhrmw",
   "game": {
     "ipdb": {
-      "mfg": 47,
-      "number": 3681
+      "mfg": 467,
+      "number": 5895
     },
-    "year": 1965,
-    "manufacturer": "Bally",
-    "title": "Beauty Beach",
-    "id": "beauty-beach"
+    "year": 1900,
+    "manufacturer": "LTD",
+    "title": "Viking King",
+    "id": "viking-king"
   },
   "versions": [
     {
-      "released_at": "2016-06-10T22:25:32.111Z",
+      "released_at": "2016-06-11T12:18:16.941Z",
       "version": "1.0",
+      "changes": "Initial release",
       "counter": {
         "downloads": 0
       },
@@ -31,40 +32,88 @@ Content-Encoding: gzip
         "variations": {
           "small-2x": {
             "is_protected": true,
-            "url": "https://localhost:7357/storage/v1/files/small-2x/ekpbv38a7q.jpg"
+            "url": "https://localhost:7357/storage/v1/files/small-2x/p224wbbr8w.jpg"
           },
           "small": {
             "is_protected": true,
-            "url": "https://localhost:7357/storage/v1/files/small/ekpbv38a7q.jpg"
+            "url": "https://localhost:7357/storage/v1/files/small/p224wbbr8w.jpg"
           },
           "medium-2x": {
             "is_protected": true,
-            "url": "https://localhost:7357/storage/v1/files/medium-2x/ekpbv38a7q.jpg"
+            "url": "https://localhost:7357/storage/v1/files/medium-2x/p224wbbr8w.jpg"
           },
           "medium": {
             "is_protected": true,
-            "url": "https://localhost:7357/storage/v1/files/medium/ekpbv38a7q.jpg"
+            "url": "https://localhost:7357/storage/v1/files/medium/p224wbbr8w.jpg"
           },
           "full": {
             "is_protected": true,
-            "url": "https://localhost:7357/storage/v1/files/full/ekpbv38a7q.jpg"
+            "url": "https://localhost:7357/storage/v1/files/full/p224wbbr8w.jpg"
           }
         },
         "bytes": 12813,
-        "url": "https://localhost:7357/storage/v1/files/ekpbv38a7q.directb2s",
-        "id": "ekpbv38a7q"
+        "url": "https://localhost:7357/storage/v1/files/p224wbbr8w.directb2s",
+        "id": "p224wbbr8w"
+      }
+    },
+    {
+      "released_at": "2016-06-11T12:18:16.941Z",
+      "version": "1.1",
+      "changes": "- Backglass is now even more high res!\n- It blinks more.",
+      "counter": {
+        "downloads": 0
+      },
+      "file": {
+        "counter": {
+          "downloads": 0
+        },
+        "is_protected": true,
+        "variations": {
+          "small-2x": {
+            "is_protected": true,
+            "url": "https://localhost:7357/storage/v1/files/small-2x/pksebhrmw.jpg"
+          },
+          "small": {
+            "is_protected": true,
+            "url": "https://localhost:7357/storage/v1/files/small/pksebhrmw.jpg"
+          },
+          "medium-2x": {
+            "is_protected": true,
+            "url": "https://localhost:7357/storage/v1/files/medium-2x/pksebhrmw.jpg"
+          },
+          "medium": {
+            "is_protected": true,
+            "url": "https://localhost:7357/storage/v1/files/medium/pksebhrmw.jpg"
+          },
+          "full": {
+            "is_protected": true,
+            "url": "https://localhost:7357/storage/v1/files/full/pksebhrmw.jpg"
+          }
+        },
+        "bytes": 12813,
+        "url": "https://localhost:7357/storage/v1/files/pksebhrmw.directb2s",
+        "id": "pksebhrmw"
       }
     }
   ],
+  "description": "Photoshopped the super hires backglass together from four different sources!",
   "authors": [
     {
       "roles": [
         "creator"
       ],
       "user": {
-        "id": "W[>[(\b\u001dÂá"
+        "counter": {
+          "stars": 0,
+          "comments": 0
+        },
+        "gravatar_id": "2801215b78d7c7bd285dd63da3f60b65",
+        "username": "Edythe37",
+        "name": "Edythe37",
+        "id": "e24qbhr8q"
       }
     }
   ],
-  "created_at": "2016-06-10T22:25:32.111Z"
+  "acknowledgements": "- Thanks @mom for supporting my late hours\n- Thanks @dad for supporting @mom!",
+  "created_at": "2016-06-11T12:18:16.941Z"
 }

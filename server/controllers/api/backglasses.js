@@ -48,7 +48,7 @@ exports.create = function(req, res) {
 	}).then(newBackglass => {
 
 		backglass = newBackglass;
-		if (backglass.versions) {
+		if (_.isArray(backglass.versions)) {
 			backglass.versions.forEach(version => {
 				if (!version.released_at) {
 					version.released_at = now;

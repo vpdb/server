@@ -1,15 +1,24 @@
 422 Unprocessable Entity
 X-App-Sha: 5eece90
 Content-Type: application/json; charset=utf-8
-Content-Length: 142
-Etag: W/"8e-AovPWp15w2b6fXdY9/qRXQ"
+Content-Length: 314
+Etag: W/"13a-puk1lnzPs16q1tsancrR2w"
 
 {
   "errors": [
     {
-      "message": "No such file with ID \"i-dont-exist\".",
-      "field": "versions.0._file",
-      "value": "i-dont-exist"
+      "message": "Path `_game` is required.",
+      "field": "_game"
+    },
+    {
+      "message": "You must provide at least one author.",
+      "field": "authors",
+      "value": []
+    },
+    {
+      "message": "You must provide at least one version for the backglass.",
+      "field": "versions",
+      "value": []
     }
   ]
 }

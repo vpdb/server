@@ -67,7 +67,7 @@ exports.create = function(req, res) {
 
 		return Backglass.findById(backglass._id)
 			.populate({ path: '_game' })
-			.populate({ path: 'versions.authors._user' })
+			.populate({ path: 'authors._user' })
 			.populate({ path: 'versions._file' })
 			.exec();
 

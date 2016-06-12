@@ -116,14 +116,15 @@ describe('The VPDB `Backglass` API', function() {
 		});
 
 		it('should should succeed with minimal data', function(done) {
-			hlp.file.createDirectB2S('member', request, function(b2s) {
+			const user = 'member';
+			hlp.file.createDirectB2S(user, request, function(b2s) {
 				request
 					.post('/api/v1/backglasses')
-					.as('member')
+					.as(user)
 					.send({
 						_game: game.id,
 						authors: [ {
-							_user: hlp.users['member'].id,
+							_user: hlp.users[user].id,
 							roles: [ 'creator' ]
 						} ],
 						versions: [ {

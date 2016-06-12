@@ -31,7 +31,7 @@ var hlp = require('../modules/helper');
 
 superagentTest(request);
 
-describe.only('The VPDB `Backglass` API', function() {
+describe('The VPDB `Backglass` API', function() {
 
 	describe('when posting a new backglass', function() {
 
@@ -179,6 +179,38 @@ describe.only('The VPDB `Backglass` API', function() {
 						});
 				});
 			});
+		});
+
+		it('should automatically link to correct game if game name exists.', function(done) {
+			const gameName = 'matchedgame';
+			const user = 'member';
+			hlp.file.createRom(user, request, function(file) {
+				request
+					.post('/api/v1/games/' + game.id + '/roms')
+					.as('member')
+					.send({ id: gameName, _file: file.id })
+					.end(function(err, res) {
+						hlp.expectStatus(err, res, 201);
+						hlp.doomRom(user, res.body.id);
+						hlp.file.createDirectB2S('member', request, gameName, function(b2s) {
+							request
+								.post('/api/v1/backglasses')
+								.as('member')
+								.send({
+									authors: [ {
+										_user: hlp.users['member'].id,
+										roles: [ 'creator' ]
+									} ],
+									versions: [ {
+										version: '1.0',
+										_file: b2s.id
+									} ]
+								})
+								.end(hlp.status(201, done));
+						});
+					});
+			});
+
 		});
 	});
 });

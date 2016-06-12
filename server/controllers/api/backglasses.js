@@ -24,6 +24,8 @@ const logger = require('winston');
 
 const acl = require('../../acl');
 const api = require('./api');
+const File = require('mongoose').model('File');
+const Rom = require('mongoose').model('Rom');
 const Backglass = require('mongoose').model('Backglass');
 
 const error = require('../../modules/error')('api', 'backglass');
@@ -38,6 +40,7 @@ exports.create = function(req, res) {
 
 	const now = new Date();
 	let backglass;
+	let backglassFile;
 	Promise.try(function() {
 
 		return Backglass.getInstance(_.extend(req.body, {
@@ -54,10 +57,22 @@ exports.create = function(req, res) {
 					version.released_at = now;
 				}
 			});
+			if (backglass.versions[0] && !backglass._game) {
+				return File.findById(backglass.versions[0]._file).exec();
+			}
 		}
 
-		// TODO check for rom name in .directb2s if _game is not set.
+	}).then(file => {
+		if (file && file.metadata && file.metadata.gamename) {
+			backglassFile = file;
+			return Rom.findOne({ id: file.metadata.gamename }).exec();
+		}
 
+	}).then(rom => {
+		if (rom) {
+			logger.info('[ctrl|backglass] Linking backglass to same game %s as rom "%s".', rom._game, backglassFile.metadata.gamename);
+			backglass._game = rom._game;
+		}
 		return backglass.validate();
 
 	}).then(() => {

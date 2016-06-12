@@ -221,7 +221,40 @@ describe('The VPDB `Backglass` API', function() {
 						});
 					});
 			});
+		});
 
+		it('should should succeed with minimal data under games resource', function(done) {
+			const user = 'member';
+			hlp.file.createDirectB2S(user, request, function(b2s) {
+				request
+					.post('/api/v1/games/' + game.id + '/backglasses')
+					.save('games/create-backglass')
+					.as(user)
+					.send({
+						authors: [ {
+							_user: hlp.users[user].id,
+							roles: [ 'creator' ]
+						} ],
+						versions: [ {
+							version: '1.0',
+							_file: b2s.id
+						} ]
+					})
+					.end(function(err, res) {
+						hlp.expectStatus(err, res, 201);
+						hlp.doomBackglass(user, res.body.id);
+						done();
+					});
+			});
+		});
+
+		it('should should fail for non-existent game under games resource', function(done) {
+			const user = 'member';
+			request
+				.post('/api/v1/games/lol-not-exist/backglasses')
+				.as(user)
+				.send({})
+				.end(hlp.status(404, 'no such game', done));
 		});
 	});
 

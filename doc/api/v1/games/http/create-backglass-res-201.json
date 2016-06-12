@@ -1,0 +1,78 @@
+201 Created
+X-App-Sha: 5eece90
+Content-Type: application/json; charset=utf-8
+Etag: W/"5fc-DCE+j35xP/2Npwf20i6YnQ"
+Content-Encoding: gzip
+
+{
+  "id": "ekazz9z1q",
+  "game": {
+    "ipdb": {
+      "rating": 8,
+      "mfg": 81,
+      "number": 1253
+    },
+    "year": 1965,
+    "manufacturer": "Chicago Coin",
+    "title": "Hula-Hula",
+    "id": "hula-hula"
+  },
+  "versions": [
+    {
+      "released_at": "2016-06-12T19:10:12.827Z",
+      "version": "1.0",
+      "counter": {
+        "downloads": 0
+      },
+      "file": {
+        "counter": {
+          "downloads": 0
+        },
+        "is_protected": true,
+        "variations": {
+          "small-2x": {
+            "is_protected": true,
+            "url": "https://localhost:7357/storage/v1/files/small-2x/ekurbz9y1q.jpg"
+          },
+          "small": {
+            "is_protected": true,
+            "url": "https://localhost:7357/storage/v1/files/small/ekurbz9y1q.jpg"
+          },
+          "medium-2x": {
+            "is_protected": true,
+            "url": "https://localhost:7357/storage/v1/files/medium-2x/ekurbz9y1q.jpg"
+          },
+          "medium": {
+            "is_protected": true,
+            "url": "https://localhost:7357/storage/v1/files/medium/ekurbz9y1q.jpg"
+          },
+          "full": {
+            "is_protected": true,
+            "url": "https://localhost:7357/storage/v1/files/full/ekurbz9y1q.jpg"
+          }
+        },
+        "bytes": 2067,
+        "url": "https://localhost:7357/storage/v1/files/ekurbz9y1q.directb2s",
+        "id": "ekurbz9y1q"
+      }
+    }
+  ],
+  "authors": [
+    {
+      "roles": [
+        "creator"
+      ],
+      "user": {
+        "counter": {
+          "stars": 0,
+          "comments": 0
+        },
+        "gravatar_id": "ba3ada215afb8ae88d30c27ebe3382a3",
+        "username": "Paula.Bruen",
+        "name": "Paula.Bruen",
+        "id": "ek4byszow"
+      }
+    }
+  ],
+  "created_at": "2016-06-12T19:10:12.827Z"
+}

@@ -1,17 +1,17 @@
 POST /v1/backglasses HTTP/2.0
 Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
-authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJlMjRxYmhyOHEiLCJpYXQiOiIyMDE2LTA2LTExVDEyOjE4OjE2LjI5M1oiLCJleHAiOiIyMDE2LTA2LTExVDEzOjE4OjE2LjI5M1oiLCJpcnQiOmZhbHNlfQ.V9IuK5nUNzUmQg_QYmwsTgywnw_Y6yAoCZEs7j8vWtE
+authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJlazRieXN6b3ciLCJpYXQiOiIyMDE2LTA2LTEyVDE5OjEwOjExLjk0M1oiLCJleHAiOiIyMDE2LTA2LTEyVDIwOjEwOjExLjk0M1oiLCJpcnQiOmZhbHNlfQ.W_DqvbZoB7CbJfpQawH8FnBURSh2bqwZAapGBEl8DiE
 content-type: application/json
-Content-Length: 458
+Content-Length: 457
 
 {
-  "_game": "viking-king",
+  "_game": "hula-hula",
   "description": "Photoshopped the super hires backglass together from four different sources!",
   "acknowledgements": "- Thanks @mom for supporting my late hours\n- Thanks @dad for supporting @mom!",
   "authors": [
     {
-      "_user": "e24qbhr8q",
+      "_user": "ek4byszow",
       "roles": [
         "creator"
       ]
@@ -21,12 +21,12 @@ Content-Length: 458
     {
       "version": "1.0",
       "changes": "Initial release",
-      "_file": "p224wbbr8w"
+      "_file": "ekb4hz9y1q"
     },
     {
       "version": "1.1",
       "changes": "- Backglass is now even more high res!\n- It blinks more.",
-      "_file": "pksebhrmw"
+      "_file": "pk4xbz9y1w"
     }
   ]
 }

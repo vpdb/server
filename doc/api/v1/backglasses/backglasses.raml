@@ -7,14 +7,18 @@ description: |
   backglass is linked to the game by having the same file name as the
   table file.
 
-  Note that the `_game` attribute is optional, but only if the linked file
-  contains a reference to a ROM and that ROM already exists in the database.
-
 post:
   is: [ validated ]
   securedBy: [ jwt: { scopes: [ MEMBER ] } ]
   description: |
     Create a new backglass.
+
+    This resource is available in order to facilitate batch-upload of
+    backglasses. You can either specify the `_game` attribute in the
+    body or rely on the linked file's `GameName` value, which will try
+    to match the game by ROM, if such ROM is available.
+
+    Otherwise, use the backglass resource [under games](api://core/post/games/{game_id}/backglasses).
 
   body:
     role/member:

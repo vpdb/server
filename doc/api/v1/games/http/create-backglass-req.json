@@ -1,0 +1,23 @@
+POST /v1/games/hula-hula/backglasses HTTP/2.0
+Host: api.vpdb.io
+Accept-Encoding: gzip, deflate
+authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJlazRieXN6b3ciLCJpYXQiOiIyMDE2LTA2LTEyVDE5OjEwOjExLjk0M1oiLCJleHAiOiIyMDE2LTA2LTEyVDIwOjEwOjExLjk0M1oiLCJpcnQiOmZhbHNlfQ.W_DqvbZoB7CbJfpQawH8FnBURSh2bqwZAapGBEl8DiE
+content-type: application/json
+Content-Length: 107
+
+{
+  "authors": [
+    {
+      "_user": "ek4byszow",
+      "roles": [
+        "creator"
+      ]
+    }
+  ],
+  "versions": [
+    {
+      "version": "1.0",
+      "_file": "ekurbz9y1q"
+    }
+  ]
+}

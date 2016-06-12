@@ -25,6 +25,7 @@ const logger = require('winston');
 const acl = require('../../acl');
 const api = require('./api');
 const File = require('mongoose').model('File');
+const Game = require('mongoose').model('Game');
 const Rom = require('mongoose').model('Rom');
 const Backglass = require('mongoose').model('Backglass');
 
@@ -40,7 +41,7 @@ exports.create = function(req, res) {
 
 	const now = new Date();
 	let backglass;
-	let backglassFile;
+
 	Promise.try(function() {
 
 		return Backglass.getInstance(_.extend(req.body, {
@@ -57,22 +58,36 @@ exports.create = function(req, res) {
 					version.released_at = now;
 				}
 			});
+
+			// if this comes from /games/:gameId/backglasses, we already have a game id.
+			if (req.params.gameId) {
+				return Game.findOne({ id: req.params.gameId }).exec().then(game => {
+					if (!game) {
+						throw error('No such game with ID "%s".', req.params.gameId).status(404);
+					}
+					backglass._game = game._id;
+				});
+			}
+
+			// check for available rom
 			if (backglass.versions[0] && !backglass._game) {
-				return File.findById(backglass.versions[0]._file).exec();
+				let backglassFile;
+				return File.findById(backglass.versions[0]._file).exec().then(file => {
+					if (file && file.metadata && file.metadata.gamename) {
+						backglassFile = file;
+						return Rom.findOne({ id: file.metadata.gamename }).exec();
+					}
+
+				}).then(rom => {
+					if (rom) {
+						logger.info('[ctrl|backglass] Linking backglass to same game %s as rom "%s".', rom._game, backglassFile.metadata.gamename);
+						backglass._game = rom._game;
+					}
+				});
 			}
 		}
 
-	}).then(file => {
-		if (file && file.metadata && file.metadata.gamename) {
-			backglassFile = file;
-			return Rom.findOne({ id: file.metadata.gamename }).exec();
-		}
-
-	}).then(rom => {
-		if (rom) {
-			logger.info('[ctrl|backglass] Linking backglass to same game %s as rom "%s".', rom._game, backglassFile.metadata.gamename);
-			backglass._game = rom._game;
-		}
+	}).then(() => {
 		return backglass.validate();
 
 	}).then(() => {

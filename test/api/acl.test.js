@@ -254,6 +254,10 @@ describe('The ACLs of the VPDB API', function() {
 			request.post('/api/v1/backglasses').send({}).end(hlp.status(401, done));
 		});
 
+		it('should deny access to creating backglasses under games', function(done) {
+			request.post('/api/v1/games/1234/backglasses').send({}).end(hlp.status(401, done));
+		});
+
 		it('should deny access to deleting backglasses', function(done) {
 			request.del('/api/v1/backglasses/1234').end(hlp.status(401, done));
 		});
@@ -485,6 +489,10 @@ describe('The ACLs of the VPDB API', function() {
 
 		it('should allow access to creating backglasses', function(done) {
 			request.post('/api/v1/backglasses').as('member').send({}).end(hlp.status(422, done));
+		});
+
+		it('should allow access to creating backglasses under games', function(done) {
+			request.post('/api/v1/games/1234/backglasses').as('member').send({}).end(hlp.status(404, done));
 		});
 
 		it('should allow access to deleting backglasses', function(done) {

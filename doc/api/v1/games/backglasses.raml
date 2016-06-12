@@ -1,0 +1,20 @@
+post:
+  is: [ validated ]
+  securedBy: [ jwt: { scopes: [ MEMBER ] } ]
+  description: |
+    Create a new backglass.
+
+    Note that even if you provide the `_game` attribute, it will be overridden
+    by URL's game ID.
+
+    Also note that if the game doesn't exist, a `404 Not Found` will be returned,
+    independently if the `_game` attribute is correctly set or not.
+
+  body:
+    role/member:
+      example: !include http/create-backglass-req.json
+  responses:
+    201:
+      body:
+        role/member:
+          example: !include http/create-backglass-res-201.json

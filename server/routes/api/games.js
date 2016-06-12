@@ -30,12 +30,14 @@ exports.register = function(app, api) {
 	app.delete(settings.apiPath('/games/:id'), api.auth(api.games.del, 'games', 'delete'));
 
 	app.post(settings.apiPath('/games/:id/rating'), api.auth(api.ratings.createForGame, 'games', 'rate'));
-	app.put(settings.apiPath('/games/:id/rating'), api.auth(api.ratings.updateForGame, 'games', 'rate'));
-	app.get(settings.apiPath('/games/:id/rating'), api.auth(api.ratings.getForGame, 'games', 'rate'));
+	app.put(settings.apiPath('/games/:id/rating'),  api.auth(api.ratings.updateForGame, 'games', 'rate'));
+	app.get(settings.apiPath('/games/:id/rating'),  api.auth(api.ratings.getForGame, 'games', 'rate'));
 
-	app.post(settings.apiPath('/games/:id/star'), api.auth(api.stars.starGame, 'games', 'star'));
+	app.post(settings.apiPath('/games/:id/star'),   api.auth(api.stars.starGame, 'games', 'star'));
 	app.delete(settings.apiPath('/games/:id/star'), api.auth(api.stars.unstarGame, 'games', 'star'));
-	app.get(settings.apiPath('/games/:id/star'), api.auth(api.stars.getForGame, 'games', 'star'));
+	app.get(settings.apiPath('/games/:id/star'),    api.auth(api.stars.getForGame, 'games', 'star'));
+
+	app.post(settings.apiPath('/games/:gameId/backglasses'), api.auth(api.backglasses.create, 'backglasses', 'add'));
 
 	app.get(settings.apiPath('/games/:id/events'), api.anon(api.events.list({ byGame: true })));
 

@@ -1,0 +1,5 @@
+DELETE /v1/backglasses/pky9n2ho3w HTTP/2.0
+Host: api.vpdb.io
+Accept-Encoding: gzip, deflate
+authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwa3hua2gxZHciLCJpYXQiOiIyMDE2LTA2LTEyVDE1OjM2OjI5LjA0MVoiLCJleHAiOiIyMDE2LTA2LTEyVDE2OjM2OjI5LjA0MVoiLCJpcnQiOmZhbHNlfQ._8IrISoX1amC64zIIYbRf_pXFyxCa-dWGgWkz3DKF9E
+

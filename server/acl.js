@@ -63,7 +63,8 @@ acl.init = function() {
 				{ resources: 'ipdb', permissions: 'view' },
 				{ resources: 'tags', permissions: 'delete' },
 				{ resources: 'builds', permissions: 'delete' },
-				{ resources: 'roms', permissions: 'delete' }
+				{ resources: 'roms', permissions: 'delete' },
+				{ resources: 'backglasses', permissions: 'delete' }
 			]
 		}, {
 			roles: 'member',

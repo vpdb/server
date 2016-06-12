@@ -93,3 +93,41 @@ exports.create = function(req, res) {
 
 	}).catch(api.handleError(res, error, 'Error creating backglass'));
 };
+
+/**
+ * Deletes a backglass.
+ *
+ * @param {Request} req
+ * @param {Response} res
+ */
+exports.del = function(req, res) {
+
+	let backglass;
+	let canDelete;
+	Promise.try(() => {
+		return acl.isAllowed(req.user.id, 'backglasses', 'delete');
+
+	}).then(result => {
+		canDelete = result;
+		return Backglass.findOne({ id: req.params.id }).exec();
+
+	}).then(result => {
+
+		backglass = result;
+		if (!backglass) {
+			throw error('No such backglass with ID "%s".', req.params.id).status(404);
+		}
+
+		// only allow deleting own roms
+		if (!canDelete && !backglass._created_by.equals(req.user._id)) {
+			throw error('Permission denied, must be owner.').status(403);
+		}
+		// remove from db
+		return backglass.remove();
+
+	}).then(() => {
+		logger.info('[api|rom:delete] ROM "%s" successfully deleted.', backglass.id);
+		api.success(res, null, 204);
+
+	}).catch(api.handleError(res, error, 'Error deleting backglass'));
+};

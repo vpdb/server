@@ -221,6 +221,16 @@ exports.doomRom = function(user, romId) {
 };
 
 /**
+ * Marks a backglass to be cleaned up in teardown.
+ * @param {string} user User with which the file was created
+ * @param {string} backglassId ID of the backglass
+ */
+exports.doomBackglass = function(user, backglassId) {
+	objectPath.ensureExists(this, "doomedBackglasses." + user, []);
+	this.doomedBackglasses[user].unshift(backglassId);
+};
+
+/**
  * Marks a ROM to be cleaned up in teardown.
  * @param {string} user User with which the file was created
  * @param {string} tokenId ID of the ROM
@@ -262,6 +272,7 @@ exports.cleanup = function(request, done) {
 	var doomedBuilds = this.doomedBuilds;
 	var doomedRoms = this.doomedRoms;
 	var doomedTokens = this.doomedTokens;
+	var doomedBackglasses = this.doomedBackglasses;
 
 	async.series([
 
@@ -458,6 +469,34 @@ exports.cleanup = function(request, done) {
 
 			}, function(err) {
 				that.doomedTokens = {};
+				next(err);
+			});
+		},
+
+		// 8. cleanup backglasses
+		function(next) {
+			if (!doomedBackglasses) {
+				return next();
+			}
+			async.eachSeries(_.keys(doomedBackglasses), function(user, nextBackglass) {
+				async.each(nextBackglass[user], function(backglassId, next) {
+					request
+						.del('/api/v1/backglasses/' + backglassId)
+						.as(user)
+						.end(function(err, res) {
+							if (err) {
+								return next(err);
+							}
+							if (res.status !== 204) {
+								console.log(res.body);
+							}
+							expect(res.status).to.eql(204);
+							next();
+						});
+				}, nextBackglass);
+
+			}, function(err) {
+				that.doomedBackglasses = {};
 				next(err);
 			});
 		},

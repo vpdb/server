@@ -250,6 +250,14 @@ describe('The ACLs of the VPDB API', function() {
 			request.del('/api/v1/tokens/1234').end(hlp.status(401, done));
 		});
 
+		it('should deny access to creating backglasses', function(done) {
+			request.post('/api/v1/backglasses').send({}).end(hlp.status(401, done));
+		});
+
+		it('should deny access to deleting backglasses', function(done) {
+			request.del('/api/v1/backglasses/1234').end(hlp.status(401, done));
+		});
+
 	});
 
 	describe('for logged clients (role member)', function() {
@@ -473,6 +481,14 @@ describe('The ACLs of the VPDB API', function() {
 
 		it('should allow access to deleting tokens', function(done) {
 			request.del('/api/v1/tokens/1234').as('member').end(hlp.status(404, done));
+		});
+
+		it('should allow access to creating backglasses', function(done) {
+			request.post('/api/v1/backglasses').as('member').send({}).end(hlp.status(422, done));
+		});
+
+		it('should allow access to deleting backglasses', function(done) {
+			request.del('/api/v1/backglasses/1234').as('member').end(hlp.status(404, done));
 		});
 
 	});

@@ -211,17 +211,13 @@ angular.module('vpdb.games.add', [])
 			$scope.$emit('imageUnloaded');
 		};
 
-
-		$scope.removeLink = function(link) {
-
-		};
-
-
 		$scope.searchOnIpdb = function() {
 			$window.open(angular.element('#ipdbLink').attr('href'));
 		};
 
 
+		// LOGIC STARTS HERE
+		// ------------------------------------------
 		$scope.resetMedia();
 		if ($localStorage.newGame) {
 			$scope.game  = $localStorage.newGame;

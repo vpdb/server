@@ -11,6 +11,10 @@ include ../template/_mixins
 			+icon('plus-circle').space-right
 			| Upload Release
 
+		a.btn.btn-primary.padder-bottom(ui-sref="addBackglass({ id: game.id })", ng-show="auth.hasPermission('backglasses/add')")
+			+icon('plus-circle').space-right
+			| Upload Backglass
+
 	// left column (main content)
 	.col-sm-9.col-sm-pull-3.col--main
 		.title

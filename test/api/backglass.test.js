@@ -83,10 +83,11 @@ describe('The VPDB `Backglass` API', function() {
 		});
 
 		it('should fail validations for empty version data', function(done) {
+			const user = 'member';
 			request
 				.post('/api/v1/backglasses')
-				.as('member')
-				.send({ _game: game.id, authors: [ { _user: hlp.users['member'].id, roles: [ 'creator' ]}], versions: [ {} ] })
+				.as(user)
+				.send({ _game: game.id, authors: [ { _user: hlp.users[user].id, roles: [ 'creator' ]}], versions: [ {} ] })
 				.end(function(err, res) {
 					hlp.expectValidationError(err, res, 'versions.0._file', 'must provide a file reference');
 					hlp.expectValidationError(err, res, 'versions.0.version', 'must be provided');
@@ -96,12 +97,13 @@ describe('The VPDB `Backglass` API', function() {
 		});
 
 		it('should fail validations for invalid version data', function(done) {
+			const user = 'member';
 			request
 				.post('/api/v1/backglasses')
-				.as('member')
+				.as(user)
 				.send({
 					_game: game.id,
-					authors: [ { _user: hlp.users['member'].id, roles: [ 'creator' ]}],
+					authors: [ { _user: hlp.users[user].id, roles: [ 'creator' ]}],
 					versions: [ {
 						version: '',
 						_file: 'do-not-exist'

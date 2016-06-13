@@ -1,0 +1,72 @@
+include ../template/_mixins
+
+.row.row--fullheight(ng-controller="AddBackglassCtrl")
+	.col-sm-9.col--main
+
+		h1.h--primary Add a new Backglass
+		hr.hr--primary
+
+		//---------------------------------------------------------------------
+		h4 Upload File
+		hr.hr--light
+		.panel.panel--dropzone(
+			file-upload="{ type: 'backglass', key: 'backglass', status: meta.files, onSuccess: onBackglassUpload, onClear: onClear, allowedExtensions: ['directb2s'], allowMultipleFiles: false }"
+			ngf-drag-over-class="'panel--dragging'",
+			ng-class="{ error: filesError }"
+		)
+
+			label.center-block.text-center: small: i Drop your .directb2s file in here.
+
+		.panel-body.a.a--darker
+			.img.img--ar-bg.loaded(img-bg="meta.files.backglass.variations['full']", ng-show="meta.files.backglass")
+
+		//---------------------------------------------------------------------
+		h4 Description
+		hr.hr--light
+		.form-group
+			uib-tabset.tabset--light
+				label.label--small.pull-right(markdown-info="Markdown enabled.")
+				uib-tab
+					uib-tab-heading(title="Write"): +icon('edit')
+					textarea.textarea--full.msd-elastic(placeholder="Description of the backglass", ng-model="backglass.description")
+				uib-tab
+					uib-tab-heading(title="Preview"): +icon('eye')
+					div.markdown(markdown="backglass.description")
+					label.tab__label(ng-show="!backglass.description || backglass.description.length == 0") Nothing to preview.
+
+		//---------------------------------------------------------------------
+		h4 Authors
+		hr.hr--light.hr--margin-small
+		i.pull-left(ng-show="backglass.authors.length == 0") No authors added.
+		.row--fullwidth
+			.media.media--mini.media--mini-noborders.col-sm-4(ng-repeat="author in backglass.authors", ng-mouseenter="hovering=true", ng-mouseleave="hovering=false")
+				.media-left.media-middle
+					img.img-avatar.img-avatar--sm(gravatar-src="meta.users[author._user].gravatar_id", gravatar-default="404", fallback-icon="user")
+				.media-body
+					h6.h--no-margin.h--lighter.media-heading {{ meta.users[author._user].name }}
+					span {{ author.roles.join(', ') }}
+				.media--edit-panel.fade-animation(ng-show="hovering")
+					+icon('pencil').pos-pencil.a.smaller(ng-click="addAuthor(author)")
+					+icon('trash').pos-trash.a.smaller(ng-click="removeAuthor(author)")
+		button.btn.btn-default.padder-top.pull-right(ng-click="addAuthor()")
+			+icon('plus-circle').space-right
+			| Add Author
+		.clearfix.padder-bottom
+		.alert.alert-danger.padder-bottom(ng-show="errors.authors")
+			+icon('warning').shift-up.space-right
+			| {{ errors.authors }}
+		p Everybody you add here will have write permissions to the backglass you are about to create, i.e. they can edit the backglass and add new versions.
+		p You can add acknowledgements below for people who provided help or resources but are not considered as authors for that particular backglass.
+
+		hr
+		button.btn.btn-default.btn-lg(ng-click="reset()") Reset
+		button.btn.btn-primary.btn-lg.pull-right(ng-click="submit()") Add Backglass
+		.clearfix
+
+		p
+			br
+
+	.col-sm-3.col--menu
+		img.img--logo(ng-show="game.media.logo.url", ng-src="{{ game.media.logo.variations['medium' + pixelDensitySuffix].url }}")
+		h3.h--multiline.text-center {{ game.title }}
+		.text-center {{ game.manufacturer }} · {{ game.year }}

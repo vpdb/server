@@ -25,6 +25,7 @@ var deps = [
 // main application modules
 var appDeps = [
 	'vpdb.auth',
+	'vpdb.backglasses.add',
 	'vpdb.common',
 	'vpdb.login',
 	'vpdb.home',
@@ -93,6 +94,7 @@ angular.module('vpdb', deps.concat(appDeps))
 		$stateProvider.state('releases',         { url: '/releases',                     templateUrl: '/releases/list.html' });
 		$stateProvider.state('addGame',          { url: '/add-game',                     templateUrl: '/games/add.html' });
 		$stateProvider.state('addRelease',       { url: '/games/:id/add-release',        templateUrl: '/releases/add-release.html' });
+		$stateProvider.state('addBackglass',     { url: '/games/:id/add-backglass',      templateUrl: '/backglasses/add.html' });
 		$stateProvider.state('addReleaseVersion',{ url: '/games/:id/releases/:releaseId/add',  templateUrl: '/releases/add-version.html' });
 		$stateProvider.state('releaseDetails',   { url: '/games/:id/releases/:releaseId',      templateUrl: '/releases/details.html' });
 		$stateProvider.state('editRelease',      { url: '/games/:id/releases/:releaseId/edit', templateUrl: '/releases/edit.html' });

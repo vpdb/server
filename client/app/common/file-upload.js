@@ -186,6 +186,7 @@ function getMimeType(file) {
 		case 'rar': return 'application/rar';
 		case 'vpt': return 'application/x-visual-pinball-table';
 		case 'vpx': return 'application/x-visual-pinball-table-x';
+		case 'directb2s': return 'application/x-directb2s';
 		case 'vbs': return 'application/vbscript';
 		case 'mp3': return 'audio/mp3';
 		case 'avi': return 'video/avi';

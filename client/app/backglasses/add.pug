@@ -13,12 +13,14 @@ include ../template/_mixins
 			file-upload="{ type: 'backglass', key: 'backglass', status: meta.files, onSuccess: onBackglassUpload, onClear: onClear, allowedExtensions: ['directb2s'], allowMultipleFiles: false }"
 			ngf-drag-over-class="'panel--dragging'",
 			ng-class="{ error: filesError }"
+			ng-show="!meta.files.backglass"
 		)
 
 			label.center-block.text-center: small: i Drop your .directb2s file in here.
 
-		.panel-body.a.a--darker
-			.img.img--ar-bg.loaded(img-bg="meta.files.backglass.variations['full']", ng-show="meta.files.backglass")
+		.panel.panel--blank(ng-show="meta.files.backglass")
+			.panel-body.a.a--darker
+				.img.img--ar-bg.loaded(img-bg="meta.files.backglass.variations['full']")
 
 		//---------------------------------------------------------------------
 		h4 Description

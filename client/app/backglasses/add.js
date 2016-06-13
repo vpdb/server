@@ -49,7 +49,7 @@ angular.module('vpdb.backglasses.add', [])
 				$localStorage.backglass = {};
 			}
 			$scope.backglass = $localStorage.backglass[$stateParams.id] = {
-				_game: $scope.game.id,
+				_game: $stateParams.id,
 				description: '',
 				versions: [ {
 					version: '',

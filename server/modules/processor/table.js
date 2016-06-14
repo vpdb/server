@@ -19,25 +19,25 @@
 
 "use strict";
 
-var _ = require('lodash');
-var fs = require('fs');
-var gm = require('gm');
-var path = require('path');
-var logger = require('winston');
-var request = require('request');
+const _ = require('lodash');
+const fs = require('fs');
+const gm = require('gm');
+const path = require('path');
+const logger = require('winston');
+const request = require('request');
 
-var vp = Promise.promisifyAll(require('../visualpinball'));
-var error = require('../error')('processor', 'table');
-var config = require('../settings').current;
+const vp = require('../visualpinball');
+const error = require('../error')('processor', 'table');
+const config = require('../settings').current;
 
 /**
  * Image processor.
  *
  * Pass 1
- * Resizes the image
+ * Generate table screenshot through GameEx service
  *
  * Pass 2
- * Crunches PNG files using pngquant and optipng.
+ * Generate table blocks
  *
  * @constructor
  */
@@ -53,10 +53,10 @@ function TableProcessor() {
 TableProcessor.prototype.metadata = function(file, variation) {
 
 	return Promise.try(function() {
-		return vp.readScriptFromTableAsync(file.getPath());
+		return vp.readScriptFromTable(file.getPath());
 
 	}).then(script => {
-		return vp.getTableInfoAsync(file.getPath()).then(props => {
+		return vp.getTableInfo(file.getPath()).then(props => {
 			return _.extend(props, { table_script: script.code });
 		});
 
@@ -151,4 +151,55 @@ TableProcessor.prototype.pass1 = function(src, dest, file, variation) {
 	});
 };
 
+/**
+ * Update table blocks database
+ *
+ * @param {string} src Path to source file
+ * @param {string} dest Path to destination
+ * @param {File} file File to process
+ * @param {object} variation Variation of the file to process
+ * @returns {Promise}
+ */
+TableProcessor.prototype.pass2 = function(src, dest, file, variation) {
+
+	if (variation) {
+		return Promise.resolve();
+	}
+
+	const TableBlock = require('mongoose').model('TableBlock');
+	let blocks, dbBlocks;
+	return Promise.try(() => {
+		return vp.analyzeFile(src);
+
+	}).then(b => {
+		blocks = _.uniqWith(b, blockCompare);
+		return TableBlock.where({ hash: { $in: _.map(blocks, 'hash') }}).exec();
+
+	}).then(b => {
+		dbBlocks = b;
+		const newBlocks = _.differenceWith(blocks, dbBlocks, blockCompare);
+		return Promise.each(newBlocks, block => {
+			let newBlock = new TableBlock(block);
+			newBlock._files = [file._id];
+			return newBlock.save();
+
+		});
+
+	}).then(() => {
+		return Promise.each(dbBlocks, block => {
+			block._files.push(file._id);
+			return block.save();
+		});
+	});
+};
+
+/**
+ * Compares the hashes of two blocks.
+ * @param {{ hash: Buffer }} b1
+ * @param {{ hash: Buffer }} b2
+ * @returns {boolean} True if hashes are equal, false otherwise.
+ */
+function blockCompare(b1, b2) {
+	return b1.hash.equals(b2.hash);
+}
 module.exports = new TableProcessor();

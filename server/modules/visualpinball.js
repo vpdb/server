@@ -31,118 +31,85 @@ const bindexOf = require('buffer-indexof');
 /**
  * Extracts the table script from a given .vpt file.
  *
- * @param tablePath Path to the .vpt file. File must exist.
- * @param callback Function to execute after completion, invoked with two arguments:
- * 	<ol><li>{String} Error message on error</li>
- * 		<li>{String} Table script</li></ol>
+ * @param {string} tablePath Path to the .vpt file. File must exist.
+ * @return {Promise.<string>} Table script
  */
-exports.readScriptFromTable = function(tablePath, callback) {
-	if (!fs.existsSync(tablePath)) {
-		return callback(new Error('File "' + tablePath + '" does not exist.'));
-	}
-	var now = new Date().getTime();
-	var doc = new ocd(tablePath);
-	doc.on('err', /* istanbul ignore next */ function(err) {
-		callback(err);
-	});
-	doc.on('ready', function() {
-		var storage = doc.storage('GameStg');
-		/* istanbul ignore else */
-		if (storage) {
-			try {
-				var strm = storage.stream('GameData');
-				var bufs = [];
-				strm.on('data', function(buf) {
-					bufs.push(buf);
-				});
-				strm.on('end', function() {
-					var buf = Buffer.concat(bufs);
+exports.readScriptFromTable = function(tablePath) {
 
-					var codeStart = bindexOf(buf, new Buffer('04000000434F4445', 'hex')); // 0x04000000 "CODE"
-					var codeEnd = bindexOf(buf, new Buffer('04000000454E4442', 'hex'));   // 0x04000000 "ENDB"
-					logger.info('[vp] [script] Found GameData for "%s" in %d ms.', tablePath, new Date().getTime() - now);
-					/* istanbul ignore if */
-					if (codeStart < 0 || codeEnd < 0) {
-						return callback(new Error('Cannot find CODE part in BIFF structure.'));
-					}
-					callback(null, {
-						code: buf.slice(codeStart + 12, codeEnd).toString(),
-						head: buf.slice(0, codeStart + 12),
-						tail: buf.slice(codeEnd)
-					});
-				});
-			} catch(err) {
-				/* istanbul ignore next */
-				callback(new Error('Cannot find stream "GameData" in storage "GameStg".'));
-			}
-		} else {
-			callback(new Error('Cannot find storage "GameStg".'));
+	const now = new Date().getTime();
+	return Promise.try(() => {
+		/* istanbul ignore if */
+		if (!fs.existsSync(tablePath)) {
+			throw new Error('File "' + tablePath + '" does not exist.');
 		}
+		return readDoc(tablePath);
+
+	}).then(doc => {
+		let storage = doc.storage('GameStg');
+		return readStream(storage, 'GameData');
+
+	}).then(buf => {
+
+		const codeStart = bindexOf(buf, new Buffer('04000000434F4445', 'hex')); // 0x04000000 "CODE"
+		const codeEnd = bindexOf(buf, new Buffer('04000000454E4442', 'hex'));   // 0x04000000 "ENDB"
+		logger.info('[vp] [script] Found GameData for "%s" in %d ms.', tablePath, new Date().getTime() - now);
+		/* istanbul ignore if */
+		if (codeStart < 0 || codeEnd < 0) {
+			throw new Error('Cannot find CODE part in BIFF structure.');
+		}
+		return {
+			code: buf.slice(codeStart + 12, codeEnd).toString(),
+			head: buf.slice(0, codeStart + 12),
+			tail: buf.slice(codeEnd)
+		};
 	});
-	doc.read();
 };
 
+/**
+ * Returns all TableInfo fields of the table file.
+ *
+ * @param {string} tablePath Path to the .vpt file. File must exist.
+ * @returns {Promise.<{}>} Table properties
+ */
+exports.getTableInfo = function(tablePath) {
 
-exports.getTableInfo = function(tablePath, callback) {
+	return Promise.try(() => {
+		/* istanbul ignore if */
+		if (!fs.existsSync(tablePath)) {
+			throw new Error('File "' + tablePath + '" does not exist.');
+		}
+		return readDoc(tablePath);
 
-	/* istanbul ignore if */
-	if (!fs.existsSync(tablePath)) {
-		return callback(new Error('File "' + tablePath + '" does not exist.'));
-	}
-	var doc = new ocd(tablePath);
-	doc.on('err', /* istanbul ignore next */ function(err) {
-		logger.warn('[vp] [table info] Error reading file "%s": %s', tablePath, err.message);
-		callback(null, {});
-	});
-	doc.on('ready', function() {
-		var storage = doc.storage('TableInfo');
-
-		/* istanbul ignore else */
-		if (storage) {
-			var streams = {
-				TableName: 'table_name',
-				AuthorName: 'author_name',
-				TableBlurp: 'table_blurp',
-				TableRules: 'table_rules',
-				AuthorEmail: 'author_email',
-				ReleaseDate: 'release_date',
-				TableVersion: 'table_version',
-				AuthorWebSite: 'author_website',
-				TableDescription: 'table_description'
-			};
-			var props = {};
-			async.eachSeries(_.keys(streams), function(stream, next) {
-				try {
-					var strm = storage.stream(stream);
-					var bufs = [];
-					strm.on('data', function(buf) {
-						bufs.push(buf);
-					});
-					strm.on('end', function() {
-						var buf = Buffer.concat(bufs);
-						props[streams[stream]] = buf.toString().replace(/\0/g, '');
-						next();
-					});
-					strm.on('err', /* istanbul ignore next */ function(err) {
-						logger.warn('[vp] [table info] Error reading stream "%s": %s', stream, err.message);
-						next();
-					});
-				} catch (err) {
-					logger.warn('[vp] [table info] Error reading stream "%s" from table: %s', stream, err.message);
-					next();
-				}
-			}, function() {
-				callback(null, props);
-			});
-
-		} else {
+	}).then(doc => {
+		let storage = doc.storage('TableInfo');
+		let props = {};
+		if (!storage) {
 			logger.warn('[vp] [table info] Storage "TableInfo" not found in "%s".', tablePath);
-			callback(null, {});
+			return props;
 		}
+		const streams = {
+			TableName: 'table_name',
+			AuthorName: 'author_name',
+			TableBlurp: 'table_blurp',
+			TableRules: 'table_rules',
+			AuthorEmail: 'author_email',
+			ReleaseDate: 'release_date',
+			TableVersion: 'table_version',
+			AuthorWebSite: 'author_website',
+			TableDescription: 'table_description'
+		};
+		return Promise.each(_.keys(streams), key => {
+			const propKey = streams[key];
+			return readStream(storage, key)
+				.catch(err => logger.warn('[vp] [table info] %s', err.message))
+				.then(buf => {
+					if (buf) {
+						props[propKey] = buf.toString().replace(/\0/g, '');
+					}
+				});
+		}).then(() => props);
 	});
-	doc.read();
 };
-
 
 /**
  * Returns an array of elements of which the table file is made of.
@@ -197,7 +164,7 @@ exports.analyzeFile = function(tablePath) {
 				return readStream(storage, streamName).then(data => {
 					let blocks = parseBiff(data, 4);
 					let meta = parseGameItem(blocks, streamName);
-					return analyzeBlock(data, 'gameitem', meta)
+					return analyzeBlock(data, 'gameitem', meta);
 				});
 			});
 
@@ -209,7 +176,7 @@ exports.analyzeFile = function(tablePath) {
 				return readStream(storage, streamName).then(data => {
 					let blocks = parseBiff(data);
 					let meta = parseCollection(blocks, streamName);
-					return analyzeBlock(data, 'collection', meta)
+					return analyzeBlock(data, 'collection', meta);
 				});
 			});
 
@@ -250,8 +217,14 @@ function readDoc(filename) {
  */
 function readStream(storage, key) {
 	return new Promise((resolve, reject) => {
+		if (!storage) {
+			throw new Error('No such storage.');
+		}
 		const strm = storage.stream(key);
 		const bufs = [];
+		if (!strm) {
+			throw new Error('No such stream "' + key + '".');
+		}
 		strm.on('error', reject);
 		strm.on('data', buf => bufs.push(buf));
 		strm.on('end', () => {
@@ -283,6 +256,7 @@ function parseBiff(buf, offset) {
 			blockSize = buf.slice(i, i + 4).readInt32LE(0);  // size of the block excluding the 4 size bytes
 			block = buf.slice(i + 4, i + 4 + blockSize);     // contains tag and data
 			tag = block.slice(0, 4).toString();
+			let counterIncreased = false;
 
 			//noinspection FallthroughInSwitchStatementJS
 			switch (tag) {
@@ -295,6 +269,7 @@ function parseBiff(buf, offset) {
 					 */
 					blockSize = buf.readInt16BE(i + 17);
 					i += 19 + blockSize;
+					counterIncreased = true;
 					break;
 
 				// streams
@@ -312,14 +287,15 @@ function parseBiff(buf, offset) {
 					blockSize = buf.slice(i, i + 4).readInt32LE(0);
 					block = buf.slice(i + 4, i + 4 + blockSize);
 					block = Buffer.concat([new Buffer(tag), block]);
-
-				default:
-					if (blockSize > 4) {
-						data = block.slice(4);
-						blocks.push({ tag: tag, data: data });
-					}
-					i += blockSize + 4;
 					break;
+			}
+
+			if (!counterIncreased) {
+				if (blockSize > 4) {
+					data = block.slice(4);
+					blocks.push({ tag: tag, data: data });
+				}
+				i += blockSize + 4;
 			}
 
 			//console.log('*** Adding block [%d] %s: %s', blockSize, tag, data && data.length > 100 ? data.slice(0, 100) : data);
@@ -497,7 +473,7 @@ function parseString(block) {
 function parseString16(block) {
 	let chars = [];
 	block.slice(4).forEach((v, i, b) => {
-		if (i % 2 == 0) {
+		if (i % 2 === 0) {
 			chars.push(v);
 		}
 	});

@@ -69,8 +69,8 @@ FileSchema.plugin(metrics);
 // API FIELDS
 //-----------------------------------------------------------------------------
 var apiFields = {
-	simple: [ 'id', 'url', 'bytes', 'variations', 'is_protected', 'counter', 'cost' ], // fields returned in references
-	detailed: [ 'name', 'created_at', 'mime_type', 'file_type', 'metadata' ]
+	simple: [ 'id', 'name', 'url', 'bytes', 'variations', 'is_protected', 'counter', 'cost' ], // fields returned in references
+	detailed: [ 'created_at', 'mime_type', 'file_type', 'metadata' ]
 };
 
 

@@ -59,12 +59,13 @@ acl.init = function() {
 		}, {
 			roles: 'contributor',
 			allows: [
+				{ resources: 'files', permissions: 'blockmatch' },
 				{ resources: 'games', permissions: ['update', 'add', 'delete'] },
 				{ resources: 'ipdb', permissions: 'view' },
 				{ resources: 'tags', permissions: 'delete' },
 				{ resources: 'builds', permissions: 'delete' },
 				{ resources: 'roms', permissions: 'delete' },
-				{ resources: 'backglasses', permissions: 'delete' }
+				{ resources: 'backglasses', permissions: 'delete' },
 			]
 		}, {
 			roles: 'member',

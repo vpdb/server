@@ -19,11 +19,13 @@
 
 "use strict";
 
+var _ = require('lodash');
 var logger = require('winston');
 var Busboy = require('busboy');
 
 var api = require('./api');
 var File = require('mongoose').model('File');
+var TableBlock = require('mongoose').model('TableBlock');
 
 var fileModule = require('../../modules/file');
 var error = require('../../modules/error')('api', 'file');
@@ -130,6 +132,76 @@ exports.view = function(req, res) {
 
 	}).catch(api.handleError(res, error, 'Error viewing file'));
 };
+
+/**
+ * Looks for similar table files.
+ *
+ * @param {Request} req
+ * @param {Response} res
+ */
+exports.blockmatch = function(req, res) {
+
+	let file, blocks, matches;
+	return Promise.try(() => {
+		return File.findOne({ id: req.params.id });
+
+	}).then(f => {
+		file = f;
+
+		// fail if not found
+		if (!file) {
+			throw error('No such file with ID "%s".', req.params.id).status(404);
+		}
+
+		// fail if no table file
+		if (file.getMimeCategory() !== 'table') {
+			throw error('Can only match table files, this is a %s', file.getMimeCategory(), req.params.id).status(400);
+		}
+		return TableBlock.find({_files: file._id}).exec();
+
+	}).then(b => {
+		blocks = b;
+
+		matches = new Map();
+		// split blocks: { <file id>: [ matched blocks ] }
+		blocks.forEach(block => {
+			block._files.forEach(f => {
+				// don't match own id
+				if (f.equals(file._id)) {
+					return;
+				}
+				const fid = f.toString();
+				if (!matches.has(fid)) {
+					matches.set(fid, []);
+				}
+				matches.get(fid).push(block);
+			});
+		});
+		return File.find({ _id: { $in: Array.from(matches.keys()) } }).exec();
+
+	}).then(matchedFiles => {
+		const totalBytes = _.sumBy(blocks, b => b.bytes);
+		let result = { file: file.toSimple(), matches: [] };
+		for (let [key, matchedBlocks] of matches) {
+			const matchedBytes = _.sumBy(matchedBlocks, b => b.bytes);
+			result.matches.push({
+				file: _.find(matchedFiles, matchFile(key)).toSimple(),
+				matchedCount: matchedBlocks.length,
+				matchedBytes: matchedBytes,
+				countPercentage: matchedBlocks.length / blocks.length * 100,
+				bytesPercentage: matchedBytes / totalBytes * 100
+			});
+		}
+		api.success(res, result);
+
+	}).catch(api.handleError(res, error, 'Error retrieving block matches for file'));
+};
+
+function matchFile(id) {
+	return function(file) {
+		return file._id.toString() === id;
+	};
+}
 
 /**
  * Handles uploaded data posted as-is with a content type

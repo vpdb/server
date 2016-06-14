@@ -19,12 +19,22 @@
 
 "use strict";
 
-var settings = require('../../modules/settings');
+const logger = require('winston');
+const mongoose = require('mongoose');
 
-exports.register = function(app, api) {
+const Schema = mongoose.Schema;
 
-	app.get(settings.apiPath('/files/:id'),    api.anon(api.files.view));
-	app.delete(settings.apiPath('/files/:id'), api.auth(api.files.del, 'files', 'delete'));
-	app.get(settings.apiPath('/files/:id/blockmatch'), api.auth(api.files.blockmatch, 'files', 'blockmatch'));
-
+//-----------------------------------------------------------------------------
+// SCHEMA
+//-----------------------------------------------------------------------------
+const fields = {
+	hash:  { type: Buffer, required: true, unique: true, index: true },
+	bytes: { type: Number, required: true },
+	type:  { type: String, required: true, 'enum': [ 'image', 'sound', 'gameitem', 'collection' ] },
+	meta:  { type: Schema.Types.Mixed },
+	_files: { type: [ Schema.ObjectId ], ref: 'File', index: true }
 };
+const TableBlockSchema = new Schema(fields);
+
+mongoose.model('TableBlock', TableBlockSchema);
+logger.info('[model] Schema "TableBlock" registered.');

@@ -47,6 +47,7 @@ streamline the user experience to the max.
 * Many media types per file and game
 * Multiple views when listing releases
 * Fancy release upload form to make an author's life as easy as possible
+* Automatic mod detection
 
 ## Tech Stack
 
@@ -64,7 +65,7 @@ Client uses [AngularJS](https://angularjs.org/) with CSS based on [Twitter Boots
   run `redis-server --service-install redis.windows.conf --loglevel verbose --maxheap 500m` for a local dev setup.
 * Install Grunt: `npm install -g grunt-cli`
 
-Install Node.js and Git, then open a command line and type:
+Install Node.js 6+ and Git, then open a command line and type:
 
 	git clone https://github.com/freezy/node-vpdb.git
 	cd node-vpdb

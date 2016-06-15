@@ -364,6 +364,7 @@ FileSchema.statics.toDetailed = function(file) {
 //-----------------------------------------------------------------------------
 FileSchema.post('remove', function(obj, done) {
 	storage.remove(obj);
+	// TODO remove table blocks
 	done();
 });
 

@@ -103,7 +103,6 @@ angular.module('vpdb.games.list', [])
 				page: '1',
 				per_page: '12'
 			};
-			console.log(query);
 			var q = _.omit(query, function(value, key) {
 				return defaults[key] === value;
 			});

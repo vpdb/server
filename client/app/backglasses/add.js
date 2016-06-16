@@ -3,9 +3,8 @@
 angular.module('vpdb.backglasses.add', [])
 
 	.controller('AddBackglassCtrl', function($scope, $stateParams, $localStorage, $state, $uibModal,
-											 AuthService, ApiHelper,
+											 AuthService, ApiHelper, ModalService,
 											 GameResource, FileResource, BackglassResource) {
-
 		$scope.theme('light');
 		$scope.setTitle('Add Backglass');
 
@@ -14,6 +13,17 @@ angular.module('vpdb.backglasses.add', [])
 			$scope.backglass._game = $scope.game.id;
 			$scope.setTitle('Add Backglass - ' + $scope.game.title);
 		});
+
+		// init data: either copy from local storage or reset.
+		if ($localStorage.backglass && $localStorage.backglass[$stateParams.id] && $localStorage.backglass[$stateParams.id].versions) {
+			$scope.backglass = $localStorage.backglass[$stateParams.id];
+			$scope.meta = $localStorage.backglass_meta[$stateParams.id];
+
+			AuthService.collectUrlProps($scope.meta, true);
+
+		} else {
+			$scope.reset();
+		}
 
 		/**
 		 * Resets all entered data
@@ -38,7 +48,7 @@ angular.module('vpdb.backglasses.add', [])
 			}
 			$scope.meta = $localStorage.backglass_meta[$stateParams.id] = {
 				users: {},
-				files: {}
+				files: { backglass: { variations: { full: false } } }
 			};
 			$scope.meta.users[currentUser.id] = currentUser;
 			$scope.meta.releaseDate = new Date();
@@ -66,6 +76,9 @@ angular.module('vpdb.backglasses.add', [])
 			$scope.errors = {};
 		};
 
+		/**
+		 * Posts the backglass entity to the API.
+		 */
 		$scope.submit = function() {
 
 			// update release date if set
@@ -94,24 +107,18 @@ angular.module('vpdb.backglasses.add', [])
 			}, ApiHelper.handleErrors($scope));
 		};
 
+		/**
+		 * A .directb2s file has been uploaded.
+		 * @param status File status
+		 */
 		$scope.onBackglassUpload = function(status) {
 
 			var bg = status.storage;
 			AuthService.collectUrlProps(bg, true);
 			$scope.backglass._file = bg.id;
 			$scope.meta.files.backglass = bg;
+			$scope.meta.files.backglass.storage = { id: bg.id }; // so file-upload deletes old file when new one gets dragged over
 		};
-
-		// init data: either copy from local storage or reset.
-		if ($localStorage.backglass && $localStorage.backglass[$stateParams.id] && $localStorage.backglass[$stateParams.id].versions) {
-			$scope.backglass = $localStorage.backglass[$stateParams.id];
-			$scope.meta = $localStorage.backglass_meta[$stateParams.id];
-
-			AuthService.collectUrlProps($scope.meta, true);
-
-		} else {
-			$scope.reset();
-		}
 
 		/**
 		 * Adds OR edits an author.

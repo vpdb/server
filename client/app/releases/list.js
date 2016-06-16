@@ -93,7 +93,6 @@ angular.module('vpdb.releases.list', [])
 			}
 
 			var query = { sort: $scope.sort, thumb_format: thumbFormat };
-			console.log(query);
 			if ($scope.firstQuery) {
 				query.page = urlQuery.page;
 				$scope.firstQuery = false;

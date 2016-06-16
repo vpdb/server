@@ -1,5 +1,5 @@
 "use strict";
-/* global angular _ */
+/* global angular, _ */
 
 /**
  * Updates scope on child events.
@@ -119,7 +119,7 @@ angular.module('vpdb.common', [])
 				if (attrs.imgBg[0] === '/') {
 					setImg(attrs.imgBg);
 
-					// otherwise, watch scope for expression.
+				// otherwise, watch scope for expression.
 				} else {
 					var value = $parse(attrs.imgBg);
 					scope.$watch(value, function() {

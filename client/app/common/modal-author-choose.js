@@ -19,7 +19,7 @@
 
 "use strict"; /* global _, angular */
 
-angular.module('vpdb.releases.add', []).controller('ChooseAuthorCtrl', function($scope, $uibModalInstance, UserResource, release, meta, author) {
+angular.module('vpdb.common', []).controller('ChooseAuthorCtrl', function($scope, $uibModalInstance, UserResource, subject, meta, author) {
 
 	if (author) {
 		var userId = author._user || author.user.id;
@@ -35,8 +35,9 @@ angular.module('vpdb.releases.add', []).controller('ChooseAuthorCtrl', function(
 	}
 	$scope.adding = author ? false : true;
 	$scope.errors = {};
-	$scope.release = release;
+	$scope.subject = subject;
 	$scope.role = '';
+	$scope.searching = false;
 
 	$scope.findUser = function(val) {
 		return UserResource.query({ q: val }).$promise;
@@ -69,9 +70,9 @@ angular.module('vpdb.releases.add', []).controller('ChooseAuthorCtrl', function(
 
 		// user validations
 		if (!$scope.isValidUser) {
-			$scope.errors.user = 'You must select a user. Typing after selecting a user erases the selected user.';
+			$scope.errors.user = 'You must select an existing user. Typing after selecting a user erases the selected user.';
 			valid = false;
-		} else if (_.filter($scope.release.authors, function(author) { return author._user === $scope.user.id; }).length > 0 &&
+		} else if (_.filter($scope.subject.authors, function(author) { return author._user === $scope.user.id; }).length > 0 &&
 			($scope.adding || $scope.user.id !== $scope.author._user)) {
 			$scope.errors.user = 'User "' + $scope.user.name + '" is already added as author.';
 			valid = false;

@@ -71,10 +71,10 @@ angular.module('vpdb.releases.edit', [])
 				meta.users[author.user.id] = author.user;
 			}
 			$uibModal.open({
-				templateUrl: '/releases/modal-author-add.html',
+				templateUrl: '/common/modal-author-choose.html',
 				controller: 'ChooseAuthorCtrl',
 				resolve: {
-					release: function() { return $scope.updatedRelease; },
+					subject: function() { return $scope.updatedRelease; },
 					meta: function() { return meta; },
 					author: function() { return author; }
 				}

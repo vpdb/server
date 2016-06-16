@@ -2,8 +2,9 @@
 
 angular.module('vpdb.backglasses.add', [])
 
-	.controller('AddBackglassCtrl', function($scope, $stateParams, $localStorage, AuthService,
-											 GameResource, FileResource) {
+	.controller('AddBackglassCtrl', function($scope, $stateParams, $localStorage, $state, $uibModal,
+											 AuthService, ApiHelper,
+											 GameResource, FileResource, BackglassResource) {
 
 		$scope.theme('light');
 		$scope.setTitle('Add Backglass');
@@ -65,6 +66,34 @@ angular.module('vpdb.backglasses.add', [])
 			$scope.errors = {};
 		};
 
+		$scope.submit = function() {
+
+			// update release date if set
+			var releaseDate = $scope.getReleaseDate();
+			if (releaseDate) {
+				$scope.backglass.versions[0].released_at = releaseDate;
+			} else {
+				delete $scope.backglass.versions[0].released_at;
+			}
+
+			// post to api
+			BackglassResource.save($scope.backglass, function(backglass) {
+				$scope.backglass.submitted = true;
+				$scope.reset();
+
+				ModalService.info({
+					icon: 'check-circle',
+					title: 'Backglass created!',
+					subtitle: $scope.game.title,
+					message: 'The backglass has been successfully created.'
+				});
+
+				// go to game page
+				$state.go('gameDetails', { id: $stateParams.id });
+
+			}, ApiHelper.handleErrors($scope));
+		};
+
 		$scope.onBackglassUpload = function(status) {
 
 			var bg = status.storage;
@@ -83,4 +112,53 @@ angular.module('vpdb.backglasses.add', [])
 		} else {
 			$scope.reset();
 		}
+
+		/**
+		 * Adds OR edits an author.
+		 * @param {object} author If set, edit this author, otherwise add a new one.
+		 */
+		$scope.addAuthor = function(author) {
+			$uibModal.open({
+				templateUrl: '/common/modal-author-choose.html',
+				controller: 'ChooseAuthorCtrl',
+				resolve: {
+					subject: function() { return $scope.backglass; },
+					meta: function() { return $scope.meta; },
+					author: function() { return author; }
+				}
+			}).result.then(function(newAuthor) {
+
+				// here we're getting the full object, so store the user object in meta.
+				var authorRef = { _user: newAuthor.user.id, roles: newAuthor.roles };
+				$scope.meta.users[newAuthor.user.id] = newAuthor.user;
+
+				// add or edit?
+				if (author) {
+					$scope.backglass.authors[$scope.release.authors.indexOf(author)] = authorRef;
+				} else {
+					$scope.backglass.authors.push(authorRef);
+				}
+			});
+		};
+
+		/**
+		 * Removes an author
+		 * @param {object} author
+		 */
+		$scope.removeAuthor = function(author) {
+			$scope.release.authors.splice($scope.release.authors.indexOf(author), 1);
+		};
+
+		/**
+		 * Returns a date object from the date and time picker.
+		 * If empty, returns null.
+		 */
+		$scope.getReleaseDate = function() {
+			if ($scope.meta.releaseDate || $scope.meta.releaseTime) {
+				var date = $scope.meta.releaseDate ? new Date($scope.meta.releaseDate) : new Date();
+				var time = $scope.meta.releaseTime ? new Date($scope.meta.releaseTime) : new Date();
+				return new Date(date.getFullYear(), date.getMonth(), date.getDate(), time.getHours(), time.getMinutes());
+			}
+			return null;
+		};
 	});

@@ -1,4 +1,5 @@
 include ../template/_mixins
+include ../template/timepicker
 
 .row.row--fullheight(ng-controller="AddBackglassCtrl")
 	.col-sm-9.col--main
@@ -15,7 +16,6 @@ include ../template/_mixins
 			ng-class="{ error: filesError }"
 			ng-show="!meta.files.backglass"
 		)
-
 			label.center-block.text-center: small: i Drop your .directb2s file in here.
 
 		.panel.panel--blank(ng-show="meta.files.backglass")
@@ -35,6 +35,52 @@ include ../template/_mixins
 					uib-tab-heading(title="Preview"): +icon('eye')
 					div.markdown(markdown="backglass.description")
 					label.tab__label(ng-show="!backglass.description || backglass.description.length == 0") Nothing to preview.
+
+
+		.form-group(ng-class="{ error: errors.versions[0].version }")
+			label.control-label(for="version") Version
+			.row
+				.col-sm-2: input#version.form-control(type="text", ng-model="backglass.versions[0].version", placeholder="x.x")
+				.col.sm-10: i Don't prefix with <code>v</code>.
+			.alert.alert-danger(ng-show="errors.versions[0].version")
+				+icon('warning').shift-up.space-right
+				| {{ errors.versions[0].version }}
+		.clearfix
+
+		.form-group(ng-class="{ error: errors.versions[0].released_at }")
+			label.control-label Release Date
+			.row
+				.col-sm-3: .input-group
+					input.form-control.datepicker(type='text', ng-model='meta.releaseDate', ng-required='true',
+					uib-datepicker-popup="yyyy-MM-dd",
+					format-day-header="EE"
+					is-open="calendarOpened",
+					close-text="Close",
+					show-weeks="false",
+					starting-day="1")
+					span.input-group-addon: +icon('calendar').a(ng-click='openCalendar($event)')
+				.col-sm-2
+					uib-timepicker(ng-model="meta.releaseTime", hour-step="1", minute-step="5", show-meridian="ismeridian")
+				.col-sm-7
+					i Leave empty for submission time.
+
+		div.alert.alert-danger.padder-bottom(ng-show="errors.built_at")
+			+icon('warning').shift-up.space-right
+			| {{ errors.built_at }}
+
+		.form-group
+			label.control-label(for="version") Release Notes
+			uib-tabset.tabset--light
+				label.label--small.pull-right(markdown-info="Markdown enabled.")
+				uib-tab
+					uib-tab-heading(title="Write"): +icon('edit')
+					textarea.textarea--full.msd-elastic(placeholder="Release Notes", ng-model="backglass.versions[0].changes")
+				uib-tab
+					uib-tab-heading(title="Preview"): +icon('eye')
+					div.markdown(markdown="backglass.versions[0].changes")
+					label.tab__label(ng-show="!backglass.versions[0].changes || backglass.versions[0].changes.length == 0") Nothing to preview.
+			i This will show up in the backglass' change log
+
 
 		//---------------------------------------------------------------------
 		h4 Authors
@@ -59,6 +105,22 @@ include ../template/_mixins
 			| {{ errors.authors }}
 		p Everybody you add here will have write permissions to the backglass you are about to create, i.e. they can edit the backglass and add new versions.
 		p You can add acknowledgements below for people who provided help or resources but are not considered as authors for that particular backglass.
+
+
+		//---------------------------------------------------------------------
+		h4 Acknowledgements
+		hr.hr--light
+		.form-group
+			uib-tabset.tabset--light
+				label.label--small.pull-right(markdown-info="Markdown enabled.")
+				uib-tab
+					uib-tab-heading(title="Write"): +icon('edit')
+					textarea.textarea--full.msd-elastic(placeholder="List of people to thank", ng-model="backglass.acknowledgements")
+				uib-tab
+					uib-tab-heading(title="Preview"): +icon('eye')
+					div.markdown(markdown="backglass.acknowledgements")
+					label.tab__label(ng-show="!backglass.acknowledgements || backglass.acknowledgements.length == 0") Nothing to preview.
+
 
 		hr
 		button.btn.btn-default.btn-lg(ng-click="reset()") Reset

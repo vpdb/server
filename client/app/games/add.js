@@ -1,4 +1,4 @@
-"use strict"; /* global _ */
+"use strict"; /* global _, angular */
 
 angular.module('vpdb.games.add', [])
 

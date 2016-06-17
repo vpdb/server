@@ -14,17 +14,6 @@ angular.module('vpdb.backglasses.add', [])
 			$scope.setTitle('Add Backglass - ' + $scope.game.title);
 		});
 
-		// init data: either copy from local storage or reset.
-		if ($localStorage.backglass && $localStorage.backglass[$stateParams.id] && $localStorage.backglass[$stateParams.id].versions) {
-			$scope.backglass = $localStorage.backglass[$stateParams.id];
-			$scope.meta = $localStorage.backglass_meta[$stateParams.id];
-
-			AuthService.collectUrlProps($scope.meta, true);
-
-		} else {
-			$scope.reset();
-		}
-
 		/**
 		 * Resets all entered data
 		 */
@@ -168,4 +157,19 @@ angular.module('vpdb.backglasses.add', [])
 			}
 			return null;
 		};
+
+
+		// CONTROLLER LOGIC START
+		// --------------------------------------------------------------------
+
+		// init data: either copy from local storage or reset.
+		if ($localStorage.backglass && $localStorage.backglass[$stateParams.id] && $localStorage.backglass[$stateParams.id].versions) {
+			$scope.backglass = $localStorage.backglass[$stateParams.id];
+			$scope.meta = $localStorage.backglass_meta[$stateParams.id];
+
+			AuthService.collectUrlProps($scope.meta, true);
+
+		} else {
+			$scope.reset();
+		}
 	});

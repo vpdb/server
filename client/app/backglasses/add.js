@@ -54,7 +54,7 @@ angular.module('vpdb.backglasses.add', [])
 				versions: [ {
 					version: '',
 					changes: '*Initial release.*',
-					file: null
+					_file: null
 				} ],
 				authors: [ {
 					_user: currentUser.id,
@@ -104,7 +104,7 @@ angular.module('vpdb.backglasses.add', [])
 
 			var bg = status.storage;
 			AuthService.collectUrlProps(bg, true);
-			$scope.backglass._file = bg.id;
+			$scope.backglass.versions[0]._file = bg.id;
 			$scope.meta.files.backglass = bg;
 			$scope.meta.files.backglass.storage = { id: bg.id }; // so file-upload deletes old file when new one gets dragged over
 		};

@@ -291,6 +291,21 @@ describe('The VPDB `file` API', function() {
 
 	});
 
+	describe('when uploading a directb2s file', function() {
+
+		it('should fail if the directb2s file is corrupted', function(done) {
+			var data = 'invalid data';
+			request
+				.post('/storage/v1/files')
+				.query({ type: 'backglass' })
+				.type('application/x-directb2s')
+				.set('Content-Disposition', 'attachment; filename="test.directb2s"')
+				.set('Content-Length', data.length)
+				.send(data)
+				.as('member').end(hlp.status(400, 'metadata parsing failed', done));
+		});
+	});
+
 	describe('after successfully uploading a file', function() {
 
 		it('should be able to retrieve the file details', function(done) {

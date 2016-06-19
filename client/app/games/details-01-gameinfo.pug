@@ -40,11 +40,11 @@ label.label--block(ng-show="game.game_type") {{ game.game_type | gametype }}
 label(ng-show="game.produced_units") {{ game.produced_units | number }} units produced
 hr(ng-show="game.game_type || game.units")
 
-label.label-name.label--block(ng-show="game.designers") Game Design
+label.label-name.label--block(ng-show="game.designers") Game Design:
 label.label-value(ng-show="game.designers") {{ game.designers.join(', ') }}
 hr(ng-show="game.designers")
 
-label.label-name.label--block(ng-show="game.artists") Art Design
+label.label-name.label--block(ng-show="game.artists") Art Design:
 label.label-value(ng-show="game.artists")  {{ game.artists.join(', ') }}
 hr(ng-show="game.artists")
 
@@ -60,5 +60,3 @@ hr(ng-show="game.artists")
 			strong {{ game.ipdb.rating | ratingFormat }}
 		dt(ng-show="game.ipdb.top300") Top 300
 		dd(ng-show="game.ipdb.top300") rank <strong>{{ game.ipdb.top300 }}</strong>
-
-hr(ng-show="game.ipdb")

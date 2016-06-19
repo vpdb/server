@@ -7,13 +7,23 @@ include ../template/_mixins
 
 		include details-01-gameinfo
 
-		a.btn.btn-primary.padder-bottom(ui-sref="addRelease({ id: game.id })", ng-show="auth.hasPermission('releases/add')")
-			+icon('plus-circle').space-right
-			| Upload Release
+		//-- UPLOAD BUTTONS
+		//---------------------------------------------------------------------
+		.panel--rect-block
+			h1.text-center.shift-up
+				+icon('upload').space-right
+				| UPLOAD
 
-		a.btn.btn-primary.padder-bottom(ui-sref="addBackglass({ id: game.id })", ng-show="auth.hasPermission('backglasses/add')")
-			+icon('plus-circle').space-right
-			| Upload Backglass
+			.center
+				ul.ul--no-list
+					li: a.text-center(ui-sref="addRelease({ id: game.id })")
+						+icon('plus-circle').space-right.shift-up.hidden-md
+						| Release
+					li: a.text-center(ui-sref="addBackglass({ id: game.id })")
+						+icon('plus-circle').space-right.shift-up.hidden-md
+						| Backglass
+
+			p.padder-top
 
 	// left column (main content)
 	.col-sm-9.col-sm-pull-3.col--main

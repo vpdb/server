@@ -119,6 +119,9 @@ exports.upload = function(config) {
 								} else {
 									data.id = data.title.replace(/[^a-z0-9\s\-]+/gi, '').replace(/\s+/g, '-').toLowerCase();
 								}
+								if (game.title) {
+									data.title = game.title;
+								}
 								data.year = data.year || game.year || 1900;
 								data.game_type = data.game_type || 'na';
 								data.manufacturer = data.manufacturer || 'unknown';
@@ -272,6 +275,7 @@ exports.data = [
 	{ bg: 'Theatre of Magic (Midway 1995).png', logo: 'Theatre of Magic (Midway 1995).png', ipdb: 2845 },
 	{ bg: 'Tommy The Pinball Wizard (Data East 1994).png', logo: 'Tommy The Pinball Wizard (Data East 1994).png', ipdb: 2579 },
 	{ bg: 'Torpedo Alley (Data East 1988).png', logo: 'Torpedo Alley (Data East 1988).png', ipdb: 2603 },
+	{ bg: 'TRON Legacy (Stern 2011).png', logo: 'TRON Legacy (Stern 2011).png', ipdb: 5682 , title: 'TRON Legacy' },
 	{ bg: 'Tri Zone (Williams 1979).png', logo: 'Tri Zone (Williams 1979).png', ipdb: 2641 },
 	{ bg: 'Twilight Zone (Bally 1993).png', logo: 'Twilight Zone (Bally 1993).png', ipdb: 2684 },
 	{ bg: 'Twister (Sega 1996).png', logo: 'Twister (Sega 1996).png', ipdb: 3976 },

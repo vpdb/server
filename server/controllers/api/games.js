@@ -29,6 +29,7 @@ var Release = require('mongoose').model('Release');
 var Star = require('mongoose').model('Star');
 var Rom = require('mongoose').model('Rom');
 var LogEvent = require('mongoose').model('LogEvent');
+var Backglass = require('mongoose').model('Backglass');
 
 var api = require('./api');
 
@@ -211,7 +212,7 @@ exports.list = function(req, res) {
  */
 exports.view = function(req, res) {
 
-	let game, opts;
+	let game, opts, result;
 	Promise.try(() => {
 		// retrieve game
 		return Game.findOne({ id: req.params.id })
@@ -224,6 +225,7 @@ exports.view = function(req, res) {
 		if (!game) {
 			throw error('No such game with ID "%s"', req.params.id).status(404);
 		}
+		result = game.toDetailed();
 		return game.incrementCounter('views');
 
 	}).then(() => {
@@ -250,8 +252,15 @@ exports.view = function(req, res) {
 			.exec();
 
 	}).then(releases => {
-		let result = game.toDetailed();
 		result.releases = _.map(releases, release => _.omit(release.toDetailed(opts), 'game'));
+
+		return Backglass.find({ _game: game._id })
+			.populate({ path: 'authors._user' })
+			.populate({ path: 'versions._file' })
+			.exec();
+
+	}).then(backglasses => {
+		result.backglasses = backglasses.map(backglass => _.omit(backglass.toSimple(opts), 'game'));
 		api.success(res, result, 200);
 
 	}).catch(api.handleError(res, error, 'Error viewing game'));

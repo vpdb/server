@@ -107,7 +107,10 @@ Directb2sProcessor.prototype.metadataShort = function(metadata) {
 };
 
 Directb2sProcessor.prototype.variationData = function(metadata) {
-	return metadata;
+	return {
+		width: metadata.size.width,
+		height: metadata.size.height
+	};
 };
 
 /**

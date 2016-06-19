@@ -91,10 +91,14 @@ exports.create = function(req, res) {
 		return backglass.validate();
 
 	}).then(() => {
+		logger.info('[api|backglass:create] Validations passed.');
 		return backglass.save();
 
 	}).then(() => {
+		logger.info('[api|backglass:create] Backglass "%s" successfully created.', backglass.label);
+		return backglass.activateFiles();
 
+	}).then(() => {
 		return Backglass.findById(backglass._id)
 			.populate({ path: '_game' })
 			.populate({ path: 'authors._user' })
@@ -103,7 +107,6 @@ exports.create = function(req, res) {
 
 	}).then(populatedBackglass => {
 
-		logger.info('[api|build:create] Backglass "%s" successfully created.', backglass.label);
 		api.success(res, populatedBackglass.toSimple(), 201);
 
 	}).catch(api.handleError(res, error, 'Error creating backglass'));

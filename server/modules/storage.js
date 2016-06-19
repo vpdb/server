@@ -190,10 +190,9 @@ Storage.prototype.remove = function(file) {
 /**
  * Retrieves metadata for a given file using the processor of the file type.
  * @param {File} file
- * @param {function} [done] Callback
  * @return {Promise}
  */
-Storage.prototype.metadata = function(file, done) {
+Storage.prototype.metadata = function(file) {
 	return Promise.try(function() {
 		var type = file.getMimeCategory();
 		if (!processors[type]) {
@@ -201,7 +200,7 @@ Storage.prototype.metadata = function(file, done) {
 			return Promise.resolve();
 		}
 		return processors[type].metadata(file);
-	}).nodeify(done);
+	});
 };
 
 /**

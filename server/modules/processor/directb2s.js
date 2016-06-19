@@ -50,11 +50,11 @@ function Directb2sProcessor() {
 	this.name = 'directb2s';
 	this.variations = {
 		backglass: [
-			{ name: 'full',                               mimeType: 'image/jpeg' },
-			{ name: 'medium',    width: 364, height: 291, mimeType: 'image/jpeg' },
-			{ name: 'medium-2x', width: 728, height: 582, mimeType: 'image/jpeg' },
-			{ name: 'small',     width: 253, height: 202, mimeType: 'image/jpeg' },
-			{ name: 'small-2x',  width: 506, height: 404, mimeType: 'image/jpeg' }
+			{ name: 'full',                               mimeType: 'image/jpeg', cutGrill: false },
+			{ name: 'medium',    width: 364, height: 291, mimeType: 'image/jpeg', cutGrill: true },
+			{ name: 'medium-2x', width: 728, height: 582, mimeType: 'image/jpeg', cutGrill: true },
+			{ name: 'small',     width: 253, height: 202, mimeType: 'image/jpeg', cutGrill: true },
+			{ name: 'small-2x',  width: 506, height: 404, mimeType: 'image/jpeg', cutGrill: true }
 		]
 	};
 }
@@ -142,35 +142,49 @@ Directb2sProcessor.prototype.pass1 = function(src, dest, file, variation) {
 					logger.debug('[processor|directb2s|pass1] Found backglass image, pausing XML parser...');
 					parser.pause();
 					let source = new Readable();
+					source._read = function () {
+						source.push(attr.value);
+						source.push(null);
+					};
+
 					let imgStream = source.on('error', reject).pipe(base64.decode()).on('error', reject);
 
 					// setup gm
 					let img = gm(imgStream);
-					img.quality(variation.qual || 70);
-					img.interlace('Line');
 
-					if (variation.width && variation.height) {
-						img.resize(variation.width, variation.height);
-					}
+					img.size({ bufferStream: true }, function(err, size) {
 
-					if (variation.mimeType && mimeTypes[variation.mimeType]) {
-						img.setFormat(mimeTypes[variation.mimeType].ext);
-					}
+						img.quality(variation.qual || 70);
+						img.interlace('Line');
 
-					let writeStream = fs.createWriteStream(dest);
+						if (variation.cutGrill && file.metadata.grill_height && size) {
+							img.crop(size.width, size.height - file.metadata.grill_height, 0, 0);
+							logger.info(size);
+							logger.info('[processor|directb2s|pass1] Cutting off grill for variation %s, new height = ', file.toString(variation), size.height - file.metadata.grill_height);
+						}
 
-					// setup success handler
-					writeStream.on('finish', function() {
-						logger.info('[processor|directb2s|pass1] Saved resized image to "%s" (%sms).', dest, new Date().getTime() - now);
-						parser.resume();
+						if (variation.width && variation.height) {
+							img.resize(variation.width, variation.height);
+						}
+
+						if (variation.mimeType && mimeTypes[variation.mimeType]) {
+							img.setFormat(mimeTypes[variation.mimeType].ext);
+						}
+
+						let writeStream = fs.createWriteStream(dest);
+
+						// setup success handler
+						writeStream.on('finish', function() {
+							logger.info('[processor|directb2s|pass1] Saved resized image to "%s" (%sms).', dest, new Date().getTime() - now);
+							parser.resume();
+
+						});
+						writeStream.on('error', reject);
+
+						img.stream().on('error', reject).pipe(writeStream).on('error', reject);
+
 
 					});
-					writeStream.on('error', reject);
-
-					img.stream().on('error', reject).pipe(writeStream).on('error', reject);
-
-					source.push(attr.value);
-					source.push(null);
 				}
 			});
 			parser.on('error', err => {

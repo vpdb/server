@@ -1,0 +1,61 @@
+include ../template/_mixins
+
+.theme-light
+	.modal-body
+
+		//-- IMAGE
+		//---------------------------------------------------------------------
+		img.img.img--rounded.loaded.padder-bottom.fullwidth(
+			ng-src="{{ file.variations['full'].url }}",
+			title="This is the non-illuminated background of the backglass. In the game, most elements will be lighter."
+		)
+
+		//-- STATS
+		//---------------------------------------------------------------------
+		.text-center.padder-bottom.small
+			+icon('photo-size').shift-up-2x.space-right
+			span.space-right-2x Native size: {{ file.variations.full.width }} &times;  {{ file.variations.full.height }}
+			+icon('download-circle').shift-up-2x.space-right
+			span.space-right {{ numDownloads | number }} download{{ numDownloads != 1 ? 's' : '' }}
+
+
+		//-- DESCRIPTION
+		//---------------------------------------------------------------------
+		div.markdown.padder-top-2x(markdown="backglass.description", ng-show="backglass.description")
+
+
+		//-- AUTHORS
+		//---------------------------------------------------------------------
+		h3.h--smaller.h--primary Authors
+		.media(ng-repeat="author in backglass.authors")
+			.media-left.media-middle
+				img.img-avatar.img-avatar--sm(gravatar-src="author.user.gravatar_id", gravatar-default="404", fallback-icon="user")
+			.media-body
+				user {{ author.user.name }}
+				br
+				| {{ author.roles.join(', ') }}
+
+
+		//-- ACKNOWLEDGEMENTS
+		//---------------------------------------------------------------------
+		h3.h--smaller.h--primary(ng-show="backglass.acknowledgements") Acknowledgements
+		div.markdown(markdown="backglass.acknowledgements", ng-show="backglass.acknowledgements")
+
+
+		//-- VERSION HISTORY
+		//---------------------------------------------------------------------
+		h3.h--smaller.h--primary Version History
+		uib-accordion.panel-group--transparent.subtle(close-others="false")
+			uib-accordion-group(ng-repeat="version in backglass.versions", is-open="false")
+				uib-accordion-heading
+					strong.space-left-2x v{{ version.version }}
+					|  (
+					span(am-time-ago="version.released_at")
+					| )
+					+icon('angle-down').smaller.shift-down.pull-right
+
+				div.markdown.space-left-2x(markdown="version.changes")
+
+	.modal-footer
+		button.btn.btn-hollow.pull-left(ng-click="$dismiss()") Cancel
+		button.btn.btn-primary(ng-click="download(file)") Download

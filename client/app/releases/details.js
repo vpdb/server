@@ -40,7 +40,7 @@ angular.module('vpdb.releases.details', []).controller('ReleaseDetailsController
 
 		$scope.release = release;
 		$scope.pageLoading = false;
-		$scope.setTitle($scope.release.name);
+		$scope.setTitle(release.game.title + ' · ' + $scope.release.name);
 
 		// sort versions
 		$scope.releaseVersions = _.sortByOrder(release.versions, 'released_at', false);
@@ -110,7 +110,7 @@ angular.module('vpdb.releases.details', []).controller('ReleaseDetailsController
 
 		if (AuthService.isAuthenticated) {
 			$uibModal.open({
-				templateUrl: '/games/modal-download.html',
+				templateUrl: '/releases/modal-download.html',
 				controller: 'DownloadGameCtrl',
 				size: 'lg',
 				resolve: {

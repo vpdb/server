@@ -210,6 +210,22 @@ angular.module('vpdb.games.details', [])
 			}
 		};
 
+		$scope.showBackglass = function(backglass) {
+			$uibModal.open({
+				templateUrl: '/games/modal-backglass.html',
+				controller: 'BackglassDetailCtrl',
+				size: 'md',
+				resolve: {
+					params: function() {
+						return {
+							game: $scope.game,
+							backglass: backglass
+						};
+					}
+				}
+			});
+		};
+
 //		$scope.requestModPermission = function(release) {
 //			var modalInstance = $uibModal.open({
 //				templateUrl: '/partials/modals/requestModPermission.html',
@@ -222,6 +238,22 @@ angular.module('vpdb.games.details', [])
 //				$log.info('Modal dismissed at: ' + new Date());
 //			});
 //		};
+	})
+
+	.controller('BackglassDetailCtrl', function($scope, $uibModalInstance, DownloadService, params) {
+
+		$scope.backglass = params.backglass;
+		$scope.file = $scope.backglass.versions[0].file;
+		$scope.numDownloads = 0;
+		_.each($scope.backglass.versions, function(version) {
+			$scope.numDownloads += version.file.counter.downloads;
+		});
+		$scope.download = function(file) {
+			DownloadService.downloadFile(file, function() {
+				file.counter.downloads++;
+				$scope.numDownloads++;
+			});
+		}
 	})
 
 	.controller('RequestModPermissionModalCtrl', function($scope, $uibModalInstance) {

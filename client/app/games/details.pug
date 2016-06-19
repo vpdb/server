@@ -9,18 +9,18 @@ include ../template/_mixins
 
 		//-- UPLOAD BUTTONS
 		//---------------------------------------------------------------------
-		.panel--rect-block
+		.panel--rect-block(ng-show="auth.isAuthenticated")
 			h1.text-center.shift-up
-				+icon('upload').space-right
+				+icon('upload-circle').space-right
 				| UPLOAD
 
 			.center
 				ul.ul--no-list
 					li: a.text-center(ui-sref="addRelease({ id: game.id })")
-						+icon('plus-circle').space-right.shift-up.hidden-md
+						+icon('plus-circle').space-right.shift-up
 						| Release
 					li: a.text-center(ui-sref="addBackglass({ id: game.id })")
-						+icon('plus-circle').space-right.shift-up.hidden-md
+						+icon('plus-circle').space-right.shift-up
 						| Backglass
 
 			p.padder-top
@@ -36,8 +36,9 @@ include ../template/_mixins
 
 		include details-02-release
 		include details-03-roms
+		include details-04-backglasses
 		include details-04-todo
 
-		p: br
+	p: br
 
 

@@ -178,7 +178,7 @@ function getMimeType(file) {
 	if (file.type) {
 		return file.type;
 	}
-	var ext = file.name.substr(file.name.lastIndexOf('.') + 1, file.name.length);
+	var ext = file.name.substr(file.name.lastIndexOf('.') + 1, file.name.length).toLowerCase();
 	switch (ext) {
 		case 'jpg': return 'image/jpeg';
 		case 'png': return 'image/png';

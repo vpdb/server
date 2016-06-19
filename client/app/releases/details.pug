@@ -68,10 +68,10 @@ include ../template/_mixins
 			.center
 				ul.ul--no-list
 					li: a.text-center(ui-sref="addReleaseVersion({ id: game.id, releaseId: release.id })")
-						+icon('plus-circle').space-right.shift-up.hidden-md
+						+icon('plus-circle').space-right.shift-up
 						| Upload File
 					li: a.text-center(ui-sref="editRelease({ id: game.id, releaseId: release.id })")
-						+icon('pencil-circle').space-right.shift-up.hidden-md
+						+icon('pencil-circle').space-right.shift-up
 						| Edit Release
 
 			p.padder-top
@@ -81,16 +81,13 @@ include ../template/_mixins
 	.col-sm-9.col-sm-pull-3.col--main
 
 		.title.padder-top
-			h1.title-main.h--primary: a.a--primary(ui-sref="gameDetails({id: game.id})") {{ game.title }}
-			h1.title-sub.h--small {{ game.manufacturer }} &middot; {{ game.year }}
-		hr
-		h1.title
-			.title-main {{ release.name }} {{ latestVersion.version }}
-			.title-sub
+			h1.title-main.h--primary
+				a.a--primary(ui-sref="gameDetails({id: game.id})") {{ game.title }}
+				| &nbsp;&middot; {{ release.name }} {{ latestVersion.version }}
+			h1.title-sub
 				.badge.badge--tag.badge--small.shift-down(ng-repeat="tag in release.tags", uib-tooltip="{{tag.description}}", tooltip-append-to-body="true") {{ tag.name }}
 		hr
 
-		span.clearfix.padder-top(ng-show="release.tags && release.tags.length") &nbsp;
 		div.markdown(markdown="release.description", ng-show="release.description")
 
 		//-- AUTHORS

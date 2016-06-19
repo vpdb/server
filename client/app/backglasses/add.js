@@ -130,7 +130,7 @@ angular.module('vpdb.backglasses.add', [])
 
 				// add or edit?
 				if (author) {
-					$scope.backglass.authors[$scope.release.authors.indexOf(author)] = authorRef;
+					$scope.backglass.authors[$scope.backglass.authors.indexOf(author)] = authorRef;
 				} else {
 					$scope.backglass.authors.push(authorRef);
 				}

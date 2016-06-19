@@ -18,14 +18,14 @@ include ../template/_mixins
 		//-- STATS
 		//---------------------------------------------------------------------
 		.pull-left
-			+icon('star-circle').svg-2x.shift-up-2x.space-right
-			span.space-right {{ release.counter.stars | number }} star{{ release.counter.stars != 1 ? 's' : '' }}
+			+icon('star-circle').shift-up-2x.space-right
+			span.space-right.small {{ release.counter.stars | number }} star{{ release.counter.stars != 1 ? 's' : '' }}
 		.pull-left
-			+icon('comment-circle').svg-2x.shift-up-2x.space-right
-			span.space-right {{ release.counter.comments | number }} comment{{ release.counter.comments != 1 ? 's' : '' }}
+			+icon('comment-circle').shift-up-2x.space-right
+			span.space-right.small {{ release.counter.comments | number }} comment{{ release.counter.comments != 1 ? 's' : '' }}
 		.pull-left
-			+icon('download-circle').svg-2x.shift-up-2x.space-right
-			span.space-right {{ release.counter.downloads | number }} download{{ release.counter.downloads != 1 ? 's' : '' }}
+			+icon('download-circle').shift-up-2x.space-right
+			span.space-right.small {{ release.counter.downloads | number }} download{{ release.counter.downloads != 1 ? 's' : '' }}
 
 		.clearfix
 

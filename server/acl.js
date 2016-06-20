@@ -66,6 +66,7 @@ acl.init = function() {
 				{ resources: 'builds', permissions: 'delete' },
 				{ resources: 'roms', permissions: 'delete' },
 				{ resources: 'backglasses', permissions: 'delete' },
+				{ resources: 'media', permissions: 'delete' }
 			]
 		}, {
 			roles: 'member',
@@ -81,6 +82,7 @@ acl.init = function() {
 				{ resources: 'comments', permissions: ['add'] },
 				{ resources: 'roms', permissions: ['add', 'delete-own'] },
 				{ resources: 'backglasses', permissions: ['add', 'delete-own'] },
+				{ resources: 'media', permissions: ['add', 'delete-own'] },
 				{ resources: 'messages', permissions: ['receive'] }
 			]
 		}, {

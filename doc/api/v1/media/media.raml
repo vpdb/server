@@ -1,0 +1,47 @@
+displayName: Media
+description: |
+  Media are images, video and audio linked to either a release or a game.
+
+post:
+  is: [ validated ]
+  securedBy: [ jwt: { scopes: [ MEMBER ] } ]
+  description: |
+    Create a new medium.
+
+    A valid category is mandatory. Some categories such as playfields need
+    a sub-category, which is appended to the main category with a `/`, e.g.
+    `playfield/fs` for a fullscreen playfield.
+
+  body:
+    role/member:
+      example: !include http/create-req.json
+  responses:
+    201:
+      body:
+        role/member:
+          example: !include http/create-res-201.json
+    422:
+      body:
+        role/member:
+          example: !include http/create-res-422.json
+
+/{media_id}:
+  delete:
+    is: [ protected ]
+    securedBy: [ jwt: { scopes: [ MEMBER, CONTRIB ] } ]
+    description: |
+      Delete a medium of a given ID.
+
+      Members can only delete own mida, while contributors can delete any medium.
+    body:
+        role/member:
+          example: !include http/del-req.json
+    responses:
+      200:
+        body:
+          role/member:
+            example: !include http/del-res-204.json
+      403:
+        body:
+          role/member:
+            example: !include http/del-res-403.json

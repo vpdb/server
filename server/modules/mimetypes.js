@@ -53,6 +53,11 @@ module.exports = {
 		ext: 'rar',
 		category: 'archive'
 	},
+	'application/x-shockwave-flash': {
+		name: 'Flash Animation',
+		ext: 'swf',
+		category: 'image'
+	},
 	'application/x-visual-pinball-table': {
 		name: 'Visual Pinball Table v9.x',
 		ext: 'vpt',

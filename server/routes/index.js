@@ -61,6 +61,7 @@ module.exports = function(app) {
 	require('./api/users').register(app, api);
 	require('./api/builds').register(app, api);
 	require('./api/backglasses').register(app, api);
+	require('./api/media').register(app, api);
 
 	// storage
 	require('./storage/auth').register(app, api, storage);

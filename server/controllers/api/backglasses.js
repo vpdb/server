@@ -144,7 +144,7 @@ exports.del = function(req, res) {
 		return backglass.remove();
 
 	}).then(() => {
-		logger.info('[api|rom:delete] ROM "%s" successfully deleted.', backglass.id);
+		logger.info('[api|backglass:delete] Backglass "%s" successfully deleted.', backglass.id);
 		api.success(res, null, 204);
 
 	}).catch(api.handleError(res, error, 'Error deleting backglass'));

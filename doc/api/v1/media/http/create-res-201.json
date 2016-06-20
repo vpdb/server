@@ -1,0 +1,46 @@
+201 Created
+X-App-Sha: 5eece90
+Content-Type: application/json; charset=utf-8
+Content-Length: 864
+Etag: W/"360-WDDeYoZ1LoBxIbysUG1Sew"
+
+{
+  "id": "e23zwphmne",
+  "game": {
+    "rating": {
+      "average": 0,
+      "votes": 0,
+      "score": 0
+    },
+    "counter": {
+      "releases": 0,
+      "views": 0,
+      "downloads": 0,
+      "comments": 0,
+      "stars": 0
+    },
+    "game_type": "em",
+    "ipdb": {
+      "mfg": 323,
+      "number": 2442
+    },
+    "year": 1955,
+    "manufacturer": "United",
+    "title": "Deluxe Super Slugger",
+    "id": "deluxe-super-slugger"
+  },
+  "category": "backglass_image",
+  "description": "This is a very super high resolution backglass that I have stitched together from four different sources.",
+  "acknowledgements": "- Thanks to @mom for all her patience",
+  "created_at": "2016-06-21T15:48:40.097Z",
+  "created_by": {
+    "counter": {
+      "stars": 0,
+      "comments": 0
+    },
+    "gravatar_id": "8e3affe4ac3c97766e0df7a84589a665",
+    "username": "Harvey_Bahringer48",
+    "name": "Harvey_Bahringer48",
+    "id": "p244ph8ne"
+  }
+}

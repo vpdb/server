@@ -29,6 +29,7 @@ exports.events = require('./events');
 exports.files = require('./files');
 exports.games = require('./games');
 exports.ipdb = require('./ipdb');
+exports.media = require('./media');
 exports.messages = require('./messages');
 exports.plans = require('./plans');
 exports.ratings = require('./ratings');

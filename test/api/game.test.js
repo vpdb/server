@@ -342,9 +342,63 @@ describe('The VPDB `game` API', function() {
 
 	describe('when deleting a game', function() {
 
-		it('should succeed if game is not referenced');
+		var user = 'contributor';
+		before(function(done) {
+			hlp.setupUsers(request, {
+				contributor: { roles: [ user ]}
+			}, done);
+		});
 
-		it('should fail if there is a release attached to that game');
+		after(function(done) {
+			hlp.cleanup(request, done);
+		});
+
+		it('should succeed if game is not referenced', function(done) {
+			hlp.file.createBackglass(user, request, function(backglass) {
+				request
+					.post('/api/v1/games')
+					.as(user)
+					.send(hlp.game.getGame({ _media: { backglass: backglass.id }}))
+					.end(function(err, res) {
+						hlp.expectStatus(err, res, 201);
+						request
+							.del('/api/v1/games/' + res.body.id)
+							.save({ path: 'games/delete'})
+							.as(user)
+							.end(hlp.status(204, done));
+					});
+			});
+		});
+
+		it('should fail if there is a backglass attached to that game', function(done) {
+			hlp.game.createGame(user, request, function(game) {
+				hlp.file.createDirectB2S(user, request, function(b2s) {
+					request
+						.post('/api/v1/backglasses')
+						.as(user)
+						.send({
+							_game: game.id,
+							authors: [ {
+								_user: hlp.users[user].id,
+								roles: [ 'creator' ]
+							} ],
+							versions: [ {
+								version: '1.0',
+								_file: b2s.id
+							} ]
+						})
+						.end(function(err, res) {
+							hlp.doomBackglass(user, res.body.id);
+							hlp.expectStatus(err, res, 201);
+							request
+								.del('/api/v1/games/' + game.id)
+								.save({ path: 'games/delete'})
+								.as(user)
+								.end(hlp.status(400, 'is referenced by', done));
+						});
+				});
+			});
+		});
 
 	});
 });

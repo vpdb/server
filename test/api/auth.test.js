@@ -95,8 +95,6 @@ describe('The authentication engine of the VPDB API', function() {
 				.as('member')
 				.send({ label: 'Access token', password: hlp.getUser('member').password })
 				.end(function(err, res) {
-
-					hlp.doomToken('member', res.body.id);
 					hlp.expectStatus(err, res, 201);
 
 					request
@@ -115,9 +113,7 @@ describe('The authentication engine of the VPDB API', function() {
 				.send({ password: hlp.getUser('member').password, type: 'login' })
 				.then(res => {
 
-					hlp.doomToken('member', res.body.id);
 					hlp.expectStatus(res, 201);
-
 					token = res.body.token;
 					return request
 						.patch('/api/v1/tokens/' + res.body.id)
@@ -144,9 +140,7 @@ describe('The authentication engine of the VPDB API', function() {
 				.send({ password: hlp.getUser('member').password, type: 'login' })
 				.then(res => {
 
-					hlp.doomToken('member', res.body.id);
 					hlp.expectStatus(res, 201);
-
 					token = res.body.token;
 					return request
 						.patch('/api/v1/tokens/' + res.body.id)
@@ -173,9 +167,7 @@ describe('The authentication engine of the VPDB API', function() {
 				.send({ password: hlp.getUser('member').password, type: 'login' })
 				.end(function(err, res) {
 
-					hlp.doomToken('member', res.body.id);
 					hlp.expectStatus(err, res, 201);
-
 					request
 						.post('/api/v1/authenticate')
 						.send({ token: res.body.token })

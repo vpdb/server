@@ -137,8 +137,26 @@ exports.del = function(req, res) {
 			throw error('No such game with ID "%s".', req.params.id).status(404);
 		}
 
-		// TODO check for linked releases (& ROMs, Backglasses, Media, etc) and refuse if referenced
-		return game.remove();
+		// check for release and backglass reference and fail if there are
+		let refs = { releases: 0, backglasses: 0 };
+		return Promise.all([
+			[ Release, '_game', 'releases' ],
+			[ Backglass, '_game', 'backglasses' ]
+		].map(([ Model, ref, key ]) => {
+			return Model.find({ [ref]: game._id }).exec().then(items => {
+				if (_.isEmpty(items)) {
+					return;
+				}
+				refs[key] = items.length;
+			});
+
+		})).then(() => {
+			if (_.sum(_.values(refs)) > 0) {
+				throw error('Cannot delete game because it is referenced by %s.', Object.keys(refs).map(f => `${refs[f]} ${f}`).join(' and '))
+					.status(400).warn('delete');
+			}
+			return game.remove();
+		});
 
 	}).then(() => {
 		logger.info('[api|game:delete] Game "%s" (%s) successfully deleted.', game.title, game.id);

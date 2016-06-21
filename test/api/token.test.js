@@ -135,7 +135,7 @@ describe('The VPDB `Token` API', function() {
 				.as('subscribed')
 				.send({ password: hlp.getUser('subscribed').password })
 				.end(function(err, res) {
-					hlp.doomToken('subscribed', res.body.id);
+
 					hlp.expectStatus(err, res, 201);
 					var token = res.body.token;
 
@@ -175,7 +175,6 @@ describe('The VPDB `Token` API', function() {
 				.end(function(err, res) {
 
 					hlp.expectStatus(err, res, 201);
-					hlp.doomToken(res.body.id);
 					var loginToken = res.body.token;
 
 					// create jwt with login token
@@ -217,7 +216,6 @@ describe('The VPDB `Token` API', function() {
 				.as('subscribed')
 				.send({ password: hlp.getUser('subscribed').password })
 				.end(function(err, res) {
-					hlp.doomToken('subscribed', res.body.id);
 					hlp.expectStatus(err, res, 201);
 					var token = res.body.token;
 

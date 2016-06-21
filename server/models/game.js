@@ -222,18 +222,6 @@ GameSchema.pre('remove', function(done) {
 
 	const File = require('mongoose').model('File');
 	return Promise.try(() => {
-
-		// remove linked media
-		return Promise.all([ this._media.backglass, this._media.logo].map(ref => {
-			if (!ref) {
-				return;
-			}
-			return Promise
-				.try(() => ref.id ? ref : File.findById(ref._id).exec())
-				.then(file => file.remove());
-		}));
-
-	}).then(() => {
 		// remove reference from other tables
 		return Promise.all([
 			['Rating', '_ref.game'],

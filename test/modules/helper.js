@@ -101,7 +101,7 @@ exports.teardownUsers = function(request, done) {
 				.as(superuser)
 				.end(function(err, res) {
 					if (err) {
-						return next(err);
+						return next(appendError(err, res));
 					}
 					expect(res.status).to.eql(204);
 					next();
@@ -121,7 +121,7 @@ exports.teardownUsers = function(request, done) {
 					.as(superuser)
 					.end(function(err, res) {
 						if (err) {
-							return next(err);
+							return next(appendError(err, res));
 						}
 						expect(res.status).to.eql(204);
 						next();
@@ -241,17 +241,6 @@ exports.doomMedium = function(user, mediumId) {
 };
 
 /**
- * Marks a ROM to be cleaned up in teardown.
- * @param {string} user User with which the file was created
- * @param {string} tokenId ID of the ROM
- */
-exports.doomToken = function(user, tokenId) {
-	objectPath.ensureExists(this, "doomedTokens." + user, []);
-	this.doomedTokens[user].unshift(tokenId);
-};
-
-
-/**
  * Marks a user to be cleaned up in teardown. Note that this is only for users
  * created in tests, the users in the before() method are cleaned automatically.
  * @param {string} userId ID of the user
@@ -281,7 +270,6 @@ exports.cleanup = function(request, done) {
 	var doomedTags = this.doomedTags;
 	var doomedBuilds = this.doomedBuilds;
 	var doomedRoms = this.doomedRoms;
-	var doomedTokens = this.doomedTokens;
 	var doomedBackglasses = this.doomedBackglasses;
 	var doomedMedia = this.doomedMedia;
 
@@ -299,7 +287,7 @@ exports.cleanup = function(request, done) {
 						.as(user)
 						.end(function(err, res) {
 							if (err) {
-								return next(err);
+								return next(appendError(err, res));
 							}
 							if (res.status !== 204) {
 								console.log(req.method + ' ' + req.url);
@@ -328,7 +316,7 @@ exports.cleanup = function(request, done) {
 						.as(user)
 						.end(function(err, res) {
 							if (err) {
-								return next(err);
+								return next(appendError(err, res));
 							}
 							if (res.status !== 204) {
 								console.log(res.body);
@@ -344,35 +332,7 @@ exports.cleanup = function(request, done) {
 			});
 		},
 
-		// 3. cleanup games
-		function(next) {
-			if (!doomedGames) {
-				return next();
-			}
-			async.eachSeries(_.keys(doomedGames), function(user, nextGame) {
-				async.each(doomedGames[user], function(gameId, next) {
-					request
-						.del('/api/v1/games/' + gameId)
-						.as(user)
-						.end(function(err, res) {
-							if (err) {
-								return next(err);
-							}
-							if (res.status !== 204) {
-								console.log(res.body);
-							}
-							expect(res.status).to.eql(204);
-							next();
-						});
-				}, nextGame);
-
-			}, function(err) {
-				that.doomedGames = {};
-				next(err);
-			});
-		},
-
-		// 4. cleanup tags
+		// 3. cleanup tags
 		function(next) {
 			if (!doomedTags) {
 				return next();
@@ -384,7 +344,7 @@ exports.cleanup = function(request, done) {
 						.as(user)
 						.end(function(err, res) {
 							if (err) {
-								return next(err);
+								return next(appendError(err, res));
 							}
 							if (res.status !== 204) {
 								console.log(res.body);
@@ -400,7 +360,7 @@ exports.cleanup = function(request, done) {
 			});
 		},
 
-		// 5. cleanup builds
+		// 4. cleanup builds
 		function(next) {
 			if (!doomedBuilds) {
 				return next();
@@ -412,7 +372,7 @@ exports.cleanup = function(request, done) {
 						.as(user)
 						.end(function(err, res) {
 							if (err) {
-								return next(err);
+								return next(appendError(err, res));
 							}
 							if (res.status !== 204) {
 								console.log(res.body);
@@ -428,7 +388,7 @@ exports.cleanup = function(request, done) {
 			});
 		},
 
-		// 6. cleanup ROMs
+		// 5. cleanup ROMs
 		function(next) {
 			if (!doomedRoms) {
 				return next();
@@ -440,7 +400,7 @@ exports.cleanup = function(request, done) {
 						.as(user)
 						.end(function(err, res) {
 							if (err) {
-								return next(err);
+								return next(appendError(err, res));
 							}
 							if (res.status !== 204) {
 								console.log(res.body);
@@ -456,47 +416,19 @@ exports.cleanup = function(request, done) {
 			});
 		},
 
-		// 7. cleanup tokens
-		function(next) {
-			if (!doomedTokens) {
-				return next();
-			}
-			async.eachSeries(_.keys(doomedTokens), function(user, nextToken) {
-				async.each(nextToken[user], function(tokenId, next) {
-					request
-						.del('/api/v1/tokens/' + tokenId)
-						.as(user)
-						.end(function(err, res) {
-							if (err) {
-								return next(err);
-							}
-							if (res.status !== 204) {
-								console.log(res.body);
-							}
-							expect(res.status).to.eql(204);
-							next();
-						});
-				}, nextToken);
-
-			}, function(err) {
-				that.doomedTokens = {};
-				next(err);
-			});
-		},
-
-		// 8. cleanup backglasses
+		// 6. cleanup backglasses
 		function(next) {
 			if (!doomedBackglasses) {
 				return next();
 			}
 			async.eachSeries(_.keys(doomedBackglasses), function(user, nextBackglass) {
-				async.each(nextBackglass[user], function(backglassId, next) {
+				async.each(doomedBackglasses[user], function(backglassId, next) {
 					request
 						.del('/api/v1/backglasses/' + backglassId)
 						.as(user)
 						.end(function(err, res) {
 							if (err) {
-								return next(err);
+								return next(appendError(err, res));
 							}
 							if (res.status !== 204) {
 								console.log(res.body);
@@ -512,19 +444,19 @@ exports.cleanup = function(request, done) {
 			});
 		},
 
-		// 9. cleanup media
+		// 7. cleanup media
 		function(next) {
 			if (!doomedMedia) {
 				return next();
 			}
 			async.eachSeries(_.keys(doomedMedia), function(user, nextMedium) {
-				async.each(nextMedium[user], function(mediumId, next) {
+				async.each(doomedMedia[user], function(mediumId, next) {
 					request
 						.del('/api/v1/media/' + mediumId)
 						.as(user)
 						.end(function(err, res) {
 							if (err) {
-								return next(err);
+								return next(appendError(err, res));
 							}
 							if (res.status !== 204) {
 								console.log(res.body);
@@ -536,6 +468,35 @@ exports.cleanup = function(request, done) {
 
 			}, function(err) {
 				that.doomedMedia = {};
+				next(err);
+			});
+		},
+
+		// 8. cleanup games
+		function(next) {
+			if (!doomedGames) {
+				return next();
+			}
+			async.eachSeries(_.keys(doomedGames), function(user, nextGame) {
+				async.each(doomedGames[user], function(gameId, next) {
+					request
+						.del('/api/v1/games/' + gameId)
+						.as(user)
+						.end(function(err, res) {
+							if (err) {
+								console.error(res.body);
+								return next(appendError(err, res));
+							}
+							if (res.status !== 204) {
+								console.log(res.body);
+							}
+							expect(res.status).to.eql(204);
+							next();
+						});
+				}, nextGame);
+
+			}, function(err) {
+				that.doomedGames = {};
 				next(err);
 			});
 		},
@@ -702,7 +663,7 @@ exports._createUser = function(request, name, config) {
 					.send(_.pick(user, 'username', 'password'))
 					.end(function(err, res) {
 						if (err) {
-							return next(err);
+							return next(appendError(err, res));
 						}
 						if (res.status !== 200) {
 							debug('%s <%s>: ERROR: %s', name, user.email, res.body.error);
@@ -719,7 +680,7 @@ exports._createUser = function(request, name, config) {
 							.send(_.pick(user, [ 'name', 'email', 'username', 'is_active', 'roles', '_plan' ]))
 							.end(function(err, res) {
 								if (err) {
-									return next(err.body.error);
+									return next(appendError(err, res));
 								}
 								if (res.status !== 200) {
 									return next(res.body.error);
@@ -731,3 +692,14 @@ exports._createUser = function(request, name, config) {
 			});
 	};
 };
+
+function appendError(err, res) {
+	let msg = err.message;
+	if (res.error) {
+		msg += ': ' + res.error;
+	}
+	if (res.body && res.body.error) {
+		msg += ': ' + res.body.error;
+	}
+	return new Error(msg);
+}

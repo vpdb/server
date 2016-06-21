@@ -135,7 +135,7 @@ const MediumSchema = new Schema(mediumFields);
 // API FIELDS
 //-----------------------------------------------------------------------------
 const apiFields = {
-	simple: [ 'id', 'game', 'release', 'category', 'description', 'acknowledgements', 'created_at', 'created_by' ]
+	simple: [ 'id', 'file', 'game', 'release', 'category', 'description', 'acknowledgements', 'created_at', 'created_by' ]
 };
 
 //-----------------------------------------------------------------------------

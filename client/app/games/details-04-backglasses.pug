@@ -1,6 +1,6 @@
 h1.padder-top-2x DirectB2S Backglasses
 label(ng-hide="game.backglasses.length > 0") No backglasses available.
-.row(ng-repeat="backglass in game.backglasses"): .col-md-4.col-sm-6.col-xs-12.fade-animation(ng-click="showBackglass(backglass)")
+.row: .col-md-4.col-sm-6.col-xs-12.fade-animation(ng-repeat="backglass in game.backglasses", ng-click="showBackglass(backglass)")
 	.panel.panel--animated.ng-cloak
 		.img.img--ar-bg.img--rounded-top(img-bg="backglass.versions[0].file.variations['medium' + pixelDensitySuffix].url")
 		.img.img--ar-bg.img--rounded-top.img--placeholder.loaded

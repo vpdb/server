@@ -70,6 +70,8 @@ exports.create = function(req, res) {
 
 		if (game) {
 			rom._game = game._id;
+			rom._ipdb_number = game.ipdb.number;
+
 		} else {
 			if (req.params.gameId) {
 				throw error('No such game with ID "%s"', req.params.gameId).status(404);

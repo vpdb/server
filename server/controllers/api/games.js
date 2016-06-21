@@ -295,6 +295,15 @@ exports.view = function(req, res) {
 
 	}).then(backglasses => {
 		result.backglasses = backglasses.map(backglass => _.omit(backglass.toSimple(opts), 'game'));
+
+		return Medium.find({ '_ref.game': game._id })
+			.populate({ path: '_file' })
+			.populate({ path: '_created_by' })
+			.exec();
+
+	}).then(media => {
+		result.alternate_media = media.map(medium => _.omit(medium.toSimple(opts), 'game'));
+
 		api.success(res, result, 200);
 
 	}).catch(api.handleError(res, error, 'Error viewing game'));

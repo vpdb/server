@@ -21,6 +21,16 @@ angular.module('vpdb.games.details', [])
 			{ value: 'it', label: 'Italian' },
 			{ value: 'fr', label: 'French' }
 		];
+		$scope.media = {
+			backglass_image: {
+				imgclass: ['img--ar-bg'],
+				variation: 'medium'
+			},
+			wheel_image: {
+				imgclass: ['img--ar-bg', 'img--fit'],
+				variation: 'medium'
+			}
+		};
 
 		// clear empty meta data
 		var isEmpty = function(val) {

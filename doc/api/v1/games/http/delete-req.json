@@ -1,0 +1,5 @@
+DELETE /v1/games/vogue HTTP/2.0
+Host: api.vpdb.io
+Accept-Encoding: gzip, deflate
+authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwa2FlNjlzeTZlIiwiaWF0IjoiMjAxNi0wNi0yMVQyMTozNzo1MC41MTFaIiwiZXhwIjoiMjAxNi0wNi0yMVQyMjozNzo1MC41MTFaIiwiaXJ0IjpmYWxzZX0.8fPgeEW-hTuOXOUrDBbgF-cytkgtnjpwz5EuZzXa_wg
+

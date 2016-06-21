@@ -106,11 +106,25 @@ get:
       List details of a game.
   delete:
     description: |
-      Deletes a game.
+      Delete a game.
 
       Will also delete all linked media, ratings and stars. Linked ROMs are
-      left alive with their IPDB number updated, and if any releases or
+      left alive because they contain a link to the ipdb number and will be
+      re-linked if the game is re-created, however if any releases or
       backglasses exist, an error is returned.
+    body:
+      role/contrib:
+        example: !include http/delete-req.json
+    responses:
+      204:
+        body:
+          role/contrib:
+            example: !include http/delete-res-204.json
+      400:
+        description: Trying to delete a game that is referenced by a backglass.
+        body:
+          role/contrib:
+            example: !include http/delete-res-400.json
   /roms: !include roms.raml
   /backglasses: !include backglasses.raml
   /rating: !include rating.raml

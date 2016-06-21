@@ -1,0 +1,9 @@
+400 Bad Request
+X-App-Sha: 5eece90
+Content-Type: application/json; charset=utf-8
+Content-Length: 92
+Etag: W/"5c-IrceljXTQ7Rm2D7GsL4jHQ"
+
+{
+  "error": "Cannot delete game because it is referenced by 0 releases and 1 backglasses."
+}

@@ -20,19 +20,23 @@
 "use strict";
 
 var _ = require('lodash');
+var fs = require('fs');
 var async = require('async');
 var util = require('util');
 var logger = require('winston');
 
+var File = require('mongoose').model('File');
 var Game = require('mongoose').model('Game');
 var Release = require('mongoose').model('Release');
 var Star = require('mongoose').model('Star');
 var Rom = require('mongoose').model('Rom');
 var LogEvent = require('mongoose').model('LogEvent');
 var Backglass = require('mongoose').model('Backglass');
+var Medium = require('mongoose').model('Medium');
 
 var api = require('./api');
 
+var fileModule = require('../../modules/file');
 var error = require('../../modules/error')('api', 'game');
 
 
@@ -95,12 +99,22 @@ exports.create = function(req, res) {
 		}
 
 	}).then(() => {
+		// copy backglass and logo to media
+		return Promise.all([
+			copyMedia(req, game, game._media.backglass, 'backglass_image', bg => bg.metadata.size.width * bg.metadata.size.height > 839680),  // > 820x1024
+			copyMedia(req, game, game._media.logo, 'wheel_image')
+
+		]).catch(err => {
+			logger.error('[api|game:create] Error while copying media: %s', err.message);
+			logger.error(err);
+		});
+
+	}).then(() => {
 		LogEvent.log(req, 'create_game', true, { game: _.omit(game.toSimple(), [ 'rating', 'counter' ]) }, { game: game._id });
 		api.success(res, game.toDetailed(), 201);
 
 	}).catch(api.handleError(res, error, 'Error creating game'));
 };
-
 
 /**
  * Deletes a game.
@@ -115,13 +129,15 @@ exports.del = function(req, res) {
 			.populate({ path: '_media.backglass' })
 			.populate({ path: '_media.logo' })
 			.exec();
+
 	}).then(g => {
 		game = g;
 
 		if (!game) {
 			throw error('No such game with ID "%s".', req.params.id).status(404);
 		}
-		// TODO check for linked releases (& ROMs, etc) and refuse if referenced
+
+		// TODO check for linked releases (& ROMs, Backglasses, Media, etc) and refuse if referenced
 		return game.remove();
 
 	}).then(() => {
@@ -265,3 +281,43 @@ exports.view = function(req, res) {
 
 	}).catch(api.handleError(res, error, 'Error viewing game'));
 };
+
+
+/**
+ * Copies a given file to a given media type.
+ *
+ * @param {Request} req Request for retrieving user
+ * @param {Game} game Game the media will be linked to
+ * @param {File} file File to be copied
+ * @param {string} category Media category
+ * @param {function} [check] Function called with file parameter. Media gets discarded if false is returned.
+ */
+function copyMedia(req, game, file, category, check) {
+	return Promise.try(() => {
+
+		check = check || (() => true);
+		if (file && check(file)) {
+
+			const fieldsToCopy = [ 'name', 'bytes', 'created_at', 'mime_type', 'file_type' ];
+			const fileToCopy = _.assign(_.pick(file, fieldsToCopy), {
+				_created_by: req.user,
+				variations: {}
+			});
+			return fileModule.create(fileToCopy, fs.createReadStream(file.getPath()), error).then(copiedFile => {
+				logger.info('[api|game:create] Copied file "%s" to "%s".', file.id, copiedFile.id);
+				const medium = new Medium({
+					_file: copiedFile._id,
+					_ref: { game: game._id },
+					category: category,
+					created_at: new Date(),
+					_created_by: req.user
+				});
+				return medium.save();
+
+			}).then(medium => {
+				logger.info('[api|game:create] Copied %s as media to %s.', category, medium.id);
+				return medium.activateFiles();
+			});
+		}
+	});
+}

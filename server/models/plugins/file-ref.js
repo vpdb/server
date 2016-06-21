@@ -62,8 +62,8 @@ module.exports = function(schema, options) {
 					return callback(true);
 				}
 
-				if (!file._created_by.equals(that._created_by)) {
-					that.invalidate(path, 'Referenced file must be of the same owner as referer.', file.id);
+				if (!file._created_by.equals(that._created_by._id || that._created_by)) {
+					that.invalidate(path, 'Referenced file ' + file.id + ' must be of the same owner as referer ' + that._created_by.toString() + '.', file.id);
 				}
 				if (that.isNew && file.is_active) {
 					that.invalidate(path, 'Cannot reference active files. If a file is active that means that is has been referenced elsewhere, in which case you cannot reference it again.', file.id);

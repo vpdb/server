@@ -104,7 +104,13 @@ get:
   get:
     description: |
       List details of a game.
+  delete:
+    description: |
+      Deletes a game.
 
+      Will also delete all linked media, ratings and stars. Linked ROMs are
+      left alive with their IPDB number updated, and if any releases or
+      backglasses exist, an error is returned.
   /roms: !include roms.raml
   /backglasses: !include backglasses.raml
   /rating: !include rating.raml

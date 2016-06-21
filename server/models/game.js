@@ -218,37 +218,30 @@ GameSchema.methods.toDetailed = function() {
 //-----------------------------------------------------------------------------
 // TRIGGERS
 //-----------------------------------------------------------------------------
-GameSchema.pre('remove', function(next) {
-	var File = require('mongoose').model('File');
-	var removeFile = function(ref) {
-		return function(next) {
-			var remove = function(err, file) {
-				/* istanbul ignore if  */
-				if (err) {
-					return next(err);
-				}
-				file.remove(next);
-			};
-			if (!ref) {
-				return next();
-			}
-			if (!ref.id) {
-				File.findById(ref._id, remove);
-			} else {
-				remove(null, ref);
-			}
-		};
-	};
-	var that = this;
-	var cleanup = [];
-	cleanup.push(removeFile(this._media.backglass));
-	cleanup.push(removeFile(this._media.logo));
-	cleanup.push(function(next) {
-		// remove linked comments
-		mongoose.model('Rating').remove({ '_ref.game': that._id}).exec(next);
-	});
+GameSchema.pre('remove', function(done) {
 
-	async.parallel(cleanup, next);
+	const File = require('mongoose').model('File');
+	return Promise.try(() => {
+
+		// remove linked media
+		return Promise.all([ this._media.backglass, this._media.logo].map(ref => {
+			if (!ref) {
+				return;
+			}
+			return Promise
+				.try(() => ref.id ? ref : File.findById(ref._id).exec())
+				.then(file => file.remove());
+		}));
+
+	}).then(() => {
+		// remove reference from other tables
+		return Promise.all([
+			['Rating', '_ref.game'],
+			['Star', '_ref.game'],
+			['Medium', '_ref.game']
+		].map(([ model, ref ]) => mongoose.model(model).remove({ [ref]: this._id}).exec()));
+
+	}).nodeify(done);
 });
 
 

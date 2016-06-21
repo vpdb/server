@@ -101,7 +101,7 @@ exports.create = function(req, res) {
 	}).then(() => {
 		// copy backglass and logo to media
 		return Promise.all([
-			copyMedia(req, game, game._media.backglass, 'backglass_image', bg => bg.metadata.size.width * bg.metadata.size.height > 839680),  // > 820x1024
+			copyMedia(req, game, game._media.backglass, 'backglass_image', bg => bg.metadata.size.width * bg.metadata.size.height > 647000),  // > 900x720
 			copyMedia(req, game, game._media.logo, 'wheel_image')
 
 		]).catch(err => {

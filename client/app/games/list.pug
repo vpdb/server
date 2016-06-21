@@ -32,7 +32,7 @@ include ../template/_mixins
 		.row.ng-cloak
 			.fade2-animation(ng-include="template")
 
-	//- left side menu
+	//- right side menu
 	.col-sm-3.col--menu
 		h1 Filter
 		hr
@@ -80,9 +80,16 @@ include ../template/_mixins
 			li.a(sort="rating", d="desc") Rating
 			li.a(sort="popularity", d="desc") Popularity
 
-		span(ng-show="auth.hasPermission('games/add')")
-			h1 Content
-			hr
-			a.btn.btn-primary(ui-sref="addGame").padder-bottom
-				+icon('plus-circle').space-right
-				| Add Game
+		//-- UPLOAD BUTTONS
+		//---------------------------------------------------------------------
+		.panel--rect-block.padder-top-2x(ng-show="auth.hasPermission('games/add')")
+			h1.text-center.shift-up
+				+icon('upload-circle').space-right
+				| UPLOAD
+
+			.center
+				ul.ul--no-list
+					li: a.text-center(ui-sref="addGame")
+						+icon('plus-circle').space-right.shift-up
+						| Add Game
+			p.padder-top

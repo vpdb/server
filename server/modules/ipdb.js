@@ -89,7 +89,7 @@ function parseDetails(body, done) {
 				return m.replace(/[\s,]+$/, '');
 			});
 		}
-		game.model_number = firstMatch(body, /Model Number:\s*<\/b><\/td><td[^>]*>(\d+)/i);
+		game.model_number = firstMatch(body, /Model Number:\s*<\/b><\/td><td[^>]*>([\da-z]+)/i);
 		game.year = number(firstMatch(body, /href="machine\.cgi\?id=\d+">\d+<\/a>\s*<I>[^<]*?(\d{4})/i));
 
 		game.game_type = firstMatch(body, /Type:\s*<\/b><\/td><td[^>]*>([^<]+)/i, function(m) {
@@ -148,7 +148,7 @@ function number(str) {
 }
 
 function trim(str) {
-	return str.replace(/[^-\w\d\s\.,:_'"()&]/ig, '');
+	return str.replace(/[^-\w\d\s\.,:_'"()&/]/ig, '');
 }
 
 function striptags(str) {

@@ -222,7 +222,7 @@ angular.module('vpdb.games.details', [])
 
 		$scope.showBackglass = function(backglass) {
 			$uibModal.open({
-				templateUrl: '/games/modal-backglass.html',
+				templateUrl: 'modal/backglass.html',
 				controller: 'BackglassDetailCtrl',
 				size: 'md',
 				resolve: {
@@ -236,18 +236,21 @@ angular.module('vpdb.games.details', [])
 			});
 		};
 
-//		$scope.requestModPermission = function(release) {
-//			var modalInstance = $uibModal.open({
-//				templateUrl: '/partials/modals/requestModPermission.html',
-//				controller: 'RequestModPermissionModalCtrl'
-//			});
-//
-//			modalInstance.result.then(function (selectedItem) {
-//				$scope.selected = selectedItem;
-//			}, function () {
-//				$log.info('Modal dismissed at: ' + new Date());
-//			});
-//		};
+		$scope.showMedium = function(medium) {
+			$uibModal.open({
+				templateUrl: 'modal/medium.html',
+				controller: 'MediumDetailCtrl',
+				size: 'md',
+				resolve: {
+					params: function() {
+						return {
+							game: $scope.game,
+							medium: medium
+						};
+					}
+				}
+			});
+		};
 	})
 
 	.controller('BackglassDetailCtrl', function($scope, $uibModalInstance, DownloadService, params) {
@@ -262,6 +265,22 @@ angular.module('vpdb.games.details', [])
 			DownloadService.downloadFile(file, function() {
 				file.counter.downloads++;
 				$scope.numDownloads++;
+			});
+		}
+	})
+
+	.controller('MediumDetailCtrl', function($scope, $timeout, DownloadService, params) {
+		$scope.medium = params.medium;
+
+		if ($scope.medium.file.variations.full) {
+			$timeout(function() {
+				$('#lightbox').magnificPopup({ type: 'image'});
+			});
+		}
+
+		$scope.download = function(file) {
+			DownloadService.downloadFile(file, function() {
+				$scope.medium.file.counter.downloads++;
 			});
 		}
 	})

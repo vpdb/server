@@ -5,7 +5,7 @@
     <inspection_tool class="HtmlUnknownAttribute" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="myValues">
         <value>
-          <list size="53">
+          <list size="54">
             <item index="0" class="java.lang.String" itemvalue="ngf-drag-over-class" />
             <item index="1" class="java.lang.String" itemvalue="ng-class" />
             <item index="2" class="java.lang.String" itemvalue="error" />
@@ -59,6 +59,7 @@
             <item index="50" class="java.lang.String" itemvalue="mentio-search" />
             <item index="51" class="java.lang.String" itemvalue="mentio-select" />
             <item index="52" class="java.lang.String" itemvalue="mentio-template-url" />
+            <item index="53" class="java.lang.String" itemvalue="ng-href" />
           </list>
         </value>
       </option>

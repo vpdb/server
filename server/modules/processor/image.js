@@ -52,6 +52,7 @@ function ImageProcessor() {
 			{ name: 'medium-2x', width: 600, height: 1200, mimeType: 'image/png' }
 		],
 		backglass: [
+			{ name: 'full',                               mimeType: 'image/jpeg', qual: 60 },
 			{ name: 'medium',    width: 364, height: 291, mimeType: 'image/jpeg' },
 			{ name: 'medium-2x', width: 728, height: 582, mimeType: 'image/jpeg' },
 			{ name: 'small',     width: 253, height: 202, mimeType: 'image/jpeg' },

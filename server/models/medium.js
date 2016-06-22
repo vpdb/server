@@ -153,8 +153,8 @@ MediumSchema.plugin(toObj);
 //-----------------------------------------------------------------------------
 MediumSchema.virtual('file')
 	.get(function() {
-		if (this._file && this._file.toSimple) {
-			return this._file.toSimple();
+		if (this._file && this._file.toDetailed) {
+			return this._file.toDetailed();
 		}
 	});
 

@@ -841,9 +841,7 @@ function postprocess(fileIds) {
 			}
 			return file;
 
-		}).then(() => {
-			return storage.postprocess(file);
-		});
+		}).then(() => storage.postprocess(file, { processInBackground: true }));
 	});
 }
 

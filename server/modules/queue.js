@@ -287,7 +287,7 @@ util.inherits(Queue, events.EventEmitter);
  * @param {Object|String} [variation] Variation to process
  * @return {Promise} Resolved when pass 1 is done and file is added to the queue for pass 2
  */
-Queue.prototype.add = function(processor, file, variation) {
+Queue.prototype.start = function(processor, file, variation) {
 
 	return Promise.try(() => {
 
@@ -296,7 +296,7 @@ Queue.prototype.add = function(processor, file, variation) {
 
 			// check for source file availability
 			if (!fs.existsSync(file.getPath())) {
-				logger.warn('[queue|pass1] Aborting before pass 1, %s is not on file system.', file.toString(variation));
+				logger.warn('[queue|pass1] Aborting %s before pass 1, %s is not on file system.', file.toString(variation), file.getPath());
 				return this.emit('error', 'File gone before pass 1 could start.', file, variation);
 			}
 

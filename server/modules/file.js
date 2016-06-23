@@ -30,9 +30,10 @@ var storage = require('./storage');
  * @param {object} fileData Model data
  * @param {Stream} readStream Binary stream of file content
  * @param {function} error Error logger
+ * @param {{ [processInBackground]: boolean }} [opts] Options passed to postprocessor
  * @return {Promise.<FileSchema>}
  */
-exports.create = function(fileData, readStream, error) {
+exports.create = function(fileData, readStream, error, opts) {
 
 	var file;
 	return Promise.try(function() {
@@ -76,7 +77,6 @@ exports.create = function(fileData, readStream, error) {
 		});
 
 	}).then(metadata => {
-
 		var stats = fs.statSync(file.getPath());
 		File.sanitizeObject(metadata);
 		file.metadata = metadata;
@@ -84,9 +84,8 @@ exports.create = function(fileData, readStream, error) {
 		return File.update({ _id: file._id }, { metadata: metadata, bytes: stats.size });
 
 	}).then(() => {
-
 		logger.info('[api|file:save] File upload of %s successfully completed.', file.toString());
-		return storage.postprocess(file).then(() => file);
+		return storage.postprocess(file, opts).then(() => file);
 
 	});
 };

@@ -229,7 +229,7 @@ function handleUpload(req, error) {
 			_created_by: req.user._id
 		};
 
-		return fileModule.create(fileData, req, error);
+		return fileModule.create(fileData, req, error, { processInBackground: true });
 	});
 }
 
@@ -265,7 +265,7 @@ function handleMultipartUpload(req, error) {
 					file_type: req.query.type,
 					_created_by: req.user._id
 				};
-				fileModule.create(fileData, stream, error).then(file => resolve(file)).catch(reject);
+				fileModule.create(fileData, stream, error, { processInBackground: true }).then(file => resolve(file)).catch(reject);
 			});
 		});
 

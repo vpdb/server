@@ -244,10 +244,13 @@ Storage.prototype.preprocess = function(file, done) {
  * the queue.
  *
  * @param {File} file
- * @param {boolean} [onlyVariations] If set to `true`, only (re-)process variations.
+ * @param {{ [onlyVariations]: boolean, [processInBackground]: boolean }} [opts]
+ * 		- `onlyVariations`: If `true`, only (re-)process variations.
+ * 		- `processInBackground`: If `true`, don't wait for pass 1 to finish.
  * @returns {Promise} When post process callbacks are initialized.
  */
-Storage.prototype.postprocess = function(file, onlyVariations) {
+Storage.prototype.postprocess = function(file, opts) {
+	opts = opts || {};
 	const mimeCategory = file.getMimeCategory();
 	const processor = processors[mimeCategory];
 	const variations = this.variations[mimeCategory] && this.variations[mimeCategory][file.file_type] ?
@@ -259,7 +262,7 @@ Storage.prototype.postprocess = function(file, onlyVariations) {
 	}
 	return Promise.try(() => {
 		// first, init callbacks
-		if (!onlyVariations) {
+		if (!opts.onlyVariations) {
 			return queue.initCallback(file);
 		}
 
@@ -270,13 +273,24 @@ Storage.prototype.postprocess = function(file, onlyVariations) {
 
 	}).then(() => {
 
-		// then, add to queue.
-		// fall-through is deliberate because this is done in background.
-		Promise.each(variations, v => queue.add(processor, file, v)).then(() => {
-			if (!onlyVariations) {
-				queue.add(processor, file);
-			}
-		});
+		// if processInBackground is set, just fall through
+		if (opts.processInBackground) {
+			Promise.each(variations || [], v => queue.start(processor, file, v)).then(() => {
+				if (!opts.onlyVariations) {
+					queue.start(processor, file);
+				}
+			});
+
+		} else {
+			// queue.start() runs pass 1 and adds it to the queue. this will
+			// resolve when all variations have been added to the queue after pass 1.
+			return Promise.each(variations || [], v => queue.start(processor, file, v)).then(() => {
+				if (!opts.onlyVariations) {
+					return queue.start(processor, file);
+				}
+			});
+		}
+
 	});
 };
 

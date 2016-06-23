@@ -44,6 +44,7 @@ streamline the user experience to the max.
 * Multiple authors per release
 * All authors are owners of the release and can edit / update
 * Acknowledgement field where other table contributors can be cross-linked
+* Support for DirectB2S backglasses
 * Many media types per file and game
 * Multiple views when listing releases
 * Fancy release upload form to make an author's life as easy as possible
@@ -164,8 +165,8 @@ GPLv2, see [LICENSE](LICENSE).
 [coveralls-url]: https://coveralls.io/r/freezy/node-vpdb?branch=master
 [dependencies-image]: https://david-dm.org/freezy/node-vpdb.svg?style=flat-square
 [dependencies-url]: https://david-dm.org/freezy/node-vpdb
-[codeship-image]: http://img.shields.io/codeship/e5a24c40-fe39-0131-f546-4ebc8a94177b.svg?style=flat-square
-[codeship-url]: https://www.codeship.io/projects/29544
+[codeship-image]: http://img.shields.io/codeship/46408820-1c40-0134-d638-1a1dadf4f728.svg?style=flat-square
+[codeship-url]: https://www.codeship.io/projects/159851
 [snapci-image]: https://img.shields.io/snap-ci/freezy/node-vpdb/master.svg?style=flat-square
 [snapci-url]: https://snap-ci.com/freezy/node-vpdb/branch/master
 [codeclimate-image]: http://img.shields.io/codeclimate/github/freezy/node-vpdb.svg?style=flat-square

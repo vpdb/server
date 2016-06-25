@@ -30,6 +30,7 @@ const uniqueValidator = require('mongoose-unique-validator');
 const prettyId = require('./plugins/pretty-id');
 const fileRef = require('./plugins/file-ref');
 const toObj = require('./plugins/to-object');
+const metrics = require('./plugins/metrics');
 
 const author = require('./release/author');
 
@@ -64,6 +65,9 @@ const backglassFields = {
 	description:   { type: String },
 	authors:       { type: [ author.schema ], validate: [ nonEmptyArray, 'You must provide at least one author.' ] },
 	acknowledgements: { type: String },
+	counter:       {
+		stars:     { type: Number, 'default': 0 }
+	},
 	created_at:   { type: Date, required: true },
 	_created_by:  { type: Schema.ObjectId, ref: 'User', required: true }
 };
@@ -87,6 +91,7 @@ BackglassSchema.plugin(prettyId, { model: 'Backglass', ignore: [ '_created_by' ]
 BackglassSchema.plugin(fileRef);
 BackglassSchema.plugin(paginate);
 BackglassSchema.plugin(toObj);
+BackglassSchema.plugin(metrics);
 
 
 //-----------------------------------------------------------------------------

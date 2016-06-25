@@ -30,6 +30,7 @@ const uniqueValidator = require('mongoose-unique-validator');
 const prettyId = require('./plugins/pretty-id');
 const fileRef = require('./plugins/file-ref');
 const toObj = require('./plugins/to-object');
+const metrics = require('./plugins/metrics');
 
 const author = require('./release/author');
 
@@ -126,6 +127,9 @@ const mediumFields = {
 	category:      { type: String, required: 'You must provide a category' },
 	description:   { type: String },
 	acknowledgements: { type: String },
+	counter:       {
+		stars:     { type: Number, 'default': 0 }
+	},
 	created_at:   { type: Date, required: true },
 	_created_by:  { type: Schema.ObjectId, ref: 'User', required: true }
 };
@@ -146,6 +150,7 @@ MediumSchema.plugin(prettyId, { model: 'Medium', ignore: [ '_created_by' ] });
 MediumSchema.plugin(fileRef);
 MediumSchema.plugin(paginate);
 MediumSchema.plugin(toObj);
+MediumSchema.plugin(metrics);
 
 
 //-----------------------------------------------------------------------------

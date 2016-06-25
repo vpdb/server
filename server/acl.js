@@ -81,8 +81,8 @@ acl.init = function() {
 				{ resources: 'builds', permissions: ['add', 'delete-own'] },
 				{ resources: 'comments', permissions: ['add'] },
 				{ resources: 'roms', permissions: ['add', 'delete-own'] },
-				{ resources: 'backglasses', permissions: ['add', 'delete-own'] },
-				{ resources: 'media', permissions: ['add', 'delete-own'] },
+				{ resources: 'backglasses', permissions: ['add', 'delete-own', 'star'] },
+				{ resources: 'media', permissions: ['add', 'delete-own', 'star'] },
 				{ resources: 'messages', permissions: ['receive'] }
 			]
 		}, {

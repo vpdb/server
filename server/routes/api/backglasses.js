@@ -25,4 +25,9 @@ exports.register = function(app, api) {
 
 	app.post(settings.apiPath('/backglasses'),       api.auth(api.backglasses.create, 'backglasses', 'add'));
 	app.delete(settings.apiPath('/backglasses/:id'), api.auth(api.backglasses.del, 'backglasses', 'delete-own'));
+
+	app.post(settings.apiPath('/backglasses/:id/star'),   api.auth(api.stars.star('backglass'), 'backglasses', 'star'));
+	app.delete(settings.apiPath('/backglasses/:id/star'), api.auth(api.stars.unstar('backglass'), 'backglasses', 'star'));
+	app.get(settings.apiPath('/backglasses/:id/star'),    api.auth(api.stars.get('backglass'), 'backglasses', 'star'));
+
 };

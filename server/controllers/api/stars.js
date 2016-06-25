@@ -19,51 +19,57 @@
 
 "use strict";
 
-var _ = require('lodash');
+const _ = require('lodash');
 
-var Game = require('mongoose').model('Game');
-var Release = require('mongoose').model('Release');
-var User = require('mongoose').model('User');
-var Star = require('mongoose').model('Star');
-var LogEvent = require('mongoose').model('LogEvent');
-var api = require('./api');
+const Game = require('mongoose').model('Game');
+const Release = require('mongoose').model('Release');
+const Backglass = require('mongoose').model('Backglass');
+const Medium = require('mongoose').model('Medium');
+const User = require('mongoose').model('User');
+const Star = require('mongoose').model('Star');
+const LogEvent = require('mongoose').model('LogEvent');
+const api = require('./api');
 
-var error = require('../../modules/error')('api', 'star');
-var pusher = require('../../modules/pusher');
+const error = require('../../modules/error')('api', 'star');
+const pusher = require('../../modules/pusher');
 
-// releases
-exports.starRelease = function(req, res) {
-	star(req, res, 'release', find(Release, 'release', '_game'));
-};
-exports.unstarRelease = function(req, res) {
-	unstar(req, res, 'release', find(Release, 'release', '_game'));
-};
-exports.getForRelease = function(req, res) {
-	view(req, res, find(Release, 'release'), 'name');
-};
-
-// games
-exports.starGame = function(req, res) {
-	star(req, res, 'game', find(Game, 'game'));
-};
-exports.unstarGame = function(req, res) {
-	unstar(req, res, 'game', find(Game, 'game'));
-};
-exports.getForGame = function(req, res) {
-	view(req, res, find(Game, 'game'), 'title');
+const models = {
+	release:   { model: Release,   titleAttr: 'name', populate: '_game' },
+	game:      { model: Game,      titleAttr: 'title' },
+	user:      { model: User,      titleAttr: 'email' },
+	backglass: { model: Backglass },
+	medium:    { model: Medium }
 };
 
-// users
-exports.starUser = function(req, res) {
-	star(req, res, 'user', find(User, 'user'));
-};
-exports.unstarUser = function(req, res) {
-	unstar(req, res, 'user', find(User, 'user'));
-};
-exports.getForUser = function(req, res) {
-	view(req, res, find(User, 'user'), 'email');
+exports.star = function(name) {
+	const model = models[name];
+	if (!model) {
+		throw new Error('Unknown model "' + name + '".');
+	}
+	return function(req, res) {
+		star(req, res, name, find(model.model, name, model.populate));
+	}
 };
 
+exports.unstar = function(name) {
+	const model = models[name];
+	if (!model) {
+		throw new Error('Unknown model "' + name + '".');
+	}
+	return function(req, res) {
+		unstar(req, res, name, find(model.model, name, model.populate));
+	}
+};
+
+exports.get = function(name) {
+	const model = models[name];
+	if (!model) {
+		throw new Error('Unknown model "' + name + '".');
+	}
+	return function(req, res) {
+		view(req, res, find(model.model, name), model.titleAttr || 'id');
+	}
+};
 
 /**
  * Generic function for viewing a star.

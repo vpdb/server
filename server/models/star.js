@@ -32,11 +32,13 @@ var Schema = mongoose.Schema;
 var fields = {
 	_from:       { type: Schema.ObjectId, required: true, ref: 'User', index: true },
 	_ref: {
-		game:    { type: Schema.ObjectId, ref: 'Game', index: true, sparse: true },
-		release: { type: Schema.ObjectId, ref: 'Release', index: true, sparse: true },
-		user:    { type: Schema.ObjectId, ref: 'User', index: true, sparse: true }
+		game:      { type: Schema.ObjectId, ref: 'Game', index: true, sparse: true },
+		release:   { type: Schema.ObjectId, ref: 'Release', index: true, sparse: true },
+		user:      { type: Schema.ObjectId, ref: 'User', index: true, sparse: true },
+		medium:    { type: Schema.ObjectId, ref: 'Medium', index: true, sparse: true },
+		backglass: { type: Schema.ObjectId, ref: 'Backglass', index: true, sparse: true }
 	},
-	type:        { type: String, 'enum': [ 'game', 'release', 'user' ], required: true, index: true },
+	type:        { type: String, 'enum': [ 'game', 'release', 'user', 'medium', 'backglass' ], required: true, index: true },
 	created_at:  { type: Date, required: true }
 };
 

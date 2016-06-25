@@ -39,9 +39,9 @@ exports.register = function(app, api) {
 	app.put(settings.apiPath('/releases/:id/rating'), api.auth(api.ratings.updateForRelease, 'releases', 'rate'));
 	app.get(settings.apiPath('/releases/:id/rating'), api.auth(api.ratings.getForRelease, 'releases', 'rate'));
 
-	app.post(settings.apiPath('/releases/:id/star'), api.auth(api.stars.starRelease, 'releases', 'star'));
-	app.delete(settings.apiPath('/releases/:id/star'), api.auth(api.stars.unstarRelease, 'releases', 'star'));
-	app.get(settings.apiPath('/releases/:id/star'), api.auth(api.stars.getForRelease, 'releases', 'star'));
+	app.post(settings.apiPath('/releases/:id/star'), api.auth(api.stars.star('release'), 'releases', 'star'));
+	app.delete(settings.apiPath('/releases/:id/star'), api.auth(api.stars.unstar('release'), 'releases', 'star'));
+	app.get(settings.apiPath('/releases/:id/star'), api.auth(api.stars.get('release'), 'releases', 'star'));
 
 	app.get(settings.apiPath('/releases/:id/events'), api.anon(api.events.list({ byRelease: true })));
 

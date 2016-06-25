@@ -29,9 +29,9 @@ exports.register = function(app, api) {
 	app.put(settings.apiPath('/users/:id'),       api.auth(api.users.update, 'users', 'update'));
 	app.delete(settings.apiPath('/users/:id'),    api.auth(api.users.del, 'users', 'delete'));
 
-	app.post(settings.apiPath('/users/:id/star'), api.auth(api.stars.starUser, 'users', 'star'));
-	app.delete(settings.apiPath('/users/:id/star'), api.auth(api.stars.unstarUser, 'users', 'star'));
-	app.get(settings.apiPath('/users/:id/star'), api.auth(api.stars.getForUser, 'users', 'star'));
+	app.post(settings.apiPath('/users/:id/star'), api.auth(api.stars.star('user'), 'users', 'star'));
+	app.delete(settings.apiPath('/users/:id/star'), api.auth(api.stars.unstar('user'), 'users', 'star'));
+	app.get(settings.apiPath('/users/:id/star'), api.auth(api.stars.get('user'), 'users', 'star'));
 
 	app.get(settings.apiPath('/users/:id/events'), api.anon(api.events.list({ byActor: true })));
 

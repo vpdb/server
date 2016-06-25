@@ -20,7 +20,7 @@ Make sure you enable OpenSSH. Once done, login and update the system:
 
 	sudo add-apt-repository ppa:ubuntu-toolchain-r/test
 	sudo apt-get update
-    sudo apt-get -y install gcc-4.9
+    sudo apt-get -y install gcc-4.9 ca-certificates
 	sudo apt-get -y upgrade
     sudo apt-get -y upgrade libstdc++6
 
@@ -65,22 +65,22 @@ Set:
 ### Node.js
 
 	sudo su -
-	curl https://raw.githubusercontent.com/creationix/nvm/v0.30.1/install.sh | NVM_DIR=/usr/local/nvm PROFILE=/etc/bash.bashrc bash
+	curl https://raw.githubusercontent.com/creationix/nvm/v0.31.1/install.sh | NVM_DIR=/usr/local/nvm PROFILE=/etc/bash.bashrc bash
 	vi /etc/bash.bashrc
 	
 Move added lines to the top (before `[ -z "$PS1" ] && return`), then save and:
 
-	nvm install 5
+	nvm install 6
 	nvm alias default stable
 	exit
 	
 If you want to temporarily switch to another node version:
 
-	nvm alias default 4
+	nvm alias default 5
 	service nginx restart
 
 
-Upgrade ``npm`` to latest and prevent self-signed certificate error
+Upgrade `npm` to latest and prevent self-signed certificate error
 
 	sudo npm config set ca ""
 	sudo npm install -g npm

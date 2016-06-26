@@ -155,12 +155,12 @@ function Queue() {
 				if (!data.success || !success) {
 					return callback(file);
 				}
-				storage.fstat(file, data.variation, (err, fstat) => {
-					/* istanbul ignore if */
-					if (err) {
-						logger.error('[queue|subscriber] Error fstating file %s: %s', file.toString(data.variation), err.message);
-					}
+				storage.fstat(file, data.variation).then(fstat => {
 					callback(file, fstat);
+
+				}).catch(err => {
+					logger.error('[queue|subscriber] Error fstating file %s: %s', file.toString(data.variation), err.message);
+					callback(file);
 				});
 			});
 		});
@@ -318,17 +318,18 @@ Queue.prototype.start = function(processor, file, variation) {
 	});
 };
 
-Queue.prototype.isQueued = function(file, variationName, done) {
-	var that = this;
-	var key = this.getQueryId(file, variationName);
-	this.redis.status.get(this.getRedisId(key), function(err, num) {
-		/* istanbul ignore if */
-		if (err) {
-			logger.error('[queue] Error getting value "%s" from Redis.', that.getRedisId(key));
-			return done();
-		}
-		done(null, num !== null);
+Queue.prototype.isQueued = function(file, variationName) {
+	const key = this.getQueryId(file, variationName);
+	return new Promise((resolve, reject) => {
+		this.redis.status.get(this.getRedisId(key), function(err, num) {
+			/* istanbul ignore if */
+			if (err) {
+				return reject(err);
+			}
+			resolve(num !== null);
+		});
 	});
+
 };
 
 /**
@@ -350,19 +351,33 @@ Queue.prototype.initCallback = function(file, variation) {
 };
 
 
-Queue.prototype.addCallback = function(file, variationName, callback, done) {
-	var that = this;
-	var key = this.getQueryId(file, variationName);
-	this.redis.status.incr(this.getRedisId(key), function() {
-		if (!that.queuedFiles[key]) {
-			that.queuedFiles[key] = [];
-		}
-		that.queuedFiles[key].push(callback);
-		that.redis.subscriber.subscribe(key);
-		logger.verbose('[queue] Added new callback to %s.', key);
-		if (done) {
-			done();
-		}
+/**
+ * Adds a new callback to Redis.
+ *
+ * Redis contains callbacks from incoming requests for files that are not yet
+ * finished processing. The callbacks are queried, executed and cleared when
+ * processing finishes.
+ *
+ * @param {File} file Requested file
+ * @param {string} variationName Requested variation of the file
+ * @param {function} callback Function to call when processing is finished
+ * @returns {Promise} Promise that is resolved when callback is added to Redis
+ */
+Queue.prototype.addCallback = function(file, variationName, callback) {
+	const key = this.getQueryId(file, variationName);
+	return new Promise((resolve, reject) => {
+		this.redis.status.incr(this.getRedisId(key), err => {
+			if (err) {
+				return reject(err);
+			}
+			if (!this.queuedFiles[key]) {
+				this.queuedFiles[key] = [];
+			}
+			this.queuedFiles[key].push(callback);
+			this.redis.subscriber.subscribe(key);
+			logger.verbose('[queue] Added new callback to %s.', key);
+			resolve();
+		});
 	});
 };
 

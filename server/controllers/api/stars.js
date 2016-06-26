@@ -48,7 +48,7 @@ exports.star = function(name) {
 	}
 	return function(req, res) {
 		star(req, res, name, find(model.model, name, model.populate));
-	}
+	};
 };
 
 exports.unstar = function(name) {
@@ -58,7 +58,7 @@ exports.unstar = function(name) {
 	}
 	return function(req, res) {
 		unstar(req, res, name, find(model.model, name, model.populate));
-	}
+	};
 };
 
 exports.get = function(name) {
@@ -68,7 +68,7 @@ exports.get = function(name) {
 	}
 	return function(req, res) {
 		view(req, res, find(model.model, name), model.titleAttr || 'id');
-	}
+	};
 };
 
 /**

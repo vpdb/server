@@ -15,6 +15,7 @@ describe('The storage engine of VPDB', function() {
 		hlp.setupUsers(request, {
 			member: { roles: [ 'member' ]},
 			contributor: { roles: [ 'contributor' ]},
+			contributor2: { roles: [ 'contributor' ]},
 			anothermember: { roles: [ 'member' ]}
 		}, done);
 	});
@@ -266,7 +267,7 @@ describe('The storage engine of VPDB', function() {
 			it('should grant access to an authenticated user', function(done) {
 				hlp.release.createRelease('member', request, function(release) {
 					var fileUrl = release.versions[0].files[0].file.url;
-					request.get(hlp.urlPath(fileUrl)).as('contributor').end(hlp.status(200, done));
+					request.get(hlp.urlPath(fileUrl)).as('contributor2').end(hlp.status(200, done));
 				});
 			});
 
@@ -275,7 +276,7 @@ describe('The storage engine of VPDB', function() {
 					var fileUrl = release.versions[0].files[0].file.url;
 					request
 						.post('/storage/v1/authenticate')
-						.as('contributor')
+						.as('contributor2')
 						.save({ path: 'auth/storage' })
 						.send({ paths: fileUrl })
 						.end(function(err, res) {

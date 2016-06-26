@@ -39,6 +39,8 @@ var processors = {
 	directb2s: require('./processor/directb2s')
 };
 
+const stat = Promise.promisify(fs.stat);
+
 function Storage() {
 
 	this.variationNames = [];
@@ -91,21 +93,16 @@ Storage.prototype.variations = {
  *
  * @param {File} file File to check
  * @param {string} variationName Variation of the file
- * @param {function} callback Callback to execute upon processing or error
+ * @param {function} callback Function to call when processing is finished
+ * @return {Promise} Resolved when callback is added to Redis
  */
 Storage.prototype.whenProcessed = function(file, variationName, callback) {
-	queue.isQueued(file, variationName, function(err, isQueued) {
-		/* istanbul ignore if */
-		if (err) {
-			logger.error('[storage] Error checking for queued file %s: %s', file.toString(variationName), err.message);
-			return callback();
-		}
+	return queue.isQueued(file, variationName).then(isQueued => {
 		if (!isQueued) {
 			logger.error('[storage] No such file being processed: %s', queue.getQueryId(file, variationName));
-			return callback();
+			return;
 		}
-
-		queue.addCallback(file, variationName, callback);
+		return queue.addCallback(file, variationName, callback);
 	});
 };
 
@@ -357,7 +354,7 @@ Storage.prototype.onProcessed = function(file, variation, processor) {
 	}).then(m => {
 		metadata = m;
 
-		// re-fetch data so we have the freshest varations and keep data loss at a minimum.
+		// re-fetch data so we have the freshest variations and keep data loss at a minimum.
 		return File.findById(file._id).exec();
 
 	}).then(file => {
@@ -546,39 +543,38 @@ Storage.prototype.urls = function(file) {
 	return variations;
 };
 
-Storage.prototype.fstat = function(file, variation, callback) {
+/**
+ * Tries to fstat a file and returns null if the file is still being processed or
+ * non existent.
+ *
+ * @param {File} file
+ * @param {string|object} variation
+ * @returns {Promise.<fs.Stats|null>} Stats object or null
+ */
+Storage.prototype.fstat = function(file, variation) {
 
-	var variationName = _.isObject(variation) ? variation.name : variation;
-
+	const variationName = _.isObject(variation) ? variation.name : variation;
 	if (!variationName) {
-		return fs.stat(file.getPath(), callback);
+		return stat(file.getPath());
 	}
 
 	// check for valid variation name
 	if (variationName && !_.includes(this.variationNames, variationName)) {
 		logger.warn('[storage] Unknown variation "%s".', variationName);
-		return callback();
+		return Promise.resolve(null);
 	}
 
-	queue.isQueued(file, variationName, function(err, isQueued) {
-		/* istanbul ignore if */
-		if (err) {
-			logger.error('[storage] Error checking for queued file %s: %s', file.toString(variationName), err.message);
-			return callback();
-		}
-
+	const filePath = file.getPath(variation);
+	return queue.isQueued(file, variationName).then(isQueued => {
 		if (isQueued) {
 			logger.info('[storage] Item %s/%s being processed, returning null.', file.id, variationName);
-			return callback();
+			return null;
 		}
+		return stat(filePath).catch(err => {
+			logger.warn('[storage] Cannot find %s at %s: %s', file.toString(variation), filePath, err.message);
+			return null;
+		});
 
-		// TODO optimize (aka "cache" and make it async, this is called frequently)
-		var filePath = file.getPath(variation);
-		if (variationName && fs.existsSync(filePath)) {
-			return fs.stat(filePath, callback);
-		}
-		logger.warn('[storage] Cannot find %s at %s', file.toString(variation), filePath);
-		callback();
 	});
 };
 

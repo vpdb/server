@@ -106,6 +106,9 @@ exports.success = function(res, result, code, opts) {
 		res.setHeader('X-List-Size', opts.pagination.perPage);
 		res.setHeader('X-List-Count', opts.pagination.count);
 	}
+	if (opts.headers) {
+		_.keys(opts.headers).forEach(name => res.setHeader(name, opts.headers[name]));
+	}
 	if (result) {
 		res.setHeader('Content-Type', 'application/json');
 		res.status(code).json(result);

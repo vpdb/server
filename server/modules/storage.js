@@ -22,7 +22,6 @@
 var _ = require('lodash');
 var fs = require('fs');
 var path = require('path');
-var async = require('async');
 var logger = require('winston');
 
 var queue = require('./queue');

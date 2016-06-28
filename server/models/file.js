@@ -35,7 +35,6 @@ var mimeTypes = require('../modules/mimetypes');
 var fileTypes = require('../modules/filetypes');
 
 var Schema = mongoose.Schema;
-var config = settings.current;
 
 
 //-----------------------------------------------------------------------------

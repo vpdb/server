@@ -19,19 +19,21 @@
 
 "use strict";
 
-var _ = require('lodash');
-var fs = require('fs');
-var path = require('path');
-var async = require('async');
-var logger = require('winston');
-var archiver = require('archiver');
-var Unrar = require('unrar');
-var unzip = require('unzip'); // adm-zip doesn't have a streaming api.
+const _ = require('lodash');
+const fs = require('fs');
+const path = require('path');
+const async = require('async');
+const logger = require('winston');
+const archiver = require('archiver');
+const Unrar = require('unrar');
+const unzip = require('unzip'); // adm-zip doesn't have a streaming api.
 
-var Release = require('mongoose').model('Release');
-var Rom = require('mongoose').model('Rom');
-var quota = require('../../modules/quota');
-var flavor = require('../../modules/flavor');
+const Release = require('mongoose').model('Release');
+const Rom = require('mongoose').model('Rom');
+const quota = require('../../modules/quota');
+const flavor = require('../../modules/flavor');
+const error = require('../../modules/error')('storage', 'release');
+const api = require('../api/api');
 
 /**
  * Downloads a release.
@@ -52,372 +54,234 @@ var flavor = require('../../modules/flavor');
  */
 exports.download = function(req, res) {
 
-	var body = null;
-	try {
+	let body = null;
+	let release;
+	let counters = [];
+	let requestedFiles = [];
+	let requestedFileIds;
+	let media;
+	let numTables = 0;
+	Promise.try(() => {
+
 		if (req.query.body) {
-			body = JSON.parse(req.query.body);
+			try {
+				body = JSON.parse(req.query.body);
+			} catch (e) {
+				throw error(e, 'Error parsing JSON from URL query.').status(400);
+			}
 		}
-	} catch (e) {
-		return res.status(400).json({ error: 'Error parsing JSON from URL query.', cause: e.message }).end();
-	}
-	body = body || req.body;
+		body = body || req.body;
 
-	logger.log('[download] RELEASE: %s', JSON.stringify(body));
-	if (!body || !_.isArray(body.files) || !body.files.length) {
-		return res.status(422).json({ error: 'You need to provide which files you want to include in the download.' }).end();
-	}
+		requestedFileIds = body.files;
+		media = body.media || {};
 
-	var counters = [];
-	var requestedFiles = [];
-	var requestedFileIds = body.files;
-	var media = body.media || {};
-	var numTables = 0;
+		logger.log('[download] RELEASE: %s', JSON.stringify(body));
+		if (!body || !_.isArray(body.files) || !body.files.length) {
+			throw error('You need to provide which files you want to include in the download.').status(422);
+		}
 
-	async.waterfall([
+		return Release.findOne({ id: req.params.release_id })
+			.populate({ path: '_game' })
+			.populate({ path: '_game._media.backglass' })
+			.populate({ path: '_game._media.logo' })
+			.populate({ path: 'authors._user' })
+			.populate({ path: 'versions.files._file' })
+			.populate({ path: 'versions.files._media.playfield_image' })
+			.populate({ path: 'versions.files._media.playfield_video' })
+			.populate({ path: 'versions.files._compatibility' })
+			.exec();
 
-		/**
-		 * Query release
-		 * @param next
-		 */
-		function(next) {
-			var query = Release.findOne({ id: req.params.release_id })
-					.populate({ path: '_game' })
-					.populate({ path: '_game._media.backglass' })
-					.populate({ path: '_game._media.logo' })
-					.populate({ path: 'authors._user' })
-					.populate({ path: 'versions.files._file' })
-					.populate({ path: 'versions.files._media.playfield_image' })
-					.populate({ path: 'versions.files._media.playfield_video' })
-					.populate({ path: 'versions.files._compatibility' });
+	}).then(release => {
+		if (!release) {
+			throw error('No such release with ID "%s".', req.params.release_id).status(404);
+		}
+		// populate game attributes since nested populates don't work: https://github.com/LearnBoost/mongoose/issues/1377
+		return release.populate({ path: '_game._media.logo _game._media.backglass', model: 'File' }).execPopulate();
 
-			query.exec(function(err, release) {
-				/* istanbul ignore if  */
-				if (err) {
-					logger.log('[download] Error fetching release from database: %s', err.message);
-					res.status(500).end();
-					return next(true);
-				}
-				if (!release) {
-					res.status(404).json({ error: 'No such release with ID "' + req.params.release_id + '".' }).end();
-					return next(true);
-				}
+	}).then(r => {
+		release = r;
 
-				next(null, release);
-			});
-		},
+		// count release and user download
+		counters.push(release.incrementCounter('downloads'));
+		counters.push(req.user.incrementCounter('downloads'));
 
-		/**
-		 * Populate game in release
-		 *
-		 * @param release
-		 * @param next
-		 */
-		function(release, next) {
+		release.versions.forEach(version => {
 
-			// populate game attributes since nested populates don't work: https://github.com/LearnBoost/mongoose/issues/1377
-			release.populate({ path: '_game._media.logo _game._media.backglass', model: 'File' }, function(err, release) {
-				/* istanbul ignore if  */
-				if (err) {
-					logger.log('[download] Error populating game from database: %s', err.message);
-					res.status(500).end();
-					return next(true);
-				}
+			// check if there are requested table files for that version
+			if (!_.intersection(_.map(_.map(version.files, '_file'), 'id'), requestedFileIds).length) {
+				return; // continue
+			}
+			version.files.forEach((versionFile, pos) => {
+				let file = versionFile._file;
+				file.release_version = version.toObj();
+				file.release_file = versionFile.toObj();
 
-				// count release and user download
-				counters.push(function(next) {
-					release.incrementCounter('downloads', next);
-				});
-				counters.push(function(next) {
-					req.user.incrementCounter('downloads', next);
-				});
-
-				next(null, release);
-			});
-		},
-
-		/**
-		 * Retrieve requested files
-		 * @param release
-		 * @param next
-		 */
-		function(release, next) {
-
-			release.versions.forEach(function(version) {
-
-				// check if there are requested table files for that version
-				if (!_.intersection(_.map(_.map(version.files, '_file'), 'id'), requestedFileIds).length) {
-					return; // continue
-				}
-				version.files.forEach(function(versionFile, pos) {
-					var file = versionFile._file;
-					file.release_version = version.toObj();
-					file.release_file = versionFile.toObj();
-
-					if (file.getMimeCategory() === 'table') {
-						if (_.includes(requestedFileIds, file.id)) {
-							requestedFiles.push(file);
-
-							// count downloaded flavor
-							counters.push(function(next) {
-								var inc = { $inc: {} };
-								inc.$inc['versions.$.files.' + pos + '.counter.downloads'] = 1;
-								Release.update({ 'versions._id': version._id }, inc, next);
-							});
-							numTables++;
-
-							// add media if checked
-							_.each(versionFile._media, function(mediaFile, mediaName) {
-								if (media[mediaName]) {
-									requestedFiles.push(mediaFile);
-								}
-							});
-						}
-
-					// always add any non-table files
-					} else {
+				if (file.getMimeCategory() === 'table') {
+					if (_.includes(requestedFileIds, file.id)) {
 						requestedFiles.push(file);
+
+						// count downloaded flavor
+						counters.push(Release.update({ 'versions._id': version._id }, { $inc: { ['versions.$.files.' + pos + '.counter.downloads']: 1 } }));
+						numTables++;
+
+						// add media if checked
+						_.each(versionFile._media, function(mediaFile, mediaName) {
+							if (media[mediaName]) {
+								requestedFiles.push(mediaFile);
+							}
+						});
 					}
 
-					// count file download
-					counters.push(function(next) {
-						file.incrementCounter('downloads', next);
-					});
-				});
+					// always add any non-table files
+				} else {
+					requestedFiles.push(file);
+				}
 
-				// count release download
-				counters.push(function(next) {
-					Release.update({ 'versions._id': version._id }, { $inc: { 'versions.$.counter.downloads': 1 }}, next);
-				});
-
+				// count file download
+				counters.push(file.incrementCounter('downloads'));
 			});
 
-			// count game download
-			counters.push(function(next) {
-				release._game.update({ $inc: { 'counter.downloads': numTables }}, next);
-			});
+			// count release download
+			counters.push(Release.update({ 'versions._id': version._id }, { $inc: { 'versions.$.counter.downloads': 1 } }));
+		});
 
-			// add game media?
-			if (body.game_media && release._game._media) {
-				if (release._game._media.backglass) {
-					requestedFiles.push(release._game._media.backglass);
-				}
-				if (release._game._media.logo) {
-					requestedFiles.push(release._game._media.logo);
-				}
+		// count game download
+		counters.push(release._game.update({ $inc: { 'counter.downloads': numTables } }));
+
+		// add game media?
+		if (body.game_media && release._game._media) {
+			if (release._game._media.backglass) {
+				requestedFiles.push(release._game._media.backglass);
 			}
-
-			next(null, release);
-		},
-
-		/**
-		 * Fetch ROMs if needed
- 		 * @param release
-		 * @param next
-		 */
-		function(release, next) {
-
-			if (!body.roms) {
-				return next(null, release);
+			if (release._game._media.logo) {
+				requestedFiles.push(release._game._media.logo);
 			}
+		}
 
-			Rom.find({ _game: release._game._id.toString() }).populate('_file').exec(function(err, roms) {
-				/* istanbul ignore if  */
-				if (err) {
-					logger.error('[storage|download] Error fetching ROMs from DB: %s', err.message);
-					res.status(500).end();
-					return next(true);
-				}
-
-				// TODO only add roms referenced in game script
+		// check for roms
+		if (body.roms) {
+			return Rom.find({ _game: release._game._id.toString() }).populate('_file').exec().then(roms => {
+				// TODO only add starred rom or ask
 				roms.forEach(function(rom) {
 					requestedFiles.push(rom._file);
-
 					// count file download
-					counters.push(function(next) {
-						rom._file.incrementCounter('downloads', next);
-					});
+					counters.push(rom._file.incrementCounter('downloads'));
 				});
-
-				next(null, release);
 			});
-		},
+		}
 
-		/**
-		 * Check quota
- 		 * @param release
-		 * @param next
-		 * @returns {*}
-		 */
-		function(release, next) {
+	}).then(() => {
 
-			if (!requestedFiles.length) {
-				res.status(422).json({ error: 'Requested file IDs did not match any release file.' }).end();
-				return next(true);
-			}
+		if (!requestedFiles.length) {
+			throw error('Requested file IDs did not match any release file.').status(422);
+		}
 
-			// check the quota
-			quota.isAllowed(req, res, requestedFiles, function(err, granted) {
-				/* istanbul ignore if  */
-				if (err) {
-					logger.error('[storage|download] Error checking quota for <%s>: %s', req.user.email, err.message);
-					res.status(500).end();
-					return next(true);
-				}
-				if (!granted) {
-					res.status(403).json({ error: 'Not enough quota left.' }).end();
-					return next(true);
-				}
+		// check the quota
+		return quota.isAllowed(req, res, requestedFiles);
 
-				next(null, release);
-			});
-		},
+	}).then(granted => {
+		if (!granted) {
+			throw error('Not enough quota left.').status(403);
+		}
 
-		/**
-		 * Update counters
- 		 * @param release
-		 * @param next
-		 */
-		function(release, next) {
-			async.series(counters, function(err) {
-				if (err) {
-					logger.error('[storage|download] Error updating counters: %s', err.message);
-				}
-				next(null, release);
-			});
-		},
+		// update counters
+		return Promise.all(counters);
 
-		/**
-		 * Create download archive
- 		 * @param release
-		 * @param next
-		 */
-		function(release, next) {
+	}).then(() => {
 
-			// create zip stream
-			var archive = archiver('zip');
-			var gameName = release._game.full_title;
+		// create zip stream
+		let archive = archiver('zip');
+		let gameName = release._game.full_title;
 
-			res.status(200);
-			res.set({
-				'Content-Type': 'application/zip',
-				'Content-Disposition': 'attachment; filename="' + gameName + '.zip"'
-			});
-			archive.pipe(res);
+		res.status(200);
+		res.set({
+			'Content-Type': 'application/zip',
+			'Content-Disposition': 'attachment; filename="' + gameName + '.zip"' // todo add release name and authors to zip filename
+		});
+		archive.pipe(res);
 
-			// add tables to stream
-			var releaseFiles = [];
-			async.eachSeries(requestedFiles, function(file, nextFile) {
+		// add tables to stream
+		let releaseFiles = [];
+		Promise.each(requestedFiles, file => {
 
-				var name = '';
-				switch (file.file_type) {
-					case 'logo':
-						name = 'PinballX/Media/Visual Pinball/Wheel Images/' + gameName + file.getExt();
-						break;
-					case 'backglass':
-						name = 'PinballX/Media/Visual Pinball/Backglass Images/' + gameName + file.getExt();
-						break;
-					case 'playfield-fs':
-					case 'playfield-ws':
-						if (file.getMimeCategory() === 'image') {
-							name = 'PinballX/Media/Visual Pinball/Table Images/' + gameName + file.getExt();
-						}
-						if (file.getMimeCategory() === 'video') {
-							name = 'PinballX/Media/Visual Pinball/Table Videos/' + gameName + file.getExt();
-						}
-						break;
-					case 'release':
-						switch (file.getMimeCategory()) {
-							case 'table':
-								var filename = getTableFilename(req.user, release, file, releaseFiles);
-								releaseFiles.push(filename);
-								name = 'Visual Pinball/Tables/' + filename;
-								break;
+			let name = '';
+			switch (file.file_type) {
+				case 'logo':
+					name = 'PinballX/Media/Visual Pinball/Wheel Images/' + gameName + file.getExt();
+					break;
 
-							case 'audio':
-								name = 'Visual Pinball/Music/' + file.name;
-								break;
+				case 'backglass':
+					name = 'PinballX/Media/Visual Pinball/Backglass Images/' + gameName + file.getExt();
+					break;
 
-							case 'script':
-								name = 'Visual Pinball/Scripts/' + file.name;
-								break;
+				case 'playfield-fs':
+				case 'playfield-ws':
+					if (file.getMimeCategory() === 'image') {
+						name = 'PinballX/Media/Visual Pinball/Table Images/' + gameName + file.getExt();
+					}
+					if (file.getMimeCategory() === 'video') {
+						name = 'PinballX/Media/Visual Pinball/Table Videos/' + gameName + file.getExt();
+					}
+					break;
 
-							case 'archive':
-								if (file.metadata.entries && _.isArray(file.metadata.entries)) {
+				case 'release':
+					switch (file.getMimeCategory()) {
+						case 'table':
+							var filename = getTableFilename(req.user, release, file, releaseFiles);
+							releaseFiles.push(filename);
+							name = 'Visual Pinball/Tables/' + filename;
+							break;
 
-									if (/rar/i.test(file.getMimeSubtype())) {
-										var rarfile = new Unrar(file.getPath());
-										_.each(file.metadata.entries, function(entry) {
-											var stream = rarfile.stream(entry.filename);
-											archive.append(stream, {
-												name: getArchivedFilename(entry.filename, file.name),
-												date: entry.modified_at
-											});
-											stream.on('error', function(err) {
-												logger.info('Error extracting file %s from rar: %s', entry.filename, err);
-											});
-										});
-										return nextFile();
-									}
+						case 'audio':
+							name = 'Visual Pinball/Music/' + file.name;
+							break;
 
-									if (/zip/i.test(file.getMimeSubtype())) {
-										fs.createReadStream(file.getPath())
-											.pipe(unzip.Parse())
-											.on('entry', function (entry) {
-												if (entry.type === 'File') {
-													archive.append(entry, {
-														name: getArchivedFilename(entry.path, file.name)
-													});
-												} else {
-													entry.autodrain();
-												}
-											})
-											.on('error', function(err) {
-												logger.info('Error extracting from zip: %s', err.message);
-											})
-											.on('close', function() {
-												nextFile();
-											});
-										return;
-									}
+						case 'script':
+							name = 'Visual Pinball/Scripts/' + file.name;
+							break;
+
+						case 'archive':
+							if (file.metadata && _.isArray(file.metadata.entries)) {
+								if (/rar/i.test(file.getMimeSubtype())) {
+									return streamZipfile(file, archive);
 								}
+								if (/zip/i.test(file.getMimeSubtype())) {
+									return streamRarfile(file, archive);
+								}
+							}
 
-								// otherwise, add as normal file
-								name = 'Visual Pinball/Tables/' + file.name;
-								break;
+							// otherwise, add as normal file
+							name = 'Visual Pinball/Tables/' + file.name;
+							break;
 
-							default:
-								name = 'Visual Pinball/Tables/' + file.name;
-						}
-						break;
-					case 'rom':
-						name = 'Visual Pinball/VPinMame/roms/' + file.name;
-						break;
-				}
-				// per default, put files into the root folder.
-				name = name || file.name;
-				archive.append(fs.createReadStream(file.getPath()), {
-					name: name,
-					date: file.created_at
-				});
-				nextFile();
+						default:
+							name = 'Visual Pinball/Tables/' + file.name;
+					}
+					break;
 
-			}, function() {
-				if (release.description) {
-					archive.append(release.description, { name: 'README.txt' });
-				}
-				if (release.acknowledgements) {
-					archive.append(release.acknowledgements, { name: 'CREDITS.txt' });
-				}
-				archive.finalize();
-				next();
+				case 'rom':
+					name = 'Visual Pinball/VPinMame/roms/' + file.name;
+					break;
+			}
+			// per default, put files into the root folder.
+			name = name || file.name;
+			archive.append(fs.createReadStream(file.getPath()), {
+				name: name,
+				date: file.created_at
 			});
-		}
 
-	], function(err) {
-		if (!err) {
+		}).then(() => {
+			if (release.description) {
+				archive.append(release.description, { name: 'README.txt' });
+			}
+			if (release.acknowledgements) {
+				archive.append(release.acknowledgements, { name: 'CREDITS.txt' });
+			}
+			archive.finalize();
 			logger.info("Archive successfully created.");
-		}
-	});
+		});
+
+	}).catch(api.handleError(res, error, 'Error serving file'));
 };
 
 /**
@@ -472,4 +336,51 @@ function getArchivedFilename(entryPath, archiveName) {
 		entryPath = archiveName.substr(0, archiveName.length - path.extname(archiveName).length) + '/' + entryPath;
 	}
 	return 'Visual Pinball/Tables/' + entryPath;
+}
+
+/**
+ * Streams the contents of a zip file into the current zip archive.
+ * @param {File} file Zip file to stream (source)
+ * @param archive Destination
+ * @returns {Promise}
+ */
+function streamZipfile(file, archive) {
+	return new Promise(resolve => {
+		let rarfile = new Unrar(file.getPath());
+		file.metadata.entries.forEach(entry => {
+			let stream = rarfile.stream(entry.filename);
+			archive.append(stream, {
+				name: getArchivedFilename(entry.filename, file.name),
+				date: entry.modified_at
+			});
+			stream.on('error', err => {
+				logger.info('Error extracting file %s from rar: %s', entry.filename, err);
+			});
+			stream.on('close', resolve);
+		});
+	});
+}
+
+/**
+ * Streams the contents of a rar file into the current zip archive.
+ * @param {File} file RAR file to stream (source)
+ * @param archive Destination
+ * @returns {Promise}
+ */
+function streamRarfile(file, archive) {
+	return new Promise(resolve => {
+		fs.createReadStream(file.getPath())
+			.pipe(unzip.Parse())
+			.on('entry', entry => {
+				if (entry.type === 'File') {
+					archive.append(entry, {
+						name: getArchivedFilename(entry.path, file.name)
+					});
+				} else {
+					entry.autodrain();
+				}
+			})
+			.on('error', err => logger.info('Error extracting from zip: %s', err.message))
+			.on('close', resolve);
+	});
 }

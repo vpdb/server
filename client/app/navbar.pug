@@ -8,10 +8,10 @@ block body
 	if deployment != 'production'
 		.staging-bar
 		.staging-bar
-	nav.navbar.navbar-default.navbar-fixed-top(ng-cloak)
+	nav.navbar.navbar-default.navbar-fixed-top(ng-cloak, ng-init="navCollapsed = true")
 		.container
 			.navbar-header
-				button.a--lighter.navbar-toggle(type='button', ng-init='navCollapsed = true', ng-click='navCollapsed = !navCollapsed')
+				button.a--lighter.navbar-toggle(type="button", ng-click="navCollapsed = !navCollapsed")
 					+icon('bars').space-right
 					| Menu
 				span.navbar-brand
@@ -20,7 +20,7 @@ block body
 						+icon('logo-vp').logo-vp
 						+icon('logo-db').logo-db
 
-			.uib-collapse.navbar-collapse(ng-class="{ 'in': !navCollapsed }", ng-click="navCollapsed = true")
+			.navbar-collapse(uib-collapse="navCollapsed", ng-click="navCollapsed = true")
 				block navbar
 
 	block content

@@ -34,8 +34,10 @@ include ../template/_mixins
 
 		.searchbox.abs-center
 			form.form-inline
-				input.form-control.input--lighter(type="text", ng-model="q", focus-on)
-				+icon('search').space-left
+				.input-group.input-group--separated
+					input.form-control.input--lighter(type="text", ng-model="q", focus-on)
+					.input-group-addon
+						+icon('search').space-left
 
 	//- INFO
 	//-------------------------------------------------------------------------

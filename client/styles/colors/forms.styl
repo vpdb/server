@@ -64,6 +64,15 @@ $input-background-light-focus = rgba(white, 0.75)
 			background-color $color-darker
 			&:hover
 				background-color $color-dark
+		&.input-group--separated
+			> .input-group-addon
+				background-color transparent
+			.form-control:focus + .input-group-addon
+				background-color transparent
+				.svg-icon
+					transition fill $animation-short
+					fill $color-lightish
+
 
 	input.checkbox--toggle
 		+ label

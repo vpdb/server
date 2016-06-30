@@ -11,7 +11,7 @@ include ../template/_mixins
 		div(uib-collapse="searchResult")
 			.spacer &nbsp;
 		.panel(uib-collapse="!searchResult")
-			.container
+			.container(ng-class="{ 'paging-padder': pagination.count > 12 }")
 				.row.fade2-animation(ng-show="games.length > 0")
 					.clear
 						+icon('times')(ng-click="q = ''").a

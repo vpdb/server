@@ -41,6 +41,11 @@ angular.module('vpdb.common', [])
 		});
 	})
 
+	.factory('GameMediumResource', function($resource, ConfigService) {
+		return $resource(ConfigService.apiUri('/games/:gameId/media'), {}, {
+		});
+	})
+
 	.factory('PlanResource', function($resource, ConfigService) {
 		return $resource(ConfigService.apiUri('/plans'), {}, {
 		});

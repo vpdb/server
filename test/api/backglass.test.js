@@ -260,6 +260,61 @@ describe('The VPDB `Backglass` API', function() {
 		});
 	});
 
+	describe('when listing backglasses', function() {
+
+		var game;
+		before(function(done) {
+			hlp.setupUsers(request, {
+				member: { roles: ['member'] },
+				contributor: { roles: ['contributor'] }
+			}, function() {
+				hlp.game.createGame('contributor', request, function(g) {
+					game = g;
+					done(null, g);
+				});
+			});
+		});
+
+		after(function(done) {
+			hlp.cleanup(request, done);
+		});
+
+		it('should list backglass under game', function(done) {
+
+			const user = 'member';
+			hlp.file.createDirectB2S(user, request, function(b2s) {
+				request
+					.post('/api/v1/backglasses')
+					.as(user)
+					.send({
+						_game: game.id,
+						authors: [ {
+							_user: hlp.users[user].id,
+							roles: [ 'creator' ]
+						} ],
+						versions: [ {
+							version: '1.0',
+							_file: b2s.id
+						} ]
+					})
+					.end(function(err, res) {
+						var backglass = res.body;
+						hlp.expectStatus(err, res, 201);
+						hlp.doomBackglass(user, res.body.id);
+
+						request.get('/api/v1/games/' + game.id + '/backglasses').save('games/list-backglasses').end(function(err, res) {
+							hlp.expectStatus(err, res, 200);
+							expect(res.body).to.be.an('array');
+							expect(res.body).to.have.length(1);
+							expect(res.body[0].id).to.be(backglass.id);
+							done();
+						});
+					});
+			});
+		});
+	});
+
+
 	describe('when deleting a backglass', function() {
 
 		var game;

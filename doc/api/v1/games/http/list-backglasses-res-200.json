@@ -1,0 +1,65 @@
+200 OK
+X-App-Sha: b940f12
+Content-Type: application/json; charset=utf-8
+Etag: W/"531-ecPZw9FYvO/Uk0nb/EchdQ"
+Content-Encoding: gzip
+
+[
+  {
+    "id": "p24zfasqfr",
+    "versions": [
+      {
+        "released_at": "2016-07-01T21:43:55.040Z",
+        "version": "1.0",
+        "counter": {
+          "downloads": 0
+        },
+        "file": {
+          "counter": {
+            "downloads": 0
+          },
+          "is_protected": true,
+          "variations": {
+            "small-2x": {
+              "url": "https://localhost:7357/storage/public/files/small-2x/p2qhun9wu5.jpg"
+            },
+            "small": {
+              "url": "https://localhost:7357/storage/public/files/small/p2qhun9wu5.jpg"
+            },
+            "medium-2x": {
+              "url": "https://localhost:7357/storage/public/files/medium-2x/p2qhun9wu5.jpg"
+            },
+            "medium": {
+              "url": "https://localhost:7357/storage/public/files/medium/p2qhun9wu5.jpg"
+            },
+            "full": {
+              "url": "https://localhost:7357/storage/public/files/full/p2qhun9wu5.jpg"
+            }
+          },
+          "bytes": 2067,
+          "url": "https://localhost:7357/storage/v1/files/p2qhun9wu5.directb2s",
+          "name": "test.directb2s",
+          "id": "p2qhun9wu5"
+        }
+      }
+    ],
+    "authors": [
+      {
+        "roles": [
+          "creator"
+        ],
+        "user": {
+          "counter": {
+            "stars": 0,
+            "comments": 0
+          },
+          "gravatar_id": "6c477d8adee7c413b7242ffde6bcbd47",
+          "username": "Abbey.Lynch",
+          "name": "Abbey.Lynch",
+          "id": "pkun9wf5"
+        }
+      }
+    ],
+    "created_at": "2016-07-01T21:43:55.040Z"
+  }
+]

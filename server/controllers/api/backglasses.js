@@ -113,6 +113,36 @@ exports.create = function(req, res) {
 };
 
 /**
+ * Lists all backglasses.
+ *
+ * Currently, this is only used under /games/{game_id}/backglasses, so params.gameId is mandatory.
+ * Once we get a separate section, add search and pagination.
+ *
+ * @param {Request} req
+ * @param {Response} res
+ */
+exports.list = function(req, res) {
+
+	Promise.resolve().then(() => {
+		return Game.findOne({ id: req.params.gameId }).exec();
+
+	}).then(game => {
+
+		if (!game) {
+			throw error('Unknown game "%s".', req.params.gameId).status(404);
+		}
+		return Backglass.find({ _game: game._id })
+			.populate({ path: 'authors._user' })
+			.populate({ path: 'versions._file' })
+			.exec();
+
+	}).then(backglasses => {
+		api.success(res, backglasses.map(bg => bg.toSimple()));
+
+	}).catch(api.handleError(res, error, 'Error listing backglasses'));
+};
+
+/**
  * Deletes a backglass.
  *
  * @param {Request} req

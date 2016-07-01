@@ -248,6 +248,57 @@ describe('The VPDB `Media` API', function() {
 		});
 	});
 
+	describe('when listing media', function() {
+
+		var backglass;
+
+		before(function(done) {
+			hlp.setupUsers(request, {
+				member: { roles: ['member'] },
+				contributor: { roles: ['contributor'] }
+			}, function() {
+				hlp.file.createBackglass('member', request, function(bg) {
+					hlp.doomFile('member', bg.id);
+					backglass = bg;
+					done();
+				});
+			});
+		});
+
+		after(function(done) {
+			hlp.cleanup(request, done);
+		});
+
+		it('should list media under the game', function(done) {
+			const user = 'member';
+			hlp.file.createBackglass(user, request, function(bg) {
+				hlp.game.createGame('contributor', request, function(game) {
+					request
+						.post('/api/v1/media')
+						.as(user)
+						.send({
+							category: 'backglass_image',
+							_file: bg.id,
+							_ref: { game: game.id }
+						})
+						.end(function(err, res) {
+							hlp.doomMedium(user, res.body.id);
+							hlp.expectStatus(err, res, 201);
+							let media = res.body;
+
+							request.get('/api/v1/games/' + game.id + '/media').save('games/list-media').end(function(err, res) {
+								hlp.expectStatus(err, res, 200);
+								expect(res.body).to.be.an('array');
+								expect(res.body).to.have.length(1);
+								expect(res.body[0].id).to.be(media.id);
+								done();
+							});
+						});
+				});
+			});
+		});
+	});
+
 	describe('when deleting a medium', function() {
 
 		var game;

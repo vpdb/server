@@ -79,6 +79,35 @@ exports.create = function(req, res) {
 };
 
 /**
+ * Lists all media.
+ *
+ * Currently, this is only used under /games/{game_id}/media, so params.gameId is mandatory.
+ *
+ * @param {Request} req
+ * @param {Response} res
+ */
+exports.list = function(req, res) {
+
+	Promise.resolve().then(() => {
+		return Game.findOne({ id: req.params.gameId }).exec();
+
+	}).then(game => {
+
+		if (!game) {
+			throw error('Unknown game "%s".', req.params.gameId).status(404);
+		}
+		return Medium.find({ '_ref.game': game._id })
+			.populate({ path: '_created_by' })
+			.populate({ path: '_file' })
+			.exec();
+
+	}).then(media => {
+		api.success(res, media.map(m => m.toSimple()));
+
+	}).catch(api.handleError(res, error, 'Error listing media'));
+};
+
+/**
  * Deletes a medium.
  *
  * @param {Request} req

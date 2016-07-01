@@ -1,3 +1,14 @@
+get:
+  securedBy: [ ]
+  description: List backglasses of a given game.
+  body:
+    role/anonymous:
+      example: !include http/list-backglasses-req.json
+  responses:
+    201:
+      body:
+        role/anonymous:
+          example: !include http/list-backglasses-res-200.json
 post:
   is: [ validated ]
   securedBy: [ jwt: { scopes: [ MEMBER ] } ]

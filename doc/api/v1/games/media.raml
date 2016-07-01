@@ -1,0 +1,11 @@
+get:
+  securedBy: [ ]
+  description: List all media of a given game.
+  body:
+    role/anonymous:
+      example: !include http/list-media-req.json
+  responses:
+    201:
+      body:
+        role/anonymous:
+          example: !include http/list-media-res-200.json

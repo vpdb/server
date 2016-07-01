@@ -101,8 +101,8 @@ exports.create = function(req, res) {
 	}).then(() => {
 		// copy backglass and logo to media
 		return Promise.all([
-			copyMedia(req, game, game._media.backglass, 'backglass_image', bg => bg.metadata.size.width * bg.metadata.size.height > 647000),  // > 900x720
-			copyMedia(req, game, game._media.logo, 'wheel_image')
+			exports._copyMedia(req.user, game, game._media.backglass, 'backglass_image', bg => bg.metadata.size.width * bg.metadata.size.height > 647000),  // > 900x720
+			exports._copyMedia(req.user, game, game._media.logo, 'wheel_image')
 
 		]).catch(err => {
 			logger.error('[api|game:create] Error while copying media: %s', err.message);
@@ -313,13 +313,13 @@ exports.view = function(req, res) {
 /**
  * Copies a given file to a given media type.
  *
- * @param {Request} req Request for retrieving user
+ * @param {User} user Creator of the media
  * @param {Game} game Game the media will be linked to
  * @param {File} file File to be copied
  * @param {string} category Media category
  * @param {function} [check] Function called with file parameter. Media gets discarded if false is returned.
  */
-function copyMedia(req, game, file, category, check) {
+exports._copyMedia = function(user, game, file, category, check) {
 	return Promise.try(() => {
 
 		check = check || (() => true);
@@ -327,7 +327,7 @@ function copyMedia(req, game, file, category, check) {
 
 			const fieldsToCopy = [ 'name', 'bytes', 'created_at', 'mime_type', 'file_type' ];
 			const fileToCopy = _.assign(_.pick(file, fieldsToCopy), {
-				_created_by: req.user,
+				_created_by: user,
 				variations: {}
 			});
 			return fileModule.create(fileToCopy, fs.createReadStream(file.getPath()), error).then(copiedFile => {
@@ -337,7 +337,7 @@ function copyMedia(req, game, file, category, check) {
 					_ref: { game: game._id },
 					category: category,
 					created_at: new Date(),
-					_created_by: req.user
+					_created_by: user
 				});
 				return medium.save();
 
@@ -347,4 +347,4 @@ function copyMedia(req, game, file, category, check) {
 			});
 		}
 	});
-}
+};

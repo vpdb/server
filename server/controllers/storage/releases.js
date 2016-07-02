@@ -30,6 +30,8 @@ const unzip = require('unzip'); // adm-zip doesn't have a streaming api.
 
 const Release = require('mongoose').model('Release');
 const Rom = require('mongoose').model('Rom');
+const Medium = require('mongoose').model('Medium');
+
 const quota = require('../../modules/quota');
 const flavor = require('../../modules/flavor');
 const error = require('../../modules/error')('storage', 'release');
@@ -47,7 +49,15 @@ const api = require('../api/api');
  *
  * where body is something like (url-encoded):
  *
- *    {"files":["XJejOk7p7"],"media":{"playfield_image":true,"playfield_video":false},"game_media":true}
+ *  {
+ *  	"files": [ "XJejOk7p7" ],
+ *  	"media":{
+ *  		"playfield_image":true,
+ *  		"playfield_video":false
+ *  	},
+ *  	"game_media": [ "dfdDg35Sf", "gfppdDbNas" ],
+ *  	"backglass": "hffDDsh34",
+ *  }
  *
  * @param {Request} req
  * @param {Response} res
@@ -91,15 +101,14 @@ exports.download = function(req, res) {
 			.populate({ path: 'versions.files._compatibility' })
 			.exec();
 
-	}).then(release => {
+	}).then(r => {
+		release = r;
 		if (!release) {
 			throw error('No such release with ID "%s".', req.params.release_id).status(404);
 		}
-		// populate game attributes since nested populates don't work: https://github.com/LearnBoost/mongoose/issues/1377
-		return release.populate({ path: '_game._media.logo _game._media.backglass', model: 'File' }).execPopulate();
+		return Medium.find({ '_ref.game': release._game._id }).populate('_file').exec();
 
-	}).then(r => {
-		release = r;
+	}).then(media => {
 
 		// count release and user download
 		counters.push(release.incrementCounter('downloads'));
@@ -148,14 +157,15 @@ exports.download = function(req, res) {
 		// count game download
 		counters.push(release._game.update({ $inc: { 'counter.downloads': numTables } }));
 
-		// add game media?
-		if (body.game_media && release._game._media) {
-			if (release._game._media.backglass) {
-				requestedFiles.push(release._game._media.backglass);
-			}
-			if (release._game._media.logo) {
-				requestedFiles.push(release._game._media.logo);
-			}
+		// add game media
+		if (_.isArray(body.game_media)) {
+			body.game_media.forEach(mediaId => {
+				let medium = _.find(media, m => m.id === mediaId);
+				if (!medium) {
+					throw error('Medium with id %s is not part of the game\'s media.', mediaId).status(422);
+				}
+				requestedFiles.push(medium._file);
+			});
 		}
 
 		// check for roms

@@ -38,6 +38,9 @@ exports.register = function(app, api) {
 	app.get(settings.apiPath('/games/:id/star'),    api.auth(api.stars.get('game'), 'games', 'star'));
 
 	app.post(settings.apiPath('/games/:gameId/backglasses'), api.auth(api.backglasses.create, 'backglasses', 'add'));
+	app.get(settings.apiPath('/games/:gameId/backglasses'),  api.anon(api.backglasses.list));
+
+	app.get(settings.apiPath('/games/:gameId/media'), api.anon(api.media.list));
 
 	app.get(settings.apiPath('/games/:id/events'), api.anon(api.events.list({ byGame: true })));
 

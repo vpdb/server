@@ -118,11 +118,6 @@ var apiFields = {
 //-----------------------------------------------------------------------------
 // VIRTUALS
 //-----------------------------------------------------------------------------
-GameSchema.virtual('url')
-	.get(function() {
-		return '/game/' + this.id;
-	});
-
 GameSchema.virtual('media')
 	.get(function() {
 		var media = {};

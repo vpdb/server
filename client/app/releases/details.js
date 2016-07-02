@@ -149,12 +149,20 @@ angular.module('vpdb.releases.details', []).controller('ReleaseDetailsController
 		}
 	};
 
-}).controller('DownloadGameCtrl', function($scope, $uibModalInstance, $timeout, Flavors, DownloadService, params) {
+}).controller('DownloadGameCtrl', function($scope, $uibModalInstance, $timeout, Flavors, GameMediaResource, GameBackglassResource, DownloadService, params) {
 
 	$scope.game = params.game;
 	$scope.release = params.release;
 	$scope.latestVersion = params.latestVersion;
 	$scope.flavors = Flavors;
+	$scope.includeGameMedia = false;
+
+	$scope.gameMedia = GameMediaResource.get({ gameId: $scope.game.id }, function() {
+		if (!_.isEmpty($scope.gameMedia)) {
+			$scope.includeGameMedia = true;
+		}
+	});
+	$scope.backglasses = GameBackglassResource.get({ gameId: $scope.game.id });
 
 	$scope.downloadFiles = {};
 	$scope.downloadRequest = {
@@ -163,7 +171,7 @@ angular.module('vpdb.releases.details', []).controller('ReleaseDetailsController
 			playfield_image: true,
 			playfield_video: false
 		},
-		game_media: true,
+		game_media: [],
 		roms: false
 	};
 
@@ -181,6 +189,19 @@ angular.module('vpdb.releases.details', []).controller('ReleaseDetailsController
 		}
 		$scope.downloadRequest.files = _.values(_.pluck(_.pluck($scope.downloadFiles, 'file'), 'id'));
 	};
+
+	$scope.$watch('includeGameMedia',  function() {
+		$scope.downloadRequest.game_media = [];
+		if ($scope.includeGameMedia) {
+			var addedCategories = [];
+			_.each($scope.gameMedia, function(media) {
+				if (!_.contains(addedCategories, media.category)) {
+					$scope.downloadRequest.game_media.push(media.id);
+				}
+				addedCategories.push(media.category)
+			});
+		}
+	});
 
 	// todo refactor (make it more useful)
 	$scope.tableFile = function(file) {

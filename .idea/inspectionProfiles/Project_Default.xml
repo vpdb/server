@@ -5,7 +5,7 @@
     <inspection_tool class="HtmlUnknownAttribute" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="myValues">
         <value>
-          <list size="59">
+          <list size="61">
             <item index="0" class="java.lang.String" itemvalue="ngf-drag-over-class" />
             <item index="1" class="java.lang.String" itemvalue="ng-class" />
             <item index="2" class="java.lang.String" itemvalue="error" />
@@ -65,6 +65,8 @@
             <item index="56" class="java.lang.String" itemvalue="uib-dropdown" />
             <item index="57" class="java.lang.String" itemvalue="ng-cloak" />
             <item index="58" class="java.lang.String" itemvalue="ng-init" />
+            <item index="59" class="java.lang.String" itemvalue="ng-repeat-start" />
+            <item index="60" class="java.lang.String" itemvalue="ng-checked" />
           </list>
         </value>
       </option>

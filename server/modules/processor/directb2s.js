@@ -51,10 +51,10 @@ function Directb2sProcessor() {
 	this.variations = {
 		backglass: [
 			{ name: 'full',                               mimeType: 'image/jpeg', cutGrill: false },
-			{ name: 'medium',    width: 364, height: 291, mimeType: 'image/jpeg', cutGrill: true },
-			{ name: 'medium-2x', width: 728, height: 582, mimeType: 'image/jpeg', cutGrill: true },
-			{ name: 'small',     width: 253, height: 202, mimeType: 'image/jpeg', cutGrill: true },
-			{ name: 'small-2x',  width: 506, height: 404, mimeType: 'image/jpeg', cutGrill: true }
+			{ name: 'medium',    width: 364, height: 291, mimeType: 'image/jpeg', cutGrill: true, qual: 85 },
+			{ name: 'medium-2x', width: 728, height: 582, mimeType: 'image/jpeg', cutGrill: true, qual: 80 },
+			{ name: 'small',     width: 253, height: 202, mimeType: 'image/jpeg', cutGrill: true, qual: 90 },
+			{ name: 'small-2x',  width: 506, height: 404, mimeType: 'image/jpeg', cutGrill: true, qual: 80 }
 		]
 	};
 }

@@ -26,11 +26,6 @@ include ../template/_mixins
 					label(for="includeGameMedia")
 					label(for="includeGameMedia") Include game media
 
-				p
-					input#includeRoms.checkbox--toggle(type="checkbox", ng-model="downloadRequest.roms")
-					label(for="includeRoms")
-					label(for="includeRoms") Include ROMs
-
 			.col-sm-6
 
 				p
@@ -43,6 +38,27 @@ include ../template/_mixins
 					label(for="includePlayfieldVideo")
 					label(for="includePlayfieldVideo") Include playfield videos
 
+		h3.hr--margin-smaller(ng-show="roms.length > 0") Include ROMs:
+		table.table.table-striped(ng-show="roms.length > 0")
+			thead
+				tr
+					th
+					th Version
+					th.hidden-xs Language
+					th.hidden-xs Notes
+					th DLs
+					th Size
+			tbody
+				tr(ng-repeat="rom in roms")
+					td
+						input.checkbox--check(id="rom-{{ rom.id }}", type="checkbox", ng-click="toggleRom(rom)")
+						label(for="rom-{{ rom.id }}"): b {{ rom.id }}
+					td {{ rom.version }}
+					td.hidden-xs {{ rom.languages.join(', ') }}
+					td.hidden-xs {{ rom.notes }}
+					td {{ rom.file.counter.downloads | number }}
+					td {{ rom.file.bytes | bytes }}
+
 	.modal-footer
-		button.btn.btn-default(ng-click="$dismiss()") Cancel
+		button.btn.btn-hollow(ng-click="$dismiss()") Cancel
 		button.btn.btn-primary(ng-click="download()") Download

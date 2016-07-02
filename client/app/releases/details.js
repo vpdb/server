@@ -149,7 +149,7 @@ angular.module('vpdb.releases.details', []).controller('ReleaseDetailsController
 		}
 	};
 
-}).controller('DownloadGameCtrl', function($scope, $uibModalInstance, $timeout, Flavors, GameMediaResource, GameBackglassResource, DownloadService, params) {
+}).controller('DownloadGameCtrl', function($scope, $uibModalInstance, $timeout, Flavors, RomResource, DownloadService, params) {
 
 	$scope.game = params.game;
 	$scope.release = params.release;
@@ -157,12 +157,8 @@ angular.module('vpdb.releases.details', []).controller('ReleaseDetailsController
 	$scope.flavors = Flavors;
 	$scope.includeGameMedia = false;
 
-	$scope.gameMedia = GameMediaResource.get({ gameId: $scope.game.id }, function() {
-		if (!_.isEmpty($scope.gameMedia)) {
-			$scope.includeGameMedia = true;
-		}
-	});
-	$scope.backglasses = GameBackglassResource.get({ gameId: $scope.game.id });
+	$scope.gameMedia = $scope.game.alternate_media;
+	$scope.roms = RomResource.query({ id: $scope.game.id });
 
 	$scope.downloadFiles = {};
 	$scope.downloadRequest = {
@@ -172,7 +168,7 @@ angular.module('vpdb.releases.details', []).controller('ReleaseDetailsController
 			playfield_video: false
 		},
 		game_media: [],
-		roms: false
+		roms: []
 	};
 
 	$scope.download = function() {
@@ -190,6 +186,14 @@ angular.module('vpdb.releases.details', []).controller('ReleaseDetailsController
 		$scope.downloadRequest.files = _.values(_.pluck(_.pluck($scope.downloadFiles, 'file'), 'id'));
 	};
 
+	$scope.toggleRom = function(rom) {
+		if (!_.contains($scope.downloadRequest.roms, rom.id)) {
+			$scope.downloadRequest.roms.push(rom.id);
+		} else {
+			$scope.downloadRequest.roms.splice($scope.downloadRequest.roms.indexOf(rom.id), 1);
+		}
+	};
+
 	$scope.$watch('includeGameMedia',  function() {
 		$scope.downloadRequest.game_media = [];
 		if ($scope.includeGameMedia) {
@@ -202,6 +206,11 @@ angular.module('vpdb.releases.details', []).controller('ReleaseDetailsController
 			});
 		}
 	});
+
+	if (!_.isEmpty($scope.gameMedia)) {
+		$scope.includeGameMedia = true;
+	}
+
 
 	// todo refactor (make it more useful)
 	$scope.tableFile = function(file) {

@@ -51,12 +51,13 @@ const api = require('../api/api');
  *
  *  {
  *  	"files": [ "XJejOk7p7" ],
- *  	"media":{
- *  		"playfield_image":true,
- *  		"playfield_video":false
+ *  	"media": {
+ *  		"playfield_image": true,
+ *  		"playfield_video": false
  *  	},
  *  	"game_media": [ "dfdDg35Sf", "gfppdDbNas" ],
  *  	"backglass": "hffDDsh34",
+ *  	"roms": [ "afm_113b", "afm_113" ]
  *  }
  *
  * @param {Request} req
@@ -165,16 +166,19 @@ exports.download = function(req, res) {
 					throw error('Medium with id %s is not part of the game\'s media.', mediaId).status(422);
 				}
 				requestedFiles.push(medium._file);
+				counters.push(medium._file.incrementCounter('downloads'));
 			});
 		}
 
 		// check for roms
-		if (body.roms) {
+		if (_.isArray(body.roms)) {
 			return Rom.find({ _game: release._game._id.toString() }).populate('_file').exec().then(roms => {
-				// TODO only add starred rom or ask
-				roms.forEach(function(rom) {
+				body.roms.forEach(romId => {
+					let rom = _.find(roms, r => r.id === romId);
+					if (!rom) {
+						throw error('Could not find ROM with id %s for game.', romId).status(422);
+					}
 					requestedFiles.push(rom._file);
-					// count file download
 					counters.push(rom._file.incrementCounter('downloads'));
 				});
 			});

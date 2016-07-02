@@ -30,12 +30,16 @@ table.table
 	tr > th, tr > td
 		border none
 		padding 3px 5px
+		position relative
 		&:first-child
 			padding-left 10px
 		&.name
 			font-weight $font-weight-bold
 		&.td-dlbtn
 			width 50px
+
+		> label
+			margin-bottom -8px
 	tr.center-vertically > td
 		vertical-align middle
 

@@ -167,6 +167,7 @@ angular.module('vpdb.releases.details', []).controller('ReleaseDetailsController
 			playfield_image: true,
 			playfield_video: false
 		},
+		backglass: null,
 		game_media: [],
 		roms: []
 	};
@@ -184,6 +185,14 @@ angular.module('vpdb.releases.details', []).controller('ReleaseDetailsController
 			$scope.downloadFiles[file.file.id] = file;
 		}
 		$scope.downloadRequest.files = _.values(_.pluck(_.pluck($scope.downloadFiles, 'file'), 'id'));
+	};
+
+	$scope.selectBackglass = function(backglass) {
+		if (backglass.id === $scope.downloadRequest.backglass) {
+			$scope.downloadRequest.backglass = null;
+		} else {
+			$scope.downloadRequest.backglass = backglass.id;
+		}
 	};
 
 	$scope.toggleRom = function(rom) {

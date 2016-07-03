@@ -6,8 +6,10 @@ include ../template/_mixins
 			+icon('download').space-right
 			| Download <strong>{{ game.title }}</strong>
 	.modal-body
-		h3.hr--margin-smaller Choose your flavors:
 
+		//---------------------------------------------------------------------
+		//- FILES
+		h3.hr--margin-smaller Choose your Flavors:
 		.row
 			.col-sm-3(ng-repeat="file in latestVersion.files | filter:tableFile")
 				.flavor-item(ng-class="{ active: downloadFiles[file.file.id] }", ng-click="toggleFile(file)")
@@ -19,6 +21,8 @@ include ../template/_mixins
 						label.label--block
 							span(ng-repeat="compat in file.compatibility") {{ compat.label }}
 
+		//---------------------------------------------------------------------
+		//- MEDIA
 		.row.padder-top-2x
 			.col-sm-6
 				p
@@ -38,6 +42,22 @@ include ../template/_mixins
 					label(for="includePlayfieldVideo")
 					label(for="includePlayfieldVideo") Include playfield videos
 
+		//---------------------------------------------------------------------
+		//- BACKGLASSES
+		h3.hr--margin-smaller(ng-show="game.backglasses.length > 0") Include Backglass:
+		.row(ng-show="game.backglasses.length > 0").padder-bottom-2x
+			.col-sm-3(ng-repeat="backglass in game.backglasses")
+				.flavor-item(ng-class="{ active: downloadRequest.backglass === backglass.id }", ng-click="selectBackglass(backglass)")
+					img.img.img-responsive.img--rounded-more(img-src="{{ backglass.versions[0].file.variations['medium-2x'].url }}")
+					.text-center.padder-top
+						label.label--block
+							strong v{{ backglass.versions[0].version }}
+						label.label--block
+							| by&nbsp;
+							span(ng-repeat="author in backglass.authors") {{ author.user.name }}
+
+		//---------------------------------------------------------------------
+		//- ROMS
 		h3.hr--margin-smaller(ng-show="roms.length > 0") Include ROMs:
 		table.table.table-striped(ng-show="roms.length > 0")
 			thead

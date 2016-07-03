@@ -31,6 +31,7 @@ const unzip = require('unzip'); // adm-zip doesn't have a streaming api.
 const Release = require('mongoose').model('Release');
 const Rom = require('mongoose').model('Rom');
 const Medium = require('mongoose').model('Medium');
+const Backglass = require('mongoose').model('Backglass');
 
 const quota = require('../../modules/quota');
 const flavor = require('../../modules/flavor');
@@ -186,6 +187,24 @@ exports.download = function(req, res) {
 
 	}).then(() => {
 
+		// check for backglasses
+		if (body.backglass) {
+			return Backglass.findOne({ id: body.backglass }).populate('versions._file').exec().then(backglass => {
+				if (!backglass) {
+					throw error('Could not find backglass with id %s.', body.backglass).status(422);
+				}
+				if (!backglass._game.equals(release._game._id)) {
+					throw error('Backglass is not the same game as release.', body.backglass).status(422);
+				}
+
+				let file = _.sortBy(backglass.versions, v => -v.released_at)[0]._file;
+				requestedFiles.push(file);
+				counters.push(file.incrementCounter('downloads'));
+			});
+		}
+
+	}).then(() => {
+
 		if (!requestedFiles.length) {
 			throw error('Requested file IDs did not match any release file.').status(422);
 		}
@@ -225,7 +244,13 @@ exports.download = function(req, res) {
 					break;
 
 				case 'backglass':
-					name = 'PinballX/Media/Visual Pinball/Backglass Images/' + gameName + file.getExt();
+					if (file.getMimeCategory() === 'image') {
+						name = 'PinballX/Media/Visual Pinball/Backglass Images/' + gameName + file.getExt();
+					}
+					if (file.getMimeCategory() === 'directb2s') {
+						name = 'Visual Pinball/Tables/' + gameName + file.getExt();
+					}
+
 					break;
 
 				case 'playfield-fs':
@@ -274,7 +299,7 @@ exports.download = function(req, res) {
 					break;
 
 				case 'rom':
-					name = 'Visual Pinball/VPinMame/roms/' + file.name;
+					name = 'Visual Pinball/VPinMAME/roms/' + file.name;
 					break;
 			}
 			// per default, put files into the root folder.

@@ -136,8 +136,8 @@ exports.download = function(req, res) {
 						numTables++;
 
 						// add media if checked
-						_.each(versionFile._media, function(mediaFile, mediaName) {
-							if (media[mediaName]) {
+						_.each(versionFile._media, (mediaFile, mediaName) => {
+							if (body.media[mediaName]) {
 								requestedFiles.push(mediaFile);
 							}
 						});
@@ -238,6 +238,7 @@ exports.download = function(req, res) {
 		Promise.each(requestedFiles, file => {
 
 			let name = '';
+			let path = '';
 			switch (file.file_type) {
 				case 'logo':
 					name = 'PinballX/Media/Visual Pinball/Wheel Images/' + gameName + file.getExt();
@@ -261,6 +262,7 @@ exports.download = function(req, res) {
 					if (file.getMimeCategory() === 'video') {
 						name = 'PinballX/Media/Visual Pinball/Table Videos/' + gameName + file.getExt();
 					}
+					path = file.getPath('hyperpin');
 					break;
 
 				case 'release':
@@ -304,7 +306,7 @@ exports.download = function(req, res) {
 			}
 			// per default, put files into the root folder.
 			name = name || file.name;
-			archive.append(fs.createReadStream(file.getPath()), {
+			archive.append(fs.createReadStream(path || file.getPath()), {
 				name: name,
 				date: file.created_at
 			});

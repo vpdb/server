@@ -180,7 +180,7 @@ exports.list = function(req, res) {
 		}
 
 		// add moderation
-		q = Rom.acceptedQuery(q);
+		q = Rom.approvedQuery(q);
 
 		let sort = game ? { version: -1 } : { '_file.name': 1 };
 		return Rom.paginate(q, {

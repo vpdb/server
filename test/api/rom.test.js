@@ -52,7 +52,7 @@ describe('The VPDB `ROM` API', function() {
 		});
 
 		after(function(done) {
-			hlp.cleanup(request, done);
+			//hlp.cleanup(request, done);
 		});
 
 		it('should fail for non-existing games', function(done) {
@@ -269,7 +269,7 @@ describe('The VPDB `ROM` API', function() {
 			});
 		});
 
-		it('should be listed under the game after success as member after acceptance', function(done) {
+		it('should be listed under the game after success as member after approval', function(done) {
 			var user = 'member';
 			hlp.file.createRom(user, request, function(file) {
 				request
@@ -284,7 +284,7 @@ describe('The VPDB `ROM` API', function() {
 						hlp.doomRom(user, res.body.id);
 						request.post('/api/v1/roms/' + res.body.id + '/moderate')
 							.as('moderator')
-							.send({ action: 'accept' })
+							.send({ action: 'approve' })
 							.end(function(err, res) {
 								hlp.expectStatus(err, res, 200);
 								request.get('/api/v1/games/' + game.id + '/roms').end(function(err, res) {

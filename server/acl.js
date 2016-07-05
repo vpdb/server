@@ -71,11 +71,11 @@ acl.init = function() {
 		}, {
 			roles: 'contributor',
 			allows: [
-				{ resources: 'backglasses', permissions: ['auto-accept'] },
+				{ resources: 'backglasses', permissions: ['auto-approve'] },
 				{ resources: 'games',       permissions: ['update', 'add'] },
 				{ resources: 'ipdb',        permissions: ['view'] },
-				{ resources: 'releases',    permissions: ['auto-accept'] },
-				{ resources: 'roms',        permissions: ['auto-accept'] }
+				{ resources: 'releases',    permissions: ['auto-approve'] },
+				{ resources: 'roms',        permissions: ['auto-approve'] }
 			]
 		}, {
 			roles: 'member',

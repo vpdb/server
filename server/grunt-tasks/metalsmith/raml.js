@@ -192,6 +192,12 @@ function helpers(opts) {
 						title: 'Administrator Access',
 						description: 'You must be an **administrator** in order to access this resource.'
 					};
+				case 'MODERATOR':
+					return {
+						classes: 'icon icon-diamond',
+						title: 'Moderator Access',
+						description: 'You must be a **moderator** in order to access this resource.'
+					};
 				case 'CONTRIB':
 					return {
 						classes: 'icon icon-diamond',

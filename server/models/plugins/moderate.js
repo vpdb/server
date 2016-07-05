@@ -34,8 +34,8 @@ const modelResourceMap = {
 /**
  * A plugin that enables upload moderation for an entity.
  *
- * Users that don't have the `auto-accept` permission need a person with
- * the `accept` permission to manually sign it off.
+ * Users that don't have the `auto-approve` permission need a person with
+ * the `approve` permission to manually sign it off.
  *
  * This plugin adds a `moderation` property to the entity and offers
  * methods to make quering easier.
@@ -49,25 +49,27 @@ module.exports = function(schema) {
 	 */
 	schema.add({
 		moderation: {
-			is_accepted:    { type: Boolean, required: true, 'default': false },
-			accepted_at:    { type: Date },
-			_accepted_by:   { type: Schema.ObjectId, ref: 'User' },
+			is_approved:    { type: Boolean, required: true, 'default': false },
 			is_refused:     { type: Boolean, required: true, 'default': false },
-			refused_at:     { type: Date },
-			_refused_by:    { type: Schema.ObjectId, ref: 'User' },
-			refused_reason: { type: String }
+			auto_approved:  { type: Boolean, required: true, 'default': false },
+			history: [{
+				event:       { type: String, 'enum': ['approved', 'refused', 'moderated'], required: true },
+				message:     { type: String },
+				created_at:  { type: Date },
+				_created_by: { type: Schema.ObjectId, ref: 'User' }
+			}]
 		}
 	});
 
 	/*
-	 * Post save trigger that automatically accepts if the creator has
-	 * the "auto-accept" permission.
+	 * Post save trigger that automatically approves if the creator has
+	 * the "auto-approve" permission.
 	 */
 	schema.pre('save', function(next) {
 		if (!this.isNew) {
 			return next();
 		}
-		// check if _created_by is a contributor and auto-accept.
+		// check if _created_by is a contributor and auto-approve.
 		const User = mongoose.model('User');
 		let user;
 		return Promise.try(() => {
@@ -82,16 +84,24 @@ module.exports = function(schema) {
 			if (!resource) {
 				throw new Error('Tried to check moderation permission for unmapped entity "' + this.constructor.modelName + '".')
 			}
-			return acl.isAllowed(user.id, resource, 'auto-accept');
+			return acl.isAllowed(user.id, resource, 'auto-approve');
 
-		}).then(autoAccept => {
-			if (autoAccept) {
-				logger.info('[moderation] Auto-accepting %s "%s" for user <%s>.', this.constructor.modelName, this.id, user.email);
+		}).then(autoApprove => {
+			if (autoApprove) {
+				logger.info('[moderation] Auto-approving %s "%s" for user <%s>.', this.constructor.modelName, this.id, user.email);
+				const now = new Date();
 				this.moderation = {
-					is_accepted: true,
+					is_approved: true,
 					is_refused: false,
-					accepted_at: new Date(),
-					_accepted_by: user._id
+					auto_approved: true,
+					history: [ { event: 'approved', created_at: now, _created_by: user } ]
+				};
+			} else {
+				this.moderation = {
+					is_approved: false,
+					is_refused: false,
+					auto_approved: false,
+					history: [ ]
 				};
 			}
 
@@ -99,13 +109,13 @@ module.exports = function(schema) {
 	});
 
 	/**
-	 * Returns the query used for listing only accepted entities.
+	 * Returns the query used for listing only approved entities.
 	 *
 	 * @param {array|object} [query] Query to append.
 	 * @returns {*}
 	 */
-	schema.statics.acceptedQuery = function(query) {
-		return addToQuery({ 'moderation.is_accepted': true }, query);
+	schema.statics.approvedQuery = function(query) {
+		return addToQuery({ 'moderation.is_approved': true }, query);
 	};
 
 	/**
@@ -118,7 +128,7 @@ module.exports = function(schema) {
 	 * @returns {Promise}
 	 */
 	schema.statics.handleModeration = function(user, requestBody, entity, error) {
-		const actions = ['refuse', 'accept', 'moderate'];
+		const actions = ['refuse', 'approve', 'moderate'];
 		if (!requestBody.action) {
 			throw error('Validations failed.').validationError('action', 'An action must be provided. Valid actions are: [ "' + actions.join('", "') + '" ].');
 		}
@@ -132,70 +142,85 @@ module.exports = function(schema) {
 				}
 				return entity.refuse(user, requestBody.message);
 
-			case 'accept':
-				return entity.accept(user);
+			case 'approve':
+				return entity.approve(user, requestBody.message);
 
 			case 'moderate':
-				return entity.moderate();
+				return entity.moderate(requestBody.message);
 		}
 	};
 
 	/**
-	 * Marks the entity as accepted.
+	 * Marks the entity as approved.
 	 * @param {User|ObjectId} user User who approved
+	 * @param {string} [message] Optional message
 	 * @returns {Promise}
 	 */
-	schema.methods.accept = function(user) {
+	schema.methods.approve = function(user, message) {
 
 		const Model = mongoose.model(this.constructor.modelName);
-		return Model.update({ _id: this._id }, {
-			moderation: {
-				is_accepted: true,
-				is_refused: false,
-				accepted_at: new Date(),
-				_accepted_by: user._id || user
+		return Model.findByIdAndUpdate(this._id, {
+			'moderation.is_approved': true,
+			'moderation.is_refused': false,
+			$push: {
+				'moderation.history': {
+					event: 'approved',
+					message: message,
+					created_at: new Date(),
+					_created_by: user._id || user
+				}
 			}
-		});
+		}).exec();
 	};
 
 	/**
-	 * Marks the entity as accepted.
-	 * @param {User|ObjectId} user User who approved
+	 * Marks the entity as refused.
+	 * @param {User|ObjectId} user User who refused
 	 * @param {string} reason Reason why entity was refused
 	 * @returns {Promise}
 	 */
 	schema.methods.refuse = function(user, reason) {
 
 		const Model = mongoose.model(this.constructor.modelName);
-		return Model.update({ _id: this._id }, {
-			moderation: {
-				is_accepted: false,
-				is_refused: true,
-				refused_at: new Date(),
-				_refused_by: user._id || user,
-				refused_reason: reason
+		return Model.findByIdAndUpdate(this._id, {
+			'moderation.is_approved': false,
+			'moderation.is_refused': true,
+			$push: {
+				'moderation.history': {
+					event: 'refused',
+					message: reason,
+					created_at: new Date(),
+					_created_by: user._id || user
+				}
 			}
-		});
+		}).exec();
 	};
 
 	/**
 	 * Sets the entity back to moderated
+	 * @param {string} [message] Optional message
 	 * @returns {Promise}
 	 */
-	schema.methods.moderate = function() {
+	schema.methods.moderate = function(message) {
 
 		const Model = mongoose.model(this.constructor.modelName);
-		return Model.update({ _id: this._id }, {
-			moderation: {
-				is_accepted: false,
-				is_refused: false
+		return Model.findByIdAndUpdate(this._id, {
+			'moderation.is_approved': false,
+			'moderation.is_refused': false,
+			$push: {
+				'moderation.history': {
+					event: 'moderated',
+					message: message,
+					created_at: new Date(),
+					_created_by: user._id || user
+				}
 			}
-		});
+		}).exec();
 	};
 };
 
 /**
- * Returns the query used for listing only accepted entities.
+ * Returns the query used for listing only approved entities.
  *
  * @param {object} toAdd Query to add
  * @param {array|object} [query] Original query

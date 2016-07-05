@@ -437,7 +437,7 @@ exports.list = function(req, res) {
 		}
 
 		// moderation
-		query.push(Release.acceptedQuery());
+		query.push(Release.approvedQuery());
 
 		// filter by tag
 		if (req.query.tags) {

@@ -10,6 +10,9 @@ description: |
   Note that for listing and creating ROMs, there are also end-points available
   under the [game resource][games].
 
+  ROMs are moderated, meaning only contributer uploads appear publicly without
+  manual confirmation of a moderator.
+
   [games]: api://core/games
 
 get:
@@ -79,3 +82,12 @@ post:
         body:
           role/member:
             example: !include http/del-res-204.json
+
+  /moderate:
+    post:
+      securedBy: [ jwt: { scopes: [ MEMBER, MODERATOR ] } ]
+      description: |
+          Moderate a ROM.
+
+          Using this resource, moderators can either `accept` the ROM, `refuse` it
+          or put it back to `moderate`.

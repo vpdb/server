@@ -38,7 +38,8 @@ describe('The VPDB `Star` API', function() {
 		before(function(done) {
 			hlp.setupUsers(request, {
 				member: { roles: ['member'] },
-				moderator: { roles: ['moderator'] }
+				moderator: { roles: ['moderator'] },
+				contributor: { roles: ['contributor'] }
 			}, done);
 		});
 
@@ -51,7 +52,7 @@ describe('The VPDB `Star` API', function() {
 		});
 
 		it('should succeed when providing correct data', function(done) {
-			hlp.release.createRelease('moderator', request, function(release) {
+			hlp.release.createRelease('contributor', request, function(release) {
 				request.post('/api/v1/releases/' + release.id + '/star')
 					.send({})
 					.as('member')

@@ -259,7 +259,8 @@ describe('The VPDB `Rating` API', function() {
 		before(function(done) {
 			hlp.setupUsers(request, {
 				member: { roles: [ 'member' ] },
-				moderator: { roles: [ 'moderator' ] }
+				moderator: { roles: [ 'moderator' ] },
+				contributor: { roles: [ 'contributor' ] }
 			}, done);
 		});
 
@@ -269,7 +270,7 @@ describe('The VPDB `Rating` API', function() {
 
 		it('should succeed when providing a correct rating', function(done) {
 
-			hlp.release.createRelease('moderator', request, function(release) {
+			hlp.release.createRelease('contributor', request, function(release) {
 				var rating = 5;
 				request.post('/api/v1/releases/' + release.id + '/rating')
 					.send({ value: rating })
@@ -331,7 +332,8 @@ describe('The VPDB `Rating` API', function() {
 		before(function(done) {
 			hlp.setupUsers(request, {
 				member: { roles: [ 'member' ] },
-				moderator: { roles: [ 'moderator' ] }
+				moderator: { roles: [ 'moderator' ] },
+				contributor: { roles: [ 'contributor' ] }
 			}, done);
 		});
 
@@ -340,7 +342,7 @@ describe('The VPDB `Rating` API', function() {
 		});
 
 		it('should succeed when providing correct values', function(done) {
-			hlp.release.createRelease('moderator', request, function(release) {
+			hlp.release.createRelease('contributor', request, function(release) {
 				request.post('/api/v1/releases/' + release.id + '/rating')
 					.send({ value: 8 })
 					.as('member')

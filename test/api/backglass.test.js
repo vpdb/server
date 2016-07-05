@@ -266,7 +266,8 @@ describe('The VPDB `Backglass` API', function() {
 		before(function(done) {
 			hlp.setupUsers(request, {
 				member: { roles: ['member'] },
-				moderator: { roles: ['moderator'] }
+				moderator: { roles: ['moderator'] },
+				contributor: { roles: ['contributor'] }
 			}, function() {
 				hlp.game.createGame('moderator', request, function(g) {
 					game = g;
@@ -281,7 +282,7 @@ describe('The VPDB `Backglass` API', function() {
 
 		it('should list backglass under game', function(done) {
 
-			const user = 'member';
+			const user = 'contributor';
 			hlp.file.createDirectB2S(user, request, function(b2s) {
 				request
 					.post('/api/v1/backglasses')

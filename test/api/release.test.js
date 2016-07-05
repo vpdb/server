@@ -937,7 +937,8 @@ describe('The VPDB `release` API', function() {
 		before(function(done) {
 			hlp.setupUsers(request, {
 				member: { roles: [ 'member' ] },
-				moderator: { roles: [ 'moderator' ] }
+				moderator: { roles: [ 'moderator' ] },
+				contributor: { roles: [ 'contributor' ] }
 			}, done);
 		});
 
@@ -946,7 +947,7 @@ describe('The VPDB `release` API', function() {
 		});
 
 		it('should list all fields', function(done) {
-			hlp.release.createRelease('member', request, function(release) {
+			hlp.release.createRelease('contributor', request, function(release) {
 				request
 					.get('/api/v1/releases/' + release.id)
 					.end(function(err, res) {
@@ -970,7 +971,7 @@ describe('The VPDB `release` API', function() {
 		});
 
 		it('should include thumb if format is given', function(done) {
-			hlp.release.createRelease('member', request, function(release) {
+			hlp.release.createRelease('contributor', request, function(release) {
 				request
 					.get('/api/v1/releases/' + release.id + '?thumb_format=square')
 					.save({ path: 'releases/view'})
@@ -989,7 +990,7 @@ describe('The VPDB `release` API', function() {
 		});
 
 		it('should include thumb if flavor is given', function(done) {
-			hlp.release.createRelease('member', request, function(release) {
+			hlp.release.createRelease('contributor', request, function(release) {
 				request
 					.get('/api/v1/releases/' + release.id + '?thumb_flavor=orientation:fs')
 					.save({ path: 'releases/view'})
@@ -1014,7 +1015,8 @@ describe('The VPDB `release` API', function() {
 		before(function(done) {
 			hlp.setupUsers(request, {
 				countertest: { roles: [ 'member' ] },
-				moderator: { roles: [ 'moderator' ] }
+				moderator: { roles: [ 'moderator' ] },
+				contributor: { roles: [ 'contributor' ] }
 			}, done);
 		});
 
@@ -1024,7 +1026,7 @@ describe('The VPDB `release` API', function() {
 
 		it('should update all the necessary download counters.', function(done) {
 
-			hlp.release.createRelease('moderator', request, function(release) {
+			hlp.release.createRelease('contributor', request, function(release) {
 				var url = '/storage/v1/releases/' + release.id;
 				var body = {
 					files: [ release.versions[0].files[0].file.id ],

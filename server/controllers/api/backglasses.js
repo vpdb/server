@@ -131,7 +131,12 @@ exports.list = function(req, res) {
 		if (!game) {
 			throw error('Unknown game "%s".', req.params.gameId).status(404);
 		}
-		return Backglass.find({ _game: game._id })
+
+		return Backglass.handleListQuery(req, error, { _game: game._id });
+
+	}).then(query => {
+
+		return Backglass.find(query)
 			.populate({ path: 'authors._user' })
 			.populate({ path: 'versions._file' })
 			.exec();

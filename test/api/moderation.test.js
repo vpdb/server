@@ -99,7 +99,6 @@ describe('The VPDB moderation feature', function() {
 				.as(user)
 				.send({ action: 'refuse' })
 				.end(function(err, res) {
-					hlp.dump(res);
 					expect(res.body.errors).to.have.length(1);
 					hlp.expectValidationError(err, res, 'message', 'message must be provided');
 					done();

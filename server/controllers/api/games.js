@@ -275,7 +275,7 @@ exports.view = function(req, res) {
 	}).then(starredReleaseIds => {
 
 		opts = { starredReleaseIds: starredReleaseIds };
-		return Release.find({ _game: game._id })
+		return Release.find(Release.approvedQuery({ _game: game._id }))
 			.populate({ path: '_tags' })
 			.populate({ path: '_created_by' })
 			.populate({ path: 'authors._user' })
@@ -288,7 +288,7 @@ exports.view = function(req, res) {
 	}).then(releases => {
 		result.releases = _.map(releases, release => _.omit(release.toDetailed(opts), 'game'));
 
-		return Backglass.find({ _game: game._id })
+		return Backglass.find(Backglass.approvedQuery({ _game: game._id }))
 			.populate({ path: 'authors._user' })
 			.populate({ path: 'versions._file' })
 			.exec();

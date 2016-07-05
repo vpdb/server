@@ -200,6 +200,53 @@ module.exports = function(schema) {
 	};
 
 	/**
+	 * Returns the query used for listing only approved entities.
+	 * @param {array|object} [query] Query
+	 * @returns {*}
+	 */
+	schema.statics.approvedQuery = function(query) {
+		return addToQuery({ 'moderation.is_approved': true }, query);
+	};
+
+	/**
+	 * Makes sure an API request has the permission to view the entity.
+	 * @param {Request} req Request object
+	 * @param {Err} error Error wrapper for logging
+	 * @returns {Promise}
+	 */
+	schema.methods.assertModeratedView = function(req, error) {
+
+		// if approved, all okay.
+		if (this.moderation.is_approved) {
+			return Promise.resolve(this);
+		}
+
+		// otherwise, user needs to be logged
+		if (!req.user) {
+			return Promise.reject(error('No such release with ID "%s"', req.params.id).status(404));
+		}
+
+		// if viewing own entity, okay
+		if (req.user._id.equals(this._created_by)) {
+			return Promise.resolve(this);
+		}
+
+		// if user is moderator, also okay.
+		const resource = modelResourceMap[this.constructor.modelName];
+		if (!resource) {
+			throw new Error('Tried to check moderation permission for unmapped entity "' + this.constructor.modelName + '".');
+		}
+		return acl.isAllowed(req.user.id, resource, 'moderate').then(isModerator => {
+
+			if (isModerator) {
+				return this;
+			}
+
+			throw error('No such release with ID "%s"', req.params.id).status(404);
+		});
+	};
+
+	/**
 	 * Marks the entity as approved.
 	 * @param {User|ObjectId} user User who approved
 	 * @param {string} [message] Optional message
@@ -270,7 +317,11 @@ module.exports = function(schema) {
 };
 
 /**
- * Returns the query used for listing only approved entities.
+ * Adds a new condition to an existing query.
+ *
+ * The existing query can be an object, in which case the new condition ends
+ * up as a new property, or an array, in which case it is added to the
+ * array. Otherwise, just the condition is returned.
  *
  * @param {object} toAdd Query to add
  * @param {array|object} [query] Original query

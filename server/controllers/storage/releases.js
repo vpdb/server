@@ -108,6 +108,9 @@ exports.download = function(req, res) {
 		if (!release) {
 			throw error('No such release with ID "%s".', req.params.release_id).status(404);
 		}
+		return release.assertModeratedView(req, error);
+
+	}).then(() => {
 		return Medium.find({ '_ref.game': release._game._id }).populate('_file').exec();
 
 	}).then(media => {

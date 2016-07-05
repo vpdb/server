@@ -52,7 +52,7 @@ describe('The VPDB `ROM` API', function() {
 		});
 
 		after(function(done) {
-			//hlp.cleanup(request, done);
+			hlp.cleanup(request, done);
 		});
 
 		it('should fail for non-existing games', function(done) {

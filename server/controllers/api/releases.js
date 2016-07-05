@@ -95,9 +95,6 @@ exports.create = function(req, res) {
 		return release.activateFiles();
 
 	}).then(() => {
-		return release.accept(req.user);
-
-	}).then(() => {
 		logger.info('[api|release:create] All referenced files activated, returning object to client.');
 
 		// update counters and date
@@ -631,6 +628,9 @@ exports.view = function(req, res) {
 		if (!release) {
 			throw error('No such release with ID "%s"', req.params.id).status(404);
 		}
+		return release.assertModeratedView(req, error);
+
+	}).then(release => {
 
 		release.incrementCounter('views');
 

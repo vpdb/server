@@ -14,8 +14,8 @@ describe('The storage engine of VPDB', function() {
 	before(function(done) {
 		hlp.setupUsers(request, {
 			member: { roles: [ 'member' ]},
+			moderator: { roles: [ 'moderator' ]},
 			contributor: { roles: [ 'contributor' ]},
-			contributor2: { roles: [ 'contributor' ]},
 			anothermember: { roles: [ 'member' ]}
 		}, done);
 	});
@@ -175,7 +175,7 @@ describe('The storage engine of VPDB', function() {
 
 			it('should block until the file is finished processing when requesting the variation', function(done) {
 
-				hlp.game.createGame('contributor', request, function(game) {
+				hlp.game.createGame('moderator', request, function(game) {
 					request.get(hlp.urlPath(game.media.backglass.variations['small-2x'].url)).end(function(err, res) {
 						hlp.expectStatus(err, res, 200);
 						expect(res.headers['content-length']).to.be.greaterThan(0);
@@ -186,7 +186,7 @@ describe('The storage engine of VPDB', function() {
 
 			it('should grant access to anonymous users', function(done) {
 
-				hlp.game.createGame('contributor', request, function(game) {
+				hlp.game.createGame('moderator', request, function(game) {
 					request.get(hlp.urlPath(game.media.backglass.variations.small.url)).end(function(err, res) {
 						hlp.expectStatus(err, res, 200);
 						expect(res.headers['content-length']).to.be.greaterThan(0);
@@ -197,7 +197,7 @@ describe('The storage engine of VPDB', function() {
 
 			it('should grant access to logged users', function(done) {
 
-				hlp.game.createGame('contributor', request, function(game) {
+				hlp.game.createGame('moderator', request, function(game) {
 					request.get(hlp.urlPath(game.media.backglass.url)).as('member').end(function(err, res) {
 						hlp.expectStatus(err, res, 200);
 						expect(res.headers['content-length']).to.be.greaterThan(0);
@@ -214,27 +214,27 @@ describe('The storage engine of VPDB', function() {
 		describe('when the file is still inactive', function() {
 
 			it('should block a video variation until processing is finished', function(done) {
-				hlp.file.createMp4('contributor', request, function(video) {
+				hlp.file.createMp4('moderator', request, function(video) {
 
 					// now spawn 5 clients that try to retrieve this simultaneously
 					async.times(5, function(n, next){
-						request.get(hlp.urlPath(video.variations['small-rotated'].url)).as('contributor').end(function(err, res) {
+						request.get(hlp.urlPath(video.variations['small-rotated'].url)).as('moderator').end(function(err, res) {
 							hlp.expectStatus(err, res, 200);
 							expect(res.headers['content-length']).to.be.greaterThan(0);
 							next();
 						});
 					}, function() {
-						hlp.doomFile('contributor', video.id);
+						hlp.doomFile('moderator', video.id);
 						done();
 					});
 				});
 			});
 
 			it('should block a video variation with a different MIME type until processing is finished', function(done) {
-				hlp.file.createAvi('contributor', request, function(video) {
-					request.get(hlp.urlPath(video.variations['small-rotated'].url)).as('contributor').end(function(err, res) {
+				hlp.file.createAvi('moderator', request, function(video) {
+					request.get(hlp.urlPath(video.variations['small-rotated'].url)).as('moderator').end(function(err, res) {
 						hlp.expectStatus(err, res, 200);
-						hlp.doomFile('contributor', video.id);
+						hlp.doomFile('moderator', video.id);
 						expect(res.headers['content-length']).to.be.greaterThan(0);
 						done();
 					});
@@ -242,10 +242,10 @@ describe('The storage engine of VPDB', function() {
 			});
 
 			it('should block HEAD of a video variation with a different MIME type until processing is finished', function(done) {
-				hlp.file.createAvi('contributor', request, function(video) {
-					request.head(hlp.urlPath(video.variations['small-rotated'].url)).as('contributor').end(function(err, res) {
+				hlp.file.createAvi('moderator', request, function(video) {
+					request.head(hlp.urlPath(video.variations['small-rotated'].url)).as('moderator').end(function(err, res) {
 						hlp.expectStatus(err, res, 200);
-						hlp.doomFile('contributor', video.id);
+						hlp.doomFile('moderator', video.id);
 						expect(res.headers['content-length']).to.be('0');
 						expect(res.text).to.not.be.ok();
 						done();
@@ -267,7 +267,7 @@ describe('The storage engine of VPDB', function() {
 			it('should grant access to an authenticated user', function(done) {
 				hlp.release.createRelease('member', request, function(release) {
 					var fileUrl = release.versions[0].files[0].file.url;
-					request.get(hlp.urlPath(fileUrl)).as('contributor2').end(hlp.status(200, done));
+					request.get(hlp.urlPath(fileUrl)).as('contributor').end(hlp.status(200, done));
 				});
 			});
 
@@ -276,7 +276,7 @@ describe('The storage engine of VPDB', function() {
 					var fileUrl = release.versions[0].files[0].file.url;
 					request
 						.post('/storage/v1/authenticate')
-						.as('contributor2')
+						.as('contributor')
 						.save({ path: 'auth/storage' })
 						.send({ paths: fileUrl })
 						.end(function(err, res) {

@@ -40,7 +40,7 @@ describe('The VPDB `event` API', function() {
 		before(function(done) {
 			hlp.setupUsers(request, {
 				member: { roles: [ 'member' ] },
-				contributor: { roles: [ 'contributor' ] }
+				moderator: { roles: [ 'moderator' ] }
 			}, function() {
 				hlp.release.createRelease('member', request, function(r) {
 					release = r;

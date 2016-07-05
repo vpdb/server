@@ -95,6 +95,9 @@ exports.create = function(req, res) {
 		return release.activateFiles();
 
 	}).then(() => {
+		return release.accept(req.user);
+
+	}).then(() => {
 		logger.info('[api|release:create] All referenced files activated, returning object to client.');
 
 		// update counters and date
@@ -433,19 +436,22 @@ exports.list = function(req, res) {
 			throw error('You must specify "thumb_format" when requesting thumbs per file.').status(400);
 		}
 
+		// moderation
+		query.push(Release.acceptedQuery());
+
 		// filter by tag
 		if (req.query.tags) {
 			let t = req.query.tags.split(',');
 			// all tags must be matched
 			for (let i = 0; i < t.length; i++) {
-				query.push({_tags: {$in: [t[i]]}});
+				query.push({ _tags: { $in: [t[i]] } });
 			}
 		}
 
 		// filter by release id
 		if (req.query.ids) {
 			let ids = req.query.ids.split(',');
-			query.push({id: {$in: ids}});
+			query.push({ id: { $in: ids } });
 		}
 
 		// filter by query

@@ -40,9 +40,9 @@ describe('The VPDB `Backglass` API', function() {
 		before(function(done) {
 			hlp.setupUsers(request, {
 				member: { roles: [ 'member' ] },
-				contributor: { roles: [ 'contributor' ] }
+				moderator: { roles: [ 'moderator' ] }
 			}, function() {
-				hlp.game.createGame('contributor', request, function(g) {
+				hlp.game.createGame('moderator', request, function(g) {
 					game = g;
 					done(null, g);
 				});
@@ -266,9 +266,9 @@ describe('The VPDB `Backglass` API', function() {
 		before(function(done) {
 			hlp.setupUsers(request, {
 				member: { roles: ['member'] },
-				contributor: { roles: ['contributor'] }
+				moderator: { roles: ['moderator'] }
 			}, function() {
-				hlp.game.createGame('contributor', request, function(g) {
+				hlp.game.createGame('moderator', request, function(g) {
 					game = g;
 					done(null, g);
 				});
@@ -314,7 +314,6 @@ describe('The VPDB `Backglass` API', function() {
 		});
 	});
 
-
 	describe('when deleting a backglass', function() {
 
 		var game;
@@ -322,9 +321,10 @@ describe('The VPDB `Backglass` API', function() {
 			hlp.setupUsers(request, {
 				member: { roles: [ 'member' ] },
 				member2: { roles: [ 'member' ] },
-				contributor: { roles: [ 'contributor' ] }
+				contributor: { roles: [ 'contributor' ] },
+				moderator: { roles: [ 'moderator' ] }
 			}, function() {
-				hlp.game.createGame('contributor', request, function(g) {
+				hlp.game.createGame('moderator', request, function(g) {
 					game = g;
 					done(null, g);
 				});
@@ -336,10 +336,10 @@ describe('The VPDB `Backglass` API', function() {
 		});
 
 		it('should fail if the backglass does not exist', function(done) {
-			request.del('/api/v1/backglasses/1234').as('contributor').end(hlp.status(404, 'no such backglass', done));
+			request.del('/api/v1/backglasses/1234').as('moderator').end(hlp.status(404, 'no such backglass', done));
 		});
 
-		it('should fail if the backglass is owned by someone else', function(done) {
+		it('should fail if the backglass is owned by another member', function(done) {
 			const user = 'member';
 			hlp.file.createDirectB2S(user, request, function(b2s) {
 				request
@@ -360,6 +360,31 @@ describe('The VPDB `Backglass` API', function() {
 						hlp.expectStatus(err, res, 201);
 						hlp.doomBackglass(user, res.body.id);
 						request.del('/api/v1/backglasses/' + res.body.id).as('member2').saveResponse('backglasses/del').end(hlp.status(403, 'must be owner', done));
+					});
+			});
+		});
+
+		it('should fail if the backglass is owned by another contributor', function(done) {
+			const user = 'member';
+			hlp.file.createDirectB2S(user, request, function(b2s) {
+				request
+					.post('/api/v1/backglasses')
+					.as('member')
+					.send({
+						_game: game.id,
+						authors: [ {
+							_user: hlp.users[user].id,
+							roles: [ 'creator' ]
+						} ],
+						versions: [ {
+							version: '1.0',
+							_file: b2s.id
+						} ]
+					})
+					.end(function(err, res) {
+						hlp.expectStatus(err, res, 201);
+						hlp.doomBackglass(user, res.body.id);
+						request.del('/api/v1/backglasses/' + res.body.id).as('contributor').end(hlp.status(403, 'must be owner', done));
 					});
 			});
 		});
@@ -407,7 +432,7 @@ describe('The VPDB `Backglass` API', function() {
 					})
 					.end(function(err, res) {
 						hlp.expectStatus(err, res, 201);
-						request.del('/api/v1/backglasses/' + res.body.id).as('contributor').end(hlp.status(204, done));
+						request.del('/api/v1/backglasses/' + res.body.id).as('moderator').end(hlp.status(204, done));
 					});
 			});
 		});

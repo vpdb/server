@@ -44,9 +44,9 @@ describe('The VPDB `Rating` API', function() {
 				member2: { roles: ['member'] },
 				member3: { roles: ['member'] },
 				member4: { roles: ['member'] },
-				contributor: { roles: ['contributor'] }
+				moderator: { roles: ['moderator'] }
 			}, function () {
-				hlp.game.createGame('contributor', request, function(g) {
+				hlp.game.createGame('moderator', request, function(g) {
 					game = g;
 					done(null, game);
 				});
@@ -90,7 +90,7 @@ describe('The VPDB `Rating` API', function() {
 		});
 
 		it('should fail when trying to vote twice', function(done) {
-			hlp.game.createGame('contributor', request, function(game) {
+			hlp.game.createGame('moderator', request, function(game) {
 				request.post('/api/v1/games/' + game.id + '/rating').send({ value: 1 }).as('member').end(function(err, res) {
 					hlp.expectStatus(err, res, 201);
 					request.post('/api/v1/games/' + game.id + '/rating')
@@ -103,7 +103,7 @@ describe('The VPDB `Rating` API', function() {
 		});
 
 		it('should succeed when providing a correct rating', function(done) {
-			hlp.game.createGame('contributor', request, function(game) {
+			hlp.game.createGame('moderator', request, function(game) {
 				var rating = 7;
 				request.post('/api/v1/games/' + game.id + '/rating')
 					.send({ value: rating })
@@ -128,7 +128,7 @@ describe('The VPDB `Rating` API', function() {
 		});
 
 		it('should calculate the average correctly', function(done) {
-			hlp.game.createGame('contributor', request, function(game) {
+			hlp.game.createGame('moderator', request, function(game) {
 				var ratings = [ 1, 3, 4, 10 ];
 				var avg = [ 1, 2, 2.667, 4.5 ];
 				async.timesSeries(ratings.length, function(i, next) {
@@ -151,7 +151,7 @@ describe('The VPDB `Rating` API', function() {
 		before(function(done) {
 			hlp.setupUsers(request, {
 				member: { roles: [ 'member' ] },
-				contributor: { roles: [ 'contributor' ] }
+				moderator: { roles: [ 'moderator' ] }
 			}, done);
 		});
 
@@ -160,7 +160,7 @@ describe('The VPDB `Rating` API', function() {
 		});
 
 		it('should give an indication if no vote has been cast', function(done) {
-			hlp.game.createGame('contributor', request, function(game) {
+			hlp.game.createGame('moderator', request, function(game) {
 				request.get('/api/v1/games/' + game.id + '/rating').as('member').saveResponse({ path: 'games/view-rating'}).end(function(err, res) {
 					hlp.expectStatus(err, res, 404, 'rating of <' + hlp.getUser('member').email);
 					hlp.expectStatus(err, res, 404, 'for "' + game.title);
@@ -170,7 +170,7 @@ describe('The VPDB `Rating` API', function() {
 		});
 
 		it('should be able to retrieve the vote', function(done) {
-			hlp.game.createGame('contributor', request, function(game) {
+			hlp.game.createGame('moderator', request, function(game) {
 				var rating = 8;
 				request.post('/api/v1/games/' + game.id + '/rating')
 					.send({ value: rating })
@@ -193,7 +193,7 @@ describe('The VPDB `Rating` API', function() {
 		before(function(done) {
 			hlp.setupUsers(request, {
 				member: { roles: [ 'member' ] },
-				contributor: { roles: [ 'contributor' ] }
+				moderator: { roles: [ 'moderator' ] }
 			}, done);
 		});
 
@@ -202,13 +202,13 @@ describe('The VPDB `Rating` API', function() {
 		});
 
 		it('should fail when no previous vote has been cast', function(done) {
-			hlp.game.createGame('contributor', request, function(game) {
+			hlp.game.createGame('moderator', request, function(game) {
 				request.put('/api/v1/games/' + game.id + '/rating').send({ value: 5 }).as('member').end(hlp.status(404, done));
 			});
 		});
 
 		it('should fail when providing an invalid value', function(done) {
-			hlp.game.createGame('contributor', request, function(game) {
+			hlp.game.createGame('moderator', request, function(game) {
 				request.post('/api/v1/games/' + game.id + '/rating')
 					.send({ value: 9 })
 					.as('member')
@@ -226,7 +226,7 @@ describe('The VPDB `Rating` API', function() {
 		});
 
 		it('should succeed when providing correct values', function(done) {
-			hlp.game.createGame('contributor', request, function(game) {
+			hlp.game.createGame('moderator', request, function(game) {
 				request.post('/api/v1/games/' + game.id + '/rating')
 					.send({ value: 9 })
 					.as('member')
@@ -259,7 +259,7 @@ describe('The VPDB `Rating` API', function() {
 		before(function(done) {
 			hlp.setupUsers(request, {
 				member: { roles: [ 'member' ] },
-				contributor: { roles: [ 'contributor' ] }
+				moderator: { roles: [ 'moderator' ] }
 			}, done);
 		});
 
@@ -269,7 +269,7 @@ describe('The VPDB `Rating` API', function() {
 
 		it('should succeed when providing a correct rating', function(done) {
 
-			hlp.release.createRelease('contributor', request, function(release) {
+			hlp.release.createRelease('moderator', request, function(release) {
 				var rating = 5;
 				request.post('/api/v1/releases/' + release.id + '/rating')
 					.send({ value: rating })
@@ -299,7 +299,7 @@ describe('The VPDB `Rating` API', function() {
 		before(function(done) {
 			hlp.setupUsers(request, {
 				member: { roles: [ 'member' ] },
-				contributor: { roles: [ 'contributor' ] }
+				moderator: { roles: [ 'moderator' ] }
 			}, done);
 		});
 
@@ -308,7 +308,7 @@ describe('The VPDB `Rating` API', function() {
 		});
 
 		it('should be able to retrieve the vote', function(done) {
-			hlp.release.createRelease('contributor', request, function(release) {
+			hlp.release.createRelease('moderator', request, function(release) {
 				var rating = 2;
 				request.post('/api/v1/releases/' + release.id + '/rating')
 					.send({ value: rating })
@@ -331,7 +331,7 @@ describe('The VPDB `Rating` API', function() {
 		before(function(done) {
 			hlp.setupUsers(request, {
 				member: { roles: [ 'member' ] },
-				contributor: { roles: [ 'contributor' ] }
+				moderator: { roles: [ 'moderator' ] }
 			}, done);
 		});
 
@@ -340,7 +340,7 @@ describe('The VPDB `Rating` API', function() {
 		});
 
 		it('should succeed when providing correct values', function(done) {
-			hlp.release.createRelease('contributor', request, function(release) {
+			hlp.release.createRelease('moderator', request, function(release) {
 				request.post('/api/v1/releases/' + release.id + '/rating')
 					.send({ value: 8 })
 					.as('member')
@@ -377,7 +377,7 @@ describe('The VPDB `Rating` API', function() {
 				member3: { roles: [ 'member' ] },
 				member4: { roles: [ 'member' ] },
 				member5: { roles: [ 'member' ] },
-				contributor: { roles: [ 'contributor' ] }
+				moderator: { roles: [ 'moderator' ] }
 			}, done);
 		});
 
@@ -400,7 +400,7 @@ describe('The VPDB `Rating` API', function() {
 				3.288461538,
 				3.576923077
 			];
-			hlp.game.createGames('contributor', request, 5, function(games) {
+			hlp.game.createGames('moderator', request, 5, function(games) {
 
 				var addVote = function(gameId, rating, user) {
 					return function(next) {

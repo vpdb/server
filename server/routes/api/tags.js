@@ -23,8 +23,8 @@ var settings = require('../../modules/settings');
 
 exports.register = function(app, api) {
 
-	app.get(settings.apiPath('/tags'), api.anon(api.tags.list));
-	app.post(settings.apiPath('/tags'), api.auth(api.tags.create, 'tags', 'add'));
+	app.get(settings.apiPath('/tags'),        api.anon(api.tags.list));
+	app.post(settings.apiPath('/tags'),       api.auth(api.tags.create, 'tags', 'add'));
 	app.delete(settings.apiPath('/tags/:id'), api.auth(api.tags.del, 'tags', 'delete-own'));
 
 };

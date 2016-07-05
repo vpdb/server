@@ -31,6 +31,7 @@ const prettyId = require('./plugins/pretty-id');
 const fileRef = require('./plugins/file-ref');
 const toObj = require('./plugins/to-object');
 const metrics = require('./plugins/metrics');
+const moderate = require('./plugins/moderate');
 
 const author = require('./release/author');
 
@@ -90,6 +91,7 @@ BackglassSchema.plugin(prettyId, { model: 'Backglass', ignore: [ '_created_by' ]
 ] });
 BackglassSchema.plugin(fileRef);
 BackglassSchema.plugin(paginate);
+BackglassSchema.plugin(moderate);
 BackglassSchema.plugin(toObj);
 BackglassSchema.plugin(metrics);
 

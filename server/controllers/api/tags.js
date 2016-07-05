@@ -81,7 +81,7 @@ exports.create = function(req, res) {
  */
 exports.del = function(req, res) {
 
-	var tag, canGloballyDeleteTags;
+	let tag, canGloballyDeleteTags;
 
 	Promise.try(function() {
 
@@ -112,7 +112,7 @@ exports.del = function(req, res) {
 		}
 
 		// only allow deleting own tags
-		if (!canGloballyDeleteTags && !tag._created_by.equals(req.user._id)) {
+		if (!canGloballyDeleteTags && (!tag._created_by || !tag._created_by.equals(req.user._id))) {
 			throw error('Permission denied, must be owner.').status(403).log();
 		}
 		// todo check if there are references

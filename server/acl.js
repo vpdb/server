@@ -24,7 +24,6 @@ const ACL = require('acl');
 const logger = require('winston');
 const mongoose = require('mongoose');
 
-const User = mongoose.model('User');
 const error = require('./modules/error')('acl');
 const config = require('./modules/settings').current;
 
@@ -53,37 +52,47 @@ acl.init = function() {
 		{
 			roles: 'admin',
 			allows: [
-				{ resources: 'users', permissions: ['update', 'list', 'full-details'] },
-				{ resources: 'roles', permissions: 'list' }
+				{ resources: 'roles', permissions: ['list'] },
+				{ resources: 'users', permissions: ['update', 'list', 'full-details'] }
+			]
+		}, {
+			roles: 'moderator',
+			allows: [
+				{ resources: 'backglasses', permissions: ['delete', 'moderate'] },
+				{ resources: 'builds',      permissions: ['delete'] },
+				{ resources: 'files',       permissions: ['blockmatch'] },
+				{ resources: 'games',       permissions: ['delete', 'update', 'add'] },
+				{ resources: 'ipdb',        permissions: ['view'] },
+				{ resources: 'media',       permissions: ['delete'] },
+				{ resources: 'releases',    permissions: ['moderate'] },
+				{ resources: 'roms',        permissions: ['delete', 'moderate'] },
+				{ resources: 'tags',        permissions: ['delete'] }
 			]
 		}, {
 			roles: 'contributor',
 			allows: [
-				{ resources: 'files', permissions: 'blockmatch' },
-				{ resources: 'games', permissions: ['update', 'add', 'delete'] },
-				{ resources: 'ipdb', permissions: 'view' },
-				{ resources: 'tags', permissions: 'delete' },
-				{ resources: 'builds', permissions: 'delete' },
-				{ resources: 'roms', permissions: 'delete' },
-				{ resources: 'backglasses', permissions: 'delete' },
-				{ resources: 'media', permissions: 'delete' }
+				{ resources: 'backglasses', permissions: ['auto-accept'] },
+				{ resources: 'games',       permissions: ['update', 'add'] },
+				{ resources: 'ipdb',        permissions: ['view'] },
+				{ resources: 'releases',    permissions: ['auto-accept'] },
+				{ resources: 'roms',        permissions: ['auto-accept'] }
 			]
 		}, {
 			roles: 'member',
 			allows: [
-				{ resources: 'user', permissions: ['view', 'update'] },                              // profile
-				{ resources: 'users', permissions: ['view', 'search', 'star'] },                     // any other user
-				{ resources: 'files', permissions: ['download', 'upload', 'delete'] },               // delete: only own/inactive files
-				{ resources: 'releases', permissions: ['add', 'delete', 'update', 'rate', 'star'] }, // delete: only own releases and only for a given period
-				{ resources: 'games', permissions: ['rate', 'star'] },
-				{ resources: 'tags', permissions: ['add', 'delete-own'] },
-				{ resources: 'tokens', permissions: ['add', 'list', 'delete', 'update'] },
-				{ resources: 'builds', permissions: ['add', 'delete-own'] },
-				{ resources: 'comments', permissions: ['add'] },
-				{ resources: 'roms', permissions: ['add', 'delete-own'] },
 				{ resources: 'backglasses', permissions: ['add', 'delete-own', 'star'] },
-				{ resources: 'media', permissions: ['add', 'delete-own', 'star'] },
-				{ resources: 'messages', permissions: ['receive'] }
+				{ resources: 'builds',      permissions: ['add', 'delete-own'] },
+				{ resources: 'comments',    permissions: ['add'] },
+				{ resources: 'files',       permissions: ['download', 'upload', 'delete'] },            // delete: only own/inactive files
+				{ resources: 'games',       permissions: ['rate', 'star'] },
+				{ resources: 'media',       permissions: ['add', 'delete-own', 'star'] },
+				{ resources: 'messages',    permissions: ['receive'] },
+				{ resources: 'releases',    permissions: ['add', 'delete', 'update', 'rate', 'star'] }, // delete: only own releases and only for a given period
+				{ resources: 'roms',        permissions: ['add', 'delete-own'] },
+				{ resources: 'tags',        permissions: ['add', 'delete-own'] },
+				{ resources: 'tokens',      permissions: ['add', 'delete', 'update', 'list'] },
+				{ resources: 'user',        permissions: ['view', 'update'] },                          // profile
+				{ resources: 'users',       permissions: ['view', 'search', 'star'] }                   // any other user
 			]
 		}, {
 			roles: 'mocha',
@@ -92,10 +101,11 @@ acl.init = function() {
 			]
 		}
 	])
-	.then(() => acl.addRoleParents('root', [ 'admin', 'contributor' ]))
+	.then(() => acl.addRoleParents('root', [ 'admin', 'contributor', 'moderator' ]))
 	.then(() => acl.addRoleParents('admin', [ 'member' ]))
+	.then(() => acl.addRoleParents('moderator', [ 'member' ]))
 	.then(() => acl.addRoleParents('contributor', [ 'member' ]))
-	.then(() => User.find({}))
+	.then(() => mongoose.model('User').find({}))
 	.then(users => {
 		logger.info('[acl] Applying ACLs to %d users...', users.length);
 		return Promise.each(users, user => {

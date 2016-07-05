@@ -38,7 +38,7 @@ describe('The VPDB `Star` API', function() {
 		before(function(done) {
 			hlp.setupUsers(request, {
 				member: { roles: ['member'] },
-				contributor: { roles: ['contributor'] }
+				moderator: { roles: ['moderator'] }
 			}, done);
 		});
 
@@ -51,7 +51,7 @@ describe('The VPDB `Star` API', function() {
 		});
 
 		it('should succeed when providing correct data', function(done) {
-			hlp.release.createRelease('contributor', request, function(release) {
+			hlp.release.createRelease('moderator', request, function(release) {
 				request.post('/api/v1/releases/' + release.id + '/star')
 					.send({})
 					.as('member')
@@ -84,7 +84,7 @@ describe('The VPDB `Star` API', function() {
 		});
 
 		it('should be able to retrieve starred status', function(done) {
-			hlp.release.createRelease('contributor', request, function(release) {
+			hlp.release.createRelease('moderator', request, function(release) {
 				request.get('/api/v1/releases/' + release.id + '/star')
 					.as('member')
 					.saveResponse({ path: 'releases/view-star'})
@@ -106,7 +106,7 @@ describe('The VPDB `Star` API', function() {
 		});
 
 		it('should be able to unstar a release', function(done) {
-			hlp.release.createRelease('contributor', request, function(release) {
+			hlp.release.createRelease('moderator', request, function(release) {
 				// star
 				request.post('/api/v1/releases/' + release.id + '/star').send({}).as('member').end(function(err, res) {
 					hlp.expectStatus(err, res, 201);
@@ -136,7 +136,7 @@ describe('The VPDB `Star` API', function() {
 		before(function(done) {
 			hlp.setupUsers(request, {
 				member: { roles: ['member'] },
-				contributor: { roles: ['contributor'] }
+				moderator: { roles: ['moderator'] }
 			}, done);
 		});
 
@@ -145,7 +145,7 @@ describe('The VPDB `Star` API', function() {
 		});
 
 		it('should succeed when providing correct data', function(done) {
-			hlp.game.createGame('contributor', request, function(game) {
+			hlp.game.createGame('moderator', request, function(game) {
 				request.post('/api/v1/games/' + game.id + '/star')
 					.send({})
 					.as('member')
@@ -165,7 +165,7 @@ describe('The VPDB `Star` API', function() {
 		});
 
 		it('should be able to retrieve starred status', function(done) {
-			hlp.game.createGame('contributor', request, function(game) {
+			hlp.game.createGame('moderator', request, function(game) {
 				request.get('/api/v1/games/' + game.id + '/star')
 					.as('member')
 					.saveResponse({ path: 'games/view-star'})
@@ -187,7 +187,7 @@ describe('The VPDB `Star` API', function() {
 		});
 
 		it('should be able to unstar a game', function(done) {
-			hlp.game.createGame('contributor', request, function(game) {
+			hlp.game.createGame('moderator', request, function(game) {
 				// star
 				request.post('/api/v1/games/' + game.id + '/star').send({}).as('member').end(function(err, res) {
 					hlp.expectStatus(err, res, 201);
@@ -219,8 +219,7 @@ describe('The VPDB `Star` API', function() {
 				member: { roles: ['member'] },
 				ratedMember1: { roles: ['member'] },
 				ratedMember2: { roles: ['member'] },
-				ratedMember3: { roles: ['member'] },
-				contributor: { roles: ['contributor'] }
+				ratedMember3: { roles: ['member'] }
 			}, done);
 		});
 
@@ -298,7 +297,7 @@ describe('The VPDB `Star` API', function() {
 		before(function(done) {
 			hlp.setupUsers(request, {
 				member: { roles: ['member'] },
-				contributor: { roles: ['contributor'] }
+				moderator: { roles: ['moderator'] }
 			}, done);
 		});
 
@@ -307,7 +306,7 @@ describe('The VPDB `Star` API', function() {
 		});
 
 		it('should succeed and updated counter accordingly', function(done) {
-			hlp.game.createGame('contributor', request, function(game) {
+			hlp.game.createGame('moderator', request, function(game) {
 
 				// star
 				request.post('/api/v1/games/' + game.id + '/star')

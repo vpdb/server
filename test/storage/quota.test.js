@@ -16,7 +16,7 @@ describe('The quota engine of VPDB', function() {
 			member: { roles: [ 'member' ]},
 			ratetest1: { roles: [ 'member' ]},
 			ratetest2: { roles: [ 'member' ]},
-			contributor: { roles: [ 'contributor' ]}
+			moderator: { roles: [ 'moderator' ]}
 		}, done);
 	});
 
@@ -28,7 +28,7 @@ describe('The quota engine of VPDB', function() {
 
 		it('should return the correct rate in the HTTP header', function(done) {
 
-			hlp.release.createRelease('contributor', request, function(release) {
+			hlp.release.createRelease('moderator', request, function(release) {
 				hlp.storageToken(request, 'ratetest1', release.versions[0].files[0].file.url, function(token) {
 					request
 						.get(hlp.urlPath(release.versions[0].files[0].file.url))
@@ -51,7 +51,7 @@ describe('The quota engine of VPDB', function() {
 
 		it('should refuse download if there is no more remaining rate', function(done) {
 
-			hlp.release.createRelease('contributor', request, function(release) {
+			hlp.release.createRelease('moderator', request, function(release) {
 				async.timesSeries(4, function(n, next) {
 					request
 						.get(hlp.urlPath(release.versions[0].files[0].file.url))

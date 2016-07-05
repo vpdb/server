@@ -94,7 +94,8 @@ describe('The VPDB `tag` API', function() {
 		before(function(done) {
 			hlp.setupUsers(request, {
 				member: { roles: [ 'member' ] },
-				contributor: { roles: [ 'contributor' ] }
+				contributor: { roles: [ 'contributor' ] },
+				moderator: { roles: [ 'moderator' ] }
 			}, done);
 		});
 
@@ -126,7 +127,7 @@ describe('The VPDB `tag` API', function() {
 				.send({ name: 'delete-test-2', description: 'Generated during an API test.' })
 				.end(function(err, res) {
 					hlp.expectStatus(err, res, 201);
-					hlp.doomTag('contributor', res.body.id);
+					hlp.doomTag('moderator', res.body.id);
 					request
 						.del('/api/v1/tags/' + res.body.id)
 						.saveResponse({ path: 'tags/del'})
@@ -138,20 +139,33 @@ describe('The VPDB `tag` API', function() {
 				});
 		});
 
-		it('should succeed as contributor and not owner', function(done) {
+		it('should fail as contributor and not owner', function(done) {
 			request
 				.post('/api/v1/tags')
 				.as('member')
 				.send({ name: 'delete-test-3', description: 'Generated during an API test.' })
 				.end(function(err, res) {
 					hlp.expectStatus(err, res, 201);
+					hlp.doomTag('moderator', res.body.id);
 					request
 						.del('/api/v1/tags/' + res.body.id)
 						.as('contributor')
-						.end(function(err, res) {
-							hlp.expectStatus(err, res, 204);
-							done();
-						});
+						.end(hlp.status(403, done));
+				});
+
+		});
+
+		it('should succeed as moderator and not owner', function(done) {
+			request
+				.post('/api/v1/tags')
+				.as('member')
+				.send({ name: 'delete-test-4', description: 'Generated during an API test.' })
+				.end(function(err, res) {
+					hlp.expectStatus(err, res, 201);
+					request
+						.del('/api/v1/tags/' + res.body.id)
+						.as('moderator')
+						.end(hlp.status(204, done));
 				});
 
 		});

@@ -131,7 +131,8 @@ describe('The VPDB `Build` API', function() {
 		before(function(done) {
 			hlp.setupUsers(request, {
 				member: { roles: [ 'member' ] },
-				contributor: { roles: [ 'contributor' ] }
+				contributor: { roles: [ 'contributor' ] },
+				moderator: { roles: [ 'moderator' ] }
 			}, done);
 		});
 
@@ -175,7 +176,7 @@ describe('The VPDB `Build` API', function() {
 				});
 		});
 
-		it('should succeed as contributor and not owner', function(done) {
+		it('should fail as contributor and not owner', function(done) {
 			request
 				.post('/api/v1/builds')
 				.as('member')
@@ -185,10 +186,22 @@ describe('The VPDB `Build` API', function() {
 					request
 						.del('/api/v1/builds/' + res.body.id)
 						.as('contributor')
-						.end(function(err, res) {
-							hlp.expectStatus(err, res, 204);
-							done();
-						});
+						.end(hlp.status(403, done));
+				});
+
+		});
+
+		it('should succeed as moderator and not owner', function(done) {
+			request
+				.post('/api/v1/builds')
+				.as('member')
+				.send({ label: 'delete-test-4', type: 'release', platform: 'vp', major_version: '1' })
+				.end(function(err, res) {
+					hlp.expectStatus(err, res, 201);
+					request
+						.del('/api/v1/builds/' + res.body.id)
+						.as('moderator')
+						.end(hlp.status(204, done));
 				});
 
 		});

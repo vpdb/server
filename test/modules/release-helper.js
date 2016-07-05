@@ -8,7 +8,7 @@ var expect = require('expect.js');
 
 exports.createRelease = function(user, request, done) {
 	var hlp = require('./helper');
-	hlp.game.createGame('contributor', request, function(game) {
+	hlp.game.createGame('moderator', request, function(game) {
 		hlp.file.createVpt(user, request, function(vptfile) {
 			hlp.file.createPlayfield(user, request, 'fs', function(playfield) {
 				request
@@ -43,7 +43,7 @@ exports.createRelease = function(user, request, done) {
 
 exports.createRelease2 = function(user, request, done) {
 	var hlp = require('./helper');
-	hlp.game.createGame('contributor', request, function(game) {
+	hlp.game.createGame('moderator', request, function(game) {
 		hlp.file.createVpts(user, request, 2, function(vptfiles) {
 			hlp.file.createPlayfield(user, request, 'fs', function(playfieldFs) {
 				hlp.file.createPlayfield(user, request, 'ws', function(playfieldWs) {
@@ -86,7 +86,7 @@ exports.createRelease2 = function(user, request, done) {
 
 exports.createRelease3 = function(user, request, done) {
 	var hlp = require('./helper');
-	hlp.game.createGame('contributor', request, function(game) {
+	hlp.game.createGame('moderator', request, function(game) {
 		hlp.file.createVpts(user, request, 3, function(vptfiles) {
 			hlp.file.createPlayfields(user, request, 'fs', 3, function(playfields) {
 				request
@@ -132,7 +132,7 @@ exports.createRelease3 = function(user, request, done) {
 
 exports.createRelease4 = function(user, request, done) {
 	var hlp = require('./helper');
-	hlp.game.createGame('contributor', request, function(game) {
+	hlp.game.createGame('moderator', request, function(game) {
 		hlp.file.createVpts(user, request, 3, function(vptfiles) {
 			hlp.file.createPlayfields(user, request, 'fs', 2, function(playfields) {
 				hlp.file.createPlayfield(user, request, 'ws', function(playfieldWs) {

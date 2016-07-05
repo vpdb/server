@@ -23,9 +23,9 @@ describe('The VPDB `Comment` API', function() {
 			hlp.setupUsers(request, {
 				member: { roles: [ 'member' ] },
 				member2: { roles: [ 'member' ] },
-				contributor: { roles: [ 'contributor' ] }
+				moderator: { roles: [ 'moderator' ] }
 			}, function() {
-				hlp.release.createRelease('contributor', request, function(rls) {
+				hlp.release.createRelease('moderator', request, function(rls) {
 					release = rls;
 					done(null, release);
 				});

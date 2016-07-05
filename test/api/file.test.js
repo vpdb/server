@@ -20,7 +20,7 @@ describe('The VPDB `file` API', function() {
 	before(function(done) {
 		hlp.setupUsers(request, {
 			member: { roles: [ 'member' ]},
-			contributor: { roles: [ 'contributor' ]},
+			moderator: { roles: [ 'moderator' ]},
 			anothermember: { roles: [ 'member' ]}
 		}, done);
 	});
@@ -218,8 +218,8 @@ describe('The VPDB `file` API', function() {
 	describe('when uploading a video', function() {
 
 		it('should return the correct dimensions', function(done) {
-			hlp.file.createMp4('contributor', request, function(video) {
-				hlp.doomFile('contributor', video.id);
+			hlp.file.createMp4('moderator', request, function(video) {
+				hlp.doomFile('moderator', video.id);
 				expect(video.metadata.video.width).to.be(1920);
 				expect(video.metadata.video.height).to.be(1080);
 				done();
@@ -230,8 +230,8 @@ describe('The VPDB `file` API', function() {
 	describe('when uploading a rar file', function() {
 
 		it('should return the file listing of the archive', function(done) {
-			hlp.file.createRar('contributor', request, function(rar) {
-				hlp.doomFile('contributor', rar.id);
+			hlp.file.createRar('moderator', request, function(rar) {
+				hlp.doomFile('moderator', rar.id);
 
 				expect(rar.metadata).to.be.an('object');
 				expect(rar.metadata.entries).to.be.an('array');
@@ -262,8 +262,8 @@ describe('The VPDB `file` API', function() {
 	describe('when uploading a zip file', function() {
 
 		it('should return the file listing of the archive', function(done) {
-			hlp.file.createZip('contributor', request, function(rar) {
-				hlp.doomFile('contributor', rar.id);
+			hlp.file.createZip('moderator', request, function(rar) {
+				hlp.doomFile('moderator', rar.id);
 
 				expect(rar.metadata).to.be.an('object');
 				expect(rar.metadata.entries).to.be.an('array');
@@ -454,7 +454,7 @@ describe('The VPDB `file` API', function() {
 		});
 
 		it('should fail if the file is active', function(done) {
-			var user = 'contributor';
+			var user = 'moderator';
 			hlp.game.createGame(user, request, function(game) {
 				request.del('/api/v1/files/' + game.media.backglass.id).as(user).end(hlp.status(400, 'Cannot remove active file', done));
 			});

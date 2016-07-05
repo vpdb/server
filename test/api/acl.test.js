@@ -572,8 +572,8 @@ describe('The ACLs of the VPDB API', function() {
 			request.post('/api/v1/games').send({}).as('contributor').end(hlp.status(422, done));
 		});
 
-		it('should allow to delete a game', function(done) {
-			request.del('/api/v1/games/mb').as('contributor').end(hlp.status(404, done));
+		it('should deny to deleting a game', function(done) {
+			request.del('/api/v1/games/mb').as('contributor').end(hlp.status(403, done));
 		});
 
 		it('should allow access to ping', function(done) {
@@ -588,12 +588,20 @@ describe('The ACLs of the VPDB API', function() {
 			request.post('/api/v1/tags').send({}).as('contributor').end(hlp.status(422, done));
 		});
 
+		it('should deny to delete a tag', function(done) {
+			request.del('/api/v1/tags/hd').as('contributor').end(hlp.status(403, done));
+		});
+
 		it('should allow to list builds', function(done) {
 			request.get('/api/v1/builds').as('contributor').end(hlp.status(200, done));
 		});
 
 		it('should allow to create builds', function(done) {
 			request.post('/api/v1/builds').as('contributor').send({}).end(hlp.status(422, done));
+		});
+
+		it('should deny to delete a build', function(done) {
+			request.del('/api/v1/builds/10.0.0').as('contributor').end(hlp.status(403, done));
 		});
 
 		it('should allow to create releases', function(done) {

@@ -19,7 +19,7 @@ describe('The VPDB `release` API', function() {
 		before(function(done) {
 			hlp.setupUsers(request, {
 				member: { roles: [ 'member' ] },
-				contributor: { roles: [ 'contributor' ] }
+				moderator: { roles: [ 'moderator' ] }
 			}, done);
 		});
 
@@ -179,7 +179,7 @@ describe('The VPDB `release` API', function() {
 
 		it('should fail when providing the same build twice', function(done) {
 			var user = 'member';
-			hlp.game.createGame('contributor', request, function(game) {
+			hlp.game.createGame('moderator', request, function(game) {
 				hlp.file.createVpt(user, request, function(vptfile) {
 					hlp.file.createPlayfield(user, request, 'fs', function(playfield) {
 						request
@@ -216,7 +216,7 @@ describe('The VPDB `release` API', function() {
 
 		it('should succeed when providing minimal data', function(done) {
 			var user = 'member';
-			hlp.game.createGame('contributor', request, function(game) {
+			hlp.game.createGame('moderator', request, function(game) {
 				hlp.file.createVpt(user, request, function(vptfile) {
 					hlp.file.createPlayfield(user, request, 'fs', function(playfield) {
 						request
@@ -250,7 +250,7 @@ describe('The VPDB `release` API', function() {
 
 		it('should succeed when providing full data', function(done) {
 			var user = 'member';
-			hlp.game.createGame('contributor', request, function(game) {
+			hlp.game.createGame('moderator', request, function(game) {
 				hlp.file.createVpts(user, request, 2, function(vptfiles) {
 					hlp.file.createPlayfields(user, request, 'fs', 2, function(playfieldImages) {
 						hlp.file.createMp4(user, request, function(playfieldVideo) {
@@ -311,7 +311,7 @@ describe('The VPDB `release` API', function() {
 			var date1 = '2015-01-01T00:00:00.000Z';
 			var date2 = '2015-08-01T00:00:00.000Z';
 
-			hlp.game.createGame('contributor', request, function(game) {
+			hlp.game.createGame('moderator', request, function(game) {
 				hlp.file.createVpts(user, request, 2, function(vptfiles) {
 					hlp.file.createPlayfields(user, request, 'fs', 2, function(playfieldImages) {
 						request
@@ -363,7 +363,7 @@ describe('The VPDB `release` API', function() {
 
 		it('should succeed when rotating a ws playfield to a fs file', function(done) {
 			var user = 'member';
-			hlp.game.createGame('contributor', request, function(game) {
+			hlp.game.createGame('moderator', request, function(game) {
 				hlp.file.createVpt(user, request, function(vptfile) {
 					hlp.file.createPlayfield(user, request, 'fs', 'playfield', function(playfield) {
 						request
@@ -401,7 +401,7 @@ describe('The VPDB `release` API', function() {
 
 		it('should fail when rotating playfield not belonging to the release', function(done) {
 			var user = 'member';
-			hlp.game.createGame('contributor', request, function(game) {
+			hlp.game.createGame('moderator', request, function(game) {
 				hlp.file.createVpt(user, request, function(vptfile) {
 					hlp.file.createPlayfield(user, request, 'fs', 'playfield', function(playfield) {
 						hlp.file.createPlayfield(user, request, 'fs', 'playfield', function(playfieldOther) {
@@ -444,7 +444,7 @@ describe('The VPDB `release` API', function() {
 			hlp.setupUsers(request, {
 				member: { roles: [ 'member' ] },
 				othermember: { roles: [ 'member' ] },
-				contributor: { roles: [ 'contributor' ] }
+				moderator: { roles: [ 'moderator' ] }
 			}, done);
 		});
 
@@ -666,7 +666,7 @@ describe('The VPDB `release` API', function() {
 			hlp.setupUsers(request, {
 				member: { roles: [ 'member' ] },
 				member2: { roles: [ 'member' ] },
-				contributor: { roles: [ 'contributor' ] }
+				moderator: { roles: [ 'moderator' ] }
 			}, done);
 		});
 
@@ -779,7 +779,7 @@ describe('The VPDB `release` API', function() {
 			hlp.setupUsers(request, {
 				member: { roles: [ 'member' ] },
 				member2: { roles: [ 'member' ] },
-				contributor: { roles: [ 'contributor' ] }
+				moderator: { roles: [ 'moderator' ] }
 			}, done);
 		});
 
@@ -937,7 +937,7 @@ describe('The VPDB `release` API', function() {
 		before(function(done) {
 			hlp.setupUsers(request, {
 				member: { roles: [ 'member' ] },
-				contributor: { roles: [ 'contributor' ] }
+				moderator: { roles: [ 'moderator' ] }
 			}, done);
 		});
 
@@ -1014,7 +1014,7 @@ describe('The VPDB `release` API', function() {
 		before(function(done) {
 			hlp.setupUsers(request, {
 				countertest: { roles: [ 'member' ] },
-				contributor: { roles: [ 'contributor' ] }
+				moderator: { roles: [ 'moderator' ] }
 			}, done);
 		});
 
@@ -1024,7 +1024,7 @@ describe('The VPDB `release` API', function() {
 
 		it('should update all the necessary download counters.', function(done) {
 
-			hlp.release.createRelease('contributor', request, function(release) {
+			hlp.release.createRelease('moderator', request, function(release) {
 				var url = '/storage/v1/releases/' + release.id;
 				var body = {
 					files: [ release.versions[0].files[0].file.id ],
@@ -1085,9 +1085,9 @@ describe('The VPDB `release` API', function() {
 		before(function(done) {
 			hlp.setupUsers(request, {
 				member: { roles: [ 'member' ] },
-				contributor: { roles: [ 'contributor' ] }
+				moderator: { roles: [ 'moderator', 'contributor' ] }
 			}, function() {
-				hlp.release.createReleases('member', request, numReleases, function(r) {
+				hlp.release.createReleases('moderator', request, numReleases, function(r) {
 					releases = r;
 					done(null, r);
 				});

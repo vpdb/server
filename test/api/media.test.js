@@ -40,7 +40,7 @@ describe('The VPDB `Media` API', function() {
 		before(function(done) {
 			hlp.setupUsers(request, {
 				member: { roles: ['member'] },
-				contributor: { roles: ['contributor'] }
+				moderator: { roles: ['moderator'] }
 			}, function() {
 				hlp.file.createBackglass('member', request, function(bg) {
 					hlp.doomFile('member', bg.id);
@@ -195,7 +195,7 @@ describe('The VPDB `Media` API', function() {
 		it('should succeed for minimal data', function(done) {
 			const user = 'member';
 			hlp.file.createBackglass(user, request, function(bg) {
-				hlp.game.createGame('contributor', request, function(game) {
+				hlp.game.createGame('moderator', request, function(game) {
 					request
 						.post('/api/v1/media')
 						.as(user)
@@ -221,7 +221,7 @@ describe('The VPDB `Media` API', function() {
 			const description = 'This is a very super high resolution backglass that I have stitched together from four different sources.';
 			const acknowledgements = '- Thanks to @mom for all her patience';
 			hlp.file.createBackglass(user, request, function(bg) {
-				hlp.game.createGame('contributor', request, function(game) {
+				hlp.game.createGame('moderator', request, function(game) {
 					request
 						.post('/api/v1/media')
 						.as(user)
@@ -255,7 +255,7 @@ describe('The VPDB `Media` API', function() {
 		before(function(done) {
 			hlp.setupUsers(request, {
 				member: { roles: ['member'] },
-				contributor: { roles: ['contributor'] }
+				moderator: { roles: ['moderator'] }
 			}, function() {
 				hlp.file.createBackglass('member', request, function(bg) {
 					hlp.doomFile('member', bg.id);
@@ -272,7 +272,7 @@ describe('The VPDB `Media` API', function() {
 		it('should list media under the game', function(done) {
 			const user = 'member';
 			hlp.file.createBackglass(user, request, function(bg) {
-				hlp.game.createGame('contributor', request, function(game) {
+				hlp.game.createGame('moderator', request, function(game) {
 					request
 						.post('/api/v1/media')
 						.as(user)
@@ -306,9 +306,10 @@ describe('The VPDB `Media` API', function() {
 			hlp.setupUsers(request, {
 				member: { roles: [ 'member' ] },
 				member2: { roles: [ 'member' ] },
+				moderator: { roles: [ 'moderator' ] },
 				contributor: { roles: [ 'contributor' ] }
 			}, function() {
-				hlp.game.createGame('contributor', request, function(g) {
+				hlp.game.createGame('moderator', request, function(g) {
 					game = g;
 					done(null, g);
 				});
@@ -320,10 +321,10 @@ describe('The VPDB `Media` API', function() {
 		});
 
 		it('should fail if the medium does not exist', function(done) {
-			request.del('/api/v1/media/1234').as('contributor').end(hlp.status(404, 'no such medium', done));
+			request.del('/api/v1/media/1234').as('moderator').end(hlp.status(404, 'no such medium', done));
 		});
 
-		it('should fail if the medium is owned by someone else', function(done) {
+		it('should fail if the medium is owned by another member', function(done) {
 			const user = 'member';
 			hlp.file.createBackglass(user, request, function(bg) {
 				request
@@ -338,6 +339,25 @@ describe('The VPDB `Media` API', function() {
 						hlp.expectStatus(err, res, 201);
 						hlp.doomMedium(user, res.body.id);
 						request.del('/api/v1/media/' + res.body.id).as('member2').saveResponse('media/del').end(hlp.status(403, 'must be owner', done));
+					});
+			});
+		});
+
+		it('should fail if the medium is owned by another contributor', function(done) {
+			const user = 'member';
+			hlp.file.createBackglass(user, request, function(bg) {
+				request
+					.post('/api/v1/media')
+					.as(user)
+					.send({
+						_ref: { game: game.id },
+						_file: bg.id,
+						category: 'backglass_image'
+					})
+					.end(function(err, res) {
+						hlp.expectStatus(err, res, 201);
+						hlp.doomMedium(user, res.body.id);
+						request.del('/api/v1/media/' + res.body.id).as('contributor').end(hlp.status(403, 'must be owner', done));
 					});
 			});
 		});
@@ -373,7 +393,7 @@ describe('The VPDB `Media` API', function() {
 					})
 					.end(function(err, res) {
 						hlp.expectStatus(err, res, 201);
-						request.del('/api/v1/media/' + res.body.id).as('contributor').end(hlp.status(204, done));
+						request.del('/api/v1/media/' + res.body.id).as('moderator').end(hlp.status(204, done));
 					});
 			});
 		});
@@ -390,9 +410,9 @@ describe('When dealing with pre-processing media', function() {
 		before(function(done) {
 			hlp.setupUsers(request, {
 				member: { roles: [ 'member' ] },
-				contributor: { roles: [ 'contributor' ] }
+				moderator: { roles: [ 'moderator' ] }
 			}, function() {
-				hlp.game.createGame('contributor', request, function(g) {
+				hlp.game.createGame('moderator', request, function(g) {
 					game = g;
 					hlp.file.createVpt('member', request, function(v) {
 						vptfile = v;

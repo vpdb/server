@@ -94,33 +94,47 @@ exports.create = function(req, res) {
  */
 exports.del = function(req, res) {
 
-	var canDelete, build;
+	let build, canGloballyDeleteBuilds;
+
 	Promise.try(function() {
+
 		return acl.isAllowed(req.user.id, 'builds', 'delete');
 
-	}).then(isAllowed => {
-		canDelete = isAllowed;
+	}).then(canDelete => {
+
+		canGloballyDeleteBuilds = canDelete;
+		if (!canGloballyDeleteBuilds) {
+			return acl.isAllowed(req.user.id, 'builds', 'delete-own');
+		} else {
+			return true;
+		}
+
+	}).then(canDeleteOwn => {
+
+		if (!canDeleteOwn) {
+			throw error('You cannot delete builds.').status(401).log();
+		}
 		return Build.findOne({ id: req.params.id });
 
 	}).then(b => {
 		build = b;
 
-		// fail on 404
+		// build must exist
 		if (!build) {
-			throw error('No such builds with ID "%s".', req.params.id).status(404);
+			throw error('No such build with ID "%s".', req.params.id).status(404);
 		}
 
-		// fail when not owner
-		if (!canDelete && !build._created_by.equals(req.user._id)) {
-			throw error('Permission denied, must be owner.').status(403);
+		// only allow deleting own builds
+		if (!canGloballyDeleteBuilds && (!build._created_by || !build._created_by.equals(req.user._id))) {
+			throw error('Permission denied, must be owner.').status(403).log();
 		}
-
-		// all ok, delete
+		// todo check if there are references
 		return build.remove();
 
 	}).then(function() {
+
 		logger.info('[api|build:delete] Build "%s" (%s) successfully deleted.', build.label, build.id);
 		api.success(res, null, 204);
 
-	}).catch(api.handleError(res, error, 'Error deleting build'));
+	}).catch(api.handleError(res, error, 'Error deleting tag'));
 };

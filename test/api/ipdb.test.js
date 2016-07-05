@@ -15,7 +15,7 @@ describe('The VPDB `IPDB` API', function() {
 
 		before(function (done) {
 			hlp.setupUsers(request, {
-				contributor: { roles: [ 'contributor' ] }
+				moderator: { roles: [ 'moderator' ] }
 			}, done);
 		});
 
@@ -25,7 +25,7 @@ describe('The VPDB `IPDB` API', function() {
 
 		it('should successfully fetch the data', function(done) {
 
-			var user = 'contributor';
+			var user = 'moderator';
 			hlp.file.createBackglass(user, request, function(backglass) {
 				hlp.doomFile(user, backglass.id);
 				request

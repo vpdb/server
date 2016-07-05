@@ -29,6 +29,7 @@ var uniqueValidator = require('mongoose-unique-validator');
 var prettyId = require('./plugins/pretty-id');
 var fileRef = require('./plugins/file-ref');
 var toObj = require('./plugins/to-object');
+var moderate = require('./plugins/moderate');
 
 var Schema = mongoose.Schema;
 
@@ -71,6 +72,7 @@ RomSchema.plugin(prettyId, { model: 'Rom', ignore: [ '_created_by', '_game' ], v
 ] });
 RomSchema.plugin(fileRef);
 RomSchema.plugin(paginate);
+RomSchema.plugin(moderate);
 RomSchema.plugin(toObj);
 
 //-----------------------------------------------------------------------------

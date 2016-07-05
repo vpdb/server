@@ -19,7 +19,7 @@ describe('The VPDB `game` API', function() {
 		before(function(done) {
 			hlp.setupUsers(request, {
 				member: { roles: [ 'member' ] },
-				contributor: { roles: [ 'contributor' ] }
+				moderator: { roles: [ 'moderator' ] }
 			}, done);
 		});
 
@@ -29,7 +29,7 @@ describe('The VPDB `game` API', function() {
 
 		it('should succeed if provided data is correct', function(done) {
 
-			var user = 'contributor';
+			var user = 'moderator';
 			hlp.file.createBackglass(user, request, function(backglass) {
 				request
 					.post('/api/v1/games')
@@ -47,7 +47,7 @@ describe('The VPDB `game` API', function() {
 		it('should fail if the ipdb number is already in the database', function(done) {
 
 			var game;
-			var user = 'contributor';
+			var user = 'moderator';
 			async.series([
 
 				// 1. post game 1
@@ -88,7 +88,7 @@ describe('The VPDB `game` API', function() {
 
 		it('should fail if the game id is already in the database', function(done) {
 			var game;
-			var user = 'contributor';
+			var user = 'moderator';
 			async.series([
 
 				// 1. post game 1
@@ -141,11 +141,11 @@ describe('The VPDB `game` API', function() {
 					});
 				},
 
-				// 2. post game as "contributor"
+				// 2. post game as "moderator"
 				function(next) {
 					request
 						.post('/api/v1/games')
-						.as('contributor')
+						.as('moderator')
 						.send(hlp.game.getGame({ _media: { backglass: backglassId }}))
 						.end(function(err, res) {
 							hlp.expectStatus(err, res, 422);
@@ -164,7 +164,7 @@ describe('The VPDB `game` API', function() {
 
 				// 1. upload game
 				function(next) {
-					hlp.game.createGame('contributor', request, function(game) {
+					hlp.game.createGame('moderator', request, function(game) {
 						backglassId = game.media.backglass.id;
 						next();
 					});
@@ -174,7 +174,7 @@ describe('The VPDB `game` API', function() {
 				function(next) {
 					request
 						.post('/api/v1/games')
-						.as('contributor')
+						.as('moderator')
 						.send(hlp.game.getGame({ _media: { backglass: backglassId }}))
 						.end(function(err, res) {
 							hlp.expectStatus(err, res, 422);
@@ -192,13 +192,13 @@ describe('The VPDB `game` API', function() {
 
 	describe('when listing games', function() {
 
-		var user = 'contributor';
+		var user = 'moderator';
 		var count = 10;
 		var games = [];
 
 		before(function(done) {
 			hlp.setupUsers(request, {
-				contributor: { roles: [ user ]}
+				moderator: { roles: [ user ]}
 			}, function() {
 				hlp.game.createGames(user, request, count, function(_games) {
 					games = _games;
@@ -300,12 +300,12 @@ describe('The VPDB `game` API', function() {
 
 	describe('when retrieving a game', function() {
 
-		var user = 'contributor';
+		var user = 'moderator';
 		var game;
 
 		before(function(done) {
 			hlp.setupUsers(request, {
-				contributor: { roles: [ user ]}
+				moderator: { roles: [ user ]}
 			}, function() {
 				hlp.game.createGame(user, request, function(_game) {
 					game = _game;
@@ -342,10 +342,10 @@ describe('The VPDB `game` API', function() {
 
 	describe('when deleting a game', function() {
 
-		var user = 'contributor';
+		var user = 'moderator';
 		before(function(done) {
 			hlp.setupUsers(request, {
-				contributor: { roles: [ user ]}
+				moderator: { roles: [ user ]}
 			}, done);
 		});
 

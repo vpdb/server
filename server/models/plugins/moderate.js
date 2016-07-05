@@ -105,15 +105,7 @@ module.exports = function(schema) {
 	 * @returns {*}
 	 */
 	schema.statics.acceptedQuery = function(query) {
-		const q = { 'moderation.is_accepted': true };
-		if (_.isArray(query)) {
-			query.push(q);
-			return query;
-		}
-		if (_.isObject(query)) {
-			return  _.assign(query, q);
-		}
-		return q;
+		return addToQuery({ 'moderation.is_accepted': true }, query);
 	};
 
 	/**
@@ -127,17 +119,22 @@ module.exports = function(schema) {
 	 */
 	schema.statics.handleModeration = function(user, requestBody, entity, error) {
 		const actions = ['refuse', 'accept', 'moderate'];
+		if (!requestBody.action) {
+			throw error('Validations failed.').validationError('action', 'An action must be provided. Valid actions are: [ "' + actions.join('", "') + '" ].');
+		}
 		if (!_.includes(actions, requestBody.action)) {
-			throw error('Invalid action "%s". Valid actions are: [ "%s" ].', requestBody.action, actions.join('", "')).status(400);
+			throw error('Validations failed.').validationError('action', 'Invalid action "' + requestBody.action + '". Valid actions are: [ "' + actions.join('", "') + '" ].');
 		}
 		switch (requestBody.action) {
 			case 'refuse':
 				if (!requestBody.message) {
-					throw error('Validations failed.').validationError('message', 'A message must be provided.', requestBody.message).status(400);
+					throw error('Validations failed.').validationError('message', 'A message must be provided.', requestBody.message);
 				}
 				return entity.refuse(user, requestBody.message);
+
 			case 'accept':
 				return entity.accept(user);
+
 			case 'moderate':
 				return entity.moderate();
 		}
@@ -196,3 +193,21 @@ module.exports = function(schema) {
 		});
 	};
 };
+
+/**
+ * Returns the query used for listing only accepted entities.
+ *
+ * @param {object} toAdd Query to add
+ * @param {array|object} [query] Original query
+ * @returns {*}
+ */
+function addToQuery(toAdd, query) {
+	if (_.isArray(query)) {
+		query.push(toAdd);
+		return query;
+	}
+	if (_.isObject(query)) {
+		return  _.assign(query, toAdd);
+	}
+	return toAdd;
+}

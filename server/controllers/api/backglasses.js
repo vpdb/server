@@ -179,3 +179,28 @@ exports.del = function(req, res) {
 
 	}).catch(api.handleError(res, error, 'Error deleting backglass'));
 };
+
+/**
+ * Moderates a backglass.
+ *
+ * @param {Request} req
+ * @param {Response} res
+ */
+exports.moderate = function(req, res) {
+
+	let backglass;
+	Promise.try(() => {
+		return Backglass.findOne({ id: req.params.id }).exec();
+
+	}).then(bg => {
+		backglass = bg;
+		if (!backglass) {
+			throw error('No such backglass with ID "%s".', req.params.id).status(404);
+		}
+		return Backglass.handleModeration(req, error, backglass);
+
+	}).then(() => {
+		api.success(res, backglass.toSimple(), 200);
+
+	}).catch(api.handleError(res, error, 'Error moderating backglass'));
+};

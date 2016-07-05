@@ -83,11 +83,4 @@ post:
           role/member:
             example: !include http/del-res-204.json
 
-  /moderate:
-    post:
-      securedBy: [ jwt: { scopes: [ MEMBER, MODERATOR ] } ]
-      description: |
-          Moderate a ROM.
-
-          Using this resource, moderators can either `accept` the ROM, `refuse` it
-          or put it back to `moderate`.
+  /moderate: !include ../_includes/moderated_entity.raml

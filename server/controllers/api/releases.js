@@ -437,7 +437,10 @@ exports.list = function(req, res) {
 		}
 
 		// moderation
-		query.push(Release.approvedQuery());
+		return Release.handleListQuery(req, error, query);
+
+	}).then(q => {
+		query = q;
 
 		// filter by tag
 		if (req.query.tags) {
@@ -684,6 +687,32 @@ exports.del = function(req, res) {
 
 	}).catch(api.handleError(res, error, 'Error deleting release'));
 };
+
+/**
+ * Moderates a release.
+ *
+ * @param {Request} req
+ * @param {Response} res
+ */
+exports.moderate = function(req, res) {
+
+	let release;
+	Promise.try(() => {
+		return Release.findOne({ id: req.params.id }).exec();
+
+	}).then(r => {
+		release = r;
+		if (!release) {
+			throw error('No such release with ID "%s".', req.params.id).status(404);
+		}
+		return Release.handleModeration(req, error, release);
+
+	}).then(() => {
+		api.success(res, release.toSimple(), 200);
+
+	}).catch(api.handleError(res, error, 'Error moderating release'));
+};
+
 
 /**
  * Retrieves release details.

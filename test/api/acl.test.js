@@ -460,6 +460,10 @@ describe('The ACLs of the VPDB API', function() {
 			request.get('/api/v1/releases/123/star').as('member').end(hlp.status(404, done));
 		});
 
+		it('should deny access to release moderation', function(done) {
+			request.post('/api/v1/releases/1234/moderate').as('member').send({}).end(hlp.status(403, done));
+		});
+
 		it('should deny access to user starring', function(done) {
 			request.post('/api/v1/users/123/star').as('member').send({}).end(hlp.status(404, done));
 		});
@@ -502,6 +506,10 @@ describe('The ACLs of the VPDB API', function() {
 
 		it('should allow access to creating backglasses', function(done) {
 			request.post('/api/v1/backglasses').as('member').send({}).end(hlp.status(422, done));
+		});
+
+		it('should deny access to backglass moderation', function(done) {
+			request.post('/api/v1/backglasses/1234/moderate').as('member').send({}).end(hlp.status(403, done));
 		});
 
 		it('should allow access to creating backglasses under games', function(done) {
@@ -637,6 +645,14 @@ describe('The ACLs of the VPDB API', function() {
 			request.post('/api/v1/roms/1234/moderate').as('contributor').send({}).end(hlp.status(403, done));
 		});
 
+		it('should deny access to release moderation', function(done) {
+			request.post('/api/v1/releases/1234/moderate').as('contributor').send({}).end(hlp.status(403, done));
+		});
+
+		it('should deny access to backglass moderation', function(done) {
+			request.post('/api/v1/backglasses/1234/moderate').as('contributor').send({}).end(hlp.status(403, done));
+		});
+
 	});
 
 	describe('for members with the `moderator` role', function() {
@@ -756,6 +772,14 @@ describe('The ACLs of the VPDB API', function() {
 
 		it('should allow access to rom moderation', function(done) {
 			request.post('/api/v1/roms/1234/moderate').as('moderator').send({}).end(hlp.status(404, done));
+		});
+
+		it('should allow access to release moderation', function(done) {
+			request.post('/api/v1/releases/1234/moderate').as('moderator').send({}).end(hlp.status(404, done));
+		});
+
+		it('should allow access to backglass moderation', function(done) {
+			request.post('/api/v1/backglasses/1234/moderate').as('moderator').send({}).end(hlp.status(404, done));
 		});
 	});
 

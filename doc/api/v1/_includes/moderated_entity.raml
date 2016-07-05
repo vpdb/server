@@ -1,0 +1,14 @@
+post:
+  securedBy: [ jwt: { scopes: [ MODERATOR ] } ]
+  description: |
+    Moderate an entity.
+
+    Moderation means that entities aren't publicly visible on the site when
+    created but only after a moderator approved. This resource allows to
+    either refuse, approve or set the entity back to moderated.
+
+    Note that entities created by a contributor are automatically approved.
+
+  body:
+    role/moderator:
+      schema: moderate-entity

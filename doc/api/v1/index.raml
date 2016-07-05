@@ -19,6 +19,7 @@ schemas:
   - user-register: !include _schemas/user-register.json
   - user-update-profile: !include _schemas/user-update-profile.json
   - user-token-confirmation: !include _schemas/user-token-confirmation.json
+  - moderate-entity: !include _schemas/moderate-entity.json
 
 securitySchemes:
   - jwt: !include _securitySchemes/jwt.raml
@@ -29,6 +30,7 @@ traits:
   - paginated: !include _traits/paginated.raml
   - sorted: !include _traits/sorted.raml
   - eventlog: !include _traits/eventlog.raml
+  - moderated_list: !include _traits/moderated_list.raml
 
 /games: !include games/games.raml
 /releases: !include releases/releases.raml

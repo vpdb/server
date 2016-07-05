@@ -138,7 +138,8 @@ exports.create = function(req, res) {
 exports.list = function(req, res) {
 
 	let pagination = api.pagination(req, 10, 50);
-	let ipdbNumber;
+	let game, ipdbNumber;
+	let query = {};
 
 	Promise.try(() => {
 
@@ -159,9 +160,9 @@ exports.list = function(req, res) {
 			return Game.findOne({ 'ipdb.number': ipdbNumber });
 		}
 
-	}).then(game => {
+	}).then(g => {
+		game = g;
 
-		let q;
 		if (!game) {
 			if (req.params.gameId) {
 				throw error('No such game with ID "%s".', req.params.gameId).status(404);
@@ -170,20 +171,23 @@ exports.list = function(req, res) {
 				return [ [], 0];
 			}
 			if (ipdbNumber) {
-				q = { _ipdb_number: ipdbNumber };
+				query = { _ipdb_number: ipdbNumber };
 			} else {
-				q = {};
+				query = {};
 			}
 
 		} else {
-			q = { _game: game._id };
+			query = { _game: game._id };
 		}
 
-		// add moderation
-		q = Rom.approvedQuery(q);
+		// moderation
+		return Rom.handleListQuery(req, error, query);
+
+	}).then(q => {
+		query = q;
 
 		let sort = game ? { version: -1 } : { '_file.name': 1 };
-		return Rom.paginate(q, {
+		return Rom.paginate(query, {
 			page: pagination.page,
 			limit: pagination.perPage,
 			populate: [ '_file', '_created_by' ],
@@ -251,7 +255,7 @@ exports.moderate = function(req, res) {
 		if (!rom) {
 			throw error('No such ROM with ID "%s".', req.params.id).status(404);
 		}
-		return Rom.handleModeration(req.user, req.body, rom, error);
+		return Rom.handleModeration(req, error, rom);
 
 	}).then(() => {
 		api.success(res, rom.toSimple(), 200);

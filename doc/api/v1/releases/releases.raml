@@ -45,7 +45,7 @@ post:
           example: !include http/create-res-201.json
 get:
   securedBy: [ ]
-  is: [ paginated: { defaultPerPage: 12, maxPerPage: 60 }, sorted ]
+  is: [ paginated: { defaultPerPage: 12, maxPerPage: 60 }, sorted, moderated_list ]
   description: |
     List all releases.
 
@@ -425,3 +425,4 @@ get:
             body:
               role/anon:
                 example: !include ../events/http/list-release-res-200.json
+  /moderate: !include ../_includes/moderated_entity.raml

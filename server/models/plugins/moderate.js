@@ -82,7 +82,7 @@ module.exports = function(schema) {
 			user = u;
 			const resource = modelResourceMap[this.constructor.modelName];
 			if (!resource) {
-				throw new Error('Tried to check moderation permission for unmapped entity "' + this.constructor.modelName + '".')
+				throw new Error('Tried to check moderation permission for unmapped entity "' + this.constructor.modelName + '".');
 			}
 			return acl.isAllowed(user.id, resource, 'auto-approve');
 
@@ -111,42 +111,91 @@ module.exports = function(schema) {
 	/**
 	 * Returns the query used for listing only approved entities.
 	 *
+	 * @param {Request} req Request object
+	 * @param {Err} error Error wrapper for logging
 	 * @param {array|object} [query] Query to append.
-	 * @returns {*}
+	 * @returns {Promise}
 	 */
-	schema.statics.approvedQuery = function(query) {
-		return addToQuery({ 'moderation.is_approved': true }, query);
+	schema.statics.handleListQuery = function(req, error, query) {
+
+		return Promise.try(() => {
+			if (req.query && req.query.moderation) {
+				if (!req.user) {
+					throw error('Must be logged in order to retrieve moderated items.').status(401);
+				}
+				const resource = modelResourceMap[this.modelName];
+				if (!resource) {
+					console.log(this);
+					throw new Error('Tried to check moderation permission for unmapped entity "' + this.modelName + '".');
+				}
+				return acl.isAllowed(req.user.id, resource, 'moderate');
+			}
+			return false;
+
+		}).then(isModerator => {
+
+			if (!req.query || !req.query.moderation) {
+				return addToQuery({ 'moderation.is_approved': true }, query);
+			}
+			if (!isModerator) {
+				throw error('Must be moderator in order to retrieved moderated items.').status(403);
+			}
+
+			const filters = ['refused', 'moderated', 'auto_approved', 'manually_approved', 'all'];
+
+			if (!_.includes(filters, req.query.moderation)) {
+				throw error('Invalid moderation filter. Valid filters are: [ "' + filters.join('", "') + '" ].').status(403);
+			}
+			switch (req.query.moderation) {
+				case 'refused':
+					return addToQuery({ 'moderation.is_refused': true }, query);
+
+				case 'moderated':
+					query = addToQuery({ 'moderation.is_approved': false }, query);
+					return addToQuery({ 'moderation.is_refused': false }, query);
+
+				case 'auto_approved':
+					query = addToQuery({ 'moderation.is_approved': true }, query);
+					return addToQuery({ 'moderation.auto_approved': true }, query);
+
+				case 'manually_approved':
+					query = addToQuery({ 'moderation.is_approved': true }, query);
+					return addToQuery({ 'moderation.auto_approved': false }, query);
+
+				case 'all':
+					return query;
+			}
+		});
 	};
 
 	/**
 	 * Handles moderation requests from the API.
 	 *
-	 * @param {User} user Moderator user doing the request
-	 * @param {object} requestBody Request body
-	 * @param {object} entity Entity with moderation plugin enabled
+	 * @param {Request} req Request object
 	 * @param {Err} error Error wrapper for logging
+	 * @param {object} entity Entity with moderation plugin enabled
 	 * @returns {Promise}
 	 */
-	schema.statics.handleModeration = function(user, requestBody, entity, error) {
+	schema.statics.handleModeration = function(req, error, entity) {
 		const actions = ['refuse', 'approve', 'moderate'];
-		if (!requestBody.action) {
+		if (!req.body.action) {
 			throw error('Validations failed.').validationError('action', 'An action must be provided. Valid actions are: [ "' + actions.join('", "') + '" ].');
 		}
-		if (!_.includes(actions, requestBody.action)) {
-			throw error('Validations failed.').validationError('action', 'Invalid action "' + requestBody.action + '". Valid actions are: [ "' + actions.join('", "') + '" ].');
+		if (!_.includes(actions, req.body.action)) {
+			throw error('Validations failed.').validationError('action', 'Invalid action "' + req.body.action + '". Valid actions are: [ "' + actions.join('", "') + '" ].');
 		}
-		switch (requestBody.action) {
+		switch (req.body.action) {
 			case 'refuse':
-				if (!requestBody.message) {
-					throw error('Validations failed.').validationError('message', 'A message must be provided.', requestBody.message);
+				if (!req.body.message) {
+					throw error('Validations failed.').validationError('message', 'A message must be provided.', req.body.message);
 				}
-				return entity.refuse(user, requestBody.message);
+				return entity.refuse(req.user, req.body.message);
 
 			case 'approve':
-				return entity.approve(user, requestBody.message);
+				return entity.approve(req.user, req.body.message);
 
 			case 'moderate':
-				return entity.moderate(requestBody.message);
+				return entity.moderate(req.user, req.body.message);
 		}
 	};
 
@@ -198,10 +247,11 @@ module.exports = function(schema) {
 
 	/**
 	 * Sets the entity back to moderated
+	 * @param {User|ObjectId} user User who reset to moderated
 	 * @param {string} [message] Optional message
 	 * @returns {Promise}
 	 */
-	schema.methods.moderate = function(message) {
+	schema.methods.moderate = function(user, message) {
 
 		const Model = mongoose.model(this.constructor.modelName);
 		return Model.findByIdAndUpdate(this._id, {

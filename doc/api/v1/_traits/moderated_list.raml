@@ -1,0 +1,17 @@
+queryParameters:
+  moderation:
+    description: |
+      Returns entities that are other than approved.
+
+      You must be logged as moderator, otherwise a `403` is returned.
+
+      One of the following:
+
+        - `refused` - List refused entities
+        - `moderated` - List entities that are not approved or refused yet
+        - `auto_approved` - List entities that were auto-approved
+        - `manually_approved` - List entities that were manually approved
+        - `all` - List all entities
+    required: false
+    type: string
+    example: moderated

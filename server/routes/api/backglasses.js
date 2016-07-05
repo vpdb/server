@@ -30,4 +30,6 @@ exports.register = function(app, api) {
 	app.delete(settings.apiPath('/backglasses/:id/star'), api.auth(api.stars.unstar('backglass'), 'backglasses', 'star'));
 	app.get(settings.apiPath('/backglasses/:id/star'),    api.auth(api.stars.get('backglass'), 'backglasses', 'star'));
 
+	app.post(settings.apiPath('/backglasses/:id/moderate'), api.auth(api.backglasses.moderate, 'backglasses', 'moderate'));
+
 };

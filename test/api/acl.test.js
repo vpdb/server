@@ -15,6 +15,7 @@ describe('The ACLs of the VPDB API', function() {
 			root: { roles: [ 'root' ]},
 			admin: { roles: [ 'admin' ]},
 			admin2: { roles: [ 'admin' ]},
+			moderator: { roles: [ 'moderator' ]},
 			contributor: { roles: [ 'contributor' ]},
 			member: { roles: [ 'member' ], _plan: 'subscribed'}
 		}, done);
@@ -116,6 +117,10 @@ describe('The ACLs of the VPDB API', function() {
 
 		it('should allow access to rom listing', function(done) {
 			request.get('/api/v1/roms').end(hlp.status(200, done));
+		});
+
+		it('should deny access to rom moderation', function(done) {
+			request.post('/api/v1/roms/1234/moderate').send({}).end(hlp.status(401, done));
 		});
 
 		it('should allow access to ping', function(done) {
@@ -375,6 +380,10 @@ describe('The ACLs of the VPDB API', function() {
 			request.get('/api/v1/roms').as('member').end(hlp.status(200, done));
 		});
 
+		it('should deny access to rom moderation', function(done) {
+			request.post('/api/v1/roms/1234/moderate').as('member').send({}).end(hlp.status(403, done));
+		});
+
 		it('should allow access to ping', function(done) {
 			request.get('/api/v1/ping').as('member').end(hlp.status(200, done));
 		});
@@ -624,6 +633,130 @@ describe('The ACLs of the VPDB API', function() {
 			request.get('/api/v1/user/events').as('contributor').end(hlp.status(200, done));
 		});
 
+		it('should deny access to rom moderation', function(done) {
+			request.post('/api/v1/roms/1234/moderate').as('contributor').send({}).end(hlp.status(403, done));
+		});
+
+	});
+
+	describe('for members with the `moderator` role', function() {
+
+		it('should deny access to user list', function(done) {
+			request.get('/api/v1/users').as('moderator').end(hlp.status(403, done));
+		});
+
+		it('should deny access to user search for less than 3 chars', function(done) {
+			request.get('/api/v1/users?q=12').as('moderator').end(hlp.status(403, done));
+		});
+
+		it('should allow access to user search for more than 2 chars', function(done) {
+			request.get('/api/v1/users?q=123').as('moderator').end(hlp.status(200, done));
+		});
+
+		it('should only return minmal user info when searching other users', function(done) {
+			request
+				.get('/api/v1/users?q=' + hlp.getUser('member').name.substr(0, 3))
+				.as('moderator')
+				.end(function(err, res) {
+					hlp.expectStatus(err, res, 200);
+					expect(res.body.length).to.be.above(0);
+					expect(res.body[0]).to.not.have.property('email');
+					expect(res.body[0]).to.have.property('name');
+					done();
+				});
+		});
+
+		it('should allow access to user details', function(done) {
+			request.get('/api/v1/users/' + hlp.getUser('member').id).as('moderator').end(hlp.status(200, done));
+		});
+
+		it('should deny access to user update', function(done) {
+			request.put('/api/v1/users/' + hlp.getUser('member').id).as('moderator').send({}).end(hlp.status(403, done));
+		});
+
+		it('should deny access to user delete', function(done) {
+			request.del('/api/v1/users/' + hlp.getUser('member').id).as('moderator').end(hlp.status(403, done));
+		});
+
+		it('should allow access to user profile', function(done) {
+			request.get('/api/v1/user').as('moderator').end(hlp.status(200, done));
+		});
+
+		it('should deny access to roles list', function(done) {
+			request.get('/api/v1/roles').as('moderator').end(hlp.status(403, done));
+		});
+
+		it('should allow access to ipdb query', function(done) {
+			request.get('/api/v1/ipdb/4441?dryrun=1').as('moderator').end(hlp.status(200, done));
+		});
+
+		it('should allow access to file upload', function(done) {
+			request.post('/storage/v1/files').as('moderator').send({}).end(hlp.status(422, done));
+		});
+
+		it('should allow check for existing games', function(done) {
+			request.head('/api/v1/games/mb').as('moderator').end(hlp.status(404, done));
+		});
+
+		it('should allow to create games', function(done) {
+			request.post('/api/v1/games').send({}).as('moderator').end(hlp.status(422, done));
+		});
+
+		it('should allow deleting a game', function(done) {
+			request.del('/api/v1/games/mb').as('moderator').end(hlp.status(404, done));
+		});
+
+		it('should allow access to ping', function(done) {
+			request.get('/api/v1/ping').as('moderator').end(hlp.status(200, done));
+		});
+
+		it('should allow to list tags', function(done) {
+			request.get('/api/v1/tags').as('moderator').end(hlp.status(200, done));
+		});
+
+		it('should allow to create tags', function(done) {
+			request.post('/api/v1/tags').send({}).as('moderator').end(hlp.status(422, done));
+		});
+
+		it('should allow to delete a tag', function(done) {
+			request.del('/api/v1/tags/123456').as('moderator').end(hlp.status(404, done));
+		});
+
+		it('should allow to list builds', function(done) {
+			request.get('/api/v1/builds').as('moderator').end(hlp.status(200, done));
+		});
+
+		it('should allow to create builds', function(done) {
+			request.post('/api/v1/builds').as('moderator').send({}).end(hlp.status(422, done));
+		});
+
+		it('should allow to delete a build', function(done) {
+			request.del('/api/v1/builds/123456').as('moderator').end(hlp.status(404, done));
+		});
+
+		it('should allow to create releases', function(done) {
+			request.post('/api/v1/releases').as('moderator').send({}).end(hlp.status(422, done));
+		});
+
+		it('should allow to delete releases', function(done) {
+			request.del('/api/v1/releases/123456').as('moderator').end(hlp.status(404, done));
+		});
+
+		it('should allow to list starred events', function(done) {
+			request.get('/api/v1/events?starred').as('moderator').end(hlp.status(200, done));
+		});
+
+		it('should deny access to events by user', function(done) {
+			request.get('/api/v1/users/1234/events').as('moderator').end(hlp.status(401, done));
+		});
+
+		it('should allow access to events by current user', function(done) {
+			request.get('/api/v1/user/events').as('moderator').end(hlp.status(200, done));
+		});
+
+		it('should allow access to rom moderation', function(done) {
+			request.post('/api/v1/roms/1234/moderate').as('moderator').send({}).end(hlp.status(404, done));
+		});
 	});
 
 	describe('for administrators', function() {

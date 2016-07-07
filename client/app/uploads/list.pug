@@ -1,0 +1,45 @@
+include ../template/_mixins
+
+.row.row--fullheight(ng-controller="AdminUploadsCtrl")
+	.col-sm-3.col--menu
+		h1 Filter
+		hr
+		uib-accordion.panel-group--transparent(close-others="false")
+
+			// flavor filters
+			uib-accordion-group.panel--inner(is-open="true")
+				uib-accordion-heading Show:
+				ul.list--checkboxes.list--condensed
+					li: .radio--lg: label
+						input(type="radio", value="refused", ng-model="statusFilter", ng-change="refresh()")
+						span Refused
+					li: .radio--lg: label
+						input(type="radio", value="moderated", ng-model="statusFilter", ng-change="refresh()")
+						span Moderated
+					li: .radio--lg: label
+						input(type="radio", value="auto_approved", ng-model="statusFilter", ng-change="refresh()")
+						span Auto-approved
+					li: .radio--lg: label
+						input(type="radio", value="manually_approved", ng-model="statusFilter", ng-change="refresh()")
+						span Manually Approved
+					li: .radio--lg: label
+						input(type="radio", value="all", ng-model="statusFilter")
+						span All
+
+	.col-sm-9.col--main
+		h1.h--primary Releases
+		hr.hr--primary
+
+		table.table.table-striped.table--selectable
+			colgroup
+				col(width="60px")
+				col
+				col
+			tr(ng-repeat="release in releases", ng-click="edit(release)")
+				td.center
+					+icon('{{ release.icon }}').svg-2x
+				td {{ release.game.title }} <br/><b>{{ release.name }}</b>
+				td
+					span(ng-repeat="author in release.authors") {{ author.user.name }}
+				td(am-time-ago="release.created_at")
+		span(ng-hide="releases.length > 0") No releases found.

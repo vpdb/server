@@ -14,6 +14,10 @@ block navbar
 				span.space-right-2x Admin
 				+icon('angle-down').smaller.shift-up
 			ul.uib-dropdown-menu(role="menu")
+				li(ng-show="auth.hasPermission('*/moderate')")
+					a(ui-sref="adminUploads")
+						+icon('upload').space-right.shift-up
+						span Uploads
 				li
 					a(ui-sref="adminUsers")
 						+icon('users').space-right.shift-up

@@ -118,7 +118,21 @@ angular.module('vpdb.auth', [])
 				var p = resourcePermission.split('/');
 				var resource = p[0];
 				var permission = p[1];
-				return this.permissions && _.contains(this.permissions[resource], permission);
+				if (resource === '*') {
+					if (this.permissions) {
+						for (var key in this.permissions) {
+							if (!this.permissions.hasOwnProperty(key)) {
+								continue;
+							}
+							if (_.contains(this.permissions[key], permission)) {
+								return true;
+							}
+						}
+					}
+					return false;
+				} else {
+					return this.permissions && _.contains(this.permissions[resource], permission);
+				}
 			},
 
 			/**

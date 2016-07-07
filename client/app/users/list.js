@@ -1,4 +1,4 @@
-"use strict"; /* global _*/
+"use strict"; /* global, angular _*/
 
 angular.module('vpdb.users.list', [])
 

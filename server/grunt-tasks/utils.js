@@ -84,9 +84,19 @@ module.exports = function(grunt) {
 				} else {
 					console.log('Successfully dropped db');
 				}
-				mongoose.connection.close(done);
+				mongoose.connection.close(() => {
+					console.log('Flushing Redis...');
+					var redis = require('redis').createClient(grunt.config.get('redis').port, grunt.config.get('redis').host, { no_ready_check: true });
+					redis.select(grunt.config.get('redis').db);
+					redis.on('error', console.error.bind(console));
+					redis.flushall(() => {
+						console.log('Redis flushed!');
+						done();
+					});
+				});
 			});
 		});
+
 	});
 
 };

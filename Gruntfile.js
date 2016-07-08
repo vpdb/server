@@ -154,6 +154,7 @@ module.exports = function(grunt) {
 		},
 
 		mongodb: config.vpdb.db,
+		redis: config.vpdb.redis,
 
 		ngAnnotate: {
 			options: { singleQuotes: true },

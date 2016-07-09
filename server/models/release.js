@@ -129,6 +129,7 @@ ReleaseSchema.path('versions').validate(function() {
 ReleaseSchema.statics.toSimple = function(release, opts) {
 	opts = opts || {};
 	opts.flavor = opts.flavor || {};
+	opts.fields = opts.fields || [];
 
 	// field visibility
 	var gameFields = ['id', 'title', 'manufacturer', 'year'];
@@ -137,6 +138,8 @@ ReleaseSchema.statics.toSimple = function(release, opts) {
 	var fileRefFields = [ 'released_at', 'flavor', 'compatibility', 'file' ];
 	var fileFields = ['id', 'name', 'bytes', 'mime_type'];
 	var compatFields = [ 'id' ];
+
+	releaseFields.push(...opts.fields);
 
 	var rls = _.pick(release.toObj ? release.toObj() : release, releaseFields);
 

@@ -37,10 +37,12 @@ var Tag = require('mongoose').model('Tag');
 var File = require('mongoose').model('File');
 var api = require('./api');
 
+var acl = require('../../acl');
 var error = require('../../modules/error')('api', 'release');
 var flavor = require('../../modules/flavor');
 var pusher = require('../../modules/pusher');
 var storage = require('../../modules/storage');
+
 
 Promise.promisifyAll(gm.prototype);
 
@@ -414,6 +416,7 @@ exports.list = function(req, res) {
 	let starMap = new Map();
 	let titleRegex = null;
 	let transformOpts = {};
+	let fields = req.query.fields ? req.query.fields.split(',') : [];
 
 	Promise.try(() => {
 
@@ -432,6 +435,20 @@ exports.list = function(req, res) {
 		if (transformOpts.thumbPerFile && !transformOpts.thumbFormat) {
 			throw error('You must specify "thumb_format" when requesting thumbs per file.').status(400);
 		}
+
+		if (fields.includes('moderation')) {
+			if (!req.user) {
+				throw error('You must be logged in order to fetch moderation fields.').status(403);
+			}
+			return acl.isAllowed(req.user.id, 'releases', 'moderate').then(isModerator => {
+				if (!isModerator) {
+					throw error('You must be moderator in order to fetch moderation fields.').status(403);
+				}
+				transformOpts.fields = [ 'moderation' ];
+			});
+		}
+
+	}).then(() => {
 
 		// moderation
 		return Release.handleListQuery(req, error, query);

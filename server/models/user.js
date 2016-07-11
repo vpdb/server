@@ -478,12 +478,15 @@ UserSchema.statics.normalizeProviderData = function(provider, data) {
 // TRIGGERS
 //-----------------------------------------------------------------------------
 UserSchema.post('remove', function(obj, done) {
-	// also remove logs and tokens
-	var LogUser = mongoose.model('LogUser');
-	LogUser.remove({ _user: obj._id }, function() {
-		var Token = mongoose.model('Token');
-		Token.remove({ _created_by: obj._id }, done);
-	});
+
+	const acl = require('../acl');
+	const LogUser = mongoose.model('LogUser');
+	const Token = mongoose.model('Token');
+	return Promise
+		.try(() => LogUser.remove({ _user: obj._id }))
+		.then(() => Token.remove({ _created_by: obj._id }))
+		.then(() => acl.removeUserRoles(obj.id, obj.roles))
+		.nodeify(done);
 });
 
 

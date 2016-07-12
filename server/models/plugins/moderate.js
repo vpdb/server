@@ -96,6 +96,9 @@ module.exports = function(schema) {
 					auto_approved: true,
 					history: [ { event: 'approved', created_at: now, _created_by: user } ]
 				};
+				if (this.postApprove) {
+					return this.postApprove();
+				}
 			} else {
 				this.moderation = {
 					is_approved: false,
@@ -241,7 +244,6 @@ module.exports = function(schema) {
 			if (isModerator) {
 				return this;
 			}
-
 			throw error('No such release with ID "%s"', req.params.id).status(404);
 		});
 	};
@@ -266,7 +268,15 @@ module.exports = function(schema) {
 					_created_by: user._id || user
 				}
 			}
-		}).exec();
+		})
+		.exec()
+		.then(() => Model.findOne({ id: this._id }).exec())
+		.then(entity => {
+			if (entity.postApprove) {
+				return entity.postApprove();
+			}
+			return entity;
+		});
 	};
 
 	/**

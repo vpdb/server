@@ -199,6 +199,11 @@ ReleaseSchema.statics.toSimple = function(release, opts) {
 //-----------------------------------------------------------------------------
 // METHODS
 //-----------------------------------------------------------------------------
+ReleaseSchema.methods.postApprove = function() {
+	// update counter
+	return mongoose.model('Game').update({ _id: this._game  }, { $inc: { 'counter.releases': 1 } });
+};
+
 ReleaseSchema.methods.toDetailed = function(opts) {
 	var rls = this.toObj();
 

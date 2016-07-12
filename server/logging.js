@@ -74,6 +74,8 @@ exports.init = function() {
 		logger.info('[logging] Papertrail application log enabled for %s:%d', config.vpdb.logging.papertrail.options.host, config.vpdb.logging.papertrail.options.port);
 	}
 
+	// don't crash my app, asshole!
+	logger.emitErrs = false;
 };
 
 // access log

@@ -64,7 +64,7 @@ exports.upload = function(config) {
 		};
 		var userId = res.body.user.id;
 
-		var root = path.resolve(folder, 'releases');
+		var root = path.resolve(folder);
 		async.eachSeries(fs.readdirSync(path.resolve(root)), function(gameId, nextGame) {
 			var gamePath = path.resolve(root, gameId);
 			if (!fs.lstatSync(gamePath).isDirectory()) {
@@ -235,7 +235,7 @@ function parseJson(data, pwd, config, done) {
 			'Content-Disposition': 'attachment; filename="' + file.filename + '"',
 			'Content-Length': fileContents.length
 		});
-		console.log('Posting %s (%s)...', file.filename, getMimeType(file.filename));
+		console.log('Posting %s (%s) as %s...', file.filename, getMimeType(file.filename), file.filetype);
 		request.post(config.storageUri + '/files').query({ type: file.filetype }).set(headers).type(getMimeType(file.filename)).send(fileContents).end(function(err, res) {
 
 			if (err) {

@@ -53,8 +53,8 @@ exports.upload = function(config) {
 				});
 		},
 		function(callback) {
-			var bgPrefix = path.resolve(folder, 'games', 'backglass');
-			var logoPrefix = path.resolve(folder, 'games', 'logo');
+			var bgPrefix = path.resolve(folder, 'backglass');
+			var logoPrefix = path.resolve(folder, 'logo');
 
 			//console.log('Reading backglasses from %s.', bgPrefix);
 			//console.log('Reading logos from %s.', logoPrefix);
@@ -91,6 +91,9 @@ exports.upload = function(config) {
 					.set(headers)
 					.send(bg)
 					.end(function(err, res) {
+						if (err) {
+							return next(res.body && res.body.error ? new Error(res.body.error) : err);
+						}
 						var bgRef = res.body.id;
 						var logo = fs.readFileSync(path.resolve(logoPrefix, game.logo));
 
@@ -139,6 +142,9 @@ exports.upload = function(config) {
 									.set(headers)
 									.send(data)
 									.end(function(err, res) {
+										if (res.headers['x-token-refresh']) {
+											token = res.headers['x-token-refresh'];
+										}
 										//console.log(res.body);
 										next();
 									});
@@ -243,7 +249,7 @@ exports.data = [
 	{ bg: 'No Good Gofers (Williams 1997).png', logo: 'No Good Gofers (Williams 1997).png', ipdb: 4338 },
 	{ bg: 'Party Zone (Williams 1991).png', logo: 'Party Zone (Bally 1991).png', ipdb: 1764 },
 	{ bg: 'Pinball Champ (Zaccaria 1982).png', logo: 'Pinball Champ (Zaccaria 1982).png', ipdb: 1793 },
-	{ bg: 'Pinball Magic (Capcom 1995).png', logo: '', ipdb: 3596 },
+	{ bg: 'Pinball Magic (Capcom 1995).png', logo: 'Pinball Magic (Capcom 1995).png', ipdb: 3596 },
 	{ bg: 'PinBot (Williams 1986).png', logo: 'PinBot (Williams 1986).png', ipdb: 1796 },
 	{ bg: 'Playboy (Bally 1978).png', logo: 'Playboy (Bally 1978).png', ipdb: 1823, id: 'playboy-bally' },
 	{ bg: 'Playboy (Stern 2002).png', logo: 'Playboy (Stern 2002).png', ipdb: 4506, id: 'playboy-stern' },

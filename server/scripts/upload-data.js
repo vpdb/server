@@ -56,13 +56,13 @@ var production = {
 var config = local;
 
 config.folder = process.env.VPDB_DATA_FOLDER;
-config.romFolder = process.env.VPDB_ROM_FOLDER || process.env.VPDB_DATA_FOLDER || 'E:/Pinball/Visual Pinball-103/VPinMame/roms';
+config.romFolder = process.env.VPDB_ROM_FOLDER || process.env.VPDB_DATA_FOLDER || 'F:/Pinball/Visual Pinball-103/VPinMame/roms';
 
 Promise.try(() => {
 
 //	games.upload(config);
-	return roms.upload(config);
-//	releases.upload(config);
+//	return roms.upload(config);
+	releases.upload(config);
 
 }).then(() => {
 	console.log('All done!');

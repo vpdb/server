@@ -151,7 +151,7 @@ exports.analyzeFile = function(tablePath) {
 			return Promise.mapSeries(_.times(gameData.numSounds, n => 'Sound' + n), streamName => {
 				return readStream(storage, streamName).then(data => {
 					let blocks = parseUntaggedBiff(data);
-					let [parsedData, meta] =  parseSound(blocks, streamName);
+					let [parsedData, meta] = parseSound(blocks, streamName);
 					return analyzeBlock(parsedData || data, 'sound', meta);
 				});
 			});
@@ -412,8 +412,8 @@ function parseSound(blocks, streamName) {
 	return [ blocks[3], {
 		stream: streamName,
 		name: blocks[0].toString('utf8'),
-		path: blocks[1].toString('utf8').replace(/\\/g, '/'),
-		id: blocks[2].toString('utf8')
+		path: blocks[1] ? blocks[1].toString('utf8').replace(/\\/g, '/') : null,
+		id: blocks[2] ? blocks[2].toString('utf8') : null
 	} ];
 }
 

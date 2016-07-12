@@ -4,7 +4,6 @@ const _ = require('lodash');
 const fs = require('fs');
 const path = require('path');
 const axios = require('axios');
-const basename = require('path').basename;
 
 exports.upload = function(config) {
 
@@ -102,6 +101,11 @@ exports.upload = function(config) {
 						let uploadedRom = response.data;
 						console.log('   --- Uploaded ROM with ID "%s" created!', uploadedRom.id);
 						uploadedRoms.push(filename);
+
+						if (response.headers['x-token-refresh']) {
+							apiConfig.headers[authHeader] = 'Bearer ' + response.headers['x-token-refresh'];
+							storageConfig.headers[authHeader] = 'Bearer ' + response.headers['x-token-refresh'];
+						}
 					});
 
 				}).then(() => {

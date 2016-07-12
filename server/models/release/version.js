@@ -214,14 +214,14 @@ function validateFile(release, tableFile, index) {
 					if (playfieldImage.file_type === 'playfield-fs' && playfieldImage.metadata.size.width > playfieldImage.metadata.size.height) {
 						release.invalidate('files.' + index + '._media.playfield_image', 'Provided playfield "' + playfieldImage.id + '" is ' +
 							playfieldImage.metadata.size.width + 'x' + playfieldImage.metadata.size.height +
-							' (portrait) when it really should be landscape.');
+							' (landscape) when it really should be portrait.');
 					}
 
 					// fail if playfield is set to WS but file's metadata say otherwise
 					if (playfieldImage.file_type === 'playfield-ws' && playfieldImage.metadata.size.width < playfieldImage.metadata.size.height) {
 						release.invalidate('files.' + index + '._media.playfield_image', 'Provided playfield "' + playfieldImage.id + '" is ' +
 							playfieldImage.metadata.size.width + 'x' + playfieldImage.metadata.size.height +
-							' (landscape) when it really should be portrait.');
+							' (portrait) when it really should be landscape.');
 					}
 				}
 			}));

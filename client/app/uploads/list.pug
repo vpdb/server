@@ -11,19 +11,19 @@ include ../template/_mixins
 				uib-accordion-heading Show:
 				ul.list--checkboxes.list--condensed
 					li: .radio--lg: label
-						input(type="radio", value="refused", ng-model="statusFilter", ng-change="refresh()")
+						input(type="radio", ng-model="filters.status", value="refused", ng-change="refresh()")
 						span Refused
 					li: .radio--lg: label
-						input(type="radio", value="moderated", ng-model="statusFilter", ng-change="refresh()")
+						input(type="radio", ng-model="filters.status", value="moderated", ng-change="refresh()")
 						span Moderated
 					li: .radio--lg: label
-						input(type="radio", value="auto_approved", ng-model="statusFilter", ng-change="refresh()")
+						input(type="radio", ng-model="filters.status", value="auto_approved", ng-change="refresh()")
 						span Auto-approved
 					li: .radio--lg: label
-						input(type="radio", value="manually_approved", ng-model="statusFilter", ng-change="refresh()")
+						input(type="radio", ng-model="filters.status", value="manually_approved", ng-change="refresh()")
 						span Manually Approved
 					li: .radio--lg: label
-						input(type="radio", value="all", ng-model="statusFilter")
+						input(type="radio", ng-model="filters.status", value="all", ng-change="refresh()")
 						span All
 
 	.col-sm-9.col--main

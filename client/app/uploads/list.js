@@ -17,7 +17,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-"use strict"; /* global _*/
+"use strict"; /* global angular, _*/
 
 angular.module('vpdb.uploads.list', [])
 
@@ -26,19 +26,32 @@ angular.module('vpdb.uploads.list', [])
 		$scope.theme('light');
 		$scope.setTitle('Uploads');
 		$scope.setMenu('admin');
-		$scope.statusFilter = 'all';
-
-		var icons = ['thumb-down', 'thumbs-up-down', 'thumb-up', 'thumb-up-auto'];
+		$scope.filters = { status: 'all' };
 
 		$scope.refresh = function() {
-			$scope.releases = ReleaseResource.query({ moderation: $scope.statusFilter, fields: 'moderation' }, function() {
+			console.log($scope.filters);
+			var query = {
+				moderation: $scope.filters.status,
+				fields: 'moderation',
+				sort: 'modified_at'
+			};
+			$scope.releases = ReleaseResource.query(query, function() {
 				_.each($scope.releases, function(release) {
-					if (release.moderation.is_approved) {
-						release.icon = 'check-circle';
+
+					var m = release.moderation;
+					if (m.is_approved && m.auto_approved) {
+						release.icon = 'thumb-up-auto';
+
+					} else if (m.is_approved) {
+						release.icon = 'thumb-up';
+
+					} else if (m.is_refused) {
+						release.icon = 'thumb-down';
+
 					} else {
-						release.icon = 'radio-unchecked';
+						release.icon = 'thumbs-up-down';
 					}
-					release.icon = icons[Math.floor(Math.random() * 4)];
+					//release.icon = ['thumb-down', 'thumbs-up-down', 'thumb-up', 'thumb-up-auto'][Math.floor(Math.random() * 4)];
 				});
 			});
 		};

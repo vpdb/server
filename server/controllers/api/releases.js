@@ -724,8 +724,8 @@ exports.moderate = function(req, res) {
 		}
 		return Release.handleModeration(req, error, release);
 
-	}).then(() => {
-		api.success(res, release.toSimple(), 200);
+	}).then(moderation => {
+		api.success(res, moderation, 200);
 
 	}).catch(api.handleError(res, error, 'Error moderating release'));
 };

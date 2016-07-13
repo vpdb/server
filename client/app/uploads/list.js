@@ -26,7 +26,7 @@ angular.module('vpdb.uploads.list', [])
 		$scope.theme('light');
 		$scope.setTitle('Uploads');
 		$scope.setMenu('admin');
-		$scope.filters = { status: 'all' };
+		$scope.filters = { status: 'pending' };
 
 		$scope.refresh = function() {
 			console.log($scope.filters);
@@ -56,7 +56,48 @@ angular.module('vpdb.uploads.list', [])
 			});
 		};
 
+		$scope.moderateRelease = function(release) {
+			$uibModal.open({
+				templateUrl: 'modal/moderate-release.html',
+				controller: 'ModerateReleaseCtrl',
+				size: 'md',
+				resolve: {
+					params: function() {
+						return {
+							release: release
+						};
+					}
+				}
+			});
+		};
+
 		$scope.refresh();
+	})
+
+	.controller('ModerateReleaseCtrl', function($scope, $rootScope, $uibModalInstance, ApiHelper,
+												ReleaseResource, ReleaseModerationResource, params) {
+		$scope.release = ReleaseResource.get({ release: params.release.id });
+
+		$scope.refuse = function() {
+			ReleaseModerationResource.save({ releaseId: $scope.release.id }, { action: 'refuse', message: $scope.message }, function() {
+				$uibModalInstance.close();
+				$rootScope.showNotification('Release "' + $scope.release.name + '" successfully refused.');
+			}, ApiHelper.handleErrors($scope));
+		};
+
+		$scope.approve = function() {
+			ReleaseModerationResource.save({ releaseId: $scope.release.id }, { action: 'approve', message: $scope.message }, function() {
+				$uibModalInstance.close();
+				$rootScope.showNotification('Release "' + $scope.release.name + '" successfully approved.');
+			}, ApiHelper.handleErrors($scope));
+		};
+
+		$scope.moderate = function() {
+			ReleaseModerationResource.save({ releaseId: $scope.release.id }, { action: 'moderate', message: $scope.message }, function() {
+				$uibModalInstance.close();
+				$rootScope.showNotification('Release "' + $scope.release.name + '" successfully set back to pending.');
+			}, ApiHelper.handleErrors($scope));
+		};
 	})
 
 	.filter('statusIcon', function() {

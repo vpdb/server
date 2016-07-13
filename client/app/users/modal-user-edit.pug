@@ -70,6 +70,6 @@ include ../template/_mixins
 				| {{ error }}
 
 	.modal-footer
-		button.btn.btn-default.pull-left(ng-click="reset()") Reset
-		button.btn.btn-default(ng-click="$close()") Cancel
+		button.btn.btn-hollow.pull-left(ng-click="$close()") Cancel
+		button.btn.btn-default.space-right(ng-click="reset()") Reset
 		button.btn.btn-primary(ng-click="save()") Update

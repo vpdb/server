@@ -53,7 +53,7 @@ module.exports = function(schema) {
 			is_refused:     { type: Boolean, required: true, 'default': false },
 			auto_approved:  { type: Boolean, required: true, 'default': false },
 			history: [{
-				event:       { type: String, 'enum': ['approved', 'refused', 'moderated'], required: true },
+				event:       { type: String, 'enum': ['approved', 'refused', 'pending'], required: true },
 				message:     { type: String },
 				created_at:  { type: Date },
 				_created_by: { type: Schema.ObjectId, ref: 'User' }
@@ -144,7 +144,7 @@ module.exports = function(schema) {
 				throw error('Must be moderator in order to retrieved moderated items.').status(403);
 			}
 
-			const filters = ['refused', 'moderated', 'auto_approved', 'manually_approved', 'all'];
+			const filters = ['refused', 'pending', 'auto_approved', 'manually_approved', 'all'];
 
 			if (!_.includes(filters, req.query.moderation)) {
 				throw error('Invalid moderation filter. Valid filters are: [ "' + filters.join('", "') + '" ].').status(403);
@@ -153,7 +153,7 @@ module.exports = function(schema) {
 				case 'refused':
 					return addToQuery({ 'moderation.is_refused': true }, query);
 
-				case 'moderated':
+				case 'pending':
 					query = addToQuery({ 'moderation.is_approved': false }, query);
 					return addToQuery({ 'moderation.is_refused': false }, query);
 
@@ -177,7 +177,7 @@ module.exports = function(schema) {
 	 * @param {Request} req Request object
 	 * @param {Err} error Error wrapper for logging
 	 * @param {object} entity Entity with moderation plugin enabled
-	 * @returns {Promise}
+	 * @returns {Promise.<{}>} Updated moderation attribute
 	 */
 	schema.statics.handleModeration = function(req, error, entity) {
 		const actions = ['refuse', 'approve', 'moderate'];
@@ -190,7 +190,7 @@ module.exports = function(schema) {
 		switch (req.body.action) {
 			case 'refuse':
 				if (!req.body.message) {
-					throw error('Validations failed.').validationError('message', 'A message must be provided.', req.body.message);
+					throw error('Validations failed.').validationError('message', 'A message must be provided when refusing.', req.body.message);
 				}
 				return entity.refuse(req.user, req.body.message);
 
@@ -252,11 +252,12 @@ module.exports = function(schema) {
 	 * Marks the entity as approved.
 	 * @param {User|ObjectId} user User who approved
 	 * @param {string} [message] Optional message
-	 * @returns {Promise}
+	 * @returns {Promise.<{}>} Updated moderation attribute
 	 */
 	schema.methods.approve = function(user, message) {
 
 		const Model = mongoose.model(this.constructor.modelName);
+		let moderation;
 		return Model.findByIdAndUpdate(this._id, {
 			'moderation.is_approved': true,
 			'moderation.is_refused': false,
@@ -270,20 +271,20 @@ module.exports = function(schema) {
 			}
 		})
 		.exec()
-		.then(() => Model.findOne({ id: this._id }).exec())
+		.then(() => Model.findOne({ _id: this._id }).exec())
 		.then(entity => {
+			moderation = entity.moderation;
 			if (entity.postApprove) {
 				return entity.postApprove();
 			}
-			return entity;
-		});
+		}).then(() => moderation);
 	};
 
 	/**
 	 * Marks the entity as refused.
 	 * @param {User|ObjectId} user User who refused
 	 * @param {string} reason Reason why entity was refused
-	 * @returns {Promise}
+	 ** @returns {Promise.<{}>} Updated moderation attribute
 	 */
 	schema.methods.refuse = function(user, reason) {
 
@@ -299,14 +300,17 @@ module.exports = function(schema) {
 					_created_by: user._id || user
 				}
 			}
-		}).exec();
+		})
+		.exec()
+		.then(() => Model.findOne({ _id: this._id }).exec())
+		.then(entity => entity.moderation);
 	};
 
 	/**
 	 * Sets the entity back to moderated
 	 * @param {User|ObjectId} user User who reset to moderated
 	 * @param {string} [message] Optional message
-	 * @returns {Promise}
+	 * @returns {Promise.<{}>} Updated moderation attribute
 	 */
 	schema.methods.moderate = function(user, message) {
 
@@ -316,13 +320,16 @@ module.exports = function(schema) {
 			'moderation.is_refused': false,
 			$push: {
 				'moderation.history': {
-					event: 'moderated',
+					event: 'pending',
 					message: message,
 					created_at: new Date(),
 					_created_by: user._id || user
 				}
 			}
-		}).exec();
+		})
+		.exec()
+		.then(() => Model.findOne({ _id: this._id }).exec())
+		.then(entity => entity.moderation);
 	};
 };
 

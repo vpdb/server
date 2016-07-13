@@ -22,7 +22,7 @@
 var path = require('path');
 var logger = require('winston');
 var colors = require('colors');
-var papertrail = require('winston-papertrail').Papertrail; // only needs to require, no usage.
+var Papertrail = require('winston-papertrail').Papertrail; // only needs to require, no usage.
 var expressMorgan  = require('morgan');
 var expressWinston = require('express-winston');
 
@@ -70,7 +70,10 @@ exports.init = function() {
 
 	// papertrail
 	if (config.vpdb.logging.papertrail.app) {
-		logger.add(logger.transports.Papertrail, config.vpdb.logging.papertrail.options);
+
+		let papertrailTransport = new Papertrail(config.vpdb.logging.papertrail.options);
+		papertrailTransport.on('error', err => console.error('[winston-papertrail] Ignoring error: %s', err.message));
+		logger.add(papertrailTransport, {}, true);
 		logger.info('[logging] Papertrail application log enabled for %s:%d', config.vpdb.logging.papertrail.options.host, config.vpdb.logging.papertrail.options.port);
 	}
 
@@ -123,7 +126,10 @@ exports.expressConfig = function(app) {
 
 	// papertrail
 	if (config.vpdb.logging.papertrail.access) {
-		transports.push(new logger.transports.Papertrail(config.vpdb.logging.papertrail.options));
+
+		let papertrailTransport = new Papertrail(config.vpdb.logging.papertrail.options);
+		papertrailTransport.on('error', err => console.error('[winston-papertrail] Ignoring error: %s', err.message));
+		transports.push(papertrailTransport);
 		logger.info('[logging] Papertrail access log enabled for %s:%d', config.vpdb.logging.papertrail.options.host, config.vpdb.logging.papertrail.options.port);
 	}
 

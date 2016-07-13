@@ -113,6 +113,11 @@ angular.module('vpdb.common', [])
 		});
 	})
 
+	.factory('ReleaseModerationResource', function($resource, ConfigService) {
+		return $resource(ConfigService.apiUri('/releases/:releaseId/moderate'), {}, {
+		});
+	})
+
 	.factory('TagResource', function($resource, ConfigService) {
 		return $resource(ConfigService.apiUri('/tags/:id'), {}, {
 		});

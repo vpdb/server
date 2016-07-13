@@ -11,17 +11,17 @@ include ../template/_mixins
 				uib-accordion-heading Show:
 				ul.list--checkboxes.list--condensed
 					li: .radio--lg: label
+						input(type="radio", ng-model="filters.status", value="pending", ng-change="refresh()")
+						span Pending
+					li: .radio--lg: label
 						input(type="radio", ng-model="filters.status", value="refused", ng-change="refresh()")
 						span Refused
 					li: .radio--lg: label
-						input(type="radio", ng-model="filters.status", value="moderated", ng-change="refresh()")
-						span Moderated
+						input(type="radio", ng-model="filters.status", value="manually_approved", ng-change="refresh()")
+						span Manually Approved
 					li: .radio--lg: label
 						input(type="radio", ng-model="filters.status", value="auto_approved", ng-change="refresh()")
 						span Auto-approved
-					li: .radio--lg: label
-						input(type="radio", ng-model="filters.status", value="manually_approved", ng-change="refresh()")
-						span Manually Approved
 					li: .radio--lg: label
 						input(type="radio", ng-model="filters.status", value="all", ng-change="refresh()")
 						span All
@@ -35,7 +35,7 @@ include ../template/_mixins
 				col(width="60px")
 				col
 				col
-			tr(ng-repeat="release in releases", ng-click="edit(release)")
+			tr(ng-repeat="release in releases", ng-click="moderateRelease(release)")
 				td.center
 					+icon('{{ release.icon }}').svg-2x
 				td {{ release.game.title }} <br/><b>{{ release.name }}</b>
@@ -43,3 +43,75 @@ include ../template/_mixins
 					span(ng-repeat="author in release.authors") {{ author.user.name }}
 				td(am-time-ago="release.created_at")
 		span(ng-hide="releases.length > 0") No releases found.
+
+
+script(id="modal/moderate-release.html", type="text/ng-template")
+	.theme-light
+		.modal-header
+			h1.h--no-margin.h--small <strong>{{ release.game.title }}</strong> Moderation
+
+		.modal-body
+
+			h3.h--shift-up.h--no-margin
+				| {{ release.name }}
+				.pull-right
+					button.btn.shift-up
+						+icon('eye').space-right
+						| Details
+
+			//-- INFO
+			//---------------------------------------------------------------------
+			.row
+				.col-sm-6
+					h3.h--smaller.h--primary Info
+					ul
+						li Version: {{ release.versions[0].version }}
+						li Uploaded <span am-time-ago="release.created_at"/>
+
+				.col-sm-6
+
+					//-- UPLOADER
+					//---------------------------------------------------------------------
+					h3.h--smaller.h--primary Uploader
+					.media
+						.media-left.media-middle
+							img.img-avatar.img-avatar--sm(gravatar-src="release.created_by.gravatar_id", gravatar-default="404", fallback-icon="user")
+						.media-body.oneliner
+							user {{ release.created_by.name }}
+
+			//-- AUTHORS
+			//---------------------------------------------------------------------
+			h3.h--smaller.h--primary Authors
+			.media(ng-repeat="author in release.authors")
+				.media-left.media-middle
+					img.img-avatar.img-avatar--sm(gravatar-src="author.user.gravatar_id", gravatar-default="404", fallback-icon="user")
+				.media-body
+					user {{ author.user.name }}
+					br
+					| {{ author.roles.join(', ') }}
+
+
+			//-- MESSAGE
+			//---------------------------------------------------------------------
+			h3.h--smaller.h--primary Message
+			.form-group(ng-class="{ error: errors.message }")
+				textarea.textarea--full.animate(
+					placeholder="Message to user (mandatory if refusal)",
+					ng-model="message"
+				)
+			div.alert.alert-danger.padder-bottom(ng-show="errors.message")
+				+icon('warning').shift-up.space-right
+				| {{ errors.message }}
+
+			.clearfix.padder-top
+		.modal-footer
+			button.btn.btn-hollow.pull-left(ng-click="$dismiss()") Cancel
+			button.btn.btn-primary.btn-red(ng-hide="release.moderation.is_refused", ng-click="refuse()")
+				+icon('thumb-down').space-right.shift-down-1px
+				| Refuse
+			button.btn.btn-default(ng-show="release.moderation.is_approved || release.moderation.is_refused", ng-click="moderate()")
+				+icon('thumbs-up-down').space-right
+				| Moderate
+			button.btn.btn-primary.btn-green(ng-hide="release.moderation.is_approved", ng-click="approve()")
+				+icon('thumb-up').space-right.shift-up-1px
+				| Approve

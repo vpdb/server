@@ -42,6 +42,14 @@
 		&.nostripe
 			background-color transparent
 
+	.table-double-striped >	tbody
+		> tr:nth-child(4n + 1), > tr:nth-child(4n + 2)
+			background-color $color-lightish
+
+	.table-triple-striped >	tbody
+		> tr:nth-child(6n + 1), > tr:nth-child(6n + 2), > tr:nth-child(6n + 3)
+			background-color $color-lightish
+
 	.table--selectable tr:hover td
 		color $color-lightest-inv
 	.table--selectable.primary tr:hover td

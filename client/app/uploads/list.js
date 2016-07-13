@@ -50,7 +50,6 @@ angular.module('vpdb.uploads.list', [])
 					} else {
 						release.icon = 'thumbs-up-down';
 					}
-					//release.icon = ['thumb-down', 'thumbs-up-down', 'thumb-up', 'thumb-up-auto'][Math.floor(Math.random() * 4)];
 				});
 			});
 		};
@@ -74,8 +73,10 @@ angular.module('vpdb.uploads.list', [])
 	})
 
 	.controller('ModerateReleaseCtrl', function($scope, $rootScope, $uibModalInstance, ApiHelper,
-												ReleaseResource, ReleaseModerationResource, params) {
+												ReleaseResource, ReleaseModerationResource, FileBlockmatchResource,
+												ModalService, params) {
 
+		$scope.files = [];
 		$scope.release = ReleaseResource.get({ release: params.release.id, fields: 'moderation' }, function(release) {
 			$scope.history = _.map(release.moderation.history, function(item) {
 				var h = {
@@ -99,7 +100,38 @@ angular.module('vpdb.uploads.list', [])
 				}
 				return h;
 			});
+			_.each(release.versions, function(version) {
+				_.each(version.files, function(file) {
+					file.blockmatches = FileBlockmatchResource.get({ id: file.file.id }, function(b) {
+						if (b.matches.length > 0) {
+							$scope.files.push(file);
+						}
+					});
+				});
+			});
 		});
+
+		$scope.blockmatchInfo = function() {
+			ModalService.info({
+				title: 'Similar releases',
+				message: 'Visual Pinball table files are made out of blocks. Every, image, sound or object is a block. ' +
+				'When a table file is uploaded, VPDB saves the checksum and size of every block to a heavily indexed ' +
+				'table in the database.<br>' +
+				'What you see listed under "Similar releases" are table files of other releases that have lots ' +
+				'of blocks with the same checksum. <ul>' +
+				'<li>The "Objects" bar indicates how many blocks are in common. For example, if a table file with ' +
+				'3,000 blocks has a 75% object match, that means 2,250 blocks are identical.</li>' +
+				'<li>The "Bytes" bar indicates how much of the actual data the table file has in common. For example, ' +
+				'a 60 MB file with 50% bytes match means that 30 MB are identical with the table file you\'re ' +
+				'reviewing.</li></ul>' +
+				'Generally, two observerations can be made: High bytes match and low object match means that the table ' +
+				'has been heavily tweaked, while size-heavy assets such as textures and 3D models have been kept the ' +
+				'same.<br>On the other hand, a high object match and low bytes match indicates that mainly assets have ' +
+				'been replaced while leaving the rest intact.<br><br>' +
+				'As a moderator, you should make sure that in case of a match, the uploader has properly credited the ' +
+				'original work, either as co-authors or in the acknowledgements.'
+			});
+		};
 
 		$scope.refuse = function() {
 			ReleaseModerationResource.save({ releaseId: $scope.release.id }, { action: 'refuse', message: $scope.message }, function() {

@@ -90,6 +90,36 @@ script(id="modal/moderate-release.html", type="text/ng-template")
 					br
 					| {{ author.roles.join(', ') }}
 
+			//-- BLOCK MATCHES
+			//---------------------------------------------------------------------
+			h3.h--smaller.h--primary
+				| Similar Releases
+				a(ng-click="blockmatchInfo()")
+					+icon('info').small.shift-up.space-left
+			label(ng-hide="files.length > 0") No similar releases found.
+			div(ng-repeat="file in files")
+				b(ng-show="files.length > 1") {{ file.file.name }}
+				hr(ng-show="files.length > 1")
+				table.table.table-triple-striped
+					colgroup
+						col(width="20px")
+						col(width="50%")
+						col
+						col(width="20px")
+					tr(ng-repeat-start="match in file.blockmatches.matches")
+						td(colspan="2") <strong>{{ match.game.title }}</strong><br>{{ match.release.name }} {{ match.version.version }}
+						td {{ match.file.flavor.orientation }} / {{ match.file.flavor.lighting }}
+						td.center: a(ui-sref="releaseDetails({ id: match.game.id, releaseId: match.release.id })")
+							+icon('eye')
+					tr
+						td.center-vertically.text--smaller Objects
+						td(colspan="3")
+							uib-progressbar.progress-striped.progress--flat.progress-bar--light(value="match.countPercentage", type="danger") {{ match.countPercentage | number:1 }}%
+					tr(ng-repeat-end)
+						td.center-vertically.text--smaller Bytes
+						td(colspan="3")
+							uib-progressbar.progress-striped.progress--flat.progress-bar--light.padder-bottom-less(value="match.bytesPercentage") {{ match.bytesPercentage | number:1 }}%
+
 			//-- HISTORY
 			//---------------------------------------------------------------------
 			h3.h--smaller.h--primary History

@@ -35,7 +35,7 @@ const fields = {
 	version: { type: String, required: 'Version must be provided.' },
 	released_at: { type: Date, required: true },
 	changes: { type: String },
-	files: { validate: [ nonEmptyArray, 'You must provide at least one file.' ], type: [ file.schema ] },
+	files: { validate: [ nonEmptyArray, 'You must provide at least one file.' ], type: [ file.schema ], index: true },
 	counter: {
 		downloads: { type: Number, 'default': 0 },
 		comments:   { type: Number, 'default': 0 }

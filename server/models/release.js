@@ -165,6 +165,10 @@ ReleaseSchema.statics.toSimple = function(release, opts) {
 
 	// set thumb
 	rls.thumb = getReleaseThumb(versions, opts);
+	if (!rls.thumb.image) {
+		// dont set thumb if images were not populated and thus not visible
+		delete rls.thumb;
+	}
 
 	// set star
 	if (!_.isUndefined(opts.starred)) {
@@ -394,6 +398,10 @@ function getFileThumb(file, opts) {
 
 	var playfieldImage = getPlayfieldImage(file);
 
+	if (!playfieldImage || !playfieldImage.metadata) {
+		return null;
+	}
+
 	if (opts.thumbFormat === 'original') {
 		return _.extend(_.pick(playfieldImage, thumbFields), {
 			width: playfieldImage.metadata.size.width,
@@ -412,6 +420,9 @@ function getFileThumb(file, opts) {
 function getDefaultThumb(file, opts) {
 
 	var playfieldImage = getPlayfieldImage(file);
+	if (!playfieldImage) {
+		return null;
+	}
 	var thumb = {
 		url: playfieldImage.url,
 		width: playfieldImage.metadata.size.width,
@@ -427,6 +438,9 @@ function getDefaultThumb(file, opts) {
 
 function getPlayfieldImage(file) {
 	var media = file.media || file._media;
+	if (!media || !media.playfield_image) {
+		return null;
+	}
 	return media.playfield_image.toObj ? media.playfield_image.toObj() : media.playfield_image;
 }
 

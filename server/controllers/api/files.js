@@ -25,6 +25,7 @@ var Busboy = require('busboy');
 
 var api = require('./api');
 var File = require('mongoose').model('File');
+var Release = require('mongoose').model('Release');
 var TableBlock = require('mongoose').model('TableBlock');
 
 var fileModule = require('../../modules/file');
@@ -142,6 +143,7 @@ exports.view = function(req, res) {
 exports.blockmatch = function(req, res) {
 
 	let file, blocks, matches;
+	let result = { };
 	return Promise.try(() => {
 		return File.findOne({ id: req.params.id });
 
@@ -157,6 +159,19 @@ exports.blockmatch = function(req, res) {
 		if (file.getMimeCategory() !== 'table') {
 			throw error('Can only match table files, this is a %s', file.getMimeCategory(), req.params.id).status(400);
 		}
+		result.file = file.toSimple();
+
+		return Release.findOne({ 'versions.files._file': file._id }).populate('_game authors._user');
+
+	}).then(release => {
+
+		// fail if not found
+		if (!release) {
+			throw error('Release reference missing.', req.params.id);
+		}
+
+		result.release = release.toSimple();
+
 		return TableBlock.find({_files: file._id}).exec();
 
 	}).then(b => {
@@ -181,7 +196,7 @@ exports.blockmatch = function(req, res) {
 
 	}).then(matchedFiles => {
 		const totalBytes = _.sumBy(blocks, b => b.bytes);
-		let result = { file: file.toSimple(), matches: [] };
+		result.matches = [];
 		for (let [key, matchedBlocks] of matches) {
 			const matchedBytes = _.sumBy(matchedBlocks, b => b.bytes);
 			result.matches.push({

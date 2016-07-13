@@ -90,6 +90,23 @@ script(id="modal/moderate-release.html", type="text/ng-template")
 					br
 					| {{ author.roles.join(', ') }}
 
+			//-- HISTORY
+			//---------------------------------------------------------------------
+			h3.h--smaller.h--primary History
+			table.table.table-striped
+				colgroup
+					col
+					col(width="20px")
+					col
+					col
+					col
+				tr(ng-repeat="item in history")
+					td(nowrap) {{ item.created_at | date : 'short' }}
+					td
+						+icon('{{ item.icon }}')
+					td {{ item.status }}
+					td {{ item.created_by.username }}
+					td {{ item.message }}
 
 			//-- MESSAGE
 			//---------------------------------------------------------------------

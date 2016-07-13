@@ -291,6 +291,7 @@ module.exports = function(schema) {
 			delete historyItem._id;
 			return historyItem;
 		});
+		moderation.history = _.orderBy(moderation.history, ['created_at'], ['desc']);
 		return moderation;
 	};
 

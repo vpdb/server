@@ -29,7 +29,6 @@ angular.module('vpdb.uploads.list', [])
 		$scope.filters = { status: 'pending' };
 
 		$scope.refresh = function() {
-			console.log($scope.filters);
 			var query = {
 				moderation: $scope.filters.status,
 				fields: 'moderation',
@@ -76,7 +75,31 @@ angular.module('vpdb.uploads.list', [])
 
 	.controller('ModerateReleaseCtrl', function($scope, $rootScope, $uibModalInstance, ApiHelper,
 												ReleaseResource, ReleaseModerationResource, params) {
-		$scope.release = ReleaseResource.get({ release: params.release.id });
+
+		$scope.release = ReleaseResource.get({ release: params.release.id, fields: 'moderation' }, function(release) {
+			$scope.history = _.map(release.moderation.history, function(item) {
+				var h = {
+					message: item.message,
+					created_at: new Date(item.created_at),
+					created_by: item.created_by
+				};
+				switch (item.event) {
+					case 'approved':
+						h.status = 'Approved';
+						h.icon = 'thumb-up';
+						break;
+					case 'refused':
+						h.status = 'Refused';
+						h.icon = 'thumb-down';
+						break;
+					case 'pending':
+						h.status = 'Set to Pending';
+						h.icon = 'thumbs-up-down';
+						break;
+				}
+				return h;
+			});
+		});
 
 		$scope.refuse = function() {
 			ReleaseModerationResource.save({ releaseId: $scope.release.id }, { action: 'refuse', message: $scope.message }, function() {

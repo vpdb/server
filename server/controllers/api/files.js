@@ -143,6 +143,7 @@ exports.view = function(req, res) {
 exports.blockmatch = function(req, res) {
 
 	const rlsFields = '_game authors._user versions.files._file versions.files._compatibility';
+	const threshold = 50; // sum of matched bytes and object percentage must be >50%
 	let file, blocks, matches;
 	let result = { };
 	return Promise.try(() => {
@@ -190,6 +191,7 @@ exports.blockmatch = function(req, res) {
 				matches.get(fid).push(block);
 			});
 		});
+		// FIXME just fetch files, calc percentage, filter, THEN fetch releases for performance boost.
 		return Release.find({ 'versions.files._file': { $in: Array.from(matches.keys()) }}).populate(rlsFields).exec();
 
 	}).then(matchedReleases => {
@@ -215,7 +217,8 @@ exports.blockmatch = function(req, res) {
 			splitReleaseFile(releases.get(key), key, match);
 			result.matches.push(match);
 		}
-		result.matches = _.sortBy(_.filter(result.matches, 'release'), m => -(m.countPercentage + m.bytesPercentage));
+		result.matches = _.filter(result.matches, m => m.release && m.countPercentage + m.bytesPercentage > threshold);
+		result.matches = _.sortBy(result.matches, m => -(m.countPercentage + m.bytesPercentage));
 		api.success(res, result);
 
 	}).catch(api.handleError(res, error, 'Error retrieving block matches for file'));

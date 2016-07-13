@@ -487,7 +487,7 @@ describe('When dealing with pre-processing media', function() {
 
 		it('should fail when image orientation for playfield-fs is ws', function(done) {
 			var user = 'member';
-			hlp.file.createPlayfield(user, request, 'fs', 'playfield-ws', function(playfield) {
+			hlp.file.createPlayfield(user, request, 'ws', 'playfield-fs', function(playfield) {
 				request
 					.post('/api/v1/releases')
 					.as(user)
@@ -500,7 +500,7 @@ describe('When dealing with pre-processing media', function() {
 									_file: vptfile.id,
 									_media: { playfield_image: playfield.id },
 									_compatibility: [ '9.9.0' ],
-									flavor: { orientation: 'ws', lighting: 'night' } }
+									flavor: { orientation: 'fs', lighting: 'night' } }
 								],
 								version: '1.0.0'
 							}
@@ -537,7 +537,7 @@ describe('When dealing with pre-processing media', function() {
 						authors: [ { _user: hlp.getUser(user).id, roles: [ 'Table Creator' ] } ]
 					})
 					.end(function (err, res) {
-						hlp.expectValidationError(err, res, 'versions.0.files.0._media.playfield_image', 'should be portrait');
+						hlp.expectValidationError(err, res, 'versions.0.files.0._media.playfield_image', 'should be landscape');
 						done();
 					});
 			});

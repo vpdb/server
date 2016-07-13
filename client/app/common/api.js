@@ -24,6 +24,11 @@ angular.module('vpdb.common', [])
 		});
 	})
 
+	.factory('FileBlockmatchResource', function($resource, ConfigService) {
+		return $resource(ConfigService.apiUri('/files/:id/blockmatch'), {}, {
+		});
+	})
+
 	.factory('GameResource', function($resource, ConfigService) {
 		return $resource(ConfigService.apiUri('/games/:id'), {}, {
 			head: { method: 'HEAD' }

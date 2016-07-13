@@ -142,6 +142,7 @@ exports.view = function(req, res) {
  */
 exports.blockmatch = function(req, res) {
 
+	const rlsFields = '_game authors._user versions.files._file versions.files._compatibility';
 	let file, blocks, matches;
 	let result = { };
 	return Promise.try(() => {
@@ -159,9 +160,7 @@ exports.blockmatch = function(req, res) {
 		if (file.getMimeCategory() !== 'table') {
 			throw error('Can only match table files, this is a %s', file.getMimeCategory(), req.params.id).status(400);
 		}
-		result.file = file.toSimple();
-
-		return Release.findOne({ 'versions.files._file': file._id }).populate('_game authors._user');
+		return Release.findOne({ 'versions.files._file': file._id }).populate(rlsFields).exec();
 
 	}).then(release => {
 
@@ -169,8 +168,7 @@ exports.blockmatch = function(req, res) {
 		if (!release) {
 			throw error('Release reference missing.', req.params.id);
 		}
-
-		result.release = release.toSimple();
+		splitReleaseFile(release, file._id.toString(), result);
 
 		return TableBlock.find({_files: file._id}).exec();
 
@@ -178,7 +176,7 @@ exports.blockmatch = function(req, res) {
 		blocks = b;
 
 		matches = new Map();
-		// split blocks: { <file id>: [ matched blocks ] }
+		// split blocks: { <file._id>: [ matched blocks ] }
 		blocks.forEach(block => {
 			block._files.forEach(f => {
 				// don't match own id
@@ -192,30 +190,62 @@ exports.blockmatch = function(req, res) {
 				matches.get(fid).push(block);
 			});
 		});
-		return File.find({ _id: { $in: Array.from(matches.keys()) } }).exec();
+		return Release.find({ 'versions.files._file': { $in: Array.from(matches.keys()) }}).populate(rlsFields).exec();
 
-	}).then(matchedFiles => {
+	}).then(matchedReleases => {
+		// map <file._id>: <release>
+		let releases = new Map();
+		matchedReleases.forEach(release => {
+			release.versions.forEach(version => {
+				version.files.forEach(file => {
+					releases.set(file._file._id.toString(), release);
+				});
+			});
+		});
 		const totalBytes = _.sumBy(blocks, b => b.bytes);
 		result.matches = [];
 		for (let [key, matchedBlocks] of matches) {
 			const matchedBytes = _.sumBy(matchedBlocks, b => b.bytes);
-			result.matches.push({
-				file: _.find(matchedFiles, matchFile(key)).toSimple(),
+			let match = {
 				matchedCount: matchedBlocks.length,
 				matchedBytes: matchedBytes,
 				countPercentage: matchedBlocks.length / blocks.length * 100,
 				bytesPercentage: matchedBytes / totalBytes * 100
-			});
+			};
+			splitReleaseFile(releases.get(key), key, match);
+			result.matches.push(match);
 		}
+		result.matches = _.sortBy(_.filter(result.matches, 'release'), m => -(m.countPercentage + m.bytesPercentage));
 		api.success(res, result);
 
 	}).catch(api.handleError(res, error, 'Error retrieving block matches for file'));
 };
 
-function matchFile(id) {
-	return function(file) {
-		return file._id.toString() === id;
-	};
+/**
+ * Searches a file with a given ID within a release and updates
+ * a given object with release, game, version and file.
+ * @param {Release} release Release to search in
+ * @param {string} fileId File ID to search for  (database _id as string)
+ * @param {object} result Object to be updated
+ */
+function splitReleaseFile(release, fileId, result) {
+	if (!release) {
+		return;
+	}
+	let rls = release.toSimple();
+	result.release = _.pick(rls, ['id', 'name', 'created_at', 'authors']);
+	result.game = rls.game;
+	release.versions.forEach(version => {
+		version.files.forEach(versionFile => {
+			if (versionFile._file._id.toString() === fileId) {
+				result.version = _.pick(version.toObject(), ['version', 'released_at']);
+				let f = versionFile.toObject();
+				result.file = _.pick(f, ['released_at', 'flavor' ]);
+				result.file.compatibility = f.compatibility.map(c => _.pick(c, ['id', 'label' ]));
+				result.file.file = versionFile._file.toSimple();
+			}
+		});
+	});
 }
 
 /**

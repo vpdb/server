@@ -212,12 +212,19 @@ module.exports = function(schema) {
 	};
 
 	/**
-	 * Makes sure an API request has the permission to view the entity.
+	 * Makes sure an API request has the permission to view the entity and populates
+	 * the moderation field if demanded.
+	 *
 	 * @param {Request} req Request object
 	 * @param {Err} error Error wrapper for logging
 	 * @returns {Promise}
 	 */
 	schema.methods.assertModeratedView = function(req, error) {
+
+		const resource = modelResourceMap[this.constructor.modelName];
+		if (!resource) {
+			throw new Error('Tried to check moderation permission for unmapped entity "' + this.constructor.modelName + '".');
+		}
 
 		// if approved, all okay.
 		if (this.moderation.is_approved) {
@@ -235,10 +242,6 @@ module.exports = function(schema) {
 		}
 
 		// if user is moderator, also okay.
-		const resource = modelResourceMap[this.constructor.modelName];
-		if (!resource) {
-			throw new Error('Tried to check moderation permission for unmapped entity "' + this.constructor.modelName + '".');
-		}
 		return acl.isAllowed(req.user.id, resource, 'moderate').then(isModerator => {
 
 			if (isModerator) {
@@ -246,6 +249,49 @@ module.exports = function(schema) {
 			}
 			throw error('No such release with ID "%s"', req.params.id).status(404);
 		});
+	};
+
+	/**
+	 * If moderation field is demanded in request, populates it.
+	 * @param {Request} req Request object
+	 * @param {Err} error Error wrapper for logging
+	 * @returns {Promise.<{}|false>} Populated entity if fields added, false otherwise.
+	 */
+	schema.methods.populateModeration = function(req, error) {
+		const resource = modelResourceMap[this.constructor.modelName];
+		let fields = req.query && req.query.fields ? req.query.fields.split(',') : [];
+		if (fields.includes('moderation')) {
+			if (!req.user) {
+				throw error('You must be logged in order to fetch moderation fields.').status(403);
+			}
+			return acl.isAllowed(req.user.id, resource, 'moderate').then(isModerator => {
+				if (!isModerator) {
+					throw error('You must be moderator in order to fetch moderation fields.').status(403);
+				}
+				return this.populate('moderation.history._created_by').execPopulate();
+			});
+		} else {
+			return Promise.resolve(false);
+		}
+	};
+
+	/**
+	 * Returns the moderation property API-stripped.
+	 * @returns {{}}
+	 */
+	schema.methods.moderationToObject = function() {
+		let moderation = this.moderation.toObject();
+		moderation.history = this.moderation.history.map(h => {
+			let historyItem = h.toObject();
+			if (h._created_by.toReduced) {
+				historyItem.created_by = h._created_by.toReduced();
+			}
+			delete historyItem._created_by;
+			delete historyItem.id;
+			delete historyItem._id;
+			return historyItem;
+		});
+		return moderation;
 	};
 
 	/**

@@ -212,6 +212,9 @@ ReleaseSchema.methods.toDetailed = function(opts) {
 		rls.thumb = getReleaseThumb(rls.versions, opts);
 	}
 
+	let supressedFields = opts.supressedFields || [];
+	supressedFields.forEach(field => delete rls[field]);
+
 	// reduce/enhance data
 	rls.versions = rls.versions.map(v => {
 		v.files = v.files.map(f => {
@@ -225,6 +228,9 @@ ReleaseSchema.methods.toDetailed = function(opts) {
 		});
 		return v;
 	});
+	if (rls.moderation) {
+		rls.moderation = this.moderationToObject();
+	}
 
 	if (opts.starredReleaseIds) {
 		rls.starred = _.includes(opts.starredReleaseIds, this._id.toString());

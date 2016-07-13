@@ -416,7 +416,7 @@ exports.list = function(req, res) {
 	let starMap = new Map();
 	let titleRegex = null;
 	let transformOpts = {};
-	let fields = req.query.fields ? req.query.fields.split(',') : [];
+	let fields = req.query && req.query.fields ? req.query.fields.split(',') : [];
 
 	Promise.try(() => {
 
@@ -629,6 +629,9 @@ exports.list = function(req, res) {
  */
 exports.view = function(req, res) {
 
+	let transformOpts = {
+		supressedFields: []
+	};
 	Promise.try(() => {
 		return Release.findOne({ id: req.params.id })
 			.populate({ path: '_game' })
@@ -645,13 +648,20 @@ exports.view = function(req, res) {
 		if (!release) {
 			throw error('No such release with ID "%s"', req.params.id).status(404);
 		}
-		return release.assertModeratedView(req, error);
+		return release.assertModeratedView(req, error).then(release => {
+			return release.populateModeration(req, error).then(populated => {
+				if (populated === false) {
+					transformOpts.supressedFields.push('moderation');
+				}
+				return release;
+			});
+		});
 
 	}).then(release => {
 
 		release.incrementCounter('views');
 
-		var transformOpts = {};
+
 		if (req.query.thumb_flavor) {
 			transformOpts.thumbFlavor = req.query.thumb_flavor;
 			// ex.: /api/v1/releases?flavor=orientation:fs,lighting:day

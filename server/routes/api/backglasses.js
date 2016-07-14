@@ -23,7 +23,9 @@ const settings = require('../../modules/settings');
 
 exports.register = function(app, api) {
 
+	app.get(settings.apiPath('/backglasses'),        api.anon(api.backglasses.list));
 	app.post(settings.apiPath('/backglasses'),       api.auth(api.backglasses.create, 'backglasses', 'add'));
+	app.get(settings.apiPath('/backglasses/:id'),    api.anon(api.backglasses.view));
 	app.delete(settings.apiPath('/backglasses/:id'), api.auth(api.backglasses.del, 'backglasses', 'delete-own'));
 
 	app.post(settings.apiPath('/backglasses/:id/star'),   api.auth(api.stars.star('backglass'), 'backglasses', 'star'));

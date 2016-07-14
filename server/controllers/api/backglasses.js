@@ -115,36 +115,115 @@ exports.create = function(req, res) {
 /**
  * Lists all backglasses.
  *
- * Currently, this is only used under /games/{game_id}/backglasses, so params.gameId is mandatory.
- * Once we get a separate section, add search and pagination.
+ * This is only on two routes:
+ *
+ * 		/backglasses
+ * 		/games/{game_id}/backglasses
  *
  * @param {Request} req
  * @param {Response} res
  */
 exports.list = function(req, res) {
 
+	let query = {};
+	let pagination = api.pagination(req, 10, 30);
+	let transformOpts = {};
+	let fields = req.query && req.query.fields ? req.query.fields.split(',') : [];
+
 	Promise.resolve().then(() => {
-		return Game.findOne({ id: req.params.gameId }).exec();
+
+		// list roms of a game below /api/v1/games/{gameId}
+		if (req.params.gameId) {
+			return Game.findOne({ id: req.params.gameId });
+		}
+
+		// filter with game_id query parameter
+		if (req.query.game_id) {
+			return Game.findOne({ id: req.query.game_id });
+		}
 
 	}).then(game => {
 
 		if (!game) {
-			throw error('Unknown game "%s".', req.params.gameId).status(404);
+			if (req.params.gameId) {
+				throw error('No such game with ID "%s".', req.params.gameId).status(404);
+			}
+			if (req.query.game_id) {
+				throw error('No such game with ID "%s".', req.query.game_id).status(404);
+			}
+
+		} else {
+			query._game = game._id;
 		}
 
-		return Backglass.handleListQuery(req, error, { _game: game._id });
+		// validate moderation field
+		if (fields.includes('moderation')) {
+			if (!req.user) {
+				throw error('You must be logged in order to fetch moderation fields.').status(403);
+			}
+			return acl.isAllowed(req.user.id, 'backglasses', 'moderate').then(isModerator => {
+				if (!isModerator) {
+					throw error('You must be moderator in order to fetch moderation fields.').status(403);
+				}
+				transformOpts.fields = [ 'moderation' ];
+			});
+		}
+
+	}).then(() => {
+		return Backglass.handleListQuery(req, error, query);
 
 	}).then(query => {
 
-		return Backglass.find(query)
+		return Backglass.paginate(query, {
+			page: pagination.page,
+			limit: pagination.perPage,
+			populate: [ 'authors._user', 'versions._file' ],
+			sort: { 'created_at': -1 }
+
+		}).then(result => [ result.docs, result.total ]);
+
+	}).spread((results, count) => {
+
+		let backglasses = results.map(bg => bg.toSimple(transformOpts));
+		api.success(res, backglasses, 200, api.paginationOpts(pagination, count));
+
+	}).catch(api.handleError(res, error, 'Error listing backglasses'));
+};
+
+/**
+ * Returns details about a backglass.
+ *
+ * @param {Request} req
+ * @param {Response} res
+ */
+exports.view = function(req, res) {
+
+	let transformOpts = {
+		fields: []
+	};
+	Promise.try(() => {
+		return Backglass.findOne({ id: req.params.id })
 			.populate({ path: 'authors._user' })
 			.populate({ path: 'versions._file' })
 			.exec();
 
-	}).then(backglasses => {
-		api.success(res, backglasses.map(bg => bg.toSimple()));
+	}).then(backglass => {
+		if (!backglass) {
+			throw error('No such backglass with ID "%s"', req.params.id).status(404);
+		}
+		return backglass.assertModeratedView(req, error).then(backglass => {
+			return backglass.populateModeration(req, error).then(populated => {
+				if (populated !== false) {
+					transformOpts.fields.push('moderation');
+				}
+				return backglass;
+			});
+		});
 
-	}).catch(api.handleError(res, error, 'Error listing backglasses'));
+	}).then(backglass => {
+		return api.success(res, backglass.toSimple(transformOpts));
+
+	}).catch(api.handleError(res, error, 'Error retrieving backglass details'));
 };
 
 /**

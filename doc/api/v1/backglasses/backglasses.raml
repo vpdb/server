@@ -33,7 +33,40 @@ post:
         role/member:
           example: !include http/create-res-422.json
 
+get:
+  securedBy: [ ]
+  is: [ paginated: { defaultPerPage: 10, maxPerPage: 30 }, moderated_list ]
+  description:  List all DirectB2S backglasses.
+  queryParameters:
+    game_id:
+      description: |
+        Filter by game.
+
+        If the game ID is invalid, `404 not found` is returned.
+      required: false
+      type: string
+      example: taf
+  body:
+    role/anon:
+      example: !include http/list-req.json
+  responses:
+    200:
+      body:
+        role/member:
+          example: !include http/list-res-200.json
+
 /{backglass_id}:
+  get:
+    securedBy: [ ]
+    description: List details of a given backglass.
+    body:
+         role/moderator:
+          example: !include http/view-req.json
+    responses:
+      200:
+        body:
+          role/moderator:
+            example: !include http/view-res-200.json
   delete:
     is: [ protected ]
     securedBy: [ jwt: { scopes: [ MEMBER, CONTRIB ] } ]

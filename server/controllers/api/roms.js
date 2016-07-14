@@ -168,7 +168,7 @@ exports.list = function(req, res) {
 				throw error('No such game with ID "%s".', req.params.gameId).status(404);
 			}
 			if (req.query.game_id) {
-				return [ [], 0];
+				throw error('No such game with ID "%s".', req.query.game_id).status(404);
 			}
 			if (ipdbNumber) {
 				query = { _ipdb_number: ipdbNumber };

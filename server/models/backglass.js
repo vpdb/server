@@ -110,8 +110,15 @@ BackglassSchema.virtual('game')
 //-----------------------------------------------------------------------------
 // METHODS
 //-----------------------------------------------------------------------------
-BackglassSchema.methods.toSimple = function() {
-	return _.pick(this.toObj(), apiFields.simple);
+BackglassSchema.methods.toSimple = function(opts) {
+	opts = opts || {};
+	opts.fields = opts.fields || [];
+
+	let backglass = this.toObj();
+	if (backglass.moderation) {
+		backglass.moderation = this.moderationToObject();
+	}
+	return _.pick(backglass, [...apiFields.simple, ...opts.fields ]);
 };
 
 

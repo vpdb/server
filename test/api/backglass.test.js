@@ -313,6 +313,70 @@ describe('The VPDB `Backglass` API', function() {
 					});
 			});
 		});
+
+		it('should list backglass under root', function(done) {
+
+			const user = 'contributor';
+			hlp.file.createDirectB2S(user, request, function(b2s) {
+				request
+					.post('/api/v1/backglasses')
+					.as(user)
+					.send({
+						_game: game.id,
+						authors: [ {
+							_user: hlp.users[user].id,
+							roles: [ 'creator' ]
+						} ],
+						versions: [ {
+							version: '1.0',
+							_file: b2s.id
+						} ]
+					})
+					.end(function(err, res) {
+						hlp.expectStatus(err, res, 201);
+						hlp.doomBackglass(user, res.body.id);
+
+						request.get('/api/v1/backglasses').save('backglasses/list').end(function(err, res) {
+							hlp.expectStatus(err, res, 200);
+							expect(res.body).to.be.an('array');
+							expect(res.body.length).to.be.greaterThan(0);
+							done();
+						});
+					});
+			});
+		});
+
+		it.only('should list backglass details', function(done) {
+
+			const user = 'contributor';
+			hlp.file.createDirectB2S(user, request, function(b2s) {
+				request
+					.post('/api/v1/backglasses')
+					.as(user)
+					.send({
+						_game: game.id,
+						authors: [ {
+							_user: hlp.users[user].id,
+							roles: [ 'creator' ]
+						} ],
+						versions: [ {
+							version: '1.0',
+							_file: b2s.id
+						} ]
+					})
+					.end(function(err, res) {
+						var backglass = res.body;
+						hlp.expectStatus(err, res, 201);
+						hlp.doomBackglass(user, res.body.id);
+
+						request.get('/api/v1/backglasses/' + backglass.id + '?fields=moderation').as('moderator').save('backglasses/view').end(function(err, res) {
+							hlp.expectStatus(err, res, 200);
+							expect(res.body).to.be.an('object');
+							done();
+						});
+					});
+			});
+		});
 	});
 
 	describe('when deleting a backglass', function() {

@@ -1,0 +1,125 @@
+200 OK
+X-App-Sha: 6d0a9c6
+X-List-Page: 1
+X-List-Size: 10
+X-List-Count: 2
+Content-Type: application/json; charset=utf-8
+Etag: W/"a72-KC9AyfLyrxd6D+HSf+lxcA"
+Content-Encoding: gzip
+
+[
+  {
+    "id": "eke4ur5btu",
+    "versions": [
+      {
+        "released_at": "2016-07-14T14:55:39.429Z",
+        "version": "1.0",
+        "counter": {
+          "downloads": 0
+        },
+        "file": {
+          "counter": {
+            "downloads": 0
+          },
+          "is_protected": true,
+          "variations": {
+            "small-2x": {
+              "url": "https://localhost:7357/storage/public/files/small-2x/e224fr5htu.jpg"
+            },
+            "small": {
+              "url": "https://localhost:7357/storage/public/files/small/e224fr5htu.jpg"
+            },
+            "medium-2x": {
+              "url": "https://localhost:7357/storage/public/files/medium-2x/e224fr5htu.jpg"
+            },
+            "medium": {
+              "url": "https://localhost:7357/storage/public/files/medium/e224fr5htu.jpg"
+            },
+            "full": {
+              "url": "https://localhost:7357/storage/public/files/full/e224fr5htu.jpg"
+            }
+          },
+          "bytes": 2067,
+          "url": "https://localhost:7357/storage/v1/files/e224fr5htu.directb2s",
+          "name": "test.directb2s",
+          "id": "e224fr5htu"
+        }
+      }
+    ],
+    "authors": [
+      {
+        "roles": [
+          "creator"
+        ],
+        "user": {
+          "counter": {
+            "stars": 0,
+            "comments": 0
+          },
+          "gravatar_id": "9d581c481118457f8822f973536a9750",
+          "username": "Chaya_Rosenbaum",
+          "name": "Chaya_Rosenbaum",
+          "id": "e2xfrrbvu"
+        }
+      }
+    ],
+    "created_at": "2016-07-14T14:55:39.429Z"
+  },
+  {
+    "id": "p2b9u55htf",
+    "versions": [
+      {
+        "released_at": "2016-07-14T14:55:39.242Z",
+        "version": "1.0",
+        "counter": {
+          "downloads": 0
+        },
+        "file": {
+          "counter": {
+            "downloads": 0
+          },
+          "is_protected": true,
+          "variations": {
+            "small-2x": {
+              "url": "https://localhost:7357/storage/public/files/small-2x/ekchurrbtu.jpg"
+            },
+            "small": {
+              "url": "https://localhost:7357/storage/public/files/small/ekchurrbtu.jpg"
+            },
+            "medium-2x": {
+              "url": "https://localhost:7357/storage/public/files/medium-2x/ekchurrbtu.jpg"
+            },
+            "medium": {
+              "url": "https://localhost:7357/storage/public/files/medium/ekchurrbtu.jpg"
+            },
+            "full": {
+              "url": "https://localhost:7357/storage/public/files/full/ekchurrbtu.jpg"
+            }
+          },
+          "bytes": 2067,
+          "url": "https://localhost:7357/storage/v1/files/ekchurrbtu.directb2s",
+          "name": "test.directb2s",
+          "id": "ekchurrbtu"
+        }
+      }
+    ],
+    "authors": [
+      {
+        "roles": [
+          "creator"
+        ],
+        "user": {
+          "counter": {
+            "stars": 0,
+            "comments": 0
+          },
+          "gravatar_id": "9d581c481118457f8822f973536a9750",
+          "username": "Chaya_Rosenbaum",
+          "name": "Chaya_Rosenbaum",
+          "id": "e2xfrrbvu"
+        }
+      }
+    ],
+    "created_at": "2016-07-14T14:55:39.242Z"
+  }
+]

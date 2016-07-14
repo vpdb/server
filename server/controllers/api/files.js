@@ -142,9 +142,10 @@ exports.view = function(req, res) {
  */
 exports.blockmatch = function(req, res) {
 
+	const includeSameRelease = !!req.query.include_same_release;
 	const rlsFields = '_game authors._user versions.files._file versions.files._compatibility';
 	const threshold = 50; // sum of matched bytes and object percentage must be >50%
-	let file, blocks, matches;
+	let release, file, blocks, matches;
 	let result = { };
 	return Promise.try(() => {
 		return File.findOne({ id: req.params.id });
@@ -163,7 +164,8 @@ exports.blockmatch = function(req, res) {
 		}
 		return Release.findOne({ 'versions.files._file': file._id }).populate(rlsFields).exec();
 
-	}).then(release => {
+	}).then(r => {
+		release = r;
 
 		// fail if not found
 		if (!release) {
@@ -218,6 +220,9 @@ exports.blockmatch = function(req, res) {
 			result.matches.push(match);
 		}
 		result.matches = _.filter(result.matches, m => m.release && m.countPercentage + m.bytesPercentage > threshold);
+		if (!includeSameRelease) {
+			result.matches = _.filter(result.matches, m => m.release.id !== release.id);
+		}
 		result.matches = _.sortBy(result.matches, m => -(m.countPercentage + m.bytesPercentage));
 		api.success(res, result);
 

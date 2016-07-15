@@ -129,6 +129,7 @@ exports.list = function(req, res) {
 	let pagination = api.pagination(req, 10, 30);
 	let transformOpts = {};
 	let fields = req.query && req.query.fields ? req.query.fields.split(',') : [];
+	let populate = [ 'authors._user', 'versions._file' ];
 
 	Promise.resolve().then(() => {
 
@@ -151,6 +152,7 @@ exports.list = function(req, res) {
 			if (req.query.game_id) {
 				throw error('No such game with ID "%s".', req.query.game_id).status(404);
 			}
+			populate.push('_game');
 
 		} else {
 			query._game = game._id;
@@ -177,7 +179,7 @@ exports.list = function(req, res) {
 		return Backglass.paginate(query, {
 			page: pagination.page,
 			limit: pagination.perPage,
-			populate: [ 'authors._user', 'versions._file' ],
+			populate: populate,
 			sort: { 'created_at': -1 }
 
 		}).then(result => [ result.docs, result.total ]);

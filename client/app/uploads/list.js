@@ -21,38 +21,45 @@
 
 angular.module('vpdb.uploads.list', [])
 
-	.controller('AdminUploadsCtrl', function($scope, $uibModal, ReleaseResource, BackglassResource, RomResource) {
+
+	.controller('AdminUploadsCtrl', function($scope) {
 
 		$scope.theme('light');
 		$scope.setTitle('Uploads');
 		$scope.setMenu('admin');
 		$scope.filters = { status: 'pending' };
+		$scope.numItems = 5;
+
+		$scope.Math = window.Math;
 
 		$scope.refresh = function() {
-			var query = {
+			$scope.$broadcast('refresh');
+		};
+		$scope.refresh();
+	})
+
+	.controller('AdminReleaseUploadsCtrl', function($scope, $uibModal, ApiHelper, ReleaseResource) {
+
+		var refresh = function(query) {
+			query = query || {
 				moderation: $scope.filters.status,
 				fields: 'moderation',
-				sort: 'modified_at'
+				sort: 'modified_at',
+
+				per_page: $scope.numItems
 			};
-			$scope.releases = ReleaseResource.query(query, function() {
-				_.each($scope.releases, function(release) {
-
-					var m = release.moderation;
-					if (m.is_approved && m.auto_approved) {
-						release.icon = 'thumb-up-auto';
-
-					} else if (m.is_approved) {
-						release.icon = 'thumb-up';
-
-					} else if (m.is_refused) {
-						release.icon = 'thumb-down';
-
-					} else {
-						release.icon = 'thumbs-up-down';
-					}
-				});
-			});
+			$scope.releases = ReleaseResource.query(query, ApiHelper.handlePagination($scope, { loader: true }, function() {
+				_.each($scope.releases, addIcons);
+			}));
 		};
+
+		$scope.paginate = function(link) {
+			refresh(link.query);
+		};
+
+		$scope.$on('refresh', function() {
+			refresh();
+		});
 
 		$scope.moderateRelease = function(release) {
 			$uibModal.open({
@@ -68,10 +75,7 @@ angular.module('vpdb.uploads.list', [])
 				}
 			});
 		};
-
-		$scope.refresh();
 	})
-
 	.controller('ModerateReleaseCtrl', function($scope, $rootScope, $uibModalInstance, ApiHelper,
 												ReleaseResource, ReleaseModerationResource, FileBlockmatchResource,
 												ModalService, params) {
@@ -155,6 +159,30 @@ angular.module('vpdb.uploads.list', [])
 		};
 	})
 
+	.controller('AdminBackglassUploadsCtrl', function($scope, $uibModal, ApiHelper, BackglassResource) {
+
+		var refresh = function(query) {
+			query = query || {
+					moderation: $scope.filters.status,
+					fields: 'moderation',
+					sort: 'modified_at',
+
+					per_page: $scope.numItems
+				};
+			$scope.backglasses = BackglassResource.query(query, ApiHelper.handlePagination($scope, { loader: true }, function() {
+				_.each($scope.backglasses, addIcons);
+			}));
+		};
+
+		$scope.paginate = function(link) {
+			refresh(link.query);
+		};
+
+		$scope.$on('refresh', function() {
+			refresh();
+		});
+	})
+
 	.filter('statusIcon', function() {
 		return function(release) {
 			if (release.moderation) {
@@ -165,3 +193,18 @@ angular.module('vpdb.uploads.list', [])
 		};
 	});
 
+function addIcons(entity) {
+	var m = entity.moderation;
+	if (m.is_approved && m.auto_approved) {
+		entity.icon = 'thumb-up-auto';
+
+	} else if (m.is_approved) {
+		entity.icon = 'thumb-up';
+
+	} else if (m.is_refused) {
+		entity.icon = 'thumb-down';
+
+	} else {
+		entity.icon = 'thumbs-up-down';
+	}
+}

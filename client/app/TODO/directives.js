@@ -128,8 +128,6 @@ angular.module('vpdb.common', [])
 		};
 	})
 
-
-
 	.directive('download', function($parse) {
 		return {
 			restrict: 'A',

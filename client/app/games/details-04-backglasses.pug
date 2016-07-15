@@ -6,7 +6,7 @@ label(ng-hide="game.backglasses.length > 0") No backglasses available.
 		.img.img--ar-bg.img--rounded-top.img--placeholder.loaded
 		.text-center.padder
 			.center-block
-				img.img-avatar.img-avatar--xsm(
+				img.img-avatar.img-avatar--xsm.space-left.space-right(
 					ng-repeat="author in backglass.authors",
 					gravatar-src="author.user.gravatar_id",
 					gravatar-default="404",

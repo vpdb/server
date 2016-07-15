@@ -6,7 +6,7 @@ include ../template/_mixins
 		hr
 		uib-accordion.panel-group--transparent(close-others="false")
 
-			// flavor filters
+			//- flavor filters
 			uib-accordion-group.panel--inner(is-open="true")
 				uib-accordion-heading Show:
 				ul.list--checkboxes.list--condensed
@@ -27,23 +27,70 @@ include ../template/_mixins
 						span All
 
 	.col-sm-9.col--main
-		h1.h--primary Releases
-		hr.hr--primary
 
-		table.table.table-striped.table--selectable
-			colgroup
-				col(width="60px")
-				col
-				col
-			tr(ng-repeat="release in releases", ng-click="moderateRelease(release)")
-				td.center
-					+icon('{{ release.icon }}').svg-2x
-				td {{ release.game.title }} <br/><b>{{ release.name }}</b>
-				td
-					span(ng-repeat="author in release.authors") {{ author.user.name }}
-				td(am-time-ago="release.created_at")
-		span(ng-hide="releases.length > 0") No releases found.
+		//-- RELEASES
+		//---------------------------------------------------------------------
+		div(ng-controller="AdminReleaseUploadsCtrl")
+			h1.h--primary
+				| Releases
 
+				//- pagination
+				.h--no-header.pull-right(ng-show="releases.length > 0")
+
+					span(ng-show="pagination.links.first", ng-click="paginate(pagination.links.first)"): +icon('angle-left-skip').smaller.a.a--lighter
+					span.space-left(ng-show="pagination.links.prev", ng-click="paginate(pagination.links.prev)"): +icon('angle-left').smaller.a.a--lighter
+					span.small.space-left PAGE &nbsp; {{ pagination.page }} / {{ Math.ceil(pagination.count / pagination.size) }}
+					span.space-left(ng-show="pagination.links.next", ng-click="paginate(pagination.links.next)"): +icon('angle-right').smaller.a.a--lighter
+					span.space-left(ng-show="pagination.links.last", ng-click="paginate(pagination.links.last)"): +icon('angle-right-skip').smaller.a.a--lighter
+			hr.hr--primary
+
+			//- release list
+			table.table.table-striped.table--selectable(ng-show="releases.length > 0")
+				colgroup
+					col(width="60px")
+					col
+					col
+				tr(ng-repeat="release in releases", ng-click="moderateRelease(release)")
+					td.center
+						+icon('{{ release.icon }}').svg-2x
+					td {{ release.game.title }} <br/><b>{{ release.name }}</b>
+					td(ng-bind-html="release.authors | authors")
+					td.right(am-time-ago="release.created_at")
+			span(ng-hide="releases.length > 0") No releases found.
+			.clearfix
+
+		//-- BACKGLASSES
+		//---------------------------------------------------------------------
+		div(ng-controller="AdminBackglassUploadsCtrl")
+			h1.h--primary
+				| Direct B2S Backglasses
+
+				//- pagination
+				.h--no-header.pull-right(ng-show="backglasses.length > 0")
+
+					span(ng-show="pagination.links.first", ng-click="paginate(pagination.links.first)"): +icon('angle-left-skip').smaller.a.a--lighter
+					span.space-left(ng-show="pagination.links.prev", ng-click="paginate(pagination.links.prev)"): +icon('angle-left').smaller.a.a--lighter
+					span.small.space-left PAGE &nbsp; {{ pagination.page }} / {{ Math.ceil(pagination.count / pagination.size) }}
+					span.space-left(ng-show="pagination.links.next", ng-click="paginate(pagination.links.next)"): +icon('angle-right').smaller.a.a--lighter
+					span.space-left(ng-show="pagination.links.last", ng-click="paginate(pagination.links.last)"): +icon('angle-right-skip').smaller.a.a--lighter
+			hr.hr--primary
+
+			//- backglass list
+			table.table.table-striped.table--selectable(ng-show="backglasses.length > 0")
+				colgroup
+					col(width="60px")
+					col
+					col
+				tr(ng-repeat="backglass in backglasses", ng-click="moderateBackglass(backglass)")
+					td.center
+						+icon('{{ backglass.icon }}').svg-2x
+					td {{ backglass.game.title }} <br/>Version {{ backglass.versions[0].version }}</b>
+					td(ng-bind-html="backglass.authors | authors")
+					td.right(am-time-ago="backglass.created_at")
+			span(ng-hide="backglasses.length > 0") No backglasses found.
+
+
+		p.padder-top &nbsp;
 
 script(id="modal/moderate-release.html", type="text/ng-template")
 	.theme-light

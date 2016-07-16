@@ -122,7 +122,7 @@ angular.module('vpdb.uploads.list', [])
 				'When a table file is uploaded, VPDB saves the checksum and size of every block to a heavily indexed ' +
 				'table in the database.<br>' +
 				'What you see listed under "Similar releases" are table files of other releases that have lots ' +
-				'of blocks with the same checksum. <ul>' +
+				'of blocks in common.<ul>' +
 				'<li>The "Objects" bar indicates how many blocks are in common. For example, if a table file with ' +
 				'3,000 blocks has a 75% object match, that means 2,250 blocks are identical.</li>' +
 				'<li>The "Bytes" bar indicates how much of the actual data the table file has in common. For example, ' +

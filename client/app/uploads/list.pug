@@ -150,12 +150,14 @@ script(id="modal/moderate-release.html", type="text/ng-template")
 				table.table.table-triple-striped
 					colgroup
 						col(width="20px")
-						col(width="50%")
+						col(width="40%")
 						col
 						col(width="20px")
 					tr(ng-repeat-start="match in file.blockmatches.matches")
 						td(colspan="2") <strong>{{ match.game.title }}</strong><br>{{ match.release.name }} {{ match.version.version }}
-						td {{ match.file.flavor.orientation }} / {{ match.file.flavor.lighting }}
+						td
+							span(ng-bind-html="match.release.authors | authors")
+							| <br>{{ match.file.flavor.orientation }} / {{ match.file.flavor.lighting }}
 						td.center: a(ui-sref="releaseDetails({ id: match.game.id, releaseId: match.release.id })")
 							+icon('eye')
 					tr

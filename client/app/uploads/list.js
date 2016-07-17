@@ -186,12 +186,16 @@ angular.module('vpdb.uploads.list', [])
 
 	.controller('ModerateBackglassCtrl', function($scope, $rootScope, $uibModalInstance, ApiHelper,
 												BackglassResource, BackglassModerationResource,
-												ModalService, params) {
+												ModalService, DownloadService, params) {
 
 		$scope.files = [];
 		$scope.backglass = BackglassResource.get({ id: params.backglass.id, fields: 'moderation' }, function(backglass) {
 			$scope.history = _.map(backglass.moderation.history, mapHistory);
 		});
+
+		$scope.downloadBackglass = function(file) {
+			DownloadService.downloadFile(file);
+		};
 
 		$scope.refuse = function() {
 			BackglassModerationResource.save({ id: $scope.backglass.id }, { action: 'refuse', message: $scope.message }, function() {

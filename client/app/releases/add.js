@@ -259,11 +259,16 @@ angular.module('vpdb.releases.add', []).controller('ReleaseAddCtrl', function(
 			$scope.release.submitted = true;
 			$scope.reset();
 
+			var moderationMsg = '';
+			if (!AuthService.hasPermission('releases/auto-approve')) {
+				moderationMsg = '<br>You will be notified as soon as your release has been approved and published. ';
+			}
+
 			ModalService.info({
 				icon: 'check-circle',
 				title: 'Release created!',
 				subtitle: $scope.game.title,
-				message: 'The release has been successfully created.'
+				message: 'The release has been successfully created.' + moderationMsg
 			});
 
 			// go to game page

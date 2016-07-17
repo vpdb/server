@@ -83,11 +83,17 @@ angular.module('vpdb.backglasses.add', [])
 				$scope.backglass.submitted = true;
 				$scope.reset();
 
+
+				var moderationMsg = '';
+				if (!AuthService.hasPermission('backglasses/auto-approve')) {
+					moderationMsg = '<br>You will be notified as soon as your backglass has been approved and published. ';
+				}
+
 				ModalService.info({
 					icon: 'check-circle',
 					title: 'Backglass created!',
 					subtitle: $scope.game.title,
-					message: 'The backglass has been successfully created.'
+					message: 'The backglass has been successfully created.' + moderationMsg
 				});
 
 				// go to game page

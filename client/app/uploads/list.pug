@@ -231,9 +231,16 @@ script(id="modal/moderate-backglass.html", type="text/ng-template")
 			h1.h--no-margin.h--small <strong>{{ backglass.game.title }}</strong> Moderation
 
 		.modal-body
-			img.img.img--rounded.loaded.fullwidth(
+			img.img.img--rounded.loaded.padder-bottom.fullwidth(
 				ng-src="{{ backglass.versions[0].file.variations['full'].url }}"
 			)
+			button.btn.btn-hollow(ng-click="downloadBackglass(backglass.versions[0].file)")
+				+icon('download').space-right
+				span.space-right Download
+			.small.pull-right
+				+icon('photo-size').shift-up-2x.space-right
+				span.space-right-2x Native size: {{ backglass.versions[0].file.variations.full.width }} &times;  {{ backglass.versions[0].file.variations.full.height }}
+
 			+info('backglass')
 			+authors('backglass')
 			+history()

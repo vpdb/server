@@ -212,7 +212,7 @@ script(id="modal/moderate-release.html", type="text/ng-template")
 			h3.h--shift-up.h--no-margin
 				| {{ release.name }}
 				.pull-right
-					button.btn.shift-up
+					a.btn.shift-up(ui-sref="releaseDetails({ id: release.game.id, releaseId: release.id })")
 						+icon('eye').space-right
 						| Details
 			+info('release')

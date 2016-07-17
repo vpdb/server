@@ -68,7 +68,8 @@ angular.module('vpdb.uploads.list', [])
 				resolve: {
 					params: function() {
 						return {
-							release: release
+							release: release,
+							refresh: refresh
 						};
 					}
 				}
@@ -121,6 +122,7 @@ angular.module('vpdb.uploads.list', [])
 			ReleaseModerationResource.save({ releaseId: $scope.release.id }, { action: 'refuse', message: $scope.message }, function() {
 				$uibModalInstance.close();
 				$rootScope.showNotification('Release "' + $scope.release.name + '" successfully refused.');
+				params.refresh();
 			}, ApiHelper.handleErrors($scope));
 		};
 
@@ -128,6 +130,7 @@ angular.module('vpdb.uploads.list', [])
 			ReleaseModerationResource.save({ releaseId: $scope.release.id }, { action: 'approve', message: $scope.message }, function() {
 				$uibModalInstance.close();
 				$rootScope.showNotification('Release "' + $scope.release.name + '" successfully approved.');
+				params.refresh();
 			}, ApiHelper.handleErrors($scope));
 		};
 
@@ -135,6 +138,7 @@ angular.module('vpdb.uploads.list', [])
 			ReleaseModerationResource.save({ releaseId: $scope.release.id }, { action: 'moderate', message: $scope.message }, function() {
 				$uibModalInstance.close();
 				$rootScope.showNotification('Release "' + $scope.release.name + '" successfully set back to pending.');
+				params.refresh();
 			}, ApiHelper.handleErrors($scope));
 		};
 	})
@@ -162,7 +166,8 @@ angular.module('vpdb.uploads.list', [])
 				resolve: {
 					params: function() {
 						return {
-							backglass: backglass
+							backglass: backglass,
+							refresh: refresh
 						};
 					}
 				}
@@ -192,6 +197,7 @@ angular.module('vpdb.uploads.list', [])
 			BackglassModerationResource.save({ id: $scope.backglass.id }, { action: 'refuse', message: $scope.message }, function() {
 				$uibModalInstance.close();
 				$rootScope.showNotification('Backglass successfully refused.');
+				params.refresh();
 			}, ApiHelper.handleErrors($scope));
 		};
 
@@ -199,6 +205,7 @@ angular.module('vpdb.uploads.list', [])
 			BackglassModerationResource.save({ id: $scope.backglass.id }, { action: 'approve', message: $scope.message }, function() {
 				$uibModalInstance.close();
 				$rootScope.showNotification('Backglass successfully approved.');
+				params.refresh();
 			}, ApiHelper.handleErrors($scope));
 		};
 
@@ -206,6 +213,7 @@ angular.module('vpdb.uploads.list', [])
 			BackglassModerationResource.save({ id: $scope.backglass.id }, { action: 'moderate', message: $scope.message }, function() {
 				$uibModalInstance.close();
 				$rootScope.showNotification('Backglass successfully set back to pending.');
+				params.refresh();
 			}, ApiHelper.handleErrors($scope));
 		};
 	})

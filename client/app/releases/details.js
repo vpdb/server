@@ -31,6 +31,7 @@ angular.module('vpdb.releases.details', []).controller('ReleaseDetailsController
 	$scope.gameId = $stateParams.id;
 	$scope.releaseId = $stateParams.releaseId;
 	$scope.flavors = Flavors;
+	$scope.found = false;
 
 	// GAME
 	$scope.game = GameResource.get({ id: $scope.gameId });
@@ -40,6 +41,7 @@ angular.module('vpdb.releases.details', []).controller('ReleaseDetailsController
 
 		$scope.release = release;
 		$scope.pageLoading = false;
+		$scope.found = true;
 		$scope.setTitle(release.game.title + ' · ' + $scope.release.name);
 
 		// sort versions
@@ -83,11 +85,15 @@ angular.module('vpdb.releases.details', []).controller('ReleaseDetailsController
 				});
 			});
 		});
+
+	}, function(err) {
+		$scope.pageLoading = false;
+		$scope.found = false;
 	});
 
 	// setup comments
 	$scope.newComment = '';
-	$scope.addComment = function(releaseId) {
+	$scope.addComment = function() {
 		ReleaseCommentResource.save({ releaseId: $scope.releaseId }, { message: $scope.newComment }, function(comment) {
 			$scope.comments.unshift(comment);
 			$scope.newComment = '';

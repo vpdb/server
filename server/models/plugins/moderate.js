@@ -237,7 +237,7 @@ module.exports = function(schema) {
 		}
 
 		// if viewing own entity, okay
-		if (req.user._id.equals(this._created_by)) {
+		if (req.user._id.equals(this._created_by._id || this._created_by)) {
 			return Promise.resolve(this);
 		}
 
@@ -271,7 +271,17 @@ module.exports = function(schema) {
 				return this.populate('moderation.history._created_by').execPopulate();
 			});
 		} else {
-			return Promise.resolve(false);
+			// if owner or moderator, don't populate but still return object so moderation fields aren't deleted
+			if (req.user) {
+				return acl.isAllowed(req.user.id, resource, 'moderate').then(isModerator => {
+					if (isModerator || req.user._id.equals(this._created_by._id || this._created_by)) {
+						return this;
+					}
+					return false;
+				});
+			} else {
+				return Promise.resolve(false);
+			}
 		}
 	};
 

@@ -357,16 +357,27 @@ FileSchema.statics.toDetailed = function(file) {
 	return _.pick(obj, apiFields.detailed.concat(apiFields.simple));
 };
 
-
 //-----------------------------------------------------------------------------
 // TRIGGERS
 //-----------------------------------------------------------------------------
 FileSchema.post('remove', function(obj, done) {
-	storage.remove(obj);
-	// TODO remove table blocks
-	done();
-});
 
+	return Promise.try(() => {
+		// remove physical file
+		storage.remove(obj);
+
+	}).then(() => {
+		// remove table blocks
+		const TableBlock = mongoose.model('TableBlock');
+		return TableBlock.update(
+			{ _files: obj._id },
+			{ $pull: { _files: obj._id } },
+			{ multi: true }
+		).then(() => {
+			return TableBlock.remove({ _files: { $size: 0 } }).exec();
+		});
+	}).nodeify(done);
+});
 
 //-----------------------------------------------------------------------------
 // OPTIONS

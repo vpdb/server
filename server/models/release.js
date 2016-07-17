@@ -282,8 +282,30 @@ ReleaseSchema.methods.getPlayfieldImageIds = function() {
 //-----------------------------------------------------------------------------
 ReleaseSchema.pre('remove', function(next) {
 
-	// remove linked comments
-	mongoose.model('Comment').remove({ '_ref.release': this._id}).exec(next);
+	return Promise.try(() => {
+		// remove linked comments
+		return mongoose.model('Comment').remove({ '_ref.release': this._id }).exec();
+
+	}).then(() => {
+		// remove table blocks
+		const TableBlock = mongoose.model('TableBlock');
+		let fileIds = [];
+		this.versions.forEach(version => {
+			version.files.forEach(file => {
+				fileIds.push(file._file._id || file._file);
+			});
+		});
+		logger.info('[model] Removing all table blocks for file IDs [ %s ]', fileIds.map(fid => fid.toString()).join(', '));
+		return Promise.each(fileIds, fileId => {
+			return TableBlock.update(
+				{ _files: fileId },
+				{ $pull: { _files: fileId } },
+				{ multi: true }
+			);
+		}).then(() => {
+			return TableBlock.remove({ _files: { $size: 0 } }).exec();
+		});
+	}).nodeify(next);
 });
 
 

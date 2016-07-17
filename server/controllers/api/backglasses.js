@@ -207,6 +207,7 @@ exports.view = function(req, res) {
 		return Backglass.findOne({ id: req.params.id })
 			.populate({ path: 'authors._user' })
 			.populate({ path: 'versions._file' })
+			.populate({ path: '_created_by' })
 			.exec();
 
 	}).then(backglass => {

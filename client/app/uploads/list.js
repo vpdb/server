@@ -35,7 +35,6 @@ angular.module('vpdb.uploads.list', [])
 		$scope.refresh = function() {
 			$scope.$broadcast('refresh');
 		};
-		$scope.refresh();
 	})
 
 	.controller('AdminReleaseUploadsCtrl', function($scope, $uibModal, ApiHelper, ReleaseResource) {
@@ -75,6 +74,8 @@ angular.module('vpdb.uploads.list', [])
 				}
 			});
 		};
+
+		refresh();
 	})
 	.controller('ModerateReleaseCtrl', function($scope, $rootScope, $uibModalInstance, ApiHelper,
 												ReleaseResource, ReleaseModerationResource, FileBlockmatchResource,
@@ -82,28 +83,7 @@ angular.module('vpdb.uploads.list', [])
 
 		$scope.files = [];
 		$scope.release = ReleaseResource.get({ release: params.release.id, fields: 'moderation' }, function(release) {
-			$scope.history = _.map(release.moderation.history, function(item) {
-				var h = {
-					message: item.message,
-					created_at: new Date(item.created_at),
-					created_by: item.created_by
-				};
-				switch (item.event) {
-					case 'approved':
-						h.status = 'Approved';
-						h.icon = 'thumb-up';
-						break;
-					case 'refused':
-						h.status = 'Refused';
-						h.icon = 'thumb-down';
-						break;
-					case 'pending':
-						h.status = 'Set to Pending';
-						h.icon = 'thumbs-up-down';
-						break;
-				}
-				return h;
-			});
+			$scope.history = _.map(release.moderation.history, mapHistory);
 			_.each(release.versions, function(version) {
 				_.each(version.files, function(file) {
 					file.blockmatches = FileBlockmatchResource.get({ id: file.file.id }, function(b) {
@@ -122,7 +102,7 @@ angular.module('vpdb.uploads.list', [])
 				'When a table file is uploaded, VPDB saves the checksum and size of every block to a heavily indexed ' +
 				'table in the database.<br>' +
 				'What you see listed under "Similar releases" are table files of other releases that have lots ' +
-				'of blocks in common.<ul>' +
+				'of the same blocks.<ul>' +
 				'<li>The "Objects" bar indicates how many blocks are in common. For example, if a table file with ' +
 				'3,000 blocks has a 75% object match, that means 2,250 blocks are identical.</li>' +
 				'<li>The "Bytes" bar indicates how much of the actual data the table file has in common. For example, ' +
@@ -174,6 +154,21 @@ angular.module('vpdb.uploads.list', [])
 			}));
 		};
 
+		$scope.moderateBackglass = function(backglass) {
+			$uibModal.open({
+				templateUrl: 'modal/moderate-backglass.html',
+				controller: 'ModerateBackglassCtrl',
+				size: 'md',
+				resolve: {
+					params: function() {
+						return {
+							backglass: backglass
+						};
+					}
+				}
+			});
+		};
+
 		$scope.paginate = function(link) {
 			refresh(link.query);
 		};
@@ -181,6 +176,38 @@ angular.module('vpdb.uploads.list', [])
 		$scope.$on('refresh', function() {
 			refresh();
 		});
+		refresh();
+	})
+
+	.controller('ModerateBackglassCtrl', function($scope, $rootScope, $uibModalInstance, ApiHelper,
+												BackglassResource, BackglassModerationResource,
+												ModalService, params) {
+
+		$scope.files = [];
+		$scope.backglass = BackglassResource.get({ id: params.backglass.id, fields: 'moderation' }, function(backglass) {
+			$scope.history = _.map(backglass.moderation.history, mapHistory);
+		});
+
+		$scope.refuse = function() {
+			BackglassModerationResource.save({ id: $scope.backglass.id }, { action: 'refuse', message: $scope.message }, function() {
+				$uibModalInstance.close();
+				$rootScope.showNotification('Backglass successfully refused.');
+			}, ApiHelper.handleErrors($scope));
+		};
+
+		$scope.approve = function() {
+			BackglassModerationResource.save({ id: $scope.backglass.id }, { action: 'approve', message: $scope.message }, function() {
+				$uibModalInstance.close();
+				$rootScope.showNotification('Backglass successfully approved.');
+			}, ApiHelper.handleErrors($scope));
+		};
+
+		$scope.moderate = function() {
+			BackglassModerationResource.save({ id: $scope.backglass.id }, { action: 'moderate', message: $scope.message }, function() {
+				$uibModalInstance.close();
+				$rootScope.showNotification('Backglass successfully set back to pending.');
+			}, ApiHelper.handleErrors($scope));
+		};
 	})
 
 	.filter('statusIcon', function() {
@@ -207,4 +234,27 @@ function addIcons(entity) {
 	} else {
 		entity.icon = 'thumbs-up-down';
 	}
+}
+
+function mapHistory(item) {
+	var h = {
+		message: item.message,
+		created_at: new Date(item.created_at),
+		created_by: item.created_by
+	};
+	switch (item.event) {
+		case 'approved':
+			h.status = 'Approved';
+			h.icon = 'thumb-up';
+			break;
+		case 'refused':
+			h.status = 'Refused';
+			h.icon = 'thumb-down';
+			break;
+		case 'pending':
+			h.status = 'Set to Pending';
+			h.icon = 'thumbs-up-down';
+			break;
+	}
+	return h;
 }

@@ -78,7 +78,7 @@ const BackglassSchema = new Schema(backglassFields);
 // API FIELDS
 //-----------------------------------------------------------------------------
 const apiFields = {
-	simple: [ 'id', 'game', 'versions', 'description', 'authors', 'acknowledgements', 'created_at' ]
+	simple: [ 'id', 'game', 'versions', 'description', 'authors', 'acknowledgements', 'created_at', 'created_by' ]
 };
 
 //-----------------------------------------------------------------------------
@@ -103,6 +103,12 @@ BackglassSchema.virtual('game')
 	.get(function() {
 		if (this._game && this.populated('_game')) {
 			return this._game.toReduced();
+		}
+	});
+BackglassSchema.virtual('created_by')
+	.get(function() {
+		if (this._created_by && this.populated('_created_by')) {
+			return this._created_by.toReduced();
 		}
 	});
 

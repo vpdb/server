@@ -92,6 +92,116 @@ include ../template/_mixins
 
 		p.padder-top &nbsp;
 
+//-- INFO
+//---------------------------------------------------------------------
+mixin info(entity)
+	.row
+		.col-sm-6
+			h3.h--smaller.h--primary Info
+			ul
+				li Version: {{ #{entity}.versions[0].version }}
+				li Uploaded <span am-time-ago="#{entity}.created_at"/>
+
+		.col-sm-6
+
+			//-- UPLOADER
+			//---------------------------------------------------------------------
+			h3.h--smaller.h--primary Uploader
+			.media
+				.media-left.media-middle
+					img.img-avatar.img-avatar--sm(gravatar-src=`${entity}.created_by.gravatar_id`, gravatar-default="404", fallback-icon="user")
+				.media-body.oneliner
+					user {{ #{entity}.created_by.name }}
+
+//-- AUTHORS
+//---------------------------------------------------------------------
+mixin authors(entity)
+	h3.h--smaller.h--primary Authors
+	.media(ng-repeat=`author in ${entity}.authors`)
+		.media-left.media-middle
+			img.img-avatar.img-avatar--sm(gravatar-src="author.user.gravatar_id", gravatar-default="404", fallback-icon="user")
+		.media-body
+			user {{ author.user.name }}
+			br
+			| {{ author.roles.join(', ') }}
+
+//-- BLOCK MATCHES
+//---------------------------------------------------------------------
+mixin blockmatches
+	h3.h--smaller.h--primary
+		| Similar Releases
+		a(ng-click="blockmatchInfo()")
+			+icon('info').small.shift-up.space-left
+	label(ng-hide="files.length > 0") No similar releases found.
+	div(ng-repeat="file in files")
+		b(ng-show="files.length > 1") {{ file.file.name }}
+		hr(ng-show="files.length > 1")
+		table.table.table-triple-striped
+			colgroup
+				col(width="20px")
+				col(width="40%")
+				col
+				col(width="20px")
+			tr(ng-repeat-start="match in file.blockmatches.matches")
+				td(colspan="2") <strong>{{ match.game.title }}</strong><br>{{ match.release.name }} {{ match.version.version }}
+				td
+					span(ng-bind-html="match.release.authors | authors")
+					| <br>{{ match.file.flavor.orientation }} / {{ match.file.flavor.lighting }}
+				td.center: a(ui-sref="releaseDetails({ id: match.game.id, releaseId: match.release.id })")
+					+icon('eye')
+			tr
+				td.center-vertically.text--smaller Objects
+				td(colspan="3")
+					uib-progressbar.progress-striped.progress--flat.progress-bar--light(value="match.countPercentage", type="danger") {{ match.countPercentage | number:1 }}%
+			tr(ng-repeat-end)
+				td.center-vertically.text--smaller Bytes
+				td(colspan="3")
+					uib-progressbar.progress-striped.progress--flat.progress-bar--light.padder-bottom-less(value="match.bytesPercentage") {{ match.bytesPercentage | number:1 }}%
+
+//-- HISTORY
+//---------------------------------------------------------------------
+mixin history
+	h3.h--smaller.h--primary History
+	table.table.table-striped
+		colgroup
+			col
+			col(width="20px")
+			col
+			col
+			col
+		tr(ng-repeat="item in history")
+			td(nowrap) {{ item.created_at | date : 'short' }}
+			td
+				+icon('{{ item.icon }}')
+			td {{ item.status }}
+			td {{ item.created_by.username }}
+			td {{ item.message }}
+
+//-- MESSAGE
+//---------------------------------------------------------------------
+mixin message
+	h3.h--smaller.h--primary Message
+	.form-group(ng-class="{ error: errors.message }")
+		textarea.textarea--full.animate(
+		placeholder="Message to user (mandatory if refusal)",
+		ng-model="message"
+		)
+	div.alert.alert-danger.padder-bottom(ng-show="errors.message")
+		+icon('warning').shift-up.space-right
+		| {{ errors.message }}
+
+mixin footer(entity)
+	button.btn.btn-hollow.pull-left(ng-click="$dismiss()") Cancel
+		button.btn.btn-primary.btn-red(ng-hide=`${entity}.moderation.is_refused`, ng-click="refuse()")
+			+icon('thumb-down').space-right.shift-down-1px
+			| Refuse
+		button.btn.btn-default(ng-show=`${entity}.moderation.is_approved || ${entity}.moderation.is_refused`, ng-click="moderate()")
+			+icon('thumbs-up-down').space-right
+			| Moderate
+		button.btn.btn-primary.btn-green(ng-hide=`${entity}.moderation.is_approved`, ng-click="approve()")
+			+icon('thumb-up').space-right.shift-up-1px
+			| Approve
+
 script(id="modal/moderate-release.html", type="text/ng-template")
 	.theme-light
 		.modal-header
@@ -105,109 +215,30 @@ script(id="modal/moderate-release.html", type="text/ng-template")
 					button.btn.shift-up
 						+icon('eye').space-right
 						| Details
-
-			//-- INFO
-			//---------------------------------------------------------------------
-			.row
-				.col-sm-6
-					h3.h--smaller.h--primary Info
-					ul
-						li Version: {{ release.versions[0].version }}
-						li Uploaded <span am-time-ago="release.created_at"/>
-
-				.col-sm-6
-
-					//-- UPLOADER
-					//---------------------------------------------------------------------
-					h3.h--smaller.h--primary Uploader
-					.media
-						.media-left.media-middle
-							img.img-avatar.img-avatar--sm(gravatar-src="release.created_by.gravatar_id", gravatar-default="404", fallback-icon="user")
-						.media-body.oneliner
-							user {{ release.created_by.name }}
-
-			//-- AUTHORS
-			//---------------------------------------------------------------------
-			h3.h--smaller.h--primary Authors
-			.media(ng-repeat="author in release.authors")
-				.media-left.media-middle
-					img.img-avatar.img-avatar--sm(gravatar-src="author.user.gravatar_id", gravatar-default="404", fallback-icon="user")
-				.media-body
-					user {{ author.user.name }}
-					br
-					| {{ author.roles.join(', ') }}
-
-			//-- BLOCK MATCHES
-			//---------------------------------------------------------------------
-			h3.h--smaller.h--primary
-				| Similar Releases
-				a(ng-click="blockmatchInfo()")
-					+icon('info').small.shift-up.space-left
-			label(ng-hide="files.length > 0") No similar releases found.
-			div(ng-repeat="file in files")
-				b(ng-show="files.length > 1") {{ file.file.name }}
-				hr(ng-show="files.length > 1")
-				table.table.table-triple-striped
-					colgroup
-						col(width="20px")
-						col(width="40%")
-						col
-						col(width="20px")
-					tr(ng-repeat-start="match in file.blockmatches.matches")
-						td(colspan="2") <strong>{{ match.game.title }}</strong><br>{{ match.release.name }} {{ match.version.version }}
-						td
-							span(ng-bind-html="match.release.authors | authors")
-							| <br>{{ match.file.flavor.orientation }} / {{ match.file.flavor.lighting }}
-						td.center: a(ui-sref="releaseDetails({ id: match.game.id, releaseId: match.release.id })")
-							+icon('eye')
-					tr
-						td.center-vertically.text--smaller Objects
-						td(colspan="3")
-							uib-progressbar.progress-striped.progress--flat.progress-bar--light(value="match.countPercentage", type="danger") {{ match.countPercentage | number:1 }}%
-					tr(ng-repeat-end)
-						td.center-vertically.text--smaller Bytes
-						td(colspan="3")
-							uib-progressbar.progress-striped.progress--flat.progress-bar--light.padder-bottom-less(value="match.bytesPercentage") {{ match.bytesPercentage | number:1 }}%
-
-			//-- HISTORY
-			//---------------------------------------------------------------------
-			h3.h--smaller.h--primary History
-			table.table.table-striped
-				colgroup
-					col
-					col(width="20px")
-					col
-					col
-					col
-				tr(ng-repeat="item in history")
-					td(nowrap) {{ item.created_at | date : 'short' }}
-					td
-						+icon('{{ item.icon }}')
-					td {{ item.status }}
-					td {{ item.created_by.username }}
-					td {{ item.message }}
-
-			//-- MESSAGE
-			//---------------------------------------------------------------------
-			h3.h--smaller.h--primary Message
-			.form-group(ng-class="{ error: errors.message }")
-				textarea.textarea--full.animate(
-					placeholder="Message to user (mandatory if refusal)",
-					ng-model="message"
-				)
-			div.alert.alert-danger.padder-bottom(ng-show="errors.message")
-				+icon('warning').shift-up.space-right
-				| {{ errors.message }}
+			+info('release')
+			+authors('release')
+			+blockmatches()
+			+history()
+			+message()
 
 			.clearfix.padder-top
 		.modal-footer
-			button.btn.btn-hollow.pull-left(ng-click="$dismiss()") Cancel
-			button.btn.btn-primary.btn-red(ng-hide="release.moderation.is_refused", ng-click="refuse()")
-				+icon('thumb-down').space-right.shift-down-1px
-				| Refuse
-			button.btn.btn-default(ng-show="release.moderation.is_approved || release.moderation.is_refused", ng-click="moderate()")
-				+icon('thumbs-up-down').space-right
-				| Moderate
-			button.btn.btn-primary.btn-green(ng-hide="release.moderation.is_approved", ng-click="approve()")
-				+icon('thumb-up').space-right.shift-up-1px
-				| Approve
+			+footer('release')
+
+script(id="modal/moderate-backglass.html", type="text/ng-template")
+	.theme-light
+		.modal-header
+			h1.h--no-margin.h--small <strong>{{ backglass.game.title }}</strong> Moderation
+
+		.modal-body
+			img.img.img--rounded.loaded.fullwidth(
+				ng-src="{{ backglass.versions[0].file.variations['full'].url }}"
+			)
+			+info('backglass')
+			+authors('backglass')
+			+history()
+			+message()
+
+			.clearfix.padder-top
+		.modal-footer
+			+footer('backglass')

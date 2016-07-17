@@ -14,6 +14,11 @@ angular.module('vpdb.common', [])
 		});
 	})
 
+	.factory('BackglassModerationResource', function($resource, ConfigService) {
+		return $resource(ConfigService.apiUri('/backglasses/:id/moderate'), {}, {
+		});
+	})
+
 	.factory('BuildResource', function($resource, ConfigService) {
 		return $resource(ConfigService.apiUri('/builds/:id'), {}, {
 		});

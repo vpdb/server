@@ -101,7 +101,11 @@ exports.create = function(req, res) {
 
 		// update counters and date
 		return release.populate('_game').execPopulate()
-			.then(release => release._game.incrementCounter('releases'))
+			.then(release => {
+				if (release.moderation.is_approved) {
+					release._game.incrementCounter('releases');
+				}
+			})
 			.then(() => release._game.update({ modified_at: new Date() }));
 
 	}).then(() => {

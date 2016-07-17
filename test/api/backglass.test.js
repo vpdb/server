@@ -346,7 +346,7 @@ describe('The VPDB `Backglass` API', function() {
 			});
 		});
 
-		it.only('should list backglass details', function(done) {
+		it('should list backglass details', function(done) {
 
 			const user = 'contributor';
 			hlp.file.createDirectB2S(user, request, function(b2s) {

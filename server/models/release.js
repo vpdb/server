@@ -203,9 +203,13 @@ ReleaseSchema.statics.toSimple = function(release, opts) {
 //-----------------------------------------------------------------------------
 // METHODS
 //-----------------------------------------------------------------------------
-ReleaseSchema.methods.postApprove = function() {
-	// update counter
-	return mongoose.model('Game').update({ _id: this._game  }, { $inc: { 'counter.releases': 1 } });
+ReleaseSchema.methods.moderationChanged = function(previousModeration, moderation) {
+	if (previousModeration.isApproved && !moderation.isApproved) {
+		return mongoose.model('Game').update({ _id: this._game  }, { $inc: { 'counter.releases': -1 } });
+	}
+	if (!previousModeration.isApproved && moderation.isApproved) {
+		return mongoose.model('Game').update({ _id: this._game  }, { $inc: { 'counter.releases': 1 } });
+	}
 };
 
 ReleaseSchema.methods.toDetailed = function(opts) {

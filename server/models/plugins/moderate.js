@@ -321,6 +321,7 @@ module.exports = function(schema) {
 
 		const Model = mongoose.model(this.constructor.modelName);
 		let moderation;
+		let previousModeration = { isApproved: this.moderation.is_approved, isRefused: this.moderation.is_refused };
 		return Model.findByIdAndUpdate(this._id, {
 			'moderation.is_approved': true,
 			'moderation.is_refused': false,
@@ -337,8 +338,8 @@ module.exports = function(schema) {
 		.then(() => Model.findOne({ _id: this._id }).exec())
 		.then(entity => {
 			moderation = entity.moderation;
-			if (entity.postApprove) {
-				return entity.postApprove();
+			if (entity.moderationChanged) {
+				return entity.moderationChanged(previousModeration, { isApproved: true, isRefused: false });
 			}
 		}).then(() => moderation);
 	};
@@ -352,6 +353,8 @@ module.exports = function(schema) {
 	schema.methods.refuse = function(user, reason) {
 
 		const Model = mongoose.model(this.constructor.modelName);
+		let moderation;
+		let previousModeration = { isApproved: this.moderation.is_approved, isRefused: this.moderation.is_refused };
 		return Model.findByIdAndUpdate(this._id, {
 			'moderation.is_approved': false,
 			'moderation.is_refused': true,
@@ -366,7 +369,12 @@ module.exports = function(schema) {
 		})
 		.exec()
 		.then(() => Model.findOne({ _id: this._id }).exec())
-		.then(entity => entity.moderation);
+		.then(entity => {
+			moderation = entity.moderation;
+			if (entity.moderationChanged) {
+				return entity.moderationChanged(previousModeration, { isApproved: false, isRefused: true });
+			}
+		}).then(() => moderation);
 	};
 
 	/**
@@ -378,6 +386,8 @@ module.exports = function(schema) {
 	schema.methods.moderate = function(user, message) {
 
 		const Model = mongoose.model(this.constructor.modelName);
+		let moderation;
+		let previousModeration = { isApproved: this.moderation.is_approved, isRefused: this.moderation.is_refused };
 		return Model.findByIdAndUpdate(this._id, {
 			'moderation.is_approved': false,
 			'moderation.is_refused': false,
@@ -390,9 +400,14 @@ module.exports = function(schema) {
 				}
 			}
 		})
-		.exec()
-		.then(() => Model.findOne({ _id: this._id }).exec())
-		.then(entity => entity.moderation);
+			.exec()
+			.then(() => Model.findOne({ _id: this._id }).exec())
+			.then(entity => {
+				moderation = entity.moderation;
+				if (entity.moderationChanged) {
+					return entity.moderationChanged(previousModeration, { isApproved: false, isRefused: false });
+				}
+			}).then(() => moderation);
 	};
 };
 

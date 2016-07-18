@@ -104,6 +104,21 @@ get:
   get:
     description: |
       List details of a game.
+
+  patch:
+    is: [ validated ]
+    securedBy: [ jwt: { scopes: [ CONTRIB ] } ]
+    description: |
+      Updates an existing game.
+    body:
+      role/moderator:
+        example: !include http/update-req.json
+    responses:
+      204:
+        body:
+          role/moderator:
+            example: !include http/update-res-200.json
+
   delete:
     description: |
       Delete a game.
@@ -113,12 +128,12 @@ get:
       re-linked if the game is re-created, however if any releases or
       backglasses exist, an error is returned.
     body:
-      role/contrib:
+      role/moderator:
         example: !include http/delete-req.json
     responses:
       204:
         body:
-          role/contrib:
+          role/moderator:
             example: !include http/delete-res-204.json
       400:
         description: Trying to delete a game that is referenced by a backglass.

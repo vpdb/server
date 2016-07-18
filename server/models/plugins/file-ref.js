@@ -92,7 +92,7 @@ module.exports = function(schema, options) {
 		objPaths.forEach(path => {
 			let id = _.get(this, path);
 			if (id) {
-				ids.push(id);
+				ids.push(id._id || id);
 			}
 		});
 

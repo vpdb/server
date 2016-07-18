@@ -66,7 +66,7 @@ exports.head = function(req, res) {
  */
 exports.create = function(req, res) {
 
-	var game;
+	let game;
 	Promise.try(() => {
 		return Game.getInstance(_.assign(req.body, {
 			_created_by: req.user._id,
@@ -116,6 +116,59 @@ exports.create = function(req, res) {
 	}).catch(api.handleError(res, error, 'Error creating game'));
 };
 
+
+/**
+ * Updates an existing game.
+ *
+ * @param {Request} req
+ * @param {Response} res
+ */
+exports.update = function(req, res) {
+
+	const updateableFields = ['title', 'year', 'manufacturer', 'game_type', 'short', 'description', 'instructions',
+		'produced_units', 'model_number', 'themes', 'designers', 'artists', 'features', 'notes', 'toys', 'slogans',
+		'ipdb', 'number', '_media' ];
+	let game;
+	Promise.try(() => {
+		return Game.findOne({ id: req.params.id })
+			.populate({ path: '_media.backglass' })
+			.populate({ path: '_media.logo' })
+			.exec();
+
+	}).then(game => {
+		if (!game) {
+			throw error('No such game with ID "%s".', req.params.id).status(404);
+		}
+
+		// fail if invalid fields provided
+		var submittedFields = _.keys(req.body);
+		if (_.intersection(updateableFields, submittedFields).length !== submittedFields.length) {
+			let invalidFields = _.difference(submittedFields, updateableFields);
+			throw error('Invalid field%s: ["%s"]. Allowed fields: ["%s"]', invalidFields.length === 1 ? '' : 's', invalidFields.join('", "'), updateableFields.join('", "')).status(400).log('update');
+		}
+
+		// apply changes
+		return game.updateInstance(req.body);
+
+	}).then(g => {
+		game = g;
+		// validate and save
+		return game.validate().then(() => game.save());
+
+	}).then(() => {
+
+		logger.info('[api|game:update] Game "%s" updated.', game.title);
+		return game.activateFiles();
+
+	}).then(activatedFileIds => {
+
+		logger.info('[api|game:update] Activated %s new file%s.', activatedFileIds.length, activatedFileIds.length === 1 ? '' : 's');
+		api.success(res, game.toDetailed(), 200);
+
+	}).catch(api.handleError(res, error, 'Error updating game'));
+};
+
+
 /**
  * Deletes a game.
  * @param {Request} req
@@ -132,7 +185,6 @@ exports.del = function(req, res) {
 
 	}).then(g => {
 		game = g;
-
 		if (!game) {
 			throw error('No such game with ID "%s".', req.params.id).status(404);
 		}

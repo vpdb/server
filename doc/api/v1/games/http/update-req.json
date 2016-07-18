@@ -1,0 +1,10 @@
+PATCH /v1/games/peachy HTTP/2.0
+Host: api.vpdb.io
+Accept-Encoding: gzip, deflate
+authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJla3U2OWdxM2YiLCJpYXQiOiIyMDE2LTA3LTE4VDE0OjQ2OjA2LjczMVoiLCJleHAiOiIyMDE2LTA3LTE4VDE1OjQ2OjA2LjczMVoiLCJpcnQiOmZhbHNlfQ.lDmUDZC7BoPNZrLacIqSb1G8klrYvnziTcRPYnsGYAk
+content-type: application/json
+Content-Length: 36
+
+{
+  "title": "Hi, I am your new title."
+}

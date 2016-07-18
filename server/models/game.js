@@ -146,35 +146,35 @@ GameSchema.virtual('full_title')
 //-----------------------------------------------------------------------------
 GameSchema.path('game_type').validate(function(gameType, callback) {
 
-	var ipdb = this.ipdb ? this.ipdb.number : null;
+	return Promise.try(() => {
+		let ipdb = this.ipdb ? this.ipdb.number : null;
 
-	// only check if not an original game.
-	if (this.game_type !== 'og' && (!ipdb || (!_.isInteger(ipdb) && !(_.isString(ipdb) && validator.isInt(ipdb))))) {
-		this.invalidate('ipdb.number', 'IPDB Number is mandatory for recreations and must be a postive integer.');
-		return callback(true);
-	}
+		// only check if not an original game.
+		if (this.game_type !== 'og' && (!ipdb || (!_.isInteger(ipdb) && !(_.isString(ipdb) && validator.isInt(ipdb))))) {
+			this.invalidate('ipdb.number', 'IPDB Number is mandatory for recreations and must be a postive integer.');
+			return true;
+		}
 
-	var that = this;
-	if (this.game_type !== 'og') {
-		mongoose.model('Game').findOne({ 'ipdb.number': ipdb }, function(err, g) {
-			/* istanbul ignore if  */
-			if (err) {
-				logger.error('[model|game] Error fetching game %s.');
-				return callback(false);
-			}
-			if (g) {
-				that.invalidate('ipdb.number', 'The game "' + g.title + '" is already in the database and cannot be added twice.');
-			}
-			callback(true);
-		});
-	}
+		if (this.game_type !== 'og' && this.isNew) {
+			return mongoose.model('Game').findOne({ 'ipdb.number': ipdb }).exec().then(game => {
+				if (game) {
+					this.invalidate('ipdb.number', 'The game "' + game.title + '" is already in the database and cannot be added twice.');
+				}
+				return true;
+			});
+		}
+		return true;
+
+	}).then(result => {
+		callback(result);
+	});
 });
 
 GameSchema.path('_media.backglass').validate(function(backglass, callback) {
 	if (!backglass) {
 		return callback(true);
 	}
-	mongoose.model('File').findOne({ _id: backglass }, function(err, backglass) {
+	mongoose.model('File').findOne({ _id: backglass._id || backglass }, function(err, backglass) {
 		/* istanbul ignore if  */
 		if (err) {
 			logger.error('[model|game] Error fetching backglass %s.');

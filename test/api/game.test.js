@@ -190,6 +190,78 @@ describe('The VPDB `game` API', function() {
 		it('should fail if the referenced file type for backglass is not backglass.');
 	});
 
+	describe('when updating an existing game', function() {
+
+		var game;
+		before(function(done) {
+			hlp.setupUsers(request, {
+				member: { roles: [ 'member' ] },
+				moderator: { roles: [ 'moderator' ] }
+			}, function() {
+				hlp.game.createGame('moderator', request, function(g) {
+					game = g;
+					done(null, g);
+				});
+			});
+		});
+
+		after(function(done) {
+			hlp.cleanup(request, done);
+		});
+
+		it('should fail for an non-existing game', function(done) {
+			request
+				.patch('/api/v1/games/brötzl')
+				.as('moderator')
+				.send({ })
+				.end(hlp.status(404, done));
+		});
+
+		it('should fail if an invalid field is provided', function(done) {
+			request
+				.patch('/api/v1/games/' + game.id)
+				.as('moderator')
+				.send({ created_at: new Date().toString() })
+				.end(function(err, res) {
+					hlp.expectStatus(err, res, 400, 'invalid field');
+					done();
+				});
+		});
+
+		it('should fail if an invalid value is provided', function(done) {
+			request
+				.patch('/api/v1/games/' + game.id)
+				.as('moderator')
+				.send({ game_type: 'zorg' })
+				.end(function(err, res) {
+					hlp.expectValidationError(err, res, 'game_type', 'invalid game type');
+					done();
+				});
+		});
+
+		it('should succeed with minimal data', function(done) {
+			const title = 'Hi, I am your new title.';
+			request
+				.patch('/api/v1/games/' + game.id)
+				.as('moderator')
+				.save({ path: 'games/update' })
+				.send({ title: title })
+				.end(function(err, res) {
+					hlp.expectStatus(err, res, 200);
+					expect(res.body.title).to.be(title);
+
+					// refetch to be sure.
+					request
+						.get('/api/v1/games/' + game.id)
+						.end(function(err, res) {
+							hlp.expectStatus(err, res, 200);
+							expect(res.body.title).to.be(title);
+							done();
+						});
+				});
+		});
+	});
+
 	describe('when listing games', function() {
 
 		var user = 'moderator';

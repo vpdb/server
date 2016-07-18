@@ -26,6 +26,7 @@ exports.register = function(app, api) {
 	app.get(settings.apiPath('/games'),        api.anon(api.games.list));
 	app.head(settings.apiPath('/games/:id'),   api.anon(api.games.head));
 	app.get(settings.apiPath('/games/:id'),    api.anon(api.games.view));
+	app.patch(settings.apiPath('/games/:id'),  api.auth(api.games.update, 'games', 'update'));
 	app.post(settings.apiPath('/games'),       api.auth(api.games.create, 'games', 'add'));
 	app.delete(settings.apiPath('/games/:id'), api.auth(api.games.del, 'games', 'delete'));
 

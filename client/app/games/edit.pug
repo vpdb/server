@@ -171,15 +171,11 @@ include ../template/_mixins
 			.clearfix
 
 			//-----------------------------------------------------------------
-			h1 4. Upload Media
+			h1 Media
 			hr
-			p Upload high quality artwork here. The backglass is mandatory but also the logo is strongly recommended.
-				| Please check the image guidelines if you haven’t done so yet. Note that the images you upload here
-				| are only used on the site to enhance the user experience. Media users download in media packs or
-				| individually can be added in later step.
 
 			//- backglass
-			.row.padder-top
+			//-.row.padder-top
 				.col-sm-6
 					.panel.panel--blank(
 					file-upload="{ type: 'backglass', key: 'backglass', status: game.mediaFile, onSuccess: onBackglassUpload, onClear: onMediaClear, allowedExtensions: ['jpg', 'png'], allowMultipleFiles: false }"
@@ -222,7 +218,7 @@ include ../template/_mixins
 				| {{ errors['_media.backglass'] }}
 
 			//- logo
-			.row.padder-top
+			//-.row.padder-top
 				.col-sm-6
 					.panel.panel--blank(
 					file-upload="{ type: 'logo', key: 'logo', status: game.mediaFile, onSuccess: onLogoUpload, onClear: onMediaClear, allowedExtensions: ['jpg', 'png'], allowMultipleFiles: false }"
@@ -249,7 +245,7 @@ include ../template/_mixins
 
 			hr
 			button.btn.btn-default.btn-lg(ng-click="reset()") Reset
-			button.btn.btn-primary.btn-lg.pull-right(ng-click="submit()") Add New Game
+			button.btn.btn-primary.btn-lg.pull-right(ng-click="submit()") Update Game
 			.clearfix
 
 			p

@@ -28,7 +28,10 @@ include ../template/_mixins
 	// left column (main content)
 	.col-sm-9.col-sm-pull-3.col--main
 		.title
-			h1.title-main.h--primary {{ game.title }}
+			h1.title-main.h--primary
+				| {{ game.title }}
+				a(ng-show="auth.hasPermission('games/update", ui-sref="editGame({ id: game.id })")
+					+icon('edit').space-left
 			h1.title-sub.h--small {{ game.manufacturer }} &middot; {{ game.year }}
 		hr
 		h1 Releases

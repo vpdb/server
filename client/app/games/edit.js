@@ -15,6 +15,7 @@ angular.module('vpdb.games.edit', [])
 			_.each(arrayFields, function(what) {
 				$scope.arrays[what] = $scope.game[what].join(', ');
 			});
+			$scope.game.mediaFile = angular.copy($scope.game.media);
 		});
 
 		$scope.gameTypes = [

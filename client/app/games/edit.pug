@@ -175,17 +175,18 @@ include ../template/_mixins
 			hr
 
 			//- backglass
-			//-.row.padder-top
+			.row.padder-top
 				.col-sm-6
 					.panel.panel--blank(
-					file-upload="{ type: 'backglass', key: 'backglass', status: game.mediaFile, onSuccess: onBackglassUpload, onClear: onMediaClear, allowedExtensions: ['jpg', 'png'], allowMultipleFiles: false }"
-					ngf-drag-over-class="'panel--dragging'"
+						file-upload="{ type: 'backglass', key: 'backglass', status: game.mediaFile, onSuccess: onBackglassUpload, onClear: onMediaClear, allowedExtensions: ['jpg', 'png'], allowMultipleFiles: false }"
+						ngf-drag-over-class="'panel--dragging'"
 					)
 						.panel-body.a.a--darker
 							.img.img--ar-bg.loaded(img-bg="game.mediaFile.backglass.variations['medium-2x']")
 								.text-center.vertical-center--100
 									uib-progressbar.progress--fixed-absolute.progress-striped.active(
-									value="game.mediaFile.backglass.progress", ng-show="game.mediaFile.backglass.uploading")
+										value="game.mediaFile.backglass.progress", ng-show="game.mediaFile.backglass.uploading"
+									)
 									.span(ng-show="!img.url")
 										+icon('photo').svg-4x(ng-class="{ transparent: game.mediaFile.backglass.uploading }")
 										p {{ mediaFile.backglass.uploadText }}
@@ -218,24 +219,24 @@ include ../template/_mixins
 				| {{ errors['_media.backglass'] }}
 
 			//- logo
-			//-.row.padder-top
+			.row.padder-top
 				.col-sm-6
 					.panel.panel--blank(
-					file-upload="{ type: 'logo', key: 'logo', status: game.mediaFile, onSuccess: onLogoUpload, onClear: onMediaClear, allowedExtensions: ['jpg', 'png'], allowMultipleFiles: false }"
-					ngf-drag-over-class="'panel--dragging'"
+						file-upload="{ type: 'logo', key: 'logo', status: game.mediaFile, onSuccess: onLogoUpload, onClear: onMediaClear, allowedExtensions: ['jpg', 'png'], allowMultipleFiles: false }"
+						ngf-drag-over-class="'panel--dragging'"
 					)
 						.panel-body.a.a--darker
-							.img.img--ar-logo.img--fit.loaded(img-bg="game.mediaFile.logo")
+							.img.img--ar-logo.img--fit.loaded(img-bg="game.mediaFile.logo.variations['medium-2x']")
 								.text-center.vertical-center--100
 									uib-progressbar.progress--fixed-absolute.progress-striped.active(
-									value="game.mediaFile.logo.progress", ng-show="game.mediaFile.logo.uploading")
+										value="game.mediaFile.logo.progress", ng-show="game.mediaFile.logo.uploading"
+									)
 									.span(ng-show="!img.url")
 										+icon('photo').svg-4x(ng-class="{ transparent: game.mediaFile.logo.uploading }")
 										p {{ mediaFile.logo.uploadText }}
 									.span(ng-show="img.loading")
 										+icon('gear').svg-3x.svg-spin--slow
 										p Generating thumbnails...
-
 				.col-sm-6
 					h4.h--large.h--no-margin Logo
 					ul

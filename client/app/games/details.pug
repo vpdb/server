@@ -30,7 +30,7 @@ include ../template/_mixins
 		.title
 			h1.title-main.h--primary
 				| {{ game.title }}
-				a(ng-show="auth.hasPermission('games/update", ui-sref="editGame({ id: game.id })")
+				a(ng-show="auth.hasPermission('games/update')", ui-sref="editGame({ id: game.id })")
 					+icon('edit').space-left
 			h1.title-sub.h--small {{ game.manufacturer }} &middot; {{ game.year }}
 		hr

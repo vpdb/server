@@ -214,9 +214,9 @@ include ../template/_mixins
 						+icon('warning').shift-up.space-right
 						| Dimensions are {{ backglass.dimensions }}, where the aspect ratio is <code>1:{{ backglass.ar }}</code> and <strong>{{ backglass.arDiff }}%</strong> off the ideal <code>1:1.25</code>. Please crop the image and try again.
 
-			.alert.alert-danger.alert--shifted-up(ng-show="errors['_media.backglass']")
+			.alert.alert-danger.alert--shifted-up(ng-show="errors._media.backglass")
 				+icon('warning').shift-up.space-right
-				| {{ errors['_media.backglass'] }}
+				| {{ errors._media.backglass }}
 
 			//- logo
 			.row.padder-top
@@ -245,7 +245,7 @@ include ../template/_mixins
 						li There should be enough contrast on white as well as on black background.
 
 			hr
-			button.btn.btn-default.btn-lg(ng-click="reset()") Reset
+			button.btn.btn-default.btn-lg(ng-click="reset(originalGame)") Reset
 			button.btn.btn-primary.btn-lg.pull-right(ng-click="submit()") Update Game
 			.clearfix
 

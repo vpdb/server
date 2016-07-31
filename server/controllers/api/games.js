@@ -128,7 +128,8 @@ exports.update = function(req, res) {
 	const updateableFields = ['title', 'year', 'manufacturer', 'game_type', 'short', 'description', 'instructions',
 		'produced_units', 'model_number', 'themes', 'designers', 'artists', 'features', 'notes', 'toys', 'slogans',
 		'ipdb', 'number', '_media' ];
-	let game;
+
+	let game, oldMediaObj, oldMedia, newMedia;
 	Promise.try(() => {
 		return Game.findOne({ id: req.params.id })
 			.populate({ path: '_media.backglass' })
@@ -147,11 +148,26 @@ exports.update = function(req, res) {
 			throw error('Invalid field%s: ["%s"]. Allowed fields: ["%s"]', invalidFields.length === 1 ? '' : 's', invalidFields.join('", "'), updateableFields.join('", "')).status(400).log('update');
 		}
 
+		oldMediaObj = {
+			backglass: game._media.backglass,
+			logo: game._media.logo
+		};
+		oldMedia = {
+			backglass: game._media.backglass.id,
+			logo: game._media.logo ? game._media.logo.id : null
+		};
+		newMedia = _.defaults(req.body._media, oldMedia);
+
+		// copy media if not submitted so it doesn't get erased
+		req.body._media = _.cloneDeep(newMedia);
+
 		// apply changes
 		return game.updateInstance(req.body);
 
 	}).then(g => {
 		game = g;
+
+
 		// validate and save
 		return game.validate().then(() => game.save());
 
@@ -163,6 +179,26 @@ exports.update = function(req, res) {
 	}).then(activatedFileIds => {
 
 		logger.info('[api|game:update] Activated %s new file%s.', activatedFileIds.length, activatedFileIds.length === 1 ? '' : 's');
+
+		// copy to media and delete old media if changed
+		let mediaCopies = [];
+		if (oldMedia.backglass !== newMedia.backglass) {
+			mediaCopies.push(exports._copyMedia(req.user, game, game._media.backglass, 'backglass_image', bg => bg.metadata.size.width * bg.metadata.size.height > 647000));  // > 900x720
+			mediaCopies.push(oldMediaObj.backglass.remove());
+		}
+		if (oldMedia.logo !== newMedia.logo) {
+			mediaCopies.push(exports._copyMedia(req.user, game, game._media.logo, 'wheel_image'));
+			if (oldMediaObj.logo) {
+				mediaCopies.push(oldMediaObj.logo.remove());
+			}
+		}
+		return Promise.all(mediaCopies).catch(err => {
+			logger.error('[api|game:update] Error while copying and cleaning media: %s', err.message);
+			logger.error(err);
+		});
+
+	}).then(() => {
+
 		api.success(res, game.toDetailed(), 200);
 
 	}).catch(api.handleError(res, error, 'Error updating game'));

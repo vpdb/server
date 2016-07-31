@@ -1,0 +1,5 @@
+GET /v1/backglasses/p2y52sm51t?fields=moderation HTTP/2.0
+Host: api.vpdb.io
+Accept-Encoding: gzip, deflate
+authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwa3AyOThyMXYiLCJpYXQiOiIyMDE2LTA3LTMxVDE0OjM5OjMwLjg5MFoiLCJleHAiOiIyMDE2LTA3LTMxVDE1OjM5OjMwLjg5MFoiLCJpcnQiOmZhbHNlfQ.WUfe4SVrUXQURksFGYx_8LJPBmnz9syxw8XLvgv10Hk
+

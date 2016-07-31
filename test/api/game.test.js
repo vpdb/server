@@ -128,36 +128,6 @@ describe('The VPDB `game` API', function() {
 
 		});
 
-		it('should fail if a referenced file is not of the same owner', function(done) {
-			var backglassId;
-			async.series([
-
-				// 1. upload backglass as "member"
-				function(next) {
-					hlp.file.createBackglass('member', request, function(backglass) {
-						hlp.doomFile('member', backglass.id);
-						backglassId = backglass.id;
-						next();
-					});
-				},
-
-				// 2. post game as "moderator"
-				function(next) {
-					request
-						.post('/api/v1/games')
-						.as('moderator')
-						.send(hlp.game.getGame({ _media: { backglass: backglassId }}))
-						.end(function(err, res) {
-							hlp.expectStatus(err, res, 422);
-							expect(res.body.errors).to.have.length(1);
-							expect(res.body.errors[0].field).to.be('_media.backglass');
-							expect(res.body.errors[0].message).to.contain('must be of the same owner');
-							next();
-						});
-				}
-			], done);
-		});
-
 		it('should fail if a referenced file is already referenced', function(done) {
 			var backglassId;
 			async.series([

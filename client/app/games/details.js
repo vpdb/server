@@ -256,6 +256,7 @@ angular.module('vpdb.games.details', [])
 	.controller('BackglassDetailCtrl', function($scope, $uibModalInstance, DownloadService, params) {
 
 		$scope.backglass = params.backglass;
+		$scope.game = params.game;
 		$scope.file = $scope.backglass.versions[0].file;
 		$scope.numDownloads = 0;
 		_.each($scope.backglass.versions, function(version) {
@@ -271,6 +272,7 @@ angular.module('vpdb.games.details', [])
 
 	.controller('MediumDetailCtrl', function($scope, $timeout, DownloadService, params) {
 		$scope.medium = params.medium;
+		$scope.game = params.game;
 
 		if ($scope.medium.file.variations.full) {
 			$timeout(function() {

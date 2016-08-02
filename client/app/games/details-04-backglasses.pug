@@ -28,7 +28,8 @@ script(id="modal/backglass.html", type="text/ng-template")
 
 			//-- STATS
 			//---------------------------------------------------------------------
-			.text-center.padder-bottom.small
+			.text-center.padder-bottom.small.shift-up
+				span &copy; {{ game.year }} {{ game.owner }}. All rights reserved. <br>
 				+icon('photo-size').shift-up-2x.space-right
 				span.space-right-2x Native size: {{ file.variations.full.width }} &times;  {{ file.variations.full.height }}
 				+icon('download-circle').shift-up-2x.space-right

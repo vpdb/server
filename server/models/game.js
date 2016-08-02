@@ -33,6 +33,7 @@ var fileRef = require('./plugins/file-ref');
 var metrics = require('./plugins/metrics');
 var prettyId = require('./plugins/pretty-id');
 var sortTitle = require('./plugins/sortable-title');
+var ipdb = require('../modules/ipdb');
 
 var Schema = mongoose.Schema;
 
@@ -137,6 +138,11 @@ GameSchema.virtual('full_title')
 			fullTitle += ' (' + this.manufacturer + ' ' + this.year + ')';
 		}
 		return fullTitle;
+	});
+
+GameSchema.virtual('owner')
+	.get(function() {
+		return ipdb.owners[this.ipdb.mfg] || this.manufacturer;
 	});
 
 

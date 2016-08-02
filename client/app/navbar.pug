@@ -19,6 +19,7 @@ block body
 						+icon('vpdb-o').logo
 						+icon('logo-vp').logo-vp
 						+icon('logo-db').logo-db
+						span.logo-beta BETA
 
 			.navbar-collapse(uib-collapse="navCollapsed", ng-click="navCollapsed = true")
 				block navbar
@@ -26,7 +27,7 @@ block body
 	block content
 
 	section#bottom.footer(ng-cloak)
-		p
+		//p
 			a(href="https://github.com/freezy/node-vpdb", target="_blank")
 				+icon('github-alt').shift-up.space-right
 				| <strong>Fork me</strong> on GitHub

@@ -31,19 +31,18 @@ var auth = require('../auth');
  * Protects a resource, meaning there must be valid JWT. If additionally
  * resource and permissions are provided, these are checked too.
  *
- * @param done Callback, called with (`req`, `res`). This is your API logic
+ * @param controllerFct Callback, called with (`req`, `res`). This is your API logic
  * @param resource ACL for resource
  * @param permission ACL for permission
  * @param plan key/value pairs of plan options that must match
  * @returns {Function} Middleware function
  */
-exports.auth = function(done, resource, permission, plan) {
-	return auth.auth(resource, permission, plan, function(err, req, res) {
-		if (err) {
-			return exports.fail(res, err, err.code);
-		}
-		done(req, res);
-	}, false);
+exports.auth = function(controllerFct, resource, permission, plan) {
+	return function(req, res) {
+		auth.auth(req, res, resource, permission, plan)
+			.then(() => controllerFct(req, res))
+			.catch(err => exports.fail(res, err, err.code));
+	};
 };
 
 
@@ -51,15 +50,23 @@ exports.auth = function(done, resource, permission, plan) {
  * Allows anonymous access, but still updates `req` with user if sent and
  * takes care of token invalidation.
  *
- * @param done Callback, called with (`req`, `res`). This is your API logic
+ * @param controllerFct Callback, called with (`req`, `res`). This is your API logic
  * @returns {Function} Middleware function
  */
-exports.anon = function(done) {
+exports.anon = function(controllerFct) {
 	// auth is only called in order to populate the req.user object, if credentials are provided.
-	return auth.auth(null, null, null, function(authErr, req, res) {
-		// authErr is ignored since we're in anon.
-		done(req, res, authErr);
-	});
+	return function(req, res) {
+		auth.auth(req, res, null, null, null)
+			.then(() => controllerFct(req, res))
+			.catch(err => {
+				if (err.status === 500) {
+					exports.fail(res, err, err.code)
+				} else {
+					// other errors are ignored since we're in anon.
+					return controllerFct(req, res);
+				}
+			});
+	};
 };
 
 

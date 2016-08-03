@@ -32,9 +32,9 @@ superagentTest(request);
 
 describe('The VPDB moderation feature', function() {
 
-	describe('when accepting a moderated ROM', function() {
+	describe('when accepting a moderated backglass', function() {
 
-		var game, rom;
+		var game, backglass;
 
 		before(function(done) {
 			hlp.setupUsers(request, {
@@ -43,18 +43,26 @@ describe('The VPDB moderation feature', function() {
 			}, function() {
 				hlp.game.createGame('moderator', request, function(g) {
 					game = g;
-					hlp.file.createRom('member', request, function(file) {
+
+					hlp.file.createDirectB2S('member', request, function(b2s) {
 						request
-							.post('/api/v1/games/' + game.id + '/roms')
+							.post('/api/v1/backglasses')
 							.as('member')
 							.send({
-								id: 'hulk',
-								_file: file.id
+								_game: game.id,
+								authors: [ {
+									_user: hlp.users['member'].id,
+									roles: [ 'creator' ]
+								} ],
+								versions: [ {
+									version: '1.0',
+									_file: b2s.id
+								} ]
 							})
 							.end(function(err, res) {
-								rom = res.body;
+								backglass = res.body;
 								hlp.expectStatus(err, res, 201);
-								hlp.doomRom('member', res.body.id);
+								hlp.doomBackglass('member', res.body.id);
 								done();
 							});
 					});
@@ -69,7 +77,7 @@ describe('The VPDB moderation feature', function() {
 		it('should fail for empty data', function(done) {
 			const user = 'moderator';
 			request
-				.post('/api/v1/roms/' + rom.id + '/moderate')
+				.post('/api/v1/backglasses/' + backglass.id + '/moderate')
 				.as(user)
 				.send({})
 				.end(function(err, res) {
@@ -82,7 +90,7 @@ describe('The VPDB moderation feature', function() {
 		it('should fail for invalid action', function(done) {
 			const user = 'moderator';
 			request
-				.post('/api/v1/roms/' + rom.id + '/moderate')
+				.post('/api/v1/backglasses/' + backglass.id + '/moderate')
 				.as(user)
 				.send({ action: 'brümütz!!'})
 				.end(function(err, res) {
@@ -95,7 +103,7 @@ describe('The VPDB moderation feature', function() {
 		it('should fail when message is missing for refusal', function(done) {
 			const user = 'moderator';
 			request
-				.post('/api/v1/roms/' + rom.id + '/moderate')
+				.post('/api/v1/backglasses/' + backglass.id + '/moderate')
 				.as(user)
 				.send({ action: 'refuse' })
 				.end(function(err, res) {

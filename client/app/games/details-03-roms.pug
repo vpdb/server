@@ -1,7 +1,7 @@
 include ../template/_mixins
 
 h1 ROMs
-	button.btn.btn-primary.btn--round.pull-right(ng-click="romUploadCollapsed = !romUploadCollapsed", ng-show="auth.isAuthenticated")
+	button.btn.btn-primary.btn--round.pull-right(ng-click="romUploadCollapsed = !romUploadCollapsed", ng-show="auth.hasPermission('roms/add')")
 		+icon('plus')(ng-show="romUploadCollapsed")
 		+icon('angle-up').small(ng-show="!romUploadCollapsed")
 

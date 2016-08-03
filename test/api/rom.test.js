@@ -40,7 +40,6 @@ describe('The VPDB `ROM` API', function() {
 		before(function(done) {
 			hlp.setupUsers(request, {
 				member: { roles: [ 'member' ] },
-				member2: { roles: [ 'member' ] },
 				moderator: { roles: [ 'moderator' ] },
 				contributor: { roles: [ 'contributor' ] }
 			}, function() {
@@ -56,13 +55,13 @@ describe('The VPDB `ROM` API', function() {
 		});
 
 		it('should fail for non-existing games', function(done) {
-			request.post('/api/v1/games/nonexistent/roms').as('member').send({}).end(hlp.status(404, done));
+			request.post('/api/v1/games/nonexistent/roms').as('moderator').send({}).end(hlp.status(404, done));
 		});
 
 		it('should fail when posting with an IPDB number', function(done) {
 			request
 				.post('/api/v1/games/' + game.id + '/roms')
-				.as('member')
+				.as('moderator')
 				.send({ _ipdb_number: 1234 })
 				.end(function(err, res) {
 					hlp.expectValidationError(err, res, '_ipdb_number', 'You must not provide an IPDB number');
@@ -73,7 +72,7 @@ describe('The VPDB `ROM` API', function() {
 		it('should fail validations for empty data', function(done) {
 			request
 				.post('/api/v1/games/' + game.id + '/roms')
-				.as('member')
+				.as('moderator')
 				.saveResponse({ path: 'games/create-rom' })
 				.send({})
 				.end(function(err, res) {
@@ -86,7 +85,7 @@ describe('The VPDB `ROM` API', function() {
 		it('should fail validations for invalid data', function(done) {
 			request
 				.post('/api/v1/games/' + game.id + '/roms')
-				.as('member')
+				.as('moderator')
 				.send({
 					id: '1',
 					_file: 'nonexistent'
@@ -100,7 +99,7 @@ describe('The VPDB `ROM` API', function() {
 		});
 
 		it('should fail validations for referenced non-rom files', function(done) {
-			var user = 'member';
+			var user = 'moderator';
 			hlp.file.createZip(user, request, function(file) {
 				hlp.doomFile(user, file.id);
 				request
@@ -119,7 +118,7 @@ describe('The VPDB `ROM` API', function() {
 		});
 
 		it('should fail validations for referenced non-zip files', function(done) {
-			var user = 'member';
+			var user = 'moderator';
 			request
 				.post('/storage/v1/files')
 				.query({ type: 'release' })
@@ -146,11 +145,11 @@ describe('The VPDB `ROM` API', function() {
 		});
 
 		it('should succeed with minimal data', function(done) {
-			var user = 'member';
+			var user = 'moderator';
 			hlp.file.createRom(user, request, function(file) {
 				request
 					.post('/api/v1/games/' + game.id + '/roms')
-					.as('member')
+					.as(user)
 					.send({
 						id: 'hulk',
 						_file: file.id
@@ -168,7 +167,7 @@ describe('The VPDB `ROM` API', function() {
 
 		it('should succeed with full data', function(done) {
 			var id = game.id + '_10';
-			var user = 'member';
+			var user = 'moderator';
 			var version = '1.0';
 			var notes = 'That is some ROM.';
 			var language = 'en-US';
@@ -176,7 +175,7 @@ describe('The VPDB `ROM` API', function() {
 			hlp.file.createRom(user, request, function(file) {
 				request
 					.post('/api/v1/games/' + game.id + '/roms')
-					.as('member')
+					.as(user)
 					.save({ path: 'games/create-rom' })
 					.send({
 						id: id,
@@ -201,11 +200,11 @@ describe('The VPDB `ROM` API', function() {
 		});
 
 		it('should be downloadable by any other user after success', function(done) {
-			var user = 'member';
+			var user = 'moderator';
 			hlp.file.createRom(user, request, function(file) {
 				request
 					.post('/api/v1/games/' + game.id + '/roms')
-					.as('member')
+					.as(user)
 					.send({
 						id: 'hulk3',
 						_file: file.id
@@ -214,31 +213,8 @@ describe('The VPDB `ROM` API', function() {
 						hlp.expectStatus(err, res, 201);
 						hlp.doomRom(user, res.body.id);
 						var rom = res.body;
-						hlp.storageToken(request, 'member2', rom.file.url, function(token) {
-							request.get(hlp.urlPath(rom.file.url)).query({ token: token }).as('member2').end(hlp.status(200, done));
-						});
-					});
-			});
-		});
-
-		it('should not be listed under the game after success as member', function(done) {
-			var user = 'member';
-			hlp.file.createRom(user, request, function(file) {
-				request
-					.post('/api/v1/games/' + game.id + '/roms')
-					.as(user)
-					.send({
-						id: 'hulk4',
-						_file: file.id
-					})
-					.end(function(err, res) {
-						hlp.expectStatus(err, res, 201);
-						hlp.doomRom(user, res.body.id);
-						request.get('/api/v1/games/' + game.id + '/roms').end(function(err, res) {
-							hlp.expectStatus(err, res, 200);
-							expect(res.body).to.be.an('array');
-							expect(res.body.length).to.be(0);
-							done();
+						hlp.storageToken(request, 'member', rom.file.url, function(token) {
+							request.get(hlp.urlPath(rom.file.url)).query({ token: token }).as('member').end(hlp.status(200, done));
 						});
 					});
 			});
@@ -269,43 +245,12 @@ describe('The VPDB `ROM` API', function() {
 			});
 		});
 
-		it('should be listed under the game after success as member after approval', function(done) {
-			var user = 'member';
+		it('should fail if ROM with same ID already exists', function(done) {
+			var user = 'moderator';
 			hlp.file.createRom(user, request, function(file) {
 				request
 					.post('/api/v1/games/' + game.id + '/roms')
 					.as(user)
-					.send({
-						id: 'hulk6',
-						_file: file.id
-					})
-					.end(function(err, res) {
-						hlp.expectStatus(err, res, 201);
-						hlp.doomRom(user, res.body.id);
-						request.post('/api/v1/roms/' + res.body.id + '/moderate')
-							.as('moderator')
-							.send({ action: 'approve' })
-							.end(function(err, res) {
-								hlp.expectStatus(err, res, 200);
-								request.get('/api/v1/games/' + game.id + '/roms').end(function(err, res) {
-									hlp.expectStatus(err, res, 200);
-									expect(res.body).to.be.an('array');
-									let rom = _.find(res.body, { id: 'hulk6' });
-									expect(rom).to.be.an('object');
-									expect(rom.created_by).to.be.an('object');
-									done();
-								});
-							});
-					});
-			});
-		});
-
-		it('should fail if rom with same ID already exists', function(done) {
-			var user = 'member';
-			hlp.file.createRom(user, request, function(file) {
-				request
-					.post('/api/v1/games/' + game.id + '/roms')
-					.as('member')
 					.send({
 						id: 'hulk-dupe',
 						_file: file.id
@@ -318,7 +263,7 @@ describe('The VPDB `ROM` API', function() {
 							hlp.doomFile(user, file.id);
 							request
 								.post('/api/v1/games/' + game.id + '/roms')
-								.as('member')
+								.as(user)
 								.send({
 									id: 'hulk-dupe',
 									_file: file.id
@@ -339,8 +284,6 @@ describe('The VPDB `ROM` API', function() {
 
 		before(function(done) {
 			hlp.setupUsers(request, {
-				member: { roles: [ 'member' ] },
-				member2: { roles: [ 'member' ] },
 				moderator: { roles: [ 'moderator' ] },
 				contributor: { roles: [ 'contributor' ] }
 			}, function() {
@@ -356,7 +299,7 @@ describe('The VPDB `ROM` API', function() {
 		});
 
 		it('should fail when posting without IPDB number', function(done) {
-			var user = 'member';
+			var user = 'moderator';
 			hlp.file.createRom(user, request, function(file) {
 				hlp.doomFile(user, file.id);
 				request
@@ -371,7 +314,7 @@ describe('The VPDB `ROM` API', function() {
 		});
 
 		it('should fail when posting with IPDB number that is not a number', function(done) {
-			var user = 'member';
+			var user = 'moderator';
 			hlp.file.createRom(user, request, function(file) {
 				hlp.doomFile(user, file.id);
 				request
@@ -390,7 +333,7 @@ describe('The VPDB `ROM` API', function() {
 		});
 
 		it('should succeed when providing minimal data', function(done) {
-			var user = 'member';
+			var user = 'moderator';
 			hlp.file.createRom(user, request, function(file) {
 				request
 					.post('/api/v1/roms')
@@ -496,8 +439,6 @@ describe('The VPDB `ROM` API', function() {
 
 		before(function(done) {
 			hlp.setupUsers(request, {
-				member: { roles: [ 'member' ] },
-				member2: { roles: [ 'member' ] },
 				contributor: { roles: [ 'contributor' ] },
 				moderator: { roles: [ 'moderator' ] }
 			}, function() {
@@ -512,8 +453,8 @@ describe('The VPDB `ROM` API', function() {
 			hlp.cleanup(request, done);
 		});
 
-		it('should succeed as member and owner', function(done) {
-			var user = 'member';
+		it('should succeed as contributor and owner', function(done) {
+			var user = 'contributor';
 			hlp.file.createRom(user, request, function(file) {
 				request.post('/api/v1/games/' + game.id + '/roms').as(user).send({ id: 'hulk', _file: file.id }).end(function(err, res) {
 					hlp.expectStatus(err, res, 201);
@@ -522,36 +463,21 @@ describe('The VPDB `ROM` API', function() {
 			});
 		});
 
-		it('should fail as member and not owner', function(done) {
-			var user = 'member';
-			var id = 'hulkdeleteme';
-			hlp.file.createRom(user, request, function(file) {
-				request.post('/api/v1/games/' + game.id + '/roms').as(user).send({ id: id, _file: file.id }).end(function(err, res) {
-					hlp.doomRom('moderator', id);
-					hlp.expectStatus(err, res, 201);
-					request.del('/api/v1/roms/' + res.body.id).as('member2').end(hlp.status(403, done));
-				});
-			});
-		});
-
 		it('should fail as contributor and not owner', function(done) {
-			var user = 'member';
-			var id = 'hulkdeleteme2';
-			hlp.file.createRom(user, request, function(file) {
-				request.post('/api/v1/games/' + game.id + '/roms').as(user).send({ id: id, _file: file.id }).end(function(err, res) {
+			var id = 'hulkdeleteme';
+			hlp.file.createRom('moderator', request, function(file) {
+				request.post('/api/v1/games/' + game.id + '/roms').as('moderator').send({ id: id, _file: file.id }).end(function(err, res) {
 					hlp.doomRom('moderator', id);
 					hlp.expectStatus(err, res, 201);
 					request.del('/api/v1/roms/' + res.body.id).as('contributor').end(hlp.status(403, done));
 				});
 			});
-
 		});
 
 		it('should succeed as moderator and not owner', function(done) {
-			var user = 'member';
 			var id = 'hulk';
-			hlp.file.createRom(user, request, function(file) {
-				request.post('/api/v1/games/' + game.id + '/roms').as(user).send({ id: id, _file: file.id }).end(function(err, res) {
+			hlp.file.createRom('contributor', request, function(file) {
+				request.post('/api/v1/games/' + game.id + '/roms').as('contributor').send({ id: id, _file: file.id }).end(function(err, res) {
 					hlp.expectStatus(err, res, 201);
 					request.del('/api/v1/roms/' + res.body.id).as('moderator').end(hlp.status(204, done));
 				});
@@ -568,9 +494,8 @@ describe('The VPDB `ROM` API', function() {
 		var romId2 = 'tz_pa1';
 
 		before(function(done) {
-			var user = 'contributor';
+			var user = 'moderator';
 			hlp.setupUsers(request, {
-				member: { roles: ['member'] },
 				contributor: { roles: ['contributor'] },
 				moderator: { roles: ['moderator'] }
 			}, function() {

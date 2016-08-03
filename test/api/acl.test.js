@@ -119,10 +119,6 @@ describe('The ACLs of the VPDB API', function() {
 			request.get('/api/v1/roms').end(hlp.status(200, done));
 		});
 
-		it('should deny access to rom moderation', function(done) {
-			request.post('/api/v1/roms/1234/moderate').send({}).end(hlp.status(401, done));
-		});
-
 		it('should allow access to ping', function(done) {
 			request.get('/api/v1/ping').end(hlp.status(200, done));
 		});
@@ -352,8 +348,8 @@ describe('The ACLs of the VPDB API', function() {
 			request.del('/api/v1/games/mb').as('member').end(hlp.status(403, done));
 		});
 
-		it('should allow access to rom creation', function(done) {
-			request.post('/api/v1/games/mb/roms').as('member').send({}).end(hlp.status(404, done));
+		it('should deny access to rom creation', function(done) {
+			request.post('/api/v1/games/mb/roms').as('member').send({}).end(hlp.status(403, done));
 		});
 
 		it('should allow access to rom listing', function(done) {
@@ -372,16 +368,12 @@ describe('The ACLs of the VPDB API', function() {
 			request.get('/api/v1/games/mb/rating').as('member').end(hlp.status(404, done));
 		});
 
-		it('should allow access to rom deletion', function(done) {
-			request.del('/api/v1/roms/1234').as('member').end(hlp.status(404, done));
+		it('should deny access to rom deletion', function(done) {
+			request.del('/api/v1/roms/1234').as('member').end(hlp.status(403, done));
 		});
 
 		it('should allow access to rom listing', function(done) {
 			request.get('/api/v1/roms').as('member').end(hlp.status(200, done));
-		});
-
-		it('should deny access to rom moderation', function(done) {
-			request.post('/api/v1/roms/1234/moderate').as('member').send({}).end(hlp.status(403, done));
 		});
 
 		it('should allow access to ping', function(done) {
@@ -641,16 +633,16 @@ describe('The ACLs of the VPDB API', function() {
 			request.get('/api/v1/user/events').as('contributor').end(hlp.status(200, done));
 		});
 
-		it('should deny access to rom moderation', function(done) {
-			request.post('/api/v1/roms/1234/moderate').as('contributor').send({}).end(hlp.status(403, done));
-		});
-
 		it('should deny access to release moderation', function(done) {
 			request.post('/api/v1/releases/1234/moderate').as('contributor').send({}).end(hlp.status(403, done));
 		});
 
 		it('should deny access to backglass moderation', function(done) {
 			request.post('/api/v1/backglasses/1234/moderate').as('contributor').send({}).end(hlp.status(403, done));
+		});
+
+		it('should allow access to rom creation', function(done) {
+			request.post('/api/v1/games/mb/roms').as('contributor').send({}).end(hlp.status(404, done));
 		});
 
 	});
@@ -780,6 +772,10 @@ describe('The ACLs of the VPDB API', function() {
 
 		it('should allow access to backglass moderation', function(done) {
 			request.post('/api/v1/backglasses/1234/moderate').as('moderator').send({}).end(hlp.status(404, done));
+		});
+
+		it('should allow access to rom creation', function(done) {
+			request.post('/api/v1/games/mb/roms').as('moderator').send({}).end(hlp.status(404, done));
 		});
 	});
 

@@ -180,12 +180,6 @@ exports.list = function(req, res) {
 			query = { _game: game._id };
 		}
 
-		// moderation
-		return Rom.handleListQuery(req, error, query);
-
-	}).then(q => {
-		query = q;
-
 		let sort = game ? { version: -1 } : { '_file.name': 1 };
 		return Rom.paginate(query, {
 			page: pagination.page,
@@ -236,29 +230,4 @@ exports.del = function(req, res) {
 			});
 		}), 'Error getting ROM "%s"');
 	}, 'Error checking for ACL "roms/delete".'));
-};
-
-/**
- * Moderates a ROM.
- *
- * @param {Request} req
- * @param {Response} res
- */
-exports.moderate = function(req, res) {
-
-	let rom;
-	Promise.try(() => {
-		return Rom.findOne({ id: req.params.id }).exec();
-
-	}).then(r => {
-		rom = r;
-		if (!rom) {
-			throw error('No such ROM with ID "%s".', req.params.id).status(404);
-		}
-		return Rom.handleModeration(req, error, rom);
-
-	}).then(() => {
-		api.success(res, rom.toSimple(), 200);
-
-	}).catch(api.handleError(res, error, 'Error moderating ROM'));
 };

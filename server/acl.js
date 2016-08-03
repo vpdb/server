@@ -65,7 +65,7 @@ acl.init = function() {
 				{ resources: 'ipdb',        permissions: ['view'] },
 				{ resources: 'media',       permissions: ['delete'] },
 				{ resources: 'releases',    permissions: ['moderate'] },
-				{ resources: 'roms',        permissions: ['delete', 'moderate'] },
+				{ resources: 'roms',        permissions: ['delete', 'delete-own', 'add'] },
 				{ resources: 'tags',        permissions: ['delete'] }
 			]
 		}, {
@@ -75,7 +75,7 @@ acl.init = function() {
 				{ resources: 'games',       permissions: ['update', 'add'] },
 				{ resources: 'ipdb',        permissions: ['view'] },
 				{ resources: 'releases',    permissions: ['auto-approve'] },
-				{ resources: 'roms',        permissions: ['auto-approve'] }
+				{ resources: 'roms',        permissions: ['add', 'delete-own'] }
 			]
 		}, {
 			roles: 'member',
@@ -88,7 +88,6 @@ acl.init = function() {
 				{ resources: 'media',       permissions: ['add', 'delete-own', 'star'] },
 				{ resources: 'messages',    permissions: ['receive'] },
 				{ resources: 'releases',    permissions: ['add', 'delete', 'update', 'rate', 'star'] }, // delete: only own releases and only for a given period
-				{ resources: 'roms',        permissions: ['add', 'delete-own'] },
 				{ resources: 'tags',        permissions: ['add', 'delete-own'] },
 				{ resources: 'tokens',      permissions: ['add', 'delete', 'update', 'list'] },
 				{ resources: 'user',        permissions: ['view', 'update'] },                          // profile

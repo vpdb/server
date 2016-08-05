@@ -21,7 +21,6 @@
 
 var _ = require('lodash');
 var fs = require('fs');
-var async = require('async');
 var util = require('util');
 var logger = require('winston');
 

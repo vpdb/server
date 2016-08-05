@@ -22,7 +22,6 @@
 const _ = require('lodash');
 const fs = require('fs');
 const path = require('path');
-const async = require('async');
 const logger = require('winston');
 const archiver = require('archiver');
 const Unrar = require('unrar');

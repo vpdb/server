@@ -21,7 +21,6 @@
 
 var _ = require('lodash');
 var logger = require('winston');
-var async = require('async');
 var mongoose = require('mongoose');
 var validator = require('validator');
 

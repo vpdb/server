@@ -20,7 +20,6 @@
 "use strict";
 
 var _ = require('lodash');
-var async = require('async');
 var logger = require('winston');
 var shortId = require('shortid32');
 var mongoose = require('mongoose');

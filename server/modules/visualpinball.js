@@ -22,7 +22,6 @@
 const _ = require('lodash');
 const fs = require('fs');
 const ocd = require('ole-doc').OleCompoundDoc;
-const async = require('async');
 const crypto = require('crypto');
 const events = require('events');
 const logger = require('winston');

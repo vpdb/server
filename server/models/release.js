@@ -22,7 +22,6 @@
 const _ = require('lodash');
 const fs = require('fs');
 const path = require('path');
-const async = require('async');
 const logger = require('winston');
 const shortId = require('shortid32');
 const mongoose = require('mongoose');

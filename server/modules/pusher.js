@@ -20,7 +20,6 @@
 "use strict";
 
 var _ = require('lodash');
-var async = require('async');
 var logger = require('winston');
 var Pusher = require('pusher');
 var config = require('./settings').current;

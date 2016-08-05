@@ -23,7 +23,6 @@ var _ = require('lodash');
 var fs = require('fs');
 var gm = require('gm');
 var util = require('util');
-var async = require('async');
 var logger = require('winston');
 
 var Release = require('mongoose').model('Release');

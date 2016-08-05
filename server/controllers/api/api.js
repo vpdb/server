@@ -60,7 +60,7 @@ exports.anon = function(controllerFct) {
 			.then(() => controllerFct(req, res))
 			.catch(err => {
 				if (err.status === 500) {
-					exports.fail(res, err, err.code)
+					exports.fail(res, err, err.code);
 				} else {
 					// other errors are ignored since we're in anon.
 					return controllerFct(req, res);

@@ -21,7 +21,6 @@
 
 var _ = require('lodash');
 var util = require('util');
-var async = require('async');
 var logger = require('winston');
 
 var Game = require('mongoose').model('Game');
@@ -34,65 +33,54 @@ var error = require('../../modules/error')('api', 'comment');
 
 exports.createForRelease = function(req, res) {
 
-	var assert = api.assert(error, 'create', req.user.email, res);
-	Release.findOne({ id: req.params.id }).populate('_game').exec(assert(function(release) {
+	let comment, release;
+	Promise.try(() => {
+		return Release.findOne({ id: req.params.id }).populate('_game').exec();
 
+	}).then(r => {
+		release = r;
 		if (!release) {
-			return api.fail(res, error('No such release with ID "%s"', req.params.id), 404);
+			throw error('No such release with ID "%s"', req.params.id).status(404);
 		}
-		var comment = new Comment({
+		comment = new Comment({
 			_from: req.user._id,
 			_ref: { release: release },
 			message: req.body.message,
-			ip: req.ip || req.headers['x-forwarded-for'] || req.connection.remoteAddress || '0.0.0.0',
+			ip: req.ip || req.headers[ 'x-forwarded-for' ] || req.connection.remoteAddress || '0.0.0.0',
 			created_at: new Date()
 		});
+		return comment.validate();
 
-		comment.validate(function(err) {
-			if (err) {
-				return api.fail(res, error('Validations failed. See below for details.').errors(err.errors).warn('create'), 422);
-			}
-			comment.save(assert(function(comment) {
-				logger.info('[api|comment:create] User <%s> commented on release "%s" (%s).', req.user.email, release.id, release.name);
+	}).then(() => {
+		return comment.save();
 
-				// update counters
-				var updates = [];
-				updates.push(function(next) {
-					release.incrementCounter('comments', next);
-				});
-				updates.push(function(next) {
-					release.populate('_game', assert(function(release) {
-						release._game.incrementCounter('comments', next);
-						//Game.update({ _id: release._game.toString() }, { $inc: { 'counter.comments': 1 }}, next);
-					}));
-				});
-				updates.push(function(next) {
-					req.user.incrementCounter('comments', next);
-				});
-				updates.push(function(next) {
-					LogEvent.log(req, 'create_comment', true, { comment: comment.toSimple() }, {
-						game: release._game._id,
-						release: release._id
-					}, next);
-				});
-				async.series(updates, function(err) {
-					/* istanbul ignore if  */
-					if (err) {
-						logger.error('[model|comment] Error updating counters: %s', err.message);
-					} else {
-						logger.info('[model|comment] %d counters successfully updated.', updates.length);
-					}
+	}).then(() => {
+		logger.info('[api|comment:create] User <%s> commented on release "%s" (%s).', req.user.email, release.id, release.name);
 
-					// fetch with references
-					Comment.findById(comment._id).populate('_from').exec(assert(function(comment) {
-						return api.success(res, comment.toSimple(), 201);
+		let updates = [];
+		updates.push(release.incrementCounter('comments'));
+		updates.push(release.populate('_game').execPopulate().then(release._game.incrementCounter('comments')));
+		updates.push(req.user.incrementCounter('comments'));
+		updates.push(new Promise((resolve, reject) => {
+			LogEvent.log(req, 'create_comment', true, { comment: comment.toSimple() }, {
+				game: release._game._id,
+				release: release._id
+			}, err => {
+				if (err) {
+					return reject(err);
+				}
+				resolve(err);
+			});
+		}));
+		return Promise.all(updates);
 
-					}, 'Error fetching created comment from <%s>.'));
-				});
+	}).then(() => {
+		return Comment.findById(comment._id).populate('_from').exec();
 
-			}, 'Error saving comment from <%s>.'));
-		});
-	}, 'Error finding release in order to create comment from <%s>.'));
+	}).then(comment => {
+		return api.success(res, comment.toSimple(), 201);
+
+	}).catch(api.handleError(res, error, 'Error saving comment'));
 };
 
 exports.listForRelease = function(req, res) {

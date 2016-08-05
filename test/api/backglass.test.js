@@ -206,7 +206,7 @@ describe('The VPDB `Backglass` API', function() {
 								.as('member')
 								.send({
 									authors: [ {
-										_user: hlp.users['moderator'].id,
+										_user: hlp.users.moderator.id,
 										roles: [ 'creator' ]
 									} ],
 									versions: [ {

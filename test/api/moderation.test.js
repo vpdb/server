@@ -51,7 +51,7 @@ describe('The VPDB moderation feature', function() {
 							.send({
 								_game: game.id,
 								authors: [ {
-									_user: hlp.users['member'].id,
+									_user: hlp.users.member.id,
 									roles: [ 'creator' ]
 								} ],
 								versions: [ {

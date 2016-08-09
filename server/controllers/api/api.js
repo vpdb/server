@@ -128,7 +128,7 @@ exports.success = function(res, result, code, opts) {
 /**
  * Returns a JSON-serialized error object to the client and 500 status code per default.
  * @param {object} res Response object
- * @param {Err} err Error object
+ * @param {ErrWrapper.error} err Error object
  * @param {number} [code=500] HTTP status code (defaults to 500)
  */
 exports.fail = function(res, err, code) {
@@ -354,9 +354,9 @@ exports.checkReadOnlyFields = function(newObj, oldObj, allowedFields) {
  *    throw new Error('Internal server error.');                                // results in a 500 with message "Internal server error."
  *
  * @param {Response} res Response object
- * @param {Function} error Current error function
+ * @param {ErrWrapper.error} error Current error function
  * @param {string} message Error message if exception is generic
- * @param {RegExp|string} fieldPrefix In case of validation errors, strip this expression from the field name
+ * @param {RegExp|string} [fieldPrefix] In case of validation errors, strip this expression from the field name
  * @returns {Function} Function called by the promise with error object
  */
 exports.handleError = function(res, error, message, fieldPrefix) {

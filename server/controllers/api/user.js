@@ -20,7 +20,6 @@
 "use strict";
 
 var _ = require('lodash');
-var async = require('async');
 var logger = require('winston');
 var passport = require('passport');
 var randomstring = require('randomstring');
@@ -48,27 +47,15 @@ var config = require('../../modules/settings').current;
  */
 exports.view = function(req, res) {
 
-	getACLs(req.user, function(err, acls) {
+	let acls;
+	return Promise.try(() => getACLs(req.user)).then(a => {
+		acls = a;
+		return quota.getCurrent(req.user);
 
-		/* istanbul ignore next  */
-		if (err) {
-			return api.fail(res, error(err, 'Error while retrieving ACLs for user "%s"', req.user.email)
-				.display('Internal server error')
-				.log('view'));
-		}
+	}).then(quota => {
+		api.success(res, _.extend(req.user.toDetailed(), acls, { quota: quota }), 200);
 
-		quota.getCurrent(req.user, function(err, quota) {
-
-			/* istanbul ignore next  */
-			if (err) {
-				return api.fail(res, error(err, 'Error while retrieving quota for user "%s"', req.user.email)
-					.display('Internal server error')
-					.log('view'));
-			}
-
-			api.success(res, _.extend(req.user.toDetailed(), acls, { quota: quota }), 200);
-		});
-	});
+	}).catch(api.handleError(res, error, 'Error retrieving user'));
 };
 
 
@@ -80,27 +67,32 @@ exports.view = function(req, res) {
  */
 exports.update = function(req, res) {
 
+	const updateableFields = [ 'name', 'location', 'email', 'preferences', 'channel_config' ];
+
 	// api test behavior
-	var testMode = process.env.NODE_ENV === 'test';
+	let testMode = process.env.NODE_ENV === 'test';
+	let currentUser = req.user;
+	let errors = {};
+	let user, updatedUser;
 
-	var currentUser = req.user;
-	var updateableFields = [ 'name', 'location', 'email', 'preferences', 'channel_config' ];
-	var assert = api.assert(error, 'update', currentUser.email, res);
+	return Promise.try(() => {
+		return User.findById(currentUser._id).exec();
 
-	User.findById(currentUser._id, assert(function(updatedUser) {
-
+	}).then(u => {
+		updatedUser = u;
 		_.extend(updatedUser, _.pick(req.body, updateableFields));
-
-		var errors = {};
 
 		// CHANGE PASSWORD
 		if (req.body.password && !req.body.username) {
 
 			// check for current password
 			if (!req.body.current_password) {
-				errors.current_password = { message: 'You must provide your current password.', path: 'current_password' };
+				errors.current_password = {
+					message: 'You must provide your current password.',
+					path: 'current_password'
+				};
 
-			} else  {
+			} else {
 				// change password
 				if (updatedUser.authenticate(req.body.current_password)) {
 					updatedUser.password = req.body.password;
@@ -131,93 +123,99 @@ exports.update = function(req, res) {
 
 		// CHANNEL CONFIG
 		if (req.body.channel_config && !pusher.isUserEnabled(updatedUser)) {
-			errors.channel_config = { message: 'Realtime features are not enabled for this account.', path: 'channel_config' };
+			errors.channel_config = {
+				message: 'Realtime features are not enabled for this account.',
+				path: 'channel_config'
+			};
 		}
 
-		updatedUser.validate(function(validationErr) {
+		// validate
+		return updatedUser.validate().catch(validationErr => validationErr);
 
-			if (validationErr || _.keys(errors).length) {
-				var errs = _.extend(errors, validationErr ? validationErr.errors : {});
-				return api.fail(res, error('Validation failed:').errors(errs).warn('update'), 422);
-			}
+	}).then(validationErr => {
 
-			// EMAIL CHANGE
-			if (currentUser.email !== updatedUser.email) {
+		// merge errors
+		if (validationErr || _.keys(errors).length) {
+			let errs = _.extend(errors, validationErr ? validationErr.errors : {});
+			throw error('Validation failed:').errors(errs).warn('update').status(422);
+		}
 
-				// there ALREADY IS a pending request.
-				if (currentUser.email_status && currentUser.email_status.code === 'pending_update') {
+		// EMAIL CHANGE
+		if (currentUser.email !== updatedUser.email) {
 
-					// just ignore if it's a re-post of the same address (double patch for the same new email doesn't re-trigger the confirmation mail)
-					if (currentUser.email_status.value === updatedUser.email) {
-						updatedUser.email = currentUser.email;
+			// there ALREADY IS a pending request.
+			if (currentUser.email_status && currentUser.email_status.code === 'pending_update') {
 
-					// otherwise fail
-					} else {
-						return api.fail(res, error().errors([{ message: 'You cannot update an email address that is still pending confirmation. If your previous change was false, reset the email first by providing the original value.', path: 'email' }]), 422);
-					}
+				// just ignore if it's a re-post of the same address (double patch for the same new email doesn't re-trigger the confirmation mail)
+				if (currentUser.email_status.value === updatedUser.email) {
+					updatedUser.email = currentUser.email;
+
+				// otherwise fail
+				} else {
+					throw error().errors([{ message: 'You cannot update an email address that is still pending confirmation. If your previous change was false, reset the email first by providing the original value.', path: 'email' }]).status(422);
+				}
+
+			} else {
+				// check if we've already validated this address
+				if (_.includes(currentUser.validated_emails, updatedUser.email)) {
+					updatedUser.email_status = { code: 'confirmed' };
 
 				} else {
-					// check if we've already validated this address
-					if (_.includes(currentUser.validated_emails, updatedUser.email)) {
-						updatedUser.email_status = { code: 'confirmed' };
-
-					} else {
-						updatedUser.email_status = {
-							code: 'pending_update',
-							token: randomstring.generate(16),
-							expires_at: new Date(new Date().getTime() + 86400000), // 1d valid
-							value: updatedUser.email
-						};
-						updatedUser.email = currentUser.email;
-						LogUser.success(req, updatedUser, 'update_email_request', { 'old': { email: currentUser.email }, 'new': { email: updatedUser.email_status.value }});
-						mailer.emailUpdateConfirmation(updatedUser);
-					}
-				}
-
-			} else if (req.body.email) {
-				// in here it's a special case:
-				// the email has been posted but it's the same as the current
-				// email. this situation is meant for aborting a pending
-				// confirmation request and set the email back to what it was.
-
-				// so IF we really are pending, simply set back the status to "confirmed".
-				if (currentUser.email_status && currentUser.email_status.code === 'pending_update') {
-					logger.warn('[api|user:update] Canceling email confirmation with token "%s" for user <%s> -> <%s> (%s).', currentUser.email_status.token, currentUser.email, currentUser.email_status.value, currentUser.id);
-					LogUser.success(req, updatedUser, 'cancel_email_update', { email: currentUser.email, email_canceled: currentUser.email_status.value });
-					updatedUser.email_status = { code: 'confirmed' };
+					updatedUser.email_status = {
+						code: 'pending_update',
+						token: randomstring.generate(16),
+						expires_at: new Date(new Date().getTime() + 86400000), // 1d valid
+						value: updatedUser.email
+					};
+					updatedUser.email = currentUser.email;
+					LogUser.success(req, updatedUser, 'update_email_request', { 'old': { email: currentUser.email }, 'new': { email: updatedUser.email_status.value }});
+					mailer.emailUpdateConfirmation(updatedUser);
 				}
 			}
 
-			// save
-			updatedUser.save(assert(function(user) {
+		} else if (req.body.email) {
+			// in here it's a special case:
+			// the email has been posted but it's the same as the current
+			// email. this situation is meant for aborting a pending
+			// confirmation request and set the email back to what it was.
 
-				LogUser.successDiff(req, updatedUser, 'update', _.pick(currentUser.toObj(), updateableFields), updatedUser);
+			// so IF we really are pending, simply set back the status to "confirmed".
+			if (currentUser.email_status && currentUser.email_status.code === 'pending_update') {
+				logger.warn('[api|user:update] Canceling email confirmation with token "%s" for user <%s> -> <%s> (%s).', currentUser.email_status.token, currentUser.email, currentUser.email_status.value, currentUser.id);
+				LogUser.success(req, updatedUser, 'cancel_email_update', { email: currentUser.email, email_canceled: currentUser.email_status.value });
+				updatedUser.email_status = { code: 'confirmed' };
+			}
+		}
 
-				// log
-				if (req.body.password) {
-					if (req.body.username) {
-						logger.info('[api|user:update] Successfully added local credentials with username "%s" to user <%s> (%s).', user.username, user.email, user.id);
-					} else {
-						logger.info('[api|user:update] Successfully changed password of user "%s".', user.username);
-					}
-				}
-				req.user = user;
+		return updatedUser.save();
 
-				// if all good, enrich with ACLs
-				getACLs(user, assert(function(acls) {
+	}).then(u => {
+		user = u;
+		LogUser.successDiff(req, updatedUser, 'update', _.pick(currentUser.toObj(), updateableFields), updatedUser);
 
-					// return result now and send email afterwards
-					if (testMode && req.body.returnEmailToken) {
-						api.success(res, _.extend(user.toDetailed(), acls, { email_token: user.email_status.token }), 200);
-					} else {
-						api.success(res, _.extend(user.toDetailed(), acls), 200);
-					}
+		// log
+		if (req.body.password) {
+			if (req.body.username) {
+				logger.info('[api|user:update] Successfully added local credentials with username "%s" to user <%s> (%s).', user.username, user.email, user.id);
+			} else {
+				logger.info('[api|user:update] Successfully changed password of user "%s".', user.username);
+			}
+		}
+		req.user = user;
 
-				}, 'Error retrieving ACLs for user <%s>.'));
-			}, 'Error saving user <%s>.'));
-		});
+		// if all good, enrich with ACLs
+		return getACLs(user);
 
-	}, 'Error fetching current user <%s>.'));
+	}).then(acls => {
+
+		// return result now and send email afterwards
+		if (testMode && req.body.returnEmailToken) {
+			api.success(res, _.extend(user.toDetailed(), acls, { email_token: user.email_status.token }), 200);
+		} else {
+			api.success(res, _.extend(user.toDetailed(), acls), 200);
+		}
+
+	}).catch(api.handleError(res, error, 'Error updating user'));
 };
 
 
@@ -229,172 +227,115 @@ exports.update = function(req, res) {
  */
 exports.authenticate = function(req, res) {
 
-	async.waterfall([
+	let user, how;
+	return Promise.try(() => {
 
-		/**
-		 * Try to authenticate with user/pass
-		 *
-		 * Skips if no username or password are provided and fails if provided but don't check out
-		 * @param next
-		 * @returns {*}
-		 */
-		function(next) {
-
-			if (!req.body.username || !req.body.password) {
-				return next(null, null);
-			}
-
-			User.findOne({ username: req.body.username }, function(err, user) {
-
-				/* istanbul ignore next  */
-				if (err) {
-					return next(error(err, 'Error while searching for user "%s"', req.body.username)
-							.display('Internal server error')
-							.log('authenticate'));
+		// try to authenticate with user/pass
+		if (!req.body.username || !req.body.password) {
+			return null;
+		}
+		return User.findOne({ username: req.body.username }).exec().then(usr => {
+			if (!usr || !usr.authenticate(req.body.password)) {
+				if (usr) {
+					LogUser.failure(req, usr, 'authenticate', { provider: 'local' }, null, 'Invalid password.');
 				}
-
-				if (!user || !user.authenticate(req.body.password)) {
-
-					if (user) {
-						LogUser.failure(req, user, 'authenticate', { provider: 'local' }, null, 'Invalid password.');
-					}
-
-					return next(error('Authentication denied for user "%s" (%s)', req.body.username, user ? 'password' : 'username')
-							.display('Wrong username or password')
-							.warn('authenticate')
-							.status(401));
-				}
-				next(null, user);
-			});
-		},
-
-		/**
-		 * Try to authenticate with login token
-		 * @param user User if authenticated with login/pass (if not null, skip)
-		 * @param next
-		 * @returns {*}
-		 */
-		function(user, next) {
-
-			// check if already authenticated by user/pass
-			if (user) {
-				return next(null, user, 'password');
-			}
-
-			if (!req.body.token) {
-				return next(null, null, null);
-			}
-
-			// fail if token has incorrect syntax
-			if (!/[0-9a-f]{32,}/i.test(req.body.token)) {
-				return next(error('Ignoring auth with invalid token %s', req.body.token)
-						.display('Incorrect login token.')
-						.warn('authenticate')
-						.status(400));
-			}
-
-			Token.findOne({ token: req.body.token }).populate('_created_by').exec(function(err, token) {
-
-				/* istanbul ignore next  */
-				if (err) {
-					return next(error(err, 'Error while searching for token "%s"', req.body.token)
-							.display('Internal server error')
-							.log('authenticate'));
-				}
-
-				// fail if not found
-				if (!token) {
-					return next(error('Invalid token.').status(401));
-				}
-
-				// fail if not access token
-				if (token.type !== 'login') {
-					return next(error('Token must be a login token.').status(401));
-				}
-
-				// fail if token expired
-				if (token.expires_at.getTime() < new Date().getTime()) {
-					return next(error('Token has expired.').status(401));
-				}
-
-				// fail if token inactive
-				if (!token.is_active) {
-					return next(error('Token is inactive.').status(401));
-				}
-
-				next(null, token._created_by, 'token');
-
-			});
-		},
-
-		/**
-		 * Validate user. If user is set, either user/pass were correct or a
-		 * valid token was used.
-		 *
-		 * @param {User} user Authenticated user
-		 * @param {string} how How the user was authenticated, "password" or "token"
-		 * @param next
-		 */
-		function(user, how, next) {
-
-			if (!user) {
-				return next(error('Ignored incomplete authentication request')
-					.display('You must supply a username and password or a login token')
+				throw error('Authentication denied for user "%s" (%s)', req.body.username, usr ? 'password' : 'username')
+					.display('Wrong username or password')
 					.warn('authenticate')
-					.status(400));
+					.status(401);
 			}
+			user = usr;
+			how = 'password';
+		});
 
-			// fail if user inactive
-			if (!user.is_active) {
-				if (user.email_status && user.email_status.code === 'pending_registration') {
-					LogUser.failure(req, user, 'authenticate', { provider: 'local' }, null, 'Inactive account due to pending email confirmation.');
-					return next(error('User <%s> tried to login with unconfirmed email address.', user.email)
-							.display('Your account is inactive until you confirm your email address <%s>. If you did not get an email from <%s>, please contact an administrator.', user.email, config.vpdb.email.sender.email)
-							.warn('authenticate')
-							.status(403));
+	}).then(() => {
 
-				} else {
-					LogUser.failure(req, user, 'authenticate', { provider: 'local' }, null, 'Inactive account.');
-					return next(error('User <%s> is disabled, refusing access', user.email)
-							.display('Inactive account. Please contact an administrator')
-							.warn('authenticate')
-							.status(403));
-				}
-			}
-
-			// all is good, generate token and return!
-			var now = new Date();
-			var expires = new Date(now.getTime() + config.vpdb.apiTokenLifetime);
-			var token = auth.generateApiToken(user, now, how !== 'password');
-
-			LogUser.success(req, user, 'authenticate', { provider: 'local', how: how });
-			logger.info('[api|user:authenticate] User <%s> successfully authenticated using %s.', user.email, how);
-			getACLs(user, function(err, acls) {
-
-				/* istanbul ignore next  */
-				if (err) {
-					return next(error(err, 'Error retrieving ACLs for user <%s>', user.email)
-							.display('Internal server error')
-							.log('authenticate'));
-				}
-
-				// all good!
-				next(null, {
-					token: token,
-					expires: expires,
-					user: _.extend(user.toSimple(), acls)
-				});
-			});
+		// check if already authenticated by user/pass
+		if (user) {
+			return;
 		}
 
-	], function(err, result) {
-
-		if (err) {
-			return api.fail(res, err, err.code);
+		// if no token provided, fail fast.
+		if (!req.body.token) {
+			throw error('Ignored incomplete authentication request')
+				.display('You must supply a username and password or a login token')
+				.warn('authenticate')
+				.status(400);
 		}
+
+		// fail if token has incorrect syntax
+		if (!/[0-9a-f]{32,}/i.test(req.body.token)) {
+			throw error('Ignoring auth with invalid token %s', req.body.token)
+				.display('Incorrect login token.')
+				.warn('authenticate')
+				.status(400);
+		}
+
+		return Token.findOne({ token: req.body.token }).populate('_created_by').exec().then(token => {
+
+			// fail if not found
+			if (!token) {
+				throw error('Invalid token.').status(401);
+			}
+
+			// fail if not access token
+			if (token.type !== 'login') {
+				throw error('Token must be a login token.').status(401);
+			}
+
+			// fail if token expired
+			if (token.expires_at.getTime() < new Date().getTime()) {
+				throw error('Token has expired.').status(401);
+			}
+
+			// fail if token inactive
+			if (!token.is_active) {
+				throw error('Token is inactive.').status(401);
+			}
+
+			user = token._created_by;
+			how = 'token';
+		});
+
+	}).then(() => {
+
+		// fail if user inactive
+		if (!user.is_active) {
+			if (user.email_status && user.email_status.code === 'pending_registration') {
+				LogUser.failure(req, user, 'authenticate', { provider: 'local' }, null, 'Inactive account due to pending email confirmation.');
+				throw error('User <%s> tried to login with unconfirmed email address.', user.email)
+					.display('Your account is inactive until you confirm your email address <%s>. If you did not get an email from <%s>, please contact an administrator.', user.email, config.vpdb.email.sender.email)
+					.warn('authenticate')
+					.status(403);
+
+			} else {
+				LogUser.failure(req, user, 'authenticate', { provider: 'local' }, null, 'Inactive account.');
+				throw error('User <%s> is disabled, refusing access', user.email)
+					.display('Inactive account. Please contact an administrator')
+					.warn('authenticate')
+					.status(403);
+			}
+		}
+
+		// all is good, generate token and return!
+		const now = new Date();
+		const expires = new Date(now.getTime() + config.vpdb.apiTokenLifetime);
+		const token = auth.generateApiToken(user, now, how !== 'password');
+
+		LogUser.success(req, user, 'authenticate', { provider: 'local', how: how });
+		logger.info('[api|user:authenticate] User <%s> successfully authenticated using %s.', user.email, how);
+		return getACLs(user).then(acls => {
+			return {
+				token: token,
+				expires: expires,
+				user: _.extend(user.toSimple(), acls)
+			};
+		});
+
+	}).then(result => {
 		api.success(res, result, 200);
-	});
 
+	}).catch(api.handleError(res, error, 'Error authenticating user'));
 };
 
 
@@ -406,25 +347,27 @@ exports.authenticate = function(req, res) {
  */
 exports.confirm = function(req, res) {
 
-	var assert = api.assert(error, 'confirm', req.params.tkn, res);
-	User.findOne({ 'email_status.token': req.params.tkn }, assert(function(user) {
+	let user, currentCode, logEvent, successMsg, failMsg = 'No such token or token expired.';
+	return Promise.try(() => {
+		return User.findOne({ 'email_status.token': req.params.tkn }).exec();
 
-		var logEvent, successMsg, failMsg = 'No such token or token expired.';
+	}).then(u => {
+		user = u;
+
 		if (!user) {
-			return api.fail(res, error('No user found with email token "%s".', req.params.tkn)
+			throw error('No user found with email token "%s".', req.params.tkn)
 				.display(failMsg)
-				.warn('confirm'),
-			404);
+				.warn('confirm')
+				.status(404);
 		}
 		if (user.email_status.expires_at.getTime() < new Date().getTime()) {
-			return api.fail(res, error('Email token "%s" for user <%s> is expired (%s).', req.params.tkn, user.email, user.email_status.expires_at)
+			throw error('Email token "%s" for user <%s> is expired (%s).', req.params.tkn, user.email, user.email_status.expires_at)
 				.display(failMsg)
-				.warn('confirm'),
-			404);
+				.warn('confirm')
+				.status(404);
 		}
 
-		var currentCode = user.email_status.code;
-		assert = api.assert(error, 'confirm', user.email, res);
+		currentCode = user.email_status.code;
 
 		if (currentCode === 'pending_registration') {
 			user.is_active = true;
@@ -440,27 +383,27 @@ exports.confirm = function(req, res) {
 
 		} else {
 			/* istanbul ignore next  */
-			return api.fail(res, error('Unknown email status code "%s"', user.email_status.code)
+			throw error('Unknown email status code "%s"', user.email_status.code)
 				.display('Internal server error, please contact an administrator.')
-				.log(),
-			500);
+				.log();
 		}
 		user.email_status = { code: 'confirmed' };
 		user.validated_emails = user.validated_emails || [];
 		user.validated_emails.push(user.email);
 		user.validated_emails = _.uniq(user.validated_emails);
 
-		user.save(assert(function() {
-			api.success(res, { message: successMsg, previous_code: currentCode });
-			LogUser.success(req, user, logEvent, { email: user.email });
+		return user.save();
 
-			if (logEvent === 'registration_email_confirmed' && config.vpdb.email.confirmUserEmail) {
-				mailer.welcomeLocal(user);
-			}
+	}).then(() => {
 
-		}, 'Error saving user <%s>.'));
-	}, 'Error retrieving user with email token "%s".'));
+		api.success(res, { message: successMsg, previous_code: currentCode });
+		LogUser.success(req, user, logEvent, { email: user.email });
 
+		if (logEvent === 'registration_email_confirmed' && config.vpdb.email.confirmUserEmail) {
+			mailer.welcomeLocal(user);
+		}
+
+	}).catch(api.handleError(res, error, 'Error confirming user email'));
 };
 
 
@@ -525,12 +468,7 @@ function passportCallback(req, res) {
 		var token = auth.generateApiToken(user, now, false);
 
 		logger.info('[api|%s:authenticate] User <%s> successfully authenticated.', req.params.strategy, user.email);
-		getACLs(user, function(err, acls) {
-			/* istanbul ignore if  */
-			if (err) {
-				// TODO check if it's clever to reveal anything here
-				return api.fail(res, err, 500);
-			}
+		getACLs(user).then(acls => {
 			api.success(res, {
 				token: token,
 				expires: expires,
@@ -547,24 +485,11 @@ function passportCallback(req, res) {
  * @param {User} user
  * @param {function} done done(Error, object}
  */
-function getACLs(user, done) {
-
-	acl.userRoles(user.id, function(err, roles) {
-		/* istanbul ignore if  */
-		if (err) {
-			return done(error(err, 'Error reading ACL roles for user <%s>', user.id).log('profile'));
-		}
-		acl.whatResources(roles, function(err, resources) {
-			/* istanbul ignore if  */
-			if (err) {
-				return done(error(err, 'Error ACL reading resources').log('profile'));
-			}
-			acl.allowedPermissions(user.id, _.keys(resources), function(err, permissions) {
-				/* istanbul ignore if  */
-				if (err) {
-					return done(error(err, 'Error reading ACL permissions for user <%s>', user.id).log('profile'));
-				}
-				return done(null, { permissions: permissions });
+function getACLs(user) {
+	return acl.userRoles(user.id).then(roles => {
+		return acl.whatResources(roles).then(resources => {
+			return acl.allowedPermissions(user.id, _.keys(resources)).then(permissions => {
+				return { permissions: permissions };
 			});
 		});
 	});

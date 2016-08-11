@@ -20,7 +20,6 @@
 "use strict";
 
 var _ = require('lodash');
-var async = require('async');
 var crypto = require('crypto');
 var logger = require('winston');
 var shortId = require('shortid32');
@@ -207,95 +206,86 @@ UserSchema.path('location').validate(function(location) {
 }, 'Location must not be longer than 100 characters.');
 
 UserSchema.path('provider').validate(function(provider, callback) {
-	var that = this;
 
-	// validate presence of password. can't do that in the password validator
-	// below because it's not run when there's no value (and it can be null,
-	// if auth strategy is not local). so do it here, invalidate password if
-	// necessary but return true so provider passes.
-	if (this.isNew && provider === 'local') {
-		if (!this._password) {
-			this.invalidate('password', 'Password is required.');
-		}
-		// idem for username and email
-		if (!this.username) {
-			this.invalidate('username', 'Username is required.');
-		}
-		if (!this.email) {
-			this.invalidate('email', 'Email is required.');
-		}
-	}
-	if (provider === 'local') {
-		if (!_.isString(this.username)) {
-			this.invalidate('username', 'Username must be a string between 3 and 30 characters.');
-		} else {
-			if (!validator.isLength(this.username, 3, 30)) {
-				this.invalidate('username', 'Length of username must be between 3 and 30 characters.');
+	return Promise.try(() => {
+
+		// validate presence of password. can't do that in the password validator
+		// below because it's not run when there's no value (and it can be null,
+		// if auth strategy is not local). so do it here, invalidate password if
+		// necessary but return true so provider passes.
+		if (this.isNew && provider === 'local') {
+			if (!this._password) {
+				this.invalidate('password', 'Password is required.');
 			}
-			if (!validator.matches(this.username, /^[a-z0-9\._]+$/i)) {
-				this.invalidate('username', 'Username must only contain alpha-numeric characters including dot and underscore.');
+			// idem for username and email
+			if (!this.username) {
+				this.invalidate('username', 'Username is required.');
+			}
+			if (!this.email) {
+				this.invalidate('email', 'Email is required.');
 			}
 		}
-	}
-
-	// TODO put this into separate validation when this is fixed: https://github.com/LearnBoost/mongoose/issues/1919
-	if (this.preferences && this.preferences.tablefile_name) {
-		if (!this.preferences.tablefile_name.trim()) {
-			this.invalidate('preferences.tablefile_name', 'Must not be empty if set.');
-		}
-		var rg1 = /^[^\\/:\*\?"<>\|]+$/;                     // forbidden characters \ / : * ? " < > |
-		var rg2 = /^\./;                                     // cannot start with dot (.)
-		var rg3 = /^(nul|prn|con|lpt[0-9]|com[0-9])(\.|$)/i; // forbidden file names
-		if (!rg1.test(this.preferences.tablefile_name) || rg2.test(this.preferences.tablefile_name) || rg3.test(this.preferences.tablefile_name)) {
-			this.invalidate('preferences.tablefile_name', 'Must be a valid windows filename, which "' + this.preferences.tablefile_name + '" is not.');
-		}
-	}
-	if (this.preferences && this.preferences.flavor_tags) {
-		_.each(flavor.values, function(flavorType, flavorId) {  // flavorId: 'orientation', flavorType: { fs: { name: 'Portrait', .. }, ws: { ... } }
-			if (that.preferences.flavor_tags[flavorId]) {
-				_.each(flavorType, function(flavorAttrs, flavorValue) { // flavorValue: 'fs', flavorAttrs: { name: 'Portrait', .. }
-					if (_.isUndefined(that.preferences.flavor_tags[flavorId][flavorValue])) {
-						that.invalidate('preferences.flavor_tags.' + flavorId + '.' + flavorValue, 'Must be provided when providing preferences.flavor_tags.' + flavorId + '.');
-					}
-				});
+		if (provider === 'local') {
+			if (!_.isString(this.username)) {
+				this.invalidate('username', 'Username must be a string between 3 and 30 characters.');
 			} else {
-				that.invalidate('preferences.flavor_tags.' + flavorId, 'Must be provided when providing preferences.flavor_tags.');
-			}
-		});
-	}
-
-	async.waterfall([
-		function(next) {
-
-			// TODO put this into separate validation when this is fixed: https://github.com/LearnBoost/mongoose/issues/1919
-			if (that.channel_config && that.channel_config.subscribed_releases) {
-				if (!_.isArray(that.channel_config.subscribed_releases)) {
-					that.invalidate('channel_config.subscribed_releases', 'Must be an array of release IDs.');
-					return next();
+				if (!validator.isLength(this.username, 3, 30)) {
+					this.invalidate('username', 'Length of username must be between 3 and 30 characters.');
 				}
-				var i = 0;
-				var Release = mongoose.model('Release');
-				async.each(that.channel_config.subscribed_releases, function(releaseId, next) {
-					Release.findOne({ id: releaseId }, function(err, rls) {
-						/* istanbul ignore if  */
-						if (err) {
-							logger.error('[model|user] Error fetching release %s.', releaseId);
-						} else if (!rls) {
-							that.invalidate('channel_config.subscribed_releases.' + i, 'Release with ID "' + releaseId + '" does not exist.');
-						}
-						i++;
-						next();
-					});
-
-				}, next);
-
-			} else {
-				next();
+				if (!validator.matches(this.username, /^[a-z0-9\._]+$/i)) {
+					this.invalidate('username', 'Username must only contain alpha-numeric characters including dot and underscore.');
+				}
 			}
 		}
-	], function() {
-		callback(true);
-	});
+
+		// TODO put this into separate validation when this is fixed: https://github.com/LearnBoost/mongoose/issues/1919
+		if (this.preferences && this.preferences.tablefile_name) {
+			if (!this.preferences.tablefile_name.trim()) {
+				this.invalidate('preferences.tablefile_name', 'Must not be empty if set.');
+			}
+			let rg1 = /^[^\\/:\*\?"<>\|]+$/;                     // forbidden characters \ / : * ? " < > |
+			let rg2 = /^\./;                                     // cannot start with dot (.)
+			let rg3 = /^(nul|prn|con|lpt[0-9]|com[0-9])(\.|$)/i; // forbidden file names
+			if (!rg1.test(this.preferences.tablefile_name) || rg2.test(this.preferences.tablefile_name) || rg3.test(this.preferences.tablefile_name)) {
+				this.invalidate('preferences.tablefile_name', 'Must be a valid windows filename, which "' + this.preferences.tablefile_name + '" is not.');
+			}
+		}
+		if (this.preferences && this.preferences.flavor_tags) {
+			_.each(flavor.values, (flavorType, flavorId) => {  // flavorId: 'orientation', flavorType: { fs: { name: 'Portrait', .. }, ws: { ... } }
+				if (this.preferences.flavor_tags[ flavorId ]) {
+					_.each(flavorType, (flavorAttrs, flavorValue) => { // flavorValue: 'fs', flavorAttrs: { name: 'Portrait', .. }
+						if (_.isUndefined(this.preferences.flavor_tags[ flavorId ][ flavorValue ])) {
+							this.invalidate('preferences.flavor_tags.' + flavorId + '.' + flavorValue, 'Must be provided when providing preferences.flavor_tags.' + flavorId + '.');
+						}
+					});
+				} else {
+					this.invalidate('preferences.flavor_tags.' + flavorId, 'Must be provided when providing preferences.flavor_tags.');
+				}
+			});
+		}
+
+		// TODO put this into separate validation when this is fixed: https://github.com/LearnBoost/mongoose/issues/1919
+		if (this.channel_config && this.channel_config.subscribed_releases) {
+			if (!_.isArray(this.channel_config.subscribed_releases)) {
+				this.invalidate('channel_config.subscribed_releases', 'Must be an array of release IDs.');
+				return;
+			}
+			let i = 0;
+			const Release = mongoose.model('Release');
+			return Promise.each(this.channel_config.subscribed_releases, releaseId => {
+				return Release.findOne({ id: releaseId }).exec().then(rls => {
+					if (!rls) {
+						this.invalidate('channel_config.subscribed_releases.' + i, 'Release with ID "' + releaseId + '" does not exist.');
+					}
+					i++;
+				});
+
+			});
+		}
+	}).then(() => {
+		return true;
+
+	}).nodeify((err, result) => callback(result));
 
 }, null);
 

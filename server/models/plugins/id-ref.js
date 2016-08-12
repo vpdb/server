@@ -19,9 +19,8 @@
 
 "use strict";
 
-var _ = require('lodash');
-var async = require('async');
-var mongoose = require('mongoose');
+const _ = require('lodash');
+const mongoose = require('mongoose');
 
 module.exports = function(schema, options) {
 
@@ -53,46 +52,45 @@ module.exports = function(schema, options) {
 		}
 
 		if (validateFunction) {
-			schema.path(path).validate(function (value, respond) {
-				validateFunction(this, path, refModelName, value, conditions, respond);
+			schema.path(path).validate(function(value, respond) {
+				return Promise.try(() => {
+					return validateFunction(this, path, refModelName, value, conditions);
+
+				}).nodeify((err, result) => respond(result));
+
+
 			}, message);
 		}
 	});
 };
 
-function executeQuery(query, conditions, validateValue, respond) {
+function executeQuery(query, conditions, validateValue) {
 	for (var fieldName in conditions) {
 		query.where(fieldName, conditions[fieldName]);
 	}
-	query.exec(function (err, count) {
-		if (err) {
-			return respond(err);
-		}
-		respond(count === validateValue);
-	});
+	return query.exec().then(count => count === validateValue);
 }
 
-function validateId(doc, path, refModelName, value, conditions, respond) {
+function validateId(doc, path, refModelName, value, conditions) {
 	if (value === null) {
-		return respond(true);
+		return Promise.resolve(true);
 	}
-	var refModel = mongoose.model(refModelName);
-	var query = refModel.count({_id: value});
-	executeQuery(query, conditions, 1, respond);
+	const refModel = mongoose.model(refModelName);
+	const query = refModel.count({_id: value});
+	return executeQuery(query, conditions, 1);
 }
 
-function validateIdArray(doc, path, refModelName, values, conditions, respond) {
+function validateIdArray(doc, path, refModelName, values, conditions) {
 	if (values.length === 0) {
-		return respond(true);
+		return Promise.resolve(true);
 	}
 	var n = 0;
-	async.eachSeries(values, function(value, next) {
-		validateId(doc, path, refModelName, value, conditions, function(valid) {
+	return Promise.each(values, value => {
+		return validateId(doc, path, refModelName, value, conditions).then(valid => {
 			if (!valid) {
 				doc.invalidate(path + '.' + n, 'No such ' + refModelName + ' with id "' + value + '".', value);
 			}
 			n++;
-			next();
 		});
-	}, function() { respond(true); });
+	}).then(() => true);
 }

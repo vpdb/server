@@ -20,12 +20,10 @@
 "use strict";
 
 var _ = require('lodash');
-var async = require('async');
 var logger = require('winston');
 var mongoose = require('mongoose');
 
 var common = require('./common');
-var error = require('../../modules/error')('model', 'file-ref');
 
 //noinspection JSUnresolvedVariable
 module.exports = function(schema, options) {
@@ -119,24 +117,22 @@ module.exports = function(schema, options) {
 	 */
 	schema.post('remove', function(obj, done) {
 
-		var File = mongoose.model('File');
-		var objPaths = _.keys(common.explodePaths(obj, fileRefs));
-		var ids = [];
-		objPaths.forEach(function(path) {
-			var id = _.get(obj, path + '._id');
-			if (id) {
-				ids.push(id);
-			}
-		});
-		File.find({ _id: { $in: ids }}, function(err, files) {
-			/* istanbul ignore if */
-			if (err) {
-				return done(error(err, 'Error finding referenced files').log());
-			}
+		return Promise.try(() => {
+			const File = mongoose.model('File');
+			let objPaths = _.keys(common.explodePaths(obj, fileRefs));
+			let ids = [];
+			objPaths.forEach(path => {
+				let id = _.get(obj, path + '._id');
+				if (id) {
+					ids.push(id);
+				}
+			});
+			return File.find({ _id: { $in: ids } }).exec();
+
+		}).then(files => {
 			// remove file references from db
-			async.each(files, function(file, next) {
-				file.remove(next);
-			}, done);
-		});
+			return Promise.each(files, file => file.remove());
+
+		}).nodeify(done);
 	});
 };

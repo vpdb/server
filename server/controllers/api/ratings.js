@@ -19,17 +19,17 @@
 
 "use strict";
 
-var _ = require('lodash');
-var logger = require('winston');
+const _ = require('lodash');
+const logger = require('winston');
 
-var Game = require('mongoose').model('Game');
-var Release = require('mongoose').model('Release');
-var Rating = require('mongoose').model('Rating');
-var LogEvent = require('mongoose').model('LogEvent');
-var api = require('./api');
-var metrics = require('../../modules/metrics');
+const Game = require('mongoose').model('Game');
+const Release = require('mongoose').model('Release');
+const Rating = require('mongoose').model('Rating');
+const LogEvent = require('mongoose').model('LogEvent');
+const api = require('./api');
+const metrics = require('../../modules/metrics');
 
-var error = require('../../modules/error')('api', 'rating');
+const error = require('../../modules/error')('api', 'rating');
 
 exports.createForGame = function(req, res) {
 	create(req, res, 'game', find(Game, 'game'));
@@ -106,7 +106,7 @@ function create(req, res, ref, find) {
 			}
 			rating.save(assert(function(rating) {
 
-				updateRatedEntity(req, res, ref, assert, entity, rating, 201);
+				updateRatedEntity(req, res, ref, entity, rating, 201);
 			}, 'Error saving rating.'));
 		});
 	});
@@ -139,26 +139,25 @@ function update(req, res, ref, find, titleAttr) {
 
 			rating.save(assert(function(rating) {
 
-				updateRatedEntity(req, res, ref, assert, entity, rating, 200);
+				updateRatedEntity(req, res, ref, entity, rating, 200);
 			}, 'Error saving rating.'));
 		});
 	});
 }
 
 /**
- * Updates an entity with new rating data.
+ * Updates an entity with new rating data and returns the result.
  *
  * @param {Request} req
  * @param {Response} res
  * @param {string} ref Reference name
- * @param {function} assert Assert object
  * @param {object} entity Found entity
  * @param {object} rating New rating
  * @param {int} status Success status, either 200 or 201.
  */
-function updateRatedEntity(req, res, ref, assert, entity, rating, status) {
+function updateRatedEntity(req, res, ref, entity, rating, status) {
 
-	metrics.onRatingUpdated(ref, entity, rating, assert(function(result) {
+	metrics.onRatingUpdated(ref, entity, rating).then(result => {
 
 		// if not 201, add modified date
 		if (status === 200) {
@@ -172,7 +171,7 @@ function updateRatedEntity(req, res, ref, assert, entity, rating, status) {
 			return api.success(res, result, status);
 		});
 
-	}, 'Error updating rated entity.'));
+	}).catch(api.handleError(res, error, 'Error rating ' + entity + '.'));
 }
 
 /**

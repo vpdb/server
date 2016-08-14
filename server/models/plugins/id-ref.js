@@ -25,8 +25,8 @@ const mongoose = require('mongoose');
 module.exports = function(schema, options) {
 
 	options = options || {};
-	var fields = options.fields || [];
-	var message = options.message || "{PATH} references a non existing ID";
+	const fields = options.fields || [];
+	const message = options.message || "{PATH} references a non existing ID";
 
 	schema.eachPath(function (path, schemaType) {
 		var validateFunction = null;
@@ -84,7 +84,7 @@ function validateIdArray(doc, path, refModelName, values, conditions) {
 	if (values.length === 0) {
 		return Promise.resolve(true);
 	}
-	var n = 0;
+	let n = 0;
 	return Promise.each(values, value => {
 		return validateId(doc, path, refModelName, value, conditions).then(valid => {
 			if (!valid) {

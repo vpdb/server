@@ -19,16 +19,15 @@
 
 "use strict";
 
-var _ = require('lodash');
-var redis = require('redis');
-var async = require('async');
-var logger = require('winston');
+const redis = require('redis');
+const logger = require('winston');
 
-var Rating = require('mongoose').model('Rating');
+const Rating = require('mongoose').model('Rating');
+const config = require('./settings').current;
+const redisAtmKey = 'metrics:atm';
 
-var config = require('./settings').current;
-
-var redisAtmKey = 'metrics:atm';
+Promise.promisifyAll(redis.RedisClient.prototype);
+Promise.promisifyAll(redis.Multi.prototype);
 
 function Metrics() {
 
@@ -55,58 +54,52 @@ function Metrics() {
  * @param {string} ref Reference to model
  * @param {object} entity Object that received the vote
  * @param {object} rating Rating object
- * @param {function} callback Callback, run with (err, result), where result is returned from the API after voting
+ * @reuturn {Promise.<{}>} Result
  */
-Metrics.prototype.onRatingUpdated = function(ref, entity, rating, callback) {
+Metrics.prototype.onRatingUpdated = function(ref, entity, rating) {
 
-	var that = this;
+	let atm, result;
+	return Promise.try(() => {
+		return this._getGlobalMean(ref);
 
-	// compute global mean first
-	that.getGlobalMean(ref, assert(function(atm) {
+	}).then(res => {
+		atm = res;
+		return this._updateEntityMetrics(ref, entity, atm);
 
-		// then updatse entity metrics
-		that.updateEntityMetrics(ref, entity, atm, assert(function(summary) {
+	}).then(summary => {
+		result = {
+			value: rating.value,
+			created_at: rating.created_at,
+			[ref]: summary
+		};
+		return this.redis.getAsync(redisAtmKey);
 
-			var result = { value: rating.value, created_at: rating.created_at };
-			result[ref] = summary;
+	}).then(_atm => {
 
-			var done = function(err) {
-				/* istanbul ignore if */
-				if (err) {
-					return callback(err);
-				}
-				callback(null, result);
-			};
+		if (!_atm) {
+			// nothing set, update and go on.
+			return this._updateGlobalMean(ref, atm);
+		}
+		const precision = 100;
+		if (Math.round(_atm * precision) !== Math.round(atm * precision)) {
+			logger.info('[metrics] Global mean of %ss changed from %s to %s, re-calculating bayesian estimages.', ref, Math.round(_atm * precision) / precision, Math.round(atm * precision) / precision);
+			return this._updateAllEntities(ref, atm);
+		}
 
-			// check if we need to re-compute ratings
-			that.redis.get(redisAtmKey, assert(function(_atm) {
-				if (!_atm) {
-					// nothing set, update and go on.
-					return that.updateGlobalMean(ref, atm, done);
-				}
-
-				var precision = 100;
-				if (Math.round(_atm * precision) !== Math.round(atm * precision)) {
-					logger.info('[metrics] Global mean of %ss changed from %s to %s, re-calculating bayesian estimages.', ref, Math.round(_atm * precision) / precision, Math.round(atm * precision) / precision);
-					that.updateAllEntities(ref, atm, done);
-				} else {
-					done();
-				}
-			}, callback, 'Error reading atm from Redis.'));
-		}, callback, 'Error updating entity metrics.'));
-	}, callback, 'Error getting global mean.'));
+	}).then(() => result);
 };
 
 
 /**
  * Re-calculates metrics for a given entity.
  *
+ * @private
  * @param {string} ref Reference to model
  * @param {object} entity Object that received the vote
  * @param {number} atm Arithmetic total mean
- * @param {function} callback Callback function, executed with (err, metrics)
+ * @return Promise.<{}>
  */
-Metrics.prototype.updateEntityMetrics = function(ref, entity, atm, callback) {
+Metrics.prototype._updateEntityMetrics = function(ref, entity, atm) {
 
 	/*
 	 * Bayesian estimate:
@@ -118,104 +111,81 @@ Metrics.prototype.updateEntityMetrics = function(ref, entity, atm, callback) {
 	 *    m = minimum number of votes for the item to be taken into account
 	 *    ATm = arithmetic total mean when considering the collection of all the items
 	 */
-	var m = config.vpdb.metrics.bayesianEstimate.minVotes;
-	var am, n;
+	let m = config.vpdb.metrics.bayesianEstimate.minVotes;
+	let am, n;
 
 	// get arithmetic local mean
-	var q = {};
-	q['_ref.' + ref] = entity._id;
-	Rating.aggregate({ $match: q }, {
-		$group: {
-			_id : null,
-			sum: { $sum: '$value' },
-			count: { $sum: 1 }
-		}
-	}, assert(function(result) {
-		result = result[0];
+	let q = { ['_ref.' + ref]: entity._id };
+	let metrics;
+
+	return Promise.try(() => {
+		return Rating.aggregate({ $match: q }, {
+			$group: {
+				_id: null,
+				sum: { $sum: '$value' },
+				count: { $sum: 1 }
+			}
+		}).exec();
+
+	}).then(result => {
+		result = result[ 0 ];
 		n = result.count;
 		am = result.sum / n;
 
-		var metrics = {
+		metrics = {
 			average: Math.round(am * 1000) / 1000,
 			votes: n,
 			score: (n / (n + m)) * am + (m / (n + m)) * atm
 		};
+		return entity.update({ rating: metrics });
 
-		entity.update({ rating: metrics }, function(err) {
-			/* istanbul ignore if */
-			if (err) {
-				return callback(err);
-			}
-			callback(null, metrics);
-		});
-	}, callback, 'Error aggregating ratings for ' + JSON.stringify(q) + '.'));
+	}).then(() => metrics);
 };
 
-Metrics.prototype.getGlobalMean = function(ref, callback) {
+Metrics.prototype._getGlobalMean = function(ref) {
 
 	/* istanbul ignore if: don't calculate if we use a hard-coded mean anyway. */
 	if (config.vpdb.metrics.bayesianEstimate.globalMean !== null) {
-		return callback(null, config.vpdb.metrics.bayesianEstimate.globalMean);
+		return Promise.resolve(config.vpdb.metrics.bayesianEstimate.globalMean);
 	}
+	return Promise.try(() => {
+		let q = { ['_ref.' + ref]: { '$ne': null } };
+		return Rating.aggregate({ $match: q }, {
+			$group: {
+				_id: null,
+				sum: { $sum: '$value' },
+				count: { $sum: 1 }
+			}
+		}).exec();
 
-	var q = {};
-	q['_ref.' + ref] = { '$ne': null };
-	Rating.aggregate({ $match: q }, {
-		$group: {
-			_id : null,
-			sum: { $sum: '$value' },
-			count: { $sum: 1 }
-		}
-	}, assert(function(result) {
-		result = result[0];
-		callback(null, result.sum / result.count);
-	}, callback));
+	}).then(result => result[0].sum / result[0].count);
 };
 
-Metrics.prototype.updateGlobalMean = function(ref, atm, callback) {
-	this.redis.set(redisAtmKey, atm, function(err) {
-		/* istanbul ignore if */
-		if (err) {
-			return callback('Error updating global mean: ' + err.message);
-		}
-		callback();
-	});
+Metrics.prototype._updateGlobalMean = function(ref, atm) {
+	return this.redis.setAsync(redisAtmKey, atm);
 };
 
-Metrics.prototype.updateAllEntities = function(ref, atm, callback) {
+Metrics.prototype._updateAllEntities = function(ref, atm) {
 
-	var that = this;
-	this.updateGlobalMean(ref, atm, assert(function() {
+	return Promise.try(() => {
+		return this._updateGlobalMean(ref, atm);
 
-		var Model = that.entities[ref];
+	}).then(() => {
+		const Model = this.entities[ ref ];
+
 		/* istanbul ignore if */
 		if (!Model) {
 			throw new Error('Model "' + ref + '" does not support ratings.');
 		}
 
 		// update all entities that have at least one rating
-		Model.find({ 'rating.votes': { '$gt': 0 } }, assert(function(entities) {
-			logger.log('[metrics] Updating metrics for %d %ss...', entities.length, ref);
-			async.eachSeries(entities, function(entity, next) {
-				that.updateEntityMetrics(ref, entity, atm, next);
-			}, callback);
+		return Model.find({ 'rating.votes': { '$gt': 0 } }).exec();
 
-		}, callback, 'Error finding rated ' + ref + 's.'));
-	}, callback, 'Error updating global mean.'));
+	}).then(entities => {
+		logger.log('[metrics] Updating metrics for %d %ss...', entities.length, ref);
+		return Promise.each(entities, entity => this._updateEntityMetrics(ref, entity, atm));
+
+	});
 };
-
-
-function assert(success, failure, message) {
-	return function(err, result) {
-		/* istanbul ignore if */
-		if (err) {
-			if (message) {
-				logger.error('ERROR: ' + message);
-			}
-			return failure(err);
-		}
-		success(result);
-	};
-}
 
 module.exports = new Metrics();

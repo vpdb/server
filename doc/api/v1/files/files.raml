@@ -1,0 +1,62 @@
+displayName: Files
+description: |
+  Files represent the uploaded content of VPDB.
+
+  Nearly everything binary uploaded ends up as a file. We use the storage API
+  for retrieving and uploading files. This resource only manages the metadata
+  of the files.
+
+  Files are defined by two types:
+
+  1. The **MIME Type** defines the file format, e.g. if it's an image, a
+     video or a zip archive.
+  2. The **File Type** defines the purpose it's serving at VPDB, e.g. if
+     it's a ROM, a table file or a playfield image.
+
+  Both types relate to each other, meaning each file type only allows a defined
+  selection of MIME types.
+
+/{file_id}:
+  get:
+    securedBy: [ ]
+    description: List details of a file.
+    body:
+        role/member:
+          example: !include http/view-req.json
+    responses:
+      200:
+        body:
+          role/member:
+            example: !include http/view-res-200.json
+  delete:
+      is: [ protected ]
+      securedBy: [ jwt: { scopes: [ MEMBER, MODERATOR ] } ]
+      description: Delete a file of a given ID.
+
+  /blockmatch:
+    get:
+      is: [ protected ]
+      securedBy: [ jwt: { scopes: [ MODERATOR ] } ]
+      description: |
+        List releases with similar block matches.
+
+        When uploading a Visual Pinball table file, every block of it gets indexed with a
+        checksum. This resource takes all blocks of a given file and searches for other
+        files with the same blocks.
+
+        There are two type of matches:
+
+        1. If a file shares more than 50% of its blocks, it is considered a match.
+        2. If the size of the file's matched blocks is more than 50% of its total size, it
+           is a match as well.
+
+        Per default, files of the same release are excluded. For every file (including the
+        given file to match) game, release, version as well as file details are included in
+        the result (see example).
+
+      queryParameters:
+        include_same_release:
+          description: If set, file matches of the same release are included in the result
+          required: false
+          type: integer
+          example: 1

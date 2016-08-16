@@ -325,6 +325,7 @@ describe('The VPDB `file` API', function() {
 					expect(res.body.url).to.be.ok();
 					request
 						.get('/api/v1/files/' + res.body.id)
+						.save({ path: 'files/view'})
 						.as('member')
 						.end(function(err, res) {
 							hlp.expectStatus(err, res, 200);

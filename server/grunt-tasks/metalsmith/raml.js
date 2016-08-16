@@ -384,38 +384,40 @@ function parsePostmanResource(data, relativeUri, resources, collectionId, lastFo
 			owner: 0,
 			collectionId: collectionId
 		};
-		resource.methods.forEach(method => {
-			let request = {
-				id: generateGUID(),
-				headers: "Content-Type: application/json\n",
-				url: "{{url}}" + relativeUri + resource.relativeUri,
-				preRequestScript: null,
-				pathVariables: {},
-				method: method.method,
-				data: [],
-				dataMode: "raw",
-				version: 1,
-				tests: null,
-				currentHelper: "normal",
-				helperAttributes: {},
-				time: new Date().getTime(),
-				name: relativeUri + resource.relativeUri,
-				description: shortDescription(method.description),
-				collectionId: collectionId,
-				responses: [],
-				rawModeData: ""
-			};
-			if (method.securedBy && _.compact(method.securedBy).length) {
-				request.headers += '{{authheader}}: Bearer {{apikey}}\n';
-			}
-			if (_.includes(['put', 'post'], method.method) && _.keys(method.body).length && method.body[_.keys(method.body)[0]].example) {
-				var example = splitReq(method.body[_.keys(method.body)[0]].example);
-				request.rawModeData = example.body;
-			}
-			request.url = request.url.replace(/\/\{([^{}]+)/g, '/{{$1}'); // make the {id} placeholders usuable as {{id}}
-			data.requests.push(request);
-			folder.order.push(request.id);
-		});
+		if (_.isArray(resource.methods)) {
+			resource.methods.forEach(method => {
+				let request = {
+					id: generateGUID(),
+					headers: "Content-Type: application/json\n",
+					url: "{{url}}" + relativeUri + resource.relativeUri,
+					preRequestScript: null,
+					pathVariables: {},
+					method: method.method,
+					data: [],
+					dataMode: "raw",
+					version: 1,
+					tests: null,
+					currentHelper: "normal",
+					helperAttributes: {},
+					time: new Date().getTime(),
+					name: relativeUri + resource.relativeUri,
+					description: shortDescription(method.description),
+					collectionId: collectionId,
+					responses: [],
+					rawModeData: ""
+				};
+				if (method.securedBy && _.compact(method.securedBy).length) {
+					request.headers += '{{authheader}}: Bearer {{apikey}}\n';
+				}
+				if (_.includes(['put', 'post'], method.method) && _.keys(method.body).length && method.body[_.keys(method.body)[0]].example) {
+					var example = splitReq(method.body[_.keys(method.body)[0]].example);
+					request.rawModeData = example.body;
+				}
+				request.url = request.url.replace(/\/\{([^{}]+)/g, '/{{$1}'); // make the {id} placeholders usuable as {{id}}
+				data.requests.push(request);
+				folder.order.push(request.id);
+			});
+		}
 		if (_.isArray(resource.resources)) {
 			parsePostmanResource(data, relativeUri + resource.relativeUri, resource.resources, collectionId, folder);
 		}

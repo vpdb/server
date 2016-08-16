@@ -221,8 +221,8 @@ p.padder-top(ng-show="pageLoading") Loading...
 		.clearfix
 		p.padder-bottom-2x
 
-	p.padder-top(ng-show="!found")
-		| Sorry, no such release found.
+	.padder-top.space-left-2x(ng-show="!found")
+		p Sorry, no such release found.
 		p(ng-show="!auth.isAuthenticated") If you're looking for a moderated release, try logging in.
 
 script(id="template/carousel/carousel.html", type="text/ng-template")

@@ -3,6 +3,8 @@
 var _ = require('lodash');
 var request = require('superagent');
 var expect = require('expect.js');
+var jwt = require('jwt-simple');
+var config = require('../../server/config/settings-test');
 
 var superagentTest = require('../modules/superagent-test');
 var hlp = require('../modules/helper');
@@ -204,6 +206,34 @@ describe('The authentication engine of the VPDB API', function() {
 				.get('/api/v1/user')
 				.set('Authorization', 'Bearer abcd.123.xyz')
 				.end(hlp.status(401, 'Bad JSON Web Token', done));
+		});
+
+		it('should fail if the token has expired', function(done) {
+			let now = new Date();
+			let token = jwt.encode({
+				iss: hlp.getUser('member').id,
+				iat: now,
+				exp: new Date(now.getTime() - 100), // expired
+				irt: false
+			}, config.vpdb.secret);
+			request
+				.get('/api/v1/user')
+				.set('Authorization', 'Bearer ' + token)
+				.end(hlp.status(401, 'token has expired', done));
+		});
+
+		it('should fail if the user does not exist', function(done) {
+			let now = new Date();
+			let token = jwt.encode({
+				iss: -1, // invalid
+				iat: now,
+				exp: new Date(now.getTime() + config.vpdb.storageTokenLifetime),
+				irt: false
+			}, config.vpdb.secret);
+			request
+				.get('/api/v1/user')
+				.set('Authorization', 'Bearer ' + token)
+				.end(hlp.status(403, 'no user with id', done));
 		});
 	});
 

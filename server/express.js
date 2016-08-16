@@ -74,6 +74,7 @@ exports.configure = function(app, raygunClient) {
 	// general stuff
 	app.use(expressBodyParser.json());
 
+	/* istanbul ignore if  */
 	if (runningLocal && !runningTest) {
 
 		// static file serving

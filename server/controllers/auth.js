@@ -247,7 +247,7 @@ exports.generateApiToken = function(user, now, isRefreshToken) {
  *
  * @param {object} user
  * @param {Date} now
- * @paran {string} path
+ * @param {string} path
  * @returns {string}
  */
 exports.generateStorageToken = function(user, now, path) {

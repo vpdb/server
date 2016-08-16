@@ -25,6 +25,7 @@ var _ = require('lodash');
  * Returns the parameter object that is accessible when rendering the views.
  * @param {boolean} [gitInfoFromGrunt] If true, don't require gitinfo but put a Grunt placeholder.
  */
+/* istanbul ignore next: Not generating markup when running tests.  */
 exports.viewParams = function(gitInfoFromGrunt) {
 
 	var config = require('../modules/settings').current;

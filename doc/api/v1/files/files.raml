@@ -21,8 +21,8 @@ description: |
     securedBy: [ ]
     description: List details of a file.
     body:
-        role/member:
-          example: !include http/view-req.json
+      role/member:
+        example: !include http/view-req.json
     responses:
       200:
         body:
@@ -60,3 +60,11 @@ description: |
           required: false
           type: integer
           example: 1
+      body:
+        role/member:
+          example: !include http/blockmatch-req.json
+      responses:
+        200:
+          body:
+             role/member:
+               example: !include http/blockmatch-res-200.json

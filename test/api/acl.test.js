@@ -79,6 +79,10 @@ describe('The ACLs of the VPDB API', function() {
 			request.get('/api/v1/files/123456789').end(hlp.status(404, 'No such file', done));
 		});
 
+		it('should deny access to file block matches', function(done) {
+			request.get('/api/v1/files/123456789/blockmatch').end(hlp.status(401, done));
+		});
+
 		it('should allow check for existing games', function(done) {
 			request.head('/api/v1/games/mb').end(hlp.status(404, done));
 		});
@@ -336,6 +340,10 @@ describe('The ACLs of the VPDB API', function() {
 			request.get('/api/v1/files/123456789').as('member').end(hlp.status(404, done));
 		});
 
+		it('should deny access to file block matches', function(done) {
+			request.get('/api/v1/files/123456789/blockmatch').as('member').end(hlp.status(403, done));
+		});
+
 		it('should allow check for existing games', function(done) {
 			request.head('/api/v1/games/mb').as('member').end(hlp.status(404, done));
 		});
@@ -573,6 +581,10 @@ describe('The ACLs of the VPDB API', function() {
 			request.post('/storage/v1/files').as('contributor').send({}).end(hlp.status(422, done));
 		});
 
+		it('should deny access to file block matches', function(done) {
+			request.get('/api/v1/files/123456789/blockmatch').as('contributor').end(hlp.status(403, done));
+		});
+
 		it('should allow check for existing games', function(done) {
 			request.head('/api/v1/games/mb').as('contributor').end(hlp.status(404, done));
 		});
@@ -700,6 +712,10 @@ describe('The ACLs of the VPDB API', function() {
 
 		it('should allow access to file upload', function(done) {
 			request.post('/storage/v1/files').as('moderator').send({}).end(hlp.status(422, done));
+		});
+
+		it('should allow access to file block matches', function(done) {
+			request.get('/api/v1/files/123456789/blockmatch').as('moderator').end(hlp.status(404, done));
 		});
 
 		it('should allow check for existing games', function(done) {
@@ -842,6 +858,10 @@ describe('The ACLs of the VPDB API', function() {
 			request.post('/storage/v1/files').as('admin').send({}).end(hlp.status(422, done));
 		});
 
+		it('should deny access to file block matches', function(done) {
+			request.get('/api/v1/files/123456789/blockmatch').as('admin').end(hlp.status(403, done));
+		});
+
 		it('should allow check for existing games', function(done) {
 			request.head('/api/v1/games/mb').as('admin').end(hlp.status(404, done));
 		});
@@ -954,6 +974,10 @@ describe('The ACLs of the VPDB API', function() {
 
 		it('should allow access to file upload', function(done) {
 			request.post('/storage/v1/files').as('root').send({}).end(hlp.status(422, done));
+		});
+
+		it('should allow access to file block matches', function(done) {
+			request.get('/api/v1/files/123456789/blockmatch').as('root').end(hlp.status(404, done));
 		});
 
 		it('should allow check for existing games', function(done) {

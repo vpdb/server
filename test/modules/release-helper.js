@@ -6,10 +6,14 @@ var async = require('async');
 var faker = require('faker');
 var expect = require('expect.js');
 
-exports.createRelease = function(user, request, done) {
+exports.createRelease = function(user, request, opts, done) {
+	if (_.isFunction(opts)) {
+		done = opts;
+		opts = {};
+	}
 	var hlp = require('./helper');
 	hlp.game.createGame('moderator', request, function(game) {
-		hlp.file.createVpt(user, request, function(vptfile) {
+		hlp.file.createVpt(user, request, opts, function(vptfile) {
 			hlp.file.createPlayfield(user, request, 'fs', function(playfield) {
 				request
 					.post('/api/v1/releases')

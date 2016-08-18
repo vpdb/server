@@ -1,0 +1,130 @@
+200 OK
+X-App-Sha: f680068
+Content-Type: application/json; charset=utf-8
+Etag: W/"982-MsZTP0zEPZv74yZmbDdY8A"
+Content-Encoding: gzip
+
+{
+  "release": {
+    "id": "ek1ymxkbpc",
+    "name": "Multi-layered Edition",
+    "created_at": "2016-08-29T20:53:20.343Z",
+    "authors": [
+      {
+        "roles": [
+          "Table Creator"
+        ],
+        "user": {
+          "counter": {
+            "stars": 0,
+            "comments": 0
+          },
+          "gravatar_id": "9aae8684d68e916744a23ccb7548a633",
+          "username": "Wilbert.Schiller14",
+          "name": "Wilbert.Schiller14",
+          "id": "p2krcxkhp7"
+        }
+      }
+    ]
+  },
+  "game": {
+    "id": "running-horse",
+    "title": "Running Horse",
+    "manufacturer": "Inder",
+    "year": 1976
+  },
+  "version": {
+    "version": "1.0.0",
+    "released_at": "2016-08-29T20:53:20.343Z"
+  },
+  "file": {
+    "released_at": "2016-08-29T20:53:20.343Z",
+    "flavor": {
+      "orientation": "fs",
+      "lighting": "night"
+    },
+    "compatibility": [
+      {
+        "id": "9.9.0",
+        "label": "v9.9.0"
+      }
+    ],
+    "file": {
+      "id": "pkxn7x2be7",
+      "name": "test-table-0.vpt",
+      "url": "https://localhost:7357/storage/v1/files/pkxn7x2be7.vpt",
+      "bytes": 135168,
+      "variations": {},
+      "is_protected": true,
+      "counter": {
+        "downloads": 0
+      },
+      "cost": 1
+    }
+  },
+  "matches": [
+    {
+      "matchedCount": 17,
+      "matchedBytes": 82498,
+      "countPercentage": 77.27272727272727,
+      "bytesPercentage": 97.57880418711929,
+      "release": {
+        "id": "e2zq34khec",
+        "name": "Secured Edition",
+        "created_at": "2016-08-29T20:53:21.485Z",
+        "authors": [
+          {
+            "roles": [
+              "Table Creator"
+            ],
+            "user": {
+              "counter": {
+                "stars": 0,
+                "comments": 0
+              },
+              "gravatar_id": "9aae8684d68e916744a23ccb7548a633",
+              "username": "Wilbert.Schiller14",
+              "name": "Wilbert.Schiller14",
+              "id": "p2krcxkhp7"
+            }
+          }
+        ]
+      },
+      "game": {
+        "id": "match-the-dial",
+        "title": "Match The Dial",
+        "manufacturer": "Bally",
+        "year": 1935
+      },
+      "version": {
+        "version": "1.0.0",
+        "released_at": "2016-08-29T20:53:21.485Z"
+      },
+      "file": {
+        "released_at": "2016-08-29T20:53:21.485Z",
+        "flavor": {
+          "orientation": "fs",
+          "lighting": "night"
+        },
+        "compatibility": [
+          {
+            "id": "9.9.0",
+            "label": "v9.9.0"
+          }
+        ],
+        "file": {
+          "id": "p2ndxkhe7",
+          "name": "test-table-0.vpt",
+          "url": "https://localhost:7357/storage/v1/files/p2ndxkhe7.vpt",
+          "bytes": 135168,
+          "variations": {},
+          "is_protected": true,
+          "counter": {
+            "downloads": 0
+          },
+          "cost": 1
+        }
+      }
+    }
+  ]
+}

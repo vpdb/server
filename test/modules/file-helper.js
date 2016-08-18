@@ -11,6 +11,7 @@ var pleasejs = require('pleasejs');
 var mp4 = path.resolve(__dirname, '../../data/test/files/afm.f4v');
 var avi = path.resolve(__dirname, '../../data/test/files/afm.avi');
 var vpt = path.resolve(__dirname, '../../data/test/files/empty.vpt');
+var vpt2 = path.resolve(__dirname, '../../data/test/files/table.vpt');
 var rom = path.resolve(__dirname, '../../data/test/files/hulk.zip');
 var zip = path.resolve(__dirname, '../../data/test/files/dmd.zip');
 var rar = path.resolve(__dirname, '../../data/test/files/dmd.rar');
@@ -283,15 +284,22 @@ exports.createRom = function(user, request, done) {
 		});
 };
 
-exports.createVpt = function(user, request, done) {
-	exports.createVpts(user, request, 1, function(vpts) {
+exports.createVpt = function(user, request, opts, done) {
+	if (_.isFunction(opts)) {
+		done = opts;
+		opts = {};
+	}
+	exports.createVpts(user, request, 1, opts, function(vpts) {
 		done(vpts[0]);
 	});
 };
 
-exports.createVpts = function(user, request, times, done) {
-
-	var data = fs.readFileSync(vpt);
+exports.createVpts = function(user, request, times, opts, done) {
+	if (_.isFunction(opts)) {
+		done = opts;
+		opts = {};
+	}
+	var data = opts.alternateVpt ? fs.readFileSync(vpt2) : fs.readFileSync(vpt);
 	async.times(times, function(n, next) {
 		request
 			.post('/storage/v1/files')

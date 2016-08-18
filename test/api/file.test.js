@@ -462,5 +462,6 @@ describe('The VPDB `file` API', function() {
 		});
 
 	});
+
 });
 

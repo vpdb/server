@@ -169,7 +169,7 @@ exports.blockmatch = function(req, res) {
 
 		// fail if not found
 		if (!release) {
-			throw error('Release reference missing.', req.params.id);
+			throw error('Release reference missing.', req.params.id).status(400);
 		}
 		splitReleaseFile(release, file._id.toString(), result);
 

@@ -2,6 +2,10 @@
 
 ## Tech Stack
 
+A minimal [Ubuntu LTS](http://www.ubuntu.com/) installation is going to be needed. 
+The 16.04 distribution finally contains the OpenSSL and Nginx versions with the 
+features we need, so no manual compilation is needed.
+
 * [Ubuntu Server](http://www.ubuntu.com/) or any Debian-based distro as base OS
 * [Node.js](http://nodejs.org/) for dynamic page serving
 * [Nginx](http://nginx.org/) for static page serving and reverse proxy
@@ -12,17 +16,29 @@
 
 ## Install Ubuntu
 
-Get Ubuntu 14.04 Server from [here](http://www.ubuntu.com/download/server). Start up
+Get Ubuntu 16.04 Server from [here](http://www.ubuntu.com/download/server). Start up
 VirtualBox or VMWare and install Ubuntu using the downloaded ISO as installation
 medium.
 
 Make sure you enable OpenSSH. Once done, login and update the system:
 
-	sudo add-apt-repository ppa:ubuntu-toolchain-r/test
-	sudo apt-get update
-    sudo apt-get -y install gcc-4.9 ca-certificates
-	sudo apt-get -y upgrade
-    sudo apt-get -y upgrade libstdc++6
+	sudo apt update
+	sudo apt -y upgrade
+	
+Enable automatic security updates (make sure `-security` is uncommented)
+	
+	sudo apt install unattended-upgrades
+	sudo vi /etc/apt/apt.conf.d/50unattended-upgrades
+	
+Then make these are enabled:
+
+	sudo vi /etc/apt/apt.conf.d/10periodic
+	
+	APT::Periodic::Update-Package-Lists "1";
+	APT::Periodic::Download-Upgradeable-Packages "1";
+	APT::Periodic::AutocleanInterval "7";
+	APT::Periodic::Unattended-Upgrade "1";
+
 
 ### Setup Firewall
 
@@ -31,11 +47,12 @@ Make sure you enable OpenSSH. Once done, login and update the system:
 	sudo wget https://gist.githubusercontent.com/jirutka/3742890/raw/c025b0b8c58af49aa9644982c459314c9adba157/rules-both.iptables
 	sudo vi rules-both.iptables
 
-Update to your taste (unblock port 80, 443, 8088, 8089), then create symlinks and apply:
+Update to your taste (unblock port 80, 443), then create symlinks and apply:
 
 	sudo ln -s rules-both.iptables rules.v4
 	sudo ln -s rules-both.iptables rules.v6
-	sudo service iptables-persistent start
+	sudo invoke-rc.d netfilter-persistent save
+	service netfilter-persistent start
 
 ### Harden System Security
 
@@ -59,8 +76,7 @@ Set:
 
 ### General Stuff
 
-	sudo apt-get -y install rcconf git-core python-software-properties vim unrar
-	sudo apt-get -y install build-essential checkinstall rake zlib1g-dev libpcre3 libpcre3-dev libbz2-dev libssl-dev tar libcurl4-openssl-dev ruby-dev
+	sudo apt-get -y install rcconf git-core python-software-properties vim unrar tar
 
 ### Node.js
 
@@ -104,7 +120,7 @@ FFmpeg was removed from Ubuntu and replaced by Libav. Duh.
 
 Install 3.x from repo:
 
-	sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 7F0CEB10
+	sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv EA312927
 	sudo su -
 	echo "deb http://repo.mongodb.org/apt/ubuntu "$(lsb_release -sc)"/mongodb-org/3.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.0.list
 	exit

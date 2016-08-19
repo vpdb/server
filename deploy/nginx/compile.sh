@@ -2,29 +2,20 @@
 
 cd /usr/local/src
 
-# download source, plus naxsi, headers-more and pagespeed.
-wget https://www.openssl.org/source/openssl-1.0.2g.tar.gz
-wget http://nginx.org/download/nginx-1.9.12.tar.gz
-wget https://github.com/nbs-system/naxsi/archive/master.tar.gz -O naxsi-master.tar.gz
-wget https://github.com/openresty/headers-more-nginx-module/archive/v0.29rc1.tar.gz -O headers-more-0.29rc1.tar.gz
+apt-get install openssl libssl-dev
 
-tar xvfz openssl-1.0.2g.tar.gz
-tar xvfz nginx-1.9.12.tar.gz
-tar xvfz headers-more-0.29rc1.tar.gz
-tar xvfz naxsi-master.tar.gz
+# download source plus naxsi and headers-more.
+wget http://nginx.org/download/nginx-1.11.3.tar.gz
+wget https://github.com/nbs-system/naxsi/archive/0.54.tar.gz -O naxsi-v0.54.tar.gz
+wget https://github.com/openresty/headers-more-nginx-module/archive/v0.31.tar.gz -O headers-more-v0.31.tar.gz
 
-cd openssl-1.0.2g
-./config --prefix=/usr --openssldir=/usr && make
-checkinstall --install=no -y
-apt-get purge -y openssl libssl-dev
-dpkg -i openssl_1.0.2g-1_amd64.deb
-## might need to reboot!
-cd ..
+tar xvfz nginx-1.11.3.tar.gz
+tar xvfz headers-more-v0.31.tar.gz
+tar xvfz naxsi-v0.54.tar.gz
 
 # configure
-cd nginx-1.9.12
+cd nginx-1.11.3
 ./configure \
---add-module=../naxsi-master/naxsi_src \
 --prefix=/usr/local \
 --conf-path=/etc/nginx/nginx.conf  \
 --pid-path=/var/run/nginx.pid \
@@ -33,7 +24,6 @@ cd nginx-1.9.12
 --http-log-path=/var/log/nginx/access.log \
 --user=www-data \
 --group=www-data \
---with-openssl=../openssl-1.0.2g \
 --without-mail_pop3_module \
 --without-mail_imap_module \
 --without-mail_smtp_module \
@@ -56,14 +46,15 @@ cd nginx-1.9.12
 --with-ipv6 \
 --with-cc-opt='-g -O2 -fstack-protector --param=ssp-buffer-size=4 -Wformat -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2' \
 --with-ld-opt='-Wl,-z,relro -Wl,--as-needed' \
---add-module=../headers-more-nginx-module-0.29rc1
+--add-module=../naxsi-0.54/naxsi_src \
+--add-module=../headers-more-nginx-module-0.31
 
 # compile
 make
 
 # install
 checkinstall --install=no -y
-dpkg -i nginx_1.9.12-1_amd64.deb
+dpkg -i nginx_1.11.3-1_amd64.deb
 wget https://raw.githubusercontent.com/freezy/node-vpdb/master/deploy/init/nginx -O /etc/init.d/nginx
 chmod 755 /etc/init.d/nginx
 update-rc.d -f nginx defaults

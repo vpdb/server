@@ -80,41 +80,18 @@ Set:
 
 ### Node.js
 
-	sudo su -
-	curl https://raw.githubusercontent.com/creationix/nvm/v0.31.1/install.sh | NVM_DIR=/usr/local/nvm PROFILE=/etc/bash.bashrc bash
-	vi /etc/bash.bashrc
-	
-Move added lines to the top (before `[ -z "$PS1" ] && return`), then save and:
+	cd
+	sudo curl -sL https://deb.nodesource.com/setup_6.x -o nodesource_setup.sh
+	sudo bash nodesource_setup.sh
+	sudo apt-get install -y nodejs build-essential
 
-	nvm install 6
-	nvm alias default stable
-	exit
-	
-If you want to temporarily switch to another node version:
+	npm config set ca ""
+	npm install -g npm
+	npm install -g grunt-cli bower
 
-	nvm alias default 5
-	service nginx restart
+### Image/Video Tools
 
-
-Upgrade `npm` to latest and prevent self-signed certificate error
-
-	sudo npm config set ca ""
-	sudo npm install -g npm
-	sudo npm install -g grunt-cli bower
-
-### Image Tools
-
-	sudo apt-get -y install graphicsmagick pngquant optipng
-
-### Video Tools
-
-FFmpeg was removed from Ubuntu and replaced by Libav. Duh.
-
-	cd /usr/local
-	sudo wget http://ffmpeg.gusari.org/static/64bit/ffmpeg.static.64bit.latest.tar.gz
-	tar xvfz ffmpeg.static.64bit.latest.tar.gz
-	mv ffmpeg /usr/local/bin
-	mv ffprobe /usr/local/bin
+	sudo apt -y install graphicsmagick pngquant optipng ffmpeg
 
 ### MongoDB
 
@@ -122,32 +99,31 @@ Install 3.x from repo:
 
 	sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv EA312927
 	sudo su -
-	echo "deb http://repo.mongodb.org/apt/ubuntu "$(lsb_release -sc)"/mongodb-org/3.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.0.list
+	echo "deb http://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.2 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.2.list
 	exit
 	sudo apt-get -y update
 	sudo apt-get install -y mongodb-org
 
-Configure correctly. Also open `/etc/mongod.conf` and check that ``bind_ip = 127.0.0.1`` is in there.
+Setup Systemd Script:
 
-	sudo su -
-	echo "smallfiles = true" >> /etc/mongod.conf
+	sudo vi /etc/systemd/system/mongodb.service
+	
+	[Unit]
+	Description=High-performance, schema-free document-oriented database
+	After=network.target
+	
+	[Service]
+	User=mongodb
+	ExecStart=/usr/bin/mongod --quiet --config /etc/mongod.conf
+	
+	[Install]
+	WantedBy=multi-user.target
 
-Paste this at the end of `/etc/init/mongod.conf`:
+Check if workie:
 
-	# Make sure we respawn if the physical server
-	# momentarily lies about disk space, but also
-	# make sure we don't respawn too fast
-
-	post-stop script
-		sleep 5
-	end script
-	respawn
-
-Restart and go back to normal user:
-
-	stop mongod
-	start mongod
-	exit
+	sudo systemctl start mongodb
+	sudo systemctl status mongodb
+	sudo systemctl enable mongodb
 
 ### Redis
 
@@ -159,23 +135,7 @@ Install latest from repo:
 
 ### Nginx
 
-Since Nginx doesn't support external modules (by design), you'll need need to compile it with the desired modules.
-
-External modules:
-
- * [Naxsi](https://github.com/nbs-system/naxsi) - Anti XSS & SQL Injection
- * [ngx_headers_more](https://github.com/openresty/headers-more-nginx-module) - Set, add, and clear arbitrary output headers
- * [ngx_pagespeed](https://github.com/pagespeed/ngx_pagespeed) - Automatic PageSpeed optimization (disabled for now)
- * [ngx_cache_purge](https://github.com/FRiCKLE/ngx_cache_purge) - Purge content from FastCGI, proxy, SCGI and uWSGI caches.
-
-Download and compile Nginx. See [compile script](deploy/nginx/compile.sh) how to do that.
-
-Copy needed vendor config files:
-
-	sudo cp /usr/local/src/naxsi-master/naxsi_config/naxsi_core.rules /etc/nginx/
-	sudo mv /etc/nginx/mime.types.default /etc/nginx/mime.types
-	sudo mv /etc/nginx/fastcgi_params.default /etc/nginx/fastcgi_params
-
+	sudo apt-get install -y nginx-extras
 
 ## Setup Push Deployment
 
@@ -210,10 +170,7 @@ folder.
 	chmod 700 .ssh
 	vi .ssh/authorized_keys
 
-Paste your pub key in there. Then enable `nvm` for that user.
-
-	echo 'export NVM_DIR="/usr/local/nvm"' >> ~/.profile
-	echo '[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"' >> ~/.profile
+Paste your pub key in there.
 
 ### Setup bare Git repositories
 
@@ -266,49 +223,45 @@ configure Nginx. For future deployements, refer to the [deployment guide](DEPLOY
 
 ## Setup Reverse Proxy
 
-
 ### Setup PM2
 
 	sudo npm install -g pm2
-	sudo cp /repos/source/deploy/pm2 /etc -r
-	chown deployer:www-data /etc/pm2 -R
-	vi /etc/pm2/staging.json
-	vi /etc/pm2/production.json
 	su - deployer
-	pm2 start /etc/pm2/staging.json
-	pm2 startup ubuntu
-
-Run the displayed command as root
+	cp /repos/source/deploy/pm2 ~/ -r
+	vi ~/pm2/staging.json
+	vi ~/pm2/production.json
+	pm2 start ~/pm2/staging.json
+	
+IF successful:
 	
 	pm2 save
-	exit
+	pm2 startup systemd
+	sudo systemctl enable pm2
 
-Make PM2 start *after* Redis & co:
+Make PM2 start *after* Redis & MongoDB:
 
-	sudo update-rc.d -f pm2-init.sh remove
-	sudo vi /etc/init.d/pm2-init.sh
-
-Change `PM2_HOME` to `/repos/.pm2`
-
-	sudo update-rc.d pm2-init.sh defaults 99
+	sudo vi /etc/systemd/system/pm2.service
+	 
+Add `mongodb.service redis-server.service` to the `After` config.
 
 ### SSL Config
 
-	mkdir /etc/nginx/ssl
+Install the Letsencrypt bot
+
+	cd /usr/local/bin
+	sudo wget https://dl.eff.org/certbot-auto --no-check-certificate
+	sudo chmod a+x certbot-auto
+	sudo certbot-auto
+
+Setup certificate
+
+	mkdir /etc/nginx/ssl/letsencrypt -p
 	cd /etc/nginx/ssl
 	openssl dhparam -out dhparam.pem 2048
-	openssl req -new -days 365 -nodes -keyout xxx.vpdb.io.key -out xxx.vpdb.io.csr
-
-Submit `xxx.vpdb.io.csr` to signing authority, then paste received certificate into `xxx.vpdb.io.crt`. Then
-build the key chain:
-
-	cat xxx.vpdb.io.crt startssl-sub.class1.server.sha2.ca.pem startssl-ca-sha2.pem > xxx.vpdb.io-keychain.crt
-	
-Relevant StartSSL certificates can be found [here](https://www.startssl.com/certs/ca-sha2.pem) and [here](https://www.startssl.com/certs/class1/sha2/pem/sub.class1.server.sha2.ca.pem). 	
+	sudo letsencrypt certonly --webroot -w /etc/nginx/ssl/letsencrypt -d test.vpdb.io
 
 ### Configure Nginx
 
-	sudo mkdir -p /etc/nginx/sites-available /etc/nginx/sites-enabled /etc/nginx/conf.d
 	sudo cp /repos/source/deploy/nginx/nginx.conf /etc/nginx
 	sudo cp /repos/source/deploy/nginx/sites/production.conf /etc/nginx/sites-available/vpdb-production.conf
 	sudo cp /repos/source/deploy/nginx/sites/staging.conf /etc/nginx/sites-available/vpdb-staging.conf
@@ -340,36 +293,6 @@ Add this to the `server { ... }` block
 	auth_basic_user_file /var/www/.htpasswd;
 
 ## Administration Tools
-
-### Genghis
-
-*The single-file MongoDB admin app.*
-
-Install PHP-FPM:
-
-	sudo apt-get install -y php5-fpm php5-dev php5-cli php-pear php5-mongo
-	sudo service php5-fpm restart
-	
-Install Genghis:
-	
-	cd /var/www
-	sudo git clone https://github.com/bobthecow/genghis.git
-	sudo chown www-data:www-data genghis -R
-
-Setup nginx:
-
-	sudo cp /repos/source/deploy/nginx/sites/genghis.conf /etc/nginx/sites-available/genghis
-	sudo ln -s /etc/nginx/sites-available/genghis /etc/nginx/sites-enabled/genghis
-
-Secure access:
-	
-	sudo apt-get -y install apache2-utils
-	sudo htpasswd -c /var/www/genghis/.htpasswd vpdb
-	sudo chown www-data:www-data /var/www/genghis/.htpasswd
-
-Restart nginx and we're good:
-
-	sudo /etc/init.d/nginx restart
 
 ### Monitorix
 

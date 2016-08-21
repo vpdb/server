@@ -52,7 +52,8 @@ Update to your taste (unblock port 80, 443), then create symlinks and apply:
 	sudo ln -s rules-both.iptables rules.v4
 	sudo ln -s rules-both.iptables rules.v6
 	sudo invoke-rc.d netfilter-persistent save
-	service netfilter-persistent start
+	sudo systemctl start netfilter-persistent
+	sudo systemctl enable netfilter-persistent
 
 ### Harden System Security
 

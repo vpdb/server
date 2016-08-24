@@ -295,6 +295,33 @@ Add this to the `server { ... }` block
 
 ## Administration Tools
 
+### MongoDB Replication
+
+On primary (and all replicas), open `/etc/mongod.conf` and enable replication:
+
+	replication:
+	  replSetName: rs0
+
+Restart primary and all replicas:
+
+	systemctl restart mongod
+
+Make sure that all secondaries are clean and empty, otherwise they'll be stuck 
+in `ROLLBACK`. Clearing data folder before restarting helps. Then connect to 
+primary, enable replication and add replicas:
+
+	mongo
+	rs.initiate()
+	rs.conf()
+	rs.add({ host: "vpdb.secondary", priority: 0, hidden: true })
+
+On secondaries, enable slaves in order to read:
+
+	db.getMongo().setSlaveOk()
+	show dbs
+	use vpdb
+	db.tags.find()
+
 ### Monitorix
 
 *A free, open source, lightweight system monitoring tool.* 

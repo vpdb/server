@@ -303,6 +303,7 @@ correct hosts within in the sets, we'll have the following configuration:
 - Primary: MongoDB running on `127.0.1.1:27017`, tunnels to secondaries starting at `127.0.2.2:27018`
 - Secondary: MongoDB running on `127.0.2.2:27018`, tunnel to primary at `127.0.1.1:27017`
 - Tertiary: MongoDB running on `127.0.3.3:27019`, tunnel to primary at `127.0.1.1:27017`
+- Arbiter: MongoDB running on `127.0.10.10:27100`, tunnels to secondaries starting at `127.0.2.2:27018`
 
 #### Setup SSH Tunnels
 
@@ -354,7 +355,7 @@ On primary, test connection and confirm fingerprint:
 Now setup SSH tunnels. Back as root:
 
 	sudo apt install -y autossh
-	vi  /etc/systemd/system/mongotunnel.secondary.service
+	vi /etc/systemd/system/mongotunnel.secondary.service
 	
 	[Unit]
 	Description=Keeps a tunnel to 'remote.example.com' open
@@ -362,7 +363,7 @@ Now setup SSH tunnels. Back as root:
 	
 	[Service]
 	User=mongotunnel
-	ExecStart=/usr/bin/autossh -M 0 -N -q -o "ServerAliveInterval 60" -o "ServerAliveCountMax 3" -p 22 -l mongotunnel vpdb.secondary -L 127.0.2.2:27018:127.0.2.2:27018 -R 127.0.1.1:27017:127.0.1.1:27017 -i /home/mongotunnel/.ssh/id_rsa
+	ExecStart=/usr/bin/autossh -M 0 -N -q -o "ServerAliveInterval 60" -o "ServerAliveCountMax 3" -p 22 -l mongotunnel vpdb.secondary -L 127.0.2.2:27018:127.0.2.2:27018 -R 127.0.1.1:27017:127.0.1.1:27017 -R 127.0.10.10:27100:127.0.10.10:27100 -i /home/mongotunnel/.ssh/id_rsa
 	
 	[Install]
 	WantedBy=multi-user.target
@@ -379,6 +380,20 @@ You should see the `SECONDARY` prompt on the MongoDB shell.
 
 #### Configure Replication
 
+First, create an arbiter instance so the primary doesn't go back to secondary 
+when backup is offline:
+
+	sudo mkdir /var/lib/mongodb-arbiter
+	sudo chown mongodb:mongodb /var/lib/mongodb-arbiter
+	sudo cp /etc/systemd/system/mongodb.service /etc/systemd/system/mongodb-arbiter.service
+	vi /etc/systemd/system/mongodb-arbiter.service
+	
+	ExecStart=/usr/bin/mongod --quiet --bind_ip 127.0.10.10 --port 27100 --smallfiles --nojournal --noprealloc --replSet "rs0" --dbpath /var/lib/mongodb-arbiter --logpath /var/log/mongodb/mongodb-arbiter.log
+	
+	systemctl start mongodb-arbiter.service
+	systemctl status mongodb-arbiter.service
+	systemctl enable mongodb-arbiter.service
+
 On primary (and all replicas), open `/etc/mongod.conf` and enable replication:
 
 	replication:
@@ -392,10 +407,11 @@ Make sure that all secondaries are clean and empty, otherwise they'll be stuck
 in `ROLLBACK`. Clearing data folder before restarting helps. Then connect to 
 primary, enable replication and add replicas:
 
-	mongo
-	rs.initiate()
+	mongo --host 127.0.1.1
+	rs.initiate({ _id:"rs0", members: [{ _id: 1, host: "127.0.1.1:27017" }]})
 	rs.conf()
-	rs.add({ host: "localhost:30000", priority: 0, hidden: true })
+	rs.add({ host: "127.0.2.2:27018", priority: 0, hidden: true })
+	rs.addArb("127.0.10.10:27100")
 
 On secondaries, enable slaves in order to read:
 

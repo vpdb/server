@@ -297,6 +297,88 @@ Add this to the `server { ... }` block
 
 ### MongoDB Replication
 
+Connections to replica servers are tunneled through SSH. In order to find the 
+correct hosts within in the sets, we'll have the following configuration:
+
+- Primary: MongoDB running on `127.0.1.1:27017`, tunnels to secondaries starting at `127.0.2.2:27018`
+- Secondary: MongoDB running on `127.0.2.2:27018`, tunnel to primary at `127.0.1.1:27017`
+- Tertiary: MongoDB running on `127.0.3.3:27019`, tunnel to primary at `127.0.1.1:27017`
+
+#### Setup SSH Tunnels
+
+On primary, create tunnel user and SSH keypair with no password:
+
+	sudo adduser mongotunnel --home /home/mongotunnel --shell /bin/bash --disabled-password
+	su - mongotunnel
+	mkdir ~/.ssh
+	chmod 700 ~/.ssh
+	ssh-keygen -t rsa
+	cat ~/.ssh/id_rsa.pub
+	
+Change MongoDB interface to `127.0.1.1`
+	
+	vi /etc/mongod.conf
+	vi /var/www/staging/settings.js
+	systemctl restart mongodb
+	su - deployer
+	pm2 restart staging
+	
+On secondaries, create the tunnel user and add the keypair to `authorized_keys`:
+
+	sudo adduser mongotunnel --home /home/mongotunnel --shell /bin/bash --disabled-password
+	su - mongotunnel
+	mkdir ~/.ssh
+	chmod 700 ~/.ssh
+	vi ~/.ssh/authorized_keys
+	
+Also enable `GatewayPorts` so we can tunnel to 127.0.1.*.
+	
+	vi /etc/ssh/sshd_config
+	
+	Match User mongotunnel
+	   GatewayPorts yes
+
+	systemctl restart sshd.service
+	
+Finally, change MongoDB interface and port to `127.0.2.2:27018`:
+
+	vi /etc/mongod.conf
+	vi /var/www/staging/settings.js
+	systemctl restart mongodb
+
+On primary, test connection and confirm fingerprint:
+	
+	su - mongotunnel
+	ssh vpdb.secondary -l mongotunnel
+	
+Now setup SSH tunnels. Back as root:
+
+	sudo apt install -y autossh
+	vi  /etc/systemd/system/mongotunnel.secondary.service
+	
+	[Unit]
+	Description=Keeps a tunnel to 'remote.example.com' open
+	After=network-online.target
+	
+	[Service]
+	User=mongotunnel
+	ExecStart=/usr/bin/autossh -M 0 -N -q -o "ServerAliveInterval 60" -o "ServerAliveCountMax 3" -p 22 -l mongotunnel vpdb.secondary -L 127.0.2.2:27018:127.0.2.2:27018 -R 127.0.1.1:27017:127.0.1.1:27017 -i /home/mongotunnel/.ssh/id_rsa
+	
+	[Install]
+	WantedBy=multi-user.target
+	
+Try it out:
+	
+	sudo systemctl start mongotunnel.secondary
+	sudo systemctl status mongotunnel.secondary
+	sudo systemctl enable mongotunnel.secondary
+	mongo --host localhost --port 30000
+	
+You should see the `SECONDARY` prompt on the MongoDB shell.
+	
+
+#### Configure Replication
+
 On primary (and all replicas), open `/etc/mongod.conf` and enable replication:
 
 	replication:
@@ -313,7 +395,7 @@ primary, enable replication and add replicas:
 	mongo
 	rs.initiate()
 	rs.conf()
-	rs.add({ host: "vpdb.secondary", priority: 0, hidden: true })
+	rs.add({ host: "localhost:30000", priority: 0, hidden: true })
 
 On secondaries, enable slaves in order to read:
 

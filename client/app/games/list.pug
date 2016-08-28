@@ -26,7 +26,9 @@ include ../template/_mixins
 		p(ng-show="!games.length && !loading") No games found.
 
 		//- loading
-		p(ng-show="loading") Loading...
+		p(ng-show="loading")
+			+icon('circle-o-notch').small.svg-spin.space-right.shift-up
+			| Loading...
 
 		//- content
 		.row.ng-cloak

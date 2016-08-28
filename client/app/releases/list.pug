@@ -33,7 +33,9 @@ include ../template/_mixins
 		p(ng-show="!releases.length && !loading") No releases found.
 
 		//- loading
-		p(ng-show="loading && !error") Loading...
+		p(ng-show="loading && !error")
+			+icon('circle-o-notch').small.svg-spin.space-right.shift-up
+			| Loading...
 
 		//- error
 		p(ng-show="error") Error: {{ error }}

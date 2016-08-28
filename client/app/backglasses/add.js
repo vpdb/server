@@ -8,6 +8,8 @@ angular.module('vpdb.backglasses.add', [])
 		$scope.theme('light');
 		$scope.setTitle('Add Backglass');
 
+		$scope.submitting = false;
+
 		// fetch game info
 		$scope.game = GameResource.get({ id: $stateParams.id }, function() {
 			$scope.backglass._game = $scope.game.id;
@@ -79,8 +81,10 @@ angular.module('vpdb.backglasses.add', [])
 			}
 
 			// post to api
+			$scope.submitting = true;
 			BackglassResource.save($scope.backglass, function(backglass) {
 				$scope.backglass.submitted = true;
+				$scope.submitting = false;
 				$scope.reset();
 
 
@@ -99,7 +103,9 @@ angular.module('vpdb.backglasses.add', [])
 				// go to game page
 				$state.go('gameDetails', { id: $stateParams.id });
 
-			}, ApiHelper.handleErrors($scope));
+			}, ApiHelper.handleErrors($scope, function() {
+				$scope.submitting = false;
+			}));
 		};
 
 		/**

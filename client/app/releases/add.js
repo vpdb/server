@@ -39,6 +39,8 @@ angular.module('vpdb.releases.add', []).controller('ReleaseAddCtrl', function(
 	$scope.flavors = _.values(Flavors);
 	$scope.fetchBuilds();
 
+	$scope.submitting = false;
+
 	// fetch game info
 	$scope.game = GameResource.get({ id: $stateParams.id }, function() {
 		$scope.game.lastrelease = new Date($scope.game.lastrelease).getTime();
@@ -132,7 +134,6 @@ angular.module('vpdb.releases.add', []).controller('ReleaseAddCtrl', function(
 		$scope.reset();
 	}
 
-
 	/**
 	 * Adds OR edits an author.
 	 * @param {object} author If set, edit this author, otherwise add a new one.
@@ -161,7 +162,6 @@ angular.module('vpdb.releases.add', []).controller('ReleaseAddCtrl', function(
 		});
 	};
 
-
 	/**
 	 * Removes an author
 	 * @param {object} author
@@ -169,7 +169,6 @@ angular.module('vpdb.releases.add', []).controller('ReleaseAddCtrl', function(
 	$scope.removeAuthor = function(author) {
 		$scope.release.authors.splice($scope.release.authors.indexOf(author), 1);
 	};
-
 
 	/**
 	 * Opens the create tag dialog
@@ -183,14 +182,12 @@ angular.module('vpdb.releases.add', []).controller('ReleaseAddCtrl', function(
 		});
 	};
 
-
 	/**
 	 * When a tag is dropped
 	 */
 	$scope.tagDropped = function() {
 		$scope.release._tags = _.pluck($scope.meta.tags, 'id');
 	};
-
 
 	/**
 	 * Removes a tag from the release
@@ -202,7 +199,6 @@ angular.module('vpdb.releases.add', []).controller('ReleaseAddCtrl', function(
 		$scope.release._tags = _.pluck($scope.meta.tags, 'id');
 	};
 
-
 	/**
 	 * Adds a link to the release
 	 * @param {object} link
@@ -213,7 +209,6 @@ angular.module('vpdb.releases.add', []).controller('ReleaseAddCtrl', function(
 		$scope.newLink = {}
 	};
 
-
 	/**
 	 * Removes a link from the release
 	 * @param {object} link
@@ -223,7 +218,6 @@ angular.module('vpdb.releases.add', []).controller('ReleaseAddCtrl', function(
 			return l.label !== link.label || l.url !== link.url;
 		});
 	};
-
 
 	/**
 	 * Posts the release add form to the server.
@@ -255,8 +249,10 @@ angular.module('vpdb.releases.add', []).controller('ReleaseAddCtrl', function(
 			rotationParams.push(file._media.playfield_image + ':' + relativeRotation);
 		});
 
+		$scope.submitting = true;
 		ReleaseResource.save({ rotate: rotationParams.join(',') }, $scope.release, function(release) {
 			$scope.release.submitted = true;
+			$scope.submitting = false;
 			$scope.reset();
 
 			var moderationMsg = '';
@@ -275,6 +271,8 @@ angular.module('vpdb.releases.add', []).controller('ReleaseAddCtrl', function(
 			$state.go('releaseDetails', { id: $stateParams.id, releaseId: release.id });
 
 		}, ApiHelper.handleErrors($scope, function(scope) {
+			$scope.submitting = false;
+
 			// if it's an array, those area displayed below
 			if (scope.errors && scope.errors.versions && !_.isArray(scope.errors.versions[0].files)) {
 				scope.filesError = scope.errors.versions[0].files;

@@ -16,6 +16,8 @@ angular.module('vpdb.games.add', [])
 		$scope.setTitle('Add Game');
 		$scope.setMenu('admin');
 
+		$scope.submitting = false;
+
 		$scope.reset = function() {
 			$scope.resetGame();
 			$scope.resetMedia();
@@ -138,6 +140,7 @@ angular.module('vpdb.games.add', [])
 
 			var submit = function() {
 
+				$scope.submitting = true;
 				$scope.game.game_type =
 					$scope.game.origin === 'originalGame' ? 'og' : (
 						$scope.game.game_type ? $scope.game.game_type.toLowerCase() : 'na'
@@ -145,6 +148,7 @@ angular.module('vpdb.games.add', [])
 
 				var game = GameResource.save(_.omit($scope.game, ['data', 'mediaFile']), function() {
 					var id = $scope.game.id;
+					$scope.submitting = false;
 					$scope.game.submitted = true;
 					$scope.reset();
 					ModalService.info({
@@ -157,7 +161,9 @@ angular.module('vpdb.games.add', [])
 					// go to game page
 					$state.go('gameDetails', { id: id });
 
-				}, ApiHelper.handleErrors($scope));
+				}, ApiHelper.handleErrors($scope, function() {
+					$scope.submitting = false;
+				}));
 			};
 
 			// if not yet refreshed, do that first.

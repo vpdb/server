@@ -36,9 +36,12 @@ angular.module('vpdb.releases.add', []).controller('ReleaseFileAddCtrl', functio
 	$scope.setMenu('releases');
 	$scope.setTitle('Upload Files');
 
+	$scope.submitting = false;
+
 	// define flavors and builds
 	$scope.flavors = _.values(Flavors);
 	$scope.fetchBuilds();
+
 
 	// fetch game info
 	$scope.game = GameResource.get({ id: $stateParams.id }, function() {
@@ -119,7 +122,9 @@ angular.module('vpdb.releases.add', []).controller('ReleaseFileAddCtrl', functio
 				return;
 			}
 
+			$scope.submitting = true;
 			ReleaseVersionResource.update({ releaseId: $scope.release.id, version: $scope.meta.version, rotate: rotationParams.join(',') }, { files: $scope.releaseVersion.files }, function() {
+				$scope.submitting = false;
 				$scope.reset();
 				ModalService.info({
 					icon: 'check-circle',
@@ -132,6 +137,7 @@ angular.module('vpdb.releases.add', []).controller('ReleaseFileAddCtrl', functio
 				$state.go('gameDetails', { id: $stateParams.id });
 
 			}, ApiHelper.handleErrors($scope, { fieldPrefix: 'versions.0.' }, function(scope) {
+				$scope.submitting = false;
 				// if it's an array, those area displayed below
 				if (!_.isArray(scope.errors.versions[0].files)) {
 					scope.filesError = scope.errors.versions[0].files;
@@ -151,7 +157,9 @@ angular.module('vpdb.releases.add', []).controller('ReleaseFileAddCtrl', functio
 				delete $scope.releaseVersion.released_at;
 			}
 
+			$scope.submitting = true;
 			ReleaseVersionResource.save({ releaseId: $scope.release.id, rotate: rotationParams.join(',') }, $scope.releaseVersion, function() {
+				$scope.submitting = false;
 				$scope.reset();
 				ModalService.info({
 					icon: 'check-circle',
@@ -164,6 +172,7 @@ angular.module('vpdb.releases.add', []).controller('ReleaseFileAddCtrl', functio
 				$state.go('gameDetails', { id: $stateParams.id });
 
 			}, ApiHelper.handleErrors($scope, { fieldPrefix: 'versions.0.' }, function(scope) {
+				$scope.submitting = false;
 				// if it's an array, those area displayed below
 				if (!_.isArray(scope.errors.versions[0].files)) {
 					scope.filesError = scope.errors.versions[0].files;

@@ -271,6 +271,10 @@ describe('The ACLs of the VPDB API', function() {
 			request.post('/api/v1/media').send({}).end(hlp.status(401, done));
 		});
 
+		it('should deny access to release name creation', function(done) {
+			request.get('/api/v1/release-name').send({}).end(hlp.status(401, done));
+		});
+
 	});
 
 	describe('for logged clients (role member)', function() {
@@ -522,6 +526,10 @@ describe('The ACLs of the VPDB API', function() {
 
 		it('should allow access to creating media', function(done) {
 			request.post('/api/v1/media').as('member').send({}).end(hlp.status(422, done));
+		});
+
+		it('should allow access to release name creation', function(done) {
+			request.post('/api/v1/release-name').as('member').send({}).end(hlp.status(200, done));
 		});
 
 	});

@@ -1,0 +1,5 @@
+GET /v1/release-name HTTP/2.0
+Host: api.vpdb.io
+Accept-Encoding: gzip, deflate
+authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwazRlYWgyeTgiLCJpYXQiOiIyMDE2LTA5LTA3VDIyOjE4OjAxLjU3N1oiLCJleHAiOiIyMDE2LTA5LTA3VDIzOjE4OjAxLjU3N1oiLCJpcnQiOmZhbHNlfQ.H2MrO1EHfMEAAgguxmUpfXKCrqovAE3EdxMHqmSQjx8
+

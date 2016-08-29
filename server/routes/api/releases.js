@@ -47,4 +47,6 @@ exports.register = function(app, api) {
 
 	app.get(settings.apiPath('/releases/:id/events'), api.anon(api.events.list({ byRelease: true })));
 
+	app.get(settings.apiPath('/release-name'),        api.auth(api.releases.randomName, 'releases', 'add'));
+
 };

@@ -1,0 +1,9 @@
+200 OK
+X-App-Sha: b34e05f
+Content-Type: application/json; charset=utf-8
+Content-Length: 36
+Etag: W/"24-5Wg7904LcAGpfmNNVAeYoQ"
+
+{
+  "name": "Pleasant Skin Edition"
+}

@@ -1,0 +1,13 @@
+displayName: Release Name
+get:
+  securedBy: [ jwt: { scopes: [ MEMBER ] } ]
+  description: |
+    Get a random release name for inspiration.
+  body:
+    role/member:
+      example: !include http/view-req.json
+  responses:
+    200:
+      body:
+        role/member:
+          example: !include http/view-res-200.json

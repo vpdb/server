@@ -1383,29 +1383,4 @@ describe('The VPDB `release` API', function() {
 
 	});
 
-	describe('when requesting a release name', function() {
-
-		before(function(done) {
-			hlp.setupUsers(request, {
-				member: { roles: [ 'member' ] }
-			}, done);
-		});
-
-		after(function(done) {
-			hlp.cleanup(request, done);
-		});
-
-		it.only('should return at least two words', function(done) {
-			request
-				.get('/api/v1/release-name')
-				.save({ path: 'release-name/view' })
-				.as('member')
-				.end(function(err, res) {
-					hlp.expectStatus(err, res, 200);
-					expect(res.body.name.split(' ')).to.have.length(3);
-					done();
-				});
-		});
-	});
-
 });

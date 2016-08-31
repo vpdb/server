@@ -1,0 +1,9 @@
+200 OK
+X-App-Sha: b34e05f
+Content-Type: application/json; charset=utf-8
+Content-Length: 33
+Etag: W/"21-Bsyy62G8MauZtWZtSp/Jjg"
+
+{
+  "name": "Acid Ducks Edition"
+}

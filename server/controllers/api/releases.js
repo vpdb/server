@@ -24,7 +24,6 @@ var fs = require('fs');
 var gm = require('gm');
 var util = require('util');
 var logger = require('winston');
-var generate = require('project-name-generator');
 
 var Release = require('mongoose').model('Release');
 var Version = require('mongoose').model('ReleaseVersion');
@@ -743,17 +742,6 @@ exports.moderate = function(req, res) {
 
 	}).catch(api.handleError(res, error, 'Error moderating release'));
 };
-
-/**
- * Returns a random name for release name inspiration
- *
- * @param {Request} req
- * @param {Response} res
- */
-exports.randomName = function(req, res) {
-	api.success(res, { name: generate().raw.map(_.upperFirst).join(' ') + ' Edition' }, 200);
-};
-
 
 /**
  * Retrieves release details.

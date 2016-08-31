@@ -23,6 +23,7 @@ var _ = require('lodash');
 var fs = require('fs');
 var util = require('util');
 var logger = require('winston');
+var generate = require('project-name-generator');
 
 var File = require('mongoose').model('File');
 var Game = require('mongoose').model('Game');
@@ -396,6 +397,15 @@ exports.view = function(req, res) {
 	}).catch(api.handleError(res, error, 'Error viewing game'));
 };
 
+/**
+ * Returns a random name for release name inspiration
+ *
+ * @param {Request} req
+ * @param {Response} res
+ */
+exports.releaseName = function(req, res) {
+	api.success(res, { name: generate().raw.map(_.upperFirst).join(' ') + ' Edition' }, 200);
+};
 
 /**
  * Copies a given file to a given media type.

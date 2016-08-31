@@ -443,4 +443,33 @@ describe('The VPDB `game` API', function() {
 		});
 
 	});
+
+	describe('when requesting a release name', function() {
+
+		before(function(done) {
+			hlp.setupUsers(request, {
+				member: { roles: [ 'member' ] },
+				moderator: { roles: [ 'moderator' ] }
+			}, done);
+		});
+
+		after(function(done) {
+			hlp.cleanup(request, done);
+		});
+
+		it('should return at least two words', function(done) {
+			hlp.game.createGame('moderator', request, function(game) {
+				request
+					.get('/api/v1/games/' + game.id + '/release-name')
+					.save({ path: 'games/release-name' })
+					.as('member')
+					.end(function(err, res) {
+						hlp.expectStatus(err, res, 200);
+						expect(res.body.name.split(' ')).to.have.length(3);
+						done();
+					});
+			});
+		});
+
+	});
 });

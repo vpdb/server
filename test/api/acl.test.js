@@ -272,7 +272,7 @@ describe('The ACLs of the VPDB API', function() {
 		});
 
 		it('should deny access to release name creation', function(done) {
-			request.get('/api/v1/release-name').send({}).end(hlp.status(401, done));
+			request.get('/api/v1/games/test/release-name').send({}).end(hlp.status(401, done));
 		});
 
 	});
@@ -529,7 +529,7 @@ describe('The ACLs of the VPDB API', function() {
 		});
 
 		it('should allow access to release name creation', function(done) {
-			request.post('/api/v1/release-name').as('member').send({}).end(hlp.status(200, done));
+			request.post('/api/v1/games/test/release-name').as('member').send({}).end(hlp.status(404, done));
 		});
 
 	});

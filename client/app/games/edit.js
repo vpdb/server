@@ -4,10 +4,10 @@ angular.module('vpdb.games.edit', [])
 
 	.controller('AdminGameEditCtrl', function($scope, $rootScope, $state, $stateParams, ApiHelper, AuthService, GameResource) {
 
-		var arrayFields = [ 'artists', 'designers', 'themes' ];
+		var arrayFields = [ 'keywords', 'artists', 'designers', 'themes' ];
 		var updateableFields = ['title', 'year', 'manufacturer', 'game_type', 'short', 'description', 'instructions',
 			'produced_units', 'model_number', 'themes', 'designers', 'artists', 'features', 'notes', 'toys', 'slogans',
-			'_media'];
+			'_media', 'keywords' ];
 		var maxAspectRatioDifference = 0.2;
 
 		$scope.theme('light');

@@ -125,6 +125,7 @@ exports.upload = function(config) {
 								if (game.title) {
 									data.title = game.title;
 								}
+								data.keywords = game.keywords;
 								data.year = data.year || game.year || 1900;
 								data.game_type = data.game_type || 'na';
 								data.manufacturer = data.manufacturer || 'unknown';
@@ -163,9 +164,9 @@ exports.upload = function(config) {
 };
 
 exports.data = [
-	{ bg: 'Abra Ca Dabra (Gottlieb 1975).png', logo: 'Abra Ca Dabra (Gottlieb 1975).png', ipdb: 2 },
-	{ bg: 'Aladdin\'s Castle (Bally 1976).png', logo: 'Aladdin\'s Castle (Bally 1976).png', ipdb: 40 },
-	{ bg: 'Alien Star (Gottlieb 1984).png', logo: 'Alien Star (Gottlieb 1984).png', ipdb: 49 },
+	{ bg: 'Abra Ca Dabra (Gottlieb 1975).png', logo: 'Abra Ca Dabra (Gottlieb 1975).png', ipdb: 2, keywords: [ 'magic', 'shazam', 'trickery', 'poof', 'hocus pocus', 'wizardry' ] },
+	{ bg: 'Aladdin\'s Castle (Bally 1976).png', logo: 'Aladdin\'s Castle (Bally 1976).png', ipdb: 40, keywords: [ 'night', 'genie', 'lamp', 'boy' ] },
+	{ bg: 'Alien Star (Gottlieb 1984).png', logo: 'Alien Star (Gottlieb 1984).png', ipdb: 49, keywords: [ 'battle', 'world', 'journey' ] },
 	{ bg: 'Amazing Spiderman (Gottlieb 1980).png', logo: 'Amazing Spiderman (Gottlieb 1980).png', ipdb: 2285, id: 'amazing-spider-man' },
 	{ bg: 'America\'s Most Haunted (Spooky 2014).png', logo: 'amh-wheel.png', ipdb: 6161 },
 	{ bg: 'Apollo 13 (Sega 1995).png', logo: 'Apollo 13 (Sega 1995).png', ipdb: 3592 },

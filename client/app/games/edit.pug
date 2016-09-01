@@ -65,6 +65,12 @@ include ../template/_mixins
 						+icon('warning').shift-up.space-right
 						| {{ errors.model_number }}
 
+				//- keywords
+				.form-group(ng-hide="game.game_type === 'og'")
+					label.col-sm-3.control-label Keywords
+					.col-sm-9
+						textarea.textarea--full(placeholder="Keywords", ng-model="arrays.keywords")
+
 				//- description
 				.form-group(ng-show="game.game_type === 'og'")
 					label.col-sm-3.control-label Description
@@ -166,7 +172,6 @@ include ../template/_mixins
 					label.col-sm-3.control-label Themes
 					.col-sm-9
 						textarea.textarea--full(placeholder="Game themes", ng-model="arrays.themes")
-
 
 			.clearfix
 

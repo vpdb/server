@@ -125,9 +125,9 @@ exports.create = function(req, res) {
  */
 exports.update = function(req, res) {
 
-	const updateableFields = ['title', 'year', 'manufacturer', 'game_type', 'short', 'description', 'instructions',
+	const updateableFields = [ 'title', 'year', 'manufacturer', 'game_type', 'short', 'description', 'instructions',
 		'produced_units', 'model_number', 'themes', 'designers', 'artists', 'features', 'notes', 'toys', 'slogans',
-		'ipdb', 'number', '_media' ];
+		'ipdb', 'number', '_media', 'keywords' ];
 
 	let game, oldMediaObj, oldMedia, newMedia;
 	Promise.try(() => {
@@ -404,7 +404,25 @@ exports.view = function(req, res) {
  * @param {Response} res
  */
 exports.releaseName = function(req, res) {
-	api.success(res, { name: generate().raw.map(_.upperFirst).join(' ') + ' Edition' }, 200);
+
+	let game;
+	Promise.try(() => {
+		return Game.findOne({ id: req.params.id }).exec();
+
+	}).then(g => {
+		game = g;
+		if (!game) {
+			throw error('No such game with ID "%s".', req.params.id).status(404);
+		}
+		let words = generate().raw;
+		if (!_.isEmpty(game.keywords)) {
+			words.splice(words.length - 1);
+			words.push(game.keywords[Math.floor(Math.random() * game.keywords.length)]);
+		}
+		words.push('edition');
+		api.success(res, { name:words.map(w => w.toLowerCase()).map(_.upperFirst).join(' ') }, 200);
+
+	}).catch(api.handleError(res, error, 'Error generating release name'));
 };
 
 /**

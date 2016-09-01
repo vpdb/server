@@ -59,6 +59,7 @@ var fields = {
 	themes:         Array,
 	designers:      Array,
 	artists:        Array,
+	keywords:       Array,
 	features:       String,
 	notes:          String,
 	toys:           String,

@@ -25,7 +25,7 @@
 angular.module('vpdb.releases.add', []).controller('ReleaseAddCtrl', function(
 	$scope, $uibModal, $window, $localStorage, $state, $stateParams, $location, $anchorScroll, $timeout, $controller,
 	AuthService, ConfigService, DisplayService, MimeTypeService, ModalService, ApiHelper, Flavors, ReleaseMeta,
-	ReleaseResource, FileResource, TagResource, BuildResource, GameResource)
+	ReleaseResource, FileResource, TagResource, BuildResource, GameResource, GameReleaseNameResource)
 {
 	// use add-common.js
 	angular.extend(this, $controller('ReleaseAddBaseCtrl', { $scope: $scope }));
@@ -216,6 +216,15 @@ angular.module('vpdb.releases.add', []).controller('ReleaseAddCtrl', function(
 	$scope.removeLink = function(link) {
 		$scope.release.links = _.filter($scope.release.links, function(l) {
 			return l.label !== link.label || l.url !== link.url;
+		});
+	};
+
+	/**
+	 * Retrieves a release name proposition.
+	 */
+	$scope.generateReleaseName = function() {
+		GameReleaseNameResource.get({ gameId: $stateParams.id }, function(result) {
+			$scope.release.name = result.name;
 		});
 	};
 

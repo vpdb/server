@@ -33,7 +33,21 @@
 		// hollow button
 		&.btn-hollow
 			border-color $color-dark
-			background-color transparent
+			color $color-light
+			.svg-icon
+				fill $color-light
+
+			&:hover
+				border-color $color-primary
+				color $color-primary
+				.svg-icon
+					fill $color-primary
+			&:active
+				box-shadow none
+				border-color $color-dark
+				color $color-light
+				.svg-icon
+					fill $color-light
 
 	// panel footer buttons are darker
 	.panel-footer .btn
@@ -107,7 +121,6 @@
 		&.btn-hollow
 			border-width 2px
 			border-color $color-dark-inv
-			background-color transparent
 			color $color-light-inv
 			.svg-icon
 				fill $color-light-inv

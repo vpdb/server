@@ -24,6 +24,20 @@ block navbar
 						span Users
 
 	ul.nav.navbar-nav.navbar-right
+		li.uib-dropdown(ng-show="auth.isAuthenticated && themeName === 'theme-dark'", on-toggle="toggled(open)", uib-dropdown)
+			a.btn.btn-hollow.space-right.uib-dropdown-toggle(uib-dropdown-toggle) Upload
+			ul.uib-dropdown-menu
+				li
+					a(ui-sref="profile.settings")
+						span Recreation
+				li
+					a(ng-click="auth.logout()")
+						span Original Game
+				li
+					a(ng-click="auth.logout()")
+						span Direct B2S
+
+
 		li(ng-hide="auth.isAuthenticated")
 			a(ng-click="login()")
 				+icon('lock').small.space-right.shift-up

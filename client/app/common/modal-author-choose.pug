@@ -22,9 +22,9 @@ include ../template/_mixins
 					typeahead-min-length="3",
 					typeahead-wait-ms="250")
 				span.input-group-addon
-					+icon('circle-o-notch').small.svg-spin(ng-show="searching")
-					+icon('check').smaller(ng-show="!searching && isValidUser")
-					+icon('times').smaller(ng-show="!searching && !isValidUser")
+					+icon('circle-o-notch').small.svg-spin.ng-hide(ng-show="searching")
+					+icon('check').smaller.ng-hide(ng-show="!searching && isValidUser")
+					+icon('times').smaller.ng-hide(ng-show="!searching && !isValidUser")
 
 		div.alert.alert-danger.text-left(ng-show="errors.user")
 			+icon('warning').shift-up.space-right
@@ -56,7 +56,7 @@ include ../template/_mixins
 			| {{ errors.roles }}
 
 	.modal-footer
-		button.btn.btn-default(ng-click="$dismiss()") Cancel
+		button.btn.btn-hollow.pull-left(ng-click="$dismiss()") Cancel
 		button.btn.btn--secondary(ng-click="add()") {{ adding ? 'Add' : 'Update' }} Author
 
 	script#userListItem(type="text/ng-template")

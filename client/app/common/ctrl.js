@@ -109,6 +109,17 @@ angular.module('vpdb.common', [])
 			}, ttl);
 		};
 
+		$rootScope.uploadRelease = function() {
+			$uibModal.open({
+				templateUrl: '/common/modal-game-choose.html',
+				controller: 'ChooseGameCtrl',
+				windowTopClass: 'modal--with-overflow'
+			}).result.then(function(game) {
+
+				// navigate to game add
+			});
+		}
+
 		$scope.unpinDownload = function(download) {
 			delete $scope.pinnedDownloads[download.id];
 			$scope.pinnedDownloadCount--;

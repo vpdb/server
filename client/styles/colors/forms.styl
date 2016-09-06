@@ -124,6 +124,12 @@ $input-background-light-focus = rgba(white, 0.75)
 		background-color $color-lighter
 		&:focus
 			background-color $color-lightest
+		&::-webkit-input-placeholder
+			color $color-dark-inv
+		&::-moz-placeholder
+			color $color-dark-inv
+		&:-ms-input-placeholder
+			color $color-dark-inv
 
 	// On error:
 	.form-group
@@ -137,11 +143,12 @@ $input-background-light-focus = rgba(white, 0.75)
 				border-right none
 
 	// Addon has the same background-color as the form control
-	.input-group-addon
-		color $color-dark-inv
-		background-color $color-lighter
-		.svg-icon
-			fill $color-dark-inv
+	.input-group
+		> .input-group-addon
+			color $color-dark-inv
+			background-color $color-lighter
+			.svg-icon
+				fill $color-dark-inv
 
 	input.checkbox--check
 		+ label

@@ -28,7 +28,7 @@ block navbar
 			a.btn.btn-hollow.space-right.uib-dropdown-toggle(uib-dropdown-toggle) Upload
 			ul.uib-dropdown-menu
 				li
-					a(ui-sref="profile.settings")
+					a(ng-click="uploadRelease()")
 						span Recreation
 				li
 					a(ng-click="auth.logout()")

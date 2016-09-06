@@ -1,0 +1,36 @@
+include ../template/_mixins
+
+.theme-light
+	.modal-header
+		h1.h--no-margin.h--small Upload Recreation
+
+	.modal-body
+		h3.h--no-margin Select Game
+		p Search the game of the recreation you want to upload.
+		.form-group
+			input.form-control.input-lg(type="text", placeholder="Start typing...",
+				ng-model="query",
+				ng-change="queryChange()",
+				uib-typeahead="game as game.title for game in findGame($viewValue)",
+				typeahead-on-select="gameSelected($item, $model, $label)",
+				typeahead-loading="searching",
+				typeahead-template-url="gameListItem",
+				typeahead-min-length="3",
+				typeahead-wait-ms="250",
+				focus-on)
+		h3.h--no-margin Game not found?
+		p We might haven't added the game you're looking for yet. Tell us about it and we'll do so as soon as possible!
+		button.btn.btn-hollow.pull-right Request Game
+		.clearfix
+
+	.modal-footer
+		button.btn.btn-hollow(ng-click="$dismiss()") Cancel
+
+	script#gameListItem(type="text/ng-template")
+
+		div.media.media--game-item
+			.media-left
+				.img.img--ar-bg(img-bg="match.model.media.backglass.variations['small' + pixelDensitySuffix].url")
+			.media-body
+				h3.h--no-margin.h--lighter {{ match.model.title }}
+

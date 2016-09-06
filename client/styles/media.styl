@@ -101,3 +101,23 @@
 
 .media--mini-noborders:first-child
 	margin-top 10px
+
+
+.media--game-item
+	transition all $animation-short
+	.media-left
+		padding-left 4px
+		.img
+			width 70px
+			margin-top 3px
+			margin-bottom 3px
+			margin-left 3px
+	.media-body
+		padding 2px
+
+	&:hover
+		cursor: pointer
+		background-color $color-primary
+
+		h3.h--lighter
+			color white

@@ -10,7 +10,6 @@ include ../template/_mixins
 		.form-group
 			input.form-control.input-lg(type="text", placeholder="Start typing...",
 				ng-model="query",
-				ng-change="queryChange()",
 				uib-typeahead="game as game.title for game in findGame($viewValue)",
 				typeahead-on-select="gameSelected($item, $model, $label)",
 				typeahead-loading="searching",

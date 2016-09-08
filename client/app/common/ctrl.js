@@ -115,8 +115,7 @@ angular.module('vpdb.common', [])
 				controller: 'ChooseGameCtrl',
 				windowTopClass: 'modal--with-overflow'
 			}).result.then(function(game) {
-
-				// navigate to game add
+				$state.go('addRelease', { id: game.id });
 			});
 		}
 

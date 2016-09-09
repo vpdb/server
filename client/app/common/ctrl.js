@@ -113,11 +113,37 @@ angular.module('vpdb.common', [])
 			$uibModal.open({
 				templateUrl: '/common/modal-game-choose.html',
 				controller: 'ChooseGameCtrl',
-				windowTopClass: 'modal--with-overflow'
+				windowTopClass: 'modal--with-overflow',
+				resolve: {
+					params: function() {
+						return {
+							title: 'Upload Recreation',
+							text: 'Search the game of the recreation you want to upload.'
+						};
+					}
+				}
 			}).result.then(function(game) {
 				$state.go('addRelease', { id: game.id });
 			});
-		}
+		};
+
+		$rootScope.uploadBackglass = function() {
+			$uibModal.open({
+				templateUrl: '/common/modal-game-choose.html',
+				controller: 'ChooseGameCtrl',
+				windowTopClass: 'modal--with-overflow',
+				resolve: {
+					params: function() {
+						return {
+							title: 'Upload Direct B2S Backglass',
+							text: 'Search the game of the backglass you want to upload.'
+						};
+					}
+				}
+			}).result.then(function(game) {
+				$state.go('addBackglass', { id: game.id });
+			});
+		};
 
 		$scope.unpinDownload = function(download) {
 			delete $scope.pinnedDownloads[download.id];

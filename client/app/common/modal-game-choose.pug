@@ -2,11 +2,11 @@ include ../template/_mixins
 
 .theme-light
 	.modal-header
-		h1.h--no-margin.h--small Upload Recreation
+		h1.h--no-margin.h--small {{ params.title }}
 
 	.modal-body
 		h3.h--no-margin Select Game
-		p Search the game of the recreation you want to upload.
+		p {{ params.text }}
 		.form-group
 			input.form-control.input-lg(type="text", placeholder="Start typing...",
 				ng-model="query",

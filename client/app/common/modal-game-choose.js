@@ -19,7 +19,9 @@
 
 "use strict"; /* global _, angular */
 
-angular.module('vpdb.common', []).controller('ChooseGameCtrl', function($scope, $uibModalInstance, GameResource) {
+angular.module('vpdb.common', []).controller('ChooseGameCtrl', function($scope, $uibModalInstance, GameResource, params) {
+
+	$scope.params = params;
 
 	$scope.findGame = function(val) {
 		return GameResource.query({ q: val }).$promise;

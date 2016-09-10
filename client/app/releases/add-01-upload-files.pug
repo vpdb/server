@@ -21,20 +21,21 @@ p Drag and drop your files from the file explorer into the box below.
 	+icon('warning').shift-up.space-right
 	| {{ filesError }}
 
-p Note that files of a release are structured, i.e. there are only certain file types allowed:
-ul
-	li <code>.vpt</code> / <code>.vpx</code> - The table file of the release. You can upload multiple of those
-		| if you have multiple flavors ready to release (see step {{ step.flavors }} below)
-	li <code>.vbs</code> - Table scripts, located in the <i>Scripts</i> folder
-	li <code>.mp3</code> - External game music, located in the <i>Music</i> folder
-	li <code>.zip</code> / <code>.rar</code> - When downloading the release as an archive, these will be
-		| extracted into the <i>Tables</i> folder before adding them to the archive. However, if files
-		| in your .zip or .rar file are located at the root of the archive, they will be extracted into
-		| a folder named after the your .zip or .rar file.
-	li <code>.txt</code> / <code>.md</code> - Note that your release will be in any case packaged with a
-		| README file generated from the description you provide below. There will also be a file about
-		| authors and acknowledgements distributed with every download. Thus, it is recommended to use text
-		| files only for configuration or other technical usages when necessary.
-
+.alert.alert--rounded.alert--aligned(ng-show="showHelp")
+	+icon('info')
+	p Note that files of a release are structured, i.e. there are only certain file types allowed:
+	ul
+		li <code>.vpt</code> / <code>.vpx</code> - The table file of the release. You can upload multiple of those
+			| if you have multiple flavors ready to release (see step {{ step.flavors }} below)
+		li <code>.vbs</code> - Table scripts, located in the <i>Scripts</i> folder
+		li <code>.mp3</code> - External game music, located in the <i>Music</i> folder
+		li <code>.zip</code> / <code>.rar</code> - When downloading the release as an archive, these will be
+			| extracted into the <i>Tables</i> folder before adding them to the archive. However, if files
+			| in your .zip or .rar file are located at the root of the archive, they will be extracted into
+			| a folder named after the your .zip or .rar file.
+		li <code>.txt</code> / <code>.md</code> - Note that your release will be in any case packaged with a
+			| README file generated from the description you provide below. There will also be a file about
+			| authors and acknowledgements distributed with every download. Thus, it is recommended to use text
+			| files only for configuration or other technical usages when necessary.
 
 include ../template/timepicker

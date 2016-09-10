@@ -1,6 +1,8 @@
-p These show off your work. You should provide both image and video at full HD resolution at <i>1920&times;1080</i>.
-	| For every table file you've provided in step {{ step.flavors }}, at least the screenshot is mandatory. If you provide a video,
-	| it should show the table in attract mode (no gameplay).
+.alert.alert--rounded.alert--aligned(ng-show="showHelp")
+	+icon('info')
+	p These show off your work. You should provide both image and video at full HD resolution at <i>1920&times;1080</i>.
+		| For every table file you've provided in step {{ step.flavors }}, at least the screenshot is mandatory. If you provide a video,
+		| it should show the table in attract mode (no gameplay).
 
 span(ng-repeat="file in meta.files | fileext:['vpt','vpx']")
 	h2.h--smaller

@@ -20,12 +20,19 @@
 .theme-light
 
 	.alert
+		color $color-lighter-inv
+		background-color $color-darkest-inv
+		.svg-icon
+			fill $color-lighter-inv
+	.alert-danger
 		color $color-lightest
 		.svg-icon
 			fill $color-lightest
-	.alert-danger
 		background-color $color-danger
 	.alert-success
+		color $color-lightest
+		.svg-icon
+			fill $color-lightest
 		background-color $color-success
 
 	.alert--inverted

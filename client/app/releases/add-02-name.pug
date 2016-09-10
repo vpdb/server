@@ -6,9 +6,11 @@
 	.alert.alert-danger(ng-show="errors.name")
 		+icon('warning').shift-up.space-right
 		| {{ errors.name }}
-	span.help-block This is what will show up when your release gets listed under the game. It is basically what
-		| distinguishes your release from others of the same game. Don't put the game name or anything you
-		| already describe below such as <i>"FS Night Mod VP9.9"</i>, but choose a name that brings across the
-		| nature of your virtual table.<br>
-		| Be creative, pick a theme from the table, like <i>"Castle Crusher Edition"</i> for MM or <i>"Monkey
-		| Brain Edition"</i> for IJ, but if you're out of ideas, <i>"Ultimate Edition"</i> often seems to work. ;)
+	.alert.alert--rounded.alert--aligned(ng-show="showHelp")
+		+icon('info')
+		p This is what will show up when your release gets listed under the game. It is basically what
+			| distinguishes your release from others of the same game. Don't put the game name or anything you
+			| already describe below such as <i>"FS Night Mod VP9.9"</i>, but choose a name that brings across the
+			| nature of your virtual table.<br>
+			| Be creative, pick a theme from the table, like <i>"Castle Crusher Edition"</i> for MM or <i>"Monkey
+			| Brain Edition"</i> for IJ, but if you're out of ideas, <i>"Ultimate Edition"</i> often seems to work. ;)

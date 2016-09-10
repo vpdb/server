@@ -32,9 +32,11 @@ h4
 	| Acknowledgements
 hr.hr--light.hr--margin-small
 
-p Show your love to those who helped you. In the field below, you can add your honorable mentions. It's
-	| recommended to write a <a href="http://daringfireball.net/projects/markdown/syntax#list" target="_blank">list</a>,
-	| but you're free to describe them however you want.
+.alert.alert--rounded.alert--aligned(ng-show="showHelp").padder-bottom
+	+icon('info')
+	p Show your love to those who helped you. In the field below, you can add your honorable mentions. It's
+		| recommended to write a <a href="http://daringfireball.net/projects/markdown/syntax#list" target="_blank">list</a>,
+		| but you're free to describe them however you want.
 
 .form-group
 	uib-tabset.tabset--light

@@ -6,13 +6,15 @@ include ../template/_mixins
 		h1.h--primary Add a new Release
 		hr.hr--primary
 
-		p Welcome to the release upload page. We've tried our best to make it as easy as possible for you to
-			| upload your release and add the necessary information so it can correctly be categorized, indexed and
-			| found by the community.
+		.alert.alert--rounded.alert--aligned(ng-show="showHelp")
+			+icon('info')
+			p Welcome to the release upload page. We've tried our best to make it as easy as possible for you to
+				| upload your release and add the necessary information so it can correctly be categorized, indexed and
+				| found by the community.
 
-		p Below are seven steps until you can hit the big button. If this is the first time you're uploading a release,
-			| read carefully through the instructions. Note that you can hit refresh or quit this page (even the browser)
-			| and what you've entered will be restored any time you come back. So let's get started!
+			p Below are seven steps until you can hit the big button. If this is the first time you're uploading a release,
+				| read carefully through the instructions. Note that you can hit refresh or quit this page (even the browser)
+				| and what you've entered will be restored any time you come back. So let's get started!
 
 		//---------------------------------------------------------------------
 		h1 1. Upload Files
@@ -111,3 +113,9 @@ include ../template/_mixins
 		img.img--logo(ng-show="game.media.logo.url", ng-src="{{ game.media.logo.variations['medium' + pixelDensitySuffix].url }}")
 		h3.h--multiline.text-center {{ game.title }}
 		.text-center {{ game.manufacturer }} · {{ game.year }}
+
+		hr
+		input#showHelp.checkbox--toggle(type='checkbox', ng-model="showHelp")
+		label(for="showHelp")
+		label.a.a--light.padder-bottom(for="showHelp") Show Instructions
+		.clearfix

@@ -1,5 +1,7 @@
-p Here you can let users know which versions of Visual Pinball your release supports. For every uploaded file,
-	| check which build you feel confident with.
+.alert.alert--rounded.alert--aligned(ng-show="showHelp")
+	+icon('info')
+	p Here you can let users know which versions of Visual Pinball your release supports. For every uploaded file,
+		| check which build you feel confident with.
 
 ul.list--files
 	li.panel(ng-repeat="file in meta.files | fileext:['vpt','vpx']", , ng-class="{ error: errors.versions[0].files[meta.files.indexOf(file)]._compatibility }")

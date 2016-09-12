@@ -4,7 +4,10 @@ include ../template/_mixins
 	.col-sm-9.col--main
 		h1.h--primary Upload new files
 		hr.hr--primary
-		p Here you can either upload additional flavors for an existing version or upload a new version of you release.
+
+		.alert.alert--rounded.alert--aligned(ng-show="showHelp")
+			+icon('info')
+			p Here you can either upload additional flavors for an existing version or upload a new version of you release.
 
 		.row: .col-sm-10.col-sm-offset-1
 			select.form-control.pull-right(ng-disabled="meta.mode == 'newVersion'", ng-options="version for version in versions", ng-model="meta.version")

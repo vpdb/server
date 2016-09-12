@@ -29,6 +29,10 @@ angular.module('vpdb.common', [])
 		$scope.pinnedDownloadCount = 0;
 		$scope.pinnedDownloadSize = 0;
 		$scope.notifications = {};
+		$localStorage.show_instructions = $localStorage.show_instructions || {
+			release_add: true,
+			version_add: true
+		};
 
 		AuthService.init();
 		ProfileService.init();

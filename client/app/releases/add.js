@@ -40,7 +40,10 @@ angular.module('vpdb.releases.add', []).controller('ReleaseAddCtrl', function(
 	$scope.fetchBuilds();
 
 	$scope.submitting = false;
-	$scope.showHelp = true;
+	$scope.showHelp = $localStorage.show_instructions.release_add;
+	$scope.$watch('showHelp', function() {
+		$localStorage.show_instructions.release_add = $scope.showHelp;
+	});
 
 	// fetch game info
 	$scope.game = GameResource.get({ id: $stateParams.id }, function() {

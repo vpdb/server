@@ -56,43 +56,6 @@ block navbar
 						+icon('exit').space-right.shift-up
 						span Logout
 
-
-		//- li.ng-cloak
-			.btn-group.btn-group-flex
-				button.btn.btn-pin(type="button", class="{{ downloadsPinned ? 'btn-primary' : 'btn-default' }}", ng-model="downloadsPinned", btn-checkbox, btn-checkbox-true="1", btn-checkbox-false="0")
-					i.icon.space-right(class="{{ downloadsPinned ? 'icon-pin-on' : 'icon-pin-off' }}")
-					| Pin Downloads
-					span.badge(ng-show="downloadsPinned || pinnedDownloadCount") {{ pinnedDownloadCount }}
-				button.btn.uib-dropdown-toggle(type="button", class="{{ downloadsPinned ? 'btn-primary' : 'btn-default' }}", data-toggle="dropdown")
-					+icon('angle-down').smaller.shift-up
-					span.sr-only Toggle Dropdown
-				ul.uib-dropdown-menu(role="menu")
-					li
-						table
-							tbody
-								tr.divider-bottom(ng-click="helpPinnedDownloads()")
-									td.ic
-										i.fa.fa-question-circle
-									td What's this?
-									td
-								tr.divider-none(ng-hide="pinnedDownloadCount")
-									td(colspan="3") No pinned downloads.
-
-								tr(ng-repeat="(id, dl) in pinnedDownloads")
-									td.ic
-										i.fa.fa-trash-o(ng-click="unpinDownload(dl);$event.stopPropagation()")
-									td
-										p {{ dl.info[0] }}
-										p
-											span(bind-html-unsafe="dl.info[1]")
-											| &nbsp;	 - v{{ dl.version }}
-									td {{ dl.size | bytes }}
-								tr.divider-top(ng-show="pinnedDownloadCount > 0", ng-click="downloadPinned()")
-									td.ic
-										i.fa.fa-download
-									td Download
-									td {{ pinnedDownloadSize | bytes }}
-
 block content
 
 	div(ng-repeat="(id, notification) in notifications track by id")
@@ -121,4 +84,14 @@ block content
 
 	.spinner-overlay.fade-animation(ng-show="loading", ng-cloak)
 		.spinner
+
+	script(type="text/ng-template", id="user-item.html")
+		small.user-mention-info(ng-show="typedTerm.length < 3")
+			+icon('info').shift-up.space-right-less
+			| Type 3 characters in order to search for a user
+		ul.list-group.list-group--users
+			li.list-group-item(mentio-menu-item="person", ng-repeat="person in items | filter: '!!'")
+				img.img-avatar.img-avatar--xsm.pull-left.space-right(gravatar-src="person.gravatar_id", gravatar-default="404", fallback-icon="user")
+				div.pull-left(ng-bind-html="person.name | mentioHighlight:typedTerm:'menu-highlighted' | unsafe")
+				.clearfix
 

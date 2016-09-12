@@ -34,16 +34,23 @@ hr.hr--light.hr--margin-small
 
 .alert.alert--rounded.alert--aligned(ng-show="showHelp").padder-bottom
 	+icon('info')
-	p Show your love to those who helped you. In the field below, you can add your honorable mentions. It's
-		| recommended to write a <a href="http://daringfireball.net/projects/markdown/syntax#list" target="_blank">list</a>,
-		| but you're free to describe them however you want.
+	p Show your love to those who helped you. In the field below, you can add your honorable mentions. It's recommended to write a <a href="http://daringfireball.net/projects/markdown/syntax#list" target="_blank">list</a>, but you're free to describe them however you want.
+	p Pro tip: Type <code>@</code> for user search and auto-completion.
 
 .form-group
 	uib-tabset.tabset--light
 		label.label--small.pull-right(markdown-info="Markdown enabled.")
 		uib-tab
 			tab-heading(title="Write"): +icon('edit')
-			textarea.textarea--full.msd-elastic(placeholder="List of people to thank", ng-model="release.acknowledgements")
+			textarea.textarea--full.msd-elastic(
+				placeholder="List of people to thank",
+				ng-model="release.acknowledgements",
+				mentio,
+				mentio-items="foundUsers",
+				mentio-search="findUser(term)",
+				mentio-select="getUserMention(item)",
+				mentio-template-url="user-item.html"
+			)
 		uib-tab
 			tab-heading(title="Preview"): +icon('eye')
 			div.markdown(markdown="release.acknowledgements")

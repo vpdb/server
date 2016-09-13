@@ -47,11 +47,97 @@ exports.welcomeLocal = function(user, done) {
 	mail(user, 'welcome-local', user.email, 'Welcome to the VPDB!', done);
 };
 
+exports.releaseSubmitted = function(user, release) {
+
+	return sendEmail(user, user.email, 'Your release has been submitted at VPDB', 'release-submitted', {
+		user: user,
+		previewUrl: settings.webUri('/games/' + release._game.id + '/releases/' + release.id)
+	}, 'notify_release_moderation_status');
+};
+
+/**
+ * Sends an email.
+ *
+ * @param {User} user Recepient object
+ * @param {string} recepient Destination email address
+ * @param {string} subject Subject of the email
+ * @param {string} template Name of the Handlebars template, without path or extension
+ * @param {Object} templateData Data passed to the Handlebars renderer
+ * @param {string} [enabledFlag] If set, user profile must have this preference set to true
+ * @return Promise
+ */
+function sendEmail(user, recepient, subject, template, templateData, enabledFlag) {
+
+	let what, email;
+	return Promise.try(() => {
+		what = template.replace(/-/g, ' ');
+		if (!emailEnabled(user, enabledFlag)) {
+			logger.info('[mailer] NOT sending %s email to <%s>.', what, recepient);
+			return;
+		}
+
+		// generate content
+		const tpl = getTemplate(template);
+		const text = tpl(templateData);
+
+		// setup email
+		email = {
+			from: { name: config.vpdb.email.sender.name, address: config.vpdb.email.sender.email },
+			to: { name: user.name, address: recepient },
+			subject: subject,
+			text: text
+		};
+
+		const transport = nodemailer.createTransport(smtpTransport(config.vpdb.email.nodemailer));
+		logger.info('[mailer] Sending %s email to <%s>...', what, email.to.address);
+		return transport.sendMail(email);
+
+	}).then(status => {
+		if (status.messageId) {
+			logger.info('[mailer] Successfully sent %s mail to <%s> with message ID "%s" (%s).', what, email.to.address, status.messageId, status.response);
+		} else {
+			logger.info('[mailer] Failed sending %s mail to <%s>: %s.', what, email.to.address, status.response);
+		}
+		return status;
+	});
+}
+
+/**
+ * Returns a Handlebar renderer for a given template name.
+ * @param {string} template Template file without path or extension
+ * @returns {Function} Handlebar renderer
+ */
+function getTemplate(template) {
+	return handlebars.compile(fs.readFileSync(path.resolve(templatesDir, template + '.handlebars')).toString());
+}
+
+/**
+ * Checks if an email should be sent
+ * @param {User} user User object of the recipient
+ * @param {string} [pref] If set, user.preferences[param] must be true
+ * @returns {boolean} True if email should be sent, false otherwise
+ */
+function emailEnabled(user, pref) {
+	if (_.isEmpty(config.vpdb.email.nodemailer)) {
+		return false;
+	}
+	if (!pref) {
+		return true;
+	}
+	if (!user.preferences) {
+		return true;
+	}
+	return !!user.preferences[pref];
+}
+
+/**
+ * @deprecated
+ */
 function mail(user, template, recipient, subject, done) {
 
 	done = done || function() {};
 
-	var tpl = handlebars.compile(fs.readFileSync(path.resolve(templatesDir, template + '.handlebars')).toString());
+	var tpl = getTemplate(template);
 
 	// generate content
 	var text = tpl({
@@ -74,6 +160,9 @@ function mail(user, template, recipient, subject, done) {
 }
 
 /* istanbul ignore next: not testing real mail in tests */
+/**
+ * @deprecated
+ */
 function send(email, what, done) {
 
 	if (_.isEmpty(config.vpdb.email.nodemailer)) {

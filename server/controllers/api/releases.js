@@ -40,6 +40,7 @@ var acl = require('../../acl');
 var error = require('../../modules/error')('api', 'release');
 var flavor = require('../../modules/flavor');
 var pusher = require('../../modules/pusher');
+var mailer  = require('../../modules/mailer');
 var storage = require('../../modules/storage');
 
 
@@ -103,6 +104,8 @@ exports.create = function(req, res) {
 			.then(release => {
 				if (release.moderation.is_approved) {
 					release._game.incrementCounter('releases');
+				} else {
+					mailer.releaseSubmitted(req.user, release);
 				}
 			})
 			.then(() => release._game.update({ modified_at: new Date() }));

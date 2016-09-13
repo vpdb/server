@@ -60,7 +60,8 @@ var fields = {
 	location:         { type: String },
 	preferences:      {
 		tablefile_name: { type: String },
-		flavor_tags:    { type: Schema.Types.Mixed }
+		flavor_tags:    { type: Schema.Types.Mixed },
+		notify_release_moderation_status: { type: Boolean, 'default': true }
 	},
 	credits: { type: Schema.Types.Number },
 	counter: {

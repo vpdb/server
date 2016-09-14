@@ -731,7 +731,7 @@ exports.moderate = function(req, res) {
 
 	let release;
 	Promise.try(() => {
-		return Release.findOne({ id: req.params.id }).exec();
+		return Release.findOne({ id: req.params.id }).populate('_game').exec();
 
 	}).then(r => {
 		release = r;
@@ -741,6 +741,20 @@ exports.moderate = function(req, res) {
 		return Release.handleModeration(req, error, release);
 
 	}).then(moderation => {
+		if (_.isArray(moderation.history)) {
+			moderation.history.sort((m1, m2) => m2.created_at.getTime() - m1.created_at.getTime());
+			const lastEvent = moderation.history[0];
+			switch (lastEvent.event) {
+				case 'approved': {
+					return mailer.releaseAccepted(req.user, release, lastEvent.message);
+				}
+			}
+		}
+
+	}).catch(err => {
+		logger.error('[moderation] Error sending moderation mail: %s', err.message)
+
+	}).then(() => {
 		api.success(res, moderation, 200);
 
 	}).catch(api.handleError(res, error, 'Error moderating release'));

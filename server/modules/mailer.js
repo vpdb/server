@@ -48,10 +48,18 @@ exports.welcomeLocal = function(user, done) {
 };
 
 exports.releaseSubmitted = function(user, release) {
-
 	return sendEmail(user, user.email, 'Your release has been submitted at VPDB', 'release-submitted', {
 		user: user,
 		previewUrl: settings.webUri('/games/' + release._game.id + '/releases/' + release.id)
+	}, 'notify_release_moderation_status');
+};
+
+exports.releaseAccepted = function(user, release, message) {
+	// TODO handle message
+	return sendEmail(user, 'Your release has been accepted at VPDB!', 'release-accepted', {
+		user: user,
+		message: message,
+		url: settings.webUri('/games/' + release._game.id + '/releases/' + release.id)
 	}, 'notify_release_moderation_status');
 };
 
@@ -59,20 +67,19 @@ exports.releaseSubmitted = function(user, release) {
  * Sends an email.
  *
  * @param {User} user Recepient object
- * @param {string} recepient Destination email address
  * @param {string} subject Subject of the email
  * @param {string} template Name of the Handlebars template, without path or extension
  * @param {Object} templateData Data passed to the Handlebars renderer
  * @param {string} [enabledFlag] If set, user profile must have this preference set to true
  * @return Promise
  */
-function sendEmail(user, recepient, subject, template, templateData, enabledFlag) {
+function sendEmail(user, subject, template, templateData, enabledFlag) {
 
 	let what, email;
 	return Promise.try(() => {
 		what = template.replace(/-/g, ' ');
 		if (!emailEnabled(user, enabledFlag)) {
-			logger.info('[mailer] NOT sending %s email to <%s>.', what, recepient);
+			logger.info('[mailer] NOT sending %s email to <%s>.', what, user.email);
 			return;
 		}
 
@@ -83,7 +90,7 @@ function sendEmail(user, recepient, subject, template, templateData, enabledFlag
 		// setup email
 		email = {
 			from: { name: config.vpdb.email.sender.name, address: config.vpdb.email.sender.email },
-			to: { name: user.name, address: recepient },
+			to: { name: user.name, address: user.email },
 			subject: subject,
 			text: text
 		};

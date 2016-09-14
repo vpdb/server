@@ -54,12 +54,19 @@ exports.releaseSubmitted = function(user, release) {
 	}, 'notify_release_moderation_status');
 };
 
-exports.releaseAccepted = function(user, release, message) {
+exports.releaseApproved = function(user, release, message) {
 	// TODO handle message
-	return sendEmail(user, 'Your release has been accepted at VPDB!', 'release-accepted', {
+	return sendEmail(user, 'Your release has been accepted at VPDB!', 'release-approved', {
 		user: user,
 		message: message,
 		url: settings.webUri('/games/' + release._game.id + '/releases/' + release.id)
+	}, 'notify_release_moderation_status');
+};
+
+exports.releaseRefused = function(user, release, message) {
+	return sendEmail(user, 'There was a problem with the release you\'ve uploaded to VPDB', 'release-refused', {
+		user: user,
+		message: message,
 	}, 'notify_release_moderation_status');
 };
 

@@ -731,7 +731,10 @@ exports.moderate = function(req, res) {
 
 	let release;
 	Promise.try(() => {
-		return Release.findOne({ id: req.params.id }).populate('_game').exec();
+		return Release.findOne({ id: req.params.id })
+			.populate('_game')
+			.populate('_created_by')
+			.exec();
 
 	}).then(r => {
 		release = r;
@@ -745,9 +748,10 @@ exports.moderate = function(req, res) {
 			moderation.history.sort((m1, m2) => m2.created_at.getTime() - m1.created_at.getTime());
 			const lastEvent = moderation.history[0];
 			switch (lastEvent.event) {
-				case 'approved': {
-					return mailer.releaseAccepted(req.user, release, lastEvent.message);
-				}
+				case 'approved':
+					return mailer.releaseApproved(release._created_by, release, lastEvent.message);
+				case 'refused':
+					return mailer.releaseRefused(release._created_by, release, lastEvent.message);
 			}
 		}
 

@@ -48,7 +48,7 @@ exports.welcomeLocal = function(user, done) {
 };
 
 exports.releaseSubmitted = function(user, release) {
-	return sendEmail(user, user.email, 'Your release has been submitted at VPDB', 'release-submitted', {
+	return sendEmail(user, user.email, 'Your release for ' + release._game.title + ' has been submitted', 'release-submitted', {
 		user: user,
 		previewUrl: settings.webUri('/games/' + release._game.id + '/releases/' + release.id)
 	}, 'notify_release_moderation_status');
@@ -56,7 +56,7 @@ exports.releaseSubmitted = function(user, release) {
 
 exports.releaseApproved = function(user, release, message) {
 	// TODO handle message
-	return sendEmail(user, 'Your release has been accepted at VPDB!', 'release-approved', {
+	return sendEmail(user, 'Your release for ' + release._game.title + ' has been accepted!', 'release-approved', {
 		user: user,
 		message: message,
 		url: settings.webUri('/games/' + release._game.id + '/releases/' + release.id)
@@ -69,6 +69,30 @@ exports.releaseRefused = function(user, release, message) {
 		message: message,
 	}, 'notify_release_moderation_status');
 };
+
+exports.backglassSubmitted = function(user, backglass) {
+	return sendEmail(user, user.email, 'Your backglass for ' + backglass._game.title + ' has been submitted', 'backglass-submitted', {
+		user: user,
+		backglass: backglass
+	}, 'notify_backglass_moderation_status');
+};
+
+exports.backglassApproved = function(user, release, message) {
+	// TODO handle message
+	return sendEmail(user, 'Your backglass for ' + backglass._game.title + ' has been accepted!', 'backglass-approved', {
+		user: user,
+		message: message,
+		gameUrl: settings.webUri('/games/' + release._game.id)
+	}, 'notify_backglass_moderation_status');
+};
+
+exports.backglassRefused = function(user, release, message) {
+	return sendEmail(user, 'There was a problem with the backglass you\'ve uploaded to VPDB', 'backglass-refused', {
+		user: user,
+		message: message,
+	}, 'notify_backglass_moderation_status');
+};
+
 
 /**
  * Sends an email.

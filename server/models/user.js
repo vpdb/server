@@ -61,7 +61,8 @@ var fields = {
 	preferences:      {
 		tablefile_name: { type: String },
 		flavor_tags:    { type: Schema.Types.Mixed },
-		notify_release_moderation_status: { type: Boolean, 'default': true }
+		notify_release_moderation_status: { type: Boolean, 'default': true },
+		notify_backglass_moderation_status: { type: Boolean, 'default': true }
 	},
 	credits: { type: Schema.Types.Number },
 	counter: {
@@ -263,6 +264,17 @@ UserSchema.path('provider').validate(function(provider, callback) {
 					this.invalidate('preferences.flavor_tags.' + flavorId, 'Must be provided when providing preferences.flavor_tags.');
 				}
 			});
+		}
+
+		if (this.preferences && this.preferences.notify_release_moderation_status) {
+			if (!_.isBoolean(this.preferences.notify_release_moderation_status)) {
+				this.invalidate('preferences.notify_release_moderation_status', 'Must be a boolean.');
+			}
+		}
+		if (this.preferences && this.preferences.notify_backglass_moderation_status) {
+			if (!_.isBoolean(this.preferences.notify_backglass_moderation_status)) {
+				this.invalidate('preferences.notify_backglass_moderation_status', 'Must be a boolean.');
+			}
 		}
 
 		// TODO put this into separate validation when this is fixed: https://github.com/LearnBoost/mongoose/issues/1919

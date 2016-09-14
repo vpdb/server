@@ -505,6 +505,16 @@ describe('The VPDB `user` API', function() {
 				});
 		});
 
+		it('should fail when providing an non-boolean release moderatation status preference', function (done) {
+			request
+				.patch('/api/v1/user')
+				.as('member')
+				.send({ preferences: { notify_release_moderation_status: 'string' } })
+				.end(function (err, res) {
+					hlp.expectValidationError(err, res, 'preferences.notify_release_moderation_status', 'must be a boolean');
+					done();
+				});
+		});
 	});
 
 	describe('when a user updates the channel config', function() {

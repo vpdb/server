@@ -29,6 +29,7 @@ const Game = require('mongoose').model('Game');
 const Rom = require('mongoose').model('Rom');
 const Backglass = require('mongoose').model('Backglass');
 
+const mailer = require('../../modules/mailer');
 const error = require('../../modules/error')('api', 'backglass');
 
 /**
@@ -106,7 +107,7 @@ exports.create = function(req, res) {
 			.exec();
 
 	}).then(populatedBackglass => {
-
+		mailer.backglassSubmitted(req.user, populatedBackglass);
 		api.success(res, populatedBackglass.toSimple(), 201);
 
 	}).catch(api.handleError(res, error, 'Error creating backglass'));
@@ -275,9 +276,12 @@ exports.del = function(req, res) {
  */
 exports.moderate = function(req, res) {
 
-	let backglass;
+	let backglass, moderation;
 	Promise.try(() => {
-		return Backglass.findOne({ id: req.params.id }).exec();
+		return Backglass.findOne({ id: req.params.id })
+			.populate('_game')
+			.populate('_created_by')
+			.exec();
 
 	}).then(bg => {
 		backglass = bg;
@@ -286,8 +290,23 @@ exports.moderate = function(req, res) {
 		}
 		return Backglass.handleModeration(req, error, backglass);
 
+	}).then(moderation => {
+		moderation = m;
+		if (_.isArray(moderation.history)) {
+			moderation.history.sort((m1, m2) => m2.created_at.getTime() - m1.created_at.getTime());
+			const lastEvent = moderation.history[0];
+			switch (lastEvent.event) {
+				case 'approved':
+					return mailer.backglassApproved(backglass._created_by, backglass, lastEvent.message);
+				case 'refused':
+					return mailer.backglassRefused(backglass._created_by, backglass, lastEvent.message);
+			}
+		}
+	}).catch(err => {
+		logger.error('[moderation|backglass] Error sending moderation mail: %s', err.message);
+
 	}).then(() => {
-		api.success(res, backglass.toSimple(), 200);
+		api.success(res, moderation, 200);
 
 	}).catch(api.handleError(res, error, 'Error moderating backglass'));
 };

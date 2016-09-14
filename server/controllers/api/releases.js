@@ -106,9 +106,9 @@ exports.create = function(req, res) {
 					release._game.incrementCounter('releases');
 				} else {
 					mailer.releaseSubmitted(req.user, release);
-				}
-			})
-			.then(() => release._game.update({ modified_at: new Date() }));
+					}
+				return release._game.update({ modified_at: new Date() });
+			});
 
 	}).then(() => {
 		return getDetails(release._id);
@@ -729,7 +729,7 @@ exports.del = function(req, res) {
  */
 exports.moderate = function(req, res) {
 
-	let release;
+	let release, moderation;
 	Promise.try(() => {
 		return Release.findOne({ id: req.params.id })
 			.populate('_game')
@@ -743,7 +743,8 @@ exports.moderate = function(req, res) {
 		}
 		return Release.handleModeration(req, error, release);
 
-	}).then(moderation => {
+	}).then(m => {
+		moderation = m;
 		if (_.isArray(moderation.history)) {
 			moderation.history.sort((m1, m2) => m2.created_at.getTime() - m1.created_at.getTime());
 			const lastEvent = moderation.history[0];
@@ -756,7 +757,7 @@ exports.moderate = function(req, res) {
 		}
 
 	}).catch(err => {
-		logger.error('[moderation] Error sending moderation mail: %s', err.message)
+		logger.error('[moderation] Error sending moderation mail: %s', err.message);
 
 	}).then(() => {
 		api.success(res, moderation, 200);

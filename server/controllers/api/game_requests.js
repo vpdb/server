@@ -44,7 +44,7 @@ exports.create = function(req, res) {
 
 		// validate ipdb number syntax
 		if (!req.body.ipdb_number) {
-			throw error('Validation error').validationError('ipdb_number', 'Must be provided', req.body.ipdb_number);
+			throw error('Validation error').validationError('ipdb_number', 'IPDB number must be provided', req.body.ipdb_number);
 		}
 		if (!/^\d+$/.test(req.body.ipdb_number.toString())) {
 			throw error('Validation error').validationError('ipdb_number', 'Must be a whole number', req.body.ipdb_number);
@@ -57,7 +57,20 @@ exports.create = function(req, res) {
 
 		// check if game already exists
 		if (game) {
-			throw error('Validation error').validationError('ipdb_number', 'Game with IPDB number ' + ipdbNumber + ' is already in the database!', ipdbNumber);
+			throw error('Validation error').validationError('ipdb_number', 'Game with IPDB number ' + ipdbNumber + ' (' + game.title + ') is already in the database!', ipdbNumber);
+		}
+		return GameRequest.findOne({ ipdb_number: ipdbNumber }).exec();
+
+	}).then(gameRequest => {
+
+		// check if game request already exists
+		if (gameRequest) {
+			if (gameRequest.is_closed) {
+				throw error('Validation error').validationError('ipdb_number', 'This IPDB number has already been requested and closed for the following reason: ' + gameRequest.message, ipdbNumber);
+
+			} else {
+				throw error('Validation error').validationError('ipdb_number', 'This IPDB number has already been requested. Please bear with us until we close this request.', ipdbNumber);
+			}
 		}
 
 		// fetch details

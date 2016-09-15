@@ -144,7 +144,7 @@ angular.module('vpdb.releases.add', []).controller('ReleaseAddCtrl', function(
 	 */
 	$scope.addAuthor = function(author) {
 		$uibModal.open({
-			templateUrl: '/common/modal-author-choose.html',
+			templateUrl: '/modal/modal-author-choose.html',
 			controller: 'ChooseAuthorCtrl',
 			resolve: {
 				subject: function() { return $scope.release; },

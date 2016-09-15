@@ -29,34 +29,6 @@ angular.module('vpdb.common', [])
 		};
 	})
 
-	//.directive('stars', function() {
-	//	return {
-	//		replace: true,
-	//		restrict: 'C',
-	//		scope: true,
-	//		link: {
-	//			post: function(scope, element, attrs) {
-	//				var star0 = '<i class="fa fa-star-o"></i>';
-	//				var star1 = '<i class="fa fa-star-half-o"></i>';
-	//				var star2 = '<i class="fa fa-star"></i>';
-	//				var stars = '';
-	//				var rating = attrs.value / 2;
-	//				for (var i = 0; i < 5; i++) {
-	//					if (rating < 0.25) {
-	//						stars += star0;
-	//					} else if (rating < 0.75) {
-	//						stars += star1;
-	//					} else {
-	//						stars += star2;
-	//					}
-	//					rating -= 1.0;
-	//				}
-	//				element.html(stars);
-	//			}
-	//		}
-	//	};
-	//})
-
 	.directive('markdown', function($sanitize, $compile) {
 		var converter = new Showdown.converter();
 		return {
@@ -126,33 +98,4 @@ angular.module('vpdb.common', [])
 				});
 			}
 		};
-	})
-
-	.directive('download', function($parse) {
-		return {
-			restrict: 'A',
-			transclude: true,
-			scope: true,
-			template: '<i class="{{ downloadsPinned ? (dlPinned ? \'icon icon-pin-on\' : \'icon icon-pin-off\') : \'fa fa-download\' }} space-right"></i><span ng-transclude></span> ',
-			link: function(scope, element, attrs) {
-	//			var dl = $parse(attrs.download)(scope);
-	//			scope.dlPinned = scope.pinnedDownloads[dl.id] ? true : false;
-	//			element.click(function() {
-	//				scope.download(dl, $parse(attrs.downloadInfo)(scope));
-	//				scope.$apply();
-	//			});
-	//			scope.$on('downloadUnpinned', function(event, download) {
-	//				if (download.id === dl.id) {
-	//					scope.dlPinned = false;
-	//				}
-	//			});
-	//			scope.$on('downloadPinned', function(event, download) {
-	//				if (download.id === dl.id) {
-	//					scope.dlPinned = true;
-	//				}
-	//			});
-			}
-		};
 	});
-
-

@@ -24,10 +24,6 @@ angular.module('vpdb.common', [])
 		$rootScope.timeoutNoticeCollapsed = true;
 
 		$scope.menu = 'home';
-		$scope.downloadsPinned = false;
-		$scope.pinnedDownloads = {};
-		$scope.pinnedDownloadCount = 0;
-		$scope.pinnedDownloadSize = 0;
 		$scope.notifications = {};
 		$localStorage.show_instructions = $localStorage.show_instructions || {
 			release_add: true,
@@ -87,23 +83,6 @@ angular.module('vpdb.common', [])
 			window.location.reload(true);
 		});
 
-		$scope.download = function(download, info) {
-			if ($scope.downloadsPinned) {
-				download.info = info;
-				if ($scope.pinnedDownloads[download.id]) {
-					$scope.unpinDownload(download);
-				} else {
-					$scope.pinnedDownloads[download.id] = download;
-					$scope.pinnedDownloadCount++;
-					$scope.pinnedDownloadSize += download.size;
-					$scope.$broadcast('downloadPinned', download);
-				}
-			} else {
-				//noinspection JSHint
-				alert('Here\'s the file! You\'re welcome!	');
-			}
-		};
-
 		$rootScope.showNotification = function(message, ttl) {
 			ttl = ttl || 3000;
 			var i = _.max(_.map(_.keys($scope.notifications).concat([0]), parseInt)) + 1;
@@ -115,7 +94,7 @@ angular.module('vpdb.common', [])
 
 		$rootScope.uploadRelease = function() {
 			$uibModal.open({
-				templateUrl: '/common/modal-game-choose.html',
+				templateUrl: '/modal/modal-game-choose.html',
 				controller: 'ChooseGameCtrl',
 				windowTopClass: 'modal--with-overflow',
 				resolve: {
@@ -133,7 +112,7 @@ angular.module('vpdb.common', [])
 
 		$rootScope.uploadBackglass = function() {
 			$uibModal.open({
-				templateUrl: '/common/modal-game-choose.html',
+				templateUrl: '/modal/modal-game-choose.html',
 				controller: 'ChooseGameCtrl',
 				windowTopClass: 'modal--with-overflow',
 				resolve: {
@@ -146,24 +125,6 @@ angular.module('vpdb.common', [])
 				}
 			}).result.then(function(game) {
 				$state.go('addBackglass', { id: game.id });
-			});
-		};
-
-		$scope.unpinDownload = function(download) {
-			delete $scope.pinnedDownloads[download.id];
-			$scope.pinnedDownloadCount--;
-			$scope.pinnedDownloadSize -= download.size;
-			$scope.$broadcast('downloadUnpinned', download);
-		};
-
-		$scope.downloadPinned = function() {
-			//noinspection JSHint
-			alert('You would now get a zip file with everthing included.');
-		};
-
-		$scope.helpPinnedDownloads = function() {
-			$uibModal.open({
-				templateUrl: '/partials/modals/helpPinnedDownloads.html'
 			});
 		};
 

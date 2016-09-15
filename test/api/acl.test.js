@@ -275,6 +275,10 @@ describe('The ACLs of the VPDB API', function() {
 			request.get('/api/v1/games/test/release-name').send({}).end(hlp.status(401, done));
 		});
 
+		it('should deny access to game request creation', function(done) {
+			request.post('/api/v1/game_requests').send({}).end(hlp.status(401, done));
+		});
+
 	});
 
 	describe('for logged clients (role member)', function() {
@@ -530,6 +534,10 @@ describe('The ACLs of the VPDB API', function() {
 
 		it('should allow access to release name creation', function(done) {
 			request.post('/api/v1/games/test/release-name').as('member').send({}).end(hlp.status(404, done));
+		});
+
+		it('should allow access to game request creation', function(done) {
+			request.post('/api/v1/game_requests').as('member').send({}).end(hlp.status(422, done));
 		});
 
 	});

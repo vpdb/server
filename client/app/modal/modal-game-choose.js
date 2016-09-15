@@ -19,7 +19,7 @@
 
 "use strict"; /* global _, angular */
 
-angular.module('vpdb.common', []).controller('ChooseGameCtrl', function($scope, $uibModalInstance, GameResource, params) {
+angular.module('vpdb.common', []).controller('ChooseGameCtrl', function($scope, $uibModalInstance, $uibModal, GameResource, params) {
 
 	$scope.params = params;
 
@@ -29,5 +29,13 @@ angular.module('vpdb.common', []).controller('ChooseGameCtrl', function($scope, 
 
 	$scope.gameSelected = function(item, model) {
 		$uibModalInstance.close(model);
+	};
+
+	$scope.requestGame = function() {
+		$uibModalInstance.dismiss();
+		$uibModal.open({
+			templateUrl: '/modal/modal-game-request.html',
+			controller: 'RequestGameCtrl',
+		});
 	};
 });

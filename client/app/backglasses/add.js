@@ -127,7 +127,7 @@ angular.module('vpdb.backglasses.add', [])
 		 */
 		$scope.addAuthor = function(author) {
 			$uibModal.open({
-				templateUrl: '/common/modal-author-choose.html',
+				templateUrl: '/modal/modal-author-choose.html',
 				controller: 'ChooseAuthorCtrl',
 				resolve: {
 					subject: function() { return $scope.backglass; },

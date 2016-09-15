@@ -68,6 +68,10 @@ angular.module('vpdb.common', [])
 		return $resource(ConfigService.apiUri('/games/:gameId/release-name'), {}, {});
 	})
 
+	.factory('GameRequestResource', function($resource, ConfigService) {
+		return $resource(ConfigService.apiUri('/game_requests'), {}, {});
+	})
+
 	.factory('PlanResource', function($resource, ConfigService) {
 		return $resource(ConfigService.apiUri('/plans'), {}, {
 		});

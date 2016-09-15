@@ -1,14 +1,14 @@
 200 OK
 X-App-Sha: f680068
 Content-Type: application/json; charset=utf-8
-Etag: W/"982-MsZTP0zEPZv74yZmbDdY8A"
+Etag: W/"97f-nXssgVv+dfaTm1L/0L0RMg"
 Content-Encoding: gzip
 
 {
   "release": {
-    "id": "ek1ymxkbpc",
-    "name": "Multi-layered Edition",
-    "created_at": "2016-08-29T20:53:20.343Z",
+    "id": "p2owyeb2c8",
+    "name": "Extended Edition",
+    "created_at": "2016-09-15T12:19:33.590Z",
     "authors": [
       {
         "roles": [
@@ -19,26 +19,26 @@ Content-Encoding: gzip
             "stars": 0,
             "comments": 0
           },
-          "gravatar_id": "9aae8684d68e916744a23ccb7548a633",
-          "username": "Wilbert.Schiller14",
-          "name": "Wilbert.Schiller14",
-          "id": "p2krcxkhp7"
+          "gravatar_id": "e75080a7b5cc32a3160c2e8944e9856a",
+          "username": "Alfred_Baumbach91",
+          "name": "Alfred_Baumbach91",
+          "id": "ekvnheb278"
         }
       }
     ]
   },
   "game": {
-    "id": "running-horse",
-    "title": "Running Horse",
-    "manufacturer": "Inder",
-    "year": 1976
+    "id": "casablanca",
+    "title": "Casablanca",
+    "manufacturer": "Bell Products Company",
+    "year": 1945
   },
   "version": {
     "version": "1.0.0",
-    "released_at": "2016-08-29T20:53:20.343Z"
+    "released_at": "2016-09-15T12:19:33.590Z"
   },
   "file": {
-    "released_at": "2016-08-29T20:53:20.343Z",
+    "released_at": "2016-09-15T12:19:33.590Z",
     "flavor": {
       "orientation": "fs",
       "lighting": "night"
@@ -50,9 +50,9 @@ Content-Encoding: gzip
       }
     ],
     "file": {
-      "id": "pkxn7x2be7",
+      "id": "e2zsyeb27m",
       "name": "test-table-0.vpt",
-      "url": "https://localhost:7357/storage/v1/files/pkxn7x2be7.vpt",
+      "url": "https://localhost:7357/storage/v1/files/e2zsyeb27m.vpt",
       "bytes": 135168,
       "variations": {},
       "is_protected": true,
@@ -69,9 +69,9 @@ Content-Encoding: gzip
       "countPercentage": 77.27272727272727,
       "bytesPercentage": 97.57880418711929,
       "release": {
-        "id": "e2zq34khec",
-        "name": "Secured Edition",
-        "created_at": "2016-08-29T20:53:21.485Z",
+        "id": "p2dq9ebk7m",
+        "name": "Integrated Edition",
+        "created_at": "2016-09-15T12:19:34.698Z",
         "authors": [
           {
             "roles": [
@@ -82,26 +82,26 @@ Content-Encoding: gzip
                 "stars": 0,
                 "comments": 0
               },
-              "gravatar_id": "9aae8684d68e916744a23ccb7548a633",
-              "username": "Wilbert.Schiller14",
-              "name": "Wilbert.Schiller14",
-              "id": "p2krcxkhp7"
+              "gravatar_id": "e75080a7b5cc32a3160c2e8944e9856a",
+              "username": "Alfred_Baumbach91",
+              "name": "Alfred_Baumbach91",
+              "id": "ekvnheb278"
             }
           }
         ]
       },
       "game": {
-        "id": "match-the-dial",
-        "title": "Match The Dial",
-        "manufacturer": "Bally",
-        "year": 1935
+        "id": "spokes",
+        "title": "Spokes",
+        "manufacturer": "Chicago Coin",
+        "year": 1938
       },
       "version": {
         "version": "1.0.0",
-        "released_at": "2016-08-29T20:53:21.485Z"
+        "released_at": "2016-09-15T12:19:34.698Z"
       },
       "file": {
-        "released_at": "2016-08-29T20:53:21.485Z",
+        "released_at": "2016-09-15T12:19:34.698Z",
         "flavor": {
           "orientation": "fs",
           "lighting": "night"
@@ -113,9 +113,9 @@ Content-Encoding: gzip
           }
         ],
         "file": {
-          "id": "p2ndxkhe7",
+          "id": "pkszseb27m",
           "name": "test-table-0.vpt",
-          "url": "https://localhost:7357/storage/v1/files/p2ndxkhe7.vpt",
+          "url": "https://localhost:7357/storage/v1/files/pkszseb27m.vpt",
           "bytes": 135168,
           "variations": {},
           "is_protected": true,

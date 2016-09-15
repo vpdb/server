@@ -1,12 +1,12 @@
 200 OK
 X-App-Sha: f680068
 Content-Type: application/json; charset=utf-8
-Etag: W/"2325-1DjYmNkeuvdKViyBw74Kfw"
+Etag: W/"20a5-pEirKsp33r6gtkkqEHmrwQ"
 Content-Encoding: gzip
 
 {
   "version": "1.0.0",
-  "released_at": "2016-07-31T14:40:39.867Z",
+  "released_at": "2016-09-15T12:20:37.134Z",
   "changes": "New changes.",
   "counter": {
     "comments": 0,
@@ -14,7 +14,7 @@ Content-Encoding: gzip
   },
   "files": [
     {
-      "released_at": "2016-07-31T14:40:39.867Z",
+      "released_at": "2016-09-15T12:20:37.134Z",
       "counter": {
         "downloads": 0
       },
@@ -22,83 +22,65 @@ Content-Encoding: gzip
         "orientation": "fs",
         "lighting": "night"
       },
-      "media": {
-        "playfield_image": {
-          "name": "playfield-0.png",
-          "bytes": 348,
-          "created_at": "2016-07-31T14:40:39.428Z",
-          "mime_type": "image/png",
-          "file_type": "playfield-fs",
-          "metadata": {
-            "format": "PNG",
-            "size": {
-              "width": 1080,
-              "height": 1920
-            },
-            "depth": 8
+      "playfield_image": {
+        "name": "playfield-0.png",
+        "bytes": 348,
+        "created_at": "2016-09-15T12:20:36.686Z",
+        "mime_type": "image/png",
+        "file_type": "playfield-fs",
+        "metadata": {
+          "format": "PNG",
+          "size": {
+            "width": 1080,
+            "height": 1920
           },
-          "variations": {
-            "medium": {
-              "mime_type": "image/jpeg",
-              "bytes": 1391,
-              "height": 498,
-              "width": 280,
-              "url": "https://localhost:7357/storage/public/files/medium/p26s45mrot.jpg"
-            },
-            "square": {
-              "mime_type": "image/jpeg",
-              "bytes": 615,
-              "height": 120,
-              "width": 120,
-              "url": "https://localhost:7357/storage/public/files/square/p26s45mrot.jpg"
-            },
-            "medium-2x": {
-              "mime_type": "image/jpeg",
-              "bytes": 3835,
-              "height": 996,
-              "width": 560,
-              "url": "https://localhost:7357/storage/public/files/medium-2x/p26s45mrot.jpg"
-            },
-            "full": {
-              "mime_type": "image/jpeg",
-              "bytes": 12768,
-              "height": 1920,
-              "width": 1080,
-              "url": "https://localhost:7357/storage/public/files/full/p26s45mrot.jpg"
-            },
-            "square-2x": {
-              "mime_type": "image/jpeg",
-              "bytes": 861,
-              "height": 240,
-              "width": 240,
-              "url": "https://localhost:7357/storage/public/files/square-2x/p26s45mrot.jpg"
-            },
-            "landscape": {
-              "mime_type": "image/jpeg",
-              "bytes": 1053,
-              "height": 221,
-              "width": 393,
-              "url": "https://localhost:7357/storage/public/files/landscape/p26s45mrot.jpg"
-            },
-            "landscape-2x": {
-              "mime_type": "image/jpeg",
-              "bytes": 2627,
-              "height": 442,
-              "width": 786,
-              "url": "https://localhost:7357/storage/public/files/landscape-2x/p26s45mrot.jpg"
-            },
-            "hyperpin": {
-              "url": "https://localhost:7357/storage/public/files/hyperpin/p26s45mrot.png"
-            }
+          "depth": 8
+        },
+        "variations": {
+          "medium": {
+            "mime_type": "image/jpeg",
+            "bytes": 1391,
+            "height": 498,
+            "width": 280,
+            "url": "https://localhost:7357/storage/public/files/medium/p2fxhabk78.jpg"
           },
-          "counter": {
-            "downloads": 0
+          "full": {
+            "mime_type": "image/jpeg",
+            "bytes": 12767,
+            "height": 1920,
+            "width": 1080,
+            "url": "https://localhost:7357/storage/public/files/full/p2fxhabk78.jpg"
           },
-          "is_active": true,
-          "id": "p26s45mrot",
-          "is_protected": true,
-          "url": "https://localhost:7357/storage/v1/files/p26s45mrot.png"
-        }
+          "square-2x": {
+            "mime_type": "image/jpeg",
+            "bytes": 860,
+            "height": 240,
+            "width": 240,
+            "url": "https://localhost:7357/storage/public/files/square-2x/p2fxhabk78.jpg"
+          },
+          "medium-2x": {
+            "url": "https://localhost:7357/storage/public/files/medium-2x/p2fxhabk78.jpg"
+          },
+          "square": {
+            "url": "https://localhost:7357/storage/public/files/square/p2fxhabk78.jpg"
+          },
+          "landscape": {
+            "url": "https://localhost:7357/storage/public/files/landscape/p2fxhabk78.jpg"
+          },
+          "landscape-2x": {
+            "url": "https://localhost:7357/storage/public/files/landscape-2x/p2fxhabk78.jpg"
+          },
+          "hyperpin": {
+            "url": "https://localhost:7357/storage/public/files/hyperpin/p2fxhabk78.png"
+          }
+        },
+        "counter": {
+          "downloads": 0
+        },
+        "is_active": true,
+        "id": "p2fxhabk78",
+        "is_protected": true,
+        "url": "https://localhost:7357/storage/v1/files/p2fxhabk78.png"
       },
       "compatibility": [
         {
@@ -113,7 +95,7 @@ Content-Encoding: gzip
         }
       ],
       "file": {
-        "created_at": "2016-07-31T14:40:39.328Z",
+        "created_at": "2016-09-15T12:20:36.510Z",
         "mime_type": "application/x-visual-pinball-table",
         "file_type": "release",
         "metadata": {
@@ -127,9 +109,9 @@ Content-Encoding: gzip
           "author_name": "_table_author_",
           "table_name": "_table_name_"
         },
-        "id": "e2xs4r8rov",
+        "id": "p2xsbnbk78",
         "name": "test-table-0.vpt",
-        "url": "https://localhost:7357/storage/v1/files/e2xs4r8rov.vpt",
+        "url": "https://localhost:7357/storage/v1/files/p2xsbnbk78.vpt",
         "bytes": 135168,
         "variations": {},
         "is_protected": true,
@@ -140,7 +122,7 @@ Content-Encoding: gzip
       }
     },
     {
-      "released_at": "2016-07-31T14:40:40.712Z",
+      "released_at": "2016-09-15T12:20:37.911Z",
       "counter": {
         "downloads": 0
       },
@@ -148,58 +130,52 @@ Content-Encoding: gzip
         "lighting": "day",
         "orientation": "fs"
       },
-      "media": {
-        "playfield_image": {
-          "name": "playfield-0.png",
-          "bytes": 348,
-          "created_at": "2016-07-31T14:40:40.247Z",
-          "mime_type": "image/png",
-          "file_type": "playfield-fs",
-          "metadata": {
-            "format": "PNG",
-            "size": {
-              "width": 1080,
-              "height": 1920
-            },
-            "depth": 8
+      "playfield_image": {
+        "name": "playfield-0.png",
+        "bytes": 348,
+        "created_at": "2016-09-15T12:20:37.326Z",
+        "mime_type": "image/png",
+        "file_type": "playfield-fs",
+        "metadata": {
+          "format": "PNG",
+          "size": {
+            "width": 1080,
+            "height": 1920
           },
-          "variations": {
-            "medium": {
-              "mime_type": "image/jpeg",
-              "bytes": 1392,
-              "height": 498,
-              "width": 280,
-              "url": "https://localhost:7357/storage/public/files/medium/ektywrmrot.jpg"
-            },
-            "full": {
-              "url": "https://localhost:7357/storage/public/files/full/ektywrmrot.jpg"
-            },
-            "medium-2x": {
-              "url": "https://localhost:7357/storage/public/files/medium-2x/ektywrmrot.jpg"
-            },
-            "square": {
-              "url": "https://localhost:7357/storage/public/files/square/ektywrmrot.jpg"
-            },
-            "square-2x": {
-              "url": "https://localhost:7357/storage/public/files/square-2x/ektywrmrot.jpg"
-            },
-            "landscape": {
-              "url": "https://localhost:7357/storage/public/files/landscape/ektywrmrot.jpg"
-            },
-            "landscape-2x": {
-              "url": "https://localhost:7357/storage/public/files/landscape-2x/ektywrmrot.jpg"
-            },
-            "hyperpin": {
-              "url": "https://localhost:7357/storage/public/files/hyperpin/ektywrmrot.png"
-            }
+          "depth": 8
+        },
+        "counter": {
+          "downloads": 0
+        },
+        "is_active": true,
+        "id": "ek8szah27m",
+        "is_protected": true,
+        "url": "https://localhost:7357/storage/v1/files/ek8szah27m.png",
+        "variations": {
+          "full": {
+            "url": "https://localhost:7357/storage/public/files/full/ek8szah27m.jpg"
           },
-          "counter": {
-            "downloads": 0
+          "medium": {
+            "url": "https://localhost:7357/storage/public/files/medium/ek8szah27m.jpg"
           },
-          "is_active": true,
-          "id": "ektywrmrot",
-          "is_protected": true,
-          "url": "https://localhost:7357/storage/v1/files/ektywrmrot.png"
+          "medium-2x": {
+            "url": "https://localhost:7357/storage/public/files/medium-2x/ek8szah27m.jpg"
+          },
+          "square": {
+            "url": "https://localhost:7357/storage/public/files/square/ek8szah27m.jpg"
+          },
+          "square-2x": {
+            "url": "https://localhost:7357/storage/public/files/square-2x/ek8szah27m.jpg"
+          },
+          "landscape": {
+            "url": "https://localhost:7357/storage/public/files/landscape/ek8szah27m.jpg"
+          },
+          "landscape-2x": {
+            "url": "https://localhost:7357/storage/public/files/landscape-2x/ek8szah27m.jpg"
+          },
+          "hyperpin": {
+            "url": "https://localhost:7357/storage/public/files/hyperpin/ek8szah27m.png"
+          }
         }
       },
       "compatibility": [
@@ -215,7 +191,7 @@ Content-Encoding: gzip
         }
       ],
       "file": {
-        "created_at": "2016-07-31T14:40:40.048Z",
+        "created_at": "2016-09-15T12:20:37.218Z",
         "mime_type": "application/x-visual-pinball-table",
         "file_type": "release",
         "metadata": {
@@ -229,9 +205,9 @@ Content-Encoding: gzip
           "author_name": "_table_author_",
           "table_name": "_table_name_"
         },
-        "id": "pk1bwr8r1t",
+        "id": "pku9znb27m",
         "name": "test-table-0.vpt",
-        "url": "https://localhost:7357/storage/v1/files/pk1bwr8r1t.vpt",
+        "url": "https://localhost:7357/storage/v1/files/pku9znb27m.vpt",
         "bytes": 135168,
         "variations": {},
         "is_protected": true,

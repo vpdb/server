@@ -1,22 +1,20 @@
 POST /v1/releases HTTP/2.0
 Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
-authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJla3o0dm85NjE5IiwiaWF0IjoiMjAxNi0wNS0xOVQyMjo1NTo0MC4xMzFaIiwiZXhwIjoiMjAxNi0wNS0xOVQyMzo1NTo0MC4xMzFaIiwiaXJ0IjpmYWxzZX0.LLKwSYCVhZjj2uKVWcNwO5d6k82lDaHmk9lmfE2_Zoc
+authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwa3Q1eGZoa2M4IiwiaWF0IjoiMjAxNi0wOS0xNVQxMjoyMDowNy42MDhaIiwiZXhwIjoiMjAxNi0wOS0xNVQxMzoyMDowNy42MDhaIiwiaXJ0IjpmYWxzZX0.diK0vUQXRyoIr5cH8lRPJIUNw9ILnNmnjSfbIrxA_Vg
 content-type: application/json
-Content-Length: 532
+Content-Length: 504
 
 {
   "name": "release",
-  "_game": "rey-de-diamantes",
+  "_game": "mamselle",
   "versions": [
     {
       "files": [
         {
           "released_at": "2015-01-01T00:00:00.000Z",
-          "_file": "pksyd19gos",
-          "_media": {
-            "playfield_image": "pkuyd19g1s"
-          },
+          "_file": "pkd9tfhk78",
+          "_playfield_image": "pkx4vfh278",
           "_compatibility": [
             "9.9.0"
           ],
@@ -26,10 +24,8 @@ Content-Length: 532
           }
         },
         {
-          "_file": "p2xydo9619",
-          "_media": {
-            "playfield_image": "ekeydos619"
-          },
+          "_file": "p2o9tub278",
+          "_playfield_image": "pk7xtfb2c8",
           "_compatibility": [
             "9.9.0"
           ],
@@ -45,7 +41,7 @@ Content-Length: 532
   ],
   "authors": [
     {
-      "_user": "ekz4vo9619",
+      "_user": "pkt5xfhkc8",
       "roles": [
         "Table Creator"
       ]

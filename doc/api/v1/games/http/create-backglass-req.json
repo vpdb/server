@@ -1,14 +1,14 @@
-POST /v1/games/hula-hula/backglasses HTTP/2.0
+POST /v1/games/baby-face/backglasses HTTP/2.0
 Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
-authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJlazRieXN6b3ciLCJpYXQiOiIyMDE2LTA2LTEyVDE5OjEwOjExLjk0M1oiLCJleHAiOiIyMDE2LTA2LTEyVDIwOjEwOjExLjk0M1oiLCJpcnQiOmZhbHNlfQ.W_DqvbZoB7CbJfpQawH8FnBURSh2bqwZAapGBEl8DiE
+authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJla3RmM3Foa2M4IiwiaWF0IjoiMjAxNi0wOS0xNVQxMjoxOToyOS42NjdaIiwiZXhwIjoiMjAxNi0wOS0xNVQxMzoxOToyOS42NjdaIiwiaXJ0IjpmYWxzZX0.U4YuAHQzhuBw6_BTtrBlrchAAFvki_GEzeGAIG7gGsw
 content-type: application/json
-Content-Length: 107
+Content-Length: 108
 
 {
   "authors": [
     {
-      "_user": "ek4byszow",
+      "_user": "ektf3qhkc8",
       "roles": [
         "creator"
       ]
@@ -17,7 +17,7 @@ Content-Length: 107
   "versions": [
     {
       "version": "1.0",
-      "_file": "ekurbz9y1q"
+      "_file": "ekpuowhk7m"
     }
   ]
 }

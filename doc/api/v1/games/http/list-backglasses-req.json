@@ -1,4 +1,4 @@
-GET /v1/games/pla-girl/backglasses HTTP/2.0
+GET /v1/games/star-shooter/backglasses HTTP/2.0
 Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
 

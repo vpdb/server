@@ -1,10 +1,10 @@
 POST /v1/authenticate HTTP/2.0
 Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
-authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwazZ5MXN4Nm85IiwiaWF0IjoiMjAxNi0wNS0xOVQyMjo1Njo1MC40MzJaIiwiZXhwIjoiMjAxNi0wNS0xOVQyMzo1Njo1MC40MzJaIiwiaXJ0IjpmYWxzZX0.ECwOvZpXC19ThZGXTK3cdGEZwKzg3in60f-rvSnLmWs
+authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwa2NzeGNoazdtIiwiaWF0IjoiMjAxNi0wOS0xNVQxMjoyMToxMS4yMTZaIiwiZXhwIjoiMjAxNi0wOS0xNVQxMzoyMToxMS4yMTZaIiwiaXJ0IjpmYWxzZX0.TlCbWdJT_bY_7x-LDkkEzG39ZjbIxvBWX8Mi4aghhjo
 content-type: application/json
-Content-Length: 66
+Content-Length: 65
 
 {
-  "paths": "https://localhost:7357/storage/v1/files/ek9br44gos.vpt"
+  "paths": "https://localhost:7357/storage/v1/files/pk36ch278.vpt"
 }

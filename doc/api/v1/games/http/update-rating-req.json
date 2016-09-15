@@ -1,8 +1,8 @@
-PUT /v1/games/spot-em/rating HTTP/2.0
+PUT /v1/games/butterfly/rating HTTP/2.0
 Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
 content-type: application/json
-authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwMmZzeG9zNm9zIiwiaWF0IjoiMjAxNi0wNS0xOVQyMjo1NTozNS4xNjRaIiwiZXhwIjoiMjAxNi0wNS0xOVQyMzo1NTozNS4xNjRaIiwiaXJ0IjpmYWxzZX0.Q2eBW-yUPS08CBKe-zJm9dD5OM_OGBqZ20tuqp-ZwPk
+authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwMmN6b3JoMjdtIiwiaWF0IjoiMjAxNi0wOS0xNVQxMjoyMDowMi4xMDRaIiwiZXhwIjoiMjAxNi0wOS0xNVQxMzoyMDowMi4xMDRaIiwiaXJ0IjpmYWxzZX0.IJ4ceZ8mDwCICMtv5hIE77dR5mQhjqtolsYwzyLh3gU
 Content-Length: 11
 
 {

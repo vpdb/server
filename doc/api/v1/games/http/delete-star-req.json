@@ -1,5 +1,5 @@
-DELETE /v1/games/hawthorne/star HTTP/2.0
+DELETE /v1/games/nascar/star HTTP/2.0
 Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
-authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJla3VidHN4NjFzIiwiaWF0IjoiMjAxNi0wNS0xOVQyMjo1Njo0NC4wMDJaIiwiZXhwIjoiMjAxNi0wNS0xOVQyMzo1Njo0NC4wMDJaIiwiaXJ0IjpmYWxzZX0.xNIYsweWpCElKf8GfFdNad2U_-kU8hvBras5sYaHKIA
+authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJlMnpxbWdiMjdtIiwiaWF0IjoiMjAxNi0wOS0xNVQxMjoyMTowNC4yMzRaIiwiZXhwIjoiMjAxNi0wOS0xNVQxMzoyMTowNC4yMzRaIiwiaXJ0IjpmYWxzZX0.svP9G1E1Ps7O4aJp1GJjZvXQ5MFwD8-KJeLsEvMXyBU
 

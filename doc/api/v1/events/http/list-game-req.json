@@ -1,4 +1,4 @@
-GET /v1/games/roller-catch/events HTTP/2.0
+GET /v1/games/new-continental/events HTTP/2.0
 Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
 

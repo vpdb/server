@@ -1,5 +1,5 @@
-GET /v1/games/domino-one-ball/release-name HTTP/2.0
+GET /v1/games/star-lite/release-name HTTP/2.0
 Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
-authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwazRhdHZvem0iLCJpYXQiOiIyMDE2LTA5LTA4VDE1OjU1OjU3LjYwMVoiLCJleHAiOiIyMDE2LTA5LTA4VDE2OjU1OjU3LjYwMVoiLCJpcnQiOmZhbHNlfQ.cGchYtOnLmqxKlsOlKY2eTGXlIPz4q0lAtls4P-H2gc
+authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJlMmc0YjVoazdtIiwiaWF0IjoiMjAxNi0wOS0xNVQxMjoxOTo0OC4zNjBaIiwiZXhwIjoiMjAxNi0wOS0xNVQxMzoxOTo0OC4zNjBaIiwiaXJ0IjpmYWxzZX0.LWYmo7cHiQdwrB8_xmw0zE7ugo0KkP8nIyDADBxStIY
 

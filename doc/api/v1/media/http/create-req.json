@@ -1,16 +1,16 @@
 POST /v1/media HTTP/2.0
 Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
-authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwMjQ0cGg4bmUiLCJpYXQiOiIyMDE2LTA2LTIxVDE1OjQ4OjM5LjE2NloiLCJleHAiOiIyMDE2LTA2LTIxVDE2OjQ4OjM5LjE2NloiLCJpcnQiOmZhbHNlfQ.5FMp7f5MVp0OBaw7mLygxrSMOqCYZHO8zNMPv0mfBI4
+authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwa2F3cmIyNzgiLCJpYXQiOiIyMDE2LTA5LTE1VDEyOjE5OjUyLjQ0OVoiLCJleHAiOiIyMDE2LTA5LTE1VDEzOjE5OjUyLjQ0OVoiLCJpcnQiOmZhbHNlfQ.kQr4Vj8i90jFngdrWUsIA5SqIV0lM1UyS157SJEDwlw
 content-type: application/json
-Content-Length: 271
+Content-Length: 257
 
 {
   "description": "This is a very super high resolution backglass that I have stitched together from four different sources.",
   "acknowledgements": "- Thanks to @mom for all her patience",
   "category": "backglass_image",
-  "_file": "pkap4ebmne",
+  "_file": "e2mpe5bk78",
   "_ref": {
-    "game": "deluxe-super-slugger"
+    "game": "winner"
   }
 }

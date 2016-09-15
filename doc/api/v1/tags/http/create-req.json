@@ -1,7 +1,7 @@
 POST /v1/tags HTTP/2.0
 Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
-authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwazM0bjl4Nm9zIiwiaWF0IjoiMjAxNi0wNS0xOVQyMjo1Njo0NS4yMTRaIiwiZXhwIjoiMjAxNi0wNS0xOVQyMzo1Njo0NS4yMTRaIiwiaXJ0IjpmYWxzZX0.mE_eURhppUiD0PtomVO_51JNvdqJVEPu98H9PMUI78c
+authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJlMjZ0MzZoazdtIiwiaWF0IjoiMjAxNi0wOS0xNVQxMjoyMTowNS43NTZaIiwiZXhwIjoiMjAxNi0wOS0xNVQxMzoyMTowNS43NTZaIiwiaXJ0IjpmYWxzZX0.vLlyiLXak-9UCWXc-Ia19qT1w_LbgDUKJnAI1MxkKiE
 content-type: application/json
 Content-Length: 70
 

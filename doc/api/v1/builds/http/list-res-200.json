@@ -1,7 +1,7 @@
 200 OK
-X-App-Sha: 4400951
+X-App-Sha: f680068
 Content-Type: application/json; charset=utf-8
-Etag: W/"a1d-ohptxlST2m1UaEalzhCsrA"
+Etag: W/"a1d-9TM4RyUPz9E+CBmBIwuUHw"
 Content-Encoding: gzip
 
 [
@@ -22,6 +22,16 @@ Content-Encoding: gzip
     "major_version": "9",
     "download_url": "http://www.vpforums.org/index.php?app=downloads&showfile=8793",
     "built_at": "2014-04-29T00:00:00.000Z",
+    "type": "release",
+    "is_range": false
+  },
+  {
+    "id": "9.2.1",
+    "label": "v9.2.1",
+    "platform": "vp",
+    "major_version": "9",
+    "download_url": "http://www.vpforums.org/index.php?app=downloads&showfile=8793",
+    "built_at": "2014-03-21T00:00:00.000Z",
     "type": "release",
     "is_range": false
   },
@@ -73,16 +83,6 @@ Content-Encoding: gzip
     "built_at": "2014-03-21T00:00:00.000Z",
     "type": "release",
     "is_range": true
-  },
-  {
-    "id": "9.2.1",
-    "label": "v9.2.1",
-    "platform": "vp",
-    "major_version": "9",
-    "download_url": "http://www.vpforums.org/index.php?app=downloads&showfile=8793",
-    "built_at": "2014-03-21T00:00:00.000Z",
-    "type": "release",
-    "is_range": false
   },
   {
     "id": "-9.9.0",

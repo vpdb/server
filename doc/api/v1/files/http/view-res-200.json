@@ -1,17 +1,17 @@
 200 OK
 X-App-Sha: f680068
 Content-Type: application/json; charset=utf-8
-Content-Length: 312
-Etag: W/"138-rCA4N6K6Nl1Iy020T9IXPA"
+Content-Length: 314
+Etag: W/"13a-E0cdjfM3YbNtiBHMNgK5xQ"
 
 {
-  "created_at": "2016-08-16T21:40:21.926Z",
+  "created_at": "2016-09-15T12:19:42.563Z",
   "mime_type": "text/plain",
   "file_type": "release",
   "metadata": {},
-  "id": "ek198roxg",
+  "id": "e2wzgph2cm",
   "name": "text.txt",
-  "url": "https://localhost:7357/storage/v1/files/ek198roxg.txt",
+  "url": "https://localhost:7357/storage/v1/files/e2wzgph2cm.txt",
   "bytes": 43,
   "variations": {},
   "is_protected": true,

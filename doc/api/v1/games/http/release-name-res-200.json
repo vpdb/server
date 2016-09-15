@@ -1,9 +1,9 @@
 200 OK
-X-App-Sha: b34e05f
+X-App-Sha: f680068
 Content-Type: application/json; charset=utf-8
-Content-Length: 33
-Etag: W/"21-Bsyy62G8MauZtWZtSp/Jjg"
+Content-Length: 39
+Etag: W/"27-8KCq+bBF2CB0wAOPPJZUHg"
 
 {
-  "name": "Acid Ducks Edition"
+  "name": "Omniscient Dolls Edition"
 }

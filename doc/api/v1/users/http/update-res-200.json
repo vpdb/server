@@ -1,16 +1,16 @@
 200 OK
-X-App-Sha: 4400951
+X-App-Sha: f680068
 Content-Type: application/json; charset=utf-8
-Content-Length: 468
-Etag: W/"1d4-cTON4HUlUn3FFB4g75BTRQ"
+Content-Length: 588
+Etag: W/"24c-oRNG8Nq+NYDGMRVWklDbjA"
 
 {
-  "id": "eksrg946os",
-  "name": "Dorian21",
-  "username": "Dorian21",
-  "gravatar_id": "3355c29e8666c11fb4f5da4f2e03529c",
-  "location": "South Gerard",
-  "email": "cydney.wuckert38@yahoo.com",
+  "id": "pktuk7b2cm",
+  "name": "Halle.Langosh",
+  "username": "Halle.Langosh",
+  "gravatar_id": "6c36e25dcaa3f89e357022170a26250c",
+  "location": "Koepp borough",
+  "email": "jules_gottlieb@gmail.com",
   "is_active": true,
   "provider": "local",
   "roles": [
@@ -21,7 +21,11 @@ Etag: W/"1d4-cTON4HUlUn3FFB4g75BTRQ"
     "app_tokens_enabled": false,
     "id": "free"
   },
-  "created_at": "2016-05-19T22:56:46.368Z",
+  "created_at": "2016-09-15T12:21:07.480Z",
+  "preferences": {
+    "notify_backglass_moderation_status": true,
+    "notify_release_moderation_status": true
+  },
   "counter": {
     "stars": 0,
     "downloads": 0,

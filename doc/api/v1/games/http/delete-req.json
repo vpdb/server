@@ -1,5 +1,5 @@
-DELETE /v1/games/vogue HTTP/2.0
+DELETE /v1/games/alien-warrior HTTP/2.0
 Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
-authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwa2FlNjlzeTZlIiwiaWF0IjoiMjAxNi0wNi0yMVQyMTozNzo1MC41MTFaIiwiZXhwIjoiMjAxNi0wNi0yMVQyMjozNzo1MC41MTFaIiwiaXJ0IjpmYWxzZX0.8fPgeEW-hTuOXOUrDBbgF-cytkgtnjpwz5EuZzXa_wg
+authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwa290azViMmM4IiwiaWF0IjoiMjAxNi0wOS0xNVQxMjoxOTo0Ny43ODJaIiwiZXhwIjoiMjAxNi0wOS0xNVQxMzoxOTo0Ny43ODJaIiwiaXJ0IjpmYWxzZX0.ydFuAW7YNFeY3em1-Vta8W4HQHJutIu-NkSY9wnwrS8
 

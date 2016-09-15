@@ -1,16 +1,16 @@
-POST /v1/games/all-star-baseball/roms HTTP/2.0
+POST /v1/games/odds-evens/roms HTTP/2.0
 Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
-authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwMmg0ejk0ZzE5IiwiaWF0IjoiMjAxNi0wNS0xOVQyMjo1NjozNi45NTJaIiwiZXhwIjoiMjAxNi0wNS0xOVQyMzo1NjozNi45NTJaIiwiaXJ0IjpmYWxzZX0.kcZ8P_INXw2xMueCK1cMblirB8aI4WWVjh6-u3QDJ6k
+authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwa3kxcDZoMmM4IiwiaWF0IjoiMjAxNi0wOS0xNVQxMjoyMDo1Ny40ODRaIiwiZXhwIjoiMjAxNi0wOS0xNVQxMzoyMDo1Ny40ODRaIiwiaXJ0IjpmYWxzZX0.cl99hSivD7cCsXrIhjsMXbhYE2yRJRspiu9Bp9eGrXw
 content-type: application/json
-Content-Length: 116
+Content-Length: 109
 
 {
-  "id": "all-star-baseball_10",
+  "id": "odds-evens_10",
   "version": "1.0",
   "notes": "That is some ROM.",
   "languages": [
     "en-US"
   ],
-  "_file": "e2t5zs4g1s"
+  "_file": "pknhrgbk78"
 }

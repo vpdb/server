@@ -1,7 +1,7 @@
-PATCH /v1/games/peachy HTTP/2.0
+PATCH /v1/games/grand-slam HTTP/2.0
 Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
-authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJla3U2OWdxM2YiLCJpYXQiOiIyMDE2LTA3LTE4VDE0OjQ2OjA2LjczMVoiLCJleHAiOiIyMDE2LTA3LTE4VDE1OjQ2OjA2LjczMVoiLCJpcnQiOmZhbHNlfQ.lDmUDZC7BoPNZrLacIqSb1G8klrYvnziTcRPYnsGYAk
+authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwMjUzcGhrN20iLCJpYXQiOiIyMDE2LTA5LTE1VDEyOjE5OjQ0LjgzNVoiLCJleHAiOiIyMDE2LTA5LTE1VDEzOjE5OjQ0LjgzNVoiLCJpcnQiOmZhbHNlfQ.1joRJclvd-SB5js6he04Psbxw253qywwVv9dH3G8nTY
 content-type: application/json
 Content-Length: 36
 

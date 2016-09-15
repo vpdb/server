@@ -1,11 +1,11 @@
 PATCH /v1/user HTTP/2.0
 Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
-authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJla2ZwN3M0Z285IiwiaWF0IjoiMjAxNi0wNS0xOVQyMjo1Njo0Ny4zNTBaIiwiZXhwIjoiMjAxNi0wNS0xOVQyMzo1Njo0Ny4zNTBaIiwiaXJ0IjpmYWxzZX0.9_lF6DxgPpsHw7tKWwwcGRD8NdItYxZJ34IBFAQZTJM
+authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwMjhmaDdia2M4IiwiaWF0IjoiMjAxNi0wOS0xNVQxMjoyMTowOC43NjRaIiwiZXhwIjoiMjAxNi0wOS0xNVQxMzoyMTowOC43NjRaIiwiaXJ0IjpmYWxzZX0.cu3H0cArK3xUlok5ZCEH1kQW0vLL5Bx8UEBMwCy6OsI
 content-type: application/json
-Content-Length: 53
+Content-Length: 54
 
 {
-  "username": "Felton.Hyatt87",
-  "password": "5A6ZTJRYfi"
+  "username": "Jeramy.Grimes31",
+  "password": "pTiyK6SjgA"
 }

@@ -1,8 +1,8 @@
 201 Created
-X-App-Sha: 4400951
+X-App-Sha: f680068
 Content-Type: application/json; charset=utf-8
-Content-Length: 602
-Etag: W/"25a-q2MsH7lrwshRJym78bQNyg"
+Content-Length: 624
+Etag: W/"270-7b3qUHfXPE+ZMQAv3UZraA"
 
 {
   "id": "tz_pa1",
@@ -12,8 +12,9 @@ Etag: W/"25a-q2MsH7lrwshRJym78bQNyg"
     },
     "is_protected": true,
     "bytes": 2096,
-    "url": "https://localhost:7357/storage/v1/files/e2phss4619.zip",
-    "id": "e2phss4619"
+    "url": "https://localhost:7357/storage/v1/files/e2ou56bk78.zip",
+    "name": "hulk.zip",
+    "id": "e2ou56bk78"
   },
   "languages": [],
   "rom_files": [

@@ -1,14 +1,14 @@
 PATCH /v1/user HTTP/2.0
 Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
-authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwa281Z3N4NjE5IiwiaWF0IjoiMjAxNi0wNS0xOVQyMjo1Njo0Ni40NDRaIiwiZXhwIjoiMjAxNi0wNS0xOVQyMzo1Njo0Ni40NDRaIiwiaXJ0IjpmYWxzZX0.uiRhSIBh1kEs7KbdszOsO0xXfkeWYBzrsI6uHTea6OU
+authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJlMnF0a2NiMmNtIiwiaWF0IjoiMjAxNi0wOS0xNVQxMjoyMTowNy41NTNaIiwiZXhwIjoiMjAxNi0wOS0xNVQxMzoyMTowNy41NTNaIiwiaXJ0IjpmYWxzZX0.z4EfBoXrv1zrhpXVGfkh7_N1sOezkaMQL1DAWbbkHkU
 content-type: application/json
-Content-Length: 145
+Content-Length: 146
 
 {
-  "name": "Madisyn Emard",
-  "location": "Daugherty stad",
-  "email": "gail.ullrich21@hotmail.com",
-  "current_password": "DWE48Tt0aN",
-  "password": "1tSyLTcIJY"
+  "name": "Holly Kuvalis",
+  "location": "East Carmela ton",
+  "email": "gay.fritsch67@hotmail.com",
+  "current_password": "UosBn0x70k",
+  "password": "EGEUWjnt68"
 }

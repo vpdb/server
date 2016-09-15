@@ -1,10 +1,11 @@
 200 OK
-X-App-Sha: 4400951
+X-App-Sha: f680068
+Link: <http://localhost:7357/api/v1/events?page=2&per_page=10>; rel="next"
 X-List-Page: 1
 X-List-Size: 10
-X-List-Count: 7
+X-List-Count: 18
 Content-Type: application/json; charset=utf-8
-Etag: W/"1aed-gMx5W2g2rRE2mbNvsflZDA"
+Etag: W/"23b4-7UCQZfn9t8TZmYfFeeqXfg"
 Content-Encoding: gzip
 
 [
@@ -12,32 +13,32 @@ Content-Encoding: gzip
     "event": "create_release",
     "payload": {
       "release": {
-        "id": "ekdbwdsg1s",
-        "name": "Progressive Edition",
+        "id": "p2fztphk78",
+        "name": "Seamless Edition",
         "authors": [
           {
             "roles": [
               "Table Creator"
             ],
             "user": {
-              "id": "p2gqxd96o9",
-              "name": "Ardith.Hermiston88",
-              "username": "Ardith.Hermiston88",
-              "gravatar_id": "92982810b1a6dc96d26feb094fb25d78",
               "counter": {
-                "comments": 0,
-                "stars": 0
-              }
+                "stars": 0,
+                "comments": 0
+              },
+              "gravatar_id": "911a3554a40119564bdb76ec8cafa6cb",
+              "username": "Tristian58",
+              "name": "Tristian58",
+              "id": "pkqtfeb278"
             }
           }
         ],
         "versions": [
           {
             "version": "1.0.0",
-            "released_at": "2016-05-19T22:55:20.490Z",
+            "released_at": "2016-09-15T12:19:40.270Z",
             "files": [
               {
-                "released_at": "2016-05-19T22:55:20.490Z",
+                "released_at": "2016-09-15T12:19:40.270Z",
                 "flavor": {
                   "orientation": "fs",
                   "lighting": "night"
@@ -48,7 +49,7 @@ Content-Encoding: gzip
                   }
                 ],
                 "file": {
-                  "id": "p2gwds6os",
+                  "id": "p21vehkcm",
                   "name": "test-table-0.vpt",
                   "bytes": 135168,
                   "mime_type": "application/x-visual-pinball-table"
@@ -59,194 +60,172 @@ Content-Encoding: gzip
         ]
       },
       "game": {
-        "id": "roller-catch",
-        "title": "Roller Catch",
-        "manufacturer": "Unknown",
+        "id": "new-continental",
+        "title": "New Continental",
+        "manufacturer": "General Automatic Amusements, S.P.R.L.",
         "year": 1900,
         "ipdb": {
-          "number": 6035,
-          "mfg": 328
+          "number": 4044,
+          "mfg": 131
         },
-        "game_type": "em"
+        "game_type": "na"
       }
     },
-    "logged_at": "2016-05-19T22:55:20.530Z",
+    "logged_at": "2016-09-15T12:19:40.321Z",
     "is_public": true,
     "actor": {
       "counter": {
         "stars": 0,
         "comments": 0
       },
-      "gravatar_id": "92982810b1a6dc96d26feb094fb25d78",
-      "username": "Ardith.Hermiston88",
-      "name": "Ardith.Hermiston88",
-      "id": "p2gqxd96o9"
+      "gravatar_id": "911a3554a40119564bdb76ec8cafa6cb",
+      "username": "Tristian58",
+      "name": "Tristian58",
+      "id": "pkqtfeb278"
     }
   },
   {
     "event": "create_game",
     "payload": {
       "game": {
-        "id": "roller-catch",
-        "title": "Roller Catch",
-        "manufacturer": "Unknown",
+        "id": "new-continental",
+        "title": "New Continental",
+        "manufacturer": "General Automatic Amusements, S.P.R.L.",
         "year": 1900,
         "ipdb": {
-          "number": 6035,
-          "mfg": 328
+          "number": 4044,
+          "mfg": 131
         },
-        "game_type": "em",
-        "media": {
-          "backglass": {
-            "counter": {
-              "downloads": 0
-            },
-            "is_protected": true,
-            "variations": {
-              "small-2x": {
-                "url": "https://localhost:7357/storage/public/files/small-2x/ekbwds6o9.jpg"
-              },
-              "small": {
-                "url": "https://localhost:7357/storage/public/files/small/ekbwds6o9.jpg"
-              },
-              "medium-2x": {
-                "url": "https://localhost:7357/storage/public/files/medium-2x/ekbwds6o9.jpg"
-              },
-              "medium": {
-                "url": "https://localhost:7357/storage/public/files/medium/ekbwds6o9.jpg"
-              }
-            },
-            "bytes": 135,
-            "url": "https://localhost:7357/storage/v1/files/ekbwds6o9.png",
-            "id": "ekbwds6o9"
-          }
-        }
+        "game_type": "na"
       }
     },
-    "logged_at": "2016-05-19T22:55:20.007Z",
+    "logged_at": "2016-09-15T12:19:39.896Z",
     "is_public": true,
     "actor": {
       "counter": {
         "stars": 0,
         "comments": 0
       },
-      "gravatar_id": "f21d0bc1479e76a062e80bba761491bc",
-      "username": "Ottilie60",
-      "name": "Ottilie60",
-      "id": "ek1wx39g1s"
+      "gravatar_id": "eddb390fc9253f314435e570bde3f87f",
+      "username": "Conner_Dickens",
+      "name": "Conner_Dickens",
+      "id": "ektvuehkc8"
     }
   },
   {
     "event": "create_comment",
     "payload": {
       "comment": {
-        "id": "e2fs439gos",
-        "message": "Future-proofed multi-tasking leverage",
+        "id": "p2dwueb2cm",
+        "message": "Advanced zero tolerance process improvement",
         "release": {
           "game": {
             "ipdb": {
-              "mfg": 117,
-              "number": 603
+              "rating": 6.1,
+              "mfg": 351,
+              "number": 2240
             },
-            "year": 1947,
-            "manufacturer": "Exhibit",
-            "title": "Cross Fire",
-            "id": "cross-fire"
+            "year": 1971,
+            "manufacturer": "Williams",
+            "title": "Solids N Stripes",
+            "id": "solids-n-stripes"
           },
-          "created_at": "2016-05-19T22:55:19.035Z",
-          "name": "Customer-focused Edition",
-          "id": "p2p4dsg1s"
+          "created_at": "2016-09-15T12:19:38.745Z",
+          "name": "Fundamental Edition",
+          "id": "pkwq5ebk7m"
         },
-        "created_at": "2016-05-19T22:55:19.519Z"
+        "created_at": "2016-09-15T12:19:39.436Z"
       }
     },
-    "logged_at": "2016-05-19T22:55:19.524Z",
+    "logged_at": "2016-09-15T12:19:39.441Z",
     "is_public": true
   },
   {
     "event": "create_comment",
     "payload": {
       "comment": {
-        "id": "ekczxdsgos",
-        "message": "Optimized content-based collaboration",
+        "id": "pkp4uehk7m",
+        "message": "Centralized maximized budgetary management",
         "release": {
           "game": {
             "ipdb": {
-              "mfg": 117,
-              "number": 603
+              "rating": 6.1,
+              "mfg": 351,
+              "number": 2240
             },
-            "year": 1947,
-            "manufacturer": "Exhibit",
-            "title": "Cross Fire",
-            "id": "cross-fire"
+            "year": 1971,
+            "manufacturer": "Williams",
+            "title": "Solids N Stripes",
+            "id": "solids-n-stripes"
           },
-          "created_at": "2016-05-19T22:55:19.035Z",
-          "name": "Customer-focused Edition",
-          "id": "p2p4dsg1s"
+          "created_at": "2016-09-15T12:19:38.745Z",
+          "name": "Fundamental Edition",
+          "id": "pkwq5ebk7m"
         },
-        "created_at": "2016-05-19T22:55:19.323Z"
+        "created_at": "2016-09-15T12:19:39.278Z"
       }
     },
-    "logged_at": "2016-05-19T22:55:19.334Z",
+    "logged_at": "2016-09-15T12:19:39.283Z",
     "is_public": true
   },
   {
     "event": "create_comment",
     "payload": {
       "comment": {
-        "id": "pkrz4dsgos",
-        "message": "Customizable bi-directional matrices",
+        "id": "p2b4feh2cm",
+        "message": "Optimized static hub",
         "release": {
           "game": {
             "ipdb": {
-              "mfg": 117,
-              "number": 603
+              "rating": 6.1,
+              "mfg": 351,
+              "number": 2240
             },
-            "year": 1947,
-            "manufacturer": "Exhibit",
-            "title": "Cross Fire",
-            "id": "cross-fire"
+            "year": 1971,
+            "manufacturer": "Williams",
+            "title": "Solids N Stripes",
+            "id": "solids-n-stripes"
           },
-          "created_at": "2016-05-19T22:55:19.035Z",
-          "name": "Customer-focused Edition",
-          "id": "p2p4dsg1s"
+          "created_at": "2016-09-15T12:19:38.745Z",
+          "name": "Fundamental Edition",
+          "id": "pkwq5ebk7m"
         },
-        "created_at": "2016-05-19T22:55:19.280Z"
+        "created_at": "2016-09-15T12:19:39.227Z"
       }
     },
-    "logged_at": "2016-05-19T22:55:19.289Z",
+    "logged_at": "2016-09-15T12:19:39.233Z",
     "is_public": true
   },
   {
     "event": "create_release",
     "payload": {
       "release": {
-        "id": "p2p4dsg1s",
-        "name": "Customer-focused Edition",
+        "id": "pkwq5ebk7m",
+        "name": "Fundamental Edition",
         "authors": [
           {
             "roles": [
               "Table Creator"
             ],
             "user": {
-              "id": "pkf5939go9",
-              "name": "Ruby_Murray29",
-              "username": "Ruby_Murray29",
-              "gravatar_id": "7e5fcf1051450a190f82c6a3577790dd",
               "counter": {
-                "comments": 0,
-                "stars": 0
-              }
+                "stars": 0,
+                "comments": 0
+              },
+              "gravatar_id": "1bd1774dd0bfcee53a6fcdaede13bf4c",
+              "username": "Zachary.Gibson",
+              "name": "Zachary.Gibson",
+              "id": "pkny5pbkcm"
             }
           }
         ],
         "versions": [
           {
             "version": "1.0.0",
-            "released_at": "2016-05-19T22:55:19.035Z",
+            "released_at": "2016-09-15T12:19:38.745Z",
             "files": [
               {
-                "released_at": "2016-05-19T22:55:19.035Z",
+                "released_at": "2016-09-15T12:19:38.745Z",
                 "flavor": {
                   "orientation": "fs",
                   "lighting": "night"
@@ -257,7 +236,7 @@ Content-Encoding: gzip
                   }
                 ],
                 "file": {
-                  "id": "ekausdsgos",
+                  "id": "e2a9reb278",
                   "name": "test-table-0.vpt",
                   "bytes": 135168,
                   "mime_type": "application/x-visual-pinball-table"
@@ -268,61 +247,213 @@ Content-Encoding: gzip
         ]
       },
       "game": {
-        "id": "cross-fire",
-        "title": "Cross Fire",
-        "manufacturer": "Exhibit",
-        "year": 1947,
+        "id": "solids-n-stripes",
+        "title": "Solids N Stripes",
+        "manufacturer": "Williams",
+        "year": 1971,
         "ipdb": {
-          "number": 603,
-          "mfg": 117
+          "number": 2240,
+          "mfg": 351,
+          "rating": 6.1
         },
         "game_type": "em"
       }
     },
-    "logged_at": "2016-05-19T22:55:19.219Z",
+    "logged_at": "2016-09-15T12:19:38.912Z",
     "is_public": true
   },
   {
     "event": "create_game",
     "payload": {
       "game": {
-        "id": "cross-fire",
-        "title": "Cross Fire",
-        "manufacturer": "Exhibit",
-        "year": 1947,
+        "id": "solids-n-stripes",
+        "title": "Solids N Stripes",
+        "manufacturer": "Williams",
+        "year": 1971,
         "ipdb": {
-          "number": 603,
-          "mfg": 117
+          "number": 2240,
+          "mfg": 351,
+          "rating": 6.1
         },
-        "game_type": "em",
-        "media": {
-          "backglass": {
-            "counter": {
-              "downloads": 0
-            },
-            "is_protected": true,
-            "variations": {
-              "small-2x": {
-                "url": "https://localhost:7357/storage/public/files/small-2x/p28rsd96o9.jpg"
-              },
-              "small": {
-                "url": "https://localhost:7357/storage/public/files/small/p28rsd96o9.jpg"
-              },
-              "medium-2x": {
-                "url": "https://localhost:7357/storage/public/files/medium-2x/p28rsd96o9.jpg"
-              },
-              "medium": {
-                "url": "https://localhost:7357/storage/public/files/medium/p28rsd96o9.jpg"
-              }
-            },
-            "bytes": 135,
-            "url": "https://localhost:7357/storage/v1/files/p28rsd96o9.png",
-            "id": "p28rsd96o9"
-          }
-        }
+        "game_type": "em"
       }
     },
-    "logged_at": "2016-05-19T22:55:18.669Z",
+    "logged_at": "2016-09-15T12:19:38.351Z",
+    "is_public": true
+  },
+  {
+    "event": "create_release_version",
+    "payload": {
+      "release": {
+        "id": "e24p4eb2c8",
+        "name": "Implemented Edition",
+        "authors": [
+          {
+            "roles": [
+              "Table Creator"
+            ],
+            "user": {
+              "counter": {
+                "stars": 0,
+                "comments": 0
+              },
+              "gravatar_id": "ced13b7a430265ce0dde507ebaf79a58",
+              "username": "Anais.Bogan7",
+              "name": "Anais.Bogan7",
+              "id": "p2zs4pb27m"
+            }
+          }
+        ],
+        "versions": [
+          {
+            "version": "2.0",
+            "released_at": "2016-09-15T12:19:36.582Z",
+            "files": [
+              {
+                "released_at": "2016-09-15T12:19:36.582Z",
+                "flavor": {
+                  "orientation": "ws",
+                  "lighting": "night"
+                },
+                "compatibility": [
+                  {
+                    "id": "9.9.0"
+                  }
+                ],
+                "file": {
+                  "id": "pkkhqpb2cm",
+                  "name": "test-table-0.vpt",
+                  "bytes": 135168,
+                  "mime_type": "application/x-visual-pinball-table"
+                }
+              }
+            ]
+          },
+          {
+            "version": "1.0.0",
+            "released_at": "2016-09-15T12:19:35.669Z",
+            "files": [
+              {
+                "released_at": "2016-09-15T12:19:35.669Z",
+                "flavor": {
+                  "orientation": "fs",
+                  "lighting": "night"
+                },
+                "compatibility": [
+                  {
+                    "id": "9.9.0"
+                  }
+                ],
+                "file": {
+                  "id": "ek944pbk78",
+                  "name": "test-table-0.vpt",
+                  "bytes": 135168,
+                  "mime_type": "application/x-visual-pinball-table"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "game": {
+        "id": "king-rock",
+        "title": "King Rock",
+        "manufacturer": "Gottlieb",
+        "year": 1972,
+        "ipdb": {
+          "number": 1377,
+          "mfg": 93,
+          "rating": 6.9
+        },
+        "game_type": "em"
+      }
+    },
+    "logged_at": "2016-09-15T12:19:36.739Z",
+    "is_public": true
+  },
+  {
+    "event": "create_release",
+    "payload": {
+      "release": {
+        "id": "e24p4eb2c8",
+        "name": "Implemented Edition",
+        "authors": [
+          {
+            "roles": [
+              "Table Creator"
+            ],
+            "user": {
+              "counter": {
+                "stars": 0,
+                "comments": 0
+              },
+              "gravatar_id": "ced13b7a430265ce0dde507ebaf79a58",
+              "username": "Anais.Bogan7",
+              "name": "Anais.Bogan7",
+              "id": "p2zs4pb27m"
+            }
+          }
+        ],
+        "versions": [
+          {
+            "version": "1.0.0",
+            "released_at": "2016-09-15T12:19:35.669Z",
+            "files": [
+              {
+                "released_at": "2016-09-15T12:19:35.669Z",
+                "flavor": {
+                  "orientation": "fs",
+                  "lighting": "night"
+                },
+                "compatibility": [
+                  {
+                    "id": "9.9.0"
+                  }
+                ],
+                "file": {
+                  "id": "ek944pbk78",
+                  "name": "test-table-0.vpt",
+                  "bytes": 135168,
+                  "mime_type": "application/x-visual-pinball-table"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "game": {
+        "id": "king-rock",
+        "title": "King Rock",
+        "manufacturer": "Gottlieb",
+        "year": 1972,
+        "ipdb": {
+          "number": 1377,
+          "mfg": 93,
+          "rating": 6.9
+        },
+        "game_type": "em"
+      }
+    },
+    "logged_at": "2016-09-15T12:19:35.810Z",
+    "is_public": true
+  },
+  {
+    "event": "create_game",
+    "payload": {
+      "game": {
+        "id": "king-rock",
+        "title": "King Rock",
+        "manufacturer": "Gottlieb",
+        "year": 1972,
+        "ipdb": {
+          "number": 1377,
+          "mfg": 93,
+          "rating": 6.9
+        },
+        "game_type": "em"
+      }
+    },
+    "logged_at": "2016-09-15T12:19:35.215Z",
     "is_public": true
   }
 ]

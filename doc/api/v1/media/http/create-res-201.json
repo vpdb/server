@@ -1,11 +1,69 @@
 201 Created
-X-App-Sha: 5eece90
+X-App-Sha: f680068
 Content-Type: application/json; charset=utf-8
-Content-Length: 864
-Etag: W/"360-WDDeYoZ1LoBxIbysUG1Sew"
+Etag: W/"8a6-6EqB/esBhDzmkszZ4B83MQ"
+Content-Encoding: gzip
 
 {
-  "id": "e23zwphmne",
+  "id": "pk2br5h278",
+  "file": {
+    "counter": {
+      "downloads": 0
+    },
+    "is_protected": true,
+    "variations": {
+      "small-2x": {
+        "url": "https://localhost:7357/storage/public/files/small-2x/e2mpe5bk78.jpg",
+        "width": 505,
+        "height": 404,
+        "bytes": 1776,
+        "mime_type": "image/jpeg"
+      },
+      "small": {
+        "url": "https://localhost:7357/storage/public/files/small/e2mpe5bk78.jpg",
+        "width": 253,
+        "height": 202,
+        "bytes": 836,
+        "mime_type": "image/jpeg"
+      },
+      "medium-2x": {
+        "url": "https://localhost:7357/storage/public/files/medium-2x/e2mpe5bk78.jpg",
+        "width": 728,
+        "height": 582,
+        "bytes": 3082,
+        "mime_type": "image/jpeg"
+      },
+      "medium": {
+        "url": "https://localhost:7357/storage/public/files/medium/e2mpe5bk78.jpg",
+        "width": 364,
+        "height": 291,
+        "bytes": 1188,
+        "mime_type": "image/jpeg"
+      },
+      "full": {
+        "url": "https://localhost:7357/storage/public/files/full/e2mpe5bk78.jpg",
+        "width": 640,
+        "height": 512,
+        "bytes": 2448,
+        "mime_type": "image/jpeg"
+      }
+    },
+    "bytes": 135,
+    "url": "https://localhost:7357/storage/v1/files/e2mpe5bk78.png",
+    "name": "backglass.png",
+    "id": "e2mpe5bk78",
+    "metadata": {
+      "depth": 8,
+      "size": {
+        "height": 512,
+        "width": 640
+      },
+      "format": "PNG"
+    },
+    "file_type": "backglass",
+    "mime_type": "image/png",
+    "created_at": "2016-09-15T12:19:53.447Z"
+  },
   "game": {
     "rating": {
       "average": 0,
@@ -21,26 +79,26 @@ Etag: W/"360-WDDeYoZ1LoBxIbysUG1Sew"
     },
     "game_type": "em",
     "ipdb": {
-      "mfg": 323,
-      "number": 2442
+      "mfg": 279,
+      "number": 2793
     },
-    "year": 1955,
-    "manufacturer": "United",
-    "title": "Deluxe Super Slugger",
-    "id": "deluxe-super-slugger"
+    "year": 1971,
+    "manufacturer": "Sega",
+    "title": "Winner",
+    "id": "winner"
   },
   "category": "backglass_image",
   "description": "This is a very super high resolution backglass that I have stitched together from four different sources.",
   "acknowledgements": "- Thanks to @mom for all her patience",
-  "created_at": "2016-06-21T15:48:40.097Z",
+  "created_at": "2016-09-15T12:19:53.843Z",
   "created_by": {
     "counter": {
       "stars": 0,
       "comments": 0
     },
-    "gravatar_id": "8e3affe4ac3c97766e0df7a84589a665",
-    "username": "Harvey_Bahringer48",
-    "name": "Harvey_Bahringer48",
-    "id": "p244ph8ne"
+    "gravatar_id": "207cffd97870535bd1919f0e7574757d",
+    "username": "Dahlia_Cartwright68",
+    "name": "Dahlia_Cartwright68",
+    "id": "pkawrb278"
   }
 }

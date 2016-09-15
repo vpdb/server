@@ -1,12 +1,12 @@
 201 Created
-X-App-Sha: 4400951
+X-App-Sha: f680068
 Content-Type: application/json; charset=utf-8
 Content-Length: 119
-Etag: W/"77-0dL4oK1OckoF1tzpmDBr8A"
+Etag: W/"77-je1oFTH+Lc/Hgja7AanNFg"
 
 {
   "value": 7,
-  "created_at": "2016-05-19T22:55:34.388Z",
+  "created_at": "2016-09-15T12:20:00.903Z",
   "game": {
     "average": 7,
     "votes": 1,

@@ -1,8 +1,8 @@
-POST /v1/releases/e2ap49xg19/star HTTP/2.0
+POST /v1/releases/ekxfvgbkcm/star HTTP/2.0
 Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
 content-type: application/json
-authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJla2I0NDl4Nm9zIiwiaWF0IjoiMjAxNi0wNS0xOVQyMjo1NjozOS4wOTVaIiwiZXhwIjoiMjAxNi0wNS0xOVQyMzo1NjozOS4wOTVaIiwiaXJ0IjpmYWxzZX0.Eu6vDjFgwyRFO5HN0HuKhrEupVR3gsDmvwY54rlrBZo
+authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwMnpxdDZia2M4IiwiaWF0IjoiMjAxNi0wOS0xNVQxMjoyMTowMC4xNzRaIiwiZXhwIjoiMjAxNi0wOS0xNVQxMzoyMTowMC4xNzRaIiwiaXJ0IjpmYWxzZX0.MRox0Y1JBEryXJXaxjRnvq5B_rq90MphMvFatAU9z4c
 Content-Length: 2
 
 {}

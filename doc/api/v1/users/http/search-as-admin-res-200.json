@@ -1,16 +1,16 @@
 200 OK
-X-App-Sha: 4400951
+X-App-Sha: f680068
 Content-Type: application/json; charset=utf-8
-Content-Length: 474
-Etag: W/"1da-ya9ISkurQ7lf8NFxH7lOFQ"
+Content-Length: 592
+Etag: W/"250-/zeu+vh2wp7cZOgJJDfD+g"
 
 [
   {
-    "id": "eksrg946os",
-    "name": "Colt_Muller",
-    "username": "Colt_Muller",
-    "gravatar_id": "710205aece08b95b1270c2329e16a145",
-    "email": "virginia.weimann@hotmail.com",
+    "id": "pktuk7b2cm",
+    "name": "Shaina_Klein90",
+    "username": "Shaina_Klein90",
+    "gravatar_id": "4182703084f9732d89b7efae39665a6b",
+    "email": "lenore.fisher@hotmail.com",
     "is_active": true,
     "provider": "local",
     "roles": [
@@ -21,7 +21,11 @@ Etag: W/"1da-ya9ISkurQ7lf8NFxH7lOFQ"
       "app_tokens_enabled": false,
       "id": "free"
     },
-    "created_at": "2016-05-19T22:56:46.368Z",
+    "created_at": "2016-09-15T12:21:07.480Z",
+    "preferences": {
+      "notify_backglass_moderation_status": true,
+      "notify_release_moderation_status": true
+    },
     "counter": {
       "stars": 0,
       "downloads": 0,

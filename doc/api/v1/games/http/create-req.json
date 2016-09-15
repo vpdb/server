@@ -1,24 +1,24 @@
 POST /v1/games HTTP/2.0
 Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
-authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJlMmM0dmRzZ285IiwiaWF0IjoiMjAxNi0wNS0xOVQyMjo1NToyNC4zMjZaIiwiZXhwIjoiMjAxNi0wNS0xOVQyMzo1NToyNC4zMjZaIiwiaXJ0IjpmYWxzZX0.KMmD02gkpbenbQAjdcrH8x2BJB75rBUQ0jWaSCmjOsw
+authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwa3B3Y2ViMmNtIiwiaWF0IjoiMjAxNi0wOS0xNVQxMjoxOTo0My4zODBaIiwiZXhwIjoiMjAxNi0wOS0xNVQxMzoxOTo0My4zODBaIiwiaXJ0IjpmYWxzZX0.W7VdQiprtFosU_wmlqLSqnXV5dAGEVclPnV2gt-M2vo
 content-type: application/json
-Content-Length: 351
+Content-Length: 521
 
 {
   "ipdb": {
-    "number": 217,
-    "mfg": 47
+    "number": 1134,
+    "mfg": 323
   },
-  "title": "Beauty Contest",
-  "manufacturer": "Bally",
-  "model_number": "641",
-  "year": 1960,
+  "title": "Havana",
+  "manufacturer": "United",
+  "year": 1947,
   "game_type": "em",
-  "produced_units": 1750,
-  "notes": "One ball play on a 5 ball style playfield.  This game also had re-screened backglasses produced, one of which was called Fun Spot.",
-  "id": "beauty-contest",
-  "_media": {
-    "backglass": "pkbqtds61s"
-  }
+  "themes": [
+    "World Places"
+  ],
+  "features": "5 balls for 5 cents. Passive bumpers (11), Kick-out holes (5). Backglass measures 21 by 21 inches.",
+  "notes": "The first flipper game by United was United's 1948 'Wisconsin' in April 1948. Operators of this period would soon retrofit flipperless games, like Havana, and these new flippers often ended up in unusual places on the playfield.",
+  "id": "havana",
+  "_backglass": "p2gwcph278"
 }

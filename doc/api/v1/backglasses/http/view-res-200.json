@@ -1,14 +1,14 @@
 200 OK
 X-App-Sha: f680068
 Content-Type: application/json; charset=utf-8
-Etag: W/"762-LRQZI71EZH5Hxb01OwSc+g"
+Etag: W/"771-Zs3ezbppegeWABaarK6K0w"
 Content-Encoding: gzip
 
 {
-  "id": "p2y52sm51t",
+  "id": "e2t52ehk7m",
   "versions": [
     {
-      "released_at": "2016-07-31T14:39:31.756Z",
+      "released_at": "2016-09-15T12:19:31.589Z",
       "version": "1.0",
       "counter": {
         "downloads": 0
@@ -20,25 +20,25 @@ Content-Encoding: gzip
         "is_protected": true,
         "variations": {
           "small-2x": {
-            "url": "https://localhost:7357/storage/public/files/small-2x/e2ceksmr1t.jpg"
+            "url": "https://localhost:7357/storage/public/files/small-2x/p2s52eh2cm.jpg"
           },
           "small": {
-            "url": "https://localhost:7357/storage/public/files/small/e2ceksmr1t.jpg"
+            "url": "https://localhost:7357/storage/public/files/small/p2s52eh2cm.jpg"
           },
           "medium-2x": {
-            "url": "https://localhost:7357/storage/public/files/medium-2x/e2ceksmr1t.jpg"
+            "url": "https://localhost:7357/storage/public/files/medium-2x/p2s52eh2cm.jpg"
           },
           "medium": {
-            "url": "https://localhost:7357/storage/public/files/medium/e2ceksmr1t.jpg"
+            "url": "https://localhost:7357/storage/public/files/medium/p2s52eh2cm.jpg"
           },
           "full": {
-            "url": "https://localhost:7357/storage/public/files/full/e2ceksmr1t.jpg"
+            "url": "https://localhost:7357/storage/public/files/full/p2s52eh2cm.jpg"
           }
         },
         "bytes": 2067,
-        "url": "https://localhost:7357/storage/v1/files/e2ceksmr1t.directb2s",
+        "url": "https://localhost:7357/storage/v1/files/p2s52eh2cm.directb2s",
         "name": "test.directb2s",
-        "id": "e2ceksmr1t"
+        "id": "p2s52eh2cm"
       }
     }
   ],
@@ -52,23 +52,23 @@ Content-Encoding: gzip
           "stars": 0,
           "comments": 0
         },
-        "gravatar_id": "c18f2bbaf6f855a757fbfd6fb25ed3df",
-        "username": "Alia.Skiles",
-        "name": "Alia.Skiles",
-        "id": "e2a29m5ov"
+        "gravatar_id": "910ace2734a4c6810ce13a3f36c39932",
+        "username": "Jaime.Swift21",
+        "name": "Jaime.Swift21",
+        "id": "p2kz2eh2c8"
       }
     }
   ],
-  "created_at": "2016-07-31T14:39:31.756Z",
+  "created_at": "2016-09-15T12:19:31.589Z",
   "created_by": {
     "counter": {
       "stars": 0,
       "comments": 0
     },
-    "gravatar_id": "c18f2bbaf6f855a757fbfd6fb25ed3df",
-    "username": "Alia.Skiles",
-    "name": "Alia.Skiles",
-    "id": "e2a29m5ov"
+    "gravatar_id": "910ace2734a4c6810ce13a3f36c39932",
+    "username": "Jaime.Swift21",
+    "name": "Jaime.Swift21",
+    "id": "p2kz2eh2c8"
   },
   "moderation": {
     "is_approved": true,
@@ -77,12 +77,12 @@ Content-Encoding: gzip
     "history": [
       {
         "event": "approved",
-        "created_at": "2016-07-31T14:39:31.790Z",
+        "created_at": "2016-09-15T12:19:31.617Z",
         "created_by": {
-          "id": "e2a29m5ov",
-          "name": "Alia.Skiles",
-          "username": "Alia.Skiles",
-          "gravatar_id": "c18f2bbaf6f855a757fbfd6fb25ed3df",
+          "id": "p2kz2eh2c8",
+          "name": "Jaime.Swift21",
+          "username": "Jaime.Swift21",
+          "gravatar_id": "910ace2734a4c6810ce13a3f36c39932",
           "counter": {
             "comments": 0,
             "stars": 0

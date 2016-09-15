@@ -1,12 +1,12 @@
-PATCH /v1/tokens/ekz96946o9 HTTP/2.0
+PATCH /v1/tokens/e2dn16bk78 HTTP/2.0
 Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
-authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwMnZ6NnN4Z29zIiwiaWF0IjoiMjAxNi0wNS0xOVQyMjo1Njo0NS45OTNaIiwiZXhwIjoiMjAxNi0wNS0xOVQyMzo1Njo0NS45OTNaIiwiaXJ0IjpmYWxzZX0._vk6MWHt-szHzSXZsZZefv70DfbnioB3XmMK0yFSU14
+authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJlMnduMTZiMmNtIiwiaWF0IjoiMjAxNi0wOS0xNVQxMjoyMTowNi43MjFaIiwiZXhwIjoiMjAxNi0wOS0xNVQxMzoyMTowNi43MjFaIiwiaXJ0IjpmYWxzZX0.IYsQZ5cSScYzGNr115BlG_Urw-NMVrwJ5PlXg4UGnL0
 content-type: application/json
 Content-Length: 92
 
 {
   "label": "My Renamed Application",
-  "expires_at": "2016-05-19T22:56:47.035Z",
+  "expires_at": "2016-09-15T12:21:07.755Z",
   "is_active": false
 }

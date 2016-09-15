@@ -1,10 +1,10 @@
-POST /v1/releases/p2p4dsg1s/comments HTTP/2.0
+POST /v1/releases/pkwq5ebk7m/comments HTTP/2.0
 Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
-authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJla2tyc2Q5ZzFzIiwiaWF0IjoiMjAxNi0wNS0xOVQyMjo1NToxOC40NzhaIiwiZXhwIjoiMjAxNi0wNS0xOVQyMzo1NToxOC40NzhaIiwiaXJ0IjpmYWxzZX0.kBFOlNlSm9-Z0cIienMpGUVreyo59TGRCLo0QYFTWQg
+authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJla2NoNXBia2NtIiwiaWF0IjoiMjAxNi0wOS0xNVQxMjoxOTozOC4xNDJaIiwiZXhwIjoiMjAxNi0wOS0xNVQxMzoxOTozOC4xNDJaIiwiaXJ0IjpmYWxzZX0.DtIJIwYL9IrH2aqBqA5OjWI9VKKIpbWKUnZOJiWX9xA
 content-type: application/json
-Content-Length: 50
+Content-Length: 34
 
 {
-  "message": "Customizable bi-directional matrices"
+  "message": "Optimized static hub"
 }

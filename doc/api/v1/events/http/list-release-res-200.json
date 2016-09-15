@@ -1,10 +1,10 @@
 200 OK
-X-App-Sha: 4400951
+X-App-Sha: f680068
 X-List-Page: 1
 X-List-Size: 10
 X-List-Count: 1
 Content-Type: application/json; charset=utf-8
-Etag: W/"5f8-D12HycG11ZGBDmPKG2vBpg"
+Etag: W/"5fa-kFXiGSOvxYBuwWqzOOF+Og"
 Content-Encoding: gzip
 
 [
@@ -12,32 +12,32 @@ Content-Encoding: gzip
     "event": "create_release",
     "payload": {
       "release": {
-        "id": "ekdbwdsg1s",
-        "name": "Progressive Edition",
+        "id": "p2fztphk78",
+        "name": "Seamless Edition",
         "authors": [
           {
             "roles": [
               "Table Creator"
             ],
             "user": {
-              "id": "p2gqxd96o9",
-              "name": "Ardith.Hermiston88",
-              "username": "Ardith.Hermiston88",
-              "gravatar_id": "92982810b1a6dc96d26feb094fb25d78",
               "counter": {
-                "comments": 0,
-                "stars": 0
-              }
+                "stars": 0,
+                "comments": 0
+              },
+              "gravatar_id": "911a3554a40119564bdb76ec8cafa6cb",
+              "username": "Tristian58",
+              "name": "Tristian58",
+              "id": "pkqtfeb278"
             }
           }
         ],
         "versions": [
           {
             "version": "1.0.0",
-            "released_at": "2016-05-19T22:55:20.490Z",
+            "released_at": "2016-09-15T12:19:40.270Z",
             "files": [
               {
-                "released_at": "2016-05-19T22:55:20.490Z",
+                "released_at": "2016-09-15T12:19:40.270Z",
                 "flavor": {
                   "orientation": "fs",
                   "lighting": "night"
@@ -48,7 +48,7 @@ Content-Encoding: gzip
                   }
                 ],
                 "file": {
-                  "id": "p2gwds6os",
+                  "id": "p21vehkcm",
                   "name": "test-table-0.vpt",
                   "bytes": 135168,
                   "mime_type": "application/x-visual-pinball-table"
@@ -59,28 +59,28 @@ Content-Encoding: gzip
         ]
       },
       "game": {
-        "id": "roller-catch",
-        "title": "Roller Catch",
-        "manufacturer": "Unknown",
+        "id": "new-continental",
+        "title": "New Continental",
+        "manufacturer": "General Automatic Amusements, S.P.R.L.",
         "year": 1900,
         "ipdb": {
-          "number": 6035,
-          "mfg": 328
+          "number": 4044,
+          "mfg": 131
         },
-        "game_type": "em"
+        "game_type": "na"
       }
     },
-    "logged_at": "2016-05-19T22:55:20.530Z",
+    "logged_at": "2016-09-15T12:19:40.321Z",
     "is_public": true,
     "actor": {
       "counter": {
         "stars": 0,
         "comments": 0
       },
-      "gravatar_id": "92982810b1a6dc96d26feb094fb25d78",
-      "username": "Ardith.Hermiston88",
-      "name": "Ardith.Hermiston88",
-      "id": "p2gqxd96o9"
+      "gravatar_id": "911a3554a40119564bdb76ec8cafa6cb",
+      "username": "Tristian58",
+      "name": "Tristian58",
+      "id": "pkqtfeb278"
     }
   }
 ]

@@ -37,11 +37,14 @@ angular.module('vpdb.releases.add', []).controller('ReleaseFileAddCtrl', functio
 	$scope.setTitle('Upload Files');
 
 	$scope.submitting = false;
+	$scope.showHelp = $localStorage.show_instructions.version_add;
+	$scope.$watch('showHelp', function() {
+		$localStorage.show_instructions.version_add = $scope.showHelp;
+	});
 
 	// define flavors and builds
 	$scope.flavors = _.values(Flavors);
 	$scope.fetchBuilds();
-
 
 	// fetch game info
 	$scope.game = GameResource.get({ id: $stateParams.id }, function() {
@@ -134,7 +137,7 @@ angular.module('vpdb.releases.add', []).controller('ReleaseFileAddCtrl', functio
 				});
 
 				// go to game page
-				$state.go('gameDetails', { id: $stateParams.id });
+				$state.go('releaseDetails', { id: $stateParams.id, releaseId: $scope.release.id });
 
 			}, ApiHelper.handleErrors($scope, { fieldPrefix: 'versions.0.' }, function(scope) {
 				$scope.submitting = false;
@@ -169,7 +172,7 @@ angular.module('vpdb.releases.add', []).controller('ReleaseFileAddCtrl', functio
 				});
 
 				// go to game page
-				$state.go('gameDetails', { id: $stateParams.id });
+				$state.go('releaseDetails', { id: $stateParams.id, releaseId: $scope.release.id });
 
 			}, ApiHelper.handleErrors($scope, { fieldPrefix: 'versions.0.' }, function(scope) {
 				$scope.submitting = false;

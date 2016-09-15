@@ -5,7 +5,7 @@ include ../template/_mixins
 		h1.h--primary Upload new files
 		hr.hr--primary
 
-		.alert.alert--rounded.alert--aligned(ng-show="showHelp")
+		.alert.alert--rounded.alert--aligned.padder-bottom(ng-show="showHelp")
 			+icon('info')
 			p Here you can either upload additional flavors for an existing version or upload a new version of you release.
 
@@ -94,3 +94,9 @@ include ../template/_mixins
 		img.img--logo(ng-show="game.logo.url", ng-src="{{ game.logo.variations['medium' + pixelDensitySuffix].url }}")
 		h3.h--multiline.text-center {{ game.title }}
 		.text-center {{ release.name }}
+
+		hr
+		input#showHelp.checkbox--toggle(type='checkbox', ng-model="showHelp")
+		label(for="showHelp")
+		label.a.a--light.padder-bottom(for="showHelp") Show Instructions
+		.clearfix

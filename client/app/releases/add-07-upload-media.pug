@@ -104,4 +104,4 @@ span(ng-repeat="file in meta.files | fileext:['vpt','vpx']")
 
 .text-center(ng-show="(meta.files | fileext:['vpt','vpx']).length == 0")
 	+icon('warning').shift-up.space-right
-	i Upload <code>.vpt</code>/<code>.vpx</code> files under {{ step.flavors }}. in order to upload media.
+	i Define the flavor of your uploaded files under {{ step.flavors }}. in order to upload media.

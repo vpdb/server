@@ -504,6 +504,31 @@ describe('The VPDB `user` API', function() {
 					done();
 				});
 		});
+
+		it('should succeed when changing release moderation status notification', function (done) {
+			request
+				.patch('/api/v1/user')
+				.as('chprofile')
+				.send({ preferences: { notify_release_moderation_status: false } })
+				.end(function (err, res) {
+					hlp.expectStatus(err, res, 200);
+					expect(res.body.preferences.notify_release_moderation_status).to.be(false);
+					done();
+				});
+		});
+
+		it('should succeed when changing backglass moderation status notification', function (done) {
+			request
+				.patch('/api/v1/user')
+				.as('chprofile')
+				.send({ preferences: { notify_backglass_moderation_status: true } })
+				.end(function (err, res) {
+					hlp.expectStatus(err, res, 200);
+					expect(res.body.preferences.notify_backglass_moderation_status).to.be(true);
+					done();
+				});
+		});
+
 	});
 
 	describe('when a user updates the channel config', function() {

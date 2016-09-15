@@ -29,6 +29,7 @@ module.exports.up = function(grunt) {
 			if (user.preferences) {
 				user.preferences.notify_release_moderation_status = true;
 				user.preferences.notify_backglass_moderation_status = true;
+				return user.save();
 			}
 		});
 	});

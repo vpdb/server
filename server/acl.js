@@ -80,18 +80,19 @@ acl.init = function() {
 		}, {
 			roles: 'member',
 			allows: [
-				{ resources: 'backglasses', permissions: ['add', 'delete-own', 'star'] },
-				{ resources: 'builds',      permissions: ['add', 'delete-own'] },
-				{ resources: 'comments',    permissions: ['add'] },
-				{ resources: 'files',       permissions: ['download', 'upload', 'delete'] },            // delete: only own/inactive files
-				{ resources: 'games',       permissions: ['rate', 'star'] },
-				{ resources: 'media',       permissions: ['add', 'delete-own', 'star'] },
-				{ resources: 'messages',    permissions: ['receive'] },
-				{ resources: 'releases',    permissions: ['add', 'delete', 'update', 'rate', 'star'] }, // delete: only own releases and only for a given period
-				{ resources: 'tags',        permissions: ['add', 'delete-own'] },
-				{ resources: 'tokens',      permissions: ['add', 'delete', 'update', 'list'] },
-				{ resources: 'user',        permissions: ['view', 'update'] },                          // profile
-				{ resources: 'users',       permissions: ['view', 'search', 'star'] }                   // any other user
+				{ resources: 'backglasses',   permissions: ['add', 'delete-own', 'star'] },
+				{ resources: 'builds',        permissions: ['add', 'delete-own'] },
+				{ resources: 'comments',      permissions: ['add'] },
+				{ resources: 'files',         permissions: ['download', 'upload', 'delete'] },            // delete: only own/inactive files
+				{ resources: 'games',         permissions: ['rate', 'star'] },
+				{ resources: 'game_requests', permissions: ['add'] },
+				{ resources: 'media',         permissions: ['add', 'delete-own', 'star'] },
+				{ resources: 'messages',      permissions: ['receive'] },
+				{ resources: 'releases',      permissions: ['add', 'delete', 'update', 'rate', 'star'] }, // delete: only own releases and only for a given period
+				{ resources: 'tags',          permissions: ['add', 'delete-own'] },
+				{ resources: 'tokens',        permissions: ['add', 'delete', 'update', 'list'] },
+				{ resources: 'user',          permissions: ['view', 'update'] },                          // profile
+				{ resources: 'users',         permissions: ['view', 'search', 'star'] }                   // any other user
 			]
 		}, {
 			roles: 'mocha',

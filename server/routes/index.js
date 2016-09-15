@@ -50,6 +50,7 @@ module.exports = function(app) {
 	// api
 	require('./api/auth').register(app, api);
 	require('./api/games').register(app, api);
+	require('./api/game_requests').register(app, api);
 	require('./api/files').register(app, api);
 	require('./api/misc').register(app, api);
 	require('./api/releases').register(app, api);

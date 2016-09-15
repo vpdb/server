@@ -1,0 +1,12 @@
+POST /v1/game_requests HTTP/2.0
+Host: api.vpdb.io
+Accept-Encoding: gzip, deflate
+authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJlazRzZjdwYzgiLCJpYXQiOiIyMDE2LTA5LTE1VDE5OjU2OjM4LjQ0NloiLCJleHAiOiIyMDE2LTA5LTE1VDIwOjU2OjM4LjQ0NloiLCJpcnQiOmZhbHNlfQ.mEtilQ6AglTbKpU4WeO-OzuFWGxdwovxLpglR3A7wOk
+content-type: application/json
+Content-Length: 94
+
+{
+  "ipdb_number": 4441,
+  "title": "monster bash",
+  "notes": "no monster bash? are you guys kidding???"
+}

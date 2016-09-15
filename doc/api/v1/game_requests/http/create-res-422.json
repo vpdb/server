@@ -1,0 +1,15 @@
+422 Unprocessable Entity
+X-App-Sha: 0ba39fd
+Content-Type: application/json; charset=utf-8
+Content-Length: 142
+Etag: W/"8e-m5FyTvZJGg26kOhakKHbOg"
+
+{
+  "errors": [
+    {
+      "message": "Empty page. Looks like IPDB number does not exist.",
+      "field": "ipdb_number",
+      "value": 9981123
+    }
+  ]
+}

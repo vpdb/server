@@ -1,0 +1,25 @@
+displayName: Game Requests
+description: |
+  Since games are maintained by the VPDB staff, users can request games to be
+  added to the database.
+
+post:
+  is: [ validated ]
+  securedBy: [ jwt: { scopes: [ MEMBER ] } ]
+  description: |
+    Create a new game request
+
+    IPDB data is fetched in realtime and the game title is returned.
+
+  body:
+    role/member:
+      example: !include http/create-req.json
+  responses:
+    201:
+      body:
+        role/member:
+          example: !include http/create-res-201.json
+    422:
+      body:
+        role/member:
+          example: !include http/create-res-422.json

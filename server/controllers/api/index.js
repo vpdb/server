@@ -28,6 +28,7 @@ exports.ping = api.ping;
 exports.events = require('./events');
 exports.files = require('./files');
 exports.games = require('./games');
+exports.gameRequests = require('./game_requests');
 exports.ipdb = require('./ipdb');
 exports.media = require('./media');
 exports.messages = require('./messages');

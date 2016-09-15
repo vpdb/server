@@ -29,29 +29,40 @@ var error = require('./error')('ipdb');
 function Ipdb() {
 }
 
+/**
+ * Returns structured data from IPDB for a given IPDB number.
+ * @param {number} ipdbNo IPDB number
+ * @param {Function} [done] Callback
+ * @return Promise
+ */
 Ipdb.prototype.details = function(ipdbNo, done) {
-	var url = 'http://www.ipdb.org/machine.cgi?id=' + ipdbNo;
-	logger.info('[ipdb] Fetching %s', url);
-	request({ url: url, timeout: 30000 }, function(err, response, body) {
 
-		/* istanbul ignore if */
-		if (!response) {
-			return done(error('Timeout while trying to reach IPDB.org. Please try again later.').log());
-		}
+	return Promise.try(() => {
+		var url = 'http://www.ipdb.org/machine.cgi?id=' + ipdbNo;
+		logger.info('[ipdb] Fetching %s', url);
+		return new Promise((resolve, reject) => {
+			request({ url: url, timeout: 30000 }, function(err, response, body) {
+				/* istanbul ignore if */
+				if (!response) {
+					throw error('Timeout while trying to reach IPDB.org. Please try again later.').log();
+				}
+				/* istanbul ignore if */
+				if (err) {
+					return reject(err);
+				}
+				resolve([response, body]);
+			});
+		});
 
-		/* istanbul ignore if */
-		if (err) {
-			return done(error(err, 'Error fetching %s', url).log());
-		}
-
+	}).spread((response, body) => {
 		/* istanbul ignore if */
 		if (response.statusCode !== 200) {
 			logger.error('[ipdb] Wrong response code, got %s instead of 200. Body: %s', response.statusCode, body);
-			return done(error('Wrong response data from IPDB.'));
+			throw error('Wrong response data from IPDB.').log();
 		}
+		return parseDetails(body);
 
-		parseDetails(body, done);
-	});
+	}).nodeify(done);
 };
 
 /* istanbul ignore next */
@@ -67,66 +78,69 @@ Ipdb.prototype.findDead = function(data) {
 	return ids;
 };
 
-function parseDetails(body, done) {
+function parseDetails(body) {
 
 	var tidyText = function(m) {
 		m = striptags(m).replace(/<br>/gi, '\n\n');
 		return ent.decode(m.trim());
 	};
 
-	var m = body.match(/<a name="(\d+)">([^<]+)/i);
-	var game = { ipdb: {}};
+	return Promise.try(() => {
+		var m = body.match(/<a name="(\d+)">([^<]+)/i);
+		var game = { ipdb: {}};
 
-	/* istanbul ignore else */
-	if (m) {
-		game.title = trim(m[2]);
-		game.ipdb.number = number(m[1]);
-		game.ipdb.mfg = number(firstMatch(body, /Manufacturer:\s*<\/b>.*?mfgid=(\d+)/i));
-		if (game.ipdb.mfg && manufacturerNames[game.ipdb.mfg]) {
-			game.manufacturer = manufacturerNames[game.ipdb.mfg];
-		} else {
-			game.manufacturer = firstMatch(body, />Manufacturer:.*?<a href="search\.pl\?searchtype=advanced&amp;mfgid=\d+">([^<]+)/i, function(m) {
-				return m.replace(/[\s,]+$/, '');
+		/* istanbul ignore else */
+		if (m) {
+			game.title = trim(m[2]);
+			game.ipdb.number = number(m[1]);
+			game.ipdb.mfg = number(firstMatch(body, /Manufacturer:\s*<\/b>.*?mfgid=(\d+)/i));
+			if (game.ipdb.mfg && manufacturerNames[game.ipdb.mfg]) {
+				game.manufacturer = manufacturerNames[game.ipdb.mfg];
+			} else {
+				game.manufacturer = firstMatch(body, />Manufacturer:.*?<a href="search\.pl\?searchtype=advanced&amp;mfgid=\d+">([^<]+)/i, function(m) {
+					return m.replace(/[\s,]+$/, '');
+				});
+			}
+			game.model_number = firstMatch(body, /Model Number:\s*<\/b><\/td><td[^>]*>([\da-z]+)/i);
+			game.year = number(firstMatch(body, /href="machine\.cgi\?id=\d+">\d+<\/a>\s*<I>[^<]*?(\d{4})/i));
+
+			game.game_type = firstMatch(body, /Type:\s*<\/b><\/td><td[^>]*>([^<]+)/i, function(m) {
+				var mm = m.match(/\((..)\)/);
+				return mm ? mm[1].toLowerCase() : null;
 			});
-		}
-		game.model_number = firstMatch(body, /Model Number:\s*<\/b><\/td><td[^>]*>([\da-z]+)/i);
-		game.year = number(firstMatch(body, /href="machine\.cgi\?id=\d+">\d+<\/a>\s*<I>[^<]*?(\d{4})/i));
 
-		game.game_type = firstMatch(body, /Type:\s*<\/b><\/td><td[^>]*>([^<]+)/i, function(m) {
-			var mm = m.match(/\((..)\)/);
-			return mm ? mm[1].toLowerCase() : null;
-		});
+			game.ipdb.rating = firstMatch(body, /Average Fun Rating:.*?Click for comments[^\d]*([\d\.]+)/i);
+			game.short = firstMatch(body, /Common Abbreviations:\s*<\/b><\/td><td[^>]*>([^<]+)/i, function(m) {
+				return m.split(/,\s*/);
+			});
+			game.produced_units = firstMatch(body, /Production:\s*<\/b><\/td><td[^>]*>([\d,]+)\s*units/i, function(m) {
+				return number(m.replace(/,/g, ''));
+			});
+			game.themes = firstMatch(body, /Theme:\s*<\/b><\/td><td[^>]*>([^<]+)/i, function(m) {
+				return m.split(/\s+-\s+/gi);
+			});
+			game.designers = firstMatch(body, /Design by:\s*<\/b><\/td><td[^>]*><span[^>]*>(.*?)<\/tr>/i, function(m) {
+				return ent.decode(striptags(m)).split(/,\s*/);
+			});
+			game.artists = firstMatch(body, /Art by:\s*<\/b><\/td><td[^>]*><span[^>]*>(.*?)<\/tr>/i, function(m) {
+				return ent.decode(striptags(m)).split(/,\s*/);
+			});
 
-		game.ipdb.rating = firstMatch(body, /Average Fun Rating:.*?Click for comments[^\d]*([\d\.]+)/i);
-		game.short = firstMatch(body, /Common Abbreviations:\s*<\/b><\/td><td[^>]*>([^<]+)/i, function(m) {
-			return m.split(/,\s*/);
-		});
-		game.produced_units = firstMatch(body, /Production:\s*<\/b><\/td><td[^>]*>([\d,]+)\s*units/i, function(m) {
-			return number(m.replace(/,/g, ''));
-		});
-		game.themes = firstMatch(body, /Theme:\s*<\/b><\/td><td[^>]*>([^<]+)/i, function(m) {
-			return m.split(/\s+-\s+/gi);
-		});
-		game.designers = firstMatch(body, /Design by:\s*<\/b><\/td><td[^>]*><span[^>]*>(.*?)<\/tr>/i, function(m) {
-			return ent.decode(striptags(m)).split(/,\s*/);
-		});
-		game.artists = firstMatch(body, /Art by:\s*<\/b><\/td><td[^>]*><span[^>]*>(.*?)<\/tr>/i, function(m) {
-			return ent.decode(striptags(m)).split(/,\s*/);
-		});
+			game.features = firstMatch(body, /Notable Features:\s*<\/b><\/td><td[^>]*>(.*?)<\/td>/i, tidyText);
+			game.notes = firstMatch(body, /Notes:\s*<\/b><\/td><td[^>]*>(.*?)<\/td>/i, tidyText);
+			game.toys = firstMatch(body, /Toys:\s*<\/b><\/td><td[^>]*>(.*?)<\/td>/i, tidyText);
+			game.slogans = firstMatch(body, /Marketing Slogans:\s*<\/b><\/td><td[^>]*>([\s\S]*?)<\/td>/i, tidyText);
 
-		game.features = firstMatch(body, /Notable Features:\s*<\/b><\/td><td[^>]*>(.*?)<\/td>/i, tidyText);
-		game.notes = firstMatch(body, /Notes:\s*<\/b><\/td><td[^>]*>(.*?)<\/td>/i, tidyText);
-		game.toys = firstMatch(body, /Toys:\s*<\/b><\/td><td[^>]*>(.*?)<\/td>/i, tidyText);
-		game.slogans = firstMatch(body, /Marketing Slogans:\s*<\/b><\/td><td[^>]*>([\s\S]*?)<\/td>/i, tidyText);
-
-		done(null, game);
-	} else {
-		if (/<\/script>\s*<hr width="80%">/.test(body)) {
-			done(error('Empty page. Looks like IPDB number doens\'t exist.'));
+			return game;
 		} else {
-			done(error('Cannot parse game details from page body. Are you sure the provided IPDB No. exists?'));
+
+			if (/<\/script>\s*<hr width="80%">/.test(body)) {
+				throw error('Empty page. Looks like IPDB number does not exist.');
+			} else {
+				throw error('Cannot parse game details from page body. Are you sure the provided IPDB No. exists?');
+			}
 		}
-	}
+	});
 }
 
 function firstMatch(str, regex, postFn) {

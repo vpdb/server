@@ -295,16 +295,14 @@ exports.moderate = function(req, res) {
 		if (_.isArray(moderation.history)) {
 			moderation.history.sort((m1, m2) => m2.created_at.getTime() - m1.created_at.getTime());
 			const lastEvent = moderation.history[0];
-			switch (lastEvent.event) {
+			const errHandler = err => logger.error('[moderation|backglass] Error sending moderation mail: %s', err.message);
+				switch (lastEvent.event) {
 				case 'approved':
-					return mailer.backglassApproved(backglass._created_by, backglass, lastEvent.message);
+					return mailer.backglassApproved(backglass._created_by, backglass, lastEvent.message).catch(errHandler);
 				case 'refused':
-					return mailer.backglassRefused(backglass._created_by, backglass, lastEvent.message);
+					return mailer.backglassRefused(backglass._created_by, backglass, lastEvent.message).catch(errHandler);
 			}
 		}
-	}).catch(err => {
-		logger.error('[moderation|backglass] Error sending moderation mail: %s', err.message);
-
 	}).then(() => {
 		api.success(res, moderation, 200);
 

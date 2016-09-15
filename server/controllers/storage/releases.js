@@ -93,12 +93,12 @@ exports.download = function(req, res) {
 
 		return Release.findOne({ id: req.params.release_id })
 			.populate({ path: '_game' })
-			.populate({ path: '_game._media.backglass' })
-			.populate({ path: '_game._media.logo' })
+			.populate({ path: '_game._backglass' })
+			.populate({ path: '_game._logo' })
 			.populate({ path: 'authors._user' })
 			.populate({ path: 'versions.files._file' })
-			.populate({ path: 'versions.files._media.playfield_image' })
-			.populate({ path: 'versions.files._media.playfield_video' })
+			.populate({ path: 'versions.files._playfield_image' })
+			.populate({ path: 'versions.files._playfield_video' })
 			.populate({ path: 'versions.files._compatibility' })
 			.exec();
 
@@ -138,11 +138,12 @@ exports.download = function(req, res) {
 						numTables++;
 
 						// add media if checked
-						_.each(versionFile._media, (mediaFile, mediaName) => {
-							if (body.media[mediaName]) {
-								requestedFiles.push(mediaFile);
-							}
-						});
+						if (body._playfield_image) {
+							requestedFiles.push(versionFile._playfield_image);
+						}
+						if (body._playfield_video) {
+							requestedFiles.push(versionFile._playfield_video);
+						}
 					}
 
 					// always add any non-table files

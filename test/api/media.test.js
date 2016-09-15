@@ -440,7 +440,7 @@ describe('When dealing with pre-processing media', function() {
 							{
 								files: [ {
 									_file: vptfile.id,
-									_media: { playfield_image: playfield.id },
+									_playfield_image: playfield.id,
 									_compatibility: [ '9.9.0' ],
 									flavor: { orientation: 'fs', lighting: 'night' } }
 								],
@@ -450,7 +450,7 @@ describe('When dealing with pre-processing media', function() {
 						authors: [ { _user: hlp.getUser(user).id, roles: [ 'Table Creator' ] } ]
 
 					}).end(function (err, res) {
-						hlp.expectValidationError(err, res, 'versions.0.files.0._media.playfield_image', 'orientation is set to fs');
+						hlp.expectValidationError(err, res, 'versions.0.files.0._playfield_image', 'orientation is set to fs');
 						done();
 					});
 			});
@@ -469,7 +469,7 @@ describe('When dealing with pre-processing media', function() {
 							{
 								files: [ {
 									_file: vptfile.id,
-									_media: { playfield_image: playfield.id },
+									_playfield_image: playfield.id,
 									_compatibility: [ '9.9.0' ],
 									flavor: { orientation: 'ws', lighting: 'night' } }
 								],
@@ -479,7 +479,7 @@ describe('When dealing with pre-processing media', function() {
 						authors: [ { _user: hlp.getUser(user).id, roles: [ 'Table Creator' ] } ]
 					})
 					.end(function (err, res) {
-						hlp.expectValidationError(err, res, 'versions.0.files.0._media.playfield_image', 'orientation is set to ws');
+						hlp.expectValidationError(err, res, 'versions.0.files.0._playfield_image', 'orientation is set to ws');
 						done();
 					});
 			});
@@ -498,7 +498,7 @@ describe('When dealing with pre-processing media', function() {
 							{
 								files: [ {
 									_file: vptfile.id,
-									_media: { playfield_image: playfield.id },
+									_playfield_image: playfield.id,
 									_compatibility: [ '9.9.0' ],
 									flavor: { orientation: 'fs', lighting: 'night' } }
 								],
@@ -508,7 +508,7 @@ describe('When dealing with pre-processing media', function() {
 						authors: [ { _user: hlp.getUser(user).id, roles: [ 'Table Creator' ] } ]
 					})
 					.end(function (err, res) {
-						hlp.expectValidationError(err, res, 'versions.0.files.0._media.playfield_image', 'should be portrait');
+						hlp.expectValidationError(err, res, 'versions.0.files.0._playfield_image', 'should be portrait');
 						done();
 					});
 			});
@@ -527,7 +527,7 @@ describe('When dealing with pre-processing media', function() {
 							{
 								files: [ {
 									_file: vptfile.id,
-									_media: { playfield_image: playfield.id },
+									_playfield_image: playfield.id,
 									_compatibility: [ '9.9.0' ],
 									flavor: { orientation: 'ws', lighting: 'night' } }
 								],
@@ -537,7 +537,7 @@ describe('When dealing with pre-processing media', function() {
 						authors: [ { _user: hlp.getUser(user).id, roles: [ 'Table Creator' ] } ]
 					})
 					.end(function (err, res) {
-						hlp.expectValidationError(err, res, 'versions.0.files.0._media.playfield_image', 'should be landscape');
+						hlp.expectValidationError(err, res, 'versions.0.files.0._playfield_image', 'should be landscape');
 						done();
 					});
 			});

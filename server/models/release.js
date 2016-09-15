@@ -270,14 +270,14 @@ ReleaseSchema.methods.toReduced = function() {
 ReleaseSchema.methods.getFileIds = function() {
 	let files = _.flatten(_.map(this.versions, 'files'));
 	let tableFileIds = _.map(files, '_file').map(file => file ? (file._id ? file._id.toString() : file.toString()) : null);
-	let playfieldImageId = _.compact(_.map(_.map(files, '_media'), 'playfield_image')).map(file => file._id ? file._id.toString() : file.toString());
-	let playfieldVideoId = _.compact(_.map(_.map(files, '_media'), 'playfield_video')).map(file => file._id ? file._id.toString() : file.toString());
+	let playfieldImageId = _.compact(_.map(files, '_playfield_image')).map(file => file._id ? file._id.toString() : file.toString());
+	let playfieldVideoId = _.compact(_.map(files, '_playfield_video')).map(file => file._id ? file._id.toString() : file.toString());
 	return _.compact(_.flatten([...tableFileIds, playfieldImageId, playfieldVideoId]));
 };
 
 ReleaseSchema.methods.getPlayfieldImageIds = function() {
 	let files = _.flatten(_.map(this.versions, 'files'));
-	return _.compact(_.map(_.map(files, '_media'), 'playfield_image')).map(file => file._id ? file._id.toString() : file.toString());
+	return _.compact(_.map(files, '_playfield_image')).map(file => file._id ? file._id.toString() : file.toString());
 };
 
 //-----------------------------------------------------------------------------
@@ -462,11 +462,11 @@ function getDefaultThumb(file, opts) {
 }
 
 function getPlayfieldImage(file) {
-	var media = file.media || file._media;
-	if (!media || !media.playfield_image) {
+	var playfieldImage = file.playfield_image || file._playfield_image;
+	if (!playfieldImage) {
 		return null;
 	}
-	return media.playfield_image.toObj ? media.playfield_image.toObj() : media.playfield_image;
+	return playfieldImage.toObj ? playfieldImage.toObj() : playfieldImage;
 }
 
 function byWeight(a, b) {

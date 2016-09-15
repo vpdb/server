@@ -37,10 +37,8 @@ const fields = {
 		lighting:    { type: String, 'enum': { values: flavor.keys('lighting'), message: 'Invalid lighting. Valid options are: ["' + flavor.keys('lighting').join('", "') + '"].' }}
 	},
 	_compatibility: [ { type: Schema.ObjectId, ref: 'Build' } ],
-	_media: {
-		playfield_image: { type: Schema.ObjectId, ref: 'File' },
-		playfield_video: { type: Schema.ObjectId, ref: 'File' }
-	},
+	_playfield_image: { type: Schema.ObjectId, ref: 'File' },
+	_playfield_video: { type: Schema.ObjectId, ref: 'File' },
 	released_at: { type: Date, required: true },
 	counter: {
 		downloads: { type: Number, 'default': 0 }
@@ -57,7 +55,8 @@ schema.options.toObject = {
 	transform: function(doc, file) {
 		var Build = require('mongoose').model('Build');
 		var File = require('mongoose').model('File');
-		file.media = file._media;
+		file.playfield_image = file._playfield_image;
+		file.playfield_video = file._playfield_video;
 		file.compatibility = _.map(file._compatibility, compat =>
 			compat.label ? Build.toSimple(compat) : { _id: compat._id }
 		);
@@ -65,7 +64,8 @@ schema.options.toObject = {
 		delete file.id;
 		delete file._id;
 		delete file._file;
-		delete file._media;
+		delete file._playfield_image;
+		delete file._playfield_video;
 		delete file._compatibility;
 	}
 };

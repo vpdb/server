@@ -36,7 +36,7 @@ exports.createGame = function(user, request, done) {
 		request
 			.post('/api/v1/games')
 			.as(user)
-			.send(exports.getGame({ _media: { backglass: backglass.id }}))
+			.send(exports.getGame({ _backglass: backglass.id }))
 			.end(function(err, res) {
 				hlp.expectStatus(err, res, 201);
 				hlp.doomGame(user, res.body.id);

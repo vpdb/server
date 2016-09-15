@@ -107,9 +107,7 @@ describe('The VPDB `blockmatch` API', function() {
 									version: version,
 									files: [ {
 										_file: vpt.id,
-										_media: {
-											playfield_image: pf.id
-										},
+										_playfield_image: pf.id,
 										_compatibility: [ "9.9.0" ],
 										flavor: { "orientation": "ws", "lighting": "night" }
 									} ]

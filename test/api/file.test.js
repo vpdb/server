@@ -457,7 +457,7 @@ describe('The VPDB `file` API', function() {
 		it('should fail if the file is active', function(done) {
 			var user = 'moderator';
 			hlp.game.createGame(user, request, function(game) {
-				request.del('/api/v1/files/' + game.media.backglass.id).as(user).end(hlp.status(400, 'Cannot remove active file', done));
+				request.del('/api/v1/files/' + game.backglass.id).as(user).end(hlp.status(400, 'Cannot remove active file', done));
 			});
 		});
 

@@ -35,7 +35,7 @@ describe('The VPDB `game` API', function() {
 					.post('/api/v1/games')
 					.save({ path: 'games/create'})
 					.as(user)
-					.send(hlp.game.getGame({ _media: { backglass: backglass.id }}))
+					.send(hlp.game.getGame({ _backglass: backglass.id }))
 					.end(function(err, res) {
 						hlp.expectStatus(err, res, 201);
 						hlp.doomGame(user, res.body.id);
@@ -62,8 +62,7 @@ describe('The VPDB `game` API', function() {
 				function(next) {
 					hlp.file.createBackglass(user, request, function(backglass) {
 						hlp.doomFile(user, backglass.id);
-						delete game.media;
-						game._media = { backglass: backglass.id };
+						game._backglass = backglass.id;
 						game.id = game.id + '-2';
 						next();
 					});
@@ -104,7 +103,7 @@ describe('The VPDB `game` API', function() {
 					hlp.file.createBackglass(user, request, function(backglass) {
 						hlp.doomFile(user, backglass.id);
 						var dupeId = game.id;
-						game = hlp.game.getGame({ _media: { backglass: backglass.id }});
+						game = hlp.game.getGame({ _backglass: backglass.id });
 						game.id = dupeId;
 						next();
 					});
@@ -135,7 +134,7 @@ describe('The VPDB `game` API', function() {
 				// 1. upload game
 				function(next) {
 					hlp.game.createGame('moderator', request, function(game) {
-						backglassId = game.media.backglass.id;
+						backglassId = game.backglass.id;
 						next();
 					});
 				},
@@ -145,11 +144,11 @@ describe('The VPDB `game` API', function() {
 					request
 						.post('/api/v1/games')
 						.as('moderator')
-						.send(hlp.game.getGame({ _media: { backglass: backglassId }}))
+						.send(hlp.game.getGame({ _backglass: backglassId }))
 						.end(function(err, res) {
 							hlp.expectStatus(err, res, 422);
 							expect(res.body.errors).to.have.length(1);
-							expect(res.body.errors[0].field).to.be('_media.backglass');
+							expect(res.body.errors[0].field).to.be('_backglass');
 							expect(res.body.errors[0].message).to.contain('Cannot reference active files');
 							next();
 						});
@@ -370,9 +369,8 @@ describe('The VPDB `game` API', function() {
 					expect(res.body.manufacturer).to.be(game.manufacturer);
 					expect(res.body.year).to.be(game.year);
 					expect(res.body.game_type).to.be(game.game_type);
-					expect(res.body.media).to.be.an('object');
-					expect(res.body.media.backglass).to.be.an('object');
-					expect(res.body.media.backglass.variations).to.be.an('object');
+					expect(res.body.backglass).to.be.an('object');
+					expect(res.body.backglass.variations).to.be.an('object');
 					done();
 				});
 		});
@@ -400,7 +398,7 @@ describe('The VPDB `game` API', function() {
 				request
 					.post('/api/v1/games')
 					.as(user)
-					.send(hlp.game.getGame({ _media: { backglass: backglass.id }}))
+					.send(hlp.game.getGame({ _backglass: backglass.id }))
 					.end(function(err, res) {
 						hlp.expectStatus(err, res, 201);
 						request

@@ -174,52 +174,52 @@ function validateFile(release, tableFile, index) {
 		}
 
 		// check if playfield image exists
-		if (!tableFile._media || !tableFile._media.playfield_image) {
-			release.invalidate('files.' + index + '._media.playfield_image', 'Playfield image must be provided.');
+		if (!tableFile._playfield_image) {
+			release.invalidate('files.' + index + '._playfield_image', 'Playfield image must be provided.');
 		}
 
 		var mediaValidations = [];
 
 		// validate playfield image
-		if (tableFile._media && tableFile._media.playfield_image) {
-			mediaValidations.push(mongoose.model('File').findById(tableFile._media.playfield_image).then(playfieldImage => {
+		if (tableFile._playfield_image) {
+			mediaValidations.push(mongoose.model('File').findById(tableFile._playfield_image).then(playfieldImage => {
 				if (!playfieldImage) {
-					release.invalidate('files.' + index + '._media.playfield_image',
-						'Playfield "' + tableFile._media.playfield_image + '" does not exist.');
+					release.invalidate('files.' + index + '._playfield_image',
+						'Playfield "' + tableFile._playfield_image + '" does not exist.');
 					return;
 				}
 				if (playfieldImage.file_type === 'playfield') {
-					release.invalidate('files.' + index + '._media.playfield_image',
+					release.invalidate('files.' + index + '._playfield_image',
 						'Either provide rotation parameters in query or use "playfield-fs" or "playfield-ws" in file_type.');
 
 				} else if (!_.includes(['playfield-fs', 'playfield-ws'], playfieldImage.file_type)) {
-					release.invalidate('files.' + index + '._media.playfield_image',
+					release.invalidate('files.' + index + '._playfield_image',
 						'Must reference a file with file_type "playfield-fs" or "playfield-ws".');
 
 				} else {
 
 					// fail if table file is set to FS but provided playfield is not
 					if (fileFlavor.orientation && fileFlavor.orientation === 'fs' && playfieldImage.file_type !== 'playfield-fs') {
-						release.invalidate('files.' + index + '._media.playfield_image', 'Table file orientation is set ' +
+						release.invalidate('files.' + index + '._playfield_image', 'Table file orientation is set ' +
 							'to FS but playfield image is "' + playfieldImage.file_type + '".');
 					}
 
 					// fail if table file is set to WS but provided playfield is not
 					if (fileFlavor.orientation && fileFlavor.orientation === 'ws' && playfieldImage.file_type !== 'playfield-ws') {
-						release.invalidate('files.' + index + '._media.playfield_image', 'Table file orientation is set ' +
+						release.invalidate('files.' + index + '._playfield_image', 'Table file orientation is set ' +
 							'to WS but playfield image is "' + playfieldImage.file_type + '".');
 					}
 
 					// fail if playfield is set to FS but file's metadata say otherwise
 					if (playfieldImage.file_type === 'playfield-fs' && playfieldImage.metadata.size.width > playfieldImage.metadata.size.height) {
-						release.invalidate('files.' + index + '._media.playfield_image', 'Provided playfield "' + playfieldImage.id + '" is ' +
+						release.invalidate('files.' + index + '._playfield_image', 'Provided playfield "' + playfieldImage.id + '" is ' +
 							playfieldImage.metadata.size.width + 'x' + playfieldImage.metadata.size.height +
 							' (landscape) when it really should be portrait.');
 					}
 
 					// fail if playfield is set to WS but file's metadata say otherwise
 					if (playfieldImage.file_type === 'playfield-ws' && playfieldImage.metadata.size.width < playfieldImage.metadata.size.height) {
-						release.invalidate('files.' + index + '._media.playfield_image', 'Provided playfield "' + playfieldImage.id + '" is ' +
+						release.invalidate('files.' + index + '._playfield_image', 'Provided playfield "' + playfieldImage.id + '" is ' +
 							playfieldImage.metadata.size.width + 'x' + playfieldImage.metadata.size.height +
 							' (portrait) when it really should be landscape.');
 					}
@@ -228,8 +228,7 @@ function validateFile(release, tableFile, index) {
 		}
 
 		// TODO validate playfield video
-		if (tableFile._media && tableFile._media.playfield_video) {
-
+		if (tableFile._playfield_video) {
 			mediaValidations.push(Promise.resolve(() => console.log("TODO: Validate playfield video")));
 		}
 
@@ -244,13 +243,13 @@ function nonEmptyArray(value) {
 schema.methods.getFileIds = function(files) {
 	files = files || this.files;
 	let tableFileIds = _.map(files, '_file').map(file => file ? (file._id ? file._id.toString() : file.toString()) : null);
-	let playfieldImageId = _.compact(_.map(_.map(files, '_media'), 'playfield_image')).map(file => file._id ? file._id.toString() : file.toString());
-	let playfieldVideoId = _.compact(_.map(_.map(files, '_media'), 'playfield_video')).map(file => file._id ? file._id.toString() : file.toString());
+	let playfieldImageId = _.compact(_.map(files, '_playfield_image')).map(file => file._id ? file._id.toString() : file.toString());
+	let playfieldVideoId = _.compact(_.map(files, '_playfield_video')).map(file => file._id ? file._id.toString() : file.toString());
 	return _.compact(_.flatten([...tableFileIds, playfieldImageId, playfieldVideoId]));
 };
 
 schema.methods.getPlayfieldImageIds = function() {
-	return _.compact(_.map(_.map(this.files, '_media'), 'playfield_image')).map(file => file._id ? file._id.toString() : file.toString());
+	return _.compact(_.map(this.files, '_playfield_image')).map(file => file._id ? file._id.toString() : file.toString());
 };
 
 schema.options.toObject = {

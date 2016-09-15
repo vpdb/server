@@ -51,6 +51,8 @@ var fields = {
 	year:           { type: Number, required: 'Year must be provided.', index: true },
 	manufacturer:   { type: String, required: 'Manufacturer must be provided.', index: true },
 	game_type:      { type: String, required: true, enum: { values: gameTypes, message: 'Invalid game type. Valid game types are: ["' +  gameTypes.join('", "') + '"].' }},
+	_backglass:     { type: Schema.ObjectId, ref: 'File', required: 'Backglass image must be provided.' },
+	_logo:          { type: Schema.ObjectId, ref: 'File' },
 	short:          Array,
 	description:    String,
 	instructions:   String,
@@ -86,11 +88,7 @@ var fields = {
 	},
 	modified_at:   { type: Date }, // only release add/update modifies this
 	created_at:    { type: Date, required: true },
-	_created_by:   { type: Schema.ObjectId, required: true, ref: 'User' },
-	_media: {
-		backglass: { type: Schema.ObjectId, ref: 'File', required: 'Backglass image must be provided.' },
-		logo:      { type: Schema.ObjectId, ref: 'File' }
-	}
+	_created_by:   { type: Schema.ObjectId, required: true, ref: 'User' }
 };
 var GameSchema = new Schema(fields);
 
@@ -119,16 +117,17 @@ var apiFields = {
 //-----------------------------------------------------------------------------
 // VIRTUALS
 //-----------------------------------------------------------------------------
-GameSchema.virtual('media')
+GameSchema.virtual('backglass')
 	.get(function() {
-		var media = {};
-		if (this.populated('_media.backglass') && this._media.backglass) {
-			media.backglass = this._media.backglass.toSimple();
+		if (this.populated('_backglass') && this._backglass) {
+			return this._backglass.toSimple();
 		}
-		if (this.populated('_media.logo') && this._media.logo) {
-			media.logo = this._media.logo.toSimple();
+	});
+GameSchema.virtual('logo')
+	.get(function() {
+		if (this.populated('_logo') && this._logo) {
+			return this._logo.toSimple();
 		}
-		return media;
 	});
 
 GameSchema.virtual('full_title')
@@ -176,7 +175,7 @@ GameSchema.path('game_type').validate(function(gameType, callback) {
 	});
 });
 
-GameSchema.path('_media.backglass').validate(function(backglass, callback) {
+GameSchema.path('_backglass').validate(function(backglass, callback) {
 	if (!backglass) {
 		return callback(true);
 	}
@@ -242,7 +241,8 @@ GameSchema.options.toObject = {
 	transform: function(doc, game) {
 		delete game.__v;
 		delete game._id;
-		delete game._media;
+		delete game._backglass;
+		delete game._logo;
 		delete game._created_by;
 		delete game.full_title;
 	}

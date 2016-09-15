@@ -379,7 +379,7 @@ describe('The VPDB `ROM` API', function() {
 							request
 								.post('/api/v1/games')
 								.as(user)
-								.send(hlp.game.getGame({ _media: { backglass: backglass.id }, ipdb: { number: ipdbNumber }}))
+								.send(hlp.game.getGame({ _backglass: backglass.id, ipdb: { number: ipdbNumber }}))
 								.end(function(err, res) {
 									hlp.expectStatus(err, res, 201);
 									hlp.doomGame('moderator', res.body.id);

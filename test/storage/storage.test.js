@@ -176,7 +176,7 @@ describe('The storage engine of VPDB', function() {
 			it('should block until the file is finished processing when requesting the variation', function(done) {
 
 				hlp.game.createGame('moderator', request, function(game) {
-					request.get(hlp.urlPath(game.media.backglass.variations['small-2x'].url)).end(function(err, res) {
+					request.get(hlp.urlPath(game.backglass.variations['small-2x'].url)).end(function(err, res) {
 						hlp.expectStatus(err, res, 200);
 						expect(res.headers['content-length']).to.be.greaterThan(0);
 						done();
@@ -187,7 +187,7 @@ describe('The storage engine of VPDB', function() {
 			it('should grant access to anonymous users', function(done) {
 
 				hlp.game.createGame('moderator', request, function(game) {
-					request.get(hlp.urlPath(game.media.backglass.variations.small.url)).end(function(err, res) {
+					request.get(hlp.urlPath(game.backglass.variations.small.url)).end(function(err, res) {
 						hlp.expectStatus(err, res, 200);
 						expect(res.headers['content-length']).to.be.greaterThan(0);
 						done();
@@ -198,7 +198,7 @@ describe('The storage engine of VPDB', function() {
 			it('should grant access to logged users', function(done) {
 
 				hlp.game.createGame('moderator', request, function(game) {
-					request.get(hlp.urlPath(game.media.backglass.url)).as('member').end(function(err, res) {
+					request.get(hlp.urlPath(game.backglass.url)).as('member').end(function(err, res) {
 						hlp.expectStatus(err, res, 200);
 						expect(res.headers['content-length']).to.be.greaterThan(0);
 						done();

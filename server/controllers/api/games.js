@@ -101,8 +101,8 @@ exports.create = function(req, res) {
 	}).then(() => {
 		// copy backglass and logo to media
 		return Promise.all([
-			exports._copyMedia(req.user, game, game._media.backglass, 'backglass_image', bg => bg.metadata.size.width * bg.metadata.size.height > 647000),  // > 900x720
-			exports._copyMedia(req.user, game, game._media.logo, 'wheel_image')
+			exports._copyMedia(req.user, game, game._backglass, 'backglass_image', bg => bg.metadata.size.width * bg.metadata.size.height > 647000),  // > 900x720
+			exports._copyMedia(req.user, game, game._logo, 'wheel_image')
 
 		]).catch(err => {
 			logger.error('[api|game:create] Error while copying media: %s', err.message);
@@ -127,13 +127,13 @@ exports.update = function(req, res) {
 
 	const updateableFields = [ 'title', 'year', 'manufacturer', 'game_type', 'short', 'description', 'instructions',
 		'produced_units', 'model_number', 'themes', 'designers', 'artists', 'features', 'notes', 'toys', 'slogans',
-		'ipdb', 'number', '_media', 'keywords' ];
+		'ipdb', 'number', '_backglass', '_logo', 'keywords' ];
 
 	let game, oldMediaObj, oldMedia, newMedia;
 	Promise.try(() => {
 		return Game.findOne({ id: req.params.id })
-			.populate({ path: '_media.backglass' })
-			.populate({ path: '_media.logo' })
+			.populate({ path: '_backglass' })
+			.populate({ path: '_logo' })
 			.exec();
 
 	}).then(game => {
@@ -149,17 +149,18 @@ exports.update = function(req, res) {
 		}
 
 		oldMediaObj = {
-			backglass: game._media.backglass,
-			logo: game._media.logo
+			backglass: game._backglass,
+			logo: game._logo
 		};
 		oldMedia = {
-			backglass: game._media.backglass.id,
-			logo: game._media.logo ? game._media.logo.id : null
+			_backglass: game._backglass.id,
+			_logo: game._logo ? game._logo.id : null
 		};
-		newMedia = _.defaults(req.body._media, oldMedia);
+		newMedia = _.defaults({ _backglass: req.body._backglass, _logo: req.body._logo }, oldMedia);
 
 		// copy media if not submitted so it doesn't get erased
-		req.body._media = _.cloneDeep(newMedia);
+		req.body._backglass = newMedia._backglass;
+		req.body._logo = newMedia._logo;
 
 		// apply changes
 		return game.updateInstance(req.body);
@@ -182,12 +183,12 @@ exports.update = function(req, res) {
 
 		// copy to media and delete old media if changed
 		let mediaCopies = [];
-		if (oldMedia.backglass !== newMedia.backglass) {
-			mediaCopies.push(exports._copyMedia(req.user, game, game._media.backglass, 'backglass_image', bg => bg.metadata.size.width * bg.metadata.size.height > 647000));  // > 900x720
+		if (oldMedia.backglass !== newMedia._backglass) {
+			mediaCopies.push(exports._copyMedia(req.user, game, game._backglass, 'backglass_image', bg => bg.metadata.size.width * bg.metadata.size.height > 647000));  // > 900x720
 			mediaCopies.push(oldMediaObj.backglass.remove());
 		}
-		if (oldMedia.logo !== newMedia.logo) {
-			mediaCopies.push(exports._copyMedia(req.user, game, game._media.logo, 'wheel_image'));
+		if (oldMedia.logo !== newMedia._logo) {
+			mediaCopies.push(exports._copyMedia(req.user, game, game._logo, 'wheel_image'));
 			if (oldMediaObj.logo) {
 				mediaCopies.push(oldMediaObj.logo.remove());
 			}
@@ -215,8 +216,8 @@ exports.del = function(req, res) {
 	let game;
 	Promise.try(() => {
 		return Game.findOne({ id: req.params.id })
-			.populate({ path: '_media.backglass' })
-			.populate({ path: '_media.logo' })
+			.populate({ path: '_backglass' })
+			.populate({ path: '_logo' })
 			.exec();
 
 	}).then(g => {
@@ -314,7 +315,7 @@ exports.list = function(req, res) {
 		return Game.paginate(q, {
 			page: pagination.page,
 			limit: pagination.perPage,
-			populate: ['_media.backglass', '_media.logo'],
+			populate: ['_backglass', '_logo'],
 			sort: sort
 		}).then(result => [result.docs, result.total]);
 
@@ -338,8 +339,8 @@ exports.view = function(req, res) {
 	Promise.try(() => {
 		// retrieve game
 		return Game.findOne({ id: req.params.id })
-			.populate({ path: '_media.backglass' })
-			.populate({ path: '_media.logo' })
+			.populate({ path: '_backglass' })
+			.populate({ path: '_logo' })
 			.exec();
 
 	}).then(g => {
@@ -368,8 +369,8 @@ exports.view = function(req, res) {
 			.populate({ path: '_created_by' })
 			.populate({ path: 'authors._user' })
 			.populate({ path: 'versions.files._file' })
-			.populate({ path: 'versions.files._media.playfield_image' })
-			.populate({ path: 'versions.files._media.playfield_video' })
+			.populate({ path: 'versions.files._playfield_image' })
+			.populate({ path: 'versions.files._playfield_video' })
 			.populate({ path: 'versions.files._compatibility' })
 			.exec();
 

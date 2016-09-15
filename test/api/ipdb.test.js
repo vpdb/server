@@ -31,7 +31,7 @@ describe('The VPDB `IPDB` API', function() {
 				request
 					.get('/api/v1/ipdb/4032')
 					.as(user)
-					.send(hlp.game.getGame({ _media: { backglass: backglass.id }}))
+					.send(hlp.game.getGame({ _backglass: backglass.id }))
 					.end(function (err, res) {
 						hlp.expectStatus(err, res, 200);
 						expect(res.body.ipdb.number).to.be(4032);

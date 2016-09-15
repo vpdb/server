@@ -62,7 +62,7 @@ describe('The VPDB `release` API', function() {
 					hlp.expectValidationError(err, res, 'versions.0.files.0._file', 'must provide a file reference');
 					hlp.expectNoValidationError(err, res, 'versions.0.files.0.flavor.orientation');
 					hlp.expectNoValidationError(err, res, 'versions.0.files.0.flavor.lighting');
-					hlp.expectNoValidationError(err, res, 'versions.0.files.0._media.playfield_image');
+					hlp.expectNoValidationError(err, res, 'versions.0.files.0._playfield_image');
 					done();
 				});
 		});
@@ -92,7 +92,7 @@ describe('The VPDB `release` API', function() {
 						hlp.expectValidationError(err, res, 'versions.0.files.2.flavor.orientation', 'invalid orientation');
 						hlp.expectValidationError(err, res, 'versions.0.files.3._compatibility', 'must be provided');
 						hlp.expectValidationError(err, res, 'versions.0.files.4._compatibility.0', 'no such build');
-						hlp.expectValidationError(err, res, 'versions.0.files.0._media.playfield_image', 'must be provided');
+						hlp.expectValidationError(err, res, 'versions.0.files.0._playfield_image', 'must be provided');
 						done();
 					});
 			});
@@ -145,7 +145,7 @@ describe('The VPDB `release` API', function() {
 								hlp.expectValidationError(err, res, 'versions.1.files', 'at least one table file');
 								hlp.expectNoValidationError(err, res, 'versions.1.files.0.flavor.orientation', 'must be provided');
 								hlp.expectNoValidationError(err, res, 'versions.1.files.0.flavor.lighting', 'must be provided');
-								hlp.expectNoValidationError(err, res, 'versions.1.files.0._media.playfield_image', 'must be provided');
+								hlp.expectNoValidationError(err, res, 'versions.1.files.0._playfield_image', 'must be provided');
 								done();
 							});
 					});
@@ -165,12 +165,12 @@ describe('The VPDB `release` API', function() {
 							versions: [ {
 								files: [ {
 									_file: vptfile.id,
-									_media: { playfield_image: backglass.id }
+									_playfield_image: backglass.id
 								} ]
 							} ]
 						})
 						.end(function(err, res) {
-							hlp.expectValidationError(err, res, 'versions.0.files.0._media.playfield_image', 'file_type "playfield-fs" or "playfield-ws"');
+							hlp.expectValidationError(err, res, 'versions.0.files.0._playfield_image', 'file_type "playfield-fs" or "playfield-ws"');
 							done();
 						});
 				});
@@ -192,7 +192,7 @@ describe('The VPDB `release` API', function() {
 									{
 										files: [ {
 											_file: vptfile.id,
-											_media: { playfield_image: playfield.id },
+											_playfield_image: playfield.id,
 											_compatibility: [ '9.9.0', '9.9.0' ],
 											flavor: { orientation: 'fs', lighting: 'night' } }
 										],
@@ -229,7 +229,7 @@ describe('The VPDB `release` API', function() {
 									{
 										files: [ {
 											_file: vptfile.id,
-											_media: { playfield_image: playfield.id },
+											_playfield_image: playfield.id,
 											_compatibility: [ '9.9.0' ],
 											flavor: { orientation: 'fs', lighting: 'night' } }
 										],
@@ -266,18 +266,14 @@ describe('The VPDB `release` API', function() {
 											{
 												files: [ {
 													_file: vptfiles[0].id,
-													_media: {
-														playfield_image: playfieldImages[0].id,
-														playfield_video: playfieldVideo.id
-													},
+													_playfield_image: playfieldImages[0].id,
+													_playfield_video: playfieldVideo.id,
 													_compatibility: [ '9.9.0' ],
 													flavor: { orientation: 'fs', lighting: 'night' }
 
 												}, {
 													_file: vptfiles[1].id,
-													_media: {
-														playfield_image: playfieldImages[1].id
-													},
+													_playfield_image: playfieldImages[1].id,
 													_compatibility: [ '9.9.0' ],
 													flavor: { orientation: 'fs', lighting: 'day' }
 												}, {
@@ -294,9 +290,9 @@ describe('The VPDB `release` API', function() {
 										hlp.expectStatus(err, res, 201);
 										hlp.doomRelease(user, res.body.id);
 
-										expect(res.body.versions[ 0 ].files[ 0 ].media.playfield_image.is_active).to.be(true);
-										expect(res.body.versions[ 0 ].files[ 0 ].media.playfield_video.is_active).to.be(true);
-										expect(res.body.versions[ 0 ].files[ 1 ].media.playfield_image.is_active).to.be(true);
+										expect(res.body.versions[0].files[0].playfield_image.is_active).to.be(true);
+										expect(res.body.versions[0].files[0].playfield_video.is_active).to.be(true);
+										expect(res.body.versions[0].files[1].playfield_image.is_active).to.be(true);
 										done();
 									});
 							});
@@ -326,17 +322,13 @@ describe('The VPDB `release` API', function() {
 										files: [ {
 											released_at: date1,
 											_file: vptfiles[0].id,
-											_media: {
-												playfield_image: playfieldImages[0].id,
-											},
+											_playfield_image: playfieldImages[0].id,
 											_compatibility: [ '9.9.0' ],
 											flavor: { orientation: 'fs', lighting: 'night' }
 
 										}, {
 											_file: vptfiles[1].id,
-											_media: {
-												playfield_image: playfieldImages[1].id
-											},
+											_playfield_image: playfieldImages[1].id,
 											_compatibility: [ '9.9.0' ],
 											flavor: { orientation: 'fs', lighting: 'day' }
 										} ],
@@ -377,7 +369,7 @@ describe('The VPDB `release` API', function() {
 									{
 										files: [ {
 											_file: vptfile.id,
-											_media: { playfield_image: playfield.id },
+											_playfield_image: playfield.id,
 											_compatibility: [ '9.9.0' ],
 											flavor: { orientation: 'ws', lighting: 'night' } }
 										],
@@ -389,7 +381,7 @@ describe('The VPDB `release` API', function() {
 							.end(function (err, res) {
 								hlp.expectStatus(err, res, 201);
 								hlp.doomRelease(user, res.body.id);
-								let playfieldRotated = res.body.versions[0].files[0].media.playfield_image;
+								let playfieldRotated = res.body.versions[0].files[0].playfield_image;
 								expect(playfield.metadata.size.width).to.be(playfieldRotated.metadata.size.height);
 								expect(playfield.metadata.size.height).to.be(playfieldRotated.metadata.size.width);
 								done();
@@ -416,7 +408,7 @@ describe('The VPDB `release` API', function() {
 										{
 											files: [ {
 												_file: vptfile.id,
-												_media: { playfield_image: playfield.id },
+												_playfield_image: playfield.id,
 												_compatibility: [ '9.9.0' ],
 												flavor: { orientation: 'ws', lighting: 'night' } }
 											],
@@ -712,7 +704,7 @@ describe('The VPDB `release` API', function() {
 							hlp.expectValidationError(err, res, 'files.2.flavor.orientation', 'invalid orientation');
 							hlp.expectValidationError(err, res, 'files.3._compatibility', 'must be provided');
 							hlp.expectValidationError(err, res, 'files.4._compatibility.0', 'no such build');
-							hlp.expectValidationError(err, res, 'files.0._media.playfield_image', 'must be provided');
+							hlp.expectValidationError(err, res, 'files.0._playfield_image', 'must be provided');
 							done();
 						});
 				});
@@ -731,7 +723,7 @@ describe('The VPDB `release` API', function() {
 						changes: '*Second release.*',
 						files: [ {
 							_file: '12345',
-							_media: { playfield_image: '67890' },
+							_playfield_image: '67890',
 							_compatibility: [ '9.9.0' ],
 							flavor: { orientation: 'fs', lighting: 'night' }
 						} ]
@@ -756,7 +748,7 @@ describe('The VPDB `release` API', function() {
 								changes: '*Second release.*',
 								files: [ {
 									_file: vptfile.id,
-									_media: { playfield_image: playfield.id },
+									_playfield_image: playfield.id,
 									_compatibility: [ '9.9.0' ],
 									flavor: { orientation: 'fs', lighting: 'night' }
 								} ]
@@ -806,7 +798,7 @@ describe('The VPDB `release` API', function() {
 						var data = {
 							files: [{
 								_file: vptfile.id,
-								_media: { playfield_image: playfield.id },
+								_playfield_image: playfield.id,
 								_compatibility: _.map(versionFile.compatibility, 'id'),
 								flavor: versionFile.flavor
 							}]
@@ -839,7 +831,7 @@ describe('The VPDB `release` API', function() {
 								changes: newChanges,
 								files: [{
 									_file: vptfile.id,
-									_media: { playfield_image: playfield.id },
+									_playfield_image: playfield.id,
 									_compatibility: ['9.9.0'],
 									flavor: { orientation: 'fs', lighting: 'day' }
 								}]
@@ -865,11 +857,12 @@ describe('The VPDB `release` API', function() {
 								_file: vptfile.id,
 								flavor: {},
 								_compatibility: [],
-								_media: { playfield_image: null, playfield_video: null }
+								_playfield_image: null,
+								_playfield_video: null
 							}]
 						}).end(function(err, res) {
 							hlp.expectValidationError(err, res, 'files.0._compatibility', 'must be provided');
-							hlp.expectValidationError(err, res, 'files.0._media.playfield_image', 'must be provided');
+							hlp.expectValidationError(err, res, 'files.0._playfield_image', 'must be provided');
 							hlp.expectValidationError(err, res, 'files.0.flavor.lighting', 'must be provided');
 							hlp.expectValidationError(err, res, 'files.0.flavor.orientation', 'must be provided');
 							done();
@@ -881,10 +874,10 @@ describe('The VPDB `release` API', function() {
 		it('should succeed when rotating an existing playfield image', function(done) {
 			var user = 'member';
 			hlp.release.createRelease(user, request, function(release) {
-				let playfieldImage = release.versions[0].files[0].media.playfield_image;
+				let playfieldImage = release.versions[0].files[0].playfield_image;
 				request
 					.put('/api/v1/releases/' + release.id + '/versions/' + release.versions[0].version)
-					.query({ rotate: release.versions[0].files[0].media.playfield_image.id + ':90' })
+					.query({ rotate: release.versions[0].files[0].playfield_image.id + ':90' })
 					.as(user)
 					.send({
 						files: [{
@@ -893,7 +886,7 @@ describe('The VPDB `release` API', function() {
 						}]
 					}).end(function(err, res) {
 						hlp.expectStatus(err, res, 200);
-						let rotatedPlayfieldImage = res.body.files[0].media.playfield_image;
+						let rotatedPlayfieldImage = res.body.files[0].playfield_image;
 						expect(playfieldImage.metadata.size.height).to.be(rotatedPlayfieldImage.metadata.size.width);
 						expect(playfieldImage.metadata.size.width).to.be(rotatedPlayfieldImage.metadata.size.height);
 						done();
@@ -1135,9 +1128,9 @@ describe('The VPDB `release` API', function() {
 					var rls2 = _.find(res.body, { id: releases[1].id });
 					var rls3 = _.find(res.body, { id: releases[2].id });
 
-					expect(rls1.thumb.image.url).to.be(releases[0].versions[0].files[0].media.playfield_image.url);
-					expect(rls2.thumb.image.url).to.be(releases[1].versions[0].files[1].media.playfield_image.url);
-					expect(rls3.thumb.image.url).to.be(releases[2].versions[0].files[1].media.playfield_image.url);
+					expect(rls1.thumb.image.url).to.be(releases[0].versions[0].files[0].playfield_image.url);
+					expect(rls2.thumb.image.url).to.be(releases[1].versions[0].files[1].playfield_image.url);
+					expect(rls3.thumb.image.url).to.be(releases[2].versions[0].files[1].playfield_image.url);
 
 					done();
 				});
@@ -1154,9 +1147,9 @@ describe('The VPDB `release` API', function() {
 					var rls2 = _.find(res.body, { id: releases[1].id });
 					var rls3 = _.find(res.body, { id: releases[2].id });
 
-					expect(rls1.thumb.image.url).to.be(releases[0].versions[0].files[0].media.playfield_image.variations.medium.url);
-					expect(rls2.thumb.image.url).to.be(releases[1].versions[0].files[1].media.playfield_image.variations.medium.url);
-					expect(rls3.thumb.image.url).to.be(releases[2].versions[0].files[1].media.playfield_image.variations.medium.url);
+					expect(rls1.thumb.image.url).to.be(releases[0].versions[0].files[0].playfield_image.variations.medium.url);
+					expect(rls2.thumb.image.url).to.be(releases[1].versions[0].files[1].playfield_image.variations.medium.url);
+					expect(rls3.thumb.image.url).to.be(releases[2].versions[0].files[1].playfield_image.variations.medium.url);
 
 					done();
 				});
@@ -1173,9 +1166,9 @@ describe('The VPDB `release` API', function() {
 					var rls2 = _.find(res.body, { id: releases[1].id });
 					var rls3 = _.find(res.body, { id: releases[2].id });
 
-					expect(rls1.thumb.image.url).to.be(releases[0].versions[0].files[0].media.playfield_image.url);
-					expect(rls2.thumb.image.url).to.be(releases[1].versions[0].files[0].media.playfield_image.url);
-					expect(rls3.thumb.image.url).to.be(releases[2].versions[0].files[1].media.playfield_image.url);
+					expect(rls1.thumb.image.url).to.be(releases[0].versions[0].files[0].playfield_image.url);
+					expect(rls2.thumb.image.url).to.be(releases[1].versions[0].files[0].playfield_image.url);
+					expect(rls3.thumb.image.url).to.be(releases[2].versions[0].files[1].playfield_image.url);
 
 					done();
 				});
@@ -1189,7 +1182,7 @@ describe('The VPDB `release` API', function() {
 					hlp.expectStatus(err, res, 200);
 
 					var rls4 = _.find(res.body, { id: releases[3].id });
-					expect(rls4.thumb.image.url).to.be(releases[3].versions[1].files[0].media.playfield_image.url);
+					expect(rls4.thumb.image.url).to.be(releases[3].versions[1].files[0].playfield_image.url);
 
 					done();
 				});

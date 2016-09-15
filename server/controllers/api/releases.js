@@ -300,7 +300,7 @@ exports.addVersion = function(req, res) {
 exports.updateVersion = function(req, res) {
 
 	const updateableFields = [ 'released_at', 'changes' ];
-	const updateableFileFields = [ 'flavor', '_compatibility', '_media' ];
+	const updateableFileFields = [ 'flavor', '_compatibility', '_playfield_image', '_playfield_video' ];
 	const now = new Date();
 
 	let release, version, newFiles;
@@ -394,8 +394,8 @@ exports.updateVersion = function(req, res) {
 
 		return Release.findOne({ id: req.params.id })
 			.populate({ path: 'versions.files._file' })
-			.populate({ path: 'versions.files._media.playfield_image' })
-			.populate({ path: 'versions.files._media.playfield_video' })
+			.populate({ path: 'versions.files._playfield_image' })
+			.populate({ path: 'versions.files._playfield_video' })
 			.populate({ path: 'versions.files._compatibility' })
 			.exec();
 
@@ -585,7 +585,7 @@ exports.list = function(req, res) {
 			num_comments: '-counter.comments',
 			num_stars: '-counter.stars'
 		});
-		let populatedFields = [ '_game', 'versions.files._file', 'versions.files._media.playfield_image',
+		let populatedFields = [ '_game', 'versions.files._file', 'versions.files._playfield_image',
 		                        'versions.files._compatibility', 'authors._user' ];
 
 		if (filter.length > 0) {
@@ -645,8 +645,8 @@ exports.view = function(req, res) {
 			.populate({ path: '_created_by' })
 			.populate({ path: 'authors._user' })
 			.populate({ path: 'versions.files._file' })
-			.populate({ path: 'versions.files._media.playfield_image' })
-			.populate({ path: 'versions.files._media.playfield_video' })
+			.populate({ path: 'versions.files._playfield_image' })
+			.populate({ path: 'versions.files._playfield_video' })
 			.populate({ path: 'versions.files._compatibility' })
 			.exec();
 
@@ -696,8 +696,8 @@ exports.del = function(req, res) {
 	Promise.try(() => {
 		return Release.findOne({ id: req.params.id })
 			.populate({ path: 'versions.0.files.0._file' })
-			.populate({ path: 'versions.0.files.0._media.playfield_image' })
-			.populate({ path: 'versions.0.files.0._media.playfield_video' })
+			.populate({ path: 'versions.0.files.0._playfield_image' })
+			.populate({ path: 'versions.0.files.0._playfield_video' })
 			.exec();
 
 	}).then(r => {
@@ -775,8 +775,8 @@ function getDetails(id) {
 		.populate({ path: '_created_by' })
 		.populate({ path: 'authors._user' })
 		.populate({ path: 'versions.files._file' })
-		.populate({ path: 'versions.files._media.playfield_image' })
-		.populate({ path: 'versions.files._media.playfield_video' })
+		.populate({ path: 'versions.files._playfield_image' })
+		.populate({ path: 'versions.files._playfield_video' })
 		.populate({ path: 'versions.files._compatibility' })
 		.exec();
 }
@@ -1022,7 +1022,7 @@ function parseBoolean(value) {
 //fileModule.create(fileData, readStream, error, function(err, playfieldImageFile) {
 //	if (err) {
 //		logger.error('[model|release] Error creating playfield image from table file: ' + err.message);
-//		that.invalidate('files.' + index + '._media.playfield_image', 'Error processing screenshot: ' + err.message);
+//		that.invalidate('files.' + index + '._playfield_image', 'Error processing screenshot: ' + err.message);
 //	} else {
 //		logger.info('[model|release] Playfield image successfully created.');
 //		f._media.playfield_image = playfieldImageFile._id;

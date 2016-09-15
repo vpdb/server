@@ -54,8 +54,8 @@ exports.traversePaths = function(schema, prefix, paths) {
  *    'original_version._ref': 'Release',
  *    _created_by: 'User',
  *    'versions.0.files.0._file': 'File',
- *    'versions.0.files.0._media.playfield_image': 'File',
- *    'versions.0.files.0._media.playfield_video': 'File'
+ *    'versions.0.files.0._playfield_image': 'File',
+ *    'versions.0.files.0._playfield_video': 'File'
  * };
  *
  * var arrayRefs = { _tags: 'Tag' }
@@ -67,10 +67,10 @@ exports.traversePaths = function(schema, prefix, paths) {
  *   _created_by: 'User',
  *   'versions.0.files.0._file': 'File',
  *   'versions.0.files.1._file': 'File',
- *   'versions.0.files.0._media.playfield_image': 'File',
- *   'versions.0.files.1._media.playfield_image': 'File',
- *   'versions.0.files.0._media.playfield_video': 'File',
- *   'versions.0.files.1._media.playfield_video': 'File',
+ *   'versions.0.files.0._playfield_image': 'File',
+ *   'versions.0.files.1._playfield_image': 'File',
+ *   'versions.0.files.0._playfield_video': 'File',
+ *   'versions.0.files.1._playfield_video': 'File',
  *   '_tags.0': 'Tag',
  *   '_tags.1': 'Tag'
  * }

@@ -79,7 +79,7 @@ exports.backglassSubmitted = function(user, backglass) {
 
 exports.backglassApproved = function(user, release, message) {
 	// TODO handle message
-	return sendEmail(user, 'Your backglass for ' + backglass._game.title + ' has been accepted!', 'backglass-approved', {
+	return sendEmail(user, 'Your backglass for ' + release._game.title + ' has been accepted!', 'backglass-approved', {
 		user: user,
 		message: message,
 		gameUrl: settings.webUri('/games/' + release._game.id)

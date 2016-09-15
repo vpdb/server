@@ -290,7 +290,7 @@ exports.moderate = function(req, res) {
 		}
 		return Backglass.handleModeration(req, error, backglass);
 
-	}).then(moderation => {
+	}).then(m => {
 		moderation = m;
 		if (_.isArray(moderation.history)) {
 			moderation.history.sort((m1, m2) => m2.created_at.getTime() - m1.created_at.getTime());

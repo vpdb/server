@@ -233,11 +233,21 @@ exports.doomBackglass = function(user, backglassId) {
 /**
  * Marks a medium to be cleaned up in teardown.
  * @param {string} user User with which the file was created
- * @param {string} mediumId ID of the backglass
+ * @param {string} mediumId ID of the medium
  */
 exports.doomMedium = function(user, mediumId) {
 	objectPath.ensureExists(this, "doomedMedia." + user, []);
 	this.doomedMedia[user].unshift(mediumId);
+};
+
+/**
+ * Marks a game request to be cleaned up in teardown.
+ * @param {string} user User with which the file was created
+ * @param {string} gameRequestId ID of the game request
+ */
+exports.doomGameRequest = function(user, gameRequestId) {
+	objectPath.ensureExists(this, "doomedGameRequests." + user, []);
+	this.doomedGameRequests[user].unshift(gameRequestId);
 };
 
 /**
@@ -272,6 +282,7 @@ exports.cleanup = function(request, done) {
 	var doomedRoms = this.doomedRoms;
 	var doomedBackglasses = this.doomedBackglasses;
 	var doomedMedia = this.doomedMedia;
+	var doomedGameRequests = this.doomedGameRequests;
 
 	async.series([
 
@@ -468,6 +479,34 @@ exports.cleanup = function(request, done) {
 
 			}, function(err) {
 				that.doomedMedia = {};
+				next(err);
+			});
+		},
+
+		// 7. cleanup game requests
+		function(next) {
+			if (!doomedGameRequests) {
+				return next();
+			}
+			async.eachSeries(_.keys(doomedGameRequests), function(user, nextGameRequest) {
+				async.each(doomedGameRequests[user], function(gameRequestId, next) {
+					request
+						.del('/api/v1/game_requests/' + gameRequestId)
+						.as(user)
+						.end(function(err, res) {
+							if (err) {
+								return next(appendError(err, res));
+							}
+							if (res.status !== 204) {
+								console.log(res.body);
+							}
+							expect(res.status).to.eql(204);
+							next();
+						});
+				}, nextGameRequest);
+
+			}, function(err) {
+				that.doomedGameRequests = {};
 				next(err);
 			});
 		},

@@ -1,0 +1,9 @@
+403 Forbidden
+X-App-Sha: 4f56fe0
+Content-Type: application/json; charset=utf-8
+Content-Length: 49
+Etag: W/"31-rHBFR9LLjHSuddtkfc59tw"
+
+{
+  "error": "Permission denied, must be owner."
+}

@@ -23,6 +23,7 @@ const _ = require('lodash');
 const logger = require('winston');
 
 const api = require('./api');
+const acl = require('../../acl');
 const Game = require('mongoose').model('Game');
 const GameRequest = require('mongoose').model('GameRequest');
 
@@ -74,7 +75,7 @@ exports.create = function(req, res) {
 		}
 
 		// fetch details
-		return ipdb.details(ipdbNumber).catch(err => {
+		return ipdb.details(ipdbNumber, { offline: req.query.ipdb_dryrun }).catch(err => {
 			throw error('Error retrieving data from IPDB').validationError('ipdb_number', err.message, ipdbNumber);
 		});
 
@@ -97,4 +98,84 @@ exports.create = function(req, res) {
 		api.success(res, gameRequest.toSimple(), 201);
 
 	}).catch(api.handleError(res, error, 'Error creating game request'));
+};
+
+/**
+ * Lists all game requests.
+ *
+ * @param {Request} req
+ * @param {Response} res
+ */
+exports.list = function(req, res) {
+
+	const statusValues = [ 'open', 'closed', 'denied', 'all' ];
+
+	Promise.try(() => {
+
+		const status = req.query.status || 'open';
+		if (!statusValues.includes(status)) {
+			throw error('Invalid status "' + status + '". Valid statuses are: [ ' + statusValues.join(', ') + ' ].');
+		}
+
+		let query;
+		switch (status) {
+			case 'open':
+				query = { is_closed: false };
+				break;
+			case 'closed':
+				query = { is_closed: true };
+				break;
+			case 'denied':
+				query = { is_closed: true, _game: null };
+				break;
+			case 'all':
+				query = {};
+				break;
+		}
+
+		return GameRequest.find(query)
+			.populate({ path: '_created_by' })
+			.populate({ path: '_game' })
+			.exec();
+
+	}).then(requests => {
+		api.success(res, requests.map(r => r.toDetailed()));
+
+	}).catch(api.handleError(res, error, 'Error listing game requests'));
+};
+
+/**
+ * Deletes a game request.
+ *
+ * @param {Request} req
+ * @param {Response} res
+ */
+exports.del = function(req, res) {
+
+	let gameRequest, canDelete;
+	Promise.try(() => {
+		return acl.isAllowed(req.user.id, 'game_requests', 'delete');
+
+	}).then(result => {
+		canDelete = result;
+		return GameRequest.findOne({ id: req.params.id }).exec();
+
+	}).then(result => {
+		gameRequest = result;
+		if (!gameRequest) {
+			throw error('No such game request with ID "%s".', req.params.id).status(404);
+		}
+
+		// only allow deleting own game requests
+		if (!canDelete && !gameRequest._created_by.equals(req.user._id)) {
+			throw error('Permission denied, must be owner.').status(403);
+		}
+		// remove from db
+		return gameRequest.remove();
+
+	}).then(() => {
+		logger.info('[api|game request:delete] Game Request "%s" successfully deleted.', gameRequest.id);
+		api.success(res, null, 204);
+
+	}).catch(api.handleError(res, error, 'Error deleting game request'));
 };

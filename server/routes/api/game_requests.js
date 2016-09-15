@@ -24,4 +24,6 @@ var settings = require('../../modules/settings');
 exports.register = function(app, api) {
 
 	app.post(settings.apiPath('/game_requests'), api.auth(api.gameRequests.create, 'game_requests', 'add'));
+	app.get(settings.apiPath('/game_requests'), api.auth(api.gameRequests.list, 'game_requests', 'list'));
+	app.delete(settings.apiPath('/game_requests/:id'), api.auth(api.gameRequests.del, 'game_requests', 'delete-own'));
 };

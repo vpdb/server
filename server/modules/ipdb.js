@@ -32,10 +32,20 @@ function Ipdb() {
 /**
  * Returns structured data from IPDB for a given IPDB number.
  * @param {number} ipdbNo IPDB number
- * @param {Function} [done] Callback
+ * @param {{ offline: boolean }} [opts] `offline` - if set, use local index instead of IPDB live query.
  * @return Promise
  */
-Ipdb.prototype.details = function(ipdbNo, done) {
+Ipdb.prototype.details = function(ipdbNo, opts) {
+
+	opts = opts || {};
+	if (opts.offline) {
+		const ipdb = require('../../data/ipdb.json');
+		const match = _.find(ipdb, i => i.ipdb.number === parseInt(ipdbNo));
+		if (!match) {
+			return Promise.reject(error('IPDB entry ' + ipdbNo + ' does not exist in local index. Try without the offline option.'));
+		}
+		return Promise.resolve(match);
+	}
 
 	return Promise.try(() => {
 		var url = 'http://www.ipdb.org/machine.cgi?id=' + ipdbNo;
@@ -62,7 +72,7 @@ Ipdb.prototype.details = function(ipdbNo, done) {
 		}
 		return parseDetails(body);
 
-	}).nodeify(done);
+	});
 };
 
 /* istanbul ignore next */
@@ -135,7 +145,7 @@ function parseDetails(body) {
 		} else {
 
 			if (/<\/script>\s*<hr width="80%">/.test(body)) {
-				throw error('Empty page. Looks like IPDB number does not exist.');
+				throw error('Empty page. Looks like IPDB number does not exist.').status(404);
 			} else {
 				throw error('Cannot parse game details from page body. Are you sure the provided IPDB No. exists?');
 			}

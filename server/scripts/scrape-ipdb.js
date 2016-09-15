@@ -60,9 +60,15 @@ async.whilst(function() {
 		id++;
 		return next();
 	}
-	ipdb.details(id, function(err, game) {
+	ipdb.details(id).then(game => {
+		data.push(game);
+		fs.writeFileSync(dataFile, JSON.stringify(data, null, '\t'));
+		n++;
+		id++;
+		setTimeout(next, wait);
+	}).catch(err => {
 		if (err) {
-			if (/^empty page/i.test(err)) {
+			if (/^empty page/i.test(err.message)) {
 				console.warn('Empty page, skipping.');
 				n++;
 				id++;
@@ -70,11 +76,6 @@ async.whilst(function() {
 			}
 			return next(err);
 		}
-		data.push(game);
-		fs.writeFileSync(dataFile, JSON.stringify(data, null, '\t'));
-		n++;
-		id++;
-		setTimeout(next, wait);
 	});
 }, function(err) {
 	if (err) {

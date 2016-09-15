@@ -23,3 +23,45 @@ post:
       body:
         role/member:
           example: !include http/create-res-422.json
+
+get:
+  securedBy: [ jwt: { scopes: [ CONTRIB, MODERATOR ] } ]
+  description: |
+    List all game requests
+
+    Per default, only open requests are returned. See `status` parameter
+    for other filters.
+
+  queryParameters:
+    status:
+      description: |
+        Which requests to return. One of the following:
+
+        - `open` (default) - Only return open requests
+        - `closed` - Only list closed requests, including denied
+        - `denied` - Only list denied requests
+        - `all` - List all entities
+      required: false
+      type: string
+      example: closed
+
+/{game_request_id}:
+  delete:
+    is: [ protected ]
+    securedBy: [ jwt: { scopes: [ MEMBER, MODERATOR ] } ]
+    description: |
+      Delete a game request of a given ID.
+
+      Members can only delete own game requests, while moderators can delete any medium.
+    body:
+        role/member:
+          example: !include http/del-req.json
+    responses:
+      200:
+        body:
+          role/member:
+            example: !include http/del-res-204.json
+      403:
+        body:
+          role/member:
+            example: !include http/del-res-403.json

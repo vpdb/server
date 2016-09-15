@@ -279,6 +279,14 @@ describe('The ACLs of the VPDB API', function() {
 			request.post('/api/v1/game_requests').send({}).end(hlp.status(401, done));
 		});
 
+		it('should deny access to game request list', function(done) {
+			request.get('/api/v1/game_requests').end(hlp.status(401, done));
+		});
+
+		it('should deny access to deleting game requests', function(done) {
+			request.del('/api/v1/game_requests/1234').end(hlp.status(401, done));
+		});
+
 	});
 
 	describe('for logged clients (role member)', function() {
@@ -540,6 +548,14 @@ describe('The ACLs of the VPDB API', function() {
 			request.post('/api/v1/game_requests').as('member').send({}).end(hlp.status(422, done));
 		});
 
+		it('should deny access to game request list', function(done) {
+			request.get('/api/v1/game_requests').as('member').end(hlp.status(403, done));
+		});
+
+		it('should allow access to deleting game requests', function(done) {
+			request.del('/api/v1/game_requests/1234').as('member').end(hlp.status(404, done));
+		});
+
 	});
 
 	describe('for members with the `contributor` role', function() {
@@ -671,6 +687,10 @@ describe('The ACLs of the VPDB API', function() {
 
 		it('should allow access to rom creation', function(done) {
 			request.post('/api/v1/games/mb/roms').as('contributor').send({}).end(hlp.status(404, done));
+		});
+
+		it('should allow access to game request list', function(done) {
+			request.get('/api/v1/game_requests').as('contributor').end(hlp.status(200, done));
 		});
 
 	});
@@ -809,6 +829,11 @@ describe('The ACLs of the VPDB API', function() {
 		it('should allow access to rom creation', function(done) {
 			request.post('/api/v1/games/mb/roms').as('moderator').send({}).end(hlp.status(404, done));
 		});
+
+		it('should allow access to game request list', function(done) {
+			request.get('/api/v1/game_requests').as('moderator').end(hlp.status(200, done));
+		});
+
 	});
 
 	describe('for administrators', function() {
@@ -930,6 +955,10 @@ describe('The ACLs of the VPDB API', function() {
 			request.get('/api/v1/user/events').as('admin').end(hlp.status(200, done));
 		});
 
+		it('should deny access to game request list', function(done) {
+			request.get('/api/v1/game_requests').as('admin').end(hlp.status(403, done));
+		});
+
 	});
 
 	describe('for the root user', function() {
@@ -1046,6 +1075,10 @@ describe('The ACLs of the VPDB API', function() {
 
 		it('should allow access to events by current user', function(done) {
 			request.get('/api/v1/user/events').as('root').end(hlp.status(200, done));
+		});
+
+		it('should allow access to game request list', function(done) {
+			request.get('/api/v1/game_requests').as('root').end(hlp.status(200, done));
 		});
 
 	});

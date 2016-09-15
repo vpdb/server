@@ -1,0 +1,5 @@
+DELETE /v1/game_requests/ek4pfakv7m HTTP/2.0
+Host: api.vpdb.io
+Accept-Encoding: gzip, deflate
+authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwMm54Zm4ydjdtIiwiaWF0IjoiMjAxNi0wOS0xNVQyMjozMDo1MS4zMDJaIiwiZXhwIjoiMjAxNi0wOS0xNVQyMzozMDo1MS4zMDJaIiwiaXJ0IjpmYWxzZX0.JSbDKzxGrTnat2Q45oKE8gtzKF-EXMtjzB6MMMILRHI
+

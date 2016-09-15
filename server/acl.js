@@ -58,24 +58,26 @@ acl.init = function() {
 		}, {
 			roles: 'moderator',
 			allows: [
-				{ resources: 'backglasses', permissions: ['delete', 'moderate'] },
-				{ resources: 'builds',      permissions: ['delete'] },
-				{ resources: 'files',       permissions: ['blockmatch'] },
-				{ resources: 'games',       permissions: ['delete', 'update', 'add'] },
-				{ resources: 'ipdb',        permissions: ['view'] },
-				{ resources: 'media',       permissions: ['delete'] },
-				{ resources: 'releases',    permissions: ['moderate'] },
-				{ resources: 'roms',        permissions: ['delete', 'delete-own', 'add'] },
-				{ resources: 'tags',        permissions: ['delete'] }
+				{ resources: 'backglasses',   permissions: ['delete', 'moderate'] },
+				{ resources: 'builds',        permissions: ['delete'] },
+				{ resources: 'files',         permissions: ['blockmatch'] },
+				{ resources: 'games',         permissions: ['delete', 'update', 'add'] },
+				{ resources: 'game_requests', permissions: ['list', 'delete'] },
+				{ resources: 'ipdb',          permissions: ['view'] },
+				{ resources: 'media',         permissions: ['delete'] },
+				{ resources: 'releases',      permissions: ['moderate'] },
+				{ resources: 'roms',          permissions: ['delete', 'delete-own', 'add'] },
+				{ resources: 'tags',          permissions: ['delete'] }
 			]
 		}, {
 			roles: 'contributor',
 			allows: [
-				{ resources: 'backglasses', permissions: ['auto-approve'] },
-				{ resources: 'games',       permissions: ['update', 'add'] },
-				{ resources: 'ipdb',        permissions: ['view'] },
-				{ resources: 'releases',    permissions: ['auto-approve'] },
-				{ resources: 'roms',        permissions: ['add', 'delete-own'] }
+				{ resources: 'backglasses',   permissions: ['auto-approve'] },
+				{ resources: 'games',         permissions: ['update', 'add'] },
+				{ resources: 'game_requests', permissions: ['list'] },
+				{ resources: 'ipdb',          permissions: ['view'] },
+				{ resources: 'releases',      permissions: ['auto-approve'] },
+				{ resources: 'roms',          permissions: ['add', 'delete-own'] }
 			]
 		}, {
 			roles: 'member',
@@ -85,7 +87,7 @@ acl.init = function() {
 				{ resources: 'comments',      permissions: ['add'] },
 				{ resources: 'files',         permissions: ['download', 'upload', 'delete'] },            // delete: only own/inactive files
 				{ resources: 'games',         permissions: ['rate', 'star'] },
-				{ resources: 'game_requests', permissions: ['add'] },
+				{ resources: 'game_requests', permissions: ['add', 'delete-own'] },
 				{ resources: 'media',         permissions: ['add', 'delete-own', 'star'] },
 				{ resources: 'messages',      permissions: ['receive'] },
 				{ resources: 'releases',      permissions: ['add', 'delete', 'update', 'rate', 'star'] }, // delete: only own releases and only for a given period

@@ -48,7 +48,8 @@ const GameRequestSchema = new Schema(fields);
 // API FIELDS
 //-----------------------------------------------------------------------------
 const apiFields = {
-	simple: [ 'id', 'title', 'notes', 'ipdb_number', 'ipdb_title', 'is_closed', 'message', 'game', 'created_at' ]
+	simple: [ 'id', 'title', 'notes', 'ipdb_number', 'ipdb_title', 'is_closed', 'message', 'game', 'created_at' ],
+	detailed: [ 'created_by' ]
 };
 
 //-----------------------------------------------------------------------------
@@ -66,11 +67,22 @@ GameRequestSchema.virtual('game')
 		}
 	});
 
+GameRequestSchema.virtual('created_by')
+	.get(function() {
+		if (this._created_by && this.populated('_created_by')) {
+			return this._created_by.toReduced();
+		}
+	});
+
 //-----------------------------------------------------------------------------
 // METHODS
 //-----------------------------------------------------------------------------
 GameRequestSchema.methods.toSimple = function() {
 	return _.pick(this.toObj(), apiFields.simple);
+};
+
+GameRequestSchema.methods.toDetailed = function() {
+	return _.pick(this.toObj(), [ ...apiFields.simple, ...apiFields.detailed ]);
 };
 
 //-----------------------------------------------------------------------------
@@ -82,6 +94,7 @@ GameRequestSchema.options.toObject = {
 		delete log.__v;
 		delete log._id;
 		delete log._game;
+		delete log._created_by;
 	}
 };
 

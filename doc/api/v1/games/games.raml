@@ -120,6 +120,7 @@ get:
             example: !include http/update-res-200.json
 
   delete:
+    securedBy: [ jwt: { scopes: [ MODERATOR ] } ]
     description: |
       Delete a game.
 

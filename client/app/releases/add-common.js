@@ -128,10 +128,8 @@ angular.module('vpdb.releases.add', []).controller('ReleaseAddBaseCtrl', functio
 				_randomId: status.randomId,
 				flavor: {},
 				_compatibility: [],
-				_media: {
-					playfield_image: null,
-					playfield_video: null
-				}
+				_playfield_image: null,
+				_playfield_video: null
 			});
 		}
 	};
@@ -195,7 +193,7 @@ angular.module('vpdb.releases.add', []).controller('ReleaseAddBaseCtrl', functio
 		// add to release object
 		var releaseFile = $scope.getReleaseFileForMedia(status);
 		var mediaType = status.key.split(':')[0];
-		releaseFile._media[mediaType] = status.storage.id;
+		releaseFile['_' + mediaType] = status.storage.id;
 
 		// figure out rotation
 		$scope.updateRotation(releaseFile, status);

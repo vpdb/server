@@ -8,7 +8,7 @@ p.padder-top(ng-show="pageLoading") Loading...
 	.col-sm-3.col-sm-push-9.col--menu(ng-show="found")
 
 		a.a--block.text-center(ui-sref="gameDetails({id: game.id})")
-			img.img--logo(ng-src="{{ game.media.logo.variations['medium' + pixelDensitySuffix].url }}").padder-bottom
+			img.img--logo(ng-src="{{ game.logo.variations['medium' + pixelDensitySuffix].url }}").padder-bottom
 
 		//-- PLAYFIELD SHOTS
 		//---------------------------------------------------------------------
@@ -155,7 +155,7 @@ p.padder-top(ng-show="pageLoading") Loading...
 			tbody
 				tr(ng-repeat="flavor in flavorGrid")
 					td.td--img
-						img.img--rounded(ng-src="{{ flavor.file.media.playfield_image.variations['square' + pixelDensitySuffix].url }}")
+						img.img--rounded(ng-src="{{ flavor.file.playfield_image.variations['square' + pixelDensitySuffix].url }}")
 					td
 						| {{ flavor.orientation.name }} <br>
 						i {{ flavor.orientation.other }}

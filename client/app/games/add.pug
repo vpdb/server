@@ -283,9 +283,9 @@ include ../template/_mixins
 						+icon('warning').shift-up.space-right
 						| Dimensions are {{ backglass.dimensions }}, where the aspect ratio is <code>1:{{ backglass.ar }}</code> and <strong>{{ backglass.arDiff }}%</strong> off the ideal <code>1:1.25</code>. Please crop the image and try again.
 
-			.alert.alert-danger.alert--shifted-up(ng-show="errors['_media.backglass']")
+			.alert.alert-danger.alert--shifted-up(ng-show="errors['_backglass']")
 				+icon('warning').shift-up.space-right
-				| {{ errors['_media.backglass'] }}
+				| {{ errors['_backglass'] }}
 
 			//- logo
 			.row.padder-top

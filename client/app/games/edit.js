@@ -7,7 +7,7 @@ angular.module('vpdb.games.edit', [])
 		var arrayFields = [ 'keywords', 'artists', 'designers', 'themes' ];
 		var updateableFields = ['title', 'year', 'manufacturer', 'game_type', 'short', 'description', 'instructions',
 			'produced_units', 'model_number', 'themes', 'designers', 'artists', 'features', 'notes', 'toys', 'slogans',
-			'_media', 'keywords' ];
+			'_backglass', '_logo', 'keywords' ];
 		var maxAspectRatioDifference = 0.2;
 
 		$scope.theme('light');
@@ -37,7 +37,7 @@ angular.module('vpdb.games.edit', [])
 			var bg = status.storage;
 
 			AuthService.collectUrlProps(bg, true);
-			$scope.game._media.backglass = bg.id;
+			$scope.game._backglass = bg.id;
 			$scope.game.mediaFile.backglass = bg;
 
 			var ar = Math.round(bg.metadata.size.width / bg.metadata.size.height * 1000) / 1000;
@@ -61,7 +61,7 @@ angular.module('vpdb.games.edit', [])
 			var logo = status.storage;
 
 			AuthService.collectUrlProps(logo, true);
-			$scope.game._media.logo = logo.id;
+			$scope.game._logo = logo.id;
 			$scope.game.mediaFile.logo = logo;
 		};
 
@@ -111,8 +111,7 @@ angular.module('vpdb.games.edit', [])
 			_.each(arrayFields, function(what) {
 				$scope.arrays[what] = game[what].join(', ');
 			});
-			$scope.game.mediaFile = angular.copy(game.media);
-			$scope.game._media = {};
+			$scope.game.mediaFile = _.pick(game, [ 'backglass', 'logo' ]);
 			$scope.errors = {};
 		}
 	});

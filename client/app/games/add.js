@@ -50,8 +50,6 @@ angular.module('vpdb.games.add', [])
 				origin: 'recreation',
 				ipdbUrl: '',
 				links: [{ label: '', url: '' }],
-				_media: {},
-
 				mediaFile: {
 					backglass: {
 						url: false,
@@ -180,7 +178,7 @@ angular.module('vpdb.games.add', [])
 			var bg = status.storage;
 
 			AuthService.collectUrlProps(bg, true);
-			$scope.game._media.backglass = bg.id;
+			$scope.game._backglass = bg.id;
 			$scope.game.mediaFile.backglass = bg;
 
 			var ar = Math.round(bg.metadata.size.width / bg.metadata.size.height * 1000) / 1000;
@@ -198,7 +196,7 @@ angular.module('vpdb.games.add', [])
 			var logo = status.storage;
 
 			AuthService.collectUrlProps(logo, true);
-			$scope.game._media.logo = logo.id;
+			$scope.game._logo = logo.id;
 			$scope.game.mediaFile.logo = logo;
 		};
 

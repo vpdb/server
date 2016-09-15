@@ -205,16 +205,15 @@ angular.module('vpdb.releases.edit', [])
 	$scope.meta.files = _.map(version.files, function(file) {
 		file._randomId = file.file.id;
 		file.file._randomId = file.file.id;
-		file._media = {};
 		var playfieldImageKey = $scope.getMediaKey(file.file, 'playfield_image');
-		$scope.meta.mediaFiles[playfieldImageKey] = createMeta(file.media.playfield_image, playfieldImageKey);
-		$scope.meta.mediaLinks[playfieldImageKey] = createLink(file.media.playfield_image, 'landscape');
-		if (file.media.playfield_video) {
+		$scope.meta.mediaFiles[playfieldImageKey] = createMeta(file.playfield_image, playfieldImageKey);
+		$scope.meta.mediaLinks[playfieldImageKey] = createLink(file.playfield_image, 'landscape');
+		if (file.playfield_video) {
 			var playfieldVideoKey = $scope.getMediaKey(file.file, 'playfield_video');
-			$scope.meta.mediaFiles[playfieldVideoKey] = createMeta(file.media.playfield_video);
-			$scope.meta.mediaLinks[playfieldVideoKey] = createLink(file.media.playfield_video, 'small-rotated');
+			$scope.meta.mediaFiles[playfieldVideoKey] = createMeta(file.playfield_video);
+			$scope.meta.mediaLinks[playfieldVideoKey] = createLink(file.playfield_video, 'small-rotated');
 		}
-		if (file.media.playfield_image.file_type === 'playfield-fs') {
+		if (file.playfield_image.file_type === 'playfield-fs') {
 			$scope.meta.mediaLinks[playfieldImageKey].rotation = 90;
 		}
 		return createMeta(file.file);
@@ -238,23 +237,24 @@ angular.module('vpdb.releases.edit', [])
 		// retrieve rotation parameters
 		var rotationParams = [];
 		_.forEach(version.files, function(file) {
-			var media = file._media || file.media;
-			if (!media || !media.playfield_image) {
+			var playfield_image = file._playfield_image || file.playfield_image;
+			if (!playfield_image) {
 				return;
 			}
 			var rotation = $scope.meta.mediaLinks[$scope.getMediaKey(file.file, 'playfield_image')].rotation;
 			var offset = $scope.meta.mediaLinks[$scope.getMediaKey(file.file, 'playfield_image')].offset;
 			var relativeRotation = rotation + offset;
-			rotationParams.push((media.playfield_image.id || media.playfield_image) + ':' + relativeRotation);
+			rotationParams.push((playfield_image.id || playfield_image) + ':' + relativeRotation);
 		});
 
 		// check if media needs to be replaced
 		_.each(version.files, function(file) {
-			if (!_.isEmpty(file._media)) {
+			if (file._playfield_image || file._playfield_video) {
 				$scope.version.files = $scope.version.files || [];
 				$scope.version.files.push({
 					_file: file.file.id,
-					_media: file._media
+					_playfield_image: file._playfield_image,
+					_playfield_video: file._playfield_video,
 				});
 			}
 		});

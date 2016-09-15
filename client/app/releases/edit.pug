@@ -178,7 +178,7 @@ include ../template/_mixins
 	//-----------------------------------------
 	.col-sm-3.col--menu
 		.text-center
-			img.img--logo(ng-show="game.media.logo.url", ng-src="{{ game.media.logo.variations['medium' + pixelDensitySuffix].url }}")
+			img.img--logo(ng-show="game.logo.url", ng-src="{{ game.logo.variations['medium' + pixelDensitySuffix].url }}")
 			h3.h--multiline {{ game.title }}
 			| {{ release.name }}
 
@@ -199,7 +199,7 @@ include ../template/_mixins
 					td {{ version.version }}
 					td: .multiline-wrapper: img.img--rounded.img--ar-square.img--xs.pull-right.space-left(
 						ng-repeat="file in version.files | filter:tableFile",
-						ng-src="{{ file.media.playfield_image.variations['square'].url }}"
+						ng-src="{{ file.playfield_image.variations['square'].url }}"
 						uib-tooltip="{{ flavors.orientation.values[file.flavor.orientation].other }} / {{ flavors.lighting.values[file.flavor.lighting].name }} / {{ flattenBuilds(file.compatibility) }}"
 						tooltip-append-to-body="true")
 

@@ -64,7 +64,7 @@ include ../template/_mixins
 					.panel.panel--blank.playfield--image(
 						file-upload="{ type: 'playfield', key: getMediaKey(file, 'playfield_image'), status: meta.mediaFiles, onSuccess: onMediaUpload, onClear: onMediaClear, allowedExtensions: ['jpg', 'png'], allowMultipleFiles: false }",
 						ngf-drag-over-class="'panel--dragging'",
-						ng-class="{ error: errors.files[meta.files.indexOf(file)]._media.playfield_image }"
+						ng-class="{ error: errors.files[meta.files.indexOf(file)]._playfield_image }"
 					)
 						.panel-body.a.a--darker
 							.img.img--ar-ws.loaded(
@@ -94,7 +94,7 @@ include ../template/_mixins
 					.panel.panel--blank.playfield--video(
 					file-upload="{ type: getPlayfieldType(file), key: getMediaKey(file, 'playfield_video'), status: meta.mediaFiles, onSuccess: onMediaUpload, onClear: onMediaClear, allowedExtensions: ['flv', 'f4v', 'mp4', 'avi'], allowMultipleFiles: false, disableSelect: true }",
 						ngf-drag-over-class="'panel--dragging'",
-						ng-class="{ error: errors.files[meta.files.indexOf(file)]._media.playfield_video }",
+						ng-class="{ error: errors.files[meta.files.indexOf(file)]._playfield_video }",
 						ng-show="loadingFinished",
 					)
 						.panel-body.a.a--darker
@@ -106,7 +106,7 @@ include ../template/_mixins
 					.panel.panel--blank.playfield--image(
 					file-upload="{ type: getPlayfieldType(file), key: getMediaKey(file, 'playfield_video'), status: meta.mediaFiles, onSuccess: onMediaUpload, onClear: onMediaClear, allowedExtensions: ['flv', 'f4v', 'mp4', 'avi'], allowMultipleFiles: false }",
 						ngf-drag-over-class="'panel--dragging'",
-						ng-class="{ error: errors.files[meta.files.indexOf(file)]._media.playfield_video }",
+						ng-class="{ error: errors.files[meta.files.indexOf(file)]._playfield_video }",
 						ng-hide="loadingFinished"
 					)
 						.panel-body.a.a--darker
@@ -132,9 +132,9 @@ include ../template/_mixins
 										+icon('gear').svg-3x.svg-spin--slow
 										p Generating video thumbnail...
 
-			.alert.alert-danger(ng-show="errors.files[meta.files.indexOf(file)]._media.playfield_image")
+			.alert.alert-danger(ng-show="errors.files[meta.files.indexOf(file)]._playfield_image")
 				+icon('warning').shift-up.space-right
-				| {{ errors.files[meta.files.indexOf(file)]._media.playfield_image }}
+				| {{ errors.files[meta.files.indexOf(file)]._playfield_image }}
 
 
 	.modal-footer

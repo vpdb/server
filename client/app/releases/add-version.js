@@ -105,13 +105,13 @@ angular.module('vpdb.releases.add', []).controller('ReleaseFileAddCtrl', functio
 		// retrieve rotation parameters
 		var rotationParams = [];
 		_.forEach($scope.releaseVersion.files, function(file) {
-			if (!file._media || !file._media.playfield_image) {
+			if (!file._playfield_image) {
 				return;
 			}
 			var rotation = $scope.meta.mediaLinks[$scope.getMediaKey(file, 'playfield_image')].rotation;
 			var offset = $scope.meta.mediaLinks[$scope.getMediaKey(file, 'playfield_image')].offset;
 			var relativeRotation = rotation + offset;
-			rotationParams.push(file._media.playfield_image + ':' + relativeRotation);
+			rotationParams.push(file._playfield_image + ':' + relativeRotation);
 		});
 
 		// only post files

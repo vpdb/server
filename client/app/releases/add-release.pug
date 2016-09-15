@@ -105,7 +105,7 @@ include ../template/_mixins
 		p &nbsp;
 
 	.col-sm-3.col--menu
-		img.img--logo(ng-show="game.media.logo.url", ng-src="{{ game.media.logo.variations['medium' + pixelDensitySuffix].url }}")
+		img.img--logo(ng-show="game.logo.url", ng-src="{{ game.logo.variations['medium' + pixelDensitySuffix].url }}")
 		h3.h--multiline.text-center {{ game.title }}
 		.text-center {{ game.manufacturer }} · {{ game.year }}
 

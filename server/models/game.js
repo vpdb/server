@@ -110,7 +110,7 @@ GameSchema.plugin(sortTitle, { src: 'title', dest: 'title_sortable' });
 //-----------------------------------------------------------------------------
 var apiFields = {
 	reduced: [ 'id', 'title', 'manufacturer', 'year', 'ipdb' ], // fields returned in release data
-	simple:  [ 'game_type', 'media', 'counter', 'rating' ]      // fields returned in lists
+	simple:  [ 'game_type', 'backglass', 'logo', 'counter', 'rating' ]      // fields returned in lists
 };
 
 

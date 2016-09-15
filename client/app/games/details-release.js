@@ -33,13 +33,13 @@ angular.module('vpdb.games.details', []).controller('ReleaseController', functio
 
 		// get latest shots
 		$scope.shot = _.sortByOrder(_.compact(_.map($scope.latestVersion.files, function(file) {
-			if (!file.media || !file.media.playfield_image) {
+			if (!file.playfield_image) {
 				return null;
 			}
 			return {
-				type: file.media.playfield_image.file_type,
-				url: file.media.playfield_image.variations['medium' + $rootScope.pixelDensitySuffix].url,
-				full: file.media.playfield_image.variations.full.url
+				type: file.playfield_image.file_type,
+				url: file.playfield_image.variations['medium' + $rootScope.pixelDensitySuffix].url,
+				full: file.playfield_image.variations.full.url
 			};
 		})), 'type', true)[0];
 

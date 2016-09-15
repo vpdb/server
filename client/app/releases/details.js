@@ -50,13 +50,13 @@ angular.module('vpdb.releases.details', []).controller('ReleaseDetailsController
 
 		// get latest shots
 		$scope.shots = _.sortByOrder(_.compact(_.map($scope.latestVersion.files, function(file) {
-			if (!file.media || !file.media.playfield_image) {
+			if (!file.playfield_image) {
 				return null;
 			}
 			return {
-				type: file.media.playfield_image.file_type,
-				url: file.media.playfield_image.variations['medium'].url,
-				full: file.media.playfield_image.variations.full.url
+				type: file.playfield_image.file_type,
+				url: file.playfield_image.variations['medium'].url,
+				full: file.playfield_image.variations.full.url
 			};
 		})), 'type', true);
 

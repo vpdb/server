@@ -156,7 +156,10 @@ exports.update = function(req, res) {
 			_backglass: game._backglass.id,
 			_logo: game._logo ? game._logo.id : null
 		};
-		newMedia = _.defaults({ _backglass: req.body._backglass, _logo: req.body._logo }, oldMedia);
+		newMedia = {
+			_backglass: req.body._backglass || oldMedia._backglass,
+			_logo: req.body._logo || oldMedia._logo,
+		};
 
 		// copy media if not submitted so it doesn't get erased
 		req.body._backglass = newMedia._backglass;
@@ -168,26 +171,23 @@ exports.update = function(req, res) {
 	}).then(g => {
 		game = g;
 
-
 		// validate and save
 		return game.validate().then(() => game.save());
 
 	}).then(() => {
-
 		logger.info('[api|game:update] Game "%s" updated.', game.title);
 		return game.activateFiles();
 
 	}).then(activatedFileIds => {
-
 		logger.info('[api|game:update] Activated %s new file%s.', activatedFileIds.length, activatedFileIds.length === 1 ? '' : 's');
 
 		// copy to media and delete old media if changed
 		let mediaCopies = [];
-		if (oldMedia.backglass !== newMedia._backglass) {
+		if (oldMedia._backglass !== newMedia._backglass) {
 			mediaCopies.push(exports._copyMedia(req.user, game, game._backglass, 'backglass_image', bg => bg.metadata.size.width * bg.metadata.size.height > 647000));  // > 900x720
 			mediaCopies.push(oldMediaObj.backglass.remove());
 		}
-		if (oldMedia.logo !== newMedia._logo) {
+		if (oldMedia._logo !== newMedia._logo) {
 			mediaCopies.push(exports._copyMedia(req.user, game, game._logo, 'wheel_image'));
 			if (oldMediaObj.logo) {
 				mediaCopies.push(oldMediaObj.logo.remove());
@@ -199,7 +199,6 @@ exports.update = function(req, res) {
 		});
 
 	}).then(() => {
-
 		api.success(res, game.toDetailed(), 200);
 
 	}).catch(api.handleError(res, error, 'Error updating game'));

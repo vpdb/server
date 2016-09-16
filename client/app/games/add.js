@@ -4,7 +4,7 @@ angular.module('vpdb.games.add', [])
 
 	.controller('AdminGameAddCtrl', function($scope, $uibModal, $window, $localStorage, $location, $state,
 											 ApiHelper, AuthService, ConfigService, MimeTypeService, ModalService,
-											 IpdbResource, GameResource, FileResource) {
+											 IpdbResource, GameResource, FileResource, GameRequestResource) {
 
 		var maxAspectRatioDifference = 0.2;
 		var dropText = {
@@ -65,7 +65,8 @@ angular.module('vpdb.games.add', [])
 					fetched: false,
 					year: true,
 					idValidated: false
-				}
+				},
+				_game_request: null
 			};
 		};
 
@@ -219,6 +220,18 @@ angular.module('vpdb.games.add', [])
 			$window.open(angular.element('#ipdbLink').attr('href'));
 		};
 
+		$scope.selectGameRequest = function(gameRequest) {
+			// don't fetch if already selected
+			if ($scope.game._game_request === gameRequest.id) {
+				return;
+			}
+
+			$scope.game.origin = 'recreation';
+			$scope.game.ipdbUrl = gameRequest.ipdb_number;
+			$scope.game._game_request = gameRequest.id;
+			$scope.refresh();
+		};
+
 
 		// LOGIC STARTS HERE
 		// ------------------------------------------
@@ -230,4 +243,6 @@ angular.module('vpdb.games.add', [])
 		} else {
 			$scope.resetGame();
 		}
+
+		$scope.gameRequests = GameRequestResource.query();
 	});

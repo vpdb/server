@@ -62,7 +62,7 @@ describe('The VPDB `IPDB` API', function() {
 				.get('/api/v1/ipdb/999999')
 				.as('moderator')
 				.end(hlp.status(404, 'does not exist', done));
-		})
+		});
 
 	});
 });

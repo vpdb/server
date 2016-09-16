@@ -322,6 +322,26 @@ include ../template/_mixins
 				br
 
 	.col-sm-3.col--menu
-		h1 drafts
+		h1 Requests
 		hr
-		p None
+		i(ng-show="gameRequests.length == 0") No open game requests.
+		span(ng-repeat="gameRequest in gameRequests")
+			.media.media--selectable(ng-click="selectGameRequest(gameRequest)", ng-class="{ active: gameRequest.id === game._game_request }")
+				.media-left.media-middle
+					img.img-avatar.img-avatar--sm(gravatar-src="gameRequest.created_by.gravatar_id", gravatar-default="404", fallback-icon="user")
+				.media-body
+					b {{ gameRequest.ipdb_title }}
+					br
+					| {{ gameRequest.created_by.username }}, <span am-time-ago="gameRequest.created_at"></span>
+			div(uib-collapse="gameRequest.id !== game._game_request")
+				p(ng-show="gameRequest.title")
+					h5.h--primary.h--no-margin(ng-show="gameRequest.title") Title given by user
+					| {{ gameRequest.title }}
+				p(ng-show="gameRequest.notes")
+					h5.h--primary.h--no-margin(ng-show="gameRequest.notes") Notes
+					| {{ gameRequest.notes }}
+				h5.h--primary.h--no-margin Message to user
+				textarea.form-control(ng-model="denyMessage")
+				button.btn.btn-hollow.padder-top.padder-bottom.pull-right(ng-disabled="!denyMessage") Close
+				.clearfix
+

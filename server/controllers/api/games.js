@@ -27,6 +27,7 @@ var generate = require('project-name-generator');
 
 var File = require('mongoose').model('File');
 var Game = require('mongoose').model('Game');
+var GameRequest = require('mongoose').model('GameRequest');
 var Release = require('mongoose').model('Release');
 var Star = require('mongoose').model('Star');
 var Rom = require('mongoose').model('Rom');
@@ -97,6 +98,26 @@ exports.create = function(req, res) {
 				});
 			});
 		}
+
+	}).then(() => {
+		// find game request
+		return Promise.try(() => {
+			if (req.body._game_request) {
+				return GameRequest.findOne({ id: req.body._game_request }).exec();
+
+			} else if (game.ipdb && game.ipdb.number) {
+				return GameRequest.findOne({ ipdb_number: parseInt(game.ipdb.number) }).exec();
+			}
+
+		}).then(gameRequest => {
+			if (gameRequest) {
+				// TODO send notification
+				// TODO event log
+				gameRequest.is_closed = true;
+				gameRequest._game = game._id;
+				return gameRequest.save();
+			}
+		});
 
 	}).then(() => {
 		// copy backglass and logo to media

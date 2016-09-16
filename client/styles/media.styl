@@ -121,3 +121,17 @@
 
 		h3.h--lighter
 			color white
+
+.media--selectable
+	cursor pointer
+	transition background-color $animation-shorter
+	&.active
+		cursor default
+.col--menu .media--selectable
+	margin-top 0
+	margin-left -15px
+	margin-right -15px
+	padding-left 15px
+	padding-right 15px
+	padding-top 5px
+	padding-bottom 5px

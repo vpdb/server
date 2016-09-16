@@ -69,7 +69,9 @@ angular.module('vpdb.common', [])
 	})
 
 	.factory('GameRequestResource', function($resource, ConfigService) {
-		return $resource(ConfigService.apiUri('/game_requests'), {}, {});
+		return $resource(ConfigService.apiUri('/game_requests/:id'), {}, {
+			update: { method: 'PATCH' }
+		});
 	})
 
 	.factory('PlanResource', function($resource, ConfigService) {

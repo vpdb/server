@@ -225,11 +225,22 @@ angular.module('vpdb.games.add', [])
 			if ($scope.game._game_request === gameRequest.id) {
 				return;
 			}
-
 			$scope.game.origin = 'recreation';
 			$scope.game.ipdbUrl = gameRequest.ipdb_number;
 			$scope.game._game_request = gameRequest.id;
 			$scope.refresh();
+		};
+
+		$scope.closeGameRequest = function(gameRequest, denyMessage) {
+			GameRequestResource.update({ id: gameRequest.id }, { is_closed: true, message: denyMessage }, function() {
+				ModalService.info({
+					icon: 'check-circle',
+					title: 'Game Request Closed',
+					subtitle: gameRequest.ipdb_title,
+					message: 'The game request has been successfully closed.'
+				});
+				$scope.gameRequests = GameRequestResource.query();
+			});
 		};
 
 

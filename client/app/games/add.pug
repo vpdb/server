@@ -342,6 +342,6 @@ include ../template/_mixins
 					| {{ gameRequest.notes }}
 				h5.h--primary.h--no-margin Message to user
 				textarea.form-control(ng-model="denyMessage")
-				button.btn.btn-hollow.padder-top.padder-bottom.pull-right(ng-disabled="!denyMessage") Close
+				button.btn.btn-hollow.padder-top.padder-bottom.pull-right(ng-disabled="!denyMessage", ng-click="closeGameRequest(gameRequest, denyMessage)") Close
 				.clearfix
 

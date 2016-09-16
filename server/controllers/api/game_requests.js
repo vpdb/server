@@ -29,6 +29,7 @@ const GameRequest = require('mongoose').model('GameRequest');
 
 const error = require('../../modules/error')('api', 'game_request');
 const ipdb = require('../../modules/ipdb');
+const mailer = require('../../modules/mailer');
 
 /**
  * Creates a new game request.
@@ -110,13 +111,19 @@ exports.update = function(req, res) {
 
 	const updateableFields = [ 'is_closed', 'message' ];
 
+	let game, user;
+	let requestClosed = false;
 	Promise.try(() => {
-		return GameRequest.findOne({ id: req.params.id }).exec();
+		return GameRequest
+			.findOne({ id: req.params.id })
+			.populate('_created_by')
+			.exec();
 
 	}).then(gameRequest => {
 		if (!gameRequest) {
 			throw error('No such game request with ID "%s".', req.params.id).status(404);
 		}
+		user = gameRequest._created_by;
 
 		// fail if invalid fields provided
 		let submittedFields = _.keys(req.body);
@@ -129,13 +136,17 @@ exports.update = function(req, res) {
 			if (!req.body.message) {
 				throw error('Validation error').validationError('message', 'Message must be set when closing game request so the user can be notified', req.body.message);
 			}
-			// TODO send notification
+			requestClosed = true;
 		}
 		_.assign(gameRequest, req.body);
 		return gameRequest.save();
 
 	}).then(gameRequest => {
 		api.success(res, gameRequest.toSimple(), 200);
+
+		if (requestClosed) {
+			mailer.gameRequestDenied(user, gameRequest.ipdb_title, gameRequest.message);
+		}
 
 	}).catch(api.handleError(res, error, 'Error updating game request'));
 };

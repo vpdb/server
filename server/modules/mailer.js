@@ -93,6 +93,22 @@ exports.backglassRefused = function(user, release, message) {
 	}, 'notify_backglass_moderation_status');
 };
 
+exports.gameRequestProcessed = function(user, game) {
+	return sendEmail(user, '"' + game.title + '" has been added to VPDB!', 'game-request-processed', {
+		user: user,
+		game: game,
+		url: settings.webUri('/games/' + game.id)
+	}, 'notify_game_requests');
+};
+
+exports.gameRequestDenied = function(user, gameTitle, message) {
+	return sendEmail(user, 'About "' + gameTitle + '" you wanted to be added to VPDB...', 'game-request-denied', {
+		user: user,
+		gameTitle: gameTitle,
+		message: message
+	}, 'notify_game_requests');
+};
+
 
 /**
  * Sends an email.

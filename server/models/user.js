@@ -62,7 +62,8 @@ var fields = {
 		tablefile_name: { type: String },
 		flavor_tags:    { type: Schema.Types.Mixed },
 		notify_release_moderation_status: { type: Boolean, 'default': true },
-		notify_backglass_moderation_status: { type: Boolean, 'default': true }
+		notify_backglass_moderation_status: { type: Boolean, 'default': true },
+		notify_game_requests: { type: Boolean, 'default': true }
 	},
 	credits: { type: Schema.Types.Number },
 	counter: {

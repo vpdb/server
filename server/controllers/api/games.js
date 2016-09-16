@@ -38,6 +38,7 @@ var Medium = require('mongoose').model('Medium');
 var api = require('./api');
 
 var fileModule = require('../../modules/file');
+var mailer = require('../../modules/mailer');
 var error = require('../../modules/error')('api', 'game');
 
 
@@ -103,16 +104,22 @@ exports.create = function(req, res) {
 		// find game request
 		return Promise.try(() => {
 			if (req.body._game_request) {
-				return GameRequest.findOne({ id: req.body._game_request }).exec();
+				return GameRequest
+					.findOne({ id: req.body._game_request })
+					.populate('_created_by')
+					.exec();
 
 			} else if (game.ipdb && game.ipdb.number) {
-				return GameRequest.findOne({ ipdb_number: parseInt(game.ipdb.number) }).exec();
+				return GameRequest
+					.findOne({ ipdb_number: parseInt(game.ipdb.number) })
+					.populate('_created_by')
+					.exec();
 			}
 
 		}).then(gameRequest => {
 			if (gameRequest) {
-				// TODO send notification
 				// TODO event log
+				mailer.gameRequestProcessed(gameRequest._created_by, game);
 				gameRequest.is_closed = true;
 				gameRequest._game = game._id;
 				return gameRequest.save();

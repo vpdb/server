@@ -25,5 +25,6 @@ exports.register = function(app, api) {
 
 	app.post(settings.apiPath('/game_requests'), api.auth(api.gameRequests.create, 'game_requests', 'add'));
 	app.get(settings.apiPath('/game_requests'), api.auth(api.gameRequests.list, 'game_requests', 'list'));
+	app.patch(settings.apiPath('/game_requests/:id'),  api.auth(api.gameRequests.update, 'game_requests', 'update'));
 	app.delete(settings.apiPath('/game_requests/:id'), api.auth(api.gameRequests.del, 'game_requests', 'delete-own'));
 };

@@ -176,6 +176,103 @@ describe('The VPDB `Game Request` API', function() {
 
 	});
 
+	describe('when updating an existing game request', function() {
+
+		before(function(done) {
+			hlp.setupUsers(request, {
+				member: { roles: ['member'] },
+				moderator: { roles: ['moderator'] }
+			}, done);
+		});
+
+		after(function(done) {
+			hlp.cleanup(request, done);
+		});
+
+		it('should fail for invalid fields', function(done) {
+			request
+				.post('/api/v1/game_requests?ipdb_dryrun=1')
+				.as('member')
+				.send({ ipdb_number: 2006 })
+				.end(function(err, res) {
+					hlp.doomGameRequest('member', res.body.id);
+					hlp.expectStatus(err, res, 201);
+					request
+						.patch('/api/v1/game_requests/' + res.body.id)
+						.as('moderator')
+						.send({ title: 'new title' })
+						.end(hlp.status(400, 'invalid field', done));
+				});
+		});
+
+		it('should fail if closed without message', function(done) {
+			request
+				.post('/api/v1/game_requests?ipdb_dryrun=1')
+				.as('member')
+				.send({ ipdb_number: 2007 })
+				.end(function(err, res) {
+					hlp.doomGameRequest('member', res.body.id);
+					hlp.expectStatus(err, res, 201);
+					request
+						.patch('/api/v1/game_requests/' + res.body.id)
+						.as('moderator')
+						.send({ is_closed: true })
+						.end(function(err, res) {
+							hlp.expectValidationError(err, res, 'message', 'must be set');
+							done();
+						});
+				});
+		});
+
+		it('should succeed when closing a game request', function(done) {
+
+			// create
+			request
+				.post('/api/v1/game_requests?ipdb_dryrun=1')
+				.as('member')
+				.send({ ipdb_number: 2008 })
+				.end(function(err, res) {
+					hlp.doomGameRequest('member', res.body.id);
+					hlp.expectStatus(err, res, 201);
+					let gameRequestId = res.body.id;
+
+					// verify that request is open
+					request
+						.get('/api/v1/game_requests?status=open')
+						.as('moderator')
+						.end(function(err, res) {
+							hlp.expectStatus(err, res, 200);
+							let gameRequest = _.find(res.body, r => r.id === gameRequestId);
+							expect(gameRequest.is_closed).to.be(false);
+
+							const message = 'Game is already added with IPDB number xxx. We do not keep multiple editions of the same game.';
+
+							// close request
+							request
+								.patch('/api/v1/game_requests/' + gameRequestId)
+								.as('moderator')
+								.save('game_requests/update')
+								.send({ is_closed: true, message: message })
+								.end(function(err, res) {
+									hlp.expectStatus(err, res, 200);
+
+									// verify that request is open
+									request
+										.get('/api/v1/game_requests?status=denied')
+										.as('moderator')
+										.end(function(err, res) {
+											hlp.expectStatus(err, res, 200);
+											let gameRequest = _.find(res.body, r => r.id === gameRequestId);
+											expect(gameRequest.is_closed).to.be(true);
+											expect(gameRequest.message).to.be(message);
+											done();
+										});
+								});
+						});
+				});
+		});
+	});
+
 	describe('when adding a game for a game request', function() {
 
 		before(function(done) {

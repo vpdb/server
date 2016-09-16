@@ -287,6 +287,10 @@ describe('The ACLs of the VPDB API', function() {
 			request.del('/api/v1/game_requests/1234').end(hlp.status(401, done));
 		});
 
+		it('should deny access to updating game requests', function(done) {
+			request.patch('/api/v1/game_requests/1234').send({}).end(hlp.status(401, done));
+		});
+
 	});
 
 	describe('for logged clients (role member)', function() {
@@ -556,6 +560,10 @@ describe('The ACLs of the VPDB API', function() {
 			request.del('/api/v1/game_requests/1234').as('member').end(hlp.status(404, done));
 		});
 
+		it('should deny access to updating game requests', function(done) {
+			request.patch('/api/v1/game_requests/1234').as('member').send({}).end(hlp.status(403, done));
+		});
+
 	});
 
 	describe('for members with the `contributor` role', function() {
@@ -691,6 +699,10 @@ describe('The ACLs of the VPDB API', function() {
 
 		it('should allow access to game request list', function(done) {
 			request.get('/api/v1/game_requests').as('contributor').end(hlp.status(200, done));
+		});
+
+		it('should allow access to updating game requests', function(done) {
+			request.patch('/api/v1/game_requests/1234').as('contributor').send({}).end(hlp.status(404, done));
 		});
 
 	});
@@ -832,6 +844,10 @@ describe('The ACLs of the VPDB API', function() {
 
 		it('should allow access to game request list', function(done) {
 			request.get('/api/v1/game_requests').as('moderator').end(hlp.status(200, done));
+		});
+
+		it('should allow access to updating game requests', function(done) {
+			request.patch('/api/v1/game_requests/1234').as('moderator').send({}).end(hlp.status(404, done));
 		});
 
 	});

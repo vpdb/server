@@ -62,7 +62,7 @@ acl.init = function() {
 				{ resources: 'builds',        permissions: ['delete'] },
 				{ resources: 'files',         permissions: ['blockmatch'] },
 				{ resources: 'games',         permissions: ['delete', 'update', 'add'] },
-				{ resources: 'game_requests', permissions: ['list', 'delete'] },
+				{ resources: 'game_requests', permissions: ['list', 'update', 'delete'] },
 				{ resources: 'ipdb',          permissions: ['view'] },
 				{ resources: 'media',         permissions: ['delete'] },
 				{ resources: 'releases',      permissions: ['moderate'] },
@@ -74,7 +74,7 @@ acl.init = function() {
 			allows: [
 				{ resources: 'backglasses',   permissions: ['auto-approve'] },
 				{ resources: 'games',         permissions: ['update', 'add'] },
-				{ resources: 'game_requests', permissions: ['list'] },
+				{ resources: 'game_requests', permissions: ['list', 'update'] },
 				{ resources: 'ipdb',          permissions: ['view'] },
 				{ resources: 'releases',      permissions: ['auto-approve'] },
 				{ resources: 'roms',          permissions: ['add', 'delete-own'] }

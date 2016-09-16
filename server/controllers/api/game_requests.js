@@ -101,6 +101,46 @@ exports.create = function(req, res) {
 };
 
 /**
+ * Updates a game request.
+ *
+ * @param {Request} req
+ * @param {Response} res
+ */
+exports.update = function(req, res) {
+
+	const updateableFields = [ 'is_closed', 'message' ];
+
+	Promise.try(() => {
+		return GameRequest.findOne({ id: req.params.id }).exec();
+
+	}).then(gameRequest => {
+		if (!gameRequest) {
+			throw error('No such game request with ID "%s".', req.params.id).status(404);
+		}
+
+		// fail if invalid fields provided
+		let submittedFields = _.keys(req.body);
+		if (_.intersection(updateableFields, submittedFields).length !== submittedFields.length) {
+			let invalidFields = _.difference(submittedFields, updateableFields);
+			throw error('Invalid field%s: ["%s"]. Allowed fields: ["%s"]', invalidFields.length === 1 ? '' : 's', invalidFields.join('", "'), updateableFields.join('", "')).status(400).log('update');
+		}
+
+		if (gameRequest.is_closed === false && req.body.is_closed === true) {
+			if (!req.body.message) {
+				throw error('Validation error').validationError('message', 'Message must be set when closing game request so the user can be notified', req.body.message);
+			}
+			// TODO send notification
+		}
+		_.assign(gameRequest, req.body);
+		return gameRequest.save();
+
+	}).then(gameRequest => {
+		api.success(res, gameRequest.toSimple(), 200);
+
+	}).catch(api.handleError(res, error, 'Error updating game request'));
+};
+
+/**
  * Lists all game requests.
  *
  * @param {Request} req

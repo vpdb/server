@@ -7,7 +7,7 @@ post:
   is: [ validated ]
   securedBy: [ jwt: { scopes: [ MEMBER ] } ]
   description: |
-    Create a new game request
+    Create a new game request.
 
     IPDB data is fetched in realtime and the game title is returned.
 
@@ -27,7 +27,7 @@ post:
 get:
   securedBy: [ jwt: { scopes: [ CONTRIB, MODERATOR ] } ]
   description: |
-    List all game requests
+    List all game requests.
 
     Per default, only open requests are returned. See `status` parameter
     for other filters.
@@ -46,6 +46,28 @@ get:
       example: closed
 
 /{game_request_id}:
+  patch:
+    is: [ protected ]
+    securedBy: [ jwt: { scopes: [ MEMBER, MODERATOR ] } ]
+    description: |
+      Update a game request.
+
+      The goal of this is to close an invalid game request without adding the
+      game. This can happen if a user requests another edition of a game
+      already added, which would have another IPDB number and therefore would
+      not have been blocked by the game request validations.
+
+      Note that when closing, the `message` attribute must be provided.
+
+    body:
+        role/member:
+          example: !include http/update-req.json
+    responses:
+      200:
+        body:
+          role/member:
+            example: !include http/update-res-200.json
+
   delete:
     is: [ protected ]
     securedBy: [ jwt: { scopes: [ MEMBER, MODERATOR ] } ]

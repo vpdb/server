@@ -19,6 +19,7 @@
 
 "use strict"; /* global describe, before, after, it */
 
+var _ = require('lodash');
 var fs = require('fs');
 var async = require('async');
 var request = require('superagent');
@@ -171,6 +172,140 @@ describe('The VPDB `Game Request` API', function() {
 							done();
 						});
 				});
+		});
+
+	});
+
+	describe('when adding a game for a game request', function() {
+
+		before(function(done) {
+			hlp.setupUsers(request, {
+				member: { roles: ['member'] },
+				moderator: { roles: ['moderator'] }
+			}, done);
+		});
+
+		after(function(done) {
+			hlp.cleanup(request, done);
+		});
+
+		it('should close the game request when a game with the same IPDB number is created', function(done) {
+			const user = 'moderator';
+
+			// create request
+			request
+				.post('/api/v1/game_requests?ipdb_dryrun=1')
+				.as('member')
+				.send({ ipdb_number: 1267 })
+				.end(function(err, res) {
+					hlp.doomGameRequest('member', res.body.id);
+					hlp.expectStatus(err, res, 201);
+					let gameRequestId = res.body.id;
+
+					// create game with same ipdb number
+					hlp.file.createBackglass(user, request, function(backglass) {
+						request
+							.post('/api/v1/games')
+							.as(user)
+							.send(hlp.game.getGame({ _backglass: backglass.id }, 1267))
+							.end(function(err, res) {
+								let game = res.body;
+								hlp.expectStatus(err, res, 201);
+								hlp.doomGame(user, res.body.id);
+
+								// verify previous request is closed
+								request
+									.get('/api/v1/game_requests?status=closed')
+									.as('moderator')
+									.end(function(err, res) {
+										hlp.expectStatus(err, res, 200);
+										let gameRequest = _.find(res.body, r => r.id === gameRequestId);
+										expect(gameRequest.is_closed).to.be(true);
+										expect(gameRequest.game.id).to.be(game.id);
+										done();
+									});
+							});
+					});
+				});
+		});
+
+		it('should close the game request when a game containing the game request reference is created', function(done) {
+			const user = 'moderator';
+
+			// create request
+			request
+				.post('/api/v1/game_requests?ipdb_dryrun=1')
+				.as('member')
+				.send({ ipdb_number: 20 })
+				.end(function(err, res) {
+					hlp.doomGameRequest('member', res.body.id);
+					hlp.expectStatus(err, res, 201);
+					let gameRequestId = res.body.id;
+
+					// create game with _game_request set
+					hlp.file.createBackglass(user, request, function(backglass) {
+						request
+							.post('/api/v1/games')
+							.as(user)
+							.send(hlp.game.getGame({ _backglass: backglass.id, _game_request: gameRequestId }))
+							.end(function(err, res) {
+								let game = res.body;
+								hlp.expectStatus(err, res, 201);
+								hlp.doomGame(user, res.body.id);
+
+								// verify previous request is closed
+								request
+									.get('/api/v1/game_requests?status=closed')
+									.as('moderator')
+									.end(function(err, res) {
+										hlp.expectStatus(err, res, 200);
+										let gameRequest = _.find(res.body, r => r.id === gameRequestId);
+										expect(gameRequest.is_closed).to.be(true);
+										expect(gameRequest.game.id).to.be(game.id);
+										done();
+									});
+							});
+					});
+				});
+		});
+
+		it('should not close the game request when a game containing neither game request reference nor same ipdb number is created', function(done) {
+			const user = 'moderator';
+
+			// create request
+			request
+				.post('/api/v1/game_requests?ipdb_dryrun=1')
+				.as('member')
+				.send({ ipdb_number: 51 })
+				.end(function(err, res) {
+					hlp.doomGameRequest('member', res.body.id);
+					hlp.expectStatus(err, res, 201);
+					let gameRequestId = res.body.id;
+
+					// create game with no references to game request
+					hlp.file.createBackglass(user, request, function(backglass) {
+						request
+							.post('/api/v1/games')
+							.as(user)
+							.send(hlp.game.getGame({ _backglass: backglass.id }, 510))
+							.end(function(err, res) {
+								hlp.expectStatus(err, res, 201);
+								hlp.doomGame(user, res.body.id);
+
+								// verify previous request is closed
+								request
+									.get('/api/v1/game_requests?status=all')
+									.as('moderator')
+									.end(function(err, res) {
+										hlp.expectStatus(err, res, 200);
+										let gameRequest = _.find(res.body, r => r.id === gameRequestId);
+										expect(gameRequest.is_closed).to.be(false);
+										done();
+									});
+							});
+					});
+				});
+
 		});
 
 	});

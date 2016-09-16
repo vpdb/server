@@ -8,8 +8,8 @@ var randomstring = require('randomstring');
 
 var ipdb = require(path.resolve(__dirname, '../../data/ipdb.json'));
 
-exports.getGame = function(attrs) {
-	var game = popRandomGame();
+exports.getGame = function(attrs, ipdbNumber) {
+	var game = popGame(ipdbNumber);
 	if (game.short) {
 		game.id = game.short[0].replace(/[^a-z0-9\s\-]+/gi, '').replace(/\s+/g, '-').toLowerCase();
 	} else {
@@ -58,7 +58,10 @@ exports.createGames = function(user, request, count, done) {
 	});
 };
 
-function popRandomGame() {
+function popGame(ipdbNumber) {
+	if (ipdbNumber) {
+		return _.find(ipdb, i => i.ipdb.number === parseInt(ipdbNumber));
+	}
 	return ipdb.splice(randomInt(ipdb.length), 1)[0];
 }
 

@@ -26,7 +26,6 @@ var logger = require('winston');
 var nodemailer = require('nodemailer');
 var handlebars = require('handlebars');
 var smtpTransport = require('nodemailer-smtp-transport');
-var wrap = require('wordwrap')(60);
 
 var settings = require('./settings');
 var config = settings.current;
@@ -108,6 +107,18 @@ exports.gameRequestDenied = function(user, gameTitle, message) {
 	}, 'notify_game_requests');
 };
 
+exports.releaseCommented = function(user, commentor, game, release, message) {
+	return sendEmail(user, 'New reply to your ' + release.name + ' of ' + game.title, 'release-commented', {
+		user: user,
+		release: release,
+		game: game,
+		commentor: commentor,
+		message: wrapMessage(message),
+		url: settings.webUri('/games/' + game.id + '/releases/' + release.id),
+		profileUrl: settings.webUri('/profile/notifications'),
+	}, 'notify_created_release_comments');
+};
+
 
 /**
  * Sends an email.
@@ -131,7 +142,7 @@ function sendEmail(user, subject, template, templateData, enabledFlag) {
 
 		// generate content
 		const tpl = getTemplate(template);
-		const text = wrap(tpl(templateData));
+		const text = wrap(tpl(templateData), 60);
 
 		// setup email
 		email = {
@@ -190,8 +201,30 @@ function emailEnabled(user, pref) {
  * @returns {string} Word wrapped and quoted message
  */
 function wrapMessage(message) {
-	const wrap = require('wordwrap')(58);
-	return '> ' + wrap(message).replace(/\n/g, '\n> ');
+	return wrap(message, 58, '> ');
+}
+
+/**
+ * Wraps a text into multiple lines
+ *
+ * @param {string} text Text to wrap
+ * @param {number} width Line width in chars
+ * @param {string} [indent=''] String to prefix before each line
+ * @returns {string}
+ */
+function wrap(text, width, indent) {
+	indent = indent || '';
+	const newline = '\n' + indent;
+	const reTest = new RegExp('.{1,' + width + '}(\\s+|$)', 'g');
+	const reMatch = new RegExp('.{1,' + width + '}(\\s+|$)|\\S+?(\\s+|$)', 'g');
+	const lines = _.flatten(text.split(/\r?\n/).map(line => {
+		if (reTest.test(line)) {
+			let match = line.match(reMatch);
+			return match[0].trim() ? match : line;
+		}
+		return line;
+	}));
+	return indent + lines.join(newline);
 }
 
 /**

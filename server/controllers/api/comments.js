@@ -30,12 +30,16 @@ var LogEvent = require('mongoose').model('LogEvent');
 var api = require('./api');
 
 var error = require('../../modules/error')('api', 'comment');
+var mailer = require('../../modules/mailer');
 
 exports.createForRelease = function(req, res) {
 
 	let comment, release;
 	Promise.try(() => {
-		return Release.findOne({ id: req.params.id }).populate('_game').exec();
+		return Release.findOne({ id: req.params.id })
+			.populate('_game')
+			.populate('_created_by')
+			.exec();
 
 	}).then(r => {
 		release = r;
@@ -78,7 +82,13 @@ exports.createForRelease = function(req, res) {
 		return Comment.findById(comment._id).populate('_from').exec();
 
 	}).then(comment => {
-		return api.success(res, comment.toSimple(), 201);
+
+		api.success(res, comment.toSimple(), 201);
+
+		// notify release creator (only if not the same user)
+		if (release._created_by.id !== req.user.id) {
+			mailer.releaseCommented(release._created_by, req.user, release._game, release, req.body.message);
+		}
 
 	}).catch(api.handleError(res, error, 'Error saving comment'));
 };

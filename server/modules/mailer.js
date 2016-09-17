@@ -26,6 +26,7 @@ var logger = require('winston');
 var nodemailer = require('nodemailer');
 var handlebars = require('handlebars');
 var smtpTransport = require('nodemailer-smtp-transport');
+var wrap = require('wordwrap')(60);
 
 var settings = require('./settings');
 var config = settings.current;
@@ -55,10 +56,9 @@ exports.releaseSubmitted = function(user, release) {
 };
 
 exports.releaseApproved = function(user, release, message) {
-	// TODO handle message
 	return sendEmail(user, 'Your release for ' + release._game.title + ' has been accepted!', 'release-approved', {
 		user: user,
-		message: message,
+		message: wrapMessage(message),
 		url: settings.webUri('/games/' + release._game.id + '/releases/' + release.id)
 	}, 'notify_release_moderation_status');
 };
@@ -66,7 +66,7 @@ exports.releaseApproved = function(user, release, message) {
 exports.releaseRefused = function(user, release, message) {
 	return sendEmail(user, 'There was a problem with the release you\'ve uploaded to VPDB', 'release-refused', {
 		user: user,
-		message: message,
+		message: wrapMessage(message),
 	}, 'notify_release_moderation_status');
 };
 
@@ -78,10 +78,9 @@ exports.backglassSubmitted = function(user, backglass) {
 };
 
 exports.backglassApproved = function(user, release, message) {
-	// TODO handle message
 	return sendEmail(user, 'Your backglass for ' + release._game.title + ' has been accepted!', 'backglass-approved', {
 		user: user,
-		message: message,
+		message: wrapMessage(message),
 		gameUrl: settings.webUri('/games/' + release._game.id)
 	}, 'notify_backglass_moderation_status');
 };
@@ -105,7 +104,7 @@ exports.gameRequestDenied = function(user, gameTitle, message) {
 	return sendEmail(user, 'About "' + gameTitle + '" you wanted to be added to VPDB...', 'game-request-denied', {
 		user: user,
 		gameTitle: gameTitle,
-		message: message
+		message: wrapMessage(message)
 	}, 'notify_game_requests');
 };
 
@@ -132,7 +131,7 @@ function sendEmail(user, subject, template, templateData, enabledFlag) {
 
 		// generate content
 		const tpl = getTemplate(template);
-		const text = tpl(templateData);
+		const text = wrap(tpl(templateData));
 
 		// setup email
 		email = {
@@ -182,6 +181,17 @@ function emailEnabled(user, pref) {
 		return true;
 	}
 	return !!user.preferences[pref];
+}
+
+/**
+ * Wraps a message into a quoted string with line breaks.
+ *
+ * @param {string} message One liner message
+ * @returns {string} Word wrapped and quoted message
+ */
+function wrapMessage(message) {
+	const wrap = require('wordwrap')(58);
+	return '> ' + wrap(message).replace(/\n/g, '\n> ');
 }
 
 /**

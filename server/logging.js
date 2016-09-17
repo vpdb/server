@@ -72,7 +72,7 @@ exports.init = function() {
 	if (config.vpdb.logging.papertrail.app) {
 
 		let papertrailTransport = new Papertrail(config.vpdb.logging.papertrail.options);
-		papertrailTransport.on('error', err => logger.info('[winston-papertrail] Ignoring error: %s', err.message));
+		papertrailTransport.on('error', err => logger.warn('[winston-papertrail] Ignoring %s', err.message));
 		logger.add(papertrailTransport, {}, true);
 		logger.info('[logging] Papertrail application log enabled for %s:%d', config.vpdb.logging.papertrail.options.host, config.vpdb.logging.papertrail.options.port);
 	}
@@ -128,7 +128,7 @@ exports.expressConfig = function(app) {
 	if (config.vpdb.logging.papertrail.access) {
 
 		let papertrailTransport = new Papertrail(config.vpdb.logging.papertrail.options);
-		papertrailTransport.on('error', err => logger.info('[winston-papertrail] Ignoring error: %s', err.message));
+		papertrailTransport.on('error', err => logger.warn('[winston-papertrail] Ignoring %s', err.message));
 		transports.push(papertrailTransport);
 		logger.info('[logging] Papertrail access log enabled for %s:%d', config.vpdb.logging.papertrail.options.host, config.vpdb.logging.papertrail.options.port);
 	}

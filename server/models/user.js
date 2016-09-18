@@ -65,8 +65,8 @@ var fields = {
 		notify_backglass_moderation_status: { type: Boolean, 'default': true },
 		notify_game_requests: { type: Boolean, 'default': true },
 		notify_created_release_comments: { type: Boolean, 'default': true },
-		notify_created_release_followers: { type: Boolean, 'default': true },
-		notify_mentions: { type: Boolean, 'default': true }
+		notify_created_release_followers: { type: Boolean, 'default': true }, // not implemented
+		notify_mentions: { type: Boolean, 'default': true }                   // not implemented
 	},
 	credits: { type: Schema.Types.Number },
 	counter: {

@@ -118,11 +118,21 @@ exports.create = function(req, res) {
 
 		}).then(gameRequest => {
 			if (gameRequest) {
-				// TODO event log
 				mailer.gameRequestProcessed(gameRequest._created_by, game);
 				gameRequest.is_closed = true;
 				gameRequest._game = game._id;
 				return gameRequest.save();
+			}
+
+		}).then(gameRequest => {
+			if (gameRequest) {
+				LogEvent.log(req, 'update_game_request', false, {
+					game_request: _.pick(gameRequest.toSimple(), [ 'id', 'title', 'ipdb_number', 'ipdb_title' ]),
+					game: _.pick(game.toSimple(), [ 'id', 'title', 'manufacturer', 'year', 'ipdb', 'game_type' ])
+				}, {
+					game: game._id,
+					game_request: gameRequest._id
+				});
 			}
 		});
 
@@ -157,7 +167,8 @@ exports.update = function(req, res) {
 		'produced_units', 'model_number', 'themes', 'designers', 'artists', 'features', 'notes', 'toys', 'slogans',
 		'ipdb', 'number', '_backglass', '_logo', 'keywords' ];
 
-	let game, oldMediaObj, oldMedia, newMedia;
+	let body = _.cloneDeep(req.body);
+	let game, oldGame, oldMediaObj, oldMedia, newMedia;
 	Promise.try(() => {
 		return Game.findOne({ id: req.params.id })
 			.populate({ path: '_backglass' })
@@ -168,6 +179,7 @@ exports.update = function(req, res) {
 		if (!game) {
 			throw error('No such game with ID "%s".', req.params.id).status(404);
 		}
+		oldGame = _.cloneDeep(game);
 
 		// fail if invalid fields provided
 		var submittedFields = _.keys(req.body);
@@ -227,6 +239,9 @@ exports.update = function(req, res) {
 		});
 
 	}).then(() => {
+
+		LogEvent.log(req, 'update_game', false, LogEvent.diff(oldGame, body), { game: game._id });
+
 		api.success(res, game.toDetailed(), 200);
 
 	}).catch(api.handleError(res, error, 'Error updating game'));
@@ -276,6 +291,10 @@ exports.del = function(req, res) {
 
 	}).then(() => {
 		logger.info('[api|game:delete] Game "%s" (%s) successfully deleted.', game.title, game.id);
+
+		// log event
+		LogEvent.log(req, 'delete_game', false, { game: _.omit(game.toSimple(), [ 'rating', 'counter' ]) }, { game: game._id });
+
 		api.success(res, null, 204);
 
 	}).catch(api.handleError(res, error, 'Error deleting game'));

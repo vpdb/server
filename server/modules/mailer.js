@@ -57,6 +57,8 @@ exports.releaseSubmitted = function(user, release) {
 exports.releaseApproved = function(user, release, message) {
 	return sendEmail(user, 'Your release for ' + release._game.title + ' has been accepted!', 'release-approved', {
 		user: user,
+		release: release,
+		game: release._game,
 		message: wrapMessage(message),
 		url: settings.webUri('/games/' + release._game.id + '/releases/' + release.id)
 	}, 'notify_release_moderation_status');
@@ -65,6 +67,8 @@ exports.releaseApproved = function(user, release, message) {
 exports.releaseRefused = function(user, release, message) {
 	return sendEmail(user, 'There was a problem with the release you\'ve uploaded to VPDB', 'release-refused', {
 		user: user,
+		release: release,
+		game: release._game,
 		message: wrapMessage(message),
 	}, 'notify_release_moderation_status');
 };
@@ -201,7 +205,7 @@ function emailEnabled(user, pref) {
  * @returns {string} Word wrapped and quoted message
  */
 function wrapMessage(message) {
-	return wrap(message, 58, '> ');
+	return message ? wrap(message, 58, '> ') : message;
 }
 
 /**

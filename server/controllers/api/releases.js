@@ -106,7 +106,7 @@ exports.create = function(req, res) {
 					release._game.incrementCounter('releases');
 				} else {
 					mailer.releaseSubmitted(req.user, release);
-					}
+				}
 				return release._game.update({ modified_at: new Date() });
 			});
 
@@ -136,8 +136,9 @@ exports.create = function(req, res) {
  */
 exports.update = function(req, res) {
 
-	var updateableFields = [ 'name', 'description', '_tags', 'links', 'acknowledgements', 'authors' ];
+	const updateableFields = [ 'name', 'description', '_tags', 'links', 'acknowledgements', 'authors' ];
 
+	let oldRelease;
 	Promise.try(() => {
 
 		return Release.findOne({ id: req.params.id });
@@ -164,6 +165,7 @@ exports.update = function(req, res) {
 			var invalidFields = _.difference(submittedFields, updateableFields);
 			throw error('Invalid field%s: ["%s"]. Allowed fields: ["%s"]', invalidFields.length === 1 ? '' : 's', invalidFields.join('", "'), updateableFields.join('", "')).status(400).log('update');
 		}
+		oldRelease = _.cloneDeep(release);
 
 		// apply changes
 		return release.updateInstance(req.body);
@@ -180,13 +182,13 @@ exports.update = function(req, res) {
 
 	}).then(release => {
 
-		api.success(res, release.toDetailed(), 200);
-
 		// log event
 		LogEvent.log(req, 'update_release', false,
-			{ release: req.body },
-			{ release: release._id, game: release._game }
+			LogEvent.diff(oldRelease, req.body),
+			{ release: release._id, game: release._game._id }
 		);
+
+		api.success(res, release.toDetailed(), 200);
 
 	}).catch(api.handleError(res, error, 'Error updating release'));
 };
@@ -304,7 +306,7 @@ exports.updateVersion = function(req, res) {
 	const now = new Date();
 
 	let release, version, newFiles;
-	let releaseToUpdate, versionToUpdate;
+	let releaseToUpdate, versionToUpdate, oldVersion;
 	Promise.try(() => {
 		// retrieve release
 		return Release.findOne({ id: req.params.id })
@@ -337,6 +339,7 @@ exports.updateVersion = function(req, res) {
 	}).then(r => {
 		releaseToUpdate = r;
 		versionToUpdate = _.find(releaseToUpdate.versions, { version: req.params.version });
+		oldVersion = _.cloneDeep(versionToUpdate);
 
 		newFiles = [];
 		logger.info('[api|release:updateVersion] %s', util.inspect(req.body, { depth: null }));
@@ -400,6 +403,13 @@ exports.updateVersion = function(req, res) {
 			.exec();
 
 	}).then(release => {
+
+		// log event
+		LogEvent.log(req, 'update_release_version', false,
+			LogEvent.diff(oldVersion, req.body),
+			{ release: release._id, game: release._game._id }
+		);
+
 		let version = _.find(release.toDetailed().versions, { version: req.params.version });
 		api.success(res, version, 200);
 
@@ -716,6 +726,13 @@ exports.del = function(req, res) {
 
 	}).then(() => {
 		logger.info('[api|release:delete] Release "%s" (%s) successfully deleted.', release.name, release.id);
+
+		// log event
+		LogEvent.log(req, 'delete_release', false,
+			{ release: _.pick(release.toSimple(), [ 'id', 'name', 'authors', 'versions' ]) },
+			{ release: release._id, game: release._game }
+		);
+
 		api.success(res, null, 204);
 
 	}).catch(api.handleError(res, error, 'Error deleting release'));

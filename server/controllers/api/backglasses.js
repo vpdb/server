@@ -28,6 +28,7 @@ const File = require('mongoose').model('File');
 const Game = require('mongoose').model('Game');
 const Rom = require('mongoose').model('Rom');
 const Backglass = require('mongoose').model('Backglass');
+const LogEvent = require('mongoose').model('LogEvent');
 
 const mailer = require('../../modules/mailer');
 const error = require('../../modules/error')('api', 'backglass');
@@ -107,7 +108,22 @@ exports.create = function(req, res) {
 			.exec();
 
 	}).then(populatedBackglass => {
-		mailer.backglassSubmitted(req.user, populatedBackglass);
+
+		// send moderation mail
+		if (!populatedBackglass.moderation.is_approved) {
+			mailer.backglassSubmitted(req.user, populatedBackglass);
+		}
+
+		// event log
+		LogEvent.log(req, 'create_backglass', true, {
+			backglass: _.pick(populatedBackglass.toSimple(), [ 'id', 'authors', 'versions' ]),
+			game: _.pick(populatedBackglass._game.toSimple(), [ 'id', 'title', 'manufacturer', 'year', 'ipdb', 'game_type' ])
+		}, {
+			backglass: populatedBackglass._id,
+			game: populatedBackglass._game._id
+		});
+
+		// return object
 		api.success(res, populatedBackglass.toSimple(), 201);
 
 	}).catch(api.handleError(res, error, 'Error creating backglass'));
@@ -245,7 +261,11 @@ exports.del = function(req, res) {
 
 	}).then(result => {
 		canDelete = result;
-		return Backglass.findOne({ id: req.params.id }).exec();
+		return Backglass.findOne({ id: req.params.id })
+			.populate({ path: '_game' })
+			.populate({ path: 'authors._user' })
+			.populate({ path: 'versions._file' })
+			.exec();
 
 	}).then(result => {
 
@@ -263,6 +283,16 @@ exports.del = function(req, res) {
 
 	}).then(() => {
 		logger.info('[api|backglass:delete] Backglass "%s" successfully deleted.', backglass.id);
+
+		// event log
+		LogEvent.log(req, 'delete_backglass', false, {
+			backglass: _.pick(backglass.toSimple(), [ 'id', 'authors', 'versions' ]),
+			game: _.pick(backglass._game.toSimple(), [ 'id', 'title', 'manufacturer', 'year', 'ipdb', 'game_type' ])
+		}, {
+			backglass: backglass._id,
+			game: backglass._game._id
+		});
+
 		api.success(res, null, 204);
 
 	}).catch(api.handleError(res, error, 'Error deleting backglass'));

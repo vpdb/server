@@ -33,8 +33,11 @@ var events = [
 	'unstar_game', 'unstar_release', 'unstar_user',
 	'rate_game', 'rate_release',
 	'upload_rom',
-	'create_game',
-	'create_release', 'update_release', 'create_release_version'
+	'create_game', 'update_game', 'delete_game',
+	'create_release', 'update_release', 'create_release_version', 'update_release_version', 'delete_release',
+	'create_backglass', 'delete_backglass',
+	'moderate',
+	'create_game_request', 'update_game_request', 'delete_game_request'
 ];
 
 //-----------------------------------------------------------------------------
@@ -43,9 +46,11 @@ var events = [
 var fields = {
 	_actor:      { type: Schema.ObjectId, required: true, ref: 'User', index: true },
 	_ref: {
-		game:    { type: Schema.ObjectId, ref: 'Game', index: true, sparse: true },
-		release: { type: Schema.ObjectId, ref: 'Release', index: true, sparse: true },
-		user:    { type: Schema.ObjectId, ref: 'User', index: true, sparse: true }
+		game:         { type: Schema.ObjectId, ref: 'Game', index: true, sparse: true },
+		release:      { type: Schema.ObjectId, ref: 'Release', index: true, sparse: true },
+		backglass:    { type: Schema.ObjectId, ref: 'Backglass', index: true, sparse: true },
+		user:         { type: Schema.ObjectId, ref: 'User', index: true, sparse: true },
+		game_request: { type: Schema.ObjectId, ref: 'GameRequest', index: true, sparse: true }
 	},
 	event:       { type: String, 'enum': events, required: true, index: true },
 	payload:     { },
@@ -101,6 +106,25 @@ LogEventSchema.statics.log = function(req, event, isPublic, payload, ref, done) 
 			done(err);
 		}
 	});
+};
+
+LogEventSchema.statics.diff = function(fromDB, fromAPI) {
+
+	fromDB = _.pick(fromDB, _.keys(fromAPI));
+	return _.reduce(fromDB, function(result, val, key) {
+		if (!_.isEqual(fromAPI[key], val)) {
+			if (_.isObject(val)) {
+				let d = LogEventSchema.statics.diff(val, fromAPI[key]);
+				result.old[key] = d.old;
+				result.new[key] = d.new;
+			} else {
+				result.old[key] = val;
+				result.new[key] = fromAPI[key];
+			}
+
+		}
+		return result;
+	}, { 'old': {}, 'new': {} });
 };
 
 //-----------------------------------------------------------------------------

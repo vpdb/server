@@ -25,6 +25,7 @@ const logger = require('winston');
 const api = require('./api');
 const acl = require('../../acl');
 const Game = require('mongoose').model('Game');
+const LogEvent = require('mongoose').model('LogEvent');
 const GameRequest = require('mongoose').model('GameRequest');
 
 const error = require('../../modules/error')('api', 'game_request');
@@ -95,8 +96,13 @@ exports.create = function(req, res) {
 
 	}).then(gameRequest => {
 
-		// TODO notify
 		api.success(res, gameRequest.toSimple(), 201);
+
+		LogEvent.log(req, 'create_game_request', false, {
+			game_request: _.pick(gameRequest.toSimple(), [ 'id', 'title', 'ipdb_number', 'ipdb_title' ]),
+		}, {
+			game_request: gameRequest._id
+		});
 
 	}).catch(api.handleError(res, error, 'Error creating game request'));
 };
@@ -113,6 +119,7 @@ exports.update = function(req, res) {
 
 	let game, user;
 	let requestClosed = false;
+	let before;
 	Promise.try(() => {
 		return GameRequest
 			.findOne({ id: req.params.id })
@@ -132,6 +139,7 @@ exports.update = function(req, res) {
 			throw error('Invalid field%s: ["%s"]. Allowed fields: ["%s"]', invalidFields.length === 1 ? '' : 's', invalidFields.join('", "'), updateableFields.join('", "')).status(400).log('update');
 		}
 
+		before = _.pick(gameRequest, updateableFields);
 		if (gameRequest.is_closed === false && req.body.is_closed === true) {
 			if (!req.body.message) {
 				throw error('Validation error').validationError('message', 'Message must be set when closing game request so the user can be notified', req.body.message);
@@ -142,11 +150,20 @@ exports.update = function(req, res) {
 		return gameRequest.save();
 
 	}).then(gameRequest => {
-		api.success(res, gameRequest.toSimple(), 200);
+
+		LogEvent.log(req, 'update_game_request', false, {
+			game_request: _.pick(gameRequest.toSimple(), [ 'id', 'title', 'ipdb_number', 'ipdb_title' ]),
+			before: before,
+			after: _.pick(gameRequest, updateableFields)
+		}, {
+			game_request: gameRequest._id
+		});
 
 		if (requestClosed) {
 			mailer.gameRequestDenied(user, gameRequest.ipdb_title, gameRequest.message);
 		}
+
+		api.success(res, gameRequest.toSimple(), 200);
 
 	}).catch(api.handleError(res, error, 'Error updating game request'));
 };
@@ -226,6 +243,13 @@ exports.del = function(req, res) {
 
 	}).then(() => {
 		logger.info('[api|game request:delete] Game Request "%s" successfully deleted.', gameRequest.id);
+
+		LogEvent.log(req, 'delete_game_request', false, {
+			game_request: _.pick(gameRequest.toSimple(), [ 'id', 'title', 'ipdb_number', 'ipdb_title' ])
+		}, {
+			game_request: gameRequest._id
+		});
+
 		api.success(res, null, 204);
 
 	}).catch(api.handleError(res, error, 'Error deleting game request'));

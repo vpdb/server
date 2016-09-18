@@ -32,6 +32,12 @@ const modelResourceMap = {
 	Rom: 'roms'
 };
 
+const modelReferenceMap = {
+	Release: 'release',
+	Backglass: 'backglass',
+	Rom: 'rom'
+};
+
 /**
  * A plugin that enables upload moderation for an entity.
  *
@@ -181,6 +187,7 @@ module.exports = function(schema) {
 	 * @returns {Promise.<{}>} Updated moderation attribute
 	 */
 	schema.statics.handleModeration = function(req, error, entity) {
+		const LogEvent = require('mongoose').model('LogEvent');
 		const actions = ['refuse', 'approve', 'moderate'];
 		if (!req.body.action) {
 			throw error('Validations failed.').validationError('action', 'An action must be provided. Valid actions are: [ "' + actions.join('", "') + '" ].');
@@ -188,19 +195,29 @@ module.exports = function(schema) {
 		if (!_.includes(actions, req.body.action)) {
 			throw error('Validations failed.').validationError('action', 'Invalid action "' + req.body.action + '". Valid actions are: [ "' + actions.join('", "') + '" ].');
 		}
-		switch (req.body.action) {
-			case 'refuse':
-				if (!req.body.message) {
-					throw error('Validations failed.').validationError('message', 'A message must be provided when refusing.', req.body.message);
-				}
-				return entity.refuse(req.user, req.body.message);
+		return Promise.try(() => {
+			switch (req.body.action) {
+				case 'refuse':
+					if (!req.body.message) {
+						throw error('Validations failed.').validationError('message', 'A message must be provided when refusing.', req.body.message);
+					}
+					return entity.refuse(req.user, req.body.message);
 
-			case 'approve':
-				return entity.approve(req.user, req.body.message);
+				case 'approve':
+					return entity.approve(req.user, req.body.message);
 
-			case 'moderate':
-				return entity.moderate(req.user, req.body.message);
-		}
+				case 'moderate':
+					return entity.moderate(req.user, req.body.message);
+			}
+
+		}).then(moderation => {
+
+			// event log
+			const referenceName = modelReferenceMap[this.modelName];
+			LogEvent.log(req, 'moderate', false, { action: req.body.action, message: req.body.message }, { [referenceName]: entity._id });
+
+			return moderation;
+		});
 	};
 
 	/**
@@ -293,19 +310,21 @@ module.exports = function(schema) {
 	schema.methods.moderationToObject = function() {
 		let moderation = this.moderation.toObject();
 		let includeHistory = false;
-		moderation.history = this.moderation.history.map(h => {
-			let historyItem = h.toObject();
-			if (h._created_by.toReduced) {
-				historyItem.created_by = h._created_by.toReduced();
-				includeHistory = true;
-			}
-			delete historyItem._created_by;
-			delete historyItem.id;
-			delete historyItem._id;
-			return historyItem;
-		});
+		if (this.moderation.history) {
+			moderation.history = this.moderation.history.map(h => {
+				let historyItem = h.toObject();
+				if (h._created_by.toReduced) {
+					historyItem.created_by = h._created_by.toReduced();
+					includeHistory = true;
+				}
+				delete historyItem._created_by;
+				delete historyItem.id;
+				delete historyItem._id;
+				return historyItem;
+			});
+		}
 		if (includeHistory) {
-			moderation.history = _.orderBy(moderation.history, ['created_at'], ['desc']);
+			moderation.history = _.orderBy(moderation.history || [], ['created_at'], ['desc']);
 		} else {
 			delete moderation.history;
 		}

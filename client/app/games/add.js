@@ -240,6 +240,7 @@ angular.module('vpdb.games.add', [])
 					message: 'The game request has been successfully closed.'
 				});
 				$scope.gameRequests = GameRequestResource.query();
+				$scope.reset();
 			});
 		};
 

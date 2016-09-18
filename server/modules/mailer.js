@@ -108,7 +108,7 @@ exports.gameRequestDenied = function(user, gameTitle, message) {
 };
 
 exports.releaseCommented = function(user, commentor, game, release, message) {
-	return sendEmail(user, 'New reply to your ' + release.name + ' of ' + game.title, 'release-commented', {
+	return sendEmail(user, 'New reply to your "' + release.name + '" of ' + game.title, 'release-commented', {
 		user: user,
 		release: release,
 		game: game,

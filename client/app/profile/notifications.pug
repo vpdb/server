@@ -1,0 +1,64 @@
+include ../template/_mixins
+
+h1 User
+hr
+.row
+	.col-lg-11.col-xs-10
+		label(for="notifiyMentions") Notify when someone mentions me
+	.col-lg-1.col-xs-2
+		input#notifiyMentions.checkbox--toggle(type="checkbox", ng-model="updatedPreferences.notify_mentions")
+		label.a.a--light.padder-bottom(for="notifiyMentions")
+	.clearfix
+
+h1 Releases
+hr
+.row
+	.col-lg-11.col-xs-10
+		label(for="notifiyReleaseModerationStatus") Notify when a release upload gets approved or refused
+	.col-lg-1.col-xs-2
+		input#notifiyReleaseModerationStatus.checkbox--toggle(type="checkbox", ng-model="updatedPreferences.notify_release_moderation_status")
+		label.a.a--light.padder-bottom(for="notifiyReleaseModerationStatus")
+	.clearfix
+
+	.col-lg-11.col-xs-10
+		label(for="notifiyReleaseComments") Notify when one of my releases gets commented
+	.col-lg-1.col-xs-2
+		input#notifiyReleaseComments.checkbox--toggle(type="checkbox", ng-model="updatedPreferences.notify_created_release_comments")
+		label.a.a--light.padder-bottom(for="notifiyReleaseComments")
+	.clearfix
+
+	.col-lg-11.col-xs-10
+		label(for="notifiyReleaseFollowers") Notify when one of my releases gets starred
+	.col-lg-1.col-xs-2
+		input#notifiyReleaseFollowers.checkbox--toggle(type="checkbox", ng-model="updatedPreferences.notify_created_release_followers")
+		label.a.a--light.padder-bottom(for="notifiyReleaseFollowers")
+	.clearfix
+
+h1 Direct B2S Backglasses
+hr
+.row
+	.col-lg-11.col-xs-10
+		label(for="notifiyBackglassModerationStatus") Notify when a backglass upload gets approved or refused
+	.col-lg-1.col-xs-2
+		input#notifiyBackglassModerationStatus.checkbox--toggle(type="checkbox", ng-model="updatedPreferences.notify_backglass_moderation_status")
+		label.a.a--light.padder-bottom(for="notifiyBackglassModerationStatus")
+	.clearfix
+
+
+h1 Games
+hr
+.row
+	.col-lg-11.col-xs-10
+		label(for="notifiyGameRequestStatus") Notify about game request updates
+	.col-lg-1.col-xs-2
+		input#notifiyGameRequestStatus.checkbox--toggle(type="checkbox", ng-model="updatedPreferences.notify_game_requests")
+		label.a.a--light.padder-bottom(for="notifiyGameRequestStatus")
+	.clearfix
+
+
+p.padder-top-2x
+button.btn.btn-primary.pull-right(ng-click="updateUserPreferences()")
+	+icon('check-circle').space-right
+	| Save
+
+.clearfix

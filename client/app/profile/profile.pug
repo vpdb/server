@@ -7,13 +7,15 @@ include ../template/_mixins
 		h1 Profile
 		hr
 
-
 		p: a(ui-sref="profile.settings", ng-class="{ 'active': state.name == 'profile.settings'}")
 			+icon('settings').shift-up.space-right
 			| Settings
 		p: a(ui-sref="profile.downloads", ng-class="{ 'active': state.name == 'profile.downloads'}")
 			+icon('download').shift-up.space-right
 			| Download Options
+		p: a(ui-sref="profile.notifications", ng-class="{ 'active': state.name == 'profile.notifications'}")
+			+icon('email').shift-up.space-right
+			| Notifications
 		p: a(ui-sref="profile.stats", ng-class="{ 'active': state.name == 'profile.stats'}")
 			+icon('chart').shift-up.space-right
 			| Stats

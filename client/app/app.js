@@ -38,6 +38,7 @@ var appDeps = [
 	'vpdb.games.edit',
 	'vpdb.profile.settings',
 	'vpdb.profile.downloads',
+	'vpdb.profile.notifications',
 	'vpdb.profile.stats',
 	'vpdb.release',
 	'vpdb.releases.add',
@@ -106,6 +107,7 @@ angular.module('vpdb', deps.concat(appDeps))
 		$stateProvider.state('profile',          { url: '/profile',                      templateUrl: '/profile/profile.html' });
 		$stateProvider.state('profile.settings',         { url: '/settings',             templateUrl: '/profile/settings.html', controller: 'ProfileSettingsCtrl' });
 		$stateProvider.state('profile.downloads',        { url: '/downloads',            templateUrl: '/profile/downloads.html', controller: 'ProfileDownloadsCtrl' });
+		$stateProvider.state('profile.notifications',    { url: '/notifications',        templateUrl: '/profile/notifications.html', controller: 'ProfileNotificationsCtrl' });
 		$stateProvider.state('profile.stats',            { url: '/stats',                templateUrl: '/profile/stats.html', controller: 'ProfileStatsCtrl' });
 		$stateProvider.state('authCallback',     { url: '/auth/:strategy/callback?code', templateUrl: '/auth/authenticating.html' });
 		$stateProvider.state('confirmToken',     { url: '/confirm/:token',               templateUrl: '/auth/confirm.html' });

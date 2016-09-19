@@ -55,26 +55,6 @@ angular.module('vpdb.common', [])
 		};
 	})
 
-	.directive('user', function($compile, $uibModal) {
-		return {
-			restrict: 'E',
-			link: function(scope, element) {
-				element.click(function() {
-					$uibModal.open({
-						templateUrl: '/users/modal-user-info.html',
-						controller: 'UserDetailCtrl',
-						resolve: {
-							username: function() {
-								return element.html();
-							}
-						}
-					});
-				});
-			}
-		};
-	})
-
-
 	.directive('markdownInfo', function(ModalService) {
 		return {
 			restrict: 'A',

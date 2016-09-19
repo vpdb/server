@@ -46,10 +46,4 @@ angular.module('vpdb.common', [])
 		$scope.cancelEdit = function() {
 			$scope.editing = false;
 		};
-	})
-
-	.controller('UserDetailCtrl', function($scope, $http, UserResource, username) {
-		UserResource.query({ name: username }, function(users) {
-			$scope.user = users.length ? users[0] : {};
-		});
 	});

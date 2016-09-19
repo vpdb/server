@@ -111,10 +111,13 @@ angular.module('vpdb.auth', [])
 			 * Checks whether the currently logged user has a given permission.
 			 * Returns false if not logged.
 			 *
-			 * @param resourcePermission
+			 * @param {string} resourcePermission Permission to check, e.g. "users/view"
 			 * @returns {boolean} True if user has permission, false otherwise.
 			 */
 			hasPermission: function(resourcePermission) {
+				if (!this.isAuthenticated) {
+					return false;
+				}
 				var p = resourcePermission.split('/');
 				var resource = p[0];
 				var permission = p[1];
@@ -197,6 +200,7 @@ angular.module('vpdb.auth', [])
 				this.user = user;
 				this.permissions = user.permissions;
 				this.roles = user.roles;
+				$rootScope.$broadcast('user', user);
 			},
 
 			/**
@@ -312,6 +316,8 @@ angular.module('vpdb.auth', [])
 				delete $localStorage.initialTokenExpires;
 				delete $localStorage.initialTokenCreatedLocal;
 				delete $localStorage.initialTokenCreatedServer;
+
+				$rootScope.$broadcast('user', null);
 			},
 
 			/**

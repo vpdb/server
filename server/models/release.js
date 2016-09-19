@@ -242,6 +242,9 @@ ReleaseSchema.methods.toDetailed = function(opts) {
 	if (opts.starredReleaseIds) {
 		rls.starred = _.includes(opts.starredReleaseIds, this._id.toString());
 	}
+	if (!_.isUndefined(opts.starred)) {
+		rls.starred = opts.starred;
+	}
 
 	if (this._created_by.toReduced) {
 		rls.created_by = this._created_by.toReduced();

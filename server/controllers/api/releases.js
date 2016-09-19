@@ -648,6 +648,7 @@ exports.view = function(req, res) {
 	let transformOpts = {
 		supressedFields: []
 	};
+	let release;
 	Promise.try(() => {
 		return Release.findOne({ id: req.params.id })
 			.populate({ path: '_game' })
@@ -673,10 +674,20 @@ exports.view = function(req, res) {
 			});
 		});
 
-	}).then(release => {
-
+	}).then(r => {
+		release = r;
 		release.incrementCounter('views');
 
+		// user starred status
+		if (req.user) {
+			return Star.findOne({ type: 'release', _from: req.user._id, '_ref.release': release._id }).exec();
+		}
+
+	}).then(star => {
+
+		if (star) {
+			transformOpts.starred = true;
+		}
 
 		if (req.query.thumb_flavor) {
 			transformOpts.thumbFlavor = req.query.thumb_flavor;

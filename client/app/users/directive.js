@@ -53,6 +53,7 @@ angular.module('vpdb.common', [])
 	})
 
 	.controller('UserDetailCtrl', function($scope, $http, UserResource, UserStarResource, ModalService, username) {
+		$scope.username = username;
 		UserResource.query({ name: username }, function(users) {
 			$scope.user = users.length ? users[0] : {};
 			if ($scope.user.id) {

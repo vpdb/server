@@ -52,8 +52,40 @@ angular.module('vpdb.common', [])
 		};
 	})
 
-	.controller('UserDetailCtrl', function($scope, $http, UserResource, username) {
+	.controller('UserDetailCtrl', function($scope, $http, UserResource, UserStarResource, ModalService, username) {
 		UserResource.query({ name: username }, function(users) {
 			$scope.user = users.length ? users[0] : {};
+			if ($scope.user.id) {
+				UserStarResource.get({ userId: $scope.user.id }).$promise.then(function() {
+					$scope.starred = true;
+				}, function() {
+					$scope.starred = false;
+				});
+			}
 		});
+
+		$scope.toggleStar = function() {
+			var err = function(err) {
+				if (err.data && err.data.error) {
+					ModalService.error({
+						subtitle: 'Error starring user.',
+						message: err.data.error
+					});
+				} else {
+					console.error(err);
+				}
+			};
+			if ($scope.starred) {
+				UserStarResource.delete({ userId: $scope.user.id }, {}, function() {
+					$scope.starred = false;
+					$scope.user.counter.stars--;
+				}, err);
+
+			} else {
+				UserStarResource.save({ userId: $scope.user.id }, {}, function(result) {
+					$scope.starred = true;
+					$scope.user.counter.stars = result.total_stars;
+				}, err);
+			}
+		}
 	});

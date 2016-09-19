@@ -87,61 +87,64 @@ exports.create = function(req, res) {
 /**
  * Lists users.
  *
- * @param {object} req Request object
- * @param {object} res Response object
+ * @param {Request} req Request object
+ * @param {Response} res Response object
  */
 exports.list = function(req, res) {
 
-	var assert = api.assert(error, 'list', null, res);
-	acl.isAllowed(req.user.id, 'users', 'list', assert(function(canList) {
-		acl.isAllowed(req.user.id, 'users', 'full-details', assert(function(fullDetails) {
+	let canList, canGetFullDetails;
+	Promise.try(() => {
+		return acl.isAllowed(req.user.id, 'users', 'list');
 
-			// if no list privileges, user must provide at least a 3-char search query.
-			if (!canList && (!req.query.q || req.query.q.length < 3)) {
-				return api.fail(res, error('Please provide a search query with at least three characters.'), 403);
+	}).then(result => {
+		canList = result;
+		return acl.isAllowed(req.user.id, 'users', 'full-details');
+
+	}).then(result => {
+		canGetFullDetails = result;
+
+		if (!canList && (!req.query.q || req.query.q.length < 3) && !req.query.name) {
+			throw error('Please provide a search query with at least three characters or a user name').status(403);
+		}
+		let query = User.find();
+
+		// text search
+		if (req.query.q) {
+			// sanitize and build regex
+			let q = req.query.q.trim().replace(/[^a-z0-9]+/gi, ' ').replace(/\s+/g, '.*');
+			let regex = new RegExp(q, 'i');
+			if (canList) {
+				query.or([
+					{ name: regex },
+					{ username: regex },
+					{ email: regex }
+				]);
+			} else {
+				query.or([
+					{ name: regex },
+					{ username: regex }
+				]);
 			}
-			var query = User.find();
+		}
+		if (req.query.name) {
+			query.where('name').equals(req.query.name);
+		}
 
-			// text search
-			if (req.query.q) {
-				// sanitize and build regex
-				var q = req.query.q.trim().replace(/[^a-z0-9]+/gi, ' ').replace(/\s+/g, '.*');
-				var regex = new RegExp(q, 'i');
-				if (canList) {
-					query.or([
-						{ name: regex },
-						{ username: regex },
-						{ email: regex }
-					]);
-				} else {
-					query.or([
-						{ name: regex },
-						{ username: regex }
-					]);
-				}
-			}
-			if (req.query.name) {
-				query.where('name').equals(req.query.name);
-			}
+		// filter by role
+		if (canList && req.query.roles) {
+			// sanitze and split
+			let roles = req.query.roles.trim().replace(/[^a-z0-9,]+/gi, '').split(',');
+			query.where('roles').in(roles);
+		}
 
-			// filter by role
-			if (canList && req.query.roles) {
-				// sanitze and split
-				var roles = req.query.roles.trim().replace(/[^a-z0-9,]+/gi, '').split(',');
-				query.where('roles').in(roles);
-			}
+		return query.exec();
 
-			query.exec(assert(function(users) {
-				// reduce
-				users = _.map(users, function(user) {
-					return fullDetails ? user.toSimple() : user.toReduced();
-				});
-				api.success(res, users);
+	}).then(users => {
+		// reduce
+		users = users.map(user => canGetFullDetails ? user.toSimple() : user.toReduced());
+		api.success(res, users);
 
-			}, 'Error listing users'));
-
-		}, 'Error checking for ACL "users/full-details"'));
-	}, 'Error checking for ACL "users/list".'));
+	}).catch(api.handleError(res, error, 'Error listing users'));
 };
 
 

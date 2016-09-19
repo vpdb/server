@@ -159,6 +159,11 @@ angular.module('vpdb.common', [])
 		});
 	})
 
+	.factory('UserStarResource', function($resource, ConfigService) {
+		return $resource(ConfigService.apiUri('/users/:userId/star'), {}, {
+		});
+	})
+
 	.factory('ApiHelper', function($uibModal, $rootScope, $location, ModalService, ModalFlashService) {
 		return {
 

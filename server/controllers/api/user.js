@@ -80,6 +80,20 @@ exports.update = function(req, res) {
 
 	}).then(u => {
 		updatedUser = u;
+
+		if (!updatedUser) {
+			throw error('User not found. Seems be deleted since last login.').status(404);
+		}
+
+		if (req.body.name) {
+			return User.findOne({ name: req.body.name, id: { $ne: currentUser.id }}).exec();
+		}
+	}).then(dupeNameUser => {
+
+		if (dupeNameUser) {
+			throw error('Validation failed').validationError('name', 'User with this display name already exists', req.body.name);
+		}
+
 		_.extend(updatedUser, _.pick(req.body, updateableFields));
 
 		// CHANGE PASSWORD

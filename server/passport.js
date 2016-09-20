@@ -28,6 +28,7 @@ var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 var IPBoardStrategy = require('./modules/passport-ipboard').Strategy;
 
 var error = require('./modules/error')('passport');
+var mailer = require('./modules/mailer');
 var settings = require('./modules/settings');
 var config = settings.current;
 var User = mongoose.model('User');
@@ -213,6 +214,8 @@ exports.verifyCallbackOAuth = function(strategy, providerName) {
 			}).then(user => {
 				LogUser.success(req, user, 'registration', { provider: provider, email: newUser.email });
 				logger.info('[passport|%s] New user <%s> created.', logtag, user.email);
+				mailer.welcomeOAuth(user);
+
 				return user;
 			});
 

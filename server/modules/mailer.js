@@ -47,6 +47,19 @@ exports.welcomeLocal = function(user, done) {
 	mail(user, 'welcome-local', user.email, 'Welcome to the VPDB!', done);
 };
 
+exports.welcomeOAuth = function(user) {
+	const strategyNames = {
+		github: 'GitHub',
+		google: 'Google'
+	};
+	return sendEmail(user, 'Welcome to the VPDB!', 'welcome-oauth', {
+		user: user,
+		profileUrl: settings.webUri('/profile/settings'),
+		strategy: strategyNames[user.provider] || _.upperFirst(user.provider)
+	});
+};
+
+
 exports.releaseSubmitted = function(user, release) {
 	return sendEmail(user, 'Your release for ' + release._game.title + ' has been submitted', 'release-submitted', {
 		user: user,

@@ -51,6 +51,7 @@ var fields = {
 		expires_at:   { type: Date },
 		value:        { type: String }
 	},
+	emails:           { type: [ String ] }, // collected from profiles
 	roles:            { type: [ String ], required: true },
 	_plan:            { type: String, required: true },
 	provider:         { type: String, required: true },
@@ -375,59 +376,51 @@ UserSchema.methods.toDetailed = function() {
 // STATIC METHODS
 //-----------------------------------------------------------------------------
 
-UserSchema.statics.createUser = function(userObj, confirmUserEmail, done) {
+UserSchema.statics.createUser = function(userObj, confirmUserEmail) {
 
 	var User = mongoose.model('User');
 	var LogUser = mongoose.model('LogUser');
 
-	var user = new User(_.extend(userObj, {
-		created_at: new Date(),
-		roles: [ 'member' ],
-		_plan: config.vpdb.quota.defaultPlan
-	}));
+	let user, count;
+	return Promise.try(() => {
+		user = new User(_.extend(userObj, {
+			created_at: new Date(),
+			roles: ['member'],
+			_plan: config.vpdb.quota.defaultPlan
+		}));
 
-	if (confirmUserEmail) {
-		user.email_status = {
-			code: 'pending_registration',
-			token: randomstring.generate(16),
-			expires_at: new Date(new Date().getTime() + 86400000), // 1d valid
-			value: userObj.email
-		};
-	} else {
-		user.email_status = { code: 'confirmed' };
-		user.is_active = true;
-		user.validated_emails = [ userObj.email ];
-	}
-
-	user.validate(function(err) {
-		if (err) {
-			return done(null, null, err);
+		if (confirmUserEmail) {
+			user.email_status = {
+				code: 'pending_registration',
+				token: randomstring.generate(16),
+				expires_at: new Date(new Date().getTime() + 86400000), // 1d valid
+				value: userObj.email
+			};
+		} else {
+			user.email_status = { code: 'confirmed' };
+			user.is_active = true;
+			user.validated_emails = [userObj.email];
 		}
-		User.count(function(err, count) {
-			/* istanbul ignore if  */
-			if (err) {
-				return done(error(err, 'Error counting users').log());
-			}
+		return user.validate();
 
-			user.roles = count ? [ 'member' ] : [ 'root' ];
+	}).then(() => {
+		return User.count().exec();
 
-			user.save(function(err) {
-				/* istanbul ignore if  */
-				if (err) {
-					return done(error(err, 'Error saving user <%s>', user.email).log());
-				}
-				require('../acl').addUserRoles(user.id, user.roles, function(err) {
-					/* istanbul ignore if  */
-					if (err) {
-						return done(error(err, 'Error updating ACLs for <%s>', user.email).log());
-					}
-					logger.info('[model|user] %s <%s> successfully created with ID "%s" and plan "%s".', count ? 'User' : 'Root user', user.email, user.id, user._plan);
-					done(null, user);
-				});
-			});
-		});
+	}).then(c => {
+		count = c;
+		user.roles = count ? [ 'member' ] : [ 'root' ];
+		return user.save();
+
+	}).then(u => {
+		user = u;
+		return require('../acl').addUserRoles(user.id, user.roles);
+
+	}).then(() => {
+		logger.info('[model|user] %s <%s> successfully created with ID "%s" and plan "%s".', count ? 'User' : 'Root user', user.email, user.id, user._plan);
+		return user;
 	});
 };
+
 UserSchema.statics.toReduced = function(user) {
 	if (!user) {
 		return user;

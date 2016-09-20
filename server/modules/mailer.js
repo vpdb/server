@@ -48,7 +48,7 @@ exports.welcomeLocal = function(user, done) {
 };
 
 exports.releaseSubmitted = function(user, release) {
-	return sendEmail(user, user.email, 'Your release for ' + release._game.title + ' has been submitted', 'release-submitted', {
+	return sendEmail(user, 'Your release for ' + release._game.title + ' has been submitted', 'release-submitted', {
 		user: user,
 		previewUrl: settings.webUri('/games/' + release._game.id + '/releases/' + release.id)
 	}, 'notify_release_moderation_status');
@@ -74,7 +74,7 @@ exports.releaseRefused = function(user, release, message) {
 };
 
 exports.backglassSubmitted = function(user, backglass) {
-	return sendEmail(user, user.email, 'Your backglass for ' + backglass._game.title + ' has been submitted', 'backglass-submitted', {
+	return sendEmail(user, 'Your backglass for ' + backglass._game.title + ' has been submitted', 'backglass-submitted', {
 		user: user,
 		backglass: backglass
 	}, 'notify_backglass_moderation_status');

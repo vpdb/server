@@ -19,10 +19,7 @@
 
 "use strict";
 
-var passport = require('passport');
-
 var settings = require('../modules/settings');
-var config = settings.current;
 
 /**
  * Defines server-side routing.
@@ -68,19 +65,6 @@ module.exports = function(app) {
 	require('./storage/auth').register(app, api, storage);
 	require('./storage/files').register(app, api, storage);
 	require('./storage/releases').register(app, api, storage);
-
-	// authentication
-	if (config.vpdb.passport.github.enabled) {
-		app.get('/auth/github', passport.authenticate('github', { session: false }));
-	}
-	if (config.vpdb.passport.google.enabled) {
-		app.get('/auth/google', passport.authenticate('google', { session: false, scope: 'email' }));
-	}
-	config.vpdb.passport.ipboard.forEach(ipbConfig => {
-		if (ipbConfig.enabled) {
-			app.get('/auth/' + ipbConfig.id, passport.authenticate(ipbConfig.id, { session: false }));
-		}
-	});
 
 	// or else fail
 	app.all(settings.apiPath('/*'), function(req, res) {

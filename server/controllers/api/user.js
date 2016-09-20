@@ -483,14 +483,13 @@ function passportCallback(req, res) {
  * Returns the ACLs for a given user.
  *
  * @param {User} user
- * @param {function} done done(Error, object}
+ * @return Promise.<{permissions: string[]}>
  */
 function getACLs(user) {
-	return acl.userRoles(user.id).then(roles => {
-		return acl.whatResources(roles).then(resources => {
-			return acl.allowedPermissions(user.id, _.keys(resources)).then(permissions => {
-				return { permissions: permissions };
-			});
+	return acl.userRoles(user.id)
+		.then(roles => acl.whatResources(roles))
+		.then(resources => acl.allowedPermissions(user.id, _.keys(resources)))
+		.then(permissions => {
+			return { permissions: permissions };
 		});
-	});
 }

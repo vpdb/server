@@ -56,7 +56,8 @@ exports.configure = function() {
 				passReqToCallback: true,
 				clientID: config.vpdb.passport.github.clientID,
 				clientSecret: config.vpdb.passport.github.clientSecret,
-				callbackURL: settings.webUri('/auth/github/callback')
+				callbackURL: settings.webUri('/auth/github/callback'),
+				scope: ['user:email']
 			}, exports.verifyCallbackOAuth('github')
 		));
 	}
@@ -65,7 +66,7 @@ exports.configure = function() {
 	config.vpdb.passport.ipboard.forEach(ipbConfig => {
 		if (ipbConfig.enabled) {
 
-			var callbackUrl = settings.webUri('/auth/' +  ipbConfig.id + '/callback');
+			var callbackUrl = settings.webUri('/auth/' + ipbConfig.id + '/callback');
 			logger.info('[passport|ipboard:' + ipbConfig.id + '] Enabling IP.Board authentication strategy for "%s" at %s.', ipbConfig.name, ipbConfig.baseURL);
 			passport.use(new IPBoardStrategy({
 					passReqToCallback: true,
@@ -104,12 +105,11 @@ exports.verifyCallbackOAuth = function(strategy, providerName) {
 
 	return function(req, accessToken, refreshToken, profile, callback) { // accessToken and refreshToken are ignored
 
-
 		if (!profile) {
 			logger.warn('[passport|%s] No profile data received.', logtag);
-			return callback(null, false, { message: 'No profile received from ' + logtag + '.'});
+			return callback(null, false, { message: 'No profile received from ' + logtag + '.' });
 		}
-		if (!profile.emails || !profile.emails.length) {
+		if (!_.isArray(profile.emails) || !profile.emails.length) {
 			logger.warn('[passport|%s] Profile data does not contain any email address: %s', logtag, JSON.stringify(profile));
 			return callback(null, false, { message: 'Received profile from ' + logtag + ' does not contain any email address.' });
 		}
@@ -117,21 +117,31 @@ exports.verifyCallbackOAuth = function(strategy, providerName) {
 			logger.warn('[passport|%s] Profile data does not contain any user ID: %s', logtag, JSON.stringify(profile));
 			return callback(null, false, { message: 'Received profile from ' + logtag + ' does not contain user id.' });
 		}
-		var name;
-		if (!profile.displayName && !profile.username) {
-			logger.warn('[passport|%s] Profile data does contain neither display name nor username: %s', logtag, JSON.stringify(profile));
-			name = profile.emails[0].value.substr(0, profile.emails[0].value.indexOf("@"));
-		} else {
-			name = profile.displayName || profile.username;
-		}
 
-		// create query condition
-		var providerMatch = {};
-		providerMatch[provider + '.id'] = profile.id;
-		var condition = [ providerMatch, { 'email': profile.emails[0].value } ];
+		let name, emails;
+		Promise.try(() => {
 
-		logger.info('[passport|%s] Checking for existing user: %s', logtag, JSON.stringify(condition));
-		User.findOne().or(condition).exec(function(err, user) {
+			if (!profile.displayName && !profile.username) {
+				logger.warn('[passport|%s] Profile data does contain neither display name nor username: %s', logtag, JSON.stringify(profile));
+				name = profile.emails[0].value.substr(0, profile.emails[0].value.indexOf("@"));
+			} else {
+				name = profile.displayName || profile.username;
+			}
+
+			// create query condition
+			emails = profile.emails.map(e => e.value);
+			const query = {
+				$or: [
+					{ [provider + '.id']: profile.id },
+					{ email: { $in: emails } },
+					{ emails: { $in: emails } },
+					{ validated_emails: { $in: emails } }
+				]
+			};
+			logger.info('[passport|%s] Checking for existing user: %s', logtag, JSON.stringify(query));
+			return User.findOne(query).exec();
+
+		}).then(user => {
 
 			/*
 			 * FIXME
@@ -157,38 +167,7 @@ exports.verifyCallbackOAuth = function(strategy, providerName) {
 			 *  resulting in entry 2 becoming a zombie.
 			 *  The "right" solution would be to merge the two profiles.
 			 */
-
-			/* istanbul ignore if  */
-			if (err) {
-				return callback(error(err, 'Error checking for user <%s> in database', profile.emails[0].value).log(logtag));
-			}
-			if (!user) {
-				var newUser = {
-					provider: provider,
-					name: name,
-					email: profile.emails[0].value
-				};
-				// optional data
-				if (profile.photos && profile.photos.length > 0) {
-					newUser.thumb = profile.photos[0].value;
-				}
-				newUser[provider] = profile._json; // save original data to separate field
-
-				User.createUser(newUser, false, function(err, user, validationErr) {
-					/* istanbul ignore if  */
-					if (err) {
-						return callback(error(err, 'Error creating new user'));
-					}
-					/* istanbul ignore if */
-					if (validationErr) {
-						return callback(error('Validation error').errors(validationErr.errors).log(logtag));
-					}
-					LogUser.success(req, user, 'registration', { provider: provider, email: newUser.email });
-					logger.info('[passport|%s] New user <%s> created.', logtag, user.email);
-					callback(null, user);
-				});
-
-			} else {
+			if (user) {
 				if (!user[provider]) {
 					LogUser.success(req, user, 'authenticate', { provider: provider, profile: profile._json });
 					logger.info('[passport|%s] Adding profile from %s to user.', logtag, provider, profile.emails[0].value);
@@ -199,6 +178,7 @@ exports.verifyCallbackOAuth = function(strategy, providerName) {
 
 				// update profile data on separate field
 				user[provider] = profile._json;
+				user.emails = _.uniq([ user.email, ...user.emails, ...emails]);
 
 				// optional data
 				if (!user.thumb && profile.photos && profile.photos.length > 0) {
@@ -206,17 +186,53 @@ exports.verifyCallbackOAuth = function(strategy, providerName) {
 				}
 
 				// save and return
-				user.save(function(err, user) {
-					/* istanbul ignore if  */
-					if (err) {
-						return callback(error(err, 'Error updating user').log(logtag));
-					}
+				return user.save();
+			}
 
-					// all good.
-					logger.info('[passport|%s] User <%s> updated.', logtag, user.email);
-					callback(null, user);
-				});
+			// check if username doesn't conflict
+			let newUser;
+			return User.findOne({ name: name }).exec().then(dupeNameUser => {
+				if (dupeNameUser) {
+					name += Math.floor(Math.random() * 1000);
+				}
+
+				newUser = {
+					provider: provider,
+					name: name,
+					email: profile.emails[0].value
+				};
+				// optional data
+				if (profile.photos && profile.photos.length > 0) {
+					newUser.thumb = profile.photos[0].value;
+				}
+				newUser[provider] = profile._json; // save original data to separate field
+				newUser.emails = _.uniq(emails);
+
+				return User.createUser(newUser, false);
+
+			}).then(user => {
+				LogUser.success(req, user, 'registration', { provider: provider, email: newUser.email });
+				logger.info('[passport|%s] New user <%s> created.', logtag, user.email);
+				return user;
+			});
+
+		}).then(user => {
+			callback(null, user);
+
+		}).catch(err => {
+
+			if (err.constructor && err.constructor.name === 'Err') {
+				callback(err);
+
+			} else if (err.errors && err.constructor && err.constructor.name === 'MongooseError') {
+				callback(error('User validations failed. See below for details.').errors(err.errors).warn(), 422);
+
+			/* istanbul ignore next: we always wrap errors in Err. */
+			} else {
+				logger.error(err.stack);
+				callback(error(err, 'Error during authentication.').log());
 			}
 		});
+
 	};
 };

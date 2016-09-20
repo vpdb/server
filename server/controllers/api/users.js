@@ -38,49 +38,51 @@ var redis = require('redis').createClient(config.vpdb.redis.port, config.vpdb.re
 /**
  * Creates a new user.
  *
- * @param {object} req Request object
- * @param {object} res Response object
+ * @param {Request} req Request object
+ * @param {Response} res Response object
  */
 exports.create = function(req, res) {
 
-	var newUser = _.extend(_.pick(req.body, 'username', 'password', 'email'), {
-		provider: 'local'
-	});
+	let newUser, skipEmailConfirmation, testMode;
+	Promise.try(() => {
 
-	// api test behavior
-	var testMode = process.env.NODE_ENV === 'test';
-	var skipEmailConfirmation = testMode && req.body.skipEmailConfirmation;
+		newUser = _.assignIn(_.pick(req.body, 'username', 'password', 'email'), {
+			provider: 'local'
+		});
 
-	var assert = api.assert(error, 'create', newUser.email, res);
+		// api test behavior
+		testMode = process.env.NODE_ENV === 'test';
+		skipEmailConfirmation = testMode && req.body.skipEmailConfirmation;
 
-	// TODO make sure newUser.email is sane (comes from user directly)
-	User.findOne({ email: newUser.email }, assert(function(user) {
+		// TODO make sure newUser.email is sane (comes from user directly)
+		return User.findOne({ email: newUser.email }).exec();
+
+	}).then(user => {
 
 		if (user) {
-			return api.fail(res, error('User with email <%s> already exists.', newUser.email).warn('create'), 409);
+			throw error('User with email <%s> already exists.', newUser.email).warn('create').status(409);
 		}
-		var confirmUserEmail = config.vpdb.email.confirmUserEmail && !skipEmailConfirmation;
-		User.createUser(newUser, confirmUserEmail, assert(function(user, validationErr) {
-			if (validationErr) {
-				return api.fail(res, error('Validations failed. See below for details.').errors(validationErr.errors).warn('create'), 422);
-			}
+		let confirmUserEmail = config.vpdb.email.confirmUserEmail && !skipEmailConfirmation;
+		return User.createUser(newUser, confirmUserEmail);
 
-			// return result now and send email afterwards
-			if (testMode && req.body.returnEmailToken) {
-				api.success(res, _.extend(user.toDetailed(), { email_token: user.email_status.token }), 201);
-			} else {
-				api.success(res, user.toDetailed(), 201);
-			}
+	}).then(user => {
 
-			LogUser.success(req, user, 'registration', { provider: 'local', email: newUser.email, username: newUser.username });
+		LogUser.success(req, user, 'registration', { provider: 'local', email: newUser.email, username: newUser.username });
 
-			// user validated and created. time to send the activation email.
-			if (config.vpdb.email.confirmUserEmail) {
-				mailer.registrationConfirmation(user);
-			}
+		// return result now and send email afterwards
+		if (testMode && req.body.returnEmailToken) {
+			api.success(res, _.extend(user.toDetailed(), { email_token: user.email_status.token }), 201);
 
-		}, 'Error creating user <%s>.'));
-	}, 'Error finding user with email <%s>'));
+		} else {
+			api.success(res, user.toDetailed(), 201);
+		}
+
+		// user validated and created. time to send the activation email.
+		if (config.vpdb.email.confirmUserEmail) {
+			mailer.registrationConfirmation(user);
+		}
+
+	}).catch(api.handleError(res, error, 'Error creating user'));
 };
 
 

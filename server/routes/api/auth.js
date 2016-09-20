@@ -19,15 +19,34 @@
 
 "use strict";
 
+var passport = require('passport');
+
 var settings = require('../../modules/settings');
+var config = settings.current;
 
 exports.register = function(app, api) {
 
+	// local authentication
 	app.post(settings.apiPath('/authenticate'), api.user.authenticate);
+
+	// mock route for simulating oauth2 callbacks
 	if (process.env.NODE_ENV === 'test') {
-		// mock route for simulating oauth2 callbacks
 		app.post(settings.apiPath('/authenticate/mock'), api.user.authenticateOAuth2Mock);
 	}
-	app.get(settings.apiPath('/authenticate/:strategy'), api.user.authenticateOAuth2);
 
+	// oauth init
+	if (config.vpdb.passport.github.enabled) {
+		app.get('/auth/github', passport.authenticate('github', { session: false, scope: [ 'user:email' ] }));
+	}
+	if (config.vpdb.passport.google.enabled) {
+		app.get('/auth/google', passport.authenticate('google', { session: false, scope: 'email' }));
+	}
+	config.vpdb.passport.ipboard.forEach(ipbConfig => {
+		if (ipbConfig.enabled) {
+			app.get('/auth/' + ipbConfig.id, passport.authenticate(ipbConfig.id, { session: false }));
+		}
+	});
+
+	// oauth callback
+	app.get(settings.apiPath('/authenticate/:strategy'), api.user.authenticateOAuth2);
 };

@@ -136,15 +136,17 @@ UserSchema.virtual('gravatar_id')
 
 UserSchema.virtual('plan')
 	.get(function() {
-		if (this._plan) {
-			var plan = config.vpdb.quota.plans[this._plan];
-			return {
-				id: this._plan,
-				app_tokens_enabled: plan.enableAppTokens,
-				push_notifications_enabled: plan.enableRealtime
-			};
-		}
-		return null;
+		let plan = _.find(config.vpdb.quota.plans, p => p.id === this._plan);
+		return {
+			id: this._plan,
+			app_tokens_enabled: plan.enableAppTokens,
+			push_notifications_enabled: plan.enableRealtime
+		};
+	});
+
+UserSchema.virtual('planConfig')
+	.get(function() {
+		return _.find(config.vpdb.quota.plans, p => p.id === this._plan);
 	});
 
 
@@ -316,8 +318,8 @@ UserSchema.path('password_hash').validate(function() {
 }, null);
 
 UserSchema.path('_plan').validate(function(plan) {
-	return _.includes(_.keys(config.vpdb.quota.plans), plan);
-}, 'Plan must be one of: [' + _.keys(config.vpdb.quota.plans).join(',') + ']');
+	return _.includes(config.vpdb.quota.plans.map(p => p.id), plan);
+}, 'Plan must be one of: [' +  config.vpdb.quota.plans.map(p => p.id).join(',') + ']');
 
 
 //-----------------------------------------------------------------------------

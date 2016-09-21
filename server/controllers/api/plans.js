@@ -26,8 +26,8 @@ var config = require('../../modules/settings').current;
 exports.list = function(req, res) {
 
 	var plans = [];
-	_.each(config.vpdb.quota.plans, function(plan, name) {
-		plans.push(_.extend(plan, { name: name, is_default: name === config.vpdb.quota.defaultPlan }));
+	config.vpdb.quota.plans.forEach(plan => {
+		plans.push(_.extend(plan, { name: plan.name || plan.id, is_default: plan.id === config.vpdb.quota.defaultPlan }));
 	});
 	res.send(plans);
 };

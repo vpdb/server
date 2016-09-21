@@ -50,10 +50,10 @@ const User = require('mongoose').model('User');
  * @param {Response} res
  * @param {string} [resource=null] ACL resource
  * @param {string} [permission=null] ACL permission
- * @param {string} [plan=null] key/value pairs of plan options that must match
+ * @param {string} [planAttrs=null] key/value pairs of plan options that must match, e.g. { enableAppTokens: false }
  * @returns Promise
  */
-exports.auth = function(req, res, resource, permission, plan) {
+exports.auth = function(req, res, resource, permission, planAttrs) {
 
 	const now = new Date();
 	let token;
@@ -113,8 +113,8 @@ exports.auth = function(req, res, resource, permission, plan) {
 				}
 
 				// fail if incorrect plan
-				if (!config.vpdb.quota.plans[ t._created_by._plan ].enableAppTokens) {
-					throw error('Your current plan "%s" does not allow the use of application access tokens. Upgrade or contact an admin.', t._created_by._plan).status(401);
+				if (!t._created_by.planConfig.enableAppTokens) {
+					throw error('Your current plan "%s" does not allow the use of application access tokens. Upgrade or contact an admin.', t._created_by.planConfig.id).status(401);
 				}
 
 				// fail if expired
@@ -179,13 +179,13 @@ exports.auth = function(req, res, resource, permission, plan) {
 		user = u;
 
 		// check plan config if provided
-		if (_.isObject(plan)) {
-			for (let key in plan) {
-				if (plan.hasOwnProperty(key)) {
-					let val = plan[ key ];
-					if (config.vpdb.quota.plans[ user._plan ][ key ] !== val) {
+		if (_.isObject(planAttrs)) {
+			for (let key in planAttrs) {
+				if (planAttrs.hasOwnProperty(key)) {
+					let val = planAttrs[key];
+					if (user.planConfig[key] !== val) {
 						throw error('User <%s> with plan "%s" tried to access `%s` but was denied access due to missing plan configuration (%s is %s instead of %s).',
-							user.email, user._plan, req.url, key, val, config.vpdb.quota.plans[ user._plan ][ key ]).display('Access denied').status(403).log();
+							user.email, user._plan, req.url, key, val, user.planConfig[key]).display('Access denied').status(403).log();
 					}
 				}
 			}

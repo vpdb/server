@@ -32,28 +32,26 @@ function Quota() {
 	var duration;
 	this.quota = {};
 	// we create a quota module for each duration
-	for (var plan in quotaConfig.plans) {
-		if (quotaConfig.plans.hasOwnProperty(plan)) {
-			if (quotaConfig.plans[plan].unlimited === true) {
-				logger.info('[quota] Skipping unlimited plan "%s".', plan);
-				continue;
-			}
-			duration = quotaConfig.plans[plan].per;
-			if (!this.quota[duration]) {
-				logger.info('[quota] Setting up quota per %s for plan %s...', duration, plan);
-				this.quota[duration] = quotaModule.create({
-					timeUnit: duration,
-					interval: 1,
-					host: config.vpdb.redis.host,
-					port: config.vpdb.redis.port,
-					db: config.vpdb.redis.db
-				});
-				Promise.promisifyAll(this.quota[duration]);
-			} else {
-				logger.info('[quota] Not setting up plan %s because volos needs setups per duration and we already set up per %s.', plan, duration);
-			}
+	quotaConfig.plans.forEach(plan => {
+		if (plan.unlimited === true) {
+			logger.info('[quota] Skipping unlimited plan "%s".', plan.id);
+			return;
 		}
-	}
+		duration = plan.per;
+		if (!this.quota[duration]) {
+			logger.info('[quota] Setting up quota per %s for plan %s...', duration, plan.id);
+			this.quota[duration] = quotaModule.create({
+				timeUnit: duration,
+				interval: 1,
+				host: config.vpdb.redis.host,
+				port: config.vpdb.redis.port,
+				db: config.vpdb.redis.db
+			});
+			Promise.promisifyAll(this.quota[duration]);
+		} else {
+			logger.info('[quota] Not setting up plan %s because volos needs setups per duration and we already set up per %s.', plan.id, duration);
+		}
+	});
 }
 
 /**
@@ -63,48 +61,46 @@ function Quota() {
  * @param {function} [callback]
  * @returns {Promise.<{ unlimited: boolean, period: String, limit: Number, remaining: Number, reset: Number }>}
  */
-Quota.prototype.getCurrent = function(user, callback) {
+Quota.prototype.getCurrent = function(user) {
 
-	let plan = user._plan || quotaConfig.defaultPlan;
-
-	// undefined? plans might have changed and migration failed or whatever: fall back to default plan
-	if (!_.isObject(quotaConfig.plans[plan])) {
-		plan = quotaConfig.defaultPlan;
+	let plan = user.planConfig;
+	if (!plan) {
+		throw new Error('Unable to find plan "%s" for user.', user._plan);
 	}
 
 	// unlimited?
-	if (quotaConfig.plans[plan].unlimited === true) {
-		return Promise.resolve({ unlimited: true, limit: 0, period: 'never', remaining: 0, reset: 0 }).nodeify(callback);
+	if (plan.unlimited === true) {
+		return Promise.resolve({ unlimited: true, limit: 0, period: 'never', remaining: 0, reset: 0 });
 	}
 
 	return Promise.try(() => {
 
 		// TODO fix when fixed: https://github.com/apigee-127/volos/issues/33
-		return this.quota[quotaConfig.plans[plan].per].applyAsync({
+		return this.quota[plan.per].applyAsync({
 			identifier: user.id,
 			weight: -2,
-			allow: quotaConfig.plans[plan].credits
+			allow: plan.credits
 		});
 
 	}).then(() => {
 
-		return this.quota[quotaConfig.plans[plan].per].applyAsync({
+		return this.quota[plan.per].applyAsync({
 			identifier: user.id,
 			weight: 2,
-			allow: quotaConfig.plans[plan].credits
+			allow: plan.credits
 		});
 
 	}).then(result => {
 
 		return {
 			unlimited: false,
-			period: quotaConfig.plans[plan].per,
+			period: plan.per,
 			limit: result.allowed,
 			remaining: result.allowed - result.used,
 			reset: result.expiryTime
 		};
 
-	}).nodeify(callback);
+	});
 };
 
 /**
@@ -124,10 +120,10 @@ Quota.prototype.isAllowed = function(req, res, files, callback) {
 		files = [ files ];
 	}
 
-	let plan = req.user._plan || quotaConfig.defaultPlan;
+	let plan = req.user.planConfig;
 
 	// allow unlimited plans
-	if (quotaConfig.plans[plan].unlimited === true) {
+	if (plan.unlimited === true) {
 		return Promise.resolve(true).nodeify(callback);
 	}
 
@@ -146,8 +142,8 @@ Quota.prototype.isAllowed = function(req, res, files, callback) {
 			return Promise.resolve(false).nodeify(callback);
 		}
 
-		if (!quotaConfig.plans[plan] && quotaConfig.plans[plan] !== 0) {
-			return Promise.reject(error('No quota defined for plan "%s"', plan)).nodeify(callback);
+		if (!plan) {
+			return Promise.reject(error('No quota defined for plan "%s"', req.user._plan)).nodeify(callback);
 		}
 
 		sum += cost;
@@ -159,13 +155,13 @@ Quota.prototype.isAllowed = function(req, res, files, callback) {
 	}
 
 	// https://github.com/apigee-127/volos/tree/master/quota/common#quotaapplyoptions-callback
-	return this.quota[quotaConfig.plans[plan].per].applyAsync({
+	return this.quota[plan.per].applyAsync({
 			identifier: req.user.id,
 			weight: sum,
-			allow: quotaConfig.plans[plan].credits
+			allow: plan.credits
 		})
 		.then(result => {
-			logger.info('[quota] Quota check for %s credit(s) %s on <%s> for %d file(s) with %d quota left for another %d seconds (plan allows %s per %s).', sum, result.isAllowed ? 'passed' : 'FAILED', req.user.email, files.length, result.allowed - result.used, Math.round(result.expiryTime / 1000), quotaConfig.plans[plan].credits, quotaConfig.plans[plan].per);
+			logger.info('[quota] Quota check for %s credit(s) %s on <%s> for %d file(s) with %d quota left for another %d seconds (plan allows %s per %s).', sum, result.isAllowed ? 'passed' : 'FAILED', req.user.email, files.length, result.allowed - result.used, Math.round(result.expiryTime / 1000), plan.credits, plan.per);
 			res.set({
 				'X-RateLimit-Limit': result.allowed,
 				'X-RateLimit-Remaining': result.allowed - result.used,

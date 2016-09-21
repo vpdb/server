@@ -80,7 +80,7 @@ exports.unstar = function(type, entity, user) {
  * @returns {boolean} True if a message can be sent, false otherwise.
  */
 exports.isUserEnabled = function(user) {
-	return exports.isEnabled && config.vpdb.quota.plans[user._plan].enableRealtime;
+	return exports.isEnabled && user.planConfig.enableRealtime;
 };
 
 /* istanbul ignore next: Pusher not enabled in tests */

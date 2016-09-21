@@ -222,13 +222,13 @@ module.exports = {
 			 *  You can add any number of plans here (they will show up in the
 			 *  user control panel), but at least one default plan must exist.
 			 */
-			plans: {
-				free: { credits: 5, per: 'day', enableAppTokens: true, enableRealtime: false },
-				bronze: { credits: 50, per: 'day', enableAppTokens: true, enableRealtime: false },
-				silver: { credits: 200, per: 'day', enableAppTokens: true, enableRealtime: false },
-				gold: { credits: 5000, per: 'day', enableAppTokens: true, enableRealtime: false },
-				unlimited: { unlimited: true, enableAppTokens: true, enableRealtime: false }
-			},
+			plans: [
+				{ id: 'free', credits: 5, per: 'day', enableAppTokens: true, enableRealtime: false },
+				{ id: 'bronze', credits: 50, per: 'day', enableAppTokens: true, enableRealtime: false },
+				{ id: 'silver', credits: 200, per: 'day', enableAppTokens: true, enableRealtime: false },
+				{ id: 'gold', credits: 5000, per: 'day', enableAppTokens: true, enableRealtime: false },
+				{ id: 'unlimited', unlimited: true, enableAppTokens: true, enableRealtime: false }
+			],
 
 			/**
 			 * The default plan which is assigned to new users.

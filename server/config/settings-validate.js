@@ -294,43 +294,45 @@ module.exports = {
 			plans: function(plans) {
 				var durations = ['minute', 'hour', 'day', 'week'];
 				/* istanbul ignore if */
-				if (_.keys(plans).length < 1) {
+				if (!_.isArray(plans)) {
+					return 'Plans must be an array. You might need to migrate: Change to array and move key into "id" attribute.';
+				}
+				/* istanbul ignore if */
+				if (plans.length < 1) {
 					return 'Quota plans must contain at least one plan.';
 				}
 				var plan;
 				var errors = [];
-				for (var key in plans) {
-					if (plans.hasOwnProperty(key)) {
-						plan = plans[key];
-						if (plan.unlimited !== true) {
-							/* istanbul ignore if */
-							if (!_.includes(durations, plan.per)) {
-								errors.push({
-									path: key + '.per',
-									message: 'Invalid duration. Valid durations are: ["' + durations.join('", "') + '"].',
-									setting: plan.per
-								});
-							}
-							/* istanbul ignore if */
-							if (!_.isNumber(parseInt(plan.credits)) || parseInt(plan.credits) < 0) {
-								errors.push({
-									path: key + '.credits',
-									message: 'Credits must be an integer equal or greater than 0.',
-									setting: plan.credits
-								});
-							}
 
-							/* istanbul ignore if */
-							if (!_.isBoolean(plan.enableAppTokens)) {
-								return 'Plan must define whether app tokens are allowed or not.';
-							}
-							/* istanbul ignore if */
-							if (!_.isBoolean(plan.enableRealtime)) {
-								return 'Plan must define whether real time is enabled or not.';
-							}
+				plans.forEach(plan => {
+					if (plan.unlimited !== true) {
+						/* istanbul ignore if */
+						if (!_.includes(durations, plan.per)) {
+							errors.push({
+								path: plan.id + '.per',
+								message: 'Invalid duration. Valid durations are: ["' + durations.join('", "') + '"].',
+								setting: plan.per
+							});
+						}
+						/* istanbul ignore if */
+						if (!_.isNumber(parseInt(plan.credits)) || parseInt(plan.credits) < 0) {
+							errors.push({
+								path: plan.id + '.credits',
+								message: 'Credits must be an integer equal or greater than 0.',
+								setting: plan.credits
+							});
+						}
+
+						/* istanbul ignore if */
+						if (!_.isBoolean(plan.enableAppTokens)) {
+							return 'Plan must define whether app tokens are allowed or not.';
+						}
+						/* istanbul ignore if */
+						if (!_.isBoolean(plan.enableRealtime)) {
+							return 'Plan must define whether real time is enabled or not.';
 						}
 					}
-				}
+				});
 				/* istanbul ignore if */
 				if (errors.length > 0) {
 					return errors;
@@ -339,7 +341,7 @@ module.exports = {
 
 			defaultPlan: function(defaultPlan, setting, settings) {
 				/* istanbul ignore if */
-				if (!settings.vpdb.quota.plans[defaultPlan]) {
+				if (!_.find(settings.vpdb.quota.plans, p => p.id === defaultPlan)) {
 					return 'Default plan must exist in the "vpdb.quota.plans" setting.';
 				}
 			},

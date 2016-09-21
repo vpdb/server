@@ -28,12 +28,12 @@ module.exports = {
 		},
 		skipImageOptimizations: true,
 		quota: {
-			plans: {
-				free:   { credits: 3, per: 'day', enableAppTokens: false, enableRealtime: false },
-				subscribed: { credits: 50, per: 'day', enableAppTokens: true, enableRealtime: false },
-				vip: { credits: 200, per: 'day', enableAppTokens: true, enableRealtime: true },
-				unlimited: { unlimited: true, enableAppTokens: true, enableRealtime: true }
-			},
+			plans: [
+				{ id: 'free', credits: 3, per: 'day', enableAppTokens: false, enableRealtime: false },
+				{ id: 'subscribed', credits: 50, per: 'day', enableAppTokens: true, enableRealtime: false },
+				{ id: 'vip', credits: 200, per: 'day', enableAppTokens: true, enableRealtime: true },
+				{ id: 'unlimited', unlimited: true, enableAppTokens: true, enableRealtime: true }
+			],
 			defaultPlan: 'free',
 			costs: {
 				'backglass': { category: { video: 1, image: 0 }, variation: -1 },

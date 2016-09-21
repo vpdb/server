@@ -34,12 +34,12 @@ var auth = require('../auth');
  * @param controllerFct Callback, called with (`req`, `res`). This is your API logic
  * @param resource ACL for resource
  * @param permission ACL for permission
- * @param plan key/value pairs of plan options that must match
+ * @param planConfig key/value pairs of plan options that must match
  * @returns {Function} Middleware function
  */
-exports.auth = function(controllerFct, resource, permission, plan) {
+exports.auth = function(controllerFct, resource, permission, planConfig) {
 	return function(req, res) {
-		auth.auth(req, res, resource, permission, plan)
+		auth.auth(req, res, resource, permission, planConfig)
 			.then(() => controllerFct(req, res))
 			.catch(err => exports.fail(res, err, err.code));
 	};

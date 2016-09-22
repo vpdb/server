@@ -32,6 +32,7 @@ angular.module('vpdb.releases.details', []).controller('ReleaseDetailsController
 	$scope.releaseId = $stateParams.releaseId;
 	$scope.flavors = Flavors;
 	$scope.found = false;
+	$scope.newComment = 'default text';
 
 	// GAME
 	$scope.game = GameResource.get({ id: $scope.gameId });

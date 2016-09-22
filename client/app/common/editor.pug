@@ -1,0 +1,33 @@
+include ../template/_mixins
+
+.media
+	.media-left.avatar
+		img.img-avatar.pull-left(gravatar-src="auth.user.gravatar_id", gravatar-default="404", fallback-icon="user")
+	.media-body.media--full-width
+		uib-tabset
+			.pull-right
+				+icon('txt-bold').a(ng-click="textBold()")
+				+icon('txt-italic').space-right-2x
+				+icon('txt-quote')
+				+icon('txt-code').space-right-2x
+				+icon('txt-numbered-list')
+				+icon('txt-bulleted-list')
+			uib-tab
+				uib-tab-heading(title="Write")
+					+icon('edit')
+					.panel-triangle
+				textarea.textarea--full.animate(
+					placeholder="Your comment",
+					ng-model="$parent.$parent.text",
+					msd-elastic,
+					mentio,
+					mentio-items="foundUsers",
+					mentio-search="findUser(term)",
+					mentio-select="getUserMention(item)",
+					mentio-template-url="user-item.html"
+				)
+			uib-tab
+				uib-tab-heading(title="Preview"): +icon('eye')
+				div.markdown(markdown="$parent.$parent.text")
+				label.tab__label(ng-show="!$parent.$parent.text || $parent.$parent.text.length == 0") Nothing to preview.
+		label.label--small.padder-bottom(markdown-info="Comments are parsed with Markdown.")

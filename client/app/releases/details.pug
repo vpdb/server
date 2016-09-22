@@ -82,6 +82,9 @@ p.padder-top(ng-show="pageLoading") Loading...
 	// left column (main content)
 	.col-sm-9.col-sm-pull-3.col--main(ng-show="found")
 
+		p.padder-top-2x
+		editor(text="testComment")
+
 		.alert.alert-warning.alert--no-bottom-margin(ng-show="release.moderation && !release.moderation.is_refused && !release.moderation.is_approved")
 			.text-center
 				+icon('warning').shift-up.space-right
@@ -196,8 +199,13 @@ p.padder-top(ng-show="pageLoading") Loading...
 				img.img-avatar.pull-left(gravatar-src="auth.user.gravatar_id", gravatar-default="404", fallback-icon="user")
 			.media-body.media--full-width
 				uib-tabset
-
-					label.label--small.pull-right(markdown-info="Comments are parsed with Markdown.")
+					.pull-right
+						+icon('txt-bold')
+						+icon('txt-italic').space-right-2x
+						+icon('txt-quote')
+						+icon('txt-code').space-right-2x
+						+icon('txt-numbered-list')
+						+icon('txt-bulleted-list')
 					uib-tab
 						uib-tab-heading(title="Write")
 							+icon('edit')
@@ -216,6 +224,7 @@ p.padder-top(ng-show="pageLoading") Loading...
 						uib-tab-heading(title="Preview"): +icon('eye')
 						div.markdown(markdown="$parent.$parent.newComment")
 						label.tab__label(ng-show="!$parent.$parent.newComment || $parent.$parent.newComment.length == 0") Nothing to preview.
+				label.label--small.padder-bottom(markdown-info="Comments are parsed with Markdown.")
 
 		button.btn.btn-default.padder-top.pull-right(ng-show="auth.isAuthenticated", ng-click="addComment(release.id)") Comment
 		.clearfix

@@ -290,7 +290,7 @@ ReleaseSchema.pre('remove', function(next) {
 
 	return Promise.try(() => {
 		// remove linked comments
-		return mongoose.model('Comment').remove({ '_ref.release': this._id }).exec();
+		return mongoose.model('Comment').remove({ $or: [ { '_ref.release': this._id }, { '_ref.release_moderation': this._id } ]}).exec();
 
 	}).then(() => {
 		// remove table blocks

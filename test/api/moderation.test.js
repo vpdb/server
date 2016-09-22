@@ -24,6 +24,7 @@ var fs = require('fs');
 var async = require('async');
 var request = require('superagent');
 var expect = require('expect.js');
+var faker = require('faker');
 
 var superagentTest = require('../modules/superagent-test');
 var hlp = require('../modules/helper');
@@ -109,6 +110,66 @@ describe('The VPDB moderation feature', function() {
 				.end(function(err, res) {
 					expect(res.body.errors).to.have.length(1);
 					hlp.expectValidationError(err, res, 'message', 'message must be provided');
+					done();
+				});
+		});
+
+	});
+
+	describe('when commenting a moderated release', function() {
+
+		var release;
+
+		before(function(done) {
+			hlp.setupUsers(request, {
+				member: { roles: [ 'member' ] },
+				member2: { roles: [ 'member' ] },
+				moderator: { roles: [ 'moderator' ] }
+			}, function() {
+				hlp.release.createRelease('member', request, function(r) {
+					release = r;
+					done(null, r);
+				});
+			});
+		});
+
+		after(function(done) {
+			hlp.cleanup(request, done);
+		});
+
+		it('should fail if the commentor is neither owner nor moderator', function(done) {
+			request
+				.post('/api/v1/releases/' + release.id + '/moderate/comments')
+				.as('member2')
+				.send({})
+				.end(hlp.status(403, 'must be either moderator or owner', done));
+		});
+
+		it('should succeed when posting as owner', function(done) {
+			var msg = faker.company.catchPhrase();
+			request
+				.post('/api/v1/releases/' + release.id + '/moderate/comments')
+				.save({ path: 'releases/create-moderation-comment'})
+				.as('member')
+				.send({ message: msg })
+				.end(function(err, res) {
+					hlp.expectStatus(err, res, 201);
+					expect(res.body.from.id).to.be(hlp.getUser('member').id);
+					expect(res.body.message).to.be(msg);
+					done();
+				});
+		});
+
+		it.only('should succeed when posting as moderator', function(done) {
+			var msg = faker.company.catchPhrase();
+			request
+				.post('/api/v1/releases/' + release.id + '/moderate/comments')
+				.as('moderator')
+				.send({ message: msg })
+				.end(function(err, res) {
+					hlp.expectStatus(err, res, 201);
+					expect(res.body.from.id).to.be(hlp.getUser('moderator').id);
+					expect(res.body.message).to.be(msg);
 					done();
 				});
 		});

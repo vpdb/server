@@ -37,7 +37,8 @@ var fields = {
 	id:        { type: String, required: true, unique: true, 'default': shortId.generate },
 	_from:     { type: Schema.ObjectId, required: true, ref: 'User', index: true },
 	_ref: {
-		release: { type: Schema.ObjectId, ref: 'Release', index: true, sparse: true }
+		release: { type: Schema.ObjectId, ref: 'Release', index: true, sparse: true },
+		release_moderation: { type: Schema.ObjectId, ref: 'Release', index: true, sparse: true }
 	},
 	message:   { type: String, required: 'You must provide a message when commenting.' },
 	ip:        { type: String, required: true },

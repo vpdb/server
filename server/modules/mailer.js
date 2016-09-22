@@ -136,6 +136,18 @@ exports.releaseCommented = function(user, commentor, game, release, message) {
 	}, 'notify_created_release_comments');
 };
 
+exports.releaseModerationCommented = function(user, commentor, game, release, who, message) {
+	return sendEmail(user, 'Comment about your submitted "' + release.name + '" of ' + game.title, 'release-moderation-commented', {
+		user: user,
+		who: who, // 'Moderator' or 'Submitter'
+		release: release,
+		game: game,
+		commentor: commentor,
+		message: wrapMessage(message),
+		url: settings.webUri('/games/' + game.id + '/releases/' + release.id)
+	});
+};
+
 
 /**
  * Sends an email.

@@ -44,6 +44,7 @@ exports.register = function(app, api) {
 	app.get(settings.apiPath('/releases/:id/star'), api.auth(api.stars.get('release'), 'releases', 'star'));
 
 	app.post(settings.apiPath('/releases/:id/moderate'), api.auth(api.releases.moderate, 'releases', 'moderate'));
+	app.post(settings.apiPath('/releases/:id/moderate/comments'), api.auth(api.comments.createForReleaseModeration, 'releases', 'add'));
 
 	app.get(settings.apiPath('/releases/:id/events'), api.anon(api.events.list({ byRelease: true })));
 };

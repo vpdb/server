@@ -39,7 +39,6 @@ Then make these are enabled:
 	APT::Periodic::AutocleanInterval "7";
 	APT::Periodic::Unattended-Upgrade "1";
 
-
 ### Setup Firewall
 
 	sudo apt-get -y install iptables-persistent
@@ -96,7 +95,7 @@ Set:
 
 ### MongoDB
 
-Install 3.x from repo:
+Install 3.2 from repo:
 
 	sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv EA312927
 	sudo su -
@@ -358,7 +357,7 @@ Now setup SSH tunnels. Back as root:
 	vi /etc/systemd/system/mongotunnel.secondary.service
 	
 	[Unit]
-	Description=Keeps a tunnel to 'remote.example.com' open
+	Description=Keeps a tunnel to 'vpdb.secondary' open
 	After=network-online.target
 	
 	[Service]

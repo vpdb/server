@@ -7,11 +7,11 @@ include ../template/_mixins
 		uib-tabset
 			.pull-right
 				+icon('txt-bold').a(ng-click="textBold()")
-				+icon('txt-italic').space-right-2x
-				+icon('txt-quote')
-				+icon('txt-code').space-right-2x
-				+icon('txt-numbered-list')
-				+icon('txt-bulleted-list')
+				+icon('txt-italic').a.space-right-2x(ng-click="textItalic()")
+				+icon('txt-quote').a
+				+icon('txt-code').a.space-right-2x
+				+icon('txt-numbered-list').a
+				+icon('txt-bulleted-list').a
 			uib-tab
 				uib-tab-heading(title="Write")
 					+icon('edit')

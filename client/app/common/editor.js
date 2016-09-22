@@ -30,7 +30,7 @@ angular.module('vpdb.editor', [])
 	 *  rating-user="gameRating"
 	 *  rating-action="rateGame($rating)"
 	 */
-	.directive('editor', function($timeout) {
+	.directive('editor', function() {
 
 		function setSelectionRange(input, selectionStart, selectionEnd) {
 			if (input.setSelectionRange) {
@@ -107,10 +107,6 @@ angular.module('vpdb.editor', [])
 			}
 		}
 
-		function bold(textarea, text) {
-			return wrap(textarea, text, '**');
-		}
-
 		function apply(element, scope, result) {
 			scope.text = result.text;
 			setTimeout(function() {
@@ -125,9 +121,15 @@ angular.module('vpdb.editor', [])
 			replace: true,
 			templateUrl: '/common/editor.html',
 			controller: function($scope, $element) {
+
 				$scope.textBold = function() {
 					var textarea = $element.find('textarea');
-					apply(textarea, $scope, bold(textarea, $scope.text));
+					apply(textarea, $scope, wrap(textarea, $scope.text, '**'));
+				};
+
+				$scope.textItalic = function() {
+					var textarea = $element.find('textarea');
+					apply(textarea, $scope, wrap(textarea, $scope.text, '_'));
 				};
 			}
 		};

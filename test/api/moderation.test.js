@@ -149,18 +149,25 @@ describe('The VPDB moderation feature', function() {
 			var msg = faker.company.catchPhrase();
 			request
 				.post('/api/v1/releases/' + release.id + '/moderate/comments')
-				.save({ path: 'releases/create-moderation-comment'})
 				.as('member')
 				.send({ message: msg })
 				.end(function(err, res) {
 					hlp.expectStatus(err, res, 201);
 					expect(res.body.from.id).to.be(hlp.getUser('member').id);
 					expect(res.body.message).to.be(msg);
-					done();
+					request
+						.get('/api/v1/releases/' + release.id + '/moderate/comments')
+						.as('member')
+						.end(function(err, res) {
+							hlp.expectStatus(err, res, 200);
+							expect(res.body).to.be.an('array');
+							expect(res.body).to.not.be.empty();
+							done();
+						});
 				});
 		});
 
-		it.only('should succeed when posting as moderator', function(done) {
+		it('should succeed when posting as moderator', function(done) {
 			var msg = faker.company.catchPhrase();
 			request
 				.post('/api/v1/releases/' + release.id + '/moderate/comments')
@@ -172,6 +179,49 @@ describe('The VPDB moderation feature', function() {
 					expect(res.body.message).to.be(msg);
 					done();
 				});
+		});
+
+	});
+
+	describe('when listing moderation comments of a release', function() {
+
+		var release;
+		before(function(done) {
+			hlp.setupUsers(request, {
+				member: { roles: [ 'member' ] },
+				member2: { roles: [ 'member' ] },
+				moderator: { roles: [ 'moderator' ] }
+			}, function() {
+				hlp.release.createRelease('member', request, function(r) {
+					release = r;
+					done(null, r);
+				});
+			});
+		});
+
+		after(function(done) {
+			hlp.cleanup(request, done);
+		});
+
+		it('should fail if the commentor is neither owner nor moderator', function(done) {
+			request
+				.get('/api/v1/releases/' + release.id + '/moderate/comments')
+				.as('member2')
+				.end(hlp.status(403, 'must be either moderator or owner', done));
+		});
+
+		it('should succeed when listing as owner', function(done) {
+			request
+				.get('/api/v1/releases/' + release.id + '/moderate/comments')
+				.as('member')
+				.end(hlp.status(200, done));
+		});
+
+		it('should succeed when listing as moderator', function(done) {
+			request
+				.get('/api/v1/releases/' + release.id + '/moderate/comments')
+				.as('moderator')
+				.end(hlp.status(200, done));
 		});
 
 	});

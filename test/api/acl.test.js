@@ -207,6 +207,10 @@ describe('The ACLs of the VPDB API', function() {
 			request.post('/api/v1/releases/123/moderate/comments').send({}).end(hlp.status(401, done));
 		});
 
+		it('should deny access to release moderation comment retrieval', function(done) {
+			request.get('/api/v1/releases/123/moderate/comments').end(hlp.status(401, done));
+		});
+
 		it('should deny access to user starring', function(done) {
 			request.post('/api/v1/users/123/star').send({ value: 1 }).end(hlp.status(401, done));
 		});
@@ -490,6 +494,10 @@ describe('The ACLs of the VPDB API', function() {
 
 		it('should allow access to release moderation comment retrieval', function(done) {
 			request.post('/api/v1/releases/123/moderate/comments').as('member').send({}).end(hlp.status(404, done));
+		});
+
+		it('should allow access to release moderation comment listing', function(done) {
+			request.get('/api/v1/releases/123/moderate/comments').as('member').end(hlp.status(404, done));
 		});
 
 		it('should deny access to user starring', function(done) {

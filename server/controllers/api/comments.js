@@ -184,3 +184,36 @@ exports.listForRelease = function(req, res) {
 
 	}, 'Error finding release in order to list comments.'));
 };
+
+exports.listForReleaseModeration = function(req, res) {
+
+	let release;
+	Promise.try(() => {
+		return Release.findOne({ id: req.params.id }).populate('_created_by').exec();
+
+	}).then(r => {
+		release = r;
+		if (!release) {
+			throw error('No such release with ID "%s"', req.params.id).status(404);
+		}
+		// must be owner of release or moderator
+		if (req.user.id === release._created_by.id) {
+			return true;
+		} else {
+			return acl.isAllowed(req.user.id, 'releases', 'moderate');
+		}
+
+	}).then(isAllowed => {
+		if (!isAllowed) {
+			throw error('Access denied, must be either moderator or owner of release.').status(403);
+		}
+		return Comment.find({ '_ref.release_moderation': release._id })
+			.populate('_from')
+			.exec();
+
+	}).then(comments => {
+		comments.sort((c1, c2) => c1.created_at.getTime() - c2.created_at.getTime());
+		api.success(res, _.map(comments, comment => comment.toSimple()), 200);
+
+	}).catch(api.handleError(res, error, 'Error listing moderation comments'));
+};

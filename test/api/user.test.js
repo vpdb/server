@@ -558,7 +558,7 @@ describe('The VPDB `user` API', function() {
 
 		/*
 		// testing success not possible because realtime api is disabled in test.
-		it.only('should succeed for valid data', function(done) {
+		it('should succeed for valid data', function(done) {
 			hlp.release.createRelease('contributor', request, function(release) {
 				request
 					.patch('/api/v1/user')

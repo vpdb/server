@@ -10,8 +10,8 @@ include ../template/_mixins
 				+icon('txt-italic').a.space-right-2x(ng-click="textItalic()")
 				+icon('txt-quote').a(ng-click="textQuote()")
 				+icon('txt-code').a.space-right-2x(ng-click="textCode()")
-				+icon('txt-numbered-list').a
-				+icon('txt-bulleted-list').a
+				+icon('txt-numbered-list').a(ng-click="textOrderedList()")
+				+icon('txt-bulleted-list').a(ng-click="textUnorderedList()")
 			uib-tab
 				uib-tab-heading(title="Write")
 					+icon('edit')

@@ -116,7 +116,7 @@ angular.module('vpdb.editor', [])
 			}
 		}
 
-		function wrapOnNewLine(element, text, prefixChars, suffixChars) {
+		function wrapOnNewLine(element, text, prefixChars, prefixRegex, suffixChars) {
 			suffixChars = suffixChars || '';
 			var start = element.prop('selectionStart');
 			var end = element.prop('selectionEnd');
@@ -130,11 +130,13 @@ angular.module('vpdb.editor', [])
 			var lineEnd = moveToWordEnd(text, end, /^\n$/);
 			var numLines = text.slice(start, end).split('\n').length;
 
-			// check if already prefixed and remove
+			// REMOVE
+			// ----------------------------------------------------------------
 			if (!suffixChars) {
-				if (text.substring(lineStart, lineStart + prefixChars.length) === prefixChars) {
+				var matchPrefix = new RegExp('^' + prefixRegex.source);
+				if (matchPrefix.test(text.substring(lineStart))) {
 					if (numLines > 1) {
-						let block = text.slice(lineStart + prefixChars.length, lineEnd).replace(new RegExp(_.escapeRegExp('\n' + prefixChars), 'g'), '\n');
+						let block = text.slice(lineStart, lineEnd).replace(new RegExp('(\n|^)' + prefixRegex.source, 'g'), '$1');
 						return {
 							text: [text.slice(0, lineStart), block, text.slice(end)].join(''),
 							start: lineStart,
@@ -164,45 +166,45 @@ angular.module('vpdb.editor', [])
 				start = moveToWordStart(text, start);
 				end = moveToWordEnd(text, start);
 			}
-			// if multiple lines selected, expand selection to paragraph
-			if (numLines > 1) {
-				start = lineStart;
-				end = lineEnd;
-			}
 
-			var prefix = '';
-			var suffix = '';
+			// compute prefix/suffix newlines
+			var prefixLF = '';
+			var suffixLF = '';
 			if (start > 0 && text.substring(start - 1, start) != '\n') {
-				prefix += '\n';
+				prefixLF += '\n';
 			}
 			if (start > 0 && text.substring(start - 2, start - 1) != '\n') {
-				prefix += '\n';
+				prefixLF += '\n';
 			}
 			if (end < text.length && text.substring(end, end + 1) != '\n') {
-				suffix += '\n';
+				suffixLF += '\n';
 			}
 			if (end < text.length && text.substring(end + 1, end + 2) != '\n') {
-				suffix += '\n';
+				suffixLF += '\n';
 			}
-			// if no suffix chars given, prefix every line.
-			if (!suffixChars) {
 
+			// ADD
+			// ----------------------------------------------------------------
+			if (!suffixChars) {
+				// if no suffix chars given, prefix every line.
 				block = prefixChars + text.substring(start, end).split('\n').join('\n' + prefixChars);
+				var n = 1;
+				block = block.replace(/(\\d)/g, function() { return n++; });
 				if (numLines > 1) {
-					selStart = start + prefix.length;
-					selEnd = start + prefix.length + block.length;
+					selStart = start + prefixLF.length;
+					selEnd = start + prefixLF.length + block.length;
 				} else {
-					selStart = initialStart + prefix.length + prefixChars.length;
-					selEnd = initialEnd + prefix.length + prefixChars.length;
+					selStart = initialStart + prefixLF.length + prefixChars.length;
+					selEnd = initialEnd + prefixLF.length + prefixChars.length;
 				}
 
 			} else {
-				block = [prefixChars, text.slice(start, end), suffixChars].join('');
-				selStart = initialStart + prefix.length + prefixChars.length;
-				selEnd = initialEnd + prefix.length + prefixChars.length;
+				block = [prefixChars, text.substring(start, end), suffixChars].join('');
+				selStart = initialStart + prefixLF.length + prefixChars.length;
+				selEnd = selStart + block.length - prefixChars.length - suffixChars.length;
 			}
 			return {
-				text: [text.slice(0, start), prefix, block, suffix, text.slice(end)].join(''),
+				text: [text.slice(0, start), prefixLF, block, suffixLF, text.slice(end)].join(''),
 				start: selStart,
 				end: selEnd
 			}
@@ -235,7 +237,7 @@ angular.module('vpdb.editor', [])
 
 				$scope.textQuote = function() {
 					var textarea = $element.find('textarea');
-					apply(textarea, $scope, wrapOnNewLine(textarea, $scope.text, '> '));
+					apply(textarea, $scope, wrapOnNewLine(textarea, $scope.text, '> ', /> /));
 				};
 
 				$scope.textCode = function() {
@@ -244,11 +246,20 @@ angular.module('vpdb.editor', [])
 					var end = textarea.prop('selectionEnd');
 					// if selection has line break, wrap on new line
 					if (/\n+/.test($scope.text.substring(start, end))) {
-						apply(textarea, $scope, wrapOnNewLine(textarea, $scope.text, '```\n', '\n```'));
+						apply(textarea, $scope, wrapOnNewLine(textarea, $scope.text, '```\n', /```\n/, '\n```'));
 					} else {
 						apply(textarea, $scope, wrap(textarea, $scope.text, '`'));
 					}
+				};
 
+				$scope.textUnorderedList = function() {
+					var textarea = $element.find('textarea');
+					apply(textarea, $scope, wrapOnNewLine(textarea, $scope.text, '- ', /- /));
+				};
+
+				$scope.textOrderedList = function() {
+					var textarea = $element.find('textarea');
+					apply(textarea, $scope, wrapOnNewLine(textarea, $scope.text, '\\d. ', /\d+\. /));
 				};
 			}
 		};

@@ -1,17 +1,17 @@
 include ../template/_mixins
-
 .media
 	.media-left.avatar
 		img.img-avatar.pull-left(gravatar-src="auth.user.gravatar_id", gravatar-default="404", fallback-icon="user")
 	.media-body.media--full-width
 		uib-tabset
 			.pull-right
-				+icon('txt-bold').a(ng-click="textBold()")
-				+icon('txt-italic').a.space-right-2x(ng-click="textItalic()")
-				+icon('txt-quote').a(ng-click="textQuote()")
-				+icon('txt-code').a.space-right-2x(ng-click="textCode()")
-				+icon('txt-numbered-list').a(ng-click="textOrderedList()")
-				+icon('txt-bulleted-list').a(ng-click="textUnorderedList()")
+				+icon('txt-bold').a(ng-click="textBold()", uib-tooltip="Add bold text", tooltip-placement="top", tooltip-append-to-body="true", tooltip-popup-delay="500")
+				+icon('txt-italic').a.space-right-2x(ng-click="textItalic()", uib-tooltip="Add italic text", tooltip-placement="top", tooltip-append-to-body="true", tooltip-popup-delay="500")
+				+icon('txt-quote').a(ng-click="textQuote()", uib-tooltip="Insert a quote", tooltip-placement="top", tooltip-append-to-body="true", tooltip-popup-delay="500")
+				+icon('txt-code').a(ng-click="textCode()", uib-tooltip="Insert code", tooltip-placement="top", tooltip-append-to-body="true", tooltip-popup-delay="500")
+				+icon('link').a.space-right-2x(ng-click="textLink()", uib-tooltip="Insert a link", tooltip-placement="top", tooltip-append-to-body="true", tooltip-popup-delay="500")
+				+icon('txt-bulleted-list').a(ng-click="textUnorderedList()", uib-tooltip="Add a bulleted list", tooltip-placement="top", tooltip-append-to-body="true", tooltip-popup-delay="500")
+				+icon('txt-numbered-list').a(ng-click="textOrderedList()", uib-tooltip="Add a numbered list", tooltip-placement="top", tooltip-append-to-body="true", tooltip-popup-delay="500")
 			uib-tab
 				uib-tab-heading(title="Write")
 					+icon('edit')
@@ -19,6 +19,7 @@ include ../template/_mixins
 				textarea.textarea--full.animate(
 					placeholder="Your comment",
 					ng-model="$parent.$parent.text",
+					ng-trim="false",
 					msd-elastic,
 					mentio,
 					mentio-items="foundUsers",

@@ -30,7 +30,16 @@ angular.module('vpdb.editor', [])
 	 *  rating-user="gameRating"
 	 *  rating-action="rateGame($rating)"
 	 */
-	.directive('editor', function() {
+	.directive('editor', function(AuthService) {
+
+		function matchAll(text, regex) {
+			regex = new RegExp(regex.source, 'gi');
+			var match, matches = [];
+			while (match = regex.exec(text)) {
+				matches.push(match);
+			}
+			return matches;
+		}
 
 		function setSelectionRange(input, selectionStart, selectionEnd) {
 			if (input.setSelectionRange) {
@@ -78,13 +87,45 @@ angular.module('vpdb.editor', [])
 			return end;
 		}
 
+		function wrapSelect(element, text, prefixChars, suffixChars, regex, select) {
+			text = text || '';
+			var start = element.prop('selectionStart');
+			var end = element.prop('selectionEnd');
+
+			// check if we should remove it
+			var matches = matchAll(text, regex);
+			for (var i = 0; i < matches.length; i++) {
+				if (matches[i].index < start && (matches[i].index + matches[i][0].length) > end) {
+					return {
+						text: [text.substring(0, matches[i].index), matches[i][1], text.substring(matches[i].index + matches[i][0].length)].join(''),
+						start: matches[i].index,
+						end: matches[i].index + matches[i][1].length
+					}
+				}
+			}
+
+			// check if current word is already wrapped in chars
+			if (start === end && end !== text.length) {
+				start = moveToWordStart(text, start);
+				end = moveToWordEnd(text, start);
+			}
+
+			var block = [text.substring(0, start), prefixChars, text.substring(start, end), suffixChars, text.substring(end)].join('');
+			return {
+				text: block,
+				start: start === end ? start + prefixChars.length : prefixChars.length + end + select.start,
+				end: start === end ? end + prefixChars.length : prefixChars.length + end + select.end
+			}
+		}
+
 		function wrap(element, text, chars) {
 			text = text || '';
 			var start = element.prop('selectionStart');
 			var end = element.prop('selectionEnd');
 			var selection = start === end ? start : -1;
 
-			// check if current selection is already wrapped in chars
+			// REMOVE
+			// ----------------------------------------------------------------
 			if (start >= chars.length && text.substring(start - chars.length, start) === chars &&
 				text.length >= end + chars.length && text.substring(end, end + chars.length) === chars) {
 				return {
@@ -109,6 +150,8 @@ angular.module('vpdb.editor', [])
 				}
 			}
 
+			// ADD
+			// ----------------------------------------------------------------
 			return {
 				text: [text.slice(0, start), chars, text.slice(start, end), chars, text.slice(end)].join(''),
 				start: (selection < 0 ? start : selection) + chars.length,
@@ -225,6 +268,8 @@ angular.module('vpdb.editor', [])
 			templateUrl: '/common/editor.html',
 			controller: function($scope, $element) {
 
+				$scope.auth = AuthService;
+
 				$scope.textBold = function() {
 					var textarea = $element.find('textarea');
 					apply(textarea, $scope, wrap(textarea, $scope.text, '**'));
@@ -260,6 +305,11 @@ angular.module('vpdb.editor', [])
 				$scope.textOrderedList = function() {
 					var textarea = $element.find('textarea');
 					apply(textarea, $scope, wrapOnNewLine(textarea, $scope.text, '\\d. ', /\d+\. /));
+				};
+
+				$scope.textLink = function() {
+					var textarea = $element.find('textarea');
+					apply(textarea, $scope, wrapSelect(textarea, $scope.text, '[', '](url)', /\[(.*?)\]\([^\)]+\)/i, { start: 2, end: 5 }));
 				};
 			}
 		};

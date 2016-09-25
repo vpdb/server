@@ -131,20 +131,30 @@ angular.module('vpdb.editor', [])
 			var numLines = text.slice(start, end).split('\n').length;
 
 			// check if already prefixed and remove
-			if (text.substring(lineStart, lineStart + prefixChars.length) === prefixChars) {
-				if (numLines > 1) {
-					let block = text.slice(lineStart + prefixChars.length, lineEnd).replace(new RegExp(_.escapeRegExp('\n' + prefixChars), 'g'), '\n');
-					return {
-						text: [text.slice(0, lineStart), block, text.slice(end)].join(''),
-						start: lineStart,
-						end: lineStart + block.length
+			if (!suffixChars) {
+				if (text.substring(lineStart, lineStart + prefixChars.length) === prefixChars) {
+					if (numLines > 1) {
+						let block = text.slice(lineStart + prefixChars.length, lineEnd).replace(new RegExp(_.escapeRegExp('\n' + prefixChars), 'g'), '\n');
+						return {
+							text: [text.slice(0, lineStart), block, text.slice(end)].join(''),
+							start: lineStart,
+							end: lineStart + block.length
+						}
+					} else {
+						return {
+							text: [text.slice(0, lineStart), text.slice(lineStart + prefixChars.length)].join(''),
+							start: start - prefixChars.length,
+							end: end - prefixChars.length
+						}
 					}
-
-				} else {
+				}
+			} else {
+				if (lineStart > prefixChars.length && text.substring(lineStart - prefixChars.length, lineStart) === prefixChars &&
+				    lineEnd + suffixChars.length <= text.length && text.substring(lineEnd, lineEnd + suffixChars.length) === suffixChars) {
 					return {
-						text: [text.slice(0, lineStart), text.slice(lineStart + prefixChars.length)].join(''),
-						start: start - prefixChars.length,
-						end: end - prefixChars.length
+						text: [text.slice(0, lineStart - prefixChars.length), text.slice(lineStart, lineEnd), text.slice(lineEnd + suffixChars.length)].join(''),
+						start: lineStart - prefixChars.length,
+						end: lineEnd - prefixChars.length
 					}
 				}
 			}

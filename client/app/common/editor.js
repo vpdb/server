@@ -46,9 +46,40 @@ angular.module('vpdb.editor', [])
 			}
 		}
 
+		function moveToWordStart(text, start, delimiter) {
+			delimiter = delimiter || /^\s$/;
+			var b = false;
+			for (var n = start; n >= 0; n--) {
+				if (delimiter.test(text.substring(n - 1, n))) {
+					start = n;
+					b = true;
+					break;
+				}
+			}
+			if (!b) {
+				start = 0;
+			}
+			return start;
+		}
+
+		function moveToWordEnd(text, end, delimiter) {
+			delimiter = delimiter || /^\s$/;
+			var b = false;
+			for (var n = end; n < text.length; n++) {
+				if (delimiter.test(text.substring(n, n + 1))) {
+					end = n;
+					b = true;
+					break;
+				}
+			}
+			if (!b) {
+				end = text.length;
+			}
+			return end;
+		}
+
 		function wrap(element, text, chars) {
 			text = text || '';
-			var n, b;
 			var start = element.prop('selectionStart');
 			var end = element.prop('selectionEnd');
 			var selection = start === end ? start : -1;
@@ -65,30 +96,8 @@ angular.module('vpdb.editor', [])
 
 			// check if current word is already wrapped in chars
 			if (start === end && end !== text.length) {
-				// start
-				b = false;
-				for (n = start; n >= 0; n--) {
-					if (/^\s$/.test(text.substring(n - 1, n))) {
-						start = n;
-						b = true;
-						break;
-					}
-				}
-				if (!b) {
-					start = 0;
-				}
-				// end
-				b = false;
-				for (n = end; n < text.length; n++) {
-					if (/^\s$/.test(text.substring(n, n + 1))) {
-						end = n;
-						b = true;
-						break;
-					}
-				}
-				if (!b) {
-					end = text.length;
-				}
+				start = moveToWordStart(text, start);
+				end = moveToWordEnd(text, start);
 			}
 
 			// check again if current selection is already wrapped in chars
@@ -104,6 +113,88 @@ angular.module('vpdb.editor', [])
 				text: [text.slice(0, start), chars, text.slice(start, end), chars, text.slice(end)].join(''),
 				start: (selection < 0 ? start : selection) + chars.length,
 				end: (selection < 0 ? end : selection) + chars.length
+			}
+		}
+
+		function wrapOnNewLine(element, text, prefixChars, suffixChars) {
+			suffixChars = suffixChars || '';
+			var start = element.prop('selectionStart');
+			var end = element.prop('selectionEnd');
+			var initialStart = start;
+			var initialEnd = end;
+			var block, selStart, selEnd;
+
+			// trim empty lines
+			text = text.replace(/ +\n/g, '\n');
+			var lineStart = moveToWordStart(text, start, /^\n$/);
+			var lineEnd = moveToWordEnd(text, end, /^\n$/);
+			var numLines = text.slice(start, end).split('\n').length;
+
+			// check if already prefixed and remove
+			if (text.substring(lineStart, lineStart + prefixChars.length) === prefixChars) {
+				if (numLines > 1) {
+					let block = text.slice(lineStart + prefixChars.length, lineEnd).replace(new RegExp(_.escapeRegExp('\n' + prefixChars), 'g'), '\n');
+					return {
+						text: [text.slice(0, lineStart), block, text.slice(end)].join(''),
+						start: lineStart,
+						end: lineStart + block.length
+					}
+
+				} else {
+					return {
+						text: [text.slice(0, lineStart), text.slice(lineStart + prefixChars.length)].join(''),
+						start: start - prefixChars.length,
+						end: end - prefixChars.length
+					}
+				}
+			}
+
+			// if no selection, expand selection to current word
+			if (start === end) {
+				start = moveToWordStart(text, start);
+				end = moveToWordEnd(text, start);
+			}
+			// if multiple lines selected, expand selection to paragraph
+			if (numLines > 1) {
+				start = lineStart;
+				end = lineEnd;
+			}
+
+			var prefix = '';
+			var suffix = '';
+			if (start > 0 && text.substring(start - 1, start) != '\n') {
+				prefix += '\n';
+			}
+			if (start > 0 && text.substring(start - 2, start - 1) != '\n') {
+				prefix += '\n';
+			}
+			if (end < text.length && text.substring(end, end + 1) != '\n') {
+				suffix += '\n';
+			}
+			if (end < text.length && text.substring(end + 1, end + 2) != '\n') {
+				suffix += '\n';
+			}
+			// if no suffix chars given, prefix every line.
+			if (!suffixChars) {
+
+				block = prefixChars + text.substring(start, end).split('\n').join('\n' + prefixChars);
+				if (numLines > 1) {
+					selStart = start + prefix.length;
+					selEnd = start + prefix.length + block.length;
+				} else {
+					selStart = initialStart + prefix.length + prefixChars.length;
+					selEnd = initialEnd + prefix.length + prefixChars.length;
+				}
+
+			} else {
+				block = [prefixChars, text.slice(start, end), suffixChars].join('');
+				selStart = initialStart + prefix.length + prefixChars.length;
+				selEnd = initialEnd + prefix.length + prefixChars.length;
+			}
+			return {
+				text: [text.slice(0, start), prefix, block, suffix, text.slice(end)].join(''),
+				start: selStart,
+				end: selEnd
 			}
 		}
 
@@ -130,6 +221,24 @@ angular.module('vpdb.editor', [])
 				$scope.textItalic = function() {
 					var textarea = $element.find('textarea');
 					apply(textarea, $scope, wrap(textarea, $scope.text, '_'));
+				};
+
+				$scope.textQuote = function() {
+					var textarea = $element.find('textarea');
+					apply(textarea, $scope, wrapOnNewLine(textarea, $scope.text, '> '));
+				};
+
+				$scope.textCode = function() {
+					var textarea = $element.find('textarea');
+					var start = textarea.prop('selectionStart');
+					var end = textarea.prop('selectionEnd');
+					// if selection has line break, wrap on new line
+					if (/\n+/.test($scope.text.substring(start, end))) {
+						apply(textarea, $scope, wrapOnNewLine(textarea, $scope.text, '```\n', '\n```'));
+					} else {
+						apply(textarea, $scope, wrap(textarea, $scope.text, '`'));
+					}
+
 				};
 			}
 		};

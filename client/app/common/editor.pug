@@ -8,8 +8,8 @@ include ../template/_mixins
 			.pull-right
 				+icon('txt-bold').a(ng-click="textBold()")
 				+icon('txt-italic').a.space-right-2x(ng-click="textItalic()")
-				+icon('txt-quote').a
-				+icon('txt-code').a.space-right-2x
+				+icon('txt-quote').a(ng-click="textQuote()")
+				+icon('txt-code').a.space-right-2x(ng-click="textCode()")
 				+icon('txt-numbered-list').a
 				+icon('txt-bulleted-list').a
 			uib-tab

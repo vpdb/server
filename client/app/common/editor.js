@@ -87,7 +87,7 @@ angular.module('vpdb.editor', [])
 			return end;
 		}
 
-		function wrapSelect(element, text, prefixChars, suffixChars, regex, select) {
+		function wrapSelect(element, text, prefixChars, suffixChars, regex, opts) {
 			text = text || '';
 			var start = element.prop('selectionStart');
 			var end = element.prop('selectionEnd');
@@ -95,11 +95,12 @@ angular.module('vpdb.editor', [])
 			// check if we should remove it
 			var matches = matchAll(text, regex);
 			for (var i = 0; i < matches.length; i++) {
-				if (matches[i].index < start && (matches[i].index + matches[i][0].length) > end) {
+				if (matches[i].index < start && (matches[i].index + matches[i][opts.replace].length) >= end) {
+					var index = matches[i].index + matches[i][0].indexOf(matches[i][opts.replace]);
 					return {
-						text: [text.substring(0, matches[i].index), matches[i][1], text.substring(matches[i].index + matches[i][0].length)].join(''),
-						start: matches[i].index,
-						end: matches[i].index + matches[i][1].length
+						text: [text.substring(0, index), matches[i][opts.keep], text.substring(index + matches[i][opts.replace].length)].join(''),
+						start: index,
+						end: index + matches[i][opts.keep].length
 					}
 				}
 			}
@@ -113,8 +114,8 @@ angular.module('vpdb.editor', [])
 			var block = [text.substring(0, start), prefixChars, text.substring(start, end), suffixChars, text.substring(end)].join('');
 			return {
 				text: block,
-				start: start === end ? start + prefixChars.length : prefixChars.length + end + select.start,
-				end: start === end ? end + prefixChars.length : prefixChars.length + end + select.end
+				start: start === end ? start + prefixChars.length : prefixChars.length + end + opts.start,
+				end: start === end ? end + prefixChars.length : prefixChars.length + end + opts.end
 			}
 		}
 
@@ -179,7 +180,7 @@ angular.module('vpdb.editor', [])
 				var matchPrefix = new RegExp('^' + prefixRegex.source);
 				if (matchPrefix.test(text.substring(lineStart))) {
 					if (numLines > 1) {
-						let block = text.slice(lineStart, lineEnd).replace(new RegExp('(\n|^)' + prefixRegex.source, 'g'), '$1');
+						block = text.slice(lineStart, lineEnd).replace(new RegExp('(\n|^)' + prefixRegex.source, 'g'), '$1');
 						return {
 							text: [text.slice(0, lineStart), block, text.slice(end)].join(''),
 							start: lineStart,
@@ -195,7 +196,7 @@ angular.module('vpdb.editor', [])
 				}
 			} else {
 				if (lineStart > prefixChars.length && text.substring(lineStart - prefixChars.length, lineStart) === prefixChars &&
-				    lineEnd + suffixChars.length <= text.length && text.substring(lineEnd, lineEnd + suffixChars.length) === suffixChars) {
+					lineEnd + suffixChars.length <= text.length && text.substring(lineEnd, lineEnd + suffixChars.length) === suffixChars) {
 					return {
 						text: [text.slice(0, lineStart - prefixChars.length), text.slice(lineStart, lineEnd), text.slice(lineEnd + suffixChars.length)].join(''),
 						start: lineStart - prefixChars.length,
@@ -259,6 +260,7 @@ angular.module('vpdb.editor', [])
 				setSelectionRange(element[0], result.start, result.end);
 			}, 0);
 		}
+
 		return {
 			restrict: 'E',
 			scope: {
@@ -309,8 +311,13 @@ angular.module('vpdb.editor', [])
 
 				$scope.textLink = function() {
 					var textarea = $element.find('textarea');
-					apply(textarea, $scope, wrapSelect(textarea, $scope.text, '[', '](url)', /\[(.*?)\]\([^\)]+\)/i, { start: 2, end: 5 }));
+					apply(textarea, $scope, wrapSelect(textarea, $scope.text, '[', '](url)', /([^!]|^)(\[([^\]]*)\]\([^\)]+\))/, { start: 2, end: 5, replace: 2, keep: 3 }));
+				};
+
+				$scope.textImage = function() {
+					var textarea = $element.find('textarea');
+					apply(textarea, $scope, wrapSelect(textarea, $scope.text, '![', '](url)', /!(\[([^\]]*)\]\([^\)]+\))/, { start: 2, end: 5, replace: 0, keep: 2 }));
 				};
 			}
 		};
-	});
+	});$

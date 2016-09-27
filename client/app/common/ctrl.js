@@ -141,21 +141,6 @@ angular.module('vpdb.common', [])
 			});
 		};
 
-		$rootScope.foundUsers = [];
-		$rootScope.findUser = function(query) {
-			if (query && query.trim().length >= 3) {
-				UserResource.query({ q: query }, function(users) {
-					$rootScope.foundUsers = users;
-				});
-			} else {
-				$rootScope.foundUsers = [ null ];
-			}
-		};
-
-		$rootScope.getUserMention = function(item) {
-			return "@" + item.name;
-		};
-
 		/**
 		 * Stars or unstars a release depending if game is already starred.
 		 */

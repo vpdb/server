@@ -18,7 +18,7 @@ include ../template/_mixins
 					+icon('edit')
 					.panel-triangle
 				textarea.textarea--full.animate(
-					placeholder="Your comment",
+					placeholder="{{ $parent.$parent.placeholder }}",
 					ng-model="$parent.$parent.text",
 					ng-trim="false",
 					msd-elastic,
@@ -32,4 +32,5 @@ include ../template/_mixins
 				uib-tab-heading(title="Preview"): +icon('eye')
 				div.markdown(markdown="$parent.$parent.text")
 				label.tab__label(ng-show="!$parent.$parent.text || $parent.$parent.text.length == 0") Nothing to preview.
-		label.label--small.padder-bottom(markdown-info="Comments are parsed with Markdown.")
+		label.label--small.padder-bottom.padder-top-less(markdown-info="Comments are parsed with Markdown.")
+

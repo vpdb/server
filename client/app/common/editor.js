@@ -30,7 +30,7 @@ angular.module('vpdb.editor', [])
 	 *  rating-user="gameRating"
 	 *  rating-action="rateGame($rating)"
 	 */
-	.directive('editor', function(AuthService) {
+	.directive('editor', function(AuthService, UserResource) {
 
 		function matchAll(text, regex) {
 			regex = new RegExp(regex.source, 'gi');
@@ -264,7 +264,8 @@ angular.module('vpdb.editor', [])
 		return {
 			restrict: 'E',
 			scope: {
-				text: '='
+				text: '=ngModel',
+				placeholder: '@'
 			},
 			replace: true,
 			templateUrl: '/common/editor.html',
@@ -318,6 +319,22 @@ angular.module('vpdb.editor', [])
 					var textarea = $element.find('textarea');
 					apply(textarea, $scope, wrapSelect(textarea, $scope.text, '![', '](url)', /!(\[([^\]]*)\]\([^\)]+\))/, { start: 2, end: 5, replace: 0, keep: 2 }));
 				};
+
+				// mentio methods
+				$scope.foundUsers = [];
+				$scope.findUser = function(query) {
+					if (query && query.trim().length >= 3) {
+						UserResource.query({ q: query }, function(users) {
+							$scope.foundUsers = users;
+						});
+					} else {
+						$scope.foundUsers = [ null ];
+					}
+				};
+
+				$scope.getUserMention = function(item) {
+					return "@" + item.name;
+				};
 			}
 		};
-	});$
+	});

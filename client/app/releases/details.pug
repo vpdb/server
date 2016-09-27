@@ -83,7 +83,8 @@ p.padder-top(ng-show="pageLoading") Loading...
 	.col-sm-9.col-sm-pull-3.col--main(ng-show="found")
 
 		p.padder-top-2x
-		editor(text="testComment")
+		editor(ng-model="testComment", placeholder="Your comment")
+		editor(ng-model="testComment", placeholder="Your comment")
 
 		.alert.alert-warning.alert--no-bottom-margin(ng-show="release.moderation && !release.moderation.is_refused && !release.moderation.is_approved")
 			.text-center

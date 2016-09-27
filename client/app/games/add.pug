@@ -163,9 +163,9 @@ include ../template/_mixins
 					.col-sm-6
 						input#author.form-control(type="text", ng-model="game.manufacturer", placeholder="Your name, nick name or pen name", ng-class="{ error: errors.manufacturer }")
 						span.help-block This will show up as manufacturer.
-					label.col-sm-1.control-label.text-right(for='manufacturer', ng-class="{ error: errors.year }") Year
+					label.col-sm-1.control-label.text-right(for='year2', ng-class="{ error: errors.year }") Year
 					.col-sm-2.form-subgroup
-						input#author.form-control(type="text", ng-model="game.year", ng-class="{ error: errors.year }")
+						input#year2.form-control(type="text", ng-model="game.year", ng-class="{ error: errors.year }")
 
 				.alert.alert-danger.alert--shifted-up(ng-show="errors.manufacturer")
 					.row
@@ -182,29 +182,12 @@ include ../template/_mixins
 				.form-group
 					label.col-sm-3.control-label Description
 					.col-sm-9
-						uib-tabset.tabset--light
-							label.label--small.pull-right(markdown-info="Markdown enabled.")
-							uib-tab
-								uib-tab-heading(title="Write"): +icon('edit')
-								textarea.textarea--full.msd-elastic(placeholder="Description of the original table", ng-model="game.description")
-							uib-tab
-								uib-tab-heading(title="Preview"): +icon('eye')
-								div.markdown(markdown="game.description")
-								label.tab__label(ng-show="!game.description || game.description.length == 0") Nothing to preview.
+						editor.tabset--light(ng-model="game.description", placeholder="Description of the original table", markdown-text="Markdown enabled.")
 
 				.form-group
 					label.col-sm-3.control-label Instructions
 					.col-sm-9
-						uib-tabset.tabset--light
-							label.label--small.pull-right(markdown-info="Markdown enabled.")
-							uib-tab
-								uib-tab-heading(title="Write"): +icon('edit')
-								textarea.textarea--full.msd-elastic(placeholder="Put game instructions here", ng-model="game.instructions")
-							uib-tab
-								uib-tab-heading(title="Preview"): +icon('eye')
-								div.markdown(markdown="game.instructions")
-								label.tab__label(ng-show="!game.instructions || game.instructions.length == 0") Nothing to preview.
-
+						editor.tabset--light(ng-model="game.instructions", placeholder="Put game instructions here", markdown-text="Markdown enabled.")
 
 			//- URLs (let's do that another time)
 				.clearfix

@@ -42,16 +42,7 @@ include ../template/timepicker
 		h4 Description
 		hr.hr--light
 		.form-group
-			uib-tabset.tabset--light
-				label.label--small.pull-right(markdown-info="Markdown enabled.")
-				uib-tab
-					uib-tab-heading(title="Write"): +icon('edit')
-					textarea.textarea--full.msd-elastic(placeholder="Description of the backglass", ng-model="backglass.description")
-				uib-tab
-					uib-tab-heading(title="Preview"): +icon('eye')
-					div.markdown(markdown="backglass.description")
-					label.tab__label(ng-show="!backglass.description || backglass.description.length == 0") Nothing to preview.
-
+			editor.tabset--light(ng-model="backglass.description", placeholder="Description of the backglass", markdown-text="Markdown enabled.")
 
 		.form-group(ng-class="{ error: errors.versions[0].version }")
 			label.control-label(for="version") Version
@@ -86,17 +77,7 @@ include ../template/timepicker
 
 		.form-group
 			label.control-label(for="version") Release Notes
-			uib-tabset.tabset--light
-				label.label--small.pull-right(markdown-info="Markdown enabled.")
-				uib-tab
-					uib-tab-heading(title="Write"): +icon('edit')
-					textarea.textarea--full.msd-elastic(placeholder="Release Notes", ng-model="backglass.versions[0].changes")
-				uib-tab
-					uib-tab-heading(title="Preview"): +icon('eye')
-					div.markdown(markdown="backglass.versions[0].changes")
-					label.tab__label(ng-show="!backglass.versions[0].changes || backglass.versions[0].changes.length == 0") Nothing to preview.
-			i This will show up in the change log of the backglass.
-
+			editor.tabset--light(ng-model="backglass.versions[0].changes", placeholder="Release Notes", markdown-text="Markdown enabled. This will show up in the change log of the backglass.")
 
 		//---------------------------------------------------------------------
 		h4 Authors
@@ -127,16 +108,7 @@ include ../template/timepicker
 		h4 Acknowledgements
 		hr.hr--light
 		.form-group
-			uib-tabset.tabset--light
-				label.label--small.pull-right(markdown-info="Markdown enabled.")
-				uib-tab
-					uib-tab-heading(title="Write"): +icon('edit')
-					textarea.textarea--full.msd-elastic(placeholder="List of people to thank", ng-model="backglass.acknowledgements")
-				uib-tab
-					uib-tab-heading(title="Preview"): +icon('eye')
-					div.markdown(markdown="backglass.acknowledgements")
-					label.tab__label(ng-show="!backglass.acknowledgements || backglass.acknowledgements.length == 0") Nothing to preview.
-
+			editor.tabset--light(ng-model="backglass.acknowledgements", placeholder="List of people to thank", markdown-text="Markdown enabled.")
 
 		hr
 		button.btn.btn-default.btn-lg(ng-click="reset()") Reset

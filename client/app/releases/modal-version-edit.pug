@@ -11,15 +11,7 @@ include ../template/_mixins
 		//-----------------------------------------
 		h4.h--primary Changelog
 		.form-group
-			uib-tabset.tabset--light
-				label.label--small.pull-right(markdown-info="Markdown enabled.")
-				uib-tab
-					uib-tab-heading(title="Write"): +icon('edit')
-					textarea.textarea--full.msd-elastic(placeholder="Release Information", ng-model="version.changes")
-				uib-tab
-					uib-tab-heading(title="Preview"): +icon('eye')
-					div.markdown(markdown="version.changes")
-					label.tab__label(ng-show="!version.changes || version.changes.length == 0") Nothing to preview.
+			editor.tabset--light(ng-model="version.changes", placeholder="Release Information", markdown-text="Markdown enabled.")
 
 		//- RELEASE DATE
 		//-----------------------------------------

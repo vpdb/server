@@ -31,13 +31,4 @@ div.alert.alert-danger.padder-bottom(ng-show="errors.built_at")
 
 .form-group
 	label.control-label(for="version") Release Information
-	uib-tabset.tabset--light
-		label.label--small.pull-right(markdown-info="Markdown enabled.")
-		uib-tab
-			uib-tab-heading(title="Write"): +icon('edit')
-			textarea.textarea--full.msd-elastic(placeholder="Release Information", ng-model="releaseVersion.changes")
-		uib-tab
-			uib-tab-heading(title="Preview"): +icon('eye')
-			div.markdown(markdown="releaseVersion.changes")
-			label.tab__label(ng-show="!releaseVersion.changes || releaseVersion.changes.length == 0") Nothing to preview.
-	i This will show up in the release's change log
+	editor.tabset--light(ng-model="releaseVersion.changes", placeholder="Release Information", markdown-text="Markdown enabled. This will show up in the release's change log.")

@@ -75,85 +75,37 @@ include ../template/_mixins
 				.form-group(ng-show="game.game_type === 'og'")
 					label.col-sm-3.control-label Description
 					.col-sm-9
-						uib-tabset.tabset--light
-							label.label--small.pull-right(markdown-info="Markdown enabled.")
-							uib-tab
-								uib-tab-heading(title="Write"): +icon('edit')
-								textarea.textarea--full.msd-elastic(placeholder="Description of the original table", ng-model="game.description")
-							uib-tab
-								uib-tab-heading(title="Preview"): +icon('eye')
-								div.markdown(markdown="game.description")
-								label.tab__label(ng-show="!game.description || game.description.length == 0") Nothing to preview.
+						editor.tabset--light(ng-model="game.description", placeholder="Description of the original table", markdown-text="Markdown enabled.")
 
 				//- instructions
 				.form-group(ng-show="game.game_type === 'og'")
 					label.col-sm-3.control-label Instructions
 					.col-sm-9
-						uib-tabset.tabset--light
-							label.label--small.pull-right(markdown-info="Markdown enabled.")
-							uib-tab
-								uib-tab-heading(title="Write"): +icon('edit')
-								textarea.textarea--full.msd-elastic(placeholder="Put game instructions here", ng-model="game.instructions")
-							uib-tab
-								uib-tab-heading(title="Preview"): +icon('eye')
-								div.markdown(markdown="game.instructions")
-								label.tab__label(ng-show="!game.instructions || game.instructions.length == 0") Nothing to preview.
+						editor.tabset--light(ng-model="game.instructions", placeholder="Put game instructions here", markdown-text="Markdown enabled.")
 
 				//- features
 				.form-group(ng-hide="game.game_type === 'og'")
 					label.col-sm-3.control-label Features
 					.col-sm-9
-						uib-tabset.tabset--light
-							label.label--small.pull-right(markdown-info="Markdown enabled.")
-							uib-tab
-								uib-tab-heading(title="Write"): +icon('edit')
-								textarea.textarea--full.msd-elastic(placeholder="Features such as flippers, bumpers, slingshots, ramps, etc.", ng-model="game.features")
-							uib-tab
-								uib-tab-heading(title="Preview"): +icon('eye')
-								div.markdown(markdown="game.features")
-								label.tab__label(ng-show="!game.features || game.features.length == 0") Nothing to preview.
+						editor.tabset--light(ng-model="game.features", placeholder="Features such as flippers, bumpers, slingshots, ramps, etc.", markdown-text="Markdown enabled.")
 
 				//- notes
 				.form-group(ng-hide="game.game_type === 'og'")
 					label.col-sm-3.control-label Notes
 					.col-sm-9
-						uib-tabset.tabset--light
-							label.label--small.pull-right(markdown-info="Markdown enabled.")
-							uib-tab
-								uib-tab-heading(title="Write"): +icon('edit')
-								textarea.textarea--full.msd-elastic(placeholder="Special notes about the game", ng-model="game.notes")
-							uib-tab
-								uib-tab-heading(title="Preview"): +icon('eye')
-								div.markdown(markdown="game.notes")
-								label.tab__label(ng-show="!game.notes || game.notes.length == 0") Nothing to preview.
+						editor.tabset--light(ng-model="game.notes", placeholder="Special notes about the game", markdown-text="Markdown enabled.")
 
 				//- toys
 				.form-group(ng-hide="game.game_type === 'og'")
 					label.col-sm-3.control-label Toys
 					.col-sm-9
-						uib-tabset.tabset--light
-							label.label--small.pull-right(markdown-info="Markdown enabled.")
-							uib-tab
-								uib-tab-heading(title="Write"): +icon('edit')
-								textarea.textarea--full.msd-elastic(placeholder="Other noteable objects that aren't listed under features", ng-model="game.toys")
-							uib-tab
-								uib-tab-heading(title="Preview"): +icon('eye')
-								div.markdown(markdown="game.toys")
-								label.tab__label(ng-show="!game.toys || game.toys.length == 0") Nothing to preview.
+						editor.tabset--light(ng-model="game.toys", placeholder="Other noteable objects that aren't listed under features", markdown-text="Markdown enabled.")
 
 				//- slogans
 				.form-group(ng-hide="game.game_type === 'og'")
 					label.col-sm-3.control-label Slogans
 					.col-sm-9
-						uib-tabset.tabset--light
-							label.label--small.pull-right(markdown-info="Markdown enabled.")
-							uib-tab
-								uib-tab-heading(title="Write"): +icon('edit')
-								textarea.textarea--full.msd-elastic(placeholder="Usually printed on the flyer", ng-model="game.slogans")
-							uib-tab
-								uib-tab-heading(title="Preview"): +icon('eye')
-								div.markdown(markdown="game.slogans")
-								label.tab__label(ng-show="!game.slogans || game.slogans.length == 0") Nothing to preview.
+						editor.tabset--light(ng-model="game.slogans", placeholder="Usually printed on the flyer", markdown-text="Markdown enabled.")
 
 				//- artists
 				.form-group(ng-hide="game.game_type === 'og'")

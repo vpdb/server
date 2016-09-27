@@ -38,21 +38,4 @@ hr.hr--light.hr--margin-small
 	p Pro tip: Type <code>@</code> for user search and auto-completion.
 
 .form-group
-	uib-tabset.tabset--light
-		label.label--small.pull-right(markdown-info="Markdown enabled.")
-		uib-tab
-			tab-heading(title="Write"): +icon('edit')
-			textarea.textarea--full.msd-elastic(
-				placeholder="List of people to thank",
-				ng-model="release.acknowledgements",
-				mentio,
-				mentio-items="foundUsers",
-				mentio-search="findUser(term)",
-				mentio-select="getUserMention(item)",
-				mentio-template-url="user-item.html"
-			)
-		uib-tab
-			tab-heading(title="Preview"): +icon('eye')
-			div.markdown(markdown="release.acknowledgements")
-			label.tab__label(ng-show="!release.acknowledgements || release.acknowledgements.length == 0") Nothing to preview.
-	i This will show up under your release's acknowledgements.
+	editor.tabset--light(ng-model="release.acknowledgements", placeholder="List of people to thank", markdown-text="Markdown enabled. This will show up under your release's acknowledgements.")

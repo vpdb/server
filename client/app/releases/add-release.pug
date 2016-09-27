@@ -33,16 +33,7 @@ include ../template/_mixins
 		h1 4. Describe your Release
 		hr
 		.form-group
-			uib-tabset.tabset--light
-				label.label--small.pull-right(markdown-info="Markdown enabled.")
-				uib-tab
-					uib-tab-heading(title="Write"): +icon('edit')
-					textarea.textarea--full.msd-elastic(placeholder="Description of the release", ng-model="release.description")
-				uib-tab
-					uib-tab-heading(title="Preview"): +icon('eye')
-					div.markdown(markdown="release.description")
-					label.tab__label(ng-show="!release.description || release.description.length == 0") Nothing to preview.
-			i This will show up globally under your release.
+			editor.tabset--light(ng-model="release.description", placeholder="Description of the release", markdown-text="Markdown enabled. This will show up globally under your release.")
 
 		include add-04-release-notes
 

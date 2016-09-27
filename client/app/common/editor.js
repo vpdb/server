@@ -30,7 +30,7 @@ angular.module('vpdb.editor', [])
 	 *  rating-user="gameRating"
 	 *  rating-action="rateGame($rating)"
 	 */
-	.directive('editor', function(AuthService, UserResource) {
+	.directive('editor', function(UserResource) {
 
 		function matchAll(text, regex) {
 			regex = new RegExp(regex.source, 'gi');
@@ -265,13 +265,13 @@ angular.module('vpdb.editor', [])
 			restrict: 'E',
 			scope: {
 				text: '=ngModel',
-				placeholder: '@'
+				user: '=',
+				placeholder: '@',
+				markdownText: '@'
 			},
 			replace: true,
 			templateUrl: '/common/editor.html',
 			controller: function($scope, $element) {
-
-				$scope.auth = AuthService;
 
 				$scope.textBold = function() {
 					var textarea = $element.find('textarea');

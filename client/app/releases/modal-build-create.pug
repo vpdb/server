@@ -44,15 +44,7 @@ include ../template/_mixins
 			.form-group(ng-class="{ error: errors.description }")
 				label.col-sm-3.control-label Description
 				.col-sm-7
-					uib-tabset.tabset--light
-						label.label--small.pull-right(markdown-info="Markdown enabled.")
-						uib-tab
-							uib-tab-heading(title="Write"): +icon('edit')
-							textarea.textarea--full.msd-elastic(placeholder="Description of the build", ng-model="build.description")
-						uib-tab
-							uib-tab-heading(title="Preview"): +icon('eye')
-							div.markdown(markdown="build.description")
-							label.tab__label(ng-show="!build.description || build.description.length == 0") Nothing to preview.
+					editor.tabset--light(ng-model="build.description", placeholder="Description of the build", markdown-text="Markdown enabled.")
 			div.alert.alert-danger(ng-show="errors.description")
 				+icon('warning').shift-up.space-right
 				| {{ errors.description }}

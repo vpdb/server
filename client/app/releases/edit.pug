@@ -24,17 +24,7 @@ include ../template/_mixins
 		//-----------------------------------------
 		h4.h--primary.padder-top-2x Description
 		.form-group
-			uib-tabset.tabset--light
-				label.label--small.pull-right(markdown-info="Markdown enabled.")
-				uib-tab
-					uib-tab-heading(title="Write"): +icon('edit')
-					textarea.textarea--full.msd-elastic(placeholder="Description of the release", ng-model="updatedRelease.description")
-				uib-tab
-					uib-tab-heading(title="Preview"): +icon('eye')
-					div.markdown(markdown="updatedRelease.description")
-					label.tab__label(ng-show="!updatedRelease.description || updatedRelease.description.length == 0") Nothing to preview.
-			i This will show up globally under your release.
-
+			editor.tabset--light(ng-model="updatedRelease.description", placeholder="Description of the release", markdown-text="Markdown enabled. This will show up globally under your release.")
 
 		//- AUTHORS
 		//-----------------------------------------
@@ -145,15 +135,7 @@ include ../template/_mixins
 		//-----------------------------------------
 		h4.h--primary Acknowledgements
 		.form-group
-			uib-tabset.tabset--light
-				label.label--small.pull-right(markdown-info="Markdown enabled.")
-				uib-tab
-					tab-heading(title="Write"): +icon('edit')
-					textarea.textarea--full.msd-elastic(placeholder="List of people to thank", ng-model="updatedRelease.acknowledgements")
-				uib-tab
-					tab-heading(title="Preview"): +icon('eye')
-					div.markdown(markdown="updatedRelease.acknowledgements")
-					label.tab__label(ng-show="!updatedRelease.acknowledgements || updatedRelease.acknowledgements.length == 0") Nothing to preview.
+			editor.tabset--light(ng-model="updatedRelease.acknowledgements", placeholder="List of people to thank", markdown-text="Markdown enabled. This will show up under your release's acknowledgements.")
 
 
 		//- FOOTER BUTTONS

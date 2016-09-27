@@ -285,15 +285,4 @@ angular.module('vpdb.games.details', [])
 				$scope.medium.file.counter.downloads++;
 			});
 		}
-	})
-
-	.controller('RequestModPermissionModalCtrl', function($scope, $uibModalInstance) {
-
-		$scope.ok = function () {
-			$uibModalInstance.close(true);
-		};
-
-		$scope.cancel = function () {
-			$uibModalInstance.dismiss(false);
-		};
 	});

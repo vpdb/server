@@ -1,22 +1,22 @@
 include ../template/_mixins
 
-.row.row--fullheight
+.row.row--fullheight(ng-controller="ProfileCtrl")
 
 	// sidebar (left)
 	.col-sm-3.col--menu
 		h1 Profile
 		hr
 
-		p: a(ui-sref="profile.settings", ng-class="{ 'active': state.name == 'profile.settings'}")
+		p: a(ui-sref="profile.settings", ng-class="{ 'active': state.name == 'profile.settings' }")
 			+icon('settings').shift-up.space-right
 			| Settings
-		p: a(ui-sref="profile.downloads", ng-class="{ 'active': state.name == 'profile.downloads'}")
+		p: a(ui-sref="profile.downloads", ng-class="{ 'active': state.name == 'profile.downloads' }")
 			+icon('download').shift-up.space-right
 			| Download Options
-		p: a(ui-sref="profile.notifications", ng-class="{ 'active': state.name == 'profile.notifications'}")
+		p: a(ui-sref="profile.notifications", ng-class="{ 'active': state.name == 'profile.notifications' }")
 			+icon('email').shift-up.space-right
 			| Notifications
-		p: a(ui-sref="profile.stats", ng-class="{ 'active': state.name == 'profile.stats'}")
+		p: a(ui-sref="profile.stats", ng-class="{ 'active': state.name == 'profile.stats' }")
 			+icon('chart').shift-up.space-right
 			| Stats
 		p.padder-bottom-2x
@@ -24,15 +24,33 @@ include ../template/_mixins
 	// content
 	.col-sm-9.col--main
 		p.padder-top-2x
-		.media
-			.media-left.media-middle
-				img.img-avatar.img-avatar--xlg(gravatar-src="auth.user.gravatar_id", gravatar-default="404", fallback-icon="user")
-			.media-body
-				h3.h--large.h--shift-up {{ auth.user.name }}
-				.text--large.text--shift-up {{ auth.user.email }}
-		p.padder-top-3x
+		.col-xs-12.col-sm-10
+			.media
+				.media-left.media-middle
+					img.img-avatar.img-avatar--xlg(gravatar-src="auth.user.gravatar_id", gravatar-default="404", fallback-icon="user")
+				.media-body
+					h3.h--large.h--shift-up {{ auth.user.name }}
+					.text--large.text--shift-up {{ auth.user.email }}
+					button.btn.btn-hollow.pull-right.shift-up-more(ng-click="changeAvatar()") Change Picture
+					.clearfix
+			p.padder-top-3x
 
 		.ui-view-wrapper
 			| <div ui-view class="height-animation"></div>
 
 		p.padder-bottom-2x
+
+script(id="modal/change-avatar.html", type="text/ng-template")
+	.theme-light
+		.modal-header
+			h1.h--no-margin.h--small
+				+icon('user').space-right
+				| Change Profile Picture
+
+		.modal-body
+			p VPDB uses <a href="https://en.gravatar.com/support/what-is-gravatar/" target="_blank">Gravatar</a> for your profile image. The advantage of Gravatar is that you probably already have it set up.
+			p If not, it's easy to do and your avatar will show up on many websites automatically!
+
+		.modal-footer
+			a.btn.btn-primary(href="https://en.gravatar.com/", target="_blank") Setup Gravatar
+			button.btn.btn-hollow.pull-left(ng-click="$dismiss()") Cancel

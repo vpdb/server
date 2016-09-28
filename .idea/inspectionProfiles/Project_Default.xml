@@ -5,7 +5,7 @@
     <inspection_tool class="HtmlUnknownAttribute" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="myValues">
         <value>
-          <list size="67">
+          <list size="69">
             <item index="0" class="java.lang.String" itemvalue="ngf-drag-over-class" />
             <item index="1" class="java.lang.String" itemvalue="ng-class" />
             <item index="2" class="java.lang.String" itemvalue="error" />
@@ -73,6 +73,8 @@
             <item index="64" class="java.lang.String" itemvalue="ng-trim" />
             <item index="65" class="java.lang.String" itemvalue="mentio-menu-item" />
             <item index="66" class="java.lang.String" itemvalue="ng-bind-html" />
+            <item index="67" class="java.lang.String" itemvalue="fallback-icon" />
+            <item index="68" class="java.lang.String" itemvalue="markdown" />
           </list>
         </value>
       </option>

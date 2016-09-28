@@ -123,6 +123,11 @@ angular.module('vpdb.common', [])
 		});
 	})
 
+	.factory('ReleaseModerationCommentResource', function($resource, ConfigService) {
+		return $resource(ConfigService.apiUri('/releases/:releaseId/moderate/comments'), {}, {
+		});
+	})
+
 	.factory('ReleaseRatingResource', function($resource, ConfigService) {
 		return $resource(ConfigService.apiUri('/releases/:releaseId/rating'), {}, {
 			update: { method: 'PUT' }

@@ -144,12 +144,12 @@ exports.createForReleaseModeration = function(req, res) {
 				.exec()
 				.then(comments => {
 					comments.forEach(comment => {
-						mailer.releaseModerationCommented(comment._from, req.user, release._game, release, 'Moderator', req.body.message);
+						mailer.releaseModerationCommented(comment._from, req.user, release._game, release, 'Uploader', req.body.message);
 					});
 				});
 		} else {
 			// notify uploader
-			mailer.releaseModerationCommented(release._created_by, req.user, release._game, release, 'Uploader', req.body.message);
+			mailer.releaseModerationCommented(release._created_by, req.user, release._game, release, 'Moderator', req.body.message);
 		}
 
 	}).catch(api.handleError(res, error, 'Error saving comment'));

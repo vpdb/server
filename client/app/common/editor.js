@@ -162,6 +162,7 @@ angular.module('vpdb.editor', [])
 
 		function wrapOnNewLine(element, text, prefixChars, prefixRegex, suffixChars) {
 			suffixChars = suffixChars || '';
+			text = text || '';
 			var start = element.prop('selectionStart');
 			var end = element.prop('selectionEnd');
 			var initialStart = start;
@@ -293,7 +294,7 @@ angular.module('vpdb.editor', [])
 					var start = textarea.prop('selectionStart');
 					var end = textarea.prop('selectionEnd');
 					// if selection has line break, wrap on new line
-					if (/\n+/.test($scope.text.substring(start, end))) {
+					if ($scope.text && /\n+/.test($scope.text.substring(start, end))) {
 						apply(textarea, $scope, wrapOnNewLine(textarea, $scope.text, '```\n', /```\n/, '\n```'));
 					} else {
 						apply(textarea, $scope, wrap(textarea, $scope.text, '`'));

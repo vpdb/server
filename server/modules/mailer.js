@@ -139,7 +139,7 @@ exports.releaseCommented = function(user, commentor, game, release, message) {
 exports.releaseModerationCommented = function(user, commentor, game, release, who, message) {
 	return sendEmail(user, 'Comment about your submitted "' + release.name + '" of ' + game.title, 'release-moderation-commented', {
 		user: user,
-		who: who, // 'Moderator' or 'Submitter'
+		who: who, // 'Moderator' or 'Uploader'
 		release: release,
 		game: game,
 		commentor: commentor,

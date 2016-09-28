@@ -81,14 +81,23 @@
 				color $color-lighter-inv
 				.svg-icon
 					fill $color-lighter-inv
+
 	.tab-content
 		background-color rgba(black, 0.11)
 
+	.panel-triangle
+		border-color transparent #cdcccc transparent transparent
 
 	.tabset--light
 		.nav-tabs
-			li.active a
-				background-color $color-lighter
+			li
+				&.active
+					a
+						background-color $color-lighter
+					.panel-triangle
+						border-color transparent #f1f1f0 transparent transparent
+			.panel-triangle
+				border-color transparent #d4d3d1 transparent transparent
 		.tab-content
 			background-color $color-lighter
 			textarea

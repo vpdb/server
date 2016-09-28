@@ -80,7 +80,7 @@ angular.module('vpdb.uploads.list', [])
 	})
 	.controller('ModerateReleaseCtrl', function($scope, $rootScope, $uibModalInstance, ApiHelper,
 												ReleaseResource, ReleaseModerationResource, FileBlockmatchResource,
-												ModalService, params) {
+												ReleaseModerationCommentResource, ModalService, params) {
 
 		$scope.files = [];
 		$scope.release = ReleaseResource.get({ release: params.release.id, fields: 'moderation' }, function(release) {
@@ -94,6 +94,7 @@ angular.module('vpdb.uploads.list', [])
 					});
 				});
 			});
+			$scope.comments = ReleaseModerationCommentResource.query({ releaseId: $scope.release.id });
 		});
 
 		$scope.blockmatchInfo = function() {
@@ -141,6 +142,13 @@ angular.module('vpdb.uploads.list', [])
 				params.refresh();
 			}, ApiHelper.handleErrors($scope));
 		};
+
+		$scope.sendMessage = function() {
+			ReleaseModerationCommentResource.save({ releaseId: $scope.release.id }, { message: $scope.message }, function(comment) {
+				$scope.comments.unshift(comment);
+				$scope.message = '';
+			}, ApiHelper.handleErrors($scope));
+		}
 	})
 
 	.controller('AdminBackglassUploadsCtrl', function($scope, $uibModal, ApiHelper, BackglassResource) {

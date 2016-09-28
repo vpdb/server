@@ -181,14 +181,28 @@ mixin history
 //---------------------------------------------------------------------
 mixin message
 	h3.h--smaller.h--primary Message
+	.media.media--no-margin.collapse-in-animation(ng-repeat="comment in comments track by comment.id")
+		.collapse-in-animation-inner
+			.media-left.avatar
+				img.img-avatar.pull-left(gravatar-src="comment.from.gravatar_id", gravatar-default="404", fallback-icon="user")
+			.media-body.media--full-width
+				.panel.panel--inner
+					.panel-triangle
+					.panel-heading
+						label
+						strong {{ comment.from.name }}
+						span &nbsp;commented&nbsp;
+						span(am-time-ago="comment.created_at")
+					.panel-body
+						div.markdown(markdown="comment.message")
+
 	.form-group(ng-class="{ error: errors.message }")
-		textarea.textarea--full.animate(
-		placeholder="Message to user (mandatory if refusal)",
-		ng-model="message"
-		)
+		editor.tabset--light(ng-model="message", user="auth.user", placeholder="Message to user (mandatory if refusal)", markdown-text="Markdown enabled.")
+	button.btn.btn-hollow.pull-right.shift-up-3x(ng-click="sendMessage()") Send Message Only
 	div.alert.alert-danger.padder-bottom(ng-show="errors.message")
 		+icon('warning').shift-up.space-right
 		| {{ errors.message }}
+
 
 mixin footer(entity)
 	button.btn.btn-hollow.pull-left(ng-click="$dismiss()") Cancel

@@ -4,7 +4,8 @@ p.padder-top(ng-show="pageLoading") Loading...
 
 .row.ng-cloak.row--fullheight.fade-animation(ng-controller="ReleaseDetailsController", ng-show="!pageLoading")
 
-	// right column
+	//-- RIGHT COLUMN
+	//-====================================================================
 	.col-sm-3.col-sm-push-9.col--menu(ng-show="found")
 
 		a.a--block.text-center(ui-sref="gameDetails({id: game.id})")
@@ -79,20 +80,48 @@ p.padder-top(ng-show="pageLoading") Loading...
 			p.padder-top
 
 
-	// left column (main content)
+	//-- LEFT COLUMN (main content)
+	//-====================================================================
 	.col-sm-9.col-sm-pull-3.col--main(ng-show="found")
 
-		p.padder-top-2x
+		//-- MODERATION ZONE
+		//---------------------------------------------------------------------
+		.panel--rect-block.padder-top.shift-up-1px(ng-show="release.moderation && !release.moderation.is_approved")
+			h1.text-center.shift-up(uib-tooltip="Only visible by moderators and the uploader. Will disappear when the release is approved.", tooltip-placement="bottom", tooltip-append-to-body="true", tooltip-popup-delay="200")
+				+icon('forum').space-right
+				| Moderation Zone
 
-		.alert.alert-warning.alert--no-bottom-margin(ng-show="release.moderation && !release.moderation.is_refused && !release.moderation.is_approved")
-			.text-center
-				+icon('warning').shift-up.space-right
-				| Release moderation is still pending.
+			.padder-2x
+				label(ng-show="!moderationComments || moderationComments.length == 0") No comments yet.
+				.media.media--no-margin.collapse-in-animation(ng-repeat="comment in moderationComments track by comment.id")
+					.collapse-in-animation-inner
+						.media-left.avatar
+							img.img-avatar.pull-left(gravatar-src="comment.from.gravatar_id", gravatar-default="404", fallback-icon="user")
+						.media-body.media--full-width
+							.panel.panel--inner
+								.panel-triangle
+								.panel-heading
+									label
+									strong {{ comment.from.name }}
+									| &nbsp;commented&nbsp;
+									span(am-time-ago="comment.created_at")
+								.panel-body
+									div.markdown(markdown="comment.message")
 
-		.alert.alert-danger.alert--no-bottom-margin(ng-show="release.moderation && release.moderation.is_refused && !release.moderation.is_approved")
-			.text-center
-				+icon('warning').shift-up.space-right
-				| This release has not been approved for publication.
+				editor(ng-model="newModerationComment", user="auth.user", placeholder="Comment about release moderation", markdown-text="Comments are parsed with Markdown.")
+
+				button.btn.btn-hollow.pull-right.shift-up-2x(ng-show="auth.isAuthenticated", ng-click="addModerationComment(release.id)") Reply
+				.clearfix
+
+			.alert.alert-warning(ng-show="!release.moderation.is_refused")
+				.text-center
+					+icon('warning').shift-up.space-right
+					| Release moderation is still pending.
+
+			.alert.alert-danger(ng-show="release.moderation.is_refused")
+				.text-center
+					+icon('warning').shift-up.space-right
+					| This release has not been approved for publication.
 
 		.title.padder-top
 			h1.title-main.h--primary

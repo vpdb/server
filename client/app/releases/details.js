@@ -22,7 +22,7 @@
 angular.module('vpdb.releases.details', []).controller('ReleaseDetailsController', function(
 	$scope, $rootScope, $uibModal, $timeout, $stateParams,
 	ApiHelper, ReleaseCommentResource, AuthService, ReleaseService, Flavors,
-	ReleaseRatingResource, ReleaseResource, GameResource)
+	ReleaseRatingResource, ReleaseResource, GameResource, ReleaseModerationCommentResource)
 {
 
 	$scope.theme('dark');
@@ -63,6 +63,10 @@ angular.module('vpdb.releases.details', []).controller('ReleaseDetailsController
 
 		// fetch comments
 		$scope.comments = ReleaseCommentResource.query({ releaseId: release.id });
+		if (release.moderation && !release.moderation.is_approved) {
+			$scope.moderationComments = ReleaseModerationCommentResource.query({ releaseId: release.id });
+		}
+
 
 		$scope.flavorGrid = ReleaseService.flavorGrid(release);
 
@@ -98,6 +102,12 @@ angular.module('vpdb.releases.details', []).controller('ReleaseDetailsController
 		ReleaseCommentResource.save({ releaseId: $scope.releaseId }, { message: $scope.newComment }, function(comment) {
 			$scope.comments.unshift(comment);
 			$scope.newComment = '';
+		}, ApiHelper.handleErrors($scope));
+	};
+	$scope.addModerationComment = function() {
+		ReleaseModerationCommentResource.save({ releaseId: $scope.releaseId }, { message: $scope.newModerationComment }, function(comment) {
+			$scope.moderationComments.push(comment);
+			$scope.newModerationComment = '';
 		}, ApiHelper.handleErrors($scope));
 	};
 

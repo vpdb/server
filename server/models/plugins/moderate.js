@@ -23,7 +23,6 @@ const _ = require('lodash');
 const logger = require('winston');
 const mongoose = require('mongoose');
 const acl = require('../../acl');
-const mailer = require('../../modules/mailer');
 const Schema = mongoose.Schema;
 
 const modelResourceMap = {

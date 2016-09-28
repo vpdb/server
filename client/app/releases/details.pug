@@ -113,7 +113,7 @@ p.padder-top(ng-show="pageLoading") Loading...
 				button.btn.btn-hollow.pull-right.shift-up-2x(ng-show="auth.isAuthenticated", ng-click="addModerationComment(release.id)") Reply
 				.clearfix
 
-			.alert.alert-warning(ng-show="!release.moderation.is_refused")
+			.alert.alert-info(ng-show="!release.moderation.is_refused")
 				.text-center
 					+icon('warning').shift-up.space-right
 					| Release moderation is still pending.

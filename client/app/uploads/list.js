@@ -120,7 +120,10 @@ angular.module('vpdb.uploads.list', [])
 		};
 
 		$scope.refuse = function() {
+			$scope.submitting = true;
 			ReleaseModerationResource.save({ releaseId: $scope.release.id }, { action: 'refuse', message: $scope.message }, function() {
+				$scope.submitting = false;
+				$scope.message = '';
 				$uibModalInstance.close();
 				$rootScope.showNotification('Release "' + $scope.release.name + '" successfully refused.');
 				params.refresh();
@@ -128,7 +131,10 @@ angular.module('vpdb.uploads.list', [])
 		};
 
 		$scope.approve = function() {
+			$scope.submitting = true;
 			ReleaseModerationResource.save({ releaseId: $scope.release.id }, { action: 'approve', message: $scope.message }, function() {
+				$scope.submitting = false;
+				$scope.message = '';
 				$uibModalInstance.close();
 				$rootScope.showNotification('Release "' + $scope.release.name + '" successfully approved.');
 				params.refresh();
@@ -136,15 +142,21 @@ angular.module('vpdb.uploads.list', [])
 		};
 
 		$scope.moderate = function() {
+			$scope.submitting = true;
 			ReleaseModerationResource.save({ releaseId: $scope.release.id }, { action: 'moderate', message: $scope.message }, function() {
+				$scope.submitting = false;
+				$scope.message = '';
 				$uibModalInstance.close();
 				$rootScope.showNotification('Release "' + $scope.release.name + '" successfully set back to pending.');
 				params.refresh();
+
 			}, ApiHelper.handleErrors($scope));
 		};
 
 		$scope.sendMessage = function() {
+			$scope.loading = true;
 			ReleaseModerationCommentResource.save({ releaseId: $scope.release.id }, { message: $scope.message }, function(comment) {
+				$scope.loading = false;
 				$scope.comments.unshift(comment);
 				$scope.message = '';
 			}, ApiHelper.handleErrors($scope));

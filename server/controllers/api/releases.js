@@ -29,6 +29,7 @@ var Release = require('mongoose').model('Release');
 var Version = require('mongoose').model('ReleaseVersion');
 var VersionFile = require('mongoose').model('ReleaseVersionFile');
 var LogEvent = require('mongoose').model('LogEvent');
+var Comment = require('mongoose').model('Comment');
 var Build = require('mongoose').model('Build');
 var Game = require('mongoose').model('Game');
 var Star = require('mongoose').model('Star');
@@ -757,7 +758,7 @@ exports.del = function(req, res) {
  */
 exports.moderate = function(req, res) {
 
-	let release, moderation;
+	let release, moderation, lastEvent;
 	Promise.try(() => {
 		return Release.findOne({ id: req.params.id })
 			.populate('_game')
@@ -775,7 +776,7 @@ exports.moderate = function(req, res) {
 		moderation = m;
 		if (_.isArray(moderation.history)) {
 			moderation.history.sort((m1, m2) => m2.created_at.getTime() - m1.created_at.getTime());
-			const lastEvent = moderation.history[0];
+			lastEvent = moderation.history[0];
 			const errHandler = err => logger.error('[moderation] Error sending moderation mail: %s', err.message);
 			switch (lastEvent.event) {
 				case 'approved':
@@ -783,6 +784,20 @@ exports.moderate = function(req, res) {
 				case 'refused':
 					return mailer.releaseRefused(release._created_by, release, lastEvent.message).catch(errHandler);
 			}
+		}
+
+	}).then(() => {
+
+		// if message set, create a comment.
+		if (lastEvent.message) {
+			let comment = new Comment({
+				_from: req.user._id,
+				_ref: { release_moderation: release },
+				message: lastEvent.message,
+				ip: req.ip || req.headers[ 'x-forwarded-for' ] || req.connection.remoteAddress || '0.0.0.0',
+				created_at: new Date()
+			});
+			return comment.save();
 		}
 
 	}).then(() => {

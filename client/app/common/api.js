@@ -237,6 +237,9 @@ angular.module('vpdb.common', [])
 						});
 						return;
 					}
+					if (scope.submitting) {
+						scope.submitting = false;
+					}
 					scope.message = null;
 					scope.errors = { __count: 0 };
 					scope.error = null;

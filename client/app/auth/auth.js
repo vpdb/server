@@ -142,7 +142,7 @@ angular.module('vpdb.auth', [])
 			 * Checks whether the currently logged user has a given role.
 			 * Returns false if not logged.
 			 *
-			 * @param role
+			 * @param {string|string[]} role Role to match. If multiple given, at least one must match.
 			 * @returns {boolean} True if user has role, false otherwise.
 			 */
 			hasRole: function(role) {

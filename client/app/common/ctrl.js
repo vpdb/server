@@ -155,7 +155,7 @@ angular.module('vpdb.common', [])
 					console.error(err);
 				}
 			};
-			if (AuthService.isAuthenticated) {
+			if (AuthService.hasPermission('releases/star')) {
 				if ($event) {
 					$event.stopPropagation();
 				}

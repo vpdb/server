@@ -11,7 +11,7 @@ img.img--logo(ng-src="{{ game.logo.variations['medium' + pixelDensitySuffix].url
 	rating-votes="game.rating.votes",
 	rating-user="gameRating"
 	rating-action="rateGame($rating)"
-	rating-readonly="!auth.isAuthenticated")
+	rating-readonly="!auth.hasPermission('games/rate')")
 
 
 //-- STATS

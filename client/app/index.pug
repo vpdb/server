@@ -9,7 +9,7 @@ block navbar
 			a(ui-sref="games") Games
 		li(ng-class="{ active: menu == 'releases' }")
 			a(ui-sref="releases") Releases
-		li.uib-dropdown(ng-class="{ active: menu == 'admin' }", ng-show="auth.hasRole(['root', 'admin'])", on-toggle="toggled(open)", uib-dropdown)
+		li.uib-dropdown(ng-class="{ active: menu == 'admin' }", ng-show="auth.hasRole(['root', 'admin', 'moderator'])", on-toggle="toggled(open)", uib-dropdown)
 			a.space-right.uib-dropdown-toggle(uib-dropdown-toggle)
 				span.space-right-2x Admin
 				+icon('angle-down').smaller.shift-up
@@ -24,16 +24,19 @@ block navbar
 						span Users
 
 	ul.nav.navbar-nav.navbar-right
-		li.uib-dropdown(ng-show="auth.isAuthenticated && themeName === 'theme-dark'", on-toggle="toggled(open)", uib-dropdown)
+		li.uib-dropdown(ng-show="(auth.hasPermission('releases/add') || auth.hasPermission('games/add') || auth.hasPermission('backglasses/add')) && themeName === 'theme-dark'", on-toggle="toggled(open)", uib-dropdown)
 			a.btn.btn-hollow.space-right.uib-dropdown-toggle(uib-dropdown-toggle) Upload
 			ul.uib-dropdown-menu
-				li
+				li(ng-show="auth.hasPermission('games/add')")
+					a(ui-sref="addGame")
+						span Game Data
+				li(ng-show="auth.hasPermission('releases/add')")
 					a(ng-click="uploadRelease()")
 						span Recreation
 				//li
 					a
 						span Original Game
-				li
+				li(ng-show="auth.hasPermission('backglasses/add')")
 					a(ng-click="uploadBackglass()")
 						span Direct B2S
 

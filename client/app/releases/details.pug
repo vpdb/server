@@ -27,7 +27,7 @@ p.padder-top(ng-show="pageLoading") Loading...
 				rating-votes="release.rating.votes",
 				rating-user="releaseRating"
 				rating-action="rateRelease($rating)",
-				rating-readonly="!auth.isAuthenticated")
+				rating-readonly="!auth.hasPermission('releases/rate')")
 
 		//-- DOWNLOAD BUTTON
 		//---------------------------------------------------------------------
@@ -110,7 +110,7 @@ p.padder-top(ng-show="pageLoading") Loading...
 
 				editor(ng-model="newModerationComment", user="auth.user", placeholder="Comment about release moderation", markdown-text="Comments are parsed with Markdown.")
 
-				button.btn.btn-hollow.pull-right.shift-up-2x(ng-show="auth.isAuthenticated", ng-click="addModerationComment(release.id)") Reply
+				button.btn.btn-hollow.pull-right.shift-up-2x(ng-click="addModerationComment(release.id)") Reply
 				.clearfix
 
 			.alert.alert-info(ng-show="!release.moderation.is_refused")
@@ -221,10 +221,11 @@ p.padder-top(ng-show="pageLoading") Loading...
 
 		//-- NEW COMMENT
 		//---------------------------------------------------------------------
-		h3.h--smaller.h--primary(ng-show="auth.isAuthenticated") Add a Comment:
-		editor(ng-model="newComment", user="auth.user", placeholder="Your comment", markdown-text="Comments are parsed with Markdown.")
+		div(ng-show="auth.hasPermission('comments/add')")
+			h3.h--smaller.h--primary() Add a Comment:
+			editor(ng-model="newComment", user="auth.user", placeholder="Your comment", markdown-text="Comments are parsed with Markdown.")
+			button.btn.btn-default.padder-top.pull-right(ng-click="addComment(release.id)") Comment
 
-		button.btn.btn-default.padder-top.pull-right(ng-show="auth.isAuthenticated", ng-click="addComment(release.id)") Comment
 		.clearfix
 		p.padder-bottom-2x
 

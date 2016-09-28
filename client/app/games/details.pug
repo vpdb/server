@@ -9,15 +9,15 @@ include ../template/_mixins
 
 		//-- UPLOAD BUTTONS
 		//---------------------------------------------------------------------
-		.panel--rect-block(ng-show="auth.isAuthenticated")
+		.panel--rect-block(ng-show="auth.hasPermission('releases/add') || auth.hasPermission('backglasses/add')")
 			h1.text-center.shift-up UPLOAD
 
 			.center
 				ul.ul--no-list
-					li: a.text-center(ui-sref="addRelease({ id: game.id })")
+					li(ng-show="auth.hasPermission('releases/add')"): a.text-center(ui-sref="addRelease({ id: game.id })")
 						+icon('plus-circle').space-right.shift-up
 						| Release
-					li: a.text-center(ui-sref="addBackglass({ id: game.id })")
+					li(ng-show="auth.hasPermission('backglasses/add')"): a.text-center(ui-sref="addBackglass({ id: game.id })")
 						+icon('plus-circle').space-right.shift-up
 						| Direct B2S
 

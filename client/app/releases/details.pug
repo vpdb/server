@@ -64,7 +64,7 @@ p.padder-top(ng-show="pageLoading") Loading...
 		//-- AUTHOR ZONE
 		//---------------------------------------------------------------------
 		.panel--rect-block.padder-top(ng-show="auth.isAuthor(release)")
-			h1.text-center.shift-up
+			h1.text-center
 				+icon('gear').space-right
 				| Author Zone
 
@@ -87,7 +87,7 @@ p.padder-top(ng-show="pageLoading") Loading...
 		//-- MODERATION ZONE
 		//---------------------------------------------------------------------
 		.panel--rect-block.padder-top.shift-up-1px(ng-show="release.moderation && !release.moderation.is_approved")
-			h1.text-center.shift-up(uib-tooltip="Only visible by moderators and the uploader. Will disappear when the release is approved.", tooltip-placement="bottom", tooltip-append-to-body="true", tooltip-popup-delay="200")
+			h1.text-center(uib-tooltip="Only visible by moderators and the uploader. Will disappear when the release is approved.", tooltip-placement="bottom", tooltip-append-to-body="true", tooltip-popup-delay="200")
 				+icon('forum').space-right
 				| Moderation Zone
 

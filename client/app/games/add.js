@@ -14,7 +14,7 @@ angular.module('vpdb.games.add', [])
 
 		$scope.theme('light');
 		$scope.setTitle('Add Game');
-		$scope.setMenu('admin');
+		$scope.setMenu('games');
 
 		$scope.submitting = false;
 

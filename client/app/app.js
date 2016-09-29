@@ -112,6 +112,11 @@ angular.module('vpdb', deps.concat(appDeps))
 		$stateProvider.state('profile.stats',            { url: '/stats',                templateUrl: '/profile/stats.html', controller: 'ProfileStatsCtrl' });
 		$stateProvider.state('authCallback',     { url: '/auth/:strategy/callback?code', templateUrl: '/auth/authenticating.html' });
 		$stateProvider.state('confirmToken',     { url: '/confirm/:token',               templateUrl: '/auth/confirm.html' });
+		$stateProvider.state('about',            { url: '/about',                        templateUrl: '/content/about.html' });
+		$stateProvider.state('rules',            { url: '/rules',                        templateUrl: '/content/rules.html' });
+		$stateProvider.state('faq',              { url: '/faq',                          templateUrl: '/content/faq.html' });
+		$stateProvider.state('legal',            { url: '/terms-and-conditions',         templateUrl: '/content/legal.html' });
+		$stateProvider.state('privacy',          { url: '/privacy-policy',               templateUrl: '/content/privacy.html' });
 		$stateProvider.state('404',              {                                       templateUrl: '/errors/404.html' });
 
 		$locationProvider.html5Mode({

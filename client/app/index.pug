@@ -79,11 +79,11 @@ block content
 
 		footer
 			.text-center
-				a.space-right.space-left About
-				a.space-right.space-left-2x Rules
-				a.space-right.space-left-2x FAQ
-				a.space-right.space-left-2x Legal
-				a.space-left-2x Privacy Policy
+				a.space-right.space-left(ui-sref="about", ng-class="{ active: menu == 'about' }") About
+				a.space-right.space-left-2x(ui-sref="rules", ng-class="{ active: menu == 'rules' }") Rules
+				a.space-right.space-left-2x(ui-sref="faq", ng-class="{ active: menu == 'faq' }") FAQ
+				a.space-right.space-left-2x(ui-sref="legal", ng-class="{ active: menu == 'legal' }") Legal
+				a.space-left-2x(ui-sref="privacy", ng-class="{ active: menu == 'privacy' }") Privacy Policy
 
 	.spinner-overlay.fade-animation(ng-show="loading", ng-cloak)
 		.spinner

@@ -172,8 +172,8 @@ correct hosts within in the sets, we'll have the following configuration:
 - Primary: MongoDB running on `127.0.1.1:27017`
 - Secondary: MongoDB running on `127.0.2.2:27018`
 - Tertiary: MongoDB running on `127.0.3.3:27019`
-- Arbiter 1: MongoDB running on `127.0.10.10:27100` 
-- Arbiter 2: MongoDB running on `127.0.20.20:27200`
+- Arbiter 1: MongoDB running on `127.0.10.10:27100` (on primary)
+- Arbiter 2: MongoDB running on `127.0.20.20:27200` (on primary)
 
 #### Setup SSH Tunnels
 
@@ -206,7 +206,7 @@ On primary and secondary, create SSH keypair with no password:
 	ssh-keygen -t rsa
 	cat ~/.ssh/id_rsa.pub
 	
-Change MongoDB interface to `127.0.1.1`
+On primary, change MongoDB interface to `127.0.1.1`
 	
 	vi /etc/mongod.conf
 	vi /var/www/staging/settings.js
@@ -241,15 +241,28 @@ Also enable `GatewayPorts` all instances so we can tunnel to 127.0.1.*.
 
 	systemctl restart sshd.service
 	
+Rename currently installed MongoDB instance on secondary and tertiary:
+	
+	sudo systemctl stop mongodb
+	sudo cp /etc/systemd/system/mongodb.service /etc/systemd/system/mongodb-replica.service
+	sudo cp /etc/mongod.conf /etc/mongod-replica.conf
+	sudo vi /etc/systemd/system/mongodb-replica.service
+	
+	ExecStart=/usr/bin/mongod --quiet --config /etc/mongod-replica.conf
+	
+	sudo systemctl start mongodb-replica
+	sudo systemctl status mongodb-replica
+	sudo systemctl enable mongodb-replica
+	
 On secondary, change MongoDB interface and port to `127.0.2.2:27018`:
 
 	vi /etc/mongod.conf
-	systemctl restart mongodb
+	systemctl restart mongodb-replica
 
 On tertiary, change MongoDB interface and port to `127.0.3.3:27019`:
 
-	vi /etc/mongod.conf
-	systemctl restart mongodb
+	vi /etc/mongod-replica.conf
+	systemctl restart mongodb-replica
 
 On primary, test connection and confirm fingerprint:
 	
@@ -356,7 +369,7 @@ when backup is offline:
 
 On primary and all replicas enable replication:
 
-	vi /etc/mongod.conf
+	vi /etc/mongod-replica.conf
 
 	replication:
 	  replSetName: rs0
@@ -369,21 +382,24 @@ Still on primary, copy the key file to secondaries
 	scp /home/mongotunnel/keyfile mongotunnel@home.vpdb:/home/mongotunnel/keyfile
 	chmod 600 /home/mongotunnel/keyfile
 
-On secondaries, enable keyfile authentication and change data folder:
+On secondaries, enable keyfile authentication and change data and log path:
 
 	mkdir /var/lib/mongodb-replica
 	chown mongodb:mongodb /home/mongotunnel/keyfile /var/lib/mongodb-replica
 	chmod 600 /home/mongotunnel/keyfile
-	vi /etc/mongod.conf
+	vi /etc/mongod-replica.conf
 	
 	storage:
       dbPath: /var/lib/mongodb-replica
+	systemLog:
+	  path: /var/log/mongodb/mongod-replica.log
 	security:
+	  authorization: enabled
 	  keyFile: /home/mongotunnel/keyfile
 
 Restart primary and all replicas:
 
-	systemctl restart mongodb
+	systemctl restart mongodb-replica
 
 Make sure that all secondaries are clean and empty, otherwise they'll be stuck 
 in `ROLLBACK`. Clearing data folder before restarting helps.
@@ -405,6 +421,7 @@ Then connect to primary, configure replication and add replicas:
 	rs.initiate({ _id:"rs0", members: [{ _id: 1, host: "127.0.1.1:27017" }]})
 	rs.conf()
 	rs.add({ host: "127.0.2.2:27018", priority: 0, hidden: true })
+	rs.add({ host: "127.0.3.3:27019", priority: 0, hidden: true })
 	rs.addArb("127.0.10.10:27100")
 	rs.addArb("127.0.20.20:27200")
 
@@ -415,6 +432,20 @@ On secondaries, enable slaves in order to read:
 	use vpdb
 	db.tags.find()
 	
+## Setup Backup/Staging Instance
+
+This instance isn't part of the replica, data is just copied over from the file system.
+
+On secondary and tertiary:
+
+	sudo vi /etc/mongod.conf
+	
+	net:
+	  port: 27017
+	  bindIp: 127.0.100.100
+	security:
+	  authorization: enabled
+
 ## Redis
 
 Install latest from repo:

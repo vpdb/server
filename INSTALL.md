@@ -72,13 +72,12 @@ Set:
 	PermitRootLogin no
 	LogLevel VERBOSE
 
-## Install Deps
 
 ### General Stuff
 
 	sudo apt-get -y install rcconf git-core python-software-properties vim unrar tar
 
-### Node.js
+## Node.js
 
 	cd
 	sudo curl -sL https://deb.nodesource.com/setup_6.x -o nodesource_setup.sh
@@ -89,11 +88,11 @@ Set:
 	npm install -g npm
 	npm install -g grunt-cli bower
 
-### Image/Video Tools
+## Image/Video Tools
 
 	sudo apt -y install graphicsmagick pngquant optipng ffmpeg
 
-### MongoDB
+## MongoDB
 
 Install 3.2 from repo:
 
@@ -124,8 +123,299 @@ Check if workie:
 	sudo systemctl start mongodb
 	sudo systemctl status mongodb
 	sudo systemctl enable mongodb
+	
+### Authentication
+	
+Create users:
+	
+	sudo adduser mongotunnel --home /home/mongotunnel --shell /bin/bash --disabled-password
+	mongo
+	
+	use admin
+	db.createUser({
+	  user: "root",
+	  pwd: "<password>",
+	  roles: [ { role: "root", db: "admin" } ]
+	});
+	db.createUser({
+	  user: "admin",
+	  pwd: "<password>",
+	  roles: [ { role: "userAdminAnyDatabase", db: "admin" } ]
+	});
+	use vpdb-production
+	db.createUser({
+	  user: "vpdb",
+	  pwd: "<password>",
+	  roles: [ { role: "readWrite", db: "vpdb-production" } ]
+	})
+	
+	sudo systemctl stop mongodb
+	openssl rand -base64 741 > /home/mongotunnel/keyfile
+	chown mongodb /home/mongotunnel/keyfile
+	chmod 600 /home/mongotunnel/keyfile
 
-### Redis
+Enable authentication
+
+	vi /etc/mongod.conf
+	
+	security:
+	  authorization: enabled
+	  keyFile: /home/mongotunnel/keyfile
+     
+	sudo systemctl start mongodb
+
+### Replication
+
+Connections to replica servers are tunneled through SSH. In order to find the 
+correct hosts within in the sets, we'll have the following configuration:
+
+- Primary: MongoDB running on `127.0.1.1:27017`
+- Secondary: MongoDB running on `127.0.2.2:27018`
+- Tertiary: MongoDB running on `127.0.3.3:27019`
+- Arbiter 1: MongoDB running on `127.0.10.10:27100` 
+- Arbiter 2: MongoDB running on `127.0.20.20:27200`
+
+#### Setup SSH Tunnels
+
+In order to support the above setup, we'll have to setup the following SSH tunnels:
+
+Primary to secondary:
+	
+- Local `127.0.2.2:27018` to remote `127.0.2.2:27018` - Primary accesses secondary
+- Remote `127.0.1.1:27017` to local `127.0.1.1:27017` - Secondary accesses primary
+- Remote `127.0.10.10:27100` to local `127.0.10.10:27100` - Secondary accesses arbiter 1
+- Remote `127.0.20.20:27200` to local `127.0.20.20:27200` - Secondary accesses arbiter 2
+
+Primary to tertiary:
+
+- Local `127.0.3.3:27019` to remote `127.0.3.3:27019` - Primary accesses tertiary
+- Remote `127.0.1.1:27017` to local `127.0.1.1:27017` - Tertiary accesses primary
+- Remote `127.0.10.10:27100` to local `127.0.10.10:27100` - Tertiary accesses arbiter 1
+- Remote `127.0.20.20:27200` to local `127.0.20.20:27200` - Tertiary accesses arbiter 2
+
+Secondary to tertiary:
+
+- Local `127.0.3.3:27019` to remote `127.0.3.3:27019` - Primary accesses tertiary
+- Remote `127.0.2.2:27018` to local `127.0.2.2:27018` - Secondary accesses primary
+
+On primary and secondary, create SSH keypair with no password:
+
+	su - mongotunnel
+	mkdir ~/.ssh
+	chmod 700 ~/.ssh
+	ssh-keygen -t rsa
+	cat ~/.ssh/id_rsa.pub
+	
+Change MongoDB interface to `127.0.1.1`
+	
+	vi /etc/mongod.conf
+	vi /var/www/staging/settings.js
+	systemctl restart mongodb
+	su - deployer
+	pm2 restart staging
+	
+On secondaries, create the tunnel user and add the keypair to `authorized_keys`:
+
+	sudo adduser mongotunnel --home /home/mongotunnel --shell /bin/bash --disabled-password
+	su - mongotunnel
+	mkdir ~/.ssh
+	chmod 700 ~/.ssh
+	vi ~/.ssh/authorized_keys
+	
+On secondary, create keypair and add it to tertiary
+
+	su - mongotunnel
+	ssh-keygen -t rsa
+	cat ~/.ssh/id_rsa.pub
+	
+On tertiary:
+	
+	vi ~/.ssh/authorized_keys
+	
+Also enable `GatewayPorts` all instances so we can tunnel to 127.0.1.*.
+	
+	vi /etc/ssh/sshd_config
+	
+	Match User mongotunnel
+	   GatewayPorts yes
+
+	systemctl restart sshd.service
+	
+On secondary, change MongoDB interface and port to `127.0.2.2:27018`:
+
+	vi /etc/mongod.conf
+	systemctl restart mongodb
+
+On tertiary, change MongoDB interface and port to `127.0.3.3:27019`:
+
+	vi /etc/mongod.conf
+	systemctl restart mongodb
+
+On primary, test connection and confirm fingerprint:
+	
+	su - mongotunnel
+	ssh secondary.vpdb -l mongotunnel
+	ssh home.vpdb -l mongotunnel
+	
+And on secondary:
+	
+	su - mongotunnel
+	ssh home.vpdb -l mongotunnel
+	
+Now setup SSH tunnels. Back as root on primary:
+
+	sudo apt install -y autossh
+	vi /etc/systemd/system/mongotunnel.secondary.service
+	
+	[Unit]
+	Description=Keeps a tunnel to 'vpdb.secondary' open
+	After=network-online.target
+	
+	[Service]
+	User=mongotunnel
+	ExecStart=/usr/bin/autossh -M 0 -N -q -o "ServerAliveInterval 60" -o "ServerAliveCountMax 3" -p 22 -l mongotunnel secondary.vpdb -L 127.0.2.2:27018:127.0.2.2:27018  -R 127.0.1.1:27017:127.0.1.1:27017 -R 127.0.10.10:27100:127.0.10.10:27100 -R 127.0.20.20:27200:127.0.20.20:27200 -i /home/mongotunnel/.ssh/id_rsa
+	
+	[Install]
+	WantedBy=multi-user.target
+	
+Try it out:
+	
+	sudo systemctl start mongotunnel.secondary
+	sudo systemctl status mongotunnel.secondary
+	sudo systemctl enable mongotunnel.secondary
+	mongo --host 127.0.2.2 --port 27018
+	
+Still on primary:
+	
+	vi /etc/systemd/system/mongotunnel.home.service
+	
+	[Unit]
+	Description=Keeps a tunnel to 'vpdb.home' open
+	After=network-online.target
+	
+	[Service]
+	User=mongotunnel
+	ExecStart=/usr/bin/autossh -M 0 -N -q -o "ServerAliveInterval 60" -o "ServerAliveCountMax 3" -p 22 -l mongotunnel home.vpdb -L 127.0.3.3:27019:127.0.3.3:27019 -R 127.0.1.1:27017:127.0.1.1:27017 -R 127.0.10.10:27100:127.0.10.10:27100 -R 127.0.20.20:27200:127.0.20.20:27200 -i /home/mongotunnel/.ssh/id_rsa
+	
+	[Install]
+	WantedBy=multi-user.target
+	
+Test:
+	
+	sudo systemctl start mongotunnel.home
+	sudo systemctl status mongotunnel.home
+	sudo systemctl enable mongotunnel.home
+	mongo --host 127.0.3.3 --port 27019
+	
+On secondary:
+
+	sudo apt install -y autossh
+	vi /etc/systemd/system/mongotunnel.home.service
+	
+	[Unit]
+	Description=Keeps a tunnel to 'vpdb.home' open
+	After=network-online.target
+	
+	[Service]
+	User=mongotunnel
+	ExecStart=/usr/bin/autossh -M 0 -N -q -o "ServerAliveInterval 60" -o "ServerAliveCountMax 3" -p 22 -l mongotunnel home.vpdb -L 127.0.3.3:27019:127.0.3.3:27019 -R 127.0.2.2:27018:127.0.2.2:27018 -i /home/mongotunnel/.ssh/id_rsa
+	
+	[Install]
+	WantedBy=multi-user.target
+	
+Test:
+	
+	sudo systemctl start mongotunnel.home
+	sudo systemctl status mongotunnel.home
+	sudo systemctl enable mongotunnel.home
+	mongo --host 127.0.3.3 --port 27019
+
+#### Setup Replication
+
+First, create two arbiter instances so the primary doesn't go back to secondary 
+when backup is offline:
+
+	sudo mkdir /var/lib/mongodb-arbiter-1 /var/lib/mongodb-arbiter-2
+	sudo chown mongodb:mongodb /var/lib/mongodb-arbiter*
+	sudo cp /etc/systemd/system/mongodb.service /etc/systemd/system/mongodb-arbiter-1.service
+	sudo cp /etc/systemd/system/mongodb.service /etc/systemd/system/mongodb-arbiter-2.service
+	vi /etc/systemd/system/mongodb-arbiter-1.service
+	
+	ExecStart=/usr/bin/mongod --quiet --bind_ip 127.0.10.10 --port 27100 --smallfiles --nojournal --noprealloc --replSet "rs0" --dbpath /var/lib/mongodb-arbiter-1 --keyFile /home/mongotunnel/keyfile --logpath /var/log/mongodb/mongodb-arbiter-1.log
+
+	vi /etc/systemd/system/mongodb-arbiter-2.service
+	
+	ExecStart=/usr/bin/mongod --quiet --bind_ip 127.0.20.20 --port 27200 --smallfiles --nojournal --noprealloc --replSet "rs0" --dbpath /var/lib/mongodb-arbiter-2 --keyFile /home/mongotunnel/keyfile --logpath /var/log/mongodb/mongodb-arbiter-2.log
+
+	systemctl start mongodb-arbiter-1.service
+	systemctl start mongodb-arbiter-2.service
+	systemctl status mongodb-arbiter-1.service
+	systemctl status mongodb-arbiter-2.service
+	systemctl enable mongodb-arbiter-1.service
+	systemctl enable mongodb-arbiter-2.service
+
+On primary and all replicas enable replication:
+
+	vi /etc/mongod.conf
+
+	replication:
+	  replSetName: rs0
+	  
+Still on primary, copy the key file to secondaries
+	 
+	chmod 666 /home/mongotunnel/keyfile 
+	su - mongotunnel
+	scp /home/mongotunnel/keyfile mongotunnel@secondary.vpdb:/home/mongotunnel/keyfile 
+	scp /home/mongotunnel/keyfile mongotunnel@home.vpdb:/home/mongotunnel/keyfile
+	chmod 600 /home/mongotunnel/keyfile
+
+On secondaries, enable keyfile authentication and change data folder:
+
+	mkdir /var/lib/mongodb-replica
+	chown mongodb:mongodb /home/mongotunnel/keyfile /var/lib/mongodb-replica
+	chmod 600 /home/mongotunnel/keyfile
+	vi /etc/mongod.conf
+	
+	storage:
+      dbPath: /var/lib/mongodb-replica
+	security:
+	  keyFile: /home/mongotunnel/keyfile
+
+Restart primary and all replicas:
+
+	systemctl restart mongodb
+
+Make sure that all secondaries are clean and empty, otherwise they'll be stuck 
+in `ROLLBACK`. Clearing data folder before restarting helps.
+
+Test on all instances that all connections are fine:
+
+	mongo --host 127.0.1.1 --port 27017
+	mongo --host 127.0.2.2 --port 27018
+	mongo --host 127.0.3.3 --port 27019
+	mongo --host 127.0.10.10 --port 27100
+	mongo --host 127.0.20.20 --port 27200
+
+Then connect to primary, configure replication and add replicas:
+
+	mongo --host 127.0.1.1
+	
+	use admin
+	db.auth("root", "<password>");
+	rs.initiate({ _id:"rs0", members: [{ _id: 1, host: "127.0.1.1:27017" }]})
+	rs.conf()
+	rs.add({ host: "127.0.2.2:27018", priority: 0, hidden: true })
+	rs.addArb("127.0.10.10:27100")
+	rs.addArb("127.0.20.20:27200")
+
+On secondaries, enable slaves in order to read:
+
+	db.getMongo().setSlaveOk()
+	show dbs
+	use vpdb
+	db.tags.find()
+	
+## Redis
 
 Install latest from repo:
 
@@ -133,7 +423,7 @@ Install latest from repo:
 	sudo apt-get update
 	sudo apt-get install -y redis-server
 
-### Nginx
+## Nginx
 
 	sudo apt-get install -y nginx-extras
 
@@ -293,162 +583,6 @@ Add this to the `server { ... }` block
 	auth_basic_user_file /var/www/.htpasswd;
 
 ## Administration Tools
-
-### MongoDB Replication
-
-Connections to replica servers are tunneled through SSH. In order to find the 
-correct hosts within in the sets, we'll have the following configuration:
-
-- Primary: MongoDB running on `127.0.1.1:27017`
-- Secondary: MongoDB running on `127.0.2.2:27018`
-- Tertiary: MongoDB running on `127.0.3.3:27019`
-- Arbiter 1: MongoDB running on `127.0.10.10:27100` 
-- Arbiter 2: MongoDB running on `127.0.20.20:27200`
-
-#### Setup SSH Tunnels
-
-In order to support the above setup, we'll have to setup the following SSH tunnels:
-
-Primary to secondary:
-	
-- Local `127.0.2.2:27018` to remote `127.0.2.2:27018` - Primary accesses secondary
-- Remote `127.0.1.1:27017` to local `127.0.1.1:27017` - Secondary accesses primary
-- Remote `127.0.10.10:27100` to local `127.0.10.10:27100` - Secondary accesses arbiter 1
-- Remote `127.0.20.20:27200` to local `127.0.20.20:27200` - Secondary accesses arbiter 2
-
-Primary to tertiary:
-
-- Local `127.0.3.3:27019` to remote `127.0.3.3:27019` - Primary accesses tertiary
-- Remote `127.0.1.1:27017` to local `127.0.1.1:27017` - Tertiary accesses primary
-- Remote `127.0.10.10:27100` to local `127.0.10.10:27100` - Tertiary accesses arbiter 1
-- Remote `127.0.20.20:27200` to local `127.0.20.20:27200` - Tertiary accesses arbiter 2
-
-Secondary to tertiary:
-
-- Local `127.0.3.3:27019` to remote `127.0.3.3:27019` - Primary accesses tertiary
-- Remote `127.0.2.2:27018` to local `127.0.2.2:27018` - Secondary accesses primary
-
-On primary, create tunnel user and SSH keypair with no password:
-
-	sudo adduser mongotunnel --home /home/mongotunnel --shell /bin/bash --disabled-password
-	su - mongotunnel
-	mkdir ~/.ssh
-	chmod 700 ~/.ssh
-	ssh-keygen -t rsa
-	cat ~/.ssh/id_rsa.pub
-	
-Change MongoDB interface to `127.0.1.1`
-	
-	vi /etc/mongod.conf
-	vi /var/www/staging/settings.js
-	systemctl restart mongodb
-	su - deployer
-	pm2 restart staging
-	
-On secondaries, create the tunnel user and add the keypair to `authorized_keys`:
-
-	sudo adduser mongotunnel --home /home/mongotunnel --shell /bin/bash --disabled-password
-	su - mongotunnel
-	mkdir ~/.ssh
-	chmod 700 ~/.ssh
-	vi ~/.ssh/authorized_keys
-	
-Also enable `GatewayPorts` so we can tunnel to 127.0.1.*.
-	
-	vi /etc/ssh/sshd_config
-	
-	Match User mongotunnel
-	   GatewayPorts yes
-
-	systemctl restart sshd.service
-	
-Finally, change MongoDB interface and port to `127.0.2.2:27018`:
-
-	vi /etc/mongod.conf
-	vi /var/www/staging/settings.js
-	systemctl restart mongodb
-
-On primary, test connection and confirm fingerprint:
-	
-	su - mongotunnel
-	ssh vpdb.secondary -l mongotunnel
-	
-Now setup SSH tunnels. Back as root:
-
-	sudo apt install -y autossh
-	vi /etc/systemd/system/mongotunnel.secondary.service
-	
-	[Unit]
-	Description=Keeps a tunnel to 'vpdb.secondary' open
-	After=network-online.target
-	
-	[Service]
-	User=mongotunnel
-	ExecStart=/usr/bin/autossh -M 0 -N -q -o "ServerAliveInterval 60" -o "ServerAliveCountMax 3" -p 22 -l mongotunnel vpdb.secondary -L 127.0.2.2:27018:127.0.2.2:27018 -R 127.0.1.1:27017:127.0.1.1:27017 -R 127.0.10.10:27100:127.0.10.10:27100 -R 127.0.20.20:27200:127.0.20.20:27200 -i /home/mongotunnel/.ssh/id_rsa
-	
-	[Install]
-	WantedBy=multi-user.target
-	
-Try it out:
-	
-	sudo systemctl start mongotunnel.secondary
-	sudo systemctl status mongotunnel.secondary
-	sudo systemctl enable mongotunnel.secondary
-	mongo --host localhost --port 30000
-	
-You should see the `SECONDARY` prompt on the MongoDB shell.
-	
-
-#### Configure Replication
-
-First, create two arbiter instances so the primary doesn't go back to secondary 
-when backup is offline:
-
-	sudo mkdir /var/lib/mongodb-arbiter-1 /var/lib/mongodb-arbiter-2
-	sudo chown mongodb:mongodb /var/lib/mongodb-arbiter*
-	sudo cp /etc/systemd/system/mongodb.service /etc/systemd/system/mongodb-arbiter-1.service
-	sudo cp /etc/systemd/system/mongodb.service /etc/systemd/system/mongodb-arbiter-2.service
-	vi /etc/systemd/system/mongodb-arbiter-1.service
-	
-	ExecStart=/usr/bin/mongod --quiet --bind_ip 127.0.10.10 --port 27100 --smallfiles --nojournal --noprealloc --replSet "rs0" --dbpath /var/lib/mongodb-arbiter-1 --logpath /var/log/mongodb/mongodb-arbiter-1.log
-
-	vi /etc/systemd/system/mongodb-arbiter-2.service
-	
-	ExecStart=/usr/bin/mongod --quiet --bind_ip 127.0.20.20 --port 27200 --smallfiles --nojournal --noprealloc --replSet "rs0" --dbpath /var/lib/mongodb-arbiter-2 --logpath /var/log/mongodb/mongodb-arbiter-2.log
-
-	systemctl start mongodb-arbiter-1.service
-	systemctl start mongodb-arbiter-2.service
-	systemctl status mongodb-arbiter-1.service
-	systemctl status mongodb-arbiter-2.service
-	systemctl enable mongodb-arbiter-1.service
-	systemctl enable mongodb-arbiter-2.service
-
-On primary (and all replicas), open `/etc/mongod.conf` and enable replication:
-
-	replication:
-	  replSetName: rs0
-
-Restart primary and all replicas:
-
-	systemctl restart mongod
-
-Make sure that all secondaries are clean and empty, otherwise they'll be stuck 
-in `ROLLBACK`. Clearing data folder before restarting helps. Then connect to 
-primary, enable replication and add replicas:
-
-	mongo --host 127.0.1.1
-	rs.initiate({ _id:"rs0", members: [{ _id: 1, host: "127.0.1.1:27017" }]})
-	rs.conf()
-	rs.add({ host: "127.0.2.2:27018", priority: 0, hidden: true })
-	rs.addArb("127.0.10.10:27100")
-	rs.addArb("127.0.20.20:27200")
-
-On secondaries, enable slaves in order to read:
-
-	db.getMongo().setSlaveOk()
-	show dbs
-	use vpdb
-	db.tags.find()
 
 ### Monitorix
 

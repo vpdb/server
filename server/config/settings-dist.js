@@ -13,6 +13,13 @@ module.exports = {
 	vpdb: {
 
 		/**
+		 * Name of the application
+		 *
+		 * @important
+		 */
+		name: 'VPDB API',
+
+		/**
 		 * Public URI of the API.
 		 *
 		 * This is used to construct URLs. The actual server always listens on

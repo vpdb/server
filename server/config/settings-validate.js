@@ -38,6 +38,13 @@ module.exports = {
 	 */
 	vpdb: {
 
+		name: function(name) {
+			/* istanbul ignore if */
+			if (!validator.isLength(name, 1)) {
+				return 'Name must contain at least one character.';
+			}
+		},
+
 		/**
 		 * Public URI of the API.
 		 *

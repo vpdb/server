@@ -23,6 +23,10 @@ var settings = require('../../modules/settings');
 
 exports.register = function(app, api) {
 
+	// index
+	app.get(settings.apiPath(''), api.anon(api.index));
+	app.get(settings.apiPath('/'), api.anon(api.index));
+
 	// ipdb
 	app.get(settings.apiPath('/ipdb/:id'), api.auth(api.ipdb.view, 'ipdb', 'view'));
 

@@ -25,7 +25,9 @@ var util = require('util');
 var logger = require('winston');
 
 var settings = require('../../modules/settings');
+var gitinfo = require('../../modules/gitinfo');
 var auth = require('../auth');
+var pak = require('../../../package.json');
 
 /**
  * Protects a resource, meaning there must be valid JWT. If additionally
@@ -59,11 +61,14 @@ exports.anon = function(controllerFct) {
 		auth.auth(req, res, null, null, null)
 			.then(() => controllerFct(req, res))
 			.catch(err => {
-				if (err.status === 500) {
+				if (err.code === 500) {
 					exports.fail(res, err, err.code);
 				} else {
 					// other errors are ignored since we're in anon.
-					return controllerFct(req, res);
+					if (controllerFct) {
+						return controllerFct(req, res);
+					}
+					exports.fail(res, new Error('Controller function is undefined. Sure you added it to index.js?'), 500);
 				}
 			});
 	};
@@ -377,4 +382,13 @@ exports.handleError = function(res, error, message, fieldPrefix) {
 
 exports.ping = function(req, res) {
 	exports.success(res, { result: 'pong' });
+};
+
+exports.index = function(req, res) {
+	exports.success(res, {
+		app_name: settings.current.vpdb.name,
+		app_sha: gitinfo.info.local.branch.current.SHA,
+		app_version: pak.version,
+		app_source: pak.repository.url
+	});
 };

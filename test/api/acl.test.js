@@ -27,6 +27,10 @@ describe('The ACLs of the VPDB API', function() {
 
 	describe('for anonymous clients', function() {
 
+		it('should allow access to root resource', function(done) {
+			request.get('/api/v1/').end(hlp.status(200, done));
+		});
+
 		it('should deny access to user list', function(done) {
 			request.get('/api/v1/users').saveResponse({ path: 'users/list' }).end(hlp.status(401, done));
 		});

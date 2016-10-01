@@ -25,6 +25,7 @@ exports.backglasses = require('./backglasses');
 exports.builds = require('./builds');
 exports.comments = require('./comments');
 exports.ping = api.ping;
+exports.index = api.index;
 exports.events = require('./events');
 exports.files = require('./files');
 exports.games = require('./games');

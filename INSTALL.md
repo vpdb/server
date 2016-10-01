@@ -441,7 +441,7 @@ On secondary and tertiary:
 	sudo vi /etc/mongod.conf
 	
 	net:
-	  port: 27017
+	  port: 27010
 	  bindIp: 127.0.100.100
 	security:
 	  authorization: enabled

@@ -80,10 +80,11 @@
 	"devDependencies": {
 		"adm-zip": "0.4.7",
 		"async": "1.5.2",
-		"axios": "^0.9.1",
+		"axios": "0.14.0",
+		"child-process-promise": "2.1.3",
+		"debug": "*",
 		"expect.js": "0.3.1",
 		"faker": "3.0.1",
-		"debug": "*",
 		"grunt": "latest",
 		"grunt-concurrent": "2.1.0",
 		"grunt-contrib-clean": "0.7.0",

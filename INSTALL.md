@@ -417,7 +417,7 @@ Then connect to primary, configure replication and add replicas:
 	mongo --host 127.0.1.1
 	
 	use admin
-	db.auth("root", "<password>");
+	db.auth("root", "5YmkLVGuD4KWs22SO5qL4peVTEBdlevN");
 	rs.initiate({ _id:"rs0", members: [{ _id: 1, host: "127.0.1.1:27017" }]})
 	rs.conf()
 	rs.add({ host: "127.0.2.2:27018", priority: 0, hidden: true })

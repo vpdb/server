@@ -21,11 +21,13 @@
 Promise = require('bluebird'); // jshint ignore:line
 
 const _ = require('lodash');
-const exec = require('child-process-promise').exec;
+const url = require('url');
+//const exec = require('child-process-promise').exec;
 const fs = require('fs');
 const axios = require('axios');
 const config = require('../modules/settings').current;
 
+const exec = function() {};
 
 let sha, cmd;
 Promise.try(() => {
@@ -38,12 +40,12 @@ Promise.try(() => {
 		throw Error('Primary cannot be the same host!');
 	}
 
-	if (!fs.existsSync(config.primary.mongoReadOnly.dataPath)) {
-		throw Error('Data folder "' + config.primary.mongoReadOnly.dataPath + '" for replicated read-only instance does not exist.');
-	}
-	if (!fs.existsSync(config.primary.mongoReadWrite)) {
-		throw Error('Data folder "' + config.primary.mongoReadWrite.dataPath + '" for read-write instance does not exist.');
-	}
+	// if (!fs.existsSync(config.primary.mongoReadOnly.dataPath)) {
+	// 	throw Error('Data folder "' + config.primary.mongoReadOnly.dataPath + '" for replicated read-only instance does not exist.');
+	// }
+	// if (!fs.existsSync(config.primary.mongoReadWrite)) {
+	// 	throw Error('Data folder "' + config.primary.mongoReadWrite.dataPath + '" for read-write instance does not exist.');
+	// }
 
 	console.log('Retrieving build number at %s...', config.primary.api.hostname);
 
@@ -91,6 +93,24 @@ Promise.try(() => {
 	cmd = 'systemctl start ' + config.primary.mongoReadWrite.service;
 	console.log('> %s', cmd);
 	return exec(cmd);
+
+}).then(() => {
+
+	const dbConfig = url.parse(config.vpdb.db);
+	const dbName = dbConfig.path.substring(1);
+	if (config.primary.mongoReadOnly.dbName !== dbName) {
+		cmd = 'mongo --host ' + dbConfig.host;
+		if (dbConfig.port) {
+			cmd += ' --port ' + dbConfig.port;
+		}
+		if (dbConfig.auth) {
+			const a = dbConfig.auth.split(':');
+			cmd += ' -u ' + a[0] + ' -p ' + a[1];
+		}
+		cmd += ' --eval \'db.copyDatabase("' + config.primary.mongoReadOnly.dbName + '", "' + dbName + '");use ' + config.primary.mongoReadOnly.dbName + ';db.dropDatabase();\'';
+		console.log('> %s', cmd);
+		return exec(cmd);
+	}
 
 }).then(() => {
 	console.log('All done!');

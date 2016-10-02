@@ -1,4 +1,3 @@
 #!/bin/bash
 
-export APP_SETTINGS=/var/www/staging/settings.js
-sudo node /var/www/staging/current/server/scripts/reset-to-production.js
+sudo APP_SETTINGS=/var/www/staging/settings.js node /var/www/staging/current/server/scripts/reset-to-production.js

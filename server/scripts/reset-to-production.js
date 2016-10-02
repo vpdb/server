@@ -22,12 +22,10 @@ Promise = require('bluebird'); // jshint ignore:line
 
 const _ = require('lodash');
 const url = require('url');
-//const exec = require('child-process-promise').exec;
 const fs = require('fs');
+const exec = require('child_process').execFile;
 const axios = require('axios');
 const config = require('../modules/settings').current;
-
-const exec = function() {};
 
 let sha, cmd;
 Promise.try(() => {
@@ -44,12 +42,12 @@ Promise.try(() => {
 		throw Error('Primary cannot be the same host!');
 	}
 
-	if (!fs.existsSync(config.primary.mongoReadOnly.dataPath)) {
-		throw Error('Data folder "' + config.primary.mongoReadOnly.dataPath + '" for replicated read-only instance does not exist.');
-	}
-	if (!fs.existsSync(config.primary.mongoReadWrite.dataPath)) {
-		throw Error('Data folder "' + config.primary.mongoReadWrite.dataPath + '" for read-write instance does not exist.');
-	}
+	// if (!fs.existsSync(config.primary.mongoReadOnly.dataPath)) {
+	// 	throw Error('Data folder "' + config.primary.mongoReadOnly.dataPath + '" for replicated read-only instance does not exist.');
+	// }
+	// if (!fs.existsSync(config.primary.mongoReadWrite.dataPath)) {
+	// 	throw Error('Data folder "' + config.primary.mongoReadWrite.dataPath + '" for read-write instance does not exist.');
+	// }
 
 	console.log('Retrieving build number at %s...', config.primary.api.hostname);
 
@@ -68,35 +66,30 @@ Promise.try(() => {
 
 	cmd = 'systemctl stop ' + config.primary.mongoReadWrite.service;
 	console.log('> %s', cmd);
-	return exec(cmd);
+	return execAsync(cmd);
 
 }).then(() => {
 	cmd = 'systemctl stop ' + config.primary.mongoReadOnly.service;
-	console.log('> %s', cmd);
-	return exec(cmd);
+	return execAsync(cmd);
 
 }).then(() => {
 	console.log('Deleting old data...');
 	cmd = 'rm -rf ' + config.primary.mongoReadWrite.dataPath;
-	console.log('> %s', cmd);
-	return exec(cmd);
+	return execAsync(cmd);
 
 }).then(() => {
 	console.log('Copying replication data...');
 	cmd = 'cp -a ' + config.primary.mongoReadOnly.dataPath + ' ' + config.primary.mongoReadWrite.dataPath;
-	console.log('> %s', cmd);
-	return exec(cmd);
+	return execAsync(cmd);
 
 }).then(() => {
 	console.log('Starting MongoDB instances...');
 	cmd = 'systemctl start ' + config.primary.mongoReadOnly.service;
-	console.log('> %s', cmd);
-	return exec(cmd);
+	return execAsync(cmd);
 
 }).then(() => {
 	cmd = 'systemctl start ' + config.primary.mongoReadWrite.service;
-	console.log('> %s', cmd);
-	return exec(cmd);
+	return execAsync(cmd);
 
 }).then(() => {
 
@@ -112,8 +105,7 @@ Promise.try(() => {
 			cmd += ' -u ' + a[0] + ' -p ' + a[1];
 		}
 		cmd += ' --eval \'db.copyDatabase("' + config.primary.mongoReadOnly.dbName + '", "' + dbName + '");use ' + config.primary.mongoReadOnly.dbName + ';db.dropDatabase();\'';
-		console.log('> %s', cmd);
-		return exec(cmd);
+		return execAsync(cmd);
 	}
 
 }).then(() => {
@@ -123,3 +115,23 @@ Promise.try(() => {
 	console.error('ERROR: ', err);
 });
 
+function execAsync(cmd) {
+	console.log('--> %s', cmd);
+
+	let child = exec(cmd);
+	child.stdout.on('data', function (data) {
+		console.log('--- ' + data);
+	});
+	child.stderr.on('data', function (data) {
+		console.log('--- ' + data);
+	});
+	return new Promise(function (resolve, reject) {
+		child.addListener('error', reject);
+		child.addListener('exit', (code, signal) => {
+			if (code === 0) {
+				resolve();
+			} else {
+				reject();
+		}});
+	});
+}

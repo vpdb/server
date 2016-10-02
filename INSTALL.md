@@ -445,6 +445,15 @@ On secondary and tertiary:
 	  bindIp: 127.0.100.100
 	security:
 	  authorization: enabled
+	  
+Enable reset production script:
+  
+	vi /etc/sudoers.d/deployer
+	
+	deployer ALL=(ALL) NOPASSWD:SETENV: /usr/bin/node /var/www/staging/current/server/scripts/reset-to-production.js
+	
+	chmod 0440 /etc/sudoers.d/deployer
+	
 
 ## Redis
 

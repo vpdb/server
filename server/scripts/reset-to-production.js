@@ -27,7 +27,7 @@ const spawn = require('child_process').spawn;
 const axios = require('axios');
 const config = require('../modules/settings').current;
 
-let sha, cmd;
+let sha;
 Promise.try(() => {
 
 	if (!config.primary) {
@@ -87,27 +87,45 @@ Promise.try(() => {
 
 	const dbConfig = url.parse(config.vpdb.db);
 	const dbName = dbConfig.path.substring(1);
+	let user, password;
+	if (dbConfig.auth) {
+		const a = dbConfig.auth.split(':');
+		user = a[0];
+		password = a[1];
+	}
 	if (config.primary.mongoReadOnly.dbName !== dbName) {
 		return new Promise(resolve => {
 			console.log('Waiting for instances to start up...');
 			setTimeout(resolve, 2000);
 		}).then(() => {
 			console.log('Renaming database from "%s" to "%s"...', config.primary.mongoReadOnly.dbName, dbName);
-			let args = [config.primary.mongoReadOnly.dbName, '--host', dbConfig.hostname];
-			if (dbConfig.port) {
-				args.push('--port');
-				args.push(dbConfig.port);
-			}
-			if (dbConfig.auth) {
-				const a = dbConfig.auth.split(':');
-				args.push('-u');
-				args.push(a[0]);
-				args.push('-p');
-				args.push(a[1]);
-			}
+
+			// drop if db with same name exists.
+			let args = getArgs(dbName, dbConfig, config);
 			args.push('--eval');
-			args.push('db.copyDatabase("' + config.primary.mongoReadOnly.dbName + '", "' + dbName + '");db.dropDatabase();');
+			args.push('db.dropDatabase()');
+			return exec('mongo', args).catch(() => {
+				console.warn('First drop failed but don\'t care.');
+			});
+
+		}).then(() => {
+
+			// drop if db with same name exists.
+			let args = getArgs(config.primary.mongoReadOnly.dbName, dbConfig, config);
+			let argsEval = [];
+			argsEval.push(`db.copyDatabase("${config.primary.mongoReadOnly.dbName}", "${dbName}")`);
+			argsEval.push(`db.dropDatabase()`);
+			args.push('--eval');
+			args.push(argsEval.join(';'));
 			return exec('mongo', args);
+
+		}).then(() => {
+			if (dbConfig.auth) {
+				let args = getArgs(dbName, dbConfig, config);
+				args.push('--eval');
+				args.push(`db.createUser({ user: "${user}", pwd: "${password}", roles: [ { role: "readWrite", db: "${dbName}" } ] })`);
+				return exec('mongo', args);
+			}
 		});
 	}
 
@@ -117,6 +135,21 @@ Promise.try(() => {
 }).catch(err => {
 	console.error('ERROR: ', err);
 });
+
+function getArgs(dbName, dbConfig, config) {
+	let args = [ dbName, '--host', dbConfig.hostname];
+	if (dbConfig.port) {
+		args.push('--port');
+		args.push(dbConfig.port);
+	}
+	args.push('-u');
+	args.push(config.primary.auth.user);
+	args.push('-p');
+	args.push(config.primary.auth.password);
+	args.push('--authenticationDatabase');
+	args.push('admin');
+	return args;
+}
 
 /**
  * Executes a command.

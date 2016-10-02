@@ -97,6 +97,7 @@ Promise.try(() => {
 		return new Promise(resolve => {
 			console.log('Waiting for instances to start up...');
 			setTimeout(resolve, 2000);
+
 		}).then(() => {
 			console.log('Renaming database from "%s" to "%s"...', config.primary.mongoReadOnly.dbName, dbName);
 
@@ -110,13 +111,18 @@ Promise.try(() => {
 
 		}).then(() => {
 
-			// drop if db with same name exists.
+			// copy database
 			let args = getArgs(config.primary.mongoReadOnly.dbName, dbConfig, config);
-			let argsEval = [];
-			argsEval.push(`db.copyDatabase("${config.primary.mongoReadOnly.dbName}", "${dbName}")`);
-			argsEval.push(`db.dropDatabase()`);
 			args.push('--eval');
-			args.push(argsEval.join(';'));
+			args.push(`db.copyDatabase("${config.primary.mongoReadOnly.dbName}", "${dbName}")`);
+			return exec('mongo', args);
+
+		}).then(() => {
+
+			// drop source db
+			let args = getArgs(config.primary.mongoReadOnly.dbName, dbConfig, config);
+			args.push('--eval');
+			args.push('db.dropDatabase()');
 			return exec('mongo', args);
 
 		}).then(() => {

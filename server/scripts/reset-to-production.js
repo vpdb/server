@@ -36,16 +36,20 @@ Promise.try(() => {
 		throw Error('Host must have a primary config in order to reset to production.');
 	}
 
+	if (!process.getuid || process.getuid() !== 0) {
+		throw Error('Must be run with root privileges, otherwise I cannot stop the services.');
+	}
+
 	if (_.isEqual(config.vpdb.api, config.primary.api)) {
 		throw Error('Primary cannot be the same host!');
 	}
 
-	// if (!fs.existsSync(config.primary.mongoReadOnly.dataPath)) {
-	// 	throw Error('Data folder "' + config.primary.mongoReadOnly.dataPath + '" for replicated read-only instance does not exist.');
-	// }
-	// if (!fs.existsSync(config.primary.mongoReadWrite)) {
-	// 	throw Error('Data folder "' + config.primary.mongoReadWrite.dataPath + '" for read-write instance does not exist.');
-	// }
+	if (!fs.existsSync(config.primary.mongoReadOnly.dataPath)) {
+		throw Error('Data folder "' + config.primary.mongoReadOnly.dataPath + '" for replicated read-only instance does not exist.');
+	}
+	if (!fs.existsSync(config.primary.mongoReadWrite.dataPath)) {
+		throw Error('Data folder "' + config.primary.mongoReadWrite.dataPath + '" for read-write instance does not exist.');
+	}
 
 	console.log('Retrieving build number at %s...', config.primary.api.hostname);
 

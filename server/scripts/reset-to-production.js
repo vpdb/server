@@ -63,48 +63,52 @@ Promise.try(() => {
 	// TODO checkout given SHA1
 
 	console.log('Stopping MongoDB instances...');
-
-	cmd = 'systemctl stop ' + config.primary.mongoReadWrite.service;
-	return exec(cmd);
+	return exec('systemctl', ['stop', config.primary.mongoReadWrite.service]);
 
 }).then(() => {
-	cmd = 'systemctl stop ' + config.primary.mongoReadOnly.service;
-	return exec(cmd);
+	return exec('systemctl', ['stop', config.primary.mongoReadOnly.service]);
 
 }).then(() => {
 	console.log('Deleting old data...');
-	cmd = 'rm -rf ' + config.primary.mongoReadWrite.dataPath;
-	return exec(cmd);
+	return exec('rm', ['-rf', config.primary.mongoReadWrite.dataPath]);
 
 }).then(() => {
 	console.log('Copying replication data...');
-	cmd = 'cp -a ' + config.primary.mongoReadOnly.dataPath + ' ' + config.primary.mongoReadWrite.dataPath;
-	return exec(cmd);
+	return exec('cp', ['-a', config.primary.mongoReadOnly.dataPath, config.primary.mongoReadWrite.dataPath]);
 
 }).then(() => {
 	console.log('Starting MongoDB instances...');
-	cmd = 'systemctl start ' + config.primary.mongoReadOnly.service;
-	return exec(cmd);
+	return exec('systemctl', ['start', config.primary.mongoReadOnly.service]);
 
 }).then(() => {
-	cmd = 'systemctl start ' + config.primary.mongoReadWrite.service;
-	return exec(cmd);
+	return exec('systemctl', ['start', config.primary.mongoReadWrite.service]);
 
 }).then(() => {
 
 	const dbConfig = url.parse(config.vpdb.db);
 	const dbName = dbConfig.path.substring(1);
 	if (config.primary.mongoReadOnly.dbName !== dbName) {
-		cmd = 'mongo --host ' + dbConfig.host;
-		if (dbConfig.port) {
-			cmd += ' --port ' + dbConfig.port;
-		}
-		if (dbConfig.auth) {
-			const a = dbConfig.auth.split(':');
-			cmd += ' -u ' + a[0] + ' -p ' + a[1];
-		}
-		cmd += ' --eval \'db.copyDatabase("' + config.primary.mongoReadOnly.dbName + '", "' + dbName + '");use ' + config.primary.mongoReadOnly.dbName + ';db.dropDatabase();\'';
-		return exec(cmd);
+		return new Promise(resolve => {
+			console.log('Waiting for instances to start up...');
+			setTimeout(resolve, 2000);
+		}).then(() => {
+			console.log('Renaming database from "%s" to "%s"...', config.primary.mongoReadOnly.dbName, dbName);
+			let args = [config.primary.mongoReadOnly.dbName, '--host', dbConfig.hostname];
+			if (dbConfig.port) {
+				args.push('--port');
+				args.push(dbConfig.port);
+			}
+			if (dbConfig.auth) {
+				const a = dbConfig.auth.split(':');
+				args.push('-u');
+				args.push(a[0]);
+				args.push('-p');
+				args.push(a[1]);
+			}
+			args.push('--eval');
+			args.push('db.copyDatabase("' + config.primary.mongoReadOnly.dbName + '", "' + dbName + '");db.dropDatabase();');
+			return exec('mongo', args);
+		});
 	}
 
 }).then(() => {
@@ -114,12 +118,14 @@ Promise.try(() => {
 	console.error('ERROR: ', err);
 });
 
-function exec(cmd) {
-	console.log('--> %s', cmd);
-
-	let args = cmd.split(/\s+/);
-	let executable = args.shift(0);
-
+/**
+ * Executes a command.
+ * @param {string} executable
+ * @param {string[]} args
+ * @returns {Promise}
+ */
+function exec(executable, args) {
+	console.log('--> %s %s', executable, args.join(' '));
 	return new Promise((resolve, reject) => {
 		const c = spawn(executable, args);
 

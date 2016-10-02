@@ -211,8 +211,6 @@ On primary, change MongoDB interface to `127.0.1.1`
 	vi /etc/mongod.conf
 	vi /var/www/staging/settings.js
 	systemctl restart mongodb
-	su - deployer
-	pm2 restart staging
 	
 On secondaries, create the tunnel user and add the keypair to `authorized_keys`:
 
@@ -432,20 +430,6 @@ On secondaries, enable slaves in order to read:
 	use vpdb
 	db.tags.find()
 	
-## Setup Backup/Staging Instance
-
-This instance isn't part of the replica, data is just copied over from the file system.
-
-On secondary and tertiary:
-
-	sudo vi /etc/mongod.conf
-	
-	net:
-	  port: 27010
-	  bindIp: 127.0.100.100
-	security:
-	  authorization: enabled
-	  
 ## Redis
 
 Install latest from repo:
@@ -612,6 +596,44 @@ Add this to the `server { ... }` block
 
 	auth_basic "Restricted";
 	auth_basic_user_file /var/www/.htpasswd;
+	
+## Setup Backup/Staging Instance
+
+This instance isn't part of the replica, data is just copied over from the file system.
+
+On secondary and tertiary:
+
+	sudo vi /etc/mongod.conf
+	
+	net:
+	  port: 27010
+	  bindIp: 127.0.100.100
+	security:
+	  authorization: enabled
+	  
+On primary, generate key pair for rsync file system push synch:	  
+
+	su - deployer
+	ssh-keygen -t rsa
+	cat ~/.ssh/id_rsa.pub
+	
+On secondaries, add public key.
+	
+	su - deployer
+	vi ~/.ssh/authorized_keys
+	
+On primary, accept fingerprint and setup cron job (also replace staging with prod)
+	
+	su - deployer
+	ssh secondary.vpdb
+	ssh home.vpdb
+	mkdir ~/logs
+	crontab -e
+	
+	1,11,21,31,41,51 * * * * rsync -avz /var/www/staging/shared/data/storage-public/ secondary.vpdb:/var/www/staging/shared/data/storage-public > ~/logs/cron-secondary-public.log 2>&1
+	3,13,23,33,43,53 * * * * rsync -avz /var/www/staging/shared/data/storage-protected/ secondary.vpdb:/var/www/staging/shared/data/storage-protected > ~/logs/cron-secondary-protected.log 2>&1
+	5,15,25,35,45,55 * * * * rsync -avz /var/www/staging/shared/data/storage-public/ home.vpdb:/var/www/staging/shared/data/storage-public > ~/logs/cron-home-public.log 2>&1
+	7,17,27,37,47,57 * * * * rsync -avz /var/www/staging/shared/data/storage-protected/ home.vpdb:/var/www/staging/shared/data/storage-protected > ~/logs/cron-home-protected.log 2>&1
 
 ## Administration Tools
 

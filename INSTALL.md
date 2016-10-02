@@ -549,6 +549,12 @@ Make PM2 start *after* Redis & MongoDB:
 	 
 Add `mongodb.service redis-server.service` to the `After` config.
 
+Setup log rotation:
+
+	pm2 install pm2-logrotate
+	pm2 set pm2-logrotate:max_size 100M
+	pm2 set pm2-logrotate:compress true
+
 ### SSL Config
 
 Install the Letsencrypt bot

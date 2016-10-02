@@ -21,13 +21,14 @@
 Promise = require('bluebird'); // jshint ignore:line
 
 const _ = require('lodash');
-const url = require('url');
 const fs = require('fs');
+const url = require('url');
 const spawn = require('child_process').spawn;
 const axios = require('axios');
 const config = require('../modules/settings').current;
 
-let sha;
+const exportPath = require('path').resolve(config.vpdb.tmp, 'mongo-reset-export');
+let sha, dbConfig, dbUser, dbPassword, dbName, replicaConfig, replicaUser, replicaPassword, replicaName;
 Promise.try(() => {
 
 	if (!config.primary) {
@@ -42,11 +43,15 @@ Promise.try(() => {
 		throw Error('Primary cannot be the same host!');
 	}
 
-	if (!fs.existsSync(config.primary.mongoReadOnly.dataPath)) {
-		throw Error('Data folder "' + config.primary.mongoReadOnly.dataPath + '" for replicated read-only instance does not exist.');
+	dbConfig = url.parse(config.vpdb.db);
+	dbName = dbConfig.path.substring(1);
+	if (dbConfig.auth) {
+		[dbUser, dbPassword] = dbConfig.auth.split(':');
 	}
-	if (!fs.existsSync(config.primary.mongoReadWrite.dataPath)) {
-		throw Error('Data folder "' + config.primary.mongoReadWrite.dataPath + '" for read-write instance does not exist.');
+	replicaConfig = url.parse(config.primary.replicaDB);
+	replicaName = replicaConfig.path.substring(1);
+	if (replicaConfig.auth) {
+		[replicaUser, replicaPassword] = replicaConfig.auth.split(':');
 	}
 
 	console.log('Retrieving build number at %s...', config.primary.api.hostname);
@@ -62,77 +67,59 @@ Promise.try(() => {
 
 	// TODO checkout given SHA1
 
-	console.log('Stopping MongoDB instances...');
-	return exec('systemctl', ['stop', config.primary.mongoReadWrite.service]);
-
-}).then(() => {
-	return exec('systemctl', ['stop', config.primary.mongoReadOnly.service]);
-
-}).then(() => {
-	console.log('Deleting old data...');
-	return exec('rm', ['-rf', config.primary.mongoReadWrite.dataPath]);
-
-}).then(() => {
-	console.log('Copying replication data...');
-	return exec('cp', ['-a', config.primary.mongoReadOnly.dataPath, config.primary.mongoReadWrite.dataPath]);
-
-}).then(() => {
-	console.log('Starting MongoDB instances...');
-	return exec('systemctl', ['start', config.primary.mongoReadOnly.service]);
-
-}).then(() => {
-	return exec('systemctl', ['start', config.primary.mongoReadWrite.service]);
-
-}).then(() => {
-
-	const dbConfig = url.parse(config.vpdb.db);
-	const dbName = dbConfig.path.substring(1);
-	let user, password;
-	if (dbConfig.auth) {
-		const a = dbConfig.auth.split(':');
-		user = a[0];
-		password = a[1];
+	if (fs.existsSync(exportPath)) {
+		// deleting previous export location
+		console.log('Deleting old export folder...');
+		return exec('rm', ['-rf', exportPath]);
 	}
-	if (config.primary.mongoReadOnly.dbName !== dbName) {
-		return new Promise(resolve => {
-			console.log('Waiting for instances to start up...');
-			setTimeout(resolve, 2000);
 
-		}).then(() => {
-			console.log('Renaming database from "%s" to "%s"...', config.primary.mongoReadOnly.dbName, dbName);
+}).then(() => {
 
-			// drop if db with same name exists.
-			let args = getArgs(dbName, dbConfig, config);
-			args.push('--eval');
-			args.push('db.dropDatabase()');
-			return exec('mongo', args).catch(() => {
-				console.warn('First drop failed but don\'t care.');
-			});
+	fs.mkdirSync(exportPath);
 
-		}).then(() => {
+	// export with mongodump
+	let args = getArgs(replicaConfig, replicaUser, replicaPassword, 'admin');
+	args.push('-d');
+	args.push(replicaName);
+	args.push('-o');
+	args.push(exportPath);
 
-			// copy database
-			let args = getArgs(config.primary.mongoReadOnly.dbName, dbConfig, config);
-			args.push('--eval');
-			args.push(`db.copyDatabase("${config.primary.mongoReadOnly.dbName}", "${dbName}")`);
-			return exec('mongo', args);
+	console.log('Exporting data from replica...');
+	return exec('mongodump', args);
 
-		}).then(() => {
+}).then(() => {
 
-			// drop source db
-			let args = getArgs(config.primary.mongoReadOnly.dbName, dbConfig, config);
-			args.push('--eval');
-			args.push('db.dropDatabase()');
-			return exec('mongo', args);
+	// drop db that is reimported
+	let args = getArgs(dbConfig, config.primary.auth.user, config.primary.auth.password, 'admin');
+	args.push(dbName);
+	args.push('--eval');
+	args.push('db.dropDatabase()');
 
-		}).then(() => {
-			if (dbConfig.auth) {
-				let args = getArgs(dbName, dbConfig, config);
-				args.push('--eval');
-				args.push(`db.createUser({ user: "${user}", pwd: "${password}", roles: [ { role: "readWrite", db: "${dbName}" } ] })`);
-				return exec('mongo', args);
-			}
-		});
+	console.log('Dropping database %s...', dbName);
+	return exec('mongo', args).catch(() => {
+		console.warn('Initial drop failed but don\'t care.');
+	});
+
+}).then(() => {
+
+	// import with mongorestore
+	let args = getArgs(dbConfig, config.primary.auth.user, config.primary.auth.password, 'admin');
+	args.push('-d');
+	args.push(dbName);
+	args.push(exportPath);
+
+	console.log('Exporting data from replica...');
+	return exec('mongorestore', args);
+
+}).then(() => {
+
+	// create user if needed
+	if (dbConfig.auth) {
+		let args = getArgs(dbConfig, config.primary.auth.user, config.primary.auth.password, 'admin');
+		args.push(dbName);
+		args.push('--eval');
+		args.push(`db.createUser({ user: "${dbUser}", pwd: "${dbPassword}", roles: [ { role: "readWrite", db: "${dbName}" } ] })`);
+		return exec('mongo', args);
 	}
 
 }).then(() => {
@@ -142,18 +129,24 @@ Promise.try(() => {
 	console.error('ERROR: ', err);
 });
 
-function getArgs(dbName, dbConfig, config) {
-	let args = [ dbName, '--host', dbConfig.hostname];
+function getArgs(dbConfig, user, password, authDatabase) {
+	let args = ['--host', dbConfig.hostname];
 	if (dbConfig.port) {
 		args.push('--port');
 		args.push(dbConfig.port);
 	}
-	args.push('-u');
-	args.push(config.primary.auth.user);
-	args.push('-p');
-	args.push(config.primary.auth.password);
-	args.push('--authenticationDatabase');
-	args.push('admin');
+	if (user) {
+		args.push('-u');
+		args.push(user);
+	}
+	if (password) {
+		args.push('-p');
+		args.push(password);
+	}
+	if (authDatabase) {
+		args.push('--authenticationDatabase');
+		args.push(authDatabase);
+	}
 	return args;
 }
 

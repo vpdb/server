@@ -446,15 +446,6 @@ On secondary and tertiary:
 	security:
 	  authorization: enabled
 	  
-Enable reset production script:
-  
-	vi /etc/sudoers.d/deployer
-	
-	deployer ALL=(ALL) NOPASSWD:SETENV: /usr/bin/node /var/www/staging/current/server/scripts/reset-to-production.js
-	
-	chmod 0440 /etc/sudoers.d/deployer
-	
-
 ## Redis
 
 Install latest from repo:

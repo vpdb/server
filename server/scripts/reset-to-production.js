@@ -36,10 +36,6 @@ Promise.try(() => {
 		throw Error('Host must have a primary config in order to reset to production.');
 	}
 
-	if (!process.getuid || process.getuid() !== 0) {
-		throw Error('Must be run with root privileges, otherwise I cannot stop the services.');
-	}
-
 	if (_.isEqual(config.vpdb.api, config.primary.api)) {
 		throw Error('Primary cannot be the same host!');
 	}
@@ -55,10 +51,9 @@ Promise.try(() => {
 		[replicaUser, replicaPassword] = replicaConfig.auth.split(':');
 	}
 
-	console.log('=== Retrieving build number at %s...', config.primary.api.hostname);
-
 	// retrieve primary version
 	const p = config.primary.api;
+	console.log('=== Retrieving build number at %s...', config.primary.api.hostname);
 	return axios({ method: 'get', url: `${p.protocol}://${p.hostname}:${p.port}${p.pathname}/` });
 
 }).then(function(response) {
@@ -119,7 +114,7 @@ Promise.try(() => {
 		let args = getArgs(dbConfig, config.primary.auth.user, config.primary.auth.password, 'admin');
 		args.push(dbName);
 		args.push('--eval');
-		args.push(`db.createUser({ user: "${dbUser}", pwd: "${dbPassword}", roles: [ { role: "readWrite", db: "${dbName}" } ] })`);
+		args.push(`db.grantRolesToUser("${dbUser}", [ { role: "readWrite", db: "${dbName}" } ] )`);
 		return exec('mongo', args);
 	}
 
@@ -163,11 +158,11 @@ function exec(executable, args) {
 		const c = spawn(executable, args);
 
 		c.stdout.on('data', data => {
-			console.info(`  - ${data.replace(/\s+$/, '')}`);
+			console.info(`    - ${data.toString().replace(/\s+$/, '').replace(/\n/g, '\n    -')}`);
 		});
 
 		c.stderr.on('data', data => {
-			console.error(`  ~ ${data.replace(/\s+$/, '')}`);
+			console.error(`    ~ ${data.toString().replace(/\s+$/, '').replace(/\n/g, '\n    ~')}`);
 		});
 
 		c.on('close', code => {

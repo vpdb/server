@@ -26,8 +26,9 @@ const url = require('url');
 const spawn = require('child_process').spawn;
 const axios = require('axios');
 const config = require('../modules/settings').current;
+const resolve = require('path').resolve;
 
-const exportPath = require('path').resolve(config.vpdb.tmp, 'mongo-reset-export');
+const exportPath = resolve(config.vpdb.tmp, 'mongo-reset-export');
 let sha, dbConfig, dbUser, dbPassword, dbName, replicaConfig, replicaUser, replicaPassword, replicaName;
 Promise.try(() => {
 
@@ -54,7 +55,7 @@ Promise.try(() => {
 		[replicaUser, replicaPassword] = replicaConfig.auth.split(':');
 	}
 
-	console.log('Retrieving build number at %s...', config.primary.api.hostname);
+	console.log('=== Retrieving build number at %s...', config.primary.api.hostname);
 
 	// retrieve primary version
 	const p = config.primary.api;
@@ -63,13 +64,13 @@ Promise.try(() => {
 }).then(function(response) {
 
 	sha = response.data.app_sha;
-	console.log('Primary "%s" at %s is up and running build %s.', response.data.app_name, config.primary.api.hostname, sha);
+	console.log('=== Primary "%s" at %s is up and running build %s.', response.data.app_name, config.primary.api.hostname, sha);
 
 	// TODO checkout given SHA1
 
 	if (fs.existsSync(exportPath)) {
 		// deleting previous export location
-		console.log('Deleting old export folder...');
+		console.log('=== Deleting old export folder...');
 		return exec('rm', ['-rf', exportPath]);
 	}
 
@@ -78,13 +79,13 @@ Promise.try(() => {
 	fs.mkdirSync(exportPath);
 
 	// export with mongodump
-	let args = getArgs(replicaConfig, replicaUser, replicaPassword, 'admin');
+	let args = getArgs(replicaConfig, replicaUser, replicaPassword);
 	args.push('-d');
 	args.push(replicaName);
 	args.push('-o');
 	args.push(exportPath);
 
-	console.log('Exporting data from replica...');
+	console.log('=== Exporting data from replica...');
 	return exec('mongodump', args);
 
 }).then(() => {
@@ -95,7 +96,7 @@ Promise.try(() => {
 	args.push('--eval');
 	args.push('db.dropDatabase()');
 
-	console.log('Dropping database %s...', dbName);
+	console.log('=== Dropping database %s...', dbName);
 	return exec('mongo', args).catch(() => {
 		console.warn('Initial drop failed but don\'t care.');
 	});
@@ -106,9 +107,9 @@ Promise.try(() => {
 	let args = getArgs(dbConfig, config.primary.auth.user, config.primary.auth.password, 'admin');
 	args.push('-d');
 	args.push(dbName);
-	args.push(exportPath);
+	args.push(resolve(exportPath, replicaName));
 
-	console.log('Exporting data from replica...');
+	console.log('=== Importing data from replica...');
 	return exec('mongorestore', args);
 
 }).then(() => {
@@ -123,7 +124,7 @@ Promise.try(() => {
 	}
 
 }).then(() => {
-	console.log('All done!');
+	console.log('=== All done!');
 
 }).catch(err => {
 	console.error('ERROR: ', err);
@@ -162,11 +163,11 @@ function exec(executable, args) {
 		const c = spawn(executable, args);
 
 		c.stdout.on('data', data => {
-			console.info(`--- ${data}`);
+			console.info(`  - ${data.replace(/\s+$/, '')}`);
 		});
 
 		c.stderr.on('data', data => {
-			console.error(`~~~ ${data}`);
+			console.error(`  ~ ${data.replace(/\s+$/, '')}`);
 		});
 
 		c.on('close', code => {

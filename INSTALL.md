@@ -607,10 +607,16 @@ If all good, link:
 	sudo ln -s /etc/nginx/sites-available/storage-site-name.conf /etc/nginx/sites-enabled/storage-site-name.conf
 	sudo ln -s /etc/nginx/sites-available/www-site-name.conf /etc/nginx/sites-enabled/www-site-name.conf
 	sudo ln -s /etc/nginx/sites-available/developer-site-name.conf /etc/nginx/sites-enabled/developer-site-name.conf
-
+	
 Then start nginx:
 
 	sudo systemctl restart nginx
+	
+And setup Letsencrypt renewal
+
+	sudo cronab -e
+	
+	23 4,16 * * * letsencrypt renew
 
 If you want to protect your site:
 

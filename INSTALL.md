@@ -550,54 +550,81 @@ Setup log rotation:
 
 ### SSL Config
 
-### Configure Nginx
-
-	sudo cp /repos/source/deploy/nginx/nginx.conf /etc/nginx
-	
-	sudo cp /repos/source/deploy/nginx/sites/api.staging.vpdb.conf /etc/nginx/sites-available/api.staging.vpdb.io.conf
-	sudo cp /repos/source/deploy/nginx/sites/storage.staging.vpdb.conf /etc/nginx/sites-available/storage.staging.vpdb.io.conf
-	sudo cp /repos/source/deploy/nginx/sites/staging.vpdb.conf /etc/nginx/sites-available/www.staging.io.vpdb.conf
-	
-	sudo cp /repos/source/deploy/nginx/sites/staging-devsite.conf /etc/nginx/sites-available/vpdb-staging-devsite.conf
-	sudo cp /repos/source/deploy/nginx/sites/production.conf /etc/nginx/sites-available/vpdb-production.conf
-	sudo ln -s /etc/nginx/sites-available/vpdb-production.conf /etc/nginx/sites-enabled/vpdb-production.conf
-	sudo ln -s /etc/nginx/sites-available/vpdb-staging.conf /etc/nginx/sites-enabled/vpdb-staging.conf
-
-Update configuration:
-
-	sudo vi /etc/nginx/sites-available/vpdb-production.conf
-	sudo vi /etc/nginx/sites-available/vpdb-staging.conf
-	sudo vi /etc/nginx/sites-available/vpdb-staging-devsite.conf
-	
 Install the Letsencrypt bot
 
-	cd /usr/local/bin
-	sudo wget https://dl.eff.org/certbot-auto
-	sudo chmod a+x certbot-auto
-	sudo certbot-auto
-
-Setup certificate
+	sudo apt-get install letsencrypt
+	
+Setup certificate path
 
 	mkdir /etc/nginx/ssl/letsencrypt -p
 	cd /etc/nginx/ssl
 	openssl dhparam -out dhparam.pem 2048
-	sudo letsencrypt certonly --webroot -w /etc/nginx/ssl/letsencrypt -d test.vpdb.io	
+
+### Configure Nginx
+
+	sudo cp /repos/source/deploy/nginx/nginx.conf /etc/nginx
+	
+	sudo cp /repos/source/deploy/nginx/sites/api.conf /etc/nginx/sites-available/api-site-name.conf
+	sudo cp /repos/source/deploy/nginx/sites/storage.conf /etc/nginx/sites-available/storage-site-name.conf
+	sudo cp /repos/source/deploy/nginx/sites/www.conf /etc/nginx/sites-available/www-site-name.conf
+	sudo cp /repos/source/deploy/nginx/sites/developer.conf /etc/nginx/sites-available/developer-site-name.conf
+	
+If not SSL is set up yet:
+	
+	vi /etc/nginx/sites-enabled/letsencrypt.conf
+	
+	server {
+		listen 80;
+		server_name <host name 1> <host name 2> <host name 3>;
+
+		location ~ /.well-known {
+			root /etc/nginx/ssl/letsencrypt;
+			allow all;
+		}
+	}
+	
+Then run the Letsencrypt bot
+	
+	sudo systemctl restart nginx
+	sudo letsencrypt certonly --webroot -w /etc/nginx/ssl/letsencrypt -d <host name 1> 
+	sudo letsencrypt certonly --webroot -w /etc/nginx/ssl/letsencrypt -d <host name 2> 
+	sudo letsencrypt certonly --webroot -w /etc/nginx/ssl/letsencrypt -d <host name 3> 
+	
+If okay, remove initial config
+	
+	rm /etc/nginx/sites-enabled/letsencrypt.conf
+
+When certs are at their place, update configuration:
+
+	sudo vi /etc/nginx/sites-available/api-site-name.conf
+	sudo vi /etc/nginx/sites-available/storage-site-name.conf
+	sudo vi /etc/nginx/sites-available/www-site-name.conf
+	sudo vi /etc/nginx/sites-available/developer-site-name.conf
+
+If all good, link:
+
+	sudo ln -s /etc/nginx/sites-available/api-site-name.conf /etc/nginx/sites-enabled/api-site-name.conf
+	sudo ln -s /etc/nginx/sites-available/storage-site-name.conf /etc/nginx/sites-enabled/storage-site-name.conf
+	sudo ln -s /etc/nginx/sites-available/www-site-name.conf /etc/nginx/sites-enabled/www-site-name.conf
+	sudo ln -s /etc/nginx/sites-available/developer-site-name.conf /etc/nginx/sites-enabled/developer-site-name.conf
 
 Then start nginx:
 
-	service nginx start
+	sudo systemctl restart nginx
 
 If you want to protect your site:
 
 	sudo apt-get -y install apache2-utils
 	sudo htpasswd -c /var/www/.htpasswd vpdb
 	sudo chown www-data:www-data /var/www/.htpasswd
-	sudo vi /etc/nginx/sites-available/vpdb-staging
+	sudo vi /etc/nginx/sites-available/<site-to-protect>.conf
 
 Add this to the `server { ... }` block
 
 	auth_basic "Restricted";
 	auth_basic_user_file /var/www/.htpasswd;
+	
+	sudo systemctl restart nginx
 	
 ## Setup Backup/Staging Instance
 

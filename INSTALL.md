@@ -85,7 +85,6 @@ Set:
 	sudo apt-get install -y nodejs build-essential
 
 	npm config set ca ""
-	npm install -g npm
 	npm install -g grunt-cli bower
 
 ## Image/Video Tools
@@ -209,7 +208,6 @@ On primary and secondary, create SSH keypair with no password:
 On primary, change MongoDB interface to `127.0.1.1`
 	
 	vi /etc/mongod.conf
-	vi /var/www/staging/settings.js
 	systemctl restart mongodb
 	
 On secondaries, create the tunnel user and add the keypair to `authorized_keys`:
@@ -219,6 +217,7 @@ On secondaries, create the tunnel user and add the keypair to `authorized_keys`:
 	mkdir ~/.ssh
 	chmod 700 ~/.ssh
 	vi ~/.ssh/authorized_keys
+	chmod 700 ~/.ssh/authorized_keys
 	
 On secondary, create keypair and add it to tertiary
 
@@ -254,7 +253,7 @@ Rename currently installed MongoDB instance on secondary and tertiary:
 	
 On secondary, change MongoDB interface and port to `127.0.2.2:27018`:
 
-	vi /etc/mongod.conf
+	vi /etc/mongod-replica.conf
 	systemctl restart mongodb-replica
 
 On tertiary, change MongoDB interface and port to `127.0.3.3:27019`:
@@ -276,7 +275,7 @@ And on secondary:
 Now setup SSH tunnels. Back as root on primary:
 
 	sudo apt install -y autossh
-	vi /etc/systemd/system/mongotunnel.secondary.service
+	vi /etc/systemd/system/mongotunnel.backup.service
 	
 	[Unit]
 	Description=Keeps a tunnel to 'vpdb.secondary' open
@@ -284,16 +283,16 @@ Now setup SSH tunnels. Back as root on primary:
 	
 	[Service]
 	User=mongotunnel
-	ExecStart=/usr/bin/autossh -M 0 -N -q -o "ServerAliveInterval 60" -o "ServerAliveCountMax 3" -p 22 -l mongotunnel secondary.vpdb -L 127.0.2.2:27018:127.0.2.2:27018  -R 127.0.1.1:27017:127.0.1.1:27017 -R 127.0.10.10:27100:127.0.10.10:27100 -R 127.0.20.20:27200:127.0.20.20:27200 -i /home/mongotunnel/.ssh/id_rsa
+	ExecStart=/usr/bin/autossh -M 0 -N -q -o "ServerAliveInterval 60" -o "ServerAliveCountMax 3" -p 22 -l mongotunnel secondary.vpdb -L 127.0.2.2:27018:127.0.2.2:27018 -R 127.0.1.1:27017:127.0.1.1:27017 -R 127.0.10.10:27100:127.0.10.10:27100 -R 127.0.20.20:27200:127.0.20.20:27200 -i /home/mongotunnel/.ssh/id_rsa
 	
 	[Install]
 	WantedBy=multi-user.target
 	
 Try it out:
 	
-	sudo systemctl start mongotunnel.secondary
-	sudo systemctl status mongotunnel.secondary
-	sudo systemctl enable mongotunnel.secondary
+	sudo systemctl start mongotunnel.backup
+	sudo systemctl status mongotunnel.backup
+	sudo systemctl enable mongotunnel.backup
 	mongo --host 127.0.2.2 --port 27018
 	
 Still on primary:
@@ -378,6 +377,7 @@ Still on primary, copy the key file to secondaries
 	su - mongotunnel
 	scp /home/mongotunnel/keyfile mongotunnel@secondary.vpdb:/home/mongotunnel/keyfile 
 	scp /home/mongotunnel/keyfile mongotunnel@home.vpdb:/home/mongotunnel/keyfile
+	exit
 	chmod 600 /home/mongotunnel/keyfile
 
 On secondaries, enable keyfile authentication and change data and log path:
@@ -523,7 +523,7 @@ configure Nginx. For future deployments, refer to the [deployment guide](DEPLOY.
 
 ### Setup PM2
 
-	sudo npm install -g pm2
+	sudo npm install -g pm2 pmx
 	su - deployer
 	cp /repos/source/deploy/pm2 ~/ -r
 	vi ~/pm2/staging.json
@@ -550,10 +550,29 @@ Setup log rotation:
 
 ### SSL Config
 
+### Configure Nginx
+
+	sudo cp /repos/source/deploy/nginx/nginx.conf /etc/nginx
+	
+	sudo cp /repos/source/deploy/nginx/sites/api.staging.vpdb.conf /etc/nginx/sites-available/api.staging.vpdb.io.conf
+	sudo cp /repos/source/deploy/nginx/sites/storage.staging.vpdb.conf /etc/nginx/sites-available/storage.staging.vpdb.io.conf
+	sudo cp /repos/source/deploy/nginx/sites/staging.vpdb.conf /etc/nginx/sites-available/www.staging.io.vpdb.conf
+	
+	sudo cp /repos/source/deploy/nginx/sites/staging-devsite.conf /etc/nginx/sites-available/vpdb-staging-devsite.conf
+	sudo cp /repos/source/deploy/nginx/sites/production.conf /etc/nginx/sites-available/vpdb-production.conf
+	sudo ln -s /etc/nginx/sites-available/vpdb-production.conf /etc/nginx/sites-enabled/vpdb-production.conf
+	sudo ln -s /etc/nginx/sites-available/vpdb-staging.conf /etc/nginx/sites-enabled/vpdb-staging.conf
+
+Update configuration:
+
+	sudo vi /etc/nginx/sites-available/vpdb-production.conf
+	sudo vi /etc/nginx/sites-available/vpdb-staging.conf
+	sudo vi /etc/nginx/sites-available/vpdb-staging-devsite.conf
+	
 Install the Letsencrypt bot
 
 	cd /usr/local/bin
-	sudo wget https://dl.eff.org/certbot-auto --no-check-certificate
+	sudo wget https://dl.eff.org/certbot-auto
 	sudo chmod a+x certbot-auto
 	sudo certbot-auto
 
@@ -562,23 +581,7 @@ Setup certificate
 	mkdir /etc/nginx/ssl/letsencrypt -p
 	cd /etc/nginx/ssl
 	openssl dhparam -out dhparam.pem 2048
-	sudo letsencrypt certonly --webroot -w /etc/nginx/ssl/letsencrypt -d test.vpdb.io
-
-### Configure Nginx
-
-	sudo cp /repos/source/deploy/nginx/nginx.conf /etc/nginx
-	sudo cp /repos/source/deploy/nginx/sites/production.conf /etc/nginx/sites-available/vpdb-production.conf
-	sudo cp /repos/source/deploy/nginx/sites/staging.conf /etc/nginx/sites-available/vpdb-staging.conf
-	sudo cp /repos/source/deploy/nginx/sites/staging-devsite.conf /etc/nginx/sites-available/vpdb-staging-devsite.conf
-	sudo ln -s /etc/nginx/sites-available/vpdb-production.conf /etc/nginx/sites-enabled/vpdb-production.conf
-	sudo ln -s /etc/nginx/sites-available/vpdb-staging.conf /etc/nginx/sites-enabled/vpdb-staging.conf
-	sudo ln -s /etc/nginx/sites-available/vpdb-staging-devsite.conf /etc/nginx/sites-enabled/vpdb-staging-devsite.conf
-
-Update configuration:
-
-	sudo vi /etc/nginx/sites-available/vpdb-production.conf
-	sudo vi /etc/nginx/sites-available/vpdb-staging.conf
-	sudo vi /etc/nginx/sites-available/vpdb-staging-devsite.conf
+	sudo letsencrypt certonly --webroot -w /etc/nginx/ssl/letsencrypt -d test.vpdb.io	
 
 Then start nginx:
 

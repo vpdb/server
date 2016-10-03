@@ -586,9 +586,7 @@ If not SSL is set up yet:
 Then run the Letsencrypt bot
 	
 	sudo systemctl restart nginx
-	sudo letsencrypt certonly --webroot -w /etc/nginx/ssl/letsencrypt -d <host name 1> 
-	sudo letsencrypt certonly --webroot -w /etc/nginx/ssl/letsencrypt -d <host name 2> 
-	sudo letsencrypt certonly --webroot -w /etc/nginx/ssl/letsencrypt -d <host name 3> 
+	sudo letsencrypt certonly --webroot -w /etc/nginx/ssl/letsencrypt -d <host name 1> -d <host name 2> -d <host name 3>;
 	
 If okay, remove initial config
 	

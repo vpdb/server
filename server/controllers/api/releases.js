@@ -516,7 +516,7 @@ exports.list = function(req, res) {
 
 	}).then(() => {
 
-		// restricted releases
+		// restricted games
 		if (config.vpdb.restrictions && config.vpdb.restrictions.releases && _.isArray(config.vpdb.restrictions.releases.denyMpu)) {
 			return Game.find({ 'ipdb.mpu' : { $in: config.vpdb.restrictions.releases.denyMpu }}).exec().then(games => {
 				query.push({ _game : { $nin: _.map(games, '_id') }});

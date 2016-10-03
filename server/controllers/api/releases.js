@@ -44,6 +44,7 @@ var pusher = require('../../modules/pusher');
 var mailer  = require('../../modules/mailer');
 var storage = require('../../modules/storage');
 
+var config = require('../../modules/settings').current;
 
 Promise.promisifyAll(gm.prototype);
 
@@ -506,10 +507,19 @@ exports.list = function(req, res) {
 			return Game.find(q, '_id').exec().then(games => {
 				let gameIds = _.map(games, '_id');
 				if (gameIds.length > 0) {
-					query.push({ $or: [ { name: titleRegex }, { '_game': { $in: gameIds } } ] });
+					query.push({ $or: [ { name: titleRegex }, { _game: { $in: gameIds } } ] });
 				} else {
 					query.push({ name: titleRegex });
 				}
+			});
+		}
+
+	}).then(() => {
+
+		// restricted releases
+		if (config.vpdb.restrictions && config.vpdb.restrictions.releases && _.isArray(config.vpdb.restrictions.releases.denyMpu)) {
+			return Game.find({ 'ipdb.mpu' : { $in: config.vpdb.restrictions.releases.denyMpu }}).exec().then(games => {
+				query.push({ _game : { $nin: _.map(games, '_id') }});
 			});
 		}
 
@@ -614,7 +624,7 @@ exports.list = function(req, res) {
 		} else {
 
 			let q = api.searchQuery(query);
-			logger.info('[api|release:list] query: %s, sort: %j', util.inspect(q), util.inspect(sort));
+			logger.info('[api|release:list] query: %s, sort: %j', util.inspect(q, { depth: null }), util.inspect(sort));
 			return Release.paginate(q, {
 				page: pagination.page,
 				limit: pagination.perPage,

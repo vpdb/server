@@ -305,6 +305,34 @@ module.exports = {
 		},
 
 		/**
+		 * Restrict content
+		 */
+		restrictions: {
+
+			/**
+			 * Restrict releases
+			 */
+			releases: {
+
+				/**
+				 * Don't allow releases for Stern S.A.M (54) and SPIKE (61) games
+				 */
+				denyMpu: [ 54, 61 ]
+			},
+
+			/**
+			 * Restrict backglasses
+			 */
+			backglasses: {
+
+				/**
+				 * Don't allow backglasses for Stern S.A.M (54) and SPIKE (61) games
+				 */
+				denyMpu: [ 54, 61 ]
+			}
+		},
+
+		/**
 		 * Pusher settings
 		 * See https://github.com/pusher/pusher-http-node
 		 */

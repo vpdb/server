@@ -111,6 +111,7 @@ function parseDetails(body) {
 					return m.replace(/[\s,]+$/, '');
 				});
 			}
+			game.ipdb.mpu = number(firstMatch(body, /MPU:\s*<\/b>.*?mpu=(\d+)/i));
 			game.model_number = firstMatch(body, /Model Number:\s*<\/b><\/td><td[^>]*>([\da-z]+)/i);
 			game.year = number(firstMatch(body, /href="machine\.cgi\?id=\d+">\d+<\/a>\s*<I>[^<]*?(\d{4})/i));
 
@@ -952,6 +953,72 @@ Ipdb.prototype.owners = {
 	700: "Coin Device Mfg. Co. Inc. of Syracuse, New York",
 	701: "John Ellson of Albany, New York",
 	702: "Marx Toys"
+};
+
+Ipdb.prototype.systems = {
+
+	44: { long: 'Atari Generation/System 1', short: 'System 1' },
+	45: { long: 'Atari Generation/System 2', short: 'System 2' },
+	48: { long: 'Atari Generation/System 3', short: 'System 3' },
+	20: { long: 'Bally MPU A082-91494-A000', short: 'MPU A082' },
+	38: { long: 'Bally MPU A084-91786-AH06 (6803)', short: 'MPU A084' },
+	19: { long: 'Bally MPU AS-2518-133', short: 'MPU 133' },
+	13: { long: 'Bally MPU AS-2518-17', short: 'MPU 17' },
+	18: { long: 'Bally MPU AS-2518-35', short: 'MPU 35' },
+	32: { long: 'Capcom A0015405', short: 'A0015405' },
+	22: { long: 'DataEast/Sega Version 1', short: 'Sega 1' },
+	23: { long: 'DataEast/Sega Version 2', short: 'Sega 2' },
+	24: { long: 'DataEast/Sega Version 3', short: 'Sega 3' },
+	25: { long: 'DataEast/Sega Version 3b', short: 'Sega 3b' },
+	62: { long: 'Day One D1PSB', short: 'D1PSB' },
+	46: { long: 'Game Plan MPU-1', short: 'MPU-1' },
+	47: { long: 'Game Plan MPU-2', short: 'MPU-2' },
+	14: { long: 'Gottlieb System 1', short: 'System 1' },
+	37: { long: 'Gottlieb System 3', short: 'System 3' },
+	15: { long: 'Gottlieb System 80', short: 'System 80' },
+	16: { long: 'Gottlieb System 80A', short: 'System 80A' },
+	17: { long: 'Gottlieb System 80B', short: 'System 80B' },
+	55: { long: 'Mr. Game 1B11188/0', short: '1B11188' },
+	59: { long: 'NSM Control-Unit 217838', short: 'NSM 217838' },
+	60: { long: 'PinHeck System', short: 'PinHeck' },
+	49: { long: 'Playmatic MPU 1', short: 'MPU 1' },
+	50: { long: 'Playmatic MPU 2', short: 'MPU 2' },
+	51: { long: 'Playmatic MPU 3', short: 'MPU 3' },
+	52: { long: 'Playmatic MPU 4', short: 'MPU 4' },
+	53: { long: 'Playmatic MPU 5', short: 'MPU 5' },
+	64: { long: 'Playmatic MPU C', short: 'MPU C' },
+	39: { long: 'Recel System III', short: 'Recel III' },
+	58: { long: 'Sega 95534', short: '95534' },
+	56: { long: 'Sega 95680', short: '95680' },
+	57: { long: 'Sega 96054', short: '96054' },
+	33: { long: 'Sega/Stern Whitestar', short: 'Whitestar' },
+	21: { long: 'Stern M-100 MPU', short: 'M-100' },
+	34: { long: 'Stern M-200 MPU', short: 'M-200' },
+	54: { long: 'Stern S.A.M. Board System', short: 'Stern S.A.M.' },
+	61: { long: 'Stern SPIKE™ System', short: 'Stern SPIKE™' },
+	41: { long: 'Stern Whitestar (modified)', short: 'Stern Whitestar' },
+	40: { long: 'Technoplay "2-2C 8008 LS" (68000 CPU)', short: '2-2C 8008' },
+	12: { long: 'Williams Pinball 2000', short: 'Pinball 2000' },
+	6: { long: 'Williams System 11', short: 'System 11' },
+	7: { long: 'Williams System 11A', short: 'System 11A' },
+	8: { long: 'Williams System 11B', short: 'System 11B' },
+	9: { long: 'Williams System 11C', short: 'System 11C' },
+	1: { long: 'Williams System 3', short: 'System 3' },
+	2: { long: 'Williams System 4', short: 'System 4' },
+	3: { long: 'Williams System 6', short: 'System 6' },
+	43: { long: 'Williams System 6A', short: 'System 6A' },
+	4: { long: 'Williams System 7', short: 'System 7' },
+	42: { long: 'Williams System 8', short: 'System 8' },
+	5: { long: 'Williams System 9', short: 'System 9' },
+	10: { long: 'Williams WPC (Alpha Numeric)', short: 'Williams WPC' },
+	29: { long: 'Williams WPC (DCS)', short: 'Williams WPC' },
+	27: { long: 'Williams WPC (Dot Matrix)', short: 'Williams WPC' },
+	28: { long: 'Williams WPC (Fliptronics 1)', short: 'Williams WPC' },
+	31: { long: 'Williams WPC (Fliptronics 2)', short: 'Williams WPC' },
+	30: { long: 'Williams WPC Security (WPC-S)', short: 'Williams WPC' },
+	11: { long: 'Williams WPC-95', short: 'Williams WPC-95' },
+	35: { long: 'Zaccaria Generation 1', short: 'Generation 1' },
+	36: { long: 'Zaccaria Generation 2', short: 'Generation 2' }
 };
 
 var manufacturerGroups = {

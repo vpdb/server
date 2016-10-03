@@ -19,9 +19,11 @@
 
 "use strict";
 
+Promise = require('bluebird');  // jshint ignore:line
 var fs = require('fs');
 var async = require('async');
 var path = require('path');
+
 
 var ipdb = require('../modules/ipdb');
 

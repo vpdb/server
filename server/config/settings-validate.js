@@ -400,6 +400,25 @@ module.exports = {
 			}
 		},
 
+		restrictions: {
+			releases: {
+				denyMpu: function(ids) {
+					/* istanbul ignore if */
+					if (!_.isArray(ids)) {
+						return 'Denied MPUs must be an array.';
+					}
+				}
+			},
+			backglasses: {
+				denyMpu: function(ids) {
+					/* istanbul ignore if */
+					if (!_.isArray(ids)) {
+						return 'Denied MPUs must be an array.';
+					}
+				}
+			}
+		},
+
 		/**
 		 * Pusher settings
 		 */

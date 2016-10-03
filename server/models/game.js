@@ -33,6 +33,7 @@ var metrics = require('./plugins/metrics');
 var prettyId = require('./plugins/pretty-id');
 var sortTitle = require('./plugins/sortable-title');
 var ipdb = require('../modules/ipdb');
+var config = require('../modules/settings').current;
 
 var Schema = mongoose.Schema;
 
@@ -69,7 +70,8 @@ var fields = {
 	ipdb: {
 		number: Number,
 		rating: Number,
-		mfg: Number
+		mfg: Number,
+		mpu: Number
 	},
 	counter:       {
 		releases:  { type: Number, 'default': 0 },
@@ -110,7 +112,7 @@ GameSchema.plugin(sortTitle, { src: 'title', dest: 'title_sortable' });
 //-----------------------------------------------------------------------------
 var apiFields = {
 	reduced: [ 'id', 'title', 'manufacturer', 'year', 'ipdb' ], // fields returned in release data
-	simple:  [ 'game_type', 'backglass', 'logo', 'counter', 'rating' ]      // fields returned in lists
+	simple:  [ 'game_type', 'backglass', 'logo', 'counter', 'rating', 'restrictions' ]      // fields returned in lists
 };
 
 
@@ -142,6 +144,13 @@ GameSchema.virtual('full_title')
 GameSchema.virtual('owner')
 	.get(function() {
 		return ipdb.owners[this.ipdb.mfg] || this.manufacturer;
+	});
+
+GameSchema.virtual('restrictions')
+	.get(function() {
+		if (this.ipdb.mpu && config.vpdb.restrictions && config.vpdb.restrictions.releases && _.isArray(config.vpdb.restrictions.releases.denyMpu) && config.vpdb.restrictions.releases.denyMpu.includes(this.ipdb.mpu)) {
+			return [ 'mpu' ];
+		}
 	});
 
 

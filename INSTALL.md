@@ -415,7 +415,7 @@ Then connect to primary, configure replication and add replicas:
 	mongo --host 127.0.1.1
 	
 	use admin
-	db.auth("root", "5YmkLVGuD4KWs22SO5qL4peVTEBdlevN");
+	db.auth("root", "<password>");
 	rs.initiate({ _id:"rs0", members: [{ _id: 1, host: "127.0.1.1:27017" }]})
 	rs.conf()
 	rs.add({ host: "127.0.2.2:27018", priority: 0, hidden: true })
@@ -423,13 +423,6 @@ Then connect to primary, configure replication and add replicas:
 	rs.addArb("127.0.10.10:27100")
 	rs.addArb("127.0.20.20:27200")
 
-On secondaries, enable slaves in order to read:
-
-	db.getMongo().setSlaveOk()
-	show dbs
-	use vpdb
-	db.tags.find()
-	
 ## Redis
 
 Install latest from repo:
@@ -523,7 +516,7 @@ Check if your settings are valid. Then deploy a first time. Still as user `deplo
 
 Of course the code hot-swap will fail since there isn't anything running yet.
 However, code should be copied to the correct location, and you can now
-configure Nginx. For future deployements, refer to the [deployment guide](DEPLOY.md).
+configure Nginx. For future deployments, refer to the [deployment guide](DEPLOY.md).
 
 
 ## Setup Reverse Proxy

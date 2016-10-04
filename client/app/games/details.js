@@ -78,6 +78,9 @@ angular.module('vpdb.games.details', [])
 			$scope.game = result;
 			$scope.pageLoading = false;
 			$scope.setTitle($scope.game.title);
+
+			$scope.hasReleases = $scope.game.releases.length > 0;
+			$scope.hasBackglasses = $scope.game.backglasses.length > 0;
 		});
 
 		// RATINGS

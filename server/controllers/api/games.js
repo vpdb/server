@@ -408,9 +408,17 @@ exports.view = function(req, res) {
 		});
 
 	}).then(starredReleaseIds => {
+		let query = { _game: game._id };
 
+		// if game has a release restriction, only fetch owned releases when logged
+		if (game.isRestricted('releases')) {
+			if (!req.user) {
+				return [];
+			}
+			query._created_by = req.user._id;
+		}
 		opts = { starredReleaseIds: starredReleaseIds };
-		return Release.find(Release.approvedQuery({ _game: game._id }))
+		return Release.find(Release.approvedQuery(query))
 			.populate({ path: '_tags' })
 			.populate({ path: '_created_by' })
 			.populate({ path: 'authors._user' })
@@ -422,8 +430,17 @@ exports.view = function(req, res) {
 
 	}).then(releases => {
 		result.releases = _.map(releases, release => _.omit(release.toDetailed(opts), 'game'));
+		let query = { _game: game._id };
 
-		return Backglass.find(Backglass.approvedQuery({ _game: game._id }))
+		// if game has a backglass restriction, only fetch owned releases when logged
+		if (game.isRestricted('backglasses')) {
+			if (!req.user) {
+				return [];
+			}
+			query._created_by = req.user._id;
+		}
+
+		return Backglass.find(Backglass.approvedQuery(query))
 			.populate({ path: 'authors._user' })
 			.populate({ path: 'versions._file' })
 			.exec();

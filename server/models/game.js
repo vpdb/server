@@ -229,6 +229,10 @@ GameSchema.methods.toSimple = function() {
 	return _.pick(this.toObj(), apiFields.reduced.concat(apiFields.simple));
 };
 
+GameSchema.methods.isRestricted = function(what) {
+	return this.ipdb.mpu && config.vpdb.restrictions[what].denyMpu.includes(this.ipdb.mpu);
+};
+
 /**
  * Returns the API object for a detailed games
  * @returns {*}

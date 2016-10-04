@@ -24,7 +24,7 @@
 		"ipdb": {
 			"number": 2,
 			"mfg": 93,
-			"rating": "8.0"
+			"rating": "7.9"
 		},
 		"title": "Abra Ca Dabra",
 		"manufacturer": "Gottlieb",
@@ -166,7 +166,7 @@
 		"ipdb": {
 			"number": 11,
 			"mfg": 351,
-			"rating": "6.0"
+			"rating": "6.4"
 		},
 		"title": "Aces & Kings",
 		"manufacturer": "Williams",
@@ -292,7 +292,7 @@
 			"number": 20,
 			"mfg": 214,
 			"mpu": 28,
-			"rating": "8.3"
+			"rating": "8.2"
 		},
 		"title": "The Addams Family",
 		"manufacturer": "Bally",
@@ -422,7 +422,7 @@
 			"Constantino Mitchell",
 			"Jeanine Mitchell"
 		],
-		"features": "Flippers (2), Pop bumpers (4), Slingshots (2), Standup targets (14), 3-bank drop targets (2), Solitary drop targets (3), Spinning targets (2), Programmable gates (2), Kick-out hole (1), Rollunder (1), Left and right dual inlanes. Each pop bumper has a nearby target that lights it to increase its value for a limited time. Bonus multiplier advanced by completing four top rollovers with help from lane change capability. Hitting \"oil pit release\" target or the \"water hole\" target also spots a top rollover. Each outlane has a drop target blocking the ball from draining when earned by the player. The unusual shooter lane curve will aim a ball strongly shot into play directly towards the left outlane and its drop target. An operator option allows this drop target to be in the up position at the start of every ball. Two-ball multi-ball with double playfield scoring. Alpha-numeric displays. Hinged backbox. The backbox and lower cabinet bottom and front are metal while the lower cabinet sides are wood. Two sturdy metal columns elevate the backbox allowing the playfield to extend under it. Each fuse in backbox has a lit green LED indicating the fuse is good.The upper playfield has left and right return lanes each allowing the player to shoot the ball through a spinning target and back to the top of the playfield. At the top of these return lanes are wireform gates controlled by the CPU. The player can hit targets and rollovers to open one or both of these gates. If the left gate is open, the player can complete a ball orbit through both spinners by shooting through the right-side return lane. Similarly, if the right gate is open, the player can complete a ball orbit through both spinners by shooting through the left-side return lane. Completing an orbit with green light flashing will light 'Barren X Zone' insert in center playfield for immediate doubling of playfield scoring until the green light goes out.Sound: electronic, no knocker.Factory-installed illumination: Backbox - one fluorescent tube. Playfield - all lamps are incandescent.Cabinet - front has all incandescent lamps.",
+		"features": "Flippers (2), Pop bumpers (4), Slingshots (2), Standup targets (14), 3-bank drop targets (2), Solitary drop targets (3), Spinning targets (2), Programmable gates (2), Kick-out hole (1), Rollunder (1), Left and right dual inlanes. Each pop bumper has a nearby target that lights it to increase its value for a limited time. Bonus multiplier advanced by completing four top rollovers with help from lane change capability. Hitting \"oil pit release\" target or the \"water hole\" target also spots a top rollover. Each outlane has a drop target blocking the ball from draining when earned by the player. The unusual shooter lane curve will aim a ball strongly shot into play directly towards the left outlane and its drop target. An operator option allows this drop target to be in the up position at the start of every ball. Two-ball multi-ball with double playfield scoring. Alpha-numeric displays. Hinged backbox. The backbox has two portions: a rear portion made of metal which houses the control board and the driver board, and a front portion made of wood and screwed to the metal portion and which houses the fluorescent light box, backglass, and alphanumeric display assembly. The lower cabinet front, back, and bottom are metal while its sides are wood. Two sturdy metal columns elevate the backbox allowing the playfield to extend under it. In the backbox, fuses F1 to F6 each have a lit green LED indicating the fuse is good. Fuses F7 and F8 do not have this LED.The upper playfield has left and right return lanes each allowing the player to shoot the ball through a spinning target and back to the top of the playfield. At the top of these return lanes are wireform gates controlled by the CPU. The player can hit targets and rollovers to open one or both of these gates. If the left gate is open, the player can complete a ball orbit through both spinners by shooting through the right-side return lane. Similarly, if the right gate is open, the player can complete a ball orbit through both spinners by shooting through the left-side return lane. Completing an orbit with green light flashing will light 'Barren X Zone' insert in center playfield for immediate doubling of playfield scoring until the green light goes out.Sound: electronic, no knocker.Factory-installed illumination: Backbox - one fluorescent tube. Playfield - all lamps are incandescent.Cabinet - front has all incandescent lamps.",
 		"notes": "This is the first pinball machine from any manufacturer to be produced with alpha-numeric displays. It was used to spell out words and messages in addition to scores. The Wico manual referred to the upper wireform gates as \"programmable\" as if to suggest that there are operator options for them. However, the manual has no such operator options. The gates each have a coil to open and close them and are under exclusive programmed control by the CPU.The manual also referred to all three solitary drop targets as \"programmable drop targets\" each having a small coil used to drop the target under programmed control of the CPU. Here, however, they do indicate an operator option but only for one of the three targets, the one in the left outlane (per page 18 of the manual) to place it in the up position at the start of every ball. Reportedly, in Early Production games, both left and right outlane drop targets had trouble with their operation causing the removal of the small coil during production. This trouble should also have affected the solitary drop target in front of the kick-out hole such that we would expect its small coil to have been removed as well. The manual does have a parts drawing for both the version with the small coil (the programmable version) and the version without the small coil (used for the E-S-C and A-P-E drop targets).Artist Constantino Mitchell told us that Wico kept the designer's identity a secret. His wife Jeanine did all the color work for the backglass, playfield, plastics, and cabinet. She also modeled for the artwork.An earlier game, Williams' 1981 'Hyperball', had an alpha-numeric display but is Not A Pinball."
 	},
 	{
@@ -698,7 +698,7 @@
 		"ipdb": {
 			"number": 40,
 			"mfg": 47,
-			"rating": "7.6"
+			"rating": "7.5"
 		},
 		"title": "Aladdin's Castle",
 		"manufacturer": "Bally",
@@ -871,7 +871,7 @@
 			"number": 48,
 			"mfg": 351,
 			"mpu": 43,
-			"rating": "7.5"
+			"rating": "7.6"
 		},
 		"title": "Alien Poker",
 		"manufacturer": "Williams",
@@ -1098,7 +1098,7 @@
 		"ipdb": {
 			"number": 63,
 			"mfg": 350,
-			"rating": "7.8"
+			"rating": "7.4"
 		},
 		"title": "Alpine Club",
 		"manufacturer": "Williams",
@@ -1277,7 +1277,7 @@
 		"ipdb": {
 			"number": 77,
 			"mfg": 351,
-			"rating": "7.9"
+			"rating": "7.7"
 		},
 		"title": "Apollo",
 		"manufacturer": "Williams",
@@ -1631,7 +1631,8 @@
 		"designers": [
 			"Ed Krynski"
 		],
-		"features": "Flippers (2), Pop bumpers (3), Passive bumpers (2), Slingshots (2), Standup targets (4), Drop targets (2). Green score reels with white numbers. The pop bumpers take turns lighting one at a time in clockwise order, changing approximately every five seconds. The large playfield insert in the center of these bumpers changes color to match the bumper that is lit. The four top rollover lanes take turns lighting one at a time from left to right, then start over at the left again. They change approximately every five seconds and not necessarily in sync with the changing pop bumpers. Maximum displayed point score is 1,999 points per player"
+		"features": "Flippers (2), Pop bumpers (3), Passive bumpers (2), Slingshots (2), Standup targets (4), Drop targets (2). Green score reels with white numbers. The pop bumpers take turns lighting one at a time in clockwise order, changing approximately every five seconds. The large playfield insert in the center of these bumpers changes color to match the bumper that is lit. The four top rollover lanes take turns lighting one at a time from left to right, then start over at the left again. They change approximately every five seconds and not necessarily in sync with the changing pop bumpers. Maximum displayed point score is 1,999 points per player",
+		"notes": "We have conflicting information showing this game as made either in 9/1962 or 9/1963. If Arrowhead was made in 9/1962, then it would be the first game with standard drop targets and not Williams' 1962 'Vagabond' as has always been believed. We have been unable to locate a schematic or other manufacturer documentation for this game to determine if the documentation shows a date year on it. If anyone has manufacturer documentation for Arrowhead (with dates or not) or can refer us to old advertisements from 1962/63, please contact us."
 	},
 	{
 		"ipdb": {
@@ -1822,7 +1823,7 @@
 		"ipdb": {
 			"number": 105,
 			"mfg": 93,
-			"rating": "8.0"
+			"rating": "7.8"
 		},
 		"title": "Atlantis",
 		"manufacturer": "Gottlieb",
@@ -2232,8 +2233,8 @@
 			"Constantino Mitchell",
 			"Jeanine Mitchell"
 		],
-		"features": "Flippers (3), Pop bumpers (3), Slingshots (2), Vertical Up-kickers (2), Spinning targets (2), Star rollovers (2), Vari-target (1), 7-bank drop targets (1), Single drop target (1), Mini-post between flippers. \"Bozo feature\" lights top lane to start at 100,000 or 200,000 (operator option) at start of player's last ball if player has not yet scored a rack. Photographic translite. Mirrors on cabinet sides.",
-		"notes": "We are not sure how many reset coils co-operate the bank of seven drop targets. The game manual lists these coils:3 bank reset4 bank reset5 bank reset7 bank resetand also does not list a coil to reset the single 8-ball drop target. If anyone can clarify this, especially using pictures, please contact us."
+		"features": "Flippers (3), Pop bumpers (3), Slingshots (2), Vertical Up-kickers (2), Spinning targets (2), Star rollovers (2), Vari-target (1), 4-bank memory drop targets (1), 3-bank memory drop targets (1), Single memory drop target (1), Mini-post between flippers. \"Bozo feature\" lights top lane to start at 100,000 or 200,000 (operator option) at start of player's last ball if player has not yet scored a rack. Photographic translite. Mirrors on cabinet sides.",
+		"notes": "The row of seven drop targets are reset using two coils: one resets three targets and one resets four targets.This game was produced using System 80B. We note the flippers were not embossed with the Gottlieb name. Designer Jon Norris told us this information:There were ten Bad Girls that were released to test System 3 hardware. The games were shipped to New Orleans Novelty. I actually think I found one of them on youtube. At the end of the video, when the game matches, the display is dimmed, and the flipper bats have the name \"Gottlieb\" printed on them."
 	},
 	{
 		"ipdb": {
@@ -2280,6 +2281,7 @@
 		},
 		"title": "Baffle-Card",
 		"manufacturer": "Gottlieb",
+		"model_number": "C",
 		"year": 1946,
 		"game_type": "em",
 		"produced_units": 1860,
@@ -2827,11 +2829,11 @@
 		"ipdb": {
 			"number": 169,
 			"mfg": 93,
-			"rating": "7.9"
+			"rating": "7.5"
 		},
 		"title": "Bank Shot",
 		"manufacturer": "Gottlieb",
-		"model_number": "391",
+		"model_number": "391A",
 		"year": 1976,
 		"game_type": "em",
 		"produced_units": 730,
@@ -3278,14 +3280,15 @@
 		"themes": [
 			"Sports",
 			"Baseball"
-		]
+		],
+		"features": "5 balls for 1 cent. Advertised as 24 inches long and 16 1/2 inches wide."
 	},
 	{
 		"ipdb": {
 			"number": 195,
 			"mfg": 98,
 			"mpu": 24,
-			"rating": "7.0"
+			"rating": "7.1"
 		},
 		"title": "Batman",
 		"manufacturer": "Data East",
@@ -3578,7 +3581,7 @@
 		"ipdb": {
 			"number": 211,
 			"mfg": 350,
-			"rating": "7.8"
+			"rating": "7.6"
 		},
 		"title": "Beat the Clock",
 		"manufacturer": "Williams",
@@ -3607,7 +3610,7 @@
 		},
 		"title": "Beat the Clock",
 		"manufacturer": "Midway",
-		"model_number": "0",
+		"model_number": "0C70",
 		"year": 1985,
 		"game_type": "ss",
 		"produced_units": 500,
@@ -3831,6 +3834,7 @@
 		},
 		"title": "Betcha Ball",
 		"manufacturer": "Zenith Manufacturing Company",
+		"model_number": "D",
 		"year": 1932,
 		"game_type": "pm"
 	},
@@ -3864,7 +3868,7 @@
 			"World Places",
 			"Landmarks"
 		],
-		"features": "Flippers (2), Pop bumpers (2), Slingshots (2), Drop targets (3), Kick-out hole (1). Five score reels.",
+		"features": "Flippers (2), Pop bumpers (2), Slingshots (2), Drop targets (3), Kick-out hole (1). Five score reels.Sound: 3 chimes, knocker",
 		"notes": "This is the same game as Williams' 1975 'Big Ben' made under license.The add-a-ball version for export to Italy is Segasa's 'Big Ben (Italy)'."
 	},
 	{
@@ -3955,7 +3959,7 @@
 		"ipdb": {
 			"number": 234,
 			"mfg": 93,
-			"rating": "7.8"
+			"rating": "7.6"
 		},
 		"title": "Big Brave",
 		"manufacturer": "Gottlieb",
@@ -4039,7 +4043,7 @@
 		"ipdb": {
 			"number": 240,
 			"mfg": 350,
-			"rating": "7.4"
+			"rating": "7.2"
 		},
 		"title": "Big Chief",
 		"manufacturer": "Williams",
@@ -4075,7 +4079,7 @@
 		"ipdb": {
 			"number": 242,
 			"mfg": 350,
-			"rating": "7.8"
+			"rating": "7.5"
 		},
 		"title": "Big Daddy",
 		"manufacturer": "Williams",
@@ -4222,7 +4226,7 @@
 			"Doug Watson"
 		],
 		"features": "Flippers (4), Pop bumpers (3), Slingshots (2), Star rollovers (5), 3-bank drop targets (3), Spinning targets (2), Standup targets (2), Kick-out hole (1).",
-		"notes": "This was the first Widebody game from Stern, although the playfield design was much narrower than the standard Widebody pinballs of the period. The typical playfield of such a game was almost 29\" wide. This was only 24\".It was also the first electronic game to use 7-digit score displays. To advertise this,  all four score displays simultaneously animate the numbers \"1234567\" during Game Over mode, followed by flashing \"7777777\" for three seconds, repeating it again after displaying high scores. There are no added sounds during this animation.Manufacturer data for Big Game:Production Start Date: 3/24/80Production End Date: 6/18/80Quantity produced: 2713"
+		"notes": "This was the first Widebody game from Stern, although the playfield design was much narrower than the standard Widebody pinballs of the period. The typical playfield of such a game was almost 29\" wide. This was only 24\".It was also the first electronic game to use 7-digit score displays. To advertise this,  all four score displays simultaneously animate the numbers \"1234567\" during Game Over mode, followed by flashing \"7777777\" for three seconds, repeating it again after displaying high scores. There are no added sounds during this animation.According to an article in Amusement Review (Jan/Feb 1980, page 6), Stern was \"prototyping models with both the traditional and a new plastic playfield.\" We have not seen the plastic playfield for this game, if any still exist.Manufacturer data for Big Game:Production Start Date: 3/24/80Production End Date: 6/18/80Quantity produced: 2713"
 	},
 	{
 		"ipdb": {
@@ -4375,7 +4379,7 @@
 		"ipdb": {
 			"number": 257,
 			"mfg": 93,
-			"rating": "7.4"
+			"rating": "7.5"
 		},
 		"title": "Big Indian",
 		"manufacturer": "Gottlieb",
@@ -4837,7 +4841,7 @@
 		"ipdb": {
 			"number": 286,
 			"mfg": 93,
-			"rating": "7.9"
+			"rating": "7.8"
 		},
 		"title": "Big Top",
 		"manufacturer": "Gottlieb",
@@ -5052,7 +5056,7 @@
 		},
 		"title": "Black Belt",
 		"manufacturer": "Midway",
-		"model_number": "0",
+		"model_number": "0E52",
 		"year": 1986,
 		"game_type": "ss",
 		"produced_units": 600,
@@ -5203,7 +5207,7 @@
 			"number": 310,
 			"mfg": 351,
 			"mpu": 4,
-			"rating": "8.0"
+			"rating": "7.9"
 		},
 		"title": "Black Knight",
 		"manufacturer": "Williams",
@@ -5268,7 +5272,7 @@
 		},
 		"title": "Black Pyramid",
 		"manufacturer": "Midway",
-		"model_number": "0",
+		"model_number": "0A44",
 		"year": 1984,
 		"game_type": "ss",
 		"produced_units": 2500,
@@ -5374,7 +5378,7 @@
 			"number": 317,
 			"mfg": 351,
 			"mpu": 3,
-			"rating": "7.5"
+			"rating": "7.6"
 		},
 		"title": "Blackout",
 		"manufacturer": "Williams",
@@ -5412,11 +5416,11 @@
 			"number": 319,
 			"mfg": 48,
 			"mpu": 38,
-			"rating": "6.9"
+			"rating": "7.0"
 		},
 		"title": "Blackwater 100",
 		"manufacturer": "Midway",
-		"model_number": "0",
+		"model_number": "0H07",
 		"year": 1988,
 		"game_type": "ss",
 		"short": [
@@ -5500,10 +5504,11 @@
 			"number": 323,
 			"mfg": 85
 		},
-		"title": "Blow-Me-Down",
+		"title": "Blow Me Down",
 		"manufacturer": "Coast Coin Machine Company",
 		"year": 1933,
-		"game_type": "pm"
+		"game_type": "pm",
+		"features": "5 cent play. No plunger. Ball is shot into play by a blast of air from a rubber squeeze bulb on front of cabinet."
 	},
 	{
 		"ipdb": {
@@ -5520,7 +5525,7 @@
 		"ipdb": {
 			"number": 325,
 			"mfg": 351,
-			"rating": "7.5"
+			"rating": "7.4"
 		},
 		"title": "Blue Chip",
 		"manufacturer": "Williams",
@@ -5903,7 +5908,7 @@
 			"number": 347,
 			"mfg": 257,
 			"mpu": 17,
-			"rating": "7.3"
+			"rating": "7.1"
 		},
 		"title": "Bone Busters Inc.",
 		"manufacturer": "Premier",
@@ -6284,6 +6289,7 @@
 		},
 		"title": "Bowling League",
 		"manufacturer": "Gottlieb",
+		"model_number": "H",
 		"year": 1947,
 		"game_type": "em",
 		"produced_units": 1200,
@@ -6303,7 +6309,7 @@
 		"ipdb": {
 			"number": 367,
 			"mfg": 93,
-			"rating": "6.8"
+			"rating": "7.1"
 		},
 		"title": "Bowling Queen",
 		"manufacturer": "Gottlieb",
@@ -6634,7 +6640,7 @@
 		"ipdb": {
 			"number": 388,
 			"mfg": 94,
-			"rating": "7.0"
+			"rating": "7.2"
 		},
 		"title": "Bronco",
 		"manufacturer": "Gottlieb",
@@ -6663,7 +6669,8 @@
 		"manufacturer": "Genco",
 		"year": 1939,
 		"game_type": "em",
-		"notes": "The date we show for this game may be incorrect. We cannot find any information on 'Bubble' and our date for it may have been confused with that of Genco's 1939 'Bubbles'.Author Rob Hawkins has Russ Jensen's original backglass picture (shown here) and tells us the back of it is marked 'Ex 91'. If that means Expo 1991, perhaps anyone who has photographs of that Expo might locate for us better images of this game."
+		"features": "Passive bumpers (14), Kick-out hole (1).",
+		"notes": "The date we show for this game may be incorrect. We cannot find any information on 'Bubble' and our date for it may have been confused with that of Genco's 1939 'Bubbles'."
 	},
 	{
 		"ipdb": {
@@ -6691,7 +6698,7 @@
 		"ipdb": {
 			"number": 391,
 			"mfg": 93,
-			"rating": "7.6"
+			"rating": "7.7"
 		},
 		"title": "Buccaneer",
 		"manufacturer": "Gottlieb",
@@ -6806,7 +6813,7 @@
 			"number": 396,
 			"mfg": 214,
 			"mpu": 9,
-			"rating": "6.9"
+			"rating": "6.8"
 		},
 		"title": "Bugs Bunny's Birthday Ball",
 		"manufacturer": "Bally",
@@ -6915,7 +6922,7 @@
 			"mfg": 139,
 			"mpu": 13
 		},
-		"title": "301Bulls Eye",
+		"title": "301/Bulls Eye",
 		"manufacturer": "Grand Products",
 		"year": 1986,
 		"game_type": "ss",
@@ -7026,7 +7033,7 @@
 		"ipdb": {
 			"number": 410,
 			"mfg": 282,
-			"rating": "6.8"
+			"rating": "6.9"
 		},
 		"title": "Butterfly",
 		"manufacturer": "Sonic",
@@ -7306,7 +7313,7 @@
 		},
 		"title": "Canada Dry",
 		"manufacturer": "Gottlieb",
-		"model_number": "392",
+		"model_number": "392C",
 		"year": 1976,
 		"game_type": "em",
 		"produced_units": 2885,
@@ -7673,7 +7680,7 @@
 		"ipdb": {
 			"number": 446,
 			"mfg": 93,
-			"rating": "7.8"
+			"rating": "7.5"
 		},
 		"title": "Card Trix",
 		"manufacturer": "Gottlieb",
@@ -7700,7 +7707,7 @@
 		"ipdb": {
 			"number": 447,
 			"mfg": 93,
-			"rating": "8.0"
+			"rating": "7.8"
 		},
 		"title": "Card Whiz",
 		"manufacturer": "Gottlieb",
@@ -8152,6 +8159,7 @@
 		},
 		"title": "Caveman",
 		"manufacturer": "Gottlieb",
+		"model_number": "PV810",
 		"year": 1982,
 		"game_type": "ss",
 		"produced_units": 1800,
@@ -8176,7 +8184,7 @@
 			"number": 476,
 			"mfg": 47,
 			"mpu": 18,
-			"rating": "8.0"
+			"rating": "7.9"
 		},
 		"title": "Centaur",
 		"manufacturer": "Bally",
@@ -8253,7 +8261,7 @@
 		"ipdb": {
 			"number": 480,
 			"mfg": 94,
-			"rating": "7.8"
+			"rating": "7.7"
 		},
 		"title": "Centigrade 37",
 		"manufacturer": "Gottlieb",
@@ -8278,7 +8286,7 @@
 		"ipdb": {
 			"number": 481,
 			"mfg": 93,
-			"rating": "7.6"
+			"rating": "7.7"
 		},
 		"title": "Central Park",
 		"manufacturer": "Gottlieb",
@@ -8450,7 +8458,7 @@
 			"number": 492,
 			"mfg": 94,
 			"mpu": 14,
-			"rating": "6.3"
+			"rating": "6.4"
 		},
 		"title": "Charlie's Angels",
 		"manufacturer": "Gottlieb",
@@ -8597,7 +8605,7 @@
 			"number": 500,
 			"mfg": 302,
 			"mpu": 34,
-			"rating": "7.4"
+			"rating": "7.5"
 		},
 		"title": "Cheetah",
 		"manufacturer": "Stern",
@@ -9060,7 +9068,7 @@
 		},
 		"title": "City Slicker",
 		"manufacturer": "Midway",
-		"model_number": "0",
+		"model_number": "0E79",
 		"year": 1987,
 		"game_type": "ss",
 		"produced_units": 300,
@@ -9081,7 +9089,7 @@
 			"number": 528,
 			"mfg": 257,
 			"mpu": 37,
-			"rating": "7.8"
+			"rating": "7.7"
 		},
 		"title": "Class of 1812",
 		"manufacturer": "Premier",
@@ -9855,7 +9863,7 @@
 		"ipdb": {
 			"number": 572,
 			"mfg": 47,
-			"rating": "7.7"
+			"rating": "7.6"
 		},
 		"title": "Cosmos",
 		"manufacturer": "Bally",
@@ -9975,7 +9983,7 @@
 		"ipdb": {
 			"number": 580,
 			"mfg": 93,
-			"rating": "7.8"
+			"rating": "7.4"
 		},
 		"title": "Cover Girl",
 		"manufacturer": "Gottlieb",
@@ -10001,7 +10009,7 @@
 		"ipdb": {
 			"number": 581,
 			"mfg": 93,
-			"rating": "7.7"
+			"rating": "7.6"
 		},
 		"title": "Cow Poke",
 		"manufacturer": "Gottlieb",
@@ -10455,7 +10463,7 @@
 			"Don Hooker"
 		],
 		"features": "Trap holes (18). Balls landing in lettered holes on the playfield light the corresponding letters on the backglass to form words.Patent No. USD177,950 [CABINET FOR AMUSEMENT APPARATUS] filed November 7, 1955. Granted December 16, 1958 to Charles G. Troeller, Chicago, and Donald E. Hooker, Wilmette, Ill., assignors to Raymond T. Moloney, Chicago, Ill.",
-		"notes": "Same game as Bally's 1956 'Spelling-Bee' but backglass has different colors.Bally referred to this game as a \"recreation vender\" for placement in locations that would not accept bingo machines."
+		"notes": "Same game as Bally's 1956 'Spelling-Bee' but backglass has different colors.Bally referred to this game as a \"recreation vender\" for placement in locations that would not accept traditional bingo machines. It has no multiple-coin capacity or variable odds."
 	},
 	{
 		"ipdb": {
@@ -10617,7 +10625,7 @@
 		},
 		"title": "Cybernaut",
 		"manufacturer": "Midway",
-		"model_number": "0",
+		"model_number": "0B42",
 		"year": 1985,
 		"game_type": "ss",
 		"produced_units": 900,
@@ -11007,7 +11015,7 @@
 		"ipdb": {
 			"number": 635,
 			"mfg": 93,
-			"rating": "7.5"
+			"rating": "7.6"
 		},
 		"title": "Dancing Lady",
 		"manufacturer": "Gottlieb",
@@ -11527,7 +11535,7 @@
 		"ipdb": {
 			"number": 664,
 			"mfg": 93,
-			"rating": "6.0"
+			"rating": "6.4"
 		},
 		"title": "Derby Day",
 		"manufacturer": "Gottlieb",
@@ -11726,7 +11734,7 @@
 		"ipdb": {
 			"number": 676,
 			"mfg": 93,
-			"rating": "8.0"
+			"rating": "7.8"
 		},
 		"title": "Diamond Jack",
 		"manufacturer": "Gottlieb",
@@ -11764,7 +11772,7 @@
 			"number": 678,
 			"mfg": 257,
 			"mpu": 17,
-			"rating": "7.3"
+			"rating": "7.4"
 		},
 		"title": "Diamond Lady",
 		"manufacturer": "Premier",
@@ -11783,7 +11791,7 @@
 			"Jeanine Mitchell"
 		],
 		"features": "Flippers (2), Pop bumpers (3), Rollunder spinners (2), 5-bank drop targets (2), 4-bank drop targets (1), Left outlane kickback, Drop target between flippers, 2-ball Multiball. A shortened ball shooter alley directs ball onto playfield at right flipper inlane. Hitting all Diamond drop targets without knocking down any Spades drop targets doubles the player's score. The translite is a combination of hand-drawing and photography.",
-		"notes": "'Diamond Lady' introduced a new backbox design with extended side panels, and with score display and speakers relocated to the top of the backbox.Designer John Trudeau tells us that Diamond Lady, Premier's 1987 'Victory', and Premier's 1988 'TX-Sector' were the only games to have Vitrigraph playfields, a process he believes was solely developed by Premier and not used by other pinball manufacturers.",
+		"notes": "'Diamond Lady' introduced a new backbox design with extended side panels, and with score display and speakers relocated to the top of the backbox.Designer John Trudeau tells us that Diamond Lady, Premier's 1987 'Victory', and Premier's 1988 'TX-Sector' were the only games to have Vitrigraph playfields, a process he believes was solely developed by Premier and not used by other pinball manufacturers.The woman who modeled for the manufacturer's flyer and backglass for this game also appeared on the flyer for International Concepts' 1989 'Night Moves'.",
 		"slogans": "\"Deal Yourself a Winning Hand with Diamond Lady\""
 	},
 	{
@@ -11809,7 +11817,7 @@
 		"ipdb": {
 			"number": 680,
 			"mfg": 93,
-			"rating": "7.7"
+			"rating": "7.8"
 		},
 		"title": "Dimension",
 		"manufacturer": "Gottlieb",
@@ -11861,7 +11869,7 @@
 		"ipdb": {
 			"number": 682,
 			"mfg": 351,
-			"rating": "7.7"
+			"rating": "7.6"
 		},
 		"title": "Ding Dong",
 		"manufacturer": "Williams",
@@ -11885,7 +11893,7 @@
 		"ipdb": {
 			"number": 683,
 			"mfg": 351,
-			"rating": "6.8"
+			"rating": "6.7"
 		},
 		"title": "Dipsy Doodle",
 		"manufacturer": "Williams",
@@ -12114,7 +12122,7 @@
 		"ipdb": {
 			"number": 695,
 			"mfg": 93,
-			"rating": "7.5"
+			"rating": "7.4"
 		},
 		"title": "Dodge City",
 		"manufacturer": "Gottlieb",
@@ -12180,7 +12188,7 @@
 			"number": 698,
 			"mfg": 47,
 			"mpu": 18,
-			"rating": "6.8"
+			"rating": "6.7"
 		},
 		"title": "Dolly Parton",
 		"manufacturer": "Bally",
@@ -12290,7 +12298,7 @@
 		"ipdb": {
 			"number": 703,
 			"mfg": 351,
-			"rating": "7.0"
+			"rating": "7.1"
 		},
 		"title": "Doodle Bug",
 		"manufacturer": "Williams",
@@ -12966,7 +12974,7 @@
 		},
 		"title": "Dungeons & Dragons",
 		"manufacturer": "Midway",
-		"model_number": "0",
+		"model_number": "0H06",
 		"year": 1987,
 		"game_type": "ss",
 		"short": [
@@ -13089,6 +13097,7 @@
 		},
 		"title": "Dyn O' Mite",
 		"manufacturer": "Allied Leisure",
+		"model_number": "264",
 		"year": 1975,
 		"game_type": "ss",
 		"themes": [
@@ -13102,8 +13111,8 @@
 		"artists": [
 			"Roland Berrios"
 		],
-		"features": "Flippers (2), Pop bumper (1), Slingshots (2), Standup targets (8), Solitary drop targets (4), Left and right outlane detour gates.",
-		"notes": "The 4-player version of this game is Allied Leisure's 1975 'Rock On' which was released again as Allied Leisure's 1976 'T.N.T.' and again as Allied Leisure's 1976 'Boogie'.Playfield art has a likeness of 1970�s American television actor Jimmy Walker saying his catch-phrase \"Dyn-o-mite!\""
+		"features": "Flippers (2), Pop bumper (1), Slingshots (2), Standup targets (8), Solitary drop targets (4), Left and right outlane detour gates. The special can be set to replay or add-a-ball. 3 or 5 ball play.Sound: 3 chimes, knocker.",
+		"notes": "The flippers used by the manufacturer for this game had exposed screw heads and washers and with an art design on the top surface. Some machines may have been subsequently fitted after-factory with a flipper version produced by this manufacturer for their later games. This later version did not expose screw heads and washers and had a plain white surface and, when retrofitted to this game, may or may not have had reproduction decals applied to them to simulate the original flipper artwork. In this listing are two images comparing the two flipper designs from this manufacturer.The 4-player version of this game is Allied Leisure's 1975 'Rock On' which was released again as Allied Leisure's 1976 'T.N.T.' and again as Allied Leisure's 1976 'Boogie'.Playfield art has a likeness of 1970�s American television actor Jimmy Walker saying his catch-phrase \"Dyn-o-mite!\""
 	},
 	{
 		"ipdb": {
@@ -13307,7 +13316,7 @@
 		},
 		"title": "Eight Ball Champ",
 		"manufacturer": "Midway",
-		"model_number": "0",
+		"model_number": "0B38",
 		"year": 1985,
 		"game_type": "ss",
 		"short": [
@@ -13435,7 +13444,7 @@
 		"ipdb": {
 			"number": 766,
 			"mfg": 93,
-			"rating": "7.8"
+			"rating": "7.6"
 		},
 		"title": "El Dorado",
 		"manufacturer": "Gottlieb",
@@ -13460,7 +13469,7 @@
 			"number": 767,
 			"mfg": 257,
 			"mpu": 16,
-			"rating": "6.7"
+			"rating": "6.8"
 		},
 		"title": "El Dorado City of Gold",
 		"manufacturer": "Premier",
@@ -13670,7 +13679,7 @@
 		},
 		"title": "Electra-Pool",
 		"manufacturer": "Gottlieb",
-		"model_number": "230",
+		"model_number": "230it",
 		"year": 1965,
 		"game_type": "em",
 		"themes": [
@@ -13757,7 +13766,7 @@
 			"number": 783,
 			"mfg": 47,
 			"mpu": 18,
-			"rating": "7.7"
+			"rating": "7.8"
 		},
 		"title": "Embryon",
 		"manufacturer": "Bally",
@@ -13845,7 +13854,7 @@
 		},
 		"title": "Escape from the Lost World",
 		"manufacturer": "Midway",
-		"model_number": "0",
+		"model_number": "0H05",
 		"year": 1987,
 		"game_type": "ss",
 		"produced_units": 1500,
@@ -13898,7 +13907,7 @@
 		"ipdb": {
 			"number": 793,
 			"mfg": 47,
-			"rating": "7.9"
+			"rating": "7.7"
 		},
 		"title": "Evel Knievel",
 		"manufacturer": "Bally",
@@ -14040,7 +14049,7 @@
 		"ipdb": {
 			"number": 800,
 			"mfg": 47,
-			"rating": "8.5"
+			"rating": "7.7"
 		},
 		"title": "Expressway",
 		"manufacturer": "Bally",
@@ -14088,7 +14097,7 @@
 		"ipdb": {
 			"number": 802,
 			"mfg": 94,
-			"rating": "7.5"
+			"rating": "7.4"
 		},
 		"title": "Eye Of The Tiger",
 		"manufacturer": "Gottlieb",
@@ -14161,16 +14170,22 @@
 			"number": 805,
 			"mfg": 333
 		},
-		"title": "Fabulous 50's",
+		"title": "The Fabulous 50's",
 		"manufacturer": "Viza",
 		"year": 1978,
+		"themes": [
+			"Dancing",
+			"Happiness",
+			"Music"
+		],
+		"features": "Flippers (2), Pop bumpers (3), Slingshots (2), Drop targets (4), Right outlane ball return gate.",
 		"notes": "Mfg under contract by Allied Leisure Industries"
 	},
 	{
 		"ipdb": {
 			"number": 806,
 			"mfg": 282,
-			"rating": "8.0"
+			"rating": "7.2"
 		},
 		"title": "Faces",
 		"manufacturer": "Sonic",
@@ -14504,7 +14519,7 @@
 		"ipdb": {
 			"number": 825,
 			"mfg": 93,
-			"rating": "6.7"
+			"rating": "7.1"
 		},
 		"title": "Fashion Show",
 		"manufacturer": "Gottlieb",
@@ -14560,7 +14575,7 @@
 		"ipdb": {
 			"number": 828,
 			"mfg": 93,
-			"rating": "7.9"
+			"rating": "7.8"
 		},
 		"title": "Fast Draw",
 		"manufacturer": "Gottlieb",
@@ -14790,7 +14805,7 @@
 			"number": 841,
 			"mfg": 125
 		},
-		"title": "5050",
+		"title": "50/50",
 		"manufacturer": "G. M. Laboratories, Incorporated",
 		"year": 1935,
 		"game_type": "em"
@@ -14800,7 +14815,7 @@
 			"number": 842,
 			"mfg": 47
 		},
-		"title": "5050",
+		"title": "50/50",
 		"manufacturer": "Bally",
 		"model_number": "760",
 		"year": 1965,
@@ -14935,7 +14950,7 @@
 		"ipdb": {
 			"number": 851,
 			"mfg": 94,
-			"rating": "7.9"
+			"rating": "7.7"
 		},
 		"title": "Fire Queen",
 		"manufacturer": "Gottlieb",
@@ -14992,7 +15007,7 @@
 		},
 		"title": "Fireball Classic",
 		"manufacturer": "Midway",
-		"model_number": "0",
+		"model_number": "0A40",
 		"year": 1984,
 		"game_type": "ss",
 		"short": [
@@ -15068,7 +15083,7 @@
 			"number": 856,
 			"mfg": 351,
 			"mpu": 3,
-			"rating": "7.9"
+			"rating": "7.8"
 		},
 		"title": "Firepower",
 		"manufacturer": "Williams",
@@ -15130,7 +15145,7 @@
 			"number": 859,
 			"mfg": 349,
 			"mpu": 7,
-			"rating": "7.3"
+			"rating": "7.4"
 		},
 		"title": "Fire",
 		"manufacturer": "Williams",
@@ -15689,7 +15704,7 @@
 		"ipdb": {
 			"number": 890,
 			"mfg": 93,
-			"rating": "7.9"
+			"rating": "7.7"
 		},
 		"title": "Flip a Card",
 		"manufacturer": "Gottlieb",
@@ -15783,7 +15798,7 @@
 		"ipdb": {
 			"number": 894,
 			"mfg": 93,
-			"rating": "7.8"
+			"rating": "7.6"
 		},
 		"title": "Flipper Fair",
 		"manufacturer": "Gottlieb",
@@ -15916,7 +15931,7 @@
 		"ipdb": {
 			"number": 901,
 			"mfg": 93,
-			"rating": "6.5"
+			"rating": "6.6"
 		},
 		"title": "Flying Chariots",
 		"manufacturer": "Gottlieb",
@@ -15939,7 +15954,7 @@
 		"ipdb": {
 			"number": 902,
 			"mfg": 93,
-			"rating": "7.9"
+			"rating": "7.5"
 		},
 		"title": "Flying Circus",
 		"manufacturer": "Gottlieb",
@@ -16040,6 +16055,7 @@
 		},
 		"title": "Flying Trapeze",
 		"manufacturer": "Gottlieb",
+		"model_number": "I",
 		"year": 1947,
 		"game_type": "em",
 		"produced_units": 1000,
@@ -16329,6 +16345,7 @@
 		"themes": [
 			"Military"
 		],
+		"features": "5 balls for 5 cents. Kickers (7), Trap holes (5).",
 		"notes": "Glass measures 18 3/4 inches wide by 18 inches high."
 	},
 	{
@@ -16368,7 +16385,7 @@
 		"ipdb": {
 			"number": 927,
 			"mfg": 93,
-			"rating": "6.8"
+			"rating": "6.9"
 		},
 		"title": "Foto Finish",
 		"manufacturer": "Gottlieb",
@@ -16549,7 +16566,7 @@
 		"ipdb": {
 			"number": 936,
 			"mfg": 47,
-			"rating": "7.8"
+			"rating": "7.4"
 		},
 		"title": "4 Queens",
 		"manufacturer": "Bally",
@@ -16580,7 +16597,7 @@
 		"ipdb": {
 			"number": 938,
 			"mfg": 350,
-			"rating": "7.9"
+			"rating": "7.7"
 		},
 		"title": "4 Roses",
 		"manufacturer": "Williams",
@@ -16676,7 +16693,7 @@
 		"ipdb": {
 			"number": 942,
 			"mfg": 93,
-			"rating": "7.6"
+			"rating": "6.9"
 		},
 		"title": "Four Stars",
 		"manufacturer": "Gottlieb",
@@ -16704,7 +16721,7 @@
 		},
 		"title": "4-Belles",
 		"manufacturer": "Gottlieb",
-		"model_number": "86",
+		"model_number": "86B",
 		"year": 1954,
 		"game_type": "em",
 		"produced_units": 400,
@@ -16844,7 +16861,7 @@
 		"ipdb": {
 			"number": 949,
 			"mfg": 93,
-			"rating": "7.7"
+			"rating": "7.6"
 		},
 		"title": "Free Fall",
 		"manufacturer": "Gottlieb",
@@ -17369,7 +17386,7 @@
 			"number": 974,
 			"mfg": 47,
 			"mpu": 18,
-			"rating": "7.4"
+			"rating": "7.5"
 		},
 		"title": "Future Spa",
 		"manufacturer": "Bally",
@@ -17390,7 +17407,7 @@
 			"Dave Christensen"
 		],
 		"features": "Flippers (2), Pop bumpers (5), Slingshot (1), Spinning targets (2), Kick-out hole (1), Star rollover (1), 4-in-line drop targets, Left kicker lane, Left outlane detour gate.",
-		"notes": "'Future Spa' was the first game from this manufacturer to use continuous background sound. The first pinball machine from any manufacturer to do this was Williams' 1979 'Flash'.Bally's new sound board for this was previously tested on a few specially modified Bally's 1979 'Voltan Escapes Cosmic Doom'. See that listing for more information. In the book Pinball Snapshots, Paul Faris tells the author that with the deadline for this game approaching, Dave Christensen was not going to be able to finish the playfield in time to work on the glass. So, Paul painted the backglass while Dave finished the playfield.The penciled drawings of the backglass and playfield, shown in this listing, were made by Dave Christensen.The manufacturer flyer shows a cabinet having a strong red color. We show pictures of a cabinet attributed to Renault that also have this red cabinet. We also show pictures of a pink-colored cabinet. We don't know if color fade is responsible for this pink color. Pictures attributed to Schneider show severe cabinet fade."
+		"notes": "'Future Spa' was the first game from this manufacturer to use continuous background sound. The first pinball machine from any manufacturer to do this was Williams' 1979 'Flash'.This was also the first game from any manufacturer to have in-line drop targets.Patent 4,257,604 [IN-LINE DROP TARGETS] filed June 4, 1979. Granted March 24, 1981 to Irwin J. Grabel and Glenn R. Andersen. Assignee is Bally Manufacturing Company, Chicago, Illinois.Bally's new sound board for this was previously tested on a few specially modified Bally's 1979 'Voltan Escapes Cosmic Doom'. See that listing for more information. In the book Pinball Snapshots, Paul Faris tells the author that with the deadline for this game approaching, Dave Christensen was not going to be able to finish the playfield in time to work on the glass. So, Paul painted the backglass while Dave finished the playfield.The penciled drawings of the backglass and playfield, shown in this listing, were made by Dave Christensen.The manufacturer flyer shows a cabinet having a strong red color. We show pictures of a cabinet attributed to Renault that also have this red cabinet. We also show pictures of a pink-colored cabinet. We don't know if color fade is responsible for this pink color. Pictures attributed to Schneider show severe cabinet fade."
 	},
 	{
 		"ipdb": {
@@ -17638,7 +17655,7 @@
 		"ipdb": {
 			"number": 988,
 			"mfg": 93,
-			"rating": "6.6"
+			"rating": "7.0"
 		},
 		"title": "Gaucho",
 		"manufacturer": "Gottlieb",
@@ -18033,7 +18050,7 @@
 		},
 		"title": "Gin Rummy",
 		"manufacturer": "Gottlieb",
-		"model_number": "16",
+		"model_number": "16A",
 		"year": 1949,
 		"game_type": "em",
 		"produced_units": 500,
@@ -18631,7 +18648,7 @@
 		"ipdb": {
 			"number": 1042,
 			"mfg": 93,
-			"rating": "8.0"
+			"rating": "7.8"
 		},
 		"title": "Gold Strike",
 		"manufacturer": "Gottlieb",
@@ -18653,7 +18670,7 @@
 			"number": 1043,
 			"mfg": 257,
 			"mpu": 17,
-			"rating": "6.8"
+			"rating": "6.9"
 		},
 		"title": "Gold Wings",
 		"manufacturer": "Premier",
@@ -18681,7 +18698,7 @@
 		"ipdb": {
 			"number": 1044,
 			"mfg": 94,
-			"rating": "7.3"
+			"rating": "7.4"
 		},
 		"title": "Golden Arrow",
 		"manufacturer": "Gottlieb",
@@ -18988,7 +19005,7 @@
 			"Jeanine Mitchell"
 		],
 		"features": "Flippers (2), Pop bumpers (3), Slingshots (2), 3-bank drop targets (2), Kick-out hole (1), Spinning target (1), The Snake Pit has a magnet under the playfield to hold the ball while scoring lit value.",
-		"notes": "'Gorgar' was the first talking pinball machine commercially released and had a vocabulary of seven words. 'Gorgar' also had a heart beat sound that would speed up during longer game play.For several Williams games (especially before 1987), Speech Processing was a separate task than Software Programming and may have been done by a different person than whom we list as having done the Software. Paul Dussault did the Speech Processing for this game.Compare Gorgar's physical stance as depicted on the lower playfield with the 1978 artwork, In the Underworld, by Boris Vallejo."
+		"notes": "'Gorgar' was the first talking pinball machine commercially released and had a vocabulary of seven words. 'Gorgar' also had a heart beat sound that would speed up during longer game play.According to an article in Amusement Review (Jan/Feb 1980, page 6), the talking feature was optional at an additional cost of $70 to the operator and was ordered on the great majority of the machines.For several Williams games (especially before 1987), Speech Processing was a separate task than Software Programming and may have been done by a different person than whom we list as having done the Software. Paul Dussault did the Speech Processing for this game.Compare Gorgar's physical stance as depicted on the lower playfield with the 1978 artwork, In the Underworld, by Boris Vallejo."
 	},
 	{
 		"ipdb": {
@@ -19166,13 +19183,14 @@
 		"themes": [
 			"Sports",
 			"Horse Racing"
-		]
+		],
+		"features": "1 ball for 5 cents. Trap holes (31)."
 	},
 	{
 		"ipdb": {
 			"number": 1072,
 			"mfg": 351,
-			"rating": "7.4"
+			"rating": "7.5"
 		},
 		"title": "Grand Prix",
 		"manufacturer": "Williams",
@@ -19473,7 +19491,8 @@
 	{
 		"ipdb": {
 			"number": 1088,
-			"mfg": 351
+			"mfg": 351,
+			"rating": "5.1"
 		},
 		"title": "Gridiron",
 		"manufacturer": "Williams",
@@ -19588,7 +19607,7 @@
 		"ipdb": {
 			"number": 1094,
 			"mfg": 351,
-			"rating": "7.8"
+			"rating": "7.7"
 		},
 		"title": "Gulfstream",
 		"manufacturer": "Williams",
@@ -19886,7 +19905,7 @@
 		"ipdb": {
 			"number": 1112,
 			"mfg": 47,
-			"rating": "7.7"
+			"rating": "7.6"
 		},
 		"title": "Hang Glider",
 		"manufacturer": "Bally",
@@ -20087,11 +20106,11 @@
 			"number": 1122,
 			"mfg": 48,
 			"mpu": 38,
-			"rating": "6.5"
+			"rating": "6.7"
 		},
 		"title": "Hardbody",
 		"manufacturer": "Midway",
-		"model_number": "0",
+		"model_number": "0E94",
 		"year": 1987,
 		"game_type": "ss",
 		"produced_units": 2000,
@@ -20437,7 +20456,7 @@
 		},
 		"title": "Hawaiian Isle",
 		"manufacturer": "Gottlieb",
-		"model_number": "235",
+		"model_number": "235it",
 		"year": 1966,
 		"game_type": "em",
 		"produced_units": 500,
@@ -20547,7 +20566,7 @@
 		"ipdb": {
 			"number": 1145,
 			"mfg": 93,
-			"rating": "7.8"
+			"rating": "7.7"
 		},
 		"title": "Hearts and Spades",
 		"manufacturer": "Gottlieb",
@@ -20645,6 +20664,7 @@
 		},
 		"title": "Heavy Metal Meltdown",
 		"manufacturer": "Midway",
+		"model_number": "OH03",
 		"year": 1987,
 		"game_type": "ss",
 		"short": [
@@ -20762,7 +20782,7 @@
 		"ipdb": {
 			"number": 1157,
 			"mfg": 47,
-			"rating": "7.3"
+			"rating": "7.2"
 		},
 		"title": "Hi-Deal",
 		"manufacturer": "Bally",
@@ -20832,7 +20852,7 @@
 		"ipdb": {
 			"number": 1160,
 			"mfg": 93,
-			"rating": "7.5"
+			"rating": "7.6"
 		},
 		"title": "Hi-Score",
 		"manufacturer": "Gottlieb",
@@ -21110,7 +21130,7 @@
 			"number": 1176,
 			"mfg": 349,
 			"mpu": 6,
-			"rating": "8.0"
+			"rating": "7.9"
 		},
 		"title": "High Speed",
 		"manufacturer": "Williams",
@@ -21362,7 +21382,8 @@
 	{
 		"ipdb": {
 			"number": 1193,
-			"mfg": 351
+			"mfg": 351,
+			"rating": "8.7"
 		},
 		"title": "Hit and Run Base-Ball",
 		"manufacturer": "Williams",
@@ -21536,7 +21557,7 @@
 		},
 		"title": "Hit-A-Card",
 		"manufacturer": "Gottlieb",
-		"model_number": "240",
+		"model_number": "240A",
 		"year": 1967,
 		"game_type": "em",
 		"produced_units": 1600,
@@ -21556,7 +21577,7 @@
 		"ipdb": {
 			"number": 1206,
 			"mfg": 47,
-			"rating": "7.8"
+			"rating": "7.5"
 		},
 		"title": "Hokus Pokus",
 		"manufacturer": "Bally",
@@ -21655,7 +21676,7 @@
 		"ipdb": {
 			"number": 1214,
 			"mfg": 81,
-			"rating": "6.5"
+			"rating": "6.6"
 		},
 		"title": "Hollywood",
 		"manufacturer": "Chicago Coin",
@@ -21835,7 +21856,7 @@
 		"ipdb": {
 			"number": 1224,
 			"mfg": 93,
-			"rating": "8.5"
+			"rating": "8.0"
 		},
 		"title": "Home Run",
 		"manufacturer": "Gottlieb",
@@ -22233,7 +22254,7 @@
 		"ipdb": {
 			"number": 1245,
 			"mfg": 350,
-			"rating": "7.5"
+			"rating": "7.6"
 		},
 		"title": "Hot Line",
 		"manufacturer": "Williams",
@@ -22355,7 +22376,7 @@
 		"ipdb": {
 			"number": 1251,
 			"mfg": 351,
-			"rating": "7.8"
+			"rating": "7.6"
 		},
 		"title": "Hot Tip",
 		"manufacturer": "Williams",
@@ -22428,7 +22449,7 @@
 		"ipdb": {
 			"number": 1254,
 			"mfg": 93,
-			"rating": "6.4"
+			"rating": "6.7"
 		},
 		"title": "Humpty Dumpty",
 		"manufacturer": "Gottlieb",
@@ -22469,7 +22490,7 @@
 		"ipdb": {
 			"number": 1256,
 			"mfg": 93,
-			"rating": "7.8"
+			"rating": "7.5"
 		},
 		"title": "Hurdy Gurdy",
 		"manufacturer": "Gottlieb",
@@ -22564,7 +22585,7 @@
 			"number": 1260,
 			"mfg": 257,
 			"mpu": 16,
-			"rating": "6.8"
+			"rating": "6.7"
 		},
 		"title": "Ice Fever",
 		"manufacturer": "Premier",
@@ -22858,7 +22879,7 @@
 		"ipdb": {
 			"number": 1277,
 			"mfg": 93,
-			"rating": "7.9"
+			"rating": "7.8"
 		},
 		"title": "Jack In The Box",
 		"manufacturer": "Gottlieb",
@@ -22933,7 +22954,7 @@
 		"ipdb": {
 			"number": 1281,
 			"mfg": 93,
-			"rating": "7.9"
+			"rating": "7.8"
 		},
 		"title": "Jacks Open",
 		"manufacturer": "Gottlieb",
@@ -23103,7 +23124,7 @@
 		"ipdb": {
 			"number": 1290,
 			"mfg": 94,
-			"rating": "7.8"
+			"rating": "7.7"
 		},
 		"title": "Jet Spin",
 		"manufacturer": "Gottlieb",
@@ -23667,7 +23688,7 @@
 		"artists": [
 			"Christian Marche"
 		],
-		"features": "Flippers (2), Pop bumpers (2), Left and Right Shooters, Looping Captured Ball feature.",
+		"features": "Flippers (2), Pop bumpers (2), Captive balls (5), Ball kickers (2).Sound: 3 chimes",
 		"notes": "'Jubilee' is the 4-player version of Williams' 1973 'Darling'.Claude Verpy, a collector in France, relates this story from his friend, Christian Tabart, indicating that Jubilee was originally designed with four pop bumpers:The French firm Bussoz, an operator and importer of games, sent Christian to the Williams factory in Chicago in December 1972, accompanied by an interpreter. Christian met Norm Clark and Steve Kordek and gave them his opinion on what they were doing, and the exchange was apparently very interesting. Steve Kordek was in the final stages of getting Jubilee ready for production. He had planned four pop bumpers on the playfield, the two bottom ones on either side of the captive balls, like on Whoopee. Christian told him that it would make the game less interesting for the players as those two pop bumpers would prevent the ball from being sent back to the top of the playfield and would help lose the ball quickly. The result is that the pop bumpers were replaced by two rollover buttons which add to the bonus..and a game which was certainly more interesting to play."
 	},
 	{
@@ -23675,7 +23696,7 @@
 			"number": 1322,
 			"mfg": 214,
 			"mpu": 29,
-			"rating": "8.1"
+			"rating": "8.0"
 		},
 		"title": "Judge Dredd",
 		"manufacturer": "Bally",
@@ -23792,7 +23813,7 @@
 		"ipdb": {
 			"number": 1329,
 			"mfg": 93,
-			"rating": "7.9"
+			"rating": "7.8"
 		},
 		"title": "Jumping Jack",
 		"manufacturer": "Gottlieb",
@@ -23893,12 +23914,14 @@
 		"model_number": "405",
 		"year": 1971,
 		"game_type": "em",
+		"produced_units": 750,
 		"themes": [
+			"Sports",
+			"Hunting",
 			"Safari"
 		],
-		"features": "Lit by a blacklight.  Electronic sound.",
-		"notes": "This game is not a pinball game. It does appear on some game lists as a pin, and even listed as a pin in a Williams Parts Catalog. It is really a Gun Game. The listing remains here for clarification purposes.",
-		"toys": "Has 4 moving figures: A gorilla going left and rightin the front; A monkey on the left and right side slidingup and down; In the middle, a bird.  Also there are 3 tigers which light up to shoot at (when lit)."
+		"features": "Has four moving figures: a gorilla moving left and right in the front, a monkey on both left and right side that slide up and down, and a bird in the middle. There are also three tigers which light up to shoot at (when lit). Blacklighting in recessed target gallery.Sound: electronic",
+		"notes": "Available in replay, novelty, or extended play model.This game is not a pinball game. It does appear on some game lists as a pin, and even listed as a pin in a Williams Parts Catalog. It is really a Gun Game. The listing remains here for clarification purposes.Manufacturer data for Jungle Drums:Quantity produced for USA/Canada: 500*Quantity produced for export: 250*Total quantity produced: 750*Price to Distributor: $695.00*These quantities may be sales estimates."
 	},
 	{
 		"ipdb": {
@@ -23927,7 +23950,7 @@
 		},
 		"title": "Jungle Life",
 		"manufacturer": "Gottlieb",
-		"model_number": "355",
+		"model_number": "355A",
 		"year": 1973,
 		"game_type": "em",
 		"produced_units": 2731,
@@ -23970,7 +23993,7 @@
 		"ipdb": {
 			"number": 1339,
 			"mfg": 94,
-			"rating": "7.9"
+			"rating": "8.0"
 		},
 		"title": "Jungle Princess",
 		"manufacturer": "Gottlieb",
@@ -24414,7 +24437,7 @@
 		"ipdb": {
 			"number": 1365,
 			"mfg": 47,
-			"rating": "7.6"
+			"rating": "7.5"
 		},
 		"title": "Kick Off",
 		"manufacturer": "Bally",
@@ -24534,7 +24557,7 @@
 		"ipdb": {
 			"number": 1371,
 			"mfg": 93,
-			"rating": "7.7"
+			"rating": "7.9"
 		},
 		"title": "King Kool",
 		"manufacturer": "Gottlieb",
@@ -24559,7 +24582,7 @@
 		"ipdb": {
 			"number": 1372,
 			"mfg": 93,
-			"rating": "7.9"
+			"rating": "7.8"
 		},
 		"title": "King of Diamonds",
 		"manufacturer": "Gottlieb",
@@ -24601,7 +24624,7 @@
 		"ipdb": {
 			"number": 1374,
 			"mfg": 93,
-			"rating": "7.8"
+			"rating": "7.7"
 		},
 		"title": "King Pin",
 		"manufacturer": "Gottlieb",
@@ -24626,7 +24649,7 @@
 		"ipdb": {
 			"number": 1375,
 			"mfg": 350,
-			"rating": "7.8"
+			"rating": "7.6"
 		},
 		"title": "King Pin",
 		"manufacturer": "Williams",
@@ -24755,7 +24778,7 @@
 		"ipdb": {
 			"number": 1381,
 			"mfg": 93,
-			"rating": "7.6"
+			"rating": "7.7"
 		},
 		"title": "Kings & Queens",
 		"manufacturer": "Gottlieb",
@@ -25107,7 +25130,7 @@
 		},
 		"title": "Lady Luck",
 		"manufacturer": "Midway",
-		"model_number": "0",
+		"model_number": "0E34",
 		"year": 1986,
 		"game_type": "ss",
 		"produced_units": 500,
@@ -25344,7 +25367,7 @@
 			"Jeanine Mitchell"
 		],
 		"features": "Flippers (3), Pop bumpers (3), Slingshots (2), Star rollovers (10), 4-bank drop targets (1), 3-bank drop targets (1), 2-bank drop targets (1), Kickback lanes (2), Spinning targets (2), Standup targets (2), Kick-out hole (1).",
-		"notes": "Compare this playfield layout with that of the narrow body Williams' 1984 'Star Light'.The original name for this game was \"Lanes\", a bowling theme, and we include pictures of the pre-production backglass. Artist Constantino Mitchell told us that Williams originally wanted to do a bowling game featuring people from Williams, but he wanted to do something different and came up with the Laser Ball art concept, and Williams agreed. The playfield design retains the ten star rollovers in the shape of a rack of bowling pins.Pictured in this listing is an \"amalgamated cabinet\" having serial number 429749. According to the description given to us, the cabinet bottom is made with both MDF and hardboard. The backbox insert and back door are made of particleboard. The remainder of the cabinet and backbox is made with plywood. We don't know how many games left the factory this way."
+		"notes": "Compare this playfield layout with that of the narrow body Williams' 1984 'Star Light'.The original name for this game was \"Lanes\", a bowling theme, and we include pictures of the pre-production backglass. Artist Constantino Mitchell told us that Williams originally wanted to do a bowling game featuring people from Williams, but he wanted to do something different and came up with the Laser Ball art concept, and Williams agreed. The playfield design retains the ten star rollovers in the shape of a rack of bowling pins.Pictured in this listing is an \"amalgamated cabinet\" having serial number 429749. According to the description given to us, the cabinet bottom is made with both MDF and hardboard. The backbox insert and back door are made of particleboard. The remainder of the cabinet and backbox is made with plywood. We don't know how many games left the factory this way.The style of bumper caps on this game would later be used on Williams' 1985 'Sorcerer'."
 	},
 	{
 		"ipdb": {
@@ -25405,7 +25428,7 @@
 			"number": 1416,
 			"mfg": 98,
 			"mpu": 24,
-			"rating": "7.9"
+			"rating": "8.0"
 		},
 		"title": "Last Action Hero",
 		"manufacturer": "Data East",
@@ -25758,7 +25781,7 @@
 		"ipdb": {
 			"number": 1438,
 			"mfg": 93,
-			"rating": "6.0"
+			"rating": "6.3"
 		},
 		"title": "Liberty Belle",
 		"manufacturer": "Gottlieb",
@@ -25915,12 +25938,14 @@
 		"model_number": "388",
 		"year": 1940,
 		"game_type": "em",
-		"features": "5 balls for 5 cents. Spring bumpers (17). Replay count is projected onto backglass."
+		"features": "5 balls for 5 cents. Spring bumpers (17). Replay count is projected onto backglass.",
+		"notes": "The playfield images attributed to both Browne and Sherman show the same playfield and probably the same entire game."
 	},
 	{
 		"ipdb": {
 			"number": 1447,
-			"mfg": 351
+			"mfg": 351,
+			"rating": "8.0"
 		},
 		"title": "Line Drive",
 		"manufacturer": "Williams",
@@ -26118,7 +26143,8 @@
 		"artists": [
 			"Christian Marche"
 		],
-		"features": "Flippers (2), Pop bumpers (4), Mushroom bumpers (3), Slingshots (2), Standup targets (2), Right-side ball return gates (2), Kick-out hole (1), Up-post between flippers.Replay wheel maximum: 25"
+		"features": "Flippers (2), Pop bumpers (4), Mushroom bumpers (3), Slingshots (2), Standup targets (2), Right-side ball return gates (2), Kick-out hole (1), Up-post between flippers.Replay wheel maximum: 25",
+		"notes": "In the dice game of craps, the term \"Little Joe\" means rolling two two's."
 	},
 	{
 		"ipdb": {
@@ -26567,11 +26593,11 @@
 		"ipdb": {
 			"number": 1488,
 			"mfg": 94,
-			"rating": "7.8"
+			"rating": "7.7"
 		},
 		"title": "Lucky Hand",
 		"manufacturer": "Gottlieb",
-		"model_number": "415",
+		"model_number": "415A",
 		"year": 1977,
 		"game_type": "em",
 		"produced_units": 610,
@@ -26662,6 +26688,7 @@
 		},
 		"title": "Lucky Star",
 		"manufacturer": "Gottlieb",
+		"model_number": "F",
 		"year": 1947,
 		"game_type": "em",
 		"produced_units": 2600,
@@ -27128,7 +27155,7 @@
 		"ipdb": {
 			"number": 1519,
 			"mfg": 93,
-			"rating": "5.7"
+			"rating": "5.8"
 		},
 		"title": "Magnotron",
 		"manufacturer": "Gottlieb",
@@ -27155,6 +27182,7 @@
 		},
 		"title": "Maisie",
 		"manufacturer": "Gottlieb",
+		"model_number": "E",
 		"year": 1947,
 		"game_type": "em",
 		"produced_units": 3500,
@@ -27292,7 +27320,7 @@
 		"ipdb": {
 			"number": 1528,
 			"mfg": 93,
-			"rating": "7.8"
+			"rating": "7.4"
 		},
 		"title": "Majorettes",
 		"manufacturer": "Gottlieb",
@@ -27627,6 +27655,7 @@
 		},
 		"title": "Marjorie",
 		"manufacturer": "Gottlieb",
+		"model_number": "G",
 		"year": 1947,
 		"game_type": "em",
 		"produced_units": 1200,
@@ -27775,7 +27804,7 @@
 		"ipdb": {
 			"number": 1557,
 			"mfg": 47,
-			"rating": "7.8"
+			"rating": "7.5"
 		},
 		"title": "Mata Hari",
 		"manufacturer": "Bally",
@@ -27911,7 +27940,7 @@
 			"number": 1565,
 			"mfg": 47,
 			"mpu": 18,
-			"rating": "7.5"
+			"rating": "7.6"
 		},
 		"title": "Medusa",
 		"manufacturer": "Bally",
@@ -27937,7 +27966,7 @@
 		"ipdb": {
 			"number": 1566,
 			"mfg": 93,
-			"rating": "7.9"
+			"rating": "7.7"
 		},
 		"title": "Melody",
 		"manufacturer": "Gottlieb",
@@ -28133,7 +28162,7 @@
 		"ipdb": {
 			"number": 1577,
 			"mfg": 350,
-			"rating": "7.7"
+			"rating": "7.4"
 		},
 		"title": "Merry Widow",
 		"manufacturer": "Williams",
@@ -28215,7 +28244,7 @@
 			"George Obregon"
 		],
 		"features": "Flippers (3), Pop bumper (1), Passive bumpers (2), Slingshots (2), Star rollovers (3), 3-bank drop targets (3), 6-bank memory drop targets (1), Spinning target (1), Standup target (1). Mini-post screw between flippers. Only the 6-bank of drop targets has memory.",
-		"notes": "First game to use the SB-300 sound board.The artwork on the backglass and flyer was derived from one of the advertising posters made for the 1979 movie 'Meteor'. The original painting for this poster was by noted space artist Robert McCall (1919-2010).Stern programmer Alan McNeil told us that the mini-post screw between the flippers was known as a Kirk Post (for designer Steve Kirk).Some games pictured in this listing have a sticker on the lower apron identifying this game as \"selected for tournament play\". Designer Steve Kirk was founder and president of the Pinball Association of America, organizing major tournaments since the 1970s. Reportedly, these stickers, his idea, were installed on each apron starting at some point during the long production run.This game was also manufactured in Australia under license as LAI's 1979 'Meteor'.Manufacturer data for Meteor:Production Start Date: 9/14/79Production End Date: 1/28/80Quantity produced - full games: 7939Quantity produced - knock-down games: 423 (see LAI's 1979 'Meteor')Total Quantity Produced: 8362"
+		"notes": "First game to use the SB-300 sound board.The artwork on the backglass and flyer was derived from one of the advertising posters made for the 1979 movie 'Meteor'. The original painting for this poster was by noted space artist Robert McCall (1919-2010).Stern programmer Alan McNeil told us that the mini-post screw between the flippers was known as a Kirk Post (for designer Steve Kirk).Some games pictured in this listing have a sticker on the lower apron identifying this game as \"selected for tournament play\". Designer Steve Kirk was founder and president of the Pinball Association of America, organizing major tournaments since the 1970s. Reportedly, these stickers, his idea, were installed on each apron starting at some point during the long production run.According to an article in Amusement Review (Jan/Feb 1980, page 14), Meteor was the first game for which Stern printed the rubber ring size on the playfield where the ring goes.This game was also manufactured in Australia under license as LAI's 1979 'Meteor'.Manufacturer data for Meteor:Production Start Date: 9/14/79Production End Date: 1/28/80Quantity produced - full games: 7939Quantity produced - knock-down games: 423 (see LAI's 1979 'Meteor')Total Quantity Produced: 8362"
 	},
 	{
 		"ipdb": {
@@ -28357,7 +28386,7 @@
 		"ipdb": {
 			"number": 1589,
 			"mfg": 93,
-			"rating": "6.8"
+			"rating": "7.0"
 		},
 		"title": "Mibs",
 		"manufacturer": "Gottlieb",
@@ -28573,7 +28602,7 @@
 		"ipdb": {
 			"number": 1605,
 			"mfg": 93,
-			"rating": "7.7"
+			"rating": "7.6"
 		},
 		"title": "Mini Pool",
 		"manufacturer": "Gottlieb",
@@ -28622,7 +28651,7 @@
 		"ipdb": {
 			"number": 1607,
 			"mfg": 93,
-			"rating": "7.3"
+			"rating": "7.4"
 		},
 		"title": "Minstrel Man",
 		"manufacturer": "Gottlieb",
@@ -28677,6 +28706,7 @@
 		},
 		"title": "Miss America",
 		"manufacturer": "Gottlieb",
+		"model_number": "D",
 		"year": 1947,
 		"game_type": "em",
 		"produced_units": 1673,
@@ -28866,7 +28896,7 @@
 			"number": 1622,
 			"mfg": 257,
 			"mpu": 17,
-			"rating": "7.0"
+			"rating": "7.1"
 		},
 		"title": "Monte Carlo",
 		"manufacturer": "Premier",
@@ -29047,7 +29077,7 @@
 		},
 		"title": "Motordome",
 		"manufacturer": "Midway",
-		"model_number": "0",
+		"model_number": "0E14",
 		"year": 1986,
 		"game_type": "ss",
 		"produced_units": 2000,
@@ -29067,7 +29097,7 @@
 		"ipdb": {
 			"number": 1634,
 			"mfg": 350,
-			"rating": "7.8"
+			"rating": "7.6"
 		},
 		"title": "Moulin Rouge",
 		"manufacturer": "Williams",
@@ -29277,7 +29307,7 @@
 		"ipdb": {
 			"number": 1645,
 			"mfg": 94,
-			"rating": "7.4"
+			"rating": "7.6"
 		},
 		"title": "Mustang",
 		"manufacturer": "Gottlieb",
@@ -29441,7 +29471,8 @@
 	{
 		"ipdb": {
 			"number": 1654,
-			"mfg": 350
+			"mfg": 350,
+			"rating": "8.9"
 		},
 		"title": "Nags",
 		"manufacturer": "Williams",
@@ -29560,7 +29591,7 @@
 		},
 		"title": "Neptune",
 		"manufacturer": "Gottlieb",
-		"model_number": "416",
+		"model_number": "416A",
 		"year": 1978,
 		"game_type": "em",
 		"produced_units": 270,
@@ -29935,7 +29966,7 @@
 		"ipdb": {
 			"number": 1683,
 			"mfg": 93,
-			"rating": "7.6"
+			"rating": "7.7"
 		},
 		"title": "North Star",
 		"manufacturer": "Gottlieb",
@@ -30278,7 +30309,7 @@
 		"ipdb": {
 			"number": 1704,
 			"mfg": 47,
-			"rating": "7.5"
+			"rating": "7.4"
 		},
 		"title": "Old Chicago",
 		"manufacturer": "Bally",
@@ -30469,7 +30500,7 @@
 		"ipdb": {
 			"number": 1714,
 			"mfg": 93,
-			"rating": "6.8"
+			"rating": "6.9"
 		},
 		"title": "Olympics",
 		"manufacturer": "Gottlieb",
@@ -30584,7 +30615,7 @@
 			"number": 1721,
 			"mfg": 257,
 			"mpu": 37,
-			"rating": "7.6"
+			"rating": "7.5"
 		},
 		"title": "Operation: Thunder",
 		"manufacturer": "Premier",
@@ -30712,7 +30743,7 @@
 		"ipdb": {
 			"number": 1727,
 			"mfg": 93,
-			"rating": "7.9"
+			"rating": "7.8"
 		},
 		"title": "Out of Sight",
 		"manufacturer": "Gottlieb",
@@ -30795,7 +30826,7 @@
 		"ipdb": {
 			"number": 1733,
 			"mfg": 351,
-			"rating": "7.8"
+			"rating": "7.7"
 		},
 		"title": "OXO",
 		"manufacturer": "Williams",
@@ -31114,7 +31145,7 @@
 		"ipdb": {
 			"number": 1752,
 			"mfg": 93,
-			"rating": "7.7"
+			"rating": "7.6"
 		},
 		"title": "Paradise",
 		"manufacturer": "Gottlieb",
@@ -31274,7 +31305,7 @@
 			"number": 1761,
 			"mfg": 196
 		},
-		"title": "Parlor Bagatelle (One Star  Two Bell)",
+		"title": "Parlor Bagatelle (One Star / Two Bell)",
 		"manufacturer": "M. Redgrave Bagatelle Company",
 		"year": 1898,
 		"game_type": "pm",
@@ -31304,7 +31335,7 @@
 		},
 		"title": "Party Animal",
 		"manufacturer": "Midway",
-		"model_number": "0",
+		"model_number": "0H01",
 		"year": 1987,
 		"game_type": "ss",
 		"produced_units": 2250,
@@ -31400,7 +31431,7 @@
 		"ipdb": {
 			"number": 1768,
 			"mfg": 93,
-			"rating": "7.1"
+			"rating": "7.2"
 		},
 		"title": "Paul Bunyan",
 		"manufacturer": "Gottlieb",
@@ -31553,6 +31584,10 @@
 			"POTO"
 		],
 		"produced_units": 2750,
+		"themes": [
+			"Music",
+			"Singing"
+		],
 		"designers": [
 			"Joe Kaminkow",
 			"Ed Cebula"
@@ -31560,6 +31595,7 @@
 		"artists": [
 			"Paul Faris"
 		],
+		"features": "Flippers (2), Pop bumpers (3), Slingshots (2), Standup targets (9), Vertical up-kickers (2), Swinging target (1), Hanging target (1), Left kickback outlane. A ramp in upper right playfield (the \"organ\") raises to allow the player to shoot balls into the cavern below the playfield. It raises after player hits all three targets at top of ramp or completes shooter lane skill shot.",
 		"notes": "Pictured in this listing is an Early Production game, serial number 009, which was one of several (10?) that Data East had sent to a Bose� speaker factory to have speakers and amp installed to promote the new DE sound system. The lamp boards under the playfield are red, instead of green, in this Early Production version. Excluding the specially-equipped speakers, no other differences have been identified from later production games except, reportedly, some different sound bites were used on the ROMs.Paul Faris states his daughter was his model for the Christine Dae character on the backglass.We previously listed the Manufacture Date as April, 1990.This game was produced from January 1990 to June 1990.The Phantom of the Opera was a French novel by Gaston Leroux, first published in 1910. Many film and stage productions have been adapted from it, over the years.",
 		"slogans": "\"Classic Thriller Unveiled!\""
 	},
@@ -31760,7 +31796,7 @@
 		"ipdb": {
 			"number": 1789,
 			"mfg": 93,
-			"rating": "7.7"
+			"rating": "7.5"
 		},
 		"title": "Pin-Up",
 		"manufacturer": "Gottlieb",
@@ -31880,7 +31916,7 @@
 			"number": 1795,
 			"mfg": 94,
 			"mpu": 14,
-			"rating": "7.2"
+			"rating": "7.3"
 		},
 		"title": "Pinball Pool",
 		"manufacturer": "Gottlieb",
@@ -32029,7 +32065,7 @@
 		"ipdb": {
 			"number": 1802,
 			"mfg": 93,
-			"rating": "7.2"
+			"rating": "7.3"
 		},
 		"title": "Pioneer",
 		"manufacturer": "Gottlieb",
@@ -32116,7 +32152,7 @@
 		"ipdb": {
 			"number": 1806,
 			"mfg": 351,
-			"rating": "6.8"
+			"rating": "6.9"
 		},
 		"title": "Pit Stop",
 		"manufacturer": "Williams",
@@ -32811,7 +32847,7 @@
 		"ipdb": {
 			"number": 1849,
 			"mfg": 93,
-			"rating": "7.8"
+			"rating": "8.0"
 		},
 		"title": "Pop-A-Card",
 		"manufacturer": "Gottlieb",
@@ -32858,6 +32894,10 @@
 			"P*P*Y*"
 		],
 		"produced_units": 4217,
+		"themes": [
+			"Cartoons",
+			"Licensed Theme"
+		],
 		"designers": [
 			"Barry Oursler",
 			"Python Anghelo"
@@ -32894,7 +32934,8 @@
 	{
 		"ipdb": {
 			"number": 1853,
-			"mfg": 351
+			"mfg": 351,
+			"rating": "7.7"
 		},
 		"title": "Post Time",
 		"manufacturer": "Williams",
@@ -33086,7 +33127,7 @@
 		"ipdb": {
 			"number": 1865,
 			"mfg": 93,
-			"rating": "7.8"
+			"rating": "7.6"
 		},
 		"title": "Pro-Football",
 		"manufacturer": "Gottlieb",
@@ -33111,7 +33152,7 @@
 		"ipdb": {
 			"number": 1866,
 			"mfg": 93,
-			"rating": "7.8"
+			"rating": "7.9"
 		},
 		"title": "Pro Pool",
 		"manufacturer": "Gottlieb",
@@ -33528,7 +33569,7 @@
 		"ipdb": {
 			"number": 1891,
 			"mfg": 93,
-			"rating": "7.3"
+			"rating": "7.5"
 		},
 		"title": "Queen of Hearts",
 		"manufacturer": "Gottlieb",
@@ -33562,7 +33603,7 @@
 		"ipdb": {
 			"number": 1893,
 			"mfg": 93,
-			"rating": "7.8"
+			"rating": "7.7"
 		},
 		"title": "Quick Draw",
 		"manufacturer": "Gottlieb",
@@ -33764,7 +33805,7 @@
 		"ipdb": {
 			"number": 1903,
 			"mfg": 93,
-			"rating": "6.9"
+			"rating": "7.1"
 		},
 		"title": "Rack-A-Ball",
 		"manufacturer": "Gottlieb",
@@ -34022,7 +34063,7 @@
 		"ipdb": {
 			"number": 1918,
 			"mfg": 351,
-			"rating": "7.9"
+			"rating": "7.5"
 		},
 		"title": "Rancho",
 		"manufacturer": "Williams",
@@ -34772,7 +34813,7 @@
 			"number": 1966,
 			"mfg": 349,
 			"mpu": 9,
-			"rating": "7.3"
+			"rating": "7.4"
 		},
 		"title": "Riverboat Gambler",
 		"manufacturer": "Williams",
@@ -34835,7 +34876,7 @@
 		"ipdb": {
 			"number": 1969,
 			"mfg": 47,
-			"rating": "5.4"
+			"rating": "5.5"
 		},
 		"title": "Ro Go",
 		"manufacturer": "Bally",
@@ -34915,7 +34956,7 @@
 			"number": 1972,
 			"mfg": 349,
 			"mpu": 30,
-			"rating": "8.0"
+			"rating": "8.1"
 		},
 		"title": "Red & Ted's Road Show",
 		"manufacturer": "Williams",
@@ -34937,9 +34978,9 @@
 		"artists": [
 			"John Youssi"
 		],
-		"features": "Flippers(4), Shaker motor, two manual plungers. Two talking heads can swallow the ball. Unlimited buy-in balls per player (operator option).",
+		"features": "Flippers(4), Pop bumpers (3), Slingshots (2), Shaker motor, two manual plungers. Two talking heads can swallow the ball. Unlimited buy-in balls per player (operator option).",
 		"notes": "This game was part of Williams/Midway's \"SuperPin\" line of widebody games.Country singer Carlene Carter provided the voice of \"Red\".  Carlene's song, \"Every Little Thing\", plays during the Multi-Ball and Jackpot modes, as well as the \"Super Payday\" wizard mode.Voice-over artist Tim Kitzrow provided the voice of \"Ted\".Another game with a talking head is Williams' 1990 'Funhouse'.",
-		"toys": "Two talking heads named \"Red\" and \"Ted\".",
+		"toys": "Two talking heads named \"Red\" and \"Ted\".Portable radio.",
 		"slogans": "\"Hit the road with RED AND TED'S ROADSHOW\"\n\"When it comes to wreckin' road, two heads are better than one.\"\n\"It's a big country... Someones got to tear it up!\""
 	},
 	{
@@ -35032,7 +35073,7 @@
 			"number": 1978,
 			"mfg": 257,
 			"mpu": 17,
-			"rating": "6.6"
+			"rating": "6.5"
 		},
 		"title": "Rock",
 		"manufacturer": "Premier",
@@ -35227,7 +35268,7 @@
 		"ipdb": {
 			"number": 1989,
 			"mfg": 47,
-			"rating": "7.7"
+			"rating": "7.4"
 		},
 		"title": "Rocket III",
 		"manufacturer": "Bally",
@@ -35449,7 +35490,7 @@
 		"ipdb": {
 			"number": 2002,
 			"mfg": 93,
-			"rating": "7.5"
+			"rating": "7.4"
 		},
 		"title": "Roller Coaster",
 		"manufacturer": "Gottlieb",
@@ -35783,7 +35824,7 @@
 		"ipdb": {
 			"number": 2022,
 			"mfg": 93,
-			"rating": "7.4"
+			"rating": "7.5"
 		},
 		"title": "Roto Pool",
 		"manufacturer": "Gottlieb",
@@ -36027,7 +36068,7 @@
 		"ipdb": {
 			"number": 2037,
 			"mfg": 93,
-			"rating": "7.9"
+			"rating": "7.6"
 		},
 		"title": "Royal Guard",
 		"manufacturer": "Gottlieb",
@@ -36675,7 +36716,7 @@
 		"ipdb": {
 			"number": 2077,
 			"mfg": 93,
-			"rating": "7.7"
+			"rating": "7.6"
 		},
 		"title": "Scuba",
 		"manufacturer": "Gottlieb",
@@ -36830,7 +36871,7 @@
 		"ipdb": {
 			"number": 2085,
 			"mfg": 47,
-			"rating": "7.7"
+			"rating": "7.5"
 		},
 		"title": "Sea Ray",
 		"manufacturer": "Bally",
@@ -36930,7 +36971,7 @@
 			"number": 2089,
 			"mfg": 302,
 			"mpu": 34,
-			"rating": "7.3"
+			"rating": "7.4"
 		},
 		"title": "Seawitch",
 		"manufacturer": "Stern",
@@ -37418,7 +37459,7 @@
 		"ipdb": {
 			"number": 2116,
 			"mfg": 93,
-			"rating": "7.8"
+			"rating": "7.6"
 		},
 		"title": "Sheriff",
 		"manufacturer": "Gottlieb",
@@ -38202,13 +38243,13 @@
 			"Gordon Morison"
 		],
 		"features": "Flippers (4), Pop bumpers (2), Star rollovers (4), Standup targets (2), 3-bank drop targets (2), 4-bank drop targets (1), Spinning target (1). The white target and yellow targets are reset by one coil and the purple targets are reset by a separate coil.",
-		"notes": "The 4-player EM version of this game is Gottlieb's 1978 'Sinbad'. The 2-player EM version is Gottlieb's 1978 'Eye Of The Tiger'.The flyer indicates that this game was a direct tie-in to the 1977 Hollywood movie \"Sinbad and the Eye of the Tiger\".This game was also made with the lower cabinet using metal for the entire front, entire back, and entire bottom. The sides of the cabinet were made of wood, as was the backbox. The pedestal upon which the backbox connects to the cabinet was made of metal. The serial number is stamped in the wood on the inside of the cabinet near the shooter rod. We asked Wayne Neyens about the metal cabinet. He comments:I think that it was Doc's idea but I forget. It had many draw backs, as I recall it was very noisy, hard to assemble and needed more room than we had available to do the assembly.Wayne refers to Roman F. \"Doc\" Garbark, head of mechanical engineering at Gottlieb.Sinbad (Sindbad) the Sailor was a character in one of the folk tales of classic Arabic literature known collectively as The Thousand and One Nights (aka The Arabian Nights)."
+		"notes": "The 4-player EM version of this game is Gottlieb's 1978 'Sinbad'. The 2-player EM version is Gottlieb's 1978 'Eye Of The Tiger'.Pictures here are portions of a Sample game (serial number 01290 S) having its start button and flipper buttons made of red plastic, just like the game shown in the manufacturer's flyer. It appears that production games use green plastic for these buttons. Also, the sample card holder, while using black and orange colors unique to Sinbad, shows the words \"INSERT COIN ONLY WHEN COIN ENTRANCE IS LIT\" which are not found on later cardholders for this game. Sinbad was the first of the System 1 games to use this apron having the style of art shown on it.The flyer indicates that this game was a direct tie-in to the 1977 Hollywood movie \"Sinbad and the Eye of the Tiger\".This game was also made with the lower cabinet using metal for the entire front, entire back, and entire bottom. The sides of the cabinet were made of wood, as was the backbox. The pedestal upon which the backbox connects to the cabinet was made of metal. The serial number is stamped in the wood on the inside of the cabinet near the shooter rod. We asked Wayne Neyens about the metal cabinet. He comments:I think that it was Doc's idea but I forget. It had many draw backs, as I recall it was very noisy, hard to assemble and needed more room than we had available to do the assembly.Wayne refers to Roman F. \"Doc\" Garbark, head of mechanical engineering at Gottlieb.Sinbad (Sindbad) the Sailor was a character in one of the folk tales of classic Arabic literature known collectively as The Thousand and One Nights (aka The Arabian Nights)."
 	},
 	{
 		"ipdb": {
 			"number": 2160,
 			"mfg": 93,
-			"rating": "7.8"
+			"rating": "7.7"
 		},
 		"title": "Sing Along",
 		"manufacturer": "Gottlieb",
@@ -38382,7 +38423,7 @@
 			"number": 2170,
 			"mfg": 47,
 			"mpu": 18,
-			"rating": "7.3"
+			"rating": "7.4"
 		},
 		"title": "Skateball",
 		"manufacturer": "Bally",
@@ -38537,7 +38578,7 @@
 		"ipdb": {
 			"number": 2182,
 			"mfg": 350,
-			"rating": "7.6"
+			"rating": "7.7"
 		},
 		"title": "Skill Pool",
 		"manufacturer": "Williams",
@@ -38756,7 +38797,7 @@
 		"ipdb": {
 			"number": 2195,
 			"mfg": 93,
-			"rating": "7.4"
+			"rating": "7.5"
 		},
 		"title": "Sky Jump",
 		"manufacturer": "Gottlieb",
@@ -39126,7 +39167,8 @@
 	{
 		"ipdb": {
 			"number": 2215,
-			"mfg": 351
+			"mfg": 351,
+			"rating": "6.8"
 		},
 		"title": "Smart Set",
 		"manufacturer": "Williams",
@@ -39428,7 +39470,7 @@
 		"ipdb": {
 			"number": 2233,
 			"mfg": 93,
-			"rating": "7.9"
+			"rating": "7.4"
 		},
 		"title": "Soccer",
 		"manufacturer": "Gottlieb",
@@ -39561,7 +39603,7 @@
 		"ipdb": {
 			"number": 2240,
 			"mfg": 351,
-			"rating": "6.1"
+			"rating": "6.2"
 		},
 		"title": "Solids N Stripes",
 		"manufacturer": "Williams",
@@ -39608,7 +39650,7 @@
 			"number": 2242,
 			"mfg": 351,
 			"mpu": 5,
-			"rating": "7.8"
+			"rating": "7.9"
 		},
 		"title": "Sorcerer",
 		"manufacturer": "Williams",
@@ -39635,7 +39677,7 @@
 		"ipdb": {
 			"number": 2243,
 			"mfg": 81,
-			"rating": "5.1"
+			"rating": "5.3"
 		},
 		"title": "Sound Stage",
 		"manufacturer": "Chicago Coin",
@@ -39847,7 +39889,7 @@
 		"ipdb": {
 			"number": 2254,
 			"mfg": 351,
-			"rating": "7.5"
+			"rating": "7.3"
 		},
 		"title": "Space Odyssey",
 		"manufacturer": "Williams",
@@ -39911,7 +39953,7 @@
 			"number": 2258,
 			"mfg": 33,
 			"mpu": 44,
-			"rating": "7.2"
+			"rating": "7.3"
 		},
 		"title": "Space Riders",
 		"manufacturer": "Atari",
@@ -40010,8 +40052,8 @@
 		"artists": [
 			"Tim Elliott"
 		],
-		"features": "Flippers (2), Pop bumpers (3), 7-bank standup targets (1), 4-bank standup targets (1), 3-bank standup targets (1), 3-bank drop targets (1), Left outlane kickback, Mini upper playfield. A single drop target guards ramp, a single standup target is nearby. Double GI - General Lighting changes from White to Green during Multiball. No flipper inlanes.",
-		"notes": "One of the first System 11B games, also works with a System 11A board.Steve Ritchie provided the male voice heard during the game.Pictured in this listing is a mini-playfield made of opaque black plastic instead of the standard translucent blue plastic. Its stickers have openings to show the light bulbs and their yellow bulb covers, and its flash lamp cover is orange instead of blue. Its underside has different wiring, with leaf switches instead of micro switches. The owner had obtained it from someone who was parting out a playfield. We notice this mini-playfield appears to be made of the same opaque black plastic as the playfield ramp that leads to the Space Station, and perhaps it is a prototype or sample version that was changed for production. Until we know more, we have labeled it as an alternate version.The translite art shows three space shuttles. Artist Tim Seckel related to us this story: The real space shuttle Challenger blew up right in front of me (January 1986) when I was illustrating the shuttle for this game. I was the only one in the art room at the time and had the TV on. It was terrible and ironic at the same time. I was actually painting the small shuttle on the right of the backglass when it happened.",
+		"features": "Flippers (2), Pop bumpers (3), Slingshots (2), Standup targets (15), Vertical up-kickers (2), 3-bank drop targets (1), Left outlane kickback, Mini-playfield. 2-ball multiball, Speech. Bonus Ball awarded after last ball to all qualifying players. A single drop target guards ramp, a single standup target is nearby. Double GI - General Lighting changes from white to green during multiball. No flipper inlanes.",
+		"notes": "One of the first System 11B games, also works with a System 11A board.Steve Ritchie provided the male voice heard during the game.Pictured in this listing is a mini-playfield made of opaque black plastic instead of the standard translucent blue plastic. Its stickers have openings to show the light bulbs and their yellow bulb covers, and its flash lamp cover is orange instead of blue. Its underside has different wiring, with leaf switches instead of micro switches. The owner had obtained it from someone who was parting out a playfield. We labeled the pictures of this black ramp as \"prototype\" based upon designer Barry Oursler's comments when we asked him about it:I believe they were only black on the prototype games. The blue ones were more transparent and lit up better. The color also looked better with the artwork.Pictured in this listing is a prototype drop target placed at the very top of the playfield, hidden under the mini-playfield. Barry Oursler believes it was removed from production games as a cost reduction item, leaving the production playfield showing a rectangular blank (unpainted) area where the drop target used to be.The translite art shows three space shuttles. Artist Tim Elliott related to us this story: The real space shuttle Challenger blew up right in front of me (January 1986) when I was illustrating the shuttle for this game. I was the only one in the art room at the time and had the TV on. It was terrible and ironic at the same time. I was actually painting the small shuttle on the right of the backglass when it happened. Pictured in this listing are three versions of translite:� Small cutout windows are punched in front of the space station lamps, making these lamps visible.� The cutout windows are evident but not punched, showing blank white areas of translite over the lamps.� No cutouts windows at all.We do not know why there were three versions or when this was changed during production. Barry Oursler told us he could not recall any story behind this.Not pictured here are either of two versions of backbox insert where the major difference is that one has four lamps that the other does not have. Barry Oursler could not recall this difference to comment about which came first and why the change. Pictures of these inserts and other interesting details about Space Station can be seen here.",
 		"toys": "Turning Space Station model",
 		"slogans": "\"Williams Pinball #1 in ALL worlds (display panel: see also F14 Tomcat's display panel)\"\n\"A rendezvous with Pinball Destiny\""
 	},
@@ -40019,7 +40061,7 @@
 		"ipdb": {
 			"number": 2262,
 			"mfg": 47,
-			"rating": "7.2"
+			"rating": "7.3"
 		},
 		"title": "Space Time",
 		"manufacturer": "Bally",
@@ -40211,7 +40253,7 @@
 		},
 		"title": "Special Force",
 		"manufacturer": "Midway",
-		"model_number": "0",
+		"model_number": "0E47",
 		"year": 1986,
 		"game_type": "ss",
 		"short": [
@@ -40243,7 +40285,7 @@
 			"number": 2274,
 			"mfg": 47,
 			"mpu": 18,
-			"rating": "6.9"
+			"rating": "7.1"
 		},
 		"title": "Spectrum",
 		"manufacturer": "Bally",
@@ -40465,7 +40507,7 @@
 		"ipdb": {
 			"number": 2287,
 			"mfg": 93,
-			"rating": "6.5"
+			"rating": "6.7"
 		},
 		"title": "Spin Wheel",
 		"manufacturer": "Gottlieb",
@@ -40490,7 +40532,7 @@
 		"ipdb": {
 			"number": 2288,
 			"mfg": 93,
-			"rating": "7.7"
+			"rating": "7.5"
 		},
 		"title": "Spin-A-Card",
 		"manufacturer": "Gottlieb",
@@ -40582,7 +40624,7 @@
 		"ipdb": {
 			"number": 2293,
 			"mfg": 93,
-			"rating": "7.7"
+			"rating": "7.6"
 		},
 		"title": "Spirit of 76",
 		"manufacturer": "Gottlieb",
@@ -40893,12 +40935,12 @@
 			"number": 2311,
 			"mfg": 149
 		},
-		"title": "Spot-A-Ball",
+		"title": "Spot A Ball",
 		"manufacturer": "Hercules Novelty Company, Incorporated",
 		"year": 1932,
 		"game_type": "pm",
 		"features": "5 balls for 1 cent or 10 balls for 5 cents. Game measures 24 inches long, 15 inches wide, and 9 inches high. Collapsible stands were available from the manufacturer at additional cost.",
-		"notes": "One of the many copycat versions of Gottlieb's 1931 'Baffle Ball'."
+		"notes": "The name of this game as shown on the game itself uses no hyphens. The advertisements use hyphens.One of the many copycat versions of Gottlieb's 1931 'Baffle Ball'."
 	},
 	{
 		"ipdb": {
@@ -41000,7 +41042,7 @@
 		"ipdb": {
 			"number": 2318,
 			"mfg": 93,
-			"rating": "8.4"
+			"rating": "8.3"
 		},
 		"title": "Spot-A-Card",
 		"manufacturer": "Gottlieb",
@@ -41154,7 +41196,7 @@
 		},
 		"title": "Spy Hunter",
 		"manufacturer": "Midway",
-		"model_number": "0",
+		"model_number": "0A17",
 		"year": 1984,
 		"game_type": "ss",
 		"produced_units": 2300,
@@ -41322,6 +41364,7 @@
 		},
 		"title": "Stage Door Canteen",
 		"manufacturer": "Gottlieb",
+		"model_number": "A",
 		"year": 1945,
 		"game_type": "em",
 		"produced_units": 7500,
@@ -41442,6 +41485,7 @@
 		},
 		"title": "Star Explorer",
 		"manufacturer": "Sentinel Inc.",
+		"model_number": "PH7730WA05",
 		"year": 1977,
 		"game_type": "ss",
 		"themes": [
@@ -41482,7 +41526,7 @@
 		"ipdb": {
 			"number": 2347,
 			"mfg": 47,
-			"rating": "7.9"
+			"rating": "7.5"
 		},
 		"title": "Star-Jet",
 		"manufacturer": "Bally",
@@ -41569,7 +41613,7 @@
 		"ipdb": {
 			"number": 2352,
 			"mfg": 351,
-			"rating": "6.5"
+			"rating": "6.6"
 		},
 		"title": "Star Pool",
 		"manufacturer": "Williams",
@@ -41758,7 +41802,7 @@
 		"ipdb": {
 			"number": 2359,
 			"mfg": 351,
-			"rating": "7.3"
+			"rating": "7.2"
 		},
 		"title": "Stardust",
 		"manufacturer": "Williams",
@@ -42142,7 +42186,8 @@
 	{
 		"ipdb": {
 			"number": 2386,
-			"mfg": 350
+			"mfg": 350,
+			"rating": "7.7"
 		},
 		"title": "Stop 'N' Go",
 		"manufacturer": "Williams",
@@ -42328,11 +42373,11 @@
 			"number": 2396,
 			"mfg": 48,
 			"mpu": 38,
-			"rating": "7.4"
+			"rating": "7.5"
 		},
 		"title": "Strange Science",
 		"manufacturer": "Midway",
-		"model_number": "0",
+		"model_number": "0E35",
 		"year": 1986,
 		"game_type": "ss",
 		"short": [
@@ -42382,7 +42427,7 @@
 		"ipdb": {
 			"number": 2398,
 			"mfg": 351,
-			"rating": "7.3"
+			"rating": "7.2"
 		},
 		"title": "Strato-Flite",
 		"manufacturer": "Williams",
@@ -42503,7 +42548,7 @@
 		"ipdb": {
 			"number": 2404,
 			"mfg": 351,
-			"rating": "7.8"
+			"rating": "7.6"
 		},
 		"title": "Strike Zone",
 		"manufacturer": "Williams",
@@ -42602,7 +42647,7 @@
 		"ipdb": {
 			"number": 2408,
 			"mfg": 351,
-			"rating": "8.2"
+			"rating": "8.0"
 		},
 		"title": "Student Prince",
 		"manufacturer": "Williams",
@@ -43297,7 +43342,7 @@
 		"ipdb": {
 			"number": 2443,
 			"mfg": 93,
-			"rating": "7.4"
+			"rating": "7.5"
 		},
 		"title": "Super Soccer",
 		"manufacturer": "Gottlieb",
@@ -43334,7 +43379,7 @@
 		"ipdb": {
 			"number": 2445,
 			"mfg": 94,
-			"rating": "7.8"
+			"rating": "7.5"
 		},
 		"title": "Super Spin",
 		"manufacturer": "Gottlieb",
@@ -43415,7 +43460,7 @@
 		"year": 1977,
 		"game_type": "ss",
 		"features": "Flippers (2), Pop bumpers (2), Slingshots (2), Standup target (1).",
-		"notes": "This game was produced in both Electromechanical and Solid State models."
+		"notes": "This game was produced in both Electromechanical and Solid State models.Reportedly, the same generic owners manual  was included with the manufacturer's solid state home models for Skate King, Super Star, Rodeo, Demolition Classic, Cosmic Pinball, and Circus. The one in our Files section carries a date of 08/24/77 which suggests there may be other versions having earlier or later dates."
 	},
 	{
 		"ipdb": {
@@ -43468,7 +43513,7 @@
 		"ipdb": {
 			"number": 2452,
 			"mfg": 351,
-			"rating": "7.0"
+			"rating": "7.1"
 		},
 		"title": "Super-Flite",
 		"manufacturer": "Williams",
@@ -43496,6 +43541,7 @@
 		},
 		"title": "Superliner",
 		"manufacturer": "Gottlieb",
+		"model_number": "B",
 		"year": 1946,
 		"game_type": "em",
 		"produced_units": 4000,
@@ -43569,7 +43615,7 @@
 		"ipdb": {
 			"number": 2457,
 			"mfg": 93,
-			"rating": "8.1"
+			"rating": "7.7"
 		},
 		"title": "Sure Shot",
 		"manufacturer": "Gottlieb",
@@ -43603,7 +43649,7 @@
 		"ipdb": {
 			"number": 2459,
 			"mfg": 93,
-			"rating": "7.8"
+			"rating": "7.7"
 		},
 		"title": "Surf Champ",
 		"manufacturer": "Gottlieb",
@@ -43718,7 +43764,7 @@
 		"ipdb": {
 			"number": 2464,
 			"mfg": 93,
-			"rating": "7.7"
+			"rating": "7.5"
 		},
 		"title": "Surf Side",
 		"manufacturer": "Gottlieb",
@@ -43903,7 +43949,7 @@
 		"ipdb": {
 			"number": 2474,
 			"mfg": 93,
-			"rating": "8.0"
+			"rating": "7.9"
 		},
 		"title": "Sweet Hearts",
 		"manufacturer": "Gottlieb",
@@ -44113,7 +44159,7 @@
 		"ipdb": {
 			"number": 2485,
 			"mfg": 351,
-			"rating": "7.4"
+			"rating": "7.5"
 		},
 		"title": "Swinger",
 		"manufacturer": "Williams",
@@ -44141,7 +44187,7 @@
 			"number": 2486,
 			"mfg": 349,
 			"mpu": 8,
-			"rating": "7.9"
+			"rating": "8.0"
 		},
 		"title": "Swords of Fury",
 		"manufacturer": "Williams",
@@ -44395,7 +44441,7 @@
 		"ipdb": {
 			"number": 2500,
 			"mfg": 93,
-			"rating": "7.6"
+			"rating": "7.7"
 		},
 		"title": "Target Alpha",
 		"manufacturer": "Gottlieb",
@@ -44431,7 +44477,7 @@
 		"ipdb": {
 			"number": 2502,
 			"mfg": 93,
-			"rating": "7.9"
+			"rating": "7.8"
 		},
 		"title": "Target Pool",
 		"manufacturer": "Gottlieb",
@@ -44540,7 +44586,7 @@
 		},
 		"title": "Team One",
 		"manufacturer": "Gottlieb",
-		"model_number": "384",
+		"model_number": "384A",
 		"year": 1977,
 		"game_type": "em",
 		"produced_units": 650,
@@ -44685,7 +44731,8 @@
 		"manufacturer": "Mills Novelty Company",
 		"year": 1935,
 		"game_type": "em",
-		"notes": "Used a hidden 3 reel Bell style slot machine as the main mechanism."
+		"features": "Uses a hidden 3-reel Bell-style slot machine as the main mechanism.",
+		"notes": "Compare cabinet and coin slot to that of Mills' 1937 'Flasher'."
 	},
 	{
 		"ipdb": {
@@ -45020,7 +45067,7 @@
 		"ipdb": {
 			"number": 2534,
 			"mfg": 93,
-			"rating": "7.7"
+			"rating": "7.6"
 		},
 		"title": "Thoro-Bred",
 		"manufacturer": "Gottlieb",
@@ -45045,7 +45092,7 @@
 		"ipdb": {
 			"number": 2535,
 			"mfg": 350,
-			"rating": "7.8"
+			"rating": "7.4"
 		},
 		"title": "3 Coins",
 		"manufacturer": "Williams",
@@ -45120,7 +45167,7 @@
 		"ipdb": {
 			"number": 2539,
 			"mfg": 93,
-			"rating": "7.1"
+			"rating": "7.3"
 		},
 		"title": "\"300\"",
 		"manufacturer": "Gottlieb",
@@ -45372,7 +45419,8 @@
 	{
 		"ipdb": {
 			"number": 2554,
-			"mfg": 351
+			"mfg": 351,
+			"mpu": 4
 		},
 		"title": "Thunderball",
 		"manufacturer": "Williams",
@@ -45685,7 +45733,7 @@
 			"Jeanine Mitchell"
 		],
 		"features": "Flippers (2), Pop bumpers (5), Slingshots (2), Kick-out holes (2), Standup targets (2), 5-bank drop targets (1), 3-bank drop targets (1).Banana flippers on many of the games produced.",
-		"notes": "The inclusion of Da Vinci's Vitruvian Man on the backglass may be the only depiction of male nudity from a pinball machine manufacturer."
+		"notes": "The inclusion of Da Vinci's Vitruvian Man on the backglass may be the only depiction of male nudity from a pinball machine manufacturer.The manufacturer's flyer shows that the slingshots next to the flippers each use three posts while the manual's playfield diagram shows four posts each. Presumably all production games used three posts each."
 	},
 	{
 		"ipdb": {
@@ -45800,7 +45848,7 @@
 		},
 		"title": "Tivoli",
 		"manufacturer": "Gottlieb",
-		"model_number": "257",
+		"model_number": "257it",
 		"year": 1968,
 		"game_type": "em",
 		"produced_units": 2650,
@@ -45880,7 +45928,7 @@
 			"number": 2579,
 			"mfg": 98,
 			"mpu": 24,
-			"rating": "7.9"
+			"rating": "8.0"
 		},
 		"title": "The Who's Tommy Pinball Wizard",
 		"manufacturer": "Data East",
@@ -45913,7 +45961,7 @@
 		"ipdb": {
 			"number": 2580,
 			"mfg": 93,
-			"rating": "7.9"
+			"rating": "7.8"
 		},
 		"title": "Top Card",
 		"manufacturer": "Gottlieb",
@@ -46098,7 +46146,7 @@
 		"ipdb": {
 			"number": 2590,
 			"mfg": 262,
-			"rating": "7.8"
+			"rating": "7.7"
 		},
 		"title": "Top Speed",
 		"manufacturer": "Petaco",
@@ -46646,7 +46694,7 @@
 		"ipdb": {
 			"number": 2621,
 			"mfg": 350,
-			"rating": "7.9"
+			"rating": "7.8"
 		},
 		"title": "Trade Winds",
 		"manufacturer": "Williams",
@@ -46689,7 +46737,8 @@
 	{
 		"ipdb": {
 			"number": 2625,
-			"mfg": 47
+			"mfg": 47,
+			"rating": "8.0"
 		},
 		"title": "Trail Drive",
 		"manufacturer": "Bally",
@@ -47074,7 +47123,7 @@
 		"ipdb": {
 			"number": 2648,
 			"mfg": 351,
-			"rating": "7.7"
+			"rating": "7.6"
 		},
 		"title": "Triple Action",
 		"manufacturer": "Williams",
@@ -47290,7 +47339,7 @@
 		"ipdb": {
 			"number": 2661,
 			"mfg": 93,
-			"rating": "7.1"
+			"rating": "7.3"
 		},
 		"title": "Tropic Isle",
 		"manufacturer": "Gottlieb",
@@ -47387,7 +47436,7 @@
 		},
 		"title": "Troubadour",
 		"manufacturer": "Gottlieb",
-		"model_number": "238",
+		"model_number": "238A",
 		"year": 1967,
 		"game_type": "em",
 		"produced_units": 2500,
@@ -47409,7 +47458,7 @@
 			"number": 2667,
 			"mfg": 214,
 			"mpu": 38,
-			"rating": "7.3"
+			"rating": "7.4"
 		},
 		"title": "Truck Stop",
 		"manufacturer": "Bally",
@@ -47988,7 +48037,7 @@
 		"ipdb": {
 			"number": 2705,
 			"mfg": 93,
-			"rating": "7.7"
+			"rating": "7.5"
 		},
 		"title": "Universe",
 		"manufacturer": "Gottlieb",
@@ -48146,7 +48195,7 @@
 			"Steve Kordek"
 		],
 		"features": "Flippers (2), Pop bumpers (5), Kick-out holes (2), Drop target (1).",
-		"notes": "'Vagabond' was the first pinball machine to have a drop target of the familiar type where the entire target dropped into the playfield when struck by the ball. A different type of drop target appeared earlier on Gottlieb's 1951 'Minstrel Man' and Gottlieb's 1951 'Wild West'."
+		"notes": "'Vagabond' may be the first pinball machine to have a drop target of the familiar type where the entire target dropped into the playfield when struck by the ball. A different type of drop target appeared earlier on Gottlieb's 1951 'Minstrel Man' and Gottlieb's 1951 'Wild West'.Keeney's Arrowhead had drop targets of the same style as Vagabond and may actually have preceded Vagabond. However, our date for Arrowhead is suspect and unconfirmed. For more information, see that listing."
 	},
 	{
 		"ipdb": {
@@ -48660,7 +48709,7 @@
 		"ipdb": {
 			"number": 2743,
 			"mfg": 93,
-			"rating": "7.9"
+			"rating": "7.8"
 		},
 		"title": "Volley",
 		"manufacturer": "Gottlieb",
@@ -48832,8 +48881,8 @@
 		"manufacturer": "Viza",
 		"year": 1978,
 		"game_type": "ss",
-		"features": "Flippers (8), Pop bumpers (2).Two different playfield versions are shown here: one has two kick-out holes, the other does not.This is a head-to-head game where two players at opposite ends of the playfield compete in simultaneous play. Each player has flipper buttons which control only those flippers facing the opponent. Game can also be played as a single player. Ball enters play from outhole by pressing right flipper button.",
-		"notes": "The playfield shows a portion of Frank Frazetta's artwork The Beserker. Reportedly, Ellie Frazetta, who was his wife and business manager, had indicated that this was an unauthorized use of his artwork.Mfg under contract by Allied Leisure Industries.According to an informative article by Bill Kurtz in GameRoom Magazine October 1995, the playfield had several production changes with the most noticeable being the removal of the two kick-out holes."
+		"features": "Flippers (8), Pop bumpers (2), Slingshots (2). Viking's eyes are red blinking LEDs.Two different playfield versions are shown here: one has two kick-out holes, the other does not.This is a head-to-head game where two players at opposite ends of the playfield compete in simultaneous play. Each player has flipper buttons which control only those flippers facing the opponent. Game can also be played as a single player. Ball enters play from outhole by pressing right flipper button.",
+		"notes": "The EM version of this game is Viza's 'War'.The playfield shows a portion of Frank Frazetta's artwork The Berserker. Reportedly, Ellie Frazetta, who was his wife and business manager, had indicated that this was an unauthorized use of his artwork.Mfg under contract by Allied Leisure Industries.According to an informative article by Bill Kurtz in GameRoom Magazine October 1995, the playfield had several production changes with the most noticeable being the removal of the two kick-out holes."
 	},
 	{
 		"ipdb": {
@@ -49003,7 +49052,7 @@
 			"number": 2765,
 			"mfg": 349,
 			"mpu": 8,
-			"rating": "8.1"
+			"rating": "8.0"
 		},
 		"title": "Whirlwind",
 		"manufacturer": "Williams",
@@ -49278,7 +49327,8 @@
 		"ipdb": {
 			"number": 2783,
 			"mfg": 302,
-			"mpu": 21
+			"mpu": 21,
+			"rating": "7.5"
 		},
 		"title": "Wild Fyre",
 		"manufacturer": "Stern",
@@ -49624,7 +49674,7 @@
 		},
 		"title": "Wizard",
 		"manufacturer": "Gottlieb",
-		"model_number": "324",
+		"model_number": "324it",
 		"year": 1971,
 		"game_type": "em",
 		"designers": [
@@ -49658,7 +49708,7 @@
 			"Dave Christensen"
 		],
 		"features": "Flippers (2), Pop bumpers (3), Flip flags (4), Kick-out hole (1).",
-		"notes": "'Wizard' was inspired by the 1975 Hollywood movie 'Tommy' and included likenesses of Roger Daltry and Ann-Margret on the backglass.This was the last Bally EM game to have its knocker located in the lower cabinet. It was moved to the backbox in subsequent EM games.The Double Bonus playfield insert shown in the flyer is the color green, while actual playfields shown in this listing and elsewhere can have this insert as either green or blue. The reason for the two different colors is unknown to us."
+		"notes": "'Wizard' was inspired by the 1975 Hollywood movie 'Tommy' and included likenesses of Roger Daltry and Ann-Margret on the backglass.This was the last Bally EM game to have its knocker located in the lower cabinet. It was moved to the backbox in subsequent EM games.The Double Bonus playfield insert shown in the flyer is the color green, while actual playfields shown in this listing and elsewhere can have this insert as either green or blue. The reason for the two different colors is unknown to us.Wizard was the first pinball machine to use flip flags.Patent 4,037,842 [TARGET DEVICE FOR PINBALL GAMES] filed May 8, 1975. Granted July 26, 1977 to Jeffrey D. Breslow. Assignee is Marvin Glass & Associates, Chicago, Illinois."
 	},
 	{
 		"ipdb": {
@@ -50002,7 +50052,7 @@
 			"number": 2821,
 			"mfg": 47,
 			"mpu": 18,
-			"rating": "7.9"
+			"rating": "7.8"
 		},
 		"title": "Xenon",
 		"manufacturer": "Bally",
@@ -50154,7 +50204,7 @@
 		},
 		"title": "Yukon",
 		"manufacturer": "Williams",
-		"model_number": "403",
+		"model_number": "403A",
 		"year": 1971,
 		"game_type": "em",
 		"produced_units": 730,
@@ -50471,7 +50521,7 @@
 			"number": 2848,
 			"mfg": 280,
 			"mpu": 25,
-			"rating": "7.8"
+			"rating": "7.9"
 		},
 		"title": "Baywatch",
 		"manufacturer": "Sega",
@@ -50615,6 +50665,7 @@
 		},
 		"title": "Ben Hur",
 		"manufacturer": "Staal Society",
+		"model_number": "AB0413",
 		"year": 1977,
 		"game_type": "ss",
 		"themes": [
@@ -51312,7 +51363,7 @@
 			"Baseball"
 		],
 		"features": "Ramps (3). The ramps are unpainted metal.",
-		"notes": "The schematic diagram shows this Model 183 is called \"1957 Baseball\" and has no replay or match mechanisms.The owner of the example pictured here obtained the game having in it the schematic for the replay version, Model 182, but confirmed the game's wiring is consistent with the schematic for Model 183. The pictures of the insides of the backbox show it has no provision for replays. Curiously, the backglass on this game has a replay window which obviously serves no purpose.  In addition, this glass is missing both the manufacturer name and the date portion of the name (the '1957'). It is not likely that Williams would omit their brand name from any glass that left their factory. We are aware of one instance of an arcade operator (in Myrtle Beach) having purchased a row of these games (novelty and/or replay) for their location and having had special backglasses made for them, to omit the manufacturer name and, we suspect, omit the date as well so as to not make their investment age too quickly. Presumably, arcade operators in other locales could have done the same. The manufacturer's branded and dated backglass can be seen in the book Pinball An Illustrated History.Based on the above information, we can say that the game pictured here is the novelty play Model 183 but with one of these after-factory arcade backglasses from having once been in an arcade.The replay version of this game is Williams '1957 Baseball Deluxe'.This listing was previously titled \"Deluxe Baseball 1957 New York\"."
+		"notes": "The schematic diagram shows this Model 183 is called \"1957 Baseball\" and has no replay or match mechanisms.The owner of the example pictured here obtained the game having in it the schematic for the replay version, Model 182, but confirmed the game's wiring is consistent with the schematic for Model 183. The pictures of the insides of the backbox show it has no provision for replays. Curiously, the backglass on this game has a replay window which obviously serves no purpose.  In addition, this glass is missing both the manufacturer name and the date portion of the name (the '1957'). It is not likely that Williams would omit their brand name from any glass that left their factory. We are aware of one instance of an arcade operator (in Myrtle Beach) having purchased a row of these games (novelty and/or replay) for their location and having had special backglasses made for them, to omit the manufacturer name and, we suspect, omit the date as well so as to not make their investment age too quickly. Presumably, arcade operators in other locales could have done the same. The manufacturer's branded and dated backglass can be seen in the book Pinball An Illustrated History and in their promotional photo shown in this listing.Based on the above information, we can say that the game pictured here is the novelty play Model 183 but with one of these after-factory arcade backglasses from having once been in an arcade.The replay version of this game is Williams '1957 Baseball Deluxe'.This listing was previously titled \"Deluxe Baseball 1957 New York\"."
 	},
 	{
 		"ipdb": {
@@ -51452,6 +51503,7 @@
 		},
 		"title": "Caribbean Cruise",
 		"manufacturer": "International Concepts",
+		"model_number": "C102",
 		"year": 1989,
 		"game_type": "ss",
 		"produced_units": 377,
@@ -51685,7 +51737,7 @@
 			"Circus/Carnival"
 		],
 		"features": "Flippers (2), Pop bumpers (2), Slingshots (2), Standup target (1).",
-		"notes": "The relationship between this game and Brunswick's 1980 'Circus' is not clear, as Briarwood was a division of Brunswick at the time, and these games have the same name but clearly different designs."
+		"notes": "Reportedly, the same generic owners manual was included with the manufacturer's solid state home models for Skate King, Super Star, Rodeo, Demolition Classic, Cosmic Pinball, and Circus. The one in our Files section carries a date of 08/24/77 which suggests there may be other versions having earlier or later dates. The relationship between this game and Brunswick's 1980 'Circus' is not clear, as Briarwood was a division of Brunswick at the time, and these games have the same name but clearly different designs."
 	},
 	{
 		"ipdb": {
@@ -52012,7 +52064,7 @@
 		},
 		"title": "Deluxe Jumbo",
 		"manufacturer": "Gottlieb",
-		"model_number": "94",
+		"model_number": "94A",
 		"year": 1954,
 		"game_type": "em",
 		"designers": [
@@ -52103,7 +52155,8 @@
 			"Sports",
 			"Auto Racing"
 		],
-		"features": "Flippers (2), Pop bumpers (2), Slingshots (2), Standup target (1)."
+		"features": "Flippers (2), Pop bumpers (2), Slingshots (2), Standup target (1).",
+		"notes": "Reportedly, the same generic owners manual was included with the manufacturer's solid state home models for Skate King, Super Star, Rodeo, Demolition Classic, Cosmic Pinball, and Circus. The one in our Files section carries a date of 08/24/77 which suggests there may be other versions having earlier or later dates."
 	},
 	{
 		"ipdb": {
@@ -52399,7 +52452,7 @@
 		},
 		"title": "Duette Deluxe",
 		"manufacturer": "Gottlieb",
-		"model_number": "103",
+		"model_number": "103A",
 		"year": 1955,
 		"game_type": "em",
 		"produced_units": 736,
@@ -52699,7 +52752,12 @@
 		"title": "Flasher",
 		"manufacturer": "Mills Novelty Company",
 		"year": 1937,
-		"game_type": "em"
+		"game_type": "em",
+		"themes": [
+			"Gambling",
+			"Slot Machines"
+		],
+		"notes": "This game is Not A Pinball. It has a glass playfield with no moving parts but has slot machine symbols that are lit from behind after the player pulls the side handle. It pays out according to the award schedule on the backglass. This game operates like a slot machine. In fact, the Spinning Reels article states this game uses the same mechanisms as the Mystery Blue Front Bell slot machine of 1933. We don't know, however, if it actually pays out coins or if the player has to be paid by the location.Compare the cabinet and coin slot to the pinball machine Mills' 1935 'Ten Grand'."
 	},
 	{
 		"ipdb": {
@@ -52870,6 +52928,7 @@
 		},
 		"title": "Gamatron",
 		"manufacturer": "Sonic",
+		"model_number": "A",
 		"year": 1986,
 		"game_type": "ss",
 		"themes": [
@@ -52957,7 +53016,8 @@
 		"manufacturer": "Alben",
 		"year": 1958,
 		"game_type": "em",
-		"notes": "Similar to Gottlieb's Silver"
+		"features": "Flippers (2), Pop bumpers (4), Passive bumpers (2), Slingshots (2), Bullseye targets (2), Gobble holes (2), Roto-target (1). Metal cigarette holders on side woodrails.",
+		"notes": "This game is a near copy of Gottlieb's 1957 'Silver'."
 	},
 	{
 		"ipdb": {
@@ -53022,7 +53082,8 @@
 			"Happiness",
 			"Circus/Carnival"
 		],
-		"notes": "Similar to Gottlieb's Circus"
+		"features": "Flippers (2), Pop bumpers (5) Slingshots (2), Gobble holes (2), Roto-target (1). This game had playfield inserts near the flippers that lit for high Roto-target values so players who were looking at the flippers would be made aware when those high Roto-target values came around. Cigarette holders on side woodrails.Maximum displayed point score is 1999 points per player.",
+		"notes": "This game is a copy of Gottlieb's 1957 'Super Circus'."
 	},
 	{
 		"ipdb": {
@@ -53154,7 +53215,7 @@
 			"Sports",
 			"Baseball"
 		],
-		"features": "Backglass animation."
+		"features": "3 innings per game. Hanging targets (7). Backglass light animation."
 	},
 	{
 		"ipdb": {
@@ -53444,7 +53505,7 @@
 			"number": 3163,
 			"mfg": 351,
 			"mpu": 1,
-			"rating": "7.2"
+			"rating": "7.3"
 		},
 		"title": "Hot Tip",
 		"manufacturer": "Williams",
@@ -53712,8 +53773,8 @@
 			"American West",
 			"Cards/Gambling"
 		],
-		"features": "Flippers (2), Pop bumpers (3) Standup targets (4), Kick-out holes (3), Spinning targets (3), Star rollovers (3), Horseshoe lane in upper playfield, Left and right dual inlanes, 3-reel drum unit on playfield.",
-		"notes": "Interesting backglass art design shows effective use of space and illumination."
+		"features": "Flippers (2), Pop bumpers (2) Standup targets (4), Kick-out holes (3), Spinning targets (3), Star rollovers (3), Horseshoe lane in upper playfield, Left and right dual inlanes, 3-reel drum unit on playfield.  The 3-reel drum unit graphics consist of playing cards that when displaying three-of-a-kind of J, Q, K, or A, will light other features.",
+		"notes": "Interesting backglass art design shows effective use of space and illumination. Both backglass and playfield art use forced perspective to imply that the player is looking down into a Wild West-era Mexican bar."
 	},
 	{
 		"ipdb": {
@@ -55734,7 +55795,9 @@
 		"manufacturer": "Williams",
 		"model_number": "146",
 		"year": 1956,
-		"game_type": "em"
+		"game_type": "em",
+		"features": "10 cents per play. Player operates buttons on front of cabinet to animate the marionette's hands and feet. Tape cartridge player inside cabinet plays nine songs. Tape is self-winding. Game play lasts 1 1/2 minutes.",
+		"notes": "This machine is not a pinball. It is a marionette machine. This listing and pictures are included for clarification purposes only. Our September 21, 1956 date was obtained from Williams documentation where the name of this machine was shown as either \"Peppy\", \"Peppy the Puppet\", or \"Peppy the Clown\". Most Billboard articles and the ads placed by distributors referred to this machine as \"Peppy the Clown\".The recorded music used for this machine was produced by Universal Recording Corporation (per Billboard Dec-22-1956 page 75). The tape cartridges themselves were made by Cousino, Inc. (per Billboard Dec-8-1956 page 18). Williams had planned to release a special Christmas tape cartridge with holiday songs (per Billboard Dec-1-1956 page 78)."
 	},
 	{
 		"ipdb": {
@@ -56689,6 +56752,7 @@
 		},
 		"title": "Super Mario Bros. Mushroom World",
 		"manufacturer": "Premier",
+		"model_number": "N105",
 		"year": 1992,
 		"game_type": "ss",
 		"short": [
@@ -56921,7 +56985,12 @@
 		"title": "Magic Lites",
 		"manufacturer": "Jack Rogers",
 		"year": 1959,
-		"game_type": "em"
+		"game_type": "em",
+		"themes": [
+			"Happiness",
+			"Circus/Carnival"
+		],
+		"notes": "The backglass is similar in art theme to the one on Gottlieb's 1958 'Sittin' Pretty'. We do not know, however, if the six \"tubes\" on the Magic Lites backglass have light animation in them but we presume they do, given the name of the game and that it soon followed the Gottlieb game which had seven animated \"tubes\"."
 	},
 	{
 		"ipdb": {
@@ -57009,6 +57078,7 @@
 		},
 		"title": "Nudge-It",
 		"manufacturer": "Premier",
+		"model_number": "N102",
 		"year": 1990,
 		"game_type": "ss",
 		"produced_units": 54,
@@ -57052,7 +57122,8 @@
 	{
 		"ipdb": {
 			"number": 3457,
-			"mfg": 350
+			"mfg": 350,
+			"rating": "8.0"
 		},
 		"title": "Spot-Pool",
 		"manufacturer": "Williams",
@@ -57595,6 +57666,7 @@
 		},
 		"title": "Star Shooter",
 		"manufacturer": "Allied Leisure",
+		"model_number": "336",
 		"year": 1979,
 		"game_type": "ss",
 		"themes": [
@@ -57694,6 +57766,7 @@
 		},
 		"title": "Night Moves",
 		"manufacturer": "International Concepts",
+		"model_number": "C101",
 		"year": 1989,
 		"game_type": "ss",
 		"themes": [
@@ -57703,7 +57776,7 @@
 			"John Trudeau"
 		],
 		"features": "Flippers (2), Pop bumpers (2), Kick-out holes (2), Spinning targets (1).",
-		"notes": "This game was actually manufactured by Premier under contract for International Concepts."
+		"notes": "This game was actually manufactured by Premier under contract for International Concepts.The woman who modeled for the manufacturer's flyer for this game also appeared on the flyer and backglass for Premier's 1988 'Diamond Lady'."
 	},
 	{
 		"ipdb": {
@@ -59041,6 +59114,7 @@
 		},
 		"title": "Bell Ringer",
 		"manufacturer": "Premier",
+		"model_number": "N103",
 		"year": 1990,
 		"game_type": "ss",
 		"produced_units": 160,
@@ -59492,6 +59566,7 @@
 		},
 		"title": "Motor Show",
 		"manufacturer": "Mr. Game",
+		"model_number": "A10203",
 		"year": 1989,
 		"game_type": "ss",
 		"themes": [
@@ -60129,7 +60204,7 @@
 			"Jeanine Mitchell"
 		],
 		"features": "Flippers (3), 5-bank drop targets (2), Kick-out holes (2), single drop target. No pop bumpers. Light animation on backglass (thermometer). Uses two 20-digit, alpha-numeric (with commas), blue Futaba displays.At start of game, player can choose between 'modern' or 'nostalgia' modes. Nostalgia mode imitates electromechanical games by awarding lower levels of points and using synthesized chime sounds.",
-		"notes": "A \"Street level\" game, which were an experiment by Gottlieb towards designing a simplier, single level (no ramps), slightly smaller and cheaper game.  They did not sell very well, and only six models (Premier's 1990 'Silver Slugger', Premier's 1990 'Vegas', Premier's 1990 'Deadly Weapon', Premier's 1990 'Title Fight', Premier's 1991 'Car Hop' and Premier's 1991 'Hoops') were made.",
+		"notes": "A \"Street level\" game, which were an experiment by Gottlieb towards designing a simplier, single level (no ramps), slightly smaller and cheaper game.  They did not sell very well, and only six models (Premier's 1990 'Silver Slugger', Premier's 1990 'Vegas', Premier's 1990 'Deadly Weapon', Premier's 1990 'Title Fight', Premier's 1991 'Car Hop' and Premier's 1991 'Hoops') were made.Compare the playfield layout of Car Hop to Premier's 1994 'World Challenge Soccer' which was not one of the six 'Street level' games and has a ramp and a habitrail.",
 		"slogans": "\"Cruise On Over To.Gottlieb's Car Hop!\""
 	},
 	{
@@ -60248,7 +60323,7 @@
 			"number": 3685,
 			"mfg": 214,
 			"mpu": 30,
-			"rating": "7.9"
+			"rating": "8.0"
 		},
 		"title": "WHO dunnit",
 		"manufacturer": "Bally",
@@ -60703,7 +60778,8 @@
 	{
 		"ipdb": {
 			"number": 3718,
-			"mfg": 351
+			"mfg": 351,
+			"mpu": 4
 		},
 		"title": "Rat Race",
 		"manufacturer": "Williams",
@@ -60718,7 +60794,7 @@
 			"Pam Erickson"
 		],
 		"features": "Players use the joysticks to incline playfield to move ball through various features.",
-		"notes": "'Rat Race' never went into production. Images 18270 through 18276, and images 58943 through 58945, are the same game, serial number XP289. The game name is painted on the cabinet above the coin door, a bell is equipped next to the tilt pendulum, and no numeric test display is mounted near the coin box. This game was first identified to us from England but later moved to Canada.Images 51058 through 51084 show a game with a plastic marquee above the coin door, no bell is equipped near the tilt pendulum, and a numeric test display is mounted near the coin box. This game was identified as located in Canada. Its serial number was unavailable to us.The whitewood playfield pictured here is located in Canada.An electromechanical variety of this game is International Mutoscope Corporation's 1956 'Rock 'N Roll The Crazy Maze'."
+		"notes": "'Rat Race' never went into production. Images 18270 through 18276, and images 58943 through 58945, are the same game, serial number XP289. The game name is painted on the cabinet above the coin door, a bell is equipped next to the tilt pendulum, and no numeric test display is mounted near the coin box. This game was first identified to us from England but later moved to Canada.Images 51058 through 51084 show a game with a plastic marquee above the coin door, no bell is equipped near the tilt pendulum, and a numeric test display is mounted near the coin box. This game was identified as located in Canada. Its serial number was unavailable to us.The whitewood playfield pictured here is located in Canada.A subsequent game with a maneuverable playfield is Alvin G's 1993 'Dinosaur Eggs'.An electromechanical variety of this game is International Mutoscope Corporation's 1956 'Rock 'N Roll The Crazy Maze'."
 	},
 	{
 		"ipdb": {
@@ -60785,17 +60861,6 @@
 		"manufacturer": "Nordamatic",
 		"year": 1977,
 		"game_type": "em"
-	},
-	{
-		"ipdb": {
-			"number": 3724,
-			"mfg": 53
-		},
-		"title": "Sexy Girl",
-		"manufacturer": "Bell Coin Matics",
-		"year": 1979,
-		"game_type": "ss",
-		"notes": "This listing is incorrect and unnecessary and will be deleted.See Arkon Automaten's 1980 'Sexy Girl'."
 	},
 	{
 		"ipdb": {
@@ -61809,7 +61874,7 @@
 			"number": 3792,
 			"mfg": 280,
 			"mpu": 33,
-			"rating": "7.7"
+			"rating": "7.8"
 		},
 		"title": "Goldeneye",
 		"manufacturer": "Sega",
@@ -61836,7 +61901,7 @@
 			"number": 3793,
 			"mfg": 257,
 			"mpu": 37,
-			"rating": "7.1"
+			"rating": "6.9"
 		},
 		"title": "Waterworld",
 		"manufacturer": "Premier",
@@ -62161,7 +62226,7 @@
 			"George Molentin"
 		],
 		"features": "Flippers (2), Pop bumpers (3), Passive bumpers (6), Slingshots (2), Gobble hole (1). No outlanes. The replay counter is three digits to accommodate high replay awards. Mechanical backbox animation (dancers lift their skirts, viewed through a mirror). Console cabinet.Sound: 2 bells, knocker",
-		"notes": "Reportedly, there is a different bonus for each ball that comes into play. Pictured here is the bonus for 4th ball as shown on the backglass.Without a manufacturer flyer or old advertisements available, we are unable to confirm if this game has the Star Feature that might account for the 3-digit replay mechanism, and we note the lower apron does not have the illuminating insert as do other games that have that feature. The backbox door has two relays for \"Star Bonus\" but this may be for a different feature. If anyone can provide us confirmation whether or not the Star Feature exists in this game, please contact us.The manufacturer�s original playfield drawing (not shown here) is dated 7/20/55, is unsigned (no designer name or initials), and has a note, \"Revised from Silver Frolics\"."
+		"notes": "Reportedly, there is a different bonus for each ball that comes into play. Pictured here is the bonus for 4th ball as shown on the backglass.We have no manufacturer flyer or old advertisements available to help us explain the need for the 3-digit replay mechanism. However, we received the following description from someone who had played this game extensively:There is a feature we called the \"5th Ball Special\".  At the start of a game when you were fortunate enough to be awarded this \"5th Ball Special\" it was nearly impossible to focus on the first 4 balls.  On the 5th ball this special activated a roll-over button - \"Advances Special Bonus When Lit\" on the left side near the number 9 bumper. Each time you rolled over this button, the value of the gobble hole increased by 5 replays/free games up to the max number of 50. If, while the 5th Ball Special was active, you were not fortunate enough to \"lose\" the ball via the gobble hole, then whatever number of replays you had advanced to remained in force for future games. There were 2 ways to win this bonus: 1) Either complete the 1 thru 10 sequence and drain the ball via the gobble hole, or 2) get lucky and be awarded the 5th Ball Special at the beginning of a game.  But you still had to drain via the gobble hole on the 5th ball to win the replays.Since you could win up to 50 replays for one gobble hole drain, this explains why there is a 3-digit replay mechanism.The backbox door has two relays for \"Star Bonus\" but this is not to be confused with the Star Feature used on other Williams games that also have the 3-digit replay mechanism.The manufacturer�s original playfield drawing (not shown here) is dated 7/20/55, is unsigned (no designer name or initials), and has a note, \"Revised from Silver Frolics\"."
 	},
 	{
 		"ipdb": {
@@ -62209,6 +62274,7 @@
 		},
 		"title": "Las Vegas",
 		"manufacturer": "Mattel Electronics Company (1977)",
+		"model_number": "PJ2442YL01",
 		"year": 1977,
 		"themes": [
 			"Gambling"
@@ -62264,7 +62330,7 @@
 			"number": 3824,
 			"mfg": 349,
 			"mpu": 11,
-			"rating": "8.3"
+			"rating": "8.2"
 		},
 		"title": "Tales of the Arabian Nights",
 		"manufacturer": "Williams",
@@ -63624,6 +63690,7 @@
 		},
 		"title": "Big Shot",
 		"manufacturer": "Gotham Pressed Steel Corporation (1936-1947)",
+		"model_number": "G",
 		"year": 1937,
 		"game_type": "pm",
 		"features": "This pinball game is made of steel and measures 12 1/4 x 24 1/4\". The playing board is made of hard pressed cardboard with a cardboard back.",
@@ -63858,7 +63925,7 @@
 			"number": 3945,
 			"mfg": 76,
 			"mpu": 32,
-			"rating": "6.7"
+			"rating": "6.8"
 		},
 		"title": "Flipper Football",
 		"manufacturer": "Capcom",
@@ -64285,7 +64352,7 @@
 		},
 		"title": "Amazon Hunt II",
 		"manufacturer": "Premier",
-		"model_number": "684",
+		"model_number": "684C",
 		"year": 1987,
 		"game_type": "ss",
 		"produced_units": 781,
@@ -64563,7 +64630,8 @@
 		"ipdb": {
 			"number": 4000,
 			"mfg": 76,
-			"mpu": 32
+			"mpu": 32,
+			"rating": "7.1"
 		},
 		"title": "Kingpin",
 		"manufacturer": "Capcom",
@@ -64584,10 +64652,11 @@
 			"number": 4001,
 			"mfg": 76,
 			"mpu": 32,
-			"rating": "7.2"
+			"rating": "7.3"
 		},
 		"title": "Big Bang Bar",
 		"manufacturer": "Capcom",
+		"model_number": "BIG3003",
 		"year": 1996,
 		"game_type": "ss",
 		"short": [
@@ -64925,7 +64994,7 @@
 			"Kevin O'Connor"
 		],
 		"features": "The mechanical backbox animation consists of a flipper in the lower right part of the backbox and a basket on the far left side. The game controls the backbox flipper sometimes when points are scored. For instance, after a set amount of pop bumper hits, during multiball, and during the Egyptian Soda and Hot Dog Mania modes. The exception is Pizza Power Shots mode. In this mode, the player tries to score as many points as possible in the backbox basket. This is done by flipping the backbox flipper at the right moment. A basket shot can be worth 1, 2 or 3 points, depending on the amount shown in the score display at the moment of hitting the basket switch.",
-		"notes": "Voice-over artist Tim Kitzrow provided the voice of the play-by-play announcer.This game is equipped with four pinballs.",
+		"notes": "Voice-over artist Tim Kitzrow provided the voice of the play-by-play announcer.This game is equipped with four pinballs.There are two versions of the playfield. Later versions of the playfield had two holes in the playfield below the aerial basketball hoop, each in the shape of a \"racetrack oval\", each placed between two posts that support a rubber ring. One hole was used to route an opto wire through while the other one was unused as far as we know. Earlier versions of the playfield did not have these holes and instead routed the opto wire up and behind the scoreboard. The difference is explained here.",
 		"slogans": "\"The Hottest Rookie of the Year!\"\n\"They Shoot, You Score!\""
 	},
 	{
@@ -65769,6 +65838,7 @@
 		},
 		"title": "Corsario",
 		"manufacturer": "Inder",
+		"model_number": "A",
 		"year": 1989,
 		"game_type": "ss"
 	},
@@ -65833,6 +65903,7 @@
 		},
 		"title": "Atleta",
 		"manufacturer": "Inder",
+		"model_number": "A",
 		"year": 1991,
 		"game_type": "ss",
 		"themes": [
@@ -67555,6 +67626,7 @@
 		},
 		"title": "Kings of the Turf (Second Model)",
 		"manufacturer": "H. C. Evans & Company",
+		"model_number": "E22",
 		"year": 1935,
 		"game_type": "em",
 		"themes": [
@@ -67737,6 +67809,7 @@
 		},
 		"title": "Kings of the Turf (Payout Model)",
 		"manufacturer": "H. C. Evans & Company",
+		"model_number": "E33",
 		"year": 1935,
 		"game_type": "em",
 		"themes": [
@@ -68647,10 +68720,11 @@
 			"number": 4336,
 			"mfg": 257,
 			"mpu": 37,
-			"rating": "7.0"
+			"rating": "6.9"
 		},
 		"title": "Strikes 'N Spares",
 		"manufacturer": "Premier",
+		"model_number": "N111",
 		"year": 1995,
 		"game_type": "ss",
 		"produced_units": 750,
@@ -68697,7 +68771,7 @@
 			"number": 4338,
 			"mfg": 349,
 			"mpu": 11,
-			"rating": "8.1"
+			"rating": "8.0"
 		},
 		"title": "No Good Gofers",
 		"manufacturer": "Williams",
@@ -68765,7 +68839,7 @@
 			"number": 4341,
 			"mfg": 280,
 			"mpu": 33,
-			"rating": "7.7"
+			"rating": "7.8"
 		},
 		"title": "Starship Troopers",
 		"manufacturer": "Sega",
@@ -69074,6 +69148,10 @@
 			"TCP"
 		],
 		"produced_units": 1369,
+		"themes": [
+			"Sports",
+			"Boxing"
+		],
 		"artists": [
 			"Paul Barker",
 			"Linda Doane (aka Deal)"
@@ -70077,7 +70155,7 @@
 		},
 		"title": "Amazon Hunt III",
 		"manufacturer": "Premier",
-		"model_number": "684",
+		"model_number": "684D",
 		"year": 1991,
 		"game_type": "ss",
 		"produced_units": 200,
@@ -70283,6 +70361,14 @@
 			"Licensed",
 			"Juvenilia"
 		],
+		"designers": [
+			"Joe Balcer",
+			"Joe Kaminkow"
+		],
+		"artists": [
+			"Kevin O'Connor"
+		],
+		"features": "Flippers (2), Pop bumpers (3), Slingshots (2).Pressing flipper buttons 2x left, 2x right, 2x left, 2x right during attract mode will display the personnel credits on the DMD.",
 		"notes": "Adult cartoon theme with puerile elements. The operator can address this by selecting one of three modes: 'G' for family areas, 'TV-14' for teenage areas, or 'TV-MA' for adult areas.It has been reported the production run was 2,200 initially and either 242 or 600 on the second run.In this listing is an Early Production game with serial number 146406 showing the upper right ramp decal and plastic that appear in the flyer. Included in the game was a large decal in the design of an arrow that the operator could use to cover up playfield artwork that might be deemed objectionable.",
 		"toys": "Figurines of the various cartoon characters. Toilet on playfield \"flushes\" balls during multiball play."
 	},
@@ -70430,10 +70516,11 @@
 			"number": 4455,
 			"mfg": 303,
 			"mpu": 33,
-			"rating": "6.3"
+			"rating": "6.6"
 		},
 		"title": "Harley-Davidson (1st Edition)",
 		"manufacturer": "Stern",
+		"model_number": "PINBALL",
 		"year": 1999,
 		"game_type": "ss",
 		"short": [
@@ -70833,6 +70920,7 @@
 		},
 		"title": "Brave Team",
 		"manufacturer": "Inder",
+		"model_number": "A",
 		"year": 1985,
 		"game_type": "ss",
 		"features": "Flippers (2), Pop bumpers (3), Standup targets (6), 4-bank drop targets (2), Messenger balls (2), Left and right dual inlanes.",
@@ -70845,6 +70933,7 @@
 		},
 		"title": "Bushido",
 		"manufacturer": "Inder",
+		"model_number": "A",
 		"year": 1993,
 		"game_type": "ss",
 		"themes": [
@@ -71095,8 +71184,8 @@
 		"artists": [
 			"Dick White"
 		],
-		"features": "Flippers (2), Pop bumpers (2), Kick-out hole (1), Rollunder spinner (1).",
-		"notes": "`Black Jack' was produced in both EM and SS versions."
+		"features": "Flippers (2), Pop bumpers (3), Slingshots (2), Standup targets (4), Kick-out hole (1), Spinning target (1).",
+		"notes": "The 4-player SS version of this game is Bally's 1977 'Black Jack'."
 	},
 	{
 		"ipdb": {
@@ -71153,7 +71242,7 @@
 			"number": 4501,
 			"mfg": 47,
 			"mpu": 13,
-			"rating": "7.7"
+			"rating": "7.8"
 		},
 		"title": "Mata Hari",
 		"manufacturer": "Bally",
@@ -71234,7 +71323,7 @@
 			"number": 4505,
 			"mfg": 303,
 			"mpu": 33,
-			"rating": "7.3"
+			"rating": "7.4"
 		},
 		"title": "Monopoly",
 		"manufacturer": "Stern",
@@ -71654,7 +71743,7 @@
 			"number": 4536,
 			"mfg": 303,
 			"mpu": 33,
-			"rating": "7.1"
+			"rating": "7.2"
 		},
 		"title": "RollerCoaster Tycoon",
 		"manufacturer": "Stern",
@@ -71834,7 +71923,7 @@
 			"number": 4547,
 			"mfg": 149
 		},
-		"title": "New Roll-A-BallHit The Goal",
+		"title": "New Roll-A-Ball/Hit The Goal",
 		"manufacturer": "Hercules Novelty Company, Incorporated",
 		"year": 1931,
 		"game_type": "pm"
@@ -72820,11 +72909,13 @@
 		},
 		"title": "Mach 2.0 Two",
 		"manufacturer": "Spinball",
+		"model_number": "2278",
 		"year": 1995,
 		"game_type": "ss",
 		"themes": [
 			"Aviation"
 		],
+		"features": "3 or 5 ball play.",
 		"notes": "The manufacturer's flyer and game manual refer to this game as 'Mach 2' while the backglass shows 'Mach 2.0 Two'.Designed by Inder before they closed.",
 		"toys": "The two aircraft models on the playfield are a SAAB JAS 39 Gripen fighter and a General Dynamics F-111-A Aardvark fighter-bomber."
 	},
@@ -72868,7 +72959,9 @@
 		"title": "Sleic Pin Ball",
 		"manufacturer": "Creaciones e Investigaciones Electr�nicas, Sociedad Limitada",
 		"year": 1994,
-		"game_type": "ss"
+		"game_type": "ss",
+		"features": "Flippers (2), Pop bumpers (2), Slingshots (2), 3-bank drop targets (2), Messenger balls (2), Standup targets (2), Spinning target (1).",
+		"notes": "Same playfield layout as Juegos Populares, S.A.'s 1984 'Petaco'."
 	},
 	{
 		"ipdb": {
@@ -72944,7 +73037,7 @@
 			"number": 4628,
 			"mfg": 377
 		},
-		"title": "Up 7 12",
+		"title": "Up 7 1/2",
 		"manufacturer": "Bill Port",
 		"game_type": "em",
 		"themes": [
@@ -73099,6 +73192,7 @@
 		},
 		"title": "Flush",
 		"manufacturer": "Maresa",
+		"model_number": "FL",
 		"game_type": "em",
 		"themes": [
 			"Cards/Gambling"
@@ -73379,7 +73473,8 @@
 	{
 		"ipdb": {
 			"number": 4663,
-			"mfg": 48
+			"mfg": 48,
+			"mpu": 38
 		},
 		"title": "Karate Fight",
 		"manufacturer": "Midway",
@@ -73402,10 +73497,12 @@
 		"ipdb": {
 			"number": 4664,
 			"mfg": 303,
+			"mpu": 33,
 			"rating": "7.9"
 		},
 		"title": "Harley-Davidson (2nd Edition)",
 		"manufacturer": "Stern",
+		"model_number": "PINBALL",
 		"year": 2002,
 		"game_type": "ss",
 		"short": [
@@ -73561,6 +73658,7 @@
 		"ipdb": {
 			"number": 4674,
 			"mfg": 303,
+			"mpu": 33,
 			"rating": "8.1"
 		},
 		"title": "The Simpsons Pinball Party",
@@ -73740,7 +73838,8 @@
 	},
 	{
 		"ipdb": {
-			"number": 4689
+			"number": 4689,
+			"mpu": 13
 		},
 		"title": "Verspiel Dein Wasser nicht",
 		"year": 1984,
@@ -73896,6 +73995,7 @@
 		},
 		"title": "Trik-E-Shot",
 		"manufacturer": "Gotham Pressed Steel Corporation (1936-1947)",
+		"model_number": "G",
 		"year": 1936,
 		"game_type": "pm",
 		"features": "Comes with ten marbles, in cardboard holder, and two wooden pegs for playfield slant.",
@@ -73964,6 +74064,7 @@
 		},
 		"title": "All-Star Basketball Game (with bell)",
 		"manufacturer": "Gotham Pressed Steel Corporation (1936-1947)",
+		"model_number": "G",
 		"year": 1947,
 		"game_type": "pm",
 		"themes": [
@@ -73980,6 +74081,7 @@
 		},
 		"title": "Ride \"M\" Cowboy",
 		"manufacturer": "Gotham Pressed Steel Corporation (1936-1947)",
+		"model_number": "G",
 		"year": 1939,
 		"game_type": "pm",
 		"themes": [
@@ -74087,6 +74189,7 @@
 		},
 		"title": "Circus Trix",
 		"manufacturer": "Gotham Pressed Steel Corporation (1936-1947)",
+		"model_number": "G",
 		"year": 1936,
 		"game_type": "pm",
 		"themes": [
@@ -74293,7 +74396,7 @@
 		"manufacturer": "Shyvers Coin Automatic Machine Company",
 		"year": 1934,
 		"game_type": "pm",
-		"notes": "Part of the Spirit of America series."
+		"notes": "Part of the Spirit of America series.According to the Encyclopedia of Pinball Vol 2 page 38, this manufacturer presented their Spirit of America line of games at Chicago's 1934 Coin Machine Exhibition in February but the EOP2 text does not clearly indicate if Silver Moon was among them in February or if this game only appeared at a California show the next month, March.We are unable to discern if this January 1934 listing is an unnecessary duplicate listing of our July 1934 listing or why that listing is dated July. More information is needed to determine the correct first month of manufacture and if the game was modified by the manufacture to warrant an addition listing."
 	},
 	{
 		"ipdb": {
@@ -74325,7 +74428,8 @@
 		"manufacturer": "Shyvers Coin Automatic Machine Company",
 		"year": 1934,
 		"game_type": "em",
-		"notes": "Part of the Spirit of America series.Also produced in a Junior model."
+		"features": "One example of this game (not shown here) measured 57 3/4 inches long and 23 1/2 inches wide (not including legs). The height on legs was 39 1/2 inches in the front and 43 inches in the back.",
+		"notes": "Part of the Spirit of America series.Also produced as Shyvers Coin Automatic Machine Company's 1934 'Silver Moon Jr.'.According to the Encyclopedia of Pinball Vol 2 page 38, this manufacturer presented their Spirit of America line of games at Chicago's 1934 Coin Machine Exhibition in February but the EOP2 text does not clearly indicate if Silver Moon was among them in February or if this game only appeared at a California show the next month, March.We are unable to discern why this listing is dated July 1934 or if our January 1934 listing is an unnecessary duplicate listing. More information is needed to determine the correct first month of manufacture and if the game was modified by the manufacture to warrant an addition listing."
 	},
 	{
 		"ipdb": {
@@ -74743,7 +74847,8 @@
 	{
 		"ipdb": {
 			"number": 4768,
-			"mfg": 48
+			"mfg": 48,
+			"mpu": 19
 		},
 		"title": "Big Bat",
 		"manufacturer": "Midway",
@@ -74758,7 +74863,8 @@
 	{
 		"ipdb": {
 			"number": 4769,
-			"mfg": 94
+			"mfg": 94,
+			"rating": "6.7"
 		},
 		"title": "Solar Ride",
 		"manufacturer": "Gottlieb",
@@ -74781,7 +74887,8 @@
 	{
 		"ipdb": {
 			"number": 4770,
-			"mfg": 47
+			"mfg": 47,
+			"mpu": 13
 		},
 		"title": "Bow and Arrow",
 		"manufacturer": "Bally",
@@ -74891,7 +74998,7 @@
 		},
 		"title": "Subway",
 		"manufacturer": "Gottlieb",
-		"model_number": "228",
+		"model_number": "228it",
 		"year": 1966,
 		"game_type": "em",
 		"themes": [
@@ -74910,7 +75017,7 @@
 		"ipdb": {
 			"number": 4778,
 			"mfg": 93,
-			"rating": "8.3"
+			"rating": "8.0"
 		},
 		"title": "Ice Show",
 		"manufacturer": "Gottlieb",
@@ -75042,6 +75149,7 @@
 		"ipdb": {
 			"number": 4787,
 			"mfg": 303,
+			"mpu": 33,
 			"rating": "7.5"
 		},
 		"title": "Terminator 3: Rise of the Machines",
@@ -75236,7 +75344,7 @@
 		"ipdb": {
 			"number": 4803
 		},
-		"title": "Unknown (\"One Star  One Bell\")",
+		"title": "Unknown (\"One Star / One Bell\")",
 		"game_type": "pm",
 		"features": "Game measures approximately 9 inches by 20 inches. Background is green cardboard over wood. Sides are dovetailed.",
 		"notes": "So far this game is not identified by name or manufacturer. If you know, please tell us. The back is one piece of solid pine with no writing on it.  Possibly, this game was made by Montague Redgrave for Sears. Date is estimated circa 1880's."
@@ -75244,7 +75352,8 @@
 	{
 		"ipdb": {
 			"number": 4804,
-			"mfg": 48
+			"mfg": 48,
+			"mpu": 19
 		},
 		"title": "Grand Slam",
 		"manufacturer": "Midway",
@@ -75362,7 +75471,8 @@
 	{
 		"ipdb": {
 			"number": 4813,
-			"mfg": 54
+			"mfg": 54,
+			"mpu": 14
 		},
 		"title": "Movie",
 		"manufacturer": "Bell Games",
@@ -75856,7 +75966,8 @@
 	{
 		"ipdb": {
 			"number": 4854,
-			"mfg": 156
+			"mfg": 156,
+			"mpu": 39
 		},
 		"title": "Hot & Cold",
 		"manufacturer": "Inder",
@@ -75905,10 +76016,12 @@
 		"ipdb": {
 			"number": 4858,
 			"mfg": 303,
+			"mpu": 41,
 			"rating": "8.1"
 		},
 		"title": "The Lord of the Rings",
 		"manufacturer": "Stern",
+		"model_number": "I",
 		"year": 2003,
 		"game_type": "ss",
 		"short": [
@@ -75961,6 +76074,7 @@
 		},
 		"title": "Bronco Busters",
 		"manufacturer": "Gotham Pressed Steel Corporation (1936-1947)",
+		"model_number": "G136",
 		"game_type": "pm",
 		"themes": [
 			"American West"
@@ -76015,6 +76129,7 @@
 		},
 		"title": "Hop Shot",
 		"manufacturer": "Gotham Pressed Steel Corporation (1936-1947)",
+		"model_number": "G",
 		"year": 1936,
 		"game_type": "pm",
 		"features": "Game measures approx 24 inches by 12 inches. Comes with ten marbles in a cardboard holder, and one wooden peg for playfield slant."
@@ -76034,7 +76149,7 @@
 			"number": 4867,
 			"mfg": 328
 		},
-		"title": "Parlor Bagatelle (\"One Star  One Bell\")",
+		"title": "Parlor Bagatelle (\"One Star / One Bell\")",
 		"manufacturer": "Unknown",
 		"year": 1898,
 		"game_type": "pm",
@@ -76045,7 +76160,7 @@
 		"ipdb": {
 			"number": 4868,
 			"mfg": 371,
-			"rating": "8.0"
+			"rating": "7.5"
 		},
 		"title": "Impacto",
 		"manufacturer": "Recreativos Franco",
@@ -76096,7 +76211,7 @@
 			"Playing Dice"
 		],
 		"features": "7 balls for 1 cent. Game is 31 inches long by 16 inches wide.",
-		"notes": ""
+		"notes": "In the dice game of craps, the term \"Little Joe\" means rolling two two's."
 	},
 	{
 		"ipdb": {
@@ -76250,8 +76365,8 @@
 			"Music",
 			"People"
 		],
-		"features": "Flippers (2), Pop bumpers (2), Slingshots (2), 3-bank drop targets (2), Captive balls (2), Spinning target (1). Backglass has a constantly spinning LED \"wheel\" for a random number match. 3 or 5 ball play.",
-		"notes": "The Z80-based \"Master Unit\" and \"Sound Input-Output Unit\" are installed in the lower Cabinet and the LED displays with some control logic are in the backbox. All game settings are made by slide switches on a board near the coin door."
+		"features": "Flippers (2), Pop bumpers (2), Slingshots (2), 3-bank drop targets (2), Messenger balls (2), Standup targets (2), Spinning target (1). Backglass has a constantly spinning LED \"wheel\" for a random number match. 3 or 5 ball play.",
+		"notes": "Same playfield layout as SLEIC's 1994 'Sleic Pin Ball'.The Z80-based \"Master Unit\" and \"Sound Input-Output Unit\" are installed in the lower Cabinet and the LED displays with some control logic are in the backbox. All game settings are made by slide switches on a board near the coin door."
 	},
 	{
 		"ipdb": {
@@ -76277,6 +76392,7 @@
 		},
 		"title": "Air Raid Defense",
 		"manufacturer": "Gotham Pressed Steel Corporation (1936-1947)",
+		"model_number": "G",
 		"game_type": "pm",
 		"themes": [
 			"Warfare"
@@ -76339,6 +76455,7 @@
 		},
 		"title": "Wonder Wizard Demolition Derby",
 		"manufacturer": "Sentinel Inc.",
+		"model_number": "PH7730WA02",
 		"game_type": "ss",
 		"themes": [
 			"Sports",
@@ -76517,7 +76634,8 @@
 	{
 		"ipdb": {
 			"number": 4905,
-			"mfg": 280
+			"mfg": 280,
+			"mpu": 33
 		},
 		"title": "Mini-Viper",
 		"manufacturer": "Sega",
@@ -76695,10 +76813,12 @@
 		"ipdb": {
 			"number": 4917,
 			"mfg": 303,
+			"mpu": 41,
 			"rating": "8.0"
 		},
 		"title": "Ripley's Believe It or Not",
 		"manufacturer": "Stern",
+		"model_number": "I",
 		"year": 2003,
 		"game_type": "ss",
 		"short": [
@@ -76937,7 +77057,8 @@
 	{
 		"ipdb": {
 			"number": 4935,
-			"mfg": 349
+			"mfg": 349,
+			"mpu": 8
 		},
 		"title": "Gold Mine",
 		"manufacturer": "Williams",
@@ -77043,7 +77164,8 @@
 	{
 		"ipdb": {
 			"number": 4943,
-			"mfg": 477
+			"mfg": 477,
+			"mpu": 14
 		},
 		"title": "Jungle Queen",
 		"manufacturer": "Pinball Shop",
@@ -77104,7 +77226,7 @@
 			"Rodeo"
 		],
 		"features": "Flippers (2), Pop bumpers (2), Slingshots (2), Standup target (1).",
-		"notes": "Owner states game is single-player.According to the manufacturer flyer, the game was made in choice of yellow cabinet or woodgrain cabinet."
+		"notes": "Owner states game is single-player.According to the manufacturer flyer, the game was made in choice of yellow cabinet or woodgrain cabinet.Reportedly, the same generic owners manual  was included with the manufacturer's solid state home models for Skate King, Super Star, Rodeo, Demolition Classic, Cosmic Pinball, and Circus. The one in our Files section carries a date of 08/24/77 which suggests there may be other versions having earlier or later dates."
 	},
 	{
 		"ipdb": {
@@ -77411,6 +77533,7 @@
 		},
 		"title": "Flying Aces",
 		"manufacturer": "Sentinel Inc.",
+		"model_number": "PH7730WA01",
 		"game_type": "ss",
 		"themes": [
 			"Aviation"
@@ -77611,10 +77734,12 @@
 		"ipdb": {
 			"number": 4983,
 			"mfg": 303,
+			"mpu": 41,
 			"rating": "7.6"
 		},
 		"title": "Elvis",
 		"manufacturer": "Stern",
+		"model_number": "I",
 		"year": 2004,
 		"game_type": "ss",
 		"themes": [
@@ -78045,7 +78170,7 @@
 			"Outer Space"
 		],
 		"features": "Flippers (2). Metal legs.",
-		"notes": "The electromechanical version of this game is Briarwood's 1977 'Cosmic Pinball'.We previously showed a manufacture date of August 1977 but that date is not supported, so we removed it."
+		"notes": "The electromechanical version of this game is Briarwood's 1977 'Cosmic Pinball'.We previously showed a manufacture date of August 1977 but that date is not supported, so we removed it.Reportedly, the same generic owners manual  was included with the manufacturer's solid state home models for Skate King, Super Star, Rodeo, Demolition Classic, Cosmic Pinball, and Circus. The one in our Files section carries a date of 08/24/77 which suggests there may be other versions having earlier or later dates."
 	},
 	{
 		"ipdb": {
@@ -78128,11 +78253,12 @@
 		"ipdb": {
 			"number": 5021,
 			"mfg": 48,
+			"mpu": 18,
 			"rating": "7.3"
 		},
 		"title": "Eight Ball Deluxe",
 		"manufacturer": "Midway",
-		"model_number": "0",
+		"model_number": "0B87",
 		"year": 1984,
 		"game_type": "ss",
 		"short": [
@@ -78501,7 +78627,7 @@
 		"ipdb": {
 			"number": 5049,
 			"mfg": 350,
-			"rating": "7.4"
+			"rating": "7.5"
 		},
 		"title": "Deluxe Official Baseball",
 		"manufacturer": "Williams",
@@ -78556,10 +78682,12 @@
 		"ipdb": {
 			"number": 5053,
 			"mfg": 303,
+			"mpu": 41,
 			"rating": "7.4"
 		},
 		"title": "The Sopranos",
 		"manufacturer": "Stern",
+		"model_number": "I",
 		"year": 2005,
 		"game_type": "ss",
 		"themes": [
@@ -78877,7 +79005,7 @@
 		"ipdb": {
 			"number": 5078,
 			"mfg": 94,
-			"rating": "8.0"
+			"rating": "7.8"
 		},
 		"title": "Joker Poker",
 		"manufacturer": "Gottlieb",
@@ -79092,10 +79220,12 @@
 		"ipdb": {
 			"number": 5093,
 			"mfg": 303,
+			"mpu": 41,
 			"rating": "7.0"
 		},
 		"title": "NASCAR",
 		"manufacturer": "Stern",
+		"model_number": "I",
 		"year": 2005,
 		"game_type": "ss",
 		"themes": [
@@ -79249,7 +79379,7 @@
 			"Dick White"
 		],
 		"features": "Unlike the EM version, hitting the A-B-C-D targets in sequence awards extra bonus points in addition to lighting the double bonus.Game was controlled by the \"Bally Brain\" which is a small board with a microprocessor on it that clips into two connectors on the backbox motherboard. It was based on the Intel 4-bit 4004, the world's first single-chip microprocessor.",
-		"notes": "Engineer Jeff Frederiksen of Dave Nutting Associates designed this engineering prototype for Bally, converting an EM version of Bally's 1975 'Flicker' having serial number #1074.An interesting GameRoom article details the chance \"discovery\" of this prototype in 1998 and its place in history as the basis for Mirco Games, Inc.'s 1975 'Spirit of 76' and other solid state games that followed.The original Bally Brain card was lost prior to 1998 but was recreated in 2011 and installed in this game.Patent 4,093,232 [Player operated game apparatus] filed May 13, 1975, granted June 6, 1978 to David J. Nutting and Jeffrey E. Frederiksen, assignee is Bally Manufacturing Corporation."
+		"notes": "Engineer Jeff Frederiksen of Dave Nutting Associates designed this engineering prototype for Bally, converting an EM version of Bally's 1975 'Flicker' having serial number #1074.In our Files section is an interesting GameRoom article written and provided to us by Alexis Tzannes that details the chance \"discovery\" of this prototype in 1998 and its place in history as the basis for Mirco Games, Inc.'s 1975 'Spirit of 76' and other solid state games that followed.The original Bally Brain card was lost prior to 1998 but was recreated in 2011 and installed in this game.Patent 4,093,232 [Player operated game apparatus] filed May 13, 1975, granted June 6, 1978 to David J. Nutting and Jeffrey E. Frederiksen, assignee is Bally Manufacturing Corporation."
 	},
 	{
 		"ipdb": {
@@ -79434,7 +79564,8 @@
 	{
 		"ipdb": {
 			"number": 5118,
-			"mfg": 477
+			"mfg": 477,
+			"mpu": 35
 		},
 		"title": "Horror",
 		"manufacturer": "Pinball Shop",
@@ -79464,10 +79595,12 @@
 		"ipdb": {
 			"number": 5120,
 			"mfg": 303,
-			"rating": "7.2"
+			"mpu": 41,
+			"rating": "7.3"
 		},
 		"title": "Grand Prix",
 		"manufacturer": "Stern",
+		"model_number": "I",
 		"year": 2005,
 		"game_type": "ss",
 		"short": [
@@ -79662,10 +79795,12 @@
 		"ipdb": {
 			"number": 5134,
 			"mfg": 303,
-			"rating": "7.1"
+			"mpu": 54,
+			"rating": "7.2"
 		},
 		"title": "World Poker Tour",
 		"manufacturer": "Stern",
+		"model_number": "I",
 		"year": 2006,
 		"game_type": "ss",
 		"short": [
@@ -79747,7 +79882,8 @@
 	{
 		"ipdb": {
 			"number": 5139,
-			"mfg": 94
+			"mfg": 94,
+			"mpu": 15
 		},
 		"title": "Critical Mass",
 		"manufacturer": "Gottlieb",
@@ -79879,7 +80015,7 @@
 			"number": 5152,
 			"mfg": 54
 		},
-		"title": "World Cup  World Championship",
+		"title": "World Cup / World Championship",
 		"manufacturer": "Bell Games",
 		"game_type": "ss",
 		"themes": [
@@ -80054,10 +80190,12 @@
 		"ipdb": {
 			"number": 5163,
 			"mfg": 303,
+			"mpu": 54,
 			"rating": "7.5"
 		},
 		"title": "Pirates of the Caribbean",
 		"manufacturer": "Stern",
+		"model_number": "I",
 		"year": 2006,
 		"game_type": "ss",
 		"short": [
@@ -80303,7 +80441,8 @@
 	{
 		"ipdb": {
 			"number": 5179,
-			"mfg": 495
+			"mfg": 495,
+			"mpu": 18
 		},
 		"title": "Genesis",
 		"manufacturer": "Elbos",
@@ -80793,7 +80932,8 @@
 	{
 		"ipdb": {
 			"number": 5217,
-			"mfg": 222
+			"mfg": 222,
+			"mpu": 55
 		},
 		"title": "Fast Track",
 		"manufacturer": "Mr. Game",
@@ -80825,10 +80965,12 @@
 		"ipdb": {
 			"number": 5219,
 			"mfg": 303,
+			"mpu": 54,
 			"rating": "7.7"
 		},
 		"title": "Family Guy",
 		"manufacturer": "Stern",
+		"model_number": "I",
 		"year": 2006,
 		"game_type": "ss",
 		"short": [
@@ -80920,7 +81062,8 @@
 	{
 		"ipdb": {
 			"number": 5226,
-			"mfg": 302
+			"mfg": 302,
+			"mpu": 34
 		},
 		"title": "Hypnox",
 		"manufacturer": "Stern",
@@ -81026,7 +81169,8 @@
 	{
 		"ipdb": {
 			"number": 5233,
-			"mfg": 303
+			"mfg": 303,
+			"mpu": 33
 		},
 		"title": "The Brain",
 		"manufacturer": "Stern",
@@ -81083,10 +81227,12 @@
 		"ipdb": {
 			"number": 5237,
 			"mfg": 303,
-			"rating": "8.1"
+			"mpu": 54,
+			"rating": "8.0"
 		},
 		"title": "Spider-Man",
 		"manufacturer": "Stern",
+		"model_number": "I",
 		"year": 2007,
 		"game_type": "ss",
 		"short": [
@@ -81183,6 +81329,7 @@
 		"ipdb": {
 			"number": 5244,
 			"mfg": 511,
+			"mpu": 32,
 			"rating": "7.1"
 		},
 		"title": "Big Bang Bar",
@@ -81271,7 +81418,8 @@
 	{
 		"ipdb": {
 			"number": 5251,
-			"mfg": 328
+			"mfg": 328,
+			"mpu": 13
 		},
 		"title": "Super Zeus",
 		"manufacturer": "Unknown",
@@ -81301,10 +81449,12 @@
 		"ipdb": {
 			"number": 5254,
 			"mfg": 303,
+			"mpu": 54,
 			"rating": "7.5"
 		},
 		"title": "Wheel Of Fortune",
 		"manufacturer": "Stern",
+		"model_number": "I",
 		"year": 2007,
 		"game_type": "ss",
 		"short": [
@@ -81476,7 +81626,8 @@
 	{
 		"ipdb": {
 			"number": 5265,
-			"mfg": 328
+			"mfg": 328,
+			"mpu": 16
 		},
 		"title": "Mythology",
 		"manufacturer": "Unknown",
@@ -81594,7 +81745,8 @@
 	{
 		"ipdb": {
 			"number": 5274,
-			"mfg": 303
+			"mfg": 303,
+			"mpu": 54
 		},
 		"title": "Good Morning America",
 		"manufacturer": "Stern",
@@ -81644,10 +81796,12 @@
 		"ipdb": {
 			"number": 5277,
 			"mfg": 303,
+			"mpu": 33,
 			"rating": "6.8"
 		},
 		"title": "Harley-Davidson (3rd Edition)",
 		"manufacturer": "Stern",
+		"model_number": "PINBALL",
 		"game_type": "ss",
 		"short": [
 			"HD3"
@@ -81692,7 +81846,7 @@
 		},
 		"title": "Loop the Loop",
 		"manufacturer": "Bally",
-		"model_number": "778",
+		"model_number": "778B",
 		"year": 1965,
 		"game_type": "em",
 		"themes": [
@@ -82014,10 +82168,12 @@
 		"ipdb": {
 			"number": 5301,
 			"mfg": 303,
+			"mpu": 54,
 			"rating": "7.8"
 		},
 		"title": "Shrek",
 		"manufacturer": "Stern",
+		"model_number": "I",
 		"year": 2008,
 		"game_type": "ss",
 		"themes": [
@@ -82100,10 +82256,12 @@
 		"ipdb": {
 			"number": 5306,
 			"mfg": 303,
+			"mpu": 54,
 			"rating": "7.1"
 		},
 		"title": "Indiana Jones",
 		"manufacturer": "Stern",
+		"model_number": "I",
 		"year": 2008,
 		"game_type": "ss",
 		"themes": [
@@ -82125,6 +82283,7 @@
 		"ipdb": {
 			"number": 5307,
 			"mfg": 303,
+			"mpu": 54,
 			"rating": "8.0"
 		},
 		"title": "Batman",
@@ -82785,10 +82944,12 @@
 		"ipdb": {
 			"number": 5348,
 			"mfg": 303,
+			"mpu": 54,
 			"rating": "6.7"
 		},
 		"title": "CSI",
 		"manufacturer": "Stern",
+		"model_number": "I",
 		"year": 2008,
 		"game_type": "ss",
 		"short": [
@@ -82823,7 +82984,8 @@
 	{
 		"ipdb": {
 			"number": 5350,
-			"mfg": 94
+			"mfg": 94,
+			"mpu": 15
 		},
 		"title": "The Incredible Hulk",
 		"manufacturer": "Gottlieb",
@@ -82909,7 +83071,7 @@
 			"number": 5355,
 			"mfg": 196
 		},
-		"title": "Parlor Bagatelle (Two Star  Three Bell)",
+		"title": "Parlor Bagatelle (Two Star / Three Bell)",
 		"manufacturer": "M. Redgrave Bagatelle Company",
 		"year": 1870,
 		"game_type": "pm"
@@ -83647,6 +83809,7 @@
 		"ipdb": {
 			"number": 5419,
 			"mfg": 303,
+			"mpu": 54,
 			"rating": "7.0"
 		},
 		"title": "24",
@@ -83819,7 +83982,8 @@
 	{
 		"ipdb": {
 			"number": 5429,
-			"mfg": 49
+			"mfg": 49,
+			"mpu": 38
 		},
 		"title": "Lady Luck",
 		"manufacturer": "Wulff",
@@ -83984,7 +84148,8 @@
 	{
 		"ipdb": {
 			"number": 5441,
-			"mfg": 115
+			"mfg": 115,
+			"mpu": 16
 		},
 		"title": "Fast Draw",
 		"manufacturer": "Europlay",
@@ -83998,6 +84163,7 @@
 		"ipdb": {
 			"number": 5442,
 			"mfg": 303,
+			"mpu": 54,
 			"rating": "7.5"
 		},
 		"title": "NBA",
@@ -84336,11 +84502,13 @@
 		"themes": [
 			"Skateboarding"
 		],
-		"features": "Flippers (2), Pop bumpers (2), Slingshots (2), Standup target (1). Plexiglas backglass. Game equipped with 5 steel balls."
+		"features": "Flippers (2), Pop bumpers (2), Slingshots (2), Standup target (1). Plexiglas backglass. Game equipped with 5 steel balls.",
+		"notes": "Reportedly, the same generic owners manual  was included with the manufacturer's solid state home models for Skate King, Super Star, Rodeo, Demolition Classic, Cosmic Pinball, and Circus. The one in our Files section carries a date of 08/24/77 which suggests there may be other versions having earlier or later dates."
 	},
 	{
 		"ipdb": {
-			"number": 5467
+			"number": 5467,
+			"mpu": 14
 		},
 		"title": "Hell's Queen",
 		"year": 1980,
@@ -84951,6 +85119,7 @@
 		"ipdb": {
 			"number": 5513,
 			"mfg": 303,
+			"mpu": 54,
 			"rating": "6.9"
 		},
 		"title": "Big Buck Hunter Pro",
@@ -85120,6 +85289,7 @@
 		},
 		"title": "Artemis",
 		"manufacturer": "Sigma",
+		"model_number": "B",
 		"themes": [
 			"Sports",
 			"Archery",
@@ -85288,7 +85458,8 @@
 	{
 		"ipdb": {
 			"number": 5542,
-			"mfg": 279
+			"mfg": 279,
+			"mpu": 56
 		},
 		"title": "Space Shuttle",
 		"manufacturer": "Sega",
@@ -85418,10 +85589,12 @@
 		"ipdb": {
 			"number": 5550,
 			"mfg": 303,
+			"mpu": 54,
 			"rating": "7.9"
 		},
 		"title": "Iron Man",
 		"manufacturer": "Stern",
+		"model_number": "I",
 		"year": 2010,
 		"game_type": "ss",
 		"short": [
@@ -85532,10 +85705,12 @@
 		"ipdb": {
 			"number": 5558,
 			"mfg": 303,
+			"mpu": 41,
 			"rating": "8.0"
 		},
 		"title": "The Lord of the Rings (Limited Edition)",
 		"manufacturer": "Stern",
+		"model_number": "I",
 		"year": 2009,
 		"game_type": "ss",
 		"short": [
@@ -85642,7 +85817,8 @@
 	{
 		"ipdb": {
 			"number": 5564,
-			"mfg": 328
+			"mfg": 328,
+			"mpu": 16
 		},
 		"title": "Commandos",
 		"manufacturer": "Unknown",
@@ -85864,7 +86040,8 @@
 	{
 		"ipdb": {
 			"number": 5583,
-			"mfg": 303
+			"mfg": 303,
+			"mpu": 54
 		},
 		"title": "Batman (Standard Model)",
 		"manufacturer": "Stern",
@@ -86334,6 +86511,7 @@
 		"ipdb": {
 			"number": 5618,
 			"mfg": 303,
+			"mpu": 54,
 			"rating": "7.5"
 		},
 		"title": "James Camerons Avatar",
@@ -86649,6 +86827,7 @@
 		},
 		"title": "Wonder Wizard CB Charlie",
 		"manufacturer": "Sentinel Inc.",
+		"model_number": "PH7730WA03",
 		"game_type": "ss",
 		"themes": [
 			"Hot Rods",
@@ -86700,7 +86879,8 @@
 			"Licensed Theme",
 			"Pirates",
 			"Historical"
-		]
+		],
+		"features": "The LEDs are from the factory."
 	},
 	{
 		"ipdb": {
@@ -86764,10 +86944,12 @@
 		"ipdb": {
 			"number": 5650,
 			"mfg": 303,
+			"mpu": 54,
 			"rating": "8.0"
 		},
 		"title": "Spider-Man (Black Suited)",
 		"manufacturer": "Stern",
+		"model_number": "I",
 		"year": 2007,
 		"game_type": "ss",
 		"produced_units": 500,
@@ -86804,7 +86986,8 @@
 	{
 		"ipdb": {
 			"number": 5652,
-			"mfg": 303
+			"mfg": 303,
+			"mpu": 54
 		},
 		"title": "Iron Man Classic",
 		"manufacturer": "Stern",
@@ -86825,10 +87008,12 @@
 		"ipdb": {
 			"number": 5653,
 			"mfg": 303,
-			"rating": "7.9"
+			"mpu": 54,
+			"rating": "7.8"
 		},
 		"title": "James Camerons Avatar (Limited Edition)",
 		"manufacturer": "Stern",
+		"model_number": "I",
 		"year": 2010,
 		"game_type": "ss",
 		"short": [
@@ -86921,6 +87106,7 @@
 		},
 		"title": "Bankum",
 		"manufacturer": "J. F. Thomas",
+		"model_number": "T",
 		"game_type": "pm",
 		"themes": [
 			"Playing Cards"
@@ -87035,6 +87221,7 @@
 		"ipdb": {
 			"number": 5668,
 			"mfg": 303,
+			"mpu": 54,
 			"rating": "6.7"
 		},
 		"title": "The Rolling Stones",
@@ -87247,10 +87434,12 @@
 		"ipdb": {
 			"number": 5682,
 			"mfg": 303,
+			"mpu": 54,
 			"rating": "8.0"
 		},
 		"title": "Disney TRON Legacy",
 		"manufacturer": "Stern",
+		"model_number": "I",
 		"year": 2011,
 		"game_type": "ss",
 		"themes": [
@@ -87370,6 +87559,7 @@
 		},
 		"title": "All-Star Basketball Game",
 		"manufacturer": "Gotham Pressed Steel Corporation (1936-1947)",
+		"model_number": "G",
 		"year": 1947,
 		"game_type": "pm",
 		"themes": [
@@ -87602,10 +87792,12 @@
 		"ipdb": {
 			"number": 5707,
 			"mfg": 303,
+			"mpu": 54,
 			"rating": "8.0"
 		},
 		"title": "Disney TRON Legacy (Limited Edition)",
 		"manufacturer": "Stern",
+		"model_number": "I",
 		"year": 2011,
 		"game_type": "ss",
 		"produced_units": 400,
@@ -87626,7 +87818,8 @@
 	{
 		"ipdb": {
 			"number": 5708,
-			"mfg": 303
+			"mfg": 303,
+			"mpu": 54
 		},
 		"title": "The Rolling Stones (Limited Edition)",
 		"manufacturer": "Stern",
@@ -87649,10 +87842,12 @@
 		"ipdb": {
 			"number": 5709,
 			"mfg": 303,
+			"mpu": 54,
 			"rating": "7.7"
 		},
 		"title": "Transformers (Pro)",
 		"manufacturer": "Stern",
+		"model_number": "PINBALL",
 		"year": 2011,
 		"game_type": "ss",
 		"themes": [
@@ -87774,7 +87969,8 @@
 	{
 		"ipdb": {
 			"number": 5718,
-			"mfg": 156
+			"mfg": 156,
+			"mpu": 39
 		},
 		"title": "Screech",
 		"manufacturer": "Inder",
@@ -87801,7 +87997,8 @@
 	{
 		"ipdb": {
 			"number": 5721,
-			"mfg": 349
+			"mfg": 349,
+			"mpu": 6
 		},
 		"title": "Sudden Withdrawal",
 		"manufacturer": "Williams",
@@ -87980,6 +88177,7 @@
 		},
 		"title": "Star Battle",
 		"manufacturer": "Coffee-Mat Amusement Division",
+		"model_number": "SB",
 		"game_type": "ss",
 		"themes": [
 			"Outer Space",
@@ -88048,7 +88246,8 @@
 	{
 		"ipdb": {
 			"number": 5739,
-			"mfg": 605
+			"mfg": 605,
+			"mpu": 39
 		},
 		"title": "Conquistador",
 		"manufacturer": "Irmacor",
@@ -88238,6 +88437,7 @@
 		"ipdb": {
 			"number": 5753,
 			"mfg": 303,
+			"mpu": 54,
 			"rating": "7.4"
 		},
 		"title": "Transformers Limited Edition (\"Combo\")",
@@ -88262,7 +88462,8 @@
 	{
 		"ipdb": {
 			"number": 5754,
-			"mfg": 303
+			"mfg": 303,
+			"mpu": 54
 		},
 		"title": "Transformers Autobot Crimson Limited Edition",
 		"manufacturer": "Stern",
@@ -88282,7 +88483,8 @@
 	{
 		"ipdb": {
 			"number": 5755,
-			"mfg": 303
+			"mfg": 303,
+			"mpu": 54
 		},
 		"title": "Transformers Decepticon Violet Limited Edition",
 		"manufacturer": "Stern",
@@ -88452,9 +88654,10 @@
 		"ipdb": {
 			"number": 5767,
 			"mfg": 303,
+			"mpu": 54,
 			"rating": "8.0"
 		},
-		"title": "ACDC (Pro)",
+		"title": "AC/DC (Pro)",
 		"manufacturer": "Stern",
 		"year": 2012,
 		"game_type": "ss",
@@ -88512,6 +88715,7 @@
 		},
 		"title": "Star Explorer",
 		"manufacturer": "Phillips Electronics, Ltd.",
+		"model_number": "PH7730WA15",
 		"game_type": "ss",
 		"notes": "Same game as Sentinel Inc.'s 1977 'Star Explorer' but has a different Model Number not found on the Sentinel flyer, and the lower left apron indicates Phillips Electronics."
 	},
@@ -88559,10 +88763,12 @@
 		"ipdb": {
 			"number": 5775,
 			"mfg": 303,
-			"rating": "8.0"
+			"mpu": 54,
+			"rating": "7.9"
 		},
-		"title": "ACDC (Premium)",
+		"title": "AC/DC (Premium)",
 		"manufacturer": "Stern",
+		"model_number": "I",
 		"year": 2012,
 		"game_type": "ss",
 		"short": [
@@ -88583,10 +88789,12 @@
 		"ipdb": {
 			"number": 5776,
 			"mfg": 303,
+			"mpu": 54,
 			"rating": "7.8"
 		},
-		"title": "ACDC Let There Be Rock Limited Edition",
+		"title": "AC/DC Let There Be Rock Limited Edition",
 		"manufacturer": "Stern",
+		"model_number": "PINBALL",
 		"year": 2012,
 		"game_type": "ss",
 		"short": [
@@ -88606,10 +88814,12 @@
 		"ipdb": {
 			"number": 5777,
 			"mfg": 303,
+			"mpu": 54,
 			"rating": "7.8"
 		},
-		"title": "ACDC Back In Black Limited Edition",
+		"title": "AC/DC Back In Black Limited Edition",
 		"manufacturer": "Stern",
+		"model_number": "PINBALL",
 		"year": 2012,
 		"game_type": "ss",
 		"short": [
@@ -88803,7 +89013,7 @@
 		"year": 1956,
 		"game_type": "em",
 		"features": "Trap holes (18). Balls landing in lettered holes on the playfield light the corresponding letters on the backglass to form words.Patent No. USD177,950 [CABINET FOR AMUSEMENT APPARATUS] filed November 7, 1955. Granted December 16, 1958 to Charles G. Troeller, Chicago, and Donald E. Hooker, Wilmette, Ill., assignors to Raymond T. Moloney, Chicago, Ill.",
-		"notes": "Same game as Bally's 1955 'Crosswords' but backglass has different colors.The game shown here has its lower cabinet and playfield each stamped with serial number S1333 while its backbox is stamped as S333. Stapled inside the backbox is a manufacturer's tag indicating the name 'Bally Crosswords'. This would indicate that 'Spelling-Bee' was not produced ahead of that game. Its backglass shows the year 1956."
+		"notes": "Same game as Bally's 1955 'Crosswords' but backglass has different colors.This game was ideal for placement in locations that would not accept traditional bingo machines. It has no multiple-coin capacity or variable odds.The game shown here has its lower cabinet and playfield each stamped with serial number S1333 while its backbox is stamped as S333. Stapled inside the backbox is a manufacturer's tag indicating the name 'Bally Crosswords'. This would indicate that 'Spelling-Bee' was not produced ahead of that game. Its backglass shows the year 1956."
 	},
 	{
 		"ipdb": {
@@ -88812,7 +89022,7 @@
 		},
 		"title": "Slap Shot",
 		"manufacturer": "Data East",
-		"model_number": "1",
+		"model_number": "1US",
 		"game_type": "ss",
 		"themes": [
 			"Sports",
@@ -88920,10 +89130,11 @@
 		"ipdb": {
 			"number": 5800,
 			"mfg": 634,
-			"rating": "8.1"
+			"rating": "7.9"
 		},
 		"title": "The Wizard of Oz",
 		"manufacturer": "Jersey Jack Pinball, Inc.",
+		"model_number": "Standard",
 		"year": 2013,
 		"game_type": "ss",
 		"short": [
@@ -89059,6 +89270,7 @@
 		},
 		"title": "Can Can",
 		"manufacturer": "Maresa",
+		"model_number": "CC",
 		"year": 1964,
 		"game_type": "em",
 		"short": [
@@ -89258,10 +89470,12 @@
 		"ipdb": {
 			"number": 5822,
 			"mfg": 303,
-			"rating": "7.4"
+			"mpu": 54,
+			"rating": "7.5"
 		},
 		"title": "X-Men (Pro)",
 		"manufacturer": "Stern",
+		"model_number": "I",
 		"year": 2012,
 		"game_type": "ss",
 		"themes": [
@@ -89283,10 +89497,12 @@
 	{
 		"ipdb": {
 			"number": 5823,
-			"mfg": 303
+			"mfg": 303,
+			"mpu": 54
 		},
 		"title": "X-Men Magneto LE",
 		"manufacturer": "Stern",
+		"model_number": "I",
 		"year": 2012,
 		"game_type": "ss",
 		"produced_units": 250,
@@ -89310,10 +89526,12 @@
 		"ipdb": {
 			"number": 5824,
 			"mfg": 303,
+			"mpu": 54,
 			"rating": "8.2"
 		},
 		"title": "X-Men Wolverine LE",
 		"manufacturer": "Stern",
+		"model_number": "PINBALL",
 		"year": 2012,
 		"game_type": "ss",
 		"produced_units": 300,
@@ -89350,6 +89568,7 @@
 		},
 		"title": "One Ball",
 		"manufacturer": "SIRMO Games S.A.",
+		"model_number": "AACB",
 		"game_type": "ss",
 		"features": "Trap holes (21)."
 	},
@@ -89792,7 +90011,8 @@
 	{
 		"ipdb": {
 			"number": 5861,
-			"mfg": 303
+			"mfg": 303,
+			"mpu": 54
 		},
 		"title": "Transformers The Pin",
 		"manufacturer": "Stern",
@@ -90296,7 +90516,7 @@
 		"manufacturer": "Bally",
 		"year": 1947,
 		"game_type": "em",
-		"features": "Adjustable for 5,6,7,8, or 9 ball play. Buttons and pockets increase Super-Score. Trajectory up-kicker (1) sends the ball airborne towards the basket. Scoring basket transfers Super-Score to Total Score. Super-Score value is a carry-over feature from game to game unless operator adjusts it to reset to zero after each game. Backglass measures 22 by 19 inches."
+		"features": "Adjustable for 5,6,7,8, or 9 ball play. Buttons and pockets increase Super-Score. Trajectory up-kicker (1) sends the ball airborne towards the basket. Scoring basket transfers Super-Score to Total Score. Super-Score value is a carry-over feature from game to game unless operator adjusts it to reset to zero after each game. Backglass measures 22 by 19 inches.Sound: 2 bells"
 	},
 	{
 		"ipdb": {
@@ -90305,7 +90525,7 @@
 		},
 		"title": "Dancing Dolls (Prototype)",
 		"manufacturer": "Gottlieb",
-		"model_number": "168",
+		"model_number": "168B",
 		"year": 1960,
 		"game_type": "em",
 		"themes": [
@@ -90629,7 +90849,8 @@
 	{
 		"ipdb": {
 			"number": 5926,
-			"mfg": 248
+			"mfg": 248,
+			"mpu": 39
 		},
 		"title": "D. Quijote",
 		"manufacturer": "Petaco",
@@ -90672,7 +90893,8 @@
 	{
 		"ipdb": {
 			"number": 5929,
-			"mfg": 248
+			"mfg": 248,
+			"mpu": 39
 		},
 		"title": "Mr. Evil",
 		"manufacturer": "Petaco",
@@ -90805,6 +91027,7 @@
 		"ipdb": {
 			"number": 5938,
 			"mfg": 303,
+			"mpu": 54,
 			"rating": "6.8"
 		},
 		"title": "The Avengers (Pro)",
@@ -90826,7 +91049,8 @@
 	{
 		"ipdb": {
 			"number": 5939,
-			"mfg": 303
+			"mfg": 303,
+			"mpu": 54
 		},
 		"title": "The Avengers (Premium)",
 		"manufacturer": "Stern",
@@ -90847,7 +91071,8 @@
 	{
 		"ipdb": {
 			"number": 5940,
-			"mfg": 303
+			"mfg": 303,
+			"mpu": 54
 		},
 		"title": "The Avengers (Limited Edition)",
 		"manufacturer": "Stern",
@@ -90869,10 +91094,12 @@
 	{
 		"ipdb": {
 			"number": 5941,
-			"mfg": 303
+			"mfg": 303,
+			"mpu": 54
 		},
 		"title": "The Avengers Hulk (Limited Edition)",
 		"manufacturer": "Stern",
+		"model_number": "PINBALL",
 		"year": 2012,
 		"game_type": "ss",
 		"produced_units": 250,
@@ -90994,7 +91221,8 @@
 	{
 		"ipdb": {
 			"number": 5949,
-			"mfg": 349
+			"mfg": 349,
+			"mpu": 27
 		},
 		"title": "SlugFest (Second Model)",
 		"manufacturer": "Williams",
@@ -91276,16 +91504,18 @@
 		"ipdb": {
 			"number": 5967,
 			"mfg": 634,
-			"rating": "7.9"
+			"rating": "8.0"
 		},
 		"title": "Emerald City Limited Edition Wizard of Oz",
 		"manufacturer": "Jersey Jack Pinball, Inc.",
+		"model_number": "ECLE",
 		"year": 2013,
 		"game_type": "ss",
 		"short": [
 			"ECLEWOZ",
 			"WOZECLE"
 		],
+		"produced_units": 1000,
 		"themes": [
 			"Fantasy",
 			"Licensed Theme",
@@ -91300,7 +91530,7 @@
 			"Matt Riesterer"
 		],
 		"features": "Flippers (5), Pop bumpers (4), Slingshots (3), Magnets (5), VUKs (2), Drop target (1), Scoops (2), Ball locks (2), Spinning target (1), Rollovers (7), Shaker motor, Multiball. Winged Monkey moves along diagonal track on playfield back wall to deliver the ball to upper left mini-playfield. OLED crystal ball displays any of thirty or more \"videos\" not necessarily in concert with game play. Backbox has a 26-inch High Definition LCD display. The playfield and topper illumination is provided by LEDs. Legs, lockdown bar, and side rails are green in color. Non-reflective playfield glass.The Witch's Castle (upper left mini-playfield) has three motorized doors. The first is the Winged Monkey ball lock which holds a ball until the game wants to release it. The other two are the \"castle gates\" which open inward to reveal a scoop after repeated bashings from the ball in play.",
-		"notes": "Dennis Nordman built the original house model and the concept for the original witch mechanism.Matt Riesterer was the sculptor and fabricator of the toys and other items. At our request, he listed them for us:Ruby slipper flippers, Munchkin huts and roofs, the witch legs in the house, the witch castle walls, the throwing apple trees, the witch, the State Fair balloon, and the topper. In addition, he co-created the laser-cut Oz head, helped design the crystal ball, and helped with the powder coating.This model is advertised as a limited run of 1000, currently in production (per Jack Guarnieri, March 2013), end of production not yet confirmed.There was no one-page advertising flyer made for this version because, per the manufacturer, all units were sold before the time that a flyer would be made.",
+		"notes": "Dennis Nordman built the original house model and the concept for the original witch mechanism. Matt Riesterer was the sculptor and fabricator of the toys and other items. At our request, he listed them for us:Ruby slipper flippers, Munchkin huts and roofs, the witch legs in the house, the witch castle walls, the throwing apple trees, the witch, the State Fair balloon, and the topper. In addition, he co-created the laser-cut Oz head, helped design the crystal ball, and helped with the powder coating.This model was produced as a limited run of 1000, now out of production. The prototype versions have the letter \"P\" after their serial numbers as it appears on the cabinet sticker and the model number there indicates \"WIZARD OF OZ - ECLEWOZP\". The production version cabinet sticker shows model number \"ECLE\".There was no one-page advertising flyer made for this version because, per the manufacturer, all units were sold before the time that a flyer would be made.",
 		"toys": "Melting wicked witch in plastic tube moves up and down. Dorothy's house spins."
 	},
 	{
@@ -91458,7 +91688,8 @@
 	{
 		"ipdb": {
 			"number": 5979,
-			"mfg": 262
+			"mfg": 262,
+			"mpu": 39
 		},
 		"title": "Space Game (1 card)",
 		"manufacturer": "Petaco",
@@ -92024,7 +92255,8 @@
 	{
 		"ipdb": {
 			"number": 6018,
-			"mfg": 303
+			"mfg": 303,
+			"mpu": 54
 		},
 		"title": "Disney TRON Legacy (3rd Edition)",
 		"manufacturer": "Stern",
@@ -92045,7 +92277,8 @@
 	{
 		"ipdb": {
 			"number": 6019,
-			"mfg": 303
+			"mfg": 303,
+			"mpu": 54
 		},
 		"title": "Disney TRON Legacy (4th Edition)",
 		"manufacturer": "Stern",
@@ -92176,10 +92409,12 @@
 		"ipdb": {
 			"number": 6028,
 			"mfg": 303,
+			"mpu": 54,
 			"rating": "7.8"
 		},
 		"title": "Metallica (Pro)",
 		"manufacturer": "Stern",
+		"model_number": "I",
 		"year": 2013,
 		"game_type": "ss",
 		"themes": [
@@ -92195,7 +92430,8 @@
 	{
 		"ipdb": {
 			"number": 6029,
-			"mfg": 303
+			"mfg": 303,
+			"mpu": 54
 		},
 		"title": "Metallica (Premium Road Case)",
 		"manufacturer": "Stern",
@@ -92215,10 +92451,12 @@
 		"ipdb": {
 			"number": 6030,
 			"mfg": 303,
-			"rating": "8.9"
+			"mpu": 54,
+			"rating": "7.5"
 		},
 		"title": "Metallica (Premium Monsters)",
 		"manufacturer": "Stern",
+		"model_number": "I",
 		"year": 2013,
 		"game_type": "ss",
 		"themes": [
@@ -92237,10 +92475,12 @@
 		"ipdb": {
 			"number": 6031,
 			"mfg": 303,
-			"rating": "9.0"
+			"mpu": 54,
+			"rating": "8.0"
 		},
 		"title": "Metallica Master of Puppets (Limited Edition)",
 		"manufacturer": "Stern",
+		"model_number": "I",
 		"year": 2012,
 		"game_type": "ss",
 		"produced_units": 500,
@@ -92257,7 +92497,8 @@
 	{
 		"ipdb": {
 			"number": 6032,
-			"mfg": 303
+			"mfg": 303,
+			"mpu": 41
 		},
 		"title": "Elvis Gold (Limited Edition)",
 		"manufacturer": "Stern",
@@ -92432,10 +92673,12 @@
 		"ipdb": {
 			"number": 6044,
 			"mfg": 303,
+			"mpu": 54,
 			"rating": "8.0"
 		},
 		"title": "Star Trek (Starfleet Pro)",
 		"manufacturer": "Stern",
+		"model_number": "I",
 		"year": 2013,
 		"game_type": "ss",
 		"themes": [
@@ -92460,10 +92703,12 @@
 	{
 		"ipdb": {
 			"number": 6045,
-			"mfg": 303
+			"mfg": 303,
+			"mpu": 54
 		},
 		"title": "Star Trek (Vengeance Premium)",
 		"manufacturer": "Stern",
+		"model_number": "I",
 		"year": 2013,
 		"game_type": "ss",
 		"themes": [
@@ -92486,10 +92731,12 @@
 		"ipdb": {
 			"number": 6046,
 			"mfg": 303,
+			"mpu": 54,
 			"rating": "8.0"
 		},
 		"title": "Star Trek (Enterprise Limited Edition)",
 		"manufacturer": "Stern",
+		"model_number": "I",
 		"year": 2012,
 		"game_type": "ss",
 		"short": [
@@ -92678,9 +92925,10 @@
 	{
 		"ipdb": {
 			"number": 6060,
-			"mfg": 303
+			"mfg": 303,
+			"mpu": 54
 		},
-		"title": "ACDC (LUCI Premium)",
+		"title": "AC/DC (LUCI Premium)",
 		"manufacturer": "Stern",
 		"year": 2013,
 		"game_type": "ss",
@@ -92901,7 +93149,7 @@
 		},
 		"title": "Daytona",
 		"manufacturer": "SIRMO Games S.A.",
-		"model_number": "01202",
+		"model_number": "01202B",
 		"year": 2011,
 		"game_type": "ss",
 		"features": "Two 23-inch TFT screens. Game advertised as 132 cm long, 70 cm wide, and 202 cm high.",
@@ -93154,6 +93402,7 @@
 		"ipdb": {
 			"number": 6098,
 			"mfg": 303,
+			"mpu": 54,
 			"rating": "7.4"
 		},
 		"title": "Mustang (Pro)",
@@ -93181,7 +93430,8 @@
 	{
 		"ipdb": {
 			"number": 6099,
-			"mfg": 303
+			"mfg": 303,
+			"mpu": 54
 		},
 		"title": "Mustang (Premium \"Boss\")",
 		"manufacturer": "Stern",
@@ -93208,7 +93458,8 @@
 	{
 		"ipdb": {
 			"number": 6100,
-			"mfg": 303
+			"mfg": 303,
+			"mpu": 54
 		},
 		"title": "Mustang (Limited Edition)",
 		"manufacturer": "Stern",
@@ -93275,7 +93526,8 @@
 	{
 		"ipdb": {
 			"number": 6105,
-			"mfg": 49
+			"mfg": 49,
+			"mpu": 38
 		},
 		"title": "Super Sport",
 		"manufacturer": "Wulff",
@@ -93321,6 +93573,7 @@
 		},
 		"title": "The All-American Baseball Game",
 		"manufacturer": "Amusement Machine Corporation, Ltd.",
+		"model_number": "H",
 		"year": 1931,
 		"game_type": "em",
 		"themes": [
@@ -93676,7 +93929,7 @@
 		},
 		"title": "Surfers",
 		"manufacturer": "Bally",
-		"model_number": "811",
+		"model_number": "811B",
 		"year": 1967,
 		"game_type": "em",
 		"themes": [
@@ -93915,10 +94168,12 @@
 	{
 		"ipdb": {
 			"number": 6154,
-			"mfg": 303
+			"mfg": 303,
+			"mpu": 54
 		},
 		"title": "Iron Man (Pro Vault Edition)",
 		"manufacturer": "Stern",
+		"model_number": "I",
 		"year": 2014,
 		"game_type": "ss",
 		"themes": [
@@ -93934,10 +94189,12 @@
 		"ipdb": {
 			"number": 6155,
 			"mfg": 303,
-			"rating": "7.4"
+			"mpu": 54,
+			"rating": "7.2"
 		},
 		"title": "The Walking Dead (Pro)",
 		"manufacturer": "Stern",
+		"model_number": "I",
 		"year": 2014,
 		"game_type": "ss",
 		"short": [
@@ -93957,7 +94214,9 @@
 	{
 		"ipdb": {
 			"number": 6156,
-			"mfg": 303
+			"mfg": 303,
+			"mpu": 54,
+			"rating": "8.6"
 		},
 		"title": "The Walking Dead (Limited Edition)",
 		"manufacturer": "Stern",
@@ -94038,10 +94297,13 @@
 	{
 		"ipdb": {
 			"number": 6161,
-			"mfg": 671
+			"mfg": 671,
+			"mpu": 60,
+			"rating": "8.6"
 		},
 		"title": "America's Most Haunted",
 		"manufacturer": "Spooky",
+		"model_number": "AMH01",
 		"year": 2014,
 		"game_type": "ss",
 		"short": [
@@ -94192,7 +94454,8 @@
 	{
 		"ipdb": {
 			"number": 6172,
-			"mfg": 248
+			"mfg": 248,
+			"mpu": 39
 		},
 		"title": "Crazy Race",
 		"manufacturer": "Petaco",
@@ -94283,10 +94546,12 @@
 	{
 		"ipdb": {
 			"number": 6178,
-			"mfg": 303
+			"mfg": 303,
+			"mpu": 54
 		},
 		"title": "Metallica (Pro LED)",
 		"manufacturer": "Stern",
+		"model_number": "I",
 		"year": 2014,
 		"game_type": "ss",
 		"themes": [
@@ -94535,8 +94800,8 @@
 			"World Places",
 			"Landmarks"
 		],
-		"features": "Flippers (2), Pop bumpers (2), Slingshots (2), Drop targets (3), Standup target (1). Seven score reels.",
-		"notes": "This is the add-a-ball version of Segasa's 1975 'Big Ben' made for export to Italy. It has no replay window. The backglass indicates this version is manufactured \"By Segasa under license\" and prominently displays the Williams name instead of the Segasa name, reportedly to provide more appeal to the Italian market.Pictured in this listing is a backbox with a replay window apparently added by an operator as it is not located in the backglass location where Segasa placed it for their domestic version."
+		"features": "Flippers (2), Pop bumpers (2), Slingshots (2), Drop targets (3), Standup target (1). Seven score reels. The pop bumpers are DC.",
+		"notes": "This is the add-a-ball version of Segasa's 1975 'Big Ben' made for export to Italy. It has no replay window. The backglass indicates this version is manufactured \"By Segasa under licence\" (misspelling of 'license') and prominently displays the Williams name above the game name instead of the Segasa name, reportedly to provide more appeal to the Italian market.Pictured in this listing is a backbox with a replay window apparently added by an operator as it is not located in the backglass location where Segasa placed it for their domestic version."
 	},
 	{
 		"ipdb": {
@@ -94672,7 +94937,8 @@
 	{
 		"ipdb": {
 			"number": 6207,
-			"mfg": 681
+			"mfg": 681,
+			"mpu": 34
 		},
 		"title": "Meteor",
 		"manufacturer": "Leisure & Allied Industries",
@@ -94755,6 +95021,7 @@
 		},
 		"title": "Winning Shot",
 		"manufacturer": "Universal Space Amusement Co., Ltd.",
+		"model_number": "A",
 		"game_type": "ss",
 		"themes": [
 			"Sports",
@@ -94788,10 +95055,12 @@
 	{
 		"ipdb": {
 			"number": 6215,
-			"mfg": 303
+			"mfg": 303,
+			"mpu": 61
 		},
 		"title": "Wrestlemania (Pro)",
 		"manufacturer": "Stern",
+		"model_number": "I",
 		"year": 2015,
 		"game_type": "ss",
 		"themes": [
@@ -94811,10 +95080,12 @@
 	{
 		"ipdb": {
 			"number": 6216,
-			"mfg": 303
+			"mfg": 303,
+			"mpu": 61
 		},
 		"title": "Legends of Wrestlemania (Limited Edition)",
 		"manufacturer": "Stern",
+		"model_number": "I",
 		"year": 2015,
 		"game_type": "ss",
 		"short": [
@@ -94892,6 +95163,7 @@
 		},
 		"title": "The Wizard of Oz 75th Anniversary Limited Edition",
 		"manufacturer": "Jersey Jack Pinball, Inc.",
+		"model_number": "RR75LE",
 		"year": 2014,
 		"game_type": "ss",
 		"short": [
@@ -94933,7 +95205,8 @@
 	{
 		"ipdb": {
 			"number": 6226,
-			"mfg": 248
+			"mfg": 248,
+			"mpu": 39
 		},
 		"title": "Mr. Doom",
 		"manufacturer": "Petaco",
@@ -95302,10 +95575,12 @@
 	{
 		"ipdb": {
 			"number": 6252,
-			"mfg": 303
+			"mfg": 303,
+			"mpu": 61
 		},
 		"title": "Whoa Nellie Big Juicy Melons",
 		"manufacturer": "Stern",
+		"model_number": "I",
 		"year": 2015,
 		"game_type": "ss",
 		"short": [
@@ -95404,7 +95679,8 @@
 	{
 		"ipdb": {
 			"number": 6259,
-			"mfg": 694
+			"mfg": 694,
+			"mpu": 62
 		},
 		"title": "ScoreGasm Master",
 		"manufacturer": "Day One Pinball Manufacturing, Incorporated",
@@ -95494,10 +95770,13 @@
 	{
 		"ipdb": {
 			"number": 6265,
-			"mfg": 303
+			"mfg": 303,
+			"mpu": 61,
+			"rating": "8.0"
 		},
 		"title": "KISS (Pro)",
 		"manufacturer": "Stern",
+		"model_number": "PINBALL",
 		"year": 2015,
 		"game_type": "ss",
 		"themes": [
@@ -95517,10 +95796,12 @@
 	{
 		"ipdb": {
 			"number": 6266,
-			"mfg": 303
+			"mfg": 303,
+			"mpu": 61
 		},
 		"title": "KISS (Premium)",
 		"manufacturer": "Stern",
+		"model_number": "PINBALL",
 		"year": 2015,
 		"game_type": "ss",
 		"themes": [
@@ -95540,7 +95821,8 @@
 	{
 		"ipdb": {
 			"number": 6267,
-			"mfg": 303
+			"mfg": 303,
+			"mpu": 61
 		},
 		"title": "KISS (Limited Edition)",
 		"manufacturer": "Stern",
@@ -95751,7 +96033,7 @@
 			"mfg": 697
 		},
 		"title": "Euro Star",
-		"manufacturer": "Collins Entertainment, Inc.",
+		"manufacturer": "Skillpins",
 		"game_type": "ss",
 		"features": "5 balls per play. Flipper (1). Trap holes (25).",
 		"notes": "'Euro Star' is a conversion of an unknown bingo machine made by WIMI whose logo can be seen on the coin door. The new game name is not shown on the backglass but appears on the coin box lid, admittedly a portable component that could be moved from game to game.Collins Entertainment, Inc. imported bingo games and added a flipper to the playfield to classify the game for a much reduced licensing fee than it would have as a flipperless game. They also added a printer to print tickets showing credits won, to be redeemable for merchandise. To ensure the flipper was noticed, the conversion games done by this company can be expected to have a large white sticker at the top front of the backbox having the words 'SKILL FLIPPER' on it.Circa 1990's.The name 'Skillpins' appears on this game as one word and also as two words. More information about Collins Skillpins can be seen here."
@@ -96138,7 +96420,8 @@
 	{
 		"ipdb": {
 			"number": 6307,
-			"mfg": 303
+			"mfg": 303,
+			"mpu": 61
 		},
 		"title": "Game of Thrones (Pro)",
 		"manufacturer": "Stern",
@@ -96149,6 +96432,7 @@
 			"GOTPro"
 		],
 		"themes": [
+			"Licensed Theme",
 			"Medieval"
 		],
 		"designers": [
@@ -96165,7 +96449,8 @@
 	{
 		"ipdb": {
 			"number": 6309,
-			"mfg": 303
+			"mfg": 303,
+			"mpu": 61
 		},
 		"title": "Game of Thrones (Limited Edition)",
 		"manufacturer": "Stern",
@@ -96175,6 +96460,7 @@
 			"GOTLE"
 		],
 		"themes": [
+			"Licensed Theme",
 			"Medieval"
 		],
 		"designers": [
@@ -96314,7 +96600,8 @@
 	{
 		"ipdb": {
 			"number": 6318,
-			"mfg": 681
+			"mfg": 681,
+			"mpu": 34
 		},
 		"title": "Galaxy",
 		"manufacturer": "Leisure & Allied Industries",
@@ -96420,7 +96707,8 @@
 	{
 		"ipdb": {
 			"number": 6325,
-			"mfg": 681
+			"mfg": 681,
+			"mpu": 21
 		},
 		"title": "Dracula",
 		"manufacturer": "Leisure & Allied Industries",
@@ -96484,5 +96772,192 @@
 		],
 		"features": "Trap holes (25). 1 card.",
 		"notes": "Conversion of an unknown Bally bingo game. The upper backglass has the same artwork as these 6-card games, but uses different colors:Bally's 1959 'Fun Way'Bally's 1959 'Lotta-Fun'Bally's 1960 'Spot-Em'"
+	},
+	{
+		"ipdb": {
+			"number": 6330,
+			"mfg": 701
+		},
+		"title": "Tivoli No. 5",
+		"manufacturer": "John Ellson",
+		"game_type": "pm",
+		"features": "7 balls. Game advertised (and measured) as 48 inches long and (about) 18 inches wide.Sound: 3 bells",
+		"notes": "The label on the back of the bagatelle we saw showed a picture of a full length floor-standing bagatelle identified as \"Parlor Tivoli Table\" by John Ellson of Albany, New York, patented April 15, 1876. The text below it indicated \"This Cut Represents my No. 5 Table\" advertised there as 48 inches by 18 inches. The Encyclopedia of Pinball, Vol. 1 lists this manufacturer as located in New Jersey and lists two counter games dated 1885 as Tivoli No. 1 and Tivoli No. 2. We presume Ellson moved from New Jersey to New York then made this No. 5 Table.Circa 1885."
+	},
+	{
+		"ipdb": {
+			"number": 6331,
+			"mfg": 34
+		},
+		"title": "Home Tango",
+		"manufacturer": "Atlas Indicator Works Incorporated",
+		"year": 1932,
+		"game_type": "pm",
+		"features": "Measures approximately 26 inches long, 15 inches wide, and 3 high."
+	},
+	{
+		"ipdb": {
+			"number": 6332,
+			"mfg": 303,
+			"mpu": 61
+		},
+		"title": "Ghostbusters (Pro)",
+		"manufacturer": "Stern",
+		"year": 2016,
+		"game_type": "ss",
+		"short": [
+			"GBP"
+		],
+		"themes": [
+			"Licensed Theme",
+			"Science Fiction"
+		],
+		"designers": [
+			"John Trudeau"
+		],
+		"features": "Notable Features: Flippers (2), Pop bumpers (3), Slingshots (2), Standup targets (9), Captive balls (6), Drop targets (2), Kick-out holes (2), Vertical up-kicker (1), Spinning target (1), Up-post in upper playfield, Dual inlanes, Bi-directional ramp, Stereo sound, Speech.Black powder-coated legs, armor, hinges, front molding. Backbox has powder-coated steel and plywood. A \"Ghostbusters and Terror Dogs\" translite is used instead of a backglass. Decal cabinet artwork. Traditional playfield rod supports.Ball composition: 1-1/6 inch steelFactory-installed illumination:Pop bumpers have LED lighting. 7 full spectrum color-changing RGB LED�s under playfield arrow inserts. All LED general illumination.",
+		"notes": "Jeremy Packer (aka \"Zombie Yeti\") did the translite art.MSRP when new: $5,995.00Factory accessories for optional purchase:SP32 Ghostbusters Pinball Plastic ProtectorsSP33 Ghostbusters Pinball Plastic ProtectorsSP34 Ghostbusters TopperSP35 Ghostbusters Shooter Knob & RodSP36 Ghostbusters Art BladesSP37 Ghostbusters Side ArmorSP38 Ghostbusters Side ArmorThe manufacturer stated that this game was inspired by the original 1984 Ghostbusters movie and the translite shows the four principal characters from that movie, all male. A remake of the movie opened in July 2016 using four female principal characters.",
+		"toys": "Color-changing Stay Puft marshmallow manMotorized animated interactive Slimer3D FirehouseCity skyline"
+	},
+	{
+		"ipdb": {
+			"number": 6334,
+			"mfg": 303,
+			"mpu": 61
+		},
+		"title": "Ghostbusters (Limited Edition)",
+		"manufacturer": "Stern",
+		"year": 2016,
+		"game_type": "ss",
+		"short": [
+			"GBLE"
+		],
+		"themes": [
+			"Licensed Theme",
+			"Science Fiction"
+		],
+		"designers": [
+			"John Trudeau"
+		],
+		"features": "Notable Features: Flippers (2), Pop bumpers (3), Standup targets (9), Captive balls (6), Drop targets (2), Kick-out holes (2), Electromagnets (2), Vertical up-kicker (1), Spinning target (1), Up-post in upper playfield, Dual inlanes, Shaker motor, Stereo sound, Speech. Interactive holograph projector. Two electromagnets under the lower playfield simulate slingshot action.\"Slime green\" powder-coated legs, armor, hinges, front lockdown molding. Backbox has powder-coated steel and plywood. Powder-coated steel bottom arch. A \"Ghostbusters and Slimer\" backglass is used instead of a translite. Decal cabinet artwork. Playfield side support and brackets. Ball composition: 1-1/6 inch steelFactory-installed illumination:Pop bumpers have LED lighting. 7 full spectrum color-changing RGB LED�s under playfield arrow inserts. All LED general illumination.This Limited Edition version came with a shaker motor, serialized number plate, the playfield signed by the designer, and a Certificate of Authenticity signed by Gary Stern.",
+		"notes": "Stern advertised that a limited quantity of 500 games would be made.Jeremy Packer (aka \"Zombie Yeti\") did the backglass art.MSRP when new: $8,795.00Factory accessories for optional purchase:SP32 Ghostbusters Pinball Plastic ProtectorsSP33 Ghostbusters Pinball Plastic ProtectorsSP34 Ghostbusters TopperSP35 Ghostbusters Shooter Knob & RodSP36 Ghostbusters Art BladesSP37 Ghostbusters Side ArmorSP38 Ghostbusters Side ArmorThe manufacturer stated that this game was inspired by the original 1984 Ghostbusters movie and the backglass shows the four principal characters from that movie, all male. A remake of the movie opened in July 2016 using four female principal characters.",
+		"toys": "Color-changing Stay Puft marshmallow manRotating motorized animated interactive Slimer3D Firehouse3D molded plastic public library3D molded plastic storage containment facilityCity skyline"
+	},
+	{
+		"ipdb": {
+			"number": 6336,
+			"mfg": 702
+		},
+		"title": "Power Pro Pinball",
+		"manufacturer": "Marx Toys",
+		"year": 1979,
+		"notes": "All of the other pinball machines that we have seen by this manufacturer are much smaller in size than this one and clearly classify as toys. We list \"Power Pro Pinball\" because it is significantly larger, similar in size to the home machines made by Brunswick and Briarwood in the late 1970s.The ad shown here may be from 1978. Marx Toys was advertised from 1972-1976 as \"A Division of the Quaker Oats Company\", its owner during this time. The blurry ad we show in this listing does not appear to reference Quaker Oats as do other ads we have seen. Based on that ad, this game may have been manufactured after 1976 and before Marx went out of business in 1980. We also saw online a newspaper department store ad for this game, sold as new, on sale for $119.99, and dated June 11, 1979. Based on this ad, we show this game as made in 1979. If anyone has a higher resolution image of the ad that we show in this listing, or any game ads from when the game was new, please contact us."
+	},
+	{
+		"ipdb": {
+			"number": 6337,
+			"mfg": 333
+		},
+		"title": "War",
+		"manufacturer": "Viza",
+		"game_type": "em",
+		"themes": [
+			"Fantasy",
+			"War"
+		],
+		"features": "Flippers (8), Pop bumpers (2), Slingshots (2), Kick-out holes (2). Electronic LED scoring.Sound: 3 chimes.This is a head-to-head game where two players at opposite ends of the playfield compete in simultaneous play. Each player has flipper buttons which control only those flippers facing the opponent. Game can also be played as a single player. Ball enters play from outhole by pressing red button on front of cabinet next to coin slots. Ball through center \"flipper kill area\" rollover lane renders opponent's flippers inoperative for a preset period of time (operator adjustable).",
+		"notes": "This EM version does not have an MPU. The SS version of this game is Viza's 1978 'War'.The playfield shows a portion of Frank Frazetta's artwork The Berserker. Reportedly, Ellie Frazetta, who was his wife and business manager, had indicated that this was an unauthorized use of his artwork.Mfg under contract by Allied Leisure Industries.The game shown here has had its original wood legs replaced with metal ones. The toggle switch on the cabinet front which allows for choice of 1 or 2 players was missing when the current owner received the game and the wires for this switch were connected together inside the game. The owner drilled a hole near the coin slots and installed a green button with wire jumpers to bypass the coin mechanisms. There are two timers inside the game, one for each player, that allow the operator to adjust the length of time that the opponent's flippers are deactivated when a ball enters the \"flipper kill area\". While the timer gauge on top of each is marked from 0 to 10, the side printing indicates the delay range is from 2 to 180 seconds."
+	},
+	{
+		"ipdb": {
+			"number": 6338,
+			"mfg": 47
+		},
+		"title": "Boomerang",
+		"manufacturer": "Bally",
+		"year": 1975,
+		"game_type": "ss",
+		"themes": [
+			"Adventure",
+			"Foreign Peoples"
+		],
+		"features": "Flippers (2), Pop bumper (1), Slingshots (2), Standup targets (12), Spinning target (1), Kick-out hole (1), Captive balls (2).",
+		"notes": "This is an engineering prototype for then-new solid state pinball technology. An example of the EM version Bally's 1974 'Boomerang' was modified for this purpose.Patent 4,198,051 [COMPUTERIZED PIN BALL MACHINE] filed November 19, 1975, granted April 15, 1980 to Marion F. Bracha and William H. Englehardt, assignee is Bally Manufacturing Corporation, Chicago, Illinois.The patent for this electronic pinball game was issued to Bally under the names of the two executives that were responsible for its invention. Marion F. \"Frank\" Bracha was Bally VP of Research and Development and William H. \"Bill\" Englehardt was head of Electrical Engineering.A PDF of this patent document is in our Files section. While the PDF page 2 of 54 shows a Boomerang playfield, page 18 of 54, column two, section 25, states that this was just an example of a playfield, \"It should be realized that the arrangement of the playfield may differ.\"Collector John Mohr notified us that he had confirmed with a \"PinMame expert\" that the source code shown in the patent document is indeed for Boomerang, and calls for the use of three (3) 6820 PIA's, which no production Bally ever used. The source code is Motorola 6800 based."
+	},
+	{
+		"ipdb": {
+			"number": 6339,
+			"mfg": 328
+		},
+		"title": "Marble Pool",
+		"manufacturer": "Unknown",
+		"game_type": "pm",
+		"notes": "In the picture we show, the name of the game is barely discernable in the upper left and right corners of the playfield. No cabinet measurements were provided."
+	},
+	{
+		"ipdb": {
+			"number": 6340,
+			"mfg": 351
+		},
+		"title": "Aqua Gun",
+		"manufacturer": "Williams",
+		"model_number": "353",
+		"year": 1968,
+		"game_type": "em",
+		"produced_units": 1250,
+		"themes": [
+			"Sports",
+			"Water Sports",
+			"Spear Fishing",
+			"Diving"
+		],
+		"features": "25 shots minimum, 35 shots maximum. Adjustable time feature. Blacklighting in recessed target gallery creates underwater effect.",
+		"notes": "Available in regular or novelty model.Manufacturer data for Aqua Gun:Quantity produced for USA/Canada: 627*Quantity produced for export: 623*Total quantity produced: 1250*Price to Distributor: $535.00*These quantities may be sales estimates."
+	},
+	{
+		"ipdb": {
+			"number": 6341,
+			"mfg": 130
+		},
+		"title": "Electric Tournament Pool",
+		"manufacturer": "Genco",
+		"year": 1955,
+		"game_type": "em",
+		"features": "20 cents per game. Four cue sticks. Felt playfield. Built-in levels on the outer edges of the table. Walnut wood.",
+		"notes": "A lighting accessory for dimly lit locations was available at additional cost and could be easily attached or detached. The backglass indicates \"Electric Tournament Pool\" while the sticker on front of the game indicates \"Official Tournament Pool\". Advertised as for 2 or 4 players."
+	},
+	{
+		"ipdb": {
+			"number": 6342,
+			"mfg": 350
+		},
+		"title": "Arctic Gun",
+		"manufacturer": "Williams",
+		"model_number": "344",
+		"year": 1967,
+		"game_type": "em",
+		"produced_units": 1150,
+		"themes": [
+			"Snow",
+			"World Places"
+		],
+		"features": "10 cents per play. 25 shots minimum, 35 shots maximum. Adjustable time feature. Black lighting in recessed target gallery.",
+		"notes": "Available in regular or novelty model.Manufacturer data for Arctic Gun:Quantity produced for USA/Canada: 852*Quantity produced for export: 298*Total quantity produced: 1150*Price to Distributor: $485.00*These quantities may be sales estimates."
+	},
+	{
+		"ipdb": {
+			"number": 6345,
+			"mfg": 423
+		},
+		"title": "Olympics",
+		"manufacturer": "Diverama",
+		"game_type": "ss",
+		"themes": [
+			"Sports",
+			"Olympic Games",
+			"Olympics"
+		],
+		"features": "Flippers (2), Pop bumpers (2), Mushroom bumpers (2), Slingshots (2), Standup targets (4), Messenger balls (2), Kick-out hole (1), Spinning target (1),",
+		"notes": "An unconfirmed date for this game is 1978."
 	}
 ]

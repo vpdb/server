@@ -3,12 +3,17 @@ include ../template/_mixins
 .row.row--fullheight(ng-controller="ReleaseAddCtrl")
 	.col-sm-9.col--main
 
+		.alert.alert-danger(ng-show="mpuRestriction")
+			+icon('warning').space-right.shift-up
+			b Game Restriction <br>
+			| This is a {{ game.mpu.short }} game. In order to respect the industry, we don't allow users to download {{ game.mpu.short }} games. You still can upload releases but be aware that only you will able to see them until the situation changes.
+
 		h1.h--primary Add a new Release
 		hr.hr--primary
 
 		.alert.alert--rounded.alert--aligned(ng-show="showHelp")
 			+icon('info')
-			p We're excited to host your release! What you're going to need is the table file and a high resolution screenshot, but we'll guide you through that below.
+			p(ng-hide="mpuRestriction") We're excited to host your release! What you're going to need is the table file and a high resolution screenshot, but we'll guide you through that below.
 			p If this is the first time you're uploading a release, read carefully through the instructions. You can hit refresh or quit this page (even the browser) and what you've entered will be restored any time you come back.
 
 		//---------------------------------------------------------------------

@@ -1,6 +1,43 @@
 include ../template/_mixins
 
-div(ng-controller="FaqController")
-	h1 Frequently Asked Questions
+.row.row--content.ng-cloak.row--fullheight.fade-animation(ng-controller="FaqController")
 
-	p Here are the FAQ.
+	h1.h--primary Frequently Asked Questions
+
+	h3.h--multiline.h--smaller What's the difference between releases and games?
+	p Games at VPDB are independent from digital recreations. They just contain information and media about the physical (real world) game. Releases on the other hand are digital, on your computer playable versions of a given game. There can be multiple releases per game, e.g. from different authors or with different features. You can see a game as metadata for all recreations of that game.
+
+	h3.h--multiline.h--smaller What are "flavors"?
+	p Due to past limitations, Visual Pinball tables have often been redistributed for different setups. For example, a table might have been released as a desktop table, designed for landscape monitors. Soon a "fullscreen" version of the same table would follow, allowing it to play on portrait-oriented screens found in virtual cabinets. Often, people would mod these releases and re-release them as night- or day mods.
+	p Flavors define for which setup a file is designed for. When uploading a table file, the author needs to indicate the file's "flavor", i.e. orientation, lighting and also with which version(s) of Visual Pinball it is compatible. A release can contain multiple files covering multiple flavors. This makes it easy to filter by orientation, lighting and compatibility to the user's preference.
+	p We acknowledge that with Visual Pinball X, a single file can be used for any lighting or orientation. Hence, both attributes can be set to "universal", in which case the file will show up for any filters might applied.
+
+	h3.h--multiline.h--smaller Then what are tags for?
+	p Tags are a simple way to mark common features of a release independently of its flavor. It's either set or not. Examples are "3D", which indicates that a release is entirely made out of 3D objects (as opposed to 2D sprites), "HD" for releases with textures high enough to render crispy on full HD monitors, and so on. Tags can be created by table authors.
+
+	h3.h--multiline.h--smaller Where does the content at VPDB come from?
+	p Media and ROMs are provided by our sister site GameEx. All other content is uploaded by the respective authors directly.
+
+	h3.h--multiline.h--smaller So anyone can upload content to VPDB?
+	p Yes, but content from not established contributors goes through a manual approval process before it's published on the site.
+
+	h3.h--multiline.h--smaller How does the approval process work?
+	p At VPDB, every element of an uploaded vpt/vpx file is indexed with a checksum. Before a release gets published, the moderator can see how many elements of that release are equal to other releases. It basically shows a similarity rating about the upload in question. This allows to instantly identify mods across the VPDB database. If the original table has no general mod permission, we will start asking questions before publishing.
+
+	h3.h--multiline.h--smaller Why can't I create new games?
+	p While anyone can upload releases, the game metadata is maintained by the VPDB staff. This is in order to assure maximum quality of data and media provided for the games. We've added a lot of games already but if you have content for a missing game you can request that game to be added.
+
+	h3.h--multiline.h--smaller Why can't I upload flyers, instructions, videos or other game media?
+	p We're still in beta and the media part is still under development. When finished, VPDB will support any kind of media.
+
+	h3.h--multiline.h--smaller Does VPDB support Future Pinball?
+	p We currently only support vpt/vpx files for Visual Pinball. However, our data structure is flexible enough so that we could add additional platforms in the future.
+
+	h3.h--multiline.h--smaller What happens if I log in through another provider? Does VPDB see my password?
+	p No. What happens if for example you log in with Google is that VPDB sends you to Google along with a code that identifies you coming from VPDB. Should you agree to share your email address with VPDB, Google will redirect you back to VPDB with an access token, which is a random number. With that token, VPDB can retrieve your email address from Google and authenticate you.
+
+	h3.h--multiline.h--smaller So if I previously logged with Google and Google closes my account, I cannot log in to VPDB anymore?
+	p That's correct. However, while you're logged at VPDB, you can at any time create local credentials that allow you to log in directly to VPDB.
+
+	h3.h--multiline.h--smaller Where can I get more resources for virtual pinball?
+	p The main players are <a href="http://www.vpforums.org/" _target="blank">VPF</a>, <a href="http://vpuniverse.com/" _target="blank">VPU</a>, <a href="http://vpinball.com/" _target="blank">VPB</a>, <a href="http://roguepinball.com/" _target="blank">RP</a> and, of course, <a href="http://www.gameex.com/" _target="blank">GameEx</a>. There's also <a href="http://www.pinballnirvana.com/" _target="blank">Pinball Nirvana</a> which covers real machines as well, and <a href="http://gopinball.com/forum/" _target="blank">GoPinball</a> and <a href="http://www.pinsimdb.org/" _target="blank">PinSim DB</a> for Future Pinball related resources.

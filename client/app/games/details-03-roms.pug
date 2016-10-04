@@ -1,11 +1,11 @@
 include ../template/_mixins
 
-h1 ROMs
+h1(ng-hide="game.restrictions.release.mpu") ROMs
 	button.btn.btn-primary.btn--round.pull-right(ng-click="romUploadCollapsed = !romUploadCollapsed", ng-show="auth.hasPermission('roms/add')")
 		+icon('plus')(ng-show="romUploadCollapsed")
 		+icon('angle-up').small(ng-show="!romUploadCollapsed")
 
-.full-width
+.full-width(ng-hide="game.restrictions.release.mpu")
 
 	//- upload drop panel
 	div(uib-collapse="romUploadCollapsed")
@@ -55,8 +55,8 @@ h1 ROMs
 			label.center-block.text-center: small: i Drop ROM .zip files in here.
 
 //- list
-label(ng-hide="roms.length > 0") No ROMs available.
-table.table.table-double-striped(ng-show="roms.length > 0")
+label(ng-hide="game.restrictions.release.mpu || roms.length > 0") No ROMs available.
+table.table.table-double-striped(ng-show="!game.restrictions.release.mpu && roms.length > 0")
 	thead
 		tr
 			th Name

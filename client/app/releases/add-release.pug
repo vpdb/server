@@ -3,7 +3,7 @@ include ../template/_mixins
 .row.row--fullheight(ng-controller="ReleaseAddCtrl")
 	.col-sm-9.col--main
 
-		.alert.alert-danger(ng-show="mpuRestriction")
+		.alert.alert-danger.no-space-top(ng-show="game.restrictions.release.mpu")
 			+icon('warning').space-right.shift-up
 			b Game Restriction <br>
 			| This is a {{ game.mpu.short }} game. In order to respect the industry, we don't allow users to download {{ game.mpu.short }} games. You still can upload releases but be aware that only you will able to see them until the situation changes.

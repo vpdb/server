@@ -138,7 +138,7 @@ exports.create = function(req, res) {
  */
 exports.update = function(req, res) {
 
-	const updateableFields = [ 'name', 'description', '_tags', 'links', 'acknowledgements', 'authors' ];
+	const updateableFields = [ 'name', 'description', '_tags', 'links', 'acknowledgements', 'authors', 'ipdb' ];
 
 	let oldRelease;
 	Promise.try(() => {
@@ -166,6 +166,9 @@ exports.update = function(req, res) {
 		if (_.intersection(updateableFields, submittedFields).length !== submittedFields.length) {
 			var invalidFields = _.difference(submittedFields, updateableFields);
 			throw error('Invalid field%s: ["%s"]. Allowed fields: ["%s"]', invalidFields.length === 1 ? '' : 's', invalidFields.join('", "'), updateableFields.join('", "')).status(400).log('update');
+		}
+		if (req.body.ipdb) {
+			req.body.ipdb = _.assign(release.ipdb, _.pick(req.body.ipdb, 'mpu'));
 		}
 		oldRelease = _.cloneDeep(release);
 

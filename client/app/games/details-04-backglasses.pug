@@ -1,5 +1,6 @@
-h1.padder-top-2x DirectB2S Backglasses
-label(ng-hide="game.backglasses.length > 0") No backglasses available.
+h1.padder-top-2x(ng-hide="game.restrictions.release.mpu && game.restrictions.backglass.mpu") DirectB2S Backglasses
+label(ng-hide="(game.restrictions.release.mpu && game.restrictions.backglass.mpu) || game.backglasses.length > 0") No backglasses available.
+p(ng-show="!game.restrictions.release.mpu && game.restrictions.backglass.mpu && game.backglasses.length === 0") This is a {{ game.mpu.short }} game. Those games are still in production and out of respect to the industry, we won't be offering any backglasses for this game.
 .row: .col-md-4.col-sm-6.col-xs-12.fade-animation(ng-repeat="backglass in game.backglasses", ng-click="showBackglass(backglass)")
 	.panel.panel--animated.ng-cloak
 		.img.img--ar-bg.img--rounded-top(img-bg="backglass.versions[0].file.variations['medium' + pixelDensitySuffix].url")

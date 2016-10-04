@@ -48,6 +48,16 @@ include ../template/_mixins
 						+icon('warning').shift-up.space-right
 						| {{ errors.game_type }}
 
+				//- mpu
+				.form-group(ng-class="{ error: errors.game_type }", ng-hide="game.game_type === 'og'")
+					label.col-sm-3.control-label(for="title") MPU
+					.col-sm-9.col-md-6
+						select.form-control(ng-options="item.id as item.long for item in systems", ng-model="game.ipdb.mpu")
+				.alert.alert-danger.alert--shifted-up-2x(ng-show="errors['ipdb.mpu']")
+					.row: .col-sm-9.col-sm-offset-3
+						+icon('warning').shift-up.space-right
+						| {{ errors['ipdb.mpu'] }}
+
 				//- model_number / produced_units
 				.form-group(ng-hide="game.game_type === 'og'")
 					label.col-sm-3.control-label(for='produced_units', ng-class="{ error: errors.produced_units }") Produced Units

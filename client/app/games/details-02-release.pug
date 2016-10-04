@@ -1,5 +1,10 @@
 include ../template/_mixins
 
+h1 Releases
+label(ng-hide="game.restrictions.release.mpu || game.releases.length > 0") No releases for this game available.
+p(ng-show="game.restrictions.release.mpu && !game.restrictions.backglass.mpu && game.backglasses.length === 0") This is a {{ game.mpu.short }} game. Those games are still in production and out of respect to the industry, we won't be offering any releases for this game.
+p(ng-show="game.restrictions.release.mpu && game.restrictions.backglass.mpu && game.backglasses.length === 0") This is a {{ game.mpu.short }} game. Those games are still in production and out of respect to the industry, we won't be offering any releases or Direct B2S backglasses for this game.
+
 // each release
 .panel.panel--animated.panel--animated--less(ng-repeat="release in game.releases", ng-controller="ReleaseController", ng-click="navRelease(game.id, release.id)")
 	.clearfix

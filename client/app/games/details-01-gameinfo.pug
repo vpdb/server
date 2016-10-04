@@ -37,6 +37,7 @@ hr
 //-- IPDB INFO
 //---------------------------------------------------------------------
 label.label--block(ng-show="game.game_type") {{ game.game_type | gametype }}
+label.label--block(ng-show="game.mpu") {{ game.mpu.long }}
 label(ng-show="game.produced_units") {{ game.produced_units | number }} units produced
 hr(ng-show="game.game_type || game.units")
 

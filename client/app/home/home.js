@@ -9,7 +9,7 @@ angular.module('vpdb.home', [])
 
 		$scope.theme('dark');
 		$scope.setMenu('home');
-		$scope.setTitle('Home');
+		$scope.setTitle('VPDB');
 
 		$scope.searching = false;
 		$scope.packs = [];

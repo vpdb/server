@@ -148,8 +148,15 @@ GameSchema.virtual('owner')
 
 GameSchema.virtual('restrictions')
 	.get(function() {
-		if (this.ipdb.mpu && config.vpdb.restrictions && config.vpdb.restrictions.releases && _.isArray(config.vpdb.restrictions.releases.denyMpu) && config.vpdb.restrictions.releases.denyMpu.includes(this.ipdb.mpu)) {
-			return [ 'mpu' ];
+		let restrictions = {};
+		if (config.vpdb.restrictions.releases.denyMpu.includes(this.ipdb.mpu)) {
+			restrictions.release = { mpu: true };
+		}
+		if (config.vpdb.restrictions.backglasses.denyMpu.includes(this.ipdb.mpu)) {
+			restrictions.backglass = { mpu: true };
+		}
+		if (!_.isEmpty(restrictions)) {
+			return restrictions;
 		}
 	});
 

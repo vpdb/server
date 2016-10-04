@@ -50,7 +50,6 @@ angular.module('vpdb.releases.add', []).controller('ReleaseAddCtrl', function(
 		$scope.game.lastrelease = new Date($scope.game.lastrelease).getTime();
 		$scope.release._game = $scope.game.id;
 		$scope.setTitle('Add Release - ' + $scope.game.title);
-		$scope.mpuRestriction = $scope.game.restrictions && _.contains($scope.game.restrictions, 'mpu')
 	});
 
 	// retrieve available tags

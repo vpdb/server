@@ -9,7 +9,9 @@ angular.module('vpdb.home', [])
 
 		$scope.theme('dark');
 		$scope.setMenu('home');
-		$scope.setTitle('VPDB');
+		$scope.setTitle('VPDB - The Virtual Pinball Database');
+		$scope.setDescription('VPDB is a platform around virtual pinball. It seeks to preserve the great pinball games from the last and current century in digital form, created by a wonderful community.')
+		$scope.setKeywords('virtual pinball, database, pinball, vpinball, visual pinball, directb2s, backglass, beautiful, fast, open source');
 
 		$scope.searching = false;
 		$scope.packs = [];

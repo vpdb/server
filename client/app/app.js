@@ -14,8 +14,6 @@ var deps = [
 	'ui.router',
 	'ui.bootstrap',
 	'ui.gravatar',
-	'angulartics',
-	'angulartics.google.analytics',
 	'monospaced.elastic',
 	'sun.scrollable',
 	'growlNotifications',

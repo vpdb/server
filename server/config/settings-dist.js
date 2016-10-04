@@ -474,6 +474,19 @@ module.exports = {
 		 * different name for the authorization header.
 		 */
 		authorizationHeader: 'Authorization'
+	},
+
+	/**
+	 * Web application-specific options.
+	 */
+	webapp: {
+		/**
+		 * Google Analytics
+		 */
+		ga: {
+			enabled: false,
+			id: ''
+		}
 	}
 
 	// this is optional:

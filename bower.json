@@ -35,7 +35,6 @@
 		"angular-scroll": "0.7.1",
 		"angular-nanoscroller": "^0.2.1",
 		"angular-ui-router": "0.2.15",
-		"angulartics": "0.18.0",
 		"angular-gravatar": "0.4.1",
 		"angular-growl-notifications": "2.2.0",
 		"ng-file-upload": "11.0.0",
@@ -75,13 +74,6 @@
 				"ui/mouse.js",
 				"ui/draggable.js",
 				"ui/droppable.js"
-			]
-		},
-		"angulartics": {
-			"main": [
-				"src/angulartics.js",
-				"src/angulartics-ga.js",
-				"src/angulartics-ga-cordova.js"
 			]
 		},
 		"perfect-scrollbar": {

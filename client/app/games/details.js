@@ -77,7 +77,39 @@ angular.module('vpdb.games.details', [])
 		GameResource.get({ id: $scope.gameId }, function(result) {
 			$scope.game = result;
 			$scope.pageLoading = false;
-			$scope.setTitle($scope.game.title);
+
+			// title
+			var title = $scope.game.title;
+			if ($scope.game.manufacturer && $scope.game.year) {
+				title += ' (' + $scope.game.manufacturer + ' ' + $scope.game.year + ')';
+			}
+			$scope.setTitle(title);
+
+			// meta data
+			var keywordItems = [];
+			if (!_.isEmpty($scope.game.short)) {
+				keywordItems = keywordItems.concat($scope.game.short);
+			}
+			if (!_.isEmpty($scope.game.keywords)) {
+				keywordItems = keywordItems.concat($scope.game.keywords);
+			}
+			keywordItems.push('visual pinball');
+			keywordItems.push('download');
+			keywordItems.push('vpt');
+			keywordItems.push('vpx');
+			keywordItems.push('directb2s');
+			keywordItems.push('rom');
+			$scope.setKeywords(keywordItems.join(', '));
+
+			var descriptionItems = [];
+			if ($scope.game.owner) {
+				descriptionItems.push('Produced by ' + $scope.game.owner);
+			}
+			if (!_.isEmpty($scope.game.designers)) {
+				descriptionItems.push('Designed by ' + $scope.game.designers.join(', '));
+			}
+			var s = descriptionItems.length == 0 ? '' : ' - ';
+			$scope.setDescription(descriptionItems.join(', ') + s + 'Download tables, DirectB2S backglasses, ROMs and more.');
 
 			$scope.hasReleases = $scope.game.releases.length > 0;
 			$scope.hasBackglasses = $scope.game.backglasses.length > 0;

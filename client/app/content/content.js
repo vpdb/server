@@ -25,24 +25,37 @@ angular.module('vpdb.common', [])
 		$scope.theme('dark');
 		$scope.setMenu('about');
 		$scope.setTitle('About VPDB');
+		$scope.setDescription('What VPDB is about and how it came to life.');
+		$scope.setKeywords('vpdb, about, open source, accessible, beautiful, fast');
+
 	})
 	.controller('RulesController', function($scope) {
 		$scope.theme('dark');
 		$scope.setMenu('rules');
 		$scope.setTitle('VPDB Rules');
+		$scope.setDescription('It is a great community but a few rules are important nevertheless.');
+		$scope.setKeywords('vpdb, rules, stern sam');
+
 	})
 	.controller('FaqController', function($scope) {
 		$scope.theme('dark');
 		$scope.setMenu('faq');
 		$scope.setTitle('FAQ');
+		$scope.setDescription('Answers to the most frequently asked questions.');
+		$scope.setKeywords('vpdb, faq');
+
 	})
 	.controller('LegalController', function($scope) {
 		$scope.theme('dark');
 		$scope.setMenu('legal');
 		$scope.setTitle('Terms and Conditions');
+		$scope.setDescription('Terms and conditions of the VPDB website.');
+		$scope.setKeywords('vpdb, legal, terms and conditions');
 	})
 	.controller('PrivacyController', function($scope) {
 		$scope.theme('dark');
 		$scope.setMenu('privacy');
 		$scope.setTitle('Privacy Policy');
+		$scope.setDescription('Privacy policy of the VPDB website.');
+		$scope.setKeywords('vpdb, legal, privacy policy');
 	});

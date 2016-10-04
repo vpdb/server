@@ -4,7 +4,7 @@ angular.module('vpdb.common', [])
 
 	.controller('AppCtrl', function($scope, $rootScope, $state, $location, $uibModal, $localStorage, $timeout,
 									AuthService, ProfileService, ModalService, ModalFlashService, DownloadService,
-									UserResource, ReleaseStarResource) {
+									UserResource, ReleaseStarResource, Config) {
 
 		$rootScope.themeName = 'theme-dark';
 
@@ -33,6 +33,13 @@ angular.module('vpdb.common', [])
 		AuthService.init();
 		ProfileService.init();
 
+		// enable ga
+		if (Config.ga && Config.ga.enabled) {
+			ga('create', Config.ga.id, 'auto');
+
+			// then, on every page: ga('send', 'pageview');
+			// see: https://developers.google.com/analytics/devguides/collection/analyticsjs/
+		}
 
 		// on every page
 		$rootScope.$on('$stateChangeStart', function(event, toState) {
@@ -53,6 +60,14 @@ angular.module('vpdb.common', [])
 
 		$scope.setTitle = function(title) {
 			$scope.pageTitle = title;
+		};
+
+		$scope.setDescription = function(description) {
+			$scope.metaDescription = description;
+		};
+
+		$scope.setKeywords = function(keywords) {
+			$scope.metaKeywords = keywords;
 		};
 
 		$scope.setMenu = function(menu) {

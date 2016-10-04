@@ -676,6 +676,27 @@ module.exports = {
 				return 'Option "generateTableScreenshot" must be either true or false';
 			}
 		}
+	},
+
+	webapp: {
+		ga: {
+			enabled: function(bool) {
+				/* istanbul ignore if */
+				if (!_.isBoolean(bool)) {
+					return 'Option "generateTableScreenshot" must be either true or false';
+				}
+			},
+			id: function(id, setting) {
+				/* istanbul ignore if */
+				if (!setting.enabled) {
+					return;
+				}
+				/* istanbul ignore if */
+				if (id.length === 0) {
+					return 'Your Google tracking ID must be longer than 0 characters';
+				}
+			},
+		}
 	}
 };
 

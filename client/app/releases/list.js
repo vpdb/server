@@ -36,6 +36,8 @@ angular.module('vpdb.releases.list', [])
 		$scope.theme('dark');
 		$scope.setTitle('Releases');
 		$scope.setMenu('releases');
+		$scope.setDescription('Browse and search through our release database, see playfield shots, release date, popularity or rating, filter by orientation, tag, compatibility.');
+		$scope.setKeywords('visual pinball, vpt, vpx, fullscreen, desktop, search, browse, filter, sort, download, virtual pinball, vpinball');
 
 		// query defaults
 		$scope.$query = null;

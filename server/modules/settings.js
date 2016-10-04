@@ -451,6 +451,7 @@ Settings.prototype.clientConfig = function() {
 		apiUri: this.current.vpdb.api,
 		storageUri: this.current.vpdb.storage.protected.api,
 		webUri: this.current.vpdb.webapp,
+		ga: this.current.webapp.ga,
 		authProviders: {
 			local: true,
 			google: this.current.vpdb ? this.current.vpdb.passport.google.enabled : false,

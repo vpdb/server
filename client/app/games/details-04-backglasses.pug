@@ -3,7 +3,7 @@ label(ng-hide="hasBackglasses || (game.restrictions.release.mpu && game.restrict
 p(ng-show="!hasBackglasses && !game.restrictions.release.mpu && game.restrictions.backglass.mpu") This is a {{ game.mpu.short }} game. Those games are still in production and out of respect to the industry, we won't be offering any backglasses for this game.
 .row: .col-md-4.col-sm-6.col-xs-12.fade-animation(ng-repeat="backglass in game.backglasses", ng-click="showBackglass(backglass)")
 	.panel.panel--animated.ng-cloak
-		.restricted-overlay
+		.restricted-overlay(ng-show="game.restrictions.backglass.mpu")
 			.alert.alert-danger
 				+icon('warning').shift-up.space-right
 				| Backglass only visible to uploader.

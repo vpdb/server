@@ -20,6 +20,9 @@
 "use strict";
 
 var _ = require('lodash');
+var builder = require('xmlbuilder');
+
+var settings = require('../modules/settings');
 
 /**
  * Returns the parameter object that is accessible when rendering the views.
@@ -51,4 +54,56 @@ exports.viewParams = function(gitInfoFromGrunt) {
 		},
 		svgDefs: config.vpdb.tmp + '/vpdb-svg/_svg-defs.svg'
 	};
+};
+
+exports.sitemap = function(req, res) {
+
+	const Game = require('mongoose').model('Game');
+	const Medium = require('mongoose').model('Medium');
+
+	let rootNode = builder
+		.create('urlset', { version: '1.0', encoding: 'UTF-8' })
+		.att('xmlns', 'http://www.sitemaps.org/schemas/sitemap/0.9')
+		.att('xmlns:image', 'http://www.google.com/schemas/sitemap-image/1.1');
+
+	Promise.try(() => {
+		return Game.find({}).exec();
+
+	}).then(games => {
+
+		console.log('found %s games.', games.length);
+		return Promise.each(games, game => {
+			const url = rootNode.ele('url');
+			url.ele('loc', settings.webUri('/games/' + game.id));
+
+			return Medium.find({ '_ref.game': game._id }).populate({ path: '_file' }).exec().then(media => {
+				media.forEach(medium => {
+					switch (medium.category) {
+						case 'wheel_image': {
+							let img = url.ele('image:image');
+							img.ele('image:loc', medium._file.getUrl('medium-2x'));
+							img.ele('image:caption', 'Logo for ' + game.title);
+							break;
+						}
+						case 'backglass_image': {
+							let img = url.ele('image:image');
+							img.ele('image:loc', medium._file.getUrl('full'));
+							img.ele('image:caption', 'Backglass for ' + game.title);
+							break;
+						}
+					}
+				});
+			});
+		});
+
+	}).then(() => {
+		res.setHeader('Content-Type', 'application/xml');
+		res.send(rootNode.end({ pretty: true}));
+
+	}).catch(err => {
+		console.error('ERROR:', err.stack);
+		res.status(500).send(err.message);
+	});
+
+
 };

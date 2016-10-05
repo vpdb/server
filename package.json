@@ -75,7 +75,8 @@
 		"volos-quota-redis": "0.11.2",
 		"winston": "2.2.0",
 		"winston-papertrail": "1.0.2",
-		"wiredep": "4.0.0"
+		"wiredep": "4.0.0",
+		"xmlbuilder": "8.2.2"
 	},
 	"devDependencies": {
 		"adm-zip": "0.4.7",

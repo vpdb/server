@@ -8,7 +8,7 @@ p(ng-show="!hasReleases && game.restrictions.release.mpu && game.restrictions.ba
 // each release
 .panel.panel--animated.panel--animated--less(ng-repeat="release in game.releases", ng-controller="ReleaseController", ng-click="navRelease(game.id, release.id)")
 	.clearfix
-	.restricted-overlay
+	.restricted-overlay(ng-show="game.restrictions.release.mpu")
 		.alert.alert-danger.text-center
 			+icon('warning').shift-up.space-right
 			| Release only visible to uploader.

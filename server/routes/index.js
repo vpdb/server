@@ -20,6 +20,7 @@
 "use strict";
 
 var settings = require('../modules/settings');
+var ctrl = require('../controllers/ctrl');
 
 /**
  * Defines server-side routing.
@@ -66,6 +67,9 @@ module.exports = function(app) {
 	require('./storage/files').register(app, api, storage);
 	require('./storage/releases').register(app, api, storage);
 
+	// site map
+	app.get(settings.apiPath('/sitemap').replace(/(\/v1\/)/, '/'), ctrl.sitemap);
+
 	// or else fail
 	app.all(settings.apiPath('/*'), function(req, res) {
 		res.setHeader('Content-Type', 'application/json');
@@ -75,5 +79,6 @@ module.exports = function(app) {
 		res.setHeader('Content-Type', 'application/json');
 		res.status(404).send({ error: 'No such resource. Forgot to add the version to the path?' });
 	});
+
 
 };

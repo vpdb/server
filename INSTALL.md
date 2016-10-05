@@ -612,7 +612,7 @@ Then start nginx:
 	
 And setup Letsencrypt renewal
 
-	sudo cronab -e
+	sudo crontab -e
 	
 	23 4,16 * * * letsencrypt renew
 

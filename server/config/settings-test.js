@@ -56,6 +56,7 @@ module.exports = {
 			github: { enabled: true, clientID: 'TEST_CLIENT_ID', clientSecret: 'TEST_CLIENT_SECRET' },
 			ipboard: [{ enabled: true, id: 'ipbtest', name: 'Test', icon: '', baseURL: 'https://vpdb.io/forums/index.php', clientID: 'TEST_CLIENT_ID', clientSecret: 'TEST_CLIENT_SECRET' }]
 		}
-	}
+	},
+	webapp: { ga: { enabled: false, id: '' } }
 	//, ffmpeg: { path: 'E:\\Tools\\FFmpeg\\bin\\ffmpeg.exe' }
 };

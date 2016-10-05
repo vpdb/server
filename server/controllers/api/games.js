@@ -411,7 +411,7 @@ exports.view = function(req, res) {
 		let query = { _game: game._id };
 
 		// if game has a release restriction, only fetch owned releases when logged
-		if (game.isRestricted('releases')) {
+		if (game.isRestricted('release')) {
 			if (!req.user) {
 				return [];
 			}
@@ -433,7 +433,7 @@ exports.view = function(req, res) {
 		let query = { _game: game._id };
 
 		// if game has a backglass restriction, only fetch owned releases when logged
-		if (game.isRestricted('backglasses')) {
+		if (game.isRestricted('backglass')) {
 			if (!req.user) {
 				return [];
 			}

@@ -127,6 +127,14 @@ BackglassSchema.methods.toSimple = function(opts) {
 	return _.pick(backglass, [...apiFields.simple, ...opts.fields ]);
 };
 
+BackglassSchema.methods.isCreatedBy = function(user) {
+	if (!user) {
+		return false;
+	}
+	let userId = user._id || user;
+	return this._created_by.equals(userId);
+};
+
 
 //-----------------------------------------------------------------------------
 // VALIDATIONS

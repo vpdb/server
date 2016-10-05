@@ -401,7 +401,7 @@ module.exports = {
 		},
 
 		restrictions: {
-			releases: {
+			release: {
 				denyMpu: function(ids) {
 					/* istanbul ignore if */
 					if (!_.isArray(ids)) {
@@ -409,7 +409,7 @@ module.exports = {
 					}
 				}
 			},
-			backglasses: {
+			backglass: {
 				denyMpu: function(ids) {
 					/* istanbul ignore if */
 					if (!_.isArray(ids)) {

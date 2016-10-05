@@ -222,6 +222,7 @@ exports.view = function(req, res) {
 	};
 	Promise.try(() => {
 		return Backglass.findOne({ id: req.params.id })
+			.populate({ path: '_game' })
 			.populate({ path: 'authors._user' })
 			.populate({ path: 'versions._file' })
 			.populate({ path: '_created_by' })
@@ -229,6 +230,9 @@ exports.view = function(req, res) {
 
 	}).then(backglass => {
 		if (!backglass) {
+			throw error('No such backglass with ID "%s"', req.params.id).status(404);
+		}
+		if (backglass._game.isRestricted('backglass') && !backglass.isCreatedBy(req.user)) {
 			throw error('No such backglass with ID "%s"', req.params.id).status(404);
 		}
 		return backglass.assertModeratedView(req, error).then(backglass => {

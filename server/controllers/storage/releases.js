@@ -107,6 +107,9 @@ exports.download = function(req, res) {
 		if (!release) {
 			throw error('No such release with ID "%s".', req.params.release_id).status(404);
 		}
+		if (release._game.isRestricted('release') && !release.isCreatedBy(req.user)) {
+			throw error('No such release with ID "%s".', req.params.release_id).status(404);
+		}
 		return release.assertModeratedView(req, error);
 
 	}).then(() => {
@@ -199,7 +202,6 @@ exports.download = function(req, res) {
 				if (!backglass._game.equals(release._game._id)) {
 					throw error('Backglass is not the same game as release.', body.backglass).status(422);
 				}
-
 				let file = _.sortBy(backglass.versions, v => -v.released_at)[0]._file;
 				requestedFiles.push(file);
 				counters.push(file.incrementCounter('downloads'));

@@ -47,6 +47,9 @@ exports.createForRelease = function(req, res) {
 		if (!release) {
 			throw error('No such release with ID "%s"', req.params.id).status(404);
 		}
+		if (release._game.isRestricted('release') && !release.isCreatedBy(req.user)) {
+			throw error('No such release with ID "%s"', req.params.id).status(404);
+		}
 		comment = new Comment({
 			_from: req.user._id,
 			_ref: { release: release },
@@ -157,32 +160,37 @@ exports.createForReleaseModeration = function(req, res) {
 
 exports.listForRelease = function(req, res) {
 
-	var assert = api.assert(error, 'list', '', res);
-	var pagination = api.pagination(req, 10, 50);
+	let pagination = api.pagination(req, 10, 50);
+	let release;
+	Promise.try(() => {
+		return Release.findOne({ id: req.params.id })
+			.populate('_game')
+			.populate('_created_by')
+			.exec();
 
-	Release.findOne({ id: req.params.id }, assert(function(release) {
+	}).then(r => {
+		release = r;
+
 		if (!release) {
-			return api.fail(res, error('No such release with ID "%s"', req.params.id), 404);
+			throw error('No such release with ID "%s"', req.params.id).status(404);
+		}
+		if (release._game.isRestricted('release') && !release.isCreatedBy(req.user)) {
+			throw error('No such release with ID "%s"', req.params.id).status(404);
 		}
 
-		Comment.paginate({ '_ref.release': release._id }, {
+		return Comment.paginate({ '_ref.release': release._id }, {
 			page: pagination.page,
 			limit: pagination.perPage,
 			populate: [ '_from' ],
 			sort: { created_at: -1 }
+		}).then(result => [result.docs, result.total]);
 
-		}, function(err, result) {
-			/* istanbul ignore if  */
-			if (err) {
-				return api.fail(res, error(err, 'Error listing comments').log('list'), 500);
-			}
-			var comments = _.map(result.docs, function(comment) {
-				return comment.toSimple();
-			});
-			api.success(res, comments, 200, api.paginationOpts(pagination, result.total));
-		});
+	}).spread((results, count) => {
 
-	}, 'Error finding release in order to list comments.'));
+		let comments = results.map(comment => comment.toSimple());
+		api.success(res, comments, 200, api.paginationOpts(pagination, count));
+
+	}).catch(api.handleError(res, error, 'Error listing comments for rleease.'));
 };
 
 exports.listForReleaseModeration = function(req, res) {

@@ -283,6 +283,14 @@ ReleaseSchema.methods.getPlayfieldImageIds = function() {
 	return _.compact(_.map(files, '_playfield_image')).map(file => file._id ? file._id.toString() : file.toString());
 };
 
+ReleaseSchema.methods.isCreatedBy = function(user) {
+	if (!user) {
+		return false;
+	}
+	let userId = user._id || user;
+	return this._created_by.equals(userId);
+};
+
 //-----------------------------------------------------------------------------
 // TRIGGERS
 //-----------------------------------------------------------------------------

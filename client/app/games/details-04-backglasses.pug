@@ -3,9 +3,13 @@ label(ng-hide="hasBackglasses || (game.restrictions.release.mpu && game.restrict
 p(ng-show="!hasBackglasses && !game.restrictions.release.mpu && game.restrictions.backglass.mpu") This is a {{ game.mpu.short }} game. Those games are still in production and out of respect to the industry, we won't be offering any backglasses for this game.
 .row: .col-md-4.col-sm-6.col-xs-12.fade-animation(ng-repeat="backglass in game.backglasses", ng-click="showBackglass(backglass)")
 	.panel.panel--animated.ng-cloak
-		.img.img--ar-bg.img--rounded-top(img-bg="backglass.versions[0].file.variations['medium' + pixelDensitySuffix].url")
+		.restricted-overlay
+			.alert.alert-danger
+				+icon('warning').shift-up.space-right
+				| Backglass only visible to uploader.
+		.img.img--ar-bg.img--rounded-top(img-bg="backglass.versions[0].file.variations['medium' + pixelDensitySuffix].url", ng-class="{ restricted: game.restrictions.release.mpu }")
 		.img.img--ar-bg.img--rounded-top.img--placeholder.loaded
-		.text-center.padder
+		.text-center.padder(ng-class="{ restricted: game.restrictions.release.mpu }")
 			.center-block
 				img.img-avatar.img-avatar--xsm.space-left.space-right(
 					ng-repeat="author in backglass.authors",

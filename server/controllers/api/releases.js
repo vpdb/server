@@ -520,8 +520,8 @@ exports.list = function(req, res) {
 	}).then(() => {
 
 		// restricted games
-		if (config.vpdb.restrictions && config.vpdb.restrictions.releases && _.isArray(config.vpdb.restrictions.releases.denyMpu)) {
-			return Game.find({ 'ipdb.mpu' : { $in: config.vpdb.restrictions.releases.denyMpu }}).exec().then(games => {
+		if (config.vpdb.restrictions && config.vpdb.restrictions.release && _.isArray(config.vpdb.restrictions.release.denyMpu)) {
+			return Game.find({ 'ipdb.mpu' : { $in: config.vpdb.restrictions.release.denyMpu }}).exec().then(games => {
 				query.push({ _game : { $nin: _.map(games, '_id') }});
 			});
 		}
@@ -679,6 +679,10 @@ exports.view = function(req, res) {
 		if (!release) {
 			throw error('No such release with ID "%s"', req.params.id).status(404);
 		}
+		if (release._game.isRestricted('release') && !release.isCreatedBy(req.user)) {
+			throw error('No such release with ID "%s"', req.params.id).status(404);
+		}
+
 		return release.assertModeratedView(req, error).then(release => {
 			return release.populateModeration(req, error).then(populated => {
 				if (populated === false) {

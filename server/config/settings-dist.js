@@ -312,7 +312,7 @@ module.exports = {
 			/**
 			 * Restrict releases
 			 */
-			releases: {
+			release: {
 
 				/**
 				 * Don't allow releases for Stern S.A.M (54) and SPIKE (61) games
@@ -323,7 +323,7 @@ module.exports = {
 			/**
 			 * Restrict backglasses
 			 */
-			backglasses: {
+			backglass: {
 
 				/**
 				 * Don't allow backglasses for Stern S.A.M (54) and SPIKE (61) games

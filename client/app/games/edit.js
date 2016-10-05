@@ -90,7 +90,10 @@ angular.module('vpdb.games.edit', [])
 
 			// restore arrays
 			_.each(arrayFields, function(what) {
-				game[what] = $scope.arrays[what].split(/,\s*/);
+				game[what] = _.compact($scope.arrays[what].split(/,\s*/));
+				if (_.isEmpty(game[what])) {
+					delete game[what];
+				}
 			});
 
 			GameResource.update({ id: $scope.game.id }, game, function() {

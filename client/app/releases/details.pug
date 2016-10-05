@@ -84,6 +84,10 @@ p.padder-top(ng-show="pageLoading") Loading...
 	//-====================================================================
 	.col-sm-9.col-sm-pull-3.col--main(ng-show="found")
 
+		.alert.alert-danger.no-space-top(ng-show="game.restrictions.release.mpu")
+			+icon('warning').shift-up.space-right
+			| This is a {{ game.mpu.short }} game. We allow uploads of restricted games but as the uploader you are the only one who can access this release.
+
 		//-- MODERATION ZONE
 		//---------------------------------------------------------------------
 		.panel--rect-block.padder-top.shift-up-1px(ng-show="release.moderation && !release.moderation.is_approved")

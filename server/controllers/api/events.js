@@ -86,9 +86,12 @@ exports.list = function(opts) {
 
 			// by release
 			if (opts.byRelease && req.params.id) {
-				return Release.findOne({ id: req.params.id }).exec().then(release => {
+				return Release.findOne({ id: req.params.id }).populate('_game').exec().then(release => {
 					if (!release) {
 						throw error('No such release with id %s.', req.params.id).status(404);
+					}
+					if (release._game.isRestricted('release') && !release.isCreatedBy(req.user)) {
+						throw error('No such release with ID "%s"', req.params.id).status(404);
 					}
 					query.push({ '_ref.release': release._id });
 

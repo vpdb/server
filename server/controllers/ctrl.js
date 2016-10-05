@@ -71,7 +71,6 @@ exports.sitemap = function(req, res) {
 
 	}).then(games => {
 
-		console.log('found %s games.', games.length);
 		return Promise.each(games, game => {
 			const url = rootNode.ele('url');
 			url.ele('loc', settings.webUri('/games/' + game.id));
@@ -104,6 +103,5 @@ exports.sitemap = function(req, res) {
 		console.error('ERROR:', err.stack);
 		res.status(500).send(err.message);
 	});
-
 
 };

@@ -59,6 +59,7 @@ exports.viewParams = function(gitInfoFromGrunt) {
 exports.sitemap = function(req, res) {
 
 	const Game = require('mongoose').model('Game');
+	const Release = require('mongoose').model('Release');
 	const Medium = require('mongoose').model('Medium');
 
 	let rootNode = builder
@@ -67,6 +68,39 @@ exports.sitemap = function(req, res) {
 		.att('xmlns:image', 'http://www.google.com/schemas/sitemap-image/1.1');
 
 	Promise.try(() => {
+		return Release.find({})
+			.populate('_game')
+			.populate('versions.files._playfield_image')
+			.populate('authors._user')
+			.exec();
+
+	}).then(releases => {
+
+		releases.forEach(release => {
+			let fsImage, dtImage;
+			release.versions.forEach(version => {
+				version.files.forEach(file => {
+					if (file._playfield_image.metadata.size.width > file._playfield_image.metadata.size.height) {
+						dtImage = file._playfield_image;
+					} else {
+						fsImage = file._playfield_image;
+					}
+				});
+			});
+			const authors = release.authors.map(author => author._user.name).join(', ');
+			const url = rootNode.ele('url');
+			url.ele('loc', settings.webUri('/games/' + release._game.id + '/releases/' + release.id));
+			if (fsImage) {
+				let img = url.ele('image:image');
+				img.ele('image:loc', fsImage.getUrl('full'));
+				img.ele('image:caption', 'Portrait playfield for ' + release._game.title + ', ' + release.name + ' by ' + authors + '.');
+			}
+			if (dtImage) {
+				let img = url.ele('image:image');
+				img.ele('image:loc', dtImage.getUrl('full'));
+				img.ele('image:caption', 'Landscape playfield for ' + release._game.title + ', ' + release.name + ' by ' + authors + '.');
+			}
+		});
 		return Game.find({}).exec();
 
 	}).then(games => {

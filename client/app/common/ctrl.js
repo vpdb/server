@@ -30,6 +30,13 @@ angular.module('vpdb.common', [])
 			version_add: true
 		};
 
+		// legal documents update
+		var currentDocumentRevisions = $localStorage.document_revisions || Config.documentRevisions;
+		$scope.showRulesUpdated = currentDocumentRevisions.rules < Config.documentRevisions.rules;
+		$scope.showPrivacyUpdated = currentDocumentRevisions.privacy < Config.documentRevisions.privacy;
+		$scope.showLegalUpdated = currentDocumentRevisions.legal < Config.documentRevisions.legal;
+		$localStorage.document_revisions = Config.documentRevisions;
+
 		AuthService.init();
 		ProfileService.init();
 

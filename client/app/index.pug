@@ -67,6 +67,7 @@ block content
 			span(ng-bind-html="notification.message")
 	.container.container--topmost(ng-cloak)
 
+		//- session timeout notice
 		section#timeoutNotice.uib-collapse(uib-collapse="timeoutNoticeCollapsed")
 			label
 				+icon('info').small.shift-up.space-right
@@ -75,6 +76,22 @@ block content
 				a(ng-click="timeoutNoticeCollapsed = true")
 					+icon('times').small.shift-up.space-right
 
+		.alert.alert-info(ng-show="showRulesUpdated")
+			| Hey, we've just updated our <a ui-sref="rules">site rules</a>.&nbsp;
+			span(ng-show="!showPrivacyUpdated && !showLegalUpdated") By continuing to browse the site you are agreeing to the changes.
+			.pull-right: a(ng-click="showRulesUpdated = false"): +icon('times').small.shift-up-less.space-right
+
+		.alert.alert-info(ng-show="showPrivacyUpdated")
+			| {{ showRulesUpdated ? 'W' : 'Hey, w' }}e've {{ showRulesUpdated ? 'also ' : '' }}updated our <a ui-sref="privacy">privacy policy</a>.&nbsp;
+			span(ng-show="!showLegalUpdated") By continuing to browse the site you are agreeing to {{ showRulesUpdated ? 'all' : 'the' }} changes.
+			.pull-right: a(ng-click="showPrivacyUpdated = false"): +icon('times').small.shift-up-less.space-right
+
+		.alert.alert-info(ng-show="showLegalUpdated")
+			| {{ showRulesUpdated || showPrivacyUpdated ? 'W' : 'Hey, w' }}e've {{ showRulesUpdated || showPrivacyUpdated ? 'also ' : '' }}updated our <a ui-sref="legal">terms of use</a>.&nbsp;
+			span By continuing to browse the site you are agreeing to {{ showRulesUpdated || showPrivacyUpdated ? 'all' : 'the' }} changes.
+			.pull-right: a(ng-click="showLegalUpdated = false"): +icon('times').small.shift-up-less.space-right
+
+		//- content
 		| <div ui-view></div>
 
 		footer

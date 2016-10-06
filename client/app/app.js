@@ -113,8 +113,8 @@ angular.module('vpdb', deps.concat(appDeps))
 		$stateProvider.state('about',            { url: '/about',                        templateUrl: '/content/about.html' });
 		$stateProvider.state('rules',            { url: '/rules',                        templateUrl: '/content/rules.html' });
 		$stateProvider.state('faq',              { url: '/faq',                          templateUrl: '/content/faq.html' });
-		$stateProvider.state('legal',            { url: '/terms-and-conditions',         templateUrl: '/content/legal.html' });
-		$stateProvider.state('privacy',          { url: '/privacy-policy',               templateUrl: '/content/privacy.html' });
+		$stateProvider.state('legal',            { url: '/legal',                        templateUrl: '/content/legal.html' });
+		$stateProvider.state('privacy',          { url: '/privacy',                      templateUrl: '/content/privacy.html' });
 		$stateProvider.state('404',              {                                       templateUrl: '/errors/404.html' });
 
 		$locationProvider.html5Mode({

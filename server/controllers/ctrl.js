@@ -76,8 +76,8 @@ exports.sitemap = function(req, res) {
 		rootNode.ele('url').ele('loc', settings.webUri('/about'));
 		rootNode.ele('url').ele('loc', settings.webUri('/rules'));
 		rootNode.ele('url').ele('loc', settings.webUri('/faq'));
-		rootNode.ele('url').ele('loc', settings.webUri('/terms-and-conditions'));
-		rootNode.ele('url').ele('loc', settings.webUri('/privacy-policy'));
+		rootNode.ele('url').ele('loc', settings.webUri('/legal'));
+		rootNode.ele('url').ele('loc', settings.webUri('/privacy'));
 
 		// releases
 		return Release.find({})

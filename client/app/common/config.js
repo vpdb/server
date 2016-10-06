@@ -6,6 +6,13 @@ angular.module('vpdb.common', [])
 
 	.factory('ConfigService', function(Config) {
 
+		// bump these on changes
+		vpdbConfig.documentRevisions = {
+			rules: 1,
+			privacy: 1,
+			legal: 1
+		};
+
 		var apiSameHost =
 			Config.webUri.protocol === Config.apiUri.protocol &&
 			Config.webUri.hostname === Config.apiUri.hostname &&
@@ -33,9 +40,13 @@ angular.module('vpdb.common', [])
 				}
 			},
 
+			webUri: function(path) {
+				return this.uri(Config.webUri) + (path || '');
+			},
+
 			uri: function(uri) {
 				var port = (uri.protocol === 'http' && uri.port === 80) || (uri.protocol === 'https' && uri.port === 443) ? false : uri.port;
-				return uri.protocol + '://' + uri.hostname + (port ? ':' + port : '') + uri.pathname;
+				return uri.protocol + '://' + uri.hostname + (port ? ':' + port : '') + (uri.pathname || '');
 			},
 
 			isApiUrl: function(urlOrPath) {

@@ -45,12 +45,13 @@ angular.module('vpdb.common', [])
 		$scope.setKeywords('vpdb, faq');
 
 	})
-	.controller('LegalController', function($scope) {
+	.controller('LegalController', function($scope, ConfigService) {
 		$scope.theme('dark');
 		$scope.setMenu('legal');
-		$scope.setTitle('Terms and Conditions');
+		$scope.setTitle('Terms of Use');
 		$scope.setDescription('Terms and conditions of the VPDB website.');
-		$scope.setKeywords('vpdb, legal, terms and conditions');
+		$scope.setKeywords('vpdb, legal, terms of use, terms and conditions');
+		$scope.privacyUrl = ConfigService.webUri('/privacy');
 	})
 	.controller('PrivacyController', function($scope) {
 		$scope.theme('dark');

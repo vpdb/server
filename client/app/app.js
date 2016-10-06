@@ -89,7 +89,7 @@ angular.module('vpdb', deps.concat(appDeps))
 
 	.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
 
-		// routes
+		// routes (add this stuff to the site map as well!)
 		$stateProvider.state('home',             { url: '/',                             templateUrl: '/home/home.html', controller: 'HomeController' });
 		$stateProvider.state('games',            { url: '/games',                        templateUrl: '/games/list.html' });
 		$stateProvider.state('gameDetails',      { url: '/games/:id',                    templateUrl: '/games/details.html' });

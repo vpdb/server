@@ -68,6 +68,18 @@ exports.sitemap = function(req, res) {
 		.att('xmlns:image', 'http://www.google.com/schemas/sitemap-image/1.1');
 
 	Promise.try(() => {
+
+		// static urls
+		rootNode.ele('url').ele('loc', settings.webUri('/'));
+		rootNode.ele('url').ele('loc', settings.webUri('/games'));
+		rootNode.ele('url').ele('loc', settings.webUri('/releases'));
+		rootNode.ele('url').ele('loc', settings.webUri('/about'));
+		rootNode.ele('url').ele('loc', settings.webUri('/rules'));
+		rootNode.ele('url').ele('loc', settings.webUri('/faq'));
+		rootNode.ele('url').ele('loc', settings.webUri('/terms-and-conditions'));
+		rootNode.ele('url').ele('loc', settings.webUri('/privacy-policy'));
+
+		// releases
 		return Release.find({})
 			.populate('_game')
 			.populate('versions.files._playfield_image')
@@ -75,7 +87,6 @@ exports.sitemap = function(req, res) {
 			.exec();
 
 	}).then(releases => {
-
 		releases.forEach(release => {
 			let fsImage, dtImage;
 			release.versions.forEach(version => {
@@ -101,6 +112,8 @@ exports.sitemap = function(req, res) {
 				img.ele('image:caption', 'Landscape playfield for ' + release._game.title + ', ' + release.name + ' by ' + authors + '.');
 			}
 		});
+
+		// games
 		return Game.find({}).exec();
 
 	}).then(games => {

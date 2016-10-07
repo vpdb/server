@@ -46,11 +46,11 @@ var staging = {
 	httpSimple: { username: credentials.httpSimple.username, password: credentials.httpSimple.password }
 };
 var production = {
-	apiUri: 'https://vpdb.io/api/v1',
-	storageUri: 'https://vpdb.io/storage/v1',
+	apiUri: 'https://api.vpdb.io/v1',
+	storageUri: 'https://storage.vpdb.io/v1',
 	authHeader: 'X-Authorization',
-	credentials: { username: 'uploader', password: credentials.user.password },
-	httpSimple: { username: credentials.httpSimple.username, password: credentials.httpSimple.password }
+	credentials: { username: 'uploader', password: credentials.user.password }
+	//httpSimple: { username: credentials.httpSimple.username, password: credentials.httpSimple.password }
 };
 
 var config = local;
@@ -60,9 +60,9 @@ config.romFolder = process.env.VPDB_ROM_FOLDER || process.env.VPDB_DATA_FOLDER |
 
 Promise.try(() => {
 
-//	games.upload(config);
+	games.upload(production);
 //	return roms.upload(config);
-	releases.upload(config);
+//	releases.upload(config);
 
 }).then(() => {
 	console.log('All done!');

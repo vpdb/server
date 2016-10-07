@@ -5,7 +5,7 @@ set -e
 
 # Install dependencies
 echo travis_fold:start:npm-install
-npm install -g grunt-cli pngquant-bin
+npm install -g grunt grunt-cli pngquant-bin
 npm install
 echo travis_fold:end:npm-install
 

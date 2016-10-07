@@ -85,7 +85,7 @@ Set:
 	sudo apt-get install -y nodejs build-essential
 
 	npm config set ca ""
-	npm install -g grunt-cli bower
+	npm install -g grunt grunt-cli bower
 
 ## Image/Video Tools
 

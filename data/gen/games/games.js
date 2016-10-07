@@ -129,7 +129,8 @@ exports.upload = function(config) {
 								data.year = data.year || game.year || 1900;
 								data.game_type = data.game_type || 'na';
 								data.manufacturer = data.manufacturer || 'unknown';
-								data._media = { backglass: bgRef, logo: logoRef };
+								data._backglass = bgRef;
+								data._logo = logoRef;
 
 								var headers = {};
 								headers[authHeader] = 'Bearer ' + token;

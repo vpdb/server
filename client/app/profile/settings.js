@@ -2,13 +2,15 @@
 
 angular.module('vpdb.profile.settings', [])
 
-	.controller('ProfileSettingsCtrl', function($scope, $rootScope, $uibModal, AuthService, ApiHelper, ProfileResource, TokenResource, ModalService) {
+	.controller('ProfileSettingsCtrl', function($scope, $rootScope, $uibModal, AuthService, ApiHelper, ProfileResource,
+												TokenResource, ModalService) {
 
 		$scope.theme('dark');
 		$scope.setTitle('Your Profile');
 
 		$scope.localUser = {};                                          // local user for changing password
 		$scope.localCredentials = {};                                   // local credentials object
+		$scope.tokens = [];
 
 		AuthService.refreshUser(function(err) {
 
@@ -19,7 +21,10 @@ angular.module('vpdb.profile.settings', [])
 			$scope.providers = AuthService.getProviders($scope.auth.user);
 			var allProviders = AuthService.getProviders();
 
-			$scope.tokens = TokenResource.query({ type: 'access' });
+			if (AuthService.user.plan.app_tokens_enabled) {
+				$scope.tokens = TokenResource.query({ type: 'access' });
+			}
+
 			$scope.showTokenAlert = false;
 
 			// pre-fill (local) username from first provider we find.

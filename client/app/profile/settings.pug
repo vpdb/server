@@ -146,9 +146,12 @@ include ../template/_mixins
 .span(ng-show="auth.user.provider === 'local'")
 	h1 Application Access Tokens
 	hr
-	p This allows you to give other applications such as VPDB Agent full access to
-		| the API without having to hand over your password. You can delete or
-		| temporarily disable these tokens any time.
+	p(ng-hide="auth.user.plan.app_tokens_enabled") This allows you to give other applications such as VPDB Agent full
+		| access to the API without having to hand over your password. However, application tokens are currently disabled
+		| for your current plan.
+	p(ng-show="auth.user.plan.app_tokens_enabled") This allows you to give other applications such as VPDB Agent full
+		| access to the API without having to hand over your password. You can delete or temporarily disable these tokens
+		| any time.
 
 	.alert.alert-success.padder-bottom(ng-show="showTokenAlert")
 		+icon('warning').shift-up.space-right
@@ -177,7 +180,7 @@ include ../template/_mixins
 				td.td--icon: +icon("{{ token.is_active ? 'times' : 'check' }}")(ng-click="toggleToken(token)").a.shift-up
 				td.td--icon: +icon('trash')(ng-click="deleteToken(token)").a.shift-up
 
-	button.btn.btn-default.pull-right(ng-click="createToken()")
+	button.btn.btn-default.pull-right(ng-click="createToken()", ng-show="auth.user.plan.app_tokens_enabled")
 		+icon('plus-circle').space-right
 		| New Token
 	.clearfix

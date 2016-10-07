@@ -38,7 +38,8 @@ describe('The VPDB `Token` API', function() {
 		before(function(done) {
 			hlp.setupUsers(request, {
 				member: { roles: [ 'member' ] },
-				subscribed: { roles: [ 'member' ], _plan: 'subscribed' }
+				subscribed: { roles: [ 'member' ], _plan: 'subscribed' },
+				free: { roles: [ 'member' ], _plan: 'free' }
 			}, done);
 		});
 
@@ -84,6 +85,14 @@ describe('The VPDB `Token` API', function() {
 					hlp.expectValidationError(err, res, 'label', 'must contain at least');
 					done();
 				});
+		});
+
+		it('shoud fail when subscription plan is missing access token permissions', function(done) {
+			request
+				.post('/api/v1/tokens')
+				.as('free')
+				.send({ label: 'My Application', password: hlp.getUser('subscribed').password, type: 'access' })
+				.end(hlp.status(401, 'current plan', done));
 		});
 
 		it('should succeed with valid data', function(done) {
@@ -133,7 +142,7 @@ describe('The VPDB `Token` API', function() {
 			request
 				.post('/api/v1/tokens')
 				.as('subscribed')
-				.send({ password: hlp.getUser('subscribed').password })
+				.send({ password: hlp.getUser('subscribed').password, type: 'access' })
 				.end(function(err, res) {
 
 					hlp.expectStatus(err, res, 201);
@@ -214,7 +223,7 @@ describe('The VPDB `Token` API', function() {
 			request
 				.post('/api/v1/tokens')
 				.as('subscribed')
-				.send({ password: hlp.getUser('subscribed').password })
+				.send({ password: hlp.getUser('subscribed').password, type: 'access' })
 				.end(function(err, res) {
 					hlp.expectStatus(err, res, 201);
 					var token = res.body.token;
@@ -293,7 +302,7 @@ describe('The VPDB `Token` API', function() {
 			request
 				.post('/api/v1/tokens')
 				.as('member1')
-				.send({ label: label, password: hlp.getUser('member1').password })
+				.send({ label: label, password: hlp.getUser('member1').password, type: 'access' })
 				.end(function(err, res) {
 					hlp.expectStatus(err, res, 201);
 					expect(res.body.token).to.be.ok();
@@ -318,13 +327,13 @@ describe('The VPDB `Token` API', function() {
 			request
 				.post('/api/v1/tokens')
 				.as('member2')
-				.send({ label: 'Member 1', password: hlp.getUser('member2').password })
+				.send({ label: 'Member 1', password: hlp.getUser('member2').password, type: 'access' })
 				.end(function(err, res) {
 					hlp.expectStatus(err, res, 201);
 					request
 						.post('/api/v1/tokens')
 						.as('member3')
-						.send({ label: 'Member 2', password: hlp.getUser('member3').password })
+						.send({ label: 'Member 2', password: hlp.getUser('member3').password, type: 'access' })
 						.end(function(err, res) {
 							hlp.expectStatus(err, res, 201);
 							request
@@ -364,7 +373,7 @@ describe('The VPDB `Token` API', function() {
 			request
 				.post('/api/v1/tokens')
 				.as('subscribed')
-				.send({ label: 'My Application', password: hlp.getUser('subscribed').password })
+				.send({ label: 'My Application', password: hlp.getUser('subscribed').password, type: 'access' })
 				.end(function(err, res) {
 					hlp.expectStatus(err, res, 201);
 
@@ -386,7 +395,7 @@ describe('The VPDB `Token` API', function() {
 			request
 				.post('/api/v1/tokens')
 				.as('subscribed')
-				.send({ label: 'My Application', password: hlp.getUser('subscribed').password })
+				.send({ label: 'My Application', password: hlp.getUser('subscribed').password, type: 'access' })
 				.end(function(err, res) {
 					hlp.expectStatus(err, res, 201);
 
@@ -428,7 +437,7 @@ describe('The VPDB `Token` API', function() {
 			request
 				.post('/api/v1/tokens')
 				.as('member1')
-				.send({ label: 'My Application', password: hlp.getUser('member1').password })
+				.send({ label: 'My Application', password: hlp.getUser('member1').password, type: 'access' })
 				.end(function(err, res) {
 					hlp.expectStatus(err, res, 201);
 					expect(res.body.token).to.be.ok();
@@ -445,7 +454,7 @@ describe('The VPDB `Token` API', function() {
 			request
 				.post('/api/v1/tokens')
 				.as('member3')
-				.send({ label: 'My Application', password: hlp.getUser('member3').password })
+				.send({ label: 'My Application', password: hlp.getUser('member3').password, type: 'access' })
 				.end(function(err, res) {
 					hlp.expectStatus(err, res, 201);
 					expect(res.body.token).to.be.ok();

@@ -94,8 +94,8 @@ describe('The authentication engine of the VPDB API', function() {
 
 			request
 				.post('/api/v1/tokens')
-				.as('member')
-				.send({ label: 'Access token', password: hlp.getUser('member').password })
+				.as('subscribed')
+				.send({ label: 'Access token', password: hlp.getUser('subscribed').password, type: 'access' })
 				.end(function(err, res) {
 					hlp.expectStatus(err, res, 201);
 
@@ -252,7 +252,7 @@ describe('The authentication engine of the VPDB API', function() {
 			request
 				.post('/api/v1/tokens')
 				.as('subscribed1')
-				.send({ label: 'After plan downgrade token', password: hlp.getUser('subscribed1').password })
+				.send({ label: 'After plan downgrade token', password: hlp.getUser('subscribed1').password, type: 'access' })
 				.end(function(err, res) {
 					hlp.expectStatus(err, res, 201);
 
@@ -280,7 +280,7 @@ describe('The authentication engine of the VPDB API', function() {
 			request
 				.post('/api/v1/tokens')
 				.as('subscribed')
-				.send({ label: 'Inactive token', password: hlp.getUser('subscribed').password })
+				.send({ label: 'Inactive token', password: hlp.getUser('subscribed').password, type: 'access' })
 				.end(function(err, res) {
 					hlp.expectStatus(err, res, 201);
 					var token = res.body.token;
@@ -302,7 +302,7 @@ describe('The authentication engine of the VPDB API', function() {
 			request
 				.post('/api/v1/tokens')
 				.as('subscribed')
-				.send({ label: 'Expired token', password: hlp.getUser('subscribed').password })
+				.send({ label: 'Expired token', password: hlp.getUser('subscribed').password, type: 'access' })
 				.end(function(err, res) {
 					hlp.expectStatus(err, res, 201);
 					var token = res.body.token;
@@ -338,7 +338,7 @@ describe('The authentication engine of the VPDB API', function() {
 			request
 				.post('/api/v1/tokens')
 				.as('subscribed')
-				.send({ label: 'Valid token', password: hlp.getUser('subscribed').password })
+				.send({ label: 'Valid token', password: hlp.getUser('subscribed').password, type: 'access' })
 				.end(function(err, res) {
 					hlp.expectStatus(err, res, 201);
 					request
@@ -407,7 +407,7 @@ describe('The authentication engine of the VPDB API', function() {
 			request
 				.post('/api/v1/tokens')
 				.as('subscribed')
-				.send({ label: 'App token', password: hlp.getUser('subscribed').password })
+				.send({ label: 'App token', password: hlp.getUser('subscribed').password, type: 'access' })
 				.end(function(err, res) {
 					hlp.expectStatus(err, res, 201);
 					request

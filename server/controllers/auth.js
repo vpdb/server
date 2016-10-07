@@ -29,11 +29,11 @@ const settings = require('../modules/settings');
 const config = settings.current;
 
 const Redis = require('redis');
-      Promise.promisifyAll(Redis.RedisClient.prototype);
-      Promise.promisifyAll(Redis.Multi.prototype);
+Promise.promisifyAll(Redis.RedisClient.prototype);
+Promise.promisifyAll(Redis.Multi.prototype);
 const redis = Redis.createClient(config.vpdb.redis.port, config.vpdb.redis.host, { no_ready_check: true });
-      redis.select(config.vpdb.redis.db);
-      redis.on('error', console.error.bind(console));
+redis.select(config.vpdb.redis.db);
+redis.on('error', console.error.bind(console));
 
 const User = require('mongoose').model('User');
 
@@ -65,28 +65,26 @@ exports.auth = function(req, res, resource, permission, planAttrs) {
 	return Promise.try(() => {
 
 		// read headers
-		if ((req.headers && req.headers[ headerName.toLowerCase() ]) || (req.query && req.query.token)) {
+		if ((req.headers && req.headers[headerName.toLowerCase()]) || (req.query && req.query.token)) {
 
 			if (req.query.token) {
 				fromUrl = true;
 				token = req.query.token;
+
 			} else {
 
-				fromUrl = false;
-
 				// validate format
-				var parts = req.headers[ headerName.toLowerCase() ].split(' ');
-				if (parts.length === 2) {
-					var scheme = parts[ 0 ];
-					var credentials = parts[ 1 ];
-					if (/^Bearer$/i.test(scheme)) {
-						token = credentials;
-					} else {
-						throw error('Bad Authorization header. Format is "%s: Bearer [token]"', headerName).status(401);
-					}
-				} else {
+				var parts = req.headers[headerName.toLowerCase()].split(' ');
+				if (parts.length !== 2) {
 					throw error('Bad Authorization header. Format is "%s: Bearer [token]"', headerName).status(401);
 				}
+				var scheme = parts[0];
+				var credentials = parts[1];
+				if (!/^Bearer$/i.test(scheme)) {
+					throw error('Bad Authorization header. Format is "%s: Bearer [token]"', headerName).status(401);
+				}
+				fromUrl = false;
+				token = credentials;
 			}
 		} else {
 			throw error('Unauthorized. You need to provide credentials for this resource').status(401);

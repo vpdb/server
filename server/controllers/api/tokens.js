@@ -29,53 +29,57 @@ var Token = require('mongoose').model('Token');
 
 exports.create = function(req, res) {
 
-	// tokenType == "jwt" means the token comes from a "fresh" login (not a
-	// refresh token) from either user/password or oauth2.
-	if (req.tokenType === 'jwt') {
+	let newToken;
+	Promise.try(() => {
 
-		// in this case, the user is allowed to create login tokens without
-		// additionally supplying the password.
-		if (req.body.type !== 'login' && !req.body.password) {
-			return api.fail(res, error('You cannot create other tokens but login tokens without supplying a password, ' +
-				'even when logged with a "short term" token.').warn('create-token'), 401);
+		// check if the plan allows application token creation
+		if (req.body.type === 'access' && !req.user.planConfig.enableAppTokens) {
+			throw error('Your current plan "%s" does not allow the creation of application access tokens. Upgrade or contact an admin.', req.user.planConfig.id).status(401);
 		}
 
-	} else {
+		// tokenType == "jwt" means the token comes from a "fresh" login (not a
+		// refresh token) from either user/password or oauth2.
+		if (req.tokenType === 'jwt') {
 
-		// if the token type is not "jwt" (but "jwt-refreshed" or "access-token"),
-		// the user must provide a password.
-		if (!req.body.password) {
-			return api.fail(res, error('When logged with a "long term" token (either from a X-Token-Refresh header or ' +
-				'from an access token), you must provide your password.').warn('create-token'), 401);
-		}
-	}
-
-	// in any case, if a password is supplied, check it.
-	if (req.body.password && !req.user.authenticate(req.body.password)) {
-		return api.fail(res, error('Wrong password.').warn('create-token'), 401);
-	}
-
-	var newToken = new Token(_.extend(req.body, {
-		label: req.body.label || req.headers['user-agent'],
-		is_active: true,
-		created_at: new Date(),
-		expires_at: new Date(new Date().getTime() + 31536000000),
-		_created_by: req.user._id
-	}));
-
-	newToken.validate(function(err) {
-		if (err) {
-			return api.fail(res, error('Validations failed. See below for details.').errors(err.errors).warn('create'), 422);
-		}
-		newToken.save(function(err) {
-			/* istanbul ignore if  */
-			if (err) {
-				return api.fail(res, error(err, 'Error saving token "%s"', newToken.label).log('create'), 500);
+			// in this case, the user is allowed to create login tokens without
+			// additionally supplying the password.
+			if (req.body.type !== 'login' && !req.body.password) {
+				throw error('You cannot create other tokens but login tokens without supplying a password, ' +
+					'even when logged with a "short term" token.').warn('create-token').status(401);
 			}
-			logger.info('[api|token:create] Token "%s" successfully created.', newToken.label);
-			return api.success(res, newToken.toSimple(true), 201);
-		});
-	});
+
+		} else {
+
+			// if the token type is not "jwt" (but "jwt-refreshed" or "access-token"),
+			// the user must provide a password.
+			if (!req.body.password) {
+				throw error('When logged with a "long term" token (either from a X-Token-Refresh header or ' +
+					'from an access token), you must provide your password.').warn('create-token').status(401);
+			}
+		}
+
+		// in any case, if a password is supplied, check it.
+		if (req.body.password && !req.user.authenticate(req.body.password)) {
+			throw error('Wrong password.').warn('create-token').status(401);
+		}
+
+		newToken = new Token(_.extend(req.body, {
+			label: req.body.label || req.headers['user-agent'],
+			is_active: true,
+			created_at: new Date(),
+			expires_at: new Date(new Date().getTime() + 31536000000),
+			_created_by: req.user._id
+		}));
+		return newToken.validate();
+
+	}).then(() => {
+		return newToken.save();
+
+	}).then(() =>  {
+		logger.info('[api|token:create] Token "%s" successfully created.', newToken.label);
+		return api.success(res, newToken.toSimple(true), 201);
+
+	}).catch(api.handleError(res, error, 'Error creating token'));
 };
 
 exports.list = function(req, res) {

@@ -511,6 +511,8 @@ UserSchema.options.toObject = {
 		delete user.password_salt;
 		delete user.password;
 		delete user.validated_emails;
+		delete user.emails;
+		delete user.planConfig;
 		if (user.email_status.code === 'confirmed') {
 			delete user.email_status;
 		} else {

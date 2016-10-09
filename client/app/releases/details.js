@@ -68,6 +68,12 @@ angular.module('vpdb.releases.details', []).controller('ReleaseDetailsController
 			$scope.moderationComments = ReleaseModerationCommentResource.query({ releaseId: release.id });
 		}
 
+		// mod permissions
+		if (release.license === 'by-sa') {
+			$scope.modPermission = 'This release can be freely modded when properly credited, without explicit permission from the author' + (release.authors.length === 1 ? '' : 's') + '.';
+		} else {
+			$scope.modPermission = 'This release cannot be freely modded and needs explicit permissions from the author' + (release.authors.length === 1 ? '' : 's') + '.';
+		}
 
 		$scope.flavorGrid = ReleaseService.flavorGrid(release);
 

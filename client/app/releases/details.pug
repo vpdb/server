@@ -154,6 +154,11 @@ p.padder-top(ng-show="pageLoading") Loading...
 		h3.h--smaller.h--primary(ng-show="release.acknowledgements") Acknowledgements
 		div.markdown(markdown="release.acknowledgements", ng-show="release.acknowledgements")
 
+		//-- MOD PERMISSION
+		//---------------------------------------------------------------------
+		h3.h--smaller.h--primary Mod Permissions
+		div {{ modPermission }}
+
 
 		//-- VERSION HISTORY
 		//---------------------------------------------------------------------

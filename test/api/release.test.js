@@ -224,6 +224,7 @@ describe('The VPDB `release` API', function() {
 							.as(user)
 							.send({
 								name: 'release',
+								license: 'by-sa',
 								_game: game.id,
 								versions: [
 									{
@@ -261,6 +262,7 @@ describe('The VPDB `release` API', function() {
 									.as(user)
 									.send({
 										name: 'release',
+										license: 'by-sa',
 										_game: game.id,
 										versions: [
 											{
@@ -316,6 +318,7 @@ describe('The VPDB `release` API', function() {
 							.as(user)
 							.send({
 								name: 'release',
+								license: 'by-sa',
 								_game: game.id,
 								versions: [
 									{
@@ -364,6 +367,7 @@ describe('The VPDB `release` API', function() {
 							.as(user)
 							.send({
 								name: 'release',
+								license: 'by-sa',
 								_game: game.id,
 								versions: [
 									{
@@ -403,6 +407,7 @@ describe('The VPDB `release` API', function() {
 								.as(user)
 								.send({
 									name: 'release',
+									license: 'by-sa',
 									_game: game.id,
 									versions: [
 										{

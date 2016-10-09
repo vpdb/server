@@ -20,6 +20,7 @@ exports.createRelease = function(user, request, opts, done) {
 					.as(user)
 					.send({
 						name: faker.company.catchPhraseAdjective() + ' Edition',
+						license: 'by-sa',
 						_game: game.id,
 						versions: [
 							{
@@ -56,6 +57,7 @@ exports.createRelease2 = function(user, request, done) {
 						.as(user)
 						.send({
 							name: faker.company.catchPhraseAdjective() + ' Edition',
+							license: 'by-sa',
 							_game: game.id,
 							versions: [
 								{
@@ -98,6 +100,7 @@ exports.createRelease3 = function(user, request, done) {
 					.as(user)
 					.send({
 						name: faker.company.catchPhraseAdjective() + ' Edition',
+						license: 'by-sa',
 						_game: game.id,
 						versions: [
 							{
@@ -145,6 +148,7 @@ exports.createRelease4 = function(user, request, done) {
 						.as(user)
 						.send({
 							name: faker.company.catchPhraseAdjective() + ' Edition',
+							license: 'by-sa',
 							_game: game.id,
 							versions: [
 								{

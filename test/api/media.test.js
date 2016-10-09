@@ -435,6 +435,7 @@ describe('When dealing with pre-processing media', function() {
 					.as(user)
 					.send({
 						name: 'release',
+						license: 'by-sa',
 						_game: game.id,
 						versions: [
 							{
@@ -464,6 +465,7 @@ describe('When dealing with pre-processing media', function() {
 					.as(user)
 					.send({
 						name: 'release',
+						license: 'by-sa',
 						_game: game.id,
 						versions: [
 							{
@@ -493,6 +495,7 @@ describe('When dealing with pre-processing media', function() {
 					.as(user)
 					.send({
 						name: 'release',
+						license: 'by-sa',
 						_game: game.id,
 						versions: [
 							{
@@ -522,6 +525,7 @@ describe('When dealing with pre-processing media', function() {
 					.as(user)
 					.send({
 						name: 'release',
+						license: 'by-sa',
 						_game: game.id,
 						versions: [
 							{

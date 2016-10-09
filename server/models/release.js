@@ -58,7 +58,7 @@ const releaseFields = {
 	_game:         { type: Schema.ObjectId, required: 'Reference to game must be provided.', ref: 'Game' },
 	name:          { type: String, required: 'Name must be provided.' },
 	name_sortable: { type: String, index: true },
-	license:       { type: String, required: true, 'enum': { values: licenses, message: 'Invalid license. Valid licenses are: ["' +  licenses.join('", "') + '"].' }},
+	license:       { type: String, required: 'Mod permission must be provided.', 'enum': { values: licenses, message: 'Invalid license. Valid licenses are: ["' +  licenses.join('", "') + '"].' }},
 	description:   { type: String },
 	versions:      { type: [ version.schema ], validate: [ nonEmptyArray, 'You must provide at least one version for the release.' ] },
 	authors:       { type: [ author.schema ], validate: [ nonEmptyArray, 'You must provide at least one author.' ] },

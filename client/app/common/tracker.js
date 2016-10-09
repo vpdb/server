@@ -37,14 +37,15 @@ angular.module('vpdb.tracker', [])
 				// enable ga
 				if (Config.ga && Config.ga.enabled) {
 					if (AuthService.user) {
-						ga('create', Config.ga.id, 'auto');
-					} else {
 						ga('create', Config.ga.id, 'auto', { userId: AuthService.user.id });
+					} else {
+						ga('create', Config.ga.id, 'auto');
 					}
 					$rootScope.$on('userUpdated', function(event, user) {
-						ga('set', 'userId', user.id);
+						if (user) {
+							ga('set', 'userId', user.id);
+						}
 					});
-					console.info('Google Analytics initialized.');
 
 				} else {
 					console.info('Google Analytics disabled.');

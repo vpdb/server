@@ -4,7 +4,7 @@ angular.module('vpdb.backglasses.add', [])
 
 	.controller('AddBackglassCtrl', function($scope, $stateParams, $localStorage, $state, $uibModal,
 											 AuthService, ApiHelper, ModalService,
-											 GameResource, FileResource, BackglassResource) {
+											 GameResource, FileResource, BackglassResource, TrackerService) {
 		$scope.theme('light');
 		$scope.setTitle('Add Backglass');
 
@@ -14,6 +14,7 @@ angular.module('vpdb.backglasses.add', [])
 		$scope.game = GameResource.get({ id: $stateParams.id }, function() {
 			$scope.backglass._game = $scope.game.id;
 			$scope.setTitle('Add Backglass - ' + $scope.game.title);
+			TrackerService.trackPage();
 		});
 
 		/**

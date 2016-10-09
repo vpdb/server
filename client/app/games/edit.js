@@ -2,7 +2,7 @@
 
 angular.module('vpdb.games.edit', [])
 
-	.controller('AdminGameEditCtrl', function($scope, $rootScope, $state, $stateParams, ApiHelper, AuthService, GameResource) {
+	.controller('AdminGameEditCtrl', function($scope, $rootScope, $state, $stateParams, ApiHelper, AuthService, GameResource, TrackerService) {
 
 		var arrayFields = [ 'keywords', 'artists', 'designers', 'themes' ];
 		var updateableFields = ['title', 'year', 'manufacturer', 'game_type', 'short', 'description', 'instructions',
@@ -13,6 +13,7 @@ angular.module('vpdb.games.edit', [])
 		$scope.theme('light');
 		$scope.setTitle('Edit Game');
 		$scope.setMenu('admin');
+		TrackerService.trackPage();
 
 		GameResource.get({ id: $stateParams.id }, function(game) {
 			$scope.originalGame = angular.copy(game);

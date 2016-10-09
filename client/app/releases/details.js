@@ -21,7 +21,7 @@
 
 angular.module('vpdb.releases.details', []).controller('ReleaseDetailsController', function(
 	$scope, $rootScope, $uibModal, $timeout, $stateParams,
-	ApiHelper, ReleaseCommentResource, AuthService, ReleaseService, Flavors,
+	ApiHelper, ReleaseCommentResource, AuthService, ReleaseService, Flavors, TrackerService,
 	ReleaseRatingResource, ReleaseResource, GameResource, ReleaseModerationCommentResource)
 {
 
@@ -44,6 +44,7 @@ angular.module('vpdb.releases.details', []).controller('ReleaseDetailsController
 		$scope.pageLoading = false;
 		$scope.found = true;
 		$scope.setTitle(release.game.title + ' · ' + $scope.release.name);
+		TrackerService.trackPage();
 
 		// sort versions
 		$scope.releaseVersions = _.sortByOrder(release.versions, 'released_at', false);

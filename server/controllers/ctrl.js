@@ -52,6 +52,7 @@ exports.viewParams = function(gitInfoFromGrunt) {
 				};
 			})
 		},
+		gaEnabled: config.webapp.ga.enabled,
 		svgDefs: config.vpdb.tmp + '/vpdb-svg/_svg-defs.svg'
 	};
 };

@@ -2,7 +2,7 @@
 
 angular.module('vpdb.games.details', [])
 
-	.controller('GameController', function($scope, $rootScope, $stateParams, $uibModal, $log, $localStorage,
+	.controller('GameController', function($scope, $rootScope, $stateParams, $uibModal, $log, $localStorage, TrackerService,
 					ApiHelper, Flavors, ModalService, DisplayService, ConfigService, DownloadService, AuthService,
 					GameResource, ReleaseCommentResource, FileResource, RomResource, GameRatingResource, GameStarResource) {
 
@@ -84,6 +84,7 @@ angular.module('vpdb.games.details', [])
 				title += ' (' + $scope.game.manufacturer + ' ' + $scope.game.year + ')';
 			}
 			$scope.setTitle(title);
+			TrackerService.trackPage();
 
 			// meta data
 			var keywordItems = [];

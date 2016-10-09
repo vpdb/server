@@ -44,6 +44,7 @@ var appDeps = [
 	'vpdb.releases.list',
 	'vpdb.releases.details',
 	'vpdb.releases.edit',
+	'vpdb.tracker',
 	'vpdb.uploads.list',
 	'vpdb.users.list',
 	'vpdb.users.edit'

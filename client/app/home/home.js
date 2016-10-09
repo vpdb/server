@@ -5,13 +5,14 @@
  */
 angular.module('vpdb.home', [])
 
-	.controller('HomeController', function($scope, $rootScope, $http, $timeout, ApiHelper, GameResource, ReleaseResource) {
+	.controller('HomeController', function($scope, $rootScope, $http, $timeout, ApiHelper, GameResource, ReleaseResource, TrackerService) {
 
 		$scope.theme('dark');
 		$scope.setMenu('home');
 		$scope.setTitle('VPDB - The Virtual Pinball Database');
 		$scope.setDescription('VPDB is a platform around virtual pinball. It seeks to preserve the great pinball games from the last and current century in digital form, created by a wonderful community.')
 		$scope.setKeywords('virtual pinball, database, pinball, vpinball, visual pinball, directb2s, backglass, beautiful, fast, open source');
+		TrackerService.trackPage();
 
 		$scope.searching = false;
 		$scope.packs = [];

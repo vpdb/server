@@ -24,12 +24,13 @@
  */
 angular.module('vpdb.releases.edit', [])
 	.controller('ReleaseFileEditCtrl', function($scope, $state, $stateParams, $uibModal, $rootScope,
-												ApiHelper, AuthService, Flavors,
+												ApiHelper, AuthService, Flavors, TrackerService,
 												GameResource, ReleaseResource, TagResource) {
 		// init page
 		$scope.theme('light');
 		$scope.setMenu('releases');
 		$scope.setTitle('Edit Release');
+		TrackerService.trackPage();
 
 		$scope.newLink = {};
 		$scope.editAuthors = false;

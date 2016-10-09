@@ -22,7 +22,7 @@
 angular.module('vpdb.releases.list', [])
 
 	.controller('ReleaseListController', function($scope, $rootScope, $http, $localStorage, $templateCache, $location,
-												  ApiHelper, Flavors,
+												  ApiHelper, Flavors, TrackerService,
 												  ReleaseResource, TagResource, BuildResource) {
 
 		// view type config
@@ -38,6 +38,7 @@ angular.module('vpdb.releases.list', [])
 		$scope.setMenu('releases');
 		$scope.setDescription('Browse and search through our release database, see playfield shots, release date, popularity or rating, filter by orientation, tag, compatibility.');
 		$scope.setKeywords('visual pinball, vpt, vpx, fullscreen, desktop, search, browse, filter, sort, download, virtual pinball, vpinball');
+		TrackerService.trackPage();
 
 		// query defaults
 		$scope.$query = null;

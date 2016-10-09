@@ -2,13 +2,15 @@
 
 angular.module('vpdb.games.list', [])
 
-	.controller('GameListController', function($scope, $rootScope, $http, $location, $templateCache, ApiHelper, GameResource) {
+	.controller('GameListController', function($scope, $rootScope, $http, $location, $templateCache, ApiHelper,
+											   GameResource, TrackerService) {
 
 		$scope.theme('dark');
 		$scope.setTitle('Games');
 		$scope.setMenu('games');
 		$scope.setDescription('Browse and search through our game database, see backglasses and wheel images, sort by name, popularity or rating, filter by manufacturer or decade.');
 		$scope.setKeywords('virtual pinball games, recreations, digital, list, search, browse, filter, fuzzy search');
+		TrackerService.trackPage();
 
 		$scope.loading = false;
 		$scope.$query = null;

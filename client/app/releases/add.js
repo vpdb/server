@@ -25,7 +25,7 @@
 angular.module('vpdb.releases.add', []).controller('ReleaseAddCtrl', function(
 	$scope, $uibModal, $window, $localStorage, $state, $stateParams, $location, $anchorScroll, $timeout, $controller,
 	AuthService, ConfigService, DisplayService, MimeTypeService, ModalService, ApiHelper, Flavors, ReleaseMeta,
-	ReleaseResource, FileResource, TagResource, BuildResource, GameResource, GameReleaseNameResource)
+	ReleaseResource, FileResource, TagResource, BuildResource, GameResource, GameReleaseNameResource, TrackerService)
 {
 	// use add-common.js
 	angular.extend(this, $controller('ReleaseAddBaseCtrl', { $scope: $scope }));
@@ -50,6 +50,7 @@ angular.module('vpdb.releases.add', []).controller('ReleaseAddCtrl', function(
 		$scope.game.lastrelease = new Date($scope.game.lastrelease).getTime();
 		$scope.release._game = $scope.game.id;
 		$scope.setTitle('Add Release - ' + $scope.game.title);
+		TrackerService.trackPage();
 	});
 
 	// retrieve available tags

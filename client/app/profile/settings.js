@@ -3,10 +3,11 @@
 angular.module('vpdb.profile.settings', [])
 
 	.controller('ProfileSettingsCtrl', function($scope, $rootScope, $uibModal, AuthService, ApiHelper, ProfileResource,
-												TokenResource, ModalService) {
+												TokenResource, ModalService, TrackerService) {
 
 		$scope.theme('dark');
 		$scope.setTitle('Your Profile');
+		TrackerService.trackPage();
 
 		$scope.localUser = {};                                          // local user for changing password
 		$scope.localCredentials = {};                                   // local credentials object

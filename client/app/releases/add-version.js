@@ -25,7 +25,7 @@
 angular.module('vpdb.releases.add', []).controller('ReleaseFileAddCtrl', function(
 	$scope, $controller, $state, $stateParams, $localStorage,
 	ApiHelper, AuthService, ModalService, ReleaseMeta, Flavors,
-	GameResource, ReleaseVersionResource
+	GameResource, ReleaseVersionResource, TrackerService
 ) {
 
 	// use add-common.js
@@ -51,6 +51,7 @@ angular.module('vpdb.releases.add', []).controller('ReleaseFileAddCtrl', functio
 		$scope.release = _.find($scope.game.releases, { id: $stateParams.releaseId });
 		if ($scope.release) {
 			$scope.setTitle('Upload Files - ' + $scope.game.title + ' (' + $scope.release.name + ')');
+			TrackerService.trackPage();
 
 			// populate versions
 			$scope.versions = _.pluck(_.sortByOrder($scope.release.versions, 'released_at', false), 'version');

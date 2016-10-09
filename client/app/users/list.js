@@ -2,11 +2,13 @@
 
 angular.module('vpdb.users.list', [])
 
-	.controller('AdminUserCtrl', function($scope, $uibModal, UserResource, RolesResource) {
+	.controller('AdminUserCtrl', function($scope, $uibModal, UserResource, RolesResource, TrackerService) {
 
 		$scope.theme('light');
 		$scope.setTitle('Users');
 		$scope.setMenu('admin');
+		TrackerService.trackPage();
+
 		$scope.users = UserResource.query();
 		$scope.roles = RolesResource.query();
 

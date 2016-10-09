@@ -22,11 +22,13 @@
 angular.module('vpdb.uploads.list', [])
 
 
-	.controller('AdminUploadsCtrl', function($scope) {
+	.controller('AdminUploadsCtrl', function($scope, TrackerService) {
 
 		$scope.theme('light');
 		$scope.setTitle('Uploads');
 		$scope.setMenu('admin');
+		TrackerService.trackPage();
+
 		$scope.filters = { status: 'pending' };
 		$scope.numItems = 5;
 

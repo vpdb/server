@@ -2,7 +2,7 @@
 
 angular.module('vpdb.games.add', [])
 
-	.controller('AdminGameAddCtrl', function($scope, $uibModal, $window, $localStorage, $location, $state,
+	.controller('AdminGameAddCtrl', function($scope, $uibModal, $window, $localStorage, $location, $state, TrackerService,
 											 ApiHelper, AuthService, ConfigService, MimeTypeService, ModalService,
 											 IpdbResource, GameResource, FileResource, GameRequestResource) {
 
@@ -15,6 +15,7 @@ angular.module('vpdb.games.add', [])
 		$scope.theme('light');
 		$scope.setTitle('Add Game');
 		$scope.setMenu('games');
+		TrackerService.trackPage();
 
 		$scope.submitting = false;
 

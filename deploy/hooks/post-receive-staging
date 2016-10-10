@@ -22,7 +22,7 @@ repo_clone ${DIRNAME}
 repo_checkout_branch ${DIRNAME} ${BRANCH}
 
 # 2. install node packages and build
-npm_install ${DIRNAME}
+npm_install_copy ${DIRNAME}
 grunt_build ${DIRNAME}
 
 # 3. change symlink

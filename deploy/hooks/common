@@ -86,6 +86,20 @@ npm_install() {
 	test $? -eq 0 || rollback_abort $1 "Failed to run bower install. Manually fix and relaunch deployment.".
 }
 
+npm_install_copy() {
+	if [ -d "${DEPLOY_ROOT}/${DEPLOY_ENV}/current/node_modules" ]; then
+		echo "Copying node_modules from current deployment..."
+		cp -ar ${DEPLOY_ROOT}/${DEPLOY_ENV}/current/node_modules ${DEPLOY_ROOT}/${DEPLOY_ENV}/$1/
+	fi
+	echo "Installing remaining dependencies..."
+	cd ${DEPLOY_ROOT}/${DEPLOY_ENV}/$1
+	npm install --no-optional
+	test $? -eq 0 || rollback_abort $1 "Failed to run npm install. Manually fix and relaunch deployment.".
+	echo "Installing Bower dependencies..."
+	bower install --force-latest
+	test $? -eq 0 || rollback_abort $1 "Failed to run bower install. Manually fix and relaunch deployment.".
+}
+
 grunt_build() {
 	cd ${DEPLOY_ROOT}/${DEPLOY_ENV}/$1
 	echo "Running build with Grunt..."

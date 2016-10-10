@@ -717,12 +717,12 @@ describe('The ACLs of the VPDB API', function() {
 			request.post('/api/v1/games/mb/roms').as('contributor').send({}).end(hlp.status(404, done));
 		});
 
-		it('should allow access to game request list', function(done) {
-			request.get('/api/v1/game_requests').as('contributor').end(hlp.status(200, done));
+		it('should deny access to game request list', function(done) {
+			request.get('/api/v1/game_requests').as('contributor').end(hlp.status(403, done));
 		});
 
-		it('should allow access to updating game requests', function(done) {
-			request.patch('/api/v1/game_requests/1234').as('contributor').send({}).end(hlp.status(404, done));
+		it('should deny access to updating game requests', function(done) {
+			request.patch('/api/v1/game_requests/1234').as('contributor').send({}).end(hlp.status(403, done));
 		});
 
 	});

@@ -61,24 +61,28 @@ acl.init = function() {
 				{ resources: 'backglasses',   permissions: ['delete', 'moderate'] },
 				{ resources: 'builds',        permissions: ['delete'] },
 				{ resources: 'files',         permissions: ['blockmatch'] },
-				{ resources: 'games',         permissions: ['delete', 'update', 'add'] },
+				{ resources: 'games',         permissions: ['delete'] },
 				{ resources: 'game_requests', permissions: ['list', 'update', 'delete'] },
-				{ resources: 'ipdb',          permissions: ['view'] },
 				{ resources: 'media',         permissions: ['delete'] },
 				{ resources: 'releases',      permissions: ['moderate'] },
-				{ resources: 'roms',          permissions: ['delete', 'delete-own', 'add'] },
+				{ resources: 'roms',          permissions: ['delete'] },
 				{ resources: 'tags',          permissions: ['delete'] }
 			]
 		}, {
 			roles: 'contributor',
+			allows: [ { resources: 'roms', permissions: ['add', 'delete-own']  } ]
+		}, {
+			roles: 'game-contributor',
 			allows: [
-				{ resources: 'backglasses',   permissions: ['auto-approve'] },
-				{ resources: 'games',         permissions: ['update', 'add'] },
-				{ resources: 'game_requests', permissions: ['list', 'update'] },
-				{ resources: 'ipdb',          permissions: ['view'] },
-				{ resources: 'releases',      permissions: ['auto-approve'] },
-				{ resources: 'roms',          permissions: ['add', 'delete-own'] }
+				{ resources: 'games', permissions: ['update', 'add'] },
+				{ resources: 'ipdb',  permissions: ['view'] },
 			]
+		}, {
+			roles: 'release-contributor',
+			allows: [ { resources: 'releases', permissions: ['auto-approve'] }, ]
+		}, {
+			roles: 'backglass-contributor',
+			allows: [ { resources: 'backglasses', permissions: ['auto-approve'] } ]
 		}, {
 			roles: 'member',
 			allows: [
@@ -103,10 +107,13 @@ acl.init = function() {
 			]
 		}
 	])
-	.then(() => acl.addRoleParents('root', [ 'admin', 'contributor', 'moderator' ]))
+	.then(() => acl.addRoleParents('root', [ 'admin', 'moderator' ]))
 	.then(() => acl.addRoleParents('admin', [ 'member' ]))
-	.then(() => acl.addRoleParents('moderator', [ 'member' ]))
-	.then(() => acl.addRoleParents('contributor', [ 'member' ]))
+	.then(() => acl.addRoleParents('moderator', [ 'contributor' ]))
+	.then(() => acl.addRoleParents('contributor', [ 'game-contributor', 'release-contributor', 'backglass-contributor' ]))
+	.then(() => acl.addRoleParents('game-contributor', [ 'member' ]))
+	.then(() => acl.addRoleParents('release-contributor', [ 'member' ]))
+	.then(() => acl.addRoleParents('backglass-contributor', [ 'member' ]))
 	.then(() => mongoose.model('User').find({}))
 	.then(users => {
 		logger.info('[acl] Applying ACLs to %d users...', users.length);

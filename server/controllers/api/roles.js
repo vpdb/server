@@ -25,18 +25,46 @@ exports.list = function(req, res) {
 
 	var roles = [
 		{
+			id: 'root',
 			name: 'root',
-			description: 'Super user. Can create, edit and delete everything including admins.'
+			description: 'Super user. Can create, edit and delete everything including admins.',
+			parents: [ 'admin', 'moderator' ]
 		}, {
-			name: 'admin',
-			description: 'Site administrator. Can edit everything but other administrator\'s permissions.'
+			id: 'admin',
+			name: 'Administrator',
+			description: 'User administrator. Can edit users and roles. Inherits from member.',
+			parents: [ 'member' ]
 		}, {
-			name: 'member',
-			description: 'A registered member. This role every user should have. Removing results in having the same permissions as anonymous.'
+			id: 'moderator',
+			name: 'Moderator',
+			description: 'Can moderate and delete all entities. Inherits from contributor.',
+			parents: [ 'contributor' ]
 		}, {
-			name: 'contributor',
-			description: 'Permission to edit meta data, e.g. games and media.'
-		}
+			id: 'contributor',
+			name: 'Contributor',
+			description: 'Can upload releases, backglasses and ROMs without approval, as well as add and edit games. Inherits from all other contributors.',
+			parents: [ 'game-contributor', 'release-contributor', 'backglass-contributor' ]
+		}, {
+			id: 'game-contributor',
+			name: 'Game Contributor',
+			description: 'Can add and edit game data. Inherits from member.',
+			parents: [ 'member' ]
+		}, {
+			id: 'release-contributor',
+			name: 'Release Contributor',
+			description: 'Can upload releases without approval. Inherits from member.',
+			parents: [ 'member' ]
+		}, {
+			id: 'backglass-contributor',
+			name: 'Backglass Contributor',
+			description: 'Can upload backglasses without approval. Inherits from member.',
+			parents: [ 'member' ]
+		}, {
+			id: 'member',
+			name: 'Member',
+			description: 'A registered member. This role every user should have. Removing results in having the same permissions as anonymous.',
+			parents: [ ]
+		},
 	];
 	api.success(res, roles);
 };

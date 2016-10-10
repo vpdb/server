@@ -135,7 +135,7 @@ exports.list = function(req, res) {
 		// filter by role
 		if (canList && req.query.roles) {
 			// sanitze and split
-			let roles = req.query.roles.trim().replace(/[^a-z0-9,]+/gi, '').split(',');
+			let roles = req.query.roles.trim().replace(/[^a-z0-9,-]+/gi, '').split(',');
 			query.where('roles').in(roles);
 		}
 

@@ -131,8 +131,8 @@ angular.module('vpdb', deps.concat(appDeps))
 
 		$sceDelegateProvider.resourceUrlWhitelist([
 			'self', // Allow same origin resource loads.
-			getUrl(Config.apiUri),
-			getUrl(Config.storageUri)
+			getUrl(Config.apiUri) + '/**',
+			getUrl(Config.storageUri) + '/**'
 		]);
 
 	})

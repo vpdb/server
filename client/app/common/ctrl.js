@@ -2,9 +2,9 @@
 
 angular.module('vpdb.common', [])
 
-	.controller('AppCtrl', function($scope, $rootScope, $state, $location, $uibModal, $localStorage, $timeout, $sceDelegateProvider,
+	.controller('AppCtrl', function($scope, $rootScope, $state, $location, $uibModal, $localStorage, $timeout,
 									AuthService, ProfileService, ModalService, ModalFlashService, DownloadService,
-									UserResource, ReleaseStarResource, TrackerService, Config, ConfigService) {
+									UserResource, ReleaseStarResource, TrackerService, Config) {
 
 		$rootScope.themeName = 'theme-dark';
 
@@ -40,12 +40,6 @@ angular.module('vpdb.common', [])
 		AuthService.init();
 		ProfileService.init();
 		TrackerService.init();
-
-		$sceDelegateProvider.resourceUrlWhitelist([
-			'self', // Allow same origin resource loads.
-			ConfigService.apiUri(),
-			ConfigService.storageUri(),
-		]);
 
 		// on every page
 		$rootScope.$on('$stateChangeStart', function(event, toState) {

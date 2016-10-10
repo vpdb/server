@@ -88,7 +88,7 @@ var appDeps = [
  */
 angular.module('vpdb', deps.concat(appDeps))
 
-	.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
+	.config(function($stateProvider, $urlRouterProvider, $locationProvider, $sceDelegateProvider, Config) {
 
 		// routes (add this stuff to the site map as well!)
 		$stateProvider.state('home',             { url: '/',                             templateUrl: '/home/home.html', controller: 'HomeController' });
@@ -128,6 +128,13 @@ angular.module('vpdb', deps.concat(appDeps))
 			state.go('404');
 			return $location.path();
 		});
+
+		$sceDelegateProvider.resourceUrlWhitelist([
+			'self', // Allow same origin resource loads.
+			getUrl(Config.apiUri),
+			getUrl(Config.storageUri)
+		]);
+
 	})
 
 	.config(['msdElasticConfig', function(config) {
@@ -137,6 +144,11 @@ angular.module('vpdb', deps.concat(appDeps))
 	.config(['ngClipProvider', function(ngClipProvider) {
 		ngClipProvider.setPath("/public/ZeroClipboard.swf");
 	}]);
+
+function getUrl(uri) {
+	var port = (uri.protocol === 'http' && uri.port === 80) || (uri.protocol === 'https' && uri.port === 443) ? false : uri.port;
+	return uri.protocol + '://' + uri.hostname + (port ? ':' + port : '') + (uri.pathname || '');
+}
 
 /**
  * The developer site

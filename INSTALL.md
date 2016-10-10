@@ -422,6 +422,25 @@ Then connect to primary, configure replication and add replicas:
 	rs.add({ host: "127.0.3.3:27019", priority: 0, hidden: true })
 	rs.addArb("127.0.10.10:27100")
 	rs.addArb("127.0.20.20:27200")
+	
+Setup backup script
+	
+	mkdir /var/data/mongobak
+	chown deployer /var/data/mongobak
+	chmod 770 /var/data/mongobak
+	su - deployer
+	wget https://raw.githubusercontent.com/micahwedemeyer/automongobackup/master/src/automongobackup.sh
+	chmod 755 automongobackup.sh
+	vi automongobackup.sh
+	
+Update config and test:
+
+	./automongobackup.sh
+	
+If okay, add to crontab:
+
+	crontab -e
+	0 8 * * * ~/automongobackup.sh
 
 ## Redis
 

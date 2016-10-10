@@ -4,6 +4,12 @@ include ../template/timepicker
 .row.row--fullheight(ng-controller="AddBackglassCtrl")
 	.col-sm-9.col--main
 
+		.alert.alert-danger.no-space-top(ng-show="game.restrictions.release.mpu")
+			+icon('warning').space-right.shift-up
+			b Game Restriction <br>
+			| This is a {{ game.mpu.short }} game. In order to respect the industry, we don't allow users to download {{ game.mpu.short }} games. You still can upload backglasses but be aware that only you will able to see them until the situation changes.
+
+
 		h1.h--primary Add a new Backglass
 		hr.hr--primary
 

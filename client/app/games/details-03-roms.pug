@@ -1,6 +1,6 @@
 include ../template/_mixins
 
-h1(ng-hide="game.restrictions.release.mpu") ROMs
+h1(ng-show="roms.length > 0 || !game.restrictions.release.mpu") ROMs
 	button.btn.btn-primary.btn--round.pull-right(ng-click="romUploadCollapsed = !romUploadCollapsed", ng-show="auth.hasPermission('roms/add')")
 		+icon('plus')(ng-show="romUploadCollapsed")
 		+icon('angle-up').small(ng-show="!romUploadCollapsed")
@@ -56,7 +56,7 @@ h1(ng-hide="game.restrictions.release.mpu") ROMs
 
 //- list
 label(ng-hide="game.restrictions.release.mpu || roms.length > 0") No ROMs available.
-table.table.table-double-striped(ng-show="!game.restrictions.release.mpu && roms.length > 0")
+table.table.table-double-striped(ng-show="roms.length > 0")
 	thead
 		tr
 			th Name

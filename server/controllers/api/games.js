@@ -381,7 +381,7 @@ exports.list = function(req, res) {
  */
 exports.view = function(req, res) {
 
-	let game, opts, result;
+	let game, result;
 	Promise.try(() => {
 		// retrieve game
 		return Game.findOne({ id: req.params.id })
@@ -399,62 +399,68 @@ exports.view = function(req, res) {
 
 	}).then(() => {
 
-		// retrieve stars if logged
-		if (!req.user) {
-			return null;
-		}
-		return Star.find({ type: 'release', _from: req.user._id }, '_ref.release').exec().then(stars => {
-			return _.map(_.map(_.map(stars, '_ref'), 'release'), id => id.toString());
+		// retrieve linked releases
+		let opts;
+		return Release.restrictedQuery(req, game, { _game: game._id }).then(rlsQuery => {
+
+			if (!rlsQuery) {
+				return [];
+			}
+
+			return Promise.try(() => {
+
+				// retrieve stars if logged
+				if (!req.user) {
+					return null;
+				}
+				return Star.find({ type: 'release', _from: req.user._id }, '_ref.release').exec().then(stars => {
+					return _.map(_.map(_.map(stars, '_ref'), 'release'), id => id.toString());
+				});
+
+			}).then(starredReleaseIds => {
+				opts = { starredReleaseIds: starredReleaseIds };
+				return Release.find(Release.approvedQuery(rlsQuery))
+					.populate({ path: '_tags' })
+					.populate({ path: '_created_by' })
+					.populate({ path: 'authors._user' })
+					.populate({ path: 'versions.files._file' })
+					.populate({ path: 'versions.files._playfield_image' })
+					.populate({ path: 'versions.files._playfield_video' })
+					.populate({ path: 'versions.files._compatibility' })
+					.exec();
+			});
+
+		}).then(releases => {
+			result.releases = _.map(releases, release => _.omit(release.toDetailed(opts), 'game'));
 		});
 
-	}).then(starredReleaseIds => {
-		let query = { _game: game._id };
+	}).then(() => {
 
-		// if game has a release restriction, only fetch owned releases when logged
-		if (game.isRestricted('release')) {
-			if (!req.user) {
+		// retrieve linked backglasses
+		return Backglass.restrictedQuery(req, game, { _game: game._id }).then(backglassQuery => {
+
+			logger.info('BACKGLASS query: %s', util.inspect(backglassQuery, { depth: null }));
+
+			if (!backglassQuery) {
 				return [];
 			}
-			query._created_by = req.user._id;
-		}
-		opts = { starredReleaseIds: starredReleaseIds };
-		return Release.find(Release.approvedQuery(query))
-			.populate({ path: '_tags' })
-			.populate({ path: '_created_by' })
-			.populate({ path: 'authors._user' })
-			.populate({ path: 'versions.files._file' })
-			.populate({ path: 'versions.files._playfield_image' })
-			.populate({ path: 'versions.files._playfield_video' })
-			.populate({ path: 'versions.files._compatibility' })
-			.exec();
+			return Backglass.find(Backglass.approvedQuery(backglassQuery))
+				.populate({ path: 'authors._user' })
+				.populate({ path: 'versions._file' })
+				.exec();
 
-	}).then(releases => {
-		result.releases = _.map(releases, release => _.omit(release.toDetailed(opts), 'game'));
-		let query = { _game: game._id };
+		}).then(backglasses => {
+			result.backglasses = backglasses.map(backglass => _.omit(backglass.toSimple(), 'game'));
+		});
 
-		// if game has a backglass restriction, only fetch owned releases when logged
-		if (game.isRestricted('backglass')) {
-			if (!req.user) {
-				return [];
-			}
-			query._created_by = req.user._id;
-		}
-
-		return Backglass.find(Backglass.approvedQuery(query))
-			.populate({ path: 'authors._user' })
-			.populate({ path: 'versions._file' })
-			.exec();
-
-	}).then(backglasses => {
-		result.backglasses = backglasses.map(backglass => _.omit(backglass.toSimple(opts), 'game'));
-
+	}).then(() => {
 		return Medium.find({ '_ref.game': game._id })
 			.populate({ path: '_file' })
 			.populate({ path: '_created_by' })
 			.exec();
 
 	}).then(media => {
-		result.alternate_media = media.map(medium => _.omit(medium.toSimple(opts), 'game'));
+		result.alternate_media = media.map(medium => _.omit(medium.toSimple(), 'game'));
 
 		api.success(res, result, 200);
 

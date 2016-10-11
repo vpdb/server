@@ -6,7 +6,7 @@ p(ng-show="!hasBackglasses && !game.restrictions.release.mpu && game.restriction
 		.restricted-overlay(ng-show="game.restrictions.backglass.mpu")
 			.alert.alert-danger
 				+icon('warning').shift-up.space-right
-				| Backglass only visible to uploader.
+				| Backglass only visible to uploader and mods.
 		.img.img--ar-bg.img--rounded-top(img-bg="backglass.versions[0].file.variations['medium' + pixelDensitySuffix].url", ng-class="{ restricted: game.restrictions.release.mpu }")
 		.img.img--ar-bg.img--rounded-top.img--placeholder.loaded
 		.text-center.padder(ng-class="{ restricted: game.restrictions.release.mpu }")

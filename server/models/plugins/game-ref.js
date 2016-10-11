@@ -78,7 +78,7 @@ module.exports = function(schema, options) {
 
 		const Game = mongoose.model('Game');
 		return Promise.try(() => {
-			return req.user ? acl.isAllowed(req.user.id, resource, 'moderate') : false;
+			return req.user ? acl.isAllowed(req.user.id, resource, 'view-restriced') : false;
 
 		}).then(isModerator => {
 
@@ -100,6 +100,37 @@ module.exports = function(schema, options) {
 					return addToQuery({ _game : { $nin: _.map(games, '_id') }}, query);
 				}
 			});
+		});
+	};
+
+	schema.statics.restrictedQuery = function(req, game, query) {
+
+		const reference = modelReferenceMap[this.modelName];
+		const resource = modelResourceMap[this.modelName];
+
+		// if not restricted, return same query (no filter)
+		if (!game.isRestricted(reference)) {
+			return Promise.resolve(query);
+		}
+
+		// if restricted by not logged, return null (no results)
+		if (!req.user) {
+			return null;
+		}
+
+		// now we have a user, check if either moderator or owner
+		return Promise.try(() => {
+			return acl.isAllowed(req.user.id, resource, 'view-restriced');
+
+		}).then(isModerator => {
+
+			// if moderator, retuzrn same query (no filter)
+			if (isModerator) {
+				return query;
+			}
+
+			// if no moderator, only returned owned entities
+			return addToQuery({ _created_by: req.user._id }, query);
 		});
 	};
 

@@ -11,7 +11,7 @@ p(ng-show="!hasReleases && game.restrictions.release.mpu && game.restrictions.ba
 	.restricted-overlay(ng-show="game.restrictions.release.mpu")
 		.alert.alert-danger.text-center
 			+icon('warning').shift-up.space-right
-			| Release only visible to uploader.
+			| Release only visible to uploader and moderators.
 	.col-sm-4(ng-class="{ restricted: game.restrictions.release.mpu }")
 
 		//-- PLAYFIELD TUMBS

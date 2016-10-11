@@ -58,14 +58,14 @@ acl.init = function() {
 		}, {
 			roles: 'moderator',
 			allows: [
-				{ resources: 'backglasses',   permissions: ['delete', 'moderate'] },
+				{ resources: 'backglasses',   permissions: ['delete', 'moderate', 'view-restriced'] },
 				{ resources: 'builds',        permissions: ['delete'] },
 				{ resources: 'files',         permissions: ['blockmatch'] },
 				{ resources: 'games',         permissions: ['delete'] },
 				{ resources: 'game_requests', permissions: ['list', 'update', 'delete'] },
 				{ resources: 'media',         permissions: ['delete'] },
-				{ resources: 'releases',      permissions: ['moderate'] },
-				{ resources: 'roms',          permissions: ['delete'] },
+				{ resources: 'releases',      permissions: ['moderate', 'view-restriced'] },
+				{ resources: 'roms',          permissions: ['delete', 'view-restriced'] },
 				{ resources: 'tags',          permissions: ['delete'] }
 			]
 		}, {

@@ -551,7 +551,7 @@ exports.cleanup = function(request, done) {
  * Asserts that a response contains a given status code and no error
  *
  * @param {int} code Status code to assert
- * @param {string|function} contains
+ * @param {string|function} [contains]
  * @param {function} [next=null] callback
  * @returns {Function} Function passed to end()
  */

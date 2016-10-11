@@ -27,16 +27,21 @@ exports.getGame = function(attrs, ipdbNumber) {
  *
  * @param {string} user User name with which the game should be created
  * @param {Request} request HTTP client
+ * @param {Object} [game]
  * @param {function} done Callback
  */
-exports.createGame = function(user, request, done) {
+exports.createGame = function(user, request, game, done) {
+	if (_.isFunction(game)) {
+		done = game;
+		game = {};
+	}
  	var hlp = require('./helper');
 	hlp.file.createBackglass(user, request, function(backglass) {
 		// backglass doomed by game
 		request
 			.post('/api/v1/games')
 			.as(user)
-			.send(exports.getGame({ _backglass: backglass.id }))
+			.send(_.assign(exports.getGame({ _backglass: backglass.id }), game))
 			.end(function(err, res) {
 				hlp.expectStatus(err, res, 201);
 				hlp.doomGame(user, res.body.id);

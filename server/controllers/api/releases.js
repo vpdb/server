@@ -676,11 +676,10 @@ exports.view = function(req, res) {
 		if (!release) {
 			throw error('No such release with ID "%s"', req.params.id).status(404);
 		}
+		return Release.hasRestrictionAccess(req, release._game, release);
 
-		return req.user ? acl.isAllowed(req.user.id, 'releases', 'moderate') : false;
-
-	}).then(isModerator => {
-		if (!isModerator && release._game.isRestricted('release') && !release.isCreatedBy(req.user)) {
+	}).then(hasAccess => {
+		if (!hasAccess) {
 			throw error('No such release with ID "%s"', req.params.id).status(404);
 		}
 		return release.assertModeratedView(req, error).then(release => {

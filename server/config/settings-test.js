@@ -46,7 +46,7 @@ module.exports = {
 			}
 		},
 		metrics: { bayesianEstimate: { minVotes: 3, globalMean: null } },
-		restrictions: { release: { denyMpu: [ ] }, backglass: { denyMpu: [ ] }, rom: { denyMpu: [ ] } },
+		restrictions: { release: { denyMpu: [ 9999 ] }, backglass: { denyMpu: [ 9999 ] }, rom: { denyMpu: [ 9999 ] } },
 		tmp: '.',
 		authorizationHeader: 'Authorization',
 		generateTableScreenshot: false,

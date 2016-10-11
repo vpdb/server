@@ -166,6 +166,8 @@ exports.list = function(req, res) {
 		if (game) {
 			return Rom.restrictedQuery(req, game, { _game: game._id });
 		}
+
+		// no game found.
 		if (req.params.gameId) {
 			throw error('No such game with ID "%s".', req.params.gameId).status(404);
 		}
@@ -179,6 +181,10 @@ exports.list = function(req, res) {
 		}
 
 	}).then(query => {
+
+		if (!query) {
+			return [ [], 0 ];
+		}
 
 		let sort = game ? { version: -1 } : { '_file.name': 1 };
 		return Rom.paginate(query, {

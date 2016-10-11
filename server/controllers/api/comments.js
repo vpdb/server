@@ -47,7 +47,7 @@ exports.createForRelease = function(req, res) {
 		if (!release) {
 			throw error('No such release with ID "%s"', req.params.id).status(404);
 		}
-		if (release._game.isRestricted('release') && !release.isCreatedBy(req.user)) {
+		if (release._game.isRestricted('release')) {
 			throw error('No such release with ID "%s"', req.params.id).status(404);
 		}
 		comment = new Comment({
@@ -170,14 +170,15 @@ exports.listForRelease = function(req, res) {
 
 	}).then(r => {
 		release = r;
-
 		if (!release) {
 			throw error('No such release with ID "%s"', req.params.id).status(404);
 		}
-		if (release._game.isRestricted('release') && !release.isCreatedBy(req.user)) {
+		return Release.hasRestrictionAccess(req, release._game, release);
+
+	}).then(hasAccess => {
+		if (!hasAccess) {
 			throw error('No such release with ID "%s"', req.params.id).status(404);
 		}
-
 		return Comment.paginate({ '_ref.release': release._id }, {
 			page: pagination.page,
 			limit: pagination.perPage,

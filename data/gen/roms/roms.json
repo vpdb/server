@@ -10930,24 +10930,6 @@
       "version": "R03"
    },
    {
-      "id": "mystcasa",
-      "name": "Mystery Castle (R03)",
-      "manufacturer": "Alvin G",
-      "reference": "mystcast",
-      "source": "alvggames.c",
-      "ipdb": 1647,
-      "version": "R03"
-   },
-   {
-      "id": "mystcast",
-      "name": "Mystery Castle (R02)",
-      "year": 1993,
-      "manufacturer": "Alvin G",
-      "source": "alvggames.c",
-      "ipdb": 1647,
-      "version": "R02"
-   },
-   {
       "id": "mystcast",
       "name": "Mystery Castle (R02)",
       "year": 1993,
@@ -13138,25 +13120,6 @@
       "source": "alvggames.c",
       "ipdb": 1805,
       "version": "R02"
-   },
-   {
-      "id": "pstlpkr",
-      "name": "Pistol Poker (R02)",
-      "year": 1993,
-      "manufacturer": "Alvin G",
-      "source": "alvggames.c",
-      "ipdb": 1805,
-      "version": "R02"
-   },
-   {
-      "id": "pstlpkr1",
-      "name": "Pistol Poker (R01)",
-      "year": 1993,
-      "manufacturer": "Alvin G",
-      "reference": "pstlpkr",
-      "source": "alvggames.c",
-      "ipdb": 1805,
-      "version": "R01"
    },
    {
       "id": "pstlpkr1",

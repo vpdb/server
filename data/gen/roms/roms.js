@@ -14,16 +14,18 @@ exports.upload = function(config) {
 	const credentials = config.credentials || {};
 	const romFolder = config.romFolder || 'roms';
 
+	const roms = require('./roms.json');
 	let games = new Map();
-	require('./roms.json').forEach(rom => {
+	roms.forEach(rom => {
 		if (!games.has(rom.ipdb)) {
 			games.set(rom.ipdb, { ipdb: rom.ipdb, roms: [] });
 		}
 		games.get(rom.ipdb).roms.push(rom);
 	});
+	console.log('Loaded %s ROMs for %s games.', roms.length, games.size);
 
 	let apiConfig = { baseURL: apiUri, timeout: 1000, headers: {}};
-	let storageConfig = { baseURL: storageUri, timeout: 1000, headers: {}};
+	let storageConfig = { baseURL: storageUri, timeout: 300000, headers: {}};
 	if (config.httpSimple) {
 		apiConfig.headers.Authorization = 'Basic ' + new Buffer(config.httpSimple.username + ':' + config.httpSimple.password).toString('base64');
 		storageConfig.headers.Authorization = 'Basic ' + new Buffer(config.httpSimple.username + ':' + config.httpSimple.password).toString('base64');
@@ -124,11 +126,15 @@ exports.upload = function(config) {
 		});
 
 	}).catch(err => {
+
 		if (err.data && err.data.error) {
 			throw new Error(err.data.error);
 		}
 		if (err.data && err.data.errors) {
 			throw new Error('Validation error for field "' + err.data.errors[0].field + '": ' + err.data.errors[0].message);
+
+		} else {
+			throw err;
 		}
 	});
 };

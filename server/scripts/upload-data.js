@@ -53,15 +53,15 @@ var production = {
 	//httpSimple: { username: credentials.httpSimple.username, password: credentials.httpSimple.password }
 };
 
-var config = local;
+var config = production;
 
 config.folder = process.env.VPDB_DATA_FOLDER;
 config.romFolder = process.env.VPDB_ROM_FOLDER || process.env.VPDB_DATA_FOLDER || 'F:/Pinball/Visual Pinball-103/VPinMame/roms';
 
 Promise.try(() => {
 
-	games.upload(production);
-//	return roms.upload(config);
+//	games.upload(config);
+	return roms.upload(config);
 //	releases.upload(config);
 
 }).then(() => {

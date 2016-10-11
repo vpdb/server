@@ -193,7 +193,7 @@ exports.list = function(req, res) {
 		return Backglass.handleModerationQuery(req, error, query);
 
 	}).then(q => {
-		return Backglass.handleGameQuery(req, error, q);
+		return Backglass.handleGameQuery(req, q);
 
 	}).then(query => {
 

@@ -163,22 +163,22 @@ exports.list = function(req, res) {
 	}).then(g => {
 		game = g;
 
-		if (!game) {
-			if (req.params.gameId) {
-				throw error('No such game with ID "%s".', req.params.gameId).status(404);
-			}
-			if (req.query.game_id) {
-				throw error('No such game with ID "%s".', req.query.game_id).status(404);
-			}
-			if (ipdbNumber) {
-				query = { _ipdb_number: ipdbNumber };
-			} else {
-				query = {};
-			}
-
-		} else {
-			query = { _game: game._id };
+		if (game) {
+			return Rom.restrictedQuery(req, game, { _game: game._id });
 		}
+		if (req.params.gameId) {
+			throw error('No such game with ID "%s".', req.params.gameId).status(404);
+		}
+		if (req.query.game_id) {
+			throw error('No such game with ID "%s".', req.query.game_id).status(404);
+		}
+		if (ipdbNumber) {
+			return { _ipdb_number: ipdbNumber };
+		} else {
+			return Rom.handleGameQuery(req, {});
+		}
+
+	}).then(query => {
 
 		let sort = game ? { version: -1 } : { '_file.name': 1 };
 		return Rom.paginate(query, {

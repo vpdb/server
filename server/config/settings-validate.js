@@ -416,6 +416,14 @@ module.exports = {
 						return 'Denied MPUs must be an array.';
 					}
 				}
+			},
+			rom: {
+				denyMpu: function(ids) {
+					/* istanbul ignore if */
+					if (!_.isArray(ids)) {
+						return 'Denied MPUs must be an array.';
+					}
+				}
 			}
 		},
 

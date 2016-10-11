@@ -329,6 +329,17 @@ module.exports = {
 				 * Don't allow backglasses for Stern S.A.M (54) and SPIKE (61) games
 				 */
 				denyMpu: [ 54, 61 ]
+			},
+
+			/**
+			 * Restrict ROMs
+			 */
+			rom: {
+
+				/**
+				 * Don't allow ROMs for Stern S.A.M (54) and SPIKE (61) games
+				 */
+				denyMpu: [ 54, 61 ]
 			}
 		},
 

@@ -63,11 +63,10 @@ module.exports = function(schema, options) {
 	 * Returns the query used for listing only approved entities.
 	 *
 	 * @param {Request} req Request object
-	 * @param {Err} error Error wrapper for logging
 	 * @param {array|object} [query] Query to append.
-	 * @returns {Promise}
+	 * @returns Promise.<{array|object}>
 	 */
-	schema.statics.handleGameQuery = function(req, error, query) {
+	schema.statics.handleGameQuery = function(req, query) {
 
 		const reference = modelReferenceMap[this.modelName];
 		const resource = modelResourceMap[this.modelName];
@@ -103,6 +102,14 @@ module.exports = function(schema, options) {
 		});
 	};
 
+	/**
+	 * Returns the query for listing only approved entities for a given game.
+	 *
+	 * @param {Request} req Request object
+	 * @param {Game} game Game to fetch entities for.
+	 * @param {array|object} [query] Query to append.
+	 * @returns Promise.<{array|object|null}>
+	 */
 	schema.statics.restrictedQuery = function(req, game, query) {
 
 		const reference = modelReferenceMap[this.modelName];
@@ -134,7 +141,38 @@ module.exports = function(schema, options) {
 		});
 	};
 
+	schema.statics.hasRestrictionAccess = function(req, game, entity) {
+
+		const reference = modelReferenceMap[this.modelName];
+		const resource = modelResourceMap[this.modelName];
+
+		// if not restricted, has access
+		if (!game.isRestricted(reference)) {
+			return true;
+		}
+
+		// if restricted by not logged, no access.
+		if (!req.user) {
+			return false;
+		}
+
+		// now we have a user, check if either moderator or owner
+		return Promise.try(() => {
+			return acl.isAllowed(req.user.id, resource, 'view-restriced');
+
+		}).then(isModerator => {
+
+			// if moderator, has access
+			if (isModerator) {
+				return true;
+			}
+
+			// if no moderator, only must be owner
+			return entity._created_by.equals(req.user._id);
+		});
+	};
 };
+
 
 /**
  * Adds a new condition to an existing query.

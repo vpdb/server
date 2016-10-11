@@ -477,7 +477,7 @@ exports.list = function(req, res) {
 	}).then(q => {
 
 		// restricted games
-		return Release.handleGameQuery(req, error, q);
+		return Release.handleGameQuery(req, q);
 
 	}).then(q => {
 		query = q;

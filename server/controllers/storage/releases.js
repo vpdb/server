@@ -107,7 +107,10 @@ exports.download = function(req, res) {
 		if (!release) {
 			throw error('No such release with ID "%s".', req.params.release_id).status(404);
 		}
-		if (release._game.isRestricted('release') && !release.isCreatedBy(req.user)) {
+		return Release.hasRestrictionAccess(req, release._game, release);
+
+	}).then(hasAccess => {
+		if (!hasAccess) {
 			throw error('No such release with ID "%s".', req.params.release_id).status(404);
 		}
 		return release.assertModeratedView(req, error);

@@ -99,8 +99,8 @@ const ReleaseSchema = new Schema(releaseFields);
 //-----------------------------------------------------------------------------
 // PLUGINS
 //-----------------------------------------------------------------------------
-ReleaseSchema.plugin(uniqueValidator, { message: 'The {PATH} "{VALUE}" is already taken.' });
 ReleaseSchema.plugin(gameRef);
+ReleaseSchema.plugin(uniqueValidator, { message: 'The {PATH} "{VALUE}" is already taken.' });
 ReleaseSchema.plugin(fileRef);
 ReleaseSchema.plugin(prettyId, { model: 'Release', ignore: [ '_created_by', '_tags' ] });
 ReleaseSchema.plugin(idValidator, { fields: [ '_tags' ] });

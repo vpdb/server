@@ -84,12 +84,12 @@ const apiFields = {
 //-----------------------------------------------------------------------------
 // PLUGINS
 //-----------------------------------------------------------------------------
+BackglassSchema.plugin(gameRef);
 BackglassSchema.plugin(uniqueValidator, { message: 'The {PATH} "{VALUE}" is already taken.', code: 'duplicate_field' });
 BackglassSchema.plugin(prettyId, { model: 'Backglass', ignore: [ '_created_by' ], validations: [
 	{ path: '_file', mimeType: 'application/x-directb2s', message: 'Must be a .directb2s file.' },
 	{ path: '_file', fileType: 'backglass', message: 'Must be a file of type "backglass".' }
 ] });
-BackglassSchema.plugin(gameRef);
 BackglassSchema.plugin(fileRef);
 BackglassSchema.plugin(paginate);
 BackglassSchema.plugin(moderate);

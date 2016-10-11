@@ -122,7 +122,7 @@ module.exports = function(schema, options) {
 
 		// if restricted by not logged, return null (no results)
 		if (!req.user) {
-			return null;
+			return Promise.resolve(null);
 		}
 
 		// now we have a user, check if either moderator or owner

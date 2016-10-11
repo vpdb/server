@@ -60,7 +60,7 @@ describe('The VPDB `Backglass` API', function() {
 				.as('member')
 				.send({})
 				.end(function(err, res) {
-					hlp.expectValidationError(err, res, '_game', 'is required');
+					hlp.expectValidationError(err, res, '_game', 'must be provided');
 					hlp.expectValidationError(err, res, 'authors', 'at least one author');
 					hlp.expectValidationError(err, res, 'versions', 'at least one version');
 					expect(res.body.errors.length).to.be(3);

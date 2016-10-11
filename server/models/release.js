@@ -31,6 +31,7 @@ const paginate = require('mongoose-paginate');
 
 const toObj = require('./plugins/to-object');
 const metrics = require('./plugins/metrics');
+const gameRef = require('./plugins/game-ref');
 const fileRef = require('./plugins/file-ref');
 const moderate = require('./plugins/moderate');
 const prettyId = require('./plugins/pretty-id');
@@ -55,7 +56,6 @@ const Schema = mongoose.Schema;
 // RELEASE
 const releaseFields = {
 	id:            { type: String, required: true, unique: true, 'default': shortId.generate },
-	_game:         { type: Schema.ObjectId, required: 'Reference to game must be provided.', ref: 'Game' },
 	name:          { type: String, required: 'Name must be provided.' },
 	name_sortable: { type: String, index: true },
 	license:       { type: String, required: 'Mod permission must be provided.', 'enum': { values: licenses, message: 'Invalid license. Valid licenses are: ["' +  licenses.join('", "') + '"].' }},
@@ -100,6 +100,7 @@ const ReleaseSchema = new Schema(releaseFields);
 // PLUGINS
 //-----------------------------------------------------------------------------
 ReleaseSchema.plugin(uniqueValidator, { message: 'The {PATH} "{VALUE}" is already taken.' });
+ReleaseSchema.plugin(gameRef);
 ReleaseSchema.plugin(fileRef);
 ReleaseSchema.plugin(prettyId, { model: 'Release', ignore: [ '_created_by', '_tags' ] });
 ReleaseSchema.plugin(idValidator, { fields: [ '_tags' ] });

@@ -125,7 +125,7 @@ module.exports = function(schema) {
 	 * @param {array|object} [query] Query to append.
 	 * @returns {Promise}
 	 */
-	schema.statics.handleListQuery = function(req, error, query) {
+	schema.statics.handleModerationQuery = function(req, error, query) {
 
 		return Promise.try(() => {
 			if (req.query && req.query.moderation) {

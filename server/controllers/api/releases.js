@@ -472,7 +472,12 @@ exports.list = function(req, res) {
 	}).then(() => {
 
 		// moderation
-		return Release.handleListQuery(req, error, query);
+		return Release.handleModerationQuery(req, error, query);
+
+	}).then(q => {
+
+		// restricted games
+		return Release.handleGameQuery(req, error, q);
 
 	}).then(q => {
 		query = q;
@@ -514,15 +519,6 @@ exports.list = function(req, res) {
 				} else {
 					query.push({ name: titleRegex });
 				}
-			});
-		}
-
-	}).then(() => {
-
-		// restricted games
-		if (config.vpdb.restrictions && config.vpdb.restrictions.release && _.isArray(config.vpdb.restrictions.release.denyMpu)) {
-			return Game.find({ 'ipdb.mpu' : { $in: config.vpdb.restrictions.release.denyMpu }}).exec().then(games => {
-				query.push({ _game : { $nin: _.map(games, '_id') }});
 			});
 		}
 
@@ -675,14 +671,18 @@ exports.view = function(req, res) {
 			.populate({ path: 'versions.files._compatibility' })
 			.exec();
 
-	}).then(release => {
+	}).then(r => {
+		release = r;
 		if (!release) {
 			throw error('No such release with ID "%s"', req.params.id).status(404);
 		}
-		if (release._game.isRestricted('release') && !release.isCreatedBy(req.user)) {
+
+		return req.user ? acl.isAllowed(req.user.id, 'releases', 'moderate') : false;
+
+	}).then(isModerator => {
+		if (!isModerator && release._game.isRestricted('release') && !release.isCreatedBy(req.user)) {
 			throw error('No such release with ID "%s"', req.params.id).status(404);
 		}
-
 		return release.assertModeratedView(req, error).then(release => {
 			return release.populateModeration(req, error).then(populated => {
 				if (populated === false) {

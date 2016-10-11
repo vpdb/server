@@ -20,6 +20,7 @@
 "use strict";
 
 const _ = require('lodash');
+const util = require('util');
 const logger = require('winston');
 
 const acl = require('../../acl');
@@ -97,7 +98,7 @@ exports.create = function(req, res) {
 		return backglass.save();
 
 	}).then(() => {
-		logger.info('[api|backglass:create] Backglass "%s" successfully created.', backglass.label);
+		logger.info('[api|backglass:create] Backglass "%s" successfully created.', backglass.id);
 		return backglass.activateFiles();
 
 	}).then(() => {
@@ -189,9 +190,14 @@ exports.list = function(req, res) {
 		}
 
 	}).then(() => {
-		return Backglass.handleListQuery(req, error, query);
+		return Backglass.handleModerationQuery(req, error, query);
+
+	}).then(q => {
+		return Backglass.handleGameQuery(req, error, q);
 
 	}).then(query => {
+
+		logger.info('[api|backglass:list] query: %s', util.inspect(query, { depth: null }));
 
 		return Backglass.paginate(query, {
 			page: pagination.page,
@@ -220,6 +226,8 @@ exports.view = function(req, res) {
 	let transformOpts = {
 		fields: []
 	};
+
+	let backglass;
 	Promise.try(() => {
 		return Backglass.findOne({ id: req.params.id })
 			.populate({ path: '_game' })
@@ -228,11 +236,15 @@ exports.view = function(req, res) {
 			.populate({ path: '_created_by' })
 			.exec();
 
-	}).then(backglass => {
+	}).then(b => {
+		backglass = b;
 		if (!backglass) {
 			throw error('No such backglass with ID "%s"', req.params.id).status(404);
 		}
-		if (backglass._game.isRestricted('backglass') && !backglass.isCreatedBy(req.user)) {
+		return req.user ? acl.isAllowed(req.user.id, 'backglasses', 'moderate') : false;
+
+	}).then(isModerator => {
+		if (!isModerator && backglass._game.isRestricted('backglass') && !backglass.isCreatedBy(req.user)) {
 			throw error('No such backglass with ID "%s"', req.params.id).status(404);
 		}
 		return backglass.assertModeratedView(req, error).then(backglass => {

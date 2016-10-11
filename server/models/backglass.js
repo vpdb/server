@@ -28,6 +28,7 @@ const validator = require('validator');
 const uniqueValidator = require('mongoose-unique-validator');
 
 const prettyId = require('./plugins/pretty-id');
+const gameRef = require('./plugins/game-ref');
 const fileRef = require('./plugins/file-ref');
 const toObj = require('./plugins/to-object');
 const metrics = require('./plugins/metrics');
@@ -61,7 +62,6 @@ VersionSchema.virtual('file')
 
 const backglassFields = {
 	id:            { type: String, required: true, unique: true, 'default': shortId.generate },
-	_game:         { type: Schema.ObjectId, ref: 'Game', required: true },
 	versions:      { type: [ VersionSchema ], validate: [ nonEmptyArray, 'You must provide at least one version for the backglass.' ] },
 	description:   { type: String },
 	authors:       { type: [ author.schema ], validate: [ nonEmptyArray, 'You must provide at least one author.' ] },
@@ -89,6 +89,7 @@ BackglassSchema.plugin(prettyId, { model: 'Backglass', ignore: [ '_created_by' ]
 	{ path: '_file', mimeType: 'application/x-directb2s', message: 'Must be a .directb2s file.' },
 	{ path: '_file', fileType: 'backglass', message: 'Must be a file of type "backglass".' }
 ] });
+BackglassSchema.plugin(gameRef);
 BackglassSchema.plugin(fileRef);
 BackglassSchema.plugin(paginate);
 BackglassSchema.plugin(moderate);

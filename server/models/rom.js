@@ -27,6 +27,7 @@ var validator = require('validator');
 var uniqueValidator = require('mongoose-unique-validator');
 
 var prettyId = require('./plugins/pretty-id');
+var gameRef = require('./plugins/game-ref');
 var fileRef = require('./plugins/file-ref');
 var toObj = require('./plugins/to-object');
 
@@ -38,7 +39,6 @@ var Schema = mongoose.Schema;
 var fields = {
 	id:           { type: String, required: 'ID must be provided. Use the name of the ROM file without file extension.', unique: true },
 	_file:        { type: Schema.ObjectId, ref: 'File', required: 'File reference must be provided.' },
-	_game:        { type: Schema.ObjectId },
 	_ipdb_number: { type: Number },
 	rom_files: [ {
 		filename:     { type: String },
@@ -69,6 +69,7 @@ RomSchema.plugin(prettyId, { model: 'Rom', ignore: [ '_created_by', '_game' ], v
 	{ path: '_file', mimeType: 'application/zip', message: 'Must be a ZIP archive.' },
 	{ path: '_file', fileType: 'rom', message: 'Must be a file of type "rom".' }
 ] });
+RomSchema.plugin(gameRef, { isOptional: true });
 RomSchema.plugin(fileRef);
 RomSchema.plugin(paginate);
 RomSchema.plugin(toObj);

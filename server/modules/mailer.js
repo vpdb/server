@@ -97,6 +97,7 @@ exports.backglassApproved = function(user, release, message) {
 	return sendEmail(user, 'Your backglass for ' + release._game.title + ' has been accepted!', 'backglass-approved', {
 		user: user,
 		message: wrapMessage(message),
+		game: release._game,
 		gameUrl: settings.webUri('/games/' + release._game.id)
 	}, 'notify_backglass_moderation_status');
 };

@@ -24,10 +24,11 @@ var logger = require('winston');
 var mongoose = require('mongoose');
 var paginate = require('mongoose-paginate');
 var toObj = require('./plugins/to-object');
+var slackbot = require('../modules/slackbot');
 
 var Schema = mongoose.Schema;
 
-var events = [
+const events = [
 	'create_comment',
 	'star_game', 'star_release', 'star_user',
 	'unstar_game', 'unstar_release', 'unstar_user',
@@ -105,6 +106,7 @@ LogEventSchema.statics.log = function(req, event, isPublic, payload, ref, done) 
 		if (done) {
 			done(err);
 		}
+		slackbot.logEvent(log);
 	});
 };
 

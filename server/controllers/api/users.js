@@ -193,7 +193,7 @@ exports.update = function(req, res) {
 			if (!user._id.equals(req.user._id) && (_.includes(currentUserRoles, 'root') || _.includes(currentUserRoles, 'admin'))) {
 
 				// log
-				LogUser.failure(req, user, 'update_user', diff, req.user, 'User is not allowed to update administrators or root users.');
+				LogUser.failure(req, user, 'update', diff, req.user, 'User is not allowed to update administrators or root users.');
 
 				// fail
 				return api.fail(res, error('PRIVILEGE ESCALATION: Non-root user <%s> [%s] tried to update user <%s> [%s].', req.user.email, callerRoles.join(' '), user.email, currentUserRoles.join(' '))
@@ -206,7 +206,7 @@ exports.update = function(req, res) {
 			if (_.includes(addedRoles, 'root') || _.includes(addedRoles, 'admin') || _.includes(removedRoles, 'root') || _.includes(removedRoles, 'admin')) {
 
 				// log
-				LogUser.failure(req, user, 'update_user', diff, req.user, 'User is not allowed change the admin or root role for anyone.');
+				LogUser.failure(req, user, 'update', diff, req.user, 'User is not allowed change the admin or root role for anyone.');
 
 				// fail
 				return api.fail(res, error('PRIVILEGE ESCALATION: User <%s> [%s] tried to update user <%s> [%s] with new roles [%s].', req.user.email, callerRoles.join(' '), user.email, currentUserRoles.join(' '), updatedUserRoles.join(' '))

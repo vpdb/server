@@ -210,6 +210,16 @@ module.exports = {
 					program: 'vpdb-staging',
 					colorize: true
 				}
+			},
+
+			slack: {
+				enabled: false,
+				token: '',
+				channels: {
+					eventLog: '',
+					userLog: '',
+					general: ''
+				}
 			}
 		},
 

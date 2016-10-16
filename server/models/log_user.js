@@ -24,6 +24,7 @@ var logger = require('winston');
 var mongoose = require('mongoose');
 var paginate = require('mongoose-paginate');
 var toObj = require('./plugins/to-object');
+var slackbot = require('../modules/slackbot');
 
 var Schema = mongoose.Schema;
 
@@ -104,6 +105,7 @@ LogUserSchema.statics.log = function(req, user, result, event, payload, actor, m
 		if (done) {
 			done(err);
 		}
+		slackbot.logUser(log);
 	});
 };
 

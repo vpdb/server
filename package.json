@@ -19,6 +19,7 @@
 		"url": "https://github.com/freezy/node-vpdb/issues"
 	},
 	"dependencies": {
+		"@slack/client": "^3.6.0",
 		"acl": "0.4.9",
 		"archiver": "1.0.1",
 		"base64-stream": "0.1.3",

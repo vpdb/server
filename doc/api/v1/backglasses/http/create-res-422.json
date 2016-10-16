@@ -1,13 +1,13 @@
 422 Unprocessable Entity
-X-App-Sha: f680068
+X-App-Sha: 7bd4777
 Content-Type: application/json; charset=utf-8
-Content-Length: 314
-Etag: W/"13a-puk1lnzPs16q1tsancrR2w"
+Content-Length: 324
+Etag: W/"144-4DiupDgOyW9IyseYXtE9eA"
 
 {
   "errors": [
     {
-      "message": "Path `_game` is required.",
+      "message": "Reference to game must be provided.",
       "field": "_game"
     },
     {

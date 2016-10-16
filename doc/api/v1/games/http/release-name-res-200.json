@@ -1,9 +1,9 @@
 200 OK
-X-App-Sha: f680068
+X-App-Sha: 7bd4777
 Content-Type: application/json; charset=utf-8
 Content-Length: 39
-Etag: W/"27-8KCq+bBF2CB0wAOPPJZUHg"
+Etag: W/"27-OTybUGGfuVBuGZPd628A7w"
 
 {
-  "name": "Omniscient Dolls Edition"
+  "name": "Coherent Fireman Edition"
 }

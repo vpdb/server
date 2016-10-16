@@ -1,15 +1,15 @@
 200 OK
-X-App-Sha: f680068
+X-App-Sha: 7bd4777
 Content-Type: application/json; charset=utf-8
-Etag: W/"503-7wdynNYUh18xSZK9PQeX/w"
+Etag: W/"5c9-P7WiRYgCL9XQYeobE8i9sw"
 Content-Encoding: gzip
 
 {
-  "name": "Davon_Hahn",
-  "username": "Davon_Hahn",
-  "email": "macy32@hotmail.com",
+  "name": "Jalyn78",
+  "username": "Jalyn78",
+  "email": "delia_price67@gmail.com",
   "provider": "local",
-  "created_at": "2016-09-15T12:19:27.194Z",
+  "created_at": "2016-10-16T09:16:26.456Z",
   "is_active": true,
   "counter": {
     "stars": 0,
@@ -17,74 +17,82 @@ Content-Encoding: gzip
     "comments": 0
   },
   "preferences": {
+    "notify_mentions": true,
+    "notify_created_release_followers": true,
+    "notify_created_release_comments": true,
+    "notify_game_requests": true,
     "notify_backglass_moderation_status": true,
     "notify_release_moderation_status": true
   },
   "roles": [
     "member"
   ],
-  "id": "e2ub7wh27m",
+  "id": "p2fh5oxgxkb",
   "plan": {
     "push_notifications_enabled": false,
     "app_tokens_enabled": true,
     "id": "subscribed"
   },
-  "gravatar_id": "142e26794c2908bf3571d5b2679c6e32",
+  "gravatar_id": "6ffc3f45649432ea98780a0aaf0e0aee",
   "permissions": {
-    "releases": [
-      "update",
+    "backglasses": [
       "add",
-      "delete",
-      "rate",
-      "star"
-    ],
-    "builds": [
-      "add",
+      "star",
       "delete-own"
     ],
-    "messages": [
-      "receive"
-    ],
-    "games": [
-      "rate",
-      "star"
+    "comments": [
+      "add"
     ],
     "media": [
       "add",
       "star",
       "delete-own"
     ],
-    "backglasses": [
-      "add",
-      "star",
-      "delete-own"
-    ],
-    "users": [
-      "search",
-      "view",
-      "star"
-    ],
-    "comments": [
-      "add"
-    ],
-    "tags": [
-      "add",
-      "delete-own"
+    "messages": [
+      "receive"
     ],
     "files": [
       "download",
+      "upload",
+      "delete"
+    ],
+    "tokens": [
+      "add",
+      "update",
       "delete",
-      "upload"
+      "list"
+    ],
+    "games": [
+      "star",
+      "rate"
+    ],
+    "game_requests": [
+      "add",
+      "delete-own"
     ],
     "user": [
       "update",
       "view"
     ],
-    "tokens": [
-      "update",
+    "builds": [
       "add",
+      "delete-own"
+    ],
+    "tags": [
+      "add",
+      "delete-own"
+    ],
+    "releases": [
+      "add",
+      "update",
+      "rate",
       "delete",
-      "list"
+      "star"
+    ],
+    "users": [
+      "search",
+      "star",
+      "view"
     ]
   },
   "quota": {

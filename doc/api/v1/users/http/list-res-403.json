@@ -1,9 +1,9 @@
 403 Forbidden
-X-App-Sha: f680068
+X-App-Sha: 7bd4777
 Content-Type: application/json; charset=utf-8
-Content-Length: 77
-Etag: W/"4d-p1WzVi1bdAPwhURKKak//g"
+Content-Length: 91
+Etag: W/"5b-Ygbwd1kZHEFFfm8oNTTyTg"
 
 {
-  "error": "Please provide a search query with at least three characters."
+  "error": "Please provide a search query with at least three characters or a user name"
 }

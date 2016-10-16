@@ -1,17 +1,19 @@
 200 OK
-X-App-Sha: f680068
+X-App-Sha: 7bd4777
 Content-Type: application/json; charset=utf-8
-Etag: W/"606-hH3D5EZIr49SuJsvtpDJnA"
+Etag: W/"969-iAQgJrx9ezmR3GEgVNSSIQ"
 Content-Encoding: gzip
 
 {
   "title_sortable": "Hi, I am your new title.",
   "title": "Hi, I am your new title.",
-  "manufacturer": "National Automatic Machine Company",
-  "year": 1933,
-  "game_type": "pm",
-  "id": "grand-slam",
-  "created_at": "2016-09-15T12:19:44.942Z",
+  "manufacturer": "A.B.T.",
+  "year": 1935,
+  "game_type": "em",
+  "features": "10 balls for 5 cents. Three-dimensional cast pot-metal football players on playfield. The object is to land a ball in position before the red kick-off man, then shoot a ball into the Touchdown hole at the top of the playfield. This causes a bell to ring and the first ball is kicked upfield to the goal posts. Balls falling into the Touchdown hole and the Out of Bounds hole are returned for free play. Cabinet was advertised as hand-rubbed maple inlaid with hardwood side panelings. Game measures approximately 40 inches long, 22 inches wide, and 40 inches high.",
+  "notes": "A manufacturer flyer indicates the blue men \"whirl\" to intercept kicked balls, but close inspection of the pictures reveal all playfield men are stationary, except for the kick-off man.",
+  "id": "all-stars",
+  "created_at": "2016-10-16T09:16:48.236Z",
   "rating": {
     "score": 0,
     "votes": 0,
@@ -28,15 +30,18 @@ Content-Encoding: gzip
     "releases": 0
   },
   "ipdb": {
-    "number": 1075,
-    "mfg": 227
+    "number": 56,
+    "mfg": 9
   },
   "keywords": [],
   "artists": [],
   "designers": [],
-  "themes": [],
+  "themes": [
+    "Sports",
+    "Football"
+  ],
   "short": [],
-  "owner": "National Automatic Machine Company of St. Paul, Minnesota, USA",
+  "owner": "A.B.T. Manufacturing Company of Chicago, Illinois, USA",
   "backglass": {
     "counter": {
       "downloads": 0
@@ -44,32 +49,36 @@ Content-Encoding: gzip
     "is_protected": true,
     "variations": {
       "small-2x": {
-        "url": "https://localhost:7357/storage/public/files/small-2x/pkc3pb278.jpg"
-      },
-      "small": {
-        "url": "https://localhost:7357/storage/public/files/small/pkc3pb278.jpg"
+        "url": "https://localhost:7357/storage/public/files/small-2x/p2s482q6x2h.jpg"
       },
       "medium-2x": {
-        "url": "https://localhost:7357/storage/public/files/medium-2x/pkc3pb278.jpg"
+        "url": "https://localhost:7357/storage/public/files/medium-2x/p2s482q6x2h.jpg"
+      },
+      "small": {
+        "url": "https://localhost:7357/storage/public/files/small/p2s482q6x2h.jpg",
+        "width": 253,
+        "height": 202,
+        "bytes": 836,
+        "mime_type": "image/jpeg"
       },
       "medium": {
-        "url": "https://localhost:7357/storage/public/files/medium/pkc3pb278.jpg",
+        "url": "https://localhost:7357/storage/public/files/medium/p2s482q6x2h.jpg",
         "width": 364,
         "height": 291,
-        "bytes": 1187,
+        "bytes": 1188,
         "mime_type": "image/jpeg"
       },
       "full": {
-        "url": "https://localhost:7357/storage/public/files/full/pkc3pb278.jpg",
+        "url": "https://localhost:7357/storage/public/files/full/p2s482q6x2h.jpg",
         "width": 640,
         "height": 512,
-        "bytes": 3407,
+        "bytes": 3408,
         "mime_type": "image/jpeg"
       }
     },
     "bytes": 135,
-    "url": "https://localhost:7357/storage/v1/files/pkc3pb278.png",
+    "url": "https://localhost:7357/storage/v1/files/p2s482q6x2h.png",
     "name": "backglass.png",
-    "id": "pkc3pb278"
+    "id": "p2s482q6x2h"
   }
 }

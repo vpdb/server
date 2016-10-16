@@ -1,8 +1,8 @@
-POST /v1/games/venus/rating HTTP/2.0
+POST /v1/games/william-tell/rating HTTP/2.0
 Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
 content-type: application/json
-authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwa2d5bTViazc4IiwiaWF0IjoiMjAxNi0wOS0xNVQxMjoxOTo1OS45NzZaIiwiZXhwIjoiMjAxNi0wOS0xNVQxMzoxOTo1OS45NzZaIiwiaXJ0IjpmYWxzZX0.P1u-n1Z1lyKDWIONr2tT212QbakNqUy-HcKUK8wSghI
+authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJlMnl4Mnl3ZzRraCIsImlhdCI6IjIwMTYtMTAtMTZUMDk6MTc6MDcuMzk3WiIsImV4cCI6IjIwMTYtMTAtMTZUMTA6MTc6MDcuMzk3WiIsImlydCI6ZmFsc2V9.fZlsGZqTWqKnUd3k8Red3acFTvtPBgM11lIQlMYMNJ4
 Content-Length: 11
 
 {

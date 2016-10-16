@@ -1,4 +1,4 @@
-GET /v1/games/petes-penny-ante/media HTTP/2.0
+GET /v1/games/bronco/media HTTP/2.0
 Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
 

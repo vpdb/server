@@ -1,12 +1,12 @@
-POST /v1/game_requests HTTP/2.0
+POST /v1/game_requests?ipdb_dryrun=1 HTTP/2.0
 Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
-authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJlazRzZjdwYzgiLCJpYXQiOiIyMDE2LTA5LTE1VDE5OjU2OjM4LjQ0NloiLCJleHAiOiIyMDE2LTA5LTE1VDIwOjU2OjM4LjQ0NloiLCJpcnQiOmZhbHNlfQ.mEtilQ6AglTbKpU4WeO-OzuFWGxdwovxLpglR3A7wOk
+authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwa3JidGtxNjQyaCIsImlhdCI6IjIwMTYtMTAtMTZUMDk6MTY6NDMuOTU1WiIsImV4cCI6IjIwMTYtMTAtMTZUMTA6MTY6NDMuOTU1WiIsImlydCI6ZmFsc2V9.mapRgq046vqHrwsvh-lR6j7AXRcZMUzsfndY33kdkeE
 content-type: application/json
 Content-Length: 94
 
 {
-  "ipdb_number": 4441,
+  "ipdb_number": 2768,
   "title": "monster bash",
   "notes": "no monster bash? are you guys kidding???"
 }

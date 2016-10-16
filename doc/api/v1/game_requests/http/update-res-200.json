@@ -1,14 +1,14 @@
 200 OK
-X-App-Sha: 4f56fe0
+X-App-Sha: 7bd4777
 Content-Type: application/json; charset=utf-8
-Content-Length: 245
-Etag: W/"f5-SPArdZneFnfq6PUCAbVyiA"
+Content-Length: 246
+Etag: W/"f6-N0vn2cYG8iEpqmJnO6bN7A"
 
 {
-  "id": "ekgq9e3888",
+  "id": "pkfha2q6xkb",
   "ipdb_number": 2008,
   "ipdb_title": "Rolletto",
   "is_closed": true,
   "message": "Game is already added with IPDB number xxx. We do not keep multiple editions of the same game.",
-  "created_at": "2016-09-16T22:14:46.396Z"
+  "created_at": "2016-10-16T09:16:44.908Z"
 }

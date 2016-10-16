@@ -1,5 +1,5 @@
-GET /v1/games/star-lite/release-name HTTP/2.0
+GET /v1/games/temptation/release-name HTTP/2.0
 Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
-authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJlMmc0YjVoazdtIiwiaWF0IjoiMjAxNi0wOS0xNVQxMjoxOTo0OC4zNjBaIiwiZXhwIjoiMjAxNi0wOS0xNVQxMzoxOTo0OC4zNjBaIiwiaXJ0IjpmYWxzZX0.LWYmo7cHiQdwrB8_xmw0zE7ugo0KkP8nIyDADBxStIY
+authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwMjU5aGJ3NnhrYiIsImlhdCI6IjIwMTYtMTAtMTZUMDk6MTY6NTIuMjE3WiIsImV4cCI6IjIwMTYtMTAtMTZUMTA6MTY6NTIuMjE3WiIsImlydCI6ZmFsc2V9.wZr5Vn8urXHKj68IUGTsMll6vsHR-RCP7Y8wBR0s3TI
 

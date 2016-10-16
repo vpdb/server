@@ -1,17 +1,17 @@
-POST /v1/releases/p2zymvb2cm/versions HTTP/2.0
+POST /v1/releases/e2eh44w6x2b/versions HTTP/2.0
 Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
-authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJlMmU4dnZoMmNtIiwiaWF0IjoiMjAxNi0wOS0xNVQxMjoyMDoyOC42MjlaIiwiZXhwIjoiMjAxNi0wOS0xNVQxMzoyMDoyOC42MjlaIiwiaXJ0IjpmYWxzZX0.8adMP7ccgBvEsSV_IFUYrkuLEHC4kRmvW1ZXJw_50PI
+authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwMjVoMjR3NjQyYiIsImlhdCI6IjIwMTYtMTAtMTZUMDk6MTc6MzkuMTE3WiIsImV4cCI6IjIwMTYtMTAtMTZUMTA6MTc6MzkuMTE3WiIsImlydCI6ZmFsc2V9.FAypyM74Wca3mWsiHAn4rqG5DGjysyBvg_vRnSfbCJE
 content-type: application/json
-Content-Length: 190
+Content-Length: 192
 
 {
   "version": "2.0.0",
   "changes": "*Second release.*",
   "files": [
     {
-      "_file": "e2rs8vhkcm",
-      "_playfield_image": "e2g98vh278",
+      "_file": "e2ayxxw642h",
+      "_playfield_image": "pkdz44wg42b",
       "_compatibility": [
         "9.9.0"
       ],

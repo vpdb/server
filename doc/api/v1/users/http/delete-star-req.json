@@ -1,5 +1,5 @@
-DELETE /v1/users/p2ns3gb2c8/star HTTP/2.0
+DELETE /v1/users/p2ez3pqg42b/star HTTP/2.0
 Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
-authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwazN5ZDZiMjdtIiwiaWF0IjoiMjAxNi0wOS0xNVQxMjoyMTowNS4wODRaIiwiZXhwIjoiMjAxNi0wOS0xNVQxMzoyMTowNS4wODRaIiwiaXJ0IjpmYWxzZX0.dQ_uMNubFDwQmj5KBTrqhPT34AHbClwBXaBv-uXKjT8
+authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwMmFoM3BxNjQyYiIsImlhdCI6IjIwMTYtMTAtMTZUMDk6MTg6MjQuOTM4WiIsImV4cCI6IjIwMTYtMTAtMTZUMTA6MTg6MjQuOTM4WiIsImlydCI6ZmFsc2V9.NAYx9sMtL-ILOMNLcAJ-sVsNGmp7sXar8AOIE6DmJfk
 

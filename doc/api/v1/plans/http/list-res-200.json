@@ -1,11 +1,12 @@
 200 OK
-X-App-Sha: f680068
+X-App-Sha: 7bd4777
 Content-Type: application/json; charset=utf-8
-Content-Length: 534
-Etag: W/"216-Bsr9QK+w6ZByhNdB+Yv5Mg"
+Content-Length: 608
+Etag: W/"260-EgQJ/Xicj4842/vrf52hUw"
 
 [
   {
+    "id": "free",
     "credits": 3,
     "per": "day",
     "enableAppTokens": false,
@@ -14,6 +15,7 @@ Etag: W/"216-Bsr9QK+w6ZByhNdB+Yv5Mg"
     "is_default": true
   },
   {
+    "id": "subscribed",
     "credits": 50,
     "per": "day",
     "enableAppTokens": true,
@@ -22,6 +24,7 @@ Etag: W/"216-Bsr9QK+w6ZByhNdB+Yv5Mg"
     "is_default": false
   },
   {
+    "id": "vip",
     "credits": 200,
     "per": "day",
     "enableAppTokens": true,
@@ -30,6 +33,7 @@ Etag: W/"216-Bsr9QK+w6ZByhNdB+Yv5Mg"
     "is_default": false
   },
   {
+    "id": "unlimited",
     "unlimited": true,
     "enableAppTokens": true,
     "enableRealtime": true,

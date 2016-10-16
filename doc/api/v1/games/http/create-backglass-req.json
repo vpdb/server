@@ -1,14 +1,14 @@
-POST /v1/games/baby-face/backglasses HTTP/2.0
+POST /v1/games/wizard-jackpot/backglasses HTTP/2.0
 Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
-authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJla3RmM3Foa2M4IiwiaWF0IjoiMjAxNi0wOS0xNVQxMjoxOToyOS42NjdaIiwiZXhwIjoiMjAxNi0wOS0xNVQxMzoxOToyOS42NjdaIiwiaXJ0IjpmYWxzZX0.U4YuAHQzhuBw6_BTtrBlrchAAFvki_GEzeGAIG7gGsw
+authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJla3F6YTF4NjRrYiIsImlhdCI6IjIwMTYtMTAtMTZUMDk6MTY6MjkuMDY2WiIsImV4cCI6IjIwMTYtMTAtMTZUMTA6MTY6MjkuMDY2WiIsImlydCI6ZmFsc2V9.1LNt1oFiY8E22vTpKrH3ZtUsUpVH7vJhwpa8IurtzcU
 content-type: application/json
-Content-Length: 108
+Content-Length: 110
 
 {
   "authors": [
     {
-      "_user": "ektf3qhkc8",
+      "_user": "ekqza1x64kb",
       "roles": [
         "creator"
       ]
@@ -17,7 +17,7 @@ Content-Length: 108
   "versions": [
     {
       "version": "1.0",
-      "_file": "ekpuowhk7m"
+      "_file": "ekkwg1xg42b"
     }
   ]
 }

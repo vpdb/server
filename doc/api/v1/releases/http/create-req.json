@@ -1,20 +1,21 @@
 POST /v1/releases HTTP/2.0
 Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
-authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwa3Q1eGZoa2M4IiwiaWF0IjoiMjAxNi0wOS0xNVQxMjoyMDowNy42MDhaIiwiZXhwIjoiMjAxNi0wOS0xNVQxMzoyMDowNy42MDhaIiwiaXJ0IjpmYWxzZX0.diK0vUQXRyoIr5cH8lRPJIUNw9ILnNmnjSfbIrxA_Vg
+authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJla2h5dHl3Z3hraCIsImlhdCI6IjIwMTYtMTAtMTZUMDk6MTc6MTUuOTQ3WiIsImV4cCI6IjIwMTYtMTAtMTZUMTA6MTc6MTUuOTQ3WiIsImlydCI6ZmFsc2V9.8MtWMlIJ4Vy3zyb2TyVjUhDvi-uQlqYtJBumD5lCx7w
 content-type: application/json
-Content-Length: 504
+Content-Length: 522
 
 {
   "name": "release",
-  "_game": "mamselle",
+  "license": "by-sa",
+  "_game": "dwd",
   "versions": [
     {
       "files": [
         {
           "released_at": "2015-01-01T00:00:00.000Z",
-          "_file": "pkd9tfhk78",
-          "_playfield_image": "pkx4vfh278",
+          "_file": "pk94mzq6x2h",
+          "_playfield_image": "ekch3zwg42h",
           "_compatibility": [
             "9.9.0"
           ],
@@ -24,8 +25,8 @@ Content-Length: 504
           }
         },
         {
-          "_file": "p2o9tub278",
-          "_playfield_image": "pk7xtfb2c8",
+          "_file": "pkxx8zqg4kh",
+          "_playfield_image": "pkmh3yw642b",
           "_compatibility": [
             "9.9.0"
           ],
@@ -41,7 +42,7 @@ Content-Length: 504
   ],
   "authors": [
     {
-      "_user": "pkt5xfhkc8",
+      "_user": "ekhytywgxkh",
       "roles": [
         "Table Creator"
       ]

@@ -1,16 +1,16 @@
 200 OK
-X-App-Sha: f680068
+X-App-Sha: 7bd4777
 Content-Type: application/json; charset=utf-8
-Etag: W/"53b-6JY6wRH9o4+Z2joZgXqH3g"
+Etag: W/"5f5-sblURswQ1A/IKyOqenVmug"
 Content-Encoding: gzip
 
 {
-  "location": "East Carmela ton",
-  "name": "Holly Kuvalis",
-  "username": "Krystina56",
-  "email": "clovis50@hotmail.com",
+  "location": "New Theodore",
+  "name": "Ashton Dickens",
+  "username": "Hortense37",
+  "email": "glen52@hotmail.com",
   "provider": "local",
-  "created_at": "2016-09-15T12:21:07.545Z",
+  "created_at": "2016-10-16T09:18:27.628Z",
   "is_active": true,
   "counter": {
     "stars": 0,
@@ -18,6 +18,10 @@ Content-Encoding: gzip
     "comments": 0
   },
   "preferences": {
+    "notify_mentions": true,
+    "notify_created_release_followers": true,
+    "notify_created_release_comments": true,
+    "notify_game_requests": true,
     "notify_backglass_moderation_status": true,
     "notify_release_moderation_status": true
   },
@@ -26,71 +30,75 @@ Content-Encoding: gzip
   ],
   "email_status": {
     "code": "pending_update",
-    "expires_at": "2016-09-16T12:21:08.050Z",
-    "value": "gay.fritsch67@hotmail.com"
+    "expires_at": "2016-10-17T09:18:28.239Z",
+    "value": "brisa41@gmail.com"
   },
-  "id": "e2qtkcb2cm",
+  "id": "ekg5k5q6xkb",
   "plan": {
     "push_notifications_enabled": false,
     "app_tokens_enabled": false,
     "id": "free"
   },
-  "gravatar_id": "0a078002c4f464829dfe2a6d6705f097",
+  "gravatar_id": "74a0d3a76f3951b9555c94fb3c823265",
   "permissions": {
-    "releases": [
-      "update",
+    "backglasses": [
       "add",
-      "delete",
-      "rate",
-      "star"
-    ],
-    "builds": [
-      "add",
+      "star",
       "delete-own"
     ],
-    "messages": [
-      "receive"
-    ],
-    "games": [
-      "rate",
-      "star"
+    "comments": [
+      "add"
     ],
     "media": [
       "add",
       "star",
       "delete-own"
     ],
-    "backglasses": [
-      "add",
-      "star",
-      "delete-own"
-    ],
-    "users": [
-      "search",
-      "view",
-      "star"
-    ],
-    "comments": [
-      "add"
-    ],
-    "tags": [
-      "add",
-      "delete-own"
+    "messages": [
+      "receive"
     ],
     "files": [
       "download",
+      "upload",
+      "delete"
+    ],
+    "tokens": [
+      "add",
+      "update",
       "delete",
-      "upload"
+      "list"
+    ],
+    "games": [
+      "star",
+      "rate"
+    ],
+    "game_requests": [
+      "add",
+      "delete-own"
     ],
     "user": [
       "update",
       "view"
     ],
-    "tokens": [
-      "update",
+    "builds": [
       "add",
+      "delete-own"
+    ],
+    "tags": [
+      "add",
+      "delete-own"
+    ],
+    "releases": [
+      "add",
+      "update",
+      "rate",
       "delete",
-      "list"
+      "star"
+    ],
+    "users": [
+      "search",
+      "star",
+      "view"
     ]
   }
 }

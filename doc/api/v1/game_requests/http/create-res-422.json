@@ -1,13 +1,13 @@
 422 Unprocessable Entity
-X-App-Sha: 0ba39fd
+X-App-Sha: 7bd4777
 Content-Type: application/json; charset=utf-8
-Content-Length: 142
-Etag: W/"8e-m5FyTvZJGg26kOhakKHbOg"
+Content-Length: 173
+Etag: W/"ad-XDKbwy90X/sh9STx6cHBSQ"
 
 {
   "errors": [
     {
-      "message": "Empty page. Looks like IPDB number does not exist.",
+      "message": "IPDB entry 9981123 does not exist in local index. Try without the offline option.",
       "field": "ipdb_number",
       "value": 9981123
     }

@@ -1,14 +1,14 @@
 200 OK
-X-App-Sha: f680068
+X-App-Sha: 7bd4777
 Content-Type: application/json; charset=utf-8
-Etag: W/"97f-nXssgVv+dfaTm1L/0L0RMg"
+Etag: W/"99b-uqq/2AVpKFiAxKWpPKXpQQ"
 Content-Encoding: gzip
 
 {
   "release": {
-    "id": "p2owyeb2c8",
-    "name": "Extended Edition",
-    "created_at": "2016-09-15T12:19:33.590Z",
+    "id": "ek4oox642h",
+    "name": "Multi-layered Edition",
+    "created_at": "2016-10-16T09:16:33.832Z",
     "authors": [
       {
         "roles": [
@@ -19,26 +19,26 @@ Content-Encoding: gzip
             "stars": 0,
             "comments": 0
           },
-          "gravatar_id": "e75080a7b5cc32a3160c2e8944e9856a",
-          "username": "Alfred_Baumbach91",
-          "name": "Alfred_Baumbach91",
-          "id": "ekvnheb278"
+          "gravatar_id": "512b08da800cd97d6e99b760bba801ad",
+          "username": "Westley_Hermann90",
+          "name": "Westley_Hermann90",
+          "id": "p2s3o46x2b"
         }
       }
     ]
   },
   "game": {
-    "id": "casablanca",
-    "title": "Casablanca",
-    "manufacturer": "Bell Products Company",
-    "year": 1945
+    "id": "4-square",
+    "title": "4 Square",
+    "manufacturer": "Gottlieb",
+    "year": 1971
   },
   "version": {
     "version": "1.0.0",
-    "released_at": "2016-09-15T12:19:33.590Z"
+    "released_at": "2016-10-16T09:16:33.832Z"
   },
   "file": {
-    "released_at": "2016-09-15T12:19:33.590Z",
+    "released_at": "2016-10-16T09:16:33.832Z",
     "flavor": {
       "orientation": "fs",
       "lighting": "night"
@@ -50,9 +50,9 @@ Content-Encoding: gzip
       }
     ],
     "file": {
-      "id": "e2zsyeb27m",
+      "id": "p2t9d1x6xkh",
       "name": "test-table-0.vpt",
-      "url": "https://localhost:7357/storage/v1/files/e2zsyeb27m.vpt",
+      "url": "https://localhost:7357/storage/v1/files/p2t9d1x6xkh.vpt",
       "bytes": 135168,
       "variations": {},
       "is_protected": true,
@@ -69,9 +69,9 @@ Content-Encoding: gzip
       "countPercentage": 77.27272727272727,
       "bytesPercentage": 97.57880418711929,
       "release": {
-        "id": "p2dq9ebk7m",
-        "name": "Integrated Edition",
-        "created_at": "2016-09-15T12:19:34.698Z",
+        "id": "ek1yk2w6x2b",
+        "name": "Open-source Edition",
+        "created_at": "2016-10-16T09:16:35.088Z",
         "authors": [
           {
             "roles": [
@@ -82,26 +82,26 @@ Content-Encoding: gzip
                 "stars": 0,
                 "comments": 0
               },
-              "gravatar_id": "e75080a7b5cc32a3160c2e8944e9856a",
-              "username": "Alfred_Baumbach91",
-              "name": "Alfred_Baumbach91",
-              "id": "ekvnheb278"
+              "gravatar_id": "512b08da800cd97d6e99b760bba801ad",
+              "username": "Westley_Hermann90",
+              "name": "Westley_Hermann90",
+              "id": "p2s3o46x2b"
             }
           }
         ]
       },
       "game": {
-        "id": "spokes",
-        "title": "Spokes",
-        "manufacturer": "Chicago Coin",
-        "year": 1938
+        "id": "stock-market",
+        "title": "Stock Market",
+        "manufacturer": "Western Equipment & Supply Company",
+        "year": 1936
       },
       "version": {
         "version": "1.0.0",
-        "released_at": "2016-09-15T12:19:34.698Z"
+        "released_at": "2016-10-16T09:16:35.088Z"
       },
       "file": {
-        "released_at": "2016-09-15T12:19:34.698Z",
+        "released_at": "2016-10-16T09:16:35.088Z",
         "flavor": {
           "orientation": "fs",
           "lighting": "night"
@@ -113,9 +113,9 @@ Content-Encoding: gzip
           }
         ],
         "file": {
-          "id": "pkszseb27m",
+          "id": "pkc911x6x2b",
           "name": "test-table-0.vpt",
-          "url": "https://localhost:7357/storage/v1/files/pkszseb27m.vpt",
+          "url": "https://localhost:7357/storage/v1/files/pkc911x6x2b.vpt",
           "bytes": 135168,
           "variations": {},
           "is_protected": true,

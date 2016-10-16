@@ -1,18 +1,18 @@
 200 OK
-X-App-Sha: f680068
+X-App-Sha: 7bd4777
 Content-Type: application/json; charset=utf-8
-Etag: W/"5fd-ZlqisCx/TTQaxOTmrr6rog"
+Etag: W/"6d9-Jl23Qf7Cf0Z7T+7AaI6vOA"
 Content-Encoding: gzip
 
 {
-  "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJla3Y0b2doMmNtIiwiaWF0IjoiMjAxNi0wOS0xNVQxMjoyMTowNi4zNzdaIiwiZXhwIjoiMjAxNi0wOS0xNVQxMzoyMTowNi4zNzdaIiwiaXJ0IjpmYWxzZX0.lG2GJkjyF2Y-IFi5AnDkzm5fCfcT5bTql3Rv5MgM-2M",
-  "expires": "2016-09-15T13:21:06.377Z",
+  "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwa2d4MWVxNnhrYiIsImlhdCI6IjIwMTYtMTAtMTZUMDk6MTg6MjYuNTg5WiIsImV4cCI6IjIwMTYtMTAtMTZUMTA6MTg6MjYuNTg5WiIsImlydCI6ZmFsc2V9.0_o_Hk085pVB3tZdHXf5i9YSx9MzUbdacL2NeUkq5I8",
+  "expires": "2016-10-16T10:18:26.589Z",
   "user": {
-    "id": "ekv4ogh2cm",
-    "name": "Kaycee.Tromp",
-    "username": "Kaycee.Tromp",
-    "gravatar_id": "dd7fbde990226f9372fe67697ebae7e9",
-    "email": "garnet75@gmail.com",
+    "id": "pkgx1eq6xkb",
+    "name": "Jovanny_Lakin",
+    "username": "Jovanny_Lakin",
+    "gravatar_id": "7bee7ce461602cbb57a6d418064cd0bc",
+    "email": "garry.hodkiewicz51@yahoo.com",
     "is_active": true,
     "provider": "local",
     "roles": [
@@ -23,8 +23,12 @@ Content-Encoding: gzip
       "app_tokens_enabled": false,
       "id": "free"
     },
-    "created_at": "2016-09-15T12:21:06.231Z",
+    "created_at": "2016-10-16T09:18:26.421Z",
     "preferences": {
+      "notify_mentions": true,
+      "notify_created_release_followers": true,
+      "notify_created_release_comments": true,
+      "notify_game_requests": true,
       "notify_backglass_moderation_status": true,
       "notify_release_moderation_status": true
     },
@@ -34,60 +38,64 @@ Content-Encoding: gzip
       "comments": 0
     },
     "permissions": {
-      "releases": [
-        "update",
+      "backglasses": [
         "add",
-        "delete",
-        "rate",
-        "star"
-      ],
-      "builds": [
-        "add",
+        "star",
         "delete-own"
       ],
-      "messages": [
-        "receive"
-      ],
-      "games": [
-        "rate",
-        "star"
+      "comments": [
+        "add"
       ],
       "media": [
         "add",
         "star",
         "delete-own"
       ],
-      "backglasses": [
-        "add",
-        "star",
-        "delete-own"
-      ],
-      "users": [
-        "search",
-        "view",
-        "star"
-      ],
-      "comments": [
-        "add"
-      ],
-      "tags": [
-        "add",
-        "delete-own"
+      "messages": [
+        "receive"
       ],
       "files": [
         "download",
+        "upload",
+        "delete"
+      ],
+      "tokens": [
+        "add",
+        "update",
         "delete",
-        "upload"
+        "list"
+      ],
+      "games": [
+        "star",
+        "rate"
+      ],
+      "game_requests": [
+        "add",
+        "delete-own"
       ],
       "user": [
         "update",
         "view"
       ],
-      "tokens": [
-        "update",
+      "builds": [
         "add",
+        "delete-own"
+      ],
+      "tags": [
+        "add",
+        "delete-own"
+      ],
+      "releases": [
+        "add",
+        "update",
+        "rate",
         "delete",
-        "list"
+        "star"
+      ],
+      "users": [
+        "search",
+        "star",
+        "view"
       ]
     }
   }

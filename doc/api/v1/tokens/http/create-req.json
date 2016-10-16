@@ -1,12 +1,12 @@
 POST /v1/tokens HTTP/2.0
 Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
-authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwMnM5bzZoa2M4IiwiaWF0IjoiMjAxNi0wOS0xNVQxMjoyMTowNi4xMTBaIiwiZXhwIjoiMjAxNi0wOS0xNVQxMzoyMTowNi4xMTBaIiwiaXJ0IjpmYWxzZX0.39FqHZH19KDShYUJ0dShwO3dWTP2f6rnj5jWEiQMFb0
+authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJlazN5MWV3NjRrYiIsImlhdCI6IjIwMTYtMTAtMTZUMDk6MTg6MjYuMjE4WiIsImV4cCI6IjIwMTYtMTAtMTZUMTA6MTg6MjYuMjE4WiIsImlydCI6ZmFsc2V9.taKOy6hg9uGegEoRulXUsjS4YardLDjLDiVurwTWwBE
 content-type: application/json
 Content-Length: 66
 
 {
   "label": "My Application",
-  "password": "waFOpxDsZz",
+  "password": "mCNoaISRr3",
   "type": "access"
 }

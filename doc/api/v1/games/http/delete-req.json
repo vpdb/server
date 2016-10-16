@@ -1,5 +1,5 @@
-DELETE /v1/games/alien-warrior HTTP/2.0
+DELETE /v1/games/bell-skill HTTP/2.0
 Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
-authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwa290azViMmM4IiwiaWF0IjoiMjAxNi0wOS0xNVQxMjoxOTo0Ny43ODJaIiwiZXhwIjoiMjAxNi0wOS0xNVQxMzoxOTo0Ny43ODJaIiwiaXJ0IjpmYWxzZX0.ydFuAW7YNFeY3em1-Vta8W4HQHJutIu-NkSY9wnwrS8
+authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwa3NxMmJxZzQyYiIsImlhdCI6IjIwMTYtMTAtMTZUMDk6MTY6NTEuNDMwWiIsImV4cCI6IjIwMTYtMTAtMTZUMTA6MTY6NTEuNDMwWiIsImlydCI6ZmFsc2V9.lq8jGmAjk4CSZWy916pcgADsJzNLXVxb4-5LeyuBSks
 

@@ -1,15 +1,15 @@
 200 OK
-X-App-Sha: f680068
+X-App-Sha: 7bd4777
 Content-Type: application/json; charset=utf-8
-Content-Length: 561
-Etag: W/"231-WTP7oPm6CYCocmgRpSGXLQ"
+Content-Length: 713
+Etag: W/"2c9-8R3i0Q2IiwY4FzhfWBTIeA"
 
 {
-  "name": "Shaina_Klein90",
-  "username": "Shaina_Klein90",
-  "email": "lenore.fisher@hotmail.com",
+  "name": "Terence_Kassulke",
+  "username": "Terence_Kassulke",
+  "email": "victor.zboncak80@gmail.com",
   "provider": "local",
-  "created_at": "2016-09-15T12:21:07.480Z",
+  "created_at": "2016-10-16T09:18:27.530Z",
   "is_active": true,
   "counter": {
     "stars": 0,
@@ -17,17 +17,21 @@ Etag: W/"231-WTP7oPm6CYCocmgRpSGXLQ"
     "comments": 0
   },
   "preferences": {
+    "notify_mentions": true,
+    "notify_created_release_followers": true,
+    "notify_created_release_comments": true,
+    "notify_game_requests": true,
     "notify_backglass_moderation_status": true,
     "notify_release_moderation_status": true
   },
   "roles": [
     "member"
   ],
-  "id": "pktuk7b2cm",
+  "id": "p21ek5wg42h",
   "plan": {
     "push_notifications_enabled": false,
     "app_tokens_enabled": false,
     "id": "free"
   },
-  "gravatar_id": "4182703084f9732d89b7efae39665a6b"
+  "gravatar_id": "b089ceff908019fc4348d513998b8095"
 }

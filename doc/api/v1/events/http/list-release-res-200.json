@@ -1,10 +1,10 @@
 200 OK
-X-App-Sha: f680068
+X-App-Sha: 7bd4777
 X-List-Page: 1
 X-List-Size: 10
 X-List-Count: 1
 Content-Type: application/json; charset=utf-8
-Etag: W/"5fa-kFXiGSOvxYBuwWqzOOF+Og"
+Etag: W/"5fd-pm6PFkFPaiZU/SkmBNGnmw"
 Content-Encoding: gzip
 
 [
@@ -12,8 +12,8 @@ Content-Encoding: gzip
     "event": "create_release",
     "payload": {
       "release": {
-        "id": "p2fztphk78",
-        "name": "Seamless Edition",
+        "id": "e2h9w2qgxkh",
+        "name": "Robust Edition",
         "authors": [
           {
             "roles": [
@@ -24,20 +24,20 @@ Content-Encoding: gzip
                 "stars": 0,
                 "comments": 0
               },
-              "gravatar_id": "911a3554a40119564bdb76ec8cafa6cb",
-              "username": "Tristian58",
-              "name": "Tristian58",
-              "id": "pkqtfeb278"
+              "gravatar_id": "844e2fa9cac46278ec81c81e29981dec",
+              "username": "Phoebe_OConnell7",
+              "name": "Phoebe_OConnell7",
+              "id": "ek4q2qg42h"
             }
           }
         ],
         "versions": [
           {
             "version": "1.0.0",
-            "released_at": "2016-09-15T12:19:40.270Z",
+            "released_at": "2016-10-16T09:16:40.530Z",
             "files": [
               {
-                "released_at": "2016-09-15T12:19:40.270Z",
+                "released_at": "2016-10-16T09:16:40.530Z",
                 "flavor": {
                   "orientation": "fs",
                   "lighting": "night"
@@ -48,7 +48,7 @@ Content-Encoding: gzip
                   }
                 ],
                 "file": {
-                  "id": "p21vehkcm",
+                  "id": "ekfbwkw642b",
                   "name": "test-table-0.vpt",
                   "bytes": 135168,
                   "mime_type": "application/x-visual-pinball-table"
@@ -59,28 +59,28 @@ Content-Encoding: gzip
         ]
       },
       "game": {
-        "id": "new-continental",
-        "title": "New Continental",
-        "manufacturer": "General Automatic Amusements, S.P.R.L.",
-        "year": 1900,
+        "id": "super-dixieland",
+        "title": "Super Dixieland",
+        "manufacturer": "SIRMO Games S.A.",
+        "year": 1996,
         "ipdb": {
-          "number": 4044,
-          "mfg": 131
+          "number": 4055,
+          "mfg": 275
         },
-        "game_type": "na"
+        "game_type": "ss"
       }
     },
-    "logged_at": "2016-09-15T12:19:40.321Z",
+    "logged_at": "2016-10-16T09:16:40.584Z",
     "is_public": true,
     "actor": {
       "counter": {
         "stars": 0,
         "comments": 0
       },
-      "gravatar_id": "911a3554a40119564bdb76ec8cafa6cb",
-      "username": "Tristian58",
-      "name": "Tristian58",
-      "id": "pkqtfeb278"
+      "gravatar_id": "844e2fa9cac46278ec81c81e29981dec",
+      "username": "Phoebe_OConnell7",
+      "name": "Phoebe_OConnell7",
+      "id": "ek4q2qg42h"
     }
   }
 ]

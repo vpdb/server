@@ -220,7 +220,7 @@ describe('The VPDB restriction feature', function() {
 						hlp.file.createDirectB2S('owner', request, function(b2s) {
 							request.post('/api/v1/backglasses').as('owner').send({
 									_game: restrictedGame.id,
-									authors: [ { _user: hlp.users['owner'].id, roles: [ 'creator' ] } ],
+									authors: [ { _user: hlp.users.owner.id, roles: [ 'creator' ] } ],
 									versions: [ { version: '1.0', _file: b2s.id } ]
 								}).end(function(err, res) {
 									hlp.expectStatus(err, res, 201);
@@ -229,7 +229,7 @@ describe('The VPDB restriction feature', function() {
 									hlp.file.createDirectB2S('owner', request, function(b2s) {
 										request.post('/api/v1/backglasses').as('owner').send({
 											_game: legalGame.id,
-											authors: [ { _user: hlp.users['owner'].id, roles: [ 'creator' ] } ],
+											authors: [ { _user: hlp.users.owner.id, roles: [ 'creator' ] } ],
 											versions: [ { version: '1.0', _file: b2s.id } ]
 										}).end(function(err, res) {
 											hlp.expectStatus(err, res, 201);

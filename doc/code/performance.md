@@ -49,7 +49,7 @@ YSlow and webpagetest.org.
 * Use JSON as transport data format.
 * Run the app through services like New Relic in order to determine performance
   bottle necks
-* Running 600+ integration tests also give an idea ;)
+* Running 700+ integration tests also give an idea ;)
 
 # Browser
 

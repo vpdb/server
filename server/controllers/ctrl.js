@@ -151,5 +151,10 @@ exports.sitemap = function(req, res) {
 		console.error('ERROR:', err.stack);
 		res.status(500).send(err.message);
 	});
+};
 
+
+exports.robots = function(req, res) {
+	res.setHeader('Content-Type', 'text/plain');
+	res.send('User-agent: *\nDisallow: /');
 };

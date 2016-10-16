@@ -63,12 +63,17 @@ module.exports = function(app) {
 	require('./api/media').register(app, api);
 
 	// storage
+	require('./storage/root').register(app, api);
 	require('./storage/auth').register(app, api, storage);
 	require('./storage/files').register(app, api, storage);
 	require('./storage/releases').register(app, api, storage);
 
 	// site map
 	app.get(settings.apiPath('/sitemap').replace(/(\/v1\/)/, '/'), ctrl.sitemap);
+
+	// robots.txt
+	app.get(settings.apiPath('/robots.txt').replace(/(\/v1\/)/, '/'), ctrl.robots);
+	app.get(settings.storageProtectedPath('/robots.txt').replace(/(\/v1\/)/, '/'), ctrl.robots);
 
 	// or else fail
 	app.all(settings.apiPath('/*'), function(req, res) {

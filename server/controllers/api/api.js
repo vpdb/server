@@ -387,8 +387,8 @@ exports.ping = function(req, res) {
 exports.index = function(req, res) {
 	exports.success(res, {
 		app_name: settings.current.vpdb.name,
-		app_sha: gitinfo.info.local.branch.current.SHA,
 		app_version: pak.version,
-		app_source: pak.repository.url
+		app_sha: gitinfo.info.local.branch.current.SHA,
+		app_date: gitinfo.info.local.branch.current.lastCommitTime
 	});
 };

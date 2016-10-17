@@ -14,6 +14,9 @@ angular.module('vpdb.auth', [])
 			isAuthenticated: false,
 			timeout: null,
 
+			isAuthenticating: false,
+			authCallbacks: [],
+
 			/**
 			 * Should be called when the app initializes. Reads data from storage into Angular.
 			 */
@@ -517,16 +520,45 @@ angular.module('vpdb.auth', [])
 						// check for autologin token
 						} else if (!ConfigService.isAuthUrl(config.url) && AuthService.hasLoginToken()) {
 
-							var AuthResource = $injector.get('AuthResource');
-							AuthResource.authenticate({ token: AuthService.getLoginToken() }, function(result) {
-								config.headers[AuthService.getAuthHeader()] = 'Bearer ' + result.token;
-								AuthService.authenticated(result);
-								resolve(config);
+							// if already authenticating, don't do launch another request but wait for the other to finish
+							if (AuthService.isAuthenticating) {
+								// this will be executed when the other request finishes
+								AuthService.authCallbacks.push(function(err, result) {
+									if (err) {
+										return reject(err);
+									}
+									config.headers[AuthService.getAuthHeader()] = 'Bearer ' + result.token;
+									resolve(config);
+								});
 
-							}, function(err) {
-								AuthService.clearLoginToken(); // it failed, so no need to keep it around further.
-								reject(err);
-							});
+							} else {
+								// tell potential other requests that we're already authenticating
+								AuthService.isAuthenticating = true;
+								var AuthResource = $injector.get('AuthResource');
+								AuthResource.authenticate({ token: AuthService.getLoginToken() }, function(result) {
+									config.headers[AuthService.getAuthHeader()] = 'Bearer ' + result.token;
+									AuthService.authenticated(result);
+									resolve(config);
+
+									// all good, now notify subscribers
+									AuthService.isAuthenticating = false;
+									for (var i = 0; i < AuthService.authCallbacks.length; i++) {
+										AuthService.authCallbacks[i](null, result);
+									}
+									AuthService.authCallbacks = [];
+
+								}, function(err) {
+									AuthService.clearLoginToken(); // it failed, so no need to keep it around further.
+									reject(err);
+
+									// also notify subscribers
+									AuthService.isAuthenticating = false;
+									for (var i = 0; i < AuthService.authCallbacks.length; i++) {
+										AuthService.authCallbacks[i](err);
+									}
+									AuthService.authCallbacks = [];
+								});
+							}
 
 						} else {
 							resolve(config);

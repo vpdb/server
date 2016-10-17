@@ -388,7 +388,7 @@ exports.index = function(req, res) {
 	exports.success(res, {
 		app_name: settings.current.vpdb.name,
 		app_version: pak.version,
-		app_sha: gitinfo.info.local.branch.current.SHA,
-		app_date: gitinfo.info.local.branch.current.lastCommitTime
+		app_date: gitinfo.info.local.branch.current.lastCommitTime,
+		app_sha: gitinfo.info.local.branch.current.SHA
 	});
 };

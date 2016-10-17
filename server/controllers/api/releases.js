@@ -118,7 +118,7 @@ exports.create = function(req, res) {
 	}).then(release => {
 
 		LogEvent.log(req, 'create_release', true, {
-			release: _.pick(release.toSimple(), [ 'id', 'name', 'authors', 'versions' ]),
+			release: release.toDetailed({ thumbFormat: 'medium' }),
 			game: _.pick(release._game.toSimple(), [ 'id', 'title', 'manufacturer', 'year', 'ipdb', 'game_type' ])
 		}, {
 			release: release._id,
@@ -287,7 +287,7 @@ exports.addVersion = function(req, res) {
 
 		// do the rest async
 		LogEvent.log(req, 'create_release_version', true, {
-			release: _.pick(release.toSimple(), [ 'id', 'name', 'authors', 'versions' ]),
+			release: _.pick(release.toDetailed({ thumbFormat: 'medium' }), [ 'id', 'name', 'authors', 'versions' ]),
 			game: _.pick(release._game.toSimple(), [ 'id', 'title', 'manufacturer', 'year', 'ipdb', 'game_type' ])
 		}, {
 			release: release._id,

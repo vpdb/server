@@ -117,7 +117,7 @@ exports.create = function(req, res) {
 
 		// event log
 		LogEvent.log(req, 'create_backglass', true, {
-			backglass: _.pick(populatedBackglass.toSimple(), [ 'id', 'authors', 'versions' ]),
+			backglass: populatedBackglass.toDetailed(),
 			game: _.pick(populatedBackglass._game.toSimple(), [ 'id', 'title', 'manufacturer', 'year', 'ipdb', 'game_type' ])
 		}, {
 			backglass: populatedBackglass._id,

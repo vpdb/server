@@ -20,11 +20,15 @@
 "use strict";
 
 const logger = require('winston');
-const config = require('./settings').current;
+const settings = require('./settings');
 const RtmClient = require('@slack/client').RtmClient;
+const WebClient = require('@slack/client').WebClient;
 
+const config = settings.current;
 const CLIENT_EVENTS = require('@slack/client').CLIENT_EVENTS;
 const RTM_CLIENT_EVENTS = require('@slack/client').CLIENT_EVENTS.RTM;
+
+const red = '#cf0000';
 
 /* istanbul ignore next  */
 class SlackBot {
@@ -34,6 +38,7 @@ class SlackBot {
 			this.enabled = true;
 			this.config = config.vpdb.logging.slack;
 
+			this.web = new WebClient(this.config.token);
 			this.rtm = new RtmClient(this.config.token, { logLevel: 'info', mrkdwn: true });
 			this.rtm.on(CLIENT_EVENTS.RTM.AUTHENTICATED, rtmStartData => {
 				logger.info(`[slack] Logged in as ${rtmStartData.self.name} of team ${rtmStartData.team.name}, but not yet connected to a channel.`);
@@ -42,11 +47,165 @@ class SlackBot {
 			this.rtm.on(RTM_CLIENT_EVENTS.RTM_CONNECTION_OPENED, () => {
 				//this.rtm.sendMessage('Hi guys, I\'m back again!', this.config.channels.general);
 			});
+
+			// this.web.chat.postMessage(this.config.channels.general, 'Test as freezy!', {
+			// 	as_user: false,
+			// 	username: 'freezy',
+			// 	icon_url: 'https://www.gravatar.com/avatar/3216e12a740c59824257efe8b806cc7b'
+			// });
+
 			this.rtm.start();
 		}
 	}
 
 	logEvent(log) {
+		if (!this.enabled) {
+			return Promise.resolve();
+		}
+		const User = require('mongoose').model('User');
+		let actor;
+		return Promise.try(() => {
+			return User.findById(log._actor._id || log._actor);
+
+		}).then(u => {
+			actor = u;
+			switch (log.event) {
+				case 'create_comment':
+					return [
+						`Commented on *${log.payload.comment.release.name}* of ${log.payload.comment.release.game.title} (${log.payload.comment.release.game.manufacturer} ${log.payload.comment.release.game.year}):`,
+						[{
+							fallback: log.payload.comment.message,
+							text: '> ' + log.payload.comment.message.trim(),
+							mrkdwn_in: ['text']
+						}]
+					];
+
+				case 'star_game':
+					return [`Starred *${log.payload.game.title}* (${log.payload.game.manufacturer} ${log.payload.game.year}).`];
+
+				case 'star_release':
+					return [`Starred *${log.payload.release.name}* of ${log.payload.release.game.title} (${log.payload.release.game.manufacturer} ${log.payload.release.game.year}).`];
+
+				case 'star_user':
+					break;
+
+				case 'unstar_game':
+					return [`Unstarred *${log.payload.game.title}* (${log.payload.game.manufacturer} ${log.payload.game.year}).`];
+
+				case 'unstar_release':
+					return [`Unstarred *${log.payload.release.name}* of ${log.payload.release.game.title} (${log.payload.release.game.manufacturer} ${log.payload.release.game.year}).`];
+
+				case 'unstar_user':
+					break;
+
+				case 'rate_game':
+					if (log.payload.updated) {
+						return [`Updated rating for *${log.payload.game.title}* (${log.payload.game.manufacturer} ${log.payload.game.year}) to ${log.payload.rating.value}/10.`];
+					} else {
+						return [`Rated *${log.payload.game.title}* (${log.payload.game.manufacturer} ${log.payload.game.year}) with ${log.payload.rating.value}/10.`];
+					}
+					break;
+
+				case 'rate_release':
+					if (log.payload.updated) {
+						return [`Updated rating for *${log.payload.release.name}* of ${log.payload.release.game.title} (${log.payload.release.game.manufacturer} ${log.payload.release.game.year}) to ${log.payload.rating.value}/10.`];
+					} else {
+						return [`Rated *${log.payload.release.name}* of ${log.payload.release.game.title} (${log.payload.release.game.manufacturer} ${log.payload.release.game.year}) with ${log.payload.rating.value}/10.`];
+					}
+					break;
+
+				case 'upload_rom':
+					break;
+
+				case 'create_game':
+					return [
+						`Created new game:`,
+						[{
+							fallback: `${log.payload.game.title} (${log.payload.game.manufacturer} ${log.payload.game.year})`,
+							title: `${log.payload.game.title} (${log.payload.game.manufacturer} ${log.payload.game.year})`,
+							title_link: settings.webUri('/games/' + log.payload.game.id),
+							image_url: log.payload.game.backglass.variations.small
+						}]
+					];
+
+				case 'update_game':
+					return require('mongoose').model('Game').findById(log._ref.game).then(game => {
+						return [
+							`Updated game:`,
+							[{
+								fallback: `${game.title} (${game.manufacturer} ${game.year})`,
+								title: `${game.title} (${game.manufacturer} ${game.year})`,
+								title_link: settings.webUri('/games/' + game.id),
+								text: '```\n' + JSON.stringify(log.payload.new, null, '  ') + '```',
+								mrkdwn_in: ['text']
+							}]
+						];
+					});
+
+				case 'delete_game':
+					break;
+
+				case 'create_release': {
+					let attachments = [];
+					attachments.push({
+						fallback: log.payload.release.name,
+						author_name: log.payload.release.authors.map(author => author.user.name).join(', '),
+						title: log.payload.release.name,
+						title_link: settings.webUri('/games/' + log.payload.game.id + '/releases/' + log.payload.release.id),
+						text: log.payload.release.description,
+						mrkdwn_in: ['text'],
+						image_url: log.payload.release.thumb.image.url
+					});
+					if (!log.payload.release.moderation.auto_approved) {
+						attachments.push({
+							fallback: 'Approval needed!',
+							title: 'Approval needed!',
+							title_link: settings.webUri('/admin/uploads'),
+							color: red
+						});
+					}
+					return [
+						`Created new release for *${log.payload.game.title}* (${log.payload.game.manufacturer} ${log.payload.game.year}):`,
+						attachments
+					];
+				}
+				case 'update_release':
+					break;
+				case 'create_release_version':
+					break;
+				case 'update_release_version':
+					break;
+				case 'delete_release':
+					break;
+				case 'create_backglass':
+					break;
+				case 'moderate':
+					break;
+				case 'create_game_request':
+					break;
+				case 'update_game_request':
+					break;
+				case 'delete_game_request':
+					break;
+				default:
+					break;
+			}
+			return ['Unknown event `' + log.event + '`:\n```' + JSON.stringify(log.payload, null, '  ') + '```'];
+
+		}).spread((msg, attachments) => {
+			attachments = attachments || [];
+			if (msg) {
+				this.web.chat.postMessage(this.config.channels.eventLog, msg, {
+					as_user: false,
+					username: actor.name,
+					attachments: attachments,
+					icon_url: 'https://www.gravatar.com/avatar/' + actor.gravatar_id + '?d=retro'
+				});
+			}
+
+		}).catch(err => {
+			logger.error(err, 'Error sending event log to slack.');
+		});
 	}
 
 	logUser(log) {
@@ -64,45 +223,46 @@ class SlackBot {
 		}).then(u => {
 			actor = u;
 			let self = user.id === actor.id;
-			let msg;
+			let msg, attachments = [];
 			switch (log.event) {
 				case 'authenticate':
 					if (log.result == 'success') {
 						if (log.payload.provider === 'local') {
-							msg = `User *${user.name}* logged in using ${log.payload.how}.`;
+							msg = `Logged in using ${log.payload.how}.`;
 						} else {
-							msg = `User *${user.name}* logged in through ${log.payload.provider}.`;
+							msg = `Logged in through ${log.payload.provider}.`;
 						}
 					} else {
-						msg = `User *${user.name}* failed logging in:\n> ${log.message}`;
+						msg = `Failed logging in.`;
+						attachments = [{ color: red, text: log.message }];
 					}
 					break;
 				case 'registration':
-					msg = `User *${log.payload.username}* successfully registered as <${log.payload.email}>.`;
+					msg = `Registered as <${log.payload.email}>.`;
 					break;
 				case 'email_confirmed':
-					msg = `User *${user.name}* successfully confirmed email <${log.payload.email}>.`;
+					msg = `Confirmed email <${log.payload.email}>.`;
 					break;
 				case 'registration_email_confirmed':
-					msg = `User *${user.name}* successfully finished registration with email <${log.payload.email}>.`;
+					msg = `Finished registration with email <${log.payload.email}>.`;
 					break;
 				case 'change_password':
-					msg = `User *${user.name}* successfully changed password.`;
+					msg = `Changed password.`;
 					break;
 				case 'create_local_account':
-					msg = `User *${user.name}* successfully created local credentials.`;
+					msg = `Added local credentials.`;
 					break;
 				case 'update_email_request':
-					msg = `User *${user.name}* requested to change email address from <${log.payload.old}> to <${log.payload.new}>.`;
+					msg = `Requested to change email address from <${log.payload.old}> to <${log.payload.new}>.`;
 					break;
 				case 'cancel_email_update':
-					msg = `User *${user.name}* cancelled request to change email.`;
+					msg = `Cancelled request to change email.`;
 					break;
 				case 'update':
 					if (self) {
-						msg = `User *${user.name}* updated profile.`;
+						msg = `Updated profile.`;
 					} else {
-						msg = `User *${actor.name}* updated profile of user *${user.name}*.`;
+						msg = `Updated profile of user *${user.name}*.`;
 					}
 					break;
 				default:
@@ -111,7 +271,14 @@ class SlackBot {
 			}
 
 			if (msg) {
-				this.rtm.sendMessage(msg, this.config.channels.userLog);
+				this.web.chat.postMessage(this.config.channels.userLog, msg, {
+					as_user: false,
+					username: actor.name,
+					attachments: attachments,
+					icon_url: 'https://www.gravatar.com/avatar/' + actor.gravatar_id + '?d=retro'
+				});
+
+				//this.rtm.sendMessage(msg, this.config.channels.userLog);
 			}
 
 		}).catch(err => {

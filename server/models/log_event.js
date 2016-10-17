@@ -28,6 +28,7 @@ var slackbot = require('../modules/slackbot');
 
 var Schema = mongoose.Schema;
 
+// also update slackbot when adding new events
 const events = [
 	'create_comment',
 	'star_game', 'star_release', 'star_user',

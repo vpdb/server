@@ -216,7 +216,7 @@ angular.module('vpdb.games.details', [])
 		$scope.rateGame = function(rating) {
 			var done = function(result) {
 				$scope.game.rating = result.game;
-				//$scope.gameRating = result.value;
+				$scope.gameRating = rating;
 			};
 			if ($scope.gameRating) {
 				GameRatingResource.update({ gameId: $scope.gameId }, { value: rating }, done);

@@ -162,6 +162,7 @@ angular.module('vpdb.releases.details', []).controller('ReleaseDetailsController
 	$scope.rateRelease = function(rating) {
 		var done = function(result) {
 			$scope.release.rating = result.release;
+			$scope.releaseRating = rating;
 		};
 		if ($scope.releaseRating) {
 			ReleaseRatingResource.update({ releaseId: $scope.release.id }, { value: rating }, done);

@@ -109,7 +109,7 @@ mixin info(entity)
 			h3.h--smaller.h--primary Uploader
 			.media
 				.media-left.media-middle
-					img.img-avatar.img-avatar--sm(gravatar-src=`${entity}.created_by.gravatar_id`, gravatar-default="404", fallback-icon="user")
+					img.img-avatar.img-avatar--sm(gravatar-src=`${entity}.created_by.gravatar_id`, gravatar-default="retro", fallback-icon="user")
 				.media-body.oneliner
 					user {{ #{entity}.created_by.name }}
 
@@ -119,7 +119,7 @@ mixin authors(entity)
 	h3.h--smaller.h--primary Authors
 	.media(ng-repeat=`author in ${entity}.authors`)
 		.media-left.media-middle
-			img.img-avatar.img-avatar--sm(gravatar-src="author.user.gravatar_id", gravatar-default="404", fallback-icon="user")
+			img.img-avatar.img-avatar--sm(gravatar-src="author.user.gravatar_id", gravatar-default="retro", fallback-icon="user")
 		.media-body
 			user {{ author.user.name }}
 			br
@@ -184,7 +184,7 @@ mixin message(sendMessageOnly)
 	.media.media--no-margin.collapse-in-animation(ng-repeat="comment in comments track by comment.id")
 		.collapse-in-animation-inner
 			.media-left.avatar
-				img.img-avatar.pull-left(gravatar-src="comment.from.gravatar_id", gravatar-default="404", fallback-icon="user")
+				img.img-avatar.pull-left(gravatar-src="comment.from.gravatar_id", gravatar-default="retro", fallback-icon="user")
 			.media-body.media--full-width
 				.panel.panel--inner
 					.panel-triangle

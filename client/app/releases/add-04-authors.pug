@@ -2,7 +2,7 @@ i.pull-left(ng-show="release.authors.length == 0") No authors added.
 .row--fullwidth
 	.media.media--mini.media--mini-noborders.col-sm-4(ng-repeat="author in release.authors", ng-mouseenter="hovering=true", ng-mouseleave="hovering=false")
 		.media-left.media-middle
-			img.img-avatar.img-avatar--sm(gravatar-src="meta.users[author._user].gravatar_id", gravatar-default="404", fallback-icon="user")
+			img.img-avatar.img-avatar--sm(gravatar-src="meta.users[author._user].gravatar_id", gravatar-default="retro", fallback-icon="user")
 		.media-body
 			h6.h--no-margin.h--lighter.media-heading {{ meta.users[author._user].name }}
 			span {{ author.roles.join(', ') }}

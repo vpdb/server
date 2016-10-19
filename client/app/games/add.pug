@@ -311,7 +311,7 @@ include ../template/_mixins
 		span(ng-repeat="gameRequest in gameRequests")
 			.media.media--selectable(ng-click="selectGameRequest(gameRequest)", ng-class="{ active: gameRequest.id === game._game_request }")
 				.media-left.media-middle
-					img.img-avatar.img-avatar--sm(gravatar-src="gameRequest.created_by.gravatar_id", gravatar-default="404", fallback-icon="user")
+					img.img-avatar.img-avatar--sm(gravatar-src="gameRequest.created_by.gravatar_id", gravatar-default="retro", fallback-icon="user")
 				.media-body
 					b {{ gameRequest.ipdb_title }}
 					br

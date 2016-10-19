@@ -8,6 +8,6 @@
 				img.img-avatar.img-avatar--xsm(
 					ng-repeat="author in release.authors",
 					gravatar-src="author.user.gravatar_id",
-					gravatar-default="404",
+					gravatar-default="retro",
 					fallback-icon="user",
 					title="{{ author.user.name }}: {{ author.roles.join(', ') }}")

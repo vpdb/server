@@ -100,7 +100,7 @@ p.padder-top(ng-show="pageLoading") Loading...
 				.media.media--no-margin.collapse-in-animation(ng-repeat="comment in moderationComments track by comment.id")
 					.collapse-in-animation-inner
 						.media-left.avatar
-							img.img-avatar.pull-left(gravatar-src="comment.from.gravatar_id", gravatar-default="404", fallback-icon="user")
+							img.img-avatar.pull-left(gravatar-src="comment.from.gravatar_id", gravatar-default="retro", fallback-icon="user")
 						.media-body.media--full-width
 							.panel.panel--inner
 								.panel-triangle
@@ -142,7 +142,7 @@ p.padder-top(ng-show="pageLoading") Loading...
 		h3.h--smaller.h--primary Authors
 		.media(ng-repeat="author in release.authors")
 			.media-left.media-middle
-				img.img-avatar.img-avatar--sm(gravatar-src="author.user.gravatar_id", gravatar-default="404", fallback-icon="user")
+				img.img-avatar.img-avatar--sm(gravatar-src="author.user.gravatar_id", gravatar-default="retro", fallback-icon="user")
 			.media-body
 				user {{ author.user.name }}
 				br
@@ -216,7 +216,7 @@ p.padder-top(ng-show="pageLoading") Loading...
 		.media.media--no-margin.collapse-in-animation(ng-repeat="comment in comments track by comment.id", ng-controller="CommentCtrl", ng-init="show=true")
 			.collapse-in-animation-inner
 				.media-left.avatar
-					img.img-avatar.pull-left(gravatar-src="comment.from.gravatar_id", gravatar-default="404", fallback-icon="user")
+					img.img-avatar.pull-left(gravatar-src="comment.from.gravatar_id", gravatar-default="retro", fallback-icon="user")
 				.media-body.media--full-width
 					.panel.panel--inner
 						.panel-triangle

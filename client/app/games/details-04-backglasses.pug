@@ -14,7 +14,7 @@ p(ng-show="!hasBackglasses && !game.restrictions.release.mpu && game.restriction
 				img.img-avatar.img-avatar--xsm.space-left.space-right(
 					ng-repeat="author in backglass.authors",
 					gravatar-src="author.user.gravatar_id",
-					gravatar-default="404",
+					gravatar-default="retro",
 					fallback-icon="user",
 					title="{{ author.user.name }}: {{ author.roles.join(', ') }}"
 				)
@@ -51,7 +51,7 @@ script(id="modal/backglass.html", type="text/ng-template")
 			h3.h--smaller.h--primary Authors
 			.media(ng-repeat="author in backglass.authors")
 				.media-left.media-middle
-					img.img-avatar.img-avatar--sm(gravatar-src="author.user.gravatar_id", gravatar-default="404", fallback-icon="user")
+					img.img-avatar.img-avatar--sm(gravatar-src="author.user.gravatar_id", gravatar-default="retro", fallback-icon="user")
 				.media-body
 					user {{ author.user.name }}
 					br

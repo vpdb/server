@@ -34,7 +34,7 @@ include ../template/_mixins
 			.row--fullwidth
 				.media.media--mini.media--mini-noborders.col-sm-4(ng-repeat="author in updatedRelease.authors", ng-mouseenter="hovering=true", ng-mouseleave="hovering=false")
 					.media-left.media-middle
-						img.img-avatar.img-avatar--sm(gravatar-src="author.user.gravatar_id", gravatar-default="404", fallback-icon="user")
+						img.img-avatar.img-avatar--sm(gravatar-src="author.user.gravatar_id", gravatar-default="retro", fallback-icon="user")
 					.media-body
 						h6.h--no-margin.h--lighter.media-heading {{ author.user.name }}
 						span {{ author.roles.join(', ') }}

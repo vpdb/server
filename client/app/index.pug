@@ -112,7 +112,7 @@ block content
 			| Type 3 characters in order to search for a user
 		ul.list-group.list-group--users
 			li.list-group-item(mentio-menu-item="person", ng-repeat="person in items | filter: '!!'")
-				img.img-avatar.img-avatar--xsm.pull-left.space-right(gravatar-src="person.gravatar_id", gravatar-default="404", fallback-icon="user")
+				img.img-avatar.img-avatar--xsm.pull-left.space-right(gravatar-src="person.gravatar_id", gravatar-default="retro", fallback-icon="user")
 				div.pull-left(ng-bind-html="person.name | mentioHighlight:typedTerm:'menu-highlighted' | unsafe")
 				.clearfix
 

@@ -25,7 +25,8 @@ var mongoose = require('mongoose');
 var passport = require('passport');
 var GitHubStrategy = require('passport-github').Strategy;
 var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
-var IPBoardStrategy = require('./modules/passport-ipboard').Strategy;
+var IPBoard3Strategy = require('./modules/passport-ipboard3').Strategy;
+var IPBoard4Strategy = require('./modules/passport-ipboard4').Strategy;
 
 var error = require('./modules/error')('passport');
 var mailer = require('./modules/mailer');
@@ -69,15 +70,28 @@ exports.configure = function() {
 
 			var callbackUrl = settings.webUri('/auth/' + ipbConfig.id + '/callback');
 			logger.info('[passport|ipboard:' + ipbConfig.id + '] Enabling IP.Board authentication strategy for "%s" at %s.', ipbConfig.name, ipbConfig.baseURL);
-			passport.use(new IPBoardStrategy({
-					passReqToCallback: true,
-					name: ipbConfig.id,
-					baseURL: ipbConfig.baseURL,
-					clientID: ipbConfig.clientID,
-					clientSecret: ipbConfig.clientSecret,
-					callbackURL: callbackUrl
-				}, exports.verifyCallbackOAuth('ipboard', ipbConfig.id)
-			));
+			if (ipbConfig.version === 3) {
+				passport.use(new IPBoard3Strategy({
+						passReqToCallback: true,
+						name: ipbConfig.id,
+						baseURL: ipbConfig.baseURL,
+						clientID: ipbConfig.clientID,
+						clientSecret: ipbConfig.clientSecret,
+						callbackURL: callbackUrl
+					}, exports.verifyCallbackOAuth('ipboard', ipbConfig.id)
+				));
+			}
+			if (ipbConfig.version === 4) {
+				passport.use(new IPBoard4Strategy({
+						passReqToCallback: true,
+						name: ipbConfig.id,
+						baseURL: ipbConfig.baseURL,
+						clientID: ipbConfig.clientID,
+						clientSecret: ipbConfig.clientSecret,
+						callbackURL: callbackUrl
+					}, exports.verifyCallbackOAuth('ipboard', ipbConfig.id)
+				));
+			}
 		}
 	});
 };

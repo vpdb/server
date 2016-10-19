@@ -642,6 +642,20 @@ module.exports = {
 					}
 				},
 
+				/**
+				 *  Version of the IPS board. Either `3` or `4`.
+				 */
+				version: function(version, setting) {
+					/* istanbul ignore if */
+					if (!setting.enabled) {
+						return;
+					}
+					/* istanbul ignore if */
+					if (version !== 3 && version !== 4) {
+						return 'IPS version must be either 3 or 4.';
+					}
+				},
+
 				__array: true
 			}
 		},

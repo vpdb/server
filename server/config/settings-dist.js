@@ -472,7 +472,12 @@ module.exports = {
 				 * The client secret of the generated application.
 				 * @important
 				 */
-				clientSecret: 'CLIENT_SECRET'
+				clientSecret: 'CLIENT_SECRET',
+
+				/**
+				 * Version of the IPS board. Either `3` or `4`.
+				 */
+				version: 4
 
 			}]
 		},

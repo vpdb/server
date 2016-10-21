@@ -186,6 +186,7 @@ var manufacturerNames = {
 	16: 'All American Games',
 	18: 'Allied Leisure',
 	20: 'Alvin G.',
+	28: 'Arkon',
 	32: 'Astro Games',
 	33: 'Atari',
 	47: 'Bally',

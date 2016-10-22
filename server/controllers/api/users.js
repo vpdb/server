@@ -108,7 +108,7 @@ exports.list = function(req, res) {
 		if (!canList && (!req.query.q || req.query.q.length < 3) && !req.query.name) {
 			throw error('Please provide a search query with at least three characters or a user name').status(403);
 		}
-		let query = User.find();
+		let query = [];
 
 		// text search
 		if (req.query.q) {
@@ -116,30 +116,31 @@ exports.list = function(req, res) {
 			let q = req.query.q.trim().replace(/[^a-z0-9]+/gi, ' ').replace(/\s+/g, '.*');
 			let regex = new RegExp(q, 'i');
 			if (canList) {
-				query.or([
+				query.push({ $or: [
 					{ name: regex },
 					{ username: regex },
 					{ email: regex }
-				]);
+				]});
 			} else {
-				query.or([
+				query.push({ $or: [
 					{ name: regex },
 					{ username: regex }
-				]);
+				]});
 			}
 		}
 		if (req.query.name) {
-			query.where('name').equals(req.query.name);
+			query.push({ name: new RegExp('^' + _.escapeRegExp(req.query.name) + '$', 'i') });
 		}
 
 		// filter by role
 		if (canList && req.query.roles) {
 			// sanitze and split
 			let roles = req.query.roles.trim().replace(/[^a-z0-9,-]+/gi, '').split(',');
-			query.where('roles').in(roles);
+			query.push( { roles: { $in: roles }});
 		}
 
-		return query.exec();
+		console.log(api.searchQuery(query));
+		return User.find(api.searchQuery(query)).exec();
 
 	}).then(users => {
 		// reduce

@@ -72,7 +72,7 @@ angular.module('vpdb.common', [])
 	.directive('fallbackIcon', function () {
 		return {
 			link: function postLink(scope, element, attrs) {
-				element.bind('error', function(a, b, c) {
+				element.bind('error', function() {
 					angular.element(this).replaceWith('<svg class="svg-icon ' + attrs.class + '"><use xlink:href="#icon-' + attrs.fallbackIcon + '"></use></svg>');
 				});
 			}

@@ -33,6 +33,7 @@ angular.module('vpdb.releases.details', []).controller('ReleaseDetailsController
 	$scope.flavors = Flavors;
 	$scope.found = false;
 	$scope.newComment = 'default text';
+	$scope.zoneName = AuthService.hasPermission('releases/update') ? 'Admin' : 'Author';
 
 	// GAME
 	$scope.game = GameResource.get({ id: $scope.gameId });

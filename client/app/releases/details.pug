@@ -63,10 +63,10 @@ p.padder-top(ng-show="pageLoading") Loading...
 
 		//-- AUTHOR ZONE
 		//---------------------------------------------------------------------
-		.panel--rect-block.padder-top(ng-show="auth.isAuthor(release)")
+		.panel--rect-block.padder-top(ng-show="(auth.hasPermission('releases/update-own') && auth.isAuthor(release)) || auth.hasPermission('releases/update')")
 			h1.text-center
 				+icon('gear').space-right
-				| Author Zone
+				| {{zoneName}} Zone
 
 			.center
 				ul.ul--no-list

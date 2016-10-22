@@ -188,6 +188,9 @@ function sendEmail(user, subject, template, templateData, enabledFlag) {
 		return transport.sendMail(email);
 
 	}).then(status => {
+		if (!status) {
+			return;
+		}
 		if (status.messageId) {
 			logger.info('[mailer] Successfully sent %s mail to <%s> with message ID "%s" (%s).', what, email.to.address, status.messageId, status.response);
 		} else {

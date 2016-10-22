@@ -60,12 +60,42 @@ exports.welcomeOAuth = function(user) {
 	});
 };
 
+exports.releaseAutoApproved = function(user, release) {
+	const User = require('mongoose').model('User');
+	return User.find({ roles: { $in: [ 'moderator', 'root' ]}}).exec().then(moderators => {
+		return Promise.each(moderators, moderator => {
+			return sendEmail(moderator, 'A new release has been auto-approved for ' + release._game.title, 'moderator-release-auto-approved', {
+				user: user,
+				moderator: moderator,
+				release: release,
+				game: release._game,
+				url: settings.webUri('/games/' + release._game.id + '/releases/' + release.id)
+			}, 'moderator_notify_release_auto_approved');
+		});
+	});
+};
 
 exports.releaseSubmitted = function(user, release) {
+	// send to submitter
 	return sendEmail(user, 'Your release for ' + release._game.title + ' has been submitted', 'release-submitted', {
 		user: user,
 		previewUrl: settings.webUri('/games/' + release._game.id + '/releases/' + release.id)
-	}, 'notify_release_moderation_status');
+
+	}, 'notify_release_moderation_status').then(() => {
+		// send to moderators
+		const User = require('mongoose').model('User');
+		return User.find({ roles: { $in: [ 'moderator', 'root' ]}}).exec().then(moderators => {
+			return Promise.each(moderators, moderator => {
+				return sendEmail(moderator, 'A new release has been submitted for ' + release._game.title, 'moderator-release-submitted', {
+					user: user,
+					moderator: moderator,
+					release: release,
+					game: release._game,
+					previewUrl: settings.webUri('/games/' + release._game.id + '/releases/' + release.id)
+				}, 'moderator_notify_release_submitted');
+			});
+		});
+	});
 };
 
 exports.releaseApproved = function(user, release, message) {
@@ -138,15 +168,44 @@ exports.releaseCommented = function(user, commentor, game, release, message) {
 	}, 'notify_created_release_comments');
 };
 
-exports.releaseModerationCommented = function(user, commentor, game, release, who, message) {
-	return sendEmail(user, 'Comment about your submitted "' + release.name + '" of ' + game.title, 'release-moderation-commented', {
-		user: user,
-		who: who, // 'Moderator' or 'Uploader'
-		release: release,
-		game: game,
-		commentor: commentor,
-		message: wrapMessage(message),
-		url: settings.webUri('/games/' + game.id + '/releases/' + release.id)
+exports.releaseModerationCommented = function(user, release, message) {
+
+	const Comment = require('mongoose').model('Comment');
+	const User = require('mongoose').model('User');
+	let moderators, participants;
+	return Promise.try(() => {
+		return User.find({ roles: { $in: ['moderator', 'root'] } }).exec();
+
+	}).then(m => {
+		moderators = m;
+		return Comment.find({ '_ref.release_moderation': release._id }).populate('_from').exec();
+
+	}).then(p => {
+		participants = p.map(c => c._from);
+		let all = _.uniqWith([ ...moderators, ...participants, release._created_by ], (u1, u2) => u1.id === u2.id);
+
+		return Promise.each(all.filter(u => u.id !== user.id), dest => {
+			const isDestMod = moderators.includes(dest);
+			const isSenderMod = user.hasRole(['moderator', 'root']);
+			const isDestParticipant = participants.includes(dest);
+			const game = release._game;
+
+			const subject = isDestMod ?
+				'New comment on "' + release.name + '" of ' + game.title :
+				'Comment about your submitted "' + release.name + '" of ' + game.title;
+
+			return sendEmail(dest, subject, 'release-moderation-commented', {
+				user: dest,
+				who: isSenderMod ? 'Moderator' : 'Uploader',
+				what: isSenderMod ? (isDestMod ? release._created_by.name + "'s" : 'your') : 'his',
+				release: release,
+				game: game,
+				commentor: user,
+				message: wrapMessage(message),
+				url: settings.webUri('/games/' + game.id + '/releases/' + release.id)
+			}, isDestParticipant || !isDestMod ? null : 'moderator_notify_release_commented');
+
+		});
 	});
 };
 

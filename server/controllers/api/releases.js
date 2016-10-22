@@ -106,6 +106,7 @@ exports.create = function(req, res) {
 			.then(release => {
 				if (release.moderation.is_approved) {
 					release._game.incrementCounter('releases');
+					mailer.releaseAutoApproved(req.user, release);
 				} else {
 					mailer.releaseSubmitted(req.user, release);
 				}

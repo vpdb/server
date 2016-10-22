@@ -69,9 +69,9 @@ var fields = {
 		notify_created_release_followers: { type: Boolean, 'default': true }, // not implemented
 		notify_mentions: { type: Boolean, 'default': true },                  // not implemented
 		contributor_notify_game_request_created: { type: Boolean, 'default': true }, // not implemented
-		moderator_notify_release_submitted: { type: Boolean, 'default': true },      // not implemented
-		moderator_notify_release_auto_approved: { type: Boolean, 'default': false }, // not implemented
-		moderator_notify_release_commented: { type: Boolean, 'default': true },      // not implemented
+		moderator_notify_release_submitted: { type: Boolean, 'default': true },
+		moderator_notify_release_auto_approved: { type: Boolean, 'default': false },
+		moderator_notify_release_commented: { type: Boolean, 'default': true },
 		moderator_notify_backglass_submitted: { type: Boolean, 'default': true },    // not implemented
 		moderator_notify_backglass_auto_approved: { type: Boolean, 'default': false }// not implemented
 	},
@@ -365,6 +365,21 @@ UserSchema.methods.hashPassword = function(password) {
 		return '';
 	}
 	return crypto.createHmac('sha1', this.password_salt).update(password).digest('hex');
+};
+
+UserSchema.methods.hasRole = function(role) {
+	if (_.isArray(role)) {
+		for (let i = 0; i < role.length; i++) {
+			if (this.roles.includes(role[i])) {
+				return true;
+			}
+		}
+		return false;
+
+	} else {
+		this.roles.includes(role);
+	}
+	return UserSchema.statics.toReduced(this);
 };
 
 UserSchema.methods.toReduced = function() {

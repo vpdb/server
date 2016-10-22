@@ -140,20 +140,7 @@ exports.createForReleaseModeration = function(req, res) {
 		api.success(res, comment.toSimple(), 201);
 
 		// notify
-		if (release._created_by.id === req.user.id) {
-			// notify moderator(s)
-			Comment.find({ '_ref.release_moderation': release._id, _from: { $ne: release._created_by._id } })
-				.populate('_from')
-				.exec()
-				.then(comments => {
-					comments.forEach(comment => {
-						mailer.releaseModerationCommented(comment._from, req.user, release._game, release, 'Uploader', req.body.message);
-					});
-				});
-		} else {
-			// notify uploader
-			mailer.releaseModerationCommented(release._created_by, req.user, release._game, release, 'Moderator', req.body.message);
-		}
+		mailer.releaseModerationCommented(req.user, release, req.body.message);
 
 	}).catch(api.handleError(res, error, 'Error saving comment'));
 };

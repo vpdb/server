@@ -29,6 +29,7 @@ const CLIENT_EVENTS = require('@slack/client').CLIENT_EVENTS;
 const RTM_CLIENT_EVENTS = require('@slack/client').CLIENT_EVENTS.RTM;
 
 const red = '#cf0000';
+const delay = 5000;
 
 /* istanbul ignore next  */
 class SlackBot {
@@ -195,11 +196,13 @@ class SlackBot {
 		}).spread((msg, attachments) => {
 			attachments = attachments || [];
 			if (msg) {
-				this.web.chat.postMessage(this.config.channels.eventLog, msg, {
-					as_user: false,
-					username: actor.name,
-					attachments: attachments,
-					icon_url: 'https://www.gravatar.com/avatar/' + actor.gravatar_id + '?d=retro'
+				return Promise.delay(delay).then(() => {
+					this.web.chat.postMessage(this.config.channels.eventLog, msg, {
+						as_user: false,
+						username: actor.name,
+						attachments: attachments,
+						icon_url: 'https://www.gravatar.com/avatar/' + actor.gravatar_id + '?d=retro'
+					});
 				});
 			}
 

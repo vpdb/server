@@ -138,8 +138,6 @@ exports.list = function(req, res) {
 			let roles = req.query.roles.trim().replace(/[^a-z0-9,-]+/gi, '').split(',');
 			query.push( { roles: { $in: roles }});
 		}
-
-		console.log(api.searchQuery(query));
 		return User.find(api.searchQuery(query)).exec();
 
 	}).then(users => {

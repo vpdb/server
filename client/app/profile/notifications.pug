@@ -37,6 +37,55 @@ hr
 		label.a.a--light.padder-bottom(for="notifiyGameRequestStatus")
 	.clearfix
 
+div(ng-show="auth.hasPermission('games/add')")
+	h1 Contribution
+	hr
+	.row(ng-show="auth.hasPermission('releases/moderate')")
+		.col-lg-11.col-xs-10
+			label(for="contributorNotifyGameRequestCreated") Notify when a new game request is created
+		.col-lg-1.col-xs-2
+			input#contributorNotifyGameRequestCreated.checkbox--toggle(type="checkbox", ng-model="updatedPreferences.contributor_notify_game_request_created")
+			label.a.a--light.padder-bottom(for="contributorNotifyGameRequestCreated")
+		.clearfix
+
+div(ng-show="auth.hasPermission('releases/moderate') || auth.hasPermission('backglasses/moderate')")
+	h1 Moderation
+	hr
+	.row(ng-show="auth.hasPermission('releases/moderate')")
+		.col-lg-11.col-xs-10
+			label(for="moderatorNotifyReleaseSubmitted") Notify when a submitted release needs approval
+		.col-lg-1.col-xs-2
+			input#moderatorNotifyReleaseSubmitted.checkbox--toggle(type="checkbox", ng-model="updatedPreferences.moderator_notify_release_submitted")
+			label.a.a--light.padder-bottom(for="moderatorNotifyReleaseSubmitted")
+		.clearfix
+	.row(ng-show="auth.hasPermission('releases/moderate')")
+		.col-lg-11.col-xs-10
+			label(for="moderatorNotifyReleaseAutoApproved") Notify when a submitted release was auto-approved
+		.col-lg-1.col-xs-2
+			input#moderatorNotifyReleaseAutoApproved.checkbox--toggle(type="checkbox", ng-model="updatedPreferences.moderator_notify_release_auto_approved")
+			label.a.a--light.padder-bottom(for="moderatorNotifyReleaseAutoApproved")
+		.clearfix
+	.row(ng-show="auth.hasPermission('releases/moderate')")
+		.col-lg-11.col-xs-10
+			label(for="moderatorNotifyReleaseCommented") Notify when a moderation comment on a release was created
+		.col-lg-1.col-xs-2
+			input#moderatorNotifyReleaseCommented.checkbox--toggle(type="checkbox", ng-model="updatedPreferences.moderator_notify_release_commented")
+			label.a.a--light.padder-bottom(for="moderatorNotifyReleaseCommented")
+		.clearfix
+	.row(ng-show="auth.hasPermission('releases/moderate')")
+		.col-lg-11.col-xs-10
+			label(for="moderatorNotifyBackglassSubmitted") Notify when a submitted backglass needs approval
+		.col-lg-1.col-xs-2
+			input#moderatorNotifyBackglassSubmitted.checkbox--toggle(type="checkbox", ng-model="updatedPreferences.moderator_notify_backglass_submitted")
+			label.a.a--light.padder-bottom(for="moderatorNotifyBackglassSubmitted")
+		.clearfix
+	.row(ng-show="auth.hasPermission('releases/moderate')")
+		.col-lg-11.col-xs-10
+			label(for="moderatorNotifyBackglassAutoApproved") Notify when a submitted release was auto-approved
+		.col-lg-1.col-xs-2
+			input#moderatorNotifyBackglassAutoApproved.checkbox--toggle(type="checkbox", ng-model="updatedPreferences.moderator_notify_backglass_auto_approved")
+			label.a.a--light.padder-bottom(for="moderatorNotifyBackglassAutoApproved")
+		.clearfix
 
 p.padder-top-2x
 button.btn.btn-primary.pull-right(ng-click="updateUserPreferences()")

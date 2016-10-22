@@ -67,7 +67,13 @@ var fields = {
 		notify_game_requests: { type: Boolean, 'default': true },
 		notify_created_release_comments: { type: Boolean, 'default': true },
 		notify_created_release_followers: { type: Boolean, 'default': true }, // not implemented
-		notify_mentions: { type: Boolean, 'default': true }                   // not implemented
+		notify_mentions: { type: Boolean, 'default': true },                  // not implemented
+		contributor_notify_game_request_created: { type: Boolean, 'default': true }, // not implemented
+		moderator_notify_release_submitted: { type: Boolean, 'default': true },      // not implemented
+		moderator_notify_release_auto_approved: { type: Boolean, 'default': false }, // not implemented
+		moderator_notify_release_commented: { type: Boolean, 'default': true },      // not implemented
+		moderator_notify_backglass_submitted: { type: Boolean, 'default': true },    // not implemented
+		moderator_notify_backglass_auto_approved: { type: Boolean, 'default': false }// not implemented
 	},
 	credits: { type: Schema.Types.Number },
 	counter: {

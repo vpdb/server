@@ -24,7 +24,7 @@ var settings = require('../../modules/settings');
 exports.register = function(app, api) {
 
 	app.get(settings.apiPath('/files/:id'),    api.anon(api.files.view));
-	app.delete(settings.apiPath('/files/:id'), api.auth(api.files.del, 'files', 'delete'));
+	app.delete(settings.apiPath('/files/:id'), api.auth(api.files.del, 'files', 'delete-own'));
 	app.get(settings.apiPath('/files/:id/blockmatch'), api.auth(api.files.blockmatch, 'files', 'blockmatch'));
 
 };

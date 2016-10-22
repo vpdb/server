@@ -27,7 +27,7 @@ exports.register = function(app, api) {
 	app.get(settings.apiPath('/releases/:id'),    api.anon(api.releases.view));
 	app.patch(settings.apiPath('/releases/:id'),  api.auth(api.releases.update, 'releases', 'update-own'));
 	app.post(settings.apiPath('/releases'),       api.auth(api.releases.create, 'releases', 'add'));
-	app.delete(settings.apiPath('/releases/:id'), api.auth(api.releases.del, 'releases', 'delete'));
+	app.delete(settings.apiPath('/releases/:id'), api.auth(api.releases.del, 'releases', 'delete-own'));
 
 	app.post(settings.apiPath('/releases/:id/versions'), api.auth(api.releases.addVersion, 'releases', 'add'));
 	app.patch(settings.apiPath('/releases/:id/versions/:version'), api.auth(api.releases.updateVersion, 'releases', 'update-own'));

@@ -548,15 +548,16 @@ describe('The VPDB `release` API', function() {
 			});
 		});
 
-		it('should succeed updating as non-creator but other author', function(done) {
+		it('should succeed updating as non-creator but author', function(done) {
 			var newName = 'My edited name';
 			var newDescription = 'My edited description';
 			var newAcknowledgements = 'My edited acknowledgements';
 			hlp.release.createRelease('member', request, function(release) {
+				let originalAuthors = release.authors.map(a => { return { _user: a.user.id, roles: a.roles };});
 				request
 					.patch('/api/v1/releases/' + release.id)
 					.as('member')
-					.send({ authors: [ { _user: hlp.getUser('othermember').id, roles: [ 'Some other job' ] } ] })
+					.send({ authors: [ ...originalAuthors, { _user: hlp.getUser('othermember').id, roles: [ 'Some other job' ] } ] })
 					.end(function(err, res) {
 						hlp.expectStatus(err, res, 200);
 						request
@@ -570,6 +571,25 @@ describe('The VPDB `release` API', function() {
 								expect(res.body.acknowledgements).to.be(newAcknowledgements);
 								done();
 							});
+					});
+			});
+		});
+
+		it('should succeed updating as non-creator but moderator', function(done) {
+			var newName = 'My edited name';
+			var newDescription = 'My edited description';
+			var newAcknowledgements = 'My edited acknowledgements';
+			hlp.release.createRelease('member', request, function(release) {
+				request
+					.patch('/api/v1/releases/' + release.id)
+					.as('moderator')
+					.send({ name: newName, description: newDescription, acknowledgements: newAcknowledgements })
+					.end(function(err, res) {
+						hlp.expectStatus(err, res, 200);
+						expect(res.body.name).to.be(newName);
+						expect(res.body.description).to.be(newDescription);
+						expect(res.body.acknowledgements).to.be(newAcknowledgements);
+						done();
 					});
 			});
 		});
@@ -663,6 +683,7 @@ describe('The VPDB `release` API', function() {
 			hlp.setupUsers(request, {
 				member: { roles: [ 'member' ] },
 				member2: { roles: [ 'member' ] },
+				othermember: { roles: [ 'member' ] },
 				moderator: { roles: [ 'moderator' ] }
 			}, done);
 		});
@@ -768,6 +789,73 @@ describe('The VPDB `release` API', function() {
 				});
 			});
 		});
+
+		it('should succeed when logged as non-creator but author', function(done) {
+			var user = 'member';
+			hlp.release.createRelease(user, request, function(release) {
+				let originalAuthors = release.authors.map(a => { return { _user: a.user.id, roles: a.roles };});
+				request
+					.patch('/api/v1/releases/' + release.id)
+					.as(user)
+					.send({ authors: [ ...originalAuthors, { _user: hlp.getUser('othermember').id, roles: [ 'Some other job' ] } ] })
+					.end(function(err, res) {
+						hlp.expectStatus(err, res, 200);
+						hlp.file.createVpt('othermember', request, function(vptfile) {
+							hlp.file.createPlayfield('othermember', request, 'fs', function (playfield) {
+								request
+									.post('/api/v1/releases/' + release.id + '/versions')
+									.as('othermember')
+									.send({
+										version: '2.0.0',
+										changes: '*Second release.*',
+										files: [ {
+											_file: vptfile.id,
+											_playfield_image: playfield.id,
+											_compatibility: [ '9.9.0' ],
+											flavor: { orientation: 'fs', lighting: 'night' }
+										} ]
+									}).end(function(err, res) {
+										hlp.expectStatus(err, res, 201);
+										var version = res.body;
+										expect(version).to.be.ok();
+										expect(version.changes).to.be('*Second release.*');
+										done();
+									});
+							});
+					});
+
+				});
+			});
+		});
+
+		it('should succeed when logged as non-creator but moderator', function(done) {
+			var user = 'member';
+			hlp.release.createRelease(user, request, function(release) {
+				hlp.file.createVpt(user, request, function(vptfile) {
+					hlp.file.createPlayfield(user, request, 'fs', function (playfield) {
+						request
+							.post('/api/v1/releases/' + release.id + '/versions')
+							.as('moderator')
+							.send({
+								version: '2.0.0',
+								changes: '*Second release.*',
+								files: [ {
+									_file: vptfile.id,
+									_playfield_image: playfield.id,
+									_compatibility: [ '9.9.0' ],
+									flavor: { orientation: 'fs', lighting: 'night' }
+								} ]
+							}).end(function(err, res) {
+								hlp.expectStatus(err, res, 201);
+								var version = res.body;
+								expect(version).to.be.ok();
+								expect(version.changes).to.be('*Second release.*');
+								done();
+							});
+					});
+				});
+			});
+		});
 	});
 
 	describe('when updating an existing version of a release', function() {
@@ -776,6 +864,7 @@ describe('The VPDB `release` API', function() {
 			hlp.setupUsers(request, {
 				member: { roles: [ 'member' ] },
 				member2: { roles: [ 'member' ] },
+				othermember: { roles: [ 'member' ] },
 				moderator: { roles: [ 'moderator' ] }
 			}, done);
 		});
@@ -786,7 +875,7 @@ describe('The VPDB `release` API', function() {
 
 		it('should fail when logged as a different user', function(done) {
 			hlp.release.createRelease('member', request, function(release) {
-				request.put('/api/v1/releases/' + release.id + '/versions/' + release.versions[0].version)
+				request.patch('/api/v1/releases/' + release.id + '/versions/' + release.versions[0].version)
 					.as('member2')
 					.send({})
 					.saveResponse({ path: 'releases/update-version'})
@@ -809,7 +898,7 @@ describe('The VPDB `release` API', function() {
 							}]
 						};
 						request
-							.put('/api/v1/releases/' + release.id + '/versions/' + release.versions[0].version)
+							.patch('/api/v1/releases/' + release.id + '/versions/' + release.versions[0].version)
 							.saveResponse({ path: 'releases/update-version'})
 							.as(user)
 							.send(data).end(function(err, res) {
@@ -829,7 +918,7 @@ describe('The VPDB `release` API', function() {
 				hlp.file.createVpt(user, request, function(vptfile) {
 					hlp.file.createPlayfield(user, request, 'fs', function(playfield) {
 						request
-							.put('/api/v1/releases/' + release.id + '/versions/' + release.versions[0].version)
+							.patch('/api/v1/releases/' + release.id + '/versions/' + release.versions[0].version)
 							.save({ path: 'releases/update-version'})
 							.as(user)
 							.send({
@@ -855,7 +944,7 @@ describe('The VPDB `release` API', function() {
 			hlp.release.createRelease(user, request, function(release) {
 				hlp.file.createVpt(user, request, function(vptfile) {
 					request
-						.put('/api/v1/releases/' + release.id + '/versions/' + release.versions[0].version)
+						.patch('/api/v1/releases/' + release.id + '/versions/' + release.versions[0].version)
 						.as(user)
 						.send({
 							files: [{
@@ -881,7 +970,7 @@ describe('The VPDB `release` API', function() {
 			hlp.release.createRelease(user, request, function(release) {
 				let playfieldImage = release.versions[0].files[0].playfield_image;
 				request
-					.put('/api/v1/releases/' + release.id + '/versions/' + release.versions[0].version)
+					.patch('/api/v1/releases/' + release.id + '/versions/' + release.versions[0].version)
 					.query({ rotate: release.versions[0].files[0].playfield_image.id + ':90' })
 					.as(user)
 					.send({
@@ -903,7 +992,7 @@ describe('The VPDB `release` API', function() {
 			var user = 'member';
 			hlp.release.createRelease(user, request, function(release) {
 				request
-					.put('/api/v1/releases/' + release.id + '/versions/' + release.versions[0].version)
+					.patch('/api/v1/releases/' + release.id + '/versions/' + release.versions[0].version)
 					.query({ rotate: release.versions[0].files[0].file.id + ':90' })
 					.as(user)
 					.send({
@@ -920,7 +1009,7 @@ describe('The VPDB `release` API', function() {
 			hlp.file.createPlayfield(user, request, 'fs', 'playfield', function(playfield) {
 				hlp.release.createRelease(user, request, function(release) {
 					request
-						.put('/api/v1/releases/' + release.id  + '/versions/' + release.versions[0].version)
+						.patch('/api/v1/releases/' + release.id  + '/versions/' + release.versions[0].version)
 						.query({ rotate: playfield.id + ':90' })
 						.as('member')
 						.send({ })
@@ -928,6 +1017,51 @@ describe('The VPDB `release` API', function() {
 				});
 			});
 		});
+
+		it('should succeed when logged as non-creator but author', function(done) {
+			var user = 'member';
+			var newChanges = 'New changes.';
+			hlp.release.createRelease(user, request, function(release) {
+				let originalAuthors = release.authors.map(a => { return { _user: a.user.id, roles: a.roles };});
+				request
+					.patch('/api/v1/releases/' + release.id)
+					.as(user)
+					.send({ authors: [ ...originalAuthors, { _user: hlp.getUser('othermember').id, roles: [ 'Some other job' ] } ] })
+					.end(function(err, res) {
+						hlp.expectStatus(err, res, 200);
+						request
+							.patch('/api/v1/releases/' + release.id + '/versions/' + release.versions[0].version)
+							.as('othermember')
+							.send({ changes: newChanges})
+							.end(function(err, res) {
+								hlp.expectStatus(err, res, 200);
+								var version = res.body;
+								expect(version).to.be.ok();
+								expect(version.changes).to.be(newChanges);
+								done();
+							});
+					});
+			});
+		});
+
+		it('should succeed when logged as non-creator but moderator', function(done) {
+			var user = 'member';
+			var newChanges = 'New changes.';
+			hlp.release.createRelease(user, request, function(release) {
+				request
+					.patch('/api/v1/releases/' + release.id + '/versions/' + release.versions[0].version)
+					.as('moderator')
+					.send({ changes: newChanges})
+					.end(function(err, res) {
+						hlp.expectStatus(err, res, 200);
+						var version = res.body;
+						expect(version).to.be.ok();
+						expect(version.changes).to.be(newChanges);
+						done();
+					});
+			});
+		});
+
 	});
 
 	describe('when viewing a release', function() {

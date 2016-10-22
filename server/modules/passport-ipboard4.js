@@ -90,7 +90,7 @@ Strategy.prototype.userProfile = function(accessToken, done) {
 
 			var profile = {
 				provider: that.name,
-				id: json.email,
+				id: json.id || json.email,
 				username: json.username,
 				displayName: json.displayName,
 				profileUrl: json.profileUrl,

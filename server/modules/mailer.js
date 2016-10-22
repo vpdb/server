@@ -50,7 +50,8 @@ exports.welcomeLocal = function(user, done) {
 exports.welcomeOAuth = function(user) {
 	const strategyNames = {
 		github: 'GitHub',
-		google: 'Google'
+		google: 'Google',
+		gameex: 'GameEx'
 	};
 	return sendEmail(user, 'Welcome to the VPDB!', 'welcome-oauth', {
 		user: user,

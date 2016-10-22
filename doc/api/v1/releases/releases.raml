@@ -374,7 +374,7 @@ get:
         version:
           displayName: Version ID
           type: string
-      put:
+      patch:
         is: [ validated ]
         securedBy: [ jwt: { scopes: [ MEMBER ] } ]
         description: |

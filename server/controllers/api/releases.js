@@ -140,25 +140,35 @@ exports.update = function(req, res) {
 
 	const updateableFields = [ 'name', 'description', '_tags', 'links', 'acknowledgements', 'authors', 'ipdb' ];
 
-	let oldRelease;
+	let oldRelease, release;
 	Promise.try(() => {
 
 		return Release.findOne({ id: req.params.id });
 
-	}).then(release => {
+	}).then(r => {
+		release = r;
 
 		// fail if invalid id
 		if (!release) {
 			throw error('No such release with ID "%s".', req.params.id).status(404).log('update');
 		}
 
-		// fail if wrong user
-		var authorIds = _.map(_.map(release.authors, '_user'), id => id.toString());
-		if (!_.includes(authorIds.concat(release._created_by.toString()), req.user._id.toString())) {
-			throw error('Only authors of the release can update it.').status(403).log('update');
-		}
-		if (!_.isUndefined(req.body.authors) && release._created_by.toString() !== req.user._id.toString()) {
-			throw error('Only the original uploader can edit authors.').status(403).log('update');
+		// check for global update permissions
+		return acl.isAllowed(req.user.id, 'releases', 'update');
+
+	}).then(canUpdate => {
+
+		// if user only has permissions to update own releases, check if owner.
+		if (!canUpdate) {
+			// fail if wrong user
+			const authorIds = release.authors.map(a => a._user.toString());
+			const creatorId = release._created_by.toString();
+			if (![creatorId, ...authorIds].includes(req.user._id.toString())) {
+				throw error('Only authors of the release can update it.').status(403).log('update');
+			}
+			if (!_.isUndefined(req.body.authors) && creatorId !== req.user._id.toString()) {
+				throw error('Only the original uploader can edit authors.').status(403).log('update');
+			}
 		}
 
 		// fail if invalid fields provided
@@ -219,10 +229,20 @@ exports.addVersion = function(req, res) {
 			throw error('No such release with ID "%s".', req.params.id).status(404);
 		}
 
-		// fail if wrong user
-		var authorIds = _.map(_.map(release.authors, '_user'), id => id.toString());
-		if (!_.includes([release._created_by.toString(), ...authorIds], req.user._id.toString())) {
-			throw error('Only authors of the release can update add new versions.').status(403).log('addVersion');
+		// check for global update permissions
+		return acl.isAllowed(req.user.id, 'releases', 'update');
+
+	}).then(canUpdate => {
+
+		// if user only has permissions to update own releases, check if owner.
+		if (!canUpdate) {
+
+			// fail if wrong user
+			const authorIds = release.authors.map(a => a._user.toString());
+			const creatorId = release._created_by.toString();
+			if (!_.includes([creatorId, ...authorIds], req.user._id.toString())) {
+				throw error('Only authors of the release can update add new versions.').status(403).log('addVersion');
+			}
 		}
 
 		// set defaults
@@ -327,10 +347,20 @@ exports.updateVersion = function(req, res) {
 			throw error('No such release with ID "%s".', req.params.id).status(404);
 		}
 
-		// fail if wrong user
-		let authorIds = _.map(_.map(release.authors, '_user'), id => id.toString());
-		if (!_.includes([release._created_by.toString(), ...authorIds], req.user._id.toString())) {
-			throw error('Only authors of the release can update or add new versions.').status(403).log('addVersion');
+		// check for global update permissions
+		return acl.isAllowed(req.user.id, 'releases', 'update');
+
+	}).then(canUpdate => {
+
+		// if user only has permissions to update own releases, check if owner.
+		if (!canUpdate) {
+
+			// fail if wrong user
+			const authorIds = release.authors.map(a => a._user.toString());
+			const creatorId = release._created_by.toString();
+			if (!_.includes([creatorId, ...authorIds], req.user._id.toString())) {
+				throw error('Only authors of the release can update or add new versions.').status(403).log('addVersion');
+			}
 		}
 
 		version = _.find(release.versions, { version: req.params.version });

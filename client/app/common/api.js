@@ -114,7 +114,7 @@ angular.module('vpdb.common', [])
 
 	.factory('ReleaseVersionResource', function($resource, ConfigService) {
 		return $resource(ConfigService.apiUri('/releases/:releaseId/versions/:version'), {}, {
-			update: { method: 'PUT' }
+			update: { method: 'PATCH' }
 		});
 	})
 

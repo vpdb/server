@@ -64,7 +64,7 @@ acl.init = function() {
 				{ resources: 'games',         permissions: ['delete'] },
 				{ resources: 'game_requests', permissions: ['list', 'update', 'delete'] },
 				{ resources: 'media',         permissions: ['delete'] },
-				{ resources: 'releases',      permissions: ['moderate', 'view-restriced'] },
+				{ resources: 'releases',      permissions: ['moderate', 'view-restriced', 'update'] },
 				{ resources: 'roms',          permissions: ['delete', 'view-restriced'] },
 				{ resources: 'tags',          permissions: ['delete'] }
 			]
@@ -94,7 +94,7 @@ acl.init = function() {
 				{ resources: 'game_requests', permissions: ['add', 'delete-own'] },
 				{ resources: 'media',         permissions: ['add', 'delete-own', 'star'] },
 				{ resources: 'messages',      permissions: ['receive'] },
-				{ resources: 'releases',      permissions: ['add', 'delete', 'update', 'rate', 'star'] }, // delete: only own releases and only for a given period
+				{ resources: 'releases',      permissions: ['add', 'delete', 'update-own', 'rate', 'star'] }, // delete: only own releases and only for a given period
 				{ resources: 'tags',          permissions: ['add', 'delete-own'] },
 				{ resources: 'tokens',        permissions: ['add', 'delete', 'update', 'list'] },
 				{ resources: 'user',          permissions: ['view', 'update'] },                          // profile

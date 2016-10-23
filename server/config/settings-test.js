@@ -22,7 +22,7 @@ module.exports = {
 			nodemailer: {}
 		},
 		logging: {
-			level: 'debug',
+			level: 'info',
 			console: { access: true,  app: true },
 			file: { access: null, app: null },
 			papertrail: { access: false, app: false, options: { } }

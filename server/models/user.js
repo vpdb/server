@@ -72,8 +72,8 @@ var fields = {
 		moderator_notify_release_submitted: { type: Boolean, 'default': true },
 		moderator_notify_release_auto_approved: { type: Boolean, 'default': false },
 		moderator_notify_release_commented: { type: Boolean, 'default': true },
-		moderator_notify_backglass_submitted: { type: Boolean, 'default': true },    // not implemented
-		moderator_notify_backglass_auto_approved: { type: Boolean, 'default': false }// not implemented
+		moderator_notify_backglass_submitted: { type: Boolean, 'default': true },
+		moderator_notify_backglass_auto_approved: { type: Boolean, 'default': false }
 	},
 	credits: { type: Schema.Types.Number },
 	counter: {

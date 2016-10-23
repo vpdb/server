@@ -111,7 +111,9 @@ exports.create = function(req, res) {
 	}).then(populatedBackglass => {
 
 		// send moderation mail
-		if (!populatedBackglass.moderation.is_approved) {
+		if (populatedBackglass.moderation.is_approved) {
+			mailer.backglassAutoApproved(req.user, populatedBackglass);
+		} else {
 			mailer.backglassSubmitted(req.user, populatedBackglass);
 		}
 

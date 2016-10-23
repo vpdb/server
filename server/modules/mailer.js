@@ -62,7 +62,7 @@ exports.welcomeOAuth = function(user) {
 
 exports.releaseAutoApproved = function(user, release) {
 	const User = require('mongoose').model('User');
-	return User.find({ roles: { $in: [ 'moderator', 'root' ]}}).exec().then(moderators => {
+	return User.find({ roles: { $in: [ 'moderator', 'root' ]}, id: { $ne: user.id }}).exec().then(moderators => {
 		return Promise.each(moderators, moderator => {
 			return sendEmail(moderator, 'A new release has been auto-approved for ' + release._game.title, 'moderator-release-auto-approved', {
 				user: user,
@@ -84,7 +84,7 @@ exports.releaseSubmitted = function(user, release) {
 	}, 'notify_release_moderation_status').then(() => {
 		// send to moderators
 		const User = require('mongoose').model('User');
-		return User.find({ roles: { $in: [ 'moderator', 'root' ]}}).exec().then(moderators => {
+		return User.find({ roles: { $in: [ 'moderator', 'root' ]}, id: { $ne: user.id }}).exec().then(moderators => {
 			return Promise.each(moderators, moderator => {
 				return sendEmail(moderator, 'A new release has been submitted for ' + release._game.title, 'moderator-release-submitted', {
 					user: user,
@@ -99,7 +99,7 @@ exports.releaseSubmitted = function(user, release) {
 };
 
 exports.releaseApproved = function(user, release, message) {
-	return sendEmail(user, 'Your release for ' + release._game.title + ' has been accepted!', 'release-approved', {
+	return sendEmail(user, 'Your release for ' + release._game.title + ' has been approved!', 'release-approved', {
 		user: user,
 		release: release,
 		game: release._game,
@@ -121,21 +121,49 @@ exports.backglassSubmitted = function(user, backglass) {
 	return sendEmail(user, 'Your backglass for ' + backglass._game.title + ' has been submitted', 'backglass-submitted', {
 		user: user,
 		backglass: backglass
-	}, 'notify_backglass_moderation_status');
+	}, 'notify_backglass_moderation_status').then(() => {
+		// send to moderators
+		const User = require('mongoose').model('User');
+		return User.find({ roles: { $in: [ 'moderator', 'root' ]}, id: { $ne: user.id }}).exec().then(moderators => {
+			return Promise.each(moderators, moderator => {
+				return sendEmail(moderator, 'A new backglass has been submitted for ' + backglass._game.title, 'moderator-backglass-submitted', {
+					user: user,
+					moderator: moderator,
+					game: backglass._game,
+					uploadsUrl: settings.webUri('/admin/uploads')
+				}, 'moderator_notify_backglass_submitted');
+			});
+		});
+	});
 };
 
-exports.backglassApproved = function(user, release, message) {
-	return sendEmail(user, 'Your backglass for ' + release._game.title + ' has been accepted!', 'backglass-approved', {
+exports.backglassAutoApproved = function(user, backglass) {
+	const User = require('mongoose').model('User');
+	return User.find({ roles: { $in: [ 'moderator', 'root' ]}, id: { $ne: user.id }}).exec().then(moderators => {
+		return Promise.each(moderators, moderator => {
+			return sendEmail(moderator, 'A new backglass has been auto-approved for ' + backglass._game.title, 'moderator-backglass-auto-approved', {
+				user: user,
+				moderator: moderator,
+				game: backglass._game,
+				url: settings.webUri('/games/' + backglass._game.id)
+			}, 'moderator_notify_backglass_auto_approved');
+		});
+	});
+};
+
+exports.backglassApproved = function(user, backglass, message) {
+	return sendEmail(user, 'Your backglass for ' + backglass._game.title + ' has been approved!', 'backglass-approved', {
 		user: user,
 		message: wrapMessage(message),
-		game: release._game,
-		gameUrl: settings.webUri('/games/' + release._game.id)
+		game: backglass._game,
+		gameUrl: settings.webUri('/games/' + backglass._game.id)
 	}, 'notify_backglass_moderation_status');
 };
 
-exports.backglassRefused = function(user, release, message) {
+exports.backglassRefused = function(user, backglass, message) {
 	return sendEmail(user, 'There was a problem with the backglass you\'ve uploaded to VPDB', 'backglass-refused', {
 		user: user,
+		game: backglass._game,
 		message: message,
 	}, 'notify_backglass_moderation_status');
 };

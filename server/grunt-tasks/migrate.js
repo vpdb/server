@@ -41,8 +41,6 @@ module.exports = function(grunt) {
 		let runNumber = grunt.option('run-number');
 		let fromFolder = grunt.option('from');
 		let toFolder = grunt.option('to') || '.';
-		let fromBranch = grunt.option('from-branch') || 'master';
-		let toBranch = grunt.option('to-branch') || 'master';
 
 		// only run one script?
 		if (runNumber) {
@@ -71,7 +69,7 @@ module.exports = function(grunt) {
 			return done();
 		}
 
-		let fromRepo, toRepo, fromCommit;
+		let fromRepo, toRepo, fromCommit, toCommit, foundFromCommit = false;
 		return Promise.try(() => {
 			return bootstrapDatabase();
 
@@ -84,7 +82,7 @@ module.exports = function(grunt) {
 
 		}).then(repo => {
 			toRepo = repo;
-			return fromRepo.getBranchCommit(fromBranch);
+			return fromRepo.getHeadCommit();
 
 		}).then(commit => {
 			fromCommit = commit;
@@ -93,19 +91,18 @@ module.exports = function(grunt) {
 			});
 
 		}).then(() => {
-			return toRepo.getBranchCommit(toBranch);
+			return toRepo.getHeadCommit();
 
-		}).then(toCommit => {
-
+		}).then(commit => {
+			toCommit = commit;
 			return new Promise((resolve, reject) => {
 				let commits = [];
-				let finished = false;
 				toCommit.history(Git.Revwalk.SORT.TOPOLOGICAL)
 					.on('end', c => resolve(commits))
 					.on('error', reject)
 					.on('commit', commit => {
-						finished = finished || commit.sha() === fromCommit.sha();
-						if (!finished) {
+						foundFromCommit = foundFromCommit || commit.sha() === fromCommit.sha();
+						if (!foundFromCommit) {
 							commits.push(commit);
 						}
 					})
@@ -114,9 +111,12 @@ module.exports = function(grunt) {
 
 		}).then(commits => {
 
+			if (!foundFromCommit) {
+				grunt.log.writeln('Initial commit not found, aborting (this can happen on a force push).');
+				return;
+			}
 			let scripts = fs.readdirSync(scriptFolder);
-
-			grunt.log.writeln('Found %s commits between folders.', commits.length);
+			grunt.log.writeln('Found %s commits between %s and %s.', commits.length, fromCommit.sha().substring(0, 7), toCommit.sha().substring(0, 7));
 			return Promise.each(_.reverse(commits), commit => {
 				let script = _.find(scripts, filename => commit.sha().startsWith(filename.split('-')[1]));
 				if (!script) {
@@ -129,7 +129,6 @@ module.exports = function(grunt) {
 
 		}).nodeify(done);
 	});
-
 };
 
 /**

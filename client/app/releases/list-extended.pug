@@ -16,6 +16,6 @@ include ../template/_mixins
 				+icon('star')(ng-click="toggleReleaseStar(release, $event)").shift-up-2x
 			h1.h--small.h--no-margin {{ release.game.title }}
 			label.label--block {{ release.name }}
-			span.small.pull-right.space-right(am-time-ago="release.created_at")
+			span.small.pull-right.space-right(am-time-ago="release.released_at")
 			div.small.oneliner by {{ release.authors[0].user.name }}
 		.clearfix

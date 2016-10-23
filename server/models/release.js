@@ -89,6 +89,7 @@ const releaseFields = {
 		votes:     { type: Number, 'default': 0 },
 		score:     { type: Number, 'default': 0 } // imdb-top-250-like score, a bayesian estimate.
 	},
+	released_at:   { type: Date, index: true },
 	modified_at:   { type: Date, required: true },
 	created_at:    { type: Date, required: true },
 	_created_by:   { type: Schema.ObjectId, required: true, ref: 'User' }
@@ -136,7 +137,7 @@ ReleaseSchema.statics.toSimple = function(release, opts) {
 
 	// field visibility
 	var gameFields = ['id', 'title', 'manufacturer', 'year', 'license' ];
-	var releaseFields = [ 'id', 'name', 'created_at', 'authors', 'counter', 'versions' ];
+	var releaseFields = [ 'id', 'name', 'created_at', 'released_at', 'authors', 'counter', 'versions' ];
 	var versionFields = [ 'version', 'released_at', 'files' ];
 	var fileRefFields = [ 'released_at', 'flavor', 'compatibility', 'file' ];
 	var fileFields = ['id', 'name', 'bytes', 'mime_type'];

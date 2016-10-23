@@ -89,6 +89,8 @@ exports.create = function(req, res) {
 
 	}).then(() => {
 		logger.info('[api|release:create] Validations passed.');
+		release.versions = _.sortBy(release.versions, ['released_at']);
+		release.released_at = release.versions[release.versions.length - 1].released_at;
 		return release.save();
 
 	}).then(() => {
@@ -279,6 +281,8 @@ exports.addVersion = function(req, res) {
 
 	}).then(() => {
 		release.versions.push(newVersion);
+		release.versions = _.sortBy(release.versions, ['released_at']);
+		release.released_at = release.versions[release.versions.length - 1].released_at;
 		release.modified_at = now;
 
 		logger.info('[api|release:addVersion] Validations passed, adding new version to release.');
@@ -411,6 +415,9 @@ exports.updateVersion = function(req, res) {
 
 	}).then(() => {
 		logger.info('[api|release:updateVersion] Validations passed, updating version.');
+
+		releaseToUpdate.versions = _.sortBy(releaseToUpdate.versions, ['released_at']);
+		releaseToUpdate.released_at = releaseToUpdate.versions[releaseToUpdate.versions.length - 1].released_at;
 		releaseToUpdate.modified_at = now;
 		return releaseToUpdate.save();
 
@@ -627,8 +634,8 @@ exports.list = function(req, res) {
 			stars.forEach(id => starMap.set(id, true));
 		}
 
-		let sort = api.sortParams(req, { modified_at: 1 }, {
-			modified_at: '-modified_at',
+		let sort = api.sortParams(req, { released_at: 1 }, {
+			released_at: '-released_at',
 			popularity: '-metrics.popularity',
 			rating: '-rating.score',
 			name: 'name_sortable',

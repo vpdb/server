@@ -22,7 +22,7 @@
 angular.module('vpdb.common', [])
 
 	.controller('UserDetailCtrl', function($scope, $http, $timeout, UserResource, UserStarResource, ModalService, username) {
-		$scope.username = username.replace(/[\s,]+$/g, '');
+		$scope.username = username.replace(/\.$/g, '');
 		$scope.user = null;
 		UserResource.query({ name: $scope.username }, function(users) {
 			$scope.user = users.length ? users[0] : {};

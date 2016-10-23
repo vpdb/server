@@ -125,7 +125,7 @@ class SlackBot {
 							fallback: `${log.payload.game.title} (${log.payload.game.manufacturer} ${log.payload.game.year})`,
 							title: `${log.payload.game.title} (${log.payload.game.manufacturer} ${log.payload.game.year})`,
 							title_link: settings.webUri('/games/' + log.payload.game.id),
-							image_url: log.payload.game.backglass.variations.small
+							image_url: log.payload.game.backglass.variations.small.url
 						}]
 					];
 
@@ -269,7 +269,7 @@ class SlackBot {
 					}
 					break;
 				default:
-					msg = 'Unknown event `' +  log.event + '`:\n```' + JSON.stringify(log.payload, null,  '  ') + '```';
+					msg = 'New event `' +  log.event + '`:\n```' + JSON.stringify(log.payload, null,  '  ') + '```';
 					break;
 			}
 

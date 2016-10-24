@@ -139,6 +139,7 @@ exports.success = function(res, result, code, opts) {
 exports.fail = function(res, err, code) {
 
 	Promise.try(() => {
+		let body = err.body || {};
 		code = code || err.code || 500;
 		res.setHeader('Content-Type', 'application/json');
 		if (err.errs) {
@@ -149,9 +150,9 @@ exports.fail = function(res, err, code) {
 					value: error.value
 				};
 			}), _.isEqual);
-			res.status(code).json({ errors: _.sortBy(arr, 'field') });
+			res.status(code).json(_.assignIn({ errors: _.sortBy(arr, 'field') }, body));
 		} else {
-			res.status(code).json({ error: err.msg() });
+			res.status(code).json(_.assignIn({ error: err.msg() }, body));
 		}
 	}).catch(err => logger.error(err.stack));
 };

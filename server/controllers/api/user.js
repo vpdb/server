@@ -38,6 +38,13 @@ var mailer = require('../../modules/mailer');
 var error = require('../../modules/error')('api', 'user');
 var config = require('../../modules/settings').current;
 
+// redis
+const Redis = require('redis');
+Promise.promisifyAll(Redis.RedisClient.prototype);
+Promise.promisifyAll(Redis.Multi.prototype);
+const redis = Redis.createClient(config.vpdb.redis.port, config.vpdb.redis.host, { no_ready_check: true });
+redis.select(config.vpdb.redis.db);
+redis.on('error', console.error.bind(console));
 
 /**
  * Returns the current user's profile.
@@ -241,13 +248,32 @@ exports.update = function(req, res) {
  */
 exports.authenticate = function(req, res) {
 
+	const ipAddress = req.ip || (req.headers ? req.headers['x-forwarded-for'] : null) || (req.connection ? req.connection.remoteAddress : null) || '0.0.0.0';
+	const backoffNumDelay = 3600 * 24; // keep counter for one day
+	const backoffDelay = [ 0, 0, 0, 0, 0, 5, 10, 15, 20, 30, 60, 120, 180, 300 ];
+	const backoffNumKey = 'auth_delay_num:' + ipAddress;
+	const backoffDelayKey = 'auth_delay_time:' + ipAddress;
+
 	let user, how;
+	let antiBruteForce = false;
 	return Promise.try(() => {
+		// check if there's a delay
+		return redis.ttlAsync(backoffDelayKey);
+
+	}).then(ttl => {
+		if (ttl > 0) {
+			throw error('Too many failed login attempts from %s, blocking for another %s seconds.', ipAddress, ttl)
+				.display('Too many failed login attempts from this IP, try again in %s seconds.', ttl)
+				.body({ wait: ttl })
+				.warn('authenticate')
+				.status(429);
+		}
 
 		// try to authenticate with user/pass
 		if (!req.body.username || !req.body.password) {
 			return null;
 		}
+		antiBruteForce = true;
 		return User.findOne({ username: req.body.username }).exec().then(usr => {
 			if (!usr || !usr.authenticate(req.body.password)) {
 				if (usr) {
@@ -289,6 +315,7 @@ exports.authenticate = function(req, res) {
 
 			// fail if not found
 			if (!token) {
+				antiBruteForce = true;
 				throw error('Invalid token.').status(401);
 			}
 
@@ -331,7 +358,7 @@ exports.authenticate = function(req, res) {
 			}
 		}
 
-		// all is good, generate token and return!
+		// generate token and return.
 		const now = new Date();
 		const expires = new Date(now.getTime() + config.vpdb.apiTokenLifetime);
 		const token = auth.generateApiToken(user, now, how !== 'password');
@@ -349,6 +376,26 @@ exports.authenticate = function(req, res) {
 	}).then(result => {
 		api.success(res, result, 200);
 
+	}).catch(err => {
+		if (antiBruteForce) {
+			let num;
+			return redis.incrAsync(backoffNumKey).then(n => {
+				num = n;
+				let wait = backoffDelay[Math.min(num, backoffDelay.length) - 1];
+				logger.info('[api|user:authenticate] Increasing back-off time to %s for try number %d.', wait, num);
+				if (wait > 0) {
+					return redis.setAsync(backoffDelayKey, true).then(() => redis.expireAsync(backoffDelayKey, wait));
+				}
+			}).then(() => {
+				if (num === 1) {
+					return redis.expireAsync(backoffNumKey, backoffNumDelay);
+				}
+			}).then(() => {
+				throw err;
+			});
+		} else {
+			throw err;
+		}
 	}).catch(api.handleError(res, error, 'Error authenticating user'));
 };
 

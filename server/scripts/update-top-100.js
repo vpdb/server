@@ -37,8 +37,13 @@ Promise.try(() => {
 	const pinside = require('../modules/pinside');
 	return pinside.updateTop100({ top300: false });
 
-}).then(() => {
-	console.log('done!');
+}).then(result => {
+
+	const total = result.matched + result.missed + result.double;
+	console.log('Total: %d', total);
+	console.log('Matched: %d (%d%)', result.matched, Math.round(result.matched / total * 100));
+	console.log('Missed: %d (%d%)', result.missed, Math.round(result.missed / total * 100));
+	console.log('Double: %d (%d%)', result.double, Math.round(result.double / total * 100));
 	//console.log(require('util').inspect(result, { colors:true }));
 
 }).catch(err => {

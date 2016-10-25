@@ -31,6 +31,19 @@ class Pinside {
 
 	constructor() {
 		this._error = require('./error')('pinside');
+		this._mapping = {
+			'batman-the-dark-knight': 5307,
+			'spider-man-vault': 5237,
+			'black-spider-man': 5237,
+			'iron-man-ve': 5550,
+			'star_trek': 6044,
+			'star_trek_le': 6044,
+			'star-trek-the-mirror-universe': 2355,
+			'star-trek': 2355,
+			'star-trek-the-next-generation': 2357,
+			'star-trek-dataeast': 2356,
+			'lord-of-the-rings-(le)': 4858,
+		}
 	}
 
 	/**
@@ -40,15 +53,38 @@ class Pinside {
 	 */
 	updateTop100(opts) {
 		opts = opts || {};
-		return this.getTop100(opts).then(top100 => {
+		let result = {
+			matched: 0,
+			missed: 0,
+			double: 0
+		};
+		let top100;
+		return this.getTop100(opts).then(result => {
+			top100 = result;
+			// reset all ranks
+			return Game.update({}, { 'pinside.ranks': [] });
+
+		}).then(() => {
 			return Promise.each(top100, pinsideGame => {
 				const strip = /\(([^)]+)\)|[^a-z0-9]+$/gi;
 				const regex = new RegExp(pinsideGame.title.replace(strip, '').replace(/[^a-z0-9]+/gi, '.*?'), 'i');
-				return Game.find({ title: { $regex: regex } }).exec().then(matchedGames => {
-					// +-2 years is okay
-					matchedGames = matchedGames.filter(g => Math.abs(pinsideGame.year - g.year) < 3);
+				let mapped = false;
+				let query;
+				if (this._mapping[pinsideGame.id]) {
+					mapped = true;
+					query = { 'ipdb.number': this._mapping[pinsideGame.id] }
+				} else {
+					query = { title: { $regex: regex } };
+				}
+				return Game.find(query).exec().then(matchedGames => {
+					if (!mapped) {
+						// +-2 years is okay
+						matchedGames = matchedGames.filter(g => Math.abs(pinsideGame.year - g.year) < 3);
+					}
 					if (matchedGames.length === 0) {
-						console.log('No match for %s', pinsideGame.title);
+						console.log('No match for %s (%s %s): %s', pinsideGame.title, pinsideGame.mfg, pinsideGame.year, pinsideGame.id);
+						result.missed++;
+
 					} else if (matchedGames.length === 1) {
 						const g = matchedGames[0];
 						console.log('Found game: %s (%s %s): %s', g.title, g.manufacturer, g.year, pinsideGame.id);
@@ -60,13 +96,15 @@ class Pinside {
 						g.pinside.rating = pinsideGame.rating;
 						g.pinside.ids = _.uniq(g.pinside.ids);
 						g.pinside.ranks = _.uniq(g.pinside.ranks);
-
+						result.matched++;
 						return g.save();
+
 					} else {
 						console.log('Found multiple games %s.', matchedGames.map(g => `${g.title} (${g.manufacturer} ${g.year})`).join(', '));
+						result.double++;
 					}
 				});
-			});
+			}).then(() => result);
 		});
 	}
 

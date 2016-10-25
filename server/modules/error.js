@@ -147,6 +147,11 @@ Err.prototype.without = function(prefix) {
 	return this;
 };
 
+Err.prototype.body = function(body) {
+	this.body = body;
+	return this;
+};
+
 Err.prototype._stripFields = function() {
 	if (!this.fieldPrefix) {
 		return;

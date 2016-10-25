@@ -44,7 +44,7 @@ block navbar
 		li(ng-hide="auth.isAuthenticated")
 			a(ng-click="login()")
 				+icon('lock').small.space-right.shift-up
-				span.space-right Login
+				span.space-right Login <small>or Register</small>
 		li.uib-dropdown(ng-show="auth.isAuthenticated", on-toggle="toggled(open)", uib-dropdown)
 			a.space-right.uib-dropdown-toggle(uib-dropdown-toggle)
 				span.space-right-2x {{ auth.user.name }}

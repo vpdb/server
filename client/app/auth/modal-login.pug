@@ -44,7 +44,7 @@ include ../template/_mixins
 				.form-group
 					label.col-sm-4.control-label Password
 					.col-sm-6
-						input.form-control(ng-model="userPass.password", type="password")
+						input.form-control(ng-model="userPass.password", type="password", ng-keyup="$event.keyCode === 13 && login()")
 
 		//- REGISTER
 		div(ng-show="registering && !loginParams.localOnly")

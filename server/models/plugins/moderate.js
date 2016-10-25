@@ -22,7 +22,6 @@
 const _ = require('lodash');
 const logger = require('winston');
 const mongoose = require('mongoose');
-const acl = require('../../acl');
 const Schema = mongoose.Schema;
 
 const modelResourceMap = {
@@ -76,6 +75,7 @@ module.exports = function(schema) {
 			return next();
 		}
 		// check if _created_by is a contributor and auto-approve.
+		const acl = require('../../acl');
 		const User = mongoose.model('User');
 		let user;
 		return Promise.try(() => {
@@ -127,6 +127,7 @@ module.exports = function(schema) {
 	 */
 	schema.statics.handleModerationQuery = function(req, error, query) {
 
+		const acl = require('../../acl');
 		return Promise.try(() => {
 			if (req.query && req.query.moderation) {
 				if (!req.user) {
@@ -238,6 +239,7 @@ module.exports = function(schema) {
 	 */
 	schema.methods.assertModeratedView = function(req, error) {
 
+		const acl = require('../../acl');
 		const resource = modelResourceMap[this.constructor.modelName];
 		if (!resource) {
 			throw new Error('Tried to check moderation permission for unmapped entity "' + this.constructor.modelName + '".');
@@ -275,6 +277,7 @@ module.exports = function(schema) {
 	 * @returns {Promise.<{}|false>} Populated entity if fields added, false otherwise.
 	 */
 	schema.methods.populateModeration = function(req, error) {
+		const acl = require('../../acl');
 		const resource = modelResourceMap[this.constructor.modelName];
 		let fields = req.query && req.query.fields ? req.query.fields.split(',') : [];
 		if (fields.includes('moderation')) {

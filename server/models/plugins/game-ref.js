@@ -21,7 +21,6 @@
 
 const _ = require('lodash');
 const mongoose = require('mongoose');
-const acl = require('../../acl');
 const Schema = mongoose.Schema;
 
 const config = require('../../modules/settings').current;
@@ -75,6 +74,7 @@ module.exports = function(schema, options) {
 			return Promise.resolve(query);
 		}
 
+		const acl = require('../../acl');
 		const Game = mongoose.model('Game');
 		return Promise.try(() => {
 			return req.user ? acl.isAllowed(req.user.id, resource, 'view-restriced') : false;
@@ -112,6 +112,7 @@ module.exports = function(schema, options) {
 	 */
 	schema.statics.restrictedQuery = function(req, game, query) {
 
+		const acl = require('../../acl');
 		const reference = modelReferenceMap[this.modelName];
 		const resource = modelResourceMap[this.modelName];
 
@@ -143,6 +144,7 @@ module.exports = function(schema, options) {
 
 	schema.statics.hasRestrictionAccess = function(req, game, entity) {
 
+		const acl = require('../../acl');
 		const reference = modelReferenceMap[this.modelName];
 		const resource = modelResourceMap[this.modelName];
 

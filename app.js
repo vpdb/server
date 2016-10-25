@@ -103,6 +103,11 @@ serverDomain.run(function() {
 
 	}).then(() => {
 
+		// bootstrap modules
+		require('./server/modules/quota').init();
+		require('./server/modules/storage').init();
+		require('./server/modules/queue').init();
+
 		// bootstrap models
 		let modelsPath = path.resolve(__dirname, 'server/models');
 		fs.readdirSync(modelsPath).forEach(function(file) {

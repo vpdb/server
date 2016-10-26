@@ -28,6 +28,7 @@
 		"buffer-indexof": "1.0.0",
 		"bull": "1.0.0",
 		"busboy": "0.2.13",
+		"cheerio": "0.22.0",
 		"colors": "1.1.2",
 		"compression": "1.6.2",
 		"ent": "2.2.0",

@@ -79,9 +79,11 @@ var config = require('./settings').current;
  * @constructor
  */
 function Queue() {
-
 	events.EventEmitter.call(this);
+}
+util.inherits(Queue, events.EventEmitter);
 
+Queue.prototype.init = function() {
 	var that = this;
 
 	this.queuedFiles = {}; // contains callbacks for potential controller requests of not-yet-processed files
@@ -273,11 +275,7 @@ function Queue() {
 		console.log(err.stack);
 		processQueue(err, file, variation);
 	});
-
-}
-util.inherits(Queue, events.EventEmitter);
-
-
+};
 
 /**
  * Runs pass 1 (if available) and adds it to the queue of pass 2.

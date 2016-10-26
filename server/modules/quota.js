@@ -27,210 +27,217 @@ var error = require('./error')('quota');
 var config = require('./settings').current;
 var quotaConfig = config.vpdb.quota;
 
-function Quota() {
-	logger.info('[quota] Initializing quotas...');
-	var duration;
-	this.quota = {};
-	// we create a quota module for each duration
-	quotaConfig.plans.forEach(plan => {
-		if (plan.unlimited === true) {
-			logger.info('[quota] Skipping unlimited plan "%s".', plan.id);
-			return;
-		}
-		duration = plan.per;
-		if (!this.quota[duration]) {
-			logger.info('[quota] Setting up quota per %s for plan %s...', duration, plan.id);
-			this.quota[duration] = quotaModule.create({
-				timeUnit: duration,
-				interval: 1,
-				host: config.vpdb.redis.host,
-				port: config.vpdb.redis.port,
-				db: config.vpdb.redis.db
-			});
-			Promise.promisifyAll(this.quota[duration]);
-		} else {
-			logger.info('[quota] Not setting up plan %s because volos needs setups per duration and we already set up per %s.', plan.id, duration);
-		}
-	});
-}
+class Quota {
 
-/**
- * Returns the current rate limits for the given user.
- *
- * @param user
- * @param {function} [callback]
- * @returns {Promise.<{ unlimited: boolean, period: String, limit: Number, remaining: Number, reset: Number }>}
- */
-Quota.prototype.getCurrent = function(user) {
+	/**
+	 * Initializes quota plans
+	 */
+	init() {
+		logger.info('[quota] Initializing quotas...');
+		var duration;
+		this.quota = {};
 
-	let plan = user.planConfig;
-	if (!plan) {
-		throw new Error('Unable to find plan "%s" for user.', user._plan);
-	}
-
-	// unlimited?
-	if (plan.unlimited === true) {
-		return Promise.resolve({ unlimited: true, limit: 0, period: 'never', remaining: 0, reset: 0 });
-	}
-
-	return Promise.try(() => {
-
-		// TODO fix when fixed: https://github.com/apigee-127/volos/issues/33
-		return this.quota[plan.per].applyAsync({
-			identifier: user.id,
-			weight: -2,
-			allow: plan.credits
+		// we create a quota module for each duration
+		quotaConfig.plans.forEach(plan => {
+			if (plan.unlimited === true) {
+				logger.info('[quota] Skipping unlimited plan "%s".', plan.id);
+				return;
+			}
+			duration = plan.per;
+			if (!this.quota[duration]) {
+				logger.info('[quota] Setting up quota per %s for plan %s...', duration, plan.id);
+				this.quota[duration] = quotaModule.create({
+					timeUnit: duration,
+					interval: 1,
+					host: config.vpdb.redis.host,
+					port: config.vpdb.redis.port,
+					db: config.vpdb.redis.db
+				});
+				Promise.promisifyAll(this.quota[duration]);
+			} else {
+				logger.info('[quota] Not setting up plan %s because volos needs setups per duration and we already set up per %s.', plan.id, duration);
+			}
 		});
-
-	}).then(() => {
-
-		return this.quota[plan.per].applyAsync({
-			identifier: user.id,
-			weight: 2,
-			allow: plan.credits
-		});
-
-	}).then(result => {
-
-		return {
-			unlimited: false,
-			period: plan.per,
-			limit: result.allowed,
-			remaining: result.allowed - result.used,
-			reset: result.expiryTime
-		};
-
-	});
-};
-
-/**
- * Checks if there is enough quota for the given file and consumes the quota.
- *
- * It also adds the rate limit headers to the request.
- *
- * @param {object} req Request
- * @param {object} res Response
- * @param {File|File[]} files File(s) to check for
- * @param {function} [callback] Callback with `err` and `isAllowed`
- * @returns {Promise.<boolean>}
- */
-Quota.prototype.isAllowed = function(req, res, files, callback) {
-
-	if (!_.isArray(files)) {
-		files = [ files ];
 	}
 
-	let plan = req.user.planConfig;
+	/**
+	 * Returns the current rate limits for the given user.
+	 *
+	 * @param user
+	 * @param {function} [callback]
+	 * @returns {Promise.<{ unlimited: boolean, period: String, limit: Number, remaining: Number, reset: Number }>}
+	 */
+	getCurrent(user) {
 
-	// allow unlimited plans
-	if (plan.unlimited === true) {
-		return Promise.resolve(true).nodeify(callback);
-	}
-
-	var file, sum = 0;
-	for (var i = 0; i < files.length; i++) {
-		file = files[i];
-		let cost = Quota.prototype.getCost(file);
-
-		// a free file
-		if (cost === 0) {
-			continue;
-		}
-
-		// deny access to anon (wouldn't be here if there were only free files)
-		if (!req.user) {
-			return Promise.resolve(false).nodeify(callback);
-		}
-
+		let plan = user.planConfig;
 		if (!plan) {
-			return Promise.reject(error('No quota defined for plan "%s"', req.user._plan)).nodeify(callback);
+			throw new Error('Unable to find plan "%s" for user.', user._plan);
 		}
 
-		sum += cost;
+		// unlimited?
+		if (plan.unlimited === true) {
+			return Promise.resolve({ unlimited: true, limit: 0, period: 'never', remaining: 0, reset: 0 });
+		}
+
+		return Promise.try(() => {
+
+			// TODO fix when fixed: https://github.com/apigee-127/volos/issues/33
+			return this.quota[plan.per].applyAsync({
+				identifier: user.id,
+				weight: -2,
+				allow: plan.credits
+			});
+
+		}).then(() => {
+
+			return this.quota[plan.per].applyAsync({
+				identifier: user.id,
+				weight: 2,
+				allow: plan.credits
+			});
+
+		}).then(result => {
+
+			return {
+				unlimited: false,
+				period: plan.per,
+				limit: result.allowed,
+				remaining: result.allowed - result.used,
+				reset: result.expiryTime
+			};
+
+		});
 	}
 
-	// don't even check quota if weight is 0
-	if (sum === 0) {
-		return Promise.resolve(true).nodeify(callback);
-	}
+	/**
+	 * Checks if there is enough quota for the given file and consumes the quota.
+	 *
+	 * It also adds the rate limit headers to the request.
+	 *
+	 * @param {object} req Request
+	 * @param {object} res Response
+	 * @param {File|File[]} files File(s) to check for
+	 * @param {function} [callback] Callback with `err` and `isAllowed`
+	 * @returns {Promise.<boolean>}
+	 */
+	isAllowed(req, res, files, callback) {
 
-	// https://github.com/apigee-127/volos/tree/master/quota/common#quotaapplyoptions-callback
-	return this.quota[plan.per].applyAsync({
+		if (!_.isArray(files)) {
+			files = [ files ];
+		}
+
+		let plan = req.user.planConfig;
+
+		// allow unlimited plans
+		if (plan.unlimited === true) {
+			return Promise.resolve(true).nodeify(callback);
+		}
+
+		var file, sum = 0;
+		for (var i = 0; i < files.length; i++) {
+			file = files[i];
+			let cost = Quota.prototype.getCost(file);
+
+			// a free file
+			if (cost === 0) {
+				continue;
+			}
+
+			// deny access to anon (wouldn't be here if there were only free files)
+			if (!req.user) {
+				return Promise.resolve(false).nodeify(callback);
+			}
+
+			if (!plan) {
+				return Promise.reject(error('No quota defined for plan "%s"', req.user._plan)).nodeify(callback);
+			}
+
+			sum += cost;
+		}
+
+		// don't even check quota if weight is 0
+		if (sum === 0) {
+			return Promise.resolve(true).nodeify(callback);
+		}
+
+		// https://github.com/apigee-127/volos/tree/master/quota/common#quotaapplyoptions-callback
+		return this.quota[plan.per].applyAsync({
 			identifier: req.user.id,
 			weight: sum,
 			allow: plan.credits
 		})
-		.then(result => {
-			logger.info('[quota] Quota check for %s credit(s) %s on <%s> for %d file(s) with %d quota left for another %d seconds (plan allows %s per %s).', sum, result.isAllowed ? 'passed' : 'FAILED', req.user.email, files.length, result.allowed - result.used, Math.round(result.expiryTime / 1000), plan.credits, plan.per);
-			res.set({
-				'X-RateLimit-Limit': result.allowed,
-				'X-RateLimit-Remaining': result.allowed - result.used,
-				'X-RateLimit-Reset': result.expiryTime
-			});
-			return result.isAllowed;
-		}
-	).nodeify(callback);
-};
-
-/**
- * Returns the cost of a given file and variation.
- *
- * @param {File} file File
- * @param {string|object} [variation] Optional variation
- * @returns {*}
- */
-Quota.prototype.getCost = function(file, variation) {
-
-	if (!file.file_type) {
-		logger.error(require('util').inspect(file));
-		throw new Error('File object must be populated when retrieving costs.');
-	}
-
-	var variationName = _.isObject(variation) ? variation.name : variation;
-	var cost = quotaConfig.costs[file.file_type];
-
-	// undefined file_types are free
-	if (_.isUndefined(cost)) {
-		logger.warn('[quota] Undefined cost for file_type "%s".', file.file_type);
-		return 0;
-	}
-
-	// if a variation is demanded and cost contains variation def, ignore the rest.
-	if (variationName && !_.isUndefined(cost.variation)) {
-		if (_.isObject(cost.variation)) {
-			if (_.isUndefined(cost.variation[variationName])) {
-				if (_.isUndefined(cost.variation['*'])) {
-					logger.warn('[quota] No cost defined for %s file of variation %s and no fallback given, returning 0.', file.file_type, variationName);
-					return 0;
+			.then(result => {
+					logger.info('[quota] Quota check for %s credit(s) %s on <%s> for %d file(s) with %d quota left for another %d seconds (plan allows %s per %s).', sum, result.isAllowed ? 'passed' : 'FAILED', req.user.email, files.length, result.allowed - result.used, Math.round(result.expiryTime / 1000), plan.credits, plan.per);
+					res.set({
+						'X-RateLimit-Limit': result.allowed,
+						'X-RateLimit-Remaining': result.allowed - result.used,
+						'X-RateLimit-Reset': result.expiryTime
+					});
+					return result.isAllowed;
 				}
-				cost = cost.variation['*'];
-			} else {
-				cost = cost.variation[variationName];
-			}
-		} else {
-			return cost.variation;
-		}
+			).nodeify(callback);
 	}
 
-	if (_.isObject(cost)) {
-		if (_.isUndefined(cost.category)) {
-			logger.warn('[quota] No cost defined for %s file (type is undefined).', file.file_type, file.getMimeCategory(variation));
+	/**
+	 * Returns the cost of a given file and variation.
+	 *
+	 * @param {File} file File
+	 * @param {string|object} [variation] Optional variation
+	 * @returns {*}
+	 */
+	getCost(file, variation) {
+
+		if (!file.file_type) {
+			logger.error(require('util').inspect(file));
+			throw new Error('File object must be populated when retrieving costs.');
+		}
+
+		var variationName = _.isObject(variation) ? variation.name : variation;
+		var cost = quotaConfig.costs[file.file_type];
+
+		// undefined file_types are free
+		if (_.isUndefined(cost)) {
+			logger.warn('[quota] Undefined cost for file_type "%s".', file.file_type);
 			return 0;
 		}
-		if (_.isObject(cost.category)) {
-			var costCategory = cost.category[file.getMimeCategory(variation)];
-			if (_.isUndefined(costCategory)) {
-				if (_.isUndefined(cost.category['*'])) {
-					logger.warn('[quota] No cost defined for %s file of type %s and no fallback given, returning 0.', file.file_type, file.getMimeCategory(variation));
-					return 0;
+
+		// if a variation is demanded and cost contains variation def, ignore the rest.
+		if (variationName && !_.isUndefined(cost.variation)) {
+			if (_.isObject(cost.variation)) {
+				if (_.isUndefined(cost.variation[variationName])) {
+					if (_.isUndefined(cost.variation['*'])) {
+						logger.warn('[quota] No cost defined for %s file of variation %s and no fallback given, returning 0.', file.file_type, variationName);
+						return 0;
+					}
+					cost = cost.variation['*'];
+				} else {
+					cost = cost.variation[variationName];
 				}
-				return cost.category['*'];
+			} else {
+				return cost.variation;
 			}
-			return costCategory;
 		}
-		return cost.category;
+
+		if (_.isObject(cost)) {
+			if (_.isUndefined(cost.category)) {
+				logger.warn('[quota] No cost defined for %s file (type is undefined).', file.file_type, file.getMimeCategory(variation));
+				return 0;
+			}
+			if (_.isObject(cost.category)) {
+				var costCategory = cost.category[file.getMimeCategory(variation)];
+				if (_.isUndefined(costCategory)) {
+					if (_.isUndefined(cost.category['*'])) {
+						logger.warn('[quota] No cost defined for %s file of type %s and no fallback given, returning 0.', file.file_type, file.getMimeCategory(variation));
+						return 0;
+					}
+					return cost.category['*'];
+				}
+				return costCategory;
+			}
+			return cost.category;
+		}
+		return cost;
 	}
-	return cost;
-};
+}
 
 module.exports = new Quota();

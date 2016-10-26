@@ -70,8 +70,14 @@ var fields = {
 	ipdb: {
 		number: Number,
 		rating: Number,
+		rank: Number,
 		mfg: Number,
 		mpu: Number
+	},
+	pinside: {
+		ids: [ String ],
+		ranks: [ Number ],
+		rating: Number
 	},
 	counter:       {
 		releases:  { type: Number, 'default': 0 },

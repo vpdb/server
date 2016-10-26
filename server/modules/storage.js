@@ -50,7 +50,7 @@ class Storage {
 			table: processors.table.variations,
 			directb2s: processors.directb2s.variations
 		};
-		
+
 		// create necessary paths..
 		_.each(this.variations, items => {
 			_.each(items, variations => {

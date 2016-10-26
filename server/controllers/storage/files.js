@@ -97,7 +97,11 @@ function find(req, authErr) {
 
 		// file is not public - user must be logged in.
 		if (!isPublic && !req.user) {
-			throw error(authErr, 'You must provide valid credentials for non-public files.').status(401);
+			if (authErr) {
+				throw error(authErr, 'You must provide valid credentials for non-public files.').status(401);
+			} else {
+				throw error('You must provide valid credentials for non-public files.').status(401);
+			}
 		}
 
 		// if inactive and user is not logged or not the owner, refuse.

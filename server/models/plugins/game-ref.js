@@ -130,10 +130,10 @@ module.exports = function(schema, options) {
 		return Promise.try(() => {
 			return acl.isAllowed(req.user.id, resource, 'view-restriced');
 
-		}).then(isModerator => {
+		}).then(canViewRestricted => {
 
 			// if moderator, retuzrn same query (no filter)
-			if (isModerator) {
+			if (canViewRestricted) {
 				return query;
 			}
 

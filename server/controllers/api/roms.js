@@ -139,7 +139,6 @@ exports.list = function(req, res) {
 
 	let pagination = api.pagination(req, 10, 50);
 	let game, ipdbNumber;
-	let query = {};
 
 	Promise.try(() => {
 

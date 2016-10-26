@@ -38,28 +38,21 @@ const processors = {
 	directb2s: require('./processor/directb2s')
 };
 
-const variations = {
-	image: processors.image.variations,
-	video: processors.video.variations,
-	table: processors.table.variations,
-	directb2s: processors.directb2s.variations
-};
-
 const stat = Promise.promisify(fs.stat);
 
 class Storage {
 
-	constructor() {
-
-	}
-
 	init() {
-
 		this.variationNames = [];
-		var that = this;
-
+		this.variations = {
+			image: processors.image.variations,
+			video: processors.video.variations,
+			table: processors.table.variations,
+			directb2s: processors.directb2s.variations
+		};
+		
 		// create necessary paths..
-		_.each(variations, items => {
+		_.each(this.variations, items => {
 			_.each(items, variations => {
 				variations.forEach(variation => {
 					['public', 'protected'].forEach(access => {
@@ -69,8 +62,8 @@ class Storage {
 							logger.info('[storage] Creating non-existant path for variation "%s" at %s', variation.name, variationPath);
 							fs.mkdirSync(variationPath);
 						}
-						if (!_.includes(that.variationNames, variation.name)) {
-							that.variationNames.push(variation.name);
+						if (!_.includes(this.variationNames, variation.name)) {
+							this.variationNames.push(variation.name);
 						}
 					});
 				});
@@ -172,8 +165,8 @@ class Storage {
 				}, 500);
 			}
 		}
-		if (variations[file.getMimeCategory()] && variations[file.getMimeCategory()][file.file_type]) {
-			variations[file.getMimeCategory()][file.file_type].forEach(variation => {
+		if (this.variations[file.getMimeCategory()] && this.variations[file.getMimeCategory()][file.file_type]) {
+			this.variations[file.getMimeCategory()][file.file_type].forEach(variation => {
 				filePath = file.getPath(variation.name);
 				if (fs.existsSync(filePath)) {
 					logger.verbose('[storage] Removing file variation %s..', filePath);
@@ -254,8 +247,8 @@ class Storage {
 		opts = opts || {};
 		const mimeCategory = file.getMimeCategory();
 		const processor = processors[mimeCategory];
-		const variations = variations[mimeCategory] && variations[mimeCategory][file.file_type] ?
-			variations[mimeCategory][file.file_type] :
+		const variations = this.variations[mimeCategory] && this.variations[mimeCategory][file.file_type] ?
+			this.variations[mimeCategory][file.file_type] :
 			null;
 
 		if (!processor) {
@@ -418,6 +411,7 @@ class Storage {
 	url(file, variation) {
 
 		if (!file) {
+			console.log('file is null!');
 			return null;
 		}
 		let storageUri = file.isPublic(variation) ? settings.storagePublicUri.bind(settings) : settings.storageProtectedUri.bind(settings);
@@ -480,8 +474,8 @@ class Storage {
 		}
 
 		// variations
-		if (variations[mimeCategory] && variations[mimeCategory][file.file_type]) {
-			variations[mimeCategory][file.file_type].forEach(function(variation) {
+		if (this.variations[mimeCategory] && this.variations[mimeCategory][file.file_type]) {
+			this.variations[mimeCategory][file.file_type].forEach(function(variation) {
 				var lockPath = that.path(file, variation, { forceProtected: true, lockFile: true });
 				var protectedPath = that.path(file, variation, { forceProtected: true });
 				var publicPath = that.path(file, variation);
@@ -530,8 +524,8 @@ class Storage {
 		var that = this;
 		var variations = file.variations || {};
 		var mimeCategory = file.getMimeCategory();
-		if (variations[mimeCategory] && variations[mimeCategory][file.file_type]) {
-			variations[mimeCategory][file.file_type].forEach(function(variation) {
+		if (this.variations[mimeCategory] && this.variations[mimeCategory][file.file_type]) {
+			this.variations[mimeCategory][file.file_type].forEach(variation => {
 				variations[variation.name] = variations[variation.name] || {};
 				variations[variation.name].url = that.url(file, variation);
 				var cost = quota.getCost(file, variation);

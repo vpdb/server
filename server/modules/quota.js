@@ -136,7 +136,7 @@ class Quota {
 		var file, sum = 0;
 		for (var i = 0; i < files.length; i++) {
 			file = files[i];
-			let cost = Quota.prototype.getCost(file);
+			let cost = this.getCost(file);
 
 			// a free file
 			if (cost === 0) {

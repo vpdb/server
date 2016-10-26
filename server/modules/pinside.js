@@ -43,6 +43,17 @@ class Pinside {
 			'star-trek-the-next-generation': 2357,
 			'star-trek-dataeast': 2356,
 			'lord-of-the-rings-(le)': 4858,
+			'ghostbuster-premium-le': 6332,
+			'ghostbusters': 6332,
+			'wizard-of-oz': 5800,
+			'the_walking_dead_le': 6155,
+			'addams-family-gold-special-collectors-edition': 20,
+			'the-hobbit': 6224,
+			'game-of-thrones-le': 6307,
+			'x-men-le': 5822,
+			'revenge-from-mars': 4446,
+			'transformers-(le)': 5709,
+
 		}
 	}
 

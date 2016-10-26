@@ -45,7 +45,7 @@ exports.values = {
 		mimeTypes: [ 'application/x-visual-pinball-table', 'application/x-visual-pinball-table-x', 'text/plain', 'application/vbscript', 'audio/mpeg', 'audio/mp3', 'application/zip', 'application/rar', 'application/x-rar-compressed' ]
 	},
 	'rom': {
-		mimeTypes: [ 'application/zip' ]
+		mimeTypes: [ 'application/zip', 'application/x-zip-compressed' ]
 	}
 };
 

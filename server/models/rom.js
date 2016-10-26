@@ -67,7 +67,6 @@ var apiFields = {
 RomSchema.plugin(gameRef, { isOptional: true });
 RomSchema.plugin(uniqueValidator, { message: 'The {PATH} "{VALUE}" is already taken.', code: 'duplicate_field' });
 RomSchema.plugin(prettyId, { model: 'Rom', ignore: [ '_created_by', '_game' ], validations: [
-	{ path: '_file', mimeType: 'application/zip', message: 'Must be a ZIP archive.' },
 	{ path: '_file', fileType: 'rom', message: 'Must be a file of type "rom".' }
 ] });
 RomSchema.plugin(fileRef);

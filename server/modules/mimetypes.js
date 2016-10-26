@@ -53,6 +53,11 @@ module.exports = {
 		ext: 'rar',
 		category: 'archive'
 	},
+	'application/x-zip-compressed': {
+		name: 'ZIP-compressed file',
+		ext: 'zip',
+		category: 'archive'
+	},
 	'application/x-shockwave-flash': {
 		name: 'Flash Animation',
 		ext: 'swf',

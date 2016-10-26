@@ -54,7 +54,7 @@ class Pinside {
 			'revenge-from-mars': 4446,
 			'transformers-(le)': 5709,
 
-		}
+		};
 	}
 
 	/**
@@ -83,7 +83,7 @@ class Pinside {
 				let query;
 				if (this._mapping[pinsideGame.id]) {
 					mapped = true;
-					query = { 'ipdb.number': this._mapping[pinsideGame.id] }
+					query = { 'ipdb.number': this._mapping[pinsideGame.id] };
 				} else {
 					query = { title: { $regex: regex } };
 				}

@@ -161,6 +161,9 @@ GameSchema.virtual('restrictions')
 		if (config.vpdb.restrictions.backglass.denyMpu.includes(this.ipdb.mpu)) {
 			restrictions.backglass = { mpu: true };
 		}
+		if (config.vpdb.restrictions.rom.denyMpu.includes(this.ipdb.mpu)) {
+			restrictions.rom = { mpu: true };
+		}
 		if (!_.isEmpty(restrictions)) {
 			return restrictions;
 		}

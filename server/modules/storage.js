@@ -19,16 +19,16 @@
 
 "use strict";
 
-var _ = require('lodash');
-var fs = require('fs');
-var path = require('path');
-var logger = require('winston');
+const _ = require('lodash');
+const fs = require('fs');
+const path = require('path');
+const logger = require('winston');
 
-var queue = require('./queue');
-var quota = require('./quota');
-var error = require('./error')('storage');
-var settings = require('./settings');
-var config = settings.current;
+const queue = require('./queue');
+const quota = require('./quota');
+const error = require('./error')('storage');
+const settings = require('./settings');
+const config = settings.current;
 
 const processors = {
 	image: require('./processor/image'),
@@ -130,7 +130,7 @@ class Storage {
 		}).then(files => {
 			return Promise.each(files, file => {
 				logger.info('[storage] Cleanup: Removing inactive file "%s" by <%s> (%s).', file.name, file._created_by ? file._created_by.email : 'unknown', file.id);
-				Storage.prototype.remove(file);
+				this.remove(file);
 				return file.remove();
 			});
 		});
@@ -334,7 +334,7 @@ class Storage {
 			}
 
 			// check if file should have been moved to public storage meanwhile
-			checkIfMoved(file, originalFile, variation);
+			this.checkIfMoved(file, originalFile, variation);
 
 			// read metadata from processed file
 			logger.verbose('[storage] Reading metadata from %s...', file.toString(variation));
@@ -368,7 +368,7 @@ class Storage {
 			}
 
 			// check if file should have been moved to public storage meanwhile
-			checkIfMoved(file, originalFile, variation);
+			this.checkIfMoved(file, originalFile, variation);
 
 			var filepath = file.getPath(variation);
 			if (!fs.existsSync(filepath)) {
@@ -403,7 +403,7 @@ class Storage {
 			}
 
 			// check if file should have been moved to public storage meanwhile
-			checkIfMoved(file, originalFile, variation);
+			this.checkIfMoved(file, originalFile, variation);
 
 			return updatedFile;
 		});
@@ -580,20 +580,20 @@ class Storage {
 
 		});
 	}
-}
 
-function checkIfMoved(file, originalFile, variation) {
+	checkIfMoved(file, originalFile, variation) {
 
-	// check if file should have been renamed while reading meta data
-	var dirtyPath = Storage.prototype.path(originalFile, variation);
-	var cleanPath = Storage.prototype.path(file, variation);
-	if (!fs.existsSync(cleanPath) && fs.existsSync(dirtyPath)) {
-		logger.info('[storage] Seems that "%s" was locked while attempting to move, renaming now to "%s".', dirtyPath, cleanPath);
-		//try {
+		// check if file should have been renamed while reading meta data
+		var dirtyPath = this.path(originalFile, variation);
+		var cleanPath = this.path(file, variation);
+		if (!fs.existsSync(cleanPath) && fs.existsSync(dirtyPath)) {
+			logger.info('[storage] Seems that "%s" was locked while attempting to move, renaming now to "%s".', dirtyPath, cleanPath);
+			//try {
 			fs.renameSync(dirtyPath, cleanPath);
-		//} catch (err) {
-		//	logger.error('[storage] Error renaming: %s', err.message);
-		//}
+			//} catch (err) {
+			//	logger.error('[storage] Error renaming: %s', err.message);
+			//}
+		}
 	}
 }
 

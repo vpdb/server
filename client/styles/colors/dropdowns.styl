@@ -5,11 +5,14 @@
 
 	// In navbar
 	.navbar-nav li > .uib-dropdown-menu
-		background-color $color-navbar
+
 		border-left-color $color-primary
 		border-right-color $color-primary
 		border-bottom-color $color-primary
 
+	@media (min-width: $bootstrap-screen-sm-min)
+		.navbar-nav li > .uib-dropdown-menu
+			background-color $color-navbar
 
 //
 // Light theme

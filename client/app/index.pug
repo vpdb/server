@@ -4,40 +4,40 @@ include template/_mixins
 block navbar
 	ul.nav.navbar-nav
 		li(ng-class="{ active: menu == 'home' }")
-			a(ui-sref="home") Home
+			a(ui-sref="home", ng-click="navCollapsed = true") Home
 		li(ng-class="{ active: menu == 'games' }")
-			a(ui-sref="games") Games
+			a(ui-sref="games", ng-click="navCollapsed = true") Games
 		li(ng-class="{ active: menu == 'releases' }")
-			a(ui-sref="releases") Releases
-		li.uib-dropdown(ng-class="{ active: menu == 'admin' }", ng-show="auth.hasRole(['root', 'admin', 'moderator'])", on-toggle="toggled(open)", uib-dropdown)
+			a(ui-sref="releases", ng-click="navCollapsed = true") Releases
+		li.uib-dropdown(ng-class="{ active: menu == 'admin' }", ng-show="auth.hasRole(['root', 'admin', 'moderator'])", uib-dropdown)
 			a.space-right.uib-dropdown-toggle(uib-dropdown-toggle)
 				span.space-right-2x Admin
 				+icon('angle-down').smaller.shift-up
 			ul.uib-dropdown-menu(role="menu")
 				li(ng-show="auth.hasPermission('*/moderate')")
-					a(ui-sref="adminUploads")
+					a(ui-sref="adminUploads", ng-click="navCollapsed = true")
 						+icon('upload').space-right.shift-up
 						span Uploads
 				li
-					a(ui-sref="adminUsers")
+					a(ui-sref="adminUsers", ng-click="navCollapsed = true")
 						+icon('users').space-right.shift-up
 						span Users
 
 	ul.nav.navbar-nav.navbar-right
-		li.uib-dropdown(ng-show="(auth.hasPermission('releases/add') || auth.hasPermission('games/add') || auth.hasPermission('backglasses/add')) && themeName === 'theme-dark'", on-toggle="toggled(open)", uib-dropdown)
-			a.btn.btn-hollow.space-right.uib-dropdown-toggle(uib-dropdown-toggle) Upload
+		li.hidden-sm.uib-dropdown(ng-show="(auth.hasPermission('releases/add') || auth.hasPermission('games/add') || auth.hasPermission('backglasses/add')) && themeName === 'theme-dark'", uib-dropdown)
+			a.btn.btn-hollow.uib-dropdown-toggle(uib-dropdown-toggle) Upload
 			ul.uib-dropdown-menu
 				li(ng-show="auth.hasPermission('games/add')")
-					a(ui-sref="addGame")
+					a(ui-sref="addGame", ng-click="navCollapsed = true")
 						span Game Data
 				li(ng-show="auth.hasPermission('releases/add')")
-					a(ng-click="uploadRelease()")
+					a(ng-click="uploadRelease(); navCollapsed = true")
 						span Recreation
 				//li
 					a
 						span Original Game
 				li(ng-show="auth.hasPermission('backglasses/add')")
-					a(ng-click="uploadBackglass()")
+					a(ng-click="uploadBackglass(); navCollapsed = true")
 						span Direct B2S
 
 
@@ -45,17 +45,18 @@ block navbar
 			a(ng-click="login()")
 				+icon('lock').small.space-right.shift-up
 				span.space-right Login <small>or Register</small>
-		li.uib-dropdown(ng-show="auth.isAuthenticated", on-toggle="toggled(open)", uib-dropdown)
+		li.uib-dropdown(ng-show="auth.isAuthenticated", uib-dropdown)
 			a.space-right.uib-dropdown-toggle(uib-dropdown-toggle)
+				img.img-avatar.img-avatar--xsm.space-right(gravatar-src="auth.user.gravatar_id", gravatar-default="retro")
 				span.space-right-2x {{ auth.user.name }}
 				+icon('angle-down').smaller.shift-up
 			ul.uib-dropdown-menu
 				li
-					a(ui-sref="profile.settings")
+					a(ui-sref="profile.settings", ng-click="navCollapsed = true")
 						+icon('user').space-right.shift-up
 						span Profile
 				li
-					a(ng-click="auth.logout()")
+					a(ng-click="auth.logout(); navCollapsed = true")
 						+icon('exit').space-right.shift-up
 						span Logout
 
@@ -96,12 +97,13 @@ block content
 
 		footer
 			.text-center
-				a.space-right.space-left(ui-sref="about", ng-class="{ active: menu == 'about' }") About
+				a.space-right.space-left(href="https://www.gameex.info/forums/forum/65-vpdb-support-forum/") Forum
 				a.space-right.space-left-2x(ui-sref="rules", ng-class="{ active: menu == 'rules' }") Rules
 				a.space-right.space-left-2x(ui-sref="faq", ng-class="{ active: menu == 'faq' }") FAQ
-				a.space-right.space-left-2x(href="https://developer.vpdb.io/") Contribute
 				a.space-right.space-left-2x(ui-sref="legal", ng-class="{ active: menu == 'legal' }") Legal
 				a.space-left-2x(ui-sref="privacy", ng-class="{ active: menu == 'privacy' }") Privacy Policy
+				a.space-right.space-left-2x(href="https://developer.vpdb.io/") Develop
+				a.space-right.space-left-2x(ui-sref="about", ng-class="{ active: menu == 'about' }") About
 
 	.spinner-overlay.fade-animation(ng-show="loading", ng-cloak)
 		.spinner

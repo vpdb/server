@@ -5,28 +5,25 @@ block root
 	- var appname = 'vpdb'
 
 block body
-	if deployment != 'production'
-		.staging-bar
-		.staging-bar
-	nav.navbar.navbar-default.navbar-fixed-top(ng-cloak, ng-init="navCollapsed = true")
+	nav.navbar.navbar-default.navbar-fixed-top(ng-cloak, ng-init="navCollapsed = true", role="navigation")
 		.container
 			.navbar-header
 				button.a--lighter.navbar-toggle(type="button", ng-click="navCollapsed = !navCollapsed")
 					+icon('bars').space-right
 					| Menu
 				span.navbar-brand
-					a(href="/")
+					a(href="/", ng-click="navCollapsed = true")
 						+icon('vpdb-o').logo
 						+icon('logo-vp').logo-vp
 						+icon('logo-db').logo-db
 						span.logo-beta BETA
 
-			.navbar-collapse(uib-collapse="navCollapsed", ng-click="navCollapsed = true")
+			.navbar-collapse(uib-collapse="navCollapsed")
 				block navbar
 
 	block content
 
-	section#bottom.footer(ng-cloak)
+	//-section#bottom.footer(ng-cloak)
 		//p
 			a(href="https://github.com/freezy/node-vpdb", target="_blank")
 				+icon('github-alt').shift-up.space-right

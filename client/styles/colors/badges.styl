@@ -46,7 +46,41 @@
 		background-color #414141
 		&:before
 			background-image url("/images/tag-head-dark.svg")
-//
+
+	// The Top 10/100/300 badges
+	.top-badge
+		&.gold
+			.top-block
+				color $color-primary
+			.svg-icon
+				fill $color-primary
+		&.silver
+			.top-block
+				color $color-lighter
+			.svg-icon
+				fill $color-lighter
+		&.bronze
+			.top-block
+				color $color-light
+			.svg-icon
+				fill $color-light
+		&:hover
+			&.gold
+				.top-block
+					color $color-primary-light
+				.svg-icon
+					fill $color-primary-light
+			&.silver
+				.top-block
+					color $color-lightest
+				.svg-icon
+					fill $color-lightest
+			&.bronze
+				.top-block
+					color $color-lightish
+				.svg-icon
+					fill $color-lightish
+	//
 // Light theme
 // --------------------------------------------------
 .theme-light

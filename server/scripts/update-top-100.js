@@ -35,7 +35,7 @@ Promise.try(() => {
 
 	// update from Pinside
 	const pinside = require('../modules/pinside');
-	return pinside.updateTop100({ top300: false });
+	return pinside.updateTop100({ top300: true });
 
 }).then(result => {
 

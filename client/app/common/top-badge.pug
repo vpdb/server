@@ -1,0 +1,8 @@
+include ../template/_mixins
+a.top-badge(ng-show="hasRank", ng-class="place", ng-href="href", target="_blank")
+	+icon('laurel-left')
+	.top-block
+		.top-title {{ site }}
+		.top-how-many TOP {{ top }}
+		.top-rank &#x23;{{ rank }}
+	+icon('laurel-right')

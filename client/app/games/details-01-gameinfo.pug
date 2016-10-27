@@ -13,6 +13,7 @@ img.img--logo(ng-src="{{ game.logo.variations['medium' + pixelDensitySuffix].url
 	rating-action="rateGame($rating)"
 	rating-readonly="!auth.hasPermission('games/rate')")
 
+top-badge(ng-model="game.pinside.ranks", site="Pinside", href="https://pinside.com/pinball/archive/{{ game.pinside.ids[0] }}")
 
 //-- STATS
 //---------------------------------------------------------------------

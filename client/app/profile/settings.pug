@@ -146,12 +146,8 @@ include ../template/_mixins
 .span(ng-show="auth.user.provider === 'local'")
 	h1 Application Access Tokens
 	hr
-	p(ng-hide="auth.user.plan.app_tokens_enabled") This allows you to give other applications such as VPDB Agent full
-		| access to the API without having to hand over your password. However, application tokens are currently disabled
-		| for your current plan.
-	p(ng-show="auth.user.plan.app_tokens_enabled") This allows you to give other applications such as VPDB Agent full
-		| access to the API without having to hand over your password. You can delete or temporarily disable these tokens
-		| any time.
+	p(ng-hide="auth.user.plan.app_tokens_enabled") This allows you to give other applications such as VPDB Agent full access to the API without having to hand over your password. However, application tokens are currently disabled for your current plan.
+	p(ng-show="auth.user.plan.app_tokens_enabled") This allows you to give other applications such as VPDB Agent full access to the API without having to hand over your password. You can delete or temporarily disable these tokens any time.
 
 	.alert.alert-success.padder-bottom(ng-show="showTokenAlert")
 		+icon('warning').shift-up.space-right
@@ -209,6 +205,4 @@ table.table.table-striped(ng-show="providers.length")
 			td -
 
 p(ng-hide="providers.length")
-	i No linked accounts. Linked accounts appear when you choose to login with one of the supported third party
-		| providers. In order to link a third party account to this account, simply login using a third party
-		| account where you registered with the same email address.
+	i No linked accounts. Linked accounts appear when you choose to login with one of the supported third party providers. In order to link a third party account to this account, simply login using a third party account where you registered with the same email address.

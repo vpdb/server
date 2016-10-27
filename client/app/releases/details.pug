@@ -198,8 +198,8 @@ p.padder-top(ng-show="pageLoading")
 			thead
 				tr
 					th
-					th.hidden-sm Orientation
-					th Lighting
+					th Orientation
+					th.hidden-xs.hidden-sm Lighting
 					th Compatibility
 					th Version
 					th Size
@@ -207,10 +207,10 @@ p.padder-top(ng-show="pageLoading")
 				tr(ng-repeat="flavor in flavorGrid")
 					td.td--img
 						img.img--rounded(ng-src="{{ flavor.file.playfield_image.variations['square' + pixelDensitySuffix].url }}")
-					td.hidden-sm
+					td
 						| {{ flavor.orientation.name }} <br>
 						i {{ flavor.orientation.other }}
-					td
+					td.hidden-xs.hidden-sm
 						| {{ flavor.lighting.name }} <br>
 						i {{ flavor.lighting.other }}
 					td

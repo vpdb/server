@@ -211,6 +211,7 @@ exports.releaseModerationCommented = function(user, release, message) {
 	}).then(p => {
 		participants = p.map(c => c._from);
 		let all = _.uniqWith([ ...moderators, ...participants, release._created_by ], (u1, u2) => u1.id === u2.id);
+		const isApproved = release.moderation && release.moderation.is_approved;
 
 		return Promise.each(all.filter(u => u.id !== user.id), dest => {
 			const isDestMod = moderators.includes(dest);
@@ -230,7 +231,7 @@ exports.releaseModerationCommented = function(user, release, message) {
 				game: game,
 				commentor: user,
 				message: wrapMessage(message),
-				url: settings.webUri('/games/' + game.id + '/releases/' + release.id)
+				url: settings.webUri('/games/' + game.id + '/releases/' + release.id + (isApproved ? '?show-moderation' : ''))
 			}, isDestParticipant || !isDestMod ? null : 'moderator_notify_release_commented');
 
 		});

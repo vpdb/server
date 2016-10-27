@@ -20,7 +20,7 @@
 "use strict"; /* global _, angular */
 
 angular.module('vpdb.releases.details', []).controller('ReleaseDetailsController', function(
-	$scope, $rootScope, $uibModal, $timeout, $stateParams,
+	$scope, $rootScope, $uibModal, $timeout, $stateParams, $location,
 	ApiHelper, ReleaseCommentResource, AuthService, ReleaseService, Flavors, TrackerService,
 	ReleaseRatingResource, ReleaseResource, GameResource, ReleaseModerationCommentResource)
 {
@@ -32,6 +32,7 @@ angular.module('vpdb.releases.details', []).controller('ReleaseDetailsController
 	$scope.releaseId = $stateParams.releaseId;
 	$scope.flavors = Flavors;
 	$scope.found = false;
+	$scope.pageLoading = true;
 	$scope.newComment = 'default text';
 	$scope.zoneName = AuthService.hasPermission('releases/update') ? 'Admin' : 'Author';
 
@@ -46,6 +47,14 @@ angular.module('vpdb.releases.details', []).controller('ReleaseDetailsController
 		$scope.found = true;
 		$scope.setTitle(release.game.title + ' · ' + $scope.release.name);
 		TrackerService.trackPage();
+
+		// moderation toggle
+		if ($location.search()['show-moderation']) {
+			$scope.showModeration = true;
+			$location.search('show-moderation', null);
+		} else {
+			$scope.showModeration = release.moderation && !release.moderation.is_approved;
+		}
 
 		// sort versions
 		$scope.releaseVersions = _.sortByOrder(release.versions, 'released_at', false);
@@ -65,7 +74,7 @@ angular.module('vpdb.releases.details', []).controller('ReleaseDetailsController
 
 		// fetch comments
 		$scope.comments = ReleaseCommentResource.query({ releaseId: release.id });
-		if (release.moderation && !release.moderation.is_approved) {
+		if (release.moderation) {
 			$scope.moderationComments = ReleaseModerationCommentResource.query({ releaseId: release.id });
 		}
 

@@ -1,6 +1,8 @@
 include ../template/_mixins
 
-p.padder-top(ng-show="pageLoading") Loading...
+p.padder-top(ng-show="pageLoading")
+	+icon('circle-o-notch').small.svg-spin.space-right.shift-up
+	| Loading...
 
 .row.ng-cloak.row--fullheight.fade-animation(ng-controller="ReleaseDetailsController", ng-show="!pageLoading")
 
@@ -76,6 +78,10 @@ p.padder-top(ng-show="pageLoading") Loading...
 					li: a.text-center(ui-sref="editRelease({ id: game.id, releaseId: release.id })")
 						+icon('pencil-circle').space-right.shift-up
 						| Edit Release
+					li(ng-hide="release.moderation && !release.moderation.is_approved")
+						input#showModeration.checkbox--toggle(type='checkbox', ng-model="showModeration")
+						label(for="showModeration")
+						label.a.a--light(for="showModeration") Show Moderation
 
 			p.padder-top
 
@@ -90,7 +96,7 @@ p.padder-top(ng-show="pageLoading") Loading...
 
 		//-- MODERATION ZONE
 		//---------------------------------------------------------------------
-		.panel--rect-block.padder-top.shift-up-1px(ng-show="release.moderation && !release.moderation.is_approved")
+		.panel--rect-block.padder-top.shift-up-1px(ng-show="showModeration")
 			h1.text-center(uib-tooltip="Only visible by moderators and the uploader. Will disappear when the release is approved.", tooltip-placement="bottom", tooltip-append-to-body="true", tooltip-popup-delay="200")
 				+icon('forum').space-right
 				| Moderation Zone
@@ -117,10 +123,15 @@ p.padder-top(ng-show="pageLoading") Loading...
 				button.btn.btn-hollow.pull-right.shift-up-2x(ng-click="addModerationComment(release.id)") Reply
 				.clearfix
 
-			.alert.alert-info(ng-show="!release.moderation.is_refused")
+			.alert.alert-info(ng-show="!release.moderation.is_refused && !release.moderation.is_approved")
 				.text-center
 					+icon('warning').shift-up.space-right
 					| Release moderation is still pending.
+
+			.alert.alert-success(ng-show="!release.moderation.is_refused && release.moderation.is_approved")
+				.text-center
+					+icon('info').space-right
+					| This release has {{ release.moderation.auto_approved ? 'been auto-approved' : 'already approved' }}.
 
 			.alert.alert-danger(ng-show="release.moderation.is_refused")
 				.text-center
@@ -238,7 +249,7 @@ p.padder-top(ng-show="pageLoading") Loading...
 		.clearfix
 		p.padder-bottom-2x
 
-	.padder-top.space-left-2x(ng-show="!found")
+	.padder-top.space-left-2x(ng-show="!found && !pageLoading")
 		p Sorry, no such release found.
 		p(ng-show="!auth.isAuthenticated") If you're looking for a moderated release, try logging in.
 

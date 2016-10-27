@@ -89,8 +89,8 @@ exports.create = function(req, res) {
 
 	}).then(() => {
 		logger.info('[api|release:create] Validations passed.');
-		release.versions = _.sortBy(release.versions, ['released_at']);
-		release.released_at = release.versions[release.versions.length - 1].released_at;
+		release.versions = _.orderBy(release.versions, ['released_at'], ['desc']);
+		release.released_at = release.versions[0].released_at;
 		return release.save();
 
 	}).then(() => {
@@ -281,8 +281,8 @@ exports.addVersion = function(req, res) {
 
 	}).then(() => {
 		release.versions.push(newVersion);
-		release.versions = _.sortBy(release.versions, ['released_at']);
-		release.released_at = release.versions[release.versions.length - 1].released_at;
+		release.versions = _.orderBy(release.versions, ['released_at'], ['desc']);
+		release.released_at = release.versions[0].released_at;
 		release.modified_at = now;
 
 		logger.info('[api|release:addVersion] Validations passed, adding new version to release.');
@@ -416,8 +416,8 @@ exports.updateVersion = function(req, res) {
 	}).then(() => {
 		logger.info('[api|release:updateVersion] Validations passed, updating version.');
 
-		releaseToUpdate.versions = _.sortBy(releaseToUpdate.versions, ['released_at']);
-		releaseToUpdate.released_at = releaseToUpdate.versions[releaseToUpdate.versions.length - 1].released_at;
+		releaseToUpdate.versions = _.orderBy(releaseToUpdate.versions, ['released_at'], ['desc']);
+		releaseToUpdate.released_at = releaseToUpdate.versions[0].released_at;
 		releaseToUpdate.modified_at = now;
 		return releaseToUpdate.save();
 

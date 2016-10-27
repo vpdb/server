@@ -138,7 +138,7 @@ describe('The VPDB `ROM` API', function() {
 							_file: res.body.id
 						})
 						.end(function(err, res) {
-							hlp.expectValidationError(err, res, '_file', 'must be a zip archive');
+							hlp.expectValidationError(err, res, '_file', 'must be a file of type "rom"');
 							done();
 						});
 				});

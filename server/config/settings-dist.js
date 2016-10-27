@@ -110,6 +110,27 @@ module.exports = {
 		secret: 'alongsecret',
 
 		/**
+		 * When the user fails to login with user/pass or token, block logins for
+		 * the IP address.
+		 */
+		loginBackoff: {
+
+			/**
+			 * How long the IP adress is blocked. Index in array is number of
+			 * seconds to wait for the nth time. If n > array length, the last
+			 * delay is applied.
+			 */
+			delay: [ 0, 0, 0, 0, 0, 5, 10, 15, 20, 30, 60, 120, 180, 300 ],
+
+			/**
+			 * Keep counter during this time in seconds. That means that once
+			 * the user fails to login, the counter will continue to increase
+			 * during that time even if a successful login occurs.
+			 */
+			keep: 3600 * 24
+		},
+
+		/**
 		 * Various mail settings.
 		 */
 		email: {

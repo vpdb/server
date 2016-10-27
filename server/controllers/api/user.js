@@ -249,8 +249,8 @@ exports.update = function(req, res) {
 exports.authenticate = function(req, res) {
 
 	const ipAddress = req.ip || (req.headers ? req.headers['x-forwarded-for'] : null) || (req.connection ? req.connection.remoteAddress : null) || '0.0.0.0';
-	const backoffNumDelay = 3600 * 24; // keep counter for one day
-	const backoffDelay = [ 0, 0, 0, 0, 0, 5, 10, 15, 20, 30, 60, 120, 180, 300 ];
+	const backoffNumDelay = config.vpdb.loginBackoff.keep;
+	const backoffDelay = config.vpdb.loginBackoff.delay;
 	const backoffNumKey = 'auth_delay_num:' + ipAddress;
 	const backoffDelayKey = 'auth_delay_time:' + ipAddress;
 

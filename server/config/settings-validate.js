@@ -168,6 +168,43 @@ module.exports = {
 		},
 
 		/**
+		 * When the user fails to login with user/pass or token, block logins for
+		 * the IP address.
+		 */
+		loginBackoff: {
+
+			/**
+			 * How long the IP adress is blocked. Index in array is number of
+			 * seconds to wait for the nth time. If n > array length, the last
+			 * delay is applied.
+			 */
+			delay: function(delay) {
+				/* istanbul ignore if */
+				if (!_.isArray(delay)) {
+					return 'Delay must be an array of integers.';
+				}
+				/* istanbul ignore next */
+				for (let i = 0; i < delay.length; i++) {
+					if (!_.isNumber(delay[i])) {
+						return 'Delay must be an array of integers.';
+					}
+				}
+			},
+
+			/**
+			 * Keep counter during this time in seconds. That means that once
+			 * the user fails to login, the counter will continue to increase
+			 * during that time even if a successful login occurs.
+			 */
+			keep: function(keep) {
+				/* istanbul ignore if */
+				if (!_.isNumber(keep)) {
+					return 'Keep duration must be a number.';
+				}
+			}
+		},
+
+		/**
 		 * Sets various logging options.
 		 */
 		logging: {

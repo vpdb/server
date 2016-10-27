@@ -48,7 +48,7 @@ block navbar
 		li.uib-dropdown(ng-show="auth.isAuthenticated", uib-dropdown)
 			a.space-right.uib-dropdown-toggle(uib-dropdown-toggle)
 				img.img-avatar.img-avatar--xsm.space-right(gravatar-src="auth.user.gravatar_id", gravatar-default="retro")
-				span.space-right-2x {{ auth.user.name }}
+				span.space-right-2x.hidden-sm {{ auth.user.name }}
 				+icon('angle-down').smaller.shift-up
 			ul.uib-dropdown-menu
 				li

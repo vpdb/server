@@ -19,7 +19,7 @@ include ../template/_mixins
 		p: a(ui-sref="profile.stats", ng-class="{ 'active': state.name == 'profile.stats' }")
 			+icon('chart').shift-up.space-right
 			| Stats
-		p.padder-bottom-2x
+		p.padder-bottom-2x.hidden-xs
 
 	// content
 	.col-sm-9.col--main
@@ -31,9 +31,10 @@ include ../template/_mixins
 				.media-body
 					h3.h--large.h--shift-up {{ auth.user.name }}
 					.text--large.text--shift-up {{ auth.user.email }}
-					button.btn.btn-hollow.pull-right.shift-up-more(ng-click="changeAvatar()") Change Picture
+					button.btn.btn-hollow.pull-right.shift-up-more.hidden-xs.hidden-sm(ng-click="changeAvatar()") Change Picture
 					.clearfix
-			p.padder-top-3x
+			button.visible-xs-inline.visible-sm-inline.btn.btn-hollow.padder-top.padder-bottom(ng-click="changeAvatar()") Change Picture
+			p.hidden-xs.hidden-sm.padder-top-2x
 
 		.clearfix
 		.ui-view-wrapper

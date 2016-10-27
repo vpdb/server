@@ -8,7 +8,7 @@ p.padder-top(ng-show="pageLoading")
 
 	//-- RIGHT COLUMN
 	//-====================================================================
-	.col-sm-3.col-sm-push-9.col--menu(ng-show="found")
+	.col-sm-4.col-md-3.col-sm-push-8.col-md-push-9.col--menu(ng-show="found")
 
 		a.a--block.text-center(ui-sref="gameDetails({id: game.id})")
 			img.img--logo(ng-src="{{ game.logo.variations['medium' + pixelDensitySuffix].url }}").padder-bottom
@@ -88,7 +88,7 @@ p.padder-top(ng-show="pageLoading")
 
 	//-- LEFT COLUMN (main content)
 	//-====================================================================
-	.col-sm-9.col-sm-pull-3.col--main(ng-show="found")
+	.col-sm-8.col-md-9.col-sm-pull-4.col-md-pull-3.col--main(ng-show="found")
 
 		.alert.alert-danger.no-space-top(ng-show="game.restrictions.release.mpu")
 			+icon('warning').shift-up.space-right
@@ -198,7 +198,7 @@ p.padder-top(ng-show="pageLoading")
 			thead
 				tr
 					th
-					th Orientation
+					th.hidden-sm Orientation
 					th Lighting
 					th Compatibility
 					th Version
@@ -207,7 +207,7 @@ p.padder-top(ng-show="pageLoading")
 				tr(ng-repeat="flavor in flavorGrid")
 					td.td--img
 						img.img--rounded(ng-src="{{ flavor.file.playfield_image.variations['square' + pixelDensitySuffix].url }}")
-					td
+					td.hidden-sm
 						| {{ flavor.orientation.name }} <br>
 						i {{ flavor.orientation.other }}
 					td

@@ -67,7 +67,7 @@ angular.module('vpdb.releases.details', []).controller('ReleaseDetailsController
 			}
 			return {
 				type: file.playfield_image.file_type,
-				url: file.playfield_image.variations['medium'].url,
+				url: file.playfield_image.variations['medium' + $rootScope.pixelDensitySuffix].url,
 				full: file.playfield_image.variations.full.url
 			};
 		})), 'type', true);

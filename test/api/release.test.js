@@ -1064,6 +1064,95 @@ describe('The VPDB `release` API', function() {
 
 	});
 
+	describe('when validating a file of a release', function() {
+
+		var release;
+		before(function(done) {
+			hlp.setupUsers(request, {
+				member: { roles: ['member'] },
+				moderator: { roles: ['moderator'] }
+			}, function() {
+				var user = 'member';
+				hlp.release.createRelease(user, request, function(r) {
+					release = r;
+					done();
+				});
+			});
+		});
+
+		after(function(done) {
+			hlp.cleanup(request, done);
+		});
+
+		it('should fail for invalid release', function(done) {
+			request
+				.post('/api/v1/releases/doesnotexist/versions/doesnotexist/files/doesnotexist/validate')
+				.as('moderator')
+				.send({})
+				.end(hlp.status(404, 'no such release', done));
+		});
+
+		it('should fail for invalid version', function(done) {
+			request
+				.post('/api/v1/releases/' + release.id + '/versions/doesnotexist/files/' + release.versions[0].files[0].file.id + '/validate')
+				.as('moderator')
+				.send({})
+				.end(hlp.status(404, 'no such version', done));
+		});
+
+		it('should fail for invalid file', function(done) {
+			request
+				.post('/api/v1/releases/' + release.id + '/versions/' + release.versions[0].version + '/files/doesnotexist/validate')
+				.as('moderator')
+				.send({})
+				.end(hlp.status(404, 'no file with id', done));
+		});
+
+		it('should fail for empty data', function(done) {
+			request
+				.post('/api/v1/releases/' + release.id + '/versions/' + release.versions[0].version + '/files/' + release.versions[0].files[0].file.id + '/validate')
+				.as('moderator')
+				.send({})
+				.end(function(err, res) {
+					expect(res.body.errors).to.have.length(2);
+					hlp.expectValidationError(err, res, 'status', 'must be provided');
+					hlp.expectValidationError(err, res, 'message', 'must be provided');
+					done();
+			});
+		});
+
+		it('should fail for invalid status', function(done) {
+			request
+				.post('/api/v1/releases/' + release.id + '/versions/' + release.versions[0].version + '/files/' + release.versions[0].files[0].file.id + '/validate')
+				.as('moderator')
+				.send({ message: 'Wrong status.', status: 'duh.' })
+				.end(function(err, res) {
+					expect(res.body.errors).to.have.length(1);
+					hlp.expectValidationError(err, res, 'status', 'must be one of');
+					done();
+			});
+		});
+
+		it('should succeed for valid data', function(done) {
+			const message = 'All validated, thanks!';
+			const status = 'verified';
+			request
+				.post('/api/v1/releases/' + release.id + '/versions/' + release.versions[0].version + '/files/' + release.versions[0].files[0].file.id + '/validate')
+				.as('moderator')
+				.save({ path: 'releases/validate-file'})
+				.send({ message: message, status: status })
+				.end(function(err, res) {
+					hlp.expectStatus(err, res, 200);
+					expect(res.body.message).to.be(message);
+					expect(res.body.status).to.be(status);
+					expect(res.body.validated_at).to.be.ok();
+					expect(res.body.validated_by).to.be.an('object');
+					done();
+			});
+		});
+
+	});
+
 	describe('when viewing a release', function() {
 
 		before(function(done) {

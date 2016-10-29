@@ -460,6 +460,93 @@ exports.updateVersion = function(req, res) {
 };
 
 /**
+ * Validates a release file.
+ *
+ * @param {"express".e.Request} req
+ * @param {"express".e.Response} res
+ */
+exports.validateFile = function(req, res) {
+
+	const now = new Date();
+	let release, version, file, fileId;
+	let releaseToUpdate, versionToUpdate, fileToUpdate;
+
+	Promise.try(() => {
+		// retrieve release
+		return Release.findOne({ id: req.params.id })
+			.populate('versions.files._file')
+			.exec();
+
+	}).then(r => {
+		release = r;
+
+		if (!release) {
+			throw error('No such release with ID "%s".', req.params.id).status(404);
+		}
+		version = _.find(release.versions, { version: req.params.version });
+		if (!version) {
+			throw error('No such version "%s" for release "%s".', req.params.version, req.params.id).status(404);
+		}
+		file = _.find(version.files, f => f._file.id === req.params.file);
+		if (!file) {
+			throw error('No file with ID "%s" for version "%s" of release "%s".', req.params.file, req.params.version, req.params.id).status(404);
+		}
+		fileId = file._id;
+
+		// validations
+		let validationErrors = [];
+		if (!req.body.message) {
+			validationErrors.push({ path: 'message', message: 'A message must be provided.', value: req.body.message });
+		}
+		if (!req.body.status) {
+			validationErrors.push({ path: 'status', message: 'Status must be provided.', value: req.body.status });
+		}
+		if (validationErrors.length) {
+			throw error('Validation error').errors(validationErrors);
+		}
+
+		// retrieve release with no references that we can update
+		return Release.findOne({ id: req.params.id }).exec();
+
+	}).then(r => {
+		releaseToUpdate = r;
+		versionToUpdate = _.find(releaseToUpdate.versions, { version: req.params.version });
+		fileToUpdate = _.find(versionToUpdate.files, f => f._id.equals(fileId));
+
+		fileToUpdate.validation = {
+			status: req.body.status,
+			message: req.body.message,
+			validated_at: now,
+			_validated_by: req.user._id
+		};
+
+		return releaseToUpdate.save();
+
+	}).then(() => {
+
+		logger.info('[api|release:validateFile] Updated file validation status.');
+
+		return Release.findOne({ id: req.params.id })
+			.populate({ path: 'versions.files._file' })
+			.populate({ path: 'versions.files.validation._validated_by' })
+			.exec();
+
+	}).then(release => {
+
+		version = _.find(release.toDetailed().versions, { version: req.params.version });
+		file = _.find(version.files, f => f.file.id === req.params.file);
+
+		// log event
+		LogEvent.log(req, 'validate_release', false,
+			{ validation: file.validation },
+			{ release: release._id, game: release._game._id }
+		);
+		api.success(res, file.validation, 200);
+
+	}).catch(api.handleError(res, error, 'Error validating release file.', /^versions\.\d+\.files\.\d+\.validation\./));
+};
+
+/**
  * Lists all releases.
  *
  * @param {"express".e.Request} req

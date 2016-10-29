@@ -396,7 +396,7 @@ get:
           role/member:
             example: !include http/update-version-req.json
         responses:
-          201:
+          200:
             body:
               role/member:
                 example: !include http/update-version-res-200.json
@@ -409,6 +409,32 @@ get:
             body:
               role/member:
                 example: !include http/update-version-res-403.json
+
+      /files/{file_id}:
+        post:
+          is: [ validated ]
+          securedBy: [ jwt: { scopes: [ MODERATOR ] } ]
+          description: |
+            Validate or report a release as broken.
+
+            Moderators can mark individual release files with a validation status.
+            The goal is to make sure the release is working as it's supposed to be.
+
+            There are three different validation levels:
+
+              - `verified` - The file has been verified and everything is okay.
+              - `playable` - Maybe some scripts are not the latest version or other
+                 problems so minor that the release is playable.
+              - `broken` - Major problems resulting in an unplayable file.
+
+          body:
+            role/moderator:
+              example: !include http/validate-file-req.json
+          responses:
+            200:
+              body:
+                role/moderator:
+                  example: !include http/validate-file-res-200.json
 
   /comments: !include comments.raml
   /rating: !include rating.raml

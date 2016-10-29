@@ -31,6 +31,7 @@ exports.register = function(app, api) {
 
 	app.post(settings.apiPath('/releases/:id/versions'), api.auth(api.releases.addVersion, 'releases', 'add'));
 	app.patch(settings.apiPath('/releases/:id/versions/:version'), api.auth(api.releases.updateVersion, 'releases', 'update-own'));
+	app.post(settings.apiPath('/releases/:id/versions/:version/files/:file/validate'), api.auth(api.releases.validateFile, 'releases', 'validate'));
 
 	app.get(settings.apiPath('/releases/:id/comments'), api.anon(api.comments.listForRelease));
 	app.post(settings.apiPath('/releases/:id/comments'), api.auth(api.comments.createForRelease, 'comments', 'add'));

@@ -195,6 +195,10 @@ describe('The ACLs of the VPDB API', function() {
 			request.patch('/api/v1/releases/123/versions/1.2').send({}).end(hlp.status(401, done));
 		});
 
+		it('should deny access to release file validation', function(done) {
+			request.post('/api/v1/releases/123/versions/1.2/files/1234/validate').send({}).end(hlp.status(401, done));
+		});
+
 		it('should deny access to release starring', function(done) {
 			request.post('/api/v1/releases/123/star').send({ value: 1 }).end(hlp.status(401, done));
 		});
@@ -480,6 +484,10 @@ describe('The ACLs of the VPDB API', function() {
 			request.patch('/api/v1/releases/123/versions/1.0').as('member').send({}).end(hlp.status(404, done));
 		});
 
+		it('should deny access to release file validation', function(done) {
+			request.post('/api/v1/releases/123/versions/1.2/files/1234/validate').as('member').send({}).end(hlp.status(403, done));
+		});
+
 		it('should deny access to release starring', function(done) {
 			request.post('/api/v1/releases/123/star').as('member').send({}).end(hlp.status(404, done));
 		});
@@ -693,6 +701,10 @@ describe('The ACLs of the VPDB API', function() {
 			request.del('/api/v1/releases/123456').as('contributor').end(hlp.status(404, done));
 		});
 
+		it('should deny access to release file validation', function(done) {
+			request.post('/api/v1/releases/123/versions/1.2/files/1234/validate').as('contributor').send({}).end(hlp.status(403, done));
+		});
+
 		it('should allow to list starred events', function(done) {
 			request.get('/api/v1/events?starred').as('contributor').end(hlp.status(200, done));
 		});
@@ -832,6 +844,10 @@ describe('The ACLs of the VPDB API', function() {
 
 		it('should allow to delete releases', function(done) {
 			request.del('/api/v1/releases/123456').as('moderator').end(hlp.status(404, done));
+		});
+
+		it('should allow access to release file validation', function(done) {
+			request.post('/api/v1/releases/123/versions/1.2/files/1234/validate').as('moderator').send({}).end(hlp.status(404, done));
 		});
 
 		it('should allow to list starred events', function(done) {

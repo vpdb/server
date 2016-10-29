@@ -64,7 +64,7 @@ acl.init = function() {
 				{ resources: 'games',         permissions: ['delete'] },
 				{ resources: 'game_requests', permissions: ['list', 'update', 'delete'] },
 				{ resources: 'media',         permissions: ['delete'] },
-				{ resources: 'releases',      permissions: ['moderate', 'view-restriced', 'update'] },
+				{ resources: 'releases',      permissions: ['moderate', 'view-restriced', 'update', 'validate'] },
 				{ resources: 'roms',          permissions: ['delete', 'view-restriced'] },
 				{ resources: 'tags',          permissions: ['delete'] }
 			]

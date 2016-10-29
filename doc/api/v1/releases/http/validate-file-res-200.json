@@ -1,0 +1,21 @@
+200 OK
+X-App-Sha: 0e19d03
+Content-Type: application/json; charset=utf-8
+Content-Length: 305
+Etag: W/"131-4/Dt7dfbf5sMl+7eZw+8YA"
+
+{
+  "status": "verified",
+  "message": "All validated, thanks!",
+  "validated_at": "2016-10-29T20:56:00.248Z",
+  "validated_by": {
+    "id": "ekucpcrehh",
+    "name": "Edwina92",
+    "username": "Edwina92",
+    "gravatar_id": "90de108f5838a1d99c2c68273de67c8c",
+    "counter": {
+      "comments": 0,
+      "stars": 0
+    }
+  }
+}

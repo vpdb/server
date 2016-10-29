@@ -1,0 +1,11 @@
+POST /v1/releases/p2bzmec5ehb/versions/1.0.0/files/pkuh7ec5ehb/validate HTTP/2.0
+Host: api.vpdb.io
+Accept-Encoding: gzip, deflate
+authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJla3VjcGNyZWhoIiwiaWF0IjoiMjAxNi0xMC0yOVQyMDo1NTo1OS42MTFaIiwiZXhwIjoiMjAxNi0xMC0yOVQyMTo1NTo1OS42MTFaIiwiaXJ0IjpmYWxzZX0.ga2NITbI6zBFloY8HLvACmSrZAgRm_Q4KqUR2eI5yP0
+content-type: application/json
+Content-Length: 56
+
+{
+  "message": "All validated, thanks!",
+  "status": "verified"
+}

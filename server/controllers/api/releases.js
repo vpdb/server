@@ -794,6 +794,7 @@ exports.view = function(req, res) {
 			.populate({ path: 'versions.files._playfield_image' })
 			.populate({ path: 'versions.files._playfield_video' })
 			.populate({ path: 'versions.files._compatibility' })
+			.populate({ path: 'versions.files.validation._validated_by' })
 			.exec();
 
 	}).then(r => {
@@ -962,6 +963,7 @@ function getDetails(id) {
 		.populate({ path: 'versions.files._playfield_image' })
 		.populate({ path: 'versions.files._playfield_video' })
 		.populate({ path: 'versions.files._compatibility' })
+		.populate({ path: 'versions.files.validation._validated_by' })
 		.exec();
 }
 

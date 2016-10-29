@@ -197,6 +197,7 @@ p.padder-top(ng-show="pageLoading")
 		table.table.table-striped
 			thead
 				tr
+					th(width="25px")
 					th
 					th Orientation
 					th.hidden-xs.hidden-sm Lighting
@@ -205,6 +206,9 @@ p.padder-top(ng-show="pageLoading")
 					th Size
 			tbody
 				tr(ng-repeat="flavor in flavorGrid")
+					td.validation-badge(ng-class='flavor.file.validation | validationStatus')
+						a(ng-click="validateFile(release, flavor.version.version, flavor.file)", uib-tooltip="{{ flavor.file.validation | validationTooltip }}", tooltip-placement="right", tooltip-append-to-body="true", tooltip-popup-delay="500")
+							+icon('{{ "medal-" + (flavor.file.validation | validationStatus) }}')
 					td.td--img
 						img.img--rounded(ng-src="{{ flavor.file.playfield_image.variations['square' + pixelDensitySuffix].url }}")
 					td

@@ -32,5 +32,5 @@ div(ng-class="{ media: !!user }")
 				uib-tab-heading(title="Preview"): +icon('eye')
 				div.markdown(markdown="$parent.$parent.text")
 				label.tab__label(ng-show="!$parent.$parent.text || $parent.$parent.text.length == 0") Nothing to preview.
-		label.label--small.padder-bottom.padder-top-less(markdown-info="{{ markdownText }}")
+		label.label--small.padder-bottom.padder-top-less(markdown-info="{{ markdownText }}", ng-show="markdownText")
 

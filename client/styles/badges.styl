@@ -137,3 +137,42 @@
 		height 50px
 		width 30px
 		margin-top -30px
+
+// Release verified badges
+table > tbody > tr > td.validation-badge
+	padding-top 5px
+	.svg-icon
+		height 50px
+		width: 32px
+
+	&.unknown a
+		.svg-icon
+			fill $color-light
+		&:hover
+			.svg-icon
+				fill $color-lightish
+	&.verified a
+		.svg-icon
+			fill $color-primary
+		&:hover
+			.svg-icon
+				fill $color-primary-light
+	&.playable a
+		.svg-icon
+			fill $color-lighter
+		&:hover
+			.svg-icon
+				fill $color-lightest
+	&.broken a
+		.svg-icon
+			fill $color-primary
+		&:hover
+			.svg-icon
+				fill $color-primary-light
+
+h3.hr--no-margin > .validation-badge
+	top -3px
+	left -5px
+	position relative
+	width 40px
+	height 60px

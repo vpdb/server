@@ -184,6 +184,27 @@ angular.module('vpdb.releases.details', []).controller('ReleaseDetailsController
 		}
 	};
 
+
+	$scope.validateFile = function(release, version, file) {
+		$uibModal.open({
+			templateUrl: '/releases/modal-file-validation.html',
+			controller: 'FileValidationCtrl',
+			resolve: {
+				params: function() {
+					return {
+						release: release,
+						version: version,
+						file: file,
+					};
+				}
+			}
+		}).result.then(function(validation) {
+			if (validation) {
+				file.validation = validation
+			}
+		})
+	}
+
 }).controller('DownloadGameCtrl', function($scope, $uibModalInstance, $timeout, Flavors, RomResource, DownloadService, params) {
 
 	$scope.game = params.game;
@@ -266,6 +287,66 @@ angular.module('vpdb.releases.details', []).controller('ReleaseDetailsController
 		$scope.toggleFile(tableFiles[0]);
 	}
 
+}).controller('FileValidationCtrl', function($scope, $rootScope, $uibModalInstance, ReleaseFileValidationResource, ApiHelper, params) {
+
+	if (!params.file.validation) {
+		$scope.message = 'This file has not been validated yet. Nothing more to see. ';
+	} else {
+		$scope.message = 'This file has been validated by ' + params.file.validation.validated_by.name + '. ';
+		switch (params.file.validation.status) {
+			case 'verified':
+				break;
+			case 'playable':
+				$scope.message += 'There seems to be a minor problem but the file is still playable.';
+				break;
+			case 'broken':
+				$scope.message += 'There seems to be a problems but the file is still playable.';
+				break;
+		}
+		$scope.message += 'More details below:';
+	}
+
+
+	$scope.validation = _.cloneDeep(params.file.validation || {});
+	$scope.file = params.file;
+	$scope.statuses = [
+		{ name: 'verified', description: 'The file has been verified and everything is okay.'},
+		{ name: 'playable', description: 'Problems so minor that the release is still playable.'},
+		{ name: 'broken', description: 'Major problems resulting in an unplayable file.'}
+	];
+
+	if (!$scope.validation.message) {
+		$scope.validation.message = 'Checked and made sure that:\n\n- DOF config up is to date\n- `controller.vbs` is up to date\n- SoundFX calls are working'
+	}
+
+	$scope.submit = function() {
+		ReleaseFileValidationResource.save({ releaseId: params.release.id, version: params.version, fileId: params.file.file.id }, $scope.validation, function(validation) {
+			$rootScope.showNotification('Successfully saved new validation status.');
+			$uibModalInstance.close(validation);
+
+		}, ApiHelper.handleErrors($scope));
+	}
+
+}).filter('validationStatus', function() {
+	return function(validation, displayName) {
+		var name = validation ? validation.status : 'unknown';
+		if (displayName) {
+			return name[0].toUpperCase() + name.substring(1);
+		}
+		return name;
+	};
+
+}).filter('validationTooltip', function() {
+	return function(validation) {
+		if (!validation) {
+			return "This file hasn't been validated yet.";
+		}
+		switch (validation.status) {
+			case 'verified': return 'This file has been validated by a moderator.';
+			case 'playable': return 'There are minor problems but the file is still playable.';
+			case 'broken': return 'This file has been reported to be broken.';
+		}
+	};
 });
 
 

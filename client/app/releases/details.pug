@@ -192,17 +192,23 @@ p.padder-top(ng-show="pageLoading")
 
 		//-- FLAVORS
 		//---------------------------------------------------------------------
-		h1.h--small Available Flavors
+		h1.h--small
+			| Available Flavors
+			.pull-right
+				input#showFilenames.checkbox--toggle(type='checkbox', ng-model="storage.showFilenames")
+				label.shift-down(for="showFilenames")
+				label.a.a--light.font-content(for="showFilenames") Show file names
 		hr
 		table.table.table-striped
 			thead
 				tr
 					th(width="25px")
 					th
-					th Orientation
-					th.hidden-xs.hidden-sm Lighting
-					th Compatibility
-					th Version
+					th(ng-show="!storage.showFilenames") Orientation
+					th.hidden-xs.hidden-sm(ng-show="!storage.showFilenames") Lighting
+					th(ng-show="!storage.showFilenames") Compatibility
+					th(ng-show="storage.showFilenames") File Name
+					th(ng-show="storage.showFilenames") Version
 					th Size
 			tbody
 				tr(ng-repeat="flavor in flavorGrid")
@@ -211,15 +217,16 @@ p.padder-top(ng-show="pageLoading")
 							+icon('{{ "medal-" + (flavor.file.validation | validationStatus) }}')
 					td.td--img
 						img.img--rounded(ng-src="{{ flavor.file.playfield_image.variations['square' + pixelDensitySuffix].url }}")
-					td
+					td(ng-show="!storage.showFilenames")
 						| {{ flavor.orientation.name }} <br>
 						i {{ flavor.orientation.other }}
-					td.hidden-xs.hidden-sm
+					td.hidden-xs.hidden-sm(ng-show="!storage.showFilenames")
 						| {{ flavor.lighting.name }} <br>
 						i {{ flavor.lighting.other }}
-					td
+					td(ng-show="!storage.showFilenames")
 						span(ng-repeat="compat in flavor.file.compatibility") {{ compat.label }}
-					td {{ flavor.version.version }}
+					td(ng-show="storage.showFilenames") {{ flavor.file.file.name }}
+					td(ng-show="storage.showFilenames") {{ flavor.version.version }}
 					td {{ flavor.file.file.bytes | bytes }}
 
 		h1.h--small Comments

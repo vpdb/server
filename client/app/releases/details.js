@@ -20,7 +20,7 @@
 "use strict"; /* global _, angular */
 
 angular.module('vpdb.releases.details', []).controller('ReleaseDetailsController', function(
-	$scope, $rootScope, $uibModal, $timeout, $stateParams, $location,
+	$scope, $rootScope, $uibModal, $timeout, $stateParams, $location, $localStorage,
 	ApiHelper, ReleaseCommentResource, AuthService, ReleaseService, Flavors, TrackerService,
 	ReleaseRatingResource, ReleaseResource, GameResource, ReleaseModerationCommentResource)
 {
@@ -35,6 +35,7 @@ angular.module('vpdb.releases.details', []).controller('ReleaseDetailsController
 	$scope.pageLoading = true;
 	$scope.newComment = 'default text';
 	$scope.zoneName = AuthService.hasPermission('releases/update') ? 'Admin' : 'Author';
+	$scope.storage = $localStorage;
 
 	// GAME
 	$scope.game = GameResource.get({ id: $scope.gameId });

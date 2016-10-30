@@ -53,7 +53,13 @@ class Pinside {
 			'x-men-le': 5822,
 			'revenge-from-mars': 4446,
 			'transformers-(le)': 5709,
-
+			'eight-ball-deluxe-limited-edition': 762,
+			'flash-gordon': 874,
+			'flash': 871,
+			'csi': 5348,
+			'back-to-the-future': 126,
+			'the-avengers': 5938,
+			'centaur-ii': 476
 		};
 	}
 

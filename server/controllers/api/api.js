@@ -157,6 +157,20 @@ exports.fail = function(res, err, code) {
 	}).catch(err => logger.error(err.stack));
 };
 
+exports.assertFields = function(req, updateableFields, error, action) {
+	action = action || 'update';
+	// fail if invalid fields provided
+	let submittedFields = _.keys(req.body);
+	if (_.intersection(updateableFields, submittedFields).length !== submittedFields.length) {
+		let invalidFields = _.difference(submittedFields, updateableFields);
+		throw error('Invalid field%s: ["%s"]. Allowed fields: ["%s"]',
+				invalidFields.length === 1 ? '' : 's',
+				invalidFields.join('", "'),
+				updateableFields.join('", "')
+		).status(400).log(action);
+	}
+};
+
 exports.checkApiContentType = function(req, res, next) {
 	var hasBody = req.method === 'POST' || req.method === 'PUT' || req.method === 'PATCH';
 

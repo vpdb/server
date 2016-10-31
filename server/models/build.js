@@ -55,7 +55,8 @@ var BuildSchema = new Schema(fields);
 // API FIELDS
 //-----------------------------------------------------------------------------
 var apiFields = {
-	simple: [ 'id', 'label', 'platform', 'major_version', 'download_url', 'built_at', 'type', 'is_range' ]
+	simple: [ 'id', 'label', 'platform', 'major_version', 'download_url', 'built_at', 'type', 'is_range' ],
+	detailed: [ 'support_url', 'description', 'is_active' ]
 };
 
 
@@ -77,12 +78,20 @@ BuildSchema.methods.toSimple = function() {
 	return BuildSchema.statics.toSimple(this);
 };
 
+BuildSchema.methods.toDetailed = function() {
+	return BuildSchema.statics.toDetailed(this);
+};
+
 //-----------------------------------------------------------------------------
 // STATIC METHODS
 //-----------------------------------------------------------------------------
 BuildSchema.statics.toSimple = function(build) {
 	var obj = build.toObj ? build.toObj() : build;
 	return _.pick(obj, apiFields.simple);
+};
+BuildSchema.statics.toDetailed = function(build) {
+	var obj = build.toObj ? build.toObj() : build;
+	return _.pick(obj, [ ...apiFields.simple, ...apiFields.detailed ]);
 };
 
 //-----------------------------------------------------------------------------
@@ -113,7 +122,6 @@ BuildSchema.options.toObject = {
 		delete build.__v;
 		delete build._id;
 		delete build._created_by;
-		delete build.is_active;
 	}
 };
 

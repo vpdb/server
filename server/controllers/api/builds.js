@@ -25,6 +25,7 @@ var logger = require('winston');
 var acl = require('../../acl');
 var api = require('./api');
 var Build = require('mongoose').model('Build');
+var LogEvent = require('mongoose').model('LogEvent');
 
 var error = require('../../modules/error')('api', 'tag');
 
@@ -57,6 +58,47 @@ exports.list = function(req, res) {
 };
 
 /**
+ * Updates an existing build.
+ *
+ * @param {Request} req
+ * @param {Response} res
+ */
+exports.update = function(req, res) {
+
+	const updateableFields = ['platform', 'major_version', 'label', 'download_url', 'support_url', 'built_at',
+		'description', 'type', 'is_range', 'is_active'];
+
+	let oldBuild;
+	Promise.try(() => {
+		return Build.findOne({ id: req.params.id });
+
+	}).then(build => {
+
+		// build must exist
+		if (!build) {
+			throw error('No such build with ID "%s".', req.params.id).status(404);
+		}
+
+		oldBuild  = _.cloneDeep(build.toDetailed());
+
+		// check fields and assign to object
+		api.assertFields(req, updateableFields, error);
+		_.assign(build, _.pick(req.body, updateableFields));
+
+		return build.save();
+
+	}).then(newBuild => {
+
+		logger.info('[api|build:update] Build "%s" successfully updated.', newBuild.id);
+		api.success(res, newBuild.toDetailed(), 200);
+
+		// log event
+		LogEvent.log(req, 'update_build', false, LogEvent.diff(oldBuild, req.body), { build: newBuild._id });
+
+	}).catch(api.handleError(res, error, 'Error updating build'));
+};
+
+/**
  * Creates a new build.
  *
  * @param {Request} req
@@ -72,15 +114,14 @@ exports.create = function(req, res) {
 		newBuild.is_active = false;
 		newBuild.created_at = new Date();
 		newBuild._created_by = req.user._id;
-
-		return newBuild.validate();
-
-	}).then(function() {
 		return newBuild.save();
 
 	}).then(function() {
 		logger.info('[api|build:create] Build "%s" successfully created.', newBuild.label);
 		api.success(res, newBuild.toSimple(), 201);
+
+		// log event
+		LogEvent.log(req, 'create_build', false, newBuild.toDetailed(), { build: newBuild._id });
 
 	}).catch(api.handleError(res, error, 'Error creating build'));
 };
@@ -135,6 +176,9 @@ exports.del = function(req, res) {
 
 		logger.info('[api|build:delete] Build "%s" (%s) successfully deleted.', build.label, build.id);
 		api.success(res, null, 204);
+
+		// log event
+		LogEvent.log(req, 'delete_build', false, build.toSimple(), { build: build._id });
 
 	}).catch(api.handleError(res, error, 'Error deleting tag'));
 };

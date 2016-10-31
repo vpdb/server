@@ -59,7 +59,7 @@ acl.init = function() {
 			roles: 'moderator',
 			allows: [
 				{ resources: 'backglasses',   permissions: ['delete', 'moderate', 'view-restriced'] },
-				{ resources: 'builds',        permissions: ['delete'] },
+				{ resources: 'builds',        permissions: ['delete', 'update'] },
 				{ resources: 'files',         permissions: ['blockmatch'] },
 				{ resources: 'games',         permissions: ['delete'] },
 				{ resources: 'game_requests', permissions: ['list', 'update', 'delete'] },

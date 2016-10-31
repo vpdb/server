@@ -111,6 +111,111 @@ describe('The VPDB `Build` API', function() {
 		});
 	});
 
+	describe('when updating a build', function() {
+
+		let build;
+		before(function(done) {
+			hlp.setupUsers(request, {
+				member: { roles: [ 'member' ] },
+				moderator: { roles: [ 'moderator' ] }
+			}, function() {
+				request
+					.post('/api/v1/builds')
+					.as('member')
+					.send({ label: 'v1.0.0', type: 'release', platform: 'vp', major_version: '1' })
+					.end(function(err, res) {
+						build = res.body;
+						hlp.expectStatus(err, res, 201);
+						hlp.doomBuild('member', res.body.id);
+						done();
+					});
+			});
+		});
+
+		after(function(done) {
+			hlp.cleanup(request, done);
+		});
+
+		it('should fail when providing a non-existent build', function(done) {
+			request
+				.patch('/api/v1/builds/qwerz')
+				.as('moderator')
+				.send({ })
+				.end(hlp.status(404, 'no such build', done));
+		});
+
+		it('should fail when providing invalid fields', function(done) {
+			request
+				.patch('/api/v1/builds/' + build.id)
+				.as('moderator')
+				.send({ id: 'new-id', nonexisting: 'qwertz' })
+				.end(hlp.status(400, 'Invalid fields: ["id", "nonexisting"]', done));
+		});
+
+		it('should fail for invalid types', function(done) {
+
+			request
+				.patch('/api/v1/builds/' + build.id)
+				.as('moderator')
+				.saveResponse({ path: 'builds/update'})
+				.send({
+					platform: true,
+					built_at: 'never',
+					type: true,
+				})
+				.end(function(err, res) {
+					hlp.expectValidationError(err, res, 'platform', 'invalid platform');
+					hlp.expectValidationError(err, res, 'built_at', 'cast to date failed');
+					hlp.expectValidationError(err, res, 'type', 'invalid type');
+					done();
+				});
+		});
+
+		it('succeed for valid data', function(done) {
+			const platform = 'vp';
+			const label = 'Updated build label';
+			const majorVersion = '11';
+			const downloadUrl = 'https://visualpinball.com/updated-url';
+			const supportUrl = 'https://visualpinball.com/support-url';
+			const buildAt = new Date('2017-01-01 12:00:00');
+			const description = 'The new future version of Visual Pinball!';
+			const type = 'nightly';
+			const isRange = true;
+			const isActive = true;
+
+			request
+				.patch('/api/v1/builds/' + build.id)
+				.as('moderator')
+				.save({ path: 'builds/update'})
+				.send({
+					platform: platform,
+					label: label,
+					major_version: majorVersion,
+					download_url: downloadUrl,
+					support_url: supportUrl,
+					built_at: buildAt,
+					description: description,
+					type: type,
+					is_range: isRange,
+					is_active: isActive
+				})
+				.end(function(err, res) {
+					hlp.expectStatus(err, res, 200);
+					expect(res.body.platform).to.be(platform);
+					expect(res.body.label).to.be(label);
+					expect(res.body.major_version).to.be(majorVersion);
+					expect(res.body.download_url).to.be(downloadUrl);
+					expect(res.body.support_url).to.be(supportUrl);
+					expect(new Date(res.body.built_at).getTime()).to.be(buildAt.getTime());
+					expect(res.body.description).to.be(description);
+					expect(res.body.type).to.be(type);
+					expect(res.body.is_range).to.be(isRange);
+					expect(res.body.is_active).to.be(isActive);
+					done();
+				});
+		});
+	});
+
 	describe('when listing all builds', function() {
 
 		it('should list the initially added builds', function(done) {

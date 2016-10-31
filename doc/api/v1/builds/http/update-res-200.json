@@ -1,0 +1,19 @@
+200 OK
+X-App-Sha: 59533dc
+Content-Type: application/json; charset=utf-8
+Content-Length: 371
+Etag: W/"173-jeZxDMmhWaJKeMYZQ7aBdA"
+
+{
+  "id": "v1.0.0",
+  "label": "Updated build label",
+  "platform": "vp",
+  "major_version": "11",
+  "download_url": "https://visualpinball.com/updated-url",
+  "built_at": "2017-01-01T11:00:00.000Z",
+  "type": "nightly",
+  "is_range": true,
+  "support_url": "https://visualpinball.com/support-url",
+  "description": "The new future version of Visual Pinball!",
+  "is_active": true
+}

@@ -56,6 +56,22 @@ get:
           example: !include http/list-res-200.json
 
 /{build_id}:
+  patch:
+    is: [ protected ]
+    securedBy: [ jwt: { scopes: [ MODERATOR ] } ]
+    description: Update a given build.
+    body:
+      role/moderator:
+        example: !include http/update-req.json
+    responses:
+      200:
+        body:
+          role/moderator:
+            example: !include http/update-res-200.json
+      422:
+        body:
+          role/moderator:
+            example: !include http/update-res-422.json
   delete:
     is: [ protected ]
     securedBy: [ jwt: { scopes: [ MEMBER, CONTRIB ] } ]

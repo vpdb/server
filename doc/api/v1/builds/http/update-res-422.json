@@ -1,0 +1,25 @@
+422 Unprocessable Entity
+X-App-Sha: 59533dc
+Content-Type: application/json; charset=utf-8
+Content-Length: 413
+Etag: W/"19d-F5ZViYKaiuhm2rsBtERBQQ"
+
+{
+  "errors": [
+    {
+      "message": "Cast to Date failed for value \"never\" at path \"built_at\"",
+      "field": "built_at",
+      "value": "never"
+    },
+    {
+      "message": "Invalid platform. Valid platforms are: [ \"vp\" ].",
+      "field": "platform",
+      "value": "true"
+    },
+    {
+      "message": "Invalid type. Valid types are: [ \"release\", \"nightly\", \"experimental\" ].",
+      "field": "type",
+      "value": "true"
+    }
+  ]
+}

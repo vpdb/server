@@ -133,11 +133,7 @@ exports.update = function(req, res) {
 		user = gameRequest._created_by;
 
 		// fail if invalid fields provided
-		let submittedFields = _.keys(req.body);
-		if (_.intersection(updateableFields, submittedFields).length !== submittedFields.length) {
-			let invalidFields = _.difference(submittedFields, updateableFields);
-			throw error('Invalid field%s: ["%s"]. Allowed fields: ["%s"]', invalidFields.length === 1 ? '' : 's', invalidFields.join('", "'), updateableFields.join('", "')).status(400).log('update');
-		}
+		api.assertFields(req, updateableFields, error);
 
 		before = _.pick(gameRequest, updateableFields);
 		if (gameRequest.is_closed === false && req.body.is_closed === true) {

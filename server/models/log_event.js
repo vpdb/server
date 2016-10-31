@@ -35,6 +35,7 @@ const events = [
 	'unstar_game', 'unstar_release', 'unstar_user',
 	'rate_game', 'rate_release',
 	'upload_rom',
+	'create_build', 'update_build', 'delete_build',
 	'create_game', 'update_game', 'delete_game',
 	'create_release', 'update_release', 'create_release_version', 'update_release_version', 'delete_release', 'validate_release',
 	'create_backglass', 'delete_backglass',
@@ -52,7 +53,8 @@ var fields = {
 		release:      { type: Schema.ObjectId, ref: 'Release', index: true, sparse: true },
 		backglass:    { type: Schema.ObjectId, ref: 'Backglass', index: true, sparse: true },
 		user:         { type: Schema.ObjectId, ref: 'User', index: true, sparse: true },
-		game_request: { type: Schema.ObjectId, ref: 'GameRequest', index: true, sparse: true }
+		game_request: { type: Schema.ObjectId, ref: 'GameRequest', index: true, sparse: true },
+		build:        { type: Schema.ObjectId, ref: 'Build', index: true, sparse: true }
 	},
 	event:       { type: String, 'enum': events, required: true, index: true },
 	payload:     { },
@@ -87,9 +89,9 @@ LogEventSchema.virtual('actor')
 //-----------------------------------------------------------------------------
 
 LogEventSchema.statics.log = function(req, event, isPublic, payload, ref, done) {
-	var LogEvent = mongoose.model('LogEvent');
-	var actor = req.user ? req.user._id : null;
-	var log = new LogEvent({
+	const LogEvent = mongoose.model('LogEvent');
+	const actor = req.user ? req.user._id : null;
+	const log = new LogEvent({
 		_actor: actor,
 		_ref: ref,
 		event: event,
@@ -98,7 +100,7 @@ LogEventSchema.statics.log = function(req, event, isPublic, payload, ref, done) 
 		ip: req.ip || req.headers['x-forwarded-for'] || req.connection.remoteAddress || '0.0.0.0',
 		logged_at: new Date()
 	});
-	return log.save(function(err) {
+	return log.save(err => {
 		/* istanbul ignore if  */
 		if (err) {
 			logger.error('[model|logevent] Error saving log for "%s": %s', event, err.message, err);

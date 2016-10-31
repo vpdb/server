@@ -97,6 +97,29 @@ include ../template/_mixins
 				.row
 					.col-xs-6.text-center.a(ng-repeat="tag in tags" filter-tag="{{ tag.id }}", title="{{ tag.description }}") {{ tag.name }}
 
+			// validation filter
+			uib-accordion-group.panel--inner(is-open="filterValidationOpen")
+				uib-accordion-heading by Validation
+				.row
+					.col-xs-6.col-lg-3.text-center.a
+						+icon('medal-verified').svg-3x.padder-bottom
+						| Verified
+					.col-xs-6.col-lg-3.text-center.a
+						+icon('medal-playable').svg-3x.padder-bottom
+						| Playable
+					.clearfix.show.hidden-lg.padder-bottom
+					.col-xs-6.col-lg-3.text-center.a
+						+icon('medal-broken').svg-3x.padder-bottom
+						| Broken
+					.col-xs-6.col-lg-3.text-center.a
+						+icon('medal-unknown').svg-3x.padder-bottom
+						| None
+
+				.clearfix
+				a.a.pull-right(ng-click="validationInfo()")
+					+icon('info').small.shift-up-less.space-right-less
+					i What's this?
+
 		h1 Sort
 		hr
 		ul.list--sort-options

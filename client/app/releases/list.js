@@ -46,7 +46,7 @@ angular.module('vpdb.releases.list', [])
 		$scope.filterTags = [];
 		$scope.filterBuilds = [];
 		$scope.filterFlavorOpen = { };
-		$scope.sort = 'title';
+		$scope.sort = 'released_at';
 
 		// stuff we need in the view
 		$scope.Math = window.Math;
@@ -155,7 +155,7 @@ angular.module('vpdb.releases.list', [])
 
 		var queryToUrl = function(query) {
 			var defaults = {
-				sort: 'title',
+				sort: 'released_at',
 				page: '1',
 				per_page: '12'
 			};

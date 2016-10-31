@@ -78,7 +78,11 @@ include ../template/_mixins
 	//- RELEASES
 	//-------------------------------------------------------------------------
 	.col-sm-12
-		h1.h--primary Latest Releases
+		h1.h--primary
+			| Latest Releases
+			a.font-content.shift-down.pull-right(ui-sref="releases")
+				| More
+				+icon('angle-right').smaller.space-left
 		hr
 		.row.fade2-animation
 			.col-lg-4.col-md-6(ng-repeat="release in releases", ng-click="navRelease(release.game.id, release.id)")
@@ -106,7 +110,11 @@ include ../template/_mixins
 	//- GAMES
 	//-------------------------------------------------------------------------
 	.col-sm-12
-		h1.h--primary Popular Games
+		h1.h--primary
+			| Popular Games
+			a.font-content.shift-down.pull-right(ui-sref="games")
+				| More
+				+icon('angle-right').smaller.space-left
 		hr
 
 		.row.fade2-animation(ng-show="popularGames.length > 0")

@@ -439,7 +439,7 @@ exports.view = function(req, res) {
 		// retrieve linked backglasses
 		return Backglass.restrictedQuery(req, game, { _game: game._id }).then(backglassQuery => {
 
-			logger.info('BACKGLASS query: %s', util.inspect(backglassQuery, { depth: null }));
+			//logger.info('BACKGLASS query: %s', util.inspect(backglassQuery, { depth: null }));
 
 			if (!backglassQuery) {
 				return [];

@@ -1,4 +1,4 @@
-"use strict"; /* global ga, _ */
+"use strict"; /* global ga, angular, _ */
 
 /**
  * Home page of VPDB, i.e. the root index page.
@@ -92,75 +92,5 @@ angular.module('vpdb.home', [])
 			per_page: 8,
 			sort: 'popularity' });
 
-	})
-
-	.filter('manufacturerIcon', function() {
-		return function(item) {
-			switch (item.logo) {
-				case 'williams':
-					return 'icon-williams';
-				case 'stern':
-					return 'icon-stern';
-				default:
-					return '';
-			}
-		};
-	})
-
-	.filter('feedIcon', function() {
-		return function(item) {
-			switch (item.type) {
-				case 'comment':
-					return 'fa-comment';
-				case 'release':
-					return 'fa-arrow-circle-up';
-				default:
-					return '';
-			}
-		};
-	})
-
-	.filter('smalls', function() {
-		return function(str) {
-			return str.replace(/(\d\d\d0)s/i, "$1<small>s</small>");
-		};
-	})
-
-	.filter('feedAction', function() {
-		return function(item) {
-
-			switch (item.type) {
-				case 'comment':
-					return '&nbsp;commented on <a href="/game/' + item.data.game.id + '#' + item.data.release.id +'" class="a--lighter">' +
-						item.data.release.title +
-						'</a> of <a href="/game/' + item.data.game.id +'" class="a--lighter">' +
-						item.data.game.name +
-						'</a>';
-
-				case 'release':
-					return '&nbsp;released <a href="/game/' + item.data.game.id + '#' + item.data.release.id +'" class="a--lighter">' +
-						item.data.release.title +
-						'</a> <label class="label--version">' + item.data.release.lastversion.version + '</label>' +
-						' of ' +
-						'<a href="/game/' + item.data.game.id +'" class="a--lighter">' +
-						item.data.game.name +
-						'</a>';
-				default:
-					return '<i>Unknown event</i>';
-			}
-		};
-	})
-
-	.filter('feedMessage', function() {
-		return function(item) {
-			switch (item.type) {
-				case 'comment':
-					return item.data.message;
-
-				case 'release':
-					return 'Changelog here';
-				default:
-					return '<i>Unknown event</i>';
-			}
-		};
 	});
+

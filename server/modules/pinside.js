@@ -59,7 +59,8 @@ class Pinside {
 			'csi': 5348,
 			'back-to-the-future': 126,
 			'the-avengers': 5938,
-			'centaur-ii': 476
+			'centaur-ii': 476,
+			'adventures-of-rocky-and-bullwinkle-and-friends': 23
 		};
 	}
 

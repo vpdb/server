@@ -64,6 +64,16 @@ include ../template/_mixins
 		// filters
 		uib-accordion.panel-group--transparent(close-others="false")
 
+			// compat filter
+			uib-accordion-group.panel--inner(is-open="filterBuildOpen")
+				uib-accordion-heading by Compatibility
+				.row
+					p.space-left-2x Official:
+					.col-xs-6.text-center.a(ng-repeat="build in builds | filter:{is_range:false,type:'release'}" filter-build="{{ build.id }}") {{ build.label }}
+				.row
+					p.space-left-2x.padder-top Experimental:
+					.col-xs-6.text-center.a(ng-repeat="build in builds | filter:{is_range:false,type:'experimental'}" filter-build="{{ build.id }}") {{ build.label }}
+
 			// flavor filters
 			uib-accordion-group.panel--inner(ng-repeat="flavor in flavors", is-open="filterFlavorOpen[flavor.name]")
 				uib-accordion-heading by {{ flavor.header }}
@@ -86,16 +96,6 @@ include ../template/_mixins
 				uib-accordion-heading by Tag
 				.row
 					.col-xs-6.text-center.a(ng-repeat="tag in tags" filter-tag="{{ tag.id }}", title="{{ tag.description }}") {{ tag.name }}
-
-			// tag filter
-			uib-accordion-group.panel--inner(is-open="filterBuildOpen")
-				uib-accordion-heading by Compatibility
-				.row
-					p.space-left-2x Official:
-					.col-xs-6.text-center.a(ng-repeat="build in builds | filter:{is_range:false,type:'release'}" filter-build="{{ build.id }}") {{ build.label }}
-				.row
-					p.space-left-2x.padder-top Experimental:
-					.col-xs-6.text-center.a(ng-repeat="build in builds | filter:{is_range:false,type:'experimental'}" filter-build="{{ build.id }}") {{ build.label }}
 
 		h1 Sort
 		hr

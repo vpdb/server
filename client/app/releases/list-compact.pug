@@ -5,7 +5,7 @@
 			h1.h--small {{ release.game.title }}
 			label.label--subtitle {{ release.name }}
 			.center-block.padder-bottom-2x
-				img.img-avatar.img-avatar--xsm(
+				img.img-avatar.img-avatar--xsm.space-v(
 					ng-repeat="author in release.authors",
 					gravatar-src="author.user.gravatar_id",
 					gravatar-default="retro",

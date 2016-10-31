@@ -16,7 +16,7 @@ angular.module('vpdb.games.list', [])
 		$scope.$query = null;
 		$scope.filterDecades = [];
 		$scope.filterManufacturer = [];
-		$scope.sort = 'title';
+		$scope.sort = 'popularity';
 		$scope.firstQuery = true;
 
 		// stuff we need in the view
@@ -103,7 +103,7 @@ angular.module('vpdb.games.list', [])
 
 		var queryToUrl = function(query) {
 			var defaults = {
-				sort: 'title',
+				sort: 'popularity',
 				page: '1',
 				per_page: '12'
 			};

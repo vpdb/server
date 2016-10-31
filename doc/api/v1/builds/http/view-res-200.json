@@ -1,0 +1,15 @@
+200 OK
+X-App-Sha: 59533dc
+Content-Type: application/json; charset=utf-8
+Content-Length: 142
+Etag: W/"8e-0hVFO4BhECjnx6xAxSXEgQ"
+
+{
+  "id": "v1.0.0",
+  "label": "v1.0.0",
+  "platform": "vp",
+  "major_version": "1",
+  "type": "release",
+  "is_range": false,
+  "is_active": false
+}

@@ -56,6 +56,17 @@ get:
           example: !include http/list-res-200.json
 
 /{build_id}:
+  get:
+    securedBy: [ ]
+    description: Fetch details for a given build
+    body:
+      role/anon:
+        example: !include http/view-req.json
+    responses:
+      200:
+        body:
+          role/moderator:
+            example: !include http/view-res-200.json
   patch:
     is: [ protected ]
     securedBy: [ jwt: { scopes: [ MODERATOR ] } ]

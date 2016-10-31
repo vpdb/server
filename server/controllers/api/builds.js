@@ -99,6 +99,28 @@ exports.update = function(req, res) {
 };
 
 /**
+ * View details of a given build.
+ *
+ * @param {Request} req
+ * @param {Response} res
+ */
+exports.view = function(req, res) {
+
+	Promise.try(() => {
+		return Build.findOne({ id: req.params.id });
+
+	}).then(build => {
+
+		// build must exist
+		if (!build) {
+			throw error('No such build with ID "%s".', req.params.id).status(404);
+		}
+		api.success(res, build.toDetailed(), 200);
+
+	}).catch(api.handleError(res, error, 'Error viewing build'));
+};
+
+/**
  * Creates a new build.
  *
  * @param {Request} req

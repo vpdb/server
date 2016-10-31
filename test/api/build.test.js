@@ -216,6 +216,47 @@ describe('The VPDB `Build` API', function() {
 		});
 	});
 
+	describe('when retrieving details for a build', function() {
+
+		let build;
+		before(function(done) {
+			hlp.setupUsers(request, {
+				member: { roles: [ 'member' ] },
+				moderator: { roles: [ 'moderator' ] }
+			}, function() {
+				request
+					.post('/api/v1/builds')
+					.as('member')
+					.send({ label: 'v1.0.0', type: 'release', platform: 'vp', major_version: '1' })
+					.end(function(err, res) {
+						build = res.body;
+						hlp.expectStatus(err, res, 201);
+						hlp.doomBuild('member', res.body.id);
+						done();
+					});
+			});
+		});
+
+		after(function(done) {
+			hlp.cleanup(request, done);
+		});
+
+		it('should fail when providing a non-existent ID', function(done) {
+			request.get('/api/v1/builds/qwerz').end(hlp.status(404, 'no such build', done));
+		});
+
+		it('succeed for an existing build', function(done) {
+			request
+				.get('/api/v1/builds/' + build.id)
+				.save({ path: 'builds/view'})
+				.end(function(err, res) {
+					hlp.expectStatus(err, res, 200);
+					expect(res.body.id).to.be.ok();
+					done();
+				});
+		});
+	});
+
 	describe('when listing all builds', function() {
 
 		it('should list the initially added builds', function(done) {

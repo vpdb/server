@@ -25,6 +25,7 @@ exports.register = function(app, api) {
 
 	app.get(settings.apiPath('/builds'),        api.anon(api.builds.list));
 	app.post(settings.apiPath('/builds'),       api.auth(api.builds.create, 'builds', 'add'));
+	app.get(settings.apiPath('/builds/:id'),    api.anon(api.builds.view));
 	app.patch(settings.apiPath('/builds/:id'),  api.auth(api.builds.update, 'builds', 'update'));
 	app.delete(settings.apiPath('/builds/:id'), api.auth(api.builds.del, 'builds', 'delete-own'));
 

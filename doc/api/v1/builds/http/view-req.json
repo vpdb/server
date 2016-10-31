@@ -1,0 +1,4 @@
+GET /v1/builds/v1.0.0 HTTP/2.0
+Host: api.vpdb.io
+Accept-Encoding: gzip, deflate
+

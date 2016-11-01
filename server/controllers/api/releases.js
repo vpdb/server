@@ -681,6 +681,17 @@ exports.list = function(req, res) {
 
 	}).then(() => {
 
+		// validation filter
+		const validationStatusValues = ['verified', 'playable', 'broken'];
+		if (!_.isUndefined(req.query.validation)) {
+			if (validationStatusValues.includes(req.query.validation)) {
+				query.push({ 'versions.files.validation.status': req.query.validation });
+			}
+			if (req.query.validation === 'none') {
+				query.push({ 'versions.files.validation': { $exists: false } });
+			}
+		}
+
 		// file size filter
 		let filesize = parseInt(req.query.filesize, 10);
 		if (filesize) {

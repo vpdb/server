@@ -101,22 +101,22 @@ include ../template/_mixins
 			uib-accordion-group.panel--inner(is-open="filterValidationOpen")
 				uib-accordion-heading by Validation
 				.row
-					.col-xs-6.col-lg-3.text-center.a
+					.col-xs-6.col-lg-3.text-center.a(ng-class="{active: $parent.$parent.validation === 'verified'}", ng-click="toggleValidation('verified')")
 						+icon('medal-verified').svg-3x.padder-bottom
 						| Verified
-					.col-xs-6.col-lg-3.text-center.a
+					.col-xs-6.col-lg-3.text-center.a(ng-class="{active: $parent.$parent.validation === 'playable'}", ng-click="toggleValidation('playable')")
 						+icon('medal-playable').svg-3x.padder-bottom
 						| Playable
 					.clearfix.show.hidden-lg.padder-bottom
-					.col-xs-6.col-lg-3.text-center.a
+					.col-xs-6.col-lg-3.text-center.a(ng-class="{active: $parent.$parent.validation === 'broken'}", ng-click="toggleValidation('broken')")
 						+icon('medal-broken').svg-3x.padder-bottom
 						| Broken
-					.col-xs-6.col-lg-3.text-center.a
+					.col-xs-6.col-lg-3.text-center.a(ng-class="{active: $parent.$parent.validation === 'none'}", ng-click="toggleValidation('none')")
 						+icon('medal-unknown').svg-3x.padder-bottom
 						| None
 
 				.clearfix
-				a.a.pull-right(ng-click="validationInfo()")
+				//-a.a.pull-right(ng-click="validationInfo()")
 					+icon('info').small.shift-up-less.space-right-less
 					i What's this?
 

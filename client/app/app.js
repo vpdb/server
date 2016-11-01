@@ -96,7 +96,7 @@ angular.module('vpdb', deps.concat(appDeps))
 		$stateProvider.state('games',            { url: '/games',                        templateUrl: '/games/list.html' });
 		$stateProvider.state('gameDetails',      { url: '/games/:id',                    templateUrl: '/games/details.html' });
 		$stateProvider.state('editGame',         { url: '/games/:id/edit',               templateUrl: '/games/edit.html' });
-		$stateProvider.state('releases',         { url: '/releases?builds',              templateUrl: '/releases/list.html' });
+		$stateProvider.state('releases',         { url: '/releases?builds',              templateUrl: '/releases/list.html', reloadOnSearch: false });
 		$stateProvider.state('addGame',          { url: '/add-game',                     templateUrl: '/games/add.html' });
 		$stateProvider.state('addRelease',       { url: '/games/:id/add-release',        templateUrl: '/releases/add-release.html' });
 		$stateProvider.state('addBackglass',     { url: '/games/:id/add-backglass',      templateUrl: '/backglasses/add.html' });

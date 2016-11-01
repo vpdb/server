@@ -142,7 +142,17 @@ angular.module('vpdb.releases.list', [])
 				delete query.flavor;
 			}
 
-			query = _.extend(query, queryOverride);
+			// filter by validation
+			if ($scope.validation) {
+				query.validation = $scope.validation;
+			}
+			if (!$scope.validation) {
+				delete query.validation;
+			}
+
+			if (_.isObject(queryOverride)) {
+				query = _.extend(query, queryOverride);
+			}
 			$location.search(queryToUrl(query));
 
 			// refresh if changes
@@ -162,7 +172,7 @@ angular.module('vpdb.releases.list', [])
 			var q = _.omit(query, function (value, key) {
 				return defaults[key] === value;
 			});
-			delete q.thumb;
+			delete q.thumb_format;
 			return q;
 		};
 
@@ -194,6 +204,10 @@ angular.module('vpdb.releases.list', [])
 				$scope.filterFlavorOpen[f[0]] = true;
 				$scope.flavorFilter[f[0]] = f[1]
 			}
+		}
+		if (urlQuery.validation) {
+			$scope.filterValidationOpen = true;
+			$scope.validation = urlQuery.validation;
 		}
 
 		$scope.$watch('q', refresh);
@@ -229,6 +243,15 @@ angular.module('vpdb.releases.list', [])
 		$scope.onFlavorChange = function() {
 			refresh({});
 		};
+
+		$scope.toggleValidation = function(validation) {
+			if (validation === $scope.validation) {
+				$scope.validation = null;
+			} else {
+				$scope.validation = validation;
+			}
+			refresh({});
+		}
 
 		refresh({});
 	})

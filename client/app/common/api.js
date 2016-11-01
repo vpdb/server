@@ -21,6 +21,7 @@ angular.module('vpdb.common', [])
 
 	.factory('BuildResource', function($resource, ConfigService) {
 		return $resource(ConfigService.apiUri('/builds/:id'), {}, {
+			update: { method: 'PATCH' }
 		});
 	})
 

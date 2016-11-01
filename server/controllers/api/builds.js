@@ -85,6 +85,15 @@ exports.update = function(req, res) {
 		api.assertFields(req, updateableFields, error);
 		_.assign(build, _.pick(req.body, updateableFields));
 
+
+		// those fields are empty if data comes from initialization, so populate them.
+		if (!build.created_at) {
+			build.created_at = new Date();
+		}
+		if (!build._created_by) {
+			build._created_by = req.user._id;
+		}
+
 		return build.save();
 
 	}).then(newBuild => {

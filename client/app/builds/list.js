@@ -40,6 +40,8 @@ angular.module('vpdb.builds', [])
 						return build;
 					}
 				}
+			}).result.then(function(updatedBuild) {
+				_.assign(build, updatedBuild);
 			});
 		};
 

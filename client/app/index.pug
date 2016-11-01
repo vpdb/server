@@ -18,10 +18,14 @@ block navbar
 					a(ui-sref="adminUploads", ng-click="navCollapsed = true")
 						+icon('upload').space-right.shift-up
 						span Uploads
-				li
+				li(ng-show="auth.hasPermission('users/update')")
 					a(ui-sref="adminUsers", ng-click="navCollapsed = true")
 						+icon('users').space-right.shift-up
 						span Users
+				li(ng-show="auth.hasPermission('builds/update')")
+					a(ui-sref="adminBuilds", ng-click="navCollapsed = true")
+						+icon('package').space-right.shift-up
+						span Builds
 
 	ul.nav.navbar-nav.navbar-right
 		li.hidden-sm.uib-dropdown(ng-show="(auth.hasPermission('releases/add') || auth.hasPermission('games/add') || auth.hasPermission('backglasses/add')) && themeName === 'theme-dark'", uib-dropdown)

@@ -4,37 +4,44 @@ h1 Releases
 hr
 .row
 	.col-lg-11.col-xs-10
-		label(for="notifiyReleaseModerationStatus") Notify when a release upload gets approved or refused
+		label(for="notifyReleaseModerationStatus") Notify when my release upload gets approved or refused
 	.col-lg-1.col-xs-2
-		input#notifiyReleaseModerationStatus.checkbox--toggle(type="checkbox", ng-model="updatedPreferences.notify_release_moderation_status")
-		label.a.a--light.padder-bottom(for="notifiyReleaseModerationStatus")
+		input#notifyReleaseModerationStatus.checkbox--toggle(type="checkbox", ng-model="updatedPreferences.notify_release_moderation_status")
+		label.a.a--light.padder-bottom(for="notifyReleaseModerationStatus")
 	.clearfix
 
 	.col-lg-11.col-xs-10
-		label(for="notifiyReleaseComments") Notify when one of my releases gets commented
+		label(for="notifyReleaseValidationStatus") Notify when one of my files gets verified or marked as broken
 	.col-lg-1.col-xs-2
-		input#notifiyReleaseComments.checkbox--toggle(type="checkbox", ng-model="updatedPreferences.notify_created_release_comments")
-		label.a.a--light.padder-bottom(for="notifiyReleaseComments")
+		input#notifyReleaseValidationStatus.checkbox--toggle(type="checkbox", ng-model="updatedPreferences.notify_release_validation_status")
+		label.a.a--light.padder-bottom(for="notifyReleaseValidationStatus")
+	.clearfix
+
+	.col-lg-11.col-xs-10
+		label(for="notifyReleaseComments") Notify when one of my releases gets commented
+	.col-lg-1.col-xs-2
+		input#notifyReleaseComments.checkbox--toggle(type="checkbox", ng-model="updatedPreferences.notify_created_release_comments")
+		label.a.a--light.padder-bottom(for="notifyReleaseComments")
 	.clearfix
 
 h1 Direct B2S Backglasses
 hr
 .row
 	.col-lg-11.col-xs-10
-		label(for="notifiyBackglassModerationStatus") Notify when a backglass upload gets approved or refused
+		label(for="notifyBackglassModerationStatus") Notify when my backglass upload gets approved or refused
 	.col-lg-1.col-xs-2
-		input#notifiyBackglassModerationStatus.checkbox--toggle(type="checkbox", ng-model="updatedPreferences.notify_backglass_moderation_status")
-		label.a.a--light.padder-bottom(for="notifiyBackglassModerationStatus")
+		input#notifyBackglassModerationStatus.checkbox--toggle(type="checkbox", ng-model="updatedPreferences.notify_backglass_moderation_status")
+		label.a.a--light.padder-bottom(for="notifyBackglassModerationStatus")
 	.clearfix
 
 h1 Games
 hr
 .row
 	.col-lg-11.col-xs-10
-		label(for="notifiyGameRequestStatus") Notify about game request updates
+		label(for="notifyGameRequestStatus") Notify about my game request updates
 	.col-lg-1.col-xs-2
-		input#notifiyGameRequestStatus.checkbox--toggle(type="checkbox", ng-model="updatedPreferences.notify_game_requests")
-		label.a.a--light.padder-bottom(for="notifiyGameRequestStatus")
+		input#notifyGameRequestStatus.checkbox--toggle(type="checkbox", ng-model="updatedPreferences.notify_game_requests")
+		label.a.a--light.padder-bottom(for="notifyGameRequestStatus")
 	.clearfix
 
 div(ng-show="auth.hasPermission('games/add')")

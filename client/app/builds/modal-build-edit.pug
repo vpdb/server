@@ -17,7 +17,9 @@ include form
 				.img.img--ar-square.img--xs.img--rounded-left.pull-left.space-right(img-bg="release.thumb.image.url")
 				a.a.a--lighter.list--oneliner(ui-sref="releaseDetails({id: release.game.id, releaseId: release.id})", ng-click="$dismiss()") <b>{{ release.game.title }}</b> &middot; {{ release.name }}
 				.clearfix
-		p(ng-show="releases.length === 0"): i No referenced releases found.
+		p(ng-show="releases.length === 0")
+			i No referenced releases found.
+			button.btn.btn-hollow.pull-right(ng-click="delete(build)") Delete Build
 		p(ng-show="pagination.count > pagination.size"): i: a.a.a--lighter(ui-sref="releases({ builds: build.id })") Browse all ~{{ pagination.count }} releases.
 		.clearfix
 

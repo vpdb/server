@@ -34,6 +34,14 @@ angular.module('vpdb.builds', [])
 			}, ApiHelper.handleErrors($scope));
 		};
 
+		$scope.delete = function(build) {
+			BuildResource.delete({ id: build.id }, function() {
+				$rootScope.showNotification('Successfully deleted build.');
+				$uibModalInstance.close();
+
+			}, ApiHelper.handleErrorsInDialog($scope, 'Error deleting build'));
+		};
+
 		$scope.openCalendar = function($event) {
 			$event.preventDefault();
 			$event.stopPropagation();

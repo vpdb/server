@@ -2,7 +2,7 @@
 
 angular.module('vpdb.builds', [])
 
-	.controller('AdminBuildCtrl', function($scope, $uibModal, BuildResource, TrackerService) {
+	.controller('AdminBuildCtrl', function($scope, $rootScope, $uibModal, BuildResource, TrackerService) {
 
 		$scope.theme('light');
 		$scope.setTitle('Builds');
@@ -33,7 +33,6 @@ angular.module('vpdb.builds', [])
 			});
 		};
 
-
 		$scope.edit = function(build) {
 			$uibModal.open({
 				templateUrl: '/builds/modal-build-edit.html',
@@ -45,7 +44,11 @@ angular.module('vpdb.builds', [])
 					}
 				}
 			}).result.then(function(updatedBuild) {
-				_.assign(build, updatedBuild);
+				if (updatedBuild) {
+					_.assign(build, updatedBuild);
+				} else {
+					refresh();
+				}
 			});
 		};
 

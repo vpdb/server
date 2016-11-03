@@ -527,6 +527,8 @@ exports.validateFile = function(req, res) {
 		logger.info('[api|release:validateFile] Updated file validation status.');
 
 		return Release.findOne({ id: req.params.id })
+			.populate({ path: '_created_by' })
+			.populate({ path: '_game' })
 			.populate({ path: 'versions.files._file' })
 			.populate({ path: 'versions.files.validation._validated_by' })
 			.exec();
@@ -536,12 +538,15 @@ exports.validateFile = function(req, res) {
 		version = _.find(release.toDetailed().versions, { version: req.params.version });
 		file = _.find(version.files, f => f.file.id === req.params.file);
 
+		api.success(res, file.validation, 200);
+
 		// log event
 		LogEvent.log(req, 'validate_release', false,
 			{ validation: file.validation },
 			{ release: release._id, game: release._game._id }
 		);
-		api.success(res, file.validation, 200);
+
+		mailer.releaseValidated(release._created_by, req.user, release._game, release, file);
 
 	}).catch(api.handleError(res, error, 'Error validating release file.', /^versions\.\d+\.files\.\d+\.validation\./));
 };

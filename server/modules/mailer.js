@@ -196,6 +196,26 @@ exports.releaseCommented = function(user, commentor, game, release, message) {
 	}, 'notify_created_release_comments');
 };
 
+exports.releaseValidated = function(user, moderator, game, release, file) {
+	let data = {
+		user: user,
+		moderator: moderator,
+		file: file.file,
+		game: game,
+		release: release,
+		message: wrapMessage(file.validation.message),
+		url: settings.webUri('/games/' + game.id + '/releases/' + release.id + '?show-moderation'),
+	};
+	switch (file.validation.status) {
+		case 'verified':
+			return sendEmail(user, 'Congrats, "' + file.file.name + '" has been validated!', 'validation-release-verified', data, 'notify_release_validation_status');
+		case 'playable':
+			return sendEmail(user, 'Your file "' + file.file.name + '" has been validated.', 'validation-release-playable', data, 'notify_release_validation_status');
+		case 'broken':
+			return sendEmail(user, 'There is an issue with "' + file.file.name + '".', 'validation-release-broken', data, 'notify_release_validation_status');
+	}
+};
+
 exports.releaseModerationCommented = function(user, release, message) {
 
 	const Comment = require('mongoose').model('Comment');

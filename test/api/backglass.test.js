@@ -82,7 +82,7 @@ describe('The VPDB `Backglass` API', function() {
 				});
 		});
 
-		it.only('should fail validations for empty version data', function(done) {
+		it('should fail validations for empty version data', function(done) {
 			const user = 'member';
 			request
 				.post('/api/v1/backglasses')

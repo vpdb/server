@@ -65,7 +65,7 @@ exports.list = function(req, res) {
  */
 exports.update = function(req, res) {
 
-	const updateableFields = ['platform', 'major_version', 'label', 'download_url', 'support_url', 'built_at',
+	const updateableFields = ['id', 'platform', 'major_version', 'label', 'download_url', 'support_url', 'built_at',
 		'description', 'type', 'is_range', 'is_active'];
 
 	let oldBuild;
@@ -141,7 +141,8 @@ exports.create = function(req, res) {
 	Promise.try(function() {
 		newBuild = new Build(req.body);
 
-		newBuild.id = newBuild.label ? newBuild.label.replace(/(^[^a-z0-9\._-]+)|([^a-z0-9\._-]+$)/gi, '').replace(/[^a-z0-9\._-]+/gi, '-').toLowerCase() : '-';
+		const idFromLabel = newBuild.label ? newBuild.label.replace(/(^[^a-z0-9\._-]+)|([^a-z0-9\._-]+$)/gi, '').replace(/[^a-z0-9\._-]+/gi, '-').toLowerCase() : '-';
+		newBuild.id = newBuild.id || idFromLabel;
 		newBuild.is_active = false;
 		newBuild.created_at = new Date();
 		newBuild._created_by = req.user._id;

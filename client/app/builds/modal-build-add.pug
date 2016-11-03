@@ -1,0 +1,15 @@
+include ../template/_mixins
+include form
+
+.theme-light
+	.modal-header
+		h1.h--small.h--no-margin
+			+icon('package').space-right
+			| Add new build
+	.modal-body
+
+		+buildForm(false)
+
+	.modal-footer
+		button.btn.btn-hollow.pull-left(ng-click="$close()") Cancel
+		button.btn.btn-primary(ng-click="submit()") Save

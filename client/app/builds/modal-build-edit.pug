@@ -1,112 +1,21 @@
 include ../template/_mixins
+include form
 
 .theme-light
 	.modal-header
 		h1.h--small.h--no-margin
 			+icon('package').space-right
-			| Update Build <strong>{{ build.id }}</strong>
+			| Update Build <strong>{{ id }}</strong>
 	.modal-body
-		form.form-horizontal(role="form")
 
-			//-- LABEL / IS RANGE
-			.form-group(ng-class="{ error: errors.label }")
-				label.col-sm-3.control-label Label
-				.col-sm-4
-					input.form-control(ng-model="build.label", ng-required)
-				label.col-sm-3.control-label(for="buildRange") Is Range
-				.col-sm-2
-					input#buildRange.checkbox--toggle(type="checkbox", ng-model="build.is_range")
-					label.shift-down(for="buildRange")
-
-			div.alert.alert-danger(ng-show="errors.label")
-				+icon('warning').shift-up.space-right
-				| {{ errors.label }}
-
-			//- PLATFORM / MAJOR VERSION
-			.form-group(ng-class="{ error: errors.platform || errors.major_version }")
-				label.col-sm-3.control-label Platform
-				.col-sm-7
-					select.form-control(ng-options="item.id as item.label for item in platforms", ng-model="build.platform")
-				.col-sm-2
-					input.form-control(ng-model="build.major_version", ng-required)
-			div.alert.alert-danger(ng-show="errors.platform")
-				+icon('warning').shift-up.space-right
-				| {{ errors.platform }}
-			div.alert.alert-danger(ng-show="errors.major_version")
-				+icon('warning').shift-up.space-right
-				| {{ errors.major_version }}
-
-			//- TYPE
-			.form-group(ng-class="{ error: errors.type }")
-				label.col-sm-3.control-label Type
-				.col-sm-9
-					select.form-control(ng-options="item.id as item.label for item in types", ng-model="build.type")
-			div.alert.alert-danger(ng-show="errors.type")
-				+icon('warning').shift-up.space-right
-				| {{ errors.type }}
-
-			//- RELEASE DATE
-			.form-group(ng-class="{ error: errors.built_at }")
-				label.col-sm-3.control-label Released at
-				.col-sm-5: .input-group
-					input.form-control.datepicker(type='text', ng-model='build.built_at', ng-required='true',
-						uib-datepicker-popup="yyyy-MM-dd",
-						format-day-header="EE"
-						is-open="calendarOpened",
-						close-text="Close",
-						show-weeks="false",
-						starting-day="1"
-					)
-					span.input-group-addon: +icon('calendar').a(ng-click="openCalendar($event)")
-			div.alert.alert-danger(ng-show="errors.built_at")
-				+icon('warning').shift-up.space-right
-				| {{ errors.built_at }}
-
-			//- DESCRIPTION
-			.form-group(ng-class="{ error: errors.description }")
-				label.col-sm-3.control-label Descr
-				.col-sm-9
-					editor(ng-model="build.description", placeholder="Description and release notes of the release")
-			div.alert.alert-danger(ng-show="errors.description")
-				+icon('warning').shift-up.space-right
-				| {{ errors.description }}
-
-			//-- DOWNLOAD URL
-			.form-group(ng-class="{ error: errors.download_url }")
-				label.col-sm-3.control-label DL URL
-				.col-sm-9
-					input.form-control(ng-model="build.download_url", ng-required)
-			div.alert.alert-danger(ng-show="errors.download_url")
-				+icon('warning').shift-up.space-right
-				| {{ errors.download_url }}
-
-			//-- SUPPORT URL
-			.form-group(ng-class="{ error: errors.support_url }")
-				label.col-sm-3.control-label Support URL
-				.col-sm-9
-					input.form-control(ng-model="build.support_url", ng-required)
-			div.alert.alert-danger(ng-show="errors.support_url")
-				+icon('warning').shift-up.space-right
-				| {{ errors.support_url }}
-
-			//- IS ACTIVE
-			.form-group(ng-class="{ error: errors.is_active }")
-				label.col-sm-3.control-label(for="buildActive") Active
-				.col-sm-8
-					input#buildActive.checkbox--toggle(type="checkbox", ng-model="build.is_active")
-					label.shift-down(for="buildActive")
-
-			//- GENERIC ERRORS
-			div.alert.alert-danger(ng-show="error")
-				+icon('warning').shift-up.space-right
-				| {{ error }}
+		+buildForm(true)
 
 		h3 Referenced Releases
 		div(ng-repeat="release in releases")
 			.panel.padder-bottom
 				.clearfix
 				.img.img--ar-square.img--xs.img--rounded-left.pull-left.space-right(img-bg="release.thumb.image.url")
-				a.a.a--lighter.list--oneliner(ui-sref="releaseDetails({id: release.game.id, releaseId: release.id})") <b>{{ release.game.title }}</b> &middot; {{ release.name }}
+				a.a.a--lighter.list--oneliner(ui-sref="releaseDetails({id: release.game.id, releaseId: release.id})", ng-click="$dismiss()") <b>{{ release.game.title }}</b> &middot; {{ release.name }}
 				.clearfix
 		p(ng-show="releases.length === 0"): i No referenced releases found.
 		p(ng-show="pagination.count > pagination.size"): i: a.a.a--lighter(ui-sref="releases({ builds: build.id })") Browse all ~{{ pagination.count }} releases.

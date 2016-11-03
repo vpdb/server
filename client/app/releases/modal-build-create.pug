@@ -58,7 +58,7 @@ include ../template/_mixins
 					select.form-control(ng-options="type for type in types", ng-model="build.type")
 			div.alert.alert-danger.padder-bottom(ng-show="errors.type")
 				+icon('warning').shift-up.space-right
-				| {{ errors.download_url }}
+				| {{ errors.type }}
 
 
 			//- MAJOR VERSION

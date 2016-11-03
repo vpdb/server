@@ -7,6 +7,7 @@ angular.module('vpdb.builds', [])
 
 		BootstrapTemplate.patchCalendar();
 
+		$scope.id = build.id;
 		$scope.build = build;
 		$scope.platforms = [ { id: 'vp', label: 'Visual Pinball' } ];
 		$scope.types = [
@@ -25,8 +26,8 @@ angular.module('vpdb.builds', [])
 		});
 
 		$scope.save = function() {
-			var data = _.pick($scope.build, ["platform", "major_version", "label", "download_url", "support_url", "built_at", "description", "type", "is_range", "is_active"]);
-			BuildResource.update({ id: $scope.build.id }, data, function(updatedBuild) {
+			var data = _.pick($scope.build, ["id", "platform", "major_version", "label", "download_url", "support_url", "built_at", "description", "type", "is_range", "is_active"]);
+			BuildResource.update({ id: $scope.id }, data, function(updatedBuild) {
 				$uibModalInstance.close(updatedBuild);
 				$rootScope.showNotification('Successfully updated build.');
 

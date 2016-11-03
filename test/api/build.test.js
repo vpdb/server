@@ -148,8 +148,8 @@ describe('The VPDB `Build` API', function() {
 			request
 				.patch('/api/v1/builds/' + build.id)
 				.as('moderator')
-				.send({ id: 'new-id', nonexisting: 'qwertz' })
-				.end(hlp.status(400, 'Invalid fields: ["id", "nonexisting"]', done));
+				.send({ created_at: new Date(), nonexisting: 'qwertz' })
+				.end(hlp.status(400, 'Invalid fields: ["created_at", "nonexisting"]', done));
 		});
 
 		it('should fail for invalid types', function(done) {

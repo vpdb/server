@@ -192,7 +192,7 @@ angular.module('vpdb.releases.edit', [])
 		};
 	}
 ).controller('VersionEditCtrl', function($scope, $controller, $uibModalInstance, game, release, version, BootstrapTemplate,
-										 ApiHelper, ReleaseMeta, ReleaseVersionResource, ModalService) {
+										 ApiHelper, ReleaseMeta, ReleaseVersionResource, BuildResource, ModalService) {
 
 	BootstrapTemplate.patchCalendar();
 
@@ -202,6 +202,7 @@ angular.module('vpdb.releases.edit', [])
 	$scope.releaseVersion = version;
 	$scope.version = _.pick(version, 'released_at', 'changes');
 	$scope.meta = _.cloneDeep(ReleaseMeta);
+	$scope.loading = false;
 
 	$scope.meta.files = _.map(version.files, function(file) {
 		file._randomId = file.file.id;
@@ -217,17 +218,41 @@ angular.module('vpdb.releases.edit', [])
 		if (file.playfield_image.file_type === 'playfield-fs') {
 			$scope.meta.mediaLinks[playfieldImageKey].rotation = 90;
 		}
-		return createMeta(file.file);
+		return _.extend(createMeta(file.file, { _compatibility: _.map(file.compatibility, 'id') }));
 	});
 
 	_.each(version.files, function(releaseFile) {
 		var mediaFile = $scope.meta.mediaFiles[$scope.getMediaKey(releaseFile.file, 'playfield_image')];
 		$scope.updateRotation(releaseFile, mediaFile);
+		releaseFile._compatibility = _.map(releaseFile.compatibility, 'id');
 	});
+
+	BuildResource.query(function(builds) {
+		$scope.builds = {};
+		_.each(_.sortByOrder(builds, ['built_at'], ['desc']), function(build) {
+			if (!$scope.builds[build.type]) {
+				$scope.builds[build.type] = [];
+			}
+			build.built_at = new Date(build.built_at);
+			$scope.builds[build.type].push(build);
+		});
+	});
+
+	$scope.toggleBuild = function(metaFile, build) {
+		var releaseFile = _.find(version.files, function(f) { return f.file.id === metaFile.storage.id });
+		var idx = releaseFile._compatibility.indexOf(build.id);
+		if (idx > -1) {
+			releaseFile._compatibility.splice(idx, 1);
+		} else {
+			releaseFile._compatibility.push(build.id);
+		}
+	};
+
 
 	$scope.save = function() {
 
 		// get release date
+
 		var releaseDate = $scope.getReleaseDate();
 		if (releaseDate) {
 			$scope.releaseVersion.released_at = releaseDate;
@@ -248,20 +273,26 @@ angular.module('vpdb.releases.edit', [])
 			rotationParams.push((playfield_image.id || playfield_image) + ':' + relativeRotation);
 		});
 
-		// check if media needs to be replaced
+		// populate files
+		$scope.version.files = [];
 		_.each(version.files, function(file) {
-			if (file._playfield_image || file._playfield_video) {
-				$scope.version.files = $scope.version.files || [];
-				$scope.version.files.push({
-					_file: file.file.id,
-					_playfield_image: file._playfield_image,
-					_playfield_video: file._playfield_video,
-				});
+			var releaseFile = {
+				_file: file.file.id,
+				_compatibility: file._compatibility
+			};
+			if (file._playfield_image) {
+				releaseFile._playfield_image = file._playfield_image;
 			}
+			if (file._playfield_video) {
+				releaseFile._playfield_video = file._playfield_video;
+			}
+			$scope.version.files.push(releaseFile);
 		});
 
+		$scope.loading = true;
 		ReleaseVersionResource.update({ releaseId: release.id, version: version.version, rotate: rotationParams.join(',') }, $scope.version, function(updatedVersion) {
 
+			$scope.loading = false;
 			$uibModalInstance.close(updatedVersion);
 			ModalService.info({
 				icon: 'check-circle',
@@ -272,6 +303,7 @@ angular.module('vpdb.releases.edit', [])
 
 		}, ApiHelper.handleErrors($scope, null, null, function(scope, response) {
 
+			$scope.loading = false;
 			if (!response.data.errors) {
 				return;
 			}

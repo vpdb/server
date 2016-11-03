@@ -136,7 +136,7 @@ exports.auth = function(req, res, resource, permission, planAttrs) {
 			// validate token
 			let decoded;
 			try {
-				decoded = jwt.decode(token, config.vpdb.secret);
+				decoded = jwt.decode(token, config.vpdb.secret, false, 'HS256');
 			} catch (e) {
 				throw error(e, 'Bad JSON Web Token').status(401);
 			}

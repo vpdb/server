@@ -82,13 +82,14 @@ describe('The VPDB `Backglass` API', function() {
 				});
 		});
 
-		it('should fail validations for empty version data', function(done) {
+		it.only('should fail validations for empty version data', function(done) {
 			const user = 'member';
 			request
 				.post('/api/v1/backglasses')
 				.as(user)
 				.send({ _game: game.id, authors: [ { _user: hlp.users[user].id, roles: [ 'creator' ]}], versions: [ {} ] })
 				.end(function(err, res) {
+					hlp.dump(res);
 					hlp.expectValidationError(err, res, 'versions.0._file', 'must provide a file reference');
 					hlp.expectValidationError(err, res, 'versions.0.version', 'must be provided');
 					expect(res.body.errors.length).to.be(2);

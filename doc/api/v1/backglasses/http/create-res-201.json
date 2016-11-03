@@ -1,24 +1,24 @@
 201 Created
-X-App-Sha: 7bd4777
+X-App-Sha: 027627f
 Content-Type: application/json; charset=utf-8
-Etag: W/"a76-rQ6pZryd61mv6n33i5us4A"
+Etag: W/"a57-DZhTQSysJrSAcEXItNqQyQ"
 Content-Encoding: gzip
 
 {
-  "id": "pkxhgo4642h",
+  "id": "ekyz45fymbb",
   "game": {
     "ipdb": {
-      "mfg": 63,
-      "number": 6056
+      "mfg": 81,
+      "number": 3485
     },
-    "year": 1932,
-    "manufacturer": "Bridget Manufacturing Company",
-    "title": "Wizard Jackpot",
-    "id": "wizard-jackpot"
+    "year": 1939,
+    "manufacturer": "Chicago Coin",
+    "title": "Majors",
+    "id": "majors"
   },
   "versions": [
     {
-      "released_at": "2016-10-16T09:16:30.030Z",
+      "released_at": "2016-11-03T22:23:35.130Z",
       "version": "1.0",
       "changes": "Initial release",
       "counter": {
@@ -31,29 +31,29 @@ Content-Encoding: gzip
         "is_protected": true,
         "variations": {
           "small-2x": {
-            "url": "https://localhost:7357/storage/public/files/small-2x/e2rg14g42h.jpg"
+            "url": "https://localhost:7357/storage/public/files/small-2x/e24bxruymbh.jpg"
           },
           "small": {
-            "url": "https://localhost:7357/storage/public/files/small/e2rg14g42h.jpg"
+            "url": "https://localhost:7357/storage/public/files/small/e24bxruymbh.jpg"
           },
           "medium-2x": {
-            "url": "https://localhost:7357/storage/public/files/medium-2x/e2rg14g42h.jpg"
+            "url": "https://localhost:7357/storage/public/files/medium-2x/e24bxruymbh.jpg"
           },
           "medium": {
-            "url": "https://localhost:7357/storage/public/files/medium/e2rg14g42h.jpg"
+            "url": "https://localhost:7357/storage/public/files/medium/e24bxruymbh.jpg"
           },
           "full": {
-            "url": "https://localhost:7357/storage/public/files/full/e2rg14g42h.jpg"
+            "url": "https://localhost:7357/storage/public/files/full/e24bxruymbh.jpg"
           }
         },
         "bytes": 2067,
-        "url": "https://localhost:7357/storage/v1/files/e2rg14g42h.directb2s",
+        "url": "https://localhost:7357/storage/v1/files/e24bxruymbh.directb2s",
         "name": "test.directb2s",
-        "id": "e2rg14g42h"
+        "id": "e24bxruymbh"
       }
     },
     {
-      "released_at": "2016-10-16T09:16:30.030Z",
+      "released_at": "2016-11-03T22:23:35.130Z",
       "version": "1.1",
       "changes": "- Backglass is now even more high res!\n- It blinks more.",
       "counter": {
@@ -66,25 +66,25 @@ Content-Encoding: gzip
         "is_protected": true,
         "variations": {
           "small-2x": {
-            "url": "https://localhost:7357/storage/public/files/small-2x/ekgg146x2h.jpg"
+            "url": "https://localhost:7357/storage/public/files/small-2x/pkubxruz8hb.jpg"
           },
           "small": {
-            "url": "https://localhost:7357/storage/public/files/small/ekgg146x2h.jpg"
+            "url": "https://localhost:7357/storage/public/files/small/pkubxruz8hb.jpg"
           },
           "medium-2x": {
-            "url": "https://localhost:7357/storage/public/files/medium-2x/ekgg146x2h.jpg"
+            "url": "https://localhost:7357/storage/public/files/medium-2x/pkubxruz8hb.jpg"
           },
           "medium": {
-            "url": "https://localhost:7357/storage/public/files/medium/ekgg146x2h.jpg"
+            "url": "https://localhost:7357/storage/public/files/medium/pkubxruz8hb.jpg"
           },
           "full": {
-            "url": "https://localhost:7357/storage/public/files/full/ekgg146x2h.jpg"
+            "url": "https://localhost:7357/storage/public/files/full/pkubxruz8hb.jpg"
           }
         },
         "bytes": 2067,
-        "url": "https://localhost:7357/storage/v1/files/ekgg146x2h.directb2s",
+        "url": "https://localhost:7357/storage/v1/files/pkubxruz8hb.directb2s",
         "name": "test.directb2s",
-        "id": "ekgg146x2h"
+        "id": "pkubxruz8hb"
       }
     }
   ],
@@ -99,13 +99,13 @@ Content-Encoding: gzip
           "stars": 0,
           "comments": 0
         },
-        "gravatar_id": "43f6565b5dab3e854378796f4c07edbb",
-        "username": "Jackie.Runte",
-        "name": "Jackie.Runte",
-        "id": "ekqza1x64kb"
+        "gravatar_id": "0ab553a81c5c9b74c58b719cc4889f1a",
+        "username": "Laney7",
+        "name": "Laney7",
+        "id": "pknssruy8bh"
       }
     }
   ],
   "acknowledgements": "- Thanks @mom for supporting my late hours\n- Thanks @dad for supporting @mom!",
-  "created_at": "2016-10-16T09:16:30.030Z"
+  "created_at": "2016-11-03T22:23:35.130Z"
 }

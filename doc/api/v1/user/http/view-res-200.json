@@ -1,15 +1,15 @@
 200 OK
-X-App-Sha: 7bd4777
+X-App-Sha: 027627f
 Content-Type: application/json; charset=utf-8
-Etag: W/"5c9-P7WiRYgCL9XQYeobE8i9sw"
+Etag: W/"73e-CQW4eop4O5o879BdXt26cg"
 Content-Encoding: gzip
 
 {
-  "name": "Jalyn78",
-  "username": "Jalyn78",
-  "email": "delia_price67@gmail.com",
+  "name": "Lela_Bartoletti29",
+  "username": "Lela_Bartoletti29",
+  "email": "rae59@hotmail.com",
   "provider": "local",
-  "created_at": "2016-10-16T09:16:26.456Z",
+  "created_at": "2016-11-03T22:23:31.468Z",
   "is_active": true,
   "counter": {
     "stars": 0,
@@ -17,82 +17,89 @@ Content-Encoding: gzip
     "comments": 0
   },
   "preferences": {
+    "moderator_notify_backglass_auto_approved": false,
+    "moderator_notify_backglass_submitted": true,
+    "moderator_notify_release_commented": true,
+    "moderator_notify_release_auto_approved": false,
+    "moderator_notify_release_submitted": true,
+    "contributor_notify_game_request_created": true,
     "notify_mentions": true,
     "notify_created_release_followers": true,
     "notify_created_release_comments": true,
     "notify_game_requests": true,
     "notify_backglass_moderation_status": true,
+    "notify_release_validation_status": true,
     "notify_release_moderation_status": true
   },
   "roles": [
     "member"
   ],
-  "id": "p2fh5oxgxkb",
+  "id": "p2fh25fzmhb",
   "plan": {
     "push_notifications_enabled": false,
     "app_tokens_enabled": true,
     "id": "subscribed"
   },
-  "gravatar_id": "6ffc3f45649432ea98780a0aaf0e0aee",
+  "gravatar_id": "62c102f79d8753f767d8f32173c1bd3b",
   "permissions": {
-    "backglasses": [
-      "add",
-      "star",
-      "delete-own"
+    "builds": [
+      "delete-own",
+      "add"
     ],
     "comments": [
       "add"
-    ],
-    "media": [
-      "add",
-      "star",
-      "delete-own"
-    ],
-    "messages": [
-      "receive"
-    ],
-    "files": [
-      "download",
-      "upload",
-      "delete"
-    ],
-    "tokens": [
-      "add",
-      "update",
-      "delete",
-      "list"
-    ],
-    "games": [
-      "star",
-      "rate"
-    ],
-    "game_requests": [
-      "add",
-      "delete-own"
     ],
     "user": [
       "update",
       "view"
     ],
-    "builds": [
+    "releases": [
+      "delete-own",
       "add",
-      "delete-own"
+      "rate",
+      "update-own",
+      "star"
+    ],
+    "game_requests": [
+      "delete-own",
+      "add"
+    ],
+    "messages": [
+      "receive"
+    ],
+    "backglasses": [
+      "delete-own",
+      "add",
+      "star"
     ],
     "tags": [
-      "add",
-      "delete-own"
-    ],
-    "releases": [
-      "add",
-      "update",
-      "rate",
-      "delete",
-      "star"
+      "delete-own",
+      "add"
     ],
     "users": [
       "search",
-      "star",
-      "view"
+      "view",
+      "star"
+    ],
+    "games": [
+      "rate",
+      "star"
+    ],
+    "files": [
+      "delete-own",
+      "download",
+      "upload"
+    ],
+    "media": [
+      "delete-own",
+      "add",
+      "star"
+    ],
+    "tokens": [
+      "delete-own",
+      "list",
+      "add",
+      "update-own"
     ]
   },
   "quota": {

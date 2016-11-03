@@ -1,8 +1,8 @@
-PUT /v1/games/whirligig/rating HTTP/2.0
+PUT /v1/games/live-power/rating HTTP/2.0
 Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
 content-type: application/json
-authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwMjZleXp3NjQyaCIsImlhdCI6IjIwMTYtMTAtMTZUMDk6MTc6MDkuNTQzWiIsImV4cCI6IjIwMTYtMTAtMTZUMTA6MTc6MDkuNTQzWiIsImlydCI6ZmFsc2V9.vX5F9SG8FoRpDTsp9d4caz6OInBH3DJPjUpOLr7riBQ
+authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwMnR1dXRmeThoaCIsImlhdCI6IjIwMTYtMTEtMDNUMjI6MjQ6MTEuNzcyWiIsImV4cCI6IjIwMTYtMTEtMDNUMjM6MjQ6MTEuNzcyWiIsImlydCI6ZmFsc2V9.Ba0ZKu9ZV623jjIh2MMV9hFFdpiDsO33toETZnEnACA
 Content-Length: 11
 
 {

@@ -1,28 +1,20 @@
 POST /v1/games HTTP/2.0
 Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
-authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwa2NwZzJ3NjRraCIsImlhdCI6IjIwMTYtMTAtMTZUMDk6MTY6NDYuNTc2WiIsImV4cCI6IjIwMTYtMTAtMTZUMTA6MTY6NDYuNTc2WiIsImlydCI6ZmFsc2V9.d1m409HOWZpDo7gXKFYenS057aj-eQ2m4cFoJiRK8Vw
+authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJlMnp3c3VmeThiaCIsImlhdCI6IjIwMTYtMTEtMDNUMjI6MjM6NTAuMzA5WiIsImV4cCI6IjIwMTYtMTEtMDNUMjM6MjM6NTAuMzA5WiIsImlydCI6ZmFsc2V9.pE6x2-ni31Q42Qve_2v7g_Q3JqqXoPDlUlJSxkEGXvI
 content-type: application/json
-Content-Length: 1024
+Content-Length: 1303
 
 {
   "ipdb": {
-    "number": 756,
-    "mfg": 94,
-    "mpu": 15
+    "number": 5143,
+    "mfg": 328
   },
-  "title": "Eclipse",
-  "manufacturer": "Gottlieb",
-  "model_number": "671",
-  "year": 1982,
+  "title": "Kiss",
+  "manufacturer": "Unknown",
   "game_type": "ss",
-  "produced_units": 193,
-  "designers": [
-    "John Buras",
-    "Adolf Seitz Jr."
-  ],
-  "features": "Flippers (4), Pop bumpers (4), Slingshots (2), Standup targets (8), Kick-out holes (2), 5-bank drop targets (1), 4-bank drop targets (1), 3-bank drop targets (1), Kicking target (1), Spinning target (1).Same playfield layout as Gottlieb's 1981 'Black Hole' but without the lower level playfield.  What would be the entrance to the lower level on Black Hole is a captive hole for multiball on Eclipse. Achieving multiball requires specific targets to be achieved in sequence.",
-  "notes": "Although only 193 complete games were produced, a considerable number of kits (comprising a backglass, playfield and game ROMs) were produced. These kits were usually used to convert \"James Bond 007\" cabinets.  Eclipse uses the same sound PROM as the export version of Black Hole.",
-  "id": "eclipse",
-  "_backglass": "p2b5g2wgxkh"
+  "notes": "This conversion kit included a playfield and backglass to fit inside a Bally cabinet, converting it to be like Bally's 1979 'Kiss'.There are two different versions of the conversion playfield in this listing. One uses the 'S' from the rune alphabet (the so-called \"bolt-style\" shape) while the other has a rounded 'S'. We do not know what manufacturer in what country made either version, but the use of the 'S' runes is outlawed in Germany due to their use by Nazi organizations. We had wondered if it was even possible for a German manufacturer to have made the \"bolt-style\" playfield shown here. A hobbyist from Germany responded to tell us that early editions of record albums from the band KISS were available there with the \"bolt-style\" shape but were later changed to the rounded 'S'. This tells us that sales can occur, but it is difficult to speculate usefully until we know who manufactured each version.No information is available to us indicating there are two versions of the conversion backglass.We previously showed the manufacturer to be Geiger-Automatenbau. However, Mr. Geiger has informed us that he was not the manufacturer.",
+  "id": "kiss",
+  "year": 1900,
+  "_backglass": "p25w9ffzmhh"
 }

@@ -1,15 +1,15 @@
 200 OK
-X-App-Sha: 7bd4777
+X-App-Sha: 027627f
 Content-Type: application/json; charset=utf-8
-Content-Length: 713
-Etag: W/"2c9-8R3i0Q2IiwY4FzhfWBTIeA"
+Etag: W/"417-FBsCZXjN4bsklcB3reT9pQ"
+Content-Encoding: gzip
 
 {
-  "name": "Terence_Kassulke",
-  "username": "Terence_Kassulke",
-  "email": "victor.zboncak80@gmail.com",
+  "name": "Charlotte_Braun34",
+  "username": "Charlotte_Braun34",
+  "email": "michele45@gmail.com",
   "provider": "local",
-  "created_at": "2016-10-16T09:18:27.530Z",
+  "created_at": "2016-11-03T22:25:30.775Z",
   "is_active": true,
   "counter": {
     "stars": 0,
@@ -17,21 +17,28 @@ Etag: W/"2c9-8R3i0Q2IiwY4FzhfWBTIeA"
     "comments": 0
   },
   "preferences": {
+    "moderator_notify_backglass_auto_approved": false,
+    "moderator_notify_backglass_submitted": true,
+    "moderator_notify_release_commented": true,
+    "moderator_notify_release_auto_approved": false,
+    "moderator_notify_release_submitted": true,
+    "contributor_notify_game_request_created": true,
     "notify_mentions": true,
     "notify_created_release_followers": true,
     "notify_created_release_comments": true,
     "notify_game_requests": true,
     "notify_backglass_moderation_status": true,
+    "notify_release_validation_status": true,
     "notify_release_moderation_status": true
   },
   "roles": [
     "member"
   ],
-  "id": "p21ek5wg42h",
+  "id": "e2enrduymbh",
   "plan": {
     "push_notifications_enabled": false,
     "app_tokens_enabled": false,
     "id": "free"
   },
-  "gravatar_id": "b089ceff908019fc4348d513998b8095"
+  "gravatar_id": "56d717f110f02d073870fa833970391b"
 }

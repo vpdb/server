@@ -1,9 +1,9 @@
 200 OK
-X-App-Sha: 7bd4777
+X-App-Sha: 027627f
 Content-Type: application/json; charset=utf-8
-Content-Length: 39
-Etag: W/"27-OTybUGGfuVBuGZPd628A7w"
+Content-Length: 31
+Etag: W/"1f-8sItRduwfLYSU18e+mOrnw"
 
 {
-  "name": "Coherent Fireman Edition"
+  "name": "Male Mom Edition"
 }

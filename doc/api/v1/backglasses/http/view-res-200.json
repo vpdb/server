@@ -1,24 +1,25 @@
 200 OK
-X-App-Sha: 7bd4777
+X-App-Sha: 027627f
 Content-Type: application/json; charset=utf-8
-Etag: W/"81e-UzmEku11sLdO5bqvcAUVhg"
+Etag: W/"81e-BEIuDi+cTW1vaJfk16GFoQ"
 Content-Encoding: gzip
 
 {
-  "id": "eknq714g42h",
+  "id": "e2xewruy8hh",
   "game": {
     "ipdb": {
-      "mfg": 93,
-      "number": 1843
+      "rating": 7.8,
+      "mfg": 350,
+      "number": 2621
     },
-    "year": 1970,
-    "manufacturer": "Gottlieb",
-    "title": "Polo",
-    "id": "polo"
+    "year": 1962,
+    "manufacturer": "Williams",
+    "title": "Trade Winds",
+    "id": "trade-winds"
   },
   "versions": [
     {
-      "released_at": "2016-10-16T09:16:31.405Z",
+      "released_at": "2016-11-03T22:23:36.470Z",
       "version": "1.0",
       "counter": {
         "downloads": 0
@@ -30,25 +31,25 @@ Content-Encoding: gzip
         "is_protected": true,
         "variations": {
           "small-2x": {
-            "url": "https://localhost:7357/storage/public/files/small-2x/e21x7o4g4kb.jpg"
+            "url": "https://localhost:7357/storage/public/files/small-2x/ektwqrfz8bb.jpg"
           },
           "small": {
-            "url": "https://localhost:7357/storage/public/files/small/e21x7o4g4kb.jpg"
+            "url": "https://localhost:7357/storage/public/files/small/ektwqrfz8bb.jpg"
           },
           "medium-2x": {
-            "url": "https://localhost:7357/storage/public/files/medium-2x/e21x7o4g4kb.jpg"
+            "url": "https://localhost:7357/storage/public/files/medium-2x/ektwqrfz8bb.jpg"
           },
           "medium": {
-            "url": "https://localhost:7357/storage/public/files/medium/e21x7o4g4kb.jpg"
+            "url": "https://localhost:7357/storage/public/files/medium/ektwqrfz8bb.jpg"
           },
           "full": {
-            "url": "https://localhost:7357/storage/public/files/full/e21x7o4g4kb.jpg"
+            "url": "https://localhost:7357/storage/public/files/full/ektwqrfz8bb.jpg"
           }
         },
         "bytes": 2067,
-        "url": "https://localhost:7357/storage/v1/files/e21x7o4g4kb.directb2s",
+        "url": "https://localhost:7357/storage/v1/files/ektwqrfz8bb.directb2s",
         "name": "test.directb2s",
-        "id": "e21x7o4g4kb"
+        "id": "ektwqrfz8bb"
       }
     }
   ],
@@ -62,23 +63,23 @@ Content-Encoding: gzip
           "stars": 0,
           "comments": 0
         },
-        "gravatar_id": "2643bdd41e174318c0c23c9c020efb3d",
-        "username": "Dillan_Powlowski",
-        "name": "Dillan_Powlowski",
-        "id": "p2ou61xgx2h"
+        "gravatar_id": "14e00607f89b8ec8555f52688f7ef1db",
+        "username": "Esperanza22",
+        "name": "Esperanza22",
+        "id": "p2zqruy8bb"
       }
     }
   ],
-  "created_at": "2016-10-16T09:16:31.405Z",
+  "created_at": "2016-11-03T22:23:36.470Z",
   "created_by": {
     "counter": {
       "stars": 0,
       "comments": 0
     },
-    "gravatar_id": "2643bdd41e174318c0c23c9c020efb3d",
-    "username": "Dillan_Powlowski",
-    "name": "Dillan_Powlowski",
-    "id": "p2ou61xgx2h"
+    "gravatar_id": "14e00607f89b8ec8555f52688f7ef1db",
+    "username": "Esperanza22",
+    "name": "Esperanza22",
+    "id": "p2zqruy8bb"
   },
   "moderation": {
     "is_approved": true,
@@ -87,12 +88,12 @@ Content-Encoding: gzip
     "history": [
       {
         "event": "approved",
-        "created_at": "2016-10-16T09:16:31.471Z",
+        "created_at": "2016-11-03T22:23:36.528Z",
         "created_by": {
-          "id": "p2ou61xgx2h",
-          "name": "Dillan_Powlowski",
-          "username": "Dillan_Powlowski",
-          "gravatar_id": "2643bdd41e174318c0c23c9c020efb3d",
+          "id": "p2zqruy8bb",
+          "name": "Esperanza22",
+          "username": "Esperanza22",
+          "gravatar_id": "14e00607f89b8ec8555f52688f7ef1db",
           "counter": {
             "comments": 0,
             "stars": 0

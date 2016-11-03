@@ -1,7 +1,7 @@
-PATCH /v1/games/all-stars HTTP/2.0
+PATCH /v1/games/royal-flippers HTTP/2.0
 Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
-authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwMmRzOGtxNnhrYiIsImlhdCI6IjIwMTYtMTAtMTZUMDk6MTY6NDguMTMyWiIsImV4cCI6IjIwMTYtMTAtMTZUMTA6MTY6NDguMTMyWiIsImlydCI6ZmFsc2V9.t_XRFAW6lIRVjSZp9LGZaMeaYR9ipFpfyQT9U8cxxCA
+authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJlMjl1eHVmeW1oYiIsImlhdCI6IjIwMTYtMTEtMDNUMjI6MjM6NTEuNzQ0WiIsImV4cCI6IjIwMTYtMTEtMDNUMjM6MjM6NTEuNzQ0WiIsImlydCI6ZmFsc2V9.Q7MF8Ac49265LZt-DDUWOLgqEafgiMLzuald6Y0Git8
 content-type: application/json
 Content-Length: 36
 

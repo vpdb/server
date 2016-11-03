@@ -1,16 +1,16 @@
 POST /v1/media HTTP/2.0
 Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
-authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwa2Z3aHFnNDJiIiwiaWF0IjoiMjAxNi0xMC0xNlQwOToxNjo1Ni4zNjhaIiwiZXhwIjoiMjAxNi0xMC0xNlQxMDoxNjo1Ni4zNjhaIiwiaXJ0IjpmYWxzZX0.vO2S9LHH0mvTAILzaqCKa8TP1i36LkAl9LeoGLhEcjw
+authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJla3VjZmZ5OGhoIiwiaWF0IjoiMjAxNi0xMS0wM1QyMjoyMzo1OS42NDFaIiwiZXhwIjoiMjAxNi0xMS0wM1QyMzoyMzo1OS42NDFaIiwiaXJ0IjpmYWxzZX0.TS5AgW1jvMCRVfeUeGwABKm5zJE5CKrDM6awLw7sPoo
 content-type: application/json
-Content-Length: 264
+Content-Length: 258
 
 {
   "description": "This is a very super high resolution backglass that I have stitched together from four different sources.",
   "acknowledgements": "- Thanks to @mom for all her patience",
   "category": "backglass_image",
-  "_file": "pk8xebq64kh",
+  "_file": "pk4fmuuymhh",
   "_ref": {
-    "game": "diamond-lill"
+    "game": "harvey"
   }
 }

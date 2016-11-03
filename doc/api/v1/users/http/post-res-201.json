@@ -1,15 +1,15 @@
 201 Created
-X-App-Sha: 7bd4777
+X-App-Sha: 027627f
 Content-Type: application/json; charset=utf-8
-Content-Length: 839
-Etag: W/"347-c99CxMcKt7T/kWsQbyPB6Q"
+Etag: W/"4a0-1EW7Hn/KqiyEHvbe/DVcNw"
+Content-Encoding: gzip
 
 {
-  "name": "Flavie79",
-  "username": "Flavie79",
-  "email": "ashlynn_kirlin19@gmail.com",
+  "name": "Demetrius50",
+  "username": "Demetrius50",
+  "email": "elise_williamson@yahoo.com",
   "provider": "local",
-  "created_at": "2016-10-16T09:18:28.083Z",
+  "created_at": "2016-11-03T22:25:31.596Z",
   "is_active": false,
   "counter": {
     "stars": 0,
@@ -17,11 +17,18 @@ Etag: W/"347-c99CxMcKt7T/kWsQbyPB6Q"
     "comments": 0
   },
   "preferences": {
+    "moderator_notify_backglass_auto_approved": false,
+    "moderator_notify_backglass_submitted": true,
+    "moderator_notify_release_commented": true,
+    "moderator_notify_release_auto_approved": false,
+    "moderator_notify_release_submitted": true,
+    "contributor_notify_game_request_created": true,
     "notify_mentions": true,
     "notify_created_release_followers": true,
     "notify_created_release_comments": true,
     "notify_game_requests": true,
     "notify_backglass_moderation_status": true,
+    "notify_release_validation_status": true,
     "notify_release_moderation_status": true
   },
   "roles": [
@@ -29,14 +36,14 @@ Etag: W/"347-c99CxMcKt7T/kWsQbyPB6Q"
   ],
   "email_status": {
     "code": "pending_registration",
-    "expires_at": "2016-10-17T09:18:28.084Z",
-    "value": "ashlynn_kirlin19@gmail.com"
+    "expires_at": "2016-11-04T22:25:31.597Z",
+    "value": "elise_williamson@yahoo.com"
   },
-  "id": "pkh9brw6xkb",
+  "id": "p2knfdfz8hh",
   "plan": {
     "push_notifications_enabled": false,
     "app_tokens_enabled": false,
     "id": "free"
   },
-  "gravatar_id": "03f6c2a693e512f6fcbb9a212b7ed31f"
+  "gravatar_id": "26523157d116cf5f22988dbf10dce4bb"
 }

@@ -1,21 +1,21 @@
 200 OK
-X-App-Sha: 7bd4777
+X-App-Sha: 027627f
 X-List-Page: 1
 X-List-Size: 12
 X-List-Count: 10
 Content-Type: application/json; charset=utf-8
-Etag: W/"3c33-j5LUEZtMOY0Ezw2Wsv068A"
+Etag: W/"3c20-wDQpGdZTcK1tRPq7EIu6ig"
 Content-Encoding: gzip
 
 [
   {
-    "id": "bubbles",
-    "title": "Bubbles",
-    "manufacturer": "Genco",
-    "year": 1939,
+    "id": "1937-daily-races",
+    "title": "1937 Daily Races",
+    "manufacturer": "Gottlieb",
+    "year": 1936,
     "ipdb": {
-      "number": 5325,
-      "mfg": 130
+      "number": 4293,
+      "mfg": 93
     },
     "game_type": "em",
     "backglass": {
@@ -25,105 +25,35 @@ Content-Encoding: gzip
       "is_protected": true,
       "variations": {
         "small-2x": {
-          "url": "https://localhost:7357/storage/public/files/small-2x/p2dr82wg42b.jpg",
-          "width": 505,
-          "height": 404,
-          "bytes": 1775,
-          "mime_type": "image/jpeg"
-        },
-        "medium-2x": {
-          "url": "https://localhost:7357/storage/public/files/medium-2x/p2dr82wg42b.jpg",
-          "width": 728,
-          "height": 582,
-          "bytes": 3081,
-          "mime_type": "image/jpeg"
-        },
-        "small": {
-          "url": "https://localhost:7357/storage/public/files/small/p2dr82wg42b.jpg",
-          "width": 253,
-          "height": 202,
-          "bytes": 835,
-          "mime_type": "image/jpeg"
-        },
-        "medium": {
-          "url": "https://localhost:7357/storage/public/files/medium/p2dr82wg42b.jpg",
-          "width": 364,
-          "height": 291,
-          "bytes": 1187,
-          "mime_type": "image/jpeg"
-        },
-        "full": {
-          "url": "https://localhost:7357/storage/public/files/full/p2dr82wg42b.jpg",
-          "width": 640,
-          "height": 512,
-          "bytes": 2448,
-          "mime_type": "image/jpeg"
-        }
-      },
-      "bytes": 135,
-      "url": "https://localhost:7357/storage/v1/files/p2dr82wg42b.png",
-      "name": "backglass.png",
-      "id": "p2dr82wg42b"
-    },
-    "counter": {
-      "stars": 0,
-      "comments": 0,
-      "downloads": 0,
-      "views": 0,
-      "releases": 0
-    },
-    "rating": {
-      "score": 0,
-      "votes": 0,
-      "average": 0
-    }
-  },
-  {
-    "id": "continental-magic-game",
-    "title": "Continental Magic Game",
-    "manufacturer": "The Slot Construction Company B.V.B.A.",
-    "year": 1991,
-    "ipdb": {
-      "number": 5658,
-      "mfg": 590
-    },
-    "game_type": "ss",
-    "backglass": {
-      "counter": {
-        "downloads": 0
-      },
-      "is_protected": true,
-      "variations": {
-        "small-2x": {
-          "url": "https://localhost:7357/storage/public/files/small-2x/ekr4d2qg42h.jpg",
+          "url": "https://localhost:7357/storage/public/files/small-2x/p2nswufzmbh.jpg",
           "width": 505,
           "height": 404,
           "bytes": 1776,
           "mime_type": "image/jpeg"
         },
         "medium-2x": {
-          "url": "https://localhost:7357/storage/public/files/medium-2x/ekr4d2qg42h.jpg",
+          "url": "https://localhost:7357/storage/public/files/medium-2x/p2nswufzmbh.jpg",
           "width": 728,
           "height": 582,
-          "bytes": 3082,
+          "bytes": 3081,
           "mime_type": "image/jpeg"
         },
         "small": {
-          "url": "https://localhost:7357/storage/public/files/small/ekr4d2qg42h.jpg",
+          "url": "https://localhost:7357/storage/public/files/small/p2nswufzmbh.jpg",
           "width": 253,
           "height": 202,
           "bytes": 836,
           "mime_type": "image/jpeg"
         },
         "medium": {
-          "url": "https://localhost:7357/storage/public/files/medium/ekr4d2qg42h.jpg",
+          "url": "https://localhost:7357/storage/public/files/medium/p2nswufzmbh.jpg",
           "width": 364,
           "height": 291,
           "bytes": 1188,
           "mime_type": "image/jpeg"
         },
         "full": {
-          "url": "https://localhost:7357/storage/public/files/full/ekr4d2qg42h.jpg",
+          "url": "https://localhost:7357/storage/public/files/full/p2nswufzmbh.jpg",
           "width": 640,
           "height": 512,
           "bytes": 2448,
@@ -131,9 +61,9 @@ Content-Encoding: gzip
         }
       },
       "bytes": 135,
-      "url": "https://localhost:7357/storage/v1/files/ekr4d2qg42h.png",
+      "url": "https://localhost:7357/storage/v1/files/p2nswufzmbh.png",
       "name": "backglass.png",
-      "id": "ekr4d2qg42h"
+      "id": "p2nswufzmbh"
     },
     "counter": {
       "stars": 0,
@@ -149,14 +79,13 @@ Content-Encoding: gzip
     }
   },
   {
-    "id": "cow-poke",
-    "title": "Cow Poke",
-    "manufacturer": "Gottlieb",
-    "year": 1965,
+    "id": "always-seven",
+    "title": "Always Seven",
+    "manufacturer": "E. M. Marchant",
+    "year": 1950,
     "ipdb": {
-      "number": 581,
-      "mfg": 93,
-      "rating": 7.6
+      "number": 4463,
+      "mfg": 110
     },
     "game_type": "em",
     "backglass": {
@@ -166,45 +95,115 @@ Content-Encoding: gzip
       "is_protected": true,
       "variations": {
         "small-2x": {
-          "url": "https://localhost:7357/storage/public/files/small-2x/p2cz1kq6x2b.jpg",
+          "url": "https://localhost:7357/storage/public/files/small-2x/pkr5qufzmhb.jpg",
+          "width": 505,
+          "height": 404,
+          "bytes": 1776,
+          "mime_type": "image/jpeg"
+        },
+        "medium-2x": {
+          "url": "https://localhost:7357/storage/public/files/medium-2x/pkr5qufzmhb.jpg",
+          "width": 728,
+          "height": 582,
+          "bytes": 3082,
+          "mime_type": "image/jpeg"
+        },
+        "small": {
+          "url": "https://localhost:7357/storage/public/files/small/pkr5qufzmhb.jpg",
+          "width": 253,
+          "height": 202,
+          "bytes": 836,
+          "mime_type": "image/jpeg"
+        },
+        "medium": {
+          "url": "https://localhost:7357/storage/public/files/medium/pkr5qufzmhb.jpg",
+          "width": 364,
+          "height": 291,
+          "bytes": 1188,
+          "mime_type": "image/jpeg"
+        },
+        "full": {
+          "url": "https://localhost:7357/storage/public/files/full/pkr5qufzmhb.jpg",
+          "width": 640,
+          "height": 512,
+          "bytes": 3408,
+          "mime_type": "image/jpeg"
+        }
+      },
+      "bytes": 135,
+      "url": "https://localhost:7357/storage/v1/files/pkr5qufzmhb.png",
+      "name": "backglass.png",
+      "id": "pkr5qufzmhb"
+    },
+    "counter": {
+      "stars": 0,
+      "comments": 0,
+      "downloads": 0,
+      "views": 0,
+      "releases": 0
+    },
+    "rating": {
+      "score": 0,
+      "votes": 0,
+      "average": 0
+    }
+  },
+  {
+    "id": "continental",
+    "title": "Continental",
+    "manufacturer": "Bally",
+    "year": 1978,
+    "ipdb": {
+      "number": 6111,
+      "mfg": 47
+    },
+    "game_type": "em",
+    "backglass": {
+      "counter": {
+        "downloads": 0
+      },
+      "is_protected": true,
+      "variations": {
+        "small-2x": {
+          "url": "https://localhost:7357/storage/public/files/small-2x/pkw4wffzmhb.jpg",
           "width": 505,
           "height": 404,
           "bytes": 1775,
           "mime_type": "image/jpeg"
         },
         "medium-2x": {
-          "url": "https://localhost:7357/storage/public/files/medium-2x/p2cz1kq6x2b.jpg",
+          "url": "https://localhost:7357/storage/public/files/medium-2x/pkw4wffzmhb.jpg",
           "width": 728,
           "height": 582,
-          "bytes": 3081,
+          "bytes": 3080,
           "mime_type": "image/jpeg"
         },
         "small": {
-          "url": "https://localhost:7357/storage/public/files/small/p2cz1kq6x2b.jpg",
+          "url": "https://localhost:7357/storage/public/files/small/pkw4wffzmhb.jpg",
           "width": 253,
           "height": 202,
           "bytes": 835,
           "mime_type": "image/jpeg"
         },
         "medium": {
-          "url": "https://localhost:7357/storage/public/files/medium/p2cz1kq6x2b.jpg",
+          "url": "https://localhost:7357/storage/public/files/medium/pkw4wffzmhb.jpg",
           "width": 364,
           "height": 291,
-          "bytes": 1187,
+          "bytes": 1186,
           "mime_type": "image/jpeg"
         },
         "full": {
-          "url": "https://localhost:7357/storage/public/files/full/p2cz1kq6x2b.jpg",
+          "url": "https://localhost:7357/storage/public/files/full/pkw4wffzmhb.jpg",
           "width": 640,
           "height": 512,
-          "bytes": 2448,
+          "bytes": 2447,
           "mime_type": "image/jpeg"
         }
       },
       "bytes": 135,
-      "url": "https://localhost:7357/storage/v1/files/p2cz1kq6x2b.png",
+      "url": "https://localhost:7357/storage/v1/files/pkw4wffzmhb.png",
       "name": "backglass.png",
-      "id": "p2cz1kq6x2b"
+      "id": "pkw4wffzmhb"
     },
     "counter": {
       "stars": 0,
@@ -220,13 +219,13 @@ Content-Encoding: gzip
     }
   },
   {
-    "id": "fortune",
-    "title": "Fortune",
-    "manufacturer": "Rock-ola",
-    "year": 1936,
+    "id": "fun-way",
+    "title": "Fun Way",
+    "manufacturer": "Bally",
+    "year": 1959,
     "ipdb": {
-      "number": 921,
-      "mfg": 269
+      "number": 971,
+      "mfg": 47
     },
     "game_type": "em",
     "backglass": {
@@ -236,25 +235,45 @@ Content-Encoding: gzip
       "is_protected": true,
       "variations": {
         "small-2x": {
-          "url": "https://localhost:7357/storage/public/files/small-2x/e2dw1kw6x2b.jpg"
-        },
-        "small": {
-          "url": "https://localhost:7357/storage/public/files/small/e2dw1kw6x2b.jpg"
+          "url": "https://localhost:7357/storage/public/files/small-2x/ekdreufzmhb.jpg",
+          "width": 505,
+          "height": 404,
+          "bytes": 1776,
+          "mime_type": "image/jpeg"
         },
         "medium-2x": {
-          "url": "https://localhost:7357/storage/public/files/medium-2x/e2dw1kw6x2b.jpg"
+          "url": "https://localhost:7357/storage/public/files/medium-2x/ekdreufzmhb.jpg",
+          "width": 728,
+          "height": 582,
+          "bytes": 3081,
+          "mime_type": "image/jpeg"
+        },
+        "small": {
+          "url": "https://localhost:7357/storage/public/files/small/ekdreufzmhb.jpg",
+          "width": 253,
+          "height": 202,
+          "bytes": 836,
+          "mime_type": "image/jpeg"
         },
         "medium": {
-          "url": "https://localhost:7357/storage/public/files/medium/e2dw1kw6x2b.jpg"
+          "url": "https://localhost:7357/storage/public/files/medium/ekdreufzmhb.jpg",
+          "width": 364,
+          "height": 291,
+          "bytes": 1188,
+          "mime_type": "image/jpeg"
         },
         "full": {
-          "url": "https://localhost:7357/storage/public/files/full/e2dw1kw6x2b.jpg"
+          "url": "https://localhost:7357/storage/public/files/full/ekdreufzmhb.jpg",
+          "width": 640,
+          "height": 512,
+          "bytes": 2448,
+          "mime_type": "image/jpeg"
         }
       },
       "bytes": 135,
-      "url": "https://localhost:7357/storage/v1/files/e2dw1kw6x2b.png",
+      "url": "https://localhost:7357/storage/v1/files/ekdreufzmhb.png",
       "name": "backglass.png",
-      "id": "e2dw1kw6x2b"
+      "id": "ekdreufzmhb"
     },
     "counter": {
       "stars": 0,
@@ -270,15 +289,15 @@ Content-Encoding: gzip
     }
   },
   {
-    "id": "lah",
-    "title": "Last Action Hero",
-    "manufacturer": "Data East",
-    "year": 1993,
+    "id": "gw",
+    "title": "Gold Wings",
+    "manufacturer": "Premier",
+    "year": 1986,
     "ipdb": {
-      "number": 1416,
-      "mfg": 98,
-      "mpu": 24,
-      "rating": 8
+      "number": 1043,
+      "mfg": 257,
+      "mpu": 17,
+      "rating": 6.9
     },
     "game_type": "ss",
     "backglass": {
@@ -288,45 +307,45 @@ Content-Encoding: gzip
       "is_protected": true,
       "variations": {
         "small-2x": {
-          "url": "https://localhost:7357/storage/public/files/small-2x/pkeedkqg4kh.jpg",
+          "url": "https://localhost:7357/storage/public/files/small-2x/pk8zefuymhh.jpg",
           "width": 505,
           "height": 404,
           "bytes": 1776,
           "mime_type": "image/jpeg"
         },
         "medium-2x": {
-          "url": "https://localhost:7357/storage/public/files/medium-2x/pkeedkqg4kh.jpg",
+          "url": "https://localhost:7357/storage/public/files/medium-2x/pk8zefuymhh.jpg",
           "width": 728,
           "height": 582,
-          "bytes": 3081,
+          "bytes": 3082,
           "mime_type": "image/jpeg"
         },
         "small": {
-          "url": "https://localhost:7357/storage/public/files/small/pkeedkqg4kh.jpg",
+          "url": "https://localhost:7357/storage/public/files/small/pk8zefuymhh.jpg",
           "width": 253,
           "height": 202,
           "bytes": 836,
           "mime_type": "image/jpeg"
         },
+        "medium": {
+          "url": "https://localhost:7357/storage/public/files/medium/pk8zefuymhh.jpg",
+          "width": 364,
+          "height": 291,
+          "bytes": 1188,
+          "mime_type": "image/jpeg"
+        },
         "full": {
-          "url": "https://localhost:7357/storage/public/files/full/pkeedkqg4kh.jpg",
+          "url": "https://localhost:7357/storage/public/files/full/pk8zefuymhh.jpg",
           "width": 640,
           "height": 512,
           "bytes": 2448,
           "mime_type": "image/jpeg"
-        },
-        "medium": {
-          "url": "https://localhost:7357/storage/public/files/medium/pkeedkqg4kh.jpg",
-          "width": 364,
-          "height": 291,
-          "bytes": 1187,
-          "mime_type": "image/jpeg"
         }
       },
       "bytes": 135,
-      "url": "https://localhost:7357/storage/v1/files/pkeedkqg4kh.png",
+      "url": "https://localhost:7357/storage/v1/files/pk8zefuymhh.png",
       "name": "backglass.png",
-      "id": "pkeedkqg4kh"
+      "id": "pk8zefuymhh"
     },
     "counter": {
       "stars": 0,
@@ -341,18 +360,18 @@ Content-Encoding: gzip
       "average": 0
     },
     "mpu": {
-      "short": "Sega 3",
-      "long": "DataEast/Sega Version 3"
+      "short": "System 80B",
+      "long": "Gottlieb System 80B"
     }
   },
   {
-    "id": "special-marble-no-horseshoe",
-    "title": "Special Marble (No Horseshoe)",
-    "manufacturer": "A.B.T.",
+    "id": "lone-eagle",
+    "title": "Lone Eagle",
+    "manufacturer": "C. & D. Manufacturing Company",
     "year": 1933,
     "ipdb": {
-      "number": 5981,
-      "mfg": 9
+      "number": 5725,
+      "mfg": 602
     },
     "game_type": "pm",
     "backglass": {
@@ -362,45 +381,115 @@ Content-Encoding: gzip
       "is_protected": true,
       "variations": {
         "small-2x": {
-          "url": "https://localhost:7357/storage/public/files/small-2x/pk1sokq6x2h.jpg",
+          "url": "https://localhost:7357/storage/public/files/small-2x/ek7xeuuzmhb.jpg",
+          "width": 505,
+          "height": 404,
+          "bytes": 1774,
+          "mime_type": "image/jpeg"
+        },
+        "medium-2x": {
+          "url": "https://localhost:7357/storage/public/files/medium-2x/ek7xeuuzmhb.jpg",
+          "width": 728,
+          "height": 582,
+          "bytes": 3080,
+          "mime_type": "image/jpeg"
+        },
+        "small": {
+          "url": "https://localhost:7357/storage/public/files/small/ek7xeuuzmhb.jpg",
+          "width": 253,
+          "height": 202,
+          "bytes": 834,
+          "mime_type": "image/jpeg"
+        },
+        "medium": {
+          "url": "https://localhost:7357/storage/public/files/medium/ek7xeuuzmhb.jpg",
+          "width": 364,
+          "height": 291,
+          "bytes": 1186,
+          "mime_type": "image/jpeg"
+        },
+        "full": {
+          "url": "https://localhost:7357/storage/public/files/full/ek7xeuuzmhb.jpg",
+          "width": 640,
+          "height": 512,
+          "bytes": 2445,
+          "mime_type": "image/jpeg"
+        }
+      },
+      "bytes": 135,
+      "url": "https://localhost:7357/storage/v1/files/ek7xeuuzmhb.png",
+      "name": "backglass.png",
+      "id": "ek7xeuuzmhb"
+    },
+    "counter": {
+      "stars": 0,
+      "comments": 0,
+      "downloads": 0,
+      "views": 0,
+      "releases": 0
+    },
+    "rating": {
+      "score": 0,
+      "votes": 0,
+      "average": 0
+    }
+  },
+  {
+    "id": "pass-time",
+    "title": "Pass-Time",
+    "manufacturer": "Pass-Time Table Company, Detroit, Michigan (1932)",
+    "year": 1932,
+    "ipdb": {
+      "number": 6074,
+      "mfg": 658
+    },
+    "game_type": "pm",
+    "backglass": {
+      "counter": {
+        "downloads": 0
+      },
+      "is_protected": true,
+      "variations": {
+        "small-2x": {
+          "url": "https://localhost:7357/storage/public/files/small-2x/p2nbpufymhh.jpg",
           "width": 505,
           "height": 404,
           "bytes": 1775,
           "mime_type": "image/jpeg"
         },
         "medium-2x": {
-          "url": "https://localhost:7357/storage/public/files/medium-2x/pk1sokq6x2h.jpg",
+          "url": "https://localhost:7357/storage/public/files/medium-2x/p2nbpufymhh.jpg",
           "width": 728,
           "height": 582,
           "bytes": 3081,
           "mime_type": "image/jpeg"
         },
         "small": {
-          "url": "https://localhost:7357/storage/public/files/small/pk1sokq6x2h.jpg",
+          "url": "https://localhost:7357/storage/public/files/small/p2nbpufymhh.jpg",
           "width": 253,
           "height": 202,
           "bytes": 835,
           "mime_type": "image/jpeg"
         },
         "medium": {
-          "url": "https://localhost:7357/storage/public/files/medium/pk1sokq6x2h.jpg",
+          "url": "https://localhost:7357/storage/public/files/medium/p2nbpufymhh.jpg",
           "width": 364,
           "height": 291,
           "bytes": 1187,
           "mime_type": "image/jpeg"
         },
         "full": {
-          "url": "https://localhost:7357/storage/public/files/full/pk1sokq6x2h.jpg",
+          "url": "https://localhost:7357/storage/public/files/full/p2nbpufymhh.jpg",
           "width": 640,
           "height": 512,
-          "bytes": 2448,
+          "bytes": 3407,
           "mime_type": "image/jpeg"
         }
       },
       "bytes": 135,
-      "url": "https://localhost:7357/storage/v1/files/pk1sokq6x2h.png",
+      "url": "https://localhost:7357/storage/v1/files/p2nbpufymhh.png",
       "name": "backglass.png",
-      "id": "pk1sokq6x2h"
+      "id": "p2nbpufymhh"
     },
     "counter": {
       "stars": 0,
@@ -416,15 +505,15 @@ Content-Encoding: gzip
     }
   },
   {
-    "id": "spinball",
-    "title": "Spinball",
-    "manufacturer": "Chicago Coin",
-    "year": 1948,
+    "id": "red-baron",
+    "title": "Red Baron",
+    "manufacturer": "Barni",
+    "year": 1900,
     "ipdb": {
-      "number": 2289,
-      "mfg": 81
+      "number": 6160,
+      "mfg": 451
     },
-    "game_type": "em",
+    "game_type": "ss",
     "backglass": {
       "counter": {
         "downloads": 0
@@ -432,245 +521,155 @@ Content-Encoding: gzip
       "is_protected": true,
       "variations": {
         "small-2x": {
-          "url": "https://localhost:7357/storage/public/files/small-2x/ekau8kq6x2b.jpg",
-          "width": 505,
-          "height": 404,
-          "bytes": 1776,
-          "mime_type": "image/jpeg"
-        },
-        "medium-2x": {
-          "url": "https://localhost:7357/storage/public/files/medium-2x/ekau8kq6x2b.jpg",
-          "width": 728,
-          "height": 582,
-          "bytes": 3082,
-          "mime_type": "image/jpeg"
-        },
-        "small": {
-          "url": "https://localhost:7357/storage/public/files/small/ekau8kq6x2b.jpg",
-          "width": 253,
-          "height": 202,
-          "bytes": 836,
-          "mime_type": "image/jpeg"
-        },
-        "medium": {
-          "url": "https://localhost:7357/storage/public/files/medium/ekau8kq6x2b.jpg",
-          "width": 364,
-          "height": 291,
-          "bytes": 1188,
-          "mime_type": "image/jpeg"
-        },
-        "full": {
-          "url": "https://localhost:7357/storage/public/files/full/ekau8kq6x2b.jpg",
-          "width": 640,
-          "height": 512,
-          "bytes": 2448,
-          "mime_type": "image/jpeg"
-        }
-      },
-      "bytes": 135,
-      "url": "https://localhost:7357/storage/v1/files/ekau8kq6x2b.png",
-      "name": "backglass.png",
-      "id": "ekau8kq6x2b"
-    },
-    "counter": {
-      "stars": 0,
-      "comments": 0,
-      "downloads": 0,
-      "views": 0,
-      "releases": 0
-    },
-    "rating": {
-      "score": 0,
-      "votes": 0,
-      "average": 0
-    }
-  },
-  {
-    "id": "summer-holidays",
-    "title": "Summer Holidays",
-    "manufacturer": "Petaco",
-    "year": 1975,
-    "ipdb": {
-      "number": 4597,
-      "mfg": 262
-    },
-    "game_type": "em",
-    "backglass": {
-      "counter": {
-        "downloads": 0
-      },
-      "is_protected": true,
-      "variations": {
-        "small-2x": {
-          "url": "https://localhost:7357/storage/public/files/small-2x/ek4932w6x2b.jpg",
-          "width": 505,
-          "height": 404,
-          "bytes": 1776,
-          "mime_type": "image/jpeg"
-        },
-        "medium-2x": {
-          "url": "https://localhost:7357/storage/public/files/medium-2x/ek4932w6x2b.jpg",
-          "width": 728,
-          "height": 582,
-          "bytes": 3082,
-          "mime_type": "image/jpeg"
-        },
-        "small": {
-          "url": "https://localhost:7357/storage/public/files/small/ek4932w6x2b.jpg",
-          "width": 253,
-          "height": 202,
-          "bytes": 836,
-          "mime_type": "image/jpeg"
-        },
-        "medium": {
-          "url": "https://localhost:7357/storage/public/files/medium/ek4932w6x2b.jpg",
-          "width": 364,
-          "height": 291,
-          "bytes": 1188,
-          "mime_type": "image/jpeg"
-        },
-        "full": {
-          "url": "https://localhost:7357/storage/public/files/full/ek4932w6x2b.jpg",
-          "width": 640,
-          "height": 512,
-          "bytes": 2448,
-          "mime_type": "image/jpeg"
-        }
-      },
-      "bytes": 135,
-      "url": "https://localhost:7357/storage/v1/files/ek4932w6x2b.png",
-      "name": "backglass.png",
-      "id": "ek4932w6x2b"
-    },
-    "counter": {
-      "stars": 0,
-      "comments": 0,
-      "downloads": 0,
-      "views": 0,
-      "releases": 0
-    },
-    "rating": {
-      "score": 0,
-      "votes": 0,
-      "average": 0
-    }
-  },
-  {
-    "id": "topper",
-    "title": "Topper",
-    "manufacturer": "Chicago Coin",
-    "year": 1939,
-    "ipdb": {
-      "number": 2593,
-      "mfg": 81
-    },
-    "game_type": "em",
-    "backglass": {
-      "counter": {
-        "downloads": 0
-      },
-      "is_protected": true,
-      "variations": {
-        "small-2x": {
-          "url": "https://localhost:7357/storage/public/files/small-2x/e28okw6xkh.jpg",
-          "width": 505,
-          "height": 404,
-          "bytes": 1776,
-          "mime_type": "image/jpeg"
-        },
-        "medium-2x": {
-          "url": "https://localhost:7357/storage/public/files/medium-2x/e28okw6xkh.jpg",
-          "width": 728,
-          "height": 582,
-          "bytes": 3082,
-          "mime_type": "image/jpeg"
-        },
-        "small": {
-          "url": "https://localhost:7357/storage/public/files/small/e28okw6xkh.jpg",
-          "width": 253,
-          "height": 202,
-          "bytes": 836,
-          "mime_type": "image/jpeg"
-        },
-        "medium": {
-          "url": "https://localhost:7357/storage/public/files/medium/e28okw6xkh.jpg",
-          "width": 364,
-          "height": 291,
-          "bytes": 1188,
-          "mime_type": "image/jpeg"
-        },
-        "full": {
-          "url": "https://localhost:7357/storage/public/files/full/e28okw6xkh.jpg",
-          "width": 640,
-          "height": 512,
-          "bytes": 2448,
-          "mime_type": "image/jpeg"
-        }
-      },
-      "bytes": 135,
-      "url": "https://localhost:7357/storage/v1/files/e28okw6xkh.png",
-      "name": "backglass.png",
-      "id": "e28okw6xkh"
-    },
-    "counter": {
-      "stars": 0,
-      "comments": 0,
-      "downloads": 0,
-      "views": 0,
-      "releases": 0
-    },
-    "rating": {
-      "score": 0,
-      "votes": 0,
-      "average": 0
-    }
-  },
-  {
-    "id": "turf-champs",
-    "title": "Turf Champs",
-    "manufacturer": "Stoner Manufacturing Company",
-    "year": 1936,
-    "ipdb": {
-      "number": 2671,
-      "mfg": 304
-    },
-    "game_type": "em",
-    "backglass": {
-      "counter": {
-        "downloads": 0
-      },
-      "is_protected": true,
-      "variations": {
-        "small-2x": {
-          "url": "https://localhost:7357/storage/public/files/small-2x/pk6bdkw642h.jpg",
+          "url": "https://localhost:7357/storage/public/files/small-2x/p2owpuuz8hh.jpg",
           "width": 505,
           "height": 404,
           "bytes": 1775,
           "mime_type": "image/jpeg"
         },
         "medium-2x": {
-          "url": "https://localhost:7357/storage/public/files/medium-2x/pk6bdkw642h.jpg",
+          "url": "https://localhost:7357/storage/public/files/medium-2x/p2owpuuz8hh.jpg",
           "width": 728,
           "height": 582,
           "bytes": 3081,
           "mime_type": "image/jpeg"
         },
         "small": {
-          "url": "https://localhost:7357/storage/public/files/small/pk6bdkw642h.jpg",
+          "url": "https://localhost:7357/storage/public/files/small/p2owpuuz8hh.jpg",
           "width": 253,
           "height": 202,
           "bytes": 835,
           "mime_type": "image/jpeg"
         },
         "medium": {
-          "url": "https://localhost:7357/storage/public/files/medium/pk6bdkw642h.jpg",
+          "url": "https://localhost:7357/storage/public/files/medium/p2owpuuz8hh.jpg",
           "width": 364,
           "height": 291,
           "bytes": 1187,
           "mime_type": "image/jpeg"
         },
         "full": {
-          "url": "https://localhost:7357/storage/public/files/full/pk6bdkw642h.jpg",
+          "url": "https://localhost:7357/storage/public/files/full/p2owpuuz8hh.jpg",
+          "width": 640,
+          "height": 512,
+          "bytes": 2447,
+          "mime_type": "image/jpeg"
+        }
+      },
+      "bytes": 135,
+      "url": "https://localhost:7357/storage/v1/files/p2owpuuz8hh.png",
+      "name": "backglass.png",
+      "id": "p2owpuuz8hh"
+    },
+    "counter": {
+      "stars": 0,
+      "comments": 0,
+      "downloads": 0,
+      "views": 0,
+      "releases": 0
+    },
+    "rating": {
+      "score": 0,
+      "votes": 0,
+      "average": 0
+    }
+  },
+  {
+    "id": "silver-star",
+    "title": "Silver Star",
+    "manufacturer": "Exhibit",
+    "year": 1934,
+    "ipdb": {
+      "number": 4203,
+      "mfg": 117
+    },
+    "game_type": "em",
+    "backglass": {
+      "counter": {
+        "downloads": 0
+      },
+      "is_protected": true,
+      "variations": {
+        "small-2x": {
+          "url": "https://localhost:7357/storage/public/files/small-2x/e2vz5fuzmhh.jpg"
+        },
+        "small": {
+          "url": "https://localhost:7357/storage/public/files/small/e2vz5fuzmhh.jpg"
+        },
+        "medium-2x": {
+          "url": "https://localhost:7357/storage/public/files/medium-2x/e2vz5fuzmhh.jpg"
+        },
+        "medium": {
+          "url": "https://localhost:7357/storage/public/files/medium/e2vz5fuzmhh.jpg"
+        },
+        "full": {
+          "url": "https://localhost:7357/storage/public/files/full/e2vz5fuzmhh.jpg"
+        }
+      },
+      "bytes": 135,
+      "url": "https://localhost:7357/storage/v1/files/e2vz5fuzmhh.png",
+      "name": "backglass.png",
+      "id": "e2vz5fuzmhh"
+    },
+    "counter": {
+      "stars": 0,
+      "comments": 0,
+      "downloads": 0,
+      "views": 0,
+      "releases": 0
+    },
+    "rating": {
+      "score": 0,
+      "votes": 0,
+      "average": 0
+    }
+  },
+  {
+    "id": "town-bar",
+    "title": "Town Bar",
+    "manufacturer": "Rotor Table Games Co, Incorporated",
+    "year": 1935,
+    "ipdb": {
+      "number": 4261,
+      "mfg": 271
+    },
+    "game_type": "em",
+    "backglass": {
+      "counter": {
+        "downloads": 0
+      },
+      "is_protected": true,
+      "variations": {
+        "small-2x": {
+          "url": "https://localhost:7357/storage/public/files/small-2x/e2xequuz8hb.jpg",
+          "width": 505,
+          "height": 404,
+          "bytes": 1776,
+          "mime_type": "image/jpeg"
+        },
+        "medium-2x": {
+          "url": "https://localhost:7357/storage/public/files/medium-2x/e2xequuz8hb.jpg",
+          "width": 728,
+          "height": 582,
+          "bytes": 3082,
+          "mime_type": "image/jpeg"
+        },
+        "small": {
+          "url": "https://localhost:7357/storage/public/files/small/e2xequuz8hb.jpg",
+          "width": 253,
+          "height": 202,
+          "bytes": 836,
+          "mime_type": "image/jpeg"
+        },
+        "medium": {
+          "url": "https://localhost:7357/storage/public/files/medium/e2xequuz8hb.jpg",
+          "width": 364,
+          "height": 291,
+          "bytes": 1188,
+          "mime_type": "image/jpeg"
+        },
+        "full": {
+          "url": "https://localhost:7357/storage/public/files/full/e2xequuz8hb.jpg",
           "width": 640,
           "height": 512,
           "bytes": 2448,
@@ -678,9 +677,9 @@ Content-Encoding: gzip
         }
       },
       "bytes": 135,
-      "url": "https://localhost:7357/storage/v1/files/pk6bdkw642h.png",
+      "url": "https://localhost:7357/storage/v1/files/e2xequuz8hb.png",
       "name": "backglass.png",
-      "id": "pk6bdkw642h"
+      "id": "e2xequuz8hb"
     },
     "counter": {
       "stars": 0,

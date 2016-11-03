@@ -1,13 +1,13 @@
 200 OK
-X-App-Sha: 7bd4777
+X-App-Sha: 027627f
 Content-Type: application/json; charset=utf-8
 Content-Length: 167
-Etag: W/"a7-Bjbb9giHqPL+L52t1ey2NQ"
+Etag: W/"a7-LHJn6J1NPZH+n7XxAUDs0g"
 
 {
-  "id": "e27yk5q6x2b",
+  "id": "ekwe53uy8bh",
   "label": "My Renamed Application",
   "is_active": false,
-  "expires_at": "2016-10-16T09:18:28.086Z",
-  "created_at": "2016-10-16T09:18:27.080Z"
+  "expires_at": "2016-11-03T22:25:31.357Z",
+  "created_at": "2016-11-03T22:25:30.353Z"
 }

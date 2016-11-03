@@ -1,7 +1,7 @@
-POST /v1/releases/p2bzmec5ehb/versions/1.0.0/files/pkuh7ec5ehb/validate HTTP/2.0
+POST /v1/releases/pk4g7uz8bb/versions/1.0.0/files/e2afncfzmbb/validate HTTP/2.0
 Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
-authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJla3VjcGNyZWhoIiwiaWF0IjoiMjAxNi0xMC0yOVQyMDo1NTo1OS42MTFaIiwiZXhwIjoiMjAxNi0xMC0yOVQyMTo1NTo1OS42MTFaIiwiaXJ0IjpmYWxzZX0.ga2NITbI6zBFloY8HLvACmSrZAgRm_Q4KqUR2eI5yP0
+authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwa2Y1bmNmem1iaCIsImlhdCI6IjIwMTYtMTEtMDNUMjI6MjU6MDEuMzI3WiIsImV4cCI6IjIwMTYtMTEtMDNUMjM6MjU6MDEuMzI3WiIsImlydCI6ZmFsc2V9.ByADZ9r7Erp5imJSDYh5C7NcVvFM5UOsmL-Or02rY2w
 content-type: application/json
 Content-Length: 56
 

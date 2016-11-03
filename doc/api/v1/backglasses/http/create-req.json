@@ -1,17 +1,17 @@
 POST /v1/backglasses HTTP/2.0
 Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
-authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJla3F6YTF4NjRrYiIsImlhdCI6IjIwMTYtMTAtMTZUMDk6MTY6MjkuMDY2WiIsImV4cCI6IjIwMTYtMTAtMTZUMTA6MTY6MjkuMDY2WiIsImlydCI6ZmFsc2V9.1LNt1oFiY8E22vTpKrH3ZtUsUpVH7vJhwpa8IurtzcU
+authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwa25zc3J1eThiaCIsImlhdCI6IjIwMTYtMTEtMDNUMjI6MjM6MzQuMjM5WiIsImV4cCI6IjIwMTYtMTEtMDNUMjM6MjM6MzQuMjM5WiIsImlydCI6ZmFsc2V9.hTT0S8e9pTboKHtto47j45h2qtF7aA3sBz0_JRan7Zo
 content-type: application/json
-Content-Length: 464
+Content-Length: 458
 
 {
-  "_game": "wizard-jackpot",
+  "_game": "majors",
   "description": "Photoshopped the super hires backglass together from four different sources!",
   "acknowledgements": "- Thanks @mom for supporting my late hours\n- Thanks @dad for supporting @mom!",
   "authors": [
     {
-      "_user": "ekqza1x64kb",
+      "_user": "pknssruy8bh",
       "roles": [
         "creator"
       ]
@@ -21,12 +21,12 @@ Content-Length: 464
     {
       "version": "1.0",
       "changes": "Initial release",
-      "_file": "e2rg14g42h"
+      "_file": "e24bxruymbh"
     },
     {
       "version": "1.1",
       "changes": "- Backglass is now even more high res!\n- It blinks more.",
-      "_file": "ekgg146x2h"
+      "_file": "pkubxruz8hb"
     }
   ]
 }

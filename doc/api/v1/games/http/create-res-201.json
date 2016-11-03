@@ -1,21 +1,18 @@
 201 Created
-X-App-Sha: 7bd4777
+X-App-Sha: 027627f
 Content-Type: application/json; charset=utf-8
-Etag: W/"8b7-jQBQVPh4MLfJ7wA/PYR2aw"
+Etag: W/"9ac-vCBlEcLxCNMTBAjXVJnvTA"
 Content-Encoding: gzip
 
 {
-  "title_sortable": "Eclipse",
-  "title": "Eclipse",
-  "manufacturer": "Gottlieb",
-  "model_number": "671",
-  "year": 1982,
+  "title_sortable": "Kiss",
+  "title": "Kiss",
+  "manufacturer": "Unknown",
   "game_type": "ss",
-  "produced_units": 193,
-  "features": "Flippers (4), Pop bumpers (4), Slingshots (2), Standup targets (8), Kick-out holes (2), 5-bank drop targets (1), 4-bank drop targets (1), 3-bank drop targets (1), Kicking target (1), Spinning target (1).Same playfield layout as Gottlieb's 1981 'Black Hole' but without the lower level playfield.  What would be the entrance to the lower level on Black Hole is a captive hole for multiball on Eclipse. Achieving multiball requires specific targets to be achieved in sequence.",
-  "notes": "Although only 193 complete games were produced, a considerable number of kits (comprising a backglass, playfield and game ROMs) were produced. These kits were usually used to convert \"James Bond 007\" cabinets.  Eclipse uses the same sound PROM as the export version of Black Hole.",
-  "id": "eclipse",
-  "created_at": "2016-10-16T09:16:46.679Z",
+  "notes": "This conversion kit included a playfield and backglass to fit inside a Bally cabinet, converting it to be like Bally's 1979 'Kiss'.There are two different versions of the conversion playfield in this listing. One uses the 'S' from the rune alphabet (the so-called \"bolt-style\" shape) while the other has a rounded 'S'. We do not know what manufacturer in what country made either version, but the use of the 'S' runes is outlawed in Germany due to their use by Nazi organizations. We had wondered if it was even possible for a German manufacturer to have made the \"bolt-style\" playfield shown here. A hobbyist from Germany responded to tell us that early editions of record albums from the band KISS were available there with the \"bolt-style\" shape but were later changed to the rounded 'S'. This tells us that sales can occur, but it is difficult to speculate usefully until we know who manufactured each version.No information is available to us indicating there are two versions of the conversion backglass.We previously showed the manufacturer to be Geiger-Automatenbau. However, Mr. Geiger has informed us that he was not the manufacturer.",
+  "id": "kiss",
+  "year": 1900,
+  "created_at": "2016-11-03T22:23:50.426Z",
   "rating": {
     "score": 0,
     "votes": 0,
@@ -31,24 +28,20 @@ Content-Encoding: gzip
     "views": 0,
     "releases": 0
   },
+  "pinside": {
+    "ranks": [],
+    "ids": []
+  },
   "ipdb": {
-    "number": 756,
-    "mfg": 94,
-    "mpu": 15
+    "number": 5143,
+    "mfg": 328
   },
   "keywords": [],
   "artists": [],
-  "designers": [
-    "John Buras",
-    "Adolf Seitz Jr."
-  ],
+  "designers": [],
   "themes": [],
   "short": [],
-  "mpu": {
-    "short": "System 80",
-    "long": "Gottlieb System 80"
-  },
-  "owner": "D. Gottlieb & Company",
+  "owner": "Unknown Manufacturer",
   "backglass": {
     "counter": {
       "downloads": 0
@@ -56,24 +49,24 @@ Content-Encoding: gzip
     "is_protected": true,
     "variations": {
       "small-2x": {
-        "url": "https://localhost:7357/storage/public/files/small-2x/p2b5g2wgxkh.jpg"
+        "url": "https://localhost:7357/storage/public/files/small-2x/p25w9ffzmhh.jpg"
       },
       "small": {
-        "url": "https://localhost:7357/storage/public/files/small/p2b5g2wgxkh.jpg"
+        "url": "https://localhost:7357/storage/public/files/small/p25w9ffzmhh.jpg"
       },
       "medium-2x": {
-        "url": "https://localhost:7357/storage/public/files/medium-2x/p2b5g2wgxkh.jpg"
+        "url": "https://localhost:7357/storage/public/files/medium-2x/p25w9ffzmhh.jpg"
       },
       "medium": {
-        "url": "https://localhost:7357/storage/public/files/medium/p2b5g2wgxkh.jpg"
+        "url": "https://localhost:7357/storage/public/files/medium/p25w9ffzmhh.jpg"
       },
       "full": {
-        "url": "https://localhost:7357/storage/public/files/full/p2b5g2wgxkh.jpg"
+        "url": "https://localhost:7357/storage/public/files/full/p25w9ffzmhh.jpg"
       }
     },
     "bytes": 135,
-    "url": "https://localhost:7357/storage/v1/files/p2b5g2wgxkh.png",
+    "url": "https://localhost:7357/storage/v1/files/p25w9ffzmhh.png",
     "name": "backglass.png",
-    "id": "p2b5g2wgxkh"
+    "id": "p25w9ffzmhh"
   }
 }

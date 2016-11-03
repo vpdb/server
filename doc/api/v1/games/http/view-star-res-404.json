@@ -1,9 +1,9 @@
 404 Not Found
-X-App-Sha: 7bd4777
+X-App-Sha: 027627f
 Content-Type: application/json; charset=utf-8
-Content-Length: 75
-Etag: W/"4b-lqozhOtT1UYsRoOxNGcJFA"
+Content-Length: 77
+Etag: W/"4d-JEMRbPLoGBqzM+OS4+oOQg"
 
 {
-  "error": "No star for <rhiannon59@gmail.com> for \"Gold Star\" found."
+  "error": "No star for <cleo95@yahoo.com> for \"American League\" found."
 }

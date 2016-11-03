@@ -1,16 +1,16 @@
 200 OK
-X-App-Sha: 7bd4777
+X-App-Sha: 027627f
 Content-Type: application/json; charset=utf-8
-Content-Length: 752
-Etag: W/"2f0-hCZLdGEGEpf+xwbqZxMVHg"
+Etag: W/"42c-tU4pMU7ar5VxmTOE297hYw"
+Content-Encoding: gzip
 
 {
-  "id": "p21ek5wg42h",
-  "name": "Mallory.Flatley81",
-  "username": "Mallory.Flatley81",
-  "gravatar_id": "920b68e7300f45c447b59ea16b6d3a01",
-  "location": "New Myles burgh",
-  "email": "gerard_mccullough25@hotmail.com",
+  "id": "e2enrduymbh",
+  "name": "Aglae15",
+  "username": "Aglae15",
+  "gravatar_id": "aa8bde2200b79055506641cc189a6d30",
+  "location": "Lake Moriah haven",
+  "email": "julio.nikolaus62@yahoo.com",
   "is_active": true,
   "provider": "local",
   "roles": [
@@ -21,13 +21,20 @@ Etag: W/"2f0-hCZLdGEGEpf+xwbqZxMVHg"
     "app_tokens_enabled": false,
     "id": "free"
   },
-  "created_at": "2016-10-16T09:18:27.530Z",
+  "created_at": "2016-11-03T22:25:30.775Z",
   "preferences": {
+    "moderator_notify_backglass_auto_approved": false,
+    "moderator_notify_backglass_submitted": true,
+    "moderator_notify_release_commented": true,
+    "moderator_notify_release_auto_approved": false,
+    "moderator_notify_release_submitted": true,
+    "contributor_notify_game_request_created": true,
     "notify_mentions": true,
     "notify_created_release_followers": true,
     "notify_created_release_comments": true,
     "notify_game_requests": true,
     "notify_backglass_moderation_status": true,
+    "notify_release_validation_status": true,
     "notify_release_moderation_status": true
   },
   "counter": {

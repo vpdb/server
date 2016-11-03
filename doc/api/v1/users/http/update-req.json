@@ -1,14 +1,14 @@
-PUT /v1/users/p21ek5wg42h HTTP/2.0
+PUT /v1/users/e2enrduymbh HTTP/2.0
 Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
-authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJlazVwa3JxZzRraCIsImlhdCI6IjIwMTYtMTAtMTZUMDk6MTg6MjcuNDgyWiIsImV4cCI6IjIwMTYtMTAtMTZUMTA6MTg6MjcuNDgyWiIsImlydCI6ZmFsc2V9.qEdgqM5jNwUpFa36MfpwFweBoSxRaSk7yP0XYmuDyWg
+authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwa2R2cjN1em1oYiIsImlhdCI6IjIwMTYtMTEtMDNUMjI6MjU6MzAuNzI0WiIsImV4cCI6IjIwMTYtMTEtMDNUMjM6MjU6MzAuNzI0WiIsImlydCI6ZmFsc2V9.i9qHZeoIlW45rQoUNfXbuw4-ow65P_vN-hn7Ody9s5A
 content-type: application/json
-Content-Length: 152
+Content-Length: 127
 
 {
-  "email": "gerard_mccullough25@hotmail.com",
-  "username": "Mallory.Flatley81",
-  "name": "Mallory.Flatley81",
+  "email": "julio.nikolaus62@yahoo.com",
+  "username": "Aglae15",
+  "name": "Aglae15",
   "is_active": true,
   "roles": [
     "member"

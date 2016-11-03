@@ -1,4 +1,4 @@
-GET /v1/games/super-dixieland/events HTTP/2.0
+GET /v1/games/gusher/events HTTP/2.0
 Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
 

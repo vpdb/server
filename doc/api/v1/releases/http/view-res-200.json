@@ -1,15 +1,16 @@
 200 OK
-X-App-Sha: 7bd4777
+X-App-Sha: 027627f
 Content-Type: application/json; charset=utf-8
-Etag: W/"15c9-mI9aeeey4EVRtUElu5oM3A"
+Etag: W/"15f8-g9yVRo4WSKLONYAlzCKCtg"
 Content-Encoding: gzip
 
 {
-  "name_sortable": "Fully-configurable Edition",
-  "name": "Fully-configurable Edition",
+  "name_sortable": "Public-key Edition",
+  "released_at": "2016-11-03T22:25:04.732Z",
+  "name": "Public-key Edition",
   "license": "by-sa",
-  "modified_at": "2016-10-16T09:17:58.687Z",
-  "created_at": "2016-10-16T09:17:58.687Z",
+  "modified_at": "2016-11-03T22:25:04.732Z",
+  "created_at": "2016-11-03T22:25:04.732Z",
   "rating": {
     "score": 0,
     "votes": 0,
@@ -35,24 +36,24 @@ Content-Encoding: gzip
           "stars": 0,
           "comments": 0
         },
-        "gravatar_id": "8f8de5403181a0743a43c42590f3bba5",
-        "username": "Gayle.Cremin",
-        "name": "Gayle.Cremin",
-        "id": "e2pbqw642h"
+        "gravatar_id": "32c206550df93aa59a9da1ed89456331",
+        "username": "Clay_Rutherford93",
+        "name": "Clay_Rutherford93",
+        "id": "ekbqg7fymbh"
       }
     }
   ],
   "versions": [
     {
       "version": "1.0.0",
-      "released_at": "2016-10-16T09:17:58.687Z",
+      "released_at": "2016-11-03T22:25:04.732Z",
       "counter": {
         "comments": 0,
         "downloads": 0
       },
       "files": [
         {
-          "released_at": "2016-10-16T09:17:58.687Z",
+          "released_at": "2016-11-03T22:25:04.732Z",
           "counter": {
             "downloads": 0
           },
@@ -63,7 +64,7 @@ Content-Encoding: gzip
           "playfield_image": {
             "name": "playfield-0.png",
             "bytes": 348,
-            "created_at": "2016-10-16T09:17:58.145Z",
+            "created_at": "2016-11-03T22:25:04.350Z",
             "mime_type": "image/png",
             "file_type": "playfield-fs",
             "metadata": {
@@ -78,33 +79,33 @@ Content-Encoding: gzip
               "downloads": 0
             },
             "is_active": true,
-            "id": "p25hsqqg4kb",
+            "id": "p2os87uzmhb",
             "is_protected": true,
-            "url": "https://localhost:7357/storage/v1/files/p25hsqqg4kb.png",
+            "url": "https://localhost:7357/storage/v1/files/p2os87uzmhb.png",
             "variations": {
               "full": {
-                "url": "https://localhost:7357/storage/public/files/full/p25hsqqg4kb.jpg"
+                "url": "https://localhost:7357/storage/public/files/full/p2os87uzmhb.jpg"
               },
               "medium": {
-                "url": "https://localhost:7357/storage/public/files/medium/p25hsqqg4kb.jpg"
+                "url": "https://localhost:7357/storage/public/files/medium/p2os87uzmhb.jpg"
               },
               "medium-2x": {
-                "url": "https://localhost:7357/storage/public/files/medium-2x/p25hsqqg4kb.jpg"
+                "url": "https://localhost:7357/storage/public/files/medium-2x/p2os87uzmhb.jpg"
               },
               "square": {
-                "url": "https://localhost:7357/storage/public/files/square/p25hsqqg4kb.jpg"
+                "url": "https://localhost:7357/storage/public/files/square/p2os87uzmhb.jpg"
               },
               "square-2x": {
-                "url": "https://localhost:7357/storage/public/files/square-2x/p25hsqqg4kb.jpg"
+                "url": "https://localhost:7357/storage/public/files/square-2x/p2os87uzmhb.jpg"
               },
               "landscape": {
-                "url": "https://localhost:7357/storage/public/files/landscape/p25hsqqg4kb.jpg"
+                "url": "https://localhost:7357/storage/public/files/landscape/p2os87uzmhb.jpg"
               },
               "landscape-2x": {
-                "url": "https://localhost:7357/storage/public/files/landscape-2x/p25hsqqg4kb.jpg"
+                "url": "https://localhost:7357/storage/public/files/landscape-2x/p2os87uzmhb.jpg"
               },
               "hyperpin": {
-                "url": "https://localhost:7357/storage/public/files/hyperpin/p25hsqqg4kb.png"
+                "url": "https://localhost:7357/storage/public/files/hyperpin/p2os87uzmhb.png"
               }
             }
           },
@@ -121,7 +122,7 @@ Content-Encoding: gzip
             }
           ],
           "file": {
-            "created_at": "2016-10-16T09:17:57.958Z",
+            "created_at": "2016-11-03T22:25:04.150Z",
             "mime_type": "application/x-visual-pinball-table",
             "file_type": "release",
             "metadata": {
@@ -135,9 +136,9 @@ Content-Encoding: gzip
               "author_name": "_table_author_",
               "table_name": "_table_name_"
             },
-            "id": "ekmswq6x2b",
+            "id": "ek1ymcuy8hh",
             "name": "test-table-0.vpt",
-            "url": "https://localhost:7357/storage/v1/files/ekmswq6x2b.vpt",
+            "url": "https://localhost:7357/storage/v1/files/ek1ymcuy8hh.vpt",
             "bytes": 135168,
             "variations": {},
             "is_protected": true,
@@ -150,17 +151,17 @@ Content-Encoding: gzip
       ]
     }
   ],
-  "id": "pk79sww642h",
+  "id": "e23q87uymhh",
   "tags": [],
   "game": {
-    "id": "indiana-jones",
-    "title": "Indiana Jones",
-    "manufacturer": "Stern",
-    "year": 2008
+    "id": "surf-side",
+    "title": "Surf Side",
+    "manufacturer": "Gottlieb",
+    "year": 1967
   },
   "thumb": {
     "image": {
-      "url": "https://localhost:7357/storage/v1/files/p25hsqqg4kb.png",
+      "url": "https://localhost:7357/storage/v1/files/p2os87uzmhb.png",
       "is_protected": true,
       "width": 1080,
       "height": 1920
@@ -171,10 +172,10 @@ Content-Encoding: gzip
     }
   },
   "created_by": {
-    "id": "e2pbqw642h",
-    "name": "Gayle.Cremin",
-    "username": "Gayle.Cremin",
-    "gravatar_id": "8f8de5403181a0743a43c42590f3bba5",
+    "id": "ekbqg7fymbh",
+    "name": "Clay_Rutherford93",
+    "username": "Clay_Rutherford93",
+    "gravatar_id": "32c206550df93aa59a9da1ed89456331",
     "counter": {
       "comments": 0,
       "stars": 0

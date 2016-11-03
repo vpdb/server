@@ -1,4 +1,4 @@
-GET /v1/games/polo/backglasses HTTP/2.0
+GET /v1/games/trade-winds/backglasses HTTP/2.0
 Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
 

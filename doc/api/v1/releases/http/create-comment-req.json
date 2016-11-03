@@ -1,10 +1,10 @@
-POST /v1/releases/e2b4xkwgxkh/comments HTTP/2.0
+POST /v1/releases/eke8ruz8bb/comments HTTP/2.0
 Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
-authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwazFzczJxNnhrYiIsImlhdCI6IjIwMTYtMTAtMTZUMDk6MTY6MzguNDc2WiIsImV4cCI6IjIwMTYtMTAtMTZUMTA6MTY6MzguNDc2WiIsImlydCI6ZmFsc2V9.IA99Lh2cN8iMzMp9k5UvHRrbI8mLm2ksGqLjVmUhb9s
+authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwMnJzY3J1eThoaCIsImlhdCI6IjIwMTYtMTEtMDNUMjI6MjM6NDMuMjIxWiIsImV4cCI6IjIwMTYtMTEtMDNUMjM6MjM6NDMuMjIxWiIsImlydCI6ZmFsc2V9.dK4hM1VzE1H7mRmHV1liFzG8Ws-KauXj3M71FsNtKWQ
 content-type: application/json
 Content-Length: 47
 
 {
-  "message": "Devolved national instruction set"
+  "message": "Automated well-modulated alliance"
 }

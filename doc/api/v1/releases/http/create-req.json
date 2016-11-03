@@ -1,21 +1,21 @@
 POST /v1/releases HTTP/2.0
 Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
-authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJla2h5dHl3Z3hraCIsImlhdCI6IjIwMTYtMTAtMTZUMDk6MTc6MTUuOTQ3WiIsImV4cCI6IjIwMTYtMTAtMTZUMTA6MTc6MTUuOTQ3WiIsImlydCI6ZmFsc2V9.8MtWMlIJ4Vy3zyb2TyVjUhDvi-uQlqYtJBumD5lCx7w
+authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJlMndmZHR1em1iaCIsImlhdCI6IjIwMTYtMTEtMDNUMjI6MjQ6MTcuNjgzWiIsImV4cCI6IjIwMTYtMTEtMDNUMjM6MjQ6MTcuNjgzWiIsImlydCI6ZmFsc2V9.11fasth_9_Sziv69iP05iok6WTUerwtcQo_vfSWKmHM
 content-type: application/json
-Content-Length: 522
+Content-Length: 528
 
 {
   "name": "release",
   "license": "by-sa",
-  "_game": "dwd",
+  "_game": "bing-o-reno",
   "versions": [
     {
       "files": [
         {
           "released_at": "2015-01-01T00:00:00.000Z",
-          "_file": "pk94mzq6x2h",
-          "_playfield_image": "ekch3zwg42h",
+          "_file": "pktwznuymhb",
+          "_playfield_image": "p2bsafzmhb",
           "_compatibility": [
             "9.9.0"
           ],
@@ -25,8 +25,8 @@ Content-Length: 522
           }
         },
         {
-          "_file": "pkxx8zqg4kh",
-          "_playfield_image": "pkmh3yw642b",
+          "_file": "p2nwzafz8hh",
+          "_playfield_image": "ek79afzmbb",
           "_compatibility": [
             "9.9.0"
           ],
@@ -42,7 +42,7 @@ Content-Length: 522
   ],
   "authors": [
     {
-      "_user": "ekhytywgxkh",
+      "_user": "e2wfdtuzmbh",
       "roles": [
         "Table Creator"
       ]

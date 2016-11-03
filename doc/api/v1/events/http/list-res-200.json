@@ -1,11 +1,11 @@
 200 OK
-X-App-Sha: 7bd4777
+X-App-Sha: 027627f
 Link: <http://localhost:7357/api/v1/events?page=2&per_page=10>; rel="next", <http://localhost:7357/api/v1/events?page=3&per_page=10>; rel="last"
 X-List-Page: 1
 X-List-Size: 10
 X-List-Count: 29
 Content-Type: application/json; charset=utf-8
-Etag: W/"2cc8-Y2ZkihkYi8QZmrvH2M6VXQ"
+Etag: W/"8ba3-LuFSy1Z+xGE9kc/vAUI7WA"
 Content-Encoding: gzip
 
 [
@@ -13,8 +13,32 @@ Content-Encoding: gzip
     "event": "create_release",
     "payload": {
       "release": {
-        "id": "e2h9w2qgxkh",
-        "name": "Robust Edition",
+        "name_sortable": "Multi-tiered Edition",
+        "released_at": "2016-11-03T22:23:45.111Z",
+        "name": "Multi-tiered Edition",
+        "license": "by-sa",
+        "modified_at": "2016-11-03T22:23:45.111Z",
+        "created_at": "2016-11-03T22:23:45.111Z",
+        "moderation": {
+          "is_approved": false,
+          "is_refused": false,
+          "auto_approved": false
+        },
+        "rating": {
+          "score": 0,
+          "votes": 0,
+          "average": 0
+        },
+        "metrics": {
+          "popularity": 0
+        },
+        "counter": {
+          "views": 0,
+          "stars": 0,
+          "comments": 0,
+          "downloads": 0
+        },
+        "links": [],
         "authors": [
           {
             "roles": [
@@ -25,277 +49,184 @@ Content-Encoding: gzip
                 "stars": 0,
                 "comments": 0
               },
-              "gravatar_id": "844e2fa9cac46278ec81c81e29981dec",
-              "username": "Phoebe_OConnell7",
-              "name": "Phoebe_OConnell7",
-              "id": "ek4q2qg42h"
+              "gravatar_id": "6736bb828210a8465e69d55be329fe95",
+              "username": "Margret.Lakin46",
+              "name": "Margret.Lakin46",
+              "id": "ek1qmruz8bb"
             }
           }
         ],
         "versions": [
           {
             "version": "1.0.0",
-            "released_at": "2016-10-16T09:16:40.530Z",
+            "released_at": "2016-11-03T22:23:45.111Z",
+            "counter": {
+              "comments": 0,
+              "downloads": 0
+            },
             "files": [
               {
-                "released_at": "2016-10-16T09:16:40.530Z",
+                "released_at": "2016-11-03T22:23:45.111Z",
+                "counter": {
+                  "downloads": 0
+                },
                 "flavor": {
                   "orientation": "fs",
                   "lighting": "night"
                 },
+                "playfield_image": {
+                  "name": "playfield-0.png",
+                  "bytes": 348,
+                  "created_at": "2016-11-03T22:23:44.881Z",
+                  "mime_type": "image/png",
+                  "file_type": "playfield-fs",
+                  "metadata": {
+                    "format": "PNG",
+                    "size": {
+                      "width": 1080,
+                      "height": 1920
+                    },
+                    "depth": 8
+                  },
+                  "counter": {
+                    "downloads": 0
+                  },
+                  "is_active": true,
+                  "id": "ekm3rfzmbb",
+                  "is_protected": true,
+                  "url": "https://localhost:7357/storage/v1/files/ekm3rfzmbb.png",
+                  "variations": {
+                    "full": {
+                      "url": "https://localhost:7357/storage/public/files/full/ekm3rfzmbb.jpg"
+                    },
+                    "medium": {
+                      "url": "https://localhost:7357/storage/public/files/medium/ekm3rfzmbb.jpg"
+                    },
+                    "medium-2x": {
+                      "url": "https://localhost:7357/storage/public/files/medium-2x/ekm3rfzmbb.jpg"
+                    },
+                    "square": {
+                      "url": "https://localhost:7357/storage/public/files/square/ekm3rfzmbb.jpg"
+                    },
+                    "square-2x": {
+                      "url": "https://localhost:7357/storage/public/files/square-2x/ekm3rfzmbb.jpg"
+                    },
+                    "landscape": {
+                      "url": "https://localhost:7357/storage/public/files/landscape/ekm3rfzmbb.jpg"
+                    },
+                    "landscape-2x": {
+                      "url": "https://localhost:7357/storage/public/files/landscape-2x/ekm3rfzmbb.jpg"
+                    },
+                    "hyperpin": {
+                      "url": "https://localhost:7357/storage/public/files/hyperpin/ekm3rfzmbb.png"
+                    }
+                  }
+                },
                 "compatibility": [
                   {
-                    "id": "9.9.0"
+                    "id": "9.9.0",
+                    "label": "v9.9.0",
+                    "platform": "vp",
+                    "major_version": "9",
+                    "download_url": "http://www.vpforums.org/index.php?app=downloads&showfile=8793",
+                    "built_at": "2014-04-29T00:00:00.000Z",
+                    "type": "release",
+                    "is_range": false
                   }
                 ],
                 "file": {
-                  "id": "ekfbwkw642b",
+                  "created_at": "2016-11-03T22:23:44.764Z",
+                  "mime_type": "application/x-visual-pinball-table",
+                  "file_type": "release",
+                  "metadata": {
+                    "table_script": "Sub Table1_KeyDown(ByVal keycode)\r\r\tIf keycode = PlungerKey Then\r\t\tPlunger.PullBack\r\tEnd If\r\r\tIf keycode = LeftFlipperKey Then\r\t\tLeftFlipper.RotateToEnd\r\t\tPlaySound \"FlipperUp\",0,1,-0.1,0.25\r\tEnd If\r    \r\tIf keycode = RightFlipperKey Then\r\t\tRightFlipper.RotateToEnd\r\r\t\tPlaySound \"FlipperUp\",0,1,0.1,0.25\r\tEnd If\r    \r\tIf keycode = LeftTiltKey Then\r\t\tNudge 90, 2\r\tEnd If\r    \r\tIf keycode = RightTiltKey Then\r\t\tNudge 270, 2\r\tEnd If\r    \r\tIf keycode = CenterTiltKey Then\r\t\tNudge 0, 2\r\tEnd If\r    \rEnd Sub\r\rSub Table1_KeyUp(ByVal keycode)\r\r\tIf keycode = PlungerKey Then\r\t\tPlunger.Fire\r\tEnd If\r    \r\tIf keycode = LeftFlipperKey Then\r\t\tLeftFlipper.RotateToStart\r\t\tPlaySound \"FlipperDown\",0,1,-0.1,0.25\r\tEnd If\r    \r\tIf keycode = RightFlipperKey Then\r\t\tRightFlipper.RotateToStart\r        \r\t\tPlaySound \"FlipperDown\",0,1,0.1,0.25\r\tEnd If\r\rEnd Sub\r\rSub Drain_Hit()\r\tDrain.DestroyBall\r\tPlunger.CreateBall\r\tPlaySound \"Plunger\",0,1,0,0.25\rEnd Sub\r\rSub LeftSlingshot_Slingshot()\r\tPlaySound \"Bumper\",0,1,-0.15,0.25\rEnd Sub\r\rSub RightSlingshot_Slingshot()\r\tPlaySound \"Bumper\",0,1,0.15,0.25\rEnd Sub\r\rSub Plunger_Init()\r\tPlaySound \"Plunger\",0,0.5,0.5,0.25\r\tPlunger.CreateBall\rEnd Sub",
+                    "table_description": "_table_description_",
+                    "author_website": "_table_website_",
+                    "table_version": "_table_version_",
+                    "release_date": "_table_release_date_",
+                    "author_email": "_table_email_",
+                    "table_rules": "_table_rules_",
+                    "author_name": "_table_author_",
+                    "table_name": "_table_name_"
+                  },
+                  "id": "ekxr85fz8hb",
                   "name": "test-table-0.vpt",
+                  "url": "https://localhost:7357/storage/v1/files/ekxr85fz8hb.vpt",
                   "bytes": 135168,
-                  "mime_type": "application/x-visual-pinball-table"
+                  "is_protected": true,
+                  "counter": {
+                    "downloads": 0
+                  },
+                  "cost": 1
                 }
               }
             ]
           }
-        ]
-      },
-      "game": {
-        "id": "super-dixieland",
-        "title": "Super Dixieland",
-        "manufacturer": "SIRMO Games S.A.",
-        "year": 1996,
-        "ipdb": {
-          "number": 4055,
-          "mfg": 275
+        ],
+        "id": "ekth3rfymhb",
+        "tags": [],
+        "game": {
+          "id": "gusher",
+          "title": "Gusher",
+          "manufacturer": "Shyvers Manufacturing Company",
+          "year": 1935
         },
-        "game_type": "ss"
-      }
-    },
-    "logged_at": "2016-10-16T09:16:40.584Z",
-    "is_public": true,
-    "actor": {
-      "counter": {
-        "stars": 0,
-        "comments": 0
-      },
-      "gravatar_id": "844e2fa9cac46278ec81c81e29981dec",
-      "username": "Phoebe_OConnell7",
-      "name": "Phoebe_OConnell7",
-      "id": "ek4q2qg42h"
-    }
-  },
-  {
-    "event": "create_game",
-    "payload": {
-      "game": {
-        "id": "super-dixieland",
-        "title": "Super Dixieland",
-        "manufacturer": "SIRMO Games S.A.",
-        "year": 1996,
-        "ipdb": {
-          "number": 4055,
-          "mfg": 275
+        "thumb": {
+          "image": {
+            "url": "https://localhost:7357/storage/public/files/medium/ekm3rfzmbb.jpg"
+          },
+          "flavor": {
+            "orientation": "fs",
+            "lighting": "night"
+          }
         },
-        "game_type": "ss",
-        "backglass": {
+        "created_by": {
+          "id": "ek1qmruz8bb",
+          "name": "Margret.Lakin46",
+          "username": "Margret.Lakin46",
+          "gravatar_id": "6736bb828210a8465e69d55be329fe95",
           "counter": {
-            "downloads": 0
-          },
-          "is_protected": true,
-          "variations": {
-            "small-2x": {
-              "url": "https://localhost:7357/storage/public/files/small-2x/ek8wkwg4kh.jpg"
-            },
-            "small": {
-              "url": "https://localhost:7357/storage/public/files/small/ek8wkwg4kh.jpg"
-            },
-            "medium-2x": {
-              "url": "https://localhost:7357/storage/public/files/medium-2x/ek8wkwg4kh.jpg"
-            },
-            "medium": {
-              "url": "https://localhost:7357/storage/public/files/medium/ek8wkwg4kh.jpg"
-            },
-            "full": {
-              "url": "https://localhost:7357/storage/public/files/full/ek8wkwg4kh.jpg"
-            }
-          },
-          "bytes": 135,
-          "url": "https://localhost:7357/storage/v1/files/ek8wkwg4kh.png",
-          "name": "backglass.png",
-          "id": "ek8wkwg4kh"
+            "comments": 0,
+            "stars": 0
+          }
         }
-      }
-    },
-    "logged_at": "2016-10-16T09:16:40.112Z",
-    "is_public": true,
-    "actor": {
-      "counter": {
-        "stars": 0,
-        "comments": 0
-      },
-      "gravatar_id": "e8933a305892fb71e8ca43ab3e625378",
-      "username": "Sienna14",
-      "name": "Sienna14",
-      "id": "ekfq2qgxkb"
-    }
-  },
-  {
-    "event": "create_comment",
-    "payload": {
-      "comment": {
-        "id": "pkwr42w6x2h",
-        "message": "Reactive solution-oriented matrix",
-        "release": {
-          "game": {
-            "ipdb": {
-              "mfg": 47,
-              "number": 3083
-            },
-            "year": 1941,
-            "manufacturer": "Bally",
-            "title": "Entry",
-            "id": "entry"
-          },
-          "created_at": "2016-10-16T09:16:39.146Z",
-          "name": "Switchable Edition",
-          "id": "e2b4xkwgxkh"
-        },
-        "created_at": "2016-10-16T09:16:39.568Z"
-      }
-    },
-    "logged_at": "2016-10-16T09:16:39.574Z",
-    "is_public": true
-  },
-  {
-    "event": "create_comment",
-    "payload": {
-      "comment": {
-        "id": "p2vp4kq642b",
-        "message": "Integrated interactive groupware",
-        "release": {
-          "game": {
-            "ipdb": {
-              "mfg": 47,
-              "number": 3083
-            },
-            "year": 1941,
-            "manufacturer": "Bally",
-            "title": "Entry",
-            "id": "entry"
-          },
-          "created_at": "2016-10-16T09:16:39.146Z",
-          "name": "Switchable Edition",
-          "id": "e2b4xkwgxkh"
-        },
-        "created_at": "2016-10-16T09:16:39.440Z"
-      }
-    },
-    "logged_at": "2016-10-16T09:16:39.445Z",
-    "is_public": true
-  },
-  {
-    "event": "create_comment",
-    "payload": {
-      "comment": {
-        "id": "pkbexkw6x2h",
-        "message": "Devolved national instruction set",
-        "release": {
-          "game": {
-            "ipdb": {
-              "mfg": 47,
-              "number": 3083
-            },
-            "year": 1941,
-            "manufacturer": "Bally",
-            "title": "Entry",
-            "id": "entry"
-          },
-          "created_at": "2016-10-16T09:16:39.146Z",
-          "name": "Switchable Edition",
-          "id": "e2b4xkwgxkh"
-        },
-        "created_at": "2016-10-16T09:16:39.380Z"
-      }
-    },
-    "logged_at": "2016-10-16T09:16:39.387Z",
-    "is_public": true
-  },
-  {
-    "event": "create_release",
-    "payload": {
-      "release": {
-        "id": "e2b4xkwgxkh",
-        "name": "Switchable Edition",
-        "authors": [
-          {
-            "roles": [
-              "Table Creator"
-            ],
-            "user": {
-              "counter": {
-                "stars": 0,
-                "comments": 0
-              },
-              "gravatar_id": "a97383380b7559ad14c3bc8f358a0dd4",
-              "username": "Julius92",
-              "name": "Julius92",
-              "id": "p2g49kwg4kb"
-            }
-          }
-        ],
-        "versions": [
-          {
-            "version": "1.0.0",
-            "released_at": "2016-10-16T09:16:39.146Z",
-            "files": [
-              {
-                "released_at": "2016-10-16T09:16:39.146Z",
-                "flavor": {
-                  "orientation": "fs",
-                  "lighting": "night"
-                },
-                "compatibility": [
-                  {
-                    "id": "9.9.0"
-                  }
-                ],
-                "file": {
-                  "id": "e2gw92wgx2b",
-                  "name": "test-table-0.vpt",
-                  "bytes": 135168,
-                  "mime_type": "application/x-visual-pinball-table"
-                }
-              }
-            ]
-          }
-        ]
       },
       "game": {
-        "id": "entry",
-        "title": "Entry",
-        "manufacturer": "Bally",
-        "year": 1941,
+        "id": "gusher",
+        "title": "Gusher",
+        "manufacturer": "Shyvers Manufacturing Company",
+        "year": 1935,
         "ipdb": {
-          "number": 3083,
-          "mfg": 47
+          "number": 4256,
+          "mfg": 285
         },
         "game_type": "em"
       }
     },
-    "logged_at": "2016-10-16T09:16:39.207Z",
-    "is_public": true
+    "logged_at": "2016-11-03T22:23:45.190Z",
+    "is_public": true,
+    "actor": {
+      "counter": {
+        "stars": 0,
+        "comments": 0
+      },
+      "gravatar_id": "6736bb828210a8465e69d55be329fe95",
+      "username": "Margret.Lakin46",
+      "name": "Margret.Lakin46",
+      "id": "ek1qmruz8bb"
+    }
   },
   {
     "event": "create_game",
     "payload": {
       "game": {
-        "id": "entry",
-        "title": "Entry",
-        "manufacturer": "Bally",
-        "year": 1941,
+        "id": "gusher",
+        "title": "Gusher",
+        "manufacturer": "Shyvers Manufacturing Company",
+        "year": 1935,
         "ipdb": {
-          "number": 3083,
-          "mfg": 47
+          "number": 4256,
+          "mfg": 285
         },
         "game_type": "em",
         "backglass": {
@@ -305,128 +236,155 @@ Content-Encoding: gzip
           "is_protected": true,
           "variations": {
             "small-2x": {
-              "url": "https://localhost:7357/storage/public/files/small-2x/pkkq92qgxkh.jpg"
+              "url": "https://localhost:7357/storage/public/files/small-2x/pkuem5uymbh.jpg"
             },
             "small": {
-              "url": "https://localhost:7357/storage/public/files/small/pkkq92qgxkh.jpg"
+              "url": "https://localhost:7357/storage/public/files/small/pkuem5uymbh.jpg"
             },
             "medium-2x": {
-              "url": "https://localhost:7357/storage/public/files/medium-2x/pkkq92qgxkh.jpg"
+              "url": "https://localhost:7357/storage/public/files/medium-2x/pkuem5uymbh.jpg"
             },
             "medium": {
-              "url": "https://localhost:7357/storage/public/files/medium/pkkq92qgxkh.jpg"
+              "url": "https://localhost:7357/storage/public/files/medium/pkuem5uymbh.jpg"
             },
             "full": {
-              "url": "https://localhost:7357/storage/public/files/full/pkkq92qgxkh.jpg"
+              "url": "https://localhost:7357/storage/public/files/full/pkuem5uymbh.jpg"
             }
           },
           "bytes": 135,
-          "url": "https://localhost:7357/storage/v1/files/pkkq92qgxkh.png",
+          "url": "https://localhost:7357/storage/v1/files/pkuem5uymbh.png",
           "name": "backglass.png",
-          "id": "pkkq92qgxkh"
+          "id": "pkuem5uymbh"
         }
       }
     },
-    "logged_at": "2016-10-16T09:16:38.681Z",
+    "logged_at": "2016-11-03T22:23:44.712Z",
+    "is_public": true,
+    "actor": {
+      "counter": {
+        "stars": 0,
+        "comments": 0
+      },
+      "gravatar_id": "06706f549c342ffe1740bfc29a599205",
+      "username": "Newton.Orn",
+      "name": "Newton.Orn",
+      "id": "p29e85uzmhh"
+    }
+  },
+  {
+    "event": "create_comment",
+    "payload": {
+      "comment": {
+        "id": "e24s8rfzmbh",
+        "message": "Proactive fresh-thinking time-frame",
+        "release": {
+          "game": {
+            "ipdb": {
+              "rating": 7.7,
+              "mfg": 94,
+              "number": 1340
+            },
+            "year": 1977,
+            "manufacturer": "Gottlieb",
+            "title": "Jungle Queen",
+            "id": "jungle-queen"
+          },
+          "created_at": "2016-11-03T22:23:43.923Z",
+          "name": "Team-oriented Edition",
+          "id": "eke8ruz8bb"
+        },
+        "created_at": "2016-11-03T22:23:44.243Z"
+      }
+    },
+    "logged_at": "2016-11-03T22:23:44.249Z",
     "is_public": true
   },
   {
-    "event": "create_release_version",
+    "event": "create_comment",
     "payload": {
-      "release": {
-        "id": "ekvbkqgx2b",
-        "name": "Re-contextualized Edition",
-        "authors": [
-          {
-            "roles": [
-              "Table Creator"
-            ],
-            "user": {
-              "counter": {
-                "stars": 0,
-                "comments": 0
-              },
-              "gravatar_id": "81ccbb5ad2980fbf0ea0016a3823d3af",
-              "username": "Zachary12",
-              "name": "Zachary12",
-              "id": "p25p22q6x2h"
-            }
-          }
-        ],
-        "versions": [
-          {
-            "version": "2.0",
-            "released_at": "2016-10-16T09:16:37.061Z",
-            "files": [
-              {
-                "released_at": "2016-10-16T09:16:37.061Z",
-                "flavor": {
-                  "orientation": "ws",
-                  "lighting": "night"
-                },
-                "compatibility": [
-                  {
-                    "id": "9.9.0"
-                  }
-                ],
-                "file": {
-                  "id": "p2mzhkw642b",
-                  "name": "test-table-0.vpt",
-                  "bytes": 135168,
-                  "mime_type": "application/x-visual-pinball-table"
-                }
-              }
-            ]
+      "comment": {
+        "id": "p2vy8rfymhh",
+        "message": "Networked motivating installation",
+        "release": {
+          "game": {
+            "ipdb": {
+              "rating": 7.7,
+              "mfg": 94,
+              "number": 1340
+            },
+            "year": 1977,
+            "manufacturer": "Gottlieb",
+            "title": "Jungle Queen",
+            "id": "jungle-queen"
           },
-          {
-            "version": "1.0.0",
-            "released_at": "2016-10-16T09:16:36.055Z",
-            "files": [
-              {
-                "released_at": "2016-10-16T09:16:36.055Z",
-                "flavor": {
-                  "orientation": "fs",
-                  "lighting": "night"
-                },
-                "compatibility": [
-                  {
-                    "id": "9.9.0"
-                  }
-                ],
-                "file": {
-                  "id": "e2urkkqgxkb",
-                  "name": "test-table-0.vpt",
-                  "bytes": 135168,
-                  "mime_type": "application/x-visual-pinball-table"
-                }
-              }
-            ]
-          }
-        ]
-      },
-      "game": {
-        "id": "cp",
-        "title": "The Champion Pub",
-        "manufacturer": "Bally",
-        "year": 1998,
-        "ipdb": {
-          "number": 4358,
-          "mfg": 214,
-          "mpu": 11,
-          "rating": 7.8
+          "created_at": "2016-11-03T22:23:43.923Z",
+          "name": "Team-oriented Edition",
+          "id": "eke8ruz8bb"
         },
-        "game_type": "ss"
+        "created_at": "2016-11-03T22:23:44.178Z"
       }
     },
-    "logged_at": "2016-10-16T09:16:37.210Z",
+    "logged_at": "2016-11-03T22:23:44.184Z",
+    "is_public": true
+  },
+  {
+    "event": "create_comment",
+    "payload": {
+      "comment": {
+        "id": "pkyy8ruymbb",
+        "message": "Automated well-modulated alliance",
+        "release": {
+          "game": {
+            "ipdb": {
+              "rating": 7.7,
+              "mfg": 94,
+              "number": 1340
+            },
+            "year": 1977,
+            "manufacturer": "Gottlieb",
+            "title": "Jungle Queen",
+            "id": "jungle-queen"
+          },
+          "created_at": "2016-11-03T22:23:43.923Z",
+          "name": "Team-oriented Edition",
+          "id": "eke8ruz8bb"
+        },
+        "created_at": "2016-11-03T22:23:44.101Z"
+      }
+    },
+    "logged_at": "2016-11-03T22:23:44.108Z",
     "is_public": true
   },
   {
     "event": "create_release",
     "payload": {
       "release": {
-        "id": "ekvbkqgx2b",
-        "name": "Re-contextualized Edition",
+        "name_sortable": "Team-oriented Edition",
+        "released_at": "2016-11-03T22:23:43.923Z",
+        "name": "Team-oriented Edition",
+        "license": "by-sa",
+        "modified_at": "2016-11-03T22:23:43.923Z",
+        "created_at": "2016-11-03T22:23:43.923Z",
+        "moderation": {
+          "is_approved": true,
+          "is_refused": false,
+          "auto_approved": true
+        },
+        "rating": {
+          "score": 0,
+          "votes": 0,
+          "average": 0
+        },
+        "metrics": {
+          "popularity": 0
+        },
+        "counter": {
+          "views": 0,
+          "stars": 0,
+          "comments": 0,
+          "downloads": 0
+        },
+        "links": [],
         "authors": [
           {
             "roles": [
@@ -437,72 +395,178 @@ Content-Encoding: gzip
                 "stars": 0,
                 "comments": 0
               },
-              "gravatar_id": "81ccbb5ad2980fbf0ea0016a3823d3af",
-              "username": "Zachary12",
-              "name": "Zachary12",
-              "id": "p25p22q6x2h"
+              "gravatar_id": "abd73ea92aaf6a96a4ae9147fcb37e1e",
+              "username": "Nicolas_Hilll",
+              "name": "Nicolas_Hilll",
+              "id": "e2s4c5uzmhh"
             }
           }
         ],
         "versions": [
           {
             "version": "1.0.0",
-            "released_at": "2016-10-16T09:16:36.055Z",
+            "released_at": "2016-11-03T22:23:43.923Z",
+            "counter": {
+              "comments": 0,
+              "downloads": 0
+            },
             "files": [
               {
-                "released_at": "2016-10-16T09:16:36.055Z",
+                "released_at": "2016-11-03T22:23:43.923Z",
+                "counter": {
+                  "downloads": 0
+                },
                 "flavor": {
                   "orientation": "fs",
                   "lighting": "night"
                 },
+                "playfield_image": {
+                  "name": "playfield-0.png",
+                  "bytes": 348,
+                  "created_at": "2016-11-03T22:23:43.632Z",
+                  "mime_type": "image/png",
+                  "file_type": "playfield-fs",
+                  "metadata": {
+                    "format": "PNG",
+                    "size": {
+                      "width": 1080,
+                      "height": 1920
+                    },
+                    "depth": 8
+                  },
+                  "counter": {
+                    "downloads": 0
+                  },
+                  "is_active": true,
+                  "id": "ek3qc5fymbh",
+                  "is_protected": true,
+                  "url": "https://localhost:7357/storage/v1/files/ek3qc5fymbh.png",
+                  "variations": {
+                    "full": {
+                      "url": "https://localhost:7357/storage/public/files/full/ek3qc5fymbh.jpg"
+                    },
+                    "medium": {
+                      "url": "https://localhost:7357/storage/public/files/medium/ek3qc5fymbh.jpg"
+                    },
+                    "medium-2x": {
+                      "url": "https://localhost:7357/storage/public/files/medium-2x/ek3qc5fymbh.jpg"
+                    },
+                    "square": {
+                      "url": "https://localhost:7357/storage/public/files/square/ek3qc5fymbh.jpg"
+                    },
+                    "square-2x": {
+                      "url": "https://localhost:7357/storage/public/files/square-2x/ek3qc5fymbh.jpg"
+                    },
+                    "landscape": {
+                      "url": "https://localhost:7357/storage/public/files/landscape/ek3qc5fymbh.jpg"
+                    },
+                    "landscape-2x": {
+                      "url": "https://localhost:7357/storage/public/files/landscape-2x/ek3qc5fymbh.jpg"
+                    },
+                    "hyperpin": {
+                      "url": "https://localhost:7357/storage/public/files/hyperpin/ek3qc5fymbh.png"
+                    }
+                  }
+                },
                 "compatibility": [
                   {
-                    "id": "9.9.0"
+                    "id": "9.9.0",
+                    "label": "v9.9.0",
+                    "platform": "vp",
+                    "major_version": "9",
+                    "download_url": "http://www.vpforums.org/index.php?app=downloads&showfile=8793",
+                    "built_at": "2014-04-29T00:00:00.000Z",
+                    "type": "release",
+                    "is_range": false
                   }
                 ],
                 "file": {
-                  "id": "e2urkkqgxkb",
+                  "created_at": "2016-11-03T22:23:43.480Z",
+                  "mime_type": "application/x-visual-pinball-table",
+                  "file_type": "release",
+                  "metadata": {
+                    "table_script": "Sub Table1_KeyDown(ByVal keycode)\r\r\tIf keycode = PlungerKey Then\r\t\tPlunger.PullBack\r\tEnd If\r\r\tIf keycode = LeftFlipperKey Then\r\t\tLeftFlipper.RotateToEnd\r\t\tPlaySound \"FlipperUp\",0,1,-0.1,0.25\r\tEnd If\r    \r\tIf keycode = RightFlipperKey Then\r\t\tRightFlipper.RotateToEnd\r\r\t\tPlaySound \"FlipperUp\",0,1,0.1,0.25\r\tEnd If\r    \r\tIf keycode = LeftTiltKey Then\r\t\tNudge 90, 2\r\tEnd If\r    \r\tIf keycode = RightTiltKey Then\r\t\tNudge 270, 2\r\tEnd If\r    \r\tIf keycode = CenterTiltKey Then\r\t\tNudge 0, 2\r\tEnd If\r    \rEnd Sub\r\rSub Table1_KeyUp(ByVal keycode)\r\r\tIf keycode = PlungerKey Then\r\t\tPlunger.Fire\r\tEnd If\r    \r\tIf keycode = LeftFlipperKey Then\r\t\tLeftFlipper.RotateToStart\r\t\tPlaySound \"FlipperDown\",0,1,-0.1,0.25\r\tEnd If\r    \r\tIf keycode = RightFlipperKey Then\r\t\tRightFlipper.RotateToStart\r        \r\t\tPlaySound \"FlipperDown\",0,1,0.1,0.25\r\tEnd If\r\rEnd Sub\r\rSub Drain_Hit()\r\tDrain.DestroyBall\r\tPlunger.CreateBall\r\tPlaySound \"Plunger\",0,1,0,0.25\rEnd Sub\r\rSub LeftSlingshot_Slingshot()\r\tPlaySound \"Bumper\",0,1,-0.15,0.25\rEnd Sub\r\rSub RightSlingshot_Slingshot()\r\tPlaySound \"Bumper\",0,1,0.15,0.25\rEnd Sub\r\rSub Plunger_Init()\r\tPlaySound \"Plunger\",0,0.5,0.5,0.25\r\tPlunger.CreateBall\rEnd Sub",
+                    "table_description": "_table_description_",
+                    "author_website": "_table_website_",
+                    "table_version": "_table_version_",
+                    "release_date": "_table_release_date_",
+                    "author_email": "_table_email_",
+                    "table_rules": "_table_rules_",
+                    "author_name": "_table_author_",
+                    "table_name": "_table_name_"
+                  },
+                  "id": "p2sqc5uymhb",
                   "name": "test-table-0.vpt",
+                  "url": "https://localhost:7357/storage/v1/files/p2sqc5uymhb.vpt",
                   "bytes": 135168,
-                  "mime_type": "application/x-visual-pinball-table"
+                  "is_protected": true,
+                  "counter": {
+                    "downloads": 0
+                  },
+                  "cost": 1
                 }
               }
             ]
           }
-        ]
+        ],
+        "id": "eke8ruz8bb",
+        "tags": [],
+        "game": {
+          "id": "jungle-queen",
+          "title": "Jungle Queen",
+          "manufacturer": "Gottlieb",
+          "year": 1977
+        },
+        "thumb": {
+          "image": {
+            "url": "https://localhost:7357/storage/public/files/medium/ek3qc5fymbh.jpg"
+          },
+          "flavor": {
+            "orientation": "fs",
+            "lighting": "night"
+          }
+        },
+        "created_by": {
+          "id": "e2s4c5uzmhh",
+          "name": "Nicolas_Hilll",
+          "username": "Nicolas_Hilll",
+          "gravatar_id": "abd73ea92aaf6a96a4ae9147fcb37e1e",
+          "counter": {
+            "comments": 0,
+            "stars": 0
+          }
+        }
       },
       "game": {
-        "id": "cp",
-        "title": "The Champion Pub",
-        "manufacturer": "Bally",
-        "year": 1998,
+        "id": "jungle-queen",
+        "title": "Jungle Queen",
+        "manufacturer": "Gottlieb",
+        "year": 1977,
         "ipdb": {
-          "number": 4358,
-          "mfg": 214,
-          "mpu": 11,
-          "rating": 7.8
+          "number": 1340,
+          "mfg": 94,
+          "rating": 7.7
         },
-        "game_type": "ss"
+        "game_type": "em"
       }
     },
-    "logged_at": "2016-10-16T09:16:36.217Z",
+    "logged_at": "2016-11-03T22:23:43.989Z",
     "is_public": true
   },
   {
     "event": "create_game",
     "payload": {
       "game": {
-        "id": "cp",
-        "title": "The Champion Pub",
-        "manufacturer": "Bally",
-        "year": 1998,
+        "id": "jungle-queen",
+        "title": "Jungle Queen",
+        "manufacturer": "Gottlieb",
+        "year": 1977,
         "ipdb": {
-          "number": 4358,
-          "mfg": 214,
-          "mpu": 11,
-          "rating": 7.8
+          "number": 1340,
+          "mfg": 94,
+          "rating": 7.7
         },
-        "game_type": "ss",
+        "game_type": "em",
         "backglass": {
           "counter": {
             "downloads": 0
@@ -510,33 +574,538 @@ Content-Encoding: gzip
           "is_protected": true,
           "variations": {
             "small-2x": {
-              "url": "https://localhost:7357/storage/public/files/small-2x/pkcpk2q6xkh.jpg"
+              "url": "https://localhost:7357/storage/public/files/small-2x/e2f47ruzmhh.jpg"
             },
             "small": {
-              "url": "https://localhost:7357/storage/public/files/small/pkcpk2q6xkh.jpg"
+              "url": "https://localhost:7357/storage/public/files/small/e2f47ruzmhh.jpg"
             },
             "medium-2x": {
-              "url": "https://localhost:7357/storage/public/files/medium-2x/pkcpk2q6xkh.jpg"
+              "url": "https://localhost:7357/storage/public/files/medium-2x/e2f47ruzmhh.jpg"
             },
             "medium": {
-              "url": "https://localhost:7357/storage/public/files/medium/pkcpk2q6xkh.jpg"
+              "url": "https://localhost:7357/storage/public/files/medium/e2f47ruzmhh.jpg"
             },
             "full": {
-              "url": "https://localhost:7357/storage/public/files/full/pkcpk2q6xkh.jpg"
+              "url": "https://localhost:7357/storage/public/files/full/e2f47ruzmhh.jpg"
             }
           },
           "bytes": 135,
-          "url": "https://localhost:7357/storage/v1/files/pkcpk2q6xkh.png",
+          "url": "https://localhost:7357/storage/v1/files/e2f47ruzmhh.png",
           "name": "backglass.png",
-          "id": "pkcpk2q6xkh"
-        },
-        "mpu": {
-          "short": "Williams WPC-95",
-          "long": "Williams WPC-95"
+          "id": "e2f47ruzmhh"
         }
       }
     },
-    "logged_at": "2016-10-16T09:16:35.558Z",
+    "logged_at": "2016-11-03T22:23:43.443Z",
+    "is_public": true
+  },
+  {
+    "event": "create_release_version",
+    "payload": {
+      "release": {
+        "id": "e24a5fzmhh",
+        "name": "Profit-focused Edition",
+        "authors": [
+          {
+            "roles": [
+              "Table Creator"
+            ],
+            "user": {
+              "counter": {
+                "stars": 0,
+                "comments": 0
+              },
+              "gravatar_id": "99a7a081eaf59602138b8b69c6cc9500",
+              "username": "Quinten_Connelly4",
+              "name": "Quinten_Connelly4",
+              "id": "e2cxt5fymbb"
+            }
+          }
+        ],
+        "versions": [
+          {
+            "released_at": "2016-11-03T22:23:41.426Z",
+            "version": "2.0",
+            "counter": {
+              "comments": 0,
+              "downloads": 0
+            },
+            "files": [
+              {
+                "released_at": "2016-11-03T22:23:41.426Z",
+                "counter": {
+                  "downloads": 0
+                },
+                "flavor": {
+                  "orientation": "ws",
+                  "lighting": "night"
+                },
+                "playfield_image": {
+                  "name": "playfield-0.png",
+                  "bytes": 347,
+                  "created_at": "2016-11-03T22:23:40.932Z",
+                  "mime_type": "image/png",
+                  "file_type": "playfield-ws",
+                  "metadata": {
+                    "format": "PNG",
+                    "size": {
+                      "width": 1920,
+                      "height": 1080
+                    },
+                    "depth": 8
+                  },
+                  "counter": {
+                    "downloads": 0
+                  },
+                  "is_active": true,
+                  "id": "e2ahnrfymhh",
+                  "is_protected": true,
+                  "url": "https://localhost:7357/storage/v1/files/e2ahnrfymhh.png",
+                  "variations": {
+                    "full": {
+                      "url": "https://localhost:7357/storage/public/files/full/e2ahnrfymhh.jpg"
+                    },
+                    "medium": {
+                      "url": "https://localhost:7357/storage/public/files/medium/e2ahnrfymhh.jpg"
+                    },
+                    "medium-2x": {
+                      "url": "https://localhost:7357/storage/public/files/medium-2x/e2ahnrfymhh.jpg"
+                    },
+                    "square": {
+                      "url": "https://localhost:7357/storage/public/files/square/e2ahnrfymhh.jpg"
+                    },
+                    "square-2x": {
+                      "url": "https://localhost:7357/storage/public/files/square-2x/e2ahnrfymhh.jpg"
+                    },
+                    "landscape": {
+                      "url": "https://localhost:7357/storage/public/files/landscape/e2ahnrfymhh.jpg"
+                    },
+                    "landscape-2x": {
+                      "url": "https://localhost:7357/storage/public/files/landscape-2x/e2ahnrfymhh.jpg"
+                    },
+                    "hyperpin": {
+                      "url": "https://localhost:7357/storage/public/files/hyperpin/e2ahnrfymhh.png"
+                    }
+                  }
+                },
+                "compatibility": [
+                  {
+                    "id": "9.9.0",
+                    "label": "v9.9.0",
+                    "platform": "vp",
+                    "major_version": "9",
+                    "download_url": "http://www.vpforums.org/index.php?app=downloads&showfile=8793",
+                    "built_at": "2014-04-29T00:00:00.000Z",
+                    "type": "release",
+                    "is_range": false
+                  }
+                ],
+                "file": {
+                  "created_at": "2016-11-03T22:23:40.880Z",
+                  "mime_type": "application/x-visual-pinball-table",
+                  "file_type": "release",
+                  "metadata": {
+                    "table_script": "Sub Table1_KeyDown(ByVal keycode)\r\r\tIf keycode = PlungerKey Then\r\t\tPlunger.PullBack\r\tEnd If\r\r\tIf keycode = LeftFlipperKey Then\r\t\tLeftFlipper.RotateToEnd\r\t\tPlaySound \"FlipperUp\",0,1,-0.1,0.25\r\tEnd If\r    \r\tIf keycode = RightFlipperKey Then\r\t\tRightFlipper.RotateToEnd\r\r\t\tPlaySound \"FlipperUp\",0,1,0.1,0.25\r\tEnd If\r    \r\tIf keycode = LeftTiltKey Then\r\t\tNudge 90, 2\r\tEnd If\r    \r\tIf keycode = RightTiltKey Then\r\t\tNudge 270, 2\r\tEnd If\r    \r\tIf keycode = CenterTiltKey Then\r\t\tNudge 0, 2\r\tEnd If\r    \rEnd Sub\r\rSub Table1_KeyUp(ByVal keycode)\r\r\tIf keycode = PlungerKey Then\r\t\tPlunger.Fire\r\tEnd If\r    \r\tIf keycode = LeftFlipperKey Then\r\t\tLeftFlipper.RotateToStart\r\t\tPlaySound \"FlipperDown\",0,1,-0.1,0.25\r\tEnd If\r    \r\tIf keycode = RightFlipperKey Then\r\t\tRightFlipper.RotateToStart\r        \r\t\tPlaySound \"FlipperDown\",0,1,0.1,0.25\r\tEnd If\r\rEnd Sub\r\rSub Drain_Hit()\r\tDrain.DestroyBall\r\tPlunger.CreateBall\r\tPlaySound \"Plunger\",0,1,0,0.25\rEnd Sub\r\rSub LeftSlingshot_Slingshot()\r\tPlaySound \"Bumper\",0,1,-0.15,0.25\rEnd Sub\r\rSub RightSlingshot_Slingshot()\r\tPlaySound \"Bumper\",0,1,0.15,0.25\rEnd Sub\r\rSub Plunger_Init()\r\tPlaySound \"Plunger\",0,0.5,0.5,0.25\r\tPlunger.CreateBall\rEnd Sub",
+                    "table_description": "_table_description_",
+                    "author_website": "_table_website_",
+                    "table_version": "_table_version_",
+                    "release_date": "_table_release_date_",
+                    "author_email": "_table_email_",
+                    "table_rules": "_table_rules_",
+                    "author_name": "_table_author_",
+                    "table_name": "_table_name_"
+                  },
+                  "id": "pkphnruz8bb",
+                  "name": "test-table-0.vpt",
+                  "url": "https://localhost:7357/storage/v1/files/pkphnruz8bb.vpt",
+                  "bytes": 135168,
+                  "is_protected": true,
+                  "counter": {
+                    "downloads": 0
+                  },
+                  "cost": 1
+                }
+              }
+            ]
+          },
+          {
+            "version": "1.0.0",
+            "released_at": "2016-11-03T22:23:40.817Z",
+            "counter": {
+              "comments": 0,
+              "downloads": 0
+            },
+            "files": [
+              {
+                "released_at": "2016-11-03T22:23:40.817Z",
+                "counter": {
+                  "downloads": 0
+                },
+                "flavor": {
+                  "orientation": "fs",
+                  "lighting": "night"
+                },
+                "playfield_image": {
+                  "name": "playfield-0.png",
+                  "bytes": 348,
+                  "created_at": "2016-11-03T22:23:40.591Z",
+                  "mime_type": "image/png",
+                  "file_type": "playfield-fs",
+                  "metadata": {
+                    "format": "PNG",
+                    "size": {
+                      "width": 1080,
+                      "height": 1920
+                    },
+                    "depth": 8
+                  },
+                  "variations": {
+                    "square": {
+                      "mime_type": "image/jpeg",
+                      "bytes": 616,
+                      "height": 120,
+                      "width": 120,
+                      "url": "https://localhost:7357/storage/public/files/square/pkeet5fz8hb.jpg"
+                    },
+                    "full": {
+                      "mime_type": "image/jpeg",
+                      "bytes": 18888,
+                      "height": 1920,
+                      "width": 1080,
+                      "url": "https://localhost:7357/storage/public/files/full/pkeet5fz8hb.jpg"
+                    },
+                    "square-2x": {
+                      "mime_type": "image/jpeg",
+                      "bytes": 862,
+                      "height": 240,
+                      "width": 240,
+                      "url": "https://localhost:7357/storage/public/files/square-2x/pkeet5fz8hb.jpg"
+                    },
+                    "landscape": {
+                      "mime_type": "image/jpeg",
+                      "bytes": 1054,
+                      "height": 221,
+                      "width": 393,
+                      "url": "https://localhost:7357/storage/public/files/landscape/pkeet5fz8hb.jpg"
+                    },
+                    "medium": {
+                      "url": "https://localhost:7357/storage/public/files/medium/pkeet5fz8hb.jpg"
+                    },
+                    "medium-2x": {
+                      "url": "https://localhost:7357/storage/public/files/medium-2x/pkeet5fz8hb.jpg"
+                    },
+                    "landscape-2x": {
+                      "url": "https://localhost:7357/storage/public/files/landscape-2x/pkeet5fz8hb.jpg"
+                    },
+                    "hyperpin": {
+                      "url": "https://localhost:7357/storage/public/files/hyperpin/pkeet5fz8hb.png"
+                    }
+                  },
+                  "counter": {
+                    "downloads": 0
+                  },
+                  "is_active": true,
+                  "id": "pkeet5fz8hb",
+                  "is_protected": true,
+                  "url": "https://localhost:7357/storage/v1/files/pkeet5fz8hb.png"
+                },
+                "compatibility": [
+                  {
+                    "id": "9.9.0",
+                    "label": "v9.9.0",
+                    "platform": "vp",
+                    "major_version": "9",
+                    "download_url": "http://www.vpforums.org/index.php?app=downloads&showfile=8793",
+                    "built_at": "2014-04-29T00:00:00.000Z",
+                    "type": "release",
+                    "is_range": false
+                  }
+                ],
+                "file": {
+                  "created_at": "2016-11-03T22:23:40.473Z",
+                  "mime_type": "application/x-visual-pinball-table",
+                  "file_type": "release",
+                  "metadata": {
+                    "table_script": "Sub Table1_KeyDown(ByVal keycode)\r\r\tIf keycode = PlungerKey Then\r\t\tPlunger.PullBack\r\tEnd If\r\r\tIf keycode = LeftFlipperKey Then\r\t\tLeftFlipper.RotateToEnd\r\t\tPlaySound \"FlipperUp\",0,1,-0.1,0.25\r\tEnd If\r    \r\tIf keycode = RightFlipperKey Then\r\t\tRightFlipper.RotateToEnd\r\r\t\tPlaySound \"FlipperUp\",0,1,0.1,0.25\r\tEnd If\r    \r\tIf keycode = LeftTiltKey Then\r\t\tNudge 90, 2\r\tEnd If\r    \r\tIf keycode = RightTiltKey Then\r\t\tNudge 270, 2\r\tEnd If\r    \r\tIf keycode = CenterTiltKey Then\r\t\tNudge 0, 2\r\tEnd If\r    \rEnd Sub\r\rSub Table1_KeyUp(ByVal keycode)\r\r\tIf keycode = PlungerKey Then\r\t\tPlunger.Fire\r\tEnd If\r    \r\tIf keycode = LeftFlipperKey Then\r\t\tLeftFlipper.RotateToStart\r\t\tPlaySound \"FlipperDown\",0,1,-0.1,0.25\r\tEnd If\r    \r\tIf keycode = RightFlipperKey Then\r\t\tRightFlipper.RotateToStart\r        \r\t\tPlaySound \"FlipperDown\",0,1,0.1,0.25\r\tEnd If\r\rEnd Sub\r\rSub Drain_Hit()\r\tDrain.DestroyBall\r\tPlunger.CreateBall\r\tPlaySound \"Plunger\",0,1,0,0.25\rEnd Sub\r\rSub LeftSlingshot_Slingshot()\r\tPlaySound \"Bumper\",0,1,-0.15,0.25\rEnd Sub\r\rSub RightSlingshot_Slingshot()\r\tPlaySound \"Bumper\",0,1,0.15,0.25\rEnd Sub\r\rSub Plunger_Init()\r\tPlaySound \"Plunger\",0,0.5,0.5,0.25\r\tPlunger.CreateBall\rEnd Sub",
+                    "table_description": "_table_description_",
+                    "author_website": "_table_website_",
+                    "table_version": "_table_version_",
+                    "release_date": "_table_release_date_",
+                    "author_email": "_table_email_",
+                    "table_rules": "_table_rules_",
+                    "author_name": "_table_author_",
+                    "table_name": "_table_name_"
+                  },
+                  "id": "e27qv5uzmhh",
+                  "name": "test-table-0.vpt",
+                  "url": "https://localhost:7357/storage/v1/files/e27qv5uzmhh.vpt",
+                  "bytes": 135168,
+                  "is_protected": true,
+                  "counter": {
+                    "downloads": 0
+                  },
+                  "cost": 1
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "game": {
+        "id": "big-indian",
+        "title": "Big Indian",
+        "manufacturer": "Unknown",
+        "year": 1900,
+        "ipdb": {
+          "number": 5621,
+          "mfg": 328
+        },
+        "game_type": "em"
+      }
+    },
+    "logged_at": "2016-11-03T22:23:41.711Z",
+    "is_public": true
+  },
+  {
+    "event": "create_release",
+    "payload": {
+      "release": {
+        "name_sortable": "Profit-focused Edition",
+        "released_at": "2016-11-03T22:23:40.817Z",
+        "name": "Profit-focused Edition",
+        "license": "by-sa",
+        "modified_at": "2016-11-03T22:23:40.817Z",
+        "created_at": "2016-11-03T22:23:40.817Z",
+        "moderation": {
+          "is_approved": true,
+          "is_refused": false,
+          "auto_approved": true
+        },
+        "rating": {
+          "score": 0,
+          "votes": 0,
+          "average": 0
+        },
+        "metrics": {
+          "popularity": 0
+        },
+        "counter": {
+          "views": 0,
+          "stars": 0,
+          "comments": 0,
+          "downloads": 0
+        },
+        "links": [],
+        "authors": [
+          {
+            "roles": [
+              "Table Creator"
+            ],
+            "user": {
+              "counter": {
+                "stars": 0,
+                "comments": 0
+              },
+              "gravatar_id": "99a7a081eaf59602138b8b69c6cc9500",
+              "username": "Quinten_Connelly4",
+              "name": "Quinten_Connelly4",
+              "id": "e2cxt5fymbb"
+            }
+          }
+        ],
+        "versions": [
+          {
+            "version": "1.0.0",
+            "released_at": "2016-11-03T22:23:40.817Z",
+            "counter": {
+              "comments": 0,
+              "downloads": 0
+            },
+            "files": [
+              {
+                "released_at": "2016-11-03T22:23:40.817Z",
+                "counter": {
+                  "downloads": 0
+                },
+                "flavor": {
+                  "orientation": "fs",
+                  "lighting": "night"
+                },
+                "playfield_image": {
+                  "name": "playfield-0.png",
+                  "bytes": 348,
+                  "created_at": "2016-11-03T22:23:40.591Z",
+                  "mime_type": "image/png",
+                  "file_type": "playfield-fs",
+                  "metadata": {
+                    "format": "PNG",
+                    "size": {
+                      "width": 1080,
+                      "height": 1920
+                    },
+                    "depth": 8
+                  },
+                  "counter": {
+                    "downloads": 0
+                  },
+                  "is_active": true,
+                  "id": "pkeet5fz8hb",
+                  "is_protected": true,
+                  "url": "https://localhost:7357/storage/v1/files/pkeet5fz8hb.png",
+                  "variations": {
+                    "full": {
+                      "url": "https://localhost:7357/storage/public/files/full/pkeet5fz8hb.jpg"
+                    },
+                    "medium": {
+                      "url": "https://localhost:7357/storage/public/files/medium/pkeet5fz8hb.jpg"
+                    },
+                    "medium-2x": {
+                      "url": "https://localhost:7357/storage/public/files/medium-2x/pkeet5fz8hb.jpg"
+                    },
+                    "square": {
+                      "url": "https://localhost:7357/storage/public/files/square/pkeet5fz8hb.jpg"
+                    },
+                    "square-2x": {
+                      "url": "https://localhost:7357/storage/public/files/square-2x/pkeet5fz8hb.jpg"
+                    },
+                    "landscape": {
+                      "url": "https://localhost:7357/storage/public/files/landscape/pkeet5fz8hb.jpg"
+                    },
+                    "landscape-2x": {
+                      "url": "https://localhost:7357/storage/public/files/landscape-2x/pkeet5fz8hb.jpg"
+                    },
+                    "hyperpin": {
+                      "url": "https://localhost:7357/storage/public/files/hyperpin/pkeet5fz8hb.png"
+                    }
+                  }
+                },
+                "compatibility": [
+                  {
+                    "id": "9.9.0",
+                    "label": "v9.9.0",
+                    "platform": "vp",
+                    "major_version": "9",
+                    "download_url": "http://www.vpforums.org/index.php?app=downloads&showfile=8793",
+                    "built_at": "2014-04-29T00:00:00.000Z",
+                    "type": "release",
+                    "is_range": false
+                  }
+                ],
+                "file": {
+                  "created_at": "2016-11-03T22:23:40.473Z",
+                  "mime_type": "application/x-visual-pinball-table",
+                  "file_type": "release",
+                  "metadata": {
+                    "table_script": "Sub Table1_KeyDown(ByVal keycode)\r\r\tIf keycode = PlungerKey Then\r\t\tPlunger.PullBack\r\tEnd If\r\r\tIf keycode = LeftFlipperKey Then\r\t\tLeftFlipper.RotateToEnd\r\t\tPlaySound \"FlipperUp\",0,1,-0.1,0.25\r\tEnd If\r    \r\tIf keycode = RightFlipperKey Then\r\t\tRightFlipper.RotateToEnd\r\r\t\tPlaySound \"FlipperUp\",0,1,0.1,0.25\r\tEnd If\r    \r\tIf keycode = LeftTiltKey Then\r\t\tNudge 90, 2\r\tEnd If\r    \r\tIf keycode = RightTiltKey Then\r\t\tNudge 270, 2\r\tEnd If\r    \r\tIf keycode = CenterTiltKey Then\r\t\tNudge 0, 2\r\tEnd If\r    \rEnd Sub\r\rSub Table1_KeyUp(ByVal keycode)\r\r\tIf keycode = PlungerKey Then\r\t\tPlunger.Fire\r\tEnd If\r    \r\tIf keycode = LeftFlipperKey Then\r\t\tLeftFlipper.RotateToStart\r\t\tPlaySound \"FlipperDown\",0,1,-0.1,0.25\r\tEnd If\r    \r\tIf keycode = RightFlipperKey Then\r\t\tRightFlipper.RotateToStart\r        \r\t\tPlaySound \"FlipperDown\",0,1,0.1,0.25\r\tEnd If\r\rEnd Sub\r\rSub Drain_Hit()\r\tDrain.DestroyBall\r\tPlunger.CreateBall\r\tPlaySound \"Plunger\",0,1,0,0.25\rEnd Sub\r\rSub LeftSlingshot_Slingshot()\r\tPlaySound \"Bumper\",0,1,-0.15,0.25\rEnd Sub\r\rSub RightSlingshot_Slingshot()\r\tPlaySound \"Bumper\",0,1,0.15,0.25\rEnd Sub\r\rSub Plunger_Init()\r\tPlaySound \"Plunger\",0,0.5,0.5,0.25\r\tPlunger.CreateBall\rEnd Sub",
+                    "table_description": "_table_description_",
+                    "author_website": "_table_website_",
+                    "table_version": "_table_version_",
+                    "release_date": "_table_release_date_",
+                    "author_email": "_table_email_",
+                    "table_rules": "_table_rules_",
+                    "author_name": "_table_author_",
+                    "table_name": "_table_name_"
+                  },
+                  "id": "e27qv5uzmhh",
+                  "name": "test-table-0.vpt",
+                  "url": "https://localhost:7357/storage/v1/files/e27qv5uzmhh.vpt",
+                  "bytes": 135168,
+                  "is_protected": true,
+                  "counter": {
+                    "downloads": 0
+                  },
+                  "cost": 1
+                }
+              }
+            ]
+          }
+        ],
+        "id": "e24a5fzmhh",
+        "tags": [],
+        "game": {
+          "id": "big-indian",
+          "title": "Big Indian",
+          "manufacturer": "Unknown",
+          "year": 1900
+        },
+        "thumb": {
+          "image": {
+            "url": "https://localhost:7357/storage/public/files/medium/pkeet5fz8hb.jpg"
+          },
+          "flavor": {
+            "orientation": "fs",
+            "lighting": "night"
+          }
+        },
+        "created_by": {
+          "id": "e2cxt5fymbb",
+          "name": "Quinten_Connelly4",
+          "username": "Quinten_Connelly4",
+          "gravatar_id": "99a7a081eaf59602138b8b69c6cc9500",
+          "counter": {
+            "comments": 0,
+            "stars": 0
+          }
+        }
+      },
+      "game": {
+        "id": "big-indian",
+        "title": "Big Indian",
+        "manufacturer": "Unknown",
+        "year": 1900,
+        "ipdb": {
+          "number": 5621,
+          "mfg": 328
+        },
+        "game_type": "em"
+      }
+    },
+    "logged_at": "2016-11-03T22:23:40.870Z",
+    "is_public": true
+  },
+  {
+    "event": "create_game",
+    "payload": {
+      "game": {
+        "id": "big-indian",
+        "title": "Big Indian",
+        "manufacturer": "Unknown",
+        "year": 1900,
+        "ipdb": {
+          "number": 5621,
+          "mfg": 328
+        },
+        "game_type": "em",
+        "backglass": {
+          "counter": {
+            "downloads": 0
+          },
+          "is_protected": true,
+          "variations": {
+            "small-2x": {
+              "url": "https://localhost:7357/storage/public/files/small-2x/e2bqt5uz8bb.jpg"
+            },
+            "small": {
+              "url": "https://localhost:7357/storage/public/files/small/e2bqt5uz8bb.jpg"
+            },
+            "medium-2x": {
+              "url": "https://localhost:7357/storage/public/files/medium-2x/e2bqt5uz8bb.jpg"
+            },
+            "medium": {
+              "url": "https://localhost:7357/storage/public/files/medium/e2bqt5uz8bb.jpg"
+            },
+            "full": {
+              "url": "https://localhost:7357/storage/public/files/full/e2bqt5uz8bb.jpg"
+            }
+          },
+          "bytes": 135,
+          "url": "https://localhost:7357/storage/v1/files/e2bqt5uz8bb.png",
+          "name": "backglass.png",
+          "id": "e2bqt5uz8bb"
+        }
+      }
+    },
+    "logged_at": "2016-11-03T22:23:40.436Z",
     "is_public": true
   }
 ]

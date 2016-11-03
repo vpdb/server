@@ -1,5 +1,5 @@
-DELETE /v1/games/bell-skill HTTP/2.0
+DELETE /v1/games/wild-fire HTTP/2.0
 Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
-authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwa3NxMmJxZzQyYiIsImlhdCI6IjIwMTYtMTAtMTZUMDk6MTY6NTEuNDMwWiIsImV4cCI6IjIwMTYtMTAtMTZUMTA6MTY6NTEuNDMwWiIsImlydCI6ZmFsc2V9.lq8jGmAjk4CSZWy916pcgADsJzNLXVxb4-5LeyuBSks
+authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJla3V1ZnptYmgiLCJpYXQiOiIyMDE2LTExLTAzVDIyOjIzOjU0LjgwNFoiLCJleHAiOiIyMDE2LTExLTAzVDIzOjIzOjU0LjgwNFoiLCJpcnQiOmZhbHNlfQ.JNesp4Uz2pvGECk46gosEjITwfDHIF6Bpngh5KHOgXE
 

@@ -1,16 +1,16 @@
-POST /v1/games/pearl-harbor/roms HTTP/2.0
+POST /v1/games/third-world/roms HTTP/2.0
 Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
-authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwMjJ6cXBxNngyaCIsImlhdCI6IjIwMTYtMTAtMTZUMDk6MTg6MTUuOTc2WiIsImV4cCI6IjIwMTYtMTAtMTZUMTA6MTg6MTUuOTc2WiIsImlydCI6ZmFsc2V9.R2-rKwWOCSyWhDZdb28zqh_25mX2b9FZ-LCugoEVr6g
+authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwazFyODhmeThiYiIsImlhdCI6IjIwMTYtMTEtMDNUMjI6MjU6MjAuNTE2WiIsImV4cCI6IjIwMTYtMTEtMDNUMjM6MjU6MjAuNTE2WiIsImlydCI6ZmFsc2V9.c73n8hufglfQHy40Ur-b7WH5RuOKJ95GVPugtr0Z0No
 content-type: application/json
-Content-Length: 112
+Content-Length: 111
 
 {
-  "id": "pearl-harbor_10",
+  "id": "third-world_10",
   "version": "1.0",
   "notes": "That is some ROM.",
   "languages": [
     "en-US"
   ],
-  "_file": "pkrqqpq64kh"
+  "_file": "pkyz3mfy8hb"
 }

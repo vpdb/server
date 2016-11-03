@@ -1,14 +1,14 @@
 200 OK
-X-App-Sha: 7bd4777
+X-App-Sha: 027627f
 Content-Type: application/json; charset=utf-8
-Etag: W/"99b-uqq/2AVpKFiAxKWpPKXpQQ"
+Etag: W/"995-59YGMi5lH9X6e0zIE0GHGA"
 Content-Encoding: gzip
 
 {
   "release": {
-    "id": "ek4oox642h",
-    "name": "Multi-layered Edition",
-    "created_at": "2016-10-16T09:16:33.832Z",
+    "id": "pkqprruy8hh",
+    "name": "Implemented Edition",
+    "created_at": "2016-11-03T22:23:38.697Z",
     "authors": [
       {
         "roles": [
@@ -19,26 +19,26 @@ Content-Encoding: gzip
             "stars": 0,
             "comments": 0
           },
-          "gravatar_id": "512b08da800cd97d6e99b760bba801ad",
-          "username": "Westley_Hermann90",
-          "name": "Westley_Hermann90",
-          "id": "p2s3o46x2b"
+          "gravatar_id": "8e0b6f4b9b73028215fbf2ede5e515b2",
+          "username": "Jeffery_Lang52",
+          "name": "Jeffery_Lang52",
+          "id": "e2tgerfz8bh"
         }
       }
     ]
   },
   "game": {
-    "id": "4-square",
-    "title": "4 Square",
-    "manufacturer": "Gottlieb",
-    "year": 1971
+    "id": "pleasure-island",
+    "title": "Pleasure-Island",
+    "manufacturer": "Rock-ola",
+    "year": 1934
   },
   "version": {
     "version": "1.0.0",
-    "released_at": "2016-10-16T09:16:33.832Z"
+    "released_at": "2016-11-03T22:23:38.697Z"
   },
   "file": {
-    "released_at": "2016-10-16T09:16:33.832Z",
+    "released_at": "2016-11-03T22:23:38.697Z",
     "flavor": {
       "orientation": "fs",
       "lighting": "night"
@@ -50,9 +50,9 @@ Content-Encoding: gzip
       }
     ],
     "file": {
-      "id": "p2t9d1x6xkh",
+      "id": "e2s9rruy8bb",
       "name": "test-table-0.vpt",
-      "url": "https://localhost:7357/storage/v1/files/p2t9d1x6xkh.vpt",
+      "url": "https://localhost:7357/storage/v1/files/e2s9rruy8bb.vpt",
       "bytes": 135168,
       "variations": {},
       "is_protected": true,
@@ -69,9 +69,9 @@ Content-Encoding: gzip
       "countPercentage": 77.27272727272727,
       "bytesPercentage": 97.57880418711929,
       "release": {
-        "id": "ek1yk2w6x2b",
-        "name": "Open-source Edition",
-        "created_at": "2016-10-16T09:16:35.088Z",
+        "id": "ekhbvrfy8bh",
+        "name": "Synergized Edition",
+        "created_at": "2016-11-03T22:23:39.974Z",
         "authors": [
           {
             "roles": [
@@ -82,26 +82,26 @@ Content-Encoding: gzip
                 "stars": 0,
                 "comments": 0
               },
-              "gravatar_id": "512b08da800cd97d6e99b760bba801ad",
-              "username": "Westley_Hermann90",
-              "name": "Westley_Hermann90",
-              "id": "p2s3o46x2b"
+              "gravatar_id": "8e0b6f4b9b73028215fbf2ede5e515b2",
+              "username": "Jeffery_Lang52",
+              "name": "Jeffery_Lang52",
+              "id": "e2tgerfz8bh"
             }
           }
         ]
       },
       "game": {
-        "id": "stock-market",
-        "title": "Stock Market",
-        "manufacturer": "Western Equipment & Supply Company",
-        "year": 1936
+        "id": "slugfest-third-model",
+        "title": "SlugFest (Third Model)",
+        "manufacturer": "Williams",
+        "year": 1900
       },
       "version": {
         "version": "1.0.0",
-        "released_at": "2016-10-16T09:16:35.088Z"
+        "released_at": "2016-11-03T22:23:39.974Z"
       },
       "file": {
-        "released_at": "2016-10-16T09:16:35.088Z",
+        "released_at": "2016-11-03T22:23:39.974Z",
         "flavor": {
           "orientation": "fs",
           "lighting": "night"
@@ -113,9 +113,9 @@ Content-Encoding: gzip
           }
         ],
         "file": {
-          "id": "pkc911x6x2b",
+          "id": "e289uruy8bb",
           "name": "test-table-0.vpt",
-          "url": "https://localhost:7357/storage/v1/files/pkc911x6x2b.vpt",
+          "url": "https://localhost:7357/storage/v1/files/e289uruy8bb.vpt",
           "bytes": 135168,
           "variations": {},
           "is_protected": true,

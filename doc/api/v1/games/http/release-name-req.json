@@ -1,5 +1,5 @@
-GET /v1/games/temptation/release-name HTTP/2.0
+GET /v1/games/oval-ten/release-name HTTP/2.0
 Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
-authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwMjU5aGJ3NnhrYiIsImlhdCI6IjIwMTYtMTAtMTZUMDk6MTY6NTIuMjE3WiIsImV4cCI6IjIwMTYtMTAtMTZUMTA6MTY6NTIuMjE3WiIsImlydCI6ZmFsc2V9.wZr5Vn8urXHKj68IUGTsMll6vsHR-RCP7Y8wBR0s3TI
+authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJlMjZxZmZmejhoYiIsImlhdCI6IjIwMTYtMTEtMDNUMjI6MjM6NTUuNTcyWiIsImV4cCI6IjIwMTYtMTEtMDNUMjM6MjM6NTUuNTcyWiIsImlydCI6ZmFsc2V9.KaFZff972MB94MC78WpXAzEWX9fjsQI1evHNd-WV3uA
 

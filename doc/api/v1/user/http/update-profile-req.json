@@ -1,14 +1,14 @@
 PATCH /v1/user HTTP/2.0
 Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
-authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJla2c1azVxNnhrYiIsImlhdCI6IjIwMTYtMTAtMTZUMDk6MTg6MjcuNjQyWiIsImV4cCI6IjIwMTYtMTAtMTZUMTA6MTg6MjcuNjQyWiIsImlydCI6ZmFsc2V9.Z5G6Dg8i4bRVLmFdSYCVS1ZO5OtpWZxbZ8PDC36QkC0
+authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwMmdmZHV6OGJoIiwiaWF0IjoiMjAxNi0xMS0wM1QyMjoyNTozMC44NzRaIiwiZXhwIjoiMjAxNi0xMS0wM1QyMzoyNTozMC44NzRaIiwiaXJ0IjpmYWxzZX0.Ga3tc0DWUK4e6PfXaB9COskELINf2AQbBVWUCyV72Fc
 content-type: application/json
-Content-Length: 135
+Content-Length: 140
 
 {
-  "name": "Ashton Dickens",
-  "location": "New Theodore",
-  "email": "brisa41@gmail.com",
-  "current_password": "7NcD3oZTsM",
-  "password": "DFvBtS5XTn"
+  "name": "Laurel Schuster",
+  "location": "Zieme bury",
+  "email": "zachery.robel@yahoo.com",
+  "current_password": "78UESElxnU",
+  "password": "4ky15ayK7F"
 }

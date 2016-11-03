@@ -1,5 +1,5 @@
-GET /v1/games/gold-star/star HTTP/2.0
+GET /v1/games/american-league/star HTTP/2.0
 Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
-authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJla2dlN2V3NnhrYiIsImlhdCI6IjIwMTYtMTAtMTZUMDk6MTg6MjMuNjc1WiIsImV4cCI6IjIwMTYtMTAtMTZUMTA6MTg6MjMuNjc1WiIsImlydCI6ZmFsc2V9.GQjmbChTNfeAOsoUdnZj97FCl03Ob9yKy04IFYUUPmU
+authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwa2JyNGRmeThiYiIsImlhdCI6IjIwMTYtMTEtMDNUMjI6MjU6MjcuMzgxWiIsImV4cCI6IjIwMTYtMTEtMDNUMjM6MjU6MjcuMzgxWiIsImlydCI6ZmFsc2V9.035mYT_1_ziUAjTlrOFYlmU7V5fiiR1vVNslsGncvd4
 

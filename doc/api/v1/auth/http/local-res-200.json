@@ -1,18 +1,18 @@
 200 OK
-X-App-Sha: 7bd4777
+X-App-Sha: 027627f
 Content-Type: application/json; charset=utf-8
-Etag: W/"6d9-Jl23Qf7Cf0Z7T+7AaI6vOA"
+Etag: W/"852-/8FFhISP7Lc2uEMMvqFuVQ"
 Content-Encoding: gzip
 
 {
-  "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwa2d4MWVxNnhrYiIsImlhdCI6IjIwMTYtMTAtMTZUMDk6MTg6MjYuNTg5WiIsImV4cCI6IjIwMTYtMTAtMTZUMTA6MTg6MjYuNTg5WiIsImlydCI6ZmFsc2V9.0_o_Hk085pVB3tZdHXf5i9YSx9MzUbdacL2NeUkq5I8",
-  "expires": "2016-10-16T10:18:26.589Z",
+  "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJlazR1ZWRmejhoYiIsImlhdCI6IjIwMTYtMTEtMDNUMjI6MjU6MjkuOTMxWiIsImV4cCI6IjIwMTYtMTEtMDNUMjM6MjU6MjkuOTMxWiIsImlydCI6ZmFsc2V9.jKrhXmH6OnTzhC6TU4wqGTfEP6-Ete3WIvJtzgimsKc",
+  "expires": "2016-11-03T23:25:29.931Z",
   "user": {
-    "id": "pkgx1eq6xkb",
-    "name": "Jovanny_Lakin",
-    "username": "Jovanny_Lakin",
-    "gravatar_id": "7bee7ce461602cbb57a6d418064cd0bc",
-    "email": "garry.hodkiewicz51@yahoo.com",
+    "id": "ek4uedfz8hb",
+    "name": "Estrella_Dooley19",
+    "username": "Estrella_Dooley19",
+    "gravatar_id": "87139e44624073a1767a9853a3dcfd46",
+    "email": "christopher_ziemann59@gmail.com",
     "is_active": true,
     "provider": "local",
     "roles": [
@@ -23,13 +23,20 @@ Content-Encoding: gzip
       "app_tokens_enabled": false,
       "id": "free"
     },
-    "created_at": "2016-10-16T09:18:26.421Z",
+    "created_at": "2016-11-03T22:25:29.768Z",
     "preferences": {
+      "moderator_notify_backglass_auto_approved": false,
+      "moderator_notify_backglass_submitted": true,
+      "moderator_notify_release_commented": true,
+      "moderator_notify_release_auto_approved": false,
+      "moderator_notify_release_submitted": true,
+      "contributor_notify_game_request_created": true,
       "notify_mentions": true,
       "notify_created_release_followers": true,
       "notify_created_release_comments": true,
       "notify_game_requests": true,
       "notify_backglass_moderation_status": true,
+      "notify_release_validation_status": true,
       "notify_release_moderation_status": true
     },
     "counter": {
@@ -38,64 +45,64 @@ Content-Encoding: gzip
       "comments": 0
     },
     "permissions": {
-      "backglasses": [
-        "add",
-        "star",
-        "delete-own"
+      "builds": [
+        "delete-own",
+        "add"
       ],
       "comments": [
         "add"
-      ],
-      "media": [
-        "add",
-        "star",
-        "delete-own"
-      ],
-      "messages": [
-        "receive"
-      ],
-      "files": [
-        "download",
-        "upload",
-        "delete"
-      ],
-      "tokens": [
-        "add",
-        "update",
-        "delete",
-        "list"
-      ],
-      "games": [
-        "star",
-        "rate"
-      ],
-      "game_requests": [
-        "add",
-        "delete-own"
       ],
       "user": [
         "update",
         "view"
       ],
-      "builds": [
+      "releases": [
+        "delete-own",
         "add",
-        "delete-own"
+        "rate",
+        "update-own",
+        "star"
+      ],
+      "game_requests": [
+        "delete-own",
+        "add"
+      ],
+      "messages": [
+        "receive"
+      ],
+      "backglasses": [
+        "delete-own",
+        "add",
+        "star"
       ],
       "tags": [
-        "add",
-        "delete-own"
-      ],
-      "releases": [
-        "add",
-        "update",
-        "rate",
-        "delete",
-        "star"
+        "delete-own",
+        "add"
       ],
       "users": [
         "search",
-        "star",
-        "view"
+        "view",
+        "star"
+      ],
+      "games": [
+        "rate",
+        "star"
+      ],
+      "files": [
+        "delete-own",
+        "download",
+        "upload"
+      ],
+      "media": [
+        "delete-own",
+        "add",
+        "star"
+      ],
+      "tokens": [
+        "delete-own",
+        "list",
+        "add",
+        "update-own"
       ]
     }
   }

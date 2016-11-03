@@ -1,16 +1,16 @@
 200 OK
-X-App-Sha: 7bd4777
+X-App-Sha: 027627f
 Content-Type: application/json; charset=utf-8
-Etag: W/"30c1-of6+pEC8wDwlPMVTk37XAQ"
+Etag: W/"47f0-XHvIaDa8aZkdbmVe4RqNVw"
 Content-Encoding: gzip
 
 [
   {
-    "id": "p2oqkrw6xkh",
-    "name": "Albertha.Feest5",
-    "username": "Albertha.Feest5",
-    "gravatar_id": "3c75b337527dc16d606a3289bd03d493",
-    "email": "earl56@hotmail.com",
+    "id": "p2pv53uz8hh",
+    "name": "Caroline96",
+    "username": "Caroline96",
+    "gravatar_id": "56be5e245f46365d424e59f27793e116",
+    "email": "maria.parker@yahoo.com",
     "is_active": true,
     "provider": "local",
     "roles": [
@@ -22,13 +22,20 @@ Content-Encoding: gzip
       "app_tokens_enabled": false,
       "id": "free"
     },
-    "created_at": "2016-10-16T09:18:27.399Z",
+    "created_at": "2016-11-03T22:25:30.647Z",
     "preferences": {
+      "moderator_notify_backglass_auto_approved": false,
+      "moderator_notify_backglass_submitted": true,
+      "moderator_notify_release_commented": true,
+      "moderator_notify_release_auto_approved": false,
+      "moderator_notify_release_submitted": true,
+      "contributor_notify_game_request_created": true,
       "notify_mentions": true,
       "notify_created_release_followers": true,
       "notify_created_release_comments": true,
       "notify_game_requests": true,
       "notify_backglass_moderation_status": true,
+      "notify_release_validation_status": true,
       "notify_release_moderation_status": true
     },
     "counter": {
@@ -38,11 +45,11 @@ Content-Encoding: gzip
     }
   },
   {
-    "id": "p29pkrwgx2h",
-    "name": "Cordia.Breitenberg",
-    "username": "Cordia.Breitenberg",
-    "gravatar_id": "7b02157110a4edd3b6824b1af7f52d6d",
-    "email": "edgar_bergstrom73@gmail.com",
+    "id": "pkntrdfzmbh",
+    "name": "Winnifred_Mohr14",
+    "username": "Winnifred_Mohr14",
+    "gravatar_id": "19fb358b431d38700478fe7407e41e97",
+    "email": "armand_sipes@gmail.com",
     "is_active": true,
     "provider": "local",
     "roles": [
@@ -53,13 +60,20 @@ Content-Encoding: gzip
       "app_tokens_enabled": false,
       "id": "free"
     },
-    "created_at": "2016-10-16T09:18:27.438Z",
+    "created_at": "2016-11-03T22:25:30.683Z",
     "preferences": {
+      "moderator_notify_backglass_auto_approved": false,
+      "moderator_notify_backglass_submitted": true,
+      "moderator_notify_release_commented": true,
+      "moderator_notify_release_auto_approved": false,
+      "moderator_notify_release_submitted": true,
+      "contributor_notify_game_request_created": true,
       "notify_mentions": true,
       "notify_created_release_followers": true,
       "notify_created_release_comments": true,
       "notify_game_requests": true,
       "notify_backglass_moderation_status": true,
+      "notify_release_validation_status": true,
       "notify_release_moderation_status": true
     },
     "counter": {
@@ -69,11 +83,11 @@ Content-Encoding: gzip
     }
   },
   {
-    "id": "ek5pkrqg4kh",
-    "name": "Nicholas_Harber37",
-    "username": "Nicholas_Harber37",
-    "gravatar_id": "2c8b3bd238e70a8d3532e83b9cae3da4",
-    "email": "alejandrin_herzog@hotmail.com",
+    "id": "pkdvr3uzmhb",
+    "name": "Halle72",
+    "username": "Halle72",
+    "gravatar_id": "6bf5a78cfcd4a56fbfc16add7c68c213",
+    "email": "dee_altenwerth6@yahoo.com",
     "is_active": true,
     "provider": "local",
     "roles": [
@@ -84,13 +98,20 @@ Content-Encoding: gzip
       "app_tokens_enabled": false,
       "id": "free"
     },
-    "created_at": "2016-10-16T09:18:27.469Z",
+    "created_at": "2016-11-03T22:25:30.713Z",
     "preferences": {
+      "moderator_notify_backglass_auto_approved": false,
+      "moderator_notify_backglass_submitted": true,
+      "moderator_notify_release_commented": true,
+      "moderator_notify_release_auto_approved": false,
+      "moderator_notify_release_submitted": true,
+      "contributor_notify_game_request_created": true,
       "notify_mentions": true,
       "notify_created_release_followers": true,
       "notify_created_release_comments": true,
       "notify_game_requests": true,
       "notify_backglass_moderation_status": true,
+      "notify_release_validation_status": true,
       "notify_release_moderation_status": true
     },
     "counter": {
@@ -100,11 +121,11 @@ Content-Encoding: gzip
     }
   },
   {
-    "id": "e26ek5q642b",
-    "name": "Colton_Littel87",
-    "username": "Colton_Littel87",
-    "gravatar_id": "7234af4b0f62201e4f80ab792eb0f537",
-    "email": "gabriel.vonrueden@gmail.com",
+    "id": "ekzar3fz8bh",
+    "name": "Aubree_Borer",
+    "username": "Aubree_Borer",
+    "gravatar_id": "c831b0bf94484de5af0d7eda466b4900",
+    "email": "lula_rippin67@yahoo.com",
     "is_active": true,
     "provider": "local",
     "roles": [
@@ -115,13 +136,20 @@ Content-Encoding: gzip
       "app_tokens_enabled": false,
       "id": "free"
     },
-    "created_at": "2016-10-16T09:18:27.502Z",
+    "created_at": "2016-11-03T22:25:30.747Z",
     "preferences": {
+      "moderator_notify_backglass_auto_approved": false,
+      "moderator_notify_backglass_submitted": true,
+      "moderator_notify_release_commented": true,
+      "moderator_notify_release_auto_approved": false,
+      "moderator_notify_release_submitted": true,
+      "contributor_notify_game_request_created": true,
       "notify_mentions": true,
       "notify_created_release_followers": true,
       "notify_created_release_comments": true,
       "notify_game_requests": true,
       "notify_backglass_moderation_status": true,
+      "notify_release_validation_status": true,
       "notify_release_moderation_status": true
     },
     "counter": {
@@ -131,11 +159,11 @@ Content-Encoding: gzip
     }
   },
   {
-    "id": "p21ek5wg42h",
-    "name": "Terence_Kassulke",
-    "username": "Terence_Kassulke",
-    "gravatar_id": "b089ceff908019fc4348d513998b8095",
-    "email": "victor.zboncak80@gmail.com",
+    "id": "e2enrduymbh",
+    "name": "Charlotte_Braun34",
+    "username": "Charlotte_Braun34",
+    "gravatar_id": "56d717f110f02d073870fa833970391b",
+    "email": "michele45@gmail.com",
     "is_active": true,
     "provider": "local",
     "roles": [
@@ -146,13 +174,20 @@ Content-Encoding: gzip
       "app_tokens_enabled": false,
       "id": "free"
     },
-    "created_at": "2016-10-16T09:18:27.530Z",
+    "created_at": "2016-11-03T22:25:30.775Z",
     "preferences": {
+      "moderator_notify_backglass_auto_approved": false,
+      "moderator_notify_backglass_submitted": true,
+      "moderator_notify_release_commented": true,
+      "moderator_notify_release_auto_approved": false,
+      "moderator_notify_release_submitted": true,
+      "contributor_notify_game_request_created": true,
       "notify_mentions": true,
       "notify_created_release_followers": true,
       "notify_created_release_comments": true,
       "notify_game_requests": true,
       "notify_backglass_moderation_status": true,
+      "notify_release_validation_status": true,
       "notify_release_moderation_status": true
     },
     "counter": {
@@ -162,11 +197,11 @@ Content-Encoding: gzip
     }
   },
   {
-    "id": "p2952rw642h",
-    "name": "Enrique_Hartmann67",
-    "username": "Enrique_Hartmann67",
-    "gravatar_id": "d54a39f4371b47cd94dfa1fad8c80e66",
-    "email": "cathy.huel65@yahoo.com",
+    "id": "pksu3fz8bh",
+    "name": "Micheal_Eichmann",
+    "username": "Micheal_Eichmann",
+    "gravatar_id": "2331cff590654f574aa53f301546fed3",
+    "email": "norene.crist68@yahoo.com",
     "is_active": true,
     "provider": "local",
     "roles": [
@@ -177,13 +212,20 @@ Content-Encoding: gzip
       "app_tokens_enabled": false,
       "id": "free"
     },
-    "created_at": "2016-10-16T09:18:27.562Z",
+    "created_at": "2016-11-03T22:25:30.801Z",
     "preferences": {
+      "moderator_notify_backglass_auto_approved": false,
+      "moderator_notify_backglass_submitted": true,
+      "moderator_notify_release_commented": true,
+      "moderator_notify_release_auto_approved": false,
+      "moderator_notify_release_submitted": true,
+      "contributor_notify_game_request_created": true,
       "notify_mentions": true,
       "notify_created_release_followers": true,
       "notify_created_release_comments": true,
       "notify_game_requests": true,
       "notify_backglass_moderation_status": true,
+      "notify_release_validation_status": true,
       "notify_release_moderation_status": true
     },
     "counter": {
@@ -193,11 +235,11 @@ Content-Encoding: gzip
     }
   },
   {
-    "id": "pk5525w6xkh",
-    "name": "Eugene.Johnson54",
-    "username": "Eugene.Johnson54",
-    "gravatar_id": "8dcac9340b558b4e0e976423752e716e",
-    "email": "lyric76@gmail.com",
+    "id": "e25u3uz8bh",
+    "name": "Elaina_Spinka78",
+    "username": "Elaina_Spinka78",
+    "gravatar_id": "f167e33e36997ef3ad134dd670565850",
+    "email": "bridie.crooks22@hotmail.com",
     "is_active": true,
     "provider": "local",
     "roles": [
@@ -208,13 +250,20 @@ Content-Encoding: gzip
       "app_tokens_enabled": false,
       "id": "free"
     },
-    "created_at": "2016-10-16T09:18:27.592Z",
+    "created_at": "2016-11-03T22:25:30.832Z",
     "preferences": {
+      "moderator_notify_backglass_auto_approved": false,
+      "moderator_notify_backglass_submitted": true,
+      "moderator_notify_release_commented": true,
+      "moderator_notify_release_auto_approved": false,
+      "moderator_notify_release_submitted": true,
+      "contributor_notify_game_request_created": true,
       "notify_mentions": true,
       "notify_created_release_followers": true,
       "notify_created_release_comments": true,
       "notify_game_requests": true,
       "notify_backglass_moderation_status": true,
+      "notify_release_validation_status": true,
       "notify_release_moderation_status": true
     },
     "counter": {
@@ -224,11 +273,11 @@ Content-Encoding: gzip
     }
   },
   {
-    "id": "ekg5k5q6xkb",
-    "name": "Hortense37",
-    "username": "Hortense37",
-    "gravatar_id": "74a0d3a76f3951b9555c94fb3c823265",
-    "email": "glen52@hotmail.com",
+    "id": "p2gfduz8bh",
+    "name": "Deion_Kohler",
+    "username": "Deion_Kohler",
+    "gravatar_id": "edca6b4e46e832837b30412ad2a2f6e4",
+    "email": "alene20@gmail.com",
     "is_active": true,
     "provider": "local",
     "roles": [
@@ -239,13 +288,20 @@ Content-Encoding: gzip
       "app_tokens_enabled": false,
       "id": "free"
     },
-    "created_at": "2016-10-16T09:18:27.628Z",
+    "created_at": "2016-11-03T22:25:30.861Z",
     "preferences": {
+      "moderator_notify_backglass_auto_approved": false,
+      "moderator_notify_backglass_submitted": true,
+      "moderator_notify_release_commented": true,
+      "moderator_notify_release_auto_approved": false,
+      "moderator_notify_release_submitted": true,
+      "contributor_notify_game_request_created": true,
       "notify_mentions": true,
       "notify_created_release_followers": true,
       "notify_created_release_comments": true,
       "notify_game_requests": true,
       "notify_backglass_moderation_status": true,
+      "notify_release_validation_status": true,
       "notify_release_moderation_status": true
     },
     "counter": {
@@ -255,11 +311,11 @@ Content-Encoding: gzip
     }
   },
   {
-    "id": "p21r2rw6x2b",
-    "name": "Marcella9",
-    "username": "Marcella9",
-    "gravatar_id": "00042fdd9f7d8a32ee10e1f4f864f803",
-    "email": "austin_swaniawski70@yahoo.com",
+    "id": "pkebf3fymhh",
+    "name": "Zelma95",
+    "username": "Zelma95",
+    "gravatar_id": "62c383e65cc41aadc722530d3cac6870",
+    "email": "estrella.roberts@yahoo.com",
     "is_active": true,
     "provider": "local",
     "roles": [
@@ -270,13 +326,20 @@ Content-Encoding: gzip
       "app_tokens_enabled": false,
       "id": "free"
     },
-    "created_at": "2016-10-16T09:18:27.660Z",
+    "created_at": "2016-11-03T22:25:30.951Z",
     "preferences": {
+      "moderator_notify_backglass_auto_approved": false,
+      "moderator_notify_backglass_submitted": true,
+      "moderator_notify_release_commented": true,
+      "moderator_notify_release_auto_approved": false,
+      "moderator_notify_release_submitted": true,
+      "contributor_notify_game_request_created": true,
       "notify_mentions": true,
       "notify_created_release_followers": true,
       "notify_created_release_comments": true,
       "notify_game_requests": true,
       "notify_backglass_moderation_status": true,
+      "notify_release_validation_status": true,
       "notify_release_moderation_status": true
     },
     "counter": {
@@ -286,11 +349,11 @@ Content-Encoding: gzip
     }
   },
   {
-    "id": "ek9fk5qg4kb",
-    "name": "Lawson.Douglas",
-    "username": "Lawson.Douglas",
-    "gravatar_id": "032b7d56a6c61b4bf888690bd56dcd05",
-    "email": "hailee83@yahoo.com",
+    "id": "e23yfdfzmbh",
+    "name": "Sarah88",
+    "username": "Sarah88",
+    "gravatar_id": "bdfa07a95acc57ffd637449376d1f47e",
+    "email": "mark_schmidt@gmail.com",
     "is_active": true,
     "provider": "local",
     "roles": [
@@ -301,13 +364,20 @@ Content-Encoding: gzip
       "app_tokens_enabled": false,
       "id": "free"
     },
-    "created_at": "2016-10-16T09:18:27.691Z",
+    "created_at": "2016-11-03T22:25:31.065Z",
     "preferences": {
+      "moderator_notify_backglass_auto_approved": false,
+      "moderator_notify_backglass_submitted": true,
+      "moderator_notify_release_commented": true,
+      "moderator_notify_release_auto_approved": false,
+      "moderator_notify_release_submitted": true,
+      "contributor_notify_game_request_created": true,
       "notify_mentions": true,
       "notify_created_release_followers": true,
       "notify_created_release_comments": true,
       "notify_game_requests": true,
       "notify_backglass_moderation_status": true,
+      "notify_release_validation_status": true,
       "notify_release_moderation_status": true
     },
     "counter": {
@@ -317,11 +387,11 @@ Content-Encoding: gzip
     }
   },
   {
-    "id": "pkruk5wg4kh",
-    "name": "Cleo11",
-    "username": "Cleo11",
-    "gravatar_id": "4237c0936ac1c61a083a971c909630d0",
-    "email": "jaqueline.kovacek6@gmail.com",
+    "id": "pkzxf3uzmbb",
+    "name": "Lauretta_Reichel",
+    "username": "Lauretta_Reichel",
+    "gravatar_id": "5764abc09a292d4fb49a8b29ea1df2cd",
+    "email": "lexus69@yahoo.com",
     "is_active": true,
     "provider": "local",
     "roles": [
@@ -332,13 +402,20 @@ Content-Encoding: gzip
       "app_tokens_enabled": false,
       "id": "free"
     },
-    "created_at": "2016-10-16T09:18:27.723Z",
+    "created_at": "2016-11-03T22:25:31.164Z",
     "preferences": {
+      "moderator_notify_backglass_auto_approved": false,
+      "moderator_notify_backglass_submitted": true,
+      "moderator_notify_release_commented": true,
+      "moderator_notify_release_auto_approved": false,
+      "moderator_notify_release_submitted": true,
+      "contributor_notify_game_request_created": true,
       "notify_mentions": true,
       "notify_created_release_followers": true,
       "notify_created_release_comments": true,
       "notify_game_requests": true,
       "notify_backglass_moderation_status": true,
+      "notify_release_validation_status": true,
       "notify_release_moderation_status": true
     },
     "counter": {
@@ -348,11 +425,11 @@ Content-Encoding: gzip
     }
   },
   {
-    "id": "p2gf2rqg4kh",
-    "name": "Blair58",
-    "username": "Blair58",
-    "gravatar_id": "850e6c393d0a56a53adec2dbf4ed8b41",
-    "email": "jerry96@gmail.com",
+    "id": "e2eqfdfymhh",
+    "name": "Donna.Kohler",
+    "username": "Donna.Kohler",
+    "gravatar_id": "6f1b99de8aa1960b39fd0fa450b7a52e",
+    "email": "arlie.waelchi@hotmail.com",
     "is_active": true,
     "provider": "local",
     "roles": [
@@ -363,13 +440,20 @@ Content-Encoding: gzip
       "app_tokens_enabled": false,
       "id": "free"
     },
-    "created_at": "2016-10-16T09:18:27.755Z",
+    "created_at": "2016-11-03T22:25:31.244Z",
     "preferences": {
+      "moderator_notify_backglass_auto_approved": false,
+      "moderator_notify_backglass_submitted": true,
+      "moderator_notify_release_commented": true,
+      "moderator_notify_release_auto_approved": false,
+      "moderator_notify_release_submitted": true,
+      "contributor_notify_game_request_created": true,
       "notify_mentions": true,
       "notify_created_release_followers": true,
       "notify_created_release_comments": true,
       "notify_game_requests": true,
       "notify_backglass_moderation_status": true,
+      "notify_release_validation_status": true,
       "notify_release_moderation_status": true
     },
     "counter": {
@@ -379,11 +463,11 @@ Content-Encoding: gzip
     }
   },
   {
-    "id": "ekb5w6xkb",
-    "name": "Irving19",
-    "username": "Irving19",
-    "gravatar_id": "616c08bc7e3f5f1bfc85bcb02836bf8d",
-    "email": "damion84@gmail.com",
+    "id": "p2opu3fzmhb",
+    "name": "Newell.Heathcote",
+    "username": "Newell.Heathcote",
+    "gravatar_id": "348c973623e5c69683a7d26fb31fcc5b",
+    "email": "willie59@hotmail.com",
     "is_active": true,
     "provider": "local",
     "roles": [
@@ -394,13 +478,20 @@ Content-Encoding: gzip
       "app_tokens_enabled": false,
       "id": "free"
     },
-    "created_at": "2016-10-16T09:18:27.785Z",
+    "created_at": "2016-11-03T22:25:31.351Z",
     "preferences": {
+      "moderator_notify_backglass_auto_approved": false,
+      "moderator_notify_backglass_submitted": true,
+      "moderator_notify_release_commented": true,
+      "moderator_notify_release_auto_approved": false,
+      "moderator_notify_release_submitted": true,
+      "contributor_notify_game_request_created": true,
       "notify_mentions": true,
       "notify_created_release_followers": true,
       "notify_created_release_comments": true,
       "notify_game_requests": true,
       "notify_backglass_moderation_status": true,
+      "notify_release_validation_status": true,
       "notify_release_moderation_status": true
     },
     "counter": {
@@ -410,11 +501,11 @@ Content-Encoding: gzip
     }
   },
   {
-    "id": "p24hrw64kh",
-    "name": "Nakia_Olson",
-    "username": "Nakia_Olson",
-    "gravatar_id": "9256907ae1783b49d499bed9aa93da1d",
-    "email": "mya77@gmail.com",
+    "id": "p2sru3uymbb",
+    "name": "Layla_Macejkovic",
+    "username": "Layla_Macejkovic",
+    "gravatar_id": "61f606addc4264b240ad5147a159ad7b",
+    "email": "desmond72@yahoo.com",
     "is_active": true,
     "provider": "local",
     "roles": [
@@ -425,13 +516,20 @@ Content-Encoding: gzip
       "app_tokens_enabled": false,
       "id": "free"
     },
-    "created_at": "2016-10-16T09:18:27.812Z",
+    "created_at": "2016-11-03T22:25:31.386Z",
     "preferences": {
+      "moderator_notify_backglass_auto_approved": false,
+      "moderator_notify_backglass_submitted": true,
+      "moderator_notify_release_commented": true,
+      "moderator_notify_release_auto_approved": false,
+      "moderator_notify_release_submitted": true,
+      "contributor_notify_game_request_created": true,
       "notify_mentions": true,
       "notify_created_release_followers": true,
       "notify_created_release_comments": true,
       "notify_game_requests": true,
       "notify_backglass_moderation_status": true,
+      "notify_release_validation_status": true,
       "notify_release_moderation_status": true
     },
     "counter": {
@@ -441,11 +539,11 @@ Content-Encoding: gzip
     }
   },
   {
-    "id": "e2fbrqgx2h",
-    "name": "Sunny_Bergstrom",
-    "username": "Sunny_Bergstrom",
-    "gravatar_id": "2c10c92b45eb582af46ec95b6e493493",
-    "email": "israel14@hotmail.com",
+    "id": "pk55f3fymbh",
+    "name": "Stephania.Runte",
+    "username": "Stephania.Runte",
+    "gravatar_id": "1382b4246d15eea06600cac3e7bc98cf",
+    "email": "nayeli.yundt68@hotmail.com",
     "is_active": true,
     "provider": "local",
     "roles": [
@@ -456,13 +554,20 @@ Content-Encoding: gzip
       "app_tokens_enabled": false,
       "id": "free"
     },
-    "created_at": "2016-10-16T09:18:27.841Z",
+    "created_at": "2016-11-03T22:25:31.412Z",
     "preferences": {
+      "moderator_notify_backglass_auto_approved": false,
+      "moderator_notify_backglass_submitted": true,
+      "moderator_notify_release_commented": true,
+      "moderator_notify_release_auto_approved": false,
+      "moderator_notify_release_submitted": true,
+      "contributor_notify_game_request_created": true,
       "notify_mentions": true,
       "notify_created_release_followers": true,
       "notify_created_release_comments": true,
       "notify_game_requests": true,
       "notify_backglass_moderation_status": true,
+      "notify_release_validation_status": true,
       "notify_release_moderation_status": true
     },
     "counter": {
@@ -472,11 +577,11 @@ Content-Encoding: gzip
     }
   },
   {
-    "id": "ekchrq6x2b",
-    "name": "Harvey30",
-    "username": "Harvey30",
-    "gravatar_id": "d6edd0065dd78fb4f3dc8004b22d6d1a",
-    "email": "lacey14@yahoo.com",
+    "id": "e2grf3uz8hb",
+    "name": "Jessie_Dietrich37",
+    "username": "Jessie_Dietrich37",
+    "gravatar_id": "baa04e257a43e0ce23e42a384fe3e183",
+    "email": "odessa18@hotmail.com",
     "is_active": true,
     "provider": "local",
     "roles": [
@@ -487,13 +592,20 @@ Content-Encoding: gzip
       "app_tokens_enabled": true,
       "id": "vip"
     },
-    "created_at": "2016-10-16T09:18:27.877Z",
+    "created_at": "2016-11-03T22:25:31.442Z",
     "preferences": {
+      "moderator_notify_backglass_auto_approved": false,
+      "moderator_notify_backglass_submitted": true,
+      "moderator_notify_release_commented": true,
+      "moderator_notify_release_auto_approved": false,
+      "moderator_notify_release_submitted": true,
+      "contributor_notify_game_request_created": true,
       "notify_mentions": true,
       "notify_created_release_followers": true,
       "notify_created_release_comments": true,
       "notify_game_requests": true,
       "notify_backglass_moderation_status": true,
+      "notify_release_validation_status": true,
       "notify_release_moderation_status": true
     },
     "counter": {
@@ -503,11 +615,11 @@ Content-Encoding: gzip
     }
   },
   {
-    "id": "pkkhhrwg4kh",
-    "name": "Layla85",
-    "username": "Layla85",
-    "gravatar_id": "f52cd2673029293565d0c014b7b02650",
-    "email": "abby27@yahoo.com",
+    "id": "eko5fdfy8hb",
+    "name": "Marilyne_Mante",
+    "username": "Marilyne_Mante",
+    "gravatar_id": "2c5521ef2d8f1bc9d2798c9ac2ba12cf",
+    "email": "shakira.gleichner72@yahoo.com",
     "is_active": true,
     "provider": "local",
     "roles": [
@@ -518,13 +630,20 @@ Content-Encoding: gzip
       "app_tokens_enabled": true,
       "id": "vip"
     },
-    "created_at": "2016-10-16T09:18:27.910Z",
+    "created_at": "2016-11-03T22:25:31.467Z",
     "preferences": {
+      "moderator_notify_backglass_auto_approved": false,
+      "moderator_notify_backglass_submitted": true,
+      "moderator_notify_release_commented": true,
+      "moderator_notify_release_auto_approved": false,
+      "moderator_notify_release_submitted": true,
+      "contributor_notify_game_request_created": true,
       "notify_mentions": true,
       "notify_created_release_followers": true,
       "notify_created_release_comments": true,
       "notify_game_requests": true,
       "notify_backglass_moderation_status": true,
+      "notify_release_validation_status": true,
       "notify_release_moderation_status": true
     },
     "counter": {

@@ -25,6 +25,7 @@ var logger = require('winston');
 var acl = require('../../acl');
 var api = require('./api');
 var Build = require('mongoose').model('Build');
+var Release = require('mongoose').model('Release');
 var LogEvent = require('mongoose').model('LogEvent');
 
 var error = require('../../modules/error')('api', 'tag');
@@ -201,7 +202,14 @@ exports.del = function(req, res) {
 		if (!canGloballyDeleteBuilds && (!build._created_by || !build._created_by.equals(req.user._id))) {
 			throw error('Permission denied, must be owner.').status(403).log();
 		}
-		// todo check if there are references
+
+		return Release.find({ 'versions.files._compatibility': build._id }).exec();
+
+	}).then(releases => {
+
+		if (releases.length !== 0) {
+			throw error('Cannot delete referenced build. The following releases must be unlinked first: ["%s"].', releases.map(r => r.id).join('", "')).status(400);
+		}
 		return build.remove();
 
 	}).then(function() {

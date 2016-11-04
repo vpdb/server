@@ -8,7 +8,7 @@ angular.module('vpdb.common', [])
 
 		// bump these on changes
 		vpdbConfig.documentRevisions = {
-			rules: 1,
+			rules: 2,
 			privacy: 1,
 			legal: 1
 		};

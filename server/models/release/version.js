@@ -188,6 +188,19 @@ function validateFile(release, tableFile, index) {
 						'Playfield "' + tableFile._playfield_image + '" does not exist.');
 					return;
 				}
+
+				// validate aspect ratio
+				const ar = playfieldImage.metadata.size.width / playfieldImage.metadata.size.height;
+
+				if (ar > 1 && (ar < 1.5 || ar > 1.85)) {
+					release.invalidate('files.' + index + '._playfield_image',
+						'Playfield image must have an aspect ratio between 16:9 and 16:10.');
+				}
+				if (ar < 1 && ((1 / ar) < 1.5 || (1 / ar) > 1.85)) {
+					release.invalidate('files.' + index + '._playfield_image',
+						'Playfield image must have an aspect ratio between 16:9 and 16:10.');
+				}
+
 				if (playfieldImage.file_type === 'playfield') {
 					release.invalidate('files.' + index + '._playfield_image',
 						'Either provide rotation parameters in query or use "playfield-fs" or "playfield-ws" in file_type.');

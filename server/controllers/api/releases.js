@@ -130,6 +130,12 @@ exports.create = function(req, res) {
 
 		api.success(res, release.toDetailed(), 201);
 
+		// notify (co-)author(s)
+		release.authors.forEach(author => {
+			if (author._user.id !== req.user.id) {
+				mailer.releaseAdded(req.user, author._user, release);
+			}
+		});
 	}).catch(api.handleError(res, error, 'Error creating release'));
 };
 
@@ -232,20 +238,19 @@ exports.addVersion = function(req, res) {
 			throw error('No such release with ID "%s".', req.params.id).status(404);
 		}
 
-		// check for global update permissions
-		return acl.isAllowed(req.user.id, 'releases', 'update');
+		// check permission
+		const authorIds = release.authors.map(a => a._user.toString());
+		const creatorId = release._created_by.toString();
+		if (!_.includes([creatorId, ...authorIds], req.user._id.toString())) {
+			return false;
+		} else {
+			return acl.isAllowed(req.user.id, 'releases', 'update');
+		}
 
-	}).then(canUpdate => {
+	}).then(isAllowed => {
 
-		// if user only has permissions to update own releases, check if owner.
-		if (!canUpdate) {
-
-			// fail if wrong user
-			const authorIds = release.authors.map(a => a._user.toString());
-			const creatorId = release._created_by.toString();
-			if (!_.includes([creatorId, ...authorIds], req.user._id.toString())) {
-				throw error('Only authors of the release can update add new versions.').status(403).log('addVersion');
-			}
+		if (!isAllowed) {
+			throw error('Only moderators or authors of the release can add new versions.').status(403).log('addVersion');
 		}
 
 		// set defaults
@@ -310,7 +315,7 @@ exports.addVersion = function(req, res) {
 
 		api.success(res, _.filter(release.toDetailed().versions, { version: newVersion.version })[0], 201);
 
-		// do the rest async
+		// log event
 		LogEvent.log(req, 'create_release_version', true, {
 			release: _.pick(release.toDetailed({ thumbFormat: 'medium' }), [ 'id', 'name', 'authors', 'versions' ]),
 			game: _.pick(release._game.toSimple(), [ 'id', 'title', 'manufacturer', 'year', 'ipdb', 'game_type' ])
@@ -318,7 +323,16 @@ exports.addVersion = function(req, res) {
 			release: release._id,
 			game: release._game._id
 		});
+
+		// notify pusher
 		pusher.addVersion(release._game, release, newVersion);
+
+		// notify (co-)author(s)
+		release.authors.forEach(author => {
+			if (author._user.id !== req.user.id) {
+				mailer.releaseVersionAdded(req.user, author._user, release, newVersion);
+			}
+		});
 
 	}).catch(api.handleError(res, error, 'Error updating release'));
 };
@@ -352,25 +366,26 @@ exports.updateVersion = function(req, res) {
 			throw error('No such release with ID "%s".', req.params.id).status(404);
 		}
 
-		// check for global update permissions
-		return acl.isAllowed(req.user.id, 'releases', 'update');
-
-	}).then(canUpdate => {
-
-		// if user only has permissions to update own releases, check if owner.
-		if (!canUpdate) {
-
-			// fail if wrong user
-			const authorIds = release.authors.map(a => a._user.toString());
-			const creatorId = release._created_by.toString();
-			if (!_.includes([creatorId, ...authorIds], req.user._id.toString())) {
-				throw error('Only authors of the release can update or add new versions.').status(403).log('addVersion');
-			}
-		}
-
+		// fail if no version
 		version = _.find(release.versions, { version: req.params.version });
 		if (!version) {
 			throw error('No such version "%s" for release "%s".', req.params.version, req.params.id).status(404);
+		}
+
+		// check permissions
+		const authorIds = release.authors.map(a => a._user.toString());
+		const creatorId = release._created_by.toString();
+		if (!_.includes([creatorId, ...authorIds], req.user._id.toString())) {
+			return false;
+		} else {
+			// check for global update permissions
+			return acl.isAllowed(req.user.id, 'releases', 'update');
+		}
+
+	}).then(hasPermission => {
+
+		if (!hasPermission) {
+			throw error('Only moderators and authors of the release can update a version.').status(403).log('addVersion');
 		}
 
 		// retrieve release with no references that we can update
@@ -439,6 +454,8 @@ exports.updateVersion = function(req, res) {
 	}).then(() => {
 
 		return Release.findOne({ id: req.params.id })
+			.populate({ path: '_game' })
+			.populate({ path: 'authors._user' })
 			.populate({ path: 'versions.files._file' })
 			.populate({ path: 'versions.files._playfield_image' })
 			.populate({ path: 'versions.files._playfield_video' })
@@ -447,14 +464,23 @@ exports.updateVersion = function(req, res) {
 
 	}).then(release => {
 
+		let version = _.find(release.toDetailed().versions, { version: req.params.version });
+		api.success(res, version, 200);
+
 		// log event
 		LogEvent.log(req, 'update_release_version', false,
 			LogEvent.diff(oldVersion, req.body),
 			{ release: release._id, game: release._game._id }
 		);
 
-		let version = _.find(release.toDetailed().versions, { version: req.params.version });
-		api.success(res, version, 200);
+		// notify (co-)author(s)
+		release.authors.forEach(author => {
+			if (author._user.id !== req.user.id) {
+				newFiles.forEach(versionFile => {
+					mailer.releaseFileAdded(req.user, author._user, release, version, versionFile);
+				});
+			}
+		});
 
 	}).catch(api.handleError(res, error, 'Error updating version', /^versions\.\d+\./));
 };

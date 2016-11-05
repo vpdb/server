@@ -117,6 +117,48 @@ exports.releaseRefused = function(user, release, message) {
 	}, 'notify_release_moderation_status');
 };
 
+exports.releaseAdded = function(uploader, author, release) {
+	const authorType = isUploaderAuthor(uploader, release.authors) ? 'co-author' : 'author';
+	return sendEmail(author, 'A new release for ' + release._game.title + ' has been uploaded', 'release-author-new-release', {
+		user: author,
+		uploader: uploader,
+		release: release,
+		game: release._game,
+		authorType: authorType,
+		url: settings.webUri('/games/' + release._game.id + '/releases/' + release.id)
+	});
+};
+
+exports.releaseVersionAdded = function(uploader, author, release, version) {
+	return sendEmail(author, 'A new version for "' + release.name + '" of ' + release._game.title + ' has been uploaded', 'release-author-new-version', {
+		user: author,
+		uploader: uploader,
+		release: release,
+		version: version,
+		changes: wrapMessage(version.changes),
+		game: release._game,
+		url: settings.webUri('/games/' + release._game.id + '/releases/' + release.id)
+	});
+};
+
+exports.releaseFileAdded = function(uploader, author, release, version, versionFile) {
+	const File = require('mongoose').model('File');
+	return Promise.try(() => {
+		return File.findById(versionFile._file).exec();
+	}).then(file => {
+		return sendEmail(author, 'A new file for v' + version.version + ' of "' + release.name + '" of ' + release._game.title + ' has been uploaded', 'release-author-new-file', {
+			user: author,
+			uploader: uploader,
+			release: release,
+			version: version,
+			file: file,
+			changes: wrapMessage(version.changes),
+			game: release._game,
+			url: settings.webUri('/games/' + release._game.id + '/releases/' + release.id)
+		});
+	});
+};
+
 exports.backglassSubmitted = function(user, backglass) {
 	return sendEmail(user, 'Your backglass for ' + backglass._game.title + ' has been submitted', 'backglass-submitted', {
 		user: user,
@@ -164,7 +206,7 @@ exports.backglassRefused = function(user, backglass, message) {
 	return sendEmail(user, 'There was a problem with the backglass you\'ve uploaded to VPDB', 'backglass-refused', {
 		user: user,
 		game: backglass._game,
-		message: message,
+		message: wrapMessage(message),
 	}, 'notify_backglass_moderation_status');
 };
 
@@ -419,4 +461,15 @@ function send(email, what, done) {
 		logger.info('[mailer] Successfully sent %s mail to <%s> with message ID "%s" (%s).', what, email.to.address, status.messageId, status.response);
 		done(null, status);
 	});
+}
+
+function isUploaderAuthor(uploader, authors) {
+	const uploaderId = uploader._id || uploader;
+	for (let i = 0; i < authors.length; i++) {
+		const authorId = authors[i]._user._id || authors[i]._user;
+		if (authorId.equals(uploaderId)) {
+			return true;
+		}
+	}
+	return false;
 }

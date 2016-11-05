@@ -61,7 +61,7 @@ const releaseFields = {
 	license:       { type: String, required: 'Mod permission must be provided.', 'enum': { values: licenses, message: 'Invalid license. Valid licenses are: ["' +  licenses.join('", "') + '"].' }},
 	description:   { type: String },
 	versions:      { type: [ version.schema ], validate: [ nonEmptyArray, 'You must provide at least one version for the release.' ] },
-	authors:       { type: [ author.schema ], validate: [ nonEmptyArray, 'You must provide at least one author.' ] },
+	authors:       { type: [ author.schema ], validate: [ nonEmptyArray, 'You must provide at least one author.' ] }, // TODO limit to let's say 10 max
 	_tags:       [ { type: String, ref: 'Tag' } ],
 	links: [ {
 		label: { type: String },

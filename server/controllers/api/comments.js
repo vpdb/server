@@ -101,10 +101,7 @@ exports.createForReleaseModeration = function(req, res) {
 
 	let comment, release;
 	Promise.try(() => {
-		return Release.findOne({ id: req.params.id })
-			.populate('_game')
-			.populate('_created_by')
-			.exec();
+		return Release.findOne({ id: req.params.id }).populate('_game').exec();
 
 	}).then(r => {
 		release = r;
@@ -112,8 +109,10 @@ exports.createForReleaseModeration = function(req, res) {
 			throw error('No such release with ID "%s"', req.params.id).status(404);
 		}
 
-		// must be owner of release or moderator
-		if (req.user.id === release._created_by.id) {
+		// must be owner or author of release or moderator
+		const authorIds = release.authors.map(a => a._user.toString());
+		const creatorId = release._created_by.toString();
+		if (!_.includes([creatorId, ...authorIds], req.user._id.toString())) {
 			return true;
 		} else {
 			return acl.isAllowed(req.user.id, 'releases', 'moderate');
@@ -121,7 +120,7 @@ exports.createForReleaseModeration = function(req, res) {
 
 	}).then(isAllowed => {
 		if (!isAllowed) {
-			throw error('Access denied, must be either moderator or owner of release.').status(403);
+			throw error('Access denied, must be either moderator or owner or author of release.').status(403);
 		}
 		comment = new Comment({
 			_from: req.user._id,
@@ -185,15 +184,17 @@ exports.listForReleaseModeration = function(req, res) {
 
 	let release;
 	Promise.try(() => {
-		return Release.findOne({ id: req.params.id }).populate('_created_by').exec();
+		return Release.findOne({ id: req.params.id }).exec();
 
 	}).then(r => {
 		release = r;
 		if (!release) {
 			throw error('No such release with ID "%s"', req.params.id).status(404);
 		}
-		// must be owner of release or moderator
-		if (req.user.id === release._created_by.id) {
+		// check permission
+		const authorIds = release.authors.map(a => a._user.toString());
+		const creatorId = release._created_by.toString();
+		if (!_.includes([creatorId, ...authorIds], req.user._id.toString())) {
 			return true;
 		} else {
 			return acl.isAllowed(req.user.id, 'releases', 'moderate');
@@ -201,7 +202,7 @@ exports.listForReleaseModeration = function(req, res) {
 
 	}).then(isAllowed => {
 		if (!isAllowed) {
-			throw error('Access denied, must be either moderator or owner of release.').status(403);
+			throw error('Access denied, must be either moderator or owner or author of release.').status(403);
 		}
 		return Comment.find({ '_ref.release_moderation': release._id })
 			.populate('_from')

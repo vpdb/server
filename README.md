@@ -171,5 +171,5 @@ GPLv2, see [LICENSE](LICENSE).
 [snapci-url]: https://snap-ci.com/freezy/node-vpdb/branch/master
 [codeclimate-image]: http://img.shields.io/codeclimate/github/freezy/node-vpdb.svg?style=flat-square
 [codeclimate-url]: https://codeclimate.com/github/freezy/node-vpdb
-[idea-image]: https://www.jetbrains.com/idea/opensource/img/all/banners/idea120x30_white.gif
+[idea-image]: https://raw.githubusercontent.com/freezy/node-vpdb/master/gfx/logo_IntelliJIDEA.png
 [idea-url]: https://www.jetbrains.com/idea/

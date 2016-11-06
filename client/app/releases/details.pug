@@ -139,7 +139,7 @@ p.padder-top(ng-show="pageLoading")
 					| This release has not been approved for publication.
 
 		.title.padder-top
-			h1.title-main.h--primary
+			h1.title-main.h--primary(property="v:itemreviewed")
 				a.a--primary(ui-sref="gameDetails({id: game.id})") {{ game.title }}
 				| &nbsp;&middot; {{ release.name }} {{ latestVersion.version }}
 			h1.title-sub

@@ -48,7 +48,7 @@ include ../template/_mixins
 		.row(ng-show="game.backglasses.length > 0").padder-bottom-2x
 			.col-sm-3(ng-repeat="backglass in game.backglasses")
 				.flavor-item(ng-class="{ active: downloadRequest.backglass === backglass.id }", ng-click="selectBackglass(backglass)")
-					img.img.img-responsive.img--rounded-more(img-src="{{ backglass.versions[0].file.variations['medium-2x'].url }}")
+					img.img.img-responsive.img--rounded-more(img-src="{{ backglass.versions[0].file.variations['medium' + pixelDensitySuffix].url }}")
 					.text-center.padder-top
 						label.label--block
 							strong v{{ backglass.versions[0].version }}

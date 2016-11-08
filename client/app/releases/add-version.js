@@ -23,7 +23,7 @@
  * Main controller containing the form for adding a new release.
  */
 angular.module('vpdb.releases.add', []).controller('ReleaseFileAddCtrl', function(
-	$scope, $controller, $state, $stateParams, $localStorage,
+	$scope, $controller, $state, $stateParams, $localStorage, $uibModal,
 	ApiHelper, AuthService, ModalService, ReleaseMeta, Flavors,
 	GameResource, ReleaseVersionResource, TrackerService
 ) {
@@ -75,6 +75,34 @@ angular.module('vpdb.releases.add', []).controller('ReleaseFileAddCtrl', functio
 		media: 4
 	};
 
+	$scope.selectPlayfield = function(file) {
+		$uibModal.open({
+			templateUrl: '/releases/modal-select-playfield.html',
+			controller: 'SelectPlayfieldCtrl',
+			resolve: {
+				params: function() {
+					return {
+						release: $scope.release,
+						file: file
+					};
+				}
+			}
+		}).result.then(function(playfieldImage) {
+			var playfieldImageKey = $scope.getMediaKey(file, 'playfield_image');
+			$scope.meta.mediaFiles[playfieldImageKey] = createMeta(playfieldImage, playfieldImageKey);
+			$scope.meta.mediaLinks[playfieldImageKey] = createLink(playfieldImage, 'landscape');
+			if (playfieldImage.file_type === 'playfield-fs') {
+				$scope.meta.mediaLinks[playfieldImageKey].rotation = 90;
+				$scope.meta.mediaLinks[playfieldImageKey].offset = -90;
+			}
+			file._playfield_image = playfieldImage.id;
+		});
+	};
+
+	$scope.canSelectPlayfield = function(file) {
+		return getCompatiblePlayfieldImages($scope.release, file).length > 0;
+	};
+
 	/** Resets all entered data */
 	$scope.reset = function() {
 
@@ -93,14 +121,14 @@ angular.module('vpdb.releases.add', []).controller('ReleaseFileAddCtrl', functio
 		}
 		$scope.releaseVersion = $localStorage.release_version[$scope.release.id] = {
 			version: '',
-			changes: '*New update!*\n\nChanges:\n\n- Added 3D objects\n-Table now talks.',
+			changes: '*New update!*\n\nChanges:\n\n- Added 3D objects\n- Table now talks.',
 			files: [ ]
 		};
 		$scope.errors = {};
 		$scope.filesError = null;
 		$scope.releaseFileRefs = {};
 
-		// TODO remove files via API
+		// TODO remove files via API (playfield only when not copied)
 	};
 
 	/** Posts the release add form to the server. */
@@ -113,7 +141,7 @@ angular.module('vpdb.releases.add', []).controller('ReleaseFileAddCtrl', functio
 				return;
 			}
 			var rotation = $scope.meta.mediaLinks[$scope.getMediaKey(file, 'playfield_image')].rotation;
-			var offset = $scope.meta.mediaLinks[$scope.getMediaKey(file, 'playfield_image')].offset;
+			var offset = $scope.meta.mediaLinks[$scope.getMediaKey(file, 'playfield_image')].offset || 0;
 			var relativeRotation = rotation + offset;
 			rotationParams.push(file._playfield_image + ':' + relativeRotation);
 		});
@@ -188,4 +216,40 @@ angular.module('vpdb.releases.add', []).controller('ReleaseFileAddCtrl', functio
 
 	};
 
+}).controller('SelectPlayfieldCtrl', function($scope, params) {
+	$scope.images = getCompatiblePlayfieldImages(params.release, params.file);
 });
+
+
+function getCompatiblePlayfieldImages(release, file) {
+	var images = [];
+	_.forEach(release.versions, function(version) {
+		_.forEach(version.files, function(f) {
+			if ((f.flavor.orientation === 'any' || f.flavor.orientation === file.flavor.orientation) && (f.flavor.lighting === 'any' || f.flavor.lighting === file.flavor.lighting)) {
+				images.push({ version: version, image: f.playfield_image });
+			}
+		})
+	});
+	return images;
+}
+
+
+function createMeta(file, key) {
+	return {
+		name: file.name,
+		bytes: file.bytes,
+		mimeType: file.mime_type,
+		icon: 'ext-vp' + (/table-x$/i.test(file.mime_type) ? 'x' : 't'),
+		randomId: file._randomId,
+		storage: file,
+		key: key
+	};
+}
+
+function createLink(file, variation) {
+	return {
+		url: file.variations[variation].url,
+		is_protected: file.variations[variation].is_protected,
+		rotation: 0
+	};
+}

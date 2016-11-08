@@ -16,7 +16,7 @@ include ../template/_mixins
 		//- RELEASE DATE
 		//-----------------------------------------
 		h4.h--primary.padder-top Release Date
-		.form-group(ng-class="{ error: errors.released_at }")
+		.form-group.padder-bottom-2x(ng-class="{ error: errors.released_at }")
 			.row
 				.col-sm-3: .input-group
 					input.form-control.datepicker(type='text', ng-model='version.released_at', ng-required='true',

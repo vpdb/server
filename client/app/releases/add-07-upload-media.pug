@@ -19,8 +19,9 @@ span(ng-repeat="file in meta.files | fileext:['vpt','vpx']")
 
 				//- rotate icons
 				.pull-right
-					a(ng-click="rotate(file, 'playfield_image', 90)", title="Rotate left"): +icon('rotate-left')
-					a(ng-click="rotate(file, 'playfield_image', -90)", title="Rotate right"): +icon('rotate-right')
+					a(ng-show="canSelectPlayfield(getReleaseFile(file))", ng-click="selectPlayfield(getReleaseFile(file))", title="Choose playfield from previous version"): +icon('history')
+					a(ng-show="getReleaseFile(file)._playfield_image", ng-click="rotate(file, 'playfield_image', 90)", title="Rotate left"): +icon('rotate-left')
+					a(ng-show="getReleaseFile(file)._playfield_image", ng-click="rotate(file, 'playfield_image', -90)", title="Rotate right"): +icon('rotate-right')
 
 			//- drop zone
 			.panel.panel--blank.playfield--image(

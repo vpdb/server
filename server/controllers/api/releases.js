@@ -241,8 +241,8 @@ exports.addVersion = function(req, res) {
 		// check permission
 		const authorIds = release.authors.map(a => a._user.toString());
 		const creatorId = release._created_by.toString();
-		if (!_.includes([creatorId, ...authorIds], req.user._id.toString())) {
-			return false;
+		if (_.includes([creatorId, ...authorIds], req.user._id.toString())) {
+			return true;
 		} else {
 			return acl.isAllowed(req.user.id, 'releases', 'update');
 		}
@@ -375,8 +375,8 @@ exports.updateVersion = function(req, res) {
 		// check permissions
 		const authorIds = release.authors.map(a => a._user.toString());
 		const creatorId = release._created_by.toString();
-		if (!_.includes([creatorId, ...authorIds], req.user._id.toString())) {
-			return false;
+		if (_.includes([creatorId, ...authorIds], req.user._id.toString())) {
+			return true;
 		} else {
 			// check for global update permissions
 			return acl.isAllowed(req.user.id, 'releases', 'update');

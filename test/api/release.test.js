@@ -1,11 +1,13 @@
 "use strict"; /* global describe, before, after, it */
 
 var _ = require('lodash');
+var gm = require('gm');
 var fs = require('fs');
 var path = require('path');
 var async = require('async');
 var request = require('superagent');
 var expect = require('expect.js');
+var pleasejs = require('pleasejs');
 
 var superagentTest = require('../modules/superagent-test');
 var hlp = require('../modules/helper');
@@ -156,6 +158,46 @@ describe('The VPDB `release` API', function() {
 		it('should fail validations when providing a different file type as playfield image', function(done) {
 			var user = 'member';
 			hlp.file.createVpt(user, request, function(vptfile) {
+				gm(1080, 1920, pleasejs.make_color()).toBuffer('PNG', function(err, data) {
+					if (err) {
+						throw err;
+					}
+					request
+						.post('/storage/v1/files')
+						.query({ type: 'backglass' })
+						.type('image/png')
+						.set('Content-Disposition', 'attachment; filename="wrontype.png"')
+						.set('Content-Length', data.length)
+						.send(data)
+						.as(user)
+						.end(function(err, res) {
+							var playfieldId = res.body.id;
+							expect(err).to.not.be.ok();
+							expect(res.status).to.be(201);
+							hlp.doomFile(user, playfieldId);
+							request
+								.post('/api/v1/releases')
+								.as(user)
+								.send({
+									versions: [{
+										files: [{
+											_file: vptfile.id,
+											_playfield_image: playfieldId
+										}]
+									}]
+								})
+								.end(function(err, res) {
+									hlp.expectValidationError(err, res, 'versions.0.files.0._playfield_image', 'file_type "playfield-fs" or "playfield-ws"');
+									done();
+								});
+						});
+				});
+			});
+		});
+
+		it('should fail validations when providing a playfield image with the wrong aspect ratio', function(done) {
+			var user = 'member';
+			hlp.file.createVpt(user, request, function(vptfile) {
 				hlp.file.createBackglass(user, request, function(backglass) {
 					hlp.doomFile(user, backglass.id);
 					request
@@ -170,7 +212,7 @@ describe('The VPDB `release` API', function() {
 							} ]
 						})
 						.end(function(err, res) {
-							hlp.expectValidationError(err, res, 'versions.0.files.0._playfield_image', 'file_type "playfield-fs" or "playfield-ws"');
+							hlp.expectValidationError(err, res, 'versions.0.files.0._playfield_image', 'have an aspect ratio between');
 							done();
 						});
 				});
@@ -698,7 +740,7 @@ describe('The VPDB `release` API', function() {
 					.as('member2')
 					.send({})
 					.saveResponse({ path: 'releases/create-version'})
-					.end(hlp.status(403, 'only authors of the release', done));
+					.end(hlp.status(403, 'only moderators or authors of the release', done));
 			});
 		});
 
@@ -879,7 +921,7 @@ describe('The VPDB `release` API', function() {
 					.as('member2')
 					.send({})
 					.saveResponse({ path: 'releases/update-version'})
-					.end(hlp.status(403, 'only authors of the release', done));
+					.end(hlp.status(403, 'only moderators and authors of the release', done));
 			});
 		});
 

@@ -112,7 +112,7 @@ exports.createForReleaseModeration = function(req, res) {
 		// must be owner or author of release or moderator
 		const authorIds = release.authors.map(a => a._user.toString());
 		const creatorId = release._created_by.toString();
-		if (!_.includes([creatorId, ...authorIds], req.user._id.toString())) {
+		if (_.includes([creatorId, ...authorIds], req.user._id.toString())) {
 			return true;
 		} else {
 			return acl.isAllowed(req.user.id, 'releases', 'moderate');
@@ -194,7 +194,7 @@ exports.listForReleaseModeration = function(req, res) {
 		// check permission
 		const authorIds = release.authors.map(a => a._user.toString());
 		const creatorId = release._created_by.toString();
-		if (!_.includes([creatorId, ...authorIds], req.user._id.toString())) {
+		if (_.includes([creatorId, ...authorIds], req.user._id.toString())) {
 			return true;
 		} else {
 			return acl.isAllowed(req.user.id, 'releases', 'moderate');

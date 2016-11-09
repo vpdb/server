@@ -3,11 +3,12 @@
 angular.module('vpdb.backglasses.add', [])
 
 	.controller('AddBackglassCtrl', function($scope, $stateParams, $localStorage, $state, $uibModal,
-											 AuthService, ApiHelper, ModalService,
+											 AuthService, ApiHelper, ModalService, BootstrapTemplate,
 											 GameResource, FileResource, BackglassResource, TrackerService) {
 		$scope.theme('light');
 		$scope.setTitle('Add Backglass');
 
+		BootstrapTemplate.patchCalendar();
 		$scope.submitting = false;
 
 		// fetch game info
@@ -155,7 +156,7 @@ angular.module('vpdb.backglasses.add', [])
 		 * @param {object} author
 		 */
 		$scope.removeAuthor = function(author) {
-			$scope.release.authors.splice($scope.release.authors.indexOf(author), 1);
+			$scope.backglass.authors.splice($scope.backglass.authors.indexOf(author), 1);
 		};
 
 		/**
@@ -171,6 +172,12 @@ angular.module('vpdb.backglasses.add', [])
 			return null;
 		};
 
+		$scope.openCalendar = function($event) {
+			$event.preventDefault();
+			$event.stopPropagation();
+
+			$scope.calendarOpened = true;
+		};
 
 		// CONTROLLER LOGIC START
 		// --------------------------------------------------------------------

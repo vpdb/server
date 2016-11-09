@@ -142,7 +142,7 @@ Directb2sProcessor.prototype.pass1 = function(src, dest, file, variation) {
 					logger.debug('[processor|directb2s|pass1] Found backglass image, pausing XML parser...');
 					parser.pause();
 					let source = new Readable();
-					source._read = function () {
+					source._read = function() {
 						source.push(attr.value);
 						source.push(null);
 					};
@@ -180,10 +180,7 @@ Directb2sProcessor.prototype.pass1 = function(src, dest, file, variation) {
 
 						});
 						writeStream.on('error', reject);
-
 						img.stream().on('error', reject).pipe(writeStream).on('error', reject);
-
-
 					});
 				}
 			});

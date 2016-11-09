@@ -245,6 +245,31 @@ describe('The VPDB `ROM` API', function() {
 			});
 		});
 
+		it('should available for details', function(done) {
+			var user = 'contributor';
+			hlp.file.createRom(user, request, function(file) {
+				request
+					.post('/api/v1/games/' + game.id + '/roms')
+					.as(user)
+					.send({
+						id: 'hulk6',
+						_file: file.id
+					})
+					.end(function(err, res) {
+						hlp.expectStatus(err, res, 201);
+						hlp.doomRom(user, res.body.id);
+						request.get('/api/v1/roms/hulk6').save('roms/view').end(function(err, res) {
+							hlp.expectStatus(err, res, 200);
+							let rom = res.body;
+							expect(rom).to.be.an('object');
+							expect(rom.created_by).to.be.an('object');
+							expect(rom.id).to.be('hulk6');
+							done();
+						});
+					});
+			});
+		});
+
 		it('should fail if ROM with same ID already exists', function(done) {
 			var user = 'moderator';
 			hlp.file.createRom(user, request, function(file) {

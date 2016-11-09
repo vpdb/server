@@ -1,0 +1,68 @@
+200 OK
+X-App-Sha: 27f8001
+Content-Type: application/json; charset=utf-8
+Etag: W/"416-+LSWgCZLGIBhuYEC5ewAQw"
+Content-Encoding: gzip
+
+{
+  "id": "hulk6",
+  "languages": [],
+  "rom_files": [
+    {
+      "filename": "433.cpu",
+      "bytes": 1024,
+      "crc": 3227331410,
+      "modified_at": "1996-12-24T22:32:00.000Z"
+    },
+    {
+      "filename": "433.snd",
+      "bytes": 1024,
+      "crc": 550313471,
+      "modified_at": "1996-12-24T22:32:00.000Z"
+    },
+    {
+      "filename": "6530sys1.bin",
+      "bytes": 1024,
+      "crc": 3078820641,
+      "modified_at": "1996-12-24T22:32:00.000Z"
+    }
+  ],
+  "created_by": {
+    "counter": {
+      "stars": 0,
+      "comments": 0
+    },
+    "gravatar_id": "9b2dedc73fa8bd3e38af5dce9c8f6bfe",
+    "username": "Braulio.Wyman",
+    "name": "Braulio.Wyman",
+    "id": "e25y4dg4yh"
+  },
+  "game": {
+    "id": "trailer",
+    "title": "Trailer",
+    "manufacturer": "Playmatic",
+    "year": 1985,
+    "ipdb": {
+      "number": 3276,
+      "mfg": 255,
+      "mpu": 53
+    },
+    "game_type": "ss",
+    "counter": {
+      "stars": 0,
+      "comments": 0,
+      "downloads": 0,
+      "views": 0,
+      "releases": 0
+    },
+    "rating": {
+      "score": 0,
+      "votes": 0,
+      "average": 0
+    },
+    "mpu": {
+      "short": "MPU 5",
+      "long": "Playmatic MPU 5"
+    }
+  }
+}

@@ -25,6 +25,7 @@ exports.register = function(app, api) {
 
 	app.get(settings.apiPath('/roms'), api.anon(api.roms.list));
 	app.post(settings.apiPath('/roms'), api.auth(api.roms.create, 'roms', 'add'));
+	app.get(settings.apiPath('/roms/:id'),  api.anon(api.roms.view));
 	app.delete(settings.apiPath('/roms/:id'),  api.auth(api.roms.del, 'roms', 'delete-own'));
 
 	app.get(settings.apiPath('/games/:gameId/roms'), api.anon(api.roms.list));

@@ -67,6 +67,18 @@ post:
         role/member:
           example: !include http/create-res-201.json
 /{rom_id}:
+  get:
+    securedBy: [ ]
+    description: List details of a ROM.
+    body:
+      role/anon:
+        example: !include http/view-req.json
+    responses:
+      200:
+        body:
+          role/anon:
+            example: !include http/view-res-200.json
+
   delete:
     is: [ protected ]
     securedBy: [ jwt: { scopes: [ MEMBER, CONTRIB ] } ]

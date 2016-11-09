@@ -1,0 +1,4 @@
+GET /v1/roms/hulk6 HTTP/2.0
+Host: api.vpdb.io
+Accept-Encoding: gzip, deflate
+

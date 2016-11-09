@@ -203,6 +203,30 @@ exports.list = function(req, res) {
 
 
 /**
+ * Returns details of a ROM
+ *
+ * @param {Request} req
+ * @param {Response} res
+ */
+exports.view = function(req, res) {
+
+	Promise.try(() => {
+		return Rom.findOne({ id: req.params.id })
+			.populate('_game')
+			.populate('_created_by')
+			.exec();
+
+	}).then(rom => {
+		if (!rom) {
+			return api.fail(res, error('No such ROM with ID "%s".', req.params.id), 404);
+		}
+		api.success(res, rom._game ? _.assign(rom.toSimple(), { game: rom._game.toSimple() }) : rom.toSimple());
+
+	}).catch(api.handleError(res, error, 'Error viewing ROM'));
+};
+
+
+/**
  * Deletes a ROM.
  *
  * FIXME: promisify and check delete-own permissions

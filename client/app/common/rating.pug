@@ -1,19 +1,15 @@
 include ../template/_mixins
 
-.span(rel="v:rating")
-	.ratingbox__left-col(typeof="v:Rating")
-		.ratingbox__rating.rating-user(ng-class="{ 'rating-10': ratingHover == 10, 'color-primary': boxHovering }") {{ rating | ratingFormat }}
-		span(property="v:average", content="{{ rating }}")
-		span(property="v:best", content="10")
-		span(property="v:worst", content="1")
-	.ratingbox__right-col
-		span.rating-stars(ng-mouseleave="rateEnd()")
-			each val in [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-				span.star-wrapper(
-					ng-mouseover=`rateStart(${val})`,
-					ng-click=`rate(${val})`,
-					ng-class=`{ 'star-on': value >= ${val}, 'star-off': value < ${val}, selecting: boxHovering }`
-				)
-					+icon(val % 2 ? 'star-left' : 'star-right').star
-		span.votes(ng-show="ratingVotes") <span property="v:votes">{{ ratingVotes | number }}</span> vote{{ ratingVotes == 1 ? '' : 's' }}
-		span.votes(ng-hide="ratingVotes") no votes
+.ratingbox__left-col
+	.ratingbox__rating.rating-user(ng-class="{ 'rating-10': ratingHover == 10, 'color-primary': boxHovering }") {{ rating | ratingFormat }}
+.ratingbox__right-col
+	span.rating-stars(ng-mouseleave="rateEnd()")
+		each val in [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+			span.star-wrapper(
+				ng-mouseover=`rateStart(${val})`,
+				ng-click=`rate(${val})`,
+				ng-class=`{ 'star-on': value >= ${val}, 'star-off': value < ${val}, selecting: boxHovering }`
+			)
+				+icon(val % 2 ? 'star-left' : 'star-right').star
+	span.votes(ng-show="ratingVotes") {{ ratingVotes | number }} vote{{ ratingVotes == 1 ? '' : 's' }}
+	span.votes(ng-hide="ratingVotes") no votes

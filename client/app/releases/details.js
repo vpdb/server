@@ -37,16 +37,22 @@ angular.module('vpdb.releases.details', []).controller('ReleaseDetailsController
 	$scope.zoneName = AuthService.hasPermission('releases/update') ? 'Admin' : 'Author';
 	$scope.storage = $localStorage;
 
+	$scope.ldRelease = {
+		"@context": "http://schema.org/",
+		"@type": "Product"
+	};
+
 	// GAME
 	$scope.game = GameResource.get({ id: $scope.gameId });
 
 	// RELEASE
 	ReleaseResource.get({ release: $scope.releaseId }, function(release) {
 
+		var title = release.game.title + ' · ' + release.name;
 		$scope.release = release;
 		$scope.pageLoading = false;
 		$scope.found = true;
-		$scope.setTitle(release.game.title + ' · ' + $scope.release.name);
+		$scope.setTitle(title);
 		TrackerService.trackPage();
 
 		// moderation toggle
@@ -109,7 +115,38 @@ angular.module('vpdb.releases.details', []).controller('ReleaseDetailsController
 			});
 		});
 
+		// seo structured data
+		$scope.ldRelease.name = title;
+		if (release.description) {
+			$scope.ldRelease.description = release.description;
+		}
+		$scope.ldRelease.brand = _.map(release.authors, 'user.name').join(', ');
+		
+		var playfieldImage;
+		_.forEach(release.versions, function(version) {
+			_.forEach(version.files, function(file) {
+				// prefer landscape shot
+				if (!playfieldImage || (file.playfield_image.file_type === 'playfield-ws' && playfieldImage.file_type !== 'playfield-ws')) {
+					playfieldImage = file.playfield_image;
+				}
+			});
+		});
+		if (playfieldImage) {
+			$scope.ldRelease.image = playfieldImage.variations['medium'].url;
+		}
+
+		if (release.rating.votes) {
+			$scope.ldRelease.aggregateRating = {
+				"@type": "AggregateRating",
+				"ratingValue": release.rating.average,
+				"bestRating": "10",
+				"worstRating": "1",
+				"ratingCount": release.rating.votes
+			};
+		}
+
 	}, function(err) {
+		console.error(err);
 		$scope.pageLoading = false;
 		$scope.found = false;
 	});

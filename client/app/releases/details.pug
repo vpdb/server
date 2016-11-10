@@ -264,6 +264,7 @@ p.padder-top(ng-show="pageLoading")
 		p Sorry, no such release found.
 		p(ng-show="!auth.isAuthenticated") If you're looking for a moderated release, try logging in.
 
+	jsonld(json="ldRelease")
 script(id="template/carousel/carousel.html", type="text/ng-template")
 	.carousel(ng-mouseenter="pause()", ng-mouseleave="play()", ng-swipe-right="prev()", ng-swipe-left="next()")
 		ol.carousel-indicators(ng-show="slides.length > 1")

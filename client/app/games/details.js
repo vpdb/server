@@ -10,6 +10,10 @@ angular.module('vpdb.games.details', [])
 		$scope.setMenu('games');
 
 		$scope.gameId = $stateParams.id;
+		$scope.ldGame = {
+			"@context": "http://schema.org/",
+			"@type": "Product"
+		};
 		$scope.pageLoading = true;
 		$scope.flavors = Flavors;
 		$scope.newRoms = $localStorage.game_data && $localStorage.game_data[$scope.gameId] ? $localStorage.game_data[$scope.gameId].roms : [];
@@ -86,7 +90,7 @@ angular.module('vpdb.games.details', [])
 			$scope.setTitle(title);
 			TrackerService.trackPage();
 
-			// meta data
+			// seo meta
 			var keywordItems = [];
 			if (!_.isEmpty($scope.game.short)) {
 				keywordItems = keywordItems.concat($scope.game.short);
@@ -100,6 +104,8 @@ angular.module('vpdb.games.details', [])
 			keywordItems.push('vpx');
 			keywordItems.push('directb2s');
 			keywordItems.push('rom');
+			keywordItems.push('pinmame');
+			keywordItems.push('vpinmame');
 			$scope.setKeywords(keywordItems.join(', '));
 
 			var descriptionItems = [];
@@ -114,6 +120,25 @@ angular.module('vpdb.games.details', [])
 
 			$scope.hasReleases = $scope.game.releases.length > 0;
 			$scope.hasBackglasses = $scope.game.backglasses.length > 0;
+
+			// seo structured data
+			$scope.ldGame.name = title;
+			$scope.ldGame.image = $scope.game.backglass.variations['medium-2x'].url;
+			if ($scope.game.manufacturer) {
+				$scope.ldGame.brand = $scope.game.manufacturer;
+			}
+			if ($scope.game.slogans) {
+				$scope.ldGame.description = $scope.game.slogans.split('\n')[0];
+			}
+			if ($scope.game.rating.votes) {
+				$scope.ldGame.aggregateRating = {
+					"@type": "AggregateRating",
+					"ratingValue": $scope.game.rating.average,
+					"bestRating": "10",
+					"worstRating": "1",
+					"ratingCount": $scope.game.rating.votes
+				};
+			}
 		});
 
 		// RATINGS

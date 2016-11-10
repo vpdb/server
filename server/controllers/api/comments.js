@@ -101,7 +101,10 @@ exports.createForReleaseModeration = function(req, res) {
 
 	let comment, release;
 	Promise.try(() => {
-		return Release.findOne({ id: req.params.id }).populate('_game').exec();
+		return Release.findOne({ id: req.params.id })
+			.populate('_game')
+			.populate('_created_by')
+			.exec();
 
 	}).then(r => {
 		release = r;

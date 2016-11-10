@@ -121,7 +121,7 @@ angular.module('vpdb.releases.details', []).controller('ReleaseDetailsController
 			$scope.ldRelease.description = release.description;
 		}
 		$scope.ldRelease.brand = _.map(release.authors, 'user.name').join(', ');
-		
+
 		var playfieldImage;
 		_.forEach(release.versions, function(version) {
 			_.forEach(version.files, function(file) {

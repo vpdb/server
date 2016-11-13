@@ -428,15 +428,18 @@ describe('The authentication engine of the VPDB API', function() {
 					profile: {
 						provider: 'github',
 						id: '11234',
-						displayName: null,
-						username: 'mockuser',
+						displayName: 'Motörhead Dude-23',
+						username: 'motorhead',
 						profileUrl: 'https://github.com/mockuser',
 						emails: [
-							{ value: 'mockuser@vpdb.io' }
+							{ value: 'motorhead@vpdb.io' }
 						],
 						_raw: '(not mocked)', _json: { not: 'mocked '}
 					}
-				}).end(hlp.auth.assertToken(request, done));
+				}).end(hlp.auth.assertToken(request, function(err, profile) {
+					expect(profile.name).to.be('Motorhead Dude23');
+					done();
+				}));
 		});
 
 		it('should match the same already registered Github user even though email and name are different', function(done) {

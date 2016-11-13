@@ -42,8 +42,8 @@ var Schema = mongoose.Schema;
 //-----------------------------------------------------------------------------
 var fields = {
 	id:               { type: String, required: true, unique: true, 'default': shortId.generate },
-	name:             { type: String, index: true, required: 'Name must be provided.' }, // display name, equals username when locally registering
-	username:         { type: String, index: true, unique: true, sparse: true },
+	name:             { type: String, index: true, required: 'Name must be provided.' }, // display name, equals username when locally registering.
+	username:         { type: String, index: true, unique: true, sparse: true },         // login name when logging locally, empty if oauth
 	email:            { type: String, index: true, unique: true, lowercase: true, required: 'Email must be provided.' },
 	email_status: {
 		code:         { type: String, 'enum': [ 'confirmed', 'pending_registration', 'pending_update' ], required: true },
@@ -185,6 +185,7 @@ UserSchema.pre('validate', function(next) {
 //-----------------------------------------------------------------------------
 // VALIDATIONS
 //-----------------------------------------------------------------------------
+const validNameRegex = /^[0-9a-z ]{3,}$/i;
 UserSchema.path('name').validate(function(name) {
 	// this gets default from username if not set anyway.
 	if (this.isNew) {
@@ -192,6 +193,14 @@ UserSchema.path('name').validate(function(name) {
 	}
 	return _.isString(name) && validator.isLength(name, 3, 30);
 }, 'Name must be between 3 and 30 characters.');
+
+UserSchema.path('name').validate(function(name) {
+	// this gets default from username if not set anyway.
+	if (this.isNew) {
+		return true;
+	}
+	return validNameRegex.test(name);
+}, 'Name can only contain letters, numbers and spaces.');
 
 UserSchema.path('email').validate(function(email) {
 	// if you are authenticating by any of the oauth strategies, don't validate
@@ -246,10 +255,10 @@ UserSchema.path('provider').validate(function(provider, callback) {
 				this.invalidate('username', 'Username must be a string between 3 and 30 characters.');
 			} else {
 				if (!validator.isLength(this.username, 3, 30)) {
-					this.invalidate('username', 'Length of username must be between 3 and 30 characters.');
+					this.invalidate('username', 'Username must be between 3 and 30 characters.');
 				}
-				if (!validator.matches(this.username, /^[a-z0-9\._]+$/i)) {
-					this.invalidate('username', 'Username must only contain alpha-numeric characters including dot and underscore.');
+				if (!validator.matches(this.username, /^[a-z0-9]+$/i)) {
+					this.invalidate('username', 'Username must only contain alpha-numeric characters.');
 				}
 			}
 		}

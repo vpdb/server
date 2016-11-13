@@ -35,7 +35,7 @@ angular.module('vpdb.common', [])
 			restrict: 'AE',
 			link: function(scope, element, attrs) {
 				var linkUsers = function(html) {
-					return html.replace(/@&#3[49];([^&,']+)&#3[49];/g, '<user>$1</user>').replace(/@([^\s,']+)/g, '<user>$1</user>');
+					return html.replace(/@&#3[49];([a-z0-9 ]+)&#3[49];/g, '<user>$1</user>').replace(/@([a-z0-9]+)/g, '<user>$1</user>');
 				};
 				if (attrs.markdown) {
 					scope.$watch(attrs.markdown, function(newVal) {

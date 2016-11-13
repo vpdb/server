@@ -334,7 +334,7 @@ angular.module('vpdb.editor', [])
 				};
 
 				$scope.getUserMention = function(item) {
-					return "@" + item.name;
+					return ~item.name.indexOf(' ') ? '@"' + item.name + '"' : '@' + item.name;
 				};
 			}
 		};

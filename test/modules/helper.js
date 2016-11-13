@@ -55,7 +55,7 @@ exports.genUser = function(attrs) {
 
 	var username = '';
 	do {
-		username = faker.internet.userName().replace(/[^a-z0-9\._]+/gi, '');
+		username = faker.internet.userName().replace(/[^a-z0-9]+/gi, '');
 	} while (username.length < 3);
 
 	return _.extend({

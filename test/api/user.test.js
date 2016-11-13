@@ -174,7 +174,7 @@ describe('The VPDB `user` API', function() {
 				}).end(function(err, res) {
 					hlp.expectStatus(err, res, 422);
 					hlp.expectValidationError(err, res, 'email', 'email must be in the correct format');
-					hlp.expectValidationError(err, res, 'username', 'length of username');
+					hlp.expectValidationError(err, res, 'username', 'must be between 3 and 30 characters');
 					hlp.expectValidationError(err, res, 'password', 'at least 6 characters');
 					expect(res.body.errors).to.have.length(3);
 					done();

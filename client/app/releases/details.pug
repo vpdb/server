@@ -18,7 +18,7 @@ p.padder-top(ng-show="pageLoading")
 		uib-carousel.padder-horizontal(interval="60000")
 			uib-slide(ng-repeat="slide in shots", active="slide.active")
 				a.image(href="{{ slide.full }}")
-					img(src="{{ slide.url }}")
+					img(ng-src="{{ slide.url }}")
 
 		//-- RELEASE RATING
 		//---------------------------------------------------------------------

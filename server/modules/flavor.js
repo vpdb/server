@@ -78,6 +78,12 @@ exports.defaultFileTags = function() {
 	});
 };
 
+/**
+ * Returns default thumb settings. Opts override defaults.
+ *
+ * @param {{ lighting:string, orientation:string }} [opts] Options
+ * @returns {{ lighting:string, orientation:string }} Default thumb
+ */
 exports.defaultThumb = function(opts) {
 	var defaultThumb = {};
 	opts = opts || {};

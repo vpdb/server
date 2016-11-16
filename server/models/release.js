@@ -110,7 +110,7 @@ ReleaseSchema.plugin(moderate);
 ReleaseSchema.plugin(toObj);
 ReleaseSchema.plugin(metrics, { hotness: { popularity: { views: 1, downloads: 10, comments: 20, stars: 30 }}});
 ReleaseSchema.plugin(sortableTitle, { src: 'name', dest: 'name_sortable' });
-ReleaseSchema.plugin(releaseAggregation, { releaseFields: releaseFields, versionFields: version.fields });
+ReleaseSchema.plugin(releaseAggregation);
 
 //-----------------------------------------------------------------------------
 // VALIDATIONS
@@ -361,107 +361,117 @@ logger.info('[model] Schema "Release" registered.');
  * Basically it looks at thumbFlavor and thumbFormat and tries to return
  * the best match.
  * @param versions
- * @param opts
+ * @param {{ thumbFlavor:string, thumbFormat:string, fullThumbData:boolean }} opts thumbFlavor: "orientation:fs,lighting:day", thumbFormat: variation name or "original"
  * @returns {{image: *, flavor: *}}
  */
 function getReleaseThumb(versions, opts) {
 
 	opts.thumbFormat = opts.thumbFormat || 'original';
 
-	var i, j, file, thumb;
+	/** @type {{ lighting:string, orientation:string }} */
+	const flavorDefaults = flavor.defaultThumb();
+	/** @type {{ lighting:string, orientation:string }} */
+	const flavorParams = (opts.thumbFlavor || '').split(',').map(f => f.split(':')).reduce((a, v) => _.assign(a, { [v[0]]: v[1]}), {});
 
-	var f, fileFlavor, flavorName, flavorValue;
-	var flavorParams = opts.thumbFlavor ? opts.thumbFlavor.split(',') : [];
-	var defaults = flavor.defaultThumb();
-	var weight, match, filesByWeight = [];
+	// get all table files
+	const files = _.flatten(_.map(versions, 'files')).filter(file => file.flavor);
 
-	// get all files
-	var files = _.flatten(_.map(versions, 'files'));
+//	console.log('flavorParams: %j, flavorDefaults: %j', flavorParams, flavorDefaults);
 
-	// find best matching flavor
-	for (i = 0; i < files.length; i++) {
-		if (!files[i].flavor) {
-			// skip non-table files
-			continue;
-		}
-		file = files[i];
-		fileFlavor = file.flavor.toObj ? file.flavor.toObj() : file.flavor;
-		weight = 0;
+	// assign weights to each file depending on parameters
+	/** @type {{ file: {[playfield_image]:{}, [_playfield_image]:{}}, weight:number }[]} */
+	const filesByWeight = _.orderBy(files.map(file => {
 
-		for (j = 0; j < flavorParams.length; j++) {
-			f = flavorParams[j].split(':');
-			flavorName = f[0];
-			flavorValue = f[1];
+		/** @type {{ lighting:string, orientation:string }} */
+		const fileFlavor = file.flavor.toObj ? file.flavor.toObj() : file.flavor;
+		let weight = 0;
+		const flavorNames = getFlavorNames(opts);
+		let p = flavorNames.length + 1;
+		flavorNames.forEach(flavorName => {
 
 			// parameter match gets most weight.
-			if (fileFlavor[flavorName] === flavorValue) {
-				weight += Math.pow(10, (flavorParams.length - j + 1) * 3);
+			if (fileFlavor[flavorName] === flavorParams[flavorName]) {
+				weight += Math.pow(10, p * 3);
 
 			// defaults match gets also weight, but less
-			} else if (defaults[flavorName] === flavorValue) {
-				weight += Math.pow(10, (flavorParams.length - j + 1));
+			} else if (fileFlavor[flavorName] === flavorDefaults[flavorName]) {
+				weight += Math.pow(10, p);
 			}
-		}
-//		console.log('[%s] %s / %j => %d', release.id, opts.thumbFlavor, fileFlavor, weight);
-		filesByWeight.push({
+			p--;
+		});
+
+		console.log('%s / %j => %d', opts.thumbFlavor, fileFlavor, weight);
+		return {
 			file: file,
 			weight: weight
-		});
-	}
-	filesByWeight = filesByWeight.sort(byWeight);
+		};
 
-	var selectedFlavor;
-	for (i = 0; i < filesByWeight.length; i++) {
-		thumb = getFileThumb(filesByWeight[i].file, opts);
-		selectedFlavor = filesByWeight[i].file.flavor;
-		if (thumb !== null) {
-			break;
-		}
-	}
+	}), ['weight'], ['desc']);
 
-	if (!thumb) {
-		thumb = getDefaultThumb(filesByWeight[0], opts);
-		selectedFlavor = filesByWeight[0].file.flavor;
+	const bestMatch = filesByWeight[0].file;
+	const thumb = getFileThumb(bestMatch, opts);
+	// can be null if invalid thumbFormat was specified
+	if (thumb === null) {
+		return {
+			image: getDefaultThumb(bestMatch, opts),
+			flavor: bestMatch.flavor
+		};
 	}
-
 	return {
 		image: thumb,
-		flavor: selectedFlavor
+		flavor: bestMatch.flavor
 	};
 }
 
+/**
+ * Returns playfield thumb for a given release file.
+ * Can return null if playfield is not populated or thumbFormat is invalid or not specified.
+ *
+ * @param {{ [playfield_image]:{}, [_playfield_image]:{} }} file Table
+ * @param {{ fullThumbData:boolean, thumbFormat:string }} opts thumbFormat is the variation or "original" if the full link is desired.
+ * @returns {{}|null}
+ */
 function getFileThumb(file, opts) {
 
-	var thumbFields = [ 'url', 'width', 'height', 'is_protected' ];
+	let thumbFields = [ 'url', 'width', 'height', 'is_protected' ];
 	if (opts.fullThumbData) {
-		thumbFields = thumbFields.concat(['mime_type', 'bytes', 'file_type']);
+		thumbFields = [...thumbFields, 'mime_type', 'bytes', 'file_type'];
 	}
 
-	var playfieldImage = getPlayfieldImage(file);
+	if (!opts.thumbFormat) {
+		return null;
+	}
 
+	const playfieldImage = getPlayfieldImage(file);
+
+	// if not populated, return null
 	if (!playfieldImage || !playfieldImage.metadata) {
 		return null;
 	}
 
 	if (opts.thumbFormat === 'original') {
-		return _.extend(_.pick(playfieldImage, thumbFields), {
+		return _.assign(_.pick(playfieldImage, thumbFields), {
 			width: playfieldImage.metadata.size.width,
 			height: playfieldImage.metadata.size.height
 		});
 
 	} else if (playfieldImage.variations[opts.thumbFormat]) {
 		return _.pick(playfieldImage.variations[opts.thumbFormat], thumbFields);
-	}/*else {
-	 console.log(playfieldImage);
-	 console.log('[%s] no %s variation for playfield image, trying next best match.', release.id, opts.thumbFormat);
-	 }*/
+	}
 	return null;
 }
 
+/**
+ * Returns the default thumb of a file.
+ *
+ * @param {{ [playfield_image]:{}, [_playfield_image]:{} }} file Table file
+ * @param {{ fullThumbData: boolean }} opts
+ * @returns {{}|null}
+ */
 function getDefaultThumb(file, opts) {
 
 	var playfieldImage = getPlayfieldImage(file);
-	if (!playfieldImage) {
+	if (!playfieldImage || !playfieldImage.metadata) {
 		return null;
 	}
 	var thumb = {
@@ -477,22 +487,26 @@ function getDefaultThumb(file, opts) {
 	return thumb;
 }
 
+/**
+ * Returns all known flavor names sorted by given parameters.
+ * @param opts
+ * @returns {Array}
+ */
+function getFlavorNames(opts) {
+	return _.uniq([ ...(opts.thumbFlavor || '').split(',').map(f => f.split(':')[0]), 'orientation', 'lighting' ]);
+}
+
+/**
+ * Returns the playfield image property from the table file object.
+ * @param {{ [playfield_image]:{}, [_playfield_image]:{} }} file Table file
+ * @returns {{}|ObjectId|null}
+ */
 function getPlayfieldImage(file) {
 	var playfieldImage = file.playfield_image || file._playfield_image;
 	if (!playfieldImage) {
 		return null;
 	}
 	return playfieldImage.toObj ? playfieldImage.toObj() : playfieldImage;
-}
-
-function byWeight(a, b) {
-	if (a.weight < b.weight) {
-		return 1;
-	}
-	if (a.weight > b.weight) {
-		return -1;
-	}
-	return 0;
 }
 
 /**

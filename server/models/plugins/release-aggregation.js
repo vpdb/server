@@ -27,7 +27,7 @@ const _ = require('lodash');
  * @param schema
  * @param options
  */
-module.exports = function(schema, options) {
+module.exports = function(schema) {
 
 	/**
 	 * Returns an aggregation pipeline that filters releases by nested conditions.
@@ -47,21 +47,16 @@ module.exports = function(schema, options) {
 		let project1 = {};
 		let project2 = {};
 
-		_.each(options.releaseFields, function(val, field) {
-			if (field != 'versions') {
-				group1[field] = '$' + field;
-				group2[field] = '$' + field;
-				project1[field] = '$_id.' + field;
-				project2[field] = '$_id.' + field;
-			}
+		_.keys(schema.tree).filter(field => field !== 'versions').forEach(field => {
+			group1[field] = '$' + field;
+			group2[field] = '$' + field;
+			project1[field] = '$_id.' + field;
+			project2[field] = '$_id.' + field;
 		});
 		project1.versions = { };
-
-		_.each(options.versionFields, function(val, field) {
-			if (field != 'files') {
-				group1['version_' + field] = '$versions.' + field;
-				project1.versions[field] = '$_id.version_' + field;
-			}
+		_.keys(schema.tree.versions).filter(field => field !== 'files').forEach(field => {
+			group1['version_' + field] = '$versions.' + field;
+			project1.versions[field] = '$_id.version_' + field;
 		});
 
 		let pipe = [ { $match: q } ];

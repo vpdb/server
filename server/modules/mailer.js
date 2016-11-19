@@ -32,9 +32,13 @@ var config = settings.current;
 
 var templatesDir = path.resolve(__dirname, '../email-templates');
 
-exports.registrationConfirmation = function(user, done) {
-
-	mail(user, 'registration-confirmation', user.email, 'Please confirm your email', done);
+exports.registrationConfirmation = function(user) {
+	return sendEmail(user, 'Please confirm your email', 'registration-confirmation', {
+		user: user,
+		site: settings.webUri(),
+		confirmationUrl: settings.webUri('/confirm/' + user.email_status.token),
+		recipient: user.email
+	});
 };
 
 exports.emailUpdateConfirmation = function(user, done) {

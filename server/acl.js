@@ -53,7 +53,7 @@ acl.init = function() {
 			roles: 'admin',
 			allows: [
 				{ resources: 'roles', permissions: ['list'] },
-				{ resources: 'users', permissions: ['update', 'list', 'full-details'] }
+				{ resources: 'users', permissions: ['update', 'list', 'full-details', 'send-confirmation'] }
 			]
 		}, {
 			roles: 'moderator',

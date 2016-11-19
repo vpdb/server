@@ -235,6 +235,10 @@ describe('The ACLs of the VPDB API', function() {
 			request.get('/api/v1/users/123/star').end(hlp.status(401, done));
 		});
 
+		it('should deny access to registration mail', function(done) {
+			request.post('/api/v1/users/123/send-confirmation').send({}).end(hlp.status(401, done));
+		});
+
 		it('should allow to list events', function(done) {
 			request.get('/api/v1/events').end(hlp.status(200, done));
 		});
@@ -540,6 +544,10 @@ describe('The ACLs of the VPDB API', function() {
 			request.get('/api/v1/users/1234/events').as('member').end(hlp.status(401, done));
 		});
 
+		it('should deny access to registration mail', function(done) {
+			request.post('/api/v1/users/123/send-confirmation').send({}).as('member').end(hlp.status(403, done));
+		});
+
 		it('should allow access to events by current user', function(done) {
 			request.get('/api/v1/user/events').as('member').end(hlp.status(200, done));
 		});
@@ -725,6 +733,10 @@ describe('The ACLs of the VPDB API', function() {
 			request.get('/api/v1/users/1234/events').as('contributor').end(hlp.status(401, done));
 		});
 
+		it('should deny access to registration mail', function(done) {
+			request.post('/api/v1/users/123/send-confirmation').send({}).as('contributor').end(hlp.status(403, done));
+		});
+
 		it('should allow access to events by current user', function(done) {
 			request.get('/api/v1/user/events').as('contributor').end(hlp.status(200, done));
 		});
@@ -874,6 +886,10 @@ describe('The ACLs of the VPDB API', function() {
 			request.get('/api/v1/users/1234/events').as('moderator').end(hlp.status(401, done));
 		});
 
+		it('should deny access to registration mail', function(done) {
+			request.post('/api/v1/users/123/send-confirmation').send({}).as('moderator').end(hlp.status(403, done));
+		});
+
 		it('should allow access to events by current user', function(done) {
 			request.get('/api/v1/user/events').as('moderator').end(hlp.status(200, done));
 		});
@@ -937,6 +953,10 @@ describe('The ACLs of the VPDB API', function() {
 
 		it('should allow user update of non-admin', function(done) {
 			request.put('/api/v1/users/' + hlp.getUser('member').id).as('admin').send({}).end(hlp.status(422, done));
+		});
+
+		it('should grant access to registration mail', function(done) {
+			request.post('/api/v1/users/' + hlp.getUser('member').id + '/send-confirmation').send({}).as('admin').end(hlp.status(200, done));
 		});
 
 		it('should deny user update of admin', function(done) {

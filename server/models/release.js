@@ -400,7 +400,7 @@ function getReleaseThumb(versions, opts) {
 			p--;
 		});
 
-		console.log('%s / %j => %d', opts.thumbFlavor, fileFlavor, weight);
+//		console.log('%s / %j => %d', opts.thumbFlavor, fileFlavor, weight);
 		return {
 			file: file,
 			weight: weight

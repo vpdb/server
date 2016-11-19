@@ -127,7 +127,7 @@ get:
   delete:
     is: [ protected ]
     securedBy: [ jwt: { scopes: [ ROOT ] } ]
-    description: | 
+    description: |
       Delete a user of a given ID.
 
       Note that deleting users is only supported for tests. Thus, the user
@@ -144,7 +144,18 @@ get:
 
   /star: !include star.raml
   /events:
-        get:
-          is: [ protected, paginated: { defaultPerPage: 10, maxPerPage: 50 }, eventlog ]
-          securedBy: [ jwt: { scopes: [ ADMIN ] } ]
-          description: Retrieves all events related to the user.
+    get:
+      is: [ protected, paginated: { defaultPerPage: 10, maxPerPage: 50 }, eventlog ]
+      securedBy: [ jwt: { scopes: [ ADMIN ] } ]
+      description: Retrieves all events related to the user.
+
+  /send-confirmation:
+    post:
+      is: [ protected ]
+      securedBy: [ jwt: { scopes: [ ADMIN ] } ]
+      description: |
+        Re-sends the confirmation mail.
+
+        Useful if email was entered wrong on registration and was fixed by an admin.
+
+        Post with empty object.

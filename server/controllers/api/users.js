@@ -293,18 +293,49 @@ exports.view = function(req, res) {
  */
 exports.del = function(req, res) {
 
-	var assert = api.assert(error, 'delete', req.params.id, res);
+	let user;
+	Promise.try(() => {
+		return User.findOne({ id: req.params.id }).exec();
 
-	User.findOne({ id: req.params.id }, assert(function(user) {
+	}).then(u => {
+		user = u;
 		if (!user) {
-			return api.fail(res, error('No such user'), 404);
+			throw error('No such user').status(404);
 		}
-		user.remove(assert(function() {
-			acl.removeUserRoles(user.id, user.roles);
-			logger.info('[api|user:delete] User <%s> successfully deleted.', user.email);
-			res.status(204).end();
+		return user.remove();
 
-		}, 'Error deleting user "%s"'));
+	}).then(() => {
+		return acl.removeUserRoles(user.id, user.roles);
 
-	}, 'Error finding user "%s"'));
+	}).then(() => {
+		logger.info('[api|user:delete] User <%s> successfully deleted.', user.email);
+		res.status(204).end();
+
+	}).catch(api.handleError(res, error, 'Error deleting user'));
+};
+
+
+/**
+ * (Re-)sends the confirmation mail to an existing user.
+ *
+ * Needed if the user spelled the email wrong the first time.
+ *
+ * @param {object} req Request object
+ * @param {object} res Response object
+ */
+exports.sendConfirmationMail = function(req, res) {
+
+	Promise.try(() => {
+		return User.findOne({ id: req.params.id }).exec();
+
+	}).then(user => {
+		if (!user) {
+			throw error('No such user').status(404);
+		}
+		return mailer.registrationConfirmation(user);
+
+	}).then(() => {
+		res.status(200).end();
+
+	}).catch(api.handleError(res, error, 'Error sending confirmation mail to user'));
 };

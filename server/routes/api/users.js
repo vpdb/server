@@ -23,16 +23,17 @@ var settings = require('../../modules/settings');
 
 exports.register = function(app, api) {
 
-	app.post(settings.apiPath('/users'),          api.users.create);
-	app.get(settings.apiPath('/users'),           api.auth(api.users.list, 'users', 'search'));
-	app.get(settings.apiPath('/users/:id'),       api.auth(api.users.view, 'users', 'view'));
-	app.put(settings.apiPath('/users/:id'),       api.auth(api.users.update, 'users', 'update'));
-	app.delete(settings.apiPath('/users/:id'),    api.auth(api.users.del, 'users', 'delete'));
+	app.post(settings.apiPath('/users'),       api.users.create);
+	app.get(settings.apiPath('/users'),        api.auth(api.users.list, 'users', 'search'));
+	app.get(settings.apiPath('/users/:id'),    api.auth(api.users.view, 'users', 'view'));
+	app.put(settings.apiPath('/users/:id'),    api.auth(api.users.update, 'users', 'update'));
+	app.delete(settings.apiPath('/users/:id'), api.auth(api.users.del, 'users', 'delete'));
 
-	app.post(settings.apiPath('/users/:id/star'), api.auth(api.stars.star('user'), 'users', 'star'));
+	app.post(settings.apiPath('/users/:id/star'),   api.auth(api.stars.star('user'), 'users', 'star'));
 	app.delete(settings.apiPath('/users/:id/star'), api.auth(api.stars.unstar('user'), 'users', 'star'));
-	app.get(settings.apiPath('/users/:id/star'), api.auth(api.stars.get('user'), 'users', 'star'));
+	app.get(settings.apiPath('/users/:id/star'),    api.auth(api.stars.get('user'), 'users', 'star'));
 
-	app.get(settings.apiPath('/users/:id/events'), api.anon(api.events.list({ byActor: true })));
+	app.get(settings.apiPath('/users/:id/events'),             api.anon(api.events.list({ byActor: true })));
+	app.post(settings.apiPath('/users/:id/send-confirmation'), api.auth(api.users.sendConfirmationMail, 'users', 'send-confirmation'));
 
 };

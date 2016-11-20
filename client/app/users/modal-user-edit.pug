@@ -28,6 +28,8 @@ include ../template/_mixins
 				label.col-sm-3.control-label Email
 				.col-sm-7
 					input.form-control(ng-model="user.email", ng-required)
+				.col-sm-2
+					button.btn.btn-hollow.btn-xs(ng-click="sendConfirmation()", ng-show="originalUser.provider === 'local' && !originalUser.is_active", title="Sends the confirmation mail") Resend
 
 			.form-group(ng-class="{ error: errors.roles }")
 				label.col-sm-3.control-label Roles

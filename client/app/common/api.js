@@ -175,6 +175,12 @@ angular.module('vpdb.common', [])
 		});
 	})
 
+	.factory('UserConfirmationResource', function($resource, ConfigService) {
+		return $resource(ConfigService.apiUri('/users/:userId/send-confirmation'), {}, {
+			send: { method: 'POST' }
+		});
+	})
+
 	.factory('ApiHelper', function($uibModal, $rootScope, $location, ModalService, ModalFlashService) {
 		return {
 

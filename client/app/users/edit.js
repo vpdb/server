@@ -3,10 +3,11 @@
 angular.module('vpdb.users.edit', [])
 
 	.controller('AdminUserEditCtrl', function($scope, $rootScope, $uibModalInstance, ApiHelper,
-						  UserResource, PlanResource, user, roles) {
+						  UserResource, UserConfirmationResource, PlanResource, user, roles) {
 
 		var fields = [ 'id', 'name', 'email', 'username', 'is_active', 'roles', '_plan' ];
 
+		$scope.originalUser = user;
 		$scope.user = {};
 		$scope.roles = roles;
 		$scope.originalName = user.name;
@@ -35,6 +36,13 @@ angular.module('vpdb.users.edit', [])
 					$rootScope.auth.user = updatedUser;
 				}
 				$uibModalInstance.close();
+			}, ApiHelper.handleErrors($scope));
+		};
+
+		$scope.sendConfirmation = function() {
+			UserConfirmationResource.send({ userId: $scope.user.id }, {}, function() {
+				$rootScope.showNotification('Notification mail sent.');
+
 			}, ApiHelper.handleErrors($scope));
 		};
 

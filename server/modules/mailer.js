@@ -41,14 +41,17 @@ exports.registrationConfirmation = function(user) {
 	});
 };
 
-exports.emailUpdateConfirmation = function(user, done) {
-
-	mail(user, 'email-update-confirmation', user.email_status.value, 'Please confirm your email', done);
+exports.emailUpdateConfirmation = function(user) {
+	return sendEmail(user, 'Please confirm your email', 'email-update-confirmation', {
+		user: user,
+		site: settings.webUri(),
+		confirmationUrl: settings.webUri('/confirm/' + user.email_status.token),
+		recipient: user.email
+	});
 };
 
-exports.welcomeLocal = function(user, done) {
-
-	mail(user, 'welcome-local', user.email, 'Welcome to the VPDB!', done);
+exports.welcomeLocal = function(user) {
+	return sendEmail(user, 'Welcome to the VPDB!', 'welcome-local', { user: user, });
 };
 
 exports.welcomeOAuth = function(user) {
@@ -415,58 +418,7 @@ function wrap(text, width, indent) {
 	return indent + lines.join(newline);
 }
 
-/**
- * @deprecated
- */
-function mail(user, template, recipient, subject, done) {
-
-	done = done || function() {};
-
-	var tpl = getTemplate(template);
-
-	// generate content
-	var text = tpl({
-		user: user,
-		site: settings.webUri(),
-		confirmationUrl: settings.webUri('/confirm/' + user.email_status.token),
-		recipient: recipient
-	});
-
-	// setup email
-	var email = {
-		from: { name: config.vpdb.email.sender.name, address: config.vpdb.email.sender.email },
-		to: { name: user.name, address: recipient },
-		subject: subject,
-		text: text
-	};
-
-	// send email
-	send(email, template.replace(/-/g, ' '), done);
-}
-
 /* istanbul ignore next: not testing real mail in tests */
-/**
- * @deprecated
- */
-function send(email, what, done) {
-
-	if (_.isEmpty(config.vpdb.email.nodemailer)) {
-		logger.info('[mailer] NOT sending %s email to <%s> due to environment config.', what, email.to.address);
-		return done();
-	}
-
-	var transport = nodemailer.createTransport(smtpTransport(config.vpdb.email.nodemailer));
-	logger.info('[mailer] Sending %s email to <%s>...', what, email.to.address);
-	transport.sendMail(email, function(err, status) {
-		if (err) {
-			logger.error('[mailer] Error sending %s mail to <%s>:', what, email.to.address, err);
-			return done(err);
-		}
-		logger.info('[mailer] Successfully sent %s mail to <%s> with message ID "%s" (%s).', what, email.to.address, status.messageId, status.response);
-		done(null, status);
-	});
-}
-
 function isUploaderAuthor(uploader, authors) {
 	const uploaderId = uploader._id || uploader;
 	for (let i = 0; i < authors.length; i++) {

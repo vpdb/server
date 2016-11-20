@@ -92,6 +92,7 @@ module.exports = function(schema, options) {
 				if (req.user) {
 					return addToQuery({ $or: [
 						{ _created_by: req.user._id },
+						{ 'authors._user': req.user._id },
 						{ _game : { $nin: _.map(games, '_id') } }
 					]}, query);
 
@@ -132,16 +133,24 @@ module.exports = function(schema, options) {
 
 		}).then(canViewRestricted => {
 
-			// if moderator, retuzrn same query (no filter)
+			// if moderator, return same query (no filter)
 			if (canViewRestricted) {
 				return query;
 			}
 
-			// if no moderator, only returned owned entities
-			return addToQuery({ _created_by: req.user._id }, query);
+			// if no moderator, only returned owned or authored entities
+			return addToQuery({ $or: [ { _created_by: req.user._id }, { 'authors._user': req.user._id } ] }, query);
 		});
 	};
 
+	/**
+	 * Checks whether a user can access a given game.
+	 *
+	 * @param req Request containing user object
+	 * @param game Game to check
+	 * @param entity Entity that references the game. Needed to in order to check for owner.
+	 * @return {Promise.<boolean>}
+	 */
 	schema.statics.hasRestrictionAccess = function(req, game, entity) {
 
 		const acl = require('../../acl');
@@ -150,12 +159,12 @@ module.exports = function(schema, options) {
 
 		// if not restricted, has access
 		if (!game.isRestricted(reference)) {
-			return true;
+			return Promise.resolve(true);
 		}
 
 		// if restricted by not logged, no access.
 		if (!req.user) {
-			return false;
+			return Promise.resolve(false);
 		}
 
 		// now we have a user, check if either moderator or owner
@@ -169,10 +178,29 @@ module.exports = function(schema, options) {
 				return true;
 			}
 
-			// if no moderator, only must be owner
-			return entity._created_by.equals(req.user._id);
+			// if no moderator, must be owner or author
+			const createdBy = entity._created_by._id || entity._created_by;
+			const authoredBy = entity.authors ? entity.authors.map(author => author._user._id || author._user) : [];
+			return [...authoredBy, createdBy].reduce((a, id) => a || req.user._id.equals(id), false);
 		});
 	};
+
+	/**
+	 * --- still unused - remove if obsolete ---
+	 *
+	 * Returns true if the entity is restricted by its linked game.
+	 * Note that the game must be populated, otherwise <tt>true</tt> will be returned.
+	 *
+	 * @return {boolean} True if linked game is restricted, false otherwise.
+	 */
+	schema.methods.isRestricted = function() {
+		const reference = modelReferenceMap[this.constructor.modelName];
+		if (!this._game.ipdb) {
+			// game needs to be populated, so refuse if that's not the case
+			return true;
+		}
+		return config.vpdb.restrictions[reference].denyMpu.includes(this._game.ipdb.mpu);
+	}
 };
 
 

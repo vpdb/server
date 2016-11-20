@@ -345,6 +345,10 @@ exports.list = function(req, res) {
 			}
 		}
 
+		// TODO only list where's actually content.
+		// if logged as moderator, keep condition like this
+		// if not logged, retrieve restricted game IDs and exclude them
+		// if member, retrieve restricted game IDs, retrieve authored/created game IDs and exclude difference
 		if (parseInt(req.query.min_releases)) {
 			query.push({ 'counter.releases': { $gte: parseInt(req.query.min_releases) } });
 		}

@@ -956,7 +956,7 @@ describe('The ACLs of the VPDB API', function() {
 		});
 
 		it('should grant access to registration mail', function(done) {
-			request.post('/api/v1/users/' + hlp.getUser('member').id + '/send-confirmation').send({}).as('admin').end(hlp.status(200, done));
+			request.post('/api/v1/users/' + hlp.getUser('member').id + '/send-confirmation').send({}).as('admin').end(hlp.status(400, done));
 		});
 
 		it('should deny user update of admin', function(done) {

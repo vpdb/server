@@ -21,6 +21,7 @@
 
 var _ = require('lodash');
 var logger = require('winston');
+var randomstring = require('randomstring');
 
 var User = require('mongoose').model('User');
 var LogUser = require('mongoose').model('LogUser');
@@ -316,9 +317,11 @@ exports.del = function(req, res) {
 
 
 /**
- * (Re-)sends the confirmation mail to an existing user.
+ * Resets the token and expiration date and resends the confirmation mail to
+ * an existing user.
  *
- * Needed if the user spelled the email wrong the first time.
+ * Needed if the user spelled the email wrong the first time or didn't click on
+ * the link within 24 hours.
  *
  * @param {object} req Request object
  * @param {object} res Response object
@@ -332,6 +335,14 @@ exports.sendConfirmationMail = function(req, res) {
 		if (!user) {
 			throw error('No such user').status(404);
 		}
+		if (user.email_status.code === 'confirmed') {
+			throw error('Cannot re-send confirmation mail to already confirmed address.').status(400);
+		}
+		user.email_status.token = randomstring.generate(16);
+		user.email_status.expires_at = new Date(new Date().getTime() + 86400000); // 1d valid
+		return user.save();
+
+	}).then(user => {
 		return mailer.registrationConfirmation(user);
 
 	}).then(() => {

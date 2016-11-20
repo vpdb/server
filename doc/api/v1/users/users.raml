@@ -154,8 +154,9 @@ get:
       is: [ protected ]
       securedBy: [ jwt: { scopes: [ ADMIN ] } ]
       description: |
-        Re-sends the confirmation mail.
+        Resets the confirmation token and expiration date and resends the confirmation mail.
 
-        Useful if email was entered wrong on registration and was fixed by an admin.
+        Useful if email was entered wrong on registration and was fixed by an admin, or if the
+        confirmation link wasn't clicked within 24 hours.
 
         Post with empty object.

@@ -1,8 +1,8 @@
 include ../template/_mixins
 
 h1.padder-top-2x Media
-label(ng-hide="game.alternate_media.length > 0") No media available.
-.row: .col-md-4.col-sm-6.col-xs-12.fade-animation(ng-repeat="medium in game.alternate_media", ng-click="showMedium(medium)")
+label(ng-hide="game.media.length > 0") No media available.
+.row: .col-md-4.col-sm-6.col-xs-12.fade-animation(ng-repeat="medium in game.media", ng-click="showMedium(medium)")
 	.panel.panel--animated.ng-cloak
 		.img.img--rounded-top(img-bg="medium.file.variations[media[medium.category].variation + pixelDensitySuffix].url", ng-class="{{ media[medium.category].imgclass }}")
 		.img.img--rounded-top.img--placeholder.loaded(ng-class="{{ media[medium.category].imgclass }}")

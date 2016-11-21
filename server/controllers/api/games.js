@@ -502,7 +502,7 @@ exports.view = function(req, res) {
 			.exec();
 
 	}).then(media => {
-		result.alternate_media = media.map(medium => _.omit(medium.toSimple(), 'game'));
+		result.media = media.map(medium => _.omit(medium.toSimple(), 'game'));
 
 		api.success(res, result, 200);
 

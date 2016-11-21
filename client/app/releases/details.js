@@ -251,7 +251,7 @@ angular.module('vpdb.releases.details', []).controller('ReleaseDetailsController
 	$scope.flavors = Flavors;
 	$scope.includeGameMedia = false;
 
-	$scope.gameMedia = $scope.game.alternate_media;
+	$scope.gameMedia = $scope.game.media;
 	$scope.roms = RomResource.query({ id: $scope.game.id });
 
 	$scope.downloadFiles = {};

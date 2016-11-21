@@ -1,14 +1,14 @@
-PUT /v1/users/e2enrduymbh HTTP/2.0
+PUT /v1/users/ekun2fs8x9b HTTP/2.0
 Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
-authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwa2R2cjN1em1oYiIsImlhdCI6IjIwMTYtMTEtMDNUMjI6MjU6MzAuNzI0WiIsImV4cCI6IjIwMTYtMTEtMDNUMjM6MjU6MzAuNzI0WiIsImlydCI6ZmFsc2V9.i9qHZeoIlW45rQoUNfXbuw4-ow65P_vN-hn7Ody9s5A
+authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwMmtua2ZzODQ5aCIsImlhdCI6IjIwMTYtMTEtMjFUMjE6MTU6MzEuNzAzWiIsImV4cCI6IjIwMTYtMTEtMjFUMjI6MTU6MzEuNzAzWiIsImlydCI6ZmFsc2V9.uokeJ4ye4OgamkCuGhkFtLm_fVMcRz2YtOrB0SNCepY
 content-type: application/json
-Content-Length: 127
+Content-Length: 144
 
 {
-  "email": "julio.nikolaus62@yahoo.com",
-  "username": "Aglae15",
-  "name": "Aglae15",
+  "email": "amari.jerde@gmail.com",
+  "username": "AyanaSchamberger33",
+  "name": "AyanaSchamberger33",
   "is_active": true,
   "roles": [
     "member"

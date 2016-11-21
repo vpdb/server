@@ -1,9 +1,8 @@
 404 Not Found
-X-App-Sha: 027627f
 Content-Type: application/json; charset=utf-8
-Content-Length: 77
-Etag: W/"4d-JEMRbPLoGBqzM+OS4+oOQg"
+Content-Length: 81
+Etag: W/"51-e68rbd9NPm2glGIqoKj9vg"
 
 {
-  "error": "No star for <cleo95@yahoo.com> for \"American League\" found."
+  "error": "No star for <danyka_pouros62@hotmail.com> for \"Triplets\" found."
 }

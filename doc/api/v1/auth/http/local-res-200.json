@@ -1,18 +1,17 @@
 200 OK
-X-App-Sha: 027627f
 Content-Type: application/json; charset=utf-8
-Etag: W/"852-/8FFhISP7Lc2uEMMvqFuVQ"
+Etag: W/"835-f1Cf3DbSLBLEXK7r66JNnA"
 Content-Encoding: gzip
 
 {
-  "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJlazR1ZWRmejhoYiIsImlhdCI6IjIwMTYtMTEtMDNUMjI6MjU6MjkuOTMxWiIsImV4cCI6IjIwMTYtMTEtMDNUMjM6MjU6MjkuOTMxWiIsImlydCI6ZmFsc2V9.jKrhXmH6OnTzhC6TU4wqGTfEP6-Ete3WIvJtzgimsKc",
-  "expires": "2016-11-03T23:25:29.931Z",
+  "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwMnhubzU5ODQ5aCIsImlhdCI6IjIwMTYtMTEtMjFUMjE6MTU6MzAuODg0WiIsImV4cCI6IjIwMTYtMTEtMjFUMjI6MTU6MzAuODg0WiIsImlydCI6ZmFsc2V9.55qCmzwoIfn3vWmcFJ9QBozsev-6_iRRpgDSe7FQ0hQ",
+  "expires": "2016-11-21T22:15:30.884Z",
   "user": {
-    "id": "ek4uedfz8hb",
-    "name": "Estrella_Dooley19",
-    "username": "Estrella_Dooley19",
-    "gravatar_id": "87139e44624073a1767a9853a3dcfd46",
-    "email": "christopher_ziemann59@gmail.com",
+    "id": "p2xno59849h",
+    "name": "Garrick48",
+    "username": "Garrick48",
+    "gravatar_id": "7a377cb982a59d060c340c2b29ee440d",
+    "email": "jaydon85@yahoo.com",
     "is_active": true,
     "provider": "local",
     "roles": [
@@ -23,7 +22,7 @@ Content-Encoding: gzip
       "app_tokens_enabled": false,
       "id": "free"
     },
-    "created_at": "2016-11-03T22:25:29.768Z",
+    "created_at": "2016-11-21T21:15:30.738Z",
     "preferences": {
       "moderator_notify_backglass_auto_approved": false,
       "moderator_notify_backglass_submitted": true,

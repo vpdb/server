@@ -1,16 +1,15 @@
 200 OK
-X-App-Sha: 027627f
 Content-Type: application/json; charset=utf-8
-Etag: W/"761-CzWMsbIC8DWFZSmi81SUCw"
+Etag: W/"76b-INr+rdG7lHjtdgNwemr6YQ"
 Content-Encoding: gzip
 
 {
-  "location": "Zieme bury",
-  "name": "Laurel Schuster",
-  "username": "Deion_Kohler",
-  "email": "alene20@gmail.com",
+  "location": "Bernice chester",
+  "name": "Bettie Gutmann",
+  "username": "Pierce68",
+  "email": "izabella74@hotmail.com",
   "provider": "local",
-  "created_at": "2016-11-03T22:25:30.861Z",
+  "created_at": "2016-11-21T21:15:31.834Z",
   "is_active": true,
   "counter": {
     "stars": 0,
@@ -37,16 +36,16 @@ Content-Encoding: gzip
   ],
   "email_status": {
     "code": "pending_update",
-    "expires_at": "2016-11-04T22:25:31.747Z",
-    "value": "zachery.robel@yahoo.com"
+    "expires_at": "2016-11-22T21:15:32.393Z",
+    "value": "sonya_vandervort@hotmail.com"
   },
-  "id": "p2gfduz8bh",
+  "id": "e2fhf984sh",
   "plan": {
     "push_notifications_enabled": false,
     "app_tokens_enabled": false,
     "id": "free"
   },
-  "gravatar_id": "edca6b4e46e832837b30412ad2a2f6e4",
+  "gravatar_id": "dccb6e1b351e4ee0917bfcfbe5d3e0d1",
   "permissions": {
     "builds": [
       "delete-own",

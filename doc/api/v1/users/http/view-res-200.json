@@ -1,15 +1,14 @@
 200 OK
-X-App-Sha: 027627f
 Content-Type: application/json; charset=utf-8
-Etag: W/"417-FBsCZXjN4bsklcB3reT9pQ"
+Etag: W/"414-S/VrLyObLN47HbCOKzztng"
 Content-Encoding: gzip
 
 {
-  "name": "Charlotte_Braun34",
-  "username": "Charlotte_Braun34",
-  "email": "michele45@gmail.com",
+  "name": "LuzSchuppe96",
+  "username": "LuzSchuppe96",
+  "email": "johnson.kirlin74@yahoo.com",
   "provider": "local",
-  "created_at": "2016-11-03T22:25:30.775Z",
+  "created_at": "2016-11-21T21:15:31.753Z",
   "is_active": true,
   "counter": {
     "stars": 0,
@@ -34,11 +33,11 @@ Content-Encoding: gzip
   "roles": [
     "member"
   ],
-  "id": "e2enrduymbh",
+  "id": "ekun2fs8x9b",
   "plan": {
     "push_notifications_enabled": false,
     "app_tokens_enabled": false,
     "id": "free"
   },
-  "gravatar_id": "56d717f110f02d073870fa833970391b"
+  "gravatar_id": "882f20c748b69045e2fd1b938f899b9e"
 }

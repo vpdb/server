@@ -1,9 +1,9 @@
-PATCH /v1/releases/e26scnuz8bb HTTP/2.0
+PATCH /v1/releases/p2p4z4smxsb HTTP/2.0
 Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
-authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwMnB6dWF1eW1oYiIsImlhdCI6IjIwMTYtMTEtMDNUMjI6MjQ6MjcuMDIzWiIsImV4cCI6IjIwMTYtMTEtMDNUMjM6MjQ6MjcuMDIzWiIsImlydCI6ZmFsc2V9.2EBGiigNMk8D8EhMsxaWUQOToKZpBJ8toIwU_MfPXsY
+authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwa25kc3M4eHNiIiwiaWF0IjoiMjAxNi0xMS0yMVQyMToxNDoyNC44OTZaIiwiZXhwIjoiMjAxNi0xMS0yMVQyMjoxNDoyNC44OTZaIiwiaXJ0IjpmYWxzZX0.vAptCwLDWF43oxq4_9PLpOdRiEbWGEtqu7Znlo-D6As
 content-type: application/json
-Content-Length: 317
+Content-Length: 316
 
 {
   "name": "Updated name",
@@ -11,7 +11,7 @@ Content-Length: 317
   "acknowledgements": "Updated acknowledgements",
   "authors": [
     {
-      "_user": "ek8zfnuzmbb",
+      "_user": "ekdd9smx9b",
       "roles": [
         "Some other job"
       ]

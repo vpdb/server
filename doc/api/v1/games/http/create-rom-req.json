@@ -1,16 +1,16 @@
-POST /v1/games/third-world/roms HTTP/2.0
+POST /v1/games/esquire/roms HTTP/2.0
 Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
-authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwazFyODhmeThiYiIsImlhdCI6IjIwMTYtMTEtMDNUMjI6MjU6MjAuNTE2WiIsImV4cCI6IjIwMTYtMTEtMDNUMjM6MjU6MjAuNTE2WiIsImlydCI6ZmFsc2V9.c73n8hufglfQHy40Ur-b7WH5RuOKJ95GVPugtr0Z0No
+authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJlMmRzZTVzOHhzaCIsImlhdCI6IjIwMTYtMTEtMjFUMjE6MTU6MjEuMDQ0WiIsImV4cCI6IjIwMTYtMTEtMjFUMjI6MTU6MjEuMDQ0WiIsImlydCI6ZmFsc2V9.0WT7nfDslAyNKURqAecJJr8Zhy7_85q9RKRx27V-Ebg
 content-type: application/json
-Content-Length: 111
+Content-Length: 107
 
 {
-  "id": "third-world_10",
+  "id": "esquire_10",
   "version": "1.0",
   "notes": "That is some ROM.",
   "languages": [
     "en-US"
   ],
-  "_file": "pkyz3mfy8hb"
+  "_file": "pkqrers849b"
 }

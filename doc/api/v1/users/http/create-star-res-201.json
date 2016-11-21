@@ -1,10 +1,9 @@
 201 Created
-X-App-Sha: 027627f
 Content-Type: application/json; charset=utf-8
 Content-Length: 64
-Etag: W/"40-RSfcTkJ21FLXDhmtqCJ7WQ"
+Etag: W/"40-k33Dv6n2y4ZJklgX81O2wg"
 
 {
-  "created_at": "2016-11-03T22:25:28.425Z",
+  "created_at": "2016-11-21T21:15:29.200Z",
   "total_stars": 1
 }

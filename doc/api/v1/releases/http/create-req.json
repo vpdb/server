@@ -1,21 +1,21 @@
 POST /v1/releases HTTP/2.0
 Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
-authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJlMndmZHR1em1iaCIsImlhdCI6IjIwMTYtMTEtMDNUMjI6MjQ6MTcuNjgzWiIsImV4cCI6IjIwMTYtMTEtMDNUMjM6MjQ6MTcuNjgzWiIsImlydCI6ZmFsc2V9.11fasth_9_Sziv69iP05iok6WTUerwtcQo_vfSWKmHM
+authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJlMjNlNHM5OHhzaCIsImlhdCI6IjIwMTYtMTEtMjFUMjE6MTQ6MTUuNTQ4WiIsImV4cCI6IjIwMTYtMTEtMjFUMjI6MTQ6MTUuNTQ4WiIsImlydCI6ZmFsc2V9.ZFtKXcsySdND_P7B9CIFMvrzF_KnFf3OWihTSFNLMn0
 content-type: application/json
-Content-Length: 528
+Content-Length: 536
 
 {
   "name": "release",
   "license": "by-sa",
-  "_game": "bing-o-reno",
+  "_game": "spirit-of-america",
   "versions": [
     {
       "files": [
         {
           "released_at": "2015-01-01T00:00:00.000Z",
-          "_file": "pktwznuymhb",
-          "_playfield_image": "p2bsafzmhb",
+          "_file": "pk9qt9s849b",
+          "_playfield_image": "e2tev99mx9h",
           "_compatibility": [
             "9.9.0"
           ],
@@ -25,8 +25,8 @@ Content-Length: 528
           }
         },
         {
-          "_file": "p2nwzafz8hh",
-          "_playfield_image": "ek79afzmbb",
+          "_file": "e24qt99mx9h",
+          "_playfield_image": "p2cptssm4sb",
           "_compatibility": [
             "9.9.0"
           ],
@@ -42,7 +42,7 @@ Content-Length: 528
   ],
   "authors": [
     {
-      "_user": "e2wfdtuzmbh",
+      "_user": "e23e4s98xsh",
       "roles": [
         "Table Creator"
       ]

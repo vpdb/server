@@ -1,11 +1,10 @@
 201 Created
-X-App-Sha: 027627f
 Content-Type: application/json; charset=utf-8
-Etag: W/"8b1-mcvTh7GYp2gOpYB6rr22NA"
+Etag: W/"8ef-fL4g3bzpR88RKNmMTG+/HA"
 Content-Encoding: gzip
 
 {
-  "id": "p2k93uuymbb",
+  "id": "pkazsy9m49b",
   "file": {
     "counter": {
       "downloads": 0
@@ -13,45 +12,45 @@ Content-Encoding: gzip
     "is_protected": true,
     "variations": {
       "small-2x": {
-        "url": "https://localhost:7357/storage/public/files/small-2x/pk4fmuuymhh.jpg",
+        "url": "https://localhost:7357/storage/public/files/small-2x/pkefyzs84sh.jpg",
         "width": 505,
         "height": 404,
         "bytes": 1776,
         "mime_type": "image/jpeg"
       },
-      "medium-2x": {
-        "url": "https://localhost:7357/storage/public/files/medium-2x/pk4fmuuymhh.jpg",
-        "width": 728,
-        "height": 582,
-        "bytes": 3082,
-        "mime_type": "image/jpeg"
-      },
       "small": {
-        "url": "https://localhost:7357/storage/public/files/small/pk4fmuuymhh.jpg",
+        "url": "https://localhost:7357/storage/public/files/small/pkefyzs84sh.jpg",
         "width": 253,
         "height": 202,
         "bytes": 836,
         "mime_type": "image/jpeg"
       },
+      "medium-2x": {
+        "url": "https://localhost:7357/storage/public/files/medium-2x/pkefyzs84sh.jpg",
+        "width": 728,
+        "height": 582,
+        "bytes": 3081,
+        "mime_type": "image/jpeg"
+      },
       "medium": {
-        "url": "https://localhost:7357/storage/public/files/medium/pk4fmuuymhh.jpg",
+        "url": "https://localhost:7357/storage/public/files/medium/pkefyzs84sh.jpg",
         "width": 364,
         "height": 291,
         "bytes": 1188,
         "mime_type": "image/jpeg"
       },
       "full": {
-        "url": "https://localhost:7357/storage/public/files/full/pk4fmuuymhh.jpg",
+        "url": "https://localhost:7357/storage/public/files/full/pkefyzs84sh.jpg",
         "width": 640,
         "height": 512,
-        "bytes": 2448,
+        "bytes": 2446,
         "mime_type": "image/jpeg"
       }
     },
     "bytes": 135,
-    "url": "https://localhost:7357/storage/v1/files/pk4fmuuymhh.png",
+    "url": "https://localhost:7357/storage/v1/files/pkefyzs84sh.png",
     "name": "backglass.png",
-    "id": "pk4fmuuymhh",
+    "id": "pkefyzs84sh",
     "metadata": {
       "depth": 8,
       "size": {
@@ -62,9 +61,13 @@ Content-Encoding: gzip
     },
     "file_type": "backglass",
     "mime_type": "image/png",
-    "created_at": "2016-11-03T22:24:00.581Z"
+    "created_at": "2016-11-21T21:13:57.654Z"
   },
   "game": {
+    "mpu": {
+      "long": "Recel System III",
+      "short": "Recel III"
+    },
     "rating": {
       "average": 0,
       "votes": 0,
@@ -77,28 +80,29 @@ Content-Encoding: gzip
       "comments": 0,
       "stars": 0
     },
-    "game_type": "em",
+    "game_type": "ss",
     "ipdb": {
-      "mfg": 352,
-      "number": 1132
+      "mpu": 39,
+      "mfg": 248,
+      "number": 5929
     },
-    "year": 1951,
-    "manufacturer": "Williams",
-    "title": "Harvey",
-    "id": "harvey"
+    "year": 1900,
+    "manufacturer": "Petaco",
+    "title": "Mr. Evil",
+    "id": "mr-evil"
   },
   "category": "backglass_image",
   "description": "This is a very super high resolution backglass that I have stitched together from four different sources.",
   "acknowledgements": "- Thanks to @mom for all her patience",
-  "created_at": "2016-11-03T22:24:01.006Z",
+  "created_at": "2016-11-21T21:13:58.091Z",
   "created_by": {
     "counter": {
       "stars": 0,
       "comments": 0
     },
-    "gravatar_id": "60fd7be1e71c4d14e6f2141dc060e1e0",
-    "username": "Halie_Bartoletti22",
-    "name": "Halie_Bartoletti22",
-    "id": "ekucffy8hh"
+    "gravatar_id": "70026fe71bd35e7a5744a98e0a192eb6",
+    "username": "Josie0",
+    "name": "Josie0",
+    "id": "e2ubys8xsh"
   }
 }

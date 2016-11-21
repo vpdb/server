@@ -1,17 +1,17 @@
 POST /v1/backglasses HTTP/2.0
 Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
-authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwa25zc3J1eThiaCIsImlhdCI6IjIwMTYtMTEtMDNUMjI6MjM6MzQuMjM5WiIsImV4cCI6IjIwMTYtMTEtMDNUMjM6MjM6MzQuMjM5WiIsImlydCI6ZmFsc2V9.hTT0S8e9pTboKHtto47j45h2qtF7aA3sBz0_JRan7Zo
+authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwa2N1cjI5bXg5YiIsImlhdCI6IjIwMTYtMTEtMjFUMjE6MTM6MzAuNzE1WiIsImV4cCI6IjIwMTYtMTEtMjFUMjI6MTM6MzAuNzE1WiIsImlydCI6ZmFsc2V9.AJnuR-RkBkHSs-eRnN6mGhyWRBffNuVjhUTGi_K2rLg
 content-type: application/json
-Content-Length: 458
+Content-Length: 462
 
 {
-  "_game": "majors",
+  "_game": "derby-1941",
   "description": "Photoshopped the super hires backglass together from four different sources!",
   "acknowledgements": "- Thanks @mom for supporting my late hours\n- Thanks @dad for supporting @mom!",
   "authors": [
     {
-      "_user": "pknssruy8bh",
+      "_user": "pkcur29mx9b",
       "roles": [
         "creator"
       ]
@@ -21,12 +21,12 @@ Content-Length: 458
     {
       "version": "1.0",
       "changes": "Initial release",
-      "_file": "e24bxruymbh"
+      "_file": "p2b4uks8x9b"
     },
     {
       "version": "1.1",
       "changes": "- Backglass is now even more high res!\n- It blinks more.",
-      "_file": "pkubxruz8hb"
+      "_file": "pkqxu298x9b"
     }
   ]
 }

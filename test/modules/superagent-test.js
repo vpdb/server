@@ -35,7 +35,7 @@ module.exports = function(superagent, options) {
 	options.saveHost = options.saveHost || 'api.vpdb.io';
 	options.saveRoot = options.saveRoot || 'doc/api/v1';
 	options.ignoreReqHeaders = options.ignoreReqHeaders || ['cookie', 'host', 'user-agent'];
-	options.ignoreResHeaders = options.ignoreResHeaders || ['x-token-refresh', 'x-user-dirty', 'vary', 'connection', 'transfer-encoding', 'date'];
+	options.ignoreResHeaders = options.ignoreResHeaders || ['x-token-refresh', 'x-user-dirty', 'vary', 'connection', 'transfer-encoding', 'date', 'x-app-sha'];
 	options.pathTrim = options.pathTrim || function(path) {
 		let p = path.split('/');
 		p.splice(0, 2);

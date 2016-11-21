@@ -1,10 +1,10 @@
-POST /v1/releases/eke8ruz8bb/comments HTTP/2.0
+POST /v1/releases/e26qbh9849b/comments HTTP/2.0
 Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
-authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwMnJzY3J1eThoaCIsImlhdCI6IjIwMTYtMTEtMDNUMjI6MjM6NDMuMjIxWiIsImV4cCI6IjIwMTYtMTEtMDNUMjM6MjM6NDMuMjIxWiIsImlydCI6ZmFsc2V9.dK4hM1VzE1H7mRmHV1liFzG8Ws-KauXj3M71FsNtKWQ
+authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwa3h6aGg5ODRzaCIsImlhdCI6IjIwMTYtMTEtMjFUMjE6MTM6NDAuMTI3WiIsImV4cCI6IjIwMTYtMTEtMjFUMjI6MTM6NDAuMTI3WiIsImlydCI6ZmFsc2V9.DXQjmFSh6j0mtHOVCJFeVl0ZzicrxBWwERT79uRkJFg
 content-type: application/json
-Content-Length: 47
+Content-Length: 49
 
 {
-  "message": "Automated well-modulated alliance"
+  "message": "Cross-group leading edge projection"
 }

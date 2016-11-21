@@ -1,9 +1,8 @@
 200 OK
-X-App-Sha: 027627f
 Content-Type: application/json; charset=utf-8
-Content-Length: 31
-Etag: W/"1f-8sItRduwfLYSU18e+mOrnw"
+Content-Length: 34
+Etag: W/"22-nCxaEGc9Gqs9EYrnptAXWw"
 
 {
-  "name": "Male Mom Edition"
+  "name": "Madly Class Edition"
 }

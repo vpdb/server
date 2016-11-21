@@ -1,9 +1,8 @@
 403 Forbidden
-X-App-Sha: 027627f
 Content-Type: application/json; charset=utf-8
-Content-Length: 72
-Etag: W/"48-zS/Sg6oyN0NUthdEAyiZFA"
+Content-Length: 79
+Etag: W/"4f-FM6npL0XPppmf8ZtrZowgw"
 
 {
-  "error": "Only authors of the release can update add new versions."
+  "error": "Only moderators or authors of the release can add new versions."
 }

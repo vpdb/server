@@ -1,8 +1,8 @@
-PUT /v1/games/live-power/rating HTTP/2.0
+PUT /v1/games/love-in-world/rating HTTP/2.0
 Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
 content-type: application/json
-authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwMnR1dXRmeThoaCIsImlhdCI6IjIwMTYtMTEtMDNUMjI6MjQ6MTEuNzcyWiIsImV4cCI6IjIwMTYtMTEtMDNUMjM6MjQ6MTEuNzcyWiIsImlydCI6ZmFsc2V9.Ba0ZKu9ZV623jjIh2MMV9hFFdpiDsO33toETZnEnACA
+authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJlMm9zM3lzOHg5aCIsImlhdCI6IjIwMTYtMTEtMjFUMjE6MTQ6MDkuMzM3WiIsImV4cCI6IjIwMTYtMTEtMjFUMjI6MTQ6MDkuMzM3WiIsImlydCI6ZmFsc2V9.zM8ChSX1TSvR_6OrygCprWpdwLm7OGSqfdnSpELcRK8
 Content-Length: 11
 
 {

@@ -1,20 +1,21 @@
 POST /v1/games HTTP/2.0
 Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
-authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJlMnp3c3VmeThiaCIsImlhdCI6IjIwMTYtMTEtMDNUMjI6MjM6NTAuMzA5WiIsImV4cCI6IjIwMTYtMTEtMDNUMjM6MjM6NTAuMzA5WiIsImlydCI6ZmFsc2V9.pE6x2-ni31Q42Qve_2v7g_Q3JqqXoPDlUlJSxkEGXvI
+authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwMmZxZmJzbTRzYiIsImlhdCI6IjIwMTYtMTEtMjFUMjE6MTM6NDcuMzI2WiIsImV4cCI6IjIwMTYtMTEtMjFUMjI6MTM6NDcuMzI2WiIsImlydCI6ZmFsc2V9.DAjO0kwwNsnfOekVD2C75yu4StWJwJ_17E-9sTOQuVI
 content-type: application/json
-Content-Length: 1303
+Content-Length: 333
 
 {
   "ipdb": {
-    "number": 5143,
-    "mfg": 328
+    "number": 5865,
+    "mfg": 405
   },
-  "title": "Kiss",
-  "manufacturer": "Unknown",
+  "title": "Croce D'Oro",
+  "manufacturer": "Splin S.A.",
   "game_type": "ss",
-  "notes": "This conversion kit included a playfield and backglass to fit inside a Bally cabinet, converting it to be like Bally's 1979 'Kiss'.There are two different versions of the conversion playfield in this listing. One uses the 'S' from the rune alphabet (the so-called \"bolt-style\" shape) while the other has a rounded 'S'. We do not know what manufacturer in what country made either version, but the use of the 'S' runes is outlawed in Germany due to their use by Nazi organizations. We had wondered if it was even possible for a German manufacturer to have made the \"bolt-style\" playfield shown here. A hobbyist from Germany responded to tell us that early editions of record albums from the band KISS were available there with the \"bolt-style\" shape but were later changed to the rounded 'S'. This tells us that sales can occur, but it is difficult to speculate usefully until we know who manufactured each version.No information is available to us indicating there are two versions of the conversion backglass.We previously showed the manufacturer to be Geiger-Automatenbau. However, Mr. Geiger has informed us that he was not the manufacturer.",
-  "id": "kiss",
+  "features": "Trap holes (25). Six cards. 220v operation.",
+  "notes": "This game was made for export to Italy. No optional payout hopper was advertised on manufacturer's website.",
+  "id": "croce-doro",
   "year": 1900,
-  "_backglass": "p25w9ffzmhh"
+  "_backglass": "ek8qub9mx9h"
 }

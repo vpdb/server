@@ -1,5 +1,5 @@
-GET /v1/games/oval-ten/release-name HTTP/2.0
+GET /v1/games/gunner/release-name HTTP/2.0
 Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
-authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJlMjZxZmZmejhoYiIsImlhdCI6IjIwMTYtMTEtMDNUMjI6MjM6NTUuNTcyWiIsImV4cCI6IjIwMTYtMTEtMDNUMjM6MjM6NTUuNTcyWiIsImlydCI6ZmFsc2V9.KaFZff972MB94MC78WpXAzEWX9fjsQI1evHNd-WV3uA
+authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwMmhyOGg5bXhzaCIsImlhdCI6IjIwMTYtMTEtMjFUMjE6MTM6NTIuNzYxWiIsImV4cCI6IjIwMTYtMTEtMjFUMjI6MTM6NTIuNzYxWiIsImlydCI6ZmFsc2V9.pIDUZERBiAvwoFpmGfhf9tiMdQuvxCeetrCV4cqsgfY
 

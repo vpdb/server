@@ -1,8 +1,7 @@
 200 OK
-X-App-Sha: 27f8001
 Content-Type: application/json; charset=utf-8
-Etag: W/"416-+LSWgCZLGIBhuYEC5ewAQw"
-Content-Encoding: gzip
+Content-Length: 987
+Etag: W/"3db-AUc6Jx2TpQ270NARfgQjxg"
 
 {
   "id": "hulk6",
@@ -32,22 +31,21 @@ Content-Encoding: gzip
       "stars": 0,
       "comments": 0
     },
-    "gravatar_id": "9b2dedc73fa8bd3e38af5dce9c8f6bfe",
-    "username": "Braulio.Wyman",
-    "name": "Braulio.Wyman",
-    "id": "e25y4dg4yh"
+    "gravatar_id": "4327e564a09a357cc6a46f3c80f869e6",
+    "username": "SandraGislason",
+    "name": "SandraGislason",
+    "id": "e2zxersm4sh"
   },
   "game": {
-    "id": "trailer",
-    "title": "Trailer",
-    "manufacturer": "Playmatic",
-    "year": 1985,
+    "id": "esquire",
+    "title": "Esquire",
+    "manufacturer": "Stoner Manufacturing Company",
+    "year": 1934,
     "ipdb": {
-      "number": 3276,
-      "mfg": 255,
-      "mpu": 53
+      "number": 790,
+      "mfg": 304
     },
-    "game_type": "ss",
+    "game_type": "em",
     "counter": {
       "stars": 0,
       "comments": 0,
@@ -59,10 +57,6 @@ Content-Encoding: gzip
       "score": 0,
       "votes": 0,
       "average": 0
-    },
-    "mpu": {
-      "short": "MPU 5",
-      "long": "Playmatic MPU 5"
     }
   }
 }

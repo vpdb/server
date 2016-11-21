@@ -1,16 +1,16 @@
 POST /v1/media HTTP/2.0
 Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
-authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJla3VjZmZ5OGhoIiwiaWF0IjoiMjAxNi0xMS0wM1QyMjoyMzo1OS42NDFaIiwiZXhwIjoiMjAxNi0xMS0wM1QyMzoyMzo1OS42NDFaIiwiaXJ0IjpmYWxzZX0.TS5AgW1jvMCRVfeUeGwABKm5zJE5CKrDM6awLw7sPoo
+authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJlMnVieXM4eHNoIiwiaWF0IjoiMjAxNi0xMS0yMVQyMToxMzo1Ni42NTJaIiwiZXhwIjoiMjAxNi0xMS0yMVQyMjoxMzo1Ni42NTJaIiwiaXJ0IjpmYWxzZX0.uEaO264FVOabfUvmMWkT52BFK-Mm3wDXvwgUaV_plpk
 content-type: application/json
-Content-Length: 258
+Content-Length: 259
 
 {
   "description": "This is a very super high resolution backglass that I have stitched together from four different sources.",
   "acknowledgements": "- Thanks to @mom for all her patience",
   "category": "backglass_image",
-  "_file": "pk4fmuuymhh",
+  "_file": "pkefyzs84sh",
   "_ref": {
-    "game": "harvey"
+    "game": "mr-evil"
   }
 }

@@ -1,14 +1,13 @@
 200 OK
-X-App-Sha: 027627f
 Content-Type: application/json; charset=utf-8
-Etag: W/"995-59YGMi5lH9X6e0zIE0GHGA"
+Etag: W/"964-uY2hzyEeSuTTNG5ZIEvjJA"
 Content-Encoding: gzip
 
 {
   "release": {
-    "id": "pkqprruy8hh",
-    "name": "Implemented Edition",
-    "created_at": "2016-11-03T22:23:38.697Z",
+    "id": "p2uyc2sm4sh",
+    "name": "Enterprise-wide Edition",
+    "created_at": "2016-11-21T21:13:35.090Z",
     "authors": [
       {
         "roles": [
@@ -19,26 +18,26 @@ Content-Encoding: gzip
             "stars": 0,
             "comments": 0
           },
-          "gravatar_id": "8e0b6f4b9b73028215fbf2ede5e515b2",
-          "username": "Jeffery_Lang52",
-          "name": "Jeffery_Lang52",
-          "id": "e2tgerfz8bh"
+          "gravatar_id": "5cfa593e2d9dc6f4743e98eb47013f7e",
+          "username": "Marcella22",
+          "name": "Marcella22",
+          "id": "ekaq62sm49h"
         }
       }
     ]
   },
   "game": {
-    "id": "pleasure-island",
-    "title": "Pleasure-Island",
-    "manufacturer": "Rock-ola",
-    "year": 1934
+    "id": "cp",
+    "title": "Checkpoint",
+    "manufacturer": "Data East",
+    "year": 1991
   },
   "version": {
     "version": "1.0.0",
-    "released_at": "2016-11-03T22:23:38.697Z"
+    "released_at": "2016-11-21T21:13:35.090Z"
   },
   "file": {
-    "released_at": "2016-11-03T22:23:38.697Z",
+    "released_at": "2016-11-21T21:13:35.090Z",
     "flavor": {
       "orientation": "fs",
       "lighting": "night"
@@ -50,9 +49,9 @@ Content-Encoding: gzip
       }
     ],
     "file": {
-      "id": "e2s9rruy8bb",
+      "id": "e2dfgk984sb",
       "name": "test-table-0.vpt",
-      "url": "https://localhost:7357/storage/v1/files/e2s9rruy8bb.vpt",
+      "url": "https://localhost:7357/storage/v1/files/e2dfgk984sb.vpt",
       "bytes": 135168,
       "variations": {},
       "is_protected": true,
@@ -69,9 +68,9 @@ Content-Encoding: gzip
       "countPercentage": 77.27272727272727,
       "bytesPercentage": 97.57880418711929,
       "release": {
-        "id": "ekhbvrfy8bh",
-        "name": "Synergized Edition",
-        "created_at": "2016-11-03T22:23:39.974Z",
+        "id": "ekbxmks8xsb",
+        "name": "Upgradable Edition",
+        "created_at": "2016-11-21T21:13:36.342Z",
         "authors": [
           {
             "roles": [
@@ -82,26 +81,26 @@ Content-Encoding: gzip
                 "stars": 0,
                 "comments": 0
               },
-              "gravatar_id": "8e0b6f4b9b73028215fbf2ede5e515b2",
-              "username": "Jeffery_Lang52",
-              "name": "Jeffery_Lang52",
-              "id": "e2tgerfz8bh"
+              "gravatar_id": "5cfa593e2d9dc6f4743e98eb47013f7e",
+              "username": "Marcella22",
+              "name": "Marcella22",
+              "id": "ekaq62sm49h"
             }
           }
         ]
       },
       "game": {
-        "id": "slugfest-third-model",
-        "title": "SlugFest (Third Model)",
-        "manufacturer": "Williams",
-        "year": 1900
+        "id": "show-boat",
+        "title": "Show Boat",
+        "manufacturer": "Chicago Coin",
+        "year": 1941
       },
       "version": {
         "version": "1.0.0",
-        "released_at": "2016-11-03T22:23:39.974Z"
+        "released_at": "2016-11-21T21:13:36.342Z"
       },
       "file": {
-        "released_at": "2016-11-03T22:23:39.974Z",
+        "released_at": "2016-11-21T21:13:36.342Z",
         "flavor": {
           "orientation": "fs",
           "lighting": "night"
@@ -113,9 +112,9 @@ Content-Encoding: gzip
           }
         ],
         "file": {
-          "id": "e289uruy8bb",
+          "id": "pkyeck984sh",
           "name": "test-table-0.vpt",
-          "url": "https://localhost:7357/storage/v1/files/e289uruy8bb.vpt",
+          "url": "https://localhost:7357/storage/v1/files/pkyeck984sh.vpt",
           "bytes": 135168,
           "variations": {},
           "is_protected": true,

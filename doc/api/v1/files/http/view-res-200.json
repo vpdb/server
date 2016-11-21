@@ -1,17 +1,16 @@
 200 OK
-X-App-Sha: 027627f
 Content-Type: application/json; charset=utf-8
 Content-Length: 316
-Etag: W/"13c-MREqu8hS199sq68No4SV6A"
+Etag: W/"13c-Cyr6LqEWahV55fHKPM4beQ"
 
 {
-  "created_at": "2016-11-03T22:23:47.488Z",
+  "created_at": "2016-11-21T21:13:44.364Z",
   "mime_type": "text/plain",
   "file_type": "release",
   "metadata": {},
-  "id": "p2zzkuuzmbh",
+  "id": "e23bqh98x9b",
   "name": "text.txt",
-  "url": "https://localhost:7357/storage/v1/files/p2zzkuuzmbh.txt",
+  "url": "https://localhost:7357/storage/v1/files/e23bqh98x9b.txt",
   "bytes": 43,
   "variations": {},
   "is_protected": true,

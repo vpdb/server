@@ -1,7 +1,7 @@
-PATCH /v1/games/royal-flippers HTTP/2.0
+PATCH /v1/games/gondolier HTTP/2.0
 Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
-authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJlMjl1eHVmeW1oYiIsImlhdCI6IjIwMTYtMTEtMDNUMjI6MjM6NTEuNzQ0WiIsImV4cCI6IjIwMTYtMTEtMDNUMjM6MjM6NTEuNzQ0WiIsImlydCI6ZmFsc2V9.Q7MF8Ac49265LZt-DDUWOLgqEafgiMLzuald6Y0Git8
+authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJla3puYjltNHNoIiwiaWF0IjoiMjAxNi0xMS0yMVQyMToxMzo0OC44MTFaIiwiZXhwIjoiMjAxNi0xMS0yMVQyMjoxMzo0OC44MTFaIiwiaXJ0IjpmYWxzZX0._j0teFEqWHOORs4xSMijIKHhxXfppINx00VBlhA_REM
 content-type: application/json
 Content-Length: 36
 

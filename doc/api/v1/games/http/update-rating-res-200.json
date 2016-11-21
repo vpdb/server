@@ -1,16 +1,15 @@
 200 OK
-X-App-Sha: 027627f
 Content-Type: application/json; charset=utf-8
 Content-Length: 164
-Etag: W/"a4-I2i4ncprBKejhoi5kqKeLw"
+Etag: W/"a4-vjwXjH9GRu31CXe7rYwfcQ"
 
 {
   "value": 8,
-  "created_at": "2016-11-03T22:24:12.495Z",
+  "created_at": "2016-11-21T21:14:10.074Z",
   "game": {
     "average": 8,
     "votes": 1,
     "score": 8.375
   },
-  "modified_at": "2016-11-03T22:24:12.530Z"
+  "modified_at": "2016-11-21T21:14:10.101Z"
 }

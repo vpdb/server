@@ -1,24 +1,23 @@
 201 Created
-X-App-Sha: 027627f
 Content-Type: application/json; charset=utf-8
-Etag: W/"58d-RAXA5FVfBAsYzD66J12o0Q"
+Etag: W/"597-nWYZqB5G2yh+8vwyKpeT4A"
 Content-Encoding: gzip
 
 {
-  "id": "e2ee4ruy8hh",
+  "id": "p2pbtk98xsb",
   "game": {
     "ipdb": {
-      "mfg": 81,
-      "number": 3485
+      "mfg": 47,
+      "number": 922
     },
-    "year": 1939,
-    "manufacturer": "Chicago Coin",
-    "title": "Majors",
-    "id": "majors"
+    "year": 1941,
+    "manufacturer": "Bally",
+    "title": "Derby 1941",
+    "id": "derby-1941"
   },
   "versions": [
     {
-      "released_at": "2016-11-03T22:23:35.486Z",
+      "released_at": "2016-11-21T21:13:31.882Z",
       "version": "1.0",
       "counter": {
         "downloads": 0
@@ -30,25 +29,25 @@ Content-Encoding: gzip
         "is_protected": true,
         "variations": {
           "small-2x": {
-            "url": "https://localhost:7357/storage/public/files/small-2x/e2bp45uy8hb.jpg"
+            "url": "https://localhost:7357/storage/public/files/small-2x/ekbhv298xsb.jpg"
           },
           "small": {
-            "url": "https://localhost:7357/storage/public/files/small/e2bp45uy8hb.jpg"
+            "url": "https://localhost:7357/storage/public/files/small/ekbhv298xsb.jpg"
           },
           "medium-2x": {
-            "url": "https://localhost:7357/storage/public/files/medium-2x/e2bp45uy8hb.jpg"
+            "url": "https://localhost:7357/storage/public/files/medium-2x/ekbhv298xsb.jpg"
           },
           "medium": {
-            "url": "https://localhost:7357/storage/public/files/medium/e2bp45uy8hb.jpg"
+            "url": "https://localhost:7357/storage/public/files/medium/ekbhv298xsb.jpg"
           },
           "full": {
-            "url": "https://localhost:7357/storage/public/files/full/e2bp45uy8hb.jpg"
+            "url": "https://localhost:7357/storage/public/files/full/ekbhv298xsb.jpg"
           }
         },
         "bytes": 2067,
-        "url": "https://localhost:7357/storage/v1/files/e2bp45uy8hb.directb2s",
+        "url": "https://localhost:7357/storage/v1/files/ekbhv298xsb.directb2s",
         "name": "test.directb2s",
-        "id": "e2bp45uy8hb"
+        "id": "ekbhv298xsb"
       }
     }
   ],
@@ -62,12 +61,12 @@ Content-Encoding: gzip
           "stars": 0,
           "comments": 0
         },
-        "gravatar_id": "0ab553a81c5c9b74c58b719cc4889f1a",
-        "username": "Laney7",
-        "name": "Laney7",
-        "id": "pknssruy8bh"
+        "gravatar_id": "672ba8fa0cda19a41b546a729809af77",
+        "username": "TateFritsch",
+        "name": "TateFritsch",
+        "id": "pkcur29mx9b"
       }
     }
   ],
-  "created_at": "2016-11-03T22:23:35.486Z"
+  "created_at": "2016-11-21T21:13:31.882Z"
 }

@@ -37,7 +37,6 @@ const moderate = require('./plugins/moderate');
 const prettyId = require('./plugins/pretty-id');
 const idValidator = require('./plugins/id-ref');
 const sortableTitle = require('./plugins/sortable-title');
-const releaseAggregation = require('./plugins/release-aggregation');
 
 const flavor = require('../modules/flavor');
 
@@ -110,7 +109,6 @@ ReleaseSchema.plugin(moderate);
 ReleaseSchema.plugin(toObj);
 ReleaseSchema.plugin(metrics, { hotness: { popularity: { views: 1, downloads: 10, comments: 20, stars: 30 }}});
 ReleaseSchema.plugin(sortableTitle, { src: 'name', dest: 'name_sortable' });
-ReleaseSchema.plugin(releaseAggregation);
 
 //-----------------------------------------------------------------------------
 // VALIDATIONS

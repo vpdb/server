@@ -745,18 +745,18 @@ exports.list = function(req, res) {
 
 	}).then(() => {
 
-		// inner filters
+		// flavor filters
 		if (!_.isUndefined(req.query.flavor)) {
 			req.query.flavor.split(',').forEach(f => {
-				let kv = f.split(':');
-				let k = kv[0].toLowerCase();
-				let v = kv[1].toLowerCase();
-				if (flavor.values[k]) {
-					let fltr = {};
-					fltr['versions.files.flavor.' + k] = { $in: [ 'any', v ]};
-					filter.push(fltr);
+				const [key, val] = f.split(':');
+				if (flavor.values[key]) {
+					query.push({ ['versions.files.flavor.' + key]: { $in: [ 'any', val ]} });
 				}
 			});
+			// also return the same thumb if not specified otherwise.
+			if (!transformOpts.thumbFlavor) {
+				transformOpts.thumbFlavor = req.query.flavor;
+			}
 		}
 
 		if (stars) {
@@ -775,29 +775,14 @@ exports.list = function(req, res) {
 		let populatedFields = [ '_game', 'versions.files._file', 'versions.files._playfield_image',
 		                        'versions.files._compatibility', 'authors._user' ];
 
-		if (filter.length > 0) {
-			let aggr = Release.getAggregationPipeline(query, filter, sort, pagination);
-//			console.log(util.inspect(aggr, { depth: null, colors: true}));
-			return Release.aggregate(aggr).exec().then(result => {
-				// populate
-				return Release.populate(result, populatedFields);
-
-			}).then(releases => {
-				// still need to count
-				return Release.count(query).exec().then(count => [ releases, count ]);
-			});
-
-		} else {
-
-			let q = api.searchQuery(query);
-			logger.info('[api|release:list] query: %s, sort: %j', util.inspect(q, { depth: null }), util.inspect(sort));
-			return Release.paginate(q, {
-				page: pagination.page,
-				limit: pagination.perPage,
-				populate: populatedFields,
-				sort: sort  // '_game.title', '_game.id'
-			}).then(result => [ result.docs, result.total ]);
-		}
+		let q = api.searchQuery(query);
+		logger.info('[api|release:list] query: %s, sort: %j', util.inspect(q, { depth: null }), util.inspect(sort));
+		return Release.paginate(q, {
+			page: pagination.page,
+			limit: pagination.perPage,
+			populate: populatedFields,
+			sort: sort  // '_game.title', '_game.id'
+		}).then(result => [ result.docs, result.total ]);
 
 	}).spread((results, count) => {
 
@@ -806,7 +791,19 @@ exports.list = function(req, res) {
 				transformOpts.starred = starMap.get(release._id.toString()) ? true : false;
 			}
 			transformOpts.fileIds = fileIds;
-			return Release.toSimple(release, transformOpts);
+			release = Release.toSimple(release, transformOpts);
+
+			// if flavor specified, filter returned files to match filter
+			if (!_.isUndefined(req.query.flavor)) {
+				release.versions = release.versions.filter(version => {
+					req.query.flavor.split(',').forEach(f => {
+						const [key, val] = f.split(':');
+						version.files = version.files.filter(file => file.flavor[key] === val);
+					});
+					return version.files.length > 0;
+				});
+			}
+			return release;
 		});
 
 		api.success(res, releases, 200, api.paginationOpts(pagination, count));

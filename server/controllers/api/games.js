@@ -37,9 +37,12 @@ var Medium = require('mongoose').model('Medium');
 
 var api = require('./api');
 
+var acl = require('../../acl');
 var fileModule = require('../../modules/file');
 var mailer = require('../../modules/mailer');
 var error = require('../../modules/error')('api', 'game');
+const config = require('../../modules/settings').current;
+
 
 
 /**
@@ -345,13 +348,48 @@ exports.list = function(req, res) {
 			}
 		}
 
-		// TODO only list where's actually content.
-		// if logged as moderator, keep condition like this
-		// if not logged, retrieve restricted game IDs and exclude them
-		// if member, retrieve restricted game IDs, retrieve authored/created game IDs and exclude difference
-		if (parseInt(req.query.min_releases)) {
-			query.push({ 'counter.releases': { $gte: parseInt(req.query.min_releases) } });
+		/*
+		 * If min_releases is set, only list where's actually content (by content we mean "releases"):
+		 *   - if logged as moderator, just query counter.releases
+		 *   - if not logged, retrieve restricted game IDs and exclude them
+		 *   - if member, retrieve restricted game IDs, retrieve authored/created game IDs and exclude difference
+		 *
+		 * Note that this a quick fix and doesn't work for min_releases > 1, though this use case isn't very useful.
+		 */
+		const minReleases = parseInt(req.query.min_releases);
+		if (minReleases) {
+
+			// counter includes restricted releases
+			query.push({ 'counter.releases': { $gte: minReleases } });
+
+			// check if additional conditions are needed
+			return Promise.try(() => {
+				return req.user ? acl.isAllowed(req.user.id, 'releases', 'view-restriced') : false;
+
+			}).then(isModerator => {
+
+				// moderator gets unfiltered list
+				if (isModerator) {
+					return;
+				}
+
+				// user gets owned/authored releases
+				if (req.user) {
+					return Release.find({ $or: [ { _created_by: req.user._id }, { 'authors._user': req.user._id }] }).exec().then(releases => {
+						query.push({ $or: [
+							{ 'ipdb.mpu': { $nin: config.vpdb.restrictions.release.denyMpu } },
+							{ _id: { $in: releases.map(r => r._game) } }
+						] });
+					});
+				}
+
+				// just exclude all restricted games for anon
+				query.push({ 'ipdb.mpu': { $nin: config.vpdb.restrictions.release.denyMpu } });
+			});
+
 		}
+
+	}).then(() => {
 
 		let sort = api.sortParams(req, { title: 1 }, {
 			popularity: '-metrics.popularity',
@@ -360,7 +398,7 @@ exports.list = function(req, res) {
 		});
 
 		let q = api.searchQuery(query);
-		logger.info('[api|game:list] query: %s, sort: %j', util.inspect(q), util.inspect(sort));
+		logger.info('[api|game:list] query: %s, sort: %j', util.inspect(q, { depth: null }), util.inspect(sort));
 
 		return Game.paginate(q, {
 			page: pagination.page,

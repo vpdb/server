@@ -200,7 +200,7 @@ module.exports = function(schema, options) {
 			return true;
 		}
 		return config.vpdb.restrictions[reference].denyMpu.includes(this._game.ipdb.mpu);
-	}
+	};
 };
 
 

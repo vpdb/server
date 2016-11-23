@@ -131,7 +131,7 @@ p.padder-top(ng-show="pageLoading")
 			.alert.alert-success(ng-show="!release.moderation.is_refused && release.moderation.is_approved")
 				.text-center
 					+icon('info').space-right
-					| This release has {{ release.moderation.auto_approved ? 'been auto-approved' : 'already approved' }}.
+					| This release has been {{ release.moderation.auto_approved ? 'auto-approved' : 'approved' }}.
 
 			.alert.alert-danger(ng-show="release.moderation.is_refused")
 				.text-center

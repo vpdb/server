@@ -207,7 +207,9 @@ angular.module('vpdb.releases.add', []).controller('ReleaseAddBaseCtrl', functio
 		releaseFile['_' + mediaType] = status.storage.id;
 
 		// figure out rotation
-		$scope.updateRotation(releaseFile, status);
+		if (/^image\//.test(status.mimeType)) {
+			$scope.updateRotation(releaseFile, status);
+		}
 
 		AuthService.collectUrlProps(status.storage, true);
 	};

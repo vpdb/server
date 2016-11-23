@@ -144,10 +144,10 @@ exports.download = function(req, res) {
 						numTables++;
 
 						// add media if checked
-						if (body._playfield_image) {
+						if (body.playfield_image) {
 							requestedFiles.push(versionFile._playfield_image);
 						}
-						if (body._playfield_video) {
+						if (body.playfield_video) {
 							requestedFiles.push(versionFile._playfield_video);
 						}
 					}

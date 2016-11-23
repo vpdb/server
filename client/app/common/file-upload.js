@@ -61,7 +61,7 @@ angular.module('vpdb.common', []).directive('fileUpload', function($parse, $comp
 			element.attr('ngf-multiple', params.allowMultipleFiles === true ? 'true' : 'false');
 
 			// remove the attribute to avoid indefinite loop
-			element.removeAttr("file-upload");
+			element.removeAttr('file-upload');
 			$compile(element)(scope);
 
 			// can be removed at some point..
@@ -157,13 +157,13 @@ angular.module('vpdb.common', []).directive('fileUpload', function($parse, $comp
 						params.onSuccess(status);
 
 					}, ApiHelper.handleErrorsInDialog(scope, 'Error uploading file.', function() {
+						if (params.onError) {
+							params.onError(status);
+						}
 						if (params.key) {
 							delete params.status[params.key];
 						} else {
 							params.status.splice(params.status.indexOf(status), 1);
-						}
-						if (params.onError) {
-							params.onError(params.key);
 						}
 					}), function (evt) {
 						status.progress = parseInt(100.0 * evt.loaded / evt.total);

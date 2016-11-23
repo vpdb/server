@@ -242,6 +242,13 @@ angular.module('vpdb.common', [])
 				}
 				opt = _.isObject(opt) ? opt : {};
 				return function(response) {
+					if (!response.data) {
+						ModalService.error({
+							subtitle: "Connection error",
+							message: "Looks like a request failed due to network problems. Please try again."
+						});
+						return;
+					}
 					if (response.status === 401 && response.data.error === "Token has expired") {
 						ModalService.error({
 							subtitle: "Session timed out",
@@ -282,6 +289,7 @@ angular.module('vpdb.common', [])
 			 * @returns {Function}
 			 */
 			handleErrorsInDialog: function(scope, title, callback) {
+				var that = this;
 				return function(response) {
 					var skipError = false;
 					if (callback) {
@@ -291,7 +299,7 @@ angular.module('vpdb.common', [])
 					if (!skipError) {
 						ModalService.error({
 							subtitle: title,
-							message: response.data.error
+							message: that.parseError(response)
 						});
 					}
 				};
@@ -304,10 +312,11 @@ angular.module('vpdb.common', [])
 			 * @returns {Function}
 			 */
 			handleErrorsInFlashDialog: function(path, title) {
+				var that = this;
 				return function(response) {
 					ModalFlashService.error({
 						subtitle: title,
-						message: response.data.error
+						message: that.parseError(response)
 					});
 					$location.path(path);
 				};
@@ -332,6 +341,23 @@ angular.module('vpdb.common', [])
 				scope.message = null;
 				scope.errors = { __count: 0 };
 				scope.error = null;
+			},
+
+			/**
+			 * Parses error message from response.
+			 * @param response
+			 * @returns {string}
+			 */
+			parseError: function(response) {
+				if (response.data) {
+					if (response.data.error) {
+						return response.data.error;
+					} else {
+						return 'Not sure what the error was but we got this in return: ' + JSON.stringify(response.data);
+					}
+				} else {
+					return 'Connection error. Please try again.';
+				}
 			}
 		};
 	})

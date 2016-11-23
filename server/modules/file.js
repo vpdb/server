@@ -38,17 +38,14 @@ exports.create = function(fileData, readStream, error, opts) {
 	var file;
 	return Promise.try(function() {
 		file = new File(fileData);
-		return file.validate();
-
-	}).then(() => {
 		return file.save();
 
 	}).then(f => {
 		file = f;
 		return new Promise(function(resolve, reject) {
 			var writeStream = fs.createWriteStream(file.getPath());
-			writeStream.on("finish", resolve);
-			writeStream.on("error", reject);
+			writeStream.on('finish', resolve);
+			writeStream.on('error', reject);
 			readStream.pipe(writeStream);
 		});
 

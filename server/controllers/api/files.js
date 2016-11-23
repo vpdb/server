@@ -272,8 +272,10 @@ function handleUpload(req, error) {
 		if (!/filename=([^;]+)/i.test(req.headers['content-disposition'])) {
 			throw error('Header "Content-Disposition" must contain file name.').status(422);
 		}
-		var fileData = {
-			name: req.headers['content-disposition'].match(/filename=([^;]+)/i)[1].replace(/(^"|^'|"$|'$)/g, ''),
+		const filename = req.headers['content-disposition'].match(/filename=([^;]+)/i)[1].replace(/(^"|^'|"$|'$)/g, '');
+		logger.info('[api|file:upload] Starting file upload of "%s"...', filename);
+		const fileData = {
+			name: filename,
 			bytes: req.headers['content-length'] || 0,
 			variations: {},
 			created_at: new Date(),
@@ -309,6 +311,7 @@ function handleMultipartUpload(req, error) {
 				if (numFiles > 1) {
 					return reject(error('Multipart requests must only contain one file.').status(422));
 				}
+				logger.info('[api|file:upload] Starting file (multipart) upload of "%s"...', filename);
 				var fileData = {
 					name: filename,
 					bytes: 0,

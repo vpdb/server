@@ -88,11 +88,20 @@ angular.module('vpdb.modal', [])
 				if (flash) {
 					this._flashMessage = data;
 				} else {
-					return $uibModal.open({
-						templateUrl: '/modal/modal-error-info.html',
-						controller: 'ModalCtrl',
-						resolve: { data: function() { return data; } }
-					});
+					// if connection broke and the html isn't cached, this will fail too
+					try {
+						return $uibModal.open({
+							templateUrl: '/modal/modal-error-info.html',
+							controller: 'ModalCtrl',
+							resolve: {
+								data: function() {
+									return data;
+								}
+							}
+						});
+					} catch (err) {
+						console.error(err);
+					}
 				}
 			},
 

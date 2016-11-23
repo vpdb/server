@@ -135,6 +135,17 @@ angular.module('vpdb.releases.add', []).controller('ReleaseAddBaseCtrl', functio
 	};
 
 	/**
+	 * On error, remove file from release.
+	 * @param status
+	 */
+	$scope.onFileUploadError = function(status) {
+		var tableFile = _.findWhere($scope.releaseVersion.files, { _randomId: status.randomId });
+		if (tableFile) {
+			$scope.releaseVersion.files.splice($scope.releaseVersion.files.indexOf(tableFile), 1);
+		}
+	};
+
+	/**
 	 * Callback when a release file was successfully uploaded.
 	 * @param status
 	 */

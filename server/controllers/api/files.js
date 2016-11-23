@@ -274,7 +274,7 @@ function handleUpload(req, error) {
 		}
 		var fileData = {
 			name: req.headers['content-disposition'].match(/filename=([^;]+)/i)[1].replace(/(^"|^'|"$|'$)/g, ''),
-			bytes: req.headers['content-length'],
+			bytes: req.headers['content-length'] || 0,
 			variations: {},
 			created_at: new Date(),
 			mime_type: req.headers['content-type'],

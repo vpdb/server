@@ -14,18 +14,18 @@ include ../template/_mixins
 			h3.h--shift-up Login with
 			.text-center
 				each ipb in authStrategies.ipboard
-					a.btn.btn--secondary.btn-lg(ng-click=`oauth('${ipb.url}')`)
+					a.btn.btn--secondary.btn-lg.padder-bottom(ng-click=`oauth('${ipb.url}')`)
 						+icon(ipb.icon).space-right
 						| #{ipb.name}
 				if authStrategies.google
-					a.btn.btn--secondary.btn-lg(ng-click="oauth('/auth/google')")
+					a.btn.btn--secondary.btn-lg.padder-bottom(ng-click="oauth('/auth/google')")
 						+icon('google-g').space-right
 						| Google
 				if authStrategies.github
-					a.btn.btn--secondary.btn-lg(ng-click="oauth('/auth/github')")
+					a.btn.btn--secondary.btn-lg.padder-bottom(ng-click="oauth('/auth/github')")
 						+icon('github').space-right
 						| GitHub
-			hr.hr--light.padder-top-2x
+			hr.hr--light
 			.clearfix
 
 		div.alert.alert-success.padder-bottom(ng-show="topMessage")

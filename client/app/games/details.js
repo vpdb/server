@@ -314,7 +314,7 @@ angular.module('vpdb.games.details', [])
 		};
 	})
 
-	.controller('BackglassDetailCtrl', function($scope, $uibModalInstance, DownloadService, params) {
+	.controller('BackglassDetailCtrl', function($scope, $uibModal, $uibModalInstance, DownloadService, params) {
 
 		$scope.backglass = params.backglass;
 		$scope.game = params.game;
@@ -328,7 +328,51 @@ angular.module('vpdb.games.details', [])
 				file.counter.downloads++;
 				$scope.numDownloads++;
 			});
+		};
+
+		$scope.edit = function(backglass) {
+			$uibModal.open({
+				templateUrl: 'modal/backglass-edit.html',
+				controller: 'BackglassEditCtrl',
+				size: 'md',
+				resolve: {
+					params: function() {
+						return {
+							backglass: backglass,
+							game: $scope.game,
+						};
+					}
+				}
+			});
 		}
+	})
+
+	.controller('BackglassEditCtrl', function($scope, $rootScope, $uibModalInstance, ApiHelper, GameResource, BackglassResource, params) {
+
+		$scope.findGame = function(val) {
+			return GameResource.query({ q: val }).$promise;
+		};
+
+		$scope.gameSelected = function(item, model) {
+			$scope.backglass._game = model.id;
+		};
+
+		$scope.reset = function() {
+			$scope.backglass = _.pick(params.backglass, [ 'description', 'acknowledgements']);
+			$scope.backglass._game = params.game.id;
+			$scope.query = params.game.title;
+		};
+
+		$scope.submit = function() {
+			BackglassResource.update({ id: params.backglass.id }, $scope.backglass, function() {
+				params.backglass.description = $scope.backglass.description;
+				params.backglass.acknowledgements = $scope.backglass.acknowledgements;
+				$rootScope.showNotification('Successfully updated backlass.');
+				$uibModalInstance.close();
+
+			}, ApiHelper.handleErrors($scope));
+		};
+		$scope.reset();
 	})
 
 	.controller('MediumDetailCtrl', function($scope, $timeout, DownloadService, params) {

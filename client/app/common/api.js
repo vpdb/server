@@ -11,6 +11,7 @@ angular.module('vpdb.common', [])
 
 	.factory('BackglassResource', function($resource, ConfigService) {
 		return $resource(ConfigService.apiUri('/backglasses/:id'), {}, {
+			update: { method: 'PATCH' }
 		});
 	})
 

@@ -166,7 +166,9 @@ angular.module('vpdb.auth', [])
 					return false;
 				}
 				var authorIds = _.pluck(release.authors, 'user.id');
-				authorIds.push(release.created_by.id);
+				if (release.created_by) {
+					authorIds.push(release.created_by.id);
+				}
 				return _.contains(authorIds, this.user.id);
 			},
 

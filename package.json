@@ -1,6 +1,6 @@
 {
 	"name": "vpdb",
-	"version": "v1.0.0-beta.21",
+	"version": "v1.0.0",
 	"description": "Virtual Pinball Database",
 	"main": "app.js",
 	"private": true,

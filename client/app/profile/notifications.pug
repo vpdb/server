@@ -88,7 +88,7 @@ div(ng-show="auth.hasPermission('releases/moderate') || auth.hasPermission('back
 		.clearfix
 	.row(ng-show="auth.hasPermission('releases/moderate')")
 		.col-lg-11.col-xs-10
-			label(for="moderatorNotifyBackglassAutoApproved") Notify when a submitted release was auto-approved
+			label(for="moderatorNotifyBackglassAutoApproved") Notify when a submitted backglass was auto-approved
 		.col-lg-1.col-xs-2
 			input#moderatorNotifyBackglassAutoApproved.checkbox--toggle(type="checkbox", ng-model="updatedPreferences.moderator_notify_backglass_auto_approved")
 			label.a.a--light.padder-bottom(for="moderatorNotifyBackglassAutoApproved")

@@ -38,7 +38,7 @@ const events = [
 	'create_build', 'update_build', 'delete_build',
 	'create_game', 'update_game', 'delete_game',
 	'create_release', 'update_release', 'create_release_version', 'update_release_version', 'delete_release', 'validate_release',
-	'create_backglass', 'delete_backglass',
+	'create_backglass', 'delete_backglass', 'update_backglass',
 	'moderate',
 	'create_game_request', 'update_game_request', 'delete_game_request'
 ];

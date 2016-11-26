@@ -67,9 +67,24 @@ get:
         body:
           role/moderator:
             example: !include http/view-res-200.json
+  patch:
+    is: [ protected ]
+    securedBy: [ jwt: { scopes: [ MEMBER, MODERATOR ] } ]
+    description: |
+      Updates a backglass.
+
+      For now, only `_game`, `description` and `acknowledgements` are editable.
+    body:
+      role/member:
+         example: !include http/update-req.json
+    responses:
+      200:
+        body:
+          role/moderator:
+            example: !include http/update-res-200.json
   delete:
     is: [ protected ]
-    securedBy: [ jwt: { scopes: [ MEMBER, CONTRIB ] } ]
+    securedBy: [ jwt: { scopes: [ MEMBER, MODERATOR ] } ]
     description: |
       Delete a backglass of a given ID.
 

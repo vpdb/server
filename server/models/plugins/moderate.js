@@ -241,6 +241,7 @@ module.exports = function(schema) {
 
 		const acl = require('../../acl');
 		const resource = modelResourceMap[this.constructor.modelName];
+		const reference = modelReferenceMap[this.constructor.modelName];
 		if (!resource) {
 			throw new Error('Tried to check moderation permission for unmapped entity "' + this.constructor.modelName + '".');
 		}
@@ -252,7 +253,7 @@ module.exports = function(schema) {
 
 		// otherwise, user needs to be logged
 		if (!req.user) {
-			return Promise.reject(error('No such release with ID "%s"', req.params.id).status(404));
+			return Promise.reject(error('No such %s with ID "%s"', reference, req.params.id).status(404));
 		}
 
 		// if viewing own entity, okay
@@ -266,7 +267,7 @@ module.exports = function(schema) {
 			if (isModerator) {
 				return this;
 			}
-			throw error('No such release with ID "%s"', req.params.id).status(404);
+			throw error('No such %s with ID "%s"', reference, req.params.id).status(404);
 		});
 	};
 

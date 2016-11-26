@@ -1,0 +1,84 @@
+200 OK
+Content-Type: application/json; charset=utf-8
+Etag: W/"6f9-zZqXktfcDY1RibLWValUZw"
+Content-Encoding: gzip
+
+{
+  "id": "e28sym6q6sh",
+  "game": {
+    "ipdb": {
+      "mfg": 204,
+      "number": 5913
+    },
+    "year": 1900,
+    "manufacturer": "Maresa",
+    "title": "Dardos",
+    "id": "dardos"
+  },
+  "versions": [
+    {
+      "released_at": "2016-11-26T20:10:45.710Z",
+      "version": "1.0",
+      "counter": {
+        "downloads": 0
+      },
+      "file": {
+        "counter": {
+          "downloads": 0
+        },
+        "is_protected": true,
+        "variations": {
+          "small-2x": {
+            "url": "https://localhost:7357/storage/public/files/small-2x/pknyym6qg9b.jpg"
+          },
+          "small": {
+            "url": "https://localhost:7357/storage/public/files/small/pknyym6qg9b.jpg"
+          },
+          "medium-2x": {
+            "url": "https://localhost:7357/storage/public/files/medium-2x/pknyym6qg9b.jpg"
+          },
+          "medium": {
+            "url": "https://localhost:7357/storage/public/files/medium/pknyym6qg9b.jpg"
+          },
+          "full": {
+            "url": "https://localhost:7357/storage/public/files/full/pknyym6qg9b.jpg"
+          }
+        },
+        "bytes": 2067,
+        "url": "https://localhost:7357/storage/v1/files/pknyym6qg9b.directb2s",
+        "name": "test.directb2s",
+        "id": "pknyym6qg9b"
+      }
+    }
+  ],
+  "description": "It is a fantasy backglass that does not contain any more spelling errors.",
+  "authors": [
+    {
+      "roles": [
+        "creator"
+      ],
+      "user": {
+        "counter": {
+          "stars": 0,
+          "comments": 0
+        },
+        "gravatar_id": "a0400cb059760a1c92b0c0730c756afb",
+        "username": "BryanaOHara0",
+        "name": "BryanaOHara0",
+        "id": "pkuym6w69h"
+      }
+    }
+  ],
+  "acknowledgements": "Thanks to @mom for supporting me.",
+  "created_at": "2016-11-26T20:10:45.710Z",
+  "created_by": {
+    "counter": {
+      "stars": 0,
+      "comments": 0
+    },
+    "gravatar_id": "1efa60b01456bc6e0e11f15d5287ce97",
+    "username": "LennieEmmerich",
+    "name": "LennieEmmerich",
+    "id": "e24ymgq6sb"
+  }
+}

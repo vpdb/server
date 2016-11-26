@@ -106,6 +106,7 @@ exports.create = function(req, res) {
 			.populate({ path: '_game' })
 			.populate({ path: 'authors._user' })
 			.populate({ path: 'versions._file' })
+			.populate({ path: '_created_by' })
 			.exec();
 
 	}).then(populatedBackglass => {
@@ -132,6 +133,86 @@ exports.create = function(req, res) {
 	}).catch(api.handleError(res, error, 'Error creating backglass'));
 };
 
+
+/**
+ * Updates a backglass.
+ *
+ * @param {Request} req
+ * @param {Response} res
+ */
+exports.update = function(req, res) {
+
+	const updateableFields = [ '_game', 'description', 'acknowledgements' ];
+
+	let oldBackglass, backglass;
+	Promise.try(() => {
+		return Backglass.findOne({ id: req.params.id });
+
+	}).then(bg => {
+		backglass = bg;
+
+		// fail if invalid id
+		if (!backglass) {
+			throw error('No such backglass with ID "%s".', req.params.id).status(404).log('update');
+		}
+
+		// check for global update permissions
+		return acl.isAllowed(req.user.id, 'backglasses', 'update');
+
+	}).then(canUpdate => {
+
+		// if user only has permissions to update own releases, check if owner.
+		if (!canUpdate) {
+			// fail if wrong user
+			const authorIds = backglass.authors.map(a => a._user.toString());
+			const creatorId = backglass._created_by.toString();
+			if (![creatorId, ...authorIds].includes(req.user._id.toString())) {
+				throw error('Only authors, uploader or moderators can update a backglass.').status(403).log('update');
+			}
+			if (!_.isUndefined(req.body.authors) && creatorId !== req.user._id.toString()) {
+				throw error('Only the original uploader can edit authors.').status(403).log('update');
+			}
+		}
+
+		// fail if invalid fields provided
+		const submittedFields = _.keys(req.body);
+		if (_.intersection(updateableFields, submittedFields).length !== submittedFields.length) {
+			var invalidFields = _.difference(submittedFields, updateableFields);
+			throw error('Invalid field%s: ["%s"]. Allowed fields: ["%s"]', invalidFields.length === 1 ? '' : 's', invalidFields.join('", "'), updateableFields.join('", "')).status(400).log('update');
+		}
+		oldBackglass = _.cloneDeep(oldBackglass);
+
+		// apply changes
+		return backglass.updateInstance(req.body);
+
+	}).then(backglass => {
+
+		// validate and save
+		return backglass.save();
+
+	}).then(backglass => {
+
+		// re-fetch backglass object tree
+		return Backglass.findById(backglass._id)
+			.populate({ path: '_game' })
+			.populate({ path: 'authors._user' })
+			.populate({ path: 'versions._file' })
+			.populate({ path: '_created_by' })
+			.exec();
+
+	}).then(backglass => {
+
+		// log event
+		LogEvent.log(req, 'update_backglass', false,
+			LogEvent.diff(oldBackglass, req.body),
+			{ backglass: backglass._id, game: backglass._game._id }
+		);
+
+		api.success(res, backglass.toSimple(), 200);
+
+	}).catch(api.handleError(res, error, 'Error updating backglass'));
+};
+
 /**
  * Lists all backglasses.
  *
@@ -151,7 +232,7 @@ exports.list = function(req, res) {
 	let fields = req.query && req.query.fields ? req.query.fields.split(',') : [];
 	let populate = [ 'authors._user', 'versions._file' ];
 
-	Promise.resolve().then(() => {
+	Promise.try(() => {
 
 		// list roms of a game below /api/v1/games/{gameId}
 		if (req.params.gameId) {

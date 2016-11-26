@@ -259,6 +259,169 @@ describe('The VPDB `Backglass` API', function() {
 		});
 	});
 
+	describe('when updating a backglass', function() {
+
+		var game, backglass;
+		before(function(done) {
+			hlp.setupUsers(request, {
+				member: { roles: ['member'] },
+				author: { roles: ['member'] },
+				bystander: { roles: ['member'] },
+				moderator: { roles: ['moderator'] }
+			}, function() {
+				hlp.game.createGame('moderator', request, function(g) {
+					game = g;
+					hlp.file.createDirectB2S('member', request, function(b2s) {
+						request
+							.post('/api/v1/backglasses')
+							.as('member')
+							.send({
+								_game: game.id,
+								authors: [{
+									_user: hlp.users['author'].id,
+									roles: ['creator']
+								}],
+								versions: [{
+									version: '1.0',
+									_file: b2s.id
+								}]
+							})
+							.end(function(err, res) {
+								hlp.expectStatus(err, res, 201);
+								hlp.doomBackglass('member', res.body.id);
+								backglass = res.body;
+								done();
+							});
+					});
+				});
+			});
+		});
+
+		after(function(done) {
+			hlp.cleanup(request, done);
+		});
+
+		it('should fail for non-existing backglass', function(done) {
+			const user = 'member';
+			request.patch('/api/v1/backglasses/doesnt-exist').as(user).send({}).end(hlp.status(404, done));
+		});
+
+		it('should fail for invalid fields', function(done) {
+			const user = 'member';
+			request.patch('/api/v1/backglasses/' + backglass.id)
+				.as(user)
+				.send({ authors: {}})
+				.end(hlp.status(400, 'invalid field', done));
+		});
+
+		it('should fail if not author, creator or moderator', function(done) {
+			const user = 'bystander';
+			request.patch('/api/v1/backglasses/' + backglass.id)
+				.as(user)
+				.send({ authors: {}})
+				.end(hlp.status(403, 'only authors, uploader or moderators', done));
+		});
+
+		it('should succeed as uploader', function(done) {
+			const user = 'member';
+			request.patch('/api/v1/backglasses/' + backglass.id)
+				.as(user)
+				.send({})
+				.end(function(err, res) {
+					hlp.expectStatus(err, res, 200);
+					expect(res.body).to.eql(backglass);
+					done();
+				});
+		});
+
+		it('should succeed as author', function(done) {
+			const user = 'author';
+			request.patch('/api/v1/backglasses/' + backglass.id)
+				.as(user)
+				.send({})
+				.end(function(err, res) {
+					hlp.expectStatus(err, res, 200);
+					expect(res.body).to.eql(backglass);
+					done();
+				});
+		});
+
+		it('should succeed as moderator', function(done) {
+			const user = 'moderator';
+			request.patch('/api/v1/backglasses/' + backglass.id)
+				.as(user)
+				.send({})
+				.end(function(err, res) {
+					hlp.expectStatus(err, res, 200);
+					expect(res.body).to.eql(backglass);
+					done();
+				});
+		});
+
+		it('should fail for non-existing game', function(done) {
+			const user = 'moderator';
+			request.patch('/api/v1/backglasses/' + backglass.id)
+				.as(user)
+				.send({ _game: '12345'})
+				.end(function(err, res) {
+					hlp.expectValidationError(err, res, '_game', 'no such game');
+					done();
+				});
+		});
+
+		it('should succeed with valid data', function(done) {
+			const newDescription = 'It is a fantasy backglass that does not contain any more spelling errors.';
+			const newAcks = 'Thanks to @mom for supporting me.';
+			hlp.game.createGame('moderator', request, function(g) {
+				hlp.file.createDirectB2S('moderator', request, function(b2s) {
+					request
+						.post('/api/v1/backglasses')
+						.as('moderator')
+						.send({
+							_game: game.id,
+							authors: [{
+								_user: hlp.users['author'].id,
+								roles: ['creator']
+							}],
+							versions: [{
+								version: '1.0',
+								_file: b2s.id
+							}]
+						})
+						.end(function(err, res) {
+							hlp.expectStatus(err, res, 201);
+							hlp.doomBackglass('moderator', res.body.id);
+							request.patch('/api/v1/backglasses/' + backglass.id)
+								.as('moderator')
+								.send({
+									_game: g.id,
+									description: newDescription,
+									acknowledgements: newAcks
+								})
+								.save('backglasses/update')
+								.end(function(err, res) {
+
+									hlp.expectStatus(err, res, 200);
+									expect(res.body.game.id).to.be(g.id);
+									expect(res.body.description).to.be(newDescription);
+									expect(res.body.acknowledgements).to.be(newAcks);
+
+									request.get('/api/v1/backglasses/' + backglass.id).as('moderator').end(function(err, res) {
+										hlp.expectStatus(err, res, 200);
+										expect(res.body.game.id).to.be(g.id);
+										expect(res.body.description).to.be(newDescription);
+										expect(res.body.acknowledgements).to.be(newAcks);
+										done();
+									});
+								});
+						});
+				});
+			});
+
+		});
+
+	});
+
 	describe('when listing backglasses', function() {
 
 		var game;

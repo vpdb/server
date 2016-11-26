@@ -58,7 +58,7 @@ acl.init = function() {
 		}, {
 			roles: 'moderator',
 			allows: [
-				{ resources: 'backglasses',   permissions: ['delete', 'moderate', 'view-restriced'] },
+				{ resources: 'backglasses',   permissions: ['delete', 'moderate', 'update', 'view-restriced'] },
 				{ resources: 'builds',        permissions: ['delete', 'update'] },
 				{ resources: 'files',         permissions: ['blockmatch'] },
 				{ resources: 'games',         permissions: ['delete'] },
@@ -86,7 +86,7 @@ acl.init = function() {
 		}, {
 			roles: 'member',
 			allows: [
-				{ resources: 'backglasses',   permissions: ['add', 'delete-own', 'star'] },
+				{ resources: 'backglasses',   permissions: ['add', 'delete-own', 'update-own', 'star'] },
 				{ resources: 'builds',        permissions: ['add', 'delete-own'] },
 				{ resources: 'comments',      permissions: ['add'] },
 				{ resources: 'files',         permissions: ['download', 'delete-own', 'upload'] },

@@ -278,7 +278,7 @@ describe('The VPDB `Backglass` API', function() {
 							.send({
 								_game: game.id,
 								authors: [{
-									_user: hlp.users['author'].id,
+									_user: hlp.users.author.id,
 									roles: ['creator']
 								}],
 								versions: [{
@@ -380,7 +380,7 @@ describe('The VPDB `Backglass` API', function() {
 						.send({
 							_game: game.id,
 							authors: [{
-								_user: hlp.users['author'].id,
+								_user: hlp.users.author.id,
 								roles: ['creator']
 							}],
 							versions: [{

@@ -70,6 +70,10 @@ angular.module('vpdb.common', [])
 			$scope.metaKeywords = keywords;
 		};
 
+		$scope.setThumbnail = function(thumbnail) {
+			$scope.metaThumbnail = thumbnail;
+		};
+
 		$scope.setMenu = function(menu) {
 			$scope.menu = menu;
 		};

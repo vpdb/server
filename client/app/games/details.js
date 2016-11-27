@@ -88,6 +88,7 @@ angular.module('vpdb.games.details', [])
 				title += ' (' + $scope.game.manufacturer + ' ' + $scope.game.year + ')';
 			}
 			$scope.setTitle(title);
+			$scope.setThumbnail($scope.game.backglass.variations['small'].url);
 			TrackerService.trackPage();
 
 			// seo meta

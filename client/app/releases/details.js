@@ -27,7 +27,6 @@ angular.module('vpdb.releases.details', []).controller('ReleaseDetailsController
 
 	$scope.theme('dark');
 	$scope.setMenu('Release Details');
-
 	$scope.gameId = $stateParams.id;
 	$scope.releaseId = $stateParams.releaseId;
 	$scope.flavors = Flavors;
@@ -53,6 +52,8 @@ angular.module('vpdb.releases.details', []).controller('ReleaseDetailsController
 		$scope.pageLoading = false;
 		$scope.found = true;
 		$scope.setTitle(title);
+		$scope.setDescription(release.description);
+		$scope.setKeywords([release.game.title, release.name, 'Download', 'Visual Pinball'].join(',')); // TODO add FP when supported
 		TrackerService.trackPage();
 
 		// moderation toggle
@@ -133,6 +134,7 @@ angular.module('vpdb.releases.details', []).controller('ReleaseDetailsController
 		});
 		if (playfieldImage) {
 			$scope.ldRelease.image = playfieldImage.variations['medium'].url;
+			$scope.setThumbnail(playfieldImage.variations['medium'].url);
 		}
 
 		if (release.rating.votes) {

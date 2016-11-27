@@ -198,7 +198,7 @@ angular.module('vpdb.releases.details', []).controller('ReleaseDetailsController
 
 		} else {
 			$rootScope.login({
-				headMessage: 'In order to download this release, you need to be logged. You can register for free just below.'
+				headMessage: 'In order to download this release, you need to be logged in. You can register for free just below.'
 			});
 		}
 	};

@@ -156,5 +156,5 @@ exports.sitemap = function(req, res) {
 
 exports.robots = function(req, res) {
 	res.setHeader('Content-Type', 'text/plain');
-	res.send('User-agent: *\nDisallow: /');
+	res.send('User-agent: *\nDisallow:');
 };

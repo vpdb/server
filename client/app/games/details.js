@@ -119,7 +119,6 @@ angular.module('vpdb.games.details', [])
 			$scope.setDescription(descriptionItems.join(', ') + s + 'Download tables, DirectB2S backglasses, ROMs and more.');
 
 			$scope.hasReleases = $scope.game.releases.length > 0;
-			$scope.hasBackglasses = $scope.game.backglasses.length > 0;
 
 			// seo structured data
 			$scope.ldGame.name = title;
@@ -290,7 +289,7 @@ angular.module('vpdb.games.details', [])
 					params: function() {
 						return {
 							game: $scope.game,
-							backglass: backglass
+							backglass: backglass,
 						};
 					}
 				}
@@ -331,6 +330,7 @@ angular.module('vpdb.games.details', [])
 		};
 
 		$scope.edit = function(backglass) {
+			$uibModalInstance.close();
 			$uibModal.open({
 				templateUrl: 'modal/backglass-edit.html',
 				controller: 'BackglassEditCtrl',
@@ -343,32 +343,50 @@ angular.module('vpdb.games.details', [])
 						};
 					}
 				}
+			}).result.then(function(result) {
+				if (!result) {
+					params.game.backglasses.splice(_.findIndex(params.game.backglasses, { id: backglass.id }), 1);
+				}
 			});
 		}
 	})
 
-	.controller('BackglassEditCtrl', function($scope, $rootScope, $uibModalInstance, ApiHelper, GameResource, BackglassResource, params) {
+	.controller('BackglassEditCtrl', function($scope, $rootScope, $uibModalInstance, ApiHelper,
+											  GameResource, BackglassResource, ModalService, params) {
+		$scope.backglass = params.backglass;
 
 		$scope.findGame = function(val) {
 			return GameResource.query({ q: val }).$promise;
 		};
 
 		$scope.gameSelected = function(item, model) {
-			$scope.backglass._game = model.id;
+			$scope.updatedBackglass._game = model.id;
 		};
 
 		$scope.reset = function() {
-			$scope.backglass = _.pick(params.backglass, [ 'description', 'acknowledgements']);
-			$scope.backglass._game = params.game.id;
+			$scope.updatedBackglass = _.pick(params.backglass, [ 'description', 'acknowledgements']);
+			$scope.updatedBackglass._game = params.game.id;
 			$scope.query = params.game.title;
 		};
 
+		$scope.remove = function(backglass) {
+			return ModalService.question({
+				title: 'Delete Backglass',
+				message: 'This is definitive. Backglass will be gone after that.',
+				question: 'Are you sure?'
+			}).result.then(function() {
+				BackglassResource.delete({ id: backglass.id }, function() {
+					$uibModalInstance.close(null);
+				}, ApiHelper.handleErrorsInDialog($scope, 'Error removing backglass.'));
+			});
+		};
+
 		$scope.submit = function() {
-			BackglassResource.update({ id: params.backglass.id }, $scope.backglass, function() {
-				params.backglass.description = $scope.backglass.description;
-				params.backglass.acknowledgements = $scope.backglass.acknowledgements;
+			BackglassResource.update({ id: params.backglass.id }, $scope.updatedBackglass, function() {
+				params.backglass.description = $scope.updatedBackglass.description;
+				params.backglass.acknowledgements = $scope.updatedBackglass.acknowledgements;
 				$rootScope.showNotification('Successfully updated backlass.');
-				$uibModalInstance.close();
+				$uibModalInstance.close(params.game.id === $scope.updatedBackglass._game ? params.backglass : null);
 
 			}, ApiHelper.handleErrors($scope));
 		};

@@ -1,6 +1,6 @@
-h1.padder-top-2x(ng-show="hasBackglasses || !game.restrictions.release.mpu || !game.restrictions.backglass.mpu") DirectB2S Backglasses
-label(ng-hide="hasBackglasses || (game.restrictions.release.mpu && game.restrictions.backglass.mpu)") No backglasses available.
-p(ng-show="!hasBackglasses && !game.restrictions.release.mpu && game.restrictions.backglass.mpu") This is a {{ game.mpu.short }} game. Those games are still in production and out of respect to the industry, we won't be offering any backglasses for this game.
+h1.padder-top-2x(ng-show="game.backglasses.length > 0 || !game.restrictions.release.mpu || !game.restrictions.backglass.mpu") DirectB2S Backglasses
+label(ng-hide="game.backglasses.length > 0 || (game.restrictions.release.mpu && game.restrictions.backglass.mpu)") No backglasses available.
+p(ng-show="game.backglasses.length === 0 && !game.restrictions.release.mpu && game.restrictions.backglass.mpu") This is a {{ game.mpu.short }} game. Those games are still in production and out of respect to the industry, we won't be offering any backglasses for this game.
 .row: .col-md-4.col-sm-6.col-xs-12.fade-animation(ng-repeat="backglass in game.backglasses", ng-click="showBackglass(backglass)")
 	.panel.panel--animated.ng-cloak
 		.restricted-overlay(ng-show="game.restrictions.backglass.mpu")
@@ -78,10 +78,9 @@ script(id="modal/backglass.html", type="text/ng-template")
 
 					div.markdown.space-left-2x(markdown="version.changes")
 
-
 		.modal-footer
 			button.btn.btn-hollow.pull-left(ng-click="$dismiss()") Cancel
-			button.btn.btn-default.pull-left(ng-click="edit(backglass)", ng-show="auth.hasPermission('backglasses/moderate') || auth.isAuthor(backglass)")
+			button.btn.btn-default.pull-left(ng-click="edit(backglass)", ng-show="auth.hasPermission('backglasses/update') || (auth.isAuthor(backglass) && auth.hasPermission('backglasses/update-own'))")
 				+icon('edit').space-right
 				| Edit
 			button.btn.btn-primary(ng-click="download(file)") Download
@@ -108,12 +107,17 @@ script(id="modal/backglass-edit.html", type="text/ng-template")
 			//-- DESCRIPTION
 			//---------------------------------------------------------------------
 			h3.h--no-margin Description
-			editor.tabset--light(ng-model="backglass.description", placeholder="Description of the backglass", markdown-text="Markdown enabled.")
+			editor.tabset--light(ng-model="updatedBackglass.description", placeholder="Description of the backglass", markdown-text="Markdown enabled.")
 
 			//-- ACKNOWLEDGEMENTS
 			//---------------------------------------------------------------------
 			h3.h--no-margin Acknowledgements
-			editor.tabset--light(ng-model="backglass.acknowledgements", placeholder="E.g.: Thanks to @mom for supporting me!", markdown-text="Markdown enabled.")
+			editor.tabset--light(ng-model="updatedBackglass.acknowledgements", placeholder="E.g.: Thanks to @mom for supporting me!", markdown-text="Markdown enabled.")
+
+			button.btn.btn-primary.btn-red.shift-up-2x.pull-right(ng-click="remove(backglass)", ng-show="auth.hasPermission('backglasses/delete') || (auth.isAuthor(backglass) && auth.hasPermission('backglasses/delete-own'))")
+				+icon('trash').space-right
+				| Delete
+			.clearfix
 
 		.modal-footer
 			button.btn.btn-hollow.pull-left(ng-click="$dismiss()") Cancel

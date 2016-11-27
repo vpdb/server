@@ -40,6 +40,8 @@ script(id="modal/backglass.html", type="text/ng-template")
 				+icon('download-circle').shift-up-2x.space-right
 				span.space-right {{ numDownloads | number }} download{{ numDownloads != 1 ? 's' : '' }}
 
+			pre.text-center {{ backglass.versions[0].file.name }}
+
 
 			//-- DESCRIPTION
 			//---------------------------------------------------------------------

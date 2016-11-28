@@ -266,11 +266,13 @@ exports.download = function(req, res) {
 				case 'playfield-ws':
 					if (file.getMimeCategory() === 'image') {
 						name = 'PinballX/Media/Visual Pinball/Table Images/' + gameName + file.getExt();
+						path = file.getPath('hyperpin');
 					}
 					if (file.getMimeCategory() === 'video') {
 						name = 'PinballX/Media/Visual Pinball/Table Videos/' + gameName + file.getExt();
+						path = file.getPath();
 					}
-					path = file.getPath('hyperpin');
+					
 					break;
 
 				case 'release':

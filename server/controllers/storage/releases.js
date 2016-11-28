@@ -259,7 +259,6 @@ exports.download = function(req, res) {
 					if (file.getMimeCategory() === 'directb2s') {
 						name = 'Visual Pinball/Tables/' + gameName + file.getExt();
 					}
-
 					break;
 
 				case 'playfield-fs':
@@ -272,7 +271,6 @@ exports.download = function(req, res) {
 						name = 'PinballX/Media/Visual Pinball/Table Videos/' + gameName + file.getExt();
 						path = file.getPath();
 					}
-					
 					break;
 
 				case 'release':

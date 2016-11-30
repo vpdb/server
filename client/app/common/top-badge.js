@@ -37,7 +37,6 @@ angular.module('vpdb.common', [])
 
 				$scope.$watch('ranks', function(ranks) {
 					if (ranks && ranks.length > 0) {
-						console.log('ranks = ', ranks);
 						$scope.hasRank = $scope.ranks;
 						$scope.rank = _.min(ranks);
 						if ($scope.rank <= 10) {

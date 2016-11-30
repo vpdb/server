@@ -763,7 +763,7 @@ exports.list = function(req, res) {
 			stars.forEach(id => starMap.set(id, true));
 		}
 
-		let sort = api.sortParams(req, { released_at: 1 }, {
+		const sort = api.sortParams(req, { released_at: 1 }, {
 			released_at: '-released_at',
 			popularity: '-metrics.popularity',
 			rating: '-rating.score',

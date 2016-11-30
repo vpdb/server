@@ -157,7 +157,7 @@ angular.module('vpdb.releases.details', []).controller('ReleaseDetailsController
 	$scope.newComment = '';
 	$scope.addComment = function() {
 		ReleaseCommentResource.save({ releaseId: $scope.releaseId }, { message: $scope.newComment }, function(comment) {
-			$scope.comments.unshift(comment);
+			$scope.comments.push(comment);
 			$scope.newComment = '';
 		}, ApiHelper.handleErrors($scope));
 	};

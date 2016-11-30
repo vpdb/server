@@ -150,6 +150,7 @@ exports.createForReleaseModeration = function(req, res) {
 exports.listForRelease = function(req, res) {
 
 	let pagination = api.pagination(req, 10, 50);
+	const sort = api.sortParams(req, { released_at: 1 }, { date: '-created_at' });
 	let release;
 	Promise.try(() => {
 		return Release.findOne({ id: req.params.id })
@@ -172,7 +173,7 @@ exports.listForRelease = function(req, res) {
 			page: pagination.page,
 			limit: pagination.perPage,
 			populate: [ '_from' ],
-			sort: { created_at: -1 }
+			sort: sort
 		}).then(result => [result.docs, result.total]);
 
 	}).spread((results, count) => {
@@ -209,10 +210,10 @@ exports.listForReleaseModeration = function(req, res) {
 		}
 		return Comment.find({ '_ref.release_moderation': release._id })
 			.populate('_from')
+			.sort({ created_at: 'asc' })
 			.exec();
 
 	}).then(comments => {
-		comments.sort((c1, c2) => c1.created_at.getTime() - c2.created_at.getTime());
 		api.success(res, _.map(comments, comment => comment.toSimple()), 200);
 
 	}).catch(api.handleError(res, error, 'Error listing moderation comments'));

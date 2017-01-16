@@ -45,6 +45,8 @@ exports.configure = function(app, raygunClient) {
 	var runningTest = process.env.NODE_ENV === 'test';
 	var ipAddress = process.env.IPADDRESS || '127.0.0.1';
 
+
+
 	logger.info('[express] Setting up Express for running %s in %s mode.', runningLocal ? 'locally' : 'remotely', runningDev ? 'development' : 'production');
 
 	/* istanbul ignore if  */

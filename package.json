@@ -68,6 +68,7 @@
 		"request": "2.78.0",
 		"sax": "1.2.1",
 		"shortid32": "0.1.1",
+		"socket.io": "1.7.2",
 		"three": "0.82.1",
 		"uglify-js": "2.7.4",
 		"unrar": "0.1.6",

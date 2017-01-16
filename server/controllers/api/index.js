@@ -39,6 +39,7 @@ exports.releases = require('./releases');
 exports.roles = require('./roles');
 exports.roms = require('./roms');
 exports.stars = require('./stars');
+exports.streams = require('./streams');
 exports.tags = require('./tags');
 exports.tokens = require('./tokens');
 exports.user = require('./user');

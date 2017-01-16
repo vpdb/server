@@ -39,6 +39,8 @@ exports.register = function(app, api) {
 	// pusher
 	app.post(settings.apiPath('/messages/authenticate'), api.auth(api.messages.authenticate, 'messages', 'receive', { enableRealtime: true }));
 
+	app.get(settings.apiPath('/streams/:id'), api.anon(api.streams.view));
+
 	// ping
 	app.get(settings.apiPath('/ping'), api.anon(api.ping));
 

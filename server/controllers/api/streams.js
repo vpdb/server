@@ -1,6 +1,6 @@
 /*
  * VPDB - Visual Pinball Database
- * Copyright (C) 2017 freezy <freezy@xbmc.org>
+ * Copyright (C) 2016 freezy <freezy@xbmc.org>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -19,14 +19,20 @@
 
 "use strict";
 
-const dmdStream = require('./modules/dmdstream');
+const _ = require('lodash');
+const logger = require('winston');
 
-/* istanbul ignore next: Realtime stuff not tested */
-exports.init = function(server) {
+const dmdStreams = require('../../modules/dmdstream');
+const error = require('../../modules/error')('api', 'tag');
+const acl = require('../../acl');
+const api = require('./api');
 
-	const io = require('socket.io')(server);
-	io.on('connection', function(socket) {
-		console.log("Got a client!");
-		dmdStream.onNewConnection(socket);
-	});
+exports.view = function(req, res) {
+	Promise.try(() => {
+		res.writeHead(206, { 'Content-Type': 'video/mp4' });
+		if (!dmdStreams.stream(res)) {
+			throw error('No stream available').status(404);
+		}
+
+	}).catch(api.handleError(res, error, 'Error retrieving stream'));
 };

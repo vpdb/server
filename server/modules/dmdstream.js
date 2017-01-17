@@ -39,7 +39,7 @@ class DmdStream {
 		}
 		const spawn = require('child_process').spawn;
 		const ffmpeg = spawn('ffmpeg', [
-			'-y', '-f', 'rawvideo', '-s', '128x32', '-pix_fmt', 'rgb24', '-re', '-i', '-',
+			'-y', '-f', 'rawvideo', '-s', '128x32', '-pix_fmt', 'rgb24', '-re', '-i', 'pipe:0',
 			'-codec:v', 'libx264', '-f', 'mp4', '-b:v', '100k', '-pix_fmt', 'yuv444p', 'pipe:1']);
 		//ffmpeg.stdout.on('data', data => console.log(data.toString()));
 		ffmpeg.stderr.on('data', data => console.log(data.toString()));

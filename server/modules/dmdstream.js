@@ -35,10 +35,13 @@ class DmdStream {
 		this._sockets[socket.id] = { socket: socket, id: crypto.randomBytes(16).toString('hex'), isProducer: false };
 
 		// general API
-		socket.on('produce', () => {
-			logger.info('Client %s is a producer', socket.id);
+		socket.on('produce', data => {
+			logger.info('Client %s is a producer: ', socket.id, data);
 			this._sockets[socket.id].isProducer = true;
+			this._sockets[socket.id].width = data.width;
+			this._sockets[socket.id].height = data.height;
 			this._subscribers[socket.id] = [];
+			_.values(this._sockets).filter(s => !s.isProducer).forEach(s => s.socket.emit('producer', { id: this._sockets[socket.id].id }));
 		});
 		socket.on('subscribe', id => {
 			logger.info('Client %s subscribed to stream %s.', socket.id, id);
@@ -47,6 +50,7 @@ class DmdStream {
 				socket.emit('error', { message: 'No such producer with ID "' + id + '".' });
 				return;
 			}
+			socket.emit('dimensions', { id: producer.id, width: producer.width, height: producer.height });
 			this._subscribers[producer.socket.id].push(this._sockets[socket.id]);
 		});
 		socket.on('unsubscribe', id => {
@@ -61,6 +65,7 @@ class DmdStream {
 		socket.on('disconnect', () => {
 			logger.info('Client %s has disconnected.', socket.id);
 			if (this._sockets[socket.id].isProducer) {
+				this._subscribers[socket.id].forEach(s => s.socket.emit('stop', { id: this._sockets[socket.id].id }));
 				delete this._subscribers[socket.id];
 			}
 			delete this._sockets[socket.id];
@@ -70,6 +75,19 @@ class DmdStream {
 		socket.on('gray2frame', data => {
 			if (this._subscribers[socket.id]) {
 				this._subscribers[socket.id].forEach(s => s.socket.emit('gray2frame', { id: this._sockets[socket.id].id, frame: data }));
+			}
+		});
+		socket.on('stop', () => {
+			if (this._subscribers[socket.id]) {
+				this._subscribers[socket.id].forEach(s => s.socket.emit('stop', { id: this._sockets[socket.id].id }));
+			}
+		});
+		socket.on('dimensions', data => {
+			logger.info('New dimensions for client %s:', socket.id, data);
+			this._sockets[socket.id].width = data.width;
+			this._sockets[socket.id].height = data.height;
+			if (this._subscribers[socket.id]) {
+				this._subscribers[socket.id].forEach(s => s.socket.emit('dimensions', { id: this._sockets[socket.id].id, width: data.width, height: data.height }));
 			}
 		});
 

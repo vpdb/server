@@ -30,27 +30,33 @@ angular.module('vpdb.dmdstream', [])
 				dmdId: '=',
 			},
 			replace: true,
-			template: '<div></div>',
+			template: '<div class="dmd"></div>',
 			controller: function($scope, $element) {
+
+				$scope.width = 128;
+				$scope.height = 32;
 
 				var color = new THREE.Color(0xff6a00);
 				var hsl = color.getHSL();
 
-				var ar = 128 / 32;
+				var ar = $scope.width / $scope.height;
 
 				var camera = new THREE.PerspectiveCamera(55, ar, 20, 3000);
-				camera.position.z = 1000;
+				camera.position.x = 0;
+				camera.position.y = 0;
+				camera.position.z = 615;
+
 				var scene = new THREE.Scene();
 
 				// texture
-				var blankFrame = new Uint8Array(128 * 32 * 3);
-				var dmdTexture = new THREE.DataTexture(blankFrame, 128, 32, THREE.RGBFormat);
+				var blankFrame = new Uint8Array($scope.width * $scope.height * 3);
+				var dmdTexture = new THREE.DataTexture(blankFrame, $scope.width, $scope.height, THREE.RGBFormat);
 				dmdTexture.minFilter = THREE.LinearFilter;
 				dmdTexture.magFilter = THREE.LinearFilter;
 				var dmdMaterial = new THREE.MeshBasicMaterial({ map: dmdTexture });
 
 				// plane
-				var planeGeometry = new THREE.PlaneGeometry(128, 32, 1, 1);
+				var planeGeometry = new THREE.PlaneGeometry($scope.width, $scope.height, 1, 1);
 				var dmdMesh = new THREE.Mesh(planeGeometry, dmdMaterial);
 				scene.add(dmdMesh);
 				dmdMesh.z = 0;
@@ -58,22 +64,23 @@ angular.module('vpdb.dmdstream', [])
 
 				// renderer
 				var renderer = new THREE.WebGLRenderer();
-				$element.replaceWith(renderer.domElement);
+				$element.append(renderer.domElement);
+				window.addEventListener('resize', onResize, false);
 
 				$scope.socket.on('gray2frame', function(data) {
 
-					if (data.id !== $scope.dmdId) {
+					if (data.id !== $scope.dmdId || $scope.width === 0 || $scope.height === 0) {
 						console.log('%s != %s', data.id, $scope.dmdId);
 						return;
 					}
 
 					var buffer = new DataView(data.frame);
-					var rgbFrame = new Uint8Array(128 * 32 * 3);
+					var rgbFrame = new Uint8Array($scope.width * $scope.height * 3);
 					var pos = 0;
 					var dotColor = new THREE.Color();
-					for (var y = 31; y >= 0; y--) {
-						for (var x = 0; x < 128; x++) {
-							var lum = buffer.getUint8(y * 128 + x) / 4;
+					for (var y = $scope.height - 1; y >= 0; y--) {
+						for (var x = 0; x < $scope.width; x++) {
+							var lum = buffer.getUint8(y * $scope.width + x) / 4;
 							dotColor.setHSL(hsl.h, hsl.s, lum * hsl.l);
 							rgbFrame[pos] = Math.floor(dotColor.r * 255);
 							rgbFrame[pos + 1] = Math.floor(dotColor.g * 255);
@@ -88,6 +95,37 @@ angular.module('vpdb.dmdstream', [])
 
 					renderer.render(scene, camera);
 				});
+
+				$scope.socket.on('dimensions', function(data) {
+					if (data.id !== $scope.dmdId) {
+						return;
+					}
+					$scope.width = data.width;
+					$scope.height = data.height;
+					ar = $scope.width / $scope.height;
+					onResize();
+				});
+
+				function onResize() {
+					var dim = getDimensions();
+					/*
+					renderTargetDots.width = dim.width;
+					renderTargetDots.height = dim.height;
+					renderTargetGlow.width = dim.width;
+					renderTargetGlow.height = dim.height;*/
+
+					renderer.setSize(dim.width, dim.height);
+					camera.updateProjectionMatrix();
+				}
+
+				function getDimensions() {
+					var containerWidth = $element.parent().width();
+					var width, height;
+					width = containerWidth;
+					height = Math.round(containerWidth / ar);
+					console.log("resizing to %sx%s, keeping ar = %s", width, height, ar);
+					return { width: width, height: height };
+				}
 			}
 		};
 	});

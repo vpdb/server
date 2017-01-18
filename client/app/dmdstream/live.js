@@ -18,4 +18,15 @@ angular.module('vpdb.dmdstream', [])
 			$scope.$apply();
 		});
 		$scope.socket.emit('getProducers');
+
+		$scope.socket.on('producer', function(data) {
+			$scope.dmdIds.push(data.id);
+			$scope.socket.emit('subscribe', data.id);
+			$scope.$apply();
+		});
+
+		$scope.socket.on('stop', function(data) {
+			$scope.dmdIds.splice($scope.dmdIds.indexOf(data.id), 1);
+			$scope.$apply();
+		});
 	});

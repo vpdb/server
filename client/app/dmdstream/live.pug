@@ -4,3 +4,4 @@
 		h1 Live Streams
 		.row.col-md-12
 			livedmd(ng-repeat="dmdId in dmdIds", socket="socket", dmd-id="dmdId")
+			p(ng-show="dmdIds.length === 0") There isn't anyone streaming currently.

@@ -1,7 +1,8 @@
 
-.row.row--fullheight(ng-controller="LiveDmdController")
-	.container
-		h1 Live Streams
-		.row.col-md-12
-			livedmd(ng-repeat="dmdId in dmdIds", socket="socket", dmd-id="dmdId")
-			p(ng-show="dmdIds.length === 0") There isn't anyone streaming currently.
+.row.row--content.ng-cloak.row--fullheight.fade-animation(ng-controller="LiveDmdController")
+	h1.h--primary Live Streams
+	livedmd(ng-repeat="dmdId in dmdIds", socket="socket", dmd-id="dmdId")
+	p(ng-show="dmdIds.length === 0") There isn't anyone streaming currently.
+
+	h3 What's this?
+	p This is a sandbox for playing around with DMD live streaming. In VPM, using dmdext's <code>DmdDevice.dll</code>, you can enable live streaming and your game will be streamed in real time to this page.

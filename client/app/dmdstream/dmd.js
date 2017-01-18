@@ -40,6 +40,8 @@ angular.module('vpdb.dmdstream', [])
 				var hsl = color.getHSL();
 
 				var ar = $scope.width / $scope.height;
+				var screen = getDimensions();
+				console.log('Setting DMD up for %sx%s.', screen.width, screen.height);
 
 				var camera = new THREE.PerspectiveCamera(55, ar, 20, 3000);
 				camera.position.x = 0;
@@ -64,8 +66,68 @@ angular.module('vpdb.dmdstream', [])
 
 				// renderer
 				var renderer = new THREE.WebGLRenderer();
+
+				// POST PROCESSING
+				// ---------------
+				// common render target params
+				$scope.renderTargetParameters = {
+					minFilter: THREE.LinearFilter,
+					magFilter: THREE.LinearFilter,
+					format: THREE.RGBFormat,
+					stencilBufer: false
+				};
+				$scope.dotMatrixParams = {
+					size: 3,
+					blur: 1.3
+				};
+				$scope.glowParams = {
+					amount: 1.6,
+					blur: 1
+				};
+
+				// Init dotsComposer to render the dots effect
+				// A composer is a stack of shader passes combined.
+				// A render target is an offscreen buffer to save a composer output
+				var renderTargetDots = new THREE.WebGLRenderTarget(screen.width, screen.height, $scope.renderTargetParameters);
+
+				// dots Composer renders the dot effect
+				var dotsComposer = new THREE.EffectComposer(renderer, renderTargetDots);
+
+				var renderPass = new THREE.RenderPass(scene, camera);
+
+				// a shader pass applies a shader effect to a texture (usually the previous shader output)
+				var dotMatrixPass = new THREE.ShaderPass(THREE.DotMatrixShader);
+				dotsComposer.addPass(renderPass);
+				dotsComposer.addPass(dotMatrixPass);
+
+				// Init glowComposer renders a blurred version of the scene
+				var renderTargetGlow = new THREE.WebGLRenderTarget(screen.width, screen.height, $scope.renderTargetParameters);
+				var glowComposer = new THREE.EffectComposer(renderer, renderTargetGlow);
+
+				// create shader passes
+				var hblurPass = new THREE.ShaderPass(THREE.HorizontalBlurShader);
+				var vblurPass = new THREE.ShaderPass(THREE.VerticalBlurShader);
+
+				glowComposer.addPass(renderPass);
+				glowComposer.addPass(dotMatrixPass);
+				glowComposer.addPass(hblurPass);
+				glowComposer.addPass(vblurPass);
+				//glowComposer.addPass( fxaaPass );
+
+				// blend Composer runs the AdditiveBlendShader to combine the output of dotsComposer and glowComposer
+				var blendPass = new THREE.ShaderPass(THREE.AdditiveBlendShader);
+				blendPass.uniforms['tBase'].value = dotsComposer.renderTarget1;
+				blendPass.uniforms['tAdd'].value = glowComposer.renderTarget1;
+
+				var blendComposer = new THREE.EffectComposer(renderer);
+				blendComposer.addPass(blendPass);
+				blendPass.renderToScreen = true;
+
 				$element.append(renderer.domElement);
 				window.addEventListener('resize', onResize, false);
+				onParamsChange();
+				onResize();
+				dotMatrixPass.uniforms['resolution'].value = new THREE.Vector2(screen.width, screen.height);
 
 				$scope.socket.on('gray2frame', function(data) {
 
@@ -91,9 +153,12 @@ angular.module('vpdb.dmdstream', [])
 
 					dmdMesh.material.map.image.data = rgbFrame;
 					dmdMesh.material.map.needsUpdate = true;
-					dmdMesh.material.needsUpdate = true;
+					//dmdMesh.material.needsUpdate = true;
 
-					renderer.render(scene, camera);
+					dotsComposer.render();
+					glowComposer.render();
+					blendComposer.render();
+					//renderer.render(scene, camera);
 				});
 
 				$scope.socket.on('dimensions', function(data) {
@@ -106,13 +171,24 @@ angular.module('vpdb.dmdstream', [])
 					onResize();
 				});
 
+				function onParamsChange() {
+
+					//copy gui params into shader uniforms
+					dotMatrixPass.uniforms['size'].value = Math.pow($scope.dotMatrixParams.size, 2);
+					dotMatrixPass.uniforms['blur'].value = Math.pow($scope.dotMatrixParams.blur * 2, 2);
+
+					hblurPass.uniforms['h'].value = $scope.glowParams.blur / screen.width * 2;
+					vblurPass.uniforms['v'].value = $scope.glowParams.blur / screen.height * 2;
+					blendPass.uniforms['amount'].value = $scope.glowParams.amount;
+				}
+
 				function onResize() {
 					var dim = getDimensions();
-					/*
+
 					renderTargetDots.width = dim.width;
 					renderTargetDots.height = dim.height;
 					renderTargetGlow.width = dim.width;
-					renderTargetGlow.height = dim.height;*/
+					renderTargetGlow.height = dim.height;
 
 					renderer.setSize(dim.width, dim.height);
 					camera.updateProjectionMatrix();
@@ -123,7 +199,6 @@ angular.module('vpdb.dmdstream', [])
 					var width, height;
 					width = containerWidth;
 					height = Math.round(containerWidth / ar);
-					console.log("resizing to %sx%s, keeping ar = %s", width, height, ar);
 					return { width: width, height: height };
 				}
 			}

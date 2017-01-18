@@ -95,7 +95,6 @@ class DmdStream {
 		socket.on('getProducers', () => {
 			socket.emit('producers', _.values(this._sockets).filter(s => s.isProducer).map(s => s.id));
 		});
-
 	}
 }
 module.exports = new DmdStream();

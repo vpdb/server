@@ -119,7 +119,7 @@ angular.module('vpdb', deps.concat(appDeps))
 		$stateProvider.state('faq',              { url: '/faq',                          templateUrl: '/content/faq.html' });
 		$stateProvider.state('legal',            { url: '/legal',                        templateUrl: '/content/legal.html' });
 		$stateProvider.state('privacy',          { url: '/privacy',                      templateUrl: '/content/privacy.html' });
-		$stateProvider.state('livedmd',          { url: '/live-dmd',                     templateUrl: '/dmdstream/live.html' });
+		$stateProvider.state('livedmd',          { url: '/live',                         templateUrl: '/dmdstream/live.html' });
 		$stateProvider.state('404',              {                                       templateUrl: '/errors/404.html' });
 
 		$locationProvider.html5Mode({

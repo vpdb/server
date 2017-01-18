@@ -19,163 +19,65 @@
 
 "use strict";
 
-const Stream = require('stream');
+const _ = require('lodash');
 const logger = require('winston');
-const HSL = rgbToHsl(0xff, 0x6a, 0x00);
+const crypto = require('crypto');
 
 class DmdStream {
 
 	constructor() {
-		this._streams = [];
-		this._sockets = [];
-		this._dmdSubscribers = [];
-	}
-
-	subscribe(socket) {
-		this._dmdSubscribers.push(socket);
-	}
-
-	getStream() {
-		return this._streams.length > 0 ? this._streams[0] : null;
-	}
-
-	stream(writeStream) {
-		let stream = this.getStream();
-		if (stream === null) {
-			return false;
-		}
-		const spawn = require('child_process').spawn;
-		const ffmpeg = spawn('ffmpeg', [
-			'-y', '-f', 'rawvideo', '-s', '128x32', '-pix_fmt', 'rgb24', '-i', '-',
-			'-codec:v', 'libx264', '-b', '100k', '-f', 'mpegts', '-pix_fmt', 'yuv420p',
-			'-profile:v', 'baseline', '-preset:v', 'ultrafast', 'pipe:1']);
-		ffmpeg.stderr.on('data', data => console.log(data.toString()));
-		ffmpeg.stdout.pipe(writeStream);
-		stream.pipe(ffmpeg.stdin);
-		return true;
+		this._sockets = {};
+		this._subscribers = {};
 	}
 
 	onNewConnection(socket) {
-
-		this._sockets.push(socket);
 		logger.info('New Socket.IO client %s connected.', socket.id);
+		this._sockets[socket.id] = { socket: socket, id: crypto.randomBytes(16).toString('hex'), isProducer: false };
 
-		socket.on('gray2frame', data => {
-			this._dmdSubscribers.forEach(socket => socket.emit('gray2frame', data));
+		// general API
+		socket.on('produce', () => {
+			logger.info('Client %s is a producer', socket.id);
+			this._sockets[socket.id].isProducer = true;
+			this._subscribers[socket.id] = [];
 		});
-
-		// todo move to API
-		socket.on('subscribe', () => {
-			logger.info('Client %s subscribed to incoming frames.', socket.id);
-			this.subscribe(socket);
+		socket.on('subscribe', id => {
+			logger.info('Client %s subscribed to stream %s.', socket.id, id);
+			let producer = _.values(this._sockets).find(s => s.id === id && s.isProducer);
+			if (!producer) {
+				socket.emit('error', { message: 'No such producer with ID "' + id + '".' });
+				return;
+			}
+			this._subscribers[producer.socket.id].push(this._sockets[socket.id]);
 		});
-
+		socket.on('unsubscribe', id => {
+			logger.info('Client %s unsubscribed from stream %s.', socket.id, id);
+			let producer = _.values(this._sockets).find(s => s.id === id);
+			if (!producer) {
+				socket.emit('error', { message: 'No such producer with ID "' + id + '".' });
+				return;
+			}
+			this._subscribers[producer.socket.id] = this._subscribers[producer.socket.id].filter(s => s.id !== socket.id);
+		});
 		socket.on('disconnect', () => {
 			logger.info('Client %s has disconnected.', socket.id);
-		});
-
-		/*
-		//console.log('got new socket: ', socket);
-		const stream = new Stream();
-		stream.readable = true;
-
-		socket.on('gray2frame', data => {
-			let rgbFrame = new Buffer(128 * 32 * 3);
-			let pos = 0;
-			for (let y = 0; y < 32; y++) {
-				for (let x = 0; x < 128; x++) {
-					let opacity = data[y * 128 + x] / 4;
-					let rgb = hslToRgb(HSL[0], HSL[1], opacity * HSL[2]);
-					rgbFrame[pos] = rgb[0];
-					rgbFrame[pos + 1] = rgb[1];
-					rgbFrame[pos + 2] = rgb[2];
-					pos += 3;
-				}
+			if (this._sockets[socket.id].isProducer) {
+				delete this._subscribers[socket.id];
 			}
-			stream.emit('data', rgbFrame);
-		});
-		socket.on('end', function() {
-			console.log('Closing stream.');
-			stream.emit('end');
+			delete this._sockets[socket.id];
 		});
 
-		this._streams.push(stream);*/
+		// producer API
+		socket.on('gray2frame', data => {
+			if (this._subscribers[socket.id]) {
+				this._subscribers[socket.id].forEach(s => s.socket.emit('gray2frame', { id: this._sockets[socket.id].id, frame: data }));
+			}
+		});
+
+		// consumer API
+		socket.on('getProducers', () => {
+			socket.emit('producers', _.values(this._sockets).filter(s => s.isProducer).map(s => s.id));
+		});
+
 	}
 }
 module.exports = new DmdStream();
-
-
-/**
- * Converts an HSL color value to RGB. Conversion formula
- * adapted from http://en.wikipedia.org/wiki/HSL_color_space.
- * Assumes h, s, and l are contained in the set [0, 1] and
- * returns r, g, and b in the set [0, 255].
- *
- * @param   {number}  h       The hue
- * @param   {number}  s       The saturation
- * @param   {number}  l       The lightness
- * @return  {Array}           The RGB representation
- */
-function hslToRgb(h, s, l) {
-	let r, g, b;
-
-	if (s === 0) {
-		r = g = b = l; // achromatic
-	} else {
-		const hue2rgb = function hue2rgb(p, q, t) {
-			if (t < 0) t += 1;
-			if (t > 1) t -= 1;
-			if (t < 1 / 6) return p + (q - p) * 6 * t;
-			if (t < 1 / 2) return q;
-			if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
-			return p;
-		};
-
-		const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
-		const p = 2 * l - q;
-		r = hue2rgb(p, q, h + 1 / 3);
-		g = hue2rgb(p, q, h);
-		b = hue2rgb(p, q, h - 1 / 3);
-	}
-
-	return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
-}
-
-/**
- * Converts an RGB color value to HSL. Conversion formula
- * adapted from http://en.wikipedia.org/wiki/HSL_color_space.
- * Assumes r, g, and b are contained in the set [0, 255] and
- * returns h, s, and l in the set [0, 1].
- *
- * @param   {number}  r       The red color value
- * @param   {number}  g       The green color value
- * @param   {number}  b       The blue color value
- * @return  {Array}           The HSL representation
- */
-function rgbToHsl(r, g, b) {
-	r /= 255;
-	g /= 255;
-	b /= 255;
-	const max = Math.max(r, g, b), min = Math.min(r, g, b);
-	let h, s, l = (max + min) / 2;
-
-	if (max == min) {
-		h = s = 0; // achromatic
-	} else {
-		const d = max - min;
-		s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-		switch (max) {
-			case r:
-				h = (g - b) / d + (g < b ? 6 : 0);
-				break;
-			case g:
-				h = (b - r) / d + 2;
-				break;
-			case b:
-				h = (r - g) / d + 4;
-				break;
-		}
-		h /= 6;
-	}
-	return [h, s, l];
-}

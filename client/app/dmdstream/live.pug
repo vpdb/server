@@ -2,5 +2,5 @@
 .row.row--fullheight(ng-controller="LiveDmdController")
 	.container
 		h1 Live Streams
-
-		#livedmd
+		.row.col-md-12
+			livedmd(ng-repeat="dmdId in dmdIds", socket="socket", dmd-id="dmdId")

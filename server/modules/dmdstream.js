@@ -70,6 +70,10 @@ class DmdStream {
 			this.subscribe(socket);
 		});
 
+		socket.on('disconnect', () => {
+			logger.info('Client %s has disconnected.', socket.id);
+		});
+
 		/*
 		//console.log('got new socket: ', socket);
 		const stream = new Stream();

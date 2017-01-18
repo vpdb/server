@@ -26,7 +26,6 @@ exports.init = function(server) {
 
 	const io = require('socket.io')(server);
 	io.on('connection', function(socket) {
-		console.log("Got a client!");
 		dmdStream.onNewConnection(socket);
 	});
 };

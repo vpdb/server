@@ -5,223 +5,66 @@ angular.module('vpdb.dmdstream', [])
 
 	.controller('LiveDmdController', function($scope) {
 
-		var HSL = rgbToHsl(0xff, 0x6a, 0x00);
-		var dmdTexture;
-		var dotsComposer;
-		var glowComposer;
-		var blendComposer;
-
 		$scope.setTitle('Live DMD Streams');
 		$scope.theme('dark');
+
+		var color = new THREE.Color(0xff6a00);
+		var hsl = color.getHSL();
+
+		var HSL = rgbToHsl(0xff, 0x6a, 0x00);
+		var ar = 128 / 32;
+
+		var screen = getDimensions();
+		var camera = new THREE.PerspectiveCamera(55, ar, 20, 3000);
+		camera.position.z = 1000;
+		var scene = new THREE.Scene();
+
+		// texture
+		var blankFrame = new Uint8Array(128 * 32 * 3);
+		var dmdTexture = new THREE.DataTexture(blankFrame, 128, 32, THREE.RGBFormat);
+		dmdTexture.minFilter = THREE.LinearFilter;
+		dmdTexture.magFilter = THREE.LinearFilter;
+		var dmdMaterial = new THREE.MeshBasicMaterial({ map: dmdTexture });
+
+		// plane
+		var planeGeometry = new THREE.PlaneGeometry(128, 32, 1, 1);
+		var dmdMesh = new THREE.Mesh(planeGeometry, dmdMaterial);
+		scene.add(dmdMesh);
+		dmdMesh.z = 0;
+		dmdMesh.scale.x = dmdMesh.scale.y = 20;
+
+		//init renderer
+		var renderer = new THREE.WebGLRenderer();
+		document.body.appendChild(renderer.domElement);
 
 		var socket = io('http://localhost:3000');
 		socket.on('gray2frame', function(data) {
 
-			var rgbFrame = new ArrayBuffer(128 * 32 * 3);
+			var buffer = new DataView(data);
+			var rgbFrame = new Uint8Array(128 * 32 * 3);
 			var pos = 0;
+			var dotColor = new THREE.Color();
 			for (var y = 0; y < 32; y++) {
 				for (var x = 0; x < 128; x++) {
-					var opacity = data[y * 128 + x] / 4;
-					var rgb = hslToRgb(HSL[0], HSL[1], opacity * HSL[2]);
-					rgbFrame[pos] = rgb[0];
-					rgbFrame[pos + 1] = rgb[1];
-					rgbFrame[pos + 2] = rgb[2];
+					var lum = buffer.getUint8(y * 128 + x) / 4;
+					dotColor.setHSL(hsl.h, hsl.s, lum * hsl.l);
+					rgbFrame[pos] = Math.floor(dotColor.r * 255);
+					rgbFrame[pos + 1] = Math.floor(dotColor.g * 255);
+					rgbFrame[pos + 2] = Math.floor(dotColor.b * 255);
 					pos += 3;
 				}
 			}
 
-			dmdTexture.image.data = rgbFrame;
-			dmdTexture.needsUpdate = true;
+			dmdMesh.material.map.image.data = rgbFrame;
+			dmdMesh.material.map.needsUpdate = true;
+			dmdMesh.material.needsUpdate = true;
 
-			/*
-			dotsComposer.render(0.1);
-			glowComposer.render(0.1);
-			blendComposer.render(0.1);*/
+			renderer.render(scene, camera);
 		});
 		socket.emit('subscribe');
 
-		var camera, scene, renderer;
-		var renderTargetDots, renderTargetGlow;
-		var video, videoTexture, videoMaterial;
-		var composer;
-		var shaderTime = 0;
-		var badTVParams, badTVPass;
-		var staticParams, staticPass;
-		var rgbParams, rgbPass;
-		var filmParams, filmPass;
-		var renderPass, copyPass;
-		var dotMatrixPass, dotMatrixParams;
-		var hblurPass;
-		var vblurPass;
-		var blendPAss;
-		var gui;
-		var plane;
-		var pnoise, globalParams;
-
-		var dotWidth = 128;
-		var dotHeight = 32;
-		var ar = dotWidth / dotHeight;
-
-		//animate();
-
-		dotMatrixParams = {
-			size: 3,
-			blur: 1.3
-		};
-		var glowParams = {
-			amount: 1.6,
-			blur: 1
-		};
-		var perspectiveParams = {
-			distance: 615,
-			x: 10,
-			y: 10
-		};
-
-		var init = function() {
-
-			var screen = getDimensions();
-
-			camera = new THREE.PerspectiveCamera(55, ar, 20, 3000);
-			camera.position.z = 1000;
-			scene = new THREE.Scene();
-
-			//Load Video
-			//video = document.createElement('video');
-			//video.loop = true;
-			//video.src = 'res/dmd-frames-contrast.mp4';
-			//video.play();
-
-			//init video texture
-			dmdTexture = new THREE.DataTexture([], 0, 0, THREE.RGBFormat);
-			dmdTexture.minFilter = THREE.LinearFilter;
-			dmdTexture.magFilter = THREE.LinearFilter;
-
-			videoMaterial = new THREE.MeshBasicMaterial({
-				map: dmdTexture
-			});
-
-			//Add video plane
-			var planeGeometry = new THREE.PlaneGeometry(dotWidth, dotHeight, 1, 1);
-			var plane = new THREE.Mesh(planeGeometry, videoMaterial);
-			scene.add(plane);
-			plane.z = 0;
-			plane.scale.x = plane.scale.y = 20;
-
-			//init renderer
-			renderer = new THREE.WebGLRenderer();
-			document.body.appendChild(renderer.domElement);
-
-			// POST PROCESSING
-
-			//common render target params
-			var renderTargetParameters = {
-				minFilter: THREE.LinearFilter,
-				magFilter: THREE.LinearFilter,
-				format: THREE.RGBFormat,
-				stencilBufer: false
-			};
-
-			//Init dotsComposer to render the dots effect
-			//A composer is a stack of shader passes combined
-
-			//a render target is an offscreen buffer to save a composer output
-			renderTargetDots = new THREE.WebGLRenderTarget(screen.width, screen.height, renderTargetParameters);
-			//dots Composer renders the dot effect
-			dotsComposer = new THREE.EffectComposer(renderer, renderTargetDots);
-
-			var renderPass = new THREE.RenderPass(scene, camera);
-			//a shader pass applies a shader effect to a texture (usually the previous shader output)
-			dotMatrixPass = new THREE.ShaderPass(THREE.DotMatrixShader);
-			dotsComposer.addPass(renderPass);
-			dotsComposer.addPass(dotMatrixPass);
-
-			//Init glowComposer renders a blurred version of the scene
-			renderTargetGlow = new THREE.WebGLRenderTarget(screen.width, screen.height, renderTargetParameters);
-			glowComposer = new THREE.EffectComposer(renderer, renderTargetGlow);
-
-			//create shader passes
-			hblurPass = new THREE.ShaderPass(THREE.HorizontalBlurShader);
-			vblurPass = new THREE.ShaderPass(THREE.VerticalBlurShader);
-
-			glowComposer.addPass(renderPass);
-			glowComposer.addPass(dotMatrixPass);
-			glowComposer.addPass(hblurPass);
-			glowComposer.addPass(vblurPass);
-			//glowComposer.addPass( fxaaPass );
-
-			//blend Composer runs the AdditiveBlendShader to combine the output of dotsComposer and glowComposer
-			var blendPass = new THREE.ShaderPass(THREE.AdditiveBlendShader);
-			blendPass.uniforms['tBase'].value = dotsComposer.renderTarget1;
-			blendPass.uniforms['tAdd'].value = glowComposer.renderTarget1;
-			blendComposer = new THREE.EffectComposer(renderer);
-			blendComposer.addPass(blendPass);
-			blendPass.renderToScreen = true;
-
-			//////////////
-
-			//Init DAT GUI control panel
-
-
-			/*
-			var gui = new dat.GUI();
-
-			var f1 = gui.addFolder('Dot Matrix');
-			f1.add(dotMatrixParams, 'size', 0, 10).step(0.1).onChange(onParamsChange);
-			f1.add(dotMatrixParams, 'blur', 0, 10).step(0.1).onChange(onParamsChange);
-			f1.open();
-
-			var f2 = gui.addFolder('Glow');
-			f2.add(glowParams, 'amount', 0, 10).step(0.1).onChange(onParamsChange);
-			f2.add(glowParams, 'blur', 0, 10).step(0.1).onChange(onParamsChange);
-			f2.open();
-			/*
-			 var f3 = gui.addFolder('Perspective');
-			 f3.add(perspectiveParams, 'distance', 610, 620).step(0.05).onChange(onParamsChange);
-			 f3.add(perspectiveParams, 'x', -20, 20).step(0.1).onChange(onParamsChange);
-			 f3.add(perspectiveParams, 'y', -20, 20).step(0.1).onChange(onParamsChange);
-			 f3.open();
-
-			gui.close();*/
-
-			window.addEventListener('resize', onResize, false);
-			onParamsChange();
-			onResize();
-			dotMatrixPass.uniforms["resolution"].value = new THREE.Vector2(screen.width, screen.height);
-		}
-
-		var onParamsChange = function() {
-
-			//copy gui params into shader uniforms
-			dotMatrixPass.uniforms["size"].value = Math.pow(dotMatrixParams.size, 2);
-			dotMatrixPass.uniforms["blur"].value = Math.pow(dotMatrixParams.blur * 2, 2);
-
-			hblurPass.uniforms['h'].value = glowParams.blur / screen.width * 2;
-			vblurPass.uniforms['v'].value = glowParams.blur / screen.height * 2;
-			blendPass.uniforms['amount'].value = glowParams.amount;
-
-			camera.position.x = perspectiveParams.x;
-			camera.position.y = perspectiveParams.y;
-			camera.position.z = perspectiveParams.distance;
-		}
-
-		var onToggleMute = function() {
-			video.volume = badTVParams.mute ? 0 : 1;
-		}
-
-
-		var onResize = function() {
-			var dim = getDimensions();
-			renderTargetDots.width = dim.width;
-			renderTargetDots.height = dim.height;
-			renderTargetGlow.width = dim.width;
-			renderTargetGlow.height = dim.height;
-
-			renderer.setSize(dim.width, dim.height);
-			camera.updateProjectionMatrix();
-		}
-
-		var getDimensions = function() {
+		function getDimensions() {
+			var ar = 128 / 32;
 			var windowAR = window.innerWidth / window.innerHeight;
 			var width, height;
 			if (windowAR > ar) {
@@ -235,8 +78,6 @@ angular.module('vpdb.dmdstream', [])
 			console.log(width, height);
 			return { width: width, height: height };
 		}
-
-		init();
 
 		/**
 		 * Converts an HSL color value to RGB. Conversion formula
@@ -271,7 +112,7 @@ angular.module('vpdb.dmdstream', [])
 				b = hue2rgb(p, q, h - 1 / 3);
 			}
 
-			return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
+			return [Math.floor(r * 255), Math.floor(g * 255), Math.floor(b * 255)];
 		}
 
 		/**

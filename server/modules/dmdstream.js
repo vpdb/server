@@ -20,12 +20,19 @@
 "use strict";
 
 const Stream = require('stream');
+const logger = require('winston');
 const HSL = rgbToHsl(0xff, 0x6a, 0x00);
 
 class DmdStream {
 
 	constructor() {
 		this._streams = [];
+		this._sockets = [];
+		this._dmdSubscribers = [];
+	}
+
+	subscribe(socket) {
+		this._dmdSubscribers.push(socket);
 	}
 
 	getStream() {
@@ -50,6 +57,20 @@ class DmdStream {
 
 	onNewConnection(socket) {
 
+		this._sockets.push(socket);
+		logger.info('New Socket.IO client %s connected.', socket.id);
+
+		socket.on('gray2frame', data => {
+			this._dmdSubscribers.forEach(socket => socket.emit('gray2frame', data));
+		});
+
+		// todo move to API
+		socket.on('subscribe', () => {
+			logger.info('Client %s subscribed to incoming frames.', socket.id);
+			this.subscribe(socket);
+		});
+
+		/*
 		//console.log('got new socket: ', socket);
 		const stream = new Stream();
 		stream.readable = true;
@@ -74,7 +95,7 @@ class DmdStream {
 			stream.emit('end');
 		});
 
-		this._streams.push(stream);
+		this._streams.push(stream);*/
 	}
 }
 module.exports = new DmdStream();

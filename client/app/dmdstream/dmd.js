@@ -71,7 +71,7 @@ angular.module('vpdb.dmdstream', [])
 					var rgbFrame = new Uint8Array(128 * 32 * 3);
 					var pos = 0;
 					var dotColor = new THREE.Color();
-					for (var y = 0; y < 32; y++) {
+					for (var y = 31; y >= 0; y--) {
 						for (var x = 0; x < 128; x++) {
 							var lum = buffer.getUint8(y * 128 + x) / 4;
 							dotColor.setHSL(hsl.h, hsl.s, lum * hsl.l);

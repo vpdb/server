@@ -1,5 +1,5 @@
-
 .row.row--content.ng-cloak.row--fullheight.fade-animation(ng-controller="LiveDmdController")
+
 	h1.h--primary Live Streams
 	livedmd(ng-repeat="dmdId in dmdIds", socket="socket", dmd-id="dmdId")
 	p(ng-show="dmdIds.length === 0") There isn't anyone streaming currently.

@@ -41,7 +41,7 @@ class DmdStream {
 			this._sockets[socket.id].width = data.width;
 			this._sockets[socket.id].height = data.height;
 			this._sockets[socket.id].color = data.color;
-			if (data.palette.length > 0) {
+			if (data.palette && data.palette.length > 0) {
 				this._sockets[socket.id].palette = data.palette;
 			}
 			this._subscribers[socket.id] = [];

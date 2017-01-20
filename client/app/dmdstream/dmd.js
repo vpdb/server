@@ -35,7 +35,7 @@ angular.module('vpdb.dmdstream', [])
 
 				$scope.width = 128;
 				$scope.height = 32;
-				$scope.bufferTime = 500;
+				$scope.bufferTime = 0;
 				$scope.started = 0;
 				$scope.gray2Palette = null;
 				$scope.gray4Palette = null;
@@ -47,10 +47,7 @@ angular.module('vpdb.dmdstream', [])
 				console.log('Setting DMD up for %sx%s.', screen.width, screen.height);
 
 				var camera = new THREE.PerspectiveCamera(55, ar, 20, 3000);
-				camera.position.x = 0;
-				camera.position.y = 0;
-				camera.position.z = 615;
-
+				camera.position.z = 1000;
 				var scene = new THREE.Scene();
 
 				// texture
@@ -86,6 +83,11 @@ angular.module('vpdb.dmdstream', [])
 				$scope.glowParams = {
 					amount: 1.6,
 					blur: 1
+				};
+				$scope.perspectiveParams = {
+					distance: 615,
+					x: 10,
+					y: 10
 				};
 
 				// Init dotsComposer to render the dots effect
@@ -221,7 +223,7 @@ angular.module('vpdb.dmdstream', [])
 
 					if (delay < 0) {
 						$scope.bufferTime -= delay;
-						Console.log("Increasing buffer time to %sms.", delay);
+						console.log("Increasing buffer time to %sms.", $scope.bufferTime);
 						delay = 0;
 					}
 
@@ -230,23 +232,27 @@ angular.module('vpdb.dmdstream', [])
 						dmdMesh.material.map.image.data = frame;
 						dmdMesh.material.map.needsUpdate = true;
 
-						// dotsComposer.render();
-						// glowComposer.render();
-						// blendComposer.render();
-						renderer.render(scene, camera);
+						dotsComposer.render(0.1);
+						glowComposer.render(0.1);
+						blendComposer.render(0.1);
+						//renderer.render(scene, camera);
 					}, delay);
 					frame = render();
 				}
 
 				function onParamsChange() {
 
-					//copy gui params into shader uniforms
+					// copy gui params into shader uniforms
 					dotMatrixPass.uniforms['size'].value = Math.pow($scope.dotMatrixParams.size, 2);
 					dotMatrixPass.uniforms['blur'].value = Math.pow($scope.dotMatrixParams.blur * 2, 2);
 
 					hblurPass.uniforms['h'].value = $scope.glowParams.blur / screen.width * 2;
 					vblurPass.uniforms['v'].value = $scope.glowParams.blur / screen.height * 2;
 					blendPass.uniforms['amount'].value = $scope.glowParams.amount;
+
+					camera.position.x = $scope.perspectiveParams.x;
+					camera.position.y = $scope.perspectiveParams.y;
+					camera.position.z = $scope.perspectiveParams.distance;
 				}
 
 				function onResize() {

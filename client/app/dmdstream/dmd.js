@@ -219,6 +219,12 @@ angular.module('vpdb.dmdstream', [])
 					var clientDiff = new Date().getTime() - $scope.clientStart;
 					var delay = $scope.bufferTime + serverDiff - clientDiff;
 
+					if (delay < 0) {
+						$scope.bufferTime -= delay;
+						Console.log("Increasing buffer time to %sms.", delay);
+						delay = 0;
+					}
+
 					var frame;
 					setTimeout(function() {
 						dmdMesh.material.map.image.data = frame;

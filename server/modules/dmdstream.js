@@ -54,6 +54,11 @@ class DmdStream {
 				socket.emit('err', { message: 'No such producer with ID "' + id + '".' });
 				return;
 			}
+			if (this._subscribers[producer.socket.id].length === 0) {
+				logger.info('First subscriber, starting producer %s.', producer.socket.id);
+				producer.socket.emit('resume');
+			}
+
 			socket.emit('color', { id: producer.id, color: producer.color });
 			if (producer.palette) {
 				socket.emit('palette', { id: producer.id, palette: producer.palette });
@@ -69,12 +74,28 @@ class DmdStream {
 				return;
 			}
 			this._subscribers[producer.socket.id] = this._subscribers[producer.socket.id].filter(s => s.id !== socket.id);
+			if (this._subscribers[producer.socket.id].length === 0) {
+				logger.info('No more subscribers, pausing producer %s.', producer.socket.id);
+				producer.socket.emit('pause');
+			}
 		});
 		socket.on('disconnect', () => {
 			logger.info('Client %s has disconnected.', socket.id);
 			if (this._sockets[socket.id].isProducer) {
 				this._subscribers[socket.id].forEach(s => s.socket.emit('stop', { id: this._sockets[socket.id].id }));
 				delete this._subscribers[socket.id];
+			} else {
+				_.keys(this._subscribers).forEach(producerSocketId => {
+					const subscribers = this._subscribers[producerSocketId];
+					const index = subscribers.indexOf(this._sockets[socket.id]);
+					if (index > -1) {
+						subscribers.splice(index, 1);
+					}
+					if (this._subscribers[producerSocketId].length === 0) {
+						logger.info('No more subscribers for producer %s, pausing.', this._sockets[producerSocketId].socket.id);
+						this._sockets[producerSocketId].socket.emit('pause');
+					}
+				});
 			}
 			delete this._sockets[socket.id];
 		});

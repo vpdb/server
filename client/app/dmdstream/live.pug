@@ -5,4 +5,18 @@
 	p(ng-show="dmdIds.length === 0") There isn't anyone streaming currently.
 
 	h3 What's this?
-	p This is a sandbox for playing around with DMD live streaming. In VPM, using dmdext's <code>DmdDevice.dll</code>, you can enable live streaming and your game will be streamed in real time to this page.
+	p This is a sandbox for playing around with DMD live streaming. In VPM, using dmdext's <code>DmdDevice.dll</code>, you can enable live streaming and your DMD will be streamed in real time to this page.
+	p Note that nothing is recorded, and frames are only sent over the wire when there are actually people watching. However, anyone can open this page and see who's streaming.
+	h4.padder-top-2x How to stream
+	ul
+		li Download <a href="https://github.com/freezy/dmd-extensions/releases">DMD Extensions</a>.
+		li Copy <code>DmdDevice.dll</code> and <code>DmdDevice.ini</code> to your VPM Folder (usually called <i>VPinMAME</i> where you installed Visual Pinball)
+		li Open <code>DmdDevice.ini</code> and under <code>[vpdbstream]</code>, set <code>enabled</code> to <code>true</code>
+		li Before launching a game, make sure <i>Use external DMD (dll)</i> is checked in the game's VPM options.
+		li Launch game and be amazed :)
+
+	p Note that frame-by-frame coloring feature is fully implemented, i.e. if you're running a modified SAM ROM, it will be rendered correctly.
+
+	h4.padder-top-2x How does it work?
+	p We stream compressed sub frames through a websocket into the browser's WebGL texture. A few shaders make it look nice.
+	p A frame is between 50 and 200 bytes, which keeps the bandwidth minimal. Only changed frames are transferred. We start with a 500ms streaming buffer that is dynamically increased when latency gets larger than that.

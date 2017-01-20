@@ -17,6 +17,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+"use strict";
+
 /* global angular, THREE, _ */
 
 angular.module('vpdb.dmdstream', [])
@@ -26,7 +28,7 @@ angular.module('vpdb.dmdstream', [])
 			restrict: 'E',
 			scope: {
 				socket: '=',
-				dmdId: '=',
+				dmdId: '='
 			},
 			replace: true,
 			template: '<div class="dmd"></div>',
@@ -38,6 +40,9 @@ angular.module('vpdb.dmdstream', [])
 				$scope.started = 0;
 				$scope.gray2Palette = null;
 				$scope.gray4Palette = null;
+				$scope.$on('onParamsChange', function() { onParamsChange() });
+
+				console.log($scope.$parent.test);
 
 				setColor(0xec843d);
 
@@ -71,26 +76,12 @@ angular.module('vpdb.dmdstream', [])
 
 				// POST PROCESSING
 				// ---------------
-				// common render target params
-				$scope.renderTargetParameters = {
-					minFilter: THREE.LinearFilter,
-					magFilter: THREE.LinearFilter,
-					format: THREE.RGBFormat,
-					stencilBufer: false
-				};
-				$scope.dotMatrixParams = {
-					size: 3,
-					blur: 1.3
-				};
-				$scope.glowParams = {
-					amount: 1.6,
-					blur: 1
-				};
+
 
 				// Init dotsComposer to render the dots effect
 				// A composer is a stack of shader passes combined.
 				// A render target is an offscreen buffer to save a composer output
-				var renderTargetDots = new THREE.WebGLRenderTarget(screen.width, screen.height, $scope.renderTargetParameters);
+				var renderTargetDots = new THREE.WebGLRenderTarget(screen.width, screen.height, $scope.$parent.renderTargetParameters);
 
 				// dots Composer renders the dot effect
 				var dotsComposer = new THREE.EffectComposer(renderer, renderTargetDots);
@@ -103,7 +94,7 @@ angular.module('vpdb.dmdstream', [])
 				dotsComposer.addPass(dotMatrixPass);
 
 				// Init glowComposer renders a blurred version of the scene
-				var renderTargetGlow = new THREE.WebGLRenderTarget(screen.width, screen.height, $scope.renderTargetParameters);
+				var renderTargetGlow = new THREE.WebGLRenderTarget(screen.width, screen.height, $scope.$parent.renderTargetParameters);
 				var glowComposer = new THREE.EffectComposer(renderer, renderTargetGlow);
 
 				// create shader passes
@@ -229,23 +220,29 @@ angular.module('vpdb.dmdstream', [])
 						dmdMesh.material.map.image.data = frame;
 						dmdMesh.material.map.needsUpdate = true;
 
-						dotsComposer.render();
-						glowComposer.render();
-						blendComposer.render();
-						//renderer.render(scene, camera);
+						renderCanvas();
 					}, delay);
 					frame = render();
+				}
+
+				function renderCanvas() {
+					dotsComposer.render();
+					glowComposer.render();
+					blendComposer.render();
+					//renderer.render(scene, camera);
 				}
 
 				function onParamsChange() {
 
 					// copy gui params into shader uniforms
-					dotMatrixPass.uniforms['size'].value = Math.pow($scope.dotMatrixParams.size, 2);
-					dotMatrixPass.uniforms['blur'].value = Math.pow($scope.dotMatrixParams.blur * 2, 2);
+					dotMatrixPass.uniforms['size'].value = Math.pow($scope.$parent.dotMatrixParams.size, 2);
+					dotMatrixPass.uniforms['blur'].value = Math.pow($scope.$parent.dotMatrixParams.blur * 2, 2);
 
-					hblurPass.uniforms['h'].value = $scope.glowParams.blur / screen.width * 2;
-					vblurPass.uniforms['v'].value = $scope.glowParams.blur / screen.height * 2;
-					blendPass.uniforms['amount'].value = $scope.glowParams.amount;
+					hblurPass.uniforms['h'].value = $scope.$parent.glowParams.blur / screen.width * 2;
+					vblurPass.uniforms['v'].value = $scope.$parent.glowParams.blur / screen.height * 2;
+					blendPass.uniforms['amount'].value = $scope.$parent.glowParams.amount;
+
+					renderCanvas();
 				}
 
 				function onResize() {

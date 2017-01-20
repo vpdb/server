@@ -1,5 +1,19 @@
 .row.row--content.ng-cloak.row--fullheight.fade-animation(ng-controller="LiveDmdController")
 
+	.pull-right.shift-up(ng-hide="dmdIds.length === 0")
+		.dmd-knob
+			input#dotBlurKnob(type="text")
+			div DOT BLUR
+		.dmd-knob
+			input#dotSizeKnob(type="text")
+			div DOT SIZE
+		.dmd-knob
+			input#glowBlurKnob(type="text")
+			div GLOW BLUR
+		.dmd-knob
+			input#glowAmountKnob(type="text")
+			div GLOW
+
 	h1.h--primary Live Streams
 	livedmd(ng-repeat="dmdId in dmdIds", socket="socket", dmd-id="dmdId")
 	p(ng-show="dmdIds.length === 0") There isn't anyone streaming currently.
@@ -19,4 +33,4 @@
 
 	h4.padder-top-2x How does it work?
 	p We stream compressed sub frames through a websocket into the browser's WebGL texture. A few shaders make it look nice.
-	p A frame is between 50 and 200 bytes, which keeps the bandwidth minimal. Only changed frames are transferred. We start with a 500ms streaming buffer that is dynamically increased when latency gets larger than that.
+	p A frame is between 50 and 200 bytes, which keeps the bandwidth minimal. Only changed frames are transferred. There is a streaming buffer that is dynamically increased when latency catches up.

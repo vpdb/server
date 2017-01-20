@@ -43,6 +43,7 @@
 		"showdown": "^0.3.1",
 		"magnific-popup": "1.0.1",
 		"waitForImages": "alexanderdickson/waitForImages#~1.4.2",
+		"jquery-knob": "aterrien/jQuery-Knob#^1.2.13",
 		"jquery-throttle-debounce": "*",
 		"highlightjs": "8.9.1",
 		"bootstrap": "3.3.6",

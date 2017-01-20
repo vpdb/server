@@ -9,7 +9,8 @@ angular.module('vpdb.dmdstream', [])
 		$scope.theme('dark');
 
 		$scope.dmdIds = [];
-		$scope.socket = io('http://localhost:3000');
+		$scope.socket = io('https://api-test.vpdb.io');
+		//$scope.socket = io('http://localhost:3000');
 		$scope.socket.on('producers', function(dmdIds) {
 			$scope.dmdIds = dmdIds;
 			_.each(dmdIds, function(id) {

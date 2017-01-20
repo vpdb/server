@@ -35,8 +35,10 @@ angular.module('vpdb.dmdstream', [])
 
 				$scope.width = 128;
 				$scope.height = 32;
+				$scope.bufferTime = 500;
+				$scope.started = 0;
 
-				var color = new THREE.Color(0xff6a00);
+				var color = new THREE.Color(0xec843d);
 				var hsl = color.getHSL();
 
 				var ar = $scope.width / $scope.height;
@@ -151,14 +153,26 @@ angular.module('vpdb.dmdstream', [])
 						return;
 					}
 
-					dmdMesh.material.map.image.data = gray2toRgb24Frame(joinPlanes($scope.width, $scope.height, 2, data.frame));
-					dmdMesh.material.map.needsUpdate = true;
-					//dmdMesh.material.needsUpdate = true;
+					if (!$scope.clientStart) {
+						$scope.clientStart = new Date().getTime();
+						$scope.serverStart = data.timestamp;
+					}
+					var serverDiff = data.timestamp - $scope.serverStart;
+					var clientDiff = new Date().getTime() - $scope.clientStart;
+					var delay = $scope.bufferTime + serverDiff - clientDiff;
 
-					// dotsComposer.render();
-					// glowComposer.render();
-					// blendComposer.render();
-					renderer.render(scene, camera);
+					var frame;
+					setTimeout(function() {
+						dmdMesh.material.map.image.data = frame;
+						dmdMesh.material.map.needsUpdate = true;
+						//dmdMesh.material.needsUpdate = true;
+
+						// dotsComposer.render();
+						// glowComposer.render();
+						// blendComposer.render();
+						renderer.render(scene, camera);
+					}, delay);
+					frame = gray2toRgb24Frame(joinPlanes($scope.width, $scope.height, 2, data.planes));
 				});
 
 				$scope.socket.on('dimensions', function(data) {
@@ -242,7 +256,7 @@ angular.module('vpdb.dmdstream', [])
 					var frame = new ArrayBuffer(width * height);
 					var planeSize = buffer.byteLength / bitlength;
 					for (var bytePos = 0; bytePos < width * height / 8; bytePos++) {
-						for (var bitPos = 0; bitPos < 8; bitPos++) {
+						for (var bitPos = 7; bitPos >= 0; bitPos--) {
 							for (var planePos = 0; planePos < bitlength; planePos++) {
 								var bit = isBitSet(buffer.getUint8(planeSize * planePos + bytePos), bitPos) ? 1 : 0;
 								frame[bytePos * 8 + bitPos] |= (bit << planePos);
@@ -253,8 +267,7 @@ angular.module('vpdb.dmdstream', [])
 				}
 
 				function isBitSet(byte, pos) {
-					var mask = byte << pos;
-					return (byte & mask) != 0
+					return (byte & (1 << pos)) != 0;
 				}
 			}
 		};

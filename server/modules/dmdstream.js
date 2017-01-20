@@ -79,7 +79,11 @@ class DmdStream {
 		});
 		socket.on('gray2planes', data => {
 			if (this._subscribers[socket.id]) {
-				this._subscribers[socket.id].forEach(s => s.socket.emit('gray2planes', { id: this._sockets[socket.id].id, frame: data }));
+				this._subscribers[socket.id].forEach(s => s.socket.emit('gray2planes', {
+					id: this._sockets[socket.id].id,
+					timestamp: data.readUInt32LE(0),
+					planes: data.slice(8)
+				}));
 			}
 		});
 		socket.on('stop', () => {

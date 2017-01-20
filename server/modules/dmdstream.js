@@ -36,10 +36,14 @@ class DmdStream {
 
 		// general API
 		socket.on('produce', data => {
-			logger.info('Client %s is a producer: ', socket.id, data);
+			logger.info('Client %s is a producer:', socket.id, data);
 			this._sockets[socket.id].isProducer = true;
 			this._sockets[socket.id].width = data.width;
 			this._sockets[socket.id].height = data.height;
+			this._sockets[socket.id].color = data.color;
+			if (data.palette.length > 0) {
+				this._sockets[socket.id].palette = data.palette;
+			}
 			this._subscribers[socket.id] = [];
 			_.values(this._sockets).filter(s => !s.isProducer).forEach(s => s.socket.emit('producer', { id: this._sockets[socket.id].id }));
 		});
@@ -49,6 +53,10 @@ class DmdStream {
 			if (!producer) {
 				socket.emit('err', { message: 'No such producer with ID "' + id + '".' });
 				return;
+			}
+			socket.emit('color', { id: producer.id, color: producer.color });
+			if (producer.palette) {
+				socket.emit('palette', { id: producer.id, palette: producer.palette });
 			}
 			socket.emit('dimensions', { id: producer.id, width: producer.width, height: producer.height });
 			this._subscribers[producer.socket.id].push(this._sockets[socket.id]);
@@ -72,9 +80,30 @@ class DmdStream {
 		});
 
 		// producer API
-		socket.on('gray2frame', data => {
+		socket.on('color', data => {
 			if (this._subscribers[socket.id]) {
-				this._subscribers[socket.id].forEach(s => s.socket.emit('gray2frame', { id: this._sockets[socket.id].id, frame: data }));
+				this._subscribers[socket.id].forEach(s => s.socket.emit('color', {
+					id: this._sockets[socket.id].id,
+					color: data.color
+				}));
+			}
+		});
+		socket.on('palette', data => {
+			if (this._subscribers[socket.id]) {
+				this._subscribers[socket.id].forEach(s => s.socket.emit('palette', {
+					id: this._sockets[socket.id].id,
+					palette: data.palette
+				}));
+			}
+		});
+		socket.on('clearColor', () => {
+			if (this._subscribers[socket.id]) {
+				this._subscribers[socket.id].forEach(s => s.socket.emit('clearColor', { id: this._sockets[socket.id].id }));
+			}
+		});
+		socket.on('clearPalette', () => {
+			if (this._subscribers[socket.id]) {
+				this._subscribers[socket.id].forEach(s => s.socket.emit('clearPalette', { id: this._sockets[socket.id].id }));
 			}
 		});
 		socket.on('gray2planes', data => {
@@ -83,6 +112,35 @@ class DmdStream {
 					id: this._sockets[socket.id].id,
 					timestamp: data.readUInt32LE(0),
 					planes: data.slice(8)
+				}));
+			}
+		});
+		socket.on('gray4planes', data => {
+			if (this._subscribers[socket.id]) {
+				this._subscribers[socket.id].forEach(s => s.socket.emit('gray4planes', {
+					id: this._sockets[socket.id].id,
+					timestamp: data.readUInt32LE(0),
+					planes: data.slice(8)
+				}));
+			}
+		});
+		socket.on('coloredgray2', data => {
+			if (this._subscribers[socket.id]) {
+				this._subscribers[socket.id].forEach(s => s.socket.emit('coloredgray2', {
+					id: this._sockets[socket.id].id,
+					timestamp: data.readUInt32LE(0),
+					palette: readPalette(data, 8, 4),
+					planes: data.slice(20)
+				}));
+			}
+		});
+		socket.on('coloredgray4', data => {
+			if (this._subscribers[socket.id]) {
+				this._subscribers[socket.id].forEach(s => s.socket.emit('coloredgray4', {
+					id: this._sockets[socket.id].id,
+					timestamp: data.readUInt32LE(0),
+					palette: readPalette(data, 8, 16),
+					planes: data.slice(56)
 				}));
 			}
 		});
@@ -107,3 +165,13 @@ class DmdStream {
 	}
 }
 module.exports = new DmdStream();
+
+function readPalette(data, offset, numColors) {
+	let palette = [];
+	let pos = offset;
+	for (var i = 0; i < numColors; i++) {
+		palette.push((data.readUInt8(pos) << 16) + (data.readUInt8(pos + 1) << 8) + data.readUInt8(pos + 2));
+		pos += 3;
+	}
+	return palette;
+}

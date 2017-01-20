@@ -37,9 +37,10 @@ angular.module('vpdb.dmdstream', [])
 				$scope.height = 32;
 				$scope.bufferTime = 500;
 				$scope.started = 0;
+				$scope.gray2Palette = null;
+				$scope.gray4Palette = null;
 
-				var color = new THREE.Color(0xec843d);
-				var hsl = color.getHSL();
+				setColor(0xec843d);
 
 				var ar = $scope.width / $scope.height;
 				var screen = getDimensions();
@@ -131,25 +132,82 @@ angular.module('vpdb.dmdstream', [])
 				onResize();
 				dotMatrixPass.uniforms['resolution'].value = new THREE.Vector2(screen.width, screen.height);
 
-				$scope.socket.on('gray2frame', function(data) {
-
-					if (data.id !== $scope.dmdId || $scope.width === 0 || $scope.height === 0) {
-						return;
-					}
-
-					dmdMesh.material.map.image.data = gray2toRgb24(data.frame);
-					dmdMesh.material.map.needsUpdate = true;
-					//dmdMesh.material.needsUpdate = true;
-
-					dotsComposer.render();
-					glowComposer.render();
-					blendComposer.render();
-					//renderer.render(scene, camera);
+				$scope.socket.on('gray2planes', function(data) {
+					renderFrame(data, function() {
+						return graytoRgb24(joinPlanes($scope.width, $scope.height, 2, data.planes), 4);
+					});
 				});
 
-				$scope.socket.on('gray2planes', function(data) {
+				$scope.socket.on('gray4planes', function(data) {
+					renderFrame(data, function() {
+						return graytoRgb24(joinPlanes($scope.width, $scope.height, 4, data.planes), 4);
+					});
+				});
 
-					if (data.id !== $scope.dmdId || $scope.width === 0 || $scope.height === 0) {
+				$scope.socket.on('coloredgray2', function(data) {
+					renderFrame(data, function() {
+						return graytoRgb24(joinPlanes($scope.width, $scope.height, 2, data.planes), data.palette);
+					});
+				});
+
+				$scope.socket.on('coloredgray4', function(data) {
+					renderFrame(data, function() {
+						return graytoRgb24(joinPlanes($scope.width, $scope.height, 4, data.planes), data.palette);
+					});
+				});
+
+				$scope.socket.on('color', function(data) {
+					if (data.id !== $scope.dmdId) {
+						return;
+					}
+					console.log('Setting color to #%s', data.color.toString(16));
+					setColor(data.color);
+				});
+
+				$scope.socket.on('palette', function(data) {
+					if (data.id !== $scope.dmdId) {
+						return;
+					}
+					if (data.palette.length === 4) {
+
+						console.log('Setting palette to %s colors: %s', data.palette.length, data.palette.map(c => c.toString(16)).join('/'));
+						$scope.gray2Palette = data.palette;
+					}
+					if (data.palette.length === 16) {
+						console.log('Setting palette to %s colors.', data.palette.length);
+						$scope.gray4Palette = data.palette;
+					}
+				});
+
+				$scope.socket.on('clearColor', function(data) {
+					if (data.id !== $scope.dmdId) {
+						return;
+					}
+					console.log('Clearing color.');
+					setColor(0xec843d);
+				});
+
+				$scope.socket.on('clearPalette', function(data) {
+					if (data.id !== $scope.dmdId) {
+						return;
+					}
+					console.log('Clearing palette.');
+					$scope.gray2Palette = null;
+					$scope.gray4Palette = null;
+				});
+
+				$scope.socket.on('dimensions', function(data) {
+					if (data.id !== $scope.dmdId) {
+						return;
+					}
+					$scope.width = data.width;
+					$scope.height = data.height;
+					ar = $scope.width / $scope.height;
+					onResize();
+				});
+
+				function renderFrame(data, render) {
+					if (data.id !== $scope.dmdId) {
 						return;
 					}
 
@@ -165,25 +223,14 @@ angular.module('vpdb.dmdstream', [])
 					setTimeout(function() {
 						dmdMesh.material.map.image.data = frame;
 						dmdMesh.material.map.needsUpdate = true;
-						//dmdMesh.material.needsUpdate = true;
 
 						// dotsComposer.render();
 						// glowComposer.render();
 						// blendComposer.render();
 						renderer.render(scene, camera);
 					}, delay);
-					frame = gray2toRgb24Frame(joinPlanes($scope.width, $scope.height, 2, data.planes));
-				});
-
-				$scope.socket.on('dimensions', function(data) {
-					if (data.id !== $scope.dmdId) {
-						return;
-					}
-					$scope.width = data.width;
-					$scope.height = data.height;
-					ar = $scope.width / $scope.height;
-					onResize();
-				});
+					frame = render();
+				}
 
 				function onParamsChange() {
 
@@ -216,15 +263,29 @@ angular.module('vpdb.dmdstream', [])
 					return { width: width, height: height };
 				}
 
-				function gray2toRgb24(frame) {
-					var buffer = new DataView(frame);
+				function graytoRgb24(buffer, paletteOrNumColors) {
 					var rgbFrame = new Uint8Array($scope.width * $scope.height * 3);
 					var pos = 0;
 					var dotColor = new THREE.Color();
+					var palette = null;
+					if (_.isArray(paletteOrNumColors)) {
+						palette = paletteOrNumColors;
+					} else {
+						if (paletteOrNumColors === 4 && $scope.gray2Palette) {
+							palette = $scope.gray2Palette;
+						}
+						if (paletteOrNumColors === 16 && $scope.gray4Palette) {
+							palette = $scope.gray4Palette;
+						}
+					}
 					for (var y = $scope.height - 1; y >= 0; y--) {
 						for (var x = 0; x < $scope.width; x++) {
-							var lum = buffer.getUint8(y * $scope.width + x) / 4;
-							dotColor.setHSL(hsl.h, hsl.s, lum * hsl.l);
+							if (palette) {
+								dotColor = new THREE.Color(palette[buffer[y * $scope.width + x]]);
+							} else {
+								var lum = buffer[y * $scope.width + x] / paletteOrNumColors;
+								dotColor.setHSL($scope.hsl.h, $scope.hsl.s, lum * $scope.hsl.l);
+							}
 							rgbFrame[pos] = Math.floor(dotColor.r * 255);
 							rgbFrame[pos + 1] = Math.floor(dotColor.g * 255);
 							rgbFrame[pos + 2] = Math.floor(dotColor.b * 255);
@@ -234,21 +295,9 @@ angular.module('vpdb.dmdstream', [])
 					return rgbFrame;
 				}
 
-				function gray2toRgb24Frame(buffer) {
-					var rgbFrame = new Uint8Array($scope.width * $scope.height * 3);
-					var pos = 0;
-					var dotColor = new THREE.Color();
-					for (var y = $scope.height - 1; y >= 0; y--) {
-						for (var x = 0; x < $scope.width; x++) {
-							var lum = buffer[y * $scope.width + x] / 4;
-							dotColor.setHSL(hsl.h, hsl.s, lum * hsl.l);
-							rgbFrame[pos] = Math.floor(dotColor.r * 255);
-							rgbFrame[pos + 1] = Math.floor(dotColor.g * 255);
-							rgbFrame[pos + 2] = Math.floor(dotColor.b * 255);
-							pos += 3;
-						}
-					}
-					return rgbFrame;
+				function setColor(color) {
+					$scope.color = new THREE.Color(color);
+					$scope.hsl = $scope.color.getHSL();
 				}
 
 				function joinPlanes(width, height, bitlength, planes) {

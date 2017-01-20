@@ -132,26 +132,10 @@ angular.module('vpdb.dmdstream', [])
 				$scope.socket.on('gray2frame', function(data) {
 
 					if (data.id !== $scope.dmdId || $scope.width === 0 || $scope.height === 0) {
-						console.log('%s != %s', data.id, $scope.dmdId);
 						return;
 					}
 
-					var buffer = new DataView(data.frame);
-					var rgbFrame = new Uint8Array($scope.width * $scope.height * 3);
-					var pos = 0;
-					var dotColor = new THREE.Color();
-					for (var y = $scope.height - 1; y >= 0; y--) {
-						for (var x = 0; x < $scope.width; x++) {
-							var lum = buffer.getUint8(y * $scope.width + x) / 4;
-							dotColor.setHSL(hsl.h, hsl.s, lum * hsl.l);
-							rgbFrame[pos] = Math.floor(dotColor.r * 255);
-							rgbFrame[pos + 1] = Math.floor(dotColor.g * 255);
-							rgbFrame[pos + 2] = Math.floor(dotColor.b * 255);
-							pos += 3;
-						}
-					}
-
-					dmdMesh.material.map.image.data = rgbFrame;
+					dmdMesh.material.map.image.data = gray2toRgb24(data.frame);
 					dmdMesh.material.map.needsUpdate = true;
 					//dmdMesh.material.needsUpdate = true;
 
@@ -159,6 +143,22 @@ angular.module('vpdb.dmdstream', [])
 					glowComposer.render();
 					blendComposer.render();
 					//renderer.render(scene, camera);
+				});
+
+				$scope.socket.on('gray2planes', function(data) {
+
+					if (data.id !== $scope.dmdId || $scope.width === 0 || $scope.height === 0) {
+						return;
+					}
+
+					dmdMesh.material.map.image.data = gray2toRgb24Frame(joinPlanes($scope.width, $scope.height, 2, data.frame));
+					dmdMesh.material.map.needsUpdate = true;
+					//dmdMesh.material.needsUpdate = true;
+
+					// dotsComposer.render();
+					// glowComposer.render();
+					// blendComposer.render();
+					renderer.render(scene, camera);
 				});
 
 				$scope.socket.on('dimensions', function(data) {
@@ -200,6 +200,61 @@ angular.module('vpdb.dmdstream', [])
 					width = containerWidth;
 					height = Math.round(containerWidth / ar);
 					return { width: width, height: height };
+				}
+
+				function gray2toRgb24(frame) {
+					var buffer = new DataView(frame);
+					var rgbFrame = new Uint8Array($scope.width * $scope.height * 3);
+					var pos = 0;
+					var dotColor = new THREE.Color();
+					for (var y = $scope.height - 1; y >= 0; y--) {
+						for (var x = 0; x < $scope.width; x++) {
+							var lum = buffer.getUint8(y * $scope.width + x) / 4;
+							dotColor.setHSL(hsl.h, hsl.s, lum * hsl.l);
+							rgbFrame[pos] = Math.floor(dotColor.r * 255);
+							rgbFrame[pos + 1] = Math.floor(dotColor.g * 255);
+							rgbFrame[pos + 2] = Math.floor(dotColor.b * 255);
+							pos += 3;
+						}
+					}
+					return rgbFrame;
+				}
+
+				function gray2toRgb24Frame(buffer) {
+					var rgbFrame = new Uint8Array($scope.width * $scope.height * 3);
+					var pos = 0;
+					var dotColor = new THREE.Color();
+					for (var y = $scope.height - 1; y >= 0; y--) {
+						for (var x = 0; x < $scope.width; x++) {
+							var lum = buffer[y * $scope.width + x] / 4;
+							dotColor.setHSL(hsl.h, hsl.s, lum * hsl.l);
+							rgbFrame[pos] = Math.floor(dotColor.r * 255);
+							rgbFrame[pos + 1] = Math.floor(dotColor.g * 255);
+							rgbFrame[pos + 2] = Math.floor(dotColor.b * 255);
+							pos += 3;
+						}
+					}
+					return rgbFrame;
+				}
+
+				function joinPlanes(width, height, bitlength, planes) {
+					var buffer = new DataView(planes);
+					var frame = new ArrayBuffer(width * height);
+					var planeSize = buffer.byteLength / bitlength;
+					for (var bytePos = 0; bytePos < width * height / 8; bytePos++) {
+						for (var bitPos = 0; bitPos < 8; bitPos++) {
+							for (var planePos = 0; planePos < bitlength; planePos++) {
+								var bit = isBitSet(buffer.getUint8(planeSize * planePos + bytePos), bitPos) ? 1 : 0;
+								frame[bytePos * 8 + bitPos] |= (bit << planePos);
+							}
+						}
+					}
+					return frame;
+				}
+
+				function isBitSet(byte, pos) {
+					var mask = byte << pos;
+					return (byte & mask) != 0
 				}
 			}
 		};

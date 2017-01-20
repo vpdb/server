@@ -47,7 +47,7 @@ class DmdStream {
 			logger.info('Client %s subscribed to stream %s.', socket.id, id);
 			let producer = _.values(this._sockets).find(s => s.id === id && s.isProducer);
 			if (!producer) {
-				socket.emit('error', { message: 'No such producer with ID "' + id + '".' });
+				socket.emit('err', { message: 'No such producer with ID "' + id + '".' });
 				return;
 			}
 			socket.emit('dimensions', { id: producer.id, width: producer.width, height: producer.height });
@@ -57,7 +57,7 @@ class DmdStream {
 			logger.info('Client %s unsubscribed from stream %s.', socket.id, id);
 			let producer = _.values(this._sockets).find(s => s.id === id);
 			if (!producer) {
-				socket.emit('error', { message: 'No such producer with ID "' + id + '".' });
+				socket.emit('err', { message: 'No such producer with ID "' + id + '".' });
 				return;
 			}
 			this._subscribers[producer.socket.id] = this._subscribers[producer.socket.id].filter(s => s.id !== socket.id);
@@ -75,6 +75,11 @@ class DmdStream {
 		socket.on('gray2frame', data => {
 			if (this._subscribers[socket.id]) {
 				this._subscribers[socket.id].forEach(s => s.socket.emit('gray2frame', { id: this._sockets[socket.id].id, frame: data }));
+			}
+		});
+		socket.on('gray2planes', data => {
+			if (this._subscribers[socket.id]) {
+				this._subscribers[socket.id].forEach(s => s.socket.emit('gray2planes', { id: this._sockets[socket.id].id, frame: data }));
 			}
 		});
 		socket.on('stop', () => {

@@ -17,7 +17,6 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-"use strict";
 /* global angular, THREE, _ */
 
 angular.module('vpdb.dmdstream', [])
@@ -47,7 +46,10 @@ angular.module('vpdb.dmdstream', [])
 				console.log('Setting DMD up for %sx%s.', screen.width, screen.height);
 
 				var camera = new THREE.PerspectiveCamera(55, ar, 20, 3000);
-				camera.position.z = 1000;
+				camera.position.x = 10;
+				camera.position.y = 10;
+				camera.position.z = 615;
+
 				var scene = new THREE.Scene();
 
 				// texture
@@ -83,11 +85,6 @@ angular.module('vpdb.dmdstream', [])
 				$scope.glowParams = {
 					amount: 1.6,
 					blur: 1
-				};
-				$scope.perspectiveParams = {
-					distance: 615,
-					x: 10,
-					y: 10
 				};
 
 				// Init dotsComposer to render the dots effect
@@ -232,9 +229,9 @@ angular.module('vpdb.dmdstream', [])
 						dmdMesh.material.map.image.data = frame;
 						dmdMesh.material.map.needsUpdate = true;
 
-						dotsComposer.render(0.1);
-						glowComposer.render(0.1);
-						blendComposer.render(0.1);
+						dotsComposer.render();
+						glowComposer.render();
+						blendComposer.render();
 						//renderer.render(scene, camera);
 					}, delay);
 					frame = render();
@@ -249,10 +246,6 @@ angular.module('vpdb.dmdstream', [])
 					hblurPass.uniforms['h'].value = $scope.glowParams.blur / screen.width * 2;
 					vblurPass.uniforms['v'].value = $scope.glowParams.blur / screen.height * 2;
 					blendPass.uniforms['amount'].value = $scope.glowParams.amount;
-
-					camera.position.x = $scope.perspectiveParams.x;
-					camera.position.y = $scope.perspectiveParams.y;
-					camera.position.z = $scope.perspectiveParams.distance;
 				}
 
 				function onResize() {

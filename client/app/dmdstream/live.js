@@ -73,12 +73,6 @@ angular.module('vpdb.dmdstream', [])
 				$scope.$broadcast('onParamsChange');
 			}
 		}));
-		$('#dotBlurKnob').val($scope.dotMatrixParams.blur).knob(_.extend(opts, {
-			change: function (v) {
-				$scope.dotMatrixParams.blur = v;
-				$scope.$broadcast('onParamsChange');
-			}
-		}));
 		$('#glowAmountKnob').val($scope.glowParams.amount).knob(_.extend(opts, {
 			change: function (v) {
 				$scope.glowParams.amount = v;

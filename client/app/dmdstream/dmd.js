@@ -170,7 +170,7 @@ angular.module('vpdb.dmdstream', [])
 					}
 					if (data.palette.length === 4) {
 
-						console.log('Setting palette to %s colors: %s', data.palette.length, data.palette.map(c => c.toString(16)).join('/'));
+						console.log('Setting palette to %s colors.', data.palette.length);
 						$scope.gray2Palette = data.palette;
 					}
 					if (data.palette.length === 16) {

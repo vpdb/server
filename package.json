@@ -26,7 +26,7 @@
 		"bluebird": "3.5.0",
 		"body-parser": "1.18.1",
 		"buffer-indexof": "1.1.1",
-		"bull": "1.0.0",
+		"bull": "3.2.0",
 		"busboy": "0.2.13",
 		"cheerio": "0.22.0",
 		"colors": "1.1.2",

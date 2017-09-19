@@ -76,6 +76,11 @@ Set:
 ### General Stuff
 
 	sudo apt-get -y install rcconf git-core python-software-properties vim unrar tar
+	
+### Cleaning up `/boot`
+	
+	sudo apt purge linux-image-4.4.0-xx-generic
+	sudo apt autoremove
 
 ## Node.js
 
@@ -243,6 +248,7 @@ Rename currently installed MongoDB instance on secondary and tertiary:
 	sudo systemctl stop mongodb
 	sudo cp /etc/systemd/system/mongodb.service /etc/systemd/system/mongodb-replica.service
 	sudo cp /etc/mongod.conf /etc/mongod-replica.conf
+	sudo vi /etc/mongod-replica.conf
 	sudo vi /etc/systemd/system/mongodb-replica.service
 	
 	ExecStart=/usr/bin/mongod --quiet --config /etc/mongod-replica.conf
@@ -629,11 +635,12 @@ Then start nginx:
 
 	sudo systemctl restart nginx
 	
-And setup Letsencrypt renewal
+And setup Letsencrypt renewal (and reload nginx one a week)
 
 	sudo crontab -e
 	
 	23 4,16 * * * letsencrypt renew
+	30 4    * * 0 systemctrl reload nginx
 
 If you want to protect your site:
 

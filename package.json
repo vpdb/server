@@ -44,7 +44,7 @@
 		"jwt-simple": "0.5.1",
 		"lodash": "4.17.4",
 		"md5": "2.2.1",
-		"mongoose": "4.6.0",
+		"mongoose": "4.11.12",
 		"mongoose-paginate": "5.0.3",
 		"mongoose-unique-validator": "1.0.2",
 		"morgan": "1.8.2",

@@ -136,6 +136,9 @@ function parseDetails(body) {
 			game.artists = firstMatch(body, /Art by:\s*<\/b><\/td><td[^>]*><span[^>]*>(.*?)<\/tr>/i, function(m) {
 				return ent.decode(striptags(m)).split(/,\s*/);
 			});
+			game.animators = firstMatch(body, /Dots\/Animation by:\s*<\/b><\/td><td[^>]*><span[^>]*>(.*?)<\/tr>/i, function(m) {
+				return ent.decode(striptags(m)).split(/,\s*/);
+			});
 
 			game.features = firstMatch(body, /Notable Features:\s*<\/b><\/td><td[^>]*>(.*?)<\/td>/i, tidyText);
 			game.notes = firstMatch(body, /Notes:\s*<\/b><\/td><td[^>]*>(.*?)<\/td>/i, tidyText);

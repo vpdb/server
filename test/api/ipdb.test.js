@@ -48,7 +48,9 @@ describe('The VPDB `IPDB` API', function() {
 					expect(res.body.designers).to.contain('Brian Eddy');
 					expect(res.body.artists).to.be.an('array');
 					expect(res.body.artists).to.contain('John Youssi');
-					expect(res.body.artists).to.contain('Greg Freres');
+					expect(res.body.animators).to.be.an('array');
+					expect(res.body.animators).to.contain('Adam Rhine');
+					expect(res.body.animators).to.contain('Brian Morris');
 					expect(res.body.features).to.contain('pop-up trolls');
 					expect(res.body.notes).to.contain('Ye Olde Medieval Madness');
 					expect(res.body.toys).to.contain('Exploding castle');

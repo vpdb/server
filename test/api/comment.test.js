@@ -79,7 +79,7 @@ describe('The VPDB `Comment` API', function() {
 					request.get('/api/v1/releases/' + release.id + '/comments').end(function(err, res) {
 						hlp.expectStatus(err, res, 200);
 						expect(res.body).to.be.an('array');
-						expect(res.body[0].message).to.be(msg);
+						expect(res.body[res.body.length - 1].message).to.be(msg);
 						done();
 					});
 				});

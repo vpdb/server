@@ -41,7 +41,7 @@ Then make these are enabled:
 
 ### Setup Firewall
 
-	sudo apt-get -y install iptables-persistent
+	sudo apt -y install iptables-persistent
 	cd /etc/iptables
 	sudo wget https://gist.githubusercontent.com/jirutka/3742890/raw/c025b0b8c58af49aa9644982c459314c9adba157/rules-both.iptables
 	sudo vi rules-both.iptables
@@ -75,7 +75,7 @@ Set:
 
 ### General Stuff
 
-	sudo apt-get -y install rcconf git-core python-software-properties vim unrar tar
+	sudo apt -y install rcconf git-core python-software-properties vim unrar tar libcurl4-openssl-dev 
 	
 ### Cleaning up `/boot`
 	
@@ -87,7 +87,7 @@ Set:
 	cd
 	sudo curl -sL https://deb.nodesource.com/setup_6.x -o nodesource_setup.sh
 	sudo bash nodesource_setup.sh
-	sudo apt-get install -y nodejs build-essential
+	sudo apt install -y nodejs build-essential
 
 	npm config set ca ""
 	npm install -g grunt grunt-cli bower
@@ -104,8 +104,8 @@ Install 3.2 from repo:
 	sudo su -
 	echo "deb http://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.2 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.2.list
 	exit
-	sudo apt-get -y update
-	sudo apt-get install -y mongodb-org
+	sudo apt -y update
+	sudo apt install -y mongodb-org
 
 Setup Systemd Script:
 
@@ -453,12 +453,12 @@ If okay, add to crontab:
 Install latest from repo:
 
 	sudo apt-add-repository -y ppa:chris-lea/redis-server
-	sudo apt-get update
-	sudo apt-get install -y redis-server
+	sudo apt update
+	sudo apt install -y redis-server
 
 ## Nginx
 
-	sudo apt-get install -y nginx-extras
+	sudo apt install -y nginx-extras
 
 ## Setup Push Deployment
 
@@ -577,7 +577,7 @@ Setup log rotation:
 
 Install the Letsencrypt bot
 
-	sudo apt-get install letsencrypt
+	sudo apt install letsencrypt
 	
 Setup certificate path
 
@@ -644,7 +644,7 @@ And setup Letsencrypt renewal (and reload nginx one a week)
 
 If you want to protect your site:
 
-	sudo apt-get -y install apache2-utils
+	sudo apt -y install apache2-utils
 	sudo htpasswd -c /var/www/.htpasswd vpdb
 	sudo chown www-data:www-data /var/www/.htpasswd
 	sudo vi /etc/nginx/sites-available/<site-to-protect>.conf
@@ -705,8 +705,8 @@ Add repo and install:
 	sudo echo deb http://apt.izzysoft.de/ubuntu generic universe >> /etc/apt/sources.list
 	wget http://apt.izzysoft.de/izzysoft.asc
 	sudo apt-key add izzysoft.asc
-	sudo apt-get update
-	sudo apt-get install -y monitorix
+	sudo apt update
+	sudo apt install -y monitorix
 	sudo cp /repos/source/deploy/conf/monitorix.conf /etc/monitorix/
 	
 Not all plugins seem to with that package, so let's link the Git repo into its lib directory:
@@ -733,7 +733,7 @@ Setup nginx:
 
 Pollers:
 
-	sudo apt-get install -y python-pip
+	sudo apt install -y python-pip
 	sudo pip install newrelic-plugin-agent
 	sudo pip install newrelic-plugin-agent[mongodb]
 	sudo cp /opt/newrelic-plugin-agent/newrelic-plugin-agent.cfg /etc/newrelic/newrelic-plugin-agent.cfg

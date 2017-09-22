@@ -159,7 +159,14 @@ Settings.prototype.migrate = function(callback) {
 		logger.info('[settings] Found new settings: [' + newProps.join(', ') + ']');
 
 		// 2. retrieve code blocks of added properties
-		var nodesNew = analyze(uglify.parse(settingsDist));
+		var nodesNew = analyze(uglify.minify(settingsDist, {
+			compress: false,
+			mangle: false,
+			output: {
+				ast: true,
+				code: false
+			}
+		}).ast);
 
 		// 3. inject code blocks into settings.js
 		var settingsPatched = _.clone(settingsCurr);
@@ -171,7 +178,14 @@ Settings.prototype.migrate = function(callback) {
 			var node = settingsNew[path];  // ast node corresponding to the setting to be added
 			try {
 				// analyze current settings, so we know where to inject
-				ast = analyze(uglify.parse(settingsPatched));
+				ast = analyze(uglify.minify(settingsPatched, {
+					compress: false,
+					mangle: false,
+					output: {
+						ast: true,
+						code: false
+					}
+				}).ast);
 			} catch (err) {
 				logger.error('[settings] Error parsing patched file: ' + err);
 				result.errors.push({

@@ -25,7 +25,6 @@ var path = require('path');
 var logger = require('winston');
 var nodemailer = require('nodemailer');
 var handlebars = require('handlebars');
-var smtpTransport = require('nodemailer-smtp-transport');
 
 var settings = require('./settings');
 var config = settings.current;
@@ -340,7 +339,8 @@ function sendEmail(user, subject, template, templateData, enabledFlag) {
 			text: text
 		};
 
-		const transport = nodemailer.createTransport(smtpTransport(config.vpdb.email.nodemailer));
+		// create reusable transporter object using the default SMTP transport
+		const transport = nodemailer.createTransport(config.vpdb.email.nodemailer);
 		logger.info('[mailer] Sending %s email to <%s>...', what, email.to.address);
 		return transport.sendMail(email);
 

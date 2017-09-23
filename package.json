@@ -6,7 +6,7 @@
 	"private": true,
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/freezy/node-vpdb"
+		"url": "https://github.com/vpdb/backend"
 	},
 	"keywords": [
 		"visual pinball",
@@ -16,7 +16,7 @@
 	"author": "freezy",
 	"license": "GPLv2",
 	"bugs": {
-		"url": "https://github.com/freezy/node-vpdb/issues"
+		"url": "https://github.com/vpdb/backend/issues"
 	},
 	"dependencies": {
 		"@slack/client": "^3.6.0",
@@ -130,7 +130,7 @@
 		"yargs": "3.32.0"
 	},
 	"engines": {
-		"node": "6.x"
+		"node": "8.x"
 	},
 	"scripts": {
 		"test": "grunt ci"

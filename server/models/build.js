@@ -102,7 +102,7 @@ BuildSchema.path('label').validate(function(label) {
 }, 'Label must contain at least three characters.');
 
 BuildSchema.path('built_at').validate(function(dateString) {
-	return _.isDate(dateString) || (_.isString(dateString) && validator.isDate(dateString));
+	return _.isDate(dateString) || (_.isString(dateString) && validator.isISO8601(dateString));
 }, 'Date must be a string parseable by Javascript.');
 
 

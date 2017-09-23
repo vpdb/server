@@ -84,24 +84,13 @@ serverDomain.run(function() {
 
 	let app = express();
 
-	new Promise((resolve, reject) => {
-		// bootstrap db connection
-		let mongoOpts = { server: { socketOptions: { keepAlive: 1, connectTimeoutMS: 5000 } }, auto_reconnect: true };
-		mongoose.connection.on('open', function() {
-			logger.info('[app] Database connected to %s.', config.vpdb.db);
-			resolve();
-		});
-		mongoose.connection.on('error', function (err) {
-			logger.error('[app] Database connection failed: %s.', err.message);
-			reject(err);
-		});
-		mongoose.connection.on('disconnected', function() {
-			logger.error('[app] Database disconnected, trying to reconnect...');
-			mongoose.connect(config.vpdb.db, mongoOpts);
-		});
-		mongoose.connect(config.vpdb.db, mongoOpts);
-
-	}).then(() => {
+	const mongoOpts = {
+		useMongoClient: true,
+		keepAlive: true,
+		connectTimeoutMS: 5000
+	};
+	mongoose.connect(config.vpdb.db, mongoOpts).then(() => {
+		logger.info('[app] Database connected to %s.', config.vpdb.db);
 
 		// bootstrap modules
 		require('./server/modules/quota').init();

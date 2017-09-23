@@ -291,7 +291,7 @@ module.exports = {
 			 * being served from a different folder so we can make Nginx or even
 			 * a CDN host them.
 			 *
-			 * [1] https://github.com/freezy/node-vpdb/blob/master/server/modules/filetypes.js
+			 * [1] https://github.com/vpdb/backend/blob/master/server/modules/filetypes.js
 			 */
 			costs: {
 				'backglass': { category: { video: 1, image: 0 }, variation: -1 },   // bg vids: 1 credit, bg imgs: free, any variation: public

@@ -500,14 +500,14 @@ Paste your pub key in there.
 Still as user `deployer`:
 
 	cd ~
-	git clone --mirror https://github.com/freezy/node-vpdb.git staging
-	git clone --mirror https://github.com/freezy/node-vpdb.git production
+	git clone --mirror https://github.com/vpdb/backend.git staging
+	git clone --mirror https://github.com/vpdb/backend.git production
 	chmod 700 /repos/production /repos/staging
 
 Setup deployment hooks:
 
 	cd ~
-	git clone https://github.com/freezy/node-vpdb.git source
+	git clone https://github.com/vpdb/backend.git source
 	ln -s ~/source/deploy/hooks/post-receive-production ~/production/hooks/post-receive
 	ln -s ~/source/deploy/hooks/post-receive-staging ~/staging/hooks/post-receive
 	ln -s ~/source/deploy/hooks/common ~/production/hooks/common

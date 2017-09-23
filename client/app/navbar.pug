@@ -25,11 +25,11 @@ block body
 
 	//-section#bottom.footer(ng-cloak)
 		//p
-			a(href="https://github.com/freezy/node-vpdb", target="_blank")
+			a(href="https://github.com/vpdb/backend", target="_blank")
 				+icon('github-alt').shift-up.space-right
 				| <strong>Fork me</strong> on GitHub
 			if deployment != 'production'
 				| &nbsp;&#8212;
-				a(href=`https://github.com/freezy/node-vpdb/commit/${gitinfo.local.branch.current.SHA}`, target="_blank")=gitinfo.local.branch.current.shortSHA
+				a(href=`https://github.com/vpdb/backend/commit/${gitinfo.local.branch.current.SHA}`, target="_blank")=gitinfo.local.branch.current.shortSHA
 				| &nbsp;@&nbsp;
-				a(href=`https://github.com/freezy/node-vpdb/tree/${gitinfo.local.branch.current.name}`, target="_blank")=gitinfo.local.branch.current.name
+				a(href=`https://github.com/vpdb/backend/tree/${gitinfo.local.branch.current.name}`, target="_blank")=gitinfo.local.branch.current.name

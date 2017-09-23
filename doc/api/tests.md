@@ -78,9 +78,9 @@ email confirmation because it can only be used by administrators. Also note
 that this is the only case so far that could be easily done with a unit test.
 
 
-[coverage]: https://github.com/freezy/node-vpdb/blob/master/app.js#L10
-[oauthmock]: https://github.com/freezy/node-vpdb/blob/master/server/routes.js#L58
-[ipdbtest]: https://github.com/freezy/node-vpdb/blob/master/test/api/ipdb.test.js#L26
-[usersjs]: https://github.com/freezy/node-vpdb/blob/master/server/controllers/api/users.js
-[userjs]: https://github.com/freezy/node-vpdb/blob/master/server/controllers/api/user.js
+[coverage]: https://github.com/vpdb/backend/blob/master/app.js#L10
+[oauthmock]: https://github.com/vpdb/backend/blob/master/server/routes.js#L58
+[ipdbtest]: https://github.com/vpdb/backend/blob/master/test/api/ipdb.test.js#L26
+[usersjs]: https://github.com/vpdb/backend/blob/master/server/controllers/api/users.js
+[userjs]: https://github.com/vpdb/backend/blob/master/server/controllers/api/user.js
 [apiusers]: api://core/put/users/{user_id}

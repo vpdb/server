@@ -6,7 +6,7 @@ This describes how in particular VPDB organizes configuration settings and chang
 
 In the repo we have ``server/config/settings-dist.js``. This is the distributed configuration file that is maintained as
 new values are added. Detailed documentation about each value can be found in the
-[file itself](https://github.com/freezy/node-vpdb/blob/master/server/config/settings-dist.js).
+[file itself](https://github.com/vpdb/backend/blob/master/server/config/settings-dist.js).
 
 Per default, VPDB checks ``server/config/settings.js`` for your customized settings file. This can be changed by setting
 the environment variable ``APP_SETTINGS`` to a different path. If neither exists, ``app.js`` exits upon start. Before

@@ -137,9 +137,8 @@ There's also continuous integration running on three services:
 |-----------|----------------------------------------------------------|
 | Travis CI | [![Build Status Travis CI][travis-image]][travis-url]    |
 | Codeship  | [![Build Status Codeship][codeship-image]][codeship-url] |
-| Snap      | [![Build Status Snap][snapci-image]][snapci-url]         |
 
-After every test run, code coverage stats are sent to [Coveralls.io](https://coveralls.io/r/freezy/node-vpdb). Note that 
+After every test run, code coverage stats are sent to [Coveralls.io](https://coveralls.io/r/vpdb/backend). Note that 
 both CI and code coverage only concern server-side code.
 
 Code is also run through Code Climate, with the following result: [![Code Climate][codeclimate-image]][codeclimate-url]
@@ -158,18 +157,16 @@ Thanks also to JetBrains for their awesome IDE and support of the Open Source Co
 
 GPLv2, see [LICENSE](LICENSE).
 
-[text-logo]: https://github.com/freezy/node-vpdb/raw/master/gfx/text-logo.png
-[travis-image]: https://img.shields.io/travis/freezy/node-vpdb.svg?style=flat-square
-[travis-url]: https://travis-ci.org/freezy/node-vpdb
-[coveralls-image]: https://img.shields.io/coveralls/freezy/node-vpdb.svg?style=flat-square
-[coveralls-url]: https://coveralls.io/r/freezy/node-vpdb?branch=master
-[dependencies-image]: https://david-dm.org/freezy/node-vpdb.svg?style=flat-square
-[dependencies-url]: https://david-dm.org/freezy/node-vpdb
+[text-logo]: https://github.com/vpdb/backend/raw/master/gfx/text-logo.png
+[travis-image]: https://img.shields.io/travis/vpdb/backend.svg?style=flat-square
+[travis-url]: https://travis-ci.org/vpdb/backend
+[coveralls-image]: https://img.shields.io/coveralls/vpdb/backend.svg?style=flat-square
+[coveralls-url]: https://coveralls.io/r/vpdb/backend?branch=master
+[dependencies-image]: https://david-dm.org/vpdb/backend.svg?style=flat-square
+[dependencies-url]: https://david-dm.org/vpdb/backend
 [codeship-image]: http://img.shields.io/codeship/46408820-1c40-0134-d638-1a1dadf4f728.svg?style=flat-square
 [codeship-url]: https://www.codeship.io/projects/159851
-[snapci-image]: https://img.shields.io/snap-ci/freezy/node-vpdb/master.svg?style=flat-square
-[snapci-url]: https://snap-ci.com/freezy/node-vpdb/branch/master
-[codeclimate-image]: http://img.shields.io/codeclimate/github/freezy/node-vpdb.svg?style=flat-square
-[codeclimate-url]: https://codeclimate.com/github/freezy/node-vpdb
-[idea-image]: https://raw.githubusercontent.com/freezy/node-vpdb/master/gfx/logo_IntelliJIDEA.png
+[codeclimate-image]: http://img.shields.io/codeclimate/github/vpdb/backend.svg?style=flat-square
+[codeclimate-url]: https://codeclimate.com/github/vpdb/backend
+[idea-image]: https://raw.githubusercontent.com/vpdb/backend/master/gfx/logo_IntelliJIDEA.png
 [idea-url]: https://www.jetbrains.com/idea/

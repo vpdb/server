@@ -95,4 +95,4 @@ There are also a few generated folders:
 [pug]: https://github.com/pugjs
 [bower]: http://bower.io/
 [npm]: https://www.npmjs.org/
-[INSTALL]: https://github.com/freezy/node-vpdb/blob/master/INSTALL.md
+[INSTALL]: https://github.com/vpdb/backend/blob/master/INSTALL.md

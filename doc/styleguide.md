@@ -95,13 +95,13 @@ continue using an icon font.
 [bem-article]: http://csswizardry.com/2013/01/mindbemding-getting-your-head-round-bem-syntax/
 [bootstrap]: http://getbootstrap.com/
 [sre]: http://drewbarontini.com/articles/single-responsibility/
-[vpdb.styl]: https://github.com/freezy/node-vpdb/blob/master/client/styles/vpdb.styl
+[vpdb.styl]: https://github.com/vpdb/backend/blob/master/client/styles/vpdb.styl
 [stylus]: http://learnboost.github.io/stylus/
 [fa]: http://fontawesome.io/
 [tenreasons]: http://ianfeather.co.uk/ten-reasons-we-switched-from-an-icon-font-to-svg/
 [svgvsif]: http://css-tricks.com/icon-fonts-vs-svg/
-[ai-icons]: https://github.com/freezy/node-vpdb/blob/master/gfx/icons.ai
-[icon-folder]: https://github.com/freezy/node-vpdb/tree/master/gfx/icons
+[ai-icons]: https://github.com/vpdb/backend/blob/master/gfx/icons.ai
+[icon-folder]: https://github.com/vpdb/backend/tree/master/gfx/icons
 [svgmin]: https://github.com/sindresorhus/grunt-svgmin
 [svgstore]: https://github.com/FWeinb/grunt-svgstore
 [svgsprites]: http://css-tricks.com/svg-sprites-use-better-icon-fonts/

@@ -1,7 +1,7 @@
 {
 	"name": "node-vpdb",
 	"version": "0.0.5",
-	"homepage": "https://github.com/freezy/node-vpdb",
+	"homepage": "https://github.com/vpdb/backend",
 	"authors": [
 		"freezy <freezy@xbmc.org>"
 	],

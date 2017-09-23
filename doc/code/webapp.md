@@ -103,6 +103,6 @@ running with `grunt dev`.
 
 [angular]: https://angularjs.org/
 [bower]: http://bower.io/
-[bower.json]: https://github.com/freezy/node-vpdb/blob/master/bower.json
+[bower.json]: https://github.com/vpdb/backend/blob/master/bower.json
 [ngModule]: https://docs.angularjs.org/guide/module
-[index.pug]: https://github.com/freezy/node-vpdb/blob/master/client/app/index.pug
+[index.pug]: https://github.com/vpdb/backend/blob/master/client/app/index.pug

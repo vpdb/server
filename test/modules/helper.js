@@ -7,7 +7,6 @@ var util = require('util');
 var async = require('async');
 var debug = require('debug')('test-helper');
 var faker = require('faker');
-var objectPath = require("object-path");
 var randomstring = require('randomstring');
 var expect = require('expect.js');
 var parseUrl = require('url').parse;
@@ -166,7 +165,7 @@ exports.storageToken = function(request, user, path, done) {
  * @param {string} fileId ID of the file
  */
 exports.doomFile = function(user, fileId) {
-	objectPath.ensureExists(this, "doomedFiles." + user, []);
+	this.ensureExists("doomedFiles", user);
 	this.doomedFiles[user].unshift(fileId);
 };
 
@@ -176,7 +175,7 @@ exports.doomFile = function(user, fileId) {
  * @param {string} gameId ID of the game
  */
 exports.doomGame = function(user, gameId) {
-	objectPath.ensureExists(this, "doomedGames." + user, []);
+	this.ensureExists("doomedGames", user);
 	this.doomedGames[user].unshift(gameId);
 };
 
@@ -186,7 +185,7 @@ exports.doomGame = function(user, gameId) {
  * @param {string} releaseId ID of the release
  */
 exports.doomRelease = function(user, releaseId) {
-	objectPath.ensureExists(this, "doomedReleases." + user, []);
+	this.ensureExists("doomedReleases", user);
 	this.doomedReleases[user].unshift(releaseId);
 };
 
@@ -196,7 +195,7 @@ exports.doomRelease = function(user, releaseId) {
  * @param {string} tagId ID of the tag
  */
 exports.doomTag = function(user, tagId) {
-	objectPath.ensureExists(this, "doomedTags." + user, []);
+	this.ensureExists("doomedTags", user);
 	this.doomedTags[user].unshift(tagId);
 };
 
@@ -206,7 +205,7 @@ exports.doomTag = function(user, tagId) {
  * @param {string} buildId ID of the build
  */
 exports.doomBuild = function(user, buildId) {
-	objectPath.ensureExists(this, "doomedBuilds." + user, []);
+	this.ensureExists("doomedBuilds", user);
 	this.doomedBuilds[user].unshift(buildId);
 };
 
@@ -216,7 +215,7 @@ exports.doomBuild = function(user, buildId) {
  * @param {string} romId ID of the ROM
  */
 exports.doomRom = function(user, romId) {
-	objectPath.ensureExists(this, "doomedRoms." + user, []);
+	this.ensureExists("doomedRoms", user);
 	this.doomedRoms[user].unshift(romId);
 };
 
@@ -226,7 +225,7 @@ exports.doomRom = function(user, romId) {
  * @param {string} backglassId ID of the backglass
  */
 exports.doomBackglass = function(user, backglassId) {
-	objectPath.ensureExists(this, "doomedBackglasses." + user, []);
+	this.ensureExists("doomedBackglasses", user);
 	this.doomedBackglasses[user].unshift(backglassId);
 };
 
@@ -236,7 +235,7 @@ exports.doomBackglass = function(user, backglassId) {
  * @param {string} mediumId ID of the medium
  */
 exports.doomMedium = function(user, mediumId) {
-	objectPath.ensureExists(this, "doomedMedia." + user, []);
+	this.ensureExists("doomedMedia", user);
 	this.doomedMedia[user].unshift(mediumId);
 };
 
@@ -246,7 +245,7 @@ exports.doomMedium = function(user, mediumId) {
  * @param {string} gameRequestId ID of the game request
  */
 exports.doomGameRequest = function(user, gameRequestId) {
-	objectPath.ensureExists(this, "doomedGameRequests." + user, []);
+	this.ensureExists("doomedGameRequests", user);
 	this.doomedGameRequests[user].unshift(gameRequestId);
 };
 
@@ -262,6 +261,15 @@ exports.doomUser = function(userId) {
 	// only add if not already there.
 	if (!~this.doomedUsers.indexOf(userId)) {
 		this.doomedUsers.unshift(userId);
+	}
+};
+
+exports.ensureExists = function(attr, user) {
+	if (!_.isObject(this[attr])) {
+		this[attr] = {};
+	}
+	if (!_.isArray(this[attr][user])) {
+		this[attr][user] = [];
 	}
 };
 

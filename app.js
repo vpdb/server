@@ -50,12 +50,12 @@ if (process.env.COVERAGE_ENABLED) {
 	// see API for other options
 }
 
-const settings = require('./server/modules/settings');
+const settings = require('./src/modules/settings');
 const serverDomain = domain.create();
 let raygunClient = null;
 
 // setup logger
-require('./server/logging').init();
+require('./src/logging').init();
 
 // setup raygun error handling
 if (process.env.RAYGUN_API_KEY) {
@@ -93,30 +93,30 @@ serverDomain.run(function() {
 		logger.info('[app] Database connected to %s.', config.vpdb.db);
 
 		// bootstrap modules
-		require('./server/modules/quota').init();
-		require('./server/modules/storage').init();
-		require('./server/modules/queue').init();
+		require('./src/modules/quota').init();
+		require('./src/modules/storage').init();
+		require('./src/modules/queue').init();
 
 		// bootstrap models
-		let modelsPath = path.resolve(__dirname, 'server/models');
+		let modelsPath = path.resolve(__dirname, 'src/models');
 		fs.readdirSync(modelsPath).forEach(function(file) {
 			if (!fs.lstatSync(modelsPath + '/' + file).isDirectory()) {
 				require(modelsPath + '/' + file);
 			}
 		});
 
-		return require('./server/acl').init();
+		return require('./src/acl').init();
 
 	}).then(() => {
 
 		// bootstrap passport config
-		require('./server/passport').configure();
+		require('./src/passport').configure();
 
 		// express settings
-		require('./server/express').configure(app, raygunClient);
+		require('./src/express').configure(app, raygunClient);
 
 		// other stuff
-		return require('./server/startup').init();
+		return require('./src/startup').init();
 
 	}).then(() => {
 

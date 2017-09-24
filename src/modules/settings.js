@@ -35,7 +35,7 @@ function Settings() {
 	/* istanbul ignore next */
 	if (!process.env.APP_SETTINGS || !fs.existsSync(process.env.APP_SETTINGS)) {
 		if (process.env.APP_SETTINGS) {
-			throw new Error('Cannot find settings at "' + process.env.APP_SETTINGS + '". Copy server/config/settings-dist.js to server/config/settings.js or point `APP_SETTINGS` environment variable to correct path.');
+			throw new Error('Cannot find settings at "' + process.env.APP_SETTINGS + '". Copy src/config/settings-dist.js to server/config/settings.js or point `APP_SETTINGS` environment variable to correct path.');
 		} else {
 			var e = new Error('Settings location not found. Please set the `APP_SETTINGS` environment variable to your configuration file and retry.');
 			console.error(e.stack);

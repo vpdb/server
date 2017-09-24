@@ -81,8 +81,8 @@ you can supply:
  * `--port=<port>` - Makes the app listen on a given port. Default: `3000`.
  * `--config=<path>` - Uses a different settings file. Note that the settings location has different defaults depending 
    on how Grunt is launched:
-   * When launched as `dev` or `serve`, the default is `server/config/settings.js`
-   * When launched as `test` or `serve-test`, the default is `server/config/settings-test.js`. See *Tests* under 
+   * When launched as `dev` or `serve`, the default is `src/config/settings.js`
+   * When launched as `test` or `serve-test`, the default is `src/config/settings-test.js`. See *Tests* under 
      *Development* below for additional parameters.
 
 Both settings may also be provided by setting the `PORT` and `APP_SETTINGS` environment variable (providing it via 

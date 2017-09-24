@@ -4,7 +4,7 @@ var _ = require('lodash');
 var request = require('superagent');
 var expect = require('expect.js');
 var jwt = require('jwt-simple');
-var config = require('../../server/config/settings-test');
+var config = require('../../src/config/settings-test');
 
 var superagentTest = require('../modules/superagent-test');
 var hlp = require('../modules/helper');

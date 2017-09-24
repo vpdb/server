@@ -1,0 +1,22 @@
+{
+	"restartable": "rs",
+	"ignore": [
+		".git",
+		"node_modules/**/node_modules"
+	],
+	"verbose": true,
+	"execMap": {
+		"js": "node"
+	},
+	"watch": [
+		"src/**"
+	],
+	"env": {
+		"NODE_ENV": "development",
+		"PORT": "3000",
+		"APP_NAME": "local",
+		"PMX_ENABLED": 0,
+		"NEW_RELIC_ENABLED": 0
+	},
+	"ext": "js json"
+}

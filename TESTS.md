@@ -3,7 +3,7 @@
 We use [Mocha][mocha] for running backend API tests and [Protractor][protractor] for end-to-end webdriver tests.
 
 A test run requires a clean environment. For this purpose, there is an included settings file at 
-`server/config/settings-test.js` which is used when running tests. Basically it's a stripped-down config that uses a 
+`src/config/settings-test.js` which is used when running tests. Basically it's a stripped-down config that uses a 
 different database, runs on a different HTTP port and enables code coverage.
 
 If you want to execute the tests, run the server in test mode:

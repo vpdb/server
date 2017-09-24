@@ -45,7 +45,7 @@ Both the API and the storage code live in the `./server` sub folder. We won't
 get into much detail here, but briefly the structure is the following:
 
  - The application script is `./app.js`, at the root of the project.
- - Files sitting at `./server/` bootstrap the application and they are only 
+ - Files sitting at `./src/` bootstrap the application and they are only 
    executed once at startup.
  - The `models` sub folder contains the [Mongoose][mongoose] schemas.
  - API logic sits at `controllers/api`.

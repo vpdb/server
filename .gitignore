@@ -23,8 +23,8 @@ logs
 /vpdb-svg
 
 results
-server/config/settings.js
-server/scripts/credentials.js
+src/config/settings.js
+src/scripts/credentials.js
 test/coverage
 
 npm-debug.log

@@ -522,8 +522,8 @@ Also add `scripts` folder to the path for easy deployment commands.
 Still as user `deployer`, create configuration file
 
 	cd ~/source
-	cp server/config/settings-dist.js ~/initial-production-settings.js
-	cp server/config/settings-dist.js ~/initial-staging-settings.js
+	cp src/config/settings-dist.js ~/initial-production-settings.js
+	cp src/config/settings-dist.js ~/initial-staging-settings.js
 	ln -s ~/initial-production-settings.js /var/www/production/settings.js
 	ln -s ~/initial-staging-settings.js /var/www/staging/settings.js
 	vi /var/www/production/settings.js
@@ -532,8 +532,8 @@ Still as user `deployer`, create configuration file
 Update and double-check all `@important` settings. When done, run
 
 	npm install
-	APP_SETTINGS=/var/www/production/settings.js node server/config/validate.js
-	APP_SETTINGS=/var/www/staging/settings.js node server/config/validate.js
+	APP_SETTINGS=/var/www/production/settings.js node src/config/validate.js
+	APP_SETTINGS=/var/www/staging/settings.js node src/config/validate.js
 
 Check if your settings are valid. Then deploy a first time. Still as user `deployer`:
 

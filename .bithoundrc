@@ -52,8 +52,8 @@
     "devsite/**",
     "doc/**",
     "gfx/**",
-    "server/grunt-tasks/**",
-    "server/modules/settings.js",
+    "src/grunt-tasks/**",
+    "src/modules/settings.js",
     "test/**"
   ],
   "test": [

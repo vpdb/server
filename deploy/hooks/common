@@ -131,11 +131,11 @@ repo_link() {
 
 
 	echo Migrating settings...
-	APP_SETTINGS=${newSettings} node ${dest}/server/config/migrate.js
+	APP_SETTINGS=${newSettings} node ${dest}/src/config/migrate.js
 	test $? -eq 0 || rollback_abort $1 "New @important config settings. Please fix settings at ${patchedSettings} and manually finish deployment."
 
 	echo Validating settings...
-	APP_SETTINGS=${newSettings} node ${dest}/server/config/validate.js
+	APP_SETTINGS=${newSettings} node ${dest}/src/config/validate.js
 	test $? -eq 0 || rollback_abort $1 "Setting validation failed. Please fix settings at ${patchedSettings} and manually finish deployment."
 
 	echo Swapping settings...

@@ -18,6 +18,11 @@
 	"bugs": {
 		"url": "https://github.com/vpdb/backend/issues"
 	},
+	"scripts": {
+		"start": "node app.js",
+		"dev": "./node_modules/.bin/nodemon --config deploy/nodemon.json --exec npm start",
+		"test": "grunt ci"
+	},
 	"dependencies": {
 		"@slack/client": "^3.6.0",
 		"acl": "0.4.11",
@@ -132,11 +137,6 @@
 	},
 	"engines": {
 		"node": "8.x"
-	},
-	"scripts": {
-		"start": "node app.js",
-		"dev": "./node_modules/.bin/nodemon --config tools/nodemon.json --exec npm start",
-		"test": "grunt ci"
 	},
 	"mod-project-name": "vpdb"
 }

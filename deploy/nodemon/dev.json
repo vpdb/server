@@ -9,6 +9,7 @@
 		"js": "node"
 	},
 	"watch": [
+		"app.js",
 		"src/**"
 	],
 	"env": {

@@ -20,7 +20,8 @@
 	},
 	"scripts": {
 		"start": "node app.js",
-		"dev": "./node_modules/.bin/nodemon --config deploy/nodemon.json --exec npm start",
+		"dev": "./node_modules/.bin/nodemon --config deploy/nodemon/dev.json --exec \"npm run lint && npm start\"",
+		"lint": "./node_modules/.bin/eslint src/**/*.js",
 		"test": "grunt ci"
 	},
 	"dependencies": {
@@ -89,6 +90,7 @@
 		"async": "1.5.2",
 		"axios": "0.16.2",
 		"debug": "3.0.1",
+		"eslint": "4.7.2",
 		"expect.js": "0.3.1",
 		"faker": "4.1.0",
 		"grunt": "latest",
@@ -137,6 +139,16 @@
 	},
 	"engines": {
 		"node": "8.x"
+	},
+	"eslintConfig": {
+		"env": {
+			"node": true
+		},
+		"parserOptions": {
+			"ecmaVersion": 6,
+			"sourceType": "module",
+			"impliedStrict": true
+		}
 	},
 	"mod-project-name": "vpdb"
 }

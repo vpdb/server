@@ -142,7 +142,15 @@
 	},
 	"eslintConfig": {
 		"env": {
+			"es6": true,
 			"node": true
+		},
+		"extends": "eslint:recommended",
+		"rules": {
+			"indent": [ "off", "tab" ],
+			"linebreak-style": [ "off", "windows" ],
+			"quotes": [ "error", "single" ],
+			"semi": [ "error", "always" ]
 		},
 		"parserOptions": {
 			"ecmaVersion": 6,

@@ -27,6 +27,8 @@ class Gitinfo {
 
 	constructor() {
 
+		var foo = !!!bar;
+
 		this.info = {
 			local: {
 				branch: {

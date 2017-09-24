@@ -17,33 +17,33 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-"use strict";
+'use strict';
 
-var _ = require('lodash');
-var path = require('path');
-var http = require('http');
-var logger = require('winston');
-var passport = require('passport');
-var express = require('express');
-var pugStatic = require('./modules/connect-pug-static');
-var expressWinston = require('express-winston');
-var expressBodyParser = require('body-parser');
-var expressCompression = require('compression');
-var expressErrorhandler = require('errorhandler');
+const _ = require('lodash');
+const path = require('path');
+const http = require('http');
+const logger = require('winston');
+const passport = require('passport');
+const express = require('express');
+const pugStatic = require('./modules/connect-pug-static');
+const expressWinston = require('express-winston');
+const expressBodyParser = require('body-parser');
+const expressCompression = require('compression');
+const expressErrorhandler = require('errorhandler');
 
-var settings = require('./modules/settings');
-var writeable = require('./modules/writeable');
-var gitinfo = require('./modules/gitinfo');
-var ctrl = require('./controllers/ctrl');
-var apiCtrl = require('./controllers/api/api');
-var logging = require('./logging');
+const settings = require('./modules/settings');
+const writeable = require('./modules/writeable');
+const gitinfo = require('./modules/gitinfo');
+const ctrl = require('./controllers/ctrl');
+const apiCtrl = require('./controllers/api/api');
+const logging = require('./logging');
 
 exports.configure = function(app, raygunClient) {
 
-	var runningLocal = !process.env.APP_NAME || (process.env.APP_NAME !== 'production' && process.env.APP_NAME !== 'staging');
-	var runningDev = process.env.NODE_ENV !== 'production';
-	var runningTest = process.env.NODE_ENV === 'test';
-	var ipAddress = process.env.IPADDRESS || '127.0.0.1';
+	let runningLocal = !process.env.APP_NAME || (process.env.APP_NAME !== 'production' && process.env.APP_NAME !== 'staging');
+	let runningDev = process.env.NODE_ENV !== 'production';
+	let runningTest = process.env.NODE_ENV === 'test';
+	const ipAddress = process.env.IPADDRESS || '127.0.0.1';
 
 	logger.info('[express] Setting up Express for running %s in %s mode.', runningLocal ? 'locally' : 'remotely', runningDev ? 'development' : 'production');
 
@@ -56,7 +56,7 @@ exports.configure = function(app, raygunClient) {
 	app.set('port', process.env.PORT);
 	app.set('views', path.resolve(__dirname, '../client/app'));
 	app.set('view engine', 'pug');
-	app.set('json spaces', "\t");
+	app.set('json spaces', '\t');
 	app.set('showStackError', runningDev);
 	app.disable('x-powered-by');
 
@@ -166,20 +166,6 @@ exports.configure = function(app, raygunClient) {
 		//enable coverage endpoints under /coverage
 		app.use('/_coverage', require('istanbul-middleware').createHandler());
 		app.use('/coverage', express.static(path.resolve(__dirname, '../test/coverage/lcov-report'), { maxAge: 3600*24*30*1000 }));
-	}
-
-	// per default, serve index and let Angular.JS figure out if it's a valid route (nginx does this in production).
-	if (runningLocal && !runningTest) {
-		app.use(function(req, res) {
-			/* istanbul ignore else: Managed by Nginx in production. */
-			if (!/\.html$/.test(req.path)) {
-				res.status(200).render('index', _.extend(ctrl.viewParams(), {
-					pretty: true
-				}));
-			} else {
-				res.status(404).end();
-			}
-		});
 	}
 };
 

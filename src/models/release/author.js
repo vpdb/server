@@ -17,7 +17,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-"use strict";
+'use strict';
 
 const mongoose = require('mongoose');
 const toObj = require('../plugins/to-object');

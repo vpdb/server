@@ -17,17 +17,15 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-"use strict";
+'use strict';
 
-var _ = require('lodash');
-var logger = require('winston');
+const _ = require('lodash');
 
-var LogUser = require('mongoose').model('LogUser');
+const LogUser = require('mongoose').model('LogUser');
 
-var api = require('./api');
-var error = require('../../modules/error')('api', 'userlogs');
-var config = require('../../modules/settings').current;
-
+const api = require('./api');
+const error = require('../../modules/error')('api', 'userlogs');
+const config = require('../../modules/settings').current;
 
 /**
  * Returns the current user's log.
@@ -37,13 +35,13 @@ var config = require('../../modules/settings').current;
  */
 exports.list = function(req, res) {
 
-	var pagination = api.pagination(req, 30, 100);
-	var query = [{ _user: req.user._id, _actor: req.user._id }];
+	const pagination = api.pagination(req, 30, 100);
+	const query = [{ _user: req.user._id, _actor: req.user._id }];
 
 	// filter event
 	if (req.query.event) {
-		var events = req.query.event.split(',');
-		var d = [];
+		const events = req.query.event.split(',');
+		const d = [];
 		events.forEach(function(event) {
 			d.push({ event: event });
 		});
@@ -67,7 +65,7 @@ exports.list = function(req, res) {
 			return api.fail(res, error(err, 'Error retrieving logs').log('list'), 500);
 		}
 
-		var providerInfo = {
+		const providerInfo = {
 			google: { name: 'Google', icon: 'google-g' },
 			github: { name: 'GitHub', icon: 'github' },
 			local: { name: 'Local Account', icon: 'vpdb' }
@@ -77,7 +75,7 @@ exports.list = function(req, res) {
 		});
 
 		// process results
-		var logs = _.map(result.docs, function(log) {
+		const logs = _.map(result.docs, function(log) {
 
 			if (providerInfo[log.payload.provider]) {
 				log.payload.providerInfo = providerInfo[log.payload.provider];

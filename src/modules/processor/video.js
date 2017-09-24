@@ -17,14 +17,14 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-"use strict";
+'use strict';
 
-var _ = require('lodash');
-var logger = require('winston');
-var ffmpeg = Promise.promisifyAll(require('fluent-ffmpeg'));
+const _ = require('lodash');
+const logger = require('winston');
+const ffmpeg = Promise.promisifyAll(require('fluent-ffmpeg'));
 
-var config = require('../settings').current;
-var error = require('../error')('processor', 'video');
+const config = require('../settings').current;
+const error = require('../error')('processor', 'video');
 
 /**
  * Video processor.
@@ -70,7 +70,7 @@ VideoProcessor.prototype.metadata = function(file, variation) {
 };
 
 VideoProcessor.prototype.metadataShort = function(metadata) {
-	var short = {};
+	let short = {};
 	if (metadata.format) {
 		short = _.pick(metadata.format, 'format_name', 'format_long_name', 'duration', 'bit_rate');
 	}
@@ -87,6 +87,7 @@ VideoProcessor.prototype.metadataShort = function(metadata) {
 	return short;
 };
 
+// eslint-disable-next-line no-unused-vars
 VideoProcessor.prototype.variationData = function(metadata) {
 	// TODO
 	return {
@@ -112,7 +113,7 @@ VideoProcessor.prototype.pass1 = function(src, dest, file, variation) {
 		}
 
 		logger.debug('[video|pass1] Starting processing %s at %s.', file.toString(variation), dest);
-		var started = new Date().getTime();
+		const started = new Date().getTime();
 		ffmpeg(src)
 			.noAudio()
 			.frames(1)
@@ -157,7 +158,7 @@ VideoProcessor.prototype.pass2 = function(src, dest, file, variation) {
 
 		logger.info('[video|pass2] Starting video processing of %s', file.toString(variation));
 		if (!variation) {
-			var md = this.metadataShort(file.metadata);
+			const md = this.metadataShort(file.metadata);
 			if (md.video.bit_rate < 4000000 && /^[hx]264$/.test(md.video.codec_name)) {
 				logger.info('[video|pass2] Original video seems okay (%s mpbs, %s), skipping re-processing.', Math.round(md.video.bit_rate / 1000) / 1000, md.video.codec_name);
 				return resolve();
@@ -165,8 +166,8 @@ VideoProcessor.prototype.pass2 = function(src, dest, file, variation) {
 				logger.info('[video|pass2] Re-processing original video (%s mpbs, %s)', Math.round(md.video.bit_rate / 1000) / 1000, md.video.codec_name);
 			}
 		}
-		var started = new Date().getTime();
-		var proc = ffmpeg(src)
+		const started = new Date().getTime();
+		const proc = ffmpeg(src)
 			.noAudio()
 			.videoCodec('libx264')
 			.on('start', function(commandLine) {

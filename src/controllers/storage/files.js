@@ -17,7 +17,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-"use strict";
+'use strict';
 
 const fs = require('fs');
 const util = require('util');
@@ -279,7 +279,7 @@ function serve(req, res, file, variationName, headOnly) {
 					});
 				}
 
-			}).catch(err => res.end());
+			}).catch(() => res.end());
 		});
 	});
 }
@@ -292,13 +292,13 @@ function serve(req, res, file, variationName, headOnly) {
  */
 function BufferStream(source) {
 	if (!Buffer.isBuffer(source)) {
-		throw new Error("Source must be a buffer.");
+		throw new Error('Source must be a buffer.');
 	}
 	stream.Readable.call(this);
 	this._source = source;
 	this._offset = 0;
 	this._length = source.length;
-	this.on("end", this._destroy);
+	this.on('end', this._destroy);
 }
 util.inherits(BufferStream, stream.Readable);
 BufferStream.prototype._destroy = function() {

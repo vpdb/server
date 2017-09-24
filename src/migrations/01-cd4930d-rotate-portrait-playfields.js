@@ -1,10 +1,9 @@
-"use strict";
+'use strict';
 
 const gm = require('gm');
 const fs = require('fs');
 const mongoose = require('mongoose');
 
-const User = mongoose.model('User');
 const File = mongoose.model('File');
 const processor = require('../modules/processor/image');
 

@@ -17,24 +17,23 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-"use strict";
+'use strict';
+Promise = require('bluebird');
 
-Promise = require('bluebird');  // jshint ignore:line
-var fs = require('fs');
-var async = require('async');
-var path = require('path');
+const fs = require('fs');
+const async = require('async');
+const path = require('path');
 
+const ipdb = require('../modules/ipdb');
 
-var ipdb = require('../modules/ipdb');
+const stopAfter = 7000;
+const wait = 1200;
+const dataFile = path.resolve(__dirname, '../../data/ipdb.json');
+const data = fs.existsSync(dataFile) ? require(dataFile) : [];
 
-var stopAfter = 7000;
-var wait = 1200;
-var dataFile = path.resolve(__dirname, '../../data/ipdb.json');
-var data = fs.existsSync(dataFile) ? require(dataFile) : [];
-
-var n = 0;
-var id = data.length > 0 ? data[data.length - 1].ipdb.number + 1 : 1;
-var dead = [10, 19, 52, 60, 61, 65, 69, 70, 76, 118, 145, 150, 157, 190, 203, 238, 266, 291, 293, 334, 339, 371, 400,
+let n = 0;
+let id = data.length > 0 ? data[data.length - 1].ipdb.number + 1 : 1;
+const dead = [10, 19, 52, 60, 61, 65, 69, 70, 76, 118, 145, 150, 157, 190, 203, 238, 266, 291, 293, 334, 339, 371, 400,
 	440, 465, 485, 505, 550, 559, 561, 574, 578, 705, 898, 951, 986, 1022, 1033, 1055, 1099, 1102, 1170, 1174, 1180,
 	1186, 1204, 1205, 1212, 1272, 1326, 1334, 1387, 1420, 1461, 1512, 1547, 1554, 1575, 1598, 1599, 1603, 1611, 1630,
 	1671, 1731, 1751, 1818, 1831, 1838, 1842, 1855, 1913, 1952, 1957, 1973, 1982, 1985, 2023, 2024, 2032, 2094, 2167,
@@ -52,7 +51,7 @@ var dead = [10, 19, 52, 60, 61, 65, 69, 70, 76, 118, 145, 150, 157, 190, 203, 23
 	3741, 3796, 3797, 3819, 3835, 3850, 3913, 3930, 3937, 3991, 4006, 4030, 4035, 4036, 4100, 4135, 4281, 4331, 4349,
 	4369, 4448, 4449, 4491, 4494, 4503, 4508, 4514, 4624, 4688, 4722, 4756, 4766, 4796, 4835, 4845, 4925, 4955, 4993,
 	5046, 5084, 5102, 5107, 5131, 5144, 5147, 5194, 5201, 5212, 5234, 5241, 5250, 5253, 5273, 5286, 5360, 5415, 5483,
-	5520, 5524, 5525, 5565, 5720, 5735, 5863, 6106, 6222, 4652, 6222, 6223, 6224, 6263, 6308, 6320, 6328 ];
+	5520, 5524, 5525, 5565, 5720, 5735, 5863, 6106, 6222, 4652, 6222, 6223, 6224, 6263, 6308, 6320, 6328];
 
 async.whilst(function() {
 	return n < stopAfter;

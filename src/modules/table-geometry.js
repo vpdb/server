@@ -17,10 +17,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-"use strict";
+/* eslint-disable no-console */
+'use strict';
 
-var _ = require('lodash');
-var THREE = require('three');
+const _ = require('lodash');
+const THREE = require('three');
 
 /**
  * Returns the four intersection points between a canvas and the 2D projection
@@ -44,26 +45,26 @@ var THREE = require('three');
 exports.calculateProjection = function(table, picDimensions) {
 
 	// setup camera
-	var camera = new THREE.PerspectiveCamera(table.fov, picDimensions.width / picDimensions.height , 0.1, 10000000);
+	const camera = new THREE.PerspectiveCamera(table.fov, picDimensions.width / picDimensions.height, 0.1, 10000000);
 
 	// setup rectangle
-	var vptRect = createRect(table.width, table.height, 0);
+	const vptRect = createRect(table.width, table.height, 0);
 	vptRect.applyMatrix(new THREE.Matrix4().makeRotationX(THREE.Math.degToRad(-table.inclination)));
 
 	// project to camera
 	setFov(table.fov, picDimensions.height, vptRect, camera);
-	var picRect = projectGeometry(vptRect, camera, picDimensions);
+	const picRect = projectGeometry(vptRect, camera, picDimensions);
 	console.log('Projection: %j', picRect.vertices);
 
 	// scaling to fill screen...
-	var postScale = picDimensions.height / (_.max(_.map(picRect.vertices, 'y')) - _.min(_.map(picRect.vertices, 'y')));
+	const postScale = picDimensions.height / (_.max(_.map(picRect.vertices, 'y')) - _.min(_.map(picRect.vertices, 'y')));
 	picRect.applyMatrix(new THREE.Matrix4().makeScale(postScale, postScale, postScale));
 	picRect.applyMatrix(new THREE.Matrix4().makeScale(1.02, 1, 1));
 
 
 	// moving to center
-	var mX = (picDimensions.width - _.max(_.map(picRect.vertices, 'x')) - _.min(_.map(picRect.vertices, 'x'))) / 2;
-	var mY = -picRect.vertices[1].y;
+	const mX = (picDimensions.width - _.max(_.map(picRect.vertices, 'x')) - _.min(_.map(picRect.vertices, 'x'))) / 2;
+	const mY = -picRect.vertices[1].y;
 	picRect.applyMatrix(new THREE.Matrix4().makeTranslation(mX, mY, 0));
 	console.log('Projection (centered): %j', picRect.vertices);
 
@@ -85,8 +86,8 @@ exports.calculateProjection = function(table, picDimensions) {
 function setFov(fov, height, rect, camera) {
 
 	fov *= 0.85;
-	var dist = height / (2 * Math.tan(THREE.Math.degToRad(fov / 2)));
-	var distD = dist - rect.vertices[0].z;
+	const dist = height / (2 * Math.tan(THREE.Math.degToRad(fov / 2)));
+	const distD = dist - rect.vertices[0].z;
 	rect.applyMatrix(new THREE.Matrix4().makeTranslation(0, 0, distD));
 	camera.fov = fov;
 	camera.updateProjectionMatrix();
@@ -101,7 +102,7 @@ function setFov(fov, height, rect, camera) {
  * @returns {THREE.Geometry} Rectangle representing the table
  */
 function createRect(width, height, z) {
-	var rect = new THREE.Geometry();
+	const rect = new THREE.Geometry();
 	rect.vertices.push(
 		new THREE.Vector3(width / -2, height / 2, z),
 		new THREE.Vector3(width / -2, height / -2, z),
@@ -121,8 +122,9 @@ function createRect(width, height, z) {
  * @returns {THREE.Geometry} Projected geometry
  */
 function projectGeometry(geometry, camera, screenDim) {
-	var p, projection = new THREE.Geometry();
-	for (var i = 0; i < geometry.vertices.length; i++) {
+	let p;
+	const projection = new THREE.Geometry();
+	for (let i = 0; i < geometry.vertices.length; i++) {
 		p = projectVector3(geometry.vertices[i], camera, screenDim);
 		projection.vertices.push(new THREE.Vector3(p.x, p.y, 0));
 	}
@@ -138,7 +140,7 @@ function projectGeometry(geometry, camera, screenDim) {
  * @returns {{x: number, y: number}}
  */
 function projectVector3(vector, camera, screenDim) {
-	var pos = vector.clone();
+	const pos = vector.clone();
 
 	// map to normalized device coordinate (NDC) space
 	pos.project(camera);

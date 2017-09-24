@@ -17,8 +17,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-"use strict";
-Promise = require('bluebird'); // jshint ignore:line
+'use strict';
+Promise = require('bluebird');
 
 const _ = require('lodash');
 const fs = require('fs');
@@ -29,6 +29,7 @@ const config = require('../modules/settings').current;
 const resolve = require('path').resolve;
 
 const exportPath = resolve(config.vpdb.tmp, 'mongo-reset-export');
+// eslint-disable-next-line no-unused-vars
 let sha, dbConfig, dbUser, dbPassword, dbName, replicaConfig, replicaUser, replicaPassword, replicaName;
 Promise.try(() => {
 

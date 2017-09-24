@@ -1,0 +1,24 @@
+{
+	"restartable": "rs",
+	"ignore": [
+		".git",
+		"node_modules/**/node_modules"
+	],
+	"verbose": true,
+	"execMap": {
+		"js": "node"
+	},
+	"watch": [
+		"app.js",
+		"src/**"
+	],
+	"env": {
+		"NODE_ENV": "test",
+		"APP_SETTINGS": "./src/config/settings-test.js",
+		"PORT": "7357",
+		"APP_NAME": "local",
+		"COVERAGE_ENABLED": true,
+		"COVERALLS_SERVICE_NAME": "Local Test Runner"
+	},
+	"ext": "js json"
+}

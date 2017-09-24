@@ -17,44 +17,56 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-"use strict";
+'use strict';
 
-var _ = require('lodash');
-var fs = require('fs');
-var path = require('path');
-var logger = require('winston');
-var mongoose = require('mongoose');
-var shortId = require('shortid32');
-var settings = require('./../modules/settings');
+const _ = require('lodash');
+const fs = require('fs');
+const logger = require('winston');
+const mongoose = require('mongoose');
+const shortId = require('shortid32');
 
-var toObj = require('./plugins/to-object');
-var metrics = require('./plugins/metrics');
-var storage = require('../modules/storage');
-var quota = require('../modules/quota');
-var mimeTypes = require('../modules/mimetypes');
-var fileTypes = require('../modules/filetypes');
+const toObj = require('./plugins/to-object');
+const metrics = require('./plugins/metrics');
+const storage = require('../modules/storage');
+const quota = require('../modules/quota');
+const mimeTypes = require('../modules/mimetypes');
+const fileTypes = require('../modules/filetypes');
 
-var Schema = mongoose.Schema;
+const Schema = mongoose.Schema;
 
 
 //-----------------------------------------------------------------------------
 // SCHEMA
 //-----------------------------------------------------------------------------
-var fields = {
-	id:           { type: String, required: true, unique: true, 'default': shortId.generate },
-	name:         { type: String, required: 'Filename must be provided.' },
-	bytes:        { type: Number, required: true },
-	mime_type:    { type: String, required: true, 'enum': { values: _.keys(mimeTypes), message: 'Invalid MIME type. Valid MIME types are: ["' +  _.keys(mimeTypes).join('", "') + '"].' }},
-	file_type:    { type: String, required: true, 'enum': { values: fileTypes.keys(), message: 'Invalid file type. Valid file types are: ["' +  fileTypes.keys().join('", "') + '"].' }},
-	metadata:     { type: Schema.Types.Mixed },
-	variations:   { type: Schema.Types.Mixed },
+const fields = {
+	id: { type: String, required: true, unique: true, 'default': shortId.generate },
+	name: { type: String, required: 'Filename must be provided.' },
+	bytes: { type: Number, required: true },
+	mime_type: {
+		type: String,
+		required: true,
+		'enum': {
+			values: _.keys(mimeTypes),
+			message: 'Invalid MIME type. Valid MIME types are: ["' + _.keys(mimeTypes).join('", "') + '"].'
+		}
+	},
+	file_type: {
+		type: String,
+		required: true,
+		'enum': {
+			values: fileTypes.keys(),
+			message: 'Invalid file type. Valid file types are: ["' + fileTypes.keys().join('", "') + '"].'
+		}
+	},
+	metadata: { type: Schema.Types.Mixed },
+	variations: { type: Schema.Types.Mixed },
 	preprocessed: { type: Schema.Types.Mixed },
-	is_active:    { type: Boolean, required: true, 'default': false },
-	counter:      { downloads: { type: Number, 'default': 0 }},
-	created_at:   { type: Date, required: true },
-	_created_by:  { type: Schema.ObjectId, required: true, ref: 'User' }
+	is_active: { type: Boolean, required: true, 'default': false },
+	counter: { downloads: { type: Number, 'default': 0 } },
+	created_at: { type: Date, required: true },
+	_created_by: { type: Schema.ObjectId, required: true, ref: 'User' }
 };
-var FileSchema = new Schema(fields);
+const FileSchema = new Schema(fields);
 
 
 //-----------------------------------------------------------------------------
@@ -67,9 +79,9 @@ FileSchema.plugin(metrics);
 //-----------------------------------------------------------------------------
 // API FIELDS
 //-----------------------------------------------------------------------------
-var apiFields = {
-	simple: [ 'id', 'name', 'url', 'bytes', 'variations', 'is_protected', 'counter', 'cost' ], // fields returned in references
-	detailed: [ 'created_at', 'mime_type', 'file_type', 'metadata' ]
+const apiFields = {
+	simple: ['id', 'name', 'url', 'bytes', 'variations', 'is_protected', 'counter', 'cost'], // fields returned in references
+	detailed: ['created_at', 'mime_type', 'file_type', 'metadata']
 };
 
 
@@ -198,7 +210,7 @@ FileSchema.methods.isFree = function(variation) {
  * @returns {string}
  */
 FileSchema.methods.getMimeType = function(variation) {
-	var variationName = _.isObject(variation) ? variation.name : variation;
+	const variationName = _.isObject(variation) ? variation.name : variation;
 	if (variation && this.variations && this.variations[variationName] && this.variations[variationName].mime_type) {
 		return this.variations[variationName].mime_type;
 	} else if (_.isObject(variation) && variation.mimeType) {
@@ -240,7 +252,7 @@ FileSchema.methods.getMimeCategory = function(variation) {
  * @returns {string}
  */
 FileSchema.methods.toString = function(variation) {
-	var v = _.isObject(variation) ? variation.name : variation;
+	const v = _.isObject(variation) ? variation.name : variation;
 	return this.file_type + ' "' + this.id + '"' + (v ? ' (' + v + ')' : '');
 };
 
@@ -267,7 +279,7 @@ FileSchema.methods.switchToActive = function(done) {
  * @param {Object|String} [variation] Either variation name or object containing attribute "name".
  */
 FileSchema.methods.lock = function(variation) {
-	var lockfile = this.getLockFile(variation);
+	const lockfile = this.getLockFile(variation);
 	logger.debug('[file] Locking file at "%s"', lockfile);
 	try {
 		fs.closeSync(fs.openSync(lockfile, 'w'));
@@ -282,7 +294,7 @@ FileSchema.methods.lock = function(variation) {
  * @param {Object|String} [variation] Either variation name or object containing attribute "name".
  */
 FileSchema.methods.unlock = function(variation) {
-	var lockfile = this.getLockFile(variation);
+	const lockfile = this.getLockFile(variation);
 	logger.debug('[file] Unlocking file at "%s"', lockfile);
 	try {
 		fs.unlinkSync(lockfile);
@@ -297,7 +309,7 @@ FileSchema.methods.unlock = function(variation) {
  * @param {Object|String} [variation] Either variation name or object containing attribute "name".
  */
 FileSchema.methods.isLocked = function(variation) {
-	var lockfile = this.getLockFile(variation);
+	const lockfile = this.getLockFile(variation);
 	return fs.existsSync(lockfile);
 };
 
@@ -327,8 +339,8 @@ FileSchema.methods.getLockFile = function(variation) {
  */
 FileSchema.statics.sanitizeObject = function(object, replacement) {
 	replacement = replacement || '-';
-	var oldProp;
-	for (var property in object) {
+	let oldProp;
+	for (let property in object) {
 		if (object.hasOwnProperty(property)) {
 			if (/\.|\$/.test(property)) {
 				oldProp = property;
@@ -336,7 +348,7 @@ FileSchema.statics.sanitizeObject = function(object, replacement) {
 				object[property] = object[oldProp];
 				delete object[oldProp];
 			}
-			if (typeof object[property] === "object") {
+			if (typeof object[property] === 'object') {
 				FileSchema.statics.sanitizeObject(object[property]);
 			}
 		}
@@ -346,14 +358,14 @@ FileSchema.statics.toSimple = function(file) {
 	if (!file) {
 		return file;
 	}
-	var obj = file.toObj ? file.toObj() : file;
+	const obj = file.toObj ? file.toObj() : file;
 	return _.pick(obj, apiFields.simple);
 };
 FileSchema.statics.toDetailed = function(file) {
 	if (!file) {
 		return file;
 	}
-	var obj = file.toObj ? file.toObj() : file;
+	const obj = file.toObj ? file.toObj() : file;
 	return _.pick(obj, apiFields.detailed.concat(apiFields.simple));
 };
 

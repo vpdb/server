@@ -17,56 +17,63 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-"use strict";
+'use strict';
 
-var _ = require('lodash');
-var logger = require('winston');
-var mongoose = require('mongoose');
-var validator = require('validator');
+const _ = require('lodash');
+const logger = require('winston');
+const mongoose = require('mongoose');
+const validator = require('validator');
 
-var paginate = require('mongoose-paginate');
-var uniqueValidator = require('mongoose-unique-validator');
+const paginate = require('mongoose-paginate');
+const uniqueValidator = require('mongoose-unique-validator');
 
-var toObj = require('./plugins/to-object');
-var fileRef = require('./plugins/file-ref');
-var metrics = require('./plugins/metrics');
-var prettyId = require('./plugins/pretty-id');
-var sortTitle = require('./plugins/sortable-title');
-var ipdb = require('../modules/ipdb');
-var config = require('../modules/settings').current;
+const toObj = require('./plugins/to-object');
+const fileRef = require('./plugins/file-ref');
+const metrics = require('./plugins/metrics');
+const prettyId = require('./plugins/pretty-id');
+const sortTitle = require('./plugins/sortable-title');
+let ipdb = require('../modules/ipdb');
+const config = require('../modules/settings').current;
 
-var Schema = mongoose.Schema;
+const Schema = mongoose.Schema;
 
-var gameTypes = [ 'ss', 'em', 'pm', 'og', 'na'];
+const gameTypes = ['ss', 'em', 'pm', 'og', 'na'];
 
-var maxAspectRatioDifference = 0.2;
+const maxAspectRatioDifference = 0.2;
 
 
 //-----------------------------------------------------------------------------
 // SCHEMA
 //-----------------------------------------------------------------------------
-var fields = {
-	id:             { type: String, required: 'Game ID must be provided.', unique: true },
-	title:          { type: String, required: 'Title must be provided.', index: true },
+const fields = {
+	id: { type: String, required: 'Game ID must be provided.', unique: true },
+	title: { type: String, required: 'Title must be provided.', index: true },
 	title_sortable: { type: String, index: true },
-	year:           { type: Number, required: 'Year must be provided.', index: true },
-	manufacturer:   { type: String, required: 'Manufacturer must be provided.', index: true },
-	game_type:      { type: String, required: true, enum: { values: gameTypes, message: 'Invalid game type. Valid game types are: ["' +  gameTypes.join('", "') + '"].' }},
-	_backglass:     { type: Schema.ObjectId, ref: 'File', required: 'Backglass image must be provided.' },
-	_logo:          { type: Schema.ObjectId, ref: 'File' },
-	short:          Array,
-	description:    String,
-	instructions:   String,
+	year: { type: Number, required: 'Year must be provided.', index: true },
+	manufacturer: { type: String, required: 'Manufacturer must be provided.', index: true },
+	game_type: {
+		type: String,
+		required: true,
+		enum: {
+			values: gameTypes,
+			message: 'Invalid game type. Valid game types are: ["' + gameTypes.join('", "') + '"].'
+		}
+	},
+	_backglass: { type: Schema.ObjectId, ref: 'File', required: 'Backglass image must be provided.' },
+	_logo: { type: Schema.ObjectId, ref: 'File' },
+	short: Array,
+	description: String,
+	instructions: String,
 	produced_units: Number,
-	model_number:   String,
-	themes:         Array,
-	designers:      Array,
-	artists:        Array,
-	keywords:       Array,
-	features:       String,
-	notes:          String,
-	toys:           String,
-	slogans:        String,
+	model_number: String,
+	themes: Array,
+	designers: Array,
+	artists: Array,
+	keywords: Array,
+	features: String,
+	notes: String,
+	toys: String,
+	slogans: String,
 	ipdb: {
 		number: Number,
 		rating: Number,
@@ -75,30 +82,30 @@ var fields = {
 		mpu: Number
 	},
 	pinside: {
-		ids: [ String ],
-		ranks: [ Number ],
+		ids: [String],
+		ranks: [Number],
 		rating: Number
 	},
-	counter:       {
-		releases:  { type: Number, 'default': 0 },
-		views:     { type: Number, 'default': 0 },
+	counter: {
+		releases: { type: Number, 'default': 0 },
+		views: { type: Number, 'default': 0 },
 		downloads: { type: Number, 'default': 0 },
-		comments:  { type: Number, 'default': 0 },
-		stars:     { type: Number, 'default': 0 }
+		comments: { type: Number, 'default': 0 },
+		stars: { type: Number, 'default': 0 }
 	},
 	metrics: {
 		popularity: { type: Number, 'default': 0 } // time-decay based score like reddit, but based on views, downloads, comments, favs. see SO/11653545
 	},
 	rating: {
-		average:   { type: Number, 'default': 0 },
-		votes:     { type: Number, 'default': 0 },
-		score:     { type: Number, 'default': 0 } // imdb-top-250-like score, a bayesian estimate.
+		average: { type: Number, 'default': 0 },
+		votes: { type: Number, 'default': 0 },
+		score: { type: Number, 'default': 0 } // imdb-top-250-like score, a bayesian estimate.
 	},
-	modified_at:   { type: Date }, // only release add/update modifies this
-	created_at:    { type: Date, required: true },
-	_created_by:   { type: Schema.ObjectId, required: true, ref: 'User' }
+	modified_at: { type: Date }, // only release add/update modifies this
+	created_at: { type: Date, required: true },
+	_created_by: { type: Schema.ObjectId, required: true, ref: 'User' }
 };
-var GameSchema = new Schema(fields);
+const GameSchema = new Schema(fields);
 
 
 //-----------------------------------------------------------------------------
@@ -116,9 +123,9 @@ GameSchema.plugin(sortTitle, { src: 'title', dest: 'title_sortable' });
 //-----------------------------------------------------------------------------
 // API FIELDS
 //-----------------------------------------------------------------------------
-var apiFields = {
-	reduced: [ 'id', 'title', 'manufacturer', 'year', 'ipdb' ], // fields returned in release data
-	simple:  [ 'game_type', 'backglass', 'logo', 'counter', 'rating', 'mpu', 'restrictions' ]      // fields returned in lists
+const apiFields = {
+	reduced: ['id', 'title', 'manufacturer', 'year', 'ipdb'], // fields returned in release data
+	simple: ['game_type', 'backglass', 'logo', 'counter', 'rating', 'mpu', 'restrictions']      // fields returned in lists
 };
 
 
@@ -140,7 +147,7 @@ GameSchema.virtual('logo')
 
 GameSchema.virtual('full_title')
 	.get(function() {
-		var fullTitle = this.title;
+		let fullTitle = this.title;
 		if (this.year || this.manufacturer) {
 			fullTitle += ' (' + this.manufacturer + ' ' + this.year + ')';
 		}
@@ -218,8 +225,8 @@ GameSchema.path('_backglass').validate(function(backglass, callback) {
 			return callback(false);
 		}
 		if (backglass) {
-			var ar = Math.round(backglass.metadata.size.width / backglass.metadata.size.height * 1000) / 1000;
-			var arDiff = Math.abs(ar / 1.25 - 1);
+			const ar = Math.round(backglass.metadata.size.width / backglass.metadata.size.height * 1000) / 1000;
+			const arDiff = Math.abs(ar / 1.25 - 1);
 			return callback(arDiff < maxAspectRatioDifference);
 		}
 		callback(true);
@@ -256,7 +263,6 @@ GameSchema.methods.toDetailed = function() {
 //-----------------------------------------------------------------------------
 GameSchema.pre('remove', function(done) {
 
-	const File = require('mongoose').model('File');
 	return Promise.try(() => {
 		// remove reference from other tables
 		return Promise.all([

@@ -17,8 +17,9 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-"use strict";
+'use strict';
 
+// eslint-disable-next-line no-unused-vars
 module.exports = exports = function(schema, options) {
 	schema.methods.toObj = function() {
 		return this.toObject({ virtuals: true });

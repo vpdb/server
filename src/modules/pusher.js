@@ -17,12 +17,12 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-"use strict";
+'use strict';
 
-var _ = require('lodash');
-var logger = require('winston');
-var Pusher = require('pusher');
-var config = require('./settings').current;
+const _ = require('lodash');
+const logger = require('winston');
+const Pusher = require('pusher');
+const config = require('./settings').current;
 
 exports.isEnabled = config.vpdb.pusher.enabled;
 
@@ -36,25 +36,26 @@ exports.addVersion = function(game, release, version) {
 
 	// don't even bother quering..
 	if (!exports.isEnabled) {
-		return logger.info("[pusher] [addVersion] Disabled, skipping announce.");
+		return logger.info('[pusher] [addVersion] Disabled, skipping announce.');
 	}
 
-	var User = require('mongoose').model('User');
-	var Star = require('mongoose').model('Star');
+	const User = require('mongoose').model('User');
 
 	User.find({ 'channel_config.subscribed_releases': release.id }, function(err, subscribedUsers) {
 		/* istanbul ignore if  */
 		if (err) {
 			return logger.error('[pusher] [addVersion] Error retrieving subscribed users for release %s: %s', release.id, err.message);
 		}
-		var users = _.filter(subscribedUsers, function(user) {
+		const users = _.filter(subscribedUsers, function(user) {
 			return exports.isUserEnabled(user);
 		});
-		logger.info("Found %d authorized user(s) subscribed to release %s.", users.length, release.id);
+		logger.info('Found %d authorized user(s) subscribed to release %s.', users.length, release.id);
 
-		var userChannels = _.uniq(_.map(users, function(user) { return getChannel(user); }));
+		const userChannels = _.uniq(_.map(users, function(user) {
+			return getChannel(user);
+		}));
 		userChannels.forEach(function(chan) {
-			logger.info("Announcing update to channel %s", chan);
+			logger.info('Announcing update to channel %s', chan);
 			exports.api.trigger(chan, 'new_release_version', { game_id: game.id, release_id: release.id, version: version.version });
 		});
 	});

@@ -1,4 +1,4 @@
-Promise = require('bluebird'); // jshint ignore:line
+Promise = require('bluebird');
 
 const fs = require('fs');
 const logger = require('winston');

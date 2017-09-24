@@ -17,15 +17,14 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-"use strict";
+'use strict';
 
-var _ = require('lodash');
-var logger = require('winston');
+const _ = require('lodash');
+const logger = require('winston');
 
-var error = require('../../modules/error')('api', 'token');
-var acl = require('../../acl');
-var api = require('./api');
-var Token = require('mongoose').model('Token');
+const error = require('../../modules/error')('api', 'token');
+const api = require('./api');
+const Token = require('mongoose').model('Token');
 
 exports.create = function(req, res) {
 
@@ -84,8 +83,8 @@ exports.create = function(req, res) {
 
 exports.list = function(req, res) {
 
-	var query = { _created_by: req.user._id };
-	var allowedTypes = [ 'access', 'login'];
+	const query = { _created_by: req.user._id };
+	const allowedTypes = ['access', 'login'];
 
 	// filter by type?
 	if (req.query.type && _.includes(allowedTypes, req.query.type)) {
@@ -108,8 +107,8 @@ exports.list = function(req, res) {
 
 exports.update = function(req, res) {
 
-	var assert = api.assert(error, 'update', req.params.id, res);
-	var updateableFields = [ 'label', 'is_active', 'expires_at' ]; // TODO enable expires_at only in debug, not in prod
+	const assert = api.assert(error, 'update', req.params.id, res);
+	const updateableFields = ['label', 'is_active', 'expires_at']; // TODO enable expires_at only in debug, not in prod
 
 	Token.findOne({ id: req.params.id, _created_by: req.user._id }, assert(function(token) {
 		if (!token) {
@@ -134,7 +133,7 @@ exports.update = function(req, res) {
 
 exports.del = function(req, res) {
 
-	var assert = api.assert(error, 'delete', req.params.id, res);
+	const assert = api.assert(error, 'delete', req.params.id, res);
 
 	Token.findOne({ id: req.params.id, _created_by: req.user._id }, assert(function(token) {
 		if (!token) {

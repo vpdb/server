@@ -17,29 +17,27 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-"use strict";
+'use strict';
 
 const path = require('path');
 const logger = require('winston');
-const Git = require("nodegit");
+const Git = require('nodegit');
 
 class Gitinfo {
 
 	constructor() {
 
-		var foo = !!!bar;
-
 		this.info = {
 			local: {
 				branch: {
 					current: {
-						name: "unknown",
-						SHA: "unknown",
-						shortSHA: "unknown",
-						currentUser: "unknown",
+						name: 'unknown',
+						SHA: 'unknown',
+						shortSHA: 'unknown',
+						currentUser: 'unknown',
 						lastCommitTime: new Date(),
-						lastCommitMessage: "",
-						lastCommitAuthor: "unknown"
+						lastCommitMessage: '',
+						lastCommitAuthor: 'unknown'
 					}
 				}
 			}
@@ -48,8 +46,7 @@ class Gitinfo {
 		const repoRoot = path.resolve(__dirname, '../..');
 		Git.Repository.open(repoRoot).then(repo => {
 			return repo.getCurrentBranch().then(branch => {
-				return repo.getCurrentBranch()
-					.then(ref => repo.getBranchCommit(branch))
+				return repo.getBranchCommit(branch)
 					.then(commit => {
 						this.info.local.branch.current = {
 							name: branch,
@@ -58,7 +55,7 @@ class Gitinfo {
 							lastCommitTime: new Date(commit.timeMs()),
 							lastCommitMessage: commit.message(),
 							lastCommitAuthor: commit.author().name
-						}
+						};
 					});
 			});
 		}).then(() => {

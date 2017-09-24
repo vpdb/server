@@ -17,21 +17,19 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-"use strict";
+'use strict';
 
-var _ = require('lodash');
-var util = require('util');
-var logger = require('winston');
+const _ = require('lodash');
+const logger = require('winston');
 
-var Game = require('mongoose').model('Game');
-var Release = require('mongoose').model('Release');
-var Comment = require('mongoose').model('Comment');
-var LogEvent = require('mongoose').model('LogEvent');
-var api = require('./api');
-var acl = require('../../acl');
+const Release = require('mongoose').model('Release');
+const Comment = require('mongoose').model('Comment');
+const LogEvent = require('mongoose').model('LogEvent');
+const api = require('./api');
+const acl = require('../../acl');
 
-var error = require('../../modules/error')('api', 'comment');
-var mailer = require('../../modules/mailer');
+const error = require('../../modules/error')('api', 'comment');
+const mailer = require('../../modules/mailer');
 
 exports.createForRelease = function(req, res) {
 

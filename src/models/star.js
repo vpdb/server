@@ -17,32 +17,30 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-"use strict";
+'use strict';
 
-var _ = require('lodash');
-var logger = require('winston');
-var mongoose = require('mongoose');
+const logger = require('winston');
+const mongoose = require('mongoose');
 
-var Schema = mongoose.Schema;
-
+const Schema = mongoose.Schema;
 
 //-----------------------------------------------------------------------------
 // SCHEMA
 //-----------------------------------------------------------------------------
-var fields = {
-	_from:       { type: Schema.ObjectId, required: true, ref: 'User', index: true },
+const fields = {
+	_from: { type: Schema.ObjectId, required: true, ref: 'User', index: true },
 	_ref: {
-		game:      { type: Schema.ObjectId, ref: 'Game', index: true, sparse: true },
-		release:   { type: Schema.ObjectId, ref: 'Release', index: true, sparse: true },
-		user:      { type: Schema.ObjectId, ref: 'User', index: true, sparse: true },
-		medium:    { type: Schema.ObjectId, ref: 'Medium', index: true, sparse: true },
+		game: { type: Schema.ObjectId, ref: 'Game', index: true, sparse: true },
+		release: { type: Schema.ObjectId, ref: 'Release', index: true, sparse: true },
+		user: { type: Schema.ObjectId, ref: 'User', index: true, sparse: true },
+		medium: { type: Schema.ObjectId, ref: 'Medium', index: true, sparse: true },
 		backglass: { type: Schema.ObjectId, ref: 'Backglass', index: true, sparse: true }
 	},
-	type:        { type: String, 'enum': [ 'game', 'release', 'user', 'medium', 'backglass' ], required: true, index: true },
-	created_at:  { type: Date, required: true }
+	type: { type: String, 'enum': ['game', 'release', 'user', 'medium', 'backglass'], required: true, index: true },
+	created_at: { type: Date, required: true }
 };
 
-var StarSchema = new Schema(fields);
+const StarSchema = new Schema(fields);
 // TODO autoindex: false in production: http://mongoosejs.com/docs/guide.html#indexes
 
 mongoose.model('Star', StarSchema);

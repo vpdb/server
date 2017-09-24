@@ -17,15 +17,15 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-"use strict";
+'use strict';
 
-var _ = require('lodash');
-var logger = require('winston');
-var quotaModule = require('volos-quota-redis');
+const _ = require('lodash');
+const logger = require('winston');
+const quotaModule = require('volos-quota-redis');
 
-var error = require('./error')('quota');
-var config = require('./settings').current;
-var quotaConfig = config.vpdb.quota;
+const error = require('./error')('quota');
+const config = require('./settings').current;
+const quotaConfig = config.vpdb.quota;
 
 class Quota {
 
@@ -34,7 +34,7 @@ class Quota {
 	 */
 	init() {
 		logger.info('[quota] Initializing quotas...');
-		var duration;
+		let duration;
 		this.quota = {};
 
 		// we create a quota module for each duration
@@ -133,8 +133,8 @@ class Quota {
 			return Promise.resolve(true).nodeify(callback);
 		}
 
-		var file, sum = 0;
-		for (var i = 0; i < files.length; i++) {
+		let file, sum = 0;
+		for (let i = 0; i < files.length; i++) {
 			file = files[i];
 			let cost = this.getCost(file);
 
@@ -167,15 +167,14 @@ class Quota {
 			allow: plan.credits
 		})
 			.then(result => {
-					logger.info('[quota] Quota check for %s credit(s) %s on <%s> for %d file(s) with %d quota left for another %d seconds (plan allows %s per %s).', sum, result.isAllowed ? 'passed' : 'FAILED', req.user.email, files.length, result.allowed - result.used, Math.round(result.expiryTime / 1000), plan.credits, plan.per);
-					res.set({
-						'X-RateLimit-Limit': result.allowed,
-						'X-RateLimit-Remaining': result.allowed - result.used,
-						'X-RateLimit-Reset': result.expiryTime
-					});
-					return result.isAllowed;
-				}
-			).nodeify(callback);
+				logger.info('[quota] Quota check for %s credit(s) %s on <%s> for %d file(s) with %d quota left for another %d seconds (plan allows %s per %s).', sum, result.isAllowed ? 'passed' : 'FAILED', req.user.email, files.length, result.allowed - result.used, Math.round(result.expiryTime / 1000), plan.credits, plan.per);
+				res.set({
+					'X-RateLimit-Limit': result.allowed,
+					'X-RateLimit-Remaining': result.allowed - result.used,
+					'X-RateLimit-Reset': result.expiryTime
+				});
+				return result.isAllowed;
+			}).nodeify(callback);
 	}
 
 	/**
@@ -192,8 +191,8 @@ class Quota {
 			throw new Error('File object must be populated when retrieving costs.');
 		}
 
-		var variationName = _.isObject(variation) ? variation.name : variation;
-		var cost = quotaConfig.costs[file.file_type];
+		const variationName = _.isObject(variation) ? variation.name : variation;
+		let cost = quotaConfig.costs[file.file_type];
 
 		// undefined file_types are free
 		if (_.isUndefined(cost)) {
@@ -224,7 +223,7 @@ class Quota {
 				return 0;
 			}
 			if (_.isObject(cost.category)) {
-				var costCategory = cost.category[file.getMimeCategory(variation)];
+				const costCategory = cost.category[file.getMimeCategory(variation)];
 				if (_.isUndefined(costCategory)) {
 					if (_.isUndefined(cost.category['*'])) {
 						logger.warn('[quota] No cost defined for %s file of type %s and no fallback given, returning 0.', file.file_type, file.getMimeCategory(variation));

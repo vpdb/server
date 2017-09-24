@@ -17,11 +17,9 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-"use strict";
+'use strict';
 
 const _ = require('lodash');
-const fs = require('fs');
-const path = require('path');
 const logger = require('winston');
 const shortId = require('shortid32');
 const mongoose = require('mongoose');
@@ -374,7 +372,7 @@ function getReleaseThumb(versions, opts) {
 	// get all table files
 	const files = _.flatten(_.map(versions, 'files')).filter(file => file.flavor);
 
-//	console.log('flavorParams: %j, flavorDefaults: %j', flavorParams, flavorDefaults);
+	// console.log('flavorParams: %j, flavorDefaults: %j', flavorParams, flavorDefaults);
 
 	// assign weights to each file depending on parameters
 	/** @type {{ file: {[playfield_image]:{}, [_playfield_image]:{}}, weight:number }[]} */
@@ -398,7 +396,7 @@ function getReleaseThumb(versions, opts) {
 			p--;
 		});
 
-//		console.log('%s / %j => %d', opts.thumbFlavor, fileFlavor, weight);
+		// console.log('%s / %j => %d', opts.thumbFlavor, fileFlavor, weight);
 		return {
 			file: file,
 			weight: weight

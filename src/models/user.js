@@ -17,51 +17,50 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-"use strict";
+'use strict';
 
-var _ = require('lodash');
-var crypto = require('crypto');
-var logger = require('winston');
-var shortId = require('shortid32');
-var mongoose = require('mongoose');
-var validator = require('validator');
-var randomstring = require('randomstring');
-var uniqueValidator = require('mongoose-unique-validator');
-var toObj = require('./plugins/to-object');
-var metrics = require('./plugins/metrics');
+const _ = require('lodash');
+const crypto = require('crypto');
+const logger = require('winston');
+const shortId = require('shortid32');
+const mongoose = require('mongoose');
+const validator = require('validator');
+const randomstring = require('randomstring');
+const uniqueValidator = require('mongoose-unique-validator');
+const toObj = require('./plugins/to-object');
+const metrics = require('./plugins/metrics');
 
-var error = require('../modules/error')('model', 'user');
-var config = require('../modules/settings').current;
-var flavor = require('../modules/flavor');
-var pusher = require('../modules/pusher');
-var Schema = mongoose.Schema;
+const config = require('../modules/settings').current;
+const flavor = require('../modules/flavor');
+const pusher = require('../modules/pusher');
+const Schema = mongoose.Schema;
 
 
 //-----------------------------------------------------------------------------
 // SCHEMA
 //-----------------------------------------------------------------------------
-var fields = {
-	id:               { type: String, required: true, unique: true, 'default': shortId.generate },
-	name:             { type: String, index: true, required: 'Name must be provided.' }, // display name, equals username when locally registering.
-	username:         { type: String, index: true, unique: true, sparse: true },         // login name when logging locally, empty if oauth
-	email:            { type: String, index: true, unique: true, lowercase: true, required: 'Email must be provided.' },
+const fields = {
+	id: { type: String, required: true, unique: true, 'default': shortId.generate },
+	name: { type: String, index: true, required: 'Name must be provided.' }, // display name, equals username when locally registering.
+	username: { type: String, index: true, unique: true, sparse: true },         // login name when logging locally, empty if oauth
+	email: { type: String, index: true, unique: true, lowercase: true, required: 'Email must be provided.' },
 	email_status: {
-		code:         { type: String, 'enum': [ 'confirmed', 'pending_registration', 'pending_update' ], required: true },
-		token:        { type: String },
-		expires_at:   { type: Date },
-		value:        { type: String }
+		code: { type: String, 'enum': ['confirmed', 'pending_registration', 'pending_update'], required: true },
+		token: { type: String },
+		expires_at: { type: Date },
+		value: { type: String }
 	},
-	emails:           { type: [ String ] }, // collected from profiles
-	roles:            { type: [ String ], required: true },
-	_plan:            { type: String, required: true },
-	provider:         { type: String, required: true },
-	password_hash:    { type: String },
-	password_salt:    { type: String },
-	thumb:            { type: String },
-	location:         { type: String },
-	preferences:      {
+	emails: { type: [String] }, // collected from profiles
+	roles: { type: [String], required: true },
+	_plan: { type: String, required: true },
+	provider: { type: String, required: true },
+	password_hash: { type: String },
+	password_salt: { type: String },
+	thumb: { type: String },
+	location: { type: String },
+	preferences: {
 		tablefile_name: { type: String },
-		flavor_tags:    { type: Schema.Types.Mixed },
+		flavor_tags: { type: Schema.Types.Mixed },
 		notify_release_moderation_status: { type: Boolean, 'default': true },
 		notify_release_validation_status: { type: Boolean, 'default': true },
 		notify_backglass_moderation_status: { type: Boolean, 'default': true },
@@ -78,16 +77,16 @@ var fields = {
 	},
 	credits: { type: Schema.Types.Number },
 	counter: {
-		comments:     { type: Number, 'default': 0 },
-		downloads:    { type: Number, 'default': 0 },
-		stars:        { type: Number, 'default': 0 }
+		comments: { type: Number, 'default': 0 },
+		downloads: { type: Number, 'default': 0 },
+		stars: { type: Number, 'default': 0 }
 	},
-	created_at:       { type: Date, required: true },
-	is_active:        { type: Boolean, required: true, 'default': false },
-	validated_emails: { type: [ String ] },
-	channel_config:   {
+	created_at: { type: Date, required: true },
+	is_active: { type: Boolean, required: true, 'default': false },
+	validated_emails: { type: [String] },
+	channel_config: {
 		subscribe_to_starred: { type: Boolean, 'default': false }, // "nice to know", useless
-		subscribed_releases: { type: [ String ], index: true }     // linked releases on client side, so we can announce properly in realtime
+		subscribed_releases: { type: [String], index: true }     // linked releases on client side, so we can announce properly in realtime
 	}
 };
 
@@ -103,7 +102,7 @@ config.vpdb.passport.ipboard.forEach(function(ipbConfig) {
 		fields[ipbConfig.id] = {};
 	}
 });
-var UserSchema = new Schema(fields);
+const UserSchema = new Schema(fields);
 UserSchema.index({ name: 'text', username: 'text', email: 'text' });
 UserSchema.plugin(uniqueValidator, { message: 'The {PATH} "{VALUE}" is already taken.' });
 
@@ -117,9 +116,9 @@ UserSchema.plugin(metrics);
 //-----------------------------------------------------------------------------
 // API FIELDS
 //-----------------------------------------------------------------------------
-var apiFields = {
-	reduced: [ 'id', 'name', 'username', 'thumb', 'gravatar_id', 'location' ], // "member" search result
-	simple: [ 'email', 'is_active', 'provider', 'roles', 'plan', 'created_at', 'google', 'github', 'preferences', 'counter' ]  // "admin" lists & profile
+const apiFields = {
+	reduced: ['id', 'name', 'username', 'thumb', 'gravatar_id', 'location'], // "member" search result
+	simple: ['email', 'is_active', 'provider', 'roles', 'plan', 'created_at', 'google', 'github', 'preferences', 'counter']  // "admin" lists & profile
 };
 
 
@@ -161,7 +160,7 @@ UserSchema.virtual('planConfig')
 // MIDDLEWARE
 //-----------------------------------------------------------------------------
 UserSchema.pre('validate', function(next) {
-	var user = this.toJSON();
+	const user = this.toJSON();
 	if (this.isNew && !this.name) {
 		if (user.username) {
 			this.name = user.username;
@@ -214,7 +213,7 @@ UserSchema.path('email').validate(function(email, callback) {
 	if (!email) {
 		return callback(true);
 	}
-	var that = this;
+	const that = this;
 
 	mongoose.model('User').findOne({ 'email_status.value': email }, function(err, u) {
 		/* istanbul ignore if  */
@@ -268,7 +267,7 @@ UserSchema.path('provider').validate(function(provider, callback) {
 			if (!this.preferences.tablefile_name.trim()) {
 				this.invalidate('preferences.tablefile_name', 'Must not be empty if set.');
 			}
-			let rg1 = /^[^\\/:\*\?"<>\|]+$/;                     // forbidden characters \ / : * ? " < > |
+			let rg1 = /^[^\\/:*?"<>|]+$/;                        // forbidden characters \ / : * ? " < > |
 			let rg2 = /^\./;                                     // cannot start with dot (.)
 			let rg3 = /^(nul|prn|con|lpt[0-9]|com[0-9])(\.|$)/i; // forbidden file names
 			if (!rg1.test(this.preferences.tablefile_name) || rg2.test(this.preferences.tablefile_name) || rg3.test(this.preferences.tablefile_name)) {
@@ -411,8 +410,7 @@ UserSchema.methods.toDetailed = function() {
 
 UserSchema.statics.createUser = function(userObj, confirmUserEmail) {
 
-	var User = mongoose.model('User');
-	var LogUser = mongoose.model('LogUser');
+	const User = mongoose.model('User');
 
 	let user, count;
 	return Promise.try(() => {
@@ -458,12 +456,12 @@ UserSchema.statics.toReduced = function(user) {
 	if (!user) {
 		return user;
 	}
-	var obj = user.toObj ? user.toObj() : user;
+	const obj = user.toObj ? user.toObj() : user;
 	return _.extend(_.pick(obj, apiFields.reduced), { counter: _.pick(obj.counter, ['comments', 'stars'] ) });
 };
 
 UserSchema.statics.toSimple = function(user) {
-	var obj = user.toObj ? user.toObj() : user;
+	const obj = user.toObj ? user.toObj() : user;
 	user = _.pick(obj, apiFields.reduced.concat(apiFields.simple));
 	if (!_.isEmpty(user.github)) {
 		user.github = UserSchema.statics.normalizeProviderData('github', user.github);

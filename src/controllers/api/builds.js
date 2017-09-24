@@ -17,18 +17,18 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-"use strict";
+'use strict';
 
-var _ = require('lodash');
-var logger = require('winston');
+const _ = require('lodash');
+const logger = require('winston');
 
-var acl = require('../../acl');
-var api = require('./api');
-var Build = require('mongoose').model('Build');
-var Release = require('mongoose').model('Release');
-var LogEvent = require('mongoose').model('LogEvent');
+const acl = require('../../acl');
+const api = require('./api');
+const Build = require('mongoose').model('Build');
+const Release = require('mongoose').model('Release');
+const LogEvent = require('mongoose').model('LogEvent');
 
-var error = require('../../modules/error')('api', 'tag');
+const error = require('../../modules/error')('api', 'tag');
 
 /**
  * Lists all current builds.
@@ -38,7 +38,7 @@ var error = require('../../modules/error')('api', 'tag');
  */
 exports.list = function(req, res) {
 
-	var q;
+	let q;
 	if (req.user) {
 		// logged users also get their own builds even if inactive.
 		q = { $or: [{ is_active: true }, { _created_by: req.user._id }] };
@@ -138,11 +138,11 @@ exports.view = function(req, res) {
  */
 exports.create = function(req, res) {
 
-	var newBuild;
+	let newBuild;
 	Promise.try(function() {
 		newBuild = new Build(req.body);
 
-		const idFromLabel = newBuild.label ? newBuild.label.replace(/(^[^a-z0-9\._-]+)|([^a-z0-9\._-]+$)/gi, '').replace(/[^a-z0-9\._-]+/gi, '-').toLowerCase() : '-';
+		const idFromLabel = newBuild.label ? newBuild.label.replace(/(^[^a-z0-9._-]+)|([^a-z0-9._-]+$)/gi, '').replace(/[^a-z0-9._-]+/gi, '-').toLowerCase() : '-';
 		newBuild.id = newBuild.id || idFromLabel;
 		newBuild.is_active = false;
 		newBuild.created_at = new Date();

@@ -17,15 +17,12 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-"use strict";
-
-Promise = require('bluebird'); // jshint ignore:line
+'use strict';
+Promise = require('bluebird');
 
 const _ = require('lodash');
 const fs = require('fs');
-const http = require('http');
 const path = require('path');
-const util = require('util');
 const mongoose = require('mongoose');
 
 const settings = require('../modules/settings');
@@ -58,7 +55,6 @@ const variations = {
 	table: processors.table.variations
 };
 
-const User = mongoose.model('User');
 const File = mongoose.model('File');
 
 const args = process.argv.slice(2);
@@ -99,7 +95,7 @@ File.find(query).exec().then(files => Promise.each(files, file => {
 					fs.renameSync(dest, original);
 				})
 				.then(() => storage.onProcessed(file, variation, processor))
-				.catch(err => console.error("ERROR: %s", err.message));
+				.catch(err => console.error('ERROR: %s', err.message));
 			});
 		}
 	});

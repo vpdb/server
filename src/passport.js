@@ -17,23 +17,23 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-"use strict";
+'use strict';
 
-var _ = require('lodash');
-var logger = require('winston');
-var mongoose = require('mongoose');
-var passport = require('passport');
-var GitHubStrategy = require('passport-github').Strategy;
-var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
-var IPBoard3Strategy = require('./modules/passport-ipboard3').Strategy;
-var IPBoard4Strategy = require('./modules/passport-ipboard4').Strategy;
+const _ = require('lodash');
+const logger = require('winston');
+const mongoose = require('mongoose');
+const passport = require('passport');
+const GitHubStrategy = require('passport-github').Strategy;
+const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
+const IPBoard3Strategy = require('./modules/passport-ipboard3').Strategy;
+const IPBoard4Strategy = require('./modules/passport-ipboard4').Strategy;
 
-var error = require('./modules/error')('passport');
-var mailer = require('./modules/mailer');
-var settings = require('./modules/settings');
-var config = settings.current;
-var User = mongoose.model('User');
-var LogUser = mongoose.model('LogUser');
+const error = require('./modules/error')('passport');
+const mailer = require('./modules/mailer');
+const settings = require('./modules/settings');
+const config = settings.current;
+const User = mongoose.model('User');
+const LogUser = mongoose.model('LogUser');
 
 /**
  * Defines the authentication strategies and user serialization.
@@ -44,53 +44,49 @@ exports.configure = function() {
 	if (config.vpdb.passport.google.enabled) {
 		logger.info('[passport] Enabling Google authentication strategy with callback at %s', settings.webUri('/auth/google/callback'));
 		passport.use(new GoogleStrategy({
-				clientID: config.vpdb.passport.google.clientID,
-				clientSecret: config.vpdb.passport.google.clientSecret,
-				callbackURL: settings.webUri('/auth/google/callback')
-			}, exports.verifyCallbackOAuth('google')
-		));
+			clientID: config.vpdb.passport.google.clientID,
+			clientSecret: config.vpdb.passport.google.clientSecret,
+			callbackURL: settings.webUri('/auth/google/callback')
+		}, exports.verifyCallbackOAuth('google')));
 	}
 
 	// use github strategy
 	if (config.vpdb.passport.github.enabled) {
 		logger.info('[passport] Enabling GitHub authentication strategy with callback at %s', settings.webUri('/auth/github/callback'));
 		passport.use(new GitHubStrategy({
-				passReqToCallback: true,
-				clientID: config.vpdb.passport.github.clientID,
-				clientSecret: config.vpdb.passport.github.clientSecret,
-				callbackURL: settings.webUri('/auth/github/callback'),
-				scope: ['user:email']
-			}, exports.verifyCallbackOAuth('github')
-		));
+			passReqToCallback: true,
+			clientID: config.vpdb.passport.github.clientID,
+			clientSecret: config.vpdb.passport.github.clientSecret,
+			callbackURL: settings.webUri('/auth/github/callback'),
+			scope: ['user:email']
+		}, exports.verifyCallbackOAuth('github')));
 	}
 
 	// ipboard strategies
 	config.vpdb.passport.ipboard.forEach(ipbConfig => {
 		if (ipbConfig.enabled) {
 
-			var callbackUrl = settings.webUri('/auth/' + ipbConfig.id + '/callback');
+			const callbackUrl = settings.webUri('/auth/' + ipbConfig.id + '/callback');
 			logger.info('[passport|ipboard:' + ipbConfig.id + '] Enabling IP.Board authentication strategy for "%s" at %s.', ipbConfig.name, ipbConfig.baseURL);
 			if (ipbConfig.version === 3) {
 				passport.use(new IPBoard3Strategy({
-						passReqToCallback: true,
-						name: ipbConfig.id,
-						baseURL: ipbConfig.baseURL,
-						clientID: ipbConfig.clientID,
-						clientSecret: ipbConfig.clientSecret,
-						callbackURL: callbackUrl
-					}, exports.verifyCallbackOAuth('ipboard', ipbConfig.id)
-				));
+					passReqToCallback: true,
+					name: ipbConfig.id,
+					baseURL: ipbConfig.baseURL,
+					clientID: ipbConfig.clientID,
+					clientSecret: ipbConfig.clientSecret,
+					callbackURL: callbackUrl
+				}, exports.verifyCallbackOAuth('ipboard', ipbConfig.id)));
 			}
 			if (ipbConfig.version === 4) {
 				passport.use(new IPBoard4Strategy({
-						passReqToCallback: true,
-						name: ipbConfig.id,
-						baseURL: ipbConfig.baseURL,
-						clientID: ipbConfig.clientID,
-						clientSecret: ipbConfig.clientSecret,
-						callbackURL: callbackUrl
-					}, exports.verifyCallbackOAuth('ipboard', ipbConfig.id)
-				));
+					passReqToCallback: true,
+					name: ipbConfig.id,
+					baseURL: ipbConfig.baseURL,
+					clientID: ipbConfig.clientID,
+					clientSecret: ipbConfig.clientSecret,
+					callbackURL: callbackUrl
+				}, exports.verifyCallbackOAuth('ipboard', ipbConfig.id)));
 			}
 		}
 	});
@@ -115,8 +111,8 @@ exports.configure = function() {
  * @see http://passportjs.org/guide/oauth/
  */
 exports.verifyCallbackOAuth = function(strategy, providerName) {
-	var provider = providerName || strategy;
-	var logtag = providerName ? strategy + ':' + providerName : strategy;
+	const provider = providerName || strategy;
+	const logtag = providerName ? strategy + ':' + providerName : strategy;
 
 	return function(req, accessToken, refreshToken, profile, callback) { // accessToken and refreshToken are ignored
 
@@ -138,7 +134,7 @@ exports.verifyCallbackOAuth = function(strategy, providerName) {
 
 			if (!profile.displayName && !profile.username) {
 				logger.warn('[passport|%s] Profile data does contain neither display name nor username: %s', logtag, JSON.stringify(profile));
-				name = profile.emails[0].value.substr(0, profile.emails[0].value.indexOf("@"));
+				name = profile.emails[0].value.substr(0, profile.emails[0].value.indexOf('@'));
 			} else {
 				name = profile.displayName || profile.username;
 			}
@@ -341,7 +337,7 @@ const diacriticsRemovalMap = [
 	{'base':'z','letters':/[\u007A\u24E9\uFF5A\u017A\u1E91\u017C\u017E\u1E93\u1E95\u01B6\u0225\u0240\u2C6C\uA763]/g}
 ];
 function removeDiacritics(str) {
-	for (var i = 0; i < diacriticsRemovalMap.length; i++) {
+	for (let i = 0; i < diacriticsRemovalMap.length; i++) {
 		str = str.replace(diacriticsRemovalMap[i].letters, diacriticsRemovalMap[i].base);
 	}
 	return str;

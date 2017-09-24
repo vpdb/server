@@ -17,16 +17,16 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-"use strict";
+'use strict';
 
-var path = require('path');
-var logger = require('winston');
-var colors = require('colors');
-var Papertrail = require('winston-papertrail').Papertrail; // only needs to require, no usage.
-var expressMorgan  = require('morgan');
-var expressWinston = require('express-winston');
+const path = require('path');
+const logger = require('winston');
+const Papertrail = require('winston-papertrail').Papertrail; // only needs to require, no usage.
+const expressMorgan = require('morgan');
+const expressWinston = require('express-winston');
+require('colors');
 
-var config = require('./modules/settings').current;
+const config = require('./modules/settings').current;
 
 // application log
 /* istanbul ignore next: It's config and most of it not used during tests. */
@@ -53,7 +53,7 @@ exports.init = function() {
 
 	// file
 	if (config.vpdb.logging.file.app) {
-		var logPath = path.resolve(config.vpdb.logging.file.app);
+		const logPath = path.resolve(config.vpdb.logging.file.app);
 		logger.add(logger.transports.File, ({
 			level: 'info',                   // Level of messages that this transport should log.
 			silent: false,                   // Boolean flag indicating whether to suppress output.
@@ -85,12 +85,12 @@ exports.init = function() {
 /* istanbul ignore next: It's config and most of it not used during tests. */
 exports.expressConfig = function(app) {
 
-	var transports = [];
+	const transports = [];
 
 	// console
 	if (config.vpdb.logging.console.access) {
 		expressMorgan.token('color-req', req => {
-			var str = req.method + ' ' + (req.originalUrl || req.url);
+			const str = req.method + ' ' + (req.originalUrl || req.url);
 			switch (req.method) {
 				case 'GET':    return str.white.blueBG;
 				case 'POST':   return str.white.greenBG;
@@ -100,7 +100,7 @@ exports.expressConfig = function(app) {
 			}
 		});
 		expressMorgan.token('user', req => {
-			var ip = req.ip || req.headers['x-forwarded-for'] || req.connection.remoteAddress || '0.0.0.0';
+			const ip = req.ip || req.headers['x-forwarded-for'] || req.connection.remoteAddress || '0.0.0.0';
 			return req.user ? req.user.name + ':' + ip : ip;
 		});
 
@@ -109,7 +109,7 @@ exports.expressConfig = function(app) {
 
 	// file
 	if (config.vpdb.logging.file.access) {
-		var logPath = path.resolve(config.vpdb.logging.file.access);
+		const logPath = path.resolve(config.vpdb.logging.file.access);
 		transports.push(new logger.transports.File({
 			level: 'info',                   // Level of messages that this transport should log.
 			silent: false,                   // Boolean flag indicating whether to suppress output.

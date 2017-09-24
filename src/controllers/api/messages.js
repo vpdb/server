@@ -17,14 +17,13 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-"use strict";
+'use strict';
 
-var _ = require('lodash');
-var api = require('./api');
-var logger = require('winston');
+const api = require('./api');
+const logger = require('winston');
 
-var pusher = require('../../modules/pusher');
-var error = require('../../modules/error')('api', 'messages');
+const pusher = require('../../modules/pusher');
+const error = require('../../modules/error')('api', 'messages');
 
 exports.authenticate = function(req, res) {
 
@@ -39,10 +38,10 @@ exports.authenticate = function(req, res) {
 		return api.fail(res, error('Channel name must be provided as "channel_name".'), 422);
 	}
 
-	var socketId = req.body.socket_id;
-	var channel = req.body.channel_name;
+	const socketId = req.body.socket_id;
+	const channel = req.body.channel_name;
 	try {
-		var auth = pusher.api.authenticate(socketId, channel);
+		const auth = pusher.api.authenticate(socketId, channel);
 		logger.log('[pusher] User <%s> successfully authenticated for channel %s.', req.user.email, channel);
 		res.send(auth);
 

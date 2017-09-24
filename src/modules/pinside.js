@@ -17,7 +17,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-"use strict";
+'use strict';
 
 const _ = require('lodash');
 const cheerio = require('cheerio');
@@ -100,12 +100,12 @@ class Pinside {
 						matchedGames = matchedGames.filter(g => Math.abs(pinsideGame.year - g.year) < 3);
 					}
 					if (matchedGames.length === 0) {
-						console.log('No match for %s (%s %s): %s', pinsideGame.title, pinsideGame.mfg, pinsideGame.year, pinsideGame.id);
+						logger.log('No match for %s (%s %s): %s', pinsideGame.title, pinsideGame.mfg, pinsideGame.year, pinsideGame.id);
 						result.missed++;
 
 					} else if (matchedGames.length === 1) {
 						const g = matchedGames[0];
-						console.log('Found game: %s (%s %s): %s', g.title, g.manufacturer, g.year, pinsideGame.id);
+						logger.log('Found game: %s (%s %s): %s', g.title, g.manufacturer, g.year, pinsideGame.id);
 						g.pinside = g.pinside || [];
 						g.pinside.ids = g.pinside.ids || [];
 						g.pinside.ranks = g.pinside.ranks || [];
@@ -118,7 +118,7 @@ class Pinside {
 						return g.save();
 
 					} else {
-						console.log('Found multiple games %s.', matchedGames.map(g => `${g.title} (${g.manufacturer} ${g.year})`).join(', '));
+						logger.log('Found multiple games %s.', matchedGames.map(g => `${g.title} (${g.manufacturer} ${g.year})`).join(', '));
 						result.double++;
 					}
 				});

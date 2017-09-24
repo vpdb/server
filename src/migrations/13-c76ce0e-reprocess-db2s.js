@@ -17,7 +17,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-"use strict";
+'use strict';
 
 const fs = require('fs');
 const mongoose = require('mongoose');
@@ -59,7 +59,7 @@ module.exports.up = function(grunt) {
 					fs.renameSync(dest, original);
 				})
 				.then(() => storage.onProcessed(file, variation, processor))
-				.catch(err => grunt.log.writeln("ERROR: %s", err.message));
+				.catch(err => grunt.log.writeln('ERROR: %s', err.message));
 			});
 		}
 

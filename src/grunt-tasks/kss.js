@@ -17,39 +17,39 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-"use strict";
+'use strict';
 
-var _ = require('lodash');
-var fs = require('fs');
-var kss = require('kss');
-var pug = require('pug');
-var path = require('path');
-var async = require('async');
-var html2jade = require('html2jade');
-var highlight = require('highlight.js');
+const _ = require('lodash');
+const fs = require('fs');
+const kss = require('kss');
+let pug = require('pug');
+const path = require('path');
+const async = require('async');
+const html2jade = require('html2jade');
+const highlight = require('highlight.js');
 
-var debug = require('debug')('grunt-kss');
+const debug = require('debug')('grunt-kss');
 
-var ctrl = require('../controllers/ctrl');
-var writeable = require('../modules/writeable');
+const ctrl = require('../controllers/ctrl');
+const writeable = require('../modules/writeable');
 
 module.exports = function(grunt) {
 
 	grunt.registerTask('kss', function() {
-		var done = this.async();
+		const done = this.async();
 		kss.traverse('client/styles', { multiline: true, markdown: true, markup: true, mask: '*.styl' }, function(err, styleguide) {
 			if (err) {
 				throw err;
 			}
-			var rootRefs = [];
+			const rootRefs = [];
 
 			// print out files to be generated
 			grunt.log.writeln('Parsed stylesheets.');
-//			grunt.log.writeln(styleguide.data.files.map(function(file) { return '  - ' + file }).join('\n'));
+			// grunt.log.writeln(styleguide.data.files.map(function(file) { return '  - ' + file }).join('\n'));
 
 			// accumulate all of the sections' first indexes in case they don't have a root element.
 			styleguide.section().forEach(function(rootSection) {
-				var currentRoot = rootSection.reference().match(/[0-9]*\.?/)[0].replace('.', '');
+				const currentRoot = rootSection.reference().match(/[0-9]*\.?/)[0].replace('.', '');
 				if (currentRoot && !~rootRefs.indexOf(currentRoot)) {
 					rootRefs.push(currentRoot);
 				}
@@ -58,16 +58,16 @@ module.exports = function(grunt) {
 			rootRefs.sort(function(a, b) {
 				return parseInt(a) - parseInt(b);
 			});
-			var sectionTemplate = pug.compile(fs.readFileSync('client/app/devsite/styleguide-section.pug'), { pretty: true });
+			const sectionTemplate = pug.compile(fs.readFileSync('client/app/devsite/styleguide-section.pug'), { pretty: true });
 
-			var renderSection = function(rootSection, reference, sections, next) {
+			const renderSection = function(rootSection, reference, sections, next) {
 				grunt.log.writeln('Generating %s %s"', reference, rootSection ? rootSection.header() : 'Unnamed');
 				serializeSections(sections, function(err, sections) {
 					if (err) {
 						grunt.log.error(err);
 						return next(err);
 					}
-					var filename = path.resolve(writeable.devsiteRoot, 'html/styleguide/' + reference + '.html');
+					const filename = path.resolve(writeable.devsiteRoot, 'html/styleguide/' + reference + '.html');
 					grunt.log.write('Writing "%s"... ', filename);
 					fs.writeFileSync(filename, sectionTemplate({
 						styleguide: styleguide,
@@ -82,7 +82,7 @@ module.exports = function(grunt) {
 			// now, group all of the sections by their root reference, and make a page for each.
 			async.each(rootRefs, function(rootRef, next) {
 
-				var rootSection = styleguide.section(rootRef);
+				const rootSection = styleguide.section(rootRef);
 				async.each(styleguide.section(new RegExp('^' + rootRef + '\\.\\d+$')), function(section, next) {
 					renderSection(rootSection, section.reference(), [ section ].concat(styleguide.section(section.reference() + '.x.x')), next);
 				}, next);
@@ -93,7 +93,7 @@ module.exports = function(grunt) {
 				}
 				grunt.log.writeln('Sections rendered.');
 
-				var data = _.extend({
+				const data = _.extend({
 					sections: _.map(rootRefs, function(rootRef) {
 						return {
 							id: rootRef,
@@ -105,11 +105,11 @@ module.exports = function(grunt) {
 				}, ctrl.viewParams());
 
 				// render index
-				var indexHtml = pug.renderFile('client/app/devsite/index.pug', data);
-				var styleguideMain = pug.renderFile('client/app/devsite/styleguide-main.pug', data);
+				const indexHtml = pug.renderFile('client/app/devsite/index.pug', data);
+				const styleguideMain = pug.renderFile('client/app/devsite/styleguide-main.pug', data);
 
 				// render index (move that to grunt directly)
-				var filename = path.resolve(writeable.devsiteRoot, 'index.html');
+				let filename = path.resolve(writeable.devsiteRoot, 'index.html');
 				grunt.log.write('Writing "%s"... ', filename);
 				fs.writeFileSync(filename, indexHtml);
 				grunt.log.ok();
@@ -180,9 +180,9 @@ function serializeModifiers(modifiers, done) {
 				return next(err);
 			}
 			pug = pug.replace(/html[\s\S]+body[\n\r]+/gi, '');
-			pug = ("\n" + pug).replace(/[\n\r]\s{4}/g, '\n');
+			pug = ('\n' + pug).replace(/[\n\r]\s{4}/g, '\n');
 
-			var html = modifier.markup();
+			const html = modifier.markup();
 			next(null, {
 				name: modifier.name(),
 				description: modifier.description(),
@@ -210,10 +210,11 @@ function toPug(html, done) {
 	});
 }
 
+// eslint-disable-next-line no-unused-vars
 function sectionSort(a, b) {
-	var arrA = a.reference().split('.');
-	var arrB = b.reference().split('.');
-	var i = 0;
+	const arrA = a.reference().split('.');
+	const arrB = b.reference().split('.');
+	let i = 0;
 	while (parseInt(arrA[i]) === parseInt(arrB[i])) {
 		if (++i > arrA.length) {
 			return 0;

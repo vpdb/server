@@ -17,12 +17,13 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-"use strict";
+'use strict';
 
-var _ = require('lodash');
-var builder = require('xmlbuilder');
+const _ = require('lodash');
+const builder = require('xmlbuilder');
+const logger = require('winston');
 
-var settings = require('../modules/settings');
+const settings = require('../modules/settings');
 
 /**
  * Returns the parameter object that is accessible when rendering the views.
@@ -31,8 +32,8 @@ var settings = require('../modules/settings');
 /* istanbul ignore next: Not generating markup when running tests.  */
 exports.viewParams = function(gitInfoFromGrunt) {
 
-	var config = require('../modules/settings').current;
-	var assets = require('../modules/assets');
+	const config = require('../modules/settings').current;
+	const assets = require('../modules/assets');
 
 	return {
 		deployment: process.env.APP_NAME || 'staging',
@@ -148,11 +149,10 @@ exports.sitemap = function(req, res) {
 		res.send(rootNode.end({ pretty: true}));
 
 	}).catch(err => {
-		console.error('ERROR:', err.stack);
+		logger.error('ERROR:', err.stack);
 		res.status(500).send(err.message);
 	});
 };
-
 
 exports.robots = function(req, res) {
 	res.setHeader('Content-Type', 'text/plain');

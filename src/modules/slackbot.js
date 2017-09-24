@@ -17,7 +17,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-"use strict";
+'use strict';
 
 const logger = require('winston');
 const settings = require('./settings');
@@ -105,7 +105,6 @@ class SlackBot {
 					} else {
 						return [`Rated *${log.payload.game.title}* (${log.payload.game.manufacturer} ${log.payload.game.year}) with ${log.payload.rating.value}/10.`];
 					}
-					break;
 
 				case 'rate_release':
 					if (log.payload.updated) {
@@ -113,14 +112,13 @@ class SlackBot {
 					} else {
 						return [`Rated *${log.payload.release.name}* of ${log.payload.release.game.title} (${log.payload.release.game.manufacturer} ${log.payload.release.game.year}) with ${log.payload.rating.value}/10.`];
 					}
-					break;
 
 				case 'upload_rom':
 					break;
 
 				case 'create_game':
 					return [
-						`Created new game:`,
+						'Created new game:',
 						[{
 							fallback: `${log.payload.game.title} (${log.payload.game.manufacturer} ${log.payload.game.year})`,
 							title: `${log.payload.game.title} (${log.payload.game.manufacturer} ${log.payload.game.year})`,
@@ -132,7 +130,7 @@ class SlackBot {
 				case 'update_game':
 					return require('mongoose').model('Game').findById(log._ref.game).then(game => {
 						return [
-							`Updated game:`,
+							'Updated game:',
 							[{
 								fallback: `${game.title} (${game.manufacturer} ${game.year})`,
 								title: `${game.title} (${game.manufacturer} ${game.year})`,
@@ -236,7 +234,7 @@ class SlackBot {
 							msg = `Logged in through ${log.payload.provider}.`;
 						}
 					} else {
-						msg = `Failed logging in.`;
+						msg = 'Failed logging in.';
 						attachments = [{ color: red, text: log.message }];
 					}
 					break;
@@ -250,20 +248,20 @@ class SlackBot {
 					msg = `Finished registration with email <${log.payload.email}>.`;
 					break;
 				case 'change_password':
-					msg = `Changed password.`;
+					msg = 'Changed password.';
 					break;
 				case 'create_local_account':
-					msg = `Added local credentials.`;
+					msg = 'Added local credentials.';
 					break;
 				case 'update_email_request':
 					msg = `Requested to change email address from <${log.payload.old}> to <${log.payload.new}>.`;
 					break;
 				case 'cancel_email_update':
-					msg = `Cancelled request to change email.`;
+					msg = 'Cancelled request to change email.';
 					break;
 				case 'update':
 					if (self) {
-						msg = `Updated profile.`;
+						msg = 'Updated profile.';
 					} else {
 						msg = `Updated profile of user *${user.name}*.`;
 					}

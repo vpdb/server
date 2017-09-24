@@ -17,15 +17,14 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-"use strict";
+'use strict';
 
-var _ = require('lodash');
-var api = require('./api');
-var config = require('../../modules/settings').current;
+const _ = require('lodash');
+const config = require('../../modules/settings').current;
 
 exports.list = function(req, res) {
 
-	var plans = [];
+	const plans = [];
 	config.vpdb.quota.plans.forEach(plan => {
 		plans.push(_.extend(plan, { name: plan.name || plan.id, is_default: plan.id === config.vpdb.quota.defaultPlan }));
 	});

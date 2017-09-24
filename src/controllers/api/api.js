@@ -17,17 +17,16 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-"use strict";
+'use strict';
 
-var _ = require('lodash');
-var url = require('url');
-var util = require('util');
-var logger = require('winston');
+const _ = require('lodash');
+const url = require('url');
+const logger = require('winston');
 
-var settings = require('../../modules/settings');
-var gitinfo = require('../../modules/gitinfo');
-var auth = require('../auth');
-var pak = require('../../../package.json');
+const settings = require('../../modules/settings');
+const gitinfo = require('../../modules/gitinfo');
+const auth = require('../auth');
+const pak = require('../../../package.json');
 
 /**
  * Protects a resource, meaning there must be valid JWT. If additionally
@@ -87,15 +86,15 @@ exports.success = function(res, result, code, opts) {
 		code = 200;
 	}
 	if (opts.pagination) {
-		var pageLinks = {};
-		var currentUrl = url.parse(settings.apiHost() + res.req.url, true);
+		const pageLinks = {};
+		const currentUrl = url.parse(settings.apiHost() + res.req.url, true);
 		delete currentUrl.search;
-		var paginatedUrl = function(page, perPage) {
+		const paginatedUrl = function(page, perPage) {
 			currentUrl.query = _.extend(currentUrl.query, { page: page, per_page: perPage });
 			return url.format(currentUrl);
 		};
 
-		var lastPage = Math.ceil(opts.pagination.count / opts.pagination.perPage);
+		const lastPage = Math.ceil(opts.pagination.count / opts.pagination.perPage);
 		if (opts.pagination.page > 2) {
 			pageLinks.first = paginatedUrl(1, opts.pagination.perPage);
 		}
@@ -143,7 +142,7 @@ exports.fail = function(res, err, code) {
 		code = code || err.code || 500;
 		res.setHeader('Content-Type', 'application/json');
 		if (err.errs) {
-			var arr = _.uniqWith(_.map(err.errs, (error, path) => {
+			const arr = _.uniqWith(_.map(err.errs, (error, path) => {
 				return {
 					message: error.message,
 					field: _.isArray(err.errs) ? error.path : path,
@@ -164,15 +163,15 @@ exports.assertFields = function(req, updateableFields, error, action) {
 	if (_.intersection(updateableFields, submittedFields).length !== submittedFields.length) {
 		let invalidFields = _.difference(submittedFields, updateableFields);
 		throw error('Invalid field%s: ["%s"]. Allowed fields: ["%s"]',
-				invalidFields.length === 1 ? '' : 's',
-				invalidFields.join('", "'),
-				updateableFields.join('", "')
+			invalidFields.length === 1 ? '' : 's',
+			invalidFields.join('", "'),
+			updateableFields.join('", "')
 		).status(400).log(action);
 	}
 };
 
 exports.checkApiContentType = function(req, res, next) {
-	var hasBody = req.method === 'POST' || req.method === 'PUT' || req.method === 'PATCH';
+	const hasBody = req.method === 'POST' || req.method === 'PUT' || req.method === 'PATCH';
 
 	// todo fix use config instead of "/api".
 	if (req.path.substr(0, 5) !== '/api/') {
@@ -190,6 +189,7 @@ exports.checkApiContentType = function(req, res, next) {
 	}
 };
 
+// eslint-disable-next-line no-unused-vars
 exports.handleParseError = function(err, req, res, next) {
 	/* istanbul ignore else */
 	if (err instanceof SyntaxError && req.get('content-type') === 'application/json' && req.path.substr(0, 5) === '/api/') {
@@ -229,8 +229,8 @@ exports.assert = function(error, prefix, ref, res, rollback) {
 		 * directly to client otherwise.
 		 */
 		return function() {
-			var args = Array.prototype.slice.call(arguments);
-			var err = args[0];
+			const args = Array.prototype.slice.call(arguments);
+			const err = args[0];
 			/* istanbul ignore if */
 			if (err) {
 				if (rollback) {
@@ -254,7 +254,6 @@ exports.assert = function(error, prefix, ref, res, rollback) {
 					} else {
 						exports.fail(res, err);
 					}
-					console.log(err);
 					logger.error('[api|%s] Stack: %s', prefix, new Error().stack);
 				}
 			} else {
@@ -303,11 +302,12 @@ exports.searchQuery = function(query) {
 };
 
 exports.sortParams = function(req, defaultSort, map) {
-	var key, order, mapOrder, sortBy = {};
+	let key, order, mapOrder;
+	const sortBy = {};
 	defaultSort = defaultSort || { title: 1 };
 	map = map || {};
 	if (req.query.sort) {
-		var s = req.query.sort.match(/^(-?)([a-z0-9_-]+)+$/);
+		let s = req.query.sort.match(/^(-?)([a-z0-9_-]+)+$/);
 		if (s) {
 			order = s[1] ? -1 : 1;
 			key = s[2];
@@ -329,9 +329,9 @@ exports.sortParams = function(req, defaultSort, map) {
 };
 
 exports.checkReadOnlyFields = function(newObj, oldObj, allowedFields) {
-	var errors = [];
+	const errors = [];
 	_.difference(_.keys(newObj), allowedFields).forEach(function(field) {
-		var newVal, oldVal;
+		let newVal, oldVal;
 
 		// for dates we want to compare the time stamp
 		if (oldObj[field] instanceof Date) {

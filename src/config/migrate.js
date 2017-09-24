@@ -17,12 +17,13 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-"use strict";
+'use strict';
 
-var path = require('path');
-var logger = require('winston');
+const path = require('path');
+const logger = require('winston');
+let settings;
 try {
-	var settings = require(path.resolve(__dirname, '../modules/settings'));
+	settings = require(path.resolve(__dirname, '../modules/settings'));
 } catch (e) {
 	logger.error('[settings] Migration failed!');
 	process.exit(2);
@@ -31,8 +32,8 @@ settings.migrate(function(result) {
 	if (result.errors.length > 0) {
 		return process.exit(2);
 	}
-	var importantSettings = [];
-	for (var i = 0; i < result.added.length; i++) {
+	const importantSettings = [];
+	for (let i = 0; i < result.added.length; i++) {
 		if (result.added[i].important) {
 			importantSettings.push(result.added[i].path);
 		}

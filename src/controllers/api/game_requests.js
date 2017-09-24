@@ -17,7 +17,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-"use strict";
+'use strict';
 
 const _ = require('lodash');
 const logger = require('winston');
@@ -117,7 +117,7 @@ exports.update = function(req, res) {
 
 	const updateableFields = [ 'is_closed', 'message' ];
 
-	let game, user;
+	let user;
 	let requestClosed = false;
 	let before;
 	Promise.try(() => {

@@ -17,7 +17,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-"use strict";
+'use strict';
 
 const _ = require('lodash');
 const fs = require('fs');
@@ -70,7 +70,6 @@ exports.download = function(req, res) {
 	let counters = [];
 	let requestedFiles = [];
 	let requestedFileIds;
-	let media;
 	let numTables = 0;
 	Promise.try(() => {
 
@@ -82,9 +81,7 @@ exports.download = function(req, res) {
 			}
 		}
 		body = body || req.body;
-
 		requestedFileIds = body.files;
-		media = body.media || {};
 
 		logger.log('[download] RELEASE: %s', JSON.stringify(body));
 		if (!body || !_.isArray(body.files) || !body.files.length) {
@@ -327,7 +324,7 @@ exports.download = function(req, res) {
 				archive.append(release.acknowledgements, { name: 'CREDITS.txt' });
 			}
 			archive.finalize();
-			logger.info("Archive successfully created.");
+			logger.info('Archive successfully created.');
 		});
 
 	}).catch(api.handleError(res, error, 'Error serving file'));

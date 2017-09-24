@@ -17,13 +17,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-"use strict";
+'use strict';
 
 const _ = require('lodash');
 const fs = require('fs');
 const path = require('path');
-const util = require('util');
-const request = require('request');
 const mongoose = require('mongoose');
 const Git = require('nodegit');
 
@@ -98,7 +96,7 @@ module.exports = function(grunt) {
 			return new Promise((resolve, reject) => {
 				let commits = [];
 				toCommit.history(Git.Revwalk.SORT.TOPOLOGICAL)
-					.on('end', c => resolve(commits))
+					.on('end', () => resolve(commits))
 					.on('error', reject)
 					.on('commit', commit => {
 						foundFromCommit = foundFromCommit || commit.sha() === fromCommit.sha();

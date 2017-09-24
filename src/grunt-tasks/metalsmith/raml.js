@@ -17,19 +17,19 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-"use strict";
+'use strict';
 
-var _ = require('lodash');
-var url = require('url');
-var pug = require('pug');
-var async = require('async');
-var debug = require('debug')('metalsmith-raml');
-var raml2obj = require('raml2obj');
-var relative = require('path').relative;
-var highlight = require('highlight.js');
-var resolve = require('path').resolve;
-var normalize = require('path').normalize;
-var md = require('../../modules/md');
+const _ = require('lodash');
+const url = require('url');
+const pug = require('pug');
+const async = require('async');
+const debug = require('debug')('metalsmith-raml');
+const raml2obj = require('raml2obj');
+const relative = require('path').relative;
+const highlight = require('highlight.js');
+const resolve = require('path').resolve;
+const normalize = require('path').normalize;
+const md = require('../../modules/md');
 
 module.exports = function(opts) {
 
@@ -39,17 +39,17 @@ module.exports = function(opts) {
 	opts.template = opts.template || 'template.pug';
 
 	// we need a file-based dictionary, so convert the name-based one.
-	var configuredFiles = {};
+	const configuredFiles = {};
 	_.each(opts.files || {}, function(value, key) {
 		configuredFiles[normalize(value.src)] = { dest: value.dest, name: key };
 	});
 
 	return function(files, metalsmith, done) {
 
-		debug("Generating RAML doc...");
+		debug('Generating RAML doc...');
 
-		var filepath;
-		var srcFiles = {};
+		let filepath;
+		const srcFiles = {};
 
 		// get raml files to render
 		for (filepath in files) {
@@ -60,7 +60,7 @@ module.exports = function(opts) {
 			}
 		}
 
-		var metadata = metalsmith.metadata();
+		const metadata = metalsmith.metadata();
 		if (!metadata.api) {
 			metadata.api = {};
 		}
@@ -68,7 +68,7 @@ module.exports = function(opts) {
 		// for each api
 		async.each(_.keys(srcFiles), function(file, next) {
 
-			var path = relative(process.cwd(), resolve(opts.src, file));
+			const path = relative(process.cwd(), resolve(opts.src, file));
 
 			// process raml
 			debug('Processing RAML file at %s...', path);
@@ -79,15 +79,15 @@ module.exports = function(opts) {
 					// render each resource
 					_.each(obj.resources, function(resource) {
 
-						var destFolder = srcFiles[file].dest.replace(/\\/g, '/');
-						var dest = destFolder + '/' + resource.uniqueId + '.html';
-						var html = pug.renderFile(opts.template, {
+						const destFolder = srcFiles[file].dest.replace(/\\/g, '/');
+						const dest = destFolder + '/' + resource.uniqueId + '.html';
+						const html = pug.renderFile(opts.template, {
 							resource: resource,
 							hlp: helpers(_.extend(opts, { api: obj })),
 							print: print
 						});
 
-						debug("Creating %s...", dest);
+						debug('Creating %s...', dest);
 
 						files[dest] = { contents: new Buffer(html) };
 					});
@@ -120,8 +120,8 @@ function helpers(opts) {
 				return code;
 			}
 			if (isHttp) {
-				var split = splitReq(code);
-				var headers = highlight.highlight('http', split.headers).value;
+				const split = splitReq(code);
+				let headers = highlight.highlight('http', split.headers).value;
 				headers = headers.replace(/Bearer\s+([^\s<>]+)/g, 'Bearer <api-token default="$1"></api-token>');
 				return headers + '\r\n\r\n' + highlight.highlight('json', split.body).value;
 			}
@@ -133,17 +133,17 @@ function helpers(opts) {
 				return text;
 			}
 			// create short description
-			var dot = text.indexOf('.');
+			const dot = text.indexOf('.');
 			return md.renderInline(text.substring(0, dot > 0 ? dot: text.length));
 		},
 
 		toCurl: function(req) {
-			var line, words, method;
-			var split = splitReq(req);
-			var lines = split.headers.split(/\r\n/);
-			var cmd = 'curl';
-			var validHeaders = [ 'content-type', 'authorization' ];
-			for (var i = 0; i < lines.length; i++) {
+			let line, words, method;
+			const split = splitReq(req);
+			const lines = split.headers.split(/\r\n/);
+			let cmd = 'curl';
+			const validHeaders = ['content-type', 'authorization'];
+			for (let i = 0; i < lines.length; i++) {
 				line = lines[i];
 				if (i === 0) {
 					words = line.split(/\s/);
@@ -161,12 +161,12 @@ function helpers(opts) {
 			}
 			if (split.body) {
 				try {
-					cmd += ' \\\n   -d \'' + JSON.stringify(JSON.parse(split.body)).replace(/'/g, "\\'") + '\'';
+					cmd += ' \\\n   -d \'' + JSON.stringify(JSON.parse(split.body)).replace(/'/g, '\\\'') + '\'';
 				} catch (e) {
 					cmd = 'Cannot parse JSON body: \n' + e;
 				}
 			}
-			var highlighted = highlight.highlight('bash', cmd).value;
+			let highlighted = highlight.highlight('bash', cmd).value;
 			highlighted = highlighted.replace(/\sBearer\s+([^\s"]+)/g, ' Bearer <api-token default="$1"></api-token>');
 			return highlighted;
 		},
@@ -220,18 +220,18 @@ function helpers(opts) {
 		},
 
 		requestByType: function(body) {
-			var that = this;
+			const that = this;
 			if (!_.isObject(body)) {
 				return {};
 			}
-			var byType = {};
+			const byType = {};
 			_.each(body, function(request, type) {
 
 				// ignore requests without example
 				if (!request.example) {
 					return;
 				}
-				var t = that.splitType(type);
+				const t = that.splitType(type);
 				byType[t.name] = {
 					role: t.role,
 					request: request
@@ -241,11 +241,11 @@ function helpers(opts) {
 		},
 
 		responseByType: function(responses) {
-			var that = this;
+			const that = this;
 			if (!_.isObject(responses)) {
 				return {};
 			}
-			var byType = {};
+			const byType = {};
 			_.each(responses, function(block, code) {
 				if (block.body) {
 					_.each(block.body, function(response, type) {
@@ -254,7 +254,7 @@ function helpers(opts) {
 						if (!response.example) {
 							return;
 						}
-						var t = that.splitType(type);
+						const t = that.splitType(type);
 						if (!byType[t.name]) {
 							byType[t.name] = [];
 						}
@@ -281,8 +281,9 @@ function helpers(opts) {
 		 * @returns {{role: string, name: string}}
 		 */
 		splitType: function(type, defaultName) {
-			var name, t = type.split('/')[1].split('-');
-			var role = t[0];
+			let name;
+			const t = type.split('/')[1].split('-');
+			const role = t[0];
 			if (t.length > 1) {
 				t.splice(0, 1);
 				name = t.join(' ');
@@ -293,16 +294,17 @@ function helpers(opts) {
 		},
 
 		schema: function(schemaStr, opts) {
-			var schema = JSON.parse(schemaStr);
-			var props = schema.properties;
+			const schema = JSON.parse(schemaStr);
+			let props = schema.properties;
 
 			// "onlyIn" filtering
+			// eslint-disable-next-line no-unused-vars
 			props = _.pickBy(props, function(prop, name) {
 				if (!_.isArray(prop.onlyIn)) {
 					return true;
 				}
-				for (var i = 0; i < prop.onlyIn.length; i++) {
-					var onlyIn = prop.onlyIn[i];
+				for (let i = 0; i < prop.onlyIn.length; i++) {
+					const onlyIn = prop.onlyIn[i];
 					if (onlyIn.type && onlyIn.type !== opts.type) {
 						continue;
 					}
@@ -336,7 +338,7 @@ function helpers(opts) {
 
 function splitReq(req) {
 	if (/\r\n\r\n/.test(req)) {
-		var c = req.split(/\r\n\r\n/);
+		const c = req.split(/\r\n\r\n/);
 		return {
 			headers: c[0],
 			body: c[1]
@@ -358,13 +360,13 @@ function postman(obj) {
 	let collectionId = generateGUID();
 	let data = {
 		id: collectionId,
-		name: "VPDB API",
-		description: "VPDB's REST API.",
+		name: 'VPDB API',
+		description: 'VPDB\'s REST API.',
 		order: [],
 		folders: [ ],
 		timestamp: new Date().getTime(),
 		owner: 0,
-		remoteLink: "",
+		remoteLink: '',
 		'public': false,
 		requests: []
 	};
@@ -388,29 +390,29 @@ function parsePostmanResource(data, relativeUri, resources, collectionId, lastFo
 			resource.methods.forEach(method => {
 				let request = {
 					id: generateGUID(),
-					headers: "Content-Type: application/json\n",
-					url: "{{url}}" + relativeUri + resource.relativeUri,
+					headers: 'Content-Type: application/json\n',
+					url: '{{url}}' + relativeUri + resource.relativeUri,
 					preRequestScript: null,
 					pathVariables: {},
 					method: method.method,
 					data: [],
-					dataMode: "raw",
+					dataMode: 'raw',
 					version: 1,
 					tests: null,
-					currentHelper: "normal",
+					currentHelper: 'normal',
 					helperAttributes: {},
 					time: new Date().getTime(),
 					name: relativeUri + resource.relativeUri,
 					description: shortDescription(method.description),
 					collectionId: collectionId,
 					responses: [],
-					rawModeData: ""
+					rawModeData: ''
 				};
 				if (method.securedBy && _.compact(method.securedBy).length) {
 					request.headers += '{{authheader}}: Bearer {{apikey}}\n';
 				}
 				if (_.includes(['put', 'post'], method.method) && _.keys(method.body).length && method.body[_.keys(method.body)[0]].example) {
-					var example = splitReq(method.body[_.keys(method.body)[0]].example);
+					const example = splitReq(method.body[_.keys(method.body)[0]].example);
 					request.rawModeData = example.body;
 				}
 				request.url = request.url.replace(/\/\{([^{}]+)/g, '/{{$1}'); // make the {id} placeholders usuable as {{id}}
@@ -431,9 +433,9 @@ function shortDescription(text) {
 	if (!text) {
 		return text;
 	}
-	var dot = text.indexOf('.');
+	const dot = text.indexOf('.');
 	return text.substring(0, dot > 0 ? dot: text.length).replace(/[\r\n]+/g, ' ');
-};
+}
 
 function generateGUID() {
 	return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {

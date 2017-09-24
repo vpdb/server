@@ -17,20 +17,20 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-"use strict";
+'use strict';
 
-var fs = require('fs');
-var request = require('request');
-var path = require('path');
-var Zip = require('adm-zip'); // todo migrate to unzip
+const fs = require('fs');
+const request = require('request');
+const path = require('path');
+const Zip = require('adm-zip'); // todo migrate to unzip
 
 module.exports = function(grunt) {
 
 
 	grunt.registerMultiTask('istanbul-middleware', function() {
 
-		var done = this.async();
-		var options = this.options();
+		const done = this.async();
+		const options = this.options();
 
 		if (!options.url) {
 			grunt.log.error('URL must be given for istanbul-middleware.');
@@ -38,11 +38,11 @@ module.exports = function(grunt) {
 		}
 
 		switch (this.target) {
-			case 'download':
-				var dest = this.data.dest;
-				var baseDir = path.resolve(__dirname, '../..') + '/';
-				var zipfile = path.resolve(baseDir, dest, 'coverage.zip');
-				var extractTo = path.resolve(baseDir, dest);
+			case 'download': {
+				const dest = this.data.dest;
+				const baseDir = path.resolve(__dirname, '../..') + '/';
+				const zipfile = path.resolve(baseDir, dest, 'coverage.zip');
+				const extractTo = path.resolve(baseDir, dest);
 				grunt.log.writeln('Downloading coverage zip file from %s', options.url + '/download');
 				grunt.log.writeln('Base dir =  %s', baseDir);
 
@@ -50,10 +50,10 @@ module.exports = function(grunt) {
 					.pipe(fs.createWriteStream(zipfile))
 					.on('close', function() {
 						grunt.log.writeln('Extracting zip file to %s', extractTo);
-						var zip = new Zip(zipfile);
+						const zip = new Zip(zipfile);
 						zip.extractAllTo(extractTo, true);
 
-						var lcovinfo = fs.readFileSync(extractTo + '/lcov.info');
+						let lcovinfo = fs.readFileSync(extractTo + '/lcov.info');
 						lcovinfo = replaceAll(lcovinfo.toString(), '\\', '/');
 						lcovinfo = replaceAll(lcovinfo, baseDir, '');
 						fs.writeFileSync(extractTo + '/lcov.info', lcovinfo);
@@ -61,9 +61,11 @@ module.exports = function(grunt) {
 					})
 					.on('error', done);
 				break;
-			case 'reset':
+			}
+			case 'reset': {
 				request.post(options.url + '/reset', done);
 				break;
+			}
 		}
 
 	});
@@ -71,7 +73,8 @@ module.exports = function(grunt) {
 };
 
 function escapeRegExp(string) {
-	return string.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
+	// eslint-disable-next-line no-useless-escape
+	return string.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, '\\$1');
 }
 
 function replaceAll(string, find, replace) {

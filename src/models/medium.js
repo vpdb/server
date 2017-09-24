@@ -17,22 +17,19 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-"use strict";
+'use strict';
 
 const _ = require('lodash');
 const logger = require('winston');
 const shortId = require('shortid32');
 const mongoose = require('mongoose');
 const paginate = require('mongoose-paginate');
-const validator = require('validator');
 const uniqueValidator = require('mongoose-unique-validator');
 
 const prettyId = require('./plugins/pretty-id');
 const fileRef = require('./plugins/file-ref');
 const toObj = require('./plugins/to-object');
 const metrics = require('./plugins/metrics');
-
-const author = require('./release/author');
 
 const Schema = mongoose.Schema;
 

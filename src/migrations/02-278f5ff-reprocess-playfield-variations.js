@@ -1,11 +1,9 @@
-"use strict";
+'use strict';
 
-const gm = require('gm');
 const fs = require('fs');
 const rimraf = Promise.promisify(require('rimraf'));
 const mongoose = require('mongoose');
 
-const User = mongoose.model('User');
 const File = mongoose.model('File');
 
 const storage = require('../modules/storage');
@@ -58,13 +56,13 @@ module.exports.up = function(grunt) {
 					let dest = file.getPath(variation, '_reprocessing');
 					grunt.log.writeln('   -> %s: %s', variation.name, dest);
 					return processor.pass1(file.getPath(), dest, file, variation).then(() => {
-							if (fs.existsSync(original)) {
-								fs.unlinkSync(original);
-							}
-							fs.renameSync(dest, original);
-						})
-						.then(() => storage.onProcessed(file, variation, processor))
-						.catch(err => console.error("ERROR: %s", err.message));
+						if (fs.existsSync(original)) {
+							fs.unlinkSync(original);
+						}
+						fs.renameSync(dest, original);
+					})
+					.then(() => storage.onProcessed(file, variation, processor))
+					.catch(err => console.error('ERROR: %s', err.message));
 				});
 			}
 		});

@@ -20,9 +20,9 @@
 	},
 	"scripts": {
 		"start": "node app.js",
-		"dev": "./node_modules/.bin/nodemon --config deploy/nodemon/dev.json --exec \"npm run lint && npm start\"",
+		"dev": "./node_modules/.bin/nodemon --config deploy/nodemon/dev.json --exec npm start",
 		"lint": "./node_modules/.bin/eslint src/**/*.js",
-		"test": "grunt ci"
+		"test": "./node_modules/.bin/nodemon --config deploy/nodemon/test.json --exec \"npm run lint && npm start\""
 	},
 	"dependencies": {
 		"@slack/client": "^3.6.0",
@@ -139,24 +139,6 @@
 	},
 	"engines": {
 		"node": "8.x"
-	},
-	"eslintConfig": {
-		"env": {
-			"es6": true,
-			"node": true
-		},
-		"extends": "eslint:recommended",
-		"rules": {
-			"indent": [ "off", "tab" ],
-			"linebreak-style": [ "off", "windows" ],
-			"quotes": [ "error", "single" ],
-			"semi": [ "error", "always" ]
-		},
-		"parserOptions": {
-			"ecmaVersion": 6,
-			"sourceType": "module",
-			"impliedStrict": true
-		}
 	},
 	"mod-project-name": "vpdb"
 }

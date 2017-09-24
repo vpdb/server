@@ -17,26 +17,26 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-"use strict";
+'use strict';
 
-var _ = require('lodash');
-var logger = require('winston');
-var passport = require('passport');
-var randomstring = require('randomstring');
+const _ = require('lodash');
+const logger = require('winston');
+const passport = require('passport');
+const randomstring = require('randomstring');
 
-var User = require('mongoose').model('User');
-var Token = require('mongoose').model('Token');
-var LogUser = require('mongoose').model('LogUser');
+const User = require('mongoose').model('User');
+const Token = require('mongoose').model('Token');
+const LogUser = require('mongoose').model('LogUser');
 
-var acl = require('../../acl');
-var api = require('./api');
-var auth = require('../auth');
+const acl = require('../../acl');
+const api = require('./api');
+const auth = require('../auth');
 
-var quota = require('../../modules/quota');
-var pusher = require('../../modules/pusher');
-var mailer = require('../../modules/mailer');
-var error = require('../../modules/error')('api', 'user');
-var config = require('../../modules/settings').current;
+const quota = require('../../modules/quota');
+const pusher = require('../../modules/pusher');
+const mailer = require('../../modules/mailer');
+const error = require('../../modules/error')('api', 'user');
+const config = require('../../modules/settings').current;
 
 // redis
 const Redis = require('redis');
@@ -44,7 +44,7 @@ Promise.promisifyAll(Redis.RedisClient.prototype);
 Promise.promisifyAll(Redis.Multi.prototype);
 const redis = Redis.createClient(config.vpdb.redis.port, config.vpdb.redis.host, { no_ready_check: true });
 redis.select(config.vpdb.redis.db);
-redis.on('error', console.error.bind(console));
+redis.on('error', err => logger.error(err.message));
 
 /**
  * Returns the current user's profile.
@@ -491,7 +491,7 @@ exports.authenticateOAuth2 = function(req, res, next) {
  */
 exports.authenticateOAuth2Mock = function(req, res) {
 	logger.log('[api|user:auth-mock] Processing mock authentication via %s...', req.body.provider);
-	var profile = req.body.profile;
+	const profile = req.body.profile;
 	if (profile) {
 		profile._json = {
 			info: 'This mock data and is more complete otherwise.',
@@ -514,19 +514,19 @@ function passportCallback(req, res) {
 	return function(err, user, info) {
 		if (err) {
 			return api.fail(res, error(err, 'Authentication failed: %j', err.oauthError)
-					.warn('authenticate', req.params.strategy),
-				401);
+				.warn('authenticate', req.params.strategy),
+			401);
 		}
 		if (!user) {
 			return api.fail(res, error('No user object in passport callback. More info: %j', info)
-					.display(info ? info : 'Could not retrieve user.')
-					.log('authenticate', req.params.strategy),
-				500);
+				.display(info ? info : 'Could not retrieve user.')
+				.log('authenticate', req.params.strategy),
+			500);
 		}
 
-		var now = new Date();
-		var expires = new Date(now.getTime() + config.vpdb.apiTokenLifetime);
-		var token = auth.generateApiToken(user, now, false);
+		const now = new Date();
+		const expires = new Date(now.getTime() + config.vpdb.apiTokenLifetime);
+		const token = auth.generateApiToken(user, now, false);
 
 		logger.info('[api|%s:authenticate] User <%s> successfully authenticated.', req.params.strategy, user.email);
 		getACLs(user).then(acls => {

@@ -17,12 +17,12 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-"use strict";
+'use strict';
 
-var util = require('util');
-var OAuth2Strategy = require('passport-oauth').OAuth2Strategy;
-var InternalOAuthError = require('passport-oauth').InternalOAuthError;
-var logger = require('winston');
+const util = require('util');
+const OAuth2Strategy = require('passport-oauth').OAuth2Strategy;
+const InternalOAuthError = require('passport-oauth').InternalOAuthError;
+const logger = require('winston');
 
 /**
  * `Strategy` constructor.
@@ -73,7 +73,6 @@ function Strategy(options, verify) {
 
 	options.authorizationURL = options.baseURL + '?app=oauth2&module=server&section=authorize';
 	options.tokenURL = options.baseURL + '?app=oauth2&module=server&section=token';
-//	options.state = false;
 	options.customHeaders = options.customHeaders || {};
 
 	if (!options.customHeaders['User-Agent']) {
@@ -108,18 +107,18 @@ util.inherits(Strategy, OAuth2Strategy);
  * @api protected
  */
 Strategy.prototype.userProfile = function(accessToken, done) {
-	var that = this;
+	const that = this;
 	logger.info('[passport-ipboard] Getting profile for user at %s', this._userProfileURL);
 	/* istanbul ignore next */
-	this._oauth2.get(this._userProfileURL, accessToken, function (err, body, res) {
+	this._oauth2.get(this._userProfileURL, accessToken, function(err, body) {
 		if (err) {
 			return done(new InternalOAuthError('failed to fetch user profile', err));
 		}
 
 		try {
-			var json = JSON.parse(body);
+			const json = JSON.parse(body);
 
-			var profile = {
+			const profile = {
 				provider: that.name,
 				id: json.id,
 				username: json.username,

@@ -23,7 +23,6 @@ const _ = require('lodash');
 const fs = require('fs');
 const ocd = require('ole-doc').OleCompoundDoc;
 const crypto = require('crypto');
-const events = require('events');
 const logger = require('winston');
 const bindexOf = require('buffer-indexof');
 
@@ -471,7 +470,7 @@ function parseString(block) {
  */
 function parseString16(block) {
 	let chars = [];
-	block.slice(4).forEach((v, i, b) => {
+	block.slice(4).forEach((v, i) => {
 		if (i % 2 === 0) {
 			chars.push(v);
 		}
@@ -489,7 +488,7 @@ function parseString16(block) {
  */
 function analyzeBlock(data, type, meta) {
 	if (!data) {
-		return console.error('Ignoring empty data for %s.', meta.stream);
+		return logger.error('Ignoring empty data for %s.', meta.stream);
 	}
 	return {
 		hash: crypto.createHash('md5').update(data).digest(),

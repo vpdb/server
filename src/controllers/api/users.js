@@ -17,24 +17,23 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-"use strict";
+'use strict';
 
-var _ = require('lodash');
-var logger = require('winston');
-var randomstring = require('randomstring');
+const _ = require('lodash');
+const logger = require('winston');
+const randomstring = require('randomstring');
 
-var User = require('mongoose').model('User');
-var LogUser = require('mongoose').model('LogUser');
+const User = require('mongoose').model('User');
+const LogUser = require('mongoose').model('LogUser');
 
-var acl = require('../../acl');
-var api = require('./api');
-var error = require('../../modules/error')('api', 'users');
-var mailer = require('../../modules/mailer');
-var config = require('../../modules/settings').current;
-var redis = require('redis').createClient(config.vpdb.redis.port, config.vpdb.redis.host, { no_ready_check: true });
-    redis.select(config.vpdb.redis.db);
-    redis.on('error', console.error.bind(console));
-
+const acl = require('../../acl');
+const api = require('./api');
+const error = require('../../modules/error')('api', 'users');
+const mailer = require('../../modules/mailer');
+const config = require('../../modules/settings').current;
+const redis = require('redis').createClient(config.vpdb.redis.port, config.vpdb.redis.host, { no_ready_check: true });
+redis.select(config.vpdb.redis.db);
+redis.on('error', err => logger.error(err.message));
 
 /**
  * Creates a new user.
@@ -159,30 +158,30 @@ exports.list = function(req, res) {
 exports.update = function(req, res) {
 
 	// TODO move into model
-	var updateableFields = [ 'name', 'email', 'username', 'is_active', 'roles', '_plan' ];
-	var assert = api.assert(error, 'update', req.params.id, res);
+	const updateableFields = ['name', 'email', 'username', 'is_active', 'roles', '_plan'];
+	const assert = api.assert(error, 'update', req.params.id, res);
 
 	User.findOne({ id: req.params.id }, assert(function(user) {
 		if (!user) {
 			return api.fail(res, error('No such user.'), 404);
 		}
-		var updatedUser = req.body;
+		const updatedUser = req.body;
 
 		// 1. check for changed read-only fields
-		var readOnlyFieldErrors = api.checkReadOnlyFields(req.body, user, updateableFields);
+		const readOnlyFieldErrors = api.checkReadOnlyFields(req.body, user, updateableFields);
 		if (readOnlyFieldErrors) {
 			return api.fail(res, error('User tried to update read-only fields').errors(readOnlyFieldErrors).warn('update'), 422);
 		}
 
 		// 2. check for permission escalation
-		var callerRoles = req.user.roles || [];
-		var currentUserRoles = user.roles || [];
-		var updatedUserRoles = updatedUser.roles || [];
+		const callerRoles = req.user.roles || [];
+		const currentUserRoles = user.roles || [];
+		const updatedUserRoles = updatedUser.roles || [];
 
-		var removedRoles = _.difference(currentUserRoles, updatedUserRoles);
-		var addedRoles = _.difference(updatedUserRoles, currentUserRoles);
+		const removedRoles = _.difference(currentUserRoles, updatedUserRoles);
+		const addedRoles = _.difference(updatedUserRoles, currentUserRoles);
 
-		var diff = LogUser.diff(_.pick(user.toObj(), updateableFields), updatedUser);
+		const diff = LogUser.diff(_.pick(user.toObj(), updateableFields), updatedUser);
 
 		// if caller is not root..
 		if (!_.includes(callerRoles, 'root')) {
@@ -269,7 +268,7 @@ exports.update = function(req, res) {
  */
 exports.view = function(req, res) {
 
-	var assert = api.assert(error, 'view', req.params.id, res);
+	const assert = api.assert(error, 'view', req.params.id, res);
 
 	User.findOne({ id: req.params.id }, assert(function(user) {
 		if (!user) {

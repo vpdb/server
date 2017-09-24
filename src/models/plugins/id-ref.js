@@ -17,7 +17,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-"use strict";
+'use strict';
 
 const _ = require('lodash');
 const mongoose = require('mongoose');
@@ -26,7 +26,7 @@ module.exports = function(schema, options) {
 
 	options = options || {};
 	const fields = options.fields || [];
-	const message = options.message || "{PATH} references a non existing ID";
+	const message = options.message || '{PATH} references a non existing ID';
 
 	schema.eachPath(function (path, schemaType) {
 		var validateFunction = null;

@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 /*
  * VPDB - Visual Pinball Database
  * Copyright (C) 2016 freezy <freezy@xbmc.org>
@@ -19,33 +19,34 @@
  */
 
 // override standard promises
-Promise = require('bluebird'); // jshint ignore:line
-var games = require('../../data/gen/games/games');
-var roms = require('../../data/gen/roms/roms');
-var releases = require('../../data/gen/releases/releases');
-var credentials = require('./credentials');
+Promise = require('bluebird');
+const roms = require('../../data/gen/roms/roms');
+const credentials = require('./credentials');
 
-var local = {
+// eslint-disable-next-line no-unused-vars
+const local = {
 	apiUri: 'http://127.0.0.1:3000/api/v1',
 	storageUri: 'http://127.0.0.1:3000/storage/v1',
 	authHeader: 'Authorization',
 	credentials: { username: 'test', password: credentials.user.password }
 };
-var test = {
+// eslint-disable-next-line no-unused-vars
+const test = {
 	apiUri: 'https://test.vpdb.io/api/v1',
 	storageUri: 'https://test.vpdb.io/storage/v1',
 	authHeader: 'X-Authorization',
 	credentials: { username: 'uploader', password: credentials.user.password },
 	httpSimple: { username: credentials.httpSimple.username, password: credentials.httpSimple.password }
 };
-var staging = {
+// eslint-disable-next-line no-unused-vars
+const staging = {
 	apiUri: 'https://staging.vpdb.io/api/v1',
 	storageUri: 'https://staging.vpdb.io/storage/v1',
 	authHeader: 'X-Authorization',
 	credentials: { username: 'uploader', password: credentials.user.password },
 	httpSimple: { username: credentials.httpSimple.username, password: credentials.httpSimple.password }
 };
-var production = {
+const production = {
 	apiUri: 'https://api.vpdb.io/v1',
 	storageUri: 'https://storage.vpdb.io/v1',
 	authHeader: 'X-Authorization',
@@ -53,7 +54,7 @@ var production = {
 	//httpSimple: { username: credentials.httpSimple.username, password: credentials.httpSimple.password }
 };
 
-var config = production;
+const config = production;
 
 config.folder = process.env.VPDB_DATA_FOLDER;
 config.romFolder = process.env.VPDB_ROM_FOLDER || process.env.VPDB_DATA_FOLDER || 'F:/Pinball/Visual Pinball-103/VPinMame/roms';
@@ -70,4 +71,3 @@ Promise.try(() => {
 }).catch(err => {
 	console.error('ERROR: %s', err.message);
 });
-

@@ -17,15 +17,15 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-"use strict";
+'use strict';
 
-var fs = require('fs');
-var path = require('path');
+const fs = require('fs');
+const path = require('path');
 
 function Writeable() {
 
-	this.buildRoot = process.env.APP_BUILDDIR ? process.env.APP_BUILDDIR : path.resolve(__dirname, "../../build");
-	this.devsiteRoot = process.env.APP_BUILDDIR ? process.env.APP_DEVSITEDIR : path.resolve(__dirname, "../../devsite");
+	this.buildRoot = process.env.APP_BUILDDIR ? process.env.APP_BUILDDIR : path.resolve(__dirname, '../../build');
+	this.devsiteRoot = process.env.APP_BUILDDIR ? process.env.APP_DEVSITEDIR : path.resolve(__dirname, '../../devsite');
 
 	this.jsRoot = path.resolve(this.buildRoot, 'js');
 	this.cssRoot = path.resolve(this.buildRoot, 'css');
@@ -57,7 +57,7 @@ function Writeable() {
 	}
 }
 
-var writeable = new Writeable();
+const writeable = new Writeable();
 exports.buildRoot = writeable.buildRoot;
 exports.devsiteRoot = writeable.devsiteRoot;
 exports.jsRoot = writeable.jsRoot;

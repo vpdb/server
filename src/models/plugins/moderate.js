@@ -17,7 +17,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-"use strict";
+'use strict';
 
 const _ = require('lodash');
 const logger = require('winston');
@@ -135,7 +135,7 @@ module.exports = function(schema) {
 				}
 				const resource = modelResourceMap[this.modelName];
 				if (!resource) {
-					console.log(this);
+					logger.info(this);
 					throw new Error('Tried to check moderation permission for unmapped entity "' + this.modelName + '".');
 				}
 				return acl.isAllowed(req.user.id, resource, 'moderate');

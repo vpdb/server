@@ -17,34 +17,31 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-"use strict";
+'use strict';
 
-var _ = require('lodash');
-var fs = require('fs');
-var gm = require('gm');
-var util = require('util');
-var logger = require('winston');
+const _ = require('lodash');
+const fs = require('fs');
+const gm = require('gm');
+const util = require('util');
+const logger = require('winston');
 
-var Release = require('mongoose').model('Release');
-var Version = require('mongoose').model('ReleaseVersion');
-var VersionFile = require('mongoose').model('ReleaseVersionFile');
-var LogEvent = require('mongoose').model('LogEvent');
-var Comment = require('mongoose').model('Comment');
-var Build = require('mongoose').model('Build');
-var Game = require('mongoose').model('Game');
-var Star = require('mongoose').model('Star');
-var Tag = require('mongoose').model('Tag');
-var File = require('mongoose').model('File');
-var api = require('./api');
+const Release = require('mongoose').model('Release');
+const Version = require('mongoose').model('ReleaseVersion');
+const VersionFile = require('mongoose').model('ReleaseVersionFile');
+const LogEvent = require('mongoose').model('LogEvent');
+const Comment = require('mongoose').model('Comment');
+const Build = require('mongoose').model('Build');
+const Game = require('mongoose').model('Game');
+const Star = require('mongoose').model('Star');
+const File = require('mongoose').model('File');
+const api = require('./api');
 
-var acl = require('../../acl');
-var error = require('../../modules/error')('api', 'release');
-var flavor = require('../../modules/flavor');
-var pusher = require('../../modules/pusher');
-var mailer  = require('../../modules/mailer');
-var storage = require('../../modules/storage');
-
-var config = require('../../modules/settings').current;
+const acl = require('../../acl');
+const error = require('../../modules/error')('api', 'release');
+const flavor = require('../../modules/flavor');
+const pusher = require('../../modules/pusher');
+const mailer = require('../../modules/mailer');
+const storage = require('../../modules/storage');
 
 Promise.promisifyAll(gm.prototype);
 
@@ -56,8 +53,8 @@ Promise.promisifyAll(gm.prototype);
  */
 exports.create = function(req, res) {
 
-	var now = new Date();
-	var release;
+	const now = new Date();
+	let release;
 	Promise.try(() => {
 
 		// defaults
@@ -65,7 +62,7 @@ exports.create = function(req, res) {
 			req.body.versions.forEach(function(version) {
 				version.released_at = version.released_at || now.toISOString();
 				if (version.files) {
-					var releasedAt = version.released_at || now.toISOString();
+					const releasedAt = version.released_at || now.toISOString();
 					version.files.forEach(function(file) {
 						file.released_at = file.released_at || releasedAt;
 					});
@@ -181,9 +178,9 @@ exports.update = function(req, res) {
 		}
 
 		// fail if invalid fields provided
-		var submittedFields = _.keys(req.body);
+		const submittedFields = _.keys(req.body);
 		if (_.intersection(updateableFields, submittedFields).length !== submittedFields.length) {
-			var invalidFields = _.difference(submittedFields, updateableFields);
+			const invalidFields = _.difference(submittedFields, updateableFields);
 			throw error('Invalid field%s: ["%s"]. Allowed fields: ["%s"]', invalidFields.length === 1 ? '' : 's', invalidFields.join('", "'), updateableFields.join('", "')).status(400).log('update');
 		}
 		if (req.body.ipdb) {
@@ -225,8 +222,8 @@ exports.update = function(req, res) {
  */
 exports.addVersion = function(req, res) {
 
-	var now = new Date();
-	var release, newVersion;
+	const now = new Date();
+	let release, newVersion;
 	Promise.try(() => {
 		return Release.findOne({ id: req.params.id }).exec();
 
@@ -254,7 +251,7 @@ exports.addVersion = function(req, res) {
 		}
 
 		// set defaults
-		var versionObj = _.defaults(req.body, { released_at: now });
+		const versionObj = _.defaults(req.body, { released_at: now });
 		if (versionObj.files) {
 			versionObj.files.forEach(function(file) {
 				_.defaults(file, { released_at: now });
@@ -272,7 +269,7 @@ exports.addVersion = function(req, res) {
 	}).then(() => {
 
 		logger.info('[api|release:addVersion] model: %s', util.inspect(newVersion, { depth: null }));
-		var validationErr;
+		let validationErr;
 		return newVersion.validate().catch(err => validationErr = err).finally(() => {
 			// validate existing version here
 			if (_.filter(release.versions, { version: newVersion.version }).length > 0) {
@@ -587,7 +584,6 @@ exports.list = function(req, res) {
 
 	let pagination = api.pagination(req, 12, 60);
 	let query = [];
-	let filter = [];
 	let fileIds = null;
 	let stars = null;
 	let starMap = new Map();
@@ -695,7 +691,7 @@ exports.list = function(req, res) {
 			if (!req.user) {
 				throw error('Must be logged when listing starred releases.').status(401);
 			}
-			if (req.query.starred === "false") {
+			if (req.query.starred === 'false') {
 				query.push({ _id: { $nin: stars } });
 			} else {
 				query.push({ _id: { $in: stars } });
@@ -773,7 +769,7 @@ exports.list = function(req, res) {
 			num_stars: '-counter.stars'
 		});
 		let populatedFields = [ '_game', 'versions.files._file', 'versions.files._playfield_image',
-		                        'versions.files._compatibility', 'authors._user' ];
+			'versions.files._compatibility', 'authors._user' ];
 
 		let q = api.searchQuery(query);
 		logger.info('[api|release:list] query: %s, sort: %j', util.inspect(q, { depth: null }), util.inspect(sort));
@@ -1105,7 +1101,7 @@ function rollbackPreprocess(req) {
 					return;
 				}
 				delete file.preprocessed.unvalidatedRotation;
-				logger.info('[api|release] Rolling back rotated file \"%s\" to %s°.', file.getPath(), file.preprocessed.rotation);
+				logger.info('[api|release] Rolling back rotated file "%s" to %s°.', file.getPath(), file.preprocessed.rotation);
 				return gm(src).rotate('black', file.preprocessed.rotation).writeAsync(file.getPath());
 
 			// update metadata
@@ -1202,16 +1198,16 @@ function copyFile(source, target) {
 
 	return new Promise((resolve, reject) => {
 		let rd = fs.createReadStream(source);
-		rd.on("error", err => {
+		rd.on('error', err => {
 			/* istanbul ignore next */
 			reject(err);
 		});
 		let wr = fs.createWriteStream(target);
-		wr.on("error", err => {
+		wr.on('error', err => {
 			/* istanbul ignore next */
 			reject(err);
 		});
-		wr.on("close", () => {
+		wr.on('close', () => {
 			resolve(target);
 		});
 		rd.pipe(wr);

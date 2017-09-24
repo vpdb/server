@@ -17,30 +17,30 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-"use strict";
+'use strict';
 
-var _ = require('lodash');
-var path = require('path');
-var express = require('express');
+const _ = require('lodash');
+const path = require('path');
+const express = require('express');
 
-var settings = require('../modules/settings');
-var writeable = require('../modules/writeable');
+const settings = require('../modules/settings');
+const writeable = require('../modules/writeable');
 
 module.exports = function(grunt) {
 
 	grunt.registerTask('devsite-serve', function() {
 
-		var done = this.async();
-		var options = this.options() || {};
+		const done = this.async();
+		const options = this.options() || {};
 
 		// default options
-		var port = options.port || 4000;
-		var root = options.root || process.cwd();
-		var map = options.map || {};
-		var defaultPage = options.defaultPage || path.resolve(root, 'index.html');
+		const port = options.port || 4000;
+		const root = options.root || process.cwd();
+		const map = options.map || {};
+		const defaultPage = options.defaultPage || path.resolve(root, 'index.html');
 
 		// setup express
-		var app = express();
+		const app = express();
 
 		app.use(express.static(root));
 		_.each(map, function(val, key) {
@@ -48,7 +48,7 @@ module.exports = function(grunt) {
 			app.use(key, express.static(val));
 		});
 		app.use(function(req, res, next) {
-			if (/\/[^\.]*$/.test(req.path) || /\.\d+$/.test(req.path)) {
+			if (/\/[^.]*$/.test(req.path) || /\.\d+$/.test(req.path)) {
 				res.sendFile(defaultPage);
 			} else {
 				next();

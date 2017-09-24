@@ -17,7 +17,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-"use strict";
+'use strict';
 
 const _ = require('lodash');
 const fs = require('fs');
@@ -67,8 +67,8 @@ Directb2sProcessor.prototype.metadata = function(file, variation) {
 				let now = new Date().getTime();
 				let metadata = {};
 				let saxStream = sax.createStream(true);
-				saxStream.on("error", reject);
-				saxStream.on("opentag", node => {
+				saxStream.on('error', reject);
+				saxStream.on('opentag', node => {
 					switch (node.name) {
 						case 'DirectB2SData': metadata.version = node.attributes.Version; break;
 						case 'Name': metadata.name = node.attributes.Value; break;
@@ -81,7 +81,7 @@ Directb2sProcessor.prototype.metadata = function(file, variation) {
 						case 'GameName': metadata.gamename = node.attributes.Value; break;
 					}
 				});
-				saxStream.on("end", () => {
+				saxStream.on('end', () => {
 					logger.info('[processor|directb2s|metadata] Retrieved metadata in %sms.', new Date().getTime() - now);
 					resolve(metadata);
 				});
@@ -253,7 +253,7 @@ Directb2sProcessor.prototype.pass2 = function(src, dest, file, variation) {
 					let started = false;
 					let quanter = new PngQuant([192, '--ordered']);
 					let handleError = function(err) {
-						console.error('ERROR: %s', err.message);
+						logger.error('ERROR: %s', err.message);
 						if (!started) {
 							write(' ' + attr.name + '="');
 							write(escape(attr.value));
@@ -361,7 +361,7 @@ function escape(string) {
 	const map = {
 		'>': '&gt;',
 		'<': '&lt;',
-		"'": '&apos;',
+		'\'': '&apos;',
 		'"': '&quot;',
 		'&': '&amp;',
 		'\r': '&#xD;',

@@ -17,7 +17,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-"use strict";
+'use strict';
 
 var debug = require('debug')('metalsmith-apilinks');
 
@@ -32,9 +32,10 @@ module.exports = function(opts) {
 				if (filepath.substr(filepath.length - 5, filepath.length) === '.html') {
 					contents = files[filepath].contents.toString();
 					changed = false;
-					//noinspection JSHint
+					// eslint-disable-next-line no-useless-escape
 					contents = contents.replace(/\s+href="api:\/\/([^\/]+)[^"]+"/gi, function(match) {
 						var apiName, apiPath, link, method, resource;
+						// eslint-disable-next-line no-useless-escape
 						match = match.match(/api:\/\/([^\/]+)\/([^"]*)"/i);
 						apiName = match[1];
 						apiPath = match[2].split('/');

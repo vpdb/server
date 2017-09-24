@@ -17,16 +17,15 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-"use strict";
+'use strict';
 
-var _ = require('lodash');
-var fs = require('fs');
-var path = require('path');
-var logger = require('winston');
+const _ = require('lodash');
+const fs = require('fs');
+const path = require('path');
+const logger = require('winston');
 
-var storage = require('./modules/storage');
-var queue = require('./modules/queue');
-var error = require('./modules/error')('startup');
+const storage = require('./modules/storage');
+const queue = require('./modules/queue');
 
 exports.init = function() {
 
@@ -52,7 +51,7 @@ exports.init = function() {
 		}));
 
 		return Promise.each(datas, data => {
-			var Model = require('mongoose').model(data.model);
+			const Model = require('mongoose').model(data.model);
 
 			// check if empty
 			return Model.count({}).then(num => {

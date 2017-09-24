@@ -17,17 +17,17 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-"use strict";
+'use strict';
 
-var _ = require('lodash');
-var fs = require('fs');
-var queue = require('bull');
-var util  = require('util');
-var redis = require('redis');
-var events = require('events');
-var logger = require('winston');
+const _ = require('lodash');
+const fs = require('fs');
+const queue = require('bull');
+const util = require('util');
+const redis = require('redis');
+const events = require('events');
+const logger = require('winston');
 
-var config = require('./settings').current;
+const config = require('./settings').current;
 
 /**
  * The processing queue.
@@ -84,11 +84,11 @@ function Queue() {
 util.inherits(Queue, events.EventEmitter);
 
 Queue.prototype.init = function() {
-	var that = this;
+	const that = this;
 
 	this.queuedFiles = {}; // contains callbacks for potential controller requests of not-yet-processed files
 
-	var redisOpts = {
+	const redisOpts = {
 		redis: {
 			port: config.vpdb.redis.port,
 			host: config.vpdb.redis.host,
@@ -137,10 +137,10 @@ Queue.prototype.init = function() {
 		// unsubscribe from channel
 		this.redis.subscriber.unsubscribe(key);
 
-		var storage = require('./storage');
-		var File = require('mongoose').model('File');
+		const storage = require('./storage');
+		const File = require('mongoose').model('File');
 		File.findById(data.fileId, (err, file) => {
-			var success = true;
+			let success = true;
 			/* istanbul ignore if */
 			if (err) {
 				logger.error('[queue|subscriber] Error getting file with ID "%s": %s', data.fileId, err.message);
@@ -151,7 +151,7 @@ Queue.prototype.init = function() {
 				success = false;
 			}
 
-			var callbacks = this.queuedFiles[key];
+			const callbacks = this.queuedFiles[key];
 			delete this.queuedFiles[key];
 			callbacks.forEach(callback => {
 				if (!data.success || !success) {
@@ -195,11 +195,11 @@ Queue.prototype.init = function() {
 	/**
 	 * Processes callback queue (waiting requests)
 	 */
-	var processQueue = function(err, file, variation) {
+	const processQueue = function(err, file, variation) {
 		if (!file) {
 			return;
 		}
-		var key = that.getQueryId(file, variation);
+		const key = that.getQueryId(file, variation);
 
 		// clear the status...
 		that.redis.status.del(that.getRedisId(key), function(err) {
@@ -210,7 +210,7 @@ Queue.prototype.init = function() {
 			}
 
 			// ...and send the event to the subscribers
-			var data;
+			let data;
 			if (!err) {
 				data = { fileId: file._id.toString(), variation: variation, success: true };
 			} else {
@@ -232,7 +232,7 @@ Queue.prototype.init = function() {
 
 	this.on('finishedPass1', function(file, variation, processor, processed) {
 
-		var key = this.getQueryId(file, variation);
+		const key = this.getQueryId(file, variation);
 		this.redis.status.get(this.getRedisId(key), function(err, num) {
 			/* istanbul ignore if */
 			if (err) {
@@ -257,7 +257,7 @@ Queue.prototype.init = function() {
 	});
 
 	this.on('finishedPass2', function(file, variation) {
-		var key = this.getQueryId(file, variation);
+		const key = this.getQueryId(file, variation);
 		this.redis.status.get(this.getRedisId(key), function(err, num) {
 			/* istanbul ignore if */
 			if (err) {
@@ -272,7 +272,7 @@ Queue.prototype.init = function() {
 
 	this.on('error', function(err, file, variation) {
 		logger.warn('[queue] Error processing %s: %s', file ? file.toString(variation) : '[null]', err.message || err);
-		console.log(err.stack);
+		logger.error(err.stack);
 		processQueue(err, file, variation);
 	});
 };
@@ -380,7 +380,7 @@ Queue.prototype.addCallback = function(file, variationName, callback) {
 };
 
 Queue.prototype.getQueryId = function(file, variation) {
-	var variationName = _.isObject(variation) ? variation.name : variation;
+	const variationName = _.isObject(variation) ? variation.name : variation;
 	return variationName ? file.id + ':' + variationName : file.id;
 };
 
@@ -389,7 +389,7 @@ Queue.prototype.getRedisId = function(key) {
 };
 
 Queue.prototype.empty = function() {
-	var that = this;
+	const that = this;
 	this.queues.image.count().then(function(count) {
 		logger.verbose('[queue] Cleaning %d entries out of image queue.', count);
 		that.queues.image.empty();
@@ -421,7 +421,6 @@ function processFile(job, emitter) {
 
 	let finalDest = false;
 	let file, src, dest;
-	let srcModificationTime;
 	let variation = job.data.variation;
 
 	return Promise.try(() => {
@@ -448,7 +447,6 @@ function processFile(job, emitter) {
 			throw new Error('[queue|pass2] Aborting before pass 2, ' + file.toString(variation) + ' is not on file system.');
 		}
 
-		srcModificationTime = fs.statSync(src).mtime;
 		file.lock(variation);
 		return processor.pass2(src, dest, file, variation).catch(err => {
 			if (fs.existsSync(dest)) {

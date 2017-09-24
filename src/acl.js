@@ -17,20 +17,18 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-"use strict";
+'use strict';
 
-const _ = require('lodash');
 const ACL = require('acl');
 const logger = require('winston');
 const mongoose = require('mongoose');
 
-const error = require('./modules/error')('acl');
 const config = require('./modules/settings').current;
 
 const redis = require('redis').createClient(config.vpdb.redis.port, config.vpdb.redis.host, { no_ready_check: true });
 
 redis.select(config.vpdb.redis.db);
-redis.on('error', console.error.bind(console));
+redis.on('error', err => logger.error('[acl] Redis error: %s', err.message));
 
 const acl = new ACL(new ACL.redisBackend(redis, 'acl'));
 

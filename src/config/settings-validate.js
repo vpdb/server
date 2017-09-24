@@ -17,14 +17,13 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-"use strict";
+'use strict';
 
-var _ = require('lodash');
-var fs = require('fs');
-var path = require('path');
-var mimeTypes = require('../modules/mimetypes');
-var fileTypes = require('../modules/filetypes');
-var validator = require('validator');
+const _ = require('lodash');
+const fs = require('fs');
+const path = require('path');
+const fileTypes = require('../modules/filetypes');
+const validator = require('validator');
 
 /**
  * Settings validations for VPFB
@@ -99,6 +98,7 @@ module.exports = {
 		 */
 		db: function(db) {
 			/* istanbul ignore if */
+			// eslint-disable-next-line no-useless-escape
 			if (!/mongodb:\/\/[^\/]+\/[a-z0-9]+/i.test(db)) {
 				return 'Database must fit the scheme "mongodb://<host>/<db-name>"';
 			}
@@ -109,8 +109,8 @@ module.exports = {
 		 */
 		redis: {
 			host: function(host) {
-				var validIp = !/^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$/.test(host);
-				var validHost = /^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$/.test(host);
+				let validIp = !/^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$/.test(host);
+				let validHost = /^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9-]*[a-zA-Z0-9]).)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9-]*[A-Za-z0-9])$/.test(host);
 				/* istanbul ignore if */
 				if (!validIp && !validHost) {
 					return 'Must be a valid host or IP address';
@@ -232,7 +232,7 @@ module.exports = {
 					if (!logPath) {
 						return null;
 					}
-					var logDir = path.dirname(logPath);
+					const logDir = path.dirname(logPath);
 
 					/* istanbul ignore if */
 					if (!fs.existsSync(logDir)) {
@@ -247,7 +247,7 @@ module.exports = {
 					if (!logPath) {
 						return null;
 					}
-					var logDir = path.dirname(logPath);
+					const logDir = path.dirname(logPath);
 
 					/* istanbul ignore if */
 					if (!fs.existsSync(logDir)) {
@@ -336,7 +336,7 @@ module.exports = {
 		 */
 		quota: {
 			plans: function(plans) {
-				var durations = ['minute', 'hour', 'day', 'week'];
+				const durations = ['minute', 'hour', 'day', 'week'];
 				/* istanbul ignore if */
 				if (!_.isArray(plans)) {
 					return 'Plans must be an array. You might need to migrate: Change to array and move key into "id" attribute.';
@@ -345,8 +345,7 @@ module.exports = {
 				if (plans.length < 1) {
 					return 'Quota plans must contain at least one plan.';
 				}
-				var plan;
-				var errors = [];
+				const errors = [];
 
 				plans.forEach(plan => {
 					if (plan.unlimited !== true) {
@@ -391,8 +390,9 @@ module.exports = {
 			},
 
 			costs: function(costs) {
-				var cost, errors = [];
-				for (var fileType in costs) {
+				let cost;
+				const errors = [];
+				for (let fileType in costs) {
 					if (costs.hasOwnProperty(fileType)) {
 						cost = costs[fileType];
 						/* istanbul ignore if */
@@ -632,7 +632,7 @@ module.exports = {
 					if (!setting.enabled) {
 						return;
 					}
-					var urlErr = checkUrl(url);
+					const urlErr = checkUrl(url);
 					/* istanbul ignore if */
 					if (urlErr) {
 						return urlErr;
@@ -760,34 +760,34 @@ module.exports = {
 };
 
 function checkUrl(str) {
-	var pattern = new RegExp(
-			"^" +
-			// protocol identifier
-			"(?:(?:https?)://)" +
-			// user:pass authentication
-			"(?:\\S+(?::\\S*)?@)?" +
-			"(?:" +
-			// IP address dotted notation octets
-			// excludes loopback network 0.0.0.0
-			// excludes reserved space >= 224.0.0.0
-			// excludes network & broacast addresses
-			// (first & last IP address of each class)
-			"(?:[1-9]\\d?|1\\d\\d|2[01]\\d|22[0-3])" +
-			"(?:\\.(?:1?\\d{1,2}|2[0-4]\\d|25[0-5])){2}" +
-			"(?:\\.(?:[1-9]\\d?|1\\d\\d|2[0-4]\\d|25[0-4]))" +
-			"|localhost|" +
-			// host name
-			"(?:(?:[a-z\\u00a1-\\uffff0-9]+-?)*[a-z\\u00a1-\\uffff0-9]+)" +
-			// domain name
-			"(?:\\.(?:[a-z\\u00a1-\\uffff0-9]+-?)*[a-z\\u00a1-\\uffff0-9]+)*" +
-			// TLD identifier
-			"(?:\\.(?:[a-z\\u00a1-\\uffff]{2,}))" +
-			")" +
-			// port number
-			"(?::\\d{2,5})?" +
-			// resource path
-			"(?:/[^\\s]*)?" +
-			"$", "i"
+	const pattern = new RegExp(
+		'^' +
+		// protocol identifier
+		'(?:(?:https?)://)' +
+		// user:pass authentication
+		'(?:\\S+(?::\\S*)?@)?' +
+		'(?:' +
+		// IP address dotted notation octets
+		// excludes loopback network 0.0.0.0
+		// excludes reserved space >= 224.0.0.0
+		// excludes network & broacast addresses
+		// (first & last IP address of each class)
+		'(?:[1-9]\\d?|1\\d\\d|2[01]\\d|22[0-3])' +
+		'(?:\\.(?:1?\\d{1,2}|2[0-4]\\d|25[0-5])){2}' +
+		'(?:\\.(?:[1-9]\\d?|1\\d\\d|2[0-4]\\d|25[0-4]))' +
+		'|localhost|' +
+		// host name
+		'(?:(?:[a-z\\u00a1-\\uffff0-9]+-?)*[a-z\\u00a1-\\uffff0-9]+)' +
+		// domain name
+		'(?:\\.(?:[a-z\\u00a1-\\uffff0-9]+-?)*[a-z\\u00a1-\\uffff0-9]+)*' +
+		// TLD identifier
+		'(?:\\.(?:[a-z\\u00a1-\\uffff]{2,}))' +
+		')' +
+		// port number
+		'(?::\\d{2,5})?' +
+		// resource path
+		'(?:/[^\\s]*)?' +
+		'$', 'i'
 	);
 	/* istanbul ignore if */
 	if (!pattern.test(str)) {
@@ -796,8 +796,8 @@ function checkUrl(str) {
 }
 
 function checkHost(host) {
-	var validIp = !/^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$/.test(host);
-	var validHost = /^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$/.test(host);
+	let validIp = !/^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$/.test(host);
+	let validHost = /^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9-]*[a-zA-Z0-9]).)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9-]*[A-Za-z0-9])$/.test(host);
 	/* istanbul ignore if */
 	if (!validIp && !validHost) {
 		return 'Must be a valid host or IP address';

@@ -17,14 +17,13 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-"use strict";
+'use strict';
 
-var _ = require('lodash');
-var logger = require('winston');
-var mongoose = require('mongoose');
+const _ = require('lodash');
+const logger = require('winston');
+const mongoose = require('mongoose');
 
-var common = require('./common');
-var error = require('../../modules/error')('model', 'pretty-id');
+const common = require('./common');
 
 /**
  * Plugin that converts pretty IDs to ObjectIds before passing it to mongoose.
@@ -54,7 +53,7 @@ module.exports = function(schema, options) {
 	}
 	options.validations = options.validations || [];
 
-	var paths = _.omitBy(common.traversePaths(schema), (schemaType, path) => {
+	const paths = _.omitBy(common.traversePaths(schema), (schemaType, path) => {
 		return _.includes(options.ignore, path.replace(/\.0$/g, ''));
 	});
 
@@ -70,8 +69,8 @@ module.exports = function(schema, options) {
 
 		return replaceIds(obj, paths, options).then(invalidations => {
 
-			var Model = mongoose.model(options.model);
-			var model = new Model(obj);
+			const Model = mongoose.model(options.model);
+			const model = new Model(obj);
 			//var model = this.model(this.constructor.modelName);
 
 			// for invalid IDs, invalidate instantly so we can provide which value is wrong.
@@ -108,26 +107,26 @@ module.exports = function(schema, options) {
  */
 function replaceIds(obj, paths, options) {
 
-	var Model = mongoose.model(options.model);
+	const Model = mongoose.model(options.model);
 	return Promise.try(function() {
-		var invalidations = [];
-		var models = {};
+		const invalidations = [];
+		const models = {};
 		models[options.model] = Model;
-		var refPaths = getRefPaths(obj, paths);
+		const refPaths = getRefPaths(obj, paths);
 
 		return Promise.each(_.keys(refPaths), objPath => {
 
-			var refModelName = refPaths[objPath];
-			var RefModel = models[refModelName] || mongoose.model(refModelName);
+			const refModelName = refPaths[objPath];
+			const RefModel = models[refModelName] || mongoose.model(refModelName);
 			models[refModelName] = RefModel;
 
-			var prettyId = _.get(obj, objPath);
+			let prettyId = _.get(obj, objPath);
 
 			if (!prettyId) {
 				return;
 			}
 			if (!_.isString(prettyId)) {
-				invalidations.push({ path: objPath, message: "ID must be a string.", value: prettyId });
+				invalidations.push({ path: objPath, message: 'ID must be a string.', value: prettyId });
 				_.set(obj, objPath, '000000000000000000000000'); // to avoid class cast error to objectId message
 				return;
 			}
@@ -152,7 +151,7 @@ function replaceIds(obj, paths, options) {
 					});
 
 					// convert pretty id to mongdb id
-//					console.log('--- Overwriting pretty ID "%s" at %s with %s.', prettyId, objPath, refObj._id);
+					// console.log('--- Overwriting pretty ID "%s" at %s with %s.', prettyId, objPath, refObj._id);
 					_.set(obj, objPath, refObj._id);
 				}
 			});
@@ -165,11 +164,11 @@ function replaceIds(obj, paths, options) {
 function getRefPaths(obj, paths) {
 
 	// pick because it's an object (map)
-	var singleRefsFiltered = _.pickBy(paths, schemaType => schemaType.options && schemaType.options.ref);
-	var singleRefs = _.mapValues(singleRefsFiltered, schemaType => schemaType.options.ref);
+	const singleRefsFiltered = _.pickBy(paths, schemaType => schemaType.options && schemaType.options.ref);
+	const singleRefs = _.mapValues(singleRefsFiltered, schemaType => schemaType.options.ref);
 
-	var arrayRefsFiltered = _.pickBy(paths, schemaType => schemaType.caster && schemaType.caster.instance && schemaType.caster.options && schemaType.caster.options.ref);
-	var arrayRefs = _.mapValues(arrayRefsFiltered, schemaType => schemaType.caster.options.ref);
+	const arrayRefsFiltered = _.pickBy(paths, schemaType => schemaType.caster && schemaType.caster.instance && schemaType.caster.options && schemaType.caster.options.ref);
+	const arrayRefs = _.mapValues(arrayRefsFiltered, schemaType => schemaType.caster.options.ref);
 
 	return common.explodePaths(obj, singleRefs, arrayRefs);
 }

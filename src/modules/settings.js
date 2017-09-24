@@ -17,18 +17,18 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-"use strict";
+'use strict';
 
-var _ = require('lodash');
-var fs = require('fs');
-var util = require('util');
-var path_ = require('path');
-var crypto = require('crypto');
-var logger = require('winston');
-var uglify = require('uglify-js');
+const _ = require('lodash');
+const fs = require('fs');
+const util = require('util');
+const path_ = require('path');
+const crypto = require('crypto');
+const logger = require('winston');
+const uglify = require('uglify-js');
 
-var validations = require(path_.resolve(__dirname, '../config/settings-validate'));
-var dryRun = false;
+const validations = require(path_.resolve(__dirname, '../config/settings-validate'));
+let dryRun = false;
 
 function Settings() {
 
@@ -37,8 +37,8 @@ function Settings() {
 		if (process.env.APP_SETTINGS) {
 			throw new Error('Cannot find settings at "' + process.env.APP_SETTINGS + '". Copy src/config/settings-dist.js to server/config/settings.js or point `APP_SETTINGS` environment variable to correct path.');
 		} else {
-			var e = new Error('Settings location not found. Please set the `APP_SETTINGS` environment variable to your configuration file and retry.');
-			console.error(e.stack);
+			const e = new Error('Settings location not found. Please set the `APP_SETTINGS` environment variable to your configuration file and retry.');
+			logger.error(e.stack);
 			throw e;
 		}
 	}
@@ -55,14 +55,14 @@ function Settings() {
 Settings.prototype.validate = function() {
 
 	logger.info('[settings] Validating settings at %s', this.filePath);
-	var settings = this.current;
+	const settings = this.current;
 
-	var validate = function(validation, setting, path) {
-		var success = true;
-		var validationError, p, i, j;
-		var logError = function(p, error, setting) {
+	const validate = function(validation, setting, path) {
+		let success = true;
+		let validationError, p, i, j;
+		const logError = function(p, error, setting) {
 			setting = !_.isUndefined(error.setting) ? error.setting : setting;
-			var s = _.isObject(setting) ? JSON.stringify(setting) : setting;
+			const s = _.isObject(setting) ? JSON.stringify(setting) : setting;
 			if (_.isObject(error)) {
 				logger.error('[settings] %s.%s [KO]: %s (%s).', p, error.path, error.message, s);
 			} else {
@@ -136,22 +136,24 @@ Settings.prototype.validate = function() {
 /* istanbul ignore next */
 Settings.prototype.migrate = function(callback) {
 
-	var settingsCurrName = path_.basename(this.filePath);
-	var settingsDistPath = path_.resolve(__dirname, '../config/settings-dist.js');
-	var settingsDist = fs.readFileSync(settingsDistPath, { encoding: 'utf8' }).trim().replace(/\x0D\x0A/gi, '\n');
-	var settingsCurr = fs.readFileSync(this.filePath, { encoding: 'utf8' }).trim().replace(/\x0D\x0A/gi, '\n');
-	var result = { added: [], errors: [] };
+	const settingsCurrName = path_.basename(this.filePath);
+	const settingsDistPath = path_.resolve(__dirname, '../config/settings-dist.js');
+	// eslint-disable-next-line
+	const nl = /\x0d\x0a/gi;
+	const settingsDist = fs.readFileSync(settingsDistPath, { encoding: 'utf8' }).trim().replace(nl, '\n');
+	const settingsCurr = fs.readFileSync(this.filePath, { encoding: 'utf8' }).trim().replace(nl, '\n');
+	const result = { added: [], errors: [] };
 
 	if (settingsCurr !== settingsDist) {
 
 		logger.info('[settings] Checking for new settings.');
 
 		// 1. retrieve added properties
-		var oldTree = {};
-		var newTree = {};
+		const oldTree = {};
+		const newTree = {};
 		eval(settingsCurr.replace(/module\.exports\s*=\s*\{/, 'oldTree = {')); // jshint ignore:line
 		eval(settingsDist.replace(/module\.exports\s*=\s*\{/, 'newTree = {')); // jshint ignore:line
-		var newProps = diff(oldTree, newTree);
+		const newProps = diff(oldTree, newTree);
 		if (newProps.length === 0) {
 			logger.info('[settings] No new settings found.');
 			return callback(result);
@@ -159,7 +161,7 @@ Settings.prototype.migrate = function(callback) {
 		logger.info('[settings] Found new settings: [' + newProps.join(', ') + ']');
 
 		// 2. retrieve code blocks of added properties
-		var nodesNew = analyze(uglify.minify(settingsDist, {
+		const nodesNew = analyze(uglify.minify(settingsDist, {
 			compress: false,
 			mangle: false,
 			output: {
@@ -169,13 +171,13 @@ Settings.prototype.migrate = function(callback) {
 		}).ast);
 
 		// 3. inject code blocks into settings.js
-		var settingsPatched = _.clone(settingsCurr);
-		var settingsNew = _.pick(nodesNew, newProps);
-		var settingsNewKeys = _.keys(settingsNew);
-		var ast;
-		for (var i = 0; i < settingsNewKeys.length; i++) {
-			var path = settingsNewKeys[i]; // path in settings to be added
-			var node = settingsNew[path];  // ast node corresponding to the setting to be added
+		let settingsPatched = _.clone(settingsCurr);
+		const settingsNew = _.pick(nodesNew, newProps);
+		const settingsNewKeys = _.keys(settingsNew);
+		let ast;
+		for (let i = 0; i < settingsNewKeys.length; i++) {
+			const path = settingsNewKeys[i]; // path in settings to be added
+			const node = settingsNew[path];  // ast node corresponding to the setting to be added
 			try {
 				// analyze current settings, so we know where to inject
 				ast = analyze(uglify.minify(settingsPatched, {
@@ -202,16 +204,16 @@ Settings.prototype.migrate = function(callback) {
 			if (!ast[path]) {
 				logger.info('[settings] Patching %s with setting "%s"', settingsCurrName, path);
 
-				var comment = node.start.comments_before.length > 0;
-				var start = comment ? node.start.comments_before[0].pos : node.start.pos;
-				var len = comment ? node.end.endpos - start : node.end.endpos - start;
-				var codeBlock = settingsDist.substr(start, len);
-//				logger.info('start: %d, len: %d, hasComment: %s', start, len, comment);
-//				logger.info('\n===============\n%s\n===============\n', util.inspect(node, false, 10, true));
-//				logger.info('settingsDist:\n%s', settingsDist);
+				const comment = node.start.comments_before.length > 0;
+				const start = comment ? node.start.comments_before[0].pos : node.start.pos;
+				const len = comment ? node.end.endpos - start : node.end.endpos - start;
+				const codeBlock = settingsDist.substr(start, len);
+				//				logger.info('start: %d, len: %d, hasComment: %s', start, len, comment);
+				//				logger.info('\n===============\n%s\n===============\n', util.inspect(node, false, 10, true));
+				//				logger.info('settingsDist:\n%s', settingsDist);
 
 				// inject at the end of an element
-				var parentPath;
+				let parentPath;
 				if (path.indexOf('.') > 0) {
 					parentPath = path.substr(0, path.lastIndexOf('.'));
 					settingsPatched = patch(settingsPatched, codeBlock, ast[parentPath].end.pos, parentPath);
@@ -222,8 +224,8 @@ Settings.prototype.migrate = function(callback) {
 				}
 
 				// add message to result
-				var descr = node.start.comments_before[0] ? node.start.comments_before[0].value.trim() : null;
-				var important = false;
+				let descr = node.start.comments_before[0] ? node.start.comments_before[0].value.trim() : null;
+				let important = false;
 				if (descr) {
 
 					if (descr.match(/\*\s*@important/i)) {
@@ -277,16 +279,16 @@ Settings.prototype.migrate = function(callback) {
  * @returns {Object}
  */
 function analyze(tree, path, node) {
-	var nodes = {};
+	const nodes = {};
 	if (node) {
 		nodes[path] = node;
 	}
-	var i;
+	let i;
 	if (tree.right) {
 		_.extend(nodes, analyze(tree.right, path));
 	} else if (tree.properties) {
 		for (i = 0; i < tree.properties.length; i++) {
-			var nextPath = (path ? path + '.' : '') + tree.properties[i].key;
+			const nextPath = (path ? path + '.' : '') + tree.properties[i].key;
 			_.extend(nodes, analyze(tree.properties[i].value, nextPath, tree.properties[i]));
 		}
 	} else if (tree.body) {
@@ -313,15 +315,15 @@ function analyze(tree, path, node) {
  */
 function diff(oldTree, newTree, parent) {
 	parent = parent ? parent : '';
-	var newProps = _.difference(_.keys(newTree), _.keys(oldTree));
-	var comProps = _.intersection(_.keys(newTree), _.keys(oldTree));
-	var newValues = _.map(newProps, function (key) {
+	const newProps = _.difference(_.keys(newTree), _.keys(oldTree));
+	const comProps = _.intersection(_.keys(newTree), _.keys(oldTree));
+	let newValues = _.map(newProps, function(key) {
 		return parent ? parent + '.' + key : key;
 	});
-	for (var i = 0; i < comProps.length; i++) {
-		var prop = oldTree[comProps[i]];
+	for (let i = 0; i < comProps.length; i++) {
+		const prop = oldTree[comProps[i]];
 		if (_.isObject(prop)) {
-			var p = parent ? parent + '.' + comProps[i] : comProps[i];
+			const p = parent ? parent + '.' + comProps[i] : comProps[i];
 			newValues = newValues.concat(diff(oldTree[comProps[i]], newTree[comProps[i]], p));
 		}
 	}
@@ -330,11 +332,11 @@ function diff(oldTree, newTree, parent) {
 
 function patch(settingsPatched, codeBlock, pos, parentPath) {
 //	console.log('PATCHING:\n--- code ---\n%s\n--- /code ---\nat pos %d below "%s"', codeBlock, pos, parentPath);
-	var before = settingsPatched.substr(0, pos);
-	var after = settingsPatched.substr(pos);
-	var level = parentPath ? parentPath.split('.').length : 0;
-	var indent = '';
-	for (var i = 0; i < level; i++) {
+	const before = settingsPatched.substr(0, pos);
+	const after = settingsPatched.substr(pos);
+	const level = parentPath ? parentPath.split('.').length : 0;
+	let indent = '';
+	for (let i = 0; i < level; i++) {
 		indent += '\t';
 	}
 	return before.trim() + ',\n\n\t' + indent + codeBlock.trim().replace(/,$/, '') + '\n' + indent + after.trim();
@@ -346,8 +348,8 @@ function patch(settingsPatched, codeBlock, pos, parentPath) {
  */
 Settings.prototype.apiHost = function() {
 	return this.current.vpdb.api.protocol + '://' +
-	       this.current.vpdb.api.hostname +
-	      (this.current.vpdb.api.port === 80 || this.current.vpdb.api.port === 443 ? '' : ':' + this.current.vpdb.api.port);
+		this.current.vpdb.api.hostname +
+		(this.current.vpdb.api.port === 80 || this.current.vpdb.api.port === 443 ? '' : ':' + this.current.vpdb.api.port);
 };
 
 /**
@@ -410,9 +412,9 @@ Settings.prototype.storageProtectedPath = function(path) {
  */
 Settings.prototype.webUri = function(path) {
 	return this.current.vpdb.webapp.protocol + '://' +
-	       this.current.vpdb.webapp.hostname +
-	      (this.current.vpdb.webapp.port === 80 || this.current.vpdb.webapp.port === 443 ? '' : ':' + this.current.vpdb.webapp.port) +
-	      (path || '');
+		this.current.vpdb.webapp.hostname +
+		(this.current.vpdb.webapp.port === 80 || this.current.vpdb.webapp.port === 443 ? '' : ':' + this.current.vpdb.webapp.port) +
+		(path || '');
 };
 
 /**
@@ -483,10 +485,10 @@ Settings.prototype.clientConfig = function() {
 };
 
 Settings.prototype.clientConfigName = function() {
-	var data = util.inspect(this.clientConfig());
-	var md5sum = crypto.createHash('md5');
+	const data = util.inspect(this.clientConfig());
+	const md5sum = crypto.createHash('md5');
 	md5sum.update(data);
-	var hash = md5sum.digest('hex').substr(0, 7);
+	const hash = md5sum.digest('hex').substr(0, 7);
 	return 'config_' + hash + '.js';
 };
 

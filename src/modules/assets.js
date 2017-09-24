@@ -17,23 +17,23 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-"use strict";
+'use strict';
 
-var _ = require('lodash');
-var fs = require('fs');
-var glob = require('glob');
-var path = require('path');
-var logger = require('winston');
-var wiredep = require('wiredep');
+const _ = require('lodash');
+const fs = require('fs');
+const glob = require('glob');
+const path = require('path');
+const logger = require('winston');
+const wiredep = require('wiredep');
 
-var settings = require('./settings');
-var writeable = require('./writeable');
+const settings = require('./settings');
+const writeable = require('./writeable');
 
 function Assets() {
 
-	var that = this;
-	var jsRoot = path.resolve(__dirname, '../../client/app');
-	var cssRoot = writeable.cssRoot;
+	const that = this;
+	const jsRoot = path.resolve(__dirname, '../../client/app');
+	const cssRoot = writeable.cssRoot;
 
 	this.app = { js: [], css: [] };
 	this.deps = { js: [], css: [], fonts: [], 'public': [] };
@@ -61,7 +61,8 @@ function Assets() {
 	});
 
 	// vendor libs from bower
-	var dep, bowerDir = path.resolve(__dirname, '../../bower_components');
+	let dep;
+	const bowerDir = path.resolve(__dirname, '../../bower_components');
 	if (fs.existsSync(bowerDir)) {
 		dep = wiredep({
 			cwd: path.resolve(__dirname, '../../'),
@@ -72,12 +73,12 @@ function Assets() {
 	if (!dep || !dep.packages) { // don't bother if bower deps weren't installed yet
 		return logger.warn('[assets] No Bower directory found or wiredep came up empty (%s)', dep);
 	}
-	var n = 0;
+	let n = 0;
 	_.each(dep.packages, function(pak, name) {
 		_.each(pak.main, function(file) {
 			_.each(glob.sync(file), function(file) {
-				var ext = path.extname(file.toLowerCase());
-				var key, suffix = '', prefix = '', shift = 0;
+				const ext = path.extname(file.toLowerCase());
+				let key, suffix = '', prefix = '', shift = 0;
 				if (ext === '.js') {
 					key = 'js';
 					suffix = '/' + name;
@@ -89,18 +90,18 @@ function Assets() {
 				} else {
 					key = 'public';
 				}
-				var web = prefix + key + suffix + '/' + path.basename(file);
+				const web = prefix + key + suffix + '/' + path.basename(file);
 				/* manual override sort:
 				 *   - put all jquery stuff before angular (https://github.com/angular/angular.js/issues/8471)
 				 *   - put html5-shim before angular
 				 */
-				if (/\/jquery(\-ui)?\//i.test(web)) {
+				if (/\/jquery(-ui)?\//i.test(web)) {
 					shift = -100;
 				}
-				if (/\-shim/i.test(web)) {
+				if (/-shim/i.test(web)) {
 					shift = -50;
 				}
-				var f = {
+				const f = {
 					src: path.resolve(file),
 					dest: path.resolve(writeable.buildRoot, web),
 					web: '/' + web,

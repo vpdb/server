@@ -17,7 +17,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-"use strict";
+'use strict';
 
 const _ = require('lodash');
 const fs = require('fs');
@@ -137,7 +137,7 @@ class Storage {
 	 * @param file
 	 */
 	remove(file) {
-		var filePath = file.getPath();
+		let filePath = file.getPath();
 		if (fs.existsSync(filePath)) {
 			logger.verbose('[storage] Removing file %s..', filePath);
 			try {
@@ -147,8 +147,8 @@ class Storage {
 				logger.error('[storage] %s', err);
 
 				// if this is a busy problem, try again in a few.
-				var retries = 0;
-				var intervalId = setInterval(function() {
+				let retries = 0;
+				const intervalId = setInterval(function() {
 					if (!fs.existsSync(filePath)) {
 						return clearInterval(intervalId);
 					}
@@ -188,7 +188,7 @@ class Storage {
 	 */
 	metadata(file) {
 		return Promise.try(function() {
-			var type = file.getMimeCategory();
+			const type = file.getMimeCategory();
 			if (!processors[type]) {
 				logger.warn('[storage] No metadata parser for mime category "%s".', type);
 				return Promise.resolve();
@@ -206,8 +206,8 @@ class Storage {
 	 * @returns {object} Reduced metadata
 	 */
 	metadataShort(file, metadata) {
-		var data = metadata ? metadata : file.metadata;
-		var type = file.getMimeCategory();
+		let data = metadata ? metadata : file.metadata;
+		const type = file.getMimeCategory();
 		if (!data) {
 			return {};
 		}
@@ -219,7 +219,7 @@ class Storage {
 
 	preprocess(file, done) {
 		return Promise.try(() => {
-			var type = file.getMimeCategory();
+			const type = file.getMimeCategory();
 			if (!processors[type] || !processors[type].preprocess) {
 				return Promise.resolve(file);
 			}
@@ -363,16 +363,16 @@ class Storage {
 			// check if file should have been moved to public storage meanwhile
 			this.checkIfMoved(file, originalFile, variation);
 
-			var filepath = file.getPath(variation);
+			const filepath = file.getPath(variation);
 			if (!fs.existsSync(filepath)) {
 				// here we care: we came so far, so this was definitely deleted while we were away
 				throw error('File "%s" gone, has been deleted before metadata finished.', filepath);
 			}
 
-			var data = {};
+			const data = {};
 			if (variation) {
 				// save only limited meta data for variations
-				var fieldPath = 'variations.' + variation.name;
+				const fieldPath = 'variations.' + variation.name;
 				data[fieldPath] = _.extend(processor.variationData(metadata), { bytes: fs.statSync(filepath).size });
 				if (variation.mimeType) {
 					data[fieldPath].mime_type = variation.mimeType;
@@ -411,7 +411,7 @@ class Storage {
 	url(file, variation) {
 
 		if (!file) {
-			console.log('file is null!');
+			logger.warn('file is null!');
 			return null;
 		}
 		let storageUri = file.isPublic(variation) ? settings.storagePublicUri.bind(settings) : settings.storageProtectedUri.bind(settings);
@@ -435,13 +435,13 @@ class Storage {
 	path(file, variation, opts) {
 
 		opts = opts || {};
-		var baseDir = file.isPublic(variation) && !opts.forceProtected ? config.vpdb.storage.public.path : config.vpdb.storage.protected.path;
-		var variationName = _.isObject(variation) ? variation.name : variation;
-		var suffix = opts.tmpSuffix || '';
-		var ext = opts.lockFile ? '.lock' : file.getExt(variation);
+		const baseDir = file.isPublic(variation) && !opts.forceProtected ? config.vpdb.storage.public.path : config.vpdb.storage.protected.path;
+		const variationName = _.isObject(variation) ? variation.name : variation;
+		const suffix = opts.tmpSuffix || '';
+		const ext = opts.lockFile ? '.lock' : file.getExt(variation);
 		return variationName ?
-		path.resolve(baseDir, variationName, file.id) + suffix + ext :
-		path.resolve(baseDir, file.id) + suffix + ext;
+			path.resolve(baseDir, variationName, file.id) + suffix + ext :
+			path.resolve(baseDir, file.id) + suffix + ext;
 	}
 
 	/**
@@ -451,12 +451,12 @@ class Storage {
 	 */
 	switchToPublic(file) {
 
-		var that = this;
-		var mimeCategory = file.getMimeCategory();
+		const that = this;
+		const mimeCategory = file.getMimeCategory();
 
 		// file
-		var protectedPath = that.path(file, null, { forceProtected: true });
-		var publicPath = that.path(file);
+		const protectedPath = that.path(file, null, { forceProtected: true });
+		const publicPath = that.path(file);
 		if (protectedPath !== publicPath) {
 			logger.verbose('[storage] Renaming "%s" to "%s"', protectedPath, publicPath);
 			try {
@@ -476,9 +476,9 @@ class Storage {
 		// variations
 		if (this.variations[mimeCategory] && this.variations[mimeCategory][file.file_type]) {
 			this.variations[mimeCategory][file.file_type].forEach(function(variation) {
-				var lockPath = that.path(file, variation, { forceProtected: true, lockFile: true });
-				var protectedPath = that.path(file, variation, { forceProtected: true });
-				var publicPath = that.path(file, variation);
+				const lockPath = that.path(file, variation, { forceProtected: true, lockFile: true });
+				const protectedPath = that.path(file, variation, { forceProtected: true });
+				const publicPath = that.path(file, variation);
 				if (protectedPath !== publicPath) {
 					if (fs.existsSync(protectedPath)) {
 						if (!fs.existsSync(lockPath)) {
@@ -521,14 +521,14 @@ class Storage {
 		if (!file) {
 			return {};
 		}
-		var that = this;
-		var variations = file.variations || {};
-		var mimeCategory = file.getMimeCategory();
+		const that = this;
+		const variations = file.variations || {};
+		const mimeCategory = file.getMimeCategory();
 		if (this.variations[mimeCategory] && this.variations[mimeCategory][file.file_type]) {
 			this.variations[mimeCategory][file.file_type].forEach(variation => {
 				variations[variation.name] = variations[variation.name] || {};
 				variations[variation.name].url = that.url(file, variation);
-				var cost = quota.getCost(file, variation);
+				const cost = quota.getCost(file, variation);
 				if (!file.is_active || cost > -1) {
 					variations[variation.name].is_protected = true;
 				}
@@ -578,8 +578,8 @@ class Storage {
 	checkIfMoved(file, originalFile, variation) {
 
 		// check if file should have been renamed while reading meta data
-		var dirtyPath = this.path(originalFile, variation);
-		var cleanPath = this.path(file, variation);
+		const dirtyPath = this.path(originalFile, variation);
+		const cleanPath = this.path(file, variation);
 		if (!fs.existsSync(cleanPath) && fs.existsSync(dirtyPath)) {
 			logger.info('[storage] Seems that "%s" was locked while attempting to move, renaming now to "%s".', dirtyPath, cleanPath);
 			//try {

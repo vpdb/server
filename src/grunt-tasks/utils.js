@@ -17,7 +17,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-"use strict";
+'use strict';
 
 var fs = require('fs');
 var path = require('path');
@@ -38,8 +38,8 @@ module.exports = function(grunt) {
 		gitinfo.local.branch.current.lastCommitTime = gitinfo.local.branch.current.lastCommitTime.replace(/"/g, '');
 
 		// dump to disk
-		grunt.file.write(gitsave.dest, JSON.stringify(gitinfo, null, "\t"));
-		grunt.log.writeln("Gitinfo written to %s.", gitsave.dest);
+		grunt.file.write(gitsave.dest, JSON.stringify(gitinfo, null, '\t'));
+		grunt.log.writeln('Gitinfo written to %s.', gitsave.dest);
 	});
 
 	grunt.registerTask('client-config', function() {
@@ -61,7 +61,7 @@ module.exports = function(grunt) {
 	grunt.registerTask('stop', function() {
 		var done = this.async();
 		var url = 'http://127.0.0.1:' + process.env.PORT + '/kill';
-		grunt.log.writeln("Killing off server at %s", url);
+		grunt.log.writeln('Killing off server at %s', url);
 		request.post(url, done);
 	});
 

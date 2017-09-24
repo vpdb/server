@@ -17,14 +17,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-"use strict";
+'use strict';
 
-var _ = require('lodash');
-var fs = require('fs');
-var Unrar = require('unrar');
-var Zip = require('adm-zip');
-
-var error = require('../error')('processor', 'archive');
+const _ = require('lodash');
+const Unrar = require('unrar');
+const Zip = require('adm-zip');
 
 Promise.promisifyAll(Unrar.prototype);
 
@@ -91,7 +88,7 @@ module.exports = new ArchiveProcessor();
 function getRarMetadata(file) {
 
 	return Promise.try(function() {
-		var archive = new Unrar(file.getPath());
+		const archive = new Unrar(file.getPath());
 		return archive.listAsync();
 
 	}).then(entries => {
@@ -123,7 +120,7 @@ function getZipMetadata(file) {
 
 	return Promise.try(function() {
 
-		var entries = new Zip(file.getPath()).getEntries();
+		let entries = new Zip(file.getPath()).getEntries();
 
 		// filter directories
 		entries = _.filter(entries, entry => !entry.isDirectory);

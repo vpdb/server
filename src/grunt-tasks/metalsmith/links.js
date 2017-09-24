@@ -17,7 +17,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-"use strict";
+'use strict';
 
 module.exports = function(opts) {
 
@@ -26,14 +26,15 @@ module.exports = function(opts) {
 	opts.noext = opts.noext === true;
 
 	return function (files, metalsmith, done) {
-		for (var filepath in files) {
+		for (let filepath in files) {
 			if (files.hasOwnProperty(filepath)) {
-				var link = (opts.absolute ? '/' : '') + filepath.replace(/\\/g, '/');
+				let link = (opts.absolute ? '/' : '') + filepath.replace(/\\/g, '/');
 				if (opts.permalinks) {
+					// eslint-disable-next-line no-useless-escape
 					link = link.replace(/\/[^\/]+$/, '');
 				}
 				if (opts.noext) {
-					link = link.replace(/\.[^\.]+$/, '');
+					link = link.replace(/\.[^.]+$/, '');
 				}
 				if (link.substr(link.lastIndexOf('/')) === '/index') {
 					link = link.substr(0, link.lastIndexOf('/'));

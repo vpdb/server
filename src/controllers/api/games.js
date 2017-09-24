@@ -17,30 +17,29 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-"use strict";
+'use strict';
 
-var _ = require('lodash');
-var fs = require('fs');
-var util = require('util');
-var logger = require('winston');
-var generate = require('project-name-generator');
+const _ = require('lodash');
+const fs = require('fs');
+const util = require('util');
+const logger = require('winston');
+const generate = require('project-name-generator');
 
-var File = require('mongoose').model('File');
-var Game = require('mongoose').model('Game');
-var GameRequest = require('mongoose').model('GameRequest');
-var Release = require('mongoose').model('Release');
-var Star = require('mongoose').model('Star');
-var Rom = require('mongoose').model('Rom');
-var LogEvent = require('mongoose').model('LogEvent');
-var Backglass = require('mongoose').model('Backglass');
-var Medium = require('mongoose').model('Medium');
+const Game = require('mongoose').model('Game');
+const GameRequest = require('mongoose').model('GameRequest');
+const Release = require('mongoose').model('Release');
+const Star = require('mongoose').model('Star');
+const Rom = require('mongoose').model('Rom');
+const LogEvent = require('mongoose').model('LogEvent');
+const Backglass = require('mongoose').model('Backglass');
+const Medium = require('mongoose').model('Medium');
 
-var api = require('./api');
+const api = require('./api');
 
-var acl = require('../../acl');
-var fileModule = require('../../modules/file');
-var mailer = require('../../modules/mailer');
-var error = require('../../modules/error')('api', 'game');
+const acl = require('../../acl');
+const fileModule = require('../../modules/file');
+const mailer = require('../../modules/mailer');
+const error = require('../../modules/error')('api', 'game');
 const config = require('../../modules/settings').current;
 
 
@@ -185,7 +184,7 @@ exports.update = function(req, res) {
 		oldGame = _.cloneDeep(game);
 
 		// fail if invalid fields provided
-		var submittedFields = _.keys(req.body);
+		const submittedFields = _.keys(req.body);
 		if (_.intersection(updateableFields, submittedFields).length !== submittedFields.length) {
 			let invalidFields = _.difference(submittedFields, updateableFields);
 			throw error('Invalid field%s: ["%s"]. Allowed fields: ["%s"]', invalidFields.length === 1 ? '' : 's', invalidFields.join('", "'), updateableFields.join('", "')).status(400).log('update');

@@ -17,7 +17,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-"use strict";
+'use strict';
 
 const _ = require('lodash');
 const jwt = require('jwt-simple');
@@ -33,7 +33,7 @@ Promise.promisifyAll(Redis.RedisClient.prototype);
 Promise.promisifyAll(Redis.Multi.prototype);
 const redis = Redis.createClient(config.vpdb.redis.port, config.vpdb.redis.host, { no_ready_check: true });
 redis.select(config.vpdb.redis.db);
-redis.on('error', console.error.bind(console));
+redis.on('error', err => logger.error(err.message));
 
 const User = require('mongoose').model('User');
 

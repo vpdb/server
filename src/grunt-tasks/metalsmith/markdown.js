@@ -18,11 +18,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-var basename = require('path').basename;
-var debug = require('debug')('metalsmith-markdown');
-var dirname = require('path').dirname;
-var extname = require('path').extname;
-var md = require('../../modules/md');
+const basename = require('path').basename;
+const debug = require('debug')('metalsmith-markdown');
+const dirname = require('path').dirname;
+const extname = require('path').extname;
+const md = require('../../modules/md');
 
 /**
  * Metalsmith plugin to convert markdown files.
@@ -30,6 +30,7 @@ var md = require('../../modules/md');
  * @param {Object} options (optional)
  * @return {Function}
  */
+// eslint-disable-next-line no-unused-vars
 module.exports = function(preset, options){
 
 	return function(files, metalsmith, done){
@@ -39,13 +40,13 @@ module.exports = function(preset, options){
 			if (!is_markdown(file)) {
 				return;
 			}
-			var data = files[file];
-			var dir = dirname(file);
-			var html = basename(file, extname(file)) + '.html';
+			const data = files[file];
+			const dir = dirname(file);
+			let html = basename(file, extname(file)) + '.html';
 			if ('.' != dir) html = dir + '/' + html;
 
 			debug('converting file: %s', file);
-			var str = md.render(data.contents.toString());
+			const str = md.render(data.contents.toString());
 			data.contents = new Buffer(str);
 
 			delete files[file];

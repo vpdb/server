@@ -17,7 +17,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-"use strict";
+'use strict';
 
 const _ = require('lodash');
 const util = require('util');
@@ -425,7 +425,7 @@ exports.moderate = function(req, res) {
 			moderation.history.sort((m1, m2) => m2.created_at.getTime() - m1.created_at.getTime());
 			const lastEvent = moderation.history[0];
 			const errHandler = err => logger.error('[moderation|backglass] Error sending moderation mail: %s', err.message);
-				switch (lastEvent.event) {
+			switch (lastEvent.event) {
 				case 'approved':
 					return mailer.backglassApproved(backglass._created_by, backglass, lastEvent.message).catch(errHandler);
 				case 'refused':

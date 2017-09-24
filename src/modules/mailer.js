@@ -17,19 +17,19 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-"use strict";
+'use strict';
 
-var _ = require('lodash');
-var fs = require('fs');
-var path = require('path');
-var logger = require('winston');
-var nodemailer = require('nodemailer');
-var handlebars = require('handlebars');
+const _ = require('lodash');
+const fs = require('fs');
+const path = require('path');
+const logger = require('winston');
+const nodemailer = require('nodemailer');
+const handlebars = require('handlebars');
 
-var settings = require('./settings');
-var config = settings.current;
+const settings = require('./settings');
+const config = settings.current;
 
-var templatesDir = path.resolve(__dirname, '../email-templates');
+const templatesDir = path.resolve(__dirname, '../email-templates');
 
 exports.registrationConfirmation = function(user) {
 	return sendEmail(user, 'Please confirm your email', 'registration-confirmation', {
@@ -294,7 +294,7 @@ exports.releaseModerationCommented = function(user, release, message) {
 			return sendEmail(dest, subject, 'release-moderation-commented', {
 				user: dest,
 				who: isSenderMod ? 'Moderator' : 'Uploader',
-				what: isSenderMod ? (isDestMod ? release._created_by.name + "'s" : 'your') : 'his',
+				what: isSenderMod ? (isDestMod ? release._created_by.name + '\'s' : 'your') : 'his',
 				release: release,
 				game: game,
 				commentor: user,

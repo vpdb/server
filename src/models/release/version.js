@@ -17,7 +17,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-"use strict";
+'use strict';
 
 const _ = require('lodash');
 const logger = require('winston');
@@ -59,11 +59,11 @@ schema.path('files').validate(function(files, callback) {
 		return Promise.resolve(true);
 	}
 
-	var hasTableFile = false;
-	var tableFiles = [];
+	let hasTableFile = false;
+	const tableFiles = [];
 	return Promise.try(() => {
 
-		var index = 0; // when updating a version, ignore existing files, so increment only if new
+		let index = 0; // when updating a version, ignore existing files, so increment only if new
 		return Promise.each(files, f => {
 			return validateFile(this, f, index).then(isTableFile => {
 				if (isTableFile) {
@@ -83,9 +83,9 @@ schema.path('files').validate(function(files, callback) {
 		}
 
 		// can be either exploded into object or id only.
-		var getIdFromFile = file => file._id ? file._id.toString() : file.toString();
+		const getIdFromFile = file => file._id ? file._id.toString() : file.toString();
 
-//		console.log('Checking %d table files for compat/flavor dupes:', _.keys(tableFiles).length);
+		//console.log('Checking %d table files for compat/flavor dupes:', _.keys(tableFiles).length);
 
 		// validate existing compat/flavor combination
 		tableFiles.forEach(tableFile => {
@@ -95,27 +95,27 @@ schema.path('files').validate(function(files, callback) {
 				return;
 			}
 
-			var fileFlavor = f.flavor.toObject();
-			var fileCompat = _.map(f._compatibility, getIdFromFile);
+			const fileFlavor = f.flavor.toObject();
+			const fileCompat = _.map(f._compatibility, getIdFromFile);
 			fileCompat.sort();
 
-			var dupeFiles = _.filter(_.map(tableFiles, 'file'), otherFile => {
+			const dupeFiles = _.filter(_.map(tableFiles, 'file'), otherFile => {
 
 				if (f.id === otherFile.id) {
 					return false;
 				}
-				var compat = _.map(otherFile._compatibility, getIdFromFile);
+				const compat = _.map(otherFile._compatibility, getIdFromFile);
 				compat.sort();
 
-//				console.log('  File %s <-> %s', file.id, otherFile.id);
-//				console.log('     compat %j <-> %j', fileCompat, compat);
-//				console.log('     flavor %j <-> %j', fileFlavor, otherFile.flavor.toObject());
+				// console.log('  File %s <-> %s', file.id, otherFile.id);
+				// console.log('     compat %j <-> %j', fileCompat, compat);
+				// console.log('     flavor %j <-> %j', fileFlavor, otherFile.flavor.toObject());
 
 				return _.isEqual(fileCompat, compat) && _.isEqual(fileFlavor, otherFile.flavor.toObject());
 			});
 
 			if (f.isNew && dupeFiles.length > 0) {
-//				console.log('     === FAILED ===');
+				// console.log('     === FAILED ===');
 				this.invalidate('files.' + tableFile.index + '._compatibility', 'A combination of compatibility and flavor already exists with the same values.');
 				this.invalidate('files.' + tableFile.index + '.flavor', 'A combination of compatibility and flavor already exists with the same values.');
 			}
@@ -158,7 +158,7 @@ function validateFile(release, tableFile, index) {
 		}
 
 		// flavor
-		var fileFlavor = tableFile.flavor || {};
+		const fileFlavor = tableFile.flavor || {};
 		_.each(file.fields.flavor, (obj, flavor) => {
 			if (!fileFlavor[flavor]) {
 				release.invalidate('files.' + index + '.flavor.' + flavor, 'Flavor `' + flavor + '` must be provided.');
@@ -178,7 +178,7 @@ function validateFile(release, tableFile, index) {
 			release.invalidate('files.' + index + '._playfield_image', 'Playfield image must be provided.');
 		}
 
-		var mediaValidations = [];
+		const mediaValidations = [];
 
 		// validate playfield image
 		if (tableFile._playfield_image) {
@@ -242,7 +242,7 @@ function validateFile(release, tableFile, index) {
 
 		// TODO validate playfield video
 		if (tableFile._playfield_video) {
-			mediaValidations.push(Promise.resolve(() => console.log("TODO: Validate playfield video")));
+			mediaValidations.push(Promise.resolve(() => logger.log('TODO: Validate playfield video')));
 		}
 
 		return Promise.all(mediaValidations).then(() => true);

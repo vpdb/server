@@ -23,8 +23,8 @@
 		"dev": "./node_modules/.bin/nodemon --config deploy/nodemon/dev.json --exec npm start",
 		"lint": "./node_modules/.bin/eslint src/**/*.js",
 		"serve-test": "./node_modules/.bin/nodemon --config deploy/nodemon/test.json --exec \"npm run lint && npm run droptestdbs && npm start\"",
-		"test": "./node_modules/.bin/run-s wait test",
-		"ci": "./node_modules/.bin/npm-run-all serve-test test",
+		"test": "./node_modules/.bin/run-s wait mocha",
+		"ci": "./node_modules/.bin/run-p serve-test test",
 		"droptestdbs": "node deploy/tools/dropdb",
 		"wait": "node deploy/tools/wait",
 		"mocha": "./node_modules/.bin/mocha --reporter spec --timeout 120000 test/**/*.test.js"

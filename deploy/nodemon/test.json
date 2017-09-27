@@ -14,7 +14,7 @@
 	],
 	"env": {
 		"NODE_ENV": "test",
-		"APP_SETTINGS": "./src/config/settings-test.js",
+		"APP_SETTINGS": "src/config/settings-test.js",
 		"PORT": "7357",
 		"APP_NAME": "local",
 		"COVERAGE_ENABLED": true,

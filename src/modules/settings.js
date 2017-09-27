@@ -32,17 +32,18 @@ let dryRun = false;
 
 function Settings() {
 
-	/* istanbul ignore next */
-	if (!process.env.APP_SETTINGS || !fs.existsSync(process.env.APP_SETTINGS)) {
-		if (process.env.APP_SETTINGS) {
-			throw new Error('Cannot find settings at "' + process.env.APP_SETTINGS + '". Copy src/config/settings-dist.js to server/config/settings.js or point `APP_SETTINGS` environment variable to correct path.');
-		} else {
-			const e = new Error('Settings location not found. Please set the `APP_SETTINGS` environment variable to your configuration file and retry.');
-			logger.error(e.stack);
-			throw e;
-		}
+	if (!process.env.APP_SETTINGS) {
+		const e = new Error('Settings location not found. Please set the `APP_SETTINGS` environment variable to your configuration file and retry.');
+		logger.error(e.stack);
+		throw e;
 	}
-	this.filePath = process.env.APP_SETTINGS;
+	const filePath = path_.isAbsolute(process.env.APP_SETTINGS) ? process.env.APP_SETTINGS : path_.resolve(process.cwd(), process.env.APP_SETTINGS);
+
+	/* istanbul ignore next */
+	if (!fs.existsSync(filePath)) {
+		throw new Error('Cannot find settings at "' + filePath + '". Copy src/config/settings-dist.js to server/config/settings.js or point `APP_SETTINGS` environment variable to correct path (CWD = ' + process.cwd() + ').');
+	}
+	this.filePath = filePath;
 	this.current = require(this.filePath.substr(0, this.filePath.length - 3));
 }
 

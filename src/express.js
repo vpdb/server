@@ -69,6 +69,16 @@ exports.configure = function(app, raygunClient) {
 	if (runningLocal) {
 		// in production the reverse proxy is taking care of this
 		app.use(expressCompression({ filter: function(req, res) { return /json|text|javascript|css/.test(res.getHeader('Content-Type')); }, level: 9 }));
+
+		// setup CORS
+		app.use(function (req, res, next) {
+			res.setHeader('Access-Control-Allow-Origin', '*');
+			res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,PATCH,DELETE,OPTIONS');
+			res.setHeader('Access-Control-Allow-Headers', 'Accept,Accept-Encoding,Accept-Language,Authorization,Cache-Control,Content-Type,DNT,If-Modified-Since,Keep-Alive,Origin,Link,Referer,User-Agent,X-Authorization,X-Requested-With');
+			res.setHeader('Access-Control-Allow-Credentials', true);
+			res.setHeader('Access-Control-Expose-Headers', 'Cache-Control,Link,X-App-Sha,X-Token-Refresh,X-User-Dirty,X-RateLimit-Limit,X-RateLimit-Remaining,X-RateLimit-Reset,X-List-Count,X-List-Page,X-List-Size');
+			next();
+		});
 	}
 
 	// general stuff

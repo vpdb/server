@@ -127,7 +127,6 @@ serverDomain.run(function() {
 		// now we start the server.
 		logger.info('[app] Starting Express server at %s:%d', app.get('ipaddress'), app.get('port'));
 		app.listen(app.get('port'), app.get('ipaddress'), function() {
-			logger.info('[app] Web application ready at %s', settings.webUri());
 			logger.info('[app] Storage API ready at %s', settings.storageProtectedUri());
 			logger.info('[app] API ready at %s', settings.apiUri());
 			if (process.send) {

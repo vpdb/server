@@ -94,7 +94,6 @@ exports.del = function(req, res) {
 		if (file.is_active !== false) {
 			throw error('Cannot remove active file.').status(400);
 		}
-
 		return file.remove();
 
 	}).then(() => {

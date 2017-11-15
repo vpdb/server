@@ -101,6 +101,7 @@ exports.create = function(req, res) {
 				});
 			});
 		}
+		return null;
 
 	}).then(() => {
 		// find game request
@@ -117,6 +118,7 @@ exports.create = function(req, res) {
 					.populate('_created_by')
 					.exec();
 			}
+			return null;
 
 		}).then(gameRequest => {
 			if (gameRequest) {
@@ -125,6 +127,7 @@ exports.create = function(req, res) {
 				gameRequest._game = game._id;
 				return gameRequest.save();
 			}
+			return null;
 
 		}).then(gameRequest => {
 			if (gameRequest) {
@@ -136,6 +139,7 @@ exports.create = function(req, res) {
 					game_request: gameRequest._id
 				});
 			}
+			return null;
 		});
 
 	}).then(() => {
@@ -243,7 +247,6 @@ exports.update = function(req, res) {
 	}).then(() => {
 
 		LogEvent.log(req, 'update_game', false, LogEvent.diff(oldGame, body), { game: game._id });
-
 		api.success(res, game.toDetailed(), 200);
 
 	}).catch(api.handleError(res, error, 'Error updating game'));
@@ -384,9 +387,10 @@ exports.list = function(req, res) {
 
 				// just exclude all restricted games for anon
 				query.push({ 'ipdb.mpu': { $nin: config.vpdb.restrictions.release.denyMpu } });
+				return null;
 			});
-
 		}
+		return null;
 
 	}).then(() => {
 
@@ -573,5 +577,6 @@ exports._copyMedia = function(user, game, file, category, check) {
 				return medium.activateFiles();
 			});
 		}
+		return null;
 	});
 };

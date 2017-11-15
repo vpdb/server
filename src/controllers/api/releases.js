@@ -620,6 +620,7 @@ exports.list = function(req, res) {
 				transformOpts.fields = [ 'moderation' ];
 			});
 		}
+		return null;
 
 	}).then(() => {
 
@@ -673,6 +674,7 @@ exports.list = function(req, res) {
 				}
 			});
 		}
+		return null;
 
 	}).then(() => {
 
@@ -682,6 +684,7 @@ exports.list = function(req, res) {
 				stars = _.map(starsResult, '_ref.release').map(id => id.toString());
 			});
 		}
+		return null;
 
 	}).then(() => {
 
@@ -705,6 +708,7 @@ exports.list = function(req, res) {
 				query.push({ 'versions.files._compatibility': { $in: _.map(builds, '_id') }});
 			});
 		}
+		return null;
 
 	}).then(() => {
 
@@ -738,6 +742,7 @@ exports.list = function(req, res) {
 				}
 			});
 		}
+		return null;
 
 	}).then(() => {
 
@@ -860,6 +865,7 @@ exports.view = function(req, res) {
 		if (req.user) {
 			return Star.findOne({ type: 'release', _from: req.user._id, '_ref.release': release._id }).exec();
 		}
+		return null;
 
 	}).then(star => {
 
@@ -962,6 +968,7 @@ exports.moderate = function(req, res) {
 					return mailer.releaseRefused(release._created_by, release, lastEvent.message).catch(errHandler);
 			}
 		}
+		return null;
 
 	}).then(() => {
 
@@ -976,6 +983,7 @@ exports.moderate = function(req, res) {
 			});
 			return comment.save();
 		}
+		return null;
 
 	}).then(() => {
 		api.success(res, moderation, 200);

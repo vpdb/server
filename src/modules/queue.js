@@ -313,6 +313,7 @@ Queue.prototype.start = function(processor, file, variation) {
 		} else {
 			this.emit('finishedPass1', file, variation, processor, false);
 		}
+		return null;
 	});
 };
 

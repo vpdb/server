@@ -243,6 +243,7 @@ exports.list = function(req, res) {
 		if (req.query.game_id) {
 			return Game.findOne({ id: req.query.game_id });
 		}
+		return null;
 
 	}).then(game => {
 
@@ -271,6 +272,7 @@ exports.list = function(req, res) {
 				transformOpts.fields = [ 'moderation' ];
 			});
 		}
+		return null;
 
 	}).then(() => {
 		return Backglass.handleModerationQuery(req, error, query);
@@ -432,6 +434,8 @@ exports.moderate = function(req, res) {
 					return mailer.backglassRefused(backglass._created_by, backglass, lastEvent.message).catch(errHandler);
 			}
 		}
+		return null;
+
 	}).then(() => {
 		api.success(res, moderation, 200);
 

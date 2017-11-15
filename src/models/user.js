@@ -152,7 +152,12 @@ UserSchema.virtual('plan')
 
 UserSchema.virtual('planConfig')
 	.get(function() {
-		return _.find(config.vpdb.quota.plans, p => p.id === this._plan);
+		let plan = _.find(config.vpdb.quota.plans, p => p.id === this._plan);
+		if (!plan) {
+			logger.warn('[model|user] Cannot find plan "%s" for user "%s" in server config.', this._plan, this.email);
+			plan = _.find(config.vpdb.quota.plans, p => p.id === config.vpdb.quota.defaultPlan);
+		}
+		return plan;
 	});
 
 
@@ -317,6 +322,8 @@ UserSchema.path('provider').validate(function(provider, callback) {
 
 			});
 		}
+		return null;
+
 	}).then(() => {
 		return true;
 

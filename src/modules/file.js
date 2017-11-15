@@ -56,6 +56,7 @@ exports.create = function(fileData, readStream, error, opts) {
 			file.bytes = stats.size;
 			return File.update({ _id: file._id }, { bytes: stats.size });
 		}
+		return null;
 
 	}).then(() => {
 		return storage.preprocess(file);

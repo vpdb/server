@@ -49,8 +49,6 @@ exports.create = function(req, res) {
 
 	}).then(newMedium => {
 		medium = newMedium;
-
-	}).then(() => {
 		return medium.validate();
 
 	}).then(() => {

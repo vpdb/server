@@ -37,13 +37,16 @@ exports.register = function(app, api) {
 	// oauth init
 	if (config.vpdb.passport.github.enabled) {
 		app.get('/auth/github', passport.authenticate('github', { session: false, scope: [ 'user:email' ] }));
+		app.get(settings.apiPath('/redirect/github'), passport.authenticate('github', { session: false, scope: [ 'user:email' ] }));
 	}
 	if (config.vpdb.passport.google.enabled) {
 		app.get('/auth/google', passport.authenticate('google', { session: false, scope: 'email' }));
+		app.get(settings.apiPath('/redirect/google'), passport.authenticate('google', { session: false, scope: 'email' }));
 	}
 	config.vpdb.passport.ipboard.forEach(ipbConfig => {
 		if (ipbConfig.enabled) {
 			app.get('/auth/' + ipbConfig.id, passport.authenticate(ipbConfig.id, { session: false }));
+			app.get(settings.apiPath('/redirect/' + ipbConfig.id), passport.authenticate(ipbConfig.id, { session: false }));
 		}
 	});
 

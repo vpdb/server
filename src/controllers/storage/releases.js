@@ -190,6 +190,7 @@ exports.download = function(req, res) {
 				});
 			});
 		}
+		return null;
 
 	}).then(() => {
 
@@ -207,6 +208,7 @@ exports.download = function(req, res) {
 				counters.push(file.incrementCounter('downloads'));
 			});
 		}
+		return null;
 
 	}).then(() => {
 
@@ -315,6 +317,7 @@ exports.download = function(req, res) {
 				name: name,
 				date: file.created_at
 			});
+			return null;
 
 		}).then(() => {
 			if (release.description) {

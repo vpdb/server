@@ -259,11 +259,13 @@ class Storage {
 			if (!opts.onlyVariations) {
 				return queue.initCallback(file);
 			}
+			return null;
 
 		}).then(() => {
 			if (variations) {
 				return Promise.all(variations.map(v => queue.initCallback(file, v)));
 			}
+			return null;
 
 		}).then(() => {
 
@@ -284,7 +286,7 @@ class Storage {
 					}
 				});
 			}
-
+			return null;
 		});
 	}
 

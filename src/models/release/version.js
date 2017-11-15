@@ -120,6 +120,7 @@ schema.path('files').validate(function(files, callback) {
 				this.invalidate('files.' + tableFile.index + '.flavor', 'A combination of compatibility and flavor already exists with the same values.');
 			}
 		});
+		return null;
 
 	}).then(() => {
 		callback(true);

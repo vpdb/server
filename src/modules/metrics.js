@@ -85,6 +85,7 @@ Metrics.prototype.onRatingUpdated = function(ref, entity, rating) {
 			logger.info('[metrics] Global mean of %ss changed from %s to %s, re-calculating bayesian estimages.', ref, Math.round(_atm * precision) / precision, Math.round(atm * precision) / precision);
 			return this._updateAllEntities(ref, atm);
 		}
+		return null;
 
 	}).then(() => result);
 };

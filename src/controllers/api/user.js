@@ -95,6 +95,8 @@ exports.update = function(req, res) {
 		if (req.body.name) {
 			return User.findOne({ name: req.body.name, id: { $ne: currentUser.id }}).exec();
 		}
+		return null;
+
 	}).then(dupeNameUser => {
 
 		if (dupeNameUser) {

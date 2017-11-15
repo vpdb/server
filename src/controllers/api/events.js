@@ -80,6 +80,7 @@ exports.list = function(opts) {
 					query.push({ '_ref.game': game._id });
 				});
 			}
+			return null;
 
 		}).then(() => {
 
@@ -101,6 +102,7 @@ exports.list = function(opts) {
 
 				});
 			}
+			return null;
 
 		}).then(() => {
 
@@ -130,6 +132,7 @@ exports.list = function(opts) {
 					}
 				});
 			}
+			return null;
 
 		}).then(() => {
 
@@ -137,6 +140,7 @@ exports.list = function(opts) {
 			if (req.user) {
 				return acl.isAllowed(req.user.id, 'users', 'full-details').then(result => fullDetails = result);
 			}
+			return null;
 
 		}).then(() => {
 
@@ -154,6 +158,7 @@ exports.list = function(opts) {
 					query.push({ '_actor': user._id });
 				});
 			}
+			return null;
 
 		}).then(() => {
 			logger.info('Events query: %s', util.inspect(query, { depth: null }));

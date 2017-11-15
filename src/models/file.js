@@ -377,6 +377,7 @@ FileSchema.post('remove', function(obj, done) {
 	return Promise.try(() => {
 		// remove physical file
 		storage.remove(obj);
+		return null;
 
 	}).then(() => {
 		// remove table blocks

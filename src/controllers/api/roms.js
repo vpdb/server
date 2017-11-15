@@ -158,6 +158,7 @@ exports.list = function(req, res) {
 			}
 			return Game.findOne({ 'ipdb.number': ipdbNumber });
 		}
+		return null;
 
 	}).then(g => {
 		game = g;

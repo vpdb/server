@@ -20,6 +20,7 @@
 'use strict';
 
 const _ = require('lodash');
+const fs = require('fs');
 const path = require('path');
 const http = require('http');
 const logger = require('winston');
@@ -40,10 +41,11 @@ const logging = require('./logging');
 
 exports.configure = function(app, raygunClient) {
 
-	let runningLocal = !process.env.APP_NAME || (process.env.APP_NAME !== 'production' && process.env.APP_NAME !== 'staging');
-	let runningDev = process.env.NODE_ENV !== 'production';
-	let runningTest = process.env.NODE_ENV === 'test';
+	const runningLocal = !process.env.APP_NAME || (process.env.APP_NAME !== 'production' && process.env.APP_NAME !== 'staging');
+	const runningDev = process.env.NODE_ENV !== 'production';
+	const runningTest = process.env.NODE_ENV === 'test';
 	const ipAddress = process.env.IPADDRESS || '127.0.0.1';
+	const staticWebApp = process.env.WEBAPP ? path.resolve(__dirname, '../..', process.env.WEBAPP) : null;
 
 	logger.info('[express] Setting up Express for running %s in %s mode.', runningLocal ? 'locally' : 'remotely', runningDev ? 'development' : 'production');
 
@@ -54,8 +56,6 @@ exports.configure = function(app, raygunClient) {
 
 	app.set('ipaddress', ipAddress);
 	app.set('port', process.env.PORT);
-	app.set('views', path.resolve(__dirname, '../client/app'));
-	app.set('view engine', 'pug');
 	app.set('json spaces', '\t');
 	app.set('showStackError', runningDev);
 	app.disable('x-powered-by');
@@ -78,31 +78,6 @@ exports.configure = function(app, raygunClient) {
 
 	// general stuff
 	app.use(expressBodyParser.json());
-
-	/* istanbul ignore if  */
-	if (runningLocal && !runningTest) {
-
-		// static file serving
-		// markup (which is pre-compiled in production)
-		app.use(/.*\.html$/i, pugStatic({
-			baseDir: path.resolve(__dirname, '../client/app'),
-			baseUrl: '/',
-			pug: _.extend(ctrl.viewParams(), {
-				pretty: true
-			})
-		}));
-
-		// other static files
-		app.use(express.static(writeable.buildRoot, { maxAge: 3600*24*30*1000 }));
-		app.use(express.static(path.resolve(__dirname, '../client/static'), { maxAge: 3600*24*30*1000 }));
-		app.use(express.static(path.resolve(__dirname, '../client/static/images/favicon'), { maxAge: 3600*24*30*1000 }));
-		app.use('/js', express.static(path.resolve(__dirname, '../client/app'), { maxAge: 3600*24*30*1000 }));
-		app.use('/js/config.js', express.static(path.resolve(writeable.jsRoot, settings.clientConfigName()), { maxAge: 3600 * 24 * 30 * 1000 }));
-
-		// only for the source map, see https://github.com/gruntjs/grunt-contrib-stylus/pull/117
-		app.use('/css/client/styles/vpdb.css.map', express.static(path.resolve(writeable.buildRoot, 'css/vpdb.css.map'), { maxAge: 3600 * 24 * 30 * 1000 }));
-		app.use('/css/client/styles', express.static(path.resolve(__dirname, '../client/styles'), { maxAge: 3600 * 24 * 30 * 1000 }));
-	}
 
 	// initialize passport
 	app.use(passport.initialize());
@@ -135,6 +110,22 @@ exports.configure = function(app, raygunClient) {
 				return req.user.email;
 			}
 		};
+	}
+
+	// travis / saucelab webapp. Run with:
+	// set PORT=4445
+	// set APP_SETTINGS=c:\dev\vpdb-backend\src\config\settings-sauce.js
+	// set NODE_ENV=test
+	// set WEBAPP=vpdb-website/dist
+	if (runningTest) {
+		if (staticWebApp && fs.existsSync(staticWebApp)) {
+			logger.info('[express] Serving static webapp at %s...', staticWebApp);
+			app.use(express.static(staticWebApp));
+			app.use('/*', (req, res) => res.sendfile(staticWebApp + '/index.html'));
+
+		} else if (staticWebApp) {
+			logger.warn('[express] Ignoring WEBAPP parameter "%", "%" does not exist.', process.env.WEBAPP, staticWebApp);
+		}
 	}
 
 	// error logger comes at the very last

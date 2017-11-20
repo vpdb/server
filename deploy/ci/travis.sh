@@ -18,5 +18,5 @@ echo "pngquant version: $(pngquant --version)"
 echo travis_fold:end:Versions
 
 # Run tests
-npm run ci
+npm run test:ci
 #grunt coveralls:api

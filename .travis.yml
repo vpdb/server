@@ -1,3 +1,4 @@
+dist: trusty
 language: node_js
 sudo: false
 node_js:
@@ -11,7 +12,7 @@ addons:
   apt:
     sources:
       - ubuntu-toolchain-r-test
-      - mongodb-3.2-precise
+      - mongodb-3.2-trusty
     packages:
       - graphicsmagick
       - optipng
@@ -26,6 +27,8 @@ before_script:
   - tar -xvf /tmp/rar.tar.gz --strip 1
   - cd ..
   - export PATH=$(pwd)/bin:$PATH
+  - mkdir -p data/storage-test-protected
+  - mkdir -p data/storage-test-public
 script:
   - deploy/ci/travis.sh
 env:

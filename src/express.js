@@ -19,23 +19,18 @@
 
 'use strict';
 
-const _ = require('lodash');
 const fs = require('fs');
 const path = require('path');
 const http = require('http');
 const logger = require('winston');
 const passport = require('passport');
 const express = require('express');
-const pugStatic = require('./modules/connect-pug-static');
 const expressWinston = require('express-winston');
 const expressBodyParser = require('body-parser');
 const expressCompression = require('compression');
 const expressErrorhandler = require('errorhandler');
 
-const settings = require('./modules/settings');
-const writeable = require('./modules/writeable');
 const gitinfo = require('./modules/gitinfo');
-const ctrl = require('./controllers/ctrl');
 const apiCtrl = require('./controllers/api/api');
 const logging = require('./logging');
 

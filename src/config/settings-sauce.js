@@ -10,7 +10,7 @@ module.exports = {
 			'public': { path: './data/storage-test-public', api: { protocol: 'http', hostname: 'localhost', port: 4445, pathname: '/storage/public', prefix: '' } },
 			'protected': { path: './data/storage-test-protected', api: { protocol: 'http', hostname: 'localhost', port: 4445, pathname: '/storage/v1', prefix: '' } }
 		},
-		webapp: { protocol: 'http', hostname: 'localhost', port: 7357 },
+		webapp: { protocol: 'http', hostname: 'localhost', port: 4445 },
 		db: 'mongodb://localhost/vpdb-sauce',
 		redis: { host: '127.0.0.1', port: 6379, db: 7 },
 		apiTokenLifetime: 3600000,

@@ -1794,6 +1794,12 @@
 			"resolved": "https://registry.npmjs.org/destroy/-/destroy-1.0.4.tgz",
 			"integrity": "sha1-l4hXRCxEdJ5CBmE+N5RiBYJqvYA="
 		},
+		"detect-libc": {
+			"version": "1.0.2",
+			"resolved": "https://registry.npmjs.org/detect-libc/-/detect-libc-1.0.2.tgz",
+			"integrity": "sha1-ca1dIEvxempsqPRQxhRUBm70YeE=",
+			"dev": true
+		},
 		"dicer": {
 			"version": "0.2.5",
 			"resolved": "https://registry.npmjs.org/dicer/-/dicer-0.2.5.tgz",
@@ -5840,9 +5846,9 @@
 			"dev": true
 		},
 		"nan": {
-			"version": "2.7.0",
-			"resolved": "https://registry.npmjs.org/nan/-/nan-2.7.0.tgz",
-			"integrity": "sha1-2Vv3IeyHfgjbJ27T/G63j5CDrUY=",
+			"version": "2.8.0",
+			"resolved": "https://registry.npmjs.org/nan/-/nan-2.8.0.tgz",
+			"integrity": "sha1-7XFfP+neArV6XmJS2QqWZ14fCFo=",
 			"dev": true
 		},
 		"natives": {
@@ -6051,11 +6057,12 @@
 			"dev": true
 		},
 		"node-pre-gyp": {
-			"version": "0.6.38",
-			"resolved": "https://registry.npmjs.org/node-pre-gyp/-/node-pre-gyp-0.6.38.tgz",
-			"integrity": "sha1-6Sog+DQWQVu0CG9tH7eLPac9ET0=",
+			"version": "0.6.39",
+			"resolved": "https://registry.npmjs.org/node-pre-gyp/-/node-pre-gyp-0.6.39.tgz",
+			"integrity": "sha512-OsJV74qxnvz/AMGgcfZoDaeDXKD3oY3QVIbBmwszTFkRisTSXbMQyn4UWzUMOtA5SVhrBZOTp0wcoSBgfMfMmQ==",
 			"dev": true,
 			"requires": {
+				"detect-libc": "1.0.2",
 				"hawk": "3.1.3",
 				"mkdirp": "0.5.1",
 				"nopt": "4.0.1",
@@ -6065,7 +6072,7 @@
 				"rimraf": "2.6.2",
 				"semver": "5.4.1",
 				"tar": "2.2.1",
-				"tar-pack": "3.4.0"
+				"tar-pack": "3.4.1"
 			},
 			"dependencies": {
 				"ajv": {
@@ -6216,15 +6223,6 @@
 						"uuid": "3.1.0"
 					}
 				},
-				"rimraf": {
-					"version": "2.6.2",
-					"resolved": "https://registry.npmjs.org/rimraf/-/rimraf-2.6.2.tgz",
-					"integrity": "sha512-lreewLK/BlghmxtfH36YYVg1i8IAce4TI7oao75I1g245+6BctqTVQiBP3YUJ9C6DQOXJmkYR9X9fCLtCOJc5w==",
-					"dev": true,
-					"requires": {
-						"glob": "7.1.2"
-					}
-				},
 				"semver": {
 					"version": "5.4.1",
 					"resolved": "https://registry.npmjs.org/semver/-/semver-5.4.1.tgz",
@@ -6243,16 +6241,16 @@
 			}
 		},
 		"nodegit": {
-			"version": "0.20.2",
-			"resolved": "https://registry.npmjs.org/nodegit/-/nodegit-0.20.2.tgz",
-			"integrity": "sha1-UHssmwW5H+EmQ1Te29UT8Mfh7FY=",
+			"version": "0.20.3",
+			"resolved": "https://registry.npmjs.org/nodegit/-/nodegit-0.20.3.tgz",
+			"integrity": "sha1-pEFy2wjIM83LGrm7wsgyzgWJiBU=",
 			"dev": true,
 			"requires": {
 				"fs-extra": "0.26.7",
 				"lodash": "4.17.4",
-				"nan": "2.7.0",
+				"nan": "2.8.0",
 				"node-gyp": "3.6.2",
-				"node-pre-gyp": "0.6.38",
+				"node-pre-gyp": "0.6.39",
 				"promisify-node": "0.3.0"
 			}
 		},
@@ -8786,9 +8784,9 @@
 			}
 		},
 		"tar-pack": {
-			"version": "3.4.0",
-			"resolved": "https://registry.npmjs.org/tar-pack/-/tar-pack-3.4.0.tgz",
-			"integrity": "sha1-I74tf2cagzk3bL2wuP4/3r8xeYQ=",
+			"version": "3.4.1",
+			"resolved": "https://registry.npmjs.org/tar-pack/-/tar-pack-3.4.1.tgz",
+			"integrity": "sha512-PPRybI9+jM5tjtCbN2cxmmRU7YmqT3Zv/UDy48tAh2XRkLa9bAORtSWLkVc13+GJF+cdTh1yEnHEk3cpTaL5Kg==",
 			"dev": true,
 			"requires": {
 				"debug": "2.6.9",

@@ -18,7 +18,7 @@
  */
 
 'use strict';
-
+f
 const fs = require('fs');
 const path = require('path');
 const http = require('http');
@@ -86,10 +86,12 @@ exports.configure = function(app, raygunClient) {
 	app.use('/styleguide', express.static(path.resolve(__dirname, '../styleguide')));
 
 	// git sha header
-	app.use(function(req, res, next) {
-		res.set({ 'X-App-Sha': gitinfo.info.local.branch.current.shortSHA });
-		next();
-	});
+	if (gitinfo) {
+		app.use(function(req, res, next) {
+			res.set({ 'X-App-Sha': gitinfo.info.local.branch.current.shortSHA });
+			next();
+		});
+	}
 
 	// dynamic routes
 	require('./routes')(app);

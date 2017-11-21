@@ -21,7 +21,16 @@
 
 const path = require('path');
 const logger = require('winston');
-const Git = require('nodegit');
+
+let Git;
+try {
+	Git = require('nodegit');
+} catch (err) {
+	logger.error('[gitinfo] Error loading library.');
+	module.exports = null;
+	return;
+}
+
 
 class Gitinfo {
 

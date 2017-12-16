@@ -90,7 +90,11 @@ serverDomain.run(function() {
 		connectTimeoutMS: 5000
 	};
 	mongoose.connect(config.vpdb.db, mongoOpts).then(() => {
-		logger.info('[app] Database connected to %s.', config.vpdb.db);
+
+		const admin = new mongoose.mongo.Admin(mongoose.connection.db);
+		admin.buildInfo((err, info) => {
+			logger.info('[app] Database connected to MongoDB %s at %s.', info.version, config.vpdb.db);
+		});
 
 		// bootstrap modules
 		require('./src/modules/quota').init();

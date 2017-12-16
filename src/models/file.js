@@ -66,7 +66,7 @@ const fields = {
 	created_at: { type: Date, required: true },
 	_created_by: { type: Schema.ObjectId, required: true, ref: 'User' }
 };
-const FileSchema = new Schema(fields);
+const FileSchema = new Schema(fields, { usePushEach: true });
 
 
 //-----------------------------------------------------------------------------

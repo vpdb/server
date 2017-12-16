@@ -49,7 +49,7 @@ const versionFields = {
 		downloads: { type: Number, 'default': 0 }
 	}
 };
-const VersionSchema = new Schema(versionFields);
+const VersionSchema = new Schema(versionFields, { usePushEach: true });
 VersionSchema.plugin(fileRef);
 VersionSchema.plugin(toObj);
 VersionSchema.virtual('file')
@@ -71,7 +71,7 @@ const backglassFields = {
 	created_at:   { type: Date, required: true },
 	_created_by:  { type: Schema.ObjectId, ref: 'User', required: true }
 };
-const BackglassSchema = new Schema(backglassFields);
+const BackglassSchema = new Schema(backglassFields, { usePushEach: true });
 
 //-----------------------------------------------------------------------------
 // API FIELDS

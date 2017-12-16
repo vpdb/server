@@ -42,7 +42,7 @@ const fields = {
 	_created_by: { type: Schema.ObjectId, required: true, ref: 'User', index: true },
 	created_at:  { type: Date, required: true }
 };
-const GameRequestSchema = new Schema(fields);
+const GameRequestSchema = new Schema(fields, { usePushEach: true });
 
 //-----------------------------------------------------------------------------
 // API FIELDS

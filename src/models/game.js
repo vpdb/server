@@ -105,7 +105,7 @@ const fields = {
 	created_at: { type: Date, required: true },
 	_created_by: { type: Schema.ObjectId, required: true, ref: 'User' }
 };
-const GameSchema = new Schema(fields);
+const GameSchema = new Schema(fields, { usePushEach: true });
 
 
 //-----------------------------------------------------------------------------

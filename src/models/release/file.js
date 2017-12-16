@@ -51,7 +51,7 @@ const fields = {
 	}
 };
 
-const schema = new Schema(fields);
+const schema = new Schema(fields, { usePushEach: true });
 schema.plugin(fileRef);
 schema.plugin(prettyId, { model: 'ReleaseVersionFile' });
 schema.plugin(toObj);

@@ -42,7 +42,7 @@ var fields = {
 	created_at:  { type: Date, required: true }
 };
 
-var RatingSchema = new Schema(fields);
+var RatingSchema = new Schema(fields, { usePushEach: true });
 // TODO autoindex: false in production: http://mongoosejs.com/docs/guide.html#indexes
 
 

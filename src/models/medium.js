@@ -130,7 +130,7 @@ const mediumFields = {
 	created_at:   { type: Date, required: true },
 	_created_by:  { type: Schema.ObjectId, ref: 'User', required: true }
 };
-const MediumSchema = new Schema(mediumFields);
+const MediumSchema = new Schema(mediumFields, { usePushEach: true });
 
 //-----------------------------------------------------------------------------
 // API FIELDS

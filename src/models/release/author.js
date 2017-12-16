@@ -26,7 +26,7 @@ const Schema = mongoose.Schema;
 const schema = new Schema({
 	_user: { type: Schema.ObjectId, required: 'Reference to user must be provided.', ref: 'User' },
 	roles: [ String ]
-});
+}, { usePushEach: true });
 schema.plugin(toObj);
 schema.virtual('user')
 	.get(function() {

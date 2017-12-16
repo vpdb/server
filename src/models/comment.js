@@ -45,7 +45,7 @@ var fields = {
 	created_at: { type: Date, required: true }
 };
 
-var CommentSchema = new Schema(fields);
+var CommentSchema = new Schema(fields, { usePushEach: true });
 
 
 //-----------------------------------------------------------------------------

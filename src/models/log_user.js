@@ -42,7 +42,7 @@ var fields = {
 	logged_at: { type: Date, required: true }
 };
 
-var LogUserSchema = new Schema(fields);
+var LogUserSchema = new Schema(fields, { usePushEach: true });
 
 
 //-----------------------------------------------------------------------------

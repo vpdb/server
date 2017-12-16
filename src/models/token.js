@@ -44,7 +44,7 @@ var fields = {
 	created_at:   { type: Date, required: true },
 	_created_by:  { type: Schema.ObjectId, ref: 'User', required: true }
 };
-var TokenSchema = new Schema(fields);
+var TokenSchema = new Schema(fields, { usePushEach: true });
 
 
 //-----------------------------------------------------------------------------

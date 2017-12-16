@@ -62,7 +62,7 @@ var fields = {
 	ip:          { type: String, required: true },
 	logged_at:   { type: Date, required: true }
 };
-var LogEventSchema = new Schema(fields);
+var LogEventSchema = new Schema(fields, { usePushEach: true });
 
 
 //-----------------------------------------------------------------------------

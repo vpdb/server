@@ -41,7 +41,7 @@ const fields = {
 		comments:   { type: Number, 'default': 0 }
 	}
 };
-const schema = new Schema(fields);
+const schema = new Schema(fields, { usePushEach: true });
 schema.plugin(fileRef);
 schema.plugin(prettyId, { model: 'ReleaseVersion' });
 schema.plugin(toObj);

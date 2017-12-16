@@ -39,7 +39,7 @@ var fields = {
 	created_at:   { type: Date, required: true },
 	_created_by:  { type: Schema.ObjectId, ref: 'User', required: true }
 };
-var TagSchema = new Schema(fields);
+var TagSchema = new Schema(fields, { usePushEach: true });
 
 
 //-----------------------------------------------------------------------------

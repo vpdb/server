@@ -91,7 +91,7 @@ const releaseFields = {
 	created_at:    { type: Date, required: true },
 	_created_by:   { type: Schema.ObjectId, required: true, ref: 'User' }
 };
-const ReleaseSchema = new Schema(releaseFields);
+const ReleaseSchema = new Schema(releaseFields, { usePushEach: true });
 
 
 //-----------------------------------------------------------------------------

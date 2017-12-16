@@ -52,7 +52,7 @@ var fields = {
 	created_at:   { type: Date, required: true },
 	_created_by:  { type: Schema.ObjectId, ref: 'User', required: true }
 };
-var RomSchema = new Schema(fields);
+var RomSchema = new Schema(fields, { usePushEach: true });
 
 //-----------------------------------------------------------------------------
 // API FIELDS

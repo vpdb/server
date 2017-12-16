@@ -40,7 +40,7 @@ const fields = {
 	created_at: { type: Date, required: true }
 };
 
-const StarSchema = new Schema(fields);
+const StarSchema = new Schema(fields, { usePushEach: true });
 // TODO autoindex: false in production: http://mongoosejs.com/docs/guide.html#indexes
 
 mongoose.model('Star', StarSchema);

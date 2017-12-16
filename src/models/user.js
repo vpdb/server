@@ -102,7 +102,7 @@ config.vpdb.passport.ipboard.forEach(function(ipbConfig) {
 		fields[ipbConfig.id] = {};
 	}
 });
-const UserSchema = new Schema(fields);
+const UserSchema = new Schema(fields, { usePushEach: true });
 UserSchema.index({ name: 'text', username: 'text', email: 'text' });
 UserSchema.plugin(uniqueValidator, { message: 'The {PATH} "{VALUE}" is already taken.' });
 

@@ -34,7 +34,7 @@ const fields = {
 	meta:  { type: Schema.Types.Mixed },
 	_files: { type: [ Schema.ObjectId ], ref: 'File', index: true }
 };
-const TableBlockSchema = new Schema(fields);
+const TableBlockSchema = new Schema(fields, { usePushEach: true });
 
 mongoose.model('TableBlock', TableBlockSchema);
 logger.info('[model] Schema "TableBlock" registered.');

@@ -120,16 +120,26 @@ Metrics.prototype._updateEntityMetrics = function(ref, entity, atm) {
 	let metrics;
 
 	return Promise.try(() => {
-		return Rating.aggregate({ $match: q }, {
-			$group: {
-				_id: null,
-				sum: { $sum: '$value' },
-				count: { $sum: 1 }
-			}
-		}).exec();
+
+		// Mongoose API FTW!!
+		return new Promise((res, rej) => {
+			let data = [];
+			return Rating.aggregate({ $match: q }, {
+				$group: {
+					_id: null,
+					sum: { $sum: '$value' },
+					count: { $sum: 1 }
+				}
+			})
+			.cursor({})
+			.exec()
+			.on('data', doc => data.push(doc))
+			.on('end', () => res(data))
+			.on('error', rej);
+		});
 
 	}).then(result => {
-		result = result[ 0 ];
+		result = result[0];
 		n = result.count;
 		am = result.sum / n;
 
@@ -151,13 +161,23 @@ Metrics.prototype._getGlobalMean = function(ref) {
 	}
 	return Promise.try(() => {
 		let q = { ['_ref.' + ref]: { '$ne': null } };
-		return Rating.aggregate({ $match: q }, {
-			$group: {
-				_id: null,
-				sum: { $sum: '$value' },
-				count: { $sum: 1 }
-			}
-		}).exec();
+
+		// Mongoose API FTW!!
+		return new Promise((res, rej) => {
+			let data = [];
+			return Rating.aggregate({ $match: q }, {
+				$group: {
+					_id: null,
+					sum: { $sum: '$value' },
+					count: { $sum: 1 }
+				}
+			})
+			.cursor({})
+			.exec()
+			.on('data', doc => data.push(doc))
+			.on('end', () => res(data))
+			.on('error', rej);
+		});
 
 	}).then(result => result[0].sum / result[0].count);
 };

@@ -26,8 +26,9 @@
 		"build:lint": "./node_modules/.bin/eslint src/**/*.js",
 		"test:dropdbs": "node deploy/tools/dropdb",
 		"test:wait": "node deploy/tools/wait",
+		"test:finish": "node deploy/tools/finish",
 		"test:mocha": "mocha --reporter spec --timeout 120000 test/**/*.test.js",
-		"test:run": "run-s test:wait test:mocha",
+		"test:run": "run-s test:wait test:mocha test:finish",
 		"test:ci": "run-p serve:test test:run"
 	},
 	"dependencies": {

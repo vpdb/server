@@ -93,7 +93,11 @@ serverDomain.run(function() {
 
 		const admin = new mongoose.mongo.Admin(mongoose.connection.db);
 		admin.buildInfo((err, info) => {
-			logger.info('[app] Database connected to MongoDB %s at %s.', info.version, config.vpdb.db);
+			if (err) {
+				logger.warn('[app] Database connected to MongoDB %s at %s (WARN: %s).', info ? info.version : 'unknown', config.vpdb.db, err.message);
+			} else {
+				logger.info('[app] Database connected to MongoDB %s at %s.', info ? info.version : 'unknown', config.vpdb.db);
+			}
 		});
 
 		// bootstrap modules

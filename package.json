@@ -21,15 +21,17 @@
 	"scripts": {
 		"start": "node app.js",
 		"serve:dev": "nodemon --config deploy/nodemon/dev.json --exec npm start",
-		"serve:test": "cross-env NODE_ENV=test APP_SETTINGS=src/config/settings-test.js PORT=7357 APP_NAME=local COVERAGE_ENABLED=true COVERALLS_SERVICE_NAME=Local run-s build:lint test:dropdbs start",
+		"serve:test": "nyc --reporter=lcov --reporter=html node app.js",
 		"serve:protractor": "cross-env NODE_ENV=test APP_SETTINGS=src/config/settings-protractor.js PORT=7357 APP_NAME=local run-s test:dropdbs start",
-		"build:lint": "./node_modules/.bin/eslint src/**/*.js",
+		"build:lint": "eslint src/**/*.js",
 		"test:dropdbs": "node deploy/tools/dropdb",
+		"test:rimraf": "rimraf coverage",
 		"test:wait": "node deploy/tools/wait",
-		"test:finish": "node deploy/tools/finish",
+		"test:finish": "cross-env PORT=7357 node deploy/tools/finish",
 		"test:mocha": "mocha --reporter spec --timeout 120000 test/**/*.test.js",
 		"test:run": "run-s test:wait test:mocha test:finish",
-		"test:ci": "run-p serve:test test:run"
+		"test:serve": "cross-env NODE_ENV=test APP_SETTINGS=src/config/settings-test.js PORT=7357 APP_NAME=local run-s build:lint test:dropdbs test:rimraf serve:test",
+		"test:ci": "run-p test:serve test:run"
 	},
 	"dependencies": {
 		"@slack/client": "3.6.0",
@@ -104,7 +106,6 @@
 		"faker": "4.1.0",
 		"highlight.js": "8.6.0",
 		"html2jade": "0.8.6",
-		"istanbul-middleware": "0.2.2",
 		"kss": "2.4.0",
 		"load-grunt-tasks": "3.5.2",
 		"markdown-it": "8.4.0",
@@ -117,6 +118,7 @@
 		"nodegit": "0.20.3",
 		"nodemon": "1.12.1",
 		"npm-run-all": "4.1.1",
+		"nyc": "^11.3.0",
 		"pleasejs": "git://github.com/Fooidge/PleaseJS.git#06e677f2d5210512eba87de73d0efd7a5ad210a7",
 		"pug": "2.0.0-alpha7",
 		"raml2obj": "2.2.0",

@@ -43,13 +43,6 @@ require('shortid32').characters('123456789abcdefghkmnopqrstuvwxyz');
 Promise = require('bluebird');
 mongoose.Promise = Promise;
 
-if (process.env.COVERAGE_ENABLED) {
-	console.log('[app] Hook loader for coverage enabled.');
-	require('istanbul-middleware').hookLoader(__dirname);
-	// cover all files except under node_modules
-	// see API for other options
-}
-
 const settings = require('./src/modules/settings');
 const serverDomain = domain.create();
 let raygunClient = null;

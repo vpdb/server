@@ -19,7 +19,7 @@ function check() {
 	});
 }
 
-let counter = 30;
+let counter = 120;
 function poll() {
 	return check().then(() => {
 		console.log('[wait] Server up!');

@@ -25,7 +25,7 @@
 		"serve:protractor": "cross-env NODE_ENV=test APP_SETTINGS=src/config/settings-protractor.js PORT=7357 APP_NAME=local run-s test:dropdbs start",
 		"build:lint": "eslint src/**/*.js",
 		"test:dropdbs": "node deploy/tools/dropdb",
-		"test:rimraf": "rimraf coverage",
+		"test:rimraf": "rimraf .nyc_output coverage",
 		"test:wait": "node deploy/tools/wait",
 		"test:finish": "cross-env PORT=7357 node deploy/tools/finish",
 		"test:mocha": "mocha --reporter spec --timeout 120000 test/**/*.test.js",

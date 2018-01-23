@@ -24,6 +24,8 @@ const logger = require('winston');
 
 const error = require('../../modules/error')('api', 'token');
 const api = require('./api');
+const acl = require('../../acl');
+const scopes = require('../../scopes');
 const Token = require('mongoose').model('Token');
 
 exports.create = function(req, res) {
@@ -31,9 +33,12 @@ exports.create = function(req, res) {
 	let newToken;
 	Promise.try(() => {
 
+		// default type is "personal".
+		req.body.type = req.body.type || 'personal';
+
 		// check if the plan allows application token creation
-		if (req.body.type === 'access' && !req.user.planConfig.enableAppTokens) {
-			throw error('Your current plan "%s" does not allow the creation of application access tokens. Upgrade or contact an admin.', req.user.planConfig.id).status(401);
+		if (req.body.scopes && req.body.scopes.includes(scopes.all.id) && !req.user.planConfig.enableAppTokens) {
+			throw error('Your current plan "%s" does not allow the creation of application "all" access tokens. Upgrade or contact an admin.', req.user.planConfig.id).status(401);
 		}
 
 		// tokenType == "jwt" means the token comes from a "fresh" login (not a
@@ -42,7 +47,7 @@ exports.create = function(req, res) {
 
 			// in this case, the user is allowed to create login tokens without
 			// additionally supplying the password.
-			if (req.body.type !== 'login' && !req.body.password) {
+			if (req.body.scopes && !req.body.scopes.includes(scopes.login.id) && !req.body.password) {
 				throw error('You cannot create other tokens but login tokens without supplying a password, ' +
 					'even when logged with a "short term" token.').warn('create-token').status(401);
 			}
@@ -62,11 +67,27 @@ exports.create = function(req, res) {
 			throw error('Wrong password.').warn('create-token').status(401);
 		}
 
+		// for application tokens, check additional permissions.
+		if (req.body.type === 'application') {
+			return acl.isAllowed(req.user.id, 'tokens', 'application-token').then(granted => {
+				if (!granted) {
+					throw error('Permission denied.').status(401);
+				}
+				newToken = new Token(_.extend(req.body, {
+					label: req.body.label,
+					is_active: true,
+					created_at: new Date(),
+					expires_at: new Date(new Date().getTime() + 315360000000) // 10 years
+				}));
+				return newToken.validate();
+			});
+		}
+
 		newToken = new Token(_.extend(req.body, {
 			label: req.body.label || req.headers['user-agent'],
 			is_active: true,
 			created_at: new Date(),
-			expires_at: new Date(new Date().getTime() + 31536000000),
+			expires_at: new Date(new Date().getTime() + 31536000000), // 1 year
 			_created_by: req.user._id
 		}));
 		return newToken.validate();
@@ -83,7 +104,7 @@ exports.create = function(req, res) {
 
 exports.list = function(req, res) {
 
-	const query = { _created_by: req.user._id };
+	const query = { _created_by: req.user._id, type: 'personal' };
 	const allowedTypes = ['access', 'login'];
 
 	// filter by type?
@@ -108,14 +129,14 @@ exports.list = function(req, res) {
 exports.update = function(req, res) {
 
 	const assert = api.assert(error, 'update', req.params.id, res);
-	const updateableFields = ['label', 'is_active', 'expires_at']; // TODO enable expires_at only in debug, not in prod
+	const updatableFields = ['label', 'is_active', 'expires_at']; // TODO enable expires_at only in debug, not in prod
 
 	Token.findOne({ id: req.params.id, _created_by: req.user._id }, assert(function(token) {
 		if (!token) {
 			return api.fail(res, error('No such token'), 404);
 		}
 
-		_.extend(token, _.pick(req.body, updateableFields));
+		_.extend(token, _.pick(req.body, updatableFields));
 
 		token.validate(function(err) {
 			if (err) {

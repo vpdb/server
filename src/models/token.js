@@ -19,39 +19,44 @@
 
 'use strict';
 
-var _ = require('lodash');
-var crypto = require('crypto');
-var logger = require('winston');
-var shortId = require('shortid32');
-var mongoose = require('mongoose');
-var validator = require('validator');
-var uniqueValidator = require('mongoose-unique-validator');
-var toObj = require('./plugins/to-object');
+const _ = require('lodash');
+const crypto = require('crypto');
+const logger = require('winston');
+const shortId = require('shortid32');
+const mongoose = require('mongoose');
+const validator = require('validator');
+const uniqueValidator = require('mongoose-unique-validator');
+const toObj = require('./plugins/to-object');
 
-var Schema = mongoose.Schema;
+const scopes = require('../scopes');
+const config = require('../modules/settings').current;
+
+const Schema = mongoose.Schema;
 
 //-----------------------------------------------------------------------------
 // SCHEMA
 //-----------------------------------------------------------------------------
-var fields = {
-	id:           { type: String, required: true, unique: true, 'default': shortId.generate },
-	token:        { type: String, required: true, unique: true, 'default': generate },
-	label:        { type: String, required: 'A label must be provided.' },
-	type:         { type: String,  'enum': [ 'access', 'login' ] },
-	is_active:    { type: Boolean, required: true, 'default': true },
+const fields = {
+	id: { type: String, required: true, unique: true, 'default': shortId.generate },
+	token: { type: String, required: true, unique: true, 'default': generate },
+	label: { type: String, required: 'A label must be provided.' },
+	type: { type: String, 'enum': [ 'personal', 'application' ], required: true },
+	scopes: { type: [String], required: true },
+	provider: { type: String }, // must be set for application tokens
+	is_active: { type: Boolean, required: true, 'default': true },
 	last_used_at: { type: Date },
-	expires_at:   { type: Date, required: true },
-	created_at:   { type: Date, required: true },
-	_created_by:  { type: Schema.ObjectId, ref: 'User', required: true }
+	expires_at: { type: Date, required: true },
+	created_at: { type: Date, required: true },
+	_created_by: { type: Schema.ObjectId, ref: 'User', required: false }
 };
-var TokenSchema = new Schema(fields, { usePushEach: true });
+const TokenSchema = new Schema(fields, { usePushEach: true });
 
 
 //-----------------------------------------------------------------------------
 // API FIELDS
 //-----------------------------------------------------------------------------
-var apiFields = {
-	simple: [ 'id', 'label', 'is_active', 'last_used_at', 'expires_at', 'created_at' ]
+const apiFields = {
+	simple: ['id', 'label', 'is_active', 'last_used_at', 'expires_at', 'created_at']
 };
 
 
@@ -59,7 +64,7 @@ var apiFields = {
 // METHODS
 //-----------------------------------------------------------------------------
 TokenSchema.methods.toSimple = function(showToken) {
-	var obj = TokenSchema.statics.toSimple(this);
+	const obj = TokenSchema.statics.toSimple(this);
 	if (showToken) {
 		obj.token = this.token;
 	}
@@ -70,7 +75,7 @@ TokenSchema.methods.toSimple = function(showToken) {
 // STATIC METHODS
 //-----------------------------------------------------------------------------
 TokenSchema.statics.toSimple = function(token) {
-	var obj = token.toObj ? token.toObj() : token;
+	const obj = token.toObj ? token.toObj() : token;
 	return _.pick(obj, apiFields.simple);
 };
 
@@ -81,6 +86,51 @@ TokenSchema.path('label').validate(function(label) {
 	return _.isString(label) && validator.isLength(label ? label.trim() : '', 3);
 }, 'Label must contain at least three characters.');
 
+TokenSchema.path('scopes').validate(function(s) {
+	if (!s || s.length === 0) {
+		this.invalidate('scopes', 'Scopes must be set.');
+		return true;
+	}
+	for (let i = 0; i < s.length; i++) {
+		if (!_.keys(scopes).includes(s[i])) {
+			this.invalidate('scopes', 'Scope must be one or more of the following: [ "' + _.keys(scopes).join('", "') + '" ].');
+			return true;
+		}
+	}
+	if (this.type === 'application') {
+		const validScopes = [ scopes.community.id, scopes.storage.id ];
+		for (let i = 0; i < s.length; i++) {
+			if (!validScopes.includes(s[i])) {
+				this.invalidate('scopes', 'Application scopes must be one or more of the following: [ "' + validScopes.join('", "') + '" ].');
+				return true;
+			}
+		}
+	}
+});
+
+TokenSchema.path('type').validate(function(type) {
+	if (type === 'application') {
+		if (!this.provider) {
+			this.invalidate('provider', 'Provider is required for application tokens.');
+		}
+		const providers = [];
+		if (config.vpdb.passport.google.enabled) {
+			providers.push('google');
+		}
+		if (config.vpdb.passport.github.enabled) {
+			providers.push('github');
+		}
+		config.vpdb.passport.ipboard.forEach(ipb => {
+			if (ipb.enabled) {
+				providers.push(ipb.id);
+			}
+		});
+		if (!providers.includes(this.provider)) {
+			this.invalidate('provider', 'Must be one of: [ "' + providers.join('", "') + '" ].');
+		}
+	}
+	return true;
+});
 
 //-----------------------------------------------------------------------------
 // PLUGINS

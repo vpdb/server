@@ -74,12 +74,12 @@ exports.auth = function(req, res, resource, permission, planAttrs) {
 			} else {
 
 				// validate format
-				var parts = req.headers[headerName.toLowerCase()].split(' ');
+				const parts = req.headers[headerName.toLowerCase()].split(' ');
 				if (parts.length !== 2) {
 					throw error('Bad Authorization header. Format is "%s: Bearer [token]"', headerName).status(401);
 				}
-				var scheme = parts[0];
-				var credentials = parts[1];
+				const scheme = parts[0];
+				const credentials = parts[1];
 				if (!/^Bearer$/i.test(scheme)) {
 					throw error('Bad Authorization header. Format is "%s: Bearer [token]"', headerName).status(401);
 				}

@@ -19,19 +19,15 @@
 
 "use strict"; /* global describe, before, after, it */
 
-var _ = require('lodash');
-var fs = require('fs');
-var path = require('path');
-var async = require('async');
-var request = require('superagent');
-var expect = require('expect.js');
+const request = require('superagent');
+const expect = require('expect.js');
 
-var superagentTest = require('../modules/superagent-test');
-var hlp = require('../modules/helper');
+const superagentTest = require('../modules/superagent-test');
+const hlp = require('../modules/helper');
 
 superagentTest(request);
 
-describe('The VPDB `Token` API', function() {
+describe.only('The VPDB `Token` API', function() {
 
 	describe('when creating a new access token', function() {
 
@@ -52,7 +48,7 @@ describe('The VPDB `Token` API', function() {
 				.post('/api/v1/tokens')
 				.saveResponse({ path: 'tokens/create'})
 				.as('subscribed')
-				.send({ label: 'Test Application', type: 'access' })
+				.send({ label: 'Test Application', type: 'personal', scopes: [ 'all' ] })
 				.end(hlp.status(401, 'without supplying a password', done));
 		});
 
@@ -60,7 +56,7 @@ describe('The VPDB `Token` API', function() {
 			request
 				.post('/api/v1/tokens')
 				.as('subscribed')
-				.send({ label: 'Test Application', password: 'xxx', type: 'access' })
+				.send({ label: 'Test Application', password: 'xxx', type: 'personal', scopes: [ 'all' ] })
 				.end(hlp.status(401, 'wrong password', done));
 		});
 
@@ -69,7 +65,7 @@ describe('The VPDB `Token` API', function() {
 				.post('/api/v1/tokens')
 				.as('subscribed')
 				.set('User-Agent', '')
-				.send({ password: hlp.getUser('subscribed').password, type: 'access' })
+				.send({ password: hlp.getUser('subscribed').password, type: 'personal', scopes: [ 'all' ] })
 				.end(function(err, res) {
 					hlp.expectValidationError(err, res, 'label', 'must be provided');
 					done();
@@ -80,7 +76,7 @@ describe('The VPDB `Token` API', function() {
 			request
 				.post('/api/v1/tokens')
 				.as('subscribed')
-				.send({ label: 'x', password: hlp.getUser('subscribed').password, type: 'access' })
+				.send({ label: 'x', password: hlp.getUser('subscribed').password, type: 'personal', scopes: [ 'all' ] })
 				.end(function(err, res) {
 					hlp.expectValidationError(err, res, 'label', 'must contain at least');
 					done();
@@ -91,7 +87,7 @@ describe('The VPDB `Token` API', function() {
 			request
 				.post('/api/v1/tokens')
 				.as('free')
-				.send({ label: 'My Application', password: hlp.getUser('subscribed').password, type: 'access' })
+				.send({ label: 'My Application', password: hlp.getUser('subscribed').password, type: 'personal', scopes: [ 'all' ] })
 				.end(hlp.status(401, 'current plan', done));
 		});
 
@@ -100,7 +96,7 @@ describe('The VPDB `Token` API', function() {
 				.post('/api/v1/tokens')
 				.save({ path: 'tokens/create'})
 				.as('subscribed')
-				.send({ label: 'My Application', password: hlp.getUser('subscribed').password, type: 'access' })
+				.send({ label: 'My Application', password: hlp.getUser('subscribed').password, type: 'personal', scopes: [ 'all' ] })
 				.end(function(err, res) {
 					hlp.expectStatus(err, res, 201);
 					expect(res.body.id).to.be.ok();
@@ -127,11 +123,11 @@ describe('The VPDB `Token` API', function() {
 		it('should fail if no password provided while using a refresh token', function(done) {
 			request.get('/api/v1/ping').as('member').end(function(err, res) {
 				hlp.expectStatus(err, res, 200);
-				var token = res.headers['x-token-refresh'];
+				const token = res.headers['x-token-refresh'];
 				request
 					.post('/api/v1/tokens')
 					.set('Authorization', 'Bearer ' + token)
-					.send({ type: 'login' })
+					.send({ type: 'personal', scopes: [ 'login' ] })
 					.end(hlp.status(401, 'must provide your password', done));
 			});
 		});
@@ -142,17 +138,17 @@ describe('The VPDB `Token` API', function() {
 			request
 				.post('/api/v1/tokens')
 				.as('subscribed')
-				.send({ password: hlp.getUser('subscribed').password, type: 'access' })
+				.send({ password: hlp.getUser('subscribed').password, scopes: [ 'all' ] })
 				.end(function(err, res) {
 
 					hlp.expectStatus(err, res, 201);
-					var token = res.body.token;
+					const token = res.body.token;
 
 					// use access token for login token
 					request
 						.post('/api/v1/tokens')
 						.set('Authorization', 'Bearer ' + token)
-						.send({ type: 'login' })
+						.send({ type: 'personal', scopes: [ 'login' ] })
 						.end(hlp.status(401, 'must provide your password', done));
 				});
 		});
@@ -165,11 +161,11 @@ describe('The VPDB `Token` API', function() {
 				.send({ username: hlp.getUser('member').name, password: hlp.getUser('member').password })
 				.end(function(err, res) {
 					hlp.expectStatus(err, res, 200);
-					var token = res.body.token;
+					const token = res.body.token;
 					request
 						.post('/api/v1/tokens')
 						.set('Authorization', 'Bearer ' + token)
-						.send({ password: 'i-am-wrong', type: 'login' })
+						.send({ password: 'i-am-wrong', type: 'personal', scopes: [ 'login' ] })
 						.end(hlp.status(401, done));
 				});
 		});
@@ -180,11 +176,11 @@ describe('The VPDB `Token` API', function() {
 			request
 				.post('/api/v1/tokens')
 				.as('member')
-				.send({ type: 'login' })
+				.send({ scopes: [ 'login' ] })
 				.end(function(err, res) {
 
 					hlp.expectStatus(err, res, 201);
-					var loginToken = res.body.token;
+					const loginToken = res.body.token;
 
 					// create jwt with login token
 					request
@@ -193,13 +189,13 @@ describe('The VPDB `Token` API', function() {
 						.end(function(err, res) {
 
 							hlp.expectStatus(err, res, 200);
-							var jwt = res.body.token;
+							const jwt = res.body.token;
 
 							// try to create another login token
 							request
 								.post('/api/v1/tokens')
 								.set('Authorization', 'Bearer ' + jwt)
-								.send({ type: 'login' })
+								.send({ type: 'personal', scopes: [ 'login' ] })
 								.end(hlp.status(401, 'must provide your password', done));
 						});
 				});
@@ -208,11 +204,11 @@ describe('The VPDB `Token` API', function() {
 		it('should succeed when providing a password while using a refresh token', function(done) {
 			request.get('/api/v1/ping').as('member').end(function(err, res) {
 				hlp.expectStatus(err, res, 200);
-				var token = res.headers['x-token-refresh'];
+				const token = res.headers['x-token-refresh'];
 				request
 					.post('/api/v1/tokens')
 					.set('Authorization', 'Bearer ' + token)
-					.send({ password: hlp.getUser('member').password, type: 'login' })
+					.send({ password: hlp.getUser('member').password, type: 'personal', scopes: [ 'login' ] })
 					.end(hlp.status(201, done));
 			});
 		});
@@ -223,16 +219,16 @@ describe('The VPDB `Token` API', function() {
 			request
 				.post('/api/v1/tokens')
 				.as('subscribed')
-				.send({ password: hlp.getUser('subscribed').password, type: 'access' })
+				.send({ password: hlp.getUser('subscribed').password, type: 'personal', scopes: [ 'all' ] })
 				.end(function(err, res) {
 					hlp.expectStatus(err, res, 201);
-					var token = res.body.token;
+					const token = res.body.token;
 
 					// use access token for login token
 					request
 						.post('/api/v1/tokens')
 						.set('Authorization', 'Bearer ' + token)
-						.send({ password: hlp.getUser('subscribed').password, type: 'login' })
+						.send({ password: hlp.getUser('subscribed').password, type: 'personal', scopes: [ 'login' ] })
 						.end(hlp.status(201, done));
 				});
 		});
@@ -245,11 +241,11 @@ describe('The VPDB `Token` API', function() {
 				.send({ username: hlp.getUser('member').name, password: hlp.getUser('member').password })
 				.end(function(err, res) {
 					hlp.expectStatus(err, res, 200);
-					var token = res.body.token;
+					const token = res.body.token;
 					request
 						.post('/api/v1/tokens')
 						.set('Authorization', 'Bearer ' + token)
-						.send({ type: 'login' })
+						.send({ type: 'personal', scopes: [ 'login' ] })
 						.end(hlp.status(201, done));
 				});
 		});
@@ -272,11 +268,11 @@ describe('The VPDB `Token` API', function() {
 				}).end(function(err, res) {
 					hlp.expectStatus(err, res, 200);
 					hlp.doomUser(res.body.user.id);
-					var token = res.body.token;
-					request
+				const token = res.body.token;
+				request
 						.post('/api/v1/tokens')
 						.set('Authorization', 'Bearer ' + token)
-						.send({ type: 'login' })
+						.send({ type: 'personal', scopes: [ 'login' ] })
 						.end(hlp.status(201, done));
 				});
 		});
@@ -298,11 +294,11 @@ describe('The VPDB `Token` API', function() {
 		});
 
 		it('should return the created token', function(done) {
-			var label = 'My Application';
+			const label = 'My Application';
 			request
 				.post('/api/v1/tokens')
 				.as('member1')
-				.send({ label: label, password: hlp.getUser('member1').password, type: 'access' })
+				.send({ label: label, password: hlp.getUser('member1').password, scopes: ['all'] })
 				.end(function(err, res) {
 					hlp.expectStatus(err, res, 201);
 					expect(res.body.token).to.be.ok();
@@ -314,7 +310,7 @@ describe('The VPDB `Token` API', function() {
 							hlp.expectStatus(err, res, 200);
 							expect(res.body).to.be.an('array');
 							expect(res.body).to.have.length(1);
-							var token = res.body[0];
+							const token = res.body[0];
 							expect(token.token).to.not.be.ok();
 							expect(token.label).to.be(label);
 							expect(token.is_active).to.be(true);
@@ -327,13 +323,13 @@ describe('The VPDB `Token` API', function() {
 			request
 				.post('/api/v1/tokens')
 				.as('member2')
-				.send({ label: 'Member 1', password: hlp.getUser('member2').password, type: 'access' })
+				.send({ label: 'Member 1', password: hlp.getUser('member2').password, scopes: ['all'] })
 				.end(function(err, res) {
 					hlp.expectStatus(err, res, 201);
 					request
 						.post('/api/v1/tokens')
 						.as('member3')
-						.send({ label: 'Member 2', password: hlp.getUser('member3').password, type: 'access' })
+						.send({ label: 'Member 2', password: hlp.getUser('member3').password, scopes: ['all'] })
 						.end(function(err, res) {
 							hlp.expectStatus(err, res, 201);
 							request
@@ -373,7 +369,7 @@ describe('The VPDB `Token` API', function() {
 			request
 				.post('/api/v1/tokens')
 				.as('subscribed')
-				.send({ label: 'My Application', password: hlp.getUser('subscribed').password, type: 'access' })
+				.send({ label: 'My Application', password: hlp.getUser('subscribed').password, scopes: ['all'] })
 				.end(function(err, res) {
 					hlp.expectStatus(err, res, 201);
 
@@ -395,11 +391,11 @@ describe('The VPDB `Token` API', function() {
 			request
 				.post('/api/v1/tokens')
 				.as('subscribed')
-				.send({ label: 'My Application', password: hlp.getUser('subscribed').password, type: 'access' })
+				.send({ label: 'My Application', password: hlp.getUser('subscribed').password, scopes: ['all'] })
 				.end(function(err, res) {
 					hlp.expectStatus(err, res, 201);
 
-					var soon = new Date(new Date().getTime() + 1000);
+					const soon = new Date(new Date().getTime() + 1000);
 					request
 						.patch('/api/v1/tokens/' + res.body.id)
 						.as('subscribed')
@@ -437,7 +433,7 @@ describe('The VPDB `Token` API', function() {
 			request
 				.post('/api/v1/tokens')
 				.as('member1')
-				.send({ label: 'My Application', password: hlp.getUser('member1').password, type: 'access' })
+				.send({ label: 'My Application', password: hlp.getUser('member1').password, scopes: ['all'] })
 				.end(function(err, res) {
 					hlp.expectStatus(err, res, 201);
 					expect(res.body.token).to.be.ok();
@@ -454,7 +450,7 @@ describe('The VPDB `Token` API', function() {
 			request
 				.post('/api/v1/tokens')
 				.as('member3')
-				.send({ label: 'My Application', password: hlp.getUser('member3').password, type: 'access' })
+				.send({ label: 'My Application', password: hlp.getUser('member3').password, scopes: ['all'] })
 				.end(function(err, res) {
 					hlp.expectStatus(err, res, 201);
 					expect(res.body.token).to.be.ok();

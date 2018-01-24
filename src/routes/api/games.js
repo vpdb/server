@@ -46,6 +46,6 @@ exports.register = function(app, api) {
 
 	app.get(settings.apiPath('/games/:id/events'), api.anon(api.events.list({ byGame: true })));
 
-	app.get(settings.apiPath('/games/:id/release-name'), api.auth(api.games.releaseName, 'releases', 'add'));
+	app.get(settings.apiPath('/games/:id/release-name'), api.auth(api.games.releaseName, 'releases', 'add', [ scope.ALL, scope.CREATE ]));
 
 };

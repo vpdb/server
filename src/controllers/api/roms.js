@@ -44,7 +44,7 @@ exports.create = function(req, res) {
 	Promise.try(() => {
 
 		if (!req.params.gameId && !req.body._ipdb_number) {
-			throw error('You must provide an IPDB number when not posting to a game resource.').status(400);
+			throw error('You must provide an IPDB number when not posting to a game resource.').status(422);
 		}
 
 		// validate here because we use it in the query before running rom validations

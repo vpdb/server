@@ -301,7 +301,7 @@ exports.authenticate = function(req, res) {
 		// if no token provided, fail fast.
 		if (!req.body.token) {
 			throw error('Ignored incomplete authentication request')
-				.display('You must supply a username and password or a login token')
+				.display('You must supply a username and password or a token with "login" scope.')
 				.warn('authenticate')
 				.status(400);
 		}

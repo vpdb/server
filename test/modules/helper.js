@@ -2,16 +2,16 @@
 
 Promise = require('bluebird'); // jshint ignore:line
 
-var _ = require('lodash');
-var util = require('util');
-var async = require('async');
-var debug = require('debug')('test-helper');
-var faker = require('faker');
-var randomstring = require('randomstring');
-var expect = require('expect.js');
-var parseUrl = require('url').parse;
+const _ = require('lodash');
+const util = require('util');
+const async = require('async');
+const debug = require('debug')('test-helper');
+const faker = require('faker');
+const randomstring = require('randomstring');
+const expect = require('expect.js');
+const parseUrl = require('url').parse;
 
-var superuser = '__superuser';
+const superuser = '__superuser';
 
 exports.auth = require('./auth-helper');
 exports.file = require('./file-helper');
@@ -31,8 +31,7 @@ exports.setupUsers = function(request, config, done) {
 	this.users = {};
 	request.tokens = {};
 
-
-	var users = _.map(config, function(config, name) {
+	const users = _.map(config, function(config, name) {
 		return exports._createUser(request, name, config);
 	});
 
@@ -52,7 +51,7 @@ exports.setupUsers = function(request, config, done) {
 
 exports.genUser = function(attrs) {
 
-	var username = '';
+	let username = '';
 	do {
 		username = faker.internet.userName().replace(/[^a-z0-9]+/gi, '');
 	} while (username.length < 3);
@@ -65,7 +64,7 @@ exports.genUser = function(attrs) {
 };
 
 exports.genGithubUser = function() {
-	var gen = exports.genUser();
+	const gen = exports.genUser();
 	return {
 		provider: 'github',
 		profile: {
@@ -88,8 +87,8 @@ exports.genGithubUser = function() {
  * @param done Callback
  */
 exports.teardownUsers = function(request, done) {
-	var that = this;
-	var deleteUser = function(name, force) {
+	const that = this;
+	const deleteUser = function(name, force) {
 		return function(next) {
 			// don't cut off the branch we're sitting on...
 			if (!force && name === superuser) {
@@ -108,7 +107,7 @@ exports.teardownUsers = function(request, done) {
 		};
 	};
 
-	var users = _.map(this.users, function(config, name) {
+	let users = _.map(this.users, function(config, name) {
 		return deleteUser(name);
 	});
 
@@ -281,16 +280,16 @@ exports.ensureExists = function(attr, user) {
  */
 exports.cleanup = function(request, done) {
 
-	var that = this;
-	var doomedFiles = this.doomedFiles;
-	var doomedGames = this.doomedGames;
-	var doomedReleases = this.doomedReleases;
-	var doomedTags = this.doomedTags;
-	var doomedBuilds = this.doomedBuilds;
-	var doomedRoms = this.doomedRoms;
-	var doomedBackglasses = this.doomedBackglasses;
-	var doomedMedia = this.doomedMedia;
-	var doomedGameRequests = this.doomedGameRequests;
+	const that = this;
+	let doomedFiles = this.doomedFiles;
+	let doomedGames = this.doomedGames;
+	let doomedReleases = this.doomedReleases;
+	let doomedTags = this.doomedTags;
+	let doomedBuilds = this.doomedBuilds;
+	let doomedRoms = this.doomedRoms;
+	let doomedBackglasses = this.doomedBackglasses;
+	let doomedMedia = this.doomedMedia;
+	let doomedGameRequests = this.doomedGameRequests;
 
 	async.series([
 
@@ -301,7 +300,7 @@ exports.cleanup = function(request, done) {
 			}
 			async.eachSeries(_.keys(doomedFiles), function(user, nextUser) {
 				async.each(doomedFiles[user], function(fileId, next) {
-					var req = request
+					const req = request
 						.del('/api/v1/files/' + fileId)
 						.as(user)
 						.end(function(err, res) {
@@ -575,15 +574,15 @@ exports.status = function(code, contains, next) {
 			err = { status: res.status, response: res };
 		}
 
-		var status = err ? err.status : res.status;
-		var body = err ? err.response.body : res.body;
+		const status = err ? err.status : res.status;
+		const body = err ? err.response.body : res.body;
 
 		if (status !== code) {
 			console.warn("RESPONSE BODY = %j", body);
 		}
 		expect(status).to.be(code);
 		if (contains) {
-			var msg = body.error.message || body.error;
+			const msg = body.error.message || body.error;
 			expect(msg.toLowerCase()).to.contain(contains.toLowerCase());
 		}
 		if (next) {
@@ -603,8 +602,8 @@ exports.expectStatus = function(err, res, code, contains) {
 		err = undefined;
 	}
 
-	var status = err ? err.status : res.status;
-	var body = err ? err.response.body : res.body;
+	const status = err ? err.status : res.status;
+	const body = err ? err.response.body : res.body;
 
 	if (status !== code) {
 		console.log(res.body);
@@ -632,12 +631,12 @@ exports.expectValidationError = function(err, res, field, contains, code) {
 	}
 	expect(err.status).to.be(code || 422);
 	expect(err.response.body.errors).to.be.an('array');
-	var fieldErrors = _.filter(err.response.body.errors, { field: field });
+	const fieldErrors = _.filter(err.response.body.errors, { field: field });
 	if (!fieldErrors.length) {
 		throw new Error('Expected validation error on field "' + field + '" but got none.');
 	}
 	if (contains) {
-		var matchedErrors = _.filter(fieldErrors, function(val) {
+		const matchedErrors = _.filter(fieldErrors, function(val) {
 			return val.message.toLowerCase().indexOf(contains.toLowerCase()) > -1;
 		});
 		if (!matchedErrors.length) {
@@ -648,9 +647,9 @@ exports.expectValidationError = function(err, res, field, contains, code) {
 
 exports.expectNoValidationError = function(err, res, field, contains) {
 	if (_.isArray(err.response.body.errors)) {
-		var fieldErrors = _.filter(err.response.body.errors, { field: field });
+		const fieldErrors = _.filter(err.response.body.errors, { field: field });
 		if (contains) {
-			var matchedErrors = _.filter(fieldErrors, function(val) {
+			const matchedErrors = _.filter(fieldErrors, function(val) {
 				return val.message.toLowerCase().indexOf(contains.toLowerCase()) > -1;
 			});
 			expect(matchedErrors.length).to.be(0);
@@ -681,10 +680,10 @@ exports.dump = function(res, title) {
 
 
 exports._createUser = function(request, name, config) {
-	var that = this;
+	const that = this;
 
 	return function(next) {
-		var user = exports.genUser();
+		let user = exports.genUser();
 		user.skipEmailConfirmation = true;
 
 		// 1. create user

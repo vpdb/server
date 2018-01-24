@@ -32,11 +32,13 @@ class Scope {
 
 		/**
 		 * All kind of uploads
+		 * TODO implement and test
 		 */
 		this.CREATE = 'create';
 
 		/**
 		 * Used for obtaining storage tokens.
+		 * TODO implement and test
 		 */
 		this.STORAGE = 'storage';
 

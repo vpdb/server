@@ -323,8 +323,8 @@ exports.authenticate = function(req, res) {
 			}
 
 			// fail if not login token
-			if (scope.isValid(token.scopes, [ 'login' ])) {
-				throw error('Token must have a login scope.').status(401);
+			if (!scope.isExclusive(token.scopes, [ 'login' ])) {
+				throw error('Token to exchange for JWT must exclusively be "login" ([ "' + token.scopes.join('", "') + '" ] given).').status(401);
 			}
 
 			// fail if token expired

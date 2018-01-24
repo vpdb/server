@@ -1,39 +1,47 @@
 const _ = require('lodash');
 
+/**
+ * Scopes control access of a given type of token. While permissions control
+ * access to resources for a given user, scopes further narrow it down depending
+ * on the type of authentication.
+ */
 class Scope {
 
-	/**
-	 * Previous "access" scope. Can do nearly everything.
-	 *
-	 * JWT tokens have this scope but also long-term tokens used in third-party
-	 * applications such as VPDB Agent.
-	 */
-	ALL = 'all';
+	constructor() {
 
-	/**
-	 * Used for autologin. Can be used to obtain a JWT (which has "all" scope).
-	 *
-	 * This is used for browser auto-login so we don't have to store the plain
-	 * text password on the user's machine. The only thing it
-	 */
-	LOGIN = 'login';
+		/**
+		 * Previous "access" scope. Can do nearly everything.
+		 *
+		 * JWT tokens have this scope but also long-term tokens used in third-party
+		 * applications such as VPDB Agent.
+		 */
+		this.ALL = 'all';
 
-	/**
-	 * Rate, star, comment, basically anything visible on the site.
-	 */
-	COMMUNITY = 'community';
+		/**
+		 * Used for autologin. Can be used to obtain a JWT (which has "all" scope).
+		 *
+		 * This is used for browser auto-login so we don't have to store the plain
+		 * text password on the user's machine. The only thing it
+		 */
+		this.LOGIN = 'login';
 
-	/**
-	 * All kind of uploads
-	 */
-	CREATE = 'create';
+		/**
+		 * Rate, star, comment, basically anything visible on the site.
+		 */
+		this.COMMUNITY = 'community';
 
-	/**
-	 * Used for obtaining storage tokens.
-	 */
-	STORAGE = 'storage';
+		/**
+		 * All kind of uploads
+		 */
+		this.CREATE = 'create';
 
-	private scopes = [ this.ALL, this.LOGIN, this.COMMUNITY, this.CREATE, this.STORAGE ];
+		/**
+		 * Used for obtaining storage tokens.
+		 */
+		this.STORAGE = 'storage';
+
+		this._scopes = [ this.ALL, this.LOGIN, this.COMMUNITY, this.CREATE, this.STORAGE ];
+	}
 
 	/**
 	 * Checks if given scopes contain a scope.
@@ -42,7 +50,7 @@ class Scope {
 	 * @param {string} scope Scope
 	 * @return {boolean} True if found, false otherwise.
 	 */
-	public has(scopes, scope) {
+	has(scopes, scope) {
 		return scopes && scopes.includes(scope);
 	}
 
@@ -52,11 +60,23 @@ class Scope {
 	 * @param {string[]|null} [validScopes] Valid scopes, all scopes when omitted
 	 * @return {boolean} True if all scopes are valid
 	 */
-	public isValid(scopes, validScopes) {
-		if (_.isArray(scopes)) {
+	isValid(scopes, validScopes) {
+		if (!_.isArray(scopes)) {
 			return true;
 		}
-		validScopes = validScopes || this.scopes;
+		validScopes = validScopes || this._scopes;
+		for (let i = 0; i < scopes.length; i++) {
+			if (!this.has(validScopes, scopes[i])) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	isExclusive(scopes, validScopes) {
+		if (scopes.length !== validScopes.length){
+			return false;
+		}
 		for (let i = 0; i < scopes.length; i++) {
 			if (!this.has(validScopes, scopes[i])) {
 				return false;

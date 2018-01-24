@@ -197,7 +197,7 @@ exports.auth = function(req, res, resource, permission, requiredScopes, planAttr
 
 		// check scopes
 		if (!scope.isValid(scopes, requiredScopes)) {
-			throw error('Your token has an invalid scope: [ "%s" ] (required: [ "%s" ])', scopes.join('", "'), requiredScopes.join('", "')).status(403).log();
+			throw error('Your token has an invalid scope: [ "%s" ] (required: [ "%s" ])', scopes.join('", "'), requiredScopes.join('", "')).status(401).log();
 		}
 
 		// check plan config if provided

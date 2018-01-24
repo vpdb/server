@@ -1,13 +1,13 @@
 "use strict"; /*global describe, before, after, beforeEach, afterEach, it*/
 
-var _ = require('lodash');
-var request = require('superagent');
-var expect = require('expect.js');
-var jwt = require('jwt-simple');
-var config = require('../../src/config/settings-test');
+const _ = require('lodash');
+const request = require('superagent');
+const expect = require('expect.js');
+const jwt = require('jwt-simple');
+const config = require('../../src/config/settings-test');
 
-var superagentTest = require('../modules/superagent-test');
-var hlp = require('../modules/helper');
+const superagentTest = require('../modules/superagent-test');
+const hlp = require('../modules/helper');
 
 superagentTest(request);
 
@@ -95,24 +95,24 @@ describe('The authentication engine of the VPDB API', function() {
 			request
 				.post('/api/v1/tokens')
 				.as('subscribed')
-				.send({ label: 'Access token', password: hlp.getUser('subscribed').password, type: 'access' })
+				.send({ label: 'Access token', password: hlp.getUser('subscribed').password, scopes: [ 'all' ] })
 				.end(function(err, res) {
 					hlp.expectStatus(err, res, 201);
 
 					request
 						.post('/api/v1/authenticate')
 						.send({ token: res.body.token })
-						.end(hlp.status(401, 'must be a login token', done));
+						.end(hlp.status(401, 'must exclusively be "login"', done));
 				});
 		});
 
 		it('should fail if the token is expired', function() {
 
-			var token;
+			let token;
 			return request
 				.post('/api/v1/tokens')
 				.as('member')
-				.send({ password: hlp.getUser('member').password, type: 'login' })
+				.send({ password: hlp.getUser('member').password, scopes: [ 'login' ] })
 				.then(res => {
 
 					hlp.expectStatus(res, 201);
@@ -135,11 +135,11 @@ describe('The authentication engine of the VPDB API', function() {
 
 		it('should fail if the token is inactive', function() {
 
-			var token;
+			let token;
 			return request
 				.post('/api/v1/tokens')
 				.as('member')
-				.send({ password: hlp.getUser('member').password, type: 'login' })
+				.send({ password: hlp.getUser('member').password, scopes: [ 'login' ] })
 				.then(res => {
 
 					hlp.expectStatus(res, 201);
@@ -166,7 +166,7 @@ describe('The authentication engine of the VPDB API', function() {
 				.post('/api/v1/tokens')
 				.as('member')
 				.set('User-Agent', 'Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.8.1) Gecko/20061024 Firefox/2.0 (Swiftfox)')
-				.send({ password: hlp.getUser('member').password, type: 'login' })
+				.send({ password: hlp.getUser('member').password, scopes: [ 'login' ] })
 				.end(function(err, res) {
 
 					hlp.expectStatus(err, res, 201);
@@ -252,13 +252,13 @@ describe('The authentication engine of the VPDB API', function() {
 			request
 				.post('/api/v1/tokens')
 				.as('subscribed1')
-				.send({ label: 'After plan downgrade token', password: hlp.getUser('subscribed1').password, type: 'access' })
+				.send({ label: 'After plan downgrade token', password: hlp.getUser('subscribed1').password, scopes: [ 'all' ] })
 				.end(function(err, res) {
 					hlp.expectStatus(err, res, 201);
 
 					// 2. downgrade user to free
-					var token = res.body.token;
-					var user = hlp.getUser('subscribed1');
+					const token = res.body.token;
+					const user = hlp.getUser('subscribed1');
 					user._plan = 'free';
 					request
 						.put('/api/v1/users/' + user.id)
@@ -280,10 +280,10 @@ describe('The authentication engine of the VPDB API', function() {
 			request
 				.post('/api/v1/tokens')
 				.as('subscribed')
-				.send({ label: 'Inactive token', password: hlp.getUser('subscribed').password, type: 'access' })
+				.send({ label: 'Inactive token', password: hlp.getUser('subscribed').password, scopes: [ 'all' ] })
 				.end(function(err, res) {
 					hlp.expectStatus(err, res, 201);
-					var token = res.body.token;
+					const token = res.body.token;
 					request
 						.patch('/api/v1/tokens/' + res.body.id)
 						.as('subscribed')
@@ -302,10 +302,10 @@ describe('The authentication engine of the VPDB API', function() {
 			request
 				.post('/api/v1/tokens')
 				.as('subscribed')
-				.send({ label: 'Expired token', password: hlp.getUser('subscribed').password, type: 'access' })
+				.send({ label: 'Expired token', password: hlp.getUser('subscribed').password, scopes: [ 'all' ] })
 				.end(function(err, res) {
 					hlp.expectStatus(err, res, 201);
-					var token = res.body.token;
+					const token = res.body.token;
 					request
 						.patch('/api/v1/tokens/' + res.body.id)
 						.as('subscribed')
@@ -324,13 +324,13 @@ describe('The authentication engine of the VPDB API', function() {
 			request
 				.post('/api/v1/tokens')
 				.as('subscribed')
-				.send({ label: 'Valid token', password: hlp.getUser('subscribed').password, type: 'login' })
+				.send({ label: 'Valid token', password: hlp.getUser('subscribed').password, scopes: [ 'login' ] })
 				.end(function(err, res) {
 					hlp.expectStatus(err, res, 201);
 					request
 						.get('/api/v1/user')
 						.set('Authorization', 'Bearer ' + res.body.token)
-						.end(hlp.status(401, 'must be an access token', done));
+						.end(hlp.status(401, 'invalid scope: [ "login" ] (required: [ "all" ]', done));
 				});
 		});
 
@@ -338,7 +338,7 @@ describe('The authentication engine of the VPDB API', function() {
 			request
 				.post('/api/v1/tokens')
 				.as('subscribed')
-				.send({ label: 'Valid token', password: hlp.getUser('subscribed').password, type: 'access' })
+				.send({ label: 'Valid token', password: hlp.getUser('subscribed').password, scopes: [ 'all' ] })
 				.end(function(err, res) {
 					hlp.expectStatus(err, res, 201);
 					request
@@ -352,7 +352,7 @@ describe('The authentication engine of the VPDB API', function() {
 	describe('when authorization is provided in the URL', function() {
 
 		it('should able to get an access token if the auth token is valid', function(done) {
-			var path = '/api/v1/user';
+			const path = '/api/v1/user';
 			request
 				.post('/storage/v1/authenticate')
 				.as('member')
@@ -376,7 +376,7 @@ describe('The authentication engine of the VPDB API', function() {
 		});
 
 		it('should fail if the token is for a different path', function(done) {
-			var path = '/storage/v1/files/12345';
+			const path = '/storage/v1/files/12345';
 			hlp.storageToken(request, 'member', path, function(token) {
 				request
 					.get('/api/v1/user')
@@ -386,7 +386,7 @@ describe('The authentication engine of the VPDB API', function() {
 		});
 
 		it('should fail if the request method is not GET or HEAD', function(done) {
-			var path = '/storage/v1/files';
+			const path = '/storage/v1/files';
 			hlp.storageToken(request, 'member', path, function(token) {
 				request
 					.post(path)
@@ -407,7 +407,7 @@ describe('The authentication engine of the VPDB API', function() {
 			request
 				.post('/api/v1/tokens')
 				.as('subscribed')
-				.send({ label: 'App token', password: hlp.getUser('subscribed').password, type: 'access' })
+				.send({ label: 'App token', password: hlp.getUser('subscribed').password, scopes: [ 'all' ] })
 				.end(function(err, res) {
 					hlp.expectStatus(err, res, 201);
 					request
@@ -443,7 +443,7 @@ describe('The authentication engine of the VPDB API', function() {
 		});
 
 		it('should match the same already registered Github user even though email and name are different', function(done) {
-			var githubId = '65465';
+			const githubId = '65465';
 			request
 				.post('/api/v1/authenticate/mock')
 				.send({
@@ -468,7 +468,7 @@ describe('The authentication engine of the VPDB API', function() {
 		});
 
 		it('should match an already registered local user with the same email address', function(done) {
-			var localUser = hlp.getUser('member');
+			const localUser = hlp.getUser('member');
 			request
 				.post('/api/v1/authenticate/mock')
 				.send({
@@ -506,7 +506,7 @@ describe('The authentication engine of the VPDB API', function() {
 		});
 
 		it('should match an already registered GitHub user with the same email address', function(done) {
-			var email = 'imthesame@vpdb.io';
+			const email = 'imthesame@vpdb.io';
 			request
 				.post('/api/v1/authenticate/mock')
 				.send({
@@ -516,8 +516,8 @@ describe('The authentication engine of the VPDB API', function() {
 						emails: [ { value: email } ]
 					}
 				}).end(hlp.auth.assertToken(request, function(err, profile) {
-					var userId = profile.id;
-					request
+				const userId = profile.id;
+				request
 						.post('/api/v1/authenticate/mock')
 						.send({
 							provider: 'github',
@@ -532,9 +532,9 @@ describe('The authentication engine of the VPDB API', function() {
 		});
 
 		it('should not match an already registered GitHub user even though ID, username and display name are the same', function(done) {
-			var id = '23';
-			var username = 'doofus';
-			var displayname = 'Doof Us';
+			const id = '23';
+			const username = 'doofus';
+			const displayname = 'Doof Us';
 			request
 				.post('/api/v1/authenticate/mock')
 				.send({
@@ -544,8 +544,8 @@ describe('The authentication engine of the VPDB API', function() {
 						emails: [ { value: 'email1@vpdb.io' } ]
 					}
 				}).end(hlp.auth.assertToken(request, function(err, profile) {
-					var userId = profile.id;
-					request
+				const userId = profile.id;
+				request
 						.post('/api/v1/authenticate/mock')
 						.send({
 							provider: 'github',

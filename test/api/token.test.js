@@ -27,7 +27,7 @@ const hlp = require('../modules/helper');
 
 superagentTest(request);
 
-describe.only('The VPDB `Token` API', function() {
+describe('The VPDB `Token` API', function() {
 
 	describe('when creating a new access token', function() {
 

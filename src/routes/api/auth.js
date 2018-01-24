@@ -19,10 +19,10 @@
 
 'use strict';
 
-var passport = require('passport');
+const passport = require('passport');
 
-var settings = require('../../modules/settings');
-var config = settings.current;
+const settings = require('../../modules/settings');
+const config = settings.current;
 
 exports.register = function(app, api) {
 

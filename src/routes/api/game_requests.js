@@ -19,12 +19,13 @@
 
 'use strict';
 
-var settings = require('../../modules/settings');
+const scope = require('../../scope');
+const settings = require('../../modules/settings');
 
 exports.register = function(app, api) {
 
-	app.post(settings.apiPath('/game_requests'), api.auth(api.gameRequests.create, 'game_requests', 'add'));
-	app.get(settings.apiPath('/game_requests'), api.auth(api.gameRequests.list, 'game_requests', 'list'));
-	app.patch(settings.apiPath('/game_requests/:id'),  api.auth(api.gameRequests.update, 'game_requests', 'update'));
-	app.delete(settings.apiPath('/game_requests/:id'), api.auth(api.gameRequests.del, 'game_requests', 'delete-own'));
+	app.post(settings.apiPath('/game_requests'), api.auth(api.gameRequests.create, 'game_requests', 'add', [ scope.ALL, scope.COMMUNITY ]));
+	app.get(settings.apiPath('/game_requests'), api.auth(api.gameRequests.list, 'game_requests', 'list', [ scope.ALL ]));
+	app.patch(settings.apiPath('/game_requests/:id'),  api.auth(api.gameRequests.update, 'game_requests', 'update', [ scope.ALL, scope.COMMUNITY ]));
+	app.delete(settings.apiPath('/game_requests/:id'), api.auth(api.gameRequests.del, 'game_requests', 'delete-own', [ scope.ALL, scope.COMMUNITY ]));
 };

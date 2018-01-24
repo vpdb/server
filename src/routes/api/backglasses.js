@@ -19,20 +19,21 @@
 
 'use strict';
 
+const scope = require('../../scope');
 const settings = require('../../modules/settings');
 
 exports.register = function(app, api) {
 
 	app.get(settings.apiPath('/backglasses'),        api.anon(api.backglasses.list));
-	app.post(settings.apiPath('/backglasses'),       api.auth(api.backglasses.create, 'backglasses', 'add'));
+	app.post(settings.apiPath('/backglasses'),       api.auth(api.backglasses.create, 'backglasses', 'add', [ scope.ALL, scope.CREATE ]));
 	app.get(settings.apiPath('/backglasses/:id'),    api.anon(api.backglasses.view));
-	app.patch(settings.apiPath('/backglasses/:id'),  api.auth(api.backglasses.update, 'backglasses', 'update-own'));
-	app.delete(settings.apiPath('/backglasses/:id'), api.auth(api.backglasses.del, 'backglasses', 'delete-own'));
+	app.patch(settings.apiPath('/backglasses/:id'),  api.auth(api.backglasses.update, 'backglasses', 'update-own', [ scope.ALL, scope.CREATE ]));
+	app.delete(settings.apiPath('/backglasses/:id'), api.auth(api.backglasses.del, 'backglasses', 'delete-own', [ scope.ALL, scope.CREATE ]));
 
-	app.post(settings.apiPath('/backglasses/:id/star'),   api.auth(api.stars.star('backglass'), 'backglasses', 'star'));
-	app.delete(settings.apiPath('/backglasses/:id/star'), api.auth(api.stars.unstar('backglass'), 'backglasses', 'star'));
-	app.get(settings.apiPath('/backglasses/:id/star'),    api.auth(api.stars.get('backglass'), 'backglasses', 'star'));
+	app.post(settings.apiPath('/backglasses/:id/star'),   api.auth(api.stars.star('backglass'), 'backglasses', 'star', [ scope.ALL, scope.COMMUNITY ]));
+	app.delete(settings.apiPath('/backglasses/:id/star'), api.auth(api.stars.unstar('backglass'), 'backglasses', 'star', [ scope.ALL, scope.COMMUNITY ]));
+	app.get(settings.apiPath('/backglasses/:id/star'),    api.auth(api.stars.get('backglass'), 'backglasses', 'star', [ scope.ALL, scope.COMMUNITY ]));
 
-	app.post(settings.apiPath('/backglasses/:id/moderate'), api.auth(api.backglasses.moderate, 'backglasses', 'moderate'));
+	app.post(settings.apiPath('/backglasses/:id/moderate'), api.auth(api.backglasses.moderate, 'backglasses', 'moderate', [ scope.ALL ]));
 
 };

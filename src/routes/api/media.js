@@ -19,15 +19,16 @@
 
 'use strict';
 
+const scope = require('../../scope');
 const settings = require('../../modules/settings');
 
 exports.register = function(app, api) {
 
-	app.post(settings.apiPath('/media'),       api.auth(api.media.create, 'media', 'add'));
-	app.delete(settings.apiPath('/media/:id'), api.auth(api.media.del, 'media', 'delete-own'));
+	app.post(settings.apiPath('/media'),       api.auth(api.media.create, 'media', 'add', [ scope.ALL, scope.CREATE ]));
+	app.delete(settings.apiPath('/media/:id'), api.auth(api.media.del, 'media', 'delete-own', [ scope.ALL, scope.CREATE ]));
 
-	app.post(settings.apiPath('/media/:id/star'),   api.auth(api.stars.star('medium'), 'media', 'star'));
-	app.delete(settings.apiPath('/media/:id/star'), api.auth(api.stars.unstar('medium'), 'media', 'star'));
-	app.get(settings.apiPath('/media/:id/star'),    api.auth(api.stars.get('medium'), 'media', 'star'));
+	app.post(settings.apiPath('/media/:id/star'),   api.auth(api.stars.star('medium'), 'media', 'star', [ scope.ALL, scope.COMMUNITY ]));
+	app.delete(settings.apiPath('/media/:id/star'), api.auth(api.stars.unstar('medium'), 'media', 'star', [ scope.ALL, scope.COMMUNITY ]));
+	app.get(settings.apiPath('/media/:id/star'),    api.auth(api.stars.get('medium'), 'media', 'star', [ scope.ALL, scope.COMMUNITY ]));
 
 };

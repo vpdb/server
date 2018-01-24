@@ -19,15 +19,16 @@
 
 'use strict';
 
-var settings = require('../../modules/settings');
+const scope = require('../../scope');
+const settings = require('../../modules/settings');
 
 exports.register = function(app, api) {
 
 	app.get(settings.apiPath('/roms'), api.anon(api.roms.list));
-	app.post(settings.apiPath('/roms'), api.auth(api.roms.create, 'roms', 'add'));
+	app.post(settings.apiPath('/roms'), api.auth(api.roms.create, 'roms', 'add', [ scope.ALL , scope.CREATE ]));
 	app.get(settings.apiPath('/roms/:id'),  api.anon(api.roms.view));
-	app.delete(settings.apiPath('/roms/:id'),  api.auth(api.roms.del, 'roms', 'delete-own'));
+	app.delete(settings.apiPath('/roms/:id'),  api.auth(api.roms.del, 'roms', 'delete-own', [ scope.ALL , scope.CREATE ]));
 
 	app.get(settings.apiPath('/games/:gameId/roms'), api.anon(api.roms.list));
-	app.post(settings.apiPath('/games/:gameId/roms'), api.auth(api.roms.create, 'roms', 'add'));
+	app.post(settings.apiPath('/games/:gameId/roms'), api.auth(api.roms.create, 'roms', 'add', [ scope.ALL , scope.CREATE ]));
 };

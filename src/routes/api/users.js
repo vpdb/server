@@ -19,21 +19,22 @@
 
 'use strict';
 
-var settings = require('../../modules/settings');
+const scope = require('../../scope');
+const settings = require('../../modules/settings');
 
 exports.register = function(app, api) {
 
 	app.post(settings.apiPath('/users'),       api.users.create);
-	app.get(settings.apiPath('/users'),        api.auth(api.users.list, 'users', 'search'));
-	app.get(settings.apiPath('/users/:id'),    api.auth(api.users.view, 'users', 'view'));
-	app.put(settings.apiPath('/users/:id'),    api.auth(api.users.update, 'users', 'update'));
-	app.delete(settings.apiPath('/users/:id'), api.auth(api.users.del, 'users', 'delete'));
+	app.get(settings.apiPath('/users'),        api.auth(api.users.list, 'users', 'search', [ scope.ALL ]));
+	app.get(settings.apiPath('/users/:id'),    api.auth(api.users.view, 'users', 'view', [ scope.ALL ]));
+	app.put(settings.apiPath('/users/:id'),    api.auth(api.users.update, 'users', 'update', [ scope.ALL ]));
+	app.delete(settings.apiPath('/users/:id'), api.auth(api.users.del, 'users', 'delete', [ scope.ALL ]));
 
-	app.post(settings.apiPath('/users/:id/star'),   api.auth(api.stars.star('user'), 'users', 'star'));
-	app.delete(settings.apiPath('/users/:id/star'), api.auth(api.stars.unstar('user'), 'users', 'star'));
-	app.get(settings.apiPath('/users/:id/star'),    api.auth(api.stars.get('user'), 'users', 'star'));
+	app.post(settings.apiPath('/users/:id/star'),   api.auth(api.stars.star('user'), 'users', 'star', [ scope.ALL, scope.COMMUNITY ]));
+	app.delete(settings.apiPath('/users/:id/star'), api.auth(api.stars.unstar('user'), 'users', 'star', [ scope.ALL, scope.COMMUNITY ]));
+	app.get(settings.apiPath('/users/:id/star'),    api.auth(api.stars.get('user'), 'users', 'star', [ scope.ALL, scope.COMMUNITY ]));
 
 	app.get(settings.apiPath('/users/:id/events'),             api.anon(api.events.list({ byActor: true })));
-	app.post(settings.apiPath('/users/:id/send-confirmation'), api.auth(api.users.sendConfirmationMail, 'users', 'send-confirmation'));
+	app.post(settings.apiPath('/users/:id/send-confirmation'), api.auth(api.users.sendConfirmationMail, 'users', 'send-confirmation', [ scope.ALL ]));
 
 };

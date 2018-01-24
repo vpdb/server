@@ -19,26 +19,27 @@
 
 'use strict';
 
-var settings = require('../../modules/settings');
+const scope = require('../../scope');
+const settings = require('../../modules/settings');
 
 exports.register = function(app, api) {
 
 	app.get(settings.apiPath('/games'),        api.anon(api.games.list));
 	app.head(settings.apiPath('/games/:id'),   api.anon(api.games.head));
 	app.get(settings.apiPath('/games/:id'),    api.anon(api.games.view));
-	app.patch(settings.apiPath('/games/:id'),  api.auth(api.games.update, 'games', 'update'));
-	app.post(settings.apiPath('/games'),       api.auth(api.games.create, 'games', 'add'));
-	app.delete(settings.apiPath('/games/:id'), api.auth(api.games.del, 'games', 'delete'));
+	app.patch(settings.apiPath('/games/:id'),  api.auth(api.games.update, 'games', 'update', [ scope.ALL ]));
+	app.post(settings.apiPath('/games'),       api.auth(api.games.create, 'games', 'add', [ scope.ALL ]));
+	app.delete(settings.apiPath('/games/:id'), api.auth(api.games.del, 'games', 'delete', [ scope.ALL ]));
 
-	app.post(settings.apiPath('/games/:id/rating'), api.auth(api.ratings.createForGame, 'games', 'rate'));
-	app.put(settings.apiPath('/games/:id/rating'),  api.auth(api.ratings.updateForGame, 'games', 'rate'));
-	app.get(settings.apiPath('/games/:id/rating'),  api.auth(api.ratings.getForGame, 'games', 'rate'));
+	app.post(settings.apiPath('/games/:id/rating'), api.auth(api.ratings.createForGame, 'games', 'rate', [ scope.ALL, scope.COMMUNITY ]));
+	app.put(settings.apiPath('/games/:id/rating'),  api.auth(api.ratings.updateForGame, 'games', 'rate', [ scope.ALL, scope.COMMUNITY ]));
+	app.get(settings.apiPath('/games/:id/rating'),  api.auth(api.ratings.getForGame, 'games', 'rate', [ scope.ALL, scope.COMMUNITY ]));
 
-	app.post(settings.apiPath('/games/:id/star'),   api.auth(api.stars.star('game'), 'games', 'star'));
-	app.delete(settings.apiPath('/games/:id/star'), api.auth(api.stars.unstar('game'), 'games', 'star'));
-	app.get(settings.apiPath('/games/:id/star'),    api.auth(api.stars.get('game'), 'games', 'star'));
+	app.post(settings.apiPath('/games/:id/star'),   api.auth(api.stars.star('game'), 'games', 'star', [ scope.ALL, scope.COMMUNITY ]));
+	app.delete(settings.apiPath('/games/:id/star'), api.auth(api.stars.unstar('game'), 'games', 'star', [ scope.ALL, scope.COMMUNITY ]));
+	app.get(settings.apiPath('/games/:id/star'),    api.auth(api.stars.get('game'), 'games', 'star', [ scope.ALL, scope.COMMUNITY ]));
 
-	app.post(settings.apiPath('/games/:gameId/backglasses'), api.auth(api.backglasses.create, 'backglasses', 'add'));
+	app.post(settings.apiPath('/games/:gameId/backglasses'), api.auth(api.backglasses.create, 'backglasses', 'add', [ scope.ALL, scope.CREATE ]));
 	app.get(settings.apiPath('/games/:gameId/backglasses'),  api.anon(api.backglasses.list));
 
 	app.get(settings.apiPath('/games/:gameId/media'), api.anon(api.media.list));

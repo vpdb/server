@@ -19,7 +19,7 @@
 
 'use strict';
 
-var settings = require('../../modules/settings');
+const settings = require('../../modules/settings');
 
 exports.register = function(app, api, storage) {
 

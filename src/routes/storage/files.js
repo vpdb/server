@@ -19,11 +19,12 @@
 
 'use strict';
 
-var settings = require('../../modules/settings');
+const scope = require('../../scope');
+const settings = require('../../modules/settings');
 
 exports.register = function(app, api, storage) {
 
-	app.post(settings.storageProtectedPath('/files'),                      api.auth(api.files.upload, 'files', 'upload'));
+	app.post(settings.storageProtectedPath('/files'),                      api.auth(api.files.upload, 'files', 'upload', [ scope.ALL ]));
 	app.head(settings.storageProtectedPath('/files/:id.[^/]+'),            api.anon(storage.files.head));
 	app.head(settings.storageProtectedPath('/files/:variation/:id.[^/]+'), api.anon(storage.files.head));
 	app.get(settings.storageProtectedPath('/files/:id.[^/]+'),             api.anon(storage.files.get));  // permission/quota handling is inside.

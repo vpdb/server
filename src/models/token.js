@@ -28,7 +28,7 @@ const validator = require('validator');
 const uniqueValidator = require('mongoose-unique-validator');
 const toObj = require('./plugins/to-object');
 
-const scopes = require('../scopes');
+const scope = require('../scope');
 const config = require('../modules/settings').current;
 
 const Schema = mongoose.Schema;
@@ -86,25 +86,19 @@ TokenSchema.path('label').validate(function(label) {
 	return _.isString(label) && validator.isLength(label ? label.trim() : '', 3);
 }, 'Label must contain at least three characters.');
 
-TokenSchema.path('scopes').validate(function(s) {
-	if (!s || s.length === 0) {
+TokenSchema.path('scopes').validate(function(scopes) {
+	if (!scopes || scopes.length === 0) {
 		this.invalidate('scopes', 'Scopes must be set.');
 		return true;
 	}
-	for (let i = 0; i < s.length; i++) {
-		if (!_.keys(scopes).includes(s[i])) {
-			this.invalidate('scopes', 'Scope must be one or more of the following: [ "' + _.keys(scopes).join('", "') + '" ].');
-			return true;
-		}
+	if (!scope.isValid(scopes)) {
+		this.invalidate('scopes', 'Scopes must be one or more of the following: [ "' + _.keys(scopes).join('", "') + '" ].');
+		return true;
 	}
-	if (this.type === 'application') {
-		const validScopes = [ scopes.community.id, scopes.storage.id ];
-		for (let i = 0; i < s.length; i++) {
-			if (!validScopes.includes(s[i])) {
-				this.invalidate('scopes', 'Application scopes must be one or more of the following: [ "' + validScopes.join('", "') + '" ].');
-				return true;
-			}
-		}
+	const applicationScopes = [ scope.COMMUNITY, scope.STORAGE ];
+	if (this.type === 'application' && !scope.isValid(scopes, applicationScopes)) {
+		this.invalidate('scopes', 'Application scopes must be one or more of the following: [ "' + applicationScopes.join('", "') + '" ].');
+		return true;
 	}
 });
 

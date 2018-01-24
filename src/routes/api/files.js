@@ -19,12 +19,13 @@
 
 'use strict';
 
-var settings = require('../../modules/settings');
+const scope = require('../../scope');
+const settings = require('../../modules/settings');
 
 exports.register = function(app, api) {
 
 	app.get(settings.apiPath('/files/:id'),    api.anon(api.files.view));
-	app.delete(settings.apiPath('/files/:id'), api.auth(api.files.del, 'files', 'delete-own'));
-	app.get(settings.apiPath('/files/:id/blockmatch'), api.auth(api.files.blockmatch, 'files', 'blockmatch'));
+	app.delete(settings.apiPath('/files/:id'), api.auth(api.files.del, 'files', 'delete-own', [ scope.ALL, scope.CREATE ]));
+	app.get(settings.apiPath('/files/:id/blockmatch'), api.auth(api.files.blockmatch, 'files', 'blockmatch', [ scope.ALL, scope.CREATE ]));
 
 };

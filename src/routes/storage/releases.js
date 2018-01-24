@@ -19,11 +19,11 @@
 
 'use strict';
 
-var settings = require('../../modules/settings');
+const scope = require('../../scope');
+const settings = require('../../modules/settings');
 
 exports.register = function(app, api, storage) {
 
-	app.get(settings.storageProtectedPath('/releases/:release_id'), api.auth(storage.releases.download, 'files', 'download'));
-	app.post(settings.storageProtectedPath('/releases/:release_id'), api.auth(storage.releases.download, 'files', 'download'));
-
+	app.get(settings.storageProtectedPath('/releases/:release_id'), api.auth(storage.releases.download, 'files', 'download', [ scope.ALL ]));
+	app.post(settings.storageProtectedPath('/releases/:release_id'), api.auth(storage.releases.download, 'files', 'download', [ scope.ALL ]));
 };

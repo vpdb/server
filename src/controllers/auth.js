@@ -24,6 +24,7 @@ const jwt = require('jwt-simple');
 const logger = require('winston');
 
 const acl = require('../acl');
+const scope = require('../scope');
 const error = require('../modules/error')('ctrl', 'auth');
 const settings = require('../modules/settings');
 const config = settings.current;
@@ -36,6 +37,7 @@ redis.select(config.vpdb.redis.db);
 redis.on('error', err => logger.error(err.message));
 
 const User = require('mongoose').model('User');
+const Token = require('mongoose').model('Token');
 
 /**
  * Protects a resource by verifying the JWT in the header or query param.
@@ -50,12 +52,15 @@ const User = require('mongoose').model('User');
  * @param {Response} res
  * @param {string} [resource=null] ACL resource
  * @param {string} [permission=null] ACL permission
+ * @param {string[]} [requiredScopes=null] Scopes, where, if set, at least one must match the current auth method's scopes.
  * @param {string} [planAttrs=null] key/value pairs of plan options that must match, e.g. { enableAppTokens: false }
  * @returns Promise
  */
-exports.auth = function(req, res, resource, permission, planAttrs) {
+exports.auth = function(req, res, resource, permission, requiredScopes, planAttrs) {
 
+	const userIdHeader = 'X-Vpdb-UserId';
 	const now = new Date();
+	let scopes = [];
 	let token;
 	let fromUrl = false;
 	let headerName = config.vpdb.authorizationHeader;
@@ -105,10 +110,10 @@ exports.auth = function(req, res, resource, permission, planAttrs) {
 					throw error('Invalid access token.').status(401);
 				}
 
-				// fail if not access token
-				if (t.type !== 'access') {
-					throw error('Token must be an access token.').status(401);
-				}
+				// // fail if not access token
+				// if (t.type !== 'access') {
+				// 	throw error('Token must be an access token.').status(401);
+				// }
 
 				// fail if incorrect plan
 				if (!t._created_by.planConfig.enableAppTokens) {
@@ -126,7 +131,21 @@ exports.auth = function(req, res, resource, permission, planAttrs) {
 				}
 
 				// so we're good here!
+				scopes = t.scopes;
 				tokenType = 'access-token';
+
+				// additional checks for application token
+				if (t.type === 'application') {
+					if (!req.headers[userIdHeader]) {
+						throw new error('Must provide "%s" header when using application token.', userIdHeader).status(400);
+					}
+					return User.findOne({ id: req.headers[userIdHeader] }).then(user => {
+						if (!user[t.provider]) {
+							throw new error('Provided user has not been authenticated with %s.', t.provider).status(400);
+						}
+						return user;
+					});
+				}
 				return Token.update({ _id: t._id }, { last_used_at: new Date() }).then(() => t._created_by);
 			});
 
@@ -167,7 +186,7 @@ exports.auth = function(req, res, resource, permission, planAttrs) {
 				if (tokenExp.getTime() - tokenIssued.getTime() === config.vpdb.apiTokenLifetime) {
 					res.setHeader('X-Token-Refresh', exports.generateApiToken(user, now, true));
 				}
-
+				scopes = [ scope.ALL ];
 				tokenType = decoded.irt ? 'jwt-refreshed' : 'jwt';
 				return user;
 			});
@@ -175,6 +194,11 @@ exports.auth = function(req, res, resource, permission, planAttrs) {
 
 	}).then(u => {
 		user = u;
+
+		// check scopes
+		if (!scope.isValid(scopes, requiredScopes)) {
+			throw error('Your token has an invalid scope: [ "%s" ] (required: [ "%s" ])', scopes.join('", "'), requiredScopes.join('", "')).status(403).log();
+		}
 
 		// check plan config if provided
 		if (_.isObject(planAttrs)) {
@@ -193,6 +217,7 @@ exports.auth = function(req, res, resource, permission, planAttrs) {
 		// this will be useful for the rest of the stack
 		req.user = user;
 		req.tokenType = tokenType; // one of: [ 'jwt', 'jwt-refreshed', 'access-token' ]
+		req.tokenScopes = scopes;
 
 		// set dirty header if necessary
 		return redis.getAsync('dirty_user_' + user.id).then(result => {
@@ -218,8 +243,6 @@ exports.auth = function(req, res, resource, permission, planAttrs) {
 		});
 	});
 };
-
-var Token = require('mongoose').model('Token');
 
 /**
  * Creates a JSON Web Token for a given user and time.

@@ -25,7 +25,7 @@ const logger = require('winston');
 const error = require('../../modules/error')('api', 'token');
 const api = require('./api');
 const acl = require('../../acl');
-const scopes = require('../../scopes');
+const scope = require('../../scope');
 const Token = require('mongoose').model('Token');
 
 exports.create = function(req, res) {
@@ -37,7 +37,7 @@ exports.create = function(req, res) {
 		req.body.type = req.body.type || 'personal';
 
 		// check if the plan allows application token creation
-		if (req.body.scopes && req.body.scopes.includes(scopes.all.id) && !req.user.planConfig.enableAppTokens) {
+		if (scope.has(req.body.scopes, scope.ALL) && !req.user.planConfig.enableAppTokens) {
 			throw error('Your current plan "%s" does not allow the creation of application "all" access tokens. Upgrade or contact an admin.', req.user.planConfig.id).status(401);
 		}
 
@@ -47,7 +47,7 @@ exports.create = function(req, res) {
 
 			// in this case, the user is allowed to create login tokens without
 			// additionally supplying the password.
-			if (req.body.scopes && !req.body.scopes.includes(scopes.login.id) && !req.body.password) {
+			if (!scope.has(req.body.scopes, scope.LOGIN) && !req.body.password) {
 				throw error('You cannot create other tokens but login tokens without supplying a password, ' +
 					'even when logged with a "short term" token.').warn('create-token').status(401);
 			}

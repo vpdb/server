@@ -19,13 +19,13 @@
 
 'use strict';
 
-var settings = require('../../modules/settings');
+const scope = require('../../scope');
+const settings = require('../../modules/settings');
 
 exports.register = function(app, api) {
 
-	app.post(settings.apiPath('/tokens'), api.auth(api.tokens.create, 'tokens', 'add'));
-	app.get(settings.apiPath('/tokens'), api.auth(api.tokens.list, 'tokens', 'list', { enableAppTokens: true }));
-	app.delete(settings.apiPath('/tokens/:id'), api.auth(api.tokens.del, 'tokens', 'delete-own'));
-	app.patch(settings.apiPath('/tokens/:id'), api.auth(api.tokens.update, 'tokens', 'update-own'));
-
+	app.post(settings.apiPath('/tokens'), api.auth(api.tokens.create, 'tokens', 'add', [ scope.ALL ]));
+	app.get(settings.apiPath('/tokens'), api.auth(api.tokens.list, 'tokens', 'list', [ scope.ALL ], { enableAppTokens: true }));
+	app.delete(settings.apiPath('/tokens/:id'), api.auth(api.tokens.del, 'tokens', 'delete-own', [ scope.ALL ]));
+	app.patch(settings.apiPath('/tokens/:id'), api.auth(api.tokens.update, 'tokens', 'update-own', [ scope.ALL ]));
 };

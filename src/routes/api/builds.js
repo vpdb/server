@@ -19,14 +19,15 @@
 
 'use strict';
 
-var settings = require('../../modules/settings');
+const scope = require('../../scope');
+const settings = require('../../modules/settings');
 
 exports.register = function(app, api) {
 
 	app.get(settings.apiPath('/builds'),        api.anon(api.builds.list));
-	app.post(settings.apiPath('/builds'),       api.auth(api.builds.create, 'builds', 'add'));
+	app.post(settings.apiPath('/builds'),       api.auth(api.builds.create, 'builds', 'add', [ scope.ALL, scope.CREATE ]));
 	app.get(settings.apiPath('/builds/:id'),    api.anon(api.builds.view));
-	app.patch(settings.apiPath('/builds/:id'),  api.auth(api.builds.update, 'builds', 'update'));
-	app.delete(settings.apiPath('/builds/:id'), api.auth(api.builds.del, 'builds', 'delete-own'));
+	app.patch(settings.apiPath('/builds/:id'),  api.auth(api.builds.update, 'builds', 'update', [ scope.ALL, scope.CREATE ]));
+	app.delete(settings.apiPath('/builds/:id'), api.auth(api.builds.del, 'builds', 'delete-own', [ scope.ALL, scope.CREATE ]));
 
 };

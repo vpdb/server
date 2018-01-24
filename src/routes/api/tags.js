@@ -19,12 +19,13 @@
 
 'use strict';
 
-var settings = require('../../modules/settings');
+const scope = require('../../scope');
+const settings = require('../../modules/settings');
 
 exports.register = function(app, api) {
 
 	app.get(settings.apiPath('/tags'),        api.anon(api.tags.list));
-	app.post(settings.apiPath('/tags'),       api.auth(api.tags.create, 'tags', 'add'));
-	app.delete(settings.apiPath('/tags/:id'), api.auth(api.tags.del, 'tags', 'delete-own'));
+	app.post(settings.apiPath('/tags'),       api.auth(api.tags.create, 'tags', 'add', [ scope.ALL , scope.CREATE ]));
+	app.delete(settings.apiPath('/tags/:id'), api.auth(api.tags.del, 'tags', 'delete-own', [ scope.ALL , scope.CREATE ]));
 
 };

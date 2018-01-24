@@ -35,12 +35,13 @@ const pak = require('../../../package.json');
  * @param controllerFct Callback, called with (`req`, `res`). This is your API logic
  * @param resource ACL for resource
  * @param permission ACL for permission
+ * @param scopes scopes necessary for this resource
  * @param planConfig key/value pairs of plan options that must match
  * @returns {Function} Middleware function
  */
-exports.auth = function(controllerFct, resource, permission, planConfig) {
+exports.auth = function(controllerFct, resource, permission, scopes, planConfig) {
 	return function(req, res) {
-		auth.auth(req, res, resource, permission, planConfig)
+		auth.auth(req, res, resource, permission, scopes, planConfig)
 			.then(() => controllerFct(req, res))
 			.catch(err => exports.fail(res, err, err.code));
 	};
@@ -57,7 +58,7 @@ exports.auth = function(controllerFct, resource, permission, planConfig) {
 exports.anon = function(controllerFct) {
 	// auth is only called in order to populate the req.user object, if credentials are provided.
 	return function(req, res) {
-		auth.auth(req, res, null, null, null)
+		auth.auth(req, res, null, null, null, null)
 			.then(() => controllerFct(req, res))
 			.catch(err => {
 				if (err.code === 500) {

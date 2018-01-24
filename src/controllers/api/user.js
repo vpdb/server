@@ -31,6 +31,7 @@ const LogUser = require('mongoose').model('LogUser');
 const acl = require('../../acl');
 const api = require('./api');
 const auth = require('../auth');
+const scope = require('../../scope');
 
 const quota = require('../../modules/quota');
 const pusher = require('../../modules/pusher');
@@ -321,9 +322,9 @@ exports.authenticate = function(req, res) {
 				throw error('Invalid token.').status(401);
 			}
 
-			// fail if not access token
-			if (token.type !== 'login') {
-				throw error('Token must be a login token.').status(401);
+			// fail if not login token
+			if (scope.isValid(token.scopes, [ 'login' ])) {
+				throw error('Token must have a login scope.').status(401);
 			}
 
 			// fail if token expired

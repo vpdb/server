@@ -19,7 +19,8 @@
 
 'use strict';
 
-var settings = require('../../modules/settings');
+const scope = require('../../scope');
+const settings = require('../../modules/settings');
 
 exports.register = function(app, api) {
 
@@ -28,16 +29,16 @@ exports.register = function(app, api) {
 	app.get(settings.apiPath('/'), api.anon(api.index));
 
 	// ipdb
-	app.get(settings.apiPath('/ipdb/:id'), api.auth(api.ipdb.view, 'ipdb', 'view'));
+	app.get(settings.apiPath('/ipdb/:id'), api.auth(api.ipdb.view, 'ipdb', 'view', [ scope.ALL ]));
 
 	// roles
-	app.get(settings.apiPath('/roles'), api.auth(api.roles.list, 'roles', 'list'));
+	app.get(settings.apiPath('/roles'), api.auth(api.roles.list, 'roles', 'list', [ scope.ALL ]));
 
 	// events
 	app.get(settings.apiPath('/events'), api.anon(api.events.list()));
 
 	// pusher
-	app.post(settings.apiPath('/messages/authenticate'), api.auth(api.messages.authenticate, 'messages', 'receive', { enableRealtime: true }));
+	app.post(settings.apiPath('/messages/authenticate'), api.auth(api.messages.authenticate, 'messages', 'receive', [ scope.ALL ], { enableRealtime: true }));
 
 	// ping
 	app.get(settings.apiPath('/ping'), api.anon(api.ping));

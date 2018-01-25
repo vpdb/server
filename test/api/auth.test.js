@@ -15,6 +15,7 @@ describe('The authentication engine of the VPDB API', function() {
 
 	before(function(done) {
 		hlp.setupUsers(request, {
+			admin: { roles: ['admin'], _plan: 'subscribed' },
 			member: { roles: [ 'member' ] },
 			disabled: { roles: [ 'member' ], is_active: false },
 			subscribed: { roles: [ 'member' ], _plan: 'subscribed' },
@@ -178,7 +179,7 @@ describe('The authentication engine of the VPDB API', function() {
 		});
 	});
 
-	describe('when a primary access token is provided in the header', function() {
+	describe('when a JWT is provided in the header', function() {
 
 		it('should grant access to the user profile if the token is valid', function(done) {
 			request
@@ -237,7 +238,7 @@ describe('The authentication engine of the VPDB API', function() {
 		});
 	});
 
-	describe('when an application access token is provided in the header', function() {
+	describe('when a personal token is provided in the header', function() {
 
 		it('should fail if the token is invalid', function(done) {
 			request
@@ -345,6 +346,77 @@ describe('The authentication engine of the VPDB API', function() {
 						.get('/api/v1/user')
 						.set('Authorization', 'Bearer ' + res.body.token)
 						.end(hlp.status(200, done));
+				});
+		});
+	});
+
+	describe.only('when an application token is provided in the header', () => {
+		let oauthUser;
+		let appToken;
+		before(done => {
+			request
+				.post('/api/v1/authenticate/mock')
+				.send({
+					provider: 'ipboard',
+					providerName: 'ipbtest',
+					profile: { provider: 'ipbtest', id: '2', username: 'test', displayName: 'test i am', profileUrl: 'http://localhost:8088/index.php?showuser=2', emails: [ { value: 'test@vpdb.io' } ], photos: [ { value: 'http://localhost:8088/uploads/' } ] }
+				}).end((err, res) => {
+					hlp.expectStatus(err, res, 200);
+					hlp.doomUser(res.body.user.id);
+					oauthUser = res.body.user;
+					request
+						.post('/api/v1/tokens')
+						.as('admin')
+						.send({ label: 'Test Application', password: hlp.getUser('admin').password, provider: 'ipbtest', type: 'application', scopes: [ 'community'] })
+						.end((err, res) => {
+							hlp.expectStatus(err, res, 201);
+							appToken = res.body.token;
+							done();
+						});
+				});
+		});
+
+		it('should fail when no user header is provided', done => {
+			request
+				.get('/api/v1/user')
+				.with(appToken)
+				.end(hlp.status(400, 'must provide "x-vpdb-user-id" header', done));
+		});
+
+		it('should fail when a non-existent user header is provided', done => {
+			request
+				.get('/api/v1/user')
+				.with(appToken)
+				.set('X-Vpdb-User-Id', 'blürpsl')
+				.end(hlp.status(400, 'no user with id', done));
+		});
+
+		it('should fail with a user header of a different provider', done => {
+			request
+				.get('/api/v1/user')
+				.with(appToken)
+				.set('X-Vpdb-User-Id', hlp.getUser('member').id)
+				.end(hlp.status(400, 'user has not been authenticated with', done));
+		});
+
+		it('should fail on a out-of-scope resource', done => {
+			request
+				.post('/api/v1/backglasses')
+				.send({})
+				.with(appToken)
+				.set('X-Vpdb-User-Id', oauthUser.id)
+				.end(hlp.status(401, 'token has an invalid scope', done));
+		});
+
+		it('should succeed with the correct user header', done => {
+			request
+				.get('/api/v1/user')
+				.with(appToken)
+				.set('X-Vpdb-User-Id', oauthUser.id)
+				.end(function(err, res) {
+					hlp.expectStatus(err, res, 200);
+					expect(res.body.id).to.be(oauthUser.id);
+					done();
 				});
 		});
 	});

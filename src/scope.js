@@ -18,10 +18,10 @@ class Scope {
 		this.ALL = 'all';
 
 		/**
-		 * Used for autologin. Can be used to obtain a JWT (which has "all" scope).
+		 * Used for autologin. Can be used to obtain a JWT (which has a "all" scope).
 		 *
 		 * This is used for browser auto-login so we don't have to store the plain
-		 * text password on the user's machine. The only thing it
+		 * text password on the user's machine.
 		 */
 		this.LOGIN = 'login';
 
@@ -42,8 +42,25 @@ class Scope {
 		 */
 		this.STORAGE = 'storage';
 
-		this._scopes = [ this.ALL, this.LOGIN, this.COMMUNITY, this.CREATE, this.STORAGE ];
-		this._applicationScopes = [ this.COMMUNITY, this.CREATE, this.STORAGE ];
+		/**
+		 * Defines which scopes a token type is allowed to have *at creation*.
+		 * @private
+		 */
+		this._scopes = {
+			personal:  [ this.ALL, this.LOGIN, this.COMMUNITY, this.CREATE, this.STORAGE ],
+			application: [ this.COMMUNITY, this.CREATE, this.STORAGE ]
+		};
+	}
+
+	/**
+	 * Returns all scopes that are valid for a given token type at token
+	 * creation.
+	 *
+	 * @param {"personal"|"application"} type Token type
+	 * @return {string[]} Valid scopes
+	 */
+	getScopes(type) {
+		return this._scopes[type];
 	}
 
 	/**
@@ -56,27 +73,36 @@ class Scope {
 	has(scopes, scope) {
 		return scopes && scopes.includes(scope);
 	}
-
 	/**
-	 * Makes sure that all given scopes are valid
-	 * @param {string[]} scopes Scopes to check
-	 * @param {string[]|null} [validScopes] Valid scopes, all scopes when omitted
+	 * Makes sure that all given scopes are valid. Basically as soon as one
+	 * of the given scopes is not in the valid scopes, returns false.
+	 *
+	 * @param {string[]|"personal"|"application"} [validScopes] If string given, match against valid scopes of given type. Otherwise match against given scopes.
+	 * @param {string[]} scopesToValidate Scopes to check
 	 * @return {boolean} True if all scopes are valid
 	 */
-	isValid(scopes, validScopes) {
-		if (!_.isArray(scopes)) {
-			return true;
+	isValid(validScopes, scopesToValidate) {
+		// fail if no scopes to validate given.
+		if (!_.isArray(scopesToValidate)) {
+			return false;
 		}
-		validScopes = validScopes || this._scopes;
-		for (let i = 0; i < scopes.length; i++) {
-			if (!this.has(validScopes, scopes[i])) {
+		validScopes = _.isArray(validScopes) ? validScopes : this._scopes[validScopes];
+		for (let i = 0; i < scopesToValidate.length; i++) {
+			if (!this.has(validScopes, scopesToValidate[i])) {
 				return false;
 			}
 		}
 		return true;
 	}
 
-	isExclusive(scopes, validScopes) {
+	/**
+	 * Checks if the given scopes are identical.
+	 *
+	 * @param {string[]} validScopes
+	 * @param {string[]} scopes
+	 * @return {boolean} True if identical, false otherwise.
+	 */
+	isIdentical(validScopes, scopes) {
 		if (scopes.length !== validScopes.length){
 			return false;
 		}
@@ -86,10 +112,6 @@ class Scope {
 			}
 		}
 		return true;
-	}
-
-	isApplicationScope(scopes) {
-		return this.isValid(scopes, this._applicationScopes);
 	}
 }
 

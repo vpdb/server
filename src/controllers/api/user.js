@@ -323,7 +323,7 @@ exports.authenticate = function(req, res) {
 			}
 
 			// fail if not login token
-			if (!scope.isExclusive(token.scopes, [ 'login' ])) {
+			if (!scope.isIdentical(token.scopes, [ 'login' ])) {
 				throw error('Token to exchange for JWT must exclusively be "login" ([ "' + token.scopes.join('", "') + '" ] given).').status(401);
 			}
 

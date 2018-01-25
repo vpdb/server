@@ -34,6 +34,7 @@ describe('The VPDB `Token` API', function() {
 		before(function(done) {
 			hlp.setupUsers(request, {
 				member: { roles: [ 'member' ] },
+				admin: { roles: [ 'admin' ], _plan: 'subscribed' },
 				subscribed: { roles: [ 'member' ], _plan: 'subscribed' },
 				free: { roles: [ 'member' ], _plan: 'free' }
 			}, done);
@@ -67,6 +68,28 @@ describe('The VPDB `Token` API', function() {
 				.send({ label: 'Test Application', password: hlp.getUser('subscribed').password, type: 'xxx', scopes: [ 'all' ] })
 				.end(function(err, res) {
 					hlp.expectValidationError(err, res, 'type', 'not a valid enum value');
+					done();
+				});
+		});
+
+		it('should fail if no scope is provided', function(done) {
+			request
+				.post('/api/v1/tokens')
+				.as('subscribed')
+				.send({ label: 'Test Application', password: hlp.getUser('subscribed').password })
+				.end(function(err, res) {
+					hlp.expectValidationError(err, res, 'scopes', 'scopes are required');
+					done();
+				});
+		});
+
+		it('should fail if an invalid scope is provided', function(done) {
+			request
+				.post('/api/v1/tokens')
+				.as('subscribed')
+				.send({ label: 'Test Application', password: hlp.getUser('subscribed').password, scopes: [ 'bürz' ] })
+				.end(function(err, res) {
+					hlp.expectValidationError(err, res, 'scopes', 'must be one or more of the following');
 					done();
 				});
 		});
@@ -291,34 +314,65 @@ describe('The VPDB `Token` API', function() {
 
 	describe('when creating a new application token', () => {
 		before(function(done) {
-			hlp.setupUsers(request, { root: { roles: ['root'], _plan: 'subscribed' } }, done);
+			hlp.setupUsers(request, {
+				admin: { roles: ['admin'], _plan: 'subscribed' },
+				subscribed: { roles: [ 'member' ], _plan: 'subscribed' },
+			}, done);
 		});
 
 		after(function(done) {
 			hlp.cleanup(request, done);
 		});
 
-		it('should fail for tokens with scope "all"', done => {
+		it('should fail for without provider', done => {
 			request
 				.post('/api/v1/tokens')
-				.as('root')
-				.send({ password: hlp.getUser('root').password, type: 'application', scopes: [ 'all' ] })
+				.as('admin')
+				.send({ label: 'Test Application', password: hlp.getUser('admin').password, type: 'application', scopes: [ 'community '] })
 				.end(function(err, res) {
-					hlp.expectValidationError(err, res, 'scopes', 'application scopes must be one or more of the following');
+					hlp.expectValidationError(err, res, 'provider', 'provider is required');
 					done();
 				});
 		});
 
-		it('should fail for tokens with scope "login"', done => {
+		it('should fail for invalid provider', done => {
 			request
 				.post('/api/v1/tokens')
-				.as('root')
-				.send({ password: hlp.getUser('root').password, type: 'application', scopes: [ 'login' ] })
+				.as('admin')
+				.send({ label: 'Test Application', password: hlp.getUser('admin').password, type: 'application', provider: 'yadayada', scopes: [ 'community '] })
 				.end(function(err, res) {
-					hlp.expectValidationError(err, res, 'scopes', 'application scopes must be one or more of the following');
+					hlp.expectValidationError(err, res, 'provider', 'provider must be one of');
 					done();
 				});
-		})
+		});
+
+		it('should fail for existing but invalid scope', done => {
+			request
+				.post('/api/v1/tokens')
+				.as('admin')
+				.send({ label: 'Test Application', password: hlp.getUser('admin').password, type: 'application', scopes: [ 'all '] })
+				.end(function(err, res) {
+					hlp.expectValidationError(err, res, 'scopes', 'scopes must be one or more of the following');
+					done();
+				});
+		});
+
+		it('should fail for user without proper ACLs', done => {
+			request
+				.post('/api/v1/tokens')
+				.as('subscribed')
+				.send({ label: 'Test Application', password: hlp.getUser('subscribed').password, provider: 'github', type: 'application', scopes: [ 'community'] })
+				.end(hlp.status(401, done));
+		});
+
+		it('should succeed with valid data', done => {
+			request
+				.post('/api/v1/tokens')
+				.as('admin')
+				.send({ label: 'Test Application', password: hlp.getUser('admin').password, provider: 'github', type: 'application', scopes: [ 'community'] })
+				.end(hlp.status(201, done));
+		});
+
 	});
 
 	describe('when listing tokens', function() {

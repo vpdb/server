@@ -151,8 +151,11 @@ exports.fail = function(res, err, code) {
 				};
 			}), _.isEqual);
 			res.status(code).json(_.assignIn({ errors: _.sortBy(arr, 'field') }, body));
-		} else {
+		} else if (_.isFunction(err.msg)) {
 			res.status(code).json(_.assignIn({ error: err.msg() }, body));
+		} else {
+			res.status(code).json(_.assignIn({ error: err.message }, body));
+			logger.error(err.stack);
 		}
 	}).catch(err => logger.error(err.stack));
 };

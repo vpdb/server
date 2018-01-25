@@ -77,7 +77,8 @@ exports.create = function(req, res) {
 					label: req.body.label,
 					is_active: true,
 					created_at: new Date(),
-					expires_at: new Date(new Date().getTime() + 315360000000) // 10 years
+					expires_at: new Date(new Date().getTime() + 315360000000), // 10 years
+					_created_by: req.user._id
 				}));
 				return newToken.validate();
 			});

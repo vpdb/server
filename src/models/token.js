@@ -32,6 +32,7 @@ const scope = require('../scope');
 const config = require('../modules/settings').current;
 
 const Schema = mongoose.Schema;
+const validTypes = [ 'personal', 'application' ];
 
 //-----------------------------------------------------------------------------
 // SCHEMA
@@ -39,18 +40,17 @@ const Schema = mongoose.Schema;
 const fields = {
 	id: { type: String, required: true, unique: true, 'default': shortId.generate },
 	token: { type: String, required: true, unique: true, 'default': generate },
-	label: { type: String, required: 'A label must be provided.' },
-	type: { type: String, 'enum': [ 'personal', 'application' ], required: true },
-	scopes: { type: [String], required: true },
+	label: { type: String, required: 'A label must be provided' },
+	type: { type: String, 'enum': validTypes, required: true },
+	scopes: { type: [String] },
 	provider: { type: String }, // must be set for application tokens
 	is_active: { type: Boolean, required: true, 'default': true },
 	last_used_at: { type: Date },
 	expires_at: { type: Date, required: true },
 	created_at: { type: Date, required: true },
-	_created_by: { type: Schema.ObjectId, ref: 'User', required: false }
+	_created_by: { type: Schema.ObjectId, ref: 'User', required: true }
 };
 const TokenSchema = new Schema(fields, { usePushEach: true });
-
 
 //-----------------------------------------------------------------------------
 // API FIELDS
@@ -58,7 +58,6 @@ const TokenSchema = new Schema(fields, { usePushEach: true });
 const apiFields = {
 	simple: ['id', 'label', 'is_active', 'last_used_at', 'expires_at', 'created_at']
 };
-
 
 //-----------------------------------------------------------------------------
 // METHODS
@@ -88,17 +87,15 @@ TokenSchema.path('label').validate(function(label) {
 
 TokenSchema.path('scopes').validate(function(scopes) {
 	if (!scopes || scopes.length === 0) {
-		this.invalidate('scopes', 'Scopes must be set.');
+		this.invalidate('scopes', 'Scopes are required');
 		return true;
 	}
-	if (!scope.isValid(scopes)) {
-		this.invalidate('scopes', 'Scopes must be one or more of the following: [ "' + _.keys(scopes).join('", "') + '" ].');
-		return true;
+	// for scope validation, fall back to private if invalid type given
+	const type = validTypes.includes(this.type) ? this.type : 'private';
+	if (!scope.isValid(type, scopes)) {
+		this.invalidate('scopes', 'Scopes must be one or more of the following: [ "' + scope.getScopes(type).join('", "') + '" ].');
 	}
-	if (this.type === 'application' && !scope.isApplicationScope(scopes)) {
-		this.invalidate('scopes', 'Application scopes must be one or more of the following: [ "' + scope._applicationScopes.join('", "') + '" ].');
-		return true;
-	}
+	return true;
 });
 
 TokenSchema.path('type').validate(function(type) {
@@ -119,7 +116,7 @@ TokenSchema.path('type').validate(function(type) {
 			}
 		});
 		if (!providers.includes(this.provider)) {
-			this.invalidate('provider', 'Must be one of: [ "' + providers.join('", "') + '" ].');
+			this.invalidate('provider', 'Provider must be one of: [ "' + providers.join('", "') + '" ].');
 		}
 	}
 	return true;

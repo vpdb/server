@@ -587,14 +587,12 @@ describe('The scopes of the VPDB API', function() {
 			request.del('/api/v1/builds/1234').with(tokenCommunity).end(hlp.status(401, 'invalid scope', done));
 		});
 
-
 		it('should deny access to file deletion', done => {
 			request.del('/api/v1/files/1234').with(tokenCommunity).end(hlp.status(401, 'invalid scope', done));
 		});
 		it('should deny access to file blockmatch', done => {
 			request.get('/api/v1/files/1234/blockmatch').with(tokenCommunity).end(hlp.status(401, 'invalid scope', done));
 		});
-
 
 		it('should deny access to game request retrieval', done => {
 			request.get('/api/v1/game_requests').with(tokenCommunity).end(hlp.status(401, 'invalid scope', done));
@@ -759,8 +757,8 @@ describe('The scopes of the VPDB API', function() {
 			request.patch('/api/v1/tokens/1234').send({}).with(tokenCommunity).end(hlp.status(401, 'invalid scope', done));
 		});
 
-		it('should deny access to user profile', done => {
-			request.get('/api/v1/user').with(tokenCommunity).end(hlp.status(401, 'invalid scope', done));
+		it('should allow access to user profile', done => {
+			request.get('/api/v1/user').with(tokenCommunity).end(hlp.status(200, done));
 		});
 		it('should deny access to user profile update', done => {
 			request.patch('/api/v1/user').send({}).with(tokenCommunity).end(hlp.status(401, 'invalid scope', done));

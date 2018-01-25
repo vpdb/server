@@ -58,9 +58,9 @@ const Token = require('mongoose').model('Token');
  */
 exports.auth = function(req, res, resource, permission, requiredScopes, planAttrs) {
 
-	const userIdHeader = 'X-Vpdb-UserId';
+	const userIdHeader = 'x-vpdb-user-id';
 	const now = new Date();
-	let scopes = [];
+	let tokenScopes = [];
 	let token;
 	let fromUrl = false;
 	let headerName = config.vpdb.authorizationHeader;
@@ -110,13 +110,8 @@ exports.auth = function(req, res, resource, permission, requiredScopes, planAttr
 					throw error('Invalid access token.').status(401);
 				}
 
-				// // fail if not access token
-				// if (t.type !== 'access') {
-				// 	throw error('Token must be an access token.').status(401);
-				// }
-
 				// fail if incorrect plan
-				if (!t._created_by.planConfig.enableAppTokens) {
+				if (t.type === 'personal' && t._created_by.planConfig.enableAppTokens) {
 					throw error('Your current plan "%s" does not allow the use of application access tokens. Upgrade or contact an admin.', t._created_by.planConfig.id).status(401);
 				}
 
@@ -131,7 +126,7 @@ exports.auth = function(req, res, resource, permission, requiredScopes, planAttr
 				}
 
 				// so we're good here!
-				scopes = t.scopes;
+				tokenScopes = t.scopes;
 				tokenType = 'access-token';
 
 				// additional checks for application token
@@ -140,6 +135,9 @@ exports.auth = function(req, res, resource, permission, requiredScopes, planAttr
 						throw new error('Must provide "%s" header when using application token.', userIdHeader).status(400);
 					}
 					return User.findOne({ id: req.headers[userIdHeader] }).then(user => {
+						if (!user) {
+							throw new error('No user with ID "%s".', req.headers[userIdHeader]).status(400);
+						}
 						if (!user[t.provider]) {
 							throw new error('Provided user has not been authenticated with %s.', t.provider).status(400);
 						}
@@ -186,7 +184,7 @@ exports.auth = function(req, res, resource, permission, requiredScopes, planAttr
 				if (tokenExp.getTime() - tokenIssued.getTime() === config.vpdb.apiTokenLifetime) {
 					res.setHeader('X-Token-Refresh', exports.generateApiToken(user, now, true));
 				}
-				scopes = [ scope.ALL ];
+				tokenScopes = [ scope.ALL ];
 				tokenType = decoded.irt ? 'jwt-refreshed' : 'jwt';
 				return user;
 			});
@@ -196,8 +194,8 @@ exports.auth = function(req, res, resource, permission, requiredScopes, planAttr
 		user = u;
 
 		// check scopes
-		if (!scope.isValid(scopes, requiredScopes)) {
-			throw error('Your token has an invalid scope: [ "%s" ] (required: [ "%s" ])', scopes.join('", "'), requiredScopes.join('", "')).status(401).log();
+		if (!scope.isValid(requiredScopes, tokenScopes)) {
+			throw error('Your token has an invalid scope: [ "%s" ] (required: [ "%s" ])', tokenScopes.join('", "'), requiredScopes.join('", "')).status(401).log();
 		}
 
 		// check plan config if provided
@@ -217,7 +215,7 @@ exports.auth = function(req, res, resource, permission, requiredScopes, planAttr
 		// this will be useful for the rest of the stack
 		req.user = user;
 		req.tokenType = tokenType; // one of: [ 'jwt', 'jwt-refreshed', 'access-token' ]
-		req.tokenScopes = scopes;
+		req.tokenScopes = tokenScopes;
 
 		// set dirty header if necessary
 		return redis.getAsync('dirty_user_' + user.id).then(result => {

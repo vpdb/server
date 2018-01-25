@@ -24,7 +24,7 @@ const settings = require('../../modules/settings');
 
 exports.register = function(app, api) {
 
-	app.get(settings.apiPath('/user'),              api.auth(api.user.view, 'user', 'view', [ scope.ALL ]));
+	app.get(settings.apiPath('/user'),              api.auth(api.user.view, 'user', 'view', [ scope.ALL, scope.COMMUNITY ]));
 	app.patch(settings.apiPath('/user'),            api.auth(api.user.update, 'user', 'update', [ scope.ALL ]));
 	app.get(settings.apiPath('/user/logs'),         api.auth(api.userlogs.list, 'user', 'view', [ scope.ALL ]));
 	app.get(settings.apiPath('/user/events'),       api.auth(api.events.list({ loggedUser: true }), 'user', 'view', [ scope.ALL ]));

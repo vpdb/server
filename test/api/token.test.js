@@ -29,7 +29,7 @@ superagentTest(request);
 
 describe('The VPDB `Token` API', function() {
 
-	describe('when creating a new access token', function() {
+	describe('when creating a new personal token with scope "all"', function() {
 
 		before(function(done) {
 			hlp.setupUsers(request, {
@@ -58,6 +58,17 @@ describe('The VPDB `Token` API', function() {
 				.as('subscribed')
 				.send({ label: 'Test Application', password: 'xxx', type: 'personal', scopes: [ 'all' ] })
 				.end(hlp.status(401, 'wrong password', done));
+		});
+
+		it('should fail if an invalid type is provided', function(done) {
+			request
+				.post('/api/v1/tokens')
+				.as('subscribed')
+				.send({ label: 'Test Application', password: hlp.getUser('subscribed').password, type: 'xxx', scopes: [ 'all' ] })
+				.end(function(err, res) {
+					hlp.expectValidationError(err, res, 'type', 'not a valid enum value');
+					done();
+				});
 		});
 
 		it('should fail validations for empty label', function(done) {
@@ -107,7 +118,7 @@ describe('The VPDB `Token` API', function() {
 
 	});
 
-	describe('when creating a new login token', function() {
+	describe('when creating a new personal token with scope "login"', function() {
 
 		before(function(done) {
 			hlp.setupUsers(request, {
@@ -278,7 +289,39 @@ describe('The VPDB `Token` API', function() {
 		});
 	});
 
-	describe('when listing auth tokens', function() {
+	describe('when creating a new application token', () => {
+		before(function(done) {
+			hlp.setupUsers(request, { root: { roles: ['root'], _plan: 'subscribed' } }, done);
+		});
+
+		after(function(done) {
+			hlp.cleanup(request, done);
+		});
+
+		it('should fail for tokens with scope "all"', done => {
+			request
+				.post('/api/v1/tokens')
+				.as('root')
+				.send({ password: hlp.getUser('root').password, type: 'application', scopes: [ 'all' ] })
+				.end(function(err, res) {
+					hlp.expectValidationError(err, res, 'scopes', 'application scopes must be one or more of the following');
+					done();
+				});
+		});
+
+		it('should fail for tokens with scope "login"', done => {
+			request
+				.post('/api/v1/tokens')
+				.as('root')
+				.send({ password: hlp.getUser('root').password, type: 'application', scopes: [ 'login' ] })
+				.end(function(err, res) {
+					hlp.expectValidationError(err, res, 'scopes', 'application scopes must be one or more of the following');
+					done();
+				});
+		})
+	});
+
+	describe('when listing tokens', function() {
 
 		before(function(done) {
 			hlp.setupUsers(request, {
@@ -351,7 +394,7 @@ describe('The VPDB `Token` API', function() {
 		});
 	});
 
-	describe('when updating an auth token', function() {
+	describe('when updating a token', function() {
 
 		before(function(done) {
 			hlp.setupUsers(request, {
@@ -413,7 +456,7 @@ describe('The VPDB `Token` API', function() {
 
 	});
 
-	describe('when deleting an auth token', function() {
+	describe('when deleting a token', function() {
 
 		before(function(done) {
 			hlp.setupUsers(request, {

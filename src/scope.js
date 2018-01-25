@@ -43,6 +43,7 @@ class Scope {
 		this.STORAGE = 'storage';
 
 		this._scopes = [ this.ALL, this.LOGIN, this.COMMUNITY, this.CREATE, this.STORAGE ];
+		this._applicationScopes = [ this.COMMUNITY, this.CREATE, this.STORAGE ];
 	}
 
 	/**
@@ -85,6 +86,10 @@ class Scope {
 			}
 		}
 		return true;
+	}
+
+	isApplicationScope(scopes) {
+		return this.isValid(scopes, this._applicationScopes);
 	}
 }
 

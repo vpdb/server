@@ -95,9 +95,8 @@ TokenSchema.path('scopes').validate(function(scopes) {
 		this.invalidate('scopes', 'Scopes must be one or more of the following: [ "' + _.keys(scopes).join('", "') + '" ].');
 		return true;
 	}
-	const applicationScopes = [ scope.COMMUNITY, scope.STORAGE ];
-	if (this.type === 'application' && !scope.isValid(scopes, applicationScopes)) {
-		this.invalidate('scopes', 'Application scopes must be one or more of the following: [ "' + applicationScopes.join('", "') + '" ].');
+	if (this.type === 'application' && !scope.isApplicationScope(scopes)) {
+		this.invalidate('scopes', 'Application scopes must be one or more of the following: [ "' + scope._applicationScopes.join('", "') + '" ].');
 		return true;
 	}
 });

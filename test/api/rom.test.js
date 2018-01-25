@@ -334,7 +334,7 @@ describe('The VPDB `ROM` API', function() {
 						id: 'tz_pa1',
 						_file: file.id
 					})
-					.end(hlp.status(400, 'must provide an ipdb number', done));
+					.end(hlp.status(422, 'must provide an ipdb number', done));
 			});
 		});
 

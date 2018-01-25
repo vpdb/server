@@ -582,6 +582,10 @@ exports.status = function(code, contains, next) {
 		}
 		expect(status).to.be(code);
 		if (contains) {
+			if (!body.error) {
+				exports.dump(body);
+				throw new Error('Expected error message but got no error.');
+			}
 			const msg = body.error.message || body.error;
 			expect(msg.toLowerCase()).to.contain(contains.toLowerCase());
 		}

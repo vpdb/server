@@ -85,6 +85,13 @@ exports.create = function(req, res) {
 	}).catch(api.handleError(res, error, 'Error creating user'));
 };
 
+exports.createOrUpdate = function(req, res) {
+
+	Promise.try(() => {
+
+	}).catch(api.handleError(res, error, 'Error creating or updating user'));
+};
+
 
 /**
  * Lists users.

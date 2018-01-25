@@ -350,7 +350,7 @@ describe('The authentication engine of the VPDB API', function() {
 		});
 	});
 
-	describe.only('when an application token is provided in the header', () => {
+	describe('when an application token is provided in the header', () => {
 		let oauthUser;
 		let appToken;
 		before(done => {
@@ -418,6 +418,29 @@ describe('The authentication engine of the VPDB API', function() {
 					expect(res.body.id).to.be(oauthUser.id);
 					done();
 				});
+		});
+
+		it.skip('should be able to create an oauth user', done => {
+			request
+				.put('/api/v1/users')
+				.with(appToken)
+				.send({
+					id: 1234,
+					username: 'new-ips-user',
+					displayName: 'New IPS user',
+					name: {
+						familyName: '',
+						givenName: '',
+						middleName: ''
+					},
+					emails: [
+						{ value: 'ipsuser@vpdb.io', type: 'work' }
+					],
+					photos: []
+				}).end(function(err, res) {
+					hlp.dump(res);
+					done();
+			});
 		});
 	});
 

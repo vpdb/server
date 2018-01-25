@@ -131,6 +131,13 @@ exports.auth = function(req, res, resource, permission, requiredScopes, planAttr
 
 				// additional checks for application token
 				if (t.type === 'application') {
+
+					// if this resource is a service resource, we don't need a user ID. Also make sure no permissions needed.
+					if (scope.isIdentical([ scope.SERVICE ], requiredScopes) && !resource && !permission) {
+						return Token.update({ _id: t._id }, { last_used_at: new Date() }).then(() => null);
+					}
+
+					// check for user id header
 					if (!req.headers[userIdHeader]) {
 						throw new error('Must provide "%s" header when using application token.', userIdHeader).status(400);
 					}
@@ -198,6 +205,14 @@ exports.auth = function(req, res, resource, permission, requiredScopes, planAttr
 			throw error('Your token has an invalid scope: [ "%s" ] (required: [ "%s" ])', tokenScopes.join('", "'), requiredScopes.join('", "')).status(401).log();
 		}
 
+		req.tokenType = tokenType; // one of: [ 'jwt', 'jwt-refreshed', 'access-token' ]
+		req.tokenScopes = tokenScopes;
+
+		// user can be null for service resources
+		if (user === null) {
+			return;
+		}
+
 		// check plan config if provided
 		if (_.isObject(planAttrs)) {
 			for (let key in planAttrs) {
@@ -214,8 +229,6 @@ exports.auth = function(req, res, resource, permission, requiredScopes, planAttr
 
 		// this will be useful for the rest of the stack
 		req.user = user;
-		req.tokenType = tokenType; // one of: [ 'jwt', 'jwt-refreshed', 'access-token' ]
-		req.tokenScopes = tokenScopes;
 
 		// set dirty header if necessary
 		return redis.getAsync('dirty_user_' + user.id).then(result => {

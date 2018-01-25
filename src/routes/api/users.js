@@ -25,6 +25,7 @@ const settings = require('../../modules/settings');
 exports.register = function(app, api) {
 
 	app.post(settings.apiPath('/users'),       api.users.create);
+	app.put(settings.apiPath('/users'),        api.auth(api.users.createOrUpdate, '', '', [ scope.SERVICE ]));
 	app.get(settings.apiPath('/users'),        api.auth(api.users.list, 'users', 'search', [ scope.ALL ]));
 	app.get(settings.apiPath('/users/:id'),    api.auth(api.users.view, 'users', 'view', [ scope.ALL ]));
 	app.put(settings.apiPath('/users/:id'),    api.auth(api.users.update, 'users', 'update', [ scope.ALL ]));

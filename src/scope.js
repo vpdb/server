@@ -14,6 +14,7 @@ class Scope {
 		 *
 		 * JWT tokens have this scope but also long-term tokens used in third-party
 		 * applications such as VPDB Agent.
+		 * @type {string}
 		 */
 		this.ALL = 'all';
 
@@ -22,23 +23,34 @@ class Scope {
 		 *
 		 * This is used for browser auto-login so we don't have to store the plain
 		 * text password on the user's machine.
+		 * @type {string}
 		 */
 		this.LOGIN = 'login';
 
 		/**
 		 * Rate, star, comment, basically anything visible on the site.
+		 * @type {string}
 		 */
 		this.COMMUNITY = 'community';
 
 		/**
+		 * Resources that are not personal but third-party application related.
+		 *
+		 * @type {string}
+		 */
+		this.SERVICE = 'service';
+
+		/**
 		 * All kind of uploads
 		 * TODO implement and test
+		 * @type {string}
 		 */
 		this.CREATE = 'create';
 
 		/**
 		 * Used for obtaining storage tokens.
 		 * TODO implement and test
+		 * @type {string}
 		 */
 		this.STORAGE = 'storage';
 
@@ -48,7 +60,7 @@ class Scope {
 		 */
 		this._scopes = {
 			personal:  [ this.ALL, this.LOGIN, this.COMMUNITY, this.CREATE, this.STORAGE ],
-			application: [ this.COMMUNITY, this.CREATE, this.STORAGE ]
+			application: [ this.COMMUNITY, this.CREATE, this.STORAGE, this.SERVICE ]
 		};
 	}
 

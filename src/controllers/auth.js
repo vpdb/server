@@ -111,7 +111,7 @@ exports.auth = function(req, res, resource, permission, requiredScopes, planAttr
 				}
 
 				// fail if incorrect plan
-				if (t.type === 'personal' && t._created_by.planConfig.enableAppTokens) {
+				if (t.type === 'personal' && !t._created_by.planConfig.enableAppTokens) {
 					throw error('Your current plan "%s" does not allow the use of application access tokens. Upgrade or contact an admin.', t._created_by.planConfig.id).status(401);
 				}
 
@@ -202,7 +202,7 @@ exports.auth = function(req, res, resource, permission, requiredScopes, planAttr
 
 		// check scopes
 		if (!scope.isValid(requiredScopes, tokenScopes)) {
-			throw error('Your token has an invalid scope: [ "%s" ] (required: [ "%s" ])', tokenScopes.join('", "'), requiredScopes.join('", "')).status(401).log();
+			throw error('Your token has an invalid scope: [ "%s" ] (required: [ "%s" ])', (tokenScopes || []).join('", "'), (requiredScopes || []).join('", "')).status(401).log();
 		}
 
 		req.tokenType = tokenType; // one of: [ 'jwt', 'jwt-refreshed', 'access-token' ]

@@ -242,7 +242,7 @@ MediumSchema.path('category').validate(function() {
 
 });
 
-MediumSchema.path('_file').validate(function(value, callback) {
+MediumSchema.path('_file').validate(function(value) {
 	const File =  mongoose.model('File');
 	return Promise.try(() => {
 		return File.findById(value).exec();
@@ -272,7 +272,7 @@ MediumSchema.path('_file').validate(function(value, callback) {
 		}
 		return true;
 
-	}).nodeify((err, result) => callback(result));
+	});
 });
 
 

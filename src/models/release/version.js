@@ -52,7 +52,7 @@ schema.plugin(toObj);
  * Note that individual files cannot be updated; they can only be added or
  * removed. Thus, we base the file index (i) on new items only.
  */
-schema.path('files').validate(function(files, callback) {
+schema.path('files').validate(function(files) {
 
 	// ignore if no files set
 	if (!_.isArray(files) || files.length === 0) {
@@ -122,13 +122,10 @@ schema.path('files').validate(function(files, callback) {
 		});
 		return null;
 
-	}).then(() => {
-		callback(true);
-
-	}).catch(/* istanbul ignore next */ err => {
+	}).then(() => true).catch(/* istanbul ignore next */ err => {
 		logger.error('[model|release] Error validating files! %s', err.message);
 		logger.error(err.stack);
-		callback(false);
+		throw err;
 	});
 });
 

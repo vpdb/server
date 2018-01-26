@@ -23,5 +23,5 @@ const settings = require('../../modules/settings');
 
 exports.register = function(app, api, storage) {
 
-	app.post(settings.storageProtectedPath('/authenticate'), api.auth(storage.user.authenticate));
+	app.post(settings.storageProtectedPath('/authenticate'), api.auth(storage.user.authenticate, null, null, null));
 };

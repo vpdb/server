@@ -188,7 +188,7 @@ GameSchema.virtual('mpu')
 //-----------------------------------------------------------------------------
 // VALIDATIONS
 //-----------------------------------------------------------------------------
-GameSchema.path('game_type').validate(function(gameType, callback) {
+GameSchema.path('game_type').validate(function() {
 
 	return Promise.try(() => {
 		let ipdb = this.ipdb ? this.ipdb.number : null;
@@ -209,27 +209,22 @@ GameSchema.path('game_type').validate(function(gameType, callback) {
 		}
 		return true;
 
-	}).then(result => {
-		callback(result);
 	});
 });
 
-GameSchema.path('_backglass').validate(function(backglass, callback) {
-	if (!backglass) {
-		return callback(true);
-	}
-	mongoose.model('File').findOne({ _id: backglass._id || backglass }, function(err, backglass) {
-		/* istanbul ignore if  */
-		if (err) {
-			logger.error('[model|game] Error fetching backglass %s.');
-			return callback(false);
+GameSchema.path('_backglass').validate(function(backglass) {
+	return Promise.try(() => {
+		if (!backglass) {
+			return true;
 		}
+		return mongoose.model('File').findOne({ _id: backglass._id || backglass }).exec();
+	}).then(backglass => {
 		if (backglass) {
 			const ar = Math.round(backglass.metadata.size.width / backglass.metadata.size.height * 1000) / 1000;
 			const arDiff = Math.abs(ar / 1.25 - 1);
-			return callback(arDiff < maxAspectRatioDifference);
+			return arDiff < maxAspectRatioDifference;
 		}
-		callback(true);
+		return true;
 	});
 }, 'Aspect ratio of backglass must be smaller than 1:1.5 and greater than 1:1.05.');
 

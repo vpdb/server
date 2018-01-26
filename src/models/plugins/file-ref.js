@@ -20,7 +20,6 @@
 'use strict';
 
 var _ = require('lodash');
-var logger = require('winston');
 var mongoose = require('mongoose');
 
 var common = require('./common');
@@ -43,34 +42,31 @@ module.exports = function(schema, options) {
 	//-----------------------------------------------------------------------------
 	_.keys(fileRefs).forEach(function(path) {
 
-		schema.path(path).validate(function(fileId, callback) {
-			var that = this;
-			if (!fileId || !that._created_by) {
-				return callback(true);
-			}
+		schema.path(path).validate(function(fileId) {
 
-			mongoose.model('File').findOne({ _id: fileId._id || fileId.toString() }, function(err, file) {
-				/* istanbul ignore if */
-				if (err) {
-					logger.error('[model] Error fetching file "%s".', fileId);
-					return callback(true);
+			return Promise.try(() => {
+				if (!fileId || !this._created_by) {
+					return true;
 				}
+				return mongoose.model('File').findOne({ _id: fileId._id || fileId.toString() }).exec();
+			}).then(file => {
 				// this is already checked by pretty-id
 				if (!file) {
-					return callback(true);
+					return true;
 				}
 
 				/* removed: e.g. a backglass can be updated by someone different than the original game creator.
-				let thisCreatedBy = that._created_by._id || that._created_by;
+				let thisCreatedBy = this._created_by._id || this._created_by;
 				if (!file._created_by.equals(thisCreatedBy)) {
-					that.invalidate(path, 'Referenced file ' + file.id + ' must be of the same owner as referer ' + thisCreatedBy.toString() + '.', file.id);
+					this.invalidate(path, 'Referenced file ' + file.id + ' must be of the same owner as referer ' + thisCreatedBy.toString() + '.', file.id);
 				}*/
 
-				if (that.isNew && file.is_active) {
-					that.invalidate(path, 'Cannot reference active files. If a file is active that means that is has been referenced elsewhere, in which case you cannot reference it again.', file.id);
+				if (this.isNew && file.is_active) {
+					this.invalidate(path, 'Cannot reference active files. If a file is active that means that is has been referenced elsewhere, in which case you cannot reference it again.', file.id);
 				}
-				callback(true);
+				return true;
 			});
+
 		});
 	});
 

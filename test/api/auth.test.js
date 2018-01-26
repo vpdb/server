@@ -331,7 +331,7 @@ describe('The authentication engine of the VPDB API', function() {
 					request
 						.get('/api/v1/user')
 						.set('Authorization', 'Bearer ' + res.body.token)
-						.end(hlp.status(401, 'invalid scope: [ "login" ] (required: [ "all" ]', done));
+						.end(hlp.status(401, 'invalid scope: [ "login" ]', done));
 				});
 		});
 

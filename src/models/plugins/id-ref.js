@@ -52,12 +52,10 @@ module.exports = function(schema, options) {
 		}
 
 		if (validateFunction) {
-			schema.path(path).validate(function(value, respond) {
+			schema.path(path).validate(function(value) {
 				return Promise.try(() => {
 					return validateFunction(this, path, refModelName, value, conditions);
-
-				}).nodeify((err, result) => respond(result));
-
+				});
 
 			}, message);
 		}

@@ -94,9 +94,8 @@ class Scope {
 	 * @return {boolean} True if all scopes are valid
 	 */
 	isValid(validScopes, scopesToValidate) {
-		// fail if no scopes to validate given.
-		if (!_.isArray(scopesToValidate)) {
-			return false;
+		if (validScopes === null) {
+			return true;
 		}
 		validScopes = _.isArray(validScopes) ? validScopes : this._scopes[validScopes];
 		for (let i = 0; i < scopesToValidate.length; i++) {

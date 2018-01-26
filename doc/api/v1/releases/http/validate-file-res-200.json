@@ -1,20 +1,7 @@
 200 OK
+Access-Control-Allow-Origin: *
+Access-Control-Expose-Headers: Cache-Control,Link,X-App-Sha,X-Token-Refresh,X-User-Dirty,X-RateLimit-Limit,X-RateLimit-Remaining,X-RateLimit-Reset,X-List-Count,X-List-Page,X-List-Size
 Content-Type: application/json; charset=utf-8
-Content-Length: 310
-Etag: W/"136-zXlGhZ2vrSdr9uxts1B1Mg"
+Content-Length: 316
+Etag: W/"13c-bKzDK1UbLvyb3cVDw4pckdU205w"
 
-{
-  "status": "verified",
-  "message": "All validated, thanks!",
-  "validated_at": "2016-11-21T21:15:01.540Z",
-  "validated_by": {
-    "id": "e2zesm49h",
-    "name": "LewAbshire2",
-    "username": "LewAbshire2",
-    "gravatar_id": "8deecd6307ea3614007fc4880cd3b683",
-    "counter": {
-      "comments": 0,
-      "stars": 0
-    }
-  }
-}

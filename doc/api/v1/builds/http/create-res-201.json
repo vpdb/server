@@ -1,15 +1,7 @@
 201 Created
+Access-Control-Allow-Origin: *
+Access-Control-Expose-Headers: Cache-Control,Link,X-App-Sha,X-Token-Refresh,X-User-Dirty,X-RateLimit-Limit,X-RateLimit-Remaining,X-RateLimit-Reset,X-List-Count,X-List-Page,X-List-Size
 Content-Type: application/json; charset=utf-8
 Content-Length: 203
-Etag: W/"cb-2lqiI8+b1xirgqeDn0j4ow"
+Etag: W/"cb-o/+hU5jzgP8QH4klDRGCJjgUZ94"
 
-{
-  "id": "v1.0.1",
-  "label": "v1.0.1",
-  "platform": "vp",
-  "major_version": "1",
-  "download_url": "http://download_url/",
-  "built_at": "2000-01-01T11:21:00.000Z",
-  "type": "release",
-  "is_range": false
-}

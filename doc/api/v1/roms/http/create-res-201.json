@@ -1,39 +1,7 @@
 201 Created
+Access-Control-Allow-Origin: *
+Access-Control-Expose-Headers: Cache-Control,Link,X-App-Sha,X-Token-Refresh,X-User-Dirty,X-RateLimit-Limit,X-RateLimit-Remaining,X-RateLimit-Reset,X-List-Count,X-List-Page,X-List-Size
 Content-Type: application/json; charset=utf-8
-Content-Length: 626
-Etag: W/"272-7U8kUUjS58QfX5kmVDBZ6g"
+Content-Length: 625
+Etag: W/"271-mvmkif+G6YUV1bdJiyT+08pWVR0"
 
-{
-  "id": "tz_pa1",
-  "file": {
-    "counter": {
-      "downloads": 0
-    },
-    "is_protected": true,
-    "bytes": 2096,
-    "url": "https://localhost:7357/storage/v1/files/ek3sr5sm4sh.zip",
-    "name": "hulk.zip",
-    "id": "ek3sr5sm4sh"
-  },
-  "languages": [],
-  "rom_files": [
-    {
-      "filename": "433.cpu",
-      "bytes": 1024,
-      "crc": 3227331410,
-      "modified_at": "1996-12-24T22:32:00.000Z"
-    },
-    {
-      "filename": "433.snd",
-      "bytes": 1024,
-      "crc": 550313471,
-      "modified_at": "1996-12-24T22:32:00.000Z"
-    },
-    {
-      "filename": "6530sys1.bin",
-      "bytes": 1024,
-      "crc": 3078820641,
-      "modified_at": "1996-12-24T22:32:00.000Z"
-    }
-  ]
-}

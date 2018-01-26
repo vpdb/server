@@ -1,5 +1,5 @@
-DELETE /v1/games/royal-flush HTTP/2.0
+DELETE /v1/games/alamo HTTP/2.0
 Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
-authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJlMnBiOGhzbXg5aCIsImlhdCI6IjIwMTYtMTEtMjFUMjE6MTM6NTIuMDQ3WiIsImV4cCI6IjIwMTYtMTEtMjFUMjI6MTM6NTIuMDQ3WiIsImlydCI6ZmFsc2V9.f2DRqTWeXAUDqVqlhn4-OKjY4LhgTCtxx7Ir06KaddE
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJla2ZoYmZ4eThwOSIsImlhdCI6IjIwMTgtMDEtMjZUMjM6MDg6MzYuMTkzWiIsImV4cCI6IjIwMTgtMDEtMjdUMDA6MDg6MzYuMTkzWiIsImlydCI6ZmFsc2V9.7xjEjQskyXVUIVdVeZ1Zqm-yX20TE4oPF6xfOoJEkNs
 

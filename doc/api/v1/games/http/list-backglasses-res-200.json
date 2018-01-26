@@ -1,67 +1,10 @@
 200 OK
+Access-Control-Allow-Origin: *
+Access-Control-Expose-Headers: Cache-Control,Link,X-App-Sha,X-Token-Refresh,X-User-Dirty,X-RateLimit-Limit,X-RateLimit-Remaining,X-RateLimit-Reset,X-List-Count,X-List-Page,X-List-Size
 X-List-Page: 1
 X-List-Size: 10
 X-List-Count: 1
 Content-Type: application/json; charset=utf-8
-Etag: W/"53c-o1Ou0OKyIi2OZNOJyn4UwQ"
+Etag: W/"546-bm/JolgdnaJAe6pH1iZLNINY7xA"
 Content-Encoding: gzip
 
-[
-  {
-    "id": "e2trt2s8xsh",
-    "versions": [
-      {
-        "released_at": "2016-11-21T21:13:32.510Z",
-        "version": "1.0",
-        "counter": {
-          "downloads": 0
-        },
-        "file": {
-          "counter": {
-            "downloads": 0
-          },
-          "is_protected": true,
-          "variations": {
-            "small-2x": {
-              "url": "https://localhost:7357/storage/public/files/small-2x/p2sev2984sb.jpg"
-            },
-            "small": {
-              "url": "https://localhost:7357/storage/public/files/small/p2sev2984sb.jpg"
-            },
-            "medium-2x": {
-              "url": "https://localhost:7357/storage/public/files/medium-2x/p2sev2984sb.jpg"
-            },
-            "medium": {
-              "url": "https://localhost:7357/storage/public/files/medium/p2sev2984sb.jpg"
-            },
-            "full": {
-              "url": "https://localhost:7357/storage/public/files/full/p2sev2984sb.jpg"
-            }
-          },
-          "bytes": 2067,
-          "url": "https://localhost:7357/storage/v1/files/p2sev2984sb.directb2s",
-          "name": "test.directb2s",
-          "id": "p2sev2984sb"
-        }
-      }
-    ],
-    "authors": [
-      {
-        "roles": [
-          "creator"
-        ],
-        "user": {
-          "counter": {
-            "stars": 0,
-            "comments": 0
-          },
-          "gravatar_id": "484824471c35ea45ce28beb3e89bc5b5",
-          "username": "AlyceCassin",
-          "name": "AlyceCassin",
-          "id": "pkzqt2s8xsh"
-        }
-      }
-    ],
-    "created_at": "2016-11-21T21:13:32.510Z"
-  }
-]

@@ -1,13 +1,7 @@
 201 Created
+Access-Control-Allow-Origin: *
+Access-Control-Expose-Headers: Cache-Control,Link,X-App-Sha,X-Token-Refresh,X-User-Dirty,X-RateLimit-Limit,X-RateLimit-Remaining,X-RateLimit-Reset,X-List-Count,X-List-Page,X-List-Size
 Content-Type: application/json; charset=utf-8
 Content-Length: 204
-Etag: W/"cc-Rv7IjW3ZY7nHnY6EtrzOBQ"
+Etag: W/"cc-DG/HOI9LPd9BGM68t3g1lpx1fD8"
 
-{
-  "id": "p2rt1598x9b",
-  "label": "My Application",
-  "is_active": true,
-  "expires_at": "2017-11-21T21:15:30.667Z",
-  "created_at": "2016-11-21T21:15:30.667Z",
-  "token": "7d5945c866f027cf3461ec15e2b8a22f"
-}

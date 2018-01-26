@@ -1,43 +1,7 @@
 201 Created
+Access-Control-Allow-Origin: *
+Access-Control-Expose-Headers: Cache-Control,Link,X-App-Sha,X-Token-Refresh,X-User-Dirty,X-RateLimit-Limit,X-RateLimit-Remaining,X-RateLimit-Reset,X-List-Count,X-List-Page,X-List-Size
 Content-Type: application/json; charset=utf-8
 Content-Length: 692
-Etag: W/"2b4-EtHyyvItvSmA5Tn6HJA5zw"
+Etag: W/"2b4-iisWeOTlXIpYyUTXxiJEszrUcyQ"
 
-{
-  "id": "esquire_10",
-  "file": {
-    "counter": {
-      "downloads": 0
-    },
-    "is_protected": true,
-    "bytes": 2096,
-    "url": "https://localhost:7357/storage/v1/files/pkqrers849b.zip",
-    "name": "hulk.zip",
-    "id": "pkqrers849b"
-  },
-  "version": "1.0",
-  "notes": "That is some ROM.",
-  "languages": [
-    "en-US"
-  ],
-  "rom_files": [
-    {
-      "filename": "433.cpu",
-      "bytes": 1024,
-      "crc": 3227331410,
-      "modified_at": "1996-12-24T22:32:00.000Z"
-    },
-    {
-      "filename": "433.snd",
-      "bytes": 1024,
-      "crc": 550313471,
-      "modified_at": "1996-12-24T22:32:00.000Z"
-    },
-    {
-      "filename": "6530sys1.bin",
-      "bytes": 1024,
-      "crc": 3078820641,
-      "modified_at": "1996-12-24T22:32:00.000Z"
-    }
-  ]
-}

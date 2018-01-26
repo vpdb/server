@@ -1,5 +1,5 @@
-GET /v1/games/gunner/release-name HTTP/2.0
+GET /v1/games/long-island/release-name HTTP/2.0
 Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
-authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwMmhyOGg5bXhzaCIsImlhdCI6IjIwMTYtMTEtMjFUMjE6MTM6NTIuNzYxWiIsImV4cCI6IjIwMTYtMTEtMjFUMjI6MTM6NTIuNzYxWiIsImlydCI6ZmFsc2V9.pIDUZERBiAvwoFpmGfhf9tiMdQuvxCeetrCV4cqsgfY
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJla2Q0enU0ejhwcyIsImlhdCI6IjIwMTgtMDEtMjZUMjM6MDg6MzcuNzM5WiIsImV4cCI6IjIwMTgtMDEtMjdUMDA6MDg6MzcuNzM5WiIsImlydCI6ZmFsc2V9.5tMH5gzW2qHZWtyKvR-VvQ-Q7khngeIaYCQcLbSujRE
 

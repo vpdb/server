@@ -1,14 +1,14 @@
 PATCH /v1/user HTTP/2.0
 Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
-authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJlMmZoZjk4NHNoIiwiaWF0IjoiMjAxNi0xMS0yMVQyMToxNTozMS44NDVaIiwiZXhwIjoiMjAxNi0xMS0yMVQyMjoxNTozMS44NDVaIiwiaXJ0IjpmYWxzZX0.DXQ-zD9SDe_LMMBdVxZJISyXJc-YjzFj7FgP0hxow7U
-content-type: application/json
-Content-Length: 149
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwazZodmVxeThwcyIsImlhdCI6IjIwMTgtMDEtMjZUMjM6MTI6MjguMDA3WiIsImV4cCI6IjIwMTgtMDEtMjdUMDA6MTI6MjguMDA3WiIsImlydCI6ZmFsc2V9.hq2elIbBLX13Yp_WUe058hDl5sV1N9rOpgGL-73pSWw
+Content-Type: application/json
+Content-Length: 134
 
 {
-  "name": "Bettie Gutmann",
-  "location": "Bernice chester",
-  "email": "sonya_vandervort@hotmail.com",
-  "current_password": "YJ6RKcKxz6",
-  "password": "8JPsIBBEuL"
+  "name": "Corbin Volkman",
+  "location": "Hilllside",
+  "email": "manuela76@yahoo.com",
+  "current_password": "fkoYFHjyIq",
+  "password": "VF2bSQI0li"
 }

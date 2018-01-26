@@ -1,62 +1,7 @@
 200 OK
+Access-Control-Allow-Origin: *
+Access-Control-Expose-Headers: Cache-Control,Link,X-App-Sha,X-Token-Refresh,X-User-Dirty,X-RateLimit-Limit,X-RateLimit-Remaining,X-RateLimit-Reset,X-List-Count,X-List-Page,X-List-Size
 Content-Type: application/json; charset=utf-8
-Content-Length: 987
-Etag: W/"3db-AUc6Jx2TpQ270NARfgQjxg"
+Content-Length: 956
+Etag: W/"3bc-5y/kgyxvCRmCjMV2Cte3VpPN86s"
 
-{
-  "id": "hulk6",
-  "languages": [],
-  "rom_files": [
-    {
-      "filename": "433.cpu",
-      "bytes": 1024,
-      "crc": 3227331410,
-      "modified_at": "1996-12-24T22:32:00.000Z"
-    },
-    {
-      "filename": "433.snd",
-      "bytes": 1024,
-      "crc": 550313471,
-      "modified_at": "1996-12-24T22:32:00.000Z"
-    },
-    {
-      "filename": "6530sys1.bin",
-      "bytes": 1024,
-      "crc": 3078820641,
-      "modified_at": "1996-12-24T22:32:00.000Z"
-    }
-  ],
-  "created_by": {
-    "counter": {
-      "stars": 0,
-      "comments": 0
-    },
-    "gravatar_id": "4327e564a09a357cc6a46f3c80f869e6",
-    "username": "SandraGislason",
-    "name": "SandraGislason",
-    "id": "e2zxersm4sh"
-  },
-  "game": {
-    "id": "esquire",
-    "title": "Esquire",
-    "manufacturer": "Stoner Manufacturing Company",
-    "year": 1934,
-    "ipdb": {
-      "number": 790,
-      "mfg": 304
-    },
-    "game_type": "em",
-    "counter": {
-      "stars": 0,
-      "comments": 0,
-      "downloads": 0,
-      "views": 0,
-      "releases": 0
-    },
-    "rating": {
-      "score": 0,
-      "votes": 0,
-      "average": 0
-    }
-  }
-}

@@ -1,21 +1,21 @@
 POST /v1/releases HTTP/2.0
 Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
-authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJlMjNlNHM5OHhzaCIsImlhdCI6IjIwMTYtMTEtMjFUMjE6MTQ6MTUuNTQ4WiIsImV4cCI6IjIwMTYtMTEtMjFUMjI6MTQ6MTUuNTQ4WiIsImlydCI6ZmFsc2V9.ZFtKXcsySdND_P7B9CIFMvrzF_KnFf3OWihTSFNLMn0
-content-type: application/json
-Content-Length: 536
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJla3Y0cGc0eW1lcyIsImlhdCI6IjIwMTgtMDEtMjZUMjM6MDk6MjkuNzE5WiIsImV4cCI6IjIwMTgtMDEtMjdUMDA6MDk6MjkuNzE5WiIsImlydCI6ZmFsc2V9.QnNEwYyekk492DzuOKoxxtJfq0-cDrgtiLAjMFko4Y8
+Content-Type: application/json
+Content-Length: 521
 
 {
   "name": "release",
   "license": "by-sa",
-  "_game": "spirit-of-america",
+  "_game": "sw",
   "versions": [
     {
       "files": [
         {
           "released_at": "2015-01-01T00:00:00.000Z",
-          "_file": "pk9qt9s849b",
-          "_playfield_image": "e2tev99mx9h",
+          "_file": "e2h4yc4ymps",
+          "_playfield_image": "pkaxzc4zme9",
           "_compatibility": [
             "9.9.0"
           ],
@@ -25,8 +25,8 @@ Content-Length: 536
           }
         },
         {
-          "_file": "e24qt99mx9h",
-          "_playfield_image": "p2cptssm4sb",
+          "_file": "ekzxz7xz8e9",
+          "_playfield_image": "ekd4y7xy8p9",
           "_compatibility": [
             "9.9.0"
           ],
@@ -42,7 +42,7 @@ Content-Length: 536
   ],
   "authors": [
     {
-      "_user": "e23e4s98xsh",
+      "_user": "ekv4pg4ymes",
       "roles": [
         "Table Creator"
       ]

@@ -1,72 +1,7 @@
 201 Created
+Access-Control-Allow-Origin: *
+Access-Control-Expose-Headers: Cache-Control,Link,X-App-Sha,X-Token-Refresh,X-User-Dirty,X-RateLimit-Limit,X-RateLimit-Remaining,X-RateLimit-Reset,X-List-Count,X-List-Page,X-List-Size
 Content-Type: application/json; charset=utf-8
-Etag: W/"597-nWYZqB5G2yh+8vwyKpeT4A"
+Etag: W/"665-Uqdzdr3cMUwyHCM1Ey0DsYaJBjc"
 Content-Encoding: gzip
 
-{
-  "id": "p2pbtk98xsb",
-  "game": {
-    "ipdb": {
-      "mfg": 47,
-      "number": 922
-    },
-    "year": 1941,
-    "manufacturer": "Bally",
-    "title": "Derby 1941",
-    "id": "derby-1941"
-  },
-  "versions": [
-    {
-      "released_at": "2016-11-21T21:13:31.882Z",
-      "version": "1.0",
-      "counter": {
-        "downloads": 0
-      },
-      "file": {
-        "counter": {
-          "downloads": 0
-        },
-        "is_protected": true,
-        "variations": {
-          "small-2x": {
-            "url": "https://localhost:7357/storage/public/files/small-2x/ekbhv298xsb.jpg"
-          },
-          "small": {
-            "url": "https://localhost:7357/storage/public/files/small/ekbhv298xsb.jpg"
-          },
-          "medium-2x": {
-            "url": "https://localhost:7357/storage/public/files/medium-2x/ekbhv298xsb.jpg"
-          },
-          "medium": {
-            "url": "https://localhost:7357/storage/public/files/medium/ekbhv298xsb.jpg"
-          },
-          "full": {
-            "url": "https://localhost:7357/storage/public/files/full/ekbhv298xsb.jpg"
-          }
-        },
-        "bytes": 2067,
-        "url": "https://localhost:7357/storage/v1/files/ekbhv298xsb.directb2s",
-        "name": "test.directb2s",
-        "id": "ekbhv298xsb"
-      }
-    }
-  ],
-  "authors": [
-    {
-      "roles": [
-        "creator"
-      ],
-      "user": {
-        "counter": {
-          "stars": 0,
-          "comments": 0
-        },
-        "gravatar_id": "672ba8fa0cda19a41b546a729809af77",
-        "username": "TateFritsch",
-        "name": "TateFritsch",
-        "id": "pkcur29mx9b"
-      }
-    }
-  ],
-  "created_at": "2016-11-21T21:13:31.882Z"
-}

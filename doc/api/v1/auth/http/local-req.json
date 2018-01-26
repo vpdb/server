@@ -1,10 +1,10 @@
 POST /v1/authenticate HTTP/2.0
 Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
-content-type: application/json
-Content-Length: 48
+Content-Type: application/json
+Content-Length: 45
 
 {
-  "username": "Garrick48",
-  "password": "FY0oIz8DCL"
+  "username": "Mary95",
+  "password": "4uXloD1kgX"
 }

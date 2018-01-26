@@ -1,98 +1,10 @@
 200 OK
+Access-Control-Allow-Origin: *
+Access-Control-Expose-Headers: Cache-Control,Link,X-App-Sha,X-Token-Refresh,X-User-Dirty,X-RateLimit-Limit,X-RateLimit-Remaining,X-RateLimit-Reset,X-List-Count,X-List-Page,X-List-Size
 X-List-Page: 1
 X-List-Size: 10
 X-List-Count: 2
 Content-Type: application/json; charset=utf-8
-Etag: W/"6cc-Qy0lIjnpFp+ySfSdxS9iaA"
+Etag: W/"6de-4/y8jIHg8ExCuixwvEAhfpV4H3M"
 Content-Encoding: gzip
 
-[
-  {
-    "id": "hulk",
-    "file": {
-      "counter": {
-        "downloads": 0
-      },
-      "is_protected": true,
-      "bytes": 2096,
-      "url": "https://localhost:7357/storage/v1/files/ekzt5smxsh.zip",
-      "name": "hulk.zip",
-      "id": "ekzt5smxsh"
-    },
-    "languages": [],
-    "rom_files": [
-      {
-        "filename": "433.cpu",
-        "bytes": 1024,
-        "crc": 3227331410,
-        "modified_at": "1996-12-24T22:32:00.000Z"
-      },
-      {
-        "filename": "433.snd",
-        "bytes": 1024,
-        "crc": 550313471,
-        "modified_at": "1996-12-24T22:32:00.000Z"
-      },
-      {
-        "filename": "6530sys1.bin",
-        "bytes": 1024,
-        "crc": 3078820641,
-        "modified_at": "1996-12-24T22:32:00.000Z"
-      }
-    ],
-    "created_by": {
-      "counter": {
-        "stars": 0,
-        "comments": 0
-      },
-      "gravatar_id": "3c601f9f863abee99ca1720695262b1a",
-      "username": "Agustina84",
-      "name": "Agustina84",
-      "id": "ekgvur9mx9h"
-    }
-  },
-  {
-    "id": "tz_pa1",
-    "file": {
-      "counter": {
-        "downloads": 0
-      },
-      "is_protected": true,
-      "bytes": 2096,
-      "url": "https://localhost:7357/storage/v1/files/ek7vrsm4sb.zip",
-      "name": "hulk.zip",
-      "id": "ek7vrsm4sb"
-    },
-    "languages": [],
-    "rom_files": [
-      {
-        "filename": "433.cpu",
-        "bytes": 1024,
-        "crc": 3227331410,
-        "modified_at": "1996-12-24T22:32:00.000Z"
-      },
-      {
-        "filename": "433.snd",
-        "bytes": 1024,
-        "crc": 550313471,
-        "modified_at": "1996-12-24T22:32:00.000Z"
-      },
-      {
-        "filename": "6530sys1.bin",
-        "bytes": 1024,
-        "crc": 3078820641,
-        "modified_at": "1996-12-24T22:32:00.000Z"
-      }
-    ],
-    "created_by": {
-      "counter": {
-        "stars": 0,
-        "comments": 0
-      },
-      "gravatar_id": "3c601f9f863abee99ca1720695262b1a",
-      "username": "Agustina84",
-      "name": "Agustina84",
-      "id": "ekgvur9mx9h"
-    }
-  }
-]

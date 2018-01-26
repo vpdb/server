@@ -1,14 +1,7 @@
 201 Created
+Access-Control-Allow-Origin: *
+Access-Control-Expose-Headers: Cache-Control,Link,X-App-Sha,X-Token-Refresh,X-User-Dirty,X-RateLimit-Limit,X-RateLimit-Remaining,X-RateLimit-Reset,X-List-Count,X-List-Page,X-List-Size
 Content-Type: application/json; charset=utf-8
 Content-Length: 220
-Etag: W/"dc-UQfeyg6tF6n5NnLb0jvG5w"
+Etag: W/"dc-6prsATloJh3LxZ5R/wlynLHDdK4"
 
-{
-  "id": "ek6eebs84sb",
-  "title": "monster bash",
-  "notes": "no monster bash? are you guys kidding???",
-  "ipdb_number": 2768,
-  "ipdb_title": "White Water",
-  "is_closed": false,
-  "created_at": "2016-11-21T21:13:45.658Z"
-}

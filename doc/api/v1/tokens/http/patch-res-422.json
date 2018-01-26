@@ -1,19 +1,7 @@
 422 Unprocessable Entity
+Access-Control-Allow-Origin: *
+Access-Control-Expose-Headers: Cache-Control,Link,X-App-Sha,X-Token-Refresh,X-User-Dirty,X-RateLimit-Limit,X-RateLimit-Remaining,X-RateLimit-Reset,X-List-Count,X-List-Page,X-List-Size
 Content-Type: application/json; charset=utf-8
 Content-Length: 258
-Etag: W/"102-YaHULEdYmN+6lY3HYUxrgA"
+Etag: W/"102-UOxdOOTRwftNhV9OJy5oEa8Jy4c"
 
-{
-  "errors": [
-    {
-      "message": "Cast to Date failed for value \"foo\" at path \"expires_at\"",
-      "field": "expires_at",
-      "value": "foo"
-    },
-    {
-      "message": "Label must contain at least three characters.",
-      "field": "label",
-      "value": "1"
-    }
-  ]
-}

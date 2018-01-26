@@ -1,38 +1,7 @@
 422 Unprocessable Entity
+Access-Control-Allow-Origin: *
+Access-Control-Expose-Headers: Cache-Control,Link,X-App-Sha,X-Token-Refresh,X-User-Dirty,X-RateLimit-Limit,X-RateLimit-Remaining,X-RateLimit-Reset,X-List-Count,X-List-Page,X-List-Size
 Content-Type: application/json; charset=utf-8
 Content-Length: 768
-Etag: W/"300-L2/XVpPWf3jhGlVB8WFeKw"
+Etag: W/"300-BbDcIULNYjWTmz2c4FhIrHQ4qFw"
 
-{
-  "errors": [
-    {
-      "message": "Cast to Date failed for value \"no-date\" at path \"built_at\"",
-      "field": "built_at",
-      "value": "no-date"
-    },
-    {
-      "message": "You need to provide if the build is a range of versions or one specific version.",
-      "field": "is_range",
-      "value": null
-    },
-    {
-      "message": "Label must contain at least three characters.",
-      "field": "label",
-      "value": "1"
-    },
-    {
-      "message": "Major version must be provided.",
-      "field": "major_version"
-    },
-    {
-      "message": "Invalid platform. Valid platforms are: [ \"vp\" ].",
-      "field": "platform",
-      "value": "zurg"
-    },
-    {
-      "message": "Invalid type. Valid types are: [ \"release\", \"nightly\", \"experimental\" ].",
-      "field": "type",
-      "value": "non-existent"
-    }
-  ]
-}

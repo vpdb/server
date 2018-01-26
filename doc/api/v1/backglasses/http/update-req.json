@@ -1,12 +1,12 @@
-PATCH /v1/backglasses/e28sym6q6sh HTTP/2.0
+PATCH /v1/backglasses/p2e5qxy8p9 HTTP/2.0
 Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
-authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJlMmtiejg2cTZzaCIsImlhdCI6IjIwMTYtMTEtMjZUMjA6MTA6NDUuMjc1WiIsImV4cCI6IjIwMTYtMTEtMjZUMjE6MTA6NDUuMjc1WiIsImlydCI6ZmFsc2V9.QGM8oOWL0JxjbHSLfw7Og3APtoXRNfkpJKcSPEJit8M
-content-type: application/json
-Content-Length: 163
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwMjd6ZXF4eThwOSIsImlhdCI6IjIwMTgtMDEtMjZUMjM6MDc6NTMuMDkyWiIsImV4cCI6IjIwMTgtMDEtMjdUMDA6MDc6NTMuMDkyWiIsImlydCI6ZmFsc2V9.suOFe3Xkn3W5nWmHEJ3_1OCdYw55dcgaKLGOvsPe_MA
+Content-Type: application/json
+Content-Length: 169
 
 {
-  "_game": "dardos",
+  "_game": "hit-the-deck",
   "description": "It is a fantasy backglass that does not contain any more spelling errors.",
   "acknowledgements": "Thanks to @mom for supporting me."
 }

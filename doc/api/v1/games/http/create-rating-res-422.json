@@ -1,14 +1,7 @@
 422 Unprocessable Entity
+Access-Control-Allow-Origin: *
+Access-Control-Expose-Headers: Cache-Control,Link,X-App-Sha,X-Token-Refresh,X-User-Dirty,X-RateLimit-Limit,X-RateLimit-Remaining,X-RateLimit-Reset,X-List-Count,X-List-Page,X-List-Size
 Content-Type: application/json; charset=utf-8
 Content-Length: 112
-Etag: W/"70-hw1HQJbxO3dzlte6OOnw8Q"
+Etag: W/"70-/x5+hnA9DC6WsCx2nTLhSV0MzZQ"
 
-{
-  "errors": [
-    {
-      "message": "Value must be between 1 and 10.",
-      "field": "value",
-      "value": 11
-    }
-  ]
-}

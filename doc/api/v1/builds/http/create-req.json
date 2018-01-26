@@ -1,8 +1,8 @@
 POST /v1/builds HTTP/2.0
 Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
-authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwMjJ6a2JzOHg5aCIsImlhdCI6IjIwMTYtMTEtMjFUMjE6MTM6MzkuMDQxWiIsImV4cCI6IjIwMTYtMTEtMjFUMjI6MTM6MzkuMDQxWiIsImlydCI6ZmFsc2V9.NY2icr6-ThFUyQ7mt1D4iHnpD2dOxycEXrYbTCGKOYo
-content-type: application/json
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwa3p5ZWU0ejhwcyIsImlhdCI6IjIwMTgtMDEtMjZUMjM6MDg6MDkuMDEyWiIsImV4cCI6IjIwMTgtMDEtMjdUMDA6MDg6MDkuMDEyWiIsImlydCI6ZmFsc2V9.29kq1xn75IK0k3VSxvxN9ckBUQMFnXhq8F6euKfTDxk
+Content-Type: application/json
 Content-Length: 232
 
 {

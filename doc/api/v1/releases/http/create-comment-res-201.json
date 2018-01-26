@@ -1,20 +1,7 @@
 201 Created
+Access-Control-Allow-Origin: *
+Access-Control-Expose-Headers: Cache-Control,Link,X-App-Sha,X-Token-Refresh,X-User-Dirty,X-RateLimit-Limit,X-RateLimit-Remaining,X-RateLimit-Reset,X-List-Count,X-List-Page,X-List-Size
 Content-Type: application/json; charset=utf-8
-Content-Length: 308
-Etag: W/"134-kVXNRq8cEDEd951FCUboYw"
+Content-Length: 307
+Etag: W/"133-q7SJSXTcRgvchLZUnSluq9GzthA"
 
-{
-  "id": "p2vbzbs8x9b",
-  "from": {
-    "counter": {
-      "stars": 0,
-      "comments": 1
-    },
-    "gravatar_id": "652cc9503eeb94c4408709e143efa3aa",
-    "username": "Hertha93",
-    "name": "Hertha93",
-    "id": "pkxzhh984sh"
-  },
-  "message": "Cross-group leading edge projection",
-  "created_at": "2016-11-21T21:13:40.862Z"
-}

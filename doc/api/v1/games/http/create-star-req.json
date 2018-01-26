@@ -1,8 +1,8 @@
-POST /v1/games/hunch/star HTTP/2.0
+POST /v1/games/worlds-fair-jig-saw/star HTTP/2.0
 Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
-content-type: application/json
-authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwMnlzOHI5ODQ5aCIsImlhdCI6IjIwMTYtMTEtMjFUMjE6MTU6MjguMDY5WiIsImV4cCI6IjIwMTYtMTEtMjFUMjI6MTU6MjguMDY5WiIsImlydCI6ZmFsc2V9.jugA7yd6384sQZolHHifHtpKxNUgmhdgWqwcYEyPDIc
+Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJlazU0c2V3eW1lcyIsImlhdCI6IjIwMTgtMDEtMjZUMjM6MTI6MjIuMzM2WiIsImV4cCI6IjIwMTgtMDEtMjdUMDA6MTI6MjIuMzM2WiIsImlydCI6ZmFsc2V9.ZELNi86We4Ebiy73ke9yJBv9fS3eXrPD0KqgjDXdd3s
 Content-Length: 2
 
 {}

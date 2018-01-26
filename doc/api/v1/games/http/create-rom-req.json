@@ -1,16 +1,16 @@
-POST /v1/games/esquire/roms HTTP/2.0
+POST /v1/games/king-rex/roms HTTP/2.0
 Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
-authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJlMmRzZTVzOHhzaCIsImlhdCI6IjIwMTYtMTEtMjFUMjE6MTU6MjEuMDQ0WiIsImV4cCI6IjIwMTYtMTEtMjFUMjI6MTU6MjEuMDQ0WiIsImlydCI6ZmFsc2V9.0WT7nfDslAyNKURqAecJJr8Zhy7_85q9RKRx27V-Ebg
-content-type: application/json
-Content-Length: 107
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwazdxY3hxejhlOSIsImlhdCI6IjIwMTgtMDEtMjZUMjM6MTE6NTkuNTM0WiIsImV4cCI6IjIwMTgtMDEtMjdUMDA6MTE6NTkuNTM0WiIsImlydCI6ZmFsc2V9.vfmHERgPW9_ijd1Lmf1Ue0z8Yt2FgNpcMF3rnk3KzI0
+Content-Type: application/json
+Content-Length: 108
 
 {
-  "id": "esquire_10",
+  "id": "king-rex_10",
   "version": "1.0",
   "notes": "That is some ROM.",
   "languages": [
     "en-US"
   ],
-  "_file": "pkqrers849b"
+  "_file": "p2dzm4wymes"
 }

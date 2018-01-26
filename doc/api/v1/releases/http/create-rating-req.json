@@ -1,8 +1,8 @@
-POST /v1/releases/p24299mx9b/rating HTTP/2.0
+POST /v1/releases/e26wnxyme9/rating HTTP/2.0
 Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
-content-type: application/json
-authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJlMmV4b3pzbTQ5aCIsImlhdCI6IjIwMTYtMTEtMjFUMjE6MTQ6MTAuMzE4WiIsImV4cCI6IjIwMTYtMTEtMjFUMjI6MTQ6MTAuMzE4WiIsImlydCI6ZmFsc2V9.gudHs9aFWlUg5fcC9vcgkX4gzvg7qWbLwoKh1ufTNeQ
+Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwMjg5c2F4eW1wcyIsImlhdCI6IjIwMTgtMDEtMjZUMjM6MDk6MTAuNjc5WiIsImV4cCI6IjIwMTgtMDEtMjdUMDA6MDk6MTAuNjc5WiIsImlydCI6ZmFsc2V9.J1xEWoExO0zlF0DeXHIUs_tRP0ol0kigvXzYmoZOvUs
 Content-Length: 11
 
 {

@@ -1,14 +1,14 @@
-POST /v1/games/derby-1941/backglasses HTTP/2.0
+POST /v1/games/hyde-park/backglasses HTTP/2.0
 Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
-authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwa2N1cjI5bXg5YiIsImlhdCI6IjIwMTYtMTEtMjFUMjE6MTM6MzAuNzE1WiIsImV4cCI6IjIwMTYtMTEtMjFUMjI6MTM6MzAuNzE1WiIsImlydCI6ZmFsc2V9.AJnuR-RkBkHSs-eRnN6mGhyWRBffNuVjhUTGi_K2rLg
-content-type: application/json
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwMmV5NHc0ejhlOSIsImlhdCI6IjIwMTgtMDEtMjZUMjM6MDc6NTEuMDQyWiIsImV4cCI6IjIwMTgtMDEtMjdUMDA6MDc6NTEuMDQyWiIsImlydCI6ZmFsc2V9.oEqSvf9nPMH-baXBuSirB2wDH3uDeFYmachN4UYudjM
+Content-Type: application/json
 Content-Length: 110
 
 {
   "authors": [
     {
-      "_user": "pkcur29mx9b",
+      "_user": "p2ey4w4z8e9",
       "roles": [
         "creator"
       ]
@@ -17,7 +17,7 @@ Content-Length: 110
   "versions": [
     {
       "version": "1.0",
-      "_file": "ekbhv298xsb"
+      "_file": "e2ypwwxzmes"
     }
   ]
 }

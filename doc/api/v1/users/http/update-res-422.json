@@ -1,33 +1,7 @@
 422 Unprocessable Entity
+Access-Control-Allow-Origin: *
+Access-Control-Expose-Headers: Cache-Control,Link,X-App-Sha,X-Token-Refresh,X-User-Dirty,X-RateLimit-Limit,X-RateLimit-Remaining,X-RateLimit-Reset,X-List-Count,X-List-Page,X-List-Size
 Content-Type: application/json; charset=utf-8
 Content-Length: 484
-Etag: W/"1e4-cmfcRfMB5KbbDQWcd1zqBw"
+Etag: W/"1e4-PJWY9iqTYW+rZ2mjQDWw8lpI38I"
 
-{
-  "errors": [
-    {
-      "message": "Path `_plan` is required.",
-      "field": "_plan"
-    },
-    {
-      "message": "Email must be provided.",
-      "field": "email"
-    },
-    {
-      "message": "Path `is_active` is required.",
-      "field": "is_active"
-    },
-    {
-      "message": "Name must be provided.",
-      "field": "name"
-    },
-    {
-      "message": "Path `roles` is required.",
-      "field": "roles"
-    },
-    {
-      "message": "Username must be a string between 3 and 30 characters.",
-      "field": "username"
-    }
-  ]
-}

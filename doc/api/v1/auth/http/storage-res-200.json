@@ -1,8 +1,7 @@
 200 OK
+Access-Control-Allow-Origin: *
+Access-Control-Expose-Headers: Cache-Control,Link,X-App-Sha,X-Token-Refresh,X-User-Dirty,X-RateLimit-Limit,X-RateLimit-Remaining,X-RateLimit-Reset,X-List-Count,X-List-Page,X-List-Size
 Content-Type: application/json; charset=utf-8
-Content-Length: 319
-Etag: W/"13f-aTJ4BU57lnNop5uo/XCDAQ"
+Content-Length: 317
+Etag: W/"13d-21YtgDELNiYW1C5W/a6ToPtLqik"
 
-{
-  "https://localhost:7357/storage/v1/files/e2dy7fs8x9h.vpt": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJlMjRxZjlteDliIiwiaWF0IjoiMjAxNi0xMS0yMVQyMToxNTo0My44MDNaIiwiZXhwIjoiMjAxNi0xMS0yMVQyMToxNjo0My44MDNaIiwicGF0aCI6Ii9zdG9yYWdlL3YxL2ZpbGVzL2UyZHk3ZnM4eDloLnZwdCJ9.vUAncY2GftDFBAjcg2ozeYYiSOZIC3d8QMwQDEiLWGs"
-}

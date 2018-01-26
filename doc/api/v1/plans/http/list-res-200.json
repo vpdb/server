@@ -1,42 +1,7 @@
 200 OK
+Access-Control-Allow-Origin: *
+Access-Control-Expose-Headers: Cache-Control,Link,X-App-Sha,X-Token-Refresh,X-User-Dirty,X-RateLimit-Limit,X-RateLimit-Remaining,X-RateLimit-Reset,X-List-Count,X-List-Page,X-List-Size
 Content-Type: application/json; charset=utf-8
 Content-Length: 608
-Etag: W/"260-EgQJ/Xicj4842/vrf52hUw"
+Etag: W/"260-3siwJ7WN2Game/hnD+Gzx+26FP4"
 
-[
-  {
-    "id": "free",
-    "credits": 3,
-    "per": "day",
-    "enableAppTokens": false,
-    "enableRealtime": false,
-    "name": "free",
-    "is_default": true
-  },
-  {
-    "id": "subscribed",
-    "credits": 50,
-    "per": "day",
-    "enableAppTokens": true,
-    "enableRealtime": false,
-    "name": "subscribed",
-    "is_default": false
-  },
-  {
-    "id": "vip",
-    "credits": 200,
-    "per": "day",
-    "enableAppTokens": true,
-    "enableRealtime": true,
-    "name": "vip",
-    "is_default": false
-  },
-  {
-    "id": "unlimited",
-    "unlimited": true,
-    "enableAppTokens": true,
-    "enableRealtime": true,
-    "name": "unlimited",
-    "is_default": false
-  }
-]

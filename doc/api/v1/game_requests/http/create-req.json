@@ -1,8 +1,8 @@
 POST /v1/game_requests?ipdb_dryrun=1 HTTP/2.0
 Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
-authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJla2tzcGg5OHhzaCIsImlhdCI6IjIwMTYtMTEtMjFUMjE6MTM6NDUuMDc3WiIsImV4cCI6IjIwMTYtMTEtMjFUMjI6MTM6NDUuMDc3WiIsImlydCI6ZmFsc2V9.f45dKTrYcHVvNbijscKlkm_5s7Hl5U1CIuGZTme2TGQ
-content-type: application/json
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwMjY5aDV4em1wOSIsImlhdCI6IjIwMTgtMDEtMjZUMjM6MDg6MjAuNDM0WiIsImV4cCI6IjIwMTgtMDEtMjdUMDA6MDg6MjAuNDM0WiIsImlydCI6ZmFsc2V9.vaQ03JFYv6IbutUaXzT1w4MZcdaS60_XK3swILEDT7M
+Content-Type: application/json
 Content-Length: 94
 
 {

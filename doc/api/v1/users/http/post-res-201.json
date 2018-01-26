@@ -1,48 +1,7 @@
 201 Created
+Access-Control-Allow-Origin: *
+Access-Control-Expose-Headers: Cache-Control,Link,X-App-Sha,X-Token-Refresh,X-User-Dirty,X-RateLimit-Limit,X-RateLimit-Remaining,X-RateLimit-Reset,X-List-Count,X-List-Page,X-List-Size
 Content-Type: application/json; charset=utf-8
-Etag: W/"494-8duIimdXG1qhYH/F1LvqiQ"
+Etag: W/"4a2-XTtiMDwgP43xsNiSQqigxgA+lZ0"
 Content-Encoding: gzip
 
-{
-  "name": "JessieGoodwin4",
-  "username": "JessieGoodwin4",
-  "email": "lon15@hotmail.com",
-  "provider": "local",
-  "created_at": "2016-11-21T21:15:32.246Z",
-  "is_active": false,
-  "counter": {
-    "stars": 0,
-    "downloads": 0,
-    "comments": 0
-  },
-  "preferences": {
-    "moderator_notify_backglass_auto_approved": false,
-    "moderator_notify_backglass_submitted": true,
-    "moderator_notify_release_commented": true,
-    "moderator_notify_release_auto_approved": false,
-    "moderator_notify_release_submitted": true,
-    "contributor_notify_game_request_created": true,
-    "notify_mentions": true,
-    "notify_created_release_followers": true,
-    "notify_created_release_comments": true,
-    "notify_game_requests": true,
-    "notify_backglass_moderation_status": true,
-    "notify_release_validation_status": true,
-    "notify_release_moderation_status": true
-  },
-  "roles": [
-    "member"
-  ],
-  "email_status": {
-    "code": "pending_registration",
-    "expires_at": "2016-11-22T21:15:32.247Z",
-    "value": "lon15@hotmail.com"
-  },
-  "id": "p284hfs8x9h",
-  "plan": {
-    "push_notifications_enabled": false,
-    "app_tokens_enabled": false,
-    "id": "free"
-  },
-  "gravatar_id": "a9d27f63a488f869482a0f5f59974c27"
-}

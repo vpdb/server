@@ -1,23 +1,7 @@
 422 Unprocessable Entity
+Access-Control-Allow-Origin: *
+Access-Control-Expose-Headers: Cache-Control,Link,X-App-Sha,X-Token-Refresh,X-User-Dirty,X-RateLimit-Limit,X-RateLimit-Remaining,X-RateLimit-Reset,X-List-Count,X-List-Page,X-List-Size
 Content-Type: application/json; charset=utf-8
 Content-Length: 324
-Etag: W/"144-4DiupDgOyW9IyseYXtE9eA"
+Etag: W/"144-ZEJ7tR48A6VjDUlm1nSioDaKoEE"
 
-{
-  "errors": [
-    {
-      "message": "Reference to game must be provided.",
-      "field": "_game"
-    },
-    {
-      "message": "You must provide at least one author.",
-      "field": "authors",
-      "value": []
-    },
-    {
-      "message": "You must provide at least one version for the backglass.",
-      "field": "versions",
-      "value": []
-    }
-  ]
-}

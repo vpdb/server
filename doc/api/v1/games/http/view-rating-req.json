@@ -1,5 +1,5 @@
-GET /v1/games/rodello/rating HTTP/2.0
+GET /v1/games/skill-ball/rating HTTP/2.0
 Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
-authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJlMmtmOHlzOHhzaCIsImlhdCI6IjIwMTYtMTEtMjFUMjE6MTQ6MDguNjkwWiIsImV4cCI6IjIwMTYtMTEtMjFUMjI6MTQ6MDguNjkwWiIsImlydCI6ZmFsc2V9.R6e01U39tGaRq_Ham8vOmfeVwnuYBRTuGRVkm99_Q4I
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwa215MmF4eW1lOSIsImlhdCI6IjIwMTgtMDEtMjZUMjM6MDk6MDcuMTQwWiIsImV4cCI6IjIwMTgtMDEtMjdUMDA6MDk6MDcuMTQwWiIsImlydCI6ZmFsc2V9.2Hl4Ov3a55-XSDxWMj1_TkEtBLE1tmkjvXhHsl_EpiA
 

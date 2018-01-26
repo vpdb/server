@@ -1,21 +1,7 @@
 422 Unprocessable Entity
+Access-Control-Allow-Origin: *
+Access-Control-Expose-Headers: Cache-Control,Link,X-App-Sha,X-Token-Refresh,X-User-Dirty,X-RateLimit-Limit,X-RateLimit-Remaining,X-RateLimit-Reset,X-List-Count,X-List-Page,X-List-Size
 Content-Type: application/json; charset=utf-8
 Content-Length: 387
-Etag: W/"183-jOF5htVr+/E2984aNPVx1A"
+Etag: W/"183-VE2WSYb6SbOJ9qpy6XsHg8xUwBg"
 
-{
-  "errors": [
-    {
-      "message": "You must provide a file reference.",
-      "field": "_file"
-    },
-    {
-      "message": "Reference to game missing.",
-      "field": "_ref"
-    },
-    {
-      "message": "Must provide sub-category for \"flyer_image\". Possible values: [ \"back\", \"front\", \"inside1\", \"inside2\", \"inside3\", \"inside4\", \"inside5\", \"inside6\" ].",
-      "field": "category"
-    }
-  ]
-}

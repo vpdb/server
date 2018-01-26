@@ -1,8 +1,7 @@
 401 Unauthorized
+Access-Control-Allow-Origin: *
+Access-Control-Expose-Headers: Cache-Control,Link,X-App-Sha,X-Token-Refresh,X-User-Dirty,X-RateLimit-Limit,X-RateLimit-Remaining,X-RateLimit-Reset,X-List-Count,X-List-Page,X-List-Size
 Content-Type: application/json; charset=utf-8
 Content-Length: 79
-Etag: W/"4f-QDndmuszS+gHLE2rEkINug"
+Etag: W/"4f-RYaRl1VAVKjFOUH9s+M9yXHBJJ0"
 
-{
-  "error": "Unauthorized. You need to provide credentials for this resource"
-}

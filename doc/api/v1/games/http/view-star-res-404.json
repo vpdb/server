@@ -1,8 +1,7 @@
 404 Not Found
+Access-Control-Allow-Origin: *
+Access-Control-Expose-Headers: Cache-Control,Link,X-App-Sha,X-Token-Refresh,X-User-Dirty,X-RateLimit-Limit,X-RateLimit-Remaining,X-RateLimit-Reset,X-List-Count,X-List-Page,X-List-Size
 Content-Type: application/json; charset=utf-8
-Content-Length: 81
-Etag: W/"51-e68rbd9NPm2glGIqoKj9vg"
+Content-Length: 73
+Etag: W/"49-1OnnFR5TIJgq8/lSF2XTJ9PNnO0"
 
-{
-  "error": "No star for <danyka_pouros62@hotmail.com> for \"Triplets\" found."
-}

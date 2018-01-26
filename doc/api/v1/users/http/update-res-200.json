@@ -1,44 +1,7 @@
 200 OK
+Access-Control-Allow-Origin: *
+Access-Control-Expose-Headers: Cache-Control,Link,X-App-Sha,X-Token-Refresh,X-User-Dirty,X-RateLimit-Limit,X-RateLimit-Remaining,X-RateLimit-Reset,X-List-Count,X-List-Page,X-List-Size
 Content-Type: application/json; charset=utf-8
-Etag: W/"43b-/RXndjKWFJS/tb/LmzhVmw"
+Etag: W/"427-ecwAqDs6Zvc7WLo3iyvXWAyYHKU"
 Content-Encoding: gzip
 
-{
-  "id": "ekun2fs8x9b",
-  "name": "AyanaSchamberger33",
-  "username": "AyanaSchamberger33",
-  "gravatar_id": "79d9ab5bde75cb933aad5edb3c079dc9",
-  "location": "New Selena fort",
-  "email": "amari.jerde@gmail.com",
-  "is_active": true,
-  "provider": "local",
-  "roles": [
-    "member"
-  ],
-  "plan": {
-    "push_notifications_enabled": false,
-    "app_tokens_enabled": false,
-    "id": "free"
-  },
-  "created_at": "2016-11-21T21:15:31.753Z",
-  "preferences": {
-    "moderator_notify_backglass_auto_approved": false,
-    "moderator_notify_backglass_submitted": true,
-    "moderator_notify_release_commented": true,
-    "moderator_notify_release_auto_approved": false,
-    "moderator_notify_release_submitted": true,
-    "contributor_notify_game_request_created": true,
-    "notify_mentions": true,
-    "notify_created_release_followers": true,
-    "notify_created_release_comments": true,
-    "notify_game_requests": true,
-    "notify_backglass_moderation_status": true,
-    "notify_release_validation_status": true,
-    "notify_release_moderation_status": true
-  },
-  "counter": {
-    "stars": 0,
-    "downloads": 0,
-    "comments": 0
-  }
-}

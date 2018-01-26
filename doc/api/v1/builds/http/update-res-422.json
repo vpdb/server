@@ -1,24 +1,7 @@
 422 Unprocessable Entity
+Access-Control-Allow-Origin: *
+Access-Control-Expose-Headers: Cache-Control,Link,X-App-Sha,X-Token-Refresh,X-User-Dirty,X-RateLimit-Limit,X-RateLimit-Remaining,X-RateLimit-Reset,X-List-Count,X-List-Page,X-List-Size
 Content-Type: application/json; charset=utf-8
 Content-Length: 413
-Etag: W/"19d-F5ZViYKaiuhm2rsBtERBQQ"
+Etag: W/"19d-vU/B6xwQ2P6DigUT3OHMzc3+XAQ"
 
-{
-  "errors": [
-    {
-      "message": "Cast to Date failed for value \"never\" at path \"built_at\"",
-      "field": "built_at",
-      "value": "never"
-    },
-    {
-      "message": "Invalid platform. Valid platforms are: [ \"vp\" ].",
-      "field": "platform",
-      "value": "true"
-    },
-    {
-      "message": "Invalid type. Valid types are: [ \"release\", \"nightly\", \"experimental\" ].",
-      "field": "type",
-      "value": "true"
-    }
-  ]
-}

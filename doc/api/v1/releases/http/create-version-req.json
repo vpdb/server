@@ -1,17 +1,17 @@
-POST /v1/releases/ekr9d4s849b/versions HTTP/2.0
+POST /v1/releases/pkpwo4y8es/versions HTTP/2.0
 Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
-authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwazhneHNteDloIiwiaWF0IjoiMjAxNi0xMS0yMVQyMToxNDozNy45MjhaIiwiZXhwIjoiMjAxNi0xMS0yMVQyMjoxNDozNy45MjhaIiwiaXJ0IjpmYWxzZX0.wBKRdt9NUZG0wY0VVE7yZNdzkB5GWG2CFhUZyt2oxso
-content-type: application/json
-Content-Length: 192
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJla3g2N2R4eThwOSIsImlhdCI6IjIwMTgtMDEtMjZUMjM6MTA6MjMuNjY5WiIsImV4cCI6IjIwMTgtMDEtMjdUMDA6MTA6MjMuNjY5WiIsImlydCI6ZmFsc2V9.E8l56GKCcqY-ZLSdZ6C4okXa6GqMMVmMd_lzSAVD1mM
+Content-Type: application/json
+Content-Length: 191
 
 {
   "version": "2.0.0",
   "changes": "*Second release.*",
   "files": [
     {
-      "_file": "pknx3xs849h",
-      "_playfield_image": "e23xd4smxsh",
+      "_file": "pkmhqoxz8es",
+      "_playfield_image": "ek3e14y8p9",
       "_compatibility": [
         "9.9.0"
       ],

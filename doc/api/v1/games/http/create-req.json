@@ -1,21 +1,32 @@
 POST /v1/games HTTP/2.0
 Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
-authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwMmZxZmJzbTRzYiIsImlhdCI6IjIwMTYtMTEtMjFUMjE6MTM6NDcuMzI2WiIsImV4cCI6IjIwMTYtMTEtMjFUMjI6MTM6NDcuMzI2WiIsImlydCI6ZmFsc2V9.DAjO0kwwNsnfOekVD2C75yu4StWJwJ_17E-9sTOQuVI
-content-type: application/json
-Content-Length: 333
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJla3llcTV4eThlcyIsImlhdCI6IjIwMTgtMDEtMjZUMjM6MDg6MjQuNDQ3WiIsImV4cCI6IjIwMTgtMDEtMjdUMDA6MDg6MjQuNDQ3WiIsImlydCI6ZmFsc2V9.1z4Jc4xifY5qkOgt1QIdTGp0nbpnOcENZcs6xLJk8UQ
+Content-Type: application/json
+Content-Length: 563
 
 {
   "ipdb": {
-    "number": 5865,
-    "mfg": 405
+    "number": 938,
+    "mfg": 350,
+    "rating": "7.7"
   },
-  "title": "Croce D'Oro",
-  "manufacturer": "Splin S.A.",
-  "game_type": "ss",
-  "features": "Trap holes (25). Six cards. 220v operation.",
-  "notes": "This game was made for export to Italy. No optional payout hopper was advertised on manufacturer's website.",
-  "id": "croce-doro",
-  "year": 1900,
-  "_backglass": "ek8qub9mx9h"
+  "title": "4 Roses",
+  "manufacturer": "Williams",
+  "model_number": "274",
+  "year": 1962,
+  "game_type": "em",
+  "produced_units": 1250,
+  "themes": [
+    "Pageantry"
+  ],
+  "designers": [
+    "Steve Kordek"
+  ],
+  "artists": [
+    "George Molentin"
+  ],
+  "features": "Flippers (2), Pop bumpers (3), Passive bumpers (2), Slingshots (2), Gobble holes (2), Rotating target (1). Red and Yellow advances raise corresponding gobble hole values from 50 points to 100, 200, 300, and Special.Maximum displayed point score is 1,999 points.",
+  "id": "4-roses",
+  "_backglass": "pkrpw54z8p9"
 }

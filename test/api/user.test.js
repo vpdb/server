@@ -32,6 +32,7 @@ describe('The VPDB `user` API', function() {
 			chmail5: { roles: [ 'member' ]},
 			chmail6: { roles: [ 'member' ]},
 			chprofile: { roles: [ 'member' ]},
+			addoauth: { roles: [ 'member' ]},
 			vip: { roles: [ 'member' ], _plan: 'vip' },
 			vip1: { roles: [ 'member' ], _plan: 'vip' }
 		}, done);
@@ -1102,6 +1103,94 @@ describe('The VPDB `user` API', function() {
 					hlp.expectValidationError(err, res, 'gravatar_id', 'field is read-only');
 					done();
 				});
+		});
+
+	});
+
+	describe.only('when a third-party service creates a new user', () => {
+
+		let appToken;
+		before(done => {
+			request
+				.post('/api/v1/tokens')
+				.as('admin')
+				.send({ label: 'User test token', password: hlp.getUser('admin').password, provider: 'ipbtest', type: 'application', scopes: [ 'community', 'service' ] })
+				.end((err, res) => {
+					hlp.expectStatus(err, res, 201);
+					appToken = res.body.token;
+					done();
+				});
+		});
+
+		it('should fail with empty body', done => {
+			request
+				.put('/api/v1/users')
+				.with(appToken)
+				.send({}).end((err, res) => {
+					hlp.expectValidationError(err, res, 'email', 'email is required');
+					hlp.expectValidationError(err, res, 'username', 'username is required');
+					hlp.expectValidationError(err, res, 'provider_id', 'provider is required');
+					done();
+			});
+		});
+
+		it('should fail with invalid body', done => {
+			request
+				.put('/api/v1/users')
+				.with(appToken)
+				.send({ email: 'noemail', username: 'ö', provider_id: { test: 123 }, provider_profile: 'string' }).end((err, res) => {
+					hlp.expectValidationError(err, res, 'email', 'email is invalid');
+					hlp.expectValidationError(err, res, 'username', 'must be alphanumeric');
+					hlp.expectValidationError(err, res, 'provider_id', 'must be a number or a string');
+					hlp.expectValidationError(err, res, 'provider_profile', 'must be an object');
+					done();
+			});
+		});
+
+		it('should show add a new user with an unknown email address', done => {
+			request
+				.put('/api/v1/users')
+				.with(appToken)
+				.send({ email: 'by-isp@vpdb.io', username: 'böh', provider_id: 1234}).end((err, res) => {
+					hlp.expectStatus(err, res, 201);
+					hlp.doomUser(res.body.id);
+					expect(res.body.ipbtest.id).to.be(1234);
+					expect(res.body.email).to.be('by-isp@vpdb.io');
+					expect(res.body.roles).to.eql([ 'member' ]);
+					done();
+			});
+		});
+
+		it('should show update a user with a known email address', done => {
+			request
+				.put('/api/v1/users')
+				.with(appToken)
+				.send({ email: hlp.getUser('addoauth').email, username: 'böh', provider_id: 4321 }).end((err, res) => {
+					hlp.expectStatus(err, res, 200);
+					expect(res.body.id).to.be(hlp.getUser('addoauth').id);
+					expect(res.body.ipbtest.id).to.be(4321);
+					expect(res.body.roles).to.eql([ 'member' ]);
+					done();
+				});
+		});
+
+		it('should show update a user with an existing provider ID', done => {
+			request
+				.put('/api/v1/users')
+				.with(appToken)
+				.send({ email: 'update-me@vpdb.io', username: 'duh', provider_id: 666 }).end((err, res) => {
+					hlp.expectStatus(err, res, 201);
+					const user = res.body;
+					request
+						.put('/api/v1/users')
+						.with(appToken)
+						.send({ email: 'email-updated@vpdb.io', username: 'asdf', provider_id: 666 }).end((err, res) => {
+							hlp.expectStatus(err, res, 200);
+							expect(res.body.id).to.be(user.id);
+							expect(res.body.email).to.be('update-me@vpdb.io');
+							done();
+				});
+			});
 		});
 
 	});

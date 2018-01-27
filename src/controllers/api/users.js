@@ -92,26 +92,44 @@ exports.createOrUpdate = function(req, res) {
 	let name, provider, isNew;
 	Promise.try(() => {
 
-		// validations
+		// make sure there's an app token
 		if (!req.appToken) {
 			throw error('Resource only available with application token.').status(400);
 		}
 		provider = req.appToken.provider;
-		if (!req.body[provider] || !req.body[provider].id) {
-			throw error('Validations failed.').validationError(provider + '.id', 'Identifier at provider is required.');
+
+		// validations
+		let err = null;
+		if (!req.body.provider_id) {
+			err = (err || error('Validations failed.')).validationError('provider_id', 'Identifier at provider is required.');
+		} else if (!_.isString(req.body.provider_id) && !_.isNumber(req.body.provider_id)) {
+			err = (err || error('Validations failed.')).validationError('provider_id', 'Identifier at provider must be a number or a string.');
 		}
-		if (!_.isString(req.body.email) || !validator.isEmail(req.body.email)) {
-			throw error('Validations failed.').validationError('email', 'Email is required.');
+		if (!req.body.email || !_.isString(req.body.email)) {
+			err = (err || error('Validations failed.')).validationError('email', 'Email is required.');
+
+		} else if (!validator.isEmail(req.body.email)) {
+			err = (err || error('Validations failed.')).validationError('email', 'Email is invalid.');
 		}
 		if (!req.body.username) {
-			throw error('Validations failed.').validationError('username', 'Username is required.');
+			err = (err || error('Validations failed.')).validationError('username', 'Username is required.');
+		} else if (!_.isString(req.body.username)) {
+			err = (err || error('Validations failed.')).validationError('username', 'Username must be a string.');
+		} else if (!/^[0-9a-z ]{3,}$/i.test(removeDiacritics(req.body.username).replace(/[^0-9a-z ]+/gi, ''))) {
+			err = (err || error('Validations failed.')).validationError('username', 'Username must be alphanumeric with at least three characters.');
+		}
+		if (req.body.provider_profile && !_.isObject(req.body.provider_profile)) {
+			err = (err || error('Validations failed.')).validationError('provider_profile', 'Must be an object.');
+		}
+		if (err) {
+			throw err;
 		}
 		name = removeDiacritics(req.body.username).replace(/[^0-9a-z ]+/gi, '');
 
 		// create query condition
 		const query = {
 			$or: [
-				{ [provider + '.id']: req.body[provider].id },
+				{ [provider + '.id']: req.body.provider_id },
 				{ email: req.body.email },
 				{ validated_emails: req.body.email }
 			]
@@ -121,24 +139,21 @@ exports.createOrUpdate = function(req, res) {
 	}).then(existingUser => {
 
 		if (existingUser) {
-			// if (!existingUser[provider]) {
-			// 	LogUser.success(req, existingUser, 'authenticate', { provider: provider, profile: profile._json });
-			// 	logger.info('[passport|%s] Adding profile from %s to user.', logtag, provider, profile.emails[0].value);
-			// } else {
-			// 	LogUser.success(req, user, 'authenticate', { provider: provider });
-			// 	logger.info('[passport|%s] Returning user %s', logtag, profile.emails[0].value);
-			// }
+			if (!existingUser[provider]) {
+				LogUser.success(req, existingUser, 'provider_add', { provider: provider, profile: req.body.provider_profile });
+			} else {
+				LogUser.success(req, existingUser, 'provider_update', { provider: provider });
+			}
 
 			// update profile data on separate field
-			existingUser[provider] = req.body.profile || req.body;
-			existingUser.emails = _.uniq([ existingUser.email, ...existingUser.emails, req.body.email ]);
+			existingUser[provider] = _.assign(existingUser[provider], { id: req.body.provider_id }, req.body.provider_profile || {});
+			existingUser.emails = _.uniq([existingUser.email, ...existingUser.emails, req.body.email]);
 
 			isNew = false;
 
 			// save and return
 			return existingUser.save();
 		}
-
 		isNew = true;
 
 		// check if username doesn't conflict
@@ -151,19 +166,18 @@ exports.createOrUpdate = function(req, res) {
 				provider: provider,
 				name: name,
 				email: req.body.email,
-				emails: [ req.body.email ],
-				[provider]:  req.body.profile || req.body
+				emails: [req.body.email],
+				[provider]: _.assign({ id: req.body.provider_id }, req.body.provider_profile || {})
 			};
 
-			return User.createUser(newUser, false);
-
-		}).then(user => {
-			// LogUser.success(req, user, 'registration', { provider: provider, email: newUser.email });
-			// logger.info('[passport|%s] New user <%s> created.', logtag, user.email);
-			//mailer.welcomeOAuth(user);
-
-			api.success(res, user.toDetailed(), isNew ? 201 : 200);
+			return User.createUser(newUser, false).then(newUser => {
+				LogUser.success(req, newUser, 'provider_registration', { provider: provider, email: newUser.email });
+				return newUser;
+			});
 		});
+
+	}).then(user => {
+		api.success(res, user.toDetailed(), isNew ? 201 : 200);
 
 	}).catch(api.handleError(res, error, 'Error creating or updating user'));
 };

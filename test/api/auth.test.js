@@ -367,7 +367,7 @@ describe('The authentication engine of the VPDB API', function() {
 					request
 						.post('/api/v1/tokens')
 						.as('admin')
-						.send({ label: 'Test Application', password: hlp.getUser('admin').password, provider: 'ipbtest', type: 'application', scopes: [ 'community', 'service' ] })
+						.send({ label: 'Auth test token', password: hlp.getUser('admin').password, provider: 'ipbtest', type: 'application', scopes: [ 'community', 'service' ] })
 						.end((err, res) => {
 							hlp.expectStatus(err, res, 201);
 							appToken = res.body.token;
@@ -424,7 +424,7 @@ describe('The authentication engine of the VPDB API', function() {
 			request
 				.put('/api/v1/users')
 				.with(appToken)
-				.send({ ipbtest: { id: 1234 }, email: 'oauth@vpdb.io', username: 'oauthtest' }).end(function(err, res) {
+				.send({ provider_id: 1234, email: 'oauth@vpdb.io', username: 'oauthtest' }).end(function(err, res) {
 					hlp.expectStatus(err, res, 201);
 					hlp.doomUser(res.body.id);
 					expect(res.body.provider).to.be('ipbtest');

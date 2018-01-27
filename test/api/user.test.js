@@ -1107,7 +1107,7 @@ describe('The VPDB `user` API', function() {
 
 	});
 
-	describe.only('when a third-party service creates a new user', () => {
+	describe('when a provider service creates a new user', () => {
 
 		let appToken;
 		before(done => {
@@ -1180,6 +1180,7 @@ describe('The VPDB `user` API', function() {
 				.with(appToken)
 				.send({ email: 'update-me@vpdb.io', username: 'duh', provider_id: 666 }).end((err, res) => {
 					hlp.expectStatus(err, res, 201);
+					hlp.doomUser(res.body.id);
 					const user = res.body;
 					request
 						.put('/api/v1/users')

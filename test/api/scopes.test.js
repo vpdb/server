@@ -10,7 +10,7 @@ superagentTest(request);
 
 describe('The scopes of the VPDB API', function() {
 
-	let tokenAll, tokenLogin, tokenCommunity;
+	let tokenAll, tokenLogin, tokenCommunity, tokenService;
 	before(function() {
 
 		return Promise.promisify(hlp.setupUsers.bind(hlp))(request, { root: { roles: [ 'root' ],  _plan: 'vip' } })
@@ -48,11 +48,22 @@ describe('The scopes of the VPDB API', function() {
 				expect(res.body.id).to.be.ok();
 				expect(res.body.token).to.be.ok();
 				tokenCommunity = res.body.token;
+				return request
+					.post('/api/v1/tokens')
+					.as('root')
+					.send({ label: 'service-token', password: hlp.getUser('root').password, provider: 'github', type: 'application', scopes: [ 'service' ] })
+					.promise();
+
+			}).then(res => {
+				hlp.expectStatus(res, 201);
+				expect(res.body.id).to.be.ok();
+				expect(res.body.token).to.be.ok();
+				tokenService = res.body.token;
 			});
 	});
 
 	after(function(done) {
-		hlp.teardownUsers(request, done);
+		hlp.cleanup(request, done);
 	});
 
 	describe('using an "all" token', function() {
@@ -286,6 +297,9 @@ describe('The scopes of the VPDB API', function() {
 
 		it('should allow access to user list', done => {
 			request.get('/api/v1/users').with(tokenAll).end(hlp.status(200, done));
+		});
+		it('should deny access to user creation through provider', done => {
+			request.put('/api/v1/users').with(tokenAll).send({}).end(hlp.status(401, 'invalid scope', done));
 		});
 		it('should allow access to user details', done => {
 			request.get('/api/v1/users/1234').with(tokenAll).end(hlp.status(404, done));
@@ -531,6 +545,9 @@ describe('The scopes of the VPDB API', function() {
 		it('should deny access to user list', done => {
 			request.get('/api/v1/users').with(tokenLogin).end(hlp.status(401, 'invalid scope', done));
 		});
+		it('should deny access to user creation through provider', done => {
+			request.put('/api/v1/users').with(tokenLogin).send({}).end(hlp.status(401, 'invalid scope', done));
+		});
 		it('should deny access to user details', done => {
 			request.get('/api/v1/users/1234').with(tokenLogin).end(hlp.status(401, 'invalid scope', done));
 		});
@@ -773,6 +790,9 @@ describe('The scopes of the VPDB API', function() {
 		it('should deny access to user list', done => {
 			request.get('/api/v1/users').with(tokenCommunity).end(hlp.status(401, 'invalid scope', done));
 		});
+		it('should deny access to user creation through provider', done => {
+			request.put('/api/v1/users').with(tokenCommunity).send({}).end(hlp.status(401, 'invalid scope', done));
+		});
 		it('should deny access to user details', done => {
 			request.get('/api/v1/users/1234').with(tokenCommunity).end(hlp.status(401, 'invalid scope', done));
 		});
@@ -783,5 +803,13 @@ describe('The scopes of the VPDB API', function() {
 			request.del('/api/v1/users/1234').with(tokenCommunity).end(hlp.status(401, 'invalid scope', done));
 		});
 
+	});
+
+
+	describe('using a service token', function() {
+
+		it('should allow access to user creation through provider', done => {
+			request.put('/api/v1/users').with(tokenService).send({}).end(hlp.status(422, done));
+		});
 	});
 });

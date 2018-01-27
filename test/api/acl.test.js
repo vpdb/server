@@ -39,6 +39,10 @@ describe('The ACLs of the VPDB API', function() {
 			request.get('/api/v1/users?q=123').end(hlp.status(401, done));
 		});
 
+		it('should deny access to user creation through provider', done => {
+			request.put('/api/v1/users').send({}).end(hlp.status(401, 'unauthorized', done));
+		});
+
 		it('should deny access to user details', function(done) {
 			request.get('/api/v1/users/' + hlp.getUser('member').id).saveResponse({ path: 'users/view' }).send({}).end(hlp.status(401, done));
 		});
@@ -333,6 +337,10 @@ describe('The ACLs of the VPDB API', function() {
 
 		it('should allow access to user search for more than 2 chars', function(done) {
 			request.get('/api/v1/users?q=123').as('member').end(hlp.status(200, done));
+		});
+
+		it('should deny access to user creation through provider', done => {
+			request.put('/api/v1/users').send({}).as('member').end(hlp.status(401, done));
 		});
 
 		it('should only return minmal user info when searching other users', function(done) {
@@ -632,6 +640,10 @@ describe('The ACLs of the VPDB API', function() {
 			request.get('/api/v1/users?q=123').as('contributor').end(hlp.status(200, done));
 		});
 
+		it('should deny access to user creation through provider', done => {
+			request.put('/api/v1/users').send({}).as('contributor').end(hlp.status(401, done));
+		});
+
 		it('should only return minmal user info when searching other users', function(done) {
 			request
 				.get('/api/v1/users?q=' + hlp.getUser('member').name.substr(0, 3))
@@ -785,7 +797,11 @@ describe('The ACLs of the VPDB API', function() {
 			request.get('/api/v1/users?q=123').as('moderator').end(hlp.status(200, done));
 		});
 
-		it('should only return minmal user info when searching other users', function(done) {
+		it('should deny access to user creation through provider', done => {
+			request.put('/api/v1/users').send({}).as('moderator').end(hlp.status(401, done));
+		});
+
+		it('should only return minimal user info when searching other users', function(done) {
 			request
 				.get('/api/v1/users?q=' + hlp.getUser('member').name.substr(0, 3))
 				.as('moderator')
@@ -942,6 +958,10 @@ describe('The ACLs of the VPDB API', function() {
 			request.get('/api/v1/users?q=123').as('admin').end(hlp.status(200, done));
 		});
 
+		it('should deny access to user creation through provider', done => {
+			request.put('/api/v1/users').send({}).as('admin').end(hlp.status(401, done));
+		});
+
 		it('should return detailed user info when listing other users', function(done) {
 			request
 				.get('/api/v1/users?q=' + hlp.getUser('member').name.substr(0, 3))
@@ -1067,6 +1087,9 @@ describe('The ACLs of the VPDB API', function() {
 		});
 		it('should allow access to user search for more than 2 chars', function(done) {
 			request.get('/api/v1/users?q=123').as('root').end(hlp.status(200, done));
+		});
+		it('should deny access to user creation through provider', done => {
+			request.put('/api/v1/users').send({}).as('root').end(hlp.status(401, done));
 		});
 		it('should return detailed user info when listing other users', function(done) {
 			request

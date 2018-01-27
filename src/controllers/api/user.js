@@ -322,6 +322,11 @@ exports.authenticate = function(req, res) {
 				throw error('Invalid token.').status(401);
 			}
 
+			// fail if invalid type
+			if (token.type !== 'personal') {
+				throw error('Cannot use token of type "%s" for authentication (must be of type "personal").', token.type).status(401);
+			}
+
 			// fail if not login token
 			if (!scope.isIdentical(token.scopes, [ 'login' ])) {
 				throw error('Token to exchange for JWT must exclusively be "login" ([ "' + token.scopes.join('", "') + '" ] given).').status(401);
@@ -339,6 +344,8 @@ exports.authenticate = function(req, res) {
 
 			user = token._created_by;
 			how = 'token';
+
+			return token.update({ last_used_at: new Date() });
 		});
 
 	}).then(() => {

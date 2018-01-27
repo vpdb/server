@@ -353,7 +353,14 @@ describe('The VPDB `Token` API', function() {
 				.send({ label: 'Test Application', password: hlp.getUser('admin').password, type: 'application', scopes: [ 'all '] })
 				.end(function(err, res) {
 					hlp.expectValidationError(err, res, 'scopes', 'scopes must be one or more of the following');
-					done();
+					request
+						.post('/api/v1/tokens')
+						.as('admin')
+						.send({ label: 'Test Application', password: hlp.getUser('admin').password, type: 'application', scopes: [ 'login '] })
+						.end(function(err, res) {
+							hlp.expectValidationError(err, res, 'scopes', 'scopes must be one or more of the following');
+							done();
+						});
 				});
 		});
 

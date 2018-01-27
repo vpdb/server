@@ -95,47 +95,47 @@ exports.auth = function(req, res, resource, permission, requiredScopes, planAttr
 			throw error('Unauthorized. You need to provide credentials for this resource').status(401);
 		}
 
-		// application access token?
+		// app token?
 		if (/[0-9a-f]{32,}/i.test(token)) {
 
 			// application access tokens aren't allowed in the url
 			if (fromUrl) {
-				throw error('Application Access Tokens must be provided in the header.').status(401);
+				throw error('App tokens must be provided in the header.').status(401);
 			}
 
-			return Token.findOne({ token: token }).populate('_created_by').exec().then(t => {
+			return Token.findOne({ token: token }).populate('_created_by').exec().then(appToken => {
 
 				// fail if not found
-				if (!t) {
-					throw error('Invalid access token.').status(401);
+				if (!appToken) {
+					throw error('Invalid app token.').status(401);
 				}
 
 				// fail if incorrect plan
-				if (t.type === 'personal' && !t._created_by.planConfig.enableAppTokens) {
-					throw error('Your current plan "%s" does not allow the use of application access tokens. Upgrade or contact an admin.', t._created_by.planConfig.id).status(401);
+				if (appToken.type !== 'personal' && !appToken._created_by.planConfig.enableAppTokens) {
+					throw error('Your current plan "%s" does not allow the use of app tokens. Upgrade or contact an admin.', appToken._created_by.planConfig.id).status(401);
 				}
 
 				// fail if expired
-				if (t.expires_at.getTime() < now.getTime()) {
+				if (appToken.expires_at.getTime() < now.getTime()) {
 					throw error('Token has expired.').status(401);
 				}
 
 				// fail if inactive
-				if (!t.is_active) {
+				if (!appToken.is_active) {
 					throw error('Token is inactive.').status(401);
 				}
 
 				// so we're good here!
-				req.appToken = t;
-				tokenScopes = t.scopes;
+				req.appToken = appToken;
+				tokenScopes = appToken.scopes;
 				tokenType = 'access-token';
 
 				// additional checks for application token
-				if (t.type === 'application') {
+				if (appToken.type === 'application') {
 
-					// if this resource is a service resource, we don't need a user ID. Also make sure no permissions needed.
+					// if this resource is a service resource, we don't need a user ID. But make sure no permissions needed.
 					if (scope.isValid([ scope.SERVICE ], requiredScopes) && !resource && !permission) {
-						return Token.update({ _id: t._id }, { last_used_at: new Date() }).then(() => null);
+						return appToken.update({ last_used_at: new Date() }).then(() => null);
 					}
 
 					// check for user id header
@@ -146,13 +146,13 @@ exports.auth = function(req, res, resource, permission, requiredScopes, planAttr
 						if (!user) {
 							throw new error('No user with ID "%s".', req.headers[userIdHeader]).status(400);
 						}
-						if (!user[t.provider]) {
-							throw new error('Provided user has not been authenticated with %s.', t.provider).status(400);
+						if (!user[appToken.provider]) {
+							throw new error('Provided user has not been authenticated with %s.', appToken.provider).status(400);
 						}
-						return user;
+						return appToken.update({ last_used_at: new Date() }).then(() => user);
 					});
 				}
-				return Token.update({ _id: t._id }, { last_used_at: new Date() }).then(() => t._created_by);
+				return appToken.update({ last_used_at: new Date() }).then(() => appToken._created_by);
 			});
 
 		// Otherwise, assume it's a JWT.
@@ -248,6 +248,7 @@ exports.auth = function(req, res, resource, permission, requiredScopes, planAttr
 			return;
 		}
 
+		// check ACL permissions
 		return acl.isAllowed(user.id, resource, permission).then(granted => {
 			if (!granted) {
 				throw error('User <%s> tried to access `%s` but was denied access due to missing permissions to %s/%s.', user.email, req.url, resource, permission).display('Access denied').status(403).log();

@@ -106,7 +106,7 @@ exports.create = function(req, res) {
 exports.list = function(req, res) {
 
 	const query = { _created_by: req.user._id, type: 'personal' };
-	const allowedTypes = ['access', 'login'];
+	const allowedTypes = [ 'personal', 'application' ];
 
 	// filter by type?
 	if (req.query.type && _.includes(allowedTypes, req.query.type)) {
@@ -120,9 +120,7 @@ exports.list = function(req, res) {
 		}
 
 		// reduce
-		tokens = _.map(tokens, function(token) {
-			return token.toSimple();
-		});
+		tokens = _.map(tokens, token => token.toSimple());
 		api.success(res, tokens);
 	});
 };

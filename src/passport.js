@@ -138,7 +138,7 @@ exports.verifyCallbackOAuth = function(strategy, providerName) {
 			} else {
 				name = profile.displayName || profile.username;
 			}
-			name = removeDiacritics(name).replace(/[^0-9a-z ]+/gi, '');
+			name = exports.removeDiacritics(name).replace(/[^0-9a-z ]+/gi, '');
 
 			// create query condition
 			emails = profile.emails.map(e => e.value);
@@ -336,9 +336,10 @@ const diacriticsRemovalMap = [
 	{'base':'y','letters':/[\u0079\u24E8\uFF59\u1EF3\u00FD\u0177\u1EF9\u0233\u1E8F\u00FF\u1EF7\u1E99\u1EF5\u01B4\u024F\u1EFF]/g},
 	{'base':'z','letters':/[\u007A\u24E9\uFF5A\u017A\u1E91\u017C\u017E\u1E93\u1E95\u01B6\u0225\u0240\u2C6C\uA763]/g}
 ];
-function removeDiacritics(str) {
+
+exports.removeDiacritics = function(str) {
 	for (let i = 0; i < diacriticsRemovalMap.length; i++) {
 		str = str.replace(diacriticsRemovalMap[i].letters, diacriticsRemovalMap[i].base);
 	}
 	return str;
-}
+};

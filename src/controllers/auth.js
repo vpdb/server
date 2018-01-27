@@ -126,6 +126,7 @@ exports.auth = function(req, res, resource, permission, requiredScopes, planAttr
 				}
 
 				// so we're good here!
+				req.appToken = t;
 				tokenScopes = t.scopes;
 				tokenType = 'access-token';
 
@@ -133,7 +134,7 @@ exports.auth = function(req, res, resource, permission, requiredScopes, planAttr
 				if (t.type === 'application') {
 
 					// if this resource is a service resource, we don't need a user ID. Also make sure no permissions needed.
-					if (scope.isIdentical([ scope.SERVICE ], requiredScopes) && !resource && !permission) {
+					if (scope.isValid([ scope.SERVICE ], requiredScopes) && !resource && !permission) {
 						return Token.update({ _id: t._id }, { last_used_at: new Date() }).then(() => null);
 					}
 

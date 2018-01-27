@@ -22,6 +22,7 @@
 const _ = require('lodash');
 const logger = require('winston');
 const randomstring = require('randomstring');
+const validator = require('validator');
 
 const User = require('mongoose').model('User');
 const LogUser = require('mongoose').model('LogUser');
@@ -31,6 +32,7 @@ const api = require('./api');
 const error = require('../../modules/error')('api', 'users');
 const mailer = require('../../modules/mailer');
 const config = require('../../modules/settings').current;
+const removeDiacritics = require('../../passport').removeDiacritics;
 const redis = require('redis').createClient(config.vpdb.redis.port, config.vpdb.redis.host, { no_ready_check: true });
 redis.select(config.vpdb.redis.db);
 redis.on('error', err => logger.error(err.message));
@@ -87,7 +89,81 @@ exports.create = function(req, res) {
 
 exports.createOrUpdate = function(req, res) {
 
+	let name, provider, isNew;
 	Promise.try(() => {
+
+		// validations
+		if (!req.appToken) {
+			throw error('Resource only available with application token.').status(400);
+		}
+		provider = req.appToken.provider;
+		if (!req.body[provider] || !req.body[provider].id) {
+			throw error('Validations failed.').validationError(provider + '.id', 'Identifier at provider is required.');
+		}
+		if (!_.isString(req.body.email) || !validator.isEmail(req.body.email)) {
+			throw error('Validations failed.').validationError('email', 'Email is required.');
+		}
+		if (!req.body.username) {
+			throw error('Validations failed.').validationError('username', 'Username is required.');
+		}
+		name = removeDiacritics(req.body.username).replace(/[^0-9a-z ]+/gi, '');
+
+		// create query condition
+		const query = {
+			$or: [
+				{ [provider + '.id']: req.body[provider].id },
+				{ email: req.body.email },
+				{ validated_emails: req.body.email }
+			]
+		};
+		return User.findOne(query).exec();
+
+	}).then(existingUser => {
+
+		if (existingUser) {
+			// if (!existingUser[provider]) {
+			// 	LogUser.success(req, existingUser, 'authenticate', { provider: provider, profile: profile._json });
+			// 	logger.info('[passport|%s] Adding profile from %s to user.', logtag, provider, profile.emails[0].value);
+			// } else {
+			// 	LogUser.success(req, user, 'authenticate', { provider: provider });
+			// 	logger.info('[passport|%s] Returning user %s', logtag, profile.emails[0].value);
+			// }
+
+			// update profile data on separate field
+			existingUser[provider] = req.body.profile || req.body;
+			existingUser.emails = _.uniq([ existingUser.email, ...existingUser.emails, req.body.email ]);
+
+			isNew = false;
+
+			// save and return
+			return existingUser.save();
+		}
+
+		isNew = true;
+
+		// check if username doesn't conflict
+		let newUser;
+		return User.findOne({ name: name }).exec().then(dupeNameUser => {
+			if (dupeNameUser) {
+				name += Math.floor(Math.random() * 1000);
+			}
+			newUser = {
+				provider: provider,
+				name: name,
+				email: req.body.email,
+				emails: [ req.body.email ],
+				[provider]:  req.body.profile || req.body
+			};
+
+			return User.createUser(newUser, false);
+
+		}).then(user => {
+			// LogUser.success(req, user, 'registration', { provider: provider, email: newUser.email });
+			// logger.info('[passport|%s] New user <%s> created.', logtag, user.email);
+			//mailer.welcomeOAuth(user);
+
+			api.success(res, user.toDetailed(), isNew ? 201 : 200);
+		});
 
 	}).catch(api.handleError(res, error, 'Error creating or updating user'));
 };

@@ -367,7 +367,7 @@ describe('The authentication engine of the VPDB API', function() {
 					request
 						.post('/api/v1/tokens')
 						.as('admin')
-						.send({ label: 'Test Application', password: hlp.getUser('admin').password, provider: 'ipbtest', type: 'application', scopes: [ 'community'] })
+						.send({ label: 'Test Application', password: hlp.getUser('admin').password, provider: 'ipbtest', type: 'application', scopes: [ 'community', 'service' ] })
 						.end((err, res) => {
 							hlp.expectStatus(err, res, 201);
 							appToken = res.body.token;
@@ -420,25 +420,14 @@ describe('The authentication engine of the VPDB API', function() {
 				});
 		});
 
-		it.skip('should be able to create an oauth user', done => {
+		it('should be able to create an oauth user', done => {
 			request
 				.put('/api/v1/users')
 				.with(appToken)
-				.send({
-					id: 1234,
-					username: 'new-ips-user',
-					displayName: 'New IPS user',
-					name: {
-						familyName: '',
-						givenName: '',
-						middleName: ''
-					},
-					emails: [
-						{ value: 'ipsuser@vpdb.io', type: 'work' }
-					],
-					photos: []
-				}).end(function(err, res) {
-					hlp.dump(res);
+				.send({ ipbtest: { id: 1234 }, email: 'oauth@vpdb.io', username: 'oauthtest' }).end(function(err, res) {
+					hlp.expectStatus(err, res, 201);
+					hlp.doomUser(res.body.id);
+					expect(res.body.provider).to.be('ipbtest');
 					done();
 			});
 		});

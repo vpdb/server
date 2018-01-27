@@ -86,8 +86,8 @@ class Scope {
 		return scopes && scopes.includes(scope);
 	}
 	/**
-	 * Makes sure that all given scopes are valid. Basically as soon as one
-	 * of the given scopes is not in the valid scopes, returns false.
+	 * Makes sure that at least one scope is valid. Basically as soon as one
+	 * of the given scopes is in the valid scopes, return trie.
 	 *
 	 * @param {string[]|"personal"|"application"} [validScopes] If string given, match against valid scopes of given type. Otherwise match against given scopes.
 	 * @param {string[]} scopesToValidate Scopes to check
@@ -99,11 +99,11 @@ class Scope {
 		}
 		validScopes = _.isArray(validScopes) ? validScopes : this._scopes[validScopes];
 		for (let i = 0; i < scopesToValidate.length; i++) {
-			if (!this.has(validScopes, scopesToValidate[i])) {
-				return false;
+			if (this.has(validScopes, scopesToValidate[i])) {
+				return true;
 			}
 		}
-		return true;
+		return false;
 	}
 
 	/**

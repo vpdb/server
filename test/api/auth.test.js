@@ -351,7 +351,7 @@ describe('The authentication engine of the VPDB API', function() {
 	});
 
 	describe('when an application token is provided in the header', () => {
-		let oauthUser;
+		let oauthUser1, oauthUser2;
 		let appToken;
 		before(done => {
 			request
@@ -363,15 +363,26 @@ describe('The authentication engine of the VPDB API', function() {
 				}).end((err, res) => {
 					hlp.expectStatus(err, res, 200);
 					hlp.doomUser(res.body.user.id);
-					oauthUser = res.body.user;
+					oauthUser1 = res.body.user;
 					request
-						.post('/api/v1/tokens')
-						.as('admin')
-						.send({ label: 'Auth test token', password: hlp.getUser('admin').password, provider: 'ipbtest', type: 'application', scopes: [ 'community', 'service' ] })
-						.end((err, res) => {
-							hlp.expectStatus(err, res, 201);
-							appToken = res.body.token;
-							done();
+						.post('/api/v1/authenticate/mock')
+						.send({
+							provider: 'github',
+							providerName: 'github',
+							profile: { provider: 'github', id: '23', username: 'githubuser', displayName: 'test i am', profileUrl: 'http://localhost:8088/index.php?showuser=2', emails: [ { value: 'test2@vpdb.io' } ], photos: [ { value: 'http://localhost:8088/uploads/' } ] }
+						}).end((err, res) => {
+							hlp.expectStatus(err, res, 200);
+							hlp.doomUser(res.body.user.id);
+							oauthUser2 = res.body.user;
+							request
+								.post('/api/v1/tokens')
+								.as('admin')
+								.send({ label: 'Auth test token', password: hlp.getUser('admin').password, provider: 'ipbtest', type: 'application', scopes: [ 'community', 'service' ] })
+								.end((err, res) => {
+									hlp.expectStatus(err, res, 201);
+									appToken = res.body.token;
+									done();
+							});
 						});
 				});
 		});
@@ -380,10 +391,10 @@ describe('The authentication engine of the VPDB API', function() {
 			request
 				.get('/api/v1/user')
 				.with(appToken)
-				.end(hlp.status(400, 'must provide "x-vpdb-user-id" header', done));
+				.end(hlp.status(400, 'must provide "x-vpdb-user-id" or "x-user-id" header', done));
 		});
 
-		it('should fail when a non-existent user header is provided', done => {
+		it('should fail when a non-existent vpdb user header is provided', done => {
 			request
 				.get('/api/v1/user')
 				.with(appToken)
@@ -391,7 +402,7 @@ describe('The authentication engine of the VPDB API', function() {
 				.end(hlp.status(400, 'no user with id', done));
 		});
 
-		it('should fail with a user header of a different provider', done => {
+		it('should fail with a vpdb user header of a different provider', done => {
 			request
 				.get('/api/v1/user')
 				.with(appToken)
@@ -404,18 +415,46 @@ describe('The authentication engine of the VPDB API', function() {
 				.post('/api/v1/backglasses')
 				.send({})
 				.with(appToken)
-				.set('X-Vpdb-User-Id', oauthUser.id)
+				.set('X-Vpdb-User-Id', oauthUser1.id)
 				.end(hlp.status(401, 'token has an invalid scope', done));
 		});
 
-		it('should succeed with the correct user header', done => {
+		it('should fail with a non-existent user header', done => {
 			request
 				.get('/api/v1/user')
 				.with(appToken)
-				.set('X-Vpdb-User-Id', oauthUser.id)
+				.set('X-User-Id', 'blarp')
+				.end(hlp.status(400, 'no user with id', done));
+		});
+
+		it('should fail with a user header from a different provider', done => {
+			request
+				.get('/api/v1/user')
+				.with(appToken)
+				.set('X-User-Id', oauthUser2.github.id)
+				.end(hlp.status(400, 'no user with id', done));
+		});
+
+		it('should succeed with the correct provider user header', done => {
+			request
+				.get('/api/v1/user')
+				.with(appToken)
+				.set('X-User-Id', '2')
 				.end(function(err, res) {
 					hlp.expectStatus(err, res, 200);
-					expect(res.body.id).to.be(oauthUser.id);
+					expect(res.body.id).to.be(oauthUser1.id);
+					done();
+				});
+		});
+
+		it('should succeed with the correct vpdb user header', done => {
+			request
+				.get('/api/v1/user')
+				.with(appToken)
+				.set('X-Vpdb-User-Id', oauthUser1.id)
+				.end(function(err, res) {
+					hlp.expectStatus(err, res, 200);
+					expect(res.body.id).to.be(oauthUser1.id);
 					done();
 				});
 		});

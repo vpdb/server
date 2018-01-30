@@ -58,7 +58,8 @@ const Token = require('mongoose').model('Token');
  */
 exports.auth = function(req, res, resource, permission, requiredScopes, planAttrs) {
 
-	const userIdHeader = 'x-vpdb-user-id';
+	const vpdbUserIdHeader = 'x-vpdb-user-id';
+	const providerUserIdHeader = 'x-user-id';
 	const now = new Date();
 	let tokenScopes = [];
 	let token;
@@ -138,19 +139,36 @@ exports.auth = function(req, res, resource, permission, requiredScopes, planAttr
 						return appToken.update({ last_used_at: new Date() }).then(() => null);
 					}
 
-					// check for user id header
-					if (!req.headers[userIdHeader]) {
-						throw new error('Must provide "%s" header when using application token.', userIdHeader).status(400);
-					}
-					return User.findOne({ id: req.headers[userIdHeader] }).then(user => {
-						if (!user) {
-							throw new error('No user with ID "%s".', req.headers[userIdHeader]).status(400);
+					return Promise.try(() => {
+
+						// vpdb user id header provided
+						if (req.headers[vpdbUserIdHeader]) {
+							return User.findOne({ id: req.headers[vpdbUserIdHeader] }).then(user => {
+								if (!user) {
+									throw new error('No user with ID "%s".', req.headers[vpdbUserIdHeader]).status(400);
+								}
+								if (!user[appToken.provider]) {
+									throw new error('Provided user has not been authenticated with %s.', appToken.provider).status(400);
+								}
+								return user;
+
+							});
 						}
-						if (!user[appToken.provider]) {
-							throw new error('Provided user has not been authenticated with %s.', appToken.provider).status(400);
+
+						// oauth provider user id header provided
+						if (req.headers[providerUserIdHeader]) {
+							return User.findOne({ [appToken.provider + '.id' ]: req.headers[providerUserIdHeader] }).then(user => {
+								if (!user) {
+									throw new error('No user with ID "%s" for provider "%s".', req.headers[providerUserIdHeader], appToken.provider).status(400);
+								}
+								return user;
+							});
 						}
-						return appToken.update({ last_used_at: new Date() }).then(() => user);
-					});
+
+						// if no user header found, fail.
+						throw new error('Must provide "%s" or "%s" header when using application token.', vpdbUserIdHeader, providerUserIdHeader).status(400);
+
+					}).then(user => appToken.update({ last_used_at: new Date() }).then(() => user));
 				}
 				return appToken.update({ last_used_at: new Date() }).then(() => appToken._created_by);
 			});

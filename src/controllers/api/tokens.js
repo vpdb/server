@@ -128,7 +128,7 @@ exports.list = function(req, res) {
 exports.update = function(req, res) {
 
 	const assert = api.assert(error, 'update', req.params.id, res);
-	const updatableFields = ['label', 'is_active', 'expires_at']; // TODO enable expires_at only in debug, not in prod
+	const updatableFields = ['label', 'is_active', 'expires_at', 'scopes' ]; // TODO enable expires_at only in debug, not in prod
 
 	Token.findOne({ id: req.params.id, _created_by: req.user._id }, assert(function(token) {
 		if (!token) {

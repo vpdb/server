@@ -57,7 +57,7 @@ const TokenSchema = new Schema(fields, { usePushEach: true });
 // API FIELDS
 //-----------------------------------------------------------------------------
 const apiFields = {
-	simple: ['id', 'label', 'scopes', 'is_active', 'last_used_at', 'expires_at', 'created_at']
+	simple: ['id', 'label', 'type', 'scopes', 'provider', 'is_active', 'last_used_at', 'expires_at', 'created_at']
 };
 
 //-----------------------------------------------------------------------------

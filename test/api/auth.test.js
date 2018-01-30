@@ -244,7 +244,7 @@ describe('The authentication engine of the VPDB API', function() {
 			request
 				.get('/api/v1/user')
 				.set('Authorization', 'Bearer 688f4864ca7be0fe4bfe866acbf6b151')
-				.end(hlp.status(401, 'Invalid access token', done));
+				.end(hlp.status(401, 'invalid app token', done));
 		});
 
 		it('should fail if the user has the wrong plan', function(done) {
@@ -266,13 +266,13 @@ describe('The authentication engine of the VPDB API', function() {
 						.as('__superuser')
 						.send(_.pick(user, [ 'name', 'email', 'username', 'is_active', 'roles', '_plan' ]))
 						.end(function(err, res) {
+							hlp.expectStatus(err, res, 200);
 
 							// 3. fail with app token
-							hlp.expectStatus(err, res, 200);
 							request
 								.get('/api/v1/user')
 								.set('Authorization', 'Bearer ' + token)
-								.end(hlp.status(401, 'does not allow the use of application access tokens', done));
+								.end(hlp.status(401, 'does not allow the use of app tokens', done));
 						});
 				});
 		});

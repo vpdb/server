@@ -67,7 +67,7 @@ exports.configure = function() {
 		if (ipbConfig.enabled) {
 
 			const callbackUrl = settings.webUri('/auth/' + ipbConfig.id + '/callback');
-			logger.info('[passport|ipboard:' + ipbConfig.id + '] Enabling IP.Board authentication strategy for "%s" at %s.', ipbConfig.name, ipbConfig.baseURL);
+			logger.info('[passport|ipboard:' + ipbConfig.id + '] Enabling IP.Board authentication strategy for "%s" at %s.', ipbConfig.name, callbackUrl);
 			if (ipbConfig.version === 3) {
 				passport.use(new IPBoard3Strategy({
 					passReqToCallback: true,

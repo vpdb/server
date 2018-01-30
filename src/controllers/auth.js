@@ -111,7 +111,7 @@ exports.auth = function(req, res, resource, permission, requiredScopes, planAttr
 				}
 
 				// fail if incorrect plan
-				if (appToken.type !== 'personal' && !appToken._created_by.planConfig.enableAppTokens) {
+				if (appToken.type === 'personal' && !appToken._created_by.planConfig.enableAppTokens) {
 					throw error('Your current plan "%s" does not allow the use of app tokens. Upgrade or contact an admin.', appToken._created_by.planConfig.id).status(401);
 				}
 

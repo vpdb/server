@@ -273,17 +273,7 @@ GameSchema.pre('remove', function(done) {
 //-----------------------------------------------------------------------------
 // OPTIONS
 //-----------------------------------------------------------------------------
-GameSchema.options.toObject = {
-	virtuals: true,
-	transform: function(doc, game) {
-		delete game.__v;
-		delete game._id;
-		delete game._backglass;
-		delete game._logo;
-		delete game._created_by;
-		delete game.full_title;
-	}
-};
+GameSchema.options.toObject = { virtuals: true, versionKey: false };
 
 mongoose.model('Game', GameSchema);
 logger.info('[model] Schema "Game" registered.');

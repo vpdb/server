@@ -65,12 +65,12 @@ exports.auth = function(req, res, resource, permission, requiredScopes, planAttr
 	let token;
 	let fromUrl = false;
 	let headerName = config.vpdb.authorizationHeader;
-	let tokenType, user;
+	let user;
 	delete req.user;
 
 	return Promise.try(() => {
 
-		// read headers
+		// get token
 		if ((req.headers && req.headers[headerName.toLowerCase()]) || (req.query && req.query.token)) {
 
 			if (req.query.token) {
@@ -128,11 +128,13 @@ exports.auth = function(req, res, resource, permission, requiredScopes, planAttr
 
 				// so we're good here!
 				req.appToken = appToken;
-				tokenScopes = appToken.scopes;
-				tokenType = 'access-token';
+				req.tokenType = appToken.type;
+				req.tokenScopes = appToken.scopes;
 
 				// additional checks for application token
 				if (appToken.type === 'application') {
+
+					req.tokenProvider = appToken.provider;
 
 					// if this resource is a service resource, we don't need a user ID. But make sure no permissions needed.
 					if (scope.isValid([ scope.SERVICE ], requiredScopes) && !resource && !permission) {
@@ -210,8 +212,8 @@ exports.auth = function(req, res, resource, permission, requiredScopes, planAttr
 				if (tokenExp.getTime() - tokenIssued.getTime() === config.vpdb.apiTokenLifetime) {
 					res.setHeader('X-Token-Refresh', exports.generateApiToken(user, now, true));
 				}
-				tokenScopes = [ scope.ALL ];
-				tokenType = decoded.irt ? 'jwt-refreshed' : 'jwt';
+				req.tokenScopes = [ scope.ALL ];
+				req.tokenType = decoded.irt ? 'jwt-refreshed' : 'jwt';
 				return user;
 			});
 		}
@@ -220,12 +222,9 @@ exports.auth = function(req, res, resource, permission, requiredScopes, planAttr
 		user = u;
 
 		// check scopes
-		if (!scope.isValid(requiredScopes, tokenScopes)) {
-			throw error('Your token has an invalid scope: [ "%s" ] (required: [ "%s" ])', (tokenScopes || []).join('", "'), (requiredScopes || []).join('", "')).status(401).log();
+		if (!scope.isValid(requiredScopes, req.tokenScopes)) {
+			throw error('Your token has an invalid scope: [ "%s" ] (required: [ "%s" ])', (req.tokenScopes || []).join('", "'), (requiredScopes || []).join('", "')).status(401).log();
 		}
-
-		req.tokenType = tokenType; // one of: [ 'jwt', 'jwt-refreshed', 'access-token' ]
-		req.tokenScopes = tokenScopes;
 
 		// user can be null for service resources
 		if (user === null) {

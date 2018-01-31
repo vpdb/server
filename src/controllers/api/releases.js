@@ -34,6 +34,7 @@ const Build = require('mongoose').model('Build');
 const Game = require('mongoose').model('Game');
 const Star = require('mongoose').model('Star');
 const File = require('mongoose').model('File');
+const ReleaseSerializer = require('../../serializers/release.serializer');
 const api = require('./api');
 
 const acl = require('../../acl');
@@ -792,7 +793,11 @@ exports.list = function(req, res) {
 				transformOpts.starred = starMap.get(release._id.toString()) ? true : false;
 			}
 			transformOpts.fileIds = fileIds;
-			release = Release.toSimple(release, transformOpts);
+			if (req.tokenType === 'application') {
+				transformOpts.providerData = req.tokenProvider;
+			}
+			release = ReleaseSerializer.serialize(ReleaseSerializer.SIMPLE, release, req);
+			//release = Release.toSimple(release, transformOpts);
 
 			// if flavor specified, filter returned files to match filter
 			if (!_.isUndefined(req.query.flavor)) {

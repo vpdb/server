@@ -451,15 +451,21 @@ UserSchema.statics.createUser = function(userObj, confirmUserEmail) {
 	});
 };
 
-UserSchema.statics.toReduced = function(user) {
+UserSchema.statics.toReduced = function(user, opts) {
+	opts = opts || {};
 	if (!user) {
 		return user;
 	}
 	const obj = user.toObj ? user.toObj() : user;
-	return _.extend(_.pick(obj, apiFields.reduced), { counter: _.pick(obj.counter, ['comments', 'stars'] ) });
+	user = _.extend(_.pick(obj, apiFields.reduced), { counter: _.pick(obj.counter, ['comments', 'stars'] ) });
+	if (opts.providerData && obj[opts.providerData]) {
+		user[opts.providerData] = { id: obj[opts.providerData].id };
+	}
+	return user;
 };
 
-UserSchema.statics.toSimple = function(user) {
+UserSchema.statics.toSimple = function(user, opts) {
+	opts = opts || {};
 	const obj = user.toObj ? user.toObj() : user;
 	user = _.pick(obj, apiFields.reduced.concat(apiFields.simple));
 	if (!_.isEmpty(user.github)) {
@@ -467,6 +473,9 @@ UserSchema.statics.toSimple = function(user) {
 	}
 	if (!_.isEmpty(user.google)) {
 		user.google = UserSchema.statics.normalizeProviderData('google', user.google);
+	}
+	if (opts.providerData && obj[opts.providerData]) {
+		user[opts.providerData] = { id: obj[opts.providerData].id };
 	}
 	return user;
 };

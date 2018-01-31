@@ -148,7 +148,7 @@ ReleaseSchema.statics.toSimple = function(release, opts) {
 	// if results comes from an aggregation, we don't have a model and need to call toObj manually...
 	if (!release.toObj) {
 		rls.authors.forEach(function(authorItem) {
-			author.schema.options.toObject.transform(null, authorItem);
+			author.schema.options.toObject.transform(null, authorItem, opts);
 		});
 	}
 
@@ -327,23 +327,7 @@ ReleaseSchema.pre('remove', function(next) {
 //-----------------------------------------------------------------------------
 // OPTIONS
 //-----------------------------------------------------------------------------
-ReleaseSchema.options.toObject = {
-	virtuals: true,
-	transform: function(doc, release) {
-		release.tags = release._tags;
-		release.game = _.pick(release._game, ['id', 'title', 'manufacturer', 'year']);
-		delete release.__v;
-		delete release._id;
-		delete release._tags;
-		delete release._game;
-		if (_.isArray(release.links)) {
-			release.links.forEach(function(link) {
-				delete link._id;
-				delete link.id;
-			});
-		}
-	}
-};
+ReleaseSchema.options.toObject = { virtuals: true, versionKey: false };
 
 mongoose.model('Release', ReleaseSchema);
 mongoose.model('ReleaseVersion', version.schema);

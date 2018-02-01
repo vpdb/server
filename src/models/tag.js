@@ -104,15 +104,7 @@ TagSchema.path('description').validate(function(description) {
 //-----------------------------------------------------------------------------
 // OPTIONS
 //-----------------------------------------------------------------------------
-TagSchema.options.toObject = {
-	virtuals: true,
-	transform: function(doc, tag) {
-		delete tag.__v;
-		delete tag._id;
-		delete tag._created_by;
-		delete tag.is_active;
-	}
-};
+TagSchema.options.toObject = { virtuals: true, versionKey: false };
 
 mongoose.model('Tag', TagSchema);
 logger.info('[model] Schema "Tag" registered.');

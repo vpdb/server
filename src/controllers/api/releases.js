@@ -589,24 +589,24 @@ exports.list = function(req, res) {
 	let stars = null;
 	let starMap = new Map();
 	let titleRegex = null;
-	let transformOpts = {};
+	let serializerOpts = {};
 	let fields = req.query && req.query.fields ? req.query.fields.split(',') : [];
 
 	Promise.try(() => {
 
 		// flavor, thumb selection
 		if (req.query.thumb_flavor) {
-			transformOpts.thumbFlavor = req.query.thumb_flavor;
+			serializerOpts.thumbFlavor = req.query.thumb_flavor;
 			// ex.: /api/v1/releases?flavor=orientation:fs,lighting:day
 		}
 		if (req.query.thumb_format) {
-			transformOpts.thumbFormat = req.query.thumb_format;
+			serializerOpts.thumbFormat = req.query.thumb_format;
 		}
-		transformOpts.fullThumbData = parseBoolean(req.query.thumb_full_data);
-		transformOpts.thumbPerFile = parseBoolean(req.query.thumb_per_file);
+		serializerOpts.fullThumbData = parseBoolean(req.query.thumb_full_data);
+		serializerOpts.thumbPerFile = parseBoolean(req.query.thumb_per_file);
 
 		// check
-		if (transformOpts.thumbPerFile && !transformOpts.thumbFormat) {
+		if (serializerOpts.thumbPerFile && !serializerOpts.thumbFormat) {
 			throw error('You must specify "thumb_format" when requesting thumbs per file.').status(400);
 		}
 
@@ -618,7 +618,7 @@ exports.list = function(req, res) {
 				if (!isModerator) {
 					throw error('You must be moderator in order to fetch moderation fields.').status(403);
 				}
-				transformOpts.fields = [ 'moderation' ];
+				serializerOpts.includeModeration = true;
 			});
 		}
 		return null;
@@ -756,8 +756,8 @@ exports.list = function(req, res) {
 				}
 			});
 			// also return the same thumb if not specified otherwise.
-			if (!transformOpts.thumbFlavor) {
-				transformOpts.thumbFlavor = req.query.flavor;
+			if (!serializerOpts.thumbFlavor) {
+				serializerOpts.thumbFlavor = req.query.flavor;
 			}
 		}
 
@@ -790,13 +790,13 @@ exports.list = function(req, res) {
 
 		let releases = results.map(release => {
 			if (stars) {
-				transformOpts.starred = starMap.get(release._id.toString()) ? true : false;
+				serializerOpts.starred = !!starMap.get(release._id.toString());
 			}
-			transformOpts.fileIds = fileIds;
+			serializerOpts.fileIds = fileIds;
 			if (req.tokenType === 'application') {
-				transformOpts.providerData = req.tokenProvider;
+				serializerOpts.providerData = req.tokenProvider;
 			}
-			release = ReleaseSerializer.serialize(ReleaseSerializer.SIMPLE, release, req);
+			release = ReleaseSerializer.serialize(ReleaseSerializer.SIMPLE, release, req, serializerOpts);
 			//release = Release.toSimple(release, transformOpts);
 
 			// if flavor specified, filter returned files to match filter

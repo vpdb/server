@@ -107,20 +107,7 @@ RomSchema.path('id').validate(function(id) {
 //-----------------------------------------------------------------------------
 // OPTIONS
 //-----------------------------------------------------------------------------
-RomSchema.options.toObject = {
-	virtuals: true,
-	transform: function(doc, rom) {
-		delete rom.__v;
-		delete rom._id;
-		delete rom._created_by;
-		if (_.isArray(rom.rom_files)) {
-			rom.rom_files.forEach(rom => {
-				delete rom._id;
-				delete rom.id;
-			});
-		}
-	}
-};
+RomSchema.options.toObject = { virtuals: true, versionKey: false };
 
 mongoose.model('Rom', RomSchema);
 logger.info('[model] Schema "Rom" registered.');

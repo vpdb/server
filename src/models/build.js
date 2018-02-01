@@ -116,14 +116,7 @@ BuildSchema.plugin(toObj);
 //-----------------------------------------------------------------------------
 // OPTIONS
 //-----------------------------------------------------------------------------
-BuildSchema.options.toObject = {
-	virtuals: true,
-	transform: function(doc, build) {
-		delete build.__v;
-		delete build._id;
-		delete build._created_by;
-	}
-};
+BuildSchema.options.toObject = { virtuals: true, versionKey: false };
 
 mongoose.model('Build', BuildSchema);
 logger.info('[model] Schema "Build" registered.');

@@ -146,23 +146,8 @@ function nonEmptyArray(value) {
 //-----------------------------------------------------------------------------
 // OPTIONS
 //-----------------------------------------------------------------------------
-BackglassSchema.options.toObject = {
-	virtuals: true,
-	transform: function(doc, backglass) {
-		delete backglass.__v;
-		delete backglass._id;
-		delete backglass._created_by;
-	}
-};
-VersionSchema.options.toObject = {
-	virtuals: true,
-	transform: function(doc, version) {
-		delete version.__v;
-		delete version._id;
-		delete version.id;
-		delete version._file;
-	}
-};
+BackglassSchema.options.toObject = { virtuals: true, versionKey: false };
+VersionSchema.options.toObject = { virtuals: true, versionKey: false };
 
 mongoose.model('Backglass', BackglassSchema);
 logger.info('[model] Schema "Backglass" registered.');

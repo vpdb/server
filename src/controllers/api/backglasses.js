@@ -228,7 +228,7 @@ exports.list = function(req, res) {
 
 	let query = {};
 	let pagination = api.pagination(req, 10, 30);
-	let transformOpts = {};
+	let serializerOpts = {};
 	let fields = req.query && req.query.fields ? req.query.fields.split(',') : [];
 	let populate = [ 'authors._user', 'versions._file' ];
 
@@ -269,7 +269,7 @@ exports.list = function(req, res) {
 				if (!isModerator) {
 					throw error('You must be moderator in order to fetch moderation fields.').status(403);
 				}
-				transformOpts.fields = [ 'moderation' ];
+				serializerOpts.includeModeration = true;
 			});
 		}
 		return null;
@@ -294,7 +294,7 @@ exports.list = function(req, res) {
 
 	}).spread((results, count) => {
 
-		let backglasses = results.map(bg => bg.toSimple(transformOpts));
+		let backglasses = results.map(bg => bg.toSimple(serializerOpts));
 		api.success(res, backglasses, 200, api.paginationOpts(pagination, count));
 
 	}).catch(api.handleError(res, error, 'Error listing backglasses'));
@@ -308,7 +308,7 @@ exports.list = function(req, res) {
  */
 exports.view = function(req, res) {
 
-	let transformOpts = {
+	let serializerOpts = {
 		fields: []
 	};
 
@@ -335,14 +335,14 @@ exports.view = function(req, res) {
 		return backglass.assertModeratedView(req, error).then(backglass => {
 			return backglass.populateModeration(req, error).then(populated => {
 				if (populated !== false) {
-					transformOpts.fields.push('moderation');
+					serializerOpts.includeModeration = true;
 				}
 				return backglass;
 			});
 		});
 
 	}).then(backglass => {
-		return api.success(res, backglass.toSimple(transformOpts));
+		return api.success(res, backglass.toSimple(serializerOpts));
 
 	}).catch(api.handleError(res, error, 'Error retrieving backglass details'));
 };

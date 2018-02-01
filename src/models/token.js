@@ -137,14 +137,7 @@ TokenSchema.plugin(toObj);
 //-----------------------------------------------------------------------------
 // OPTIONS
 //-----------------------------------------------------------------------------
-TokenSchema.options.toObject = {
-	virtuals: true,
-	transform: function(doc, build) {
-		delete build.__v;
-		delete build._id;
-		delete build._created_by;
-	}
-};
+TokenSchema.options.toObject = { virtuals: true, versionKey: false };
 
 /**
  * Generates a token.

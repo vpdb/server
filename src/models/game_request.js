@@ -88,15 +88,7 @@ GameRequestSchema.methods.toDetailed = function() {
 //-----------------------------------------------------------------------------
 // OPTIONS
 //-----------------------------------------------------------------------------
-GameRequestSchema.options.toObject = {
-	virtuals: true,
-	transform: function(doc, log) {
-		delete log.__v;
-		delete log._id;
-		delete log._game;
-		delete log._created_by;
-	}
-};
+GameRequestSchema.options.toObject = { virtuals: true, versionKey: false };
 
 mongoose.model('GameRequest', GameRequestSchema);
 logger.info('[model] Schema "GameRequest" registered.');

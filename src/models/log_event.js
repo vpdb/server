@@ -135,17 +135,7 @@ LogEventSchema.statics.diff = function(fromDB, fromAPI) {
 //-----------------------------------------------------------------------------
 // OPTIONS
 //-----------------------------------------------------------------------------
-LogEventSchema.options.toObject = {
-	virtuals: true,
-	transform: function(doc, log) {
-		delete log.__v;
-		delete log._id;
-		delete log._actor;
-		delete log._ref;
-		delete log.id;
-	}
-};
-
+LogEventSchema.options.toObject = { virtuals: true, versionKey: false };
 
 mongoose.model('LogEvent', LogEventSchema);
 logger.info('[model] Schema "LogEvent" registered.');

@@ -119,15 +119,7 @@ CommentSchema.statics.toDetailed = function(comment) {
 //-----------------------------------------------------------------------------
 // OPTIONS
 //-----------------------------------------------------------------------------
-CommentSchema.options.toObject = {
-	virtuals: true,
-	transform: function(doc, comment) {
-		delete comment.__v;
-		delete comment._id;
-		delete comment._ref;
-		delete comment._from;
-	}
-};
+CommentSchema.options.toObject = { virtuals: true, versionKey: false };
 
 mongoose.model('Comment', CommentSchema);
 logger.info('[model] Schema "Comment" registered.');

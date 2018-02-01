@@ -132,17 +132,7 @@ LogUserSchema.statics.diff = function(obj1, obj2) {
 //-----------------------------------------------------------------------------
 // OPTIONS
 //-----------------------------------------------------------------------------
-LogUserSchema.options.toObject = {
-	virtuals: true,
-	transform: function(doc, log) {
-		delete log.__v;
-		delete log._id;
-		delete log._user;
-		delete log._actor;
-		delete log.id;
-	}
-};
-
+LogUserSchema.options.toObject = { virtuals: true, versionKey: false };
 
 mongoose.model('LogUser', LogUserSchema);
 logger.info('[model] Schema "LogUser" registered.');

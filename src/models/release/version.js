@@ -263,13 +263,7 @@ schema.methods.getPlayfieldImageIds = function() {
 	return _.compact(_.map(this.files, '_playfield_image')).map(file => file._id ? file._id.toString() : file.toString());
 };
 
-schema.options.toObject = {
-	virtuals: true,
-	transform: function(doc, version) {
-		delete version.id;
-		delete version._id;
-	}
-};
+schema.options.toObject = { virtuals: true, versionKey: false };
 
 module.exports.fields = fields;
 module.exports.schema = schema;

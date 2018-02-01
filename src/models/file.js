@@ -395,19 +395,7 @@ FileSchema.post('remove', function(obj, done) {
 //-----------------------------------------------------------------------------
 // OPTIONS
 //-----------------------------------------------------------------------------
-FileSchema.options.toObject = {
-	virtuals: true,
-	transform: function(doc, file) {
-		delete file.__v;
-		delete file._id;
-		delete file._created_by;
-		file.variations = storage.urls(doc);
-		file.metadata = storage.metadataShort(doc);
-		if (file.cost <= 0) {
-			delete file.cost;
-		}
-	}
-};
+FileSchema.options.toObject = { virtuals: true, versionKey: false };
 
 mongoose.model('File', FileSchema);
 logger.info('[model] Schema "File" registered.');

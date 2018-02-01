@@ -279,13 +279,7 @@ MediumSchema.path('_file').validate(function(value) {
 //-----------------------------------------------------------------------------
 // OPTIONS
 //-----------------------------------------------------------------------------
-MediumSchema.options.toObject = {
-	virtuals: true,
-	transform: function(doc, medium) {
-		delete medium.__v;
-		delete medium._id;
-	}
-};
+MediumSchema.options.toObject = { virtuals: true, versionKey: false };
 
 mongoose.model('Medium', MediumSchema);
 logger.info('[model] Schema "Medium" registered.');

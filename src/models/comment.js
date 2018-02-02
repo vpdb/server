@@ -54,64 +54,11 @@ CommentSchema.plugin(paginate);
 
 
 //-----------------------------------------------------------------------------
-// API FIELDS
-//-----------------------------------------------------------------------------
-const apiFields = {
-	simple: ['id', 'from', 'message', 'release', 'created_at'], // fields returned in references
-	detailed: ['ip']
-};
-
-
-//-----------------------------------------------------------------------------
 // VALIDATIONS
 //-----------------------------------------------------------------------------
 CommentSchema.path('message').validate(function(msg) {
 	return _.isString(msg) && validator.isLength(msg, 3, 5000);
 }, 'Message must be at least 3 chars and no longer than 5k characters.');
-
-
-//-----------------------------------------------------------------------------
-// VIRTUALS
-//-----------------------------------------------------------------------------
-CommentSchema.virtual('from')
-	.get(function() {
-		if (this.populated('_from') && this._from) {
-			return this._from.toReduced();
-		}
-		return undefined;
-	});
-
-CommentSchema.virtual('release')
-	.get(function() {
-		if (this.populated('_ref.release') && this._ref.release) {
-			return this._ref.release.toReduced();
-		}
-		return undefined;
-	});
-
-
-//-----------------------------------------------------------------------------
-// METHODS
-//-----------------------------------------------------------------------------
-CommentSchema.methods.toSimple = function() {
-	return CommentSchema.statics.toSimple(this);
-};
-CommentSchema.methods.toDetailed = function() {
-	return CommentSchema.statics.toDetailed(this);
-};
-
-
-//-----------------------------------------------------------------------------
-// STATIC METHODS
-//-----------------------------------------------------------------------------
-CommentSchema.statics.toSimple = function(comment) {
-	const obj = comment.toObj ? comment.toObj() : comment;
-	return _.pick(obj, apiFields.simple);
-};
-CommentSchema.statics.toDetailed = function(comment) {
-	const obj = comment.toObj ? comment.toObj() : comment;
-	return _.pick(obj, apiFields.detailed.concat(apiFields.simple));
-};
 
 
 //-----------------------------------------------------------------------------

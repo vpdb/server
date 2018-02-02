@@ -73,7 +73,7 @@ BuildSchema.path('label').validate(function(label) {
 
 BuildSchema.path('built_at').validate(function(dateString) {
 	return _.isDate(dateString) || (_.isString(dateString) && validator.isISO8601(dateString));
-}, 'Date must be a string parseable by Javascript.');
+}, 'Date must be a string parsable by Javascript.');
 
 
 //-----------------------------------------------------------------------------

@@ -6,24 +6,26 @@ const Serializer = require('./serializer');
 class FileSerializer extends Serializer {
 
 	/** @protected */
-	_reduced(object, req, opts) {
-		return _.pick(object, ['id', 'name', 'bytes', 'mime_type']);
+	_reduced(doc, req, opts) {
+		return _.pick(doc, ['id', 'name', 'bytes', 'mime_type']);
 	}
 
 	/** @protected */
-	_simple(object, req, opts) {
-		const file = this._reduced(object, req, opts);
-		_.assign(file, _.pick(object, [ 'bytes', 'variations', 'is_protected', 'counter' ]));
-		file.cost = quota.getCost(object);
-		file.url = storage.url(object);
-		file.is_protected = !object.is_active || file.cost > -1;
+	_simple(doc, req, opts) {
+		const file = this._reduced(doc, req, opts);
+		_.assign(file, _.pick(doc, [ 'bytes', 'counter' ]));
+		file.variations = storage.urls(doc);
+		file.cost = quota.getCost(doc);
+		file.url = storage.url(doc);
+		file.is_protected = !doc.is_active || file.cost > -1;
 		return file;
 	}
 
 	/** @protected */
-	_detailed(object, req, opts) {
-		const file = this._simple(object, req, opts);
-		_.assign(file, _.pick(object, ['created_at', 'file_type', 'metadata']));
+	_detailed(doc, req, opts) {
+		const file = this._simple(doc, req, opts);
+		_.assign(file, _.pick(doc, ['created_at', 'file_type', 'metadata']));
+		file.metadata = storage.metadataShort(doc);
 		return file;
 	}
 }

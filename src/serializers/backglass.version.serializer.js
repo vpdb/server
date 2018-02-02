@@ -5,16 +5,16 @@ const FileSerializer = require('./file.serializer');
 class BackglassVersionSerializer extends Serializer {
 
 	/** @private */
-	_reduced(object, req, opts) {
-		const backglassVersion = _.pick(object, [ 'version', 'changes', 'released_at', 'counter' ]);
-		backglassVersion.file = FileSerializer.reduced(object._file, req, opts);
+	_reduced(doc, req, opts) {
+		const backglassVersion = _.pick(doc, [ 'version', 'changes', 'released_at', 'counter' ]);
+		backglassVersion.file = FileSerializer.reduced(doc._file, req, opts);
 		return backglassVersion;
 	}
 
 	/** @private */
-	_simple(object, req, opts) {
-		const backglassVersion = _.pick(object, [ 'version', 'changes', 'released_at', 'counter' ]);
-		backglassVersion.file = FileSerializer.simple(object._file, req, opts);
+	_simple(doc, req, opts) {
+		const backglassVersion = _.pick(doc, [ 'version', 'changes', 'released_at', 'counter' ]);
+		backglassVersion.file = FileSerializer.simple(doc._file, req, opts);
 		return backglassVersion;
 	}
 }

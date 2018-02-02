@@ -4,18 +4,18 @@ const UserSerializer = require('./user.serializer');
 class AuthorSerializer extends Serializer {
 
 	/** @protected */
-	_reduced(object, req, opts) {
+	_reduced(doc, req, opts) {
 		return {
-			user: UserSerializer.reduced(object._user, req, opts),
-			roles: object.roles
+			user: UserSerializer.reduced(doc._user, req, opts),
+			roles: doc.roles
 		};
 	}
 
 	/** @protected */
-	_simple(object, req, opts) {
+	_simple(doc, req, opts) {
 		return {
-			user: UserSerializer.simple(object._user, req, opts),
-			roles: object.roles
+			user: UserSerializer.simple(doc._user, req, opts),
+			roles: doc.roles
 		};
 	}
 

@@ -8,35 +8,45 @@ const ReleaseVersionSerializer = require('./release.version.serializer');
 class ReleaseSerializer extends Serializer {
 
 	/** @protected */
-	_simple(object, req, opts) {
-
-		// primitive fields
-		const release = _.pick(object, ['id', 'name', 'created_at', 'released_at', 'counter']);
-
-		// game
-		release.game = GameSerializer.reduced(object._game, req, opts);
-
-		// authors
-		release.authors = object.authors.map(author => AuthorSerializer.reduced(author, req, opts));
-
-		// versions
-		release.versions = object.versions
-			.map(version => ReleaseVersionSerializer.simple(version, req, opts))
-			.sort(this._sortByDate('released_at'));
-		release.versions = ReleaseVersionSerializer._strip(release.versions, req, opts);
-
-		// thumb
-		release.thumb = this._findThumb(object.versions, opts);
-
-		// star
-		release.starred = opts.starred;
-
-		return release;
+	_simple(doc, req, opts) {
+		return this._serialize(doc, req, opts, ReleaseVersionSerializer.simple(version, req, opts).bind(ReleaseVersionSerializer), true);
 	}
 
 	/** @protected */
-	_detailed(object, req, opts) {
-		const release = this._simple(object, req, opts);
+	_detailed(doc, req, opts) {
+		return this._serialize(doc, req, opts, ReleaseVersionSerializer.detailed(version, req, opts).bind(ReleaseVersionSerializer), false);
+	}
+
+	/** @private */
+	_serialize(doc, req, opts, versionSerializer, stripVersions) {
+		// primitive fields
+		const release = _.pick(doc, ['id', 'name', 'created_at', 'released_at', 'counter']);
+
+		// game
+		release.game = GameSerializer.reduced(doc._game, req, opts);
+
+		// authors
+		release.authors = doc.authors.map(author => AuthorSerializer.reduced(author, req, opts));
+
+		// versions
+		release.versions = doc.versions
+			.map(version => ReleaseVersionSerializer.simple(version, req, opts))
+			.sort(this._sortByDate('released_at'));
+
+		if (stripVersions) {
+			release.versions = ReleaseVersionSerializer._strip(release.versions, req, opts);
+		}
+
+		// thumb
+		release.thumb = this._findThumb(doc.versions, opts);
+
+		// star
+		if (opts.starredReleaseIds) {
+			release.starred = _.includes(opts.starredReleaseIds, doc._id.toString());
+		}
+		if (!_.isUndefined(opts.starred)) {
+			release.starred = opts.starred;
+		}
 
 		return release;
 	}

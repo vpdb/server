@@ -7,17 +7,24 @@ const BuildSerializer = require('./build.serializer');
 class ReleaseVersionSerializer extends Serializer {
 
 	/** @protected */
-	_simple(object, req, opts) {
-		const version = _.pick(object, [ 'version', 'released_at' ]);
-		version.files = object.files.map(versionFile => {
+	_simple(doc, req, opts) {
+		const version = _.pick(doc, [ 'version', 'released_at' ]);
+		version.files = doc.files.map(versionFile => {
 			const addThumb = opts.thumbPerFile && opts.thumbFormat;
 			return {
 				released_at: versionFile.released_at,
 				compatibility: versionFile._compatibility.map(build => BuildSerializer.reduced(build, req, opts)),
 				file: FileSerializer.simple(versionFile._file, req, opts),
-				thumb: addThumb ?  this._getFileThumb(versionFile, opts) : undefined
+				thumb: addThumb ? this._getFileThumb(versionFile, opts) : undefined
 			};
 		});
+		return version;
+	}
+
+	/** @protected */
+	_detailed(doc, req, opts) {
+		const version = this._simple(doc, req, opts);
+		_.assign(version, _.pick(doc, [ 'changes', 'counter' ]));
 		return version;
 	}
 
@@ -27,7 +34,6 @@ class ReleaseVersionSerializer extends Serializer {
 	 * @param objects Versions to strip
 	 * @param {Request} req
 	 * @param {object} opts
-	 * @private
 	 */
 	_strip(objects, req, opts) {
 		let i, j;

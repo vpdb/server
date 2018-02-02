@@ -201,8 +201,8 @@ class Storage {
 	 * Strips the original metadata down to something that is sent to the client
 	 * via the API.
 	 *
-	 * @param {File} file
-	 * @param {Object} metadata
+	 * @param {File} file File, with metadata included
+	 * @param {Object} [metadata] Override metadata
 	 * @returns {object} Reduced metadata
 	 */
 	metadataShort(file, metadata) {

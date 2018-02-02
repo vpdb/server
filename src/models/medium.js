@@ -147,50 +147,10 @@ MediumSchema.plugin(fileRef);
 MediumSchema.plugin(paginate);
 MediumSchema.plugin(metrics);
 
-
-//-----------------------------------------------------------------------------
-// VIRTUALS
-//-----------------------------------------------------------------------------
-MediumSchema.virtual('file')
-	.get(function() {
-		if (this._file && this._file.toDetailed) {
-			return this._file.toDetailed();
-		}
-	});
-
-MediumSchema.virtual('created_by')
-	.get(function() {
-		if (this._created_by && this._created_by.toReduced) {
-			return this._created_by.toReduced();
-		}
-	});
-
-MediumSchema.virtual('game')
-	.get(function() {
-		if (this._ref && this._ref.game && this._ref.game.toSimple) {
-			return this._ref.game.toSimple();
-		}
-	});
-
-MediumSchema.virtual('release')
-	.get(function() {
-		if (this._ref && this._ref.release && this._ref.release.toSimple) {
-			return this._ref.release.toSimple();
-		}
-	});
-
-
-//-----------------------------------------------------------------------------
-// METHODS
-//-----------------------------------------------------------------------------
-MediumSchema.methods.toSimple = function() {
-	return _.pick(this.toObj(), apiFields.simple);
-};
-
-
 //-----------------------------------------------------------------------------
 // VALIDATIONS
 //-----------------------------------------------------------------------------
+
 MediumSchema.path('category').validate(function() {
 	let [ categoryName, childName ] = this.category.split('/');
 	let category = categories[categoryName];

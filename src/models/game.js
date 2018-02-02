@@ -119,73 +119,9 @@ GameSchema.plugin(sortTitle, { src: 'title', dest: 'title_sortable' });
 
 
 //-----------------------------------------------------------------------------
-// API FIELDS
-//-----------------------------------------------------------------------------
-const apiFields = {
-	reduced: ['id', 'title', 'manufacturer', 'year', 'ipdb'], // fields returned in release data
-	simple: ['game_type', 'backglass', 'logo', 'counter', 'rating', 'mpu', 'restrictions']      // fields returned in lists
-};
-
-
-//-----------------------------------------------------------------------------
-// VIRTUALS
-//-----------------------------------------------------------------------------
-GameSchema.virtual('backglass')
-	.get(function() {
-		if (this.populated('_backglass') && this._backglass) {
-			return this._backglass.toSimple();
-		}
-	});
-GameSchema.virtual('logo')
-	.get(function() {
-		if (this.populated('_logo') && this._logo) {
-			return this._logo.toSimple();
-		}
-	});
-
-GameSchema.virtual('full_title')
-	.get(function() {
-		let fullTitle = this.title;
-		if (this.year || this.manufacturer) {
-			fullTitle += ' (' + this.manufacturer + ' ' + this.year + ')';
-		}
-		return fullTitle;
-	});
-
-GameSchema.virtual('owner')
-	.get(function() {
-		return ipdb.owners[this.ipdb.mfg] || this.manufacturer;
-	});
-
-GameSchema.virtual('restrictions')
-	.get(function() {
-		let restrictions = {};
-		if (config.vpdb.restrictions.release.denyMpu.includes(this.ipdb.mpu)) {
-			restrictions.release = { mpu: true };
-		}
-		if (config.vpdb.restrictions.backglass.denyMpu.includes(this.ipdb.mpu)) {
-			restrictions.backglass = { mpu: true };
-		}
-		if (config.vpdb.restrictions.rom.denyMpu.includes(this.ipdb.mpu)) {
-			restrictions.rom = { mpu: true };
-		}
-		if (!_.isEmpty(restrictions)) {
-			return restrictions;
-		}
-	});
-
-GameSchema.virtual('mpu')
-	.get(function() {
-		if (this.ipdb.mpu && ipdb.systems[this.ipdb.mpu]) {
-			return ipdb.systems[this.ipdb.mpu];
-		}
-	});
-
-
-
-//-----------------------------------------------------------------------------
 // VALIDATIONS
 //-----------------------------------------------------------------------------
+
 GameSchema.path('game_type').validate(function() {
 
 	return Promise.try(() => {
@@ -230,24 +166,9 @@ GameSchema.path('_backglass').validate(function(backglass) {
 //-----------------------------------------------------------------------------
 // METHODS
 //-----------------------------------------------------------------------------
-GameSchema.methods.toReduced = function() {
-	return _.pick(this.toObj(), apiFields.reduced);
-};
-
-GameSchema.methods.toSimple = function() {
-	return _.pick(this.toObj(), apiFields.reduced.concat(apiFields.simple));
-};
 
 GameSchema.methods.isRestricted = function(what) {
 	return this.ipdb.mpu && config.vpdb.restrictions[what].denyMpu.includes(this.ipdb.mpu);
-};
-
-/**
- * Returns the API object for a detailed games
- * @returns {*}
- */
-GameSchema.methods.toDetailed = function() {
-	return this.toObj();
 };
 
 

@@ -19,10 +19,10 @@
 
 'use strict';
 
-var _ = require('lodash');
-var mongoose = require('mongoose');
+const _ = require('lodash');
+const mongoose = require('mongoose');
 
-var common = require('./common');
+const common = require('./common');
 
 //noinspection JSUnresolvedVariable
 module.exports = function(schema, options) {
@@ -30,10 +30,10 @@ module.exports = function(schema, options) {
 	options = options || {};
 
 	// filter ignored paths
-	var paths = _.pickBy(common.traversePaths(schema), function(schemaType) {
+	const paths = _.pickBy(common.traversePaths(schema), function(schemaType) {
 		return schemaType.options && schemaType.options.ref && schemaType.options.ref === 'File';
 	});
-	var fileRefs = _.omitBy(paths, function(schemaType, path) {
+	const fileRefs = _.omitBy(paths, function(schemaType, path) {
 		return _.includes(options.ignore, path);
 	});
 

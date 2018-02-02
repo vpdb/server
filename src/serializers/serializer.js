@@ -5,37 +5,45 @@ class Serializer {
 	/**
 	 * Returns the reduced version of the object.
 	 *
-	 * @param {object} object Retrieved MongoDB object
+	 * @param {Document} doc Retrieved MongoDB object
 	 * @param {Request} req Request object
-	 * @param {{ includedFields:string[], excludedFields:string[], starred:boolean|undefined, fileIds:string[], thumbFlavor:string, thumbFormat:string, fullThumbData:boolean, thumbPerFile:boolean }} [opts] Additional options for serialization
+	 * @param {{ [includedFields]:string[], [excludedFields]:string[], [starred]:boolean|undefined, [fileIds]:string[], [thumbFlavor]:string, [thumbFormat]:string, [fullThumbData]:boolean, [thumbPerFile]:boolean }} [opts] Additional options for serialization
 	 * @return {object} Serialized object
 	 */
-	reduced(object, req, opts) {
-		return this._post(object, this._reduced(object, req, this._defaultOpts(opts)), req, opts);
+	reduced(doc, req, opts) {
+		return this.__serialize(this._reduced.bind(this), doc, req, opts);
 	}
 
 	/**
 	 * Returns the simple version of the object.
 	 *
-	 * @param {object} object Retrieved MongoDB object
+	 * @param {Document} doc Retrieved MongoDB object
 	 * @param {Request} req Request object
-	 * @param {{ includedFields:string[], excludedFields:string[], starred:boolean|undefined, fileIds:string[], thumbFlavor:string, thumbFormat:string, fullThumbData:boolean, thumbPerFile:boolean }} [opts] Additional options for serialization
+	 * @param {{ [includedFields]:string[], [excludedFields]:string[], [starred]:boolean|undefined, [fileIds]:string[], [thumbFlavor]:string, [thumbFormat]:string, [fullThumbData]:boolean, [thumbPerFile]:boolean }} [opts] Additional options for serialization
 	 * @return {object} Serialized object
 	 */
-	simple(object, req, opts) {
-		return this._post(object, this._simple(object, req, this._defaultOpts(opts)), req, opts);
+	simple(doc, req, opts) {
+		return this.__serialize(this._simple.bind(this), doc, req, opts);
 	}
 
 	/**
 	 * Returns the detailed version of the object.
 	 *
-	 * @param {object} object Retrieved MongoDB object
+	 * @param {Document} doc Retrieved MongoDB object
 	 * @param {Request} req Request object
-	 * @param {{ includedFields:string[], excludedFields:string[], starred:boolean|undefined, fileIds:string[], thumbFlavor:string, thumbFormat:string, fullThumbData:boolean, thumbPerFile:boolean }} [opts] Additional options for serialization
+	 * @param {{ [includedFields]:string[], [excludedFields]:string[], [starred]:boolean|undefined, [fileIds]:string[], [thumbFlavor]:string, [thumbFormat]:string, [fullThumbData]:boolean, [thumbPerFile]:boolean }} [opts] Additional options for serialization
 	 * @return {object} Serialized object
 	 */
-	detailed(object, req, opts) {
-		return this._post(object, this._detailed(object, req, this._defaultOpts(opts)), req, opts);
+	detailed(doc, req, opts) {
+		return this.__serialize(this._detailed.bind(this), doc, req, opts);
+	}
+
+	/** @private **/
+	__serialize(serializer, doc, req, opts) {
+		if (!doc) {
+			return undefined;
+		}
+		return this._post(doc, serializer(doc, req, this._defaultOpts(opts)), req, this._defaultOpts(opts));
 	}
 
 	/**
@@ -44,15 +52,15 @@ class Serializer {
 	 *
 	 * @private
 	 */
-	_post(object, serializedObject, req, opts) {
+	_post(doc, object, req, opts) {
 
 		// handle moderation field
-		serializedObject.moderation = require('./moderation.serializer')._simple(object.moderation, req, this._defaultOpts(opts));
+		object.moderation = require('./moderation.serializer')._simple(doc.moderation, req, opts);
 
-		// TODO might need to check for nested fields
-		opts.excludedFields.forEach(field => delete serializedObject[field]);
+		// remove excluded fields
+		opts.excludedFields.forEach(field => delete object[field]);
 
-		return serializedObject;
+		return object;
 	}
 
 	/**
@@ -61,8 +69,8 @@ class Serializer {
 	 * This is only the fallthrough, don't call directly.
 	 * @protected
 	 */
-	_reduced(object, req, opts) {
-		return this.simple(object, req, opts);
+	_reduced(doc, req, opts) {
+		return this.simple(doc, req, opts);
 	}
 
 	/**
@@ -71,7 +79,7 @@ class Serializer {
 	 * This is only the fallthrough, don't call directly.
 	 * @protected
 	 */
-	_simple(object, req, opts) {
+	_simple(doc, req, opts) {
 		return {};
 	}
 
@@ -81,8 +89,8 @@ class Serializer {
 	 * This is only the fallthrough, don't call directly.
 	 * @protected
 	 */
-	_detailed(object, req, opts) {
-		return this.simple(object, req, opts);
+	_detailed(doc, req, opts) {
+		return this.simple(doc, req, opts);
 	}
 
 	/** @protected */

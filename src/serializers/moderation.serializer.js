@@ -5,17 +5,17 @@ const UserSerializer = require('./user.serializer');
 class ModerationSerializer extends Serializer {
 
 	/** @protected */
-	_simple(object, req, opts) {
+	_simple(doc, req, opts) {
 
-		if (!object) {
+		if (!doc) {
 			return undefined;
 		}
 
 		// if user is populated that means we should populate the history, otherwise only status is returned
-		const includeHistory = _.isArray(object.history) && object.history[0] && object.history[0]._created_by._id;
-		const moderation = _.pick(object, ['is_approved', 'is_refused', 'auto_approved']);
+		const includeHistory = _.isArray(doc.history) && doc.history[0] && doc.history[0]._created_by._id;
+		const moderation = _.pick(doc, ['is_approved', 'is_refused', 'auto_approved']);
 		if (includeHistory) {
-			moderation.history = object.history.map(h => {
+			moderation.history = doc.history.map(h => {
 				return {
 					event: h.event,
 					created_at: h.created_at,

@@ -34,6 +34,11 @@ const LogEvent = require('mongoose').model('LogEvent');
 const Backglass = require('mongoose').model('Backglass');
 const Medium = require('mongoose').model('Medium');
 
+const GameSerializer = require('../../serializers/game.serializer');
+const ReleaseSerializer = require('../../serializers/release.serializer');
+const BackglassSerializer = require('../../serializers/backglass.serializer');
+const MediumSerializer = require('../../serializers/medium.serializer');
+
 const api = require('./api');
 
 const acl = require('../../acl');
@@ -133,7 +138,7 @@ exports.create = function(req, res) {
 			if (gameRequest) {
 				LogEvent.log(req, 'update_game_request', false, {
 					game_request: _.pick(gameRequest.toSimple(), [ 'id', 'title', 'ipdb_number', 'ipdb_title' ]),
-					game: _.pick(game.toSimple(), [ 'id', 'title', 'manufacturer', 'year', 'ipdb', 'game_type' ])
+					game: GameSerializer.reduced(game, req, opts)
 				}, {
 					game: game._id,
 					game_request: gameRequest._id
@@ -154,8 +159,8 @@ exports.create = function(req, res) {
 		});
 
 	}).then(() => {
-		LogEvent.log(req, 'create_game', true, { game: _.omit(game.toSimple(), [ 'rating', 'counter' ]) }, { game: game._id });
-		api.success(res, game.toDetailed(), 201);
+		LogEvent.log(req, 'create_game', true, { game: _.omit(GameSerializer.simple(game, req), [ 'rating', 'counter' ]) }, { game: game._id });
+		return api.success(res, GameSerializer.detailed(game, req), 201);
 
 	}).catch(api.handleError(res, error, 'Error creating game'));
 };
@@ -247,7 +252,7 @@ exports.update = function(req, res) {
 	}).then(() => {
 
 		LogEvent.log(req, 'update_game', false, LogEvent.diff(oldGame, body), { game: game._id });
-		api.success(res, game.toDetailed(), 200);
+		api.success(res, GameSerializer.detailed(game, req), 200);
 
 	}).catch(api.handleError(res, error, 'Error updating game'));
 };
@@ -298,7 +303,7 @@ exports.del = function(req, res) {
 		logger.info('[api|game:delete] Game "%s" (%s) successfully deleted.', game.title, game.id);
 
 		// log event
-		LogEvent.log(req, 'delete_game', false, { game: _.omit(game.toSimple(), [ 'rating', 'counter' ]) }, { game: game._id });
+		LogEvent.log(req, 'delete_game', false, { game: _.omit(GameSerializer.simple(game, req), [ 'rating', 'counter' ]) }, { game: game._id });
 
 		api.success(res, null, 204);
 
@@ -412,7 +417,7 @@ exports.list = function(req, res) {
 
 	}).spread((results, count) => {
 
-		let games = results.map(game => game.toSimple());
+		let games = results.map(game => GameSerializer.simple(game, req));
 		api.success(res, games, 200, api.paginationOpts(pagination, count));
 
 	}).catch(api.handleError(res, error, 'Error listing games'));
@@ -439,7 +444,7 @@ exports.view = function(req, res) {
 		if (!game) {
 			throw error('No such game with ID "%s"', req.params.id).status(404);
 		}
-		result = game.toDetailed();
+		result = GameSerializer.detailed(game, req);
 		return game.incrementCounter('views');
 
 	}).then(() => {
@@ -476,7 +481,7 @@ exports.view = function(req, res) {
 			});
 
 		}).then(releases => {
-			result.releases = _.map(releases, release => _.omit(release.toDetailed(opts), 'game'));
+			result.releases = _.map(releases, release => GameSerializer.detailed(release, req, { excludedFields: [ 'game' ] }));
 		});
 
 	}).then(() => {
@@ -496,7 +501,7 @@ exports.view = function(req, res) {
 				.exec();
 
 		}).then(backglasses => {
-			result.backglasses = backglasses.map(backglass => _.omit(backglass.toSimple(), 'game'));
+			result.backglasses = backglasses.map(backglass => _.omit(BackglassSerializer.simple(backglass, req), 'game'));
 		});
 
 	}).then(() => {
@@ -506,7 +511,7 @@ exports.view = function(req, res) {
 			.exec();
 
 	}).then(media => {
-		result.media = media.map(medium => _.omit(medium.toSimple(), 'game'));
+		result.media = media.map(medium => MediumSerializer.simple(medium, req), { excludedFields: ['game'] });
 
 		api.success(res, result, 200);
 

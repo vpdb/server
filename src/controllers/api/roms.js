@@ -41,7 +41,7 @@ exports.create = function(req, res) {
 
 	let validFields = ['id', 'version', 'notes', 'languages', '_file'];
 	let newRom, game;
-	Promise.try(() => {
+	return Promise.try(() => {
 
 		if (!req.params.gameId && !req.body._ipdb_number) {
 			throw error('You must provide an IPDB number when not posting to a game resource.').status(422);
@@ -140,7 +140,7 @@ exports.list = function(req, res) {
 	let pagination = api.pagination(req, 10, 50);
 	let game, ipdbNumber;
 
-	Promise.try(() => {
+	return Promise.try(() => {
 
 		// list roms of a game below /api/v1/games/{gameId}
 		if (req.params.gameId) {
@@ -211,7 +211,7 @@ exports.list = function(req, res) {
  */
 exports.view = function(req, res) {
 
-	Promise.try(() => {
+	return Promise.try(() => {
 		return Rom.findOne({ id: req.params.id })
 			.populate('_game')
 			.populate('_created_by')

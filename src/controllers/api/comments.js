@@ -34,7 +34,7 @@ const mailer = require('../../modules/mailer');
 exports.createForRelease = function(req, res) {
 
 	let comment, release;
-	Promise.try(() => {
+	return Promise.try(() => {
 		return Release.findOne({ id: req.params.id })
 			.populate('_game')
 			.populate('_created_by')
@@ -98,7 +98,7 @@ exports.createForRelease = function(req, res) {
 exports.createForReleaseModeration = function(req, res) {
 
 	let comment, release;
-	Promise.try(() => {
+	return Promise.try(() => {
 		return Release.findOne({ id: req.params.id })
 			.populate('_game')
 			.populate('_created_by')
@@ -150,7 +150,7 @@ exports.listForRelease = function(req, res) {
 	let pagination = api.pagination(req, 10, 50);
 	const sort = api.sortParams(req, { released_at: 1 }, { date: '-created_at' });
 	let release;
-	Promise.try(() => {
+	return Promise.try(() => {
 		return Release.findOne({ id: req.params.id })
 			.populate('_game')
 			.populate('_created_by')
@@ -185,7 +185,7 @@ exports.listForRelease = function(req, res) {
 exports.listForReleaseModeration = function(req, res) {
 
 	let release;
-	Promise.try(() => {
+	return Promise.try(() => {
 		return Release.findOne({ id: req.params.id }).exec();
 
 	}).then(r => {

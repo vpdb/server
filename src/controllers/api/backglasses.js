@@ -47,7 +47,7 @@ exports.create = function(req, res) {
 	const now = new Date();
 	let backglass;
 
-	Promise.try(function() {
+	return Promise.try(() => {
 
 		return Backglass.getInstance(_.extend(req.body, {
 			_created_by: req.user._id,
@@ -147,7 +147,7 @@ exports.update = function(req, res) {
 	const updateableFields = [ '_game', 'description', 'acknowledgements' ];
 
 	let oldBackglass, backglass;
-	Promise.try(() => {
+	return Promise.try(() => {
 		return Backglass.findOne({ id: req.params.id });
 
 	}).then(bg => {
@@ -234,7 +234,7 @@ exports.list = function(req, res) {
 	let fields = req.query && req.query.fields ? req.query.fields.split(',') : [];
 	let populate = [ 'authors._user', 'versions._file' ];
 
-	Promise.try(() => {
+	return Promise.try(() => {
 
 		// list roms of a game below /api/v1/games/{gameId}
 		if (req.params.gameId) {
@@ -315,7 +315,7 @@ exports.view = function(req, res) {
 	};
 
 	let backglass;
-	Promise.try(() => {
+	return Promise.try(() => {
 		return Backglass.findOne({ id: req.params.id })
 			.populate({ path: '_game' })
 			.populate({ path: 'authors._user' })
@@ -360,7 +360,7 @@ exports.del = function(req, res) {
 
 	let backglass;
 	let canDelete;
-	Promise.try(() => {
+	return Promise.try(() => {
 		return acl.isAllowed(req.user.id, 'backglasses', 'delete');
 
 	}).then(result => {
@@ -411,7 +411,7 @@ exports.del = function(req, res) {
 exports.moderate = function(req, res) {
 
 	let backglass, moderation;
-	Promise.try(() => {
+	return Promise.try(() => {
 		return Backglass.findOne({ id: req.params.id })
 			.populate('_game')
 			.populate('_created_by')

@@ -70,7 +70,7 @@ exports.update = function(req, res) {
 		'description', 'type', 'is_range', 'is_active'];
 
 	let oldBuild;
-	Promise.try(() => {
+	return Promise.try(() => {
 		return Build.findOne({ id: req.params.id });
 
 	}).then(build => {
@@ -116,7 +116,7 @@ exports.update = function(req, res) {
  */
 exports.view = function(req, res) {
 
-	Promise.try(() => {
+	return Promise.try(() => {
 		return Build.findOne({ id: req.params.id });
 
 	}).then(build => {
@@ -139,7 +139,7 @@ exports.view = function(req, res) {
 exports.create = function(req, res) {
 
 	let newBuild;
-	Promise.try(function() {
+	return Promise.try(() => {
 		newBuild = new Build(req.body);
 
 		const idFromLabel = newBuild.label ? newBuild.label.replace(/(^[^a-z0-9._-]+)|([^a-z0-9._-]+$)/gi, '').replace(/[^a-z0-9._-]+/gi, '-').toLowerCase() : '-';
@@ -170,7 +170,7 @@ exports.del = function(req, res) {
 
 	let build, canGloballyDeleteBuilds;
 
-	Promise.try(function() {
+	return Promise.try(() => {
 
 		return acl.isAllowed(req.user.id, 'builds', 'delete');
 

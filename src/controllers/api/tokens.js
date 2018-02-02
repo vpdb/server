@@ -31,7 +31,7 @@ const Token = require('mongoose').model('Token');
 exports.create = function(req, res) {
 
 	let newToken;
-	Promise.try(() => {
+	return Promise.try(() => {
 
 		// default type is "personal".
 		req.body.type = req.body.type || 'personal';

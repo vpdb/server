@@ -46,7 +46,7 @@ redis.on('error', err => logger.error(err.message));
 exports.create = function(req, res) {
 
 	let newUser, skipEmailConfirmation, testMode;
-	Promise.try(() => {
+	return Promise.try(() => {
 
 		newUser = _.assignIn(_.pick(req.body, 'username', 'password', 'email'), {
 			provider: 'local'
@@ -90,7 +90,7 @@ exports.create = function(req, res) {
 exports.createOrUpdate = function(req, res) {
 
 	let name, provider, isNew;
-	Promise.try(() => {
+	return Promise.try(() => {
 
 		// make sure there's an app token
 		if (!req.appToken) {
@@ -192,7 +192,7 @@ exports.createOrUpdate = function(req, res) {
 exports.list = function(req, res) {
 
 	let canList, canGetFullDetails;
-	Promise.try(() => {
+	return Promise.try(() => {
 		return acl.isAllowed(req.user.id, 'users', 'list');
 
 	}).then(result => {
@@ -391,7 +391,7 @@ exports.view = function(req, res) {
 exports.del = function(req, res) {
 
 	let user;
-	Promise.try(() => {
+	return Promise.try(() => {
 		return User.findOne({ id: req.params.id }).exec();
 
 	}).then(u => {
@@ -424,7 +424,7 @@ exports.del = function(req, res) {
  */
 exports.sendConfirmationMail = function(req, res) {
 
-	Promise.try(() => {
+	return Promise.try(() => {
 		return User.findOne({ id: req.params.id }).exec();
 
 	}).then(user => {

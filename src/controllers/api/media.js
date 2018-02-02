@@ -40,7 +40,7 @@ exports.create = function(req, res) {
 	const now = new Date();
 	let medium;
 
-	Promise.try(function() {
+	return Promise.try(() => {
 
 		return Medium.getInstance(_.extend(req.body, {
 			_created_by: req.user._id,
@@ -113,7 +113,7 @@ exports.del = function(req, res) {
 
 	let medium;
 	let canDelete;
-	Promise.try(() => {
+	return Promise.try(() => {
 		return acl.isAllowed(req.user.id, 'media', 'delete');
 
 	}).then(result => {

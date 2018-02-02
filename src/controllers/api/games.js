@@ -51,7 +51,7 @@ const config = require('../../modules/settings').current;
  */
 exports.head = function(req, res) {
 
-	Promise.try(() => {
+	return Promise.try(() => {
 		// retrieve game
 		return Game.findOne({ id: req.params.id }).exec();
 
@@ -71,7 +71,7 @@ exports.head = function(req, res) {
 exports.create = function(req, res) {
 
 	let game;
-	Promise.try(() => {
+	return Promise.try(() => {
 		return Game.getInstance(_.assign(req.body, {
 			_created_by: req.user._id,
 			created_at: new Date()
@@ -175,7 +175,7 @@ exports.update = function(req, res) {
 
 	let body = _.cloneDeep(req.body);
 	let game, oldGame, oldMediaObj, oldMedia, newMedia;
-	Promise.try(() => {
+	return Promise.try(() => {
 		return Game.findOne({ id: req.params.id })
 			.populate({ path: '_backglass' })
 			.populate({ path: '_logo' })
@@ -261,7 +261,7 @@ exports.update = function(req, res) {
 exports.del = function(req, res) {
 
 	let game;
-	Promise.try(() => {
+	return Promise.try(() => {
 		return Game.findOne({ id: req.params.id })
 			.populate({ path: '_backglass' })
 			.populate({ path: '_logo' })
@@ -316,7 +316,7 @@ exports.list = function(req, res) {
 	let pagination = api.pagination(req, 12, 60);
 	let query = [];
 
-	Promise.try(() => {
+	return Promise.try(() => {
 
 		// text search
 		if (req.query.q) {
@@ -427,7 +427,7 @@ exports.list = function(req, res) {
 exports.view = function(req, res) {
 
 	let game, result;
-	Promise.try(() => {
+	return Promise.try(() => {
 		// retrieve game
 		return Game.findOne({ id: req.params.id })
 			.populate({ path: '_backglass' })
@@ -522,7 +522,7 @@ exports.view = function(req, res) {
 exports.releaseName = function(req, res) {
 
 	let game;
-	Promise.try(() => {
+	return Promise.try(() => {
 		return Game.findOne({ id: req.params.id }).exec();
 
 	}).then(g => {

@@ -37,10 +37,7 @@ exports.list = function(req, res) {
 		q = { is_active: true };
 	}
 
-	Promise.try(function() {
-		return Tag.find(q).exec();
-
-	}).then(tags => {
+	return Promise.try(() => Tag.find(q).exec()).then(tags => {
 
 		// reduce
 		tags = _.map(tags, tag => tag.toSimple());
@@ -52,7 +49,7 @@ exports.list = function(req, res) {
 exports.create = function(req, res) {
 
 	var newTag;
-	Promise.try(function() {
+	return Promise.try(() => {
 
 		newTag = new Tag(_.extend(req.body, {
 			_id: req.body.name ? req.body.name.replace(/(^[^a-z0-9]+)|([^a-z0-9]+$)/gi, '').replace(/[^a-z0-9]+/gi, '-').toLowerCase() : '-',
@@ -83,7 +80,7 @@ exports.del = function(req, res) {
 
 	let tag, canGloballyDeleteTags;
 
-	Promise.try(function() {
+	return Promise.try(() => {
 
 		return acl.isAllowed(req.user.id, 'tags', 'delete');
 

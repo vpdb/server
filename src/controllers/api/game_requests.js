@@ -43,7 +43,7 @@ exports.create = function(req, res) {
 	const now = new Date();
 	let ipdbNumber;
 
-	Promise.try(function() {
+	return Promise.try(() => {
 
 		// validate ipdb number syntax
 		if (!req.body.ipdb_number) {
@@ -120,7 +120,7 @@ exports.update = function(req, res) {
 	let user;
 	let requestClosed = false;
 	let before;
-	Promise.try(() => {
+	return Promise.try(() => {
 		return GameRequest
 			.findOne({ id: req.params.id })
 			.populate('_created_by')
@@ -174,7 +174,7 @@ exports.list = function(req, res) {
 
 	const statusValues = [ 'open', 'closed', 'denied', 'all' ];
 
-	Promise.try(() => {
+	return Promise.try(() => {
 
 		const status = req.query.status || 'open';
 		if (!statusValues.includes(status)) {
@@ -217,7 +217,7 @@ exports.list = function(req, res) {
 exports.del = function(req, res) {
 
 	let gameRequest, canDelete;
-	Promise.try(() => {
+	return Promise.try(() => {
 		return acl.isAllowed(req.user.id, 'game_requests', 'delete');
 
 	}).then(result => {

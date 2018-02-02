@@ -56,7 +56,7 @@ exports.create = function(req, res) {
 
 	const now = new Date();
 	let release;
-	Promise.try(() => {
+	return Promise.try(() => {
 
 		// defaults
 		if (req.body.versions) {
@@ -148,7 +148,7 @@ exports.update = function(req, res) {
 	const updateableFields = [ 'name', 'description', '_tags', 'links', 'acknowledgements', 'authors', 'ipdb' ];
 
 	let oldRelease, release;
-	Promise.try(() => {
+	return Promise.try(() => {
 
 		return Release.findOne({ id: req.params.id });
 
@@ -225,7 +225,7 @@ exports.addVersion = function(req, res) {
 
 	const now = new Date();
 	let release, newVersion;
-	Promise.try(() => {
+	return Promise.try(() => {
 		return Release.findOne({ id: req.params.id }).exec();
 
 	}).then(r => {
@@ -349,7 +349,7 @@ exports.updateVersion = function(req, res) {
 
 	let release, version, newFiles;
 	let releaseToUpdate, versionToUpdate, oldVersion;
-	Promise.try(() => {
+	return Promise.try(() => {
 		// retrieve release
 		return Release.findOne({ id: req.params.id })
 			.populate('versions.files._compatibility')
@@ -495,7 +495,7 @@ exports.validateFile = function(req, res) {
 	let release, version, file, fileId;
 	let releaseToUpdate, versionToUpdate, fileToUpdate;
 
-	Promise.try(() => {
+	return Promise.try(() => {
 		// retrieve release
 		return Release.findOne({ id: req.params.id })
 			.populate('versions.files._file')
@@ -592,7 +592,7 @@ exports.list = function(req, res) {
 	let serializerOpts = {};
 	let fields = req.query && req.query.fields ? req.query.fields.split(',') : [];
 
-	Promise.try(() => {
+	return Promise.try(() => {
 
 		// flavor, thumb selection
 		if (req.query.thumb_flavor) {
@@ -829,7 +829,7 @@ exports.view = function(req, res) {
 		excludedFields: []
 	};
 	let release;
-	Promise.try(() => {
+	return Promise.try(() => {
 		return Release.findOne({ id: req.params.id })
 			.populate({ path: '_game' })
 			.populate({ path: '_tags' })
@@ -904,7 +904,7 @@ exports.view = function(req, res) {
 exports.del = function(req, res) {
 
 	let release;
-	Promise.try(() => {
+	return Promise.try(() => {
 		return Release.findOne({ id: req.params.id })
 			.populate({ path: 'versions.0.files.0._file' })
 			.populate({ path: 'versions.0.files.0._playfield_image' })
@@ -948,7 +948,7 @@ exports.del = function(req, res) {
 exports.moderate = function(req, res) {
 
 	let release, moderation, lastEvent;
-	Promise.try(() => {
+	return Promise.try(() => {
 		return Release.findOne({ id: req.params.id })
 			.populate('_game')
 			.populate('_created_by')

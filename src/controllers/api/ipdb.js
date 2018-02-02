@@ -24,7 +24,7 @@ var ipdb = require('../../modules/ipdb');
 const error = require('../../modules/error')('api', 'ipdb');
 
 exports.view = function(req, res) {
-	Promise.try(() => {
+	return Promise.try(() => {
 		return ipdb.details(req.params.id, { offline: req.query.dryrun });
 
 	}).then(game => {

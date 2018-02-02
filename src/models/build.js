@@ -24,7 +24,6 @@ var logger = require('winston');
 var mongoose = require('mongoose');
 var validator = require('validator');
 var uniqueValidator = require('mongoose-unique-validator');
-var toObj = require('./plugins/to-object');
 
 var Schema = mongoose.Schema;
 var platforms = [ 'vp' ];
@@ -110,7 +109,6 @@ BuildSchema.path('built_at').validate(function(dateString) {
 // PLUGINS
 //-----------------------------------------------------------------------------
 BuildSchema.plugin(uniqueValidator, { message: 'The {PATH} "{VALUE}" is already taken.' });
-BuildSchema.plugin(toObj);
 
 
 //-----------------------------------------------------------------------------

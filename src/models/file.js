@@ -25,7 +25,6 @@ const logger = require('winston');
 const mongoose = require('mongoose');
 const shortId = require('shortid32');
 
-const toObj = require('./plugins/to-object');
 const metrics = require('./plugins/metrics');
 const storage = require('../modules/storage');
 const quota = require('../modules/quota');
@@ -73,7 +72,6 @@ const FileSchema = new Schema(fields, { usePushEach: true });
 // PLUGINS
 //-----------------------------------------------------------------------------
 
-FileSchema.plugin(toObj);
 FileSchema.plugin(metrics);
 
 

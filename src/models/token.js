@@ -27,7 +27,6 @@ const mongoose = require('mongoose');
 const validator = require('validator');
 const uniqueValidator = require('mongoose-unique-validator');
 const userAgentParser = require('ua-parser-js');
-const toObj = require('./plugins/to-object');
 
 const scope = require('../scope');
 const config = require('../modules/settings').current;
@@ -131,7 +130,6 @@ TokenSchema.path('type').validate(function(type) {
 // PLUGINS
 //-----------------------------------------------------------------------------
 TokenSchema.plugin(uniqueValidator, { message: 'The {PATH} "{VALUE}" is already taken.' });
-TokenSchema.plugin(toObj);
 
 
 //-----------------------------------------------------------------------------

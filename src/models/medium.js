@@ -28,7 +28,6 @@ const uniqueValidator = require('mongoose-unique-validator');
 
 const prettyId = require('./plugins/pretty-id');
 const fileRef = require('./plugins/file-ref');
-const toObj = require('./plugins/to-object');
 const metrics = require('./plugins/metrics');
 
 const Schema = mongoose.Schema;
@@ -146,7 +145,6 @@ MediumSchema.plugin(uniqueValidator, { message: 'The {PATH} "{VALUE}" is already
 MediumSchema.plugin(prettyId, { model: 'Medium', ignore: [ '_created_by' ] });
 MediumSchema.plugin(fileRef);
 MediumSchema.plugin(paginate);
-MediumSchema.plugin(toObj);
 MediumSchema.plugin(metrics);
 
 

@@ -29,7 +29,6 @@ const uniqueValidator = require('mongoose-unique-validator');
 const prettyId = require('./plugins/pretty-id');
 const gameRef = require('./plugins/game-ref');
 const fileRef = require('./plugins/file-ref');
-const toObj = require('./plugins/to-object');
 const metrics = require('./plugins/metrics');
 const moderate = require('./plugins/moderate');
 
@@ -51,7 +50,6 @@ const versionFields = {
 };
 const VersionSchema = new Schema(versionFields, { usePushEach: true });
 VersionSchema.plugin(fileRef);
-VersionSchema.plugin(toObj);
 
 const backglassFields = {
 	id:            { type: String, required: true, unique: true, 'default': shortId.generate },
@@ -79,7 +77,6 @@ BackglassSchema.plugin(prettyId, { model: 'Backglass', ignore: [ '_created_by' ]
 BackglassSchema.plugin(fileRef);
 BackglassSchema.plugin(paginate);
 BackglassSchema.plugin(moderate);
-BackglassSchema.plugin(toObj);
 BackglassSchema.plugin(metrics);
 
 BackglassSchema.methods.isCreatedBy = function(user) {

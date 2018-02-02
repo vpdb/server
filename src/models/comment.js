@@ -25,7 +25,6 @@ var shortId = require('shortid32');
 var mongoose = require('mongoose');
 var paginate = require('mongoose-paginate');
 var validator = require('validator');
-var toObj = require('./plugins/to-object');
 
 var Schema = mongoose.Schema;
 
@@ -52,7 +51,6 @@ var CommentSchema = new Schema(fields, { usePushEach: true });
 // PLUGINS
 //-----------------------------------------------------------------------------
 CommentSchema.plugin(paginate);
-CommentSchema.plugin(toObj);
 
 
 //-----------------------------------------------------------------------------

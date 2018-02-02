@@ -20,7 +20,6 @@
 'use strict';
 
 const mongoose = require('mongoose');
-const toObj = require('../plugins/to-object');
 const Schema = mongoose.Schema;
 
 const AuthorSchema = new Schema({
@@ -28,7 +27,6 @@ const AuthorSchema = new Schema({
 	roles: [ String ]
 }, { usePushEach: true });
 
-AuthorSchema.plugin(toObj);
 AuthorSchema.options.toObject = { virtuals: true, versionKey: false };
 
 module.exports.schema = AuthorSchema;

@@ -21,7 +21,6 @@
 
 const mongoose = require('mongoose');
 
-const toObj = require('../plugins/to-object');
 const fileRef = require('../plugins/file-ref');
 const prettyId = require('../plugins/pretty-id');
 const flavor = require('../../modules/flavor');
@@ -53,7 +52,6 @@ const fields = {
 const schema = new Schema(fields, { usePushEach: true });
 schema.plugin(fileRef);
 schema.plugin(prettyId, { model: 'ReleaseVersionFile' });
-schema.plugin(toObj);
 
 
 //-----------------------------------------------------------------------------

@@ -23,7 +23,6 @@ const _ = require('lodash');
 const logger = require('winston');
 const mongoose = require('mongoose');
 
-const toObj = require('../plugins/to-object');
 const fileRef = require('../plugins/file-ref');
 const prettyId = require('../plugins/pretty-id');
 
@@ -44,7 +43,6 @@ const fields = {
 const schema = new Schema(fields, { usePushEach: true });
 schema.plugin(fileRef);
 schema.plugin(prettyId, { model: 'ReleaseVersion' });
-schema.plugin(toObj);
 
 /**
  * Validates files.

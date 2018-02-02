@@ -27,7 +27,6 @@ const validator = require('validator');
 const paginate = require('mongoose-paginate');
 const uniqueValidator = require('mongoose-unique-validator');
 
-const toObj = require('./plugins/to-object');
 const fileRef = require('./plugins/file-ref');
 const metrics = require('./plugins/metrics');
 const prettyId = require('./plugins/pretty-id');
@@ -115,7 +114,6 @@ GameSchema.plugin(uniqueValidator, { message: 'The {PATH} "{VALUE}" is already t
 GameSchema.plugin(prettyId, { model: 'Game', ignore: [ '_created_by' ] });
 GameSchema.plugin(fileRef);
 GameSchema.plugin(paginate);
-GameSchema.plugin(toObj);
 GameSchema.plugin(metrics, { hotness: { popularity: { views: 1, downloads: 10, comments: 20, stars: 30 }}});
 GameSchema.plugin(sortTitle, { src: 'title', dest: 'title_sortable' });
 

@@ -23,7 +23,6 @@ var _ = require('lodash');
 var logger = require('winston');
 var mongoose = require('mongoose');
 var validator = require('validator');
-var toObj = require('./plugins/to-object');
 
 var Schema = mongoose.Schema;
 
@@ -40,12 +39,6 @@ var fields = {
 	_created_by:  { type: Schema.ObjectId, ref: 'User', required: true }
 };
 var TagSchema = new Schema(fields, { usePushEach: true });
-
-
-//-----------------------------------------------------------------------------
-// PLUGINS
-//-----------------------------------------------------------------------------
-TagSchema.plugin(toObj);
 
 
 //-----------------------------------------------------------------------------

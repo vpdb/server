@@ -23,7 +23,6 @@ var _ = require('lodash');
 var logger = require('winston');
 var mongoose = require('mongoose');
 var paginate = require('mongoose-paginate');
-var toObj = require('./plugins/to-object');
 var slackbot = require('../modules/slackbot');
 
 var Schema = mongoose.Schema;
@@ -69,7 +68,6 @@ var LogEventSchema = new Schema(fields, { usePushEach: true });
 // PLUGINS
 //-----------------------------------------------------------------------------
 LogEventSchema.plugin(paginate);
-LogEventSchema.plugin(toObj);
 
 
 //-----------------------------------------------------------------------------

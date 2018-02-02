@@ -27,7 +27,6 @@ const mongoose = require('mongoose');
 const uniqueValidator = require('mongoose-unique-validator');
 const paginate = require('mongoose-paginate');
 
-const toObj = require('./plugins/to-object');
 const metrics = require('./plugins/metrics');
 const gameRef = require('./plugins/game-ref');
 const fileRef = require('./plugins/file-ref');
@@ -104,7 +103,6 @@ ReleaseSchema.plugin(prettyId, { model: 'Release', ignore: [ '_created_by', '_ta
 ReleaseSchema.plugin(idValidator, { fields: [ '_tags' ] });
 ReleaseSchema.plugin(paginate);
 ReleaseSchema.plugin(moderate);
-ReleaseSchema.plugin(toObj);
 ReleaseSchema.plugin(metrics, { hotness: { popularity: { views: 1, downloads: 10, comments: 20, stars: 30 }}});
 ReleaseSchema.plugin(sortableTitle, { src: 'name', dest: 'name_sortable' });
 

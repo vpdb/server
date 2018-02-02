@@ -27,7 +27,6 @@ const mongoose = require('mongoose');
 const validator = require('validator');
 const randomstring = require('randomstring');
 const uniqueValidator = require('mongoose-unique-validator');
-const toObj = require('./plugins/to-object');
 const metrics = require('./plugins/metrics');
 
 const config = require('../modules/settings').current;
@@ -110,7 +109,6 @@ UserSchema.plugin(uniqueValidator, { message: 'The {PATH} "{VALUE}" is already t
 //-----------------------------------------------------------------------------
 // PLUGINS
 //-----------------------------------------------------------------------------
-UserSchema.plugin(toObj);
 UserSchema.plugin(metrics);
 
 //-----------------------------------------------------------------------------

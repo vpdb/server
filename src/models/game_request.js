@@ -23,7 +23,6 @@ const _ = require('lodash');
 const logger = require('winston');
 const shortId = require('shortid32');
 const mongoose = require('mongoose');
-const toObj = require('./plugins/to-object');
 
 var Schema = mongoose.Schema;
 
@@ -51,11 +50,6 @@ const apiFields = {
 	simple: [ 'id', 'title', 'notes', 'ipdb_number', 'ipdb_title', 'is_closed', 'message', 'game', 'created_at' ],
 	detailed: [ 'created_by' ]
 };
-
-//-----------------------------------------------------------------------------
-// PLUGINS
-//-----------------------------------------------------------------------------
-GameRequestSchema.plugin(toObj);
 
 //-----------------------------------------------------------------------------
 // VIRTUALS

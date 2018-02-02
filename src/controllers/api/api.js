@@ -127,6 +127,7 @@ exports.success = function(res, result, code, opts) {
 	} else {
 		res.status(code).end();
 	}
+	return null;
 };
 
 

@@ -618,7 +618,7 @@ exports.list = function(req, res) {
 				if (!isModerator) {
 					throw error('You must be moderator in order to fetch moderation fields.').status(403);
 				}
-				serializerOpts.includeModeration = true;
+				serializerOpts.includedFields = [ 'moderation' ];
 			});
 		}
 		return null;
@@ -826,7 +826,7 @@ exports.list = function(req, res) {
 exports.view = function(req, res) {
 
 	let transformOpts = {
-		supressedFields: []
+		excludedFields: []
 	};
 	let release;
 	Promise.try(() => {
@@ -854,9 +854,10 @@ exports.view = function(req, res) {
 			throw error('No such release with ID "%s"', req.params.id).status(404);
 		}
 		return release.assertModeratedView(req, error).then(release => {
-			return release.populateModeration(req, error).then(populated => {
+			const fields = req.query && req.query.fields ? req.query.fields.split(',') : [];
+			return release.populateModeration(req, { includedFields: fields }, error).then(populated => {
 				if (populated === false) {
-					transformOpts.supressedFields.push('moderation');
+					transformOpts.excludedFields.push('moderation');
 				}
 				return release;
 			});

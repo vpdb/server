@@ -220,9 +220,6 @@ ReleaseSchema.methods.toDetailed = function(opts) {
 		rls.thumb = getReleaseThumb(rls.versions, opts);
 	}
 
-	let supressedFields = opts.supressedFields || [];
-	supressedFields.forEach(field => delete rls[field]);
-
 	// reduce/enhance data
 	rls.versions = rls.versions.map(v => {
 		v.files = v.files.map(f => {

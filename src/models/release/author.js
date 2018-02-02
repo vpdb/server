@@ -28,28 +28,6 @@ const AuthorSchema = new Schema({
 	roles: [ String ]
 }, { usePushEach: true });
 
-AuthorSchema.statics.toReduced = function(author, opts) {
-	return {
-		roles: author.roles,
-		user: require('mongoose').model('User').toReduced(author._user, opts)
-	}
-};
-
-AuthorSchema.statics.toSimple = function(author, opts) {
-	return {
-		roles: author.roles,
-		user: require('mongoose').model('User').toSimple(author._user, opts)
-	}
-};
-
-AuthorSchema.methods.toReduced = function(opts) {
-	return AuthorSchema.statics.toReduced(this, opts);
-};
-
-AuthorSchema.methods.toSimple = function(opts) {
-	return AuthorSchema.statics.toSimple(this, opts);
-};
-
 AuthorSchema.plugin(toObj);
 AuthorSchema.options.toObject = { virtuals: true, versionKey: false };
 

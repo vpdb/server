@@ -3,7 +3,7 @@ Host: api.vpdb.io
 Accept-Encoding: gzip, deflate
 Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJla2U1cW1xYTU1OSIsImlhdCI6IjIwMTgtMDItMDNUMjI6MjM6MDQuNTI1WiIsImV4cCI6IjIwMTgtMDItMDNUMjM6MjM6MDQuNTI1WiIsImlydCI6ZmFsc2V9.qWWk-I8FhMES0OfZOaIIEuhuNGxnXvpI7NI0VGJg8G8
 Content-Type: application/json
-Content-Length: 110
+Content-Length: 109
 
 {
    "authors": [

@@ -8,7 +8,7 @@ class GameSerializer extends Serializer {
 	}
 
 	simple(object, req, opts) {
-		return _.pick(object, [ 'id', 'title', 'manufacturer', 'year', 'ipdb' ]);
+		return _.pick(object, [ 'id', 'title', 'manufacturer', 'year', 'ipdb', 'game_type' ]);
 	}
 
 }

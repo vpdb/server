@@ -19,7 +19,6 @@
 
 'use strict';
 
-const _ = require('lodash');
 const mongoose = require('mongoose');
 
 const toObj = require('../plugins/to-object');

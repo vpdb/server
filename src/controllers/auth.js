@@ -61,7 +61,6 @@ exports.auth = function(req, res, resource, permission, requiredScopes, planAttr
 	const vpdbUserIdHeader = 'x-vpdb-user-id';
 	const providerUserIdHeader = 'x-user-id';
 	const now = new Date();
-	let tokenScopes = [];
 	let token;
 	let fromUrl = false;
 	let headerName = config.vpdb.authorizationHeader;

@@ -72,58 +72,15 @@ const FileSchema = new Schema(fields, { usePushEach: true });
 //-----------------------------------------------------------------------------
 // PLUGINS
 //-----------------------------------------------------------------------------
+
 FileSchema.plugin(toObj);
 FileSchema.plugin(metrics);
 
 
 //-----------------------------------------------------------------------------
-// API FIELDS
-//-----------------------------------------------------------------------------
-const apiFields = {
-	simple: ['id', 'name', 'url', 'bytes', 'variations', 'is_protected', 'counter', 'cost'], // fields returned in references
-	detailed: ['created_at', 'mime_type', 'file_type', 'metadata']
-};
-
-
-//-----------------------------------------------------------------------------
-// VIRTUALS
-//-----------------------------------------------------------------------------
-FileSchema.virtual('created_by')
-	.get(function() {
-		if (this.populated('_created_by')) {
-			return this._created_by.toReduced();
-		}
-	});
-
-FileSchema.virtual('url')
-	.get(function() {
-		return storage.url(this);
-	});
-
-/**
- * how much credit it costs to download this file.
- *
- * -1 = public file
- *  0 = free file
- * >0 = non-free file
- */
-FileSchema.virtual('cost')
-	.get(function() {
-		return quota.getCost(this);
-	});
-
-/**
- * `protected` means that the file is served only to logged users
- */
-FileSchema.virtual('is_protected')
-	.get(function() {
-		return !this.is_active || this.cost > -1;
-	});
-
-
-//-----------------------------------------------------------------------------
 // VALIDATIONS
 //-----------------------------------------------------------------------------
+
 FileSchema.path('mime_type').validate(function(mimeType) {
 	// will be validated by enum
 	if (!this.file_type || !fileTypes.exists(this.file_type)) {
@@ -138,13 +95,6 @@ FileSchema.path('mime_type').validate(function(mimeType) {
 //-----------------------------------------------------------------------------
 // METHODS
 //-----------------------------------------------------------------------------
-
-FileSchema.methods.toSimple = function() {
-	return FileSchema.statics.toSimple(this);
-};
-FileSchema.methods.toDetailed = function() {
-	return FileSchema.statics.toDetailed(this);
-};
 
 /**
  * Returns the local path where the file is stored.
@@ -353,20 +303,6 @@ FileSchema.statics.sanitizeObject = function(object, replacement) {
 			}
 		}
 	}
-};
-FileSchema.statics.toSimple = function(file) {
-	if (!file) {
-		return file;
-	}
-	const obj = file.toObj ? file.toObj() : file;
-	return _.pick(obj, apiFields.simple);
-};
-FileSchema.statics.toDetailed = function(file) {
-	if (!file) {
-		return file;
-	}
-	const obj = file.toObj ? file.toObj() : file;
-	return _.pick(obj, apiFields.detailed.concat(apiFields.simple));
 };
 
 //-----------------------------------------------------------------------------

@@ -1,4 +1,5 @@
 const _ = require('lodash');
+const flavor = require('../modules/flavor');
 const Serializer = require('./serializer');
 const FileSerializer = require('./file.serializer');
 const BuildSerializer = require('./build.serializer');

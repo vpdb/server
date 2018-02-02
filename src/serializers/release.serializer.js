@@ -2,7 +2,7 @@ const _ = require('lodash');
 const flavor = require('../modules/flavor');
 const Serializer = require('./serializer');
 const GameSerializer = require('./game.serializer');
-const UserSerializer = require('./user.serializer');
+const AuthorSerializer = require('./author.serializer');
 const ReleaseVersionSerializer = require('./release.version.serializer');
 
 class ReleaseSerializer extends Serializer {
@@ -16,9 +16,7 @@ class ReleaseSerializer extends Serializer {
 		release.game = GameSerializer.reduced(object._game, req, opts);
 
 		// authors
-		release.authors = object.authors.map(author => {
-			return { user: UserSerializer.reduced(author._user, req, opts), roles: author.roles };
-		});
+		release.authors = object.authors.map(author => AuthorSerializer.reduced(author, req, opts));
 
 		// versions
 		release.versions = object.versions

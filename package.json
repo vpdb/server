@@ -19,7 +19,7 @@
 		"url": "https://github.com/vpdb/backend/issues"
 	},
 	"scripts": {
-		"start": "node app.js",
+		"start": "node --inspect app.js",
 		"serve:dev": "nodemon --config deploy/nodemon/dev.json --exec npm start",
 		"serve:test": "nyc --reporter=lcov --reporter=html node app.js",
 		"serve:protractor": "cross-env NODE_ENV=test APP_SETTINGS=src/config/settings-protractor.js PORT=7357 APP_NAME=local run-s test:dropdbs start",

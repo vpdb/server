@@ -230,8 +230,7 @@ module.exports = function(schema) {
 	};
 
 	/**
-	 * Makes sure an API request has the permission to view the entity and populates
-	 * the moderation field if demanded.
+	 * Makes sure an API request has the permission to view the entity.
 	 *
 	 * @param {Request} req Request object
 	 * @param {Err} error Error wrapper for logging
@@ -274,14 +273,14 @@ module.exports = function(schema) {
 	/**
 	 * If moderation field is demanded in request, populates it.
 	 * @param {Request} req Request object
+	 * @param {{ includedFields: string[] }} opts Options
 	 * @param {Err} error Error wrapper for logging
 	 * @returns {Promise.<{}|false>} Populated entity if fields added, false otherwise.
 	 */
-	schema.methods.populateModeration = function(req, error) {
+	schema.methods.populateModeration = function(req, opts, error) {
 		const acl = require('../../acl');
 		const resource = modelResourceMap[this.constructor.modelName];
-		let fields = req.query && req.query.fields ? req.query.fields.split(',') : [];
-		if (fields.includes('moderation')) {
+		if (opts.includedFields.includes('moderation')) {
 			if (!req.user) {
 				throw error('You must be logged in order to fetch moderation fields.').status(403);
 			}

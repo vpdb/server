@@ -30,6 +30,8 @@ const Game = require('mongoose').model('Game');
 const Rom = require('mongoose').model('Rom');
 const Backglass = require('mongoose').model('Backglass');
 const LogEvent = require('mongoose').model('LogEvent');
+const BackglassSerializer = require('../../serializers/backglass.serializer');
+const GameSerializer = require('../../serializers/game.serializer');
 
 const mailer = require('../../modules/mailer');
 const error = require('../../modules/error')('api', 'backglass');
@@ -120,15 +122,15 @@ exports.create = function(req, res) {
 
 		// event log
 		LogEvent.log(req, 'create_backglass', true, {
-			backglass: populatedBackglass.toSimple(),
-			game: _.pick(populatedBackglass._game.toSimple(), [ 'id', 'title', 'manufacturer', 'year', 'ipdb', 'game_type' ])
+			backglass: BackglassSerializer.serialize(BackglassSerializer.DETAILED, populatedBackglass, req),
+			game: GameSerializer.reduced(populatedBackglass._game, req)
 		}, {
 			backglass: populatedBackglass._id,
 			game: populatedBackglass._game._id
 		});
 
 		// return object
-		api.success(res, populatedBackglass.toSimple(), 201);
+		api.success(res, BackglassSerializer.serialize(BackglassSerializer.DETAILED, populatedBackglass, req), 201);
 
 	}).catch(api.handleError(res, error, 'Error creating backglass'));
 };
@@ -208,7 +210,7 @@ exports.update = function(req, res) {
 			{ backglass: backglass._id, game: backglass._game._id }
 		);
 
-		api.success(res, backglass.toSimple(), 200);
+		api.success(res, BackglassSerializer.serialize(BackglassSerializer.DETAILED, backglass, req), 200);
 
 	}).catch(api.handleError(res, error, 'Error updating backglass'));
 };
@@ -269,7 +271,7 @@ exports.list = function(req, res) {
 				if (!isModerator) {
 					throw error('You must be moderator in order to fetch moderation fields.').status(403);
 				}
-				serializerOpts.includeModeration = true;
+				serializerOpts.includedFields = [ 'moderation' ];
 			});
 		}
 		return null;
@@ -294,7 +296,7 @@ exports.list = function(req, res) {
 
 	}).spread((results, count) => {
 
-		let backglasses = results.map(bg => bg.toSimple(serializerOpts));
+		let backglasses = results.map(bg => BackglassSerializer.reduced(bg, req, serializerOpts));
 		api.success(res, backglasses, 200, api.paginationOpts(pagination, count));
 
 	}).catch(api.handleError(res, error, 'Error listing backglasses'));
@@ -333,16 +335,17 @@ exports.view = function(req, res) {
 			throw error('No such backglass with ID "%s"', req.params.id).status(404);
 		}
 		return backglass.assertModeratedView(req, error).then(backglass => {
-			return backglass.populateModeration(req, error).then(populated => {
+			const fields = req.query && req.query.fields ? req.query.fields.split(',') : [];
+			return backglass.populateModeration(req, { includedFields: fields }, error).then(populated => {
 				if (populated !== false) {
-					serializerOpts.includeModeration = true;
+					serializerOpts.includedFields = [ 'moderation' ];
 				}
-				return backglass;
+				return populated;
 			});
 		});
 
 	}).then(backglass => {
-		return api.success(res, backglass.toSimple(serializerOpts));
+		return api.success(res, BackglassSerializer.serialize(BackglassSerializer.DETAILED, backglass, req, serializerOpts));
 
 	}).catch(api.handleError(res, error, 'Error retrieving backglass details'));
 };
@@ -387,8 +390,8 @@ exports.del = function(req, res) {
 
 		// event log
 		LogEvent.log(req, 'delete_backglass', false, {
-			backglass: _.pick(backglass.toSimple(), [ 'id', 'authors', 'versions' ]),
-			game: _.pick(backglass._game.toSimple(), [ 'id', 'title', 'manufacturer', 'year', 'ipdb', 'game_type' ])
+			backglass: _.pick(BackglassSerializer.serialize(BackglassSerializer.DETAILED, backglass, req), [ 'id', 'authors', 'versions' ]),
+			game: GameSerializer.simple(backglass._game, req)
 		}, {
 			backglass: backglass._id,
 			game: backglass._game._id

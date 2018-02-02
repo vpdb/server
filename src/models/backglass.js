@@ -52,12 +52,6 @@ const versionFields = {
 const VersionSchema = new Schema(versionFields, { usePushEach: true });
 VersionSchema.plugin(fileRef);
 VersionSchema.plugin(toObj);
-VersionSchema.virtual('file')
-	.get(function() {
-		if (this._file && this._file.toSimple) {
-			return this._file.toSimple();
-		}
-	});
 
 const backglassFields = {
 	id:            { type: String, required: true, unique: true, 'default': shortId.generate },
@@ -74,13 +68,6 @@ const backglassFields = {
 const BackglassSchema = new Schema(backglassFields, { usePushEach: true });
 
 //-----------------------------------------------------------------------------
-// API FIELDS
-//-----------------------------------------------------------------------------
-const apiFields = {
-	simple: [ 'id', 'game', 'versions', 'description', 'authors', 'acknowledgements', 'created_at', 'created_by' ]
-};
-
-//-----------------------------------------------------------------------------
 // PLUGINS
 //-----------------------------------------------------------------------------
 BackglassSchema.plugin(gameRef);
@@ -95,46 +82,13 @@ BackglassSchema.plugin(moderate);
 BackglassSchema.plugin(toObj);
 BackglassSchema.plugin(metrics);
 
-
-//-----------------------------------------------------------------------------
-// VIRTUALS
-//-----------------------------------------------------------------------------
-BackglassSchema.virtual('game')
-	.get(function() {
-		if (this._game && this.populated('_game')) {
-			return this._game.toReduced();
-		}
-	});
-BackglassSchema.virtual('created_by')
-	.get(function() {
-		if (this._created_by && this.populated('_created_by')) {
-			return this._created_by.toReduced();
-		}
-	});
-
-
-//-----------------------------------------------------------------------------
-// METHODS
-//-----------------------------------------------------------------------------
-BackglassSchema.methods.toSimple = function(opts) {
-	opts = opts || {};
-	opts.fields = opts.fields || [];
-
-	let backglass = this.toObj();
-	if (backglass.moderation) {
-		backglass.moderation = this.moderationToObject();
-	}
-	return _.pick(backglass, [...apiFields.simple, ...opts.fields ]);
-};
-
 BackglassSchema.methods.isCreatedBy = function(user) {
 	if (!user) {
 		return false;
 	}
-	let userId = user._id || user;
+	const userId = user._id || user;
 	return this._created_by.equals(userId);
 };
-
 
 //-----------------------------------------------------------------------------
 // VALIDATIONS

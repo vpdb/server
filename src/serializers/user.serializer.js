@@ -4,7 +4,7 @@ const Serializer = require('./serializer');
 class UserSerializer extends Serializer {
 
 	reduced(object, req, opts) {
-		return _.pick(object, ['id', 'name', 'username', 'thumb', 'gravatar_id', 'location']);
+		return _.pick(object, ['id', 'name', 'username', 'thumb', 'gravatar_id', 'location' ]);
 	}
 
 	simple(object, req, opts) {

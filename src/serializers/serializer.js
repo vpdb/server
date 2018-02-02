@@ -2,63 +2,52 @@ const _ = require('lodash');
 
 class Serializer {
 
-	constructor() {
-		/**
-		 * Smallest level of detail
-		 * @type {string}
-		 */
-		this.REDUCED = 'reduced';
-		/**
-		 * Normal level of detail
-		 * @type {string}
-		 */
-		this.SIMPLE = 'simple';
-		/**
-		 * Most detailed level
-		 * @type {string}
-		 */
-		this.DETAILED = 'detailed';
-	}
-
 	/**
-	 * Serializes the object to be returned by the API.
+	 * Returns the reduced version of the object.
 	 *
-	 * @param {'reduced'|'simple'|'detailed'} detailLevel
 	 * @param {object} object Retrieved MongoDB object
 	 * @param {Request} req Request object
 	 * @param {{ includedFields:string[], excludedFields:string[], starred:boolean|undefined, fileIds:string[], thumbFlavor:string, thumbFormat:string, fullThumbData:boolean, thumbPerFile:boolean }} [opts] Additional options for serialization
 	 * @return {object} Serialized object
 	 */
-	serialize(detailLevel, object, req, opts) {
+	reduced(object, req, opts) {
+		return this._post(object, this._reduced(object, req, this._defaultOpts(opts)), req, opts);
+	}
 
-		opts = _.defaultsDeep(opts || {}, {
-			includedFields: [],
-			excludedFields: [],
-			starred: undefined,
-			fileIds: [],
-			thumbFlavor: null,
-			thumbFormat: null,
-			fullThumbData: false,
-			thumbPerFile: false
-		});
+	/**
+	 * Returns the simple version of the object.
+	 *
+	 * @param {object} object Retrieved MongoDB object
+	 * @param {Request} req Request object
+	 * @param {{ includedFields:string[], excludedFields:string[], starred:boolean|undefined, fileIds:string[], thumbFlavor:string, thumbFormat:string, fullThumbData:boolean, thumbPerFile:boolean }} [opts] Additional options for serialization
+	 * @return {object} Serialized object
+	 */
+	simple(object, req, opts) {
+		return this._post(object, this._simple(object, req, this._defaultOpts(opts)), req, opts);
+	}
 
-		let serializedObject;
-		switch (detailLevel) {
-			case this.REDUCED:
-				serializedObject = this.reduced(object, req, opts);
-				break;
+	/**
+	 * Returns the detailed version of the object.
+	 *
+	 * @param {object} object Retrieved MongoDB object
+	 * @param {Request} req Request object
+	 * @param {{ includedFields:string[], excludedFields:string[], starred:boolean|undefined, fileIds:string[], thumbFlavor:string, thumbFormat:string, fullThumbData:boolean, thumbPerFile:boolean }} [opts] Additional options for serialization
+	 * @return {object} Serialized object
+	 */
+	detailed(object, req, opts) {
+		return this._post(object, this._detailed(object, req, this._defaultOpts(opts)), req, opts);
+	}
 
-			case this.SIMPLE:
-				serializedObject = this.simple(object, req, opts);
-				break;
-
-			case this.DETAILED:
-				serializedObject = this.detailed(object, req, opts);
-				break;
-		}
+	/**
+	 * Updates serialized object with additional data, common for all detail
+	 * levels and types.
+	 *
+	 * @private
+	 */
+	_post(object, serializedObject, req, opts) {
 
 		// handle moderation field
-		serializedObject.moderation = require('./moderation.serializer').simple(object.moderation, req, opts);
+		serializedObject.moderation = require('./moderation.serializer')._simple(object.moderation, req, this._defaultOpts(opts));
 
 		// TODO might need to check for nested fields
 		opts.excludedFields.forEach(field => delete serializedObject[field]);
@@ -70,10 +59,9 @@ class Serializer {
 	 * Returns the reduced version of the object.
 	 *
 	 * This is only the fallthrough, don't call directly.
-	 * @private
-	 * @returns {{}}
+	 * @protected
 	 */
-	reduced(object, req, opts) {
+	_reduced(object, req, opts) {
 		return this.simple(object, req, opts);
 	}
 
@@ -81,10 +69,9 @@ class Serializer {
 	 * Returns the simple version of the object.
 	 *
 	 * This is only the fallthrough, don't call directly.
-	 * @private
-	 * @returns {{}}
+	 * @protected
 	 */
-	simple(object, req, opts) {
+	_simple(object, req, opts) {
 		return {};
 	}
 
@@ -92,14 +79,28 @@ class Serializer {
 	 * Returns the detailed version of the object.
 	 *
 	 * This is only the fallthrough, don't call directly.
-	 * @private
-	 * @returns {{}}
+	 * @protected
 	 */
-	detailed(object, req, opts) {
+	_detailed(object, req, opts) {
 		return this.simple(object, req, opts);
 	}
 
-	sortByDate(attr) {
+	/** @protected */
+	_defaultOpts(opts) {
+		return _.defaultsDeep(opts || {}, {
+			includedFields: [],
+			excludedFields: [],
+			starred: undefined,
+			fileIds: [],
+			thumbFlavor: null,
+			thumbFormat: null,
+			fullThumbData: false,
+			thumbPerFile: false
+		});
+	}
+
+	/** @protected */
+	_sortByDate(attr) {
 		return (a, b) => {
 			const dateA = new Date(a[attr]).getTime();
 			const dateB = new Date(b[attr]).getTime();
@@ -119,9 +120,10 @@ class Serializer {
 	 *
 	 * @param {{ [playfield_image]:{}, [_playfield_image]:{} }} file Table
 	 * @param {{ fullThumbData:boolean, thumbFormat:string }} opts thumbFormat is the variation or "original" if the full link is desired.
+	 * @protected
 	 * @returns {{}|null}
 	 */
-	getFileThumb(file, opts) {
+	_getFileThumb(file, opts) {
 
 		let thumbFields = [ 'url', 'width', 'height', 'is_protected' ];
 		if (opts.fullThumbData) {
@@ -132,7 +134,7 @@ class Serializer {
 			return null;
 		}
 
-		const playfieldImage = this.getPlayfieldImage(file);
+		const playfieldImage = this._getPlayfieldImage(file);
 
 		// if not populated, return null
 		if (!playfieldImage || !playfieldImage.metadata) {
@@ -154,9 +156,10 @@ class Serializer {
 	/**
 	 * Returns the playfield image property from the table file object.
 	 * @param {{ [playfield_image]:{}, [_playfield_image]:{} }} file Table file
+	 * @protected
 	 * @returns {{}|ObjectId|null}
 	 */
-	getPlayfieldImage(file) {
+	_getPlayfieldImage(file) {
 		const playfieldImage = file.playfield_image || file._playfield_image;
 		if (!playfieldImage) {
 			return null;

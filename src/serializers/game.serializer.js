@@ -3,11 +3,13 @@ const Serializer = require('./serializer');
 
 class GameSerializer extends Serializer {
 
-	reduced(object, req, opts) {
+	/** @protected */
+	_reduced(object, req, opts) {
 		return _.pick(object, [ 'id', 'title', 'manufacturer', 'year' ]);
 	}
 
-	simple(object, req, opts) {
+	/** @protected */
+	_simple(object, req, opts) {
 		return _.pick(object, [ 'id', 'title', 'manufacturer', 'year', 'ipdb', 'game_type' ]);
 	}
 

@@ -122,7 +122,7 @@ exports.create = function(req, res) {
 
 		// event log
 		LogEvent.log(req, 'create_backglass', true, {
-			backglass: BackglassSerializer.serialize(BackglassSerializer.DETAILED, populatedBackglass, req),
+			backglass: BackglassSerializer.detailed(populatedBackglass, req),
 			game: GameSerializer.reduced(populatedBackglass._game, req)
 		}, {
 			backglass: populatedBackglass._id,
@@ -130,7 +130,7 @@ exports.create = function(req, res) {
 		});
 
 		// return object
-		api.success(res, BackglassSerializer.serialize(BackglassSerializer.DETAILED, populatedBackglass, req), 201);
+		api.success(res, BackglassSerializer.detailed(populatedBackglass, req), 201);
 
 	}).catch(api.handleError(res, error, 'Error creating backglass'));
 };
@@ -210,7 +210,7 @@ exports.update = function(req, res) {
 			{ backglass: backglass._id, game: backglass._game._id }
 		);
 
-		api.success(res, BackglassSerializer.serialize(BackglassSerializer.DETAILED, backglass, req), 200);
+		api.success(res, BackglassSerializer.detailed(backglass, req), 200);
 
 	}).catch(api.handleError(res, error, 'Error updating backglass'));
 };
@@ -345,7 +345,7 @@ exports.view = function(req, res) {
 		});
 
 	}).then(backglass => {
-		return api.success(res, BackglassSerializer.serialize(BackglassSerializer.DETAILED, backglass, req, serializerOpts));
+		return api.success(res, BackglassSerializer.detailed(backglass, req, serializerOpts));
 
 	}).catch(api.handleError(res, error, 'Error retrieving backglass details'));
 };
@@ -390,7 +390,7 @@ exports.del = function(req, res) {
 
 		// event log
 		LogEvent.log(req, 'delete_backglass', false, {
-			backglass: _.pick(BackglassSerializer.serialize(BackglassSerializer.DETAILED, backglass, req), [ 'id', 'authors', 'versions' ]),
+			backglass: _.pick(BackglassSerializer.detailed(backglass, req), [ 'id', 'authors', 'versions' ]),
 			game: GameSerializer.simple(backglass._game, req)
 		}, {
 			backglass: backglass._id,

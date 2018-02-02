@@ -4,8 +4,8 @@ const UserSerializer = require('./user.serializer');
 
 class ModerationSerializer extends Serializer {
 
-
-	simple(object, req, opts) {
+	/** @protected */
+	_simple(object, req, opts) {
 
 		if (!object) {
 			return undefined;

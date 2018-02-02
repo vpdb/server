@@ -7,7 +7,8 @@ const ReleaseVersionSerializer = require('./release.version.serializer');
 
 class ReleaseSerializer extends Serializer {
 
-	simple(object, req, opts) {
+	/** @protected */
+	_simple(object, req, opts) {
 
 		// primitive fields
 		const release = _.pick(object, ['id', 'name', 'created_at', 'released_at', 'counter']);
@@ -21,11 +22,11 @@ class ReleaseSerializer extends Serializer {
 		// versions
 		release.versions = object.versions
 			.map(version => ReleaseVersionSerializer.simple(version, req, opts))
-			.sort(this.sortByDate('released_at'));
-		release.versions = ReleaseVersionSerializer.strip(release.versions, req, opts);
+			.sort(this._sortByDate('released_at'));
+		release.versions = ReleaseVersionSerializer._strip(release.versions, req, opts);
 
 		// thumb
-		release.thumb = this.findThumb(object.versions, opts);
+		release.thumb = this._findThumb(object.versions, opts);
 
 		// star
 		release.starred = opts.starred;
@@ -33,8 +34,9 @@ class ReleaseSerializer extends Serializer {
 		return release;
 	}
 
-	detailed(object, req, opts) {
-		const release = this.simple(object, req, opts);
+	/** @protected */
+	_detailed(object, req, opts) {
+		const release = this._simple(object, req, opts);
 
 		return release;
 	}
@@ -47,9 +49,10 @@ class ReleaseSerializer extends Serializer {
 	 * the best match.
 	 * @param versions
 	 * @param {{ thumbFlavor:string, thumbFormat:string, fullThumbData:boolean }} opts thumbFlavor: "orientation:fs,lighting:day", thumbFormat: variation name or "original"
+	 * @private
 	 * @returns {{image: *, flavor: *}}
 	 */
-	findThumb(versions, opts) {
+	_findThumb(versions, opts) {
 
 		opts.thumbFormat = opts.thumbFormat || 'original';
 
@@ -73,7 +76,7 @@ class ReleaseSerializer extends Serializer {
 			/** @type {{ lighting:string, orientation:string }} */
 			const fileFlavor = file.flavor.toObj ? file.flavor.toObj() : file.flavor;
 			let weight = 0;
-			const flavorNames = this.getFlavorNames(opts);
+			const flavorNames = this._getFlavorNames(opts);
 			let p = flavorNames.length + 1;
 			flavorNames.forEach(flavorName => {
 
@@ -97,11 +100,11 @@ class ReleaseSerializer extends Serializer {
 		}), ['weight'], ['desc']);
 
 		const bestMatch = filesByWeight[0].file;
-		const thumb = this.getFileThumb(bestMatch, opts);
+		const thumb = this._getFileThumb(bestMatch, opts);
 		// can be null if invalid thumbFormat was specified
 		if (thumb === null) {
 			return {
-				image: this.getDefaultThumb(bestMatch, opts),
+				image: this._getDefaultThumb(bestMatch, opts),
 				flavor: bestMatch.flavor
 			};
 		}
@@ -118,11 +121,12 @@ class ReleaseSerializer extends Serializer {
 	 *
 	 * @param {{ [playfield_image]:{}, [_playfield_image]:{} }} file Table file
 	 * @param {{ fullThumbData: boolean }} opts
+	 * @private
 	 * @returns {{}|null}
 	 */
-	getDefaultThumb(file, opts) {
+	_getDefaultThumb(file, opts) {
 
-		let playfieldImage = this.getPlayfieldImage(file);
+		let playfieldImage = this._getPlayfieldImage(file);
 		if (!playfieldImage || !playfieldImage.metadata) {
 			return null;
 		}
@@ -142,12 +146,12 @@ class ReleaseSerializer extends Serializer {
 	/**
 	 * Returns all known flavor names sorted by given parameters.
 	 * @param opts
+	 * @private
 	 * @returns {Array}
 	 */
-	getFlavorNames(opts) {
+	_getFlavorNames(opts) {
 		return _.uniq([ ...(opts.thumbFlavor || '').split(',').map(f => f.split(':')[0]), 'orientation', 'lighting' ]);
 	}
-
 }
 
 module.exports = new ReleaseSerializer();

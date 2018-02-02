@@ -7,16 +7,19 @@ const BackglassVersionSerializer = require('./backglass.version.serializer');
 
 class BackglassSerializer extends Serializer {
 
-	reduced(object, req, opts) {
-		return this._serialize(this.REDUCED, object, req, opts);
+	/** @protected */
+	_reduced(object, req, opts) {
+		return this._serialize(object, req, opts, BackglassVersionSerializer.reduced.bind(BackglassVersionSerializer));
 	}
 
-	simple(object, req, opts) {
-		return this._serialize(this.SIMPLE, object, req, opts);
+	/** @protected */
+	_simple(object, req, opts) {
+		return this._serialize(object, req, opts, BackglassVersionSerializer.simple.bind(BackglassVersionSerializer));
 	}
 
-	detailed(object, req, opts) {
-		const backglass = this._serialize(this.DETAILED, object, req, opts);
+	/** @protected */
+	_detailed(object, req, opts) {
+		const backglass = this._serialize(object, req, opts, BackglassVersionSerializer.simple.bind(BackglassVersionSerializer));
 
 		// creator
 		backglass.created_by = UserSerializer.reduced(object._created_by, req, opts);
@@ -24,22 +27,19 @@ class BackglassSerializer extends Serializer {
 		return backglass;
 	}
 
-	_serialize(detailLevel, object, req, opts) {
+	/** @private */
+	_serialize(object, req, opts, backglassSerializer) {
 		// primitive fields
 		const backglass = _.pick(object, ['id', 'description', 'acknowledgements', 'created_at']);
 
 		// versions
-		if (detailLevel === this.REDUCED) {
-			backglass.versions = object.versions.map(bg => BackglassVersionSerializer.reduced(bg, req, opts));
-		} else {
-			backglass.versions = object.versions.map(bg => BackglassVersionSerializer.simple(bg, req, opts));
-		}
+		backglass.versions = object.versions.map(bg => backglassSerializer(bg, req, opts));
 
 		// game
 		backglass.game = GameSerializer.reduced(object._game, req, opts);
 
 		// authors
-		backglass.authors = object.authors.map(author => AuthorSerializer.reduced(author));
+		backglass.authors = object.authors.map(author => AuthorSerializer.reduced(author, req, opts));
 
 		return backglass;
 	}

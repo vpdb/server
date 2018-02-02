@@ -27,6 +27,7 @@ const api = require('./api');
 const Build = require('mongoose').model('Build');
 const Release = require('mongoose').model('Release');
 const LogEvent = require('mongoose').model('LogEvent');
+const BuildSerializer = require('../../serializers/build.serializer');
 
 const error = require('../../modules/error')('api', 'tag');
 
@@ -52,7 +53,7 @@ exports.list = function(req, res) {
 	}).then(builds => {
 
 		// reduce
-		builds = _.map(builds, build => build.toSimple());
+		builds = _.map(builds, build => BuildSerializer.serialize(BuildSerializer.simple, build, req));
 		api.success(res, builds);
 
 	}).catch(api.handleError(res, error, 'Error listing builds'));

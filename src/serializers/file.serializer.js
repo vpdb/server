@@ -5,12 +5,14 @@ const Serializer = require('./serializer');
 
 class FileSerializer extends Serializer {
 
-	reduced(object, req, opts) {
+	/** @protected */
+	_reduced(object, req, opts) {
 		return _.pick(object, ['id', 'name', 'bytes', 'mime_type']);
 	}
 
-	simple(object, req, opts) {
-		const file = this.reduced(object, req, opts);
+	/** @protected */
+	_simple(object, req, opts) {
+		const file = this._reduced(object, req, opts);
 		_.assign(file, _.pick(object, [ 'bytes', 'variations', 'is_protected', 'counter' ]));
 		file.cost = quota.getCost(object);
 		file.url = storage.url(object);
@@ -18,8 +20,9 @@ class FileSerializer extends Serializer {
 		return file;
 	}
 
-	detailed(object, req, opts) {
-		const file = this.simple(object, req, opts);
+	/** @protected */
+	_detailed(object, req, opts) {
+		const file = this._simple(object, req, opts);
 		_.assign(file, _.pick(object, ['created_at', 'file_type', 'metadata']));
 		return file;
 	}

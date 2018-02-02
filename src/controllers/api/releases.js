@@ -796,7 +796,7 @@ exports.list = function(req, res) {
 			if (req.tokenType === 'application') {
 				serializerOpts.providerData = req.tokenProvider;
 			}
-			release = ReleaseSerializer.serialize(ReleaseSerializer.SIMPLE, release, req, serializerOpts);
+			release = ReleaseSerializer.simple(release, req, serializerOpts);
 			//release = Release.toSimple(release, transformOpts);
 
 			// if flavor specified, filter returned files to match filter

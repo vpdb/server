@@ -64,50 +64,6 @@ const fields = {
 };
 const BuildSchema = new Schema(fields, { usePushEach: true });
 
-
-//-----------------------------------------------------------------------------
-// API FIELDS
-//-----------------------------------------------------------------------------
-const apiFields = {
-	simple: ['id', 'label', 'platform', 'major_version', 'download_url', 'built_at', 'type', 'is_range'],
-	detailed: ['support_url', 'description', 'is_active']
-};
-
-
-//-----------------------------------------------------------------------------
-// VIRTUALS
-//-----------------------------------------------------------------------------
-BuildSchema.virtual('created_by')
-	.get(function() {
-		if (this._created_by && this.populated('_created_by')) {
-			return this._created_by.toReduced();
-		}
-	});
-
-
-//-----------------------------------------------------------------------------
-// METHODS
-//-----------------------------------------------------------------------------
-BuildSchema.methods.toSimple = function() {
-	return BuildSchema.statics.toSimple(this);
-};
-
-BuildSchema.methods.toDetailed = function() {
-	return BuildSchema.statics.toDetailed(this);
-};
-
-//-----------------------------------------------------------------------------
-// STATIC METHODS
-//-----------------------------------------------------------------------------
-BuildSchema.statics.toSimple = function(build) {
-	const obj = build.toObj ? build.toObj() : build;
-	return _.pick(obj, apiFields.simple);
-};
-BuildSchema.statics.toDetailed = function(build) {
-	const obj = build.toObj ? build.toObj() : build;
-	return _.pick(obj, [ ...apiFields.simple, ...apiFields.detailed ]);
-};
-
 //-----------------------------------------------------------------------------
 // VALIDATIONS
 //-----------------------------------------------------------------------------

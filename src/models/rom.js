@@ -19,45 +19,49 @@
 
 'use strict';
 
-var _ = require('lodash');
-var logger = require('winston');
-var mongoose = require('mongoose');
-var paginate = require('mongoose-paginate');
-var validator = require('validator');
-var uniqueValidator = require('mongoose-unique-validator');
+const _ = require('lodash');
+const logger = require('winston');
+const mongoose = require('mongoose');
+const paginate = require('mongoose-paginate');
+const validator = require('validator');
+const uniqueValidator = require('mongoose-unique-validator');
 
-var prettyId = require('./plugins/pretty-id');
-var gameRef = require('./plugins/game-ref');
-var fileRef = require('./plugins/file-ref');
+const prettyId = require('./plugins/pretty-id');
+const gameRef = require('./plugins/game-ref');
+const fileRef = require('./plugins/file-ref');
 
-var Schema = mongoose.Schema;
+const Schema = mongoose.Schema;
 
 //-----------------------------------------------------------------------------
 // SCHEMA
 //-----------------------------------------------------------------------------
-var fields = {
-	id:           { type: String, required: 'ID must be provided. Use the name of the ROM file without file extension.', unique: true },
-	_file:        { type: Schema.ObjectId, ref: 'File', required: 'File reference must be provided.' },
+const fields = {
+	id: {
+		type: String,
+		required: 'ID must be provided. Use the name of the ROM file without file extension.',
+		unique: true
+	},
+	_file: { type: Schema.ObjectId, ref: 'File', required: 'File reference must be provided.' },
 	_ipdb_number: { type: Number },
-	rom_files: [ {
-		filename:     { type: String },
-		bytes:        { type: Number },
-		crc:          { type: Number },
-		modified_at:  { type: Date }
-	} ],
-	version:      { type: String },
-	languages:    { type: [ String ] },
-	notes:        { type: String },
-	created_at:   { type: Date, required: true },
-	_created_by:  { type: Schema.ObjectId, ref: 'User', required: true }
+	rom_files: [{
+		filename: { type: String },
+		bytes: { type: Number },
+		crc: { type: Number },
+		modified_at: { type: Date }
+	}],
+	version: { type: String },
+	languages: { type: [String] },
+	notes: { type: String },
+	created_at: { type: Date, required: true },
+	_created_by: { type: Schema.ObjectId, ref: 'User', required: true }
 };
-var RomSchema = new Schema(fields, { usePushEach: true });
+const RomSchema = new Schema(fields, { usePushEach: true });
 
 //-----------------------------------------------------------------------------
 // API FIELDS
 //-----------------------------------------------------------------------------
-var apiFields = {
-	simple: [ 'id', 'file', 'version', 'notes', 'languages', 'rom_files', 'created_by' ]
+const apiFields = {
+	simple: ['id', 'file', 'version', 'notes', 'languages', 'rom_files', 'created_by']
 };
 
 //-----------------------------------------------------------------------------

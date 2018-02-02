@@ -19,33 +19,33 @@
 
 'use strict';
 
-var _ = require('lodash');
-var logger = require('winston');
-var mongoose = require('mongoose');
-var validator = require('validator');
+const _ = require('lodash');
+const logger = require('winston');
+const mongoose = require('mongoose');
+const validator = require('validator');
 
-var Schema = mongoose.Schema;
+const Schema = mongoose.Schema;
 
 
 //-----------------------------------------------------------------------------
 // SCHEMA
 //-----------------------------------------------------------------------------
-var fields = {
-	_id:          { type: String, required: true, unique: true },
-	name:         { type: String, required: 'Name must be provided.', unique: true },
-	description:  { type: String, required: 'Description must be provided.' },
-	is_active:    { type: Boolean, required: true, default: false },
-	created_at:   { type: Date, required: true },
-	_created_by:  { type: Schema.ObjectId, ref: 'User', required: true }
+const fields = {
+	_id: { type: String, required: true, unique: true },
+	name: { type: String, required: 'Name must be provided.', unique: true },
+	description: { type: String, required: 'Description must be provided.' },
+	is_active: { type: Boolean, required: true, default: false },
+	created_at: { type: Date, required: true },
+	_created_by: { type: Schema.ObjectId, ref: 'User', required: true }
 };
-var TagSchema = new Schema(fields, { usePushEach: true });
+const TagSchema = new Schema(fields, { usePushEach: true });
 
 
 //-----------------------------------------------------------------------------
 // API FIELDS
 //-----------------------------------------------------------------------------
-var apiFields = {
-	simple: [ 'id', 'name', 'description' ]
+const apiFields = {
+	simple: ['id', 'name', 'description']
 };
 
 

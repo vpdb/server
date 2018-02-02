@@ -19,29 +19,29 @@
 
 'use strict';
 
-var _ = require('lodash');
-var logger = require('winston');
-var mongoose = require('mongoose');
-var paginate = require('mongoose-paginate');
-var slackbot = require('../modules/slackbot');
+const _ = require('lodash');
+const logger = require('winston');
+const mongoose = require('mongoose');
+const paginate = require('mongoose-paginate');
+const slackbot = require('../modules/slackbot');
 
-var Schema = mongoose.Schema;
+const Schema = mongoose.Schema;
 
 //-----------------------------------------------------------------------------
 // SCHEMA
 //-----------------------------------------------------------------------------
-var fields = {
-	_user:     { type: Schema.ObjectId, required: true, ref: 'User', index: true },
-	_actor:    { type: Schema.ObjectId, required: true, ref: 'User', index: true },
-	event:     { type: String, index: true },
-	payload:   { },
-	result:    { type: String, 'enum': [ 'success', 'failure' ], required: true },
-	message:   { type: String }, // in case of failure, this is the error message.
-	ip:        { type: String, required: true },
+const fields = {
+	_user: { type: Schema.ObjectId, required: true, ref: 'User', index: true },
+	_actor: { type: Schema.ObjectId, required: true, ref: 'User', index: true },
+	event: { type: String, index: true },
+	payload: {},
+	result: { type: String, 'enum': ['success', 'failure'], required: true },
+	message: { type: String }, // in case of failure, this is the error message.
+	ip: { type: String, required: true },
 	logged_at: { type: Date, required: true }
 };
 
-var LogUserSchema = new Schema(fields, { usePushEach: true });
+const LogUserSchema = new Schema(fields, { usePushEach: true });
 
 
 //-----------------------------------------------------------------------------
@@ -82,9 +82,9 @@ LogUserSchema.statics.failure = function(req, user, event, payload, actor, messa
 };
 
 LogUserSchema.statics.log = function(req, user, result, event, payload, actor, message, done) {
-	var LogUser = mongoose.model('LogUser');
+	const LogUser = mongoose.model('LogUser');
 	actor = actor || user;
-	var log = new LogUser({
+	const log = new LogUser({
 		_user: user,
 		_actor: actor,
 		event: event,
@@ -109,7 +109,7 @@ LogUserSchema.statics.log = function(req, user, result, event, payload, actor, m
 
 LogUserSchema.statics.successDiff = function(req, user, event, obj1, obj2, actor, done) {
 
-	var diff = LogUserSchema.statics.diff(obj1, obj2);
+	const diff = LogUserSchema.statics.diff(obj1, obj2);
 	if (diff && !_.isEmpty(diff.new)) {
 		LogUserSchema.statics.success(req, user, event, diff, actor, done);
 	}

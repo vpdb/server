@@ -19,13 +19,13 @@
 
 'use strict';
 
-var _ = require('lodash');
-var logger = require('winston');
-var mongoose = require('mongoose');
-var paginate = require('mongoose-paginate');
-var slackbot = require('../modules/slackbot');
+const _ = require('lodash');
+const logger = require('winston');
+const mongoose = require('mongoose');
+const paginate = require('mongoose-paginate');
+const slackbot = require('../modules/slackbot');
 
-var Schema = mongoose.Schema;
+const Schema = mongoose.Schema;
 
 // also update slackbot when adding new events
 const events = [
@@ -45,23 +45,23 @@ const events = [
 //-----------------------------------------------------------------------------
 // SCHEMA
 //-----------------------------------------------------------------------------
-var fields = {
-	_actor:      { type: Schema.ObjectId, required: true, ref: 'User', index: true },
+const fields = {
+	_actor: { type: Schema.ObjectId, required: true, ref: 'User', index: true },
 	_ref: {
-		game:         { type: Schema.ObjectId, ref: 'Game', index: true, sparse: true },
-		release:      { type: Schema.ObjectId, ref: 'Release', index: true, sparse: true },
-		backglass:    { type: Schema.ObjectId, ref: 'Backglass', index: true, sparse: true },
-		user:         { type: Schema.ObjectId, ref: 'User', index: true, sparse: true },
+		game: { type: Schema.ObjectId, ref: 'Game', index: true, sparse: true },
+		release: { type: Schema.ObjectId, ref: 'Release', index: true, sparse: true },
+		backglass: { type: Schema.ObjectId, ref: 'Backglass', index: true, sparse: true },
+		user: { type: Schema.ObjectId, ref: 'User', index: true, sparse: true },
 		game_request: { type: Schema.ObjectId, ref: 'GameRequest', index: true, sparse: true },
-		build:        { type: Schema.ObjectId, ref: 'Build', index: true, sparse: true }
+		build: { type: Schema.ObjectId, ref: 'Build', index: true, sparse: true }
 	},
-	event:       { type: String, 'enum': events, required: true, index: true },
-	payload:     { },
-	is_public:   { type: Boolean, required: true, 'default': false },
-	ip:          { type: String, required: true },
-	logged_at:   { type: Date, required: true }
+	event: { type: String, 'enum': events, required: true, index: true },
+	payload: {},
+	is_public: { type: Boolean, required: true, 'default': false },
+	ip: { type: String, required: true },
+	logged_at: { type: Date, required: true }
 };
-var LogEventSchema = new Schema(fields, { usePushEach: true });
+const LogEventSchema = new Schema(fields, { usePushEach: true });
 
 
 //-----------------------------------------------------------------------------

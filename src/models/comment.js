@@ -19,32 +19,32 @@
 
 'use strict';
 
-var _ = require('lodash');
-var logger = require('winston');
-var shortId = require('shortid32');
-var mongoose = require('mongoose');
-var paginate = require('mongoose-paginate');
-var validator = require('validator');
+const _ = require('lodash');
+const logger = require('winston');
+const shortId = require('shortid32');
+const mongoose = require('mongoose');
+const paginate = require('mongoose-paginate');
+const validator = require('validator');
 
-var Schema = mongoose.Schema;
+const Schema = mongoose.Schema;
 
 
 //-----------------------------------------------------------------------------
 // SCHEMA
 //-----------------------------------------------------------------------------
-var fields = {
-	id:        { type: String, required: true, unique: true, 'default': shortId.generate },
-	_from:     { type: Schema.ObjectId, required: true, ref: 'User', index: true },
+const fields = {
+	id: { type: String, required: true, unique: true, 'default': shortId.generate },
+	_from: { type: Schema.ObjectId, required: true, ref: 'User', index: true },
 	_ref: {
 		release: { type: Schema.ObjectId, ref: 'Release', index: true, sparse: true },
 		release_moderation: { type: Schema.ObjectId, ref: 'Release', index: true, sparse: true }
 	},
-	message:   { type: String, required: 'You must provide a message when commenting.' },
-	ip:        { type: String, required: true },
+	message: { type: String, required: 'You must provide a message when commenting.' },
+	ip: { type: String, required: true },
 	created_at: { type: Date, required: true }
 };
 
-var CommentSchema = new Schema(fields, { usePushEach: true });
+const CommentSchema = new Schema(fields, { usePushEach: true });
 
 
 //-----------------------------------------------------------------------------
@@ -56,9 +56,9 @@ CommentSchema.plugin(paginate);
 //-----------------------------------------------------------------------------
 // API FIELDS
 //-----------------------------------------------------------------------------
-var apiFields = {
-	simple: [ 'id', 'from', 'message', 'release', 'created_at' ], // fields returned in references
-	detailed: [ 'ip' ]
+const apiFields = {
+	simple: ['id', 'from', 'message', 'release', 'created_at'], // fields returned in references
+	detailed: ['ip']
 };
 
 
@@ -105,11 +105,11 @@ CommentSchema.methods.toDetailed = function() {
 // STATIC METHODS
 //-----------------------------------------------------------------------------
 CommentSchema.statics.toSimple = function(comment) {
-	var obj = comment.toObj ? comment.toObj() : comment;
+	const obj = comment.toObj ? comment.toObj() : comment;
 	return _.pick(obj, apiFields.simple);
 };
 CommentSchema.statics.toDetailed = function(comment) {
-	var obj = comment.toObj ? comment.toObj() : comment;
+	const obj = comment.toObj ? comment.toObj() : comment;
 	return _.pick(obj, apiFields.detailed.concat(apiFields.simple));
 };
 

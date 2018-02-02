@@ -19,30 +19,30 @@
 
 'use strict';
 
-var _ = require('lodash');
-var logger = require('winston');
-var shortId = require('shortid32');
-var mongoose = require('mongoose');
+const _ = require('lodash');
+const logger = require('winston');
+const shortId = require('shortid32');
+const mongoose = require('mongoose');
 
-var Schema = mongoose.Schema;
+const Schema = mongoose.Schema;
 
 
 //-----------------------------------------------------------------------------
 // SCHEMA
 //-----------------------------------------------------------------------------
-var fields = {
-	id:          { type: String, required: true, unique: true, 'default': shortId.generate },
-	_from:       { type: Schema.ObjectId, required: true, ref: 'User', index: true },
+const fields = {
+	id: { type: String, required: true, unique: true, 'default': shortId.generate },
+	_from: { type: Schema.ObjectId, required: true, ref: 'User', index: true },
 	_ref: {
-		game:    { type: Schema.ObjectId, ref: 'Game', index: true, sparse: true },
+		game: { type: Schema.ObjectId, ref: 'Game', index: true, sparse: true },
 		release: { type: Schema.ObjectId, ref: 'Release', index: true, sparse: true }
 	},
-	value:       { type: Number, required: 'You must provide a value when rating.' },
+	value: { type: Number, required: 'You must provide a value when rating.' },
 	modified_at: { type: Date },
-	created_at:  { type: Date, required: true }
+	created_at: { type: Date, required: true }
 };
 
-var RatingSchema = new Schema(fields, { usePushEach: true });
+const RatingSchema = new Schema(fields, { usePushEach: true });
 // TODO autoindex: false in production: http://mongoosejs.com/docs/guide.html#indexes
 
 

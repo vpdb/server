@@ -24,7 +24,7 @@ const logger = require('winston');
 const shortId = require('shortid32');
 const mongoose = require('mongoose');
 
-var Schema = mongoose.Schema;
+const Schema = mongoose.Schema;
 
 //-----------------------------------------------------------------------------
 // SCHEMA

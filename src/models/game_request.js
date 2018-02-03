@@ -19,7 +19,6 @@
 
 'use strict';
 
-const _ = require('lodash');
 const logger = require('winston');
 const shortId = require('shortid32');
 const mongoose = require('mongoose');
@@ -42,42 +41,6 @@ const fields = {
 	created_at:  { type: Date, required: true }
 };
 const GameRequestSchema = new Schema(fields, { usePushEach: true });
-
-//-----------------------------------------------------------------------------
-// API FIELDS
-//-----------------------------------------------------------------------------
-const apiFields = {
-	simple: [ 'id', 'title', 'notes', 'ipdb_number', 'ipdb_title', 'is_closed', 'message', 'game', 'created_at' ],
-	detailed: [ 'created_by' ]
-};
-
-//-----------------------------------------------------------------------------
-// VIRTUALS
-//-----------------------------------------------------------------------------
-GameRequestSchema.virtual('game')
-	.get(function() {
-		if (this._game && this.populated('_game')) {
-			return this._game.toSimple();
-		}
-	});
-
-GameRequestSchema.virtual('created_by')
-	.get(function() {
-		if (this._created_by && this.populated('_created_by')) {
-			return this._created_by.toReduced();
-		}
-	});
-
-//-----------------------------------------------------------------------------
-// METHODS
-//-----------------------------------------------------------------------------
-GameRequestSchema.methods.toSimple = function() {
-	return _.pick(this.toObj(), apiFields.simple);
-};
-
-GameRequestSchema.methods.toDetailed = function() {
-	return _.pick(this.toObj(), [ ...apiFields.simple, ...apiFields.detailed ]);
-};
 
 //-----------------------------------------------------------------------------
 // OPTIONS

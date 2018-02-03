@@ -31,7 +31,7 @@ var hlp = require('../modules/helper');
 
 superagentTest(request);
 
-describe.only('The VPDB `Backglass` API', function() {
+describe('The VPDB `Backglass` API', function() {
 
 	describe('when posting a new backglass', function() {
 

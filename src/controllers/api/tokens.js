@@ -27,6 +27,7 @@ const api = require('./api');
 const acl = require('../../acl');
 const scope = require('../../scope');
 const Token = require('mongoose').model('Token');
+const TokenSerializer = require('../../serializers/token.serializer');
 
 exports.create = function(req, res) {
 
@@ -98,7 +99,7 @@ exports.create = function(req, res) {
 
 	}).then(() =>  {
 		logger.info('[api|token:create] Token "%s" successfully created.', newToken.label);
-		return api.success(res, newToken.toSimple(true), 201);
+		return api.success(res, TokenSerializer.detailed(newToken, req), 201);
 
 	}).catch(api.handleError(res, error, 'Error creating token'));
 };
@@ -120,8 +121,8 @@ exports.list = function(req, res) {
 		}
 
 		// reduce
-		tokens = _.map(tokens, token => token.toSimple());
-		api.success(res, tokens);
+		tokens = _.map(tokens, token => TokenSerializer.simple(token, req));
+		return api.success(res, tokens);
 	});
 };
 
@@ -144,7 +145,7 @@ exports.update = function(req, res) {
 			token.save(assert(function() {
 
 				logger.info('[api|token:update] Token "%s" successfully updated.', token.label);
-				return api.success(res, token.toSimple(), 200);
+				return api.success(res, TokenSerializer.simple(token, req), 200);
 
 			}, 'Error updating token "%s"'));
 		});

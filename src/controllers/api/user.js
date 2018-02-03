@@ -217,7 +217,7 @@ exports.update = function(req, res) {
 
 	}).then(u => {
 		user = u;
-		LogUser.successDiff(req, updatedUser, 'update', _.pick(currentUser.toObj(), updateableFields), updatedUser);
+		LogUser.successDiff(req, updatedUser, 'update', _.pick(currentUser.toObject(), updateableFields), updatedUser);
 
 		// log
 		if (req.body.password) {

@@ -110,6 +110,7 @@ const categories = {
 	}
 };
 
+
 //-----------------------------------------------------------------------------
 // SCHEMA
 //-----------------------------------------------------------------------------
@@ -131,12 +132,6 @@ const mediumFields = {
 };
 const MediumSchema = new Schema(mediumFields, { usePushEach: true });
 
-//-----------------------------------------------------------------------------
-// API FIELDS
-//-----------------------------------------------------------------------------
-const apiFields = {
-	simple: [ 'id', 'file', 'game', 'release', 'category', 'description', 'acknowledgements', 'created_at', 'created_by' ]
-};
 
 //-----------------------------------------------------------------------------
 // PLUGINS
@@ -146,6 +141,7 @@ MediumSchema.plugin(prettyId, { model: 'Medium', ignore: [ '_created_by' ] });
 MediumSchema.plugin(fileRef);
 MediumSchema.plugin(paginate);
 MediumSchema.plugin(metrics);
+
 
 //-----------------------------------------------------------------------------
 // VALIDATIONS

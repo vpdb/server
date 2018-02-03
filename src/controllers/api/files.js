@@ -19,17 +19,20 @@
 
 'use strict';
 
-var _ = require('lodash');
-var logger = require('winston');
-var Busboy = require('busboy');
+const _ = require('lodash');
+const logger = require('winston');
+const Busboy = require('busboy');
 
-var api = require('./api');
-var File = require('mongoose').model('File');
-var Release = require('mongoose').model('Release');
-var TableBlock = require('mongoose').model('TableBlock');
+const api = require('./api');
+const File = require('mongoose').model('File');
+const Release = require('mongoose').model('Release');
+const TableBlock = require('mongoose').model('TableBlock');
 
-var fileModule = require('../../modules/file');
-var error = require('../../modules/error')('api', 'file');
+const ReleaseSerializer = require('../../serializers/release.serializer');
+const FileSerializer = require('../../serializers/file.serializer');
+
+const fileModule = require('../../modules/file');
+const error = require('../../modules/error')('api', 'file');
 
 /**
  * End-point for uploading files. Data can be sent either as entire body or
@@ -61,7 +64,7 @@ exports.upload = function(req, res) {
 
 	}).then(file => {
 
-		api.success(res, file.toDetailed(), 201);
+		return api.success(res, FileSerializer.detailed(file, req), 201);
 
 	}).catch(api.handleError(res, error, 'Error uploading file'));
 };
@@ -73,7 +76,7 @@ exports.upload = function(req, res) {
  */
 exports.del = function(req, res) {
 
-	var file;
+	let file;
 	return Promise.try(() => {
 		return File.findOne({ id: req.params.id });
 
@@ -123,12 +126,12 @@ exports.view = function(req, res) {
 		}
 
 		// fail if inactive and not owner
-		var isOwner = req.user && file._created_by.equals(req.user._id);
+		let isOwner = req.user && file._created_by.equals(req.user._id);
 		if (!file.is_active && (!req.user || !isOwner)) {
 			throw error('File "%s" is inactive.', req.params.id).status(req.user ? 403 : 401);
 		}
 
-		api.success(res, file.toDetailed());
+		return api.success(res, FileSerializer.detailed(file, req));
 
 	}).catch(api.handleError(res, error, 'Error viewing file'));
 };
@@ -170,7 +173,7 @@ exports.blockmatch = function(req, res) {
 		if (!release) {
 			throw error('Release reference missing.', req.params.id).status(400);
 		}
-		splitReleaseFile(release, file._id.toString(), result);
+		splitReleaseFile(req, release, file._id.toString(), result);
 
 		return TableBlock.find({_files: file._id}).exec();
 
@@ -215,7 +218,7 @@ exports.blockmatch = function(req, res) {
 				countPercentage: matchedBlocks.length / blocks.length * 100,
 				bytesPercentage: matchedBytes / totalBytes * 100
 			};
-			splitReleaseFile(releases.get(key), key, match);
+			splitReleaseFile(req, releases.get(key), key, match);
 			result.matches.push(match);
 		}
 		result.matches = _.filter(result.matches, m => m.release && m.countPercentage + m.bytesPercentage > threshold);
@@ -231,15 +234,16 @@ exports.blockmatch = function(req, res) {
 /**
  * Searches a file with a given ID within a release and updates
  * a given object with release, game, version and file.
+ * @param {Request} req Current request object
  * @param {Release} release Release to search in
  * @param {string} fileId File ID to search for  (database _id as string)
  * @param {object} result Object to be updated
  */
-function splitReleaseFile(release, fileId, result) {
+function splitReleaseFile(req, release, fileId, result) {
 	if (!release) {
 		return;
 	}
-	let rls = release.toSimple();
+	let rls = ReleaseSerializer.simple(release, req);
 	result.release = _.pick(rls, ['id', 'name', 'created_at', 'authors']);
 	result.game = rls.game;
 	release.versions.forEach(version => {
@@ -249,7 +253,7 @@ function splitReleaseFile(release, fileId, result) {
 				let f = versionFile.toObject();
 				result.file = _.pick(f, ['released_at', 'flavor' ]);
 				result.file.compatibility = f.compatibility.map(c => _.pick(c, ['id', 'label' ]));
-				result.file.file = versionFile._file.toSimple();
+				result.file.file = FileSerializer.simple(versionFile._file, req);
 			}
 		});
 	});
@@ -301,17 +305,17 @@ function handleMultipartUpload(req, error) {
 			throw error('Mime type must be provided as query parameter "content_type" when using multipart.').status(422);
 		}
 
-		var busboy = new Busboy({ headers: req.headers });
-		var parseResult = new Promise(function(resolve, reject) {
+		const busboy = new Busboy({ headers: req.headers });
+		const parseResult = new Promise(function(resolve, reject) {
 
-			var numFiles = 0;
+			let numFiles = 0;
 			busboy.on('file', function(fieldname, stream, filename) {
 				numFiles++;
 				if (numFiles > 1) {
 					return reject(error('Multipart requests must only contain one file.').status(422));
 				}
 				logger.info('[api|file:upload] Starting file (multipart) upload of "%s"...', filename);
-				var fileData = {
+				const fileData = {
 					name: filename,
 					bytes: 0,
 					variations: {},
@@ -324,7 +328,7 @@ function handleMultipartUpload(req, error) {
 			});
 		});
 
-		var parseMultipart = new Promise((resolve, reject) => {
+		const parseMultipart = new Promise((resolve, reject) => {
 			busboy.on('finish', resolve);
 			busboy.on('error', reject);
 			req.pipe(busboy);

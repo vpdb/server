@@ -42,34 +42,12 @@ const TagSchema = new Schema(fields, { usePushEach: true });
 
 
 //-----------------------------------------------------------------------------
-// API FIELDS
-//-----------------------------------------------------------------------------
-const apiFields = {
-	simple: ['id', 'name', 'description']
-};
-
-
-//-----------------------------------------------------------------------------
 // VIRTUALS
 //-----------------------------------------------------------------------------
-TagSchema.virtual('created_by')
-	.get(function() {
-		if (this._created_by && this.populated('_created_by')) {
-			return this._created_by.toReduced();
-		}
-	});
 TagSchema.virtual('id')
 	.get(function() {
 		return this._id;
 	});
-
-
-//-----------------------------------------------------------------------------
-// METHODS
-//-----------------------------------------------------------------------------
-TagSchema.methods.toSimple = function() {
-	return _.pick(this.toObj(), apiFields.simple);
-};
 
 
 //-----------------------------------------------------------------------------

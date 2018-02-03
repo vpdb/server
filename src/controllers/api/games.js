@@ -35,6 +35,7 @@ const Backglass = require('mongoose').model('Backglass');
 const Medium = require('mongoose').model('Medium');
 
 const GameSerializer = require('../../serializers/game.serializer');
+const GameRequestSerializer = require('../../serializers/game_request.serializer');
 const ReleaseSerializer = require('../../serializers/release.serializer');
 const BackglassSerializer = require('../../serializers/backglass.serializer');
 const MediumSerializer = require('../../serializers/medium.serializer');
@@ -137,8 +138,8 @@ exports.create = function(req, res) {
 		}).then(gameRequest => {
 			if (gameRequest) {
 				LogEvent.log(req, 'update_game_request', false, {
-					game_request: _.pick(gameRequest.toSimple(), [ 'id', 'title', 'ipdb_number', 'ipdb_title' ]),
-					game: GameSerializer.reduced(game, req, opts)
+					game_request: _.pick(GameRequestSerializer.simple(gameRequest, req), [ 'id', 'title', 'ipdb_number', 'ipdb_title' ]),
+					game: GameSerializer.reduced(game, req)
 				}, {
 					game: game._id,
 					game_request: gameRequest._id
@@ -481,7 +482,9 @@ exports.view = function(req, res) {
 			});
 
 		}).then(releases => {
-			result.releases = _.map(releases, release => GameSerializer.detailed(release, req, { excludedFields: [ 'game' ] }));
+			opts.excludedFields = [ 'game' ];
+			result.releases = _.map(releases, release => ReleaseSerializer.detailed(release, req, opts));
+			return null;
 		});
 
 	}).then(() => {
@@ -513,7 +516,7 @@ exports.view = function(req, res) {
 	}).then(media => {
 		result.media = media.map(medium => MediumSerializer.simple(medium, req), { excludedFields: ['game'] });
 
-		api.success(res, result, 200);
+		return api.success(res, result, 200);
 
 	}).catch(api.handleError(res, error, 'Error viewing game'));
 };

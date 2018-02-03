@@ -1,23 +1,14 @@
 const _ = require('lodash');
 const flavor = require('../modules/flavor');
 const Serializer = require('./serializer');
-const FileSerializer = require('./file.serializer');
-const BuildSerializer = require('./build.serializer');
+const ReleaseVersionFileSerializer = require('./release.version.file.serializer');
 
 class ReleaseVersionSerializer extends Serializer {
 
 	/** @protected */
 	_simple(doc, req, opts) {
 		const version = _.pick(doc, [ 'version', 'released_at' ]);
-		version.files = doc.files.map(versionFile => {
-			const addThumb = opts.thumbPerFile && opts.thumbFormat;
-			return {
-				released_at: versionFile.released_at,
-				compatibility: versionFile._compatibility.map(build => BuildSerializer.reduced(build, req, opts)),
-				file: FileSerializer.simple(versionFile._file, req, opts),
-				thumb: addThumb ? this._getFileThumb(versionFile, opts) : undefined
-			};
-		});
+		version.files = doc.files.map(versionFile => ReleaseVersionFileSerializer.simple(versionFile, req, opts));
 		return version;
 	}
 
@@ -48,7 +39,7 @@ class ReleaseVersionSerializer extends Serializer {
 						objects[i].files[j] = null;
 					}
 
-					// otherwise, make sure we include only the latest flavor combination.
+				// otherwise, make sure we include only the latest flavor combination.
 				} else {
 
 					// if non-table file, skip

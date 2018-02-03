@@ -19,7 +19,7 @@ class UserSerializer extends Serializer {
 
 		// provider id
 		if (opts.includeProviderId && doc[opts.includeProviderId]) {
-			user.provider_id = obj[opts.includeProviderId].id;
+			user.provider_id = doc[opts.includeProviderId].id;
 		}
 
 		return user;
@@ -83,7 +83,7 @@ class UserSerializer extends Serializer {
 				id: user.google.id,
 				username: user.google.login,
 				email: user.google.email,
-				avatar_url: data.avatar_url,
+				avatar_url: user.avatar_url,
 				html_url: user.google.html_url
 			};
 		}

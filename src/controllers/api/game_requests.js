@@ -28,6 +28,8 @@ const Game = require('mongoose').model('Game');
 const LogEvent = require('mongoose').model('LogEvent');
 const GameRequest = require('mongoose').model('GameRequest');
 
+const GameRequestSerializer = require('../../serializers/game_request.serializer');
+
 const error = require('../../modules/error')('api', 'game_request');
 const ipdb = require('../../modules/ipdb');
 const mailer = require('../../modules/mailer');
@@ -96,13 +98,15 @@ exports.create = function(req, res) {
 
 	}).then(gameRequest => {
 
-		api.success(res, gameRequest.toSimple(), 201);
+		api.success(res, GameRequestSerializer.simple(gameRequest, req), 201);
 
 		LogEvent.log(req, 'create_game_request', false, {
-			game_request: _.pick(gameRequest.toSimple(), [ 'id', 'title', 'ipdb_number', 'ipdb_title' ]),
+			game_request: _.pick(GameRequestSerializer.simple(gameRequest, req), [ 'id', 'title', 'ipdb_number', 'ipdb_title' ]),
 		}, {
 			game_request: gameRequest._id
 		});
+
+		return null;
 
 	}).catch(api.handleError(res, error, 'Error creating game request'));
 };
@@ -148,7 +152,7 @@ exports.update = function(req, res) {
 	}).then(gameRequest => {
 
 		LogEvent.log(req, 'update_game_request', false, {
-			game_request: _.pick(gameRequest.toSimple(), [ 'id', 'title', 'ipdb_number', 'ipdb_title' ]),
+			game_request: _.pick(GameRequestSerializer.simple(gameRequest, req), [ 'id', 'title', 'ipdb_number', 'ipdb_title' ]),
 			before: before,
 			after: _.pick(gameRequest, updateableFields)
 		}, {
@@ -159,7 +163,7 @@ exports.update = function(req, res) {
 			mailer.gameRequestDenied(user, gameRequest.ipdb_title, gameRequest.message);
 		}
 
-		api.success(res, gameRequest.toSimple(), 200);
+		return api.success(res, GameRequestSerializer.simple(gameRequest, req), 200);
 
 	}).catch(api.handleError(res, error, 'Error updating game request'));
 };
@@ -203,7 +207,7 @@ exports.list = function(req, res) {
 			.exec();
 
 	}).then(requests => {
-		api.success(res, requests.map(r => r.toDetailed()));
+		return api.success(res, requests.map(r => GameRequestSerializer.detailed(r, req)));
 
 	}).catch(api.handleError(res, error, 'Error listing game requests'));
 };
@@ -241,12 +245,12 @@ exports.del = function(req, res) {
 		logger.info('[api|game request:delete] Game Request "%s" successfully deleted.', gameRequest.id);
 
 		LogEvent.log(req, 'delete_game_request', false, {
-			game_request: _.pick(gameRequest.toSimple(), [ 'id', 'title', 'ipdb_number', 'ipdb_title' ])
+			game_request: _.pick(GameRequestSerializer.simple(gameRequest, req), [ 'id', 'title', 'ipdb_number', 'ipdb_title' ])
 		}, {
 			game_request: gameRequest._id
 		});
 
-		api.success(res, null, 204);
+		return api.success(res, null, 204);
 
 	}).catch(api.handleError(res, error, 'Error deleting game request'));
 };

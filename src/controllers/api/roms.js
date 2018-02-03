@@ -19,17 +19,20 @@
 
 'use strict';
 
-var _ = require('lodash');
-var logger = require('winston');
-var Zip = require('adm-zip'); // todo migrate to unzip
+const _ = require('lodash');
+const logger = require('winston');
+const Zip = require('adm-zip'); // todo migrate to unzip
 
-var error = require('../../modules/error')('api', 'rom');
-var acl = require('../../acl');
-var api = require('./api');
-var Rom = require('mongoose').model('Rom');
-var Game = require('mongoose').model('Game');
-var File = require('mongoose').model('File');
-var LogEvent = require('mongoose').model('LogEvent');
+const error = require('../../modules/error')('api', 'rom');
+const acl = require('../../acl');
+const api = require('./api');
+const Rom = require('mongoose').model('Rom');
+const Game = require('mongoose').model('Game');
+const File = require('mongoose').model('File');
+const LogEvent = require('mongoose').model('LogEvent');
+
+const RomSerializer = require('../../serializers/rom.serializer');
+const GameSerializer = require('../../serializers/game.serializer');
 
 /**
  * Creates a new ROM.
@@ -118,12 +121,12 @@ exports.create = function(req, res) {
 	}).then(() => {
 
 		if (game.toReduced) {
-			LogEvent.log(req, 'upload_rom', true, { rom: newRom.toSimple(), game: game.toReduced() }, { game: game._id });
+			LogEvent.log(req, 'upload_rom', true, { rom: RomSerializer.simple(newRom, req), game: GameSerializer.reduced(game, req) }, { game: game._id });
 		} else {
-			LogEvent.log(req, 'upload_rom', true, { rom: newRom.toSimple(), game: game }, { });
+			LogEvent.log(req, 'upload_rom', true, { rom: RomSerializer.simple(newRom, req), game: game }, { });
 		}
 
-		api.success(res, newRom.toSimple(), 201);
+		return api.success(res, RomSerializer.simple(newRom, req), 201);
 
 	}).catch(api.handleError(res, error, 'Error creating ROM'));
 };
@@ -196,7 +199,7 @@ exports.list = function(req, res) {
 
 	}).spread((results, count) => {
 
-		let roms = results.map(rom => rom.toSimple());
+		let roms = results.map(rom => RomSerializer.simple(rom, req));
 		api.success(res, roms, 200, api.paginationOpts(pagination, count));
 
 	}).catch(api.handleError(res, error, 'Error listing ROMs'));
@@ -221,7 +224,7 @@ exports.view = function(req, res) {
 		if (!rom) {
 			return api.fail(res, error('No such ROM with ID "%s".', req.params.id), 404);
 		}
-		api.success(res, rom._game ? _.assign(rom.toSimple(), { game: rom._game.toSimple() }) : rom.toSimple());
+		return api.success(res, rom._game ? _.assign(RomSerializer.simple(rom, req), { game: GameSerializer.simple(rom._game, req) }) : RomSerializer.simple(rom, req));
 
 	}).catch(api.handleError(res, error, 'Error viewing ROM'));
 };
@@ -236,7 +239,7 @@ exports.view = function(req, res) {
  */
 exports.del = function(req, res) {
 
-	var assert = api.assert(error, 'delete', req.params.id, res);
+	const assert = api.assert(error, 'delete', req.params.id, res);
 	acl.isAllowed(req.user.id, 'roms', 'delete', assert(function(canDelete) {
 		Rom.findOne({ id: req.params.id }, assert(function(rom) {
 

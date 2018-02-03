@@ -22,6 +22,7 @@
 const _ = require('lodash');
 
 const LogUser = require('mongoose').model('LogUser');
+const LogUserSerializer = require('../../serializers/log_user.serializer');
 
 const api = require('./api');
 const error = require('../../modules/error')('api', 'userlogs');
@@ -75,13 +76,13 @@ exports.list = function(req, res) {
 		});
 
 		// process results
-		const logs = _.map(result.docs, function(log) {
+		const logs = _.map(result.docs, log => {
 
 			if (providerInfo[log.payload.provider]) {
 				log.payload.providerInfo = providerInfo[log.payload.provider];
 			}
-			return log.toObj();
+			return LogUserSerializer.simple(log, req);
 		});
-		api.success(res, logs, 200, api.paginationOpts(pagination, result.total));
+		return api.success(res, logs, 200, api.paginationOpts(pagination, result.total));
 	});
 };

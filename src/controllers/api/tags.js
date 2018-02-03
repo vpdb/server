@@ -19,17 +19,19 @@
 
 'use strict';
 
-var _ = require('lodash');
-var logger = require('winston');
+const _ = require('lodash');
+const logger = require('winston');
 
-var error = require('../../modules/error')('api', 'tag');
-var acl = require('../../acl');
-var api = require('./api');
-var Tag = require('mongoose').model('Tag');
+const error = require('../../modules/error')('api', 'tag');
+const acl = require('../../acl');
+const api = require('./api');
+const Tag = require('mongoose').model('Tag');
+
+const TagSerializer = require('../../serializers/tag.serializer');
 
 exports.list = function(req, res) {
 
-	var q;
+	let q;
 	if (req.user) {
 		// logged users also get their own tags even if inactive.
 		q = { $or: [{ is_active: true }, { _created_by: req.user._id }] };
@@ -40,7 +42,7 @@ exports.list = function(req, res) {
 	return Promise.try(() => Tag.find(q).exec()).then(tags => {
 
 		// reduce
-		tags = _.map(tags, tag => tag.toSimple());
+		tags = _.map(tags, tag => TagSerializer.simple(tag, req));
 		api.success(res, tags);
 
 	}).catch(api.handleError(res, error, 'Error listing tags'));
@@ -48,7 +50,7 @@ exports.list = function(req, res) {
 
 exports.create = function(req, res) {
 
-	var newTag;
+	let newTag;
 	return Promise.try(() => {
 
 		newTag = new Tag(_.extend(req.body, {
@@ -64,7 +66,7 @@ exports.create = function(req, res) {
 
 	}).then(function() {
 		logger.info('[api|tag:create] Tag "%s" successfully created.', newTag.name);
-		api.success(res, newTag.toSimple(), 201);
+		return api.success(res, TagSerializer.simple(newTag, req), 201);
 
 	}).catch(api.handleError(res, error, 'Error creating tag'));
 };

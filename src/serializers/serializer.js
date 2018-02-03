@@ -172,7 +172,7 @@ class Serializer {
 		if (!playfieldImage) {
 			return null;
 		}
-		return playfieldImage.toObj ? playfieldImage.toObj() : playfieldImage;
+		return playfieldImage.toObject ? playfieldImage.toObject() : playfieldImage;
 	}
 
 }

@@ -58,13 +58,6 @@ const fields = {
 const RomSchema = new Schema(fields, { usePushEach: true });
 
 //-----------------------------------------------------------------------------
-// API FIELDS
-//-----------------------------------------------------------------------------
-const apiFields = {
-	simple: ['id', 'file', 'version', 'notes', 'languages', 'rom_files', 'created_by']
-};
-
-//-----------------------------------------------------------------------------
 // PLUGINS
 //-----------------------------------------------------------------------------
 RomSchema.plugin(gameRef, { isOptional: true });
@@ -74,30 +67,6 @@ RomSchema.plugin(prettyId, { model: 'Rom', ignore: [ '_created_by', '_game' ], v
 ] });
 RomSchema.plugin(fileRef);
 RomSchema.plugin(paginate);
-
-//-----------------------------------------------------------------------------
-// VIRTUALS
-//-----------------------------------------------------------------------------
-RomSchema.virtual('created_by')
-	.get(function() {
-		if (this._created_by && this.populated('_created_by')) {
-			return this._created_by.toReduced();
-		}
-	});
-
-RomSchema.virtual('file')
-	.get(function() {
-		if (this._file && this.populated('_file')) {
-			return this._file.toSimple();
-		}
-	});
-
-//-----------------------------------------------------------------------------
-// METHODS
-//-----------------------------------------------------------------------------
-RomSchema.methods.toSimple = function() {
-	return _.pick(this.toObj(), apiFields.simple);
-};
 
 //-----------------------------------------------------------------------------
 // VALIDATIONS

@@ -35,8 +35,6 @@ const prettyId = require('./plugins/pretty-id');
 const idValidator = require('./plugins/id-ref');
 const sortableTitle = require('./plugins/sortable-title');
 
-const flavor = require('../modules/flavor');
-
 const file = require('./release/file');
 const version = require('./release/version');
 const author = require('./release/author');
@@ -132,58 +130,6 @@ ReleaseSchema.methods.moderationChanged = function(previousModeration, moderatio
 	if (!previousModeration.isApproved && moderation.isApproved) {
 		return mongoose.model('Game').update({ _id: this._game  }, { $inc: { 'counter.releases': 1 } });
 	}
-};
-
-ReleaseSchema.methods.toDetailed = function(opts) {
-	var rls = this.toObj();
-
-	opts = opts || {};
-	if (opts.thumbFlavor || opts.thumbFormat) {
-		rls.thumb = getReleaseThumb(rls.versions, opts);
-	}
-
-	// reduce/enhance data
-	rls.versions = rls.versions.map(v => {
-		v.files = v.files.map(f => {
-			if (opts.thumbPerFile && opts.thumbFormat) {
-				f.thumb = getFileThumb(f, opts);
-				if (!opts.full) {
-					delete f.media;
-				}
-			}
-			return f;
-		});
-		return v;
-	});
-	if (rls.moderation) {
-		rls.moderation = this.moderationToObject();
-	}
-
-	if (opts.starredReleaseIds) {
-		rls.starred = _.includes(opts.starredReleaseIds, this._id.toString());
-	}
-	if (!_.isUndefined(opts.starred)) {
-		rls.starred = opts.starred;
-	}
-
-	if (this._created_by.toReduced) {
-		rls.created_by = this._created_by.toReduced();
-	}
-	delete rls._created_by;
-
-	return rls;
-};
-
-ReleaseSchema.methods.toSimple = function(opts) {
-	return ReleaseSchema.statics.toSimple(this, opts);
-};
-
-ReleaseSchema.methods.toReduced = function() {
-	var release = _.pick(this.toObj(), [ 'id', 'name', 'created_at' ]);
-	if (this._game) {
-		release.game = this._game.toReduced();
-	}
-	return release;
 };
 
 /**

@@ -28,6 +28,8 @@ const LogEvent = require('mongoose').model('LogEvent');
 const api = require('./api');
 const acl = require('../../acl');
 
+const CommentSerializer = require('../../serializers/comment.serializer');
+
 const error = require('../../modules/error')('api', 'comment');
 const mailer = require('../../modules/mailer');
 
@@ -68,7 +70,7 @@ exports.createForRelease = function(req, res) {
 		updates.push(release.populate('_game').execPopulate().then(release._game.incrementCounter('comments')));
 		updates.push(req.user.incrementCounter('comments'));
 		updates.push(new Promise((resolve, reject) => {
-			LogEvent.log(req, 'create_comment', true, { comment: comment.toSimple() }, {
+			LogEvent.log(req, 'create_comment', true, { comment: CommentSerializer.simple(comment, req) }, {
 				game: release._game._id,
 				release: release._id
 			}, err => {
@@ -85,12 +87,13 @@ exports.createForRelease = function(req, res) {
 
 	}).then(comment => {
 
-		api.success(res, comment.toSimple(), 201);
+		api.success(res, CommentSerializer.simple(comment, req), 201);
 
 		// notify release creator (only if not the same user)
 		if (release._created_by.id !== req.user.id) {
 			mailer.releaseCommented(release._created_by, req.user, release._game, release, req.body.message);
 		}
+		return null;
 
 	}).catch(api.handleError(res, error, 'Error saving comment'));
 };
@@ -137,10 +140,12 @@ exports.createForReleaseModeration = function(req, res) {
 		return Comment.findById(comment._id).populate('_from').exec();
 
 	}).then(comment => {
-		api.success(res, comment.toSimple(), 201);
+		api.success(res, CommentSerializer.simple(comment, req), 201);
 
 		// notify
 		mailer.releaseModerationCommented(req.user, release, req.body.message);
+
+		return null;
 
 	}).catch(api.handleError(res, error, 'Error saving comment'));
 };
@@ -176,8 +181,8 @@ exports.listForRelease = function(req, res) {
 
 	}).spread((results, count) => {
 
-		let comments = results.map(comment => comment.toSimple());
-		api.success(res, comments, 200, api.paginationOpts(pagination, count));
+		let comments = results.map(comment => CommentSerializer.simple(comment, req));
+		return api.success(res, comments, 200, api.paginationOpts(pagination, count));
 
 	}).catch(api.handleError(res, error, 'Error listing comments for rleease.'));
 };
@@ -212,7 +217,7 @@ exports.listForReleaseModeration = function(req, res) {
 			.exec();
 
 	}).then(comments => {
-		api.success(res, _.map(comments, comment => comment.toSimple()), 200);
+		return api.success(res, comments.map(comment => CommentSerializer.simple(comment, req)), 200);
 
 	}).catch(api.handleError(res, error, 'Error listing moderation comments'));
 };

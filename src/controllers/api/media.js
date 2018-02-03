@@ -27,6 +27,8 @@ const api = require('./api');
 const Game = require('mongoose').model('Game');
 const Medium = require('mongoose').model('Medium');
 
+const MediumSerializer = require('../../serializers/medium.serializer');
+
 const error = require('../../modules/error')('api', 'medium');
 
 /**
@@ -69,7 +71,7 @@ exports.create = function(req, res) {
 
 	}).then(populatedMedium => {
 
-		api.success(res, populatedMedium.toSimple(), 201);
+		return api.success(res, MediumSerializer.simple(populatedMedium, req), 201);
 
 	}).catch(api.handleError(res, error, 'Error creating medium'));
 };
@@ -98,7 +100,7 @@ exports.list = function(req, res) {
 			.exec();
 
 	}).then(media => {
-		api.success(res, media.map(m => m.toSimple()));
+		return api.success(res, media.map(m => MediumSerializer.simple(m, req)));
 
 	}).catch(api.handleError(res, error, 'Error listing media'));
 };

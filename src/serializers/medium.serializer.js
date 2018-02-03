@@ -9,7 +9,7 @@ class MediumSerializer extends Serializer {
 
 	/** @protected */
 	_simple(doc, req, opts) {
-		const medium = _.pick(doc, ['id', 'file', 'game', 'release', 'category', 'description', 'acknowledgements', 'created_at', 'created_by']);
+		const medium = _.pick(doc, ['id', 'category', 'description', 'acknowledgements', 'created_at']);
 		if (doc.populated('_file')) {
 			medium.file = FileSerializer.simple(doc._file, req, opts);
 		}

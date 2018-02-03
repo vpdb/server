@@ -8,13 +8,13 @@ class GameSerializer extends Serializer {
 
 	/** @protected */
 	_reduced(doc, req, opts) {
-		return _.pick(doc.toObject(), [ 'id', 'title', 'manufacturer', 'year', 'ipdb' ]);
+		return _.pick(doc, ['id', 'title', 'manufacturer', 'year', 'ipdb']);
 	}
 
 	/** @protected */
 	_simple(doc, req, opts) {
 		const game = this._reduced(doc, req, opts);
-		_.assign(game, _.pick(doc.toObject(), ['game_type', 'backglass', 'logo', 'counter', 'rating', 'mpu', 'restrictions']));
+		_.assign(game, _.pick(doc, ['game_type', 'backglass', 'logo', 'counter', 'rating']));
 
 		// restrictions
 		const restrictions = {};

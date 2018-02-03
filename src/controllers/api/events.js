@@ -28,6 +28,7 @@ const Game = require('mongoose').model('Game');
 const Release = require('mongoose').model('Release');
 const User = require('mongoose').model('User');
 const LogEvent = require('mongoose').model('LogEvent');
+const LogEventSerializer = require('../../serializers/log_event.serializer');
 
 const acl = require('../../acl');
 const api = require('./api');
@@ -178,7 +179,7 @@ exports.list = function(opts) {
 
 		}).spread((results, count) => {
 
-			let logs = results.map(log => fullDetails ? log.toObj() : _.omit(log.toObj(), [ 'ip' ]));
+			let logs = results.map(log => fullDetails ? LogEventSerializer.detailed(log, req) : LogEventSerializer.simple(log, req));
 			api.success(res, logs, 200, api.paginationOpts(pagination, count));
 
 		}).catch(api.handleError(res, error, 'Error listing events'));

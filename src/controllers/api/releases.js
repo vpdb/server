@@ -34,8 +34,10 @@ const Build = require('mongoose').model('Build');
 const Game = require('mongoose').model('Game');
 const Star = require('mongoose').model('Star');
 const File = require('mongoose').model('File');
-const ReleaseSerializer = require('../../serializers/release.serializer');
 const api = require('./api');
+
+const GameSerializer = require('../../serializers/game.serializer');
+const ReleaseSerializer = require('../../serializers/release.serializer');
 
 const acl = require('../../acl');
 const error = require('../../modules/error')('api', 'release');
@@ -119,14 +121,14 @@ exports.create = function(req, res) {
 	}).then(release => {
 
 		LogEvent.log(req, 'create_release', true, {
-			release: release.toDetailed({ thumbFormat: 'medium' }),
-			game: _.pick(release._game.toSimple(), [ 'id', 'title', 'manufacturer', 'year', 'ipdb', 'game_type' ])
+			release: ReleaseSerializer.detailed(release, req, { thumbFormat: 'medium' }),
+			game: _.pick(GameSerializer.simple(release._game, req), [ 'id', 'title', 'manufacturer', 'year', 'ipdb', 'game_type' ])
 		}, {
 			release: release._id,
 			game: release._game._id
 		});
 
-		api.success(res, release.toDetailed(), 201);
+		api.success(res, ReleaseSerializer.detailed(release, req), 201);
 
 		// notify (co-)author(s)
 		release.authors.forEach(author => {
@@ -134,6 +136,9 @@ exports.create = function(req, res) {
 				mailer.releaseAdded(req.user, author._user, release);
 			}
 		});
+
+		return null;
+
 	}).catch(api.handleError(res, error, 'Error creating release'));
 };
 
@@ -210,7 +215,7 @@ exports.update = function(req, res) {
 			{ release: release._id, game: release._game._id }
 		);
 
-		api.success(res, release.toDetailed(), 200);
+		return api.success(res, ReleaseSerializer.detailed(release, req), 200);
 
 	}).catch(api.handleError(res, error, 'Error updating release'));
 };
@@ -311,12 +316,12 @@ exports.addVersion = function(req, res) {
 
 	}).then(release => {
 
-		api.success(res, _.filter(release.toDetailed().versions, { version: newVersion.version })[0], 201);
+		api.success(res, _.filter(ReleaseSerializer.detailed(release, req).versions, { version: newVersion.version })[0], 201);
 
 		// log event
 		LogEvent.log(req, 'create_release_version', true, {
-			release: _.pick(release.toDetailed({ thumbFormat: 'medium' }), [ 'id', 'name', 'authors', 'versions' ]),
-			game: _.pick(release._game.toSimple(), [ 'id', 'title', 'manufacturer', 'year', 'ipdb', 'game_type' ])
+			release: _.pick(ReleaseSerializer.detailed(release, req, { thumbFormat: 'medium' }), [ 'id', 'name', 'authors', 'versions' ]),
+			game: _.pick(GameSerializer.simple(release._game, req), [ 'id', 'title', 'manufacturer', 'year', 'ipdb', 'game_type' ])
 		}, {
 			release: release._id,
 			game: release._game._id
@@ -462,7 +467,7 @@ exports.updateVersion = function(req, res) {
 
 	}).then(release => {
 
-		let version = _.find(release.toDetailed().versions, { version: req.params.version });
+		let version = _.find(ReleaseSerializer.detailed(release, req).versions, { version: req.params.version });
 		api.success(res, version, 200);
 
 		// log event
@@ -559,7 +564,7 @@ exports.validateFile = function(req, res) {
 
 	}).then(release => {
 
-		version = _.find(release.toDetailed().versions, { version: req.params.version });
+		version = _.find(ReleaseSerializer.detailed(release, req).versions, { version: req.params.version });
 		file = _.find(version.files, f => f.file.id === req.params.file);
 
 		api.success(res, file.validation, 200);
@@ -890,7 +895,7 @@ exports.view = function(req, res) {
 		transformOpts.thumbPerFile = parseBoolean(req.query.thumb_per_file);
 		transformOpts.full = parseBoolean(req.query.full);
 
-		return api.success(res, release.toDetailed(transformOpts));
+		return api.success(res, ReleaseSerializer.detailed(release, req, transformOpts));
 
 	}).catch(api.handleError(res, error, 'Error retrieving release details'));
 };
@@ -930,7 +935,7 @@ exports.del = function(req, res) {
 
 		// log event
 		LogEvent.log(req, 'delete_release', false,
-			{ release: _.pick(release.toSimple(), [ 'id', 'name', 'authors', 'versions' ]) },
+			{ release: _.pick(ReleaseSerializer.simple(release, req), [ 'id', 'name', 'authors', 'versions' ]) },
 			{ release: release._id, game: release._game }
 		);
 

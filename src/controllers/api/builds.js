@@ -53,7 +53,7 @@ exports.list = function(req, res) {
 	}).then(builds => {
 
 		// reduce
-		builds = _.map(builds, build => BuildSerializer.serialize(BuildSerializer.simple, build, req));
+		builds = _.map(builds, build => BuildSerializer.simple(build, req));
 		api.success(res, builds);
 
 	}).catch(api.handleError(res, error, 'Error listing builds'));
@@ -81,7 +81,7 @@ exports.update = function(req, res) {
 			throw error('No such build with ID "%s".', req.params.id).status(404);
 		}
 
-		oldBuild  = _.cloneDeep(build.toDetailed());
+		oldBuild  = _.cloneDeep(BuildSerializer.detailed(build, req));
 
 		// check fields and assign to object
 		api.assertFields(req, updateableFields, error);
@@ -101,10 +101,12 @@ exports.update = function(req, res) {
 	}).then(newBuild => {
 
 		logger.info('[api|build:update] Build "%s" successfully updated.', newBuild.id);
-		api.success(res, newBuild.toDetailed(), 200);
+		api.success(res, BuildSerializer.detailed(newBuild, req), 200);
 
 		// log event
 		LogEvent.log(req, 'update_build', false, LogEvent.diff(oldBuild, req.body), { build: newBuild._id });
+
+		return null;
 
 	}).catch(api.handleError(res, error, 'Error updating build'));
 };
@@ -126,7 +128,7 @@ exports.view = function(req, res) {
 		if (!build) {
 			throw error('No such build with ID "%s".', req.params.id).status(404);
 		}
-		api.success(res, build.toDetailed(), 200);
+		return api.success(res, BuildSerializer.detailed(build, req), 200);
 
 	}).catch(api.handleError(res, error, 'Error viewing build'));
 };
@@ -152,10 +154,12 @@ exports.create = function(req, res) {
 
 	}).then(function() {
 		logger.info('[api|build:create] Build "%s" successfully created.', newBuild.label);
-		api.success(res, newBuild.toSimple(), 201);
+		api.success(res, BuildSerializer.simple(newBuild, req), 201);
 
 		// log event
-		LogEvent.log(req, 'create_build', false, newBuild.toDetailed(), { build: newBuild._id });
+		LogEvent.log(req, 'create_build', false, BuildSerializer.detailed(newBuild, req), { build: newBuild._id });
+
+		return null;
 
 	}).catch(api.handleError(res, error, 'Error creating build'));
 };
@@ -219,7 +223,7 @@ exports.del = function(req, res) {
 		api.success(res, null, 204);
 
 		// log event
-		LogEvent.log(req, 'delete_build', false, build.toSimple(), { build: build._id });
+		LogEvent.log(req, 'delete_build', false, BuildSerializer.simple(build, req), { build: build._id });
 
 	}).catch(api.handleError(res, error, 'Error deleting tag'));
 };

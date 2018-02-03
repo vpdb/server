@@ -9,12 +9,12 @@ class ReleaseSerializer extends Serializer {
 
 	/** @protected */
 	_simple(doc, req, opts) {
-		return this._serialize(doc, req, opts, ReleaseVersionSerializer.simple(version, req, opts).bind(ReleaseVersionSerializer), true);
+		return this._serialize(doc, req, opts, ReleaseVersionSerializer.simple.bind(ReleaseVersionSerializer), true);
 	}
 
 	/** @protected */
 	_detailed(doc, req, opts) {
-		return this._serialize(doc, req, opts, ReleaseVersionSerializer.detailed(version, req, opts).bind(ReleaseVersionSerializer), false);
+		return this._serialize(doc, req, opts, ReleaseVersionSerializer.detailed.bind(ReleaseVersionSerializer), false);
 	}
 
 	/** @private */
@@ -84,7 +84,7 @@ class ReleaseSerializer extends Serializer {
 		const filesByWeight = _.orderBy(files.map(file => {
 
 			/** @type {{ lighting:string, orientation:string }} */
-			const fileFlavor = file.flavor.toObj ? file.flavor.toObj() : file.flavor;
+			const fileFlavor = file.flavor.toObject ? file.flavor.toObject() : file.flavor;
 			let weight = 0;
 			const flavorNames = this._getFlavorNames(opts);
 			let p = flavorNames.length + 1;

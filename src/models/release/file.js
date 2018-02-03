@@ -53,44 +53,7 @@ const schema = new Schema(fields, { usePushEach: true });
 schema.plugin(fileRef);
 schema.plugin(prettyId, { model: 'ReleaseVersionFile' });
 
-
-//-----------------------------------------------------------------------------
-// VIRTUALS
-//-----------------------------------------------------------------------------
-// schema.virtual('validation.validated_by')
-// 	.get(function() {
-// 		if (this.populated('validation._validated_by')) {
-// 			return this.validation._validated_by.toReduced();
-// 		}
-// 	});
-
 schema.options.toObject = { virtuals: true, versionKey: false };
-// schema.options.toObject = {
-// 	virtuals: true,
-// 	transform: function(doc, file) {
-// 		const Build = require('mongoose').model('Build');
-// 		const File = require('mongoose').model('File');
-// 		const User = require('mongoose').model('User');
-// 		file.playfield_image = file._playfield_image;
-// 		file.playfield_video = file._playfield_video;
-// 		file.compatibility = _.map(file._compatibility, compat =>
-// 			compat.label ? Build.toSimple(compat) : { _id: compat._id }
-// 		);
-// 		file.file = File.toDetailed(file._file);
-// 		if (file.validation) {
-// 			if (file.validation._validated_by.id) {
-// 				file.validation.validated_by = User.toReduced(file.validation._validated_by);
-// 			}
-// 			delete file.validation._validated_by;
-// 		}
-// 		delete file.id;
-// 		delete file._id;
-// 		delete file._file;
-// 		delete file._playfield_image;
-// 		delete file._playfield_video;
-// 		delete file._compatibility;
-// 	}
-// };
 
 module.exports.fields = fields;
 module.exports.schema = schema;

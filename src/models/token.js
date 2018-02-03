@@ -26,7 +26,6 @@ const shortId = require('shortid32');
 const mongoose = require('mongoose');
 const validator = require('validator');
 const uniqueValidator = require('mongoose-unique-validator');
-const userAgentParser = require('ua-parser-js');
 
 const scope = require('../scope');
 const config = require('../modules/settings').current;
@@ -51,36 +50,6 @@ const fields = {
 	_created_by: { type: Schema.ObjectId, ref: 'User', required: true }
 };
 const TokenSchema = new Schema(fields, { usePushEach: true });
-
-//-----------------------------------------------------------------------------
-// API FIELDS
-//-----------------------------------------------------------------------------
-const apiFields = {
-	simple: ['id', 'label', 'type', 'scopes', 'provider', 'is_active', 'last_used_at', 'expires_at', 'created_at']
-};
-
-//-----------------------------------------------------------------------------
-// METHODS
-//-----------------------------------------------------------------------------
-TokenSchema.methods.toSimple = function(showToken) {
-	const obj = TokenSchema.statics.toSimple(this);
-	if (showToken) {
-		obj.token = this.token;
-	}
-	const browser = userAgentParser(obj.label);
-	if (browser.browser.name && browser.os.name) {
-		obj.browser = browser;
-	}
-	return obj;
-};
-
-//-----------------------------------------------------------------------------
-// STATIC METHODS
-//-----------------------------------------------------------------------------
-TokenSchema.statics.toSimple = function(token) {
-	const obj = token.toObj ? token.toObj() : token;
-	return _.pick(obj, apiFields.simple);
-};
 
 //-----------------------------------------------------------------------------
 // VALIDATIONS

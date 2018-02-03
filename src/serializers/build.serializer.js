@@ -13,6 +13,7 @@ class BuildSerializer extends Serializer {
 		return _.pick(doc, ['id', 'label', 'platform', 'major_version', 'download_url', 'built_at', 'type', 'is_range']);
 	}
 
+	/** @protected */
 	_detailed(doc, req, opts) {
 		const build = this._simple(doc, req, opts);
 		_.assign(build, _.pick(doc, ['support_url', 'description', 'is_active']));
